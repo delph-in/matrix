@@ -11,6 +11,20 @@ object_n := noun-lex &
   [ STEM < "objects" >,
     SYNSEM.LKEYS.KEYREL.PRED '_object_n_rel ].
 
+s_n := noun-lex &
+  [ STEM < "s" >,
+    SYNSEM.LKEYS.KEYREL.PRED '_s_n_rel ].
+
+o1_n := noun-lex &
+  [ STEM < "o1" >,
+    SYNSEM.LKEYS.KEYREL.PRED '_o1_n_rel ].
+
+o2_n := noun-lex &
+  [ STEM < "o2" >,
+    SYNSEM.LKEYS.KEYREL.PRED '_o2_n_rel ].
+
+
+
 verb_v := transitive-verb-lex &
    [ STEM < "verb" >,
      SYNSEM.LKEYS.KEYREL.PRED '_verb_v_rel ].
