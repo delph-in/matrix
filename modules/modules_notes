@@ -116,7 +116,8 @@ Strict OSV -- subj-head, comp-head, hs first
 
 Strict v-final (OSV, SOV) -- Japanese: comp-head, subj-head, no order
 Strict v-initial (VSO, VOS) -- do these exist?: head-subj, head-comp, no order
-Strict v-medial (SVO, OVS) -- do these exist? -- this is just SVO + OVS.
+Strict v-medial (SVO, OVS) -- do these exist? Just putting together
+ SVO and OVS also gives SOV and VOS.
 
 Completely free -- Polish (still need to rule out spurious ambiguity in
   order of application of head-comp and head-subj):
