@@ -41,19 +41,7 @@ print "\t b) an adverb\n";
 print "\t c) both\n";
 print "\t d) neither\n\n";
 
-# Read the answer from standard in.
-
-$answer = <STDIN>;
-chomp($answer);
-
-# Make sure the answer was something appropriate.  If not,
-# prompt for a appropriate answer.
-
-while ($answer =~ /^[^ABCDabcd]/) {
-    print "Please type A B C or D.\n";
-    $answer = <STDIN>;
-    chomp($answer);
-}
+$answer = &getanswer("A","a","B","b","C","c","D","d");
 
 # Move to appropriate subroutine on the basis of the answer.
 # D just prints the "sorry can't help message."
@@ -86,18 +74,7 @@ if ($answer =~ /^[Aa]/) {
     print "\t c) sentential negation requires both the inflection and\n\t\t"."the adverb\n";
     print "\t d) none of the above\n\n";
       
-# Read in the answer.
-
-    $answer = <STDIN>;
-    chomp($answer);
-
-# Check that it's appropriate.  If not, prompt again.
-
-    while ($answer =~ /^[^ABCDabcd]/) {
-	print "Please type A B C or D.\n";
-	$answer = <STDIN>;
-	chomp($answer);
-    }
+    $answer = &getanswer("A","a","B","b","C","c","D","d");
 
 # Call appropriate subroutine(s) on the basis of the answer.
 # D just prints the "sorry can't help message."
@@ -138,17 +115,9 @@ sub generate_infl_neg {
 # Find out whether it's a prefix or a suffix.
 
     print "Is the negation affix a prefix or a suffix?\n";
-    $answer = <STDIN>;
-    chomp($answer);
 
-# Check for an appropriate answer.
+    $answer = &getanswer("P","p","S","s"); 
 
-    while ($answer =~ /^[^PpSs]/) {
-	print "Please type P or S.\n";
-	$answer = <STDIN>;
-	chomp($answer);
-    }
-   
 # Set the value of $affix based on the answer.  We need
 # to do this to get a normalized spelling, since we're going
 # to use the value of $affix as part of the generated tdl code.
@@ -170,10 +139,17 @@ sub generate_infl_neg {
 # the morphosyntax.  Cf Bender & Good 2005.
 
     print "How is the negation $affix spelled in the underlying form?\n";
-    print "Suggested form: NEG\n";
+    print "Suggested form (we'll use this as a default): NEG\n";
 
     $spelling = <STDIN>;
     chomp($spelling);
+
+    if ($spelling =~ /^$/) {
+
+	$spelling = "NEG";
+
+    }
+
 
 # Check whether the file already exists, and if so whether the user
 # wants to overwrite.
@@ -211,11 +187,20 @@ sub generate_infl_neg {
 
 sub generate_adv_neg {
 
-    #Here we're going to have worry about whether or not the
-    #scopal head-adj rules are already instantiated.  Hmmm...
+#Assume that we're going to instantiate scopal and intersective
+#head-modifier rules for both orders for every grammar.  We might
+#one day find a language that only uses a subset, but that's a
+#topic for another time.
 
     print "Generating tdl files for adverbial sentential negation.\n";
     print "Be sure to load adv-neg.tdl, adv-neg-lex.tdl, and adv-neg-rules.tdl in your script.\n\n";
+
+    print "You've said your language handles sentential negation\n";
+    print "via a negative adverb.  Is this element best described as:\n\n";
+    print "\t a) an independent modifier\n";
+    print "\t b) selected by a verb (auxiliary verb or main verb)\n\n";
+
+    $answer = &getanswer("a","b","A","B");
 
 }
 
@@ -263,3 +248,58 @@ sub check_clobber {
 	}
     }
 }
+
+# Subroutine for answers to multiple choice questionnaire items.
+# Takes as arguments the set of valid choices, and then checks
+# whether user input matches.  As long as user input doesn't match,
+# keep prompting user.
+
+sub getanswer {
+
+# Read the answer from standard in.
+
+    $answer = <STDIN>;
+    chomp($answer);
+
+# Make sure the answer was something appropriate.  If not,
+# prompt for a appropriate answer.
+
+    while (&notinarray($answer,@_)) {
+	print "Please type";
+
+	$last = scalar(@_) - 1;
+
+	for ($i=0;$i<$last;$i++) {
+
+	    print " $_[$i]";
+	    
+	}
+
+	print " or $_[$last].\n";
+
+	$answer = <STDIN>;
+	chomp($answer);
+    }
+
+    return $answer;
+
+}
+
+# Subroutine used by getanswer to test whether or not an element
+# (first argument) is in an array (remaining arguments).  Surely
+# there's a standard form for this in Perl, but oh well.
+
+sub notinarray {
+
+    for($i=1;$i<scalar(@_);$i++) {
+	
+	if ($_[0] =~ $_[$i]) {
+	    return 0;
+	}
+
+    }
+
+    return 1;
+
+}
+
