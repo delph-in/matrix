@@ -1,3 +1,39 @@
+Paper:
+
+	basic word order: Emily
+	negation: Emily
+	matrix yes-no questions -- particle, word order: Dan
+	test cases: Emily/Dan
+	Perl script?
+
+Things to address:
+
+	word order: "canonical", topicalization/extraposition, 
+           lexical alternations
+
+        highlight distinction with "P&P" -- data-driven, working
+           up from phenomena, not trying to have one parameter
+           handle lots of diverse phenomena
+
+        not entirely bottom-up, but talk about how we'll deal
+           with counterexamples
+
+	OVS languages; debate about VPs or not -- how that affects
+	   what we do with spurious ambiguity in free word order
+           languages
+
+Dan's schedule -- 
+  off to PA/DC 12/22-12/30
+  12/31 back in Germany
+  back in the office 1/3 -- no class until 1/10
+
+Emily's schedule -- 
+  in Seattle until 1/6
+  teaching starting 1/3
+
+Talk next: 1/4 9am PST
+Deadline: 1/14
+
 Testing/evaluation:
 
 1. Try loading all of the modules at once to make sure that
@@ -127,11 +163,26 @@ Completely free -- Polish (still need to rule out spurious ambiguity in
     head-comp, subj-head: hc first
     comp-head, head-subj: hc first
 
+  What really happens with 3arg clauses in Polish, Warlpiri, other languages?
+  LFG "non-configurational" languages.
+
+  What kind of elements attach low?
+  Try abritrary constraint of right attachment before left attachment?
+    (even in strict OVS languages)
+
+  Two problems: -- spurious ambiguity when there's arguments on
+                   either side of the head
+                -- pragmatic effects
+
 Strict SOV in matrix clauses, SVO embedded (German, Norwegian?)
 similar variants
 
 Strict VO or OV order, plus opposite head-comp order for
  (some) non-verbal heads
+
+Auxiliary always in 2nd position -- but everything
+else is free. (I think this is what the LFG crowd says
+is going on in Warlpiri -- some other Australian languages.)
 
 ... How to tell when to count `inverted' orders as derived? ...
 ... What is our current thinking about olist?  Assuming for now
@@ -159,14 +210,18 @@ Relatively general modules:
  
  `basic word order'
  simple word classes
- determiners or lack thereof
+ determiners or lack thereof / gets messy quickly with
+	indefinites
  pro-drop
  sentential negation
  modifiers
  matrix yes-no questions
  case
  intraclausal scrambling
- agreement (S-V, Det-N, Adj-N; for png, case, other?)
+ agreement (S-V, Det-N, Adj-N; for png, case, other? --
+   might vary within a language as to how much agrees.
+   Slavic depictives agree in number but not gender, or ...)
+   syntactic v. semantic agreement
  ARG-ST to VAL mapping: ergative v. accusative
  complex predicates 
  complement reordering -- I'm implementing this for
@@ -176,11 +231,13 @@ Relatively general modules:
    presented as a separate choice.    Need to consider
    which kinds of reordering are best handled by lexical
    rules, too.
+ tense/aspect
 
 Less universal modules:
 
  V2
  Romance clitics/pronoun incorporation
+ real clitics (2nd position -- Avgustinova)
  serial verbs
  Hindi-style verb clusters
  numeral classifiers
@@ -211,3 +268,14 @@ Transfer `modules'?
  This is not just for demo but also for practical application.
  It will be nice to allow people to play with their grammars
  by translating from a more familiar language.
+
+Meeting with Dan 12/21/04
+
+ Avgustinova -- working within in HPSG, thinking in terms of modules
+ working on Slavic -- case, agreement, clitics; seems likely
+ to be willing to work with someone who wanted to do implementation
+ Notions about how the modularity works -- importing parts of
+ hiearchies/subparts get further elaborated.
+
+ Case marking -- as morphology or as adpositions (not requiring
+ that all adpositions, even English to, are case markers).
