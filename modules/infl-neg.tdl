@@ -9,7 +9,7 @@
 negation-lex-rule := infl-ltol-rule &
   [ SYNSEM [ LOCAL.CAT #cat,
 	     NON-LOCAL #non-loc ],
-    DTR.SYNSEM [ LOCAL [ CAT #cat,
+    DTR.SYNSEM [ LOCAL [ CAT #cat & [ HEAD verb ],
 			 CONT.HOOK [ INDEX #ind,
 				     LTOP #larg,
 				     XARG #xarg ]],
