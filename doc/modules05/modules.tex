@@ -144,9 +144,9 @@ is meant to scale up to handle both kinds of typological variation.
 
 The core Matrix and modular extensions to it may appear at first
 glance to be analogous to the Principles and Parameters proposed
-in mainstream syntactic theory, beginning with \newcite{Chomsky81}.
-However, there is at least one important difference between the
-approaches.  Whereas Parameters are meant to be abstract `switches'
+by \newcite{Chomsky81} and others.
+However, they differ in at least one important respect:
+Whereas Parameters are meant to be abstract `switches'
 which simultaneously control multiple different, apparently 
 unrelated surface phenomena, the modules in the Matrix each directly
 encode the constraints necessary to handle one particular phenomenon.
@@ -203,12 +203,13 @@ COURSE.  ANYTHING ELSE ABOUT REUSE OF ANALYSES?]
 
 \section{Implementations of three modules}
 
-To explore the issues that will arise both in developing modules which
-are consistent with each other and in managing the modules, we have
-implemented an initial set of modules targeting three areas: basic
-word order, matrix yes-no questions, and sentential negation.  The coverage
-of these modules and the strategies taken in their implementation are
-described in the following subsections.
+To explore the issues that will arise in developing modules which
+are consistent with each other and in module management, we have
+implemented an initial set of modules targeting basic
+word order, matrix yes-no questions, and sentential negation.  
+%The coverage
+%of these modules and the strategies taken in their implementation are
+%described in the following subsections.
 
 \subsection{Word order}
 
@@ -265,9 +266,32 @@ constituents represented in such a tree need to be interpreted as
 linguistically meaningful.  Conversely, however, any such grammar
 should posit a constituent where the linguistic evidence says there
 must be one.}
-
 Figure~\ref{wordorderfig} shows the types files for the SOV and
-V-final orders and instance file which they both share.
+V-final orders and the instance file which they both share.
+
+\begin{figure*}[ht]
+\begin{center}
+{\tt\small
+\begin{tabular}{l}
+\hline
+{\bf SOV.tdl}\\
+comp-head-phrase := basic-head-1st-comp-phrase \& head-final.\\
+subj-head-phrase := basic-head-subj-phrase \& head-final \&\\
+   \phantom{foo}[ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS $\langle$ $\rangle$ ].\\
+{\bf V-final.tdl}\\
+comp-head-phrase := basic-head-1st-comp-phrase \& head-final.\\
+subj-head-phrase := basic-head-subj-phrase \& head-final.\\
+{\bf V-final-rules.tdl}\\
+comp-head := comp-head-phrase.\\
+subj-head := subj-head-phrase.\\
+\hline
+\end{tabular}
+}
+\end{center}
+\caption{SOV and V-final basic word order modules}
+\label{wordorderfig}
+\end{figure*}
+
 
 The core Matrix also provides a lexical type hierarchy
 providing basic types for (among other things) nouns and verbs which
@@ -279,40 +303,207 @@ of NP structure while still producing parses with well-formed semantic
 representations (for testing via generation), we posited a place-holder
 module providing an underconstrained determinerless NP rule.
 
--- basic S [comp] V order
+We've been speaking of these modules as handling the order of
+subjects, complements and verbs, but two caveats are in order.  First,
+the head-complement and head-subject rules posited are not constrained
+to any particular part of speech type. Thus, the system that is
+produced models languages with consistent ordering of heads and
+dependents, for heads of all parts of speech.  The Matrix provides a
+type hierarchy of HEAD values that allows for statements over any
+disjunction of head types, so it should be straightforward to produce
+a system in which linearization is relativized to the head type, but
+this remains future work.  Second, we began by considering clauses
+with at most one complement, but of course that is an
+oversimplification.  The rules as stated will handle an unbounded
+number of complements, and realize them in an order determined by
+their order on the head daughter's complements ({\sc comps}) list.
 
--- strategy for V-initial or V-final; reuse and another sense of ``modularity''.
--- strategy for ``free'' word order
+The next obvious step is to allow some flexibility in the order of
+complements.  We believe that this will be best handled as a separate,
+interacting modular system, as it appears that languages vary in the
+extent to which they allow complements to reorder.\footnote{Contrast,
+for example, English, which allows PP complements to reorder with each
+other and with adjuncts fairly easily but keeps NP complements close
+to their selecting heads, with Japanese, which generally allows free
+ordering of complements and indeed free ordering between complements
+and subjects (`scrambling').}  As a first step in this direction,
+however, we have implemented a head-2nd-comp-rule which realizes the
+second element of a head's {\sc comps} list, while passing the first
+complement up to be realized at a higher level in the tree.  This rule
+is instantiated for the free-word-order module only.  For sentences
+with ditransitive verbs (and thus four elements: subject, verb, direct
+object, and indirect object), a grammar with the free-word order
+module will license all 24 possible orders of major clause
+constituents, while assigning exactly one parse to each.
 
--- not handled yet: mixed word order (by head type, by clause type); pragmatic effects of word order in ``free'' word order languages
-
--- reorderings among complements: somewhat orthogonal. implemented so far just for ``free''.  [add for V-initial and V-final?]
+Finally, we note two further extensions in this domain which will need
+to be handled to produce a system useful across a broad range of
+languages.  The first is mixed word order, where one or more word
+orders is arguably basic, but the choice between them is syntactically
+constrained: either by head type (as discussed above) or by clause
+type (matrix v.\ subordinate).  The second is a representation of the
+pragmatic effects of word order, especially in free word-order
+languages.\footnote{In languages with relatively fixed word order, the
+displacement constructions which produce alternative orders provide a
+place to encoded such pragmatic constraints.}
 
 
 \subsection{Yes-no questions}
 
 \subsection{Sentential negation}
 
+The sentential negation modules handle three basic strategies for
+sentential negation, as well as some hybrids: sentential negation
+through verbal inflection; a V, VP or S adverb (pre- or post-head); a
+selected adverb which appears as the complement of a verb (main or
+auxiliary); inflection in combination with a selected adverb, either
+optionally or obligatorily; and inflection in complementary
+distribution with a negative adverb. We will illustrate two of these here.  
+
+The negative inflection approach to sentential negation is implemented
+by means of a lexical rule, shown in Figure~\ref{negrulefig}.  This
+rule takes a verbal lexeme as its daughter and produces another verbal
+lexeme with negative inflection as well as negative semantics.  The
+constructional content ({\sc c-cont}) of this rule adds the negative
+relation and the appropriate scopal constraint between that relation
+and the verb's semantics. In the grammar generated using this module,
+this type is instantiated by a lexical rule instance, specialized
+according to user input as to whether the relevant inflection is a
+prefix or a suffix, and as to the spelling of the suffix.  We assume
+this spelling to be the underlying form which can then be passed to a
+morphophonological component capable of handling non-concatenative
+effects or other intricacies.  As further modules are developed, we
+will need to tune the interaction of this rule with other lexical
+rules to allow linguists to capture the ordering of the
+processes.\footnote{Though note that the same generalizations could be
+expressed in a morphological analysis component.  In this case
+overgeneration on the part of the (morpho-)syntax would be merely
+inefficient.}
+
+\begin{figure}[ht]
+{\scriptsize
+\begin{verbatim}
+negation-lex-rule := infl-ltol-rule &
+[ SYNSEM [ LOCAL.CAT #cat,
+           NON-LOCAL #non-loc ],
+  DTR.SYNSEM [ LOCAL [ CAT #cat & [ HEAD verb ],
+                       CONT.HOOK [ INDEX #ind,
+                                   LTOP #larg,
+                       XARG #xarg ]],
+               NON-LOCAL #non-loc ],
+  C-CONT [ HOOK [ INDEX #ind,
+                  LTOP #ltop,
+                  XARG #xarg ],
+           RELS <! arg1-relation &
+                   [ PRED '_neg_r_rel,
+                     LBL #ltop,
+                     ARG1 #harg ] !>,
+           HCONS <! qeq &
+                   [ HARG #harg,
+                     LARG #LARG ] !> ]].
+\end{verbatim}
+}
+\caption{Inflectional rule for sentential negation}
+\label{negrulefig}
+\end{figure}
+
+In the negative adverb case, we posit a lexical type which inherits
+from the Matrix type for scopal adverbs.  This type is specialized by user
+input to be pre- or post-head and to attach to S, VP, or V.  Further
+elaborations would allow for some underspecification along both dimensions.
+Finally, a lexical entry is autogenerated using the negative adverb type
+so created and a spelling provided by the user.
+
+
 \section{Management of modules}
 \label{management}
 
--- perl scripts/form idea: ideal case has an interactive interface
-where decisions lead to more choices to be made, linguist can see
-the decisions taken at a glance, 
+There are at least three partially conflicting pressures on the design
+of a means of module management in this system: 1. From a developer's
+perspective, it is desirable to capture as many generalizations as
+possible across modules within a system so that common information is
+factored out and coded only once, even if it is used in many
+alternative modules. 2. From a user's perspective, it should be clear
+what modules are available, what choices have been indicated so far,
+and what implications those choices have for the generated grammar.
+3. Again from a user's perspective, it should be relatively simple to
+integrate updates to the Matrix (core grammar and modules) into a
+grammar under development, without loss of information.\footnote{In
+the worst case, the grammar developer might have to manually retweak
+some module-generated part of the grammar for which the module had
+been updated.  However, it should always be apparent to the user when
+this is required.}  Similarly, it should be possible for the grammar
+developer to revise a decision that was made early on (such as in the
+type of negation strategy the language uses) and regenerate the
+automatically generated portions of the grammar, without loss of
+information.  These considerations have implications both for the
+encoding of the underlying knowledge base that makes up the modules
+and for the user interface designed to allow a linguist to interact
+with them.
 
--- could conceivably just have lots and lots of different files, but:
-missed generalizations, need to input spellings of things
+The simplest approach to these issues would be code each module as a
+separate file or files, and devise a grammar-loading script with
+suitable in-line comments indicating which files to include for which
+linguistic effects.  This naive approach does not do well on the first
+criterion: creating all of those separate files represents a great
+deal of redundancy (sentential negation with preverbal VP adverbs is
+very much like sentential negation with postverbal S adverbs, in terms
+of the code that needs to be produced).  We could address this by
+automatically generating the various files while still presenting them
+to the user as static entities.  However, this won't scale up to
+situations where the exact contents of one module need to be
+customized in light of other modules chosen.  The naive approach fails
+rather miserably on the second, UI-focused, criterion.  It would be
+desirable to present the user with linguistic questions in a dynamic
+fashion (presenting the choice of type of negative adverb only after
+that general strategy has been chosen, for example).  This approach
+does answer consideration (3) fairly well: it would simple enough to
+provide a diff tool which compared user's versions of the files
+included to off-the-shelf copies of the same modules, and alerted the
+user to any local changes to files which had either been updated by
+the Matrix developers or were involved in a grammar revision (change
+of module selection).  However, there is still room for improvement:
+some of the customization (e.g., spellings of various morphemes) could
+more easily be automatically updated if that information were stored
+where the system had direct access to it, rather than implicitly in
+modified files.
 
--- current solution is a perl script, for testing purposes
+A better solution would draw on linguist knowledge stored in a
+separate set of files to automatically produce both the files that a
+particular grammar needs to include and the script which loads them.
+The UI for this system would be some kind of form or ``wizard'' which
+allowed user input of both broad choices (e.g., which word order
+system to use) and information to customize modules (is the negative
+inflection a prefix or a suffix? how is it spelled?).  Such subsidary
+questions would only appear once the choice which makes them relevant
+was made.  Furthermore, the system would record the user's answers, and
+perhaps even be able to take a grammar and work out which answers must
+have been given, as well as where files have been modified.  
+
+In this paper, we leave the development of such a UI for future work,
+and develop instead a command-line script (in Perl) which steps the
+user through the linguistic questions (raising only those that become
+relevant) and generates both the grammar files and the grammar-loading
+script which the LKB uses to call them.  While the command-line UI is
+certainly a far cry from ideal, it does succeed in making the task of
+customizing the Matrix by making selections along the three dimensions
+represented very quick work.  At the moment, the modules produce
+several separate files, though it is perhaps an open question whether
+it would be easier for users to further modify such automatically
+generated grammars if the grammar code were more consolidated.
 
 \section{Evaluation}
 
--- Table of languages and properties
+To evaluate the mutual consistency of the modules developed so far as
+well as to illustrate their applicability to a interesting range of
+languages, we developed abstract testsuites for N languages.  This
+sample of languages is not intended to be representative, either
+typologically or genetically, but is rather opportunistic.  The
+testsuites are abstract in that we represent sentences in terms of
+strings of part of speech tags rather than particular words, in order
+to sidestep the problem of lexica for each language.
 
--- Describe test suites: admit that the sample is entirely opportunistic,
-and that the point of the evaluation is to illustrate the usefulness of the
-technique across and interesting range of languages.  not a systematic 
-typological survey.
+-- Table of languages and properties
 
 -- Cite sources
 
