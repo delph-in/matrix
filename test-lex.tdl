@@ -1,0 +1,21 @@
+;;; Lexicon file for testing matrix modules
+;;; Working for now with very impoverished
+;;; lexical types.  Try to keep overgeneration
+;;; under control by keeping vocab small.
+
+subject_n := noun-lex &
+  [ STEM < "subjects" >,
+    SYNSEM.LKEYS.KEYREL.PRED '_subject_n_rel ].
+
+object_n := noun-lex &
+  [ STEM < "objects" >,
+    SYNSEM.LKEYS.KEYREL.PRED '_object_n_rel ].
+
+verb_v := transitive-verb-lex &
+   [ STEM < "verb" >,
+     SYNSEM.LKEYS.KEYREL.PRED '_verb_v_rel ].
+
+iverb_v := intransitive-verb-lex &
+   [ STEM < "iverb" >,
+     SYNSEM.LKEYS.KEYREL.PRED '_iverb_v_rel ].
+
