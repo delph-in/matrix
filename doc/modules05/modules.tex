@@ -14,20 +14,21 @@
 
 \title{Rapid Prototyping of Scalable Grammars:\\
        Modular Extensions to a Language-Independent Core}
-\author{Emily Bender\\
-Department of Linguistics\\
-University of Washington\\
-Box 354340\\
-Seattle, WA 98195-4340, USA\\
-{\small {\tt ebender@u.washington.edu}}
-\And
-Dan Flickinger\\
-CSLI, Stanford University\\
-Ventura Hall, 220 Panama St\\
-Stanford, CA 94305, USA\\
-{\small {\tt danf@csli.stanford.edu}}
-}
+%% \author{Emily M.~Bender\\
+%% Department of Linguistics\\
+%% University of Washington\\
+%% Box 354340\\
+%% Seattle, WA 98195-4340, USA\\
+%% {\small {\tt ebender@u.washington.edu}}
+%% \And
+%% Dan Flickinger\\
+%% CSLI, Stanford University\\
+%% Ventura Hall, 220 Panama St\\
+%% Stanford, CA 94305, USA\\
+%% {\small {\tt danf@csli.stanford.edu}}
+%% }
 
+\author{anonymous}
 \date{}
 
 \begin{document}
@@ -76,17 +77,17 @@ The past decade has seen the development of wide-coverage implemented
 grammars representing deep linguistic analysis of several languages in
 several frameworks, including Head-Driven Phrase Structure Grammar
 (\hpsg), Lexical-Functional Grammar (\lfg), and Lexicalized Tree
-Adjoining Grammar ({\sc ltag}). In \hpsg, the most extensive grammars
-are those of English \cite{Flickinger:00}, German \cite{Mue:Kap:00},
-and Japanese \cite{Siegel:00,Siegel:Bender:02}.  The Grammar Matrix
-\cite{Ben:Fli:Oe:02} is an attempt to distill the wisdom of these
-existing grammars and document it in a form that can be used as the
-basis for new grammars. The main goals of the project are: (i)
-consistent with other work in \hpsg, to develop in detail semantic
-representations and in particular the syntax-semantics interface; (ii)
-to represent generalizations across linguistic objects and across
-languages; and (iii) through the richness of the matrix and its
-built-in links with the \lkb\ grammar engineering environment
+Adjoining Grammar ({\sc ltag}). In \hpsg\ \cite{Pol:Sag:94}, the most
+extensive grammars are those of English \cite{Flickinger:00}, German
+\cite{Mue:Kap:00}, and Japanese \cite{Siegel:00,Siegel:Bender:02}.
+The Grammar Matrix \cite{Ben:Fli:Oe:02} is an attempt to distill the
+wisdom of these existing grammars and document it in a form that can
+be used as the basis for new grammars. The main goals of the project
+are: (i) consistent with other work in \hpsg, to develop in detail
+semantic representations and in particular the syntax-semantics
+interface; (ii) to represent generalizations across linguistic objects
+and across languages; and (iii) through the richness of the matrix and
+its built-in links with the \lkb\ grammar engineering environment
 \cite{Copestake:02}, to allow for extremely quick start-up as the
 matrix is applied to new languages.
 
@@ -137,7 +138,7 @@ don't conceptualize them in this way.  These include things like
 noun incorporation, numeral classifiers, and auxiliary verbs.
 Not all languages instantiate these phenomena, but among those that
 do, one finds recurring varieties which can be subjected to typological
-analysis (see, for example, \cite{Mithun:??} on noun incorpration).
+analysis (see, for example, \cite{Mithun:84} on noun incorpration).
 The type of modular extension to the Matrix which we propose here
 is meant to scale up to handle both kinds of typological variation.
 
@@ -202,7 +203,91 @@ COURSE.  ANYTHING ELSE ABOUT REUSE OF ANALYSES?]
 
 \section{Implementations of three modules}
 
+To explore the issues that will arise both in developing modules which
+are consistent with each other and in managing the modules, we have
+implemented an initial set of modules targeting three areas: basic
+word order, matrix yes-no questions, and sentential negation.  The coverage
+of these modules and the strategies taken in their implementation are
+described in the following subsections.
+
 \subsection{Word order}
+
+The word order modules address the so-called basic word order in
+a language: the relative order of subjects, verbs, and verbal complements.
+Languages vary in their ridigity with respect to word order and the
+question of how to determine the basic word-order of a language is 
+notoriously complex.  Nonetheless, we believe that many if not most
+linguists working on linguistic description would analyze some orders
+as primary and others as derived.  Thus the basic word order modules
+are meant to capture the relative ordering of subjects, verbs, and complements
+in clauses which don't also involve word-order changing phenomena
+such as topicalization, extraposition, subject-verb (or subject-auxiliary)
+inversion, etc.  Eventual modules for such phenomena would need to
+interact appropriately with the basic word-order modules.
+
+The Grammar Matrix core grammar provides definitions of basic
+head-complement and head-subject schemata which are consistent with
+the Matrix implementation of compositional semantics
+\cite{Fli:Ben:03}, as well as definitions of head-initial and
+head-final phrase types.  These rules are also consistent with the
+HPSG-style handling of long-distance dependencies implemented in the
+Matrix.\footnote{We note that the long-distance dependency machinery
+might be best treated as a module itself rather than part of the core
+grammar.}  With this infrastructure, the implementation of the basic
+word order modules was mostly a matter of creating subtypes joining
+head-complement and head-subject schemata with the right types
+specifying head/dependent order, in addition to creating instances of
+those types as required by the \lkb\ parser.
+
+The word order modules implemented so far handle the following
+possibilities SOV, SVO, VSO, VOS, OVS, OSV, V-final, V-initial, and
+free word order.\footnote{VOS, OVS and OSV are extremely rare among
+the world's languages, with OSV being arguably unattested.
+Nonetheless, we decided to implement support for all of them.}  In the
+strict word orders, only one head-complement and one head-subject rule
+are posited, with a strict ordering between them.  For V-final and
+V-initial order (where the order of subjects and complements are
+unconstrained), again we have only two rules, but they are allowed to
+apply in either order.  For the free word order case, we posited both
+head-initial and head-final head-complement and head-subject rules.
+This alone is enough to capture the 6 possible word orders, but
+without further work it leads to considerable spurious ambiguity in
+the cases where there are arguments on both sides of the verb.  To
+solve this problem, we adapted a strategy from the English Resource
+Grammar for requiring attachment to the right before attachment to the
+left.\footnote{We believe that this approach is linguistically
+appropriate as long as the languages in question cannot be said to
+have a VP constituent in OVS clauses.  Matrix grammars produce
+maximally binary-branching structures.  This is convenient in that it
+reduces the number of rules a grammar needs to encode, though at a
+cost of arguably more complex trees.  We maintain that not all of the
+constituents represented in such a tree need to be interpreted as
+linguistically meaningful.  Conversely, however, any such grammar
+should posit a constituent where the linguistic evidence says there
+must be one.}
+
+Figure~\ref{wordorderfig} shows the types files for the SOV and
+V-final orders and instance file which they both share.
+
+The core Matrix also provides a lexical type hierarchy
+providing basic types for (among other things) nouns and verbs which
+can be cross-classified with a set of types for various argument
+structure patterns.  For the purposes of testing these modules,
+we made a set of lexical types inheriting from these dimensions and
+instantiated by a test lexicon.  In addition, to finesse the issue
+of NP structure while still producing parses with well-formed semantic
+representations (for testing via generation), we posited a place-holder
+module providing an underconstrained determinerless NP rule.
+
+-- basic S [comp] V order
+
+-- strategy for V-initial or V-final; reuse and another sense of ``modularity''.
+-- strategy for ``free'' word order
+
+-- not handled yet: mixed word order (by head type, by clause type); pragmatic effects of word order in ``free'' word order languages
+
+-- reorderings among complements: somewhat orthogonal. implemented so far just for ``free''.  [add for V-initial and V-final?]
+
 
 \subsection{Yes-no questions}
 
@@ -214,19 +299,25 @@ COURSE.  ANYTHING ELSE ABOUT REUSE OF ANALYSES?]
 -- perl scripts/form idea: ideal case has an interactive interface
 where decisions lead to more choices to be made, linguist can see
 the decisions taken at a glance, 
+
 -- could conceivably just have lots and lots of different files, but:
 missed generalizations, need to input spellings of things
+
 -- current solution is a perl script, for testing purposes
 
 \section{Evaluation}
 
 -- Table of languages and properties
+
 -- Describe test suites: admit that the sample is entirely opportunistic,
 and that the point of the evaluation is to illustrate the usefulness of the
 technique across and interesting range of languages.  not a systematic 
 typological survey.
+
 -- Cite sources
+
 -- Describe coverage, things about languages that are not covered
+
 -- Describe the amount of work it takes to make a prototype with the
 perl script, and compare to what it would take to do it from scratch
 
@@ -234,8 +325,10 @@ perl script, and compare to what it would take to do it from scratch
 
 -- linguistic/scientific interest of modules: comparative analyses
 across languages
+
 -- ref to Montage? (or maybe save that for final version, when 
 we're not trying to be anonymous)
+
 -- mention uses of prototyping, for documentary linguistics, pedagogical
 purposes, industrial-strength grammar engineering (including assisting
 minority languages in producing resources relatively cheeply), and perhaps
@@ -243,6 +336,15 @@ benefits to machine-learning approaches -- can we imagine any?  something
 along the lines of presenting typological properties in a machine-readable
 way to improve ML algorithms which might need to be tuned differently for
 different kinds of languages
+
+-- Modularity in grammar engineering: observations about how what looks
+like a module from a typological perspective is integrated with the rest
+of the grammar from the perspective of any given language. Reiterate about
+needing to be careful about cross-module consistency. Also :+.
+
+-- Modularity in grammar engineering: reuse of bits across modules within
+a system.  word order rule reuse, perl-script based specialization of 
+
 
 \section*{Acknowledgements}
 
