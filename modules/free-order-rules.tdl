@@ -5,20 +5,12 @@
 ;;; about V, S, and O).
 
 ;;; This is the rules file, to be used in conjunction with 
-;;; the old types file free-order.old.  (In 1/5/05 solution,
-;;; the V-initial-rules and V-final-rules files work for
-;;; free word order.) 
+;;; the types file free-order.old.  
 
-head-subj-1 := head-subj-phrase-1.
-head-subj-2 := head-subj-phrase-2.
-subj-head-1 := subj-head-phrase-1.
-subj-head-2 := subj-head-phrase-2.
-head-comp-1 := head-comp-phrase-1.
+head-comp := head-comp-phrase.
+head-subj := head-subj-phrase.
+comp-head := comp-head-phrase.
+subj-head := subj-head-phrase.
 head-comp-2 := head-comp-phrase-2.
-head-comp-3 := head-comp-phrase-3.
-head-comp-4 := head-comp-phrase-4.
-comp-head-1 := comp-head-phrase-1.
 comp-head-2 := comp-head-phrase-2.
-comp-head-3 := comp-head-phrase-3.
-comp-head-4 := comp-head-phrase-4.
 

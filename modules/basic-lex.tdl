@@ -16,7 +16,7 @@ dat := case.
 noun :+ [ CASE case ].
 
 noun-lex := basic-noun-lex & basic-one-arg &
-  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr >,
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >,
 			     COMPS < >,
 			     SUBJ < >,
 			     SPEC < > ]],

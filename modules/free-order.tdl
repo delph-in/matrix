@@ -2,8 +2,10 @@
 
 ;;; Module for free word order, i.e., all possible
 ;;; orders of head, subj, comps (thinking initially
-;;; about V, S, and O).  Use this with both V-final-rules.tdl
-;;; and V-initial-rules.tdl.
+;;; about V, S, and O).  Use this with free-order-rules.tdl,
+;;; which is partially redunant to V-initial-rules.tdl
+;;; and V-final-rules.tdl.  The difference is that those
+;;; currently don't have the head-2nd-comp rules.
 
 ;;; Just using the V-final and V-initial modules
 ;;; together is unsatisfactory, since that system gives
@@ -21,8 +23,7 @@
 ;;; the verb is in the middle -- that would give spurious
 ;;; ambiguity.
 
-;;; This solution adopts the xmod hierarchy from the ERG
-;;; (rename these types one day?) to enforce right-first
+;;; This solution adopts the xmod hierarchy to enforce right-first
 ;;; attachment.  That is, all arguments appears to the right
 ;;; of the verb must attach before all arguments appearing to
 ;;; the left.  The linguistic prediction of this analysis
@@ -30,15 +31,9 @@
 ;;; VP consituent, even when the verb and object are adjacent
 ;;; (OV order).
 
-xmod := *top*.
-
-notmod-or-rmod := xmod.
-notmod-or-lmod := xmod.
-notmod := notmod-or-rmod & notmod-or-lmod.
-
-hasmod := xmod.
-lmod := hasmod & notmod-or-lmod.
-rmod := hasmod & notmod-or-rmod.
+;;; Using a separate feature for tracking argument attachment
+;;; (as opposed to modifier attachment).   We might be able to
+;;; collapse these one day, but that's not obvious.
 
 synsem :+
  [ ATTACH xmod ].
@@ -62,6 +57,8 @@ head-mod-phrase :+
 
 head-subj-phrase := basic-head-subj-phrase & head-initial-head-nexus. 
 subj-head-phrase := basic-head-subj-phrase & head-final-head-nexus. 
-head-comp-phrase := basic-head-comp-phrase & head-initial-head-nexus. 
-comp-head-phrase := basic-head-comp-phrase & head-final-head-nexus. 
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus. 
+comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus. 
+head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus. 
+comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus. 
 
