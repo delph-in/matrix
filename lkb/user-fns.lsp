@@ -1,68 +1,64 @@
 (in-package :lkb)
-;;; LinGO big grammar specific functions
 
+;;;
+;;; identify characters that can form words; all other characters will create
+;;; word boundaries and later be suppressed in tokenization.
+;;;
+(defun alphanumeric-or-extended-p (c)
+  (and (graphic-char-p c) (not (member c *punctuation-characters*))))
 
-(defun alphanumeric-or-extended-p (char)
-  (and (graphic-char-p char)
-       (not (member char '(#\space #\! #\" #\& #\' #\(
-                           #\) #\* #\+ #\, #\. #\/ #\;
-                           #\< #\= #\> #\? #\@ #\[ #\\ #\] #\^
-                           #\_ #\` #\{ #\| #\} #\~)))))
+;;;
+;;; determine surface order of constituents in rule: returns list of paths into
+;;; feature structure of rule, i.e. (nil (args first) (args rest first)) for a
+;;; binary rule, where the first list element is the path to the mother node of
+;;; the rule.
+;;;
+(defun establish-linear-precedence (rule)
+  (let ((daughters
+         (loop
+             for args = (existing-dag-at-end-of rule '(args))
+             then (existing-dag-at-end-of args *list-tail*)
+             for daughter = (when args 
+                              (get-value-at-end-of args *list-head*))
+             for path = (list 'args) then (append path *list-tail*)
+             while (and daughter (not (eq daughter 'no-way-through)))
+             collect (append path *list-head*))))
+    (if (null daughters)
+      (cerror "Ignore it" "Rule without daughters")
+      (cons nil daughters))))
 
-(defun establish-linear-precedence (rule-fs)
-   ;;;    A function which will order the features of a rule
-   ;;;    to give (mother daughter1 ... daughtern)
-   ;;;    
-   ;;;  Modification - this must always give a feature
-   ;;;  position for the mother - it can be NIL if
-   ;;; necessary
-  (let* ((mother NIL)
-         (daughter1 (get-value-at-end-of rule-fs '(ARGS FIRST)))
-         (daughter2 (get-value-at-end-of rule-fs '(ARGS REST FIRST)))
-         (daughter3 (get-value-at-end-of rule-fs '(ARGS REST REST FIRST))))
-    (declare (ignore mother))
-    (unless daughter1 
-      (cerror "Ignore it" "Rule without daughter"))
-    (append (list nil '(ARGS FIRST))
-            (if daughter2 
-                (list '(ARGS REST FIRST)))
-            (if daughter3 
-                (if daughter2 
-                    (list '(ARGS REST REST FIRST)))))))
-
+;;;
+;;; detect rules that have orthographemic variation associated to them; those
+;;; who do should only be applied within the morphology system; for the time
+;;; being use value of NEEDS-AFFIX feature, though it would be nicer to rely
+;;; on a type distinction of lexical rules or re-entrancy of ORTH.
+;;;
 (defun spelling-change-rule-p (rule)
-;;; a function which is used to prevent the parser 
-;;; trying to apply a rule which affects spelling and
-;;; which should therefore only be applied by the morphology
-;;; system.  
-;;; Old test was for something which was a subtype of
-;;; *morph-rule-type* - this tests for 
-;;; < NEEDS-AFFIX > = + (assuming bool-value-true is default value)
-;;; in the rule
   (let ((affix (get-dag-value (tdfs-indef 
                                (rule-full-fs rule)) 'needs-affix)))
     (and affix (bool-value-true affix))))
 
-(defun make-orth-tdfs (orth)
-  (let ((unifs nil)
-        (tmp-orth-path *orth-path*))
-    (loop for orth-value in (split-into-words orth)
-         do
-         (let ((opath (create-path-from-feature-list 
-                       (append tmp-orth-path *list-head*))))
-           (push (make-unification :lhs opath                    
-                                   :rhs (make-u-value :type orth-value))
-                 unifs)
-           (setq tmp-orth-path (append tmp-orth-path *list-tail*))))
-    (let ((indef (process-unifications unifs)))
-      (when indef
-        (setf indef (create-wffs indef))
-        (make-tdfs :indef indef)))))
+;;;
+;;; create feature structure representation of orthography value for insertion
+;;; into the output structure of inflectional rules; somewhat more complicated
+;;; than one might expect because of treatment for multi-word elements.
+;;;
+(defun make-orth-tdfs (orthography)
+  (let* ((unifications
+          (loop 
+              for token in (split-into-words orthography)
+              for path = *orth-path* then (append path *list-tail*)
+              for opath = (create-path-from-feature-list 
+                           (append path *list-head*))
+              collect (make-unification :lhs opath                    
+                                        :rhs (make-u-value :type token))))
+         (indef (process-unifications unifications)))
+    (when indef
+      (make-tdfs :indef (create-wffs indef)))))
 
 ;;;
 ;;; assign priorities to parser tasks and lexical entries
 ;;;
-
 (defun rule-priority (rule)
   (case (rule-id rule)
     (subj 1000)))
@@ -78,6 +74,9 @@
   (declare (ignore fs))
   800)
 
+;;;
+;;; determine path and file names for lexicon and leaf type cache files.
+;;;
 (defun set-temporary-lexicon-filenames nil
   (let* ((version (or (find-symbol "*GRAMMAR-VERSION*" :common-lisp-user)
                       (and (find-package :lkb)
@@ -90,10 +89,10 @@
       (make-pathname :name prefix 
                      :directory (pathname-directory (lkb-tmp-dir))))
     (setf *psorts-temp-index-file* 
-      (make-pathname :name (concatenate 'string prefix "-index") 
+      (make-pathname :name (concatenate 'string prefix ".idx") 
                      :directory (pathname-directory (lkb-tmp-dir))))
     (setf *leaf-temp-file* 
-      (make-pathname :name (concatenate 'string prefix "-rels")
+      (make-pathname :name (concatenate 'string prefix ".lfs")
                      :directory (pathname-directory (lkb-tmp-dir))))))
 
 (defun bool-value-true (fs)

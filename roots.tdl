@@ -1,0 +1,12 @@
+;;;
+;;; a sample start symbol: accept fully-saturated verbal projections only; if
+;;; a grammar makes use of the head -- subject and head -- complement types as
+;;; provided by the Matrix, this should be a good starting point.  Note that it
+;;; is legal to have multiple start symbols, but they all need to be listed as
+;;; the value of `*start-symbol' (see `lkb/user-fns.lsp').
+;;;
+
+root := phrase &
+[ SYNSEM.LOCAL.CAT [ HEAD verb,
+                     VAL [ SUBJ < anti-synsem >,
+                           COMPS null ] ] ].

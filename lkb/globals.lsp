@@ -37,6 +37,20 @@
 (defparameter *irregular-forms-only-p* t)
 
 ;;;
+;;; input characters to be ignored (i.e. suppressed) in tokenization
+;;;
+(defparameter *punctuation-characters*
+  (append
+   '(#\space #\! #\" #\& #\' #\(
+     #\) #\* #\+ #\, #\- #\. #\/ #\;
+     #\< #\= #\> #\? #\@ #\[ #\\ #\] #\^
+     #\_ #\` #\{ #\| #\} #\~)
+   #+:ics
+   '(#\ideographic_full_stop #\fullwidth_question_mark 
+     #\horizontal_ellipsis #\fullwidth_full_stop
+     #\fullwidth_exclamation_mark #\black_circle
+     #\fullwidth_comma #\ideographic_space
+     #\katakana_middle_dot #\white_circle)))
 
 (defparameter *display-type-hierarchy-on-load* nil)
 
