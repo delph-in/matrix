@@ -1482,7 +1482,7 @@ head-adj-int-phrase := head-adj-phrase & isect-mod-phrase.
 
 ; Update: 2004-08-26 We have devised a means of adding in a subhierarchy
 ; under head without prejudging the disjunctive types needed.  Therefore,
-; the part of speech types will not specify HEAD values.  Nonetheless,
+; the part of speech types will now specify HEAD values.  Nonetheless,
 ; the HEAD values of arguments are left underspecified, as that does
 ; vary across languages.
 
