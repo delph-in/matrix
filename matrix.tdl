@@ -572,8 +572,8 @@ subord-or-conj-relation := relation &
 
 conjunction-relation := subord-or-conj-relation &
   [ C-ARG conj-index,
-    L-INDEX index,
-    R-INDEX index ].
+    L-INDEX individual,
+    R-INDEX individual ].
 
 ; NB: "if_then_rel" is now a PRED value of subord-relation.
 subord-relation := subord-or-conj-relation.
