@@ -1285,7 +1285,7 @@ single-rel-lex-item := lex-item &
   [ SYNSEM.LOCAL.CONT.RELS <! relation !> ].
 
 no-hcons-lex-item := lex-item & 
-  [ SYNSEM.LOCAL.CONT.HCONS 0-dlist ].
+  [ SYNSEM.LOCAL.CONT.HCONS <! !> ].
 
 norm-sem-lex-item := norm-hook-lex-item & single-rel-lex-item & no-hcons-lex-item.
 
