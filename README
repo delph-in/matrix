@@ -1,25 +1,65 @@
 Grammar matrix v 0.5, August 15, 2003 (dpf)
 
-This is a minor upgrade of version 0.4 of the grammar matrix, with
-some further normalization of relation names and MRS feature geometry
-to be consistent with the Copestake et al.  paper, "Introduction to
-MRS", being readied for publication.
+This is an upgrade of version 0.4 of the grammar matrix, with some
+further normalization of relation names and MRS feature geometry to be
+consistent with the Copestake et al.  paper, "Introduction to MRS",
+being readied for publication.
 
-If you have already developed a grammar based on the matrix, you may
-need to make some manual adjustments to your language-specific grammar
-files, depending on whether you have made explicit reference to the
-affected features or types, which have been changed as follows:
+If you have already developed a grammar based on the matrix, you will
+need to make at least one set of manual adjustments to your
+language-specific grammar files, since the location of the KEYS
+attribute has changed, and the constraints on its attributes have also
+changed.  The KEYS attributes had been used in matrix-derived grammars
+for two distinct purposes, first to simplify the notation when defining
+lexical types, and second to express constraints on semantic selection
+within phrases.  The first usage was a convenient shorthand notation
+which is irrelevant to phrasal signs, while the second is crucial in
+constraining phrases.  These two notions are now distinct in the
+matrix, with the attribute LKEYS now containing these 'shorthand'
+attributes convenient for defining lexical types, and the attribute
+KEYS now made a HEAD feature.  The attributes in KEYS are also more
+strictly constrained, with KEY and ALTKEY no longer taking whole
+relations as values, but only semantic sorts (see the User Guide for
+elaboration).  Likewise, the MESSAGE attribute now simply takes a
+'message' type (or the distinguished type 'no-msg') as its value,
+rather than a difference list.
 
-(1) Deleted feature
+Obligatory changes to make to language-specific grammar files:
 
-    The feature E-INDEX was introduced into the Matrix for v 0.4,based 
+(1) Where your grammar used the KEY and ALTKEY attributes to constrain
+    the properties of a selected constituent (complement, specifier, 
+    subject, or modifier), change these values of KEYS.KEY and 
+    KEYS.ALTKEY to be subtypes of the type 'semsort'.  See the User 
+    Guide for elaboration.
+(2) Change these paths for SYNSEM.LOCAL.KEYS.KEY and ...ALTKEY to be
+    SYNSEM.LOCAL.CAT.HEAD.KEYS.KEY and ...ALTKEY
+(3) Where your grammar used the KEY and ALTKEY attributes to constrain
+    the value of a lexical type's own semantic relations, change these
+    paths for SYNSEM.LOCAL.KEYS.KEY and ...ALTKEY to be
+    SYNSEM.LOCAL.LKEYS.--KEYREL and ...--ALTKEYREL
+(4) Change the value of KEYS.MESSAGE by removing the diff-list brackets.
+(5) Change the paths SYNSEM.LOCAL.KEYS.MESSAGE to
+    SYNSEM.LOCAL.CAT.HEAD.KEYS.MESSAGE
+(6) Change the values for --COMPKEY and --OCOMPKEY to be the semantic
+    sort of the relevant complement, rather than the type of a relation
+    (again, see the User Guide for elaboration of semantic sorts).
+(7) Change the paths SYNSEM.LOCAL.KEYS.--COMPKEY and ...--OCOMPKEY to
+    SYNSEM.LOCAL.LKEYS.--COMPKEY and ...--OCOMPKEY
+
+In addition, you may need to make further adjustments, depending on
+whether you have made explicit reference to the affected features or
+types, which have been changed as follows:
+
+(a) Deleted feature
+
+    The feature E-INDEX was introduced into the matrix for v 0.4,based 
     on its use in the ERG at the time for treating the semantics of 
     predicative PPs and gerunds.  However, improved analysis of English 
     has removed the current motivation for this attribute in HOOK, so 
-    it has been deleted from the Matrix in order to be consistent with 
+    it has been deleted from the matrix in order to be consistent with 
     the emerging MRS documentation.
 
-(2) Renaming of type 'mrs-thing', and changes to its subtypes
+(b) Renaming of type 'mrs-thing', and changes to its subtypes
 
     The name of the supertype of 'individual' and 'handle' has been 
     renamed from 'mrs-thing' to 'semarg' (for 'semantic argument').  
@@ -28,7 +68,7 @@ affected features or types, which have been changed as follows:
     Corresponding adjustments have been made to the type hierarchy under 
     'semarg', though the leaf types remain the same.
 
-(3) Renaming of other relations
+(c) Renaming of other relations
 
     To support a more consistent naming convention for relations, any 
     relation or predicate whose name formerly ended in "-rel" now has a 

@@ -131,7 +131,7 @@ phrase := phrase-or-lexrule &
 
 non-affix-bearing := word-or-lexrule &
   [ INFLECTED +,
-    SYNSEM.LOCAL.KEYS.KEY.WLINK cons ].
+    SYNSEM.LOCAL.LKEYS.--KEYREL.WLINK cons ].
 
 ; Rule
 
@@ -214,7 +214,7 @@ local-min := mod-local &
     AGR individual ].
 
 local-basic := local-min &
-  [ KEYS keys-min ].
+  [ LKEYS lexkeys ].
 
 local := local-basic &
   [ CTXT ctxt-min,
@@ -266,7 +266,8 @@ head-min := avm.
 ; declared for which subtypes is also a language-specific question.
 
 head := head-min &
-  [ MOD list ].
+  [ MOD list,
+    KEYS keys_min ].
 
 valence-min := avm.
 
@@ -276,6 +277,17 @@ valence := valence-min &
     COMPS list,
     SPEC list,
     --KEYCOMP avm ].
+
+keys_min := avm.
+keys := keys_min &
+  [ KEY semsort,
+    ALTKEY semsort,
+    MESSAGE basic_message ].
+
+; One of a grammatically salient inventory of semantic sorts, such as
+; 'animate' or 'time'
+
+semsort :< sort.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; CONT values
@@ -316,22 +328,18 @@ nom-obj := mrs &
   [ HOOK.INDEX index ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; KEY relations, for semantic selection
-;  KEY relation             ; Pointer to main relation in RELS
-;  ALTKEY relation          ; Pointer to an alternate relation in RELS
-;  --COMPKEY relation       ; Pointer to the complement's main relation
-;  --OCOMPKEY relation      ; Pointer to the oblique complement's main relation
-;
-;  MESSAGE 0-1-dlist,       ; Message type for clauses
+; LKEYS attributes, shorthand for paths to semantic relations and sorts in
+; lexical types:
+;  --KEYREL relation        ; Pointer to main relation in RELS
+;  --ALTKEYREL relation     ; Pointer to an alternate relation in RELS
+;  --COMPKEY semsort        ; Pointer to the complement's KEY sort
+;  --OCOMPKEY semsort       ; Pointer to the oblique complement's KEY sort
 
-keys-min := avm.
-
-keys := keys-min &
-  [ KEY relation,
-    ALTKEY relation,
-    --COMPKEY relation,
-    --OCOMPKEY relation,
-    MESSAGE 0-1-dlist ].
+lexkeys := avm &
+  [ --KEYREL relation,
+    --ALTKEYREL relation,
+    --COMPKEY semsort,
+    --OCOMPKEY semsort ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;  CTXT values 
@@ -355,13 +363,16 @@ ctxt := ctxt-min &
 ; allowing scope ambiguity between quanitifers and messages, as it is
 ; not clear what that would mean.
 
-message := norm-relation &
+basic_message := relation.
+message := basic_message &
   [ MARG handle ].
 command := message.
 prop-or-ques := message.          ;for COMPS of e.g. 'know'
 proposition := prop-or-ques.
 abstr-ques := prop-or-ques.       
 question := abstr-ques.
+
+no-msg := basic_message.
 
 ; Subtype of int_rel for tag questions and structures in other languages
 ; with equivalent pragmatics.
@@ -381,7 +392,8 @@ semarg := avm &
 instloc := *top*.
 
 handle := semarg.
-individual := semarg.
+individual := semarg &
+  [ SORT semsort ].
 
 ; The INDEX value of a nom-obj is an index (expletive or
 ; referential).
@@ -452,11 +464,6 @@ relation := avm &
     WLINK list,
     PRED string ].
 
-; no-relation contrasts with all other relations.
-
-norm-relation := relation.
-no-relation := relation.
-
 ; Abstract relation subtypes.  We recommend not positing a type
 ; for each lexical relation, but rather using the feature PRED
 ; to distinguish different lexical relations of the same type.
@@ -468,7 +475,7 @@ no-relation := relation.
 ; (ii) Something in the grammar needs to make reference to a family
 ; of relations that are not otherwise distinguished by a type.
 
-arg0_rel := norm-relation &
+arg0_rel := relation &
   [ ARG0 individual ].
 
 arg1_rel := arg0_rel &
@@ -498,32 +505,36 @@ verb_ellipsis_rel := arg1_rel.
 noun_rel := arg0_rel &
   [ ARG0 ref-ind ].
 
+; Relational nouns like 'picture' or 'claim' take an additional semantic 
+; argument
+noun_arg1_rel := noun_rel & arg1_rel.
+
 named_rel := noun_rel &
   [ PRED 'named_rel,
     CARG string ].
 
 ; Preposition relations
 
-prep_mod_rel := arg12_rel.
+prep_mod_rel := arg12_ev_rel.
 
 ; adverb relations
+; NB: Negation is represented not as a subtype of adv\_rel, but as an adv\_rel 
+; with the PRED value "neg\_rel".
 
 adv_rel := arg0_rel.
-neg_rel := adv_rel.
 
-; subordination and coordinating conjunctions
+; coordinating and subordinating conjunctions
 
-subord_or_conjunction_rel := norm-relation &
+subord_or_conj_rel := relation &
   [ L-HNDL handle,
     R-HNDL handle ].
 
-conjunction_rel := subord_or_conjunction_rel &
+conjunction_rel := subord_or_conj_rel &
   [ C-ARG conj-index,
     L-INDEX index,
     R-INDEX index ].
 
-subord_rel := subord_or_conjunction_rel.
-if_then_rel := subord_rel & 
+if_then_rel := subord_or_conj_rel &
   [ PRED 'if_then_rel ].
 
 ; noun noun compounds
@@ -652,11 +663,9 @@ lexeme-to-word-rule := lex-rule &
 
 lexeme-to-lexeme-rule := lex-rule &
   [ INFLECTED -,
-    SYNSEM.LOCAL [ CAT [ MC #mc ],
-		   KEYS.MESSAGE #msg ],
-    DTR [ SYNSEM.LOCAL [ CAT [ MC #mc ],
-			 KEYS.MESSAGE #msg ],
-	  INFLECTED - ]].
+    SYNSEM.LOCAL.CAT.MC #mc,
+    DTR [ SYNSEM.LOCAL.CAT.MC #mc,
+          INFLECTED - ] ].
 
 ; Spelling changing rules.  The LKB identifies these rules based
 ; on the NEEDS-AFFIX value. 
@@ -691,13 +700,11 @@ infl-ltow-rule := lexeme-to-word-rule & inflecting-lex-rule.
 
 headed-phrase := phrase & 
   [ ROOT -,
-    SYNSEM.LOCAL [ CAT [ HEAD head & #head ],
-                   AGR #agr,
-		   KEYS.KEY #key ],
+    SYNSEM.LOCAL [ CAT.HEAD head & #head,
+                   AGR #agr ],
     HEAD-DTR.SYNSEM.LOCAL local &
-		 [ CAT [ HEAD #head ],
-                   AGR #agr,
-		   KEYS.KEY #key ] ].
+		 [ CAT.HEAD #head,
+                   AGR #agr ] ].
 
 non-headed-phrase := phrase &
   [ ROOT - ].
@@ -825,7 +832,7 @@ head-compositional := headed-phrase &
   [ C-CONT.HOOK #hook,
     HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ].
 
-; Clauses have non-empty message values, non-clauses don't.
+; Clauses have message types as values, non-clauses have the value no-msg.
 ; Constrain the HEAD value of clause to verb or whatever type is
 ; appropriate.  Clauses have empty QUE values.
 ; Later versions of the matrix might have clause v. non-clause as
@@ -835,8 +842,8 @@ head-compositional := headed-phrase &
 ; and head-subj-phrase.  
 
 non-clause := head-nexus-phrase &
-  [ SYNSEM.LOCAL [ CAT.MC na,
-		   KEYS.MESSAGE 0-dlist ] ].
+  [ SYNSEM.LOCAL.CAT [ MC na,
+                       HEAD.KEYS.MESSAGE no-msg ] ].
 
 clause := phrasal &
   [ SYNSEM [ LOCAL.CAT.VAL.COMPS olist,
@@ -851,11 +858,10 @@ clause := phrasal &
 relative-clause := clause.
   
 non-rel-clause := headed-phrase & clause &
-  [ SYNSEM [ LOCAL.KEYS.MESSAGE 1-dlist &
-			  <! message & #msg &
-				   [ LBL #mhand,
-				     MARG #marghand ] !>,
-	     NON-LOCAL.REL 0-dlist ],
+  [ SYNSEM [ LOCAL.CAT.HEAD.KEYS.MESSAGE #msg &
+                                         [ LBL #mhand,
+                                           MARG #marghand ],
+             NON-LOCAL.REL 0-dlist ],
     HEAD-DTR.SYNSEM [ LOCAL.CONT.HOOK [ LTOP #hdhand,
 				        INDEX #ind ],
 		      NON-LOCAL [ QUE 0-dlist,
@@ -869,13 +875,13 @@ non-rel-clause := headed-phrase & clause &
 
 
 interrogative-clause := clause &
-  [ SYNSEM.LOCAL.KEYS.MESSAGE <! question !> ].
+  [ SYNSEM.LOCAL.CAT.HEAD.KEYS.MESSAGE question ].
 
 declarative-clause := clause &
-  [ SYNSEM.LOCAL.KEYS.MESSAGE <! proposition !> ].
+  [ SYNSEM.LOCAL.CAT.HEAD.KEYS.MESSAGE proposition ].
 
 imperative-clause := clause &
-  [ SYNSEM.LOCAL.KEYS.MESSAGE <! command !> ].
+  [ SYNSEM.LOCAL.CAT.HEAD.KEYS.MESSAGE command ].
 
 basic-head-filler-phrase := binary-phrase & phrasal &
   [ SYNSEM [ LOCAL [ CAT [ VAL [ COMPS < >,
@@ -901,16 +907,14 @@ basic-head-filler-phrase := binary-phrase & phrasal &
 
 basic-head-subj-phrase := head-valence-phrase & head-compositional & 
 			  binary-headed-phrase &
-  [ SYNSEM.LOCAL [ CAT [ POSTHEAD +,
-			 VAL [ SUBJ olist & < anti-synsem >,
-			       COMPS < >,
-                               SPR #spr ] ],
-                   KEYS.ALTKEY #altkey ],
-    HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL [ SUBJ < #synsem >,
-                                        SPR #spr,
-                                        COMPS olist ],
-                                  MC na ],
-                            KEYS.ALTKEY #altkey ],
+  [ SYNSEM.LOCAL.CAT [ POSTHEAD +,
+                       VAL [ SUBJ olist & < anti-synsem >,
+                             COMPS < >,
+                             SPR #spr ] ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL [ SUBJ < #synsem >,
+                                      SPR #spr,
+                                      COMPS olist ],
+                                MC na ],
     NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem &
 		 [ LOCAL [ CAT [ VAL [ SUBJ olist,
 				       COMPS olist,
@@ -922,31 +926,27 @@ basic-head-subj-phrase := head-valence-phrase & head-compositional &
 basic-head-spec-phrase := head-valence-phrase & non-clause & phrasal &
 			  binary-headed-phrase &
   [ INFLECTED +,
-    SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ #subj,
-				 COMPS #spcomps,
-				 SPR #spr,
-				 SPEC #spec ],
-			   POSTHEAD #ph ],
-		     KEYS.ALTKEY #altkey ],
-	     MODIFIED #modif ],
+    SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
+                               COMPS #spcomps,
+                               SPR #spr,
+                               SPEC #spec ],
+                         POSTHEAD #ph ],
+             MODIFIED #modif ],
     HEAD-DTR [ INFLECTED +,
                SYNSEM [ LOCAL [ CAT [ HEAD #head,
-				    VAL [ SUBJ #subj,
-					  COMPS olist & #comps,
-					  SPR < #synsem & 
-						 canonical-synsem . #spr >,
-					  SPEC #spec ],
-				    POSTHEAD #ph,
-				    MC na ],
-			      CONT.HOOK #hdhook,
-			      KEYS [ KEY #key,
-                                     ALTKEY #altkey ] ],
-		      MODIFIED #hmodif ] ],
+                                      VAL [ SUBJ #subj,
+                                            COMPS olist & #comps,
+                                            SPR < #synsem & 
+                                                  canonical-synsem . #spr >,
+                                            SPEC #spec ],
+                                      POSTHEAD #ph,
+                                      MC na ],
+                                CONT.HOOK #hdhook ],
+                        MODIFIED #hmodif ] ],
     NON-HEAD-DTR.SYNSEM #synsem &
 	 [ LOCAL [ CAT [ MC na,
                          VAL [ SPEC < [ LOCAL [ CAT [ HEAD #head,
                                                       VAL.COMPS #comps ],
-                                                KEYS.KEY #key,
                                                 CONT.HOOK #hdhook ],
                                         MODIFIED #hmodif ] >,
                                COMPS #spcomps ] ],
@@ -959,22 +959,18 @@ basic-head-spec-phrase := head-valence-phrase & non-clause & phrasal &
 basic-head-comp-phrase := head-valence-phrase & head-compositional &
 			  binary-headed-phrase &
   [ SYNSEM canonical-synsem &
-	   [ LOCAL [ CAT [ MC #mc,
-			   VAL [ SUBJ #subj,
-				 COMPS #comps,
-				 SPR #spr ],
-			   POSTHEAD #ph ],
-		     KEYS [ ALTKEY #altkey,
-			    MESSAGE #hmsg ] ],
-	     LEX #lex ],
-    HEAD-DTR.SYNSEM [ LOCAL [ CAT [ MC #mc,
-				    VAL [ SUBJ #subj,
-					  COMPS < #synsem . #comps >,
-					  SPR #spr ],
-				    POSTHEAD #ph ],
-			      KEYS [ ALTKEY #altkey,
-				     MESSAGE #hmsg ] ],
-		      LEX #lex ], 
+	   [ LOCAL.CAT [ MC #mc,
+                         VAL [ SUBJ #subj,
+                               COMPS #comps,
+                               SPR #spr ],
+                         POSTHEAD #ph ],
+             LEX #lex ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC #mc,
+                                  VAL [ SUBJ #subj,
+                                        COMPS < #synsem . #comps >,
+                                        SPR #spr ],
+                                  POSTHEAD #ph ],
+                      LEX #lex ], 
     NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem,
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ] ].
@@ -987,23 +983,19 @@ basic-head-opt-comp-phrase := head-valence-phrase & basic-unary-phrase &
                               head-compositional &
   [ INFLECTED #infl,
     SYNSEM canonical-synsem &
-	   [ LOCAL [ CAT [ VAL [ SUBJ #subj,
-				 SPR #spr,
-                                 SPEC #spec ],
-                           MC #mc,
-                           POSTHEAD #ph ],
-		     KEYS [ ALTKEY #altkey,
-                            MESSAGE #msg ] ],
+	   [ LOCAL.CAT [ VAL [ SUBJ #subj,
+                               SPR #spr,
+                               SPEC #spec ],
+                         MC #mc,
+                         POSTHEAD #ph ],
              MODIFIED #mod ],
     HEAD-DTR #head & 
            [ INFLECTED #infl,
-             SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ #subj,
-					  SPR #spr,
-                                          SPEC #spec ],
-                                    MC #mc,
-                                    POSTHEAD #ph ],
-                              KEYS [ MESSAGE #msg,
-                                     ALTKEY #altkey ] ],
+             SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
+                                        SPR #spr,
+                                        SPEC #spec ],
+                                  MC #mc,
+                                  POSTHEAD #ph ],
                       MODIFIED #mod ] ],
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ],
@@ -1015,7 +1007,7 @@ basic-head-opt-one-comp-phrase := basic-head-opt-comp-phrase &
                SYNSEM.LOCAL [ CAT.VAL.COMPS 
                                      < unexpressed & [ OPT + ]
                                        . #comps & < expressed-synsem, ... > >,
-                              KEYS.KEY event_rel ] ] ].
+                              CONT.HOOK.INDEX event ] ] ].
 
 basic-head-opt-two-comp-phrase := basic-head-opt-comp-phrase &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,
@@ -1024,7 +1016,7 @@ basic-head-opt-two-comp-phrase := basic-head-opt-comp-phrase &
                                 < unexpressed & [ OPT + ]
                                   . < unexpressed & [ OPT + ]
                                       . #comps & < expressed-synsem, ... > > >,
-                              KEYS.KEY event_rel ] ] ].
+                              CONT.HOOK.INDEX event ] ] ].
 
 
 ; Unary rules for extraction
@@ -1034,21 +1026,19 @@ basic-extracted-arg-phrase := head-valence-phrase & head-only &
 
 basic-extracted-comp-phrase := basic-extracted-arg-phrase & head-compositional &
   [ SYNSEM canonical-synsem &
-	   [ LOCAL [ CAT [ VAL [ SUBJ #subj,
-				 SPR #spr,
-				 COMPS #comps ],
-			   MC #mc ],
-		     KEYS.MESSAGE #msg ],
+	   [ LOCAL.CAT [ VAL [ SUBJ #subj,
+                               SPR #spr,
+                               COMPS #comps ],
+                         MC #mc ],
 	     LEX #lex ],
     HEAD-DTR [ SYNSEM 
-	       [ LOCAL [ CAT [ VAL [ SUBJ #subj,
-				     SPR #spr,
-				     COMPS < gap &
-					     [ NON-LOCAL.SLASH #slash ]
-					     . #comps > ],
-			       MC #mc ],
-			 KEYS.MESSAGE #msg ],
-		 LEX #lex,
+	       [ LOCAL.CAT [ VAL [ SUBJ #subj,
+                                   SPR #spr,
+                                   COMPS < gap &
+                                           [ NON-LOCAL.SLASH #slash ]
+                                           . #comps > ],
+                             MC #mc ],
+                 LEX #lex,
 		 NON-LOCAL.SLASH #slash ] ],
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ] ].
@@ -1067,24 +1057,20 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase &
 		      NON-LOCAL.SLASH.LIST < #local > ] ].
 
 head-mod-phrase := head-nexus-phrase &
-  [ SYNSEM [ LOCAL [ CAT.VAL [ SUBJ #subj,
-                               SPR #spr,
-                               COMPS < > ],
-                     KEYS.ALTKEY #altkey ],
-	     MODIFIED hasmod ],
-    HEAD-DTR.SYNSEM [ LOCAL [ CAT.VAL [ SUBJ #subj,
-                                        SPR #spr,
-                                        COMPS olist ],
-                              KEYS.ALTKEY #altkey ],
+  [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj,
+                             SPR #spr,
+                             COMPS < > ],
+             MODIFIED hasmod ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj,
+                                      SPR #spr,
+                                      COMPS olist ],
                       NON-LOCAL [ REL 0-dlist ] ] ].
 
 basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal.
 
 extracted-adj-phrase := basic-extracted-adj-phrase &
-  [ SYNSEM [ LOCAL [ CAT [ POSTHEAD #ph,
-			   MC #mc ],
-		     KEYS [ KEY #modkey,
-                            MESSAGE #msg ] ],
+  [ SYNSEM [ LOCAL.CAT [ POSTHEAD #ph,
+                         MC #mc ],
 	     NON-LOCAL.SLASH 1-dlist &
 		   [ LIST < [ CAT [ POSTHEAD +,
 				    HEAD [ MOD < [ LOCAL [ CAT [ HEAD #head,
@@ -1092,13 +1078,11 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
                                                                  POSTHEAD #ph,
                                                                  MC #mc ],
                                                            CONT.HOOK #hdhook,
-                                                           KEYS.KEY #modkey,
                                                            CTXT #ctxt ] ] > ],
 				    VAL [ SUBJ olist,
                                           COMPS olist,
 					  SPR olist ] ],
-			      CONT.HOOK #hook,
-			      KEYS [ MESSAGE #msg ] ] > ] ],
+			      CONT.HOOK #hook ] > ] ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local-basic &
 		   [ CAT [ HEAD #head,
@@ -1114,8 +1098,7 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
 	     HCONS <! !> ] ].
 
 basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
-  [ SYNSEM [ LOCAL [ CAT.MC #mc,
-                     KEYS.MESSAGE #msg ],
+  [ SYNSEM [ LOCAL.CAT.MC #mc,
 	     NON-LOCAL [ SLASH [ LIST #first,
 				 LAST #last ],
 			 REL 0-dlist ] ],
@@ -1124,10 +1107,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                     POSTHEAD #ph,
                                     MC #hmc ],
                               AGR #agr,
-			      CONT.HOOK #hdhook,
-			      KEYS [ KEY #key,
-                                     ALTKEY #altkey,
-				     MESSAGE #hmsg ] ],
+			      CONT.HOOK #hdhook ],
                       NON-LOCAL #nonloc &
 			     [ SLASH [ LIST #middle,
 				       LAST #last ] ],
@@ -1138,19 +1118,14 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                                                POSTHEAD #ph,
                                                                MC #hmc ],
 							 AGR #agr,
-							 CONT.HOOK #hdhook,
-							 KEYS 
-                                                          [ KEY #key,
-                                                            ALTKEY #altkey,
-							    MESSAGE #hmsg ] ],
-						       NON-LOCAL #nonloc,
+							 CONT.HOOK #hdhook ],
+                                                       NON-LOCAL #nonloc,
                                                        MODIFIED #modif ] > ],
-					VAL [ COMPS olist,
+                                        VAL [ COMPS olist,
 					      SPR olist ],
                                         MC #mc ],
-                                  CONT.HOOK #hook,
-				  KEYS [ MESSAGE #msg ] ],
-			  NON-LOCAL [ SLASH [ LIST #first,
+                                  CONT.HOOK #hook ],
+                          NON-LOCAL [ SLASH [ LIST #first,
 					      LAST #middle ],
 				      QUE 0-dlist & [ LIST null ] ] ],
     C-CONT [ HOOK #hook,
@@ -1189,8 +1164,8 @@ scopal-mod-phrase := head-mod-phrase-simple &
     C-CONT.HCONS <! !> ].
 
 isect-mod-phrase := head-mod-phrase-simple &
-  [ HEAD-DTR.SYNSEM.LOCAL [ CONT.HOOK.LTOP #hand,
-			    KEYS.MESSAGE 0-dlist ],
+  [ HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.KEYS.MESSAGE no-msg,
+                            CONT.HOOK.LTOP #hand ],
     NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL intersective-mod ] >,
 				CONT.HOOK.LTOP #hand ],
     C-CONT.HCONS <! !> ].
