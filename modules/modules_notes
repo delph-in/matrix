@@ -1,0 +1,167 @@
+Testing/evaluation:
+
+1. Try loading all of the modules at once to make sure that
+everything is at least consistent.  (For now, while everything
+should be.)  If we get to building inconsistent modules, write
+a Perl script to generate all the different script files, lisp
+function to load them in succession and test them.
+
+2. Find some specific languages (perhaps student projects
+from 471 last year?) and see how far we can get on their test suite
+coverage by using existing modules.  Might need to double check
+quality of that data, though.
+
+3. Morphologically complex languages?  Have to assume for
+now that someone's done a morphological analyzer, and maybe
+even get assume standardized morphological tags.  Try to test
+on Slave as an example?
+
+4. MT demo to show off semantic compatibility
+
+Management:
+
+Try writing a Perl script as a stand-in for a nicer-UI wizard.
+It should ask a bunch of `typological' questions and output
+a customized script file.  It could also ask for some vocabulary
+and output a small lexicon file. 
+
+One reason to do this as a script (or other interactive interface)
+rather than having people edit the script file directly is
+that the current set up requires all type files to be loaded
+in one statement (cf. the call to clear-types in read-tdl-type-files-aux),
+but many of the modules involve both type files and instance
+files (rules).  This would require editing the script file
+in two places, and I imagine it would be error-prone.
+Furthermore, it seems that many interesting modules are going
+to require tdl-creation rather than just selecting among modules,
+another reason to go with an interactive set-up.
+
+Later think about a user coming back to the wizard to refine 
+the grammar based on further information.
+
+I have a feeling that we're quickly going to get into a lot
+of modules, and so an interactive Perl script is just not going
+to be the way to go to building the grammars.  Maybe web-based
+cgi so folks can poke around a form and find the things they
+want to add?  With buttons for `export script' and maybe
+even `test grammar against test suite'?
+
+How to make sure that all of the words in the test suite 
+are covered in the lexicon?
+
+Maybe work in some `immediate gratification' steps where the
+user can stop and see just some basic transitive/intransitive
+sentences go, and then run another script to refine things
+further, and then...
+
+What about building a testsuite?  Imagine in the future asking
+for sentences to illustrate particular phenomena, and annotate
+them with phenomena for \itsdb consumption?
+
+We need to think at some point about the optimal allocation of
+information to files in the case that people want to generate
+a starting grammar with the wizard and then go in and edit
+it.  Having things scattered over lots of little modules might
+not be ideal.  I wish I could find the email exchange I think
+we had about that....
+
+Word order:
+
+Allow for languages that allow both head-comp and comp-head
+
+ -- indiscriminately (Polish)
+ -- depending on POS of the head
+ -- depending on other head features of the head (e.g.,
+    finite v. non-finite verbs)
+ -- depending on POS/other of complement
+
+	Some of these might require generating tdl on the fly
+	based on user's answers.
+
+Current word order solution has SVO, SOV, etc all as separate
+files with some redundant constraints.  Consider pulling out
+generalizations and `inheriting'?  
+
+What to do with strict head-comp first v. optional head-comp
+first?  That is, what about languages that allow OSV and SOV?
+Here's a first-pass typology:
+
+Strict SVO -- English: head-comp, subj-head, hc first
+Strict OVS -- comp-head, head-subj, hc first
+Strict SOV -- comp-head, subj-head, hc first
+Strict VOS -- head-comp, head-subj, hc first
+
+Strict VSO -- head-subj, head-comp, hs first
+Strict OSV -- subj-head, comp-head, hs first
+
+Strict v-final (OSV, SOV) -- Japanese: comp-head, subj-head, no order
+Strict v-initial (VSO, VOS) -- do these exist?: head-subj, head-comp, no order
+Strict v-medial (SVO, OVS) -- do these exist? -- this is just SVO + OVS.
+
+Completely free -- Polish (still need to rule out spurious ambiguity in
+  order of application of head-comp and head-subj):
+    comp-head, head-comp, subj-head, head-subj
+    comp-head, subj-head in either order
+    head-comp, head-subj in either order
+    head-comp, subj-head: hc first
+    comp-head, head-subj: hc first
+
+Strict SOV in matrix clauses, SVO embedded (German, Norwegian?)
+similar variants
+
+Strict VO or OV order, plus opposite head-comp order for
+ (some) non-verbal heads
+
+... How to tell when to count `inverted' orders as derived? ...
+... What is our current thinking about olist?  Assuming for now
+ that we are explicitly discharging all complements ...
+
+Subcategorization:
+
+Existing Matrix types underdetermine POS of complements.
+Fill in when?  Need NP/PP distinction, possibly also case.
+
+Relatively general modules:
+ 
+ `basic word order'
+ simple word classes
+ determiners or lack thereof
+ pro-drop
+ sentential negation
+ modifiers
+ matrix yes-no questions
+ case
+ intraclausal scrambling
+ agreement (S-V, Det-N, Adj-N; for png, case, other?)
+ ARG-ST to VAL mapping: ergative v. accusative
+ 
+Less universal modules:
+
+ V2
+ Romance clitics/pronoun incorporation
+ serial verbs
+ Hindi-style verb clusters
+ numeral classifiers
+ clausal embedding
+ relative clauses
+ possessives
+ noun incorporation
+ NP `splattering' (Warlpiri style)
+ interclausal scrambling/argument composition
+
+ 
+LKB wishlist
+ 
+ ability to hide surplus types in the head hierarchy,  perhaps
+ elsewhere
+
+Transfer `modules'?
+
+ If we're going to show off with an MT demo, we'll need the
+ ability to construct transfer components on the fly that can
+ handle differences in quantifier inventory, gender assignment
+ (preferably on nouns, not pronouns), what else?
+
+ This is not just for demo but also for practical application.
+ It will be nice to allow people to play with their grammars
+ by translating from a more familiar language.

@@ -1,3 +1,5 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
 ;;; These label definitions are used by the LKB to put
 ;;; labels on the nodes of the trees it displays.  They
 ;;; are solely for the convenience of the grammar developer

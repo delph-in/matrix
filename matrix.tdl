@@ -1,10 +1,14 @@
 ;;; -*- Mode: TDL; Package: LKB -*-
 ;;;
-;;;  HPSG Grammar Matrix Version 0.8
+;;;  HPSG Grammar Matrix Version 0.9
 ;;;
 ;;;  Copyright (c) 2002-2004
 ;;;    Emily M. Bender, Dan Flickinger, Stephan Oepen
 ;;;    see licence.txt for conditions
+;;;
+;;;  Projects using the Grammar Matrix should reference
+;;;  http://www.delph-in.net/matrix, the version used
+;;;  and Bender, Flickiner, & Oepen 2002.
 ;;;
 ;;;  Based on:
 ;;;
