@@ -13,7 +13,14 @@ nom := case.
 acc := case.
 dat := case.
 
-noun :+ [ CASE case ].
+; Constrain nouns to be MOD < > now that I'm putting in the head-mod
+; rules -- otherwise lots of icky parses.  In general, I think we'll
+; want to put in things like this as a default for any entry that isn't
+; explicitly given an interesting MOD value.  Likewise on the valence
+; features?  Something to consider as we expand the modules idea.
+
+noun :+ [ CASE case,
+	  MOD < > ].
 
 noun-lex := basic-noun-lex & basic-one-arg &
   [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >,

@@ -4,13 +4,22 @@
 
 use Switch;
 
-# Perl script for customizing module handling sentential
-# negation.  We'll eventually probably want just one big
-# perl/cgi thing which handles all of the modules.  Negation
-# seemed like a good place to start, since there are too
-# many choices to just build separate .tdl files in this case.
+# Perl script for automatically generating a grammar prototype
+# including the core Matrix as well as appropriate modules for
+# word order, negation, and yes-no questions.  This will instantiate
+# files as needed in matrix/modules and create a useful script
+# in lkb/script (saving whatever was there to script.old).
 
-# usage: perl neg.pl
+# usage: perl modules.pl
+
+# Initialize the arrays that will be used to store the names
+# of files we're going to want to make sure are loaded in the
+# script.
+
+@typesfiles = ();
+@lexfiles = ();
+@irulesfiles = ();
+@rulesfiles = ();
 
 # Find out where files are stored.  I've coded in the path
 # to my directory for ease of use here.  Change the line setting
@@ -23,7 +32,7 @@ $answer = <STDIN>;
 chomp($answer);
 $matrix_dir = $answer;
 
-# Check whether they're really given us a matrix directory.
+# Check whether they've really given us a matrix directory.
 # Doing this by looking for the lkb/script file.
 
 unless (-e $matrix_dir."/lkb/script") {
@@ -35,7 +44,79 @@ unless (-e $matrix_dir."/lkb/script") {
     print "I'm trying $matrix_dir\n\n";
 }
 
-print "This questionnaire will help you build a prototype\n analysis of negation for your grammar.\n\n";
+print "This questionnaire will help you build a prototype grammar.\n\n";
+
+print "Let's start with basic word order.  Is your language best described as:\n\n";
+print "\t a) SOV\n";
+print "\t b) SVO\n";
+print "\t c) VSO\n";
+print "\t d) OSV\n";
+print "\t e) OVS\n";
+print "\t f) VOS\n";
+print "\t g) V-final\n";
+print "\t h) V-initial\n";
+print "\t i) free (pragmatically determined) word order\n"
+print "\t j) other\n\n";
+
+$answer = &getanswer("A","a","B","b","C","c","D","d","E","e","F","f","G","g","H","h","I","i","J","j");
+
+# Depending on the answer, select types and rules files to have the
+# script load.
+
+switch ($answer) {
+    
+    case /^[Aa]/ { push(@typesfiles, "SOV.tdl");
+		   push(@rulesfiles, "V-final-rules.tdl"); }
+    case /^[Bb]/ { push(@typesfiles, "SVO.tdl");
+		   push(@rulesfiles, "SVO-rules.tdl"); }
+    case /^[Cc]/ { push(@typesfiles, "VSO.tdl");
+		   push(@rulesfiles, "V-initial-rules.tdl"); }
+    case /^[Dd]/ { push(@typesfiles, "OSV.tdl");
+		   push(@rulesfiles, "V-final-rules.tdl"); }
+    case /^[Ee]/ { push(@typesfiles, "OVS.tdl");
+		   push(@rulesfiles, "OVS-rules.tdl"); }
+    case /^[Ff]/ { push(@typesfiles, "VOS.tdl");
+		   push(@rulesfiles, "V-initial-rules.tdl"); }
+    case /^[Gg]/ { push(@typesfiles, "V-final.tdl");
+		   push(@rulesfiles, "V-final-rules.tdl"); }
+    case /^[Hh]/ { push(@typesfiles, "V-initial.tdl");
+		   push(@rulesfiles, "V-initial-rules.tdl"); }
+    case /^[Ii]/ { push(@typesfiles, "free-order.tdl");
+		   push(@rulesfiles, "free-order-rules.tdl"); }
+    case /^[Jj]/ { print "Sorry I can't help you with word order today.  Without some word\n order module you won't be able to parse anything.  Exiting now. Please start\n again.\n";
+		   exit(0); }
+}
+
+print "Okay, now let's work on matrix  yes-no questions.\n\n";
+
+# Prompt user for input to find out which mechanism is
+# relevant for their language.
+
+print "Does your language handle yes-no questions by means of:\n\n";
+print "\t a) inverting the order of the subject and the main verb\n";
+print "\t b) inverting the order of the subject and auxiliary verbs only\n";
+print "\t c) a separate question particle\n";
+print "\t d) none of the above\n\n";
+
+$answer = &getanswer("A","a","B","b","C","c","D","d");
+
+# Move to appropriate subroutine on the basis of the answer.
+# D just prints the "sorry can't help message."
+# A and B go straight to subroutines.
+# C looks for subcases, and then calls subroutines.
+
+switch ($answer) {
+
+    case /^[Aa]/  { &generate_mainv_yesno; }
+    case /^[Bb]/  { &generate_aux_yesno; }
+    case /^[Cc]/  { &generate_particle_yesno; }
+    case /^[Dd]/  {
+        print "Sorry, I can't help you with yes-no questions today.\n";
+    }
+}
+
+
+print "Okay, now let's work on sentential negation.\n\n";
 
 # Prompt user for input to find out which kind of negation is
 # relevant for their language.
@@ -97,6 +178,65 @@ switch ($answer) {
 
 #################################################################
 # Subroutines
+
+# This one creates the tdl files for the subject-main-verb-inversion
+# case.
+
+sub generate_mainv_yesno {
+
+    print "Generating tdl files for subject-verb inversion.\n";
+    print "Be sure to load subj-v-inv-lrule.tdl and svi-lrule.tdl in your script.\n\n";
+}
+
+# This one creates the tdl files for the subject-aux-inversion
+# case.
+
+sub generate_aux_yesno {
+
+    print "Generating tdl files for subject-aux inversion.\n";
+    print "Be sure to load subj-v-inv-lrule.tdl, subj-aux-inv-lrule.tdl and sai-lrule.tdl in your script.\n\n";
+}
+
+
+# This one will generate the yes-no particle version.
+
+sub generate_particle_yesno {
+
+# Find out the spelling of the particle.  We'll assume for now that
+# it has constant form.
+
+    print "How is the question particle spelled?\n";
+    print "Suggested form: QPART\n";
+
+    $spelling = <STDIN>;
+    chomp($spelling);
+
+    &check_clobber("qpart-lex.tdl");
+
+# Check for write permissions.  If we can't open the file for
+# output in the specified directory, exit. 
+
+    open(OUTPUT,">$matrix_dir"."/modules/qpart-lex.tdl") || 
+	die "Cannot create matrix/modules/qpart-lex.tdl.\n";
+
+# Output tdl header.
+
+    print OUTPUT "\;\;\; -*- Mode: TDL; Package: LKB -*-\n\n";
+    print OUTPUT "\;\;\; Autogenerated sentence particle question module\n";
+
+# Output lexical entry definition. $spelling stores the
+# spelling of the particle.
+
+    print OUTPUT "qpart-1 := qpart-le &\n";
+    print OUTPUT "[ STEM < \"$spelling\" > ].\n\n";
+
+# Hint about what to do to the script file.  In the long run, we
+# should be modifying the script files, too.
+
+    print "Be sure to load qpart-type.tdl and qpart-lex.tdl in your script.\n\n";
+
+}
+
 
 # This one creates the tdl files for the negation as inflection
 # case.
