@@ -108,7 +108,7 @@ sub generate_infl_neg {
 	chomp($answer);
     }
    
-    if ($answer =~ /^Pp/) {
+    if ($answer =~ /^[Pp]/) {
 
 	$affix = "prefix";
 
@@ -163,7 +163,7 @@ sub check_clobber {
 
     my($file) = $matrix_dir."/modules/".$_[0];
 
-    print "Calling check clobber on $file\n";
+#    print "Calling check clobber on $file\n";
 
     if (-e $file) {
 
