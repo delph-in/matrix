@@ -487,9 +487,9 @@ event_rel := arg0_rel &
   [ ARG0 event ].
 
 arg1_ev_rel := arg1_rel & event_rel.
-arg12_ev_rel := arg1_ev_rel.
-arg123_ev_rel := arg12_ev_rel.
-arg1234_ev_rel := arg123_ev_rel.
+arg12_ev_rel := arg1_ev_rel & arg12_rel.
+arg123_ev_rel := arg12_ev_rel & arg123_rel.
+arg1234_ev_rel := arg123_ev_rel & arg1234_rel.
 
 verb_ellipsis_rel := arg1_rel.
 

@@ -23,7 +23,7 @@ affected features or types, which have been changed as follows:
 
     The name of the supertype of 'individual' and 'handle' has been 
     renamed from 'mrs-thing' to 'semarg' (for 'semantic argument').  
-    Also, one of its subtypes 'expl-ind' has been deleted, since it was 
+    Also, one of its subtypes 'non-expl' has been deleted, since it was 
     confusingly redundant with the type 'event-or-ref-index'.  
     Corresponding adjustments have been made to the type hierarchy under 
     'semarg', though the leaf types remain the same.
@@ -36,3 +36,143 @@ affected features or types, which have been changed as follows:
     always replaced with an underscore ("_").  An explanation of the 
     naming conventions can be found in the Matrix User Guide.
 
+------------------------------------------------------------------------------
+Grammar matrix v 0.4, March 10, 2003
+
+This is a minor upgrade of the first version of the grammar matrix
+(v 0.3), designed to standardize the feature geometry and naming
+conventions for MRS feature structures, and to enable stronger
+principles of semantic composition, as presented in Copestake,
+Lascarides, and Flickinger (2001).
+
+If you have already developed a grammar based on the matrix, you will
+need to make the following manual adjustments to your language-specific
+grammar files:
+
+(1) Renamed features 
+    Summary: Naming conventions now made consistent with soon-to-be-published
+    standard reference on MRS.
+    Recommended procedure: Do a global replace for each of the following in
+    all of your *.tdl files:
+    LISZT    -->  RELS
+    H-CONS   -->  HCONS
+    TOP      -->  LTOP
+    HNDL     -->  LBL
+    SC-ARG   -->  HARG
+    OUTSCPD  -->  LARG
+    SOA      -->  MARG
+    RESTR    -->  RSTR
+    BV       -->  ARG0
+    EVENT    -->  ARG0
+    INST     -->  ARG0
+    LABEL    -->  WLINK
+
+(2) Introduction of HOOK attribute
+    Summary: The externally visible attributes of an MRS are now grouped
+    within a single attribute called HOOK, which is consistently used in
+    constructions to identify the properties of the semantic head daughter
+    with those of the phrase.  The features in HOOK include the familiar
+    LTOP (formerly TOP), INDEX, and E-INDEX, as well as a new feature XARG
+    which is unified with the semantic index of the controlled argument of
+    a phrase (to simplify the definition of e.g. equi and raising types)
+    Recommended procedure: In each of your *.tdl files, search for each 
+    occurrence of the three features LTOP, INDEX, and E-INDEX, and insert 
+    HOOK into the path preceding each feature.  In some cases, you will see 
+    that you can simplify the re-entrancies in your feature structures by 
+    referring to HOOK instead of individually referring to each of the three
+    attributes separately.  In addition, consider revising your lexical types 
+    for equi and raising predicates to make use of the new XARG feature, 
+    which should enable you to avoid reference to arguments of arguments.
+    
+(3) Naming of argument roles (ARG1, ARG2, ARG3, ARG4)
+    Summary: Each relation now assigns its first (least oblique) argument
+    to ARG1, its next argument to ARG2, and so on.   The major change from
+    the first version of the matrix is to assign objects of transitive verbs
+    to ARG2 rather than ARG3, and similarly for objects of prepositions.
+    Recommended procedure: In each of your *.tdl files, search for ARG3, and 
+    consider replacing it with ARG2.  Check all other role name assignments 
+    to ensure that role names are assigned consistently.
+
+(4) Basic relation types
+    Summary: The inventory of basic relation types has been simplified.
+    Recommended procedure: Review the subtypes that your grammar defined for
+    the original basic relation types, and revise them to employ the new
+    relation types, consistent with the changes made in step (3) above.  Note
+    that a basic relation type has been added for quantifiers: quant-rel.
+
+(5) Deleted features (--TOPKEY)
+    Summary: Some semantics-related features proved to be unnecessary
+    Recommended procedure: None required, unless your grammar makes use of
+    the feature --TOPKEY, in which case you may choose to introduce this
+    feature as part of your language-specific inventory of features.
+
+
+------------------------------------------------------------------------------
+[Original notes for v 0.3]
+
+This is an extremely preliminary first cut at the grammar
+matrix.  It has not been tested except by being loaded into
+the LKB.  It contains the following:
+
+-- basic types which define the feature geometry
+-- types for MRS semantics
+-- underspecified supertypes of lexical rules
+-- underspecified supertypes of phrase structure rules
+
+Of these, the last were the most hastily thrown together.
+They are basically taken from the syntax.tdl file of the LinGO
+English grammar, and then simplified by removing constraints
+that are either likely to be specific to English or are
+related to the LinGO analysis of coordination.
+
+These phrase structure rule types are of necessity underconstrained
+and merely instantiating them will surely lead to a grammar
+with gross overgeneration.  Thus, it is expected that they
+will be either augmented directly, or via subtypes that fill
+in some of the missing constraints.  One clear example of this
+is the lack of constraints on the HEAD values in phrase structure
+rules.  Since it's not clear what the appropriate 'universal'
+head type hierarchy will/could be, I've refrained from even 
+defining types like 'verbal'...
+
+Similarly, certain parts of the type hierarchy might need to be
+modified.  In an ideal world, the matrix type hierarchy would only
+need to be extended at the bottom for individual grammars.  However,
+it is not clear that this is possible or desirable even in principle,
+and it is certainly not the case for this preliminary first version!
+(Defaults may help here...)
+
+The single biggest gap in the matrix is the utter lack of
+lexical types.  I hope that it can be useful even with this
+huge lacuna.  Since the matrix holds so closely to the LinGO
+grammar, the lexical types of the LinGO grammar should be 
+used as models for creating lexical types.  Note in particular
+that the rules assume lexical threading of NON-LOCAL features.
+Beware that some feature names (notably HNDL) and many type names
+differ between the matrix and the LinGO grammar, even when they
+are logically and mnemonically related.
+
+Future versions of the matrix should include further documentation
+as well as more types (especially lexical types).  Revisions to
+the types included in this version should also be anticipated, 
+since it seems extremely unlikely that this first guess as to
+what's universally useful will turn out to be entirely correct.
+
+Stephan Oepen has kindly cleaned up the collateral .lsp files
+included in this distribution of the matrix.  Take a look at
+lkb/script for information on how various files (including .tdl
+files) are included, and which aspects of the grammar should
+be encoded in which .tdl files.
+
+April 5, 2002 (erb)
+
+Added improvements to supertypes for lexical rules.  "Derivational"
+lexical rules are now lexeme-to-lexeme, rather than word-to-word
+(a hold-over from PAGE).  Lexeme-to-lexeme rules can be spelling
+changing, and apply _inside_ lexeme-to-word, or inflectional rules,
+as expected.
+
+June 18, 2002 (oe)
+
+Fix generator support (by adding a suitable `mrsglobals.lsp'); more
+cleaning up of `script' and related collateral files.
