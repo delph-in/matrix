@@ -83,4 +83,11 @@
 ;;; context condition in MRS munging rules
 ;;; 
 
-(defparameter *mrs-rule-condition-path* (list (vsym "CONDITION")))
+(defparameter *mrs-rule-condition-path* (list (vsym "CONTEXT")))
+
+;;;
+;;; ERB 2004-06-08
+;;;
+
+(setf *sem-relation-suffix* "_rel")
+(setf *rel-name-path* `(,(vsym "PRED") ))

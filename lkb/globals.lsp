@@ -99,3 +99,9 @@
 ;;; for the compare function 
 
 (defparameter *discriminant-path* '(synsem local keys key pred))
+
+;;; the lex-rule suffix defaults to _lex_rule, but this might
+;;; not be desirable
+
+;(setf *lex-rule-suffix* nil)
+

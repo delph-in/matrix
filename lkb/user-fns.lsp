@@ -104,3 +104,4 @@
   (and fs
        (let ((fs-type (type-of-fs fs)))
          (eql fs-type '-))))
+

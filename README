@@ -1,3 +1,113 @@
+------------------------------------------------------------------------------
+LinGO Grammar Matrix v 0.9, August 30, 2004 (erb)
+
+NB: This version of the Matrix requires LKB version
+$Date: 2004-08-30 23:18:06 $ or later.  
+
+Changes since v 0.6:
+
+1. Head types
+
+   We had previously hesitated to posit head types, as we
+   expect the exact subhierarchy under the type head to be
+   language-specific, even for those head types that are
+   found cross-linguistically.  However, this hesitation
+   was hampering our ability to develop lexical types for
+   the Matrix.  In this version, we have included 10 basic
+   head types, as well as types for all possible
+   disjunctive combinations for the basic 10.  See further
+   documentation near 'head' in matrix.tdl.  Note that the
+   disjunctive types are stored in a separate file
+   head-types.tdl.
+
+   We still have not posited any head features.  In order
+   to add features to one of the head types (disjunctive
+   or otherwise) already defined in the Matrix, you'll
+   need to use the new 'type addendum' syntax.  (This is
+   why a current LKB is required.)  Type addenda can be
+   used to add information (not override information)
+   associated with previously defined types.  They have :+
+   in place of :=.  Type addenda can add parent types,
+   constraints, or documentation strings, as long as they
+   are consistent with the existing definition.  As with
+   subtypes, it is good practice to refrain from stating
+   redundant information on type addenda.  The LKB will
+   print an error if a parent is declared redundantly.  No
+   such checking exists for constraints.
+	
+2. Lexical types (mostly from v 0.7)
+
+   The Matrix now has a set of underspecified lexical types.
+   Lexical entries are classified along multiple dimensions,
+   including part-of-speech and subcategorization.  Particular
+   grammars can cross-classify these types to create the
+   lexical types they need.  We're particularly interested to
+   learn about cases where additional types parallel to those
+   posited in this part of the Matrix are required.
+
+3. anti-synsem
+
+   The type anti-synsem is still present, but no longer explicitly
+   used in the Matrix.  (In previous versions of the Matrix,
+   the mother of the head-subj phrase was SUBJ < anti-synsem >
+   instead of SUBJ < >.  This and similar constraints are part
+   of English-specific analyses.)
+
+4. COMPS and the head-subject phrase
+
+   In response to Ellingsen 2003, we have removed the requirement
+   that complements be realized before subjects cross-linguistically.
+   We expect this to be true in many, but not all, languages.
+
+5. MC
+
+   Again in response to Ellingsen 2003, we have removed many
+   of the constraints on the value of MC (`main clause'). 
+   This feature is meant to be used for phenomena which are
+   restricted to either main (MC +) or subordinate (MC -) 
+   clauses.  The particular constraints present in earlier versions
+   of the Matrix were part of English-specific analyses.
+
+6. Changes to the script
+
+   The script (lkb/script) has been changed somewhat, including:
+
+	-- (index-for-generator) is run at load time,
+	since most Matrix grammars are small and since
+        it is now relatively easy to create grammars which
+        can be used for parsing and generation.  We have 
+        found that the generator can be very useful in 
+        detecting flaws in a grammar.  For a grammar with
+        a large lexicon, this may be too slow.  If so,
+        just comment it out in the script.
+
+	-- There is a short expression at the end which
+    	can be used to change the default string (or indeed
+	list of strings) in the parse dialogue to something
+	appropriate for your language.  Uncomment this expression
+	and customize it appropriately.  
+
+7. labels.tdl
+
+   With the addition of head types, we are now able to include
+   a basic set of node labels.  As noted in labels.tdl, these
+   are provided only for the convenience of the grammar developer,
+   and do not have any theoretical status.  As such, even though
+   they are provided as part of the Matrix distribution, they
+   should be customized (edited) without hesitation.
+
+8. Other minor technical changes
+
+   The value of INSTLOC is now string (formerly "instloc") for
+   compatibility with recent versions of the LKB.
+
+   The head daughters of head-modifier phrases are no longer
+   required to have empty COMPS lists.  Furthermore, additional
+   features are matched between modifiers' MOD values and 
+   the head daughters' SYNSEMs.
+
+------------------------------------------------------------------------------
+
 LinGO Grammar Matrix v 0.6, October 15, 2003 (dpf)
 
 This is a minor tuning of version 0.5, including a refinement of the KEYS

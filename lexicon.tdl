@@ -1,5 +1,5 @@
 ;;;
 ;;; we need at least one dummy entry here, otherwise the LKB fails to load
 ;;;
-foo := word &
+foo := basic-noun-lex &
   [ STEM < "foo" > ].
