@@ -1209,6 +1209,37 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 				 CONT.HOOK.INDEX event ],
 			 MODIFIED #mod ] ] ].
 
+; ERB 2004-12-14 Type for optional specifier (determiner) phrases.
+; Build NPs out of N's.  The specification [OPT +] on the head
+; daughter's SPR value is meant to allow this rule to apply to
+; some nouns and not others.  Nouns which require an overt specifier
+; should lexically say [ OPT - ].  Nouns which optionally occur
+; with a specifier can leave the OPT value of that argument unmarked.
+; Nouns which only appear without a specifier need a SPR value which
+; is incompatible with any of the available overt determiners.  This
+; could conceivably be regulated on the basis of semantics.
+
+basic-bare-np-phrase := head-only &
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
+			   SUBJ < >,
+			   COMPS < >,
+			   SPEC < > ],
+    HEAD-DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR < [ LOCAL.CAT.HEAD det,
+					      OPT + ] >,
+				      SUBJ < >,
+				      COMPS < > ],
+			    CONT.HOOK [ INDEX #index,
+					LTOP #larg ] ],
+    C-CONT [ RELS <! quant-relation &
+		   [ LBL #ltop,
+		     ARG0 #index,
+		     RSTR #harg ] !>,
+	     HCONS <! qeq & 
+		    [ HARG #harg,
+		      LARG #larg ] !>,
+	     HOOK [ INDEX #index,
+		    LTOP #ltop ] ] ].
+
 ; Unary rules for extraction
 
 basic-extracted-arg-phrase := head-valence-phrase & head-only &

@@ -9,7 +9,7 @@
 ;;; symbol, define verb and uncomment it.  Alternatively, define some
 ;;; other appropriate type and use it place of verb here.
 
-;root := phrase &
-;[ SYNSEM.LOCAL.CAT [ HEAD verb,
-;                     VAL [ SUBJ < anti-synsem >,
-;                           COMPS null ] ] ].
+root := phrase &
+[ SYNSEM.LOCAL.CAT [ HEAD verb,
+                     VAL [ SUBJ < >,
+                           COMPS null ] ] ].

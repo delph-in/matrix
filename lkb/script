@@ -35,6 +35,9 @@
    (lkb-pathname (parent-directory) "matrix.tdl")
    (lkb-pathname (parent-directory) "head-types.tdl")
    (lkb-pathname (parent-directory) "my_language.tdl")
+;;; Modules: types files
+   (lkb-pathname (parent-directory) "modules/SVO.tdl")
+   (lkb-pathname (parent-directory) "modules/basic-lex.tdl")
 ;#+:mt 
 ;   (lkb-pathname (this-directory) "transfer.tdl")
 ))
@@ -44,10 +47,12 @@
 ;;; (some grammars with larger lexica organize them into multiple files).
 ;;;
 
-;;; For grammars with small lexicons, no need to use a cache file:
-
 (read-tdl-lex-file-aux (lkb-pathname (parent-directory) "lexicon.tdl"))
 
+;;; For testing modules
+(read-tdl-lex-file-aux (lkb-pathname (parent-directory) "test-lex.tdl"))
+
+;;; For grammars with small lexicons, no need to use a cache file:
 ;;; Once your lexicon has >1000 words or so, consider using the 
 ;;; cache file:
 
@@ -62,6 +67,15 @@
 (read-tdl-grammar-file-aux (lkb-pathname (parent-directory) "rules.tdl"))
 (read-tdl-lex-rule-file-aux (lkb-pathname (parent-directory) "lrules.tdl"))
 (read-morph-file-aux (lkb-pathname (parent-directory) "irules.tdl"))
+
+;;; Modules: rules files
+(read-tdl-grammar-file-aux (lkb-pathname 
+			    (parent-directory) 
+			    "modules/SVO-rules.tdl"))
+(read-tdl-grammar-file-aux (lkb-pathname 
+			    (parent-directory) 
+			    "modules/optdet-rules.tdl"))
+
 
 ;;;
 ;;; The `start symbol(s)' of the grammar.
@@ -90,7 +104,7 @@
 ;;; generation is not being used regularly, and the indexing
 ;;; is taking too long, comment out the following.  index-for-generator()
 ;;; can also be run from the expanded LKB top menu, under
-;;; Generate
+;;; Generate.
 ;;;
 
 (index-for-generator)

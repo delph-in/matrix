@@ -4,6 +4,6 @@
 ;;;  Used in combination with SVO word order types file.
 
 head-comp := head-comp-phrase.
-subj-head := head-subj-phrase.
+subj-head := subj-head-phrase.
 
 

@@ -62,8 +62,19 @@ We need to think at some point about the optimal allocation of
 information to files in the case that people want to generate
 a starting grammar with the wizard and then go in and edit
 it.  Having things scattered over lots of little modules might
-not be ideal.  I wish I could find the email exchange I think
-we had about that....
+not be ideal.  I tried to start an email exchange about this
+in May (5/3/04) but don't see any responses.  Seem to remember
+a phone or other conversation in the which the consensus was
+go with the editing-the-script/lots of separate modules files
+option.  Currently I'm thinking that the best bet would be to
+compile the information used from modules in a file that is
+separate from both matrix.tdl and my_language.tdl.  The idea would
+be to put it all in one place so that the grammar writer could
+easily look at it, but also to discourage people from editing
+it directly.  The compiled file would include documentation indicating
+which types are a consequence of which choices on the part of
+the grammar writer.  `Sniffing' those choices and recompiling on
+a matrix update shouldn't be too hard.
 
 Word order:
 
@@ -134,7 +145,8 @@ Relatively general modules:
  intraclausal scrambling
  agreement (S-V, Det-N, Adj-N; for png, case, other?)
  ARG-ST to VAL mapping: ergative v. accusative
- 
+ complex predicates 
+
 Less universal modules:
 
  V2
@@ -148,7 +160,11 @@ Less universal modules:
  noun incorporation
  NP `splattering' (Warlpiri style)
  interclausal scrambling/argument composition
-
+ single verbs as answers to yes-no questions (Mandarin, Cantonese);
+   this is separate from other pro-drop/optional argument cases: 
+   see email from erb->danf on 5/13/04
+ A-not-A questions (Mandarin, Cantonese) -- do these recur frequently
+   enough to make a module out of?
  
 LKB wishlist
  
