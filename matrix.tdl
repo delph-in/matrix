@@ -1,6 +1,6 @@
 ;;; -*- Mode: TDL; Package: LKB -*-
 ;;;
-;;;  HPSG Grammar Matrix Version 0.4
+;;;  HPSG Grammar Matrix Version 0.5
 ;;;
 ;;;  Copyright Emily M. Bender 2002
 ;;;  All Rights Reserved.
@@ -24,8 +24,8 @@ avm := *top*.
 list := avm.
 
 cons := list &
-	[ FIRST *top*,
-	  REST *top* ].
+  [ FIRST *top*,
+    REST *top* ].
 
 0-1-list := list.
 1-list := 0-1-list & cons &
@@ -35,8 +35,8 @@ null := 0-1-list.
   [ REST cons ].
 
 diff-list := avm &
-[ LIST list,
-  LAST list ].
+  [ LIST list,
+    LAST list ].
 
 0-1-dlist := diff-list &
   [ LIST 0-1-list ].
@@ -55,11 +55,11 @@ diff-list := avm &
 ; relationships to each other & the feature geometry.
 
 dl-append := avm & [APPARG1 [LIST #first,       
-			       LAST #between],
-		      APPARG2 [LIST #between,
-			       LAST #last],
-		      RESULT  [LIST #first,
-			       LAST #last]].
+                             LAST #between],
+                    APPARG2 [LIST #between,
+                             LAST #last],
+                    RESULT  [LIST #first,
+                             LAST #last]].
 
 symbol := atom.
 integer := atom.
@@ -130,8 +130,8 @@ phrase := phrase-or-lexrule &
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 non-affix-bearing := word-or-lexrule &
-[ INFLECTED +,
-  SYNSEM.LOCAL.KEYS.KEY.WLINK cons ].
+  [ INFLECTED +,
+    SYNSEM.LOCAL.KEYS.KEY.WLINK cons ].
 
 ; Rule
 
@@ -178,7 +178,7 @@ phr-synsem := canonical-synsem & lex-or-phrase-synsem &
     LEX - ].
 
 non-canonical := synsem &
-  [ LOCAL.CONT.HOOK.INDEX non-expl ].
+  [ LOCAL.CONT.HOOK.INDEX event-or-ref-index ].
 
 expressed-non-canonical := non-canonical & expressed-synsem.
 
@@ -294,13 +294,11 @@ mrs := mrs-min &
 ; HOOK values include
 ;    LTOP                  ; Local top handle
 ;    INDEX                 ; The salient nominal instance or event
-;    E-INDEX               ; A secondary event index for predicative phrases
 ;    XARG                  ; The external (controlled) argument of a phrase
 
 hook := avm &
   [ LTOP handle,
     INDEX individual,
-    E-INDEX individual,
     XARG individual ].
 
 ; MRSs are divided into psoas (with a distinguished event) and
@@ -365,9 +363,9 @@ proposition := prop-or-ques.
 abstr-ques := prop-or-ques.       
 question := abstr-ques.
 
-; Subtype of int-rel for tag questions and structures in other languages
+; Subtype of int_rel for tag questions and structures in other languages
 ; with equivalent pragmatics.
-ne-rel := abstr-ques.                 
+ne_rel := abstr-ques.                 
 
 ; Constrains handle of scopable argument HARG relative to one 
 ; outscoped LARG handle (the "H" is mnemonic for either "higher" or
@@ -378,12 +376,12 @@ qeq := avm &
   [ HARG handle,
     LARG handle ].        
 
-mrs-thing := avm &
+semarg := avm &
   [ INSTLOC instloc ].
 instloc := *top*.
 
-handle := mrs-thing.
-individual := mrs-thing.
+handle := semarg.
+individual := semarg.
 
 ; The INDEX value of a nom-obj is an index (expletive or
 ; referential).
@@ -393,8 +391,7 @@ index := individual.
 ; This is the type of the index of the phrase modified by predicative
 ; PPs, which can either modify a ref-ind nominal or an event VP.
 
-non-expl := individual.
-event-or-ref-index := non-expl & index.
+event-or-ref-index := individual.
 
 ; Expletives get distinguished index type so they can be
 ; selected semantically.  In English, this type has subtypes
@@ -402,7 +399,7 @@ event-or-ref-index := non-expl & index.
 ; so those aren't included here.
 
 expl-ind := index.
-ref-ind := event-or-ref-index &
+ref-ind := index & event-or-ref-index &
   [ PNG png ].
 
 ; Types encoding agreement information, analyzed as a part of the
@@ -422,9 +419,9 @@ aspect := sort.
 mood := sort.
 
 tam := avm &
- [ TENSE tense,
-   ASPECT aspect,
-   MOOD mood ]. 
+  [ TENSE tense,
+    ASPECT aspect,
+    MOOD mood ]. 
 
 event := event-or-ref-index &
   [ E tam ].
@@ -433,9 +430,9 @@ event := event-or-ref-index &
 ; values.  These are meant to be interpreted as pointers to 
 ; the set of indices the conjunction conjoins.
 
-conj-ind := event-or-ref-index.
-conj-event := conj-ind & event.
-conj-ref-ind := conj-ind & ref-ind.
+conj-index := event-or-ref-index.
+conj-event := conj-index & event.
+conj-ref-ind := conj-index & ref-ind.
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -471,74 +468,74 @@ no-relation := relation.
 ; (ii) Something in the grammar needs to make reference to a family
 ; of relations that are not otherwise distinguished by a type.
 
-arg0-rel := norm-relation &
+arg0_rel := norm-relation &
   [ ARG0 individual ].
 
-arg1-rel := arg0-rel &
-  [ ARG1 mrs-thing ].
+arg1_rel := arg0_rel &
+  [ ARG1 semarg ].
 
-arg12-rel := arg1-rel &
-  [ ARG2 mrs-thing ].
+arg12_rel := arg1_rel &
+  [ ARG2 semarg ].
 
-arg123-rel := arg12-rel &
-  [ ARG3 mrs-thing ].
+arg123_rel := arg12_rel &
+  [ ARG3 semarg ].
 
-arg1234-rel := arg123-rel &
-  [ ARG4 mrs-thing ].
+arg1234_rel := arg123_rel &
+  [ ARG4 semarg ].
 
-event-rel := arg0-rel &
+event_rel := arg0_rel &
   [ ARG0 event ].
 
-arg1-ev-rel := arg1-rel & event-rel.
-arg12-ev-rel := arg1-ev-rel.
-arg123-ev-rel := arg12-ev-rel.
-arg1234-ev-rel := arg123-ev-rel.
+arg1_ev_rel := arg1_rel & event_rel.
+arg12_ev_rel := arg1_ev_rel.
+arg123_ev_rel := arg12_ev_rel.
+arg1234_ev_rel := arg123_ev_rel.
 
-verb-ellipsis-rel := arg1-rel.
+verb_ellipsis_rel := arg1_rel.
 
 ; Noun relations
 
-noun-rel := arg0-rel &
+noun_rel := arg0_rel &
   [ ARG0 ref-ind ].
 
-named-rel := noun-rel &
-  [ PRED 'named-rel,
+named_rel := noun_rel &
+  [ PRED 'named_rel,
     CARG string ].
 
 ; Preposition relations
 
-prep-mod-rel := arg12-rel.
+prep_mod_rel := arg12_rel.
 
 ; adverb relations
 
-adv-rel := arg0-rel.
-neg-rel := adv-rel.
+adv_rel := arg0_rel.
+neg_rel := adv_rel.
 
 ; subordination and coordinating conjunctions
 
-subord-or-conjunction-rel := norm-relation &
+subord_or_conjunction_rel := norm-relation &
   [ L-HNDL handle,
     R-HNDL handle ].
 
-conjunction-rel := subord-or-conjunction-rel &
-  [ C-ARG conj-ind,
+conjunction_rel := subord_or_conjunction_rel &
+  [ C-ARG conj-index,
     L-INDEX index,
     R-INDEX index ].
 
-subord-rel := subord-or-conjunction-rel.
-if-then-rel := subord-rel & 
-  [ PRED 'if-then-rel ].
+subord_rel := subord_or_conjunction_rel.
+if_then_rel := subord_rel & 
+  [ PRED 'if_then_rel ].
 
 ; noun noun compounds
 
-unspec-compound-rel := arg12-rel &
+unspec_compound_rel := arg12_rel &
   [ ARG0 event,
-    ARG1 non-expl,
-    ARG2 non-expl ].
+    ARG1 ref-ind,
+    ARG2 ref-ind ].
 
 ; quantifier relation
 
-quant-rel := arg0-rel &
+quant_rel := arg0_rel &
   [ ARG0 ref-ind,
     RSTR handle,
     BODY handle ].
@@ -1018,7 +1015,7 @@ basic-head-opt-one-comp-phrase := basic-head-opt-comp-phrase &
                SYNSEM.LOCAL [ CAT.VAL.COMPS 
                                      < unexpressed & [ OPT + ]
                                        . #comps & < expressed-synsem, ... > >,
-                              KEYS.KEY event-rel ] ] ].
+                              KEYS.KEY event_rel ] ] ].
 
 basic-head-opt-two-comp-phrase := basic-head-opt-comp-phrase &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,
@@ -1027,7 +1024,7 @@ basic-head-opt-two-comp-phrase := basic-head-opt-comp-phrase &
                                 < unexpressed & [ OPT + ]
                                   . < unexpressed & [ OPT + ]
                                       . #comps & < expressed-synsem, ... > > >,
-                              KEYS.KEY event-rel ] ] ].
+                              KEYS.KEY event_rel ] ] ].
 
 
 ; Unary rules for extraction
