@@ -50,6 +50,14 @@ unless (-e $matrix_dir."/lkb/script") {
     }
 }
 
+# Initialize a file to record the choices in.
+&check_clobber("modules_choices");
+
+open(CHOICES,">$matrix_dir/modules/modules_choices") ||
+    die "Can't open $matrix_dir/modules/modules_choies.\n";
+
+
+
 print "This questionnaire will help you build a prototype grammar.\n\n";
 
 print "Let's start with basic word order.  Is your language best described as:\n\n";
@@ -71,23 +79,32 @@ $answer = &getanswer("A","a","B","b","C","c","D","d","E","e","F","f","G","g","H"
 
 switch ($answer) {
     
-    case /^[Aa]/ { push(@typesfiles, "SOV.tdl");
+    case /^[Aa]/ { print CHOICES "SOV word order \n";
+		   push(@typesfiles, "SOV.tdl");
 		   push(@rulesfiles, "V-final-rules.tdl"); }
-    case /^[Bb]/ { push(@typesfiles, "SVO.tdl");
+    case /^[Bb]/ { print CHOICES "SVO word order \n";
+		   push(@typesfiles, "SVO.tdl");
 		   push(@rulesfiles, "SVO-rules.tdl"); }
-    case /^[Cc]/ { push(@typesfiles, "VSO.tdl");
+    case /^[Cc]/ { print CHOICES "VSO word order \n";
+		   push(@typesfiles, "VSO.tdl");
 		   push(@rulesfiles, "V-initial-rules.tdl"); }
-    case /^[Dd]/ { push(@typesfiles, "OSV.tdl");
+    case /^[Dd]/ { print CHOICES "OSV word order \n";
+		   push(@typesfiles, "OSV.tdl");
 		   push(@rulesfiles, "V-final-rules.tdl"); }
-    case /^[Ee]/ { push(@typesfiles, "OVS.tdl");
+    case /^[Ee]/ { print CHOICES "OVS word order \n";
+		   push(@typesfiles, "OVS.tdl");
 		   push(@rulesfiles, "OVS-rules.tdl"); }
-    case /^[Ff]/ { push(@typesfiles, "VOS.tdl");
+    case /^[Ff]/ { print CHOICES "VOS word order \n";
+		   push(@typesfiles, "VOS.tdl");
 		   push(@rulesfiles, "V-initial-rules.tdl"); }
-    case /^[Gg]/ { push(@typesfiles, "V-final.tdl");
+    case /^[Gg]/ { print CHOICES "V-final word order \n";
+		   push(@typesfiles, "V-final.tdl");
 		   push(@rulesfiles, "V-final-rules.tdl"); }
-    case /^[Hh]/ { push(@typesfiles, "V-initial.tdl");
+    case /^[Hh]/ { print CHOICES "V-initial word order \n";
+		   push(@typesfiles, "V-initial.tdl");
 		   push(@rulesfiles, "V-initial-rules.tdl"); }
-    case /^[Ii]/ { push(@typesfiles, "free-order.tdl");
+    case /^[Ii]/ { print CHOICES "free word order \n";
+		   push(@typesfiles, "free-order.tdl");
 		   push(@rulesfiles, "free-order-rules.tdl"); }
     case /^[Jj]/ { print "Sorry I can't help you with word order today.  Without some word\n order module you won't be able to parse anything.  Exiting now. Please start\n again.\n";
 		   exit(0); }
@@ -113,9 +130,12 @@ $answer = &getanswer("A","a","B","b","C","c","D","d");
 
 switch ($answer) {
 
-    case /^[Aa]/  { &generate_mainv_yesno; }
-    case /^[Bb]/  { &generate_aux_yesno; }
-    case /^[Cc]/  { &generate_particle_yesno; }
+    case /^[Aa]/  { print CHOICES "yes-no: Main verb inversion\n";
+		    &generate_mainv_yesno; }
+    case /^[Bb]/  { print CHOICES "yes-no: Subj-aux inversion\n";
+		    &generate_aux_yesno; }
+    case /^[Cc]/  { print CHOICES "yes-no: question particle\n";
+		    &generate_particle_yesno; }
     case /^[Dd]/  {
         print "Sorry, I can't help you with yes-no questions today.\n";
     }
@@ -142,8 +162,10 @@ $answer = &getanswer("A","a","B","b","C","c","D","d");
 
 switch ($answer) {
 
-    case /^[Aa]/ { &generate_infl_neg; }
-    case /^[Bb]/ { &generate_adv_neg; }
+    case /^[Aa]/ { print CHOICES "Negation as verbal inflection\n";
+		   &generate_infl_neg; }
+    case /^[Bb]/ { print CHOICES "Negation as adverb\n";
+		   &generate_adv_neg; }
     case /^[Dd]/ {
 	print "Sorry, I can't help you with negation today.\n";
     }
@@ -169,12 +191,15 @@ switch ($answer) {
 	
 	switch ($answer) {
        
-	    case /^[Aa]/ { &generate_infl_neg;
+	    case /^[Aa]/ { print CHOICES "Inflection or adverb\n";
+			   &generate_infl_neg;
 			   &generate_adv_neg; }
-	    case /^[Bb]/ { &generate_infl_neg;
+	    case /^[Bb]/ { print CHOICES "Inflection, adverb, or both\n";
+			   &generate_infl_neg;
 			   &generate_infl_neg;
 			   &generate_both_neg; }
-	    case /^[Cc]/ { &generate_both_neg; }
+	    case /^[Cc]/ { print CHOICES "Inflection and adverb\n";
+			   &generate_both_neg; }
 	    case /^[Dd]/ { 
 		print "Sorry, I can't help you with negation today.\n";
 	    }
@@ -210,6 +235,25 @@ sub generate_aux_yesno {
 
 sub generate_particle_yesno {
 
+# Find out whether this is sentence initial or sentence-final.
+
+    print "Does the question particle appear:\n\n";
+    print "\t a) at the beginning of the sentence\n";
+    print "\t b) at the end\n";
+    print "\t c) somewhere else?\n";
+
+    $answer = &getanswer("A","a","B","b","C","c");
+
+    switch ($answer) {
+
+	case /^[Aa]/ { print CHOICES "Prehead\n";
+		       $posthead = "-"; }
+	case /^[Bb]/ { print CHOICES "Posthead\n";
+		       $posthead = "+"; }
+	case /^[Cc]/ { print "Sorry, I can't help you with questions today.\n";
+		       exit(0); }
+    }
+
 # Find out the spelling of the particle.  We'll assume for now that
 # it has constant form.
 
@@ -222,6 +266,8 @@ sub generate_particle_yesno {
     if ($spelling =~ /^$/) {
 	$spelling = "QPART";
     }
+
+    print CHOICES "Particle spelling: $spelling\n";
 
     &check_clobber("qpart-lex.tdl");
 
@@ -345,6 +391,8 @@ sub generate_infl_neg {
 
 sub generate_adv_neg {
 
+    use Switch;
+
 #Assume that we're going to instantiate scopal and intersective
 #head-modifier rules for both orders for every grammar.  We might
 #one day find a language that only uses a subset, but that's a
@@ -354,24 +402,32 @@ sub generate_adv_neg {
 
     print "You've said your language handles sentential negation\n";
     print "via a negative adverb.\n";
-
+    
     print "How is the negative adverb spelled? (default: negadv)\n\n";
-
+    
     $spelling = <STDIN>;
     chomp($spelling);
+
     if ($spelling =~ /^$/) {
-	$spelling = "negadv";
+ 	$spelling = "negadv";
     }
 
     print "Is this element best described as:\n\n";
     print "\t a) an independent modifier\n";
     print "\t b) selected by a verb (auxiliary verb or main verb)\n\n";
-
+    
     $answer = &getanswer("a","b","A","B");
+
 
     switch ($answer) {
 
-	case /^[Aa]/ { 
+	case /^[Bb]/ {
+
+	    print "Selected adverb case.  Needs lexical rules.\n";
+
+	}
+
+	case /^[Aa]/ {
 
 #For independent modifiers, determiner order of attachment (pre or posthead)
 #and bar-level of the thing it attaches to.  Assume for now that order
@@ -381,21 +437,21 @@ sub generate_adv_neg {
 	    print "Does it attach to the left or to the right of the head it modifies?\n";
 
 	    $order = &getanswer("L","l","R","r");
-
+	    
 	    if ($order =~ /^[Ll]/) {
 		$posthead = "-";
 	    } else {
 		$posthead = "+";
 	    }
-
+	
 	    print "Does it attach to:\n\n";
 	    print "\t a) V\n";
 	    print "\t b) VP\n";
 	    print "\t c) S\n";
-            print "\t d) other\n\n";
-	 
+	    print "\t d) other\n\n";
+	    
 	    $barlevel = &getanswer("A","a","B","b","C","c","D","d");
-
+	    
 	    if ($barlevel =~ /^[Dd]/) {
 		print "Sorry, I can't help you with negation today.\n";
 		exit(0);
@@ -412,49 +468,49 @@ sub generate_adv_neg {
 	    print OUTPUT "\;\;\; -*- Mode: TDL; Package: LKB -*-\n\n";
 	    print OUTPUT "\;\;\; Autogenerated adverbial negation module\n";
 	    print OUTPUT "\;\;\; Use in conjunction with adv-neg-lex.tdl\n\n";
-
+	    
 	    print OUTPUT "neg-adv-lex := basic-scopal-adverb-lex &\n";
 	    print OUTPUT "   [ SYNSEM.LOCAL.CAT [ POSTHEAD $posthead,\n";
 	    print OUTPUT "                        VAL [ SPR < >,\n";
 	    print OUTPUT "                              COMPS < >,\n";
-            print OUTPUT "                              SUBJ < > ],\n";
+	    print OUTPUT "                              SUBJ < > ],\n";
 	    print OUTPUT "                        HEAD.MOD < [ LOCAL.CAT [ HEAD verb,\n";
-
+	
 	    switch ($barlevel) {
-
+	    
 #Actually, this won't work.  We need some sort of LEX feature to force
 #attachment to V.
-
+		
 		case /^[Aa]/ {
 		    print OUTPUT "                                                 VAL [ SUBJ cons,\n";
 		    print OUTPUT "                                                       COMPS cons ]]] > ]].\n\n";
 		}
-
+		
 		case /^[Bb]/ {
 		    print OUTPUT "                                                 VAL [ SUBJ cons,\n";
 		    print OUTPUT "                                                       COMPS null ]]] > ]].\n\n";
 		}
-		 
+	    
 		case /^[Cc]/ {
 		    print OUTPUT "                                                 VAL [ SUBJ null,\n";
-                    print OUTPUT "                                                       COMPS null ]]] > ]].\n\n";
+		    print OUTPUT "                                                       COMPS null ]]] > ]].\n\n";
 		}
 	    }
-
+	
 # Now generate lexical item file.
 
 	    &check_clobber("adv-neg-lex.tdl");
 	    open(OUTPUT,">$matrix_dir"."/modules/adv-neg-lex.tdl") || 
 		die "Cannot create matrix/modules/adv-neg-lex.tdl.\n";
-	    
+	
 	    print OUTPUT "\;\;\; -*- Mode: TDL; Package: LKB -*-\n\n";
 	    print OUTPUT "\;\;\; Autogenerated adverbial negation module\n";
 	    print OUTPUT "\;\;\; Use in conjunction with adv-neg.tdl\n\n";
-
+	    
 	    print OUTPUT "neg-adv := neg-adv-lex &\n";
-            print OUTPUT "  [ SYNSEM.LKEYS.KEYREL.PRED \"_neg_r_rel\",\n";
-            print OUTPUT "    STEM < \"$spelling\" > ].\n\n"; 
-
+	    print OUTPUT "  [ SYNSEM.LKEYS.KEYREL.PRED \"_neg_r_rel\",\n";
+	    print OUTPUT "    STEM < \"$spelling\" > ].\n\n"; 
+	    
 
 #	    print "Be sure to load adv-neg.tdl and adv-neg-lex.tdl in your script.\n\n";
 
@@ -465,13 +521,6 @@ sub generate_adv_neg {
 	    push(@lexfiles, "adv-neg-lex.tdl");
 
 	}
-
-	case /^[Bb]/ {
-
-	    print "Selected adverb case.  Needs lexical rules.\n";
-
-	}
-	    
     }
 }
 
