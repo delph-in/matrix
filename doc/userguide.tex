@@ -89,9 +89,7 @@ Matrix and MRS.  Sections \ref{basicobj}--\ref{synsem-i} describe
 the implementation of MRS in the Matrix and how to extend it in
 building a grammar of a specific language.  Along the way, we
 provide touchstone linguistic examples and advice on best practice.
-Section \ref{gen}
-discusses considerations that arise in designing grammars for
-generation as well as parsing.  Section \ref{verif} describes tools
+Section \ref{verif} describes tools
 and methods for verifying the well-formedness of {\it mrs}s.  Finally,
 Section \ref{semisec} describes the Sem-I (`Semantic Interface'), a component
 of the grammar that specifies how {\it mrs}s are to be interpreted.
@@ -157,7 +155,7 @@ decisions that must be made about the content of the semantic
 representations.  In this paper, we present some design decisions that
 have emerged in work on two broad-coverage grammars the English
 Resource Grammar (ERG: \citeboth{Flickinger00}) and the JaCY Japanese
-grammar (JaCY: \citeboth{Sie:Ben:02}).
+grammar (JaCY: \citeboth{Sie:Ben:02}). 
 While the influences on these design decisions
 are myriad, perhaps the most important guiding principle is the
 following: The semantic representations produced should include all
@@ -167,7 +165,7 @@ is represented simply as the attribute-value pair \mbox{[TENSE past]}
 (on an event variable) rather than a more elaborate Reichenbachian
 representation relating the event time to the time of utterance,
 because this more elaborate representation can be unambiguously
-derived from the more parsmonious one given.  (For more discussion,
+derived from the more parsimonious one given.  (For more discussion,
 see \S\ref{AgrTAM} below and {\S}6 of \citeboth{Cop:Fli:Sag:Pol:03}.)
 We hope that the descriptions in the following sections of the design
 decisions taken so far will provide guidance for grammar engineers
@@ -189,15 +187,15 @@ under {\it avm} and {\it sort}, including all of the basic semantic objects.
 \br{*top*}{
 \br{avm}{	
  {\br{mrs}{\lf{psoa}\lf{\ \ \ \ \ \ \ \ \ nom-obj}}}
- \lf{lexkeys}
- \lf{keys}
- {\br{relation}{\tlf{\ldots}}}
+ \lf{\ \ \ lexkeys}
+ \lf{\ \ \ \ \ \ \ \ \ \ \ keys}
+ {\br{\ \ \ \ \ \ relation}{\tlf{\ldots}}}
  \lf{qeq}
- \lf{   hook}
+ \lf{\ \ \ \ \ hook}
  \br{semarg}{\br{individual}{\tlf{\ldots}}\lf{\ \ \ \ handle}}
  \lf{tam}
- \lf{   png}}
-\br{sort}{\lf{semsort}}}
+ \lf{\ \ \ png}}
+\br{sort}{\lf{\ \ \ \ \ \ \ \ \ semsort}}}
 \end{tree}
 }
 \end{center}
@@ -232,7 +230,8 @@ the Matrix) are constrained as in (\ref{mrs-cons}).
 \begin{avm}
 {\it mrs}: \[ hook & hook\\
               rels & diff-list\\
-              hcons & diff-list \]
+              hcons & diff-list\\
+              msg & basic\_message \]
 \end{avm}
 }
 %
@@ -241,7 +240,9 @@ implemented as difference list to allow for appending without
 relational constraints.} of {\it relation}s (\S\ref{reltypesec}) and
 the value of {\sc hcons} is a difference list of {\it qeq}s
 (\S\ref{qeqsec}).  The value of {\sc hook} is a feature structure of
-type {\it hook} (\S\ref{hooksec}).
+type {\it hook} (\S\ref{hooksec}).  Finally, the value of {\sc msg} is
+a feature structure of type {\it basic\_message}, used to constrain the
+propositional type of a sign (\S\ref{msgsec}.
 
 The type {\it mrs} also has two subtypes {\it nom-obj} and {\it psoa},
 following \citeboth{Pol:Sag:94}, corresponding to semantic representations of 
@@ -319,14 +320,14 @@ interesting re-entrancies of {\sc pred} values, explored in the ERG for
 the semantics of degree specifiers, and perhaps also useful for some
 treatments of coordination or gapping.
 
-For compatibility with RMRS (FIX: ref) and software designed to
-integrate deep and shallow processing, {\sc pred} values should
+For compatibility with RMRS (\cite{Cop:03}) and software designed 
+to integrate deep and shallow processing, {\sc pred} values should
 conform to the following templates:
 
 \es{
 \begin{tabular}[t]{ll}
 {\tt \_orth\_pos\_sense\_rel} & (lexically introduced predicates)\\
-{\tt orth\_pos\_sense\_rel} & (abstract predicates introduced by constructions)
+{\tt sense\_rel} & (abstract predicates introduced by constructions)
 \end{tabular}
 }
 
@@ -336,7 +337,10 @@ and typically also for closed-class words.  By using the stem orthography,
 we enusre that predicate names used in {\it mrs}s produced by deep
 grammars will be interoperable with predicate names used in {\it mrs}s 
 produced by robust shallow processors, which name the predicates based
-on (lemmatized) forms in the input.
+on (lemmatized) forms in the input.  The leading underscore is used to
+distinguish predicate names introduced by specific lexical entries from those
+introduced by constructions or by lexical types supplying a common predicate
+for a class of lexical entries.
 
 The {\tt pos} component is one
 of a closed set of single lowercase letters interpreted as follows:\\
@@ -355,7 +359,7 @@ x & all other closed-class predicates
 }
 %
 We use this POS-based information (such as might be accessible from a
-POS-tagger) for coarse-grained sense distinctions.  Finer grained
+POS-tagger) for coarse-grained sense distinctions.  Finer-grained
 distinctions can be made (in a precision grammar) via the {\tt sense}
 component.  The {\tt sense} component can consist of any sequence of
 characters (letters, numbers, etc.), excluding the underscore which is
@@ -365,7 +369,10 @@ contribute a relation particular to that combination.  We distinguish
 these relations by placing the particle's orthography in the {\tt
 sense} field. Unlike the other components, the {\tt sense} component
 is optional, and if omitted, its separating underscore is also
-omitted.
+omitted.  By convention, a predicate name with no sense component is
+interpreted as underspecified for sense, so if more than one sense is
+present in the lexicon for a given orthography and part of speech, each
+of these predicate names should have a sense component.
 
 Every relation and predicate name ends in {\bf \_rel}, for the
 convenience of the grammar writer, particularly to avoid possible
@@ -399,12 +406,16 @@ replaced by the plus sign.  So the following example is also correct:\\
 \subsubsection{\sc wlink}
 
 The feature {\sc wlink} serves to link the relation to an element in
-the input string. 
+the input string, so that applications can reconstruct the input string
+source of a given relation in the corresponding semantics.
 Since this feature does not interact with the rest of the semantic
 composition machinery in the Matrix, we will omit it from our AVM
-descriptions in the rest of this paper.
-%[FIX (oe): Something about how this works, which
-%systems support it, what a grammar engineer needs to know about it?]
+descriptions in the rest of this paper.  It is included as part of the
+Matrix because it provides a useful experimental link later on, when 
+developing applications that use a Matrix-derived grammar.  The grammar
+engineer can safely ignore this feature during grammar development.  If 
+an application seesm to require it, contact the authors for details on
+how to put it to use.
 
 \subsection{{\it qeq}}
 \label{qeqsec}
@@ -412,8 +423,8 @@ descriptions in the rest of this paper.
 As mentioned above, scopal relations in MRS are represented via
 handles, which appear as the value of the feature {\sc lbl} and also
 as the value of certain roles within scopal relations (e.g., the {\sc
-body} and {\sc rstr} values of quantifiers -- see \S\ref{quantsec}).
-However, for many applications (including machine translation), fully
+rstr} value of quantifiers -- see \S\ref{quantsec}).
+However, for many applications, including machine translation, fully
 specified scope relations are not required.  Furthermore, any surface
 string with multiple noun phrases (and therefore multiple quantifiers,
 overt or implicit) is going to be ambiguous with respect to scopal
@@ -438,7 +449,8 @@ Thus the {\sc body} value of quantifier relations can be resolved in
 such a way that the quantifiers `float in' wherever there's a `space'
 left by a {\it qeq} constraint.
 
-In the implementation, this is represented via the feature {\sc
+In the implementation, these handle constraints (restrictions on scopal
+interactions) are represented via the feature {\sc
 hcons}.  The value of {\sc hcons} is a difference list (again,
 representing a bag) of {\it qeq}s.\fn{Once again, the difference list
 is not typed.  See note~\ref{dlfn}.}  {\it Qeq}s, in turn, are
@@ -462,11 +474,11 @@ open the possibility of different kinds of handle constraints, only
 {\it qeq} constraints have proven necessary so far for wide-coverage
 grammars of English (ERG) and Japanese (JaCY), and so only
 {\it qeq} constraints are currently implemented in the 
-Matrix.\footnote{However, a large grammar implementation for German (FIX: ref 
-Verbmobil book?) makes crucial use of {\it leq} (less than or equal) scopal
+Matrix.\footnote{However, a large grammar implementation for German 
+(described in \citeboth{Wahl:Karg:00})
+makes crucial use of {\it leq} (less than or equal) scopal
 constraints, and recent work on extending MRS representations to robust 
-processing (FIX: ref Copestake et al)
-also employs {\it leq} constraints.}
+processing ((\cite{Cop:03}) also employs {\it leq} constraints.}
 
 \subsection{{\it hook}}
 \label{hooksec}
@@ -476,23 +488,23 @@ the semantics of any given sign (word or phrase),
 more information is needed in order to be able to combine the semantic
 representations of signs in order to compositionally build
 semantic representations of larger phrases.  For example, consider the
-partial {\it mrs}s produced by the ERG for the signs {\it the dog} and 
-{\it barks} in
+partial feature structures for the {\it mrs}s produced by the ERG for the 
+signs {\it the dog} and {\it barks} in
 (\ref{db1}):\fn{Following \lkb\ conventions, difference lists are
 represented with the brackets $\langle$! !$\rangle$, consistent with the
-abbreviatory conventions employed in the TDL (FIX ref)
+abbreviatory conventions employed in the TDL (\cite{Kri:Sch:94})
 syntax adopted in the \lkb.}
 
 \ees{\label{db1}
 \item \begin{avm}
-\[ {\sc rels} & \q<\tn{!} \[ \avmspan{\it quant\_rel}\\ 
-		  lbl & \@1\\
-                  pred & {\bf \_def\_q\_rel}\\
+\[ {\sc rels} & \q<\tn{!} 
+               \[ 
+		  lbl & {\it handle}\\
+                  pred & {\bf \_the\_q\_rel}\\
                   arg0 & \@2\\
-                  rstr & \@3 
-                  body & \@4 \] ,
-               \[ \avmspan{\it noun\_rel}\\
-		  lbl & \@5\\
+                  rstr & \@3\\
+                  body & {\it handle} \],
+               \[ lbl & \@5\\
                   pred & {\bf \_dog\_n\_rel}\\
                   arg0 & \@2 \] \tn{!}\q>\\
    hcons & \q<\tn{!} \[ {\it qeq}\\
@@ -500,7 +512,8 @@ syntax adopted in the \lkb.}
                    larg & \@5 \] \tn{!}\q> \]
 \end{avm}
 \item \begin{avm}
-\[ {\sc rels} & \q<\tn{!} \[ \avmspan{\it arg1\_ev\_rel}\\
+\[ {\sc rels} & \q<\tn{!} \[ 
+                  lbl & {\it handle}\\
                   pred & {\bf \_bark\_v\_rel}\\
                   arg0 & event\\
                   arg1 & semarg \] \tn{!}\q>\\
@@ -514,15 +527,17 @@ we would like to identify the {\sc arg0} of the {\bf \_dog\_n\_rel} with the
 the grammar (in this case, the lexical entry for {\it bark}) gain
 access to the right value of the right relation?  While the value of
 {\sc rels} is implemented as a difference list, it is notionally to be
-treated as a bag, so it would be unprincipled to leverage position on
-the list.  In fact, it would also be impractical: the list position of the
+treated as a bag, so it would be unprincipled
+to make reference to the position of a relation in
+the list.  In fact, it would also be impractical for a grammar of any
+interesting size: the list position of the
 relation contributed by the head noun in a noun phrase
 is affected by what else there is in the NP.  For example, in {\it the
 big dog}, the {\bf \_big\_j\_rel} would intervene (in this implementation)
-between the {\bf \_def\_q\_rel} and the {\bf \_dog\_n\_rel}.  The solution is 
-to use the value of {\sc hook} to `publish' or make visible externally
-just those elements of the {\it mrs} that other constituents need
-access to.
+between the {\bf \_the\_q\_rel} and the {\bf \_dog\_n\_rel}.  The solution is 
+to use the value of the attribute {\sc hook} to `publish' or make visible 
+externally just those elements of the {\it mrs} that the grammar will need
+access to for semantic composition.
 
 Thus the value of {\sc hook} represents a hypothesis about which 
 information may be accessed externally.  The Matrix provides for
@@ -552,10 +567,8 @@ head of
 the constituent.  If the {\it mrs} is a {\it nom-obj}, this will be a
 {\it ref-ind} (referential index).  If the {\it mrs} is a {\it psoa},
 this will be an {\it event}.  (See \S\ref{mrssec} above on {\it psoa}
-and {\it nomobj} and \S\ref{semargsec} below on {\it ref-ind} and {\it
-event}.)  If the sign is a modifier like a prepositional
-phrase or an adjective phrase, its {\sc index} will be determined by the
-constraints on the phrase to be modified.
+and {\it nom-obj} and \S\ref{semargsec} below on {\it ref-ind} and {\it
+event}.)  
 This information is accessed by semantic heads
 in order to identify indices (including event
 indices) with (non-scopal) argument positions in predications: e.g.,
@@ -575,7 +588,8 @@ open adjuncts, and constructions like English tag questions.  See
 The values of {\sc lbl}, {\sc harg}, {\sc larg}, and all role features
 (e.g., {\sc arg0} etc., see \S\ref{relarg}) are objects of (subtypes
 of) type {\it semarg}.  This type introduces the non-linguistic feature {\sc
-instloc}, which is used in generation and whose value should never be
+instloc}, which is used for skolemization of variables in generation and 
+whose value should never be
 further constrained by the grammar.  The hierarchy below {\it
 semarg} is shown in Figure~\ref{semarghier}.
 
@@ -612,7 +626,7 @@ semarg} is shown in Figure~\ref{semarghier}.
 There are two subtypes of {\it semarg}.  The first, {\it handle},
 is the type of the value of all 
 handle-taking features ({\sc lbl}, {\sc harg}, {\sc larg}, {\sc marg},
-{\sc body}, {\sc rstr}), and can be the value type for a semantic role
+{\sc rstr}, {\sc body}), and can be the value type for a semantic role
 filling one of the features {\sc arg1, arg2, ...}.  
 There are no subtypes of {\it handle}, nor is it
 anticipated that grammar engineers will need to add any in the course
@@ -645,7 +659,8 @@ which allow pro-drop to the extent that Japanese does, and which therefore
 have no use for expletive elements.}  Such expletive pronouns are given
 an {\sc index} value of type {\it expl-ind} (which is exceptionally not
 linked to any argument position in their main relation, since they
-don't introduce any relation).  Selecting heads require dependents with
+don't introduce any relation).  Ordinary selecting heads can then require 
+dependents with
 contenful {\sc index} values (i.e., {\it event-or-ref-index}s, or
 some subtype thereof).  In languages like English (and perhaps Dutch) with
 multiple expletive pronouns, subtypes of {\it expl-ind} can be added
@@ -675,14 +690,14 @@ as shown in (\ref{evref}):
 }
 %
 The features {\sc tam} and {\sc png} encode tense-aspect-mood
-information (a property of events) and agreement information (person,
-number, and gender; properties of referential indices, cf.\
+information (properties of events) and agreement information (person,
+number, and gender -- properties of referential indices; cf.\
 \citeboth{Pol:Sag:94}), respectively.  In the current version of the
-Matrix (v 0.5), the type {\it tam} (unsurprisingly) introduces the
+Matrix (v 0.6), the type {\it tam} (unsurprisingly) introduces the
 features {\sc tense}, {\sc aspect}, and {\sc mood}.  This may be too
 strong a constraint, since languages may well conflate two or more of
 these properties; see the discussion of the {\it png} type immediately
-following.  We will have more to say about the analyses of TAM and agreement in
+following.  We will have more to say about the analyses of agreement in
 \S\ref{AgrTAM} below.
 
 \es{
@@ -706,69 +721,6 @@ person-number {\sc pn} attribute along with a gender {\sc gen} attribute.
 Clearly, in other languages separate attributes for person and number are
 well motivated, leading us to leave the elaboration of the {\it png} type
 as language-specific for now.
-
-\subsection{{\it keys}}
-\label{keysec}
-
-The next type of object to consider is {\it keys}.  This type is
-introduced to serve as the value of the {\sc head} feature {\sc keys}.
-The purpose of {\sc keys} is to provide constraints for semantic
-selection of dependents (complements, specifiers, subjects, and
-modifiers).  The attributes in {\it keys} include two called {\sc key}
-and {\sc altkey} for constraining the semantic sorts of the dependent
-phrase, and one called {\sc message} for constraining types of clausal
-dependents. Since the {\sc keys} attribute is a {\sc head} feature,
-the grammar ensures that these semantic sort properties of a phrase
-propagate up the syntactic head path.
-
-The type {\it keys} is constrained as shown in (\ref{keys}):
-
-\es{\label{keys}
-\begin{avm}
-\[ key & semsort \\
-   altkey & semsort \\
-   message & message \]
-\end{avm}
-}
-
-The feature {\sc key} serves as a pointer to the semantic sort of a phrase
-where a semantic sort is one of the subtypes defined for the %distinguished 
-type {\it semsort}, described in \S\ref{semsort} below.
-The value of
-this feature is often but not always identified with the value of the 
-semantic feature of a sign given by the path 
-{\sc SYNSEM.LOCAL.CONT.HOOK.INDEX.SORT}.  Mismatches occur because 
-the syntactic and semantic head paths can differ (cf.\ \S\ref{semheadsec}), or
-because lexical entries idiosyncratically assign different values.
-% since the semantic sort of a sign
-%usually corresponds to the type reflected in head-dependent collocations,
-%but there can in principle be exceptions.
-
-Since generalizations about semantic selection may make reference to more than
-one such semantic sort of a sign, the Matrix provides a second {\sc keys}
-attribute called {\sc altkey}.  The idea here is that a modifier, for example,
-may constrain the phrase it modifies along one dimension of semantic selection,
-while a verb taking that same modified phrase as a complement may need to 
-constrain it along a second dimension.  
-
-The third feature of objects of type {\it keys} is {\sc message}.
-This attribute has as its value a subtype of the type {\it message} 
-or the type {\it no-msg}, depending on whether the phrase is clausal
-or non-clausal.  {\it Message}s are our representation of the 
-semantic types of clauses and are described in more detail in
-\S\ref{msgrelsec} below.  For clausal phrases, the value of {\sc message}
-will be a pointer to the relevant message relation in the {\sc rels} list
-of that phrase.  
-
-Note that as a head feature, the value of {\sc keys} on the mother node of a
-headed-phrase will be identified with the {\sc keys} value of the head 
-daughter.  For non-headed phrases such as coordinate constructions, each
-such construction type will have to stipulate the values for the attributes
-in {\sc keys} on the mother node.  These values may come from one or the other
-of the daughters, or may be supplied directly by the construction itself.
-
-
-
 
 \subsection{{\it semsort}}
 \label{semsort}
@@ -826,19 +778,73 @@ We therefore see now value in providing an external pointer to the
 head (syntactic or semantic) of a phrase.
 
 
+The final attribute of objects of type {\it mrs} is {\sc msg}.
+This attribute has as its value a subtype of the type {\it message} 
+or the type {\it no-msg}, depending on whether the phrase is clausal
+or non-clausal.  {\it Message}s are our representation of the 
+semantic types of clauses and are described in more detail in
+\S\ref{msgrelsec} below.  For clausal phrases, the value of {\sc message}
+will be a pointer to the relevant message relation in the {\sc rels} list
+of that phrase.  
+
+
+\subsection{{\it keys}}
+\label{keysec}
+
+The next type of object to consider is {\it keys}, not exactly a semantic
+object, but one useful for the interface between syntax and semantics.  
+This type is
+introduced to serve as the value of the (syntactic) {\sc head} feature 
+{\sc keys}. 
+The purpose of {\sc keys} is to provide constraints for semantic
+selection of dependents (complements, specifiers, subjects, and
+modifiers).  The attributes in {\it keys} include two called {\sc key}
+and {\sc altkey}, which can be used by selecting heads or by constructions
+to constrain a dependent phrase semantically.
+Since the {\sc keys} attribute is a {\sc head} feature,
+the grammar ensures that these semantic properties of a phrase
+propagate up the syntactic head path.
+
+The type {\it keys} is constrained as shown in (\ref{keys}):
+
+\es{\label{keys}
+\begin{avm}
+\[ key & predsort \\
+   altkey & predsort \]
+\end{avm}
+}
+
+The feature {\sc key} provides a constraint on the {\it predsort} of a phrase,
+which can be but is not necessarily identified with the {\sc pred} value of one
+of the relations in the {\sc rels} list of that phrase.  Since generalizations
+about semantic selection may make reference to more than one such semantic
+property of a sign, the Matrix provides a second {\sc keys} attribute called
+{\sc altkey}.  The idea here is that a modifier, for example, may constrain the
+phrase it modifies along one dimension of semantic selection, while a verb
+taking that same modified phrase as a complement may need to constrain it along
+a second dimension.
+
+Note that as a head feature, the value of {\sc keys} on the mother node of a
+headed-phrase will be identified with the {\sc keys} value of the head 
+daughter.  For non-headed phrases such as coordinate constructions, each
+such construction type will have to stipulate the values for the attributes
+in {\sc keys} on the mother node.  These values may come from one or the other
+of the daughters, or may be supplied directly by the construction itself.
+
+
 \subsection{{\it lexkeys}}
 \label{lexkeysec}
 
-The final type of object to consider here is the type {\it lexkeys}, which
+The last type of object to consider here is the type {\it lexkeys}, which
 is defined in the Matrix to provide attributes which are not linguisticslly
 significant, but which provide some convenient shorthand notation for the
 grammar writer when defining the lexical type hierarchy.  In particular,
 this type introduces two attributes that simplify the expression of
 constraints on relations introduced by a lexical type, and two attributes
-that point to the {\sc key} attribute of complements of the lexical type.
+that point to the {\sc key} attribute of complements of the lexical type..
 The grammar writer can decide whether or not to make use of these shorthand
-attributes (whose names bear a leading double dash as a reminder that they
-are only abbreviations for longer path names).  
+attributes (the latter two bearing a leading double dash as a reminder that 
+they are only abbreviations for longer path names).  
 The type {\it lexkeys} is the value of the {\sc local}  feature {\sc lkeys},
 and nothing in the Matrix propagates the value of this feature up
 to phrases.  Thus, the features on {\it lexkeys} are only
@@ -848,49 +854,80 @@ The type {\it lexkeys} is constrained as follows:
 
 \es{
 \begin{avm}
-{\it lexkeys}: \[ {-}{-}keyrel & relation\\
-    {-}{-}altkeyrel & relation\\
+{\it lexkeys}: \[ keyrel & relation\\
+    altkeyrel & relation\\
     {-}{-}compkey & semsort\\
     {-}{-}ocompkey & semsort \]
 \end{avm}
 }
 
 \noindent
+
+The two features {\sc keyrel} and {\sc altkeyrel} are available to provide
+pointers to each of two relations introduced by a lexical entry, for easier
+definitions of constraints on values of those relations within the lexical
+type hierarchy.  Typically, the value of {\sc keyrel} will be a pointer
+to the relation in the {\sc rels} list of a lexical entry which introduces
+its {\sc index} value as the {\sc arg0} of that relation.  The value of
+{\sc altkeyrel} will be unbound for most lexical entries, since
+most introduce a single relation in the {\sc rels} list, but for
+an entry which introduces more than one relation, this attribute provides
+a convenient pointer to a second relation on the {\sc rels} list.
+
 The features {\sc {-}{-}compkey} and {\sc {-}{-}ocompkey} provide
 pointers to the {\sc key} values of two complements of a lexical
 entry.  The relationship
 between {\sc {-}{-}compkey}/{\sc {-}{-}ocompkey} and {\sc keys.key} of
 the relevant complements will be established in lexical types.\fn{In the
 case of the entry for {\it abstain} given here, the relevant constraint
-is on the type {\it unsat\_two\_arg\_subst}, which is a supertype of
+in the ERG is on the type {\it unsat\_two\_arg\_subst}, which is a supertype of
 the {\sc synsem} value of {\it v\_empty\_prep\_intrans\_le}.}
 This allows specific lexical entries to do semantic selection of
 complements by simply constraining their own {\sc {-}{-}compkey} and/or
-{\sc {-}{-}ocompkey} values, as in the following lexical entry adapted
-from
-the ERG:
+{\sc {-}{-}ocompkey} values, as in the following (partial) lexical entries 
+adapted from
+the ERG for the verb {\it abstain} and the empty preposition {\it from} as in 
+{\it Kim abstained from the vote}:
 
 \es{
 \begin{avm}
 {\it abstain\_v1}: \[ \avmspan{\it v\_empty\_prep\_intrans\_le}\\
 		     stem & \q< \textnormal{``abstain''} \q>\\
-                     synsem & \[ local \[ cat.heat.keys.key & {\bf \_abstain\_v\_from\_rel}\\
-		                          lkeys.{-}{-}compkey & \_from\_p\_rel\_s \]\]\]
+                     synsem & \[ local \[ lkeys \[ keyrel & {\bf \_abstain\_v\_from\_rel}\\
+{-}{-}compkey & {\bf \_from\_p\_sel\_rel} \]\]\]\]
 \end{avm}
 }
 
-The other two features {\sc {-}{-}keyrel} and {\sc {-}{-}altkeyrel} provide
-pointers to each of two relations introduced by a lexical entry, for easier
-definitions of constraints on values of those relations within the lexical
-type hierarchy.  Typically, the value of {\sc {-}{-}keyrel} will be a pointer
-to the relation in the {\sc rels} list of a lexical entry which introduces
-its {\sc index} value as the {\sc arg0} of that relation, so it will be
-the {\it noun\_rel} for a noun, or the {\it event\_rel} for a verb.  The value of
-{\sc {-}{-}altkeyrel} will be unbound for for most lexical entries, since
-most introduce a single relation in the {\sc rels} list, but for
-an entry which introduces more than one relation, this attribute provides
-a convenient pointer to a second relation on the {\sc rels} list.
+\es{
+\begin{avm}
+{\it from\_prtcl}: \[ \avmspan{\it p\_prtcl\_le}\\
+		     stem & \q< \textnormal{``from''} \q>\\
+                     synsem & \[ local \[ lkeys \[ keyrel \[ pred & {\bf \_from\_p\_sel\_rel} \]\]\]\]\]
+\end{avm}
+}
 
+The lexical type for the verb {\it abstain} includes as part of its definition
+the following reentrancy which enables the use of this {\sc --compkey} 
+shortcut:
+
+\es{
+\begin{avm} \[ \avmspan{\it v\_empty\_prep\_intrans\_le}\\
+synsem & \[ loc \[ cat \[ val \[ comps \[ first \[ loc \[ cat \[ head \[ keys \[ key & \@1 \]\]\]\]\]\]\]\]\]\\
+lkeys \[ {-}{-}compkey & \@1 \]\]\]
+\end{avm}
+}
+
+The lexical type for semantically empty prepositions includes the following
+reentrancy which shows how the constraints in the two lexical entries above
+will interact correctly, without making any reference to the attribute
+{\sc lkeys} during processing, as desired.
+
+\es{
+\begin{avm} \[ \avmspan{\it p\_prtcl\_le}\\
+synsem & \[ loc \[ cat \[ head \[ keys \[ key & \@1 \]\]\]\]\\
+lkeys \[ keyrel \[ pred & \@1 \]\]\]\]
+\end{avm}
+}
 
 \subsection{Summary}
 
@@ -911,12 +948,13 @@ is shown in Figure~\ref{relhier}.
 \begin{center}
 {\it
 \begin{tree}
-\br{relation}{\br{arg0\_rel}{\br{noun\_rel}{\lf{named\_rel}}
-	   	             \br{event\_rel}{\tlf{\ldots}}
-		             \lf{quant\_rel}
-			     \lf{\ \ \ adv\_rel}}
-			     \br{\ \ message}{\tlf{\ldots}}
-		             \br{subord\_or\_conj\_rel}{\tlf{\ldots}}}
+\br{relation}{\br{\hspace{2.0in}arg0-relation}{\br{\hspace{-0.9in} noun-relation}{\lf{\hspace{-0.9in}named-relation}}
+	   	             \lf{\hspace{0.5in} event-relation}
+		             \lf{\hspace{1.9in} arg1-relation}
+		             \lf{\hspace{3.2in} adv-relation}
+			     \lf{\hspace{4.6in} quant-relation}}
+			     \br{\hspace{1.0in} basic\_message}{}
+		             \br{subord-or-conj-reln}{}}
 \end{tree}
 }
 \end{center}
@@ -925,7 +963,7 @@ is shown in Figure~\ref{relhier}.
 \end{figure}
 
 In the following subsections we will describe
-ordinary predicates (i.e., the subtypes of {\it arg0\_rel} introduced by
+ordinary predicates (i.e., the subtypes of {\it arg0-relation} introduced by
 nouns, verbs, prepositions, adjectives and
 adverbs -- \S\ref{ordpred}), and the special relation types defined
 for quantifiers (\S\ref{quantsec}), messages (\S\ref{msgrelsec}), and
@@ -945,59 +983,62 @@ contexts in the grammar.
 \subsection{Ordinary Predicates}
 \label{ordpred}
 
-\subsubsection{{\it arg0\_rel}, {\it noun\_rel}, {\it event\_rel}, {\it adv\_rel}}
+\subsubsection{{\it arg0-relation} subtypes}
 \label{arg0sec}
 
 The vast majority of lexical entries introduce only a single relation,
-and furthermore one that is an instance of {\it arg0\_rel} or one of its
-subtypes, including {\it noun\_rel}, {\it event\_rel}, and {\it adv\_rel}.  
-The type {\it arg0\_rel} is constrained as follows:
+and furthermore one that is an instance of {\it arg0-relation} or one of its
+subtypes, including {\it noun-relation}, {\it event-relation}, and {\it adv-relation}.  
+The type {\it arg0-relation} is constrained as follows:
 
 \es{
 \begin{avm}
-{\it arg0\_rel}: \[ arg0 & individual \]
+{\it arg0-relation}: \[ arg0 & individual \]
 \end{avm}
 }
 
-Thus all open class lexical items introduce a relation with the {\sc
-arg0} role.  The value of this role is an {\it individual}.  For nouns
-and verbs, the {\sc arg0} of the key relation (i.e., the {\sc {-}{-}keyrel} value) should be identified with
+Thus all open-class lexical items introduce a relation with the {\sc
+arg0} role.  The value of this role is an {\it individual}.  For nouns,
+verbs, and adjectives, the {\sc arg0} of the main relation (i.e., the 
+{\sc keyrel} value) should be identified with
 the {\sc hook.index}, and this identification should be done on a general
 supertype.
 
-For nouns, it will be a (referential) index which serves as a pointer
+For ordinary nouns, the value of {\sc arg0} will be a (referential) index 
+which serves as a pointer
 to the entity referred to by the NP.  This
 same index is also the value of the {\sc arg1} feature in any relations
 introduced by intersective modifiers of the head noun, and also the value of 
-a role feature in the key 
-relation of any predicate selecting the NP as a semantic argument.  The type
-{\it noun\_rel} is constrained appropriately:
+a role feature in the relation of any lexical predicate selecting the NP as a 
+semantic argument.  The type
+{\it noun-relation} is constrained appropriately:
 
 \es{
 \begin{avm}
-{\it noun\_rel}: \[ arg0 & ref-ind \]
+{\it noun-relation}: \[ arg0 & ref-ind \]
 \end{avm}
 }
 %
 As discussed in \S\ref{semargsec} above, objects of type {\it ref-ind}
 bear the feature {\sc png}.  This means that the agreement information
-associated with a noun will also be found in {\sc lkeys.{-}{-}keyrel.arg0},
+associated with a noun will also be found in {\sc lkeys.keyrel.arg0},
 but this information doesn't propagate up to the phrase, and so agreement
 information should always be accessed through the {\sc cont.hook.index}.
 
-For verbs, which introduce relations of type {\it event\_rel}, the
+For verbs, which introduce relations of type {\it event-relation}, the
 value of {\sc arg0} is the event variable identified as the {\sc index} value.
 Again, this
 {\it event} will also show up as the value of a role feature in
-modifier relations such as those expressed by adverbs and by PPs modifying
+modifier relations such as those expressed by (intersective) adverbs and by 
+PPs modifying
 verbal phrases.  Other elements that might appear to notionally take
-events as arguments (e.g., clause-embedding verbs) actually take a
-handle (e.g., of the message that embeds the event relation) as their
-argument.  The type {\it event\_rel} is therefore constrained as follows:
+events as arguments (e.g., clause-embedding verbs or scopal adverbs like
+{\it probably}) actually take the handle of the phrase as their
+argument.  The type {\it event-relation} is therefore constrained as follows:
 
 \es{
 \begin{avm}
-{\it event\_rel}: \[ arg0 & event \]
+{\it event-relation}: \[ arg0 & event \]
 \end{avm}
 }
 %
@@ -1007,16 +1048,16 @@ information associated with an event are encoded in the {\sc arg0}
 of the relation describing that event.  Again, as there is no pointer
 to the whole relation that gets passed up to the phrasal level,
 this information and
-the event index itself should be access via the path {\sc hook.index} 
-semantic selection or composition. 
+the event index itself should be accessed via the path {\sc hook.index} 
+for semantic selection or composition. 
 
-The Matrix provides only one subtype of {\it noun\_rel}, the type {\it
-named\_rel}:
+The Matrix provides one particularly useful subtype of {\it noun-relation} 
+called {\it named-relation}:
 
 \es{
 \begin{avm}
-{\it named\_rel}: \[ pred & {\bf named\_rel}\\
-                    carg & string \]
+{\it named-relation}: \[ pred & {\bf named\_rel}\\
+                         carg & string \]
 \end{avm}
 }
 %
@@ -1030,11 +1071,11 @@ Their contribution to the semantics is distinguished solely by their
 {\sc carg} (and of course their {\sc arg0}s, which will be distinct for
 each proper name in a single sentence).
 
-Note that as {\it named\_rel} is a subtype of {\it noun\_rel}, it
+Note that as {\it named-relation} is a subtype of {\it noun-relation}, it
 will introduce a referential index ({\it ref-ind}) which must
 be bound by some quantifier in order to form a well-formed {\it mrs}.
 In the ERG, this is achieved by means of a non-branching rule
-which adds the quantifier to a proper noun which usually but not always
+which adds the quantifier to a proper noun, which usually but not always
 lacks an explicit determiner.  Given noun phrases in English like {\it the
 younger Smith} and {\it some Roberts}, the ERG defines lexical entries
 for proper names as syntactically nouns, not NPs, and employs a specialized
@@ -1043,10 +1084,11 @@ a proper noun (and usually consisting only of that noun).  The Matrix will
 support this analysis of proper names, but will of course also enable the
 construction of grammars for languages where proper names are simply lexical 
 NPs, in which case each lexical entry's semantics will consist of two
-relations: a {\it named\_rel} and a {\it quant\_rel} to bind its referential
+relations: a {\it named-relation} and a {\it quant-relation} to bind its 
+referential
 index.
 
-\subsubsection{{\it arg1\_rel}, {\it arg12\_rel}, ...}
+\subsubsection{{\it arg1-relation}, {\it arg12-relation}, ...}
 
 As discussed in \S\ref{arg0sec}, the value of {\sc arg0} is the
 distinguished {\it ref-ind} or {\it event} of a relation.  Many
@@ -1063,38 +1105,38 @@ Sem-I (`semantic interface'), which provides such information as is
 needed to map from {\it mrs}s to application-specific representations.
 The Sem-I is further described in \S\ref{semisec} below.
 
-Figure~\ref{arg1234fig} shows the type hierarchy below {\it arg0\_rel},
-filling in the information below {\it event\_rel} and {\it arg1\_rel},
+Figure~\ref{arg1234fig} shows the type hierarchy below {\it arg0-relation},
+filling in the information below {\it event-relation}, {\it noun-relation}, 
+and {\it arg1-relation},
 which was abbreviated in Figure~\ref{relhier} above.  The features
 {\sc arg1} through {\sc arg4} are introduced by the types {\it
-arg1\_rel} through {\it arg1234\_rel}, as shown in (\ref{argavm}).
+arg1-relation} through {\it arg1234-relation}, as shown in (\ref{argavm}).
 The values of the argument features on these types are only
 contrained to be {\it semarg}s, as for any given predicate
-they may be {\it individual}s ({\it ref-ind}s or {\it event}s) or
-{\it handle}s, in the case of scopal predicates.
+they may be {\it individual}s ({\it ref-ind}s or {\it event}s), or
+{\it handle}s in the case of scopal predicates.
 
 \begin{figure}[ht]
 \begin{center}
 
 \begin{tabular}{cccccc}
-\mc{6}{c}{\node{1}{\it arg0\_rel}}\\[.5cm]
+\mc{6}{c}{\node{1}{\it arg0-rln}}\\[.5cm]
 
-\node{2}{\it adv\_rel} & & \node{4}{\it arg1\_rel} & \node{5}{\it event\_rel} &
-\node{6}{\it noun\_rel} & \node{7}{\it quant\_rel}\\[.5cm]
+\node{2}{\it adv-rln} & \node{4}{\it arg1-rln} & \node{5}{\it event-rln} &
+\node{6}{\it noun-rln} & \node{7}{\it quant-rln} &\\[.5cm]
 
-\node{3}{\it neg\_rel} & \node{8}{\it verb\_ellipsis\_rel} & 
-\node{9}{\it arg12\_rel} & \node{10}{\it arg1\_ev\_rel} & \node{11}{\it named\_rel} &\\[.5cm]
+\node{8}{\it verb-ellipsis-rln} & 
+\node{9}{\it arg12-rln} & \node{10}{\it arg1-ev-rln} & \node{3}{\it noun-arg1-rln} & \node{11}{\it named-rln} & \\[.5cm]
 
-\node{12}{\it unspec\_compound\_rel} & \node{13}{\it prep\_mod\_rel} &
-\node{14}{\it arg123\_rel} & \node{15}{\it arg12\_ev\_rel} & &\\[.5cm]
+\node{12}{\it unspec-compound-rln} &
+\node{14}{\it arg123-rln} & \node{15}{\it arg12-ev-rln} & &\\[.5cm]
 
-&& \node{16}{\it arg1234\_rel} & \node{17}{\it arg123\_ev\_rel} & &\\[.5cm]
+\node{13}{\it prep-mod-rln} & \node{16}{\it arg1234-rln} & \node{17}{\it arg123-ev-rln} & & &\\[.5cm]
 
-&&& \node{18}{\it arg1234\_ev\_rel} & &
+&& \node{18}{\it arg1234-ev-rln} & & &
 \end{tabular}
 
 \ncon{1}{2}
-\ncon{2}{3}
 \ncon{1}{4}
 \ncon{1}{5}
 \ncon{1}{6}
@@ -1102,13 +1144,15 @@ they may be {\it individual}s ({\it ref-ind}s or {\it event}s) or
 \ncon{4}{8}
 \ncon{4}{9}
 \ncon{4}{10}
+\ncon{4}{3}
 \ncon{5}{10}
+\ncon{6}{3}
 \ncon{6}{11}
 \ncon{9}{12}
-\ncon{9}{13}
 \ncon{9}{14}
 \ncon{9}{15}
 \ncon{10}{15}
+\ncon{15}{13}
 \ncon{14}{16}
 \ncon{14}{17}
 \ncon{15}{17}
@@ -1116,22 +1160,22 @@ they may be {\it individual}s ({\it ref-ind}s or {\it event}s) or
 \ncon{17}{18}
 
 \end{center}
-\caption{Hierarchy below {\it arg0\_rel}}
+\caption{Hierarchy below {\it arg0-relation}}
 \label{arg1234fig}
 \end{figure}
 
 \ees{\label{argavm}
 \item \begin{avm}
-{\it arg1\_rel}: \[ arg1 & semarg \]
+{\it arg1-relation}: \[ arg1 & semarg \]
 \end{avm}
 \item \begin{avm}
-{\it arg12\_rel}: \[ arg2 & semarg \]
+{\it arg12-relation}: \[ arg2 & semarg \]
 \end{avm}
 \item \begin{avm}
-{\it arg123\_rel}: \[ arg3 & semarg \]
+{\it arg123-relation}: \[ arg3 & semarg \]
 \end{avm}
 \item \begin{avm}
-{\it arg1234\_rel}: \[ arg4 & semarg \]
+{\it arg1234-relation}: \[ arg4 & semarg \]
 \end{avm}
 }
 
@@ -1144,31 +1188,35 @@ should always correspond to the first (least oblique) syntactic
 argument, the {\sc arg2} to the second (next least oblique) syntactic
 argument, and so on (see \S\ref{linksec} and \citeboth{Fli:Ben:f}).
 
-The type {\it arg1\_rel} does not inherit from {\it event\_rel}, to
+The type {\it arg1-relation} does not inherit from {\it event-relation}, to
 allow for the possibility of relational nouns and other relations that
 take more than one argument but do not express events.
-The types {\it arg1\_ev\_rel} through {\it arg1234\_ev\_rel} provide event
+The types {\it arg1-ev-relation} through {\it arg1234-ev-relation} provide 
+event
 relations with one to four arguments.  Thus (semantically)
-intransitive verbs introcue {\it arg1\_rel}s, (semantically) transitive
-verbs introduce {\it arg12\_rel}s, etc.  Ordinary nouns introduce {\it
-noun\_rel}s, which only have an {\it arg0}.  Relational nouns (such as
-{\it picture}) introduce a relation {\it noun\_arg1\_rel} which inherits 
-from both {\it noun\_rel} and {\it arg1\_rel} (not {\it
-arg1\_ev\_rel}).  A noun with two semantic arguments would require a relation
-that inherits from {\it noun\_rel} and {\it arg12\_rel}, and similarly
+intransitive verbs introduce {\it arg1-ev-relation}s, (semantically) transitive
+verbs introduce {\it arg12-ev-relation}s, etc.  Ordinary nouns introduce {\it
+noun-relation}s, which only have an {\it arg0}.  Relational nouns (such as
+{\it picture}) introduce a relation {\it noun-arg1-relation} which inherits 
+from both {\it noun-relation} and {\it arg1-relation} (not {\it
+arg1-ev-relation}).  A noun with two semantic arguments would require a 
+relation
+that inherits from {\it noun-relation} and {\it arg12-relation}, and similarly
 for a noun with three arguments, if such exist (apart from deverbal nouns,
 which are treated for English via lexical rule in the ERG).  These types all 
-inherit from {\it arg0\_rel} and
-through it {\it relation}, they will all also bear the features {\sc
+inherit from {\it arg0-relation} and
+through it {\it relation}, so they will all also bear the features {\sc
 arg0}, {\sc lbl}, {\sc pred}, and {\sc wlink}.
 
 Note that verbs are not the only lexical entries which introduce subtypes of
-{\it event\_rel} in their semantics.  Adjectives can in some languages serve
+{\it event-relation} in their semantics.  Adjectives can in some languages 
+serve
 directly as predicates, be subject to tense and aspect constraints, and take
 one or more arguments, all analogous to verbs.  Likewise, prepositions can also
 appear as the heads of predicative phrases, so they will also introduce
-subtypes of {\it event\_rel} in their semantics.  It is worth noting that
-the choice of the name {\it event\_rel} is intended to include states as well
+subtypes of {\it event-relation} in their semantics.  It is worth noting that
+the choice of the name {\it event-relation} is intended to include states as 
+well
 as processes, as required by verbs as well as adjectives and prepositions.
 At present the Matrix does not introduce events into the relations for nouns,
 though it might be argued that examples in English like {\it the current
@@ -1177,28 +1225,31 @@ do not know of grammar-internal constraints that require making reference to
 events on nouns, we will expect such temporally constrained noun phrases to
 be interpreted outside of the grammar.
 
-While verbs identify their {\sc hook.index} value with the {\sc arg0} value in
-their main relation, attributive adjectives do not, since they are modifiers, 
-which as semantic heads of phrases must expose the index of the noun
-that they modify.  So attributive adjectives identify their {\sc hook.index}
-value with the {\sc arg1} value in their main relation, with that same value
-identified with the value of the {\sc hook.index} in their {\sc mod} attribute,
-namely the index of the noun they will modify.  This same value is also
-identified with the {\sc xarg} attribute in the adjective's {\sc hook},
-necessary if adjectives in a given language can appear in control
-constructions.  Predicative adjectives are derived from their attributive
-counterparts vie a lexical rule which identifies the {\sc arg0} attribute
-of the adjective's main relation with its {\sc hook.index} value, so that the
-adjective's event attribute is exposed and can be constrained, for example for
-tense and aspect, as in the English example {\it The tree was tall}.
-
-The Matrix anticipates a similar approach for prepositions, treating as basic their
-use as (head of phrases) modifying verbal projections, and deriving via lexical
-rule their predicative counterparts which expose the event of the preposition
-(its main relation's {\sc arg0} value) as its {\sc index} value.  This enables
-the desired semantic effects for examples like the English {\it The dog was
-in the park}, and for more interesting examples like {\it The dog currently
-in the park is barking}.
+Like verbs, adjectives and prepositions identify their {\sc hook.index} value 
+with the {\sc arg0} value in their main relation, enabling them to appear as
+heads of predicative phrases, supplying an event which can be constrained for
+tense and aspect.  In the ERG, for example, the copula {\it be} does not
+supply its own relation, but only constrains tense and aspect since it often
+combines with a verb participle that already supplies the event relation, as 
+in {\it Kim was leaving}.  Since that
+grammar uses the same copula {\it be} for {\it Kim was angry}, the adjective
+{\it angry} must supply an event relation whose {\sc arg0} event will be
+constrained in this example to past tense.  Now since adjectives and
+prepositions can head phrases that modify nouns, they must also expose the
+argument position they will identify with the index of the phrase they
+modify.  This ``external argument'' of a PP or AP is its {\sc hook.xarg}
+value, identified in the lexical head's feature structure with the value of
+the rather long path {\sc head.mod.first.local.cont.hook.index}.  This value
+will be unified by the grammar rules for modification with the semantic index 
+of the noun being modified.   These two {\sc hook} attributes {\sc index} and
+{\sc xarg} enable the semantic composition desired for intersective
+modification of nouns by adjectives or PPs, and of verbs by PPs, as well as
+the use of adjectives and prepositions in predicative constructions.  The
+machinery should extend to more interesting examples like {\it The dog 
+currently in the park is barking}, where {\it currently} temporally constrains
+the event introduced by the PP {\it in the park} (its {\sc hook.index}) while 
+the PP's {\sc hook.xarg} is identified with the {\sc hook.index} of the noun
+{\it dog}.
 
 Adverbs, unlike adjectives and prepositions, do not appear predicatively, and
 hence do not need to introduce an independent event.  So they simply identify
@@ -1207,14 +1258,22 @@ they modify, and further identify this value with their own {\sc hook.index}.
 
 \subsection{Special Relations}
 
-%[FIX - Motivate additional special relations for readability, including
-%quant\_rels and coord/subord, but acknowledge that could in principle let
-%SemI cope with these just using PRED/SORT/ARGn attributes.]
+The Matrix also provides a small number of additional semantic relations which
+introduce additional attributes for easier readability for both grammar
+writers and application developers.  These special relations could of course
+be defined just using the above inventory of relation attributes ({\sc pred}
+and {\sc arg1 ... argn}), since the Sem-I would provide an unambigous
+interpretation of these features within a given relation type.  But it has
+proven to be convenient in practice to supply the following relations with
+their own particular attributes.
 
 \subsubsection{Quantifiers}
 \label{quantsec}
 
-Quantifiers introduce two scopal features, {\sc rstr} and {\sc body}.
+The lexical types for quantifiers like {\it some} and {\it every} introduce
+a {\it quant-relation} which is also a subtype of {\it arg0-relation}, but
+thie type introduces two additional features, {\sc rstr} (restrictor)
+and {\sc body}.
 As scopal features, they both take values of type {\it handle}.  The
 {\sc rstr} will be related to the top handle of the quantifier's
 restriction (i.e., the N$'$ that takes the quantifier as a specifier)
@@ -1224,11 +1283,11 @@ this is what allows quantifiers to have varied scoping possibilities
 (see \citeboth{Cop:Fli:Sag:Pol:03}).  The value of {\sc arg0} is the
 referential index that the quantifier binds (see \S\ref{bvsec}).
 
-The type {\it quant\_rel} is thus constrained as follows:
+The type {\it quant-relation} is thus constrained as follows:
 
 \es{
 \begin{avm}
-{\it quant\_rel}: \[ arg0 & ref-ind\\
+{\it quant-relation}: \[ arg0 & ref-ind\\
                     rstr & handle\\
                     body & handle \]
 \end{avm}
@@ -1236,28 +1295,38 @@ The type {\it quant\_rel} is thus constrained as follows:
 
 Since all quantifiers should need only these features, particular
 quantifiers should be distinguished by their {\sc pred} values
-(e.g., {\bf \_every\_q\_rel}, {\bf \_some\_q\_rel}, {\bf \_def\_q\_rel}).
+(e.g., {\bf \_every\_q\_rel}, {\bf \_some\_q\_rel}, {\bf \_the\_q\_rel} in
+the ERG).
+The Matrix does not yet adopt any hypothesis about whether the inventory
+of quantifier relations might be made language-independent, though it
+would clearly be desirable if such an inventory could be defined.
+
 
 \subsubsection{Messages}
 \label{msgrelsec}
 
-We provide {\it message} types in the Matrix as an MRS encoding
-of the distinctions among types of semantics of clauses in
+We provide the {\it message} type in the Matrix as an MRS encoding
+of the distinctions among types of semantics of clauses developed in
 \citeboth{Gin:Sag:00}.  Clauses can express
-commands, questions, or propositions.  The Matrix
-organizes the subtypes of {\it message} as shown in Figure~\ref{msgfig}.
+commands, questions, or propositions, either as simple sentences or in
+embedded contexts as sentential complements, relative clauses, etc.  The
+type {\it message} is a subtype of {\it relation} which introduces the
+attribute {\sc marg} (message argument), whose value will be the highest
+scoping handle of the clause.  The {\sc pred} value of the message relation
+is used to distinguish the three clause types, drawing from the pred sorts
+given in the hierarchy in Figure~\ref{msgfig}, all of which carry the suffix
+{\it \_m\_rel} for quick identification.
 
 \begin{figure}
 \begin{center}
 
 {\it
 \begin{tree}
-\br{basic\_message}{\lf{no-msg}
-\br{message}{\lf{command}
-             \br{\ \ \ prop-or-ques}{
-                               \br{abstr-ques}{\lf{question}
-                                               \lf{\ \ \ \ \ \ \ \ \ ne\_rel}}
-                               \lf{\ \ \ \ \ \ \ \ \ \ proposition}}}}
+\br{message\_m\_rel}{\lf{command\_m\_rel}
+             \br{\hspace{0.5in}prop-or-ques\_m\_rel}{
+                               \br{abstr-ques\_m\_rel}{\lf{\hspace{-0.8in}question\_m\_rel}
+                                              \lf{\hspace{0.5in}ne\_m\_rel}}
+                               \lf{\hspace{1.0in}proposition\_m\_rel}}}
 \end{tree}
 }
 
@@ -1268,18 +1337,22 @@ organizes the subtypes of {\it message} as shown in Figure~\ref{msgfig}.
 
 This type hierarchy has a bit more structure than might otherwise be
 expected as we anticipate that the {\it messsage} type of a clause (through
-{\sc keys.message}) will used in semantic selection by
-clause-taking verbs.  As some verbs (like {\it know}) accept {\it
-proposition} or {\it question} but not {\it command} complements, we
-provide the intermediate type {\it prop-or-ques}.
-Among questions ({\it abstr-ques}), we distinguish between
-ordinary {\it questions} and the type of confirmation-seeking
-question expressed by a tag question in English, the particle {\it ne}
-in Japanese, the particle {\it ne} in German, or the equivalent in
-other languages.\fn{On {\it ne\_rel}, see \citeboth{Ben:Fli:99}.}
+{\sc cont.msg}) will used in semantic selection by
+clause-taking verbs.  As some verbs (like {\it know}) accept sentential
+complements which are either propositions or questions but not commands,
+the Matrix provides the intermediate type {\it prop-or-ques\_m\_rel} which
+the verb {\it know} can use to constrain its complement's {\sc msg.pred} value.
+Among questions, all of which will be assigned the {\sc msg.pred} value
+{\it abstr-ques\_m\_rel} by the grammar, we distinguish between
+ordinary questions {with {\sc msg.pred} value {\it question\_m\_rel})
+and the type of confirmation-seeking question expressed by a tag question in 
+English, the particle {\it ne} in Japanese, the particle {\it ne} in German, 
+or the equivalent in
+other languages, for which the Matrix supplies the pred sort 
+{\it ne\_m\_rel}.\fn{On {\it ne\_rel}, see \citeboth{Ben:Fli:99}.}
 
 The ERG has adopted the further assumption that all questions contain an
-immediately embedded proposition, motivated both by (reasonable but
+immediately embedded proposition, motivated both by (reasonable but perhaps
 controversial) hypotheses about inference in discourse, and by concerns for
 simplicity in the hierarchy of constructions for English.  This choice of
 implementation for the semantics of questions is supported by the Matrix, but 
@@ -1288,10 +1361,13 @@ not required by it.
 \subsubsection{Subordination and Coordination}
 \label{coordsec}
 
-The Matrix provides two relation types for subordination and coordination. 
-The first, the more general type {\it subord\_or\_conj\_rel}, is used directly
-by subordinating conjunctions like English {\it since}, and the second is a 
-subtype {\it conjunction\_rel} used by ordinary conjunctions like English 
+The Matrix provides two relation types for subordination and coordination,
+both subtypes of {\it subord-or-conj-relation}, which introduces two new
+attributes for their semantic arguments.
+The first subtype {\it subord-relation} can be used for
+subordinating conjunctions like English {\it since}, and the second
+subtype {\it conjunction-relation} is used by ordinary conjunctions like 
+English 
 {\it and}.  Both coordination and subordination relations take two handles as 
 arguments; in the
 case of subordination, these correspond to the {\sc ltop} values of
@@ -1304,45 +1380,44 @@ coordination.
 
 \es{
 \begin{avm}
-{\it subord\_or\_conj\_rel}: \[ l-hndl & handle\\
-                                r-hndl & handle \]
+{\it subord-or-conj-relation}: \[ l-hndl & handle\\
+                                  r-hndl & handle \]
 \end{avm}
 }
 
 The main relation introduced by specific subordinating conjunctions (e.g., 
 {\it if}, {\it because}, {\it while}) will be simply the general relation
-{\it subord\_or\_conj\_rel}, with distinguishing values provided by
-each lexical entry for the {\sc pred} value.  There
+{\it subord-relation}, with each lexical entry providing distinguishing 
+values for the {\sc pred} attribute.  There
 is, however, more to be said about coordination.  Coordination of clauses,
 predicates or noun phrases requires the construction of a single {\it
 individual} ({\it event} or {\it ref-ind}) that can be the value of a
 role feature in any outside predicate that takes the conjoined
-entity as an argument.  This is achieved by giving {\it conjunction\_rel}
+entity as an argument.  This is achieved by giving {\it conjunction-relation}
 the three additional features shown in (\ref{conjrel}):
 
 \es{\label{conjrel}
 \begin{avm}
-\[ c-arg & conj-ind\\
+\[ c-arg & conj-index\\
    l-index & index\\ 
    r-index & index \]
 \end{avm}
 }
 %
-The value of {\sc c-arg} is the conjoined index ({\it conj-ind}) which
+The value of {\sc c-arg} is the conjoined index ({\it conj-index}) which
 serves as a pointer to the separate conjoined entity.  
 
-Of course, it's possible to conjoin more than two noun phrases,
+Of course, it is possible to conjoin more than two noun phrases,
 predicates or clauses.  In order to keep a determinate number of
 features for any given relation, we represent multi-coordination via a
-series of chained {\it conjunction\_rel}s, where the {\sc r-index} of
-all but the lowest {\it conjunction\_rel} is the {\sc c-arg} of the next
-{\it conjunction\_rel}.
-%Is this right?  What about the {\sc
-%r-hndl}?  Provide example? [DPF] Yes, right, and for non-NP signs, also
-%true for r-hndl.  Yes, we should provide an example.
+series of chained binary {\it conjunction-relation}s, 
+where the {\sc r-index} of
+all but the lowest {\it conjunction-relation} is the {\sc c-arg} of the next
+{\it conjunction-relation}.
 
 Note that in the coordination of noun phrases, the {\sc l-hndl} and 
-{\sc r-hndl} values of the {\it conjunction\_rel} will be identified with the
+{\sc r-hndl} values of the {\it conjunction-relation} will be identified 
+with the
 {\sc ltop} values of each of the two noun phrases, but these handle values
 will not be identified with the {\sc lbl} values of any relations in the
 phrase, given our treatment of quantifiers as underspecified with respect to
@@ -1353,18 +1428,51 @@ the {\sc lbl} values of relations in the phrase.
 
 \subsubsection{Miscellaneous Special Relations}
 
-%[Discuss at least {\it unspec\_compound\_rel} and
-%{\it verb\_ellipsis\_rel}.  It's unclear to me at this point
-%why these merit their own types, if we're going to go the
-%{\sc pred} route].
-%FIX - yes, just use PRED, not new relations.  But discuss and illustrate,
-%maybe under banner of construction-specific relations ...
+In order to illustrate some ways in which this hierarchy of semantic relations
+might be extended, the Matrix provides three additional relations which 
+grammar writers may find useful.  Perhaps the most interesting of these is
+the {\it unspec-compound-relation}, intended for use in the construction of
+noun-noun compounds.  These are treated in the ERG as a syntactic constituent 
+with two noun daughters that are combined by a rule which introduces this
+{\it unspec-compound-relation}, a subtype of {\it arg12-relation}.  This
+relation does not introduce any new attributes, but rather constrains the
+two arguments to both be of type {\it ref-ind}.  Such a constraint might have
+value, but if not, the grammar writer could simply use the relation type
+{\it arg12-relation}, and assign the appropriate unique {\sc pred} value.
 
-\subsubsection{User Defined Special Relations}
+Similarly, the Matrix supplies the {\it verb-ellipsis-relation} as a subtype of
+{\it arg1-relation}, intended for analyses of elided verb phrases as in the
+English example {\it We tried to but we couldn't.}  Here neither new attributes
+nor specific constraints on existing attributes are added, though we 
+anticipate that the semantics of elliptical constructions in languages might
+require such additional machinery.  Again, the grammar writer may well choose
+to ignore this type.
 
-%[ ... Give guideance here on what to do in case a new relation type
-%seems merited.  Discuss cases like number names or numeral classifiers? ... ]
-%FIX - Maybe one or two examples.
+The third such type is the {\it prep-mod-relation}, a subtype of 
+{\it arg12-ev-relation}, and intended for use with prepositions that head
+modifier phrases.  Here again, no new constraints enrich this type, though
+for a given language it may be useful to impose additional type constraints
+on the values of {\sc arg1} and {\sc arg2} that would hold for all lexical
+entries and constructions introducing this relation type.  
+
+\subsubsection{User-Defined Special Relations}
+
+The Matrix design anticipates that grammar writers may choose to extend the
+inventory of relation types to accommodate language-specific phenomena.  For
+example, an analysis of degree specifiers and measure phrases like the 
+English examples {\it the building was very tall} or {\it the building was 
+fifty meters tall} may lead the grammar writer to a new relation type for
+these degree phrases.  Similarly, comparative constructions, like in the 
+English examples {\it Kim is taller than Sandy was} or {\it dogs have more
+legs than ostriches}, may require the introduction of relations with 
+additional attributes to encode all of the relevant constraints.  
+
+When adding a new relation, be sure to place it correctly in the {\it relation}
+hierarchy so that it inherits exactly the attributes and constraints that it
+needs from existing types.  And before choosing to make the addition, consider
+whether an existing relation type might in fact serve, given the existence of
+the Sem-I component (described in \S\ref{semisec} below) to provide a unique
+interpretation of the attributes {\sc arg1 ... arg4} for each relation.
 
 \section{Features of Indices: Agreement and TAM}
 \label{AgrTAM}
@@ -1435,6 +1543,11 @@ unspecified in the Matrix.  In future work, we hope to include possible
 tense/aspect systems as modules in the Matrix, i.e., as components that we 
 expect to be useful in many but not all languages.
 
+The treatment of tense, aspect, and mood is equally underspecified in the
+current version of the Matrix, though it is expected that a more elaborated
+candidate set of types will emerge in the near future, at least for some
+aspectual distinctions, growing out of work on the NorSource grammar of
+Norwegian.
 
 \section{Syntax-Semantics Interface}
 \label{synsem-i}
@@ -1442,7 +1555,7 @@ expect to be useful in many but not all languages.
 Section \ref{basicobj} discussed the basic semantic objects defined
 in the Matrix.  Section \ref{relarg} discussed types of relations
 and the representation of arguments of relations.  The preceding
-Section described our approach to representing agreement and TAM.
+section sketched our approach to representing agreement and TAM.
 This should give a fairly complete picture of the kinds of semantic
 representations Matrix-derived grammars should build.  This section
 addresses how to go about building those representations
@@ -1461,8 +1574,10 @@ bound by an appropriate quantifier.  \S\ref{hconssec} provides
 examples of handle constraints, including constraints on the {\sc
 rstr} values of quantifiers, how messages interact with handle
 constraints, and handle constraints concerning scopal modifiers like
-{\it probably}.  \S\ref{semselkey} describes how the value of {\sc
-keys} can be used to implement semantic selectional restrictions.
+{\it probably}.  
+%\S\ref{semselkey} describes how the value of {\sc
+%keys} can be used to implement semantic selectional restrictions.
+%[Now covered in {lexkeysec}.)
 Finally, \S\ref{xargsec} describes mismatches between syntax and
 semantics, including control constructions, expletives, and
 raising of {\sc key} and {\sc index} values (e.g., by the English auxiliary 
@@ -1566,7 +1681,7 @@ head-daughter:
 \end{avm}
 }
 %
-The types {\it basic-head-subj-phrase}, {\it basic-head-comp-phrase},
+The types {\it basic-head-comp-phrase},
 {\it basic-extracted-comp-phrase}, and {\it
 basic-head-opt-comp-phrase} (and therefore its two subtypes)
 all inherit this constraint from {\it head-compositional}.  That is,
@@ -1579,18 +1694,18 @@ and therefore do not identify the {\sc hook} of the {\sc c-cont} with the
 {\sc hook} of the daughter (see \S\ref{ccontsec} below). 
 
 The type {\it head-mod-phrase} does not inherit from {\it
-head-compositional}, nor do any of its subyptes.  Indeed, {\it
-basic-head-mod-phrase-simple} imposes the opposite constraint,
-identifying the {\sc hook} values of the {\sc c-cont} and the non-head
-daughter.
-%We need to include a longer description of how scopal and
-%intersective modification work.  Where would that best fit in? [DPF] Section
-%6.6.3, which might be retitled Modification  
-Thus we treat the modifier in head-modifier constructions as the semantic
-head, even though it is not the syntactic head.  Similarly, in {\it
+head-compositional}, but one of its subtypes {\it isect-mod-phrase} does, to
+account for the semantic properties of phrases with intersective modifiers.
+In contrast, one of its other subtypes {\it scopal-mod-phrase}
+imposes the opposite constraint, identifying the {\sc hook} values of the 
+{\sc c-cont} and the non-head daughter, as required for the semantics of
+phrases containing scopal modifiers like {\it probably}.
+Thus we treat the modifier in scopal head-modifier constructions as the 
+semantic head, even though it is not the syntactic head.  Similarly, in {\it
 basic-head-spec-phrase} the {\sc hook} of the {\sc c-cont} is
 identified with the {\sc hook} of the specifier daughter, as we take
 specifiers to be semantic heads.
+
 %For some reason this constraint is
 %actually implemented via the {\sc spr} feature of the head-daughter,
 %which seems unnecessarily baroque to me.  Should we fiques it?
@@ -1598,7 +1713,15 @@ specifiers to be semantic heads.
 %identify any semantic head.  This probably needs to be fixed, too. [DPF] 
 %Agreed.  Probably want a type nonhead-compositional for spr-hd and head-adj.
 
-We have (syntactically) headed phrases where the semantic head is
+The third possibility is illustrated in the type {\it head-subj-phrase},
+which supplies a message relation that takes widest scope, and hence the
+{\sc c-cont.hook} of the phrase is not identified with that of either daughter.
+Instead, the {\sc c-cont.hook.ltop} value is identified with the handle (label)
+of the newly supplied message relation, and the {\sc c-cont.hook.index} value
+is identified with that of the head daughter.  See the next section for a
+discussion of how constructions can contribute semantics.
+
+So we have (syntactically) headed phrases where the semantic head is
 the syntactic head, headed phrases where the semantic head is instead
 the (syntactic) non-head daughter, and headed phrases where the {\sc
 c-cont} is the semantic head.  The Matrix does not provide any
@@ -1608,9 +1731,8 @@ on {\it lex-rule}, {\it basic-binary-phrase}, and {\it basic-unary-phrase}
 ensure that the {\sc hook} of the mother will always be identified
 with the {\sc hook} of the {\sc c-cont}, but it is the responsibility
 of the grammar developer to make sure that the {\sc hook} of the
-{\sc c-cont} provides sufficient information.  This will happen if
-it is identified with the {\sc hook} of a daughter (as in
-the constructions discussed above), or if the {\sc c-cont} has
+{\sc c-cont} provides sufficient information.  This will be ensured if
+it is identified with the {\sc hook} of a daughter, or if the {\sc c-cont} has
 a non-empty {\sc rels} value and the features inside {\sc hook}
 are related to the appropriate parts of some {\it relation} on 
 {\sc rels}.
@@ -1666,10 +1788,10 @@ semantics is shown in (\ref{compsem}):
 \br{S}{\br{NP}{\br{Det}{{\lf{the}}}
                \br{N}{\br{N}{\lf{office}}
                       \br{N}{\lf{chair}}}}
-       \br{VP}{\br{V}{\lf{arrived}}}}
+       \br{VP}{\br{V}{\lf{\hspace{0.2in}arrived}}}}
 \end{tree}\\
 \\
-The office chair arrived
+{\it The office chair arrived}
 }
 
 \enumsentence{\label{compsem}
@@ -1677,10 +1799,10 @@ The office chair arrived
 \[ {\it mrs}\\
 hook & \[ ltop & h1\\
           index & e2 \]\\
-rels & \avml\q<\tn{!} \[ \avmspan{\bf prpstn\_m\_rel}\\
+rels & \avml\q<\tn{!} \[ \avmspan{\bf proposition\_m\_rel}\\
               lbl & h1\\ 
               marg & h4 \],
-            \[ \avmspan{\bf def\_q\_rel}\\
+            \[ \avmspan{\bf \_the\_q\_rel}\\
                lbl & h10\\
                arg0 & x8\\
                rstr & h11\\
@@ -1698,8 +1820,8 @@ rels & \avml\q<\tn{!} \[ \avmspan{\bf prpstn\_m\_rel}\\
                body & h19 \],
             \[ \avmspan{\bf n-n-cmpnd\_rel}\\
                lbl & h7\\
-               arg1 & x16\\
-               arg2 & x8 \],
+               arg1 & x8\\
+               arg2 & x16 \],
             \[ \avmspan{\bf \_arrive\_v\_rel}\\
                lbl & h21\\ 
                arg0 & e2\\
@@ -1838,20 +1960,20 @@ provided by a separate component of the grammar called the Sem-I, described
 in \S\ref{semisec}.
 
 The linking type for transitive verbs like {\it chase} in the ERG includes the 
-following simple linking constraints:\fn{These \label{argsfn}constraints are stated
-on the type {\it trans-lt}, but rather inherited from its supertypes.  We
-display them on {\it trans-lt} for expository convenience.
-
-In future versions of the Matrix,
-we expect to state such constraints using the feature ARG-S (Argument Structure)rather than valence features like SUBJ or COMPS.}
+following simple linking constraints:\fn{These \label{argsfn}constraints are 
+not stated directly
+on the type {\it trans-lt}, but are rather inherited from its supertypes.  We
+display them on {\it trans-lt} for expository convenience.  In future versions 
+of the Matrix,
+we expect to state such constraints using the feature {\sc ARG-S} (Argument Structure) rather than valence features like SUBJ or COMPS.}
 
 \es{
 \begin{avm}
 \[ {\it trans-lt}\\
    subj & \q< \[ hook.index & \@1 \] \q>\\
    comps & \q< \[ hook.index & \@2 \] \q>\\
-   {-}{-}keyrel  & \[ arg1 & \@1 \\
-            arg2 & \@2 \] \]
+   keyrel  & \[ arg1 & \@1 \\
+                arg2 & \@2 \] \]
 \end{avm}
 }
 
@@ -1870,7 +1992,7 @@ is unified with the constraints in the {\sc comps} attribute of {\it chase},
 including both the syntactic requirements for an accusative NP and the
 semantic constraints which identify the semantic index of that NP with the
 {\sc arg2} role in the head's relation {\bf \_chase\_v\_rel}.  An analogous
-identification is made when tne subject NP {\it the dog} is combined with
+identification is made when the subject NP {\it the dog} is combined with
 the verb phrase {\it chased the cat} using the {\it subject-head} rule, so
 that the NP's semantic index is unified with the {\sc arg1} role of the
 {\bf \_chase\_v\_rel}.
@@ -1891,8 +2013,8 @@ Sandy was right} in the ERG includes the following linking constraints:\fn{See n
 \[ {\it cp-intrans-verb}\\
    subj & \q< \[ hook.index & \@1 \] \q>\\
    comps & \q< \[ hook.ltop & \@2 \] \q>\\
-   {-}{-}keyrel & \[ arg1 & \@1\\
-            arg2 & \@2 \] \]
+   keyrel & \[ arg1 & \@1\\
+               arg2 & \@2 \] \]
 \end{avm}
 }
 
@@ -1922,7 +2044,7 @@ For example, the lexical type for simple intersective adjectives like English
 \begin{avm}
 \[ {\it adj-synsem}\\
    head.mod & \q< \[ hook.index & \@1 \] \q>\\
-   {-}{-}keyrel & \[ arg1 & \@1 \]\]
+   keyrel & \[ arg1 & \@1 \]\]
 \end{avm}
 }
 
@@ -1949,15 +2071,9 @@ by verbs like {\it insist}, making reference to the modified phrase's
 \begin{avm}
 \[ {\it basic\_scopal\_adverb\_synsem}\\
   head.mod & \q< \[ hook.ltop & \@1 \] \q>\\ 
-  {-}{-}keyrel & \[ arg1 & \@1 \] \]
+  keyrel & \[ arg1 & \@1 \] \]
 \end{avm}
 }
-
-%% $\avmplus{\att{\it scopal-adv}\\
-%%           \attvallist{HEAD.MOD}{
-%%           \avmplus{\attval{HOOK.LTOP}{\ind{1}}}}\\
-%%           \attvallist{CONT.RELS}{
-%%           \avmplus{\attval{ARG1}{\ind{1}}}}}$\\
 
 The construction that combines scopal modifiers with their heads will unify
 this constraint from the modifier on the head's {\sc ltop}, resulting in the
@@ -1967,44 +2083,137 @@ introduced by the modifier, as desired.
 \subsection{Indices Bound by Quantifiers}
 \label{bvsec}
 
+One of the requirements for an {\it mrs} to be well-formed is that each of
+the referential indices ({\it ref-ind}) must be bound by a quantifier.  In
+the Matrix this means that within a sentence each time a noun phrase is
+constructed which introduces a referential index (the {\sc arg0} value of
+the relation supplied by the head noun), that {\sc arg0} value 
+must be identified with the {\sc arg0} value of exactly one 
+{\it quant-relation} in the {\it mrs} for the sentence.  In addition, if the
+value of an argument role in some relation {\sc arg1 ... arg4} is constrained
+to be of type {\it ref-ind}, then that variable will have to be bound by a
+quantifier.  This means that if the grammar writer defines a lexical entry
+for a verb with optional arguments, the values of the {\sc argn} roles in
+that verb's relation should be left underspecified when defining the lexical
+entry for the verb.  For example, the English verb {\it eat} might be defined
+as a transitive verb whose NP object is optional, allowing both {\it The mouse
+ate} and {\it The mouse ate the cheese}.  The value of the {\sc arg2} role
+in the {\bf arg12-ev-relation} for this optional direct object can be
+constrained to be of type {\it index}, but not {\it ref-ind}, in the definition
+of the lexical entry for {\it eat}.  If the direct object is not present, the
+{\sc arg2} value will then be treated as unbound, and if the direct object is
+present, it will supply both the referential index and the quantifier that
+binds it.
+
+Note that semantic variables of type {\it event} in the Matrix are not bound by
+quantifiers, so they do not affect the well-formedness of an {\it mrs}, even
+if they appear as the argument of some predicate.  And indices introduced by
+expletive pronouns, which will be (subtypes of) {\it expl-ind}, are not
+expected to appear as arguments of relations in an {\it mrs}.
+
 \subsection{Imposing Handle Constraints}
 \label{hconssec}
+
+Since the elementary predications for a phrase or sentence are simply 
+collected up as a bag or unordered list in the attribute {\sc cont.rels},
+any scope relations among these predications must be expressed by means of
+constraints on their handles, the value of the attribute {\sc lbl} in each
+elementary predication.  In this subsection we discuss the three most typical
+kinds of handle constraints used in Matrix grammars.
 
 \subsubsection{Embedded Clauses}
 \label{msgsec}
 
-%[ ... Includes discussion of messages ... ]
+A clause is taken in the Matrix to be a saturated projection of a verb (or
+perhaps some other tense-bearing predicate) which introduces a message
+relation (a proposition, question, or command).  As discussed above, each
+message relation introduces just one argument role called {\sc marg}, whose
+value will constrain the handle with the next-highest scope in that clause
+(ignoring quantifiers), by means of a {\it qeq} constraint 
+(cf. \S\ref{qeqsec}). 
+This next-highest scoping handle will typically be the value of the {\sc lbl}
+attribute of the head verb's relation.  For simplex sentences with only one
+clause, the {\sc lbl} value of the one message relation will be identified
+with the {\sc ltop} of the semantics for the whole sentence, expressing the
+fact that this message has scope over every other relation within the
+sentence, including all quantifiers.
 
-\subsubsection{Quantifiers}
+When one clause is embedded as an argument or modifier phrase within a larger
+sentence, the handle of its message relation is instead identified either with 
+an argument role of the embedding predicate, or with the {\sc ltop} of the
+phrase it is modifying.  This expresses the fact that the semantic content
+of this embedded clause falls within the scope of some other relation in the
+sentence.  We can illustrate with an example of each of these types of
+embedded, first for sentential complements and then for modifier phrases.
+
+In the English sentence {\it Kim wondered whether Sandy arrived}, the clause
+{\it whether Sandy arrived} is a complement selected by the verb {\it wonder},
+which introduces an {\bf arg12-ev-relation} whose {\sc arg1} value is the
+referential index supplied by {\it Kim} and whose {\sc arg2} value is the
+{\sc ltop} of the embedded clause.  This {\sc ltop} for {\it whether Sandy
+arrived} is identified with the {\sc lbl} of the message relation (of type
+{\it question}) as a result of the semantic composition of that clause.
+
+Relative clauses are taken to be intersective modifiers of nouns, and as we
+have already seen, intersective modification is expressed in the Matrix by
+identifying the {\sc ltop} values of the modifier and the phrase being
+modified.  Thus in the sentence {\it Every dog that the cat chased barks}, the
+{\sc ltop} of the relative clause {\it that the cat chased} is identified
+with the {\sc ltop} of the noun {\it dog}, expressing the fact that the
+semantic content of the relative clause will fall inside the scope of the
+quantifier {\it every} binding the referential index supplied by {\it dog}.
+
+
+\subsubsection{Quantifiers and Scope}
 \label{qqeq}
+
+As seen above, each referential index introduced in an {\it mrs} must be
+bound by a quantifier, but in addition, the handle of the noun relation 
+introducing that {\it ref-ind} must also be appropriately constrained.  Each
+nominal phrase that is ready to combine with a determiner will identify its
+{\sc ltop} with the handle of the highest-scoping elementary predication in
+that phrase, typically the {\sc lbl} of the head noun.  When this phrase
+becomes a noun phrase, either by combining with a determiner or via some
+construction which supplies the quantifier, this {\sc ltop} value of the 
+nominal phrase might be expected to be identified with the {\sc rstr} 
+(restrictor) value of its quantifier.  But in order to allow for the full
+range of possible scope relations within noun phrases, a {\it qeq} handle
+constraint is introduced, where the {\sc rstr} value of the quantifier
+relation is identified with the {\sc harg} (the ``higher'' scope position)
+of the {\it qeq}, and the {\sc ltop} of the N-bar is identified with the
+{\sc larg} (the ``lower'' scope position).  This seemingly cumbersome
+introduction of a {\it qeq} for the semantics within every noun phrase
+ensures that all possible readings of the phrase are correctly represented,
+allowing just the right range of variation in quantifier scope.
+For a fuller discussion of these issues, see \citeboth{Cop:Fli:Sag:Pol:03}.
+
 \subsubsection{Scopal Modifiers}
 
-%[ ... Include discussion of LKB's MRS scoping machinery and
-%constraints on well-formed MRSs. ... ]
+Some modifiers like the English adverb {\sc probably} are treated as scopal,
+which means that instead of taking as their argument the {\it ref-ind} or
+{\it event} of the phrase they modify, they identify their semantic relation's
+argument position with the top handle of the phrase they modify.  This
+expresses the fact that the semantic content of the modified phrase falls
+within the scope of the semantic predicate introduced by the modifier.  As
+with the other examples of scopal interactions we have seen, here too we want
+to allow for intervening quantifiers in the underspecified representation
+for a sentence like {\it Every manager will probably hire some consultants}.
+So the lexical entry for {\it probably} does not identify the {\sc ltop} of the
+verb phrase it modifies directly with its {\sc arg0}, but rather introduces
+a {\it qeq} relation whose {\sc harg} is identified with the adverb's 
+{\sc arg0} and whose {\sc larg} is identified with the {\sc ltop} of its
+{\sc mod} value.
  
-\subsection{Semantic Selection: Keys}
-\label{semselkey}
-
-%% [DAN: Can you provide a few more examples of how {\sc key} and {\sc
-%% altkey} are used in the ERG?  I think that I used one or the other as
-%% a junk slot to hide a relation inside numeral classifiers that was
-%% added to {\sc rels} just in case they were used as nominal heads (via
-%% a lexical rule), but I'm not sure this is the kind of trick we should
-%% be encouraging...  It looks like ALTKEY at least seems to be used by
-%% some constructions in the ERG to introduce relations --
-%% e.g. proper\_np\_phrase.  Maybe explain that? Discuss how we use keys
-%% in the tags paper, or just ref to it?]
-
 \subsection{Syntax-Semantics Mismatches}
 \label{xargsec}
 
 When defining the linking between syntactic arguments of a lexical entry
 and the corresponding semantic argument positions in the relation introduced
 by that entry, a grammar writer will often encounter mismatches.  A single
-syntactic argument may have its index be linked to 
+syntactic argument may have its index be linked to
 %more than one position in
 %the head's semantics 
-to a position in more than one head's semantics
+a position in more than one head's semantics
 (as in equi constructions), or it may not appear in
 the head's semantic relation at all, as in raising or expletive constructions.
 In this section we describe the mechanisms provided in the Matrix for 
@@ -2058,10 +2267,10 @@ The dog tried to bark.
 Type for subject-equi verbs like {\it try}
 
 \begin{avm}
-\[ {\it subj-equi-verb}
+\[ {\it subj-equi-verb}\\
    subj & \q< \[ hook.index & \@1 \] \q>\\
    comps & \q< \[ hook.xarg & \@1 \] \q>\\
-   {-}{-}keyrel & \[ arg1 & \@1 \] \]
+   keyrel & \[ arg1 & \@1 \] \]
 \end{avm}
 
 }
@@ -2168,7 +2377,7 @@ semantics constructed for this example is given in (\ref{csem}).
 The construction of this representation is the result of the same general
 principles of semantic composition presented above.  The {\it head-complement} rule 
 unifies the verb {\it tried}'s constraints on
-its complement with those of the VP phrase {\it to bark}, which results in the
+its complement with those of the verb phrase {\it to bark}, which results in the
 identification of the {\sc xarg} value of that VP with the {\sc index} of the 
 subject of {\it tried}.  The constraints on {\it tried}'s subject are propagated up
 to the verb phrase {\it tried to bark} from the head-daughter {\it tried} by
@@ -2177,7 +2386,7 @@ semantic properties of its daughters, including the desired re-entrancies with
 the subject index.  Hence when the head-subject rule combines {\it the dog}
 with {\it tried to bark}, the syntactic and semantic constraints of the noun
 phrase are unified with those in the {\sc subj} attribute of the verb phrase,
-resulting in the identification of the {\sc arg0} value introduced by {it dog}
+resulting in the identification of the {\sc arg0} value introduced by {\it dog}
 with the {\sc arg1} values in both {\bf \_try\_v\_rel} and {\bf \_bark\_v\_rel}.
 
 \subsubsection{Raising}
@@ -2187,7 +2396,7 @@ raising phenomena, where a syntactic argument's semantic index is not linked
 to any semantic argument position in a given lexical entry's semantic relation,
 but is instead assigned to a role in the semantics of another syntactic 
 argument of the lexical entry.  For example, the English verb {\it seem} can
-have two syntactic arguments, and NP and a VP, as in {\it the dog seems to
+have two syntactic arguments, an NP and a VP, as in {\it the dog seems to
 bark}, but the semantics of {\it seem} introduces a one-argument relation
 {\bf \_seem\_v\_rel} which takes a proposition.
 
@@ -2233,7 +2442,7 @@ Type for subject-raising verbs like {\it seem}
    subj & \q< \[ hook.index & \@1 \] \q>\\
    comps & \q< \[ hook & \[ ltop & \@2\\
                             xarg & \@1 \] \] \q>\\
-   {-}{-}keyrel & \[ arg1 & \@2 \] \]
+   keyrel & \[ arg1 & \@2 \] \]
 \end{avm}
 
 %% $\avmplus{\att{\it subj-rais-verb}\\
@@ -2269,7 +2478,7 @@ Type for object-raising verbs like {\it believe}
    subj & \q< \[ hook.index & \@1 \] \q>\\
    comps & \q< \[ hook.index & \@2 \] , \[ hook & \[ ltop & \@3\\
                                                      xarg & \@2 \]\] \q>\\
-   {-}{-}keyrel & \[ arg1 & \@1\\
+   keyrel & \[ arg1 & \@1\\
                      arg2 & \@3 \] \]
 \end{avm}
 
@@ -2305,7 +2514,7 @@ making use of an English-specific subtype of the Matrix {\it expl-ind} named
 \begin{avm}
 \[ {\it expl-subj-verb}\\
    subj & \q< \[ hook.index & {\it it-ind} \]\\
-   {-}{-}keyrel & \[ arg0 & event \] \]
+   keyrel & \[ arg0 & event \] \]
 \end{avm}
 }
 
@@ -2326,8 +2535,9 @@ The dog believes there to be a cat
 }
 
 
-\section{Generation}
-\label{gen}
+% Postponed until the next version
+%\section{Generation}
+%\label{gen}
 
 %[ ... What you need to do to make sure you can generate from your
 %grammar, info on writing filters for semantically empty lexical items, ... ] 
@@ -2335,9 +2545,42 @@ The dog believes there to be a cat
 \section{Verifying {\it mrs}s}
 \label{verif}
 
-%[... describe the scoping machinery, the different ways of viewing
-%{\it mrs}s in the LKB, and the color coding of MRS ``health'' in the
-%treebanking tool ...]
+The LKB provides several useful tools for ensuring that the {\it mrs} 
+representations that are built with a Matrix-derived grammar are well formed.
+These include batch tests for correctness of lexical entries and for the
+fully scoped readings of sentences, as well as alternate views of the
+{\it mrs}s for sentences.  The basic functionality is documented in 
+\cite{Copestake:02}, so here we only highlight a few of the most common tests
+that a grammar writer can use.
+
+First, it is important that the lexical entries for the grammar are all
+correctly defined, and one good batch test for this level of well-formedness
+can be invoked from the ``LKB Top'' window, by selecting the ``Debug -- Check
+lexicon'' menu item.  This will cause each lexical entry in the lexicon to be
+expanded and checked, with helpful error messages printed if any flaws are
+uncovered.
+
+Second, the wellformedness of an {\it mrs} for a sentence can be checked by
+making sure that the underspecified semantics constructed by the grammar
+can be used to produce the right range of fully-scoped representations.  This
+check can be invoked by left-clicking on one of the small parse trees that
+appears after successfully parsing a sentence, and selecting the menu item
+``Scoped MRS'', which will either bring up a window showing all of the 
+possible fully-scoped realizations for the chosen sentence, or produce an
+error message, often with helpful advice about what is wrong with the 
+{\it mrs}.
+
+A third useful view of an {\it mrs} can be invoked by again left-clicking
+on one of the small parse trees, and selecting the menu item ``Dependencies'',
+which will bring up a window showing a simplified view of the elementary
+dependencies that can be computed from the input {\it mrs}.  If the color of
+the text is blue, the argument links among predicates are all well-formed,
+whereas if the text color in the window is yellow, at least one link is not
+well-formed, and the line for the offending predicate is marked with an initial
+vertical bar to help in diagnosis.  If the feature structure for the input
+{\it mrs} has defined a circular linking structure (usually because of an
+error in how the difference lists have been appended), then the text color
+in this ``Dependencies'' window will be red.
 
 \section{Sem-I: The Semantic Interface}
 \label{semisec}
@@ -2378,25 +2621,30 @@ to be consistent across languages, it forms part of the Matrix,
 with links to language-specific examples that illustrate the use of these
 relations and values for a particular grammar.
 
-For example, the two-place relation introduced for noun-noun compounds in
-the Matrix will appear in the meta-level Sem-I database as follows:\\
-\begin{tabular}{lllllllll}
-PRED & ARG0 & & ARG1 & & ARG2 & & documentation & test suite eg\\
-unspec\_compound\_rel & event & oblig & 
-index & oblig & index & oblig & \verb+< link to documentation >+ & 
-\verb+< eg num >+
-\end{tabular}
+For example, a two-place relation introduced for noun-noun compounds in
+an English grammar derived from the Matrix might appear in the meta-level 
+Sem-I database as follows:
 
+\vspace{0.1in}
+\begin{tabular}{lllllllll}
+PRED & ARG0 & & ARG1 & & ARG2 & & documentation & test suite\\
+n-n-cmpnd\_rel & event & obl & 
+index & obl & index & obl & \verb+<link to doc>+ & 
+\verb+<ex. #>+
+\end{tabular}
+\vspace{0.1in}
+
+\noindent
 Here, the specification and instantiation of the types
 of the ARG0, ARG1, ARG2 values may be done automatically, as will be the case
 with the object-level Sem-I.  Each semantic role is identified as an
-obligatory ('oblig') or optional ('opt') argument of the predicate, with the 
+obligatory ('obl') or optional ('opt') argument of the predicate, with the 
 expectation that more fine-grained distinctions may be needed later.
 The documentation needs to explain the meaning and use
 of the relation in as much detail as necessary for application
 developers to decide how to treat it.  For instance, it would be 
 important for a developer
-to know whether unspec\_compound\_rel was used for all 
+to know whether {\bf n-n-cmpnd\_rel} was used for all 
 noun-noun compounds in this grammar or only for some of them.
 
 The meta-level Sem-I will also include specifications of semantic classes
@@ -2406,7 +2654,7 @@ specialized for these semantic classes.
 
 \subsection{The object-level Sem-I}
 
-Each grammar built using the Matrix should include an automatically 
+Each grammar built using the Matrix should eventually include an automatically 
 constructed database for the semantic information pertaining to the open class 
 words in the language.  This is the object-level Sem-I, generated from the 
 lexical database for each lexicon, with possible links to example sentences
@@ -2431,13 +2679,14 @@ must make it possible to autogenerate the links in this database.
 
 \subsection{Thematic role mapping}
 
-The Matrix uses a naming convention where ARGn is used to identify
+The Matrix uses a naming convention where role names of the form ARGn are 
+used to identify
 individual semantic arguments for predicates.  While this has proven to be
 important in capturing generalizations about linking in the lexical type
 hierarchy, it requires that other linguistic generalizations over thematic
 roles be expressed instead in the Sem-I.
 
-The approach employed in the Matrix is two-fold: a rich inventory
+The approach planned for the Matrix is two-fold: a rich inventory
 of word classes will be incrementally developed which will allow mapping
 of ARGn relations into alternative inventories, and since this is
 a long term project, it might be augmented with automatically
@@ -2448,7 +2697,8 @@ intent of role assignments for any given predicate.
 
 Information about word classes should be added
 incrementally to the lexical databases, without changing the grammars.
-Documentation for these classes explains the notion of ARGn wrt that class, and
+Documentation for these classes explains the notion of ARGn with respect to
+that class, and
 mappings to alternative thematic roles can be done on the basis of class 
 membership.
 Verb classes will be part of the Matrix Sem-I, since they are motivated by 
@@ -2510,25 +2760,44 @@ the person liked to do the thing
 where {\it person} is the standard term for animate entities and 
 {\it thing} for non-animate ones.
 
-The point about this approach is to make it reasonably intuitive for outsiders
-without the process of deciding on the semantic categories becoming too
-time-consuming.  It would also make it reasonably easy to check the
-entries for over-generation, by 
-scanning the automatically generated examples for obviously incorrect
-sentences.
+The point about this approach is to make it reasonably intuitive for 
+application developers while avoiding making the process of deciding on 
+the semantic categories too
+time-consuming.  It will also simplify the task of checking lexical
+entries for over-generation, by allowing the grammar writer to scan the 
+automatically generated examples for obviously incorrect sentences.
 
 \section{Conclusion}
 
+We have provided documentation here for the semantic types and their 
+attributes that are used in the Matrix, as well as a discussion of how these 
+types are used in semantic composition to produce well-formed meaning 
+representations.  We illustrated the concepts primarily with examples from
+English, but expect that the mechanisms introduced here should be useful in
+building grammars for a wide variety of human languages.
+
 \section{Acknowledgments}
 
-This paper is an extension of \citeboth{Fli:Ben:03}.
-
-\ldots
+This paper is an extension of work first reported in \citeboth{Fli:Ben:03}.
+We are grateful to the authors of {\it Minimal Recursion Semantics: An
+Introduction}, from which this documentation draws heavily, and especially to
+Ann Copestake for illumination on many issues presented here.  We also thank
+the early adopters of the Matrix, in particular Melanie Siegel as principal
+author of the wide-coverage JACY grammar of Japanese, and the developers of
+the trail-blazing NorSource grammar of Norwegian: Lars Hellan, Dorothee
+Beermann, and Petter Haugereid, as well as their colleague Kaja Borthen.  We
+have received helpful questions and critique from the other members of the
+Deep Thought consortium that helped to fund this work, especially from
+Berthold Crysmann, currently developing a wide-coverage grammar of German for
+the project; and also from colleagues working in the Norwegian LOGON machine
+translation project.  As always, only the authors of this document can be
+held responsible for any errors that survive here in spite of the excellent
+counsel we received.
 
 \bibliographystyle{robbib}
 \bibliography{./userguide}
 
-\section*{Index}
+%\section*{Index}
 
 \end{document}
 
