@@ -954,8 +954,10 @@ basic-head-filler-phrase := binary-phrase & phrasal &
 basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
   [ SYNSEM.LOCAL.CAT [ POSTHEAD +,
                        VAL [ SUBJ olist & < anti-synsem >,
+			     COMPS #comps,
                              SPR #spr ] ],
     HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL [ SUBJ < #synsem >,
+				      COMPS #comps,	
                                       SPR #spr ],
                                 MC na ],
     NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem &
