@@ -1,0 +1,15 @@
+;;; type declarations for munge rules 
+
+general_mrs_rule := avm &
+[ LCONDITION mrs,
+  OUTPUT *top* ] .
+
+mrs_rule :=  general_mrs_rule &
+[ INPUT mrs,
+  LCONDITION mrs,
+  OUTPUT mrs ] .
+
+generator_rule :=  general_mrs_rule &
+[ LCONDITION mrs,
+  OUTPUT string ] .
+
