@@ -5,7 +5,9 @@
 ;;; about V, S, and O).
 
 ;;; This is the rules file, to be used in conjunction with 
-;;; the types file free-order.tdl
+;;; the old types file free-order.old.  (In 1/5/05 solution,
+;;; the V-initial-rules and V-final-rules files work for
+;;; free word order.) 
 
 head-subj-1 := head-subj-phrase-1.
 head-subj-2 := head-subj-phrase-2.

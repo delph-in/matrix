@@ -2,7 +2,8 @@
 
 ;;; Module for free word order, i.e., all possible
 ;;; orders of head, subj, comps (thinking initially
-;;; about V, S, and O).
+;;; about V, S, and O).  Use this with both V-final-rules.tdl
+;;; and V-initial-rules.tdl.
 
 ;;; Just using the V-final and V-initial modules
 ;;; together is unsatisfactory, since that system gives
@@ -13,71 +14,54 @@
 ;;; respecifications of types (head-subj-phrase, etc)
 ;;; rather than multiple parallel types.
 
-;;; In other words, the problem here is that we want 
-;;; the subject to be allowed to attach lower than 
-;;; complements just in case the higher complements 
-;;; are on the same side of the verb as the subject.
+;;; The root of the problem seems to be that we need
+;;; the subject to be able to attach inside the object(s)
+;;; for VSO and OSV, but at the same time, we don't want
+;;; complete flexibility on order of attachment when
+;;; the verb is in the middle -- that would give spurious
+;;; ambiguity.
 
-;;; The implementation here makes use of a new feature
-;;; INIT on head to track the headedness of rules, as
-;;; well as constraints on the value of valence features.
-;;; Head complement rules can either leave the INIT value
-;;; unconstrained and require [ HEAD-DTR..SUBJ cons ], or
-;;; constrain the INIT value and require [ HEAD-DTR..SUBJ < > ].
-;;; The head subject phrases can either require 
-;;; [ HEAD-DTR..COMPS < > ] and leave INIT unspecified,
-;;; or constrain INIT and require [ HEAD-DTR..COMPS cons ].
-;;; The value of doing this on both head-subj and head-comp
-;;; rules is that it will (in theory) scale to cases of
-;;; multiple complements.  This file gives head-complement
-;;; rules for realizing the first or second member of
-;;; the COMPS list.  Analogous rules for a third member
-;;; could be written.
+;;; This solution adopts the xmod hierarchy from the ERG
+;;; (rename these types one day?) to enforce right-first
+;;; attachment.  That is, all arguments appears to the right
+;;; of the verb must attach before all arguments appearing to
+;;; the left.  The linguistic prediction of this analysis
+;;; is that free word order languages do not have a consistent
+;;; VP consituent, even when the verb and object are adjacent
+;;; (OV order).
 
-; Extra feature for tracking which head-comp or
-; head-subj phrase has applied.  Tracks whether 
-; required head-comp phrase is head-initial or head-final.
+xmod := *top*.
 
-head :+ [ INIT bool ].
+notmod-or-rmod := xmod.
+notmod-or-lmod := xmod.
+notmod := notmod-or-rmod & notmod-or-lmod.
 
-head-subj-phrase-1 := basic-head-subj-phrase & head-initial &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+hasmod := xmod.
+lmod := hasmod & notmod-or-lmod.
+rmod := hasmod & notmod-or-rmod.
 
-head-subj-phrase-2 := basic-head-subj-phrase & head-initial &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.INIT +,
-				 VAL.COMPS cons ]].
+synsem :+
+ [ ATTACH xmod ].
 
-subj-head-phrase-1 := basic-head-subj-phrase & head-final &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+head-initial-head-nexus := head-initial & 
+ [ SYNSEM.ATTACH lmod,
+   HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].
 
-subj-head-phrase-2 := basic-head-subj-phrase & head-final &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.INIT -,
-				 VAL.COMPS cons ]].
+head-final-head-nexus := head-final &
+ [ SYNSEM.ATTACH rmod ].
 
-head-comp-phrase-1 := basic-head-1st-comp-phrase & head-initial &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].
 
-head-comp-phrase-2 := basic-head-1st-comp-phrase & head-initial &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.INIT +,
-				 VAL.SUBJ < > ]].
+; We'll need to add identification of ATTACH between
+; mother and head-daughter for all other kinds of phrases
+; if we do this.  Just for illustration, I'm putting it in
+; for head-adjunct phrases here:
 
-head-comp-phrase-3 := basic-head-2nd-comp-phrase & head-initial &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].
+head-mod-phrase :+
+  [ SYNSEM.ATTACH #attach,
+    HEAD-DTR.SYNSEM.ATTACH #attach ].
 
-head-comp-phrase-4 := basic-head-2nd-comp-phrase & head-initial &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.INIT +,
-				 VAL.SUBJ < > ]].
+head-subj-phrase := basic-head-subj-phrase & head-initial-head-nexus. 
+subj-head-phrase := basic-head-subj-phrase & head-final-head-nexus. 
+head-comp-phrase := basic-head-comp-phrase & head-initial-head-nexus. 
+comp-head-phrase := basic-head-comp-phrase & head-final-head-nexus. 
 
-comp-head-phrase-1 := basic-head-1st-comp-phrase & head-final &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].
-
-comp-head-phrase-2 := basic-head-1st-comp-phrase & head-final &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.INIT -,
-				 VAL.SUBJ < > ]].
-
-comp-head-phrase-3 := basic-head-2nd-comp-phrase & head-final &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].
-
-comp-head-phrase-4 := basic-head-2nd-comp-phrase & head-final &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.INIT -,
-				 VAL.SUBJ < > ]].
