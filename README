@@ -1,4 +1,4 @@
-Grammar matrix v 0.1, January 27, 2002
+Grammar matrix v 0.2, February 13, 2002
 
 This is an extremely preliminary first cut at the grammar
 matrix.  It has not been tested except by being loaded into
@@ -22,7 +22,7 @@ will be either augmented directly, or via subtypes that fill
 in some of the missing constraints.  One clear example of this
 is the lack of constraints on the HEAD values in phrase structure
 rules.  Since it's not clear what the appropriate 'universal'
-head type hierachy will/could be, I've refrained from even 
+head type hierarchy will/could be, I've refrained from even 
 defining types like 'verbal'...
 
 Similarly, certain parts of the type hierarchy might need to be
@@ -41,3 +41,16 @@ that the rules assume lexical threading of NON-LOCAL features.
 Beware that some feature names (notably HNDL) and many type names
 differ between the matrix and the LinGO grammar, even when they
 are logically and mnemonically related.
+
+Future versions of the matrix should include further documentation
+as well as more types (especially lexical types).  Revisions to
+the types included in this version should also be anticipated, 
+since it seems extremely unlikely that this first guess as to
+what's universally useful will turn out to be entirely correct.
+
+Stephan Oepen has kindly cleaned up the collateral .lsp files
+included in this distribution of the matrix.  Take a look at
+lkb/script for information on how various files (including .tdl
+files) are included, and which aspects of the grammar should
+be encoded in which .tdl files.
+
