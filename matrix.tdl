@@ -63,6 +63,9 @@ dl-append := avm & [APPARG1 [LIST #first,
 
 symbol := atom.
 integer := atom.
+
+; NB: strings should be enclosed in double quotes, e.g., [PRED "named_rel"].
+
 string := symbol.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
@@ -268,6 +271,8 @@ head-min := avm.
 head := head-min &
   [ MOD list,
     KEYS keys_min ].
+
+
 
 valence-min := avm.
 
@@ -510,7 +515,7 @@ noun_rel := arg0_rel &
 noun_arg1_rel := noun_rel & arg1_rel.
 
 named_rel := noun_rel &
-  [ PRED 'named_rel,
+  [ PRED "named_rel",
     CARG string ].
 
 ; Preposition relations
@@ -535,7 +540,7 @@ conjunction_rel := subord_or_conj_rel &
     R-INDEX index ].
 
 if_then_rel := subord_or_conj_rel &
-  [ PRED 'if_then_rel ].
+  [ PRED "if_then_rel" ].
 
 ; noun noun compounds
 
