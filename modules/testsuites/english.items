@@ -1,0 +1,29 @@
+; English has:
+
+; SVO order
+; negation marked by selected adverb (selected by aux)
+; yes-no questions marked by subject-aux inversion
+
+;Kim saw Sandy
+n tv n
+s tv o
+*n n tv
+*tv n n
+*o tv s
+
+;Kim did not see Sandy
+n aux neg-adv tv n
+*n tv neg-adv n
+*n neg-adv aux tv n
+*n neg-adv tv n
+*n aux tv neg-adv n
+
+;Did Kim see Sandy?
+aux n tv n
+*tv n n
+*aux tv n n 
+
+;Did Kim not see Sandy?
+aux n neg-adv tv n
+*aux n tv neg-adv n
+*aux neg-adv n tv n 

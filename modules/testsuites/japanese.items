@@ -1,0 +1,32 @@
+; Based on what I know about Japanese
+
+; Japanese has:
+; V-final order
+; negation expressed as suffix on the verb
+; yes-no questions with a sentence-final marker
+
+; taroo-ga gohan-wo tabeta
+; Taroo-NOM food-ACC ate
+n n tv
+*n tv n
+s o tv
+o s tv
+*tv n n
+
+; taroo-ga gohan-wo tabenakatta
+; Taroo-NOM food-ACC eat.neg.past
+n n tv-NEG
+*n n NEG-tv
+
+; taroo-ga gohan-wo tabeta ka
+' Taroo-NOM food-ACC ate QPART
+n n tv QPART
+*QPART n n tv
+*n QPART n tv
+*n n QPART tv
+
+; taroo-ga gohan-wo tabenaktta ka
+; Taroo-NOM food-ACC eat.net.past QPART
+n n tv-NEG QPART
+*n n QPART tv-NEG
+*n n tv QPART-NEG

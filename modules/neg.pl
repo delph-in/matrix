@@ -1,5 +1,9 @@
 #!/usr/bin/perl
 
+# packages to include
+
+use Switch;
+
 # Perl script for customizing module handling sentential
 # negation.  We'll eventually probably want just one big
 # perl/cgi thing which handles all of the modules.  Negation
@@ -25,9 +29,10 @@ $matrix_dir = $answer;
 unless (-e $matrix_dir."/lkb/script") {
 #    die "There's something wrong with the Matrix stored in $matrix_dir.\n";
     print "There's something wrong with the Matrix stored in $matrix_dir.\n";
-    print "I'm trying /home/bender/lingo/grammars/matrix\n\n";
 # CHANGE HERE
-    $matrix_dir = "/home/bender/lingo/grammars/matrix";
+#    $matrix_dir = "/home/bender/lingo/grammars/matrix";
+    $matrix_dir = "/Users/erb/lingo/grammars/matrix";
+    print "I'm trying $matrix_dir\n\n";
 }
 
 print "This questionnaire will help you build a prototype\n analysis of negation for your grammar.\n\n";
@@ -48,58 +53,46 @@ $answer = &getanswer("A","a","B","b","C","c","D","d");
 # A and B go straight to subroutines.
 # C looks for subcases, and then calls subroutines.
 
-if ($answer =~ /^[Aa]/) {
+switch ($answer) {
 
-    &generate_infl_neg;
-
-} elsif ($answer =~ /^[Bb]/) {
-    
-    &generate_adv_neg;
-
-} elsif ($answer =~ /^[Dd]/) {
-    
-    print "Sorry, I can't help you with negation today.\n";
-
-} elsif ($answer =~ /^[Cc]/) {
+    case /^[Aa]/ { &generate_infl_neg; }
+    case /^[Bb]/ { &generate_adv_neg; }
+    case /^[Dd]/ {
+	print "Sorry, I can't help you with negation today.\n";
+    }
+    case /^[Cc]/ {
 
 # Here is where we need more input from the user, to find
 # out which kind of "both" it is.
 
-    print "You've said your language has both inflectional sentential\n";
-    print "negation and adverbial sentential negation.  Which scenario\n";
-    print "best describes your language?\n\n";
+	print "You've said your language has both inflectional sentential\n";
+	print "negation and adverbial sentential negation.  Which scenario\n";
+	print "best describes your language?\n\n";
 
-    print "\t a) inflectional negation and adverbial negation are in\n\t\t"."complementary distribution\n";
-    print "\t b) the inflectional negation and the adverb can appear\n\t\t"."independently or together\n";
-    print "\t c) sentential negation requires both the inflection and\n\t\t"."the adverb\n";
-    print "\t d) none of the above\n\n";
+	print "\t a) inflectional negation and adverbial negation are in\n\t\t"."complementary distribution\n";
+	print "\t b) the inflectional negation and the adverb can appear\n\t\t"."independently or together\n";
+	print "\t c) sentential negation requires both the inflection and\n\t\t"."the adverb\n";
+	print "\t d) none of the above\n\n";
       
-    $answer = &getanswer("A","a","B","b","C","c","D","d");
+	$answer = &getanswer("A","a","B","b","C","c","D","d");
 
 # Call appropriate subroutine(s) on the basis of the answer.
 # D just prints the "sorry can't help message."
 # A and B call multiple subroutines, C just one.
-
-    if ($answer =~ /^[Aa]/) {
-
-	&generate_infl_neg;
-	&generate_adv_neg; 
-
-    } elsif ($answer =~ /^[Bb]/) {
-
-	&generate_infl_neg;
-	&generate_adv_neg; 
-	&generate_both_neg;
-
-    } elsif ($answer =~ /^[Cc]/) {
-
-	&generate_both_neg;
-
-    } elsif ($answer =~ /^[Dd]/) {
-
-	print "Sorry, I can't help you with negation today.\n";
 	
-    } 
+	switch ($answer) {
+       
+	    case /^[Aa]/ { &generate_infl_neg;
+			   &generate_adv_neg; }
+	    case /^[Bb]/ { &generate_infl_neg;
+			   &generate_infl_neg;
+			   &generate_both_neg; }
+	    case /^[Cc]/ { &generate_both_neg; }
+	    case /^[Dd]/ { 
+		print "Sorry, I can't help you with negation today.\n";
+	    }
+	}
+    }
 }
 
 #################################################################
@@ -193,15 +186,119 @@ sub generate_adv_neg {
 #topic for another time.
 
     print "Generating tdl files for adverbial sentential negation.\n";
-    print "Be sure to load adv-neg.tdl, adv-neg-lex.tdl, and adv-neg-rules.tdl in your script.\n\n";
 
     print "You've said your language handles sentential negation\n";
-    print "via a negative adverb.  Is this element best described as:\n\n";
+    print "via a negative adverb.\n";
+
+    print "How is the negative adverb spelled? (default: neg-adv)\n\n";
+
+    $spelling = <STDIN>;
+    chomp($spelling);
+    if ($spelling =~ /^$/) {
+	$spelling = "neg-adv";
+    }
+
+    print "Is this element best described as:\n\n";
     print "\t a) an independent modifier\n";
     print "\t b) selected by a verb (auxiliary verb or main verb)\n\n";
 
     $answer = &getanswer("a","b","A","B");
 
+    switch ($answer) {
+
+	case /^[Aa]/ { 
+
+#For independent modifiers, determiner order of attachment (pre or posthead)
+#and bar-level of the thing it attaches to.  Assume for now that order
+#of attachment won't be free (this isn't hard to handle if we need it).
+#Need a better solution for forcing V-level attachment.
+
+	    print "Does it attach to the left or to the right of the head it modifies?\n";
+
+	    $order = &getanswer("L","l","R","r");
+
+	    if ($order =~ /^[Ll]/) {
+		$posthead = "-";
+	    } else {
+		$posthead = "+";
+	    }
+
+	    print "Does it attach to:\n\n";
+	    print "\t a) V\n";
+	    print "\t b) VP\n";
+	    print "\t c) S\n";
+            print "\t d) other\n\n";
+	 
+	    $barlevel = &getanswer("A","a","B","b","C","c","D","d");
+
+	    if ($barlevel =~ /^[Dd]/) {
+		print "Sorry, I can't help you with negation today.\n";
+		exit(0);
+	    }
+
+# That's all we need to know to write some tdl.  Start with type file.
+# Check for write permissions.  If we can't open the file for
+# output in the specified directory, exit. 
+
+	    &check_clobber("adv-neg.tdl");
+	    open(OUTPUT,">$matrix_dir"."/modules/adv-neg.tdl") || 
+		die "Cannot create matrix/modules/adv-neg.tdl.\n";
+	    
+	    print OUTPUT "\;\;\; -*- Mode: TDL; Package: LKB -*-\n\n";
+	    print OUTPUT "\;\;\; Autogenerated adverbial negation module\n";
+	    print OUTPUT "\;\;\; Use in conjunction with adv-neg-lex.tdl\n\n";
+
+	    print OUTPUT "neg-adv-lex := basic-scopal-adv-lex &\n";
+	    print OUTPUT "   [ SYNSEM.LOCAL.CAT [ POSTHEAD $posthead,\n";
+	    print OUTPUT "                        HEAD.MOD < [ LOCAL.CAT [ HEAD verb,\n";
+
+	    switch ($barlevel) {
+
+#Actually, this won't work.  We need some sort of LEX feature to force
+#attachment to V.
+
+		case /^[Aa]/ {
+		    print OUTPUT "                                                 VAL [ SUBJ cons,\n";
+		    print OUTPUT "                                                       COMPS cons ]]] > ]].\n\n";
+		}
+
+		case /^[Bb]/ {
+		    print OUTPUT "                                                 VAL [ SUBJ cons,\n";
+		    print OUTPUT "                                                       COMPS null ]]] > ]].\n\n";
+		}
+		 
+		case /^[Cc]/ {
+		    print OUTPUT "                                                 VAL [ SUBJ null,\n";
+                    print OUTPUT "                                                       COMPS null ]]] > ]].\n\n";
+		}
+	    }
+
+# Now generate lexical item file.
+
+	    &check_clobber("adv-neg-lex.tdl");
+	    open(OUTPUT,">$matrix_dir"."/modules/adv-neg-lex.tdl") || 
+		die "Cannot create matrix/modules/adv-neg-lex.tdl.\n";
+	    
+	    print OUTPUT "\;\;\; -*- Mode: TDL; Package: LKB -*-\n\n";
+	    print OUTPUT "\;\;\; Autogenerated adverbial negation module\n";
+	    print OUTPUT "\;\;\; Use in conjunction with adv-neg.tdl\n\n";
+
+	    print OUTPUT "neg-adv := neg-adv-lex &\n";
+            print OUTPUT "  [ SYNSEM.LKEYS.KEYREL \"_neg_r_rel\",\n";
+            print OUTPUT "    STEM < \"$spelling\" > ].\n\n"; 
+
+
+	    print "Be sure to load adv-neg.tdl and adv-neg-lex.tdl in your script.\n\n";
+
+	}
+
+	case /^[Bb]/ {
+
+	    print "Selected adverb case.  Needs lexical rules.\n";
+
+	}
+	    
+    }
 }
 
 # This will generate the tdl for two part negation.
@@ -228,14 +325,14 @@ sub check_clobber {
 # supplied by the user.
 
     my($file) = $matrix_dir."/modules/".$_[0];
+    my($answer);
 
 #    print "Calling check clobber on $file\n";
 
     if (-e $file) {
 
 	print "$_[0] already exists. Continue anyway? [yn]";
-	$answer = <STDIN>;
-	chomp($answer);
+	$answer = &getanswer("Y","y","N","n");
 	if ($answer =~ /^[Yy]$/) {
 	    
 	    print "Okay, continuing and overwriting output file...\n";
@@ -293,7 +390,7 @@ sub notinarray {
 
     for($i=1;$i<scalar(@_);$i++) {
 	
-	if ($_[0] =~ $_[$i]) {
+	if ($_[0] =~ /^$_[$i]/) {
 	    return 0;
 	}
 
