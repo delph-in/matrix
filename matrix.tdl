@@ -112,7 +112,7 @@ synsem-min := avm &
     NON-LOCAL non-local-min ].
 
 lex-or-phrase-synsem := synsem-min &
-  [ LEX bool ].
+  [ LIGHT luk ].
 
 synsem := synsem-min.
 
@@ -123,15 +123,12 @@ canonical-synsem := expressed-synsem &
 
 lex-synsem := canonical-synsem & lex-or-phrase-synsem &
   [ LOCAL local-min,
-    LEX +,
+    LIGHT +,
     LKEYS lexkeys ].
-
-; 04-03-23: Future revisions will replace the feature LEX
-; with a feature LIGHT.
 
 phr-synsem := canonical-synsem & lex-or-phrase-synsem &
   [ LOCAL local-min,
-    LEX - ].
+    LIGHT - ].
 
 non-canonical := synsem &
   [ LOCAL.CONT.HOOK.INDEX event-or-ref-index ].
@@ -197,10 +194,17 @@ non-local-none := non-local &
 
 cat-min := avm.
 
+; ERB 2004-05-05 Following ERG, add a feature HC-LIGHT which indicates
+; whether a head-comp phrase projected from a head is treated as light
+; or heavy.  That is, whether or not a phrase consisting of heads and
+; complements is light or heavy is taken to be a lexical property of
+; the head.
+
 cat := cat-min &
   [ HEAD head-min,
     VAL valence-min,
     MC luk,
+    HC-LIGHT luk,
     POSTHEAD bool ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1001,6 +1005,8 @@ basic-head-spec-phrase := head-valence-phrase & non-clause & phrasal &
              RELS <! !>,
 	     HCONS <! !> ] ].
 
+; Value of LIGHT comes from head-daughter's specification in HC-LIGHT.
+
 basic-head-comp-phrase := head-valence-phrase & head-compositional &
 			  binary-headed-phrase &
   [ SYNSEM canonical-synsem &
@@ -1009,13 +1015,13 @@ basic-head-comp-phrase := head-valence-phrase & head-compositional &
                                COMPS #comps,
                                SPR #spr ],
                          POSTHEAD #ph ],
-             LEX #lex ],
+             LIGHT #light ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC #mc,
                                   VAL [ SUBJ #subj,
                                         COMPS < #synsem . #comps >,
                                         SPR #spr ],
-                                  POSTHEAD #ph ],
-                      LEX #lex ], 
+				  HC-LIGHT #light,
+                                  POSTHEAD #ph ]], 
     NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem,
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ] ].
@@ -1067,7 +1073,7 @@ basic-head-opt-two-comp-phrase := basic-head-opt-comp-phrase &
 ; Unary rules for extraction
 
 basic-extracted-arg-phrase := head-valence-phrase & head-only &
-  [ SYNSEM.LEX - ].
+  [ SYNSEM.LIGHT - ].
 
 basic-extracted-comp-phrase := basic-extracted-arg-phrase & 
                                head-compositional &
@@ -1100,14 +1106,18 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase &
 				  MC na ],
 		      NON-LOCAL.SLASH.LIST < #local > ] ].
 
+; ERB 2004-05-05 Allow modifiers to attach to things with
+; non-empty comps lists.  The head-mod-phrase will pass up
+; the COMPS requirement, whatever it was.
+
 head-mod-phrase := head-nexus-phrase &
   [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj,
                              SPR #spr,
-                             COMPS < > ],
+                             COMPS #comps ],
              MODIFIED hasmod ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj,
                                       SPR #spr,
-                                      COMPS olist ],
+                                      COMPS #comps ],
                       NON-LOCAL [ REL 0-dlist ] ] ].
 
 basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal.
@@ -1182,9 +1192,9 @@ head-mod-phrase-simple := basic-head-mod-phrase-simple &
 adj-head-phrase := basic-head-mod-phrase-simple & head-final &
   [ SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
 	     MODIFIED lmod & [ PERIPH #periph ],
-             LEX #lex ],
+             LIGHT #light ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
-                      LEX #lex ],
+                      LIGHT #light ],
     NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.COMPS < > ],
 			  NON-LOCAL [ SLASH 0-dlist,
 				      REL 0-dlist ],
