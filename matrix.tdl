@@ -490,7 +490,7 @@ prep-mod-relation := arg12-ev-relation.
 ; NB: Negation is represented not as a subtype of adv-relation, but as an 
 ; adv-relation with the PRED value neg_rel.
 
-adv-relation := arg0-relation.
+adv-relation := arg1-relation.
 
 ; coordinating and subordinating conjunctions
 
@@ -665,14 +665,20 @@ onull := olist & null.
 
 lex-rule := phrase-or-lexrule & word-or-lexrule &
   [ NEEDS-AFFIX bool,
-    SYNSEM.LOCAL.CONT.RELS [ LIST #first,
+    SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
 			     LAST #last ],
+			HCONS [ LIST #hfirst,
+				LAST #hlast ] ],
     DTR #dtr & word-or-lexrule &
-	[ SYNSEM.LOCAL.CONT.RELS [ LIST #first,
-		  		   LAST #middle ],
+	[ SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
+		  	             LAST #middle ],
+			      HCONS [ LIST #hfirst,
+				      LAST #hmiddle ] ],
 	  ALTS #alts ],
-    C-CONT.RELS [ LIST #middle,
-		  LAST #last ],
+    C-CONT [ RELS [ LIST #middle,
+		    LAST #last ],
+	     HCONS [ LIST #hmiddle,
+		     LAST #hlast ]],
     ALTS #alts,
     ARGS < #dtr > ].
 
@@ -1708,14 +1714,38 @@ attrib-or-pred-lex-item := lex-item &
 basic-verb-lex := norm-sem-lex-item & 
   [ SYNSEM.LKEYS.KEYREL	event-relation ].
 
-basic-adjective-lex := norm-sem-lex-item &
+basic-adjective-lex := norm-hook-lex-item & single-rel-lex-item &
   [ SYNSEM.LKEYS.KEYREL event-relation ].
 
-basic-adposition-lex := norm-sem-lex-item &
+basic-scopal-mod-adj-lex := basic-adjective-lex &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL scopal-mod ] > ].
+
+basic-int-mod-adj-lex := basic-adjective-lex & no-hcons-lex-item &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL intersective-mod ] > ].
+
+basic-nomod-adj-lex := basic-adjective-lex & no-hcons-lex-item &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
+
+basic-adposition-lex := norm-hook-lex-item & single-rel-lex-item &
   [ SYNSEM.LKEYS.KEYREL prep-mod-relation ].
 
-basic-adverb-lex := norm-sem-lex-item &
+basic-scopal-mod-adposition-lex := basic-adposition-lex &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL scopal-mod ] > ].
+
+basic-int-mod-adposition-lex := basic-adposition-lex & no-hcons-lex-item &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL intersective-mod ] > ].
+
+basic-nomod-adposition-lex := basic-adposition-lex & no-hcons-lex-item &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
+
+basic-adverb-lex := norm-hook-lex-item & single-rel-lex-item &
   [ SYNSEM.LKEYS.KEYREL adv-relation ].
+
+basic-scopal-adverb-lex := basic-adverb-lex &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL scopal-mod ] > ].
+
+basic-int-adverb-lex := basic-adverb-lex & no-hcons-lex-item &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL intersective-mod ] > ].
 
 ; Anticipate subtypes of basic-noun-lex for common nouns,
 ; proper nouns, and pronouns.  All are treated as norm-sem-lex-item
