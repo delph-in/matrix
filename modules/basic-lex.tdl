@@ -29,3 +29,15 @@ intransitive-verb-lex := basic-verb-lex & intransitive-lex-item &
 			     SPEC < > ]],
     ARG-ST < #subj &
 	     [ LOCAL.CAT.VAL.SPR < > ] > ].
+
+ditransitive-verb-lex := basic-verb-lex & ditransitive-lex-item &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+			     COMPS < #comps1, #comps2 >,
+			     SUBJ < #subj >,
+			     SPEC < > ]],
+    ARG-ST < #subj &
+	     [ LOCAL.CAT.VAL.SPR < > ], 
+	     #comps1 &
+	     [ LOCAL.CAT.VAL.SPR < > ],
+	     #comps2 &
+	     [ LOCAL.CAT.VAL.SPR < > ] > ].

@@ -136,7 +136,6 @@ Strict VO or OV order, plus opposite head-comp order for
 ... How to tell when to count `inverted' orders as derived? ...
 ... What is our current thinking about olist?  Assuming for now
  that we are explicitly discharging all complements ...
-
 ... Semantics is currently a bit broken because the
 head-subj rule is ready to be tied up with declarative
 clause stuff. Maybe rethink whether that's an option we
@@ -145,6 +144,11 @@ productions for the introduction of messages?  Seems to work
 better in languages where subject can (or must) attach
 before object, since not all verbs have objects, but we
 are assuming subjects (or at least pro-drop) everywhere.
+... As the word order modules get fancier, we'll need to
+make sure that the pro-drop modules are compatible with them
+(specifically worried about spurious ambiguity).  It would
+be nice to have just one set of pro-drop modules, but they
+may have to be written relative to the word order module choice?...
 
 Subcategorization:
 
@@ -165,6 +169,13 @@ Relatively general modules:
  agreement (S-V, Det-N, Adj-N; for png, case, other?)
  ARG-ST to VAL mapping: ergative v. accusative
  complex predicates 
+ complement reordering -- I'm implementing this for
+   free word order languages as part of the word order
+   module, but for more constrained languages it could
+   presumably be separate. (?)  At least, it should be
+   presented as a separate choice.    Need to consider
+   which kinds of reordering are best handled by lexical
+   rules, too.
 
 Less universal modules:
 

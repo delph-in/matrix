@@ -1118,19 +1118,35 @@ basic-head-comp-phrase := head-valence-phrase & head-compositional &
   [ SYNSEM canonical-synsem &
 	   [ LOCAL.CAT [ MC #mc,
                          VAL [ SUBJ #subj,
-                               COMPS #comps,
                                SPR #spr ],
                          POSTHEAD #ph ],
              LIGHT #light ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC #mc,
                                   VAL [ SUBJ #subj,
-                                        COMPS < #synsem . #comps >,
                                         SPR #spr ],
 				  HC-LIGHT #light,
                                   POSTHEAD #ph ]], 
-    NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem,
+    NON-HEAD-DTR.SYNSEM canonical-synsem,
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ] ].
+
+; ERB 2004-12-14 This is what used to be called basic-head-comp-phrase.
+
+basic-head-1st-comp-phrase := basic-head-comp-phrase &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,
+    HEAD-DTR.SYNSEM.LOCA.CAT.VAL.COMPS < #synsem . #comps >,
+    NON-HEAD-DTR.SYNSEM #synsem ].
+
+; ERB 2004-12-14 First pass at a rule that realizes complements
+; out of order.
+
+basic-head-2nd-comp-phrase := basic-head-comp-phrase &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #firstcomp . #othercomps >,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS [ FIRST #firstcomp,
+					  REST < #synsem . #othercomps > ],
+    NON-HEAD-DTR #synsem ].
+
+
 
 ; Skip an optional complement as long as there is still another obligatory
 ; complement on the list.  Two subtypes allow for one or two optional
@@ -1173,6 +1189,7 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
                       MODIFIED #mod ] ],
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ] ].
+
 
 ; ERB 2004-05-10 For languages that allow "pro-drop" of subjects.
 ; (Languages that also allow "pro-drop" of other arguments will

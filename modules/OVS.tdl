@@ -3,7 +3,7 @@
 ;;;  Module for OVS word order; types file.
 ;;;  Used in combination with OVS  word order rules file.
 
-comp-head-phrase := basic-head-comp-phrase & head-final.
+comp-head-phrase := basic-head-1st-comp-phrase & head-final.
 head-subj-phrase := basic-head-subj-phrase & head-initial &
    [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 

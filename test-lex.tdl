@@ -19,3 +19,6 @@ iverb_v := intransitive-verb-lex &
    [ STEM < "verb" >,
      SYNSEM.LKEYS.KEYREL.PRED '_iverb_v_rel ].
 
+dverb_v := ditransitive-verb-lex &
+   [ STEM < "verb" >,
+     SYNSEM.LKEYS.KEYREL.PRED '_dverb_v_rel ].
