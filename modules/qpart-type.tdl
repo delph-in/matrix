@@ -4,7 +4,7 @@ qpart-le := norm-sem-lex-item & norm-zero-arg &
   [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL [ CAT [ HEAD verb,
                                                       VAL [ SUBJ < >,
                                                             COMPS < > ] ],
-                                                CONT.HOOK #mtop ] ] >,
+                                                CONT.HOOK.LTOP #mtop ] ] >,
                            VAL [ SUBJ < >,
                                  COMPS < > ],
                            POSTHEAD - ],
