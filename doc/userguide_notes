@@ -1,0 +1,105 @@
+Some questions:
+
+-- Why exactly do we expect not to need features on semsorts?
+(Or are we just taking that position to start with because it
+is more constrained?)
+
+-- Are there potentially cases where a verb might constrain
+both the CONT.HOOK.INDEX and the CAT.KEYS.KEY value?  If so,
+they would be interesting to discuss.  
+
+-- I adapted the example of abstain_v1 to be consistent with 
+the placement of --COMPKEY in LKEYS (not KEYS) and with 
+--COMPKEY being sort valued.... or wanted to, but didn't know how
+that sort was going to be spelled.  Dan, can you update this?
+
+-- In 4.1 we say that nouns and verbs identify their LKEYS.--KEYREL.ARG0
+with their CONT.HOOK.INDEX, but we don't say what happens for prepositions,
+adjectives, and adverbs.  What should happen?
+
+-- Are we going to specify PRED values for things like named_rel,
+in addition to the distinguished relation types?  If so, we should
+be consistent and do this every place we don't expect there to be
+variation in the PRED value of a type (cf. message types).
+
+-- v0.5 doesn't have any types like noun_arg1_rel, although these
+are mentioned in the paper.  Fix v0.5 or put a fn in the paper? 
+
+-- Also, in the quick mention of deverbal nouns, should we say something
+about the analysis of nominalizations (i.e., a nominalization_rel
+wrapped around the event_rel) in the brief mention of deverbal
+nouns?
+
+-- I'm not sure I'm convinced about temporally constrainted NPs
+being interpreted outside the grammar...  Maybe we can just be
+a bit more vague and relegate this to future work?
+
+-- The paragraph describing the HOOK.INDEX values of adjectives
+and related issues was pretty dense.  I'm not up to fixing it right
+now though.
+
+-- Should we mention the whole reduced relatives issue for postmodifiers
+of Ns in English?  (I.e., the idea that we came to this summer about
+having modifier PPs only modify verbal projections, and having 
+nominal PP modifiers actually be reduced relatives, and include
+a proposition...)
+
+-- Would adverbs ever have an ARG1 value?  Also, I'm a little unclear
+as to why "with care" gets its own ARG0 event variable while "carefully"
+doesn't...
+
+-- The names of the message types (at least the leaf types) need
+to be fixed in the paper and in matrix.tdl in order to be made 
+consistent with the naming conventions.
+
+-- Give specific page ref in G&S 2000 for questions embedding propositions?
+
+-- This, from 4.2.3, is inconsistent with what we say in 3.5:
+
+[DAN: Why do we need a separate type here?  Isn't being the value of a
+{\sc c-arg} distinctive enough? [DPF] No, it turns out that the
+grammar needs to be able to exclude conjoined phrases in certain
+contexts, and the only obvious distinction available is this conj-ind
+type, since the syntax of a conjoined phrase is by hypothesis not
+distinguishable from ordinary phrases.  We could maybe do it with the
+(new) SORT attribute instead, but will have to wait and see.]
+
+One or the other needs to be fixed...
+
+-- The last paragraph of 4.2.3 re L-HNDL and R-HNDL in coordinated
+NPs is opaque to me.  Wouldn't the value of these features at least
+qeq the LTOP of the two noun phrases?  If not, why not?
+
+-- I fixed the mrs for the office char arrived to match the avm
+macros we've otherwise been using, and also put in the standardized
+PRED names. But I wasn't sure: should _def_q_rel have a leading
+underscore?  It doesn't in the ERG at present.  
+
+-- What's the regularized form of n-n-cmpnd?  (I've put in 
+n-n-cmpd\_rel in a few places.)  Is it going to be a special relation,
+or just a PRED value on a prep_mod_rel?
+
+-- Also, should we footnote the display of PRED names as types
+as a display thing, regularize to PRED values (and show the
+corresponding relation types) or leave as is?
+
+-- In the discussion of linking types in the ERG, I replaced the fake
+type names with real ones, but then changed the constraints around a
+bit to anticipate --KEYREL instead of relation-valued KEYS.KEY.
+Should we add anything here about qeqs in the two scopal types (insist
+and probably)? [Didn't quite get to finding the right type to replace
+subj-rais-verb, obj-rais-verb, or expl-subj-verb with, also, my choice
+of types and placement of footnotes may be somewhat inconsistent.]
+
+
+-- 6.8.1 insert ref to Levine (? -- whoever Ivan keeps refering
+to regarding that other theory of XARG) or possibly Ivan's French
+rel cl paper (need permission first).
+
+-- I didn't see the point of the example "The dog believes there
+to be a cat" -- we should either spell this out more, or leave it
+out, I think.
+
+-- Sem-I:  I'm still not convinced that matrix v. language specific
+and automatically generated v. hand-built are really going to line
+up.  I think we should probably say less rather than more here...
