@@ -1,0 +1,13 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
+qpart-le := norm-sem-lex-item & norm-zero-arg &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL [ CAT [ HEAD verb,
+                                                      VAL [ SUBJ < >,
+                                                            COMPS < > ] ],
+                                                CONT.HOOK #mtop ] ] >,
+                           VAL [ SUBJ < >,
+                                 COMPS < > ],
+                           POSTHEAD - ],
+                     CONT.RELS <! arg1-relation & 
+                                  [ PRED "question-rel",
+                                    ARG1 #mtop ] !> ] ] ].

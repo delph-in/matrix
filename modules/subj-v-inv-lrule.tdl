@@ -1,0 +1,12 @@
+sujb-v-inv-lrule := const-ltol-rule &
+  [ DTR [ SYNSEM [ LOCAL [ CAT [ HEAD verb & #head,
+			         VAL [ SUBJ < #subj >,
+                                       COMPS #comps ] ],
+			   CONT #cont ],
+                   NON-LOCAL #nonloc ] ],
+    SYNSEM [ LOCAL [ CAT [ HEAD #head,
+			   VAL [ COMPS < #subj . #comps >,
+				 SUBJ < > ] ],
+		     CONT #cont ],
+             NONLOC #nonloc ],
+    C-CONT.RELS <! !> ].
