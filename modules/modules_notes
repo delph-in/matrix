@@ -91,7 +91,16 @@ Allow for languages that allow both head-comp and comp-head
 
 Current word order solution has SVO, SOV, etc all as separate
 files with some redundant constraints.  Consider pulling out
-generalizations and `inheriting'?  
+generalizations and `inheriting'?  For example, strict SOV
+is the same as strict v-final with the additional constraint
+on the COMPS value of the head-dtr in the head-subj phrase.  
+But then we need to encode somewhere that you want both files --
+this might work fine when it's all wrapped in a UI, but probably
+best not to do it that way yet. 
+
+OSV/SOV/V-final all share the same rules file.  Avoid
+duplication in this case.
+Likewise for VSO/VOS/V-initial.
 
 What to do with strict head-comp first v. optional head-comp
 first?  That is, what about languages that allow OSV and SOV?
