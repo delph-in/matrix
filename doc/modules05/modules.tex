@@ -51,8 +51,7 @@ Manual development of precise broad-coverage grammar implementations
 is a labor-intensive undertaking, typically requiring multiple years
 of work by highly trained computational linguists.  Recent implementation
 efforts toward reducing the time and level of expertise needed for producing
-a new grammar have focused either on adapting an existing grammar of a
-related language \cite{Butt-et-al-02,Kim:Dal:Kap:Kin:Mas:Ohk:03,Bat:Kru:Kru:ta}, or
+a new grammar have focused either on adapting an existing grammar of another language \cite{Butt-et-al-02,Kim:Dal:Kap:Kin:Mas:Ohk:03,Bat:Kru:Kru:ta}, or
 on identifying a set of language-independent grammar constraints to
 which language-specific constraints can be added~\cite{Ben:Fli:Oe:02}.
 Neither implementation approach has benefited from the substantial
@@ -66,8 +65,8 @@ automatically generates the necessary language-specific constraints as
 extensions to the Matrix grammar files, enabling the linguist to
 produce a working prototype grammar with very little effort or
 computational expertise.  We illustrate this concept of a
-typology-based module for several phenomena including basic word
-order, sentence negation, and yes-no questions, and we conclude with
+typology-based module for basic word
+order, sentential negation, and yes-no questions, and we conclude with
 an evaluation of the resulting grammar implementations for a variety
 of languages.
 
@@ -123,7 +122,7 @@ A functional system which is represented in every language is
 sentential negation, expressed using a variety of mechanisms.  On 
 the other hand, there are linguistic
 phenomena which appear in only some languages, and are difficult to
-conceptualize as alternative realizations of the same function.  More
+conceptualize as alternative realizations of some universal function.  More
 importantly, for our purposes, ordinary working linguists (`OWLs')
 don't conceptualize them in this way.  These include things like
 noun incorporation, numeral classifiers, and auxiliary verbs; each of
@@ -138,8 +137,8 @@ glance to be analogous to the Principles and Parameters proposed
 by \newcite{Chomsky81} and others.
 However, they differ in at least one important respect:
 Whereas Parameters are meant to be abstract `switches'
-which simultaneously control multiple different, apparently 
-unrelated surface phenomena, the modules in the Matrix each directly
+which simultaneously control multiple different, and apparently 
+unrelated, surface phenomena, the modules in the Matrix each directly
 encode the constraints necessary to handle one particular phenomenon.
 Nonetheless, this does not make the modules themselves trivial:
 they need to be carefully designed in order to be mutually
@@ -167,7 +166,7 @@ the core Matrix while maintaining consistency with the module-derived
 customizations for individual languages, and issues with enabling the
 linguist to go back and revise decisions in the face of new
 information or improved linguistic analyses; both are discussed in
-in \S\ref{management} below.
+\S\ref{management} below.
 
 \section{Implementations of three modules}
 \label{imp}
@@ -209,7 +208,7 @@ those types as required by the \lkb\ parser.
 The word order modules implemented so far handle 
 SOV, SVO, VSO, VOS, OVS, OSV, V-final, V-initial, and
 free word order.\footnote{VOS, OVS and OSV are extremely rare among
-the world's languages, with OSV being arguably unattested.
+the world's languages, with OVS being arguably nearly unattested.
 Nonetheless, we decided to implement support for all of them.}  In the
 strict word orders, only one head-complement and one head-subject rule
 are posited, with a strict ordering between them.  For V-final and
@@ -273,7 +272,7 @@ representing different patterns of optionality of determiners.
 We have been speaking of these modules as handling the order of
 subjects, complements, and verbs, but two caveats are in order.  First,
 the head-complement and head-subject rules posited are not constrained
-to any particular part of speech type. Thus, the system that is
+to any particular part of speech (head) type. Thus, the system that is
 produced models languages with consistent ordering of heads and
 dependents, for heads of all parts of speech.  The Matrix provides a
 type hierarchy of {\sc head} values that allows for statements over any
@@ -283,7 +282,7 @@ this remains future work.  Second, we began by considering clauses
 with at most one complement, but of course that is an
 oversimplification.  The rules as stated will handle an unbounded
 number of complements, and realize them in an order determined by
-their order on the head daughter's complements ({\sc comps}) list.
+their order on the lexical head's complements ({\sc comps}) list.
 
 The next obvious step is to allow some flexibility in the order of
 complements.  We believe that this will be best handled as a separate,
@@ -294,7 +293,7 @@ other and with adjuncts fairly easily but keeps NP complements close
 to their selecting heads, with Japanese, which generally allows free
 ordering of complements and indeed free ordering between complements
 and subjects (`scrambling').}  As a first step in this direction,
-however, we have implemented a head-2nd-comp-rule which realizes the
+however, we have implemented a head-2nd-comp-phrase which realizes the
 second element of a head's {\sc comps} list, while passing the first
 complement up to be realized at a higher level in the tree.  This rule
 is instantiated for the free-word-order module only.  For sentences
@@ -308,7 +307,7 @@ to be handled to produce a system useful across a broad range of
 languages.  The first is mixed word order, where two or more word
 orders are arguably basic, but the choice between them is syntactically
 constrained: either by head type (as discussed above) or by clause
-type (matrix v.\ subordinate).  The second is a representation of the
+type (main v.\ subordinate).  The second is a representation of the
 pragmatic effects of word order, especially in free word-order
 languages.\footnote{In languages with relatively fixed word order, the
 displacement constructions which produce alternative orders provide a
@@ -334,7 +333,7 @@ once the clause is constructed.
 
 Subject-aux inversion is a minor extension of the basic inversion type,
 simply constraining the lexical rule to only apply to auxiliary verbs.
-This module does not deal with the special case of an additional 'support'
+This module does not deal with the special case of an additional `support'
 verb like {\it do} used in English yes-no questions lacking any other
 auxiliary verb, though it could be so extended if such support verbs
 proved to be needed for other languages.
@@ -361,7 +360,7 @@ as a hybrid: sentential negation through verbal inflection; a V,
 VP, or S adverb (pre- or post-head); and inflection in complementary
 distribution with a negative adverb. We will illustrate two of these
 here.  In the near future, we plan to add support for negation as a
-selected adverb which appears as the complement of an auxiliary verb 
+selected adverb which appears as the complement of a (main or auxiliary) verb 
 and inflection in combination with a selected adverb,
 either optionally or obligatorily.
 
@@ -422,13 +421,13 @@ provided by the user.
 
 \subsection{Summary}
 
-This work also sheds some light on the nature of modularity in grammar
-engineering and in the HPSG framework.  What looks like a module from
+This work sheds some light on the nature of modularity in grammar
+engineering and in the \hpsg\ framework.  What looks like a module from
 a typological perspective (word order, sentential negation, etc.)\ is
 in fact tightly integrated with the rest of the grammar from the point
 of view of an individual language.  In the context of this project,
 this means that care must be taken to ensure that the various modules
-interact properly, and in fact sometimes need to explicitly say
+interact properly, and in fact one module sometimes needs to explicitly say
 something about another part of the system.  For example, the free
 word order module posits an additional feature {\sc attach} to require
 rightward attachment before leftward attachment of arguments.  The
@@ -438,7 +437,7 @@ purpose-built extension to tdl syntax which allows constraints to be
 added to an already declared type.  At the same time, working at a
 typological level has revealed another kind of modularity: the
 possibility of reusing pieces of analysis across different modules,
-for example, the same rules instances work for the V-final, SOV and
+for example, reusing the same rule instances for the V-final, SOV and
 OSV word order modules.
 
 
@@ -484,7 +483,7 @@ rather miserably on the second, UI-focused, criterion.  It would be
 desirable to present the user with linguistic questions in a dynamic
 fashion (presenting the choice of type of negative adverb only after
 that general strategy has been chosen, for example).  This approach
-does answer consideration (3) fairly well: it would be simple enough to
+does answer consideration (3) fairly well, however: it would be simple enough to
 provide a tool which compares the user's versions of the files
 included to off-the-shelf copies of the same modules, and alerts the
 user to any local changes to files which have either been updated by
@@ -498,7 +497,7 @@ modified files.
 A better solution would draw on linguistic knowledge stored in
 separate files to automatically produce both the files required by a
 particular grammar and the script that loads them.  The UI for this
-system would be a form or ``wizard'' which allowed user input of both
+system would be a form or wizard which allows user input of both
 broad choices (e.g., which word order system to use) and information
 to customize modules (is the negative inflection a prefix or a suffix?
 how is it spelled?).  Such subsidiary questions would only appear once
@@ -513,7 +512,7 @@ user through the linguistic questions (raising only those that become
 relevant) and generates both the grammar files and the grammar-loading
 script which the LKB uses to call them.  While the command-line UI is
 certainly far from ideal, it does succeed in simplifying the user's task
-of customizing the Matrix by making selections along the tree dimensions
+of customizing the Matrix by making selections along the three dimensions
 discussed in \S\ref{imp}.
 
 At the moment, the modules produce
@@ -525,11 +524,11 @@ generated grammars if the grammar code were more consolidated.
 
 To evaluate the mutual consistency of the modules developed so far as
 well as to illustrate their applicability to a interesting range of
-languages, we developed abstract testsuites for seven languages, in
+languages, we developed abstract test suites for seven languages, in
 each case including both grammatical and ungrammatical examples.  This
 sample of languages is not intended to be representative, either
 typologically or genetically; rather it is a convenience sample.  The
-testsuites are abstract in that we represent sentences in terms of
+test suites are abstract in that we represent sentences in terms of
 strings of part of speech tags rather than particular words, in order
 to sidestep the problems of lexica and morphology for each language.
 The languages and their properties are shown in
@@ -611,17 +610,17 @@ method allows for extremely rapid prototyping of deep precision
 grammars in such a way that the prototypes themselves can serve as the
 basis for sustained development.  We envision at least five potential
 uses for this kind of grammar prototyping: (i) in pedagogical
-contexts, it allows grammar engineering students to more quickly work
-on cutting-edge problems, (ii) in language documentation, where a
-documentary linguist in the field might be collaborating remotely with
-a grammar engineer to propose and test hypotheses, (iii) in leveraging
-the results from economically powerful languages to reduce the cost of
-creating resources for minority languages, (iv) in presenting
-typological properties in machine-readable format to improve ML
-algorithms which might need to be tuned differently for different
-kinds of languages, and (v) in supporting typological or comparative
-studies of linguistic phenomena or interactions between phenomena across
-languages.
+contexts, where it would allow grammar engineering students to more
+quickly work on cutting-edge problems, (ii) in language documentation,
+where a documentary linguist in the field might be collaborating
+remotely with a grammar engineer to propose and test hypotheses, (iii)
+in leveraging the results from economically powerful languages to
+reduce the cost of creating resources for minority languages, (iv) in
+presenting typological properties in machine-readable format to
+improve ML algorithms which might need to be tuned differently for
+different kinds of languages, and (v) in supporting typological or
+comparative studies of linguistic phenomena or interactions between
+phenomena across languages.
 
 %\section*{References}
 
