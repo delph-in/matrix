@@ -56,10 +56,14 @@
   (list
    (vsym "CARG")))
 
+(defparameter lkb::*semantics-index-path* 
+  (append *initial-semantics-path* (list (vsym "HOOK") (vsym "INDEX"))))
+  
 ;;;
 ;;; types for variable naming in mrsoutput (copy from `src/mrs/mrsglobals.lsp'
 ;;; but here to remind us to adapt them, as appropriate).
 ;;;
+
 (defparameter *event-type* (vsym "event"))
 (defparameter *event_or_index-type* (vsym "event_or_index"))
 (defparameter *non_expl-ind-type* (vsym "non_expl-ind"))
@@ -78,4 +82,5 @@
 ;;;
 ;;; context condition in MRS munging rules
 ;;; 
+
 (defparameter *mrs-rule-condition-path* (list (vsym "CONDITION")))
