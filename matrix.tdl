@@ -1,6 +1,6 @@
 ;;; -*- Mode: TDL; Package: LKB -*-
 ;;;
-;;;  HPSG Grammar Matrix Version 0.9
+;;;  HPSG Grammar Matrix Version 0.8
 ;;;
 ;;;  Copyright (c) 2002-2004
 ;;;    Emily M. Bender, Dan Flickinger, Stephan Oepen
@@ -33,8 +33,7 @@ basic-sign := sign-min &
 sign := basic-sign &
   [ SYNSEM synsem,
     ARGS list,
-    INFLECTED bool,
-    ROOT bool ].
+    INFLECTED bool ].
 
 ; C-CONT encodes the semantic contribution of the rule (phrasal
 ; or lexical).
@@ -47,8 +46,12 @@ phrase-or-lexrule := sign &
 word-or-lexrule-min := sign-min.
 
 ; ALTS allow lexical entries to block lexical rule application
+; ARG-ST is the argument structure list.  It appears only on
+; lexical items (words or lexical rules), not on phrases.
+
 word-or-lexrule := word-or-lexrule-min & sign &
-  [ ALTS alts-min ].
+  [ ALTS alts-min,
+    ARG-ST list ].
 
 alts-min := avm.
 alts := alts-min &
@@ -58,8 +61,7 @@ no-alts := alts-min.
 ; Not all words have lex-synsem - e.g. lexical PPs like "tomorrow" are
 ; phr-synsem since they can be post-nominal modifiers.
 
-word := word-or-lexrule &
-  [ ROOT - ].
+word := word-or-lexrule.
 
 lex-item := word-or-lexrule.
 
@@ -69,13 +71,7 @@ lex-item := word-or-lexrule.
 ;; most phrases will assign the type phr-synsem to the value of
 ;; SYNSEM, but not all.
 
-; Phrases don't have argument structure, but ARG-S is a feature
-; of local, not sign.  So rather than have subtypes of local for
-; phrases and lexical items, constrain phrases to have empty ARG-S.
-
-phrase := phrase-or-lexrule &
-  [ SYNSEM.LOCAL.ARG-S < >,
-    ROOT bool ].
+phrase := phrase-or-lexrule.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Affixation
@@ -98,7 +94,7 @@ tree-node-label := *top* &
 label := sign &
   [ LABEL-NAME string ].
 
-;; see lkbpatches
+; For complex node labels, like S/NP
 meta := sign &
   [ META-PREFIX string,
     META-SUFFIX string ]. 
@@ -117,6 +113,11 @@ synsem-min := avm &
     DEF-OPT bool,
     LOCAL mod-local,
     NON-LOCAL non-local-min ].
+
+; The feature LIGHT is used to model phenomena which distinguish
+; shorter words from longer ones, or constituents which are lexical
+; or nearly so from larger phrases.  It is inspired by the work 
+; of Abeille and Godard (e.g., 2003).
 
 lex-or-phrase-synsem := synsem-min &
   [ LIGHT luk ].
@@ -164,11 +165,6 @@ explicitly used in the Matrix.".
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LOCAL & NON-LOCAL values
 
-; The feature AGR is introduced on LOCAL rather than on CAT (or on HEAD) since
-; coordination schema unify the CAT value of the daughters with that of then
-; mother, but need to be able to change AGR on the mother (to get plural 
-; agreement on verb when subject is a coordinated NP with "and" vs. "or").  
-
 mod-local := avm.
 
 local-min := mod-local &
@@ -177,12 +173,11 @@ local-min := mod-local &
     AGR individual ].
 
 local := local-min &
-  [ CTXT ctxt-min,
-    ARG-S list ].
+  [ CTXT ctxt-min ].
 
 ; Types for distinguishing scopal v. intersective modifiers.
 ; (These types are used in the MOD value of modifiers, and 
-; references by the scopal/intersective head-adjunct rules.)
+; referenced by the scopal/intersective head-adjunct rules.)
 
 scopal-mod := local.
 intersective-mod := local.
@@ -552,8 +547,6 @@ arg12-ev-relation := arg1-ev-relation & arg12-relation.
 arg123-ev-relation := arg12-ev-relation & arg123-relation.
 arg1234-ev-relation := arg123-ev-relation & arg1234-relation.
 
-verb-ellipsis-relation := arg1-relation.
-
 ; Noun relations
 
 noun-relation := arg0-relation &
@@ -566,16 +559,6 @@ noun-arg1-relation := noun-relation & arg1-relation.
 named-relation := noun-relation &
   [ PRED named_rel,
     CARG string ].
-
-; Preposition relations
-
-prep-mod-relation := arg12-ev-relation.
-
-; adverb relations
-; NB: Negation is represented not as a subtype of adv-relation, but as an 
-; adv-relation with the PRED value neg_rel.
-
-adv-relation := arg1-relation.
 
 ; coordinating and subordinating conjunctions
 
@@ -590,13 +573,6 @@ conjunction-relation := subord-or-conj-relation &
 
 ; NB: "if_then_rel" is now a PRED value of subord-relation.
 subord-relation := subord-or-conj-relation.
-
-; noun noun compounds
-
-unspec-compound-relation := arg12-relation &
-  [ ARG0 event,
-    ARG1 ref-ind,
-    ARG2 ref-ind ].
 
 ; quantifier relation
 
@@ -785,11 +761,9 @@ lexeme-to-word-rule := lex-rule &
   [ INFLECTED +,
     KEY-ARG #keyarg,   
     SYNSEM #synsem,
-    ROOT #root,
     DTR [ INFLECTED -,
           KEY-ARG #keyarg,   
-          SYNSEM #synsem,
-          ROOT #root ],
+          SYNSEM #synsem ],
     C-CONT.RELS <! !> ].
 
 ; Lexeme-to-lexeme rules can make more radical changes to the SYNSEM value.
@@ -834,15 +808,13 @@ infl-ltow-rule := lexeme-to-word-rule & inflecting-lex-rule.
 ; identify HEAD but not AGR.
 
 headed-phrase := phrase & 
-  [ ROOT -,
-    SYNSEM.LOCAL [ CAT.HEAD head & #head,
+  [ SYNSEM.LOCAL [ CAT.HEAD head & #head,
                    AGR #agr ],
     HEAD-DTR.SYNSEM.LOCAL local &
 		 [ CAT.HEAD #head,
                    AGR #agr ] ].
 
-non-headed-phrase := phrase &
-  [ ROOT - ].
+non-headed-phrase := phrase.
 
 ; Most but not all phrases have SYNSEM phr-synsem; head-complement
 ; constructions have their SYNSEM type determined by the head-dtr.
@@ -890,8 +862,7 @@ basic-unary-phrase := phrase &
 				 [ CONT [ RELS [ LIST #first,
 						 LAST #middle ],
 					  HCONS [ LIST #scfirst,
-						  LAST #scmiddle ] ] ],
-                    ROOT - ] > ].
+						  LAST #scmiddle ] ] ] ] > ].
 
 unary-phrase := basic-unary-phrase &
   [ INFLECTED +,
@@ -910,14 +881,12 @@ basic-binary-phrase := phrase &
 				 [ CONT [ RELS [ LIST #first,
 						 LAST #middle1 ],
 					  HCONS [ LIST #scfirst,
-						  LAST #scmiddle1 ] ] ],
-                    ROOT - ],
+						  LAST #scmiddle1 ] ] ] ],
 	   sign & [ SYNSEM.LOCAL local &
 				 [ CONT [ RELS [ LIST #middle1,
 						 LAST #middle2 ],
 					  HCONS [ LIST #scmiddle1,
-						  LAST #scmiddle2 ] ] ],
-                    ROOT - ] > ].
+						  LAST #scmiddle2 ] ] ] ] > ].
 
 binary-phrase := basic-binary-phrase &
   [ INFLECTED +,
@@ -1502,11 +1471,11 @@ fully-inflected-lexeme := lex-item &
 ; clausal constructions with question semantics can require the presence
 ; of a question word.
 
-; basic_zero_arg lexical items have empty ARG-S lists.  They may
+; basic_zero_arg lexical items have empty ARG-ST lists.  They may
 ; introduce a non-empty value for one of the non-local features.
 
 basic-zero-arg := lex-item &
-  [ SYNSEM.LOCAL.ARG-S < > ].
+  [ ARG-ST < > ].
 
 zero-arg-nonslash := lex-item &
   [ SYNSEM.NON-LOCAL.SLASH 0-dlist ].
@@ -1540,7 +1509,7 @@ zero-arg-slash := zero-arg-nonrel & zero-arg-nonque.
 ; non-local values of their own, nor do they bind off any non-local
 ; feature values.  This assumes that the bottom of most long-distance
 ; dependencies is handles by a rule that constrains an argument (either
-; on the ARG-S list or a valence list) to be a synsem of type gap.
+; on the ARG-ST list or a valence list) to be a synsem of type gap.
 ; Elements like English tough adjectives which bind off a slash value
 ; will need a new type that doesn't amalgamate that slash value.
 ; Elements which both introduce REL or QUE values and take one or
@@ -1548,58 +1517,58 @@ zero-arg-slash := zero-arg-nonrel & zero-arg-nonque.
 ; amalgamate everything but add a value in addition.
 
 basic-one-arg := lex-item &
-  [ SYNSEM [ LOCAL.ARG-S < [ NON-LOCAL [ SLASH #slash,
-				REL #rel,
-				QUE #que ] ] >,
-    NON-LOCAL [ SLASH #slash,
-		REL #rel,
-		QUE #que ] ] ].
+  [ ARG-ST < [ NON-LOCAL [ SLASH #slash,
+			   REL #rel,
+			   QUE #que ] ] >,
+    SYNSEM.NON-LOCAL [ SLASH #slash,
+		       REL #rel,
+		       QUE #que ] ].
 
 basic-two-arg := lex-item &
-  [ SYNSEM [ LOCAL.ARG-S < [ NON-LOCAL [ SLASH [ LIST #smiddle,
-					LAST #slast ],
-				REL [ LIST #rmiddle,
-				      LAST #rlast ],
-				QUE [ LIST #qmiddle,
-				      LAST #qlast ] ] ],
-		  [ NON-LOCAL [ SLASH [ LIST #sfirst,
-					LAST #smiddle ],
-				REL [ LIST #rfirst,
-				      LAST #rmiddle ],
-				QUE [ LIST #qfirst,
-				      LAST #qmiddle ] ] ] >,
-    NON-LOCAL [ SLASH [ LIST #sfirst,
-			LAST #slast ],
-		REL [ LIST #rfirst,
-		      LAST #rlast ],
-		QUE [ LIST #qfirst,
-		      LAST #qlast ] ] ] ].
+  [ ARG-ST < [ NON-LOCAL [ SLASH [ LIST #smiddle,
+				   LAST #slast ],
+			   REL [ LIST #rmiddle,
+				 LAST #rlast ],
+			   QUE [ LIST #qmiddle,
+				 LAST #qlast ] ] ],
+	     [ NON-LOCAL [ SLASH [ LIST #sfirst,
+				   LAST #smiddle ],
+			   REL [ LIST #rfirst,
+				 LAST #rmiddle ],
+			   QUE [ LIST #qfirst,
+				 LAST #qmiddle ] ] ] >,
+    SYNSEM.NON-LOCAL [ SLASH [ LIST #sfirst,
+			       LAST #slast ],
+		       REL [ LIST #rfirst,
+			     LAST #rlast ],
+		       QUE [ LIST #qfirst,
+			     LAST #qlast ] ] ].
 
 basic-three-arg := lex-item &
-  [ SYNSEM [ LOCAL [ ARG-S < [ NON-LOCAL [ SLASH [ LIST #smiddle2,
-					  LAST #slast ],
-				  REL [ LIST #rmiddle2,
-					LAST #rlast ],
-				  QUE [ LIST #qmiddle2,
-					LAST #qlast ] ] ],
-                    [ NON-LOCAL [ SLASH [ LIST #sfirst,
-                                          LAST #smiddle1 ],
-                                  REL [ LIST #rfirst,
-					LAST #rmiddle1 ],
-				  QUE [ LIST #qfirst,
-					LAST #qmiddle1 ] ] ],
-                    [ NON-LOCAL [ SLASH [ LIST #smiddle1,
-                                          LAST #smiddle2 ],
-                                  REL [ LIST #rmiddle1,
-					LAST #rmiddle2 ],
-				  QUE [ LIST #qmiddle1,
-					LAST #qmiddle2 ] ] ] > ],
-    NON-LOCAL [ SLASH [ LIST #sfirst,
-                        LAST #slast ],
-                REL [ LIST #rfirst,
-		      LAST #rlast ],
-		QUE [ LIST #qfirst,
-		      LAST #qlast ] ] ] ].
+  [ ARG-ST < [ NON-LOCAL [ SLASH [ LIST #smiddle2,
+				   LAST #slast ],
+			   REL [ LIST #rmiddle2,
+				 LAST #rlast ],
+			   QUE [ LIST #qmiddle2,
+				 LAST #qlast ] ] ],
+	     [ NON-LOCAL [ SLASH [ LIST #sfirst,
+				   LAST #smiddle1 ],
+			   REL [ LIST #rfirst,
+				 LAST #rmiddle1 ],
+			   QUE [ LIST #qfirst,
+				 LAST #qmiddle1 ] ] ],
+	     [ NON-LOCAL [ SLASH [ LIST #smiddle1,
+				   LAST #smiddle2 ],
+			   REL [ LIST #rmiddle1,
+				 LAST #rmiddle2 ],
+			   QUE [ LIST #qmiddle1,
+				 LAST #qmiddle2 ] ] ] >,
+    SYNSEM.NON-LOCAL [ SLASH [ LIST #sfirst,
+			       LAST #slast ],
+		       REL [ LIST #rfirst,
+			     LAST #rlast ],
+		       QUE [ LIST #qfirst,
+			     LAST #qlast ] ] ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Subcategorization/linking
@@ -1635,7 +1604,7 @@ basic-three-arg := lex-item &
 ; be meaningless.)  Subordinating conjunctions will have even more
 ; to say semantically.
 
-; We are also leaving underspecified the mapping from ARG-S to
+; We are also leaving underspecified the mapping from ARG-ST to
 ; valence features.  The phrase structure rules assume one particular
 ; inventory of valence features (SPR, SUBJ, COMPS), but the exact
 ; deployment of those features might be language-specific (e.g.,
@@ -1643,7 +1612,7 @@ basic-three-arg := lex-item &
 ; rules differentiate SPR and SUBJ in that SPR is treated as the
 ; semantic head.
 
-; By hypothesis, the order of the syntactic arguments on the ARG-S
+; By hypothesis, the order of the syntactic arguments on the ARG-ST
 ; list corresponds to the order of the semantric arguments ARGn, with
 ; the caveat that not all syntactic arguments are also semantic
 ; arguments, as in constructions involving expletives or raising.  The
@@ -1651,10 +1620,10 @@ basic-three-arg := lex-item &
 ; have their interpretation specified in the Sem-I, where the
 ; interpretations of each ARGn will be relative to (classes of)
 ; predicates.  Nonetheless, we expect the order of elements on the
-; ARG-S list follow a thematic role or grammatical function hierarchy
+; ARG-ST list follow a thematic role or grammatical function hierarchy
 ; in underived lexical items.  This order may be perturbed by lexical
 ; rules.  In addition, there are degrees of freedom allowed by the
-; mapping from ARG-S to the valence features and the possibility of
+; mapping from ARG-ST to the valence features and the possibility of
 ; scrambling by realizing elements of a valence list "out of order".
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1668,36 +1637,36 @@ basic-three-arg := lex-item &
 ; (Kim is a student requires an analysis of predicative NPs.)
 
 intransitive-lex-item := basic-one-arg & 
-  [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ] >,
-             LKEYS.KEYREL.ARG1 #ind ] ].
+  [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ] >,
+    SYNSEM.LKEYS.KEYREL.ARG1 #ind ].
 
 ; It rains.
 ; Il pleut.
 
 expl-arg-only-lex-item := basic-one-arg &
-  [ SYNSEN [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX expl-ind ] > ] ].
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX expl-ind ] > ].
 
 ; Kim eats lunch.  Kim is fond of apples.
 ; Kim ga hiru gohan wo taberu.  
 ; Kim mange le dejeuner.  
 
 transitive-lex-item := basic-two-arg &
-  [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
-	                   [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ] >,
-             LKEYS.KEYREL [ ARG1 #ind1,
-	                    ARG2 #ind2 ] ] ].
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
+	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ] >,
+     SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
+			   ARG2 #ind2 ] ].
 
 ; Kim gives Sandy a book.
 ; Kim ga Sandy ni hon wo ageru.
 ; Kim donne un livre a Sandy.
 
 ditransitive-lex-item := basic-three-arg &
-  [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
-	                   [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
-                           [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind3 ] >,
-             LKEYS.KEYREL [ ARG1 #ind1,
-	                    ARG2 #ind2,
-                            ARG3 #ind3 ] ] ].
+  [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
+	     [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
+	     [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind3 ] >,
+    SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
+			  ARG2 #ind2,
+			  ARG3 #ind3 ] ].
 
 ; That Kim sleeps is obvious.
 ; [NB: This is just one possible analysis of clausal subjects.
@@ -1706,38 +1675,38 @@ ditransitive-lex-item := basic-three-arg &
 ;  one analysis or the other.]
 
 clausal-arg-intrans-lex-item := basic-one-arg &
-   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
-              LKEYS.KEYREL [ ARG1 #ltop ] ] ]. 
+   [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
+     SYNSEM.LKEYS.KEYREL [ ARG1 #ltop ] ]. 
 
 ; That Kim sleeps surprises Sandy.
 
 clausal-first-arg-trans-lex-item := basic-two-arg &
-   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.LTOP #ltop ],
-                            [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ] >,
-              LKEYS.KEYREL [ ARG1 #ltop,
-	                     ARG2 #ind ] ] ].
+   [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #ltop ],
+	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ] >,
+     SYNSEM.LKEYS.KEYREL [ ARG1 #ltop,
+			   ARG2 #ind ] ].
 
 ; Sandy believes that Kim sleeps.
 ; Sandy ga Kim ga neru to shinjita.
 ; Sandy croit que Kim dors.
 
 clausal-second-arg-trans-lex-item := basic-two-arg &
-   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ],
-                            [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
-              LKEYS.KEYREL [ ARG1 #ind,
-	                     ARG2 #ltop ] ] ].
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ],
+	      [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
+     SYNSEM.LKEYS.KEYREL [ ARG1 #ind,
+			   ARG2 #ltop ] ].
 
 ; Kim told Sandy that Pat slept.
 ; Kim ga Sandy ni Pat ga neta to itta.
 ; Kim a dit a Sandy que Pat dormait.
 
 clausal-third-arg-ditrans-lex-item := basic-three-arg &
-   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
-                            [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
-			    [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
-              LKEYS.KEYREL [ ARG1 #ind1,
-			     ARG2 #ind2,
-			     ARG3 #ltop ] ] ].
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
+	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
+	      [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
+     SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
+			   ARG2 #ind2,
+			   ARG3 #ltop ] ].
 
 ; It is obvious that Kim sleeps.  
 ; Il est evident que Kim dors.
@@ -1746,76 +1715,76 @@ clausal-third-arg-ditrans-lex-item := basic-three-arg &
 ; clausal-arg-intrans-lex-items, but some probably don't alternate).
 
 clausal-expl-arg-lex-item := basic-two-arg &
-   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX expl-ind ],  
-	                    [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
-              LKEYS.KEYREL [ ARG1 #ltop ] ] ].
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX expl-ind ],  
+	      [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
+     SYNSEM.LKEYS.KEYREL [ ARG1 #ltop ] ].
 
 ; Kim seems to sleep; Kim is sleeping.
 
 trans-first-arg-raising-lex-item := basic-two-arg & 
-   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX #ind ],
-                            [ LOCAL.CONT.HOOK [ XARG #ind,
-	                                        LTOP #ltop ] ] >,
-              LKEYS.KEYREL [ ARG1 #ltop ] ] ].
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX #ind ],
+	      [ LOCAL.CONT.HOOK [ XARG #ind,
+				  LTOP #ltop ] ] >,
+     SYNSEM.LKEYS.KEYREL [ ARG1 #ltop ] ].
 
 ; Kim tries to sleep.
 
 trans-first-arg-control-lex-item := basic-two-arg &
-   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ],
-                            [ LOCAL.CONT.HOOK [ XARG #ind,
-	                                        LTOP #ltop ] ] >,
-              LKEYS.KEYREL [ ARG1 #ind,
-	                     ARG2 #ltop ] ] ].
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ],
+	      [ LOCAL.CONT.HOOK [ XARG #ind,
+				  LTOP #ltop ] ] >,
+     SYNSEM.LKEYS.KEYREL [ ARG1 #ind,
+			   ARG2 #ltop ] ].
 
 ; Kim appeared to Sandy to leave, Kim seems to Sandy to have left.
 ; (Treat "Kim seems happy to Sandy" as derived in some way?)
 
 ditrans-first-arg-raising-lex-item := basic-three-arg &
-   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX #ind1 ],
-                            [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
-                            [ LOCAL.CONT.HOOK [ XARG #ind1,
-						LTOP #ltop ] ] >,
-              LKEYS.KEYREL [ ARG1 #ind2,
-		             ARG2 #ltop ] ] ].
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX #ind1 ],
+	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
+	      [ LOCAL.CONT.HOOK [ XARG #ind1,
+				  LTOP #ltop ] ] >,
+     SYNSEM.LKEYS.KEYREL [ ARG1 #ind2,
+			   ARG2 #ltop ] ].
 
 
 ; Kim promised Sandy to leave. 
 
 ditrans-first-arg-control-lex-item := basic-three-arg &
-   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
-                            [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
-                            [ LOCAL.CONT.HOOK [ XARG #ind1,
-						LTOP #ltop ] ] >,
-              LKEYS.KEYREL [ ARG1 #ind1,
-			     ARG2 #ind2,
-		             ARG3 #ltop ] ] ].
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
+	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
+	      [ LOCAL.CONT.HOOK [ XARG #ind1,
+				  LTOP #ltop ] ] >,
+     SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
+			   ARG2 #ind2,
+			   ARG3 #ltop ] ].
 
 ; Kim believed Sandy to have left.
 
 distrans-second-arg-raising-lex-item := basic-three-arg &
-   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
-                            [ LOCAL.CONT.HOOK.INDEX #ind2 ],
-                            [ LOCAL.CONT.HOOK [ XARG #ind2,
-						LTOP #ltop ] ] >,
-              LKEYS.KEYREL [ ARG1 #ind1,
-		             ARG2 #ltop ] ] ].
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
+	      [ LOCAL.CONT.HOOK.INDEX #ind2 ],
+	      [ LOCAL.CONT.HOOK [ XARG #ind2,
+				  LTOP #ltop ] ] >,
+     SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
+			   ARG2 #ltop ] ].
 
 ; Kim appealed to Sandy to leave.			     
 
 ditrans-second-arg-control-lex-item := basic-three-arg &
-   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
-                            [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
-                            [ LOCAL.CONT.HOOK [ XARG #ind2,
-						LTOP #ltop ] ] >,
-              LKEYS.KEYREL [ ARG1 #ind1,
-			     ARG2 #ind2,
-		             ARG3 #ltop ] ] ].
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
+	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
+	      [ LOCAL.CONT.HOOK [ XARG #ind2,
+				  LTOP #ltop ] ] >,
+     SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
+			   ARG2 #ind2,
+			   ARG3 #ltop ] ].
 	                     
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; For nouns requiring specifiers, adjectives taking degree specifiers, etc.
 
-; Keep specifiers on ARG-S because amalgamation constraints are
+; Keep specifiers on ARG-ST because amalgamation constraints are
 ; stated there.  Also, in the eventual hope of implementing
 ; a binding theory, which seems to need to take account of possessor
 ; nouns in picture NPs (Runner et al 2004).
@@ -1833,17 +1802,17 @@ ditrans-second-arg-control-lex-item := basic-three-arg &
 ; very fond of apples
 
 spr-plus-one-arg-lex-item := basic-two-arg &
-   [ SYNSEM [ LOCAL.ARG-S < synsem, 
-                            [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ] >,
-              LKEYS.KEYREL.ARG1 #ind ] ].
+   [ ARG-ST < synsem, 
+	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ] >,
+     SYNSEM.LKEYS.KEYREL.ARG1 #ind ].
 
 ; the claim that Sandy slept.
 ; very happy that Sandy slept
 
 spr-plus-clausal-arg-lex-item := basic-two-arg &
-   [ SYNSEM [ LOCAL.ARG-S < synsem, 
-                            [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
-              LKEYS.KEYREL.ARG1 #ltop ] ].
+   [ ARG-ST < synsem, 
+	      [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
+     SYNSEM.LKEYS.KEYREL.ARG1 #ltop ].
 
 ; Whether or not we need more types here is going to largely depend
 ; on whether we treat deverbal nouns semantically as nominalizations,
@@ -1853,12 +1822,12 @@ spr-plus-clausal-arg-lex-item := basic-two-arg &
 ; How eager to sleep is Kim?
 
 spr-trans-first-arg-control-lex-item := basic-three-arg &
-   [ SYNSEM [ LOCAL.ARG-S < synsem,
-                            [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ],
-                            [ LOCAL.CONT.HOOK [ XARG #ind,
-	                                        LTOP #ltop ] ] >,
-              LKEYS.KEYREL [ ARG1 #ind,
-	                     ARG2 #ltop ] ] ].
+   [ ARG-ST < synsem,
+	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ],
+	      [ LOCAL.CONT.HOOK [ XARG #ind,
+				  LTOP #ltop ] ] >,
+     SYNSEM.LKEYS.KEYREL [ ARG1 #ind,
+			   ARG2 #ltop ] ].
 
 ; Possibly more types related to the above.
 
@@ -1898,6 +1867,12 @@ basic-verb-lex := norm-sem-lex-item &
 ; no further handle constraints.  The latter especially may be
 ; too strong.
 
+; Adpositions and adjectives (also adverbs, somewhere?) may
+; have additional arguments, but the modified element is assumed
+; to always be the ARG1.  These types should be cross-classified
+; with argument structure types appropriate to their combinatoric
+; potential.
+
 scopal-mod-lex := lex-item &
   [ SYNSEM [ LOCAL [ CAT.HEAD.MOD < [ LOCAL scopal-mod &
 					    [ CONT.HOOK.LTOP #larg ]] >,
@@ -1907,7 +1882,9 @@ scopal-mod-lex := lex-item &
 	     LKEYS.KEYREL.ARG1 #harg ]].
 
 intersective-mod-lex := no-hcons-lex-item &
-  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL intersective-mod ] > ].
+  [ SYNSEM [ LOCAL.CAT.HEAD.MOD < [ LOCAL intersective-mod & 
+					  [ CONT.HOOK.INDEX #ind ]] >,
+	     LKEYS.KEYREL.ARG1 #ind ] ].
 
 no-mod-lex := no-hcons-lex-item &
   [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
@@ -1922,7 +1899,7 @@ basic-nomod-adj-lex := basic-adjective-lex & no-mod-lex.
 
 basic-adposition-lex := norm-hook-lex-item & single-rel-lex-item &
   [ SYNSEM [ LOCAL.CAT.HEAD adp,
-	     LKEYS.KEYREL prep-mod-relation ]].
+	     LKEYS.KEYREL event-relation ]].
 
 basic-scopal-mod-adposition-lex := basic-adposition-lex & scopal-mod-lex.
 basic-int-mod-adposition-lex := basic-adposition-lex & intersective-mod-lex.
@@ -1930,7 +1907,7 @@ basic-nomod-adposition-lex := basic-adposition-lex & no-mod-lex.
 
 basic-adverb-lex := norm-hook-lex-item & single-rel-lex-item &
   [ SYNSEM [ LOCAL.CAT.HEAD adv,
-	     LKEYS.KEYREL adv-relation ]].
+	     LKEYS.KEYREL event-relation ]].
 
 basic-scopal-adverb-lex := basic-adverb-lex & scopal-mod-lex.
 basic-int-adverb-lex := basic-adverb-lex & intersective-mod-lex.
@@ -1954,9 +1931,9 @@ basic-noun-lex := norm-sem-lex-item &
 ; This is important semantically to allow the determiner to grab
 ; onto the INDEX and LTOP of the N' it combines with.  Elsewhere
 ; in the lexical types we have avoided mentioning the valence features,
-; believing the mapping from ARG-S to valence features to be somewhat
+; believing the mapping from ARG-ST to valence features to be somewhat
 ; language-specific.  In this case, however, it does not concern
-; a mapping to ARG-S.
+; a mapping to ARG-ST.
 
 basic-determiner-lex := norm-hook-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD det,
@@ -1971,7 +1948,7 @@ basic-determiner-lex := norm-hook-lex-item &
 		     RSTR #harg ] ] ].
 
 ; Subordinating conjunctions take two clauses, one as an argument
-; (i.e., element of ARG-S) and one as modifiee.  We allow quantifiers
+; (i.e., element of ARG-ST) and one as modifiee.  We allow quantifiers
 ; to scope between the messages of the clauses and the subord-relation
 ; in order to capture the ambiguity of:
 
@@ -1983,13 +1960,13 @@ basic-determiner-lex := norm-hook-lex-item &
 ; No hypothesis yet about the HEAD value of these cross-linguistically.
 
 basic-subord-conjunction-lex := basic-one-arg &
-  [ SYNSEM [ LOCAL [ ARG-S < [ LOCAL.CONT.HOOK.LTOP #ltop1 ] >,
-		     CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #ltop2 ] >,
+  [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #ltop1 ] >,
+    SYNSEM [ LOCAL [ CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #ltop2 ] >,
 		     CONT [ HCONS <! qeq &
-                                  [ HARG #harg,
-				    LARG #larg ] !>,
+				   [ HARG #harg,
+				     LARG #larg ] !>,
 			    RELS <! relation,
-                                  message & 
+				  message & 
 				  [ LBL #msg,
 				    PRED proposition_m_rel,
 				    MARG #harg ] !>,

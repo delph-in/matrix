@@ -1,8 +1,8 @@
 ------------------------------------------------------------------------------
-LinGO Grammar Matrix v 0.9, August 30, 2004 (erb)
+LinGO Grammar Matrix v 0.8, August 30, 2004 (erb)
 
 NB: This version of the Matrix requires LKB version
-$Date: 2004-08-30 23:18:06 $ or later.  
+$Date: 2004-09-13 04:43:24 $ or later.  
 
 Changes since v 0.6:
 
@@ -35,6 +35,9 @@ Changes since v 0.6:
    print an error if a parent is declared redundantly.  No
    such checking exists for constraints.
 	
+   NB: The :+ syntax is not yet supported in the PET
+   system.  
+
 2. Lexical types (mostly from v 0.7)
 
    The Matrix now has a set of underspecified lexical types.
@@ -59,7 +62,7 @@ Changes since v 0.6:
    that complements be realized before subjects cross-linguistically.
    We expect this to be true in many, but not all, languages.
 
-5. MC
+5. MC and ROOT
 
    Again in response to Ellingsen 2003, we have removed many
    of the constraints on the value of MC (`main clause'). 
@@ -67,6 +70,9 @@ Changes since v 0.6:
    restricted to either main (MC +) or subordinate (MC -) 
    clauses.  The particular constraints present in earlier versions
    of the Matrix were part of English-specific analyses.
+
+   The feature ROOT has been removed.  Its intended purpose
+   was redundant with the combination of MC and root conditions.
 
 6. Changes to the script
 
@@ -87,6 +93,11 @@ Changes since v 0.6:
 	appropriate for your language.  Uncomment this expression
 	and customize it appropriately.  
 
+	-- The default script no longer uses a cache file for
+ 	the lexicon.  For lexicons with >1000 words, the 
+	cache may be a good idea.  See the comments in the
+	script file for how to invoke caching.
+
 7. labels.tdl
 
    With the addition of head types, we are now able to include
@@ -105,6 +116,19 @@ Changes since v 0.6:
    required to have empty COMPS lists.  Furthermore, additional
    features are matched between modifiers' MOD values and 
    the head daughters' SYNSEMs.
+
+   The feature ARG-S has been moved from the type local
+   to the type word-or-lexrule and renamed as ARG-ST to
+   differentiate it a bit better from ARGS.
+
+9. Some semantic types (adv-relation, prep-mod-relation, 
+   verb-ellipsis-relation, and unspec-compound-relation)
+   have been removed, as these types did not add any features
+   nor express any constraints.  In their place, existing
+   argn relations should be used, with appropriate PRED values.
+   adv-relation and verb-ellipsis-relation should be replaced
+   with arg1-ev-relation, prep-mod-relation with arg12-ev-relation
+   and unspec-compound-relation with arg12-relation.
 
 ------------------------------------------------------------------------------
 

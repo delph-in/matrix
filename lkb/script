@@ -14,26 +14,29 @@
 (load-irregular-spellings (lkb-pathname (parent-directory) "irregs.tab"))
 
 ;;;
-;;; Now the core grammar: to preserve the fiction of separating the
-;;; matrix from language-specific parts, we recommend at least one
-;;; additional file; larger grammars have ended up organizing files
-;;; roughly by content, e.g.  fundamental types (similar to what comes
-;;; with the matrix already), types for constructions, lexical types,
-;;; semantic types, etc.  If you have multiple such files, there
-;;; should be a line for each in the following.  Here we have included
-;;; matrix.tdl, head-types.tdl, and one other grammar file
-;;; `my_language.tdl', which you might want to rename.
+;;; Now the core grammar, which will typically be spread out 
+;;; across multiple files.  The Matrix provides matrix.tdl, 
+;;; defining most of the matrix types and head-types.tdl, which
+;;; contains the intermediate types in the subhierarchy under head
+;;; (as they would unnecessarily clutter matrix.tdl).  You should
+;;; rename my_language.tdl to something appropriate, and enter
+;;; language-specific types there.  In larger grammars, it is common
+;;; to separate out e.g. lexical types from construction types
+;;; into distinct files.  All files containing types used in 
+;;; the grammar should be mentioned in the following command.
+
 ;;;
 ;;; (2004-06-08) transfer.tdl includes some types which support 
-;;; transfer rules.
+;;; transfer rules.  Still under development -- ignore for the
+;;; time being.
 ;;;
 (read-tdl-type-files-aux
   (list 
    (lkb-pathname (parent-directory) "matrix.tdl")
    (lkb-pathname (parent-directory) "head-types.tdl")
    (lkb-pathname (parent-directory) "my_language.tdl")
-#+:mt 
-   (lkb-pathname (this-directory) "transfer.tdl")
+;#+:mt 
+;   (lkb-pathname (this-directory) "transfer.tdl")
 ))
 
 ;;;
@@ -82,7 +85,7 @@
 ;;; Matrix-derived grammars often have stable enough semantic 
 ;;; representations that the grammar can usefully be tested
 ;;; by generating from them.  The function index-for-generator()
-;;; must be called for generation is enable.  In grammars with
+;;; must be called for generation to be enabled.  In grammars with
 ;;; small lexica, this takes a trivial amount of time.  If
 ;;; generation is not being used regularly, and the indexing
 ;;; is taking too long, comment out the following.  index-for-generator()
@@ -94,16 +97,23 @@
 
 ;;;
 ;;; Preliminary support for transfer rules in Matrix grammars.
+;;; This is still under development and should be ignored for
+;;; the time being.
 ;;;
 
 ;#+:mt
 ;(mt:initialize-transfer)
 ;#+:mt
 ;(lkb-load-lisp (this-directory) "mt.lsp" t)
+
+;;; If using transfer rules, they can be loaded as
+;;; follows, assuming they are stored in a file called
+;;; transfer.mtr.
+
 ;#+:mt
 ;(mt:read-transfer-rules 
 ; (list
-;  (lkb-pathname (parent-directory) "paraphraser.mtr"))
+;  (lkb-pathname (parent-directory) "transfer.mtr"))
 ; "MWE Paraphraser"
 ; :filter nil)
 
@@ -115,4 +125,4 @@
 ;;;
 
 ;(if (eq (length *last-parses*) 1)
-;    (setf *last-parses* '("your sentenced 1" "your sentence 2")))
+;    (setf *last-parses* '("your sentence 1" "your sentence 2")))
