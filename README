@@ -1,4 +1,4 @@
-Grammar matrix v 0.2, February 13, 2002
+Grammar matrix v 0.2.1, April 5, 2002
 
 This is an extremely preliminary first cut at the grammar
 matrix.  It has not been tested except by being loaded into
@@ -54,3 +54,10 @@ lkb/script for information on how various files (including .tdl
 files) are included, and which aspects of the grammar should
 be encoded in which .tdl files.
 
+April 5, 2002
+
+Added improvements to supertypes for lexical rules.  "Derivational"
+lexical rules are now lexeme-to-lexeme, rather than word-to-word
+(a hold-over from PAGE).  Lexeme-to-lexeme rules can be spelling
+changing, and apply _inside_ lexeme-to-word, or inflectional rules,
+as expected.
