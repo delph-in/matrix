@@ -1,0 +1,39 @@
+; Based on Jeremy Kahn's labs for 471, 2004
+; Hindi has the following characteristics:
+
+; Grammatical gender (masculine, feminine)
+; Case (direct, oblique)
+; Near-ubiquitous post-verbal auxiliary be
+; Split ergativity (ergative agreement in perfective finite clauses,
+   with some verbs, optionally with others, not at all with others)
+; Largely optional determiners
+; SOV order (possibly V final, i.e., OSV or SOV)
+; A postpositional marker on definite direct objects ("ko")
+; Adverbial negation: seems to go at the beginning of the verb cluster,
+;     at least prefers to attach to main verb rather than be.
+; Matrix polar questions are marked with a clause-initial question
+;     particle.  This despite the fact that the language is otherwise
+;     head final in head-complement structures.
+
+; lar.ki- ca-y pi-ti- hai
+n n tv aux
+n n tv
+*n tv aux n
+*tv aux n n
+*tv n n 
+*n tv n 
+*tv aux n n 
+*aux tv n n 
+
+; lar.ki- nahi-~ soti- hai
+n neg-adv iv aux
+n neg-adv iv
+*neg-adv n iv aux
+*n iv aux neg-adv
+
+; not sure this is really out
+*n iv neg-adv aux
+
+; kya- lar.kiya-~ ca-y pi-ti- hai~
+QPART n n tv aux
+*n n tv aux QPART

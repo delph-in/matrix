@@ -1,0 +1,24 @@
+; Based on Rice 1989, as read by Emily and Jeff
+
+; Slave has:
+; SOV order (Subj Oblique Object Verb)
+; negation as a post-verbal adverb
+; yes-no questions with a sentence-initial question marker
+
+; dene ?ela@ thehtsi~
+; man boat 3-made
+n n tv
+*tv n n
+*n tv n
+
+; ?asi@ l\e@ht!e@e ?o~t!e
+; QPART bread 3-be
+QPART n iv
+*n QPART iv
+*n iv QPART
+
+; dene gha@yeyi@da@ yi@le
+; person 1p-see NEG
+n iv NEG
+*NEG n iv
+*n NEG iv
