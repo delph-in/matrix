@@ -1,3 +1,3 @@
 (in-package :common-lisp-user)
 
-(defparameter *grammar-version* "MatriX (0.4; 15-aug-03)")
+(defparameter *grammar-version* "Matrix (0.5; 15-aug-03)")
