@@ -638,9 +638,11 @@ lex-rule := phrase-or-lexrule & word-or-lexrule &
     ALTS #alts ].
 
 ; Supertype for inflectional lexical rules (these apply first).
+; [NEEDS-AFFIX +] so that LKB can identify them as spelling-changing.
 
 lex-rule-affix := lex-rule &
-  [ INFLECTED +,
+  [ NEEDS-AFFIX +,
+    INFLECTED +,
     KEY-ARG #keyarg,   
     SYNSEM #synsem,
     ARGS < #dtr >,
