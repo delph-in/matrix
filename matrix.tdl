@@ -303,7 +303,7 @@ hook := avm &
     E-INDEX individual,
     XARG individual ].
 
-; Mrss are divided into psoas (with a distinguished event) and
+; MRSs are divided into psoas (with a distinguished event) and
 ; nom-objs (with a distinguished index).  We use a polymorphic
 ; attribute name INDEX for both of these, to simplify manipulation of
 ; these objects; for example, modifying PPs assign as their ARG's
@@ -351,8 +351,8 @@ ctxt := ctxt-min &
 ; The message represents the semantic type of a clause (cf. Ginzburg &
 ; Sag 2000).  All clauses have messages.  Elements that take clauses
 ; as semantic arguments should end up with the LBL of the clause as
-; the value of ARGn, L/R-HNDL, etc.  The MARG of a message
-; is a handle that qeqs the LBL of the main verb in the clause.
+; the value of ARGn, L/R-HNDL, etc.  The MARG (message argument) of a 
+; message is a handle that qeqs the LBL of the main verb in the clause.
 ; This leaves room for quantifiers to scope at each clause without
 ; allowing scope ambiguity between quanitifers and messages, as it is
 ; not clear what that would mean.
@@ -369,8 +369,10 @@ question := abstr-ques.
 ; with equivalent pragmatics.
 ne-rel := abstr-ques.                 
 
-; Constrains handle of scopable argument H-ARG relative to one 
-; outscoped L-ARG handle.
+; Constrains handle of scopable argument HARG relative to one 
+; outscoped LARG handle (the "H" is mnemonic for either "higher" or
+; "hole" argument, while the "L" is mnemonic for either "lower" or 
+; "label" argument.
 
 qeq := avm &
   [ HARG handle,
@@ -533,6 +535,13 @@ unspec-compound-rel := arg12-rel &
   [ ARG0 event,
     ARG1 non-expl,
     ARG2 non-expl ].
+
+; quantifier relation
+
+quant-rel := arg0-rel &
+  [ ARG0 ref-ind,
+    RSTR handle,
+    BODY handle ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Head types

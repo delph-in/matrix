@@ -59,4 +59,4 @@
 ;;; generation; also, we always compute the generation index (while we have
 ;;; small lexica) in the hope that the generator will be used frequently.
 ;;;
-(lkb-load-lisp (this-directory) "mrsglobals.lsp" t)
+(lkb-load-lisp (this-directory) "mrsglobals.lisp" t)

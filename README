@@ -1,4 +1,75 @@
-Grammar matrix v 0.3, June 20, 2002
+Grammar matrix v 0.4, March 10, 2003
+
+This is a minor upgrade of the first version of the grammar matrix
+(v 0.3), designed to standardize the feature geometry and naming
+conventions for MRS feature structures, and to enable stronger
+principles of semantic composition, as presented in Copestake,
+Lascarides, and Flickinger (2001).
+
+If you have already developed a grammar based on the matrix, you will
+need to make the following manual adjustments to your language-specific
+grammar files:
+
+(1) Renamed features 
+    Summary: Naming conventions now made consistent with soon-to-be-published
+    standard reference on MRS.
+    Recommended procedure: Do a global replace for each of the following in
+    all of your *.tdl files:
+    LISZT    -->  RELS
+    H-CONS   -->  HCONS
+    TOP      -->  LTOP
+    HNDL     -->  LBL
+    SC-ARG   -->  HARG
+    OUTSCPD  -->  LARG
+    SOA      -->  MARG
+    RESTR    -->  RSTR
+    BV       -->  ARG0
+    EVENT    -->  ARG0
+    INST     -->  ARG0
+    LABEL    -->  WLINK
+
+(2) Introduction of HOOK attribute
+    Summary: The externally visible attributes of an MRS are now grouped
+    within a single attribute called HOOK, which is consistently used in
+    constructions to identify the properties of the semantic head daughter
+    with those of the phrase.  The features in HOOK include the familiar
+    LTOP (formerly TOP), INDEX, and E-INDEX, as well as a new feature XARG
+    which is unified with the semantic index of the controlled argument of
+    a phrase (to simplify the definition of e.g. equi and raising types)
+    Recommended procedure: In each of your *.tdl files, search for each 
+    occurrence of the three features LTOP, INDEX, and E-INDEX, and insert 
+    HOOK into the path preceding each feature.  In some cases, you will see 
+    that you can simplify the re-entrancies in your feature structures by 
+    referring to HOOK instead of individually referring to each of the three
+    attributes separately.  In addition, consider revising your lexical types 
+    for equi and raising predicates to make use of the new XARG feature, 
+    which should enable you to avoid reference to arguments of arguments.
+    
+(3) Naming of argument roles (ARG1, ARG2, ARG3, ARG4)
+    Summary: Each relation now assigns its first (least oblique) argument
+    to ARG1, its next argument to ARG2, and so on.   The major change from
+    the first version of the matrix is to assign objects of transitive verbs
+    to ARG2 rather than ARG3, and similarly for objects of prepositions.
+    Recommended procedure: In each of your *.tdl files, search for ARG3, and 
+    consider replacing it with ARG2.  Check all other role name assignments 
+    to ensure that role names are assigned consistently.
+
+(4) Basic relation types
+    Summary: The inventory of basic relation types has been simplified.
+    Recommended procedure: Review the subtypes that your grammar defined for
+    the original basic relation types, and revise them to employ the new
+    relation types, consistent with the changes made in step (3) above.  Note
+    that a basic relation type has been added for quantifiers: quant-rel.
+
+(5) Deleted features (--TOPKEY)
+    Summary: Some semantics-related features proved to be unnecessary
+    Recommended procedure: None required, unless your grammar makes use of
+    the feature --TOPKEY, in which case you may choose to introduce this
+    feature as part of your language-specific inventory of features.
+
+
+------------------------------------------------------------------------------
+[Original notes for v 0.3]
 
 This is an extremely preliminary first cut at the grammar
 matrix.  It has not been tested except by being loaded into
