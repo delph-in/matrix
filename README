@@ -1,0 +1,43 @@
+Grammar matrix v 0.1, January 27, 2002
+
+This is an extremely preliminary first cut at the grammar
+matrix.  It has not been tested except by being loaded into
+the LKB.  It contains the following:
+
+-- basic types which define the feature geometry
+-- types for MRS semantics
+-- underspecified supertypes of lexical rules
+-- underspecified supertypes of phrase structure rules
+
+Of these, the last were the most hastily thrown together.
+They are basically taken from the syntax.tdl file of the LinGO
+English grammar, and then simplified by removing constraints
+that are either likely to be specific to English or are
+related to the LinGO analysis of coordination.
+
+These phrase structure rule types are of necessity underconstrained
+and merely instantiating them will surely lead to a grammar
+with gross overgeneration.  Thus, it is expected that they
+will be either augmented directly, or via subtypes that fill
+in some of the missing constraints.  One clear example of this
+is the lack of constraints on the HEAD values in phrase structure
+rules.  Since it's not clear what the appropriate 'universal'
+head type hierachy will/could be, I've refrained from even 
+defining types like 'verbal'...
+
+Similarly, certain parts of the type hierarchy might need to be
+modified.  In an ideal world, the matrix type hierarchy would only
+need to be extended at the bottom for individual grammars.  However,
+it is not clear that this is possible or desirable even in principle,
+and it is certainly not the case for this preliminary first version!
+(Defaults may help here...)
+
+The single biggest gap in the matrix is the utter lack of
+lexical types.  I hope that it can be useful even with this
+huge lacuna.  Since the matrix holds so closely to the LinGO
+grammar, the lexical types of the LinGO grammar should be 
+used as models for creating lexical types.  Note in particular
+that the rules assume lexical threading of NON-LOCAL features.
+Beware that some feature names (notably HNDL) and many type names
+differ between the matrix and the LinGO grammar, even when they
+are logically and mnemonically related.
