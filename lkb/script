@@ -32,7 +32,15 @@
 ;;; Next, the lexicon itself, instantiating (lexical) types of the grammar
 ;;; (some grammars with larger lexica organize them into multiple files).
 ;;;
-(read-cached-lex-if-available (lkb-pathname (parent-directory) "lexicon.tdl"))
+
+;;; For grammars with small lexicons, no need to use a cache file:
+
+(read-tdl-lex-file-aux (lkb-pathname (parent-directory) "lexicon.tdl"))
+
+;;; Once your lexicon has >1000 words or so, consider using the 
+;;; cache file:
+
+;(read-cached-lex-if-available (lkb-pathname (parent-directory) "lexicon.tdl"))
 
 ;;;
 ;;; Finally, the grammar rules, lexical rules (given special treatment in the
