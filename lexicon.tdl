@@ -3,19 +3,3 @@
 ;;;
 foo := word &
   [ STEM < "foo" > ].
-
-kim := pn-word &
-  [ STEM < "kim" >,
-    SYNSEM.LOCAL.KEYS.KEY.CARG "kim" ].
-
-dog := noun-word &
-  [ STEM < "dog" >,
-    SYNSEM.LOCAL.KEYS.KEy.PRED 'dog-n-rel ].
-
-sleep := intr-verb &
-  [ STEM < "sleep" >,
-    SYNSEM.LOCAL.KEYS.KEY.PRED 'sleep-v-rel ].
-
-the := det-nonwh-word &
-  [ STEM < "the" >,
-    SYNSEM.LOCAL.KEYS.KEY.PRED 'the-q-rel ].
