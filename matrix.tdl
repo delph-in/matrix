@@ -1058,10 +1058,17 @@ basic-head-filler-phrase := basic-filler-phrase & headed-phrase.
 ; should inherit from either a clause-type or from head-compositional,
 ; and ensure that the length of these lists is specified appropriately.
 
+; ERB 2004-12-14 For purposes of testing word order modules, assume
+; for now that we're going to go with a non-branching rule analysis
+; of message introduction.  Make basic-head-subj phrase inherit from
+; head-compositional and constraint C-CONT.RELS and C-CONT.HCONS like
+; everyone else.
+
 ; ERB 2004-08-26 Remove [MC na] on head daughter; probably specific
 ; to some analysis for English.
 
 basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
+			  head-compositional &
   [ SYNSEM.LOCAL.CAT [ POSTHEAD +,
                        VAL [ SUBJ < >,
 			     COMPS #comps,
@@ -1075,7 +1082,9 @@ basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
 				       SPR olist ] ] ],
 		   NON-LOCAL [ SLASH 0-dlist & [ LIST < > ],
 			       REL 0-dlist,
-			       QUE 0-dlist ] ] ].
+			       QUE 0-dlist ] ],
+    C-CONT [ HCONS <! !>,
+	     RELS <! !> ]].
 
 ; ERB 2004-08-26 Remove [MC na] on both daughters; probably specific
 ; to some analysis for English.  
@@ -1134,7 +1143,7 @@ basic-head-comp-phrase := head-valence-phrase & head-compositional &
 
 basic-head-1st-comp-phrase := basic-head-comp-phrase &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,
-    HEAD-DTR.SYNSEM.LOCA.CAT.VAL.COMPS < #synsem . #comps >,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < #synsem . #comps >,
     NON-HEAD-DTR.SYNSEM #synsem ].
 
 ; ERB 2004-12-14 First pass at a rule that realizes complements
@@ -1144,7 +1153,7 @@ basic-head-2nd-comp-phrase := basic-head-comp-phrase &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < #firstcomp . #othercomps >,
     HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS [ FIRST #firstcomp,
 					  REST < #synsem . #othercomps > ],
-    NON-HEAD-DTR #synsem ].
+    NON-HEAD-DTR.SYNSEM #synsem ].
 
 
 

@@ -4,6 +4,16 @@
 ;;; order modules for now.  Will need to build this
 ;;; out as a set of alternative modules.
 
+; For my own sanity in testing the free word order
+; module, implement a tiny bit of case.  Case values
+; declared directly on noun lexical entries, for now.
+
+case := *top*.
+nom := case.
+acc := case.
+dat := case.
+
+noun :+ [ CASE case ].
 
 noun-lex := basic-noun-lex & basic-one-arg &
   [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr >,
@@ -18,9 +28,11 @@ transitive-verb-lex := basic-verb-lex & transitive-lex-item &
 			     SUBJ < #subj >,
 			     SPEC < > ]],
     ARG-ST < #subj &
-	     [ LOCAL.CAT.VAL.SPR < > ], 
+	     [ LOCAL.CAT [ HEAD.CASE nom,
+			   VAL.SPR < > ]], 
 	     #comps &
-	     [ LOCAL.CAT.VAL.SPR < > ] > ].
+	     [ LOCAL.CAT [ HEAD.CASE acc,
+			   VAL.SPR < > ]] > ].
 
 intransitive-verb-lex := basic-verb-lex & intransitive-lex-item &
   [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
@@ -28,7 +40,8 @@ intransitive-verb-lex := basic-verb-lex & intransitive-lex-item &
 			     SUBJ < #subj >,
 			     SPEC < > ]],
     ARG-ST < #subj &
-	     [ LOCAL.CAT.VAL.SPR < > ] > ].
+	     [ LOCAL.CAT [ HEAD.CASE nom,
+			   VAL.SPR < > ]] > ].
 
 ditransitive-verb-lex := basic-verb-lex & ditransitive-lex-item &
   [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
@@ -36,8 +49,11 @@ ditransitive-verb-lex := basic-verb-lex & ditransitive-lex-item &
 			     SUBJ < #subj >,
 			     SPEC < > ]],
     ARG-ST < #subj &
-	     [ LOCAL.CAT.VAL.SPR < > ], 
+	     [ LOCAL.CAT [ HEAD.CASE nom,
+			   VAL.SPR < > ]], 
 	     #comps1 &
-	     [ LOCAL.CAT.VAL.SPR < > ],
+	     [ LOCAL.CAT [ HEAD.CASE acc,
+			   VAL.SPR < > ]],
 	     #comps2 &
-	     [ LOCAL.CAT.VAL.SPR < > ] > ].
+	     [ LOCAL.CAT [ HEAD.CASE dat,
+			   VAL.SPR < > ]] > ].

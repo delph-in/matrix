@@ -22,11 +22,11 @@
 ;;; INIT on head to track the headedness of rules, as
 ;;; well as constraints on the value of valence features.
 ;;; Head complement rules can either leave the INIT value
-;;; unconstrained and require [ HEAD-DTR..SUBJ nelist ], or
+;;; unconstrained and require [ HEAD-DTR..SUBJ cons ], or
 ;;; constrain the INIT value and require [ HEAD-DTR..SUBJ < > ].
 ;;; The head subject phrases can either require 
 ;;; [ HEAD-DTR..COMPS < > ] and leave INIT unspecified,
-;;; or constrain INIT and require [ HEAD-DTR..COMPS nelist ].
+;;; or constrain INIT and require [ HEAD-DTR..COMPS cons ].
 ;;; The value of doing this on both head-subj and head-comp
 ;;; rules is that it will (in theory) scale to cases of
 ;;; multiple complements.  This file gives head-complement
@@ -45,38 +45,38 @@ head-subj-phrase-1 := basic-head-subj-phrase & head-initial &
 
 head-subj-phrase-2 := basic-head-subj-phrase & head-initial &
    [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.INIT +,
-				 VAL.COMPS nelist ]].
+				 VAL.COMPS cons ]].
 
 subj-head-phrase-1 := basic-head-subj-phrase & head-final &
    [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
 subj-head-phrase-2 := basic-head-subj-phrase & head-final &
    [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.INIT -,
-				 VAL.COMPS nelist ]].
+				 VAL.COMPS cons ]].
 
 head-comp-phrase-1 := basic-head-1st-comp-phrase & head-initial &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ nelist ].
+   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].
 
 head-comp-phrase-2 := basic-head-1st-comp-phrase & head-initial &
    [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.INIT +,
 				 VAL.SUBJ < > ]].
 
 head-comp-phrase-3 := basic-head-2nd-comp-phrase & head-initial &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ nelist ].
+   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].
 
 head-comp-phrase-4 := basic-head-2nd-comp-phrase & head-initial &
    [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.INIT +,
 				 VAL.SUBJ < > ]].
 
 comp-head-phrase-1 := basic-head-1st-comp-phrase & head-final &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ nelist ].
+   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].
 
 comp-head-phrase-2 := basic-head-1st-comp-phrase & head-final &
    [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.INIT -,
 				 VAL.SUBJ < > ]].
 
 comp-head-phrase-3 := basic-head-2nd-comp-phrase & head-final &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ nelist ].
+   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].
 
 comp-head-phrase-4 := basic-head-2nd-comp-phrase & head-final &
    [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.INIT -,

@@ -44,8 +44,7 @@
 ;   (lkb-pathname (parent-directory) "modules/VOS.tdl")
 ;   (lkb-pathname (parent-directory) "modules/V-final.tdl")
 ;   (lkb-pathname (parent-directory) "modules/V-initial.tdl")
-;;; V-medial: use SVO, OVS
-;;; Completely free: Use V-final, V-initial
+   (lkb-pathname (parent-directory) "modules/free-order.tdl")
    (lkb-pathname (parent-directory) "modules/basic-lex.tdl")
 ;#+:mt 
 ;   (lkb-pathname (this-directory) "transfer.tdl")
@@ -90,6 +89,9 @@
 ;(read-tdl-grammar-file-aux (lkb-pathname 
 ;			    (parent-directory) 
 ;			    "modules/V-initial-rules.tdl"))
+(read-tdl-grammar-file-aux (lkb-pathname 
+			    (parent-directory) 
+			    "modules/free-order-rules.tdl"))
 (read-tdl-grammar-file-aux (lkb-pathname 
 			    (parent-directory) 
 			    "modules/optdet-rules.tdl"))
