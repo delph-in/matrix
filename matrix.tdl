@@ -609,7 +609,7 @@ diff-list := avm &
 
 1-dlist := 0-1-dlist &
   [ LIST 1-list &
-	 [ REST #rest & null ],
+	 [ REST #rest ],
     LAST #rest ].
 
 
@@ -1656,7 +1656,7 @@ spr-plus-clausal-arg-lex-item := basic-two-arg &
 ; Kim is very eager to sleep.
 ; How eager to sleep is Kim?
 
-spr-trans-first-arg-control-lex-item := basic-two-arg &
+spr-trans-first-arg-control-lex-item := basic-three-arg &
    [ SYNSEM [ LOCAL.ARG-S < synsem,
                             [ LOCAL.CONT.HOOK.INDEX #ind ],
                             [ LOCAL.CONT.HOOK [ XARG #ind,
