@@ -91,12 +91,8 @@ sign := basic-sign &
 
 phrase-or-lexrule := sign &
   [ SYNSEM canonical-synsem &
-	   [ LOCAL.CONT [ TOP #hand,
-			  INDEX #index,
-                          E-INDEX #event ] ],
-    C-CONT mrs-min & [ TOP #hand,
-		       INDEX #index,
-                       E-INDEX #event ] ].
+	   [ LOCAL.CONT.HOOK #hook],
+    C-CONT mrs-min & [ HOOK #hook] ].
 
 word-or-lexrule-min := sign-min.
 
@@ -113,9 +109,7 @@ no-alts := alts-min.
 ; phr-synsem since they can be post-nominal modifiers.
 
 word := word-or-lexrule &
-  [ SYNSEM.LOCAL.CONT [ TOP #hand,
-			--TOPKEY.HNDL #hand ],
-    ROOT - ].
+  [ ROOT - ].
 
 ;; Not all phrases have SYNSEM phr-synsem, since we need to allow the
 ;; head-comp rules to build signs which are still [ SYNSEM lex-synsem
@@ -137,7 +131,7 @@ phrase := phrase-or-lexrule &
 
 non-affix-bearing := word-or-lexrule &
 [ INFLECTED +,
-  SYNSEM.LOCAL.KEYS.KEY.LABEL cons ].
+  SYNSEM.LOCAL.KEYS.KEY.WLINK cons ].
 
 ; Rule
 
@@ -184,7 +178,7 @@ phr-synsem := canonical-synsem & lex-or-phrase-synsem &
     LEX - ].
 
 non-canonical := synsem &
-  [ LOCAL.CONT.INDEX non-expl ].
+  [ LOCAL.CONT.HOOK.INDEX non-expl ].
 
 expressed-non-canonical := non-canonical & expressed-synsem.
 
@@ -286,24 +280,28 @@ valence := valence-min &
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; CONT values
 ;
-;   TOP handle,            ; Local top handle, linked by H-CONS 
-;                          ; to other handles
-;   H-CONS diff-list       ; Scope constraints: list of qeq's
-;   LISZT diff-list        ; List of semantic relations
+;   HOOK                   : Externally visible attributes of a sign
+;   RELS diff-list         ; List of semantic relations
+;   HCONS diff-list        ; Scope constraints: list of qeq's
 
-mrs-min := avm &
-  [ INDEX individual,
-    E-INDEX individual ].
+mrs-min := avm.
 
-mrs-min0 := mrs-min &
-  [ TOP handle ].
+mrs := mrs-min &
+  [ HOOK hook,
+    RELS diff-list,
+    HCONS diff-list ].
 
-mrs-min1 := mrs-min0 &
-  [ LISZT diff-list,
-    --TOPKEY relation ].
-    
-mrs := mrs-min1 &
-  [ H-CONS diff-list ].
+; HOOK values include
+;    LTOP                  ; Local top handle
+;    INDEX                 ; The salient nominal instance or event
+;    E-INDEX               ; A secondary event index for predicative phrases
+;    XARG                  ; The external (controlled) argument of a phrase
+
+hook := avm &
+  [ LTOP handle,
+    INDEX individual,
+    E-INDEX individual,
+    XARG individual ].
 
 ; Mrss are divided into psoas (with a distinguished event) and
 ; nom-objs (with a distinguished index).  We use a polymorphic
@@ -313,19 +311,11 @@ mrs := mrs-min1 &
 ; (with a ref-ind value) or a VP (with an event value).  Similarly
 ; useful for coordination.
 
-psoa := mrs-min &
-  [ INDEX event ].
+psoa := mrs &
+  [ HOOK.INDEX event ].
 
-psoa-basicmrs := psoa & mrs-min0.
-
-psoa-mrs := psoa-basicmrs & mrs.
-
-nom-obj := mrs-min &
-  [ INDEX index ].
-
-nom-obj-basicmrs := nom-obj & mrs-min0.
-
-nom-obj-mrs := nom-obj-basicmrs & mrs.
+nom-obj := mrs &
+  [ HOOK.INDEX index ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; KEY relations, for semantic selection
@@ -336,19 +326,14 @@ nom-obj-mrs := nom-obj-basicmrs & mrs.
 ;
 ;  MESSAGE 0-1-dlist,       ; Message type for clauses
 
-
 keys-min := avm.
 
-keys-k := keys-min &
-  [ KEY relation ].
-
-keys-km := keys-k &
-  [ MESSAGE 0-1-dlist ].
-
-keys := keys-km &
-  [ ALTKEY relation,
+keys := keys-min &
+  [ KEY relation,
+    ALTKEY relation,
     --COMPKEY relation,
-    --OCOMPKEY relation ].
+    --OCOMPKEY relation,
+    MESSAGE 0-1-dlist ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;  CTXT values 
@@ -365,15 +350,15 @@ ctxt := ctxt-min &
 
 ; The message represents the semantic type of a clause (cf. Ginzburg &
 ; Sag 2000).  All clauses have messages.  Elements that take clauses
-; as semantic arguments should end up with the HNDL of the clause as
-; the value of ARG4, L/R-HNDL, MAIN, SUBORD, etc.  The SOA of a message
-; is a handle that qeqs the HNDL of the main verb in the clause.
+; as semantic arguments should end up with the LBL of the clause as
+; the value of ARGn, L/R-HNDL, etc.  The MARG of a message
+; is a handle that qeqs the LBL of the main verb in the clause.
 ; This leaves room for quantifiers to scope at each clause without
 ; allowing scope ambiguity between quanitifers and messages, as it is
 ; not clear what that would mean.
 
 message := norm-relation &
-  [ SOA handle ].
+  [ MARG handle ].
 command := message.
 prop-or-ques := message.          ;for COMPS of e.g. 'know'
 proposition := prop-or-ques.
@@ -384,12 +369,12 @@ question := abstr-ques.
 ; with equivalent pragmatics.
 ne-rel := abstr-ques.                 
 
-; Constrains handle of scopable argument SC-ARG relative to one 
-; OUTSCPD handle.
+; Constrains handle of scopable argument H-ARG relative to one 
+; outscoped L-ARG handle.
 
 qeq := avm &
-  [ SC-ARG handle,
-    OUTSCPD handle ].        
+  [ HARG handle,
+    LARG handle ].        
 
 mrs-thing := avm &
   [ INSTLOC instloc ].
@@ -464,8 +449,8 @@ conj-ref-ind := conj-ind & ref-ind.
 ; This becomes useful whenever a grammar is used in some application.
 
 relation := avm &
-  [ HNDL handle,
-    LABEL list,
+  [ LBL handle,
+    WLINK list,
     PRED string ].
 
 ; no-relation contrasts with all other relations.
@@ -484,77 +469,70 @@ no-relation := relation.
 ; (ii) Something in the grammar needs to make reference to a family
 ; of relations that are not otherwise distinguished by a type.
 
+arg0-rel := norm-relation &
+  [ ARG0 individual ].
 
-verb-prep-rel := norm-relation & 
-                 [EVENT event].
+arg1-rel := arg0-rel &
+  [ ARG1 mrs-thing ].
 
-event-rel := verb-prep-rel.
-v-event-rel := event-rel.
-arg-rel := norm-relation &
-           [ ARG mrs-thing ].
-arg-event-rel := arg-rel & event-rel.
-arg1-rel := v-event-rel &
-            [ARG1 ref-ind].
+arg12-rel := arg1-rel &
+  [ ARG2 mrs-thing ].
 
-; The purpose of arg3-rel-super is allow for a type that includes all
-; verbs and no prepositions/modifiers.  Since Ps have ARG3, this can't
-; in a subtype of v-event-rel.  The specialization to ARG3 ref-ind for
-; Ps will be on argmod3-rel.
+arg123-rel := arg12-rel &
+  [ ARG3 mrs-thing ].
 
-arg3-rel-super := event-rel &
-                  [ ARG3 mrs-thing ].
-arg3-rel  := arg3-rel-super & v-event-rel &
-            [ARG3 ref-ind].
+arg1234-rel := arg123-rel &
+  [ ARG4 mrs-thing ].
 
-; For nominalizing predicates.
+event-rel := arg0-rel &
+  [ ARG0 event ].
 
-arg4-rel-super := norm-relation &
-                  [ ARG4 mrs-thing ].
-arg4-rel := v-event-rel & arg4-rel-super.
-arg12-rel :=  arg1-rel &
-            [ARG2 ref-ind ].
-arg123-rel :=  arg12-rel & arg13-rel.
-arg13-rel  :=  arg1-rel & arg3-rel.
-arg14-rel := arg1-rel & arg4-rel.
-arg124-rel := arg12-rel & arg14-rel.
-arg134-rel := arg13-rel & arg14-rel.
-arg1234-rel := arg123-rel & arg124-rel & arg134-rel.
+arg1-ev-rel := arg1-rel & event-rel.
+arg12-ev-rel := arg1-ev-rel.
+arg123-ev-rel := arg12-ev-rel.
+arg1234-ev-rel := arg123-ev-rel.
 
-; unaccusative verbs
-
-arg3only-rel := arg3-rel.
-
-argmod3-rel := arg-rel & arg3-rel-super.
 verb-ellipsis-rel := arg1-rel.
+
+; Noun relations
+
+noun-rel := arg0-rel &
+  [ ARG0 ref-ind ].
+
+named-rel := noun-rel &
+  [ PRED 'named-rel,
+    CARG string ].
 
 ; Preposition relations
 
-prep-mod-rel := argmod3-rel.
+prep-mod-rel := arg12-rel.
 
 ; adverb relations
 
-adv-rel := arg-event-rel.
+adv-rel := arg0-rel.
 neg-rel := adv-rel.
 
 ; subordination and coordinating conjunctions
 
 subord-or-conjunction-rel := norm-relation &
-                             [L-HNDL handle,
-                              R-HNDL handle ].
+  [ L-HNDL handle,
+    R-HNDL handle ].
 
 conjunction-rel := subord-or-conjunction-rel &
-                   [C-ARG conj-ind,
-                    L-INDEX index,
-                    R-INDEX index].
+  [ C-ARG conj-ind,
+    L-INDEX index,
+    R-INDEX index ].
 
 subord-rel := subord-or-conjunction-rel.
-if-then-rel := subord-rel & [PRED 'if-then-rel].
+if-then-rel := subord-rel & 
+  [ PRED 'if-then-rel ].
 
 ; noun noun compounds
 
-unspec-compound-rel := norm-relation &
-  [ HINST index,
-    NHINST index ].
+unspec-compound-rel := arg12-rel &
+  [ ARG0 event,
+    ARG1 non-expl,
+    ARG2 non-expl ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Head types
@@ -628,14 +606,14 @@ onull := olist & null.
 
 lex-rule := phrase-or-lexrule & word-or-lexrule &
   [ NEEDS-AFFIX bool,
+    SYNSEM.LOCAL.CONT.RELS [ LIST #first,
+			     LAST #last ],
     DTR #dtr & word-or-lexrule &
-	[ SYNSEM.LOCAL.CONT.LISZT [ LIST #middle,
-		  		    LAST #last ],
+	[ SYNSEM.LOCAL.CONT.RELS [ LIST #middle,
+		  		   LAST #last ],
 	  ALTS #alts ],
-    SYNSEM.LOCAL.CONT.LISZT [ LIST #first,
-			      LAST #last ],
-    C-CONT.LISZT [ LIST #first,
-		   LAST #middle ],
+    C-CONT.RELS [ LIST #first,
+		  LAST #middle ],
     ALTS #alts,
     ARGS < #dtr > ].
 
@@ -662,7 +640,7 @@ lexeme-to-word-rule := lex-rule &
           KEY-ARG #keyarg,   
           SYNSEM #synsem,
           ROOT #root ],
-    C-CONT.LISZT <! !> ].
+    C-CONT.RELS <! !> ].
 
 ; Lexeme-to-lexeme rules can make more radical changes to the SYNSEM value.
 
@@ -751,20 +729,20 @@ head-valence-phrase := head-nexus-phrase &
 
 basic-unary-phrase := phrase &
   [ STEM #stem,
-    SYNSEM.LOCAL.CONT [ LISZT [ LIST #first,
-				LAST #last ],
-			H-CONS [ LIST #scfirst,
-				 LAST #sclast ] ],
-    C-CONT [ LISZT [ LIST #middle,
-		     LAST #last ],
-	     H-CONS [ LIST #scmiddle,
-		      LAST #sclast ] ],
+    SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
+        		       LAST #last ],
+			HCONS [ LIST #scfirst,
+				LAST #sclast ] ],
+    C-CONT [ RELS [ LIST #middle,
+		    LAST #last ],
+	     HCONS [ LIST #scmiddle,
+		     LAST #sclast ] ],
     ARGS < sign & [ STEM #stem,
                     SYNSEM.LOCAL local &
-				 [ CONT [ LISZT [ LIST #first,
-						  LAST #middle ],
-					  H-CONS [ LIST #scfirst,
-						   LAST #scmiddle ] ] ],
+				 [ CONT [ RELS [ LIST #first,
+						 LAST #middle ],
+					  HCONS [ LIST #scfirst,
+						  LAST #scmiddle ] ] ],
                     ROOT - ] > ].
 
 unary-phrase := basic-unary-phrase &
@@ -772,25 +750,25 @@ unary-phrase := basic-unary-phrase &
     ARGS < [ INFLECTED + ] > ].
 
 basic-binary-phrase := phrase &
-  [ SYNSEM.LOCAL.CONT [ LISZT [ LIST #first,
-				LAST #last ],
-			H-CONS [ LIST #scfirst,
-				 LAST #sclast ] ],
-    C-CONT [ LISZT [ LIST #middle2,
-		     LAST #last ],
-	     H-CONS [ LIST #scmiddle2,
-		      LAST #sclast ] ],
+  [ SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
+			       LAST #last ],
+			HCONS [ LIST #scfirst,
+				LAST #sclast ] ],
+    C-CONT [ RELS [ LIST #middle2,
+		    LAST #last ],
+	     HCONS [ LIST #scmiddle2,
+		     LAST #sclast ] ],
     ARGS < sign & [ SYNSEM.LOCAL local &
-				 [ CONT [ LISZT [ LIST #first,
-						  LAST #middle1 ],
-					  H-CONS [ LIST #scfirst,
-						   LAST #scmiddle1 ] ] ],
+				 [ CONT [ RELS [ LIST #first,
+						 LAST #middle1 ],
+					  HCONS [ LIST #scfirst,
+						  LAST #scmiddle1 ] ] ],
                     ROOT - ],
 	   sign & [ SYNSEM.LOCAL local &
-				 [ CONT [ LISZT [ LIST #middle1,
-						  LAST #middle2 ],
-					  H-CONS [ LIST #scmiddle1,
-						   LAST #scmiddle2 ] ] ],
+				 [ CONT [ RELS [ LIST #middle1,
+						 LAST #middle2 ],
+					  HCONS [ LIST #scmiddle1,
+						  LAST #scmiddle2 ] ] ],
                     ROOT - ] > ].
 
 binary-phrase := basic-binary-phrase &
@@ -828,17 +806,18 @@ basic-head-final := basic-binary-headed-phrase &
 
 head-final := basic-head-final & binary-headed-phrase.
 
-; C-CONT is the semantic contribution of the phrase itself.  The handle and
-; index of the phrase come from the handle and index of C-CONT (which are
-; possibly but not necessarily identified with the handle and index of one of
-; the daughters).  The liszt of the phrase is the append of the liszt of
-; C-CONT and the liszts of the daughters.
+; C-CONT is the semantic contribution of the phrase itself.  The hook 
+; of the phrase is identified with the hook of C-CONT (which is possibly
+; but not necessarily identified with the hook of one of the daughters.
+; The rels of the phrase result from appending the rels of C-CONT and the
+; rels of the daughters.
+
+; Head-compositional phrases identify the syntactic head daughter as the
+; semantic head.
 
 head-compositional := headed-phrase &
-  [ C-CONT [ TOP #hand,
-	     INDEX #index ],
-    HEAD-DTR.SYNSEM.LOCAL.CONT [ TOP #hand,
-                                 INDEX #index ] ].
+  [ C-CONT.HOOK #hook,
+    HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ].
 
 ; Clauses have non-empty message values, non-clauses don't.
 ; Constrain the HEAD value of clause to verb or whatever type is
@@ -868,19 +847,19 @@ relative-clause := clause.
 non-rel-clause := headed-phrase & clause &
   [ SYNSEM [ LOCAL.KEYS.MESSAGE 1-dlist &
 			  <! message & #msg &
-				   [ HNDL #mhand,
-				     SOA #soahand ] !>,
+				   [ LBL #mhand,
+				     MARG #marghand ] !>,
 	     NON-LOCAL.REL 0-dlist ],
-    HEAD-DTR.SYNSEM [ LOCAL.CONT [ TOP #hdhand,
-				   INDEX #ind ],
+    HEAD-DTR.SYNSEM [ LOCAL.CONT.HOOK [ LTOP #hdhand,
+				        INDEX #ind ],
 		      NON-LOCAL [ QUE 0-dlist,
 				  REL 0-dlist ] ],
-    C-CONT [ TOP #mhand,
-	     INDEX #ind,
-	     LISZT.LIST < #msg, ... >,
-	     H-CONS.LIST < qeq &
-                           [ SC-ARG #soahand,
-                             OUTSCPD #hdhand ], ... > ] ].
+    C-CONT [ HOOK [ LTOP #mhand,
+                    INDEX #ind ],
+	     RELS.LIST < #msg, ... >,
+	     HCONS.LIST < qeq &
+                          [ HARG #marghand,
+                            LARG #hdhand ], ... > ] ].
 
 
 interrogative-clause := clause &
@@ -953,8 +932,7 @@ basic-head-spec-phrase := head-valence-phrase & non-clause & phrasal &
 					  SPEC #spec ],
 				    POSTHEAD #ph,
 				    MC na ],
-			      CONT [ TOP #htop,
-				     INDEX #ind ],
+			      CONT.HOOK #hdhook,
 			      KEYS [ KEY #key,
                                      ALTKEY #altkey ] ],
 		      MODIFIED #hmodif ] ],
@@ -963,16 +941,14 @@ basic-head-spec-phrase := head-valence-phrase & non-clause & phrasal &
                          VAL [ SPEC < [ LOCAL [ CAT [ HEAD #head,
                                                       VAL.COMPS #comps ],
                                                 KEYS.KEY #key,
-                                                CONT [ TOP #htop,
-                                                       INDEX #ind ] ],
+                                                CONT.HOOK #hdhook ],
                                         MODIFIED #hmodif ] >,
                                COMPS #spcomps ] ],
-                   CONT.TOP #top ],
+                   CONT.HOOK #hook ],
            MODIFIED #modif ],
-    C-CONT [ TOP #top,
-             INDEX #ind,
-             LISZT <! !>,
-	     H-CONS <! !> ] ].
+    C-CONT [ HOOK #hook,
+             RELS <! !>,
+	     HCONS <! !> ] ].
 
 basic-head-comp-phrase := head-valence-phrase & head-compositional &
 			  binary-headed-phrase &
@@ -994,8 +970,8 @@ basic-head-comp-phrase := head-valence-phrase & head-compositional &
 				     MESSAGE #hmsg ] ],
 		      LEX #lex ], 
     NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem,
-    C-CONT [ LISZT <! !>,
-	     H-CONS <! !> ] ].
+    C-CONT [ RELS <! !>,
+	     HCONS <! !> ] ].
 
 ; Skip an optional complement as long as there is still another obligatory
 ; complement on the list.  Two subtypes allow for one or two optional
@@ -1023,8 +999,8 @@ basic-head-opt-comp-phrase := head-valence-phrase & basic-unary-phrase &
                               KEYS [ MESSAGE #msg,
                                      ALTKEY #altkey ] ],
                       MODIFIED #mod ] ],
-    C-CONT [ LISZT <! !>,
-	     H-CONS <! !> ],
+    C-CONT [ RELS <! !>,
+	     HCONS <! !> ],
     ARGS < #head > ].
 
 basic-head-opt-one-comp-phrase := basic-head-opt-comp-phrase &
@@ -1068,8 +1044,8 @@ basic-extracted-comp-phrase := basic-extracted-arg-phrase & head-compositional &
 			 KEYS.MESSAGE #msg ],
 		 LEX #lex,
 		 NON-LOCAL.SLASH #slash ] ],
-    C-CONT [ LISZT <! !>,
-	     H-CONS <! !> ] ].
+    C-CONT [ RELS <! !>,
+	     HCONS <! !> ] ].
 
 basic-extracted-subj-phrase := basic-extracted-arg-phrase &
   [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < >,
@@ -1078,8 +1054,9 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase &
 		       MC - ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < gap &
 					       [ LOCAL #local & local &
-						       [ CONT.INDEX ref-ind ] ] >,
-					COMPS olist ],
+						       [ CONT.HOOK.INDEX 
+                                                                ref-ind ] ] >,
+        				COMPS olist ],
 				  MC na ],
 		      NON-LOCAL.SLASH.LIST < #local > ] ].
 
@@ -1108,14 +1085,13 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
                                                                  VAL #val,
                                                                  POSTHEAD #ph,
                                                                  MC #mc ],
-                                                           CONT [ TOP #htop,
-                                                                INDEX #hind ],
+                                                           CONT.HOOK #hdhook,
                                                            KEYS.KEY #modkey,
                                                            CTXT #ctxt ] ] > ],
 				    VAL [ SUBJ olist,
                                           COMPS olist,
 					  SPR olist ] ],
-			      CONT.TOP #hand,
+			      CONT.HOOK #hook,
 			      KEYS [ MESSAGE #msg ] ] > ] ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local-basic &
@@ -1124,13 +1100,12 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
                                                [ NON-LOCAL.SLASH 0-dlist ] > ],
 			   POSTHEAD #ph,
                            MC #mc ],
-                     CONT [ TOP #htop,
-                            INDEX #hind ],
+                     CONT.HOOK #hdhook,
                      CTXT #ctxt ],
              NON-LOCAL.SLASH 0-dlist,
 	     MODIFIED notmod ],
-    C-CONT [ TOP #hand,
-	     H-CONS <! !> ] ].
+    C-CONT [ HOOK #hook,
+	     HCONS <! !> ] ].
 
 basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
   [ SYNSEM [ LOCAL [ CAT.MC #mc,
@@ -1143,7 +1118,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                     POSTHEAD #ph,
                                     MC #hmc ],
                               AGR #agr,
-			      CONT.INDEX #hind,
+			      CONT.HOOK #hdhook,
 			      KEYS [ KEY #key,
                                      ALTKEY #altkey,
 				     MESSAGE #hmsg ] ],
@@ -1157,7 +1132,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                                                POSTHEAD #ph,
                                                                MC #hmc ],
 							 AGR #agr,
-							 CONT.INDEX #hind,
+							 CONT.HOOK #hdhook,
 							 KEYS 
                                                           [ KEY #key,
                                                             ALTKEY #altkey,
@@ -1167,17 +1142,17 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
 					VAL [ COMPS olist,
 					      SPR olist ],
                                         MC #mc ],
+                                  CONT.HOOK #hook,
 				  KEYS [ MESSAGE #msg ] ],
 			  NON-LOCAL [ SLASH [ LIST #first,
 					      LAST #middle ],
 				      QUE 0-dlist & [ LIST null ] ] ],
-    C-CONT.LISZT <! !> ].
+    C-CONT [ HOOK #hook,
+             RELS <! !> ] ].
 
 head-mod-phrase-simple := basic-head-mod-phrase-simple &
-  [ HEAD-DTR.SYNSEM.LOCAL.CONT.TOP #htop,
-    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL.CONT.TOP #htop ] >,
-                                CONT.TOP #hand ],
-    C-CONT.TOP #hand ].
+  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #htop,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #htop ] >].
 
 adj-head-phrase := basic-head-mod-phrase-simple & head-final &
   [ SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
@@ -1204,19 +1179,15 @@ head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
 ; we delay construction of intersective modification, but not scopal.
 
 scopal-mod-phrase := head-mod-phrase-simple &
-  [ NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL scopal-mod ] >,
-				CONT.INDEX #index ],
-    C-CONT [ INDEX #index,
-	     H-CONS <! !> ] ].
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL scopal-mod ] >,
+    C-CONT.HCONS <! !> ].
 
 isect-mod-phrase := head-mod-phrase-simple &
-  [ HEAD-DTR.SYNSEM.LOCAL [ CONT [ TOP #hand,
-				   INDEX #index ],
+  [ HEAD-DTR.SYNSEM.LOCAL [ CONT.HOOK.LTOP #hand,
 			    KEYS.MESSAGE 0-dlist ],
     NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL intersective-mod ] >,
-				CONT.TOP #hand ],
-    C-CONT [ INDEX #index,
-	     H-CONS <! !> ] ].
+				CONT.HOOK.LTOP #hand ],
+    C-CONT.HCONS <! !> ].
 
 adj-head-scop-phrase := adj-head-phrase & scopal-mod-phrase &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.POSTHEAD - ].

@@ -4,19 +4,47 @@
   `(,(vsym "SYNSEM") ,(vsym "LOCAL") ,(vsym "CONT"))
   "Following this path into a sign gets you to the MRS structure")
 
+(defparameter *main-semantics-path* 
+  `(,(vsym "SYNSEM") ,(vsym "LOCAL") ,(vsym "CONT") 
+    ,(vsym "RELS") ,(vsym "LIST")))
+
 (defparameter *psoa-liszt-path* (list (vsym "RELS") (vsym "LIST"))
   "path to get a liszt from a psoa")
 
-(defparameter *ignored-sem-features* (list (vsym "LABEL"))
+(defparameter *psoa-top-h-path*  `(,(vsym "HOOK") ,(vsym "LTOP"))
+  "path to get the top handle from a psoa")
+
+(defparameter *psoa-index-path* 
+  `(,(vsym "HOOK") ,(vsym "INDEX"))
+  "path to get an index from a psoa")
+
+(defparameter *psoa-event-path* `(,(vsym "HOOK") ,(vsym "INDEX")))
+(defparameter *psoa-rh-cons-path* `(,(vsym "HCONS") ,(vsym "LIST")))
+
+(defparameter *rel-handel-path*
+    `(,(vsym "LBL"))
+  "path to get the handel from a relation")
+
+(defparameter *sc-arg-feature* (vsym "HARG")
+  "the feature in a qeq that leads to the first argument")
+
+(defparameter *outscpd-feature* (vsym "LARG")
+  "the feature in a qeq that leads to the second argument")
+
+(defparameter *bv-feature* (vsym "ARG0"))
+
+(defparameter *scope-feat* (vsym "BODY"))
+
+(defparameter *ignored-sem-features* (list (vsym "WLINK"))
   "A list of features which are ignored completely")
 
 (defparameter *main-semantics-path* 
   (append *initial-semantics-path* (list (vsym "RELS") (vsym "LIST")))
   "the path into a lexical entry which gives the list of
-   relations - typically (append *initial-semantics-path* '(LISZT LIST))")
+   relations - typically (append *initial-semantics-path* '(RELS LIST))")
 
 (defparameter *construction-semantics-path* 
-  (list (vsym "C-CONT") (vsym "LISZT") (vsym "LIST"))
+  (list (vsym "C-CONT") (vsym "RELS") (vsym "LIST"))
   "the path into a rule/construction which gives the
    semantics specific to that construction")
 
