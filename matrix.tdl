@@ -1280,7 +1280,7 @@ norm-hook-lex-item := lex-item &
 ; have empty HCONS values.
 
 single-rel-lex-item := lex-item &
-  [ SYNSEM.LOCAL.CONT.RELS 1-dlist ].
+  [ SYNSEM.LOCAL.CONT.RELS <! relation !> ].
 
 no-hcons-lex-item := lex-item & 
   [ SYNSEM.LOCAL.CONT.HCONS 0-dlist ].
@@ -1733,7 +1733,7 @@ basic-determiner-lex := norm-hook-lex-item &
 		     CONT [ HCONS <! qeq &
 				   [ HARG #harg,
 				     LARG #larg ] !>,
-			    RELS 1-dlist ] ],
+			    RELS <! relation !> ] ],
 	     LKEYS.KEYREL quant-relation &
 		   [ ARG0 #ind,
 		     RSTR #harg ] ] ].
