@@ -1,3 +1,6 @@
+
+
+
 	Word order	negation	yes-no Q
    	----------	--------	--------
 Hindi   SOV (V-final?)  pre-V adv 	sentence-initial marker
@@ -7,5 +10,5 @@ Mandarin SVO		pre-V adv	sentence-final marker, A-not-A
 Japanese V-final	verbal infl	sentence-final marker
 Polish  free		pre-V adv       sentence-initial marker, intonation
 			  (prefix?)
-Spanish SVO		??		main verb inversion
-English SVO		selected adv	aux inversion
+Spanish SVO		pre-V adv	main verb inversion
+English SVO		post-V adv	aux inversion

@@ -16,10 +16,10 @@ n tv n
 
 ; wo3 bu4 chi1 fan4
 ; I don't eat  food
-n neg-adv tv n
-*neg-adv n tv n
-*n tv n neg-adv
-*n tv neg-adv n
+n negadv tv n
+*negadv n tv n
+*n tv n negadv
+*n tv negadv n
 
 ; ni3 chi1 fan4 ma
 ; you eat  food QPART
@@ -29,6 +29,6 @@ n tv n QPART
 
 ; ni3 chi1 bu chi1 fan4
 ; you eat not eat food
-n tv neg-adv tv n
-*n tv neg-adv tv n QPART
-*n neg-adv tv tv n 
+n tv negadv tv n
+*n tv negadv tv n QPART
+*n negadv tv tv n 

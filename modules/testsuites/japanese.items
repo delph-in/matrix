@@ -15,11 +15,11 @@ o s tv
 
 ; taroo-ga gohan-wo tabenakatta
 ; Taroo-NOM food-ACC eat.neg.past
-n n tv-NEG
-*n n NEG-tv
+n n tvNEG
+*n n NEGtv
 
 ; taroo-ga gohan-wo tabeta ka
-' Taroo-NOM food-ACC ate QPART
+; Taroo-NOM food-ACC ate QPART
 n n tv QPART
 *QPART n n tv
 *n QPART n tv
@@ -27,6 +27,6 @@ n n tv QPART
 
 ; taroo-ga gohan-wo tabenaktta ka
 ; Taroo-NOM food-ACC eat.net.past QPART
-n n tv-NEG QPART
-*n n QPART tv-NEG
-*n n tv QPART-NEG
+n n tvNEG QPART
+*n n QPART tvNEG
+*n n tv QPARTNEG

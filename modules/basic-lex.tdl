@@ -30,16 +30,18 @@ noun-lex := basic-noun-lex & basic-one-arg &
     ARG-ST < #spr > ].
 
 transitive-verb-lex := basic-verb-lex & transitive-lex-item &
-  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+  [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
 			     COMPS < #comps >,
 			     SUBJ < #subj >,
-			     SPEC < > ]],
+			     SPEC < > ]]],
     ARG-ST < #subj &
 	     [ LOCAL.CAT [ HEAD.CASE nom,
 			   VAL.SPR < > ]], 
 	     #comps &
 	     [ LOCAL.CAT [ HEAD.CASE acc,
 			   VAL.SPR < > ]] > ].
+
+verb :+ [ MOD <> ].
 
 intransitive-verb-lex := basic-verb-lex & intransitive-lex-item &
   [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
@@ -68,12 +70,13 @@ ditransitive-verb-lex := basic-verb-lex & ditransitive-lex-item &
 aux-verb-lex := basic-verb-lex & trans-first-arg-raising-lex-item &
   [ SYNSEM.LOCAL [ CAT [ HEAD.MOD < >,
                          VAL [ SPR < >,
-                               COMPS < #comps >,
+                               COMPS < #comps . #vcomps >,
                                SUBJ < #subj >,
                                SPEC < > ] ] ],
     ARG-ST < #subj &
 	     [ LOCAL.CAT [ HEAD.CASE nom,
 			   VAL.SPR < > ]], 
 	     #comps &
-	     [ LOCAL.CAT.HEAD verb ] > ].
+	     [ LOCAL.CAT [ HEAD verb,
+                           VAL.COMPS #vcomps] ]> ].
 

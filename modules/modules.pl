@@ -40,7 +40,7 @@ unless (-e $matrix_dir."/lkb/script") {
 #    die "There's something wrong with the Matrix stored in $matrix_dir.\n";
     print "There's something wrong with the Matrix stored in $matrix_dir.\n";
 # CHANGE HERE
-    $matrix_dir = "/home/bender/lingo/grammars/matrix";
+    $matrix_dir = "/home/danf/lingo/matrix/grammars/matrix";
 #    $matrix_dir = "/Users/erb/lingo/grammars/matrix";
     print "I'm trying $matrix_dir\n";
    
@@ -547,8 +547,7 @@ sub generate_adv_neg {
 		
 		case /^[Aa]/ {
 		    print CHOICES "V modifier\n";
-		    print OUTPUT "                                                 VAL [ SUBJ cons,\n";
-		    print OUTPUT "                                                       COMPS cons ]]] > ]].\n\n";
+		    print OUTPUT "                                                 VAL [ SUBJ cons ]]] > ]].\n\n";
 		}
 		
 		case /^[Bb]/ {

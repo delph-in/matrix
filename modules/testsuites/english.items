@@ -25,5 +25,4 @@ aux n tv n
 
 ;Did Kim not see Sandy?
 aux n negadv tv n
-*aux n tv negadv n
 *aux negadv n tv n 

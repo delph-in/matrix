@@ -70,3 +70,6 @@ aux_v := aux-verb-lex &
      SYNSEM [ LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.VAL.COMPS < > ] >,
               LKEYS.KEYREL.PRED '_aux_v_rel ] ].
 
+aux_v_lex := aux-verb-lex &
+   [ STEM < "auxl" >,
+     SYNSEM [ LKEYS.KEYREL.PRED '_aux_v_rel ] ].

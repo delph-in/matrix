@@ -19,6 +19,6 @@ QPART n iv
 
 ; dene gha@yeyi@da@ yi@le
 ; person 1p-see NEG
-n iv NEG
-*NEG n iv
-*n NEG iv
+n iv negadv
+*negadv n iv
+*n negadv iv

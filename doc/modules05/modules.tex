@@ -96,14 +96,7 @@ The first, preliminary version of the Grammar Matrix
 consisted of types defining the basic feature geometry and technical
 devices (e.g., for list manipulation), types associated with Minimal
 Recursion Semantics (see, e.g., \cite{Cop:Las:Fli:01}), types for
-general classes of rules (including derivational and inflectional
-lexical rules, unary and binary phrase structure rules, headed and
-non-headed rules, and head-initial and head-final rules), and types
-for basic constructions such as head-complement, head-specifier,
-head-subject, head-filler, and head-modifier rules, as well as 
-coordination and more specialized classes of constructions, such as relative
-clauses and noun-noun compounding.  In addition, the preliminary
-version of the Grammar Matrix included configuration and parameter
+lexical and syntactic rules, and configuration and parameter
 files for the \lkb.  The current released version of the Matrix further 
 includes a hierarchy of lexical types for creating language-specific 
 lexical entries.
@@ -125,20 +118,17 @@ In general, we find two kinds of typological variation across
 languages.  On the one hand, there are systems (formal or functional)
 which must be represented in every language.  Word order is a prime
 example of a formal system represented in every language: Every
-language has some set of permissible word orders.  Those sets differ
-from language to language, but there are recurring patterns.
+language has some set of permissible word orders.
 A functional system which is represented in every language is
-sentential negation.  To our knowledge, all human languages provide
-some means of expressing the negation of a statement.  There are many
-strategies for this, and most, if not all, of those strategies appear
-in more than one language.  On the other hand, there are linguistic
+sentential negation, expressed using a variety of mechanisms.  On 
+the other hand, there are linguistic
 phenomena which appear in only some languages, and are difficult to
 conceptualize as alternative realizations of the same function.  More
 importantly, for our purposes, ordinary working linguists (`OWLs')
 don't conceptualize them in this way.  These include things like
-noun incorporation, numeral classifiers, and auxiliary verbs.
-Not all languages instantiate these phenomena, but among those that
-do, one finds recurring varieties which can be subjected to typological
+noun incorporation, numeral classifiers, and auxiliary verbs; each of
+these phenomena are found in recurring varieties that can be 
+subjected to typological
 analysis (see, for example, \cite{Mithun:84} on noun incorporation).
 The type of modular extension to the Matrix which we propose here
 is meant to scale up to handle both kinds of typological variation.
@@ -156,13 +146,10 @@ they need to be carefully designed in order to be mutually
 consistent, ideally across all possible combinations.  Our strategy
 is thus consistent with a
 bottom-up, data-driven investigation of linguistic universals and
-constraints on cross-linguistic variation.  Further, in building modules
-for any particular function or phenomenon, we work from the assumption
-that we have not necessarily found an exhaustive classification of languages
-along that dimension.  This is certainly true of the implemented
-modules presented below.  We are also still cautious about making
-theoretical claims based on interactions between the modules, though
-we expect such predictions to emerge as the modules mature.
+constraints on cross-linguistic variation.  As the number and breadth
+of implemented grammars grows, we expect linguistic predictions to 
+emerge and become part of improved modules, particularly with respect
+to interactions among the distinct phenomena that the modules cover.
 Our approach should in time be instrumental in assisting large-scale 
 typological investigations (covering hundreds of languages), making use
 of the linguistically precise constraints encoded in these modules to
@@ -170,28 +157,17 @@ uncover deeper and more subtle facts about languages.
 
 Consistent with earlier versions of the Matrix, we aim to support
 both rapid precision grammar prototyping and solutions that can scale up
-to broad-coverage grammars.
-That is, the prototype created automatically by the system
-described here should be one that a linguist could then work with over time
-to incrementally improve.  This sets a high bar for the modules themselves,
+to broad-coverage grammars. This sets a high bar for the modules themselves,
 requiring them to be not only quick first-pass solutions, but also
 good early approximations which need to be refined but not thrown out.
 It also requires that the automatically generated grammar files 
 maintain a high degree of readability so that they may be effectively
-modified.  We also encounter issues with updating procedures: if
-a linguist is working with a Matrix-generated grammar, some challenges
-arise in propagating updates to the Matrix, given the potential need to
-change automatically 
-generated files.  Finally, the user interface for the prototyping 
-stage must allow
-the linguist to go back and revise decisions in the face of new
-information or improved linguistic analyses.  This again raises the 
-issue of how to best achieve automated revisions in the face of hand-editing
-of autogenerated files.  We'll return to these issues in \S\ref{management}
-below.
-
-% XX Add something on planned support for other Matrix users to add modules,
-% perhaps in final section.
+modified.  We will also encounter issues with updating procedures for
+the core Matrix while maintaining consistency with the module-derived
+customizations for individual languages, and issues with enabling the
+linguist to go back and revise decisions in the face of new
+information or improved linguistic analyses; both are discussed in
+in \S\ref{management} below.
 
 \section{Implementations of three modules}
 
@@ -544,7 +520,8 @@ generated grammars if the grammar code were more consolidated.
 
 To evaluate the mutual consistency of the modules developed so far as
 well as to illustrate their applicability to a interesting range of
-languages, we developed abstract testsuites for seven languages.  This
+languages, we developed abstract testsuites for seven languages, in each
+case including both grammatical and ungrammatical examples.  This
 sample of languages is not intended to be representative, either
 typologically or genetically, but is rather opportunistic.  The
 testsuites are abstract in that we represent sentences in terms of
@@ -558,12 +535,12 @@ The languages and their properties are shown in Table~\ref{testsuitetable}.
 \begin{tabular}{lllll}
 \hline
 Language & Word order & Negation & Yes-no Q\footnotemark & Source\\ \hline
-English  & SVO	      & post-aux adv\footnotemark	& aux inversion &\\
 Hindi    & SOV        & pre-V adv 	& sentence-initial particle& \cite{Sne:Wei:00}\\
 Japanese & V-final    & verbal suffix   & sentence-final particle & \\
 Mandarin & SVO	      & pre-V adv	& sentence-final particle, A-not-A & \cite{Li*81}\\
 Polish   & free	      & pre-V adv       & sentence-initial particle & Adam Przepi\'{o}rkowski, p.c.\\
 Slave (Athabaskan) & SOV & post-V adv	& sentence-initial particle & \cite{Rice89}\\
+English  & SVO	      & post-aux adv\footnotemark	& aux inversion &\\
 Spanish  & SVO	      & pre-V adv	& main verb inversion & \\ \hline
 \end{tabular}
 \end{center}
@@ -576,11 +553,48 @@ Spanish  & SVO	      & pre-V adv	& main verb inversion & \\ \hline
 \addtocounter{footnote}{1}
 \footnotetext{The situation in English is a bit more complicated.  \newcite{Kim00} argues that sentential {\it not} is actually selected by the auxiliary it appears with.}
 
+To do the evaluation, we ran the Perl script once for each language, answering
+the multiple-choice questions with single key strokes; fewer than ten 
+keystrokes were required for any one grammar, excluding input for spelling.
+The script then
+automatically generated the language-specific grammar files, as well as the
+customized load file which we used to load the new grammar.  We then batch
+parsed the small test suite for that language, and repeated the exercise for
+the next language.
 
--- Describe coverage, things about languages that are not covered
+The coverage of these automatically generated grammars for the seven languages
+is shown in Table~\ref{testresults}.
 
--- Describe the amount of work it takes to make a prototype with the
-Perl script, and compare to what it would take to do it from scratch
+\begin{table*}[ht]
+\begin{center}
+\small
+\begin{tabular}{lrrrr}
+\hline
+Language & Positives & Coverage & Negatives & Overgeneration \\ \hline
+Hindi    & 5         & 100\% 	& 10 & 10\% \\
+Japanese & 6         & 100\%    &  8 & 0\% \\
+Mandarin & 4	     &  75\%	&  9 & 0\% \\
+Polish   & 14	     & 100\%    &  8 & 0\% \\
+Slave    & 3         & 100\%	&  6 & 0\% \\
+English  & 5	     & 80\%	& 11 & 45\%\\
+Spanish  & 5         & 80\%	& 8  & 25\% \\ \hline
+\end{tabular}
+\end{center}
+\caption{Parsing evaluation results}
+\label{testresults}
+\end{table*}
+
+It is clear that the resulting grammars are not all perfect.  For Mandarin,
+there is as yet no provision in the modules for A-not-A questions.  For
+English, the one example involving a negated yes-no question fails to
+parse, since we falsely treated the negation particle as a post-modifier,
+which also leads to considerable overgeneration. And for Spanish, the
+test suite included declarative/interrogative word order contrasts, but
+without a treatment of punctuation, the grammar confuses one for the other.
+Otherwise, these grammars perform quite well on these modest data sets,
+and reflect an almost trivial implementation effort on the part of the user,
+contrasted with a day or more of skilled grammar development work to 
+achieve similar results with the standard Matrix.
 
 \section{Conclusion and outlook}
 
@@ -602,15 +616,6 @@ algorithms which might need to be tuned differently for different
 kinds of languages, and (v) in supporting typological or comparative
 studies of linguistic phenomena or interactions between phenomena across
 languages.
-
-
-\section*{Acknowledgements}
-
-[Leave these out for now, as part of being anonymous?]
-
-Stephan Oepen, Scott Drellishak
-
-Language information: Jeff Good, Jeremy Kahn, Anya Dormer, Adam Przepi\'orkowski
 
 %\section*{References}
 

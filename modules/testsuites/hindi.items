@@ -5,7 +5,7 @@
 ; Case (direct, oblique)
 ; Near-ubiquitous post-verbal auxiliary be
 ; Split ergativity (ergative agreement in perfective finite clauses,
-   with some verbs, optionally with others, not at all with others)
+;   with some verbs, optionally with others, not at all with others)
 ; Largely optional determiners
 ; SOV order (possibly V final, i.e., OSV or SOV)
 ; A postpositional marker on definite direct objects ("ko")
@@ -16,24 +16,24 @@
 ;     head final in head-complement structures.
 
 ; lar.ki- ca-y pi-ti- hai
-n n tv aux
+n n tv auxl
 n n tv
-*n tv aux n
-*tv aux n n
+*n tv auxl n
+*tv auxl n n
 *tv n n 
 *n tv n 
-*tv aux n n 
-*aux tv n n 
+*tv auxl n n 
+*auxl tv n n 
 
 ; lar.ki- nahi-~ soti- hai
-n neg-adv iv aux
-n neg-adv iv
-*neg-adv n iv aux
-*n iv aux neg-adv
+n negadv iv auxl
+n negadv iv
+*negadv n iv auxl
+*n iv auxl negadv
 
 ; not sure this is really out
-*n iv neg-adv aux
+*n iv negadv auxl
 
 ; kya- lar.kiya-~ ca-y pi-ti- hai~
-QPART n n tv aux
-*n n tv aux QPART
+QPART n n tv auxl
+*n n tv auxl QPART

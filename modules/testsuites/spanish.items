@@ -32,4 +32,3 @@ tv n n
 ;Did Kim not see Sandy?
 negadv tv n n
 *negadv n tv n
-*n negadv tv n

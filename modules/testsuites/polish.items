@@ -28,14 +28,14 @@ QPART n n tv
 
 ; Kim nie zobaczyl\ Sandy
 ; Kim not saw Sandy
-n neg-adv tv n
-*neg-adv n tv n
-*n tv n neg-adv
-*n n tv neg-adv
+n negadv tv n
+*negadv n tv n
+*n tv n negadv
+*n n tv negadv
 
 ; Czy Kim nie zobaczyl\ Sandy?
 ; QPART Kim not saw Sandy?
-QPART n neg-adv tv n
-QPART n n neg-adv tv
-*n neg-adv tv n QPART
-*neg-adv QPART tv n n
+QPART n negadv tv n
+QPART n n negadv tv
+*n negadv tv n QPART
+*negadv QPART tv n n
