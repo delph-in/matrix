@@ -136,6 +136,15 @@ Strict VO or OV order, plus opposite head-comp order for
 ... What is our current thinking about olist?  Assuming for now
  that we are explicitly discharging all complements ...
 
+... Semantics is currently a bit broken because the
+head-subj rule is ready to be tied up with declarative
+clause stuff. Maybe rethink whether that's an option we
+want to support?  What's wrong with always using non-branching
+productions for the introduction of messages?  Seems to work
+better in languages where subject can (or must) attach
+before object, since not all verbs have objects, but we
+are assuming subjects (or at least pro-drop) everywhere.
+
 Subcategorization:
 
 Existing Matrix types underdetermine POS of complements.
