@@ -63,6 +63,8 @@
 ;;;
 (read-tdl-grammar-file-aux (lkb-pathname (parent-directory) "rules.tdl"))
 (read-tdl-lex-rule-file-aux (lkb-pathname (parent-directory) "lrules.tdl"))
+;;; Modules: Non-spell-changing lexical rules 
+
 (read-morph-file-aux (lkb-pathname (parent-directory) "irules.tdl"))
 
 ;;; Modules: lexical rules 

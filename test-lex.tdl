@@ -23,17 +23,34 @@ o1_n := noun-lex &
     SYNSEM [ LOCAL.CAT.HEAD.CASE acc,
 	     LKEYS.KEYREL.PRED '_o1_n_rel ]].
 
+o1_n2 := noun-lex &
+  [ STEM < "o" >,
+    SYNSEM [ LOCAL.CAT.HEAD.CASE acc,
+	     LKEYS.KEYREL.PRED '_o1_n_rel ]].
+
 o2_n := noun-lex &
   [ STEM < "o2" >,
     SYNSEM [ LOCAL.CAT.HEAD.CASE dat,
 	     LKEYS.KEYREL.PRED '_o2_n_rel ]].
 
+n_n := noun-lex &
+  [ STEM < "n" >,
+    SYNSEM [ LKEYS.KEYREL.PRED '_n_n_rel ]].
+
 verb_v := transitive-verb-lex &
    [ STEM < "verb" >,
      SYNSEM.LKEYS.KEYREL.PRED '_verb_v_rel ].
 
+tverb_v2 := transitive-verb-lex &
+   [ STEM < "tv" >,
+     SYNSEM.LKEYS.KEYREL.PRED '_verb_v_rel ].
+
 iverb_v := intransitive-verb-lex &
    [ STEM < "verb" >,
+     SYNSEM.LKEYS.KEYREL.PRED '_iverb_v_rel ].
+
+iverb_v2 := intransitive-verb-lex &
+   [ STEM < "iv" >,
      SYNSEM.LKEYS.KEYREL.PRED '_iverb_v_rel ].
 
 dverb_v := ditransitive-verb-lex &
@@ -43,3 +60,13 @@ dverb_v := ditransitive-verb-lex &
 dverb_v2 := ditransitive-verb-lex &
    [ STEM < "dverb" >,
      SYNSEM.LKEYS.KEYREL.PRED '_dverb-true_v_rel ].
+
+dverb_v3 := ditransitive-verb-lex &
+   [ STEM < "dv" >,
+     SYNSEM.LKEYS.KEYREL.PRED '_dverb-true_v_rel ].
+
+aux_v := aux-verb-lex &
+   [ STEM < "aux" >,
+     SYNSEM [ LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.VAL.COMPS < > ] >,
+              LKEYS.KEYREL.PRED '_aux_v_rel ] ].
+

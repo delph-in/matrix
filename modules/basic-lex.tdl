@@ -64,3 +64,16 @@ ditransitive-verb-lex := basic-verb-lex & ditransitive-lex-item &
 	     #comps2 &
 	     [ LOCAL.CAT [ HEAD.CASE dat,
 			   VAL.SPR < > ]] > ].
+
+aux-verb-lex := basic-verb-lex & trans-first-arg-raising-lex-item &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.MOD < >,
+                         VAL [ SPR < >,
+                               COMPS < #comps >,
+                               SUBJ < #subj >,
+                               SPEC < > ] ] ],
+    ARG-ST < #subj &
+	     [ LOCAL.CAT [ HEAD.CASE nom,
+			   VAL.SPR < > ]], 
+	     #comps &
+	     [ LOCAL.CAT.HEAD verb ] > ].
+

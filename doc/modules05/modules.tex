@@ -49,9 +49,9 @@ reflecting interactions among these phenomena.
 \section{Introduction}
 Manual development of precise broad-coverage grammar implementations
 is a labor-intensive undertaking, typically requiring multiple years
-of work by highly trained computational linguists.  Recent efforts
-toward reducing the time and level of expertise needed for producing a
-new grammar have focused either on adapting an existing grammar of a
+of work by highly trained computational linguists.  Recent implementation
+efforts toward reducing the time and level of expertise needed for producing
+a new grammar have focused either on adapting an existing grammar of a
 related language \cite{Butt-et-al-02,Kim:Dal:Kap:Kin:Mas:Ohk:03}, or
 on identifying a set of language-independent grammar constraints to
 which language-specific constraints can be added~\cite{Ben:Fli:Oe:02}.
@@ -80,16 +80,17 @@ several frameworks, including Head-Driven Phrase Structure Grammar
 Adjoining Grammar ({\sc ltag}). In \hpsg\ \cite{Pol:Sag:94}, the most
 extensive grammars are those of English \cite{Flickinger:00}, German
 \cite{Mue:Kap:00}, and Japanese \cite{Siegel:00,Siegel:Bender:02}.
-The Grammar Matrix \cite{Ben:Fli:Oe:02} is an attempt to distill the
+The Grammar Matrix \cite{Ben:Fli:Oe:02} is presented as 
+an attempt to distill the
 wisdom of these existing grammars and document it in a form that can
 be used as the basis for new grammars. The main goals of the project
-are: (i) consistent with other work in \hpsg, to develop in detail
-semantic representations and in particular the syntax-semantics
-interface; (ii) to represent generalizations across linguistic objects
-and across languages; and (iii) through the richness of the matrix and
-its built-in links with the \lkb\ grammar engineering environment
-\cite{Copestake:02}, to allow for extremely quick start-up as the
-matrix is applied to new languages.
+are: (i) to develop in detail semantic representations and in particular 
+the syntax-semantics interface, consistent with other work in \hpsg; 
+(ii) to represent generalizations across linguistic objects
+and across languages; and (iii) to allow for very quick start-up as 
+the Matrix is applied to new languages, using the inventory of types and
+the built-in links to the \lkb\ grammar engineering environment
+\cite{Copestake:02}.
 
 The first, preliminary version of the Grammar Matrix 
 consisted of types defining the basic feature geometry and technical
@@ -112,7 +113,7 @@ language-independent, and monotonically extensible when developing a
 new grammar for a language, though not all types defined in the Matrix
 will necessarily be employed for any given language.  This strong 
 assumption of universality has been of practical utility in the early
-development of the matrix, but it has sharply limited the inventory of
+development of the Matrix, but it has sharply limited the inventory of
 constraint definitions that could be supplied to grammar developers
 since many generalizations hold only for subsets of languages.  It is
 this limitation of the current Matrix that we address by introducing
@@ -151,71 +152,59 @@ which simultaneously control multiple different, apparently
 unrelated surface phenomena, the modules in the Matrix each directly
 encode the constraints necessary to handle one particular phenomenon.
 Nonetheless, this does not make the modules themselves trivial:
-the modules need to be carefully designed in order to be mutually
-consistent, ideally across all possible combinations.  
-
-We would like to stress that our goals with this project include a
+they need to be carefully designed in order to be mutually
+consistent, ideally across all possible combinations.  Our strategy
+is thus consistent with a
 bottom-up, data-driven investigation of linguistic universals and
-constraints on cross-linguistic variation.  Thus in building modules
+constraints on cross-linguistic variation.  Further, in building modules
 for any particular function or phenomenon, we work from the assumption
-that we have not yet found an exhaustive classification of languages
+that we have not necessarily found an exhaustive classification of languages
 along that dimension.  This is certainly true of the implemented
-modules presented below.  Furthermore, we are cautious about making
-theoretical claims based on interactions between the modules.  If we
-had, for example, a word-order alternative which was incompatible with
-a noun incorporation alternative, this might be interpreted as a
-prediction that that particular combination is never found in the
-world's languages.  This would almost certainly be
-over-interpretation, however, and it seems the better course to strive
-for compatibility and leave to long-term typological investigation the
-discovery of patterns of co-occurrence.  A system such as the one we
-propose could be instrumental in assisting large scale typological
-investigations (covering hundreds of languages) in studying deeper,
-more subtle facts about languages.
+modules presented below.  We are also still cautious about making
+theoretical claims based on interactions between the modules, though
+we expect such predictions to emerge as the modules mature.
+Our approach should in time be instrumental in assisting large-scale 
+typological investigations (covering hundreds of languages), making use
+of the linguistically precise constraints encoded in these modules to
+uncover deeper and more subtle facts about languages.
 
 Consistent with earlier versions of the Matrix, we aim to support
-both rapid precision grammar prototyping and scalable solutions.
-That is, the grammar prototype created automatically by the system
-described here should be one that a linguist could then work with
+both rapid precision grammar prototyping and solutions that can scale up
+to broad-coverage grammars.
+That is, the prototype created automatically by the system
+described here should be one that a linguist could then work with over time
 to incrementally improve.  This sets a high bar for the modules themselves,
-requiring them to be not only first-pass solutions, but actually
-good first approximations which may need to be refined but not thrown out.
+requiring them to be not only quick first-pass solutions, but also
+good early approximations which need to be refined but not thrown out.
 It also requires that the automatically generated grammar files 
 maintain a high degree of readability so that they may be effectively
-modified.  Similarly, there are issues in updating procedures: if
-a linguist is working with a Matrix-generated grammar, how best to
-propagate updates in the Matrix, despite potential changes to automatically
-generated files.  Finally, the UI for the prototyping stage must allow
+modified.  We also encounter issues with updating procedures: if
+a linguist is working with a Matrix-generated grammar, some challenges
+arise in propagating updates to the Matrix, given the potential need to
+change automatically 
+generated files.  Finally, the user interface for the prototyping 
+stage must allow
 the linguist to go back and revise decisions in the face of new
-information or revised linguistic analyses.  This again raises the 
+information or improved linguistic analyses.  This again raises the 
 issue of how to best achieve automated revisions in the face of hand-editing
 of autogenerated files.  We'll return to these issues in \S\ref{management}
 below.
 
-[IS IT WORTH MAKING A LIST OF THINGS WHICH MIGHT BE COVERED IN
-THIS WAY, OR IS THE GENERAL DISCUSSION AT THE BEGINNING OF THIS SECTION
-DETAILED ENOUGH?]
-
-[SAY SOMETHING ABOUT EVENTUALLY SUPPORTING A WAY FOR THE MATRIX USER
-COMMUNITY TO PROPOSE ADDITIONAL MODULES?  THAT'S ALL FUTURE WORK, OF
-COURSE.  ANYTHING ELSE ABOUT REUSE OF ANALYSES?]
-
+% XX Add something on planned support for other Matrix users to add modules,
+% perhaps in final section.
 
 \section{Implementations of three modules}
 
 To explore the issues that will arise in developing modules which
-are consistent with each other and in module management, we have
+are consistent with each other and in the management of modules, we have
 implemented an initial set of modules targeting basic
 word order, matrix yes-no questions, and sentential negation.  
-%The coverage
-%of these modules and the strategies taken in their implementation are
-%described in the following subsections.
 
 \subsection{Word order}
 
 The word order modules address the so-called basic word order in
 a language: the relative order of subjects, verbs, and verbal complements.
-Languages vary in their rigidity with respect to word order and the
+Languages vary in their rigidity with respect to word order, and the
 question of how to determine the basic word-order of a language is 
 notoriously complex.  Nonetheless, we believe that many if not most
 linguists working on linguistic description would analyze some orders
@@ -226,7 +215,7 @@ such as topicalization, extraposition, subject-verb (or subject-auxiliary)
 inversion, etc.  Eventual modules for such phenomena would need to
 interact appropriately with the basic word-order modules.
 
-The Grammar Matrix core grammar provides definitions of basic
+The Matrix core grammar provides definitions of basic
 head-complement and head-subject schemata which are consistent with
 the Matrix implementation of compositional semantics
 \cite{Fli:Ben:03}, as well as definitions of head-initial and
@@ -266,7 +255,7 @@ constituents represented in such a tree need to be interpreted as
 linguistically meaningful.  Conversely, however, any such grammar
 should posit a constituent where the linguistic evidence says there
 must be one.}
-Figure~\ref{wordorderfig} shows the types files for the SOV and
+Figure~\ref{wordorderfig} shows the type files for the SOV and
 V-final orders and the instance file which they both share.
 
 \begin{figure*}[ht]
@@ -297,7 +286,7 @@ The core Matrix also provides a lexical type hierarchy
 providing basic types for (among other things) nouns and verbs which
 can be cross-classified with a set of types for various argument
 structure patterns.  For the purposes of testing these modules,
-we made a set of lexical types inheriting from these dimensions and
+we made a set of lexical types inheriting from these dimensions,
 instantiated by a test lexicon.  In addition, to finesse the issue
 of NP structure while still producing parses with well-formed semantic
 representations (for testing via generation), we posited a place-holder
@@ -345,15 +334,52 @@ type (matrix v.\ subordinate).  The second is a representation of the
 pragmatic effects of word order, especially in free word-order
 languages.\footnote{In languages with relatively fixed word order, the
 displacement constructions which produce alternative orders provide a
-place to encoded such pragmatic constraints.}
+place to encode such pragmatic constraints.}
 
 
 \subsection{Yes-no questions}
 
+The modules for yes-no questions implement four alternative mechanisms:
+(1) inversion of the subject and the main verb relative to the declarative
+sentence word order; (2) inversion of the subject and an auxiliary
+verb; (3) introduction of a question particle either sentence-initially or
+sentence-finally; and (4) use of intonation alone to indicate a question.
+
+Inversion of the subject and the main verb is implemented with a lexical
+rule which relocates the subject (the value of {\sc subj} in the valence
+specifications) to be the first on the {\sc comps} list, and further
+assigns a positive value for an additional feature {\sc inv} (inverted)
+on verbs.  This feature may well have independent syntactic motivation in 
+the language, but is in any case used here to encode the relevant distinction
+so the declarative/interrogative distinction can be made in the semantics
+once the clause is constructed.
+
+Subject-aux inversion is a minor extension of the basic inversion type,
+simply constraining the lexical rule to only apply to auxiliary verbs.
+This module does not deal with the special case of an additional 'support'
+verb like {\it do} used in English yes-no questions lacking any other
+auxiliary verb, though it could be so extended if such support verbs
+proved to be needed for other languages.
+
+The third type of mechanism employs a distinct question particle, here
+treated as a sentence adverb appearing either at the beginning or at the
+end of the sentence.  The user is prompted for this positional distinction,
+and for the spelling of the particle; the code for the relevant lexical
+entry is then autogenerated, instantiating a question particle type which
+supplies the remaining syntactic and semantic constraints needed.
+
+A fourth mechanism for yes-no questions is accommodated, where word order is
+unchanged, and intonation alone distinguishes the question from the statement.
+Given the underspecification of the semantics of {\it messages} (e.g.,
+propositions vs. interrogatives) in the Matrix, no additional code needs to
+be generated.  The user is instead advised that if intonation is marked in 
+the written language, as with punctuation, further work will be needed in order
+to link such a marker with the intended semantic distinction.
+
 \subsection{Sentential negation}
 
-The sentential negation modules handle three basic strategies for
-sentential negation, as well as some hybrids: sentential negation
+The sentential negation modules handle three basic strategies, 
+as well as some hybrids: sentential negation
 through verbal inflection; a V, VP or S adverb (pre- or post-head); a
 selected adverb which appears as the complement of a verb (main or
 auxiliary); inflection in combination with a selected adverb, either
@@ -375,7 +401,7 @@ morphophonological component capable of handling non-concatenative
 effects or other intricacies.  As further modules are developed, we
 will need to tune the interaction of this rule with other lexical
 rules to allow linguists to capture the ordering of the
-processes.\footnote{Though note that the same generalizations could be
+processes.\footnote{Note, however, that the same generalizations could be
 expressed in a morphological analysis component.  In this case
 overgeneration on the part of the (morpho-)syntax would be merely
 inefficient.}
@@ -409,7 +435,7 @@ negation-lex-rule := infl-ltol-rule &
 
 In the negative adverb case, we posit a lexical type which inherits
 from the Matrix type for scopal adverbs.  This type is specialized by user
-input to be pre- or post-head and to attach to S, VP, or V.  Further
+input to be a pre- or post-head modifier and to attach to S, VP, or V.  Further
 elaborations would allow for some underspecification along both dimensions.
 Finally, a lexical entry is autogenerated using the negative adverb type
 so created and a spelling provided by the user.
@@ -419,7 +445,7 @@ so created and a spelling provided by the user.
 \label{management}
 
 There are at least three partially conflicting pressures on the design
-of a means of module management in this system: 1. From a developer's
+of a method for module management in this system: 1. From a developer's
 perspective, it is desirable to capture as many generalizations as
 possible across modules within a system so that common information is
 factored out and coded only once, even if it is used in many
@@ -457,18 +483,18 @@ rather miserably on the second, UI-focused, criterion.  It would be
 desirable to present the user with linguistic questions in a dynamic
 fashion (presenting the choice of type of negative adverb only after
 that general strategy has been chosen, for example).  This approach
-does answer consideration (3) fairly well: it would simple enough to
-provide a diff tool which compared user's versions of the files
+does answer consideration (3) fairly well: it would be simple enough to
+provide a tool which compared the user's versions of the files
 included to off-the-shelf copies of the same modules, and alerted the
 user to any local changes to files which had either been updated by
 the Matrix developers or were involved in a grammar revision (change
-of module selection).  However, there is still room for improvement:
+of module selection).  However, even here there is still room for improvement:
 some of the customization (e.g., spellings of various morphemes) could
 more easily be automatically updated if that information were stored
 where the system had direct access to it, rather than implicitly in
 modified files.
 
-A better solution would draw on linguist knowledge stored in a
+A better solution would draw on linguistic knowledge stored in a
 separate set of files to automatically produce both the files that a
 particular grammar needs to include and the script which loads them.
 The UI for this system would be some kind of form or ``wizard'' which
@@ -501,7 +527,7 @@ sample of languages is not intended to be representative, either
 typologically or genetically, but is rather opportunistic.  The
 testsuites are abstract in that we represent sentences in terms of
 strings of part of speech tags rather than particular words, in order
-to sidestep the problem of lexica for each language.
+to sidestep the problems of lexica and morphology for each language.
 
 -- Table of languages and properties
 
@@ -510,7 +536,7 @@ to sidestep the problem of lexica for each language.
 -- Describe coverage, things about languages that are not covered
 
 -- Describe the amount of work it takes to make a prototype with the
-perl script, and compare to what it would take to do it from scratch
+Perl script, and compare to what it would take to do it from scratch
 
 \section{Conclusion and outlook}
 

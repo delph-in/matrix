@@ -12,11 +12,11 @@ s tv o
 *o tv s
 
 ;Kim did not see Sandy
-n aux neg-adv tv n
-*n tv neg-adv n
-*n neg-adv aux tv n
-*n neg-adv tv n
-*n aux tv neg-adv n
+n aux negadv tv n
+*n tv negadv n
+*n negadv aux tv n
+*n negadv tv n
+*n aux tv negadv n
 
 ;Did Kim see Sandy?
 aux n tv n
@@ -24,6 +24,6 @@ aux n tv n
 *aux tv n n 
 
 ;Did Kim not see Sandy?
-aux n neg-adv tv n
-*aux n tv neg-adv n
-*aux neg-adv n tv n 
+aux n negadv tv n
+*aux n tv negadv n
+*aux negadv n tv n 

@@ -13,7 +13,8 @@
 ;;;  In this version, no types file is needed, since the
 ;;;  there are no constraints being added.
 
-bare-np := basic-bare-np-phrase.
+bare-np := basic-bare-np-phrase & 
+  [ SYNSEM.LOCAL.CAT.HEAD noun ].
 
 
 
