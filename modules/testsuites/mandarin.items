@@ -1,0 +1,34 @@
+; Based on what I know about Mandarin
+
+; Mandarin has:
+; SVO word order
+; negation expressed as a preverbal adverb
+; yes-no questions with a sentence-final question marker
+; 'alternative' or A-not-A questions [don't know how to handle
+; these yet]
+; simple answers to yes-no questions with V or not V.
+
+; wo3 chi1 fan4
+; I eat food
+n tv n
+*n n tv
+*tv n n 
+
+; wo3 bu4 chi1 fan4
+; I don't eat  food
+n neg-adv tv n
+*neg-adv n tv n
+*n tv n neg-adv
+*n tv neg-adv n
+
+; ni3 chi1 fan4 ma
+; you eat  food QPART
+n tv n QPART
+*QPART n tv n
+*n tv QPART n
+
+; ni3 chi1 bu chi1 fan4
+; you eat not eat food
+n tv neg-adv tv n
+*n tv neg-adv tv n QPART
+*n neg-adv tv tv n 
