@@ -52,6 +52,10 @@
   "the highest type in the hierarchy under which all
    rels are found")
 
+(defparameter *value-feats* 
+  (list
+   (vsym "CARG")))
+
 ;;;
 ;;; types for variable naming in mrsoutput (copy from `src/mrs/mrsglobals.lsp'
 ;;; but here to remind us to adapt them, as appropriate).
@@ -71,3 +75,7 @@
 (defparameter *difference-list-type* (vsym "*diff-list*"))
 (defparameter *conj-ind-type* (vsym "conj-ind"))
 
+;;;
+;;; context condition in MRS munging rules
+;;; 
+(defparameter *mrs-rule-condition-path* (list (vsym "CONDITION")))

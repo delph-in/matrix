@@ -98,4 +98,4 @@
 
 ;;; for the compare function 
 
-(defparameter *discriminant-path* '(synsem local keys key))
+(defparameter *discriminant-path* '(synsem local keys key pred))

@@ -60,3 +60,4 @@
 ;;; small lexica) in the hope that the generator will be used frequently.
 ;;;
 (lkb-load-lisp (this-directory) "mrsglobals.lisp" t)
+;(index-for-generator)

@@ -1,4 +1,4 @@
-Grammar matrix v 0.4, March 10, 2003
+Grammar matrix v 0.4, March 14, 2003 (dpf)
 
 This is a minor upgrade of the first version of the grammar matrix
 (v 0.3), designed to standardize the feature geometry and naming
@@ -59,13 +59,21 @@ grammar files:
     Recommended procedure: Review the subtypes that your grammar defined for
     the original basic relation types, and revise them to employ the new
     relation types, consistent with the changes made in step (3) above.  Note
-    that a basic relation type has been added for quantifiers: quant-rel.
-
+    that a basic relation type has been added for quantifiers: quant-rel.  The
+    basic relation type `named-rel' has also been incorporated into the Matrix,
+    and its inherent constant is now the CARG.  `mrsglobals.lisp' is updated
+    accordingly.
+    
 (5) Deleted features (--TOPKEY)
     Summary: Some semantics-related features proved to be unnecessary
     Recommended procedure: None required, unless your grammar makes use of
     the feature --TOPKEY, in which case you may choose to introduce this
     feature as part of your language-specific inventory of features.
+
+(6) Technical
+    The `lkb/script' used to request `mrsglobals.lsp' which did not exist and
+    was silently ignored (causing MRS errors and failure to generate).  This
+    has been corrected in `lkb/script'.
 
 
 ------------------------------------------------------------------------------

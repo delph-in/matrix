@@ -1,6 +1,6 @@
-;;; -*- Mode: TDL; Package: DISCO -*-
+;;; -*- Mode: TDL; Package: LKB -*-
 ;;;
-;;;  HPSG Grammar Matrix Version 0.1
+;;;  HPSG Grammar Matrix Version 0.4
 ;;;
 ;;;  Copyright Emily M. Bender 2002
 ;;;  All Rights Reserved.
@@ -319,8 +319,8 @@ nom-obj := mrs &
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; KEY relations, for semantic selection
-;  KEY relation             ; Pointer to main relation in LISZT
-;  ALTKEY relation          ; Pointer to an alternate relation in LISZT
+;  KEY relation             ; Pointer to main relation in RELS
+;  ALTKEY relation          ; Pointer to an alternate relation in RELS
 ;  --COMPKEY relation       ; Pointer to the complement's main relation
 ;  --OCOMPKEY relation      ; Pointer to the oblique complement's main relation
 ;
