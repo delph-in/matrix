@@ -447,7 +447,7 @@ conj-ref-ind := conj-ind & ref-ind.
 ; relations have an event.  Furthermore, nominal relations and event relations
 ; can have additional roles, depending on their meaning.
 
-; LABEL links semantic relation to input string elements, more or less.
+; WLINK links semantic relation to input string elements, more or less.
 ; This becomes useful whenever a grammar is used in some application.
 
 relation := avm &
