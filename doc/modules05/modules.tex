@@ -1,0 +1,139 @@
+%
+% File draft.tex
+%
+
+\documentclass[11pt]{article}
+\usepackage{acl2005}
+\usepackage{times}
+\usepackage{latexsym}
+\setlength\titlebox{6.5cm}    % Expanding the titlebox
+
+\newcommand{\hpsg}{\textsc{hpsg}}
+\newcommand{\lkb}{\textsc{lkb}}
+\newcommand{\lfg}{\textsc{lfg}}
+
+\title{Rapid Prototyping of Scalable Grammars:\\
+       Modular Extensions to a Language-Independent Core}
+\author{Emily Bender\\
+Department of Linguistics\\
+University of Washington\\
+Box 354340\\
+Seattle, WA 98195-4340, USA\\
+{\small {\tt ebender@u.washington.edu}}
+\And
+Dan Flickinger\\
+CSLI, Stanford University\\
+Ventura Hall, 220 Panama St\\
+Stanford, CA 94305, USA\\
+{\small {\tt danf@csli.stanford.edu}}
+}
+
+\date{}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+This paper presents a novel approach to simpliyfing the construction of 
+precise broad-coverage grammars, employing typologically-motivated modules
+as customizable extensions to a language-independent core grammar.  Each
+module represents some salient dimension of cross-linguistic variation such
+as word order or negation, and presents the grammar developer with simple 
+choices that result in automatically generated language-specific software 
+that becomes part of the grammar implementation for that language.  The 
+paper illustrates this notion of a module for several phenomena, and 
+includes an evaluation of the approach against multilingual test data
+reflecting interactions among these phenomena.
+\end{abstract}
+
+\section{Introduction}
+Manual development of precise broad-coverage grammar implementations is a 
+labor-intensive undertaking, typically requiring multiple years of work by 
+highly trained computational linguists.  Recent efforts toward reducing the
+time and level of expertise needed for producing a new grammar have
+focused either on adapting an existing grammar of a related language 
+(ref ParGram Jpns-Krn), or on identifying a set of language-independent 
+grammar constraints to which language-specific constraints can be 
+added~\cite{Ben:Fli:Oe:02}.  Neither implementation approach has benefited 
+from the substantial theoretical work on language typology, which characterizes
+linguistic phenomena and the varied mechanisms that languages employ to 
+realize them.  In this paper we report on an elaboration of the grammar
+matrix approach in which phenomenon-specific modules encode the dimensions
+of variation, and present the grammar developer with simple choices that
+determine this language's type for each phenomenon. Each module then
+automatically generates the necessary language-specific constraints as
+extensions to the Matrix grammar files, enabling the linguist to produce
+a working prototype grammar with very little effort or computational
+expertise.  We ilustrate this concept of a typology-based module for
+several phenomena including basic word order, sentence negation, and
+yes-no questions, and we conclude with an evaluation of the resulting
+grammar implementations for a variety of languages.
+
+\section{The Grammar Matrix}
+
+The past decade has seen the development of wide-coverage implemented
+grammars representing deep linguistic analysis of several languages in
+several frameworks, including Head-Driven Phrase Structure Grammar
+(\hpsg), Lexical-Functional Grammar (\lfg), and Lexicalized Tree
+Adjoining Grammar ({\sc ltag}). In , the most extensive grammars
+are those of English \cite{Flickinger:00}, German \cite{Mue:Kap:00},
+and Japanese \cite{Siegel:00,Siegel:Bender:02}.  As part of a
+multi-lingual grammar engineering effort, we are developing a `grammar
+matrix' or starter-kit, distilling the wisdom of existing grammars and
+codifying and documenting it in a form that can be used as the basis
+for new grammars.
+
+The main goals of the project are: (i) consistent with other work in
+\hpsg, to develop in detail semantic representations and in particular
+the syntax-semantics interface; (ii) to represent generalizations
+across linguistic objects and across languages; and (iii) through the
+richness of the matrix and its built-in links with
+the \lkb\ grammar engineering environment \cite{Copestake:02}, to
+allow for extremely quick start-up as the matrix is applied to new
+languages.
+
+The first, preliminary version of the grammar matrix~\cite{Ben:Fli:Oe:02}
+consisted of types defining the basic feature geometry and technical
+devices (e.g., for list manipulation), types associated with Minimal
+Recursion Semantics (see, e.g., \cite{Cop:Las:Fli:01}) types for
+general classes of rules (including derivational and inflectional
+lexical rules, unary and binary phrase structure rules, headed and
+non-headed rules, and head-initial and head-final rules), and types
+for basic constructions such as head-complement, head-specifier,
+head-subject, head-filler, and head-modifier rules, as well as 
+coordination and more specialized classes of constructions, such as relative
+clauses and noun-noun compounding.  In addition, the preliminary
+version of the grammar matrix included configuration and parameter
+files for the \lkb.  The current released version of the matrix further 
+includes a hierarchy of lexical types for creating language-specific 
+lexical entries.
+
+All of the constraints in the current matrix are intended to be 
+language-independent, and monotonically extensible when developing a
+new grammar for a language, though not all types defined in the matrix
+will necessarily be employed for any given language.  This strong 
+assumption of universality has been of practical utility in the early
+development of the matrix, but it has sharply limited the inventory of
+constraint definitions that could be supplied to grammar developers
+since many generalizations hold only for subsets of languages.  It is
+this limitation of the current matrix that we address by introducing
+the notion of typology-based modules.
+
+\section{Typology-based modules}
+
+
+\section{Implementations of three modules}
+
+\section{Management of modules}
+
+\section{Evaluation}
+
+\section*{Acknowledgements}
+
+\section*{References}
+
+%\bibliographystyle{acl}
+\bibliographystyle{robbib}
+\bibliography{modules}
+
+
+\end{document}
