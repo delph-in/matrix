@@ -1,0 +1,9 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+;;;
+;;;  Module for OVS word order; rules file.
+;;;  Used in combination with OVS word order types file.
+
+comp-head := comp-head-phrase.
+head-subj := head-subj-phrase.
+
+
