@@ -1,6 +1,6 @@
 ;;; -*- Mode: TDL; Package: LKB -*-
 ;;;
-;;;  HPSG Grammar Matrix Version 0.6
+;;;  HPSG Grammar Matrix Version 0.7
 ;;;
 ;;;  Copyright Emily M. Bender 2002
 ;;;  All Rights Reserved.
@@ -62,15 +62,6 @@ word := word-or-lexrule &
   [ ROOT - ].
 
 lex-item := word-or-lexrule.
-norm-lex-item := lex-item &
-  [ SYNSEM [ LOCAL.CONT [ HOOK [ LTOP #ltop,
-                                 INDEX #index ],
-                          RELS.LIST.FIRST #keyrel ],
-             LKEYS.KEYREL #keyrel & [ LBL #ltop,
-                                      ARG0 #index ] ] ].
-
-lexeme := norm-lex-item &
-  [ INFLECTED - ].
 
 ;; Not all phrases have SYNSEM phr-synsem, since we need to allow the
 ;; head-comp rules to build signs which are still [ SYNSEM lex-synsem
@@ -134,6 +125,9 @@ lex-synsem := canonical-synsem & lex-or-phrase-synsem &
   [ LOCAL local-min,
     LEX +,
     LKEYS lexkeys ].
+
+; 04-03-23: Future revisions will replace the feature LEX
+; with a feature LIGHT.
 
 phr-synsem := canonical-synsem & lex-or-phrase-synsem &
   [ LOCAL local-min,
@@ -223,6 +217,9 @@ head-min := avm.
 
 ; Which subtypes of head are necessary and which head features are
 ; declared for which subtypes is also a language-specific question.
+; We expect to find noun, verb, adjective, etc. as subtypes of head
+; in many if not all languages, but they may be grouped differently
+; within the type hierarchy.
 
 head := head-min &
   [ MOD list,
@@ -605,6 +602,11 @@ diff-list := avm &
 0-dlist := 0-1-dlist &
   [ LIST #list,
     LAST #list ].
+
+; ADD DOC -- don't use for lists which are constructive.
+; might be good now -- circular structure check?
+; dpf will look into it. -- remove null?
+
 1-dlist := 0-1-dlist &
   [ LIST 1-list &
 	 [ REST #rest & null ],
@@ -649,6 +651,14 @@ onull := olist & null.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Lexical rules
 
+; Grammars should be monotonic in their construction of semantic
+; representations.  That is, as the tree is built, no relations should
+; ever be thrown away.  This has implications for the way lexical rules
+; are written.  If two forms are related to each other, and one has
+; more semantic relations than the other, it has to be the output. 
+; We are interested in cases where this constraint is or appears to
+; be problematic.
+
 lex-rule := phrase-or-lexrule & word-or-lexrule &
   [ NEEDS-AFFIX bool,
     SYNSEM.LOCAL.CONT.RELS [ LIST #first,
@@ -688,8 +698,10 @@ lexeme-to-word-rule := lex-rule &
     C-CONT.RELS <! !> ].
 
 ; Lexeme-to-lexeme rules can make more radical changes to the SYNSEM value.
+; (ERB 2004-02-11) This used to inherit from "lexeme" but now there is no
+; such type.  What was its purpose?
 
-lexeme-to-lexeme-rule := lex-rule & lexeme &
+lexeme-to-lexeme-rule := lex-rule & 
   [ INFLECTED #infl,
     SYNSEM.LOCAL.CAT.MC #mc,
     DTR [ INFLECTED #infl,
@@ -933,14 +945,18 @@ basic-head-filler-phrase := binary-phrase & phrasal &
 ; These phrase types should all inherit from head-final or head-initial,
 ; as appropriate, replacing binary-headed-phrase.
 
+; Don't assume that all comps are realized before the subject
+; in all languages.  Remove COMPS olist from this one.  In languages
+; which do realize all COMPS before the SUBJ, the head-subj-phrase
+; should allow [COMPS olist] on the head daughter but constrain
+; the mother to be [COMPS < >].
+
 basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
   [ SYNSEM.LOCAL.CAT [ POSTHEAD +,
                        VAL [ SUBJ olist & < anti-synsem >,
-                             COMPS < >,
                              SPR #spr ] ],
     HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL [ SUBJ < #synsem >,
-                                      SPR #spr,
-                                      COMPS olist ],
+                                      SPR #spr ],
                                 MC na ],
     NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem &
 		 [ LOCAL [ CAT [ VAL [ SUBJ olist,
@@ -1206,3 +1222,550 @@ adj-head-int-phrase := adj-head-phrase & isect-mod-phrase &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD - ] ].
 head-adj-int-phrase := head-adj-phrase & isect-mod-phrase.
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;;
+;;  Lexical types
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; Lexical entries will be cross-classified along many dimensions,
+; including:
+;
+; -- Whether or not they introduce non-empty non-local feature values
+; -- Amalgamation of non-local features
+; -- Whether or not they are fully inflected as listed
+;     in the lexicon.
+; -- Part of speech (and associated semantic generalizations)
+; -- Subcategorization
+; -- Values for the HOOK features
+;
+; On the first three dimensions, the vast majority of words will
+; actually follow the general pattern.  In order to facilitate the
+; definition of types (in particular grammars) for those cases that
+; don't, the constraints are stated on separate types.  Additional
+; types can be created as required by inheriting from all of the types
+; that are still relevant.  This is clearly an area to investigate
+; the use of defaults, as we learn more about best practice concerning
+; their use.
+;
+; Note that we don't treat these dimensions as entirely independent
+; of each other, but rather hope to strike a balance between flexibility
+; and redundancy. 
+;
+; We are currently avoiding any development within the Matrix of the
+; subhierarchy under head (see notes at the definition of type head
+; above), believing that the exact geometry of that hierarchy to be
+; somewhat language dependent.  Thus, even the types for the part of
+; speech dimension will not specify head values, and will need to be
+; specialized in particular grammars to do so.  Furthermore, the
+; subcategorization types will specify only the number of syntactic
+; arguments and their linking to the semantic relations.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; HOOK feature values
+
+; LKEYS.KEYREL is a short-cut to the relation that is going to
+; contribute the LTOP and INDEX for the word, such that linking
+; types and lexical entries don't have to refer to a specific position
+; on the RELS list.
+
+norm-hook-lex-item := lex-item &
+  [ SYNSEM [ LOCAL.CONT [ HOOK [ LTOP #ltop,
+                                 INDEX #index ],
+                          RELS.LIST.FIRST #keyrel ],
+             LKEYS.KEYREL #keyrel & [ LBL #ltop,
+                                      ARG0 #index ] ] ].
+
+; Furthermore, most lexical items contribute only one relation, and
+; have empty HCONS values.
+
+single-rel-lex-item := lex-item &
+  [ SYNSEM.LOCAL.CONT.RELS 1-dlist ].
+
+no-hcons-lex-item := lex-item & 
+  [ SYNSEM.LOCAL.CONT.HCONS 0-dlist ].
+
+norm-sem-lex-item := norm-hook-lex-item & single-rel-lex-item & no-hcons-lex-item.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; inflected v. uninflected
+
+uninflected-lexeme := lex-item &
+  [ INFLECTED - ].
+
+fully-inflected-lexeme := lex-item &
+  [ INFLECTED + ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Non-local features: Values and amalgamation
+
+; Not all of the non-local features will necessarily be useful in
+; all languages.  SLASH is for `topicalization' style long distance
+; dependencies.  REL and QUE are used in the analysis of pied piping
+; in relative clauses and questions respectively, and also to signal
+; the presence of a question element in in-situ questions so that
+; clausal constructions with question semantics can require the presence
+; of a question word.
+
+; basic_zero_arg lexical items have empty ARG-S lists.  They may
+; introduce a non-empty value for one of the non-local features.
+
+basic-zero-arg := lex-item &
+  [ SYNSEM.LOCAL.ARG-S < > ].
+
+zero-arg-nonslash := lex-item &
+  [ SYNSEM.NON-LOCAL.SLASH 0-dlist ].
+
+zero-arg-nonrel : = lex-item &
+  [ SYNSEM.NON-LOCAL.REL 0-dlist ].
+
+zero-arg-nonque : = lex-item &
+  [ SYNSEM.NON-LOCAL.QUE 0-dlist ].
+
+; Non-argument taking items which introduce no non-local values.
+
+norm-zero-arg := zero-arg-nonslash & zero-arg-nonrel & zero-arg-nonque.
+
+; Items introducing a rel value.
+
+zero-arg-rel := zero-arg-nonslash & zero-arg-nonque.
+
+; Items introducing a que value.
+
+zero-arg-que := zero-arg-nonslash & zero-arg-nonque.
+
+; Items introducing a slash value, e.g., resumptive pronouns in French.
+
+zero-arg-slash := zero-arg-nonrel & zero-arg-nonque.
+
+; These non-zero argument types only amalgamate the non-local
+; feature values of their complements.  They do not introduce any
+; non-local values of their own, nor do they bind off any non-local
+; feature values.  This assumes that the bottom of most long-distance
+; dependencies is handles by a rule that constrains an argument (either
+; on the ARG-S list or a valence list) to be a synsem of type gap.
+; Elements like English tough adjectives which bind off a slash value
+; will need a new type that doesn't amalgamate that slash value.
+; Elements which both introduce REL or QUE values and take one or
+; more arguments will require appropriate new types as well, which
+; amalgamate everything but add a value in addition.
+
+basic-one-arg := lex-item &
+  [ SYNSEM [ LOCAL.ARG-S < [ NON-LOCAL [ SLASH #slash,
+				REL #rel,
+				QUE #que ] ] >,
+    NON-LOCAL [ SLASH #slash,
+		REL #rel,
+		QUE #que ] ] ].
+
+basic-two-arg := lex-item &
+  [ SYNSEM [ LOCAL.ARG-S < [ NON-LOCAL [ SLASH [ LIST #smiddle,
+					LAST #slast ],
+				REL [ LIST #rmiddle,
+				      LAST #rlast ],
+				QUE [ LIST #qmiddle,
+				      LAST #qlast ] ] ],
+		  [ NON-LOCAL [ SLASH [ LIST #sfirst,
+					LAST #smiddle ],
+				REL [ LIST #rfirst,
+				      LAST #rmiddle ],
+				QUE [ LIST #qfirst,
+				      LAST #qmiddle ] ] ] >,
+    NON-LOCAL [ SLASH [ LIST #sfirst,
+			LAST #slast ],
+		REL [ LIST #rfirst,
+		      LAST #rlast ],
+		QUE [ LIST #qfirst,
+		      LAST #qlast ] ] ] ].
+
+basic-three-arg := lex-item &
+  [ SYNSEM [ LOCAL [ ARG-S < [ NON-LOCAL [ SLASH [ LIST #smiddle2,
+					  LAST #slast ],
+				  REL [ LIST #rmiddle2,
+					LAST #rlast ],
+				  QUE [ LIST #qmiddle2,
+					LAST #qlast ] ] ],
+                    [ NON-LOCAL [ SLASH [ LIST #sfirst,
+                                          LAST #smiddle1 ],
+                                  REL [ LIST #rfirst,
+					LAST #rmiddle1 ],
+				  QUE [ LIST #qfirst,
+					LAST #qmiddle1 ] ] ],
+                    [ NON-LOCAL [ SLASH [ LIST #smiddle1,
+                                          LAST #smiddle2 ],
+                                  REL [ LIST #rmiddle1,
+					LAST #rmiddle2 ],
+				  QUE [ LIST #qmiddle1,
+					LAST #qmiddle2 ] ] ] > ],
+    NON-LOCAL [ SLASH [ LIST #sfirst,
+                        LAST #slast ],
+                REL [ LIST #rfirst,
+		      LAST #rlast ],
+		QUE [ LIST #qfirst,
+		      LAST #qlast ] ] ] ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Subcategorization/linking
+
+; These types specify the number of syntactic arguments, a relation
+; type, and the relationship between the syntactic arguments and the
+; relation type.  They inherit from the amalgamation types above,
+; since we believe that the need for cross-classification across these
+; two dimensions is minimal.  That is, words which do something other
+; than simply amalgamate the non-local feature values of their
+; arguments probably have quirky subcategorization frames as well.
+
+; It is expected that further types will need to be defined in 
+; every particular grammar, but these types should cover the vast
+; majority of open-class lexical items, and assist with some closed-class
+; items as well.
+
+; As explained above, we are leaving the HEAD values of the syntactic
+; arguments underspecified as we expect the exact nature of the
+; subhierarchy under HEAD to be relatively language-specific.
+; Furthermore, there are cross-linguistic differences in the part of
+; speech of arguments in otherwise similar subcategorization types:
+; English transitive verbs select two NPs.  Japanese transitives
+; select two PPs, as the case particles are treated as postpositions.
+
+; We will, however, specify the semantic type of arguments, since it
+; is relevant to the semantic constraints associated with each lexical
+; item.  Clausal-argument taking elements identify the LTOP of their
+; complement with an ARGn position, rather than the INDEX.  (Even
+; though handles are involved here, we do identification rather than a
+; relationship mediated by HCONS because the messages already leave
+; enough room for quantifiers to scope at the top of the embedded
+; clause, and scope ambiguities between quantifiers and messages would
+; be meaningless.)  Subordinating conjunctions will have even more
+; to say semantically.
+
+; We are also leaving underspecified the mapping from ARG-S to
+; valence features.  The phrase structure rules assume one particular
+; inventory of valence features (SPR, SUBJ, COMPS), but the exact
+; deployment of those features might be language-specific (e.g.,
+; in syntactically ergative languages).  NB: The phrase structure
+; rules differentiate SPR and SUBJ in that SPR is treated as the
+; semantic head.
+
+; By hypothesis, the order of the syntactic arguments on the ARG-S
+; list corresponds to the order of the semantric arguments ARGn, with
+; the caveat that not all syntactic arguments are also semantic
+; arguments, as in constructions involving expletives or raising.  The
+; ARGn features do not correspond to theta roles but rather should
+; have their interpretation specified in the Sem-I, where the
+; interpretations of each ARGn will be relative to (classes of)
+; predicates.  Nonetheless, we expect the order of elements on the
+; ARG-S list follow a thematic role or grammatical function hierarchy
+; in underived lexical items.  This order may be perturbed by lexical
+; rules.  In addition, there are degrees of freedom allowed by the
+; mapping from ARG-S to the valence features and the possibility of
+; scrambling by realizing elements of a valence list "out of order".
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; For verbs, adjectives and nouns that don't require specifiers
+
+
+; Kim is tired, Kim sleeps, Kim is in the park, Kim is a student.
+; Kim ga nemui, Kim ga neru.
+; Kim est fatigue, Kim dors, Kim est a la maison, Kim est etudiant.
+
+; (Kim is a student requires an analysis of predicative NPs.)
+
+intransitive-lex-item := basic-one-arg & 
+  [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ] >,
+             LKEYS.KEYREL.ARG1 #ind ] ].
+
+; It rains.
+; Il pleut.
+
+expl-arg-only-lex-item := basic-one-arg &
+  [ SYNSEN [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX expl-ind ] > ] ].
+
+; Kim eats lunch.  Kim is fond of apples.
+; Kim ga hiru gohan wo taberu.  
+; Kim mange le dejeuner.  
+
+transitive-lex-item := basic-two-arg &
+  [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX #ind1 ],
+	                   [ LOCAL.CONT.HOOK.INDEX #ind2 ] >,
+             LKEYS.KEYREL [ ARG1 #ind1,
+	                    ARG2 #ind2 ] ] ].
+
+; Kim gives Sandy a book.
+; Kim ga Sandy ni hon wo ageru.
+; Kim donne un livre a Sandy.
+
+ditransitive-lex-item := basic-three-arg &
+  [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX #ind1 ],
+	                   [ LOCAL.CONT.HOOK.INDEX #ind2 ],
+                           [ LOCAL.CONT.HOOK.INDEX #ind3 ] >,
+             LKEYS.KEYREL [ ARG1 #ind1,
+	                    ARG2 #ind2,
+                            ARG3 #ind3 ] ] ].
+
+; That Kim sleeps is obvious.
+; [NB: This is just one possible analysis of clausal subjects.
+;  in English, a non-branching NP -> CP rule is also plausible.
+;  We are interested in arguments from other languages supporting
+;  one analysis or the other.]
+
+clausal-arg-intrans-lex-item := basic-one-arg &
+   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
+              LKEYS.KEYREL [ ARG1 #ltop ] ] ]. 
+
+; That Kim sleeps surprises Sandy.
+
+clausal-first-arg-trans-lex-item := basic-two-arg &
+   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.LTOP #ltop ],
+                            [ LOCAL.CONT.HOOK.INDEX #ind ] >,
+              LKEYS.KEYREL [ ARG1 #ltop,
+	                     ARG2 #ind ] ] ].
+
+; Sandy believes that Kim sleeps.
+; Sandy ga Kim ga neru to shinjita.
+; Sandy croit que Kim dors.
+
+clausal-second-arg-trans-lex-item := basic-two-arg &
+   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX #ind ],
+                            [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
+              LKEYS.KEYREL [ ARG1 #ind,
+	                     ARG2 #ltop ] ] ].
+
+; Kim told Sandy that Pat slept.
+; Kim ga Sandy ni Pat ga neta to itta.
+; Kim a dit a Sandy que Pat dormait.
+
+clausal-third-arg-ditrans-lex-item := basic-three-arg &
+   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX #ind1 ],
+                            [ LOCAL.CONT.HOOK.INDEX #ind2 ],
+			    [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
+              LKEYS.KEYREL [ ARG1 #ind1,
+			     ARG2 #ind2,
+			     ARG3 #ltop ] ] ].
+
+; It is obvious that Kim sleeps.  
+; Il est evident que Kim dors.
+
+; (Many of these might be generated via a lexical rule from
+; clausal-arg-intrans-lex-items, but some probably don't alternate).
+
+clausal-expl-arg-lex-item := basic-two-arg &
+   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX expl-ind ],  
+	                    [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
+              LKEYS.KEYREL [ ARG1 #ltop ] ] ].
+
+; Kim seems to sleep; Kim is sleeping.
+
+trans-first-arg-raising-lex-item := basic-two-arg & 
+   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX #ind ],
+                            [ LOCAL.CONT.HOOK [ XARG #ind,
+	                                        LTOP #ltop ] ] >,
+              LKEYS.KEYREL [ ARG1 #ltop ] ] ].
+
+; Kim tries to sleep.
+
+trans-first-arg-control-lex-item := basic-two-arg &
+   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX #ind ],
+                            [ LOCAL.CONT.HOOK [ XARG #ind,
+	                                        LTOP #ltop ] ] >,
+              LKEYS.KEYREL [ ARG1 #ind,
+	                     ARG2 #ltop ] ] ].
+
+; Kim appeared to Sandy to leave, Kim seems to Sandy to have left.
+; (Treat "Kim seems happy to Sandy" as derived in some way?)
+
+ditrans-first-arg-raising-lex-item := basic-three-arg &
+   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX #ind1 ],
+                            [ LOCAL.CONT.HOOK.INDEX #ind2 ],
+                            [ LOCAL.CONT.HOOK [ XARG #ind1,
+						LTOP #ltop ] ] >,
+              LKEYS.KEYREL [ ARG1 #ind2,
+		             ARG2 #ltop ] ] ].
+
+
+; Kim promised Sandy to leave. 
+
+ditrans-first-arg-control-lex-item := basic-three-arg &
+   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX #ind1 ],
+                            [ LOCAL.CONT.HOOK.INDEX #ind2 ],
+                            [ LOCAL.CONT.HOOK [ XARG #ind1,
+						LTOP #ltop ] ] >,
+              LKEYS.KEYREL [ ARG1 #ind1,
+			     ARG2 #ind2,
+		             ARG3 #ltop ] ] ].
+
+; Kim believed Sandy to have left.
+
+distrans-second-arg-raising-lex-item := basic-three-arg &
+   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX #ind1 ],
+                            [ LOCAL.CONT.HOOK.INDEX #ind2 ],
+                            [ LOCAL.CONT.HOOK [ XARG #ind2,
+						LTOP #ltop ] ] >,
+              LKEYS.KEYREL [ ARG1 #ind1,
+		             ARG2 #ltop ] ] ].
+
+; Kim appealed to Sandy to leave.			     
+
+ditrans-second-arg-control-lex-item := basic-three-arg &
+   [ SYNSEM [ LOCAL.ARG-S < [ LOCAL.CONT.HOOK.INDEX #ind1 ],
+                            [ LOCAL.CONT.HOOK.INDEX #ind2 ],
+                            [ LOCAL.CONT.HOOK [ XARG #ind2,
+						LTOP #ltop ] ] >,
+              LKEYS.KEYREL [ ARG1 #ind1,
+			     ARG2 #ind2,
+		             ARG3 #ltop ] ] ].
+	                     
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; For nouns requiring specifiers, adjectives taking degree specifiers, etc.
+
+; Keep specifiers on ARG-S because amalgamation constraints are
+; stated there.  Also, in the eventual hope of implementing
+; a binding theory, which seems to need to take account of possessor
+; nouns in picture NPs (Runner et al 2004).
+
+; a dog, Kim's dog
+
+; The specifier does not play a semantic role in the book
+; relation, so there is nothing more to say: these can just
+; inherit from basic-one-arg, and not link in that one argument.
+; The head-spec rule identifies the head's HOOK with the SPEC..HOOK
+; of the specifier, which gives the specifier access to the noun's
+; index for linking purposes.
+
+; a book about dogs
+; very fond of apples
+
+spr-plus-one-arg-lex-item := basic-two-arg &
+   [ SYNSEM [ LOCAL.ARG-S < synsem, 
+                            [ LOCAL.CONT.HOOK.INDEX #ind ] >,
+              LKEYS.KEYREL.ARG1 #ind ] ].
+
+; the claim that Sandy slept.
+; very happy that Sandy slept
+
+spr-plus-clausal-arg-lex-item := basic-two-arg &
+   [ SYNSEM [ LOCAL.ARG-S < synsem, 
+                            [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
+              LKEYS.KEYREL.ARG1 #ltop ] ].
+
+; Whether or not we need more types here is going to largely depend
+; on whether we treat deverbal nouns semantically as nominalizations,
+; and how we handle the linking in that case.  Leave this for later.
+
+; Kim is very eager to sleep.
+; How eager to sleep is Kim?
+
+spr-trans-first-arg-control-lex-item := basic-two-arg &
+   [ SYNSEM [ LOCAL.ARG-S < synsem,
+                            [ LOCAL.CONT.HOOK.INDEX #ind ],
+                            [ LOCAL.CONT.HOOK [ XARG #ind,
+	                                        LTOP #ltop ] ] >,
+              LKEYS.KEYREL [ ARG1 #ind,
+	                     ARG2 #ltop ] ] ].
+
+; Possibly more types related to the above.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Modifiers
+
+; Modifiers which can be used either attributively or predicatively 
+; identify their XARG with their MOD..IND, so that the modified element
+; or the subject play the same role.  Assume other constraints will block
+; a modifier from picking up a subject (in the ERG, this is done by
+; not giving them any SUBJ ever, since adjectives and PPs require
+; the support of the copula to function as predicates; in a language
+; which doesn't use the copula in these contexts, something else would
+; need to be done.
+
+attrib-or-pred-lex-item := lex-item &
+  [ SYNSEM.LOCAL [ CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX #ind,
+		   CONT.HOOK.XARG #ind ] ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Part of speech
+
+; These types are meant to cross-classify with the above, but
+; many closed-class items have linking constraints which are particular
+; to the part of speech class, and so some linking constraints are
+; included.
+
+; Bringing in norm-sem-lex-item here where relevant, although this
+; might be too stringent.
+
+basic-verb-lex := norm-sem-lex-item & 
+  [ SYNSEM.LKEYS.KEYREL	event-relation ].
+
+basic-adjective-lex := norm-sem-lex-item &
+  [ SYNSEM.LKEYS.KEYREL event-relation ].
+
+basic-adposition-lex := norm-sem-lex-item &
+  [ SYNSEM.LKEYS.KEYREL prep-mod-relation ].
+
+basic-adverb-lex := norm-sem-lex-item &
+  [ SYNSEM.LKEYS.KEYREL adv-relation ].
+
+; Anticipate subtypes of basic-noun-lex for common nouns,
+; proper nouns, and pronouns.  All are treated as norm-sem-lex-item
+; (i.e., only introducing a single relation, and no H-CONS).  One
+; might think otherwise based on canonical examples from familiar
+; languages in which pronouns and proper nouns don't have determiners.
+; However, even in languages like English, we find examples like
+; "The Kim that I know is younger than the one that you know."
+; So, rather than build the quantifier for proper nouns/pronouns
+; into the lexical entry, use (potentially obligatory) non-branching
+; rules to introduce the quantifier and discharge the SPR requirement.
+
+basic-noun-lex := norm-sem-lex-item & 
+  [ SYNSEM.LKEYS.KEYREL noun-relation ].
+
+; Note the use of the feature SPEC in basic-determiner-lex.
+; This is important semantically to allow the determiner to grab
+; onto the INDEX and LTOP of the N' it combines with.  Elsewhere
+; in the lexical types we have avoided mentioning the valence features,
+; believing the mapping from ARG-S to valence features to be somewhat
+; language-specific.  In this case, however, it does not concern
+; a mapping to ARG-S.
+
+basic-determiner-lex := norm-hook-lex-item &
+  [ SYNSEM [ LOCAL [ CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #ind,
+							  LTOP #larg ],
+		     CONT [ HCONS <! qeq &
+				   [ HARG #harg,
+				     LARG #larg ] !>,
+			    RELS 1-dlist ] ],
+	     LKEYS.KEYREL quant-relation &
+		   [ ARG0 #ind,
+		     RSTR #harg ] ] ].
+
+; Subordinating conjunctions take two clauses, one as an argument
+; (i.e., element of ARG-S) and one as modifiee.  We allow quantifiers
+; to scope between the messages of the clauses and the subord-relation
+; in order to capture the ambiguity of:
+
+; No one drinks coffee because it tastes good.
+
+; We are interested in examples from languages where the analogous
+; sentence is not analogously ambiguous.
+
+basic-subord-conjunction-lex := basic-one-arg &
+  [ SYNSEM [ LOCAL [ ARG-S < [ LOCAL.CONT.HOOK.LTOP #ltop1 ] >,
+		     CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #ltop2 ] >,
+		     CONT [ HCONS <! qeq &
+                                  [ HARG #harg,
+				    LARG #larg ] !>,
+			    RELS <! relation,
+                                  message & 
+				  [ LBL #msg,
+				    PRED proposition_m_rel,
+				    MARG #harg ] !>,
+			    HOOK [ LTOP #msg ] ] ],
+	     LKEYS.KEYREL subord-relation &
+		   [ LBL #larg,
+		     L-HNDL #ltop1,
+		     R-HNDL #ltop2 ] ] ].
+
+; Coming soon:
+; Lexical type for negative particles like English "not"
+; Lexical type for WH elements
+; Documentation listing the phenomena handled by these lexical types.
