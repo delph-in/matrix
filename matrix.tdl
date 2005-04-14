@@ -2,7 +2,7 @@
 ;;;
 ;;;  HPSG Grammar Matrix Version 0.9
 ;;;
-;;;  Copyright (c) 2002-2004
+;;;  Copyright (c) 2002-2005
 ;;;    Emily M. Bender, Dan Flickinger, Stephan Oepen
 ;;;    see licence.txt for conditions
 ;;;
@@ -780,6 +780,110 @@ lexeme-to-lexeme-rule := lex-rule &
     DTR [ INFLECTED #infl,
           SYNSEM.LOCAL.CAT.MC #mc ] ].
 
+; ERB 2005-04-13 Add a few subtypes that copy up most other information,
+; so that folks don't have to keep doing this. 
+
+same-local-lex-rule := lexeme-to-lexeme-rule &
+  [ SYNSEM.LOCAL #local,
+    DTR.SYNSEM.LOCAL #local ].
+
+same-non-local-lex-rule := lexeme-to-lexeme-rule &
+  [ SYNSEM.NON-LOCAL #nl,
+    DTR.SYNSEM.NON-LOCAL #nl ].
+
+same-ctxt-lex-rule := lexeme-to-lexeme-rule &
+  [ SYNSEM.LOCAL.CTXT #ctxt,
+    DTR.SYNSEM.LOCAL.CTXT #ctxt ].
+
+same-cont-lex-rule := lexeme-to-lexeme-rule &
+  [ SYNSEM.LOCAL.CONT #cont,
+    DTR.SYNSEM.LOCAL.CONT #cont ].
+
+same-agr-lex-rule := lexeme-to-lexeme-rule &
+  [ SYNSEM.LOCAL.AGR #agr,
+    DTR.SYNSEM.LOCAL.AGR #agr ].
+
+same-cat-lex-rule := lexeme-to-lexeme-rule &
+  [ SYNSEM.LOCAL.CAT #cat,
+    DTR.SYNSEM.LOCAL.CAT #cat ].
+
+same-head-lex-rule := lexeme-to-lexeme-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD #head,
+    DTR.SYNSEM.LOCAL.CAT.HEAD #head ].
+
+same-val-lex-rule := lexeme-to-lexeme-rule &
+  [ SYNSEM.LOCAL.CAT.VAL #val,
+    DTR.SYNSEM.LOCAL.CAT.VAL #val ].
+
+same-hc-light-lex-rule := lexeme-to-lexeme-rule &
+  [ SYNSEM.LOCAL.CAT.HC-LIGHT #hcl,
+    DTR.SYNSEM.LOCAL.CAT.HC-LIGHT #hcl ].
+
+same-posthead-lex-rule := lexeme-to-lexeme-rule &
+  [ SYNSEM.LOCAL.CAT.POSTHEAD #ph,
+    DTR.SYNSEM.LOCAL.CAT.POSTHEAD #ph ].
+
+no-ccont-lex-rule := lexeme-to-lexeme-rule &
+  [ C-CONT [ RELS <! !>,
+	     HCONS <! !> ]].
+
+non-local-change-only-lex-rule := same-local-lex-rule &
+				  no-ccont-lex-rule.
+
+local-change-only-lex-rule := same-non-local-lex-rule &
+			      no-ccont-lex-rule.
+
+; ERB 2004-05-13 The only permissible changes to CONT are
+; inside HOOK.  If any RELS or HCONS need to be added, they
+; should be added through the lex-rule's C-CONT.  For this reason,
+; this type does not inherit from no-ccont-lex-rule, and any
+; subtypes/instances should properly constrain the values of
+; C-CONT.RELS and C-CONT.HCONS. No relations may be dropped.
+
+cont-change-only-lex-rule := same-non-local-lex-rule &
+			    same-ctxt-lex-rule &
+			    same-cat-lex-rule &
+			    same-agr-lex-rule &
+   [ SYNSEM.LOCAL.CONT [ RELS #rels,
+			 HCONS #hcons ],
+     DTR.SYNSEM.LOCAL.CONT [ RELS #rels,
+			     HCONS #hcons ]].
+
+ctxt-change-only-lex-rule := local-change-only-lex-rule & 
+			    same-cont-lex-rule &
+			    same-cat-lex-rule &
+			    same-agr-lex-rule.
+
+agr-change-only-lex-rule := local-change-only-lex-rule &
+			    same-cont-lex-rule &
+			    same-cat-lex-rule &
+			    same-ctxt-lex-rule.
+
+cat-change-only-lex-rule := local-change-only-lex-rule &
+			    same-ctxt-lex-rule &
+			    same-cont-lex-rule &
+			    same-agr-lex-rule.
+
+head-change-only-lex-rule := cat-change-only-lex-rule &
+			     same-val-lex-rule &
+			     same-hc-light-lex-rule &
+			     same-posthead-lex-rule.
+
+; ERB 2005-04-13 When using val-change-only-lex rule, be sure
+; to constrain the values of all of the VAL features (SPR, SUBJ,
+; COMPS and SPEC) on the mother.
+
+val-change-only-lex-rule := cat-change-only-lex-rule &
+			     same-head-lex-rule &
+			     same-hc-light-lex-rule &
+			     same-posthead-lex-rule.
+
+add-only-ltol-rule := same-local-lex-rule &
+		      same-non-local-lex-rule.
+
+add-only-no-ccont-ltol-rule := add-only-ltol-rule &
+			       no-ccont-lex-rule.
+
 ; Spelling changing rules.  The LKB identifies these rules based
 ; on the NEEDS-AFFIX value. 
 
@@ -793,12 +897,57 @@ constant-lex-rule := lex-rule &
   [ STEM #stem,
     DTR [ STEM #stem ]].
 
-; Cross-classified glb types
+; Cross-classified types packaing spelling change status and
+; feature copying.
 
 const-ltol-rule := lexeme-to-lexeme-rule & constant-lex-rule.
 infl-ltol-rule := lexeme-to-lexeme-rule & inflecting-lex-rule.
 const-ltow-rule := lexeme-to-word-rule & constant-lex-rule.
 infl-ltow-rule := lexeme-to-word-rule & inflecting-lex-rule.
+
+infl-non-local-change-only-ltol-rule := non-local-change-only-lex-rule &
+				       inflecting-lex-rule.
+infl-local-change-only-ltol-rule := local-change-only-lex-rule &
+				   inflecting-lex-rule.
+infl-cont-change-only-ltol-rule := cont-change-only-lex-rule &
+				  inflecting-lex-rule.	
+infl-ctxt-change-only-ltol-rule := ctxt-change-only-lex-rule &
+				  inflecting-lex-rule.
+infl-agr-change-only-ltol-rule := agr-change-only-lex-rule &
+				 inflecting-lex-rule.
+infl-cat-change-only-ltol-rule := cat-change-only-lex-rule &
+				 inflecting-lex-rule.
+infl-head-change-only-ltol-rule := head-change-only-lex-rule &
+				  inflecting-lex-rule.
+infl-val-change-only-ltol-rule := val-change-only-lex-rule &
+				 inflecting-lex-rule.
+infl-add-only-ltol-rule := add-only-ltol-rule &
+			   inflecting-lex-rule.
+infl-add-only-no-ccont-ltol-rule := add-only-no-ccont-ltol-rule &
+				    inflecting-lex-rule.
+
+const-non-local-change-only-ltol-rule := non-local-change-only-lex-rule &
+				       constant-lex-rule.
+const-local-change-only-ltol-rule := local-change-only-lex-rule &
+				   constant-lex-rule.
+const-cont-change-only-ltol-rule := cont-change-only-lex-rule &
+				  constant-lex-rule.	
+const-ctxt-change-only-ltol-rule := ctxt-change-only-lex-rule &
+				  constant-lex-rule.
+const-agr-change-only-ltol-rule := agr-change-only-lex-rule &
+				 constant-lex-rule.
+const-cat-change-only-ltol-rule := cat-change-only-lex-rule &
+				 constant-lex-rule.
+const-head-change-only-ltol-rule := head-change-only-lex-rule &
+				  constant-lex-rule.
+const-val-change-only-ltol-rule := val-change-only-lex-rule &
+				 constant-lex-rule.
+const-add-only-ltol-rule := add-only-ltol-rule &
+			   constant-lex-rule.
+
+; ERB 2005-04-13 I don't think there would be any use for a
+; const-add-only-no-ccont-ltol-rule, and it would also be circular.
+; I worry that const-add-only-ltol-rules would also be circular.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Phrase structure rules

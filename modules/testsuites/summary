@@ -3,12 +3,14 @@
 
 	Word order	negation	yes-no Q
    	----------	--------	--------
+English SVO		post-aux adv	aux inversion
 Hindi   SOV (V-final?)  pre-V adv 	sentence-initial marker
-Slave	SOV		post-V adv	sentence-initial marker
-Russian	SVO		pre-V (VP?) adv	intonation 
-Mandarin SVO		pre-V adv	sentence-final marker, A-not-A
 Japanese V-final	verbal infl	sentence-final marker
+Mandarin SVO		pre-V adv	sentence-final marker, A-not-A
 Polish  free		pre-V adv       sentence-initial marker, intonation
 			  (prefix?)
+Russian	SVO		pre-V (VP?) adv	intonation 
+Slave	SOV		post-V adv	sentence-initial marker
 Spanish SVO		pre-V adv	main verb inversion
-English SVO		post-V adv	aux inversion
+
+
