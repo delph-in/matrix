@@ -761,14 +761,16 @@ lex-rule := phrase-or-lexrule & word-or-lexrule &
 ; Lexeme-to-word rules are hypothesized to monotonically add synsem
 ; information.
 
-lexeme-to-word-rule := lex-rule &
+; ERB 2005-04-14 But it's a bad idea to copy the whole synsem
+; value, since that means identifying RELS and HCONS lists, breaking
+; the diff-list append.
+
+lexeme-to-word-rule := same-local-lex-rule &
+		       same-non-local-lex-rule &
   [ INFLECTED +,
-    KEY-ARG #keyarg,   
-    SYNSEM #synsem,
-    DTR [ INFLECTED -,
-          KEY-ARG #keyarg,   
-          SYNSEM #synsem ],
-    C-CONT.RELS <! !> ].
+    DTR [ INFLECTED - ],
+    C-CONT [RELS <! !>,
+	    HCONS <! !>]].
 
 ; Lexeme-to-lexeme rules can make more radical changes to the SYNSEM value.
 ; (ERB 2004-02-11) This used to inherit from "lexeme" but now there is no
@@ -783,47 +785,66 @@ lexeme-to-lexeme-rule := lex-rule &
 ; ERB 2005-04-13 Add a few subtypes that copy up most other information,
 ; so that folks don't have to keep doing this. 
 
-same-local-lex-rule := lexeme-to-lexeme-rule &
-  [ SYNSEM.LOCAL #local,
-    DTR.SYNSEM.LOCAL #local ].
+; ERB 2005-04-14 If we copy the whole LOCAL value,
+; we're copying RELS and HCONS, which means we can't
+; add any sem through C-CONT. Thus what is 'logically'
+; same-local is really a bunch of smaller identities.
 
-same-non-local-lex-rule := lexeme-to-lexeme-rule &
+;same-local-lex-rule := lexeme-to-lexeme-rule &
+;  [ SYNSEM.LOCAL #local,
+;    DTR.SYNSEM.LOCAL #local ].
+
+; ERB 2005-04-14 Don't want any of these inheriting
+; from lexeme-to-lexeme because they're supertypes
+; to lexeme-to-word.  This part of the hierarchy probably
+; needs to be cleaned up a bit.
+
+same-local-lex-rule := same-cat-lex-rule & 
+		       same-cont-lex-rule &
+		       same-ctxt-lex-rule &
+		       same-agr-lex-rule.
+
+same-non-local-lex-rule := lex-rule &
   [ SYNSEM.NON-LOCAL #nl,
     DTR.SYNSEM.NON-LOCAL #nl ].
 
-same-ctxt-lex-rule := lexeme-to-lexeme-rule &
+same-ctxt-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.CTXT #ctxt,
     DTR.SYNSEM.LOCAL.CTXT #ctxt ].
 
-same-cont-lex-rule := lexeme-to-lexeme-rule &
-  [ SYNSEM.LOCAL.CONT #cont,
-    DTR.SYNSEM.LOCAL.CONT #cont ].
+; ERB 2005-04-14 Can't just identify CONT values,since
+; that makes it impossible to add any RELS/HCONS through
+; C-CONT. Instead this type should identify HOOK.
 
-same-agr-lex-rule := lexeme-to-lexeme-rule &
+same-cont-lex-rule := lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK #hook,
+    DTR.SYNSEM.LOCAL.CONT.HOOK #hook ].
+
+same-agr-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.AGR #agr,
     DTR.SYNSEM.LOCAL.AGR #agr ].
 
-same-cat-lex-rule := lexeme-to-lexeme-rule &
+same-cat-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.CAT #cat,
     DTR.SYNSEM.LOCAL.CAT #cat ].
 
-same-head-lex-rule := lexeme-to-lexeme-rule &
+same-head-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.CAT.HEAD #head,
     DTR.SYNSEM.LOCAL.CAT.HEAD #head ].
 
-same-val-lex-rule := lexeme-to-lexeme-rule &
+same-val-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL #val,
     DTR.SYNSEM.LOCAL.CAT.VAL #val ].
 
-same-hc-light-lex-rule := lexeme-to-lexeme-rule &
+same-hc-light-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.CAT.HC-LIGHT #hcl,
     DTR.SYNSEM.LOCAL.CAT.HC-LIGHT #hcl ].
 
-same-posthead-lex-rule := lexeme-to-lexeme-rule &
+same-posthead-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.CAT.POSTHEAD #ph,
     DTR.SYNSEM.LOCAL.CAT.POSTHEAD #ph ].
 
-no-ccont-lex-rule := lexeme-to-lexeme-rule &
+no-ccont-lex-rule := lex-rule &
   [ C-CONT [ RELS <! !>,
 	     HCONS <! !> ]].
 
@@ -833,21 +854,22 @@ non-local-change-only-lex-rule := same-local-lex-rule &
 local-change-only-lex-rule := same-non-local-lex-rule &
 			      no-ccont-lex-rule.
 
-; ERB 2004-05-13 The only permissible changes to CONT are
+; ERB 2004-04-13 The only permissible changes to CONT are
 ; inside HOOK.  If any RELS or HCONS need to be added, they
 ; should be added through the lex-rule's C-CONT.  For this reason,
 ; this type does not inherit from no-ccont-lex-rule, and any
 ; subtypes/instances should properly constrain the values of
 ; C-CONT.RELS and C-CONT.HCONS. No relations may be dropped.
 
+; ERB 2004-04-14  But identifying RELS and HCONS is no good,
+; because that breaks the diff-list append that should
+; let you add info through C-CONT.  So just go with the
+; text warning above.
+
 cont-change-only-lex-rule := same-non-local-lex-rule &
 			    same-ctxt-lex-rule &
 			    same-cat-lex-rule &
-			    same-agr-lex-rule &
-   [ SYNSEM.LOCAL.CONT [ RELS #rels,
-			 HCONS #hcons ],
-     DTR.SYNSEM.LOCAL.CONT [ RELS #rels,
-			     HCONS #hcons ]].
+			    same-agr-lex-rule.
 
 ctxt-change-only-lex-rule := local-change-only-lex-rule & 
 			    same-cont-lex-rule &
@@ -906,48 +928,95 @@ const-ltow-rule := lexeme-to-word-rule & constant-lex-rule.
 infl-ltow-rule := lexeme-to-word-rule & inflecting-lex-rule.
 
 infl-non-local-change-only-ltol-rule := non-local-change-only-lex-rule &
-				       inflecting-lex-rule.
+					inflecting-lex-rule &
+					lexeme-to-lexeme-rule.
+
 infl-local-change-only-ltol-rule := local-change-only-lex-rule &
-				   inflecting-lex-rule.
+				    inflecting-lex-rule &
+				    lexeme-to-lexeme-rule.
+
 infl-cont-change-only-ltol-rule := cont-change-only-lex-rule &
-				  inflecting-lex-rule.	
+				   inflecting-lex-rule &
+				   lexeme-to-lexeme-rule.	
+
 infl-ctxt-change-only-ltol-rule := ctxt-change-only-lex-rule &
-				  inflecting-lex-rule.
+				   inflecting-lex-rule &
+				   lexeme-to-lexeme-rule.
+
 infl-agr-change-only-ltol-rule := agr-change-only-lex-rule &
-				 inflecting-lex-rule.
+				  inflecting-lex-rule &
+				  lexeme-to-lexeme-rule.
+
 infl-cat-change-only-ltol-rule := cat-change-only-lex-rule &
-				 inflecting-lex-rule.
+				  inflecting-lex-rule &
+				  lexeme-to-lexeme-rule.
+
 infl-head-change-only-ltol-rule := head-change-only-lex-rule &
-				  inflecting-lex-rule.
+				   inflecting-lex-rule &
+				   lexeme-to-lexeme-rule.
+
 infl-val-change-only-ltol-rule := val-change-only-lex-rule &
-				 inflecting-lex-rule.
+				  inflecting-lex-rule &
+				  lexeme-to-lexeme-rule.
+
+; ERB 2005-04-26 Take care with the following two rules.  While
+; they likely won't be circular for parsing (since the surface form
+; of the word will usually limit the number of times each can apply)
+; they can easily spin in generation.  To make the input and output
+; incompatible, I recommend constraining the type of the DTR to
+; something incompatible with the type of the rule.
+
 infl-add-only-ltol-rule := add-only-ltol-rule &
-			   inflecting-lex-rule.
+			   inflecting-lex-rule &
+			   lexeme-to-lexeme-rule.
+
 infl-add-only-no-ccont-ltol-rule := add-only-no-ccont-ltol-rule &
-				    inflecting-lex-rule.
+				    inflecting-lex-rule &
+				    lexeme-to-lexeme-rule.
 
 const-non-local-change-only-ltol-rule := non-local-change-only-lex-rule &
-				       constant-lex-rule.
-const-local-change-only-ltol-rule := local-change-only-lex-rule &
-				   constant-lex-rule.
-const-cont-change-only-ltol-rule := cont-change-only-lex-rule &
-				  constant-lex-rule.	
-const-ctxt-change-only-ltol-rule := ctxt-change-only-lex-rule &
-				  constant-lex-rule.
-const-agr-change-only-ltol-rule := agr-change-only-lex-rule &
-				 constant-lex-rule.
-const-cat-change-only-ltol-rule := cat-change-only-lex-rule &
-				 constant-lex-rule.
-const-head-change-only-ltol-rule := head-change-only-lex-rule &
-				  constant-lex-rule.
-const-val-change-only-ltol-rule := val-change-only-lex-rule &
-				 constant-lex-rule.
-const-add-only-ltol-rule := add-only-ltol-rule &
-			   constant-lex-rule.
+					 constant-lex-rule &
+					 lexeme-to-lexeme-rule.
 
-; ERB 2005-04-13 I don't think there would be any use for a
-; const-add-only-no-ccont-ltol-rule, and it would also be circular.
-; I worry that const-add-only-ltol-rules would also be circular.
+const-local-change-only-ltol-rule := local-change-only-lex-rule &
+				     constant-lex-rule &
+				     lexeme-to-lexeme-rule.
+
+const-cont-change-only-ltol-rule := cont-change-only-lex-rule &
+				    constant-lex-rule &
+				    lexeme-to-lexeme-rule.	
+
+const-ctxt-change-only-ltol-rule := ctxt-change-only-lex-rule &
+				    constant-lex-rule &
+				    lexeme-to-lexeme-rule.
+
+const-agr-change-only-ltol-rule := agr-change-only-lex-rule &
+				   constant-lex-rule &
+				   lexeme-to-lexeme-rule.
+
+const-cat-change-only-ltol-rule := cat-change-only-lex-rule &
+				   constant-lex-rule &
+				   lexeme-to-lexeme-rule.
+
+const-head-change-only-ltol-rule := head-change-only-lex-rule &
+				    constant-lex-rule &
+				    lexeme-to-lexeme-rule.
+
+const-val-change-only-ltol-rule := val-change-only-lex-rule &
+				   constant-lex-rule &
+				   lexeme-to-lexeme-rule.
+
+; ERB 2005-04-14 Take care when using the following two types
+; not to create circular rules.  They may still be useful (the
+; latter is employed in the Slave grammar), but you'll need to
+; make sure that the DTR type is incompatible with the rule type.
+
+const-add-only-ltol-rule := add-only-ltol-rule &
+			    constant-lex-rule &
+			    lexeme-to-lexeme-rule.
+const-add-only-no-ccont-ltol-rule := add-only-no-ccont-ltol-rule &
+				     constant-lex-rule.
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Phrase structure rules
