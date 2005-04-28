@@ -71,7 +71,7 @@ adv-label := label &
 
 adj-label := label & 
 	   [ SYNSEM.LOCAL.CAT.HEAD adj,
-	     LABEL-NAME "ADV" ].
+	     LABEL-NAME "ADJ" ].
 
 conj-label := label & 
 	      [ SYNSEM.LOCAL.CAT.HEAD conj,
