@@ -53,6 +53,7 @@
 \newcommand{\myvaluebold}[1]{{\mbox{\scriptsize {\bf #1}}}}
 \newcommand{\boxvaluebold}[1]{{\fbox{\scriptsize {\bf #1}}}}
 \newcommand{\ind}[1]{{\setlength{\fboxsep}{0.25mm} \: \fbox{{\small #1}} \:}}
+\newcommand{\mpt}[1]{\marginpar{\tiny #1}}
 
 
 \avmfont{\small\sc}
@@ -67,6 +68,7 @@
 
 \title{MRS in the LinGO Grammar Matrix:\\ A Practical User's Guide}
 \author{Dan Flickinger, Emily M. Bender, and Stephan Oepen}
+\date{2003-12-13: Matrix v0.5}
 
 \begin{document}
 \maketitle
@@ -79,7 +81,7 @@
 This paper is intended to serve as documentation for the semantic
 aspects of the LinGO Grammar Matrix. We assume familiarity with the
 specification of Minimal Recursion Semantics (MRS) given in
-\citeboth{Cop:Fli:Sag:Pol:03} (see also \citeboth{Cop:Las:Fli:01}),
+\namecite{Cop:Fli:Sag:Pol:03} (see also \citeboth{Cop:Las:Fli:01}),
 and focus instead on the practical aspects of writing grammars
 that produce well-formed {\it mrs}s and of developing semantic
 representations of particular linguistic phenomena within MRS.
@@ -138,7 +140,7 @@ meaning representation sufficient to support logical inference.  The
 type definitions for signs in the Matrix include a semantic component
 which is an implementation of MRS, and more specifically of the
 elaboration of a semantic algebra for MRS presented in
-\citeboth{Cop:Las:Fli:01}.  In addition, MRS was designed to answer the
+\namecite{Cop:Las:Fli:01}.  In addition, MRS was designed to answer the
 competing demands of expressive adequacy and computational
 tractability, as well as to allow underspecification where it
 facilitates computational applications, such as machine translation.
@@ -245,7 +247,7 @@ a feature structure of type {\it basic\_message}, used to constrain the
 propositional type of a sign (\S\ref{msgsec}.
 
 The type {\it mrs} also has two subtypes {\it nom-obj} and {\it psoa},
-following \citeboth{Pol:Sag:94}, corresponding to semantic representations of 
+following \namecite{Pol:Sag:94}, corresponding to semantic representations of 
 nominal signs (with a distinguished {\it ref-ind}) and predicative signs
 (with a distinguished {\it event}).  The types {\it ref-ind}
 and {\it event} are described in \S\ref{semargsec} below.  This distinction
@@ -320,7 +322,7 @@ interesting re-entrancies of {\sc pred} values, explored in the ERG for
 the semantics of degree specifiers, and perhaps also useful for some
 treatments of coordination or gapping.
 
-For compatibility with RMRS (\cite{Cop:03}) and software designed 
+For compatibility with RMRS \cite{Cop:03} and software designed 
 to integrate deep and shallow processing, {\sc pred} values should
 conform to the following templates:
 
@@ -342,7 +344,7 @@ distinguish predicate names introduced by specific lexical entries from those
 introduced by constructions or by lexical types supplying a common predicate
 for a class of lexical entries.
 
-The {\tt pos} component is one
+The {\tt pos} component\mpt{what about a (adjective or adverb) and s (sahen)?} is one
 of a closed set of single lowercase letters interpreted as follows:\\
 
 \es{
@@ -415,7 +417,7 @@ Matrix because it provides a useful experimental link later on, when
 developing applications that use a Matrix-derived grammar.  The grammar
 engineer can safely ignore this feature during grammar development.  If 
 an application seesm to require it, contact the authors for details on
-how to put it to use.
+how to put it to use.\mpt{and cfrom/cto}
 
 \subsection{{\it qeq}}
 \label{qeqsec}
@@ -432,7 +434,7 @@ relations.  Rather than build separate parses for each scoping, and
 potentially have to choose between them in a given application, it is
 preferable to leave scopal relations underspecified, to the extent
 that the grammar doesn't in fact constrain them.\fn{For discussion of
-underspecification of scope, see \citeboth{Cop:Fli:Sag:Pol:03} and
+underspecification of scope, see \namecite{Cop:Fli:Sag:Pol:03} and
 references given there.}  In Matrix-derived grammars, following MRS 
 specifications, this is achieved as follows:
 
@@ -469,13 +471,13 @@ and the {\sc larg} is identified with the {\sc lbl} (handle) of the outscoped
 relation.  Examples of parts of the grammar that impose such constraints
 are given in \S\ref{hconssec} below.
 
-While the MRS specification in \citeboth{Cop:Fli:Sag:Pol:03} leaves
+While the MRS specification in \namecite{Cop:Fli:Sag:Pol:03} leaves
 open the possibility of different kinds of handle constraints, only
 {\it qeq} constraints have proven necessary so far for wide-coverage
 grammars of English (ERG) and Japanese (JaCY), and so only
 {\it qeq} constraints are currently implemented in the 
 Matrix.\footnote{However, a large grammar implementation for German 
-(described in \citeboth{Wahl:Karg:00})
+(described in \namecite{Wahl:Karg:00})
 makes crucial use of {\it leq} (less than or equal) scopal
 constraints, and recent work on extending MRS representations to robust 
 processing ((\cite{Cop:03}) also employs {\it leq} constraints.}
@@ -714,7 +716,7 @@ number, and gender.  These three dimensions are not necessarily distinct
 for a given language, as seen in English where person and number are
 usually conflated morphologically, motivating a basic distinction between
 third-singular and non-third-singular inflectional types, with further
-subtypes for non-third-singular.\footnote{Cf. \citeboth{Flickinger00} for
+subtypes for non-third-singular.\footnote{Cf. \namecite{Flickinger00} for
 discussion of this part of the type hierarchy.} Thus in English the most 
 natural feature structure for the {\it png} type is to have a merged 
 person-number {\sc pn} attribute along with a gender {\sc gen} attribute.
@@ -770,7 +772,7 @@ predictable cross-linguistically.
 
 % Maybe move this somewhere else? --EB
 Note that, as strings, {\sc pred} values are not organized into a hierarchy.
-Furthermore expect to only need to identify particular relations
+Furthermore we expect to only need to identify particular relations
 (via {\it semsort}s which correspond to specific {\sc pred} values)
 in a reasonably small number of closed classes of lexical items.
 We therefore see now value in providing an external pointer to the
@@ -1251,7 +1253,7 @@ the event introduced by the PP {\it in the park} (its {\sc hook.index}) while
 the PP's {\sc hook.xarg} is identified with the {\sc hook.index} of the noun
 {\it dog}.
 
-Adverbs, unlike adjectives and prepositions, do not appear predicatively, and
+Adverbs,\mpt{out of date} unlike adjectives and prepositions, do not appear predicatively, and
 hence do not need to introduce an independent event.  So they simply identify
 the value of their main relation's {\sc arg0} with the index of the phrase
 they modify, and further identify this value with their own {\sc hook.index}.
@@ -1307,14 +1309,15 @@ would clearly be desirable if such an inventory could be defined.
 
 We provide the {\it message} type in the Matrix as an MRS encoding
 of the distinctions among types of semantics of clauses developed in
-\citeboth{Gin:Sag:00}.  Clauses can express
+\namecite{Gin:Sag:00}.  Clauses can express
 commands, questions, or propositions, either as simple sentences or in
 embedded contexts as sentential complements, relative clauses, etc.  The
 type {\it message} is a subtype of {\it relation} which introduces the
 attribute {\sc marg} (message argument), whose value will be the highest
 scoping handle of the clause.  The {\sc pred} value of the message relation
 is used to distinguish the three clause types, drawing from the pred sorts
-given in the hierarchy in Figure~\ref{msgfig}, all of which carry the suffix
+given in the hierarchy in Figure~\ref{msgfig}\mpt{RMRS/Matrix
+  mismatch: inconsistent in the text}, all of which carry the suffix
 {\it \_m\_rel} for quick identification.
 
 \begin{figure}
@@ -1344,7 +1347,7 @@ the Matrix provides the intermediate type {\it prop-or-ques\_m\_rel} which
 the verb {\it know} can use to constrain its complement's {\sc msg.pred} value.
 Among questions, all of which will be assigned the {\sc msg.pred} value
 {\it abstr-ques\_m\_rel} by the grammar, we distinguish between
-ordinary questions {with {\sc msg.pred} value {\it question\_m\_rel})
+ordinary questions (with {\sc msg.pred} value {\it question\_m\_rel})
 and the type of confirmation-seeking question expressed by a tag question in 
 English, the particle {\it ne} in Japanese, the particle {\it ne} in German, 
 or the equivalent in
@@ -1589,7 +1592,7 @@ raising of {\sc key} and {\sc index} values (e.g., by the English auxiliary
 With every word or phrase providing a semantics which consists of {\sc
 hook}, {\sc rels}, and {\sc hcons}, the principles of semantic
 composition in phrase structure rules can be stated (and implemented)
-quite elegantly, following the definitions in \citeboth{Cop:Las:Fli:01}:
+quite elegantly, following the definitions in \namecite{Cop:Las:Fli:01}:
 
 \begin{enumerate}
 \item The value for {\sc rels} on the mother of a phrase is the result of
@@ -2185,7 +2188,7 @@ of the {\it qeq}, and the {\sc ltop} of the N-bar is identified with the
 introduction of a {\it qeq} for the semantics within every noun phrase
 ensures that all possible readings of the phrase are correctly represented,
 allowing just the right range of variation in quantifier scope.
-For a fuller discussion of these issues, see \citeboth{Cop:Fli:Sag:Pol:03}.
+For a fuller discussion of these issues, see \namecite{Cop:Fli:Sag:Pol:03}.
 
 \subsubsection{Scopal Modifiers}
 
@@ -2202,7 +2205,8 @@ So the lexical entry for {\it probably} does not identify the {\sc ltop} of the
 verb phrase it modifies directly with its {\sc arg0}, but rather introduces
 a {\it qeq} relation whose {\sc harg} is identified with the adverb's 
 {\sc arg0} and whose {\sc larg} is identified with the {\sc ltop} of its
-{\sc mod} value.
+{\sc mod} value.\mpt{maybe mention that these are less common than
+  intersective modifiers?}
  
 \subsection{Syntax-Semantics Mismatches}
 \label{xargsec}
@@ -2778,7 +2782,7 @@ building grammars for a wide variety of human languages.
 
 \section{Acknowledgments}
 
-This paper is an extension of work first reported in \citeboth{Fli:Ben:03}.
+This paper is an extension of work first reported in \namecite{Fli:Ben:03}.
 We are grateful to the authors of {\it Minimal Recursion Semantics: An
 Introduction}, from which this documentation draws heavily, and especially to
 Ann Copestake for illumination on many issues presented here.  We also thank
