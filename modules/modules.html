@@ -1,0 +1,172 @@
+<html>
+
+<title>Grammar Matrix: Modules Selection</title>
+
+<body>
+
+<h1>LinGO Grammar Matrix</h1>
+<h1>LSA 111 Grammar Matrix customization page</h1>
+
+<p>By filling out this form, you will produce an initial
+starter package for your grammar for the lab, consisting
+of the language-independent core, appropriate word order
+and negation modules (if available), some initial lexical
+types, and a tiny lexicon.  
+
+<p>Be advised that this system is highly experimental.
+If you experience set backs, please don't give up, but
+post to the <a href="">course bulletin board</a> or
+email Emily at: ebender at u dot washington dot edu.
+Likewise if you don't see options that are appropriate for
+your language.
+
+<form action="bin/customizematrix.cgi" method="post">
+
+<hr>
+
+<h3>Language</h3>
+
+<p>e.g., Basque or Hawaiian_Creole: <br>
+<input type="text" name="language" size=60><br>
+
+<hr>
+
+<h3>Word Order</h3>
+
+<p>Please indicate which pattern best describes the basic
+word order of your language:<br>
+
+<input type="radio" name="wordorder" value="sov"> a) SOV <br>
+<input type="radio" name="wordorder" value="svo"> b) SVO <br>
+<input type="radio" name="wordorder" value="vso"> c) VSO <br>
+<input type="radio" name="wordorder" value="osv"> d) OSV <br>
+<input type="radio" name="wordorder" value="ovs"> e) OVS <br>
+<input type="radio" name="wordorder" value="vos"> f) VOS <br>
+<input type="radio" name="wordorder" value="v-final"> g) V-final <br>
+<input type="radio" name="wordorder" value="v-initial"> h) V-initial <br>
+<input type="radio" name="wordorder" value="free"> i) free (pragmatically determined) word order <br>
+
+<p>Note: Modules for V2 order (auxiliary second, all else free or
+finite verb second, non-finite verb clause-finally) and differing
+word order between matrix and subordinate clauses are currently
+under development.
+
+<P>Does your language have determiners (as indpendent words)?
+<input type="radio" name="hasDets" value="t">yes
+<input type="radio" name="hasDets" value="nil">no
+
+<p>If so, what is the order of determiners with respect to
+nouns?
+<input type="radio" name="NounDetOrder" value="HeadSpec">Noun-Det
+<input type="radio" name="NounDetOrder" value="SpecHead">Det-Noun
+
+
+<hr>
+
+<h3>Basic Lexicon</h3>
+
+<p>Please use full form lexical entries (not stem forms or
+citation forms).  This form can only accept lower ascii 
+alphanumerics (a-z, A-Z, 0-9, _).  
+
+<p>Noun 1: 
+
+<ul>
+<li>Spelling: <input type="text" name="noun1" size=40>
+<li>Predicate name (e.g., _cat_n_rel): <input type="text" name="noun1pred" size=40>
+<li>For this noun, a specifier (determiner) is <input type="radio" name="noun1spr" value="obl"> obligatory <input type="radio" name="noun1spr" value="opt"> optional <input type="radio" name="noun1spr" value="nil"> impossible
+</ul>
+
+<p>Noun 2: 
+
+<ul>
+<li>Spelling: <input type="text" name="noun2" size=40>
+<li>Predicate name (e.g., _cat_n_rel): <input type="text" name="noun2pred" size=40>
+<li>For this noun, a specifier (determiner) is <input type="radio" name="noun2spr" value="obl"> obligatory <input type="radio" name="noun2spr" value="opt"> optional <input type="radio" name="noun2spr" value="nil"> impossible
+</ul>
+
+<p>Intransitive verb:
+
+<ul>
+<li>Spelling: <input type="text" name="iverb" size=40>
+<li>Predicate name (e.g., _sleep_v_rel): <input type="text" name="ivpred" size=40>
+<li>The subject (sole argument) of this verb is a: <input type="radio" name="iverbSubj" value="np"> NP <input type="radio" name="iverbSubj" value="pp"> PP
+</ul>
+
+<p>Transitive verb:
+
+<ul>
+<li>Spelling: <input type="text" name="tverb" size=40>
+<li>Predicate name (e.g., _see_v_rel): <input type="text" name="tvpred" size=40>
+<li>The subject of this verb is a: <input type="radio" name="tverbSubj" value="np"> NP <input type="radio" name="tverbSubj" value="pp"> PP
+<li>The object of this verb is a: <input type="radio" name="tverbObj" value="np"> NP <input type="radio" name="tverbObj" value="pp"> PP
+</ul>
+
+<p>Determiners (if applicable):
+
+<p>If your two nouns require different determiner forms (e.g., because
+of agreement in case or gender, etc.), define the two deteminers here.
+Note that the initial definitions won't include agreement information.
+This will be addressed in the lab.
+
+<ul>
+<li>Spelling: <input type="text" name="det1" size=40>
+<li>Predicate name (e.g., _indef_q_rel): <input type="text" name="det1pred" size=40>
+</ul>
+
+<ul>
+<li>Spelling: <input type="text" name="det2" size=40>
+<li>Predicate name (e.g., _indef_q_rel): <input type="text" name="det2pred" size=40>
+</ul>
+
+<p>Case marking adposition -- Subjects (if applicable):
+
+<ul>
+<li>Spelling: <input type="text" name="subjAdpForm" size=40>
+<li><input type="radio" name="subjAdp" value="pre"> preposition
+<input type="radio" name="subjAdp" value="post"> postposition
+</ul>
+
+<p>Case marking adposition -- Objects (if applicable):
+
+<ul>
+<li>Spelling: <input type="text" name="objAdpForm" size=40>
+<li><input type="radio" name="objAdp" value="pre"> preposition
+<input type="radio" name="objAdp" value="post"> postposition
+</ul>
+
+<hr>
+
+<h3>Some test sentences</h3>
+
+<p>By filling out the following two fields,  you will give the LKB
+default strings to put into the parse dialog.  Please write two
+sentences using <b>only</b> the vocabulary defined above.  NB: This script
+can only handle lower ascii alphanumeric characters.  
+
+<p>Sentence 1:<input type="text" name="sentence1" size=100>
+<p>Sentence 2:<input type="text" name="sentence2" size=100>
+
+<hr>
+
+<h3>How would you like the files delivered?</h3>
+
+<p>When you push "submit", a customized version of the matrix will be
+created for you, and a page will appear with a link to download the
+material.  The matrix is not a single file, but actually a directory
+of files.  In order to simplify downloading, it will be compressed
+into an archive.  Choose the archive type that works best with your
+OS. If you are using Mac OS X or linux, choose .tar.gz.  If you are using
+Windows, choose .zip.
+
+<p>Archive type: <input type="radio" name="delivery" value="tgz">
+.tar.gz <input type="radio" name="delivery" value="zip"> .zip.
+
+<hr>
+
+<p><input type="submit" value="Submit">
+<input type="reset" value="Reset">
+
+</form>
+</body>
+</html>
