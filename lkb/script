@@ -35,11 +35,6 @@
    (lkb-pathname (parent-directory) "matrix.tdl")
    (lkb-pathname (parent-directory) "head-types.tdl")
    (lkb-pathname (parent-directory) "my_language.tdl")
-   (lkb-pathname (parent-directory) "modules/basic-lex.tdl")
-;;; Modules: types files
-(lkb-pathname (parent-directory) "modules/infl-neg.tdl")
-(lkb-pathname (parent-directory) "modules/qpart-type.tdl")
-(lkb-pathname (parent-directory) "modules/OSV.tdl")
 ))
 
 ;;;
@@ -47,11 +42,7 @@
 ;;; (some grammars with larger lexica organize them into multiple files).
 ;;;
 
-(read-tdl-lex-file-aux (list (lkb-pathname (parent-directory) "lexicon.tdl")
-			     (lkb-pathname (parent-directory) "test-lex.tdl")
-;;; Modules: lex files
-(lkb-pathname (parent-directory) "modules/qpart-lex.tdl")
-))			     
+(read-tdl-lex-file-aux (list (lkb-pathname (parent-directory) "lexicon.tdl")))
 
 ;;; For grammars with small lexicons, no need to use a cache file:
 ;;; Once your lexicon has >1000 words or so, consider using the 
@@ -67,25 +58,7 @@
 ;;;
 (read-tdl-grammar-file-aux (lkb-pathname (parent-directory) "rules.tdl"))
 (read-tdl-lex-rule-file-aux (lkb-pathname (parent-directory) "lrules.tdl"))
-;;; Modules: Non-spell-changing lexical rules 
-
 (read-morph-file-aux (lkb-pathname (parent-directory) "irules.tdl"))
-
-;;; Modules: lexical rules 
-(read-morph-file-aux (lkb-pathname (parent-directory) "modules/infl-neg-irule.tdl"))
-
-
-(read-tdl-grammar-file-aux (lkb-pathname 
-			    (parent-directory) 
-			    "modules/optdet-rules.tdl"))
-(read-tdl-grammar-file-aux (lkb-pathname 
-			    (parent-directory) 
-			    "modules/mod-rules.tdl"))
-;;; Modules: rules files
-(read-tdl-grammar-file-aux (lkb-pathname 
-                           (parent-directory)
-                           "modules/V-final-rules.tdl"))
-
 
 ;;;
 ;;; The `start symbol(s)' of the grammar.
