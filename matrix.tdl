@@ -816,9 +816,13 @@ same-ctxt-lex-rule := lex-rule &
 ; that makes it impossible to add any RELS/HCONS through
 ; C-CONT. Instead this type should identify HOOK.
 
+; ERB 2005-05-16 Copy MSG too!
+
 same-cont-lex-rule := lex-rule &
-  [ SYNSEM.LOCAL.CONT.HOOK #hook,
-    DTR.SYNSEM.LOCAL.CONT.HOOK #hook ].
+  [ SYNSEM.LOCAL.CONT [ HOOK #hook,
+	                MSG #msg ],
+    DTR.SYNSEM.LOCAL.CONT [ HOOK #hook,
+			    MSG #msg ]].
 
 same-agr-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.AGR #agr,
@@ -1044,6 +1048,23 @@ non-headed-phrase := phrase.
 phrasal := phrase &
   [ SYNSEM phr-synsem ].
 
+; ERB 2005-05-04 If messages are introduced by unary rules at the
+; top of each clause, most phrase types should say [MSG no-msg]
+; on the mother.  The exceptions to this are the clauses themselves
+; and coordination constructions.
+
+; ERB 2005-05-11 This is not the right way to do it.  There are 
+; going to be cases (e.g., quantifiers) where we want the MSG
+; of the head daughter copied up to the mother.   Let's try
+; making (normal) lexical items MSG no-msg, and having the no-msg-phrase
+; copy the info up.  Make no-msg-phrase inherit from headed-phrase.
+; Non-headed phrases will have to say something about the MSG
+; of the mother.
+
+no-msg-phrase := headed-phrase &
+  [ SYNSEM.LOCAL.CONT.MSG #msg, 
+    HEAD-DTR.SYNSEM.LOCAL.CONT.MSG #msg ].
+
 ; Head/nexus phrases pass up the REL and QUE values of the head daughter
 ; (which has amalgamated the REL and QUE values of its arguments as in
 ; Sag 1997) to the mother.  
@@ -1056,7 +1077,13 @@ head-nexus-que-phrase := headed-phrase &
   [ SYNSEM.NON-LOCAL.QUE #que,
     HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].
 
-head-nexus-phrase := head-nexus-rel-phrase & head-nexus-que-phrase.
+; ERB 2005-05-04 If messages are introduced by unary rules at the
+; top of each clause, most phrase types should say [MSG no-msg]
+; on the mother.  The exceptions to this are the clauses themselves
+; and coordination constructions.
+
+head-nexus-phrase := head-nexus-rel-phrase & head-nexus-que-phrase &
+		     no-msg-phrase.
 
 ; In a head/local dependent phrase, the SLASH feature of the mother is
 ; token-identical to that of the head daughter, which has already amalgamated
@@ -1129,9 +1156,17 @@ binary-rule-left-to-right := rule &
 binary-rule-right-to-left := rule &
   [ ARGS < [ KEY-ARG bool ], [ KEY-ARG + ] > ].
 
-head-only := unary-phrase & headed-phrase &
+; ERB 2005-05-04 If messages are introduced by unary rules at the
+; top of each clause, most phrase types should say [MSG no-msg]
+; on the mother.  The exceptions to this are the clauses themselves
+; and coordination constructions.  Basic-head-only is for 
+; the clauses.
+
+basic-head-only := unary-phrase & headed-phrase &
   [ HEAD-DTR #head,
     ARGS < #head > ].
+
+head-only := basic-head-only & no-msg-phrase.
 
 head-initial := binary-headed-phrase &
   [ HEAD-DTR #head,
@@ -1170,6 +1205,11 @@ head-compositional := headed-phrase &
 ; ERB 2004-08-26 Remove [MC na], which is probably specific
 ; to some analysis for English.
 
+; ERB 2005-05-11 I'm not sure what use non-clause is in the current
+; system, and the constraint MSG no-msg is a little suspicious.  
+; It seems to only be used for head-spec phrases right now, though,
+; so leave it for now.
+
 non-clause := head-nexus-phrase &
   [ SYNSEM.LOCAL [ CONT.MSG no-msg ] ].
 
@@ -1197,7 +1237,10 @@ relative-clause := clause.
 ; (again, the case of interrogatives, if there is one construction
 ; which introduces both messages).
 
-basic-non-rel-clause := headed-phrase & clause &
+; ERB 2005-05-04 Making all of these basic-head-only (non-branching
+; constructions).  Need to work on relative clauses at a later date.
+
+basic-non-rel-clause := basic-head-only & clause &
   [ SYNSEM [ LOCAL.CONT.MSG #msg &
                             [ LBL #mhand ],
              NON-LOCAL.REL 0-dlist ],
@@ -1212,7 +1255,7 @@ basic-non-rel-clause := headed-phrase & clause &
 ; MARG to head daughter's LTOP.  Subtypes will need
 ; to constrain length of HCONS and RELS.
 
-non-rel-clause := basic-non-rel-clause &
+non-rel-clause := basic-non-rel-clause & 
    [ SYNSEM.LOCAL.CONT.MSG.MARG #marg,
      HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #ltop,
      C-CONT.HCONS.LIST.FIRST qeq & [ HARG #marg,
@@ -1222,14 +1265,35 @@ non-rel-clause := basic-non-rel-clause &
 ; of just clause, so that something does the work of putting
 ; the message on the RELS list.
 
-interrogative-clause := basic-non-rel-clause &
+; ERB 2005-05-04 Trying out an analysis of clausal semantics where the
+; message is always introduced by a non-branching construction.  This
+; goes against Ginzburg & Sag's (2000) strategy of cross-classifying
+; phrase types with clause types, but it seems more practical for the
+; Matrix, for two reasons: (i) In a free word order language, the
+; `root' node in their strategy could be a head-subj, could be a
+; head-comp, etc. and (ii) it's just easier to conceive of the
+; crosslinguistic variation this way.  Leave the length of C-CONT.RELS
+; and C-CONT.HCONS unspecified for the moment on interrogatives.  In
+; some cases, it might be helpful to have the interrogatives put in
+; both the prpstn and the ques messages.  Likewise, don't require
+; MSG no-msg on the head daugther of interrogatives.
+
+interrogative-clause := basic-non-rel-clause & 
   [ SYNSEM.LOCAL.CONT.MSG.PRED question_m_rel ].
 
-declarative-clause := non-rel-clause &
-  [ SYNSEM.LOCAL.CONT.MSG.PRED proposition_m_rel ].
+declarative-clause := non-rel-clause & 
+  [ SYNSEM.LOCAL.CONT.MSG [ PRED proposition_m_rel,
+			    MARG #marg ],
+    C-CONT [ RELS <! *top* !>,
+	     HCONS <! qeq &
+		     [ HARG #marg,
+		       LARG #ltop ] !> ],
+    HEAD-DTR.SYNSEM.LOCAL.CONT [ MSG no-msg,
+				 HOOK.LTOP #ltop ]].
 
-imperative-clause := non-rel-clause &
-  [ SYNSEM.LOCAL.CONT.MSG.PRED command_m_rel ].
+imperative-clause := non-rel-clause & 
+  [ SYNSEM.LOCAL.CONT.MSG.PRED command_m_rel,
+    HEAD-DTR.SYNSEM.LOCAL.CONT.MSG no-msg  ].
 
 ; ERB 2004-08-26 The analysis of relative clauses in the ERG
 ; requires that the relative clause construction (a kind of
@@ -1728,7 +1792,16 @@ single-rel-lex-item := lex-item &
 no-hcons-lex-item := lex-item & 
   [ SYNSEM.LOCAL.CONT.HCONS <! !> ].
 
-norm-sem-lex-item := norm-hook-lex-item & single-rel-lex-item & no-hcons-lex-item.
+; ERB 2005-05-11 Normal lex items don't introduce messages. 
+; Since I'm trying out an analysis where the no-msg-phrases
+; copy of MSG values, need to bottom out in MSG no-msg
+; on most lex items.
+
+no-msg-lex-item := lex-item &
+  [ SYNSEM.LOCAL.CONT.MSG no-msg ].
+
+norm-sem-lex-item := norm-hook-lex-item & single-rel-lex-item 
+		     & no-hcons-lex-item & no-msg-lex-item.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; inflected v. uninflected
@@ -2254,6 +2327,7 @@ basic-subord-conjunction-lex := basic-one-arg &
 		   [ LBL #larg,
 		     L-HNDL #ltop1,
 		     R-HNDL #ltop2 ] ] ].
+
 
 ; Coming soon:
 ; Lexical type for negative particles like English "not"
