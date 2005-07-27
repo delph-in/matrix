@@ -1,11 +1,10 @@
 ;;; -*- Mode: TDL; Package: LKB -*-
 
-;;; Module for free word order, i.e., all possible
+;;; Phrase structure rule instances.
+
+;;; Rules for free word order, i.e., all possible
 ;;; orders of head, subj, comps (thinking initially
 ;;; about V, S, and O).
-
-;;; This is the rules file, to be used in conjunction with 
-;;; the types file free-order.old.  
 
 head-comp := head-comp-phrase.
 head-subj := head-subj-phrase.

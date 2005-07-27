@@ -1,7 +1,8 @@
 ;;; -*- Mode: TDL; Package: LKB -*-
-;;;
-;;;  Module for SOV word order; rules file.
-;;;  Used in combination with SOV/OSV/V-final types files.
+
+;;;  Phrase structur rule instances.
+
+;;;  Rules for SOV word order.
 
 comp-head := comp-head-phrase.
 subj-head := subj-head-phrase.

@@ -1,7 +1,4 @@
-;;; -*- Mode: TDL; Package: LKB -*-
-;;;
-;;;  Module for VOS word order; types file.
-;;;  Used in combination with V-initial word order rules file.
+;;;  Types for VOS word order.
 
 head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
 head-subj-phrase := basic-head-subj-phrase & head-initial &

@@ -1,7 +1,4 @@
-;;; -*- Mode: TDL; Package: LKB -*-
-;;;
-;;;  Module for SVO word order; types file.
-;;;  Used in combination with SVO word order rules file.
+;;;  Types for SVO word order.
 
 head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
 subj-head-phrase := basic-head-subj-phrase & head-final &

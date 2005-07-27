@@ -1,8 +1,5 @@
-;;; -*- Mode: TDL; Package: LKB -*-
-;;;
-;;;  Module for V-final word order; types file.
+;;;  Types for V-final word order.
 ;;;  Allows both orders of S and O.
-;;;  Used in combination with V-final word order rules file.
 
 comp-head-phrase := basic-head-1st-comp-phrase & head-final.
 subj-head-phrase := basic-head-subj-phrase & head-final.

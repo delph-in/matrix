@@ -5,20 +5,20 @@
 <body>
 
 <h1>LinGO Grammar Matrix</h1>
-<h1>LSA 111 Grammar Matrix customization page</h1>
+<h1>Matrix customization and download page</h1>
+<h1><font color=red>Currently under active development, please check
+back later.</font></h1>
+<h2>Version of 7/26/2005</h2>
 
-<p>By filling out this form, you will produce an initial
-starter package for your grammar for the lab, consisting
-of the language-independent core, appropriate word order
-and negation modules (if available), some initial lexical
-types, and a tiny lexicon.  
+<p>By filling out this form, you will produce an initial starter
+package for your grammar, consisting of the language-independent core,
+appropriate word order, negation, and polar question modules (if
+available), some initial lexical types, and a tiny lexicon.  Note
+that this small fragment will only treat matrix (main) clauses.
 
-<p>Be advised that this system is highly experimental.
-If you experience set backs, please don't give up, but
-post to the <a href="">course bulletin board</a> or
-email Emily at: ebender at u dot washington dot edu.
-Likewise if you don't see options that are appropriate for
-your language.
+<p>Be advised that this system is highly experimental.  We are
+interested in your feedback.  If you have questions or comments,
+please email Emily Bender at: ebender at u dot washington dot edu.
 
 <form action="bin/customizematrix.cgi" method="post">
 
@@ -34,7 +34,7 @@ your language.
 <h3>Word Order</h3>
 
 <p>Please indicate which pattern best describes the basic
-word order of your language:<br>
+word order of your language in matrix (main) clauses:<br>
 
 <input type="radio" name="wordorder" value="sov"> a) SOV <br>
 <input type="radio" name="wordorder" value="svo"> b) SVO <br>
@@ -60,6 +60,74 @@ nouns?
 <input type="radio" name="NounDetOrder" value="HeadSpec">Noun-Det
 <input type="radio" name="NounDetOrder" value="SpecHead">Det-Noun
 
+<hr>
+
+<h3>Sentential Negation</h3>
+
+<p>Please indicate which strategy or strategies your language
+uses for sentential negation (as distinct from constituent negation). 
+(You may leave this section blank, in which case your grammar will
+not include any information about negation.)
+
+<ul>
+<li><input type="checkbox" name="neg" value="infl">Verbal inflection:
+
+<ul>
+<li>On: <input type="radio" name="neg-infl-type" value="aux">auxiliaries only
+<input type="radio" name="neg-infl-type" value="main">main verbs only
+<input type="radio" name="neg-infl-type" value="aux-main">any finite verb (main or auxiliary)
+<li>Affix type: <input type="radio" name="neg-aff" value="prefix">prefix
+<input type="radio" name="neg-aff" value="suffix">suffix
+<li>Affix spelling: <input type="text" name="neg-aff-form" size=10>
+
+(Note: The customization page assumes purely concatenative morphology.
+More complicated morphophonological effects will need to be handled
+separately.)
+</ul>
+
+<li><input type="checkbox" name="neg" value="adv">An adverb
+<ul>
+<li><input type="radio" name="neg-adv" value="ind-adv">... which is
+an independent modifier of 
+<input type="radio" name="negmod" value="S">S
+<input type="radio" name="negmod" value="VP">VP
+<input type="radio" name="negmod" value="V">V
+and appears to the 
+<input type="radio" name="negprepostmod" value="pre">left
+<input type="radio" name="negprepostmod" value="post">right
+<input type="radio" name="negprepostmod" value="either">either
+of the category it modifies.
+<li><input type="radio" name="neg-adv" value="sel-adv">... which is
+a selected complement of 
+<input type="radio" name="neg-sel-adv" value="main">main verbs
+<input type="radio" name="neg-sel-adv" value="aux">auxiliaries
+<input type="radio" name="neg-sel-adv" value="main-aux">any finite verb
+</ul>
+
+</ul>
+
+<p>Notes: The following options are not yet implemented: Negative
+inflection of non-finite verbs, special negative auxiliaries.
+
+<p>If you have selected both inflectional and adverbial negation,
+please indicate which of the following best describes your language:
+
+<ul>
+<li><input type="radio" name="multineg" value="comp">Inflectional and
+adverbial negation are used in complementary distribution.
+<li><input type="radio" name="multineg" value="bothopt">Inflectional
+and adverbial negation can appear independently or together.
+<li><input type="radio" name="multineg" value="bothobl">Both inflection
+and the adverb are required to express sentential negation.
+<li><input type="radio" name="multineg" value="advobl">The adverb is
+obligatory, but inflection may appear in addition.
+<li><input type="radio" name="multineg" value="inflobl">The inflection
+is obligatory, but the adverb may appear in addition. 
+</ul>
+
+<p>Note: We assume that when negation is expressed via both
+inflection and an adverb at the same time, the adverb is treated
+as a selected complement.
 
 <hr>
 
@@ -74,7 +142,10 @@ alphanumerics (a-z, A-Z, 0-9, _).
 <ul>
 <li>Spelling: <input type="text" name="noun1" size=40>
 <li>Predicate name (e.g., _cat_n_rel): <input type="text" name="noun1pred" size=40>
-<li>For this noun, a specifier (determiner) is <input type="radio" name="noun1spr" value="obl"> obligatory <input type="radio" name="noun1spr" value="opt"> optional <input type="radio" name="noun1spr" value="nil"> impossible
+<li>For this noun, a specifier (determiner) is 
+<input type="radio" name="noun1spr" value="obl"> obligatory 
+<input type="radio" name="noun1spr" value="opt"> optional 
+<input type="radio" name="noun1spr" value="nil"> impossible
 </ul>
 
 <p>Noun 2: 
@@ -82,24 +153,64 @@ alphanumerics (a-z, A-Z, 0-9, _).
 <ul>
 <li>Spelling: <input type="text" name="noun2" size=40>
 <li>Predicate name (e.g., _cat_n_rel): <input type="text" name="noun2pred" size=40>
-<li>For this noun, a specifier (determiner) is <input type="radio" name="noun2spr" value="obl"> obligatory <input type="radio" name="noun2spr" value="opt"> optional <input type="radio" name="noun2spr" value="nil"> impossible
+<li>For this noun, a specifier (determiner) is 
+<input type="radio" name="noun2spr" value="obl"> obligatory 
+<input type="radio" name="noun2spr" value="opt"> optional 
+<input type="radio" name="noun2spr" value="nil"> impossible
 </ul>
 
 <p>Intransitive verb:
 
 <ul>
-<li>Spelling: <input type="text" name="iverb" size=40>
+<li>Spelling (finite form): <input type="text" name="iverb" size=40>
 <li>Predicate name (e.g., _sleep_v_rel): <input type="text" name="ivpred" size=40>
-<li>The subject (sole argument) of this verb is a: <input type="radio" name="iverbSubj" value="np"> NP <input type="radio" name="iverbSubj" value="pp"> PP
+<li>The subject (sole argument) of this verb is a: 
+<input type="radio" name="iverbSubj" value="np"> NP 
+<input type="radio" name="iverbSubj" value="pp"> PP
+<li>If your language has auxiliaries and this intransitive verb
+appears in a different form when it is the (head of the) complement
+of the auxiliary specified below, please specify that form here: 
+<input type="text" name="iverb-nonfinite" size=40>
 </ul>
 
 <p>Transitive verb:
 
 <ul>
-<li>Spelling: <input type="text" name="tverb" size=40>
+<li>Spelling (finite form): <input type="text" name="tverb" size=40>
 <li>Predicate name (e.g., _see_v_rel): <input type="text" name="tvpred" size=40>
-<li>The subject of this verb is a: <input type="radio" name="tverbSubj" value="np"> NP <input type="radio" name="tverbSubj" value="pp"> PP
-<li>The object of this verb is a: <input type="radio" name="tverbObj" value="np"> NP <input type="radio" name="tverbObj" value="pp"> PP
+<li>The subject of this verb is a: 
+<input type="radio" name="tverbSubj" value="np"> NP 
+<input type="radio" name="tverbSubj" value="pp"> PP
+<li>The object of this verb is a: 
+<input type="radio" name="tverbObj" value="np"> NP 
+<input type="radio" name="tverbObj" value="pp"> PP
+<li>If your language has auxiliaries and this transitive verb
+appears in a different form when it is the (head of the) complement
+of the auxiliary specified below, please specify that form here: 
+<input type="text" name="tverb-nonfinite" size=40>
+</ul>
+
+<p>Auxiliary verb (if applicable):
+
+<ul>
+<li>Spelling: <input type="text" name="auxverb" size=40>
+<li>This auxiliary verb contributes:
+<ul>
+<li><input type="radio" name="auxsem" value="pred">An independent
+predicate (e.g., _can_v_rel): <input type="text" name="auxpred" size=40>
+<li><input type="radio" name="auxsem" value="tma">Tense/aspect information
+only
+</ul>
+<li>This auxiliary verb takes as its complement:
+<ul>
+<li><input type="radio" name="auxcomp" value="S">a saturated sentence
+<li><input type="radio" name="auxcomp" value="VP">a VP, raising the subject
+<li><input type="radio" name="auxcomp" value="V">a V, raising all of its arguments (argument composition).
+</ul>
+<li>This auxiliary verb appears to the <input type="radio"
+name="auxorder" value="left">left <input type="radio" name="auxorder"
+value="right">right <input type="radio" name="auxorder"
+value="either">either side of its complement.
 </ul>
 
 <p>Determiners (if applicable):
@@ -133,6 +244,12 @@ This will be addressed in the lab.
 <li>Spelling: <input type="text" name="objAdpForm" size=40>
 <li><input type="radio" name="objAdp" value="pre"> preposition
 <input type="radio" name="objAdp" value="post"> postposition
+</ul>
+
+<p>Negative adverb (if applicable):
+
+<ul>
+<li>Spelling: <input type="text" name="negadvform" size=40>
 </ul>
 
 <hr>

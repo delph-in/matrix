@@ -1,5 +1,3 @@
-;;; -*- Mode: TDL; Package: LKB -*-
-
 ;;; Module for free word order, i.e., all possible
 ;;; orders of head, subj, comps (thinking initially
 ;;; about V, S, and O).  Use this with free-order-rules.tdl,
@@ -46,10 +44,10 @@ head-final-head-nexus := head-final &
  [ SYNSEM.ATTACH rmod ].
 
 
-; We'll need to add identification of ATTACH between
-; mother and head-daughter for all other kinds of phrases
-; if we do this.  Just for illustration, I'm putting it in
-; for head-adjunct phrases here:
+;;; We'll need to add identification of ATTACH between
+;;; mother and head-daughter for all other kinds of phrases
+;;; if we do this.  Just for illustration, I'm putting it in
+;;; for head-adjunct phrases here:
 
 head-mod-phrase :+
   [ SYNSEM.ATTACH #attach,
