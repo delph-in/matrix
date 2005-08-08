@@ -21,6 +21,8 @@
 #4. Figure out what's wrong with the print statement at the
 #   end of &print_html.
 #   And what's wrong with .tar.gz output.
+#   Test/fix negation (esp. independent adv)
+#   Fix SPR on COMPS of transitive-verb
 ##########################################################################
 
 #Declare the package of this file, mm for "matrix modules"
@@ -1007,9 +1009,9 @@ sub print_lex_types_tdl
 	    #for the tdl (pre/post head x V/VP/S modifier)?  Hard to maintain
 	    #that, though...
 
-	    if ($mm::negprepostmod =~ pre) {
+	    if ($mm::negprepostmod =~ /pre/) {
 		$mm::posthead = "-";
-	    } elsif ($mm::negprepostmod =~post) {
+	    } elsif ($mm::negprepostmod =~ /post/) {
 		$mm::posthead = "+";
 	    } else {
 		return_error (500, "Internal Sever Error", "Something's wrong with the mod order for neg adv.  Please contact developers.");
