@@ -138,9 +138,14 @@ lex-synsem := canonical-synsem & lex-or-phrase-synsem &
     LIGHT +,
     LKEYS lexkeys ].
 
-phr-synsem := canonical-synsem & lex-or-phrase-synsem &
-  [ LOCAL local-min,
-    LIGHT - ].
+; ERB (2005-08-10) We want to make sure that head-comp phrases
+; don't have the feature LKEYS, even if they are LIGHT +.
+
+phr-synsem-min := canonical-synsem & lex-or-phrase-synsem &
+  [ LOCAL local-min ].
+
+phr-synsem := phr-synsem-min &
+  [ LIGHT - ].
 
 non-canonical := synsem &
   [ LOCAL.CONT.HOOK.INDEX event-or-ref-index ].
@@ -1404,9 +1409,12 @@ basic-head-spec-phrase := head-valence-phrase & non-clause & phrasal &
 
 ; Value of LIGHT comes from head-daughter's specification in HC-LIGHT.
 
+; ERB (2005-08-10) Change value of SYNSEM from canonical-synsem to
+; phr-synsem-min, so that LKEYS is not an appropriate feature.
+
 basic-head-comp-phrase := head-valence-phrase & head-compositional &
 			  binary-headed-phrase &
-  [ SYNSEM canonical-synsem &
+  [ SYNSEM phr-synsem-min &
 	   [ LOCAL.CAT [ MC #mc,
                          VAL [ SUBJ #subj,
                                SPR #spr ],
