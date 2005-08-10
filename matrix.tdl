@@ -1803,6 +1803,18 @@ no-msg-lex-item := lex-item &
 norm-sem-lex-item := norm-hook-lex-item & single-rel-lex-item 
 		     & no-hcons-lex-item & no-msg-lex-item.
 
+hcons-lex-item := norm-hook-lex-item & single-rel-lex-item 
+		  & no-msg-lex-item.
+
+; ERB 2005-08-07 For lexical items like case-marking adpositions
+; and auxiliaries which only contribute tense/aspect information.
+; These all take HOOK from their first complements.
+
+raise-sem-lex-item := no-hcons-lex-item & no-msg-lex-item &
+  [ SYNSEM.LOCAL [ CONT [ RELS <! !>,
+			  HOOK #hook ],
+		   CAT.VAL.COMPS < [ LOCAL.CONT.HOOK #hook ] , ... > ]].
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; inflected v. uninflected
 
@@ -2073,11 +2085,32 @@ clausal-expl-arg-lex-item := basic-two-arg &
 
 ; Kim seems to sleep; Kim is sleeping.
 
-trans-first-arg-raising-lex-item := basic-two-arg & 
+trans-first-arg-raising-lex-item := basic-two-arg &
    [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX #ind ],
-	      [ LOCAL.CONT.HOOK [ XARG #ind,
-				  LTOP #ltop ] ] >,
-     SYNSEM.LKEYS.KEYREL [ ARG1 #ltop ] ].
+	      [ LOCAL.CONT.HOOK.XARG #ind ] > ].
+
+; Variant expecting a relation introduced by the raising
+; predicate.  Adding qeq between ARG1 and LTOP.  Can't
+; cross-classify with norm-sem-lex-item.
+
+; These can't inherit from basic-verb-lex, since they
+; introduce a non-empty HCONS value.  Need to get 
+; event-relation from somewhere else.
+
+trans-first-arg-raising-lex-item-1 := trans-first-arg-raising-lex-item & 
+   [ ARG-ST < [ ],
+	      [ LOCAL.CONT.HOOK.LTOP #larg ] >,
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & 
+				[ HARG #harg,
+				  LARG #larg ] !>,
+	      LKEYS.KEYREL event-relation & 
+			       [ ARG1 #harg ]]].
+
+; Variant for raising verbs/auxiliaries which don't
+; introduce a predicate of their own. 
+
+trans-first-arg-raising-lex-item-2 := trans-first-arg-raising-lex-item &
+				      raise-sem-lex-item.
 
 ; Kim tries to sleep.
 
