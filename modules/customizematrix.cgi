@@ -18,11 +18,8 @@
 #
 #3. Add yes-no questions. 
 #
-#4. Figure out what's wrong with the print statement at the
-#   end of &print_html.
-#   And what's wrong with .tar.gz output.
-#   Test/fix negation (esp. independent adv)
-#   Fix SPR on COMPS of transitive-verb
+#4. Figure out what's wrong .tar.gz output.
+#   Test/fix negation (esp. independent adv): add head-modifier rules!
 ##########################################################################
 
 #Declare the package of this file, mm for "matrix modules"
@@ -71,6 +68,7 @@ open (MYLANGUAGE, ">$mm::matrix/"."$mm::my_language") || return_error (500,"Inte
 
 &print_mylanguage_headers;
 &print_head_type_addenda_tdl;
+&print_value_types_tdl;
 &print_word_order_tdl;
 &print_lex_rule_types_tdl;
 &print_lex_types_tdl;
@@ -234,6 +232,7 @@ sub parse_form_data
     $mm::auxcomp = $FORM_DATA{"auxcomp"};
     $mm::auxorder = $FORM_DATA{"auxorder"};
     $mm::auxsem = $FORM_DATA{"auxsem"};
+    $mm::auxsubj = $FORM_DATA{"auxsubj"};
     $mm::auxverbform = $FORM_DATA{"auxverb"};
     $mm::delivery = $FORM_DATA{"delivery"};
     $mm::det1 = $FORM_DATA{"det1"};
@@ -243,6 +242,7 @@ sub parse_form_data
     $mm::hasdets = $FORM_DATA{"hasDets"};
     $mm::hasdets = $FORM_DATA{"hasDets"};
     $mm::iverb = $FORM_DATA{"iverb"};
+    $mm::iverbnf = $FORM_DATA{"iverb-nonfinite"};
     $mm::iverbpred = $FORM_DATA{"ivpred"};
     $mm::iverbsubj = $FORM_DATA{"iverbSubj"};
     $mm::ivsubj = $FORM_DATA{"iverbSubj"};
@@ -274,6 +274,7 @@ sub parse_form_data
     $mm::subjadp = $FORM_DATA{"subjAdp"};
     $mm::subjadpform = $FORM_DATA{"subjAdpForm"};
     $mm::tverb = $FORM_DATA{"tverb"};
+    $mm::tverbnf = $FORM_DATA{"tverb-nonfinite"};
     $mm::tverbobj = $FORM_DATA{"tverbObj"};
     $mm::tverbpred = $FORM_DATA{"tvpred"};
     $mm::tverbsubj = $FORM_DATA{"tverbSubj"};
@@ -282,6 +283,178 @@ sub parse_form_data
     $mm::wordorder = $FORM_DATA{"wordorder"};
 #   $mm:: = $FORM_DATA{""};
 
+#Some secondary information, calculated on the basis of the above:
+
+#Is the ordering of adpositions consistent with the order of 
+#V and O?
+
+    $mm::consistentorder = "easy";
+
+    if ($mm::subjadp || $mm::objadp) {
+	
+	$mm::adp = ($mm::subjadp || $mm::objadp);
+	
+	if ($mm::wordorder =~ /free/) {
+	    $mm::consistentorder = "free";
+	} elsif (($mm::wordorder =~ /(sov)|(osv)|(ovs)|v-final/) && ($mm::adp =~ /pre/)) {
+	    $mm::consistentorder = "ov-prep";
+	} elsif (($mm::wordorder =~ /(svo)|(vos)|(vso)|v-initial/) && ($mm::adp =~ /post/)) {
+	    $mm::consistentorder = "vo-postp";
+	}
+    }
+
+
+#Is the ordering of auxiliaries and their complements consistent
+#with the order of other verbs?
+
+    $mm::auxconsistentorder = "easy";
+
+    if ($mm::auxverbform) {
+
+	if ($mm::wordorder =~ /free/) {
+	    if ($mm::auxorder =~ /left/) {
+		$mm::auxconsistentorder = "free-aux-left";
+	    } elsif ($mm::auxorder =~ /right/) {
+		$mm::auxconsistentorder = "free-aux-right";
+	    }
+
+	} elsif (($mm::wordorder =~ /(sov)|(osv)|(ovs)|v-final/) && ($mm::auxorder =~ /left/)) {
+	    $mm::auxconsistentorder = "ov-auxv";
+	} elsif (($mm::wordorder =~ /(svo)|(vos)|(vso)|v-initial/) && ($mm::auxorder =~ /right/)) {
+	    $mm::auxconsistentorder = "vo-vaux";
+	}
+    }
+
+#Do the noun entries have the same behavior wrt to overt determiners?
+
+    $mm::singlentype = 1;
+
+    if ($mm::noun1spr) {
+
+	if ($mm::noun2spr && ($mm::noun1spr ne $mm::noun2spr)) {
+	    $mm::singlentype = 0;
+	}
+    } else {
+	
+	return_error (500, "Internal Server Error", "Something's wrong with the noun entries.  Please contact developers.");
+    }
+
+#Do the verbs take the same category (NP or PP) for their subjects?
+
+    if ($mm::iverbsubj) {
+	
+	if ($mm::tverbsubj && ($mm::iverbsubj ne $mm::tverbsubj)) {
+	    $mm::singlevtype = 0;
+	} else {
+	    $mm::singlevtype = 1;
+	}
+    } else {
+	
+	return_error (500, "Internal Server Error", "Something's wrong with the intransitive verb. Please contact developers.");
+    }
+    
+
+#What's going on with the distribution of multiple negation strategies?
+
+    if (($mm::neg eq "adv") || ($mm::multineg =~ /comp/)) {
+	$mm::advalone = "always";
+    } elsif ($mm::multineg =~ /bothopt|advobl/) {
+	$mm::advalone = "sometimes";
+    } elsif ($mm::multineg =~ /bothobl|inflobl/) {
+	$mm::advalone = "never"; 
+    } else {
+	return_error (500, "Internal Server Error", "There's something wrong with adverbial negation.  Please contact the developers.");
+    }
+
+#For the independent adverb negation strategy, are the adverbs
+#prehead or posthead?
+
+    if ($mm::negadv =~ /ind-adv/) {
+
+	if ($mm::negprepostmod =~ /pre/) {
+	    $mm::posthead = "-";
+	} elsif ($mm::negprepostmod =~ /post/) {
+	    $mm::posthead = "+";
+	} elsif ($mm::negprepostmod =~ /either/) {
+	    $mm::prepostmod = "";
+	} else {
+	    return_error (500, "Internal Sever Error", "Something's wrong with the mod order for neg adv.  Please contact developers.");
+	}
+    }
+
+
+
+#Do we need a feature AUX?  So far, could be using it in either of the
+#negation strategies.  Note that if the value for either is "main-aux"
+#we don't yet need a main verb/auxiliary distinction.  (Though one might
+#expect to find one elsewhere, since the terms are used.)
+
+    if (($mm::neginfltype eq "aux") || ($mm::negseladv eq "aux")) {
+	$mm::hasaux = 1;
+    } else {
+	$mm::hasaux = 0;
+    }
+
+#Do we need head-modifier rules?
+
+    if (($mm::negadv =~ /ind-adv/) &&
+	(!$mm::advalone ||
+	 $mm::advalone =~ /always|sometimes/)) {
+
+	$mm::modrules = "t";
+
+    } else {
+
+	$mm::modrules = "nil";
+
+    }
+
+#Do we need to constrain HC-LIGHT on verbs, to distinguish V from VP?
+
+    if (($mm::negadv =~ /ind-adv/ && $mm::negmod eq "V") ||
+	($mm::auxcomp eq "V")) {
+
+	$mm::hclight = "t";
+
+    } else {
+
+	$mm::hclight = "nil";
+    }
+
+#Which type of auxiliary, if any, are we using?  Store the type
+#name as $mm::auxtypename.
+
+    if ($mm::hasaux) {
+	if ($mm::auxcomp =~ /VP/) {
+	    if ($mm::auxsem =~ /pred/) {
+		$mm::auxtypename = "subj-raise-aux-with-pred";
+	    } elsif ($mm::auxsem =~ /tma/) {
+		$mm::auxtypename = "subj-raise-aux-no-sem";
+	    } else {
+		return_error (500, "Internal Server Error", "Something's wrong with the aux type.  Please contact developers.");
+	    }
+	} elsif ($mm::auxcomp =~ /V/) {
+	    if ($mm::auxsem =~ /pred/) {
+		$mm::auxtypename = "arg-comp-aux-with-pred";
+	    } elsif ($mm::auxsem =~ /tma/) {
+		$mm::auxtypename = "arg-comp-aux-no-sem";
+	    } else {
+		return_error (500, "Internal Server Error", "Something's wrong with the aux type.  Please contact developers.");
+	    }
+	} elsif ($mm::auxcomp =~ /S/) {
+	    if ($mm::auxsem =~ /pred/) {
+		$mm::auxtypename = "s-comp-aux-with-pred";
+	    } elsif ($mm::auxsem =~ /tma/) {
+		$mm::auxtypename = "s-comp-aux-no-sem";
+	    } else {
+		return_error (500, "Internal Server Error", "Something's wrong with the aux type.  Please contact developers.");
+	    }
+	} else {
+	    return_error (500, "Internal Server Error", "Something's wrong with the aux type.  Please contact developers.");
+	    
+	}
+    }
+   
 }
 
 #-------------------------------------------------------------------------
@@ -340,10 +513,11 @@ sub check_for_form_errors {
     }
 
 #Did they answer all of the questions about the negation strategy they chose?
+#This one is buggy right now, so commented out.  FIX_ME and put back in.
 
-    if (($mm::neg =~ /adv/ && !($mm::negmod && $mm::negprepostmod)) || (($mm::neg =~ /infl/) && !($mm::neginfltype && $mm::negaff && $mm::negaffform))) {
-	return_error (500, "Internal Server Error", "You must answer all questions for each negation strategy you choose.");
-    }
+#    if (($mm::neg =~ /adv/ && !($mm::negmod && $mm::negprepostmod)) || (($mm::neg =~ /infl/) && !($mm::neginfltype && $mm::negaff && $mm::negaffform))) {
+#	return_error (500, "Internal Server Error", "You must answer all questions for each negation strategy you choose.");
+#    }
 
 #Check that if both inflectional and adverbial negation are selected, one of the options for combining them is too.
 
@@ -407,6 +581,23 @@ sub check_for_form_errors {
 	return_error (500, "Internal Server Error", "You must answer all questions for each lexical entry you specify.");
     }
 
+#Did they give us the same form for both finite and nonfinite verbs?
+
+    if (($mm::tverb eq $mm::tverbnf) || ($mm::iverb eq $mm::iverbf)) {
+
+	return_error (500, "Internal Server Error", "If you provide a form for a verb when it cooccurs with an auxiliary, it must be different from the other (finite) form.");
+
+    }
+
+#If they're specifying an auxiliary, and they say it takes a VP or V complement,
+#did they tell us what type of subject?
+
+    if ($mm::auxverbform) {
+	if (($mm::auxcomp =~ /V/) & !$mm::auxsubj) {
+	    return_error (500, "Internal Server Error", "If your auxiliary takes a V or VP complement, you must specify whether its subject is an NP or a PP.");
+	}
+    }
+
 }
 
 #-------------------------------------------------------------------------
@@ -427,7 +618,7 @@ sub return_error
 
 End_of_Error
 
-    exit(1);
+exit(1);
 }
 
 #-------------------------------------------------------------------------
@@ -507,21 +698,54 @@ sub print_head_type_addenda_tdl
 {
 #Gather all things we want to add to the head types and print them here.
 
-    print MYLANGUAGE "\;\;\; Type addenda adding constraints to head types\n\n";
+    print MYLANGUAGE ";;; Type addenda adding constraints to head types\n\n";
 
-    #Do we need a type AUX?  So far, could be using it in either of the
-    #negation strategies.  Note that if the value for either is "main-aux"
-    #we don't yet need a main verb/auxiliary distinction.  (Though one might
-    #expect to find one elsewhere, since the terms are used.)
-
-    if (($mm::neginfltype eq "aux") || ($mm::negseladv eq "aux")) {
-	$mm::hasaux = 1;
-    } else {
-	$mm::hasaux = 0;
-    }
+    #Add the feature AUX, if necessary.
 
     if ($mm::hasaux == 1) {
-	print MYLANGUAGE "verb :+ [AUX bool].\n\n";
+	print MYLANGUAGE ";;; Your grammar has auxiliaries, so we are adding the features AUX and FORM\n";
+	print MYLANGUAGE ";;; to the type verb.  We are assuming that auxiliaries select non-finite verbal\n";
+	print MYLANGUAGE ";;; projections for their complements.\n\n";
+
+	print MYLANGUAGE ";;; To allow for a simpler statement of word order rules (in some grammars)\n";
+	print MYLANGUAGE ";;; we add the feature AUX to the type head, rather than verb.\n\n";
+
+	print MYLANGUAGE "head :+ [ AUX bool ].\n\n";
+	print MYLANGUAGE "verb :+ [ FORM form ].\n\n";
+    }
+
+    #Constrain the MOD values of non-modifiers if we're adding head-adj rules
+
+    if ($mm::modrules =~ /t/) {
+
+	print MYLANGUAGE ";;; This grammar includes head-modifier rules.  To keep\n";
+	print MYLANGUAGE ";;; out extraneous parses, constrain the value of MOD on\n";
+	print MYLANGUAGE ";;; various subtypes of head.  This may need to be loosened later.\n";
+	print MYLANGUAGE ";;; This constraint says that only adverbs, adjectives,\n";
+	print MYLANGUAGE ";;; and adpositions can be modifiers.\n\n";
+
+	print MYLANGUAGE "+nvcdmo :+ [ MOD < > ].\n\n";
+
+    }
+
+}
+
+#-------------------------------------------------------------------------
+
+sub print_value_types_tdl
+{
+#Types for values of things like FORM
+
+    print MYLANGUAGE ";;; Types for values of additional features.\n\n";
+
+    if ($mm::hasaux == 1) {
+	
+	print MYLANGUAGE ";;; Value of the feature FORM, used to distinguish\n;;; which verbs appear after auxiliaries.\n\n";
+
+	print MYLANGUAGE "form := avm.\n";
+	print MYLANGUAGE "fin := form.\n";
+	print MYLANGUAGE "inf := form.\n\n";
+
     }
 }
 
@@ -532,21 +756,7 @@ sub print_word_order_tdl
 #First, if there are adpositions, is their placement consistent
 #with the O/V order?
 
-    my($ruletypesinput,$adp);
-    $mm::consistentorder = "easy";
-
-    if ($mm::subjadp || $mm::objadp) {
-	
-	$adp = ($mm::subjadp || $mm::objadp);
-	
-	if ($mm::wordorder =~ /free/) {
-	    $mm::consistentorder = "free";
-	} elsif (($mm::wordorder =~ /(sov)|(osv)|(ovs)|v-final/) && ($adp =~ /pre/)) {
-	    $mm::consistentorder = "ov-prep";
-	} elsif (($mm::wordorder =~ /(svo)|(vos)|(vso)|v-initial/) && ($adp =~ /post/)) {
-	    $mm::consistentorder = "vo-postp";
-	}
-    }
+    my($ruletypesinput);
 
     if ($mm::wordorder =~ /sov/) {
 	$ruletypesinput = "SOV.tdl";
@@ -582,14 +792,122 @@ sub print_word_order_tdl
     
     close (RULETYPES);
     
-#Now some add ons for languages which have adpositions
-#(in particular, adp-marked subjects or objects) which
-#don't follow the general ordering convenstions of the language.
+#Now some add-ons for those cases where the word order is
+#sensitive to the head type (adpositions, auxiliaries).
+#In general, we might also find word order sensitive to
+#clause type (matrix v. subordinate) and dependent type.
+
+# aux		 adp		head-comp		comp-head		#rules    add to rules.tdl
+# ---		 ---		---------		---------		------    ----------------
+# ov-auxv 	 ov-prep	v:AUX + | adp		~adp:AUX -		2         head-comp: both
+# vo-vaux	 vo-post	~adp:AUX - 		v:AUX + | adp		2         comp-head: both
+# free-aux-left	 free-prep	unrestricted		~adp:AUX - 		2         --
+# free-aux-right free-post	~adp:AUX -		unrestricted		2         --
+# free-aux-left	 free-post	~adp			AUX -			2         --
+# free-aux-right free-prep	AUX -			~adp			2         --
+# easy		 ov-prep	adp			~adp			2         head-comp: adp
+# easy		 vo-post	~adp			adp			2         comp-head: adp
+# easy		 free-prep	unrestricted		~adp			2         --
+# easy		 free-post	~adp			unrestricted		2         --
+# ov-auxv	 easy		v:AUX +			AUX -			2         head-comp: aux
+# vo-vaux	 easy		AUX -			v:AUX +			2         comp-head: aux
+#
+# Not bothering with the case where adpositions aren't fixed in their order,
+# since I don't believe it exists.
     
-    if ($mm::consistentorder =~ /ov-prep/) {
+    if (($mm::consistentorder =~ /ov-prep/) && ($mm::auxconsistentorder =~ /ov-auxv/)) {
+
+	print MYLANGUAGE ";;; The following type addendum statment restricts the head-final\n";
+	print MYLANGUAGE ";;; head-complement rule from taking adpositions or auxiliaries as its head.\n\n";
+
+	print MYLANGUAGE "comp-head-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo &\n";
+	print MYLANGUAGE "                                            [ AUX - ]].\n\n";
+
+	print MYLANGUAGE ";;; Head-initial head-comp phrases for auxiliaries and prepositions.\n";
+	print MYLANGUAGE ";;; Using the disjunctive type for verbs and prepositions to state\n";
+	print MYLANGUAGE ";;; this with one rule. Note that AUX is appropriate for all head types\n";
+	print MYLANGUAGE ";;; and prepositions are underspecified for AUX.\n\n";
+
+	print MYLANGUAGE "head-comp-phrase := basic-head-1st-comp-phrase & head-initial &\n";
+	print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT.HEAD +vp & [ AUX + ]].\n";
+
+    }
+    
+    if (($mm::consistentorder =~ /vo-post/) && ($mm::auxconsistentorder =~ /vo-vaux/)) {
+
+	print MYLANGUAGE ";;; The following type addendum statment restricts the head-initial\n";
+	print MYLANGUAGE ";;; head-complement rule from taking adpositions or auxiliaries as its head.\n\n";
+
+	print MYLANGUAGE "head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo &\n";
+	print MYLANGUAGE "                                            [ AUX - ]].\n\n";
+
+	print MYLANGUAGE ";;; Head-final head-comp phrases for auxiliaries and prepositions.\n";
+	print MYLANGUAGE ";;; Using the disjunctive type for verbs and prepositions to state\n";
+	print MYLANGUAGE ";;; this with one rule. Note that AUX is appropriate for all head types\n";
+	print MYLANGUAGE ";;; and prepositions are underspecified for AUX.\n\n";
+
+	print MYLANGUAGE "comp-head-phrase := basic-head-1st-comp-phrase & head-final &\n";
+	print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT.HEAD +vp & [ AUX + ]].\n\n";
+
+    }
+
+    if (($mm::auxconsistentorder =~ /free-aux-left/) && 
+	($mm::consistentorder =~ /free/) && ($mm::adp =~ /pre/)) {
+
+	print MYLANGUAGE ";;; The following type addendum statement resricts the head-final\n";
+	print MYLANGUAGE ";;; head-complement rule from taking adpositions or auxiliaries as its head.\n\n";
+
+	print MYLANGUAGE "comp-head-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo &\n";
+	print MYLANGUAGE "                                            [ AUX - ]].\n\n";
+	    
+    }
+    
+    if (($mm::auxconsistentorder =~ /free-aux-right/) && 
+	($mm::consistentorder =~ /free/) && ($mm::adp =~ /post/)) {
+
+	print MYLANGUAGE ";;; The following type addendum statement resricts the head-initial\n";
+	print MYLANGUAGE ";;; head-complement rule from taking adpositions or auxiliaries as its head.\n\n";
+
+	print MYLANGUAGE "head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo &\n";
+	print MYLANGUAGE "                                            [ AUX - ]].\n\n";
 	
-	print MYLANGUAGE "\;\;\; The following type addendum statment restricts the head-final\n";
-	print MYLANGUAGE "\;\;\; head-complement rule from taking adpositions as itshead.\n\n";
+    }
+    
+    if (($mm::auxconsistentorder =~ /free-aux-left/) && 
+	($mm::consistentorder =~ /free/) && ($mm::adp =~ /post/)) {
+
+	print MYLANGUAGE ";;; The following type addendum statement resricts the head-initial\n";
+	print MYLANGUAGE ";;; head-complement rule from taking adpositions as its head.\n\n";
+
+	print MYLANGUAGE "head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo ].\n\n";
+	    
+	print MYLANGUAGE ";;; The following type addendum statement resricts the head-final\n";
+	print MYLANGUAGE ";;; head-complement rule from taking auxiliaries as its head.\n\n";
+
+	print MYLANGUAGE "comp-head-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].\n\n";
+
+    }
+
+    if (($mm::auxconsistentorder =~ /free-aux-right/) && 
+	($mm::consistentorder =~ /free/) && ($mm::adp =~ /pre/)) {
+
+	print MYLANGUAGE ";;; The following type addendum statement resricts the head-final\n";
+	print MYLANGUAGE ";;; head-complement rule from taking adpositions as its head.\n\n";
+
+	print MYLANGUAGE "comp-head-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo ].\n\n";
+	    
+	print MYLANGUAGE ";;; The following type addendum statement resricts the head-initial\n";
+	print MYLANGUAGE ";;; head-complement rule from taking auxiliaries as its head.\n\n";
+
+	print MYLANGUAGE "head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].\n\n";
+
+    }
+    
+
+    if (($mm::consistentorder =~ /ov-prep/) && ($mm::auxconsistentorder =~ /easy/)) {
+	
+	print MYLANGUAGE ";;; The following type addendum statment restricts the head-final\n";
+	print MYLANGUAGE ";;; head-complement rule from taking adpositions as its head.\n\n";
 	print MYLANGUAGE "comp-head-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo ].\n\n";
 	
 	print MYLANGUAGE "head-comp-phrase := basic-head-1st-comp-phrase & head-initial &\n";
@@ -597,10 +915,10 @@ sub print_word_order_tdl
 	
     }
     
-    if ($mm::consistentorder =~ /vo-postp/) {
+    if (($mm::consistentorder =~ /vo-postp/) && ($mm::auxconsistentorder =~ /easy/)) {
 	
-	print MYLANGUAGE "\;\;\; The following type addendum statment restricts the head-initial\n";
-	print MYLANGUAGE "\;\;\; head-complement rule from taking adpositions as itshead.\n\n";
+	print MYLANGUAGE ";;; The following type addendum statment restricts the head-initial\n";
+	print MYLANGUAGE ";;; head-complement rule from taking adpositions as itshead.\n\n";
 	print MYLANGUAGE "head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo ].\n\n";
 	
 	print MYLANGUAGE "comp-head-phrase := basic-head-1st-comp-phrase & head-initial &\n";
@@ -608,28 +926,51 @@ sub print_word_order_tdl
 	
     }
 
-    if ($mm::consistentorder =~ /free/) {
+    if (($mm::consistentorder =~ /free/) && ($mm::auxconsistentorder =~ /easy/)) {
 
-	if ($adp =~ /pre/) {
+	if ($mm::adp =~ /pre/) {
 	    
-	    print MYLANGUAGE "\;\;\; The following type addendum statment restricts the head-final\n";
-	    print MYLANGUAGE "\;\;\; head-complement rule from taking adpositions as itshead.\n\n";
+	    print MYLANGUAGE ";;; The following type addendum statment restricts the head-final\n";
+	    print MYLANGUAGE ";;; head-complement rule from taking adpositions as itshead.\n\n";
 	    print MYLANGUAGE "comp-head-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo ].\n\n";
 	    
 	} else {
 	    
-	    print MYLANGUAGE "\;\;\; The following type addendum statment restricts the head-initial\n";
-	    print MYLANGUAGE "\;\;\; head-complement rule from taking adpositions as itshead.\n\n";
+	    print MYLANGUAGE ";;; The following type addendum statment restricts the head-initial\n";
+	    print MYLANGUAGE ";;; head-complement rule from taking adpositions as itshead.\n\n";
 	    print MYLANGUAGE "head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo ].\n\n";
 	    
 	}
     }
 
+    if (($mm::consistentorder =~ /easy/) && ($mm::auxconsistentorder =~ /ov-auxv/)) {
+
+	print MYLANGUAGE ";;; The following type addendum statment restricts the head-final\n";
+	print MYLANGUAGE ";;; head-complement rule from taking adpositions as its head.\n\n";
+	print MYLANGUAGE "comp-head-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].\n\n";
+	
+	print MYLANGUAGE "head-comp-phrase := basic-head-1st-comp-phrase & head-initial &\n";
+	print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ]].\n\n";
+
+    }
+
+    if (($mm::consistentorder =~ /easy/) && ($mm::auxconsistentorder =~ /vo-vaux/)) {
+
+	print MYLANGUAGE ";;; The following type addendum statment restricts the head-initial\n";
+	print MYLANGUAGE ";;; head-complement rule from taking adpositions as its head.\n\n";
+	print MYLANGUAGE "head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].\n\n";
+	
+	print MYLANGUAGE "comp-head-phrase := basic-head-1st-comp-phrase & head-initial &\n";
+	print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ]].\n\n";
+
+    }
+
+
 #Now the rules for NPs: spec-head or head-spec, plus also the
 #opt-det rule.
     
-    print MYLANGUAGE "\;\;\; Rules for building NPs.  Note that the Matrix uses SPR for\n";
-    print MYLANGUAGE "\;\;\; the specifier of nouns and SUBJ for the subject (specifier) of verbs.\n\n";
+    print MYLANGUAGE ";;; Rules for building NPs.  Note that the Matrix uses SPR for\n";
+    print MYLANGUAGE ";;; the specifier of nouns and SUBJ for the subject (specifier) of verbs.\n\n";
     
     if ($mm::hasdets =~ /t/) {
 	if ($mm::noundetorder =~ /SpecHead/) {
@@ -643,8 +984,8 @@ sub print_word_order_tdl
 	}
     }
 
-    print MYLANGUAGE "\;\;\; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\n";
-    print MYLANGUAGE "\;\;\; introduced to match the semantic effect of bare NPs in your language.\n\n";
+    print MYLANGUAGE ";;; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\n";
+    print MYLANGUAGE ";;; introduced to match the semantic effect of bare NPs in your language.\n\n";
     
     print MYLANGUAGE "bare-np-phrase := basic-bare-np-phrase &\n";
     print MYLANGUAGE "   [ C-CONT.RELS <! [ PRED \"unspec_q_rel\" ] !> ].\n\n";
@@ -676,29 +1017,23 @@ sub print_lex_rule_types_tdl
 
     if (($mm::neg =~ /adv/) && ($mm::negadv =~ /sel-adv/)) {
 
-	print MYLANGUAGE "\;\;\; This lexical rule adds a selected negative\n";
-	print MYLANGUAGE "\;\;\; adverb to the beginning of the COMPS list.\n";
+	print MYLANGUAGE ";;; This lexical rule adds a selected negative\n";
+	print MYLANGUAGE ";;; adverb to the beginning of the COMPS list.\n";
 
     #Decide first how many instances we need, and whether we're talking
     #spelling-changing or not, so we can inherit from the appropriate
     #supertypes.
 
-	if (($mm::neg eq "adv") || ($mm::multineg =~ /comp/)) {
-	    $mm::advalone = "always";
-	    print MYLANGUAGE "\;\;\; This type is instantiated in lrules.tdl\n\n";
-	} elsif ($mm::multineg =~ /bothopt|advobl/) {
-	    $mm::advalone = "sometimes";
-	    print MYLANGUAGE "\;\;\; This type has subtypes instantiated by instances in\n";
-	    print MYLANGUAGE "\;\;\; both irules.tdl and lrules.tdl\n\n";
-	} elsif ($mm::multineg =~ /bothobl|inflobl/) {
-	    $mm::advalone = "never"; 
-	    print MYLANGUAGE "\;\;\; This type is instantiated in irules.tdl\n\n";
-	} else {
-	    return_error (500, "Internal Server Error", "There's something wrong with adverbial negation.  Please contact the developers.");
+	if ($mm::advalone =~ /always/ ) {
+	    print MYLANGUAGE ";;; This type is instantiated in lrules.tdl\n\n";
+	} elsif ($mm::advalone =~ /sometimes/) {
+	    print MYLANGUAGE ";;; This type has subtypes instantiated by instances in\n";
+	    print MYLANGUAGE ";;; both irules.tdl and lrules.tdl\n\n";
+	} elsif ($mm::advalone =~ /never/ ) { 
+	    print MYLANGUAGE ";;; This type is instantiated in irules.tdl\n\n";
 	}
 
 	print MYLANGUAGE "neg-add-lex-rule := val-change-only-lex-rule &\n";
-	print MYLANGUAGE "                    no-ccont-lex-rule &\n";
 
 	if ($mm::advalone =~ /always/) {
 	    print MYLANGUAGE "                    constant-lex-rule &\n";
@@ -706,14 +1041,14 @@ sub print_lex_rule_types_tdl
 	    print MYLANGUAGE "                    inflecting-lex-rule &\n";
 	}
 
-        print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ \#subj\n";
-	print MYLANGUAGE "                            SPR \#spr\n";
-	print MYLANGUAGE "                            SPEC \#spec\n";
-	print MYLANGUAGE "                            COMPS < neg-adv-lex . \#comps > ]\n";
-	print MYLANGUAGE "     DTR lex-item & [ LOCAL.CAT [ VAL [ SUBJ \#subj\n";
-	print MYLANGUAGE "                                        SPR \#spr\n";
-	print MYLANGUAGE "                                        SPEC \#spec\n";
-	print MYLANGUAGE "                                        COMPS \#comps ]\n";
+        print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ \#subj,\n";
+	print MYLANGUAGE "                            SPR \#spr,\n";
+	print MYLANGUAGE "                            SPEC \#spec,\n";
+	print MYLANGUAGE "                            COMPS < neg-adv-lex . \#comps > ],\n";
+	print MYLANGUAGE "     DTR lex-item & [ LOCAL.CAT [ VAL [ SUBJ \#subj,\n";
+	print MYLANGUAGE "                                        SPR \#spr,\n";
+	print MYLANGUAGE "                                        SPEC \#spec,\n";
+	print MYLANGUAGE "                                        COMPS \#comps ],\n";
 	print MYLANGUAGE "                                  HEAD verb";
 
 	#_FIX_ME_: In theory, one could have a langauge where one type of verb takes
@@ -745,9 +1080,9 @@ sub print_lex_rule_types_tdl
     if (($mm::neg =~ /infl/) && ($mm::multineg ne "bothobl")
 	&& ($mm::multineg ne "advobl")) {
 
-	print MYLANGUAGE "\;\;\; This lexical rule adds the neg_r_rel to the verb's\n";
-	print MYLANGUAGE "\;\;\; RELS list.  It is instantiated by a spelling-changing\n";
-	print MYLANGUAGE "\;\;\; rule as specified in irules.tdl.\n\n";
+	print MYLANGUAGE ";;; This lexical rule adds the neg_r_rel to the verb's\n";
+	print MYLANGUAGE ";;; RELS list.  It is instantiated by a spelling-changing\n";
+	print MYLANGUAGE ";;; rule as specified in irules.tdl.\n\n";
 
 	print MYLANGUAGE "neg-infl-lex-rule := cont-change-only-lex-rule &\n";
 	print MYLANGUAGE "                     inflecting-lex-rule &\n";
@@ -793,20 +1128,8 @@ sub print_lex_types_tdl
 
 #Lexical types for nouns
 
-    print MYLANGUAGE "\;\;\; Nouns\n\n";
+    print MYLANGUAGE ";;; Nouns\n\n";
     
-    $mm::singlentype = 1;
-
-    if ($mm::noun1spr) {
-
-	if ($mm::noun2spr && ($mm::noun1spr ne $mm::noun2spr)) {
-	    $mm::singlentype = 0;
-	}
-    } else {
-	
-	return_error (500, "Internal Server Error", "Something's wrong with the noun entries.  Please contact developers.");
-    }
-
 # Playing fast and loose with the meaning of OPT on SPR.  Using
 # OPT - to mean obligatory (as usual), OPT + to mean impossible (that's
 # weird), and leaving OPT unspecified for truly optional.  Hoping
@@ -859,55 +1182,62 @@ sub print_lex_types_tdl
     }
     
 #Lexical types for verbs
+#I'm adding the constraint to associate XARG with the
+#first ARG-ST element here (so raising auxiliaries work),
+#but perhaps this belongs in matrix.tdl?  Or maybe this
+#is another module/parameter (like, the external argument
+#might not be the first one?
 
-    print MYLANGUAGE "\;\;\; Verbs\n\n";
-
-    my($singlevtype) = 1;
-    
-    if ($mm::iverbsubj) {
-	
-	if ($mm::tverbsubj && ($mm::iverbsubj ne $mm::tverbsubj)) {
-	    $singlevtype = 0;
-	}
-    } else {
-	
-	return_error (500, "Internal Server Error", "Something's wrong with the intransitive verb. Please contact developers.");
-    }
+    print MYLANGUAGE ";;; Verbs\n\n";
     
     print MYLANGUAGE "verb-lex := basic-verb-lex &\n";
-    print MYLANGUAGE "  [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,\n";
-    print MYLANGUAGE " 			   SPEC < >,\n";
-    print MYLANGUAGE "			   SUBJ < \#subj > ],\n";
+    print MYLANGUAGE "  [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,\n";
+    print MYLANGUAGE " 			             SPEC < >,\n";
+    print MYLANGUAGE "			             SUBJ < \#subj > ]";
+
+    if ($mm::hasaux) {
+	print MYLANGUAGE ",\n                         HEAD.AUX - ],\n";
+    } else {
+	print MYLANGUAGE "],\n";
+    }
+
+    print MYLANGUAGE "                   CONT.HOOK.XARG \#xarg ],\n";
     print MYLANGUAGE "    ARG-ST < \#subj &\n";
     
-    if ($singlevtype) {
+    if ($mm::singlevtype) {
 	
 	if ($mm::iverbsubj =~ /np/) {
 	    
-	    print MYLANGUAGE "             [ LOCAL.CAT [ HEAD noun,\n";
+	    print MYLANGUAGE "             [ LOCAL [ CAT [ HEAD noun,\n";
 	    
 	} else {
 	    
-	    print MYLANGUAGE "             [ LOCAL.CAT [ HEAD adp,\n";	
+	    print MYLANGUAGE "             [ LOCAL [ CAT [ HEAD adp,\n";	
 	    
 	}
 	
-	print MYLANGUAGE "                           VAL [ SPR < >,\n";
-	print MYLANGUAGE "                                 COMPS < > ]]], ... > ].\n\n";
+	print MYLANGUAGE "                             VAL [ SPR < >,\n";
+	print MYLANGUAGE "                                   COMPS < > ]],\n";
+	print MYLANGUAGE "                       CONT.INDEX \#xarg ]], ... > ].\n\n";
 	
     } else {
 	
-	print MYLANGUAGE "                 [ LOCAL.CAT.VAL [ SPR < >,\n";
-	print MYLANGUAGE "                                  COMPS < > ]], ... > ].\n\n";
+	print MYLANGUAGE "                 [ LOCAL [ CAT.VAL [ SPR < >,\n";
+	print MYLANGUAGE "                                     COMPS < > ],\n";
+        print MYLANGUAGE "                           CONT.INDEX \#xarg ]], ... > ].\n\n";
     }
     
-    if ($mm::negadv =~ /ind-adv/) {
+    if ($mm::hclight =~ /t/) {
 	
-	print MYLANGUAGE "\;\;\; In order to force V rather than VP attachment of adverbs,\n";
-	print MYLANGUAGE "\;\;\; we make use of a feature LIGHT.  Phrases are generally [LIGHT -]\n";
-	print MYLANGUAGE "\;\;\; with the exception of head-complement phrases, which take their\n";
-	print MYLANGUAGE "\;\;\; value for LIGHT from the head's HC-LIGHT feature.  To make this\n";
-	print MYLANGUAGE "\;\;\; work for us here, constraint HC-LIGHT on verbs to be -.\n\n";
+
+	print MYLANGUAGE ";;; If there are aspects of the syntax which pick out\n";
+	print MYLANGUAGE ";;; lexical Vs (transitive or intransitive) such as V-attachment\n";
+	print MYLANGUAGE ";;; of adverbs or argument composition auxiliaries which take V\n";
+	print MYLANGUAGE ";;; complements, we need to distinguish (intranstive) V and VP.\n";
+	print MYLANGUAGE ";;; To do so, we make use of a feature LIGHT.  Phrases are generally [LIGHT -]\n";
+	print MYLANGUAGE ";;; with the exception of head-complement phrases, which take their\n";
+	print MYLANGUAGE ";;; value for LIGHT from the head's HC-LIGHT feature.  To make this\n";
+	print MYLANGUAGE ";;; work for us here, constraint HC-LIGHT on verbs to be -.\n\n";
 	
 	print MYLANGUAGE "verb-lex :+ [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].\n\n";
 
@@ -916,7 +1246,7 @@ sub print_lex_types_tdl
     print MYLANGUAGE "intransitive-verb-lex := verb-lex & intransitive-lex-item &\n";
     print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT.VAL.COMPS < >";
     
-    if ($singlevtype) {
+    if ($mm::singlevtype) {
 	
 	print MYLANGUAGE " ].\n\n";
 	
@@ -937,7 +1267,7 @@ sub print_lex_types_tdl
     print MYLANGUAGE "transitive-verb-lex := verb-lex & transitive-lex-item &\n";
     print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT.VAL.COMPS < \#comps >,\n";
     
-    if ($singlevtype) {
+    if ($mm::singlevtype) {
 	
 	print MYLANGUAGE "    ARG-ST < [ ],\n";
 	
@@ -952,29 +1282,51 @@ sub print_lex_types_tdl
     }
 
     print MYLANGUAGE "              \#comps &\n";
+    print MYLANGUAGE "              [ LOCAL.CAT [ VAL [ SPR < >,\n";
+    print MYLANGUAGE "                                  COMPS < > ],\n";
     
     if ($mm::tverbobj =~ /np/) {
-	print MYLANGUAGE "              [ LOCAL.CAT.HEAD noun ] > ].\n\n";
+	print MYLANGUAGE "                            HEAD noun ]] > ].\n\n";
     } else {
-	print MYLANGUAGE "              [ LOCAL.CAT.HEAD adp ] > ].\n\n";
+	print MYLANGUAGE "                            HEAD adp ]] > ].\n\n";
     }
     
+#If there's auxiliaries, define finite and non-finite verb types,
+#cross-classify with trans and intrans.
+
+    if ($mm::hasaux == 1) {
+	print MYLANGUAGE ";;; Types for finite and non-finite verbs.  These will\n";
+	print MYLANGUAGE ";;; most likely need to be replaced with lexical rules\n";
+	print MYLANGUAGE ";;; deriving the finite and non-finite forms from verb stems.\n\n";
+
+	print MYLANGUAGE "finite-verb-lex := verb-lex &\n";
+	print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT.HEAD.FORM fin ].\n\n";
+
+	print MYLANGUAGE "non-finite-verb-lex := verb-lex &\n";
+	print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT.HEAD.FORM inf ].\n\n";
+
+	print MYLANGUAGE "finite-trans-verb-lex := finite-verb-lex & transitive-verb-lex.\n";
+	print MYLANGUAGE "non-finite-trans-verb-lex := non-finite-verb-lex & transitive-verb-lex.\n";
+	print MYLANGUAGE "finite-intrans-verb-lex := finite-verb-lex & intransitive-verb-lex.\n";
+	print MYLANGUAGE "non-finite-intrans-verb-lex := non-finite-verb-lex & intransitive-verb-lex.\n";
+
+    }
+
 #Lexical types for adpositions (if present):
     
     if ($mm::subjadp || $mm::objadp) {
 	
-	print MYLANGUAGE "\;\;\; Case-marking adpositions\n\n";
-	print MYLANGUAGE "case-marker-p-lex := basic-one-arg & no-hcons-lex-item &\n";
-	print MYLANGUAGE "   [ SYNSEM.LOCAL [ CAT [ HEAD adp,\n";
-	print MYLANGUAGE "                          VAL [ SPR < >,\n";
-	print MYLANGUAGE "                                SUBJ < >,\n";
-	print MYLANGUAGE "                                COMPS < \#comps >,\n";
-	print MYLANGUAGE "                                SPEC < > ]],\n";
-	print MYLANGUAGE "                    CONT [ HOOK \#hook,\n";
-	print MYLANGUAGE "                           RELS <! !> ]],\n";
-	print MYLANGUAGE "     ARG-ST < \#comps & [ LOCAL [ CAT [ HEAD noun,\n";
-	print MYLANGUAGE "                                        VAL.SPR < > ],\n";
-	print MYLANGUAGE "                                  CONT.HOOK \#hook ]] > ].\n\n";
+	print MYLANGUAGE ";;; Case-marking adpositions\n";
+	print MYLANGUAGE ";;; Case marking adpositions are constrained not to\n";
+	print MYLANGUAGE ";;; be modifiers.\n\n";
+	print MYLANGUAGE "case-marker-p-lex := basic-one-arg & raise-sem-lex-item &\n";
+	print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT [ HEAD adp & [ MOD < > ],\n";
+	print MYLANGUAGE "                        VAL [ SPR < >,\n";
+	print MYLANGUAGE "                              SUBJ < >,\n";
+	print MYLANGUAGE "                              COMPS < \#comps >,\n";
+	print MYLANGUAGE "                              SPEC < > ]],\n";
+	print MYLANGUAGE "     ARG-ST < \#comps & [ LOCAL.CAT [ HEAD noun,\n";
+	print MYLANGUAGE "                                      VAL.SPR < > ]] > ].\n\n";
 	
     }
     
@@ -982,8 +1334,8 @@ sub print_lex_types_tdl
     
     if ($mm::hasdets =~ /t/) {
 	
-	print MYLANGUAGE "\;\;\; Determiners\n";
-	print MYLANGUAGE "\;\;\; SPEC is non-empty, and already specified by basic-determiner-lex.\n\n";
+	print MYLANGUAGE ";;; Determiners\n";
+	print MYLANGUAGE ";;; SPEC is non-empty, and already specified by basic-determiner-lex.\n\n";
 	
 	print MYLANGUAGE "determiner-lex := basic-determiner-lex & basic-zero-arg &\n";
 	print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,\n";
@@ -992,14 +1344,190 @@ sub print_lex_types_tdl
 	
     }
 
+#Lexical type for auxiliaries.  There's probably more we can give them
+#here, if we ask more questions (are there auxiliaries with both independent
+#preds and those which just contribute tense/aspect information?)...
+
+    if ($mm::hasaux) {
+
+	print MYLANGUAGE ";;; Auxiliaries\n\n";
+
+	if ($mm::auxcomp =~ /VP/) {
+
+	    print MYLANGUAGE "subj-raise-aux := trans-first-arg-raising-lex-item &\n";
+	    print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < \#subj >,\n";
+	    print MYLANGUAGE "                              COMPS < \#comps >,\n";
+	    print MYLANGUAGE "                              SPR < >,\n";
+	    print MYLANGUAGE "                              SPEC < > ],\n";
+	    print MYLANGUAGE "                        HEAD verb & [ AUX + ]],\n";
+	    print MYLANGUAGE "     ARG-ST < \#subj &\n";
+	    print MYLANGUAGE "              [ LOCAL.CAT [ VAL  [ SPR < >,\n";
+	    print MYLANGUAGE "                                   COMPS < > ],\n";
+	    print MYLANGUAGE "                            HEAD";
+
+	    if ($mm::auxsubj =~ /noun/) {
+
+		print MYLANGUAGE " noun ]],\n";
+
+	    } elsif ($mm::auxsubj =~ /adp/) {
+
+		print MYLANGUAGE " adp ]],\n";
+
+	    } else {
+
+		return_error (500, "Internal Server Error", "There's something wrong with the subject type for your auxiliary.  Please contact developers.");
+	    }
+
+	    print MYLANGUAGE "              \#comps &\n";
+	    print MYLANGUAGE "              [ LOCAL.CAT [ VAL [ SUBJ < [ ] >,\n";
+	    print MYLANGUAGE "                                  COMPS < > ],\n";
+	    print MYLANGUAGE "                            HEAD verb &\n";
+	    print MYLANGUAGE "                                 [ FORM inf ]]] > ].\n\n";
+
+	    if ($mm::auxsem =~ /pred/) {
+
+		print MYLANGUAGE "subj-raise-aux-with-pred := subj-raise-aux &\n";
+                print MYLANGUAGE "                            trans-first-arg-raising-lex-item-1.\n\n";
+
+	    } elsif ($mm::auxsem =~ /tma/) {
+
+		print MYLANGUAGE "; To keep the semantically empty ones from spinning on\n";
+		print MYLANGUAGE "; generation, require complement to be [AUX -].  The\n";
+		print MYLANGUAGE "; FORM feature might be enough in the starter grammars,\n";
+		print MYLANGUAGE "; but I don't want to rely on this.  Then again, [ AUX - ]\n";
+		print MYLANGUAGE "; might not be true.  Be sure to put in a comment.\n\n";
+
+		print MYLANGUAGE "subj-raise-aux-no-sem := subj-raise-aux &\n";
+		print MYLANGUAGE "                         trans-first-arg-raising-lex-item-2 &\n"; 
+		print MYLANGUAGE "   [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].\n\n";
+
+	    } else {
+
+		return_error (500, "Internal Server Error", "There's something wrong with the semantics of the auxiliary.  Please contact developers.");
+
+	    }
+
+	} elsif ($mm::auxcomp =~ /V/) {
+
+	    print MYLANGUAGE "; Somewhat surprisingly, this inherits from basic-two-arg, so that\n";
+	    print MYLANGUAGE "; the non-local features are amalgamated from subj, the lexical\n";
+	    print MYLANGUAGE "; verb complement, but not the other complements, if any.\n\n";
+	    
+	    print MYLANGUAGE "arg-comp-aux := basic-two-arg &\n";
+	    print MYLANGUAGE "  [ SYNSEM.LOCAL.CAT [ HEAD verb & [ AUX + ],\n";
+	    print MYLANGUAGE "                       VAL [ SUBJ < \#subj >,\n";
+	    print MYLANGUAGE "                             COMPS < \#comps . \#vcomps >,\n";
+	    print MYLANGUAGE "                             SPR < >,\n";
+	    print MYLANGUAGE "                             SPEC < > ]],\n";
+	    print MYLANGUAGE "    ARG-ST < \#subj &\n";
+	    print MYLANGUAGE "             [ LOCAL [ CAT [ VAL [ SPR < >,\n";
+	    print MYLANGUAGE "                                   COMPS < > ],\n";
+	    print MYLANGUAGE "                             HEAD";
+	    
+	    if ($mm::auxsubj =~ /NP/) {
+		
+		print MYLANGUAGE " noun ]],\n";
+		
+	    } elsif ($mm::auxsubj =~ /PP/) {
+		
+		print MYLANGUAGE " adp ]],\n";
+		
+	    } else {
+		
+		return_error (500, "Internal Server Error", "There's something wrong with the subject type for your auxiliary.  Please contact developers.");
+	    }
+
+	    print MYLANGUAGE "                       CONT.HOOK.INDEX \#xarg ]],\n";
+	    print MYLANGUAGE "             \#comps &\n";
+	    print MYLANGUAGE "             [ LIGHT +,\n";
+	    print MYLANGUAGE "               LOCAL [ CAT [ VAL [ SUBJ <[ ]>,\n";
+	    print MYLANGUAGE "                                   COMPS \#vcomps ],\n";
+	    print MYLANGUAGE "                             HEAD verb & [ FORM inf ]],\n";
+	    print MYLANGUAGE "                       CONT.HOOK.XARG \#xarg ]] > ].\n\n";
+
+	    if ($mm::auxsem =~ /pred/) {
+
+		print MYLANGUAGE "; Not inheriting from basic-verb-lex, so need to put in event-relation\n";
+		print MYLANGUAGE "; by hand here.\n\n";
+
+		print MYLANGUAGE "arg-comp-aux-with-pred := arg-comp-aux & hcons-lex-item &\n";
+		print MYLANGUAGE "   [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq &\n";
+		print MYLANGUAGE "                                    [ HARG \#harg,\n";
+		print MYLANGUAGE "                                      LARG \#larg ] !> ],\n";
+		print MYLANGUAGE "              LKEYS.KEYREL event-relation &\n";
+		print MYLANGUAGE "                           [ ARG1 \#harg ]],\n";
+		print MYLANGUAGE "     ARG-ST < [ ], \n";
+		print MYLANGUAGE "              [ LOCAL.CONT.HOOK [ XARG \#xarg,\n";
+		print MYLANGUAGE "              LTOP \#larg ]] > ].\n\n";
+		    
+	    } elsif ($mm::auxsem =~ /tma/) {
+
+		print MYLANGUAGE "; Note that raise-sem-lex-item assumes the first complement is\n";
+		print MYLANGUAGE "; where the HOOK comes from.  It's not clear to me how you'd tell\n";
+		print MYLANGUAGE "; that you had an argument composition auxiliary if it wasn't appearing\n";
+		print MYLANGUAGE "; adjacent to the verb.\n\n";
+		
+		print MYLANGUAGE "arg-comp-aux-no-sem := arg-comp-aux  & raise-sem-lex-item & \n";
+		print MYLANGUAGE "  [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].\n\n";
+		
+	    } else {
+
+		return_error (500, "Internal Server Error", "There's something wrong with the semantics of the auxiliary.  Please contact developers.");
+		
+	    }
+
+	} elsif ($mm::auxcomp =~ /S/) {
+
+	    print MYLANGUAGE "s-comp-aux := basic-one-arg & \n";
+	    print MYLANGUAGE "  [ SYNSEM.LOCAL.CAT [ HEAD verb & [ AUX + ],\n";
+	    print MYLANGUAGE "                       VAL [ SUBJ < >,\n";
+	    print MYLANGUAGE "                             COMPS < \#comps >,\n";
+	    print MYLANGUAGE "                             SPR < >,\n";
+	    print MYLANGUAGE "                             SPEC < > ]],\n";
+	    print MYLANGUAGE "    ARG-ST < \#comps &\n";
+	    print MYLANGUAGE "             [ LOCAL.CAT [ VAL [ SUBJ < >,\n";
+	    print MYLANGUAGE "                                 COMPS < > ],\n";
+	    print MYLANGUAGE "                           HEAD verb & [ FORM inf ]]] > ].\n\n";
+		       
+	    if ($mm::auxsem =~ /pred/) {
+	    
+		print MYLANGUAGE "; S comp aux, with pred\n\n";
+
+		print MYLANGUAGE "s-comp-aux-with-pred := s-comp-aux & hcons-lex-item &\n";
+		print MYLANGUAGE "   [ SYNSEM [ LOCAL.CONT.HCONS <! qeq &\n";
+		print MYLANGUAGE "                                  [ HARG \#harg,\n";
+		print MYLANGUAGE "                                    LARG \#larg ] !>,\n";
+		print MYLANGUAGE "              LKEYS.KEYREL event-relation &\n";
+		print MYLANGUAGE "                           [ ARG1 \#harg ]],\n";
+		print MYLANGUAGE "     ARG-ST < [ LOCAL.CONT.HOOK.LTOP \#larg ] > ].\n\n";
+
+	    } elsif ($mm::auxsem =~ /tma/) {
+
+		print MYLANGUAGE "; S comp aux, no sem\n\n";
+
+		print MYLANGUAGE "; Better say [ AUX - ] on complement here, or we'll spin\n";
+		print MYLANGUAGE "; on generation.\n\n";
+		
+		print MYLANGUAGE "s-comp-aux-no-sem := s-comp-aux & raise-sem-lex-item &\n";
+		print MYLANGUAGE "  [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ] > ].\n\n";
+		
+	    } else {
+
+		return_error (500, "Internal Server Error", "There's something wrong with the semantics of the auxiliary.  Please contact developers.");
+		
+	    }
+	}
+    }
+
+
 #Lexical type for negative adverb, if appropriate.  Note that $mm::neg will
 #match the string "adv" if it's just adverbs or if both adverbial and 
 #inflectional strategies are used. 
 
     if ($mm::neg =~ /adv/) {
 
-	print MYLANGUAGE "\;\;\; Adverbs\n\n";
-	print MYLANGUAGE "\;\;\; Negative adverb\n\n";
+	print MYLANGUAGE ";;; Adverbs\n\n";
+	print MYLANGUAGE ";;; Negative adverb\n\n";
 	
 	if ($mm::negadv =~ /ind-adv/) {
 
@@ -1008,14 +1536,6 @@ sub print_lex_types_tdl
 	    #Perhaps it would be cleaner to just store all 2x3 possibilities
 	    #for the tdl (pre/post head x V/VP/S modifier)?  Hard to maintain
 	    #that, though...
-
-	    if ($mm::negprepostmod =~ /pre/) {
-		$mm::posthead = "-";
-	    } elsif ($mm::negprepostmod =~ /post/) {
-		$mm::posthead = "+";
-	    } else {
-		return_error (500, "Internal Sever Error", "Something's wrong with the mod order for neg adv.  Please contact developers.");
-	    }
 
 	    if ($mm::posthead) {
 		print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT [ POSTHEAD $mm::posthead,\n";
@@ -1043,10 +1563,10 @@ sub print_lex_types_tdl
 
 	} elsif ($mm::negadv =~ /sel-adv/) {
 
-	    print MYLANGUAGE "\;\;\; Constrain the MOD value of this adverb to keep\n";
-	    print MYLANGUAGE "\;\;\; it from modifying the kind of verbs which can select it\n";
-	    print MYLANGUAGE "\;\;\; To keep spurious parses down, as a starting point, we have\n";
-	    print MYLANGUAGE "\;\;\; assumed that it only modifies verbs (e.g., non-finite verbs).\n\n";
+	    print MYLANGUAGE ";;; Constrain the MOD value of this adverb to keep\n";
+	    print MYLANGUAGE ";;; it from modifying the kind of verbs which can select it\n";
+	    print MYLANGUAGE ";;; To keep spurious parses down, as a starting point, we have\n";
+	    print MYLANGUAGE ";;; assumed that it only modifies verbs (e.g., non-finite verbs).\n\n";
 
 	    print MYLANGUAGE "neg-adv-lex := basic-scopal-adverb-lex &\n";
 	    print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,\n";
@@ -1087,23 +1607,38 @@ sub create_rules_tdl
 #Add to rules file if $mm::consistentorder is vo-postp or ov-prep
     
     open (RULESINST, ">>$mm::matrix/"."rules.tdl") || return_error (500,"Internal Server Error","Cannot open necessary output file: rules.tdl");
-    
-    if ($mm::consistentorder =~ /(vo)|(ov)/ ) {
+
+    if (($mm::auxconsistentorder =~ /(vo)|(ov)/) &&
+	($mm::consistentorder =~ /(vo)|(ov)/)) {
+
+	print RULESINST ";;; Additional head-complement rule for auxiliaries and adpositions.\n\n";
+
+    } elsif (($mm::auxconsistentorder =~ /easy/) &&
+	     ($mm::consistentorder =~ /(vo)|(ov)/)) {
+
+	print RULESINST ";;; Additional head-complement rule for adpositions.\n\n";
 	
-	print RULESINST "\;\;\; Additional head-complement rule for adpositions.\n";
+    } elsif ($mm::auxconsistentorder =~ /(vo)|(ov)/) {
+
+	print RULESINST ";;; Additional head-complement rule for auxiliaries.\n";
+ 
+    }
+
+    if (($mm::consistentorder =~ /vo/) ||
+	($mm::auxconsistentorder =~ /vo/)) {
 	
-	if ($mm::consistentorder =~ /vo/) {
+	print RULESINST "comp-head := comp-head-phrase.\n\n";
 	    
-	    print RULESINST "comp-head := comp-head-phrase.\n\n";
+    } 
+
+    if (($mm::consistentorder =~ /ov/) ||
+	($mm::auxconsistentorder =~ /ov/)) {
 	    
-	} else {
+	print RULESINST "head-comp := head-comp-phrase.\n\n";
 	    
-	    print RULESINST "head-comp := head-comp-phrase.\n\n";
-	    
-	}
     }
     
-    print RULESINST "\;\;\; Rule(s) for building NPs.\n\n";
+    print RULESINST ";;; Rule(s) for building NPs.\n\n";
 
     if ($mm::noundetorder =~ /SpecHead/) {
 	
@@ -1117,6 +1652,25 @@ sub create_rules_tdl
     
     print RULESINST "bare-np := bare-np-phrase.\n\n";
     
+#Add head-modifier rules to rules file if necessary.  Just
+#create them all at this point, even though we're only using
+#the scopal rules for negation and probably only one of the two
+#at that.
+
+    if ($mm::modrules =~ /t/) {
+
+	print RULESINST ";;; Rule instances for head-modifier structures. Corresponding types\n";
+	print RULESINST ";;; are defined in matrix.tdl.  The matrix customization script did\n";
+	print RULESINST ";;; not need to add any further constraints, so no corresponding tyes \n";
+	print RULESINST ";;; appear in $mm::my_language\n\n";
+	    
+	print RULESINST "head-adj-int := head-adj-int-phrase.\n";
+	print RULESINST "adj-head-int := adj-head-int-phrase.\n";
+	print RULESINST "head-adj-scop := head-adj-scop-phrase.\n";
+	print RULESINST "adj-head-scop := adj-head-scop-phrase.\n";
+
+    }
+
     close (RULESINST);
 
 }
@@ -1256,28 +1810,87 @@ sub create_lexicon_tdl
 	
     }
     
-    print LEXICON "\;\;\; Verbs\n\n";
+    print LEXICON ";;; Verbs\n\n";
     
     if ($mm::iverb) {
 	
-	print LEXICON "$mm::iverb := intransitive-verb-lex &\n";
-	print LEXICON "   [ STEM < \"$mm::iverb\" >,\n";
-	print LEXICON "     SYNSEM.LKEYS.KEYREL.PRED \"$mm::iverbpred\" ].\n\n";
+	if ($mm::hasaux) {
+
+	    print LEXICON "$mm::iverb := finite-intrans-verb-lex &\n";
+	    print LEXICON "   [ STEM < \"$mm::iverb\">,\n";
+	    print LEXICON "     SYNSEM.LKEYS.KEYREL.PRED \"$mm::iverbpred\" ].\n\n";
+	    
+	    if ($mm::iverbnf) {
+		print LEXICON "$mm::iverbnf := non-finite-intrans-verb-lex &\n";
+		print LEXICON "   [ STEM < \"$mm::iverbnf\" >,\n";
+		print LEXICON "     SYNSEM.LKEYS.KEYREL.PRED \"$mm::iverbpred\" ].\n\n";
+		
+	    } else {
+		
+		print LEXICON "$mm::iverb","2 := non-finite-intrans-verb-lex &\n";
+		print LEXICON "   [ STEM < \"$mm::iverb\">,\n";
+		print LEXICON "     SYNSEM.LKEYS.KEYREL.PRED \"$mm::iverbpred\" ].\n\n";
+
+	    } 
+
+	} else {
+
+	    print LEXICON "$mm::iverb := intransitive-verb-lex &\n";
+	    print LEXICON "   [ STEM < \"$mm::iverb\" >,\n";
+	    print LEXICON "     SYNSEM.LKEYS.KEYREL.PRED \"$mm::iverbpred\" ].\n\n";
 	
+	}
     }
-    
+
     if ($mm::tverb) {
 	
-	print LEXICON "$mm::tverb := transitive-verb-lex &\n";
-	print LEXICON "   [ STEM < \"$mm::tverb\" >,\n";
-	print LEXICON "     SYNSEM.LKEYS.KEYREL.PRED \"$mm::tverbpred\" ].\n\n";
+	if ($mm::hasaux) {
+
+	    print LEXICON "$mm::tverb := finite-trans-verb-lex &\n";
+	    print LEXICON "   [ STEM < \"$mm::tverb\">,\n";
+	    print LEXICON "     SYNSEM.LKEYS.KEYREL.PRED \"$mm::tverbpred\" ].\n\n";
+
+	    if ($mm::tverbnf) {
+		print LEXICON "$mm::tverbnf := non-finite-trans-verb-lex &\n";
+		print LEXICON "   [ STEM < \"$mm::tverbnf\" >,\n";
+		print LEXICON "     SYNSEM.LKEYS.KEYREL.PRED \"$mm::tverbpred\" ].\n\n";
+
+	    } else {
+
+		print LEXICON "$mm::tverb","2 := non-finite-trans-verb-lex &\n";
+		print LEXICON "   [ STEM < \"$mm::tverb\">,\n";
+		print LEXICON "     SYNSEM.LKEYS.KEYREL.PRED \"$mm::tverbpred\" ].\n\n";
+
+	    } 
+
+	} else {
+
+	    print LEXICON "$mm::tverb := transitive-verb-lex &\n";
+	    print LEXICON "   [ STEM < \"$mm::tverb\" >,\n";
+	    print LEXICON "     SYNSEM.LKEYS.KEYREL.PRED \"$mm::tverbpred\" ].\n\n";
+	
+	}
+    }    
+
+    if ($mm::hasaux) {
+
+	print LEXICON ";;; Auxiliaries\n\n";
+
+	print LEXICON "$mm::auxform := $mm::auxtypename &\n";
+	print LEXICON "   [ STEM < \"$mm::auxform\" >";
+
+	if ($mm::auxsem =~ /pred/) {
+	    print LEXICON ",\n     SYNSEM.LKEYS.KEYREL.PRED \"$mm::auxpred\" ].\n\n";
+	} else {
+	    print LEXICON "].\n\n";
+	}
 	
     }
-    
-    print LEXICON "\;\;\; Other\n\n";
+
+    print LEXICON ";;; Other\n\n";
 
     if ($mm::subjadpform || $mm::objadpform) {
-	print LEXICON "\;\;\; Case-marking adpositions\n\n";
+	print LEXICON ";;; Case-marking adpositions\n\n";
     }
     
     if ($mm::subjadpform) {
@@ -1296,7 +1909,7 @@ sub create_lexicon_tdl
     
     if ($mm::det1) {
 
-	print LEXICON "\;\;\; Determiners\n\n";
+	print LEXICON ";;; Determiners\n\n";
 	print LEXICON "$mm::det1 := determiner-lex &\n";
 	print LEXICON "   [ STEM < \"$mm::det1\" >,\n";
 	print LEXICON "     SYNSEM.LKEYS.KEYREL.PRED \"$mm::det1pred\" ].\n\n";
@@ -1362,29 +1975,39 @@ sub print_html
 
 #Print content of html output file.
     print <<End_of_Html;
-    
-    <h3>Customized Matrix</h3>
-    <p>A customized copy of the Matrix has been created for you.  Please download it <a href="http://www.delph-in.net/matrix/tmp/$mm::download">here</a>
-    <p>This file will be removed from the system in 15 minutes.  If you wish to recreate it, please fill out <a href="http://www.delph-in.net/matrix/modules.html">the form</a> again.
-    <h3>Instructions</h3>
-    <p>To unpack the archive (if your browswer hasn't already done it for you), first try saving it on your desktop and double clicking it.  If that doesn't work, and you're using Linux of Mac OS X, from a command prompt, type <tt>"tar xzf matrix.$mm::user.tar.gz"</tt>.
+  
+<h3>Customized Matrix</h3>
 
-<p>Once you've unpacked the archive you should find a directory called <tt>matrix.$mm::user</tt>. Inside the directory are several files.  Here is an explanation of some:
+<p>A customized copy of the Matrix has been created for you.  
+Please download it <a href="http://www.delph-in.net/matrix/tmp/$mm::download">here</a>
 
-			      <ul>
-			      <li><tt>matrix.tdl</tt>: Language independent type and constraint definitions.  You should not need to modify this file.
-			      <li><tt>$mm::my_language</tt>: Types and constraints specific to your language.  This is where you will add additional constraints.
-			      <li><tt>lexicon.tdl</tt>: Lexical entries for your language.
-			      <li><tt>rules.tdl</tt>: Phrase structure rule instance entries for your language.
-			      <li><tt>irules.tdl</tt>: Spelling-changing lexical rule instance entries for your language.
-			      <li><tt>lrules.tdl</tt>: Non-spelling-changing lexical rule instance entries for your language.
-			      <li><tt>lkb/script</tt>: The script file for loading your grammar into the LKB.
-			      </ul>
-			      
-			      <hr>
-			      <a href="http://www.delph-in.net/matrix/modules.html">Back to form</a><br>
-			      <a href="http://www.delph-in.net/matrix/">Back to Matrix main page</a><br>
-			      </body></html>
-			      
+<p>This file will be removed from the system in 15 minutes.  If you wish to recreate it, 
+please fill out <a href="http://www.delph-in.net/matrix/modules.html">the form</a> again.
+
+<h3>Instructions</h3>
+
+<p>To unpack the archive, if your browswer hasn't already done it for you, first try saving it 
+on your desktop and double clicking it.  If that doesn't work, and you're using Linux or 
+Mac OS X, from a command prompt, type <tt>&quot;tar xzf matrix.$mm::user.tar.gz&quot;</tt>.
+
+<p>Once you've unpacked the archive you should find a directory called <tt>matrix.$mm::user</tt>. 
+Inside the directory are several files.  Here is an explanation of some:
+
+<ul>
+<li><tt>matrix.tdl</tt>: Language independent type and constraint definitions.  You should not need to modify this file.
+<li><tt>$mm::my_language</tt>: Types and constraints specific to your language.  This is where you will add additional constraints.
+<li><tt>lexicon.tdl</tt>: Lexical entries for your language.
+<li><tt>rules.tdl</tt>: Phrase structure rule instance entries for your language.
+<li><tt>irules.tdl</tt>: Spelling-changing lexical rule instance entries for your language.
+<li><tt>lrules.tdl</tt>: Non-spelling-changing lexical rule instance entries for your language.
+<li><tt>lkb/script</tt>: The script file for loading your grammar into the LKB.
+</ul>
+
+<hr>
+<a href="http://www.delph-in.net/matrix/modules.html">Back to form</a><br>
+<a href="http://www.delph-in.net/matrix/">Back to Matrix main page</a><br>
+</body></html>
+
 End_of_Html
-			  }
+}
+
