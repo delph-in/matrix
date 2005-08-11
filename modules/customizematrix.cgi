@@ -269,6 +269,10 @@ sub parse_form_data
     $mm::noundetorder = $FORM_DATA{"NounDetOrder"};
     $mm::objadp = $FORM_DATA{"objAdp"};
     $mm::objadpform = $FORM_DATA{"objAdpForm"};
+    $mm::ques = $FORM_DATA{"ques"};
+    $mm::qinvverb = $FORM_DATA{"qinvverb"};
+    $mm::qpartposthead = $FORM_DATA{"qpartposthead"};
+    $mm::qpartform = $FORM_DATA{"qpartform"};
     $mm::sentence1 = $FORM_DATA{"sentence1"};
     $mm::sentence2 = $FORM_DATA{"sentence2"};
     $mm::subjadp = $FORM_DATA{"subjAdp"};
@@ -356,14 +360,16 @@ sub parse_form_data
 
 #What's going on with the distribution of multiple negation strategies?
 
-    if (($mm::neg eq "adv") || ($mm::multineg =~ /comp/)) {
-	$mm::advalone = "always";
-    } elsif ($mm::multineg =~ /bothopt|advobl/) {
-	$mm::advalone = "sometimes";
-    } elsif ($mm::multineg =~ /bothobl|inflobl/) {
-	$mm::advalone = "never"; 
-    } else {
-	return_error (500, "Internal Server Error", "There's something wrong with adverbial negation.  Please contact the developers.");
+    if (($mm::neq eq "adv") || ($mm::multineg)) {
+	if (($mm::neg eq "adv") || ($mm::multineg =~ /comp/)) {
+	    $mm::advalone = "always";
+	} elsif ($mm::multineg =~ /bothopt|advobl/) {
+	    $mm::advalone = "sometimes";
+	} elsif ($mm::multineg =~ /bothobl|inflobl/) {
+	    $mm::advalone = "never"; 
+	} else {
+	    return_error (500, "Internal Server Error", "There's something wrong with adverbial negation.  Please contact the developers.");
+	}
     }
 
 #For the independent adverb negation strategy, are the adverbs
@@ -385,11 +391,13 @@ sub parse_form_data
 
 
 #Do we need a feature AUX?  So far, could be using it in either of the
-#negation strategies.  Note that if the value for either is "main-aux"
+#negation strategies or one of the question strategies.  
+#Note that if the value for either is "main-aux"
 #we don't yet need a main verb/auxiliary distinction.  (Though one might
 #expect to find one elsewhere, since the terms are used.)
 
-    if (($mm::neginfltype eq "aux") || ($mm::negseladv eq "aux")) {
+    if (($mm::neginfltype eq "aux") || ($mm::negseladv eq "aux")
+	|| ($mm::qinvverb eq "aux")) {
 	$mm::hasaux = 1;
     } else {
 	$mm::hasaux = 0;
@@ -546,7 +554,7 @@ sub check_for_form_errors {
 #Check that if anything requiring and auxiliary is selected, an auxiliary is specified.
 #This one does negation so far.  Revisit when I add question formation.
  
-    if ($mm::neginfltype =~ /aux/ || $mm::negseladv =~ /aux/) {
+    if ($mm::neginfltype eq "aux" || $mm::negseladv =~ /aux/) {
 	unless ($mm::auxverbform) {
 	    return_error (500, "Internal Server Error", "You have indicated that sentential negation requires the presence of an auxiliary, but you have not specified a lexical entry for the auxiliary.");
 	}
@@ -598,6 +606,17 @@ sub check_for_form_errors {
 	}
     }
 
+#If they selected the question particle strategy, did they specify 
+#the order and the form?
+
+    if ($mm::ques =~ /qpart/) {
+	unless ($mm::qpartposthead) {
+	    return_error (500, "Internal Server Error", "If you chose the question particle strategy for yes-no questions, you must specify where the question particle appears.");
+	}
+	unless ($mm::qpartform) {
+	    return_error (500, "Internal Server Error", "If you chose the question particle strategy for yes-no questions, you must specify the form of the question particle.");
+	}
+    }
 }
 
 #-------------------------------------------------------------------------
@@ -700,7 +719,7 @@ sub print_head_type_addenda_tdl
 
     print MYLANGUAGE ";;; Type addenda adding constraints to head types\n\n";
 
-    #Add the feature AUX, if necessary.
+    #Add the features AUX, FORM, and INV, if necessary.
 
     if ($mm::hasaux == 1) {
 	print MYLANGUAGE ";;; Your grammar has auxiliaries, so we are adding the features AUX and FORM\n";
@@ -710,8 +729,16 @@ sub print_head_type_addenda_tdl
 	print MYLANGUAGE ";;; To allow for a simpler statement of word order rules (in some grammars)\n";
 	print MYLANGUAGE ";;; we add the feature AUX to the type head, rather than verb.\n\n";
 
+	print MYLANGUAGE ";;; For the analysis of inverted yes-no questions, we add the feature INV.\n";
+
 	print MYLANGUAGE "head :+ [ AUX bool ].\n\n";
-	print MYLANGUAGE "verb :+ [ FORM form ].\n\n";
+	print MYLANGUAGE "verb :+ [ FORM form";
+
+	if ($mm::ques =~ /inv/) {
+	    print MYLANGUAGE ",\n INV bool ].\n\n";
+	} else {
+	    print MYLANGUAGE " ].\n\n";
+	}
     }
 
     #Constrain the MOD values of non-modifiers if we're adding head-adj rules
@@ -1008,6 +1035,11 @@ sub print_lex_rule_types_tdl
 #For now, requiring daughter to be a lexical item, but that might
 #not even scale to the questions stuff.
 
+#Actually, it works for the English case at least.  We want the
+#sai rule to apply after the negation rule, and that rule won't
+#spin because of differing SUBJ values.  But clearly, a more
+#general solution is required.
+
 #Types for negation: 
 
 #Selected adverb, with or without inflection.  The same rule type
@@ -1033,7 +1065,12 @@ sub print_lex_rule_types_tdl
 	    print MYLANGUAGE ";;; This type is instantiated in irules.tdl\n\n";
 	}
 
-	print MYLANGUAGE "neg-add-lex-rule := val-change-only-lex-rule &\n";
+	print MYLANGUAGE "neg-add-lex-rule := local-change-only-lex-rule &\n";
+	print MYLANGUAGE "                    same-ctxt-lex-rule &\n";
+	print MYLANGUAGE "                    same-agr-lex-rule &\n";
+	print MYLANGUAGE "                    same-head-lex-rule &\n";
+	print MYLANGUAGE "                    same-hc-light-lex-rule &\n";
+	print MYLANGUAGE "                    same-posthead-lex-rule &\n";
 
 	if ($mm::advalone =~ /always/) {
 	    print MYLANGUAGE "                    constant-lex-rule &\n";
@@ -1041,29 +1078,40 @@ sub print_lex_rule_types_tdl
 	    print MYLANGUAGE "                    inflecting-lex-rule &\n";
 	}
 
-        print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ \#subj,\n";
-	print MYLANGUAGE "                            SPR \#spr,\n";
-	print MYLANGUAGE "                            SPEC \#spec,\n";
-	print MYLANGUAGE "                            COMPS < neg-adv-lex . \#comps > ],\n";
-	print MYLANGUAGE "     DTR lex-item & [ LOCAL.CAT [ VAL [ SUBJ \#subj,\n";
-	print MYLANGUAGE "                                        SPR \#spr,\n";
-	print MYLANGUAGE "                                        SPEC \#spec,\n";
-	print MYLANGUAGE "                                        COMPS \#comps ],\n";
-	print MYLANGUAGE "                                  HEAD verb";
+        print MYLANGUAGE "   [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ \#subj,\n";
+	print MYLANGUAGE "                              SPR \#spr,\n";
+	print MYLANGUAGE "                              SPEC \#spec,\n";
+	print MYLANGUAGE "                              COMPS < [ LOCAL [ CONT [ HOOK [ INDEX \#negind,\n";
+	print MYLANGUAGE "                                                               LTOP \#negltop ],\n";
+	print MYLANGUAGE "                                                       HCONS <! [ LARG \#larg ] !> ]],\n";
+	print MYLANGUAGE "                                                LKEYS.KEYREL.PRED \"_neg_r_rel\" ] . \#comps > ],\n";
+	print MYLANGUAGE "                    CONT [ HOOK [ INDEX \#negind,\n";
+	print MYLANGUAGE "                                  LTOP \#negltop,\n";
+	print MYLANGUAGE "                                  XARG \#xarg ],\n";
+	print MYLANGUAGE "                           MSG \#msg ]],\n";
+	print MYLANGUAGE "     DTR lex-item & [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ \#subj,\n";
+	print MYLANGUAGE "                                                 SPR \#spr,\n";
+	print MYLANGUAGE "                                                 SPEC \#spec,\n";
+	print MYLANGUAGE "                                                 COMPS \#comps ],\n";
+	print MYLANGUAGE "                                           HEAD verb";
 
 	#_FIX_ME_: In theory, one could have a langauge where one type of verb takes
 	#inflection + adverb, and the other only inflection.  Not going there for now...
 
 	if (($mm::negseladv =~ /main-aux/) ||
 	    ($mm::hasaux == 0)) {
-	    print MYLANGUAGE " ]]].\n\n";
+	    print MYLANGUAGE " ],\n";
 	} elsif ($mm::negseladv =~ /aux/) {
-	    print MYLANGUAGE "& [ AUX + ]]]].\n\n";
+	    print MYLANGUAGE "& [ AUX + ]],\n";
 	} elsif ($mm::negseladv =~ /main/ && $mm::hasaux == 1) {
-	    print MYLANGUAGE "& [ AUX - ]]]].\n\n";
+	    print MYLANGUAGE "& [ AUX - ]],\n";
 	} else {
 	    return_error (500, "Internal Server Error", "There's something wrong with selected adverb neagation.  Please contact developers.");
 	}
+
+	print MYLANGUAGE "                                     CONT [ HOOK [ LTOP \#larg,\n";
+	print MYLANGUAGE "                                                   XARG \#xarg ],\n";
+	print MYLANGUAGE "                                            MSG \#msg ]]]].\n\n";
 
 	if ($mm::advalone =~ /sometimes/) {
 	    print MYLANGUAGE "infl-neg-add-lex-rule := neg-add-lex-rule & inflecting-lex-rule\n";
@@ -1073,9 +1121,19 @@ sub print_lex_rule_types_tdl
     }
 
      #Inflection without selected adverb
-     #This one adds the 'neg_r_rel, and as such is only used
+     #This one adds the '_neg_r_rel, and as such is only used
      #when inflection appears alone (infl strategy only, both
      #strategies with multineg = comp, bothopt, inflobl).
+
+    #Spell _neg_r_rel with leading _ even though it is introduced
+    #by the lexical rule so that "the cat didn't sleep" and "the
+    #cat did not sleep" have the same representation.
+
+    #Copying up LKEYS here because I use the KEYREL.PRED to select
+    #the neg adv in the neg-add-lex-rule.  We don't want the output
+    #of this rule to be a possible first complement to a neg-add aux.
+    #If we find another way to select the neg adv, something will
+    #probably need to be changed here.
 
     if (($mm::neg =~ /infl/) && ($mm::multineg ne "bothobl")
 	&& ($mm::multineg ne "advobl")) {
@@ -1091,30 +1149,66 @@ sub print_lex_rule_types_tdl
 	print MYLANGUAGE "                     LTOP \#ltop,\n";
 	print MYLANGUAGE "                     INDEX \#ind ],\n";
 	print MYLANGUAGE "              RELS <! event-relation &\n";
-	print MYLANGUAGE "                      [ PRED \"neg_r_rel\",\n";
+	print MYLANGUAGE "                      [ PRED \"_neg_r_rel\",\n";
 	print MYLANGUAGE "                        LBL \#ltop,\n";
 	print MYLANGUAGE "                        ARG0 \#ind,\n";
 	print MYLANGUAGE "                        ARG1 \#harg ] !>,\n";
 	print MYLANGUAGE "              HCONS <! qeq &\n";
 	print MYLANGUAGE "                       [ HARG \#harg,\n";
 	print MYLANGUAGE "                         LARG \#larg ] !> ],\n";
+	print MYLANGUAGE "     SYNSEM.LKEYS \#lkeys,\n";
 	print MYLANGUAGE "     DTR lex-item & \n";
-	print MYLANGUAGE "         [ SYNSEM.LOCAL [ CONT [ MSG \#msg,\n";
+	print MYLANGUAGE "         [ SYNSEM [ LKEYS \#lkeys,\n";
+	print MYLANGUAGE "                    LOCAL [ CONT [ MSG \#msg,\n";
 	print MYLANGUAGE "                                 HOOK [ XARG \#xarg,\n";
 	print MYLANGUAGE "                                        LTOP \#larg ]],\n";
 	print MYLANGUAGE "                          CAT.HEAD verb";
 
 	if (($mm::neginfltype =~ /main-aux/) ||
 	    ($mm::hasaux == 0)) {
-	    print MYLANGUAGE " ]]].\n\n";
+	    print MYLANGUAGE " ]]]].\n\n";
 	} elsif ($mm::neginfltype =~ /aux/) {
-	    print MYLANGUAGE "& [ AUX + ]]]].\n\n";
+	    print MYLANGUAGE "& [ AUX + ]]]]].\n\n";
 	} elsif ($mm::neginfltype =~ /main/ && $mm::hasaux == 1) {
-	    print MYLANGUAGE "& [ AUX - ]]]].\n\n";
+	    print MYLANGUAGE "& [ AUX - ]]]]].\n\n";
 	} else {
 	    return_error (500, "Internal Server Error", "There's something wrong with inflectional neagation.  Please contact developers.");
 	}
     }
+
+    #Types for subject-verb and subject-aux inversion question strategies
+
+    if ($mm::ques =~ /inv/) {
+
+	print MYLANGUAGE ";;; Rule for inverted subject verb order in questions.\n\n";
+	print MYLANGUAGE ";;; The incompatible SUBJ values on SYNSEM and DTR are\n";
+	print MYLANGUAGE ";;; what keeps this one from spinning.\n";
+
+	print MYLANGUAGE "subj-v-inv-lrule := val-change-only-lex-rule &\n";
+	print MYLANGUAGE "                    constant-lex-rule &\n";
+	print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT [ HEAD verb & [ INV +";
+
+	if ($mm::qinvverb eq "aux") {
+	    print MYLANGUAGE ",\n                                       AUX + ],\n";
+	} elsif ($mm::qinvverb eq "main") {
+	    print MYLANGUAGE ",\n                                       AUX - ],\n";
+	} elsif ($mm::qinvverb eq "main-aux") {
+	    print MYLANGUAGE " ],\n";
+	} else {
+	    return_error (500, "Internal Server Error", "There's something wrong with the verb type (main/aux) for inverted questions.  Please contact developers.");
+	}
+
+	print MYLANGUAGE "                        VAL [ COMPS < \#subj . \#comps >,\n";
+	print MYLANGUAGE "                              SUBJ < >,\n";
+	print MYLANGUAGE "                              SPR \#spr,\n";
+	print MYLANGUAGE "                              SPEC \#spec ]],\n";
+	print MYLANGUAGE "     DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < \#subj >,\n";
+	print MYLANGUAGE "                                COMPS \#comps,\n";
+	print MYLANGUAGE "                                SPR \#spr,\n";
+	print MYLANGUAGE "                                SPEC \#spec ]].\n\n";
+     
+    }
+
 }
 
 #-------------------------------------------------------------------------
@@ -1218,13 +1312,13 @@ sub print_lex_types_tdl
 	
 	print MYLANGUAGE "                             VAL [ SPR < >,\n";
 	print MYLANGUAGE "                                   COMPS < > ]],\n";
-	print MYLANGUAGE "                       CONT.INDEX \#xarg ]], ... > ].\n\n";
+	print MYLANGUAGE "                       CONT.HOOK.INDEX \#xarg ]], ... > ].\n\n";
 	
     } else {
 	
 	print MYLANGUAGE "                 [ LOCAL [ CAT.VAL [ SPR < >,\n";
 	print MYLANGUAGE "                                     COMPS < > ],\n";
-        print MYLANGUAGE "                           CONT.INDEX \#xarg ]], ... > ].\n\n";
+        print MYLANGUAGE "                           CONT.HOOK.INDEX \#xarg ]], ... > ].\n\n";
     }
     
     if ($mm::hclight =~ /t/) {
@@ -1578,6 +1672,23 @@ sub print_lex_types_tdl
 	    return_error (500,"Internal Server Error", "There's something wrong with the negative adverb.  Please contact developers.");
 	}
     }
+
+#Lexical type for question particle.
+
+    if ($mm::ques =~ /qpart/) {
+	
+	print MYLANGUAGE "qpart-le := scopal-adverb-lex &\n";
+	print MYLANGUAGE "  [ SYNSEM [ LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD verb,\n";
+	print MYLANGUAGE "                                                  VAL [ SUBJ < >,\n";
+	print MYLANGUAGE "                                                        COMPS < > ]]>],\n";
+	print MYLANGUAGE "                         VAL [ SUBJ < >,\n";
+	print MYLANGUAGE "                               SPR < >,\n";
+	print MYLANGUAGE "                               COMPS < > ],\n";
+	print MYLANGUAGE "                         POSTHEAD $mm::qpartposthead ],\n";
+	print MYLANGUAGE "             LKEYS.KEYREL message &\n";
+	print MYLANGUAGE "                          [ PRED question_m_rel ]]].\n\n";
+
+    }
 }
 
 #-------------------------------------------------------------------------
@@ -1759,6 +1870,12 @@ sub create_lrules_tdl
 	print LRULES "neg-add-lr := const-neg-add-lex-rule.\n\n";
     }
 
+#Lexical rule for subject-verb/subject-aux inversion.
+
+    if ($mm::ques =~ /inv/) {
+	print LRULES "inv-lr := subj-v-inv-lrule.\n\n";
+    }
+
     close (LRULES);
 }
 
@@ -1876,13 +1993,14 @@ sub create_lexicon_tdl
 
 	print LEXICON ";;; Auxiliaries\n\n";
 
-	print LEXICON "$mm::auxform := $mm::auxtypename &\n";
-	print LEXICON "   [ STEM < \"$mm::auxform\" >";
+	print LEXICON "$mm::auxverbform := $mm::auxtypename &\n";
+	print LEXICON "   [ STEM < \"$mm::auxverbform\" >,\n";
+	print LEXICON "     SYNSEM.LKEYS.KEYREL.PRED ";
 
 	if ($mm::auxsem =~ /pred/) {
-	    print LEXICON ",\n     SYNSEM.LKEYS.KEYREL.PRED \"$mm::auxpred\" ].\n\n";
+	    print LEXICON "\"$mm::auxpred\" ].\n\n";
 	} else {
-	    print LEXICON "].\n\n";
+	    print LEXICON "no-pred ].\n\n";
 	}
 	
     }
@@ -1929,6 +2047,13 @@ sub create_lexicon_tdl
 	print LEXICON "$mm::negadvform := neg-adv-lex &\n";
 	print LEXICON "   [ STEM < \"$mm::negadvform\" >, \n";
 	print LEXICON "     SYNSEM.LKEYS.KEYREL.PRED \"_neg_r_rel\" ].\n\n";
+
+    }
+
+    if ($mm::qpartform) {
+	
+	print LEXICON "$mm::qpartform := qpart-lex &\n";
+	print LEXICON "   [ STEM < \"$mm::qpartform\" > ].\n\n";
 
     }
 }
