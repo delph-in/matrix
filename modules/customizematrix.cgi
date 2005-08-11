@@ -16,10 +16,11 @@
 #2. Consider moving particularly ugly subroutines off into different
 #   files.
 #
-#3. Add yes-no questions. 
+#3. Add semantics for yes-no questions. 
 #
 #4. Figure out what's wrong .tar.gz output.
-#   Test/fix negation (esp. independent adv): add head-modifier rules!
+#   
+#5. Downcase the language name when creating the value of $mm::my_language
 ##########################################################################
 
 #Declare the package of this file, mm for "matrix modules"
@@ -469,6 +470,12 @@ sub parse_form_data
 #-------------------------------------------------------------------------
 
 sub check_for_form_errors {
+
+#Did they tell us the name of their language?
+
+    if ($mm::my_language eq ".tdl") {
+	return_error (500, "Internal Server Error", "You must specify the name of the language you are working on.");
+    }
 
 #Did they specify a word order?
 
@@ -1862,7 +1869,7 @@ sub create_lrules_tdl
 # Cases where we have an instance of neg-add-lex-rule
 # (not subtypes of same):
 
-    if ($mm::advalone =~ /always/) {
+    if (($mm::advalone =~ /always/) || !$mm::advalone)  {
 	print LRULES "neg-add-lr := neg-add-lex-rule.\n\n";
     }
 
