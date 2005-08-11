@@ -405,9 +405,10 @@ sub parse_form_data
 
 #Do we need head-modifier rules?
 
-    if (($mm::negadv =~ /ind-adv/) &&
+    if (($mm::ques =~ /qpart/) ||
+	(($mm::negadv =~ /ind-adv/) &&
 	(!$mm::advalone ||
-	 $mm::advalone =~ /always|sometimes/)) {
+	 $mm::advalone =~ /always|sometimes/))) {
 
 	$mm::modrules = "t";
 
@@ -1674,19 +1675,21 @@ sub print_lex_types_tdl
     }
 
 #Lexical type for question particle.
+#I'd like to say that the KEYREL is a message, but that clashes
+#with the constraint on basic-adverb-lex which says event-relation.
+#No time to fix it now.
 
     if ($mm::ques =~ /qpart/) {
 	
-	print MYLANGUAGE "qpart-le := scopal-adverb-lex &\n";
+	print MYLANGUAGE "qpart-le := basic-scopal-adverb-lex &\n";
 	print MYLANGUAGE "  [ SYNSEM [ LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD verb,\n";
 	print MYLANGUAGE "                                                  VAL [ SUBJ < >,\n";
-	print MYLANGUAGE "                                                        COMPS < > ]]>],\n";
+	print MYLANGUAGE "                                                        COMPS < > ]]]>,\n";
 	print MYLANGUAGE "                         VAL [ SUBJ < >,\n";
 	print MYLANGUAGE "                               SPR < >,\n";
 	print MYLANGUAGE "                               COMPS < > ],\n";
 	print MYLANGUAGE "                         POSTHEAD $mm::qpartposthead ],\n";
-	print MYLANGUAGE "             LKEYS.KEYREL message &\n";
-	print MYLANGUAGE "                          [ PRED question_m_rel ]]].\n\n";
+	print MYLANGUAGE "             LKEYS.KEYREL.PRED question_m_rel ]].\n\n";
 
     }
 }
@@ -2052,7 +2055,7 @@ sub create_lexicon_tdl
 
     if ($mm::qpartform) {
 	
-	print LEXICON "$mm::qpartform := qpart-lex &\n";
+	print LEXICON "$mm::qpartform := qpart-le &\n";
 	print LEXICON "   [ STEM < \"$mm::qpartform\" > ].\n\n";
 
     }
