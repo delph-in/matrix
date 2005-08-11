@@ -653,6 +653,7 @@ rmod := hasmod & notmod-or-rmod.
 sort := *top*.
 predsort := sort.
 atom := predsort.
+no-pred := predsort.
 avm := *top*.
 list := avm.
 
