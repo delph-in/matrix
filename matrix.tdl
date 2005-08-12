@@ -1355,12 +1355,15 @@ basic-head-filler-phrase := basic-filler-phrase & headed-phrase.
 ; ERB 2004-08-26 Remove [MC na] on head daughter; probably specific
 ; to some analysis for English.
 
+; ERB 2005-08-12 Need [ LIGHT - ] on mother, so add SYNSEM phr-synsem.
+
 basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
 			  head-compositional &
-  [ SYNSEM.LOCAL.CAT [ POSTHEAD +,
-                       VAL [ SUBJ < >,
-			     COMPS #comps,
-                             SPR #spr ] ],
+  [ SYNSEM phr-synsem & 
+	   [ LOCAL.CAT [ POSTHEAD +,
+			 VAL [ SUBJ < >,
+			       COMPS #comps,
+			       SPR #spr ] ] ],
     HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < #synsem >,
 				      COMPS #comps,	
                                       SPR #spr ],

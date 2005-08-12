@@ -22,7 +22,10 @@
 #   
 #5. Downcase the language name when creating the value of $mm::my_language
 #
-#6. Consider allowing folks to input an auxiliary lexical entry
+#6. Add to output a .choices file which records the user input
+#   for our future reference (and debugging purposes!)
+#
+#7. Consider allowing folks to input an auxiliary lexical entry
 #   even if none of the other choice have required an auxiliary.
 ##########################################################################
 
@@ -243,7 +246,6 @@ sub parse_form_data
     $mm::det1pred = $FORM_DATA{"det1pred"};
     $mm::det2 = $FORM_DATA{"det2"};
     $mm::det2pred = $FORM_DATA{"det2pred"};
-    $mm::hasdets = $FORM_DATA{"hasDets"};
     $mm::hasdets = $FORM_DATA{"hasDets"};
     $mm::iverb = $FORM_DATA{"iverb"};
     $mm::iverbnf = $FORM_DATA{"iverb-nonfinite"};
@@ -747,7 +749,9 @@ sub print_head_type_addenda_tdl
 	print MYLANGUAGE ";;; To allow for a simpler statement of word order rules (in some grammars)\n";
 	print MYLANGUAGE ";;; we add the feature AUX to the type head, rather than verb.\n\n";
 
-	print MYLANGUAGE ";;; For the analysis of inverted yes-no questions, we add the feature INV.\n";
+	if ($mm::ques =~ /inv/) {
+	    print MYLANGUAGE ";;; For the analysis of inverted yes-no questions, we add the feature INV.\n\n";
+    }
 
 	print MYLANGUAGE "head :+ [ AUX bool ].\n\n";
 	print MYLANGUAGE "verb :+ [ FORM form";
@@ -757,6 +761,11 @@ sub print_head_type_addenda_tdl
 	} else {
 	    print MYLANGUAGE " ].\n\n";
 	}
+    } elsif ($mm::ques =~ /inv/) {
+
+	print MYLANGUAGE ";;; For the analysis of inverted yes-no questions, we add the feature INV.\n\n";
+	print MYLANGUAGE "verb :+ [ INV bool ].\n\n";
+
     }
 
     #Constrain the MOD values of non-modifiers if we're adding head-adj rules
@@ -1658,17 +1667,16 @@ sub print_lex_types_tdl
 
 	    print MYLANGUAGE "                              COMPS < >,\n";
 	    print MYLANGUAGE "                              SUBJ < > ],\n";
-	    print MYLANGUAGE "                        HEAD.MOD < [ LOCAL.CAT [ HEAD verb,\n";
+	    print MYLANGUAGE "                        HEAD.MOD < [ LOCAL.CAT [ HEAD verb";
 
 	    if ($mm::negmod =~ /S/) { 
-		print MYLANGUAGE "                                                 VAL [ SUBJ null,\n";
+		print MYLANGUAGE ",\n                                                 VAL [ SUBJ null,\n";
                 print MYLANGUAGE "                                                       COMPS null ]]] > ]].\n\n";
 	    } elsif ($mm::negmod =~ /VP/) { #Careful, "VP" will also match "V"
-                print MYLANGUAGE "                                                 VAL [ SUBJ cons,\n";
+                print MYLANGUAGE ",\n                                                 VAL [ SUBJ cons,\n";
                 print MYLANGUAGE "                                                       COMPS null ]]] > ]].\n\n";
 	    } elsif ($mm::negmod =~ /V/) {
-		print MYLANGUAGE "                                                 VAL.SUBJ cons ],\n";
-		print MYLANGUAGE "                                     LIGHT + ] > ]].\n\n";
+		print MYLANGUAGE " ],\n                                 LIGHT + ] > ]].\n\n";
 	    } else {
 		return_error (500,"Internal Server Error", "There's something wrong with the barlevel attachment of negative adverbs.  Please contact developers.");
 	    }
@@ -1771,7 +1779,7 @@ sub create_rules_tdl
     
     print RULESINST ";;; Rule(s) for building NPs.\n\n";
 
-    if ($mm::hasdets) {
+    if ($mm::hasdets =~ /t/) {
 
 	if ($mm::noundetorder =~ /SpecHead/) {
 	    
@@ -1882,7 +1890,7 @@ sub create_lrules_tdl
 # Cases where we have an instance of neg-add-lex-rule
 # (not subtypes of same):
 
-    if ($mm::advalone =~ /always/) {
+    if (($mm::negadv =~ /sel-adv/) && ($mm::advalone =~ /always/)) {
 	print LRULES "neg-add-lr := neg-add-lex-rule.\n\n";
     }
 

@@ -12,8 +12,6 @@
 ;Kim saw Sandy
 n tv n
 s tv o
-*o tv s
-*tv n n
 *n n tv
 
 ;Kim no vio' a Sandy
@@ -25,8 +23,8 @@ n negadv tv n
 ;Vio' Kim a Sandy?
 ;Did Kim see Sandy?
 tv n n
-*n tv n
-*n n tv
+;*n tv n
+;*n n tv
 
 ;No vio' Kim a Sandy?
 ;Did Kim not see Sandy?
