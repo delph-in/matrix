@@ -21,6 +21,9 @@
 #4. Figure out what's wrong .tar.gz output.
 #   
 #5. Downcase the language name when creating the value of $mm::my_language
+#
+#6. Consider allowing folks to input an auxiliary lexical entry
+#   even if none of the other choice have required an auxiliary.
 ##########################################################################
 
 #Declare the package of this file, mm for "matrix modules"
@@ -358,10 +361,17 @@ sub parse_form_data
 	return_error (500, "Internal Server Error", "Something's wrong with the intransitive verb. Please contact developers.");
     }
     
+#If negation involves and adverb, did they say which kind?
+
+    if ($mm::neg =~ /adv/) {
+	unless ($mm::negadv) {
+	    return_error (500, "Internal Server Error", "If your language expresses sentential negation with a negative adverb, you must specify whether it is independent or selected.");
+	}
+    }
 
 #What's going on with the distribution of multiple negation strategies?
 
-    if (($mm::neq eq "adv") || ($mm::multineg)) {
+    if (($mm::neg eq "adv") || ($mm::multineg)) {
 	if (($mm::neg eq "adv") || ($mm::multineg =~ /comp/)) {
 	    $mm::advalone = "always";
 	} elsif ($mm::multineg =~ /bothopt|advobl/) {
@@ -1651,10 +1661,10 @@ sub print_lex_types_tdl
 	    print MYLANGUAGE "                        HEAD.MOD < [ LOCAL.CAT [ HEAD verb,\n";
 
 	    if ($mm::negmod =~ /S/) { 
-		print MYLANGUAGE "                                                 VAL [ SUBJ null\n";
+		print MYLANGUAGE "                                                 VAL [ SUBJ null,\n";
                 print MYLANGUAGE "                                                       COMPS null ]]] > ]].\n\n";
 	    } elsif ($mm::negmod =~ /VP/) { #Careful, "VP" will also match "V"
-                print MYLANGUAGE "                                                 VAL [ SUBJ cons\n";
+                print MYLANGUAGE "                                                 VAL [ SUBJ cons,\n";
                 print MYLANGUAGE "                                                       COMPS null ]]] > ]].\n\n";
 	    } elsif ($mm::negmod =~ /V/) {
 		print MYLANGUAGE "                                                 VAL.SUBJ cons ],\n";
@@ -1761,16 +1771,19 @@ sub create_rules_tdl
     
     print RULESINST ";;; Rule(s) for building NPs.\n\n";
 
-    if ($mm::noundetorder =~ /SpecHead/) {
-	
-	print RULESINST "spec-head := spec-head-phrase.\n";
-	
-    } else {
-	
-	print RULESINST "head-spec := head-spec-phrase.\n";
-	
-    }
-    
+    if ($mm::hasdets) {
+
+	if ($mm::noundetorder =~ /SpecHead/) {
+	    
+	    print RULESINST "spec-head := spec-head-phrase.\n";
+	    
+	} else {
+	    
+	    print RULESINST "head-spec := head-spec-phrase.\n";
+	    
+	}
+    }    
+
     print RULESINST "bare-np := bare-np-phrase.\n\n";
     
 #Add head-modifier rules to rules file if necessary.  Just
@@ -1869,7 +1882,7 @@ sub create_lrules_tdl
 # Cases where we have an instance of neg-add-lex-rule
 # (not subtypes of same):
 
-    if (($mm::advalone =~ /always/) || !$mm::advalone)  {
+    if ($mm::advalone =~ /always/) {
 	print LRULES "neg-add-lr := neg-add-lex-rule.\n\n";
     }
 
