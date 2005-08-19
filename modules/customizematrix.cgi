@@ -71,7 +71,7 @@ use CGI;
 
 #Create a customized my_language.tdl file, and store in matrix.user/
 
-open (MYLANGUAGE, ">$mm::matrix/"."$mm::my_language") || return_error (500,"Internal Server Error","Cannot open necessary output file.");
+open (MYLANGUAGE, ">$mm::matrix/"."$mm::my_language") || return_error (500,"Probable Script Bug","Cannot open necessary output file.");
 
 &print_mylanguage_headers;
 &print_head_type_addenda_tdl;
@@ -100,6 +100,11 @@ close (MYLANGUAGE);
 
 &create_lexicon_tdl;
 
+#Create a customized roots.tdl file, and store in matrix.user/.
+#This used to be part of matrix-core, but now it needs to be
+#specialized in case there's auxiliaries.
+
+&create_roots_tdl;
 
 #Package up the matrix in an archive, and print out instructions
 #for downloading it.
@@ -220,12 +225,12 @@ sub parse_form_data
 
 	if ($key =~ /sentence/) {
 	    unless ($value =~ /[a-zA-Z0-9_ ]*/) {
-		&return_error (500, "Internal Server Error",
+		&return_error (500, "Input Error",
 			       "Value of $key is invalid. Please use only letters, numbers, spaces and _.");
 	    }
 	} else {
 	    unless ($value =~ /[a-zA-Z0-9_]*/) {
-		&return_error (500, "Internal Server Error",
+		&return_error (500, "Input Error",
 			       "Value of $key is invalid. Please use only letters, numbers and _.");
 	    }
 	}
@@ -254,7 +259,7 @@ sub parse_form_data
     $mm::ivsubj = $FORM_DATA{"iverbSubj"};
     $mm::language = $FORM_DATA{"language"};
     $mm::multineg = $FORM_DATA{"multineg"};
-    $mm::my_language = $FORM_DATA{"language"}.".tdl";
+    $mm::my_language = lc($FORM_DATA{"language"}).".tdl";
     $mm::neg = $FORM_DATA{"neg"};
     $mm::negadv = $FORM_DATA{"neg-adv"};
     $mm::negadvform = $FORM_DATA{"negadvform"};
@@ -343,10 +348,14 @@ sub parse_form_data
 
 	if ($mm::noun2spr && ($mm::noun1spr ne $mm::noun2spr)) {
 	    $mm::singlentype = 0;
+	} elsif ($mm::noun2spr eq $mm::noun1spr) {
+	    $mm::singlentype = 1;
+	} else {
+
+	    if ($mm::noun2spr) {
+		return_error (500, "Probable Script Bug", "Something's wrong with the noun entries.  Please contact developers.");
+	    }
 	}
-    } else {
-	
-	return_error (500, "Internal Server Error", "Something's wrong with the noun entries.  Please contact developers.");
     }
 
 #Do the verbs take the same category (NP or PP) for their subjects?
@@ -355,19 +364,22 @@ sub parse_form_data
 	
 	if ($mm::tverbsubj && ($mm::iverbsubj ne $mm::tverbsubj)) {
 	    $mm::singlevtype = 0;
-	} else {
+	} elsif  ($mm::iverbsubj eq $mm::tverbsubj) {
 	    $mm::singlevtype = 1;
+	} else {
+
+	    if ($mm::tverbsubj) {
+
+		return_error (500, "Probable Script Bug", "Something's wrong with the intransitive verb. Please contact developers.");
+	    }
 	}
-    } else {
-	
-	return_error (500, "Internal Server Error", "Something's wrong with the intransitive verb. Please contact developers.");
     }
-    
+
 #If negation involves and adverb, did they say which kind?
 
     if ($mm::neg =~ /adv/) {
 	unless ($mm::negadv) {
-	    return_error (500, "Internal Server Error", "If your language expresses sentential negation with a negative adverb, you must specify whether it is independent or selected.");
+	    return_error (500, "Input Error", "If your language expresses sentential negation with a negative adverb, you must specify whether it is independent or selected.");
 	}
     }
 
@@ -381,7 +393,7 @@ sub parse_form_data
 	} elsif ($mm::multineg =~ /bothobl|inflobl/) {
 	    $mm::advalone = "never"; 
 	} else {
-	    return_error (500, "Internal Server Error", "There's something wrong with adverbial negation.  Please contact the developers.");
+	    return_error (500, "Probable Script Bug", "There's something wrong with adverbial negation.  Please contact the developers.");
 	}
     }
 
@@ -397,7 +409,7 @@ sub parse_form_data
 	} elsif ($mm::negprepostmod =~ /either/) {
 	    $mm::prepostmod = "";
 	} else {
-	    return_error (500, "Internal Sever Error", "Something's wrong with the mod order for neg adv.  Please contact developers.");
+	    return_error (500, "Probable Script Bug", "Something's wrong with the mod order for neg adv.  Please contact developers.");
 	}
     }
 
@@ -453,7 +465,7 @@ sub parse_form_data
 	    } elsif ($mm::auxsem =~ /tma/) {
 		$mm::auxtypename = "subj-raise-aux-no-sem";
 	    } else {
-		return_error (500, "Internal Server Error", "Something's wrong with the aux type.  Please contact developers.");
+		return_error (500, "Probable Script Bug", "Something's wrong with the aux type.  Please contact developers.");
 	    }
 	} elsif ($mm::auxcomp =~ /V/) {
 	    if ($mm::auxsem =~ /pred/) {
@@ -461,7 +473,7 @@ sub parse_form_data
 	    } elsif ($mm::auxsem =~ /tma/) {
 		$mm::auxtypename = "arg-comp-aux-no-sem";
 	    } else {
-		return_error (500, "Internal Server Error", "Something's wrong with the aux type.  Please contact developers.");
+		return_error (500, "Probable Script Bug", "Something's wrong with the aux type.  Please contact developers.");
 	    }
 	} elsif ($mm::auxcomp =~ /S/) {
 	    if ($mm::auxsem =~ /pred/) {
@@ -469,10 +481,10 @@ sub parse_form_data
 	    } elsif ($mm::auxsem =~ /tma/) {
 		$mm::auxtypename = "s-comp-aux-no-sem";
 	    } else {
-		return_error (500, "Internal Server Error", "Something's wrong with the aux type.  Please contact developers.");
+		return_error (500, "Probable Script Bug", "Something's wrong with the aux type.  Please contact developers.");
 	    }
 	} else {
-	    return_error (500, "Internal Server Error", "Something's wrong with the aux type.  Please contact developers.");
+	    return_error (500, "Probable Script Bug", "Something's wrong with the aux type.  Please contact developers.");
 	    
 	}
     }
@@ -486,57 +498,57 @@ sub check_for_form_errors {
 #Did they tell us the name of their language?
 
     if ($mm::my_language eq ".tdl") {
-	return_error (500, "Internal Server Error", "You must specify the name of the language you are working on.");
+	return_error (500, "Input Error", "You must specify the name of the language you are working on.");
     }
 
 #Did they specify a word order?
 
     unless ($mm::wordorder) {
-	return_error (500,"Internal Server Error","No value specified for word order");
+	return_error (500,"Input Error","No value specified for word order");
     }
 
 
 #Did they specify an archive type?
   
     unless ($mm::delivery) {
-	return_error (500, "Internal Server Error", "You must specify an archive type (.tar.gz or .zip).");
+	return_error (500, "Input Error", "You must specify an archive type (.tar.gz or .zip).");
     }
 
 #If they want a PP subject, did they supply an adposition?
 
     if (($mm::tvsubj =~ /pp/ || $mm::ivsubj =~ /pp/) && !$mm::subjadpform) {
-	return_error (500, "Internal Server Error", "If one or both of your verbs take PP subjects, you must provide a subject-marking adposition.");
+	return_error (500, "Input Error", "If one or both of your verbs take PP subjects, you must provide a subject-marking adposition.");
     }
 
 #If they want a PP object, did they supply an adposition?
     
     if ($mm::tvobj =~ /pp/ && !$mm::objadpform) {
-	return_error (500, "Internal Server Error", "If your transitive verb takes PP objects, you must provide an object-marking adposition.");
+	return_error (500, "Input Error", "If your transitive verb takes PP objects, you must provide an object-marking adposition.");
     }
 
 #If they want and adposition, did they specify its ordering possibilities?
 
     if (($mm::subjadpform && !$mm::subjadp) || ($mm::objadpform && !$mm::objadp)) {
-	return_error (500, "Internal Server Error", "All adpositions must be specified as either prepositions or postpositions.");
+	return_error (500, "Input Error", "All adpositions must be specified as either prepositions or postpositions.");
     }
 
 #If they have two adpositions, do they have the same ordering possibilities?
 
     if ($mm::subjadp && $mm::objadp && !($mm::subjadp eq $mm::objadp)) {
-	return_error (500, "Internal Server Error", "Systems with inconsistent adposition placement not currently supported.");
+	return_error (500, "Input Error", "Systems with inconsistent adposition placement not currently supported.");
     }
 
 #Did they specify whether the language has determiners?
 
     unless ($mm::hasdets) {
-	return_error (500, "Internal Server Error", "You must specify whether your language has determiners as independent words.");
+	return_error (500, "Input Error", "You must specify whether your language has determiners as independent words.");
     }
 
 #If they want determiners, did they specify the noun-det order?
 
     if ($mm::hasdets =~ /t/) {
 	unless ($mm::noundetorder) {
-	    return_error (500, "Internal Server Error", "If your language has independent determiners, you must specify which side of the noun they appear on.");
+	    return_error (500, "Input Error", "If your language has independent determiners, you must specify which side of the noun they appear on.");
 	}
     }
 
@@ -544,14 +556,14 @@ sub check_for_form_errors {
 #This one is buggy right now, so commented out.  FIX_ME and put back in.
 
 #    if (($mm::neg =~ /adv/ && !($mm::negmod && $mm::negprepostmod)) || (($mm::neg =~ /infl/) && !($mm::neginfltype && $mm::negaff && $mm::negaffform))) {
-#	return_error (500, "Internal Server Error", "You must answer all questions for each negation strategy you choose.");
+#	return_error (500, "Input Error", "You must answer all questions for each negation strategy you choose.");
 #    }
 
 #Check that if both inflectional and adverbial negation are selected, one of the options for combining them is too.
 
     if ($mm::neg =~ /adv/ && $mm::neg =~ /infl/) {
 	unless ($mm::multineg) {
-	    return_error (500, "Internal Server Error", "If you select both inflectional and adverbial negation, you must specify how they may or may not cooccur.");
+	    return_error (500, "Input Error", "If you select both inflectional and adverbial negation, you must specify how they may or may not cooccur.");
 	}
     }
     
@@ -559,7 +571,7 @@ sub check_for_form_errors {
 
     if ($mm::negadvform) {
 	unless ($mm::neg =~ /adv/) {
-	    return_error (500, "Internal Server Error", "Do not specify a form for a negative adverb, unless you also choose the adverbial sentential negation strategy.");
+	    return_error (500, "Input Error", "Do not specify a form for a negative adverb, unless you also choose the adverbial sentential negation strategy.");
 	}
     }
 
@@ -567,7 +579,7 @@ sub check_for_form_errors {
 
     if ($mm::neg =~ /adv/) {
 	unless ($mm::negadvform) {
-	    return_error (500, "Internal Server Error", "If you select adverbial negation, you must specify a form for the negative adverb in the lexicon section.");
+	    return_error (500, "Input Error", "If you select adverbial negation, you must specify a form for the negative adverb in the lexicon section.");
 	}
     }
 
@@ -576,14 +588,14 @@ sub check_for_form_errors {
  
     if ($mm::neginfltype eq "aux" || $mm::negseladv =~ /aux/) {
 	unless ($mm::auxverbform) {
-	    return_error (500, "Internal Server Error", "You have indicated that sentential negation requires the presence of an auxiliary, but you have not specified a lexical entry for the auxiliary.");
+	    return_error (500, "Input Error", "You have indicated that sentential negation requires the presence of an auxiliary, but you have not specified a lexical entry for the auxiliary.");
 	}
     }
 
 #Did they specify enough lexical entries?
 
     unless ($mm::noun1 && $mm::iverb && $mm::tverb) {
-	return_error (500, "Internal Server Error", "You must create an intransitive verb entry, a transitive verb entry, and at least one noun entry.");
+	return_error (500, "Input Error", "You must create an intransitive verb entry, a transitive verb entry, and at least one noun entry.");
     }
 
 #Did they give pred names?
@@ -593,7 +605,7 @@ sub check_for_form_errors {
 	    ($mm::det1pred || !$mm::det1) &&
 	    ($mm::det2pred || !$mm::det2) &&
 	    $mm::iverbpred && $mm::tverbpred) {
-	return_error (500, "Internal Server Error", "You must specify a predicate value for each noun, (main) verb, and determiner you specify.");
+	return_error (500, "Input Error", "You must specify a predicate value for each noun, (main) verb, and determiner you specify.");
     }
 
 #Did they answer all of the questions about lexical entries?
@@ -606,14 +618,14 @@ sub check_for_form_errors {
 	    ($mm::objadpform || !$mm::objadp) &&
 	    ($mm::subjadpform || !$mm::subjadp) &&
 	    (($mm::auxsem && $mm::auxcomp && $mm::auxorder) || !$mm::auxverbform)) {
-	return_error (500, "Internal Server Error", "You must answer all questions for each lexical entry you specify.");
+	return_error (500, "Input Error", "You must answer all questions for each lexical entry you specify.");
     }
 
 #Did they give us the same form for both finite and nonfinite verbs?
 
     if (($mm::tverb eq $mm::tverbnf) || ($mm::iverb eq $mm::iverbf)) {
 
-	return_error (500, "Internal Server Error", "If you provide a form for a verb when it cooccurs with an auxiliary, it must be different from the other (finite) form.");
+	return_error (500, "Input Error", "If you provide a form for a verb when it cooccurs with an auxiliary, it must be different from the other (finite) form.");
 
     }
 
@@ -622,7 +634,7 @@ sub check_for_form_errors {
 
     if ($mm::auxverbform) {
 	if (($mm::auxcomp =~ /V/) & !$mm::auxsubj) {
-	    return_error (500, "Internal Server Error", "If your auxiliary takes a V or VP complement, you must specify whether its subject is an NP or a PP.");
+	    return_error (500, "Input Error", "If your auxiliary takes a V or VP complement, you must specify whether its subject is an NP or a PP.");
 	}
     }
 
@@ -631,10 +643,10 @@ sub check_for_form_errors {
 
     if ($mm::ques =~ /qpart/) {
 	unless ($mm::qpartposthead) {
-	    return_error (500, "Internal Server Error", "If you chose the question particle strategy for yes-no questions, you must specify where the question particle appears.");
+	    return_error (500, "Input Error", "If you chose the question particle strategy for yes-no questions, you must specify where the question particle appears.");
 	}
 	unless ($mm::qpartform) {
-	    return_error (500, "Internal Server Error", "If you chose the question particle strategy for yes-no questions, you must specify the form of the question particle.");
+	    return_error (500, "Input Error", "If you chose the question particle strategy for yes-no questions, you must specify the form of the question particle.");
 	}
     }
 }
@@ -703,8 +715,8 @@ sub customize_script
 #All module-generated tdl is included in the `standard' files (my_language.tdl,
 #lexicon.tdl, irules.tdl, etc).
 
-    open (LKBSCRIPT, ">$mm::matrix"."/lkb/script") || return_error (500,"Internal Server Error","Cannot open necessary output file.");
-    open (BASESCRIPT, "$mm::modules_home"."script") || return_error (500,"Internal Server Error","Cannot open necessary input file: script.");
+    open (LKBSCRIPT, ">$mm::matrix"."/lkb/script") || return_error (500,"Probable Script Bug","Cannot open necessary output file.");
+    open (BASESCRIPT, "$mm::modules_home"."script") || return_error (500,"Probable Script Bug","Cannot open necessary input file: script.");
 
     while (<BASESCRIPT>) {
 
@@ -831,10 +843,10 @@ sub print_word_order_tdl
     } elsif ($mm::wordorder =~  /free/) {
 	$ruletypesinput = "free-order.tdl";
     } else {
-	return_error (500, "Internal Server Error", "Something's wrong with the word order.  Please contact developers.");
+	return_error (500, "Probable Script Bug", "Something's wrong with the word order.  Please contact developers.");
     }
 
-    open (RULETYPES, "$mm::modules_home"."$ruletypesinput") || return_error (500,"Internal Server Error","Cannot open necessary input file: $ruletypesinput.");
+    open (RULETYPES, "$mm::modules_home"."$ruletypesinput") || return_error (500,"Probable Script Bug","Cannot open necessary input file: $ruletypesinput.");
 
     print MYLANGUAGE ";;; Phrase structure rule types\n\n";
 
@@ -1133,7 +1145,7 @@ sub print_lex_rule_types_tdl
 	} elsif ($mm::negseladv =~ /main/ && $mm::hasaux == 1) {
 	    print MYLANGUAGE "& [ AUX - ]],\n";
 	} else {
-	    return_error (500, "Internal Server Error", "There's something wrong with selected adverb neagation.  Please contact developers.");
+	    return_error (500, "Probable Script Bug", "There's something wrong with selected adverb neagation.  Please contact developers.");
 	}
 
 	print MYLANGUAGE "                                     CONT [ HOOK [ LTOP \#larg,\n";
@@ -1199,40 +1211,46 @@ sub print_lex_rule_types_tdl
 	} elsif ($mm::neginfltype =~ /main/ && $mm::hasaux == 1) {
 	    print MYLANGUAGE "& [ AUX - ]]]]].\n\n";
 	} else {
-	    return_error (500, "Internal Server Error", "There's something wrong with inflectional neagation.  Please contact developers.");
+	    return_error (500, "Probable Script Bug", "There's something wrong with inflectional neagation.  Please contact developers.");
 	}
     }
 
     #Types for subject-verb and subject-aux inversion question strategies
+    #Need to copy up LKEYS here or else we get overgeneration when
+    #both inv-lr and neg-add-lr are included (lose the LKEYS information
+    #that's used to select the negative adverb from auxiliaries, meaning
+    #we get "The cat did didn't chase the dog.".
 
     if ($mm::ques =~ /inv/) {
 
 	print MYLANGUAGE ";;; Rule for inverted subject verb order in questions.\n\n";
 	print MYLANGUAGE ";;; The incompatible SUBJ values on SYNSEM and DTR are\n";
-	print MYLANGUAGE ";;; what keeps this one from spinning.\n";
+	print MYLANGUAGE ";;; what keeps this one from spinning.\n\n";
 
 	print MYLANGUAGE "subj-v-inv-lrule := val-change-only-lex-rule &\n";
 	print MYLANGUAGE "                    constant-lex-rule &\n";
-	print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT [ HEAD verb & [ INV +";
+	print MYLANGUAGE "   [ SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV +";
 
 	if ($mm::qinvverb eq "aux") {
-	    print MYLANGUAGE ",\n                                       AUX + ],\n";
+	    print MYLANGUAGE ",\n                                         AUX + ],\n";
 	} elsif ($mm::qinvverb eq "main") {
-	    print MYLANGUAGE ",\n                                       AUX - ],\n";
+	    print MYLANGUAGE ",\n                                         AUX - ],\n";
 	} elsif ($mm::qinvverb eq "main-aux") {
 	    print MYLANGUAGE " ],\n";
 	} else {
-	    return_error (500, "Internal Server Error", "There's something wrong with the verb type (main/aux) for inverted questions.  Please contact developers.");
+	    return_error (500, "Probable Script Bug", "There's something wrong with the verb type (main/aux) for inverted questions.  Please contact developers.");
 	}
 
-	print MYLANGUAGE "                        VAL [ COMPS < \#subj . \#comps >,\n";
-	print MYLANGUAGE "                              SUBJ < >,\n";
-	print MYLANGUAGE "                              SPR \#spr,\n";
-	print MYLANGUAGE "                              SPEC \#spec ]],\n";
-	print MYLANGUAGE "     DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < \#subj >,\n";
-	print MYLANGUAGE "                                COMPS \#comps,\n";
+	print MYLANGUAGE "                          VAL [ COMPS < \#subj . \#comps >,\n";
+	print MYLANGUAGE "                                SUBJ < >,\n";
 	print MYLANGUAGE "                                SPR \#spr,\n";
-	print MYLANGUAGE "                                SPEC \#spec ]].\n\n";
+	print MYLANGUAGE "                                SPEC \#spec ]],\n";
+	print MYLANGUAGE "               LKEYS \#lkeys ],\n";
+	print MYLANGUAGE "     DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ < \#subj >,\n";
+	print MYLANGUAGE "                                  COMPS \#comps,\n";
+	print MYLANGUAGE "                                  SPR \#spr,\n";
+	print MYLANGUAGE "                                  SPEC \#spec ],\n";
+	print MYLANGUAGE "                  LKEYS #lkeys ]].\n\n";
      
     }
 
@@ -1496,7 +1514,7 @@ sub print_lex_types_tdl
 
 	    } else {
 
-		return_error (500, "Internal Server Error", "There's something wrong with the subject type for your auxiliary.  Please contact developers.");
+		return_error (500, "Probable Script Bug", "There's something wrong with the subject type for your auxiliary.  Please contact developers.");
 	    }
 
 	    print MYLANGUAGE "              \#comps &\n";
@@ -1524,7 +1542,7 @@ sub print_lex_types_tdl
 
 	    } else {
 
-		return_error (500, "Internal Server Error", "There's something wrong with the semantics of the auxiliary.  Please contact developers.");
+		return_error (500, "Probable Script Bug", "There's something wrong with the semantics of the auxiliary.  Please contact developers.");
 
 	    }
 
@@ -1545,17 +1563,17 @@ sub print_lex_types_tdl
 	    print MYLANGUAGE "                                   COMPS < > ],\n";
 	    print MYLANGUAGE "                             HEAD";
 	    
-	    if ($mm::auxsubj =~ /NP/) {
+	    if ($mm::auxsubj =~ /noun/) {
 		
 		print MYLANGUAGE " noun ]],\n";
 		
-	    } elsif ($mm::auxsubj =~ /PP/) {
+	    } elsif ($mm::auxsubj =~ /adp/) {
 		
 		print MYLANGUAGE " adp ]],\n";
 		
 	    } else {
 		
-		return_error (500, "Internal Server Error", "There's something wrong with the subject type for your auxiliary.  Please contact developers.");
+		return_error (500, "Probable Script Bug", "There's something wrong with the subject type for your auxiliary.  Please contact developers.");
 	    }
 
 	    print MYLANGUAGE "                       CONT.HOOK.INDEX \#xarg ]],\n";
@@ -1593,7 +1611,7 @@ sub print_lex_types_tdl
 		
 	    } else {
 
-		return_error (500, "Internal Server Error", "There's something wrong with the semantics of the auxiliary.  Please contact developers.");
+		return_error (500, "Probable Script Bug", "There's something wrong with the semantics of the auxiliary.  Please contact developers.");
 		
 	    }
 
@@ -1634,7 +1652,7 @@ sub print_lex_types_tdl
 		
 	    } else {
 
-		return_error (500, "Internal Server Error", "There's something wrong with the semantics of the auxiliary.  Please contact developers.");
+		return_error (500, "Probable Script Bug", "There's something wrong with the semantics of the auxiliary.  Please contact developers.");
 		
 	    }
 	}
@@ -1678,7 +1696,7 @@ sub print_lex_types_tdl
 	    } elsif ($mm::negmod =~ /V/) {
 		print MYLANGUAGE " ],\n                                 LIGHT + ] > ]].\n\n";
 	    } else {
-		return_error (500,"Internal Server Error", "There's something wrong with the barlevel attachment of negative adverbs.  Please contact developers.");
+		return_error (500,"Probable Script Bug", "There's something wrong with the barlevel attachment of negative adverbs.  Please contact developers.");
 	    }
 
 	} elsif ($mm::negadv =~ /sel-adv/) {
@@ -1695,7 +1713,7 @@ sub print_lex_types_tdl
 	    print MYLANGUAGE "                        HEAD.MOD < [ LOCAL.CAT.HEAD verb ] > ]].\n\n";
 	
 	} else {
-	    return_error (500,"Internal Server Error", "There's something wrong with the negative adverb.  Please contact developers.");
+	    return_error (500,"Probable Script Bug", "There's something wrong with the negative adverb.  Please contact developers.");
 	}
     }
 
@@ -1736,7 +1754,7 @@ sub create_rules_tdl
     elsif ($mm::wordorder =~  /free/) {
 	$rulesfile = "free-order-rules.tdl";}
     else {
-	return_error (500,"Internal Server Error","Something's wrong with the word order.  Please contact developers.")
+	return_error (500,"Probable Script Bug","Something's wrong with the word order.  Please contact developers.")
 	}
 
     $rulesfile = "$mm::modules_home"."$rulesfile";
@@ -1745,7 +1763,7 @@ sub create_rules_tdl
     
 #Add to rules file if $mm::consistentorder is vo-postp or ov-prep
     
-    open (RULESINST, ">>$mm::matrix/"."rules.tdl") || return_error (500,"Internal Server Error","Cannot open necessary output file: rules.tdl");
+    open (RULESINST, ">>$mm::matrix/"."rules.tdl") || return_error (500,"Probable Script Bug","Cannot open necessary output file: rules.tdl");
 
     if (($mm::auxconsistentorder =~ /(vo)|(ov)/) &&
 	($mm::consistentorder =~ /(vo)|(ov)/)) {
@@ -1829,7 +1847,7 @@ sub create_irules_tdl
 
 # Then add to it if need be.
 
-    open (IRULES, ">>$mm::matrix/"."irules.tdl") || return_error (500,"Internal Server Error","Cannot open necessary output file: irules.tdl");
+    open (IRULES, ">>$mm::matrix/"."irules.tdl") || return_error (500,"Probable Script Bug","Cannot open necessary output file: irules.tdl");
 
 # Cases where we have an instance of neg-infl-lex-rule:
 
@@ -1885,7 +1903,7 @@ sub create_lrules_tdl
 
 # Then add to it if need be.
 
-    open (LRULES, ">>$mm::matrix/"."lrules.tdl") || return_error (500,"Internal Server Error","Cannot open necessary output file: lrules.tdl");
+    open (LRULES, ">>$mm::matrix/"."lrules.tdl") || return_error (500,"Probable Script Bug","Cannot open necessary output file: lrules.tdl");
 
 # Cases where we have an instance of neg-add-lex-rule
 # (not subtypes of same):
@@ -1916,7 +1934,7 @@ sub create_lrules_tdl
 sub create_lexicon_tdl
 {
 
-    open (LEXICON, ">$mm::matrix"."/lexicon.tdl") || return_error (500,"Internal Server Error","Cannot open necessary output file: lexicon.tdl.");
+    open (LEXICON, ">$mm::matrix"."/lexicon.tdl") || return_error (500,"Probable Script Bug","Cannot open necessary output file: lexicon.tdl.");
 
     print LEXICON ";;; -*- Mode: TDL; Package: LKB -*-\n\n";
     print LEXICON ";;; Nouns\n\n";
@@ -2089,6 +2107,36 @@ sub create_lexicon_tdl
     }
 }
 
+
+#------------------------------------------------------------
+
+sub create_roots_tdl
+{
+    open (ROOTS, ">$mm::matrix"."/roots.tdl") || return_error (500,"Probable Script Bug","Cannot open necessary output file: roots.tdl.");
+    open (BASEROOTS, "$mm::modules_home"."roots.tdl") || return_error (500,"Probable Script Bug","Cannot open necessary input file: modules/roots.tdl.");
+
+    if ($mm::hasaux == 1) {
+	while (<BASEROOTS>) {
+	    
+	    if (/verb/) {
+		chomp;
+		chop;
+		print ROOTS;
+		print ROOTS "& [ FORM fin ],\n";
+	    } else {
+		print ROOTS;
+	    }
+	}
+
+    } else {
+	while (<BASEROOTS>) {
+	    print ROOTS;
+	}
+    }
+    
+    close (ROOTS);
+    close (BASEROOTS);
+}
 
 #------------------------------------------------------------
 
