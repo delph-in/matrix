@@ -34,9 +34,7 @@
   (list 
    (lkb-pathname (parent-directory) "matrix.tdl")
    (lkb-pathname (parent-directory) "head-types.tdl")
-   (lkb-pathname (parent-directory) "my_language.tdl")
-   (lkb-pathname (parent-directory) "modules/basic-lex.tdl")
-;;; Modules: types files
+;;; Modules: LOAD my_language.tdl
 ))
 
 ;;;
@@ -44,10 +42,7 @@
 ;;; (some grammars with larger lexica organize them into multiple files).
 ;;;
 
-(read-tdl-lex-file-aux (list (lkb-pathname (parent-directory) "lexicon.tdl")
-			     (lkb-pathname (parent-directory) "test-lex.tdl")
-;;; Modules: lex files
-))			     
+(read-tdl-lex-file-aux (list (lkb-pathname (parent-directory) "lexicon.tdl")))			     
 
 ;;; For grammars with small lexicons, no need to use a cache file:
 ;;; Once your lexicon has >1000 words or so, consider using the 
@@ -63,20 +58,7 @@
 ;;;
 (read-tdl-grammar-file-aux (lkb-pathname (parent-directory) "rules.tdl"))
 (read-tdl-lex-rule-file-aux (lkb-pathname (parent-directory) "lrules.tdl"))
-;;; Modules: Non-spell-changing lexical rules 
-
 (read-morph-file-aux (lkb-pathname (parent-directory) "irules.tdl"))
-
-;;; Modules: lexical rules 
-
-
-(read-tdl-grammar-file-aux (lkb-pathname 
-			    (parent-directory) 
-			    "modules/optdet-rules.tdl"))
-(read-tdl-grammar-file-aux (lkb-pathname 
-			    (parent-directory) 
-			    "modules/mod-rules.tdl"))
-;;; Modules: rules files
 
 
 ;;;
@@ -112,33 +94,11 @@
 (index-for-generator)
 
 ;;;
-;;; Preliminary support for transfer rules in Matrix grammars.
-;;; This is still under development and should be ignored for
-;;; the time being.
-;;;
-
-;#+:mt
-;(mt:initialize-transfer)
-;#+:mt
-;(lkb-load-lisp (this-directory) "mt.lsp" t)
-
-;;; If using transfer rules, they can be loaded as
-;;; follows, assuming they are stored in a file called
-;;; transfer.mtr.
-
-;#+:mt
-;(mt:read-transfer-rules 
-; (list
-;  (lkb-pathname (parent-directory) "transfer.mtr"))
-; "MWE Paraphraser"
-; :filter nil)
-
-;;;
 ;;; The following overwrites the LKB's default for what 
 ;;; appears in the parse input dialog box.  Putting a
 ;;; short list of basic sentences from your language
 ;;; in that position may be helpful.
 ;;;
 
-;(if (eq (length *last-parses*) 1)
-;    (setf *last-parses* '("your sentence 1" "your sentence 2")))
+;;; Modules: Default sentences
+
