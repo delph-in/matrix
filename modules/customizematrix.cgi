@@ -18,14 +18,9 @@
 #
 #3. Add semantics for yes-no questions. 
 #
-#4. Figure out what's wrong .tar.gz output.
+#4. Figure out what's wrong .tar.gz output: ?? seems to be working now
 #   
-#5. Downcase the language name when creating the value of $mm::my_language
-#
-#6. Add to output a .choices file which records the user input
-#   for our future reference (and debugging purposes!)
-#
-#7. Consider allowing folks to input an auxiliary lexical entry
+#5. Consider allowing folks to input an auxiliary lexical entry
 #   even if none of the other choice have required an auxiliary.
 ##########################################################################
 
@@ -52,6 +47,13 @@ use CGI;
 #using the language name value to create a file, which requires a
 #system call, which leads to that value being interpreted.
 
+#Create a copy of the core-matrix files.
+#Doing this before parse_form_data because the latter will
+#now output information in matrix.user/modules_choices.txt,
+#and any errors produced will point the user to that file.
+
+&copy_core_matrix;
+
 #This subroutine now also extracts all of the values returned
 #by the form and stores them in global variables of package mm
 
@@ -61,17 +63,13 @@ use CGI;
 
 &check_for_form_errors;
 
-#Create a copy of the core-matrix files.
-
-&copy_core_matrix;
-
 #Create a customized script file, and store it in matrix.user/lkb/
 
 &customize_script;
 
 #Create a customized my_language.tdl file, and store in matrix.user/
 
-open (MYLANGUAGE, ">$mm::matrix/"."$mm::my_language") || return_error (500,"Probable Script Bug","Cannot open necessary output file.");
+open (MYLANGUAGE, ">$mm::matrix/"."$mm::my_language") || return_error1 (500,"Probable Script Bug","Cannot open necessary output file: $mm::my_language.");
 
 &print_mylanguage_headers;
 &print_head_type_addenda_tdl;
@@ -223,19 +221,11 @@ sub parse_form_data
 	    $FORM_DATA{$key} = $value;
 	}
 
-	if ($key =~ /sentence/) {
-	    unless ($value =~ /[a-zA-Z0-9_ ]*/) {
-		&return_error (500, "Input Error",
-			       "Value of $key is invalid. Please use only letters, numbers, spaces and _.");
-	    }
-	} else {
-	    unless ($value =~ /[a-zA-Z0-9_]*/) {
-		&return_error (500, "Input Error",
-			       "Value of $key is invalid. Please use only letters, numbers and _.");
-	    }
+	unless ($value =~ /[a-zA-Z0-9_ ]*/) {
+	    &return_error1 (500, "Input Error",
+			   "Value of $key is invalid. Please use only letters, numbers, spaces and _.");
 	}
-    }
-
+    } 
 
     #Now, extract each piece of information and store it in a global variable
     #in package mm.  Some of these may be empty, leading to undefined variables.
@@ -255,7 +245,6 @@ sub parse_form_data
     $mm::iverb = $FORM_DATA{"iverb"};
     $mm::iverbnf = $FORM_DATA{"iverb-nonfinite"};
     $mm::iverbpred = $FORM_DATA{"ivpred"};
-    $mm::iverbsubj = $FORM_DATA{"iverbSubj"};
     $mm::ivsubj = $FORM_DATA{"iverbSubj"};
     $mm::language = $FORM_DATA{"language"};
     $mm::multineg = $FORM_DATA{"multineg"};
@@ -290,13 +279,71 @@ sub parse_form_data
     $mm::subjadpform = $FORM_DATA{"subjAdpForm"};
     $mm::tverb = $FORM_DATA{"tverb"};
     $mm::tverbnf = $FORM_DATA{"tverb-nonfinite"};
-    $mm::tverbobj = $FORM_DATA{"tverbObj"};
     $mm::tverbpred = $FORM_DATA{"tvpred"};
-    $mm::tverbsubj = $FORM_DATA{"tverbSubj"};
     $mm::tvobj = $FORM_DATA{"tverbObj"};
     $mm::tvsubj = $FORM_DATA{"tverbSubj"};
     $mm::wordorder = $FORM_DATA{"wordorder"};
 #   $mm:: = $FORM_DATA{""};
+
+#Write the values for each of these variables to the file 
+#matrix.user/modules_choices.txt for future reference (especially
+#debugging purposes.
+    
+    open (CHOICES, ">$mm::matrix"."/modules_choices.txt") || return_error1 (500,"Probable Script Bug","Cannot open necessary output file: modules_choices.txt.");
+    
+    print CHOICES <<End_of_Choices;
+auxcomp (auxiliary's complement) is: $mm::auxcomp 
+auxorder (order of aux and comp) is: $mm::auxorder
+auxsem (auxiliary's semantics) is: $mm::auxsem 
+auxsubj (category of aux's subj) is: $mm::auxsubj
+auxverbform (form of auxiliary) is: $mm::auxverbform 
+delivery method is: $mm::delivery 
+det1 (form of first determiner) is: $mm::det1
+det1pred (pred of first determiner) is: $mm::det1pred
+det2 (form of second determiner) is: $mm::det2 
+det2pred (pred of second determiner) is: $mm::det2pred 
+hasdets (whether the language has determiners) is: $mm::hasdets 
+iverb (form of intrans verb) is: $mm::iverb 
+iverbnf (nonfinite form of intrans verb) is: $mm::iverbnf 
+iverbpred (pred of intrans verb) is: $mm::iverbpred 
+ivsubj (category of subj of intrans verb) is: $mm::ivsubj 
+language (language you're describing) is: $mm::language 
+multineg (how multiple negation strategies interact) is: $mm::multineg 
+neg (negation strategy/ies chosen) is: $mm::neg 
+negadv (whether the negative adverb is selected or independent) is: $mm::negadv 
+negadvform (form of the negative adverb) is: $mm::negadvform 
+negaff (whether the negative affix is a prefix or suffix) is: $mm::negaff 
+negaffform (form of the negative affix) is: $mm::negaffform 
+neginfltype (what kind of verbs inflect for negation) is: $mm::neginfltype 
+negmod (category modified by negative adverb) is: $mm::negmod 
+negprepostmod (order of neg adv wrt to head) is: $mm::negprepostmod 
+negseladv (what kind of verbs select the neg adv) is: $mm::negseladv 
+noun1 (form of first noun) is: $mm::noun1 
+noun1pred (pred of first noun) is: $mm::noun1pred 
+noun1spr (optionality of specifier on first noun) is: $mm::noun1spr 
+noun2 (form of second noun) is: $mm::noun2 
+noun2pred (pred of second noun) is: $mm::noun2pred 
+noun2spr (optionality of specifier on second noun) is: $mm::noun2spr 
+noundetorder (order of dets and nouns) is: $mm::noundetorder 
+objadp (order of object-marking adposition wrt to comp) is: $mm::objadp 
+objadpform (form of object-marking adposition) is: $mm::objadpform 
+ques (question formation strategy) is: $mm::ques 
+qinvverb (type of verbs which invert) is: $mm::qinvverb 
+qpartposthead (order of question particle wrt sentence) is: $mm::qpartposthead 
+qpartform (form of question particle) is: $mm::qpartform 
+sentence1 (first test sentence) is: $mm::sentence1 
+sentence2 (second test sentence) is: $mm::sentence2 
+subjadp (order of subject-marking adposition wrt to comp) is: $mm::subjadp 
+subjadpform (form of subject-marking adposition) is: $mm::subjadpform 
+tverb (form of transitive verb) is: $mm::tverb 
+tverbnf (non-finite form of transitive verb) is: $mm::tverbnf 
+tverbpred (pred of transitive verb) is: $mm::tverbpred 
+tvobj (category of object of transitive verb) is: $mm::tvobj 
+tvsubj (category of subject of transitive verb) is: $mm::tvsubj 
+wordorder (basic word order) is: $mm::wordorder 
+End_of_Choices
+
+close(CHOICES);
 
 #Some secondary information, calculated on the basis of the above:
 
@@ -360,15 +407,15 @@ sub parse_form_data
 
 #Do the verbs take the same category (NP or PP) for their subjects?
 
-    if ($mm::iverbsubj) {
+    if ($mm::ivsubj) {
 	
-	if ($mm::tverbsubj && ($mm::iverbsubj ne $mm::tverbsubj)) {
+	if ($mm::tvsubj && ($mm::ivsubj ne $mm::tvsubj)) {
 	    $mm::singlevtype = 0;
-	} elsif  ($mm::iverbsubj eq $mm::tverbsubj) {
+	} elsif  ($mm::ivsubj eq $mm::tvsubj) {
 	    $mm::singlevtype = 1;
 	} else {
 
-	    if ($mm::tverbsubj) {
+	    if ($mm::tvsubj) {
 
 		return_error (500, "Probable Script Bug", "Something's wrong with the intransitive verb. Please contact developers.");
 	    }
@@ -612,9 +659,9 @@ sub check_for_form_errors {
 
     unless (($mm::noun1spr || !$mm::noun1) &&
 	    ($mm::noun2spr || !$mm::noun2) &&
-	    ($mm::iverbsubj || !$mm::iverb) &&
-	    ($mm::tverbsubj || !$mm::tverb) &&
-	    ($mm::tverbobj || !$mm::iverb) &&
+	    ($mm::ivsubj || !$mm::iverb) &&
+	    ($mm::tvsubj || !$mm::tverb) &&
+	    ($mm::tvobj || !$mm::iverb) &&
 	    ($mm::objadpform || !$mm::objadp) &&
 	    ($mm::subjadpform || !$mm::subjadp) &&
 	    (($mm::auxsem && $mm::auxcomp && $mm::auxorder) || !$mm::auxverbform)) {
@@ -654,6 +701,29 @@ sub check_for_form_errors {
 #-------------------------------------------------------------------------
 
 sub return_error 
+{
+    my($status, $keyword, $message) = @_;
+    
+    print "Content-type: text/html", "\n";
+    print "Status: ", $status, " ", $keyword, "\n\n";
+    print <<End_of_Error;
+
+<title>CGI Program - Unexpected Error</title>
+<h1>$keyword</h1>
+<hr>$message
+<p>Use the back button on your browser to correct your entries and resubmit the form.
+<p>If you contact the developers about this error, please include the error message and the choices you made on the form as recorded in <a href="http://www.delph-in.net/matrix/tmp/matrix.$mm::user/modules_choices.txt">this file</a>.
+<hr>
+
+End_of_Error
+
+exit(1);
+}
+
+#-------------------------------------------------------------------------
+
+sub return_error1
+#This one is for errors that should point users to the modules_choices.txt file. 
 {
     my($status, $keyword, $message) = @_;
     
@@ -715,8 +785,8 @@ sub customize_script
 #All module-generated tdl is included in the `standard' files (my_language.tdl,
 #lexicon.tdl, irules.tdl, etc).
 
-    open (LKBSCRIPT, ">$mm::matrix"."/lkb/script") || return_error (500,"Probable Script Bug","Cannot open necessary output file.");
-    open (BASESCRIPT, "$mm::modules_home"."script") || return_error (500,"Probable Script Bug","Cannot open necessary input file: script.");
+    open (LKBSCRIPT, ">$mm::matrix"."/lkb/script") || return_error1 (500,"Probable Script Bug","Cannot open necessary output file: lkb/script.");
+    open (BASESCRIPT, "$mm::modules_home"."script") || return_error1 (500,"Probable Script Bug","Cannot open necessary input file: script.");
 
     while (<BASESCRIPT>) {
 
@@ -846,7 +916,7 @@ sub print_word_order_tdl
 	return_error (500, "Probable Script Bug", "Something's wrong with the word order.  Please contact developers.");
     }
 
-    open (RULETYPES, "$mm::modules_home"."$ruletypesinput") || return_error (500,"Probable Script Bug","Cannot open necessary input file: $ruletypesinput.");
+    open (RULETYPES, "$mm::modules_home"."$ruletypesinput") || return_error1 (500,"Probable Script Bug","Cannot open necessary input file: $ruletypesinput.");
 
     print MYLANGUAGE ";;; Phrase structure rule types\n\n";
 
@@ -1345,7 +1415,7 @@ sub print_lex_types_tdl
     
     if ($mm::singlevtype) {
 	
-	if ($mm::iverbsubj =~ /np/) {
+	if ($mm::ivsubj =~ /np/) {
 	    
 	    print MYLANGUAGE "             [ LOCAL [ CAT [ HEAD noun,\n";
 	    
@@ -1393,7 +1463,7 @@ sub print_lex_types_tdl
 	
 	print MYLANGUAGE ",\n";
 	
-	if ($mm::iverbsubj =~ /np/) {
+	if ($mm::ivsubj =~ /np/) {
 	    
 	    print MYLANGUAGE "     ARG-ST < [ LOCAL.CAT.HEAD noun ] > ].\n\n";
 	    
@@ -1412,7 +1482,7 @@ sub print_lex_types_tdl
 	
     } else {
 	
-	if ($mm::tverbsubj =~ /np/) {
+	if ($mm::tvsubj =~ /np/) {
 	    print MYLANGUAGE "     ARG-ST < [ LOCAL.CAT.HEAD noun ],\n";
 	} else {
 	    print MYLANGUAGE "     ARG-ST < [ LOCAL.CAT.HEAD adp ],\n";
@@ -1424,7 +1494,7 @@ sub print_lex_types_tdl
     print MYLANGUAGE "              [ LOCAL.CAT [ VAL [ SPR < >,\n";
     print MYLANGUAGE "                                  COMPS < > ],\n";
     
-    if ($mm::tverbobj =~ /np/) {
+    if ($mm::tvobj =~ /np/) {
 	print MYLANGUAGE "                            HEAD noun ]] > ].\n\n";
     } else {
 	print MYLANGUAGE "                            HEAD adp ]] > ].\n\n";
@@ -1763,7 +1833,7 @@ sub create_rules_tdl
     
 #Add to rules file if $mm::consistentorder is vo-postp or ov-prep
     
-    open (RULESINST, ">>$mm::matrix/"."rules.tdl") || return_error (500,"Probable Script Bug","Cannot open necessary output file: rules.tdl");
+    open (RULESINST, ">>$mm::matrix/"."rules.tdl") || return_error1 (500,"Probable Script Bug","Cannot open necessary output file: rules.tdl");
 
     if (($mm::auxconsistentorder =~ /(vo)|(ov)/) &&
 	($mm::consistentorder =~ /(vo)|(ov)/)) {
@@ -1847,7 +1917,7 @@ sub create_irules_tdl
 
 # Then add to it if need be.
 
-    open (IRULES, ">>$mm::matrix/"."irules.tdl") || return_error (500,"Probable Script Bug","Cannot open necessary output file: irules.tdl");
+    open (IRULES, ">>$mm::matrix/"."irules.tdl") || return_error1 (500,"Probable Script Bug","Cannot open necessary output file: irules.tdl");
 
 # Cases where we have an instance of neg-infl-lex-rule:
 
@@ -1903,7 +1973,7 @@ sub create_lrules_tdl
 
 # Then add to it if need be.
 
-    open (LRULES, ">>$mm::matrix/"."lrules.tdl") || return_error (500,"Probable Script Bug","Cannot open necessary output file: lrules.tdl");
+    open (LRULES, ">>$mm::matrix/"."lrules.tdl") || return_error1 (500,"Probable Script Bug","Cannot open necessary output file: lrules.tdl");
 
 # Cases where we have an instance of neg-add-lex-rule
 # (not subtypes of same):
@@ -1934,7 +2004,7 @@ sub create_lrules_tdl
 sub create_lexicon_tdl
 {
 
-    open (LEXICON, ">$mm::matrix"."/lexicon.tdl") || return_error (500,"Probable Script Bug","Cannot open necessary output file: lexicon.tdl.");
+    open (LEXICON, ">$mm::matrix"."/lexicon.tdl") || return_error1 (500,"Probable Script Bug","Cannot open necessary output file: lexicon.tdl.");
 
     print LEXICON ";;; -*- Mode: TDL; Package: LKB -*-\n\n";
     print LEXICON ";;; Nouns\n\n";
@@ -2112,8 +2182,8 @@ sub create_lexicon_tdl
 
 sub create_roots_tdl
 {
-    open (ROOTS, ">$mm::matrix"."/roots.tdl") || return_error (500,"Probable Script Bug","Cannot open necessary output file: roots.tdl.");
-    open (BASEROOTS, "$mm::modules_home"."roots.tdl") || return_error (500,"Probable Script Bug","Cannot open necessary input file: modules/roots.tdl.");
+    open (ROOTS, ">$mm::matrix"."/roots.tdl") || return_error1 (500,"Probable Script Bug","Cannot open necessary output file: roots.tdl.");
+    open (BASEROOTS, "$mm::modules_home"."roots.tdl") || return_error1 (500,"Probable Script Bug","Cannot open necessary input file: modules/roots.tdl.");
 
     if ($mm::hasaux == 1) {
 	while (<BASEROOTS>) {
@@ -2199,17 +2269,31 @@ Inside the directory are several files.  Here is an explanation of some:
 
 <ul>
 <li><tt>matrix.tdl</tt>: Language independent type and constraint definitions.  You should not need to modify this file.
-<li><tt>$mm::my_language</tt>: Types and constraints specific to your language.  This is where you will add additional constraints.
-<li><tt>lexicon.tdl</tt>: Lexical entries for your language.
+<li><tt>$mm::my_language</tt>: Types and constraints specific to your language.
+<li><tt>lexicon.tdl</tt>: Lexical entries for your language. 
 <li><tt>rules.tdl</tt>: Phrase structure rule instance entries for your language.
 <li><tt>irules.tdl</tt>: Spelling-changing lexical rule instance entries for your language.
 <li><tt>lrules.tdl</tt>: Non-spelling-changing lexical rule instance entries for your language.
 <li><tt>lkb/script</tt>: The script file for loading your grammar into the LKB.
+<li><tt>modules_choices.txt</tt>: A record of the information you provided in the matrix configuration form.
 </ul>
+
+<p>To run this grammar, start the LKB, and the load it by selected
+"Load > Complete grammar..." from the LKB menu.  You can then parse a
+sentence by selecting "Parse > Parse input..." from the LKB menu.  The
+dialogue box that pops up should include the sentences you filled into
+the form.  When a sentence parses successfully, you can try generating
+from the associated semantics by selecting "Generate" or "Generate
+from edge" from the pop-up menu.  For more on using the LKB, see the
+<a href="http://www.delph-in.net/lkb">LKB page</a> and/or Copestake
+2002 <a
+href="http://cslipublications.stanford.edu/lkb.html"><i>Implementing
+Typed Feature Structure Grammars</i></a>.
 
 <hr>
 <a href="http://www.delph-in.net/matrix/modules.html">Back to form</a><br>
 <a href="http://www.delph-in.net/matrix/">Back to Matrix main page</a><br>
+<a href="http://www.delph-in.net/lkb">To the LKB page</a>
 </body></html>
 
 End_of_Html
