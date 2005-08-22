@@ -7,20 +7,16 @@
 #########################################################################
 #TODO:
 #
-#0. Move more stuff off into subroutines.
-#
 #1. Consolidate word order things in order to
 #   take adpositions into consideration from the start (to
-#   avoid postiting addenda to types defined in my_language.tdl.
+#   avoid postiting addenda to types defined in my_language.tdl).
 #
 #2. Consider moving particularly ugly subroutines off into different
 #   files.
 #
 #3. Add semantics for yes-no questions. 
 #
-#4. Figure out what's wrong .tar.gz output: ?? seems to be working now
-#   
-#5. Consider allowing folks to input an auxiliary lexical entry
+#4. Consider allowing folks to input an auxiliary lexical entry
 #   even if none of the other choice have required an auxiliary.
 ##########################################################################
 
