@@ -24,6 +24,9 @@
 
 package mm;
 
+# onwindows is true iff we're running on Windows.  - sfd
+$mm::onwindows = ($^O eq "MSWin32");
+
 #Clean up any files that are hanging around from previous
 #downloads, so the file space doesn't get filled up.
 
@@ -35,6 +38,8 @@ package mm;
 use strict;
 use CGI::Carp qw(fatalsToBrowser);
 use CGI;
+use File::Copy;
+use File::Copy::Recursive qw(dircopy);
 
 #Parse the data from the form, and store it in matrix_form.
 #Make sure to check all text fields and rejecct anything that
@@ -94,6 +99,11 @@ close (MYLANGUAGE);
 
 &create_lexicon_tdl;
 
+#Add rules and lexical items to support coordination.  This may require
+#editing my_language.tdl, rules.tdl, irules.tdl, and lexicon.tdl.
+
+&create_coordination_tdl;
+
 #Create a customized roots.tdl file, and store in matrix.user/.
 #This used to be part of matrix-core, but now it needs to be
 #specialized in case there's auxiliaries.
@@ -134,6 +144,13 @@ sub remove_old_files
 {
 
     my(@tmpls,$tmpls,$date,@date,$now,@now,$today,$thisminute,$thishour,$fileday,$filetime,@filetime,$filehour,$fileminute,$home,$matrix,@matrix,$filename,$torm,$hourdiff);
+
+    # This code is Unix-specific, so for now just don't do cleanup on Windows.
+    #  - sfd 08/01/2005
+    if ($mm::onwindows) {
+      return;
+    }
+
     $date = `date`;
     @date = split(' ',$date);
     $today = $date[2];
@@ -232,6 +249,26 @@ sub parse_form_data
     $mm::auxsem = $FORM_DATA{"auxsem"};
     $mm::auxsubj = $FORM_DATA{"auxsubj"};
     $mm::auxverbform = $FORM_DATA{"auxverb"};
+    $mm::cs1 = $FORM_DATA{"cs1"};
+    $mm::cs1n = $FORM_DATA{"cs1n"};
+    $mm::cs1np = $FORM_DATA{"cs1np"};
+    $mm::cs1v = $FORM_DATA{"cs1v"};
+    $mm::cs1vp = $FORM_DATA{"cs1vp"};
+    $mm::cs1s = $FORM_DATA{"cs1s"};
+    $mm::cs1pat = $FORM_DATA{"cs1pat"};
+    $mm::cs1mark = $FORM_DATA{"cs1mark"};
+    $mm::cs1order = $FORM_DATA{"cs1order"};
+    $mm::cs1orth = $FORM_DATA{"cs1orth"};
+    $mm::cs2 = $FORM_DATA{"cs2"};
+    $mm::cs2n = $FORM_DATA{"cs2n"};
+    $mm::cs2np = $FORM_DATA{"cs2np"};
+    $mm::cs2v = $FORM_DATA{"cs2v"};
+    $mm::cs2vp = $FORM_DATA{"cs2vp"};
+    $mm::cs2s = $FORM_DATA{"cs2s"};
+    $mm::cs2pat = $FORM_DATA{"cs2pat"};
+    $mm::cs2mark = $FORM_DATA{"cs2mark"};
+    $mm::cs2order = $FORM_DATA{"cs2order"};
+    $mm::cs2orth = $FORM_DATA{"cs2orth"};
     $mm::delivery = $FORM_DATA{"delivery"};
     $mm::det1 = $FORM_DATA{"det1"};
     $mm::det1pred = $FORM_DATA{"det1pred"};
@@ -635,6 +672,62 @@ sub check_for_form_errors {
 	}
     }
 
+#Did they specify consistent coordination strategys?
+
+    if ($mm::cs1) {
+      unless (($mm::cs1n || $mm::cs1np || $mm::cs1v ||
+               $mm::cs1vp || $mm::cs1s) &&
+              $mm::cs1pat && $mm::cs1mark && $mm::cs1order) {
+        return_error (500, "Internal Server Error",
+                      "You must specify all the details of Coordination Strategy 1.");
+      }
+
+      if ($mm::cs1pat =~ /a/) {
+        if ($mm::cs1orth) {
+          return_error (500, "Internal Server Error",
+                        "For Coordination Strategy 1 you indicated asyndeton coordination, so it should not have any orthography (spelling).");
+        }
+      } else {
+        unless ($mm::cs1orth) {
+          return_error (500, "Internal Server Error",
+                        "You must specify the form of the word or affix for Coordination Strategy 1.");
+        }
+      }
+
+      if ($mm::cs1mark =~ /affix/ &&
+          ($mm::cs1np || $mm::cs1vp || $mm::cs1s)) {
+        return_error (500, "Internal Server Error",
+                      "Coordination Strategy 1 is marked by an affix, so cannot coordinate a phrase (NP, VP, or sentence).");
+      }
+    }
+
+    if ($mm::cs2) {
+      unless (($mm::cs2n || $mm::cs2np || $mm::cs2v ||
+               $mm::cs2vp || $mm::cs2s) &&
+              $mm::cs2pat && $mm::cs2mark && $mm::cs1order) {
+        return_error (500, "Internal Server Error",
+                      "You must specify all the details of Coordination Strategy 2.");
+      }
+
+      if ($mm::cs2pat =~ /a/) {
+        if ($mm::cs2orth) {
+          return_error (500, "Internal Server Error",
+                        "For Coordination Strategy 2 you indicated asyndeton coordination, so it should not have any orthography (spelling).");
+        }
+      } else {
+        unless ($mm::cs2orth) {
+          return_error (500, "Internal Server Error",
+                        "You must specify the form of the word or affix for Coordination Strategy 2.");
+        }
+      }
+
+      if ($mm::cs2mark =~ /affix/ &&
+          ($mm::cs2np || $mm::cs2vp || $mm::cs2s)) {
+        return_error (500, "Internal Server Error",
+                      "Coordination Strategy 2 is marked by an affix, so cannot coordinate a phrase (NP, VP, or sentence).");
+      }
+    }
+
 #Did they specify enough lexical entries?
 
     unless ($mm::noun1 && $mm::iverb && $mm::tverb) {
@@ -696,12 +789,12 @@ sub check_for_form_errors {
 
 #-------------------------------------------------------------------------
 
-sub return_error 
+sub return_error
 {
     my($status, $keyword, $message) = @_;
-    
-    print "Content-type: text/html", "\n";
-    print "Status: ", $status, " ", $keyword, "\n\n";
+
+    print "HTTP/1.1 $status $keyword\n";
+    print "Content-type: text/html\n";
     print <<End_of_Error;
 
 <title>CGI Program - Unexpected Error</title>
@@ -746,6 +839,20 @@ sub copy_core_matrix
 #my($user,@mm::home,$home,$matrix,$core_matrix,$modules_home);
 
     $mm::user = &make_user_id;
+
+    # If we're running on windows, use the right paths and do file access
+    # without making shell calls (which don't seem to work).  - sfd
+    if ($mm::onwindows) {
+      $mm::home = "C:/Documents and Settings/sfd/My Documents/Academic/Coordination in the Matrix/webmatrix/";
+      $mm::matrix = $mm::home . "tmp/matrix." . $mm::user;
+      $mm::core_matrix = $mm::home . "matrix-core";
+      $mm::modules_home = $mm::home . "modules/";
+
+      dircopy($mm::core_matrix, $mm::matrix);
+
+      return;
+    }
+    
     
 #open and close don't interpret ~.  Need to get shell to
 #interprest it for me.
@@ -1742,6 +1849,14 @@ sub print_lex_types_tdl
 	    #for the tdl (pre/post head x V/VP/S modifier)?  Hard to maintain
 	    #that, though...
 
+	    if ($mm::negprepostmod =~ /pre/) {
+		$mm::posthead = "-";
+	    } elsif ($mm::negprepostmod =~ /post/) {
+		$mm::posthead = "+";
+	    } else {
+		return_error (500, "Internal Sever Error", "Something's wrong with the mod order for neg adv.  Please contact developers.");
+	    }
+
 	    if ($mm::posthead) {
 		print MYLANGUAGE "   [ SYNSEM.LOCAL.CAT [ POSTHEAD $mm::posthead,\n";
 		print MYLANGUAGE "                        VAL [ SPR < >,\n";
@@ -1825,7 +1940,7 @@ sub create_rules_tdl
 
     $rulesfile = "$mm::modules_home"."$rulesfile";
     $rulesdest = "$mm::matrix"."/rules.tdl";
-    `cp $rulesfile $rulesdest`;
+    copy($rulesfile, $rulesdest);
     
 #Add to rules file if $mm::consistentorder is vo-postp or ov-prep
     
@@ -1909,7 +2024,7 @@ sub create_irules_tdl
     my($irulesfile,$irulesdest);
     $irulesfile = "$mm::modules_home"."irules.tdl";
     $irulesdest = "$mm::matrix"."/irules.tdl";
-    `cp $irulesfile $irulesdest`;
+    copy($irulesfile, $irulesdest);
 
 # Then add to it if need be.
 
@@ -1965,7 +2080,7 @@ sub create_lrules_tdl
     my($lrulesfile,$lrulesdest);
     $lrulesfile = "$mm::modules_home"."lrules.tdl";
     $lrulesdest = "$mm::matrix"."/lrules.tdl";
-    `cp $lrulesfile $lrulesdest`;
+    copy($lrulesfile, $lrulesdest);
 
 # Then add to it if need be.
 
@@ -2171,8 +2286,278 @@ sub create_lexicon_tdl
 	print LEXICON "   [ STEM < \"$mm::qpartform\" > ].\n\n";
 
     }
+
+    close (LEXICON);
 }
 
+
+#-------------------------------------------------------------------------
+
+sub write_coordination_strategy
+{
+  my($num, $pos, $top, $mid, $bot, $left, $pre, $suf) = @_;
+  my($headtype);
+
+  if ($pos =~ /n|np/) {
+    $headtype = "noun";
+  } elsif ($pos =~ /v|vp|s/) {
+    $headtype = "verb";
+  }
+
+  # First emit the rules into my_language.tdl.  Every strategy has a
+  # top rule and a bottom rule, but only some have a mid rule, so if
+  # the mid prefix argument $mid is empty, don't emit a rule.
+  # Similarly, not all strategies have a left rule.
+  print MYLANGUAGE "
+${pos}${num}-top-coord-rule := basic-${pos}-top-coord-rule & ${top}top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT \"${num}\" ].";
+
+  if ($mid) {
+    print MYLANGUAGE "
+${pos}${num}-mid-coord-rule := basic-${pos}-mid-coord-rule & ${mid}mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT \"${num}\" ].";
+  }
+
+  if ($pre || $suf) {
+    # First write out the rule in my_language.tdl
+    print MYLANGUAGE "
+${pos}${num}-bottom-coord-rule := ${bot}bottom-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT \"${num}\",
+    SYNSEM.LOCAL.COORD-REL.PRED \"_and_coord_rel\",
+    DTR.SYNSEM.LOCAL.CAT.HEAD ${headtype} ].";
+
+    # Now write out the spelling change rule in irules.tdl
+    print IRULES "${pos}${num}-bottom :=\n";
+    if ($pre) {
+      print IRULES "  %prefix (* ${pre})\n";
+    } else {
+      print IRULES "  %suffix (* ${suf})\n";
+    }
+    print IRULES "  ${pos}${num}-bottom-coord-rule.\n\n";
+  } else {
+    print MYLANGUAGE "
+${pos}${num}-bottom-coord-rule := ${bot}bottom-coord-rule & ${pos}-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT \"${num}\"";
+    if ($bot =~ /unary/) {
+      print MYLANGUAGE ",
+    SYNSEM.LOCAL.COORD-REL.PRED \"_and_coord_rel\" ]."
+    } else {
+      print MYLANGUAGE " ]."
+    }
+  }
+
+  if ($left) {
+    print MYLANGUAGE "
+${pos}${num}-left-coord-rule := ${bot}left-coord-rule & ${pos}-bottom-coord-phrase.";
+  }
+
+  print MYLANGUAGE "\n";
+
+  # Now emit the rule instances into rules.tdl.  As above, the mid
+  # or left rule may not be emitted.
+  print RULESINST "
+${pos}${num}-top-coord := ${pos}${num}-top-coord-rule.";
+
+  if ($mid) {
+    print RULESINST "
+${pos}${num}-mid-coord := ${pos}${num}-mid-coord-rule.";
+  }
+
+  print RULESINST "
+${pos}${num}-bottom-coord := ${pos}${num}-bottom-coord-rule.";
+
+  if ($left) {
+    print RULESINST "
+${pos}${num}-left-coord := ${pos}${num}-left-coord-rule.";
+  }
+
+  print RULESINST "\n";
+}
+
+sub create_coordination_tdl
+{
+  my($top, $mid, $bot, $left, $pre, $suf, $conj);
+
+  open (LEXICON, ">>$mm::matrix"."/lexicon.tdl") ||
+    return_error (500, "Internal Server Error",
+                  "Cannot open necessary output file: lexicon.tdl.");
+
+  open (RULESINST, ">>$mm::matrix/"."rules.tdl") ||
+    return_error (500, "Internal Server Error",
+                  "Cannot open necessary output file: rules.tdl");
+
+  open (IRULES, ">>$mm::matrix/"."irules.tdl") ||
+    return_error (500, "Internal Server Error",
+                  "Cannot open necessary output file: irules.tdl");
+
+  open (MYLANGUAGE, ">>$mm::matrix/"."$mm::my_language") ||
+    return_error (500, "Internal Server Error",
+                  "Cannot open necessary output file: $mm::my_language");
+
+  print MYLANGUAGE "\;\;\; Coordination\n";
+
+  if ($mm::cs1) {
+    # Lexical entries (lexicon.tdl)
+    if ($mm::cs1mark =~ /word/) {
+      $conj = "${mm::cs1orth}_1";
+      print LEXICON "${conj} := conj-lex &\n";
+      print LEXICON "  [ STEM < \"$mm::cs1orth\" >,\n";
+      print LEXICON "    SYNSEM.LKEYS.KEYREL.PRED \"_and_coord_rel\",\n";
+      print LEXICON "    CFORM \"1\" ].\n\n";
+
+      # If the pattern is omnisyndeton, we also need a nosem-conj-lex.
+      if ($mm::cs1pat =~ /omni/) {
+        print LEXICON "${conj}_ns := nosem-conj-lex &\n";
+        print LEXICON "  [ STEM < \"$mm::cs1orth\" > ].\n\n";
+      }
+    }
+
+    if ($mm::cs1pat =~ /a/) {
+      $top = "apoly-";
+      $mid = "";
+      $bot = "unary-";
+      $left = "";
+    } else {
+      if ($mm::cs1pat =~ /mono/) {
+        $top = "monopoly-";
+        $mid = "monopoly-";
+        $bot = "";
+        $left = "";
+      } elsif ($mm::cs1pat =~ /omni/) {
+        $top = "omni-";
+        $mid = "omni-";
+        $bot = "omni-";
+        $left = "omni-";
+      } elsif ($mm::cs1pat =~ /poly/) {
+        $top = "apoly-";
+        $mid = "";
+        $bot = "";
+        $left = "";
+      }
+
+      if ($mm::cs1mark =~ /affix/) {
+        $bot = "infl-";
+        if ($mm::cs1order =~ /before/) {
+          $pre = $mm::cs1orth;
+        } else {
+          $suf = $mm::cs1orth;
+        }
+      } else {
+        if ($mm::cs1order =~ /before/) {
+          $bot .= "conj-first-";
+          if ($left) {
+            $left .= "conj-first-";
+          }
+        } else {
+          $bot .= "conj-last-";
+          if ($left) {
+            $left .= "conj-last-";
+          }
+        }
+      }
+    }
+
+    if ($mm::cs1n) {
+      write_coordination_strategy(1, "n", $top, $mid, $bot, $left, $pre, $suf);
+    }
+
+    if ($mm::cs1np) {
+      write_coordination_strategy(1, "np", $top, $mid, $bot, $left, $pre, $suf);
+    }
+
+    if ($mm::cs1vp) {
+      write_coordination_strategy(1, "vp", $top, $mid, $bot, $left, $pre, $suf);
+    }
+
+    if ($mm::cs1s) {
+      write_coordination_strategy(1, "s", $top, $mid, $bot, $left, $pre, $suf);
+    }
+  }
+
+  if ($mm::cs2) {
+    # Lexical entries (lexicon.tdl)
+    if ($mm::cs2mark =~ /word/) {
+      $conj = "${mm::cs2orth}_2";
+      print LEXICON "${conj} := conj-lex &\n";
+      print LEXICON "  [ STEM < \"$mm::cs2orth\" >,\n";
+      print LEXICON "    SYNSEM.LKEYS.KEYREL.PRED \"_and_coord_rel\",\n";
+      print LEXICON "    CFORM \"2\" ].\n\n";
+
+      # If the pattern is omnisyndeton, we also need a nosem-conj-lex.
+      if ($mm::cs2pat =~ /omni/) {
+        print LEXICON "${conj}_ns := nosem-conj-lex &\n";
+        print LEXICON "  [ STEM < \"$mm::cs2orth\" > ].\n\n";
+      }
+    }
+
+    # Rules types (my_language.tdl and rules.tdl)
+    if ($mm::cs2pat =~ /a/) {
+      $top = "apoly-";
+      $mid = "";
+      $bot = "unary-";
+      $left = "";
+    } else {
+      if ($mm::cs2pat =~ /mono/) {
+        $top = "monopoly-";
+        $mid = "monopoly-";
+        $bot = "";
+        $left = "";
+      } elsif ($mm::cs2pat =~ /omni/) {
+        $top = "omni-";
+        $mid = "omni-";
+        $bot = "omni-";
+        $left = "omni-";
+      } elsif ($mm::cs2pat =~ /poly/) {
+        $top = "apoly-";
+        $mid = "";
+        $bot = "";
+        $left = "";
+      }
+
+      if ($mm::cs2mark =~ /affix/) {
+        $bot = "infl-";
+        if ($mm::cs2order =~ /before/) {
+          $pre = $mm::cs2orth;
+        } else {
+          $suf = $mm::cs2orth;
+        }
+      } else {
+        if ($mm::cs2order =~ /before/) {
+          $bot .= "conj-first-";
+          if ($left) {
+            $left .= "conj-first-";
+          }
+        } else {
+          $bot .= "conj-last-";
+          if ($left) {
+            $left .= "conj-last-";
+          }
+        }
+      }
+    }
+
+    if ($mm::cs2n) {
+      write_coordination_strategy(2, "n", $top, $mid, $bot, $left, $pre, $suf);
+    }
+
+    if ($mm::cs2np) {
+      write_coordination_strategy(2, "np", $top, $mid, $bot, $left, $pre, $suf);
+    }
+
+    if ($mm::cs2vp) {
+      write_coordination_strategy(2, "vp", $top, $mid, $bot, $left, $pre, $suf);
+    }
+
+    if ($mm::cs2s) {
+      write_coordination_strategy(2, "s", $top, $mid, $bot, $left, $pre, $suf);
+    }
+  }
+
+  close (LEXICON);
+  close (RULESINST);
+  close (IRULES);
+  close (MYLANGUAGE);
+}
 
 #------------------------------------------------------------
 
@@ -2225,7 +2610,8 @@ sub output_matrix
 	$mm::download = "$tarmatrix".".gz";
 	
     } else {
-	
+
+        system("dir > \"$mm::home/tmp/foo\"");
 	`zip -r $zipmatrix $usermatrix`;
 	$mm::download = $zipmatrix;
 	

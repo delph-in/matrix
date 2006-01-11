@@ -131,6 +131,75 @@ as a selected complement.
 
 <hr>
 
+<h3>Coordination</h3>
+
+<p>Languages can have have multiple ways of marking coordination that
+can differ among the various parts of speech.  The Matrix supports
+both lexical and morphological marking of coordination in several
+patterns.  These patterns include:
+
+<dl>
+<dt>Monosyndeton</dt>
+<dd>"A B and C" (one coordinand marked; also permits "A and B and C")</dd>
+<dt>Polysyndeton</dt>
+<dd>"A and B and C" (for N coordinands, N-1 marked)</dd>
+<dt>N-Polysyndeton</td>
+<dd>"and A and B and C" (all coordinands marked)</dd>
+<dt>Asyndeton</dt>
+<dd>"A B C" (no marking; also called "juxtaposition")</dd>
+</dl>
+
+<dl>
+<dt><input type="checkbox" name="cs1">Coordination Strategy 1:</dt>
+<dd>in which
+<input type="checkbox" name="cs1n">nouns
+<input type="checkbox" name="cs1np">NPs
+<!--<input type="checkbox" name="cs1v">verbs-->
+<input type="checkbox" name="cs1vp">VPs
+<input type="checkbox" name="cs1s">sentences<br>
+are marked in a 
+<input type="radio" name="cs1pat" value="mono">monosyndeton
+<input type="radio" name="cs1pat" value="poly">polysyndeton
+<input type="radio" name="cs1pat" value="omni">N-polysyndeton
+<input type="radio" name="cs1pat" value="a">asyndeton
+&nbsp;&nbsp;pattern<br>
+by a
+<input type="radio" name="cs1mark" value="word">word
+<input type="radio" name="cs1mark" value="affix">affix
+spelled
+<input type="text" name="cs1orth" size="10">
+that comes
+<input type="radio" name="cs1order" value="before">before
+<input type="radio" name="cs1order" value="after">after
+the coordinand.
+</dd>
+<dt><input type="checkbox" name="cs2">Coordination Strategy 2:</dt>
+<dd>in which
+<input type="checkbox" name="cs2n">nouns
+<input type="checkbox" name="cs2np">NPs
+<!--<input type="checkbox" name="cs2v">verbs-->
+<input type="checkbox" name="cs2vp">VPs
+<input type="checkbox" name="cs2s">sentences<br>
+are marked in a 
+<input type="radio" name="cs2pat" value="mono">monosyndeton
+<input type="radio" name="cs2pat" value="poly">polysyndeton
+<input type="radio" name="cs2pat" value="omni">N-polysyndeton
+<input type="radio" name="cs2pat" value="a">asyndeton
+&nbsp;&nbsp;pattern<br>
+by a
+<input type="radio" name="cs2mark" value="word">word
+<input type="radio" name="cs2mark" value="affix">affix
+spelled
+<input type="text" name="cs2orth" size="10">
+that comes
+<input type="radio" name="cs2order" value="before">before
+<input type="radio" name="cs2order" value="after">after
+the coordinand.
+</dd>
+</dl>
+
+<hr>
+
 <h3>Matrix Yes-No Questions</h3>
 
 <p>Please indicate which strategy your language uses to form matrix
@@ -301,7 +370,7 @@ OS. If you are using Mac OS X or linux, choose .tar.gz.  If you are using
 Windows, choose .zip.
 
 <p>Archive type: <input type="radio" name="delivery" value="tgz">
-.tar.gz <input type="radio" name="delivery" value="zip"> .zip.
+.tar.gz <input type="radio" name="delivery" value="zip" checked> .zip.
 
 <hr>
 

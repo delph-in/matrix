@@ -57,6 +57,9 @@ word-or-lexrule := word-or-lexrule-min & sign &
   [ ALTS alts-min,
     ARG-ST list ].
 
+nocoord := sign &
+  [ SYNSEM.LOCAL.COORD - ].
+
 alts-min := avm.
 alts := alts-min &
   [ PASSIVE bool ].
@@ -65,9 +68,9 @@ no-alts := alts-min.
 ; Not all words have lex-synsem - e.g. lexical PPs like "tomorrow" are
 ; phr-synsem since they can be post-nominal modifiers.
 
-word := word-or-lexrule.
+word := word-or-lexrule & nocoord.
 
-lex-item := word-or-lexrule.
+lex-item := word-or-lexrule & nocoord.
 
 ;; Not all phrases have SYNSEM phr-synsem, since we need to allow the
 ;; head-comp rules to build signs which are still [ SYNSEM lex-synsem
@@ -176,10 +179,17 @@ explicitly used in the Matrix.".
 
 mod-local := avm.
 
+; sfd 08/02/2005: Added COORD and COORD-REL for coordination.  COORD
+; is a bool that's used to enforce the syntax of coordination.
+; COORD-REL is the coordination relation.
+
 local-min := mod-local &
   [ CAT cat-min,
     CONT mrs-min,
-    AGR individual ].
+    AGR individual,
+    COORD bool,
+    COORD-REL coordination-relation,
+    COORD-STRAT string ].
 
 local := local-min &
   [ CTXT ctxt-min ].
@@ -496,13 +506,13 @@ tam := avm &
 event := event-or-ref-index &
   [ E tam ].
 
-; Coordinated phrases have conjoined indices as their INDEX
+; Coordinated phrases have coordinated indices as their INDEX
 ; values.  These are meant to be interpreted as pointers to 
-; the set of indices the conjunction conjoins.
+; the set of coordinated indices.
 
-conj-index := event-or-ref-index.
-conj-event := conj-index & event.
-conj-ref-ind := conj-index & ref-ind.
+coord-index := event-or-ref-index.
+coord-event := coord-index & event.
+coord-ref-ind := coord-index & ref-ind.
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -571,17 +581,17 @@ named-relation := noun-relation &
 
 ; coordinating and subordinating conjunctions
 
-subord-or-conj-relation := relation &
+subord-or-coord-relation := relation &
   [ L-HNDL handle,
     R-HNDL handle ].
 
-conjunction-relation := subord-or-conj-relation &
-  [ C-ARG conj-index,
+coordination-relation := subord-or-coord-relation &
+  [ C-ARG coord-index,
     L-INDEX individual,
     R-INDEX individual ].
 
 ; NB: "if_then_rel" is now a PRED value of subord-relation.
-subord-relation := subord-or-conj-relation.
+subord-relation := subord-or-coord-relation.
 
 ; quantifier relation
 
@@ -932,10 +942,10 @@ constant-lex-rule := lex-rule &
 ; Cross-classified types packaing spelling change status and
 ; feature copying.
 
-const-ltol-rule := lexeme-to-lexeme-rule & constant-lex-rule.
-infl-ltol-rule := lexeme-to-lexeme-rule & inflecting-lex-rule.
-const-ltow-rule := lexeme-to-word-rule & constant-lex-rule.
-infl-ltow-rule := lexeme-to-word-rule & inflecting-lex-rule.
+const-ltol-rule := lexeme-to-lexeme-rule & constant-lex-rule & nocoord.
+infl-ltol-rule := lexeme-to-lexeme-rule & inflecting-lex-rule & nocoord.
+const-ltow-rule := lexeme-to-word-rule & constant-lex-rule & nocoord.
+infl-ltow-rule := lexeme-to-word-rule & inflecting-lex-rule & nocoord.
 
 infl-non-local-change-only-ltol-rule := non-local-change-only-lex-rule &
 					inflecting-lex-rule &
@@ -1038,13 +1048,28 @@ const-add-only-no-ccont-ltol-rule := add-only-no-ccont-ltol-rule &
 ; NON-CLAUSE.  Headed phrases also identify the value of AGR on mother
 ; and head daughter, unlike e.g. the coordination schemata which
 ; identify HEAD but not AGR.
+;
+; sfd 08/02/2005: Added constraints on COORD and COORD-REL.  COORD
+; must be "-" for all phrases that aren't participating in
+; coordination.  Also identify the COORD-REL so it gets passed up.
 
 headed-phrase := phrase & 
   [ SYNSEM.LOCAL [ CAT.HEAD head & #head,
-                   AGR #agr ],
+                   AGR #agr,
+                   COORD -,
+                   COORD-REL #crel ],
     HEAD-DTR.SYNSEM.LOCAL local &
 		 [ CAT.HEAD #head,
-                   AGR #agr ] ].
+                   AGR #agr,
+                   COORD -,
+                   COORD-REL #crel ] ].
+
+headed-phrase :+
+  [ SYNSEM.LOCAL [ COORD -,
+                   COORD-REL #crel ],
+    HEAD-DTR.SYNSEM.LOCAL [ COORD -,
+                            COORD-REL #crel ]].
+
 
 non-headed-phrase := phrase.
 
@@ -1149,7 +1174,7 @@ binary-phrase := basic-binary-phrase &
            [ INFLECTED + ] > ].
 
 basic-binary-headed-phrase := headed-phrase & basic-binary-phrase &
-  [ NON-HEAD-DTR sign ].
+  [ NON-HEAD-DTR sign & [ SYNSEM.LOCAL.COORD - ] ].
 
 binary-headed-phrase := basic-binary-headed-phrase & binary-phrase.
 
@@ -2382,3 +2407,412 @@ basic-subord-conjunction-lex := basic-one-arg &
 ; Lexical type for negative particles like English "not"
 ; Lexical type for WH elements
 ; Documentation listing the phenomena handled by these lexical types.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Coordination (added by sfd 08/02/2005)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Two relations used in coordination:
+;
+; implicit-coord-rel: used when there's no overt conjunction (or
+; morpheme) providing the coordination relation.
+;
+; null-coord-rel: used when a conjunction contributes *no* relation.
+
+implicit-coord-rel := coordination-relation &
+  [ PRED 'implicit_coord_rel ].
+null-coord-rel := coordination-relation &
+  [ PRED 'null_coord_rel ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Conjunction parts of speech
+
+conj-lex := basic-zero-arg & single-rel-lex-item & no-hcons-lex-item &
+  [ CFORM string,
+    SYNSEM [ LOCAL [ CAT [ HEAD conj & [ MOD null ],
+                           VAL [ SPR < >,
+                                 COMPS < >,
+                                 SUBJ < > ]],
+                     CONT [ HOOK [ LTOP #ltop,
+                                   INDEX #index ],
+                            RELS.LIST.FIRST #keyrel ]],
+             LKEYS.KEYREL #keyrel & coordination-relation & [ LBL #ltop,
+                                                              C-ARG #index ]]].
+
+; A nosem-conj-lex is a conjunction that contributes no relation.
+; Used below in "omnisyndeton" coordination.
+
+nosem-conj-lex := basic-zero-arg & no-hcons-lex-item &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD conj & [ MOD null ],
+                           VAL [ SPR < >,
+                                 COMPS < >,
+                                 SUBJ < > ]],
+                     CONT.RELS <! !> ]]].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Coordination phrases and rules
+
+coord-phrase := binary-phrase &
+  [ SYNSEM.LOCAL [ COORD-STRAT #cstrat,
+                   CAT [ HEAD.MOD #mod,
+                         VAL #val ]],
+    LCOORD-DTR #ldtr & sign & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                                                     VAL #val ]]],
+    RCOORD-DTR #rdtr & sign & [ SYNSEM.LOCAL [ COORD-STRAT #cstrat,
+                                               CAT [ HEAD.MOD #mod,
+                                                     VAL #val ]]],
+    ARGS < #ldtr, #rdtr > ].
+
+topormid-coord-phrase := coord-phrase &
+  [ C-CONT.HOOK [ LTOP #lbl, INDEX #carg ],
+    LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX #lind,
+    RCOORD-DTR.SYNSEM.LOCAL [ COORD-REL [ LBL #lbl,
+                                          C-ARG #carg,
+                                          L-INDEX #lind,
+                                          R-INDEX #rind ],
+                              CONT.HOOK.INDEX #rind ]].
+
+top-coord-rule := topormid-coord-phrase &
+  [ SYNSEM.LOCAL.COORD - ].
+
+mid-coord-rule := topormid-coord-phrase &
+  [ SYNSEM.LOCAL [ COORD +,
+                   COORD-REL implicit-coord-rel ]].
+
+bottom-coord-phrase := phrase &
+  [ CONJ-DTR sign,
+    NONCONJ-DTR sign ].
+
+unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                         VAL #val ],
+                   COORD +,
+                   COORD-REL #crel ],
+    C-CONT [ HOOK [ INDEX #rind ],
+	     RELS <! #crel !>,
+	     HCONS <! !> ],
+    NONCONJ-DTR sign & #ncdtr,
+    ARGS < #ncdtr & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                                           VAL #val ],
+                                     COORD -,
+                                     CONT.HOOK [ INDEX #rind ]]] > ].
+
+infl-bottom-coord-rule := same-local-lex-rule &
+                          same-non-local-lex-rule &
+                          inflecting-lex-rule &
+  [ INFLECTED +,
+    DTR.INFLECTED -,
+    SYNSEM.LOCAL [ COORD +,
+                   COORD-REL #crel ],
+    C-CONT [ RELS <! #crel !>,
+             HCONS <! !> ]].
+
+binary-bottom-coord-rule := bottom-coord-phrase & binary-phrase &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                         VAL #val ],
+                   COORD +,
+                   COORD-REL #crel,
+                   COORD-STRAT #cform ],
+    C-CONT [ HOOK [ INDEX #rind ],
+	     RELS <! !>,
+	     HCONS <! !> ],
+    CONJ-DTR conj-lex & [ CFORM #cform,
+                          SYNSEM.LKEYS.KEYREL #crel ],
+    NONCONJ-DTR sign & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                                              VAL #val ],
+                                        COORD -,
+                                        CONT.HOOK [ INDEX #rind ]]]].
+
+conj-first-bottom-coord-rule := binary-bottom-coord-rule &
+  [ CONJ-DTR #cdtr,
+    NONCONJ-DTR #ncdtr,
+    ARGS < #cdtr, #ncdtr > ].
+
+conj-last-bottom-coord-rule := binary-bottom-coord-rule &
+  [ CONJ-DTR #cdtr,
+    NONCONJ-DTR #ncdtr,
+    ARGS < #ncdtr, #cdtr > ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; *syndeton rules: Rules that describe the different kinds of marking
+; strategies used for coordination in various languages.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; monopoly*: Mandatory monosyndeton with optional polysyndeton.  This
+; is the familiar Indo-European pattern, in which at least one
+; coordinator is mandatory ("A B and C") and more than one is possible
+; ("A and B and C").
+
+monopoly-top-coord-rule := top-coord-rule &
+  [ LCOORD-DTR.SYNSEM.LOCAL.COORD -,
+    RCOORD-DTR.SYNSEM.LOCAL.COORD + ].
+
+monopoly-mid-coord-rule := mid-coord-rule &
+  [ LCOORD-DTR.SYNSEM.LOCAL.COORD -,
+    RCOORD-DTR.SYNSEM.LOCAL.COORD + ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; apoly: These rules handle two coordination strategies:
+;
+; Asyndeton, in which no coordinators appear: "A B C".
+;
+; Polysyndeton, in which an N-way coordination is marked with  N-1
+; coordinators:
+;     "A and B and C", not "A B and C"
+;
+; For both of these, there is NO MID RULE.  The difference between
+; them is captured in the bottom rule: asyndeton will have a unary
+; (and non-inflecting) bottom rule.
+
+apoly-top-coord-rule := top-coord-rule &
+  [ LCOORD-DTR.SYNSEM.LOCAL.COORD -,
+    RCOORD-DTR.SYNSEM.LOCAL.COORD + ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; omni: This handles a variety of polysyndeton, called here for
+; clarity "omnisyndeton", in which for an N-way coordination, N
+; coordinators are required:
+;
+;     "and A and B and C" or "A and B and C and".
+;
+; This coordination strategy requires a significantly approach than
+; the others.  Rather than a single kind of bottom rule, there are two
+; kinds.  The first kind, still called "bottom", handles the single
+; lowest (rightmost) coordinand.  The other kind, called "left",
+; handles all other coordinands (it's called "left" because it is
+; always the left daughter of a top- or mid- rule).  Because there are
+; N coordinators for N coordinands in this strategy, one of the
+; conjunctions must contribute *no* coordination relation, or else
+; we'd have too many.  The bottom rule is the exceptional one: it
+; requires that its conjunction daughter be of type nosem-conj-lex.
+;
+; The mid- and top- rules are also slightly different from the other
+; coordination strategies, in that they take the COORD-REL from the
+; *left* daughter instead of the right.
+
+omni-binary-bottom-coord-rule := bottom-coord-phrase & binary-phrase &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                         VAL #val ],
+                   COORD +,
+                   COORD-REL null-coord-rel ],
+    C-CONT [ HOOK [ INDEX #rind ],
+	     RELS <! !>,
+	     HCONS <! !> ],
+    CONJ-DTR nosem-conj-lex,
+    NONCONJ-DTR sign & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                                              VAL #val ],
+                                        COORD -,
+                                        CONT.HOOK [ INDEX #rind ]]]].
+
+omni-conj-first-bottom-coord-rule := omni-binary-bottom-coord-rule &
+  [ CONJ-DTR #cdtr,
+    NONCONJ-DTR #ncdtr,
+    ARGS < #cdtr, #ncdtr > ].
+
+omni-conj-last-bottom-coord-rule := omni-binary-bottom-coord-rule &
+  [ CONJ-DTR #cdtr,
+    NONCONJ-DTR #ncdtr,
+    ARGS < #ncdtr, #cdtr > ].
+
+omni-binary-left-coord-rule := bottom-coord-phrase & binary-phrase &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                         VAL #val ],
+                   COORD -,
+                   COORD-REL #crel ],
+    C-CONT [ HOOK [ INDEX #rind ],
+	     RELS <! !>,
+	     HCONS <! !> ],
+    CONJ-DTR conj-lex & [ SYNSEM.LKEYS.KEYREL #crel ],
+    NONCONJ-DTR sign & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                                              VAL #val ],
+                                        COORD -,
+                                        CONT.HOOK [ INDEX #rind ]]]].
+
+omni-conj-first-left-coord-rule := omni-binary-left-coord-rule &
+  [ CONJ-DTR #cdtr,
+    NONCONJ-DTR #ncdtr,
+    ARGS < #cdtr, #ncdtr > ].
+
+omni-conj-last-left-coord-rule := omni-binary-left-coord-rule &
+  [ CONJ-DTR #cdtr,
+    NONCONJ-DTR #ncdtr,
+    ARGS < #ncdtr, #cdtr > ].
+
+omni-coord-phrase := coord-phrase &
+  [ C-CONT.HOOK [ LTOP #lbl, INDEX #carg ],
+    LCOORD-DTR omni-binary-left-coord-rule &
+               [ SYNSEM.LOCAL [ COORD-REL [ LBL #lbl,
+                                            C-ARG #carg,
+                                            L-INDEX #lind,
+                                            R-INDEX #rind ],
+                                CONT.HOOK.INDEX #lind ]],
+    RCOORD-DTR.SYNSEM.LOCAL [ COORD +,
+                              CONT.HOOK.INDEX #rind ]].
+
+omni-top-coord-rule := omni-coord-phrase &
+  [ SYNSEM.LOCAL.COORD - ].
+
+omni-mid-coord-rule := omni-coord-phrase &
+  [ SYNSEM.LOCAL.COORD + ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; N Coordination rules
+
+n-coord-phrase := coord-phrase &
+  [ SYNSEM.LOCAL.CAT.VAL.SPR < [ ] >,
+    SYNSEM.LOCAL.CAT.HEAD noun,
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD noun,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
+
+basic-n-top-coord-rule := n-coord-phrase &
+  [ SYNSEM.LOCAL.CAT.VAL.SPR < [ ] >,
+    C-CONT [ RELS <! !>,
+	     HCONS <! !> ]].
+
+basic-n-mid-coord-rule := n-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-REL #crel,
+    C-CONT [ RELS <! #crel !>,
+	     HCONS <! !> ]].
+
+n-bottom-coord-phrase := bottom-coord-phrase &
+  [ SYNSEM.LOCAL.CAT [ HEAD noun,
+                       VAL.SPR < [ ] > ],
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT [ HEAD noun,
+                                   VAL.SPR < [ ] > ]].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; NP Coordination rules
+
+np-coord-phrase := coord-phrase &
+  [ SYNSEM.LOCAL.CAT.VAL.SPR < >,
+    SYNSEM.LOCAL.CAT.HEAD noun,
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD noun,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
+
+basic-np-top-coord-rule := np-coord-phrase &
+  [ SYNSEM.LOCAL.CAT.VAL.SPR < >,
+    C-CONT [ HOOK [ LTOP #ltop,
+                    INDEX #ind ],
+             RELS <! [ ARG0 #ind, RSTR #ltop ] !>,
+	     HCONS <! !> ]].
+
+basic-np-mid-coord-rule := np-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-REL #crel,
+    C-CONT [ RELS <! [ ARG0 #carg, RSTR #lbl ], #crel !>,
+	     HCONS <! !> ],
+    RCOORD-DTR.SYNSEM.LOCAL.COORD-REL [ LBL #lbl,
+                                        C-ARG #carg ]].
+
+np-bottom-coord-phrase := bottom-coord-phrase &
+  [ SYNSEM.LOCAL.CAT [ HEAD noun,
+                       VAL.SPR < > ],
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT [ HEAD noun,
+                                   VAL.SPR < > ]].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Event Coordination rules (for verbs and adjectives)
+
+event-coord-phrase := coord-phrase &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX [ E #tam ],
+    LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #lhndl,
+    RCOORD-DTR.SYNSEM.LOCAL [ COORD-REL [ L-HNDL #lhndl,
+                                          R-HNDL #rhndl,
+                                          R-INDEX.E #tam ],
+                              CONT.HOOK.LTOP #rhndl ]].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; ADJ Coordination rules
+
+adj-coord-phrase := event-coord-phrase &
+  [ SYNSEM.LOCAL.CAT [ POSTHEAD #ph,
+                       HEAD adj ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD #ph,
+                                  HEAD adj ],
+    RCOORD-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD #ph,
+                                  HEAD adj ]].
+
+basic-adj-top-coord-rule := adj-coord-phrase &
+  [ C-CONT [ RELS <! !>,
+	     HCONS <! !> ]].
+
+basic-adj-mid-coord-rule := adj-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-REL #crel,
+    C-CONT [ RELS <! #crel !>,
+	     HCONS <! !> ]].
+
+adj-bottom-coord-phrase := bottom-coord-phrase &
+  [ SYNSEM.LOCAL.CAT.HEAD adj,
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD adj ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; ADV Coordination rules
+
+adv-coord-phrase := event-coord-phrase &
+  [ SYNSEM.LOCAL.CAT [ POSTHEAD #ph,
+                       HEAD adv ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD #ph,
+                                  HEAD adv ],
+    RCOORD-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD #ph,
+                                  HEAD adv ]].
+
+basic-adv-top-coord-rule := adv-coord-phrase &
+  [ C-CONT [ RELS <! !>,
+	     HCONS <! !> ]].
+
+basic-adv-mid-coord-rule := adv-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-REL #crel,
+    C-CONT [ RELS <! #crel !>,
+	     HCONS <! !> ]].
+
+adv-bottom-coord-phrase := bottom-coord-phrase &
+  [ SYNSEM.LOCAL.CAT.HEAD adv,
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; VP Coordination rules
+
+vp-coord-phrase := event-coord-phrase &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] >,
+    SYNSEM.LOCAL.CAT.HEAD verb,
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
+
+basic-vp-top-coord-rule := vp-coord-phrase &
+  [ C-CONT [ RELS <! !>,
+	     HCONS <! !> ]].
+
+basic-vp-mid-coord-rule := vp-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-REL #crel,
+    C-CONT [ RELS <! #crel !>,
+	     HCONS <! !> ]].
+
+vp-bottom-coord-phrase := bottom-coord-phrase &
+  [ SYNSEM.LOCAL.CAT [ HEAD verb,
+                       VAL.SUBJ < [ ] > ],
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
+                                   VAL.SUBJ < [ ] > ]].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; S Coordination rules
+
+s-coord-phrase := event-coord-phrase &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < >,
+    SYNSEM.LOCAL.CAT.HEAD verb,
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
+
+basic-s-top-coord-rule := s-coord-phrase &
+  [ C-CONT [ RELS <! !>,
+	     HCONS <! !> ]].
+
+basic-s-mid-coord-rule := s-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-REL #crel,
+    C-CONT [ RELS <! #crel !>,
+	     HCONS <! !> ]].
+
+s-bottom-coord-phrase := bottom-coord-phrase &
+  [ SYNSEM.LOCAL.CAT [ HEAD verb,
+                       VAL.SUBJ < > ],
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
+                                   VAL.SUBJ < > ]].
