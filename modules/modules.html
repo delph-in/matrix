@@ -1,12 +1,31 @@
 <html>
 
+<head>
+
 <title>Grammar Matrix: Modules Selection</title>
+
+<script type="text/javascript">
+function predName(pos, lex)
+{
+  if (lex == "")
+    return "";
+  else
+    return "_" + lex + "_" + pos + "_rel";
+}
+
+function updatePredField(pos, lex, pred)
+{
+  pred.value = predName(pos, lex.value);
+}
+</script>
+
+</head>
 
 <body>
 
 <h1>LinGO Grammar Matrix</h1>
 <h1>Matrix customization and download page</h1>
-<h2>Version of 8/10/2005</h2>
+<h2>Version of 2/3/2006</h2>
 
 <p>By filling out this form, you will produce an initial starter
 package for your grammar, consisting of the language-independent core,
@@ -230,8 +249,8 @@ alphanumerics (a-z, A-Z, 0-9, _).
 <p>Noun 1: 
 
 <ul>
-<li>Spelling: <input type="text" name="noun1" size=40>
-<li>Predicate name (e.g., _cat_n_rel): <input type="text" name="noun1pred" size=40>
+<li>Spelling: <input onkeyup="updatePredField('n', this, this.form.noun1pred)" type="text" name="noun1" id="noun1" size=40>
+<li>Predicate name (e.g., _cat_n_rel): <input type="text" name="noun1pred" id="noun1pred" size=40>
 <li>For this noun, a specifier (determiner) is 
 <input type="radio" name="noun1spr" value="obl"> obligatory 
 <input type="radio" name="noun1spr" value="opt"> optional 
@@ -241,7 +260,7 @@ alphanumerics (a-z, A-Z, 0-9, _).
 <p>Noun 2: 
 
 <ul>
-<li>Spelling: <input type="text" name="noun2" size=40>
+<li>Spelling: <input onkeyup="updatePredField('n', this, this.form.noun2pred)" type="text" name="noun2" size=40>
 <li>Predicate name (e.g., _cat_n_rel): <input type="text" name="noun2pred" size=40>
 <li>For this noun, a specifier (determiner) is 
 <input type="radio" name="noun2spr" value="obl"> obligatory 
@@ -252,7 +271,7 @@ alphanumerics (a-z, A-Z, 0-9, _).
 <p>Intransitive verb:
 
 <ul>
-<li>Spelling (finite form): <input type="text" name="iverb" size=40>
+<li>Spelling (finite form): <input onkeyup="updatePredField('v', this, this.form.ivpred)" type="text" name="iverb" size=40>
 <li>Predicate name (e.g., _sleep_v_rel): <input type="text" name="ivpred" size=40>
 <li>The subject (sole argument) of this verb is a: 
 <input type="radio" name="iverbSubj" value="np"> NP 
@@ -266,7 +285,7 @@ of the auxiliary specified below, please specify that form here:
 <p>Transitive verb:
 
 <ul>
-<li>Spelling (finite form): <input type="text" name="tverb" size=40>
+<li>Spelling (finite form): <input onkeyup="updatePredField('v', this, this.form.tvpred)" type="text" name="tverb" size=40>
 <li>Predicate name (e.g., _see_v_rel): <input type="text" name="tvpred" size=40>
 <li>The subject of this verb is a: 
 <input type="radio" name="tverbSubj" value="np"> NP 
