@@ -39,7 +39,7 @@ use strict;
 use CGI::Carp qw(fatalsToBrowser);
 use CGI;
 use File::Copy;
-use File::Copy::Recursive qw(dircopy);
+#use File::Copy::Recursive qw(dircopy);
 
 #Parse the data from the form, and store it in matrix_form.
 #Make sure to check all text fields and rejecct anything that
@@ -793,8 +793,8 @@ sub return_error
 {
     my($status, $keyword, $message) = @_;
 
+    print "Content-type: text/html\n\n<html>\n";
     print "HTTP/1.1 $status $keyword\n";
-    print "Content-type: text/html\n";
     print <<End_of_Error;
 
 <title>CGI Program - Unexpected Error</title>
@@ -816,7 +816,7 @@ sub return_error1
 {
     my($status, $keyword, $message) = @_;
     
-    print "Content-type: text/html", "\n";
+    print "Content-type: text/html\n\n", "<html>\n";
     print "Status: ", $status, " ", $keyword, "\n\n";
     print <<End_of_Error;
 
@@ -848,7 +848,7 @@ sub copy_core_matrix
       $mm::core_matrix = $mm::home . "matrix-core";
       $mm::modules_home = $mm::home . "modules/";
 
-      dircopy($mm::core_matrix, $mm::matrix);
+#     dircopy($mm::core_matrix, $mm::matrix);
 
       return;
     }
