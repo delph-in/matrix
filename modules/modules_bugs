@@ -5,3 +5,7 @@ Description of coordination strategies: "the coordinand"
 If aux info is filled out, make aux even if not need for neg/q
 
 globals.lsp and hyphens
+
+instance identifiers can't contain . or :, but script
+uses orthography to make them for lexical items, and the
+orthography may contain those characters.
