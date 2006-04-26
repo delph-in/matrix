@@ -677,9 +677,10 @@ sub check_for_form_errors {
     if ($mm::cs1) {
       unless (($mm::cs1n || $mm::cs1np || $mm::cs1v ||
                $mm::cs1vp || $mm::cs1s) &&
-              $mm::cs1pat && $mm::cs1mark && $mm::cs1order) {
+              (($mm::cs1pat =~ /a/ && !$mm::cs1mark && !$mm::cs1order) ||
+               ($mm::cs1pat && $mm::cs1mark && $mm::cs1order))) {
         return_error (500, "Internal Server Error",
-                      "You must specify all the details of Coordination Strategy 1.");
+                      "You must specify consistent details for Coordination Strategy 1.");
       }
 
       if ($mm::cs1pat =~ /a/) {
@@ -704,9 +705,10 @@ sub check_for_form_errors {
     if ($mm::cs2) {
       unless (($mm::cs2n || $mm::cs2np || $mm::cs2v ||
                $mm::cs2vp || $mm::cs2s) &&
-              $mm::cs2pat && $mm::cs2mark && $mm::cs1order) {
+              (($mm::cs2pat =~ /a/ && !$mm::cs2mark && !$mm::cs2order) ||
+               ($mm::cs2pat && $mm::cs2mark && $mm::cs2order))) {
         return_error (500, "Internal Server Error",
-                      "You must specify all the details of Coordination Strategy 2.");
+                      "You must specify consistent details for Coordination Strategy 2.");
       }
 
       if ($mm::cs2pat =~ /a/) {
