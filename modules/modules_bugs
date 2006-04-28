@@ -9,3 +9,11 @@ globals.lsp and hyphens
 instance identifiers can't contain . or :, but script
 uses orthography to make them for lexical items, and the
 orthography may contain those characters.
+
+When I did fake_dutch I specified obligatory determiners and
+got a bare np phrase anyway.  Are we just assuming that all
+languages want it?  (Neither of the nouns can go through it
+in this grammar, but the phrase is there.)
+
+Change comment in irules.tdl to specify spelling *changing*
+lexical rules, rather than spelling preserving.
