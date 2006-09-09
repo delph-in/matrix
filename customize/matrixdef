@@ -1,0 +1,287 @@
+Section language "Language"
+
+Text language "fr language" "e.g. Basque or Hawaiian_Creole: " "" 50
+
+
+Section word_order "Word Order"
+
+Radio wordorder "fr wordorder" "Please indicate which pattern best describes the basic word order of your language in matrix (main) clauses:<br>" ""
+. sov "fr sov" "" "SOV<br>"
+. svo "fr svo" "" "SVO<br>"
+. vso "fr vso" "" "VSO<br>"
+. osv "fr osv" "" "OSV<br>"
+. ovs "fr ovs" "" "OVS<br>"
+. vos "fr vos" "" "VOS<br>"
+. v-final "fr v-final" "" "V-final<br>"
+. v-initial "fr v-initial" "" "V-initial<br>"
+. free "fr free" "" "free (pragmatically determined word order)"
+
+Label "Note: Modules for V2 order (auxiliary second, all else free or finite verb second, non-finite verb clause-finally) and differing word order between matrix and subordinate clauses are currently under development."
+
+Radio hasDets "fr hasDets" "Does your language have determiners (as independent words)?" ""
+. t "fr t" "" "yes"
+. nil "fr nil" "" "no<br><br>"
+
+Radio NounDetOrder "fr NounDetOrder" "If so, what is the order of determiners with respect to nouns?" ""
+. HeadSpec "fr HeadSpec" "" "Noun-Det"
+. SpecHead "fr SpecHead" "" "Det-Noun"
+
+
+Section sentential_negation "Sentential Negation"
+
+Label "Please indicate which strategy or strategies your language uses for sentential negation (as distinct from constituent negation). (You may leave this section blank, in which case your grammar will not include any information about negation.)"
+
+Check neg "fr neg" "Verbal inflection:<br>" ""
+
+Radio neg-infl-type "fr neg-infl-type" "On: " ""
+. aux "fr aux" "" "auxiliaries only "
+. main "fr main" "" "main verbs only "
+. aux-main "fr aux-main" "" "any finite verb (main or auxiliary)<br>"
+
+Radio neg-aff "fr neg-aff" "Affix type: " ""
+. prefix "fr prefix" "" "prefix "
+. suffix "fr suffix" "" "suffix<br>"
+
+Text neg-aff-form "fr neg-aff-form" "Affix Spelling: " "" 10
+
+Label
+
+Check neg "fr neg" "An adverb:<br>" ""
+
+Radio neg-adv "fr neg-adv" "" ""
+. ind-adv "fr ind-adv" "" "...which is an independent modifier of "
+
+Radio negmod "fr negmod" "" ""
+. S "fr S" "" "S "
+. VP "fr VP" "" "VP "
+. V "fr V" "" "V "
+
+Radio negprepostmod "fr negprepostmod" "and appears to the " ""
+. pre "fr pre" "" "left "
+. post "fr post" "" "right "
+. either "fr either" "" "either of the category it modifies.<br>"
+
+Radio neg-adv "fr neg-adv" "" ""
+. sel-adv "fr " "" "...which is a selected complement of "
+
+Radio neg-sel-adv "fr neg-sel-adv" "" ""
+. main "fr main" "" "main verbs "
+. aux "fr aux" "" "auxiliaries "
+. main-aux "fr main-aux" "" "any finite verb"
+
+Label "Notes: The following options are not yet implemented: Negative inflection of non-finite verbs, special negative auxiliaries."
+
+Radio multineg "fr multineg" "If you have selected both inflectional and adverbial negation, please indicate which of the following best describes your language:<br>" ""
+. comp "fr comp" "" "Inflectional and adverbial negation are used in complementary distribution.<br>"
+. bothopt "fr bothopt" "" "Inflectional and adverbial negation can appear independently or together.<br>"
+. bothobl "fr bothobl" "" "Both inflection and the adverb are required to express sentential negation.<br>"
+. advobl "fr advobl" "" "The adverb is obligatory, but inflection may appear in addition.<br>"
+. inflobl "fr inflobl" "" "The inflection is obligatory, but the adverb may appear in addition."
+
+Label "Note: We assume that when negation is expressed via both inflection and an adverb at the same time, the adverb is treated as a selected complement."
+
+
+Section coordination "Coordination"
+
+Label "Languages can have have multiple ways of marking coordination that can differ among the various parts of speech. The Matrix supports both lexical and morphological marking of coordination in several patterns. These patterns include:"
+
+Label "Monosyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B and C&quot; (one coordinand marked; also permits &quot;A and B and C&quot;)<br>Polysyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A and B and C&quot; (for N coordinands, N-1 marked)<br>N-Polysyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;and A and B and C&quot; (all coordinands marked)<br>Asyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B C&quot; (no marking; also called &quot;juxtaposition&quot;)"
+
+Check cs1 "fr cs1" "" "Coordination Strategy 1:<br>&nbsp;&nbsp;&nbsp;&nbsp;in which"
+
+Check cs1n "fr cs1n" "" "nouns "
+Check cs1np "fr cs1np" "" "NPs "
+Check cs1vp "fr cs1vp" "" "VPs "
+Check cs1s "fr cs1s" "" "sentences<br>"
+
+Radio cs1pat "fr cs1pat" "&nbsp;&nbsp;&nbsp;&nbsp;are marked in a " ""
+. mono "fr mono" "" "monosyndeton "
+. poly "fr poly" "" "polysyndeton "
+. omni "fr omni" "" "N-polysyndeton "
+. a "fr a" "" "asyndeton &nbsp; pattern<br>"
+
+Radio cs1mark "fr cs1mark" "&nbsp;&nbsp;&nbsp;&nbsp;by a " ""
+. word "fr word" "" "word "
+. affix "fr affix" "" "affix "
+
+Text cs1orth "fr cs1orth" "spelled " "" 10
+
+Radio cs1order "fr cs1order" "that comes " ""
+. before "fr before" "" "before "
+. after "fr after" "" "after the coordinand<br><br>"
+
+Check cs2 "fr cs1" "" "Coordination Strategy 2:<br>&nbsp;&nbsp;&nbsp;&nbsp;in which"
+
+Check cs2n "fr cs2n" "" "nouns "
+Check cs2np "fr cs2np" "" "NPs "
+Check cs2vp "fr cs2vp" "" "VPs "
+Check cs2s "fr cs2s" "" "sentences<br>"
+
+Radio cs2pat "fr cs2pat" "&nbsp;&nbsp;&nbsp;&nbsp;are marked in a " ""
+. mono "fr mono" "" "monosyndeton "
+. poly "fr poly" "" "polysyndeton "
+. omni "fr omni" "" "N-polysyndeton "
+. a "fr a" "" "asyndeton &nbsp; pattern<br>"
+
+Radio cs2mark "fr cs2mark" "&nbsp;&nbsp;&nbsp;&nbsp;by a " ""
+. word "fr word" "" "word "
+. affix "fr affix" "" "affix "
+
+Text cs2orth "fr cs2orth" "spelled " "" 10
+
+Radio cs2order "fr cs2order" "that comes " ""
+. before "fr before" "" "before "
+. after "fr after" "" "after the coordinand "
+
+
+Section matrix_yesno "Matrix Yes/No Questions"
+
+Label "Please indicate which strategy your language uses to form matrix yes-no questions. Notes: You may leave this section blank, in which case your grammar will not include any information about questions. At present, you may select only one strategy."
+
+Radio ques "fr ques" "" ""
+. inv "fr inv" "" "Subject verb inversion: "
+
+Radio qinverb "fr qinverb" "" ""
+. main "fr main" "" "main verbs only "
+. aux "fr aux" "" "auxiliaries only "
+. main-aux "fr main-aux" "" "any verb<br>"
+
+Radio ques "fr ques" "" ""
+. inv "fr inv" "" "A separate question particle: "
+
+Radio qpartposthead "fr qpartposthead" "" ""
+. - "fr -" "" "sentence initial "
+. + "fr +" "" "sentence final<br>"
+
+Text qpartform "fr qpartform" "&nbsp;&nbsp;&nbsp;&nbsp;Spelling of question particle: " "" 40
+
+Radio ques "fr ques" "<br>" ""
+. int "fr int" "" "Intonation only"
+
+
+Section basic_lexicon "Basic Lexicon"
+
+Label "Please use full form lexical entries (not stem forms or citation forms). This form can only accept lower ascii alphanumerics (a-z, A-Z, 0-9, _)."
+
+Label "Noun 1:"
+
+Text noun1 "fr noun1" "Spelling: " "" 40
+
+Text noun1pred "fr noun1pred" "<br>Predicate name (e.g. _cat_n_rel): " "" 40
+
+Radio noun1spr "fr noun1spr" "<br>For this noun, a specifier (determiner) is " ""
+. obl "fr obl" "" "obligatory "
+. opt "fr opt" "" "optional "
+. nil "fr nil" "" "impossible "
+
+Label "Noun 2:"
+
+Text noun2 "fr noun2" "Spelling: " "" 40
+
+Text noun2pred "fr noun2pred" "<br>Predicate name (e.g. _cat_n_rel): " "" 40
+
+Radio noun2spr "fr noun2spr" "<br>For this noun, a specifier (determiner) is " ""
+. obl "fr obl" "" "obligatory "
+. opt "fr opt" "" "optional "
+. nil "fr nil" "" "impossible"
+
+Label "Intransitive verb:"
+
+Text iverb "fr iverb" "Spelling (finite form): " "" 40
+
+Text ivpred "fr ivpred" "<br>Predicate name (e.g. _sleep_v_rel): " "" 40
+
+Radio iverbSubj "fr iverbSubj" "<br>The subject (sole argument) of this verb is a: " ""
+. np "fr np" "" "NP "
+. pp "fr pp" "" "PP<br>"
+
+Text iverb-nonfinite "fr iverb-nonfinite" "If your language has auxiliaries and this intransitive verb appears in a different form when it is the (head of the) complement of the auxiliary specified below, please specify that form here: " "" 40
+
+Label "Transitive verb:"
+
+Text tverb "fr tverb" "Spelling (finite form): " "" 40
+
+Text tvpred "fr tvpred" "<br>Predicate name (e.g. _see_v_rel): " "" 40
+
+Radio tverbSubj "fr tverbSubj" "<br>The subject of this verb is a: " ""
+. np "fr np" "" "NP "
+. pp "fr pp" "" "PP<br>"
+
+Radio tverbObj "fr tverbObj" "<br>The object of this verb is a: " ""
+. np "fr np" "" "NP "
+. pp "fr pp" "" "PP<br>"
+
+Text iverb-nonfinite "fr iverb-nonfinite" "If your language has auxiliaries and this transitive verb appears in a different form when it is the (head of the) complement of the auxiliary specified below, please specify that form here: " "" 40
+
+Label "Auxiliary verb (if applicable):"
+
+Text auxverb "fr auxverb" "Spelling (finite form): " "" 40
+
+Radio auxsem "fr auxsem" "<br>This auxiliary verb contributes:<br>" ""
+. pred "fr pred" "" "An independent predicate (e.g. _can_v_rel): "
+
+Text auxpred "fr auxpred" "" "" 40
+
+Radio auxsem "fr auxsem" "<br>" ""
+. pred "fr pred" "" "Tense/aspect information only<br>"
+
+Radio auxcomp "fr auxcomp" "<br>This auxiliary verb takes as its complement:<br>" ""
+. S "fr S" "" "a saturated sentence<br>"
+. VP "fr VP" "" "a VP, raising the subject<br>"
+. V "fr V" "" "a V, raising all of its arguments (argument composition)<br>"
+
+Radio auxorder "fr auxorder" "This auxiliary verb appears to the " ""
+. left "fr left" "" "left "
+. right "fr right" "" "right "
+. either "fr either" "" "either side of its complement.<br>"
+
+Radio auxsubj "fr auxsubj" "If the auxiliary takes a VP or V complement, its subject is a: " ""
+. noun "fr noun" "" "NP "
+. adp "fr adp" "" "PP "
+
+Label "Determiners (if applicable):"
+
+Label "If your nouns require determiners, define at least one here. You may use the second to handle a different determiner form (e.g., for languages where number, gender, or case are marked on determiners). Note that the grammar start won't actually include any constraints implementing agreement."
+
+Text det1 "fr det1" "Spelling: " "" 40
+Text det1pred "fr det1pred" "<br>Predicate name (e.g. _indef_q_rel): " "" 40
+
+Label
+
+Text det2 "fr det2" "Spelling: " "" 40
+Text det2pred "fr det2pred" "<br>Predicate name (e.g. _indef_q_rel): " "" 40
+
+Label "Case marking adposition -- Subjects (if applicable):"
+
+Text subjAdpForm "fr subjAdpForm" "Spelling: " "" 40
+
+Radio subjAdp "fr subjAdp" "<br>" ""
+. pre "fr pre" "" "preposition "
+. post "fr post" "" "postposition "
+
+Label "Case marking adposition -- Objects (if applicable):"
+
+Text objAdpForm "fr objAdpForm" "Spelling: " "" 40
+
+Radio objAdp "fr objAdp" "<br>" ""
+. pre "fr pre" "" "preposition "
+. post "fr post" "" "postposition "
+
+Label "Negative adverb (if applicable):"
+
+Text negadvform "fr negadvform" "Spelling: " "" 40
+
+Label
+
+
+Section test_sentences "Some Test Sentences"
+
+Label "By filling out the following two fields, you will give the LKB default strings to put into the parse dialog.  Please write two sentences using <b>only</b> the vocabulary defined above.  NB: This script can only handle lower ascii alphanumeric characters."
+
+Text sentence1 "fr sentence1" "Sentence 1: " "" 100
+
+Label
+
+Text sentence2 "fr sentence2" "Sentence 2: " "" 100
+
+Label
