@@ -6,6 +6,9 @@
 import sys
 write = sys.stdout.write
 import os
+getenv = os.getenv
+import random
+randint = random.randint
 
 
 ######################################################################
@@ -13,7 +16,7 @@ import os
 
 form_data = {}
 
-HTTP_header = 'Content-type: text/html\n'
+HTTP_header = 'Content-type: text/html'
 
 HTML_pretitle = '''<html>
 <head>
@@ -153,18 +156,21 @@ class VarNameMap:
 
 
 ######################################################################
-# mainpage(def_file, choices_file)
+# mainpage(def_file, cookie)
 #   Create and print the main matrix page based on the arguments,
-#   which are the name of a matrix definition file and an optional
-#   choices file.
+#   which are the name of a matrix definition file and a cookie that
+#   determines where to look for the choices file
 
-def mainpage(def_file, choices_file):
-  #print HTTP_header
+def mainpage(def_file, cookie):
+  print HTTP_header
+  print 'Set-cookie: session=' + cookie + '\n'
   print HTML_pretitle
   print '<title>The Matrix</title>'
   print HTML_posttitle
   print HTML_mainprebody
   print HTML_form
+
+  choices_file = 'sessions/' + cookie + '/choices'
 
   choice = []
   try:
@@ -224,14 +230,17 @@ def print_input(type, name, value, checked, before, after, size = ''):
   
 
 ######################################################################
-# subpage(section, def_file, choices_file)
+# subpage(section, def_file, cookie)
 #   Create and print the matrix subpage for the specified section
 #   based on the arguments, which are the name of a matrix definition
-#   file and an optional choices file.
+#   file and a cookie that determines where to look for the choices
+#   file
 
-def subpage(section, def_file, choices_file):
-  #print HTTP_header
+def subpage(section, def_file, cookie):
+  print HTTP_header + '\n'
   print HTML_pretitle
+
+  choices_file = 'sessions/' + cookie + '/choices'
 
   form_data = {}
   try:
@@ -355,15 +364,15 @@ def save_choices(form_data, choices_file):
 ######################################################################
 # beginning of main program
 
-print HTTP_header
+#print HTTP_header + '\n'
 
 namemap = VarNameMap('matrixdef')
 
 # get the CGI arguments
 query = ''
-method = os.getenv('REQUEST_METHOD')
+method = getenv('REQUEST_METHOD')
 if method == 'GET':
-  query = os.getenv('QUERY_STRING')
+  query = getenv('QUERY_STRING')
 elif method == 'POST':
   query = sys.stdin.read()
 
@@ -372,11 +381,25 @@ for q in query.split('&'):
     pair = q.split('=')
     form_data[pair[0]] = pair[1]
 
+# Get the cookie.  If there's not one, make one.
+http_cookie = getenv('HTTP_COOKIE')
+if http_cookie:
+  cookie = http_cookie.split('=')[1]
+else:
+  cookie = str(randint(1000,9999))
+  while os.path.exists('sessions/' + cookie):
+    cookie = str(randint(1000,9999))
+
+session_path = 'sessions/' + cookie
+
+if cookie and not os.path.exists(session_path):
+  os.mkdir(session_path)
+
 # if the 'section' field is defined, we have submitted values to save
 if form_data.has_key('section'):
-  save_choices(form_data, 'choices')
-  
+  save_choices(form_data, session_path + '/choices')
+
 if form_data.has_key('subpage'):
-  subpage(form_data['subpage'], 'matrixdef', 'choices')
+  subpage(form_data['subpage'], 'matrixdef', cookie)
 else:
-  mainpage('matrixdef', 'choices')
+  mainpage('matrixdef', cookie)
