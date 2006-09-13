@@ -9,12 +9,18 @@ import os
 getenv = os.getenv
 import random
 randint = random.randint
+import customize
+customize_matrix = customize.customize_matrix
+import validate
+validate_choices = validate.validate_choices
 
 
 ######################################################################
 # globals
 
 form_data = {}
+
+wrong = []
 
 HTTP_header = 'Content-type: text/html'
 
@@ -66,26 +72,70 @@ page</a>]
 
 '''
 
+HTML_customprebody = '''<h3>Customized Matrix</h3>
+
+<p>A customized copy of the Matrix has been created for you.  
+Please download it <a href="%s">here</a>.
+
+<p>This file will be removed from the system in 15 minutes..
+
+<h3>Instructions</h3>
+
+<p>To unpack the archive, if your browswer hasn't already done it for
+you, first try saving it on your desktop and double clicking it.  If
+that doesn't work, and you're using Linux or Mac OS X, from a command
+prompt, type <tt>??????????</tt>.
+
+<p>Once you've unpacked the archive you should find a directory called
+<tt>??????????</tt>.  Inside the directory are several files.  Here is
+an explanation of some:
+
+<ul>
+<li><tt>matrix.tdl</tt>: Language independent type and constraint
+definitions.  You should not need to modify this file.
+<li><tt>$mm::my_language</tt>: Types and constraints specific to your
+language.
+<li><tt>lexicon.tdl</tt>: Lexical entries for your language.
+<li><tt>rules.tdl</tt>: Phrase structure rule instance entries for
+your language.
+<li><tt>irules.tdl</tt>: Spelling-changing lexical rule instance
+entries for your language.
+<li><tt>lrules.tdl</tt>: Non-spelling-changing lexical rule instance
+entries for your language.
+<li><tt>lkb/script</tt>: The script file for loading your grammar into
+the LKB.
+<li><tt>modules_choices.txt</tt>: A record of the information you
+provided in the matrix configuration form.
+</ul>
+
+<p>To run this grammar, start the LKB, and the load it by selected
+"Load > Complete grammar..." from the LKB menu.  You can then parse a
+sentence by selecting "Parse > Parse input..." from the LKB menu.  The
+dialogue box that pops up should include the sentences you filled into
+the form.  When a sentence parses successfully, you can try generating
+from the associated semantics by selecting "Generate" or "Generate
+from edge" from the pop-up menu.  For more on using the LKB, see the
+<a href="http://www.delph-in.net/lkb">LKB page</a> and/or Copestake
+2002 <a
+href="http://cslipublications.stanford.edu/lkb.html"><i>Implementing
+Typed Feature Structure Grammars</i></a>.
+
+<hr>
+<a href="matrix.cgi">Back to form</a><br>
+<a href="http://www.delph-in.net/matrix/">Back to Matrix main page</a><br>
+<a href="http://www.delph-in.net/lkb">To the LKB page</a>
+'''
+
 HTML_subprebody = '''<body>
 '''
 
-HTML_form = '''<form action="matrix.cgi" method="post">'''
+HTML_preform = '''<form action="matrix.cgi" method="post">'''
 
-HTML_postbody = '''</form>
-</body>
+HTML_postform = '</form>'
+
+HTML_postbody = '''</body>
 
 </html>'''
-
-HTML_submit = '<p><input type="submit" value="Submit">'
-
-HTML_lipsum = \
-'''Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-'''
 
 
 ######################################################################
@@ -156,19 +206,38 @@ class VarNameMap:
 
 
 ######################################################################
-# mainpage(def_file, cookie)
+# print_input(type, name, value, checked, before, after)
+#   Write out an HTML <input> tag with the specified attributes and
+#   surrounding text
+
+def print_input(type, name, value, checked, before, after, size = ''):
+  if value:
+    value = ' value="' + value + '"'
+
+  chkd = ''
+  if checked:
+    chkd = ' checked'
+
+  if size:
+    size = ' size="' + size + '"'
+    
+  print '%s<input type="%s" name="%s"%s%s%s>%s' % \
+        (before, type, name, value, chkd, size, after)
+  
+
+######################################################################
+# main_page(def_file, cookie)
 #   Create and print the main matrix page based on the arguments,
 #   which are the name of a matrix definition file and a cookie that
 #   determines where to look for the choices file
 
-def mainpage(def_file, cookie):
+def main_page(def_file, cookie):
   print HTTP_header
   print 'Set-cookie: session=' + cookie + '\n'
   print HTML_pretitle
   print '<title>The Matrix</title>'
   print HTML_posttitle
   print HTML_mainprebody
-  print HTML_form
 
   choices_file = 'sessions/' + cookie + '/choices'
 
@@ -206,37 +275,21 @@ def mainpage(def_file, cookie):
       print '</div></div>'
     i += 1
 
+  print HTML_preform
+  print_input('hidden', 'customize', '', 0, '', '');
+  print_input('submit', '', 'Customize', 0, '<p class="customize">', '</p>')
+  print HTML_postform
   print HTML_postbody
 
 
 ######################################################################
-# print_input(type, name, value, checked, before, after)
-#   Write out an HTML <input> tag with the specified attributes and
-#   surrounding text
-
-def print_input(type, name, value, checked, before, after, size = ''):
-  if value:
-    value = ' value="' + value + '"'
-
-  chkd = ''
-  if checked:
-    chkd = ' checked'
-
-  if size:
-    size = ' size="' + size + '"'
-    
-  print '%s<input type="%s" name="%s"%s%s%s>%s' % \
-        (before, type, name, value, chkd, size, after)
-  
-
-######################################################################
-# subpage(section, def_file, cookie)
+# sub_page(section, def_file, cookie)
 #   Create and print the matrix subpage for the specified section
 #   based on the arguments, which are the name of a matrix definition
 #   file and a cookie that determines where to look for the choices
 #   file
 
-def subpage(section, def_file, cookie):
+def sub_page(section, def_file, cookie):
   print HTTP_header + '\n'
   print HTML_pretitle
 
@@ -271,7 +324,7 @@ def subpage(section, def_file, cookie):
         print HTML_posttitle
         print HTML_subprebody
         print '<h2>' + word[2] + '</h2>'
-        print HTML_form
+        print HTML_preform
         print_input('hidden', 'section', section, 0, '', '\n');
     elif cur_sec == section:
       if word[0] == 'Label':
@@ -306,12 +359,26 @@ def subpage(section, def_file, cookie):
         print_input('text', vn, value, 0, bf, af, sz)
     i += 1
 
-  print HTML_submit
+  print_input('submit', '', 'Submit', 0, '<p>', '</p>', 0)
+  print HTML_postform
   print HTML_postbody
 
 
 ######################################################################
-# savechoices(form_data, choices_file)
+# custom_page(session_path)
+#   Create and print the "download your matrix here" page for the
+#   customized matrix in the directory specified by session_path
+
+def custom_page(session_path):
+  print HTTP_header + '\n'
+  print HTML_pretitle
+  print '<title>Matrix Customized</title>'
+  print HTML_customprebody % (session_path + '/matrix.zip')
+  print HTML_postbody
+
+
+######################################################################
+# save_choices(form_data, choices_file)
 #   Read the choices_file, stripping out the section associated with
 #   the 'section' member of form_data, and replacing it with all the
 #   values in form_data.
@@ -399,7 +466,16 @@ if cookie and not os.path.exists(session_path):
 if form_data.has_key('section'):
   save_choices(form_data, session_path + '/choices')
 
-if form_data.has_key('subpage'):
-  subpage(form_data['subpage'], 'matrixdef', cookie)
+# if the 'customize' field is defined, create a customized copy of the matrix
+# based on the current choices file
+if form_data.has_key('customize'):
+  wrong = validate_choices(session_path)
+  if 1:
+    customize_matrix(session_path)
+    custom_page(session_path)
+  else:
+    main_page('matrixdef', cookie)
+elif form_data.has_key('subpage'):
+  sub_page(form_data['subpage'], 'matrixdef', cookie)
 else:
-  mainpage('matrixdef', cookie)
+  main_page('matrixdef', cookie)
