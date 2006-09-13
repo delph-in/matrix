@@ -41,8 +41,9 @@ def TDLtokenize(s):
       i = 1
       while i < len(s) and s[i] != '"':
         i += 1
-      val.append(s[1:i]) # omit the open quote
-      s = s[i + 1:] # ...and the close quote
+      i += 1
+      val.append(s[0:i]) # include the quotes
+      s = s[i:]
     elif s[0] == '<':
       if s[1:2] == '!':
         val.append(s[0:2])
@@ -118,7 +119,36 @@ class TDLelem:
 
 
 ###########################################################################
-# A TDLtypedef corresponds to a statement like:
+# A TDLelem_literal is an unprocessed string.  It's used for things like
+# inflectional rules that must be formatted in a particular way, and
+# which aren't expected to merge:
+#
+# cs1n-bottom :=
+#   %prefix (* foo)
+#   cs1n-bottom-coord-rule.
+
+class TDLelem_literal:
+  def __init__(self, literal):
+    self.child = []
+    self.comment = ""
+    self.literal = literal
+
+  def write(self):
+    if self.comment:
+      for l in self.comment.split('\n'):
+        TDLwrite('; ' + l + '\n')
+      TDLwrite('\n')
+    tdl_file.write(self.literal + '\n\n')
+
+  def set_comment(self, comment):
+    self.comment = comment
+
+  def get_comment(self):
+    return self.comment
+
+
+###########################################################################
+# A TDLelem_typedef corresponds to a statement like:
 #
 # subj-head-phrase := basic-head-subj-phrase & head-final &
 #  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
@@ -133,9 +163,10 @@ class TDLelem_typedef(TDLelem):
     self.op = op
 
   def write(self):
-    for l in self.comment.split('\n'):
-      TDLwrite('; ' + l + '\n')
-    TDLwrite('\n')
+    if self.comment:
+      for l in self.comment.split('\n'):
+        TDLwrite('; ' + l + '\n')
+      TDLwrite('\n')
     
     TDLwrite(self.type + " " + self.op + " ")
     for ch in self.child:
@@ -326,7 +357,7 @@ def TDLparse_dlist():
 
 def TDLparse_term():
   global tok
-  if isid(tok[0]):
+  if isid(tok[0]) or tok[0][0] == '"':
     return TDLparse_type()
   elif tok[0][0] == '#':
     return TDLparse_coref()
@@ -458,6 +489,13 @@ class TDLfile:
         
     if not handled:
       self.typedefs.append(typedef)
+
+  ###########################################################################
+  # Add a literal to this file, which doesn't merge
+  def add_literal(self, literal, comment = ''):
+    l = TDLelem_literal(literal)
+    l.set_comment(comment)
+    self.typedefs.append(l)
 
 
 #e1 = TDLparse('shp := [ H.S.L.C.H noun ].')
