@@ -1,3 +1,9 @@
 #!/bin/bash
 
-scp `echo * | sed 's/[^ ]*~//g' | sed 's/#[^ ]*#//g' | sed 's/CVS//g' | sed 's/tohomer//g'` uwcl@homer.u.washington.edu:public_html/newmatrix
+if [ $# != 1 ]
+then
+    echo "Usage: $0 <directory name>"
+    exit 1
+fi
+
+scp `echo * | sed 's/[^ ]*~//g' | sed 's/#[^ ]*#//g' | sed 's/CVS//g' | sed 's/tohomer//g'` uwcl@homer.u.washington.edu:public_html/$1
