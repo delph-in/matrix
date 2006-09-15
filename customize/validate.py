@@ -14,6 +14,14 @@ wrong = []
 # validate_word_order()
 #   Validate the user's choices about basic word order.
 
+# There should be some value for word order
+# If hasDets is true, there should be some value for NounDetOrder
+# If auxverb is defined, then auxorder needs to be too
+# I'm currently adding AUX as a feature in specialize_word_order()
+# but wonder if instead (in addition?) we should be doing validation
+# so that we don't find ourselves worrying about auxiliaries if we
+# don't have any in the lexicon.
+
 def validate_word_order():
   pass
 
