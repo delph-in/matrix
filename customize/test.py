@@ -15,5 +15,11 @@ bar.add('sss := [ H.S.L.C.V.C < n, v > ].', '5th\ncomment')
 bar.add('hhh := [ H.S.L.C.V.C < n, n, v> ].', '6th\ncomment')
 bar.add('ppp := [ H.S.L.C.V.C < n, n, v> ].', '7th\ncomment')
 
+baz = tdl.TDLfile('baz')
+
+baz.add('qqq := [ H.S.L.C.H noun ].')
+baz.add('qqq := [ H.S.L.C.H.A + ].')
+
 foo.save()
 bar.save()
+baz.save()
