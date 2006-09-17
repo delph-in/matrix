@@ -20,6 +20,17 @@ roots = None
 
 
 ######################################################################
+# ch(s)
+#   Return the value of choice s, or '' if it has none
+
+def ch(s):
+  if choices.has_key(s):
+    return choices[s]
+  else:
+    return ''
+
+
+######################################################################
 # customize_word_order()
 #   Create the type definitions associated with the user's choices
 #   about basic word order, including information from lexicon about
@@ -876,12 +887,13 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
 # customize_coordination(): the main coordination customization routine
 
 def customize_coordination():
-  for i in (1, 2):
-    if choices.has_key('cs' + str(i)):
-      mark = choices['cs' + str(i) + 'mark']
-      pat = choices['cs' + str(i) + 'pat']
-      orth = choices['cs' + str(i) + 'orth']
-      order = choices['cs' + str(i) + 'order']
+  for n in (1, 2):
+    i = str(n)
+    if choices.has_key('cs' + i):
+      mark = choices['cs' + i + 'mark']
+      pat = choices['cs' + i + 'pat']
+      orth = choices['cs' + i + 'orth']
+      order = choices['cs' + i + 'order']
 
       pre = ''
       suf = ''
@@ -936,8 +948,8 @@ def customize_coordination():
               left += 'conj-last-'
 
       for pos in ('n', 'np', 'vp', 's'):
-        if choices['cs' + str(i) + pos]:
-          define_coord_strat(str(i), pos, top, mid, bot, left, pre, suf)
+        if choices['cs' + i + pos]:
+          define_coord_strat(i, pos, top, mid, bot, left, pre, suf)
 
 
 

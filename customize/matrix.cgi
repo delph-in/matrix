@@ -20,7 +20,7 @@ validate_choices = validate.validate_choices
 
 form_data = {}
 
-wrong = []
+wrong = {}
 
 HTTP_header = 'Content-type: text/html'
 
@@ -126,7 +126,7 @@ Typed Feature Structure Grammars</i></a>.
 <a href="http://www.delph-in.net/lkb">To the LKB page</a>
 '''
 
-HTML_subprebody = '''<body>
+HTML_prebody = '''<body>
 '''
 
 HTML_preform = '''<form action="matrix.cgi" method="post">'''
@@ -322,7 +322,7 @@ def sub_page(section, def_file, cookie):
       if cur_sec == section:
         print '<title>' + word[2] + '</title>'
         print HTML_posttitle
-        print HTML_subprebody
+        print HTML_prebody
         print '<h2>' + word[2] + '</h2>'
         print HTML_preform
         print_input('hidden', 'section', section, 0, '', '\n');
@@ -346,7 +346,7 @@ def sub_page(section, def_file, cookie):
           word = tokenize(line[i])
           (rval, rfrn, rbef, raft) = word[1:]
           checked = 0
-          if form_data.has_key(vn) and form_data[vn] == word[0]:
+          if form_data.has_key(vn) and form_data[vn] == rval:
             checked = 1
           print_input('radio', vn, rval, checked, rbef, raft)
           i += 1
@@ -374,6 +374,22 @@ def custom_page(session_path):
   print HTML_pretitle
   print '<title>Matrix Customized</title>'
   print HTML_customprebody % (session_path + '/matrix.zip')
+  print HTML_postbody
+
+
+######################################################################
+# error_page(session_path)
+#   Display errors that occurred during customization
+
+def error_page():
+  print HTTP_header + '\n'
+  print HTML_pretitle
+  print '<title>Matrix Customization Errors</title>'
+  print HTML_prebody
+
+  for w in wrong:
+    print wrong[w] + '<br>'
+
   print HTML_postbody
 
 
@@ -410,7 +426,8 @@ def save_choices(form_data, choices_file):
         wrote_values = 1
         f.write('section=' + section + '\n')
         for k in form_data.keys():
-          f.write(k + '=' + form_data[k] + '\n')
+          if k:
+            f.write(k + '=' + form_data[k] + '\n')
       else:
         f.write(a + '=' + v + '\n')
     # only pass through sections *besides* the one in question
@@ -423,7 +440,8 @@ def save_choices(form_data, choices_file):
   if not wrote_values:
     f.write('section=' + section + '\n')
     for k in form_data.keys():
-      f.write(k + '=' + form_data[k] + '\n')
+      if k:
+        f.write(k + '=' + form_data[k] + '\n')
 
   f.close()
 
@@ -470,11 +488,11 @@ if form_data.has_key('section'):
 # based on the current choices file
 if form_data.has_key('customize'):
   wrong = validate_choices(session_path)
-  if 1:
+  if len(wrong) == 0:
     customize_matrix(session_path)
     custom_page(session_path)
   else:
-    main_page('matrixdef', cookie)
+    error_page()
 elif form_data.has_key('subpage'):
   sub_page(form_data['subpage'], 'matrixdef', cookie)
 else:
