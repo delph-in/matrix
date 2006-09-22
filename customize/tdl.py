@@ -491,6 +491,11 @@ class TDLfile:
       self.typedefs.append(typedef)
 
   ###########################################################################
+  # ERB 2006-09-22 Add just a comment to an existing type in the file.
+  def comment(self, tdl_type, comment):
+    self.add(tdl_type + ':= [].', comment)
+
+  ###########################################################################
   # Add a literal to this file, which doesn't merge
   def add_literal(self, literal, comment = ''):
     l = TDLelem_literal(literal)

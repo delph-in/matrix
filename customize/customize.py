@@ -18,6 +18,46 @@ lrules = None
 lexicon = None
 roots = None
 
+######################################################################
+# Utility functions
+#
+# ERB 2006-09-16 There are properties which are derived from the
+# choices file as a whole which various modules will want to know about.
+# The first example I have is the presence of auxiliaries.  Both the
+# negation and yes-no questions modules have cases where they need to
+# restrict lexical rules to applying to main verbs only, but only if
+# there is in fact a distinction between main and auxiliary verbs (i.e.,
+# they need to say [ AUX - ], but only if the feature AUX is defined).
+
+def has_auxiliaries_p():
+
+  ans = 0
+  if neginfltype == aux or negseladv == aux or qinvverb == aux:
+    ans = 1
+
+  return ans
+
+# ERB 2006-09-21 This function assembles an inflectional rule out
+# of the appropriate information and adds it to irules.tdl.
+# Assumes we consistently use 'prefix' and 'suffix' as values in the
+# html form.
+# Should this actually be a method on TDLfile?
+
+def add_irule(instance_name,type_name,affix_type,affix_form):
+
+  rule = instance_name + ' :=\n'
+  if affix_type == 'prefix':
+    rule += '%prefix (* ' + affix_form + ')\n'
+  elif affix_type == 'suffix':
+    rule += '%suffix (* ' + affix_form + ')\n'
+
+# TODO: generate error here.
+#  else:
+#    error 'probable script bug'
+
+  rule += type_name + '.\n'
+
+  irules.add_literal(rule)
 
 ######################################################################
 # ch(s)
@@ -442,8 +482,7 @@ def ch(s):
 
 def customize_word_order():
 
-  if choices.has_key('wordorder'):
-    wo = choices['wordorder']
+  wo = ch('wordorder')
 
 # Add type definitions.  
 
@@ -622,29 +661,27 @@ in for head-adjunct phrases here:')
 
 def customize_np_word_order():
 
-  if choices.has_key('hasDets'):
-    if choices['hasDets'] == 't':
-      mylang.add('head-spec-phrase := basic-head-spec-phrase.',
-                 'Rules for bulding NPs.  Note that the Matrix uses SPR for\n\
-the specifier of nouns and SUBJ for the subject (specifier) of verbs.')
+  if ch('hasDets') == 't':
+    mylang.add('head-spec-phrase := basic-head-spec-phrase.',
+               'Rules for bulding NPs.  Note that the Matrix uses SPR for\n\
+               the specifier of nouns and SUBJ for the subject (specifier) of verbs.')
 
-      if choices.has_key('NounDetOrder'):
-        if choices['NounDetOrder'] == 'HeadSpec':
-          mylang.add('head-spec-phrase := head-initial.')
-        if choices['NounDetOrder'] == 'SpecHead':
-          mylang.add('head-spec-phrase := head-final.')
+    if ch('NounDetOrder') == 'HeadSpec':
+      mylang.add('head-spec-phrase := head-initial.')
+    if ch('NounDetOrder') == 'SpecHead':
+      mylang.add('head-spec-phrase := head-final.')
 
     rules.add('head-spec := head-spec-phrase.')
 
     
-# ERB 2006-09-14 I think that all languages have some form of
-# the Bare NP phrase.  Eventually there will be some choices about
-# this (given an appropriate module).  For now, use this stand in.
+    # ERB 2006-09-14 I think that all languages have some form of
+    # the Bare NP phrase.  Eventually there will be some choices about
+    # this (given an appropriate module).  For now, use this stand in.
 
   mylang.add('bare-np-phrase := basic-bare-np-phrase &\
-              [ C-CONT.RELS <! [ PRED \"unspec_q_rel\" ] !> ].',
+  [ C-CONT.RELS <! [ PRED \"unspec_q_rel\" ] !> ].',
              'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\n\
-introduced to match the semantic effect of bare NPs in your language.')
+             introduced to match the semantic effect of bare NPs in your language.')
 
   rules.add('bare-np := bare-np-phrase.')
 
@@ -664,10 +701,10 @@ def determine_consistent_order(wo,hc):
   # Assuming that adpositions are consistent within a language (i.e., you won't
   # find subject postpositions and object prepositions).
 
-  if choices['subjAdp']:
-    adpOrder = choices['subjAdp']
-  elif choices['objAdp']:
-    adpOrder = choices['objAdp']
+  if ch('subjAdp'):
+    adpOrder = ch('subjAdp')
+  elif ch('objAdp'):
+    adpOrder = ch('objAdp')
 
   if adpOrder:
     if wo == 'free':
@@ -677,15 +714,15 @@ def determine_consistent_order(wo,hc):
     elif hc == 'head-comp' and adpOrder == 'post':
       adp = 'vo-postp'
 
-  if choices['auxverb']:
+  if ch('auxverb'):
     if wo == 'free':
-      if choices['auxorder'] == 'left':
+      if ch('auxorder') == 'left':
         aux = 'free-aux-left'
-      elif choices['auxorder'] == 'right':
+      elif ch('auxorder') == 'right':
         aux = 'free-aux-right'
-    elif hc == 'comp-head' and choices['auxorder'] == 'left':
+    elif hc == 'comp-head' and ch('auxorder') == 'left':
       aux = 'ov-auxv'
-    elif hc == 'head-comp' and choices['auxorder'] == 'right':
+    elif hc == 'head-comp' and ch('auxorder') == 'right':
       aux = 'vo-vaux'
 
    # return what we learned
@@ -808,10 +845,239 @@ def specialize_word_order(hc,orders):
 #   Create the type definitions associated with the user's choices
 #   about sentential negation.
 
+# DOCUMENTATION
+
+# Unhandled case:  Main verbs take inflection + adverb, auxiliaries only
+# inflection (or vice versa).
+
+# ERB 2006-09-16 First pass at replicating functionality from
+# perl script.
+
 def customize_sentential_negation():
-  pass
 
+  # ERB 2006-09-16 Calculate a bunch of derived properties based on the
+  # inputs they gave for negation.  The same thing (e.g., negation via
+  # inflection on the main verb) gives a very different output depending
+  # on whether there are other options (negation via selected adverb)
+  # and how they combine.
 
+  advAlone = ''
+  multineg = ch('multineg')
+  if ch('adv_neg') == 'on' or multineg == 'comp':
+    advAlone = 'always'
+  if multineg == 'bothopt' or multineg == 'advobl':
+    advAlone = 'sometimes'
+  if multineg == 'bothobl' or multineg == 'inflobl':
+    advAlone = 'never'
+
+  # ERB 2006-09-16 TODO: The perl script had an else on the above if
+  # statment which generated a "probable script error" if we fell into
+  # it.  It's probably good idea to put that in here, too.
+
+  if ch('adv_neg') == 'on' and ch('neg-adv') == 'sel-adv':
+    create_neg_add_lex_rule(advAlone)
+    create_neg_adv_lex_item(advAlone)
+
+  if ch('infl_neg') == 'on' and multineg != 'bothobl' and multineg != 'advobl':
+    create_neg_infl_lex_rule()
+
+  if ch('adv_neg') == 'on' and ch('neg-adv') == 'ind-adv':
+
+    if advAlone == 'never':
+      # Override user input: multineg as bothobl or inflobl means
+      # we go with the selected adverb analysis.
+      create_neg_add_lex_rule(advAlone)
+
+    create_neg_adv_lex_item(advAlone)
+
+# ERB 2006-09-21 neg-add-lex rule, for negation strategies that involve
+# selected adverbs.
+
+def create_neg_add_lex_rule(advAlone):
+
+  # ERB 2006-09-17 The lexical rule conditions both need these
+  # variables, so declare them here.
+
+  pre = ''
+  suf = ''
+  orth = ''
+  rule = ''
+
+  # This first bit is shared by all the grammar types where we want
+  # the neg-add-lex-rule.
+
+  # ERB 2006-09-21 The value of COMPS on the mother is prettier
+  # with the . notation rather than FIRST/REST, but for now tdl.py
+  # isn't handling that case.
+  #                                 COMPS < [ LOCAL [ CONT [ HOOK [ INDEX #negind,\
+  #                                                                  LTOP #negltop ],\
+  #                                                          HCONS <! [ LARG #larg ] !> #]],\
+  #                                                   LKEYS.KEYREL.PRED \"_neg_r_rel\" ] . #comps > ],\
+
+  mylang.add('''neg-add-lex-rule := local-change-only-lex-rule &
+                       same-ctxt-lex-rule &
+                       same-agr-lex-rule &
+                       same-head-lex-rule &
+                       same-hc-light-lex-rule &
+                       same-posthead-lex-rule &
+     [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ #subj,
+                                  SPR #spr,
+                                  SPEC #spec ,
+                                  COMPS [ FIRST [ LOCAL.CONT [ HOOK [ INDEX #negind,
+                                                                      LTOP #negltop ],
+                                                               HCONS <! [ LARG #larg ] !> ],
+                                                  LKEYS.KEYREL.PRED "_neg_r_rel" ],
+                                          REST #comps ]],
+                        CONT [ HOOK [ INDEX #negind,
+                                      LTOP #negltop,
+                                      XARG #xarg ],
+                               MSG #msg ]],
+        DTR lex-item &  [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ #subj,
+                                                     SPR #spr,
+                                                     SPEC #spec,
+                                                     COMPS #comps ],
+                                               HEAD verb ] ],
+                                         CONT [ HOOK [ LTOP #larg,
+                                                       XARG #xarg ],
+                                               MSG #msg ]]]].''',
+                                               '''This lexical rule adds a selected negative\n
+                                               adverb to the beginning of the COMPS list''')
+
+  #Decide what to do with AUX value.
+
+  if ch('neg-sel-adv') == 'aux':
+    mylang.add('neg-add-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
+               'This rule applies only to auxiliaries.')
+
+  if ch('neg-sel-adv') == 'main' and has_auxiliaries_p():
+    mylang.add('neg-add-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].'
+               'This rule applies only to main verbs.')
+
+    #Make subtypes and instances as appropriate, depending on advAlone condition.
+
+  if advAlone == 'always':
+    mylang.add('neg-add-lex-rule := constant-lex-rule.'
+               'Thie type is instantiated in lrules.tdl.')
+    
+    lrules.add('neg-add-lr := neg-add-lex-rule.')
+
+      
+    # TODO: I really just want to add a comment to this type in this case.  Will
+    # this syntax do it?  If not, is there some other syntax in tdl.py that will?
+    
+  if advAlone == 'sometimes':
+    mylang.comment('neg-add-lex-rule',
+               'This type has subtypes instantiated by instances in both\n\
+               irules.tdl and lrules.tdl.')
+    mylang.add('infl-neg-add-lex-rule := neg-add-lex-rule & inflecting-lex-rule.')
+    mylang.add('const-neg-add-lex-rule := neg-add-lex-rule & constant-lex-rule.')
+
+    lrules.add('neg-add-lr := const-neg-add-lex-rule.')
+
+    add_irule('neg-add-lr','infl-neg-add-lex-rule',ch('neg-aff'),ch('neg-aff-form'))
+
+  if advAlone == 'never':
+    mylang.add('neg-add-lex-rule := inflecting-lex-rule.'
+               'This type is instantiated in irules.tdl.')
+      
+    add_irule('neg-add-lr','neg-add-lex-rule',ch('neg-aff'),ch('neg-aff-form'))
+
+# ERB 2006-09-21 Create negative inflection lexical rule
+#Inflection without selected adverb
+#This one adds the '_neg_r_rel, and as such is only used
+#when inflection appears alone (infl strategy only, both
+#strategies with multineg = comp, bothopt, inflobl).
+
+#Spell _neg_r_rel with leading _ even though it is introduced
+#by the lexical rule so that "the cat didn't sleep" and "the
+#cat did not sleep" have the same representation.
+
+#Copying up LKEYS here because I use the KEYREL.PRED to select
+#the neg adv in the neg-add-lex-rule.  We don't want the output
+#of this rule to be a possible first complement to a neg-add aux.
+#If we find another way to select the neg adv, something will
+#probably need to be changed here.
+
+def create_neg_infl_lex_rule():
+
+  mylang.add('neg-infl-lex-rule := cont-change-only-lex-rule &\
+	                     inflecting-lex-rule &\
+	   [ C-CONT [ MSG #msg,\
+	              HOOK [ XARG #xarg,\
+	                     LTOP #ltop,\
+	                     INDEX #ind ],\
+	              RELS <! event-relation &\
+	                      [ PRED "_neg_r_rel",\
+	                        LBL #ltop,\
+	                        ARG0 #ind,\
+	                        ARG1 #harg ] !>,\
+	              HCONS <! qeq &\
+	                       [ HARG #harg,\
+	                         LARG #larg ] !> ],\
+	     SYNSEM.LKEYS #lkeys,\
+	     DTR lex-item & \
+	         [ SYNSEM [ LKEYS #lkeys,\
+	                    LOCAL [ CONT [ MSG #msg,\
+	                                 HOOK [ XARG #xarg,\
+	                                        LTOP #larg ]],\
+	                          CAT.HEAD verb]]]].',
+             'This lexical rule adds the neg_r_rel to the verb\'s\n\
+	RELS list.  It is instantiated by a spelling-changing\n\
+	rule as specified in irules.tdl.')
+
+  if ch('neg-infl-type') == 'aux':
+    mylang.add('neg-infl-lex-rule := [ DTR.LOCAL.CAT.HEAD.AUX + ].',
+               'This rule applies only to auxiliaries.')
+
+  if ch('neg-infl-type') == 'main' and has_auxiliaries_p:
+    mylang.add('neg-infl-lex-rule := [ DTR.LOCAL.CAT.HEAD.AUX - ].',
+               'This rule applies only to main verbs.')
+
+  add_irule('neg-infl-lr','neg-infl-lex-rule',ch('neg-aff'),ch('neg-aff-form'))
+
+# ERB 2006-09-22 Create lexical types and lexical entries for 
+
+def create_neg_adv_lex_item(advAlone):
+
+  mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
+                 [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
+                                            COMPS < >,
+                                            SUBJ < > ],
+                                      HEAD.MOD < [ LOCAL.CAT.HEAD verb ] > ]].''',
+             'Type for negative adverbs.')
+
+  if advAlone == 'always':
+    mylang.comment('neg-adv-lex','''Constrain the MOD value of this adverb to keep\n
+    it from modifying the kind of verbs which can select it,\n
+    To keep spurious parses down, as a starting point, we have\n
+    assumed that it only modifies verbs (e.g., non-finite verbs).''')
+
+  if ch('negprepostmod') == 'pre':
+    mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+  elif ch('negprepostmod') == 'post':
+    mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
+                                           
+  if ch('negmod') == 'S':
+    mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
+                                                                                   COMPS null ]].''')
+  elif ch('negmod') == 'VP':
+    mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
+                                                                                   COMPS null ]].''')
+  elif ch('negmod') == 'V':
+    mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.LIGHT + ].''')
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HG-LIGHT - to allow us to pick out\n
+    lexical Vs for V-level attachment of negative adverbs.''')
+
+# ERB 2006-09-22 Validation should really make sure we have a value of
+# negadvform before we get here, but just in case, checking first, since
+# the script gets really unhappy if I try to write to an empty type.
+
+  if(ch('negadvform')):
+    lexicon.add(ch('negadvform') + ' := neg-adv-lex &\
+                [ STEM < "'+ ch('negadvform') +'" >,\
+                  SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ].')
+                                         
+  
 ######################################################################
 # Coordination
 #   Create the type definitions associated with the user's choices

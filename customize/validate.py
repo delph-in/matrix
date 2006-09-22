@@ -50,6 +50,9 @@ def validate_word_order():
 # validate_sentential_negation()
 #   Validate the user's choices about sentential negation.
 
+# If affix is indicated, must select prefix/suffix and give form.
+# If adverb is indicated, must give form.
+
 def validate_sentential_negation():
   pass
 
