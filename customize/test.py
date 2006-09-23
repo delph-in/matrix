@@ -20,7 +20,37 @@ baz = tdl.TDLfile('baz')
 baz.add('qqq := [ H.S.L.C.H noun ].')
 baz.add('qqq := [ H.S.L.C.H.A + ].')
 
-foo.save()
-bar.save()
-baz.save()
+foo.dump()
+bar.dump()
+baz.dump()
 
+# Test the list code
+
+t1 = tdl.TDLfile('')
+t1.add('t := < a , b, c >.', '')
+t1.dump()
+
+t2 = tdl.TDLfile('')
+t2.add('t := < a . b >.', '')
+t2.dump()
+
+t3 = tdl.TDLfile('')
+t3.add('t := < >.', '')
+t3.dump()
+
+t4 = tdl.TDLfile('')
+t4.add('t := [ FIRST a ].')
+t4.add('t := [ REST [ FIRST b, REST null ] ].')
+t4.dump()
+
+t5 = tdl.TDLfile('')
+t5.add('t := < a, b, c >.')
+t5.add('t := [ FIRST A ].')
+t5.add('t := [ REST [ FIRST B ] ].')
+t5.add('t := [ REST [ REST [ FIRST C ] ] ].')
+t5.dump()
+
+t6 = tdl.TDLfile('')
+t6.add('t := < a, b, c >.')
+t6.add('t := [ REST [ OTHER A ] ].')
+t6.dump()

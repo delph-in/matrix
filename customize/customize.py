@@ -701,6 +701,7 @@ def determine_consistent_order(wo,hc):
   # Assuming that adpositions are consistent within a language (i.e., you won't
   # find subject postpositions and object prepositions).
 
+  adpOrder = ''
   if ch('subjAdp'):
     adpOrder = ch('subjAdp')
   elif ch('objAdp'):
@@ -1164,8 +1165,6 @@ def customize_coordination():
       pre = ''
       suf = ''
 
-      print type(orth)
-    
       if mark == 'word':
         lexicon.add(orth + '_1 := conj-lex &\
                     [ STEM < "' + orth + '" >,\

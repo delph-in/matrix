@@ -84,6 +84,8 @@ def TDLtokenize(s):
 ###########################################################################
 # output
 
+debug_write = False
+
 tdl_file = sys.stdout
 def TDLset_file(f):
   global tdl_file
@@ -138,6 +140,10 @@ class TDLelem_literal:
       for l in self.comment.split('\n'):
         TDLwrite('; ' + l + '\n')
       TDLwrite('\n')
+
+    if debug_write:
+      TDLwrite('literal\n')
+
     tdl_file.write(self.literal + '\n\n')
 
   def set_comment(self, comment):
@@ -167,7 +173,10 @@ class TDLelem_typedef(TDLelem):
       for l in self.comment.split('\n'):
         TDLwrite('; ' + l + '\n')
       TDLwrite('\n')
-    
+
+    if debug_write:
+      TDLwrite('typedef\n')
+      
     TDLwrite(self.type + " " + self.op + " ")
     for ch in self.child:
       ch.write()
@@ -189,6 +198,9 @@ class TDLelem_type(TDLelem):
     self.type = type
 
   def write(self):
+    if debug_write:
+      TDLwrite('type\n')
+
     TDLwrite(self.type)
 
 
@@ -201,6 +213,9 @@ class TDLelem_coref(TDLelem):
     self.coref = coref
 
   def write(self):
+    if debug_write:
+      TDLwrite('coref\n')
+
     TDLwrite(self.coref)
 
 
@@ -213,6 +228,9 @@ class TDLelem_conj(TDLelem):
     self.child = []
 
   def write(self):
+    if debug_write:
+      TDLwrite('conj\n')
+
     for ch in self.child[0:1]:
       ch.write()
     for ch in self.child[1:]:
@@ -227,18 +245,96 @@ class TDLelem_conj(TDLelem):
 class TDLelem_feat(TDLelem):
   def __init__(self):
     self.child = []
+    self.empty_list = False
+
+  # Does self contain only a FIRST and a REST?  If so, self can be
+  # printed with '<' and '>' (and maybe as a list).
+  def can_abbrev(self):
+    if self.empty_list:
+      return True
+    c0 = None
+    c1 = None
+    if len(self.child) == 2:
+      c0 = self.child[0]
+      c1 = self.child[1]
+    return c0 and c1 and \
+           isinstance(c0, TDLelem_av) and \
+           isinstance(c1, TDLelem_av) and \
+           ((c0.attr == 'FIRST' and c1.attr == 'REST') or \
+            (c0.attr == 'REST' and c1.attr == 'FIRST'))
+
+  # Does self contain only a FIRST and a REST, and is the value of REST
+  # either the type 'null' or also a list?  If so, self can be printed
+  # as a list.
+  def is_list(self):
+    if self.can_abbrev():
+      c0 = self.child[0]
+      c1 = self.child[1]
+
+      if c0.attr == 'REST' and len(c0.child) == 1:
+        r = c0.child[0]
+      elif c1.attr == 'REST' and len(c1.child) == 1:
+        r = c1.child[0]
+
+      if r and \
+         isinstance(r, TDLelem_conj) and \
+         len(r.child) == 1:
+        c = r.child[0]
+        return (isinstance(c, TDLelem_type) and c.type == 'null') or \
+               (isinstance(c, TDLelem_feat) and c.is_list())
+
+    return False
+
+  def write_abbrev(self):
+    if self.empty_list:
+      TDLwrite('< >')
+      return
+    islist = self.is_list() # just call once and store the result
+    cur = self
+    first_elem = True
+    while cur:
+      if first_elem:
+        TDLwrite('< ')
+        first_elem = False
+      else:
+        TDLwrite(', ') # pairs will never get this far
+
+      if cur.child[0].attr == 'REST':
+        f = cur.child[1].child[0]
+        r = cur.child[0].child[0].child[0]
+      else:
+        f = cur.child[0].child[0]
+        r = cur.child[1].child[0].child[0]
+
+      f.write() # write value of FIRST
+
+      if islist and isinstance(r, TDLelem_type) and r.type == 'null':
+        break
+      elif not islist:
+        TDLwrite(' . ')
+        r.write()
+        break
+      else:
+        cur = r
+    TDLwrite(' >')
 
   def write(self):
-    TDLwrite('[ ')
-    old_i = tdl_indent
-    for ch in self.child[0:1]:
-      ch.write()
-    for ch in self.child[1:]:
-      TDLwrite(',\n')
-      for i in range(old_i):
-        TDLwrite(' ')
-      ch.write()
-    TDLwrite(' ]')
+    if debug_write:
+      TDLwrite('feat\n')
+
+    if self.can_abbrev():
+      self.write_abbrev()
+    else:
+      TDLwrite('[ ')
+      old_i = tdl_indent
+      for ch in self.child[0:1]:
+        ch.write()
+      for ch in self.child[1:]:
+        TDLwrite(',\n')
+        for i in range(old_i):
+          TDLwrite(' ')
+        ch.write()
+      TDLwrite(' ]')
 
 
 ###########################################################################
@@ -251,6 +347,9 @@ class TDLelem_av(TDLelem):
     self.attr = attr
 
   def write(self):
+    if debug_write:
+      TDLwrite('av\n')
+
     TDLwrite(self.attr)
     TDLwrite(' ')
     for ch in self.child:
@@ -265,6 +364,9 @@ class TDLelem_list(TDLelem):
     self.child = []
 
   def write(self):
+    if debug_write:
+      TDLwrite('list\n')
+
     TDLwrite('< ')
     for ch in self.child[0:1]:
       ch.write()
@@ -285,6 +387,9 @@ class TDLelem_dlist(TDLelem):
     self.child = []
 
   def write(self):
+    if debug_write:
+      TDLwrite('dlist\n')
+
     TDLwrite('<! ')
     for ch in self.child[0:1]:
       ch.write()
@@ -336,12 +441,81 @@ def TDLparse_feat():
 def TDLparse_list():
   global tok
   tok.pop(0) # '<'
-  elem = TDLelem_list()
+  seen_dot = False
+  child = []
   while tok[0] != '>':
-    elem.add(TDLparse_conj())
+    child.append(TDLparse_conj())
     if tok[0] == ',':
       tok.pop(0)
+    elif tok[0] == '.':
+      seen_dot = True
+      tok.pop(0)
   tok.pop(0) # '>'
+
+  # We've got the list elements, and the variable seen_dot tells us
+  # if it ends with a null (False) or not (True).  Loop through them
+  # backwards, constructing feature structures with FIRST and REST
+  # as appropriate
+
+  # first, short-circuit empty lists
+  if len(child) == 0:
+    elem = TDLelem_feat()
+    elem.empty_list = True
+    return elem
+
+  # otherwise, deal with the contents of the child list
+  elem = None
+  
+  # loop through all but the last child, constructing a list as we go
+  for c in child[0:-1]:
+    if elem == None:
+      temp = TDLelem_feat()
+      elem = temp
+      cur = temp
+    else:
+      temp = TDLelem_conj()
+      cur.add(temp)
+      cur = temp
+      temp = TDLelem_feat()
+      cur.add(temp)
+      cur = temp
+    temp = TDLelem_av('FIRST')
+    cur.add(temp)
+    temp.add(c)
+
+    # set up for the next iteration (or the finish)
+    temp = TDLelem_av('REST')
+    cur.add(temp)
+    cur = temp # leave cur pointing to an av
+
+  # deal with the last child as indicated by seen_dot
+  if seen_dot:
+    cur.add(child[-1])
+  else:
+    if elem == None:
+      temp = TDLelem_feat()
+      elem = temp
+      cur = temp
+    else:
+      temp = TDLelem_conj()
+      cur.add(temp)
+      cur = temp
+      temp = TDLelem_feat()
+      cur.add(temp)
+      cur = temp
+    temp = TDLelem_av('FIRST')
+    cur.add(temp)
+    temp.add(child[-1])
+    temp = TDLelem_av('REST')
+    cur.add(temp)
+    cur = temp
+    temp = TDLelem_conj()
+    cur.add(temp)
+    cur = temp
+    temp = TDLelem_type('null')
+    cur.add(temp)
+    cur = temp
+  
   return elem
 
 def TDLparse_dlist():
@@ -426,7 +600,15 @@ def TDLmerge(e1, e2):
   if TDLmergeable(e1, e2):
     e0 = copy.copy(e1)
     e0.child = []
-    e0.set_comment(e1.get_comment() + '\n\n' + e2.get_comment())
+
+    c1 = e1.get_comment()
+    c2 = e2.get_comment()
+    c0 = c1
+    if len(c1) and len(c2):
+      c0 += '\n\n'
+    c0 += c2
+    e0.set_comment(c0)
+
     # if the elements are ordered (list or dlist), merge the list
     # items in order.  That is, <a,b,c> + <A,B,C> = <a&A,b&B,c&C>.
     if e1.ordered():
@@ -474,6 +656,11 @@ class TDLfile:
       t.write()
     f.close()
 
+  def dump(self):
+    TDLset_file(sys.stdout)
+    for t in self.typedefs:
+      t.write()
+
   ###########################################################################
   # Add a type definition to this file, merging with an existing definition
   # if possible.
@@ -501,19 +688,3 @@ class TDLfile:
     l = TDLelem_literal(literal)
     l.set_comment(comment)
     self.typedefs.append(l)
-
-
-#e1 = TDLparse('shp := [ H.S.L.C.H noun ].')
-#e2 = TDLparse('shp := [ H.S.L.C.H verb ].')
-
-#e1 = TDLparse('shp := bhsp.')
-#e2 = TDLparse('shp := [ H.S.L.C.H verb ].')
-
-#e1 = TDLparse('shp := bhsp & hf & [ H.S.L.C.H noun ].')
-#e2 = TDLparse('shp := bhsp & hf & [ H.S.L.C.H verb ].')
-
-#e1 = TDLparse('shp := bhsp & hf & [ H.S.L.C.H noun ].')
-#e2 = TDLparse('shp := [ H.S.L.C.H verb ] & hf & bhsp.')
-
-#e1 = TDLparse('shp := [ H.S.L.C.V.C < > ].')
-#e2 = TDLparse('shp := [ H.S.L.C.V.C < n > ].')
