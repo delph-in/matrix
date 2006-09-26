@@ -1084,6 +1084,226 @@ def create_neg_adv_lex_item(advAlone):
 #   Create the type definitions associated with the user's choices
 #   about coordination.
 
+# sfd 2006-09-24 DOCUMENTATION
+#
+# 1. Statement of domain
+#
+# This module handles coordination of various phrase types (currently
+# N, NP, VP, and S).  It relies on choices in the Coordination section
+# of the questionnaire.
+#
+# 2. Seed strings/requirements of POS lexicon
+#
+# The phenomena covered by this module can be illustrated using the following
+# lexical entries:
+#
+# det (determiner)
+# n1 (noun)
+# n2 (noun)
+# n3 (noun)
+# iv1 (intransitive verb)
+# iv2 (intransitive verb)
+# iv3 (intransitive verb)
+# co (conjunction)
+# -co or co- (affix versions of the conjunction)
+#
+# Seed strings, not all of which will have valid permutations in all languages.
+#
+# These seed strings are written assuming sov order, det-n order, and
+# mandatory determiners.  Each section below will show the coordination
+# of one phrase type in with several different coordination strategies,
+# namely:
+#   monosyndeton word before
+#   monosyndeton word after
+#   monosyndeton affix before (for N only)
+#   monosyndeton affix after  (for N only)
+#   polysyndeton word before
+#   polysyndeton word after
+#   polysyndeton affix before (for N only)
+#   polysyndeton affix after  (for N only)
+#   omnisyndeton word before
+#   omnisyndeton word after
+#   omnisyndeton affix before (for N only)
+#   omnisyndeton affix after  (for N only)
+#   asyndeton
+#
+## Coordination of nouns
+#
+# det n1 n2 co n3 iv1
+# det n1 n2 n3 co iv1
+# det n1 n2 co-n3 iv1
+# det n1 n2 n3-co iv1
+# det n1 co n2 co n3 iv1
+# det n1 n2 co n3 co iv1
+# det n1 co-n2 co-n3 iv1
+# det n1 n2-co n3-co iv1
+# det co n1 co n2 co n3 iv1
+# det n1 co n2 co n3 co iv1
+# det co-n1 co-n2 co-n3 iv1
+# det n1-co n2-co n3-co iv1
+# det n1 n2 n3 iv1
+#
+## Coordination of noun phrases
+#
+# det n1 det n2 co det n3 iv1
+# det n1 det n2 det n3 co iv1
+# det n1 co det n2 co det n3 iv1
+# det n1 det n2 co det n3 co iv1
+# co det n1 co det n2 co det n3 iv1
+# det n1 co det n2 co det n3 co iv1
+# det n1 det n2 det n3 iv1
+#
+## Coordination of verb phrases
+#
+# det n1 iv1 iv2 co iv3
+# det n1 iv1 iv2 iv3 co
+# det n1 iv1 co iv2 co iv3
+# det n1 iv1 iv2 co iv3 co
+# det n1 co iv1 co iv2 co iv3
+# det n1 iv1 co iv2 co iv3 co
+# det n1 iv1 iv2 iv3
+#
+## Coordination of sentences
+#
+# det n1 iv1 det n2 iv2 co det n3 iv3
+# det n1 iv1 det n2 iv2 det n3 iv3 co
+# det n1 iv1 co det n2 iv2 co det n3 iv3
+# det n1 iv1 det n2 iv2 co det n3 iv3 co
+# co det n1 iv1 co det n2 iv2 co det n3 iv3
+# det n1 iv1 co det n2 iv2 co det n3 iv3 co
+# det n1 iv1 det n2 iv2 det n3 iv3
+#
+# 3. TDL Samples
+#
+# for an language with a single monosyndeton word-before strategy, we should
+# get the following TDL.
+#
+## mylanguage.tdl:
+#
+# ;;; Coordination
+#
+# n1-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule &
+#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+# n1-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule &
+#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+# n1-bottom-coord-rule := conj-first-bottom-coord-rule & n-bottom-coord-phrase &
+#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+#
+# np1-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule &
+#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+# np1-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule &
+#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+# np1-bottom-coord-rule := conj-first-bottom-coord-rule & np-bottom-coord-phrase &
+#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+#
+# vp1-top-coord-rule := basic-vp-top-coord-rule & monopoly-top-coord-rule &
+#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+# vp1-mid-coord-rule := basic-vp-mid-coord-rule & monopoly-mid-coord-rule &
+#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+# vp1-bottom-coord-rule := conj-first-bottom-coord-rule & vp-bottom-coord-phrase &
+#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+#
+# s1-top-coord-rule := basic-s-top-coord-rule & monopoly-top-coord-rule &
+#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+# s1-mid-coord-rule := basic-s-mid-coord-rule & monopoly-mid-coord-rule &
+#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+# s1-bottom-coord-rule := conj-first-bottom-coord-rule & s-bottom-coord-phrase &
+#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+#
+## lexicon.tdl:
+#
+# and_1 := conj-lex &
+#   [ STEM < "and" >,
+#     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
+#     CFORM "1" ].
+#
+# 4. Description of cases handled
+#
+# For the four phrase types N, NP, VP, and S, this module handles every
+# combination of the following three dimensions, with a few exceptions
+# noted below:
+#
+# Marking pattern: monosyndeton, polysyndeton, omnisyndeton, asyndeton
+# Type of mark: word or affix (with some spelling)
+# Position of mark: before or after coordinand
+#
+# Exceptions: when the pattern is asyndeton, type and position of mark,
+# as well as its spelling, must not be specified since they are
+# meaningless.  Also, an affix mark can currently only be specified
+# for lexical phrase types (i.e. just N).
+#
+# 5. Known unhandled cases
+#
+# There are a few coordination strategies that this module cannot encode:
+#
+# Classical Tibetan and Amharic(Haspelmath 2000):
+#   In strategies usually marked A-co B-co C, all but the *first* co
+#   can be optionally omitted, giving A-co B C (and so on for N>3).
+# Inupiaq (ref?):
+#   There is a strategy in this language that is mandatorily bisyndetic
+#   when there are two coordinands, but *mandatorily* monosyndetic for
+#   3 or more coordinands.  That is, we get A-lu B-lu for two, but
+#   A B C-lu for 3 or more.  A-lu B-lu C-lu and A B-lu C-lu are not
+#   allowed.
+# Indonesian (ref?):
+#   A strategy that uses different conjunctions based on position:
+#     A B serta C
+#     A dan B serta C
+#   * A serta B dan C
+#   * A serta B serta C
+#
+# In addition to these, there are some coordination strategies that can
+# be implemented using the Matrix rules, but which cannot be described
+# with the controls in the web questionnaire.  For example, Hebrew has
+# a strategy (ref?) that, like quite a few other strategies including
+# Latin -que (ref?), marks the first word of a coordinated phrase.  Such
+# a strategy could be implemented by adding a new binary feature, say
+# COORDMARKED, that is added by a morphological marking rule and identified
+# between all phrases and their first daughters.  Another odd strategy
+# is found in Kannada (ref?), where -uu is added to *every word* in a
+# coordinated phrase.  The implementation of this would be similar to the
+# first-word marking mentioned above, except that the new COORDMARKED
+# feature would be identified between phrases and *all* of their daughters.
+#
+# 6. Description of tdl
+#
+# For every phrase type that has a coordination strategy, there will be
+# a set of rules in mylanguage.tdl created with the same COORD-STRAT value.
+# These rules derive from the coordination rules in matrix.tdl (currently
+# near tbe bottom of the file), and specify the type of phrase being
+# coordinated.  They will have names that begin with the part of speech
+# (n, np, vp, s) and the number of the strategy.  For details about the
+# implementation, see the comments in matrix.tdl or Drellishak & Bender
+# 2005.
+#
+# 7. Description of customization (python)
+#
+# The entry point for this code is customize_coordination().  It loops
+# through every coordination strategy (currently only 1 and 2).  For each,
+# it looks at the user's choices and, from them, constructs a series of
+# parameters containing the prefixes and suffixes of the rules that
+# will be output (which also determines the prefixes and suffixes of the
+# matrix.tdl rules they will derive form.
+#
+# These are the parameters:
+#   num: the number of the strategy
+#   pos: the part of speech
+#   top: the prefix of the top rule
+#   mid: the prefix of the mid rule (empty for poly- and asyndeton)
+#   bot: the prefix of the bottom rule
+#   left: the prefix of the left rule (only for omnisyndeton)
+#   pre: the spelling of the prefix coordination mark (possibly empty)
+#   suf: the spelling of the suffix coordination mark (possibly empty)
+#
+# These parameters are passed to define_coord_strat(), a utility function
+# that outputs the actual rules.
+#
+# 8. Required changes to other modules
+#
+# None so far.
+
+
+######################################################################
 # define_coord_strat: a utility function, defines a strategy
 
 def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
@@ -1151,6 +1371,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
     rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
   
 
+######################################################################
 # customize_coordination(): the main coordination customization routine
 
 def customize_coordination():
