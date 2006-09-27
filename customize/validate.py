@@ -115,7 +115,23 @@ def validate_coordination():
 #   Validate the user's choices about matrix yes/no questions.
 
 def validate_yesno_questions():
-  pass
+  ques = ch('ques')
+  qinvverb = ch('qinvverb')
+  qpartposthead = ch('qpartposthead')
+  qpartform = ch('qpartform')
+
+  if ques == 'qpart':
+    if not qpartposthead:
+      err = 'If you chose the question particle strategy for yes-no questions, you must specify where the question particle appears.'
+      wrong['ques'] = err
+    if not qpartform:
+      err = 'If you chose the question particle strategy for yes-no questions, you must specify the form of the question particle.'
+      wrong['qpartform'] = err
+
+  if ques == 'inv':
+    if qinvverb != 'aux' and qinvverb != 'main' and qinvverb != 'main-aux':
+      err = 'There is something wrong with the verb type (main/aux) for inverted questions.  Please contact developers.'
+      wrong['qinvverb'] = err
 
 
 ######################################################################

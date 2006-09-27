@@ -147,7 +147,7 @@ Radio qinverb "fr qinverb" "" ""
 . main-aux "fr main-aux" "" "any verb<br>"
 
 Radio ques "fr ques" "" ""
-. inv "fr inv" "" "A separate question particle: "
+. qpart "fr qpart" "" "A separate question particle: "
 
 Radio qpartposthead "fr qpartposthead" "" ""
 . - "fr -" "" "sentence initial "

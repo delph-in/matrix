@@ -4,6 +4,7 @@
 # imports
 
 import os
+import shutil
 import tdl
 
 ######################################################################
@@ -1445,7 +1446,78 @@ def customize_coordination():
 #   about matrix yes/no questions.
 
 def customize_yesno_questions():
-  pass
+  ques = ch('ques')
+  qinvverb = ch('qinvverb')
+  qpartposthead = ch('qpartposthead')
+  qpartform = ch('qpartform')
+
+  if ques == 'qpart':
+    comment = '''
+    Your grammar has auxiliaries, so we are adding the features AUX and FORM
+    to the type verb.  We are assuming that auxiliaries select non-finite
+    verbal projections for their complements.
+
+    To allow for a simpler statement of word order rules (in some grammars)
+    we add the feature AUX to the type head, rather than verb.'''
+    mylang.add('head :+ [ AUX bool ].', comment)
+    mylang.add('verb :+ [ FORM form ].')
+
+    typedef = '''
+    qpart-le := basic-scopal-adverb-lex &
+      [ SYNSEM [ LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD verb,
+                                                      VAL [ SUBJ < >,
+                                                            COMPS < > ]]]>,
+                             VAL [ SUBJ < >,
+                                   SPR < >,
+                                   COMPS < > ],
+                             POSTHEAD ''' + qpartposthead + '''],
+                 LKEYS.KEYREL.PRED question_m_rel ]].'''
+    mylang.add(typedef)
+
+  if ques == 'inv':
+    comment = '''
+    For the analysis of inverted yes-no questions, we add the feature INV.'''
+    mylang.add('verb :+ [ INV bool ].', comment)
+
+    comment = '''
+    Rule for inverted subject verb order in questions.
+    The incompatible SUBJ values on SYNSEM and DTR are
+    what keeps this one from spinning.'''
+    if qinvverb == 'aux':
+      aux = ', AUX +'
+    elif qinvverb == 'main':
+      aux = ', AUX -'
+    elif qinvverb == 'main-aux':
+      aux = ''
+    typedef = '''
+    subj-v-inv-lrule := val-change-only-lex-rule &
+      constant-lex-rule &
+      [ SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV +''' + aux + ''' ],
+                             VAL [ COMPS < #subj . #comps >,
+                                   SUBJ < >,
+                                   SPR #spr,
+                                   SPEC #spec ]],
+                 LKEYS #lkeys ],
+        DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ < #subj >,
+                                     COMPS #comps,
+                                     SPR #spr,
+                                     SPEC #spec ],
+                     LKEYS #lkeys ]].'''
+    mylang.add(typedef, comment)
+
+    lrules.add('inv-lr := subj-v-inv-lrule.')
+
+  if qinvverb == 'aux':
+    comment = '''
+    This grammar includes head-modifier rules.  To keep out extraneous
+    parses, constrain the value of MOD on various subtypes of head.  This
+    may need to be loosened later.  This constraint says that only adverbs,
+    adjectives, and adpositions can be modifiers.'''
+    mylang.add('+nvcdmo :+ [ MOD < > ].', comment)
+
+  if qpartform:
+    typedef = qpartform + ' := qpart-le & [ STEM < "' + qpartform + '" > ].'
+    lexicon.add(typedef)
 
 
 ######################################################################
@@ -1471,9 +1543,10 @@ def customize_test_sentences():
 #   the choices file in the directory 'path'.  This function
 #   assumes that validation of the choices has already occurred.
 
-def customize_matrix(path):
+def customize_matrix(path, arch_type):
+  choices_file = path + '/choices'
   try:
-    f = open(path + '/choices', 'r')
+    f = open(choices_file, 'r')
     lines = f.readlines()
     f.close()
     for l in lines:
@@ -1483,20 +1556,24 @@ def customize_matrix(path):
   except:
     pass
 
-  path += '/matrix/'
+  matrix_path = path + '/matrix/'
 
-  # TODO: copy the matrix
-  if not os.path.exists(path):
-    os.mkdir(path)
+  # Copy from matrix-core
+  if os.path.exists(matrix_path):
+    shutil.rmtree(matrix_path)
+  shutil.copytree('matrix-core', matrix_path)
+  shutil.copy(choices_file, matrix_path) # include a copy of choices
 
+  # Create TDL object for each output file
   global mylang, rules, irules, lrules, lexicon, roots
-  mylang =  tdl.TDLfile(path + choices['language'].lower() + '.tdl')
-  rules =   tdl.TDLfile(path + 'rules.tdl')
-  irules =  tdl.TDLfile(path + 'irules.tdl')
-  lrules =  tdl.TDLfile(path + 'lrules.tdl')
-  lexicon = tdl.TDLfile(path + 'lexicon.tdl')
-  roots =   tdl.TDLfile(path + 'roots.tdl')
+  mylang =  tdl.TDLfile(matrix_path + choices['language'].lower() + '.tdl')
+  rules =   tdl.TDLfile(matrix_path + 'rules.tdl')
+  irules =  tdl.TDLfile(matrix_path + 'irules.tdl')
+  lrules =  tdl.TDLfile(matrix_path + 'lrules.tdl')
+  lexicon = tdl.TDLfile(matrix_path + 'lexicon.tdl')
+  roots =   tdl.TDLfile(matrix_path + 'roots.tdl')
 
+  # Call the various customization functions
   customize_word_order()
   customize_sentential_negation()
   customize_coordination()
@@ -1504,6 +1581,7 @@ def customize_matrix(path):
   customize_lexicon()
   customize_test_sentences()
 
+  # Save the output files
   mylang.save()
   rules.save()
   irules.save()
@@ -1511,4 +1589,15 @@ def customize_matrix(path):
   lexicon.save()
   roots.save()
 
-  # TODO: zip it up
+  # Either tar or zip up the results
+  old_dir = os.getcwd()
+  os.chdir(path)
+  if arch_type == 'tgz':
+    # sfd - I'd love to do this with a single call to "tar zcf", but for
+    # some reason the z option doesn't work inside a CGI script, even
+    # even though it does work on the command line.  WhatEVER.
+    os.system('tar cf matrix.tar matrix')
+    os.system('gzip matrix.tar')
+  else:
+    os.system('zip -r matrix.zip matrix')
+  os.chdir(old_dir)

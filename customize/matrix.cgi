@@ -9,6 +9,9 @@ import os
 getenv = os.getenv
 import random
 randint = random.randint
+import urllib
+unquote_plus = urllib.unquote_plus
+
 import customize
 customize_matrix = customize.customize_matrix
 import validate
@@ -277,7 +280,9 @@ def main_page(def_file, cookie):
 
   print HTML_preform
   print_input('hidden', 'customize', '', 0, '', '');
-  print_input('submit', '', 'Customize', 0, '<p class="customize">', '</p>')
+  print_input('radio', 'delivery', 'tgz', 0, '<p class="customize">Archive type: ', ' .tar.gz')
+  print_input('radio', 'delivery', 'zip', 0, ' ', ' .zip<br>')
+  print_input('submit', '', 'Customize', 0, '', '</p>')
   print HTML_postform
   print HTML_postbody
 
@@ -369,11 +374,15 @@ def sub_page(section, def_file, cookie):
 #   Create and print the "download your matrix here" page for the
 #   customized matrix in the directory specified by session_path
 
-def custom_page(session_path):
+def custom_page(session_path, arch_type):
   print HTTP_header + '\n'
   print HTML_pretitle
   print '<title>Matrix Customized</title>'
-  print HTML_customprebody % (session_path + '/matrix.zip')
+  if arch_type == 'tgz':
+    arch_file = 'matrix.tar.gz'
+  else:
+    arch_file = 'matrix.zip'
+  print HTML_customprebody % (session_path + '/' + arch_file)
   print HTML_postbody
 
 
@@ -461,6 +470,8 @@ if method == 'GET':
 elif method == 'POST':
   query = sys.stdin.read()
 
+query = unquote_plus(query)
+
 for q in query.split('&'):
   if q and q.find('=') != -1:
     pair = q.split('=')
@@ -488,11 +499,16 @@ if form_data.has_key('section'):
 # based on the current choices file
 if form_data.has_key('customize'):
   wrong = validate_choices(session_path)
-  if len(wrong) == 0:
-    customize_matrix(session_path)
-    custom_page(session_path)
-  else:
+
+  arch_type = form_data['delivery']
+  if arch_type != 'tgz' and arch_type != 'zip':
+    wrong['delivery'] = "You must specify an archive type."
+
+  if len(wrong):
     error_page()
+  else:
+    customize_matrix(session_path, arch_type)
+    custom_page(session_path, arch_type)
 elif form_data.has_key('subpage'):
   sub_page(form_data['subpage'], 'matrixdef', cookie)
 else:
