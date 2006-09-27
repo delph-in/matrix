@@ -1451,38 +1451,26 @@ def customize_yesno_questions():
   qpartposthead = ch('qpartposthead')
   qpartform = ch('qpartform')
 
-  if ques == 'qpart':
-    comment = '''
-    Your grammar has auxiliaries, so we are adding the features AUX and FORM
-    to the type verb.  We are assuming that auxiliaries select non-finite
-    verbal projections for their complements.
-
-    To allow for a simpler statement of word order rules (in some grammars)
-    we add the feature AUX to the type head, rather than verb.'''
+  if qinvverb == 'aux':
+    comment = \
+      'Your grammar has auxiliaries, so we are adding the features AUX\n' + \
+      'and FORM to the type verb.  We are assuming that auxiliaries\n' + \
+      'select non-finite verbal projections for their complements.\n' + \
+      '\n' + \
+      'To allow for a simpler statement of word order rules (in some\n' + \
+      'grammars) we add the feature AUX to the type head, rather than verb.'
     mylang.add('head :+ [ AUX bool ].', comment)
     mylang.add('verb :+ [ FORM form ].')
 
-    typedef = '''
-    qpart-le := basic-scopal-adverb-lex &
-      [ SYNSEM [ LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD verb,
-                                                      VAL [ SUBJ < >,
-                                                            COMPS < > ]]]>,
-                             VAL [ SUBJ < >,
-                                   SPR < >,
-                                   COMPS < > ],
-                             POSTHEAD ''' + qpartposthead + '''],
-                 LKEYS.KEYREL.PRED question_m_rel ]].'''
-    mylang.add(typedef)
-
   if ques == 'inv':
-    comment = '''
-    For the analysis of inverted yes-no questions, we add the feature INV.'''
+    comment = \
+      'For the analysis of inverted yes-no questions, we add the feature INV.'
     mylang.add('verb :+ [ INV bool ].', comment)
 
-    comment = '''
-    Rule for inverted subject verb order in questions.
-    The incompatible SUBJ values on SYNSEM and DTR are
-    what keeps this one from spinning.'''
+    comment = \
+      'Rule for inverted subject verb order in questions.\n' + \
+      'The incompatible SUBJ values on SYNSEM and DTR are\n' + \
+      'what keeps this one from spinning.'
     if qinvverb == 'aux':
       aux = ', AUX +'
     elif qinvverb == 'main':
@@ -1507,13 +1495,25 @@ def customize_yesno_questions():
 
     lrules.add('inv-lr := subj-v-inv-lrule.')
 
-  if qinvverb == 'aux':
-    comment = '''
-    This grammar includes head-modifier rules.  To keep out extraneous
-    parses, constrain the value of MOD on various subtypes of head.  This
-    may need to be loosened later.  This constraint says that only adverbs,
-    adjectives, and adpositions can be modifiers.'''
+  if ques == 'qpart':
+    comment = \
+      'This grammar includes head-modifier rules.  To keep out\n' + \
+      'extraneous parses, constrain the value of MOD on various subtypes\n' + \
+      'of head.  This may need to be loosened later.  This constraint\n' + \
+      'says that only adverbs, adjectives, and adpositions can be modifiers.'
     mylang.add('+nvcdmo :+ [ MOD < > ].', comment)
+
+    typedef = '''
+    qpart-le := basic-scopal-adverb-lex &
+      [ SYNSEM [ LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD verb,
+                                                      VAL [ SUBJ < >,
+                                                            COMPS < > ]]]>,
+                             VAL [ SUBJ < >,
+                                   SPR < >,
+                                   COMPS < > ],
+                             POSTHEAD ''' + qpartposthead + '''],
+                 LKEYS.KEYREL.PRED question_m_rel ]].'''
+    mylang.add(typedef)
 
   if qpartform:
     typedef = qpartform + ' := qpart-le & [ STEM < "' + qpartform + '" > ].'
@@ -1530,11 +1530,30 @@ def customize_lexicon():
 
 
 ######################################################################
-# customize_test_sentences()
+# customize_test_sentences(matrix_path)
 #   Create the script file entries for the user's test sentences.
 
-def customize_test_sentences():
-  pass
+def customize_test_sentences(matrix_path):
+  try:
+    b = open('matrix-core/basic_script', 'r')
+    s = open(matrix_path + 'lkb/script', 'w')
+    lines = b.readlines()
+    b.close()
+    for l in lines:
+      l = l.strip()
+      if l == ';;; Modules: LOAD my_language.tdl':
+        myl = choices['language'].lower() + '.tdl'
+        s.write('   (lkb-pathname (parent-directory) "' + myl + '")\n')
+      elif l == ';;; Modules: Default sentences':
+        s1 = ch('sentence1')
+        s2 = ch('sentence2')
+        s.write('(if (eq (length *last-parses*) 1)\n')
+        s.write('   (setf *last-parses* \'("' + s1 + '" "' + s2 + '")))\n')
+      else:
+        s.write(l + '\n')
+    s.close()
+  except:
+    pass
 
 
 ######################################################################
@@ -1579,7 +1598,7 @@ def customize_matrix(path, arch_type):
   customize_coordination()
   customize_yesno_questions()
   customize_lexicon()
-  customize_test_sentences()
+  customize_test_sentences(matrix_path)
 
   # Save the output files
   mylang.save()

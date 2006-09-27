@@ -231,10 +231,13 @@ class TDLelem_conj(TDLelem):
     if debug_write:
       TDLwrite('conj\n')
 
+    old_i = tdl_indent
     for ch in self.child[0:1]:
       ch.write()
     for ch in self.child[1:]:
-      TDLwrite(' & ')
+      TDLwrite(' &\n')
+      for i in range(old_i):
+        TDLwrite(' ')
       ch.write()
 
 

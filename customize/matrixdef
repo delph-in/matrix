@@ -187,11 +187,11 @@ Radio noun2spr "fr noun2spr" "<br>For this noun, a specifier (determiner) is " "
 
 Label "Intransitive verb:"
 
-Text iverb "fr iverb" "Spelling (finite form): " "" 40
+Text iverb "fr iverb" "Spelling (finite form): " "<br>" 40
 
-Text ivpred "fr ivpred" "<br>Predicate name (e.g. _sleep_v_rel): " "" 40
+Text ivpred "fr ivpred" "Predicate name (e.g. _sleep_v_rel): " "<br>" 40
 
-Radio iverbSubj "fr iverbSubj" "<br>The subject (sole argument) of this verb is a: " ""
+Radio iverbSubj "fr iverbSubj" "The subject (sole argument) of this verb is a: " ""
 . np "fr np" "" "NP "
 . pp "fr pp" "" "PP<br>"
 
@@ -199,15 +199,15 @@ Text iverb-nonfinite "fr iverb-nonfinite" "If your language has auxiliaries and 
 
 Label "Transitive verb:"
 
-Text tverb "fr tverb" "Spelling (finite form): " "" 40
+Text tverb "fr tverb" "Spelling (finite form): " "<br>" 40
 
-Text tvpred "fr tvpred" "<br>Predicate name (e.g. _see_v_rel): " "" 40
+Text tvpred "fr tvpred" "Predicate name (e.g. _see_v_rel): " "<br>" 40
 
-Radio tverbSubj "fr tverbSubj" "<br>The subject of this verb is a: " ""
+Radio tverbSubj "fr tverbSubj" "The subject of this verb is a: " ""
 . np "fr np" "" "NP "
 . pp "fr pp" "" "PP<br>"
 
-Radio tverbObj "fr tverbObj" "<br>The object of this verb is a: " ""
+Radio tverbObj "fr tverbObj" "The object of this verb is a: " ""
 . np "fr np" "" "NP "
 . pp "fr pp" "" "PP<br>"
 
