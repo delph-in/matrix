@@ -139,7 +139,103 @@ def validate_yesno_questions():
 #   Validate the user's choices about the test lexicon.
 
 def validate_lexicon():
-  pass
+  noun1 = ch('noun1')
+  noun1pred = ch('noun1pred')
+  noun1spr = ch('noun1spr')
+  noun2 = ch('noun2')
+  noun2pred = ch('noun2pred')
+  noun2spr = ch('noun2spr')
+
+  iverb = ch('iverb')
+  ivpred = ch('ivpred')
+  iverbSubj = ch('iverbSubj')
+  iverbnf = ch('iverbnf')
+
+  tverb = ch('tverb')
+  tvpred = ch('tvpred')
+  tverbSubj = ch('tverbSubj')
+  tverbObj = ch('tverbObj')
+  tverbnf = ch('tverbnf')
+
+  subjAdp = ch('subjAdp')
+  subjAdpForm = ch('subjAdpForm')
+  objAdp = ch('objAdp')
+  objAdpForm = ch('objAdpForm')
+
+  det1 = ch('det1')
+  det1pred = ch('det1pred')
+  det2 = ch('det2')
+  det2pred = ch('det2pred')
+
+  auxverb = ch('auxverb')
+  auxsem = ch('auxsem')
+  auxcomp = ch('auxcomp')
+  auxorder = ch('auxorder')
+
+  neg = ch('neg')
+  negadv = ch('negadv')
+
+  # Did they specify enough lexical entries?
+  if not (noun1 and iverb and tverb):
+    err = 'You must create an intransitive verb entry, a transitive verb entry, and at least one noun entry.'
+    wrong['noun1'] = err
+    wrong['iverb'] = err
+    wrong['tverb'] = err
+    
+  # Did they give pred names?
+  # sfd ToDo: If/when we start showing exactly which form fields were in
+  # error, this should be broken out into separate error messages for each
+  # choice
+  if (noun1 and not noun1pred) or \
+     (noun2 and not noun2pred) or \
+     (det1 and not det1pred) or \
+     (det2 and not det2pred) or \
+     not ivpred or not tvpred:
+    err = 'You must specify a predicate value for each noun, (main) verb, and determiner you specify.'
+    wrong['noun1pred'] = err
+    wrong['noun2pred'] = err
+    wrong['det1pred'] = err
+    wrong['det2pred'] = err
+    wrong['ivpred'] = err
+    wrong['tvpred'] = err
+
+  # Did they answer all of the questions about lexical entries?
+  # sfd ToDo: As above, separate error messages
+  if (noun1 and not noun1spr) or \
+     (noun2 and not noun2spr) or \
+     (iverb and not iverbSubj) or \
+     (tverb and not (tverbSubj and tverbObj)) or \
+     (subjAdp and not subjAdpForm) or \
+     (objAdp and not objAdpForm) or \
+     (auxverb and not (auxsem and auxcomp and auxorder)):
+    err = 'You must answer all questions for each lexical entry you specify.'
+    wrong['noun1spr'] = err
+    wrong['noun2spr'] = err
+    wrong['iverbSubj'] = err
+    wrong['tverbSubj'] = err
+    wrong['tverbObj'] = err
+    wrong['subjAdpForm'] = err
+    wrong['objAdpForm'] = err
+    wrong['auxsem'] = err
+    wrong['auxcomp'] = err
+    wrong['auxorder'] = err
+
+  # Did they give us the same form for both finite and nonfinite verbs?
+  if iverb == iverbnf or tverb == tverbnf:
+    err = 'If you provide a form for a verb when it cooccurs with an auxiliary, it must be different from the other (finite) form.'
+    wrong['iverbnf'] = err
+    wrong['tverbnf'] = err
+
+  # If they're specifying an auxiliary, and they say it takes a VP or V
+  # complement, did they tell us what type of subject?
+  if auxverb and auxcomp == 'V' and not auxsubj:
+    err = 'If your auxiliary takes a V or VP complement, you must specify whether its subject is an NP or a PP.'
+    wrong['auxsubj'] = err
+
+  # If negation involves an adverb, did they say which kind?
+  if neg and not negadv:
+    err = 'If your language expresses sentential negation with a negative adverb, you must specify whether it is independent or selected.'
+    wrong['negadv'] = err
 
 
 ######################################################################

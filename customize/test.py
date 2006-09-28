@@ -54,3 +54,7 @@ t6 = tdl.TDLfile('')
 t6.add('t := < a, b, c >.')
 t6.add('t := [ REST [ OTHER A ] ].')
 t6.dump()
+
+t7 = tdl.TDLfile('')
+t7.add('t := < a, b, ... >.')
+t7.dump()

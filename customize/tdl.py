@@ -11,19 +11,20 @@ import copy
 ###########################################################################
 # TDL Tokenization
 #
-# isid(c)
-#   return true iff c can appear in TDL identifiers
+# isid(s)
+#   return true iff s is a valid TDL identifier (or '...')
 #
 # TDLtokenize(s)
 #  convert s list of TDL tokens and return that list
 ###########################################################################
 
 def isid(s):
+  if s == '...':
+    return True
   for c in s:
     if not c.isalnum() and c != '-' and c != '+' and c != '_':
-      return 0
-
-  return 1
+      return False
+  return True
   
 def TDLtokenize(s):
   tok = ""
@@ -65,6 +66,9 @@ def TDLtokenize(s):
       else:
         val.append('Unrecognized token "' + s[0] + '"')
         s = ""
+    elif s[0:3] == '...':
+      val.append(s[0:3])
+      s = s[3:]
     elif s[0] == '[' or s[0] == ']' or \
          s[0] == '&' or s[0] == ',' or \
          s[0] == '.' or s[0] == '>':
@@ -87,11 +91,20 @@ def TDLtokenize(s):
 debug_write = False
 
 tdl_file = sys.stdout
+tdl_indent = 0
+
 def TDLset_file(f):
   global tdl_file
   tdl_file = f
 
-tdl_indent = 0
+def TDLget_indent():
+  global tdl_indent
+  return tdl_indent
+
+def TDLset_indent(indent):
+  global tdl_indent
+  tdl_indent = indent
+
 def TDLwrite(s):
   global tdl_indent
   global tdl_file
@@ -178,6 +191,7 @@ class TDLelem_typedef(TDLelem):
       TDLwrite('typedef\n')
       
     TDLwrite(self.type + " " + self.op + " ")
+    TDLset_indent(2)
     for ch in self.child:
       ch.write()
     TDLwrite(' .\n\n')
@@ -231,7 +245,7 @@ class TDLelem_conj(TDLelem):
     if debug_write:
       TDLwrite('conj\n')
 
-    old_i = tdl_indent
+    old_i = TDLget_indent()
     for ch in self.child[0:1]:
       ch.write()
     for ch in self.child[1:]:
@@ -329,7 +343,7 @@ class TDLelem_feat(TDLelem):
       self.write_abbrev()
     else:
       TDLwrite('[ ')
-      old_i = tdl_indent
+      old_i = TDLget_indent()
       for ch in self.child[0:1]:
         ch.write()
       for ch in self.child[1:]:
