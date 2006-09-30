@@ -43,19 +43,67 @@ def validate_language():
 # don't have any in the lexicon.
 
 def validate_word_order():
-  pass
+  
+  # General word order
+  if (not ch('wordorder')):
+    wrong['wordorder'] = 'You must specify a choice for the basic word order.'
+
+  # Things to do with determiners
+  if (not ch('hasDets')):
+    wrong['hasDets'] += 'You must specify whether your language has determiners.'
+  
+  if ((ch('hasDets') == 't') and (not ch('NounDetOrder'))):
+    wrong['NounDetOrder'] = 'If your language has determiners, you must specify'\
+                            + 'their order with respect to nouns.'
+
+  if (ch('NounDetOrder') and (not ch('hasDets'))):
+    wrong['hasDets'] += 'You specified an order of nouns and dets, but'\
+                       + 'not whether your language has determiners at all.'
+
+  if ((ch('det1') or ch('det2')) and (ch('hasDets') == 'nil')):
+    wrong['hasDets'] += 'You specified lexical entries for determiners, but'\
+                       + 'said your language has none.'
 
 
 ######################################################################
 # validate_sentential_negation()
 #   Validate the user's choices about sentential negation.
 
-# If affix is indicated, must select prefix/suffix and give form.
-# If adverb is indicated, must give form.
-
 def validate_sentential_negation():
-  pass
 
+  # If affix is indicated, must select prefix/suffix and main/aux/either and give form.
+  if (ch('neg-infl') == 'on'):
+    if (not ch('neg-infl-type')):
+      err = 'If sentential negation is expressed through affixation, you must specify what the affix attaches to.'
+      wrong['neg-infl-type'] = err
+    if (not ch('neg-aff')):
+      err = 'If sentential negation is expressed through affixation, you must specify whether its a prefix or a suffix'
+      wrong['neg-aff'] = err
+    if (not ch('neg-aff-form')):
+      err = 'If sentential negation is expressed through affixation, you must specify the form of the affix'
+      wrong['neg-aff-form'] = err
+    
+  # If adverb is indicated, must lexical entry, what it modifies, and ind/selected modifier
+  if (ch('adv_neg') == 'on'):
+    if (not ch('neg-adv')):
+      err = 'If sentential negaton is expressed through an adverb, you must specify whether the adverb is a selected complement or an independent modifier.'
+      wrong['neg-adv'] = err
+    if (ch('neg-adv') == 'ind-adv'):
+      if (not ch('negmod')):
+        err = 'If sentential negaton is expressed through an adverb, you must specify what type of constituent the adverb modifies.'
+        wrong['negmod'] = err
+      if (not ch('negprepostmod')):
+        err = 'If sentential negaton is expressed through an adverb, you must specify what side of its host the adverb attaches to.'
+        wrong['negprepostmod'] = err
+    if (not ch('negadvform')):
+      err = 'If sentential negation is expressed through an adverb, you must specify the form of the adverb.'
+      wrong['negadvform'] = err
+
+  # If both strategies are checked, then they must say how they combine:
+  if ((ch('neg-infl') == 'on') and (ch('adv_neg') == 'on')):
+    if (not ch('multineg')):
+      err = 'If you have selected both affix and adverb realizations of sentential negation, you must specify how they interact.'
+      wrong['multineg'] = err
 
 ######################################################################
 # validate_coordination()
@@ -172,8 +220,18 @@ def validate_lexicon():
   auxcomp = ch('auxcomp')
   auxorder = ch('auxorder')
 
+  # ERB 2006-09-29: What are these two picking up?  I don't see the match in matrixdef.
+
   neg = ch('neg')
   negadv = ch('negadv')
+
+  # ERB 2006-09-29: Doing this over in validate_sentential_negation()
+  # If negation involves an adverb, did they say which kind?
+  #  if neg and not negadv:
+  #    err = 'If your language expresses sentential negation with a negative adverb, you must specify whether it is independent or selected.'
+  #    wrong['negadv'] = err
+
+
 
   # Did they specify enough lexical entries?
   if not (noun1 and iverb and tverb):
@@ -232,11 +290,56 @@ def validate_lexicon():
     err = 'If your auxiliary takes a V or VP complement, you must specify whether its subject is an NP or a PP.'
     wrong['auxsubj'] = err
 
-  # If negation involves an adverb, did they say which kind?
-  if neg and not negadv:
-    err = 'If your language expresses sentential negation with a negative adverb, you must specify whether it is independent or selected.'
-    wrong['negadv'] = err
+  # ERB 2006-09-29
+  # If they said that any argument of a verb as a PP, did they define an
+  # appropriate adposition?
 
+  if (((tverbSubj == 'pp') or (iverbSubj == 'pp')) and not subjAdp):
+    err = 'You said that one or more of your verbs takes a PP subject, but you did not define a subject-marking adposition.'
+    wrong['subjAdp'] += err
+    wrong['subjAdpForm'] += err
+
+  if ((tverbObj == 'pp') and not objAdp):
+    err = 'You said that your transitive verb takes a PP object, but you did not define an object-marking adposition.'
+    wrong['objAdp'] += err
+    wrong['subjAdpForm'] += err
+
+  # ERB 2006-09-29
+  # Since we aren't supporting both pre- and post- positions in the same grammar
+
+  if ((subjAdp == 'pre' and objAdp == 'post') or (subjAdp == 'post' and objAdp == 'pre')):
+    err = 'We assume that argument-marking adpositions in any given language are uniformly prepositions or uniformly postpositions.  If your language is a counterexample to this, please contact the developers.'
+    wrong['subjAdp'] += err
+    wrong['objAdp'] += err
+
+  # ERB 2006-09-29
+  # If they said that either negation or questions required auxiliaries, did they specify
+  # an auxiliary?
+
+  if (not ch('auxverbform')):
+    if (ch('neginfltype') == 'aux'):
+      err = 'You specified that sentential negation is expressed through inflection of auxiliary verbs, but you did not specify an auxiliary in the lexicon.'
+      wrong['auxverbform'] += err
+    if (ch('negseladv') == 'aux'):
+      err = 'You specified that sentential negation is expressed through an adverb selected by auxiliary verbs, but you did not specify an auxiliary in the lexicon.'
+      wrong['auxverbform'] += err
+    if (ch('qinvverb') == 'aux'):
+      err = 'You specified that matrix yes-no questions are expressed through subject-auxiliary inversion, but you did not specify an auxiliary in the lexicon.'
+      wrong['auxverbform'] += err
+
+  # ERB 2006-0929
+  # If they said that either noun takes an obligatory determiner, did they say their language has
+  # determiners? ToDo: Consider whether this error should point to all things involved, or just
+  # the hasDets field.
+
+  if (((noun1spr == 'obl') or (noun2spr == 'obl')) and ch('hasDets') == nil):
+    err = 'You specified that one or more of your nouns obligatorily takes a determiner, but also that your language does not have determiners.'
+    wrong['hasDets'] = err
+    if (noun1spr == 'obl'):
+      wrong['noun1spr'] = err
+    if (noun1spr == 'obl'):
+      wrong['noun2spr'] = err
+    
 
 ######################################################################
 # validate_test_sentences()
