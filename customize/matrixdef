@@ -141,7 +141,7 @@ Label "Please indicate which strategy your language uses to form matrix yes-no q
 Radio ques "fr ques" "" ""
 . inv "fr inv" "" "Subject verb inversion: "
 
-Radio qinverb "fr qinverb" "" ""
+Radio qinvverb "fr qinverb" "" ""
 . main "fr main" "" "main verbs only "
 . aux "fr aux" "" "auxiliaries only "
 . main-aux "fr main-aux" "" "any verb<br>"

@@ -83,9 +83,8 @@ def ch(s):
 # This module handles the basic word order facts for matrix declarative
 # clauses, include permissible orders of major constituents (V, S, O),
 # and (where applicable) determiner-noun order, adposition-NP order, and
-# auxiliary-verb order.  It gathers information from multiple sections of
-# the questionnaire, namely: The word order section and various parts of
-# the lexicon section (entries for adpositions and  auxiliaries)
+# auxiliary-verb order.  Since the word order section and the basic vocabulary
+# section are closely related, both are documented together here.
 
 # 2. Seed strings/requirements of POS lexicon
 
