@@ -12,7 +12,7 @@ then
     exit 1
 fi
 
-scp `echo * | sed 's/[^ ]*~//g' | sed 's/#[^ ]*#//g' | sed 's/CVS//g' | sed 's/tohomer//g'` uwcl@homer.u.washington.edu:public_html/$1
+scp `echo * | sed 's/[^ ]*~//g' | sed 's/[^ ]*pyc//g' | sed 's/#[^ ]*#//g' | sed 's/CVS//g' | sed 's/tohomer//g' | sed 's/tolocal//g'` uwcl@homer.u.washington.edu:public_html/$1
 
 if [ $copymatrix ]
 then

@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/local/bin/python2.4
 
 ######################################################################
 # imports
@@ -6,6 +6,10 @@
 import os
 import shutil
 import tdl
+import tarfile
+if os.name == 'nt':
+  import gzip
+import zipfile
 
 ######################################################################
 # globals
@@ -2091,6 +2095,43 @@ def customize_roots():
   
 
 ######################################################################
+# Archive helper functions
+#   make_tgz(dir) and make_zip(dir) create an archive called
+#   dir.(tar.gz|zip) that contains the contents of dir
+
+def make_tgz(dir):
+  archive = dir + '.tar'
+  t = tarfile.open(archive, 'w')
+  t.add(dir)
+  t.close()
+
+  if os.name == 'nt':
+    g = gzip.open(archive + '.gz', 'wb')
+    f = open(archive, 'rb')
+    g.write(f.read())
+    f.close()
+    g.close()
+  else:
+    os.system('gzip ' + archive)
+
+
+def add_zip_files(z, dir):
+  files = os.listdir(dir)
+  for f in files:
+    cur = dir + '/' + f
+    if os.path.isdir(cur):
+      add_zip_files(z, cur)
+    else:
+      z.write(cur, cur)
+
+
+def make_zip(dir):
+  z = zipfile.ZipFile(dir + '.zip', 'w')
+  add_zip_files(z, dir)
+  z.close()
+
+
+######################################################################
 # customize_matrix(path)
 #   Create and prepare for download a copy of the matrix based on
 #   the choices file in the directory 'path'.  This function
@@ -2147,11 +2188,7 @@ def customize_matrix(path, arch_type):
   old_dir = os.getcwd()
   os.chdir(path)
   if arch_type == 'tgz':
-    # sfd - I'd love to do this with a single call to "tar zcf", but for
-    # some reason the z option doesn't work inside a CGI script, even
-    # even though it does work on the command line.  WhatEVER.
-    os.system('tar cf matrix.tar matrix')
-    os.system('gzip matrix.tar')
+    make_tgz('matrix')
   else:
-    os.system('zip -r matrix.zip matrix')
+    make_zip('matrix')
   os.chdir(old_dir)

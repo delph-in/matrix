@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/local/bin/python2.4
 
 ######################################################################
 # imports
@@ -119,7 +119,7 @@ def validate_sentential_negation():
 def validate_coordination():
   for n in (1, 2):
     i = str(n)
-    if choices.has_key('ch' + i):
+    if choices.has_key('cs' + i):
       csn =     ch('cs' + i + 'n')
       csnp =    ch('cs' + i + 'np')
       csvp =    ch('cs' + i + 'vp')
@@ -345,7 +345,7 @@ def validate_lexicon():
   # determiners? ToDo: Consider whether this error should point to all things involved, or just
   # the hasDets field.
 
-  if ((noun1spr == 'obl') or (noun2spr == 'obl')) and ch('hasDets') == nil:
+  if (noun1spr == 'obl' or noun2spr == 'obl') and ch('hasDets') == 'nil':
     err = 'You specified that one or more of your nouns obligatorily takes a determiner, but also that your language does not have determiners.'
     add_err('hasDets', err)
     if (noun1spr == 'obl'):
@@ -363,14 +363,17 @@ def validate_test_sentences():
 
 
 ######################################################################
-# validate_choices(path)
-#   Validate the choices file found in the directory 'path'.  Return
+# validate_choices(choices_file)
+#   Validate the choices file found in choices_file.  Return
 #   the names of choice file variables that are incorrect (stored
 #   in the list 'wrong'.
 
-def validate_choices(path):
+def validate_choices(choices_file):
+  global wrong
+  wrong = {}
+
   try:
-    f = open(path + '/choices', 'r')
+    f = open(choices_file, 'r')
     lines = f.readlines()
     f.close()
     for l in lines:

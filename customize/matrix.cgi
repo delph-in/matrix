@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/local/bin/python2.4
 
 ######################################################################
 # imports
@@ -12,6 +12,8 @@ randint = random.randint
 import urllib
 unquote_plus = urllib.unquote_plus
 
+import deffile
+tokenize_def = deffile.tokenize_def
 import customize
 customize_matrix = customize.customize_matrix
 import validate
@@ -132,7 +134,11 @@ Typed Feature Structure Grammars</i></a>.
 HTML_prebody = '''<body>
 '''
 
-HTML_preform = '''<form action="matrix.cgi" method="post">'''
+if os.name == 'nt':
+  HTML_method = 'get'
+else:
+  HTML_method = 'post'
+HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '">'
 
 HTML_postform = '</form>'
 
@@ -140,36 +146,6 @@ HTML_postbody = '''</body>
 
 </html>'''
 
-
-######################################################################
-# tokenize(str)
-#   split a string into words, treating double-quoted strings as
-#   single words.
-
-def tokenize(str):
-  i = 0
-  result = []
-
-  while i < len(str):
-    # skip whitespace
-    while i < len(str) and str[i].isspace():
-      i += 1
-    # if it's quoted, read to the close quote, otherwise to a space
-    if i < len(str) and str[i] == '"':
-      i += 1
-      a = i
-      while i < len(str) and str[i] != '"':
-        i += 1
-      result.append(str[a:i])
-      i += 1
-    elif i < len(str):
-      a = i
-      while i < len(str) and not str[i].isspace():
-        i += 1
-      result.append(str[a:i])
-
-  return result
-  
 
 ######################################################################
 # Class: VarNameMap, for mapping variables and friendly names
@@ -186,7 +162,7 @@ class VarNameMap:
     for l in line:
       l = l.strip()
       if len(l):
-        w = tokenize(l)
+        w = tokenize_def(l)
         if len(w) >= 3:
           ty = w[0]
           vn = w[1]
@@ -256,9 +232,8 @@ def main_page(def_file, cookie):
   line = f.readlines()
   f.close()
   
-  i = 0
-  while i < len(line):
-    word = tokenize(line[i])
+  for l in line:
+    word = tokenize_def(l)
     if len(word) == 0:
       pass
     elif word[0] == 'Section':
@@ -268,15 +243,14 @@ def main_page(def_file, cookie):
             word[2] + '</a>'
       print '<div class="values" id="' + word[1] + '" style="display:none">'
       cur_sec = ''
-      for l in choice:
-        l = l.strip()
-        (k, v) = l.split('=')
-        if k == 'section':
+      for c in choice:
+        c = c.strip()
+        (a, v) = c.split('=')
+        if a == 'section':
           cur_sec = v.strip()
         elif cur_sec == word[1]:
-          print namemap.f(k) + ' = ' + namemap.f(v) + '<br>'
+          print namemap.f(a) + ' = ' + namemap.f(v) + '<br>'
       print '</div></div>'
-    i += 1
 
   print HTML_preform
   print_input('hidden', 'customize', '', 0, '', '');
@@ -319,7 +293,7 @@ def sub_page(section, def_file, cookie):
   i = 0
   cur_sec = ''
   while i < len(line):
-    word = tokenize(line[i])
+    word = tokenize_def(line[i])
     if len(word) == 0:
       pass
     elif word[0] == 'Section':
@@ -348,7 +322,7 @@ def sub_page(section, def_file, cookie):
         print bf
         i += 1
         while line[i] != '\n':
-          word = tokenize(line[i])
+          word = tokenize_def(line[i])
           (rval, rfrn, rbef, raft) = word[1:]
           checked = 0
           if form_data.has_key(vn) and form_data[vn] == rval:
@@ -466,7 +440,7 @@ namemap = VarNameMap('matrixdef')
 query = ''
 method = getenv('REQUEST_METHOD')
 if method == 'GET':
-  query = getenv('QUERY_STRING')
+  query = getenv('QUERY_STRING', '')
 elif method == 'POST':
   query = sys.stdin.read()
 
@@ -498,7 +472,7 @@ if form_data.has_key('section'):
 # if the 'customize' field is defined, create a customized copy of the matrix
 # based on the current choices file
 if form_data.has_key('customize'):
-  wrong = validate_choices(session_path)
+  wrong = validate_choices(session_path + '/choices')
 
   arch_type = form_data['delivery']
   if arch_type != 'tgz' and arch_type != 'zip':
