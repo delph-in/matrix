@@ -105,9 +105,13 @@ def ch(s):
 # aux (auxiliary verb)
 # p (adposition)
 
+# In these seed strings, p and aux are assumed to be semantically
+# empty.  Det does have semantic content which is distinct from the
+# semantic relation introduced by the bare-np phrase.
+
 # In the absence of a module for case (and in languages without case)
 # both 's tv o' and 'o tv s' will parse in an ostensibly svo language.  We
-# want to distinguish s and o anyway because we would expect those to
+# want to distinguish s and o anyway because we would expect those two strings to
 # have different semantic representations in an svo language.  That is,
 # you shouldn't be able to generate 'o tv s' from the semantics of 's tv o'
 # in a strictly svo language.
@@ -149,8 +153,17 @@ def ch(s):
 # p det s p det o tv
 # det s p o det tv
 
+## Semantically distinct seed strings from the above:
+
+# s iv
+# det s iv
+# s o tv
+# det s o tv
+# det s det o tv
+
 # ## Ditransitive verbs.  Det on no arguments, each one separately
-# ## each pair, all three.
+# ## each pair, all three.  All of these are semantically distinct
+# ## from each other, and from the strings above.  
 
 # s io o dtv
 # det s io o dtv
@@ -161,7 +174,10 @@ def ch(s):
 # s det io det o dtv
 # det s det io det o dtv
 
-# ## Ditransitive verbs.  Det on no arguments, each one separately
+# ## P is semantically empty, so the strings below all share semantics
+# ## with something in the set above.
+
+# ## Ditransitive verbs.  Det on no arguments, eachone separately
 # ## each pair, all three. P on s argument only.
 
 # p s io o dtv
@@ -246,6 +262,7 @@ def ch(s):
 # p det s p det io p det o dtv
 
 # ## All of the above, with aux added at the end.
+# ## aux is semantically empty, so no new semantics here.
 
 # s iv aux
 # det s iv aux
@@ -339,6 +356,8 @@ def ch(s):
 # is a more nicely formatted version of what we *do* get, I haven't tested it
 # as tdl yet.)
 
+# head :+ [ AUX bool ] .
+
 # ; comp-head-phrase is restricted from taking prepositions as its head.
 # ; comp-head-phrase is restricted from taking auxiliaries as its head.
 
@@ -370,6 +389,64 @@ def ch(s):
 # subj-head := subj-head-phrase.
 # head-spec := head-spec-phrase.
 # bare-np := bare-np-phrase.
+
+# The lexical types look like this:
+
+# ;;; Lexical types
+
+# ;;; Nouns
+
+# noun-lex := basic-noun-lex &
+#   basic-one-arg &
+#   [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr &
+#                                    [ LOCAL.CAT.HEAD det ] >,
+#                              COMPS < >,
+#                              SUBJ < >,
+#                              SPEC < > ] ],
+#     ARG-ST < #spr > ] .
+
+# obl-spr-noun-lex := noun-lex &
+#   [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ] .
+
+# ;;; Verbs
+
+# verb-lex := basic-verb-lex &
+#   [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
+#                                SPEC < >,
+#                                SUBJ < #subj > ] ],
+#                    CONT.HOOK.XARG #xarg ],
+#     ARG-ST < #subj &
+#              [ LOCAL [ CAT.VAL [ SPR < >,
+#                                  COMPS < > ],
+#                        CONT.HOOK.INDEX #xarg ] ], ... > ] .
+
+# intransitive-verb-lex := verb-lex &
+#   intransitive-lex-item &
+#   [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+#     ARG-ST < [ LOCAL.CAT.HEAD adp ] > ] .
+
+# transitive-verb-lex := verb-lex &
+#   transitive-lex-item &
+#   [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+#     ARG-ST < [ LOCAL.CAT.HEAD adp ], #comps &
+#                                      [ LOCAL.CAT [ VAL [ SPR < >,
+#                                                          COMPS < > ],
+#                                                    HEAD adp ] ] > ] .
+
+# ;;; Case-marking adpositions
+# ;;; Case marking adpositions are constrained not to
+# ;;; be modifiers.
+
+# ;;; Determiners
+# ;;; SPEC is non-empty, and already specified by basic-determiner-lex.
+
+# determiner-lex := basic-determiner-lex &
+#   basic-zero-arg &
+#   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
+#                            COMPS < >,
+#                            SUBJ < > ] ] .
+
+
 
 # 4. Description of cases handled
 
@@ -1750,6 +1827,8 @@ def customize_lexicon():
                                      SPEC < > ]], \
             ARG-ST < #comps & [ LOCAL.CAT [ HEAD noun, \
                                              VAL.SPR < > ]] > ].'
+
+    mylang.add(typedef)
 	
   # Lexical type for determiners, if the language has any:
   if ch('hasDets') == 't':

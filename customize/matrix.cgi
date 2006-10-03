@@ -474,7 +474,12 @@ if form_data.has_key('section'):
 if form_data.has_key('customize'):
   wrong = validate_choices(session_path + '/choices')
 
-  arch_type = form_data['delivery']
+# ERB 2006-10-03 Checking has_key here to enable local debugging.
+
+  if form_data.has_key('delivery'):
+    arch_type = form_data['delivery']
+  else:
+    arch_type = ''
   if arch_type != 'tgz' and arch_type != 'zip':
     wrong['delivery'] = "You must specify an archive type."
 
