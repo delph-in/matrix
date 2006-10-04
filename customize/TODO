@@ -1,0 +1,25 @@
+HOW TO USE THIS FILE:
+
+  When you add something, put in the date and identify yourself.
+  When you fix something, remove it!
+  Prefix each item with FEAT (a feature request), BUG (a bug), or
+    MISC (anything else).
+
+
+[10/4/2006 sfd]
+
+FEAT: Improve TDL pretty-printing
+FEAT: Make TDLfile handle DOTTED.NAME.FORMAT correctly
+BUG:  Fix layout oddities when the main-page dropdown buttons are clicked
+      (by using images?)
+BUG:  TDLfile treats ... as an identifier -- I don't think that will merge
+      correctly
+MISC: validate.py and customize.py are getting pretty big -- should each
+      module be split into a separate, er, module?
+FEAT: Do something nicer with the validation error messages.  The desired
+      goal is marking every form field that needs fixing.  Somehow.
+FEAT: Add pretty-printing for the choices file (the random ones are just
+      jumbled together)
+FEAT: Still need validation for all modules
+BUG:  Clean up the ????? stuff in the customization page, either by
+      rewriting it or inserting them
