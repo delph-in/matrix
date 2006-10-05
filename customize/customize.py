@@ -958,7 +958,103 @@ def specialize_word_order(hc,orders):
 #   Create the type definitions associated with the user's choices
 #   about sentential negation.
 
-# DOCUMENTATION
+# ERB 2006-10-05 DOCUMENTATION
+
+# 1. Statement of domain
+
+# This module handles the expression of sentential negation.  It
+# provides two general strategy types (inflection v. adverb), several
+# variations on each type, and what I believe to be an exhaustive listing
+# of the possible ways of combining the two strategies.
+
+# 2. Seed strings/requirements of POS lexicon
+
+# In addition to the lexical entries given in the word order module,
+# this module requires:
+
+# neg (negative adverb)
+# -neg (negative suffix)
+# neg- (negative prefix)
+
+# Note: at some point, the permutation machinery will need to do
+# interesting things with affix order.  For now, there's not really
+# enough affixes to worry about it.
+
+# These seed strings are designed to work with languages that require
+# dets and Ps as well as those that do not.  They are written assuming
+# sov order, and use a transitive frame as the base to make the testing
+# a little more interesting (e.g., when you have aux involved).  For
+# the aux case, I'm assuming an auxiliary that follows the verb, and takes
+# a VP complement (subject raising).
+
+## These seed strings should each have one of two semantic representations,
+## the only difference being the presence v. absence of det.  So,
+## these two seed strings, parsed using a grammar that has negative
+## adverbs as independent modifiers to the left o V, should give the
+## two MRSs that we need:  (Once again, I'm assuming semantically empty aux.)
+
+# s o neg tv
+# det s det o neg tv
+
+## Negative adverb --- the module allows for attachment at V, VP, and S,
+## and to the left, right, or either.  Since we'll get all of these
+## positions (and more!) by doing the permutation then, I'm just doing
+## one set with a negative adverb, using the left of V placement:
+
+# s o neg tv
+# det s det o neg tv
+# p s p o neg tv
+# p det s p det o neg tv
+# det s det o neg tv aux
+# p det s p det o tv neg aux
+# s o tv neg aux
+# p s p o tv neg aux
+
+# ## Prefix, on main verbs and aux:
+
+# s o neg-tv
+# det s det o neg-tv
+# p s p o neg-tv
+# p det s p det o neg-tv
+# s o tv neg-aux
+# det s det o tv neg-aux
+# p s p o tv neg-aux
+# p det s p det o tv neg-aux
+
+# ## Suffix, on main verbs and aux:
+
+# s o tv-neg
+# det s det o tv-neg
+# p s p o tv-neg
+# p det s p det o tv-neg
+# s o tv aux-neg
+# det s det o tv aux-neg
+# p s p o tv aux-neg
+# p det s p det o tv aux-neg
+
+# ## Adverb plus prefix, on main verbs and aux:
+
+# s o neg neg-tv
+# det s det o neg neg-tv
+# p s p o neg neg-tv
+# p det s p det o neg neg-tv
+# s o tv neg neg-aux
+# det s det o tv neg neg-aux
+# p s p o tv neg neg-aux
+# p det s p det o tv neg neg-aux
+
+# ## Adverb plus suffix, on main verbs and aux:
+
+# s o neg tv-neg
+# det s det o neg tv-neg
+# p s p o neg tv-neg
+# p det s p det o neg tv-neg
+# s o tv neg aux-neg
+# det s det o tv neg aux-neg
+# p s p o tv neg aux-neg
+# p det s p det o tv neg aux-neg
+
+
 
 # Unhandled case:  Main verbs take inflection + adverb, auxiliaries only
 # inflection (or vice versa).
