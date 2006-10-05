@@ -437,6 +437,19 @@ def ch(s):
 # ;;; Case marking adpositions are constrained not to
 # ;;; be modifiers.
 
+# case-marker-p-lex := basic-one-arg &
+#   raise-sem-lex-item &
+#   [ SYNSEM.LOCAL.CAT [ HEAD adp &
+#                             [ MOD < > ],
+#                        VAL [ SPR < >,
+#                              SUBJ < >,
+#                              COMPS < #comps >,
+#                              SPEC < > ] ],
+#     ARG-ST < #comps &
+#              [ LOCAL.CAT [ HEAD noun,
+#                            VAL.SPR < > ] ] > ] .
+
+
 # ;;; Determiners
 # ;;; SPEC is non-empty, and already specified by basic-determiner-lex.
 
@@ -458,6 +471,9 @@ def ch(s):
 # constituent they combine with.  The lexicon module allows for
 # auxiliaries which combine with V (argument composition), VP
 # (raising) or S (??), and contribute their own preds or not.
+# The lexicon module also allows for each verb to select for NP or
+# PP arguments in each position (subject/object), and for nouns
+# to have obligatory, optional, or no determiners.
 
 # It also creates a bare np phrase for every language, because
 # a) all nouns need quantifiers and b) I suspect that all languages
@@ -516,6 +532,22 @@ def ch(s):
 # the disjunctive head types provided in head-types.tdl) or on the AUX
 # value.  To simplify things, AUX is declared as a feature of head, so
 # that a rule that says [AUX -] is e.g., compatible with [HEAD adp].
+
+# The tdl for the lexical types is pretty straightforward, in the
+# case of nouns and verbs.  They inherit from the relevant supertypes
+# in matrix.tdl, link ARG-ST elements to VAL elements, and constrain
+# other VAL lists to be empty.  They also give the HEAD value for
+# each argument.  Nouns might further provide a value for OPT on the
+# specifier.  Verbs identify the XARG with the first ARG-ST element's
+# INDEX.  The determiners just inherit from basic-zero-arg and make
+# empty VAL lists (maybe that should be on basic-zero-arg anyway?).
+# The case-marking adpositions inherit from basic-one-arg and raise-sem-lex-item.
+# They link their sole argument, an NP, to a COMPS list. Further, they
+# are MOD < >.
+
+# The trickiest lexical types are the auxiliaries.  They are cross-classified
+# along three dimensions: V, VP or S complement, pred or no pred, and
+# (for V or VP complement) NP v. PP subject.  
 
 # 7. Description of customization (python)
 
@@ -1847,31 +1879,41 @@ def customize_lexicon():
   # Lexical type for auxiliaries.  There's probably more we can give them
   # here, if we ask more questions (are there auxiliaries with both independent
   # preds and those which just contribute tense/aspect information?)...
+
+  # ERB 2006-10-03 Removing if statement in the middle of a string...
+
+  #                                      HEAD '
+  #       if auxsubj == 'noun':
+  #         typedef += 'noun ]],'
+  #       else:
+  #         typedef += 'adp ]],'
+  #       typedef += \
+
   if has_auxiliaries_p():
     mylang.add_literal(';;; Auxiliaries')
     if auxcomp == 'VP':
-      typedef = \
-        'subj-raise-aux := trans-first-arg-raising-lex-item & \
-            [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < #subj >, \
-                                       COMPS < #comps >, \
-                                       SPR < >, \
-                                       SPEC < > ], \
-                                 HEAD verb & [ AUX + ]], \
-              ARG-ST < #subj & \
+      typedef = 'subj-raise-aux := trans-first-arg-raising-lex-item & \
+                 [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < \#subj >, \
+                                         COMPS < \#comps >, \
+                                         SPR < >, \
+                                         SPEC < > ], \
+                                   HEAD verb & [ AUX + ]], \
+                ARG-ST < \#subj & \
                        [ LOCAL.CAT [ VAL  [ SPR < >, \
-                                            COMPS < > ], \
-                                     HEAD '
-      if auxsubj == 'noun':
-        typedef += 'noun ]],'
-      else:
-        typedef += 'adp ]],'
-      typedef += \
-        '              #comps & \
+                                            COMPS < > ]]],\
+                      \#comps & \
                        [ LOCAL.CAT [ VAL [ SUBJ < [ ] >, \
                                            COMPS < > ], \
                                      HEAD verb & \
                                           [ FORM inf ]]] > ].'
       mylang.add(typedef)
+
+      if auxsubj == 'noun':
+        mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
+      else:
+        mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD adp ].')
+        
+
       
       if auxsem == 'pred':
         typedef = \
@@ -1899,6 +1941,14 @@ def customize_lexicon():
         '; lexical verb complement, but not the other complements, if any.'
       mylang.add_literal(comment)
 
+      # ERB Removing if statement in the middle of a string.
+      #                                       HEAD 
+      #       if auxsubj == 'noun':
+      #         typedef += 'noun ]],'
+      #       else:
+      #         typedef += 'adp ]],'
+      #       typedef += \
+
       typedef = \
         'arg-comp-aux := basic-two-arg & \
            [ SYNSEM.LOCAL.CAT [ HEAD verb & [ AUX + ], \
@@ -1909,13 +1959,7 @@ def customize_lexicon():
              ARG-ST < #subj & \
                       [ LOCAL [ CAT [ VAL [ SPR < >, \
                                             COMPS < > ], \
-                                      HEAD '
-      if auxsubj == 'noun':
-        typedef += 'noun ]],'
-      else:
-        typedef += 'adp ]],'
-      typedef += \
-        '                     CONT.HOOK.INDEX #xarg ]], \
+                                CONT.HOOK.INDEX #xarg ]]], \
                     #comps & \
                     [ LIGHT +, \
                       LOCAL [ CAT [ VAL [ SUBJ <[ ]>, \
@@ -1923,6 +1967,11 @@ def customize_lexicon():
                                     HEAD verb & [ FORM inf ]], \
                               CONT.HOOK.XARG #xarg ]] > ].'
       mylang.add(typedef)
+
+      if auxsubj == 'noun':
+        mylang.add('arg-comp-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
+      else:
+        mylang.add('arg-comp-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD adp ].')
 
       if auxsem == 'pred':
         comment = \
