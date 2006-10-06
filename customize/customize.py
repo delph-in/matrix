@@ -1316,7 +1316,7 @@ def customize_sentential_negation():
     create_neg_infl_lex_rule()
 
   if ch('adv_neg') == 'on' and ch('neg-adv') == 'ind-adv':
-
+    print "MADE IT HERE"
     if advAlone == 'never':
       # Override user input: multineg as bothobl or inflobl means
       # we go with the selected adverb analysis.
@@ -1459,12 +1459,17 @@ def create_neg_infl_lex_rule():
 	RELS list.  It is instantiated by a spelling-changing\n\
 	rule as specified in irules.tdl.')
 
+  # ERB 2006-10-05 Adding AUX here independently from adding it anywhere
+  # else, in case we need it.
+  if has_auxiliaries_p:
+    mylang.add('head :+ [ AUX bool ].')
+
   if ch('neg-infl-type') == 'aux':
-    mylang.add('neg-infl-lex-rule := [ DTR.LOCAL.CAT.HEAD.AUX + ].',
+    mylang.add('neg-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
                'This rule applies only to auxiliaries.')
 
   if ch('neg-infl-type') == 'main' and has_auxiliaries_p:
-    mylang.add('neg-infl-lex-rule := [ DTR.LOCAL.CAT.HEAD.AUX - ].',
+    mylang.add('neg-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
                'This rule applies only to main verbs.')
 
   add_irule('neg-infl-lr','neg-infl-lex-rule',ch('neg-aff'),ch('neg-aff-form'))
@@ -1508,8 +1513,8 @@ def create_neg_adv_lex_item(advAlone):
 
   if(ch('negadvform')):
     lexicon.add(ch('negadvform') + ' := neg-adv-lex &\
-                [ STEM < "'+ ch('negadvform') +'" >,\
-                  SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ].')
+                [ STEM < \"'+ ch('negadvform') +'\" >,\
+                  SYNSEM.LKEYS.KEYREL.PRED \"_neg_r_rel\" ].')
                                          
   
 ######################################################################
