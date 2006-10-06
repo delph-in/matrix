@@ -2407,18 +2407,19 @@ def customize_lexicon():
 
   for i in (1, 2):
     noun = ch('noun' + str(i))
-    pred = ch('noun' + str(i) + 'pred')
-    spr = ch('noun' + str(i) + 'spr')
-    typedef = noun + ' := '
-    if singlentype or spr == 'opt':
-      typedef += 'noun-lex & '
-    elif spr == 'obl':
-      typedef += 'obl-spr-noun-lex & '
-    else:
-      typedef += 'no-spr-noun-lex & '
-    typedef += '[ STEM < "' + noun + '" >, \
-                  SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-    lexicon.add(typedef)
+    if noun:
+      pred = ch('noun' + str(i) + 'pred')
+      spr = ch('noun' + str(i) + 'spr')
+      typedef = noun + ' := '
+      if singlentype or spr == 'opt':
+        typedef += 'noun-lex & '
+      elif spr == 'obl':
+        typedef += 'obl-spr-noun-lex & '
+      else:
+        typedef += 'no-spr-noun-lex & '
+      typedef += '[ STEM < "' + noun + '" >, \
+                    SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+      lexicon.add(typedef)
 
   lexicon.add_literal(';;; Verbs')
 
@@ -2650,7 +2651,8 @@ def customize_matrix(path, arch_type):
     for l in lines:
       l = l.strip()
       w = l.split('=')
-      choices[w[0]] = w[1]
+      if w[0]:
+        choices[w[0]] = w[1]
   except:
     pass
 

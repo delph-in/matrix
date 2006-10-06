@@ -148,6 +148,13 @@ HTML_postbody = '''</body>
 
 
 ######################################################################
+# Stupid: The Python syntax coloring in Emacs doesn't seem properly
+# handle single-quotes inside of triple-quoted strings, so, as
+# necessary to turn syntax-coloring back on for the rest of the file,
+# include (or not) an extra apostrophe here:
+
+
+######################################################################
 # Class: VarNameMap, for mapping variables and friendly names
 
 class VarNameMap:
@@ -245,11 +252,12 @@ def main_page(def_file, cookie):
       cur_sec = ''
       for c in choice:
         c = c.strip()
-        (a, v) = c.split('=')
-        if a == 'section':
-          cur_sec = v.strip()
-        elif cur_sec == word[1]:
-          print namemap.f(a) + ' = ' + namemap.f(v) + '<br>'
+        if c:
+          (a, v) = c.split('=')
+          if a == 'section':
+            cur_sec = v.strip()
+          elif cur_sec == word[1]:
+            print namemap.f(a) + ' = ' + namemap.f(v) + '<br>'
       print '</div></div>'
 
   print HTML_preform
@@ -280,9 +288,11 @@ def sub_page(section, def_file, cookie):
     line = f.readlines()
     f.close()
     for l in line:
-      (a, v) = l.split('=')
-      v = v.strip()
-      form_data[a] = v
+      l = l.strip()
+      if l:
+        (a, v) = l.split('=')
+        v = v.strip()
+        form_data[a] = v
   except:
     pass
 
@@ -377,55 +387,60 @@ def error_page():
 
 
 ######################################################################
-# save_choices(form_data, choices_file)
+# save_choices(form_data, def_file, choices_file)
 #   Read the choices_file, stripping out the section associated with
 #   the 'section' member of form_data, and replacing it with all the
-#   values in form_data.
+#   values in form_data.  Use def_file to keep the choices file in
+#   order.
 
-def save_choices(form_data, choices_file):
+def save_choices(form_data, def_file, choices_file):
+  # The section isn't really a form field, but save it for later
   section = form_data['section']
   del form_data['section']
 
+  # Read the current choices file (if any) into old_choices
+  old_choice = {}
   try:
     f = open(choices_file, 'r')
     line = f.readlines()
+    for l in line:
+      l = l.strip()
+      if l:
+        (a, v) = l.split('=')
+        old_choice[a] = v
     f.close()
   except:
-    line = []
+    pass
 
+  # Open the def file and store it in line[]
+  f = open(def_file, 'r')
+  line = f.readlines()
+  f.close()
+
+  # Now pass through the def file, writing out either the old choices
+  # for each section or, for the section we're saving, the new choices
   f = open(choices_file, 'w')
-
-  wrote_values = 0
   cur_sec = ''
-  i = 0
-  while i < len(line):
-    # split into attr and value around the equals sign
-    (a, v) = line[i].split('=')
-    v = v.strip()
-    if a == 'section':
-      cur_sec = v
-      # if this is the section in question, write out the new values
+  for l in line:
+    word = tokenize_def(l)
+    if len(word) == 0:
+      pass
+    elif word[0] == 'Section':
+      if cur_sec:
+        f.write('\n')
+      cur_sec = word[1]
+      f.write('section=' + cur_sec + '\n')
+    elif word[0] == 'Check' or word[0] == 'Radio' or word[0] == 'Text':
+      a = word[1]
+      v = ''
       if cur_sec == section:
-        wrote_values = 1
-        f.write('section=' + section + '\n')
-        for k in form_data.keys():
-          if k:
-            f.write(k + '=' + form_data[k] + '\n')
+        if form_data.has_key(a):
+          v = form_data[a]
       else:
+        if old_choice.has_key(a):
+          v = old_choice[a]
+      if a and v:
         f.write(a + '=' + v + '\n')
-    # only pass through sections *besides* the one in question
-    elif cur_sec != section:
-      f.write(a + '=' + v + '\n')
-    i += 1
-
-  # If the values haven't been written yet (because 'section' is not
-  # yet in the choices file, write it out now.
-  if not wrote_values:
-    f.write('section=' + section + '\n')
-    for k in form_data.keys():
-      if k:
-        f.write(k + '=' + form_data[k] + '\n')
-
   f.close()
 
 
@@ -467,7 +482,7 @@ if cookie and not os.path.exists(session_path):
 
 # if the 'section' field is defined, we have submitted values to save
 if form_data.has_key('section'):
-  save_choices(form_data, session_path + '/choices')
+  save_choices(form_data, 'matrixdef', session_path + '/choices')
 
 # if the 'customize' field is defined, create a customized copy of the matrix
 # based on the current choices file

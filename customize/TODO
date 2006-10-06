@@ -23,3 +23,8 @@ FEAT: Add pretty-printing for the choices file (the random ones are just
 FEAT: Still need validation for all modules
 BUG:  Clean up the ????? stuff in the customization page, either by
       rewriting it or inserting them
+
+[10/6/2006 sfd]
+
+FEAT: Remove old sessions after some amount of time (days?)
+FEAT: Add a Reset button to all forms

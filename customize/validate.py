@@ -379,7 +379,8 @@ def validate_choices(choices_file):
     for l in lines:
       l = l.strip()
       w = l.split('=')
-      choices[w[0]] = w[1]
+      if w[0]:
+        choices[w[0]] = w[1]
   except:
     pass
 
