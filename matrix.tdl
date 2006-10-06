@@ -503,8 +503,21 @@ tam := avm &
     ASPECT aspect,
     MOOD mood ]. 
 
+; ERB 2006-10-05 First pass at de-messaging.  I'm going to leave
+; the messages in for now, but add a feature MESG to events.  Will
+; have to update once I see what Dan has actually done with the ERG.
+
+; ERB 2006-10-05 Update this little hierarchy enventually to 
+; include commands, etc.
+
+mesg := avm.
+prop-or-ques := mesg.
+prop := prop-or-ques.
+ques := prop-or-ques.
+
 event := event-or-ref-index &
-  [ E tam ].
+  [ E tam,
+    MESG mesg ].
 
 ; Coordinated phrases have coordinated indices as their INDEX
 ; values.  These are meant to be interpreted as pointers to 
@@ -2284,8 +2297,13 @@ attrib-or-pred-lex-item := lex-item &
 ; Bringing in norm-sem-lex-item here where relevant, although this
 ; might be too stringent.
 
+; ERB 2006-10-05 Temporarily constraining INDEX.MESG to be
+; prop-or-ques.  This will need to be revisited if we're going to 
+; allow commands, but look at what ERG does first.
+
 basic-verb-lex := norm-sem-lex-item & 
-  [ SYNSEM [ LOCAL.CAT.HEAD verb,
+  [ SYNSEM [ LOCAL [ CAT.HEAD verb,
+		     CONT.HOOK.INDEX.MESG prop-or-ques ],
 	     LKEYS.KEYREL event-relation ]].
 
 ; ERB 2004-08-26 Put in qeq, assuming that for all scopal modifiers

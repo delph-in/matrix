@@ -808,6 +808,7 @@ def determine_consistent_order(wo,hc):
 
   adp = 'easy'
   aux = 'easy'
+  qpart_order = 'easy'
 
   # Is the ordering of adpositions consistent with the ordering of O and V?
   # Assuming that adpositions are consistent within a language (i.e., you won't
@@ -819,28 +820,51 @@ def determine_consistent_order(wo,hc):
   elif ch('objAdp'):
     adpOrder = ch('objAdp')
 
+  # ERB 2006-10-05 Fixing bug in free word order case.
+
   if adpOrder:
     if wo == 'free':
-      adp = 'free'
+      if adpOrder == 'pre':
+        adp = 'free-prep'
+      elif adpOrder == 'post':
+        adp = 'free-post'
     elif hc == 'comp-head' and adpOrder == 'pre':
       adp = 'ov-prep'
     elif hc == 'head-comp' and adpOrder == 'post':
       adp = 'vo-postp'
 
+  # Now what about auxiliaries?
+
   if ch('auxverb'):
     if wo == 'free':
       if ch('auxorder') == 'left':
-        aux = 'free-aux-left'
+        aux = 'free-auxv'
       elif ch('auxorder') == 'right':
-        aux = 'free-aux-right'
+        aux = 'free-vaux'
     elif hc == 'comp-head' and ch('auxorder') == 'left':
       aux = 'ov-auxv'
     elif hc == 'head-comp' and ch('auxorder') == 'right':
       aux = 'vo-vaux'
 
+  # ERB 2006-10-05 And what about the order of question particles wrt
+  # to other kinds of head-comp?  I'm assuming for now that question particles
+  # and other complementizers will behave the same way.  Are there languages
+  # in which that is not true?
+
+  if ch('qpartposthead'):
+    if wo == 'free':
+      if ch('qpartposthead') == '+':
+        qpart_order = 'free-sq'
+      elif ch('qpartposthead') == '-':
+        qpart_order = 'free-qs'
+    elif hc == 'comp-head' and ch('qpartposthead') == '-':
+      qpart_order = 'ov-qs'
+    elif hc == 'head-comp' and ch('qpartposthead') == '+':
+      qpart_order = 'vo-sq'
+
    # return what we learned
 
-  return {'adp': adp, 'aux': aux}
+  return {'adp': adp, 'aux': aux, 'qpart_order': qpart_order}
 
 # ERB 2006-09-15 Subroutine for emitting additional information about
 # head-complement and head-subject rules as required for adpositions and
@@ -850,10 +874,10 @@ def determine_consistent_order(wo,hc):
 # ---		 ---		---------	---------	------    ----------------
 # ov-auxv 	 ov-prep	v:AUX + | adp	~adp:AUX -	2         head-comp: both
 # vo-vaux	 vo-post	~adp:AUX - 	v:AUX + | adp	2         comp-head: both
-# free-aux-left	 free-prep	unrestricted	~adp:AUX - 	2         --
-# free-aux-right free-post	~adp:AUX -	unrestricted	2         --
-# free-aux-left	 free-post	~adp		AUX -		2         --
-# free-aux-right free-prep	AUX -		~adp		2         --
+# free-auxv	 free-prep	unrestricted	~adp:AUX - 	2         --
+# free-vaux      free-post	~adp:AUX -	unrestricted	2         --
+# free-auxv	 free-post	~adp		AUX -		2         --
+# free-vaux      free-prep	AUX -		~adp		2         --
 # easy		 ov-prep	adp		~adp		2         head-comp: adp
 # easy		 vo-post	~adp		adp		2         comp-head: adp
 # easy		 free-prep	unrestricted	~adp		2         --
@@ -875,83 +899,284 @@ def determine_consistent_order(wo,hc):
 
 # These can apply to either head-comp or comp-head, depending.
 
+# ERB 2006-10-05 But: We need to worry about question particles now,
+# too.  As I add to this and the space gets more complex, I wish that
+# there was some what I could take advantage of the head-types hiearchy
+# better.
+
+# In particular, the ~adp constraint right now adds +nvjrcdmo.
+# But, the same phrase type might need to be compatible with comp,
+# so I have to weaken that do +nvjrdmo, and then further constrain it
+# to +nvjrcdmo.  Likewise, ~comp boils down to +nvjrdmo, possibly
+# further constrained to +nvjrpdmo.  But I can't just add both
+# of those constraints, since the tdl won't compile (you can't add
+# a type to a conjunction if its supertype or subtype is mentioned).
+
+# My first pass at a solution is to first collect two kinds of information
+# about each of head-comp and comp-head:
+
+# head-comp-is is a list which stores positive statements about
+# what can be the head of a head-comp phrase.  If the word order is
+# free, we shouldn't see any statements here, because anything can be
+# a head. (Similarly for comp-head-is.)
+
+# head-comp-is-not is a list which stores negative statements about
+# possible heads of head-comp phrase, i.e., what can't be the head.
+# We will have interesting values here even in the free word order
+# case unless all of the orders values are 'easy'.  (Similarly for
+# comp-head-is-not)
+
+# It's possible that I could do this all in one step, but somehow it's
+# easier to keep my undestanding of it if I break it out like this.
+
 def specialize_word_order(hc,orders):
 
   adp = orders['adp']
   aux = orders['aux']
+  qpart_order = orders['qpart_order']
 
-# ERB 2006-09-15 First add head-comp or comp-head if they aren't
-# already there.  I don't think we have to worry about constraining
-# SUBJ or COMPS on these additional rules because they'll only be for
-# adp or auxv.
+  # ERB 2006-09-15 First add head-comp or comp-head if they aren't
+  # already there.  I don't think we have to worry about constraining
+  # SUBJ or COMPS on these additional rules because they'll only be for
+  # adp or auxv or qpart, so far.
 
-  if hc == 'comp-head' and (adp == 'ov-prep' or aux == 'ov-auxv'):
+  if hc == 'comp-head' and (adp == 'ov-prep' or aux == 'ov-auxv' or qpart_order == 'ov-qs'):
     mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial.')
 
-  if hc == 'head-comp' and (adp == 'vo-post' or aux == 'vo-vaux'):
+  if hc == 'head-comp' and (adp == 'vo-post' or aux == 'vo-vaux' or qpart_order == 'vo-sq'):
     mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final.')
 
-# ERB 2006-09-15 AUX if we're going to mention it, so the tdl compiles.
+  # Add rules to rules.tdl when necessary
+
+  if aux == 'ov-auxv' or adp == 'ov-prep' or qpart_order == 'ov-qs':
+    rules.add('head-comp := head-comp-phrase.')
+
+  if aux == 'vo-vaux' or adp == 'vo-post' or qpart_order == 'vo-sq':
+    rules.add('comp-head := comp-head-phrase.')
+
+  # ERB 2006-09-15 AUX if we're going to mention it, so the tdl compiles.
 
   if aux != 'easy':
     mylang.add('head :+ [AUX bool].')
 
-# The ~adp constraint
+  # ERB 2006-10-05 Collect positive statements about head-comp/comp-head
+  # We only need to do this is if the word order is not free, and we only
+  # need to do it for one of head-comp or comp-head, depending on the order
+  # of o and v.
 
-  if adp == 'ov-prep' or adp == 'free-prep':
-    mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo ].',
-               'comp-head-phrase is restricted from taking prepositions as its head.')
+  head_comp_is = []
+  comp_head_is = []
 
-  if adp == 'vo-post' or adp == 'free-post': 
-    mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo ].',
-               'head-comp-phrase is restricted from taking adpositions as its head.')
+  # VO order
+  if aux == 'vo-vaux':
+     comp_head_is.append('verb')
+  if adp == 'vo-post':
+    comp_head_is.append('adp')
+  if qpart_order == 'vo-sq':
+    comp_head_is.append('comp')
+
+  # OV order
+  if aux == 'ov-auxv':
+    head_comp_is.append('aux')
+  if adp == 'ov-prep':
+    head_comp_is.append('adp')
+  if qpart_order == 'ov-qs':
+    head_comp_is.append('comp')
+
+  #print 'Aux is: ' + aux + '\n'
+  #print 'Adp is: ' + adp + '\n'
+  #print 'Qpart_order is: ' + qpart_order + '\n'
+  #print str(head_comp_is) + '\n'
+
+  # ERB 2006-10-05 Collect negative statements about head-comp/comp-head.
+  # This needs to be done even if the word order is free.  It might need
+  # to be done for both head-comp and comp-head in a free word order language
+  # with inconsistent constraints on comp, adp, and aux.
+
+  head_comp_is_not = []
+  comp_head_is_not = []
+
+  if aux == 'free-auxv' or aux == 'ov-auxv':
+    comp_head_is_not.append('aux')
+  if aux == 'free-vaux' or aux == 'vo-vaux':
+    head_comp_is_not.append('aux')
+  if adp == 'free-prep' or adp == 'ov-prep':
+    comp_head_is_not.append('adp')
+  if adp == 'free-post' or adp == 'vo-prep':
+    head_comp_is_not.append('adp')
+  if qpart_order == 'free-qs' or qpart_order == 'ov-qs':
+    comp_head_is_not.append('comp')
+  if qpart_order == 'free-sq'or qpart_order == 'vo-sq':
+    head_comp_is_not.append('comp')
 
 
-# And the opposite cases (adp, V:AUX + | adp)
+  # ERB 2006-10-05 Add constraints to head-comp/comp-head.
+  
+  # First the positive constraints.  We only have positive constraints if
+  # the word order is not free. We should only have positive constraints for
+  # one of head-comp and comp-head and negative constraints for the other.
+  # In the free word order case, we might have negative constraints for each
+  # one.
 
-  if adp == 'ov-prep' and aux == 'easy':
-    mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD adp ].',
-               'head-comp-phrase is only for prepositions.')
+  # If only one part of speech type is allowed by the positive constraints,
+  # we don't have a disjunctive type.  
 
-  if adp == 'ov-prep' and aux == 'ov-auxv':
-    mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD +vp & [ AUX + ] ].',
-               'head-comp-phrase is only for prepositions and auxiliaries.')
+  if len(head_comp_is) == 1:
+    head = head_comp_is[0]
+    mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+               'head-comp-phrase can requires things that are [ HEAD ' + head + ' ].')
 
-  if adp == 'vo-post' and aux == 'easy':
-    mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD adp ].',
-               'comp-head-phrase is only for postpositions.')
+  if len(comp_head_is) == 1:
+    head = comp_head_is[0]
+    mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+               'comp-head-phrase can requires things that are [ HEAD ' + head + ' ].')
 
-  if adp == 'vo-post' and aux == 'vo-vaux':
-    mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD +vp & [ AUX + ] ].',
-               'comp-head-phrase is only for postpositions and auxiliaries.')
+  # Now the case where we do have disjunctive constraints.   NB: The order
+  # here is important, since we're constructing the string which has to
+  # correspond to the disjunctive head type.  While those are logically just
+  # disjunctions, as far as the LKB is concerned, they're type names, so
+  # we need an exact string match.
 
-# The [AUX -] constraint
+  # +nvjrcdmo. 
+  # +nvjrpdmo.  
 
-  if aux == 'vo-vaux' or aux == 'free-aux-right':
-    mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
-               'head-comp-phrase is restricted from taking auxiliaries as its head.')
 
-  if aux == 'ov-auxv' or aux == 'free-aux-left':
+  if len(head_comp_is) > 1:
+    head = '+'
+    if head_comp_is.count('verb'):
+      head += 'v'
+    if head_comp_is.count('adp'):
+      head += 'p'
+    if head_comp_is.count('comp'):
+      head += 'c'
+
+    mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+               'head-comp-phrase can requires things that are one of: ' + str(head_comp_is))
+
+  if len(comp_head_is) > 1:
+    head = '+'
+    if comp_head_is.count('verb'):
+      head += 'v'
+    if comp_head_is.count('adp'):
+      head += 'p'
+    if comp_head_is.count('comp'):
+      head += 'c'
+
+    mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+               'head-comp-phrase can requires things that are one of: ' + str(head_comp_is))
+
+  # Now the negative constraints.  This is where we extracted the information
+  # that head-comp or comp-head can't be certain things.  Of course, in tdl
+  # we only have positive constraints.  So, we have to translate the information
+  # to positive constraints.  Currently, these will always involve disjunctive
+  # types, since we have more pos types than things we're collecting negative info
+  # about.  The other case is that we have no negative constraints, in which case
+  # there's nothing to do.  We can just leave the HEAD value completely underspecified.
+
+  if len(head_comp_is_not) > 0:
+    head = '+n'
+    if head_comp_is_not.count('verb') == 0:
+      head += 'v'
+    head += 'jr'
+    if head_comp_is_not.count('adp') == 0:
+      head += 'p'
+    if head_comp_is_not.count('comp') == 0:
+      head += 'c'
+    head += 'dmo'
+
+    mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+               'The head of head-comp-phrase can\'t be: ' + str(head_comp_is_not))
+
+  if len(comp_head_is_not) > 0:
+    head = '+n'
+    if comp_head_is_not.count('verb') == 0:
+      head += 'v'
+    head += 'jr'
+    if comp_head_is_not.count('adp') == 0:
+      head += 'p'
+    if comp_head_is_not.count('comp') == 0:
+      head += 'c'
+    head += 'dmo'
+
+    mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+               'The head of comp-head-phrase can\'t be: ' + str(comp_head_is_not))
+
+
+  # ERB 2006-10-05 Auxiliaries are a bit special, because they involve a
+  # feature as well.  The negative constraint (is not an auxiliary) is
+  # just a constraint on the value of the feature: AUX -.  The positive
+  # constraint (can be an auxiliary) is verb & [AUX +].  That confused
+  # me for a moment, because "can be an auxiliary" seems consistent with
+  # "can be a verb that is not an auxiliary", but in fact, the only cases
+  # where we would want that are the free word order cases, and we're not
+  # putting anything into the positive constraint lists when word
+  # order is free (see above).  The only time we have an entry for verb in
+  # one of these lists is if auxiliaries show up where non-auxes
+  # can't.  I'm using "verb" as the entry instead of "aux" because that allows
+  # me to use the values in the list directly to produce some of the positive
+  # constraints above.
+
+  if comp_head_is_not.count('verb'):
     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
                'comp-head-phrase is restricted from taking auxiliaries as its head.')
 
-# The v:AUX + constraint
+  if head_comp_is_not.count('verb'):
+    mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
+               'head-comp-phrase is restricted from taking auxiliaries as its head.')
 
-  if aux == 'ov-auxv' and adp == 'easy':
-    mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ]].',
-               'head-comp-phrase is only for auxiliaries.')
 
-  if aux == 'vo-vaux' and adp == 'easy':
-    mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ]].',
-               'comp-head-phrase is only for auxiliaries.')
+# ERB 2006-10-05 Below is what I had before I had to generalize because
+# of addition of qpart_order.
 
-# Add rules to rules.tdl when necessary
+# # The ~adp constraint and the ~comp constraint
 
-  if aux == 'ov-auxv' or adp == 'ov-prep':
-    rules.add('head-comp := head-comp-phrase.')
+#   if adp == 'ov-prep' or adp == 'free-prep':
+#     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo ].',
+#                'comp-head-phrase is restricted from taking prepositions as its head.')
 
-  if aux == 'vo-vaux' or adp == 'vo-post':
-    rules.add('comp-head := comp-head-phrase.')
+#   if adp == 'vo-post' or adp == 'free-post': 
+#     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo ].',
+#                'head-comp-phrase is restricted from taking adpositions as its head.')
+
+
+# # And the opposite cases (adp, V:AUX + | adp)
+
+#   if adp == 'ov-prep' and aux == 'easy':
+#     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD adp ].',
+#                'head-comp-phrase is only for prepositions.')
+
+#   if adp == 'ov-prep' and aux == 'ov-auxv':
+#     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD +vp & [ AUX + ] ].',
+#                'head-comp-phrase is only for prepositions and auxiliaries.')
+
+#   if adp == 'vo-post' and aux == 'easy':
+#     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD adp ].',
+#                'comp-head-phrase is only for postpositions.')
+
+#   if adp == 'vo-post' and aux == 'vo-vaux':
+#     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD +vp & [ AUX + ] ].',
+#                'comp-head-phrase is only for postpositions and auxiliaries.')
+
+# # The [AUX -] constraint
+
+#   if aux == 'vo-vaux' or aux == 'free-vaux':
+#     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
+#                'head-comp-phrase is restricted from taking auxiliaries as its head.')
+
+#   if aux == 'ov-auxv' or aux == 'free-auxv':
+#     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
+#                'comp-head-phrase is restricted from taking auxiliaries as its head.')
+
+# # The v:AUX + constraint
+
+#   if aux == 'ov-auxv' and adp == 'easy':
+#     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ]].',
+#                'head-comp-phrase is only for auxiliaries.')
+
+#   if aux == 'vo-vaux' and adp == 'easy':
+#     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ]].',
+#                'comp-head-phrase is only for auxiliaries.')
+
 
 ######################################################################
 # customize_sentential_negation()
@@ -1652,6 +1877,17 @@ def customize_coordination():
 #   Create the type definitions associated with the user's choices
 #   about matrix yes/no questions.
 
+# DOCUMENTATION
+
+# 8. Changes to other modules:
+
+# Moving to the complementizer analysis of question particles impacted
+# the word order module.  In particular, we now have to worry about
+# the order of question particles with respect to heads when we do the
+# head-comp and comp-head rules, just like we have to worry about the
+# adpositions.  I also had to touch the root definition, to allow for
+# CPs as roots. 
+
 def customize_yesno_questions():
   ques = ch('ques')
   qinvverb = ch('qinvverb')
@@ -1684,14 +1920,16 @@ def customize_yesno_questions():
       aux = ', AUX -'
     elif qinvverb == 'main-aux':
       aux = ''
+      # ERB 2006-10-05 Adding in semantics here.  This rule constrains MESG to ques.  
     typedef = '''
     subj-v-inv-lrule := val-change-only-lex-rule &
       constant-lex-rule &
-      [ SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV +''' + aux + ''' ],
-                             VAL [ COMPS < #subj . #comps >,
-                                   SUBJ < >,
-                                   SPR #spr,
-                                   SPEC #spec ]],
+      [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ INV +''' + aux + ''' ],
+                               VAL [ COMPS < #subj . #comps >,
+                                     SUBJ < >,
+                                     SPR #spr,
+                                     SPEC #spec ]],
+                         CONT.INDEX.MESG ques ],
                  LKEYS #lkeys ],
         DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ < #subj >,
                                      COMPS #comps,
@@ -1702,28 +1940,55 @@ def customize_yesno_questions():
 
     lrules.add('inv-lr := subj-v-inv-lrule.')
 
+  # ERB 2006-10-05 Moving away from the modifier analysis of question particles
+  # which I think doesn't handle the facts well.  These look more like complementizers
+  # to me.
+
   if ques == 'qpart':
     comment = \
-      'This grammar includes head-modifier rules.  To keep out\n' + \
-      'extraneous parses, constrain the value of MOD on various subtypes\n' + \
-      'of head.  This may need to be loosened later.  This constraint\n' + \
-      'says that only adverbs, adjectives, and adpositions can be modifiers.'
-    mylang.add('+nvcdmo :+ [ MOD < > ].', comment)
-
+             'We treat question particles as complementizers.\n' + \
+             'Here is the lexical type for complementizers.'
     typedef = '''
-    qpart-le := basic-scopal-adverb-lex &
-      [ SYNSEM [ LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD verb,
-                                                      VAL [ SUBJ < >,
-                                                            COMPS < > ]]]>,
-                             VAL [ SUBJ < >,
-                                   SPR < >,
-                                   COMPS < > ],
-                             POSTHEAD ''' + qpartposthead + '''],
-                 LKEYS.KEYREL.PRED question_m_rel ]].'''
-    mylang.add(typedef)
+      complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
+         [ SYNSEM.LOCAL.CAT [ HEAD comp &
+                                   [ MOD < > ],
+                              VAL [ SPR < >,
+                                    SUBJ < >,
+                                    COMPS < #comp > ]],
+           ARG-ST < #comp & [ LOCAL.CAT [ HEAD verb,
+                                          VAL [ SUBJ < >,
+                                                COMPS < > ]]] > ]
+                                                .'''
+    mylang.add(typedef,comment)
+
+    comment = 'Subtype for question particles. Constrains MESG to ques.'
+    typedef = '''
+      qpart-lex-item := complementizer-lex-item &
+         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.MESG ques ].'''
+    mylang.add(typedef,comment)
+
+    #   if ques == 'qpart':
+    #     comment = \
+    #       'This grammar includes head-modifier rules.  To keep out\n' + \
+    #       'extraneous parses, constrain the value of MOD on various subtypes\n' + \
+    #       'of head.  This may need to be loosened later.  This constraint\n' + \
+    #       'says that only adverbs, adjectives, and adpositions can be modifiers.'
+    #     mylang.add('+nvcdmo :+ [ MOD < > ].', comment)
+    
+    #     typedef = '''
+    #     qpart-le := basic-scopal-adverb-lex &
+    #       [ SYNSEM [ LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD verb,
+    #                                                       VAL [ SUBJ < >,
+    #                                                             COMPS < > ]]]>,
+    #                              VAL [ SUBJ < >,
+    #                                    SPR < >,
+    #                                    COMPS < > ],
+    #                              POSTHEAD ''' + qpartposthead + '''],
+    #                  LKEYS.KEYREL.PRED question_m_rel ]].'''
+    #     mylang.add(typedef)
 
   if qpartform:
-    typedef = qpartform + ' := qpart-le & [ STEM < "' + qpartform + '" > ].'
+    typedef = qpartform + ' := qpart-lex-item & [ STEM < "' + qpartform + '" > ].'
     lexicon.add(typedef)
 
 
@@ -2299,16 +2564,31 @@ def customize_roots():
     'good starting point.  Note that it is legal to have multiple start\n' + \
     'symbols, but they all need to be listed as the value of\n' + \
     '`*start-symbol\' (see `lkb/user-fns.lsp\').'
-  verb_addendum = ''
-  if has_auxiliaries_p():
-    verb_addendum = ' & [ FORM fin ]'
+# ERB 2006-10-05 Removing if statement from within string
+
+#  verb_addendum = ''
+#  if has_auxiliaries_p():
+#    verb_addendum = ' & [ FORM fin ]'
+#[ HEAD verb' + verb_addendum + ', \
+
   typedef = \
     'root := phrase & \
-       [ SYNSEM.LOCAL [ CAT [ HEAD verb' + verb_addendum + ', \
-                        VAL [ SUBJ < >, \
-                              COMPS < > ] ], \
+       [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < >, \
+                              COMPS < > ], \
                         COORD - ] ].'
   roots.add(typedef, comment)
+
+  if has_auxiliaries_p():
+    roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD.FORM fin ].')
+
+  # ERB 2006-10-05 I predict a bug here:  If we a language with auxiliaries
+  # and question particles, we're going to need to make sure that FORM is
+  # compatible with comp.
+
+  if ch('ques') == 'qpart':
+    roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD +vc ].')
+  else:
+    roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD verb ].')
 
   comment = \
     'This start symbol allows you to parse single words as stand-alone\n' + \
