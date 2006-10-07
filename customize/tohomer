@@ -16,5 +16,5 @@ scp `echo * | sed 's/[^ ]*~//g' | sed 's/[^ ]*pyc//g' | sed 's/#[^ ]*#//g' | sed
 
 if [ $copymatrix ]
 then
-    scp -r ../*.tdl ../*.txt ../*tab ../README ../lkb ../pet ../modules/basic_script uwcl@homer.u.washington.edu:public_html/$1/matrix-core
+    scp -r ../*.tdl ../*.txt ../*.tab ../README ../lkb ../pet ../modules/basic_script uwcl@homer.u.washington.edu:public_html/$1/matrix-core
 fi
