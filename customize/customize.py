@@ -1316,7 +1316,6 @@ def customize_sentential_negation():
     create_neg_infl_lex_rule()
 
   if ch('adv_neg') == 'on' and ch('neg-adv') == 'ind-adv':
-    print "MADE IT HERE"
     if advAlone == 'never':
       # Override user input: multineg as bothobl or inflobl means
       # we go with the selected adverb analysis.
@@ -1485,7 +1484,11 @@ def create_neg_adv_lex_item(advAlone):
                                       HEAD.MOD < [ LOCAL.CAT.HEAD verb ] > ]].''',
              'Type for negative adverbs.')
 
-  if advAlone == 'always':
+  # ERB 2006-10-06 Below was advAlone == 'always', but that seems wrong.
+  # changing it to advAlone == 'never' being the case where we don't want
+  # the adverb to be a modifier.
+
+  if advAlone == 'never':
     mylang.comment('neg-adv-lex','''Constrain the MOD value of this adverb to keep\n
     it from modifying the kind of verbs which can select it,\n
     To keep spurious parses down, as a starting point, we have\n
@@ -1495,27 +1498,49 @@ def create_neg_adv_lex_item(advAlone):
     mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
   elif ch('negprepostmod') == 'post':
     mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
-                                           
-  if ch('negmod') == 'S':
+
+  if ch('negmod') == 's':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
                                                                                    COMPS null ]].''')
-  elif ch('negmod') == 'VP':
+  elif ch('negmod') == 'vp':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
                                                                                    COMPS null ]].''')
-  elif ch('negmod') == 'V':
+  elif ch('negmod') == 'v':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.LIGHT + ].''')
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HG-LIGHT - to allow us to pick out\n
     lexical Vs for V-level attachment of negative adverbs.''')
 
-# ERB 2006-09-22 Validation should really make sure we have a value of
-# negadvform before we get here, but just in case, checking first, since
-# the script gets really unhappy if I try to write to an empty type.
+  # ERB 2006-09-22 Validation should really make sure we have a value of
+  # negadvform before we get here, but just in case, checking first, since
+  # the script gets really unhappy if I try to write to an empty type.
 
   if(ch('negadvform')):
     lexicon.add(ch('negadvform') + ' := neg-adv-lex &\
                 [ STEM < \"'+ ch('negadvform') +'\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"_neg_r_rel\" ].')
                                          
+
+  # ERB 2006-10-06 And of course we need the head-modifier rules, if we're
+  # going to have an independent modifier.  While we're at it, we need to
+  # contrain the MOD value on the rest of the head types to keep them
+  # from going nuts.
+
+  if advAlone != 'never':
+    rules.add('head-adj-int := head-adj-int-phrase.',
+              'Rule instances for head-modifier structures. Corresponding types\n' +
+              'are defined in matrix.tdl.  The matrix customization script did\n' +
+              'not need to add any further constraints, so no corresponding tyes\n' +
+              'appear in ' + choices['language'].lower() + '.tdl')
+    rules.add('adj-head-int := adj-head-int-phrase.')
+    rules.add('head-adj-scop := head-adj-scop-phrase.')
+    rules.add('adj-head-scop := adj-head-scop-phrase.')
+
+    mylang.add('+nvcdmo :+ [ MOD < > ].',
+               'This grammar includes head-modifier rules.  To keep\n' +
+               'out extraneous parses, constrain the value of MOD on\n' +
+               'various subtypes of head.  This may need to be loosened later.\n' +
+               'This constraint says that only adverbs, adjectives,\n' +
+               'and adpositions can be modifiers.')
   
 ######################################################################
 # Coordination
@@ -2678,6 +2703,18 @@ def customize_matrix(path, arch_type):
   lexicon = tdl.TDLfile(matrix_path + 'lexicon.tdl')
   roots =   tdl.TDLfile(matrix_path + 'roots.tdl')
 
+  # ERB 2006-10-05 Customizing Version.lsp, too, to make it easier
+  # to keep track of different grammars.  It's probably better to
+  # use some other object type than tdl (since this is just lisp), but
+  # doing it quick and dirty for now.  Also, we should store the
+  # Matrix version info somewhere that this can pull it from.
+
+  global version_lsp
+  version_lsp = tdl.TDLfile(matrix_path + 'Version.lsp')
+
+  version_lsp.add_literal('(in-package :common-lisp-user)\n\n')
+  version_lsp.add_literal('(defparameter *grammar-version* \"' + choices['language'] + ' (Matrix-10-2006)\")\n')
+
   # Call the various customization functions
   customize_word_order()
   customize_sentential_negation()
@@ -2694,6 +2731,7 @@ def customize_matrix(path, arch_type):
   lrules.save()
   lexicon.save()
   roots.save()
+  version_lsp.save()
 
   # Either tar or zip up the results
   old_dir = os.getcwd()
