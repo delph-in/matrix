@@ -1909,6 +1909,42 @@ def customize_coordination():
 
 # DOCUMENTATION
 
+# 2. Seed strings, requirements of POS lexicon:
+
+# The only addition to the POS lexicon is qpart, the question particle:
+
+# qpart
+
+# The seed strings are written assuming an SVO language with no
+# adpositions (in order to illustrate inversion).  Again all the
+# seed strings have the same semantics, modulo determiners.  For
+# the purposes of harvesting the semantics, I recommend these two
+# strings, parsed with an SOV grammar which expresses yes no questions
+# with a sentence final question particle:
+
+# s o tv qpart
+# det s det o tv qpart
+
+# Now the SVO seed strings:
+
+# s tv o qpart
+# tv s o 
+# aux s tv o
+
+# det s tv det o qpart
+# tv det s det o 
+# aux det s tv det o
+
+# Since this module actually involves changes to word order, the
+# seed strings/permutation interaction is actually different.  I
+# think it will come down to being careful with the filters...
+
+# Note also that the semantic contrast between questions and non-questions
+# is that questions are marked as [ MESG ques ] while non-questions are
+# [ MESG prop-or-ques ].  The type prop-or-ques subsumes ques, but
+# in [incr tsdb()], we'll be looking at exact match semantics, not
+# unification or other measures of compatibility.
+
 # 8. Changes to other modules:
 
 # Moving to the complementizer analysis of question particles impacted
