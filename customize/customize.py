@@ -1593,50 +1593,65 @@ def create_neg_adv_lex_item(advAlone):
 #   omnisyndeton affix after  (for N only)
 #   asyndeton
 #
-## Coordination of nouns
+## Coordination of nouns (each group of sentences should have the
+## same semantic representation, though with different grammars)
 #
 # det s1 s2 co s3 iv1
 # det s1 s2 s3 co iv1
 # det s1 s2 co-s3 iv1
 # det s1 s2 s3-co iv1
+#
 # det s1 co s2 co s3 iv1
 # det s1 s2 co s3 co iv1
 # det s1 co-s2 co-s3 iv1
 # det s1 s2-co s3-co iv1
+#
 # det co s1 co s2 co s3 iv1
 # det s1 co s2 co s3 co iv1
 # det co-s1 co-s2 co-s3 iv1
 # det s1-co s2-co s3-co iv1
+#
 # det s1 s2 s3 iv1
 #
-## Coordination of noun phrases
+## Coordination of noun phrases (each group of sentences should have the
+## same semantic representation, though with different grammars)
 #
 # det s1 det s2 co det s3 iv1
 # det s1 det s2 det s3 co iv1
+#
 # det s1 co det s2 co det s3 iv1
 # det s1 det s2 co det s3 co iv1
+#
 # co det s1 co det s2 co det s3 iv1
 # det s1 co det s2 co det s3 co iv1
+#
 # det s1 det s2 det s3 iv1
 #
-## Coordination of verb phrases
+## Coordination of verb phrases (each group of sentences should have the
+## same semantic representation, though with different grammars)
 #
 # det s1 iv1 iv2 co iv3
 # det s1 iv1 iv2 iv3 co
+#
 # det s1 iv1 co iv2 co iv3
 # det s1 iv1 iv2 co iv3 co
+#
 # det s1 co iv1 co iv2 co iv3
 # det s1 iv1 co iv2 co iv3 co
+#
 # det s1 iv1 iv2 iv3
 #
 ## Coordination of sentences
 #
 # det s1 iv1 det s2 iv2 co det s3 iv3
 # det s1 iv1 det s2 iv2 det s3 iv3 co
+#
 # det s1 iv1 co det s2 iv2 co det s3 iv3
 # det s1 iv1 det s2 iv2 co det s3 iv3 co
+#
 # co det s1 iv1 co det s2 iv2 co det s3 iv3
 # det s1 iv1 co det s2 iv2 co det s3 iv3 co
+#
 # det s1 iv1 det s2 iv2 det s3 iv3
 #
 # 3. TDL Samples
@@ -1844,10 +1859,10 @@ def customize_coordination():
   for n in (1, 2):
     i = str(n)
     if choices.has_key('cs' + i):
-      mark = choices['cs' + i + 'mark']
-      pat = choices['cs' + i + 'pat']
-      orth = choices['cs' + i + 'orth']
-      order = choices['cs' + i + 'order']
+      mark = ch('cs' + i + 'mark')
+      pat = ch('cs' + i + 'pat')
+      orth = ch('cs' + i + 'orth')
+      order = ch('cs' + i + 'order')
 
       pre = ''
       suf = ''
@@ -1858,7 +1873,7 @@ def customize_coordination():
                       SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",\
                       CFORM "1" ].')
         if pat == 'omni':
-          lexicon.add(orth + '_ns += nosem-conj-lex &\
+          lexicon.add(orth + '_ns := nosem-conj-lex &\
                         [ STEM < "' + orth + '" > ].')
 
       if pat == 'a':
@@ -1900,7 +1915,7 @@ def customize_coordination():
               left += 'conj-last-'
 
       for pos in ('n', 'np', 'vp', 's'):
-        if choices['cs' + i + pos]:
+        if ch('cs' + i + pos):
           define_coord_strat(i, pos, top, mid, bot, left, pre, suf)
 
 
