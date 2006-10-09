@@ -6,8 +6,8 @@
 import random
 randint = random.randint
 
-import deffile
-tokenize_def = deffile.tokenize_def
+import utils
+tokenize_def = utils.tokenize_def
 import validate
 validate_choices = validate.validate_choices
 

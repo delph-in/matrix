@@ -11,6 +11,9 @@ if os.name == 'nt':
   import gzip
 import zipfile
 
+import utils
+load_choices = utils.load_choices
+
 ######################################################################
 # globals
 
@@ -1561,9 +1564,9 @@ def create_neg_adv_lex_item(advAlone):
 # lexical entries:
 #
 # det (determiner)
-# n1 (noun)
-# n2 (noun)
-# n3 (noun)
+# s1 (subject noun)
+# s2 (subject noun)
+# s3 (subject noun)
 # iv1 (intransitive verb)
 # iv2 (intransitive verb)
 # iv3 (intransitive verb)
@@ -1592,49 +1595,49 @@ def create_neg_adv_lex_item(advAlone):
 #
 ## Coordination of nouns
 #
-# det n1 n2 co n3 iv1
-# det n1 n2 n3 co iv1
-# det n1 n2 co-n3 iv1
-# det n1 n2 n3-co iv1
-# det n1 co n2 co n3 iv1
-# det n1 n2 co n3 co iv1
-# det n1 co-n2 co-n3 iv1
-# det n1 n2-co n3-co iv1
-# det co n1 co n2 co n3 iv1
-# det n1 co n2 co n3 co iv1
-# det co-n1 co-n2 co-n3 iv1
-# det n1-co n2-co n3-co iv1
-# det n1 n2 n3 iv1
+# det s1 s2 co s3 iv1
+# det s1 s2 s3 co iv1
+# det s1 s2 co-s3 iv1
+# det s1 s2 s3-co iv1
+# det s1 co s2 co s3 iv1
+# det s1 s2 co s3 co iv1
+# det s1 co-s2 co-s3 iv1
+# det s1 s2-co s3-co iv1
+# det co s1 co s2 co s3 iv1
+# det s1 co s2 co s3 co iv1
+# det co-s1 co-s2 co-s3 iv1
+# det s1-co s2-co s3-co iv1
+# det s1 s2 s3 iv1
 #
 ## Coordination of noun phrases
 #
-# det n1 det n2 co det n3 iv1
-# det n1 det n2 det n3 co iv1
-# det n1 co det n2 co det n3 iv1
-# det n1 det n2 co det n3 co iv1
-# co det n1 co det n2 co det n3 iv1
-# det n1 co det n2 co det n3 co iv1
-# det n1 det n2 det n3 iv1
+# det s1 det s2 co det s3 iv1
+# det s1 det s2 det s3 co iv1
+# det s1 co det s2 co det s3 iv1
+# det s1 det s2 co det s3 co iv1
+# co det s1 co det s2 co det s3 iv1
+# det s1 co det s2 co det s3 co iv1
+# det s1 det s2 det s3 iv1
 #
 ## Coordination of verb phrases
 #
-# det n1 iv1 iv2 co iv3
-# det n1 iv1 iv2 iv3 co
-# det n1 iv1 co iv2 co iv3
-# det n1 iv1 iv2 co iv3 co
-# det n1 co iv1 co iv2 co iv3
-# det n1 iv1 co iv2 co iv3 co
-# det n1 iv1 iv2 iv3
+# det s1 iv1 iv2 co iv3
+# det s1 iv1 iv2 iv3 co
+# det s1 iv1 co iv2 co iv3
+# det s1 iv1 iv2 co iv3 co
+# det s1 co iv1 co iv2 co iv3
+# det s1 iv1 co iv2 co iv3 co
+# det s1 iv1 iv2 iv3
 #
 ## Coordination of sentences
 #
-# det n1 iv1 det n2 iv2 co det n3 iv3
-# det n1 iv1 det n2 iv2 det n3 iv3 co
-# det n1 iv1 co det n2 iv2 co det n3 iv3
-# det n1 iv1 det n2 iv2 co det n3 iv3 co
-# co det n1 iv1 co det n2 iv2 co det n3 iv3
-# det n1 iv1 co det n2 iv2 co det n3 iv3 co
-# det n1 iv1 det n2 iv2 det n3 iv3
+# det s1 iv1 det s2 iv2 co det s3 iv3
+# det s1 iv1 det s2 iv2 det s3 iv3 co
+# det s1 iv1 co det s2 iv2 co det s3 iv3
+# det s1 iv1 det s2 iv2 co det s3 iv3 co
+# co det s1 iv1 co det s2 iv2 co det s3 iv3
+# det s1 iv1 co det s2 iv2 co det s3 iv3 co
+# det s1 iv1 det s2 iv2 det s3 iv3
 #
 # 3. TDL Samples
 #
@@ -2709,18 +2712,11 @@ def make_zip(dir):
 #   assumes that validation of the choices has already occurred.
 
 def customize_matrix(path, arch_type):
+  global choices
+  choices = {}
+  
   choices_file = path + '/choices'
-  try:
-    f = open(choices_file, 'r')
-    lines = f.readlines()
-    f.close()
-    for l in lines:
-      l = l.strip()
-      w = l.split('=')
-      if w[0]:
-        choices[w[0]] = w[1]
-  except:
-    pass
+  choices = load_choices(choices_file)
 
   matrix_path = path + '/matrix/'
 

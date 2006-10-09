@@ -28,3 +28,10 @@ BUG:  Clean up the ????? stuff in the customization page, either by
 
 FEAT: Remove old sessions after some amount of time (days?)
 FEAT: Add a Reset button to all forms
+
+[10/9/2006 sfd]
+
+FEAT: Add a link/button to download the choices file
+BUG:  Move the negative adverb to the sentential negation page?
+BUG:  Create reasonable friendly names for everything
+BUG:  Variable name harmoization

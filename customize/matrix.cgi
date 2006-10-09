@@ -12,8 +12,9 @@ randint = random.randint
 import urllib
 unquote_plus = urllib.unquote_plus
 
-import deffile
-tokenize_def = deffile.tokenize_def
+import utils
+tokenize_def = utils.tokenize_def
+load_choices = utils.load_choices
 import customize
 customize_matrix = customize.customize_matrix
 import validate
@@ -192,7 +193,7 @@ class VarNameMap:
 
 
 ######################################################################
-# print_input(type, name, value, checked, before, after)
+# print_input(type, name, value, checked, before, after, size)
 #   Write out an HTML <input> tag with the specified attributes and
 #   surrounding text
 
@@ -261,10 +262,18 @@ def main_page(def_file, cookie):
       print '</div></div>'
 
   print HTML_preform
-  print_input('hidden', 'customize', '', 0, '', '');
-  print_input('radio', 'delivery', 'tgz', 0, '<p class="customize">Archive type: ', ' .tar.gz')
-  print_input('radio', 'delivery', 'zip', 0, ' ', ' .zip<br>')
-  print_input('submit', '', 'Customize', 0, '', '</p>')
+
+  tgz_checked = False
+  zip_checked = False
+  if os.name == 'nt':
+    zip_checked = True
+  else:
+    tgz_checked = True
+
+  print_input('hidden', 'customize', '', False, '', '');
+  print_input('radio', 'delivery', 'tgz', tgz_checked, '<p class="customize">Archive type: ', ' .tar.gz')
+  print_input('radio', 'delivery', 'zip', zip_checked, ' ', ' .zip<br>')
+  print_input('submit', '', 'Customize', False, '', '</p>')
   print HTML_postform
   print HTML_postbody
 
@@ -280,21 +289,7 @@ def sub_page(section, def_file, cookie):
   print HTTP_header + '\n'
   print HTML_pretitle
 
-  choices_file = 'sessions/' + cookie + '/choices'
-
-  form_data = {}
-  try:
-    f = open(choices_file, 'r')
-    line = f.readlines()
-    f.close()
-    for l in line:
-      l = l.strip()
-      if l:
-        (a, v) = l.split('=')
-        v = v.strip()
-        form_data[a] = v
-  except:
-    pass
+  choices = load_choices('sessions/' + cookie + '/choices')
 
   f = open(def_file, 'r')
   line = f.readlines()
@@ -314,7 +309,7 @@ def sub_page(section, def_file, cookie):
         print HTML_prebody
         print '<h2>' + word[2] + '</h2>'
         print HTML_preform
-        print_input('hidden', 'section', section, 0, '', '\n');
+        print_input('hidden', 'section', section, False, '', '\n');
     elif cur_sec == section:
       if word[0] == 'Label':
         write('<p>\n')
@@ -325,7 +320,7 @@ def sub_page(section, def_file, cookie):
         print '<hr>'
       elif word[0] == 'Check':
         (vn, fn, bf, af) = word[1:]
-        checked = form_data.has_key(vn)
+        checked = choices.has_key(vn)
         print_input('checkbox', vn, '', checked, bf, af);
       elif word[0] == 'Radio':
         (vn, fn, bf, af) = word[1:]
@@ -334,21 +329,21 @@ def sub_page(section, def_file, cookie):
         while line[i] != '\n':
           word = tokenize_def(line[i])
           (rval, rfrn, rbef, raft) = word[1:]
-          checked = 0
-          if form_data.has_key(vn) and form_data[vn] == rval:
-            checked = 1
+          checked = False
+          if choices.has_key(vn) and choices[vn] == rval:
+            checked = True
           print_input('radio', vn, rval, checked, rbef, raft)
           i += 1
         print af
       elif word[0] == 'Text':
         (vn, fn, bf, af, sz) = word[1:]
         value = ''
-        if form_data.has_key(vn):
-          value = form_data[vn]
-        print_input('text', vn, value, 0, bf, af, sz)
+        if choices.has_key(vn):
+          value = choices[vn]
+        print_input('text', vn, value, False, bf, af, sz)
     i += 1
 
-  print_input('submit', '', 'Submit', 0, '<p>', '</p>', 0)
+  print_input('submit', '', 'Submit', False, '<p>', '</p>', 0)
   print HTML_postform
   print HTML_postbody
 
@@ -399,18 +394,7 @@ def save_choices(form_data, def_file, choices_file):
   del form_data['section']
 
   # Read the current choices file (if any) into old_choices
-  old_choice = {}
-  try:
-    f = open(choices_file, 'r')
-    line = f.readlines()
-    for l in line:
-      l = l.strip()
-      if l:
-        (a, v) = l.split('=')
-        old_choice[a] = v
-    f.close()
-  except:
-    pass
+  old_choices = load_choices(choices_file)
 
   # Open the def file and store it in line[]
   f = open(def_file, 'r')
@@ -437,8 +421,8 @@ def save_choices(form_data, def_file, choices_file):
         if form_data.has_key(a):
           v = form_data[a]
       else:
-        if old_choice.has_key(a):
-          v = old_choice[a]
+        if old_choices.has_key(a):
+          v = old_choices[a]
       if a and v:
         f.write(a + '=' + v + '\n')
   f.close()

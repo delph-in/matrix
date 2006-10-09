@@ -31,7 +31,7 @@ Section sentential_negation "Sentential Negation"
 
 Label "Please indicate which strategy or strategies your language uses for sentential negation (as distinct from constituent negation). (You may leave this section blank, in which case your grammar will not include any information about negation.)"
 
-Check infl_neg "fr infl_neg" "Verbal inflection:<br>" ""
+Check infl_neg "fr infl_neg" "" "Verbal inflection:<br>"
 
 Radio neg-infl-type "fr neg-infl-type" "On: " ""
 . aux "fr aux" "" "auxiliaries only "
@@ -46,7 +46,7 @@ Text neg-aff-form "fr neg-aff-form" "Affix Spelling: " "" 10
 
 Label
 
-Check adv_neg "fr adv_neg" "An adverb:<br>" ""
+Check adv_neg "fr adv_neg" "" "An adverb:<br>"
 
 Radio neg-adv "fr neg-adv" "" ""
 . ind-adv "fr ind-adv" "" "...which is an independent modifier of "

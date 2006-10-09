@@ -3,6 +3,10 @@
 ######################################################################
 # imports
 
+import utils
+load_choices = utils.load_choices
+
+
 ######################################################################
 # globals
 
@@ -371,18 +375,10 @@ def validate_test_sentences():
 def validate_choices(choices_file):
   global wrong
   wrong = {}
+  global choices
+  choices = {}
 
-  try:
-    f = open(choices_file, 'r')
-    lines = f.readlines()
-    f.close()
-    for l in lines:
-      l = l.strip()
-      w = l.split('=')
-      if w[0]:
-        choices[w[0]] = w[1]
-  except:
-    pass
+  choices = load_choices(choices_file)
 
   validate_language()
   validate_word_order()
