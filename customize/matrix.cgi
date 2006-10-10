@@ -14,7 +14,7 @@ unquote_plus = urllib.unquote_plus
 
 import utils
 tokenize_def = utils.tokenize_def
-load_choices = utils.load_choices
+read_choices = utils.read_choices
 import customize
 customize_matrix = customize.customize_matrix
 import validate
@@ -289,7 +289,7 @@ def sub_page(section, def_file, cookie):
   print HTTP_header + '\n'
   print HTML_pretitle
 
-  choices = load_choices('sessions/' + cookie + '/choices')
+  choices = read_choices('sessions/' + cookie + '/choices')
 
   f = open(def_file, 'r')
   line = f.readlines()
@@ -394,7 +394,7 @@ def save_choices(form_data, def_file, choices_file):
   del form_data['section']
 
   # Read the current choices file (if any) into old_choices
-  old_choices = load_choices(choices_file)
+  old_choices = read_choices(choices_file)
 
   # Open the def file and store it in line[]
   f = open(def_file, 'r')

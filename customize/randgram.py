@@ -78,18 +78,17 @@ def random_grammar(choices_file):
   f.close()
 
 
-choices_file = 'rand_choices'
-load_vars()
-count = 0
-while True:
-  count += 1
-  random_grammar(choices_file)
-  wrong = validate_choices(choices_file)
-  if len(wrong):
-    f = open(choices_file, 'a')
-    for k in wrong.keys():
-      f.write(k + ': ' + wrong[k] + '\n')
-    f.close()
-  else:
-    print 'Grammar #' + str(count) + ' validated'
-    break
+def random_validated_grammar(choices_file):
+  load_vars()
+  count = 0
+  while True:
+    count += 1
+    random_grammar(choices_file)
+    wrong = validate_choices(choices_file)
+    if len(wrong):
+      f = open(choices_file, 'a')
+      for k in wrong.keys():
+        f.write(k + ': ' + wrong[k] + '\n')
+      f.close()
+    else:
+      return count

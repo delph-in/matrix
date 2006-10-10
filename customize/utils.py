@@ -31,10 +31,10 @@ def tokenize_def(str):
 
 
 ######################################################################
-# load_choices(choices_file)
-#   Load the choices in choices_file and return them in a dict
+# read_choices(choices_file)
+#   Read the choices in choices_file and return them in a dict
 
-def load_choices(choices_file):
+def read_choices(choices_file):
   choices = {}
 
   try:

@@ -3,8 +3,7 @@
 ######################################################################
 # imports
 
-import utils
-load_choices = utils.load_choices
+from utils import read_choices
 
 
 ######################################################################
@@ -378,7 +377,7 @@ def validate_choices(choices_file):
   global choices
   choices = {}
 
-  choices = load_choices(choices_file)
+  choices = read_choices(choices_file)
 
   validate_language()
   validate_word_order()

@@ -11,8 +11,7 @@ if os.name == 'nt':
   import gzip
 import zipfile
 
-import utils
-load_choices = utils.load_choices
+from utils import read_choices
 
 ######################################################################
 # globals
@@ -2731,7 +2730,7 @@ def customize_matrix(path, arch_type):
   choices = {}
   
   choices_file = path + '/choices'
-  choices = load_choices(choices_file)
+  choices = read_choices(choices_file)
 
   matrix_path = path + '/matrix/'
 

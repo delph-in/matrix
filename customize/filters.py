@@ -3,12 +3,9 @@
 ######################################################################
 # imports
 
-import sys
-write = sys.stdout.write
 import re
 
-import utils
-load_choices = utils.load_choices
+from utils import read_choices
 
 
 ######################################################################
@@ -91,15 +88,13 @@ def filter_lexicon(in_sent):
 
 
 ######################################################################
-# filter_sentences(choices_file)
+# filter_sentence(choices_file)
 #   Read the choices from choices_file, then read sentences from
 #   stdin.  Filter out bad sentences, then print the remaining ones.
 
 def filter_sentences(choices_file):
   global choices
-  choices = load_choices(choices_file)
-
-  sent = sys.stdin.readlines()
+  choices = read_choices(choices_file)
 
   for i in range(len(sent)):
     sent[i] = sent[i].strip()
