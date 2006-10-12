@@ -12,6 +12,8 @@ from utils import read_choices
 
 from randgram import random_validated_grammar
 
+import shutil
+import sys
 
 ######################################################################
 # globals
@@ -29,18 +31,43 @@ def ch(s):
   else:
     return ''
 
+######################################################################
+# Copy the other files, which we need even though some are empty
+
+def copy_other_files(in_profile,out_profile):
+  shutil.copy(in_profile + 'analysis', out_profile + 'analysis')
+  shutil.copy(in_profile + 'daughter', out_profile + 'daughter')
+  shutil.copy(in_profile + 'decision', out_profile + 'decision')
+  shutil.copy(in_profile + 'edge', out_profile + 'edge')
+  shutil.copy(in_profile + 'fold', out_profile + 'fold')
+  shutil.copy(in_profile + 'item-phenomenon', out_profile + 'item-phenomenon')
+  shutil.copy(in_profile + 'item-set', out_profile + 'item-set')
+  shutil.copy(in_profile + 'output', out_profile + 'output')
+  shutil.copy(in_profile + 'parameter', out_profile + 'parameter')
+  shutil.copy(in_profile + 'phenomenon', out_profile + 'phenomenon')
+  shutil.copy(in_profile + 'preference', out_profile + 'preference')
+  shutil.copy(in_profile + 'relations', out_profile + 'relations')
+  shutil.copy(in_profile + 'rule', out_profile + 'rule')
+  shutil.copy(in_profile + 'run', out_profile + 'run')
+  shutil.copy(in_profile + 'score', out_profile + 'score')
+  shutil.copy(in_profile + 'set', out_profile + 'set')
+  shutil.copy(in_profile + 'tree', out_profile + 'tree')
+  shutil.copy(in_profile + 'update', out_profile + 'update')
+  
+
+
 
 ######################################################################
-# filter_word_order(sent)
+# filter_word_order(sent, mrs_id)
 
-def filter_word_order(sent):
+def filter_word_order(sent, mrs_id):
   return False
 
 
 ######################################################################
-# filter_sentential_negation(sent)
+# filter_sentential_negation(sent, mrs_id)
 
-def filter_sentential_negation(sent):
+def filter_sentential_negation(sent, mrs_id):
   return False
 
 
@@ -53,7 +80,7 @@ def filter_sentential_negation(sent):
 #   This function assumes a single lexically-marked coordination
 #   strategy marked by co.
 
-def filter_coordination(sent):
+def filter_coordination(sent, mrs_id):
   if re.match('^.*co co.*$', sent):
     return True
   elif ch('cs1order') == 'before' and re.match('^.*co$', sent):
@@ -69,14 +96,30 @@ def filter_coordination(sent):
 ######################################################################
 # filter_yesno_questions(sent)
 
-def filter_yesno_questions(sent):
+def filter_yesno_questions(sent, mrs_id):
+
+  # The question particle has to be sentence-initial or sentence-final
+  if re.match('^.+qpart.+$', sent):
+    return True
+
+  # If the language doesn't use question particles, we shouldn't see any
+  elif ch('ques') != 'qpart' and ch('ques') and re.match('^.*qpart.*$', sent):
+    return True
+
+  # Follow the specification on whether the question particles are
+  # sentence initial or sentence final
+  elif ch('ques') == 'qpart' and ch('qpartposthead') == '+' and re.match('^qpart.*$', sent):
+    return True
+  elif ch('ques') == 'qpart' and ch('qpartposthead') == '-' and re.match('^.*qpart$', sent):
+    return True
+
   return False
 
 
 ######################################################################
 # filter_lexicon(sent)
 
-def filter_lexicon(sent):
+def filter_lexicon(sent, mrs_id):
   return False
 
 
@@ -84,12 +127,12 @@ def filter_lexicon(sent):
 # filter_sentence(sent)
 #   Return True iff the sentence cannot be grammatical
 
-def filter_sentence(sent):
-  return filter_word_order(sent) or \
-         filter_sentential_negation(sent) or \
-         filter_coordination(sent) or \
-         filter_yesno_questions(sent) or \
-         filter_lexicon(sent)
+def filter_sentence(sent, mrs_id):
+  return filter_word_order(sent, mrs_id) or \
+         filter_sentential_negation(sent, mrs_id) or \
+         filter_coordination(sent, mrs_id) or \
+         filter_yesno_questions(sent, mrs_id) or \
+         filter_lexicon(sent, mrs_id)
 
 
 ######################################################################
@@ -153,7 +196,114 @@ def permute(s):
       perm += ' ' + w
     perms.append(perm)
   return perms
-  
+
+######################################################################
+# make_intermediate_resource(in_profile, out_profile, string_list)
+#   Given a tsdb++ profile in in_profile that containts harvester
+#   strings with their parses and MRSs ids and a table that lists
+#   all harvester and other seed-strings and their mrs-ids, create
+#   a new profile in out_profile that contains all the harverster and
+#   seed strings matched with appropriate MRSs.  No filtering or
+#   permutations yet.
+
+def make_intermediate_resource(string_list_file, in_profile, out_profile):
+  # Make sure the profile paths end in slashes
+  if in_profile[-1] != '/':
+    in_profile += '/'
+  if out_profile[-1] != '/':
+    out_profile += '/'
+
+  # Read in the items, parses, results, and strings
+  items = read_profile_file(in_profile + 'item')
+  parses = read_profile_file(in_profile + 'parse')
+  results = read_profile_file(in_profile + 'result')
+  # String list is an @-delimited file with the following fields:
+  # mrs-id (alphanumeric string)
+  # status (`h' or `s')
+  # string
+
+  # I'm assuming that mrs-ids are unique among harvester strings.
+  # BUT: Multiple harvester strings might have the same actual MRS.
+  # ALSO: A single harvester string migth have multiple MRSs.  It
+  # will still only have one mrs-id.
+  string_list = read_profile_file(string_list_file)
+
+  # Loop once through items, putting mrs-id in i-comment for
+  # the harvester string.
+
+  for i in items:
+    string = i[6]
+    mrs_id = ''
+
+    for m in string_list:
+      if m[2] == string:
+        mrs_id = m[0]
+
+    i[9] = mrs_id
+
+    if not mrs_id:
+      print 'Warning: The string ' + string + ' has no associated mrs-id.'
+
+  # Figure out where to start with i-id, parse-id, and result-id
+
+  next_i = 0
+  for i in items:
+    if i[0] >= next_i:
+      next_i = int(i[0]) + 1
+  next_p = 0
+  for p in parses:
+    if p[0] >= next_p:
+      next_p = int(p[0]) + 1
+  next_r = 0
+  for r in results:
+    if r[1] >= next_r:
+      next_r = int(r[1]) + 1
+
+
+  # For each seed string in string_list
+  # Look through items looking for existing string with same
+  # mrs-id (could be original harvester, could be another seed string)
+  # If found, create new item with new string, copying parse and
+  # result information from existing item
+  # If not found, print a warning to STDOUT and add no item
+
+  for s in string_list:
+    if s[1] == 's':
+      found = ''
+      for i in copy(items):
+        if i[9] == s[0]:
+          found = 't'
+          for p in copy(parses):
+            if p[2] == i[0]:
+              for r in copy(results):
+                if r[0] == p[0]:
+                  new_r = copy(r)
+                  new_r[1] = str(next_r)
+                  next_r += 1
+                  new_r[0] = str(next_p)
+                  results.append(new_r)
+              new_p = copy(p)
+              new_p[0] = str(next_p)
+              next_p += 1
+              new_p[2] = str(next_i)
+              parses.append(new_p)
+          new_i = copy(i)
+          new_i[0] = str(next_i)
+          next_i += 1
+          new_i[6] = s[2]
+          items.append(new_i)
+      if not found:
+        print 'Warning: No harvester string for mrs-id ' + s[0] +'. String not added: ' + s[2]
+
+  # Write out the items, parses, and result  
+  if not os.path.exists(out_profile):
+    os.mkdir(out_profile)
+  write_profile_file(items, out_profile + 'item')
+  write_profile_file(parses, out_profile + 'parse')
+  write_profile_file(results, out_profile + 'result')
+
+  # Copy the other files, which we need even though they are empty
+  copy_other_files(in_profile,out_profile)
 
 ######################################################################
 # make_universal_resource(in_profile, out_profile)
@@ -193,7 +343,7 @@ def make_universal_resource(in_profile, out_profile):
   # permuted sentence passes the filters, adding it to the item list
   for i in copy(items):
     for perm in permute(i[6])[1:]:
-      if not filter_sentence(perm):
+      if not filter_sentence(perm, i[9]):
         # Make a new item...but first, copy any parses that refer to
         # the item being permuted, and any results that refer to
         # those parses
@@ -224,6 +374,9 @@ def make_universal_resource(in_profile, out_profile):
   write_profile_file(parses, out_profile + 'parse')
   write_profile_file(results, out_profile + 'result')
 
+  # Copy the other files, which we need even though they are empty
+  copy_other_files(in_profile,out_profile)
+
 
 ######################################################################
 # make_gold_standard(in_profile, out_profile)
@@ -248,7 +401,7 @@ def make_gold_standard(in_profile, out_profile):
   # the filters -- if not, mark it for removal by settings its id
   # to -1
   for i in items:
-    if filter_sentence(i[6]):
+    if filter_sentence(i[6], i[9]):
       for p in parses:
         if p[2] == i[0]:
           for r in results:
@@ -335,21 +488,28 @@ def make_gold_standard(in_profile, out_profile):
     if parses[p][0] == -1:
       del parses[p]
 
-  # Write out the items, parses, and results
+  # Write out the items, parses, and result  
   if not os.path.exists(out_profile):
     os.mkdir(out_profile)
   write_profile_file(items, out_profile + 'item')
   write_profile_file(parses, out_profile + 'parse')
   write_profile_file(results, out_profile + 'result')
 
+  # Copy the other files, which we need even though they are empty
+  copy_other_files(in_profile,out_profile)
 
 ######################################################################
 # main program
 
-make_universal_resource('profile', 'u_profile')
+make_intermediate_resource('string_list','profile','i_profile')
+make_universal_resource('i_profile', 'u_profile')
 
-choices_file = 'rand_choices'
-random_validated_grammar(choices_file)
+if len(sys.argv) > 1:
+  choices_file = sys.argv[1]
+else:
+  choices_file = 'rand_choices'
+  random_validated_grammar(choices_file)
+  
 choices = read_choices(choices_file)
 
 make_gold_standard('u_profile', 'g_profile')

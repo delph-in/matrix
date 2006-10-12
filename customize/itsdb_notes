@@ -99,6 +99,8 @@ standard.  That'll make the comparison easier.
 
 
 
+Information from the file Relations, which defines the fields for
+tsdb++:
 
 result:
   parse-id :integer :key                # parse for this result
@@ -131,21 +133,40 @@ item:
   i-author :string
   i-date :date
 
+parse:
+  parse-id :integer :key                # unique parse identifier
+  run-id :integer :key                  # test run for this parse
+  i-id :integer :key                    # item parsed
+  readings :integer                     # number of readings obtained
+  first :integer                        # time to find first reading (msec)
+  total :integer                        # total time for parsing (msec)
+  tcpu :integer                         # total (cpu) processing time (msec)
+  tgc :integer                          # gc time used (msec)
+  treal :integer                        # overall real time (msec)
+  words :integer                        # lexical entries retrieved
+  l-stasks :integer                     # successful lexical rule applications
+  p-ctasks :integer                     # parser contemplated tasks (LKB)
+  p-ftasks :integer                     # parser filtered tasks
+  p-etasks :integer                     # parser executed tasks
+  p-stasks :integer                     # parser succeeding tasks
+  aedges :integer                       # active items in chart (PAGE)
+  pedges :integer                       # passive items in chart
+  raedges :integer                      # active items contributing to result
+  rpedges :integer                      # passive items contributing to result
+  unifications :integer                 # number of (node) unifications
+  copies :integer                       # number of (node) copy operations
+  conses :integer                       # cons() cells allocated
+  symbols :integer                      # symbols allocated
+  others :integer                       # bytes of memory allocated
+  gcs :integer                          # number of garbage collections
+  i-load :integer                       # initial load (start of parse)
+  a-load :integer                       # average load
+  date :date                            # date and time of parse
+  error :string                         # error string (if applicable |:-)
+  comment :string                       # application-specific comment
 
+
+One line from a results file
 
 1@0@20@-1@-1@-1@-1@160@-1@-1@(43 subj-head 0.0 0 6 (41 bare-np 0.0 0 5 (40 n1-top-coord 0.0 0 5 (13 s 0.0 0 1 ("S" 0 1)) (39 n1-bottom-coord 0.0 1 5 (15 conj_1 0.0 1 2 ("CONJ" 1 2)) (35 n1-top-coord 0.0 2 5 (16 s 0.0 2 3 ("S" 2 3)) (32 n1-bottom-coord 0.0 3 5 (23 conj_1 0.0 3 4 ("CONJ" 3 4)) (24 s 0.0 4 5 ("S" 4 5))))))) (42 iv 0.0 5 6 ("IV" 5 6)))@@@[ LTOP: h1 INDEX: e2 [ e SORT: SEMSORT MESG: PROP-OR-QUES E.TENSE: TENSE E.ASPECT: ASPECT E.MOOD: MOOD ] RELS: < [ "_s_n_rel" LBL: h3 ARG0: x4 [ x SORT: SEMSORT PNG: PNG DEF: BOOL ] ] [ "_and_coord_rel" LBL: h5 C-ARG: x6 [ x SORT: SEMSORT DEF: BOOL PNG: PNG ] L-HNDL: h8 L-INDEX: x4 R-HNDL: h9 R-INDEX: u7 [ u SORT: SEMSORT ] ] [ "_s_n_rel" LBL: h10 ARG0: x11 [ x SORT: SEMSORT PNG: PNG DEF: BOOL ] ] [ "_and_coord_rel" LBL: h12 C-ARG: u7 L-HNDL: h14 L-INDEX: x11 R-HNDL: h15 R-INDEX: x13 [ x SORT: SEMSORT PNG: PNG DEF: BOOL ] ] [ "_s_n_rel" LBL: h16 ARG0: x13 ] [ "unspec_q_rel" LBL: h17 ARG0: x6 RSTR: h18 BODY: h19 ] [ "_iv_v_rel" LBL: h1 ARG0: e2 ARG1: x6 ] > HCONS: < h18 qeq h5 > ]@
 
-i-id@
-reading number@
-??@
-??@
-??@
-??@
-??@
-??@
-??@
-??@
-derivation@
-@
-@
-mrs@
