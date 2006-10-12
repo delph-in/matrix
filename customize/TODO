@@ -35,10 +35,3 @@ FEAT: Add a link/button to download the choices file
 BUG:  Move the negative adverb to the sentential negation page?
 BUG:  Create reasonable friendly names for everything
 BUG:  Variable name harmoization
-
-[10/11/06 erb]
-
-FEAT: Figure out how to annotated seed strings with which harvester string
-      their semantics should come from.  Reuse this information to write
-      filters which are specific to certain MRSs.
-
