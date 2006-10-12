@@ -1,4 +1,44 @@
-ques1@h@s o tv qpart
-ques1@s@tv s o 
-ques2@s@tv det s o
-ques2@h@det s o tv qpart
+wo1@h@s iv
+wo2@h@det s iv
+wo3@h@s o tv
+wo4@h@det s det o tv
+wo5@h@det s o tv
+wo6@h@s det o tv
+wo7@h@o s tv
+wo8@h@det o det s tv
+wo9@h@det o s tv
+wo10@h@o det s tv
+wo1@s@s iv aux
+wo1@s@p-nom s iv aux
+wo1@s@p-nom s iv
+wo2@s@det s iv aux
+wo2@s@p-nom det s iv aux
+wo2@s@p-nom det s
+wo3@s@p-nom s o tv
+wo3@s@s p-acc o tv
+wo3@s@p-nom s p-acc o tv
+wo3@s@p-nom s o tv aux
+wo3@s@s p-acc o tv aux
+wo3@s@p-nom s p-acc o tv aux
+wo4@s@p-nom det s det o tv
+wo4@s@det s p-acc det o tv
+wo4@s@p-nom det s p-acc det o tv
+wo4@s@p-nom det s det o tv aux
+wo4@s@det s p-acc det o tv aux
+wo4@s@p-nom det s p-acc det o tv aux
+wo5@s@p-nom det s o tv
+wo5@s@det s p-acc o tv
+wo5@s@p-nom det s p-acc o tv
+wo5@s@p-nom det s o tv aux
+wo5@s@det s p-acc o tv aux
+wo5@s@p-nom det s p-acc o tv aux
+wo6@s@p-nom s det o tv
+wo6@s@s p-acc det o tv
+wo6@s@p-nom s p-acc det o tv
+wo6@s@p-nom s det o tv aux
+wo6@s@s p-acc det o tv aux
+wo6@s@p-nom s p-acc det o tv aux
+wo7@s@o s tv aux
+wo8@s@det o det s tv aux
+wo9@s@det o s tv aux
+wo10@s@o det s tv aux

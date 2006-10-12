@@ -15,6 +15,8 @@ from randgram import random_validated_grammar
 import shutil
 import sys
 
+from getopt import getopt
+
 ######################################################################
 # globals
 
@@ -61,6 +63,12 @@ def copy_other_files(in_profile,out_profile):
 # filter_word_order(sent, mrs_id)
 
 def filter_word_order(sent, mrs_id):
+
+  #General filters:
+  #If we're not talking about coordination seed strings, we expect
+  #NPs to be some sequence of det, p-nom|p-acc, and s or o.
+  
+
   return False
 
 
@@ -200,6 +208,24 @@ def permute(s):
   return perms
 
 ######################################################################
+# validate_string_list(string_list)
+#   Since the string_list file is produced by hand, we should check
+#   it for formatting compliance before relying on it.
+
+def validate_string_list(string_list):
+  wrong = []
+
+  for s in string_list:
+    if len(s) != 3:
+      wrong.append(s)
+
+  if wrong != []:
+    print 'Error in string_list: The following strings are improperly formatted:'
+    print wrong
+    sys.exit
+    
+
+######################################################################
 # make_intermediate_resource(in_profile, out_profile, string_list)
 #   Given a tsdb++ profile in in_profile that containts harvester
 #   strings with their parses and MRSs ids and a table that lists
@@ -229,7 +255,8 @@ def make_intermediate_resource(string_list_file, in_profile, out_profile):
   # ALSO: A single harvester string migth have multiple MRSs.  It
   # will still only have one mrs-id.
   string_list = read_profile_file(string_list_file)
-
+  validate_string_list(string_list)
+  
   # Loop once through items, putting mrs-id in i-comment for
   # the harvester string.
 
@@ -269,6 +296,11 @@ def make_intermediate_resource(string_list_file, in_profile, out_profile):
   # result information from existing item
   # If not found, print a warning to STDOUT and add no item
 
+  # ERB 2006-10-12 Oops: This was adding each item multiple times,
+  # if the mrs_id was already in there multiply.  That gets big
+  # fast!  Added break statement so that it moves on to the next
+  # string after adding at most _one_ item for the previous string.
+
   for s in string_list:
     if s[1] == 's':
       found = ''
@@ -294,6 +326,7 @@ def make_intermediate_resource(string_list_file, in_profile, out_profile):
           next_i += 1
           new_i[6] = s[2]
           items.append(new_i)
+          break
       if not found:
         print 'Warning: No harvester string for mrs-id ' + s[0] +'. String not added: ' + s[2]
 
@@ -503,15 +536,45 @@ def make_gold_standard(in_profile, out_profile):
 ######################################################################
 # main program
 
-make_intermediate_resource('string_list','profile','i_profile')
-make_universal_resource('i_profile', 'u_profile')
+# profiles.py -i          Create intermediate resource and stop
+# profiles.py -u          Create univeral resource and gold profile
+# profiles.py <file>      Create gold standard profile for language
+#                         described in <file> on the basis of universal
+#                         resource in u_profile.
+# profiles.py -u <file>   Update u_profile and create gold standard profile
+#                         on the basis of updated u_profile.
 
-if len(sys.argv) > 1:
-  choices_file = sys.argv[1]
+(options, args) = getopt(sys.argv[1:],'iu')
+
+i_flag = ''
+u_flag = ''
+
+for o in options:
+  if re.search('i',o[0]):
+    i_flag = 'true'
+  if re.search('u',o[0]):
+    u_flag = 'true'
+
+#The intermediate resource doesn't involve any filtering, and
+# so we shouldn't recreate it with each run. Make the user specify
+# with the -i flag that the intermediate resource needs to be
+# recreated.
+
+if i_flag:
+  make_intermediate_resource('string_list','profile','i_profile')
 else:
-  choices_file = 'rand_choices'
-  random_validated_grammar(choices_file)
-  
-choices = read_choices(choices_file)
+  # The universal resource takes a long time, so enable skipping it
+  # for testing language-specific filters
+  if not u_flag:
+    make_universal_resource('i_profile', 'u_profile')
 
-make_gold_standard('u_profile', 'g_profile')
+  # See if the user specified a choices_file to use
+  if len(args) > 0:
+    choices_file = args[0]
+  else:
+    choices_file = 'rand_choices'
+    random_validated_grammar(choices_file)
+  
+    choices = read_choices(choices_file)
+
+  make_gold_standard('u_profile', 'g_profile')
