@@ -77,18 +77,20 @@ def filter_sentential_negation(sent, mrs_id):
 #     det, s1, s2, s3, iv, iv1, iv2, iv3, co
 #   ...and return True iff the sentence cannot be grammatical.
 #
-#   This function assumes a single lexically-marked coordination
-#   strategy marked by co.
+#   This function assumes a single coordination strategy (cs1)
 
 def filter_coordination(sent, mrs_id):
-  if re.match('^.*co co.*$', sent):
-    return True
-  elif ch('cs1order') == 'before' and re.match('^.*co$', sent):
-    return True
-  elif ch('cs1order') == 'after' and re.match('^co.*$', sent):
-    return True
-  elif ch('cs1pat') == 'a' and re.match('^.*co.*$', sent):
-    return True
+  if ch('cs1'):
+    if re.search('co co', sent):
+      return True
+    elif re.search('co-', sent) and re.search('-co', sent):
+      return True
+    elif ch('cs1pat') == 'a' and re.match('co', sent):
+      return True
+    elif ch('cs1order') == 'before' and re.search('co$', sent):
+      return True
+    elif ch('cs1order') == 'after' and re.search('^co', sent):
+      return True
 
   return False
 
