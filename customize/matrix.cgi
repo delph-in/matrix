@@ -9,8 +9,8 @@ import os
 getenv = os.getenv
 import random
 randint = random.randint
-import urllib
-unquote_plus = urllib.unquote_plus
+import cgi
+import cgitb; cgitb.enable()
 
 import utils
 tokenize_def = utils.tokenize_def
@@ -20,11 +20,12 @@ customize_matrix = customize.customize_matrix
 import validate
 validate_choices = validate.validate_choices
 
+def dummy():
+  pass # let emacs know the indentation is 2 spaces
+
 
 ######################################################################
 # globals
-
-form_data = {}
 
 wrong = {}
 
@@ -45,6 +46,19 @@ function toggle_display(para_id, button_id)
   } else {
     p.style.display = 'none';
     b.innerHTML = '&#9658;';
+  }
+}
+
+function clear_form()
+{
+  elements = document.getElementsByTagName('input');
+  for (i = 0; elements.item(i); i++) {
+    elm = elements.item(i)
+    if (elm.type == 'text') {
+      elm.value = '';
+    } else if (elm.type == 'radio' || elm.type == 'checkbox') {
+      elm.checked = ''
+    }
   }
 }
 </script>
@@ -135,13 +149,16 @@ Typed Feature Structure Grammars</i></a>.
 HTML_prebody = '''<body>
 '''
 
-if os.name == 'nt':
-  HTML_method = 'get'
-else:
-  HTML_method = 'post'
+HTML_method = 'post'
 HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '">'
 
 HTML_postform = '</form>'
+
+HTML_uploadpreform = '''
+<form action="matrix.cgi" method="post" enctype="multipart/form-data">
+'''
+
+HTML_uploadpostform = '</form>'
 
 HTML_postbody = '''</body>
 
@@ -193,11 +210,12 @@ class VarNameMap:
 
 
 ######################################################################
-# print_input(type, name, value, checked, before, after, size)
+# print_input(type, name, value, checked, before, after, size, onclick)
 #   Write out an HTML <input> tag with the specified attributes and
 #   surrounding text
 
-def print_input(type, name, value, checked, before, after, size = ''):
+def print_input(type, name, value, checked, before, after, \
+                size = '', onclick = ''):
   if value:
     value = ' value="' + value + '"'
 
@@ -207,9 +225,12 @@ def print_input(type, name, value, checked, before, after, size = ''):
 
   if size:
     size = ' size="' + size + '"'
+
+  if onclick:
+    onclick = ' onclick="' + onclick + '"'
     
-  print '%s<input type="%s" name="%s"%s%s%s>%s' % \
-        (before, type, name, value, chkd, size, after)
+  print '%s<input type="%s" name="%s"%s%s%s%s>%s' % \
+        (before, type, name, value, chkd, size, onclick, after)
   
 
 ######################################################################
@@ -270,11 +291,16 @@ def main_page(def_file, cookie):
   else:
     tgz_checked = True
 
-  print_input('hidden', 'customize', '', False, '', '');
-  print_input('radio', 'delivery', 'tgz', tgz_checked, '<p class="customize">Archive type: ', ' .tar.gz')
+  print_input('hidden', 'customize', 'customize', False, '', '');
+  print_input('radio', 'delivery', 'tgz', tgz_checked, '<p class="submit">Archive type: ', ' .tar.gz')
   print_input('radio', 'delivery', 'zip', zip_checked, ' ', ' .zip<br>')
-  print_input('submit', '', 'Customize', False, '', '</p>')
+  print_input('submit', '', 'Create Grammar', False, '', '</p>')
+  print_input('button', '', 'Download Choices File', False, '<p class="submit">', '</p>', '', 'window.location.href=\'' + choices_file + '\'')
   print HTML_postform
+  print HTML_uploadpreform
+  print_input('submit', '', 'Upload Choices File:', False, '<p class="submit">', '')
+  print_input('file', 'choices', '', False, '', '</p>', '20')
+  print HTML_uploadpostform
   print HTML_postbody
 
 
@@ -343,7 +369,8 @@ def sub_page(section, def_file, cookie):
         print_input('text', vn, value, False, bf, af, sz)
     i += 1
 
-  print_input('submit', '', 'Submit', False, '<p>', '</p>', 0)
+  print_input('submit', '', 'Submit', False, '<p>', '')
+  print_input('button', '', 'Clear', False, '', '</p>', '', 'clear_form()')
   print HTML_postform
   print HTML_postbody
 
@@ -390,8 +417,7 @@ def error_page():
 
 def save_choices(form_data, def_file, choices_file):
   # The section isn't really a form field, but save it for later
-  section = form_data['section']
-  del form_data['section']
+  section = form_data['section'].value
 
   # Read the current choices file (if any) into old_choices
   old_choices = read_choices(choices_file)
@@ -419,7 +445,7 @@ def save_choices(form_data, def_file, choices_file):
       v = ''
       if cur_sec == section:
         if form_data.has_key(a):
-          v = form_data[a]
+          v = form_data[a].value
       else:
         if old_choices.has_key(a):
           v = old_choices[a]
@@ -435,20 +461,7 @@ def save_choices(form_data, def_file, choices_file):
 
 namemap = VarNameMap('matrixdef')
 
-# get the CGI arguments
-query = ''
-method = getenv('REQUEST_METHOD')
-if method == 'GET':
-  query = getenv('QUERY_STRING', '')
-elif method == 'POST':
-  query = sys.stdin.read()
-
-query = unquote_plus(query)
-
-for q in query.split('&'):
-  if q and q.find('=') != -1:
-    pair = q.split('=')
-    form_data[pair[0]] = pair[1]
+form_data = cgi.FieldStorage()
 
 # Get the cookie.  If there's not one, make one.
 http_cookie = getenv('HTTP_COOKIE')
@@ -464,6 +477,15 @@ session_path = 'sessions/' + cookie
 if cookie and not os.path.exists(session_path):
   os.mkdir(session_path)
 
+# if the 'choices' field is defined, we have an uploaded choices file
+# to replace the current one
+if form_data.has_key('choices'):
+  data = form_data['choices'].value
+  if data:
+    f = open(session_path + '/choices', 'w')
+    f.write(data)
+    f.close()
+
 # if the 'section' field is defined, we have submitted values to save
 if form_data.has_key('section'):
   save_choices(form_data, 'matrixdef', session_path + '/choices')
@@ -476,7 +498,7 @@ if form_data.has_key('customize'):
 # ERB 2006-10-03 Checking has_key here to enable local debugging.
 
   if form_data.has_key('delivery'):
-    arch_type = form_data['delivery']
+    arch_type = form_data['delivery'].value
   else:
     arch_type = ''
   if arch_type != 'tgz' and arch_type != 'zip':
@@ -488,6 +510,6 @@ if form_data.has_key('customize'):
     customize_matrix(session_path, arch_type)
     custom_page(session_path, arch_type)
 elif form_data.has_key('subpage'):
-  sub_page(form_data['subpage'], 'matrixdef', cookie)
+  sub_page(form_data['subpage'].value, 'matrixdef', cookie)
 else:
   main_page('matrixdef', cookie)

@@ -1,37 +1,45 @@
 HOW TO USE THIS FILE:
 
   When you add something, put in the date and identify yourself.
-  When you fix something, remove it!
-  Prefix each item with FEAT (a feature request), BUG (a bug), or
-    MISC (anything else).
+  Prefix each item with feat: (a feature request), bug: (a bug), or
+    misc: (anything else).
+  When you fix something, mark it DONE:
 
 
 [10/4/2006 sfd]
 
-FEAT: Improve TDL pretty-printing
-FEAT: Make TDLfile handle DOTTED.NAME.FORMAT correctly
-BUG:  Fix layout oddities when the main-page dropdown buttons are clicked
+feat: Improve TDL pretty-printing
+feat: Make TDLfile handle DOTTED.NAME.FORMAT correctly
+bug:  Fix layout oddities when the main-page dropdown buttons are clicked
       (by using images?)
-BUG:  TDLfile treats ... as an identifier -- I don't think that will merge
+bug:  TDLfile treats ... as an identifier -- I don't think that will merge
       correctly
-MISC: validate.py and customize.py are getting pretty big -- should each
+misc: validate.py and customize.py are getting pretty big -- should each
       module be split into a separate, er, module?
-FEAT: Do something nicer with the validation error messages.  The desired
+feat: Do something nicer with the validation error messages.  The desired
       goal is marking every form field that needs fixing.  Somehow.
-FEAT: Add pretty-printing for the choices file (the random ones are just
+DONE: Add pretty-printing for the choices file (the random ones are just
       jumbled together)
-FEAT: Still need validation for all modules
-BUG:  Clean up the ????? stuff in the customization page, either by
+feat: Still need validation for all modules
+bug:  Clean up the ????? stuff in the customization page, either by
       rewriting it or inserting them
 
 [10/6/2006 sfd]
 
-FEAT: Remove old sessions after some amount of time (days?)
-FEAT: Add a Reset button to all forms
+feat: Remove old sessions after some amount of time (days?)
+DONE: Add a Reset button to all forms
 
 [10/9/2006 sfd]
 
-FEAT: Add a link/button to download the choices file
-BUG:  Move the negative adverb to the sentential negation page?
-BUG:  Create reasonable friendly names for everything
-BUG:  Variable name harmoization
+DONE: Add a link/button to download the choices file
+bug:  Move the negative adverb to the sentential negation page?
+bug:  Create reasonable friendly names for everything
+bug:  Variable name harmonization
+
+[10/11/2006 sfd]
+
+bug:  Don't get confused by duplicated #corefs when merging TDL.  Also
+      don't repeat them if they're identical (type names, too).
+feat: In a TDL conj, sort to keep the type names first
+feat: When printing the right side of a TDL typedef, indent any type names
+      to the level of the :=, but indent the final [TFS] two spaces
