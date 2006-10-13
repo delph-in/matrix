@@ -5,6 +5,7 @@
 
 import random
 randint = random.randint
+from StringIO import StringIO
 
 import utils
 tokenize_def = utils.tokenize_def
@@ -67,7 +68,10 @@ def random_grammar(choices_file):
       if randint(0, 1):
         choice[k] = 'on'
     else:
-      choice[k] = v[randint(0, len(v) - 1)]
+      # One out of N times, don't specify a value
+      N = 5
+      if randint(1, N) != 1:
+        choice[k] = v[randint(0, len(v) - 1)]
 
   f = open(choices_file, 'w')
   for k in varname:
