@@ -884,7 +884,8 @@ def make_gold_standard(in_profile, out_profile):
 #                         described in <file> on the basis of universal
 #                         resource in u_profile.
 # profiles.py -u <file>   Update u_profile and create gold standard profile
-#                         on the basis of updated u_profile.
+#                         on the basis of updated u_profile and choices
+#                         file <file>
 
 (options, args) = getopt(sys.argv[1:],'iu')
 
