@@ -61,21 +61,186 @@ def copy_other_files(in_profile,out_profile):
 
 ######################################################################
 # filter_word_order(sent, mrs_id)
+#
+# ERb 2006-10-12 This was getting unweidly, so I broke it up a bit.
 
-def filter_word_order(sent, mrs_id):
+def word_order_general_filters(sent, mrs_id):
 
   #General filters:
   #If we're not talking about coordination seed strings, we expect
   #NPs to be some sequence of det, p-nom|p-acc, and s or o.
-  
+  #Furthermore, the dets have to be inside the ps.
+  #BUT: p-nom can attach to s and p-acc can attach to o, I think.
+  if not re.search('coord',mrs_id):
+    if re.search('wo1',mrs_id):
+      if re.search('p-nom',sent) and not re.search('p-nom n1|n1 p-nom', sent):
+        return True
+
+    # These mrs_ids have a det attached to n1.
+    if re.search('wo2|wo5|wo10',mrs_id):
+      if not re.search('det n1|n1 det',sent):
+        return True
+
+    # These ones have one attached to o.
+    if re.search('wo6|wo9',mrs_id):
+      if not re.search('det n2|n2 det',sent):
+        return True
+
+    if re.search('wo2',mrs_id):
+      if re.search('p-nom', sent) and not re.search('p-nom det|p-nom n1|det p-nom|n1 p-nom',sent):
+        return True
+
+    # Possibly add some of the neg or ques examples as mrs_ids this
+    # one gets applied to.
+    if re.search('wo3',mrs_id):
+      # If there's only one adposition, it has to be next to a noun
+      if ((re.search('p-nom',sent) and not re.search('p-acc',sent)) or
+          (re.search('p-acc',sent) and not re.search('p-nom',sent))):
+        if not re.search('p-(nom|acc) (n1|n2)|(n1|n2) p-(nom|acc)',sent):
+          return True
+
+      # If there are two adpositions, each has to be next to a noun
+      if re.search('p-nom',sent) and re.search('p-acc',sent):
+        if not (re.search('p-(nom|acc) (n1|n2).*(n1|n2) p-(nom|acc)',sent) or
+                re.search('p-(nom|acc) (n1|n2).*p-(nom|acc) (n1|n2)',sent) or
+                re.search('(n1|n2) p-(nom|acc).*p-(nom|acc) (n1|n2)',sent) or
+                re.search('(n1|n2) p-(nom|acc).*(n1|n2) p-(nom|acc)',sent)):
+          return True
+
+    # Possibly add some of the neg or ques examples as mrs_ids this
+    # one gets applied to.
+    if re.search('wo4|wo8',mrs_id):
+      # The determiners both have to be adjancent to nouns:
+      # Can't just use the filters for wo2/5 and wo6 together, because
+      # they would license n1 det n2.
+      if not (re.search('det (n1|n2).*det (n1|n2)',sent) or
+              re.search('det (n1|n2).*(n1|n2) det',sent) or
+              re.search('(n1|n2) det.*det (n1|n2)',sent) or
+              re.search('(n1|n2) det.*(n1|n2) det',sent)):
+        return True
+
+    if re.search('wo4|wo5|wo6',mrs_id):
+      # If there's only one adposition, it has to be next to a noun or a det
+      if ((re.search('p-nom',sent) and not re.search('p-acc',sent)) or
+          (re.search('p-acc',sent) and not re.search('p-nom',sent))):
+        if not re.search('p-(nom|acc) (n1|n2|det)|(n1|n2|det) p-(nom|acc)',sent):
+          return True
+
+      # If there are two adpositions, each one has to be next to a noun or a det
+      # And no fair taking the noun and det from one NP and using them for
+      # both Ps:  p-nom n1 det p-acc tv aux n2 det
+      # There's probably a simpler way to do this, but as a first pass:
+      if not (re.search('p-(nom|acc) (n1|n2).*(n1|n2) p-(nom|acc)',sent) or
+              re.search('p-(nom|acc) (n1|n2).*p-(nom|acc) (n1|n2)',sent) or
+              re.search('(n1|n2) p-(nom|acc).*p-(nom|acc) (n1|n2)',sent) or
+              re.search('(n1|n2) p-(nom|acc).*(n1|n2) p-(nom|acc)',sent) or
+              re.search('p-(nom|acc) det (n1|n2).*(n1|n2) p-(nom|acc)',sent) or
+              re.search('p-(nom|acc) det (n1|n2).*p-(nom|acc) (n1|n2)',sent) or
+              re.search('(n1|n2) det p-(nom|acc).*p-(nom|acc) (n1|n2)',sent) or
+              re.search('(n1|n2) det p-(nom|acc).*(n1|n2) p-(nom|acc)',sent) or
+              re.search('p-(nom|acc) (n1|n2).*(n1|n2) det p-(nom|acc)',sent) or
+              re.search('p-(nom|acc) (n1|n2).*p-(nom|acc) det (n1|n2)',sent) or
+              re.search('(n1|n2) p-(nom|acc).*p-(nom|acc) det (n1|n2)',sent) or
+              re.search('(n1|n2) p-(nom|acc).*(n1|n2) det p-(nom|acc)',sent) or
+              re.search('p-(nom|acc) det (n1|n2).*(n1|n2) det p-(nom|acc)',sent) or
+              re.search('p-(nom|acc) det (n1|n2).*p-(nom|acc) det (n1|n2)',sent) or
+              re.search('(n1|n2) det p-(nom|acc).*p-(nom|acc) det (n1|n2)',sent) or
+              re.search('(n1|n2) det p-(nom|acc).*(n1|n2) det p-(nom|acc)',sent)):
+        return True
 
   return False
 
+def word_order_specific_filters(sent, mrs_id):
+  #Now do things that are specific to constraints from the choices file.
+
+  wo = ch('wordorder')
+  #For the seed strings where the 's' is the actual subject
+  #Check wither the actual order of major constituents matches
+  #the order indicated in the choices file.
+  if re.match('^wo[1-6]$',mrs_id):
+    if re.search('s.*o',wo) and re.search('n2.*n1',sent):
+      return True
+    if re.search('o.*s',wo) and re.search('n1.*n2',sent):
+      return True
+    if re.search('o.*v',wo) and re.search('tv.*n2',sent):
+      return True
+    if re.search('v.*o',wo) and re.search('n2.*tv',sent):
+      return True
+    if re.search('s.*v',wo) and re.search('(tv|iv).*n1',sent):
+      return True
+    if re.search('v.*s',wo) and re.search('n1.*(tv|iv)',sent):
+      return True
+
+  #Likewise, for the seed strings where the 'o' is the actual subject
+  if re.match('^wo([7-9]|10)$',mrs_id):
+    if re.search('s.*o',wo) and re.search('n1.*n2',sent):
+      return True
+    if re.search('o.*s',wo) and re.search('n2.*n1',sent):
+      return True
+    if re.search('o.*v',wo) and re.search('tv.*n1',sent):
+      return True
+    if re.search('v.*o',wo) and re.search('n1.*tv',sent):
+      return True
+    if re.search('s.*v',wo) and re.search('(tv|iv).*n2',sent):
+      return True
+    if re.search('v.*s',wo) and re.search('n2.*(tv|iv)',sent):
+      return True
+
+  #For, the v-final and v-initial cases, just check whether any arguments
+  #show up on the wrong side of the verb.
+  if re.search('wo',mrs_id):
+    if wo == 'v-final' and re.search('(tv|iv).*(n1|n2)',sent):
+      return True
+    if wo == 'v-initial' and re.search('(n1|n2).*(tv|iv)',sent):
+      return True
+
+  #A very general filter to save us some time, in some cases:
+  if ch('hasDets') == 'no' and re.search('det',sent):
+    return True
+
+
+  #Det-n order
+  #These are not relative to particular mrs_ids because the only strings
+  #with dets left by the general filters should have the dets adjacent to
+  #the right n.
+  # ... still have to worry about specific mrs_ids because of det n det
+  #pattern.  I need to know how many dets there are.
+  # Still, these are fairly general.  I expect to add lots of mrs_ids here.
+
+  if ch('NounDetOrder') == 'HeadSpec':
+    if re.search('wo[2569]|wo10',mrs_id) and \
+       re.search('det (n1|n2)',sent):
+      return True
+
+    if re.search('wo[48]',mrs_id) and \
+       (re.search('det .*det (n1|n2)',sent) or \
+        re.search('det (n1|n2) .*det (n1|n2)', sent) or \
+        re.search('det (n1|n2) .*(n1|n2) det', sent)):
+      return True
+
+  if ch('NounDetOrder') == 'SpecHead':
+    if re.search('wo[2569]|wo10',mrs_id) and \
+       re.search('(n1|n2) det',sent):
+      return True
+
+    if re.search('wo[48]',mrs_id) and \
+       (re.search('(n1|n2) det .*det ',sent) or \
+        re.search('(n1|n2) det .*(n1|n2) det', sent) or \
+        re.search('det (n1|n2) .*(n1|n2) det', sent)):
+      return True
+
+
+  return False
+
+def filter_word_order(sent, mrs_id):
+  return word_order_general_filters(sent, mrs_id) or\
+         word_order_specific_filters(sent, mrs_id)
 
 ######################################################################
 # filter_sentential_negation(sent, mrs_id)
 
 def filter_sentential_negation(sent, mrs_id):
+
   return False
 
 
@@ -129,7 +294,165 @@ def filter_yesno_questions(sent, mrs_id):
 ######################################################################
 # filter_lexicon(sent)
 
+# ERB 2006-10-12 The general filters related to this are all in
+# filter_word_order.
+
 def filter_lexicon(sent, mrs_id):
+
+    # This assumes that noun1 has the form n1, noun2 has the form n2, etc.
+  if re.search('wo|neg|ques',mrs_id):
+    if ch('noun1spr') == 'obl' and re.search('n1', sent):
+      if not re.search('n1 det|det n1',sent):
+        return True
+    if ch('noun2spr') == 'obl' and re.search('n2', sent):
+      if not re.search('n2 det|det n2',sent):
+        return True
+    #This one assumes that all nouns are n+digit(s), and that we only
+    #see n1 once/string.
+    if ch('noun1spr') == 'nil':
+      if re.search('n1 det', sent):
+        if re.search('n1 det n2', sent):
+          if re.search('n1 det n2 det',sent):
+            return True
+          elif ch('noun2spr') == nil:
+            return True
+        else:
+          return True
+      if re.search('det n1', sent):
+        if re.search('n2 det n1', sent):
+          if re.search('det n2 det n1',sent):
+            return True
+          elif ch('noun2spr') == nil:
+            return True
+        else:
+          return True
+            
+    #This one assumes that all nouns are n+digit(s), and that we only
+    #see n2 once/string.
+    if ch('noun2spr') == 'nil':
+      if re.search('n2 det', sent):
+        if re.search('n2 det n1', sent):
+          if re.search('n2 det n1 det'):
+            return True
+          elif ch('noun1spr') == nil:
+            return True
+        else:
+          return True
+      if re.search('det n2', sent):
+        if re.search('n1 det n2', sent):
+          if re.search('det n1 det n2', sent):
+            return True
+          elif ch('noun1spr') == nil:
+            return True
+        else:
+          return True
+
+    if ch('iverbSubj') == 'pp':
+      # We're talking about intransitive verbs here.  n1 is always
+      # the subject.
+      if re.search('wo[12]$',mrs_id):
+        if not re.search('p-nom n1|n1 p-nom|p-nom det n1|p-nom n1 det|n1 det p-nom|det n1 p-nom',sent):
+          return True
+
+    if ch('iverbSubj') == 'np':
+      if re.search('wo[12]$',mrs_id):
+        if re.search('p-nom',sent):
+          return True
+
+    #I think we don't have to worry about picking up a det or a p-nom from the other np,
+    #because the general filters should have taken out those cases. ??
+    # _FIX_ME_ need to add neg and ques examples here.
+    if ch('tverbSubj') == 'pp':
+      if re.search('wo[3-6]',mrs_id):
+        if not re.search('p-nom n1|n1 p-nom|p-nom det n1|p-nom n1 det|n1 det p-nom|det n1 p-nom',sent):
+          return True
+      # possibly redundant: right now there are no seed strings with p-nom or p-acc and these mrs_ids.
+      if re.search('wo[7-9]|wo10',mrs_id):
+        if not re.search('p-nom n2|n2 p-nom|p-nom det n2|p-nom n2 det|n2 det p-nom|det n2 p-nom',sent):
+          return True
+
+    if ch('tverbSubj') == 'np' and re.search('p-nom',sent):
+        return True
+
+    # _FIX_ME_ need to add neg and ques examples here.
+    if ch('tverbObj') == 'pp':
+      if re.search('wo[3-6]',mrs_id):
+        if not re.search('p-acc n2|n2 p-acc|p-acc det n2|p-acc n2 det|n2 det p-acc|det n2 p-acc',sent):
+          return True
+      # possibly redundant: right now there are no seed strings with p-nom or p-acc and these mrs_ids.
+      if re.search('wo[7-9]|wo10',mrs_id):
+        if not re.search('p-acc n1|n1 p-acc|p-acc det n1|p-acc n1 det|n1 det p-acc|det n1 p-acc',sent):
+          return True
+      
+    if ch('tverbObj') == 'np' and re.search('p-acc',sent):
+        return True
+
+    # _FIX_ME_ need to add neg and ques examples here.
+    if ch('objAdp') == 'pre':
+      if re.search('wo[1-6]$',mrs_id):
+        if re.search('n2 p-acc|n2 det p-acc',sent):
+          return True
+    if ch('objAdp') == 'post':
+      if re.search('wo[1-6]$',mrs_id):
+        if re.search('p-acc n2|p-acc det n2',sent):
+          return True
+    if ch('subjAdp') == 'pre':
+      if re.search('wo[1-6]$',mrs_id):
+        if re.search('n1 p-nom|n1 det p-nom',sent):
+          return True
+    if ch('subjAdp') == 'post':
+      if re.search('wo[1-6]$',mrs_id):
+        if re.search('p-nom n1|p-nom det n1',sent):
+          return True
+
+    # _FIX_ME_ Need to work in constraints on auxiliaries
+
+    # Aux cases:
+    # _FIX_ME_ worry about questions here
+    # 1. No auxiliaries
+
+    if ch('language') != '' and ch('auxverb') == '' and re.search('aux',sent):
+        return True
+      
+    # 2. Arg composition => adjacent to v, let's say for now even in free word order
+    #        may be further specified as left only or right only.
+
+    if re.search('wo|neg',mrs_id):
+      if ch('auxverb') and ch('auxcomp')=='V':
+        if ch('auxorder') == 'right':
+          if re.search('aux',sent) and not re.search('(tv|iv) (neg )*aux',sent):
+            return True
+        elif ch('auxorder') == 'left':
+          if re.search('aux',sent) and not re.search('aux (neg )*(tv|iv)',sent):
+            return True
+        elif re.search('aux',sent) and not re.search('aux (neg )*(tv|iv)|(tv|iv) (neg )*aux',sent):
+          return True
+      
+      # 3. VP comp, so S attaches outside: aux n1,n2 tv or aux n1 tv
+      #        may be further specified as left only or right only
+
+      if ch('auxverb') and ch('auxcomp')=='VP':
+        if re.search('aux .*n1 .*n2 .*tv|aux .*n2 .*n1 .*tv|tv .*n2 .*n1 .*aux|tv .*n1 .*n2 aux',sent):
+          return True
+        if re.search('aux .*n1 .*iv|iv .*n1 .*aux',sent):
+          return True
+    
+    # 4. S comp, attaches outside S and O.
+    #        may be further specified as left only or right only
+
+      if ch('auxverb') and ch('auxcomp') == 'S':
+        if re.search('(n1|n2) .*aux .*(tv|iv)',sent) or \
+           re.search('(tv|iv) .*aux .*(n1|n2)',sent):
+          return True
+
+    # This left or right only seems to work across all complementation cases.
+    
+      if ch('auxorder') == 'right' and re.search('aux .*(tv|iv)',sent):
+        return True
+      if ch('auxorder') == 'left' and re.search('(tv|iv) .*aux',sent):
+        return True
+      
+      
   return False
 
 
@@ -205,6 +528,8 @@ def permute(s):
     for w in words[1:]:
       perm += ' ' + w
     perms.append(perm)
+
+  print 'found ' + str(len(perms)) + ' permutations'
   return perms
 
 ######################################################################
@@ -374,11 +699,15 @@ def make_universal_resource(in_profile, out_profile):
     if r[1] >= next_r:
       next_r = int(r[1]) + 1
 
+  survived = 0
+  killed = 0
+
   # Pass through the item list, permuting each item and, if the new
   # permuted sentence passes the filters, adding it to the item list
   for i in copy(items):
     for perm in permute(i[6])[1:]:
       if not filter_sentence(perm, i[9]):
+        survived += 1
         # Make a new item...but first, copy any parses that refer to
         # the item being permuted, and any results that refer to
         # those parses
@@ -401,6 +730,11 @@ def make_universal_resource(in_profile, out_profile):
         next_i += 1
         new_i[6] = perm
         items.append(new_i)
+      else:
+        killed += 1
+
+  print str(survived) + ' strings survived into universal resource.'
+  print str(killed) + ' strings were filtered.'
 
   # Write out the items, parses, and results
   if not os.path.exists(out_profile):
@@ -435,8 +769,11 @@ def make_gold_standard(in_profile, out_profile):
   # Pass through the item list, checking to see if each item passes
   # the filters -- if not, mark it for removal by settings its id
   # to -1
+  filtered = 0
+  
   for i in items:
     if filter_sentence(i[6], i[9]):
+      filtered += 1
       for p in parses:
         if p[2] == i[0]:
           for r in results:
@@ -444,6 +781,9 @@ def make_gold_standard(in_profile, out_profile):
               r[1] = -1
           p[0] = -1
       i[0] = -1
+
+  print str(len(items)) + ' items received from universal resource.'
+  print str(filtered) + ' items filtered.'
 
   # Pass through the lists *backwards*, removing any items whose id
   # has been set to -1
@@ -523,6 +863,8 @@ def make_gold_standard(in_profile, out_profile):
     if parses[p][0] == -1:
       del parses[p]
 
+  print str(len(items)) + ' unique items found.'
+
   # Write out the items, parses, and result  
   if not os.path.exists(out_profile):
     os.mkdir(out_profile)
@@ -575,6 +917,6 @@ else:
     choices_file = 'rand_choices'
     random_validated_grammar(choices_file)
   
-    choices = read_choices(choices_file)
+  choices = read_choices(choices_file)
 
   make_gold_standard('u_profile', 'g_profile')
