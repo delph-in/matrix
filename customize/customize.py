@@ -1830,18 +1830,19 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
     rule = pn + '-bottom-coord-rule :=\
            ' + bot + 'bottom-coord-rule &\
            ' + pos + '-bottom-coord-phrase &\
-           [ SYNSEM.LOCAL.COORD-STRAT "' + num + '"'
-    if bot == 'unary':
-      rule += ', SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel" ].'
-    else:
-      rule += ' ].'
+           [ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].'
     mylang.add(rule)
+    if bot == 'unary-':
+      rule = pn + '-bottom-coord-rule :=\
+             [ SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel" ].'
+      mylang.add(rule)
 
   if left:
     # first the rule in mylang
-    mylang.add(pn + '-left-coord-rule :=\
-               ' + bot + 'left-coord-rule &\
-               ' + pos + '-bottom-coord-phrase.')
+    rule = pn + '-left-coord-rule :=\
+           ' + bot + 'left-coord-rule &\
+           ' + pos + '-bottom-coord-phrase.'
+    mylang.add(rule)
 
     if pre or suf:
       # constrain the predicate
