@@ -1838,11 +1838,16 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
     mylang.add(rule)
 
   if left:
+    # first the rule in mylang
     mylang.add(pn + '-left-coord-rule :=\
                ' + bot + 'left-coord-rule &\
                ' + pos + '-bottom-coord-phrase.')
 
     if pre or suf:
+      # constrain the predicate
+      mylang.add(pn + '-left-coord-rule :=\
+                 [ SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel" ].')
+
       # now the spelling change rule in irules.tdl
       rule = pn + '-left :=\n'
       if pre:
