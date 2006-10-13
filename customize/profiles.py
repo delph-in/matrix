@@ -10,6 +10,8 @@ import re
 
 from utils import read_choices
 
+from random import randint
+
 from randgram import random_validated_grammar
 
 import shutil
@@ -532,6 +534,7 @@ def permute(s):
   print 'found ' + str(len(perms)) + ' permutations'
   return perms
 
+
 ######################################################################
 # validate_string_list(string_list)
 #   Since the string_list file is produced by hand, we should check
@@ -549,6 +552,15 @@ def validate_string_list(string_list):
     print wrong
     sys.exit
     
+
+######################################################################
+# maybe_keep_filtered()
+#   One time out of N, return True, otherwise False
+
+def maybe_keep_filtered():
+  N = 100
+  return randint(1, N) == 1
+
 
 ######################################################################
 # make_intermediate_resource(in_profile, out_profile, string_list)
@@ -665,6 +677,7 @@ def make_intermediate_resource(string_list_file, in_profile, out_profile):
   # Copy the other files, which we need even though they are empty
   copy_other_files(in_profile,out_profile)
 
+
 ######################################################################
 # make_universal_resource(in_profile, out_profile)
 #   Given a tsdb++ profile in in_profile that contains harvest- and
@@ -706,7 +719,9 @@ def make_universal_resource(in_profile, out_profile):
   # permuted sentence passes the filters, adding it to the item list
   for i in copy(items):
     for perm in permute(i[6])[1:]:
-      if not filter_sentence(perm, i[9]):
+      filtered = filter_sentence(perm, i[9])
+      keep_filtered = maybe_keep_filtered()
+      if not filtered or keep_filtered:
         survived += 1
         # Make a new item...but first, copy any parses that refer to
         # the item being permuted, and any results that refer to
@@ -729,6 +744,9 @@ def make_universal_resource(in_profile, out_profile):
         new_i[0] = str(next_i)
         next_i += 1
         new_i[6] = perm
+        # if the sentence should have been filtered, remember that
+        if filtered:
+          new_i[7] = '0'
         items.append(new_i)
       else:
         killed += 1
@@ -773,14 +791,17 @@ def make_gold_standard(in_profile, out_profile):
   
   for i in items:
     if filter_sentence(i[6], i[9]):
-      filtered += 1
-      for p in parses:
-        if p[2] == i[0]:
-          for r in results:
-            if r[0] == p[0]:
-              r[1] = -1
-          p[0] = -1
-      i[0] = -1
+      if maybe_keep_filtered():
+        i[7] = '0'
+      else:
+        filtered += 1
+        for p in parses:
+          if p[2] == i[0]:
+            for r in results:
+              if r[0] == p[0]:
+                r[1] = -1
+            p[0] = -1
+        i[0] = -1
 
   print str(len(items)) + ' items received from universal resource.'
   print str(filtered) + ' items filtered.'
@@ -874,6 +895,7 @@ def make_gold_standard(in_profile, out_profile):
 
   # Copy the other files, which we need even though they are empty
   copy_other_files(in_profile,out_profile)
+
 
 ######################################################################
 # main program

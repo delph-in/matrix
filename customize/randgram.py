@@ -3,9 +3,7 @@
 ######################################################################
 # imports
 
-import random
-randint = random.randint
-from StringIO import StringIO
+from random import randint
 
 import utils
 tokenize_def = utils.tokenize_def
