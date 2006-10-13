@@ -2633,7 +2633,9 @@ omni-conj-last-bottom-coord-rule := omni-binary-bottom-coord-rule &
     NONCONJ-DTR #ncdtr,
     ARGS < #ncdtr, #cdtr > ].
 
-omni-binary-left-coord-rule := bottom-coord-phrase & binary-phrase &
+omni-left-coord-rule := bottom-coord-phrase.
+
+omni-binary-left-coord-rule := omni-left-coord-rule & binary-phrase &
   [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
                          VAL #val ],
                    COORD -,
@@ -2657,9 +2659,20 @@ omni-conj-last-left-coord-rule := omni-binary-left-coord-rule &
     NONCONJ-DTR #ncdtr,
     ARGS < #ncdtr, #cdtr > ].
 
+infl-left-coord-rule := omni-left-coord-rule &
+                        same-local-lex-rule &
+                        same-non-local-lex-rule &
+                        inflecting-lex-rule &
+  [ INFLECTED +,
+    DTR.INFLECTED -,
+    SYNSEM.LOCAL [ COORD -,
+                   COORD-REL #crel ],
+    C-CONT [ RELS <! #crel !>,
+             HCONS <! !> ]].
+
 omni-coord-phrase := coord-phrase &
   [ C-CONT.HOOK [ LTOP #lbl, INDEX #carg ],
-    LCOORD-DTR omni-binary-left-coord-rule &
+    LCOORD-DTR omni-left-coord-rule &
                [ SYNSEM.LOCAL [ COORD-REL [ LBL #lbl,
                                             C-ARG #carg,
                                             L-INDEX #lind,

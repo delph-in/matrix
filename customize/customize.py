@@ -1787,6 +1787,8 @@ def create_neg_adv_lex_item(advAlone):
 # define_coord_strat: a utility function, defines a strategy
 
 def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
+  mylang.add_literal(';;; Coordination Strategy ' + num)
+  
   pn = pos + num
   if pos == 'n' or pos == 'np':
     headtype = 'noun'
@@ -1839,6 +1841,16 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
     mylang.add(pn + '-left-coord-rule :=\
                ' + bot + 'left-coord-rule &\
                ' + pos + '-bottom-coord-phrase.')
+
+    if pre or suf:
+      # now the spelling change rule in irules.tdl
+      rule = pn + '-left :=\n'
+      if pre:
+        rule += '  %prefix (* ' + pre + ')\n'
+      else:
+        rule += '  %suffix (* ' + suf + ')\n'
+      rule += '  ' + pn + '-left-coord-rule.'
+      irules.add_literal(rule)
 
   # Now define the rule instances into rules.tdl.  As above, the mid
   # or left rule may not be necessary.

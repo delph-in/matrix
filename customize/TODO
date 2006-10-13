@@ -43,3 +43,8 @@ bug:  Don't get confused by duplicated #corefs when merging TDL.  Also
 feat: In a TDL conj, sort to keep the type names first
 feat: When printing the right side of a TDL typedef, indent any type names
       to the level of the :=, but indent the final [TFS] two spaces
+
+[10/11/2006 sfd]
+
+DONE: Something is wrong with omnisyndeton -- neither lexically- nor
+      morphologically-marked strategies seem to be working.
