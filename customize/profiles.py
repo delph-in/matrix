@@ -423,8 +423,6 @@ def filter_lexicon(sent, mrs_id):
         if re.search('p-nom n1|p-nom det n1',sent):
           return True
 
-    # _FIX_ME_ Need to work in constraints on auxiliaries
-
     # Aux cases:
     # _FIX_ME_ worry about questions here
     # 1. No auxiliaries
