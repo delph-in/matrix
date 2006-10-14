@@ -251,21 +251,37 @@ def filter_sentential_negation(sent, mrs_id):
 #   Take a sentence which consists of:
 #     det, s1, s2, s3, iv, iv1, iv2, iv3, co
 #   ...and return True iff the sentence cannot be grammatical.
-#
-#   This function assumes a single coordination strategy (cs1)
 
 def filter_coordination(sent, mrs_id):
-  if ch('cs1'):
-    if re.search('co co', sent):
-      return True
-    elif re.search('co-', sent) and re.search('-co', sent):
-      return True
-    elif ch('cs1pat') == 'a' and re.match('co', sent):
-      return True
-    elif ch('cs1order') == 'before' and re.search('co$', sent):
-      return True
-    elif ch('cs1order') == 'after' and re.search('^co', sent):
-      return True
+  # for most of these filters to work, there must be at least one
+  # coordination strategy, and if there are multiple ones, they
+  # must agree in some parameter
+  order = None
+  pat = None
+  first_strat = True
+  for i in (1, 2):
+    i = str(i)
+    if ch('cs' + i):
+      if first_strat:
+        first_strat = False
+        order = ch('cs' + i + 'order')
+        pat = ch('cs' + i + 'pat')
+      else:
+        if order != ch('cs' + i + 'order'):
+          order = None
+        if pat != ch('cs' + i + 'pat'):
+          pat = None
+
+  if order and re.search('co co', sent):
+    return True
+  elif order and re.search('co-', sent) and re.search('-co', sent):
+    return True
+  elif pat == 'a' and re.search('co', sent):
+    return True
+  elif order == 'before' and re.search('co$', sent):
+    return True
+  elif order == 'after' and re.search('^co', sent):
+    return True
 
   return False
 
@@ -799,28 +815,28 @@ def make_gold_standard(in_profile, out_profile):
           if p[2] == i[0]:
             for r in results:
               if r[0] == p[0]:
-                r[1] = -1
-            p[0] = -1
-        i[0] = -1
+                r[1] = None
+            p[0] = None
+        i[0] = None
 
   print str(len(items)) + ' items received from universal resource.'
   print str(filtered) + ' items filtered.'
 
-  # Pass through the lists *backwards*, removing any items whose id
-  # has been set to -1
+  # Pass through the lists *backwards*, removing any items, parses, or
+  # results whose IDs have been set to None
   for i in range(len(items) - 1, -1, -1):
-    if items[i][0] == -1:
+    if items[i][0] == None:
       del items[i]
   for p in range(len(parses) - 1, -1, -1):
-    if parses[p][0] == -1:
+    if parses[p][0] == None:
       del parses[p]
   for r in range(len(results) - 1, -1, -1):
-    if results[r][1] == -1:
+    if results[r][1] == None:
       del results[r]
 
   # Now we need to collapse any duplicate sentences -- that is, if
   # two sentences contain the same words, they should be made into
-  # a single item.  This happens in ??? steps:
+  # a single item.  This happens in four steps:
   #  1) Make a list of the sentences, sort it, and remove any
   #     sentence that doesn't occur more than once.
   #  2) For each of those sentences, find all items that contain it
@@ -852,37 +868,58 @@ def make_gold_standard(in_profile, out_profile):
     IDs = []
     for i in items:
       if i[6] == s:
-        IDs.append(i[0])
+        # grammatical IDs at the beginning, ungrammatical ones at the end
+        if i[7] == '1':
+          IDs.insert(0, i[0])
+        else:
+          IDs.append(i[0])
     sent_IDs.append(IDs)
 
   # mark extra parses and items for removal, pointing results to the
   # remaining, single parse
   for IDs in sent_IDs:
-    # find the new single parse ID
+    # because of the way the IDs list was constructed, if any of the
+    # sentences were grammatical, the first will be one of them;
+    # conversely, if the first is ungrammatical, they all are
+    the_item_ID = None
+    for i in items:
+      if i[0] == IDs[0] and i[7] == '1':
+        the_item_ID = i[0]
+        break
+    # find the parse ID for the one grammatical sentence
+    the_parse_ID = None
     for p in parses:
-      if p[2] == IDs[0]:
+      if p[2] == the_item_ID:
         the_parse_ID = p[0]
         break
     # for the rest of the ids, mark items with that id for removal,
     # and mark parses pointing to those items for removal
-    for ID in IDs[1:]:
-      for i in items:
-        if i[0] == ID:
-          i[0] = -1
-      for p in parses:
-        if p[2] == ID:
-          for r in results:
-            if r[0] == p[0]:
-              r[0] = the_parse_ID
-          p[0] = -1
+    for ID in IDs:
+      if ID != the_item_ID:
+        for i in items:
+          if i[0] == ID:
+            i[0] = None
+            grammatical = (i[7] == '1')
+        for p in parses:
+          if p[2] == ID:
+            for r in results:
+              if r[0] == p[0]:
+                if grammatical:
+                  r[0] = the_parse_ID
+                else:
+                  r[1] = None
+            p[0] = None
 
-  # finally, remove items and parses that have been marked with -1
+  # finally, remove items, parses, and results marked with None
   for i in range(len(items) - 1, -1, -1):
-    if items[i][0] == -1:
+    if items[i][0] == None:
       del items[i]
   for p in range(len(parses) - 1, -1, -1):
-    if parses[p][0] == -1:
+    if parses[p][0] == None:
       del parses[p]
+  for r in range(len(results) - 1, -1, -1):
+    if results[r][1] == None:
+      del results[r]
 
   print str(len(items)) + ' unique items found.'
 
