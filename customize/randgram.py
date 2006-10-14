@@ -67,7 +67,7 @@ def random_grammar(choices_file):
         choice[k] = 'on'
     else:
       # One out of N times, don't specify a value
-      N = 6
+      N = 5
       if randint(1, N) != 1:
         choice[k] = v[randint(0, len(v) - 1)]
 
