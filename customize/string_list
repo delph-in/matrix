@@ -44,6 +44,8 @@ wo9@s@det n2 n1 tv aux
 wo10@s@n2 det n1 tv aux
 neg1@h@n1 n2 neg tv
 neg2@h@det n1 det n2 neg tv
+neg3@h@n2 n1 neg tv
+neg4@h@det n2 det n1 neg tv
 neg1@s@n1 n2 neg tv
 neg1@s@p-nom n1 p-acc n2 neg tv
 neg1@s@n1 n2 tv neg aux
@@ -84,11 +86,58 @@ neg2@s@det n1 det n2 neg tv-neg
 neg2@s@p-nom det n1 p-acc det n2 neg tv-neg
 neg2@s@det n1 det n2 tv neg aux-neg
 neg2@s@p-nom det n1 p-acc det n2 tv neg aux-neg
+neg3@s@n2 n1 neg tv
+neg3@s@n2 n1 tv neg aux
+neg3@s@n2 n1 neg-tv
+neg3@s@n2 n1 tv neg-aux
+neg3@s@n2 n1 tv-neg
+neg3@s@n2 n1 tv aux-neg
+neg3@s@n2 n1 neg neg-tv
+neg3@s@n2 n1 tv neg neg-aux
+neg3@s@n2 n1 neg tv-neg
+neg3@s@n2 n1 tv neg aux-neg
+neg4@s@det n2 det n1 neg tv
+neg4@s@det n2 det n1 neg tv aux
+neg4@s@det n2 det n1 neg-tv
+neg4@s@det n2 det n1 tv neg-aux
+neg4@s@det n2 det n1 tv-neg
+neg4@s@det n2 det n1 tv aux-neg
+neg4@s@det n2 det n1 neg neg-tv
+neg4@s@det n2 det n1 tv neg neg-aux
+neg4@s@det n2 det n1 neg tv-neg
+neg4@s@det n2 det n1 tv neg aux-neg
 ques1@h@n1 n2 tv qpart
 ques2@h@det n1 det n2 tv qpart
+ques3@h@n2 n1 tv qpart
+ques4@h@det n2 det n1 tv qpart
 ques1@s@n1 tv n2 qpart
 ques1@s@tv n1 n2 
 ques1@s@aux n1 tv n2
+ques1@s@p-nom n1 tv n2 qpart
+ques1@s@tv p-nom n1 n2 
+ques1@s@aux p-nom n1 tv n2
+ques1@s@n1 tv p-acc n2 qpart
+ques1@s@tv n1 p-acc n2 
+ques1@s@aux n1 tv p-acc n2
+ques1@s@p-nom n1 tv p-acc n2 qpart
+ques1@s@tv p-nom n1 p-acc n2 
+ques1@s@aux p-nom n1 tv p-acc n2
 ques2@s@det n1 tv det n2 qpart
 ques2@s@tv det n1 det n2 
 ques2@s@aux det n1 tv det n2
+ques2@s@p-nom det n1 tv det n2 qpart
+ques2@s@tv p-nom det n1 det n2 
+ques2@s@aux p-nom det n1 tv det n2
+ques2@s@det n1 tv p-acc det n2 qpart
+ques2@s@tv det n1 p-acc det n2 
+ques2@s@aux det n1 tv p-acc det n2
+ques2@s@p-nom det n1 tv p-acc det n2 qpart
+ques2@s@tv p-nom det n1 p-acc det n2 
+ques2@s@aux p-nom det n1 tv p-acc det n2
+ques3@s@n2 tv n1 qpart
+ques3@s@tv n2 n1 
+ques3@s@aux n2 tv n1
+ques4@s@det n2 tv det n1 qpart
+ques4@s@tv det n2 det n1 
+ques4@s@aux det n2 tv det n1
+
