@@ -546,7 +546,7 @@ def filter_lexicon(sent, mrs_id):
         if re.search('n1 det n2', sent):
           if re.search('n1 det n2 det',sent):
             return True
-          elif ch('noun2spr') == nil:
+          elif ch('noun2spr') == 'nil':
             return True
         else:
           return True
@@ -554,7 +554,7 @@ def filter_lexicon(sent, mrs_id):
         if re.search('n2 det n1', sent):
           if re.search('det n2 det n1',sent):
             return True
-          elif ch('noun2spr') == nil:
+          elif ch('noun2spr') == 'nil':
             return True
         else:
           return True
@@ -566,7 +566,7 @@ def filter_lexicon(sent, mrs_id):
         if re.search('n2 det n1', sent):
           if re.search('n2 det n1 det'):
             return True
-          elif ch('noun1spr') == nil:
+          elif ch('noun1spr') == 'nil':
             return True
         else:
           return True
@@ -574,7 +574,7 @@ def filter_lexicon(sent, mrs_id):
         if re.search('n1 det n2', sent):
           if re.search('det n1 det n2', sent):
             return True
-          elif ch('noun1spr') == nil:
+          elif ch('noun1spr') == 'nil':
             return True
         else:
           return True
@@ -1027,16 +1027,17 @@ def make_gold_standard(in_profile, out_profile):
   # ERB 2006-10-15 If the item was a negative example kept in
   # the first pass, don't bother trying to filter it, just keep it.
   filtered = 0
+  wf = 0
   g_kept = 0
   
   for i in items:
     if i[7] == '1':
       if filter_sentence(i[6], i[9]):
-        if maybe_keep_filtered(10):
+        filtered += 1
+        if maybe_keep_filtered(100):
           g_kept += 1
           i[7] = '0'
         else:
-          filtered += 1
           for p in parses:
             if p[2] == i[0]:
               for r in results:
@@ -1044,9 +1045,12 @@ def make_gold_standard(in_profile, out_profile):
                   r[1] = None
               p[0] = None
           i[0] = None
+      else:
+        wf += 1
 
   print str(len(items)) + ' items received from universal resource.'
   print str(filtered) + ' items filtered.'
+  print str(wf) + ' grammatical examples found.'
   print str(g_kept) + ' locally ungrammatical examples kept.'
 
   # Pass through the lists *backwards*, removing any items, parses, or

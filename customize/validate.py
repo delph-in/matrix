@@ -5,7 +5,6 @@
 
 from utils import read_choices
 
-
 ######################################################################
 # globals
 
@@ -368,6 +367,18 @@ def validate_lexicon():
 def validate_test_sentences():
   pass
 
+######################################################################
+# validate_extra_constraints()
+#   Some extra constraints we want to put on the random grammars
+#   for the regression/other testing
+
+def validate_extra_constraints():
+  if ch('auxsem') == 'pred':
+    err = 'We don\'t want contentful auxiliaries in the random grammars.'
+    add_err('auxsem', err)
+  if ch('hasDets') == 'yes' and not ch('det1'):
+    err = 'To get uniform semantics, we always want det1 specified.'
+    add_err('det1', err)
 
 ######################################################################
 # validate_choices(choices_file)
@@ -375,7 +386,7 @@ def validate_test_sentences():
 #   the names of choice file variables that are incorrect (stored
 #   in the list 'wrong'.
 
-def validate_choices(choices_file):
+def validate_choices(choices_file,rand = False):
   global wrong
   wrong = {}
   global choices
@@ -391,4 +402,7 @@ def validate_choices(choices_file):
   validate_lexicon()
   validate_test_sentences()
 
+  if rand:
+    validate_extra_constraints()
+  
   return wrong

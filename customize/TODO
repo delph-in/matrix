@@ -53,3 +53,6 @@ DONE: Something is wrong with omnisyndeton -- neither lexically- nor
 
 feat: When adding seed strings, get their actual length and put it in
       `i-length' so we can manipulate by length in tsdb++
+bug:  randgram.py is currently forcing non-finite forms to be the same
+      as the finite forms.  We should eventually update the seed strings
+      to allow for distinct forms and test this.
