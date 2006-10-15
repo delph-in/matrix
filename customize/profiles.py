@@ -243,6 +243,70 @@ def filter_word_order(sent, mrs_id):
 
 def filter_sentential_negation(sent, mrs_id):
 
+  # Because we spelled the adverb and the affix the same:
+  negadv = re.compile(r'(\s|^)neg(\s|$)')
+
+  if re.search('neg',mrs_id):
+    # If we haven't selected inflectional negation, we shouldn't see the affixes
+    if ch('infl_neg') != 'on' and re.search('-neg|neg-',sent):
+      return True
+    # If we haven't select adverbial negation, we shouldn't see the adverbs
+    if ch('adv_neg') != 'on' and re.search(negadv,sent):
+      return True
+    # If both are required, we should see always see both affix & adv.
+    if ch('multineg') == 'bothobl':
+      if not (re.search('-neg|neg-',sent) and re.search(negadv,sent)):
+        return True
+    # If complementary dist, we should only see one or the other.
+    if ch('multineg') == 'comp':
+      if re.search('-neg|neg-',sent) and re.search(negadv,sent):
+        return True
+    # If affix can't occur without adverb, it shouldn't
+    if ch('multineg') == 'advobl' and re.search('-neg|neg-',sent):
+      if not re.search(negadv,sent):
+        return True
+    # If adverb can't occur without affix, it shouldn't
+    if ch('multineg') == 'inflobl' and re.search(negadv,sent):
+      if not re.search('-neg|neg-',sent):
+        return True
+
+    # If affix only attaches to aux, shouldn't attach to anything else.
+    if ch('neg-infl-type') == 'aux' and re.search('[^(aux)]-neg|neg-[^(aux)]',sent):
+      return True
+    # If affix only attaches to main verb, shouldn't attach to anything else.
+    if ch('neg-infl-type') == 'main' and re.search('[^(tv)(iv)]-neg|neg-[^(tv)(iv)]',sent):
+      return True
+
+    # If we've got an independent modifier, it should show up on the correct
+    # side of the verb.  Note that this only applies in sentences without
+    # negative affixes.  If there's both an affix and an adverb, we treat
+    # the adverb as selected, regardless of what the user put in.
+    if ch('neg-adv') == 'ind-adv' and not re.search('-neg|neg-',sent):
+      if ch('negprepostmod') == 'left' and re.search('(tv|iv).* neg',sent):
+        return True
+      if ch('negprepostmod') == 'right' and re.search('neg.* (tv|iv)',sent):
+        return True
+
+      #Again, if we know we're talking about an independent modifier, can
+      #say where it has to appear wrt V, VP, or S.
+      #Are these downcased in the input?
+      #So far both neg1 and neg2 involve transitive verbs, so not worrying
+      #about the intransitive case.
+      if ch('negmod') == 's':
+        if re.search('n[12].* neg.* n[12].* tv',sent) or \
+           re.search('n[12].* neg.* tv.* n[12]',sent) or \
+           re.search('n[12].* n[12].* neg.* tv',sent) or \
+           re.search('tv.* neg.* n[12].* n[12]',sent) or \
+           re.search('tv.* n[12].* neg.* n[12]',sent) or \
+           re.search('n[12].* tv.* neg.* n[12]',sent):
+          return True
+      if ch('negmod') == 'vp':
+        pass #FIX_ME
+      if ch('negmod') == 'v':
+        if not re.search('neg (aux|tv)|(aux|tv) neg',sent):
+          return True
+
+
   return False
 
 
@@ -514,6 +578,8 @@ def write_profile_file(contents, file):
 ######################################################################
 # A function that takes a list of words and returns a list of lists
 # containing all permutations of those words
+
+# FIX_ME: permute_helper should also do the right thing with affixes.
 
 def permute_helper(words):
   perms = []
