@@ -46,6 +46,10 @@ lexicon = {'noun1': 'n1', 'noun1pred': '_n1_n_rel', \
 
 
 def load_vars():
+  # only need to load once
+  if len(varname) and len(var):
+    return
+
   f = open('matrixdef', 'r')
   line = f.readlines()
   f.close()
@@ -90,6 +94,7 @@ def load_vars():
 
 
 def random_grammar(choices_file):
+  load_vars()
   choice = {}
   for k in var.keys():
     v = var[k]
