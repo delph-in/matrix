@@ -48,3 +48,8 @@ feat: When printing the right side of a TDL typedef, indent any type names
 
 DONE: Something is wrong with omnisyndeton -- neither lexically- nor
       morphologically-marked strategies seem to be working.
+
+[10/15/2006 erb]
+
+feat: When adding seed strings, get their actual length and put it in
+      `i-length' so we can manipulate by length in tsdb++

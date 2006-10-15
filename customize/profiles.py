@@ -159,7 +159,8 @@ def word_order_specific_filters(sent, mrs_id):
   #For the seed strings where the 's' is the actual subject
   #Check wither the actual order of major constituents matches
   #the order indicated in the choices file.
-  if re.match('^wo[1-6]$',mrs_id):
+  if re.search('wo[1-6]$|neg[12]$',mrs_id) or (re.search('ques[12]',mrs_id) and \
+                                                re.search('qpart',sent)):
     if re.search('s.*o',wo) and re.search('n2.*n1',sent):
       return True
     if re.search('o.*s',wo) and re.search('n1.*n2',sent):
@@ -174,7 +175,8 @@ def word_order_specific_filters(sent, mrs_id):
       return True
 
   #Likewise, for the seed strings where the 'o' is the actual subject
-  if re.match('^wo([7-9]|10)$',mrs_id):
+  if re.match('^wo([7-9]|10)$|^neg[34]',mrs_id) or \
+         (re.search('ques[34]',mrs_id) and re.search('qpart',sent)):
     if re.search('s.*o',wo) and re.search('n1.*n2',sent):
       return True
     if re.search('o.*s',wo) and re.search('n2.*n1',sent):
@@ -757,7 +759,8 @@ def permute(s):
       perm += ' ' + w
     perms.append(perm)
 
-  print 'found ' + str(len(perms)) + ' permutations'
+  if len(perms) > 1000:
+    print 'found ' + str(len(perms)) + ' permutations of ' + s 
   return perms
 
 
@@ -783,8 +786,10 @@ def validate_string_list(string_list):
 # maybe_keep_filtered()
 #   One time out of N, return True, otherwise False
 
-def maybe_keep_filtered():
-  N = 100
+# ERB 2006-10-15 I think we're going to want to retain ungrammatical
+# ones at different rates for the u_profile and the g_profile.
+
+def maybe_keep_filtered(N):
   return randint(1, N) == 1
 
 
@@ -834,7 +839,8 @@ def make_intermediate_resource(string_list_file, in_profile, out_profile):
     i[9] = mrs_id
 
     if not mrs_id:
-      print 'Warning: The string ' + string + ' has no associated mrs-id.'
+      print 'Warning: The harvester string ' + string + ' has no associated mrs-id.'
+      print 'This means many filters won\'t work on permutations of this string.'
 
   # Figure out where to start with i-id, parse-id, and result-id
 
@@ -940,13 +946,16 @@ def make_universal_resource(in_profile, out_profile):
 
   survived = 0
   killed = 0
+  u_kept = 0
 
   # Pass through the item list, permuting each item and, if the new
   # permuted sentence passes the filters, adding it to the item list
   for i in copy(items):
     for perm in permute(i[6])[1:]:
       filtered = filter_sentence(perm, i[9])
-      keep_filtered = maybe_keep_filtered()
+      keep_filtered = maybe_keep_filtered(100)
+      if keep_filtered:
+        u_kept +=1
       if not filtered or keep_filtered:
         survived += 1
         # Make a new item...but first, copy any parses that refer to
@@ -979,6 +988,7 @@ def make_universal_resource(in_profile, out_profile):
 
   print str(survived) + ' strings survived into universal resource.'
   print str(killed) + ' strings were filtered.'
+  print str(u_kept) + ' universally ungrammatical examples kept.'
 
   # Write out the items, parses, and results
   if not os.path.exists(out_profile):
@@ -1013,24 +1023,31 @@ def make_gold_standard(in_profile, out_profile):
   # Pass through the item list, checking to see if each item passes
   # the filters -- if not, mark it for removal by settings its id
   # to -1
+
+  # ERB 2006-10-15 If the item was a negative example kept in
+  # the first pass, don't bother trying to filter it, just keep it.
   filtered = 0
+  g_kept = 0
   
   for i in items:
-    if filter_sentence(i[6], i[9]):
-      if maybe_keep_filtered():
-        i[7] = '0'
-      else:
-        filtered += 1
-        for p in parses:
-          if p[2] == i[0]:
-            for r in results:
-              if r[0] == p[0]:
-                r[1] = None
-            p[0] = None
-        i[0] = None
+    if i[7] == '1':
+      if filter_sentence(i[6], i[9]):
+        if maybe_keep_filtered(10):
+          g_kept += 1
+          i[7] = '0'
+        else:
+          filtered += 1
+          for p in parses:
+            if p[2] == i[0]:
+              for r in results:
+                if r[0] == p[0]:
+                  r[1] = None
+              p[0] = None
+          i[0] = None
 
   print str(len(items)) + ' items received from universal resource.'
   print str(filtered) + ' items filtered.'
+  print str(g_kept) + ' locally ungrammatical examples kept.'
 
   # Pass through the lists *backwards*, removing any items, parses, or
   # results whose IDs have been set to None
@@ -1120,6 +1137,7 @@ def make_gold_standard(in_profile, out_profile):
                   r[1] = None
             p[0] = None
 
+
   # finally, remove items, parses, and results marked with None
   for i in range(len(items) - 1, -1, -1):
     if items[i][0] == None:
@@ -1147,39 +1165,49 @@ def make_gold_standard(in_profile, out_profile):
 ######################################################################
 # main program
 
-# profiles.py -i          Create intermediate resource and stop
-# profiles.py -u          Create univeral resource and gold profile
-# profiles.py <file>      Create gold standard profile for language
-#                         described in <file> on the basis of universal
-#                         resource in u_profile.
-# profiles.py -u <file>   Update u_profile and create gold standard profile
-#                         on the basis of updated u_profile and choices
+# profiles.py -i          Go with existing i_profile
+# profiles.py -u          Go with existing u_profile
+# profiles.py -g          Don't make gold standard: stop with u_profile.
+# profiles.py <file>      Update u_profile and create gold standard profile
+#                         described in <file>.
+# profiles.py -u <file>   Create gold standard profile for language
+#                         on the basis of existing u_profile and choices
 #                         file <file>
 
-(options, args) = getopt(sys.argv[1:],'iu')
+(options, args) = getopt(sys.argv[1:],'iug')
 
 i_flag = ''
 u_flag = ''
+g_flag = ''
 
 for o in options:
   if re.search('i',o[0]):
     i_flag = 'true'
   if re.search('u',o[0]):
     u_flag = 'true'
+  if re.search('g',o[0]):
+    g_flag = 'true'
 
 #The intermediate resource doesn't involve any filtering, and
 # so we shouldn't recreate it with each run. Make the user specify
 # with the -i flag that the intermediate resource needs to be
 # recreated.
 
-if i_flag:
-  make_intermediate_resource('string_list','profile','i_profile')
-else:
-  # The universal resource takes a long time, so enable skipping it
-  # for testing language-specific filters
-  if not u_flag:
-    make_universal_resource('i_profile', 'u_profile')
+#Okay, I kept confusing myself by not running the intermediate
+#resource part, and that part doesn't take so long.  So I'm flipping
+#the semantics of the -i flag, to make it mean *don't* make the
+#intermediate resource.
 
+if not i_flag:
+  print 'making intermediate resource...'
+  make_intermediate_resource('string_list','profile','i_profile')
+
+# The universal resource takes a long time, so enable skipping it
+# for testing language-specific filters
+if not u_flag:
+  make_universal_resource('i_profile', 'u_profile')
+
+if not g_flag:
   # See if the user specified a choices_file to use
   if len(args) > 0:
     choices_file = args[0]
