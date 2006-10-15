@@ -250,9 +250,17 @@ def filter_sentential_negation(sent, mrs_id):
     # If we haven't selected inflectional negation, we shouldn't see the affixes
     if ch('infl_neg') != 'on' and re.search('-neg|neg-',sent):
       return True
-    # If we haven't select adverbial negation, we shouldn't see the adverbs
+    # If we haven't selected adverbial negation, we shouldn't see the adverbs
     if ch('adv_neg') != 'on' and re.search(negadv,sent):
       return True
+    # If we only selected affix, we should see one in every negated sentence
+    if ch('adv_neg') == 'on' and ch('infl_neg') != 'on':
+      if not re.search('-neg|neg-',sent):
+        return True
+    # If we only selected adverbs, we should see one in eveyr negated sentence
+    if ch('adv_neg') != 'on' and ch('infl_neg') == 'on':
+      if not re.search(negadv,sent):
+        return True
     # If both are required, we should see always see both affix & adv.
     if ch('multineg') == 'bothobl':
       if not (re.search('-neg|neg-',sent) and re.search(negadv,sent)):
@@ -301,9 +309,54 @@ def filter_sentential_negation(sent, mrs_id):
            re.search('n[12].* tv.* neg.* n[12]',sent):
           return True
       if ch('negmod') == 'vp':
-        pass #FIX_ME
+        #If neg-adv attaches to a VP, then it can't intervene between 
+        #intervening the object and the verb.  But which is the object?
+        #that depends on which mrs we're talking about.
+        #Likewise, the subject can appear between the neg and the verb.
+        if re.search('neg[12]',mrs_id):
+          if re.search('tv.* neg.* n2|n2.* neg.* tv.*',sent):
+            return True
+          if re.search('neg.* n1.* tv|tv.* n1* neg',sent):
+            return True
+        if re.search('neg[34]',mrs_id):
+          if re.search('tv.* neg.* n1|n1.* neg.* tv.*',sent):
+            return True
+          if re.search('neg.* n2.* tv|tv.* n2* neg',sent):
+            return True
       if ch('negmod') == 'v':
+        #In this case, we have to be right next to the aux or the v.
         if not re.search('neg (aux|tv)|(aux|tv) neg',sent):
+          return True
+
+    if ch('neg-adv') == 'sel-adv' or \
+       (re.search(neg-adv,sent) and re.search('-neg|neg-',sent)):
+      # These are the cases where we're dealing with a selected
+      # complement negative adverb.  Such things should show up
+      # where we expect verbal complements: i.e., to the correct side
+      # of the verb, and either inside or outside the subject, as
+      # requires.
+      if ch('wordorder') == 'svo' or \
+         ch('wordorder') == 'vso' or \
+         ch('wordorder') == 'v-initial':
+        if re.search(r'(\s|^)neg .*tv',sent):
+          return True
+      if ch('wordorder') == 'ovs' or \
+         ch('wordorder') == 'osv' or \
+         ch('wordorder') == 'v-final':
+        if re.search(r'tv.* neg(\s|$)',sent):
+          return True
+      #This is one interpretation of what we might mean.  I think it
+      #matches what the tdl actually does.  It might not match the best
+      #interpretation of the prose on the web form.
+      if ch('wordorder') == 'vso': 
+        if re.search('neg[12]',mrs_id) and re.search('tv.* neg.* n1',sent):
+          return True
+        if re.search('neg[34]',mrs_id) and re.search('tv.* neg.* n2',sent):
+          return True
+      if ch('wordorder') == 'osv': 
+        if re.search('neg[12]',mrs_id) and re.search('n1.* neg.* tv',sent):
+          return True
+        if re.search('neg[34]',mrs_id) and re.search('n2.* neg.* tv',sent):
           return True
 
 
@@ -355,21 +408,116 @@ def filter_coordination(sent, mrs_id):
 
 def filter_yesno_questions(sent, mrs_id):
 
+  # If the question strategy is intonation only, then none of the
+  # strings attached to the ques[1234] MRSs should be accepted:
+  if ch('ques') == 'int' and re.search('ques',mrs_id):
+    return True
+
+  # If the language doesn't use question particles, we shouldn't see any
+  if ch('ques') != 'qpart' and ch('ques') and re.match('^.*qpart.*$', sent):
+    return True
+
   # The question particle has to be sentence-initial or sentence-final
   if re.match('^.+qpart.+$', sent):
     return True
 
-  # If the language doesn't use question particles, we shouldn't see any
-  elif ch('ques') != 'qpart' and ch('ques') and re.match('^.*qpart.*$', sent):
+  # If the language does use question particles, we should only see the
+  # question semantics when qpart is present.  (Currently, the choice here
+  # is radio buttons, rather than checkboxes.  Eventually this should be
+  # generalized.)
+
+  if ch('ques') == 'qpart' and \
+       re.search('ques',mrs_id) and \
+       not re.search('qpart',sent):
     return True
 
   # Follow the specification on whether the question particles are
   # sentence initial or sentence final
-  elif ch('ques') == 'qpart' and ch('qpartposthead') == '+' and re.match('^qpart.*$', sent):
+  if ch('ques') == 'qpart' and ch('qpartposthead') == '+' and re.match('^qpart.*$', sent):
     return True
-  elif ch('ques') == 'qpart' and ch('qpartposthead') == '-' and re.match('^.*qpart$', sent):
+  if ch('ques') == 'qpart' and ch('qpartposthead') == '-' and re.match('^.*qpart$', sent):
     return True
 
+  # Now for the tricky part.  If the language uses inversion, then
+  # we should only allow the ques MRSs when we get the appropriate word order.
+  # The inversion lexical rule (as written) makes the subject be the first
+  # thing on the COMPS list, of either an auxiliary or a main verb.
+  # I'd actally be really surprised to find this strategy outside SVO languages
+  # anyway...
+
+
+  # Again, these are written assuming that only one strategy at a time is
+  # allowed for questions.  If that's not the case, we'll need to rule out
+  # the possibility that we're looking at strings with another strategy first,
+  # e.g., by checking for the presence of qpart.
+  
+  if re.search('ques',mrs_id):
+
+    # S V O -> V S O
+    # V O S -> V S O
+    # S V O -> Aux S V O (for either VP or V comp auxiliaries.  S comp auxes just
+    #                     shouldn't allow this option).
+    # V O S -> Aux S V O
+    # S V O -> V O S Aux (if the aux follows)
+    # V O S -> V O S Aux
+    
+    if ch('wordorder') == 'svo' or ch('wordorder') == 'vos':
+      if re.search('ques[12]',mrs_id):
+        if not ((re.search('tv.* n1.* n2',sent) and not re.search('aux',sent)) or \
+                re.search('aux.* n1.* tv.* n2',sent) or \
+                re.search('tv.* n2.* n1.* aux',sent)):
+          return True
+      if re.search('ques[34]',mrs_id):
+        if not ((re.search('tv.* n2.* n1',sent) and not re.search('aux', sent)) or \
+                re.search('aux.* n2.* tv.* n1',sent) or \
+                re.search('tv.* n1.* n2.* aux',sent)):
+          return True
+    
+    # O V S -> O S V
+    # S O V -> O S V
+    # O V S -> O V S Aux
+    # S O V -> O V S Aux
+    # O V S -> Aux S O V
+    # S O V -> Aux S O V
+
+    if ch('wordorder') == 'ovs' or ch('wordorder') == 'sov':
+      if re.search('ques[12]',mrs_id):
+        if not ((re.search('n2.* n1.* tv',sent) and not re.search('aux',sent)) or \
+                re.search('n2.* tv.* n1.* aux',sent) or \
+                re.search('aux.* n2.* n1.* tv',sent)):
+          return True
+      if re.search('ques[34]',mrs_id):
+        if not ((re.search('n1.* n2.* tv',sent) and not re.search('aux',sent)) or \
+                re.search('n1.* tv.* n2.* aux',sent) or \
+                re.search('aux.* n1.* n2.* tv',sent)):
+          return True
+  
+    # V S O -> V S O
+    # V S O -> Aux S V O (VP auxes won't work in VSO languages)
+    # V S O -> V O S Aux
+    # O S V -> O S V
+    # O S V -> O V S Aux (VP auxes won't work in OSV languages)
+    # O S V -> Aux S O V
+
+    if ch('wordorder') == 'vso' or ch('wordorder') == 'osv':
+      if re.search('ques[12]',mrs_id):
+        if not ((re.search('tv.* n1.* n2',sent) and not re.search('aux',sent)) or \
+                re.search('aux.* n1.* tv.* n2',sent) or \
+                re.search('tv.* n2.* n1.* aux',sent)):
+          return True
+      if re.search('ques[34]',mrs_id):
+        if not ((re.search('tv.* n2.* n1',sent) and not re.search('aux',sent)) or \
+                re.search('aux.* n2.* tv.* n1',sent) or \
+                re.search('tv.* n1.* n2.* aux',sent)):
+          return True
+    
+    # As for V-final or V-initial languages, the predictions are weird.
+    # That is, we get homophony with declaratives.  I think we should just
+    # constrain validate.py to refuse to implement this strategy in V-final
+    # or V-initial languages.  ... In fact, I'm going to do that.
+    # Likewise for free word order.  How could you use word order to
+    # mark questions, if word order is free in general?
+    
   return False
 
 
@@ -443,47 +591,45 @@ def filter_lexicon(sent, mrs_id):
 
     #I think we don't have to worry about picking up a det or a p-nom from the other np,
     #because the general filters should have taken out those cases. ??
-    # _FIX_ME_ need to add neg and ques examples here.
+
     if ch('tverbSubj') == 'pp':
-      if re.search('wo[3-6]',mrs_id):
+      if re.search('wo[3-6]|neg[12]|ques[12]',mrs_id):
         if not re.search('p-nom n1|n1 p-nom|p-nom det n1|p-nom n1 det|n1 det p-nom|det n1 p-nom',sent):
           return True
       # possibly redundant: right now there are no seed strings with p-nom or p-acc and these mrs_ids.
-      if re.search('wo[7-9]|wo10',mrs_id):
+      if re.search('wo[7-9]|wo10|neg[34]|ques[34]',mrs_id):
         if not re.search('p-nom n2|n2 p-nom|p-nom det n2|p-nom n2 det|n2 det p-nom|det n2 p-nom',sent):
           return True
 
     if ch('tverbSubj') == 'np' and re.search('p-nom',sent):
         return True
 
-    # _FIX_ME_ need to add neg and ques examples here.
     if ch('tverbObj') == 'pp':
-      if re.search('wo[3-6]',mrs_id):
+      if re.search('wo[3-6]|neg[12]|ques[12]',mrs_id):
         if not re.search('p-acc n2|n2 p-acc|p-acc det n2|p-acc n2 det|n2 det p-acc|det n2 p-acc',sent):
           return True
       # possibly redundant: right now there are no seed strings with p-nom or p-acc and these mrs_ids.
-      if re.search('wo[7-9]|wo10',mrs_id):
+      if re.search('wo[7-9]|wo10|neg[34]|ques[34]',mrs_id):
         if not re.search('p-acc n1|n1 p-acc|p-acc det n1|p-acc n1 det|n1 det p-acc|det n1 p-acc',sent):
           return True
       
     if ch('tverbObj') == 'np' and re.search('p-acc',sent):
         return True
 
-    # _FIX_ME_ need to add neg and ques examples here.
     if ch('objAdp') == 'pre':
-      if re.search('wo[1-6]$',mrs_id):
+      if re.search('wo[1-6]$|neg[12]|ques[12]',mrs_id):
         if re.search('n2 p-acc|n2 det p-acc',sent):
           return True
     if ch('objAdp') == 'post':
-      if re.search('wo[1-6]$',mrs_id):
+      if re.search('wo[1-6]$|neg[12]|ques[12]',mrs_id):
         if re.search('p-acc n2|p-acc det n2',sent):
           return True
     if ch('subjAdp') == 'pre':
-      if re.search('wo[1-6]$',mrs_id):
+      if re.search('wo[1-6]$|neg[12]|ques[12]',mrs_id):
         if re.search('n1 p-nom|n1 det p-nom',sent):
           return True
     if ch('subjAdp') == 'post':
-      if re.search('wo[1-6]$',mrs_id):
+      if re.search('wo[1-6]$|neg[12]|ques[12]',mrs_id):
         if re.search('p-nom n1|p-nom det n1',sent):
           return True
 

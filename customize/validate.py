@@ -193,7 +193,11 @@ def validate_yesno_questions():
     if not qinvverb:
       err = 'If you chose subject-verb inversion strategy for yes-no questions, you must specify which types of verbs invert.'
       add_err('qinvverb', err)
-      
+    if ch('wordorder') == 'v-final' or \
+       ch('wordorder') == 'v-initial' or \
+       ch('wordorder') == 'free':
+      err = 'Subject-verb inversion strategy for yes-no questions is not supported for V-final, V-initial, or free word order languages.  If you believe you have a counterexample to this, please contact us.'
+      add_err('inv', err)
 
 
 ######################################################################
