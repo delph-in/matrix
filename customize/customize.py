@@ -1385,10 +1385,10 @@ def create_neg_add_lex_rule(advAlone):
                                                      SPR #spr,
                                                      SPEC #spec,
                                                      COMPS #comps ],
-                                               HEAD verb ] ],
+                                               HEAD verb ],
                                          CONT [ HOOK [ LTOP #larg,
                                                        XARG #xarg ],
-                                               MSG #msg ]]]].''',
+                                                MSG #msg ]]]].''',
                                                '''This lexical rule adds a selected negative\n
                                                adverb to the beginning of the COMPS list''')
 
@@ -2004,16 +2004,17 @@ def customize_yesno_questions():
   qpartposthead = ch('qpartposthead')
   qpartform = ch('qpartform')
 
-  if qinvverb == 'aux':
-    comment = \
-      'Your grammar has auxiliaries, so we are adding the features AUX\n' + \
-      'and FORM to the type verb.  We are assuming that auxiliaries\n' + \
-      'select non-finite verbal projections for their complements.\n' + \
-      '\n' + \
-      'To allow for a simpler statement of word order rules (in some\n' + \
-      'grammars) we add the feature AUX to the type head, rather than verb.'
-    mylang.add('head :+ [ AUX bool ].', comment)
-    mylang.add('verb :+ [ FORM form ].')
+# ERB 2006-10-15 We're doing this in has_auxiliaries_p() now.
+#   if qinvverb == 'aux':
+#     comment = \
+#       'Your grammar has auxiliaries, so we are adding the features AUX\n' + \
+#       'and FORM to the type verb.  We are assuming that auxiliaries\n' + \
+#       'select non-finite verbal projections for their complements.\n' + \
+#       '\n' + \
+#       'To allow for a simpler statement of word order rules (in some\n' + \
+#       'grammars) we add the feature AUX to the type head, rather than verb.'
+#     mylang.add('head :+ [ AUX bool ].', comment)
+#     mylang.add('verb :+ [ FORM form ].')
 
   if ques == 'inv':
     comment = \
@@ -2097,9 +2098,12 @@ def customize_yesno_questions():
     #                  LKEYS.KEYREL.PRED question_m_rel ]].'''
     #     mylang.add(typedef)
 
-  if qpartform:
-    typedef = qpartform + ' := qpart-lex-item & [ STEM < "' + qpartform + '" > ].'
-    lexicon.add(typedef)
+
+# ERB 2006-10-15: This is done in customize_lexicon, for now.
+#
+#  if qpartform:
+#    typedef = qpartform + ' := qpart-lex-item & [ STEM < "' + qpartform + '" > ].'
+#    lexicon.add(typedef)
 
 
 ######################################################################
@@ -2662,8 +2666,6 @@ def customize_misc_lex():
   negadv = ch('negadv')
   negmod = ch('negmod')
 
-  qpart = ch('qpart')
-
   # Negative adverb
   if negadv:
     typedef = \
@@ -2673,9 +2675,9 @@ def customize_misc_lex():
     lexicon.add(typedef)
 
   # Question particle
-  if qpart:
+  if ch('ques') == 'qpart':
     typedef = \
-      qpart + ' := qpart-le & \
+      ch('qpartform') + ' := qpart-le & \
                    [ STEM < "' + qpart + '" > ].'
     lexicon.add(typedef)
 

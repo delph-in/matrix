@@ -199,7 +199,7 @@ def word_order_specific_filters(sent, mrs_id):
       return True
 
   #A very general filter to save us some time, in some cases:
-  if ch('hasDets') == 'no' and re.search('det',sent):
+  if ch('hasDets') == 'nil' and re.search('det',sent):
     return True
 
 
@@ -752,12 +752,26 @@ def permute_helper(words):
 
 def permute(s):
   perms = []
-  wordlists = permute_helper(s.split(' '))
+  #Break off neg- and co- affixes.  Note that we're assuming the seed
+  #strings will provide both prefix and suffix examples to work from.
+  #Could consider noticing one and generating the other here, but we're
+  #not.
+  s = re.sub('neg-','neg- ',s)
+  s = re.sub('-neg',' -neg',s)
+  s = re.sub('co-', 'co- ',s)
+  s = re.sub('-co', ' -co',s)
+  string = s.split(' ')
+  wordlists = permute_helper(string)
   for words in wordlists:
     perm = words[0]
     for w in words[1:]:
       perm += ' ' + w
-    perms.append(perm)
+    perm = re.sub('neg- ','neg-',perm)
+    perm = re.sub(' -neg','-neg',perm)
+    perm = re.sub('co- ','co-',perm)
+    perm = re.sub(' -co','-co',perm)
+    if not (re.search('-$',perm) or re.search('^-',perm)):
+      perms.append(perm)
 
   if len(perms) > 1000:
     print 'found ' + str(len(perms)) + ' permutations of ' + s 

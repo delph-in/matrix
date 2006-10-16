@@ -3,7 +3,7 @@ wo1@s@p-nom n1 iv aux
 wo1@s@p-nom n1 iv
 wo2@s@det n1 iv aux
 wo2@s@p-nom det n1 iv aux
-wo2@s@p-nom det n1
+wo2@s@p-nom det n1 iv
 wo3@s@p-nom n1 n2 tv
 wo3@s@n1 p-acc n2 tv
 wo3@s@p-nom n1 p-acc n2 tv
