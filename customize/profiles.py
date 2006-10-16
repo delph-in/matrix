@@ -366,43 +366,118 @@ def filter_sentential_negation(sent, mrs_id):
 
 
 ######################################################################
+# replace_coord(sent, pat, order, co, x, y)
+#   A helper function for filter_coordination.  Given a sentence sent,
+#   a coordination pattern pat, an order of the coord mark order,
+#   a regexp pattern for the coordination mark co, a regexp pattern
+#   for the items being coordinated x, and a replacement string y,
+#   replace all instances of x coordination with y.
+#
+#   Note: these all assume exactly three-way coordination
+
+def replace_coord(sent, pat, order, co, x, y):
+  if pat == 'mono' and order == 'before':
+    regexp = x + ' ' + x + ' ' + co + ' ' + x
+    sent = re.sub(regexp, y, sent)
+    regexp = x + ' ' + co + ' ' + x + ' ' + co + ' ' + x
+    sent = re.sub(regexp, y, sent)
+  elif pat == 'mono' and order == 'after':
+    regexp = x + ' ' + x + ' ' + x + ' ' + co
+    sent = re.sub(regexp, y, sent)
+    regexp = x + ' ' + x + ' ' + co + ' ' + x + ' ' + co
+    sent = re.sub(regexp, y, sent)
+  elif pat == 'poly' and order == 'before':
+    regexp = x + ' ' + co + ' ' + x + ' ' + co + ' ' + x
+    sent = re.sub(regexp, y, sent)
+  elif pat == 'poly' and order == 'after':
+    regexp = x + ' ' + x + ' ' + co + ' ' + x + ' ' + co
+    sent = re.sub(regexp, y, sent)
+  elif pat == 'omni' and order == 'before':
+    regexp = co + ' ' + x + ' ' + co + ' ' + x + ' ' + co + ' ' + x
+    sent = re.sub(regexp, y, sent)
+  elif pat == 'omni' and order == 'after':
+    regexp = x + ' ' + co + ' ' + x + ' ' + co + ' ' + x + ' ' + co
+    sent = re.sub(regexp, y, sent)
+  elif pat == 'a':
+    regexp = x + ' ' + x + ' ' + x
+    sent = re.sub(regexp, y, sent)
+
+  return sent
+
+
+######################################################################
 # filter_coordination(sent)
 #   Take a sentence which consists of:
-#     det, s1, s2, s3, iv, iv1, iv2, iv3, co
+#     det, n1, n2, n3, iv, co1, co2
 #   ...and return True iff the sentence cannot be grammatical.
 
 def filter_coordination(sent, mrs_id):
-  # for most of these filters to work, there must be at least one
-  # coordination strategy, and if there are multiple ones, they
-  # must agree in some parameter
-  order = None
-  pat = None
-  first_strat = True
+  if not re.search('co', mrs_id): # HEYEMILY: mrs_id indicates coordination
+    return False
+
+  # pre-processing to reduce the complexity later:
+  #   separate the affix versions of 'co' and just treat them as words
+  sent = re.sub('co1-', 'co1 ', sent)
+  sent = re.sub('-co1', ' co1', sent)
+  sent = re.sub('co2-', 'co2 ', sent)
+  sent = re.sub('-co2', ' co2', sent)
+
   for i in (1, 2):
     i = str(i)
     if ch('cs' + i):
-      if first_strat:
-        first_strat = False
-        order = ch('cs' + i + 'order')
-        pat = ch('cs' + i + 'pat')
+      pat = ch('cs' + i + 'pat')
+      order = ch('cs' + i + 'order')
+
+      # make regexp patterns and replacements for the various phrase types
+      # nouns:
+      n_pat = 'n[123]'
+      n_rep = 'n1'
+
+      # NPs: (note that case-marking adpositions aren't handled)
+      if ch('hasDets') == 't':
+        if ch('NounDetOrder') == 'HeadSpec':
+          np_pat = n_pat + ' det'
+          np_rep = n_rep + ' det'
+        else:
+          np_pat = 'det ' + n_pat
+          np_rep = 'det ' + n_rep
       else:
-        if order != ch('cs' + i + 'order'):
-          order = None
-        if pat != ch('cs' + i + 'pat'):
-          pat = None
+        np_pat = n_pat
+        np_rep = n_rep
 
-  if order and re.search('co co', sent):
-    return True
-  elif order and re.search('co-', sent) and re.search('-co', sent):
-    return True
-  elif pat == 'a' and re.search('co', sent):
-    return True
-  elif order == 'before' and re.search('co$', sent):
-    return True
-  elif order == 'after' and re.search('^co', sent):
-    return True
+      # VPs: (note that only intransitive verbs are handled)
+      vp_pat = 'iv'
+      vp_rep = 'iv'
 
-  return False
+      # Ss: (again, only with intransitive verbs)
+      if ch('wordorder') in ('sov', 'svo', 'osv', 'v-final'):
+        s_pat = np_pat + ' ' + vp_pat
+        s_rep = np_rep + ' ' + vp_rep
+      elif ch('wordorder') in ('vso', 'ovs', 'vos', 'v-initial'):
+        s_pat = vp_pat + ' ' + np_pat
+        s_rep = vp_rep + ' ' + np_rep
+      elif ch('wordorder') == 'free':
+        s_pat = '(' + np_pat + ' ' + vp_pat + ')|(' + \
+                vp_pat + ' ' + np_pat + ')'
+        s_rep = np_rep + ' ' + vp_rep
+
+      # replace coordinated Ns with a single N
+      if ch('cs' + i + 'n'):
+        sent = replace_coord(sent, pat, order, 'co' + i, n_pat, n_rep)
+
+      # replace coordinated NPs with a single NP
+      if ch('cs' + i + 'np'):
+        sent = replace_coord(sent, pat, order, 'co' + i, np_pat, np_rep)
+        
+      # replace coordinated VPs with a single VP
+      if ch('cs' + i + 'vp'):
+        sent = replace_coord(sent, pat, order, 'co' + i, vp_pat, vp_rep)
+
+      # replace coordinated Ss with a single S
+      if ch('cs' + i + 's'):
+        sent = replace_coord(sent, pat, order, 'co' + i, s_pat, s_rep)
+
+  return filter_sentence(sent, '') # HEYEMILY: what mrs_id goes here?
 
 
 ######################################################################
@@ -685,7 +760,7 @@ def filter_lexicon(sent, mrs_id):
 
 
 ######################################################################
-# filter_sentence(sent)
+# filter_sentence(sent, mrs_id)
 #   Return True iff the sentence cannot be grammatical
 
 def filter_sentence(sent, mrs_id):

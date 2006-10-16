@@ -39,7 +39,7 @@ lexicon = {'noun1': 'n1', 'noun1pred': '_n1_n_rel', \
            'negadvform': 'neg' , \
            'qpartform': 'qpart', \
            'neg-aff-form': 'neg', \
-           'cs1orth': 'co', 'cs2orth': 'co', \
+           'cs1orth': 'co1', 'cs2orth': 'co2', \
            'iverb-nonfinite': 'iv', 'tverb-nonfinite': 'tv', \
            'language': 'rand_language', \
            'sentence1': 'sentence1', 'sentence2': 'sentence2' }
