@@ -19,6 +19,8 @@ import sys
 
 from getopt import getopt
 
+import math
+
 ######################################################################
 # globals
 
@@ -1054,7 +1056,7 @@ def make_intermediate_resource(string_list_file, in_profile, out_profile):
 
   # I'm assuming that mrs-ids are unique among harvester strings.
   # BUT: Multiple harvester strings might have the same actual MRS.
-  # ALSO: A single harvester string migth have multiple MRSs.  It
+  # ALSO: A single harvester string might have multiple MRSs.  It
   # will still only have one mrs-id.
   string_list = read_profile_file(string_list_file)
   validate_string_list(string_list)
@@ -1145,7 +1147,7 @@ def make_intermediate_resource(string_list_file, in_profile, out_profile):
 
 
 ######################################################################
-# make_universal_resource(in_profile, out_profile)
+# make_universal_resource(string_list_file,in_profile, out_profile)
 #   Given a tsdb++ profile in in_profile that contains harvest- and
 #   seed-strings with their parses and MRSs, create a new profile
 #   in out_profile that contains all the permutations of those
@@ -1153,7 +1155,7 @@ def make_intermediate_resource(string_list_file, in_profile, out_profile):
 #   sentences that are known to be ungrammatical even in the absence
 #   of any grammar.
 
-def make_universal_resource(in_profile, out_profile):
+def make_universal_resource(string_list_file, in_profile, out_profile):
   # Make sure the profile paths end in slashes
   if in_profile[-1] != '/':
     in_profile += '/'
@@ -1164,11 +1166,14 @@ def make_universal_resource(in_profile, out_profile):
   # so we don't get swamped.
 
   string_list = read_profile_file(string_list_file)
+  est = 0
   
   for m in string_list:
     words = m[2].split(' ')
     l = len(words)
     est += factorial(l)
+
+  print 'Total permutations considered: ' + str(est)
 
   if est < 1000:
     keep_prob = est // 10
@@ -1471,7 +1476,7 @@ if not i_flag:
 # The universal resource takes a long time, so enable skipping it
 # for testing language-specific filters
 if not u_flag:
-  make_universal_resource('i_profile', 'u_profile')
+  make_universal_resource('string_list','i_profile', 'u_profile')
 
 if not g_flag:
   # See if the user specified a choices_file to use
