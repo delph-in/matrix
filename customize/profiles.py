@@ -26,6 +26,7 @@ choices = {}
 killed = 0
 survived = 0
 u_kept = 0
+keep_prob = 100
 
 ######################################################################
 # ch(s)
@@ -36,6 +37,23 @@ def ch(s):
     return choices[s]
   else:
     return ''
+
+######################################################################
+# factorial(n)
+
+def factorial(n):
+  if not n >= 0:
+    raise ValueError("n must be >= 0")
+  if math.floor(n) != n:
+    raise ValueError("n must be exact integer")
+  if n+1 == n:
+    raise OverflowError("n too large")
+  result = 1
+  factor = 2
+  while factor <= n:
+    result *= factor
+    factor += 1
+  return result
 
 ######################################################################
 # Copy the other files, which we need even though some are empty
@@ -930,7 +948,7 @@ class Permlist :
     if not (re.search('-$',perm) or re.search('^-',perm)):
       if filter_sentence(perm,self.mrs_id,'u'):
         self.filtered += 1
-        if maybe_keep_filtered(100):
+        if maybe_keep_filtered(keep_prob):
           self.u_kept += 1
           self.keeps.append(perm)
       else:
@@ -1141,6 +1159,22 @@ def make_universal_resource(in_profile, out_profile):
     in_profile += '/'
   if out_profile[-1] != '/':
     out_profile += '/'
+
+  # Determine rate at which to keep universally ungrammatical examples,
+  # so we don't get swamped.
+
+  string_list = read_profile_file(string_list_file)
+  
+  for m in string_list:
+    words = m[2].split(' ')
+    l = len(words)
+    est += factorial(l)
+
+  if est < 1000:
+    keep_prob = est // 10
+  else:
+    keep_prob = est // 1000
+
     
   # Read in the items, parses, and results
   items = read_profile_file(in_profile + 'item')
@@ -1248,12 +1282,21 @@ def make_gold_standard(in_profile, out_profile):
   filtered = 0
   wf = 0
   g_kept = 0
+
+  # ERB 2006-10-17 Determine rate at which to keep ungrammatical
+  # examples, so we don't get swamped.
+
+  u_received = len(items)
+  if u_received >= 100:
+    local_keep_prob = u_received // 100
+  else:
+    local_keep_prob = u_received // 10
   
   for i in items:
     if i[7] == '1':
       if filter_sentence(i[6], i[9], 'g'):
         filtered += 1
-        if maybe_keep_filtered(100):
+        if maybe_keep_filtered(local_keep_prob):
           g_kept += 1
           i[7] = '0'
         else:
