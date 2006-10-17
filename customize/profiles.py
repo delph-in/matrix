@@ -1175,7 +1175,9 @@ def make_universal_resource(string_list_file, in_profile, out_profile):
 
   print 'Total permutations considered: ' + str(est)
 
-  if est < 1000:
+  if est < 100:
+    keep_prob = 10
+  elif est < 1000:
     keep_prob = est // 10
   else:
     keep_prob = est // 1000
@@ -1295,7 +1297,7 @@ def make_gold_standard(in_profile, out_profile):
   if u_received >= 100:
     local_keep_prob = u_received // 100
   else:
-    local_keep_prob = u_received // 10
+    local_keep_prob = 10
   
   for i in items:
     if i[7] == '1':
