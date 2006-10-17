@@ -386,7 +386,7 @@ def validate_extra_constraints():
 #   the names of choice file variables that are incorrect (stored
 #   in the list 'wrong'.
 
-def validate_choices(choices_file,rand):
+def validate_choices(choices_file, do_extra = False):
   global wrong
   wrong = {}
   global choices
@@ -402,7 +402,7 @@ def validate_choices(choices_file,rand):
   validate_lexicon()
   validate_test_sentences()
 
-  if rand:
+  if do_extra:
     validate_extra_constraints()
   
   return wrong

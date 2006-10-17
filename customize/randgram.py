@@ -4,6 +4,7 @@
 # imports
 
 from random import randint
+from StringIO import StringIO
 
 import utils
 tokenize_def = utils.tokenize_def
@@ -107,33 +108,38 @@ def random_grammar(choices_file):
       if randint(1, N) != 1:
         choice[k] = v[randint(0, len(v) - 1)]
 
-  f = open(choices_file, 'w')
+  if type(choices_file) == str:
+    f = open(choices_file, 'w')
+  else:
+    f = choices_file
+
   for k in varname:
     if k == 'Section':
       f.write('\n')
     elif choice.has_key(k):
       f.write(k + '=' + choice[k] + '\n')
-  f.close()
+
+  if type(choices_file) == str:
+    f.close()
 
 
-def random_validated_grammar(choices_file,rand):
+def random_validated_grammar(choices_file, do_extra):
   load_vars()
   count = 0
   while True:
     count += 1
-    random_grammar(choices_file)
-    wrong = validate_choices(choices_file,rand)
-    if len(wrong):
-      f = open(choices_file, 'a')
-      for k in wrong.keys():
-        f.write(k + ': ' + wrong[k] + '\n')
+    sio = StringIO()
+    random_grammar(sio)
+    wrong = validate_choices(sio, do_extra)
+    if len(wrong) == 0:
+      f = open(choices_file, 'w')
+      f.write(sio.getvalue())
       f.close()
-    else:
       return count
 
 #########################################################
 # main program, for when we want to call it independently
 # to make some grammars for us.
 
-#count = str(random_validated_grammar('rand_choices',True))
-#print 'Whew -- grammar number ' + count + ' validated.'
+#count = random_validated_grammar('rand_choices', True)
+#print 'Whew!  Grammar number ' + str(count) + ' validated.'

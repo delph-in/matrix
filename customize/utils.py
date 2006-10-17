@@ -38,9 +38,17 @@ def read_choices(choices_file):
   choices = {}
 
   try:
-    f = open(choices_file, 'r')
+    if type(choices_file) == str:
+      f = open(choices_file, 'r')
+    else:
+      f = choices_file
+      f.seek(0)
+
     lines = f.readlines()
-    f.close()
+
+    if type(choices_file) == str:
+      f.close()
+
     for l in lines:
       l = l.strip()
       if l:
