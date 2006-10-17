@@ -23,7 +23,9 @@ from getopt import getopt
 # globals
 
 choices = {}
-
+killed = 0
+survived = 0
+u_kept = 0
 
 ######################################################################
 # ch(s)
@@ -68,12 +70,18 @@ def copy_other_files(in_profile,out_profile):
 
 def word_order_general_filters(sent, mrs_id):
 
+  #If the coordination filters passed us a sentence that still has 'co' in
+  #it, reject.
+
+  if not re.search('co',mrs_id) and re.search('co',sent):
+    return True
+
   #General filters:
   #If we're not talking about coordination seed strings, we expect
   #NPs to be some sequence of det, p-nom|p-acc, and s or o.
   #Furthermore, the dets have to be inside the ps.
   #BUT: p-nom can attach to s and p-acc can attach to o, I think.
-  if not re.search('coord',mrs_id):
+  if not re.search('co',mrs_id):
     if re.search('wo1',mrs_id):
       if re.search('p-nom',sent) and not re.search('p-nom n1|n1 p-nom', sent):
         return True
@@ -411,9 +419,48 @@ def replace_coord(sent, pat, order, co, x, y):
 #     det, n1, n2, n3, iv, co1, co2
 #   ...and return True iff the sentence cannot be grammatical.
 
-def filter_coordination(sent, mrs_id):
+def filter_coordination(sent, mrs_id,no_coord):
   if not re.search('co', mrs_id): # HEYEMILY: mrs_id indicates coordination
     return False
+
+  # ERB 2006-10-16: The replace stuff  is only firing if we have a choices
+  # file loaded with at least one coordination strategy defined.  We
+  # shouldn't pass these on to get killed in the universal resource
+  # just because no coordination strategy is defined.  But, if we
+  # have a test grammar with no coordination strategy, need to know that
+  # we should kill all of these.
+  if no_coord:
+    return True
+
+  # ERB 2006-10-16 First check if we've got the right kind of mark.
+
+  # Assume we don't.
+  if ch('cs1') or ch('cs2'):
+    has_right_mark = False
+    for i in (1,2):
+      i = str(i)
+      if ch('cs' + i):
+        # If asyndeton strategy exists and there's no 'co' in the sentence, good.
+        if ch('cs' + i + 'pat') == 'a' and not re.search('co', sent):
+          has_right_mark == True
+
+        else:
+          mark = ch('cs' + i + 'mark')
+          markform = 'co' + i
+          markword = re.compile(r'(\s|^)'+markform+r'(\s|$)')
+          markaff = re.compile(r'-'+markform+r'|'+markform+r'-')
+          # If we\'re supposed to see a word, look for the  word.
+          # Assuming only one coordination per seed-string now.
+          if mark == 'word' and re.search(markword,sent):
+            has_right_mark = True
+
+            # If we\'re supposed to see affixes, look for affixes
+            # Assuming only one coordination per seed-string now.
+          if mark == 'affix' and not re.search(markaff,sent):
+            has_right_mark = True
+
+    if not has_right_mark:
+      return True
 
   # pre-processing to reduce the complexity later:
   #   separate the affix versions of 'co' and just treat them as words
@@ -434,6 +481,14 @@ def filter_coordination(sent, mrs_id):
       n_rep = 'n1'
 
       # NPs: (note that case-marking adpositions aren't handled)
+      # ERB 2006-10-16 I'm not sure they need to be explicitly handled until
+      # we worry about PP coordination.  As long as nothing is replacing
+      # them away, filter_word_order will check and make sure they're in the
+      # right place.
+
+      # ERB 2006-10-16 On the other hand, hasDets doesn't necessarily
+      # mean that determiners are required.  At present, that's handled
+      # in the noun lexical entries.
       if ch('hasDets') == 't':
         if ch('NounDetOrder') == 'HeadSpec':
           np_pat = n_pat + ' det'
@@ -449,6 +504,16 @@ def filter_coordination(sent, mrs_id):
       vp_pat = 'iv'
       vp_rep = 'iv'
 
+
+      # ERB 2006-10-16 Here is where I think we get in trouble with the
+      # case-marking adpositions. Maybe a more general solution would
+      # be to send pieces of the string independently to filter_sentence.
+      # This would be easy with poly- and omni- strategies, because you
+      # just cut at the coordination mark and send each piece.  With
+      # mono- and a-, you'd have to try each possible segmentation, I guess
+      # and that could get expensive.  At least we'd only have to do it
+      # for sentences with mrs_id indicating s coordination...
+      
       # Ss: (again, only with intransitive verbs)
       if ch('wordorder') in ('sov', 'svo', 'osv', 'v-final'):
         s_pat = np_pat + ' ' + vp_pat
@@ -464,7 +529,7 @@ def filter_coordination(sent, mrs_id):
       # replace coordinated Ns with a single N
       if ch('cs' + i + 'n'):
         sent = replace_coord(sent, pat, order, 'co' + i, n_pat, n_rep)
-
+        
       # replace coordinated NPs with a single NP
       if ch('cs' + i + 'np'):
         sent = replace_coord(sent, pat, order, 'co' + i, np_pat, np_rep)
@@ -476,8 +541,15 @@ def filter_coordination(sent, mrs_id):
       # replace coordinated Ss with a single S
       if ch('cs' + i + 's'):
         sent = replace_coord(sent, pat, order, 'co' + i, s_pat, s_rep)
-
-  return filter_sentence(sent, '') # HEYEMILY: what mrs_id goes here?
+        
+  if ch('cs1') or ch('cs2'):
+    new_mrs_id = ''
+    if re.search('co.*n1',mrs_id): new_mrs_id = 'wo1'
+    if re.search('co.*n2',mrs_id): new_mrs_id = 'wo2'
+    # Putting True in the third argument means we won't get
+    # back here.  Need to change if we ever have sentences with
+    # multiple examples of coordination.
+    return filter_sentence(sent, new_mrs_id, 'g') 
 
 
 ######################################################################
@@ -763,10 +835,18 @@ def filter_lexicon(sent, mrs_id):
 # filter_sentence(sent, mrs_id)
 #   Return True iff the sentence cannot be grammatical
 
-def filter_sentence(sent, mrs_id):
+def filter_sentence(sent, mrs_id, phase):
+
+  #If we're in the gold-standard creation phase, check whether
+  #we should just reject all coordintation examples.
+  no_coord = False
+  if phase == 'g':
+    if not (ch('cs1') or ch('cs2')):
+      no_coord = True
+  
   return filter_word_order(sent, mrs_id) or \
          filter_sentential_negation(sent, mrs_id) or \
-         filter_coordination(sent, mrs_id) or \
+         filter_coordination(sent, mrs_id, no_coord) or \
          filter_yesno_questions(sent, mrs_id) or \
          filter_lexicon(sent, mrs_id)
 
@@ -802,31 +882,80 @@ def write_profile_file(contents, file):
 # A function that takes a list of words and returns a list of lists
 # containing all permutations of those words
 
-# FIX_ME: permute_helper should also do the right thing with affixes.
+# def permute_helper(words):
+#   perms = []
+#   if len(words) == 0:
+#     return perms
+#   elif len(words) == 1:
+#     perms.append(words)
+#   else:
+#     for i in range(len(words)):
+#       temp_words = copy(words)
+#       temp_words.pop(i)
+#       temp_perms = permute_helper(temp_words)
+#       for p in temp_perms:
+#         p.insert(0, words[i])
+#         perms.append(p)
+#   return perms
 
-def permute_helper(words):
-  perms = []
-  if len(words) == 0:
-    return perms
-  elif len(words) == 1:
-    perms.append(words)
+def permute_helper(words, i, fun):
+  n = len(words)
+  if (i == n):
+    fun(words)
   else:
-    for i in range(len(words)):
-      temp_words = copy(words)
-      temp_words.pop(i)
-      temp_perms = permute_helper(temp_words)
-      for p in temp_perms:
-        p.insert(0, words[i])
-        perms.append(p)
+    old = words[i]
+    for j in range(i,n):
+      words[i] = words[j]
+      words[j] = old
+      permute_helper(words, i+1, fun)
+      words[j] = words[i]
+    words[i] = old
 
-  return perms
+class Permlist :
+  def __init__(self,mrs_id) :
+    self.perms = []
+    self.keeps = []
+    self.mrs_id = mrs_id
+    self.filtered = 0
+    self.u_kept = 0
 
+  def add(self, words) :
+    perm = words[0]
+    for w in words[1:]:
+      perm += ' ' + w
+    perm = re.sub('neg- ','neg-',perm)
+    perm = re.sub(' -neg','-neg',perm)
+    perm = re.sub('co- ','co-',perm)
+    perm = re.sub(' -co','-co',perm)
+    if not (re.search('-$',perm) or re.search('^-',perm)):
+      if filter_sentence(perm,self.mrs_id,'u'):
+        self.filtered += 1
+        if maybe_keep_filtered(100):
+          self.u_kept += 1
+          self.keeps.append(perm)
+      else:
+        self.perms.append(perm)
+
+  def get(self):
+    return self.perms
+
+  def get_keeps(self):
+    return self.keeps
+
+  def filter_count(self):
+    return self.filtered
+
+  def keeper_count(self):
+    return self.u_kept
+
+  def length(self):
+    return len(self.perms)
 
 ######################################################################
 # This calls the permute_helper above
 
-def permute(s):
-  perms = []
+def permute(s,mrs_id):
+  permlist = Permlist(mrs_id)
   #Break off neg- and co- affixes.  Note that we're assuming the seed
   #strings will provide both prefix and suffix examples to work from.
   #Could consider noticing one and generating the other here, but we're
@@ -836,21 +965,19 @@ def permute(s):
   s = re.sub('co-', 'co- ',s)
   s = re.sub('-co', ' -co',s)
   string = s.split(' ')
-  wordlists = permute_helper(string)
-  for words in wordlists:
-    perm = words[0]
-    for w in words[1:]:
-      perm += ' ' + w
-    perm = re.sub('neg- ','neg-',perm)
-    perm = re.sub(' -neg','-neg',perm)
-    perm = re.sub('co- ','co-',perm)
-    perm = re.sub(' -co','-co',perm)
-    if not (re.search('-$',perm) or re.search('^-',perm)):
-      perms.append(perm)
-
+  permute_helper(string, 0, permlist.add)
+  perms = permlist.get()
+  keeps = permlist.get_keeps()
+  global killed
+  killed += permlist.filter_count()
+  global u_kept
+  u_kept += permlist.keeper_count()
+  global survived
+  survived += len(perms)
+    
   if len(perms) > 1000:
     print 'found ' + str(len(perms)) + ' permutations of ' + s 
-  return perms
+  return [perms, keeps]
 
 
 ######################################################################
@@ -1033,20 +1160,12 @@ def make_universal_resource(in_profile, out_profile):
     if r[1] >= next_r:
       next_r = int(r[1]) + 1
 
-  survived = 0
-  killed = 0
-  u_kept = 0
 
   # Pass through the item list, permuting each item and, if the new
   # permuted sentence passes the filters, adding it to the item list
   for i in copy(items):
-    for perm in permute(i[6])[1:]:
-      filtered = filter_sentence(perm, i[9])
-      keep_filtered = maybe_keep_filtered(100)
-      if keep_filtered:
-        u_kept +=1
-      if not filtered or keep_filtered:
-        survived += 1
+    [perms, keeps] = permute(i[6],i[9])
+    for perm in perms[1:]:
         # Make a new item...but first, copy any parses that refer to
         # the item being permuted, and any results that refer to
         # those parses
@@ -1068,16 +1187,27 @@ def make_universal_resource(in_profile, out_profile):
         new_i[0] = str(next_i)
         next_i += 1
         new_i[6] = perm
-        # if the sentence should have been filtered, remember that
-        if filtered:
-          new_i[7] = '0'
         items.append(new_i)
-      else:
-        killed += 1
+    for keep in keeps:
+        for p in copy(parses):
+          if p[2] == i[0]:
+            new_p = copy(p)
+            new_p[0] = str(next_p)
+            next_p += 1
+            new_p[2] = str(next_i)
+            parses.append(new_p)
+            # No need to put anything in results for ungrammatical examples.
+        new_i = copy(i)
+        new_i[0] = str(next_i)
+        next_i += 1
+        new_i[6] = keep
+        new_i[7] = '0'
+        items.append(new_i)
 
-  print str(survived) + ' strings survived into universal resource.'
-  print str(killed) + ' strings were filtered.'
+#  print 'considered ' + str(total_perms) + 'total permutations.'
   print str(u_kept) + ' universally ungrammatical examples kept.'
+  print str(survived) + ' total strings survived into universal resource.'
+  print str(killed) + ' strings were filtered.'
 
   # Write out the items, parses, and results
   if not os.path.exists(out_profile):
@@ -1121,7 +1251,7 @@ def make_gold_standard(in_profile, out_profile):
   
   for i in items:
     if i[7] == '1':
-      if filter_sentence(i[6], i[9]):
+      if filter_sentence(i[6], i[9], 'g'):
         filtered += 1
         if maybe_keep_filtered(100):
           g_kept += 1

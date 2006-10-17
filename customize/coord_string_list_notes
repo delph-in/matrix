@@ -1,73 +1,121 @@
 # Consider switching to just n1 all the way through?  That would
-# save worrying about the semantics of 'det n1 n2 co n1' being
-# different from 'det n2 n1 co n1' ... yes, that seems wise.
+# save worrying about the semantics of 'det n1 n2 co1 n1' being
+# different from 'det n2 n1 co1 n1' ... yes, that seems wise.
 
 # Just one semantic representation.  We get this semantic
 # pattern only with monosyndeton strategy and only one explicit
 # conjunction.
-co_mono_n1@h@det n1 n1 co n1 iv
+co_mono_n2@h@det n1 n1 co1 n1 iv
 
 # Juse one semantic representation.  Different from the
 # one for co_mono_n.  Get this with the omnisyndeton strategies.
-co_omni_n@h@det co n1 co n1 co n1 iv
+co_omni_n2@h@det co1 n1 co1 n1 co1 n1 iv
 
 # Two semantic representations.  We get these same two under
 # polysendeton (obligatory or the optional kind that comes with
 # monosyndeton strategies) or asyndeton.  Hence, the following two
 # strings have the same semantics.
-co_mpa_n@h@det n1 co n1 co n1 iv
-co_mpa_n@s@det n1 n1 n1 iv
+co_mpa_n2@h@det n1 co1 n1 co1 n1 iv
+co_mpa_n2@s@det n1 n1 n1 iv
 
 # Now do the same thing, without the det, for languages that don't
 # have dets.  Expect more parses, since each n1 could be an np.
 
-co_mono_n2@h@n1 n1 co n1 iv
-co_omni_n2@h@co n1 co n1 co n1 iv
-co_mpa_n2@h@ni co n1 co n1 iv
-co_mpa_n2@s@n1 n1 n1 iv
+co_mono_n1@h@n1 n1 co1 n1 iv
+co_omni_n1@h@co n1 co1 n1 co1 n1 iv
+co_mpa_n1@h@ni co1 n1 co1 n1 iv
+co_mpa_n1@s@n1 n1 n1 iv
 
 # Now we need the strings with p-nom, for languages that require this.
 # Eventually should add aux, too, but that's not required anywhere,
 # so not bothering for now.
 
-co_mono_n@s@p-nom det n1 n1 co n1 iv
-co_mpa_n@2@p-nom det n1 co n1 co n1 iv
-co_mpa_n@s@p-nom det n1 n1 n1 iv
-co_mono_n2@s@p-nom n1 n1 co n1 iv
-co_omni_n2@s@p-nom co n1 co n1 co n1 iv
-co_mpa_n2@s@p-nom ni co n1 co n1 iv
-co_mpa_n2@s@p-nom n1 n1 n1 iv
+co_mono_n2@s@p-nom det n1 n1 co1 n1 iv
+co_mpa_n2@2@p-nom det n1 co1 n1 co1 n1 iv
+co_mpa_n2@s@p-nom det n1 n1 n1 iv
+co_mono_n1@s@p-nom n1 n1 co1 n1 iv
+co_omni_n1@s@p-nom co1 n1 co1 n1 co1 n1 iv
+co_mpa_n1@s@p-nom ni co1 n1 co1 n1 iv
+co_mpa_n1@s@p-nom n1 n1 n1 iv
 
 # Version with prefixes.
 
-co_mono_n@s@det n1 n1 co-n1 iv
-co_mpa_n@2@det n1 co-n1 co-n1 iv
-co_mpa_n@s@det n1 n1 n1 iv
-co_mono_n2@s@n1 n1 co-n1 iv
-co_omni_n2@s@co-n1 co-n1 co-n1 iv
-co_mpa_n2@s@ni co-n1 co-n1 iv
-co_mpa_n2@s@n1 n1 n1 iv
-co_mono_n@s@p-nom det n1 n1 co-n1 iv
-co_mpa_n@2@p-nom det n1 co-n1 co-n1 iv
-co_mpa_n@s@p-nom det n1 n1 n1 iv
-co_mono_n2@s@p-nom n1 n1 co-n1 iv
-co_omni_n2@s@p-nom co-n1 co-n1 co-n1 iv
-co_mpa_n2@s@p-nom ni co-n1 co-n1 iv
-co_mpa_n2@s@p-nom n1 n1 n1 iv
+co_mono_n2@s@det n1 n1 co1-n1 iv
+co_mpa_n2@2@det n1 co1-n1 co1-n1 iv
+co_mpa_n2@s@det n1 n1 n1 iv
+co_mono_n1@s@n1 n1 co1-n1 iv
+co_omni_n1@s@co1-n1 co1-n1 co1-n1 iv
+co_mpa_n1@s@ni co1-n1 co1-n1 iv
+co_mpa_n1@s@n1 n1 n1 iv
+co_mono_n2@s@p-nom det n1 n1 co1-n1 iv
+co_mpa_n2@2@p-nom det n1 co1-n1 co1-n1 iv
+co_mpa_n2@s@p-nom det n1 n1 n1 iv
+co_mono_n1@s@p-nom n1 n1 co1-n1 iv
+co_omni_n1@s@p-nom co1-n1 co1-n1 co1-n1 iv
+co_mpa_n1@s@p-nom ni co1-n1 co1-n1 iv
+co_mpa_n1@s@p-nom n1 n1 n1 iv
 
 # Version with suffixes
 
-co_mono_n@s@det n1 n1 n1-co iv
-co_mpa_n@2@det n1 n1-co n1-co iv
-co_mpa_n@s@det n1 n1 n1 iv
-co_mono_n2@s@n1 n1 n1-co iv
-co_omni_n2@s@n1-co n1-co n1-co iv
-co_mpa_n2@s@ni n1-co n1-co iv
-co_mpa_n2@s@n1 n1 n1 iv
-co_mono_n@s@p-nom det n1 n1 n1-co iv
-co_mpa_n@2@p-nom det n1 n1-co n1-co iv
-co_mpa_n@s@p-nom det n1 n1 n1 iv
-co_mono_n2@s@p-nom n1 n1 n1-co iv
-co_omni_n2@s@p-nom n1-co n1-co n1-co iv
-co_mpa_n2@s@p-nom ni n1-co n1-co iv
-co_mpa_n2@s@p-nom n1 n1 n1 iv
+co_mono_n2@s@det n1 n1 n1-co1 iv
+co_mpa_n2@2@det n1 n1-co1 n1-co1 iv
+co_mpa_n2@s@det n1 n1 n1 iv
+co_mono_n1@s@n1 n1 n1-co1 iv
+co_omni_n1@s@n1-co1 n1-co1 n1-co1 iv
+co_mpa_n1@s@ni n1-co1 n1-co1 iv
+co_mpa_n1@s@n1 n1 n1 iv
+co_mono_n2@s@p-nom det n1 n1 n1-co1 iv
+co_mpa_n2@2@p-nom det n1 n1-co1 n1-co1 iv
+co_mpa_n2@s@p-nom det n1 n1 n1 iv
+co_mono_n1@s@p-nom n1 n1 n1-co1 iv
+co_omni_n1@s@p-nom n1-co1 n1-co1 n1-co1 iv
+co_mpa_n1@s@p-nom ni n1-co1 n1-co1 iv
+co_mpa_n1@s@p-nom n1 n1 n1 iv
+
+# Now do the whole thing with 'co2' instead of 'co1'
+
+co_mono_n2@h@det n1 n1 co2 n1 iv
+co_omni_n2@h@det co2 n1 co2 n1 co2 n1 iv
+co_mpa_n2@h@det n1 co2 n1 co2 n1 iv
+co_mpa_n2@s@det n1 n1 n1 iv
+co_mono_n1@h@n1 n1 co2 n1 iv
+co_omni_n1@h@co n1 co2 n1 co2 n1 iv
+co_mpa_n1@h@ni co2 n1 co2 n1 iv
+co_mpa_n1@s@n1 n1 n1 iv
+co_mono_n2@s@p-nom det n1 n1 co2 n1 iv
+co_mpa_n2@2@p-nom det n1 co2 n1 co2 n1 iv
+co_mpa_n2@s@p-nom det n1 n1 n1 iv
+co_mono_n1@s@p-nom n1 n1 co2 n1 iv
+co_omni_n1@s@p-nom co2 n1 co2 n1 co2 n1 iv
+co_mpa_n1@s@p-nom ni co2 n1 co2 n1 iv
+co_mpa_n1@s@p-nom n1 n1 n1 iv
+co_mono_n2@s@det n1 n1 co2-n1 iv
+co_mpa_n2@2@det n1 co2-n1 co2-n1 iv
+co_mpa_n2@s@det n1 n1 n1 iv
+co_mono_n1@s@n1 n1 co2-n1 iv
+co_omni_n1@s@co2-n1 co2-n1 co2-n1 iv
+co_mpa_n1@s@ni co2-n1 co2-n1 iv
+co_mpa_n1@s@n1 n1 n1 iv
+co_mono_n2@s@p-nom det n1 n1 co2-n1 iv
+co_mpa_n2@2@p-nom det n1 co2-n1 co2-n1 iv
+co_mpa_n2@s@p-nom det n1 n1 n1 iv
+co_mono_n1@s@p-nom n1 n1 co2-n1 iv
+co_omni_n1@s@p-nom co2-n1 co2-n1 co2-n1 iv
+co_mpa_n1@s@p-nom ni co2-n1 co2-n1 iv
+co_mpa_n1@s@p-nom n1 n1 n1 iv
+co_mono_n2@s@det n1 n1 n1-co2 iv
+co_mpa_n2@2@det n1 n1-co2 n1-co2 iv
+co_mpa_n2@s@det n1 n1 n1 iv
+co_mono_n1@s@n1 n1 n1-co2 iv
+co_omni_n1@s@n1-co2 n1-co2 n1-co2 iv
+co_mpa_n1@s@ni n1-co2 n1-co2 iv
+co_mpa_n1@s@n1 n1 n1 iv
+co_mono_n2@s@p-nom det n1 n1 n1-co2 iv
+co_mpa_n2@2@p-nom det n1 n1-co2 n1-co2 iv
+co_mpa_n2@s@p-nom det n1 n1 n1 iv
+co_mono_n1@s@p-nom n1 n1 n1-co2 iv
+co_omni_n1@s@p-nom n1-co2 n1-co2 n1-co2 iv
+co_mpa_n1@s@p-nom ni n1-co2 n1-co2 iv
+co_mpa_n1@s@p-nom n1 n1 n1 iv
+
+
