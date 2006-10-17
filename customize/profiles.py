@@ -1436,7 +1436,7 @@ if not g_flag:
     choices_file = args[0]
   else:
     choices_file = 'rand_choices'
-    random_validated_grammar(choices_file)
+    random_validated_grammar(choices_file,True)
   
   choices = read_choices(choices_file)
 
