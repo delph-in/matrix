@@ -2678,7 +2678,7 @@ def customize_misc_lex():
   if ch('ques') == 'qpart':
     typedef = \
       ch('qpartform') + ' := qpart-le & \
-                   [ STEM < "' + qpart + '" > ].'
+                   [ STEM < "' + ch('qpartform') + '" > ].'
     lexicon.add(typedef)
 
 
