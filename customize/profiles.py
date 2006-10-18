@@ -1015,6 +1015,7 @@ def permute(s,mrs_id):
   s = re.sub('co-', 'co- ',s)
   s = re.sub('-co', ' -co',s)
   string = s.split(' ')
+  global est
   est = factorial(len(string))
   permute_helper(string, 0, permlist.add)
   perms = permlist.get()
