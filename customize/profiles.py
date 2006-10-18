@@ -159,14 +159,14 @@ def word_order_general_filters(sent, mrs_id):
 
     # Possibly add some of the neg or ques examples as mrs_ids this
     # one gets applied to.
-    if re.search('wo4|wo8',mrs_id):
+    if re.search('wo4|wo8|neg[24]|ques[24]',mrs_id):
       # The determiners both have to be adjancent to nouns:
       # Can't just use the filters for wo2/5 and wo6 together, because
       # they would license n1 det n2.
-      if not (re.search('det (n1|n2).*det (n1|n2)',sent) or
-              re.search('det (n1|n2).*(n1|n2) det',sent) or
-              re.search('(n1|n2) det.*det (n1|n2)',sent) or
-              re.search('(n1|n2) det.*(n1|n2) det',sent)):
+      if not (re.search(r'det (n1|n2).*det (n1|n2)',sent) or
+              re.search(r'det (n1|n2).*(n1|n2) det',sent) or
+              re.search(r'(n1|n2) det.*det (n1|n2)',sent) or
+              re.search(r'(n1|n2) det.*(n1|n2) det',sent)):
         return True
 
     if re.search('wo4|wo5|wo6',mrs_id):
@@ -264,7 +264,7 @@ def word_order_specific_filters(sent, mrs_id):
        re.search('det (n1|n2)',sent):
       return True
 
-    if re.search('wo[48]',mrs_id) and \
+    if re.search('wo[48]|neg[24]|ques[24]',mrs_id) and \
        (re.search('det .*det (n1|n2)',sent) or \
         re.search('det (n1|n2) .*det (n1|n2)', sent) or \
         re.search('det (n1|n2) .*(n1|n2) det', sent)):
@@ -275,7 +275,7 @@ def word_order_specific_filters(sent, mrs_id):
        re.search('(n1|n2) det',sent):
       return True
 
-    if re.search('wo[48]',mrs_id) and \
+    if re.search('wo[48]|neg[24]|ques[24]',mrs_id) and \
        (re.search('(n1|n2) det .*det ',sent) or \
         re.search('(n1|n2) det .*(n1|n2) det', sent) or \
         re.search('det (n1|n2) .*(n1|n2) det', sent)):
