@@ -379,6 +379,10 @@ def validate_extra_constraints():
   if ch('hasDets') == 'yes' and not ch('det1'):
     err = 'To get uniform semantics, we always want det1 specified.'
     add_err('det1', err)
+  if not ((ch('cs1') == 'on' and ch('cs1n') == 'on') or \
+          (ch('cs2') == 'on' and ch('cs2n') == 'on')):
+    err = 'The test grammars must have some way to coordinate nouns.'
+    add_err('cs1n', err)
 
 ######################################################################
 # validate_choices(choices_file)

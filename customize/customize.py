@@ -2277,7 +2277,7 @@ def customize_verbs():
     if iverbSubj == 'np':
       typedef += 'ARG-ST < [ LOCAL.CAT.HEAD noun ] > ].'
     else:
-      typedef += 'ARG-ST < [ LOCAL.CAT.HEAD adp ] > ].'
+      typedef += 'ARG-ST < [ LOCAL.CAT.HEAD adp & [ FORM p-nom ]] > ].'
   mylang.add(typedef)
 
   typedef = \
@@ -2289,12 +2289,12 @@ def customize_verbs():
     if tverbSubj == 'np':
       typedef += 'ARG-ST < [ LOCAL.CAT.HEAD noun ],'
     else:
-      typedef += 'ARG-ST < [ LOCAL.CAT.HEAD adp ],'
+      typedef += 'ARG-ST < [ LOCAL.CAT.HEAD adp & [ FORM p-nom ]],'
   typedef += '#comps & [ LOCAL.CAT [ VAL [ SPR < >, COMPS < > ],'
   if tverbObj == 'np':
     typedef += 'HEAD noun ] ] > ].'
   else:
-    typedef += 'HEAD adp ] ] > ].'
+    typedef += 'HEAD adp & [FORM p-acc] ] ] > ].'
   mylang.add(typedef)
 
   # If there are auxiliaries, define finite and non-finite verb types,
@@ -2596,6 +2596,17 @@ def customize_adpositions():
 
     mylang.add(typedef)
 
+  # ERB 2006-10-17
+  # Making the adpositions have distinct forms so that verbs can actually
+  # constrain which appears in which argument.  Will need to revisit this
+  # when we have a real module for case.
+
+  if subjAdp:
+    mylang.add('p-nom := form.','FORM value for subject marking adpositions.')
+  if objAdp:
+    mylang.add('p-acc := form.','FORM value for object marking adpositions.')
+  
+
   # Lexical entries
 
   lexicon.add_literal(';;; Other')
@@ -2609,13 +2620,15 @@ def customize_adpositions():
   if subjAdpForm:
     typedef = \
       'subj-marker := case-marker-p-lex & \
-                        [ STEM < "' + subjAdpForm + '" > ].'
+                        [ STEM < "' + subjAdpForm + '" >, \
+                          SYNSEM.LOCAL.CAT.HEAD.FORM p-nom  ].'
     lexicon.add(typedef)
 
   if objAdpForm:
     typedef = \
       'obj-marker := case-marker-p-lex & \
-                     [ STEM < "' + objAdpForm + '" > ].'
+                     [ STEM < "' + objAdpForm + '" >, \
+                       SYNSEM.LOCAL.CAT.HEAD.FORM p-acc ].'
     lexicon.add(typedef)
 
 

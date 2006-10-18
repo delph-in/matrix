@@ -424,6 +424,7 @@ def filter_sentential_negation(sent, mrs_id):
 #   Note: these all assume exactly three-way coordination
 
 def replace_coord(sent, pat, order, co, x, y):
+
   if pat == 'mono' and order == 'before':
     regexp = x + ' ' + x + ' ' + co + ' ' + x
     sent = re.sub(regexp, y, sent)
@@ -471,6 +472,24 @@ def filter_coordination(sent, mrs_id,no_coord):
   # we should kill all of these.
   if no_coord:
     return True
+
+  # ERB 2006-10-17 A few universal filters, just focusing on n1
+  # coordination for now.
+
+  # If there's an overt coordination mark and it's not adjacent to
+  # an n, filter.
+  
+  if re.search('co.*n[12]',mrs_id):
+    if re.search('co',sent) and \
+           not re.search('co[12] n1|co[12]-n1|n1 co[12]|n1-co[12]',sent):
+      return True
+
+  # In these examples at least, we shouldn't get sequences of coordination
+  # marks next to each other.
+
+  if re.search('co.*n[12]',mrs_id):
+    if re.search('co[12] co[12]',sent):
+      return True
 
   # ERB 2006-10-16 First check if we've got the right kind of mark.
 
@@ -586,9 +605,6 @@ def filter_coordination(sent, mrs_id,no_coord):
     new_mrs_id = ''
     if re.search('co.*n1',mrs_id): new_mrs_id = 'wo1'
     if re.search('co.*n2',mrs_id): new_mrs_id = 'wo2'
-    # Putting True in the third argument means we won't get
-    # back here.  Need to change if we ever have sentences with
-    # multiple examples of coordination.
     return filter_sentence(sent, new_mrs_id, 'g') 
 
 
@@ -883,7 +899,7 @@ def filter_sentence(sent, mrs_id, phase):
   if phase == 'g':
     if not (ch('cs1') or ch('cs2')):
       no_coord = True
-  
+
   return filter_word_order(sent, mrs_id) or \
          filter_sentential_negation(sent, mrs_id) or \
          filter_coordination(sent, mrs_id, no_coord) or \
