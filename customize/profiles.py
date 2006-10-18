@@ -28,7 +28,7 @@ choices = {}
 killed = 0
 survived = 0
 u_kept = 0
-keep_prob = 100
+est = 0
 
 ######################################################################
 # ch(s)
@@ -43,6 +43,9 @@ def ch(s):
 ######################################################################
 # factorial(n)
 
+# We call factorial a lot, so I'm precomputing it for a bunch of
+# relevant numbers.
+
 def factorial(n):
   if not n >= 0:
     raise ValueError("n must be >= 0")
@@ -50,6 +53,23 @@ def factorial(n):
     raise ValueError("n must be exact integer")
   if n+1 == n:
     raise OverflowError("n too large")
+  if n == 4:
+    return 24
+  if n == 5:
+    return 120
+  if n == 6:
+    return 720
+  if n == 7:
+    return 5040
+  if n == 8:
+    return 40320
+  if n == 9:
+    return 362880
+  if n == 10:
+    return 3628800
+  if n == 11:
+    return 39916800
+
   result = 1
   factor = 2
   while factor <= n:
@@ -947,15 +967,12 @@ class Permlist :
     perm = re.sub(' -neg','-neg',perm)
     perm = re.sub('co- ','co-',perm)
     perm = re.sub(' -co','-co',perm)
-    l = len(words)
-    est = factorial(l)
+    global est
     
     if est < 4:
       keep_prob = 2
     else:
       keep_prob = est // 4
-
-    print keep_prob
 
     if not (re.search('-$',perm) or re.search('^-',perm)):
       if filter_sentence(perm,self.mrs_id,'u'):
@@ -998,6 +1015,7 @@ def permute(s,mrs_id):
   s = re.sub('co-', 'co- ',s)
   s = re.sub('-co', ' -co',s)
   string = s.split(' ')
+  est = factorial(len(string))
   permute_helper(string, 0, permlist.add)
   perms = permlist.get()
   keeps = permlist.get_keeps()
