@@ -379,7 +379,7 @@ def filter_sentential_negation(sent, mrs_id):
           return True
 
     if ch('neg-adv') == 'sel-adv' or \
-       (re.search(neg-adv,sent) and re.search('-neg|neg-',sent)):
+       (re.search(r'(\s|^)neg(\s|$)',sent) and re.search('-neg|neg-',sent)):
       # These are the cases where we're dealing with a selected
       # complement negative adverb.  Such things should show up
       # where we expect verbal complements: i.e., to the correct side
@@ -767,7 +767,7 @@ def filter_lexicon(sent, mrs_id):
     if ch('noun2spr') == 'nil':
       if re.search('n2 det', sent):
         if re.search('n2 det n1', sent):
-          if re.search('n2 det n1 det'):
+          if re.search('n2 det n1 det', sent):
             return True
           elif ch('noun1spr') == 'nil':
             return True
@@ -1217,7 +1217,9 @@ def make_universal_resource(string_list_file, in_profile, out_profile):
   string_list = read_profile_file(string_list_file)
   local_est = 0
   local_max = 0
-  
+  local_total = 0
+  len_list = len(string_list)  
+
   for m in copy(string_list):
     m = re.sub('-neg',' neg',m[2])
     m = re.sub('neg-','neg ',m)
@@ -1227,13 +1229,15 @@ def make_universal_resource(string_list_file, in_profile, out_profile):
     m = re.sub('-co2',' co2',m)
     words = m.split(' ')
     l = len(words)
+    local_total += l
     if l > local_max:
       local_max = l
     local_est += factorial(l)
 
+  avg_len = local_total / len_list
   print 'Total permutations considered: ' + str(local_est)
   print 'Longest string is ' + str(local_max) + ' words long'
-
+  print 'Average string length is ' + str(avg_len) + ' words'
     
   # Read in the items, parses, and results
   items = read_profile_file(in_profile + 'item')
