@@ -491,6 +491,12 @@ def filter_coordination(sent, mrs_id,no_coord):
     if re.search('co[12] co[12]',sent):
       return True
 
+  # Now language specific filters.  If we don't have a choices file
+  # loaded in, just return False for now.
+
+  if not (ch('cs1') or ch('cs2')):
+    return False
+  
   # ERB 2006-10-16 First check if we've got the right kind of mark.
 
   # Assume we don't.
@@ -607,6 +613,7 @@ def filter_coordination(sent, mrs_id,no_coord):
     if re.search('co.*n2',mrs_id): new_mrs_id = 'wo2'
     return filter_sentence(sent, new_mrs_id, 'g') 
 
+  return False
 
 ######################################################################
 # filter_yesno_questions(sent)
@@ -1262,6 +1269,17 @@ def make_universal_resource(string_list_file, in_profile, out_profile):
   # permuted sentence passes the filters, adding it to the item list
   for i in copy(items):
     [perms, keeps] = permute(i[6],i[9])
+    # ERB 2006-10-18
+    # For coordination strings especially, we have a lot of redundant
+    # strings within each perms list.
+    perms.sort()
+    for j in range(len(perms) -1, -1, -1):
+      if j > 0:
+        if perms[j] == perms[j - 1]:
+          #      if (j == 0 or perms[j] != perms[j - 1]) and \
+          #             (j == len(perms) - 1 or perms[j] != perms[j + 1]):
+          del perms[j]
+    
     for perm in perms[1:]:
         # Make a new item...but first, copy any parses that refer to
         # the item being permuted, and any results that refer to
@@ -1301,6 +1319,8 @@ def make_universal_resource(string_list_file, in_profile, out_profile):
         new_i[7] = '0'
         items.append(new_i)
     print 'Finished processing item ' + i[0]
+    if i[0] == str(2):
+      sys.exit
 
 #  print 'considered ' + str(total_perms) + 'total permutations.'
   print str(u_kept) + ' universally ungrammatical examples kept.'
