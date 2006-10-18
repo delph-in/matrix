@@ -1489,6 +1489,15 @@ def make_gold_standard(in_profile, out_profile):
 #                         on the basis of existing u_profile and choices
 #                         file <file>
 
+# ERB 2006-10-17 To enable parallelization of the easy kind, now
+# passing in file names for profile, u_profile (if applicable), and
+# id.  The choices file should be choices_id.
+
+# profiles.py -u <file> <id> Create universal resource on the basis of profile <file>
+#                            and string list string_list.id
+# profiles.py -g <file> <id> Create language-specific resource on the basis of
+#                            universal resource <file> and choices file choices.<id>
+
 (options, args) = getopt(sys.argv[1:],'iug')
 
 i_flag = ''
@@ -1513,23 +1522,40 @@ for o in options:
 #the semantics of the -i flag, to make it mean *don't* make the
 #intermediate resource.
 
-if not i_flag:
-  print 'making intermediate resource...'
-  make_intermediate_resource('string_list','profile','i_profile')
+#if not i_flag:
+#  print 'making intermediate resource...'
+#  make_intermediate_resource('string_list','profile','i_profile')
 
 # The universal resource takes a long time, so enable skipping it
 # for testing language-specific filters
-if not u_flag:
-  make_universal_resource('string_list','i_profile', 'u_profile')
 
-if not g_flag:
+# Typical: python profiles.py -u coord_profile_all _coord
+
+if u_flag:
+  string_list = 'string_list' + args[1]
+  profile = args[0]
+  i_profile = 'i_profile' + args[1]
+  u_profile = 'u_profile' + args[1]
+
+  make_intermediate_resource(string_list,profile,i_profile)
+  make_universal_resource(string_list,i_profile,u_profile)
+
+# Typical: python profiles.py -g u_profile_coord _022
+# With choices_file_022 in the directory.
+
+if g_flag:
   # See if the user specified a choices_file to use
-  if len(args) > 0:
-    choices_file = args[0]
-  else:
-    choices_file = 'rand_choices'
-    random_validated_grammar(choices_file,True)
-  
+  #if len(args) > 0:
+  #  choices_file = args[0]
+  #else:
+  #  choices_file = 'rand_choices'
+  #  random_validated_grammar(choices_file,True)
+
+  #Assume now that user specified a choices file.
+
+  choices_file = 'choices_file' + args[1]
+  u_profile = args[0]
+  g_profile = 'g_profile' + args[1]
   choices = read_choices(choices_file)
 
-  make_gold_standard('u_profile', 'g_profile')
+  make_gold_standard(u_profile, g_profile)

@@ -1,2 +1,12 @@
 co_mono_n2@h@det n1 n1 co1 n1 iv
-co_mono_n2@s@p-nom det n1 n1 co1 n1 iv
+co_omni_n2@h@det co1 n1 co1 n1 co1 n1 iv
+co_mpa_n2@h@det n1 co1 n1 co1 n1 iv
+co_mono_n1@h@n1 n1 co1 n1 iv
+co_omni_n1@h@co1 n1 co1 n1 co1 n1 iv
+co_mpa_n1@h@n1 co1 n1 co1 n1 iv
+co_mono_n2@h@det n1 n1 co2 n1 iv
+co_omni_n2@h@det co2 n1 co2 n1 co2 n1 iv
+co_mpa_n2@h@det n1 co2 n1 co2 n1 iv
+co_mono_n1@h@n1 n1 co2 n1 iv
+co_omni_n1@h@co2 n1 co2 n1 co2 n1 iv
+co_mpa_n1@h@n1 co2 n1 co2 n1 iv
