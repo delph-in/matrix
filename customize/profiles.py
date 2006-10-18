@@ -947,14 +947,27 @@ class Permlist :
     perm = re.sub(' -neg','-neg',perm)
     perm = re.sub('co- ','co-',perm)
     perm = re.sub(' -co','-co',perm)
+    l = len(words)
+    est = factorial(l)
+    
+    if est < 4:
+      keep_prob = 2
+    else:
+      keep_prob = est // 4
+
+    print keep_prob
+
     if not (re.search('-$',perm) or re.search('^-',perm)):
       if filter_sentence(perm,self.mrs_id,'u'):
         self.filtered += 1
-        if maybe_keep_filtered(keep_prob):
-          self.u_kept += 1
-          self.keeps.append(perm)
+        if self.u_kept < 4:
+          if maybe_keep_filtered(keep_prob):
+            self.u_kept += 1
+            self.keeps.append(perm)
       else:
         self.perms.append(perm)
+
+
 
   def get(self):
     return self.perms
@@ -1175,12 +1188,6 @@ def make_universal_resource(string_list_file, in_profile, out_profile):
 
   print 'Total permutations considered: ' + str(est)
 
-  if est < 100:
-    keep_prob = 10
-  elif est < 1000:
-    keep_prob = est // 10
-  else:
-    keep_prob = est // 1000
 
     
   # Read in the items, parses, and results
