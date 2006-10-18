@@ -2690,7 +2690,7 @@ def customize_misc_lex():
   # Question particle
   if ch('ques') == 'qpart':
     typedef = \
-      ch('qpartform') + ' := qpart-le & \
+      ch('qpartform') + ' := qpart-lex-item & \
                    [ STEM < "' + ch('qpartform') + '" > ].'
     lexicon.add(typedef)
 

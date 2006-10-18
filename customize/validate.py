@@ -283,7 +283,9 @@ def validate_lexicon():
      (iverb and not iverbSubj) or \
      (tverb and not (tverbSubj and tverbObj)) or \
      (subjAdp and not subjAdpForm) or \
+     (subjAdpForm and not subjAdp) or \
      (objAdp and not objAdpForm) or \
+     (objAdpForm and not objAdp) or \
      (auxverb and not (auxsem and auxcomp and auxorder)):
     err = 'You must answer all questions for each lexical entry you specify.'
     add_err('noun1spr', err)

@@ -1028,8 +1028,9 @@ def permute(s,mrs_id):
   #not.
   s = re.sub('neg-','neg- ',s)
   s = re.sub('-neg',' -neg',s)
-  s = re.sub('co-', 'co- ',s)
+  s = re.sub('co1-', 'co1- ',s)
   s = re.sub('-co', ' -co',s)
+  s = re.sub('co2-', 'co2- ',s)
   string = s.split(' ')
   global est
   est = factorial(len(string))
@@ -1214,15 +1215,24 @@ def make_universal_resource(string_list_file, in_profile, out_profile):
   # so we don't get swamped.
 
   string_list = read_profile_file(string_list_file)
-  est = 0
+  local_est = 0
+  local_max = 0
   
-  for m in string_list:
-    words = m[2].split(' ')
+  for m in copy(string_list):
+    m = re.sub('-neg',' neg',m[2])
+    m = re.sub('neg-','neg ',m)
+    m = re.sub('co1-','co1 ',m)
+    m = re.sub('-co1',' co1',m)
+    m = re.sub('co2-','co2 ',m)
+    m = re.sub('-co2',' co2',m)
+    words = m.split(' ')
     l = len(words)
-    est += factorial(l)
+    if l > local_max:
+      local_max = l
+    local_est += factorial(l)
 
-  print 'Total permutations considered: ' + str(est)
-
+  print 'Total permutations considered: ' + str(local_est)
+  print 'Longest string is ' + str(local_max) + ' words long'
 
     
   # Read in the items, parses, and results
@@ -1286,6 +1296,7 @@ def make_universal_resource(string_list_file, in_profile, out_profile):
         new_i[6] = keep
         new_i[7] = '0'
         items.append(new_i)
+    print 'Finished processing item ' + i[0]
 
 #  print 'considered ' + str(total_perms) + 'total permutations.'
   print str(u_kept) + ' universally ungrammatical examples kept.'
