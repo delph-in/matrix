@@ -104,7 +104,7 @@ def random_grammar(choices_file):
         choice[k] = 'on'
     else:
       # One out of N times, don't specify a value
-      N = 10
+      N = 5
       if randint(1, N) != 1:
         choice[k] = v[randint(0, len(v) - 1)]
 
@@ -141,5 +141,5 @@ def random_validated_grammar(choices_file, do_extra):
 # main program, for when we want to call it independently
 # to make some grammars for us.
 
-#count = random_validated_grammar('rand_choices', True)
-#print 'Whew!  Grammar number ' + str(count) + ' validated.'
+count = random_validated_grammar('rand_choices', True)
+print 'Whew!  Grammar number ' + str(count) + ' validated.'

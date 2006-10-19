@@ -386,6 +386,26 @@ def validate_extra_constraints():
           (ch('cs2') == 'on' and ch('cs2n') == 'on')):
     err = 'The test grammars must have some way to coordinate nouns.'
     add_err('cs1n', err)
+  if ch('multineg') != '':
+    if ch('infl_neg') != 'on' or ch('adv_neg') != 'on':
+      err = 'Giving a value for multineg means you have selected both neg. strategies.'
+      add_err('multineg', err)
+  if ch('infl_neg') == '':
+    if ch('neg-infl-type') != '' or \
+       ch('neg-aff') != '' or \
+       ch('neg-aff-form') != '' :
+      err = 'You have not selected inflectional negation.'
+      add_err('infl_neg', err)
+  if ch('adv_neg') == '':
+    if ch('neg-adv') != '' or \
+       ch('negmod') != '' or \
+       ch('negprepostmod') != '' or \
+       ch('neg-adv') != '' or \
+       ch('neg-sel-adv') != '' :
+      err = 'You have not selected adverbial negation.'
+      add_err('adv_neg', err)
+
+      
 
 ######################################################################
 # validate_choices(choices_file)
