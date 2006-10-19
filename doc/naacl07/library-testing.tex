@@ -13,7 +13,7 @@
 
 \newcommand{\mc}{\multicolumn}
 
-\title{Compiling grammars from a language universal core and typology-based libraries}
+\title{Harvesting grammars from the Matrix: Evaluating a bumper crop}
 %% \author{Emily M.~Bender, Laurie Poulson, and Scott F. Drellishak\\
 %% Department of Linguistics\\
 %% University of Washington\\
@@ -252,6 +252,8 @@ representations and well-formedness predictions
 for evaluating any given grammar in that space, and
 thereby testing the cross-compatibility of our libraries.
 
+%% Add reference to Poulson 2006 about here.
+
 \section{Remarks on evaluation}
 
 There are many levels at which the Grammar Matrix customization system
@@ -296,7 +298,7 @@ intended grammaticality of each, and an associated semantic representation.
 
 \section{Methodology}
 
-\section{Test site resource}
+\subsection{Test suite resource}
 
 In order to test an arbitrary selection from the space of grammars we have
 defined, we need a parallel, independent system which can generate a gold
@@ -468,7 +470,7 @@ Figure~\ref{filter_fig}.
 \label{filter_fig}
 \end{figure}
 
-\section{Random grammars}
+\subsection{Random grammars}
 
 Underlying both the customization script and the web-based
 questionnaire form is a single file which defines the parameters
@@ -548,9 +550,20 @@ Lg.~type & \mc{2}{|c|}{Coverage} &
 \subsection{Error analysis}
 \label{error}
 
-\section{Discussion}
-
 \section{Conclusion and future work}
+
+This initial system has allowed us to validate both the testing
+approach and the grammar compilation system.  It has also proved
+itself handy in diagnosing bugs in the compilation code.  We envision
+extending the current system by adding seed strings which more
+extensively test the interaction between the various modules (e.g.,
+negation, questions, and coordination all in one), as well as more
+thorough coverage of the coordination module.  More importantly,
+we are actively working on extending the linguistic coverage of
+the libraries provided in the customization system.  As we do so,
+the verified test suites discussed here provide a baseline for
+regression testing.
+
 
 \section*{A. Appendix}
 
@@ -606,7 +619,7 @@ n1 co2 n1 co2 n1 iv & cats, cats, and cats slept\\
 
 
 \bibliographystyle{acl}
-\bibliography{/Users/erb/academic/papers/masterbib}
+\bibliography{masterbib}
 
 \end{document}
 
