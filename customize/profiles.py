@@ -281,7 +281,6 @@ def word_order_specific_filters(sent, mrs_id):
         re.search('det (n1|n2) .*(n1|n2) det', sent)):
       return True
 
-
   return False
 
 def filter_word_order(sent, mrs_id):
@@ -291,7 +290,17 @@ def filter_word_order(sent, mrs_id):
 ######################################################################
 # filter_sentential_negation(sent, mrs_id)
 
-def filter_sentential_negation(sent, mrs_id):
+def filter_sentential_negation(sent, mrs_id,phase):
+
+  if re.search('neg-',sent) and not re.search (r'neg-(tv|iv|aux)',sent):
+    return True
+  if re.search('-neg',sent) and not re.search (r'(tv|iv|aux)-neg',sent):
+    return True
+
+  # That's all for the general features
+
+  if phase == 'u':
+    return False
 
   # Because we spelled the adverb and the affix the same:
   negadv = re.compile(r'(\s|^)neg(\s|$)')
@@ -304,111 +313,115 @@ def filter_sentential_negation(sent, mrs_id):
     if ch('adv_neg') != 'on' and re.search(negadv,sent):
       return True
     # If we only selected affix, we should see one in every negated sentence
-    if ch('adv_neg') == 'on' and ch('infl_neg') != 'on':
+    if ch('adv_neg') != 'on' and ch('infl_neg') == 'on':
       if not re.search('-neg|neg-',sent):
         return True
     # If we only selected adverbs, we should see one in eveyr negated sentence
-    if ch('adv_neg') != 'on' and ch('infl_neg') == 'on':
+    if ch('adv_neg') == 'on' and ch('infl_neg') != 'on':
       if not re.search(negadv,sent):
-        return True
+         return True
     # If both are required, we should see always see both affix & adv.
-    if ch('multineg') == 'bothobl':
+    if ch('infl_neg') == 'on' and ch('adv_neg') == 'on' and ch('multineg') == 'bothobl':
       if not (re.search('-neg|neg-',sent) and re.search(negadv,sent)):
         return True
     # If complementary dist, we should only see one or the other.
-    if ch('multineg') == 'comp':
+    if ch('infl_neg') == 'on' and ch('adv_neg') == 'on' and ch('multineg') == 'comp':
       if re.search('-neg|neg-',sent) and re.search(negadv,sent):
         return True
     # If affix can't occur without adverb, it shouldn't
-    if ch('multineg') == 'advobl' and re.search('-neg|neg-',sent):
+    if ch('infl_neg') == 'on' and ch('adv_neg') == 'on' and \
+           ch('multineg') == 'advobl' and re.search('-neg|neg-',sent):
       if not re.search(negadv,sent):
         return True
     # If adverb can't occur without affix, it shouldn't
-    if ch('multineg') == 'inflobl' and re.search(negadv,sent):
+    if ch('infl_neg') == 'on' and ch('adv_neg') == 'on' and \
+           ch('multineg') == 'inflobl' and re.search(negadv,sent):
       if not re.search('-neg|neg-',sent):
         return True
 
-    # If affix only attaches to aux, shouldn't attach to anything else.
-    if ch('neg-infl-type') == 'aux' and re.search('[^(aux)]-neg|neg-[^(aux)]',sent):
-      return True
-    # If affix only attaches to main verb, shouldn't attach to anything else.
-    if ch('neg-infl-type') == 'main' and re.search('[^(tv)(iv)]-neg|neg-[^(tv)(iv)]',sent):
-      return True
+    if ch('infl_neg') == 'on':
+      # If affix only attaches to aux, shouldn't attach to anything else.
+      if ch('neg-infl-type') == 'aux' and re.search('[^(aux)]-neg|neg-[^(aux)]',sent):
+        return True
+      # If affix only attaches to main verb, shouldn't attach to anything else.
+      if ch('neg-infl-type') == 'main' and re.search('[^(tv)(iv)]-neg|neg-[^(tv)(iv)]',sent):
+        return True
 
     # If we've got an independent modifier, it should show up on the correct
     # side of the verb.  Note that this only applies in sentences without
     # negative affixes.  If there's both an affix and an adverb, we treat
     # the adverb as selected, regardless of what the user put in.
-    if ch('neg-adv') == 'ind-adv' and not re.search('-neg|neg-',sent):
-      if ch('negprepostmod') == 'left' and re.search('(tv|iv).* neg',sent):
-        return True
-      if ch('negprepostmod') == 'right' and re.search('neg.* (tv|iv)',sent):
-        return True
+
+    if ch('adv_neg') == 'on':
+      if ch('neg-adv') == 'ind-adv' and not re.search('-neg|neg-',sent):
+        if ch('negprepostmod') == 'left' and re.search('(tv|iv).* neg',sent):
+          return True
+        if ch('negprepostmod') == 'right' and re.search('neg.* (tv|iv)',sent):
+          return True
 
       #Again, if we know we're talking about an independent modifier, can
       #say where it has to appear wrt V, VP, or S.
       #Are these downcased in the input?
       #So far both neg1 and neg2 involve transitive verbs, so not worrying
       #about the intransitive case.
-      if ch('negmod') == 's':
-        if re.search('n[12].* neg.* n[12].* tv',sent) or \
-           re.search('n[12].* neg.* tv.* n[12]',sent) or \
-           re.search('n[12].* n[12].* neg.* tv',sent) or \
-           re.search('tv.* neg.* n[12].* n[12]',sent) or \
-           re.search('tv.* n[12].* neg.* n[12]',sent) or \
-           re.search('n[12].* tv.* neg.* n[12]',sent):
-          return True
-      if ch('negmod') == 'vp':
+        if ch('negmod') == 's':
+          if re.search(r'n[12].* neg.* n[12].* tv',sent) or \
+                 re.search(r'n[12].* neg.* tv.* n[12]',sent) or \
+                 re.search(r'n[12].* n[12].* neg.* tv',sent) or \
+                 re.search(r'tv.* neg.* n[12].* n[12]',sent) or \
+                 re.search(r'tv.* n[12].* neg.* n[12]',sent) or \
+                 re.search(r'n[12].* tv.* neg.* n[12]',sent):
+            return True
+        if ch('negmod') == 'vp':
         #If neg-adv attaches to a VP, then it can't intervene between 
         #intervening the object and the verb.  But which is the object?
         #that depends on which mrs we're talking about.
         #Likewise, the subject can appear between the neg and the verb.
-        if re.search('neg[12]',mrs_id):
-          if re.search('tv.* neg.* n2|n2.* neg.* tv.*',sent):
+          if re.search(r'neg[12]',mrs_id):
+            if re.search(r'tv.* neg.* n2|n2.* neg.* tv.*',sent):
+              return True
+            if re.search(r'neg.* n1.* tv|tv.* n1* neg',sent):
+              return True
+          if re.search(r'neg[34]',mrs_id):
+            if re.search(r'tv.* neg.* n1|n1.* neg.* tv.*',sent):
+              return True
+            if re.search(r'neg.* n2.* tv|tv.* n2* neg',sent):
+              return True
+        if ch('negmod') == 'v':
+          #In this case, we have to be right next to the aux or the v.
+          if not re.search(r'neg (aux|tv)|(aux|tv) neg',sent):
             return True
-          if re.search('neg.* n1.* tv|tv.* n1* neg',sent):
-            return True
-        if re.search('neg[34]',mrs_id):
-          if re.search('tv.* neg.* n1|n1.* neg.* tv.*',sent):
-            return True
-          if re.search('neg.* n2.* tv|tv.* n2* neg',sent):
-            return True
-      if ch('negmod') == 'v':
-        #In this case, we have to be right next to the aux or the v.
-        if not re.search('neg (aux|tv)|(aux|tv) neg',sent):
-          return True
 
-    if ch('neg-adv') == 'sel-adv' or \
-       (re.search(r'(\s|^)neg(\s|$)',sent) and re.search('-neg|neg-',sent)):
-      # These are the cases where we're dealing with a selected
-      # complement negative adverb.  Such things should show up
-      # where we expect verbal complements: i.e., to the correct side
-      # of the verb, and either inside or outside the subject, as
-      # requires.
-      if ch('wordorder') == 'svo' or \
-         ch('wordorder') == 'vso' or \
-         ch('wordorder') == 'v-initial':
-        if re.search(r'(\s|^)neg .*tv',sent):
-          return True
-      if ch('wordorder') == 'ovs' or \
-         ch('wordorder') == 'osv' or \
-         ch('wordorder') == 'v-final':
-        if re.search(r'tv.* neg(\s|$)',sent):
-          return True
-      #This is one interpretation of what we might mean.  I think it
-      #matches what the tdl actually does.  It might not match the best
-      #interpretation of the prose on the web form.
-      if ch('wordorder') == 'vso': 
-        if re.search('neg[12]',mrs_id) and re.search('tv.* neg.* n1',sent):
-          return True
-        if re.search('neg[34]',mrs_id) and re.search('tv.* neg.* n2',sent):
-          return True
-      if ch('wordorder') == 'osv': 
-        if re.search('neg[12]',mrs_id) and re.search('n1.* neg.* tv',sent):
-          return True
-        if re.search('neg[34]',mrs_id) and re.search('n2.* neg.* tv',sent):
-          return True
-
+      if ch('neg-adv') == 'sel-adv' or \
+             (re.search(r'(\s|^)neg(\s|$)',sent) and re.search('-neg|neg-',sent)):
+        # These are the cases where we're dealing with a selected
+        # complement negative adverb.  Such things should show up
+        # where we expect verbal complements: i.e., to the correct side
+        # of the verb, and either inside or outside the subject, as
+        # requires.
+        if ch('wordorder') == 'svo' or \
+               ch('wordorder') == 'vso' or \
+               ch('wordorder') == 'v-initial':
+          if re.search(r'(\s|^)neg .*tv',sent):
+            return True
+        if ch('wordorder') == 'ovs' or \
+               ch('wordorder') == 'osv' or \
+               ch('wordorder') == 'v-final':
+          if re.search(r'tv.* neg(\s|$)',sent):
+            return True
+        #This is one interpretation of what we might mean.  I think it
+        #matches what the tdl actually does.  It might not match the best
+        #interpretation of the prose on the web form.
+        if ch('wordorder') == 'vso': 
+          if re.search(r'neg[12]',mrs_id) and re.search(r'tv.* neg.* n1',sent):
+            return True
+          if re.search(r'neg[34]',mrs_id) and re.search(r'tv.* neg.* n2',sent):
+            return True
+        if ch('wordorder') == 'osv': 
+          if re.search(r'neg[12]',mrs_id) and re.search(r'n1.* neg.* tv',sent):
+            return True
+          if re.search(r'neg[34]',mrs_id) and re.search(r'n2.* neg.* tv',sent):
+            return True
 
   return False
 
@@ -618,7 +631,15 @@ def filter_coordination(sent, mrs_id,no_coord):
 ######################################################################
 # filter_yesno_questions(sent)
 
-def filter_yesno_questions(sent, mrs_id):
+def filter_yesno_questions(sent, mrs_id, phase):
+
+  # The question particle has to be sentence-initial or sentence-final
+  if re.match(r'^.+qpart.+$', sent):
+    return True
+
+  # That's it for general filteres.
+  if phase == 'u':
+    return False
 
   # If the question strategy is intonation only, then none of the
   # strings attached to the ques[1234] MRSs should be accepted:
@@ -629,9 +650,6 @@ def filter_yesno_questions(sent, mrs_id):
   if ch('ques') != 'qpart' and ch('ques') and re.match('^.*qpart.*$', sent):
     return True
 
-  # The question particle has to be sentence-initial or sentence-final
-  if re.match('^.+qpart.+$', sent):
-    return True
 
   # If the language does use question particles, we should only see the
   # question semantics when qpart is present.  (Currently, the choice here
@@ -729,7 +747,7 @@ def filter_yesno_questions(sent, mrs_id):
     # or V-initial languages.  ... In fact, I'm going to do that.
     # Likewise for free word order.  How could you use word order to
     # mark questions, if word order is free in general?
-    
+
   return False
 
 
@@ -768,7 +786,7 @@ def filter_lexicon(sent, mrs_id):
             return True
         else:
           return True
-            
+
     #This one assumes that all nouns are n+digit(s), and that we only
     #see n2 once/string.
     if ch('noun2spr') == 'nil':
@@ -806,25 +824,26 @@ def filter_lexicon(sent, mrs_id):
 
     if ch('tverbSubj') == 'pp':
       if re.search('wo[3-6]|neg[12]|ques[12]',mrs_id):
-        if not re.search('p-nom n1|n1 p-nom|p-nom det n1|p-nom n1 det|n1 det p-nom|det n1 p-nom',sent):
+        if not re.search(r'p-nom n1|n1 p-nom|p-nom det n1|p-nom n1 det|n1 det p-nom|det n1 p-nom',sent):
           return True
       # possibly redundant: right now there are no seed strings with p-nom or p-acc and these mrs_ids.
       if re.search('wo[7-9]|wo10|neg[34]|ques[34]',mrs_id):
-        if not re.search('p-nom n2|n2 p-nom|p-nom det n2|p-nom n2 det|n2 det p-nom|det n2 p-nom',sent):
+        if not re.search(r'p-nom n2|n2 p-nom|p-nom det n2|p-nom n2 det|n2 det p-nom|det n2 p-nom',sent):
           return True
 
     if ch('tverbSubj') == 'np' and re.search('p-nom',sent):
         return True
 
+
     if ch('tverbObj') == 'pp':
       if re.search('wo[3-6]|neg[12]|ques[12]',mrs_id):
-        if not re.search('p-acc n2|n2 p-acc|p-acc det n2|p-acc n2 det|n2 det p-acc|det n2 p-acc',sent):
+        if not re.search(r'p-acc n2|n2 p-acc|p-acc det n2|p-acc n2 det|n2 det p-acc|det n2 p-acc',sent):
           return True
       # possibly redundant: right now there are no seed strings with p-nom or p-acc and these mrs_ids.
       if re.search('wo[7-9]|wo10|neg[34]|ques[34]',mrs_id):
-        if not re.search('p-acc n1|n1 p-acc|p-acc det n1|p-acc n1 det|n1 det p-acc|det n1 p-acc',sent):
+        if not re.search(r'p-acc n1|n1 p-acc|p-acc det n1|p-acc n1 det|n1 det p-acc|det n1 p-acc',sent):
           return True
-      
+
     if ch('tverbObj') == 'np' and re.search('p-acc',sent):
         return True
 
@@ -889,8 +908,7 @@ def filter_lexicon(sent, mrs_id):
         return True
       if ch('auxorder') == 'left' and re.search('(tv|iv) .*aux',sent):
         return True
-      
-      
+
   return False
 
 
@@ -907,10 +925,33 @@ def filter_sentence(sent, mrs_id, phase):
     if not (ch('cs1') or ch('cs2')):
       no_coord = True
 
+#   if mrs_id == 'neg2':
+#     wo = filter_word_order(sent, mrs_id)
+#     neg = filter_sentential_negation(sent, mrs_id, phase)
+#     co = filter_coordination(sent,mrs_id,no_coord)
+#     q = filter_yesno_questions(sent,mrs_id,phase)
+#     lex = filter_lexicon(sent,mrs_id)
+
+#     if wo:
+#       return wo
+#     if neg:
+#       print 'neg filtered ' + sent
+#       return neg
+#     if co:
+#       print 'coord filtered ' + sent
+#       return co
+#     if q:
+#       print 'questions filtered ' + sent
+#       return q
+#     if lex:
+#       print 'lexicon filtered ' + sent
+#       return lex
+
+
   return filter_word_order(sent, mrs_id) or \
-         filter_sentential_negation(sent, mrs_id) or \
+         filter_sentential_negation(sent, mrs_id,phase) or \
          filter_coordination(sent, mrs_id, no_coord) or \
-         filter_yesno_questions(sent, mrs_id) or \
+         filter_yesno_questions(sent, mrs_id, phase) or \
          filter_lexicon(sent, mrs_id)
 
 
@@ -1318,9 +1359,7 @@ def make_universal_resource(string_list_file, in_profile, out_profile):
         new_i[6] = keep
         new_i[7] = '0'
         items.append(new_i)
-    print 'Finished processing item ' + i[0]
-    if i[0] == str(2):
-      sys.exit
+    print 'Done with item '+ i[0]
 
 #  print 'considered ' + str(total_perms) + 'total permutations.'
   print str(u_kept) + ' universally ungrammatical examples kept.'
