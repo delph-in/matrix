@@ -375,10 +375,10 @@ def validate_test_sentences():
 #   for the regression/other testing
 
 def validate_extra_constraints():
+
   if ch('auxsem') == 'pred':
-    err = 'We don\'t want contentful auxiliaries in the random grammars.'
     add_err('auxsem', err)
-  if ch('hasDets') == 'yes' and not ch('det1'):
+  if ch('hasDets') == 't' and not ch('det1'):
     err = 'To get uniform semantics, we always want det1 specified.'
     add_err('det1', err)
   if not ((ch('cs1') == 'on' and ch('cs1n') == 'on') or \
@@ -392,7 +392,7 @@ def validate_extra_constraints():
 #   the names of choice file variables that are incorrect (stored
 #   in the list 'wrong'.
 
-def validate_choices(choices_file, do_extra = False):
+def validate_choices(choices_file, extra = False):
   global wrong
   wrong = {}
   global choices
@@ -408,7 +408,9 @@ def validate_choices(choices_file, do_extra = False):
   validate_lexicon()
   validate_test_sentences()
 
-  if do_extra:
+  if extra:
     validate_extra_constraints()
-  
+
   return wrong
+
+
