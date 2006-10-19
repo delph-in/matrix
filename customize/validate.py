@@ -377,6 +377,7 @@ def validate_test_sentences():
 def validate_extra_constraints():
 
   if ch('auxsem') == 'pred':
+    err = 'Only semantically empty auxiliaries in test grammars.'
     add_err('auxsem', err)
   if ch('hasDets') == 't' and not ch('det1'):
     err = 'To get uniform semantics, we always want det1 specified.'
