@@ -472,8 +472,9 @@ else:
   while os.path.exists('sessions/' + cookie):
     cookie = str(randint(1000,9999))
 
+if not os.path.exists('sessions'):
+  os.mkdir('sessions')
 session_path = 'sessions/' + cookie
-
 if cookie and not os.path.exists(session_path):
   os.mkdir(session_path)
 
