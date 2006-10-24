@@ -9,7 +9,7 @@ HOW TO USE THIS FILE:
 [10/4/2006 sfd]
 
 feat: Improve TDL pretty-printing
-feat: Make TDLfile handle DOTTED.NAME.FORMAT correctly
+DONE: Make TDLfile handle DOTTED.NAME.FORMAT correctly
 bug:  Fix layout oddities when the main-page dropdown buttons are clicked
       (by using images?)
 bug:  TDLfile treats ... as an identifier -- I don't think that will merge
@@ -40,8 +40,8 @@ bug:  Variable name harmonization
 
 bug:  Don't get confused by duplicated #corefs when merging TDL.  Also
       don't repeat them if they're identical (type names, too).
-feat: In a TDL conj, sort to keep the type names first
-feat: When printing the right side of a TDL typedef, indent any type names
+DONE: In a TDL conj, sort to keep the type names first
+DONE: When printing the right side of a TDL typedef, indent any type names
       to the level of the :=, but indent the final [TFS] two spaces
 
 [10/11/2006 sfd]
