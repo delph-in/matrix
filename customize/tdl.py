@@ -109,11 +109,12 @@ def TDLwrite(s):
   global tdl_indent
   global tdl_file
   tdl_file.write(s)
-  i = s.find('\n')
+  i = s.rfind('\n')
   if i != -1:
     tdl_indent = len(s) - (i + 1)
   else:
     tdl_indent += len(s)
+
 
 ###########################################################################
 # A TDLelem is a node in a TDL parse tree.  This is an abstract class; the
@@ -124,7 +125,7 @@ class TDLelem:
     self.child.append(ch)
 
   def ordered(self):
-    return 0
+    return False
 
   def set_comment(self, comment):
     pass
@@ -132,6 +133,22 @@ class TDLelem:
   def get_comment(self):
     return ''
 
+  def sort(self):
+    new_child = []
+    # corefs first
+    for c in self.child:
+      if isinstance(c, TDLelem_coref):
+        new_child.append(c)
+    # ...then type names
+    for c in self.child:
+      if isinstance(c, TDLelem_type):
+        new_child.append(c)
+    # ...and finally everything else
+    for c in self.child:
+      if not isinstance(c, TDLelem_coref) and not isinstance(c, TDLelem_type):
+        new_child.append(c)
+    self.child = new_child
+        
 
 ###########################################################################
 # A TDLelem_literal is an unprocessed string.  It's used for things like
@@ -248,11 +265,17 @@ class TDLelem_conj(TDLelem):
     old_i = TDLget_indent()
     for ch in self.child[0:1]:
       ch.write()
+      last_was_feat = (isinstance(ch, TDLelem_feat));
     for ch in self.child[1:]:
-      TDLwrite(' &\n')
-      for i in range(old_i):
-        TDLwrite(' ')
+      cur_is_feat = (isinstance(ch, TDLelem_feat));
+      if cur_is_feat or last_was_feat:
+        TDLwrite(' &\n')
+        for i in range(old_i):
+          TDLwrite(' ')
+      else:
+        TDLwrite(' & ')
       ch.write()
+      last_was_feat = cur_is_feat
 
 
 ###########################################################################
@@ -266,7 +289,7 @@ class TDLelem_feat(TDLelem):
 
   # Does self contain only a FIRST and a REST?  If so, self can be
   # printed with '<' and '>' (and maybe as a list).
-  def can_abbrev(self):
+  def is_cons(self):
     if self.empty_list:
       return True
     c0 = None
@@ -284,7 +307,7 @@ class TDLelem_feat(TDLelem):
   # either the type 'null' or also a list?  If so, self can be printed
   # as a list.
   def is_list(self):
-    if self.can_abbrev():
+    if self.is_cons():
       c0 = self.child[0]
       c1 = self.child[1]
 
@@ -302,7 +325,7 @@ class TDLelem_feat(TDLelem):
 
     return False
 
-  def write_abbrev(self):
+  def write_cons(self):
     if self.empty_list:
       TDLwrite('< >')
       return
@@ -339,8 +362,8 @@ class TDLelem_feat(TDLelem):
     if debug_write:
       TDLwrite('feat\n')
 
-    if self.can_abbrev():
-      self.write_abbrev()
+    if self.is_cons():
+      self.write_cons()
     else:
       TDLwrite('[ ')
       old_i = TDLget_indent()
@@ -363,38 +386,30 @@ class TDLelem_av(TDLelem):
     self.child = []
     self.attr = attr
 
+  def write_dotted(self):
+    c = self
+    if len(c.child) == 1 and isinstance(c.child[0], TDLelem_conj):
+      c = c.child[0]
+      if len(c.child) == 1 and isinstance(c.child[0], TDLelem_feat):
+        c = c.child[0]
+        if len(c.child) == 1 and isinstance(c.child[0], TDLelem_av):
+          c = c.child[0]
+          TDLwrite(self.attr)
+          TDLwrite('.')
+          c.write()
+          return True
+    return False
+
   def write(self):
     if debug_write:
       TDLwrite('av\n')
 
-    TDLwrite(self.attr)
-    TDLwrite(' ')
-    for ch in self.child:
-      ch.write()
+    if not self.write_dotted():
+      TDLwrite(self.attr)
+      TDLwrite(' ')
+      for ch in self.child:
+        ch.write()
 
-
-###########################################################################
-# A TDLelem_list corresponds to a list (e.g. < LOCAL.CAT.HEAD det, OPT - >)
-
-class TDLelem_list(TDLelem):
-  def __init__(self):
-    self.child = []
-
-  def write(self):
-    if debug_write:
-      TDLwrite('list\n')
-
-    TDLwrite('< ')
-    for ch in self.child[0:1]:
-      ch.write()
-    for ch in self.child[1:]:
-      TDLwrite(', ')
-      ch.write()
-    TDLwrite(' >')
-
-  def ordered(self):
-    return 1
-  
 
 ###########################################################################
 # A TDLelem_dlist corresponds to a diff-list (e.g. <! [ PRED "_q_rel" ] !>)
@@ -416,7 +431,7 @@ class TDLelem_dlist(TDLelem):
     TDLwrite(' !>')
 
   def ordered(self):
-    return 1
+    return True
 
 
 ###########################################################################
@@ -437,11 +452,19 @@ def TDLparse_coref():
 def TDLparse_av():
   global tok
   attr = tok.pop(0)
-  while tok[0] == '.':
-    attr += tok.pop(0) # '.'
-    attr += tok.pop(0) # attr
   elem = TDLelem_av(attr)
-  elem.add(TDLparse_conj())
+  if tok[0] == '.':
+    tok.pop(0) # '.'
+    cur = elem
+    temp = TDLelem_conj()
+    cur.add(temp)
+    cur = temp
+    temp = TDLelem_feat()
+    cur.add(temp)
+    cur = temp
+    cur.add(TDLparse_av())
+  else:
+    elem.add(TDLparse_conj())
   return elem
 
 def TDLparse_feat():
@@ -604,9 +627,8 @@ def TDLmergeable(e1, e2):
     return e1.attr == e2.attr
   if (isinstance(e1, TDLelem_conj) and isinstance(e2, TDLelem_conj)) or \
      (isinstance(e1, TDLelem_feat) and isinstance(e2, TDLelem_feat)) or \
-     (isinstance(e1, TDLelem_list) and isinstance(e2, TDLelem_list)) or \
      (isinstance(e1, TDLelem_dlist) and isinstance(e2, TDLelem_dlist)):
-    return 1
+    return True
 
 
 ###########################################################################
@@ -649,12 +671,14 @@ def TDLmerge(e1, e2):
             break
         if not handled:
           e0.add(copy.deepcopy(c))
-    return e0
   else:
     e0 = TDLelem_conj()
     e0.add(copy.deepcopy(e1))
     e0.add(copy.deepcopy(e2))
-    return e0
+
+  e0.sort()
+
+  return e0
 
 ###########################################################################
 # A TDLfile contains the contents of a single .tdl file.  It is initialized
