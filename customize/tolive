@@ -1,0 +1,42 @@
+#!/bin/bash
+
+while [ "$1" = -m -o "$1" = -l ]
+do
+    if [ "$1" = -m ]
+    then
+        copymatrix=true
+    elif [ "$1" = -l ]
+    then
+        copylocal=true
+    fi
+    shift
+done
+
+if [ $# != 1 ]
+then
+    echo "Usage: $0 [-m] [-l] <directory name>"
+    exit 1
+fi
+
+if [ $copylocal ]
+then
+    cpcmd="cp -v"
+    cptarg="../../$1"
+else
+    cpcmd="scp"
+    cptarg="uwcl@homer.u.washington.edu:public_html/$1"
+fi
+
+mainfiles="matrix.cgi matrix.css matrixdef customize.py deffile.py tdl.py utils.py validate.py"
+
+$cpcmd $mainfiles $cptarg
+
+if [ $copymatrix ]
+then
+    if [ $copylocal ]
+    then
+        mkdir -p "$cptarg/matrix-core"
+    fi
+    matrixfiles=`echo ../*.* ../README ../lkb ../pet ../modules/basic_script | sed 's/..\/my_language.tdl//g' | sed 's/..\/CVS//g'`
+    $cpcmd -r $matrixfiles "$cptarg/matrix-core"
+fi
