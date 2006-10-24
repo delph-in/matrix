@@ -67,3 +67,7 @@ t8.add('t := one-type.')
 t8.add('t := two-type.')
 t8.add('t := #one.')
 t8.dump()
+
+t9 = tdl.TDLfile('')
+t9.add('t := [ SYNSEM [ LOCAL [ CAT [ HEAD verb ] ] ] ].')
+t9.dump()
