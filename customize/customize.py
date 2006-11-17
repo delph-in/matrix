@@ -1423,13 +1423,13 @@ def create_neg_add_lex_rule(advAlone):
 
     lrules.add('neg-add-lr := const-neg-add-lex-rule.')
 
-    add_irule('neg-add-lr','infl-neg-add-lex-rule',ch('neg-aff'),ch('neg-aff-form'))
+    add_irule('neg-add-ir','infl-neg-add-lex-rule',ch('neg-aff'),ch('neg-aff-form'))
 
   if advAlone == 'never':
     mylang.add('neg-add-lex-rule := inflecting-lex-rule.'
                'This type is instantiated in irules.tdl.')
       
-    add_irule('neg-add-lr','neg-add-lex-rule',ch('neg-aff'),ch('neg-aff-form'))
+    add_irule('neg-add-ir','neg-add-lex-rule',ch('neg-aff'),ch('neg-aff-form'))
 
 # ERB 2006-09-21 Create negative inflection lexical rule
 #Inflection without selected adverb
@@ -1517,7 +1517,7 @@ def create_neg_adv_lex_item(advAlone):
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
                                                                                    COMPS null ]].''')
   elif ch('negmod') == 'v':
-    mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.LIGHT + ].''')
+    mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HG-LIGHT - to allow us to pick out\n
     lexical Vs for V-level attachment of negative adverbs.''')
 
@@ -2040,7 +2040,7 @@ def customize_yesno_questions():
                                      SUBJ < >,
                                      SPR #spr,
                                      SPEC #spec ]],
-                         CONT.INDEX.MESG ques ],
+                         CONT.HOOK.INDEX.MESG ques ],
                  LKEYS #lkeys ],
         DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ < #subj >,
                                      COMPS #comps,
@@ -2337,10 +2337,13 @@ def customize_verbs():
 
   # Do intransitve and transitive verbs in the same loop, since they
   # share a lot of TDL in common  - sfd
+
+  # ERB 2006-11-06 Fixed some bugs in generation of non-finite forms.
+  # Was looking up ch(i + 'verbnf'), but matrixdef uses 'verb-nonfinite').
   for i in ('i', 't'):
     verb = ch(i + 'verb')
     verbpred = ch(i + 'vpred')
-    verbnf = ch(i + 'verbnf')
+    verbnf = ch(i + 'verb-nonfinite')
     tivity = 'trans'
     if i == 'i':
       tivity = 'intrans'

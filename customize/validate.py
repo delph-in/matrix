@@ -337,16 +337,16 @@ def validate_lexicon():
   # If they said that either negation or questions required auxiliaries, did they specify
   # an auxiliary?
 
-  if (not ch('auxverbform')):
+  if (not ch('auxverb')):
     if (ch('neginfltype') == 'aux'):
       err = 'You specified that sentential negation is expressed through inflection of auxiliary verbs, but you did not specify an auxiliary in the lexicon.'
-      add_err('auxverbform', err)
+      add_err('auxverb', err)
     if (ch('negseladv') == 'aux'):
       err = 'You specified that sentential negation is expressed through an adverb selected by auxiliary verbs, but you did not specify an auxiliary in the lexicon.'
-      add_err('auxverbform', err)
-    if (ch('qinvverb') == 'aux'):
+      add_err('auxverb', err)
+    if (ch('qinverb') == 'aux'):
       err = 'You specified that matrix yes-no questions are expressed through subject-auxiliary inversion, but you did not specify an auxiliary in the lexicon.'
-      add_err('auxverbform', err)
+      add_err('auxverb', err)
 
   # ERB 2006-0929
   # If they said that either noun takes an obligatory determiner, did they say their language has
