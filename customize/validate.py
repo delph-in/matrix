@@ -214,13 +214,13 @@ def validate_lexicon():
   iverb = ch('iverb')
   ivpred = ch('ivpred')
   iverbSubj = ch('iverbSubj')
-  iverbnf = ch('iverbnf')
+  iverbnf = ch('iverb-nonfinite')
 
   tverb = ch('tverb')
   tvpred = ch('tvpred')
   tverbSubj = ch('tverbSubj')
   tverbObj = ch('tverbObj')
-  tverbnf = ch('tverbnf')
+  tverbnf = ch('tverb-nonfinite')
 
   subjAdp = ch('subjAdp')
   subjAdpForm = ch('subjAdpForm')
@@ -240,8 +240,8 @@ def validate_lexicon():
 
   # ERB 2006-09-29: What are these two picking up?  I don't see the match in matrixdef.
 
-  neg = ch('neg')
-  negadv = ch('negadv')
+  # neg = ch('neg')
+  # negadv = ch('negadv')
 
   # ERB 2006-09-29: Doing this over in validate_sentential_negation()
   # If negation involves an adverb, did they say which kind?
@@ -338,7 +338,7 @@ def validate_lexicon():
   # an auxiliary?
 
   if (not ch('auxverb')):
-    if (ch('neginfltype') == 'aux'):
+    if (ch('neg-infl-type') == 'aux'):
       err = 'You specified that sentential negation is expressed through inflection of auxiliary verbs, but you did not specify an auxiliary in the lexicon.'
       add_err('auxverb', err)
     if (ch('negseladv') == 'aux'):

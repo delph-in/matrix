@@ -259,11 +259,22 @@ def word_order_specific_filters(sent, mrs_id):
   #pattern.  I need to know how many dets there are.
   # Still, these are fairly general.  I expect to add lots of mrs_ids here.
 
+  # ERB 2006-11-28 Oops: Not that general.  I was ruling out 'n1 det n2 tv'
+  # for an SOV spec-head language because the det which goes with n2 was
+  # adjacent to and after n1.  Need to pin this down a little more.
+
   if ch('NounDetOrder') == 'HeadSpec':
-    if re.search('wo[2569]|wo10',mrs_id) and \
-       re.search('det (n1|n2)',sent):
+    # These ones have just one determiner, and it's on n1
+    if re.search('wo[25]|wo10',mrs_id) and \
+       re.search('det n1',sent):
       return True
 
+    # These ones have just one determiner, and it's on n2
+    if re.search('wo[69]',mrs_id) and \
+       re.search('det n2',sent):
+      return True
+
+    # These one have two determiners
     if re.search('wo[48]|neg[24]|ques[24]',mrs_id) and \
        (re.search('det .*det (n1|n2)',sent) or \
         re.search('det (n1|n2) .*det (n1|n2)', sent) or \
@@ -759,7 +770,38 @@ def filter_yesno_questions(sent, mrs_id, phase):
 
 def filter_lexicon(sent, mrs_id):
 
-    # This assumes that noun1 has the form n1, noun2 has the form n2, etc.
+  # Figure out if we're in a case where the auxiliary is controlling
+  # the pos of the subj.
+
+  auxsubj = False
+  if re.search('aux',sent) and \
+     (ch('auxcomp') == 'VP' or ch('auxcomp') == 'V'):
+    auxsubj = True
+     
+  
+
+  # Checking for -nf forms, if appropriate.  The only seed strings
+  # with the -nf forms (so far) are those with auxiliaries.  Should
+  # eventually test some strings with -nf forms and no aux.... _FIX_ME_
+
+  if re.search('wo|neg|ques',mrs_id):
+    if ch('iverb-nonfinite') == 'iv-nf':
+      if re.search('aux',sent) and re.search('iv',sent) \
+         and not re.search('iv-nf',sent):
+        return True
+
+    if ch('tverb-nonfinite') == 'tv-nf':
+      if re.search('aux',sent) and re.search('tv',sent) \
+         and not re.search('tv-nf',sent):
+        return True
+
+    if not ch('iverb-nonfinite') and re.search('iv-nf',sent):
+      return True
+
+    if not ch('tverb-nonfinite') and re.search('tv-nf',sent):
+      return True
+
+  # This assumes that noun1 has the form n1, noun2 has the form n2, etc.
   if re.search('wo|neg|ques',mrs_id):
     if ch('noun1spr') == 'obl' and re.search('n1', sent):
       if not re.search('n1 det|det n1',sent):
@@ -810,19 +852,26 @@ def filter_lexicon(sent, mrs_id):
     if ch('iverbSubj') == 'pp':
       # We're talking about intransitive verbs here.  n1 is always
       # the subject.
+
+      # BUT: The auxiliary might want an np subject, so if there's an
+      # aux, we have to consider it separately.
       if re.search('wo[12]$',mrs_id):
-        if not re.search('p-nom n1|n1 p-nom|p-nom det n1|p-nom n1 det|n1 det p-nom|det n1 p-nom',sent):
-          return True
+        if not auxsubj:
+          if not re.search('p-nom n1|n1 p-nom|p-nom det n1|p-nom n1 det|n1 det p-nom|det n1 p-nom',sent):
+            return True
 
     if ch('iverbSubj') == 'np':
-      if re.search('wo[12]$',mrs_id):
+
+      # Likewise here, the aux might want a pp subject.
+      
+      if re.search('wo[12]$',mrs_id) and not auxsubj
         if re.search('p-nom',sent):
           return True
 
     #I think we don't have to worry about picking up a det or a p-nom from the other np,
     #because the general filters should have taken out those cases. ??
 
-    if ch('tverbSubj') == 'pp':
+    if ch('tverbSubj') == 'pp' and not auxsubj
       if re.search('wo[3-6]|neg[12]|ques[12]',mrs_id):
         if not re.search(r'p-nom n1|n1 p-nom|p-nom det n1|p-nom n1 det|n1 det p-nom|det n1 p-nom',sent):
           return True
@@ -831,7 +880,7 @@ def filter_lexicon(sent, mrs_id):
         if not re.search(r'p-nom n2|n2 p-nom|p-nom det n2|p-nom n2 det|n2 det p-nom|det n2 p-nom',sent):
           return True
 
-    if ch('tverbSubj') == 'np' and re.search('p-nom',sent):
+    if ch('tverbSubj') == 'np' and re.search('p-nom',sent) and not auxsubj
         return True
 
 
@@ -877,21 +926,21 @@ def filter_lexicon(sent, mrs_id):
     if re.search('wo|neg',mrs_id):
       if ch('auxverb') and ch('auxcomp')=='V':
         if ch('auxorder') == 'right':
-          if re.search('aux',sent) and not re.search('(tv|iv) (neg )*aux',sent):
+          if re.search('aux',sent) and not re.search('(tv|iv)(-nf)* (neg )*aux',sent):
             return True
         elif ch('auxorder') == 'left':
           if re.search('aux',sent) and not re.search('aux (neg )*(tv|iv)',sent):
             return True
-        elif re.search('aux',sent) and not re.search('aux (neg )*(tv|iv)|(tv|iv) (neg )*aux',sent):
+        elif re.search('aux',sent) and not re.search('aux (neg )*(tv|iv)|(tv|iv)(-nf)* (neg )*aux',sent):
           return True
       
       # 3. VP comp, so S attaches outside: aux n1,n2 tv or aux n1 tv
       #        may be further specified as left only or right only
 
       if ch('auxverb') and ch('auxcomp')=='VP':
-        if re.search('aux .*n1 .*n2 .*tv|aux .*n2 .*n1 .*tv|tv .*n2 .*n1 .*aux|tv .*n1 .*n2 aux',sent):
+        if re.search('aux .*n1 .*n2 .*tv|aux .*n2 .*n1 .*tv|tv(-nf)* .*n2 .*n1 .*aux|tv(-nf)* .*n1 .*n2 aux',sent):
           return True
-        if re.search('aux .*n1 .*iv|iv .*n1 .*aux',sent):
+        if re.search('aux .*n1 .*iv|iv(-nf)* .*n1 .*aux',sent):
           return True
     
     # 4. S comp, attaches outside S and O.
@@ -899,15 +948,32 @@ def filter_lexicon(sent, mrs_id):
 
       if ch('auxverb') and ch('auxcomp') == 'S':
         if re.search('(n1|n2) .*aux .*(tv|iv)',sent) or \
-           re.search('(tv|iv) .*aux .*(n1|n2)',sent):
+           re.search('(tv|iv)(-nf)* .*aux .*(n1|n2)',sent):
           return True
 
     # This left or right only seems to work across all complementation cases.
     
       if ch('auxorder') == 'right' and re.search('aux .*(tv|iv)',sent):
         return True
-      if ch('auxorder') == 'left' and re.search('(tv|iv) .*aux',sent):
+      if ch('auxorder') == 'left' and re.search('(tv|iv)(-nf)* .*aux',sent):
         return True
+
+    # Now worry about the pos of the subject in sentences with auxiliaries:
+
+    if auxsubj:
+      
+      if ch('auxsubj') == 'noun':
+        if re.search('wo|neg|ques',mrs_id):
+          if re.search('p-nom',sent):
+            return True
+
+      if ch('auxsubj') == 'adp':
+        if re.search('wo[1-6]$|neg[12]|ques[12]',mrs_id):
+          if not re.search('p-nom n1|n1 p-nom|p-nom det n1|p-nom n1 det|n1 det p-nom|det n1 p-nom',sent):
+            return True
+        if re.search('wo[7-9]|wo10|neg[34]|ques[34]',mrs_id):
+          if not re.search('p-nom n2|n2 p-nom|p-nom det n2|p-nom n2 det|n2 det p-nom|det n2 p-nom',sent):
+            return True
 
   return False
 
@@ -1572,19 +1638,26 @@ def make_gold_standard(in_profile, out_profile):
 # profiles.py -g <file> <id> Create language-specific resource on the basis of
 #                            universal resource <file> and choices file choices.<id>
 
-(options, args) = getopt(sys.argv[1:],'iug')
+# ERB 2006-11-28 For debugging purposes, disable the following unless
+# this script is being run as the main program.  (i.e., this should allow
+# me to import this file into the interpreter without running anything.)
 
-i_flag = ''
-u_flag = ''
-g_flag = ''
+if __name__ == '__main__':
 
-for o in options:
-  if re.search('i',o[0]):
-    i_flag = 'true'
-  if re.search('u',o[0]):
-    u_flag = 'true'
-  if re.search('g',o[0]):
-    g_flag = 'true'
+  (options, args) = getopt(sys.argv[1:],'iug')
+  
+  i_flag = ''
+  u_flag = ''
+  g_flag = ''
+
+  for o in options:
+    if re.search('i',o[0]):
+      i_flag = 'true'
+    if re.search('u',o[0]):
+      u_flag = 'true'
+    if re.search('g',o[0]):
+      g_flag = 'true'
+    
 
 #The intermediate resource doesn't involve any filtering, and
 # so we shouldn't recreate it with each run. Make the user specify
@@ -1605,31 +1678,31 @@ for o in options:
 
 # Typical: python profiles.py -u coord_profile_all _coord
 
-if u_flag:
-  string_list = 'string_list' + args[1]
-  profile = args[0]
-  i_profile = 'i_profile' + args[1]
-  u_profile = 'u_profile' + args[1]
+  if u_flag:
+    string_list = 'string_list' + args[1]
+    profile = args[0]
+    i_profile = 'i_profile' + args[1]
+    u_profile = 'u_profile' + args[1]
 
-  make_intermediate_resource(string_list,profile,i_profile)
-  make_universal_resource(string_list,i_profile,u_profile)
+    make_intermediate_resource(string_list,profile,i_profile)
+    make_universal_resource(string_list,i_profile,u_profile)
 
-# Typical: python profiles.py -g u_profile_coord _022
-# With choices_file_022 in the directory.
+    # Typical: python profiles.py -g u_profile_coord _022
+    # With choices_file_022 in the directory.
 
-if g_flag:
-  # See if the user specified a choices_file to use
-  #if len(args) > 0:
-  #  choices_file = args[0]
-  #else:
-  #  choices_file = 'rand_choices'
-  #  random_validated_grammar(choices_file,True)
+  if g_flag:
+    # See if the user specified a choices_file to use
+    #if len(args) > 0:
+    #  choices_file = args[0]
+    #else:
+    #  choices_file = 'rand_choices'
+    #  random_validated_grammar(choices_file,True)
 
-  #Assume now that user specified a choices file.
+    #Assume now that user specified a choices file.
 
-  choices_file = 'choices_file' + args[1]
-  u_profile = args[0]
-  g_profile = 'g_profile' + args[1]
-  choices = read_choices(choices_file)
+    choices_file = 'choices_file' + args[1]
+    u_profile = args[0]
+    g_profile = 'g_profile' + args[1]
+    choices = read_choices(choices_file)
 
-  make_gold_standard(u_profile, g_profile)
+    make_gold_standard(u_profile, g_profile)

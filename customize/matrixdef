@@ -211,7 +211,7 @@ Radio tverbObj "fr tverbObj" "The object of this verb is a: " ""
 . np "fr np" "" "NP "
 . pp "fr pp" "" "PP<br>"
 
-Text iverb-nonfinite "fr iverb-nonfinite" "If your language has auxiliaries and this transitive verb appears in a different form when it is the (head of the) complement of the auxiliary specified below, please specify that form here: " "" 40
+Text tverb-nonfinite "fr tverb-nonfinite" "If your language has auxiliaries and this transitive verb appears in a different form when it is the (head of the) complement of the auxiliary specified below, please specify that form here: " "" 40
 
 Label "Auxiliary verb (if applicable):"
 

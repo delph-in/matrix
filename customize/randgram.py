@@ -28,6 +28,10 @@ var = {}
 # current assume it's this way anyway, but it would be nice to elaborate
 # the seed strings and be able to test this functionality.
 
+# ERB 2006-11-28 I think it's time to fix this.  Editing seed strings now:
+# There should be variants with the -nf affix before the auxiliary, as well
+# as the variants without.
+
 lexicon = {'noun1': 'n1', 'noun1pred': '_n1_n_rel', \
            'noun2': 'n2', 'noun2pred': '_n2_n_rel', \
            'tverb': 'tv', 'tvpred': '_tv_v_rel', \
@@ -41,9 +45,19 @@ lexicon = {'noun1': 'n1', 'noun1pred': '_n1_n_rel', \
            'qpartform': 'qpart', \
            'neg-aff-form': 'neg', \
            'cs1orth': 'co1', 'cs2orth': 'co2', \
-           'iverb-nonfinite': 'iv', 'tverb-nonfinite': 'tv', \
            'language': 'rand_language', \
            'sentence1': 'sentence1', 'sentence2': 'sentence2' }
+
+# ERB 2006-11-28 We only want to give a value for iverb-nonfinite or
+# tverb-nonfinite some of the time.  
+
+
+
+if randint(0,1):
+  lexicon['iverb-nonfinite'] = 'iv-nf'
+
+if randint(0,1):
+  lexicon['tverb-nonfinite'] = 'tv-nf'
 
 
 def load_vars():

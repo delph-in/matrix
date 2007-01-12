@@ -51,8 +51,8 @@ def has_auxiliaries_p():
   mylang.add('fin := form.')
   mylang.add('inf := form.')
 
-  return ch('neginfltype') == 'aux' or \
-         ch('negseladv') == 'aux' or \
+  return ch('neg-infl-type') == 'aux' or \
+         ch('neg-sel-adv') == 'aux' or \
          ch('qinvverb') == 'aux' or \
          ch('auxverb')
 
@@ -2121,7 +2121,7 @@ def customize_nouns():
   noun2spr = ch('noun2spr')
 
   # Do the noun entries have the same behavior wrt to overt determiners?
-  singlentype = (noun1spr and noun2spr and noun1spr != noun2spr)
+  singlentype = (noun1spr and noun2spr and noun1spr == noun2spr)
 
   # Add the lexical types to mylang
   mylang.add_literal(';;; Lexical types')
@@ -2133,9 +2133,12 @@ def customize_nouns():
   # Playing fast and loose with the meaning of OPT on SPR.  Using
   # OPT - to mean obligatory (as usual), OPT + to mean impossible (that's
   # weird), and leaving OPT unspecified for truly optional.  Hoping
-  # this will work at least for LSA111 lab.  
-  # Funny leading white space is to make the tdl look good.
+  # this will work at least for LSA111 lab.
 
+  # ERB 2006-11-28 Update: To make that weird use of OPT work, the
+  # head-spec rule has to require [OPT -] on its non-head daughter.
+  # Adding that just in case we add the no-spr-noun-lex type.
+  
   if singlentype:
     typedef = \
       'noun-lex := basic-noun-lex & basic-one-arg & \
@@ -2170,7 +2173,13 @@ def customize_nouns():
         'no-spr-noun-lex := noun-lex & \
            [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
       mylang.add(typedef)
-    
+
+      mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.OPT - ].',
+                 'Nouns which cannot take specifiers mark their SPR requirement\n\
+as OPT +.  Making the non-head daughter OPT - in this rule\n\
+keeps such nouns out.')
+                 
+      
   # Add the lexical entries
   lexicon.add_literal(';;; Nouns')
 
@@ -2195,22 +2204,21 @@ def customize_verbs():
   iverb = ch('iverb')
   ivpred = ch('ivpred')
   iverbSubj = ch('iverbSubj')
-  tverbnf = ch('iverbnf')
+  tverbnf = ch('iverb-nonfinite')
 
   tverb = ch('tverb')
   tvpred = ch('tvpred')
   tverbSubj = ch('tverbSubj')
   tverbObj = ch('tverbObj')
-  tverbnf = ch('tverbnf')
+  tverbnf = ch('tverb-nonfinite')
 
   subjAdp = ch('subjAdp')
   subjAdpForm = ch('subjAdpForm')
   objAdp = ch('objAdp')
   objAdpForm = ch('objAdpForm')
 
-  neg = ch('neg')
-  negadv = ch('negadv')
   negmod = ch('negmod')
+  negadv = ch('neg-adv')
   auxcomp = ch('auxcomp')
 
   # Do the verbs take the same category (NP or PP) for their subjects?
@@ -2678,9 +2686,8 @@ def customize_determiners():
 
 def customize_misc_lex():
 
-  neg = ch('neg')
-  negadv = ch('negadv')
   negmod = ch('negmod')
+  negadv = ch('neg-adv')
 
   # Negative adverb
   if negadv:
