@@ -11,6 +11,9 @@ import random
 randint = random.randint
 import cgi
 import cgitb; cgitb.enable()
+import time
+import glob
+from distutils.dir_util import remove_tree
 
 import utils
 tokenize_def = utils.tokenize_def
@@ -472,8 +475,19 @@ else:
   while os.path.exists('sessions/' + cookie):
     cookie = str(randint(1000,9999))
 
+# make the sessions directory if necessary
 if not os.path.exists('sessions'):
   os.mkdir('sessions')
+
+# look for any sessions older than an hour and delete them
+now = time.time()
+sessions = glob.glob('sessions/*')
+for s in sessions:
+  if now - os.path.getmtime(s) > 3600:
+    remove_tree(s)
+
+# figure out the path to the current session's directory, creating it
+# if necessary
 session_path = 'sessions/' + cookie
 if cookie and not os.path.exists(session_path):
   os.mkdir(session_path)
