@@ -7,6 +7,7 @@
 
 root := phrase &
 [ SYNSEM.LOCAL [ CAT [ HEAD verb,
+		       MC +,
                        VAL [ SUBJ < >,
                              COMPS < > ] ],
                  COORD - ] ].

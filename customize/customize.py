@@ -660,6 +660,11 @@ def customize_major_constituent_order(wo):
 # ouside O as basic word orders?  Likewise all cases where O attaches
 # outside S?)
 
+# ERB 2007-01-21 Moving to message-free universe, and now hypothesizing
+# that all rules which attach subjects attend to clausal semantics.
+# Thus, the head-subj rules that are defined here inherit from
+# decl-head-subj-phrase (imp-head-subj-phrase is also available).
+
 # Head-comp order
 
   if wo == 'sov' or wo == 'osv' or wo == 'ovs' or wo == 'v-final':
@@ -674,11 +679,11 @@ def customize_major_constituent_order(wo):
 
   if wo == 'osv' or wo == 'sov' or wo == 'svo' or wo == 'v-final':
     hs = 'subj-head'
-    mylang.add(hs + '-phrase := basic-head-subj-phrase & head-final.')
+    mylang.add(hs + '-phrase := decl-head-subj-phrase & head-final.')
 
   if wo == 'ovs' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
     hs = 'head-subj'
-    mylang.add(hs + '-phrase := basic-head-subj-phrase & head-initial.')
+    mylang.add(hs + '-phrase := decl-head-subj-phrase & head-initial.')
 
 # Complements attach before subjects
 
@@ -760,8 +765,8 @@ mother and head-daughter for all other kinds of phrases\n\
 if we do this.  Just for illustration, I\'m putting it\n\
 in for head-adjunct phrases here:')
 
-    mylang.add('head-subj-phrase := basic-head-subj-phrase & head-initial-head-nexus.')
-    mylang.add('subj-head-phrase := basic-head-subj-phrase & head-final-head-nexus.')
+    mylang.add('head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
+    mylang.add('subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
     mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.')
     mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.')
     mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
@@ -1377,18 +1382,16 @@ def create_neg_add_lex_rule(advAlone):
                                                                HCONS <! [ LARG #larg ] !> ],
                                                   LKEYS.KEYREL.PRED "_neg_r_rel" ],
                                           REST #comps ]],
-                        CONT [ HOOK [ INDEX #negind,
+                        CONT.HOOK [ INDEX #negind,
                                       LTOP #negltop,
-                                      XARG #xarg ],
-                               MSG #msg ]],
+                                      XARG #xarg ]],
         DTR lex-item &  [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ #subj,
                                                      SPR #spr,
                                                      SPEC #spec,
                                                      COMPS #comps ],
                                                HEAD verb ],
-                                         CONT [ HOOK [ LTOP #larg,
-                                                       XARG #xarg ],
-                                                MSG #msg ]]]].''',
+                                         CONT.HOOK [ LTOP #larg,
+                                                     XARG #xarg ]]]].''',
                                                '''This lexical rule adds a selected negative\n
                                                adverb to the beginning of the COMPS list''')
 
@@ -1451,8 +1454,7 @@ def create_neg_infl_lex_rule():
 
   mylang.add('neg-infl-lex-rule := cont-change-only-lex-rule &\
 	                     inflecting-lex-rule &\
-	   [ C-CONT [ MSG #msg,\
-	              HOOK [ XARG #xarg,\
+	   [ C-CONT [ HOOK [ XARG #xarg,\
 	                     LTOP #ltop,\
 	                     INDEX #ind ],\
 	              RELS <! event-relation &\
@@ -1466,9 +1468,8 @@ def create_neg_infl_lex_rule():
 	     SYNSEM.LKEYS #lkeys,\
 	     DTR lex-item & \
 	         [ SYNSEM [ LKEYS #lkeys,\
-	                    LOCAL [ CONT [ MSG #msg,\
-	                                 HOOK [ XARG #xarg,\
-	                                        LTOP #larg ]],\
+	                    LOCAL [ CONT.HOOK [ XARG #xarg,\
+	                                        LTOP #larg ],\
 	                          CAT.HEAD verb]]]].',
              'This lexical rule adds the neg_r_rel to the verb\'s\n\
 	RELS list.  It is instantiated by a spelling-changing\n\
@@ -2022,6 +2023,11 @@ def customize_yesno_questions():
     mylang.add('verb :+ [ INV bool ].', comment)
 
     comment = \
+      'All verbs start off as not inverted.'
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].', comment)
+
+
+    comment = \
       'Rule for inverted subject verb order in questions.\n' + \
       'The incompatible SUBJ values on SYNSEM and DTR are\n' + \
       'what keeps this one from spinning.'
@@ -2031,16 +2037,19 @@ def customize_yesno_questions():
       aux = ', AUX -'
     elif qinvverb == 'main-aux':
       aux = ''
-      # ERB 2006-10-05 Adding in semantics here.  This rule constrains MESG to ques.  
+      # ERB 2006-10-05 Adding in semantics here.  This rule constrains MESG to ques.
+      # ERB 2007-01-21 Removing semantics here: Need to allow inversion to not express questions.  Instead, the result of this is MC na, and there is a separate non-branching rule which introduces question semantics.  Following the ERG in this.
     typedef = '''
-    subj-v-inv-lrule := val-change-only-lex-rule &
-      constant-lex-rule &
-      [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ INV +''' + aux + ''' ],
-                               VAL [ COMPS < #subj . #comps >,
+    subj-v-inv-lrule := cat-change-only-lex-rule &
+			same-hc-light-lex-rule &
+			same-posthead-lex-rule &
+                        constant-lex-rule &
+      [ SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV +''' + aux + ''' ],
+                             VAL [ COMPS < #subj . #comps >,
                                      SUBJ < >,
                                      SPR #spr,
-                                     SPEC #spec ]],
-                         CONT.HOOK.INDEX.MESG ques ],
+                                     SPEC #spec ],
+                             MC na ],
                  LKEYS #lkeys ],
         DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ < #subj >,
                                      COMPS #comps,
@@ -2050,6 +2059,27 @@ def customize_yesno_questions():
     mylang.add(typedef, comment)
 
     lrules.add('inv-lr := subj-v-inv-lrule.')
+
+  # ERB 2007-01-21 Then we need the non-branching construction which
+  # corrects to MC + and adds MSG ques.
+
+    comment = \
+           'This rule takes [MC na] inverted phrases and licneses' + \
+           'them as main clauses with question semantics.\n'
+
+    typedef = '''
+    int-cl := interrogative-clause & head-only &
+    [ SYNSEM.LOCAL.CAT [ HEAD.INV +,
+                         VAL #val,
+                         MC + ],
+      HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na,
+                                  VAL #val &
+                                       [SUBJ < >,
+                                       COMPS < >]],
+      C-CONT.HOOK.INDEX.MSG ques ].'''
+    mylang.add(typedef, comment)
+
+    rules.add('int := int-cl.')
 
   # ERB 2006-10-05 Moving away from the modifier analysis of question particles
   # which I think doesn't handle the facts well.  These look more like complementizers
@@ -2072,10 +2102,10 @@ def customize_yesno_questions():
                                                 .'''
     mylang.add(typedef,comment)
 
-    comment = 'Subtype for question particles. Constrains MESG to ques.'
+    comment = 'Subtype for question particles. Constrains MSG to ques.'
     typedef = '''
       qpart-lex-item := complementizer-lex-item &
-         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.MESG ques ].'''
+         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.MSG ques ].'''
     mylang.add(typedef,comment)
 
     #   if ques == 'qpart':
@@ -2766,10 +2796,15 @@ def customize_roots():
 #    verb_addendum = ' & [ FORM fin ]'
 #[ HEAD verb' + verb_addendum + ', \
 
+  # ERB 2007-01-21 Need to add [MC +] for inversion strategy for
+  # questions, but it's hard to see how this could hurt in general,
+  # so let's just put it in.
+
   typedef = \
     'root := phrase & \
-       [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < >, \
-                              COMPS < > ], \
+       [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ < >, \
+                                    COMPS < > ], \
+                              MC + ],\
                         COORD - ] ].'
   roots.add(typedef, comment)
 

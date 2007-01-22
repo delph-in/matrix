@@ -56,3 +56,15 @@ feat: When adding seed strings, get their actual length and put it in
 bug:  randgram.py is currently forcing non-finite forms to be the same
       as the finite forms.  We should eventually update the seed strings
       to allow for distinct forms and test this.
+
+[1/21/2007 erb]
+
+feat: Edit Version.lsp to create a value of *grammar-version* which
+      reflects both the date on customize.py (or perhaps matrix.tdl)
+      and the language name supplied by the user.
+bug:  Consider doing something to check whether matrix-core/matrix.tdl
+      matrix-core/roots.tdl and other contentful files are synched with
+      main matrix repository.  Er, and clean up which files are actually
+      needed in matrix-core (roots.tdl, for example, isn't used).  Consider
+      removing files that are completely produced by customize.py from
+      matrix/ itself.

@@ -350,11 +350,13 @@ semsort :< sort.
 
 mrs-min := avm.
 
+; ERB 2007-01-21 Removing feature MSG here (moving it to a feature
+; of events.
+
 mrs := mrs-min &
   [ HOOK hook,
     RELS diff-list,
-    HCONS diff-list,
-    MSG basic_message ].
+    HCONS diff-list ].
 
 ; HOOK values include
 ;    LTOP                  ; Local top handle
@@ -416,28 +418,34 @@ ctxt := ctxt-min &
 ; allowing scope ambiguity between quanitifers and messages, as it is
 ; not clear what that would mean.
 
-basic_message := relation.
-message := basic_message &
-  [ PRED message_m_rel,
-    MARG handle ].
+; ERB 2007-01-21 Moving to a message free universe.
 
-no-msg := basic_message.
+;basic_message := relation.
+;message := basic_message &
+;  [ PRED message_m_rel,
+;    MARG handle ].
+
+;no-msg := basic_message.
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Message preds
 
-message_m_rel := predsort.
-command_m_rel := message_m_rel.
-prop-or-ques_m_rel := message_m_rel.          ;for COMPS of e.g. 'know'
-proposition_m_rel := prop-or-ques_m_rel.
-abstr-ques_m_rel := prop-or-ques_m_rel.       
-question_m_rel := abstr-ques_m_rel.
+; ERB 2007-01-21 Moving to a message free universe.
+
+;message_m_rel := predsort.
+;command_m_rel := message_m_rel.
+;prop-or-ques_m_rel := message_m_rel.          ;for COMPS of e.g. 'know'
+;proposition_m_rel := prop-or-ques_m_rel.
+;abstr-ques_m_rel := prop-or-ques_m_rel.       
+;question_m_rel := abstr-ques_m_rel.
 
 
 
 ; Subtype of int_rel for tag questions and structures in other languages
 ; with equivalent pragmatics.
-ne_m_rel := abstr-ques_m_rel.                 
+;ne_m_rel := abstr-ques_m_rel.                 
 
 ; Constrains handle of scopable argument HARG relative to one 
 ; outscoped LARG handle (the "H" is mnemonic for either "higher" or
@@ -510,14 +518,18 @@ tam := avm &
 ; ERB 2006-10-05 Update this little hierarchy enventually to 
 ; include commands, etc.
 
-mesg := avm.
-prop-or-ques := mesg.
+; ERB 2007-01-21 Consider renaming the feature MSG to something more
+; reminiscent of illocutionary force?
+
+iforce := avm.
+prop-or-ques := iforce.
 prop := prop-or-ques.
 ques := prop-or-ques.
+comm := iforce.
 
 event := event-or-ref-index &
   [ E tam,
-    MESG mesg ].
+    MSG iforce ].
 
 ; Coordinated phrases have coordinated indices as their INDEX
 ; values.  These are meant to be interpreted as pointers to 
@@ -846,12 +858,11 @@ same-ctxt-lex-rule := lex-rule &
 ; C-CONT. Instead this type should identify HOOK.
 
 ; ERB 2005-05-16 Copy MSG too!
+; ERB 2007-01-21 Making MSG a feature of events.
 
 same-cont-lex-rule := lex-rule &
-  [ SYNSEM.LOCAL.CONT [ HOOK #hook,
-	                MSG #msg ],
-    DTR.SYNSEM.LOCAL.CONT [ HOOK #hook,
-			    MSG #msg ]].
+  [ SYNSEM.LOCAL.CONT [ HOOK #hook ],
+    DTR.SYNSEM.LOCAL.CONT [ HOOK #hook ]].
 
 same-agr-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.AGR #agr,
@@ -876,6 +887,10 @@ same-hc-light-lex-rule := lex-rule &
 same-posthead-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.CAT.POSTHEAD #ph,
     DTR.SYNSEM.LOCAL.CAT.POSTHEAD #ph ].
+
+same-mc-lex-rule := lex-rule &
+  [ SYNSEM.LOCAL.CAT.MC #mc,
+    DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 no-ccont-lex-rule := lex-rule &
   [ C-CONT [ RELS <! !>,
@@ -922,7 +937,8 @@ cat-change-only-lex-rule := local-change-only-lex-rule &
 head-change-only-lex-rule := cat-change-only-lex-rule &
 			     same-val-lex-rule &
 			     same-hc-light-lex-rule &
-			     same-posthead-lex-rule.
+			     same-posthead-lex-rule &
+			     same-mc-lex-rule.
 
 ; ERB 2005-04-13 When using val-change-only-lex rule, be sure
 ; to constrain the values of all of the VAL features (SPR, SUBJ,
@@ -931,7 +947,8 @@ head-change-only-lex-rule := cat-change-only-lex-rule &
 val-change-only-lex-rule := cat-change-only-lex-rule &
 			     same-head-lex-rule &
 			     same-hc-light-lex-rule &
-			     same-posthead-lex-rule.
+			     same-posthead-lex-rule &
+			     same-mc-lex-rule.
 
 add-only-ltol-rule := same-local-lex-rule &
 		      same-non-local-lex-rule.
@@ -1105,9 +1122,13 @@ phrasal := phrase &
 ; Non-headed phrases will have to say something about the MSG
 ; of the mother.
 
-no-msg-phrase := headed-phrase &
-  [ SYNSEM.LOCAL.CONT.MSG #msg, 
-    HEAD-DTR.SYNSEM.LOCAL.CONT.MSG #msg ].
+; ERB 2007-01-21 Getting rid of message relations.  MSG will now
+; be a feature of the EVENT, so it will go up the semantic head path
+; anyway. (Need to be careful about not setting it too early.)
+
+;no-msg-phrase := headed-phrase &
+;  [ SYNSEM.LOCAL.CONT.MSG #msg, 
+;    HEAD-DTR.SYNSEM.LOCAL.CONT.MSG #msg ].
 
 ; Head/nexus phrases pass up the REL and QUE values of the head daughter
 ; (which has amalgamated the REL and QUE values of its arguments as in
@@ -1126,8 +1147,10 @@ head-nexus-que-phrase := headed-phrase &
 ; on the mother.  The exceptions to this are the clauses themselves
 ; and coordination constructions.
 
-head-nexus-phrase := head-nexus-rel-phrase & head-nexus-que-phrase &
-		     no-msg-phrase.
+; ERB 2007-01-21 Removed supertype no-msg-phrase.
+
+head-nexus-phrase := head-nexus-rel-phrase & head-nexus-que-phrase.
+
 
 ; In a head/local dependent phrase, the SLASH feature of the mother is
 ; token-identical to that of the head daughter, which has already amalgamated
@@ -1206,11 +1229,13 @@ binary-rule-right-to-left := rule &
 ; and coordination constructions.  Basic-head-only is for 
 ; the clauses.
 
-basic-head-only := unary-phrase & headed-phrase &
+; ERB 2007-01-21 Removing no-msg-phrase.
+
+head-only := unary-phrase & headed-phrase &
   [ HEAD-DTR #head,
     ARGS < #head > ].
 
-head-only := basic-head-only & no-msg-phrase.
+;head-only := basic-head-only & no-msg-phrase.
 
 head-initial := binary-headed-phrase &
   [ HEAD-DTR #head,
@@ -1254,12 +1279,22 @@ head-compositional := headed-phrase &
 ; It seems to only be used for head-spec phrases right now, though,
 ; so leave it for now.
 
-non-clause := head-nexus-phrase &
-  [ SYNSEM.LOCAL [ CONT.MSG no-msg ] ].
+; ERB 2007-01-21 I'm not sure there's really any use for non-clause
+; in the message-free universe.
+
+;non-clause := head-nexus-phrase &
+;  [ SYNSEM.LOCAL [ CONT.MSG no-msg ] ].
+
+;clause := phrasal &
+;  [ SYNSEM [ LOCAL.CAT.VAL.COMPS olist,
+;	     NON-LOCAL.QUE 0-dlist ] ].
+
+; ERB 2007-01-21 COMPS olist is no longer a fair constraint on
+; clauses, under current analysis.
 
 clause := phrasal &
-  [ SYNSEM [ LOCAL.CAT.VAL.COMPS olist,
-	     NON-LOCAL.QUE 0-dlist ] ].
+  [ SYNSEM.NON-LOCAL.QUE 0-dlist ].
+
 
 ; The following subtypes of clause will need more constraints,
 ; as appropriate:
@@ -1267,7 +1302,11 @@ clause := phrasal &
 ; Relative clauses are propositions, but depending on the analysis
 ; of the construction, the message may actually come from the daughter.
 
-relative-clause := clause.
+; ERB 2007-01-21 Adding constraint that should specialize prop-or-ques
+; to prop as value of MSG.  (See notes at interrogative-clause.)
+
+relative-clause := clause &
+  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.MSG prop ].
   
 ; This type does not constrain the length of the C-CONT..RELS
 ; in order to allow for clause types which insert two messages
@@ -1284,26 +1323,33 @@ relative-clause := clause.
 ; ERB 2005-05-04 Making all of these basic-head-only (non-branching
 ; constructions).  Need to work on relative clauses at a later date.
 
-basic-non-rel-clause := basic-head-only & clause &
-  [ SYNSEM [ LOCAL.CONT.MSG #msg &
-                            [ LBL #mhand ],
-             NON-LOCAL.REL 0-dlist ],
-    HEAD-DTR.SYNSEM [ LOCAL.CONT.HOOK [ INDEX #ind ],
-		      NON-LOCAL [ QUE 0-dlist,
-				  REL 0-dlist ] ],
-    C-CONT [ HOOK [ LTOP #mhand,
-                    INDEX #ind ],
-	     RELS.LIST < #msg, ... >] ].
+; ERB 2007-01-21 No more messages.  This type now enforces some
+; constraints on the non-local features, but that's just about it.
+; (And we haven't really worked on LDDs in the Matrix yet.)  I'm not
+; sure that there's really that much work for this type to do...
+; Since we're not adding message relations anymore, I'm going to assume
+; that the C-CONT.RELS and C-CONT.HCONS are empty.
+
+; ERB 2007-01-21 Er, not head-only any more, though. 
+
+basic-non-rel-clause := clause & head-compositional &
+  [ SYNSEM.NON-LOCAL.REL 0-dlist,
+    HEAD-DTR.SYNSEM.NON-LOCAL [ QUE 0-dlist,
+				REL 0-dlist ],
+    C-CONT [ RELS <! !>,
+	     HCONS <! !> ]].
 
 ; For non-interrogative non-rel clauses, hook up 
 ; MARG to head daughter's LTOP.  Subtypes will need
 ; to constrain length of HCONS and RELS.
 
-non-rel-clause := basic-non-rel-clause & 
-   [ SYNSEM.LOCAL.CONT.MSG.MARG #marg,
-     HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #ltop,
-     C-CONT.HCONS.LIST.FIRST qeq & [ HARG #marg,
-				     LARG #ltop ]].
+; ERB 2007-01-21 No more messages.
+
+;non-rel-clause := basic-non-rel-clause & 
+;   [ SYNSEM.LOCAL.CONT.MSG.MARG #marg,
+;     HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #ltop,
+;     C-CONT.HCONS.LIST.FIRST qeq & [ HARG #marg,
+;				     LARG #ltop ]].
 
 ; ERB 2004-05-18 Make these inherit from non-rel-clause instead
 ; of just clause, so that something does the work of putting
@@ -1322,22 +1368,30 @@ non-rel-clause := basic-non-rel-clause &
 ; both the prpstn and the ques messages.  Likewise, don't require
 ; MSG no-msg on the head daugther of interrogatives.
 
+; ERB 2007-01-21 Moving to a message-free universe.  These guys
+; now constrain the value of MSG on the INDEX (event variable).
+; How to keep them from spinning, though?  For now, trying the following
+; strategy:
+; 1. All rules that satisfy the subject requirement add clausal semantics
+; (either prop-or-ques or comm).  
+; 2. Complementizers (including matrix question/statement particles) can
+; further constrain message value.
+; 3. Head-filler phrases (for questions) can further constraint message value.
+; 4. To force things to undergo question rules like the yesno rule from
+; the ERG, take advanteg of [MC na] --- see ERG
+; 5. Relative-clause rule constrains down from prop-or-ques to prop.
+; 6. Since clausal semantics is tied to satisfaction of subject requirement
+; and/or an appropriate MC value, assume that these will be enough and
+; no further modification of the root condition is required.
+
 interrogative-clause := basic-non-rel-clause & 
-  [ SYNSEM.LOCAL.CONT.MSG.PRED question_m_rel ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.MSG ques ].
 
-declarative-clause := non-rel-clause & 
-  [ SYNSEM.LOCAL.CONT.MSG [ PRED proposition_m_rel,
-			    MARG #marg ],
-    C-CONT [ RELS <! *top* !>,
-	     HCONS <! qeq &
-		     [ HARG #marg,
-		       LARG #ltop ] !> ],
-    HEAD-DTR.SYNSEM.LOCAL.CONT [ MSG no-msg,
-				 HOOK.LTOP #ltop ]].
+declarative-clause := basic-non-rel-clause & 
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.MSG prop-or-ques ].
 
-imperative-clause := non-rel-clause & 
-  [ SYNSEM.LOCAL.CONT.MSG.PRED command_m_rel,
-    HEAD-DTR.SYNSEM.LOCAL.CONT.MSG no-msg  ].
+imperative-clause := basic-non-rel-clause & 
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.MSG comm ].
 
 ; ERB 2004-08-26 The analysis of relative clauses in the ERG
 ; requires that the relative clause construction (a kind of
@@ -1395,6 +1449,12 @@ basic-head-filler-phrase := basic-filler-phrase & headed-phrase.
 
 ; ERB 2005-08-12 Need [ LIGHT - ] on mother, so add SYNSEM phr-synsem.
 
+; ERB 2007-01-21 Moving to message-free universe.  Working with the
+; hypothesis that head-subj phrases give clausal semantics --- either
+; declarative (prop-or-ques) or imperative (comm).  Can further constrain
+; C-CONT to be  RELS <! !>, now that we're not putting in messages.  (Hey:
+; that was already the case. Or not, now I don't see it?)
+
 basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
 			  head-compositional &
   [ SYNSEM phr-synsem & 
@@ -1402,6 +1462,8 @@ basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
 			 VAL [ SUBJ < >,
 			       COMPS #comps,
 			       SPR #spr ] ] ],
+    C-CONT [ RELS <! !>,
+	     HCONS <! !> ],
     HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < #synsem >,
 				      COMPS #comps,	
                                       SPR #spr ],
@@ -1411,14 +1473,19 @@ basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
 				       SPR olist ] ] ],
 		   NON-LOCAL [ SLASH 0-dlist & [ LIST < > ],
 			       REL 0-dlist,
-			       QUE 0-dlist ] ],
-    C-CONT [ HCONS <! !>,
-	     RELS <! !> ]].
+			       QUE 0-dlist ] ]].
+
+decl-head-subj-phrase := basic-head-subj-phrase & declarative-clause.
+imp-head-subj-phrase := basic-head-subj-phrase & imperative-clause.
 
 ; ERB 2004-08-26 Remove [MC na] on both daughters; probably specific
 ; to some analysis for English.  
 
-basic-head-spec-phrase := head-valence-phrase & non-clause & phrasal &
+
+; ERB 2007-01-21 Removing non-clause, which doesn't seem to be doing
+; any work any more.
+
+basic-head-spec-phrase := head-valence-phrase & phrasal &
 			  binary-headed-phrase &
   [ INFLECTED +,
     SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
@@ -1549,6 +1616,12 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
 ; should inherit from either a clause-type or from head-compositional,
 ; and ensure that the length of these lists is specified appropriately.
 
+; ERB 2007-01-21 Removing messages in favor of the feature MSG.  On
+; this first pass, trying to insert MSG information whenever subject
+; requirements are discharged.  Hmmm, again this was already RELS <! !>
+; and HCONS <! !> in C-CONT.
+
+
 basic-head-opt-subj-phrase := head-valence-phrase & head-only &
   [ INFLECTED #infl,
     SYNSEM canonical-synsem &
@@ -1559,6 +1632,8 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 			    MC #mc,
 			    POSTHEAD #ph ],
 		MODIFIED #mod ],
+    C-CONT [ RELS <! !>,
+	     HCONS <! !> ],
     HEAD-DTR [ INFLECTED #infl & +,
 		SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < unexpressed-reg &
 						    [ OPT +,
@@ -1570,6 +1645,12 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 				       POSTHEAD #ph ],
 				 CONT.HOOK.INDEX event ],
 			 MODIFIED #mod ] ] ].
+
+; ERB 2007-01-21 Subtypes for declaratives and imperatives
+
+decl-head-opt-subj-phrase := basic-head-opt-subj-phrase & declarative-clause.
+imp-head-opt-subj-phrase := basic-head-opt-subj-phrase & imperative-clause.
+
 
 ; ERB 2004-12-14 Type for optional specifier (determiner) phrases.
 ; Build NPs out of N's.  The specification [OPT +] on the head
@@ -1762,9 +1843,12 @@ scopal-mod-phrase := head-mod-phrase-simple &
 ; daughter here is going to turn out too restrictive for other
 ; languages.  
 
+; ERB 2007-01-21 The option to say MSG no-msg is no longer available.
+; But, it's probably less necessary, since we'll have fewer non-branching
+; rules?
+
 isect-mod-phrase := head-mod-phrase-simple & head-compositional &
-  [ HEAD-DTR.SYNSEM.LOCAL.CONT [ HOOK.LTOP #hand,
-                                 MSG no-msg ],
+  [ HEAD-DTR.SYNSEM.LOCAL.CONT [ HOOK.LTOP #hand ],
     NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL intersective-mod ] >,
 				CONT.HOOK.LTOP #hand ],
     C-CONT.HCONS <! !> ].
@@ -1851,20 +1935,21 @@ no-hcons-lex-item := lex-item &
 ; copy of MSG values, need to bottom out in MSG no-msg
 ; on most lex items.
 
-no-msg-lex-item := lex-item &
-  [ SYNSEM.LOCAL.CONT.MSG no-msg ].
+; ERB 2007-01-21 No more messages.
+
+;no-msg-lex-item := lex-item &
+; [ SYNSEM.LOCAL.CONT.MSG no-msg ].
 
 norm-sem-lex-item := norm-hook-lex-item & single-rel-lex-item 
-		     & no-hcons-lex-item & no-msg-lex-item.
+		     & no-hcons-lex-item.
 
-hcons-lex-item := norm-hook-lex-item & single-rel-lex-item 
-		  & no-msg-lex-item.
+hcons-lex-item := norm-hook-lex-item & single-rel-lex-item.
 
 ; ERB 2005-08-07 For lexical items like case-marking adpositions
 ; and auxiliaries which only contribute tense/aspect information.
 ; These all take HOOK from their first complements.
 
-raise-sem-lex-item := no-hcons-lex-item & no-msg-lex-item &
+raise-sem-lex-item := no-hcons-lex-item & 
   [ SYNSEM.LOCAL [ CONT [ RELS <! !>,
 			  HOOK #hook ],
 		   CAT.VAL.COMPS < [ LOCAL.CONT.HOOK #hook ] , ... > ]].
@@ -2301,9 +2386,11 @@ attrib-or-pred-lex-item := lex-item &
 ; prop-or-ques.  This will need to be revisited if we're going to 
 ; allow commands, but look at what ERG does first.
 
+; ERB 2007-01-21 Moving to constructionally introduced MSG values.
+; Removing that constraint on now defunct feature MESG.
+
 basic-verb-lex := norm-sem-lex-item & 
-  [ SYNSEM [ LOCAL [ CAT.HEAD verb,
-		     CONT.HOOK.INDEX.MESG prop-or-ques ],
+  [ SYNSEM [ LOCAL.CAT.HEAD verb,
 	     LKEYS.KEYREL event-relation ]].
 
 ; ERB 2004-08-26 Put in qeq, assuming that for all scopal modifiers
@@ -2403,22 +2490,41 @@ basic-determiner-lex := norm-hook-lex-item &
 
 ; No hypothesis yet about the HEAD value of these cross-linguistically.
 
+; ERB 2007-01-21 Quickly trying to bring this into the non-message
+; universe.  I'm not sure why we needed space bewteen the subord-relation
+; and the messages, nor if the equivalent thing can't be modeled without
+; messages.  Isn't enough for the quantifiers to be able to out-scope
+; the subord-relation?
+
+; basic-subord-conjunction-lex := basic-one-arg &
+;   [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #ltop1 ] >,
+;     SYNSEM [ LOCAL [ CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #ltop2 ] >,
+; 		     CONT [ HCONS <! qeq &
+; 				   [ HARG #harg,
+; 				     LARG #larg ] !>,
+; 			    RELS <! relation,
+; 				  message & 
+; 				  [ LBL #msg,
+; 				    PRED proposition_m_rel,
+; 				    MARG #harg ] !>,
+; 			    HOOK [ LTOP #msg ] ] ],
+; 	     LKEYS.KEYREL subord-relation &
+; 		   [ LBL #larg,
+; 		     L-HNDL #ltop1,
+; 		     R-HNDL #ltop2 ] ] ].
+
+
 basic-subord-conjunction-lex := basic-one-arg &
   [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #ltop1 ] >,
     SYNSEM [ LOCAL [ CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #ltop2 ] >,
-		     CONT [ HCONS <! qeq &
-				   [ HARG #harg,
-				     LARG #larg ] !>,
-			    RELS <! relation,
-				  message & 
-				  [ LBL #msg,
-				    PRED proposition_m_rel,
-				    MARG #harg ] !>,
-			    HOOK [ LTOP #msg ] ] ],
+		     CONT [ HCONS <! !>,
+			    RELS <! relation !>,
+			    HOOK [ LTOP #ltop ] ] ],
 	     LKEYS.KEYREL subord-relation &
-		   [ LBL #larg,
+		   [ LBL #ltop,
 		     L-HNDL #ltop1,
 		     R-HNDL #ltop2 ] ] ].
+
 
 
 ; Coming soon:
