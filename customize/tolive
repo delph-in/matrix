@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#Note to Emily... for publishing this as www.delph-in.net/matrix:
+#tolive -m matrix/customize
+
 while [ "$1" = -m -o "$1" = -l ]
 do
     if [ "$1" = -m ]
