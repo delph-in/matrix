@@ -1305,8 +1305,12 @@ clause := phrasal &
 ; ERB 2007-01-21 Adding constraint that should specialize prop-or-ques
 ; to prop as value of MSG.  (See notes at interrogative-clause.)
 
-relative-clause := clause &
-  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.MSG prop ].
+; ERB 2007-01-22 ... but I'm not sure we can assume that relative-clauses
+; are headed phrases.  So, I'm going to comment out this type for now,
+; pending the developmet of a relative clause library.
+
+;relative-clause := clause &
+;  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.MSG prop ].
   
 ; This type does not constrain the length of the C-CONT..RELS
 ; in order to allow for clause types which insert two messages
@@ -1940,8 +1944,12 @@ no-hcons-lex-item := lex-item &
 ;no-msg-lex-item := lex-item &
 ; [ SYNSEM.LOCAL.CONT.MSG no-msg ].
 
-norm-sem-lex-item := norm-hook-lex-item & single-rel-lex-item 
-		     & no-hcons-lex-item.
+; ERB 2007-01-22 Removing no-hcons-lex-item here, since now
+; there are many words which introduce hcons (in the absence of
+; messages). HCONS should now (in most cases) be constrained
+; by the linking types.
+
+norm-sem-lex-item := norm-hook-lex-item & single-rel-lex-item. 
 
 hcons-lex-item := norm-hook-lex-item & single-rel-lex-item.
 
@@ -2073,6 +2081,17 @@ basic-three-arg := lex-item &
 		       QUE [ LIST #qfirst,
 			     LAST #qlast ] ] ].
 
+; ERB 2007-01-22  In the message-free universe, many more qeqs are
+; introduced by lexical items (basically any head that selects a clausal
+; complement).  To facilitate this, I'm going to move the no-hcons
+; distinction to the linking types part of the hierarchy (and out of
+; the pos part of the hierarchy).  In this connection, it's useful
+; to have subtypes of basic-n-arg which inherit from no-hcons-lex-item.
+
+basic-one-arg-no-hcons := basic-one-arg & no-hcons-lex-item.
+basic-two-arg-no-hcons := basic-two-arg & no-hcons-lex-item.
+basic-three-arg-no-hcons := basic-three-arg & no-hcons-lex-item.
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Subcategorization/linking
 
@@ -2139,21 +2158,21 @@ basic-three-arg := lex-item &
 
 ; (Kim is a student requires an analysis of predicative NPs.)
 
-intransitive-lex-item := basic-one-arg & 
+intransitive-lex-item := basic-one-arg-no-hcons & 
   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ] >,
     SYNSEM.LKEYS.KEYREL.ARG1 #ind ].
 
 ; It rains.
 ; Il pleut.
 
-expl-arg-only-lex-item := basic-one-arg &
+expl-arg-only-lex-item := basic-one-arg-no-hcons &
    [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX expl-ind ] > ].
 
 ; Kim eats lunch.  Kim is fond of apples.
 ; Kim ga hiru gohan wo taberu.  
 ; Kim mange le dejeuner.  
 
-transitive-lex-item := basic-two-arg &
+transitive-lex-item := basic-two-arg-no-hcons &
    [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
 	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ] >,
      SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
@@ -2163,7 +2182,7 @@ transitive-lex-item := basic-two-arg &
 ; Kim ga Sandy ni hon wo ageru.
 ; Kim donne un livre a Sandy.
 
-ditransitive-lex-item := basic-three-arg &
+ditransitive-lex-item := basic-three-arg-no-hcons &
   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
 	     [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
 	     [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind3 ] >,
@@ -2177,39 +2196,60 @@ ditransitive-lex-item := basic-three-arg &
 ;  We are interested in arguments from other languages supporting
 ;  one analysis or the other.]
 
+; ERB 2007-01-22 Inserting qeqs now that we no longer have messages
+; intervening.
+
 clausal-arg-intrans-lex-item := basic-one-arg &
-   [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
-     SYNSEM.LKEYS.KEYREL [ ARG1 #ltop ] ]. 
+   [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ] >,
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg,
+					  LARG #larg ] !>,
+	      LKEYS.KEYREL [ ARG1 #harg ] ] ]. 
 
 ; That Kim sleeps surprises Sandy.
 
+; ERB 2007-01-22 Inserting qeqs now that we no longer have messages
+; intervening.
+
+
 clausal-first-arg-trans-lex-item := basic-two-arg &
-   [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #ltop ],
+   [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ],
 	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ] >,
-     SYNSEM.LKEYS.KEYREL [ ARG1 #ltop,
-			   ARG2 #ind ] ].
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg,
+					  LARG #larg ] !>,
+	      LKEYS.KEYREL [ ARG1 #harg,
+			     ARG2 #ind ] ] ].
 
 ; Sandy believes that Kim sleeps.
 ; Sandy ga Kim ga neru to shinjita.
 ; Sandy croit que Kim dors.
 
+; ERB 2007-01-22 Inserting qeqs now that we no longer have messages
+; intervening.
+
 clausal-second-arg-trans-lex-item := basic-two-arg &
    [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ],
-	      [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
-     SYNSEM.LKEYS.KEYREL [ ARG1 #ind,
-			   ARG2 #ltop ] ].
+	      [ LOCAL.CONT.HOOK.LTOP #larg ] >,
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg,
+					  LARG #larg ] !>,
+	      LKEYS.KEYREL [ ARG1 #ind,
+			     ARG2 #harg ] ] ].
 
 ; Kim told Sandy that Pat slept.
 ; Kim ga Sandy ni Pat ga neta to itta.
 ; Kim a dit a Sandy que Pat dormait.
 
+; ERB 2007-01-22 Inserting qeqs now that we no longer have messages
+; intervening.
+
 clausal-third-arg-ditrans-lex-item := basic-three-arg &
    [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
 	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
-	      [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
-     SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
-			   ARG2 #ind2,
-			   ARG3 #ltop ] ].
+	      [ LOCAL.CONT.HOOK.LTOP #larg ] >,
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg,
+					  LARG #larg ] !>,
+	      LKEYS.KEYREL [ ARG1 #ind1,
+			     ARG2 #ind2,
+			     ARG3 #harg ] ] ].
 
 ; It is obvious that Kim sleeps.  
 ; Il est evident que Kim dors.
@@ -2217,10 +2257,16 @@ clausal-third-arg-ditrans-lex-item := basic-three-arg &
 ; (Many of these might be generated via a lexical rule from
 ; clausal-arg-intrans-lex-items, but some probably don't alternate).
 
+
+; ERB 2007-01-22 Inserting qeqs now that we no longer have messages
+; intervening.
+
 clausal-expl-arg-lex-item := basic-two-arg &
    [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX expl-ind ],  
-	      [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
-     SYNSEM.LKEYS.KEYREL [ ARG1 #ltop ] ].
+	      [ LOCAL.CONT.HOOK.LTOP #larg ] >,
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg,
+					  LARG #larg ] !>,
+	      LKEYS.KEYREL [ ARG1 #harg ] ] ].
 
 ; Kim seems to sleep; Kim is sleeping.
 
@@ -2253,56 +2299,77 @@ trans-first-arg-raising-lex-item-2 := trans-first-arg-raising-lex-item &
 
 ; Kim tries to sleep.
 
+; ERB 2007-01-22 Adding in qeq here.
+
+
 trans-first-arg-control-lex-item := basic-two-arg &
    [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ],
 	      [ LOCAL.CONT.HOOK [ XARG #ind,
-				  LTOP #ltop ] ] >,
-     SYNSEM.LKEYS.KEYREL [ ARG1 #ind,
-			   ARG2 #ltop ] ].
+				  LTOP #larg ] ] >,
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg,
+					  LARG #larg ] !>,
+	      LKEYS.KEYREL [ ARG1 #ind,
+			     ARG2 #harg ] ] ].
 
 ; Kim appeared to Sandy to leave, Kim seems to Sandy to have left.
 ; (Treat "Kim seems happy to Sandy" as derived in some way?)
+
+; ERB 2007-01-22 Adding in qeq here.
 
 ditrans-first-arg-raising-lex-item := basic-three-arg &
    [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX #ind1 ],
 	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
 	      [ LOCAL.CONT.HOOK [ XARG #ind1,
-				  LTOP #ltop ] ] >,
-     SYNSEM.LKEYS.KEYREL [ ARG1 #ind2,
-			   ARG2 #ltop ] ].
+				  LTOP #larg ] ] >,
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg,
+					  LARG #larg ] !>,
+	      LKEYS.KEYREL [ ARG1 #ind2,
+			     ARG2 #harg ] ] ].
 
 
 ; Kim promised Sandy to leave. 
+
+; ERB 2007-01-22 Adding in qeq here.
 
 ditrans-first-arg-control-lex-item := basic-three-arg &
    [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
 	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
 	      [ LOCAL.CONT.HOOK [ XARG #ind1,
-				  LTOP #ltop ] ] >,
-     SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
-			   ARG2 #ind2,
-			   ARG3 #ltop ] ].
+				  LTOP #larg ] ] >,
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg,
+					  LARG #larg ] !>,
+	      LKEYS.KEYREL [ ARG1 #ind1,
+			     ARG2 #ind2,
+			     ARG3 #harg ] ] ].
 
 ; Kim believed Sandy to have left.
+
+; ERB 2007-01-22 Adding in qeq here.
 
 distrans-second-arg-raising-lex-item := basic-three-arg &
    [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
 	      [ LOCAL.CONT.HOOK.INDEX #ind2 ],
 	      [ LOCAL.CONT.HOOK [ XARG #ind2,
-				  LTOP #ltop ] ] >,
-     SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
-			   ARG2 #ltop ] ].
+				  LTOP #larg ] ] >,
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg,
+					  LARG #larg ] !>,
+	      LKEYS.KEYREL [ ARG1 #ind1,
+			     ARG2 #harg ] ] ].
 
 ; Kim appealed to Sandy to leave.			     
+
+; ERB 2007-01-22 Adding in qeq here.
 
 ditrans-second-arg-control-lex-item := basic-three-arg &
    [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
 	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
 	      [ LOCAL.CONT.HOOK [ XARG #ind2,
-				  LTOP #ltop ] ] >,
-     SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
-			   ARG2 #ind2,
-			   ARG3 #ltop ] ].
+				  LTOP #larg ] ] >,
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg,
+					  LARG #larg ] !>,
+	      LKEYS.KEYREL [ ARG1 #ind1,
+			     ARG2 #ind2,
+			     ARG3 #harg ] ] ].
 	                     
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2325,7 +2392,7 @@ ditrans-second-arg-control-lex-item := basic-three-arg &
 ; a book about dogs
 ; very fond of apples
 
-spr-plus-one-arg-lex-item := basic-two-arg &
+spr-plus-one-arg-lex-item := basic-two-arg-no-hcons &
    [ ARG-ST < synsem, 
 	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ] >,
      SYNSEM.LKEYS.KEYREL.ARG1 #ind ].
@@ -2333,10 +2400,14 @@ spr-plus-one-arg-lex-item := basic-two-arg &
 ; the claim that Sandy slept.
 ; very happy that Sandy slept
 
+; ERB 2007-01-22 Adding qeq in here.
+
 spr-plus-clausal-arg-lex-item := basic-two-arg &
    [ ARG-ST < synsem, 
-	      [ LOCAL.CONT.HOOK.LTOP #ltop ] >,
-     SYNSEM.LKEYS.KEYREL.ARG1 #ltop ].
+	      [ LOCAL.CONT.HOOK.LTOP #larg ] >,
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg,
+					  LARG #larg ] !>,
+	      LKEYS.KEYREL.ARG1 #harg ] ].
 
 ; Whether or not we need more types here is going to largely depend
 ; on whether we treat deverbal nouns semantically as nominalizations,
@@ -2345,13 +2416,17 @@ spr-plus-clausal-arg-lex-item := basic-two-arg &
 ; Kim is very eager to sleep.
 ; How eager to sleep is Kim?
 
+; ERB 2007-01-22 Adding qeq in here.
+
 spr-trans-first-arg-control-lex-item := basic-three-arg &
    [ ARG-ST < synsem,
 	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ],
 	      [ LOCAL.CONT.HOOK [ XARG #ind,
-				  LTOP #ltop ] ] >,
-     SYNSEM.LKEYS.KEYREL [ ARG1 #ind,
-			   ARG2 #ltop ] ].
+				  LTOP #larg ] ] >,
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg,
+					  LARG #larg ] !>,
+	      LKEYS.KEYREL [ ARG1 #ind,
+			     ARG2 #harg ] ] ].
 
 ; Possibly more types related to the above.
 
