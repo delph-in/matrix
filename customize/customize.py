@@ -852,7 +852,8 @@ def determine_consistent_order(wo,hc):
     elif hc == 'comp-head' and adpOrder == 'pre':
       adp = 'ov-prep'
     elif hc == 'head-comp' and adpOrder == 'post':
-      adp = 'vo-postp'
+      adp = 'vo-post'
+
 
   # Now what about auxiliaries?
 
