@@ -69,7 +69,7 @@ function clear_form()
 HTML_mainprebody = '''<body>
 <h1>LinGO Grammar Matrix</h1>
 <h1>Matrix customization and download page</h1>
-<h2>Version of 8/20/2006</h2>
+<h2>Version of 1/21/2007</h2>
 
 <p>By filling out this form, you will produce an initial starter
 package for your grammar, consisting of the language-independent core,
