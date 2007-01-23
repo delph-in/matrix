@@ -2062,7 +2062,7 @@ def customize_yesno_questions():
     lrules.add('inv-lr := subj-v-inv-lrule.')
 
   # ERB 2007-01-21 Then we need the non-branching construction which
-  # corrects to MC + and adds MSG ques.
+  # corrects to MC + and adds SF ques.
 
     comment = \
            'This rule takes [MC na] inverted phrases and licneses' + \
@@ -2077,7 +2077,7 @@ def customize_yesno_questions():
                                   VAL #val &
                                        [SUBJ < >,
                                        COMPS < >]],
-      C-CONT.HOOK.INDEX.MSG ques ].'''
+      C-CONT.HOOK.INDEX.SF ques ].'''
     mylang.add(typedef, comment)
 
     rules.add('int := int-cl.')
@@ -2103,10 +2103,10 @@ def customize_yesno_questions():
                                                 .'''
     mylang.add(typedef,comment)
 
-    comment = 'Subtype for question particles. Constrains MSG to ques.'
+    comment = 'Subtype for question particles. Constrains SF to ques.'
     typedef = '''
       qpart-lex-item := complementizer-lex-item &
-         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.MSG ques ].'''
+         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
     mylang.add(typedef,comment)
 
     #   if ques == 'qpart':

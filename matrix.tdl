@@ -350,8 +350,8 @@ semsort :< sort.
 
 mrs-min := avm.
 
-; ERB 2007-01-21 Removing feature MSG here (moving it to a feature
-; of events.
+; ERB 2007-01-21 Removing feature MSG here (moving it to a feature--SF---
+; of events).
 
 mrs := mrs-min &
   [ HOOK hook,
@@ -521,6 +521,8 @@ tam := avm &
 ; ERB 2007-01-21 Consider renaming the feature MSG to something more
 ; reminiscent of illocutionary force?
 
+; ERB 2007-01-22 MSG renamed SF.
+
 iforce := avm.
 prop-or-ques := iforce.
 prop := prop-or-ques.
@@ -529,7 +531,7 @@ comm := iforce.
 
 event := event-or-ref-index &
   [ E tam,
-    MSG iforce ].
+    SF iforce ].
 
 ; Coordinated phrases have coordinated indices as their INDEX
 ; values.  These are meant to be interpreted as pointers to 
@@ -858,7 +860,7 @@ same-ctxt-lex-rule := lex-rule &
 ; C-CONT. Instead this type should identify HOOK.
 
 ; ERB 2005-05-16 Copy MSG too!
-; ERB 2007-01-21 Making MSG a feature of events.
+; ERB 2007-01-21 Making MSG a feature (SF) of events.
 
 same-cont-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.CONT [ HOOK #hook ],
@@ -1122,7 +1124,7 @@ phrasal := phrase &
 ; Non-headed phrases will have to say something about the MSG
 ; of the mother.
 
-; ERB 2007-01-21 Getting rid of message relations.  MSG will now
+; ERB 2007-01-21 Getting rid of message relations.  SF will now
 ; be a feature of the EVENT, so it will go up the semantic head path
 ; anyway. (Need to be careful about not setting it too early.)
 
@@ -1303,14 +1305,14 @@ clause := phrasal &
 ; of the construction, the message may actually come from the daughter.
 
 ; ERB 2007-01-21 Adding constraint that should specialize prop-or-ques
-; to prop as value of MSG.  (See notes at interrogative-clause.)
+; to prop as value of SF.  (See notes at interrogative-clause.)
 
 ; ERB 2007-01-22 ... but I'm not sure we can assume that relative-clauses
 ; are headed phrases.  So, I'm going to comment out this type for now,
 ; pending the developmet of a relative clause library.
 
 ;relative-clause := clause &
-;  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.MSG prop ].
+;  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].
   
 ; This type does not constrain the length of the C-CONT..RELS
 ; in order to allow for clause types which insert two messages
@@ -1373,7 +1375,7 @@ basic-non-rel-clause := clause & head-compositional &
 ; MSG no-msg on the head daugther of interrogatives.
 
 ; ERB 2007-01-21 Moving to a message-free universe.  These guys
-; now constrain the value of MSG on the INDEX (event variable).
+; now constrain the value of SF on the INDEX (event variable).
 ; How to keep them from spinning, though?  For now, trying the following
 ; strategy:
 ; 1. All rules that satisfy the subject requirement add clausal semantics
@@ -1389,13 +1391,13 @@ basic-non-rel-clause := clause & head-compositional &
 ; no further modification of the root condition is required.
 
 interrogative-clause := basic-non-rel-clause & 
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.MSG ques ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].
 
 declarative-clause := basic-non-rel-clause & 
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.MSG prop-or-ques ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop-or-ques ].
 
 imperative-clause := basic-non-rel-clause & 
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.MSG comm ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF comm ].
 
 ; ERB 2004-08-26 The analysis of relative clauses in the ERG
 ; requires that the relative clause construction (a kind of
@@ -1620,8 +1622,8 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
 ; should inherit from either a clause-type or from head-compositional,
 ; and ensure that the length of these lists is specified appropriately.
 
-; ERB 2007-01-21 Removing messages in favor of the feature MSG.  On
-; this first pass, trying to insert MSG information whenever subject
+; ERB 2007-01-21 Removing messages in favor of the feature SF.  On
+; this first pass, trying to insert SF information whenever subject
 ; requirements are discharged.  Hmmm, again this was already RELS <! !>
 ; and HCONS <! !> in C-CONT.
 
@@ -2461,7 +2463,7 @@ attrib-or-pred-lex-item := lex-item &
 ; prop-or-ques.  This will need to be revisited if we're going to 
 ; allow commands, but look at what ERG does first.
 
-; ERB 2007-01-21 Moving to constructionally introduced MSG values.
+; ERB 2007-01-21 Moving to constructionally introduced SF values.
 ; Removing that constraint on now defunct feature MESG.
 
 basic-verb-lex := norm-sem-lex-item & 
