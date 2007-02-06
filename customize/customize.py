@@ -2172,7 +2172,7 @@ def customize_nouns():
   
   if singlentype:
     typedef = \
-      'noun-lex := basic-noun-lex & basic-one-arg & \
+      'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &\
          [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & \
                                           [ LOCAL.CAT.HEAD det'
     if noun1spr == 'obl':
@@ -2185,7 +2185,7 @@ def customize_nouns():
     mylang.add(typedef)
   else:
     typedef = \
-      'noun-lex := basic-noun-lex & basic-one-arg & \
+      'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &\
          [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
                                     COMPS < >, \
                                     SUBJ < >, \

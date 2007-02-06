@@ -115,9 +115,13 @@ meta := sign &
 ; in case of null instantiation.  This solution may be superceded
 ; by a Sem-I based alternative.
 
+; ERB 2007-02-05 Moving to an analysis of discourse status/cognitive
+; status of referents following Borthen & Haugereid 2005.  Replacing
+; DEF and DEF-OPT with COG-ST and OPT-CS.
+
 synsem-min := avm &
   [ OPT bool,
-    DEF-OPT bool,
+    OPT-CS cog-st,
     LOCAL mod-local,
     NON-LOCAL non-local-min ].
 
@@ -473,8 +477,38 @@ individual := semarg &
 ; The null instantiation use might get superceded by a Sem-I based
 ; solution.
 
+; ERB 2007-02-05 Moving to an analysis of discourse status/cognitive
+; status of referents following Borthen & Haugereid 2005.  Replacing
+; DEF and DEF-OPT with COG-ST and OPT-CS.
+
+
 index := individual &
-	 [ DEF bool ].
+	 [ COG-ST cog-st ].
+
+; ERB 2007-02-05 Hierarchy from Borthen and Haugereid of possible
+; COG-ST values.  Departing from B&H analysis by putting SPECI on
+; this type (as well as by making COG-ST a feature of indicies rather
+; than parallel to the indices in the next level up).
+
+cog-st := avm &
+  [ SPECI bool ].
+
+activ-or-less := cog-st.
+uniq-or-more := cog-st.
+uniq+fam+act := activ-or-less & uniq-or-more.
+fam-or-less := activ-or-less.
+fam-or-more := uniq-or-more.
+activ+fam := uniq+fam+act & fam-or-less.
+uniq+fam := uniq+fam+act & fam-or-more.
+uniq-or-less := fam-or-less.
+activ-or-more := fam-or-more.
+type-id := uniq-or-less.
+uniq-id := uniq-or-less & uniq+fam.
+familiar := uniq+fam & activ+fam.
+activated := activ+fam & activ-or-more.
+in-foc := activ-or-more.
+
+
 
 ; This is the type of the index of the phrase modified by predicative
 ; PPs, which can either modify a ref-ind nominal or an event VP.
@@ -1597,8 +1631,8 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
              SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ #subj,
 					  COMPS < unexpressed &
 						  [ OPT +,
-						    DEF-OPT #def,
-						    LOCAL.CONT.HOOK.INDEX.DEF #def ] . #comps >,
+						    OPT-CS #def,
+						    LOCAL.CONT.HOOK.INDEX.COG-ST #def ] . #comps >,
 					  SPR #spr,
                                         SPEC #spec ],
 				    MC #mc,
@@ -1643,7 +1677,7 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
     HEAD-DTR [ INFLECTED #infl & +,
 		SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < unexpressed-reg &
 						    [ OPT +,
-						      LOCAL.CONT.HOOK.INDEX.DEF + ] >,
+						      LOCAL.CONT.HOOK.INDEX.COG-ST in-foc ] >,
 					     COMPS #comps & < >,
 					     SPR #spr,
 					     SPEC #spec ],
@@ -2384,12 +2418,12 @@ ditrans-second-arg-control-lex-item := basic-three-arg &
 
 ; a dog, Kim's dog
 
-; The specifier does not play a semantic role in the book
-; relation, so there is nothing more to say: these can just
-; inherit from basic-one-arg, and not link in that one argument.
-; The head-spec rule identifies the head's HOOK with the SPEC..HOOK
-; of the specifier, which gives the specifier access to the noun's
-; index for linking purposes.
+; The specifier does not play a semantic role in the 'dog' relation,
+; so there is nothing more to say: these can just inherit from
+; basic-one-arg and no-hcons-lex-item, and not link in that one
+; argument.  The head-spec rule identifies the head's HOOK with the
+; SPEC..HOOK of the specifier, which gives the specifier access to the
+; noun's index for linking purposes.
 
 ; a book about dogs
 ; very fond of apples
