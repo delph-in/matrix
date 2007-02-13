@@ -851,13 +851,16 @@ lexeme-to-word-rule := same-local-lex-rule &
 
 ; Lexeme-to-lexeme rules can make more radical changes to the SYNSEM value.
 ; (ERB 2004-02-11) This used to inherit from "lexeme" but now there is no
-; such type.  What was its purpose?
+; such type.  What was its purpose? (ERB 2007-02-13) Perhaps it was used
+; to encode the lexeme/word distinction, now handled by the feature
+; INFLECTED.
+
+; (ERB 2007-02-12) Removing identity of MC here because this to can be
+; changed by ltol rules.  Creating a new type same-mc-lex-rule, etc.
 
 lexeme-to-lexeme-rule := lex-rule & 
   [ INFLECTED #infl,
-    SYNSEM.LOCAL.CAT.MC #mc,
-    DTR [ INFLECTED #infl,
-          SYNSEM.LOCAL.CAT.MC #mc ] ].
+    DTR.INFLECTED #infl ].
 
 ; ERB 2005-04-13 Add a few subtypes that copy up most other information,
 ; so that folks don't have to keep doing this. 
@@ -976,6 +979,12 @@ head-change-only-lex-rule := cat-change-only-lex-rule &
 			     same-posthead-lex-rule &
 			     same-mc-lex-rule.
 
+mc-change-only-lex-rule := cat-change-only-lex-rule &
+			     same-val-lex-rule &
+			     same-hc-light-lex-rule &
+			     same-posthead-lex-rule &
+			     same-head-lex-rule.
+
 ; ERB 2005-04-13 When using val-change-only-lex rule, be sure
 ; to constrain the values of all of the VAL features (SPR, SUBJ,
 ; COMPS and SPEC) on the mother.
@@ -986,11 +995,14 @@ val-change-only-lex-rule := cat-change-only-lex-rule &
 			     same-posthead-lex-rule &
 			     same-mc-lex-rule.
 
-add-only-ltol-rule := same-local-lex-rule &
-		      same-non-local-lex-rule.
+; ERB 2007-02-13 These two should only be inherited by ltol types,
+; since they are redundant with constraints on lexeme-to-word-rule.
 
-add-only-no-ccont-ltol-rule := add-only-ltol-rule &
-			       no-ccont-lex-rule.
+add-only-rule := same-local-lex-rule &
+	         same-non-local-lex-rule.
+
+add-only-no-ccont-rule := add-only-rule &
+			  no-ccont-lex-rule.
 
 ; Spelling changing rules.  The LKB identifies these rules based
 ; on the NEEDS-AFFIX value. 
@@ -1014,36 +1026,28 @@ const-ltow-rule := lexeme-to-word-rule & constant-lex-rule & nocoord.
 infl-ltow-rule := lexeme-to-word-rule & inflecting-lex-rule & nocoord.
 
 infl-non-local-change-only-ltol-rule := non-local-change-only-lex-rule &
-					inflecting-lex-rule &
-					lexeme-to-lexeme-rule.
+					infl-ltol-rule.
 
 infl-local-change-only-ltol-rule := local-change-only-lex-rule &
-				    inflecting-lex-rule &
-				    lexeme-to-lexeme-rule.
+				    infl-ltol-rule.
 
 infl-cont-change-only-ltol-rule := cont-change-only-lex-rule &
-				   inflecting-lex-rule &
-				   lexeme-to-lexeme-rule.	
+				   infl-ltol-rule.
 
 infl-ctxt-change-only-ltol-rule := ctxt-change-only-lex-rule &
-				   inflecting-lex-rule &
-				   lexeme-to-lexeme-rule.
+				   infl-ltol-rule.
 
 infl-agr-change-only-ltol-rule := agr-change-only-lex-rule &
-				  inflecting-lex-rule &
-				  lexeme-to-lexeme-rule.
+				  infl-ltol-rule.
 
 infl-cat-change-only-ltol-rule := cat-change-only-lex-rule &
-				  inflecting-lex-rule &
-				  lexeme-to-lexeme-rule.
+				  infl-ltol-rule.
 
 infl-head-change-only-ltol-rule := head-change-only-lex-rule &
-				   inflecting-lex-rule &
-				   lexeme-to-lexeme-rule.
+ 				   infl-ltol-rule.
 
 infl-val-change-only-ltol-rule := val-change-only-lex-rule &
-				  inflecting-lex-rule &
-				  lexeme-to-lexeme-rule.
+				  infl-ltol-rule.
 
 ; ERB 2005-04-26 Take care with the following two rules.  While
 ; they likely won't be circular for parsing (since the surface form
@@ -1052,56 +1056,46 @@ infl-val-change-only-ltol-rule := val-change-only-lex-rule &
 ; incompatible, I recommend constraining the type of the DTR to
 ; something incompatible with the type of the rule.
 
-infl-add-only-ltol-rule := add-only-ltol-rule &
-			   inflecting-lex-rule &
-			   lexeme-to-lexeme-rule.
+infl-add-only-ltol-rule := add-only-rule &
+			   infl-ltol-rule.
 
-infl-add-only-no-ccont-ltol-rule := add-only-no-ccont-ltol-rule &
-				    inflecting-lex-rule &
-				    lexeme-to-lexeme-rule.
+infl-add-only-no-ccont-ltol-rule := add-only-no-ccont-rule &
+				    infl-ltol-rule.
 
 const-non-local-change-only-ltol-rule := non-local-change-only-lex-rule &
-					 constant-lex-rule &
-					 lexeme-to-lexeme-rule.
+					 const-ltol-rule.
 
 const-local-change-only-ltol-rule := local-change-only-lex-rule &
-				     constant-lex-rule &
-				     lexeme-to-lexeme-rule.
+				     const-ltol-rule.
 
 const-cont-change-only-ltol-rule := cont-change-only-lex-rule &
-				    constant-lex-rule &
-				    lexeme-to-lexeme-rule.	
+				    const-ltol-rule.
 
 const-ctxt-change-only-ltol-rule := ctxt-change-only-lex-rule &
-				    constant-lex-rule &
-				    lexeme-to-lexeme-rule.
+				    const-ltol-rule.
 
 const-agr-change-only-ltol-rule := agr-change-only-lex-rule &
-				   constant-lex-rule &
-				   lexeme-to-lexeme-rule.
+				   const-ltol-rule.
 
 const-cat-change-only-ltol-rule := cat-change-only-lex-rule &
-				   constant-lex-rule &
-				   lexeme-to-lexeme-rule.
+				   const-ltol-rule.			       
 
 const-head-change-only-ltol-rule := head-change-only-lex-rule &
-				    constant-lex-rule &
-				    lexeme-to-lexeme-rule.
+				    const-ltol-rule.
 
 const-val-change-only-ltol-rule := val-change-only-lex-rule &
-				   constant-lex-rule &
-				   lexeme-to-lexeme-rule.
+				   const-ltol-rule.
 
 ; ERB 2005-04-14 Take care when using the following two types
 ; not to create circular rules.  They may still be useful (the
 ; latter is employed in the Slave grammar), but you'll need to
 ; make sure that the DTR type is incompatible with the rule type.
 
-const-add-only-ltol-rule := add-only-ltol-rule &
-			    constant-lex-rule &
-			    lexeme-to-lexeme-rule.
-const-add-only-no-ccont-ltol-rule := add-only-no-ccont-ltol-rule &
-				     constant-lex-rule.
+const-add-only-ltol-rule := add-only-rule &
+			    const-ltol-rule.			   
+
+const-add-only-no-ccont-ltol-rule := add-only-no-ccont-rule &
+				     const-ltol-rule.
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1249,6 +1243,60 @@ basic-binary-headed-phrase := headed-phrase & basic-binary-phrase &
   [ NON-HEAD-DTR sign & [ SYNSEM.LOCAL.COORD - ] ].
 
 binary-headed-phrase := basic-binary-headed-phrase & binary-phrase.
+
+; ERB (2007-02-13) Adding these for handling constructions where a marker
+; shows up simultaneously on both ends of the phrase, such as negation
+; in Hausa and question marking in ASL.  (For the latter case, what's
+; really going on is a non-manual sign extending the length of the clause,
+; but a convenient single-line representation uses left and right brackets
+; to show the duration of the non-manual.)
+
+basic-ternary-phrase := phrase &
+  [ SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
+			       LAST #last ],
+			HCONS [ LIST #scfirst,
+				LAST #sclast ] ],
+    C-CONT [ RELS [ LIST #middle3,
+		    LAST #last ],
+	     HCONS [ LIST #scmiddle3,
+		     LAST #sclast ] ],
+    ARGS < sign & [ SYNSEM.LOCAL local &
+				 [ CONT [ RELS [ LIST #first,
+						 LAST #middle1 ],
+					  HCONS [ LIST #scfirst,
+						  LAST #scmiddle1 ] ] ] ],
+	   sign & [ SYNSEM.LOCAL local &
+				 [ CONT [ RELS [ LIST #middle1,
+						 LAST #middle2 ],
+					  HCONS [ LIST #scmiddle1,
+						  LAST #scmiddle2 ] ] ] ],
+	   sign & [ SYNSEM.LOCAL local & 
+				 [ CONT [ RELS [ LIST #middle2,
+						 LAST #middle3 ],
+					  HCONS [ LIST #scmiddle2,
+						  LAST #scmiddle3 ] ] ] ]> ].
+
+ternary-phrase := basic-ternary-phrase &
+  [ INFLECTED +,
+    ARGS < [ INFLECTED +, 
+	     SYNSEM.LOCAL.COORD - ],
+           [ INFLECTED +, 
+	     SYNSEM.LOCAL.COORD - ],
+           [ INFLECTED +, 
+	     SYNSEM.LOCAL.COORD - ] > ].
+
+
+ternary-headed-phrase := headed-phrase & ternary-phrase.
+
+; ERB (2007-02-12) Hypothesizing for now that these will never be fulfilling
+; valence requirements of the head, so just copy that up.  
+
+ternary-head-middle-phrase := ternary-headed-phrase & head-compositional &
+  [ SYNSEM.LOCAL.CAT.VAL #val,
+    HEAD-DTR #head &
+	     [ SYNSEM.LOCAL.CAT.VAL #val ],
+    ARGS.REST.FIRST #head ].
+
 
 ; For more effecient parsing, designate one argument or the other
 ; as the KEY-ARG: that which should be unified with first.
