@@ -2421,6 +2421,7 @@ def customize_auxiliaries():
   auxcomp = ch('auxcomp')
   auxorder = ch('auxorder')
   auxsubj = ch('auxsubj')
+  auxpred = ch('auxpred')
 
   # Lexical type for auxiliaries.  There's probably more we can give them
   # here, if we ask more questions (are there auxiliaries with both independent
