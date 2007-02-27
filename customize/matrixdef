@@ -223,7 +223,7 @@ Radio auxsem "fr auxsem" "<br>This auxiliary verb contributes:<br>" ""
 Text auxpred "fr auxpred" "" "" 40
 
 Radio auxsem "fr auxsem" "<br>" ""
-. pred "fr no-pred" "" "Tense/aspect information only<br>"
+. no-pred "fr no-pred" "" "Tense/aspect information only<br>"
 
 Radio auxcomp "fr auxcomp" "<br>This auxiliary verb takes as its complement:<br>" ""
 . S "fr S" "" "a saturated sentence<br>"
