@@ -594,7 +594,10 @@ def TDLparse_conj():
 def TDLparse_typedef():
   global tok
   type = tok.pop(0) # the type name
-  op = tok.pop(0) # ':=', ':<', or ':+'
+  op = tok.pop(0)
+  while not op in (':=', ':<', ':+'):
+    type += '_' + op
+    op = tok.pop(0)
   elem = TDLelem_typedef(type, op)
   elem.add(TDLparse_conj())
   tok.pop(0) # '.'
