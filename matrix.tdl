@@ -898,9 +898,11 @@ same-ctxt-lex-rule := lex-rule &
 
 ; ERB 2005-05-16 Copy MSG too!
 ; ERB 2007-01-21 Making MSG a feature (SF) of events.
+; ERB 2007-02-20 Copy daughter's HOOK to C-CONT rather than to mother's
+; HOOK, for uniformity.
 
 same-cont-lex-rule := lex-rule &
-  [ SYNSEM.LOCAL.CONT [ HOOK #hook ],
+  [ C-CONT [ HOOK #hook ],
     DTR.SYNSEM.LOCAL.CONT [ HOOK #hook ]].
 
 same-agr-lex-rule := lex-rule &
@@ -2379,6 +2381,10 @@ trans-first-arg-raising-lex-item := basic-two-arg &
 ; These can't inherit from basic-verb-lex, since they
 ; introduce a non-empty HCONS value.  Need to get 
 ; event-relation from somewhere else.
+
+; ERB (2007-02-20) They should be able to now that things
+; are de-messaged, since basic-verb-lex no longer inherits
+; from no-hcons-lex-item.
 
 trans-first-arg-raising-lex-item-1 := trans-first-arg-raising-lex-item & 
    [ ARG-ST < [ ],
