@@ -1451,6 +1451,10 @@ def create_neg_add_lex_rule(advAlone):
 #If we find another way to select the neg adv, something will
 #probably need to be changed here.
 
+#ERB 2007-02-26 Fixing a bug here: The rule's C-CONT.HOOK.INDEX
+#should be identified with the DTR's INDEX, not with the ARG0
+#of the _neg_r_rel.
+
 def create_neg_infl_lex_rule():
 
   mylang.add('neg-infl-lex-rule := cont-change-only-lex-rule &\
@@ -1461,7 +1465,6 @@ def create_neg_infl_lex_rule():
 	              RELS <! event-relation &\
 	                      [ PRED "_neg_r_rel",\
 	                        LBL #ltop,\
-	                        ARG0 #ind,\
 	                        ARG1 #harg ] !>,\
 	              HCONS <! qeq &\
 	                       [ HARG #harg,\
@@ -1470,6 +1473,7 @@ def create_neg_infl_lex_rule():
 	     DTR lex-item & \
 	         [ SYNSEM [ LKEYS #lkeys,\
 	                    LOCAL [ CONT.HOOK [ XARG #xarg,\
+                                                INDEX #ind,\
 	                                        LTOP #larg ],\
 	                          CAT.HEAD verb]]]].',
              'This lexical rule adds the neg_r_rel to the verb\'s\n\
