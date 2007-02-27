@@ -1293,7 +1293,10 @@ ternary-headed-phrase := headed-phrase & ternary-phrase.
 ; ERB (2007-02-12) Hypothesizing for now that these will never be fulfilling
 ; valence requirements of the head, so just copy that up.  
 
-ternary-head-middle-phrase := ternary-headed-phrase & head-compositional &
+; ERB (2007-02-26) Clearly this shouldn't be head-compositional, since
+; we're using it for negation in Hausa and ASL.
+
+ternary-head-middle-phrase := ternary-headed-phrase & 
   [ SYNSEM.LOCAL.CAT.VAL #val,
     HEAD-DTR #head &
 	     [ SYNSEM.LOCAL.CAT.VAL #val ],
