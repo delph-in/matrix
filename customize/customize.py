@@ -1304,7 +1304,8 @@ def specialize_word_order(hc,orders):
 
 
 # Unhandled case:  Main verbs take inflection + adverb, auxiliaries only
-# inflection (or vice versa).
+# inflection (or vice versa).  Negation involves two markers, one on
+# either side of the constituent.
 
 # ERB 2006-09-16 First pass at replicating functionality from
 # perl script.
