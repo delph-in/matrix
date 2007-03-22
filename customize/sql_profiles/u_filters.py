@@ -59,7 +59,7 @@ def filter_string(mrs_id, sent):
 
     filter_values = {}
 
-    for f in filters:
+    for f in filter_list:
         key = f.name
         filter_values[key] = f.exe(mrs_id, sent)
 
@@ -78,10 +78,10 @@ class Filter:
         return mrs_id in self.mrs_id_list
 
     def exe(self,mrs_id,sent):
-        if not check_mrs_id(self,mrs_id):
+        if not self.check_mrs_id(mrs_id):
             return 2
         else:
-            self.apply_filter(self,sent)
+            return self.apply_filter(sent)
 
     #Might not need this here.
     def apply_filter(self,sent):
@@ -108,7 +108,7 @@ class NotFilter(Filter):
         self.re1 = re1
 
     def apply_filter(self,sent):
-        if not re.search(self.re1,sent)
+        if not re.search(self.re1,sent):
             return 0
         else:
             return 1
@@ -119,36 +119,36 @@ class NotFilter(Filter):
 
 filter_list = [
 
-    AndNotFilter(name = "filter1",
+    AndNotFilter(name = "uf1",
                  mrs_id_list = ['wo1','wo3','wo6','neg1','ques1'],
                  re1 = 'p-nom',
                  re2 = 'p-nom n1|n1 p-nom',
                  comment = "If n1 is the subject, and there is no determiner for it, any p-nom in the sentence needs to be adjacent to n1."),
 
-    AndNotFilter(name = "filter2",
+    AndNotFilter(name = "uf2",
                  mrs_id_list = ['wo7','wo10','neg3','ques3'],
                  re1 = 'p-nom',
                  re2 = 'p-nom n2|n2 p-nom',
                  comment = "If n2 is the subject, and there is no determiner for it, any p-nom in the sentence needs to be adjacent to n2."),
 
-    AndNotFilter(name = "filter3",
+    AndNotFilter(name = "uf3",
                  mrs_id_list = ['wo7','wo10','neg3','ques3'],
                  re1 = 'p-acc',
                  re2 = 'p-acc n1|n1 p-acc',
                  comment = "If n1 is the object, and there is no determiner for it, any p-acc in the sentence needs to be adjacent to n1."),
 
-    AndNotFilter(name = "filter4",
+    AndNotFilter(name = "uf4",
                  mrs_id_list = ['wo3','wo5','neg1','ques1'],
                  re1 = 'p-acc',
-                 re2 = 'p-acc n2|n2 p-acc'
+                 re2 = 'p-acc n2|n2 p-acc',
                  comment = "If n2 is the object, and there is no determiner for it, any p-acc in the sentence needs to be adjacent to n2."),
 
-    NotFilter(name = "filter5",
+    NotFilter(name = "uf5",
               mrs_id_list = ['wo2','wo5','wo10'],
               re1 = 'det n1|n1 det',
               comment = "If there's only one det, and it's attached to n1, it must be adjacent to n1."),
 
-    NotFilter(name = "filter6",
+    NotFilter(name = "uf6",
               mrs_id_list = ['wo6','wo9'],
               re1 = 'det n2|n2 det',
               comment = "If there's only one det, and it's attached to n1, it must be adjacent to n1.")]
@@ -170,7 +170,7 @@ filter_list = [
 #        else:
 #            value = 1
 #
-#    return ("filter7",value)
+#    return ("uf7",value)
 
 # If n1 is the subject and it does have a determiner attached to
 # it, if there's a p-nom, it has to form a coherent NP with n1 and det.
@@ -199,7 +199,10 @@ cursor = db.cursor()
 #Get list of ids from DB.  _FIX_ME_ update with actual table and field names
 
 cursor.execute("SELECT i_id FROM item")
-ids = cursor.fetchall
+#ids = cursor.fetchall()
+ids = cursor.fetchmany(5)
+
+print ids
 
 #`ids' is now a tuple containing elements for each item in the
 #relevant table.  Each of those elements is a tuple which contains
@@ -207,7 +210,7 @@ ids = cursor.fetchall
 
 for id in ids:
     key = id[0]
-    cursor.execute("SELECT i_comment, i_input FROM StrTst where i_id = %s", (key))
+    cursor.execute("SELECT i_comment, i_input FROM item where i_id = %s", (key))
     (mrs_id, string) = cursor.fetchone()
 
     filter_values = filter_string(mrs_id,string)
