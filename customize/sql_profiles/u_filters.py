@@ -30,43 +30,15 @@
 
 
 ######################################################################
-# PSEUDOCODE
-#
-# for each filter
-#   select (i_id,mrs_id,string) for all strings in DB
-#                                   (or all new strings, later)
-#   check mrs_id
-#
-#   if filter is not relevant
-#      add i_id to 2-list
-#
-#   else if filter matches string (catch it as `bad')
-#      add i_id to 0-list
-#
-#   else
-#      add i_id to 1-list
-#
-# for each i_id on 0-list
-#    insert 0 as value of filter field in record for i_id
-#
-# for each i_id on 1-list
-#    insert 1 as value of filter field in record for i_id
-#
-# for each i_id on 2-list
-#    insert 2 as value of filter field in record for i_id
-
-######################################################################
 # ALTERNATIVE PSEUDOCODE -- probably more efficient and compact
 #
-# Select all items (string-mrs pairs) from DB
-# Countrows
+# select i-id from MatrixTDB
 #
-# For each i-id in (0,countrows)
+# For each i-id in ids
 #    for each filter
-#       append filter name to filter_list
-#       append filter value to filter_values_list
-#    check that filter_list and filter_values_list ended up same length
-#    update DB entry for i-id with filter_list and filter_values_list
+#        add [filter_name, filter_value] to dictionary
+#    update DB entry for i-id with appropriate filter_value for each
+#                     filter_name
 
 ######################################################################
 # Preliminaries
@@ -74,41 +46,6 @@
 import MySQLdb
 import re
 import sys
-
-######################################################################
-# Main program
-
-#Connect to MySQL server _FIX_ME_ update with actual db name
-
-db = MySQLdb.connect(host="localhost", user="ebender",
-                     passwd="tr33house", db="EmilyTest")
-
-#Create a cursor
-
-cursor = db.cursor()
-
-#Get list of ids from DB.  _FIX_ME_ update with actual table and field names
-
-cursor.execute("SELECT st_id FROM StrTst")
-ids = cursor.fetchall
-
-#`ids' is now a tuple containing elements for each item in the
-#relevant table.  Each of those elements is a tuple which contains
-#just the st_id.
-
-for id in ids:
-    key = id[0]
-    cursor.execute("SELECT mrs_id, string FROM StrTst where st_id = %s", (key))
-    (mrs_id, string) = cursor.fetchone()
-
-    filter_values = filter_string(mrs_id,string)
-
-    #Should do error checking here: Are all of the values legit?
-
-    for filter_key in filter_values.keys()
-        cursor.execute("UPDATE StrTst SET %s = %s WHERE st_id = %s",
-                       (filter_key, filter_values[filter_key], key))
-
 
 #######################################################################
 # filter_string(mrs_id,string)
@@ -118,121 +55,122 @@ for id in ids:
 # the values assigned by each filter to the string-mrs pair.  Each
 # particular filter should return its name and its value.
 
-def filter_string(mrs_id, string):
+def filter_string(mrs_id, sent):
 
     filter_values = {}
-    (key, value) = filter1(mrs_id, string)
-    filter_values[key] = value
 
-    # Add in calls to the rest of the filters.
+    for f in filters:
+        key = f.name
+        filter_values[key] = f.exe(mrs_id, sent)
+
+    return filter_values
 
 ########################################################################
 # Filter class
+
+class Filter:
+
+    def __init__(self,name,mrs_id_list,comment):
+        self.name = name
+        self.mrs_id_list = mrs_id_list
+
+    def check_mrs_id(self,mrs_id):
+        return mrs_id in self.mrs_id_list
+
+    def exe(self,mrs_id,sent):
+        if not check_mrs_id(self,mrs_id):
+            return 2
+        else:
+            self.apply_filter(self,sent)
+
+    #Might not need this here.
+    def apply_filter(self,sent):
+        print "Error"
+        assert False
+
+class AndNotFilter(Filter):        
+
+    def __init__(self,name,mrs_id_list,re1,re2,comment):
+        Filter.__init__(self,name,mrs_id_list,comment)
+        self.re1 = re1
+        self.re2 = re2
+
+    def apply_filter(self,sent):
+        if re.search(self.re1,sent) and not re.search(self.re2,sent):
+            return 0
+        else:
+            return 1
+
+class NotFilter(Filter):
+
+    def __init__(self,name,mrs_id_list,re1,comment):
+        Filter.__init__(self,name,mrs_id_list,comment)
+        self.re1 = re1
+
+    def apply_filter(self,sent):
+        if not re.search(self.re1,sent)
+            return 0
+        else:
+            return 1
 
 
 ########################################################################
 # Filters
 
-# If n1 is the subject, and there is no determiner for it, any p-nom
-# in the sentence needs to be adjacent to n1.
+filter_list = [
 
-def filter1(mrs_id, sent):
+    AndNotFilter(name = "filter1",
+                 mrs_id_list = ['wo1','wo3','wo6','neg1','ques1'],
+                 re1 = 'p-nom',
+                 re2 = 'p-nom n1|n1 p-nom',
+                 comment = "If n1 is the subject, and there is no determiner for it, any p-nom in the sentence needs to be adjacent to n1."),
 
-    value = 2
-    if onlist(mrs_id,['wo1','wo3','wo6','neg1','ques1']): # _FIX_ME_ define onlist or find equiv
-        if re.search('p-nom',sent) and not re.search ('p-nom n1|n1 p-nom', sent):
-            value = 0
-        else:
-            value = 1
+    AndNotFilter(name = "filter2",
+                 mrs_id_list = ['wo7','wo10','neg3','ques3'],
+                 re1 = 'p-nom',
+                 re2 = 'p-nom n2|n2 p-nom',
+                 comment = "If n2 is the subject, and there is no determiner for it, any p-nom in the sentence needs to be adjacent to n2."),
 
-    return ("filter1",value)
-        
-# If n2 is the subject, and there is no determiner for it, any p-nom
-# in the sentence needs to be adjacent to n2.
+    AndNotFilter(name = "filter3",
+                 mrs_id_list = ['wo7','wo10','neg3','ques3'],
+                 re1 = 'p-acc',
+                 re2 = 'p-acc n1|n1 p-acc',
+                 comment = "If n1 is the object, and there is no determiner for it, any p-acc in the sentence needs to be adjacent to n1."),
 
-def filter2(mrs_id, sent):
+    AndNotFilter(name = "filter4",
+                 mrs_id_list = ['wo3','wo5','neg1','ques1'],
+                 re1 = 'p-acc',
+                 re2 = 'p-acc n2|n2 p-acc'
+                 comment = "If n2 is the object, and there is no determiner for it, any p-acc in the sentence needs to be adjacent to n2."),
 
-    value = 2
-    if onlist(mrs_id,['wo7','wo10','neg3','ques3']): # _FIX_ME_ define onlist or find equiv
-        if re.search('p-nom',sent) and not re.search ('p-nom n2|n2 p-nom', sent):
-            value = 0
-        else:
-            value = 1
+    NotFilter(name = "filter5",
+              mrs_id_list = ['wo2','wo5','wo10'],
+              re1 = 'det n1|n1 det',
+              comment = "If there's only one det, and it's attached to n1, it must be adjacent to n1."),
 
-    return ("filter2",value)
+    NotFilter(name = "filter6",
+              mrs_id_list = ['wo6','wo9'],
+              re1 = 'det n2|n2 det',
+              comment = "If there's only one det, and it's attached to n1, it must be adjacent to n1.")]
 
-# If n1 is the object, and there is no determiner for it, any p-acc
-# in the sentence needs to be adjacent to n1.
 
-def filter3(mrs_id, sent):
-
-    value = 2
-    if onlist(mrs_id,['wo7','wo10','neg3','ques3']): # _FIX_ME_ define onlist or find equiv
-        if re.search('p-acc',sent) and not re.search ('p-acc n1|n1 p-acc', sent):
-            value = 0
-        else:
-            value = 1
-
-    return ("filter3",value)
-        
-# If n2 is the object, and there is no determiner for it, any p-acc
-# in the sentence needs to be adjacent to n2.
-
-def filter4(mrs_id, sent):
-
-    value = 2
-    if onlist(mrs_id,['wo3','wo5','neg1','ques1']): # _FIX_ME_ define onlist or find equiv
-        if re.search('p-nom',sent) and not re.search ('p-acc n2|n2 p-acc', sent):
-            value = 0
-        else:
-            value = 1
-
-    return ("filter4",value)
-
-# If there's only one det, and it's attached to n1, it must be
-# adjacent to n1
-
-def filter5(mrs_id, sent):
-
-    value = 2
-    if onlist(mrs_id,['wo2','wo5','wo10']):
-        if not re.search('det n1|n1 det',sent):
-            value = 0
-        else:
-            value = 1
-
-    return ("filter5",value)
-
-# If there's only one det, and it's attached to n2, it must be
-# adjacent to n2
-
-def filter6(mrs_id, sent):
-
-    value = 2
-    if onlist(mrs_id,['wo6','wo9']):
-        if not re.search('det n2|n2 det',sent):
-            value = 0
-        else:
-            value = 1
-
-    return ("filter6",value)
 
 # If there are two dets, each one has to be next to a noun,
 # and no fair putting them both next to the same noun.
 
-def filter7(mrs_id, sent):
+#def filter7(mrs_id, sent):
 
-    value = 2
-    if onlist(mrs_id,['wo4','wo8','neg2','neg4','ques2','ques4']):
-        if not (re.search(r'det (n1|n2).*det (n1|n2)',sent) or
-                re.search(r'det (n1|n2).*(n1|n2) det',sent) or
-                re.search(r'(n1|n2) det.*det (n1|n2)',sent) or
-                re.search(r'(n1|n2) det.*(n1|n2) det',sent)):
-            value = 2
-        else:
-            value = 1
-
-    return ("filter7",value)
+#    value = 2
+#    if onlist(mrs_id,['wo4','wo8','neg2','neg4','ques2','ques4']):
+#        if not (re.search(r'det (n1|n2).*det (n1|n2)',sent) or
+#                re.search(r'det (n1|n2).*(n1|n2) det',sent) or
+#                re.search(r'(n1|n2) det.*det (n1|n2)',sent) or
+#                re.search(r'(n1|n2) det.*(n1|n2) det',sent)):
+#            value = 0
+#        else:
+#            value = 1
+#
+#    return ("filter7",value)
 
 # If n1 is the subject and it does have a determiner attached to
 # it, if there's a p-nom, it has to form a coherent NP with n1 and det.
@@ -245,4 +183,41 @@ def filter7(mrs_id, sent):
 
 # If n2 is the object and it does have a determiner attached to
 # it, if there's a p-acc, it has to form a coherent NP with n1 and det.
+
+######################################################################
+# Main program
+
+#Connect to MySQL server _FIX_ME_ update with actual db name
+
+db = MySQLdb.connect(host="localhost", user="ebender",
+                     passwd="tr33house", db="MatrixTDB")
+
+#Create a cursor
+
+cursor = db.cursor()
+
+#Get list of ids from DB.  _FIX_ME_ update with actual table and field names
+
+cursor.execute("SELECT i_id FROM item")
+ids = cursor.fetchall
+
+#`ids' is now a tuple containing elements for each item in the
+#relevant table.  Each of those elements is a tuple which contains
+#just the st_id.
+
+for id in ids:
+    key = id[0]
+    cursor.execute("SELECT i_comment, i_input FROM StrTst where i_id = %s", (key))
+    (mrs_id, string) = cursor.fetchone()
+
+    filter_values = filter_string(mrs_id,string)
+
+    #Should do error checking here: Are all of the values legit?
+
+    #    for filter_key in filter_values.keys()
+    #        cursor.execute("UPDATE StrTst SET %s = %s WHERE st_id = %s",
+    #                       (filter_key, filter_values[filter_key], key))
+
+    print filter_values
+    
 
