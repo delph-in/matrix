@@ -14,7 +14,7 @@
 
 \title{Validation and Regression Testing for a Cross-linguisic Grammar Resource}
 
-\author{Emily M.~Bender,\  Laurie Poulson,\  Scott F.~Drellishak,\ Christie Evans\\
+\author{Emily M.~Bender,\  Laurie Poulson,\  Scott Drellishak,\ Christie Evans\\
   University of Washington\\
   Department of Linguistics\\
   Seattle WA 98195-4340 USA\\
@@ -54,12 +54,12 @@
 \section{Introduction}
 
 The development and maintenance of test suites is integral to the
-process of writing deep linguistic grammars \cite{Oep:Fli:98,FIX_ME}.
+process of writing deep linguistic grammars \cite{Oep:Fli:98,But:Kin:03}.
 Such test suites typically contain hand-constructed examples
 illustrating the grammatical phenomena which have been considered to
 date as well as representative examples taken from texts from the
 target domain.  They are used for both validation (does this analysis
-do what we intend it to do?) and regression testing of precision
+do what we intend it to do?)\ and regression testing of precision
 grammars.  With test suite management software such as \itsdb\
 \cite{Oepen:01}), the grammar engineer can compare the linguistic
 `competence' of the current grammar to that of previous stages of the
@@ -86,7 +86,7 @@ consider the LinGO Grammar Matrix
 scenario:
 
 \begin{enumerate}
-\item The cross-linguistic resource isn't itself a grammar, and therefore
+\item The Matrix core grammar isn't itself a grammar, and therefore
 can't parse any strings.
 \item There is no single language modeled by the cross-linguistic resource
 from which to draw test strings.
@@ -106,13 +106,13 @@ language from a web-based form and outputs a customized
 `starter-grammar' as well as a `language description' file encoding
 the the choices the user made on the form.
 
-In its broad outlines, the strategy looks like this:
+In its broad outlines, the methodology looks like this:
 
 \begin{enumerate}
 \item Define an abstract vocabulary to be used for test suite purposes.
 \item Define an initial small set of string-semantics pairs.
 \item Construct a large set of variations on the string-semantics pairs.
-\item Define a set of filters which can select the legitimate string-semantics pairs for a particular language type from the overall set
+\item Define a set of filters which can delineate the legitimate string-semantics pairs for a particular language type
 \end{enumerate}
 %
 The filters in effect constitute a parallel grammar definition
@@ -120,38 +120,22 @@ system, albeit one which creates `grammars' of very limited generative
 capacity.  As such, the output of the filters cannot be taken as
 ground truth.  Rather, they serve as a point of comparison that allows
 us to find discrepancies between the filters and the Grammar Matrix
-(including the libraries and customization system). The discrepancies
-might be due to an error on either side.  Nonetheless, we believe that
-maintaining the filter systems is a worthwhile investment, as we see
-no other systematic way to turn up errors in the Grammar Matrix short
-of using it to build grammars for all known languages.
-
-The remainder of this paper is structured as follows: \S\ref{GM} briefly
-describes the relevant properties of the Grammar Matrix. \S\ref{rw} discusses
-related work on the testing of complex software systems and explores how
-the issues that arise in multilingual grammar engineering differ from those
-usually considered in software engineering. \S\ref{arch} presents the 
-methodology for creating test suites in more detail.  \S\ref{ea} illustrates
-the kind of errors which can be isolated with this technique.  \S\ref{fw}
-concludes the paper with a discussion of how the test suite resource should
-be maintained and extended over time and potential uses of the test suite
-resource outside the Grammar Matrix project.
+(including the libraries and customization system), which in turn
+can lead us to errors in the Grammar Matrix.
 
 \section{Background}
 \label{GM}
-
-\subsection{Grammar Matrix Overview}
 
 The Grammar Matrix is an open-source starter kit designed to
 jump-start the development of broad-coverage precision grammars,
 capable of both parsing and generation and suitable for use in a
 variety of NLP applications.  The Grammar Matrix is written within the
-HPSG framework \cite{Pol:Sag:94,Sag:Was:Ben:03}, using Minimal
+HPSG framework \cite{Pol:Sag:94}, using Minimal
 Recursion Semantics (MRS; \cite{Cop:Fli:Pol:Sag:05}) for the semantic
 representations. The particular formalism we use is TDL
 (type description language) as interpreted by the LKB
 \cite{Copestake02} grammar development environment.  Initial work on
-the Matrix \cite{Ben:Fli:Oep:02, Fli:Ben:03} focused on the
+the Matrix \cite{Ben:Fli:Oep:02,Fli:Ben:03} focused on the
 development of a cross-linguistic core grammar.  The core grammar
 provides a solid foundation for sustained development of
 linguistically-motivated yet computationally tractable grammars (e.g.,
@@ -193,9 +177,21 @@ prepositions or both be postpositions) limit this space considerably.}
 
 \subsection{The Non-modularity of Linguistic Phenomena}
 
-Usability
-considerations put two important constraints on the customization
-system: 
+In this section we discuss our finding so far about the
+non-modularity of linguistic phenomena, and argue that this
+makes the testing of a broad sample of starter grammars (representing
+many language types) even more pressing.
+
+The Grammar Matrix customization system reads in the user's language
+specification and then outputs language-specific definitions of types
+(rule types, lexical entry types and ancillary structures) which
+inherit from types defined in the crosslinguistic core of the Matrix
+but add constraints appropriate for the language at hand. The customization
+system is implemented as a Python script which builds TDL descriptions,
+prints them to the appropriate files, includes the cross-linguistic
+shared files, and presents the user with an archive for downloading.
+
+Usability considerations put two important constraints on this system:
 
 \begin{enumerate}
 \item The questions must be ones that are sensible to linguists,
@@ -210,16 +206,7 @@ should all inherit from some supertype which bears the constraint.
 In addition, all constraints pertaining to a particular type are
 stated in one place.
 
-The Grammar Matrix customization system reads in the user's language
-specification and then outputs language-specific definitions of types
-(rule types, lexical entry types and ancillary structures) which
-inherit from types defined in the crosslinguistic core of the Matrix
-but add constraints appropriate for the language at hand. The customization
-system is implemented as a Python script which builds TDL descriptions,
-prints them to the appropriate files, includes the cross-linguistic
-shared files, and presents the user with an archive for downloading.
-
-In light of the two basic constraints on the customization system, we
+In light of the these constraints, we
 have found that it is not possible to treat the libraries as black-box
 modules with respect to each other.  The libraries are interdependent,
 and the portions of the script which interpret one part of the input
@@ -316,12 +303,32 @@ same sentence.
 
 Given this non-modularity, we would ideally like to be able to
 validate (and do regression testing on) the full set of grammars
-generable by the customization system, representing every combination
-of every answer to every question.  To approximate such a thorough
+generable by the customization system.  To approximate such a thorough
 testing procedure, we can instead sample from the grammar space.
 
-\section{Related Work: Validation of complex software systems}
+\section{Related Work}
 \label{rw}
+
+Kinyon and Rambow \shortcite{Kin:Ram:03} present an approach to
+generating test suites on the basis of descriptions of languages.  The
+language descriptions are MetaGrammar hierarchies. Their approach
+appears to be more flexible than the one presented here in some ways,
+and more constrained in others.  It does not need any input strings,
+but rather produces the strings directly from the language
+description. In addition, it annotates the output in multiple ways,
+including phrase structure, dependency structure, LFG F-structure or
+``hypertags'' giving a relatively theory-neutral description of the
+linguistic phenonema illustrated in the sentence.  On the other hand,
+there is no apparent provision for creating negative (ungrammatical)
+test data and it is not clear how much effort is required to create a
+language description.  Furthermore, the multilingual MetaGrammar
+hierarchies themselves can be seen as similar to the Grammar Matrix,
+i.e., as a system for generating grammars (rather than test suites)
+\cite{Kin:Ram:Sch:Yoo:Jos:06}.  In that case, a MetaGrammar derived
+test suite would not provide an independent point of evaluation for a
+MetaGrammar derived grammar.  An interesting area for future work
+would be the comparison between the test suites generated by the
+system described here and the MetaGrammar test suites.
 
 \section{Methodology}
 \label{arch}
@@ -347,17 +354,13 @@ questionnaire.  We refer to these as language types rather than
 languages, because the grammars produced by the customization system
 are underspecified with respect to actual languages.  For example,
 they currently lack any analysis of case (outside the option of
-case-marking adpositions) or agreement.  In fact, they will always be
-underspecified, no matter how large the system gets, because it is not
-possible to describe all of the details of all of the world's
-languages in a system like this---just getting the `core' grammar down
-will be challenge enough.  Thus one and the same starter grammar might
-be extended into multiple models corresponding to multiple actual
-human languages. Accordingly, when we talk about the predicted
-(un)grammaticality of a candidate string, we are referring to its
-predicted well- or ill-formedness given the information contained in
-the language type definition, not its grammaticality in any particular
-(human) language.
+case-marking adpositions) or agreement.  
+%Cut if short on space
+Accordingly, when we talk
+about the predicted well-formedness of a candidate string, we are
+referring to its predicted well- or ill-formedness given the
+information contained in the language type definition, not its
+grammaticality in any particular (human) language.
 
 \subsection{Implementation: Python and MySQL}
 
@@ -597,13 +600,12 @@ A case in point is coordination, where an NP position, for example,
 is filled by a coordinated NP.  
 
 To handle such phenomena with our finite-state system, we do multiple
-with the filters.  All items with coordination are first processed
+passes with the filters.  All items with coordination are first processed
 with the coordination filters, and then rewritten to replace any
 well-formed coordinations with single constituents.  These rewritten
 strings are then processed with the rest of the filters, and we store
 the results as the results for those filters on the {\it original}
-strings.\footnote{\_FIX\_ME\_: We actually haven't built this part yet,
-and it's like to be a bit more complicated than this...}
+strings.
 
 \subsection{Language types}
 
@@ -611,7 +613,7 @@ The final kind of information we store in the database is definitions
 of language types.  Even though our system allows us to create test
 suites for new language types on demand, we still store the
 language-type definitions of language types we have tested, for future
-regression testing purposes.  When a language type is read it, the
+regression testing purposes.  When a language type is read in, the
 list of feature-value pairs defining it is compared to the list of
 feature-groups declared by the filters.  For each group present in the
 language-type definition, we find all of the filters which use that
@@ -621,6 +623,8 @@ all those in the master item list predicted to be well-formed for
 this language type.  From the complement of this set, we also take
 a random selection of items to test for overgeneration.  We then export
 the test suite to \itsdb\ format.
+
+\subsection{Validation}
 
 \subsection{Summary}
 
@@ -638,27 +642,15 @@ the target semantic representation.
 seed strings.
 \item Specific filters picking out the right items for
 each language type
+\item \_FIX\_ME\_ Validation
 \end{enumerate}
 %
 This is a substantial investment on the part of the grammar
 engineer, but we believe it is worth it for the return of
 being able to validate the library which has been added.
 
-[\_FIX\_ME\_: Laurie, I think this might be a good place
-to mention the Arnold et al paper (1993?) which discusses
-an alternative way of constructing test suites.  But, I don't
-have that paper, do you have it still?]
 
-
-
-
-\section{Error analysis}
-\label{ea}
-
-Emphasize that we can sample the language space at will, and
-what that buys us
-
-\section{Conclusion and Future Work}
+\section{Conclusion}
 
 The methodology outlined in this paper addresses the three obstacles
 noted in the introduction: (1) Although the cross-linguistic resource
