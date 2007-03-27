@@ -25,22 +25,16 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-  In this paper we present a methodology for validation and regression
-  testing of the Grammar Matrix core grammar and customization system.
-  The space of possible language types covered by the Grammar Matrix
-  is large and growing. It is not possible to develop a test suite for
-  all of the language types.  Instead, we have created a test suite
-  generation system which reads in the same language-type description
-  file as the grammar customization system and creates a gold standard
-  test suite for comparison.  The gold standard test suite includes
-  well-formed strings paired with all of their valid semantic
-  representations (for the language type) as well as strings which are
-  ill-formed for the language type.
-
-  The string-semantics pairs for a test suite are selected from a set
+  In this paper we present a test suite generation system which reads
+  in the same language-type description file as the Grammar Matrix
+  customization system and creates a gold standard test suite for
+  comparison.  The gold standard test suite for a language type
+  includes well-formed strings paired with all of their valid semantic
+  representations as well as a sample of ill-formed strings.
+  These string-semantics pairs are selected from a set
   of candidates by a system of regular-expression based filters.  The
   filters amount to an alternative grammar building system, whose
-  generative capacity is limited compared to the actual grammars.  We
+  generative capacity is limited compared to the actual grammars.  
   perform error analysis of the discrepancies between the test suites
   and grammars for a range of language types, and update both systems
   appropriately.  The resulting resource serves as a point of
@@ -54,28 +48,14 @@
 \section{Introduction}
 
 The development and maintenance of test suites is integral to the
-process of writing deep linguistic grammars \cite{Oep:Fli:98,But:Kin:03}.
-Such test suites typically contain hand-constructed examples
-illustrating the grammatical phenomena which have been considered to
-date as well as representative examples taken from texts from the
-target domain.  They are used for both validation (does this analysis
-do what we intend it to do?)\ and regression testing of precision
-grammars.  With test suite management software such as \itsdb\
-\cite{Oepen:01}), the grammar engineer can compare the linguistic
-`competence' of the current grammar to that of previous stages of the
-grammar.  In such comparisons, one can not only find out if the
-overall coverage, overgeneration and degree of ambiguity have
-increased (or decreased), but also explore which test suite items have
-different numbers of analyses in the different runs, and even which
-have different analyses (in terms of syntax or semantics).  As
-recently as 10 years ago, running the test suite was an overnight
-affair, and so could only simultaneously test all of the days'
-changes.  Recent advances in efficient parsing technology
-\cite{Oep:Fli:Tsu:02} and the ability to parallelize test runs have made
-it possible use test suite runs to explore the consequences of any
-given change the grammar engineer is considering
-\cite{Oep:Ben:Cal:Fli:Sie:02}.  This has only increased the importance of
-the test suite in the grammar development process.
+process of writing deep linguistic grammars
+\cite{Oep:Fli:98,But:Kin:03}.  Such test suites typically contain
+hand-constructed examples illustrating the grammatical phenomena which
+have been considered to date as well as representative examples taken
+from texts from the target domain.  In combination with test suite
+management software such as \itsdb\ \cite{Oepen:01}, they are used for
+validation and regression testing of precision grammars as well as the
+exploration of potential changes to the grammar.  
 
 In this paper, we consider what happens when the precision grammar
 resource being developed isn't a grammar of a particular language, but
@@ -96,17 +76,8 @@ thoroughly explored.
 \end{enumerate}
 
 We present a methodology for the validation and regression testing of
-the Grammar Matrix which addresses these obstacles.  In addressing
-obstacle 1, it relies on the fact that recent work on the Grammar
-Matrix \cite{Ben:Fli:05,Dre:Ben:05} has been augmented with libraries
-implementing analyses of a range of variations for a small set of
-linguistic phenomena (e.g., basic word-order).  In addition, there is
-a `customization system' which elicits typological information about a
-language from a web-based form and outputs a customized
-`starter-grammar' as well as a `language description' file encoding
-the the choices the user made on the form.
-
-In its broad outlines, the methodology looks like this:
+the Grammar Matrix which addresses these obstacles. In its broad
+outlines, our methodology looks like this:
 
 \begin{enumerate}
 \item Define an abstract vocabulary to be used for test suite purposes.
@@ -186,11 +157,7 @@ The Grammar Matrix customization system reads in the user's language
 specification and then outputs language-specific definitions of types
 (rule types, lexical entry types and ancillary structures) which
 inherit from types defined in the crosslinguistic core of the Matrix
-but add constraints appropriate for the language at hand. The customization
-system is implemented as a Python script which builds TDL descriptions,
-prints them to the appropriate files, includes the cross-linguistic
-shared files, and presents the user with an archive for downloading.
-
+but add constraints appropriate for the language at hand. 
 Usability considerations put two important constraints on this system:
 
 \begin{enumerate}
@@ -290,9 +257,9 @@ it appears that it is not possible to define all of the necessary
 constraints on the coordination rules without having access to information
 about the agreement system.  
 
-Even if the libraries could be made completely independent at the
-customization level, however, the various parts of the grammar need to
-be able to interact properly in the analysis of individual sentences.
+Even if we were able to make our analyses of different linguistic
+phenomena completely modular, however, we would still need to test
+their interaction in the analysis of particular sentences.
 Any sentence which illustrates sentential negation, a matrix yes-no
 question, or coordination also necessarily illustrates at least some
 aspects of word order, the presence v.\ absence of determiners and
@@ -511,8 +478,9 @@ example, the filter which would catch example (\ref{detdet}) above
 is defined as in (\ref{filter1}):
 
 \enumsentence{\label{filter1}
+\small
 \begin{tabular}[t]{ll}
-Type: & reject-if-match\\
+Filter Type: & reject-if-match\\
 Regexp: & (det (n1$\mid$n2).*det (n1$\mid$n2))$\mid$\\
  & (det (n1$\mid$n2).*(n1$\mid$n2) det)$\mid$\\
  & ((n1$\mid$n2) det.*det (n1$\mid$n2))$\mid$\\
@@ -550,8 +518,9 @@ and sentential {\it not}).  The first regular expression checks for
 second checks for the negative affixes.
 
 \enumsentence{\label{neg_s_fltr}
+\small
 \begin{tabular}[t]{ll}
-Type: & reject-if-both-match\\
+Filter Type: & reject-if-both-match\\
 Regexp1: & ($\backslash$s$\mid$\^{})neg($\backslash$s$\mid$\$)\\
 Regexp2: & -neg$\mid$neg-\\
 Sem-class: & [sem. classes for all neg.\ sent.]\\
@@ -625,6 +594,9 @@ a random selection of items to test for overgeneration.  We then export
 the test suite to \itsdb\ format.
 
 \subsection{Validation}
+
+Once we have created the test suite for a particular language, the
+grammar engineer 
 
 \subsection{Summary}
 
