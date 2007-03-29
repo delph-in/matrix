@@ -1,5 +1,7 @@
 #!/usr/local/bin/python2.4
 
+# !!!!! This is being replaced by add_permutes.py !!!!!!
+
 ######################################################################
 # ERB 3/21/07 Reworking the profiles code to work with MySQL DB.
 # This script will create the string-mrs pairs (in appropriate tsdb++
