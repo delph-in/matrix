@@ -1,4 +1,4 @@
-%
+%LAP edited version 9:26pm
 % File acl07.tex
 %
 % Contact: sujian@i2r.a-star.edu.sg
@@ -14,34 +14,40 @@
 
 \title{Validation and Regression Testing for a Cross-linguisic Grammar Resource}
 
-%% \author{Emily M.~Bender,\  Laurie Poulson,\  Scott Drellishak,\ Christie Evans\\
-%%   University of Washington\\
-%%   Department of Linguistics\\
-%%   Seattle WA 98195-4340 USA\\
-%%   {\tt \{ebender,lpoulson,sfd,chrisev@u.washington.edu\}}}
+\author{Emily M.~Bender,\  Laurie Poulson,\  Scott Drellishak,\ Chris Evans\\
+University of Washington\\
+Department of Linguistics\\
+Seattle WA 98195-4340 USA\\
+{\tt \{ebender,lpoulson,sfd,chrisev@u.washington.edu\}}}
 
-\author{anonymous}
+%\author{anonymous}
 
 \date{}
 
 \begin{document}
 \maketitle
 \begin{abstract}
-  In this paper we present a test suite generation system which reads
-  in the same language-type description file as the Grammar Matrix
-  customization system and creates a gold standard test suite for
-  comparison.  The gold standard test suite for a language type
-  includes well-formed strings paired with all of their valid semantic
-  representations as well as a sample of ill-formed strings.
-  These string-semantics pairs are selected from a set
-  of candidates by a system of regular-expression based filters.  The
-  filters amount to an alternative grammar building system, whose
-  generative capacity is limited compared to the actual grammars.  
-  We perform error analysis of the discrepancies between the test suites
-  and grammars for a range of language types, and update both systems
+
+In this paper we present a validation methodology for a
+  cross-linguistic grammar resource.  This resource produces output in
+  the form of small grammars based on elicited typological
+  description.  Evaluating the resource entails sampling from a very
+  large space of language types. However, the type and range of these
+  grammars preclude the use of standard test suites development
+  techniques.  The methodology presented in this paper produces a
+  database from which gold standard test suites for these grammars can
+  be generated on demand.  The gold standard test suite for a language
+  type includes well-formed strings paired with all of their valid
+  semantic representations as well as a sample of ill-formed strings.
+  These string-semantics pairs are selected from a set of candidates
+  by a system of regular-expression based filters.  The filters amount
+  to an alternative grammar building system, whose generative capacity
+  is limited compared to the actual grammars.  We perform error
+  analysis of the discrepancies between the test suites and grammars
+  for a range of language types, and update both systems
   appropriately.  The resulting resource serves as a point of
-  comparison for regression testing in future development of the
-  Matrix.
+  comparison for regression testing in future development.
+
 \end{abstract}
 
  % References: \cite{XYZ:73} (XYZ 1973)
@@ -52,11 +58,11 @@
 The development and maintenance of test suites is integral to the
 process of writing deep linguistic grammars
 \cite{Oep:Fli:98,But:Kin:03}.  Such test suites typically contain
-hand-constructed examples illustrating the grammatical phenomena which
+hand-constructed examples illustrating the grammatical phenomena that
 have been considered to date as well as representative examples taken
 from texts from the target domain.  In combination with test suite
 management software such as \itsdb\ \cite{Oepen:01}, they are used for
-validation and regression testing of precision grammars as well as the
+validation and regression testing of precision (deep linguistic) grammars as well as the
 exploration of potential changes to the grammar.  
 
 In this paper, we consider what happens when the precision grammar
@@ -67,6 +73,7 @@ consider the LinGO Grammar Matrix
 (related) obstacles to making effective use of test suites in this
 scenario:
 
+% LAP: recommend making these numbered like the examples because they are referred back to in the conclusion
 \begin{enumerate}
 \item The Matrix core grammar isn't itself a grammar, and therefore
 can't parse any strings.
@@ -77,23 +84,25 @@ by the resource is enormous, well beyond the scope of what can be
 thoroughly explored.
 \end{enumerate}
 
+%LAP: the reference added could have been an appositive but it made for a very awkward sentence
 We present a methodology for the validation and regression testing of
-the Grammar Matrix which addresses these obstacles. In its broad
+the Grammar Matrix that addresses these obstacles, developing the ideas
+originally proposed in \shortcite{Poul:06}. In its broad
 outlines, our methodology looks like this:
 
+% LAP: recommend making these unnumbered bullets because the numbering is never referred to
 \begin{enumerate}
 \item Define an abstract vocabulary to be used for test suite purposes.
 \item Define an initial small set of string-semantics pairs.
 \item Construct a large set of variations on the string-semantics pairs.
-\item Define a set of filters which can delineate the legitimate string-semantics pairs for a particular language type
+\item Define a set of filters that can delineate the legitimate string-semantics pairs for a particular language type
 \end{enumerate}
 %
 The filters in effect constitute a parallel grammar definition
-system, albeit one which creates `grammars' of very limited generative
+system, albeit one that creates `grammars' of very limited generative
 capacity.  As such, the output of the filters cannot be taken as
 ground truth.  Rather, it serves as a point of comparison that allows
-us to find discrepancies between the filters and the Grammar Matrix
-(including the libraries and customization system), which in turn
+us to find discrepancies between the filters and the Grammar Matrix which in turn
 can lead us to errors in the Grammar Matrix.
 
 \section{Background}
@@ -121,8 +130,7 @@ subject-head), and it needs a lexicon.  Although word order and many
 other phenomena vary across languages, there are still recurring
 patterns.  To allow reuse of grammar code across languages and to
 increase the size of the jump-start provided by the Matrix, in more
-recent work Bender and Flickinger \shortcite{Ben:Fli:05} and
-Drellishak and Bender \shortcite{Dre:Ben:05} have been developing
+recent work \cite{Ben:Fli:05,Dre:Ben:05}, we have been developing
 `libraries' implementing realizations of various linguistic phenomena.
 Through a web interface, grammar developers can configure an initial
 starter grammar by filling out a typological questionnaire about their
@@ -150,14 +158,14 @@ prepositions or both be postpositions) limit this space considerably.}
 
 \section{The Non-modularity of Linguistic Phenomena}
 
-In this section we discuss our finding so far about the
+In this section we discuss our findings so far about the
 non-modularity of linguistic phenomena, and argue that this
 makes the testing of a broad sample of starter grammars (representing
 many language types) even more pressing.
 
 The Grammar Matrix customization system reads in the user's language
 specification and then outputs language-specific definitions of types
-(rule types, lexical entry types and ancillary structures) which
+(rule types, lexical entry types and ancillary structures) that
 inherit from types defined in the crosslinguistic core of the Matrix
 but add constraints appropriate for the language at hand. 
 Usability considerations put two important constraints on this system:
@@ -167,14 +175,14 @@ who tend to consider phenomena one at a time.
 To achieve readable grammar code in the output TDL, among other
 things, we follow the guideline that any given constraint is
 stated only once.  If multiple types require the same constraint, they
-should all inherit from some supertype which bears the constraint.
+should all inherit from some supertype bearing that constraint.
 In addition, all constraints pertaining to a particular type are
 stated in one place.
 
 In light of the these usability considerations, we
 have found that it is not possible to treat the libraries as black-box
 modules with respect to each other.  The libraries are interdependent,
-and the portions of the script which interpret one part of the input
+and the portions of the script that interpret one part of the input
 questionnaire frequently need to make reference to information
 elicited by other parts of the questionnaire.  For example, the
 customization system implements major constituent word order by
@@ -216,13 +224,13 @@ prepositions must be barred from the head-final version lest the
 grammar license {\it post}positional phrases by mistake. We do this by
 constraining the {\sc head} value of the comp-head phrase.  Similarly,
 question particles (such as {\it est-ce que} in French or {\it ma} in
-Mandarin) are treated as complementizers: heads which select for an S
+Mandarin) are treated as complementizers: heads that select for an S
 complement.  Since these, too, may differ in their word order
 properties from verbs (and prepositions), we need information about
 the question particles (elicited with the rest of the information
 about yes-no questions) before we have complete information about the
 head-complement rule.  Furthermore, it is not simply a question of
-adding constraints to existing types: Consider the case of an SOV
+adding constraints to existing types. Consider the case of an SOV
 language with prepositions and sentence-initial question particles.
 This language would need a head-initial head-comp rule that can take
 only prepositions and complementizers as its head.  To express the
@@ -249,7 +257,7 @@ minimal person value of the coordinands.
 \item You and Kim should handle this yourselves.}
 %
 In languages with gender systems, there is often a similar hierarchy
-of gender values, e.g., in French coordianted NPs the whole NP is feminine
+of gender values, e.g., in French coordinated NPs the whole NP is feminine
 iff all coordinands are feminine and masculine otherwise.  Thus
 it appears that it is not possible to define all of the necessary
 constraints on the coordination rules without having access to information
@@ -258,7 +266,7 @@ about the agreement system.
 Even if we were able to make our analyses of different linguistic
 phenomena completely modular, however, we would still need to test
 their interaction in the analysis of particular sentences.
-Any sentence which illustrates sentential negation, a matrix yes-no
+Any sentence that illustrates sentential negation, a matrix yes-no
 question, or coordination also necessarily illustrates at least some
 aspects of word order, the presence v.\ absence of determiners and
 case-marking adpositions, and the subcategorization of the verb that
@@ -270,6 +278,336 @@ Given this non-modularity, we would ideally like to be able to
 validate (and do regression testing on) the full set of grammars
 generable by the customization system.  To approximate such a thorough
 testing procedure, we instead sample from the grammar space.
+
+\section{Methodology}
+\label{arch}
+
+This section describes in some detail our methodology for creating
+test suites on the basis of language-type descriptions.  A {\it
+language type} is a collection of feature-value pairs representing a
+possible set of answers to the Matrix customization questionnaire. We
+refer to these as language types rather than languages, because the
+grammars produced by the customization system are underspecified with
+respect to actual languages, i.e., one and the same starter grammar
+might be extended into multiple models corresponding to multiple
+actual human languages.  Accordingly, when we talk about the predicted
+(well)formedness, or (un)grammaticality, of a candidate string, we are referring to its
+predicted status with respect to a language type definition, not its
+grammaticality in any particular (human) language.
+
+\subsection{Implementation: Python and MySQL}
+
+The test suite generation system includes a MySQL database, a collection
+of Python scripts that interact with the database, and some stored
+SQL queries.  As the set of items we are manipulating is quite large
+(and will grow as new items are added to test additional libraries),
+using a database is essential for rapid retrieval of relevant items.
+Furthermore, the database facilitates the separation of procedural
+and declarative knowledge in the definition of the filters.
+
+\subsection{Abstract vocabulary for abstract strings}
+
+In order to parse and generate, a grammar needs not just syntactic
+constructions and lexical types, but also an actual lexicon.  Since we
+are working at the level of language types (and not actual languages),
+we are free to define this lexicon in whatever way is most convenient.
+Much of the idiosyncrasy in language resides in the lexicon, both in
+the form of morphemes and in the particular grammatical and
+collocational constraints associated with them.  Of these three, only
+the grammatical constraints are manipulated in any interesting way
+within the Grammar Matrix customization system.  Therefore, for the
+test suite, we define all of the language types to draw the {\it
+forms} of their lexical items from a shared, standardized vocabulary,
+illustrated in Table~\ref{tab1}.  Table~\ref{tab1} also lists the
+options that are currently available for varying the grammatical
+constraints on the lexical entries.  Using the same word forms for
+each grammar contributes substantially to building a single resource
+that can be adapted for the testing of each language type.
+
+\begin{table*}[ht]
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+Form & Description & Options \\ \hline \hline
+det & determiner & \\ 
+n1, n2 & nouns & det is optional, obligatory, impossible\\
+iv, tv & intransitive, transitive verb & subj, obj are NP or PP\\
+p-nom, p-acc & case-marking adpositions & preposition or postposition\\
+neg & negative element & adverb, prefix, suffix\\
+co1, co2 & coordination marks & word, prefix, suffix\\
+qpart & question particle & \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Standardized lexicon}
+\label{tab1}
+\end{table*}
+
+
+\subsection{Constructing master item set}
+
+We use {\it string} to refer to a sequence of words to be input to a
+grammar and {\it result} as the (expected) semantic representation.
+An {\it item} is a particular pair of string and result.  Among
+strings, we have {\it seed strings} provided by the Matrix developers
+to seed the test suite, and {\it constructed strings} derived from
+those seed strings.  The {\it constructor function} is the algorithm
+for deriving new strings from the seed strings. Seed strings are
+arranged into semantic equivalence classes, from which one
+representative is designated the {\it harvester string}.  We parse the
+harvester string with some appropriate grammar (derived from the
+Matrix customization system) to extract the semantic representation
+({\it result}) to be paired with each member of the equivalence class.
+
+The seed strings, when looked at as bags of words, should cover all
+possible realizations of the phenomenon treated by the library. For
+example, the negation library allows both inflectional and adverbial
+negation, as well as negation expressed through both inflection and an
+adverb together.  To illustrate negation of transitive sentences
+(allowing for languages with and without determiners\footnote{We
+require additional seed strings to account for languages with and
+without case-marking adpositions}), we require the seed strings in
+(\ref{neg_seed}):
+
+\enumsentence{\label{neg_seed}
+\begin{tabular}[t]{ll}
+Semtag: neg1 & Semtag: neg2\\ \hline
+n1 n2 neg tv & det n1 det n2 neg tv \\
+n1 n2 neg-tv & det n1 det n2 neg-tv \\
+n1 n2 tv-neg & det n1 det n2 tv-neg \\
+n1 n2 neg neg-tv & det n1 det n2 neg neg-tv \\
+n1 n2 neg tv-neg & det n1 det n2 neg tv-neg \\
+\end{tabular}
+}
+%
+Sentential negation has the same semantic reflex across all
+of its realizations, but the presence v.\ absence of overt determiners
+does have a semantic effect.  Accordingly, the seed strings shown in
+(\ref{neg_seed}) can be grouped into two semantic equivalence classes,
+shown as the first and second columns in the table, and associated with
+the semantic tags `neg1' and `neg2', respectively.  The two strings
+in the first row could be designated as the harvester strings, associated
+with a grammar for an SOV language with optional determiners preceding
+the noun and sentential negation expressed as a pre-head modifier of V.
+
+We use the LKB in conjunction with \itsdb\ to parse the harvester strings from all of
+the equivalence classes with the appropriate grammars.  Then the seed strings and the parsing results from the harvester strings, as well as their semantic tags, are stored and linked in our relational database.  We use the constructor function to create new strings on the basis of these seed strings in the
+database.  This produces the master item set that provides the basis for the test suites.
+%LAP I assume that this "list" is conceptual and that information is spread across tables but stating that does not elucidate the process
+
+%LAP I took out the word "word" since I didn't understand what was meant.  Perhaps it will need to be restored but if that is the case why only "word order" and not other phenomena?
+Currently, we have only one constructor function (`permute') which
+takes in a seed string and returns all unique permutations of the
+morphemes in that seed string.\footnote{`permute' strips off any
+affixes, permutes the stems, and then attaches the affixes to the
+stems in all possible ways.}  This constructor function is effective
+in producing test items that cover the range of word order variations
+currently permitted by the Grammar Matrix customization system.  
+Currently, most of the other kinds of variation countenanced (e.g.,
+adverbial v.\ inflectional negation or presence v.\ absence of determiners) 
+is handled through the initial seed string construction.  As the range of
+phenomena handled by the customization system expands, we may need
+more sophisticated constructor functions, which could handle, for
+example, the addition of all possible case suffixes to each noun
+in the sentence.
+
+\subsection{Filters}
+
+The master item set provides us with an inventory from which we
+can find positive (grammatical) examples for any language type
+generated by the system as well as interesting negative examples for
+any language type.  To do so, we filter the master item set, in two
+steps.  
+
+
+\subsubsection{Universal Filters}
+
+The first step is the application of `universal' filters, which mark any
+item known to be ungrammatical across all language types currently
+produced by the system.  For example, the word order library does
+not currently provide an analysis of radically non-configurational
+languages with discontinuous NPs (e.g., Warlpiri \cite{Hale81}).
+Accordingly, the string in (\ref{detdet}) will be ungrammatical
+across all language types:
+
+\enumsentence{\label{detdet}
+det det n1 n2 tv
+}
+
+The universal filter definitions (provided by the developers)
+each comprise one or more regular expressions, a filter type that
+specifies how the regular expressions are to be applied, and a list of
+semantic tags specifying which equivalence classes they apply to.  For
+example, the filter that would catch example (\ref{detdet}) above
+is defined as in (\ref{filter1}):
+
+\enumsentence{\label{filter1}
+\small
+\begin{tabular}[t]{ll}
+Filter Type: & reject-unless-match\\
+Regexp: & (det (n1$\mid$n2).*det (n1$\mid$n2))$\mid$\\
+ & (det (n1$\mid$n2).*(n1$\mid$n2) det)$\mid$\\
+ & ((n1$\mid$n2) det.*det (n1$\mid$n2))$\mid$\\
+ & ((n1$\mid$n2) det.*(n1$\mid$n2) det)\\
+Sem-class: & [semantic classes for all transitive\\
+&  sentences with two determiners.]\\
+\end{tabular}
+}
+%
+We store the filters definitions in the database.  Then we apply each filter to every item in the database.  For each filter whose semantic-class value
+includes the semantic class of the item at hand, we store the result
+(pass or fail) of the filter on that item.  When all of the items have been processed with all of the universal
+filters, we can query the database to produce a list of all of the
+potentially well-formed items. % for a given semantic class.
+%LAP I think that the items are potentially well-formed for a particular semantic class but I might be wrong.
+
+\subsubsection{Specific Filters}
+
+The next step is to run the filters that find the grammatical
+examples for a particular language type.  In order to facilitate
+sampling of the entire language space, we define these filters to be
+sensitive not to complete language type definitions, but rather to
+particular features (or small sets of features) of a language type.
+Thus in addition to the filter type, regular expression, and semantic
+class fields, the language-specific filters also encode partial
+descriptions  of the language types to which they 
+apply, in the form of feature-value declarations.  For example, the filter in (\ref{neg_s_fltr})
+plays a role in selecting the correct form of negated sentences if
+a language type has both inflectional negation and adverbial negation
+but the two are in complementary distribution (like English {\it n't}
+and sentential {\it not}).  The first regular expression checks for
+{\it neg} surrounded by white space (i.e., the negative adverb) and the
+second checks for the negative affixes.
+
+\enumsentence{\label{neg_s_fltr}
+\small
+\begin{tabular}[t]{ll}
+Filter Type: & reject-if-both-match\\
+Regexp1: & ($\backslash$s$\mid$\^{})neg($\backslash$s$\mid$\$)\\
+Regexp2: & -neg$\mid$neg-\\
+Sem-class: & [sem. classes for all neg.\ sent.]\\
+Lg-feat: &  and(infl\_neg:on,adv\_neg:on,\\
+& multineg:comp)
+\end{tabular}
+}
+%
+This filter uses a conjunctive language feature specification
+(three feature-value pairs that must apply), but disjunctions are
+also possible as well as conjunctions of disjunctions, etc.  These
+specifications are converted to disjunctive normal form before
+further processing.
+
+As with the universal filters, the results of the specific filters are
+stored in the database.  We process each item that passed all of the
+universal filters with each specific filter.  Whenever a filter's
+semantic-class value matches the semantic-class of the item at hand,
+we store the value assigned by the filter (pass or fail).  We also
+store the feature-value pairs required by each filter, so that we can
+look up the relevant filters for a language-type definition.
+
+
+\subsubsection{Recursive Linguistic Phenomena}
+
+Making the filters relative to particular semantic classes
+allows us to use information about the lexical items in 
+the sentences in the definition of the filters.  This makes
+it easier to write regular-expression based filters that
+can work across many different complete language types. Nonetheless,
+we have to be prepared to handle some recursive phenomena.
+A case in point is coordination, where an NP position, for example,
+is filled by a coordinated NP.  
+
+To handle such phenomena with our finite-state system, we do multiple
+passes with the filters.  All items with coordination are first processed
+with the coordination filters, and then rewritten to replace any
+well-formed coordinations with single constituents.  These rewritten
+strings are then processed with the rest of the filters, and we store
+the results as the results for those filters on the {\it original}
+strings.
+
+\subsection{Language types}
+
+The final kind of information we store in the database is definitions
+of language types.  Even though our system allows us to create test
+suites for new language types on demand, we still store the
+language-type definitions of language types we have tested, for future
+regression testing purposes.  When a language type is read in, the
+list of feature-value pairs defining it is compared to the list of
+feature-groups declared by the filters.  For each group of
+feature-value pairs present in the language-type definition, we find
+all of the filters that use that group.  We then query the database
+for all items that pass the filters relevant to the language type.
+This list of items represents all those in the master item set
+predicted to be well-formed for this language type.  From the
+complement of this set, we also take a random selection of items to
+test for overgeneration.
+
+%LAP FIX THIS TITLE
+\subsection{Validation of grammars using the test suite resource}
+
+%LAP I think that it might be more accurate to say that the test suite 
+%created is a test suite for a set of feature-value pairs but I may be wrong.
+
+Once we have created the test suite for a particular language type,
+the developer runs the Matrix customization system to get a starter
+grammar for the same language type.  The test suite is loaded into
+\itsdb\ and processed with the grammar.  \itsdb\ allows the developer
+to compare the grammar's output with the test suite at varying levels
+of detail: Do all and only the items predicted to be well-formed
+parse?  Do they get the same number of readings as predicted?  Do they
+get the semantic representations predicted?  A discrepancy at any of
+these levels points to an error in either the Grammar Matrix or the
+test suite generation system.  The developer can query the database to
+find which filters passed or failed a particular example as well as to
+discover the provenance of the example and which phenomena it is meant
+to test.
+
+% LAP I padded this a bit to avoid a one sentence paragraph.
+
+This methodology provides the ability to generate test suites for any
+arbitrary language type on demand.  Although this appears to eliminate
+the need to store the test suites we do, in fact, store information
+about previous test suites. This allows us to track the evolution of
+the Grammar Matrix in relation to those particular language types over
+time.
+
+%LAP This isn't a summary of the section so it needs a new title
+\subsection{Investment and Return}
+
+The input required from the developer in order to
+test any new library is as follows:
+
+\begin{enumerate}
+\item Seed strings illustrating the range of expressions
+handled by the new library, organized into equivalence
+classes.
+\item Designated harvester strings for each equivalence class
+and a grammar or grammars that can parse them to get
+the target semantic representation.
+\item Universal filters specific to the phenomenon and
+seed strings.
+\item Specific filters picking out the right items for
+each language type.
+\item Analysis of discrepancies between the test suite
+and the generated grammars.
+\end{enumerate}
+%
+This is a substantial investment on the part of the developer 
+but we believe the investment is worth it for the return of being 
+able to validate a library addition and test for any loss of coverage 
+going forward.
+
+Arnold et al. \shortcite{arn:ron:fou:94} note that writing grammars to
+generate test suites is impractical if the test suite generating
+grammars aren't substantially simpler to write than the `actual'
+grammars being tested.  Even though this system requires some effort
+to maintain, we believe the methodology remains practical for two reasons. 
+First, the input required from the developer enumerated above is
+closely related to the knowledge discovered in the course of building
+the libraries in the first place.  Second, the fact that the filters
+are sensitive to only particular features of language types means that
+a relatively small number of filters can create test suites for a very
+large number of language types.
 
 \section{Related Work}
 \label{rw}
@@ -303,348 +641,48 @@ test-suite development strategies used, however, are quite different.
 
 
 
-\section{Methodology}
-\label{arch}
+\section{Future Work}
 
-This section describes in some detail our methodology for creating
-test suites on the basis of language-type descriptions.  A {\it
-language type} is a collection of feature-value pairs representing a
-possible set of answers to the Matrix customization questionnaire. We
-refer to these as language types rather than languages, because the
-grammars produced by the customization system are underspecified with
-respect to actual languages, i.e., one and the same starter grammar
-might be extended into multiple models corresponding to multiple
-actual human languages.  Accordingly, when we talk about the predicted
-(well)formedness of a candidate string, we are referring to its
-predicted status with respect to a language type definition, not its
-grammaticality in any particular (human) language.
+The addition of the next library to the Grammar Matrix will provide
+us with an opportunity to try to quantify the effect of this
+methodology.  With the Grammar Matrix and the filters stabilized, the
+validation of a new library can be carefully tracked.  We can try to
+quantify the number of errors obtained and the source of the errors,
+e.g., library or filters.
 
-\subsection{Implementation: Python and MySQL}
-
-The test suite generation system includes a MySQL database, a collection
-of Python scripts which interact with the database, and some stored
-SQL queries.  As the list of items we are manipulating is quite large
-(and will grow as new items are added to test additional libraries),
-using a database is essential for rapid retrieval of relevant items.
-Furthermore, the database facilitates the separation of procedural
-and declarative knowledge in the definition of the filters.
-
-\subsection{Abstract vocabulary for abstract strings}
-
-In order to parse and generate, a grammar needs not just syntactic
-constructions and lexical types, but also an actual lexicon.  Since we
-are working at the level of language types (and not actual languages),
-we are free to define this lexicon in whatever way is most convenient.
-Much of the idiosyncrasy in language resides in the lexicon, both in
-the form of morphemes and in the particular grammatical and
-collocational constraints associated with them.  Of these three, only
-the grammatical constraints are manipulated in any interesting way
-within the Grammar Matrix customization system.  Therefore, for the
-test suite, we define all of the language types to draw the {\it
-forms} of their lexical items from a shared, standardized vocabulary,
-illustrated in Table~\ref{tab1}.  Table~\ref{tab1} also lists the
-options which are currently available for varying the grammatical
-constraints on the lexical entries.  Using the same word forms for
-each grammar contributes substantially to building a single resource
-which can be adapted for the testing of each language type.
-
-\begin{table*}[ht]
-\begin{center}
-\begin{tabular}{|l|l|l|}
-\hline
-Form & Description & Options \\ \hline \hline
-det & determiner & \\ 
-n1, n2 & nouns & det is optional, obligatory, impossible\\
-iv, tv & intransitive, transitive verb & subj, obj are NP or PP\\
-p-nom, p-acc & case-marking adpositions & preposition or postposition\\
-neg & negative element & adverb, prefix, suffix\\
-co1, co2 & coordination marks & word, prefix, suffix\\
-qpart & question particle & \\
-\hline
-\end{tabular}
-\end{center}
-\caption{Standardized lexicon}
-\label{tab1}
-\end{table*}
-
-
-\subsection{Constructing master item list}
-
-We use {\it string} to refer to a sequence of words to be input to a
-grammar and {\it result} as the (expected) semantic representation.
-An {\it item} is a particular pair of string and result.  Among
-strings, we have {\it seed strings} provided by the Matrix developers
-to seed the test suite, and {\it constructed strings} derived from
-those seed strings.  The {\it constructor function} is the algorithm
-for deriving new strings from the seed strings. Seed strings are
-arranged into semantic equivalence classes, from which one
-representative is designated the {\it harvester string}.  We parse the
-harvester string with some appropriate grammar (derived from the
-Matrix customization system) to extract the semantic representation to
-be paired with each member of the equivalence class.
-
-The seed strings, when looked at as bags of words, should cover all
-possible realizations of the phenomenon treated by the library. For
-example, the negation library allows both inflectional and adverbial
-negation, as well as negation expressed through both inflection and an
-adverb together.  To illustrate negation of transitive sentences
-(allowing for languages with and without determiners\footnote{We
-require additional seed strings to account for languages with and
-without case-marking adpositions}), we require the seed strings in
-(\ref{neg_seed}):
-
-\enumsentence{\label{neg_seed}
-\begin{tabular}[t]{ll}
-Semtag: neg1 & Semtag: neg2\\ \hline
-n1 n2 neg tv & det n1 det n2 neg tv \\
-n1 n2 neg-tv & det n1 det n2 neg-tv \\
-n1 n2 tv-neg & det n1 det n2 tv-neg \\
-n1 n2 neg neg-tv & det n1 det n2 neg neg-tv \\
-n1 n2 neg tv-neg & det n1 det n2 neg tv-neg \\
-\end{tabular}
-}
-%
-Sentential negation has the same semantic reflex across all
-of its realizations, but the presence v.\ absence of overt determiners
-does have a semantic effect.  Accordingly, the seed strings shown in
-(\ref{neg_seed}) can be grouped into two semantic equivalence classes,
-shown as the first and second columns in the table, and associated with
-the semantic tags `neg1' and `neg2', respectively.  The two strings
-in the first row could be designated as the harvester strings, associated
-with a grammar for an SOV language with optional determiners preceding
-the noun and sentential negation expressed as pre-head modifier of V.
-
-We use the LKB and \itsdb\ to parse the harvester strings from all of
-the equivalence classes with the associated grammars, and add the
-resulting linked string and result rows into our database.  We further
-add the relations between the harvester strings, semantic tags, and
-parsing results into the database, and then use that information to
-create new rows in the item and result tables for the seed strings
-from each semantic equivalence class.  We then use the constructor
-function to create new strings on the basis of the seed strings in the
-database.
-
-Currently, we have only one constructor function (`permute') which
-takes in a seed string and returns all unique permutations of the
-morphemes in that seed string.\footnote{`permute' strips off any
-affixes, permutes the stems, and then attaches the affixes to the
-stems in all possible ways.}  This constructor function is effective
-in producing test items which cover the range of word order variation
-permitted by the Grammar Matrix customization system.  As the range of
-phenomena handled by the customization system expands, we may need
-more sophisticated constructor functions, which could handle, for
-example, the addition of all possible case suffixes to each noun
-in the sentence.
-
-\subsection{Filters}
-
-The master item list provides us with an inventory from which we
-can find positive (grammatical) examples for any language type
-generated by the system as well as interesting negative examples for
-any language type.  To do so, we filter the master item list, in two
-steps.  
-
-
-\subsubsection{Universal Filters}
-
-The first step is the `universal' filters, which mark any
-item known to be ungrammatical across all language types currently
-produced by the system.  For example, the word order library does
-not currently provide an analysis of radically non-configurational
-languages with discontinuous NPs (e.g., Warlpiri \cite{Hale81}).
-Accordingly, the string in (\ref{detdet}) will be ungrammatical
-across all language types:
-
-\enumsentence{\label{detdet}
-det det n1 n2 tv
-}
-
-The universal filter definitions (provided by the grammar engineers)
-each comprise one or more regular expressions, a filter type which
-specifies how the regular expressions are to be applied, and a list of
-semantic tags specifying which equivalence classes they apply to.  For
-example, the filter which would catch example (\ref{detdet}) above
-is defined as in (\ref{filter1}):
-
-\enumsentence{\label{filter1}
-\small
-\begin{tabular}[t]{ll}
-Filter Type: & reject-if-match\\
-Regexp: & (det (n1$\mid$n2).*det (n1$\mid$n2))$\mid$\\
- & (det (n1$\mid$n2).*(n1$\mid$n2) det)$\mid$\\
- & ((n1$\mid$n2) det.*det (n1$\mid$n2))$\mid$\\
- & ((n1$\mid$n2) det.*(n1$\mid$n2) det)\\
-Sem-class: & [semantic classes for all transitive\\
-&  sentences with two determiners.]\\
-\end{tabular}
-}
-%
-We create a `filters' table in the database with a row for each
-filter.  We then select each item from the database and process it
-with all of the filters.  For each filter whose semantic-class value
-includes the semantic class of the item at hand, we store the result
-(pass or fail) of the filter for the item in the item-filters table.
-When all of the items have been processed with all of the universal
-filters, we can query the database to produce a list of all of the
-potentially well-formed items.
-
-\subsubsection{Specific Filters}
-
-The next step is to run the filters which find the grammatical
-examples for a particular language type.  In order to facilitate
-sampling of the entire language space, we define these filters to be
-sensitive not to complete language type definitions, but rather to
-particular features (or small sets of features) of a language type.
-Thus in addition to the filter type, regular expression, and semantic
-class fields, the language-specific filters also encode partial
-descriptions in the form of feature-value declarations of the language
-types they apply to.  For example, the filter in (\ref{neg_s_fltr})
-plays a role in selecting the correct form of negated sentences in
-a language has both inflectional negation and adverbial negation,
-but the two are in complementary distribution (like English {\it n't}
-and sentential {\it not}).  The first regular expression checks for
-{\it neg} surrounded by white space (i.e., the negative adverb) and the
-second checks for the negative affixes.
-
-\enumsentence{\label{neg_s_fltr}
-\small
-\begin{tabular}[t]{ll}
-Filter Type: & reject-if-both-match\\
-Regexp1: & ($\backslash$s$\mid$\^{})neg($\backslash$s$\mid$\$)\\
-Regexp2: & -neg$\mid$neg-\\
-Sem-class: & [sem. classes for all neg.\ sent.]\\
-Lg-feat: &  and(infl\_neg:on,adv\_neg:on,\\
-& multineg:comp)
-\end{tabular}
-}
-%
-This filter uses a conjunctive language feature specification
-(three feature-value pairs which must apply), but disjunctions are
-also possible (as well as conjunctions of disjunctions, etc.; these
-specifications are converted to disjunctive normal form before
-further processing).
-
-As with the universal filters, the specific filters are stored in the
-database.  We process each item which passed all of the universal
-filters with each specific filter.  Whenever a filter's semantic-class
-value matches the semantic-class of the item at hand, we store the
-value assigned by the filter (pass or fail) in the item-filter table.
-We also store the feature-value pairs required by each filter, so that
-we can look up the relevant filters for a language-type definition.
-
-
-\subsubsection{Recursive Linguistic Phenomena}
-
-Making the filters relative to particular semantic classes
-allows us to use information about the lexical items in 
-the sentences in the definition of the filters.  This makes
-it easier to write regular-expression based filters which
-can work across many different complete language types. Nonetheless,
-we have to be prepared to handle some recursive phenomena.
-A case in point is coordination, where an NP position, for example,
-is filled by a coordinated NP.  
-
-To handle such phenomena with our finite-state system, we do multiple
-passes with the filters.  All items with coordination are first processed
-with the coordination filters, and then rewritten to replace any
-well-formed coordinations with single constituents.  These rewritten
-strings are then processed with the rest of the filters, and we store
-the results as the results for those filters on the {\it original}
-strings.
-
-\subsection{Language types}
-
-The final kind of information we store in the database is definitions
-of language types.  Even though our system allows us to create test
-suites for new language types on demand, we still store the
-language-type definitions of language types we have tested, for future
-regression testing purposes.  When a language type is read in, the
-list of feature-value pairs defining it is compared to the list of
-feature-groups declared by the filters.  For each group present in the
-language-type definition, we find all of the filters which use that
-group.  We then query the database for all items which pass the
-filters relevant to the language type.  This list of items represents
-all those in the master item list predicted to be well-formed for
-this language type.  From the complement of this set, we also take
-a random selection of items to test for overgeneration.  We then export
-the test suite to \itsdb\ format.
-
-\subsection{Validation}
-
-Once we have created the test suite for a particular language, the
-grammar engineer runs the Matrix customization system to get a starter
-grammar for the same language type.  The test suite is loaded into
-\itsdb\ and processed with the grammar.  \itsdb\ allows the grammar
-engineer to compare the grammar's output with the test suite at
-varying levels of detail: Do all and only the items predicted to be
-well-formed parse?  Do they get the same number of readings as
-predicted?  Do they get the same semantic representations as
-predicted?  A discrepancy at any of these levels points to an error in
-either the Grammar Matrix or the test suite generation system.  The
-grammar engineer can then query the database to find which filters
-passed or failed a particular example as well as to discover the
-provenance of the example and which phenomena it is meant to test.
-
-While the test suites for any arbitrary language type can be
-generated on demand, we still store the test suites we have created
-in the past in order to track the evolution over time of the Grammar
-Matrix as tested against those particular language types.
-
-\subsection{Summary}
-
-The input required from the grammar engineer in order to
-test any new library is as follows:
-
-\begin{enumerate}
-\item Seed strings illustrating the range of expressions
-handled by the new library, organized into equivalence
-classes.
-\item Designated harvester strings for each equivalence class
-and a grammar or grammars which can parse them and get
-the target semantic representation.
-\item Universal filters specific to the phenomenon and
-seed strings.
-\item Specific filters picking out the right items for
-each language type
-\item Exploration of discrepancies between the test suite
-and the generated grammars
-\end{enumerate}
-%
-This is a substantial investment on the part of the grammar
-engineer, but we believe it is worth it for the return of
-being able to validate the library which has been added and
-then test for any loss of coverage going forward.
-
-Arnold et al \shortcite{arn:ron:fou:94} note that writing grammars to
-generate test suites is impractical if the test suite generating
-grammars aren't substantially simpler to write than the `actual'
-grammars being tested.  Even though this system requires some effort
-to maintain, we believe it remains practical, for two reasons: First,
-the input required from the grammar engineer enumerated above is
-closely related to the knowledge discovered in the course of building
-the libraries in the first place.  Second, the fact that the filters
-are sensitive to only particular features of language types means that
-a relatively small number of filters can create test suites for a very
-large number of language types.
+In addition to this kind of quantification and error analysis as a
+means of validating this methodology, we also intend to undertake a
+comparison of the test suites created from our database to hand built
+created for Matrix-derived grammars by students in the multilingual
+grammar engineering course at the University of
+Washington.\footnote{http://courses.washington.edu/ling567} Students
+in this class each develop grammars for a different language, and
+create test suites of positive and negative examples as part of their
+development process.  We plan to use the lexical types in the grammars
+to define a mapping from the surface lexical items used in the test
+suites to our abstract vocabulary.  We can then compare the hand built
+and autogenerated test suites in order to gauge the thoroughness of
+the system presented here.
 
 \section{Conclusion}
 
+% LAP About the numbering see note at beginning of the file.
 The methodology outlined in this paper addresses the three obstacles
-noted in the introduction: (1) Although the Grammar Matrix core
-itself isn't a grammar, we test it by deriving grammars from it. Since we
+noted in the introduction:  Although the Grammar Matrix core
+itself isn't a grammar (1), we test it by deriving grammars from it. Since we
 are testing the derived grammars, we are simultaneously testing both
 the Matrix core grammar, the libraries, and the customization script.
-(2) Although there is no single language being modeled from which to
-draw strings, we can nonetheless find a relevant set of strings and
-associated them with annotations of expected well-formedness.  The
+Although there is no single language being modeled from which to
+draw strings (2), we can nonetheless find a relevant set of strings and
+associate these strings with annotations of expected well-formedness.  The
 lexical formatives of the strings are drawn from a standardized set
-of lexical forms.  The well-formedness predictions are made on the basis
+of abstract forms.  The well-formedness predictions are made on the basis
 of the system of filters.  The system of filters doesn't represent
 ground truth, but rather a second pathway to the judgments in 
 addition to the direct use of the Matrix-derived starter grammars.
 These pathways are independent enough that the one can serve as an
-error check on the other. (3) The space of possible language types
-remains too large for thorough testing.  However, since our system allows
+error check on the other.  The space of possible language types
+remains too large for thorough testing (3).  However, since our system allows
 for the efficient derivation of a test suite for any arbitrary
 language type, it is inexpensive to sample that language-type space in
 many different ways.
@@ -664,9 +702,11 @@ many different ways.
 %Add assistance for developers in creating their seed strings,
 %with things like det or no det, case adp or no case adp, etc.
 
-%\section{Acknowledgments}
+\section{Acknowledgments}
 
-%Dan, Stephan, NSF
+This work has been supported by NSF grant BCS-0644097.  
+
+%Dan, Stephan, NSF, 567?
 
 \bibliographystyle{acl}
 \bibliography{acl07}
