@@ -150,6 +150,24 @@ grammars.\footnote{If all of the choices in the customization system
 were independent, we would have more than 2 x 10$^{27}$ grammars.  In
 actuality, constraints on possible combinations of choices limit this space considerably.}
 
+\begin{figure*}[ht]
+\small
+\begin{center}
+\begin{tabular}{l}
+\begin{minipage}{5in}
+\begin{verbatim}
+comp-head-phrase := basic-head-1st-comp-phrase & head-final.
+subj-head-phrase := basic-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+\end{verbatim}
+\end{minipage}\\
+\end{tabular}
+\end{center}
+\caption{Specialized phrase structure rule types for SOV language}
+\label{tdlfig}
+\end{figure*}
+
+
 \section{The Non-modularity of Linguistic Phenomena}
 
 In this section we discuss our findings so far about the
@@ -185,23 +203,6 @@ cross-classified with the type head-final, and the head-subject rule
 would further be constrained to take only complement-saturated phrases
 as its head daughter.  The TDL encoding of these constraints is shown
 in Figure~\ref{tdlfig}.
-
-\begin{figure*}[ht]
-\small
-\begin{center}
-\begin{tabular}{l}
-\begin{minipage}{5in}
-\begin{verbatim}
-comp-head-phrase := basic-head-1st-comp-phrase & head-final.
-subj-head-phrase := basic-head-subj-phrase & head-final &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
-\end{verbatim}
-\end{minipage}\\
-\end{tabular}
-\end{center}
-\caption{Specialized phrase structure rule types for SOV language}
-\label{tdlfig}
-\end{figure*}
 
 Following standard practice in HPSG, we use the head-complement phrase
 not only for ordinary VPs, but also for PPs, CPs, and auxiliary-headed
@@ -269,6 +270,28 @@ validate (and do regression testing on) the full set of grammars
 generable by the customization system.  To approximate such
 thoroughness, we instead sample from the grammar space.
 
+\begin{table*}[ht]
+\small
+\begin{center}
+\begin{tabular}{l|l|l}
+\hline
+Form & Description & Options \\ \hline \hline
+det & determiner & \\ 
+n1, n2 & nouns & det is optional, obligatory, impossible\\
+iv, tv & intransitive, transitive verb & subj, obj are NP or PP\\
+p-nom, p-acc & case-marking adpositions & preposition or postposition\\
+neg & negative element & adverb, prefix, suffix\\
+co1, co2 & coordination marks & word, prefix, suffix\\
+qpart & question particle & \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Standardized lexicon}
+\label{tab1}
+\end{table*}
+
+
+
 \section{Methodology}
 \label{arch}
 
@@ -313,26 +336,6 @@ options that are currently available for varying the grammatical
 constraints on the lexical entries.  Using the same word forms for
 each grammar contributes substantially to building a single resource
 that can be adapted for the testing of each language type.
-
-\begin{table*}[ht]
-\small
-\begin{center}
-\begin{tabular}{l|l|l}
-\hline
-Form & Description & Options \\ \hline \hline
-det & determiner & \\ 
-n1, n2 & nouns & det is optional, obligatory, impossible\\
-iv, tv & intransitive, transitive verb & subj, obj are NP or PP\\
-p-nom, p-acc & case-marking adpositions & preposition or postposition\\
-neg & negative element & adverb, prefix, suffix\\
-co1, co2 & coordination marks & word, prefix, suffix\\
-qpart & question particle & \\
-\hline
-\end{tabular}
-\end{center}
-\caption{Standardized lexicon}
-\label{tab1}
-\end{table*}
 
 
 \subsection{Constructing master item set}
