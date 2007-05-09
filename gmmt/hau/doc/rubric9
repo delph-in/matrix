@@ -1,0 +1,25 @@
+-----------------------------------------------------------------
+Comments:
+
+ An example of a case-marker would be "yaaro yaa-syaa w maalmins
+ littaafi", (the boy bought the teacher a book, where "w" is marking
+ teacher "maalmins" as the indirect object).
+
+This example doesn't parse :(
+
+ I changed my head-opt-subject-phrase (which only functions with the
+ sentence-final question marker) so that it would only take a main
+ clause verb, or in other words a non-head-dtr with an inflected verb
+ (not infinitive).
+
+I assume you mean head-dtr, since head-opt-subj is a unary rule
+(and therefor has no non-head-dtr).  I don't understand why this
+rule is currently constraining the CASE of the subject, though. 
+I think that constraint probably isn't having any effect.
+
+ Now the CASE nom pronoun "I and the boy went to the market" (nii d
+ yaaro mun-jee kasuwaa) will parse, but the CASE dat won't (min d
+ yaaro mun-jee kasuwaa).
+
+Nice :-)
+
