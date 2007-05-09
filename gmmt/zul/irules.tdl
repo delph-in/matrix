@@ -1,0 +1,345 @@
+neg-infl-lr :=
+%prefix (* a-)
+neg-infl-lex-rule.
+
+n1-bottom :=
+  %prefix (* na-)
+  n1-bottom-coord-rule.
+
+fut-tense :=
+  %prefix (* zo-)
+  fut-tense-lex-rule.
+
+pl-imp-verb-lex :=
+  %suffix (* -ni)
+  pl-imp-verb-lex-rule.
+
+pos-ability-lex :=
+  %prefix (* nga-)
+  pos-ability-lex-rule.
+
+neg-ability-lex :=
+  %prefix (* nge-)
+  neg-ability-lex-rule.
+
+inf-verb-lex :=
+  %prefix (* uku-)
+  inf-verb-lex-rule.
+
+default-fv-lex :=
+  %suffix (* -a)
+  default-fv-lex-rule.
+
+neg-fv-lex :=
+  %suffix (* -e)
+  neg-fv-lex-rule.
+
+
+
+c1-prefix :=
+  %prefix (* umu-)
+  c1-prefix-lex-rule.
+
+c2-prefix :=
+  %prefix (* aba-)
+  c2-prefix-lex-rule.
+
+c1a-prefix :=
+  %prefix (* u-)
+  c1a-prefix-lex-rule.
+
+c2a-prefix :=
+  %prefix (* o-)
+  c2a-prefix-lex-rule.
+
+c3-prefix :=
+  %prefix (* umu-)
+  c3-prefix-lex-rule.
+
+c4-prefix :=
+  %prefix (* imi-)
+  c4-prefix-lex-rule.
+
+c5-prefix :=
+  %prefix (* ili-)
+  c5-prefix-lex-rule.
+
+c6-prefix :=
+  %prefix (* ama-)
+  c6-prefix-lex-rule.
+
+c7-prefix :=
+  %prefix (* isi-)
+  c7-prefix-lex-rule.
+
+c8-prefix :=
+  %prefix (* izi-)
+  c8-prefix-lex-rule.
+
+c9-prefix :=
+  %prefix (* in-)
+  c9-prefix-lex-rule.
+
+c10-prefix :=
+  %prefix (* izin-)
+  c10-prefix-lex-rule.
+
+c11-prefix :=
+  %prefix (* ulu-)
+  c11-prefix-lex-rule.
+
+c14-prefix :=
+  %prefix (* ubu-)
+  c14-prefix-lex-rule.
+
+c15-prefix :=
+  %prefix (* uku-)
+  c15-prefix-lex-rule.
+
+c16-prefix :=
+  %prefix (* pha-)
+  c16-prefix-lex-rule.
+
+c17-prefix :=
+  %prefix (* uku-)
+  c17-prefix-lex-rule.
+
+
+c1-subj-concord :=
+  %prefix (* u-)
+  c1-subj-concord-lex-rule.
+
+c2-subj-concord :=
+  %prefix (* ba-)
+  c2-subj-concord-lex-rule.
+
+c1a-subj-concord :=
+  %prefix (* u-)
+  c1a-subj-concord-lex-rule.
+
+c2a-subj-concord :=
+  %prefix (* ba-)
+  c2a-subj-concord-lex-rule.
+
+c3-subj-concord :=
+  %prefix (* u-)
+  c3-subj-concord-lex-rule.
+
+c4-subj-concord :=
+  %prefix (* i-)
+  c4-subj-concord-lex-rule.
+
+c5-subj-concord :=
+  %prefix (* li-)
+  c5-subj-concord-lex-rule.
+
+c6-subj-concord :=
+  %prefix (* a-)
+  c6-subj-concord-lex-rule.
+
+c7-subj-concord :=
+  %prefix (* si-)
+  c7-subj-concord-lex-rule.
+
+c8-subj-concord :=
+  %prefix (* zi-)
+  c8-subj-concord-lex-rule.
+
+c9-subj-concord :=
+  %prefix (* i-)
+  c9-subj-concord-lex-rule.
+
+c10-subj-concord :=
+  %prefix (* zi-)
+  c10-subj-concord-lex-rule.
+
+c11-subj-concord :=
+  %prefix (* lu-)
+  c11-subj-concord-lex-rule.
+
+c14-subj-concord :=
+  %prefix (* bu-)
+  c14-subj-concord-lex-rule.
+
+c15-subj-concord :=
+  %prefix (* ku-)
+  c15-subj-concord-lex-rule.
+
+c16-subj-concord :=
+  %prefix (* ku-)
+  c16-subj-concord-lex-rule.
+
+c17-subj-concord :=
+  %prefix (* ku-)
+  c17-subj-concord-lex-rule.
+
+1sg-subj-concord :=
+  %prefix (* ngi-)
+  1sg-subj-concord-lex-rule.
+
+1non-sg-subj-concord :=
+  %prefix (* si-)
+  1non-sg-subj-concord-lex-rule.
+
+2sg-subj-concord :=
+  %prefix (* u-)
+  2sg-subj-concord-lex-rule.
+
+2non-sg-subj-concord :=
+  %prefix (* ni-)
+  2non-sg-subj-concord-lex-rule.
+
+
+c1-obj-concord :=
+  %prefix (* m-)
+  c1-obj-concord-lex-rule.
+
+c2-obj-concord :=
+  %prefix (* ba-)
+  c2-obj-concord-lex-rule.
+
+c1a-obj-concord :=
+  %prefix (* m-)
+  c1a-obj-concord-lex-rule.
+
+c2a-obj-concord :=
+  %prefix (* ba-)
+  c2a-obj-concord-lex-rule.
+
+c3-obj-concord :=
+  %prefix (* wu-)
+  c3-obj-concord-lex-rule.
+
+c4-obj-concord :=
+  %prefix (* yi-)
+  c4-obj-concord-lex-rule.
+
+c5-obj-concord :=
+  %prefix (* li-)
+  c5-obj-concord-lex-rule.
+
+c6-obj-concord :=
+  %prefix (* wa-)
+  c6-obj-concord-lex-rule.
+
+c7-obj-concord :=
+  %prefix (* si-)
+  c7-obj-concord-lex-rule.
+
+c8-obj-concord :=
+  %prefix (* zi-)
+  c8-obj-concord-lex-rule.
+
+c9-obj-concord :=
+  %prefix (* yi-)
+  c9-obj-concord-lex-rule.
+
+c10-obj-concord :=
+  %prefix (* zi-)
+  c10-obj-concord-lex-rule.
+
+c11-obj-concord :=
+  %prefix (* lu-)
+  c11-obj-concord-lex-rule.
+
+c14-obj-concord :=
+  %prefix (* bu-)
+  c14-obj-concord-lex-rule.
+
+c15-obj-concord :=
+  %prefix (* ku-)
+  c15-obj-concord-lex-rule.
+
+c16-obj-concord :=
+  %prefix (* ku-)
+  c16-obj-concord-lex-rule.
+
+c17-obj-concord :=
+  %prefix (* ku-)
+  c17-obj-concord-lex-rule.
+
+1sg-obj-concord :=
+  %prefix (* ngi-)
+  1sg-obj-concord-lex-rule.
+
+1non-sg-obj-concord :=
+  %prefix (* si-)
+  1non-sg-obj-concord-lex-rule.
+
+2sg-obj-concord :=
+  %prefix (* ku-)
+  2sg-obj-concord-lex-rule.
+
+2non-sg-obj-concord :=
+  %prefix (* ni-)
+  2non-sg-obj-concord-lex-rule.
+
+
+
+c1-adj-concord :=
+  %prefix (* omu-)
+  c1-adj-concord-lex-rule.
+
+c2-adj-concord :=
+  %prefix (* aba-)
+  c2-adj-concord-lex-rule.
+
+c1a-adj-concord :=
+  %prefix (* omu-)
+  c1a-adj-concord-lex-rule.
+
+c2a-adj-concord :=
+  %prefix (* aba-)
+  c2a-adj-concord-lex-rule.
+
+c3-adj-concord :=
+  %prefix (* omu-)
+  c3-adj-concord-lex-rule.
+
+c4-adj-concord :=
+  %prefix (* emi-)
+  c4-adj-concord-lex-rule.
+
+c5-adj-concord :=
+  %prefix (* eli-)
+  c5-adj-concord-lex-rule.
+
+c6-adj-concord :=
+  %prefix (* ama-)
+  c6-adj-concord-lex-rule.
+
+c7-adj-concord :=
+  %prefix (* esi-)
+  c7-adj-concord-lex-rule.
+
+c8-adj-concord :=
+  %prefix (* ezin-)
+  c8-adj-concord-lex-rule.
+
+c9-adj-concord :=
+  %prefix (* en-)
+  c9-adj-concord-lex-rule.
+
+c10-adj-concord :=
+  %prefix (* ezin-)
+  c10-adj-concord-lex-rule.
+
+c11-adj-concord :=
+  %prefix (* olu-)
+  c11-adj-concord-lex-rule.
+
+c14-adj-concord :=
+  %prefix (* obu-)
+  c14-adj-concord-lex-rule.
+
+c15-adj-concord :=
+  %prefix (* oku-)
+  c15-adj-concord-lex-rule.
+
+c16-adj-concord :=
+  %prefix (* oku-)
+  c16-adj-concord-lex-rule.
+
+c17-adj-concord :=
+  %prefix (* oku-)
+  c17-adj-concord-lex-rule.

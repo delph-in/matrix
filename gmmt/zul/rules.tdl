@@ -1,0 +1,25 @@
+head-comp := head-comp-phrase .
+
+subj-head := subj-head-phrase .
+
+head-spec := head-spec-phrase .
+
+bare-np := bare-np-phrase .
+
+qpart-head := qpart-head-phrase .
+
+embedded-comp-head := embedded-comp-head-phrase .
+
+n1-top-coord := n1-top-coord-rule .
+
+n1-bottom-coord := n1-bottom-coord-rule .
+
+head-adj-int := head-adj-int-phrase .
+
+adj-head-int := adj-head-int-phrase .
+
+basic-head-opt-comp := basic-head-opt-comp-phrase .
+
+imp := imp-phrase.
+
+opt-subj := opt-subj-phrase.

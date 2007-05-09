@@ -1,0 +1,5 @@
+no-obj-concord := no-obj-concord-lex-rule.
+pres-tense-lex := pres-tense-lex-rule.
+sg-imp-verb-lex := sg-imp-verb-lex-rule.
+;pos-imp-lex := pos-imp-lex-rule.
+;neg-imp-lex := neg-imp-lex-rule.

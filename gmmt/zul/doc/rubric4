@@ -1,0 +1,56 @@
+-------------------------------------------------------
+Comments
+
+ Word order: Zulu is an SVO language.  Per our discussion in class, I
+ marked that Zulu does have determiners.  The demonstratives can appear
+ either before or after the noun, but I picked `before the noun' for
+ now.  I will have to fix this later.
+
+So I'm guessing now that they aren't really determiners.  Can they
+reorder with other adjectives, or are they always on the edge?  Where
+do words like 'every', 'many', 'two' etc go?
+
+
+ After I got the test suite loaded, I did my first test run. Nothing
+ parsed, not even the sample sentences mentioned above.  At this point
+ I discovered that I had consistently misspelled `child'.  It should be
+ `umntwana', rather than `umuntwana'. I wasn't sure where in all the
+ grammar files I would need to look to fix this. I thought maybe I
+ could just change the lexicon file, but that doesn't fix the
+ sentences. 
+
+Fixing the lexicon file (specifically the STEM value of the offending
+lexical item) should have done the trick.  What exactly did you try?
+
+The grammar you turned in had a typo for the lexical item gijmani, which
+causes an error to be printed out in the lkb top window when you load
+the grammar.  Be sure to pay attention to that window and any errors
+that may have printed (and possibly scrolled by), even when the grammar
+appears to have loaded successfully.
+
+ I think it will be easiest to not worry about the internal morphology
+ of the nouns and their class prefixes. I will just create a feature
+ for noun class and so label the nouns with their type.
+
+As we discussed in class, it should be doable (and desirable) to
+do the nouns, too.
+
+ Something that shouldn't be too much work but will get me a long way
+ is simply getting the bugs out of my test suite itself.  I'm not going
+ to get very far if my test sentences are incorrect or mislabeled.  I
+ corrected some of the errors I found as I worked, but didn't reload
+ the corrected test suite.  I assume I just need to rerun the perl
+ script and recopy over the item file.
+
+Yes, that is the best way to do it, because that way you update both
+versions of the test suite (the general, human-readable one and the
+one that tsdb++ uses.
+
+ In general, though, I feel pretty good about my test sentences.  I
+ don't feel like they are overly complex.  While I was constructing it,
+ I was frustrated at the complexity that had to be introduced to cover
+ all the phenomena, but I can't escape that.  Perhaps I will feel
+ differently once I get agreement working and can actually start
+ thinking about what else I need to accomplish.
+
+:)
