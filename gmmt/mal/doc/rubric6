@@ -1,0 +1,77 @@
+----------------------------------------------
+Comments
+
+ Malayalam contains overt personal pronouns, and I have lexical entries for
+ I, you, he, she, and I added one for who.
+ These have all been specified to have a COG-ST value of activ-or-more.
+
+We're not handling wh- questions in this class.  Just adding the
+pronoun 'who' won't be enough to get the semantics right...
+
+ this and that [ii and aa] are demonstrative determiners, so I assigned
+ them COG-ST active+fam.
+
+I assume you mean demonstrative adjectives, since that's how you
+describe them below?  But in your grammar, they're still determiners.
+You'll need to follow the directions from this lab (lab 6) for
+demonstrative determiners in order to get the right semantics for these.
+
+ I don't think that there are any verb which can't drop their subject in
+ Malayalam, so I didn't add any restrictions to this.
+
+I don't think that lexical exceptions to subj pro-drop are wide-spread.
+There might be some somewhere, since there seem to be lexical exceptions 
+to just about anything, but still...
+
+ The lexical entry for want-FUT was changed to derive from
+ transitive-subjdat-objopt-verb-lex.
+
+Do you get the impression that the possibility of dropping objects is
+lexically specific?  It doesn't sound that way from the rest of your
+description.
+
+ (Just out of curiosity - if I generate, and I have a rule that this verb can
+ have an optional argument, should I expect the grammar to generate sentences
+ with all the missing pronouns?)
+
+Not with the current semantic representations.  The overt pronouns
+are contributing a pronoun_n_rel, while the so-called "dropped" pronouns
+don't correspond to any relation in the MRS.
+
+ The adjectives are inflected to match the noun they follow, even though the
+ form of the noun may not change according to its gender.
+
+Right --- gender is usually an inherent property of nouns.
+
+ While I was reading about Malayalam, it was often stated that Malayalam
+ doesn't really have adjectives.  There is a small class or words, including
+ good which act as adjectives.  There is also a mechanism by which nouns are
+ 'adjectivalised' by adding the relative participle of unatax (be), ulalaa.
+ There is also the relative participle of aakukua, aaya.
+
+I'd say that Malayalam does have adjectives, just that most of them
+are derived from nouns.  It would be interesting to try to write
+the lexical rules for this, especially to try to figure out the right
+semantic representation (given that we can't change relations or throw
+them away).
+
+ Transitive verbs can take either a NOM or ACC subject.
+ The subject should be ACC case if it is HUMAN +, or ANIM +.  Otherwise the
+ object is NOM.  I modified my case types to include a super-type nom+acc, and
+ made case nom and acc subtypes of that.  Eventually, I will have to implement
+ the agreement rules which can create the correct agreement between the object
+ noun and its verb when the noun is an object.
+
+I think this is why I thought that Malayalam might be a split-ergative
+language.  What happens to the object when the subject is marked with
+accusative?  It seems like you're going to want lexical rules which
+fill in the case requirements on the verbs, along with constraints
+on some feature like HUMAN or ANIM to make sure only the right nouns
+appear.
+
+ cold := basic-adverb-lex &
+   [ STEM < "thanuppundu" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_cold_r_rel" ] .
+
+I'm surprised to see something glossed as 'cold' tagged as an adverb.
+Does this really modify verbs?
