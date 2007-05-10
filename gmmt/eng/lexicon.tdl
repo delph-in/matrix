@@ -1,0 +1,121 @@
+not := neg-adv-lex &
+  [ STEM < "not" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ] .
+
+and_1 := conj-lex &
+  [ STEM < "and" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
+    CFORM "1" ] .
+
+;;; Pronouns
+
+I := pronoun-lex &
+  [ STEM < "I" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+                                       NUM sg ] ].
+
+you := pronoun-lex &
+  [ STEM < "you" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER second ].
+
+he := pronoun-lex &
+  [ STEM < "he" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+                                       NUM sg,
+                                       GEND masc ] ].
+
+she := pronoun-lex &
+  [ STEM < "she" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+                                       NUM sg,
+                                       GEND fem ] ].
+
+it := pronoun-lex &
+  [ STEM < "it" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+                                       NUM sg,
+                                       GEND neut ] ].
+
+we := pronoun-lex &
+  [ STEM < "we" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+                                       NUM non-sg ] ].
+
+they := pronoun-lex &
+  [ STEM < "they" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+                                       NUM non-sg ] ].
+
+;;; Nouns
+
+cat := noun-lex &
+  [ STEM < "cat" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_cat_n_rel" ] .
+
+dog := noun-lex &
+  [ STEM < "dog" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_dog_n_rel" ] .
+
+glass := noun-lex &
+  [ STEM < "glass" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_glass_n_rel" ] .
+
+car := noun-lex &
+  [ STEM < "car" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_car_n_rel" ] .
+
+;;; Verbs
+
+sleep := finite-intrans-verb-lex &
+  [ STEM < "sleep" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sleep_v_rel" ] .
+
+sleep2 := non-finite-intrans-verb-lex &
+  [ STEM < "sleep" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sleep_v_rel" ] .
+
+see := finite-trans-verb-lex &
+  [ STEM < "see" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ] .
+
+see2 := non-finite-trans-verb-lex &
+  [ STEM < "see" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ] .
+
+chase := finite-trans-verb-lex &
+  [ STEM < "chase" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_chase_v_rel" ] .
+
+chase2 := non-finite-trans-verb-lex &
+  [ STEM < "chase" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_chase_v_rel" ] .
+
+eat := finite-trans-verb-lex &
+  [ STEM < "eat" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ] .
+
+eat2 := non-finite-trans-verb-lex &
+  [ STEM < "eat" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ] .
+
+;;; Auxiliaries
+
+do := subj-raise-aux-no-sem &
+  [ STEM < "do" > ] .
+
+;;; Other
+
+;;; Determiners
+
+the := determiner-lex &
+  [ STEM < "the" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_def_q_rel" ] .
+
+a := determiner-lex &
+  [ STEM < "a" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_indef_q_rel" ] .
+
+sel-adv := neg-adv-lex &
+  [ STEM < "sel-adv" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ] .
+
