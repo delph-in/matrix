@@ -1,9 +1,0 @@
-ukuthi-trigger-rule := generator-rule &
- [ CONTEXT.RELS <! [ ARG2 handle & #h ] !>,
-   FLAGS [ EQUAL < #h >,
-	   TRIGGER "ukuthi" ]].
-
-ukuba-trigger-rule := generator-rule &
- [ CONTEXT.RELS <! [ ARG2 handle & #h ] !>,
-   FLAGS [ EQUAL < #h >,
-	   TRIGGER "ukuba" ]].
