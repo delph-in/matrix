@@ -2,13 +2,15 @@
 pattikala urananaukaunnu
 dog-pl    sleep-pres
 
-# 2. Dogs chase cars
-pattikala kaarkala
+# 2. Dogs chase cars  # zero nominative on dog, car is inanim
+pattikala kaarkala chase-unnu
 dog-pl    car-pl
 
 # 3. They chase them.
-# 4. These dogs sleep.
 
+# 4. These dogs sleep. # demonstratives are prenominal adjectives
+ii pattikala urananaukaunnu
+this/these dog-pl sleep-pres
 
 
 # 5. Dogs eat.
@@ -16,13 +18,34 @@ pattikala unanaunnu
 
 
 # 6. I can eat glass.
+enikkx kannadi tinnukaam
+1sg    glass   eat-can
+
 # 7. It doesn't hurt me.
-# 8. The dogs chase cars.
+atx enne viiddicaam
+
+# 8. The dogs chase cars. # No overt marker for definiteness (indef overt)
+
 # 9. I think that you know that dogs chase cars.
+
+pattikala kaarkala chase-unnuatx   nii ariyunnuatx njaaan vicaarikkukaunnu
+dogs      cars     chase(FIXME) you know-pres-nom I    think-pres 
+
 # 10. I ask whether you know that dogs chase cars.
-# 11. Cats and dogs chase cars.
+
+pattikala kaarkala chase-unnuatx nii ariyunuua ennx njaaan coodicuunnu
+dogs      cars     chase-pres-nom you know-pres QP  I      ask-pres
+
+# 11. Cats and dogs chase cars. (inflectional omni)
+puuccakalaum pattikalaum kaarkala chase-unnu
+
 # 12. Dogs chase cars and cats chase dogs.
+paatikala kaarkala chase-unnuatx puuccakala paatikalaye chase-unnu
+dog-pl    car-pl   chase-pres-nom cat-pl  dog-pl-acc chase-pres
+
 # 13. Cats chase dogs and sleep.
+puuccakala paatikalaye chase-unnuatx urananaukaunnu
+
 # 14. Do cats chase dogs?
 # 15. Chase the dog!
 # 16. Hungry dogs eat.
