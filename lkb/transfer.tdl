@@ -55,8 +55,7 @@ six := scratch.
 
 flags := *top* &
 [ OPTIONAL luk,
-  EQUAL list,
-  TRIGGER string ].
+  UNIQUE list ].
 
 mrs_transfer_rule :=  *top* &
 [ FILTER mrs,
@@ -88,10 +87,4 @@ quantifier_mtr := monotonic_mtr &
   OUTPUT.RELS <! [ LBL #h1, ARG0 #x1, RSTR #h2, BODY #h3 ] !> ].
 
 oquantifier_mtr := optional_mtr & quantifier_mtr.
-
-marker-pred := predsort.
-dem-rule-pred := marker-pred.
-
-generator-rule := mrs_transfer_rule &
- [ INPUT.RELS <! !> ].
 

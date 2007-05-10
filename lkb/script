@@ -34,8 +34,7 @@
 (list
 (lkb-pathname (parent-directory) "matrix.tdl")
 (lkb-pathname (parent-directory) "head-types.tdl")
-(lkb-pathname (parent-directory) "zulu.tdl")
-(lkb-pathname (this-directory) "transfer.tdl")
+   (lkb-pathname (parent-directory) "english.tdl")
 ))
 
 ;;;
@@ -81,41 +80,6 @@
 
 
 ;;;
-;;; The following overwrites the LKB's default for what
-;;; appears in the parse input dialog box.  Putting a
-;;; short list of basic sentences from your language
-;;; in that position may be helpful.
-;;;
-
-(setf *last-parses* '("ngi-nga-dl-a in-gilazi"
-"a-ngi-dl-a in-gilazi"
-"in-ja i-zo-gijim-a"
-"leya in-ja i-zo-gijim-a"
-"ni-zo-m-bon-a umu-fana omu-ncane na"
-"umu-fana u-zo-nik-a in-tombi in-ja"
-"lo umu-fana u-cabang-a ukuthi in-tombi en-hle a-i-zo-yi-nik-a in-ja uku-dla"))
-
-(lkb-load-lisp (this-directory) "mt.lsp" t)
-
-(mt:read-transfer-rules 
- (list
-  (lkb-pathname (this-directory) "trigger.mtr"))
- "Generation Trigger Rules"
- :filter nil :task :trigger :recurse nil :edges 200)
-
-(mt:read-transfer-rules 
- (list
-  (lkb-pathname (this-directory) "567.mtr"))
- "567 transfer rules"
- :filter nil)
-
-(mt:read-transfer-rules 
- (list
-  (lkb-pathname (this-directory) "567-2.mtr"))
- "567 transfer rules"
- :filter nil)
-
-;;;
 ;;; Matrix-derived grammars often have stable enough semantic
 ;;; representations that the grammar can usefully be tested
 ;;; by generating from them.  The function index-for-generator()
@@ -128,3 +92,14 @@
 ;;;
 
 (index-for-generator)
+
+;;;
+;;; The following overwrites the LKB's default for what
+;;; appears in the parse input dialog box.  Putting a
+;;; short list of basic sentences from your language
+;;; in that position may be helpful.
+;;;
+
+(if (eq (length *last-parses*) 1)
+   (setf *last-parses* '("the cat sleep" "the cat eat the dog")))
+
