@@ -1,3 +1,7 @@
+--- Word for chase
+--- Position of adverbs
+--- Hungry
+
 # 1. Dogs sleep
 pattikala urananaukaunnu
 dog-pl    sleep-pres
@@ -47,6 +51,13 @@ dog-pl    car-pl   chase-pres-nom cat-pl  dog-pl-acc chase-pres
 puuccakala paatikalaye chase-unnuatx urananaukaunnu
 
 # 14. Do cats chase dogs?
+puuccakala paatikalaye chase-oo
+
 # 15. Chase the dog!
+paatiye chase
+
 # 16. Hungry dogs eat.
+hungry paatikala unanaunnu
+
 # 17. Hungry dogs eat quickly.
+hungry paatikala veegam unanaunnu
