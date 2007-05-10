@@ -42,7 +42,8 @@ COORDINATION
 My test sentences here are somewhat limited because I had a lot of trouble finding examples.  I still have no examples coordinating more than two nouns.  I do know that coordination of nouns occurs by an affix on the second (last?) noun, and coordination of verbs is accomplished by putting all subsequent verbs in the subjunctive (this subjunctive is cropping up all over the place!).
 The prefix on nouns can be translated as 'and' or 'with'.  The examples in my test data are taken from my source grammars, but I had to change the tense to match the rest of my test suite.  In the cases where the objects are being coordinated, the 'and' translation is the most obvious. In some cases (like the following) the subject and object are coordinated:
 
-Umfana uzodlala nenjaumu-fana u-zo-dlal-a na-in-jaC1-boy SC1-FUT(IMM)-play-FV with-C9-dog'The boy will play with the dog'
+Umfana uzodlala nenjaumu-fana u-zo-dlal-a na-in-ja
+C1-boy SC1-FUT(IMM)-play-FV with-C9-dog'The boy will play with the dog'
 
 The English translation is similar in form to the Zulu, but I wonder if 'The boy and the dog will play' is just as accurate.  
 I used an example from one of my books for the verbal coordination, although I wonder if it is too complex for me to reasonably parse by the end of the term. 
