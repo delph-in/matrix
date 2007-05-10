@@ -19,10 +19,10 @@
 ;;; the list lexicographically before output.
 ;;;
 
-(((:path . "arb_567") (:content . "Modern Standard Arabic test suite from Ling 567")
-(:path . "hau_567") (:content . "Hausa test suite from Ling 567")
-(:path . "isl_567") (:content . "Icelandic test suite from Ling 567")
-(:path . "mal_567") (:content . "Malayalam test suite from Ling 567")
-(:path . "zul_567") (:content . "Zulu test suite from Ling 567")))
+(((:path . "arb_567") (:content . "Modern Standard Arabic test suite from Ling 567"))
+((:path . "hau_567") (:content . "Hausa test suite from Ling 567"))
+((:path . "isl_567") (:content . "Icelandic test suite from Ling 567"))
+((:path . "mal_567") (:content . "Malayalam test suite from Ling 567"))
+((:path . "zul_567") (:content . "Zulu test suite from Ling 567")))
 
  
