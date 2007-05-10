@@ -1,0 +1,148 @@
+
+m-nom-sg-det :=
+%suffix (* -inn)
+m-nom-sg-det-lex-rule.
+
+m-acc-sg-det :=
+%suffix (* -inn)
+m-acc-sg-det-lex-rule.
+
+m-nom-pl-det :=
+%suffix (* -nir)
+m-nom-pl-det-lex-rule.
+
+m-acc-pl-det :=
+%suffix (* -na)
+m-acc-pl-det-lex-rule.
+
+m-dat-pl-det :=
+%suffix (* -num)
+m-dat-pl-det-lex-rule.
+
+m-dat-sg-det :=
+%suffix (* -num)
+m-dat-sg-det-lex-rule.
+
+f-nom-sg-det :=
+%suffix (* -in)
+f-nom-sg-det-lex-rule.
+
+f-acc-sg-det :=
+%suffix (* -ina)
+f-acc-sg-det-lex-rule.
+
+f-dat-sg-det :=
+%suffix (* -inni)
+f-dat-sg-det-lex-rule.
+
+n-nom-sg-det :=
+%suffix (* -id)
+n-nom-sg-det-lex-rule.
+
+n-acc-sg-det :=
+%suffix (* -id)
+n-acc-sg-det-lex-rule.
+
+n-dat-sg-det :=
+%suffix (* -nu)
+n-dat-sg-det-lex-rule.
+
+m-cl1to3-nom-noun :=
+%suffix (* -ur)
+m-clto3-sg-nom-lex-rule.
+
+m-cl1-dat-noun :=
+%suffix (* -i)
+m-cl1-sg-dat-lex-rule.
+
+m-cl3-dat-noun :=
+%suffix (* -i)
+m-cl3-sg-dat-lex-rule.
+
+f-cl1-acc-noun :=
+%suffix (* -u)
+f-cl1-sg-acc-lex-rule.
+
+f-cl1-dat-noun :=
+%suffix (* -u)
+f-cl1-sg-dat-lex-rule.
+
+n-dat-noun :=
+%suffix (* -i)
+n-sg-dat-lex-rule.
+
+1pl_verb :=
+%suffix (* -um)
+1pl_verb-lex-rule.
+
+2sg_verb :=
+%suffix (* -ar)
+2sg_verb-lex-rule.
+
+2pl_verb :=
+%suffix (* -id)
+2pl_verb-lex-rule.
+
+3sg_verb :=
+%suffix (* -ar)
+3sg_verb-lex-rule.
+
+2-pl-imp :=
+%suffix (* -id)
+2-pl-imp-lex-rule.
+
+1-pl-imp :=
+%suffix (* -um)
+1-pl-imp-lex-rule.
+
+weak-m-sg-nom-adj :=
+%suffix (* -i)
+weak-m-sg-nom-adj-lex-rule.
+
+weak-m-sg-acc-adj :=
+%suffix (* -a)
+weak-m-sg-acc-adj-lex-rule.
+
+weak-m-sg-dat-adj :=
+%suffix (* -a)
+weak-m-sg-dat-adj-lex-rule.
+
+weak-f-sg-nom-adj :=
+%suffix (* -a)
+weak-f-sg-nom-adj-lex-rule.
+
+weak-f-sg-acc-adj :=
+%suffix (* -u)
+weak-f-sg-acc-adj-lex-rule.
+
+weak-f-sg-dat-adj :=
+%suffix (* -u)
+weak-f-sg-dat-adj-lex-rule.
+
+weak-n-sg-adj :=
+%suffix (* -a)
+weak-n-sg-adj-lex-rule.
+
+weak-pl-adj :=
+%suffix (* -u)
+weak-pl-adj-lex-rule.
+
+1-pl-aux :=
+%suffix (* -um)
+1-pl-aux-lex-rule.
+
+2-sg-aux :=
+%suffix (* -ur)
+2-sg-aux-lex-rule.
+
+2-pl-aux :=
+%suffix (* -id)
+2-pl-aux-lex-rule.
+
+3-sg-aux :=
+%suffix (* -ur)
+3-sg-aux-lex-rule.
+
+3-pl-aux :=
+%suffix (* -a)
+3-pl-aux-lex-rule.
