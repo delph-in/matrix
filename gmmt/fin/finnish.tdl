@@ -1,0 +1,1053 @@
+;; -*- Mode: TDL; Package: LKB -*-
+;; Finnish.tdl
+;; Created 04-06-2005
+;; by Ryan Mattson (ryangm@u.washington.edu)
+
+;; RGM 4-6-04 Types incorporated from matrix/modules/SVO.tdl
+;; RGM 4-9-05 Constrained NON-HEAD-DTR.SYNSEM of head-comp-phrase to be of type
+;; 'phr-synsem' to stop nouns that haven't undergone the detless-np rule from
+;; being joined with verbs. This eliminated a particular overgenerated parse on
+;; 'Opiskelija tykkaa tomaatista' that was creating a phrase out of 'tykaa
+;; tomaatista' before 'tomaatista' underwent the detless-np rule.
+;; RGM-4-9-05 Constrained NON-HEAD-DTR.SYNSEM of subj-head-phrase to be of type
+;; 'phr-synsem' to stop nouns that haven't undergone the detless-np rule from
+;; being licensed as subjects to VPs. This eliminated a particular ovegeneration
+;; when 'opiskelija' was being licensed as the subject of 'kavelee' before
+;; undergoing the detless-np rule.
+
+;; RGM 4-28-05 Fixed a head-comp-phrase overgeneration bug by restricting
+;; the NON-HEAD-DTR to be a headed-phrase. This killed complements that were
+;; only words. That is to say, complements can be single words, but they
+;; better be phrasally licensed by a bare-np-phrase first.
+
+;; **********
+;; RGM 5-8-05 Removed constraint on head-comp-phrase that NON-HEAD-DTR needs
+;; to have the value [HEAD noun]. Complementizers weren't being licensed to
+;; have complements. This causes overgeneration, though. Think on how
+;; to fix this.
+;; **********
+
+; RGM 5-18-05 Limited everything except adpositions, adverbs, adjectives to
+; be MOD <>
+
++nvcdmo :+ [ MOD < > ].
+
+; RGM 5-25-05 Removed [NON-HEAD-DTR headed-phrase] constraint to allow for
+; conjoined BARE-NP objects -- does this break other stuff? We shall see!
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
+   [ SYNSEM.LOCAL.CAT.IMPERATIVE #imp,
+     HEAD-DTR.SYNSEM.LOCAL.CAT.IMPERATIVE #imp ].
+
+head-subj-phrase := basic-head-subj-phrase &
+   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
+				     SPR < > ]].
+
+decl-head-subj-phrase := head-subj-phrase & head-final & declarative-clause &
+[ SYNSEM.LOCAL.CAT.IMPERATIVE -,
+  HEAD-DTR.SYNSEM.LOCAL.CAT [ IMPERATIVE -,
+			      HEAD verb & [ QUES -,
+					    FORM fin ]]].
+
+int-head-subj-phrase := head-subj-phrase & head-initial & interrogative-clause &
+[ SYNSEM.LOCAL.CAT.IMPERATIVE -,
+  HEAD-DTR.SYNSEM.LOCAL.CAT [ IMPERATIVE -,
+                              HEAD verb & [ INV +,
+                                            QUES + ]]].
+
+;; RGM 4-6-04 Added head-spr-phrase to allow for SPRs to join with Ns and create NPs
+
+head-spec-phrase := basic-head-spec-phrase & head-final
+[ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD noun,
+			      VAL [ COMPS < >,
+				    SUBJ < > ]],
+  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD det ].
+
+head-opt-subj-phrase := basic-head-opt-subj-phrase &
+[ SYNSEM.LOCAL.CAT [ IMPERATIVE - ],
+  C-CONT [ RELS <! !>,
+	   HCONS <! !> ],
+  HEAD-DTR.SYNSEM.LOCAL.CAT [ IMPERATIVE -,
+			      VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.PER non-third ] >,
+				    COMPS < > ],
+			      HEAD.FORM fin ]].
+
+decl-head-opt-subj-phrase := head-opt-subj-phrase & declarative-clause &
+[ SYNSEM.LOCAL.CAT.IMPERATIVE -,
+  HEAD-DTR.SYNSEM.LOCAL.CAT [ IMPERATIVE -,
+			      HEAD verb & [ QUES -,
+					    FORM fin ]]].
+
+int-head-opt-subj-phrase := head-opt-subj-phrase & interrogative-clause &
+[ SYNSEM.LOCAL.CAT.IMPERATIVE -,
+  HEAD-DTR.SYNSEM.LOCAL.CAT [ IMPERATIVE -,
+                              HEAD verb & [ INV +,
+                                            QUES + ]]].
+
+head-opt-comp-phrase := basic-head-opt-comp-phrase &
+[ SYNSEM.LOCAL.CAT.IMPERATIVE -,
+  HEAD-DTR word-or-lexrule & [ SYNSEM.LOCAL.CAT.IMPERATIVE - ]].
+
+; RGM 5-18-05 Constraints on the head-adj and adj-head rules to 
+
+finnish-head-adj-int-phrase := head-adj-int-phrase &
+[ C-CONT [ RELS <! !>,
+	   HCONS <! !> ]].
+
+finnish-adj-head-int-phrase := adj-head-int-phrase &
+[ C-CONT [ RELS <! !>,
+	   HCONS <! !> ]].
+
+;; RGM 4-6-05 Created basic types for common nouns, verbs, and determiners
+;; (when overt, like tuo or tAmA).
+
+;; RGM 4-30-05 Created verb-lex to clean up verb type hierarchy.
+
+verb-lex := basic-verb-lex &
+[ SYNSEM.LOCAL [ CAT [ HEAD verb & [ QUES -,
+				     INV -,
+				     NEG -,
+				     MOD < > ],
+		       VAL [ SPR < >,
+			     SUBJ < #subj & [ LOCAL [ CAT [ HEAD noun,
+							    VAL.SPR < > ],
+						      CONT.HOOK.INDEX #ind ]]>],
+		       IMPERATIVE - ],
+		 CONT.HOOK.XARG #ind ],
+  ARG-ST < #subj, ... >,
+  INFLECTED - ].
+
+; RGM 5-18-05 Added subj-raising-verb-lex to allow for 'voida' ('can') verb in
+; 'minA voin syOdA lasia' ('i can eat glass')
+
+subj-raising-verb-lex := verb-lex & trans-first-arg-raising-lex-item &
+[ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CAT.HEAD.CASE nom ] >,
+			 COMPS < #comps & [ LOCAL.CAT.HEAD verb & [ FORM inf ]]>],
+  ARG-ST < #subj, #comps > ].
+
+;; RGM 5-6-05 Added clausal-verb-lex for verbs that take clausal complements
+
+clausal-verb-lex := verb-lex & clausal-second-arg-trans-lex-item &
+[ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >,
+			 COMPS < #comps & [ LOCAL.CAT [ HEAD comp,
+							VAL.COMPS < > ]] > ],
+  ARG-ST < #subj, #comps > ].
+
+itr-verb-lex := verb-lex & intransitive-lex-item &
+[ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < #subj & synsem
+				  & [ LOCAL.CAT [ HEAD noun &
+						       [ CASE nom ],
+						  VAL.SPR <> ] ] >,
+			   COMPS < > ] ],
+  ARG-ST < #subj > ].
+
+tr-verb-lex := verb-lex & transitive-lex-item &
+[ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < #subj & synsem
+				  & [ LOCAL.CAT [ HEAD noun,
+						  VAL.SPR <> ]] >,
+			   COMPS < #comps & synsem
+				   & [ OPT +,
+				       LOCAL.CAT [ HEAD noun,
+						   VAL.SPR <> ]] >,
+			   SPEC < > ] ],
+  ARG-ST < #subj, #comps > ].
+
+;; RGM 4-30-05 Added dtr-verb-lex
+
+dtr-verb-lex := verb-lex & ditransitive-lex-item &
+[ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >,
+			 COMPS < #arg1, #arg2 > ],
+  ARG-ST < #subj, #arg1, #arg2 > ].
+
+opt-comp-dtr-verb-lex := dtr-verb-lex &
+[ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >,
+			 COMPS < #arg1 & [ OPT-CS activ-or-more ],
+				 #arg2 & [ OPT - ] > ],
+  ARG-ST < #subj, #arg1, #arg2 > ].
+
+;; RGM 4-15-05 Creating subtypes of tr-verb-lex for general valence patterns
+;; of transitive verbs and their subj/obj cases, irregulars will just
+;; specify their cases in their lexical entries, unless another general
+;; pattern is found
+
+nom-acc-tr-verb-lex := tr-verb-lex &
+[ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CAT.HEAD.CASE nom ] >,
+			 COMPS < #comps & [ LOCAL.CAT.HEAD.CASE acc ] > ],
+  ARG-ST < #subj, #comps > ].
+
+nom-part-tr-verb-lex := tr-verb-lex &
+[ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CAT.HEAD.CASE nom ] >,
+			 COMPS < #comps & [ LOCAL.CAT.HEAD.CASE part ] > ],
+  ARG-ST < #subj, #comps > ].
+
+;; end tr-verb-lex subtypes
+
+; RGM 5-29-05 Created nominal-lex type for use in nominal inflecting rules
+
+nominal-lex := *top*.
+
+noun-lex := basic-noun-lex & basic-one-arg & nominal-lex & no-hcons-lex-item &
+[ SYNSEM.LOCAL.CAT [ HEAD.MOD < >,
+		     VAL [ SPR < #spr >,
+			 SUBJ < >,
+			 COMPS < > ] ],
+  ARG-ST < #spr > ].
+
+det-lex := basic-determiner-lex & basic-zero-arg & nominal-lex &
+[ SYNSEM.LOCAL.CAT [ HEAD.MOD < >,
+		     VAL [ SPR < >,
+			   SUBJ < >,
+			   COMPS < >,
+			   SPEC < [ LOCAL.CAT.HEAD.CASE nom ] > ] ],
+  ARG-ST < > ].
+
+;; RGM 4-30-05 Added adj-lex for lab4
+
+adj-lex := basic-adjective-lex & intersective-mod-lex & nominal-lex &
+[ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD noun,
+					      VAL.SPR cons ]]>,
+		     VAL [ SPR < >,
+			   SUBJ < >,
+			   COMPS < >,
+			   SPEC < > ],
+		     POSTHEAD - ]].
+
+adv-lex := basic-adverb-lex & intersective-mod-lex &
+[ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT.HEAD verb ] >,
+		     VAL [ SPR < >,
+			   SUBJ < >,
+			   COMPS < >,
+			   SPEC < > ],
+		     POSTHEAD + ] ].
+
+; RGM 5-20-05 Created subtype of basic-scopal-adverb-lex
+
+scopal-adv-lex := basic-scopal-adverb-lex &
+[ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT.HEAD verb & [ NEG + ]] >,
+		     VAL [ SPR < >,
+			   SUBJ < >,
+			   COMPS < >,
+			   SPEC < > ]],
+  ARG-ST < > ].
+
+;; RGM 4-9-05 Created detless-np-phrase to allow for NPs that don't have determiners
+
+bare-np-phrase := basic-bare-np-phrase &
+[ HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun &
+                                     [ PRO - ] ],
+                          CONT.HOOK.INDEX.COG-ST activ-or-less ],
+  C-CONT.RELS <! [PRED exist_q_rel] !> ].
+
+;; RGM 4-9-05 Finnish nominals that occur in the subject and object positions have
+;; different semantic meanings when it comes to their definiteness. The following
+;; types constrain those meanings based on the type of HEAD-DTR which corresponds to
+;; the separation in types illustrated below (subtypes of noun-lex).
+
+;; RGM 4-14-05 Commented out 4-9-05 entries and created entries for lab3
+
+pronoun-bare-np-phrase := basic-bare-np-phrase &
+[ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.PRO +,
+  VAL.SPR < [ LOCAL.CONT.RELS < ! [ PRED #pred & exist_q_rel ] ! > ] > ],
+  C-CONT.RELS < ! [ PRED #pred ] ! > ].
+
+;; RGM 5-4-05 Created subtype of declarative-clause (from matrix.tdl)
+
+;decl-clause := declarative-clause & head-only &
+;[ SYNSEM.LOCAL.CAT [ IMPERATIVE -,
+;		     VAL [ SPR < >,
+;			 COMPS < >,
+;			 SUBJ < > ]],
+;  HEAD-DTR.SYNSEM.LOCAL.CAT [ IMPERATIVE -,
+;			      HEAD verb & [ QUES -,
+;					    FORM fin ],
+;			      VAL [ SPR < >,
+;				    COMPS < >,
+;				    SUBJ < > ]]].
+
+;; RGM 5-13-05 Created subtype of interrogative-clause (from matrix.tdl) (for lab6)
+
+;int-clause := interrogative-clause & head-only &
+;[ SYNSEM.LOCAL [ CAT [ IMPERATIVE -,
+;		       VAL [ SPR < >,
+;			     COMPS < >,
+;			     SUBJ < > ]]],
+;  HEAD-DTR.SYNSEM.LOCAL [ CAT [ IMPERATIVE -,
+;				HEAD verb & [ INV +,
+;					      QUES + ],
+;				VAL [ SPR < >,
+;				      COMPS < >,
+;				      SUBJ < anti-synsem > ]]]].
+
+cp-interrogative-clause := interrogative-clause & head-only &
+[ SYNSEM.LOCAL [ CAT [ IMPERATIVE -,
+		       VAL [ SPR < >,
+			     COMPS < >,
+			     SUBJ < > ]]],
+  HEAD-DTR.SYNSEM.LOCAL [ CAT [ IMPERATIVE -,
+				HEAD comp,
+				VAL [ SPR < >,
+				      COMPS < >,
+				      SUBJ < > ]]]].
+
+;; RGM 5-6-05 Creating complementizer-lex-item for lab5
+
+complementizer-lex-item := no-hcons-lex-item & basic-one-arg &
+[ SYNSEM.LOCAL [ CAT [ HEAD comp & [ MOD < > ],
+		       VAL [ SPR < >,
+			     SUBJ < >,
+			     COMPS < #comps & synsem &
+				     [ LOCAL.CAT [ HEAD verb,
+                                                   VAL [ SPR < >,
+                                                         SUBJ < >,
+                                                         COMPS < > ]]] > ]]],
+  ARG-ST < #comps > ].
+
+;; RGM 4-9-05 Created nom-noun-lex and elat-noun-lex to account for difference in meanings
+;; of nominative and elative forms of detless-nps. These types will interact with a rule
+;; that selects for nom or elat NPs depending on their status as subjects or objects
+;; RGM 4-14-05 Created common-noun-lex subtype of noun-lex, nom- and elat-noun-lex are
+;; now inheriting from common-noun-lex.
+
+pronoun-lex := noun-lex &
+[ SYNSEM [ LOCAL.CAT [ VAL [ SPR < [ LOCAL.CONT.RELS < ! [ PRED exist_q_rel ] ! >] >,
+			     COMPS < >,
+			     SUBJ < > ],
+		       HEAD [ CASE case,
+			      PRO + ] ],
+	   LKEYS.KEYREL.PRED 'pronoun_n_rel ] ].
+
+pronoun-nom-lex := pronoun-lex &
+[ SYNSEM.LOCAL.CAT.HEAD.CASE nom ].
+
+pronoun-part-lex := pronoun-lex &
+[ SYNSEM.LOCAL.CAT.HEAD.CASE part ].
+
+common-noun-lex := noun-lex &
+[ SYNSEM.LOCAL [ CAT [ VAL.SPR < [ LOCAL.CONT.RELS < ! [ PRED reg_quant_rel ] ! > ] >,
+		       HEAD [ PRO - ] ],
+		 CONT.HOOK.INDEX.PNG.PER third ] ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; RGM 5-25-05 Added conj-lex for lab8
+
+; modified from norm-hook-lex-item -- have to deal with the fact that a
+; coordination-relation has different args.
+conj-lex := basic-zero-arg & single-rel-lex-item & no-hcons-lex-item &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD conj,
+                           VAL [ SPR < >,
+                                 COMPS < >,
+                                 SUBJ < > ]],
+                     CONT [ HOOK [ LTOP #ltop,
+                                   INDEX #index ],
+                            RELS.LIST.FIRST #keyrel ]],
+             LKEYS.KEYREL #keyrel & coordination-relation & [ LBL #ltop,
+                                                              C-ARG #index ]]].
+
+; RGM 5-13-05 Added following inv-lex-rule for lab6 to invert the subject and verb
+; in a question.
+
+; RGM 5-13-05 Also added ques-lex-rule for lab6 to give a question inflection to verbs
+
+inv-lex-rule := const-cat-change-only-ltol-rule &
+[ INFLECTED +,
+  C-CONT [ RELS <! !>,
+	   HCONS <! !> ],
+  SYNSEM.LOCAL.CAT [ HEAD verb & [ INV + ],
+		     VAL [ COMPS < #subj . #comps >,
+			   SUBJ < anti-synsem >,
+			   SPR < > ],
+		     MC #mc,
+		     HC-LIGHT #hcl,
+		     POSTHEAD #posthead,
+		     IMPERATIVE - ],
+  DTR [ C-CONT [ RELS <! !>,
+		 HCONS <! !> ],
+	SYNSEM.LOCAL.CAT [ HEAD verb & [ INV -,
+					 QUES + ],
+			   VAL [ COMPS #comps,
+				 SUBJ < #subj & synsem > ],
+			   MC #mc,
+			   HC-LIGHT #hcl,
+			   POSTHEAD #posthead,
+			   IMPERATIVE - ]]].
+
+ques-lex-rule := infl-head-change-only-ltol-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.QUES +,
+  C-CONT [ RELS <! !>,
+	   HCONS <! !> ],
+  DTR [ C-CONT [ RELS <! !>,
+		 HCONS <! !> ],
+	SYNSEM.LOCAL.CAT.HEAD verb & [ QUES - ] ]].
+
+; RGM 5-15-05 Added IMPERATIVE feature to CAT
+
+cat :+ [ IMPERATIVE bool ].
+
+; RGM 5-15-05 Added non-branching rule for imperative clauses, lab6
+
+imperative-head-opt-subj-phrase := basic-head-opt-subj-phrase & imperative-clause &
+[ SYNSEM.LOCAL.CAT.IMPERATIVE +,
+  HEAD-DTR imp_verb-lex-rule & [ SYNSEM.LOCAL.CAT.IMPERATIVE + ]].
+
+; RGM 5-15-05 Added imperative clause
+
+imp-clause := imperative-clause & head-only &
+[ SYNSEM.LOCAL.CAT.IMPERATIVE +,
+  HEAD-DTR imperative-head-opt-subj-phrase & [ SYNSEM.LOCAL.CAT.IMPERATIVE + ]].
+
+;; RGM 4-14-05 PNG from Lab 3
+
+png :+ [ PER person,
+	 NUM number ].
+
+person := *top*.
+non-third := person.
+non-first := person.
+first := non-third.
+second := non-third & non-first.
+third := non-first.
+
+number := *top*.
+sg := number.
+non-sg := number.
+pl := non-sg.
+
+; RGM 5-29-05 Adding MSG copying to same-cont-lex-rule
+
+;same-cont-lex-rule :+ [ SYNSEM.LOCAL.CONT.MSG #msg,
+;			DTR.SYNSEM.LOCAL.CONT.MSG #msg ].
+
+;; RGM 4-14-05 Pronoun types; they undergo a covert-det rule in Finnish
+
+quantifier_rel := predsort.
+pronoun_q_rel := quantifier_rel.
+reg_quant_rel := quantifier_rel.
+
+demonstrative_q_rel := reg_quant_rel.
+non+demonstrative_q_rel := reg_quant_rel.
+proximal+dem_q_rel := demonstrative_q_rel.
+distal+dem_q_rel := demonstrative_q_rel.
+exist_q_rel := reg_quant_rel.
+
+; ERB (2005-06-01) To make transfer work...
+
+def_q_rel := reg_quant_rel.
+indef_q_rel := reg_quant_rel.
+
+;; RGM 4-15-05 Adding CASE feature to noun type, creating case type, and
+;; creating case subtypes as should exist in the lexicon right now, more
+;; to follow (possibly).
+
+;; nom = nominative
+;; acc = accusative
+;; part = partitive
+;; elat = elative (one of the six local cases, needed for the object of tykAtA)
+
+;; RGM 4-16-05 Added [PRO bool] to noun to separate pronouns in bare-np rule, PRO feature
+;; added to lexical entries for pronouns
+
+; RGM 5-13-05 Added INV and QUES features to verb
+
+; RGM 5-18-05 Added FORM to verb and created form types
+
+; RGM 5-20-05 Added NEG to verb to mark whether NEG rule has applied on it yet
+
+verb :+ [ QUES bool,
+	  INV bool,
+	  FORM form,
+	  NEG bool ].
+
+form := avm.
+fin := form.
+inf := form.
+
+noun :+ [ CASE case,
+	  PRO bool ].
+
+case := *top*.
+nom := case.
+acc := case.
+part := case.
+gen := case.
+elat := case.
+allat := case.
+ablat := case.
+iness := case.
+adess := case.
+illat := case.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Lexical rules for XFST interface ;
+;                                  ;
+; first added 5-23-05              ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;
+; Verb rules
+;;;;;
+
+verb-lex-rule := infl-ltow-rule &
+[ DTR verb-lex & [ SYNSEM.LOCAL [ CAT.HEAD verb ]],
+  SYNSEM.LOCAL.CAT [ VAL [ SUBJ < [ LOCAL.CAT.HEAD.CASE nom ] >,
+			    SPR < > ],
+		     HEAD.FORM fin ]].
+
+1sg_verb-lex-rule := verb-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+							    NUM sg ]]>].
+
+2sg_verb-lex-rule := verb-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+							    NUM sg ]]>].
+
+3sg_verb-lex-rule := verb-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+							    NUM sg ]]>].
+
+1pl_verb-lex-rule := verb-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+							    NUM pl ]]>].
+
+2pl_verb-lex-rule := verb-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+							    NUM pl ]]>].
+
+3pl_verb-lex-rule := verb-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+							    NUM pl ]]>].
+
+neg_verb-lex-rule := infl-head-change-only-ltol-rule &
+[ SYNSEM.LOCAL [ CAT [ HEAD verb & [ NEG +,
+				     MOD #mod,
+				     KEYS #keys,
+				     QUES #ques,
+				     INV #inv,
+				     FORM #form ]]],
+  DTR verb-lex & [ SYNSEM.LOCAL [ CAT [ HEAD [ NEG -,
+					       MOD #mod,
+					       KEYS #keys,
+					       QUES #ques,
+					       INV #inv,
+					       FORM #form ]]]]].
+
+; neg_verb-lex-rule := infl-ltol-rule &
+; [ SYNSEM.LOCAL [ CAT [ HEAD.NEG + ]],
+;   C-CONT [ RELS <! !>,
+; 	   HCONS <! !> ],
+;   DTR verb-lex & [ SYNSEM.LOCAL [ CAT [ HEAD.NEG - ]]]].
+
+; imp_verb-lex-rule := infl-ltol-rule &
+; [ SYNSEM.LOCAL.CAT [ IMPERATIVE +,
+; 		     HEAD #head ],
+;   C-CONT [ RELS <! !>,
+; 	   HCONS <! !> ],
+;   DTR verb-lex-rule & [ C-CONT [ RELS <! !>,
+; 				 HCONS <! !> ],
+; 			SYNSEM.LOCAL.CAT [ IMPERATIVE -,
+; 					   HEAD #head ]]].
+
+imp_verb-lex-rule := infl-cat-change-only-ltol-rule &
+		     same-head-lex-rule &
+		     same-val-lex-rule &
+		     same-hc-light-lex-rule &
+		     same-posthead-lex-rule &
+[ SYNSEM.LOCAL.CAT.IMPERATIVE +,
+  DTR verb-lex-rule & [ SYNSEM.LOCAL.CAT.IMPERATIVE - ]].
+
+
+inf_verb-lex-rule := infl-ltow-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.FORM inf,
+  DTR verb-lex ].
+
+;;;;;
+; Nominal rules
+;;;;;
+
+; Adds +NUM after lexical item
+;num_nominal-lex-rule := infl-cont-change-only-ltol-rule &
+;[ C-CONT [ RELS <! !>,
+;	   HCONS <! !> ]].
+
+num_nominal-lex-rule := infl-add-only-no-ccont-ltol-rule.
+
+sg_nominal-lex-rule := num_nominal-lex-rule &
+[ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg ],
+  DTR nominal-lex ].
+
+pl_nominal-lex-rule := num_nominal-lex-rule &
+[ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NUM pl ],
+  DTR nominal-lex ].
+
+; Adds +CASE after +NUM
+case-lex-rule := infl-head-change-only-ltol-rule &
+[ C-CONT [ RELS <! !>,
+	   HCONS <! !> ],
+  DTR num_nominal-lex-rule ].
+
+case_nom-lex-rule := case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.CASE nom ].
+
+case_acc-lex-rule := case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.CASE acc ].
+
+case_part-lex-rule := case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.CASE part ].
+
+case_elat-lex-rule := case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.CASE elat ].
+
+case_illat-lex-rule := case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.CASE illat ].
+
+case_iness-lex-rule := case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.CASE iness ].
+
+case_adess-lex-rule := case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.CASE adess ].
+
+case_ablat-lex-rule := case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.CASE ablat ].
+
+case_allat-lex-rule := case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.CASE allat ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Commented rules below were pre-XFST interface ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; RGM 4-16-05 Adding lexical rules for lab3 below
+
+; verb-lex-rule := infl-ltow-rule &
+; [ DTR verb-lex & [ SYNSEM.LOCAL.CAT.HEAD verb ],
+;   SYNSEM.LOCAL.CAT [ VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE nom ] >,
+; 		     HEAD.FORM fin ]].
+
+; 1sg_verb-lex-rule := verb-lex-rule &
+; [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+; 							    NUM sg ] ] > ].
+
+; 2sg_verb-lex-rule := verb-lex-rule &
+; [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+; 							    NUM sg ] ] > ].
+
+; 3sg_verb-lex-rule := verb-lex-rule &
+; [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+; 							    NUM sg ] ] > ].
+
+; 1pl_verb-lex-rule := verb-lex-rule &
+; [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+; 							    NUM pl ] ] > ].
+
+; 2pl_verb-lex-rule := verb-lex-rule &
+; [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+; 							    NUM pl ] ] > ].
+
+; 3pl_verb-lex-rule := verb-lex-rule &
+; [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+; 							    NUM pl ] ] > ].
+
+; ;; RGM 5-22-05 Restricted RELS and HCONS to provide appropriate relations
+
+; neg_verb-lex-rule := infl-ltol-rule &
+; [ SYNSEM.LOCAL [ CAT [ HEAD.NEG + ]],
+;   C-CONT [ RELS <! !>,
+; 	   HCONS <! !> ],
+;   DTR 1sg_verb-lex-rule & [ SYNSEM.LOCAL [ CAT [ HEAD.NEG - ]],
+; 			    C-CONT [ RELS <! !>,
+; 				     HCONS <! !> ]]].
+
+; the entry i really want:
+; neg_verb-lex-rule := infl-ltol-rule &
+; [ SYNSEM.LOCAL [ CAT [ HEAD.NEG +,
+; 		       VAL #val ]],
+;   C-CONT [ RELS <! !>,
+; 	   HCONS <! !> ],
+;   DTR verb-lex-rule & [ SYNSEM.LOCAL [ CAT [ HEAD.NEG -,
+; 						 VAL #val ]],
+; 			    C-CONT [ RELS <! !>,
+; 				     HCONS <! !> ]]].
+
+; imp_verb-lex-rule := infl-ltol-rule &
+; [ SYNSEM.LOCAL.CAT [ IMPERATIVE +,
+; 		     HEAD #head ],
+;   DTR 2sg_verb-lex-rule & [ SYNSEM.LOCAL.CAT [ IMPERATIVE -,
+; 					       HEAD #head ]]].
+
+; inf_verb-lex-rule := infl-ltow-rule &
+; [ SYNSEM.LOCAL.CAT.HEAD.FORM inf,
+;   DTR verb-lex ].
+
+; ;; RGM 4-30-05 Added adjective inflection rules to agree in png
+
+; adj-lex-rule := infl-ltow-rule &
+; [ DTR.SYNSEM.LOCAL.CAT.HEAD adj,
+;   SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD noun ] >,
+;   DTR adj-lex ].
+
+; sg_adj-lex-rule := adj-lex-rule &
+; [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg ] ] >,
+;   DTR adj-lex ].
+
+; pl_adj-lex-rule := adj-lex-rule &
+; [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM pl ] ] >,
+;   DTR adj-lex ].
+
+; for some reason this rule was unifying with PRO +, and that was 
+; really annoying because it was causing overgeneration in some places.
+; so i just specified PRO - to ensure that the overgeneration stopped.
+; i want to track down why this was happening, but i haven't been able
+; to yet. i'll start tomorrow.
+; pl_noun-lex-rule := infl-local-change-only-ltol-rule &
+; [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.NUM pl,
+; 		 CAT.HEAD.PRO -,
+; 		 CAT.HEAD.CASE nom ],
+;   DTR common-noun-lex ].
+
+; acc_noun-lex-rule := infl-head-change-only-ltol-rule &
+; [ SYNSEM.LOCAL.CAT.HEAD.CASE acc,
+;   DTR common-noun-lex ].
+
+; acc_adj-lex-rule := infl-head-change-only-ltol-rule &
+; [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE acc ] >,
+;   DTR adj-lex ].
+
+; elat_adj-lex-rule := infl-head-change-only-ltol-rule &
+; [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE elat ] >,
+;   DTR adj-lex ].
+
+; elat_noun-lex-rule := infl-head-change-only-ltol-rule &
+; [ SYNSEM.LOCAL.CAT.HEAD.CASE elat,
+;   DTR noun-lex ].
+
+; elat_det-lex-rule := infl-val-change-only-ltol-rule &
+; [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.CASE elat ] >,
+;   DTR det-lex ].
+
+; allat_noun-lex-rule := infl-head-change-only-ltol-rule &
+; [ SYNSEM.LOCAL.CAT.HEAD.CASE allat,
+;   DTR noun-lex ].
+
+; ablat_noun-lex-rule := infl-head-change-only-ltol-rule &
+; [ SYNSEM.LOCAL.CAT.HEAD.CASE ablat,
+;   DTR noun-lex ].
+
+; part_noun-lex-rule := infl-head-change-only-ltol-rule &
+; [ SYNSEM.LOCAL.CAT.HEAD.CASE part,
+;   DTR noun-lex & [ SYNSEM.LOCAL.CAT.HEAD.CASE nom ]].
+
+; acc_det-lex-rule := infl-val-change-only-ltol-rule &
+; [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.CASE acc ] >,
+;   DTR det-lex ].
+
+; part_pronoun-lex-rule := infl-head-change-only-ltol-rule &
+; [ SYNSEM.LOCAL.CAT.HEAD [ CASE part,
+; 			  PRO + ],
+;   DTR pronoun-lex & [ SYNSEM.LOCAL.CAT.HEAD [ CASE nom,
+; 					      PRO + ]]].
+
+; gen_pronoun-lex-rule := infl-head-change-only-ltol-rule &
+; [ SYNSEM.LOCAL.CAT.HEAD [ CASE gen,
+; 			  PRO + ],
+;   DTR pronoun-lex & [ SYNSEM.LOCAL.CAT.HEAD [ CASE nom,
+; 					      PRO + ]]].
+
+;; end lexicul rules
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; RGM 5-25-05 Added coordination rules below for lab8
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Matrix rule overrides
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;coordination-relation := conjunction-relation.
+implicit-coord-rel := coordination-relation &
+  [ PRED 'implicit_coord_rel ].
+
+local-min :+
+  [ COORD bool,
+    COORD-REL coordination-relation ].
+
+headed-phrase :+
+  [ SYNSEM.LOCAL [ COORD -,
+                   COORD-REL #crel ],
+    HEAD-DTR.SYNSEM.LOCAL [ COORD -,
+                            COORD-REL #crel ]].
+
+binary-headed-phrase :+
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.COORD - ].
+
+;word-or-lexrule :+
+;  [ SYNSEM.LOCAL.COORD - ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Coordination phrases and rules
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+branching-phrase := phrase &
+  [ NBR-DTR sign,
+    BR-DTR sign ].
+
+left-branching := branching-phrase &
+  [ NBR-DTR #nbr,
+    BR-DTR #br,
+    ARGS < #br, #nbr > ].
+
+right-branching := branching-phrase &
+  [ NBR-DTR #nbr,
+    BR-DTR #br,
+    ARGS < #nbr, #br > ].
+
+coord-phrase :+ branching-phrase &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                         VAL #val ]],
+    NBR-DTR.SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                                 VAL #val ]],
+    BR-DTR.SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                                VAL #val ]]].
+
+top-coord-rule := coord-phrase &
+  [ SYNSEM.LOCAL.COORD -,
+    C-CONT.HOOK [ LTOP #rltop, INDEX #rind ],
+    NBR-DTR.SYNSEM.LOCAL [ CONT.HOOK.INDEX #lind ],
+    BR-DTR.SYNSEM.LOCAL [ COORD-REL [ L-INDEX #lind ],
+                          CONT.HOOK [ LTOP #rltop, INDEX #rind ]]].
+
+mid-coord-rule := coord-phrase &
+  [ SYNSEM.LOCAL [ COORD +,
+                   COORD-REL implicit-coord-rel &
+                         [ LBL #ltop,
+                           C-ARG #cind,
+                           R-INDEX #rind ]],
+    C-CONT.HOOK [ LTOP #ltop, INDEX #cind ],
+    NBR-DTR.SYNSEM.LOCAL [ CONT.HOOK.INDEX #lind ],
+    BR-DTR.SYNSEM.LOCAL [ COORD-REL.L-INDEX #lind,
+                          CONT.HOOK.INDEX #rind ]].
+
+;bottom-coord-phrase := phrase.
+
+unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                         VAL #val ],
+                   COORD +,
+                   COORD-REL #crel & implicit-coord-rel &
+                       [ LBL #lbl,
+                         C-ARG #carg,
+                         R-INDEX #rind ]],
+    C-CONT [ HOOK [ LTOP #lbl, INDEX #carg ],
+	     RELS <! #crel !>,
+	     HCONS <! !> ],
+    ARGS < [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                                  VAL #val ],
+                            COORD -,
+                            CONT.HOOK [ INDEX #rind ]]] > ].
+
+binary-bottom-coord-rule := bottom-coord-phrase & binary-phrase &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                         VAL #val ],
+                   COORD +,
+                   COORD-REL #crel ],
+    C-CONT [ HOOK [ LTOP #lbl, INDEX #carg ],
+	     RELS <! !>,
+	     HCONS <! !> ],
+    ARGS < [ SYNSEM [ LOCAL.CAT.HEAD conj,
+                      LKEYS.KEYREL #crel & [ LBL #lbl,
+					     C-ARG #carg,
+					     R-INDEX #rind ]]],
+           [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                                  VAL #val ],
+                            COORD -,
+                            CONT.HOOK [ INDEX #rind ]]] > ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; *syndeton rules
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; monopoly*: Mandatory monosyndeton with optional polysyndeton.  This
+; is the familiar Indo-European pattern, in which at least one
+; coordinator is mandator ("A B and C") and more than one is possible
+; ("A and B and C").
+
+monopoly-top-coord-rule := top-coord-rule &
+  [ NBR-DTR.SYNSEM.LOCAL.COORD -,
+    BR-DTR.SYNSEM.LOCAL.COORD + ].
+
+monopoly-mid-coord-rule := mid-coord-rule &
+  [ NBR-DTR.SYNSEM.LOCAL.COORD -,
+    BR-DTR.SYNSEM.LOCAL.COORD + ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; NP Coordination rules
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+nom-coord-phrase := coord-phrase & right-branching &
+  [ SYNSEM.LOCAL.CAT.HEAD noun,
+    NBR-DTR.SYNSEM.LOCAL.CAT.HEAD noun,
+    BR-DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
+
+;; RGM 5-27-05
+;; num-coord feature structures were added to allow for coordinating
+;; noun-phrases that generate the proper number properties in the
+;; np-mid and np-top rules.
+
+np-coord := coord-phrase &
+[ SYNSEM.LOCAL [ COORD-REL.C-ARG.PNG.NUM pl,
+		 CAT.HEAD.CASE nom ]].
+
+np-top-coord := np-coord & basic-np-top-coord-rule.
+
+np-mid-coord := np-coord & basic-np-mid-coord-rule.
+
+second-non-first-np-top-coord := np-top-coord & second-non-first-coord.
+third-second-np-top-coord := np-top-coord & third-second-coord.
+third-third-np-top-coord := np-top-coord & third-third-coord.
+person-first-np-top-coord := np-top-coord & person-first-coord.
+first-person-np-top-coord := np-top-coord & first-person-coord.
+
+second-non-first-np-mid-coord := np-mid-coord & second-non-first-coord.
+third-second-np-mid-coord := np-mid-coord & third-second-coord.
+third-third-np-mid-coord := np-mid-coord & third-third-coord.
+person-first-np-mid-coord := np-mid-coord & person-first-coord.
+first-person-np-mid-coord := np-mid-coord & first-person-coord.
+
+per-coord := coord-phrase.
+
+second-non-first-coord := per-coord &
+[ SYNSEM.LOCAL.COORD-REL [ C-ARG.PNG.PER second,
+			   L-INDEX.PNG.PER second,
+			   R-INDEX.PNG.PER non-first ]].
+
+third-second-coord := per-coord &
+[ SYNSEM.LOCAL.COORD-REL [ C-ARG.PNG.PER second,
+			   L-INDEX.PNG.PER third,
+			   R-INDEX.PNG.PER second ]].
+
+third-third-coord := per-coord &
+[ SYNSEM.LOCAL.COORD-REL [ C-ARG.PNG.PER third,
+			   L-INDEX.PNG.PER third,
+			   R-INDEX.PNG.PER third ]].
+
+person-first-coord := per-coord &
+[ SYNSEM.LOCAL.COORD-REL [ C-ARG.PNG.PER first,
+			   L-INDEX.PNG.PER non-first,
+			   R-INDEX.PNG.PER first ]].
+
+first-person-coord := per-coord &
+[ SYNSEM.LOCAL.COORD-REL [ C-ARG.PNG.PER first,
+			   R-INDEX.PNG.PER person,
+			   L-INDEX.PNG.PER first ]].
+
+; ; Reconsider SPR < > below -- need to separate N' from NP cleanly.
+basic-np-top-coord-rule := nom-coord-phrase &
+  [ C-CONT [ HOOK [ LTOP #ltop,
+                    INDEX #ind ],
+             RELS <! [ ARG0 #ind, RSTR #ltop ] !>,
+	     HCONS <! !> ],
+    NBR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < >,
+    BR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].
+
+basic-np-mid-coord-rule := nom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-REL #crel,
+    C-CONT [ RELS <! [ ARG0 #rind, RSTR #rltop ], #crel !>,
+	     HCONS <! !> ],
+    BR-DTR.SYNSEM.LOCAL.CONT.HOOK [ LTOP #rltop,
+                                    INDEX #rind ]].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Event Coordination rules (for verbs and adjectives)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+event-coord-phrase := coord-phrase &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX [ E #tam ],
+    NBR-DTR.SYNSEM.LOCAL.CONT.HOOK [ LTOP #lhndl,
+                                     INDEX #lind ],
+    BR-DTR.SYNSEM.LOCAL [ COORD-REL [ L-HNDL #lhndl,
+                                      L-INDEX #lind,
+                                      R-INDEX.E #tam ]]].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; ADJ Coordination rules
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+adj-coord-phrase := event-coord-phrase & right-branching &
+  [ SYNSEM.LOCAL.CAT [ POSTHEAD #ph,
+                       HEAD adj ],
+    NBR-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD #ph,
+                               HEAD adj ],
+    BR-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD #ph,
+                              HEAD adj ]].
+
+basic-adj-top-coord-rule := adj-coord-phrase &
+  [ C-CONT [ RELS <! !>,
+	     HCONS <! !> ]].
+
+basic-adj-mid-coord-rule := adj-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-REL #crel & [ R-HNDL #rhndl ],
+    C-CONT [ RELS <! #crel !>,
+	     HCONS <! !> ],
+    NBR-DTR.SYNSEM.LOCAL [ CAT.VAL.SPR #spr ],
+    BR-DTR.SYNSEM.LOCAL [ CAT.VAL.SPR #spr,
+                          CONT.HOOK.LTOP #rhndl ]].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; V/VP Coordination rules
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+v-coord-phrase := event-coord-phrase & right-branching &
+  [ SYNSEM.LOCAL.CAT.HEAD verb,
+    NBR-DTR.SYNSEM.LOCAL.CAT.HEAD verb,
+    BR-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
+
+basic-v-top-coord-rule := v-coord-phrase &
+  [ C-CONT [ RELS <! !>,
+	     HCONS <! !> ],
+    NBR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr,
+    BR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr ].
+
+basic-v-mid-coord-rule := v-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-REL #crel & [ R-HNDL #rhndl ],
+    C-CONT [ RELS <! #crel !>,
+	     HCONS <! !> ],
+    NBR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr,
+    BR-DTR.SYNSEM.LOCAL [ CAT.VAL.SPR #spr,
+                          CONT.HOOK.LTOP #rhndl ]].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; RGM 5-25-05 Rules for coordination that I created for use in lab8
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+np-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+  NBR-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+  BR-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
+
+np-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule.
+
+np-bottom-coord-rule := binary-bottom-coord-rule &
+[ SYNSEM.LOCAL.CAT.HEAD noun,
+  ARGS.REST.FIRST.SYNSEM.LOCAL.CAT.HEAD noun ].
+
+v-top-coord-rule := basic-v-top-coord-rule & monopoly-top-coord-rule.
+
+v-mid-coord-rule := basic-v-mid-coord-rule & monopoly-mid-coord-rule.
+
+v-bottom-coord-rule := binary-bottom-coord-rule &
+[ SYNSEM.LOCAL.CAT.HEAD verb,
+  ARGS.REST.FIRST.SYNSEM.LOCAL.CAT.HEAD verb ].
+
+adj-top-coord-rule := basic-adj-top-coord-rule & monopoly-top-coord-rule.
+
+adj-mid-coord-rule := basic-adj-mid-coord-rule & monopoly-mid-coord-rule.
+
+adj-bottom-coord-rule := binary-bottom-coord-rule &
+[ SYNSEM.LOCAL.CAT.HEAD adj,
+  ARGS.REST.FIRST.SYNSEM.LOCAL.CAT.HEAD adj ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; END OF FILE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
