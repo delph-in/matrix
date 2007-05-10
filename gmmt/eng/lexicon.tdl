@@ -11,56 +11,50 @@ and_1 := conj-lex &
 
 I := pronoun-lex &
   [ STEM < "I" >,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
-                                       NUM sg ] ].
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1sg ].
 
 you := pronoun-lex &
   [ STEM < "you" >,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER second ].
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2nd ].
 
 he := pronoun-lex &
   [ STEM < "he" >,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
-                                       NUM sg,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
                                        GEND masc ] ].
 
 she := pronoun-lex &
   [ STEM < "she" >,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
-                                       NUM sg,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
                                        GEND fem ] ].
 
 it := pronoun-lex &
   [ STEM < "it" >,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
-                                       NUM sg,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
                                        GEND neut ] ].
 
 we := pronoun-lex &
   [ STEM < "we" >,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
-                                       NUM non-sg ] ].
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1pl ].
 
 they := pronoun-lex &
   [ STEM < "they" >,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
-                                       NUM non-sg ] ].
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3pl ].
 
 ;;; Nouns
 
-cat := noun-lex &
+cat := common-noun-lex &
   [ STEM < "cat" >,
     SYNSEM.LKEYS.KEYREL.PRED "_cat_n_rel" ] .
 
-dog := noun-lex &
+dog := common-noun-lex &
   [ STEM < "dog" >,
     SYNSEM.LKEYS.KEYREL.PRED "_dog_n_rel" ] .
 
-glass := noun-lex &
+glass := common-noun-lex &
   [ STEM < "glass" >,
     SYNSEM.LKEYS.KEYREL.PRED "_glass_n_rel" ] .
 
-car := noun-lex &
+car := common-noun-lex &
   [ STEM < "car" >,
     SYNSEM.LKEYS.KEYREL.PRED "_car_n_rel" ] .
 

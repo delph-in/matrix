@@ -1,5 +1,13 @@
+%(letter-set (!s abcedfghijklmnopqrtuvwxyz))
+
 neg-infl-lr :=
 %suffix (* nt)
 neg-infl-lex-rule.
 
+pl-noun :=
+%suffix (!s !ss) (!ss !ssses) (ss sses)
+pl-noun-lex-rule.
 
+3sg-verb :=
+%suffix (!s !ss) (!ss !ssses) (ss sses)
+3sg-verb-lex-rule.
