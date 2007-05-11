@@ -5,9 +5,9 @@ neg-infl-lr :=
 neg-infl-lex-rule.
 
 pl-noun :=
-%suffix (!s !ss) (!ss !ssses) (ss sses)
+%suffix (!s !ss) (s ses)
 pl-noun-lex-rule.
 
 3sg-verb :=
-%suffix (!s !ss) (!ss !ssses) (ss sses)
+%suffix (!s !ss) (s ses) (do does)
 3sg-verb-lex-rule.

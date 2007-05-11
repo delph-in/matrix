@@ -101,5 +101,5 @@
 ;;;
 
 (if (eq (length *last-parses*) 1)
-   (setf *last-parses* '("the cat sleep" "the cat eat the dog")))
+   (setf *last-parses* '("the cat sleeps" "the cat eats the dog")))
 

@@ -1,5 +1,7 @@
 head-comp := head-comp-phrase .
 
+head-opt-comp := head-opt-comp-phrase .
+
 subj-head := subj-head-phrase .
 
 head-spec := head-spec-phrase .
@@ -10,8 +12,6 @@ bare-np := bare-np-phrase .
 ; are defined in matrix.tdl.  The matrix customization script did
 ; not need to add any further constraints, so no corresponding tyes
 ; appear in english.tdl
-
-head-adj-int := head-adj-int-phrase .
 
 adj-head-int := adj-head-int-phrase .
 
@@ -31,7 +31,8 @@ np1-mid-coord := np1-mid-coord-rule .
 
 np1-bottom-coord := np1-bottom-coord-rule .
 
-vp1-top-coord := vp1-top-coord-rule .
+;FIX: Had to comment this out to allow generation
+;vp1-top-coord := vp1-top-coord-rule .
 
 vp1-mid-coord := vp1-mid-coord-rule .
 
