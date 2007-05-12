@@ -1,0 +1,39 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
+;;; Nouns
+
+donna := noun-lex &
+   [ STEM < "donna" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_woman_n_rel" ].
+
+ragazzo := noun-lex &
+   [ STEM < "ragazzo" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_boy_n_rel" ].
+
+;;; Verbs
+
+dorm-e := intransitive-verb-lex &
+   [ STEM < "dorm-e" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_sleep_v_rel" ].
+
+conosc-e := transitive-verb-lex &
+   [ STEM < "conosc-e" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_know_v_rel" ].
+
+;;; Other
+
+;;; Determiners
+
+il := determiner-lex &
+   [ STEM < "il" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_def_q_rel" ].
+
+
+la := determiner-lex &
+   [ STEM < "la" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_def_q_rel" ].
+
+e_1 := conj-lex &
+  [ STEM < "e" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
+    CFORM "1" ].
