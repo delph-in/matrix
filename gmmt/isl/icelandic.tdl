@@ -18,8 +18,29 @@ head-spec-phrase := basic-head-spec-phrase & head-final .
 ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
 ;              introduced to match the semantic effect of bare NPs in your language.
 
+; ERB 2007-05-11 To allow for the "indefinite" (i.e., bare nouns) to
+; show up with demonstrative determiners yet still get the information
+; [ COG-ST type-id ] otherwise, we need to have two bare-np phrases,
+; as well as a feature DEF to track definiteness.  Similarly, need to
+; allow definite detereminer to combine with these. 
+
+; ERB 2007-05-11 Disallowing "weak" forms of adjectives from bare np.
+; This will probably break if we add posthead PP modifiers which can
+; attach after prehead adjectives.  Consider enforcing posthead attachment
+; first in this language.
+
+
 bare-np-phrase := basic-bare-np-phrase &
-  [ C-CONT.RELS <! [ PRED "_exist_q_rel" ] !> ] .
+  [ C-CONT.RELS <! [ PRED "_exist_q_rel" ] !>,
+    HEAD-DTR.SYNSEM.MODIFIED notmod-or-rmod ] .
+
+indef-bare-np-phrase := basic-bare-np-phrase &
+  [ HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.DEF -,
+			    CONT.HOOK.INDEX.COG-ST type-id ]].
+
+def-bare-np-phrase := basic-bare-np-phrase &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.DEF + ].
+
 
 ; comp-head-phrase can requires things that are [ HEAD adp ].
 
@@ -171,9 +192,14 @@ f-cl3-noun-lex := fem-noun-lex.
 
 f-cl4-noun-lex := fem-noun-lex.
 
-pronoun-lex := noun-lex &
-  [ SYNSEM [ LOCAL.CAT.VAL.SPR
-		< [ OPT + ] >,
+
+;;; ERB 2007-05-11 To keep the pronouns out of the indef bare np
+;;; rule, we need to give them value for COG-ST.  Going with
+;;; activ-or-more, per lab instructions.
+
+pronoun-lex := noun-lex &  
+  [ SYNSEM [ LOCAL [ CAT.VAL.SPR < [ OPT + ] >,
+		     CONT.HOOK.INDEX.COG-ST activ-or-more ],
 	     LKEYS.KEYREL.PRED "_pronoun_n_rel" ] ].
 
 ;;; Verbs
@@ -327,8 +353,11 @@ aux-verb-lex := verb-lex & trans-first-arg-raising-lex-item-1 &
     INFLECTED - ].
 
 ;;; Case-marking 
+;;; ERB 2007-05-11  Add a feature DEF to noun to track whether
+;;; nouns are inflected as definite or not.
 
-noun :+ [ CASE case ].
+noun :+ [ CASE case,
+	  DEF bool ].
 
 ; FORM value for subject marking adpositions.
 
@@ -339,23 +368,67 @@ p-nom := form .
 noun :+ [MOD <>].
 verb :+ [MOD <>].
 
+;;; ERB 2007-05-11 Katie had the adjectives as lexically prehead,
+;;; but really that should depend on whether they get "strong" or
+;;; "weak" inflection.
+
 adjective-lex := basic-int-mod-adj-lex &
   [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD noun,
 						    VAL.SPR cons ]]>,
 			   VAL [ SPR < >,
 				 SUBJ < >,
 				 COMPS < >,
-				 SPEC < > ],
-			   POSTHEAD - ]]],
+				 SPEC < > ]]]],
     INFLECTED - ].
 
 ;;; Determiners
 ;;; SPEC is non-empty, and already specified by basic-determiner-lex.
 
+;;; ERB 2007-05-11 Assuming that the determiners don't combine
+;;; with nouns that have been inflected for definiteness.
+
+;;; ERB 2007-05-11 There's more to be done here.  According to
+;;; www.samkoma.com/mimir/mimir.htm, the independent definite determiner
+;;; is only used when the noun is preceded by an adjective.  The 
+;;; definite suffix is used when there is no adjective or when it
+;;; follows the noun.  We could use MODIFIED here to check whether
+;;; there are any premodifiers.  In addition, the prehead adjectives
+;;; should required [DEF -] on their MOD.  ... Looking a bit further,
+;;; it appears that Katie only implemented the prehead modifiers.  
+;;; I'm giving MODIFIED a shot to see if it can get the facts right.
+
+;;; ERB 2007-05-11 Again from samkoma.com, it seems that all
+;;; adjectives have "weak" and "strong" inflected forms.  The strong
+;;; forms appear after the noun and the weak forms appear before the
+;;; noun.  From this, it sounds like we need to disallow the weak
+;;; forms from indefinite bare np phrases.
+
 determiner-lex := basic-determiner-lex & basic-zero-arg &
   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
                            COMPS < >,
+			   SPEC <  [ LOCAL.CAT.HEAD.DEF -,
+				     MODIFIED notmod-or-rmod ] >,
                            SUBJ < > ] ] .
+
+;;; ERB 2007-05-11 Adding demonstrative determiners for GMMT.
+;;; Or one demonstrative determiner, anyway.
+
+demonstrative-determiner-lex := norm-hook-lex-item & basic-zero-arg &
+[ SYNSEM [ LOCAL [CAT [ HEAD det,
+	VAL[ SPEC.FIRST.LOCAL[ CONT.HOOK [ INDEX #ind & [COG-ST activ+fam],
+					   LTOP #larg & #lbl],
+			       CAT.HEAD.DEF - ],
+	SPR < >,
+	SUBJ < >,
+	COMPS < >]],
+CONT [ HCONS < ! qeq & 
+	[ HARG #harg,
+	LARG #larg ] ! >, RELS <![ PRED "exist_q_rel"], #lkey & arg12-relation & [LBL #lbl] ! >] ] ,
+LKEYS [ KEYREL quant-relation &
+	[ ARG0 #ind,
+	RSTR #harg ], ALTKEYREL #lkey]]].
+
+
 
 png :+ [ PER person,
 	 NUM number,
@@ -378,9 +451,10 @@ neut: = gender.
 
 case := *top*.
 nom := case.
-acc := case.
-dat := case.
-gen := case.
+notnom := case.
+acc := notnom.
+dat := notnom.
+gen := notnom.
 
 present := tense.
 future := tense.
@@ -388,8 +462,12 @@ past := tense.
 
 ;;; Lexical rules
 
+; ERB 2007-05-11 Add [ DEF + ] here to track whether these
+; rules have applied.
+
 det-lex-rule := infl-ltow-rule &
- [ SYNSEM.LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act ].
+ [ SYNSEM.LOCAL [ CAT.HEAD.DEF +,
+		  CONT.HOOK.INDEX.COG-ST uniq+fam+act ] ].
 
 nom-sg-det-lex-rule := det-lex-rule &
   [ DTR nom-sg-lex-rule ].
@@ -445,9 +523,14 @@ n-acc-sg-det-lex-rule := acc-sg-det-lex-rule &
 n-dat-sg-det-lex-rule := dat-sg-det-lex-rule &
   [ DTR n-dat-sg-lex-rule ].
 
+; ERB 2007-05-11 Adding [DEF -] here to keep these out of
+; the definite bare np rule.  Removing [ COG-ST type-id ],
+; since that is now added by the indef-bare-np-phrase, if 
+; at all.
+
 indef-det-lex-rule := const-ltow-rule &
   [ DTR num+case-lex-rule,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.COG-ST type-id ].
+    SYNSEM.LOCAL.CAT.HEAD.DEF - ].
 
 num+case-lex-rule := add-only-no-ccont-rule.
 
@@ -543,18 +626,18 @@ m-clto3-pl-acc-lex-rule := infl-acc-pl-lex-rule & m-acc-pl-lex-rule &
 
 ; ERB 2007-05-11: Added plural rules for class one (dog, car)
 
-m-cl1-nom-pl-lex-rule := m-nom-pl-lex-rule &
+m-cl1-nom-pl-lex-rule := m-nom-pl-lex-rule & infl-nom-pl-lex-rule &
   [ DTR m-cl1-noun-lex ].
   
-m-cl1-acc-pl-lex-rule := m-acc-pl-lex-rule &
+m-cl1-acc-pl-lex-rule := m-acc-pl-lex-rule & infl-acc-pl-lex-rule &
   [ DTR m-cl1-noun-lex ].
 
 ; ERB 2007-05-11: And for class three (cat)
 
-m-cl3-nom-pl-lex-rule := m-nom-pl-lex-rule &
+m-cl3-nom-pl-lex-rule := m-nom-pl-lex-rule & infl-nom-pl-lex-rule &
   [ DTR m-cl3-noun-lex ].
   
-m-cl3-acc-pl-lex-rule := m-acc-pl-lex-rule &
+m-cl3-acc-pl-lex-rule := m-acc-pl-lex-rule & infl-acc-pl-lex-rule &
   [ DTR m-cl3-noun-lex ].
 
 
@@ -686,10 +769,13 @@ aux-lex-rule := verb-lex-rules &
 adj-lex-rule := infl-ltow-rule &
   [ DTR adjective-lex ].
 
-weak-adj-lex-rule := adj-lex-rule.
+;;; ERB 2007-05-11 Moving posthead constraint here.
+
+weak-adj-lex-rule := adj-lex-rule &
+  [ SYNSEM.LOCAL.CAT.POSTHEAD - ].
 
 weak-pl-adj-lex-rule := weak-adj-lex-rule &
-  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM pl ] ] > ].
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM non-sg ] ] > ].
 
 weak-sg-adj-lex-rule := weak-adj-lex-rule &
   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg ] ] > ].
@@ -725,3 +811,40 @@ weak-f-sg-dat-adj-lex-rule := weak-f-lex-rule & weak-sg-adj-lex-rule & weak-dat-
 weak-f-sg-nom-adj-lex-rule := weak-f-lex-rule & weak-sg-adj-lex-rule & weak-nom-lex-rule.
 
 weak-n-sg-adj-lex-rule := weak-n-lex-rule & weak-sg-adj-lex-rule.
+
+; ERB 2007-05-11 adding the strong adjective inflection.
+; There's actually two inflectional classes here.  For now, I'm
+; just implementing the class which includes svang- `hungry'.
+
+strong-adj-lex-rule := infl-ltow-rule &
+  [ DTR adjective-lex,
+    SYNSEM.LOCAL.CAT.POSTHEAD + ].
+
+sg-strong-adj-lex-rule := strong-adj-lex-rule &
+  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ] > ].
+
+nonsg-strong-adj-lex-rule := strong-adj-lex-rule &
+  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM non-sg ] > ].
+
+f-strong-adj-lex-rule := strong-adj-lex-rule &
+  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.GEND fem ] > ].
+
+m-strong-adj-lex-rule := strong-adj-lex-rule &
+  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.GEND masc ] > ].
+
+n-strong-adj-lex-rule := strong-adj-lex-rule &
+  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.GEND neut ] > ].
+
+nom-strong-adj-lex-rule := strong-adj-lex-rule &
+  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CAT.HEAD.CASE nom ] > ].
+
+acc-strong-adj-lex-rule := strong-adj-lex-rule &
+  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CAT.HEAD.CASE acc ] > ].
+
+dat-strong-adj-lex-rule := strong-adj-lex-rule &
+  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CAT.HEAD.CASE dat ] > ].
+
+gen-strong-adj-lex-rule := strong-adj-lex-rule &
+  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CAT.HEAD.CASE gen ] > ].
+
+;; Make cross product, then create instances.

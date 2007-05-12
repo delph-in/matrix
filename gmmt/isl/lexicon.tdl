@@ -165,14 +165,14 @@ hann := pronoun-lex &
 					     			     GEND masc ] ] ].					     			     
 					     			     				     			   
 teir := pronoun-lex &
-  [ STEM < "teir" >,
+  [ STEM < "Þeir" >,
     SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
     			   CONT.HOOK.INDEX.PNG [ PER third,
 					     			     NUM non-sg, 
 					     			     GEND masc ] ] ].
 
 ta := pronoun-lex &
-  [ STEM < "ta" >,
+  [ STEM < "þá" >,
     SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
     			   CONT.HOOK.INDEX.PNG [ PER third,
 					     			     NUM non-sg, 
@@ -364,6 +364,12 @@ helst := adverb-lex &
   [ STEM < "helst" >,
     SYNSEM.LKEYS.KEYREL.PRED "_gladly_r_rel" ].
 
+;;; ERB 2007-05-11 For GMMT:
+
+svang := adjective-lex &
+  [ STEM < "svang" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_hungry_a_rel" ].
+
 ;;; Determiners
 
 hinn := determiner-lex &
@@ -373,3 +379,13 @@ hinn := determiner-lex &
 ad := complementizer-lex-item &
   [ STEM < "ad" > ].
 
+;;; ERB 2007-05-11
+;;; I know this one goes with masc plural nominative.  Don't know
+;;; what happens in other parts of the paradigm.
+
+
+tessir := demonstrative-determiner-lex &
+  [ STEM < "Þessir" >,
+    SYNSEM [ LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM non-sg,
+								  GEND masc ],
+	     LKEYS.ALTKEYREL.PRED "proximal+dem_a_rel" ]].

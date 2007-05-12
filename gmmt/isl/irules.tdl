@@ -174,3 +174,6 @@ weak-pl-adj-lex-rule.
 3-pl-aux :=
 %suffix (* -a)
 3-pl-aux-lex-rule.
+
+;;; ERB 2007-05-11 Strong adj rules.
+

@@ -6,7 +6,13 @@ subj-head := subj-head-phrase .
 
 head-spec := head-spec-phrase .
 
-bare-np := bare-np-phrase .
+; ERB 2007-05-11 Need two different bare-np phrases to get
+; the distribution of definite and indefinite inflection right.
+
+;bare-np := bare-np-phrase .
+
+bare-np-def := def-bare-np-phrase.
+bare-np-indef := indef-bare-np-phrase.
 
 comp-head := comp-head-phrase .
 
