@@ -97,10 +97,13 @@ verb-lex := basic-verb-lex &
 ; The incompatible SUBJ values on SYNSEM and DTR are
 ; what keeps this one from spinning.
 
+; ERB 2007-05-11 This needs to say the inverted guy is now [ OPT - ],
+; to keep the head-opt-comp rule from firing.
+
 subj-v-inv-lrule := cat-change-only-lex-rule & same-hc-light-lex-rule & same-posthead-lex-rule & constant-lex-rule &
   [ SYNSEM [ LOCAL.CAT [ HEAD verb &
                               [ INV + ],
-			 VAL [ COMPS < #subj . #comps >,
+			 VAL [ COMPS < #subj & [ OPT - ] . #comps >,
 			       SUBJ < >,
 			       SPR #spr,
 			       SPEC #spec ],
@@ -537,7 +540,25 @@ m-clto3-sg-acc-lex-rule := const-acc-sg-lex-rule & m-acc-sg-lex-rule &
 
 m-clto3-pl-acc-lex-rule := infl-acc-pl-lex-rule & m-acc-pl-lex-rule &
   [ DTR m-cl1to3-noun-lex ] .
+
+; ERB 2007-05-11: Added plural rules for class one (dog, car)
+
+m-cl1-nom-pl-lex-rule := m-nom-pl-lex-rule &
+  [ DTR m-cl1-noun-lex ].
   
+m-cl1-acc-pl-lex-rule := m-acc-pl-lex-rule &
+  [ DTR m-cl1-noun-lex ].
+
+; ERB 2007-05-11: And for class three (cat)
+
+m-cl3-nom-pl-lex-rule := m-nom-pl-lex-rule &
+  [ DTR m-cl3-noun-lex ].
+  
+m-cl3-acc-pl-lex-rule := m-acc-pl-lex-rule &
+  [ DTR m-cl3-noun-lex ].
+
+
+
 m-cl4-lex-rule := num+case-lex-rule & const-ltol-rule &
   [ DTR m-cl4-noun-lex ] .
 
@@ -550,7 +571,7 @@ m-cl2-sg-dat-lex-rule := const-dat-sg-lex-rule & m-dat-sg-lex-rule &
 m-cl3-sg-dat-lex-rule := infl-dat-sg-lex-rule & m-dat-sg-lex-rule &
   [ DTR m-cl3-noun-lex ] .
 
-m-clto3-pl-dat-lex-rule := infl-dat-pl-lex-rule & m-dat-pl-lex-rule &
+m-cl1to3-pl-dat-lex-rule := infl-dat-pl-lex-rule & m-dat-pl-lex-rule &
   [ DTR m-cl1to3-noun-lex ] .
   
 f-cl1-sg-nom-lex-rule := const-nom-sg-lex-rule & f-nom-sg-lex-rule &

@@ -2,6 +2,11 @@
 --- What is the proper translation of "Dogs eat", given that optional
 complements seem to be dispreferred?
 --- It would be nice to double-check adverb placement.
+--- The plural form of dog might in fact be something different.
+The grammar doesn't currently really handle the plural form of nouns.
+Seems like she just hard coded some.  Most lexical entries insist
+that they are singular.
+
 
 # 1. Dogs sleep  # indefinites appear to be unmarked for number
 
@@ -31,7 +36,7 @@ naa-iyà ci gìlâs
 bàa yaa-cùutaa ni ba
 
 # 8. The dogs chase cars.
-kàr~e-`n sunàa-fàafaràa mootàa
+kàr~nai-`n sunàa-fàafaràa mootàa
 dog-def  3pl.cont-chase car
 
 # 9. I think that you know that dogs chase cars.
@@ -39,7 +44,6 @@ inàa-taunàa     cêwaa kinàa-san    cêwaa kàr~nai sunàa-fàafaràa mootàa
 1sg.cont-think  that 2f.cont-know that dog    3pl.cont-chase car
 
 # 10. I ask whether you know that dogs chase cars.
-
 inàa-tàmbayàa koo     kinàa-san    cêwaa kàr~nai sunàa-fàafaràa mootàa
 1sg.cont-ask  whether 2f.cont-know that dog    3pl.cont-chase car
 
@@ -58,7 +62,7 @@ koo kyânwaa sunàa-fàafaràa kàr~nai
 kyânwaa sunàa-fàafaràa kàr~nai koo
 
 # 15. Chase the dog!  # There should really be a tone change on the verb.
-fàafaràa kàr~ee
+fàafaraa kàr~e-`n
 
 # 16. Hungry dogs eat.
 kàr~nai dà-yùnwa sunàa-ci

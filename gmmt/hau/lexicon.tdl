@@ -510,7 +510,7 @@ iyà := aux-verb-lex &
 [ STEM <"iyà" >,
   SYNSEM[LKEYS.KEYREL.PRED "_can_v_rel" ], INFLECTED - ].
 
-ci := transitive-verb-lex &  
+ci := opt-comp-transitive-verb-lex &  
 [ STEM <"ci">,
   SYNSEM[LKEYS.KEYREL.PRED "_eat_v_rel"], INFLECTED - ].
 
@@ -569,6 +569,16 @@ kwallàfaa := transitive-verb-lex &
 fàafaràa := transitive-verb-lex &
 [ STEM <"fàafaràa">,
   SYNSEM [ LKEYS.KEYREL.PRED "_chase_v_rel" ], INFLECTED -].
+
+; ERB 2007-05-11 Adding imperative form here for test sentence.
+; Really should generalize.
+
+fàafaraa := transitive-verb-lex &
+[ STEM <"fàafaraa">,
+  SYNSEM [ LKEYS.KEYREL.PRED "_chase_v_rel",
+	   LOCAL.CAT.HEAD.FORM imp ], 
+  INFLECTED +].
+
 
 dòokaa := transitive-verb-lex &
 [ STEM <"dòokaa">,
@@ -692,6 +702,15 @@ dà-yùnwa := adjective-lex &
  SYNSEM[LKEYS.KEYREL.PRED "_hungry_a_rel",
 	LOCAL.CAT [ HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg ]] >,
 	 POSTHEAD +] ]].
+
+;; FIX ME: Need plural form here.
+
+dà-yùnwa_2 := adjective-lex &
+[ STEM <"dà-yùnwa">,
+ SYNSEM[LKEYS.KEYREL.PRED "_hungry_a_rel",
+	LOCAL.CAT [ HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM non-sg ]] >,
+	 POSTHEAD +] ]].
+
 
 ;; adverbs
 jiyà := adverb-lex &

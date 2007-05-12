@@ -9,13 +9,29 @@ og_1 := conj-lex &
 
 ;;; Nouns
 
-kott := m-cl3-noun-lex &
-  [ STEM < "kott" >,
+;;; ERB 2007-05-11  This one has a stem change for
+;;; nom plural, which is the piece that I need.  So
+;;; I'm putting it in as that stem instead.
+
+;kott := m-cl3-noun-lex &
+;  [ STEM < "kott" >,
+;    SYNSEM.LKEYS.KEYREL.PRED "_cat_n_rel" ] .
+
+kett := m-cl3-noun-lex &
+  [ STEM < "kett" >,
     SYNSEM.LKEYS.KEYREL.PRED "_cat_n_rel" ] .
+
 
 hund := m-cl1-noun-lex &
   [ STEM < "hund" >,
     SYNSEM.LKEYS.KEYREL.PRED "_dog_n_rel" ] .
+
+;; ERB 2007-05-11
+
+bil := m-cl1-noun-lex &
+  [ STEM < "bíl" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_dog_n_rel" ] .
+
 
 laeknir := m-cl1-noun-lex &
   [ STEM < "laeknir" >,
@@ -94,7 +110,7 @@ te := neut-noun-lex &
 ;;; Pronouns
 
 eg := pronoun-lex &
-  [ STEM < "eg" >,
+  [ STEM < "ég" >,
     SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
     			   CONT.HOOK.INDEX.PNG [ PER first,
 					     			     NUM sg ] ] ].
@@ -243,6 +259,10 @@ borda := opt-trans-verb-lex &
   [ STEM < "borda" >,
     SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ] .
 
+eta := opt-trans-verb-lex &
+  [ STEM < "éta" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ] .
+
 heyra := prop-verb-lex &
   [ STEM < "heyra" >,
     SYNSEM.LKEYS.KEYREL.PRED "_hear_v_rel" ].
@@ -278,6 +298,13 @@ kaupa := transitive-verb-lex &
 skilja := transitive-verb-lex &
   [ STEM < "skilja" >,
     SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ].
+
+;; ERB 2007-05-11  Single object is acc according to dictionary.
+
+elta := transitive-verb-lex &
+  [ STEM < "elta" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_chase_v_rel" ].
+
 
 skilja2 := prop-verb-lex &
   [ STEM < "skilja" >,

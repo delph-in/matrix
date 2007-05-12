@@ -51,6 +51,23 @@ m-cl1to3-nom-noun :=
 %suffix (* -ur)
 m-clto3-sg-nom-lex-rule.
 
+;; ERB 2007-05-11  Added class one plural rules.
+
+m-cl1-pl-nom-noun := 
+%suffix (* -ar)
+m-cl1-nom-pl-lex-rule.
+
+m-cl1-pl-acc-noun := 
+%suffix (* -a)
+m-cl1-acc-pl-lex-rule.
+
+;; EBR 2007-05-11 Added instance here, type was defined.
+
+m-cl1to3-pl-dat-noun := 
+%suffix (* -um)
+m-cl1to3-pl-dat-lex-rule.
+
+
 m-cl1-dat-noun :=
 %suffix (* -i)
 m-cl1-sg-dat-lex-rule.
@@ -58,6 +75,17 @@ m-cl1-sg-dat-lex-rule.
 m-cl3-dat-noun :=
 %suffix (* -i)
 m-cl3-sg-dat-lex-rule.
+
+;; ERB 2007-05-11
+
+m-cl3-nom-pl-noun :=
+%suffix (* -ir)
+m-cl3-nom-pl-lex-rule.
+
+m-cl3-acc-pl-noun :=
+%suffix (* -i)
+m-cl3-acc-pl-lex-rule.
+
 
 f-cl1-acc-noun :=
 %suffix (* -u)

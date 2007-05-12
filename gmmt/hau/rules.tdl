@@ -38,3 +38,7 @@ imper-phrase := imperative-phrase.
 
 ;;negated sentence
 neg-phrase := negation-phrase.
+
+;; ERB 2007-05-11 Object pro-drop
+
+head-opt-comp := basic-head-opt-comp-phrase.
