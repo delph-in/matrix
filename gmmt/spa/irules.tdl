@@ -1,0 +1,77 @@
+; File for spelling preserving lexical rules, i.e., instances
+; of (subtypes of) infl-ltol-rule and infl-ltow-rule.
+
+; Every rule in this file should have a %suffix line.  Those
+; that don't belong in lrules.tdl.
+
+%(letter-set (!t bcdfghjklmnpqrstvwxz))
+%(letter-set (!v aeiou))
+
+clitic_pp_1_sg_pro :=
+%prefix (* me-)
+clitic_pp_a_1_sg_lex-rule.
+
+clitic_pp_2_sg_pro :=
+%prefix (* te-)
+clitic_pp_a_2_sg_lex-rule.
+
+clitic_1_sg_pro :=
+%prefix (* me-)
+clitic_ditrans_1_sg_lex-rule.
+
+clitic_2_sg_pro :=
+%prefix (* te-)
+clitic_ditrans_2_sg_lex-rule.
+
+clitic_1_tverb_sg_pro :=
+%prefix (* me-)
+clitic_tverb_1_sg_lex-rule.
+
+clitic_2_tverb_sg_pro :=
+%prefix (* te-)
+clitic_tverb_2_sg_lex-rule.
+
+1sg_verb :=
+%suffix (er o) (ar o) (ir o)
+1sg_verb-lex-rule.
+
+1pl_verb :=
+%suffix (er emos) (ar amos) (ir imos)
+1pl_verb-lex-rule.
+
+2sg_verb :=
+%suffix (er es) (ar as) (ir es)
+2sg_verb-lex-rule.
+
+2sg_imp_verb :=
+%suffix (er e) (ar a) (ir e)
+2sg_imp_verb-lex-rule.
+
+;;2nd PERSON PL form are accented...LKB complained about ' what to do?
+2pl_verb :=
+%suffix (er eis) (ar ais) (ir is)
+2pl_verb-lex-rule.
+
+3sg_verb :=
+%suffix (er e) (ar a) (ir e)
+3sg_verb-lex-rule.
+
+3pl_verb :=
+%suffix (er en) (ar an) (ir en)
+3pl_verb-lex-rule.
+
+pl_noun :=
+%suffix (!v !vs) (!t !tes)
+pl_noun-lex-rule.
+
+sg_f_adj :=
+%suffix (o a)
+sg_f_adj-lex-rule.
+
+pl_m_adj :=
+%suffix (o os)
+pl_m_adj-lex-rule.
+
+pl_f_adj :=
+%suffix (o as)
+pl_f_adj-lex-rule.
