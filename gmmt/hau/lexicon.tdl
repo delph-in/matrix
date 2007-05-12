@@ -141,6 +141,15 @@ kàree := common-noun-lex &
   SYNSEM [LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM sg],
 	LKEYs.KEYREL.PRED "_dog_n_rel"]].
 
+; ERB 2007-05-11 Added plural variant.  Kelsey says that the
+; morphology for plurals is irregular, so she was just full-forming
+; it.
+
+kàrnai := common-noun-lex &
+[ STEM <"kàr~nai">,
+  SYNSEM [LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM pl],
+	LKEYs.KEYREL.PRED "_dog_n_rel"]].
+
 
 kyânwaa := common-noun-lex &
 [ STEM <"kyânwaa">,
@@ -718,5 +727,11 @@ wata := f-demonstrative-lex &
 
 wani := m-demonstrative-lex &
   [ STEM < "wani" >,
+    SYNSEM [ LKEYS.ALTKEYREL.PRED "proximal+dem_a_rel"]].
+
+; ERB 2007-05-11
+
+wadànnân := mp-demonstrative-lex &
+  [ STEM < "wadànnân" >,
     SYNSEM [ LKEYS.ALTKEYREL.PRED "proximal+dem_a_rel"]].
 

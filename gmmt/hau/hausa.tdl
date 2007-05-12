@@ -273,11 +273,24 @@ intransitive-verb-lex := verb-lex & intransitive-lex-item &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
     ARG-ST < [ LOCAL.CAT [ HEAD noun ]	] > ] .
 
-transitive-verb-lex := verb-lex & transitive-lex-item &
+; ERB 2007-05-11 Added subtypes to allow for argument optionality.
+; Kelsey says there is some inflectional reflex of dropped arguments.
+; Not modeling that yet.
+
+transitive-verb-lex-super := verb-lex & transitive-lex-item &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
     ARG-ST < [ LOCAL.CAT.HEAD noun ], 
 		#comps & [ LOCAL.CAT [ VAL [ SPR < >, COMPS < > ],
                  		       HEAD noun & [ CASE acc ] ] ] > ] .
+
+transitive-verb-lex := transitive-verb-lex-super &
+  [ ARG-ST.REST.FIRST.OPT - ].
+
+; ERB 2007-05-11 Just guessing that for 'eat' we're dealing with
+; INI here.
+
+opt-comp-transitive-verb-lex := transitive-verb-lex-super &
+  [ ARG-ST.REST.FIRST.OPT-CS type-id ].
 
 ditransitive-verb-lex := verb-lex & ditransitive-lex-item &
 [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps1, #comps2 >,
@@ -376,11 +389,20 @@ LKEYS [ KEYREL quant-relation &
 	[ ARG0 #ind,
 	RSTR #harg ], ALTKEYREL #lkey]]].
 
+; ERB 2007-05-11 Added mp-demonstrative-lex and constrained the
+; other two to be [NUM sg].
+
 f-demonstrative-lex := demonstrative-determiner-lex &
-[ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem]].
+[ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem,
+				     NUM sg ]].
 
 m-demonstrative-lex := demonstrative-determiner-lex &
-[ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc]].
+[ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc,
+				     NUM sg]].
+
+mp-demonstrative-lex := demonstrative-determiner-lex &
+[ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc,
+				     NUM pl ]].
 
 
 ;;;; Lexical rules

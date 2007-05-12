@@ -4,11 +4,12 @@ complements seem to be dispreferred?
 --- It would be nice to double-check adverb placement.
 
 # 1. Dogs sleep  # indefinites appear to be unmarked for number
-kàr~ee sunàa-kwaana
-dog    3pl.cont-sleep
+
+kàr~nai sunàa-kwaana
+dog     3pl.cont-sleep
 
 # 2. Dogs chase cars
-kàr~ee sunàa-fàafaràa mootàa
+kàr~nai sunàa-fàafaràa mootàa
 dog    3pl.cont-chase car
 
 # 3. They chase them.
@@ -16,11 +17,11 @@ sunàa-fàafaràa su
 3pl.cont-chase 3pl.acc
 
 # 4. These dogs sleep.
-FIXME kàr~ee sunàa-kwaana
-these dog    3pl.cont-sleep
+wadànnân kàr~nai sunàa-kwaana
+these    dog     3pl.cont-sleep
 
 # 5. Dogs eat.  # No evidence of optional complements in the grammar.
-kàr~ee sunàa-ci
+kàr~nai sunàa-ci
 dog    3pl.cont-eat
 
 # 6. I can eat glass.
@@ -34,33 +35,33 @@ kàr~e-`n sunàa-fàafaràa mootàa
 dog-def  3pl.cont-chase car
 
 # 9. I think that you know that dogs chase cars.
-inàa-taunàa     cêwa kinàa-san    cêwa kàr~ee sunàa-fàafaràa mootàa
+inàa-taunàa     cêwaa kinàa-san    cêwaa kàr~nai sunàa-fàafaràa mootàa
 1sg.cont-think  that 2f.cont-know that dog    3pl.cont-chase car
 
 # 10. I ask whether you know that dogs chase cars.
 
-inàa-tàmbayàa koo     kinàa-san    cêwa kàr~ee sunàa-fàafaràa mootàa
+inàa-tàmbayàa koo     kinàa-san    cêwaa kàr~nai sunàa-fàafaràa mootàa
 1sg.cont-ask  whether 2f.cont-know that dog    3pl.cont-chase car
 
 # 11. Cats and dogs chase cars.  # mono or poly for NP
-kyânwaa dà kàr~ee sunàa-fàafaràa mootàa
-dà kyânwaa dà kàr~ee sunàa-fàafaràa mootàa
+kyânwaa dà kàr~nai sunàa-fàafaràa mootàa
+dà kyânwaa dà kàr~nai sunàa-fàafaràa mootàa
 
 # 12. Dogs chase cars and cats chase dogs. # asyndeton for S
-kàr~ee sunàa-fàafaràa mootàa kyânwaa sunàa-fàafaràa kàr~ee
+kàr~nai sunàa-fàafaràa mootàa kyânwaa sunàa-fàafaràa kàr~nai
 
 # 13. Cats chase dogs and sleep. # asyndeton for VP (guessing that we don't repeat subject)
-kyânwaa sunàa-fàafaràa kàr~ee sunàa-kwaana
+kyânwaa sunàa-fàafaràa kàr~nai sunàa-kwaana
 
 # 14. Do cats chase dogs?
-koo kyânwaa sunàa-fàafaràa kàr~ee
-kyânwaa sunàa-fàafaràa kàr~ee koo
+koo kyânwaa sunàa-fàafaràa kàr~nai
+kyânwaa sunàa-fàafaràa kàr~nai koo
 
 # 15. Chase the dog!  # There should really be a tone change on the verb.
 fàafaràa kàr~ee
 
 # 16. Hungry dogs eat.
-kàr~ee dà-yùnwa sunàa-ci
+kàr~nai dà-yùnwa sunàa-ci
 
 # 17. Hungry dogs eat quickly.  (Grammar indicates S-attachment)
-kàr~ee dà-yùnwa sunàa-ci zumbur
+kàr~nai dà-yùnwa sunàa-ci zumbur
