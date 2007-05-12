@@ -1,0 +1,32 @@
+I
+ani(I): pronoun-lex->def-pronoun->bare-np
+
+A dog
+klb(a dog): masc-im-noun-lex->noun-sg-no-suffix->indef-noun->bare-np
+
+The dog
+h-klb(the dog): masc-im-noun-lex->noun-sg-no-suffix->def-h-noun->bare-np
+
+A hungry dog
+klb(a dog): masc-im-noun-lex->noun-sg-no-suffix->indef-noun
+ryb(hungry): non-demonstrative-adj-lex->sg-m-adjective-inflection->indef-adj
+klb ryb (a hungry dog): hebrew-head-adj-int->bare-np
+
+This hungry dog (indef)
+klb(a dog): masc-im-noun-lex->noun-sg-no-suffix->indef-noun
+ryb(hungry): non-demonstrative-adj-lex->sg-m-adjective-inflection->indef-adj
+zh (this): proximal-demonstrative-adj-lex->dem-adjective-inflection->indef- adj
+klb ryb (a hungry dog): hebrew-head-adj-int
+klb ryb zh (this hungry dog): hebrew-head-adj-int-> hebrew-head-adj-int >bare-np
+
+This hungry dog (def)
+h-klb(the dog): masc-im-noun-lex->noun-sg-no-suffix->def-h-noun
+h-ryb(the hungry): non-demonstrative-adj-lex->sg-m-adjective-inflection->def-h-adj
+h-zh (the this): proximal-demonstrative-adj-lex->dem-adjective-inflection->def-h-adj
+h-klb h-ryb (the hungry dog): hebrew-head-adj-int
+h-klb h-ryb h-zh (this hungry dog): hebrew-head-adj-int-> hebrew-head-adj-int >bare-np
+
+When I look at the resulting MRSs, only the one with the pronoun shows the + in {h3:pronoun_n(x4:SEMSORT:+:FIRST:SG.FEM).
+
+For all the others there is neither a minus nor a plus.
+
