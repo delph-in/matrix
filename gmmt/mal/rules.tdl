@@ -27,4 +27,12 @@ n1-bottom-coord := n1-bottom-coord-rule .
 
 n1-left-coord := n1-left-coord-rule .
 
+vp1-top-coord := vp1-top-coord-rule .
+
+vp1-bottom-coord := vp1-bottom-coord-rule .
+
+s1-top-coord := s1-top-coord-rule .
+
+s1-bottom-coord := s1-bottom-coord-rule .
+
 ;imp-verb2 := imp-verb2-rule.

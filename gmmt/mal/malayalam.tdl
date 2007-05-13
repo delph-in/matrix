@@ -248,22 +248,6 @@ infl-add-ccont-ltow-rule := inflecting-lex-rule &
                               MC luk ] ],
           INFLECTED - ] ].
 
-;;; Coordination Strategy 1
-
-n1-top-coord-rule := basic-n-top-coord-rule & omni-top-coord-rule &
-  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
-
-n1-mid-coord-rule := basic-n-mid-coord-rule & omni-mid-coord-rule &
-  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
-
-n1-bottom-coord-rule := infl-bottom-coord-rule &
-  [ SYNSEM.LOCAL.COORD-STRAT "1",
-    SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel",
-    DTR.SYNSEM.LOCAL.CAT.HEAD noun ] .
-
-n1-left-coord-rule := infl-left-coord-rule & n-bottom-coord-phrase &
-  [ SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel" ] .
-
 ; We treat question particles as complementizers.
 ; Here is the lexical type for complementizers.
 
@@ -433,3 +417,41 @@ determiner-lex := basic-determiner-lex & basic-zero-arg &
                              COMPS < >,
                              SUBJ < > ] ] ] .
 
+
+;;; COORDINATION
+
+;;; N Coordination Strategy 1
+
+n1-top-coord-rule := basic-n-top-coord-rule & omni-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+n1-mid-coord-rule := basic-n-mid-coord-rule & omni-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+n1-bottom-coord-rule := infl-bottom-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1",
+    SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel",
+    DTR.SYNSEM.LOCAL.CAT.HEAD noun ] .
+
+n1-left-coord-rule := infl-left-coord-rule & n-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel" ] .
+
+;;; VP Coordination Strategy 2
+
+vp1-top-coord-rule := basic-vp-top-coord-rule & apoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "2",
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM inf ] .
+
+vp1-bottom-coord-rule := unary-bottom-coord-rule & vp-bottom-coord-phrase &
+  [ SYNSEM.LOCAL [ COORD-STRAT "2",
+                   COORD-REL.PRED "_and_coord_rel" ] ] .
+
+;;; S Coordination Strategy 2
+
+s1-top-coord-rule := basic-s-top-coord-rule & apoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "2",
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM inf ] .
+
+s1-bottom-coord-rule := unary-bottom-coord-rule & s-bottom-coord-phrase &
+  [ SYNSEM.LOCAL [ COORD-STRAT "2",
+                   COORD-REL.PRED "_and_coord_rel" ] ] .
