@@ -162,12 +162,15 @@ vp1-bottom-coord-rule := conj-first-bottom-coord-rule & vp-bottom-coord-phrase &
 ;;; Coordination Strategy 1
 
 s-coord-phrase :+
-  [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
-                            INV #inv ],
-    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD[ FORM #form,
-                                      INV #inv ],
-    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
-                                       INV #inv ] ].
+  [ SYNSEM.LOCAL [ CAT.HEAD [ FORM #form,
+                              INV #inv ],
+                   CONT.HOOK.INDEX.SF prop-or-ques ],
+    LCOORD-DTR.SYNSEM.LOCAL [ CAT.HEAD[ FORM #form,
+                                        INV #inv ],
+                              CONT.HOOK.INDEX.SF prop-or-ques ],
+    RCOORD-DTR.SYNSEM.LOCAL [ CAT.HEAD [ FORM #form,
+                                         INV #inv ],
+                              CONT.HOOK.INDEX.SF prop-or-ques ] ].
 
 s-bottom-coord-phrase :+
   [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
