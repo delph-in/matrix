@@ -176,4 +176,108 @@ weak-pl-adj-lex-rule.
 3-pl-aux-lex-rule.
 
 ;;; ERB 2007-05-11 Strong adj rules.
+;;; There's actually at least two declensions here.  Just doing
+;;; the one that 'hungry' belongs to.
 
+;;; ERB 2007-05-11 Not modeling the syncretism here, so we're
+;;; going to get extra edges.
+
+; Constant lex rule for this one.
+
+;f-sg-nom-strong :=
+;%suffix (* -)
+;f-sg-nom-strong-adj-lex-rule.
+
+f-sg-acc-strong :=
+%suffix (* -a)
+f-sg-acc-strong-adj-lex-rule.
+
+f-sg-dat-strong :=
+%suffix (* -ri)
+f-sg-dat-strong-adj-lex-rule.
+
+f-sg-gen-strong :=
+%suffix (* -rar)
+f-sg-gen-strong-adj-lex-rule.
+
+f-pl-nom-strong :=
+%suffix (* -ar)
+f-pl-nom-strong-adj-lex-rule.
+
+f-pl-acc-strong :=
+%suffix (* -ar)
+f-pl-acc-strong-adj-lex-rule.
+
+f-pl-dat-strong :=
+%suffix (* -um)
+f-pl-dat-strong-adj-lex-rule.
+
+f-pl-gen-strong :=
+%suffix (* -ra)
+f-pl-gen-strong-adj-lex-rule.
+
+m-sg-nom-strong :=
+%suffix (* -ur)
+m-sg-nom-strong-adj-lex-rule.
+
+m-sg-acc-strong :=
+%suffix (* -an)
+m-sg-acc-strong-adj-lex-rule.
+
+m-sg-dat-strong :=
+%suffix (* -um)
+m-sg-dat-strong-adj-lex-rule.
+
+m-sg-gen-strong :=
+%suffix (* -s)
+m-sg-gen-strong-adj-lex-rule.
+
+m-pl-nom-strong :=
+%suffix (* -ir)
+m-pl-nom-strong-adj-lex-rule.
+
+m-pl-acc-strong :=
+%suffix (* -a)
+m-pl-acc-strong-adj-lex-rule.
+
+m-pl-dat-strong :=
+%suffix (* -um)
+m-pl-dat-strong-adj-lex-rule.
+
+m-pl-gen-strong :=
+%suffix (* -ra)
+m-pl-gen-strong-adj-lex-rule.
+
+n-sg-nom-strong :=
+%suffix (* -t)
+n-sg-nom-strong-adj-lex-rule.
+
+n-sg-acc-strong :=
+%suffix (* -t)
+n-sg-acc-strong-adj-lex-rule.
+
+n-sg-dat-strong :=
+%suffix (* -u)
+n-sg-dat-strong-adj-lex-rule.
+
+n-sg-gen-strong :=
+%suffix (* -s)
+n-sg-gen-strong-adj-lex-rule.
+
+;;; These two are constant lex rules.
+
+;n-pl-nom-strong :=
+;%suffix (* -)
+;n-pl-nom-strong-adj-lex-rule.
+
+;n-pl-acc-strong :=
+;%suffix (* -)
+;n-pl-acc-strong-adj-lex-rule.
+
+n-pl-dat-strong :=
+%suffix (* -um)
+n-pl-dat-strong-adj-lex-rule.
+
+n-pl-gen-strong :=
+%suffix (* -ra)
+n-pl-gen-strong-adj-lex-rule.

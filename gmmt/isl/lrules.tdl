@@ -27,3 +27,9 @@ n-nom-noun := n-sg-nom-lex-rule.
 n-acc-noun := n-sg-acc-lex-rule.
 
 1-sg-aux := 1-sg-aux-lex-rule.
+
+; ERB 2007-05-11
+
+f-sg-nom-strong-adj := f-sg-nom-strong-adj-lex-rule.
+n-pl-nom-strong-adj := n-pl-nom-strong-adj-lex-rule.
+n-pl-acc-strong-adj := n-pl-acc-strong-adj-lex-rule.

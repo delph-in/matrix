@@ -816,35 +816,155 @@ weak-n-sg-adj-lex-rule := weak-n-lex-rule & weak-sg-adj-lex-rule.
 ; There's actually two inflectional classes here.  For now, I'm
 ; just implementing the class which includes svang- `hungry'.
 
-strong-adj-lex-rule := infl-ltow-rule &
+strong-adj-lex-rule := lexeme-to-word-rule &
   [ DTR adjective-lex,
     SYNSEM.LOCAL.CAT.POSTHEAD + ].
 
 sg-strong-adj-lex-rule := strong-adj-lex-rule &
-  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ] > ].
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ] > ].
 
-nonsg-strong-adj-lex-rule := strong-adj-lex-rule &
-  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM non-sg ] > ].
+pl-strong-adj-lex-rule := strong-adj-lex-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM non-sg ] > ].
 
 f-strong-adj-lex-rule := strong-adj-lex-rule &
-  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.GEND fem ] > ].
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.GEND fem ] > ].
 
 m-strong-adj-lex-rule := strong-adj-lex-rule &
-  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.GEND masc ] > ].
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.GEND masc ] > ].
 
 n-strong-adj-lex-rule := strong-adj-lex-rule &
-  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.GEND neut ] > ].
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.GEND neut ] > ].
 
 nom-strong-adj-lex-rule := strong-adj-lex-rule &
-  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CAT.HEAD.CASE nom ] > ].
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE nom ] > ].
 
 acc-strong-adj-lex-rule := strong-adj-lex-rule &
-  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CAT.HEAD.CASE acc ] > ].
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE acc ] > ].
 
 dat-strong-adj-lex-rule := strong-adj-lex-rule &
-  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CAT.HEAD.CASE dat ] > ].
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE dat ] > ].
 
 gen-strong-adj-lex-rule := strong-adj-lex-rule &
-  [ SYNSEM.LOCAL.CAT.MOD < [ LOCAL.CAT.HEAD.CASE gen ] > ].
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE gen ] > ].
 
 ;; Make cross product, then create instances.
+
+f-sg-nom-strong-adj-lex-rule := f-strong-adj-lex-rule & 
+				sg-strong-adj-lex-rule &
+				nom-strong-adj-lex-rule &
+				const-ltow-rule.
+
+f-sg-acc-strong-adj-lex-rule := f-strong-adj-lex-rule & 
+				sg-strong-adj-lex-rule &
+				acc-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+f-sg-dat-strong-adj-lex-rule := f-strong-adj-lex-rule & 
+				sg-strong-adj-lex-rule &
+				dat-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+f-sg-gen-strong-adj-lex-rule := f-strong-adj-lex-rule & 
+				sg-strong-adj-lex-rule &
+				gen-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+f-pl-nom-strong-adj-lex-rule := f-strong-adj-lex-rule & 
+				pl-strong-adj-lex-rule &
+				nom-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+f-pl-acc-strong-adj-lex-rule := f-strong-adj-lex-rule & 
+				pl-strong-adj-lex-rule &
+				acc-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+f-pl-dat-strong-adj-lex-rule := f-strong-adj-lex-rule & 
+				pl-strong-adj-lex-rule &
+				dat-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+f-pl-gen-strong-adj-lex-rule := f-strong-adj-lex-rule & 
+				pl-strong-adj-lex-rule &
+				gen-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+m-sg-nom-strong-adj-lex-rule := m-strong-adj-lex-rule & 
+				sg-strong-adj-lex-rule &
+				nom-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+m-sg-acc-strong-adj-lex-rule := m-strong-adj-lex-rule & 
+				sg-strong-adj-lex-rule &
+				acc-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+m-sg-dat-strong-adj-lex-rule := m-strong-adj-lex-rule & 
+				sg-strong-adj-lex-rule &
+				dat-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+m-sg-gen-strong-adj-lex-rule := m-strong-adj-lex-rule & 
+				sg-strong-adj-lex-rule &
+				gen-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+m-pl-nom-strong-adj-lex-rule := m-strong-adj-lex-rule & 
+				pl-strong-adj-lex-rule &
+				nom-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+m-pl-acc-strong-adj-lex-rule := m-strong-adj-lex-rule & 
+				pl-strong-adj-lex-rule &
+				acc-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+m-pl-dat-strong-adj-lex-rule := m-strong-adj-lex-rule & 
+				pl-strong-adj-lex-rule &
+				dat-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+m-pl-gen-strong-adj-lex-rule := m-strong-adj-lex-rule & 
+				pl-strong-adj-lex-rule &
+				gen-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+n-sg-nom-strong-adj-lex-rule := n-strong-adj-lex-rule & 
+				sg-strong-adj-lex-rule &
+				nom-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+n-sg-acc-strong-adj-lex-rule := n-strong-adj-lex-rule & 
+				sg-strong-adj-lex-rule &
+				acc-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+n-sg-dat-strong-adj-lex-rule := n-strong-adj-lex-rule & 
+				sg-strong-adj-lex-rule &
+				dat-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+n-sg-gen-strong-adj-lex-rule := n-strong-adj-lex-rule & 
+				sg-strong-adj-lex-rule &
+				gen-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+n-pl-nom-strong-adj-lex-rule := n-strong-adj-lex-rule & 
+				pl-strong-adj-lex-rule &
+				nom-strong-adj-lex-rule &
+				const-ltow-rule.
+
+n-pl-acc-strong-adj-lex-rule := n-strong-adj-lex-rule & 
+				pl-strong-adj-lex-rule &
+				acc-strong-adj-lex-rule &
+				const-ltow-rule.
+
+n-pl-dat-strong-adj-lex-rule := n-strong-adj-lex-rule & 
+				pl-strong-adj-lex-rule &
+				dat-strong-adj-lex-rule &
+				infl-ltow-rule.
+
+n-pl-gen-strong-adj-lex-rule := n-strong-adj-lex-rule & 
+				pl-strong-adj-lex-rule &
+				gen-strong-adj-lex-rule &
+				infl-ltow-rule.
