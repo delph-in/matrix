@@ -153,8 +153,11 @@ adj-neut-sg-lex-rule := adj-agr-lex-rule &
 
 ; The input is a verb lexical item.
 ; lexeme-to-word requires DTR be INFLECTED -, and output is INFLECTED +
+
+
+;;; ERB 2007-05-12 Changed FORM here to fin, so that it contrasts with inf.
 verb-tense-lex-rule := lexeme-to-word-rule & 
-    [ SYNSEM.LOCAL.CAT.HEAD.FORM inf,
+    [ SYNSEM.LOCAL.CAT.HEAD.FORM fin,
       DTR verb-lex ].
 
 past-verb-rule := verb-tense-lex-rule &
@@ -167,25 +170,40 @@ futr-verb-rule := verb-tense-lex-rule &
 		        infl-ltow-rule .
 
 ; Inflection for question marker -oo or -ee suffix
+; ERB 2007-05-12 Don't know why [FORM inf] was here.  Removed.
 quest-verb-rule := infl-add-only-ltol-rule &
                    [DTR verb-lex, INFLECTED +] &
                    [SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,
-                                   CAT [ MC -, HEAD.FORM inf ] ] ] .
+                                   CAT [ MC - ] ] ] .
 
 ; Inflection for NOML marker, to indicate an embedded clause
 ; These must already be inflected.
 ; They also need to be MC na since they're going to be embedded.
-nomnl1-verb-rule := infl-add-only-ltol-rule &
-                   [SYNSEM.LOCAL.CAT [ MC na, HEAD.FORM inf ] ] & 
-                   [DTR past-verb-rule, INFLECTED + ] .
+; ERB 2007-05-12 These ones are legitimately FORM inf, I think.
+; ERB 2007-05-12 But: They attach to the outside of the tense rules,
+; so they have to change the form value, rather than copy it up.
+; Changing type from infl-add-only-ltol-rule to infl-head-change-only-ltol-rule.; While I'm at it, collapsing these three into one rule.
 
-nomnl2-verb-rule := infl-add-only-ltol-rule &
-                   [SYNSEM.LOCAL.CAT [ MC na, HEAD.FORM inf ] ] & 
-                   [DTR pres-verb-rule, INFELCTED + ] .
+; nomnl1-verb-rule := infl-add-only-ltol-rule &
+;                    [SYNSEM.LOCAL.CAT [ MC na, HEAD.FORM inf ] ] & 
+;                    [DTR past-verb-rule, INFLECTED + ] .
 
-nomnl3-verb-rule := infl-add-only-ltol-rule &
-                   [SYNSEM.LOCAL.CAT [ MC na, HEAD.FORM inf ] ] & 
-                   [DTR futr-verb-rule, INFLECTED + ] .
+; nomnl2-verb-rule := infl-add-only-ltol-rule &
+;                    [SYNSEM.LOCAL.CAT [ MC na, HEAD.FORM inf ] ] & 
+;                    [DTR pres-verb-rule, INFELCTED + ] .
+
+; nomnl3-verb-rule := infl-add-only-ltol-rule &
+;                    [SYNSEM.LOCAL.CAT [ MC na, HEAD.FORM inf ] ] & 
+;                    [DTR futr-verb-rule, INFLECTED + ] .
+
+nomnl-verb-rule := infl-head-change-only-ltol-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD verb &
+			  [ FORM inf,
+			    MOD #mod ],
+    DTR verb-tense-lex-rule &
+	[ SYNSEM.LOCAL.CAT.HEAD.MOD #mod ],
+    INFLECTED + ].
+
 
 ; Lexical rule to mark the verb as an imperative form
 ; The first is the infinitive form of the verb, so input is the uninflected
@@ -202,6 +220,7 @@ imp-verb-rule := infl-ltol-rule &
 ; This lexical rule adds the neg_r_rel to the verb's
 ; 	RELS list.  It is instantiated by a spelling-changing
 ; 	rule as specified in irules.tdl.
+; ERB 2007-05-12 Don't know why [FORM inf] was here.  Removed.
 
 neg-infl-lex-rule := cont-change-only-lex-rule & inflecting-lex-rule &
   [ C-CONT [ HOOK [ XARG #xarg,
@@ -214,8 +233,7 @@ neg-infl-lex-rule := cont-change-only-lex-rule & inflecting-lex-rule &
              HCONS <! qeq &
                       [ HARG #harg,
                         LARG #larg ] !> ],
-    SYNSEM [ LKEYS #lkeys,
-             LOCAL.CAT.HEAD.FORM inf ],
+    SYNSEM [ LKEYS #lkeys ],
     DTR lex-item &
         [ SYNSEM [ LKEYS #lkeys,
                    LOCAL [ CONT.HOOK [ INDEX #ind,
@@ -224,6 +242,9 @@ neg-infl-lex-rule := cont-change-only-lex-rule & inflecting-lex-rule &
                            CAT.HEAD verb ] ] ] ] .
 
 ; Auxiliary Verb
+; ERB 2007-05-12 Don't know why [FORM inf] was here.  Removed.
+; Likewise for [MC -].
+
 infl-add-ccont-ltow-rule := inflecting-lex-rule &
                             same-non-local-lex-rule &
                             same-cat-lex-rule &
@@ -241,7 +262,6 @@ infl-add-ccont-ltow-rule := inflecting-lex-rule &
              HCONS <! qeq & 
                       [ HARG #harg,
                         LARG #larg ] !> ],
-    SYNSEM.LOCAL.CAT [ MC -, HEAD.FORM inf ] ,
     DTR [ SYNSEM.LOCAL [CONT.HOOK [XARG #xarg,
                                    LTOP #larg ],
                         CAT [ HEAD verb,
@@ -346,12 +366,12 @@ ditransitive-verb-lex := verb-lex & ditransitive-lex-item &
                           HEAD noun & [CASE nom] ] ] > ] .
 
 ;;; Clause embedding verbs
+; ERB 2007-05-12 Removed [MC na] on complement.
 clause-embed-verb-lex := verb-lex & clausal-second-arg-trans-lex-item & 
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
     ARG-ST < [ LOCAL.CAT.HEAD noun & [CASE nom] ], #comps &
                                       [ LOCAL [ CAT [ VAL [ SPR < >,
                                                           COMPS < > ],
-                                                      MC na,
                                                       HEAD verb],
                                                 CONT.HOOK.INDEX.SF prop-or-ques ] ] > ] .
 
@@ -362,12 +382,15 @@ ques-embed-verb-lex := clause-embed-verb-lex &
                                                           COMPS < > ],
                                                     HEAD verb] ] > ] .
 
+; ERB 2007-05-12 To get the -atx forms here, require [FORM inf] on 
+; the complement.
 prop-embed-verb-lex := clause-embed-verb-lex &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps & [ LOCAL.CONT.HOOK.INDEX.SF prop ] >,
     ARG-ST < [ LOCAL.CAT.HEAD noun & [CASE nom] ], #comps &
                                       [ LOCAL.CAT [ VAL [ SPR < >,
                                                           COMPS < > ],
-                                                    HEAD verb] ] > ] .
+                                                    HEAD verb & 
+							[ FORM inf ] ] ] > ] .
 
 ;;; ADJECTIVES
 

@@ -69,17 +69,24 @@ quest-verb :=
 %suffix (* oo) (!ca !coo) (!ce !coo) (!ci !coo) (!co !coo) (!cu !coo) (!i!l!la !i!l!lee) (!a!l!la !a!l!lee)
 quest-verb-rule.
 
-nomnl1-verb :=
-%suffix (* atx) (!c!cu !c!catx)
-nomnl1-verb-rule.
+; ERB 2007-05-12 There's no need for these three to be distinct.
 
-nomnl2-verb :=
-%suffix (* atx) (!c!cu !c!catx)
-nomnl2-verb-rule.
+; nomnl1-verb :=
+; %suffix (* atx) (!c!cu !c!catx)
+; nomnl1-verb-rule.
 
-nomnl3-verb :=
+; nomnl2-verb :=
+; %suffix (* atx) (!c!cu !c!catx)
+; nomnl2-verb-rule.
+
+; nomnl3-verb :=
+; %suffix (* atx) (!c!cu !c!catx)
+; nomnl3-verb-rule.
+
+
+nomnl-verb :=
 %suffix (* atx) (!c!cu !c!catx)
-nomnl3-verb-rule.
+nomnl-verb-rule.
 
 ; not including imp-pol since it contributes to overgeneration.
 ; there's a regular imperative form which is enough for now.
