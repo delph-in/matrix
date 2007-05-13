@@ -33,7 +33,8 @@ head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
 head-opt-comp-phrase := basic-head-opt-comp-phrase.
 
 subj-head-phrase := decl-head-subj-phrase & head-final &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ] .
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.FORM fin,
+                                VAL.COMPS < > ] ] .
 
 ; Rules for bulding NPs.  Note that the Matrix uses SPR for
 ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
@@ -109,8 +110,7 @@ neg-infl-lex-rule := cont-change-only-lex-rule & inflecting-lex-rule &
                    LOCAL [ CONT.HOOK [ XARG #xarg,
                                        INDEX #ind,
                                        LTOP #larg ],
-                           CAT.HEAD verb &
-                                    [ AUX + ] ] ] ] ] .
+                           CAT.HEAD verb & [ AUX + ] ] ] ] ] .
 
 ;;; Coordination Strategy 1
 
@@ -136,6 +136,20 @@ np1-bottom-coord-rule := conj-first-bottom-coord-rule & np-bottom-coord-phrase &
 
 ;;; Coordination Strategy 1
 
+vp-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
+                            INV #inv ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD[ FORM #form,
+                                      INV #inv ],
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
+                                       INV #inv ] ].
+
+vp-bottom-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
+                            INV #inv ],
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
+                                        INV #inv ] ].
+
 vp1-top-coord-rule := basic-vp-top-coord-rule & monopoly-top-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
 
@@ -146,6 +160,20 @@ vp1-bottom-coord-rule := conj-first-bottom-coord-rule & vp-bottom-coord-phrase &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
 
 ;;; Coordination Strategy 1
+
+s-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
+                            INV #inv ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD[ FORM #form,
+                                      INV #inv ],
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
+                                       INV #inv ] ].
+
+s-bottom-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
+                            INV #inv ],
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
+                                        INV #inv ] ].
 
 s1-top-coord-rule := basic-s-top-coord-rule & monopoly-top-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
@@ -181,14 +209,18 @@ verb-lex := basic-verb-lex &
 subj-v-inv-lrule := cat-change-only-lex-rule & same-hc-light-lex-rule & same-posthead-lex-rule & const-ltol-rule &
   [ SYNSEM [ LOCAL.CAT [ HEAD verb &
                               [ INV +,
-                                AUX + ],
+                                AUX +,
+                                FORM fin ],
                          VAL [ COMPS < #subj . #comps >,
                                SUBJ < >,
                                SPR #spr,
                                SPEC #spec ],
                          MC na ],
              LKEYS #lkeys ],
-    DTR.SYNSEM [ LOCAL.CAT [ HEAD verb,
+    DTR.SYNSEM [ LOCAL.CAT [ HEAD verb &
+                                  [ INV -,
+                                    AUX +,
+                                    FORM fin ],
                              VAL [ SUBJ < #subj >,
                                    COMPS #comps,
                                    SPR #spr,
@@ -198,7 +230,7 @@ subj-v-inv-lrule := cat-change-only-lex-rule & same-hc-light-lex-rule & same-pos
 ; This rule takes [MC na] inverted phrases and licnesesthem as main
 ; clauses with question semantics.
 
-int-cl := interrogative-clause & head-only &
+int-clause := interrogative-clause & head-only &
   [ SYNSEM.LOCAL.CAT [ HEAD.INV +,
                        VAL #val,
                        MC + ],
@@ -207,6 +239,8 @@ int-cl := interrogative-clause & head-only &
                                     [ SUBJ < >,
                                       COMPS < > ] ],
     C-CONT.HOOK.INDEX.SF ques ] .
+
+imp-clause := imp-head-opt-subj-phrase.
 
 ;;; Lexical types
 
@@ -249,21 +283,18 @@ fin := form .
 inf := form .
 
 intransitive-verb-lex := verb-lex & intransitive-lex-item &
-  [ INFLECTED -,
-    SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
     ARG-ST < [ LOCAL.CAT.HEAD noun ] > ] .
 
 transitive-verb-lex := verb-lex & transitive-lex-item &
-  [ INFLECTED -,
-    SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
     ARG-ST < [ LOCAL.CAT.HEAD noun ],
              #comps & [ LOCAL.CAT [ VAL [ SPR < >,
                                           COMPS < > ],
                                     HEAD noun ] ] > ] .
 
 clausal-verb-lex := finite-verb-lex & clausal-second-arg-trans-lex-item &
-  [ INFLECTED -,
-    SYNSEM.LOCAL.CAT.VAL.COMPS < #comp >,
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp >,
     ARG-ST < [ LOCAL.CAT.HEAD noun ],
              #comp & [ LOCAL.CAT [ HEAD comp,
                                    VAL.COMPS < > ] ] > ] .
@@ -288,10 +319,12 @@ non3sg-verb-lex-rule := const-ltow-rule &
 ;;; deriving the finite and non-finite forms from verb stems.
 
 finite-verb-lex := verb-lex &
-  [ SYNSEM.LOCAL.CAT.HEAD.FORM fin ] .
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CAT.HEAD.FORM fin ] .
 
 non-finite-verb-lex := verb-lex &
-  [ SYNSEM.LOCAL.CAT.HEAD.FORM inf ] .
+  [ INFLECTED +,
+    SYNSEM.LOCAL.CAT.HEAD.FORM inf ] .
 
 basic-finite-trans-verb-lex := finite-verb-lex & transitive-verb-lex .
 
@@ -315,7 +348,9 @@ subj-raise-aux := trans-first-arg-raising-lex-item &
                              SPR < >,
                              SPEC < > ],
                        HEAD verb &
-                            [ AUX + ] ],
+                            [ AUX +,
+                              FORM fin,
+                              INV - ] ],
     ARG-ST < #subj &
              [ LOCAL.CAT [ VAL [ SPR < >,
                                  COMPS < > ],
@@ -356,12 +391,19 @@ can-aux := basic-verb-lex & trans-first-arg-raising-lex-item-1 &
 subj-raise-aux-no-sem := subj-raise-aux & trans-first-arg-raising-lex-item-2 &
   [ ARG-ST < [  ], [ LOCAL.CAT.HEAD.AUX - ] > ] .
 
+do-aux := subj-raise-aux-no-sem.
+
 ;;; Complementizers
 
 comp-lex := raise-sem-lex-item & basic-one-arg &
-  [ SYNSEM.LOCAL.CAT [ HEAD comp,
-                       VAL.COMPS < #comp > ],
-    ARG-ST < #comp > ].
+  [ SYNSEM.LOCAL.CAT [ HEAD comp & [ MOD < > ],
+                       VAL [ SPR < >,
+                             SUBJ < >,
+                             COMPS < #comp > ] ],
+    ARG-ST < #comp &
+             [ LOCAL.CAT [ HEAD verb & [ FORM fin ],
+                           VAL [ SUBJ < >,
+                                 COMPS < > ] ] ] > ].
 
 decl-comp-lex := comp-lex &
   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX.SF prop ] > ].
@@ -395,6 +437,9 @@ adverb-lex := basic-int-adverb-lex &
                        VAL [ SPR < >,
                              COMPS < >,
                              SUBJ < > ] ] ].
+
+head-adj-int-phrase :+
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].
 
 ;;; Adjectives
 

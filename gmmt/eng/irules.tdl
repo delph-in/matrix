@@ -1,7 +1,8 @@
 %(letter-set (!s abcedfghijklmnopqrtuvwxyz))
+%(letter-set (!n abcedfghijklmopqrstuvwxyz))
 
 neg-infl-lr :=
-%suffix (* nt)
+%suffix (n nt) (!n !nnt)
 neg-infl-lex-rule.
 
 pl-noun :=

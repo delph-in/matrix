@@ -15,6 +15,8 @@ bare-np := bare-np-phrase .
 
 adj-head-int := adj-head-int-phrase .
 
+head-adj-int := head-adj-int-phrase .
+
 head-adj-scop := head-adj-scop-phrase .
 
 adj-head-scop := adj-head-scop-phrase .
@@ -31,8 +33,7 @@ np1-mid-coord := np1-mid-coord-rule .
 
 np1-bottom-coord := np1-bottom-coord-rule .
 
-;FIX: Had to comment this out to allow generation
-;vp1-top-coord := vp1-top-coord-rule .
+vp1-top-coord := vp1-top-coord-rule .
 
 vp1-mid-coord := vp1-mid-coord-rule .
 
@@ -44,5 +45,6 @@ s1-mid-coord := s1-mid-coord-rule .
 
 s1-bottom-coord := s1-bottom-coord-rule .
 
-int := int-cl .
+int := int-clause .
 
+imp := imp-clause .

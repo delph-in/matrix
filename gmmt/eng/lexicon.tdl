@@ -106,7 +106,7 @@ ask := int-clausal-verb-lex &
 
 ;;; Auxiliaries
 
-do := subj-raise-aux-no-sem &
+do := do-aux &
   [ STEM < "do" > ] .
 
 can := can-aux &
@@ -127,13 +127,20 @@ the := def-det-lex &
   [ STEM < "the" >,
     SYNSEM.LKEYS.KEYREL.PRED "_exist_q_rel" ] .
 
-a := indef-def-lex &
+a := indef-det-lex &
   [ STEM < "a" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_exist_q_rel" ] .
+    SYNSEM [ LKEYS.KEYREL.PRED "_exist_q_rel",
+             LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM sg ] > ] ] .
+
+this := demon-det-lex &
+  [ STEM < "this" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_exist_q_rel",
+             LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM sg ] > ] ] .
 
 these := demon-det-lex &
   [ STEM < "these" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_exist_q_rel" ] .
+    SYNSEM [ LKEYS.KEYREL.PRED "_exist_q_rel",
+             LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM pl ] > ] ] .
 
 ; FIX What's this?  Why would we have a word spelled "sel-adv"?
 sel-adv := neg-adv-lex &
