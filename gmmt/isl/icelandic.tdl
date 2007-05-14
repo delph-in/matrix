@@ -13,7 +13,12 @@ subj-head-phrase := decl-head-subj-phrase & head-final &
 ; Rules for bulding NPs.  Note that the Matrix uses SPR for
 ;                the specifier of nouns and SUBJ for the subject (specifier) of verbs.
 
-head-spec-phrase := basic-head-spec-phrase & head-final .
+; ERB 2007-05-14 I'm abusing the feature OPT to have [OPT +]
+; now mean "obligatorily dropped".  To put this into effect,
+; this rule must check for compatibility with [OPT -].
+
+head-spec-phrase := basic-head-spec-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].
 
 ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
 ;              introduced to match the semantic effect of bare NPs in your language.
@@ -29,14 +34,19 @@ head-spec-phrase := basic-head-spec-phrase & head-final .
 ; attach after prehead adjectives.  Consider enforcing posthead attachment
 ; first in this language.
 
+; ERB 2007-05-14 I had the facts wrong. MODIFIED doesn't seem to be 
+; useful.  Rather, it should be enough for the def-bare-np-phrase
+; to check for compatibility with [DEF +] and the indef-bare-np-phrase
+; to insist on COG-ST type-id.  These two constraints should interact
+; with the constraints on a) the definite and indefinite lexical rules
+; and b) the adjectives to get the right set of facts.
 
 bare-np-phrase := basic-bare-np-phrase &
   [ C-CONT.RELS <! [ PRED "_exist_q_rel" ] !>,
     HEAD-DTR.SYNSEM.MODIFIED notmod-or-rmod ] .
 
 indef-bare-np-phrase := basic-bare-np-phrase &
-  [ HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.DEF -,
-			    CONT.HOOK.INDEX.COG-ST type-id ]].
+  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.COG-ST type-id ].
 
 def-bare-np-phrase := basic-bare-np-phrase &
   [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.DEF + ].
@@ -372,8 +382,12 @@ verb :+ [MOD <>].
 ;;; but really that should depend on whether they get "strong" or
 ;;; "weak" inflection.
 
+;;; ERB 2007-05-14 On further investigation, I think Katie was right
+;;; about this.  Lexically prehead it is. 
+
 adjective-lex := basic-int-mod-adj-lex &
-  [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD noun,
+  [ SYNSEM [ LOCAL [ CAT [ POSTHEAD -,
+			   HEAD.MOD < [ LOCAL.CAT [ HEAD noun,
 						    VAL.SPR cons ]]>,
 			   VAL [ SPR < >,
 				 SUBJ < >,
@@ -403,12 +417,80 @@ adjective-lex := basic-int-mod-adj-lex &
 ;;; noun.  From this, it sounds like we need to disallow the weak
 ;;; forms from indefinite bare np phrases.
 
+;;; ERB 2007-05-14 The strong/weak adjective facts are now handled
+;;; by having the strong adjectives say the determiner must be
+;;; dropped, and by having the weak adjectives say that the 
+;;; interpretation must not be indefinite (i.e., [COG-ST uniq+act+fam]).
+;;; No longer need to say anything about SPEC here.  On the other
+;;; hand, have this type contribute the exist_q_rel and the COG-ST
+;;; value.
+
 determiner-lex := basic-determiner-lex & basic-zero-arg &
-  [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
-                           COMPS < >,
-			   SPEC <  [ LOCAL.CAT.HEAD.DEF -,
-				     MODIFIED notmod-or-rmod ] >,
-                           SUBJ < > ] ] .
+  [ SYNSEM [ LOCAL.CAT.VAL [ SPR < >,
+			     COMPS < >,
+			     SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act ] >,
+			     SUBJ < > ],
+	     LKEYS.KEYREL.PRED "exist_q_rel" ]].
+
+sg-det-lex := determiner-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ] > ].
+
+pl-det-lex := determiner-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM non-sg ] > ].
+
+m+n-det-lex := determiner-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.GEND masc+neut ] > ].
+
+m-det-lex := determiner-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.GEND masc ] > ].
+
+f-det-lex := determiner-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.GEND fem ] > ].
+
+n-det-lex := determiner-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.GEND neut ] > ].
+
+nom+acc-det-lex := determiner-lex & 
+  [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.CASE nom+acc ] > ].
+
+nom-det-lex := nom+acc-det-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.CASE nom ] > ].
+
+acc-det-lex := nom+acc-det-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.CASE acc ] > ].
+
+dat-det-lex := determiner-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.CASE dat ] > ].
+
+gen-det-lex := determiner-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.CASE gen ] > ].
+
+;;; ERB 2007-05-11 Cross-classified types for instances.  Note
+;;; that there is some syncretism, so we're not getting the full
+;;; cross-classification.
+
+sg-m-nom+acc-det-lex := sg-det-lex & m-det-lex & nom+acc-det-lex.
+sg-m-dat-det-lex := sg-det-lex & m-det-lex & dat-det-lex.
+sg-m+n-gen-det-lex := sg-det-lex & m+n-det-lex & gen-det-lex.
+
+sg-f-nom-det-lex := sg-det-lex & f-det-lex & nom-det-lex.
+sg-f-acc-det-lex := sg-det-lex & f-det-lex & nom-det-lex.
+sg-f-dat-det-lex := sg-det-lex & f-det-lex & dat-det-lex.
+sg-f-gen-det-lex := sg-det-lex & f-det-lex & gen-det-lex.
+
+sg-n-nom+acc-det-lex := sg-det-lex & n-det-lex & nom+acc-det-lex.
+sg-n-dat-det-lex := sg-det-lex & n-det-lex & dat-det-lex.
+
+pl-m-nom-det-lex := pl-det-lex & m-det-lex & nom-det-lex.
+pl-m-acc-det-lex := pl-det-lex & m-det-lex & acc-det-lex.
+
+pl-f-nom+acc-det-lex := pl-det-lex & f-det-lex & nom+acc-det-lex.
+
+pl-n-nom+acc-det-lex := pl-det-lex & n-det-lex & nom+acc-det-lex.
+
+pl-dat-det-lex := pl-det-lex & dat-det-lex.
+pl-gen-det-lex := pl-det-lex & gen-det-lex.
+
 
 ;;; ERB 2007-05-11 Adding demonstrative determiners for GMMT.
 ;;; Or one demonstrative determiner, anyway.
@@ -430,6 +512,8 @@ LKEYS [ KEYREL quant-relation &
 
 
 
+
+
 png :+ [ PER person,
 	 NUM number,
 	 GEND gender ].
@@ -445,14 +529,16 @@ non-sg := number.
 pl := non-sg.
 
 gender := avm.
-masc := gender.
+masc+neut := gender.
+masc := masc+neut.
 fem := gender.
-neut: = gender.
+neut: = masc+neut.
 
 case := *top*.
-nom := case.
 notnom := case.
-acc := notnom.
+nom+acc := case.
+nom := nom+acc.
+acc := notnom & nom+acc.
 dat := notnom.
 gen := notnom.
 
@@ -465,8 +551,15 @@ past := tense.
 ; ERB 2007-05-11 Add [ DEF + ] here to track whether these
 ; rules have applied.
 
+; ERB 2007-05-14 Actually don't need [ DEF + ] here, just
+; contrasting [ DEF - ] on the indef rule.  Do need to say
+; that the SPR is now obligatory.  (This could perhaps be done
+; with DEF + instead, making the head-spec rule check for [ DEF - ],
+; but that might get in the way when we want to use the head-spec
+; rule for other constructions.
+
 det-lex-rule := infl-ltow-rule &
- [ SYNSEM.LOCAL [ CAT.HEAD.DEF +,
+ [ SYNSEM.LOCAL [ CAT.VAL.SPR < [ OPT + ] >,
 		  CONT.HOOK.INDEX.COG-ST uniq+fam+act ] ].
 
 nom-sg-det-lex-rule := det-lex-rule &
@@ -771,8 +864,16 @@ adj-lex-rule := infl-ltow-rule &
 
 ;;; ERB 2007-05-11 Moving posthead constraint here.
 
+;;; ERB 2007-05-14 In fact, all adjectives (strong or weak) are
+;;; probably prehead (according to the judgments I got for *one*
+;;; adjective from Gunnar, anyway).  Moving that back to adjective-lex.
+;;; Meanwhile, adding constraints to require weak adjectives to combine
+;;; with definites only.  Definiteness can be expressed by either
+;;; an independent determiner (definite article or demonstrative) or
+;;; by an inflectional affix.
+
 weak-adj-lex-rule := adj-lex-rule &
-  [ SYNSEM.LOCAL.CAT.POSTHEAD - ].
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act ] > ].
 
 weak-pl-adj-lex-rule := weak-adj-lex-rule &
   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM non-sg ] ] > ].
@@ -816,9 +917,17 @@ weak-n-sg-adj-lex-rule := weak-n-lex-rule & weak-sg-adj-lex-rule.
 ; There's actually two inflectional classes here.  For now, I'm
 ; just implementing the class which includes svang- `hungry'.
 
+; ERB 2007-05-14 According to Gunnar O. Svang- at least is prehead
+; whether it is strong or weak.  In addition, strong adjectives can
+; co-occur with nouns inflected for definiteness (with an interesting
+; contrast in meaning which I'm not modeling), but not with overt
+; determiners.  Accordingly, making adjective-lex once again [
+; POSTHEAD - ] and making MOD's SPR be obligatorily "dropped" here
+; ([OPT +], in the way that I'm abusing that feature).
+
 strong-adj-lex-rule := lexeme-to-word-rule &
   [ DTR adjective-lex,
-    SYNSEM.LOCAL.CAT.POSTHEAD + ].
+    SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL.SPR < [ OPT + ] > ] > ].
 
 sg-strong-adj-lex-rule := strong-adj-lex-rule &
   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ] > ].

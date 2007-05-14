@@ -372,9 +372,57 @@ svang := adjective-lex &
 
 ;;; Determiners
 
-hinn := determiner-lex &
-  [ STEM < "hinn" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_def_q_rel" ] .
+;;; ERB 2007-05-14 Adding paradigm for definite determiners.
+
+;hinn := determiner-lex &
+;  [ STEM < "hinn" >,
+;    SYNSEM.LKEYS.KEYREL.PRED "_def_q_rel" ] .
+
+sg-m-nom+acc-det : = sg-m-nom+acc-det-lex &
+   [ STEM < "hinn" > ].
+
+sg-m-dat-det := sg-m-dat-det-lex &
+  [ STEM < "hinum" > ].
+
+sg-m+n-gen := sg-m+n-gen-det-lex &
+  [ STEM < "hins" > ].
+
+sg-f-nom-det := sg-f-nom-det-lex &
+  [ STEM < "hin" > ]. 
+
+sg-f-acc-det := sg-f-acc-det-lex &
+  [ STEM < "hina" > ]. 
+
+sg-f-dat-det := sg-f-dat-det-lex &
+  [ STEM < "hinni" > ]. 
+
+sg-f-gen-det := sg-f-gen-det-lex &
+  [ STEM < "hinnar" > ]. 
+
+sg-n-nom+acc-det := sg-n-nom+acc-det-lex &
+  [ STEM < "hið" > ]. 
+
+sg-n-dat-det := sg-n-dat-det-lex &
+  [ STEM < "hinu" > ]. 
+
+pl-m-nom-det := pl-m-nom-det-lex &
+  [ STEM < "hinir" > ]. 
+
+pl-m-acc-det := pl-m-acc-det-lex &
+  [ STEM < "hina" > ]. 
+
+pl-f-nom+acc-det := pl-f-nom+acc-det-lex &
+  [ STEM < "hinar" > ]. 
+
+pl-n-nom+acc-det := pl-n-nom+acc-det-lex &
+  [ STEM < "hin" > ]. 
+
+pl-dat-det := pl-dat-det-lex &
+  [ STEM < "hinum" > ]. 
+
+pl-gen-det := pl-gen-det-lex &
+  [ STEM < "hinna" > ]. 
+
 
 ad := complementizer-lex-item &
   [ STEM < "ad" > ].
