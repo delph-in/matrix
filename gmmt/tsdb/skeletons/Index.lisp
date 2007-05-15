@@ -19,8 +19,8 @@
 ;;; the list lexicographically before output.
 ;;;
 
-((((:path . "isl_gmmt") (:content . "Icelandic GMMT test sentences"))
-(:path . "arb_567") (:content . "Modern Standard Arabic test suite from Ling 567"))
+(((:path . "isl_gmmt") (:content . "Icelandic GMMT test sentences"))
+((:path . "arb_567") (:content . "Modern Standard Arabic test suite from Ling 567"))
 ((:path . "hau_567") (:content . "Hausa test suite from Ling 567"))
 ((:path . "isl_567") (:content . "Icelandic general test suite"))
 ((:path . "mal_567") (:content . "Malayalam test suite from Ling 567"))
