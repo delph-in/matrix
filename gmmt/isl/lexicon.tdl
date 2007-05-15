@@ -13,6 +13,8 @@ og_1 := conj-lex &
 ;;; nom plural, which is the piece that I need.  So
 ;;; I'm putting it in as that stem instead.
 
+;;; ERB 2007-05-14 Made corresponding change to test suite.
+
 ;kott := m-cl3-noun-lex &
 ;  [ STEM < "kott" >,
 ;    SYNSEM.LKEYS.KEYREL.PRED "_cat_n_rel" ] .
@@ -109,109 +111,214 @@ te := neut-noun-lex &
 
 ;;; Pronouns
 
+;;; ERB 2007-05-14 Fixed spelling here, and made corresponding change
+;;; to test suite.  Added the rest of the pronoun paradigm, except
+;;; the second person polite pronouns.
+
 eg := pronoun-lex &
   [ STEM < "ég" >,
     SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
     			   CONT.HOOK.INDEX.PNG [ PER first,
 					     			     NUM sg ] ] ].
+
 					     			     
 mig := pronoun-lex &
   [ STEM < "mig" >,
     SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
     			   CONT.HOOK.INDEX.PNG [ PER first,
 					     			     NUM sg ] ] ].					     			     
+
+mer := pronoun-lex &
+  [ STEM < "mér" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE dat,
+    			   CONT.HOOK.INDEX.PNG [ PER first,
+					     			     NUM sg ] ] ].					     			     
+
+min := pronoun-lex &
+  [ STEM < "mín" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+    			   CONT.HOOK.INDEX.PNG [ PER first,
+					     			     NUM sg ] ] ].					     			     
+
 					     			   
 vid := pronoun-lex &
-  [ STEM < "vid" >,
+  [ STEM < "við" >,
     SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
     			   CONT.HOOK.INDEX.PNG [ PER first,
 					     			     NUM non-sg ] ] ].	
 
 okkur := pronoun-lex &
   [ STEM < "okkur" >,
-    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE notnom,
     			   CONT.HOOK.INDEX.PNG [ PER first,
 					     			     NUM non-sg ] ] ].						     			     
 					     			     					     			   
 tu := pronoun-lex &
-  [ STEM < "tu" >,
+  [ STEM < "þú" >,
     SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
     			   CONT.HOOK.INDEX.PNG [ PER second,
 					     			     NUM sg ] ] ].				     	
 
 tig := pronoun-lex &
-  [ STEM < "tig" >,
+  [ STEM < "þig" >,
     SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
-    			   CONT.HOOK.INDEX.PNG [ PER second,
-					     			     NUM sg ] ] ].					     			     
-					     			     
+		   CONT.HOOK.INDEX.PNG [ PER second,
+					 NUM sg ] ] ].	
+
+ter := pronoun-lex &
+  [ STEM < "þér" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE dat,
+		   CONT.HOOK.INDEX.PNG [ PER second,
+					 NUM sg ] ] ].	
+
+
+tin := pronoun-lex &
+  [ STEM < "þín" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+		   CONT.HOOK.INDEX.PNG [ PER second,
+					 NUM sg ] ] ].	
+
+
+			     			     
 tid := pronoun-lex &
-  [ STEM < "tid" >,
+  [ STEM < "þið" >,
     SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
-    			   CONT.HOOK.INDEX.PNG [ PER second,
-					     			     NUM non-sg ] ] ].
+		   CONT.HOOK.INDEX.PNG [ PER second,
+					 NUM non-sg ] ] ].
 
 ykkur := pronoun-lex &
   [ STEM < "ykkur" >,
-    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
-    			   CONT.HOOK.INDEX.PNG [ PER second,
-					     			     NUM non-sg ] ] ].					     			     
-					     			     					     			   
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc+dat,
+		   CONT.HOOK.INDEX.PNG [ PER second,
+					 NUM non-sg ] ] ]. 
+
+
+ykkar := pronoun-lex &
+  [ STEM < "ykkar" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+		   CONT.HOOK.INDEX.PNG [ PER second,
+					 NUM non-sg ] ] ]. 
+
+
 hann := pronoun-lex &
   [ STEM < "hann" >,
-    SYNSEM.LOCAL [ CAT.HEAD.CASE case,
-    			   CONT.HOOK.INDEX.PNG [ PER third,
-					     			     NUM sg,
-					     			     GEND masc ] ] ].					     			     
-					     			     				     			   
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom+acc,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg,
+					 GEND masc ] ] ].
+
+honum := pronoun-lex &
+  [ STEM < "honum" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE dat,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg,
+					 GEND masc ] ] ].
+
+hans := pronoun-lex &
+  [ STEM < "hans" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg,
+					 GEND masc ] ] ].
+
+
 teir := pronoun-lex &
   [ STEM < "Þeir" >,
     SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
-    			   CONT.HOOK.INDEX.PNG [ PER third,
-					     			     NUM non-sg, 
-					     			     GEND masc ] ] ].
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM non-sg, 
+					 GEND masc ] ] ].
 
 ta := pronoun-lex &
   [ STEM < "þá" >,
     SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
-    			   CONT.HOOK.INDEX.PNG [ PER third,
-					     			     NUM non-sg, 
-					     			     GEND masc ] ] ].					     			     
-					     			     
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM non-sg, 
+					 GEND masc ] ] ].
+
+;; ERB 2007-05-14 No gender contrast in 3rd person dat/gen.
+
+teim := pronoun-lex &
+  [ STEM < "þeim" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE dat,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM non-sg ] ] ].
+
+
+teirra := pronoun-lex &
+  [ STEM < "þeirra" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM non-sg ] ] ].
+
+
+
 hun := pronoun-lex &
-  [ STEM < "hun" >,
+  [ STEM < "hún" >,
     SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
-    			   CONT.HOOK.INDEX.PNG [ PER third,
-					     			     NUM sg, 
-					     			     GEND fem ] ] ].
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg, 
+					 GEND fem ] ] ].
 	
 hana := pronoun-lex &
   [ STEM < "hana" >,
     SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
-    			   CONT.HOOK.INDEX.PNG [ PER third,
-					     			     NUM sg, 
-					     			     GEND fem ] ] ].					     			     
-					     			     
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg, 
+					 GEND fem ] ] ].	
+
+
+henni := pronoun-lex &
+  [ STEM < "henni" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE dat,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg, 
+					 GEND fem ] ] ].	
+
+hennar := pronoun-lex &
+  [ STEM < "hennar" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg, 
+					 GEND fem ] ] ].	
+
+
 taer := pronoun-lex &
-  [ STEM < "taer" >,
-    SYNSEM.LOCAL [ CAT.HEAD.CASE case,
-    			   CONT.HOOK.INDEX.PNG [ PER third,
-					     			     NUM non-sg, 
-					     			     GEND fem ] ] ].					     			     
-					     			     					     			   					     			   				     			   
+  [ STEM < "þær" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom+acc,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM non-sg, 
+					 GEND fem ] ] ].
+
 tad := pronoun-lex &
-  [ STEM < "tad" >,
-    SYNSEM.LOCAL [ CAT.HEAD.CASE case,
-    			   CONT.HOOK.INDEX.PNG [ PER third,
-					     			     NUM sg, 
-					     			     GEND neut ] ] ].					     			   
-					     			   				     			   		     	
+  [ STEM < "það" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom+acc,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg, 
+					 GEND neut ] ] ].
+
+
+tvi := pronoun-lex &
+  [ STEM < "því" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE dat,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg, 
+					 GEND neut ] ] ].
+
+tess := pronoun-lex &
+  [ STEM < "þess" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg, 
+					 GEND neut ] ] ].
+
+
 tau := pronoun-lex &
-  [ STEM < "tau" >,
-    SYNSEM.LOCAL [ CAT.HEAD.CASE case,
-    			   CONT.HOOK.INDEX.PNG [ PER third,
-					     	 NUM non-sg, 
-					     	 GEND neut ] ] ].	
+  [ STEM < "þau" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom+acc,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM non-sg, 
+					 GEND neut ] ] ].	
 			     			   		   
 ;;; Verbs
 
@@ -256,7 +363,7 @@ elska := transitive-verb-lex &
     SYNSEM.LKEYS.KEYREL.PRED "_love_v_rel" ] .
 
 borda := opt-trans-verb-lex &
-  [ STEM < "borda" >,
+  [ STEM < "borða" >,
     SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ] .
 
 eta := opt-trans-verb-lex &
@@ -425,7 +532,7 @@ pl-gen-det := pl-gen-det-lex &
 
 
 ad := complementizer-lex-item &
-  [ STEM < "ad" > ].
+  [ STEM < "að" > ].
 
 ;;; ERB 2007-05-11
 ;;; I know this one goes with masc plural nominative.  Don't know

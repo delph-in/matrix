@@ -537,9 +537,10 @@ neut: = masc+neut.
 case := *top*.
 notnom := case.
 nom+acc := case.
+acc+dat := notnom.
 nom := nom+acc.
-acc := notnom & nom+acc.
-dat := notnom.
+acc := acc+dat & nom+acc.
+dat := acc+dat.
 gen := notnom.
 
 present := tense.
