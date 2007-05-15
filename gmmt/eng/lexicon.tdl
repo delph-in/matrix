@@ -107,7 +107,12 @@ ask := int-clausal-verb-lex &
 ;;; Auxiliaries
 
 do := do-aux &
-  [ STEM < "do" > ] .
+  [ STEM < "do" >,
+    SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM non3sg ] >].
+
+does := do-aux &
+  [ STEM < "does" >,
+    SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3sg ] > ].
 
 can := can-aux &
   [ STEM < "can" >,

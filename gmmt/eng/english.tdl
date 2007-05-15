@@ -365,7 +365,8 @@ subj-raise-aux := trans-first-arg-raising-lex-item &
                                [ FORM inf ] ] ] > ] .
 
 can-aux := basic-verb-lex & trans-first-arg-raising-lex-item-1 &
-  [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < #subj >,
+  [ INFLECTED +,
+    SYNSEM.LOCAL.CAT [ VAL [ SUBJ < #subj >,
                              COMPS < #comps >,
                              SPR < >,
                              SPEC < > ],
@@ -394,7 +395,8 @@ can-aux := basic-verb-lex & trans-first-arg-raising-lex-item-1 &
 subj-raise-aux-no-sem := subj-raise-aux & trans-first-arg-raising-lex-item-2 &
   [ ARG-ST < [  ], [ LOCAL.CAT.HEAD.AUX - ] > ] .
 
-do-aux := subj-raise-aux-no-sem.
+do-aux := subj-raise-aux-no-sem &
+  [ INFLECTED + ].
 
 ;;; Complementizers
 

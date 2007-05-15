@@ -10,5 +10,5 @@ pl-noun :=
 pl-noun-lex-rule.
 
 3sg-verb :=
-%suffix (!s !ss) (s ses) (do does)
+%suffix (!s !ss) (s ses)
 3sg-verb-lex-rule.
