@@ -42,13 +42,12 @@ head-spec-phrase := basic-head-spec-phrase & head-final &
 ; and b) the adjectives to get the right set of facts.
 
 bare-np-phrase := basic-bare-np-phrase &
-  [ C-CONT.RELS <! [ PRED "_exist_q_rel" ] !>,
-    HEAD-DTR.SYNSEM.MODIFIED notmod-or-rmod ] .
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
 
-indef-bare-np-phrase := basic-bare-np-phrase &
+indef-bare-np-phrase := bare-np-phrase &
   [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.COG-ST type-id ].
 
-def-bare-np-phrase := basic-bare-np-phrase &
+def-bare-np-phrase := bare-np-phrase &
   [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.DEF + ].
 
 
@@ -217,11 +216,14 @@ pronoun-lex := noun-lex &
 head :+ [ AUX bool,
     FORM form ] .
 
-form := avm .
+form := avm.
 
-fin := form .
+fin := form.
 
-inf := form .
+;;; ERB 2007-05-15 Renaming "inf" "supine", since "inf" isn't used
+;;; in the grammar, and I'm adding "supine", for the complement of "can".
+
+supine := form.
 
 imp := form.
 
@@ -235,7 +237,7 @@ imp := form.
 ;;; HC-LIGHT feature.  To make this work for us here, constraint
 ;;; HC-LIGHT on verbs to be -.
 
-verb-lex :+ [ SYNSEM.LOCAL.CAT [ HC-LIGHt - ] ].
+verb-lex :+ [ SYNSEM.LOCAL.CAT [ HC-LIGHT - ] ].
 
 reg-verb-lex := verb-lex.
 
@@ -250,16 +252,26 @@ trans-verb-lex := reg-verb-lex &
     INFLECTED - ].
 
 
+;;; ERB 2007-05-15 Creating two subtypes so we can have "hvort"
+;;; ('whether') as well as 'that'.
+
 complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
-  [ SYNSEM [ LOCAL.CAT [ HEAD comp,
-		         VAL [ SPR < >,
+  [ SYNSEM.LOCAL.CAT [ HEAD comp,
+		       VAL [ SPR < >,
 			     SUBJ < >,
 			     COMPS < #comps & synsem
 				     & [ LOCAL.CAT [ HEAD verb,
 						     MC - ] ] > ,
 			     SPEC < > ] ],
-	     LOCAL.CONT.HOOK.INDEX.SF prop ],
     ARG-ST < #comps > ].
+
+prop-comp-lex-item := complementizer-lex-item &
+   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].
+
+ques-comp-lex-item := complementizer-lex-item &
+   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].
+
+
 
 intransitive-verb-lex := reg-verb-lex & intransitive-lex-item &
   [ SYNSEM.LOCAL.CAT [ HEAD verb,
@@ -305,10 +317,10 @@ clause-emb-verb-lex := reg-verb-lex & clausal-second-arg-trans-lex-item &
     INFLECTED - ].
 
 prop-verb-lex := clause-emb-verb-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.SF prop ].
 
 ques-verb-lex := clause-emb-verb-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.SF ques ].
 
 opt-trans-verb-lex := trans-verb-lex & transitive-lex-item &
   [ SYNSEM.LOCAL [ CAT [ HEAD verb,
@@ -347,6 +359,9 @@ ditrans-verb-lex := trans-verb-lex & ditransitive-lex-item &
     ARG-ST < #subj, #comps, #comps2 >,
     INFLECTED - ]. 
 
+;;; ERB 2007-05-15 It seems that 'can' (our only aux verb so far)
+;;; actually takes a past participle ("supine") complement.
+
 aux-verb-lex := verb-lex & trans-first-arg-raising-lex-item-1 &
   [ SYNSEM.LOCAL.CAT [ HEAD verb,
 		       VAL [ SUBJ < #subj & synsem
@@ -354,7 +369,8 @@ aux-verb-lex := verb-lex & trans-first-arg-raising-lex-item-1 &
 							 [ CASE nom ],
 						    VAL.SPR < > ] ] >,
 			     COMPS < #comps
-				     & [ LOCAL.CAT [ HEAD verb,
+				     & [ LOCAL.CAT [ HEAD verb &
+							  [ FORM supine ],
 						     VAL [ SUBJ < #subj >,
 						     	   COMPS < > ] ] ] >,
 			     SPR < >,
@@ -862,6 +878,13 @@ aux-lex-rule := verb-lex-rules &
 
 adj-lex-rule := infl-ltow-rule &
   [ DTR adjective-lex ].
+
+;;; ERB 2007-05-15 Adding a lexical rule for "supine" verbs.  Not
+;;; bothering with morphophonology, just putting the one in for the
+;;; class containing "eat".
+
+supine-verb-lex-rule := infl-ltow-rule &
+  [ DTR reg-verb-lex ].
 
 ;;; ERB 2007-05-11 Moving posthead constraint here.
 

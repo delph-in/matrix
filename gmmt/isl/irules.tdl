@@ -36,11 +36,11 @@ f-dat-sg-det :=
 f-dat-sg-det-lex-rule.
 
 n-nom-sg-det :=
-%suffix (* -id)
+%suffix (* -ið)
 n-nom-sg-det-lex-rule.
 
 n-acc-sg-det :=
-%suffix (* -id)
+%suffix (* -ið)
 n-acc-sg-det-lex-rule.
 
 n-dat-sg-det :=
@@ -108,7 +108,7 @@ n-sg-dat-lex-rule.
 2sg_verb-lex-rule.
 
 2pl_verb :=
-%suffix (* -id)
+%suffix (* -ið)
 2pl_verb-lex-rule.
 
 3sg_verb :=
@@ -116,7 +116,7 @@ n-sg-dat-lex-rule.
 3sg_verb-lex-rule.
 
 2-pl-imp :=
-%suffix (* -id)
+%suffix (* -ið)
 2-pl-imp-lex-rule.
 
 1-pl-imp :=
@@ -174,6 +174,14 @@ weak-pl-adj-lex-rule.
 3-pl-aux :=
 %suffix (* -a)
 3-pl-aux-lex-rule.
+
+;;; ERB 2007-05-15 Adding a lexical rule for "supine" verbs.  Not
+;;; bothering with morphophonology, just putting the one in for the
+;;; class containing "eat".
+
+supine-verb := 
+%suffix (* -ð)
+supine-verb-lex-rule.
 
 ;;; ERB 2007-05-11 Strong adj rules.
 ;;; There's actually at least two declensions here.  Just doing

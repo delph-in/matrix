@@ -32,7 +32,7 @@ hund := m-cl1-noun-lex &
 
 bil := m-cl1-noun-lex &
   [ STEM < "bíl" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_dog_n_rel" ] .
+    SYNSEM.LKEYS.KEYREL.PRED "_car_n_rel" ] .
 
 
 laeknir := m-cl1-noun-lex &
@@ -125,8 +125,8 @@ eg := pronoun-lex &
 mig := pronoun-lex &
   [ STEM < "mig" >,
     SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
-    			   CONT.HOOK.INDEX.PNG [ PER first,
-					     			     NUM sg ] ] ].					     			     
+		   CONT.HOOK.INDEX.PNG [ PER first,
+					 NUM sg ] ] ].					     			     
 
 mer := pronoun-lex &
   [ STEM < "mér" >,
@@ -374,16 +374,36 @@ heyra := prop-verb-lex &
   [ STEM < "heyra" >,
     SYNSEM.LKEYS.KEYREL.PRED "_hear_v_rel" ].
 
-hyggja := prop-verb-lex &
-  [ STEM < "hyggja" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_think_v_rel" ].
+; ERB 2007-05-15  Gunnar used "held" instead.
+
+;hyggja := prop-verb-lex &
+;  [ STEM < "hyggja" >,
+;    SYNSEM.LKEYS.KEYREL.PRED "_think_v_rel" ].
+
+held := prop-verb-lex &
+[ STEM < "held" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_think_v_rel" ].
+
+; ERB 2007-05-15 This one looks irregular.  
+; Conjugation will be wrong wrong wrong.
+
+vita := prop-verb-lex &
+[ STEM < "vita" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_know_v_rel" ].
+
+; ERB 2007-05-15 Again, the morphology is
+; going to be terrible.
+
+spyr := ques-verb-lex &
+[ STEM < "spyr" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_ask_v_rel" ].
 
 get := aux-verb-lex &
   [ STEM < "get" >,
     SYNSEM.LKEYS.KEYREL.PRED "_can_v_rel" ].
 
 meida := transitive-verb-lex &
-  [ STEM < "meida" >,
+  [ STEM < "meiða" >,
     SYNSEM.LKEYS.KEYREL.PRED "_hurt_v_rel" ].
 
 gefa := ditrans-verb-lex &
@@ -471,6 +491,10 @@ helst := adverb-lex &
   [ STEM < "helst" >,
     SYNSEM.LKEYS.KEYREL.PRED "_gladly_r_rel" ].
 
+hratt := adverb-lex &
+  [ STEM < "hratt" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_quickly_r_rel" ].
+
 ;;; ERB 2007-05-11 For GMMT:
 
 svang := adjective-lex &
@@ -531,8 +555,13 @@ pl-gen-det := pl-gen-det-lex &
   [ STEM < "hinna" > ]. 
 
 
-ad := complementizer-lex-item &
+ad := prop-comp-lex-item &
   [ STEM < "að" > ].
+
+;;; ERB 2007-05-15
+
+hvort := ques-comp-lex-item &
+  [ STEM < "hvort" > ].
 
 ;;; ERB 2007-05-11
 ;;; I know this one goes with masc plural nominative.  Don't know

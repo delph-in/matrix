@@ -109,12 +109,12 @@
 ;;;
 
 (setf *last-parses* '(
-	"eg get borda gler"
-	"kott-ur-inn elska-ar hund-inn"
-	"tad meida-ar ekki mig"
-	"kona-in gefa-ar stulka-u-ina kott-i"
-	"eg heyra ad gul-i kott-ur-inn mjalma-ar"
-	"kottur elskar hund" "hundur hoppar"))
+	"ég get borða-ð gler"
+	"kett-ur-inn elska-ar hund-inn"
+	"það meida-ar ekki mig"
+	"kona-in gefa-ar stulka-u-ina kett-i"
+	"eg heyra ad gul-i kett-ur-inn mjalma-ar"
+	"kettur elskar hund" "hundur hoppar"))
 
 (lkb-load-lisp (this-directory) "mt.lsp" t)
 
