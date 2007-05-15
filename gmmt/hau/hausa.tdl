@@ -403,7 +403,7 @@ m-demonstrative-lex := demonstrative-determiner-lex &
 
 mp-demonstrative-lex := demonstrative-determiner-lex &
 [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc,
-				     NUM pl ]].
+				     NUM non-sg ]].
 
 
 ;;;; Lexical rules

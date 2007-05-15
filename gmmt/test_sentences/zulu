@@ -1,57 +1,65 @@
 Notes:
 
---- Need to know actual noun class for car.  Could be 5/6 as
-well as 9/10.  Likewise, cat (guessing 5/6, from ili-kati form
-in dictionary.)
---- What is the correct form of the proximal demonstrative adjective
-for 'dogs'?
---- What would the actual present tense forms look like?
---- What happens on the verb agreement when the subject or argument
-is a coordinated NP with heterogeneous noun classes?
+--- What is the class of imoto/izimoto, and what's up with those
+prefixes?
+--- What is the actual distribution of -ya- (present tense) and
+when can/must it be left out?
 
 # 1. Dogs sleep
-izin-ja zi-zo-lal-a
+izin-ja zi-ya-lal-a
 c10-dog c10-sleep-FV
 
 # 2. Dogs chase cars
-izin-ja zi-zo-zi-xosh-a izin-moto
+izin-ja zi-zi-xosh-a izi-moto
 c10-dog c10-c10-chase-FV c10-car
 
+izin-ja zi-ya-zi-xosh-a izi-moto
+c10-dog c10-pres-c10-chase-FV c10-car
+
 # 3. They chase them.
-zi-zo-zi-xosh-a
+zi-ya-zi-xosh-a
+c10-pres-c10-chase-FV
 
 # 4. These dogs sleep.
-izin-ja [these] zi-zo-lal-a
+izin-ja lezi zi-ya-lal-a
+c10-dog these c10-pres-sleep-FV
 
 # 5. Dogs eat.
-izin-ja zi-zo-dl-a
+izin-ja zi-ya-dl-a
+c10-dog c10-pres-eat-FV
 
 # 6. I can eat glass.
 ngi-nga-dl-a in-gilazi
+1sg-can-eat-FV c9-glass
 
 # 7. It doesn't hurt me.
-a-ku-zo-ngi-limaz-a
+a-ku-ya-ngi-limaz-a
 
 # 8. The dogs chase cars  (not different from #2)
-izin-ja zi-zo-zi-xosh-a izin-moto
+izin-ja zi-ya-zi-xosh-a izi-moto
+izin-ja zi-zi-xosh-a izi-moto
 
 # 9. I think that you know that dogs chase cars.
 
-ngi-zo-cabang-a ukuba u-zo-az-a ukuba izin-ja zi-zo-zi-xosh-a izin-moto
+ngi-ya-cabang-a ukuba u-ya-az-a ukuba izin-ja zi-ya-zi-xosh-a izi-moto
 
 # 10. I ask whether you know that dogs chase cars.
 
-ngi-zo-zibuz-a ukuba u-zo-az-a ukuba izin-ja zi-zo-zi-xosh-a izin-moto
+ngi-ya-zibuz-a ukuba u-ya-az-a ukuba izin-ja zi-ya-zi-xosh-a izi-moto
 
 # 11. Cats and dogs chase cars.  # Seems to be a WITH coordination language
-ama-kati na-izin-ja  a-zo-zi-xosh-a izin-moto
-c6-cat   with-c10-dog
+ama-kati na-izin-ja  a-ya-zi-xosh-a izi-moto
+c6-cat   with-c10-dog c6-pres-c10-chase-FV ?-car
 
 # 12. Dogs chase cars and cats chase dogs.
+izin-ja zi-ya-zi-xosh-e izi-moto ama-kati a-ya-zi-xosh-a izin-ja
+
 # 13. Cats chase dogs and sleep.
+ama-kati a-ya-zi-xosh-e izin-ja a-ya-lal-a.
+
 # 14. Do cats chase dogs?
 
-ama-kati a-zo-zi-xosh-a izin-ja na
+ama-kati a-ya-zi-xosh-a izin-ja na
 c6-cat   c6-FUT-c10-chase-FV c10-dog QP
 
 # 15. Chase the dog!
@@ -61,5 +69,9 @@ xosh-a-ni izin-ja
 # 16. Hungry dogs eat.  # No lexical adjective for hungry, would
 			# need a relative clause based on the verb -labile.
 
-# 17. Hungry dogs eat quickly. # No lexical adjective for hungry.
+izin-ja ezi-lambile-yo zi-ya-dl-a
+c10-dog c10-hungry-rel c10-fut-eat-FV
 
+# 17. Hungry dogs eat quickly. 
+
+izin-ja ezi-lambile-yo zi-ya-dl-a ngokushesha

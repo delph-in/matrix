@@ -189,9 +189,15 @@ eq := intransitive-verb-lex &
    SYNSEM.LKEYS.KEYREL.PRED "_jump_v_rel" ] .
 
 ; az is irregular and s.b. "azi" with no final vowel change.
-az := clause-comp-verb-lex &
-  [ STEM < "az" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_know_v_rel" ] .
+;az := clause-comp-verb-lex &
+;  [ STEM < "az" >,
+;    SYNSEM.LKEYS.KEYREL.PRED "_know_v_rel" ] .
+
+; ERB 2007-05-15 prop-comp know from http://maguzawa.dyndns.ws/
+
+san := clause-comp-verb-lex &
+[ STEM < "san" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_know_v_rel " ].
 
 buz := clause-comp-verb-lex &
   [ STEM < "buz" >,
@@ -247,6 +253,14 @@ leyo-a := hearer-dem-adj-lex &
 leya-a := remote-dem-adj-lex &
 [ STEM < "leya" >,
   SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c9]>].
+
+;;; ERB 2007-05-15 Would be nice to have the rest of the plurals.
+;;; Here's one for GMMT.  Don't know if there's a noun class distinction here.
+
+wadannan := proximal-dem-adj-lex &
+[ STEM < "wad`ànnân" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c1]>].
+
 
 
 ;;; Demonstrative Pronouns
@@ -344,6 +358,21 @@ ne := adjective-lex &
 hlanu := adjective-lex &
 [ STEM < "hlanu" >, 
   SYNSEM.LKEYS.KEYREL.PRED "_five_a_rel" ] .
+
+;;; ERB 2007-05-15 According to Kelsey, there is no simple adjective
+;;; for "hungry", and these are actually more like "with/having/owner
+;;; of hunger", but pretending they're adjectives for now.
+
+mài-yunwàà := adjective-lex &
+[ STEM < "mài-yunwàà" >,
+  SYNSEM [ LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg,
+	   LKEYS.KEYREL.PRED "_hungry_a_rel" ]].
+
+mààsu-yunwàà := adjective-lex &
+[ STEM < "mààsu-yunwàà" >,
+  SYNSEM [ LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM non-sg,
+	   LKEYS.KEYREL.PRED "_hungry_a_rel" ]].
+
 
 ;;; Adverbs
 ;;; NB: most of these adverbs are just adjectives with ka-

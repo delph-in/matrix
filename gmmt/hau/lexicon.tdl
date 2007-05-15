@@ -147,7 +147,7 @@ kàree := common-noun-lex &
 
 kàrnai := common-noun-lex &
 [ STEM <"kàr~nai">,
-  SYNSEM [LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM pl],
+  SYNSEM [LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM non-sg],
 	LKEYs.KEYREL.PRED "_dog_n_rel"]].
 
 
@@ -155,6 +155,12 @@ kyânwaa := common-noun-lex &
 [ STEM <"kyânwaa">,
   SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem, NUM sg],
   	LKEYS.KEYREL.PRED "_cat_n_rel"]].
+
+kyânwuna := common-noun-lex &
+[ STEM <"kyânwuna">,
+  SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem, NUM non-sg],
+  	LKEYS.KEYREL.PRED "_cat_n_rel"]].
+
 
 dookìi := common-noun-lex &
 [ STEM <"dookìì">,
