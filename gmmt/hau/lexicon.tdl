@@ -703,19 +703,27 @@ jaa := adjective-lex &
  SYNSEM[LKEYS.KEYREL.PRED "_red_a_rel",
 	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg ]] > ]].
 
-dà-yùnwa := adjective-lex &
-[ STEM <"dà-yùnwa">,
- SYNSEM[LKEYS.KEYREL.PRED "_hungry_a_rel",
-	LOCAL.CAT [ HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg ]] >,
-	 POSTHEAD +] ]].
+;dà-yùnwa := adjective-lex &
+;[ STEM <"dà-yùnwa">,
+; SYNSEM[LKEYS.KEYREL.PRED "_hungry_a_rel",
+;	LOCAL.CAT [ HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg ]] >,
+;	 POSTHEAD +] ]].
 
-;; FIX ME: Need plural form here.
+;;; ERB 2007-05-15 According to Kelsey, there is no simple adjective
+;;; for "hungry", and these are actually more like "with/having/owner
+;;; of hunger", but pretending they're adjectives for now.
 
-dà-yùnwa_2 := adjective-lex &
-[ STEM <"dà-yùnwa">,
- SYNSEM[LKEYS.KEYREL.PRED "_hungry_a_rel",
-	LOCAL.CAT [ HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM non-sg ]] >,
-	 POSTHEAD +] ]].
+mài-yunwàà := adjective-lex &
+[ STEM < "mài-yunwàà" >,
+  SYNSEM [ LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg,
+	   LKEYS.KEYREL.PRED "_hungry_a_rel" ]].
+
+mààsu-yunwàà := adjective-lex &
+[ STEM < "mààsu-yunwàà" >,
+  SYNSEM [ LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM non-sg,
+	   LKEYS.KEYREL.PRED "_hungry_a_rel" ]].
+
+
 
 
 ;; adverbs
@@ -754,9 +762,10 @@ wani := m-demonstrative-lex &
   [ STEM < "wani" >,
     SYNSEM [ LKEYS.ALTKEYREL.PRED "proximal+dem_a_rel"]].
 
-; ERB 2007-05-11
+; ERB 2007-05-15
 
 wadànnân := mp-demonstrative-lex &
-  [ STEM < "wadànnân" >,
+  [ STEM < "wad`ànnân" >,
     SYNSEM [ LKEYS.ALTKEYREL.PRED "proximal+dem_a_rel"]].
+
 

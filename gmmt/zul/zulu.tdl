@@ -134,6 +134,7 @@ intransitive-verb-lex := verb-lex & intransitive-lex-item &
 		       VAL.COMPS < > ],
     ARG-ST < [ LOCAL.CAT.HEAD noun ] > ] .
 
+
 transitive-verb-lex := verb-lex & transitive-lex-item & 
 		       takes-oc & imp-dtr &
   [ SYNSEM.LOCAL.CAT [HEAD.AUX -,
@@ -142,6 +143,17 @@ transitive-verb-lex := verb-lex & transitive-lex-item &
                                       [ LOCAL.CAT [ VAL [ SPR < >,
                                                           COMPS < > ],
                                                     HEAD noun ] ] > ] .
+
+; ERB 2007-05-15 Making two subtypes, to allow for INI in some cases.
+; Since [OPT -] comes in through lexical rules, constrain through OPT-CS.
+; The idea is that the no-obj concord rule for INI verbs says OPT-CS type-id.
+; Verbs that can't to INI thus say OPT-CS uniq+fam+act, and therefore
+; can only go through the other no-obj concord rule (which says OPT -,
+; and disallows object drop) or through the object concord rules.
+
+no-ini-trans-verb-lex := transitive-verb-lex &
+  [ ARG-ST.REST.FIRST.OPT-CS uniq+fam+act ].
+
 
 ; first object is optional, but OPT is underspecified so 
 ; it can go through no-obj-concord-lex-rule
@@ -333,9 +345,14 @@ c10 := c9+c10 & c11+c10.
 c11 := c11+c10.
 
 c14 := nclass.
-c15 := nclass.
-c16 := nclass.
-c17 := nclass.
+
+; ERB 2007-05-15 Lots of syncretism for these three
+
+c15+c16+c17 := nclass.
+
+c15 := c15+c16+c17.
+c16 := c15+c16+c17.
+c17 := c15+c16+c17.
     
 
 demonstrative_a_rel := predsort.
@@ -416,8 +433,20 @@ verb-tense-lex-rule := add-only-no-ccont-rule & lexeme-to-lexeme-rule &
 fut-tense-lex-rule := inflecting-lex-rule & verb-tense-lex-rule &
    [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE future ] .
 
-pres-tense-lex-rule := constant-lex-rule & verb-tense-lex-rule &
+
+;;; ERB 2007-05-15 Making present tense rule for -ya-, so
+;;; changing this to inflecting.
+
+pres-tense-lex-rule := inflecting-lex-rule & verb-tense-lex-rule &
    [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE present ] .
+
+;;; ERB 2007-05-15 It looks like I also need the zero form
+;;; for some of Kelly's examples.  Will possibly need to constrain
+;;; one or the other to keep from overgenerating.
+
+pres-tense-lex-rule2 := constant-lex-rule & verb-tense-lex-rule &
+   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE present ] .
+
 
 ;;; Imperative rules
 imperative-verb-lex-rule := head-change-only-lex-rule & lexeme-to-word-rule
@@ -649,10 +678,16 @@ c17-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
 obj-concord-lex-rule := add-only-no-ccont-rule & lexeme-to-lexeme-rule &
 			neg-can-dtr & default-fv-dtr &
    [ DTR takes-oc & 
-	 [SYNSEM.LOCAL.CAT.HEAD.AUX -] ] .
+	 [ SYNSEM.LOCAL.CAT.HEAD.AUX - ] ].
 
 no-obj-concord-lex-rule := constant-lex-rule & obj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ OPT - ], ... > ].
+
+;;; ERB 2007-05-15 Need to add a path for verbs like eat to 
+;;; allow INI of object (I think --- we'll see what Sonja says).
+
+no-obj-concord-lex-rule2 := constant-lex-rule & obj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ OPT-CS type-id ], ... > ].
 
 add-obj-concord-lex-rule := inflecting-lex-rule & obj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ OPT +,
@@ -788,3 +823,52 @@ c16-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
 c17-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c17 ] > ] .
 
+;;; ERB 2007-05-15 Relative concords
+
+relative-concord-lex-rule := infl-ltow-rule &
+   [ DTR relative-lex ] .
+
+c1-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c1 ] > ].
+
+c2-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c2 ] > ].
+
+c3-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c3 ] > ].
+
+c4-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c4 ] > ].
+
+c5-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c5 ] > ].
+
+c6-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c6 ] > ].
+
+c7-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c7 ] > ].
+
+c8-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c8 ] > ].
+
+c9-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c9 ] > ].
+
+c10-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c10 ] > ].
+
+c11-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c11 ] > ].
+
+c14-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c14 ] > ].
+
+c15-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c15 ] > ].
+
+c16-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c16 ] > ].
+
+c17-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c17 ] > ].

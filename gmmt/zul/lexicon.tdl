@@ -1,5 +1,14 @@
 ;;; Nouns
 
+;;; ERB 2007-05-15  Car is i-moto/izi-moto.  I can't tel
+;;; what the class of the singular form is, but for now, I
+;;; only need it to be plural, which appears to c8.
+
+izimoto := common-noun-lex &
+  [ STEM < "moto" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_car_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c8 ] ] .
+
 ntwana := common-noun-lex &
   [ STEM < "ntwana" >,
     SYNSEM [ LKEYS.KEYREL.PRED "_child_n_rel",
@@ -122,6 +131,11 @@ dlal := intransitive-verb-lex &
   [ STEM < "dlal" >,
     SYNSEM.LKEYS.KEYREL.PRED "_play_v_rel" ] .
 
+
+lal := intransitive-verb-lex &
+  [ STEM < "lal" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sleep_v_rel" ] .
+
 fund := intransitive-verb-lex &
   [ STEM < "fund" >,
     SYNSEM.LKEYS.KEYREL.PRED "_study_v_rel" ] .
@@ -130,11 +144,11 @@ gijim := intransitive-verb-lex &
   [ STEM < "gijim" >,
     SYNSEM.LKEYS.KEYREL.PRED "_run_v_rel" ] .
 
-bon := transitive-verb-lex &
+bon := no-ini-trans-verb-lex &
   [ STEM < "bon" >,
     SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ] .
 
-shay := transitive-verb-lex &
+shay := no-ini-trans-verb-lex &
   [ STEM < "shay" >,
     SYNSEM.LKEYS.KEYREL.PRED "_hit_v_rel" ] .
 
@@ -156,7 +170,7 @@ cc-bon := clause-comp-verb-lex &
   [ STEM < "bon" >,
     SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ] .
 
-limaz := transitive-verb-lex &
+limaz := no-ini-trans-verb-lex &
   [ STEM < "limaz" >,
     SYNSEM.LKEYS.KEYREL.PRED "_hurt_v_rel" ] .
 
@@ -168,7 +182,7 @@ musa := aux-verb-lex &
   [ STEM < "musa" >, 
     SYNSEM.LKEYS.KEYREL.PRED "_neg_v_rel" ] .
 
-xosh := transitive-verb-lex &
+xosh := no-ini-trans-verb-lex &
   [ STEM < "xosh" >,
     SYNSEM.LKEYS.KEYREL.PRED "_chase_v_rel" ] .
 
@@ -189,15 +203,9 @@ eq := intransitive-verb-lex &
    SYNSEM.LKEYS.KEYREL.PRED "_jump_v_rel" ] .
 
 ; az is irregular and s.b. "azi" with no final vowel change.
-;az := clause-comp-verb-lex &
-;  [ STEM < "az" >,
-;    SYNSEM.LKEYS.KEYREL.PRED "_know_v_rel" ] .
-
-; ERB 2007-05-15 prop-comp know from http://maguzawa.dyndns.ws/
-
-san := clause-comp-verb-lex &
-[ STEM < "san" >,
-  SYNSEM.LKEYS.KEYREL.PRED "_know_v_rel " ].
+az := clause-comp-verb-lex &
+  [ STEM < "az" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_know_v_rel" ] .
 
 buz := clause-comp-verb-lex &
   [ STEM < "buz" >,
@@ -230,36 +238,163 @@ nina := pronoun-lex &
 
 
 ;;; Demonstrative adjectives
+;;; ERB 2007-05-15 Kelly just had c1 and c9 here, but it seems worthwhile
+;;; to fill out the rest of the paradigm.
+
 lo-a := proximal-dem-adj-lex &
 [ STEM < "lo" >,
   SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c1]>].
+
+laba:= proximal-dem-adj-lex &
+[ STEM < "laba" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c2]>].
+
+lo-a2:= proximal-dem-adj-lex &
+[ STEM < "lo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c3]>].
+
+le-a:= proximal-dem-adj-lex &
+[ STEM < "le" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c4]>].
+
+leli:= proximal-dem-adj-lex &
+[ STEM < "leli" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c5]>].
+
+la-a:= proximal-dem-adj-lex &
+[ STEM < "la" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c6]>].
+
+lesi:= proximal-dem-adj-lex &
+[ STEM < "lesi" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c7]>].
+
+lezi:= proximal-dem-adj-lex &
+[ STEM < "lezi" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c8]>].
+
+le-a2:= proximal-dem-adj-lex &
+[ STEM < "le" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c9]>].
+
+lezi := proximal-dem-adj-lex &
+[ STEM < "lezi" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c10]>].
+
+lolu:= proximal-dem-adj-lex &
+[ STEM < "lolu" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c11]>].
+
+lobu:= proximal-dem-adj-lex &
+[ STEM < "lobu" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c14]>].
+
+lokhu:= proximal-dem-adj-lex &
+[ STEM < "lokhu" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c15+c16+c17]>].
+
+
+
 
 lowo-a := hearer-dem-adj-lex &
 [ STEM < "lowo" >,
   SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c1]>].
 
+labo := hearer-dem-adj-lex &
+[ STEM < "labo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c2]>].
+
+lowo-a2 := hearer-dem-adj-lex &
+[ STEM < "lowo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c3]>].
+
+leyo-a := hearer-dem-adj-lex &
+[ STEM < "leyo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c4]>].
+
+lelo := hearer-dem-adj-lex &
+[ STEM < "lelo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c5]>].
+
+lawo := hearer-dem-adj-lex &
+[ STEM < "lawo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c6]>].
+
+leso := hearer-dem-adj-lex &
+[ STEM < "leso" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c7]>].
+
+lezo := hearer-dem-adj-lex &
+[ STEM < "lezo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c8]>].
+
+leyo-a2 := hearer-dem-adj-lex &
+[ STEM < "leyo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c9]>].
+
+lezo-2 := hearer-dem-adj-lex &
+[ STEM < "lezo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c10]>].
+
+lolo := hearer-dem-adj-lex &
+[ STEM < "lolo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c11]>].
+
+lobo := hearer-dem-adj-lex &
+[ STEM < "lobo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c14]>].
+
+lokho := hearer-dem-adj-lex &
+[ STEM < "lokho" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c15+c16+c17]>].
+
 lowaya-a := remote-dem-adj-lex &
 [ STEM < "lowaya" >,
   SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c1]>].
 
-le-a := proximal-dem-adj-lex &
-[ STEM < "le" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c9]>].
+labaya := remote-dem-adj-lex &
+	  [ STEM < "labaya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c2]>].
 
-leyo-a := hearer-dem-adj-lex &
-[ STEM < "leyo" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c9]>].
+lowaya-a2 := remote-dem-adj-lex &
+[ STEM < "lowaya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c3]>].
 
 leya-a := remote-dem-adj-lex &
 [ STEM < "leya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c4]>].
+
+leliya := remote-dem-adj-lex &
+[ STEM < "leliya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c5]>].
+
+lawaya := remote-dem-adj-lex &
+[ STEM < "lawaya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c6]>].
+
+lesiya := remote-dem-adj-lex &
+[ STEM < "lesiya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c7]>].
+
+leziya := remote-dem-adj-lex &
+[ STEM < "leziya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c8]>].
+
+leya-a2 := remote-dem-adj-lex &
+[ STEM < "leya" >,
   SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c9]>].
 
-;;; ERB 2007-05-15 Would be nice to have the rest of the plurals.
-;;; Here's one for GMMT.  Don't know if there's a noun class distinction here.
+loluya := remote-dem-adj-lex &
+[ STEM < "loluya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c11]>].
 
-wadannan := proximal-dem-adj-lex &
-[ STEM < "wad`ànnân" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c1]>].
+lobuya := remote-dem-adj-lex &
+[ STEM < "lobuya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c14]>].
+
+lokhuya := remote-dem-adj-lex &
+[ STEM < "lokhuya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c15+c16+c17 ]>].
 
 
 
@@ -359,20 +494,14 @@ hlanu := adjective-lex &
 [ STEM < "hlanu" >, 
   SYNSEM.LKEYS.KEYREL.PRED "_five_a_rel" ] .
 
-;;; ERB 2007-05-15 According to Kelsey, there is no simple adjective
-;;; for "hungry", and these are actually more like "with/having/owner
-;;; of hunger", but pretending they're adjectives for now.
+;;; ERB 2007-05-15 No lexical adjective for hungry. Below
+;;; is actually a relative form formed from the verb
+;;; meaning to be hungry.  To get the right set of prefixes
+;;; I'm going to pretend it's a lexical relative (relative-lex).
 
-mài-yunwàà := adjective-lex &
-[ STEM < "mài-yunwàà" >,
-  SYNSEM [ LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg,
-	   LKEYS.KEYREL.PRED "_hungry_a_rel" ]].
-
-mààsu-yunwàà := adjective-lex &
-[ STEM < "mààsu-yunwàà" >,
-  SYNSEM [ LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM non-sg,
-	   LKEYS.KEYREL.PRED "_hungry_a_rel" ]].
-
+lambile-yo := relative-lex &
+[ STEM < "lambile-yo" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_hungry_a_rel" ] .
 
 ;;; Adverbs
 ;;; NB: most of these adverbs are just adjectives with ka-

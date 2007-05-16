@@ -10,6 +10,10 @@ fut-tense :=
   %prefix (* zo-)
   fut-tense-lex-rule.
 
+pres-tense :=
+%prefix (* ya-)
+pres-tense-lex-rule.
+
 pl-imp-verb-lex :=
   %suffix (* -ni)
   pl-imp-verb-lex-rule.
@@ -343,3 +347,79 @@ c16-adj-concord :=
 c17-adj-concord :=
   %prefix (* oku-)
   c17-adj-concord-lex-rule.
+
+;;; ERB 2007-05-15 Relative concords
+;;; There's some syncretism here, which we could take
+;;; advantage of, but constructing the required ncl supertypes.
+
+c1-rel-concord :=
+%prefix (* o-)
+c1-rel-concord-lex-rule.
+
+c2-rel-concord :=
+%prefix (* aba-)
+c2-rel-concord-lex-rule.
+
+c3-rel-concord :=
+%prefix (* o-)
+c3-rel-concord-lex-rule.
+
+c4-rel-concord :=
+%prefix (* e-)
+c4-rel-concord-lex-rule.
+
+c5-rel-concord :=
+%prefix (* eli-)
+c5-rel-concord-lex-rule.
+
+c6-rel-concord :=
+%prefix (* a-)
+c6-rel-concord-lex-rule.
+
+c7-rel-concord :=
+%prefix (* esi-)
+c7-rel-concord-lex-rule.
+
+c8-rel-concord :=
+%prefix (* ezi-)
+c8-rel-concord-lex-rule.
+
+c9-rel-concord :=
+%prefix (* e-)
+c9-rel-concord-lex-rule.
+
+c10-rel-concord :=
+%prefix (* ezi-)
+c10-rel-concord-lex-rule.
+
+c11-rel-concord :=
+%prefix (* olu-)
+c11-rel-concord-lex-rule.
+
+; ERB 2007-05-15 Grammar book doesn't give anything for
+; classes 12 and 13.
+
+;c12-rel-concord :=
+;%prefix (* -)
+;c12-rel-concord-lex-rule.
+
+;c13-rel-concord :=
+;%prefix (* -)
+;c13-rel-concord-lex-rule.
+
+c14-rel-concord :=
+%prefix (* obu-)
+c14-rel-concord-lex-rule.
+
+c15-rel-concord :=
+%prefix (* oku-)
+c15-rel-concord-lex-rule.
+
+c16-rel-concord :=
+%prefix (* oku-)
+c16-rel-concord-lex-rule.
+
+c17-rel-concord :=
+%prefix (* oku-)
+c17-rel-concord-lex-rule.
+
