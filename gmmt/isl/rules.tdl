@@ -29,9 +29,21 @@ head-adj-scop := head-adj-scop-phrase .
 
 adj-head-scop := adj-head-scop-phrase .
 
-np1-top-coord := np1-top-coord-rule .
+;np1-top-coord := np1-top-coord-rule .
 
-np1-mid-coord := np1-mid-coord-rule .
+;np1-mid-coord := np1-mid-coord-rule .
+
+np1-mid-1st-left-coord := np1-mid-1st-left-coord-rule.
+np1-mid-1st-right-coord := np1-mid-1st-right-coord-rule.
+np1-mid-2nd-3rd-coord := np1-mid-2nd-3rd-coord-rule.
+np1-mid-3rd-2nd-coord:= np1-mid-3rd-2nd-coord-rule.
+np1-mid-3rd-3rd-coord := np1-mid-3rd-3rd-coord-rule.
+
+np1-top-1st-left-coord := np1-top-1st-left-coord-rule.
+np1-top-1st-right-coord := np1-top-1st-right-coord-rule.
+np1-top-2nd-3rd-coord := np1-top-2nd-3rd-coord-rule.
+np1-top-3rd-2nd-coord := np1-top-3rd-2nd-coord-rule.
+np1-top-3rd-3rd-coord := np1-top-3rd-3rd-coord-rule.
 
 np1-bottom-coord := np1-bottom-coord-rule .
 

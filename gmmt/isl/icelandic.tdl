@@ -86,25 +86,102 @@ adverb-lex := basic-adverb-lex & intersective-mod-lex &
 
 ;;; Coordination Strategy 1
 
+;;; ERB 2007-05-16 We need to get the agreement facts right. I'm 
+;;; going to assume that Icelandic behaves like English wrt to person
+;;; and number in np coordination.  Don't know what happens with
+;;; gender, but that doesn't come into play so much: subject-verb agreement
+;;; only does person and number.
+
 np1-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule &
-  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.NUM non-sg,
+		   COORD-STRAT "1" ] ].
 
 np1-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
 
 np1-bottom-coord-rule := conj-first-bottom-coord-rule & np-bottom-coord-phrase &
-  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.PER #per,
+		   COORD-STRAT "1" ],
+    CONJ-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER #per ].
+
+; ERB 2007-05-16 Too avoid double parses, use 1st-right coord phrase
+; in case that both are first person for whatever reason. And 3rd-2nd
+; for case where both are second person.
+
+np1-1st-left-coord-rule := coord-phrase &
+  [ LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER first,
+    RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER non-first,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER first ].
+
+np1-1st-right-coord-rule := coord-phrase &
+  [ RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER non-first,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER first ].
+    
+np1-2nd-3rd-coord-rule := coord-phrase &
+  [ LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER second,
+    RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER third,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER second ].
+
+np1-3rd-2nd-coord-rule := coord-phrase &
+  [ LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER non-first,
+    RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER second,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER second ].
+
+np1-3rd-3rd-coord-rule := coord-phrase &
+  [ LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER third,
+    RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER third,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER third ].
+
+;;; ERB 2007-05-16 Cross-classify for both top and mid:
+
+np1-mid-1st-left-coord-rule := np1-1st-left-coord-rule & np1-mid-coord-rule.
+np1-mid-1st-right-coord-rule := np1-1st-right-coord-rule & np1-mid-coord-rule.
+np1-mid-2nd-3rd-coord-rule := np1-2nd-3rd-coord-rule & np1-mid-coord-rule.
+np1-mid-3rd-2nd-coord-rule := np1-3rd-2nd-coord-rule & np1-mid-coord-rule.
+np1-mid-3rd-3rd-coord-rule := np1-3rd-3rd-coord-rule & np1-mid-coord-rule.
+
+np1-top-1st-left-coord-rule := np1-1st-left-coord-rule & np1-top-coord-rule.
+np1-top-1st-right-coord-rule := np1-1st-right-coord-rule & np1-top-coord-rule.
+np1-top-2nd-3rd-coord-rule := np1-2nd-3rd-coord-rule & np1-top-coord-rule.
+np1-top-3rd-2nd-coord-rule := np1-3rd-2nd-coord-rule & np1-top-coord-rule.
+np1-top-3rd-3rd-coord-rule := np1-3rd-3rd-coord-rule & np1-top-coord-rule.
+
+
+
+
+
 
 ;;; Coordination Strategy 1
 
+;;; ERB 2007-05-16 Coordination needs to preserve MC and INV status.
+;;; For now assume that these are just shared between mother and
+;;; daughters.   Might need something more fine-grained later, but
+;;; we can't just leave them underspecified.
+
 s1-top-coord-rule := basic-s-top-coord-rule & monopoly-top-coord-rule &
-  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+  [ SYNSEM.LOCAL [ COORD-STRAT "1",
+		   CAT [ MC #mc,
+			 HEAD.INV #inv ] ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT [ MC #mc,
+				  HEAD.INV #inv ],
+    RCOORD-DTR.SYNSEM.LOCAL.CAT [ MC #mc,
+				  HEAD.INV #inv ] ].
 
 s1-mid-coord-rule := basic-s-mid-coord-rule & monopoly-mid-coord-rule &
-  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+  [ SYNSEM.LOCAL [ COORD-STRAT "1",
+		   CAT [ MC #mc,
+			 HEAD.INV #inv ] ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT [ MC #mc,
+				  HEAD.INV #inv ],
+    RCOORD-DTR.SYNSEM.LOCAL.CAT [ MC #mc,
+				  HEAD.INV #inv ] ].
 
 s1-bottom-coord-rule := conj-first-bottom-coord-rule & s-bottom-coord-phrase &
-  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+  [ SYNSEM.LOCAL [ COORD-STRAT "1",
+		   CAT [ MC #mc,
+			 HEAD.INV #inv ] ],
+    COORD-DTR.SYNSEM.LOCAL.CAT [ MC #mc,
+				 HEAD.INV #inv ] ].
   
 ; For the analysis of inverted yes-no questions, we add the feature INV.
 
@@ -536,8 +613,9 @@ png :+ [ PER person,
 
 person := *top*.
 first := person.
-second := person.
-third := person.
+non-first := person.
+second := non-first.
+third := non-first.
 
 number := *top*.
 sg := number.
