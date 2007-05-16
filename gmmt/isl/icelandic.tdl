@@ -42,7 +42,7 @@ head-spec-phrase := basic-head-spec-phrase & head-final &
 ; and b) the adjectives to get the right set of facts.
 
 bare-np-phrase := basic-bare-np-phrase &
-  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
+  [ C-CONT.RELS <! [ PRED "_exist_q_rel" ] !> ].
 
 indef-bare-np-phrase := bare-np-phrase &
   [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.COG-ST type-id ].
@@ -438,7 +438,7 @@ adjective-lex := basic-int-mod-adj-lex &
 ;;; dropped, and by having the weak adjectives say that the 
 ;;; interpretation must not be indefinite (i.e., [COG-ST uniq+act+fam]).
 ;;; No longer need to say anything about SPEC here.  On the other
-;;; hand, have this type contribute the exist_q_rel and the COG-ST
+;;; hand, have this type contribute the _exist_q_rel and the COG-ST
 ;;; value.
 
 determiner-lex := basic-determiner-lex & basic-zero-arg &
@@ -446,7 +446,7 @@ determiner-lex := basic-determiner-lex & basic-zero-arg &
 			     COMPS < >,
 			     SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act ] >,
 			     SUBJ < > ],
-	     LKEYS.KEYREL.PRED "exist_q_rel" ]].
+	     LKEYS.KEYREL.PRED "_exist_q_rel" ]].
 
 sg-det-lex := determiner-lex &
   [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ] > ].
@@ -521,7 +521,7 @@ demonstrative-determiner-lex := norm-hook-lex-item & basic-zero-arg &
 	COMPS < >]],
 CONT [ HCONS < ! qeq & 
 	[ HARG #harg,
-	LARG #larg ] ! >, RELS <![ PRED "exist_q_rel"], #lkey & arg12-relation & [LBL #lbl] ! >] ] ,
+	LARG #larg ] ! >, RELS <![ PRED "_exist_q_rel"], #lkey & arg12-relation & [LBL #lbl] ! >] ] ,
 LKEYS [ KEYREL quant-relation &
 	[ ARG0 #ind,
 	RSTR #harg ], ALTKEYREL #lkey]]].
@@ -650,7 +650,7 @@ nom-sg-lex-rule := num+case-lex-rule &
 
 nom-pl-lex-rule := num+case-lex-rule &
   [ SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
-		   CONT.HOOK.INDEX.PNG [ NUM pl ] ] ].
+		   CONT.HOOK.INDEX.PNG [ NUM non-sg ] ] ].
 
 acc-sg-lex-rule := num+case-lex-rule &
   [ SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
@@ -658,7 +658,7 @@ acc-sg-lex-rule := num+case-lex-rule &
 
 acc-pl-lex-rule := num+case-lex-rule &
   [ SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
-		   CONT.HOOK.INDEX.PNG [ NUM pl ] ] ].
+		   CONT.HOOK.INDEX.PNG [ NUM non-sg ] ] ].
 
 dat-sg-lex-rule := num+case-lex-rule &
   [ SYNSEM.LOCAL [ CAT.HEAD.CASE dat,
@@ -666,7 +666,7 @@ dat-sg-lex-rule := num+case-lex-rule &
 
 dat-pl-lex-rule := num+case-lex-rule &
   [ SYNSEM.LOCAL [ CAT.HEAD.CASE dat,
-		   CONT.HOOK.INDEX.PNG [ NUM pl ] ] ].
+		   CONT.HOOK.INDEX.PNG [ NUM non-sg ] ] ].
 
 infl-nom-sg-lex-rule := infl-ltol-rule & nom-sg-lex-rule.
 
@@ -811,7 +811,7 @@ const-verb := num+pers-lex-rule & const-ltow-rule.
     
 1pl_verb-lex-rule := infl-verb &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
-							      NUM pl ]] >,
+							      NUM non-sg ]] >,
     DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
     
 2sg_verb-lex-rule := infl-verb &
@@ -821,7 +821,7 @@ const-verb := num+pers-lex-rule & const-ltow-rule.
     
 2pl_verb-lex-rule := infl-verb &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
-							      NUM pl ]] >,
+							      NUM non-sg ]] >,
     DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
 
 3sg_verb-lex-rule := infl-verb &
@@ -831,7 +831,7 @@ const-verb := num+pers-lex-rule & const-ltow-rule.
     
 3pl_verb-lex-rule := const-verb &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
-							      NUM pl ]] >,
+							      NUM non-sg ]] >,
     DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
 
 imp-lex-rule := add-only-no-ccont-rule &
@@ -844,11 +844,11 @@ imp-lex-rule := add-only-no-ccont-rule &
 
 2-pl-imp-lex-rule := imp-lex-rule & infl-ltow-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
-							      NUM pl ]] > ].
+							      NUM non-sg ]] > ].
 
 1-pl-imp-lex-rule := imp-lex-rule & infl-ltow-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
-							      NUM pl ]] > ].
+							      NUM non-sg ]] > ].
 aux-lex-rule := verb-lex-rules &
   [ DTR aux-verb-lex ].
 
@@ -858,7 +858,7 @@ aux-lex-rule := verb-lex-rules &
 
 1-pl-aux-lex-rule := aux-lex-rule & infl-ltow-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
-							      NUM pl ] ] > ].
+							      NUM non-sg ] ] > ].
 
 2-sg-aux-lex-rule := aux-lex-rule & infl-ltow-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
@@ -866,7 +866,7 @@ aux-lex-rule := verb-lex-rules &
 
 2-pl-aux-lex-rule := aux-lex-rule & infl-ltow-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
-							      NUM pl ] ] > ].
+							      NUM non-sg ] ] > ].
 
 3-sg-aux-lex-rule := aux-lex-rule & infl-ltow-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
@@ -874,7 +874,7 @@ aux-lex-rule := verb-lex-rules &
 
 3-pl-aux-lex-rule := aux-lex-rule & infl-ltow-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
-							      NUM pl ] ] > ].
+							      NUM non-sg ] ] > ].
 
 adj-lex-rule := infl-ltow-rule &
   [ DTR adjective-lex ].
