@@ -28,3 +28,4 @@
  ((:path . "mal_567") (:content . "Malayalam test suite from Ling 567"))
  ((:path . "zul_567") (:content . "Zulu test suite from Ling 567"))
  ((:path . "eng") (:content . "English test suite")))
+
