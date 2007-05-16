@@ -321,32 +321,41 @@ non-sg := number.
 pl := non-sg.
 
 ;;; Noun class rules
- 
+;;; ERB 2007-05-16 Adding lots of disjunctive classes to 
+;;; better handle homophony/syncretism in the various paradigms. 
+
+
 nclass := *top*.
 c1+c2 := nclass.
-c1 := c1+c2.
-c2 := c1+c2.
+c1+c1a+c3 := nclass.
+c1+c3 := c1+c1a+c3.
+c1+c1a := c1+c1a+c3.
+c2+c2a := nclass.
+c1 := c1+c2 & c1+c3 & c1+c1a.
+c2 := c1+c2 & c2+c2a.
 
 c1a+c2a := nclass.
-c1a := c1a+c2a.
-c2a := c1a+c2a.
+c1a := c1a+c2a & c1+c1a.
+c2a := c1a+c2a & c2+c2a.
 
+c4+c9 := nclass.
 c3+c4 := nclass.
-c3 := c3+c4.
-c4 := c3+c4.
+c3 := c3+c4 & c1+c3.
+c4 := c3+c4 & c4+c9.
 
 c5+c6 := nclass.
 c5 := c5+c6.
 c6 := c5+c6.
 
 c7+c8 := nclass.
+c8+c10 := nclass.
 c7 := c7+c8.
-c8 := c7+c8.
+c8 := c7+c8 & c8+c10.
 
 c9+c10 := nclass.
 c11+c10 := nclass.
-c9 := c9+c10.
-c10 := c9+c10 & c11+c10.
+c9 := c9+c10 & c4+c9.
+c10 := c9+c10 & c11+c10 & c8+c10.
 c11 := c11+c10.
 
 c14 := nclass.
@@ -354,10 +363,11 @@ c14 := nclass.
 ; ERB 2007-05-15 Lots of syncretism for these three
 
 c15+c16+c17 := nclass.
+c15+c17 := c15+c16+c17.
 
-c15 := c15+c16+c17.
+c15 := c15+c17.
 c16 := c15+c16+c17.
-c17 := c15+c16+c17.
+c17 := c15+c17.
     
 
 demonstrative_a_rel := predsort.
@@ -431,7 +441,10 @@ neg-infl-lex-rule := cont-change-only-lex-rule & inflecting-lex-rule &
 
 ;;; Verb tense information - tried to set this up
 ;;; so that it could be expanded later if necessary.
-verb-tense-lex-rule := add-only-no-ccont-rule & lexeme-to-lexeme-rule &
+
+;;; ERB 2007-05-16 Added nocoord here to get rid of -M labels.
+
+verb-tense-lex-rule := add-only-no-ccont-rule & lexeme-to-lexeme-rule & nocoord &
    [DTR verb-tense-rule-dtr &
 	[SYNSEM.LOCAL.CAT.HEAD.FORM dec ] ] .
 
@@ -536,8 +549,10 @@ neg-fv-lex-rule := fv-lex-rule &
 class-prefix-lex-rule := infl-ltow-rule &
    [ DTR common-noun-lex] .
 
-c1-prefix-lex-rule := class-prefix-lex-rule &
-   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NCL c1,
+
+;;; ERB 2007-05-16
+c1+c3-prefix-lex-rule := class-prefix-lex-rule &
+   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NCL c1+c3,
 					NUM sg] ].
 
 c2-prefix-lex-rule := class-prefix-lex-rule &
@@ -552,9 +567,9 @@ c2a-prefix-lex-rule := class-prefix-lex-rule &
    [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NCL c2a,
 					NUM non-sg] ].
 
-c3-prefix-lex-rule := class-prefix-lex-rule &
-   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NCL c3,
-					NUM sg] ].
+;c3-prefix-lex-rule := class-prefix-lex-rule &
+;   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NCL c3,
+;					NUM sg] ].
 
 c4-prefix-lex-rule := class-prefix-lex-rule &
    [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NCL c4,
@@ -591,14 +606,15 @@ c11-prefix-lex-rule := class-prefix-lex-rule &
 c14-prefix-lex-rule := class-prefix-lex-rule &
    [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NCL c14 ] ].
 
-c15-prefix-lex-rule := class-prefix-lex-rule &
-   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NCL c15 ] ].
+; ERB 2007-05-16
+c15+c17-prefix-lex-rule := class-prefix-lex-rule &
+   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NCL c15+c17 ] ].
 
 c16-prefix-lex-rule := class-prefix-lex-rule &
    [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NCL c16 ] ].
 
-c17-prefix-lex-rule := class-prefix-lex-rule &
-   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NCL c17 ] ].
+;c17-prefix-lex-rule := class-prefix-lex-rule &
+;   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NCL c17 ] ].
 
 
 ;;; SUBJECT CONCORD RULES
@@ -609,23 +625,24 @@ subj-concord-lex-rule := infl-ltow-rule &
 3rd-subj-concord-lex-rule := subj-concord-lex-rule &
    [ SYNSEM.LOCAL.CONT.HOOK.XARG.PNG.PER third ] .
 
-c1-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [LOCAL.CONT.HOOK.INDEX.PNG.NCL c1 ] > ] .
+c1+c1a+c3-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [LOCAL.CONT.HOOK.INDEX.PNG.NCL c1+c1a+c3 ] > ] .
 
-c2-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c2 ] > ] .
+c2+c2a-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c2+c2a ] > ] .
 
-c1a-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c1a ] > ] .
+;c1a-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c1a ] > ] .
 
-c2a-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c2a ] > ] .
+;c2a-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c2a ] > ] .
 
-c3-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c3 ] > ] .
+;c3-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c3 ] > ] .
 
-c4-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c4 ] > ] .
+; ERB 2007-05-16
+c4+c9-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c4+c9 ] > ] .
 
 c5-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c5 ] > ] .
@@ -636,14 +653,14 @@ c6-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
 c7-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c7 ] > ] .
 
-c8-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c8 ] > ] .
+c8+c10-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c8+c10 ] > ] .
 
-c9-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c9 ] > ] .
+;c9-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c9 ] > ] .
 
-c10-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c10 ] > ] .
+;c10-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c10 ] > ] .
 
 c11-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c11 ] > ] .
@@ -651,14 +668,14 @@ c11-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
 c14-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c14 ] > ] .
 
-c15-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c15 ] > ] .
+c15+c16+c17-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c15+c16+c17 ] > ] .
 
-c16-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c16 ] > ] .
+;c16-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c16 ] > ] .
 
-c17-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c17 ] > ] .
+;c17-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c17 ] > ] .
 
 1sg-subj-concord-lex-rule := subj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
@@ -678,10 +695,10 @@ c17-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
 
 
 ;;; Object concord lexical rules
-
+;;; ERB 2007-05-16 Added no-coord here.
    
 obj-concord-lex-rule := add-only-no-ccont-rule & lexeme-to-lexeme-rule &
-			neg-can-dtr & default-fv-dtr &
+			neg-can-dtr & default-fv-dtr & nocoord &
    [ DTR takes-oc & 
 	 [ SYNSEM.LOCAL.CAT.HEAD.AUX - ] ].
 
@@ -710,23 +727,23 @@ add-obj-concord-lex-rule := inflecting-lex-rule & obj-concord-lex-rule &
 3rd-obj-concord-lex-rule := add-obj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.PER third ], ... > ] .
 
-c1-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c1 ], ... > ] .
+c1+c1a-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c1+c1a ], ... > ] .
 
-c2-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c2 ], ... > ] .
+c2+c2a-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c2+c2a ], ... > ] .
 
-c1a-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c1a ], ... > ] .
+;c1a-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c1a ], ... > ] .
 
-c2a-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c2a ], ... > ] .
+;c2a-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c2a ], ... > ] .
 
 c3-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c3 ], ... > ] .
 
-c4-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c4 ], ... > ] .
+c4+c9-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c4+c9 ], ... > ] .
 
 c5-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c5 ], ... > ] .
@@ -737,14 +754,14 @@ c6-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
 c7-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c7 ], ... > ] .
 
-c8-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c8 ], ... > ] .
+c8+c10-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c8+c10 ], ... > ] .
 
-c9-obj-concord-lex-rule := 3rd-obj-concord-lex-rule & 
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c9 ], ... > ] .
+;c9-obj-concord-lex-rule := 3rd-obj-concord-lex-rule & 
+;   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c9 ], ... > ] .
 
-c10-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c10 ], ... > ] .
+;c10-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c10 ], ... > ] .
 
 c11-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c11 ], ... > ] .
@@ -752,14 +769,14 @@ c11-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
 c14-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c14 ], ... > ] .
 
-c15-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c15 ], ... > ] .
+c15+c16+c17-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c15+c16+c17 ], ... > ] .
 
-c16-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c16 ], ... > ] .
+;c16-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c16 ], ... > ] .
 
-c17-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c17 ], ... > ] .
+;c17-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c17 ], ... > ] .
 
 1sg-obj-concord-lex-rule := add-obj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
@@ -786,20 +803,20 @@ adj-concord-lex-rule := infl-ltow-rule &
 3rd-adj-concord-lex-rule := adj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG.PER third ] > ].
 
-c1-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG.NCL c1 ] > ] .
+c1+c1a+c3-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG.NCL c1+c1a+c3 ] > ] .
 
-c2-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c2 ] > ] .
+c2+c2a-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c2+c2a ] > ] .
 
-c1a-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c1a ] > ] .
+;c1a-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c1a ] > ] .
 
-c2a-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c2a ] > ] .
+;c2a-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c2a ] > ] .
 
-c3-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c3 ] > ] .
+;c3-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c3 ] > ] .
 
 c4-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c4 ] > ] .
@@ -828,31 +845,31 @@ c11-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
 c14-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c14 ] > ] .
 
-c15-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c15 ] > ] .
+c15+c16+c17-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c15+c16+c17 ] > ] .
 
-c16-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c16 ] > ] .
+;c16-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c16 ] > ] .
 
-c17-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c17 ] > ] .
+;c17-adj-concord-lex-rule := 3rd-adj-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c17 ] > ] .
 
 ;;; ERB 2007-05-15 Relative concords
 
 relative-concord-lex-rule := infl-ltow-rule &
    [ DTR relative-lex ] .
 
-c1-rel-concord-lex-rule := relative-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c1 ] > ].
+c1+c1a+c3-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c1+c1a+c3 ] > ].
 
-c2-rel-concord-lex-rule := relative-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c2 ] > ].
+c2+c2a-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c2+c2a ] > ].
 
-c3-rel-concord-lex-rule := relative-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c3 ] > ].
+;c3-rel-concord-lex-rule := relative-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c3 ] > ].
 
-c4-rel-concord-lex-rule := relative-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c4 ] > ].
+c4+c9-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c4+c9 ] > ].
 
 c5-rel-concord-lex-rule := relative-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c5 ] > ].
@@ -863,14 +880,14 @@ c6-rel-concord-lex-rule := relative-concord-lex-rule &
 c7-rel-concord-lex-rule := relative-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c7 ] > ].
 
-c8-rel-concord-lex-rule := relative-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c8 ] > ].
+c8+c10-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c8+c10 ] > ].
 
-c9-rel-concord-lex-rule := relative-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c9 ] > ].
+;c9-rel-concord-lex-rule := relative-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c9 ] > ].
 
-c10-rel-concord-lex-rule := relative-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c10 ] > ].
+;c10-rel-concord-lex-rule := relative-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c10 ] > ].
 
 c11-rel-concord-lex-rule := relative-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c11 ] > ].
@@ -878,11 +895,11 @@ c11-rel-concord-lex-rule := relative-concord-lex-rule &
 c14-rel-concord-lex-rule := relative-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c14 ] > ].
 
-c15-rel-concord-lex-rule := relative-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c15 ] > ].
+c15+c16+c17-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c15+c16+c17 ] > ].
 
-c16-rel-concord-lex-rule := relative-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c16 ] > ].
+;c16-rel-concord-lex-rule := relative-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c16 ] > ].
 
-c17-rel-concord-lex-rule := relative-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c17 ] > ].
+;c17-rel-concord-lex-rule := relative-concord-lex-rule &
+;   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c17 ] > ].

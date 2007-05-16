@@ -241,21 +241,24 @@ nina := pronoun-lex &
 ;;; ERB 2007-05-15 Kelly just had c1 and c9 here, but it seems worthwhile
 ;;; to fill out the rest of the paradigm.
 
+;;; ERB 2007-05-16 Replacing homophony with underspecification.  Assuming
+;;; c1a goes with c1 and c2a with c2.
+
 lo-a := proximal-dem-adj-lex &
 [ STEM < "lo" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c1]>].
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c1+c1a+c3]>].
 
 laba:= proximal-dem-adj-lex &
 [ STEM < "laba" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c2]>].
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c2+c2a]>].
 
-lo-a2:= proximal-dem-adj-lex &
-[ STEM < "lo" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c3]>].
+;lo-a2:= proximal-dem-adj-lex &
+;[ STEM < "lo" >,
+;  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c3]>].
 
 le-a:= proximal-dem-adj-lex &
 [ STEM < "le" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c4]>].
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c4+c9]>].
 
 leli:= proximal-dem-adj-lex &
 [ STEM < "leli" >,
@@ -271,15 +274,15 @@ lesi:= proximal-dem-adj-lex &
 
 lezi:= proximal-dem-adj-lex &
 [ STEM < "lezi" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c8]>].
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c8+c10]>].
 
-le-a2:= proximal-dem-adj-lex &
-[ STEM < "le" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c9]>].
+;le-a2:= proximal-dem-adj-lex &
+;[ STEM < "le" >,
+;  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c9]>].
 
-lezi := proximal-dem-adj-lex &
-[ STEM < "lezi" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c10]>].
+;lezi-2 := proximal-dem-adj-lex &
+;[ STEM < "lezi-2" >,
+;  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c10]>].
 
 lolu:= proximal-dem-adj-lex &
 [ STEM < "lolu" >,
@@ -298,19 +301,19 @@ lokhu:= proximal-dem-adj-lex &
 
 lowo-a := hearer-dem-adj-lex &
 [ STEM < "lowo" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c1]>].
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c1+c1a+c3]>].
 
 labo := hearer-dem-adj-lex &
 [ STEM < "labo" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c2]>].
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c2+c2a]>].
 
-lowo-a2 := hearer-dem-adj-lex &
-[ STEM < "lowo" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c3]>].
+;lowo-a2 := hearer-dem-adj-lex &
+;[ STEM < "lowo" >,
+;  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c3]>].
 
 leyo-a := hearer-dem-adj-lex &
 [ STEM < "leyo" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c4]>].
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c4+c9]>].
 
 lelo := hearer-dem-adj-lex &
 [ STEM < "lelo" >,
@@ -326,15 +329,15 @@ leso := hearer-dem-adj-lex &
 
 lezo := hearer-dem-adj-lex &
 [ STEM < "lezo" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c8]>].
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c8+c10]>].
 
-leyo-a2 := hearer-dem-adj-lex &
-[ STEM < "leyo" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c9]>].
+;leyo-a2 := hearer-dem-adj-lex &
+;[ STEM < "leyo" >,
+;  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c9]>].
 
-lezo-2 := hearer-dem-adj-lex &
-[ STEM < "lezo" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c10]>].
+;lezo-2 := hearer-dem-adj-lex &
+;[ STEM < "lezo" >,
+;  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c10]>].
 
 lolo := hearer-dem-adj-lex &
 [ STEM < "lolo" >,
@@ -350,19 +353,19 @@ lokho := hearer-dem-adj-lex &
 
 lowaya-a := remote-dem-adj-lex &
 [ STEM < "lowaya" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c1]>].
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c1+c1a+c3]>].
 
 labaya := remote-dem-adj-lex &
 	  [ STEM < "labaya" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c2]>].
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c2+c2a]>].
 
-lowaya-a2 := remote-dem-adj-lex &
-[ STEM < "lowaya" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c3]>].
+;lowaya-a2 := remote-dem-adj-lex &
+;[ STEM < "lowaya" >,
+;  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c3]>].
 
 leya-a := remote-dem-adj-lex &
 [ STEM < "leya" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c4]>].
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c4+c9]>].
 
 leliya := remote-dem-adj-lex &
 [ STEM < "leliya" >,
@@ -380,9 +383,9 @@ leziya := remote-dem-adj-lex &
 [ STEM < "leziya" >,
   SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c8]>].
 
-leya-a2 := remote-dem-adj-lex &
-[ STEM < "leya" >,
-  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c9]>].
+;leya-a2 := remote-dem-adj-lex &
+;[ STEM < "leya" >,
+;  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c9]>].
 
 loluya := remote-dem-adj-lex &
 [ STEM < "loluya" >,
