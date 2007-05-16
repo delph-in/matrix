@@ -481,17 +481,19 @@ individual := semarg &
 ; status of referents following Borthen & Haugereid 2005.  Replacing
 ; DEF and DEF-OPT with COG-ST and OPT-CS.
 
+; ERB 2007-05-16 Can't put SPECI inside COG-ST, or the generator won't
+; pay attention to the value of COG-ST.  So, making it parallel.
 
 index := individual &
-	 [ COG-ST cog-st ].
+	 [ COG-ST cog-st,
+	   SPECI bool ].
 
 ; ERB 2007-02-05 Hierarchy from Borthen and Haugereid of possible
 ; COG-ST values.  Departing from B&H analysis by putting SPECI on
 ; this type (as well as by making COG-ST a feature of indicies rather
 ; than parallel to the indices in the next level up).
 
-cog-st := avm &
-  [ SPECI bool ].
+cog-st := avm.
 
 activ-or-less := cog-st.
 uniq-or-more := cog-st.

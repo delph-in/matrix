@@ -92,17 +92,31 @@ adverb-lex := basic-adverb-lex & intersective-mod-lex &
 ;;; gender, but that doesn't come into play so much: subject-verb agreement
 ;;; only does person and number.
 
+;;; ERB 2007-05-16 And furthermore, we can't lose case information,
+;;; or we're going to overgenerate like crazy.  Assume for now that
+;;; case must be shared between NP conjuncts and mother.  There are
+;;; enough constraints in common between np1-top-coord-rule and np1-mid-coord-rule
+;;; that it might be nice to refactor.
+
 np1-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule &
   [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.NUM non-sg,
-		   COORD-STRAT "1" ] ].
+		   CAT.HEAD.CASE #case,
+		   COORD-STRAT "1" ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
 
 np1-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule &
-  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE #case, 
+		   COORD-STRAT "1" ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ] .
 
 np1-bottom-coord-rule := conj-first-bottom-coord-rule & np-bottom-coord-phrase &
   [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.PER #per,
+		   CAT.HEAD.CASE #case,
 		   COORD-STRAT "1" ],
-    CONJ-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER #per ].
+    NONCONJ-DTR.SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.PER #per,
+			    CAT.HEAD.CASE #case ] ].
 
 ; ERB 2007-05-16 Too avoid double parses, use 1st-right coord phrase
 ; in case that both are first person for whatever reason. And 3rd-2nd
@@ -295,14 +309,18 @@ head :+ [ AUX bool,
 
 form := avm.
 
-fin := form.
+;;; ERB 2007-05-16 For root condition
+
+fin-or-imp := form.
+
+fin := fin-or-imp.
 
 ;;; ERB 2007-05-15 Renaming "inf" "supine", since "inf" isn't used
 ;;; in the grammar, and I'm adding "supine", for the complement of "can".
 
 supine := form.
 
-imp := form.
+imp := fin-or-imp.
 
 ;;; If there are aspects of the syntax which pick out
 ;;; lexical Vs (transitive or intransitive) such as V-attachment
@@ -330,14 +348,17 @@ trans-verb-lex := reg-verb-lex &
 
 
 ;;; ERB 2007-05-15 Creating two subtypes so we can have "hvort"
-;;; ('whether') as well as 'that'.
+;;; ('whether') as well as 'that'.  
+
+;;; ERB 2007-05-16 These guys should insist on finite complements.
 
 complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
   [ SYNSEM.LOCAL.CAT [ HEAD comp,
 		       VAL [ SPR < >,
 			     SUBJ < >,
 			     COMPS < #comps & synsem
-				     & [ LOCAL.CAT [ HEAD verb,
+				     & [ LOCAL.CAT [ HEAD verb &
+							  [ FORM fin ],
 						     MC - ] ] > ,
 			     SPEC < > ] ],
     ARG-ST < #comps > ].
@@ -961,8 +982,11 @@ adj-lex-rule := infl-ltow-rule &
 ;;; bothering with morphophonology, just putting the one in for the
 ;;; class containing "eat".
 
+;;; ERB 2007-05-16 Forgot to constrain FORM here.
+
 supine-verb-lex-rule := infl-ltow-rule &
-  [ DTR reg-verb-lex ].
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM supine,
+    DTR reg-verb-lex ].
 
 ;;; ERB 2007-05-11 Moving posthead constraint here.
 
