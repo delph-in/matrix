@@ -4,8 +4,13 @@
 
 ; The head of head-comp-phrase can't be: ['comp']
 
+; ERB 2007-05-15 Abusing OPT feature again in the analysis
+; of INI.  head-comp-phrase must now check for compatibility
+; with [ OPT - ].
+
 head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
-  [ SYNSEM.LOCAL.CAT.HEAD +nvjrpdmo ] .
+  [ SYNSEM.LOCAL.CAT.HEAD +nvjrpdmo,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT - ].
 
 subj-head-phrase := decl-head-subj-phrase & head-final &
   [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.COMPS < >,
@@ -686,12 +691,21 @@ no-obj-concord-lex-rule := constant-lex-rule & obj-concord-lex-rule &
 ;;; ERB 2007-05-15 Need to add a path for verbs like eat to 
 ;;; allow INI of object (I think --- we'll see what Sonja says).
 
+;;; ERB 2007-05-15 Hmm ... this was leading to double parses, of 
+;;; course, in cases with no object concord and overt objects.  I 
+;;; think we should insist on that object in fact being dropped.
+;;; Marking it [ OPT + ] now, and making head-comp check for
+;;; compatibility with [ OPT - ].
+
 no-obj-concord-lex-rule2 := constant-lex-rule & obj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ OPT-CS type-id ], ... > ].
+   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ OPT +, OPT-CS type-id ], ... > ].
+
+;;; ERB 2007-05-15 This one said [ OPT + ] on the complement, but
+;;; there is no need.  Just not saying [ OPT - ] does the right thing
+;;; (i.e., allows object drop).
 
 add-obj-concord-lex-rule := inflecting-lex-rule & obj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ OPT +,
-				    LOCAl.CONT.HOOK.INDEX.COG-ST uniq+fam+act &
+   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAl.CONT.HOOK.INDEX.COG-ST uniq+fam+act &
 								 [SPECI + ] ], ... > ] .
 3rd-obj-concord-lex-rule := add-obj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.PER third ], ... > ] .
