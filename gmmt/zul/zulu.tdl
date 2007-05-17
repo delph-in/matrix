@@ -103,8 +103,8 @@ common-noun-lex := noun-lex &
 
 pronoun-lex := noun-lex &
   [ SYNSEM [ LOCAL [CAT.VAL.SPR < [ OPT + ] >,
-		    CONT.HOOK.INDEX.COG-ST activ-or-more &
-				[SPECI +]],
+		    CONT.HOOK.INDEX [ COG-ST activ-or-more,
+				      SPECI +]],
 	     LKEYS.KEYREL.PRED "_pronoun_n_rel"]].
 
 
@@ -722,8 +722,8 @@ no-obj-concord-lex-rule2 := constant-lex-rule & obj-concord-lex-rule &
 ;;; (i.e., allows object drop).
 
 add-obj-concord-lex-rule := inflecting-lex-rule & obj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAl.CONT.HOOK.INDEX.COG-ST uniq+fam+act &
-								 [SPECI + ] ], ... > ] .
+   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAl.CONT.HOOK.INDEX [ COG-ST uniq+fam+act,
+							    SPECI + ]], ... > ] .
 3rd-obj-concord-lex-rule := add-obj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.PER third ], ... > ] .
 
