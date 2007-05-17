@@ -481,17 +481,19 @@ individual := semarg &
 ; status of referents following Borthen & Haugereid 2005.  Replacing
 ; DEF and DEF-OPT with COG-ST and OPT-CS.
 
+; ERB 2007-05-16 Can't put SPECI inside COG-ST, or the generator won't
+; pay attention to the value of COG-ST.  So, making it parallel.
 
 index := individual &
-	 [ COG-ST cog-st ].
+	 [ COG-ST cog-st,
+	   SPECI bool ].
 
 ; ERB 2007-02-05 Hierarchy from Borthen and Haugereid of possible
 ; COG-ST values.  Departing from B&H analysis by putting SPECI on
 ; this type (as well as by making COG-ST a feature of indicies rather
 ; than parallel to the indices in the next level up).
 
-cog-st := avm &
-  [ SPECI bool ].
+cog-st := avm.
 
 activ-or-less := cog-st.
 uniq-or-more := cog-st.
@@ -843,6 +845,8 @@ lex-rule := phrase-or-lexrule & word-or-lexrule &
 ; the diff-list append.
 
 lexeme-to-word-rule := same-local-lex-rule &
+		       same-modified-lex-rule &
+		       same-light-lex-rule &
 		       same-non-local-lex-rule &
   [ INFLECTED +,
     DTR [ INFLECTED - ],
@@ -887,6 +891,16 @@ same-local-lex-rule := same-cat-lex-rule &
 same-non-local-lex-rule := lex-rule &
   [ SYNSEM.NON-LOCAL #nl,
     DTR.SYNSEM.NON-LOCAL #nl ].
+
+; ERB 2007-05-16 Not everything is inside LOCAL or NON-LOCAL.
+
+same-modified-lex-rule := lex-rule &
+  [ SYNSEM.MODIFIED #mod,
+    DTR.SYNSEM.MODIFIED #mod ].
+
+same-light-lex-rule := lex-rule &
+  [ SYNSEM.LIGHT #light,
+    DTR.SYNSEM.LIGHT #light ].
 
 same-ctxt-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.CTXT #ctxt,
@@ -937,10 +951,17 @@ no-ccont-lex-rule := lex-rule &
   [ C-CONT [ RELS <! !>,
 	     HCONS <! !> ]].
 
+; ERB 2007-05-16 Realized I haven't been copying up MODIFIED
+; and LIGHT.  Fixing that.
+
 non-local-change-only-lex-rule := same-local-lex-rule &
+				  same-modified-lex-rule &
+				  same-light-lex-rule &
 				  no-ccont-lex-rule.
 
 local-change-only-lex-rule := same-non-local-lex-rule &
+			      same-modified-lex-rule &
+			      same-light-lex-rule &
 			      no-ccont-lex-rule.
 
 ; ERB 2004-04-13 The only permissible changes to CONT are
@@ -956,14 +977,16 @@ local-change-only-lex-rule := same-non-local-lex-rule &
 ; text warning above.
 
 cont-change-only-lex-rule := same-non-local-lex-rule &
-			    same-ctxt-lex-rule &
-			    same-cat-lex-rule &
-			    same-agr-lex-rule.
+			     same-modified-lex-rule &
+			     same-light-lex-rule &
+			     same-ctxt-lex-rule &
+			     same-cat-lex-rule &
+			     same-agr-lex-rule.
 
 ctxt-change-only-lex-rule := local-change-only-lex-rule & 
-			    same-cont-lex-rule &
-			    same-cat-lex-rule &
-			    same-agr-lex-rule.
+			     same-cont-lex-rule &
+			     same-cat-lex-rule &
+			     same-agr-lex-rule.
 
 agr-change-only-lex-rule := local-change-only-lex-rule &
 			    same-cont-lex-rule &
@@ -1001,6 +1024,8 @@ val-change-only-lex-rule := cat-change-only-lex-rule &
 ; since they are redundant with constraints on lexeme-to-word-rule.
 
 add-only-rule := same-local-lex-rule &
+		 same-modified-lex-rule &
+		 same-light-lex-rule &
 	         same-non-local-lex-rule.
 
 add-only-no-ccont-rule := add-only-rule &
@@ -1714,6 +1739,9 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
 ; requirements are discharged.  Hmmm, again this was already RELS <! !>
 ; and HCONS <! !> in C-CONT.
 
+; ERB 2007-05-16 Moving MC identification from basic-head-opt-subj-phrase
+; down to decl-head-opt-subj-phrase, since we might *not* want it for
+; imperatives.
 
 basic-head-opt-subj-phrase := head-valence-phrase & head-only &
   [ INFLECTED #infl,
@@ -1722,7 +1750,6 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 				  COMPS #comps,
 				  SPR #spr,
 				  SPEC #spec ],
-			    MC #mc,
 			    POSTHEAD #ph ],
 		MODIFIED #mod ],
     C-CONT [ RELS <! !>,
@@ -1734,14 +1761,16 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 					     COMPS #comps & < >,
 					     SPR #spr,
 					     SPEC #spec ],
-				       MC #mc,
 				       POSTHEAD #ph ],
 				 CONT.HOOK.INDEX event ],
 			 MODIFIED #mod ] ] ].
 
 ; ERB 2007-01-21 Subtypes for declaratives and imperatives
 
-decl-head-opt-subj-phrase := basic-head-opt-subj-phrase & declarative-clause.
+decl-head-opt-subj-phrase := basic-head-opt-subj-phrase & declarative-clause &
+  [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
 imp-head-opt-subj-phrase := basic-head-opt-subj-phrase & imperative-clause.
 
 
@@ -2811,8 +2840,13 @@ unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
                                      COORD -,
                                      CONT.HOOK [ INDEX #rind ]]] > ].
 
+;;; ERB 2007-05-16 Note for sfd: There is probably a single type
+;;; you could inherit from here that combines what you need.
+
 infl-bottom-coord-rule := same-local-lex-rule &
                           same-non-local-lex-rule &
+			  same-modified-lex-rule &
+			  same-light-lex-rule &
                           inflecting-lex-rule &
   [ INFLECTED +,
     DTR.INFLECTED -,
@@ -2954,7 +2988,13 @@ omni-conj-last-left-coord-rule := omni-binary-left-coord-rule &
     NONCONJ-DTR #ncdtr,
     ARGS < #ncdtr, #cdtr > ].
 
+;;; ERB 2007-05-16 Note for sfd: There is probably a single type
+;;; you could inherit from here that combines what you need.
+
+
 infl-left-coord-rule := omni-left-coord-rule &
+			same-modified-lex-rule &
+			same-light-lex-rule &
                         same-local-lex-rule &
                         same-non-local-lex-rule &
                         inflecting-lex-rule &
