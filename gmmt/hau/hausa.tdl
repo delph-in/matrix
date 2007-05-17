@@ -390,6 +390,9 @@ aux-verb-lex := verb-lex & trans-first-arg-raising-lex-item-1 &
 ;;adjectives 
 
 ;;; ERB 2007-05-12 Kelsey says that adjectives are posthead.
+;;; ... or at least the thing corresponding to "hungry" is.
+;;; Her master test suite has some prehead adjectives, so I'm
+;;; going to move that constraint down to the lex item.
 
 adjective-lex := basic-int-mod-adj-lex & 
 [SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [LOCAL [CAT [HEAD noun,
@@ -397,8 +400,7 @@ adjective-lex := basic-int-mod-adj-lex &
 			VAL [SPR < >,
 			     SUBJ < >,
 			     COMPS < > ,
-			     SPEC < > ],
-			POSTHEAD + ]]]].
+			     SPEC < > ]]]]].
 
 f-adjective-lex := adjective-lex &
 [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem]]>].

@@ -455,13 +455,13 @@ ròokee := transitive-verb-lex &
   [ STEM < "ròokee" >,
     SYNSEM [LKEYS.KEYREL.PRED "_beg_v_rel"  ], INFLECTED -  ] .
 
-;san := transitive-verb-lex &  
-;  [ STEM < "san" >,
-;    SYNSEM [LKEYS.KEYREL.PRED "_know_v_rel"  ], INFLECTED -  ] .
+san_1 := transitive-verb-lex &  
+  [ STEM < "san" >,
+    SYNSEM [LKEYS.KEYREL.PRED "_know_v_rel"  ], INFLECTED -  ] .
 
 ; ERB 2007-05-16 prop-comp know for GMMT
 
-san := prop-comp-trverb-lex &
+san_2 := prop-comp-trverb-lex &
   [ STEM < "san" >,
     SYNSEM [LKEYS.KEYREL.PRED "_know_v_rel"  ], INFLECTED -  ] .
 
@@ -724,12 +724,14 @@ jaa := adjective-lex &
 
 mài-yunwàà := adjective-lex &
 [ STEM < "mài-yunwàà" >,
-  SYNSEM [ LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg,
+  SYNSEM [ LOCAL.CAT [ HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg,
+		       POSTHEAD + ],
 	   LKEYS.KEYREL.PRED "_hungry_a_rel" ]].
 
 mààsu-yunwàà := adjective-lex &
 [ STEM < "mààsu-yunwàà" >,
-  SYNSEM [ LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM non-sg,
+  SYNSEM [ LOCAL.CAT [ HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM non-sg,
+		       POSTHEAD + ],
 	   LKEYS.KEYREL.PRED "_hungry_a_rel" ]].
 
 
