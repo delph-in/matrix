@@ -308,7 +308,8 @@ noun-lex := noun-lex-supertype & single-rel-lex-item & no-hcons-lex-item.
 pronoun-lex := noun-lex &
   [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ,  
     SYNSEM.LKEYS.KEYREL.PRED "pronoun_n_rel" ,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.COG-ST activ-or-more & [SPECI + ]].
+    SYNSEM.LOCAL.CONT.HOOK.INDEX [ COG-ST activ-or-more, 
+				   SPECI + ]].
 
 personal-pronoun-lex := pronoun-lex &
 [ SYNSEM.LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act,
@@ -955,13 +956,15 @@ def-proper-noun-rule := const-ltow-rule &
    DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
 
 def-pronoun-rule := const-ltow-rule &
- [ SYNSEM.LOCAL.CONT.HOOK.INDEX.COG-ST activ-or-more & [SPECI + ] ,
+ [ SYNSEM.LOCAL.CONT.HOOK.INDEX [ COG-ST activ-or-more,
+				  SPECI + ] ,
    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ DEF-INDEF def ],
    SYNSEM.LOCAL.CAT.HEAD.PROPER_PRONOUN_COMMON personal_pronoun,
    DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
 
 indef-dem-pronoun-rule := const-ltow-rule &
- [ SYNSEM.LOCAL.CONT.HOOK.INDEX.COG-ST activ+fam & [SPECI + ] ,
+ [ SYNSEM.LOCAL.CONT.HOOK.INDEX [ COG-ST activ+fam,
+				  SPECI + ],
    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ DEF-INDEF indef ],
    SYNSEM.LOCAL.CAT.HEAD.PROPER_PRONOUN_COMMON it_pronoun,
    DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
