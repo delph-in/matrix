@@ -455,9 +455,16 @@ ròokee := transitive-verb-lex &
   [ STEM < "ròokee" >,
     SYNSEM [LKEYS.KEYREL.PRED "_beg_v_rel"  ], INFLECTED -  ] .
 
-san := transitive-verb-lex &  
+;san := transitive-verb-lex &  
+;  [ STEM < "san" >,
+;    SYNSEM [LKEYS.KEYREL.PRED "_know_v_rel"  ], INFLECTED -  ] .
+
+; ERB 2007-05-16 prop-comp know for GMMT
+
+san := prop-comp-trverb-lex &
   [ STEM < "san" >,
     SYNSEM [LKEYS.KEYREL.PRED "_know_v_rel"  ], INFLECTED -  ] .
+
 
 kaamàa := transitive-verb-lex &  
   [ STEM < "kaamàa" >,
@@ -505,8 +512,9 @@ kaawoo_1 := transitive-verb-lex &
 
 kàawooo_2 := transitive-verb-lex & 
  [ STEM <"kàawoo">,
-  SYNSEM [ LOCAL.CAT.HEAD[FORM imp ] ,
-	LKEYS.KEYREL.PRED "_bring_v_rel" ], INFLECTED + ].
+  SYNSEM [ LOCAL.CAT [ MC na,
+		       HEAD.FORM imp ] ,
+	   LKEYS.KEYREL.PRED "_bring_v_rel" ], INFLECTED + ].
 
 ganii := transitive-verb-lex &  
 [ STEM < "ganii" >,
@@ -582,8 +590,9 @@ fàafaràa := transitive-verb-lex &
 fàafaraa := transitive-verb-lex &
 [ STEM <"fàafaraa">,
   SYNSEM [ LKEYS.KEYREL.PRED "_chase_v_rel",
-	   LOCAL.CAT.HEAD.FORM imp ], 
-  INFLECTED +].
+	   LOCAL.CAT [ MC na,
+		       HEAD.FORM imp ]],
+  INFLECTED + ].
 
 
 dòokaa := transitive-verb-lex &
@@ -729,27 +738,29 @@ mààsu-yunwàà := adjective-lex &
 ;; adverbs
 jiyà := adverb-lex &
 [ STEM < "jiyà" >,
-SYNSEM [ LKEYS.KEYREL.PRED "_yesterday_a_rel"]].
+SYNSEM [ LKEYS.KEYREL.PRED "_yesterday_r_rel"]].
 
 sòosai := adverb-lex &
 [ STEM < "sòosai" >,
-SYNSEM [ LKEYS.KEYREL.PRED "_perfectly_a_rel"]].
+SYNSEM [ LKEYS.KEYREL.PRED "_perfectly_r_rel"]].
 
-zumbur := adverb-lex &
-[ STEM < "zumbur">,
-SYNSEM[LKEYS.KEYREL.PRED "_quickly_a_rel"]].
+; ERB 2007-05-16 One translation of 'quickly' will do.
+
+;zumbur := adverb-lex &
+;[ STEM < "zumbur">,
+;SYNSEM[LKEYS.KEYREL.PRED "_quickly_r_rel"]].
 
 gòòbe := adverb-lex &
 [ STEM < "gòobe">,
-SYNSEM[LKEYS.KEYREL.PRED "_tomorrow_a_rel"]].
+SYNSEM[LKEYS.KEYREL.PRED "_tomorrow_r_rel"]].
 
 maza := adverb-lex &
 [ STEM <"maza">,
-SYNSEM[LKEYS.KEYREL.PRED "_quickly_a_rel"]].
+SYNSEM[LKEYS.KEYREL.PRED "_quickly_r_rel"]].
 
 sau-biyu :=  adverb-lex &
 [ STEM <"sau-biyu">,
-SYNSEM[LKEYS.KEYREL.PRED "_twice_a_rel"]].
+SYNSEM[LKEYS.KEYREL.PRED "_twice_r_rel"]].
 
 
 ;;; Determiners

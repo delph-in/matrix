@@ -48,7 +48,7 @@ future := tense.
 ;;subjunct := mood.
 
 head :+ [ AUX bool,
-    	FORM form ] .
+	  FORM form ] .
 
 
 ; A-D forms for later implementation of verb grades
@@ -111,8 +111,12 @@ head-opt-subj-phrase := decl-head-opt-subj-phrase &
 				 VAL [ SUBJ < [ LOCAL.CAT.HEAD noun &
 					 [ CASE nom ] ] >] ] ].
 
+; ERB 2007-05-16 Need to maintain MC feature here.
+
 subj-head-phrase := decl-head-subj-phrase & head-final &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ] .
+  [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ MC #mc,
+				VAL.COMPS < > ] ].
 
 imperative-phrase :=  imp-head-opt-subj-phrase &
   [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb & [ FORM imp] ] ].
@@ -146,7 +150,17 @@ head-spec-phrase := basic-head-spec-phrase & head-final.
 ; introduced to match the semantic effect of bare NPs in your language.
 
 bare-np-phrase := basic-bare-np-phrase &
-  [C-CONT.RELS <! [ PRED "_exist_q_rel" ] !>] .
+  [ C-CONT.RELS <! [ PRED "_exist_q_rel" ] !>].
+
+; ERB 2007-05-16 Introducing two subtypes, to get the right distribution
+; of [ COG-ST type-id ].
+
+indef-bare-np-phrase := bare-np-phrase &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.COG-ST type-id ].
+
+def+dem-bare-np-phrase := bare-np-phrase &
+  [ SYNSEM.LOCAL.CAT.HEAD.DEF + ].
+
 
 ; Type for negative adverbs.
 
@@ -200,6 +214,13 @@ vp1-bottom-coord-rule := conj-first-bottom-coord-rule & vp-bottom-coord-phrase &
 ; We treat question particles as complementizers.
 ; Here is the lexical type for complementizers.
 
+; ERB 2007-05-16 Need to constrain complement to be properly
+; inflected (i.e., not imperative).  qpart-lex-item had said
+; [ FORM inflec ] on complement, that specifically allows 
+; imperatives.  I think that [ FORM fin ] is probably more
+; appropriate, and furthermore, we need this for all of
+; the complementizers.
+
 
 complementizer-lex-item := raise-sem-lex-item & basic-one-arg & 
   [ SYNSEM.LOCAL.CAT [ HEAD comp &
@@ -208,30 +229,32 @@ complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
                              SUBJ < >,
                              COMPS < #comp > ] ],
     ARG-ST < #comp &
-             [ LOCAL.CAT [ HEAD verb,
+             [ LOCAL.CAT [ HEAD verb &
+				[ FORM fin],
                            VAL [ SUBJ < >,
                                  COMPS < > ] ] ] > ] .
 
 ques-complementizer-lex-item := complementizer-lex-item &
 [ SYNSEM.LOCAL [ CAT [ MC -, HEAD.COMPTYPE cpmarker ], 
-		CONT.HOOK.INDEX.SF ques ] ].
+		 CONT.HOOK.INDEX.SF ques ] ].
 
 prop-complementizer-lex-item :=  complementizer-lex-item &
 [ SYNSEM.LOCAL[ CAT [ MC -, HEAD.COMPTYPE cpmarker ], 
 		CONT.HOOK.INDEX.SF prop] ].
 
 ; Subtype for question particles. Constrains SF to ques.
+
 qpart-lex-item := complementizer-lex-item &
   [ SYNSEM.LOCAL [ CAT [ MC +, HEAD.COMPTYPE qmarker, 
 			VAL [ SUBJ < >,
 			     SPEC < >, 
 	 		     SPR < > ] ],
-		CONT.HOOK.INDEX.SF ques ],
-  ARG-ST < [LOCAL.CAT.HEAD.FORM inflec]> ] .
+		CONT.HOOK.INDEX.SF ques ]].
 
 ;;; Lexical types
 
-noun :+ [ MOD < > ].
+noun :+ [ MOD < >,
+	  DEF bool ].
 verb :+ [MOD < > ].
 det :+ [ MOD < > ].
 +nvd :+ [ MOD < > ].
@@ -243,21 +266,33 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
                            COMPS < >,
                            SUBJ < >,
                            SPEC < > ],
-    ARG-ST < #spr >,
-	INFLECTED - ] .
+    ARG-ST < #spr > ] .
 
 common-noun-lex := noun-lex &
-[ SYNSEM.LOCAL[CAT.HEAD.CASE nom+acc, CONT.HOOK.INDEX.PNG [ PER third ]]] .
+[ SYNSEM.LOCAL [ CAT.HEAD.CASE nom+acc, 
+		 CONT.HOOK.INDEX.PNG.PER third ],
+  INFLECTED - ] .
 
 ;;;; Pronouns
 
+;;; ERB 2007-05-16 It's inconvenient to push the pronouns through
+;;; the indef-lex-rule, and I don't see that it's helping anything,
+;;; so let's just make them lexically [ INFLECTED + ].
+
 pronoun-lex := noun-lex &
 [ SYNSEM [ LOCAL.CAT.VAL.SPR < [ OPT + ] > ,
-	LKEYS.KEYREL.PRED "_pronoun_n_rel",
-	LOCAL.CONT.HOOK.INDEX [ PRO +,
-			COG-ST activ-or-more & [SPECI +] ] ]].
+	   LKEYS.KEYREL.PRED "_pronoun_n_rel",
+	   LOCAL.CONT.HOOK.INDEX [ PRO +,
+				   COG-ST activ-or-more,
+				   SPECI + ]],
+  INFLECTED + ].
 
 ;;; Verbs
+
+;;; ERB 2007-05-16 Generator is producing verbs with no PAC.
+;;; Try making them lexically [ INFLECTED - ]. ... or not,
+;;; since that breaks the hacked imperatives.  Rather, should
+;;; just have verbs lexically specified as [ INFLECTED +/- ].
 
 verb-lex := basic-verb-lex &
 [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
@@ -267,7 +302,7 @@ verb-lex := basic-verb-lex &
   ARG-ST < #subj & [ LOCAL [ CAT [ HEAD noun & [ CASE nom ],
 				 VAL [ SPR < >,
                                        COMPS < > ]],
-		CONT.HOOK.INDEX #xarg & [ PRO - ] ] ], ... >] .
+		CONT.HOOK.INDEX #xarg & [ PRO - ] ] ], ... > ].
 
 intransitive-verb-lex := verb-lex & intransitive-lex-item &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
@@ -303,33 +338,46 @@ dat-ditrans-verb-lex := ditransitive-verb-lex &
 	[ LOCAL.CAT.HEAD +np & [ CASE dat ]],
 	[ LOCAL.CAT.HEAD noun & [ CASE acc ]]>].
 
+; ERB 2007-05-16 Since these are specifically allowing CP as
+; well as S, they also need to day [ FORM fin ] on their complements
+; to keep the imperatives out.
+
 
 clausal-comp-trverb-lex := verb-lex & clausal-second-arg-trans-lex-item &
-[ SYNSEM.LOCAL [ CAT.VAL [ COMPS < #comps & [ LOCAL.CAT [ MC -,
-					     VAL [ SUBJ < > , COMPS < > ],
-				             HEAD +vc ]]> ],
-			 CONT.HOOK.INDEX.SF prop-or-ques ],
-  ARG-ST < [LOCAL.CAT.HEAD noun], #comps>].
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps & 
+				 [ LOCAL [ CAT [ MC -,
+						 VAL [ SUBJ < > , 
+						       COMPS < > ],
+						 HEAD +vc &
+						  [ FORM fin ]],
+					   CONT.HOOK.INDEX.SF prop-or-ques ]]>,
+  ARG-ST < [LOCAL.CAT.HEAD noun], #comps >].
 
 clausal-comp-dtrverb-lex := verb-lex & clausal-third-arg-ditrans-lex-item &
-[ SYNSEM.LOCAL [ CAT.VAL [ COMPS <#comps1 & [ LOCAL.CAT.HEAD noun & [ CASE dat ]],
-				 #comps2 & [ LOCAL.CAT [ MC -,
-					      VAL [ SUBJ < >, COMPS < > ],
-					      HEAD +vc ]]> ],
-		 CONT.HOOK.INDEX.SF prop-or-ques ],
-  ARG-ST < [LOCAL.CAT.HEAD noun],#comps1, #comps2> ].
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS <#comps1 & [ LOCAL.CAT.HEAD noun & 
+							   [ CASE dat ]],
+				#comps2 & [ LOCAL [ CAT [ MC -,
+							  VAL [ SUBJ < >, 
+								COMPS < > ],
+							  HEAD +vc & 
+							     [ FORM fin ]],
+						    CONT.HOOK.INDEX.SF prop-or-ques ]] >,
+    ARG-ST < [LOCAL.CAT.HEAD noun],#comps1, #comps2> ].
+
+; ERB 2007-05-16 These types were constraining the verb's own SF,
+; not its complement's.  Fixing that...
 
 ques-comp-dtrverb-lex := clausal-comp-dtrverb-lex &
-[ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].
+[ SYNSEM.LOCAL.CAT.VAL.COMPS.REST.FIRST.LOCAL.CONT.HOOK.INDEX.SF ques ].
 
 prop-comp-dtrverb-lex := clausal-comp-dtrverb-lex &
-[ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].
+[ SYNSEM.LOCAL.CAT.VAL.COMPS.REST.FIRST.LOCAL.CONT.HOOK.INDEX.SF prop ].
 
 ques-comp-trverb-lex := clausal-comp-trverb-lex &
-[ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].
+[ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.SF ques ].
 
 prop-comp-trverb-lex := clausal-comp-trverb-lex &
-[ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].
+[ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.SF prop ].
 
 ;;auxiliaries
 aux-verb-lex := verb-lex & trans-first-arg-raising-lex-item-1 &
@@ -341,13 +389,16 @@ aux-verb-lex := verb-lex & trans-first-arg-raising-lex-item-1 &
 
 ;;adjectives 
 
+;;; ERB 2007-05-12 Kelsey says that adjectives are posthead.
+
 adjective-lex := basic-int-mod-adj-lex & 
 [SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [LOCAL [CAT [HEAD noun,
-			VAL.SPR cons ]]] >,
-VAL [SPR < >,
-	SUBJ < >,
-	COMPS < > ,
-	SPEC < > ]]]]].
+						VAL.SPR cons ]]] >,
+			VAL [SPR < >,
+			     SUBJ < >,
+			     COMPS < > ,
+			     SPEC < > ],
+			POSTHEAD + ]]]].
 
 f-adjective-lex := adjective-lex &
 [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem]]>].
@@ -375,19 +426,28 @@ determiner-lex := basic-determiner-lex & basic-zero-arg &
                            COMPS < >,
                            SUBJ < > ] ] .
 
+;;; ERB 2007-05-16 Assume that these take nouns in the "indefinite"
+;;; form.  Get this by constraining SPEC to be [ DEF - ].
+
 demonstrative-determiner-lex := norm-hook-lex-item & basic-zero-arg &
-[ SYNSEM [ LOCAL [CAT [ HEAD det,
-	VAL[ SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #ind & [COG-ST activ+fam],
-					LTOP #larg & #lbl],
-	SPR < >,
-	SUBJ < >,
-	COMPS < >]],
-CONT [ HCONS < ! qeq & 
-	[ HARG #harg,
-	LARG #larg ] ! >, RELS <![ PRED "exist_q_rel"], #lkey & arg12-relation & [LBL #lbl] ! >] ] ,
-LKEYS [ KEYREL quant-relation &
-	[ ARG0 #ind,
-	RSTR #harg ], ALTKEYREL #lkey]]].
+   [ SYNSEM [ LOCAL [ CAT [ HEAD det,
+			    VAL [ SPEC.FIRST.LOCAL [ CAT.HEAD.DEF -,
+						     CONT.HOOK [ INDEX #ind & 
+								       [COG-ST activ+fam],
+								 LTOP #larg & #lbl ]],
+				  SPR < >,
+				  SUBJ < >,
+				  COMPS < > ]],
+		      CONT [ HCONS < ! qeq & 
+				     [ HARG #harg,
+				       LARG #larg ] ! >, 
+			     RELS <![ PRED "exist_q_rel"], 
+				   #lkey & arg12-relation 
+				   & [LBL #lbl] ! >] ],
+	      LKEYS [ KEYREL quant-relation &
+			     [ ARG0 #ind,
+			       RSTR #harg ], 
+		      ALTKEYREL #lkey ]]].
 
 
 ; ERB 2007-05-11 Added mp-demonstrative-lex and constrained the
@@ -409,36 +469,52 @@ mp-demonstrative-lex := demonstrative-determiner-lex &
 ;;;; Lexical rules
 
 ;; rules for definiteness suffix (nouns)
+;; ERB 2007-05-16 Add [ DEF + ] here to keep these from combining
+;; with demonstrative determiners.
 
-f-definiteness-lex-rule := infl-ltow-rule &
-	[ SYNSEM.LOCAL.CONT.HOOk.INDEX[ PNG [ GEN fem, NUM sg],
-					COG-ST uniq+fam+act ],
-	DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
-m-definiteness-lex-rule :=  infl-ltow-rule &
-	[ SYNSEM.LOCAL.CONT.HOOk.INDEX[ PNG [ GEN masc, NUM sg],
-					COG-ST uniq+fam+act ],
-	DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
-p-definiteness-lex-rule :=  infl-ltow-rule &
-	[ SYNSEM.LOCAL.CONT.HOOK.INDEX[ PNG [ NUM non-sg],
-					COG-ST uniq+fam+act ],
-	DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
+definiteness-lex-rule := infl-ltow-rule &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.COG-ST uniq+fam+act,
+		   CAT.HEAD.DEF + ],
+    DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
+    
+f-definiteness-lex-rule := definiteness-lex-rule &
+	[ SYNSEM.LOCAL.CONT.HOOk.INDEX.PNG [ GEN fem, 
+					     NUM sg ]].
+
+m-definiteness-lex-rule := definiteness-lex-rule &
+	[ SYNSEM.LOCAL.CONT.HOOk.INDEX.PNG [ GEN masc, 
+					     NUM sg ]].
+
+p-definiteness-lex-rule := definiteness-lex-rule &
+	[ SYNSEM.LOCAL.CONT.HOOk.INDEX.PNG.NUM non-sg ].
+
 
 ;; rules for indefiniteness (nouns without suffix)
-n-indef-lex-rule := const-ltow-rule &
-	[ SYNSEM.LOCAL.CONT.HOOK.INDEX [ PNG [PER first, NUM sg ]],
-	DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
+;; ERB 2007-05-16 These have to end up with COG-ST type-id, but
+;; we can't put that info in here, since these are (presumably)
+;; also the forms that co-occur with the demonstratives.  So,
+;; once again, using the trick of making them [ DEF - ], and 
+;; then creating two bare-np rules. Furthermore, there is no
+;; need to distinguish the different word classes here, since
+;; it's all const-ltow anyway.
 
-f-indef-lex-rule := const-ltow-rule &
-	[ SYNSEM.LOCAL.CONT.HOOK.INDEX[ PNG [ GEN fem, NUM sg] ],
-	DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
+indef-lex-rule := const-ltow-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD noun & [ DEF - ]].
 
-m-indef-lex-rule :=  const-ltow-rule &
-	[ SYNSEM.LOCAL.CONT.HOOk.INDEX[ PNG [ GEN masc, NUM sg] ],
-	DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
+; n-indef-lex-rule := const-ltow-rule &
+; 	[ SYNSEM.LOCAL.CONT.HOOK.INDEX [ PNG [PER first, NUM sg ]].
 
-p-indef-lex-rule :=  const-ltow-rule &
-	[ SYNSEM.LOCAL.CONT.HOOK.INDEX[ PNG [ NUM non-sg]],
-	DTR.SYNSEM.LOCAL.CAT.HEAD noun].
+; f-indef-lex-rule := const-ltow-rule &
+; 	[ SYNSEM.LOCAL.CONT.HOOK.INDEX[ PNG [ GEN fem, NUM sg] ],
+; 	DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
+
+; m-indef-lex-rule :=  const-ltow-rule &
+; 	[ SYNSEM.LOCAL.CONT.HOOk.INDEX[ PNG [ GEN masc, NUM sg] ],
+; 	DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
+
+; p-indef-lex-rule :=  const-ltow-rule &
+; 	[ SYNSEM.LOCAL.CONT.HOOK.INDEX[ PNG [ NUM non-sg]],
+; 	DTR.SYNSEM.LOCAL.CAT.HEAD noun].
 
 
 
@@ -591,3 +667,5 @@ future-verb-lex-rule := infl-ltow-rule &
 
 
 ;;rules for preterite
+
+
