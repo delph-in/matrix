@@ -1,7 +1,3 @@
-not := neg-adv-lex &
-  [ STEM < "not" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ] .
-
 and_1 := conj-lex &
   [ STEM < "and" >,
     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
@@ -11,7 +7,13 @@ and_1 := conj-lex &
 
 I := pronoun-lex &
   [ STEM < "I" >,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1sg ].
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+                   CONT.HOOK.INDEX.PNG.PERNUM 1sg ] ].
+
+me := pronoun-lex &
+  [ STEM < "me" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
+                   CONT.HOOK.INDEX.PNG.PERNUM 1sg ] ].
 
 you := pronoun-lex &
   [ STEM < "you" >,
@@ -19,13 +21,27 @@ you := pronoun-lex &
 
 he := pronoun-lex &
   [ STEM < "he" >,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
-                                       GEND masc ] ].
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+                   CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
+                                         GEND masc ] ] ].
+
+him := pronoun-lex &
+  [ STEM < "him" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
+                   CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
+                                         GEND masc ] ] ].
 
 she := pronoun-lex &
   [ STEM < "she" >,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
-                                       GEND fem ] ].
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+                   CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
+                                         GEND fem ] ] ].
+
+her := pronoun-lex &
+  [ STEM < "her" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
+                   CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
+                                         GEND fem ] ] ].
 
 it := pronoun-lex &
   [ STEM < "it" >,
@@ -34,11 +50,23 @@ it := pronoun-lex &
 
 we := pronoun-lex &
   [ STEM < "we" >,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1pl ].
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+                   CONT.HOOK.INDEX.PNG.PERNUM 1pl ] ].
+
+us := pronoun-lex &
+  [ STEM < "us" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
+                   CONT.HOOK.INDEX.PNG.PERNUM 1pl ] ].
 
 they := pronoun-lex &
   [ STEM < "they" >,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3pl ].
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+                   CONT.HOOK.INDEX.PNG.PERNUM 3pl ] ].
+
+them := pronoun-lex &
+  [ STEM < "them" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
+                   CONT.HOOK.INDEX.PNG.PERNUM 3pl ] ].
 
 ;;; Nouns
 
@@ -91,6 +119,14 @@ eat := finite-opt-trans-verb-lex &
 eat2 := non-finite-trans-verb-lex &
   [ STEM < "eat" >,
     SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ] .
+
+hurt := finite-opt-trans-verb-lex &
+  [ STEM < "hurt" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_hurt_v_rel" ] .
+
+hurt2 := non-finite-trans-verb-lex &
+  [ STEM < "hurt" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_hurt_v_rel" ] .
 
 think := decl-clausal-verb-lex &
   [ STEM < "think" >,
@@ -147,10 +183,14 @@ these := demon-det-lex &
     SYNSEM [ LKEYS.KEYREL.PRED "_exist_q_rel",
              LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM pl ] > ] ] .
 
-; FIX What's this?  Why would we have a word spelled "sel-adv"?
-sel-adv := neg-adv-lex &
-  [ STEM < "sel-adv" >,
+not := neg-adv-lex &
+  [ STEM < "not" >,
     SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ] .
+
+; FIX What's this?  Why would we have a word spelled "sel-adv"?
+;sel-adv := neg-adv-lex &
+;  [ STEM < "sel-adv" >,
+;    SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ] .
 
 ;;; Adverbs
 
