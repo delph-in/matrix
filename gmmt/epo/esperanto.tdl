@@ -199,7 +199,8 @@ common-noun-lex := noun-lex &
 pronoun-lex := noun-lex &
   [ SYNSEM
       [ LOCAL.CAT.VAL.SPR
-          < [ LOCAL.CONT.RELS <! [ PRED exist_q_rel ] !> ] >,
+          < [ LOCAL.CONT [ RELS <! [ PRED exist_q_rel ] !>,
+                           HOOK.INDEX.COG-ST activ-or-more ] ] >,
         LKEYS.KEYREL.PRED 'pronoun_n_rel ],
     NEEDINF needcase ].
 
@@ -475,13 +476,6 @@ head-nospec-phrase := nsnp-phrase &
       [ CAT.VAL.SPR < [ LOCAL.CONT.RELS <! [ PRED #pred ] !> ] >,
         CONT.HOOK.INDEX.COG-ST type-id ],
     C-CONT.RELS <! [ PRED #pred & exist_q_rel ] !> ].
-
-pronoun-bare-np-phrase := nsnp-phrase &
-  [ HEAD-DTR.SYNSEM.LOCAL
-      [ CAT.VAL.SPR < [ LOCAL.CONT.RELS <! [ PRED #pred ] !> ] >,
-        CONT [ RELS <! [ PRED 'pronoun_n_rel ] !>,
-               HOOK.INDEX.COG-ST activ-or-more ]],
-    C-CONT.RELS <! [ PRED #pred & exist_q_rel] !> ].
 
 head-opt-comp-phrase := basic-head-opt-comp-phrase &
   [ HEAD-DTR.SYNSEM
@@ -839,6 +833,39 @@ v-bottom-coord-rule := binary-bottom-coord-rule &
     ARGS.REST.FIRST.SYNSEM.LOCAL.CAT
       [ HEAD verb & [ VCFORM #vcf ],
         VAL.SUBJ cons ] ].
+
+s-coord-phrase := event-coord-phrase & right-branching &
+  [ SYNSEM.LOCAL.CAT
+    [ HEAD verb &
+      [ VFORM #vf,
+        VCFORM #vcf ],
+      SENTENCE #sen,
+      ROOTMOM #rm ],
+    NBR-DTR.SYNSEM.LOCAL.CAT
+      [ HEAD verb &
+        [ VFORM #vf,
+          VCFORM #vcf ],
+        VAL [ SUBJ < >,
+              COMPS < > ],
+        SENTENCE #sen,
+        ROOTMOM #rm ],
+    BR-DTR.SYNSEM.LOCAL.CAT
+      [ HEAD verb &
+        [ VFORM #vf,
+          VCFORM #vcf ],
+        VAL [ SUBJ < >,
+              COMPS < > ],
+        SENTENCE #sen,
+        ROOTMOM #rm ] ].
+
+s-top-coord-rule := basic-s-top-coord-rule & monopoly-top-coord-rule.
+s-mid-coord-rule := basic-s-mid-coord-rule & monopoly-mid-coord-rule.
+s-bottom-coord-rule := binary-bottom-coord-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD verb & [ VCFORM #vcf ],
+    ARGS.REST.FIRST.SYNSEM.LOCAL.CAT
+      [ HEAD verb & [ VCFORM #vcf ],
+        VAL [ SUBJ < >,
+              COMPS < > ] ] ].
 
 ; ###################################################
 

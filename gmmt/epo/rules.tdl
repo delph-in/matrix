@@ -11,7 +11,6 @@ comp-head-2 := comp-head-phrase-2.
 
 head-spec := head-spec-phrase.
 head-nospec := head-nospec-phrase.
-pronoun-bare-np := pronoun-bare-np-phrase.
 head-adj-int := head-adj-int-phrase.
 adj-head-int := adj-head-int-phrase.
 head-opt-comp := head-opt-comp-phrase.
@@ -30,3 +29,6 @@ adj-bottom-coord := adj-bottom-coord-rule.
 v-top-coord := v-top-coord-rule.
 v-mid-coord := v-mid-coord-rule.
 v-bottom-coord := v-bottom-coord-rule.
+s-top-coord := s-top-coord-rule.
+s-mid-coord := s-mid-coord-rule.
+s-bottom-coord := s-bottom-coord-rule.

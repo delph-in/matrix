@@ -481,17 +481,19 @@ individual := semarg &
 ; status of referents following Borthen & Haugereid 2005.  Replacing
 ; DEF and DEF-OPT with COG-ST and OPT-CS.
 
+; ERB 2007-05-16 Can't put SPECI inside COG-ST, or the generator won't
+; pay attention to the value of COG-ST.  So, making it parallel.
 
 index := individual &
-	 [ COG-ST cog-st ].
+	 [ COG-ST cog-st,
+	   SPECI bool ].
 
 ; ERB 2007-02-05 Hierarchy from Borthen and Haugereid of possible
 ; COG-ST values.  Departing from B&H analysis by putting SPECI on
 ; this type (as well as by making COG-ST a feature of indicies rather
 ; than parallel to the indices in the next level up).
 
-cog-st := avm &
-  [ SPECI bool ].
+cog-st := avm.
 
 activ-or-less := cog-st.
 uniq-or-more := cog-st.
@@ -843,6 +845,8 @@ lex-rule := phrase-or-lexrule & word-or-lexrule &
 ; the diff-list append.
 
 lexeme-to-word-rule := same-local-lex-rule &
+		       same-modified-lex-rule &
+		       same-light-lex-rule &
 		       same-non-local-lex-rule &
   [ INFLECTED +,
     DTR [ INFLECTED - ],
@@ -888,6 +892,16 @@ same-non-local-lex-rule := lex-rule &
   [ SYNSEM.NON-LOCAL #nl,
     DTR.SYNSEM.NON-LOCAL #nl ].
 
+; ERB 2007-05-16 Not everything is inside LOCAL or NON-LOCAL.
+
+same-modified-lex-rule := lex-rule &
+  [ SYNSEM.MODIFIED #mod,
+    DTR.SYNSEM.MODIFIED #mod ].
+
+same-light-lex-rule := lex-rule &
+  [ SYNSEM.LIGHT #light,
+    DTR.SYNSEM.LIGHT #light ].
+
 same-ctxt-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.CTXT #ctxt,
     DTR.SYNSEM.LOCAL.CTXT #ctxt ].
@@ -898,9 +912,11 @@ same-ctxt-lex-rule := lex-rule &
 
 ; ERB 2005-05-16 Copy MSG too!
 ; ERB 2007-01-21 Making MSG a feature (SF) of events.
+; ERB 2007-02-20 Copy daughter's HOOK to C-CONT rather than to mother's
+; HOOK, for uniformity.
 
 same-cont-lex-rule := lex-rule &
-  [ SYNSEM.LOCAL.CONT [ HOOK #hook ],
+  [ C-CONT [ HOOK #hook ],
     DTR.SYNSEM.LOCAL.CONT [ HOOK #hook ]].
 
 same-agr-lex-rule := lex-rule &
@@ -935,10 +951,17 @@ no-ccont-lex-rule := lex-rule &
   [ C-CONT [ RELS <! !>,
 	     HCONS <! !> ]].
 
+; ERB 2007-05-16 Realized I haven't been copying up MODIFIED
+; and LIGHT.  Fixing that.
+
 non-local-change-only-lex-rule := same-local-lex-rule &
+				  same-modified-lex-rule &
+				  same-light-lex-rule &
 				  no-ccont-lex-rule.
 
 local-change-only-lex-rule := same-non-local-lex-rule &
+			      same-modified-lex-rule &
+			      same-light-lex-rule &
 			      no-ccont-lex-rule.
 
 ; ERB 2004-04-13 The only permissible changes to CONT are
@@ -954,14 +977,16 @@ local-change-only-lex-rule := same-non-local-lex-rule &
 ; text warning above.
 
 cont-change-only-lex-rule := same-non-local-lex-rule &
-			    same-ctxt-lex-rule &
-			    same-cat-lex-rule &
-			    same-agr-lex-rule.
+			     same-modified-lex-rule &
+			     same-light-lex-rule &
+			     same-ctxt-lex-rule &
+			     same-cat-lex-rule &
+			     same-agr-lex-rule.
 
 ctxt-change-only-lex-rule := local-change-only-lex-rule & 
-			    same-cont-lex-rule &
-			    same-cat-lex-rule &
-			    same-agr-lex-rule.
+			     same-cont-lex-rule &
+			     same-cat-lex-rule &
+			     same-agr-lex-rule.
 
 agr-change-only-lex-rule := local-change-only-lex-rule &
 			    same-cont-lex-rule &
@@ -999,6 +1024,8 @@ val-change-only-lex-rule := cat-change-only-lex-rule &
 ; since they are redundant with constraints on lexeme-to-word-rule.
 
 add-only-rule := same-local-lex-rule &
+		 same-modified-lex-rule &
+		 same-light-lex-rule &
 	         same-non-local-lex-rule.
 
 add-only-no-ccont-rule := add-only-rule &
@@ -1291,7 +1318,10 @@ ternary-headed-phrase := headed-phrase & ternary-phrase.
 ; ERB (2007-02-12) Hypothesizing for now that these will never be fulfilling
 ; valence requirements of the head, so just copy that up.  
 
-ternary-head-middle-phrase := ternary-headed-phrase & head-compositional &
+; ERB (2007-02-26) Clearly this shouldn't be head-compositional, since
+; we're using it for negation in Hausa and ASL.
+
+ternary-head-middle-phrase := ternary-headed-phrase & 
   [ SYNSEM.LOCAL.CAT.VAL #val,
     HEAD-DTR #head &
 	     [ SYNSEM.LOCAL.CAT.VAL #val ],
@@ -1709,6 +1739,9 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
 ; requirements are discharged.  Hmmm, again this was already RELS <! !>
 ; and HCONS <! !> in C-CONT.
 
+; ERB 2007-05-16 Moving MC identification from basic-head-opt-subj-phrase
+; down to decl-head-opt-subj-phrase, since we might *not* want it for
+; imperatives.
 
 basic-head-opt-subj-phrase := head-valence-phrase & head-only &
   [ INFLECTED #infl,
@@ -1717,7 +1750,6 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 				  COMPS #comps,
 				  SPR #spr,
 				  SPEC #spec ],
-			    MC #mc,
 			    POSTHEAD #ph ],
 		MODIFIED #mod ],
     C-CONT [ RELS <! !>,
@@ -1729,14 +1761,16 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 					     COMPS #comps & < >,
 					     SPR #spr,
 					     SPEC #spec ],
-				       MC #mc,
 				       POSTHEAD #ph ],
 				 CONT.HOOK.INDEX event ],
 			 MODIFIED #mod ] ] ].
 
 ; ERB 2007-01-21 Subtypes for declaratives and imperatives
 
-decl-head-opt-subj-phrase := basic-head-opt-subj-phrase & declarative-clause.
+decl-head-opt-subj-phrase := basic-head-opt-subj-phrase & declarative-clause &
+  [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
 imp-head-opt-subj-phrase := basic-head-opt-subj-phrase & imperative-clause.
 
 
@@ -2002,12 +2036,26 @@ head-adj-int-phrase := head-adj-phrase & isect-mod-phrase.
 ; types and lexical entries don't have to refer to a specific position
 ; on the RELS list.
 
-norm-hook-lex-item := lex-item &
-  [ SYNSEM [ LOCAL.CONT [ HOOK [ LTOP #ltop,
-                                 INDEX #index ],
+norm-ltop-lex-item := lex-item &
+  [ SYNSEM [ LOCAL.CONT [ HOOK [ LTOP #ltop ],
                           RELS.LIST.FIRST #keyrel ],
-             LKEYS.KEYREL #keyrel & [ LBL #ltop,
-                                      ARG0 #index ] ] ].
+             LKEYS.KEYREL #keyrel & [ LBL #ltop ] ] ].
+
+norm-hook-lex-item := norm-ltop-lex-item &
+  [ SYNSEM [ LOCAL.CONT.HOOK.INDEX #index,
+             LKEYS.KEYREL.ARG0 #index ] ].
+
+; ERB 2007-02-26 For modifiers. Elements that have a double life
+; as attributive and predicative become tricky.  Attributive adjectives
+; and PPs should be raise-index-mod-lex-item, while predicative
+; ones should be norm-hook-lex-item. But how to relate the two?
+; Also, reconsider whether I want to do this for intersective as
+; well as scopal modifiers, or just the scopal guys.
+
+raise-index-mod-lex-item := norm-ltop-lex-item 
+  [ SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX #index ] >,
+		   CONT.HOOK.INDEX #index ] ].
+
 
 ; Furthermore, most lexical items contribute only one relation, and
 ; have empty HCONS values.
@@ -2366,6 +2414,10 @@ trans-first-arg-raising-lex-item := basic-two-arg &
 ; introduce a non-empty HCONS value.  Need to get 
 ; event-relation from somewhere else.
 
+; ERB (2007-02-20) They should be able to now that things
+; are de-messaged, since basic-verb-lex no longer inherits
+; from no-hcons-lex-item.
+
 trans-first-arg-raising-lex-item-1 := trans-first-arg-raising-lex-item & 
    [ ARG-ST < [ ],
 	      [ LOCAL.CONT.HOOK.LTOP #larg ] >,
@@ -2579,23 +2631,30 @@ intersective-mod-lex := no-hcons-lex-item &
 no-mod-lex := no-hcons-lex-item &
   [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
 
-basic-adjective-lex := norm-hook-lex-item & single-rel-lex-item &
+basic-adjective-lex := single-rel-lex-item &
   [ SYNSEM [ LOCAL.CAT.HEAD adj,
 	     LKEYS.KEYREL event-relation ]].
 
-basic-scopal-mod-adj-lex := basic-adjective-lex & scopal-mod-lex.
-basic-int-mod-adj-lex := basic-adjective-lex & intersective-mod-lex.
-basic-nomod-adj-lex := basic-adjective-lex & no-mod-lex.
+; ERB 2007-02-26 New type raise-index-mod-lex-item to get the
+; INDEX value right on modifiers.  Attributive adjectives should
+; inherit from this one, predicatives from norm-hook-lex-item.
+; Need to worry about the relationship between the two.
 
-basic-adposition-lex := norm-hook-lex-item & single-rel-lex-item &
+basic-mod-adj-lex := basic-adjective-lex & raise-index-mod-lex-item.
+basic-scopal-mod-adj-lex := basic-mod-adj-lex & scopal-mod-lex.
+basic-int-mod-adj-lex := basic-mod-adj-lex & intersective-mod-lex.
+basic-nomod-adj-lex := basic-adjective-lex & no-mod-lex & norm-hook-lex-item.
+
+basic-adposition-lex := single-rel-lex-item &
   [ SYNSEM [ LOCAL.CAT.HEAD adp,
 	     LKEYS.KEYREL event-relation ]].
 
-basic-scopal-mod-adposition-lex := basic-adposition-lex & scopal-mod-lex.
-basic-int-mod-adposition-lex := basic-adposition-lex & intersective-mod-lex.
-basic-nomod-adposition-lex := basic-adposition-lex & no-mod-lex.
+basic-mod-adp-lex := basic-adposition-lex & raise-index-mod-lex-item.
+basic-scopal-mod-adposition-lex := basic-mod-adp-lex & scopal-mod-lex.
+basic-int-mod-adposition-lex := basic-mod-adp-lex & intersective-mod-lex.
+basic-nomod-adposition-lex := basic-adposition-lex & no-mod-lex & norm-hook-lex-item.
 
-basic-adverb-lex := norm-hook-lex-item & single-rel-lex-item &
+basic-adverb-lex := raise-index-mod-lex-item & single-rel-lex-item &
   [ SYNSEM [ LOCAL.CAT.HEAD adv,
 	     LKEYS.KEYREL event-relation ]].
 
@@ -2781,8 +2840,13 @@ unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
                                      COORD -,
                                      CONT.HOOK [ INDEX #rind ]]] > ].
 
+;;; ERB 2007-05-16 Note for sfd: There is probably a single type
+;;; you could inherit from here that combines what you need.
+
 infl-bottom-coord-rule := same-local-lex-rule &
                           same-non-local-lex-rule &
+			  same-modified-lex-rule &
+			  same-light-lex-rule &
                           inflecting-lex-rule &
   [ INFLECTED +,
     DTR.INFLECTED -,
@@ -2924,7 +2988,13 @@ omni-conj-last-left-coord-rule := omni-binary-left-coord-rule &
     NONCONJ-DTR #ncdtr,
     ARGS < #ncdtr, #cdtr > ].
 
+;;; ERB 2007-05-16 Note for sfd: There is probably a single type
+;;; you could inherit from here that combines what you need.
+
+
 infl-left-coord-rule := omni-left-coord-rule &
+			same-modified-lex-rule &
+			same-light-lex-rule &
                         same-local-lex-rule &
                         same-non-local-lex-rule &
                         inflecting-lex-rule &
