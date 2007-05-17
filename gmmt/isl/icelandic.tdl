@@ -128,7 +128,7 @@ np1-1st-left-coord-rule := coord-phrase &
     SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER first ].
 
 np1-1st-right-coord-rule := coord-phrase &
-  [ RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER non-first,
+  [ RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER first,
     SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER first ].
     
 np1-2nd-3rd-coord-rule := coord-phrase &
@@ -253,10 +253,13 @@ int-cl := interrogative-clause & head-only &
 
 ;;; Nouns
 
+;;; ERB 2007-05-16 Need to say that the nouns start off not modified.
+
 noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
-  [ SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
-                           SUBJ < >,
-                           SPEC < > ] ].
+  [ SYNSEM [ LOCAL.CAT.VAL [ COMPS < >,
+			     SUBJ < >,
+			     SPEC < > ],
+	     MODIFIED notmod ] ].
 
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CAT.VAL [ SPR < #spr &
@@ -539,10 +542,16 @@ adjective-lex := basic-int-mod-adj-lex &
 ;;; hand, have this type contribute the _exist_q_rel and the COG-ST
 ;;; value.
 
+;;; ERB 2007-05-16 BUT: The independent determiner can't be used
+;;; with a bare noun --- it seems to only be possible (within my limited
+;;; dataset anyway) when there is a prenominal adjective.  So, we
+;;; do want it to say the SPEC is MODIFIED lmod.
+
 determiner-lex := basic-determiner-lex & basic-zero-arg &
   [ SYNSEM [ LOCAL.CAT.VAL [ SPR < >,
 			     COMPS < >,
-			     SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act ] >,
+			     SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act,
+				      MODIFIED lmod ] >,
 			     SUBJ < > ],
 	     LKEYS.KEYREL.PRED "_exist_q_rel" ]].
 
