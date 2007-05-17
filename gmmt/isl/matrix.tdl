@@ -1739,6 +1739,9 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
 ; requirements are discharged.  Hmmm, again this was already RELS <! !>
 ; and HCONS <! !> in C-CONT.
 
+; ERB 2007-05-16 Moving MC identification from basic-head-opt-subj-phrase
+; down to decl-head-opt-subj-phrase, since we might *not* want it for
+; imperatives.
 
 basic-head-opt-subj-phrase := head-valence-phrase & head-only &
   [ INFLECTED #infl,
@@ -1747,7 +1750,6 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 				  COMPS #comps,
 				  SPR #spr,
 				  SPEC #spec ],
-			    MC #mc,
 			    POSTHEAD #ph ],
 		MODIFIED #mod ],
     C-CONT [ RELS <! !>,
@@ -1759,14 +1761,16 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 					     COMPS #comps & < >,
 					     SPR #spr,
 					     SPEC #spec ],
-				       MC #mc,
 				       POSTHEAD #ph ],
 				 CONT.HOOK.INDEX event ],
 			 MODIFIED #mod ] ] ].
 
 ; ERB 2007-01-21 Subtypes for declaratives and imperatives
 
-decl-head-opt-subj-phrase := basic-head-opt-subj-phrase & declarative-clause.
+decl-head-opt-subj-phrase := basic-head-opt-subj-phrase & declarative-clause &
+  [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
 imp-head-opt-subj-phrase := basic-head-opt-subj-phrase & imperative-clause.
 
 
