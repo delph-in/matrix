@@ -28,7 +28,7 @@ sai := 2sg-irreg-embedded-verb-lex &
 
 affamat := stem-adj-lex &
    [ STEM < "affamat" >,
-     SYNSEM.LKEYS.KEYREL.PRED "_hungry_j_rel" ].
+     SYNSEM.LKEYS.KEYREL.PRED "_hungry_a_rel" ].
 
 
 ;;;;
@@ -310,7 +310,7 @@ baci := are-trans-verb-lex &
    [ STEM < "baci" >,
      SYNSEM.LKEYS.KEYREL.PRED "_kiss_v_rel" ].
 
-bev := ere-trans-verb-lex &
+bev := ere-ini-comp-trans-verb-lex &
    [ STEM < "bev" >,
      SYNSEM.LKEYS.KEYREL.PRED "_drink_v_rel" ].
 
@@ -326,7 +326,7 @@ calci := are-trans-verb-lex &
    [ STEM < "calci" >,
      SYNSEM.LKEYS.KEYREL.PRED "_kick_v_rel" ].
 
-cant := are-trans-verb-lex &
+cant := are-ini-comp-trans-verb-lex &
    [ STEM < "cant" >,
      SYNSEM.LKEYS.KEYREL.PRED "_sing_v_rel" ].
 
@@ -383,15 +383,15 @@ duole := 3sg-irreg-trans-verb-lex &
      SYNSEM.LKEYS.KEYREL.PRED "_hurt_v_rel" ].
 
 e-trans := 3sg-irreg-trans-verb-lex &
-   [ STEM < "e" >,
+   [ STEM < "è" >,
      SYNSEM.LKEYS.KEYREL.PRED "_be_v_rel" ].
 
 e-prep := 3sg-irreg-prep-verb-lex &
-   [ STEM < "e" >,
+   [ STEM < "è" >,
      SYNSEM.LKEYS.KEYREL.PRED "_be_v_rel" ].
 
 e-copula := 3sg-irreg-copula-verb-lex  &
-   [ STEM < "e" >,
+   [ STEM < "è" >,
      SYNSEM.LKEYS.KEYREL.PRED "_be_v_rel" ].
 
 f := are-def-trans-verb-lex &
@@ -414,11 +414,11 @@ lavor := are-intrans-verb-lex &
    [ STEM < "lavor" >,
      SYNSEM.LKEYS.KEYREL.PRED "_work_v_rel" ].
 
-legg-trans := ere-trans-verb-lex &
+legg-trans := ere-ini-comp-trans-verb-lex &
    [ STEM < "legg" >,
      SYNSEM.LKEYS.KEYREL.PRED "_read_v_rel" ].
 
-mangi := are-trans-verb-lex &
+mangi := are-ini-comp-trans-verb-lex &
    [ STEM < "mangi" >,
      SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ].
 
@@ -550,8 +550,8 @@ che := decl-comp-lex-item &
 se := int-comp-lex-item &
    [ STEM <"se"> ].
 
-;ad := prep-lex-item & 
-;   [ STEM <"ad"> ].
+ad := prep-lex-item & 
+   [ STEM <"ad"> ].
 
 a := prep-lex-item & 
    [ STEM <"a"> ].
@@ -565,152 +565,140 @@ per := prep-lex-item &
 un := non-dem-m-sg-det-lex &
    [ STEM < "un" >,
      SYNSEM [ LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST type-id ] > ,
-         LKEYS [ KEYREL.PRED "exists_q_rel" ] ] ].
+         LKEYS [ KEYREL.PRED "exist_q_rel" ] ] ].
 
-;uno := non-dem-m-sg-det-lex &
-;   [ STEM < "uno" >,
-;     SYNSEM [ LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST type-id ] > ,
-;         LKEYS [ KEYREL.PRED "exists_q_rel" ] ] ].
+uno := non-dem-m-sg-det-lex &
+   [ STEM < "uno" >,
+     SYNSEM [ LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST type-id ] > ,
+         LKEYS [ KEYREL.PRED "exist_q_rel" ] ] ].
 
 
 una := non-dem-f-sg-det-lex &
    [ STEM < "una" >,
      SYNSEM [ LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST type-id ] > ,
-         LKEYS [ KEYREL.PRED "exists_q_rel" ] ] ].
+         LKEYS [ KEYREL.PRED "exist_q_rel" ] ] ].
 
 
 il := non-dem-m-sg-det-lex &
    [ STEM < "il" >,
      SYNSEM [ LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act ] > ,
-         LKEYS [ KEYREL.PRED "exists_q_rel" ] ] ].
+         LKEYS [ KEYREL.PRED "exist_q_rel" ] ] ].
 
 
-;lo := non-dem-m-sg-det-lex &
-;   [ STEM < "lo" >,
-;     SYNSEM [ LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act ] > ,
-;         LKEYS [ KEYREL.PRED "exists_q_rel" ] ] ].
+lo := non-dem-m-sg-det-lex &
+   [ STEM < "lo" >,
+     SYNSEM [ LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act ] > ,
+         LKEYS [ KEYREL.PRED "exist_q_rel" ] ] ].
 
-;gli := non-dem-m-pl-det-lex &
-;   [ STEM < "gli" >,
-;     SYNSEM [ LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act] > ,
-;         LKEYS [ KEYREL.PRED "exists_q_rel" ] ] ].
+gli := non-dem-m-pl-det-lex &
+   [ STEM < "gli" >,
+     SYNSEM [ LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act] > ,
+	      LKEYS [ KEYREL.PRED "exist_q_rel" ] ] ].
 
 i := non-dem-m-pl-det-lex &
    [ STEM < "i" >,
      SYNSEM [ LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act ] > ,
-         LKEYS [ KEYREL.PRED "exists_q_rel" ] ] ].
+         LKEYS [ KEYREL.PRED "exist_q_rel" ] ] ].
 
 la := non-dem-f-sg-det-lex &
    [ STEM < "la" >,
      SYNSEM [ LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act ] > ,
-         LKEYS [ KEYREL.PRED "exists_q_rel" ] ] ].
+         LKEYS [ KEYREL.PRED "exist_q_rel" ] ] ].
 
 le := non-dem-f-pl-det-lex &
    [ STEM < "le" >,
      SYNSEM [ LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act ] > ,
-         LKEYS [ KEYREL.PRED "exists_q_rel" ] ] ].
+         LKEYS [ KEYREL.PRED "exist_q_rel" ] ] ].
 
 
 questo := dem-m-sg-det-lex &
    [ STEM < "questo" >,
-     SYNSEM.LKEYS [ KEYREL.PRED "exists_q_rel",
-	            ALTKEYREL.PRED proximal+dem_a_rel ]] .
+     SYNSEM.LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ].
 
 codesto := dem-m-sg-det-lex &
    [ STEM < "codesto" >,
-     SYNSEM.LKEYS  [ KEYREL.PRED "exists_q_rel",
-	      ALTKEYREL.PRED hearer+dem_a_rel ]] .
+     SYNSEM.LKEYS.ALTKEYREL.PRED hearer+dem_a_rel ].
 
 quello := dem-m-sg-det-lex &
    [ STEM < "quello" >,
-     SYNSEM.LKEYS  [ KEYREL.PRED "exists_q_rel",
-	      ALTKEYREL.PRED distal+dem_a_rel ]] .
+     SYNSEM.LKEYS.ALTKEYREL.PRED distal+dem_a_rel ].
 
 questa := dem-f-sg-det-lex &
    [ STEM < "questa" >,
-     SYNSEM.LKEYS  [ KEYREL.PRED "exists_q_rel",
-	      ALTKEYREL.PRED proximal+dem_a_rel ]] .
+     SYNSEM.LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ].
 
 codesta := dem-f-sg-det-lex &
    [ STEM < "codesta" >,
-     SYNSEM.LKEYS  [ KEYREL.PRED "exists_q_rel",
-	      ALTKEYREL.PRED hearer+dem_a_rel ]] .
+     SYNSEM.LKEYS.ALTKEYREL.PRED hearer+dem_a_rel ].
 
 quella := dem-f-sg-det-lex &
    [ STEM < "quella" >,
-     SYNSEM.LKEYS  [ KEYREL.PRED "exists_q_rel",
-	      ALTKEYREL.PRED distal+dem_a_rel ]] .
+     SYNSEM.LKEYS.ALTKEYREL.PRED distal+dem_a_rel ].
 
 queste := dem-f-pl-det-lex &
    [ STEM < "queste" >,
-     SYNSEM.LKEYS  [ KEYREL.PRED "exists_q_rel",
-	      ALTKEYREL.PRED proximal+dem_a_rel ]] .
+     SYNSEM.LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ].
 
 codeste := dem-f-pl-det-lex &
    [ STEM < "codeste" >,
-     SYNSEM.LKEYS  [ KEYREL.PRED "exists_q_rel",
-	      ALTKEYREL.PRED hearer+dem_a_rel ]] .
+     SYNSEM.LKEYS.ALTKEYREL.PRED hearer+dem_a_rel ].
 
 
 quelle := dem-f-pl-det-lex &
    [ STEM < "quelle" >,
-     SYNSEM.LKEYS  [ KEYREL.PRED "exists_q_rel",
-	      ALTKEYREL.PRED distal+dem_a_rel ]] .
+     SYNSEM.LKEYS.ALTKEYREL.PRED distal+dem_a_rel ].
 
 questi := dem-m-pl-det-lex &
    [ STEM < "questi" >,
-     SYNSEM.LKEYS  [ KEYREL.PRED "exists_q_rel",
-	      ALTKEYREL.PRED proximal+dem_a_rel ]] .
+     SYNSEM.LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ].
 
 
 codesti := dem-m-pl-det-lex &
    [ STEM < "codesti" >,
-     SYNSEM.LKEYS  [ KEYREL.PRED "exists_q_rel",
-	      ALTKEYREL.PRED hearer+dem_a_rel ]] .
+     SYNSEM.LKEYS.ALTKEYREL.PRED hearer+dem_a_rel ].
 
 
 quelli := dem-m-pl-det-lex &
    [ STEM < "quelli" >,
-     SYNSEM.LKEYS  [ KEYREL.PRED "exists_q_rel",
-	      ALTKEYREL.PRED distal+dem_a_rel ]] .
+     SYNSEM.LKEYS.ALTKEYREL.PRED distal+dem_a_rel ].
 
 ;;; Adjectives
 
 bell := stem-adj-lex &
    [ STEM < "bell" >,
-     SYNSEM.LKEYS.KEYREL.PRED "_pretty_j_rel" ].
+     SYNSEM.LKEYS.KEYREL.PRED "_pretty_a_rel" ].
 
 buff := stem-adj-lex &
    [ STEM < "buff" >,
-     SYNSEM.LKEYS.KEYREL.PRED "_funny_j_rel" ].
+     SYNSEM.LKEYS.KEYREL.PRED "_funny_a_rel" ].
 
 grande := infl-adj-lex &
    [ STEM < "grande" >,
-     SYNSEM.LKEYS.KEYREL.PRED "_big_j_rel" ].
+     SYNSEM.LKEYS.KEYREL.PRED "_big_a_rel" ].
 
 interessante := infl-adj-lex &
    [ STEM < "interessante" >,
-     SYNSEM.LKEYS.KEYREL.PRED "_interesting_j_rel" ].
+     SYNSEM.LKEYS.KEYREL.PRED "_interesting_a_rel" ].
 
 nuov := stem-adj-lex &
    [ STEM < "nuov" >,
-     SYNSEM.LKEYS.KEYREL.PRED "_new_j_rel" ].
+     SYNSEM.LKEYS.KEYREL.PRED "_new_a_rel" ].
 
 piccol := stem-adj-lex &
    [ STEM < "piccol" >,
-     SYNSEM.LKEYS.KEYREL.PRED "_small_j_rel" ].
+     SYNSEM.LKEYS.KEYREL.PRED "_small_a_rel" ].
 
 saggi := stem-adj-lex &
    [ STEM < "saggi" >,
-     SYNSEM.LKEYS.KEYREL.PRED "_wise_j_rel" ].
+     SYNSEM.LKEYS.KEYREL.PRED "_wise_a_rel" ].
 
 simpatic := stem-adj-lex &
    [ STEM < "simpatic" >,
-     SYNSEM.LKEYS.KEYREL.PRED "_nice_j_rel" ].
+     SYNSEM.LKEYS.KEYREL.PRED "_nice_a_rel" ].
 
 studios := stem-adj-lex &
    [ STEM < "studios" >,
-     SYNSEM.LKEYS.KEYREL.PRED "_studious_j_rel" ].
+     SYNSEM.LKEYS.KEYREL.PRED "_studious_a_rel" ].
 
 ;;; Misc
 

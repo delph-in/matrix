@@ -16,7 +16,8 @@ head-opt-comp := head-opt-comp-phrase.
 ;;; Rule(s) for building NPs.
 
 spec-head := spec-head-phrase.
-bare-np-phrase := bare-np-phrase.
+indef-bare-np := indef-bare-np-phrase.
+proper-bare-np := proper-bare-np-phrase.
 ;pronoun-bare-np := pronoun-bare-np-phrase.
 ;proper-bare-np := proper-bare-np-phrase.
 
@@ -26,8 +27,8 @@ bare-np-phrase := bare-np-phrase.
 ;;; appear in italian.tdl
 
 
-italian-head-adj-int := italian-head-adj-int-phrase.
-;head-adj-int := head-adj-int-phrase.
+;italian-head-adj-int := italian-head-adj-int-phrase.
+head-adj-int := head-adj-int-phrase.
 adj-head-int := adj-head-int-phrase.
 head-adj-scop := head-adj-scop-phrase.
 adj-head-scop := adj-head-scop-phrase.
@@ -47,4 +48,5 @@ np1-bottom-coord := np1-bottom-coord-rule.
 s1-top-coord := s1-top-coord-rule.
 s1-mid-coord := s1-mid-coord-rule.
 s1-bottom-coord := s1-bottom-coord-rule.
-head-adv-int := head-adv-int-phrase .
+
+;head-adv-int := head-adv-int-phrase .
