@@ -266,7 +266,7 @@ head-subj-phrase := decl-head-subj-phrase & head-final &
 ;              introduced to match the semantic effect of bare NPs in your language.
 
 bare-np-phrase := basic-bare-np-phrase &
-  [ C-CONT.RELS <! [ PRED "_exist_q_rel" ] !> ] .
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ] .
 
 ; Type for negative adverbs.
 ; LAB 8 - ADDED [ VAL.SUBJ cons] constraint to force VP attachment.

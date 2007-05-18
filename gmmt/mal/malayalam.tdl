@@ -290,7 +290,7 @@ complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
 ;;; NOUNS
 
 bare-np-phrase := basic-bare-np-phrase &
-  [ C-CONT.RELS <! [ PRED "_exist_q_rel" ] !> ] .
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ] .
 
 noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
   [ SYNSEM.LOCAL.CAT [ HEAD.MOD <>,

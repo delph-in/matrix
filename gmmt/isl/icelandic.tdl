@@ -42,7 +42,7 @@ head-spec-phrase := basic-head-spec-phrase & head-final &
 ; and b) the adjectives to get the right set of facts.
 
 bare-np-phrase := basic-bare-np-phrase &
-  [ C-CONT.RELS <! [ PRED "_exist_q_rel" ] !> ].
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
 
 indef-bare-np-phrase := bare-np-phrase &
   [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.COG-ST type-id ].
@@ -539,7 +539,7 @@ adjective-lex := basic-int-mod-adj-lex &
 ;;; dropped, and by having the weak adjectives say that the 
 ;;; interpretation must not be indefinite (i.e., [COG-ST uniq+act+fam]).
 ;;; No longer need to say anything about SPEC here.  On the other
-;;; hand, have this type contribute the _exist_q_rel and the COG-ST
+;;; hand, have this type contribute the exist_q_rel and the COG-ST
 ;;; value.
 
 ;;; ERB 2007-05-16 BUT: The independent determiner can't be used
@@ -553,7 +553,7 @@ determiner-lex := basic-determiner-lex & basic-zero-arg &
 			     SPEC < [ LOCAL.CONT.HOOK.INDEX.COG-ST uniq+fam+act,
 				      MODIFIED lmod ] >,
 			     SUBJ < > ],
-	     LKEYS.KEYREL.PRED "_exist_q_rel" ]].
+	     LKEYS.KEYREL.PRED "exist_q_rel" ]].
 
 sg-det-lex := determiner-lex &
   [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ] > ].
@@ -628,7 +628,7 @@ demonstrative-determiner-lex := norm-hook-lex-item & basic-zero-arg &
 	COMPS < >]],
 CONT [ HCONS < ! qeq & 
 	[ HARG #harg,
-	LARG #larg ] ! >, RELS <![ PRED "_exist_q_rel"], #lkey & arg12-relation & [LBL #lbl] ! >] ] ,
+	LARG #larg ] ! >, RELS <![ PRED "exist_q_rel"], #lkey & arg12-relation & [LBL #lbl] ! >] ] ,
 LKEYS [ KEYREL quant-relation &
 	[ ARG0 #ind,
 	RSTR #harg ], ALTKEYREL #lkey]]].
