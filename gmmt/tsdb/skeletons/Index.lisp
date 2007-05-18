@@ -20,11 +20,14 @@
 ;;;
 
 (((:path . "hau_gmmt") (:content . "Hausa GMMT test sentences"))
+ ((:path . "heb_gmmt") (:content . "Hebrew GMMT test sentences"))
  ((:path . "isl_gmmt") (:content . "Icelandic GMMT test sentences"))
+ ((:path . "ita_gmmt") (:content . "Italian GMMT test sentences"))
  ((:path . "zul_gmmt") (:content . "Zulu GMMT test sentences"))
  ((:path . "eng_gmmt") (:content . "English GMMT test suite"))
  ((:path . "arb_567") (:content . "Modern Standard Arabic test suite from Ling 567"))
  ((:path . "hau_567") (:content . "Hausa test suite from Ling 567"))
  ((:path . "isl_567") (:content . "Icelandic general test suite"))
+ ((:path . "ita_567") (:content . "Italian test suite from Ling 567"))
  ((:path . "mal_567") (:content . "Malayalam test suite from Ling 567"))
  ((:path . "zul_567") (:content . "Zulu test suite from Ling 567")))
