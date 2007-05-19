@@ -7,14 +7,4 @@
 ;;;
 (setf *transfer-filter-p* nil)
 
-(setf %transfer-properties-accumulator% nil)
-
-(setf %transfer-properties-defaults% nil)
-
-(setf %transfer-properties-filter%
-  (list
-   (cons (mrs::vsym "PNG.GEND") nil)))
-
-;(setf %transfer-properties-filter% nil)
-
-(setf %transfer-values-filter% nil)
+(setf *lm-model* nil)

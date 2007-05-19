@@ -61,6 +61,10 @@
 (read-tdl-lex-rule-file-aux (lkb-pathname (parent-directory) "lrules.tdl"))
 (read-morph-file-aux (lkb-pathname (parent-directory) "irules.tdl"))
 
+;;;
+;;; the mapping from grammar-internal to SEM-I compliant variable properties
+;;;
+(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
 
 ;;;
 ;;; The `start symbol(s)' of the grammar.
@@ -99,7 +103,7 @@
  :filter nil :task :trigger :recurse nil :edges 200)
 
 
-(index-for-generator)
+;(index-for-generator)
 
 ;;;
 ;;; The following overwrites the LKB's default for what

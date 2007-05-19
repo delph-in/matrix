@@ -1,3 +1,41 @@
+ToDo:
+
+1. Copy/update all grammars for:
+
+semi.vpm
+lkb/script
+lkb/globals.lsp
+lkb/mt.lsp
+lkb/user-fns.lsp -- ?
+translate-grid
+
+2: Update directory
+
+identity/
+setup.lisp
+what else?
+
+Soft link from $LOGONROOT/uw/mmt to lingo/grammars/matrix/gmmt
+
+
+3. Take notes on DTD issues
+
+sg/du/pl isn't going to work --- we also need non-sg et al
+gender just isn't relevant for transfer
+should I just go ahead and rename things inside the grammars
+GEN -> GEND et al?
+
+
+4. Add grammars to setup.lisp
+
+5. Create bitext test suites, round-robin, or something
+
+6. Consider adding transfer rules
+
+
+------------------------------------------------------------------------
+
+
 Exerpted from chat with Stephan on 5/18/07
 
 To run a batch process from the command line:
@@ -9,6 +47,8 @@ If it works, results in a .fan file
 
 the contents of the .fan log is also in an [incr tsdb()] profile now, which you can browse
 
+
+------------------------------------------------------------------------
 
 
 Stephan: the main changes i would suggest to your grammars are the following

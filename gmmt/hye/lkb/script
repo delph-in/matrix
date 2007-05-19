@@ -80,3 +80,5 @@
   (lkb-pathname (parent-directory) "567.mtr"))
  "MWE Paraphraser"
  :filter nil)
+
+(setf *last-parses* '("es apaki krnam utel" "mard e krnay khnanal"))

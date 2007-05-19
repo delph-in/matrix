@@ -79,3 +79,5 @@
   (lkb-pathname (parent-directory) "paraphraser.mtr"))
  "MWE Paraphraser"
  :filter nil)
+
+(setf *last-parses* '("in gorbe ketabra xand" "man mitavanam shishera bexoram" "gorbe amad"))

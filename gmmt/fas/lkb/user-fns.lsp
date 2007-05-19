@@ -61,7 +61,8 @@
 ;;;
 (defun rule-priority (rule)
   (case (rule-id rule)
-    (subj 1000)))
+    (subj 1000)
+    (t 0)))
 
 (defun gen-rule-priority (rule)
   (rule-priority rule))
@@ -105,4 +106,3 @@
        (let ((fs-type (type-of-fs fs)))
          (eql fs-type '-))))
 
-(setf *last-parses* '("in gorbe ketabra xand" "man mitavanam shishera bexoram" "gorbe amad"))
