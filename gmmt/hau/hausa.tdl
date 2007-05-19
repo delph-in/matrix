@@ -118,8 +118,12 @@ subj-head-phrase := decl-head-subj-phrase & head-final &
     HEAD-DTR.SYNSEM.LOCAL.CAT [ MC #mc,
 				VAL.COMPS < > ] ].
 
+; EBR 2007-05-19 Oops -- we weren't saying 2nd person here.
+; Maybe that was on purpose, but for GMMT purposes, I'm adding it now.
+
 imperative-phrase :=  imp-head-opt-subj-phrase &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb & [ FORM imp] ] ].
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb & [ FORM imp],
+				VAL.SUBJ  < [ LOCAL.CONT.HOOK.INDEX.PNG.PER second ] > ] ].
 
 
 negation-phrase := ternary-head-middle-phrase &

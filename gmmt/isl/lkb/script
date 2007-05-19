@@ -36,7 +36,7 @@
 (list
 (lkb-pathname (parent-directory) "matrix.tdl")
 (lkb-pathname (parent-directory) "head-types.tdl")
-;(lkb-pathname (this-directory) "transfer.tdl")
+(lkb-pathname (this-directory) "transfer.tdl")
    (lkb-pathname (parent-directory) "icelandic.tdl")
 ))
 
@@ -108,11 +108,11 @@
 (mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
 
 
-;(mt:read-transfer-rules 
-; (list
-;  (lkb-pathname (this-directory) "trigger.mtr"))
-; "Generation Trigger Rules"
-; :filter nil :task :trigger :recurse nil :edges 200)
+(mt:read-transfer-rules 
+ (list
+  (lkb-pathname (this-directory) "trigger.mtr"))
+ "Generation Trigger Rules"
+ :filter nil :task :trigger :recurse nil :edges 200)
 
 
 ;;;
@@ -132,8 +132,8 @@
 
 (lkb-load-lisp (this-directory) "mt.lsp" t)
 
-(mt:read-transfer-rules
-  (list
-    (lkb-pathname (this-directory) "567.mtr"))
-  "567 transfer rules"
-  :filter nil)
+;(mt:read-transfer-rules
+;  (list
+;    (lkb-pathname (this-directory) "567.mtr"))
+;  "567 transfer rules"
+;  :filter nil)

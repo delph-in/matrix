@@ -423,6 +423,9 @@ prop-verb-lex := clause-emb-verb-lex &
 ques-verb-lex := clause-emb-verb-lex &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.SF ques ].
 
+;;; ERB 2007-05-19 Made OPT-CS type-id here, for GMMT compatibility.
+;;; Need a better theory of what it really should be.
+
 opt-trans-verb-lex := trans-verb-lex & transitive-lex-item &
   [ SYNSEM.LOCAL [ CAT [ HEAD verb,
                     	 VAL [ SPR < >,
@@ -434,7 +437,7 @@ opt-trans-verb-lex := trans-verb-lex & transitive-lex-item &
 				       & [ LOCAL.CAT [ HEAD noun &
 							    [ CASE acc ],
 						       VAL.SPR <> ],
-					   OPT-CS familiar ]>,
+					   OPT-CS type-id ]>,
                                SPEC < > ]]],
     ARG-ST < #subj, #comps >,
     INFLECTED - ].

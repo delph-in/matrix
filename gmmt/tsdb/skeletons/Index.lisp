@@ -19,7 +19,8 @@
 ;;; the list lexicographically before output.
 ;;;
 
-(((:path . "hau_gmmt") (:content . "Hausa GMMT test sentences"))
+(((:path . "hau") (:content . "Hausa MMT test sentences"))
+ ((:path . "hau_gmmt") (:content . "Hausa GMMT test sentences"))
  ((:path . "heb_gmmt") (:content . "Hebrew GMMT test sentences"))
  ((:path . "isl_gmmt") (:content . "Icelandic GMMT test sentences"))
  ((:path . "ita_gmmt") (:content . "Italian GMMT test sentences"))

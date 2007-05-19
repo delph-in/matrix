@@ -135,3 +135,9 @@ cp isl/semi.vpm to each language
 
 --- note, no GENDER in VPM, as we want to strip it.
 For now assuming same VPM will work everywhere
+
+new mt.lsp should just have the following:
+
+(setf *transfer-filter-p* nil)
+
+(setf *lm-model* nil)
