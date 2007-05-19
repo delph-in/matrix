@@ -1,3 +1,5 @@
+(set-coding-system utf-8)
+
 ;;;
 ;;; First, load a number of LKB-specific settings; typically no need to look
 ;;; too closely here
@@ -103,7 +105,14 @@
 (if (eq (length *last-parses*) 1)
    (setf *last-parses* '("klb ien" "h-am htwl la ien")))
 
-(set-coding-system utf-8)
 (read-smaf-conf (lkb-pathname (this-directory) "smaf.conf"))
+
+
+;;;
+;;; the mapping from grammar-internal to SEM-I compliant variable properties
+;;;
+(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
+
+(lkb-load-lisp (this-directory) "mt.lsp" t)
 
 

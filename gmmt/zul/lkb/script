@@ -1,3 +1,5 @@
+(set-coding-system utf-8)
+
 ;;;
 ;;; First, load a number of LKB-specific settings; typically no need to look
 ;;; too closely here
@@ -35,7 +37,7 @@
 (lkb-pathname (parent-directory) "matrix.tdl")
 (lkb-pathname (parent-directory) "head-types.tdl")
 (lkb-pathname (parent-directory) "zulu.tdl")
-(lkb-pathname (this-directory) "transfer.tdl")
+;(lkb-pathname (this-directory) "transfer.tdl")
 ))
 
 ;;;
@@ -92,7 +94,7 @@
 ;;; Generate.
 ;;;
 
-(index-for-generator)
+;(index-for-generator)
 
 ;;;
 ;;; The following overwrites the LKB's default for what
@@ -104,16 +106,22 @@
 (if (eq (length *last-parses*) 1)
    (setf *last-parses* '("umu-ntwana u-zo-dlal-a" "umu-ntwana u-zo-bon-a in-yoka")))
 
+;;;
+;;; the mapping from grammar-internal to SEM-I compliant variable properties
+;;;
+(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
+
+
 (lkb-load-lisp (this-directory) "mt.lsp" t)
 
-(mt:read-transfer-rules 
- (list
-  (lkb-pathname (this-directory) "567.mtr"))
- "567 transfer rules"
- :filter nil)
+;(mt:read-transfer-rules 
+; (list
+;  (lkb-pathname (this-directory) "567.mtr"))
+; "567 transfer rules"
+; :filter nil)
 
-(mt:read-transfer-rules 
- (list
-  (lkb-pathname (this-directory) "567-2.mtr"))
- "567 transfer rules"
- :filter nil)
+;(mt:read-transfer-rules 
+; (list
+;  (lkb-pathname (this-directory) "567-2.mtr"))
+; "567 transfer rules"
+; :filter nil)

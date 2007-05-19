@@ -1,3 +1,5 @@
+(set-coding-system utf-8)
+
 ;;;
 ;;; First, load a number of LKB-specific settings; typically no need to look
 ;;; too closely here
@@ -35,21 +37,23 @@
    (lkb-pathname (parent-directory) "matrix.tdl")
    (lkb-pathname (parent-directory) "head-types.tdl")
    (lkb-pathname (parent-directory) "italian.tdl")
-   (lkb-pathname (this-directory) "transfer.tdl")
+;   (lkb-pathname (this-directory) "transfer.tdl")
 ))
 
 
+(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
+
 ;;; 2006-05-30 Transfer rules for 567 MT demo
 
-#+:mt
-(lkb-load-lisp (this-directory) "mt.lsp" t)
+;#+:mt
+;(lkb-load-lisp (this-directory) "mt.lsp" t)
 
-#+:mt
-(mt:read-transfer-rules 
- (list
-  (lkb-pathname (this-directory) "567.mtr"))
- "567 transfer rules"
- :filter nil)
+;#+:mt
+;(mt:read-transfer-rules 
+; (list
+;  (lkb-pathname (this-directory) "567.mtr"))
+; "567 transfer rules"
+; :filter nil)
 
 ;;;
 ;;; Next, the lexicon itself, instantiating (lexical) types of the grammar
@@ -105,7 +109,7 @@
 ;;; Generate.
 ;;;
 
-(index-for-generator)
+;(index-for-generator)
 
 ;;;
 ;;; The following overwrites the LKB's default for what 

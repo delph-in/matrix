@@ -105,3 +105,33 @@ means of $LOGONROOT/uw/mmt/<name>/lkb/script
 
 Stephan: nope, you need a VPM in each grammar; and implicitly that makes decisions about the SEM-I for that grammar, but you need to write those decisions down as a .smi file for each grammar.
 you could think of `uw/mmt/mrs.tdl' as the meta SEM-I for your grammars, as they should all (post-VPM) conform to what you declare there
+
+-------------------------------------------------------------------
+
+Updating script files:
+
+At top of file:
+
+(set-coding-system utf-8)
+
+Instead of old transfer stuff, in whatever form:
+
+;;;
+;;; the mapping from grammar-internal to SEM-I compliant variable properties
+;;;
+(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
+
+(lkb-load-lisp (this-directory) "mt.lsp" t)
+
+
+Remove (index-for-generator)
+
+-------------------------------------------------------------------
+
+Updating other files:
+
+Fix rule-priority() in user-fns.lsp
+cp isl/semi.vpm to each language
+
+--- note, no GENDER in VPM, as we want to strip it.
+For now assuming same VPM will work everywhere

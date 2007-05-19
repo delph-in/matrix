@@ -1,3 +1,5 @@
+(set-coding-system utf-8)
+
 ;;;
 ;;; First, load a number of LKB-specific settings; typically no need to look
 ;;; too closely here
@@ -62,22 +64,30 @@
 ;;; small lexica) in the hope that the generator will be used frequently.
 ;;;
 (lkb-load-lisp (this-directory) "mrsglobals.lisp" t)
-(index-for-generator)
+;(index-for-generator)
 
 ;;;
 ;;; finally, use the new transfer component: initially, we need a dedicated
 ;;; call to freshly initialize the transfer component and then load any number
 ;;; of rule sets, each in a separate file, associated with its identifier.
 ;;;
-#+:mt
-(mt:initialize-transfer)
-#+:mt
+;#+:mt
+;(mt:initialize-transfer)
+;#+:mt
+;(lkb-load-lisp (this-directory) "mt.lsp" t)
+;#+:mt
+;(mt:read-transfer-rules 
+; (list
+;  (lkb-pathname (parent-directory) "paraphraser.mtr"))
+; "MWE Paraphraser"
+; :filter nil)
+
+;;;
+;;; the mapping from grammar-internal to SEM-I compliant variable properties
+;;;
+(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
+
 (lkb-load-lisp (this-directory) "mt.lsp" t)
-#+:mt
-(mt:read-transfer-rules 
- (list
-  (lkb-pathname (parent-directory) "paraphraser.mtr"))
- "MWE Paraphraser"
- :filter nil)
+
 
 (setf *last-parses* '("in gorbe ketabra xand" "man mitavanam shishera bexoram" "gorbe amad"))

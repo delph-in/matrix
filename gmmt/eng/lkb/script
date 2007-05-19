@@ -1,3 +1,5 @@
+(set-coding-system utf-8)
+
 ;;;
 ;;; First, load a number of LKB-specific settings; typically no need to look
 ;;; too closely here
@@ -91,7 +93,15 @@
 ;;; Generate.
 ;;;
 
-(index-for-generator)
+;(index-for-generator)
+
+;;;
+;;; the mapping from grammar-internal to SEM-I compliant variable properties
+;;;
+(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
+
+(lkb-load-lisp (this-directory) "mt.lsp" t)
+
 
 ;;;
 ;;; The following overwrites the LKB's default for what

@@ -1,3 +1,5 @@
+(set-coding-system utf-8)
+
 ;;;
 ;;; First, load a number of LKB-specific settings; typically no need to look
 ;;; too closely here
@@ -33,18 +35,18 @@
 (read-tdl-type-files-aux
 (list
 (lkb-pathname (parent-directory) "matrix.tdl")
-(lkb-pathname (this-directory) "transfer.tdl")
+;(lkb-pathname (this-directory) "transfer.tdl")
 (lkb-pathname (parent-directory) "head-types.tdl")
    (lkb-pathname (parent-directory) "modern_standard_arabic.tdl")
 ))
 
-(lkb-load-lisp (this-directory) "mt.lsp" t)
+;(lkb-load-lisp (this-directory) "mt.lsp" t)
 
-(mt:read-transfer-rules 
- (list
-  (lkb-pathname (this-directory) "567.mtr"))
- "567 transfer rules"
- :filter nil)
+;(mt:read-transfer-rules 
+; (list
+;  (lkb-pathname (this-directory) "567.mtr"))
+; "567 transfer rules"
+; :filter nil)
 
 
 ;;;
@@ -101,13 +103,21 @@
 ;;; Generate.
 ;;;
 
-(mt:read-transfer-rules 
- (list
-  (lkb-pathname (this-directory) "trigger.mtr"))
- "Generation Trigger Rules"
- :filter nil :task :trigger :recurse nil :edges 200)
+;(mt:read-transfer-rules 
+; (list
+;  (lkb-pathname (this-directory) "trigger.mtr"))
+; "Generation Trigger Rules"
+; :filter nil :task :trigger :recurse nil :edges 200)
 
-(index-for-generator)
+;(index-for-generator)
+
+;;;
+;;; the mapping from grammar-internal to SEM-I compliant variable properties
+;;;
+(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
+
+(lkb-load-lisp (this-directory) "mt.lsp" t)
+
 
 ;;;
 ;;; The following overwrites the LKB's default for what

@@ -1,3 +1,5 @@
+(set-coding-system utf-8)
+
 ;;;
 ;;; First, load a number of LKB-specific settings; typically no need to look
 ;;; too closely here
@@ -28,7 +30,8 @@
    (lkb-pathname (parent-directory) "matrix.tdl")
    (lkb-pathname (parent-directory) "head-types.tdl")
    (lkb-pathname (parent-directory) "armenian.tdl")
-   (lkb-pathname (parent-directory) "transfer.tdl")))
+;   (lkb-pathname (parent-directory) "transfer.tdl")
+))
 
 ;;;
 ;;; Next, the lexicon itself, instantiating (lexical) types of the grammar
@@ -63,22 +66,30 @@
 ;;; small lexica) in the hope that the generator will be used frequently.
 ;;;
 (lkb-load-lisp (this-directory) "mrsglobals.lisp" t)
-(index-for-generator)
+;(index-for-generator)
+
+;;;
+;;; the mapping from grammar-internal to SEM-I compliant variable properties
+;;;
+(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
+
+(lkb-load-lisp (this-directory) "mt.lsp" t)
+
 
 ;;;
 ;;; finally, use the new transfer component: initially, we need a dedicated
 ;;; call to freshly initialize the transfer component and then load any number
 ;;; of rule sets, each in a separate file, associated with its identifier.
 ;;;
-#+:mt
-(mt:initialize-transfer)
-#+:mt
-(lkb-load-lisp (this-directory) "mt.lsp" t)
-#+:mt
-(mt:read-transfer-rules 
- (list
-  (lkb-pathname (parent-directory) "567.mtr"))
- "MWE Paraphraser"
- :filter nil)
+;#+:mt
+;(mt:initialize-transfer)
+;#+:mt
+;(lkb-load-lisp (this-directory) "mt.lsp" t)
+;#+:mt
+;(mt:read-transfer-rules 
+; (list
+;  (lkb-pathname (parent-directory) "567.mtr"))
+; "MWE Paraphraser"
+; :filter nil)
 
 (setf *last-parses* '("es apaki krnam utel" "mard e krnay khnanal"))
