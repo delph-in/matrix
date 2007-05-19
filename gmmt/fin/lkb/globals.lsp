@@ -105,3 +105,4 @@
 
 ;(setf *lex-rule-suffix* nil)
 
+(setf *translate-grid* '(:fin))

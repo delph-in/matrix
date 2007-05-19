@@ -112,3 +112,5 @@
 ;;; for the compare function 
 
 (defparameter *discriminant-path* '(synsem local keys key pred))
+
+(setf *translate-grid* '(:spa))

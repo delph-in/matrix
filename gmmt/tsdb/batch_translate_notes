@@ -2,12 +2,12 @@ ToDo:
 
 1. Copy/update all grammars for:
 
-semi.vpm
-lkb/script
-lkb/globals.lsp
-lkb/mt.lsp
+/semi.vpm
+/lkb/script
+/lkb/globals.lsp : translate-grid
+/lkb/mt.lsp
 lkb/user-fns.lsp -- ?
-translate-grid
+
 
 2: Update directory
 
