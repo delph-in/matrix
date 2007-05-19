@@ -307,7 +307,7 @@ transitive-verb-lex := verb-lex & transitive-lex-item &
 
 clausal-verb-lex := finite-verb-lex & clausal-second-arg-trans-lex-item &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp >,
-    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+    ARG-ST < [ LOCAL.CAT.HEAD noun & [ CASE nom ] ],
              #comp & [ LOCAL.CAT [ HEAD comp,
                                    VAL.COMPS < > ] ] > ] .
 
