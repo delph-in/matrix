@@ -18,20 +18,54 @@
 ;;;
 
 PNG.PER : PERS
-  first  >> 1
-  second >> 2
-  third  >> 3
-  *      >> !
+  first  <> 1
+  second <> 2
+  third  <> 3
+  *      <> !
 
 PNG.NUM : NUM
-  sg   >> sg
-  non-sg >> non-sg
-  dual >> dual
-  pl   >> pl
-  *    >> !
+  sg   <> sg
+  non-sg <> non-sg
+  dual <> dual
+  pl   <> pl
+  *    <> !
 
 E.TENSE : TENSE
-  past     >> past
-  present  >> pres
-  future   >> fut
-  *        >> !
+  past     <> past
+  present  <> pres
+  future   <> fut
+  *        <> !
+
+SF : SF
+  prop <> prop
+  ques <> ques
+  prop-or-ques <> prop-or-ques
+  comm <> comm
+
+;;; ERB 2007-05-19 I think we have to put the most specific
+;;; ones first here, or they will get clobbered by the more
+;;; general ones.
+
+COG-ST : COG-ST
+; Non-disunctive types
+type-id <> type-id 
+uniq-id <> uniq-id 
+familiar <> familiar 
+activated <> activated 
+in-foc <> in-foc 
+
+; Disjunctions of two
+activ+fam <> activ+fam 
+uniq+fam <> uniq+fam 
+activ-or-more <> activ-or-more 
+uniq-or-less <> uniq-or-less 
+
+; Disjunctions of three
+uniq+fam+act <> uniq+fam+act 
+fam-or-more <> fam-or-more 
+fam-or-less <> fam-or-less 
+
+; Disjunctions of four
+uniq-or-more <> uniq-or-more 
+activ-or-less <> activ-or-less 
+
