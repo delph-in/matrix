@@ -6,5 +6,3 @@
 ;;; not when working with only one grammar.
 ;;;
 (setf *transfer-filter-p* nil)
-
-(setf *lm-model* nil)

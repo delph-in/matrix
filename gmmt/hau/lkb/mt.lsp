@@ -6,16 +6,3 @@
 ;;; not when working with only one grammar.
 ;;;
 (setf *transfer-filter-p* nil)
-
-(setf %transfer-properties-accumulator% nil)
-
-(setf %transfer-properties-defaults% nil)
-
-(setf %transfer-properties-filter%
- (list
-  (cons (mrs::vsym "PNG.GEN") nil)
-  (cons (mrs::vsym "PRO") nil)))
-
-;(setf %transfer-properties-filter% nil)
-
-(setf %transfer-values-filter% nil)
