@@ -18,3 +18,10 @@ look by doing:
 
  $LOGONROOT/summarize -o 10 <.fan file>
 
+If you want to add a language-specific accommodation transfer grammar:
+
+create <lg>-acm in matrix/gmmt on the model of isl-acm or hau-acm
+
+edit logon/mmt/setup.lisp (i.e., matrix/gmmt/setup.lisp) to use
+that one when translating from :any to :<lg>
+
