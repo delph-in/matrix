@@ -237,13 +237,15 @@ deraxt := common-noun-lex & [ STEM < "deraxt" >,
 ; English gloss: make
 ; Infinitive kardan
 ; [Lambton 1979]
-kard := past-compound-verb-lex & [ STEM <"kard">,
-				   SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
-					    LKEYS.KEYREL.PRED '_make_v_rel ] ].
+kard := past-transitive-compound-verb-lex &
+  [ STEM <"kard">,
+    SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+             LKEYS.KEYREL.PRED '_make_v_rel ] ].
 
-kon := present-compound-verb-lex & [ STEM <"kon">,
-				     SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
-					      LKEYS.KEYREL.PRED '_make_v_rel ] ].
+kon := present-transitive-compound-verb-lex &
+  [ STEM <"kon">,
+    SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
+             LKEYS.KEYREL.PRED '_make_v_rel ] ].
 
 ; Intransitive Verbs
 
@@ -493,7 +495,7 @@ deh := present-ditransitive-verb-lex & [ STEM <"deh">,
 ; English gloss: this
 ; [Thackston 1993]
 in := determiner-lex &  [ STEM <"in">,
-			  SYNSEM.LKEYS.KEYREL.PRED proximal+dem_q_rel ].
+			  SYNSEM.LKEYS.KEYREL.PRED exist_q_rel ].
 
 ; English gloss: that
 ; [Thackston 1993]
@@ -502,7 +504,7 @@ in := determiner-lex &  [ STEM <"in">,
 ; parsed sentence with an "an" in it does not generate strings from the
 ; semantics.  Call this "anBUGBUG" as a workaround.
 anBUGBUG := determiner-lex &  [ STEM <"an">,
-				SYNSEM.LKEYS.KEYREL.PRED distal+dem_q_rel ].
+				SYNSEM.LKEYS.KEYREL.PRED exist_q_rel ].
 
 
 ; Prepositions
@@ -548,3 +550,15 @@ va_1 := conj-lex &
   [ STEM < "va" >,
     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
     CFORM "1" ] .
+
+; Adverbs
+
+zud := adverb-lex &
+  [ STEM <"zud">,
+    SYNSEM.LKEYS.KEYREL.PRED "fast_adv_rel" ].
+
+; Adjectives
+
+gurisnah := adjective-lex &
+  [ STEM <"gurisnah">,
+    SYNSEM.LKEYS.KEYREL.PRED "hungry_adj_rel" ].

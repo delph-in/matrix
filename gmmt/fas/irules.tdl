@@ -20,6 +20,10 @@ subjunctive_lex :=
 %prefix (* be)
 subjunctive_lex_rule.
 
+imperative_lex :=
+%prefix (* be)
+imperative_lex_rule.
+
 negation-lex :=
 %prefix (* ne)
 negation-lex-rule.

@@ -4,6 +4,8 @@ head-initial-comp := head-initial-comp-phrase.
 
 head-final-comp := head-final-comp-phrase.
 
+head-opt-comp := head-opt-comp-phrase.
+
 preposition-comp := preposition-comp-phrase.
 
 head-spec := head-spec-phrase.
@@ -17,6 +19,8 @@ only-covert-det := only-covert-det-phrase.
 ;covert-det-def := covert-det-def-phrase.
 
 head-opt-subj := head-opt-subj-phrase.
+
+imperative-head-opt-subj := imperative-head-opt-subj-phrase.
 
 polar-question-comp := polar-question-comp-phrase.
 
@@ -43,3 +47,6 @@ vp2-top-coord := vp2-top-coord-rule .
 vp2-bottom-coord := vp2-bottom-coord-rule .
 s2-top-coord := s2-top-coord-rule .
 s2-bottom-coord := s2-bottom-coord-rule .
+
+head-adj-int := head-adj-int-phrase.
+adj-head-int := adj-head-int-phrase.

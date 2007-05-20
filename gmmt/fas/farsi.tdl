@@ -61,6 +61,7 @@ progressive := aspect.
 ; Mood types
 indicative := mood.
 subjunctive := mood.
+imperative := mood.
 
 ; Agreement types
 png := avm &
@@ -90,8 +91,10 @@ pl := non-sg.
 ; Nouns
 
 noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
-[ SYNSEM.LOCAL [ CAT [ HEAD noun & [DEFINITE -],
-		       VAL  [ SPR <#spr & [ LOCAL.CAT.HEAD det ]>,
+[ SYNSEM.LOCAL [ CAT [ HEAD noun &
+                            [ MOD < >,
+                              DEFINITE - ],
+                       VAL  [ SPR <#spr & [ LOCAL.CAT.HEAD det ]>,
 			      COMPS <>,
 			      SUBJ <>,
 			      SPEC <>]]],
@@ -117,7 +120,7 @@ kardan-noun-lex := compound-noun-lex &
 [ COMP_AUX '_make_v_rel ].
 
 determiner-lex := basic-determiner-lex &
-[ SYNSEM.LOCAL.CAT [ HEAD det,
+[ SYNSEM.LOCAL.CAT [ HEAD det & [ MOD < > ],
 		     VAL [ SUBJ <>,
 			   COMPS <>,
 			   SPR <>]]].
@@ -137,7 +140,8 @@ non-acc-noun-phrase-cat := noun-phrase-cat &
 
 verb-lex := basic-verb-lex &
 [ SYNSEM.LOCAL [ CAT [MC -,
-                      HEAD verb & [ NEG_PREFIX -,
+                      HEAD verb & [ MOD < >,
+                                    NEG_PREFIX -,
 				    TAM [ASPECT complete,
 					 MOOD indicative] ],
 		      VAL [ SUBJ <#subj  & synsem & [ LOCAL.CAT non-acc-noun-phrase-cat ] >,
@@ -150,22 +154,26 @@ intransitive-verb-lex : = verb-lex & intransitive-lex-item &
 [ SYNSEM.LOCAL.CAT.VAL.COMPS <>,
   ARG-ST <[]> ].
 
-past-intransitive-verb-lex := intransitive-verb-lex &
+past-verb-lex := verb-lex &
 [ SYNSEM.LOCAL.CAT.HEAD.TAM.TENSE past_tense ].
 
-present-intransitive-verb-lex := intransitive-verb-lex &
+present-verb-lex := verb-lex &
 [ SYNSEM.LOCAL.CAT.HEAD.TAM.TENSE present_tense ].
+
+past-intransitive-verb-lex := past-verb-lex & intransitive-verb-lex.
+
+present-intransitive-verb-lex := present-verb-lex & intransitive-verb-lex.
 
 transitive-verb-lex : = verb-lex & transitive-lex-item &
 [ SYNSEM.LOCAL [ CAT [ HEAD.HEAD_FINAL +,
-		       VAL.COMPS <#comps & [ LOCAL.CAT acc-noun-phrase-cat ] > ] ],
+		       VAL.COMPS < #comps &
+                                   [ OPT-CS type-id,
+                                     LOCAL.CAT acc-noun-phrase-cat ] > ] ],
   ARG-ST <[], #comps> ].
 
-past-transitive-verb-lex := transitive-verb-lex &
-[ SYNSEM.LOCAL.CAT.HEAD.TAM.TENSE past_tense ].
+past-transitive-verb-lex := past-verb-lex & transitive-verb-lex.
 
-present-transitive-verb-lex := transitive-verb-lex &
-[ SYNSEM.LOCAL.CAT.HEAD.TAM.TENSE present_tense ].
+present-transitive-verb-lex := present-verb-lex & transitive-verb-lex.
 
 ; Verbs like dandan that take a nominal and a prepositional arugment.
 ditransitive-verb-lex : = verb-lex & ditransitive-lex-item &
@@ -174,24 +182,33 @@ ditransitive-verb-lex : = verb-lex & ditransitive-lex-item &
 				  #direct_object & [ LOCAL.CAT acc-noun-phrase-cat ] > ] ],
   ARG-ST <[], #indirect_object, #direct_object> ].
 
-past-ditransitive-verb-lex := ditransitive-verb-lex &
-[ SYNSEM.LOCAL.CAT.HEAD.TAM.TENSE past_tense ].
+past-ditransitive-verb-lex := past-verb-lex & ditransitive-verb-lex.
 
-present-ditransitive-verb-lex := ditransitive-verb-lex &
-[ SYNSEM.LOCAL.CAT.HEAD.TAM.TENSE present_tense ].
+present-ditransitive-verb-lex := present-verb-lex & ditransitive-verb-lex.
 
 
 ; Verbs like budan, kardan, etc. that combine with non-verbal elements to form compound verbs.
-compound-verb-lex := verb-lex & transitive-lex-item &
+intransitive-compound-verb-lex := verb-lex & transitive-lex-item &
 [ SYNSEM.LOCAL [ CAT [ HEAD.HEAD_FINAL +,
-		       VAL.COMPS <#comps & [ LOCAL.CAT non-acc-noun-phrase-cat ] > ] ],
-  ARG-ST <[], #comps> ].
+		       VAL.COMPS < #comp &
+                                   [ LOCAL.CAT non-acc-noun-phrase-cat ] > ] ],
+  ARG-ST < [], #comp > ].
 
-past-compound-verb-lex := compound-verb-lex &
-[ SYNSEM.LOCAL.CAT.HEAD.TAM.TENSE past_tense ].
+transitive-compound-verb-lex := verb-lex & ditransitive-lex-item &
+[ SYNSEM.LOCAL [ CAT [ HEAD.HEAD_FINAL +,
+		       VAL.COMPS < #comp1 &
+                                   [ LOCAL.CAT non-acc-noun-phrase-cat ],
+                                   #comp2 &
+                                   [ LOCAL.CAT acc-noun-phrase-cat ] > ] ],
+  ARG-ST < [], #comp1, #comp2 > ].
 
-present-compound-verb-lex := compound-verb-lex &
-[ SYNSEM.LOCAL.CAT.HEAD.TAM.TENSE present_tense ].
+past-intransitive-compound-verb-lex := past-verb-lex & intransitive-compound-verb-lex.
+
+past-transitive-compound-verb-lex := past-verb-lex & transitive-compound-verb-lex.
+
+present-intransitive-compound-verb-lex := present-verb-lex & intransitive-compound-verb-lex.
+
+present-transitive-compound-verb-lex := present-verb-lex & transitive-compound-verb-lex.
 
 
 ; Verbs like tavanestan that combine with verbal objects.
@@ -206,20 +223,18 @@ auxiliary-verb-lex := verb-lex & trans-first-arg-raising-lex-item &
 ; Verbs like danestan that take clauses as complements.
 clausal-comp-verb-lex := verb-lex & clausal-second-arg-trans-lex-item & 
 [ SYNSEM.LOCAL [ CAT [ HEAD.HEAD_FINAL -,
-		       VAL.COMPS < #comps & [ LOCAL.CAT [ HEAD complementizer, 
-							  VAL [ SUBJ < anti-synsem >,
-								COMPS <> ] ] ] > ] ],
+		       VAL.COMPS < #comps & [ LOCAL.CAT [ HEAD particle,
+							  VAL [ SUBJ < >,
+								COMPS < > ] ] ] > ] ],
   ARG-ST < [], #comps > ].
 
-past-clausal-comp-verb-lex := clausal-comp-verb-lex &
-[ SYNSEM.LOCAL.CAT.HEAD.TAM.TENSE past_tense ].
+past-clausal-comp-verb-lex := past-verb-lex & clausal-comp-verb-lex.
 
-present-clausal-comp-verb-lex := clausal-comp-verb-lex &
-[ SYNSEM.LOCAL.CAT.HEAD.TAM.TENSE present_tense ].
+present-clausal-comp-verb-lex := present-verb-lex & clausal-comp-verb-lex.
 
 ; Prepositions
 preposition-lex := no-hcons-lex-item &
-[ SYNSEM.LOCAL [ CAT [ HEAD preposition,
+[ SYNSEM.LOCAL [ CAT [ HEAD preposition & [ MOD < > ],
 		       VAL.SPR <>,
 		       VAL.SUBJ <>,
 		       VAL.COMPS < #comps & [ LOCAL [ CONT.HOOK #hook,
@@ -236,10 +251,12 @@ preposition-phrase-cat := cat &
 ; Particles
 
 clausal-particle := norm-sem-lex-item & 
-[ SYNSEM.LOCAL.CAT.VAL [ COMPS < [ LOCAL.CAT.VAL [ SUBJ < anti-synsem >,
-						   COMPS <> ] ] >,
-			 SPR <>,
-			 SUBJ < anti-synsem > ] ].
+[ SYNSEM.LOCAL.CAT [ HEAD.MOD < >,
+                     VAL [ COMPS < [ LOCAL.CAT [ HEAD verb,
+                                                 VAL [ SUBJ < >,
+                                                       COMPS < > ] ] ] >,
+                           SPR < >,
+                           SUBJ < > ] ] ].
 
 polar-question-particle-lex := clausal-particle & 
 [ SYNSEM.LOCAL.CAT.HEAD polar_question_particle ].
@@ -282,11 +299,18 @@ head-subj-phrase := decl-head-subj-phrase & head-final &
 head-opt-subj-phrase := decl-head-opt-subj-phrase &
 [ SYNSEM.LOCAL.CAT.MC + ].
 
+imperative-head-opt-subj-phrase := imp-head-opt-subj-phrase &
+[ SYNSEM.LOCAL.CAT.HEAD.TAM.MOOD imperative ].
+
 head-initial-comp-phrase := basic-head-1st-comp-phrase & head-initial &
 [ SYNSEM.LOCAL.CAT.HEAD.HEAD_FINAL - ].
 
 head-final-comp-phrase := basic-head-1st-comp-phrase & head-final &
 [ SYNSEM.LOCAL.CAT.HEAD.HEAD_FINAL + ].
+
+head-opt-comp-phrase := basic-head-opt-comp-phrase &
+[ SYNSEM.LOCAL.CAT.HEAD verb,
+  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD noun ] > ].
 
 preposition-comp-phrase := basic-head-1st-comp-phrase & head-initial &
 [ SYNSEM.LOCAL.CAT.HEAD preposition ].
@@ -294,10 +318,10 @@ preposition-comp-phrase := basic-head-1st-comp-phrase & head-initial &
 head-spec-phrase := basic-head-spec-phrase & head-final.
 
 ; See comments for basic-comp-phrase in matrix.tdl.
-polar-question-comp-phrase := basic-head-1st-comp-phrase & head-initial & interrogative-clause &
+polar-question-comp-phrase := basic-head-1st-comp-phrase & head-initial &
 [ SYNSEM.LOCAL.CAT.HEAD polar_question_particle ].
 
-complement-comp-phrase := basic-head-1st-comp-phrase & head-initial & declarative-clause &
+complement-comp-phrase := basic-head-1st-comp-phrase & head-initial &
 [ SYNSEM.LOCAL.CAT.HEAD complementizer ].
 
 ; Non-branching covert DET phrase since determiners are always optional.
@@ -408,7 +432,7 @@ non_acc_lex_rule := const-ltow-rule &
 ; verb_prefix_rule copies up the entire DTR SYNSEM except
 ; LOCAL.CAT.HEAD.TAM.  Derivied rules change TAM and ensure that
 ; prefixes combine correctly.
-verb_prefix_rule := infl-ltol-rule & 
+basic_verb_prefix_rule := lex-rule &
 [ SYNSEM [ OPT #opt,
 	   LOCAL [ CAT [ HEAD [ MOD #mod,
 				KEYS #keys,
@@ -434,9 +458,12 @@ verb_prefix_rule := infl-ltol-rule &
 			 CONT #cont,
 			 AGR #agr ],
 		 NON-LOCAL #non-local,
-		 MODIFIED #modified ],
-	INFLECTED + ]
+		 MODIFIED #modified ] ]
 ].
+
+verb_prefix_rule := basic_verb_prefix_rule & infl-ltol-rule &
+[ DTR.INFLECTED + ].
+
 
 ; The progressive_lex_rule changes TAM.ASPECT to progressive.  It only
 ; applies to complete, indicative, non-negated verbs.
@@ -448,6 +475,14 @@ progressive_lex_rule := verb_prefix_rule &
 				  ASPECT complete,
 				  MOOD indicative ] ].
 
+
+; The imperative_lex_rule changes TAM.MOOD to imperative.  It only
+; applies to bare present-tense verb stems
+imperative_lex_rule := basic_verb_prefix_rule & infl-ltow-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.TAM [ TENSE #tense,
+			      MOOD imperative ],
+  DTR [ SYNSEM.LOCAL.CAT.HEAD.TAM [ TENSE #tense & present_tense ] ] ].
+ 
 
 ; The subjunctive_lex_rule changes TAM.MOOD to subjunctive.  It only
 ; applies to complete, indicative, non-negated verbs.
@@ -548,6 +583,15 @@ negation-lex-rule := infl-ltol-rule &
 
 ;;; Coordination Strategy 1
 
+n-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
+
+n-bottom-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
+
 n1-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
 
@@ -558,6 +602,15 @@ n1-bottom-coord-rule := conj-first-bottom-coord-rule & n-bottom-coord-phrase &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
 
 ;;; Coordination Strategy 1
+
+np-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
+
+np-bottom-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
 
 np1-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
@@ -625,3 +678,25 @@ s2-top-coord-rule := basic-s-top-coord-rule & apoly-top-coord-rule &
 s2-bottom-coord-rule := unary-bottom-coord-rule & s-bottom-coord-phrase &
   [ SYNSEM.LOCAL [ COORD-STRAT "2",
                    COORD-REL.PRED "_and_coord_rel" ] ] .
+
+;;; Adverbs
+
+adverb-lex := basic-int-adverb-lex &
+  [ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD verb,
+                                                VAL [ SUBJ < [ ] >,
+                                                      COMPS < > ] ] ] >,
+                       VAL [ SPR < >,
+                             COMPS < >,
+                             SUBJ < > ] ] ].
+
+adj-head-int-phrase :+
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].
+
+;;; Adjectives
+
+adjective-lex := basic-int-mod-adj-lex &
+  [ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD noun,
+                                                VAL.SPR < [ ] > ] ] >,
+                       VAL [ SPR < >,
+                             COMPS < >,
+                             SUBJ < > ] ] ].
