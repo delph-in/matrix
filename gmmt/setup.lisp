@@ -6,4 +6,5 @@
 (setf *mmt-transfer-grammars*
   '((:any :isl :isl-acm)
     (:any :hau :hau-acm)
+    (:any :zul :zul-acm)
     (:any :any :identity)))
