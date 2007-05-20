@@ -1,0 +1,13 @@
+;;; Hey, emacs(1), this is -*- Mode: TDL; Coding: utf-8; -*- got it?
+
+pronoun-delete-rule := monotonic_omtr &
+ [ INPUT [ RELS < [ PRED "_pronoun_n_rel",
+		     ARG0 #x,
+		     LBL #larg ],
+		 [ PRED "exist_q_rel",
+		   ARG0 #x,
+		   RSTR #harg ] >,
+	   HCONS < qeq & [ LARG #larg,
+			    HARG #harg ] > ],
+   OUTPUT [ RELS < >,
+	    HCONS < > ]].
