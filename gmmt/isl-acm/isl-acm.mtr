@@ -1,8 +1,9 @@
 ;;; Hey, emacs(1), this is -*- Mode: TDL; Coding: utf-8; -*- got it?
 
-pro-insert-arg1-omtr := monotonic_omtr &
+pro-insert-arg1-mtr := monotonic_mtr &
 [ INPUT.RELS < >,
-  CONTEXT.RELS < [ ARG1 #x & x ] >,
+  CONTEXT.RELS < [ ARG0.SF prop-or-ques,
+		   ARG1 #x & x ] >,
   FILTER.RELS < [ ARG0 #x ] >,
   OUTPUT [ RELS < [ PRED "_pronoun_n_rel",
 		    ARG0 #x,
