@@ -191,7 +191,7 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL
       [ CAT.VAL.SPR
-          < [ LOCAL.CONT.RELS <! [ PRED reg_quant_rel ] !> ] >,
+          < [ LOCAL.CONT.RELS <! [ PRED exist_q_rel ] !> ] >,
         CONT.HOOK.INDEX.PNG.PER third ],
     NEEDINF needcat ].
 
@@ -234,7 +234,7 @@ infl-det-lex := det-lex &
 
 ; Adjectives.
 
-all-adjective-lex := basic-adjective-lex &
+all-adjective-lex := basic-int-mod-adj-lex &
   [ SYNSEM
       [ LOCAL
           [ CAT
@@ -268,13 +268,13 @@ bare-adjective-lex := all-adjective-lex &
 all-adverb-lex := basic-adverb-lex &
   [ SYNSEM.LOCAL.CAT
       [ HEAD.MOD
-        < [ LOCAL.CAT.VAL.SPR null ] >,
+        < [ LOCAL.CAT.VAL [ SUBJ < >,
+                            SPR null ] ] >,
         VAL
           [ SPR null,
             SUBJ null,
             COMPS null,
-            SPEC null ],
-        POSTHEAD - ] ].
+            SPEC null ] ] ].
 
 intersective-adverb-lex := all-adverb-lex & intersective-mod-lex &
   [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL.PREMODIFIABLE + ].

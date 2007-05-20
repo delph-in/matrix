@@ -198,9 +198,9 @@ tia := bare-adjective-lex &
 		SYNSEM.LKEYS.KEYREL.PRED '_such_j_rel ].
 ; To be generated with a lexical rule for correlatives later.
 
-tiu-adj := bare-adjective-lex &
-	[ STEM < "tiu" >,
-		SYNSEM.LKEYS.KEYREL.PRED '_that_j_rel ].
+;tiu-adj := bare-adjective-lex &
+;	[ STEM < "tiu" >,
+;		SYNSEM.LKEYS.KEYREL.PRED '_that_j_rel ].
 
 vintr-adj := adjective-lex &
 	[ STEM < "vintr" >,

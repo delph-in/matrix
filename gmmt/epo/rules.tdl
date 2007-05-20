@@ -20,6 +20,7 @@ imperative := imperative-sentence.
 command := command-sentence.
 interrogative := interrogative-sentence.
 adj-head-scop := adj-head-scop-phrase.
+head-adj-scop := head-adj-scop-phrase.
 np-top-coord := np-top-coord-rule.
 np-mid-coord := np-mid-coord-rule.
 np-bottom-coord := np-bottom-coord-rule.
