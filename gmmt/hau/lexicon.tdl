@@ -97,6 +97,13 @@ mootàa := common-noun-lex &
 				GEN fem ] , 
 	LKEYS.KEYREL.PRED "_car_n_rel" ] ] .
 
+mootoocii := common-noun-lex &
+  [ STEM < "mootoocii" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM non-sg,
+				GEN fem ] , 
+	LKEYS.KEYREL.PRED "_car_n_rel" ] ] .
+
+
 mùtûm := common-noun-lex &
   [ STEM < "mùtûm" >,
     SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc,

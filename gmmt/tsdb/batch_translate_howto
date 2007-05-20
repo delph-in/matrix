@@ -1,5 +1,6 @@
 Replace logon/uw/mmt with a soft link to matrix/gmmt
 Create an input file with test sentences in matrix/gmmt, called <src-lg>.txt
+(be sure to put blank lines between each item).
 
 In the logon/ directory, replacing <src-lg> and <tgt-lg> as appropriate:
 
