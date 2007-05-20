@@ -483,13 +483,11 @@ xntrel := nom-interrog-clausal-verb-lex &
 
 ; that (declarative and interrogative)
 the := comp-lex &
-  [ STEM < "the" >,
-    SYNSEM.LKEYS.KEYREL.PRED '_that_v_rel ].
+  [ STEM < "the" > ].
 
 ; that (declarative only)
 or := decl-comp-lex &
-  [ STEM < "or" >,
-    SYNSEM.LKEYS.KEYREL.PRED '_that_v_rel ].
+  [ STEM < "or" > ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DETERMINERS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -514,24 +512,31 @@ me := indef-det-lex &
 ;;; MISCELLANEOUS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+aragsren := adverb-lex &
+  [ STEM <"aragsren">,
+    SYNSEM.LKEYS.KEYREL.PRED '_fast_adv_rel ].
+
+amuti := adjective-lex &
+  [ STEM <"amuti">,
+    SYNSEM.LKEYS.KEYREL.PRED '_hungry_adj_rel ].
+
 ; Armenian demonstratives are really adjectives
 ; this (adj)
-;ays := det-lex &
-;  [ STEM < "ays" >,
-;    SYNSEM.LKEYS.KEYREL.PRED proximal+dem_q_rel ].
+ays := adjective-lex &
+  [ STEM < "ays" > ].
 
 ; distal that (adj)
-;ayd := det-lex &
-;  [ STEM < "ayd" >,
-;    SYNSEM.LKEYS.KEYREL.PRED distal+dem_q_rel ].
+ayd := adjective-lex &
+  [ STEM < "ayd" > ].
 
 ; remote that (adj)
-;ayn := det-lex &
-;  [ STEM < "ayn" >,
-;    SYNSEM.LKEYS.KEYREL.PRED remote+dem_q_rel ].
+ayn := adjective-lex &
+  [ STEM < "ayn" > ].
 
 ; conjunction 'and'
 ev_1 := conj-lex &
   [ STEM < "ev" >,
     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
     CFORM "1" ] .
+
+; 

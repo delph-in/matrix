@@ -36,6 +36,7 @@ form := *top*.
 fin := form.
 inf := form.
 neg := form.
+imper := form.
 
 mood := *top*.
 indic := mood.
@@ -84,7 +85,7 @@ exist_q_rel := reg_quant_rel.
 
 ; nouns
 noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
-  [ SYNSEM.LOCAL.CAT [ HEAD noun,
+  [ SYNSEM.LOCAL.CAT [ HEAD noun & [ MOD < > ],
                        VAL [ SPR < #spr >,
                              COMPS null,
                              SUBJ null,
@@ -94,13 +95,13 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
 common-noun-lex := noun-lex &
   [ INFLECTED -,
     SYNSEM.LOCAL [ CAT.VAL.SPR
-		       < [ LOCAL.CONT.RELS <! [ PRED reg_quant_rel ] !> ] >,
+		       < [ LOCAL.CONT.RELS <! [ PRED exist_q_rel ] !> ] >,
 		   CONT.HOOK.INDEX.PNG [ PER third ] ] ].
 
 ;pronouns
 pronoun-lex := noun-lex &
   [ SYNSEM [ LOCAL [ CAT.VAL.SPR
-                     < [ LOCAL.CONT.RELS <! [ PRED pronoun_q_rel ] !> ] >,
+                     < [ LOCAL.CONT.RELS <! [ PRED exist_q_rel ] !> ] >,
                      CONT.HOOK.INDEX.COG-ST activ-or-more ],
              LKEYS.KEYREL.PRED 'pronoun_n_rel ]].
 
@@ -136,7 +137,7 @@ pronoun-lex := noun-lex &
 
 ; determiners
 det-lex := basic-determiner-lex &
-  [ SYNSEM.LOCAL.CAT [ HEAD det,
+  [ SYNSEM.LOCAL.CAT [ HEAD det & [ MOD < > ],
                        VAL [ SPR null,
                              COMPS null,
                              SUBJ null,
@@ -153,7 +154,7 @@ indef-det-lex := det-lex &
 verb-lex := basic-verb-lex &
   [ INFLECTED -,
     PN-MARKED -,
-    SYNSEM.LOCAL.CAT [ HEAD verb,
+    SYNSEM.LOCAL.CAT [ HEAD verb & [ MOD < > ],
                        VAL [ SPR < >,
                              SUBJ < synsem & #subj >,
                              SPEC < > ]],
@@ -282,7 +283,7 @@ nom-interrog-clausal-verb-lex := nom-clausal-verb-lex &
 
 comp-lex := raise-sem-lex-item & basic-one-arg &
   [ INFLECTED +,
-    SYNSEM.LOCAL [ CAT [ HEAD comp,
+    SYNSEM.LOCAL [ CAT [ HEAD comp & [ MOD < > ],
                          VAL [ SUBJ < >,
                                SPR < >,
                                COMPS < #clause >,
@@ -334,12 +335,19 @@ interrogative-head-subj-phrase := basic-head-subj-phrase & interrogative-clause 
 head-opt-subj-phrase := basic-head-opt-subj-phrase &
   [ HEAD-DTR [ KE-MARKED +,
 	       PN-MARKED +,
-               SYNSEM.LOCAL.CAT.HEAD verb ]].
+               SYNSEM.LOCAL.CAT.HEAD verb & [ FORM fin ]]].
 
 interrogative-head-opt-subj-phrase :=
   basic-head-opt-subj-phrase & interrogative-clause &
     [ HEAD-DTR [ KE-MARKED +,
 		 PN-MARKED + ]].
+
+imperative-head-opt-subj-phrase := imp-head-opt-subj-phrase &
+  [ HEAD-DTR [ KE-MARKED +,
+               PN-MARKED +,
+               SYNSEM.LOCAL [ CAT [ HEAD verb & [ FORM imper ],
+                                    VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.PER second ] > ] ] ] ].
+                              
 
 head-comp-phrase := basic-head-1st-comp-phrase & head-final &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun,
@@ -536,6 +544,16 @@ subjunc_verb-lex-rule := const-ltol-rule &
     PN-MARKED -,
     SYNSEM #synsem ].
 
+imper_verb-lex-rule := const-ltol-rule &
+  [ DTR.SYNSEM.LOCAL.CAT.HEAD verb,
+    DTR.KE-MARKED -,
+    DTR.PN-MARKED -,
+    DTR.SYNSEM #synsem,
+    SYNSEM.LOCAL.CAT.HEAD.FORM imper,
+    KE-MARKED +,
+    PN-MARKED +,
+    SYNSEM #synsem ].
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Coordination
 
@@ -600,3 +618,25 @@ s1-mid-coord-rule := basic-s-mid-coord-rule & monopoly-mid-coord-rule &
 
 s1-bottom-coord-rule := conj-first-bottom-coord-rule & s-bottom-coord-phrase &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+;;; Adverbs
+
+adverb-lex := basic-int-adverb-lex &
+  [ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD verb,
+                                                VAL [ SUBJ < [ ] >,
+                                                      COMPS < > ] ] ] >,
+                       VAL [ SPR < >,
+                             COMPS < >,
+                             SUBJ < > ] ] ].
+
+head-adj-int-phrase :+
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].
+
+;;; Adjectives
+
+adjective-lex := basic-int-mod-adj-lex &
+  [ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD noun,
+                                                VAL.SPR < [ ] > ] ] >,
+                       VAL [ SPR < >,
+                             COMPS < >,
+                             SUBJ < > ] ] ].

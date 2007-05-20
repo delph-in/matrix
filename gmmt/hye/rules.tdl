@@ -1,7 +1,8 @@
 head-subj := head-subj-phrase.
-interrogative-head-subj := interrogative-head-subj-phrase.
+;interrogative-head-subj := interrogative-head-subj-phrase.
 head-opt-subj := head-opt-subj-phrase.
-interrogative-head-opt-subj := interrogative-head-opt-subj-phrase.
+;interrogative-head-opt-subj := interrogative-head-opt-subj-phrase.
+imperative-head-opt-subj := imperative-head-opt-subj-phrase.
 
 head-comp := head-comp-phrase.
 aux-head-comp := aux-head-comp-phrase.
@@ -9,6 +10,9 @@ comp-head-comp := comp-head-comp-phrase.
 head-opt-comp := head-opt-comp-phrase.
 
 head-spec := head-spec-phrase.
+
+adj-head-int := adj-head-int-phrase.
+head-adj-int := head-adj-int-phrase.
 
 any-covert-det := any-covert-det-phrase.
 

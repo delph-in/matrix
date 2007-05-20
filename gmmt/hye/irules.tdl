@@ -62,7 +62,7 @@ ins_non-sg_noun :=
   2sg_verb-lex-rule.
 
 3sg_verb :=
-  %suffix (e e) (i i) (a ay)
+  %suffix (i i) (e e) (a ay) (chhe chhi)
   3sg_verb-lex-rule.
 
 1non-sg_verb :=
