@@ -1,7 +1,7 @@
 To do interactive translation with LOGON machinery:
 
 1. Start two emacses
-2. In each emacs, do M-x LOGON.  That will start lkb and tsdb++
+2. In each emacs, do M-x logon.  That will start lkb and tsdb++
 3. Arrange the windows so you know which is which
 4. In source-side emacs common-lisp buffer:
 
