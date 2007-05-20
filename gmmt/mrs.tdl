@@ -44,9 +44,7 @@ e := i &
   SF sf ].
 
 x := i & p & 
-[ PERS person, NUM number,
-  GEND gender, 
-  IND bool, DIV bool ].
+[ PERS person, NUM number, COG-ST cog-st ].
 
 ;;;
 ;;; to check for `arity' in MTRs, maybe we need an `anti-'variable type
@@ -72,6 +70,23 @@ prop := prop-or-ques.
 ques := prop-or-ques.
 comm := sf.
 
+cog-st := top.
+activ-or-less := cog-st.
+uniq-or-more := cog-st.
+uniq+fam+act := activ-or-less & uniq-or-more.
+fam-or-less := activ-or-less.
+fam-or-more := uniq-or-more.
+activ+fam := uniq+fam+act & fam-or-more.
+uniq+fam := uniq+fam+act & fam-or-less.
+uniq-or-less := fam-or-less.
+activ-or-more := fam-or-more.
+type-id := uniq-or-less.
+uniq-id := uniq-or-less & uniq+fam.
+familiar := uniq+fam & activ+fam.
+activated := activ+fam & activ-or-more.
+in-foc := activ-or-more.
+
+
 luk := top.
 bool := luk.
 na := luk.
@@ -86,7 +101,9 @@ no_person := person.
 
 number := top.
 sg := number.
-pl := number.
+non-sg := number.
+dual := non-sg.
+pl := non-sg.
 no_number := number.
 
 gender := top.
