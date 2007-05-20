@@ -34,7 +34,8 @@ E.TENSE : TENSE
   past     <> past
   present  <> pres
   future   <> fut
-  *        <> !
+  present  <> [e]
+;  *        <> !
 
 SF : SF
   prop <> prop
