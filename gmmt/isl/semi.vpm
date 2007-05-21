@@ -28,6 +28,7 @@ PNG.NUM : NUM
   non-sg <> non-sg
   dual <> dual
   pl   <> pl
+;  number <> [x]
   *    <> !
 
 E.TENSE : TENSE

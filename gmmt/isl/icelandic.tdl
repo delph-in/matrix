@@ -172,14 +172,16 @@ np1-top-3rd-3rd-coord-rule := np1-3rd-3rd-coord-rule & np1-top-coord-rule.
 ;;; daughters.   Might need something more fine-grained later, but
 ;;; we can't just leave them underspecified.
 
+;;; ERB 2007-05-21 New tact: We want to allow the conjuncts to have
+;;; different INV values, but the mother should always be [ INV - ],
+;;; since we don't want the INT rule up on top.
+
 s1-top-coord-rule := basic-s-top-coord-rule & monopoly-top-coord-rule &
   [ SYNSEM.LOCAL [ COORD-STRAT "1",
 		   CAT [ MC #mc,
-			 HEAD.INV #inv ] ],
-    LCOORD-DTR.SYNSEM.LOCAL.CAT [ MC #mc,
-				  HEAD.INV #inv ],
-    RCOORD-DTR.SYNSEM.LOCAL.CAT [ MC #mc,
-				  HEAD.INV #inv ] ].
+			 HEAD.INV - ] ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.MC #mc ,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 s1-mid-coord-rule := basic-s-mid-coord-rule & monopoly-mid-coord-rule &
   [ SYNSEM.LOCAL [ COORD-STRAT "1",
@@ -196,7 +198,34 @@ s1-bottom-coord-rule := conj-first-bottom-coord-rule & s-bottom-coord-phrase &
 			 HEAD.INV #inv ] ],
     COORD-DTR.SYNSEM.LOCAL.CAT [ MC #mc,
 				 HEAD.INV #inv ] ].
-  
+
+;;; Copied from English grammar.  
+
+vp-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT [ VAL.COMPS < >,
+		       HEAD [ FORM #form,
+			      INV #inv ] ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD[ FORM #form,
+                                      INV #inv ],
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
+                                       INV #inv ] ].
+
+vp-bottom-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
+                            INV #inv ],
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
+                                        INV #inv ] ].
+
+vp1-top-coord-rule := basic-vp-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+vp1-mid-coord-rule := basic-vp-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+vp1-bottom-coord-rule := conj-first-bottom-coord-rule & vp-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+
 ; For the analysis of inverted yes-no questions, we add the feature INV.
 
 verb :+ [ INV bool ] .

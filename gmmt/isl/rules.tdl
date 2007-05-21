@@ -53,6 +53,13 @@ s1-mid-coord := s1-mid-coord-rule .
 
 s1-bottom-coord := s1-bottom-coord-rule .
 
+vp1-top-coord := vp1-top-coord-rule .
+
+vp1-mid-coord := vp1-mid-coord-rule .
+
+vp1-bottom-coord := vp1-bottom-coord-rule .
+
+
 int := int-cl .
 
 imp-head-opt := imp-head-opt-phrase.
