@@ -1,3 +1,5 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
 head-subj := head-subj-phrase.
 
 head-initial-comp := head-initial-comp-phrase.

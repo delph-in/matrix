@@ -1,3 +1,4 @@
+;;; -*- Mode: TDL; Package: LKB -*-
 ; File for spelling preserving lexical rules, i.e., instances
 ; of (subtypes of) infl-ltol-rule and infl-ltow-rule.
 
@@ -12,9 +13,9 @@ acc_lex :=
 %suffix (* ra)
 acc_lex_rule.
 
-progressive_lex :=
-%prefix (* mi)
-progressive_lex_rule.
+;progressive_lex :=
+;%prefix (* mi)
+;progressive_lex_rule.
 
 subjunctive_lex :=
 %prefix (* be)

@@ -1,3 +1,4 @@
+;;; -*- Mode: TDL; Package: LKB -*-
 ; Farsi
 ; Bill McNeill
 
@@ -7,20 +8,21 @@ matrix := head.
 ; Matrix parts of speech may not head a matrix clause.
 non-matrix := head.
 
+tam-head := head & [ TAM tam ].
+
 noun := non-matrix & [ CASE case,
 		       DEFINITE bool ]. ; BUGBUG Diacritic feature
 
-verb := matrix & [ TAM tam,
-		   HEAD_FINAL bool,
-		   NEG_PREFIX bool ]. ; BUGBUG Diacritic feature
+verb := matrix & tam-head & [ HEAD_FINAL bool,
+			      NEG_PREFIX bool ]. ; BUGBUG Diacritic feature
 
 det := non-matrix.
 
 preposition := non-matrix.
 
-particle := matrix.
+particle := head.
 
-polar_question_particle := particle.
+polar_question_particle := particle & matrix & tam-head.
 
 complementizer := particle.
 
@@ -59,9 +61,11 @@ complete := aspect.
 progressive := aspect.
 
 ; Mood types
-indicative := mood.
-subjunctive := mood.
-imperative := mood.
+non-imperative := mood.
+non-subjunctive := mood.
+indicative := non-imperative & non-subjunctive.
+imperative := non-subjunctive.
+subjunctive := non-imperative.
 
 ; Agreement types
 png := avm &
@@ -101,13 +105,15 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
   ARG-ST <#spr> ].
 
 pronoun-lex := noun-lex &
-[ SYNSEM [ LOCAL [ CAT.VAL.SPR < [ LOCAL.CONT.RELS < ! [ PRED exist_q_rel ] ! > ] >,
+	       [ SYNSEM [ LOCAL [ CAT.VAL.SPR < [ OPT +,
+						  LOCAL.CONT.RELS < ! [ PRED exist_q_rel ] ! > ] >,
                    CONT.HOOK.INDEX.COG-ST activ-or-more ],
-           LKEYS.KEYREL.PRED 'pronoun_n_rel ] ].
+           LKEYS.KEYREL.PRED 'pronoun_n_rel ],
+  INFLECTED - ].
 
 
 common-noun-lex := noun-lex &
-[ SYNSEM.LOCAL [ CAT.VAL.SPR < [ LOCAL.CONT.RELS < ! [PRED reg_quant_rel] ! > ] >,
+[ SYNSEM.LOCAL [ CAT.VAL.SPR < [ LOCAL.CONT.RELS < ! [PRED exist_q_rel] ! > ] >,
 		 CONT.HOOK.INDEX.PNG [ PER third ] ],
   INFLECTED - ].
 
@@ -117,13 +123,15 @@ compound-noun-lex := common-noun-lex &
 [ COMP_AUX *top* ].
 
 kardan-noun-lex := compound-noun-lex &
-[ COMP_AUX '_make_v_rel ].
+[ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] >,
+  COMP_AUX '_make_v_rel ].
 
-determiner-lex := basic-determiner-lex &
-[ SYNSEM.LOCAL.CAT [ HEAD det & [ MOD < > ],
-		     VAL [ SUBJ <>,
-			   COMPS <>,
-			   SPR <>]]].
+demonstrative-lex := basic-determiner-lex &
+[ SYNSEM.LOCAL [ CAT [ HEAD det & [ MOD < > ],
+		       VAL [ SUBJ <>,
+			     COMPS <>,
+			     SPR <>]],
+		 CONT.HOOK.INDEX.COG-ST activ+fam ]].
 
 noun-phrase-cat := cat &
 [ HEAD noun,
@@ -142,11 +150,13 @@ verb-lex := basic-verb-lex &
 [ SYNSEM.LOCAL [ CAT [MC -,
                       HEAD verb & [ MOD < >,
                                     NEG_PREFIX -,
-				    TAM [ASPECT complete,
+				    TAM #tam &
+					[ASPECT complete,
 					 MOOD indicative] ],
 		      VAL [ SUBJ <#subj  & synsem & [ LOCAL.CAT non-acc-noun-phrase-cat ] >,
 			    SPR <>,
-			    SPEC <> ] ] ],
+			    SPEC <> ] ],
+		 CONT.HOOK.INDEX.E #tam ],
   INFLECTED -,
   ARG-ST <#subj,...> ].
 
@@ -188,19 +198,20 @@ present-ditransitive-verb-lex := present-verb-lex & ditransitive-verb-lex.
 
 
 ; Verbs like budan, kardan, etc. that combine with non-verbal elements to form compound verbs.
-intransitive-compound-verb-lex := verb-lex & transitive-lex-item &
+compound-verb-lex := verb-lex &
 [ SYNSEM.LOCAL [ CAT [ HEAD.HEAD_FINAL +,
-		       VAL.COMPS < #comp &
-                                   [ LOCAL.CAT non-acc-noun-phrase-cat ] > ] ],
-  ARG-ST < [], #comp > ].
+		       VAL [ COMPS < #comp1 &
+				     [ LOCAL.CAT non-acc-noun-phrase-cat ],
+				     ...> ] ] ],
+  ARG-ST < [], #comp1, ... > ].
 
-transitive-compound-verb-lex := verb-lex & ditransitive-lex-item &
-[ SYNSEM.LOCAL [ CAT [ HEAD.HEAD_FINAL +,
-		       VAL.COMPS < #comp1 &
-                                   [ LOCAL.CAT non-acc-noun-phrase-cat ],
-                                   #comp2 &
-                                   [ LOCAL.CAT acc-noun-phrase-cat ] > ] ],
-  ARG-ST < [], #comp1, #comp2 > ].
+intransitive-compound-verb-lex := transitive-lex-item & compound-verb-lex.
+
+transitive-compound-verb-lex := ditransitive-lex-item & compound-verb-lex &
+[ SYNSEM.LOCAL.CAT.VAL.COMPS < [],
+			       #comp2 &
+			       [ LOCAL.CAT acc-noun-phrase-cat ] >,
+  ARG-ST < [], [], #comp2 > ].
 
 past-intransitive-compound-verb-lex := past-verb-lex & intransitive-compound-verb-lex.
 
@@ -213,12 +224,13 @@ present-transitive-compound-verb-lex := present-verb-lex & transitive-compound-v
 
 ; Verbs like tavanestan that combine with verbal objects.
 ; The verbal object must be in the subjunctive and agree with the auxiliary in person and number.
-auxiliary-verb-lex := verb-lex & trans-first-arg-raising-lex-item & 
+auxiliary-verb-lex := verb-lex & trans-first-arg-raising-lex-item-1 & 
 [ SYNSEM.LOCAL [ CAT [ HEAD.HEAD_FINAL -,
-		       VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG #png ] >, 
-			     COMPS < #comps & [ LOCAL.CAT [ HEAD.TAM.MOOD subjunctive,
-							    VAL.SUBJ < synsem & [ LOCAL.CONT.HOOK.INDEX.PNG #png ] > ] ] > ] ] ],
-  ARG-ST <[], #comps> ].
+		       VAL [ SUBJ < #subj >, 
+			     COMPS < #comps &
+				     [ LOCAL.CAT [ HEAD.TAM.MOOD subjunctive,
+						   VAL.SUBJ < #subj > ] ] > ] ] ],
+  ARG-ST < [], #comps> ].
 
 ; Verbs like danestan that take clauses as complements.
 clausal-comp-verb-lex := verb-lex & clausal-second-arg-trans-lex-item & 
@@ -250,9 +262,10 @@ preposition-phrase-cat := cat &
 
 ; Particles
 
-clausal-particle := norm-sem-lex-item & 
+clausal-particle := raise-sem-lex-item & basic-one-arg &
 [ SYNSEM.LOCAL.CAT [ HEAD.MOD < >,
-                     VAL [ COMPS < [ LOCAL.CAT [ HEAD verb,
+		     VAL [ COMPS < [ LOCAL.CAT [ HEAD verb &
+						      [ TAM.MOOD indicative ],
                                                  VAL [ SUBJ < >,
                                                        COMPS < > ] ] ] >,
                            SPR < >,
@@ -292,15 +305,19 @@ complementizer-lex := clausal-particle &
 ; Phrase structure rules
 
 head-subj-phrase := decl-head-subj-phrase & head-final &
-[ SYNSEM.LOCAL.CAT [ MC +,
+[ SYNSEM.LOCAL.CAT [ HEAD.TAM.MOOD non-imperative,
+		     MC +,
                      VAL.COMPS <> ],
   HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].
 
 head-opt-subj-phrase := decl-head-opt-subj-phrase &
-[ SYNSEM.LOCAL.CAT.MC + ].
+[ SYNSEM.LOCAL.CAT [ HEAD.TAM.MOOD non-imperative,
+		     MC + ] ].
 
 imperative-head-opt-subj-phrase := imp-head-opt-subj-phrase &
-[ SYNSEM.LOCAL.CAT.HEAD.TAM.MOOD imperative ].
+[ SYNSEM.LOCAL.CAT.HEAD.TAM.MOOD imperative,
+  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ
+    < [ LOCAL.CONT.HOOK.INDEX.PNG.PER second ] > ].
 
 head-initial-comp-phrase := basic-head-1st-comp-phrase & head-initial &
 [ SYNSEM.LOCAL.CAT.HEAD.HEAD_FINAL - ].
@@ -315,7 +332,8 @@ head-opt-comp-phrase := basic-head-opt-comp-phrase &
 preposition-comp-phrase := basic-head-1st-comp-phrase & head-initial &
 [ SYNSEM.LOCAL.CAT.HEAD preposition ].
 
-head-spec-phrase := basic-head-spec-phrase & head-final.
+head-spec-phrase := basic-head-spec-phrase & head-final &
+[ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].
 
 ; See comments for basic-comp-phrase in matrix.tdl.
 polar-question-comp-phrase := basic-head-1st-comp-phrase & head-initial &
@@ -347,7 +365,6 @@ covert-det-phrase := head-only &
 		    LTOP #ltop ] ] ].
 
 
-; sfd
 only-covert-det-phrase := covert-det-phrase &
 [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CONT.RELS < ! [ PRED exist_q_rel ] ! > ] >,
   C-CONT.RELS < ! [ PRED exist_q_rel ] ! > ].
@@ -401,21 +418,23 @@ def_n_lex_rule := const-ltol-rule &
 	   LIGHT #lex,
 	   MODIFIED #modified,
 	   LKEYS #lkeys ] ,
-  DTR noun-lex & [ SYNSEM [ OPT #opt,
-			    LOCAL [ CAT [ HEAD [MOD #mod,
-						KEYS #keys,
-						CASE #case,
-						DEFINITE - ],
-					  VAL #val,
-					  MC #mc,
-					  POSTHEAD #posthead ],
-				    CONT #cont,
-				    AGR #agr,
-				    CTXT #ctxt ],
-			    NON-LOCAL #non-local,
-			    LIGHT #lex,
-			    MODIFIED #modified,
-			    LKEYS #lkeys ] ] ].
+  DTR noun-lex &
+    [ SYNSEM [ OPT #opt,
+	       LOCAL [ CAT [ HEAD [MOD #mod,
+				   KEYS #keys,
+				   CASE #case,
+				   DEFINITE - ],
+			     VAL #val,
+			     MC #mc,
+			     POSTHEAD #posthead ],
+		       CONT #cont &
+			 [ HOOK.INDEX.COG-ST uniq+fam+act ],
+		       AGR #agr,
+		       CTXT #ctxt ],
+	       NON-LOCAL #non-local,
+	       LIGHT #lex,
+	       MODIFIED #modified,
+	       LKEYS #lkeys ] ] ].
 
 acc_lex_rule := infl-ltow-rule &
 [ SYNSEM.LOCAL.CAT.HEAD [ CASE acc, 
@@ -478,10 +497,14 @@ progressive_lex_rule := verb_prefix_rule &
 
 ; The imperative_lex_rule changes TAM.MOOD to imperative.  It only
 ; applies to bare present-tense verb stems
-imperative_lex_rule := basic_verb_prefix_rule & infl-ltow-rule &
+imperative_lex_rule := basic_verb_prefix_rule & infl-ltol-rule &
 [ SYNSEM.LOCAL.CAT.HEAD.TAM [ TENSE #tense,
 			      MOOD imperative ],
-  DTR [ SYNSEM.LOCAL.CAT.HEAD.TAM [ TENSE #tense & present_tense ] ] ].
+  DTR present-verb-lex &
+    [ SYNSEM.LOCAL.CAT.HEAD.TAM [ TENSE #tense ] ] ].
+
+imperative_verb_rule := const-ltow-rule &
+[ SYNSEM.LOCAL.CAT.HEAD verb & [ TAM.MOOD imperative ] ].
  
 
 ; The subjunctive_lex_rule changes TAM.MOOD to subjunctive.  It only
@@ -623,6 +646,15 @@ np1-bottom-coord-rule := conj-first-bottom-coord-rule & np-bottom-coord-phrase &
 
 ;;; Coordination Strategy 1
 
+vp-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.TAM #tam,
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.TAM #tam,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.TAM #tam ].
+
+vp-bottom-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.TAM #tam,
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.TAM #tam ].
+
 vp1-top-coord-rule := basic-vp-top-coord-rule & monopoly-top-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
 
@@ -633,6 +665,15 @@ vp1-bottom-coord-rule := conj-first-bottom-coord-rule & vp-bottom-coord-phrase &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
 
 ;;; Coordination Strategy 1
+
+s-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.TAM #tam,
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.TAM #tam,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.TAM #tam ].
+
+s-bottom-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.TAM #tam,
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.TAM #tam ].
 
 s1-top-coord-rule := basic-s-top-coord-rule & monopoly-top-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ] .

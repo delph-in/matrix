@@ -1,3 +1,4 @@
+;;; -*- Mode: TDL; Package: LKB -*-
 ;;;
 ;;; A sample start symbol: Accept fully-saturated verbal projections only; if
 ;;; a grammar makes use of the head-subject and head-complement types as
@@ -6,7 +7,7 @@
 ;;; the value of `*start-symbol' (see `lkb/user-fns.lsp').
 
 root := phrase &
-[ SYNSEM.LOCAL [ CAT [ HEAD matrix,
+[ SYNSEM.LOCAL [ CAT [ HEAD matrix & [ TAM.MOOD non-subjunctive ],
 		       MC +,
                        VAL [ SUBJ < >,
                              COMPS < > ] ],

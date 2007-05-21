@@ -31,10 +31,11 @@ PNG.NUM : NUM
   *    <> !
 
 E.TENSE : TENSE
-  past     <> past
-  present  <> pres
-  future   <> fut
-  *        <> !
+  past_tense     <> past
+  present_tense  <> pres
+  future_tense   <> fut
+  present_tense  <> [e]
+;  *        <> !
 
 SF : SF
   prop <> prop

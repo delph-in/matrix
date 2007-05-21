@@ -1,3 +1,4 @@
+;;; -*- Mode: TDL; Package: LKB -*-
 ; Sources
 ;
 ; Arthur N. Wollaston, An English-Persian Dictionary, 1978, Cosmo Publications, New Delhi
@@ -494,8 +495,8 @@ deh := present-ditransitive-verb-lex & [ STEM <"deh">,
 
 ; English gloss: this
 ; [Thackston 1993]
-in := determiner-lex &  [ STEM <"in">,
-			  SYNSEM.LKEYS.KEYREL.PRED exist_q_rel ].
+in := demonstrative-lex &  [ STEM <"in">,
+			     SYNSEM.LKEYS.KEYREL.PRED exist_q_rel ].
 
 ; English gloss: that
 ; [Thackston 1993]
@@ -503,8 +504,8 @@ in := determiner-lex &  [ STEM <"in">,
 ; BUGBUG This should be "an" according to my transcription, but a
 ; parsed sentence with an "an" in it does not generate strings from the
 ; semantics.  Call this "anBUGBUG" as a workaround.
-anBUGBUG := determiner-lex &  [ STEM <"an">,
-				SYNSEM.LKEYS.KEYREL.PRED exist_q_rel ].
+anBUGBUG := demonstrative-lex &  [ STEM <"an">,
+				   SYNSEM.LKEYS.KEYREL.PRED exist_q_rel ].
 
 
 ; Prepositions
