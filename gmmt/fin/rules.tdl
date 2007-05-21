@@ -24,9 +24,9 @@ head-adj-int := finnish-head-adj-int-phrase.
 ;decl := decl-clause.
 
 ;lab6 additions below
-;int := int-clause.
-imperative-head-opt-subj := imperative-head-opt-subj-phrase.
-imp := imp-clause.
+int := int-clause.
+;imperative-head-opt-subj := imperative-head-opt-subj-phrase.
+;imp := imp-clause.
 ;cp-interrogative := cp-interrogative-clause.
 
 ;lab7 additions
@@ -48,9 +48,13 @@ np-mid-coord := np-mid-coord-rule.
 
 np-bottom-coord := np-bottom-coord-rule.
 
-v-top-coord := v-top-coord-rule.
-v-mid-coord := v-mid-coord-rule.
-v-bottom-coord := v-bottom-coord-rule.
+vp-top-coord := vp-top-coord-rule.
+vp-mid-coord := vp-mid-coord-rule.
+vp-bottom-coord := vp-bottom-coord-rule.
+
+s-top-coord := s-top-coord-rule.
+s-mid-coord := s-mid-coord-rule.
+s-bottom-coord := s-bottom-coord-rule.
 
 adj-top-coord := adj-top-coord-rule.
 adj-mid-coord := adj-mid-coord-rule.

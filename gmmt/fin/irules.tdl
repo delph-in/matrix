@@ -39,9 +39,9 @@
 %suffix (* +3p+Pl)
 3pl_verb-lex-rule.
 
-imp_verb :=
-%suffix (* +Stem)
-imp_verb-lex-rule.
+;imp_verb :=
+;%suffix (* +Stem)
+;imp_verb-lex-rule.
 
 neg_verb :=
 %suffix (* +Neg)

@@ -203,7 +203,7 @@ det-lex := basic-determiner-lex & basic-zero-arg & nominal-lex &
 
 ;; RGM 4-30-05 Added adj-lex for lab4
 
-adj-lex := basic-adjective-lex & intersective-mod-lex & nominal-lex &
+adj-lex := basic-int-mod-adj-lex & nominal-lex &
 [ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD noun,
 					      VAL.SPR cons ]]>,
 		     VAL [ SPR < >,
@@ -212,8 +212,9 @@ adj-lex := basic-adjective-lex & intersective-mod-lex & nominal-lex &
 			   SPEC < > ],
 		     POSTHEAD - ]].
 
-adv-lex := basic-adverb-lex & intersective-mod-lex &
-[ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT.HEAD verb ] >,
+adv-lex := basic-int-adverb-lex &
+[ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD verb,
+                                              VAL.SUBJ < [ ] > ] ] >,
 		     VAL [ SPR < >,
 			   SUBJ < >,
 			   COMPS < >,
@@ -223,7 +224,8 @@ adv-lex := basic-adverb-lex & intersective-mod-lex &
 ; RGM 5-20-05 Created subtype of basic-scopal-adverb-lex
 
 scopal-adv-lex := basic-scopal-adverb-lex &
-[ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT.HEAD verb & [ NEG + ]] >,
+[ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD verb,
+                                              VAL.COMPS < > ] ] >,
 		     VAL [ SPR < >,
 			   SUBJ < >,
 			   COMPS < >,
@@ -302,6 +304,12 @@ complementizer-lex-item := no-hcons-lex-item & basic-one-arg &
                                                          COMPS < > ]]] > ]]],
   ARG-ST < #comps > ].
 
+decl-comp-lex := complementizer-lex-item &
+  [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX.SF prop ] > ].
+
+int-comp-lex := complementizer-lex-item &
+  [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX.SF ques ] > ].
+
 ;; RGM 4-9-05 Created nom-noun-lex and elat-noun-lex to account for difference in meanings
 ;; of nominative and elative forms of detless-nps. These types will interact with a rule
 ;; that selects for nom or elat NPs depending on their status as subjects or objects
@@ -323,61 +331,57 @@ pronoun-part-lex := pronoun-lex &
 [ SYNSEM.LOCAL.CAT.HEAD.CASE part ].
 
 common-noun-lex := noun-lex &
-[ SYNSEM.LOCAL [ CAT [ VAL.SPR < [ LOCAL.CONT.RELS < ! [ PRED reg_quant_rel ] ! > ] >,
+[ SYNSEM.LOCAL [ CAT [ VAL.SPR < [ LOCAL.CONT.RELS < ! [ PRED exist_q_rel ] ! > ] >,
 		       HEAD [ PRO - ] ],
 		 CONT.HOOK.INDEX.PNG.PER third ] ].
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; RGM 5-25-05 Added conj-lex for lab8
-
-; modified from norm-hook-lex-item -- have to deal with the fact that a
-; coordination-relation has different args.
-conj-lex := basic-zero-arg & single-rel-lex-item & no-hcons-lex-item &
-  [ SYNSEM [ LOCAL [ CAT [ HEAD conj,
-                           VAL [ SPR < >,
-                                 COMPS < >,
-                                 SUBJ < > ]],
-                     CONT [ HOOK [ LTOP #ltop,
-                                   INDEX #index ],
-                            RELS.LIST.FIRST #keyrel ]],
-             LKEYS.KEYREL #keyrel & coordination-relation & [ LBL #ltop,
-                                                              C-ARG #index ]]].
 
 ; RGM 5-13-05 Added following inv-lex-rule for lab6 to invert the subject and verb
 ; in a question.
 
 ; RGM 5-13-05 Also added ques-lex-rule for lab6 to give a question inflection to verbs
 
-inv-lex-rule := const-cat-change-only-ltol-rule &
-[ INFLECTED +,
-  C-CONT [ RELS <! !>,
-	   HCONS <! !> ],
-  SYNSEM.LOCAL.CAT [ HEAD verb & [ INV + ],
-		     VAL [ COMPS < #subj . #comps >,
-			   SUBJ < anti-synsem >,
-			   SPR < > ],
-		     MC #mc,
-		     HC-LIGHT #hcl,
-		     POSTHEAD #posthead,
-		     IMPERATIVE - ],
-  DTR [ C-CONT [ RELS <! !>,
-		 HCONS <! !> ],
-	SYNSEM.LOCAL.CAT [ HEAD verb & [ INV -,
-					 QUES + ],
-			   VAL [ COMPS #comps,
-				 SUBJ < #subj & synsem > ],
-			   MC #mc,
-			   HC-LIGHT #hcl,
-			   POSTHEAD #posthead,
-			   IMPERATIVE - ]]].
+inv-lex-rule := cat-change-only-lex-rule & same-hc-light-lex-rule & same-posthead-lex-rule & const-ltol-rule &
+  [ SYNSEM [ LOCAL.CAT [ HEAD verb &
+                              [ INV +,
+                                QUES +,
+                                FORM fin ],
+                         VAL [ COMPS < #subj . #comps >,
+                               SUBJ < >,
+                               SPR #spr,
+                               SPEC #spec ],
+                         MC na,
+                         IMPERATIVE - ],
+             LKEYS #lkeys ],
+    DTR.SYNSEM [ LOCAL.CAT [ HEAD verb &
+                                  [ INV -,
+                                    QUES +,
+                                    FORM fin ],
+                             VAL [ SUBJ < #subj >,
+                                   COMPS #comps,
+                                   SPR #spr,
+                                   SPEC #spec ],
+                             IMPERATIVE - ],
+                 LKEYS #lkeys ] ] .
+
+int-clause := interrogative-clause & head-only &
+  [ SYNSEM.LOCAL.CAT [ HEAD.INV +,
+                       VAL #val,
+                       MC + ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na,
+                                VAL #val &
+                                    [ SUBJ < >,
+                                      COMPS < > ] ],
+    C-CONT.HOOK.INDEX.SF ques ] .
 
 ques-lex-rule := infl-head-change-only-ltol-rule &
-[ SYNSEM.LOCAL.CAT.HEAD.QUES +,
+[ SYNSEM.LOCAL.CAT [ HEAD.QUES +,
+                     VAL #val ],
   C-CONT [ RELS <! !>,
 	   HCONS <! !> ],
   DTR [ C-CONT [ RELS <! !>,
 		 HCONS <! !> ],
-	SYNSEM.LOCAL.CAT.HEAD verb & [ QUES - ] ]].
+	SYNSEM.LOCAL.CAT [ HEAD verb & [ QUES - ],
+                           VAL #val ] ] ].
 
 ; RGM 5-15-05 Added IMPERATIVE feature to CAT
 
@@ -385,15 +389,15 @@ cat :+ [ IMPERATIVE bool ].
 
 ; RGM 5-15-05 Added non-branching rule for imperative clauses, lab6
 
-imperative-head-opt-subj-phrase := basic-head-opt-subj-phrase & imperative-clause &
-[ SYNSEM.LOCAL.CAT.IMPERATIVE +,
-  HEAD-DTR imp_verb-lex-rule & [ SYNSEM.LOCAL.CAT.IMPERATIVE + ]].
+;imperative-head-opt-subj-phrase := imp-head-opt-subj-phrase &
+;[ SYNSEM.LOCAL.CAT.IMPERATIVE +,
+;  HEAD-DTR [ SYNSEM.LOCAL.CAT.IMPERATIVE + ]].
 
 ; RGM 5-15-05 Added imperative clause
 
-imp-clause := imperative-clause & head-only &
-[ SYNSEM.LOCAL.CAT.IMPERATIVE +,
-  HEAD-DTR imperative-head-opt-subj-phrase & [ SYNSEM.LOCAL.CAT.IMPERATIVE + ]].
+;imp-clause := imperative-clause & head-only &
+;[ SYNSEM.LOCAL.CAT.IMPERATIVE +,
+;  HEAD-DTR imperative-head-opt-subj-phrase ].
 
 ;; RGM 4-14-05 PNG from Lab 3
 
@@ -546,13 +550,13 @@ neg_verb-lex-rule := infl-head-change-only-ltol-rule &
 ; 			SYNSEM.LOCAL.CAT [ IMPERATIVE -,
 ; 					   HEAD #head ]]].
 
-imp_verb-lex-rule := infl-cat-change-only-ltol-rule &
-		     same-head-lex-rule &
-		     same-val-lex-rule &
-		     same-hc-light-lex-rule &
-		     same-posthead-lex-rule &
-[ SYNSEM.LOCAL.CAT.IMPERATIVE +,
-  DTR verb-lex-rule & [ SYNSEM.LOCAL.CAT.IMPERATIVE - ]].
+;imp_verb-lex-rule := const-ltow-rule &
+;		     same-head-lex-rule &
+;		     same-val-lex-rule &
+;		     same-hc-light-lex-rule &
+;		     same-posthead-lex-rule &
+;[ SYNSEM.LOCAL.CAT.IMPERATIVE +,
+;  DTR verb-lex ].
 
 
 inf_verb-lex-rule := infl-ltow-rule &
@@ -568,7 +572,11 @@ inf_verb-lex-rule := infl-ltow-rule &
 ;[ C-CONT [ RELS <! !>,
 ;	   HCONS <! !> ]].
 
-num_nominal-lex-rule := infl-add-only-no-ccont-ltol-rule.
+finnish-lex-rule := lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.PRO #pro,
+  DTR.SYNSEM.LOCAL.CAT.HEAD.PRO #pro ].
+
+num_nominal-lex-rule := finnish-lex-rule & infl-add-only-no-ccont-ltol-rule.
 
 sg_nominal-lex-rule := num_nominal-lex-rule &
 [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg ],
@@ -579,7 +587,7 @@ pl_nominal-lex-rule := num_nominal-lex-rule &
   DTR nominal-lex ].
 
 ; Adds +CASE after +NUM
-case-lex-rule := infl-head-change-only-ltol-rule &
+case-lex-rule := finnish-lex-rule & infl-head-change-only-ltol-rule &
 [ C-CONT [ RELS <! !>,
 	   HCONS <! !> ],
   DTR num_nominal-lex-rule ].
@@ -753,299 +761,87 @@ case_allat-lex-rule := case-lex-rule &
 
 ;; end lexicul rules
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; RGM 5-25-05 Added coordination rules below for lab8
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Matrix rule overrides
+; Coordination
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;coordination-relation := conjunction-relation.
-implicit-coord-rel := coordination-relation &
-  [ PRED 'implicit_coord_rel ].
-
-local-min :+
-  [ COORD bool,
-    COORD-REL coordination-relation ].
-
-headed-phrase :+
-  [ SYNSEM.LOCAL [ COORD -,
-                   COORD-REL #crel ],
-    HEAD-DTR.SYNSEM.LOCAL [ COORD -,
-                            COORD-REL #crel ]].
-
-binary-headed-phrase :+
-  [ NON-HEAD-DTR.SYNSEM.LOCAL.COORD - ].
-
-;word-or-lexrule :+
-;  [ SYNSEM.LOCAL.COORD - ].
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Coordination phrases and rules
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-branching-phrase := phrase &
-  [ NBR-DTR sign,
-    BR-DTR sign ].
-
-left-branching := branching-phrase &
-  [ NBR-DTR #nbr,
-    BR-DTR #br,
-    ARGS < #br, #nbr > ].
-
-right-branching := branching-phrase &
-  [ NBR-DTR #nbr,
-    BR-DTR #br,
-    ARGS < #nbr, #br > ].
-
-coord-phrase :+ branching-phrase &
-  [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
-                         VAL #val ]],
-    NBR-DTR.SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
-                                 VAL #val ]],
-    BR-DTR.SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
-                                VAL #val ]]].
-
-top-coord-rule := coord-phrase &
-  [ SYNSEM.LOCAL.COORD -,
-    C-CONT.HOOK [ LTOP #rltop, INDEX #rind ],
-    NBR-DTR.SYNSEM.LOCAL [ CONT.HOOK.INDEX #lind ],
-    BR-DTR.SYNSEM.LOCAL [ COORD-REL [ L-INDEX #lind ],
-                          CONT.HOOK [ LTOP #rltop, INDEX #rind ]]].
-
-mid-coord-rule := coord-phrase &
-  [ SYNSEM.LOCAL [ COORD +,
-                   COORD-REL implicit-coord-rel &
-                         [ LBL #ltop,
-                           C-ARG #cind,
-                           R-INDEX #rind ]],
-    C-CONT.HOOK [ LTOP #ltop, INDEX #cind ],
-    NBR-DTR.SYNSEM.LOCAL [ CONT.HOOK.INDEX #lind ],
-    BR-DTR.SYNSEM.LOCAL [ COORD-REL.L-INDEX #lind,
-                          CONT.HOOK.INDEX #rind ]].
-
-;bottom-coord-phrase := phrase.
-
-unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
-  [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
-                         VAL #val ],
-                   COORD +,
-                   COORD-REL #crel & implicit-coord-rel &
-                       [ LBL #lbl,
-                         C-ARG #carg,
-                         R-INDEX #rind ]],
-    C-CONT [ HOOK [ LTOP #lbl, INDEX #carg ],
-	     RELS <! #crel !>,
-	     HCONS <! !> ],
-    ARGS < [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
-                                  VAL #val ],
-                            COORD -,
-                            CONT.HOOK [ INDEX #rind ]]] > ].
-
-binary-bottom-coord-rule := bottom-coord-phrase & binary-phrase &
-  [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
-                         VAL #val ],
-                   COORD +,
-                   COORD-REL #crel ],
-    C-CONT [ HOOK [ LTOP #lbl, INDEX #carg ],
-	     RELS <! !>,
-	     HCONS <! !> ],
-    ARGS < [ SYNSEM [ LOCAL.CAT.HEAD conj,
-                      LKEYS.KEYREL #crel & [ LBL #lbl,
-					     C-ARG #carg,
-					     R-INDEX #rind ]]],
-           [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
-                                  VAL #val ],
-                            COORD -,
-                            CONT.HOOK [ INDEX #rind ]]] > ].
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; *syndeton rules
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; monopoly*: Mandatory monosyndeton with optional polysyndeton.  This
-; is the familiar Indo-European pattern, in which at least one
-; coordinator is mandator ("A B and C") and more than one is possible
-; ("A and B and C").
-
-monopoly-top-coord-rule := top-coord-rule &
-  [ NBR-DTR.SYNSEM.LOCAL.COORD -,
-    BR-DTR.SYNSEM.LOCAL.COORD + ].
-
-monopoly-mid-coord-rule := mid-coord-rule &
-  [ NBR-DTR.SYNSEM.LOCAL.COORD -,
-    BR-DTR.SYNSEM.LOCAL.COORD + ].
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; NP Coordination rules
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-nom-coord-phrase := coord-phrase & right-branching &
-  [ SYNSEM.LOCAL.CAT.HEAD noun,
-    NBR-DTR.SYNSEM.LOCAL.CAT.HEAD noun,
-    BR-DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
-
-;; RGM 5-27-05
-;; num-coord feature structures were added to allow for coordinating
-;; noun-phrases that generate the proper number properties in the
-;; np-mid and np-top rules.
-
-np-coord := coord-phrase &
-[ SYNSEM.LOCAL [ COORD-REL.C-ARG.PNG.NUM pl,
-		 CAT.HEAD.CASE nom ]].
-
-np-top-coord := np-coord & basic-np-top-coord-rule.
-
-np-mid-coord := np-coord & basic-np-mid-coord-rule.
-
-second-non-first-np-top-coord := np-top-coord & second-non-first-coord.
-third-second-np-top-coord := np-top-coord & third-second-coord.
-third-third-np-top-coord := np-top-coord & third-third-coord.
-person-first-np-top-coord := np-top-coord & person-first-coord.
-first-person-np-top-coord := np-top-coord & first-person-coord.
-
-second-non-first-np-mid-coord := np-mid-coord & second-non-first-coord.
-third-second-np-mid-coord := np-mid-coord & third-second-coord.
-third-third-np-mid-coord := np-mid-coord & third-third-coord.
-person-first-np-mid-coord := np-mid-coord & person-first-coord.
-first-person-np-mid-coord := np-mid-coord & first-person-coord.
-
-per-coord := coord-phrase.
-
-second-non-first-coord := per-coord &
-[ SYNSEM.LOCAL.COORD-REL [ C-ARG.PNG.PER second,
-			   L-INDEX.PNG.PER second,
-			   R-INDEX.PNG.PER non-first ]].
-
-third-second-coord := per-coord &
-[ SYNSEM.LOCAL.COORD-REL [ C-ARG.PNG.PER second,
-			   L-INDEX.PNG.PER third,
-			   R-INDEX.PNG.PER second ]].
-
-third-third-coord := per-coord &
-[ SYNSEM.LOCAL.COORD-REL [ C-ARG.PNG.PER third,
-			   L-INDEX.PNG.PER third,
-			   R-INDEX.PNG.PER third ]].
-
-person-first-coord := per-coord &
-[ SYNSEM.LOCAL.COORD-REL [ C-ARG.PNG.PER first,
-			   L-INDEX.PNG.PER non-first,
-			   R-INDEX.PNG.PER first ]].
-
-first-person-coord := per-coord &
-[ SYNSEM.LOCAL.COORD-REL [ C-ARG.PNG.PER first,
-			   R-INDEX.PNG.PER person,
-			   L-INDEX.PNG.PER first ]].
-
-; ; Reconsider SPR < > below -- need to separate N' from NP cleanly.
-basic-np-top-coord-rule := nom-coord-phrase &
-  [ C-CONT [ HOOK [ LTOP #ltop,
-                    INDEX #ind ],
-             RELS <! [ ARG0 #ind, RSTR #ltop ] !>,
-	     HCONS <! !> ],
-    NBR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < >,
-    BR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].
-
-basic-np-mid-coord-rule := nom-coord-phrase &
-  [ SYNSEM.LOCAL.COORD-REL #crel,
-    C-CONT [ RELS <! [ ARG0 #rind, RSTR #rltop ], #crel !>,
-	     HCONS <! !> ],
-    BR-DTR.SYNSEM.LOCAL.CONT.HOOK [ LTOP #rltop,
-                                    INDEX #rind ]].
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Event Coordination rules (for verbs and adjectives)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-event-coord-phrase := coord-phrase &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX [ E #tam ],
-    NBR-DTR.SYNSEM.LOCAL.CONT.HOOK [ LTOP #lhndl,
-                                     INDEX #lind ],
-    BR-DTR.SYNSEM.LOCAL [ COORD-REL [ L-HNDL #lhndl,
-                                      L-INDEX #lind,
-                                      R-INDEX.E #tam ]]].
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; ADJ Coordination rules
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-adj-coord-phrase := event-coord-phrase & right-branching &
-  [ SYNSEM.LOCAL.CAT [ POSTHEAD #ph,
-                       HEAD adj ],
-    NBR-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD #ph,
-                               HEAD adj ],
-    BR-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD #ph,
-                              HEAD adj ]].
-
-basic-adj-top-coord-rule := adj-coord-phrase &
-  [ C-CONT [ RELS <! !>,
-	     HCONS <! !> ]].
-
-basic-adj-mid-coord-rule := adj-coord-phrase &
-  [ SYNSEM.LOCAL.COORD-REL #crel & [ R-HNDL #rhndl ],
-    C-CONT [ RELS <! #crel !>,
-	     HCONS <! !> ],
-    NBR-DTR.SYNSEM.LOCAL [ CAT.VAL.SPR #spr ],
-    BR-DTR.SYNSEM.LOCAL [ CAT.VAL.SPR #spr,
-                          CONT.HOOK.LTOP #rhndl ]].
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; V/VP Coordination rules
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-v-coord-phrase := event-coord-phrase & right-branching &
-  [ SYNSEM.LOCAL.CAT.HEAD verb,
-    NBR-DTR.SYNSEM.LOCAL.CAT.HEAD verb,
-    BR-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
-
-basic-v-top-coord-rule := v-coord-phrase &
-  [ C-CONT [ RELS <! !>,
-	     HCONS <! !> ],
-    NBR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr,
-    BR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr ].
-
-basic-v-mid-coord-rule := v-coord-phrase &
-  [ SYNSEM.LOCAL.COORD-REL #crel & [ R-HNDL #rhndl ],
-    C-CONT [ RELS <! #crel !>,
-	     HCONS <! !> ],
-    NBR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr,
-    BR-DTR.SYNSEM.LOCAL [ CAT.VAL.SPR #spr,
-                          CONT.HOOK.LTOP #rhndl ]].
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; RGM 5-25-05 Rules for coordination that I created for use in lab8
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-np-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule &
+np-coord-phrase :+
 [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
-  NBR-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case,
-  BR-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
+  LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+  RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
+
+np-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule.
 
 np-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule.
 
-np-bottom-coord-rule := binary-bottom-coord-rule &
-[ SYNSEM.LOCAL.CAT.HEAD noun,
-  ARGS.REST.FIRST.SYNSEM.LOCAL.CAT.HEAD noun ].
-
-v-top-coord-rule := basic-v-top-coord-rule & monopoly-top-coord-rule.
-
-v-mid-coord-rule := basic-v-mid-coord-rule & monopoly-mid-coord-rule.
-
-v-bottom-coord-rule := binary-bottom-coord-rule &
-[ SYNSEM.LOCAL.CAT.HEAD verb,
-  ARGS.REST.FIRST.SYNSEM.LOCAL.CAT.HEAD verb ].
+np-bottom-coord-rule := conj-first-bottom-coord-rule & np-bottom-coord-phrase.
 
 adj-top-coord-rule := basic-adj-top-coord-rule & monopoly-top-coord-rule.
 
 adj-mid-coord-rule := basic-adj-mid-coord-rule & monopoly-mid-coord-rule.
 
-adj-bottom-coord-rule := binary-bottom-coord-rule &
-[ SYNSEM.LOCAL.CAT.HEAD adj,
-  ARGS.REST.FIRST.SYNSEM.LOCAL.CAT.HEAD adj ].
+adj-bottom-coord-rule := conj-first-bottom-coord-rule & adj-bottom-coord-phrase.
+vp-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    SYNSEM.LOCAL.CAT.HEAD [ QUES #ques,
+                            INV #inv,
+                            FORM #form,
+                            NEG #neg ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD[ QUES #ques,
+                                      INV #inv,
+                                      FORM #form,
+                                      NEG #neg ],
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD [ QUES #ques,
+                                       INV #inv,
+                                       FORM #form,
+                                       NEG #neg ] ].
+
+s-bottom-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD [ QUES #ques,
+                            INV #inv,
+                            FORM #form,
+                            NEG #neg ],
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD [ QUES #ques,
+                                        INV #inv,
+                                        FORM #form,
+                                        NEG #neg ] ].
+
+
+vp-top-coord-rule := basic-vp-top-coord-rule & monopoly-top-coord-rule.
+
+vp-mid-coord-rule := basic-vp-mid-coord-rule & monopoly-mid-coord-rule.
+
+vp-bottom-coord-rule := conj-first-bottom-coord-rule & vp-bottom-coord-phrase.
+
+s-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD [ QUES #ques,
+                            INV #inv,
+                            FORM #form,
+                            NEG #neg ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD[ QUES #ques,
+                                      INV #inv,
+                                      FORM #form,
+                                      NEG #neg ],
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD [ QUES #ques,
+                                       INV #inv,
+                                       FORM #form,
+                                       NEG #neg ] ].
+
+s-bottom-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD [ QUES #ques,
+                            INV #inv,
+                            FORM #form,
+                            NEG #neg ],
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD [ QUES #ques,
+                                        INV #inv,
+                                        FORM #form,
+                                        NEG #neg ] ].
+
+s-top-coord-rule := basic-s-top-coord-rule & monopoly-top-coord-rule.
+
+s-mid-coord-rule := basic-s-mid-coord-rule & monopoly-mid-coord-rule.
+
+s-bottom-coord-rule := conj-first-bottom-coord-rule & s-bottom-coord-phrase.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; END OF FILE

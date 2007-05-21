@@ -16,19 +16,18 @@
 
 ja := conj-lex &
 [ STEM < "ja" >,
-  SYNSEM [ LOCAL.CAT [ HEAD.MOD null,
-		       VAL [ SPR < >,
-			     SUBJ < >,
-			     COMPS < > ]],
-	   LKEYS.KEYREL.PRED '_and_coord_rel ]].
+  SYNSEM.LKEYS.KEYREL.PRED '_and_coord_rel ].
 
 ;mitA := complementizer-lex-item &
 ;[ STEM < "mitA" > ].
 
 ;; RGM 5-6-04 Added complementizer
 
-ettA := complementizer-lex-item &
+ettA := decl-comp-lex &
 [ STEM < "ettA" > ].
+
+jos := int-comp-lex &
+[ STEM < "jos" > ].
 
 ;;; END MISC
 
@@ -47,6 +46,14 @@ kirja := common-noun-lex &
 koira := common-noun-lex &
 [ STEM < "koira" >,
   SYNSEM [ LKEYS.KEYREL.PRED '_dog_n_rel ]].
+
+kissa := common-noun-lex &
+[ STEM < "kissa" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_cat_n_rel ]].
+
+auto := common-noun-lex &
+[ STEM < "auto" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_car_n_rel ] ].
 
 talo := common-noun-lex &
 [ STEM < "talo" >,
@@ -68,18 +75,6 @@ lasi := common-noun-lex &
 [ STEM < "lasi" >,
   SYNSEM [ LKEYS.KEYREL.PRED '_glass_n_rel,
 	   LOCAL.CAT.HEAD.CASE nom ]].
-
-kissa := common-noun-lex &
-[ STEM < "kissa" >,
-  SYNSEM [ LKEYS.KEYREL.PRED '_cat_n_rel,
-	   LOCAL [ CONT.HOOK.INDEX.PNG [ NUM sg,
-					 PER third ]]]].
-
-auto := common-noun-lex &
-[ STEM < "auto" >,
-  SYNSEM [ LKEYS.KEYREL.PRED '_car_n_rel,
-	   LOCAL [ CONT.HOOK.INDEX.PNG [ NUM sg,
-					 PER third ]]]].
 
 opiskelija := common-noun-lex &
 [ STEM < "opiskelija" >,
@@ -125,12 +120,9 @@ kysyA := clausal-verb-lex &
   ARG-ST < #subj, #comps > ].
 
 ; sfd
-metsAstAA := tr-verb-lex &
+metsAstAA := nom-acc-tr-verb-lex &
 [ STEM < "metsAstAA" >,
-  SYNSEM [ LKEYS.KEYREL.PRED '_chase_v_rel,
-	   LOCAL.CAT.VAL [ SUBJ < #subj >,
-			   COMPS < #comps & [ LOCAL.CAT.HEAD.CASE nom ] >]],
-  ARG-ST < #subj, #comps >].
+  SYNSEM.LKEYS.KEYREL.PRED '_chase_v_rel ].
 
 ; sfd
 ajatella := clausal-verb-lex &
@@ -236,15 +228,27 @@ kuolla := itr-verb-lex &
 
 ;;; START DETS
 
+; proximal
 tAmA := det-lex &
 [ STEM < "tAmA" >,
-  SYNSEM [ LKEYS.KEYREL.PRED proximal+dem_q_rel,
+  SYNSEM [ LKEYS.KEYREL.PRED exist_q_rel,
 	   LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ] > ] ].
 
+nAmA := det-lex &
+[ STEM < "nAmA" >,
+  SYNSEM [ LKEYS.KEYREL.PRED exist_q_rel,
+	   LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM pl ] > ] ].
+
+; distal
 tuo := det-lex &
 [ STEM < "tuo" >,
-  SYNSEM [ LKEYS.KEYREL.PRED distal+dem_q_rel,
+  SYNSEM [ LKEYS.KEYREL.PRED exist_q_rel,
 	   LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ] > ] ].
+
+nuo := det-lex &
+[ STEM < "nuo" >,
+  SYNSEM [ LKEYS.KEYREL.PRED exist_q_rel,
+	   LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM pl ] > ] ].
 
 ;;; END DETS
 
@@ -349,32 +353,49 @@ hiitasti := adv-lex &
 en := scopal-adv-lex &
 [ STEM < "en" >,
   SYNSEM [ LKEYS.KEYREL.PRED '_neg_r_rel,
-	   LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
-							      NUM sg ]]>]].
+	   LOCAL.CAT.HEAD.MOD
+           < [ LOCAL.CAT.VAL.SUBJ
+               < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+                                               NUM sg ] ] > ] > ] ].
+
 et := scopal-adv-lex &
 [ STEM < "et" >,
   SYNSEM [ LKEYS.KEYREL.PRED '_neg_r_rel,
-	   LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
-							      NUM sg ]]>]].
+	   LOCAL.CAT.HEAD.MOD
+           < [ LOCAL.CAT.VAL.SUBJ
+               < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+                                               NUM sg ] ] > ] > ] ].
+
 ei := scopal-adv-lex &
 [ STEM < "ei" >,
   SYNSEM [ LKEYS.KEYREL.PRED '_neg_r_rel,
-	   LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
-							      NUM sg ]]>]].
+	   LOCAL.CAT.HEAD.MOD
+           < [ LOCAL.CAT.VAL.SUBJ
+               < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+                                               NUM sg ] ] > ] > ] ].
+
 emme := scopal-adv-lex &
 [ STEM < "emme" >,
   SYNSEM [ LKEYS.KEYREL.PRED '_neg_r_rel,
-	   LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
-							      NUM pl ]]>]].
+	   LOCAL.CAT.HEAD.MOD
+           < [ LOCAL.CAT.VAL.SUBJ
+               < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+                                               NUM pl ] ] > ] > ] ].
+
 ette := scopal-adv-lex &
 [ STEM < "ette" >,
   SYNSEM [ LKEYS.KEYREL.PRED '_neg_r_rel,
-	   LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
-							      NUM pl ]]>]].
+	   LOCAL.CAT.HEAD.MOD
+           < [ LOCAL.CAT.VAL.SUBJ
+               < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+                                               NUM pl ] ] > ] > ] ].
+
 eivAt := scopal-adv-lex &
 [ STEM < "eivAt" >,
   SYNSEM [ LKEYS.KEYREL.PRED '_neg_r_rel,
-	   LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
-							      NUM pl ]]>]].
+	   LOCAL.CAT.HEAD.MOD
+           < [ LOCAL.CAT.VAL.SUBJ
+               < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+                                               NUM pl ] ] > ] > ] ].
 
 ;;; END ADVERBS

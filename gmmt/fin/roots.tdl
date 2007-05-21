@@ -14,11 +14,11 @@
 
 ;; RGM 5-25-05 Constrained root condition to be COORD -, lab8
 
-root := basic-non-rel-clause &
+root := phrase &
 [ SYNSEM.LOCAL [ CAT [ HEAD verb & [ FORM fin ],
                        MC +,
 		       VAL [ SUBJ < >,
-			     COMPS null ] ],
+			     COMPS < > ] ],
 		 COORD - ]].
 
 lex-root := word-or-lexrule.
