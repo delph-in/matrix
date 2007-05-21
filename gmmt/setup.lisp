@@ -8,4 +8,5 @@
     (:any :hau :hau-acm)
     (:any :zul :zul-acm)
     (:any :eng :identity)
+    (:any :epo :identity)
     (:any :any :identity)))

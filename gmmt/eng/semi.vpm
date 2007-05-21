@@ -33,9 +33,12 @@
 PNG.PERNUM : PERS NUM
 1sg <> 1 sg
 2nd <> 2 !
+2nd <> 2 *
 3sg <> 3 sg
 1pl <> 1 non-sg
 3pl <> 3 non-sg
+*   >> ! !
+!   << * *
 
 E.TENSE : TENSE
   past     <> past

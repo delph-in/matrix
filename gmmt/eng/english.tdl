@@ -305,7 +305,7 @@ pronoun-lex := noun-lex &
   [ INFLECTED +,
     SYNSEM [ LOCAL [ CONT.HOOK.INDEX.COG-ST in-foc,
 		     CAT [ HEAD.NTYPE pronoun,
-			 VAL.SPR < [LOCAL.CONT.RELS <! [PRED "exist_q_rel"] !>] >]],
+			   VAL.SPR < [LOCAL.CONT.RELS <! [PRED "exist_q_rel"] !>] >]],
              LKEYS.KEYREL.PRED "_pronoun_n_rel" ] ].
 
 sg-noun-lex-rule := const-ltow-rule &
@@ -486,8 +486,35 @@ def-det-lex := det-lex &
 indef-det-lex := det-lex &
   [ SYNSEM.LOCAL.CAT.VAL.SPEC <[LOCAL.CONT.HOOK.INDEX.COG-ST type-id]> ].
 
-demon-det-lex := det-lex &
-  [ SYNSEM.LOCAL.CAT.VAL.SPEC <[LOCAL.CONT.HOOK.INDEX.COG-ST activ+fam]> ].
+;;; Relations for demonstratives
+
+demonstrative_a_rel := predsort.
+proximal+dem_a_rel := demonstrative_a_rel. ;; close to speaker.
+distal+dem_a_rel := demonstrative_a_rel. ;; away from speaker.
+remote+dem_a_rel := distal+dem_a_rel. ;;away from speaker and hearer
+hearer+dem_a_rel := distal+dem_a_rel. ;;near hearer
+
+;;; ERB 2007-05-21 Copied from Icelandic.
+
+demon-det-lex := norm-hook-lex-item & basic-zero-arg &
+   [ SYNSEM [ LOCAL [ CAT [ HEAD det,
+			    VAL [ SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #ind & 
+								     [COG-ST activ+fam],
+							       LTOP #larg ],
+				  SPR < >,
+				  SUBJ < >,
+				  COMPS < > ]],
+		      CONT [ HCONS < ! qeq & 
+				     [ HARG #harg,
+				       LARG #larg ] ! >, 
+			     RELS <![ PRED "exist_q_rel"], 
+				   #lkey & arg1-relation & 
+				   [LBL #larg,
+				    ARG1 #ind] ! >] ] ,
+	      LKEYS [ KEYREL quant-relation &
+			     [ ARG0 #ind,
+			       RSTR #harg ], ALTKEYREL #lkey]]].
+
 
 ;;; Adverbs
 

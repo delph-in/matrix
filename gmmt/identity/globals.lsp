@@ -20,4 +20,4 @@
 
 (setf *diff-list-last* 'last)
 
-(setf *translate-grid* '(:any . (:hau :isl :zul)))
+(setf *translate-grid* '(:any . (:arb :eng :epo :fas :fin :hai :hau :heb :hye :isl :ita :mal :spa :zul)))

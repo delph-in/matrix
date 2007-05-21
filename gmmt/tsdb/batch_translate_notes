@@ -106,6 +106,10 @@ means of $LOGONROOT/uw/mmt/<name>/lkb/script
 Stephan: nope, you need a VPM in each grammar; and implicitly that makes decisions about the SEM-I for that grammar, but you need to write those decisions down as a .smi file for each grammar.
 you could think of `uw/mmt/mrs.tdl' as the meta SEM-I for your grammars, as they should all (post-VPM) conform to what you declare there
 
+ERB 2007-05-21: When adding new languages, it appears that 
+*translate-grid* needs to be updated in setup.lisp as well as in 
+ALL of the transfer grammars.  
+
 -------------------------------------------------------------------
 
 Updating script files:
