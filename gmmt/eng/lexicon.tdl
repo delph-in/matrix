@@ -1,3 +1,5 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
 and_1 := conj-lex &
   [ STEM < "and" >,
     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
@@ -128,15 +130,27 @@ hurt2 := non-finite-trans-verb-lex &
   [ STEM < "hurt" >,
     SYNSEM.LKEYS.KEYREL.PRED "_hurt_v_rel" ] .
 
-think := decl-clausal-verb-lex &
+think := finite-decl-clausal-verb-lex &
   [ STEM < "think" >,
     SYNSEM.LKEYS.KEYREL.PRED "_think_v_rel" ] .
 
-know := clausal-verb-lex &
+think2 := non-finite-decl-clausal-verb-lex &
+  [ STEM < "think" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_think_v_rel" ] .
+
+know := finite-clausal-verb-lex &
   [ STEM < "know" >,
     SYNSEM.LKEYS.KEYREL.PRED "_know_v_rel" ] .
 
-ask := int-clausal-verb-lex &
+know2 := non-finite-clausal-verb-lex &
+  [ STEM < "know" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_know_v_rel" ] .
+
+ask := finite-int-clausal-verb-lex &
+  [ STEM < "ask" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_ask_v_rel" ] .
+
+ask2 := non-finite-int-clausal-verb-lex &
   [ STEM < "ask" >,
     SYNSEM.LKEYS.KEYREL.PRED "_ask_v_rel" ] .
 

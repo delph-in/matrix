@@ -1,3 +1,4 @@
+;;; -*- Mode: TDL; Package: LKB -*-
 ; A sample start symbol: Accept fully-saturated verbal
 ; projections only; if a grammar makes use of the head-subject and
 ; head-complement types as provided by the Matrix, this should be a

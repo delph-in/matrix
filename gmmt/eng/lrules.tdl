@@ -1,3 +1,5 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
 neg-add-lr := neg-add-lex-rule .
 
 inv-lr := subj-v-inv-lrule .

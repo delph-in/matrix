@@ -1,3 +1,5 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
 head-comp := head-comp-phrase .
 
 head-opt-comp := head-opt-comp-phrase .
