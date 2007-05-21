@@ -1,0 +1,9 @@
+ukuthi-trigger-rule := generator-rule &
+ [ CONTEXT.RELS <! [ ARG2 handle &#h ] !>,
+   FLAGS [ EQUAL < #h >,
+	   TRIGGER "ukuthi" ]].
+
+na-trigger-rule := generator-rule &
+ [ CONTEXT.RELS <! [ ARG0.SF #sf & prop-or-ques ] !>,
+   FLAGS [ SUBSUME < #sf >,
+	   TRIGGER "na" ]].
