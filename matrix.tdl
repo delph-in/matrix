@@ -3060,7 +3060,7 @@ basic-np-top-coord-rule := np-coord-phrase &
   [ SYNSEM.LOCAL.CAT.VAL.SPR < >,
     C-CONT [ HOOK [ LTOP #ltop,
                     INDEX #ind ],
-             RELS <! [ ARG0 #ind, RSTR #ltop ] !>,
+             RELS <! [ PRED "exist_q_rel", ARG0 #ind, RSTR #ltop ] !>,
 	     HCONS <! !> ]].
 
 basic-np-mid-coord-rule := np-coord-phrase &
