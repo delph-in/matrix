@@ -547,5 +547,5 @@ na := qpart-lex-item &
 ukuthi := emb-comp-lex-item &
   [ STEM < "ukuthi" > ] .
 
-ukuba := emb-comp-lex-item &
-  [ STEM < "ukuba" > ] .
+;ukuba := emb-comp-lex-item &
+;  [ STEM < "ukuba" > ] .

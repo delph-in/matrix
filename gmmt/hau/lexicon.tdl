@@ -776,16 +776,16 @@ SYNSEM[LKEYS.KEYREL.PRED "_twice_r_rel"]].
 
 wata := f-demonstrative-lex &
   [ STEM < "wata" >,
-    SYNSEM [ LKEYS.ALTKEYREL.PRED "proximal+dem_a_rel" ]].
+    SYNSEM [ LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ]].
 
 wani := m-demonstrative-lex &
   [ STEM < "wani" >,
-    SYNSEM [ LKEYS.ALTKEYREL.PRED "proximal+dem_a_rel"]].
+    SYNSEM [ LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ]].
 
 ; ERB 2007-05-15
 
 wadànnân := mp-demonstrative-lex &
   [ STEM < "wad`ànnân" >,
-    SYNSEM [ LKEYS.ALTKEYREL.PRED "proximal+dem_a_rel"]].
+    SYNSEM [ LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ]].
 
 

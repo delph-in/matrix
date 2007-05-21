@@ -241,7 +241,8 @@ enumerative-lex := qualificative-lex.
 
 dem-adj-lex := dem+qual-lex &
 [SYNSEM [LOCAL [CAT [HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.COG-ST activ+fam ]>]],
-	  LKEYS.KEYREL.PRED demonstrative_a_rel ] ].
+	 LKEYS.KEYREL arg1-relation &
+	              [ PRED demonstrative_a_rel ] ] ].
 
 proximal-dem-adj-lex := dem-adj-lex &
 [SYNSEM.LKEYS.KEYREL.PRED proximal+dem_a_rel].

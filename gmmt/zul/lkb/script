@@ -37,7 +37,7 @@
 (lkb-pathname (parent-directory) "matrix.tdl")
 (lkb-pathname (parent-directory) "head-types.tdl")
 (lkb-pathname (parent-directory) "zulu.tdl")
-;(lkb-pathname (this-directory) "transfer.tdl")
+(lkb-pathname (this-directory) "transfer.tdl")
 ))
 
 ;;;
@@ -125,3 +125,9 @@
 ;  (lkb-pathname (this-directory) "567-2.mtr"))
 ; "567 transfer rules"
 ; :filter nil)
+
+(mt:read-transfer-rules 
+ (list
+  (lkb-pathname (this-directory) "trigger.mtr"))
+ "Generation Trigger Rules"
+ :filter nil :task :trigger :recurse nil :edges 200)

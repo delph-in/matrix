@@ -249,6 +249,15 @@ int-cl := interrogative-clause & head-only &
                                       COMPS < > ] ],
     C-CONT.HOOK.INDEX.SF ques ] .
 
+;;; Relations for demonstratives
+
+demonstrative_a_rel := predsort.
+proximal+dem_a_rel := demonstrative_a_rel. ;; close to speaker.
+distal+dem_a_rel := demonstrative_a_rel. ;; away from speaker.
+remote+dem_a_rel := distal+dem_a_rel. ;;away from speaker and hearer
+hearer+dem_a_rel := distal+dem_a_rel. ;;near hearer
+
+
 ;;; Lexical types
 
 ;;; Nouns
@@ -631,7 +640,8 @@ demonstrative-determiner-lex := norm-hook-lex-item & basic-zero-arg &
 	COMPS < >]],
 CONT [ HCONS < ! qeq & 
 	[ HARG #harg,
-	LARG #larg ] ! >, RELS <![ PRED "exist_q_rel"], #lkey & arg12-relation & [LBL #lbl] ! >] ] ,
+	LARG #larg ] ! >, RELS <![ PRED "exist_q_rel"], #lkey & arg1-relation & [LBL #lbl,
+ ARG1 #ind] ! >] ] ,
 LKEYS [ KEYREL quant-relation &
 	[ ARG0 #ind,
 	RSTR #harg ], ALTKEYREL #lkey]]].

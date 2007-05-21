@@ -448,8 +448,9 @@ demonstrative-determiner-lex := norm-hook-lex-item & basic-zero-arg &
 				     [ HARG #harg,
 				       LARG #larg ] ! >, 
 			     RELS <![ PRED "exist_q_rel"], 
-				   #lkey & arg12-relation 
-				   & [LBL #lbl] ! >] ],
+				   #lkey & arg1-relation 
+				   & [LBL #lbl,
+				      ARG1 #ind] ! >] ],
 	      LKEYS [ KEYREL quant-relation &
 			     [ ARG0 #ind,
 			       RSTR #harg ], 

@@ -572,4 +572,4 @@ tessir := demonstrative-determiner-lex &
   [ STEM < "Þessir" >,
     SYNSEM [ LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM non-sg,
 								  GEND masc ],
-	     LKEYS.ALTKEYREL.PRED "proximal+dem_a_rel" ]].
+	     LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ]].
