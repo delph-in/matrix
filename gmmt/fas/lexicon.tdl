@@ -491,12 +491,12 @@ deh := present-ditransitive-verb-lex & [ STEM <"deh">,
 					 SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
 						  LKEYS.KEYREL.PRED '_give_v_rel ] ].
 
-; Determiners
+; Demonstratives
 
 ; English gloss: this
 ; [Thackston 1993]
 in := demonstrative-lex &  [ STEM <"in">,
-			     SYNSEM.LKEYS.KEYREL.PRED exist_q_rel ].
+			     SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
 
 ; English gloss: that
 ; [Thackston 1993]
@@ -505,7 +505,7 @@ in := demonstrative-lex &  [ STEM <"in">,
 ; parsed sentence with an "an" in it does not generate strings from the
 ; semantics.  Call this "anBUGBUG" as a workaround.
 anBUGBUG := demonstrative-lex &  [ STEM <"an">,
-				   SYNSEM.LKEYS.KEYREL.PRED exist_q_rel ].
+				   SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
 
 
 ; Prepositions
