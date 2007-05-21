@@ -22,7 +22,7 @@
 ;;; contains the intermediate types in the subhierarchy under head
 ;;; (as they would unnecessarily clutter matrix.tdl).  You should
 ;;; rename my_language.tdl to something appropriate, and enter
-;;; language-specific types there.  In largefile:///usr/share/doc/HTML/index.htmlr grammars, it is common
+;;; language-specific types there.  In larger grammars, it is common
 ;;; to separate out e.g. lexical types from construction types
 ;;; into distinct files.  All files containing types used in
 ;;; the grammar should be mentioned in the following command.
