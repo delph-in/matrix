@@ -24,14 +24,23 @@ masc := gender.
 fem := gender.
 neut := gender.
 
-noun :+ [ CASE case ].
+noun :+ [ CASE case,
+	  NTYPE ntype ].
 
 case := *top*.
 nom := case.
 acc := case.
 
-exist_q_rel := predsort.
+;exist_q_rel := predsort.
 
+; ERB 2007-05-21 NTYPE is for tracking common nouns
+; to keep them out of the prop+prop-bare-np phrase.
+
+ntype := *top*.
+common := ntype.
+prop+pro := ntype.
+proper := prop+pro.
+pronoun := prop+pro.
 
 ;;; Phrases
 
@@ -53,7 +62,13 @@ head-spec-phrase := basic-head-spec-phrase & head-final .
 ; introduced to match the semantic effect of bare NPs in your language.
 
 bare-np-phrase := basic-bare-np-phrase &
-  [ C-CONT.RELS <! [ PRED exist_q_rel ] !> ] .
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
+
+indef-bare-np-phrase := bare-np-phrase &
+  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.COG-ST type-id ] .
+
+pro-prop-bare-np-phrase := bare-np-phrase &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NTYPE prop+pro ].
 
 ; This lexical rule adds a selected negative
 ; adverb to the beginning of the COMPS list
@@ -283,12 +298,15 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
 
 common-noun-lex := noun-lex &
   [ INFLECTED -,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd ].
+    SYNSEM.LOCAL [ CAT.HEAD.NTYPE common,
+		   CONT.HOOK.INDEX.PNG.PERNUM 3rd ]].
 
 pronoun-lex := noun-lex &
   [ INFLECTED +,
-    SYNSEM [ LOCAL.CAT.VAL.SPR < [LOCAL.CONT.RELS <! [PRED exist_q_rel] !>] >,
-             LKEYS.KEYREL.PRED 'pronoun_n_rel ] ].
+    SYNSEM [ LOCAL [ CONT.HOOK.INDEX.COG-ST in-foc,
+		     CAT [ HEAD.NTYPE pronoun,
+			 VAL.SPR < [LOCAL.CONT.RELS <! [PRED "exist_q_rel"] !>] >]],
+             LKEYS.KEYREL.PRED "_pronoun_n_rel" ] ].
 
 sg-noun-lex-rule := const-ltow-rule &
   [ DTR.SYNSEM.LOCAL.CAT.HEAD noun,
@@ -371,7 +389,7 @@ finite-trans-verb-lex := basic-finite-trans-verb-lex &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT - ].
 
 finite-opt-trans-verb-lex := basic-finite-trans-verb-lex &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT-CS activ-or-more ].
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT-CS type-id ].
 
 non-finite-trans-verb-lex := non-finite-verb-lex & transitive-verb-lex .
 

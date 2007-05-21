@@ -8,7 +8,10 @@ subj-head := subj-head-phrase .
 
 head-spec := head-spec-phrase .
 
-bare-np := bare-np-phrase .
+;bare-np := bare-np-phrase .
+
+pro-bare-np := pro-prop-bare-np-phrase.
+indef-bare-np := indef-bare-np-phrase.
 
 ; Rule instances for head-modifier structures. Corresponding types
 ; are defined in matrix.tdl.  The matrix customization script did

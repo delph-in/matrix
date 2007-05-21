@@ -210,10 +210,10 @@ not := neg-adv-lex &
 
 quickly := adverb-lex &
   [ STEM < "quickly" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_fast_adv_rel" ] .
+    SYNSEM.LKEYS.KEYREL.PRED "_quickly_r_rel" ] .
 
 ;;; Adjectives
 
 hungry := adjective-lex &
   [ STEM < "hungry" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_hungry_adj_rel" ] .
+    SYNSEM.LKEYS.KEYREL.PRED "_hungry_a_rel" ] .
