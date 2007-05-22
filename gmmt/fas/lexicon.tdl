@@ -556,10 +556,10 @@ va_1 := conj-lex &
 
 zud := adverb-lex &
   [ STEM <"zud">,
-    SYNSEM.LKEYS.KEYREL.PRED "fast_adv_rel" ].
+    SYNSEM.LKEYS.KEYREL.PRED "_quickly_r_rel" ].
 
 ; Adjectives
 
 gurisnah := adjective-lex &
   [ STEM <"gurisnah">,
-    SYNSEM.LKEYS.KEYREL.PRED "hungry_adj_rel" ].
+    SYNSEM.LKEYS.KEYREL.PRED "_hungry_a_rel" ].
