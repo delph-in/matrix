@@ -1090,3 +1090,9 @@ indef-adj-rule := const-ltow-rule &
 	[ MOD < [ MODORDER #modorder_of_nom,
                   LOCAL.CONT.HOOK.INDEX.COG-ST #cog-st ] > ] ].
 		       
+
+;;; ERB 2007-05-22 for mmt demo
+
+present := tense.
+past := tense.
+future := tense.

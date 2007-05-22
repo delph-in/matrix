@@ -39,7 +39,7 @@ E.TENSE : TENSE
 SF : SF
   prop <> prop
   ques <> ques
-  prop-or-ques <> prop-or-ques
+  prop << prop-or-ques
   comm <> comm
 
 ;;; ERB 2007-05-19 I think we have to put the most specific
