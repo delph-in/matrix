@@ -230,7 +230,7 @@ dem-modorder := modorder.
 ;def := def-indef.
 
 bare-np-phrase := basic-bare-np-phrase &
-  [ C-CONT.RELS <! [ PRED "exists_q_rel" ] !> ].
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
 
 ;;h-klb, h-klb h-ryb, hwa
 def-bare-np-phrase := bare-np-phrase &
@@ -307,7 +307,7 @@ noun-lex := noun-lex-supertype & single-rel-lex-item & no-hcons-lex-item.
 
 pronoun-lex := noun-lex &
   [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ,  
-    SYNSEM.LKEYS.KEYREL.PRED "pronoun_n_rel" ,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ,
     SYNSEM.LOCAL.CONT.HOOK.INDEX [ COG-ST activ-or-more, 
 				   SPECI + ]].
 

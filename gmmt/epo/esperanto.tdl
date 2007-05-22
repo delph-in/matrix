@@ -15,9 +15,7 @@ infinitive := vform.
 finite := vform.
 conditional := finite.
 indicative := finite.
-past := indicative.
-present := indicative.
-future := indicative.
+
 
 ; Prepare for verb coordination.
 vcform := *top*.
@@ -51,6 +49,13 @@ common := ntype.
 prop+pro := ntype.
 proper := prop+pro.
 pronoun := prop+pro.
+
+; ERB 2007-05-21 Actual tense information:
+
+tense := *top*.
+present := tense.
+past := tense.
+future := tense.
 
 
 ; ###################################################
@@ -1093,12 +1098,15 @@ indic-verb-lex-rule := infl-ltow-rule & verb-lex-rule & tm-no-lex-rule &
 
 ; Make verb lexeme finite past word.
 past-verb-lex-rule := indic-verb-lex-rule &
-  [ SYNSEM.LOCAL.CAT.HEAD.VFORM past ].
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E.TENSE past,
+		   CAT.HEAD.VFORM indicative ]].
 
 ; Make verb lexeme finite present word.
 pres-verb-lex-rule := indic-verb-lex-rule &
-  [ SYNSEM.LOCAL.CAT.HEAD.VFORM present ].
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E.TENSE present,
+		   CAT.HEAD.VFORM indicative ]].
 
 ; Make verb lexeme finite future word.
 fut-verb-lex-rule := indic-verb-lex-rule &
-  [ SYNSEM.LOCAL.CAT.HEAD.VFORM future ].
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E.TENSE future,
+		   CAT.HEAD.VFORM indicative ]].

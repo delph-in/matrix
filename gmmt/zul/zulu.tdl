@@ -12,15 +12,25 @@ head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
   [ SYNSEM.LOCAL.CAT.HEAD +nvjrpdmo,
     HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT - ].
 
-subj-head-phrase := decl-head-subj-phrase & head-final &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.COMPS < >,
-				HEAD.FORM dec ] ] .
+;;; ERB 2007-05-22 Trying to cut down on active edges in the
+;;; gen chart.  Since we have waaaaaaaaaaay more verb edges than
+;;; noun edges, it makes sense to make this one left-to-right.
+;;; Also, then, we have to say that all subjects are [ HEAD noun ].
+
+subj-head-phrase := decl-head-subj-phrase & head-final & 
+		    binary-rule-left-to-right &
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun,
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.COMPS < >,
+				HEAD.FORM dec-or-subj ] ] .
 
 ; Rules for bulding NPs.  Note that the Matrix uses SPR for
 ;                the specifier of nouns and SUBJ for the 
 ;                subject (specifier) of verbs.
 
-head-spec-phrase := basic-head-spec-phrase & head-final .
+;;; ERB 2007-05-22 This one should be right-to-left.
+
+head-spec-phrase := basic-head-spec-phrase & head-final &
+		    binary-rule-right-to-left.
 
 ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
 ;             introduced to match the semantic effect of bare NPs in your language.
@@ -34,6 +44,7 @@ comp-head-phrase := basic-head-1st-comp-phrase &
   [ SYNSEM.LOCAL.CAT.HEAD comp ] .
 
 qpart-head-phrase := comp-head-phrase & head-final &
+		     binary-rule-right-to-left &
   [ SYNSEM.LOCAL.CAT.MC +,
     HEAD-DTR qpart-lex-item ] .
 
@@ -45,7 +56,7 @@ imp-phrase := imp-head-opt-subj-phrase &
   [ SYNSEM.LOCAL.CAT.HEAD.FORM imp ].
 
 opt-subj-phrase := decl-head-opt-subj-phrase &
-  [ SYNSEM.LOCAL.CAT.HEAD.FORM dec ].
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM dec-or-subj ].
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -59,6 +70,9 @@ opt-subj-phrase := decl-head-opt-subj-phrase &
 ; We treat question particles as complementizers.
 ; Here is the lexical type for complementizers.
 
+; ERB 2007-05-21 Need to put in constraint on form here, or
+; the subj forms mess things up on generation.
+
 complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
   [ SYNSEM.LOCAL.CAT [ HEAD comp &
                             [ MOD < > ],
@@ -66,7 +80,7 @@ complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
                              SUBJ < >,
                              COMPS < #comp > ] ],
     ARG-ST < #comp &
-             [ LOCAL.CAT [ HEAD verb,
+             [ LOCAL.CAT [ HEAD verb & [ FORM dec ],
                            VAL [ SUBJ < >,
                                  COMPS < > ] ] ] > ] .
 
@@ -177,6 +191,7 @@ ditransitive-verb-lex := verb-lex & ditransitive-lex-item
 
 
 ; embedded clauses are always propositions.
+
 clause-comp-verb-lex := clausal-second-arg-trans-lex-item & verb-lex &
 			takes-oc & imp-dtr &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL [CAT [HEAD comp,
@@ -297,9 +312,19 @@ head :+ [ AUX bool,
 
 form := avm .
 
-fin := form .
-
 inf := form .
+
+;  ERB 2007-05-21 For root condition.
+dec-or-imp := form.
+imp := dec-or-imp.
+
+; ERB 2007-05-21 For neg-fv rule, which seems like it ought to be able
+; to head stand-alone clauses or conjuncts.
+dec-or-subj := form.
+dec := dec-or-subj & dec-or-imp.
+subj := dec-or-subj.
+
+
 
 ;;; Person & Number 
 png :+ [ PER person,
@@ -388,9 +413,6 @@ takes-oc := avm.
 
 vp-or-adv-modifier := avm.
 
-imp := fin.
-dec := fin.
-
 neg-can-dtr := avm.
 
 imp-dtr := avm.
@@ -407,6 +429,7 @@ neg-fv-dtr := avm.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+
 ;;; Coordination Strategy 1
 
 n1-top-coord-rule := basic-n-top-coord-rule & apoly-top-coord-rule &
@@ -416,6 +439,41 @@ n1-bottom-coord-rule := infl-bottom-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1",
     SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel",
     DTR.SYNSEM.LOCAL.CAT.HEAD noun ] .
+
+;;; VP Coordination Strategy 2 -- copied from Malayalam, with
+;;; FORM value changed.   Except, we might as well go with S 
+;;; coord only, to keep things under control.
+
+;vp1-top-coord-rule := basic-vp-top-coord-rule & apoly-top-coord-rule &
+;  [ SYNSEM.LOCAL.COORD-STRAT "2",
+;    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM subj ] .
+
+;vp1-bottom-coord-rule := unary-bottom-coord-rule & vp-bottom-coord-phrase &
+;  [ SYNSEM.LOCAL [ COORD-STRAT "2",
+;                   COORD-REL.PRED "_and_coord_rel" ] ] .
+
+;;; S Coordination Strategy 2 --- Copied from Malayalam with FORM
+;;; value changed.
+
+
+;;; ERB 2007-05-22 This one seems to be making lots of active
+;;; edges in the gen-chart.  See if making it also binary-rule-left-to-right
+;;; will help cut that down.  That is, it should only create an 
+;;; active edge if it can find something for LCOORD-DTR.
+
+
+s1-top-coord-rule := basic-s-top-coord-rule & apoly-top-coord-rule &
+		     binary-rule-left-to-right &
+  [ SYNSEM.LOCAL [ COORD-STRAT "2",
+		   CAT.HEAD.FORM #form ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM subj,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ] .
+
+s1-bottom-coord-rule := unary-bottom-coord-rule & s-bottom-coord-phrase &
+  [ SYNSEM.LOCAL [ COORD-STRAT "2",
+                   COORD-REL.PRED "_and_coord_rel" ] ] .
+
+
 
 neg-infl-lex-rule := cont-change-only-lex-rule & inflecting-lex-rule &
   [ C-CONT [ HOOK [ XARG #xarg,
@@ -444,10 +502,14 @@ neg-infl-lex-rule := cont-change-only-lex-rule & inflecting-lex-rule &
 ;;; so that it could be expanded later if necessary.
 
 ;;; ERB 2007-05-16 Added nocoord here to get rid of -M labels.
+;;; ERB 2007-05-21 Not sure why we're constraining FORM here, but
+;;; maybe it's because negation and tense are incompatible somehow?
+;;; ERB 2007-05-21 It seems to be blocking the subjunctive form.
+;;; Since default-fv-lex-rule is now adding FORM info, maybe we 
+;;; don't need it here at all.
 
 verb-tense-lex-rule := add-only-no-ccont-rule & lexeme-to-lexeme-rule & nocoord &
-   [DTR verb-tense-rule-dtr &
-	[SYNSEM.LOCAL.CAT.HEAD.FORM dec ] ] .
+   [DTR verb-tense-rule-dtr ] .
 
 fut-tense-lex-rule := inflecting-lex-rule & verb-tense-lex-rule &
    [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE future ] .
@@ -468,10 +530,20 @@ pres-tense-lex-rule2 := constant-lex-rule & verb-tense-lex-rule &
 
 
 ;;; Imperative rules
-imperative-verb-lex-rule := head-change-only-lex-rule & lexeme-to-word-rule
-  [ DTR imp-dtr,
+;;; ERB 2007-05-21 This can't be lexeme-to-word either, since that
+;;; means no change.  Once again, making up a type.
+
+imperative-verb-lex-rule := head-change-only-lex-rule & nocoord &
+  [ DTR imp-dtr & 
+	[ INFLECTED -,
+	  SYNSEM.LOCAL.CAT.HEAD verb &
+		    [ MOD #mod,
+		      AUX #aux ]],
+    INFLECTED +,
     SYNSEM.LOCAL.CAT [HEAD verb &
-			   [FORM imp],
+			   [FORM imp,
+			    AUX #aux,
+			    MOD #mod ],
 		      MC +]].
 
 sg-imp-verb-lex-rule := constant-lex-rule & imperative-verb-lex-rule & 
@@ -531,19 +603,43 @@ neg-ability-lex-rule := ability-lex-rule &
 				  LTOP #larg ] ] ] .
 
 
-inf-verb-lex-rule := infl-ltow-rule &
-  [ SYNSEM.LOCAL.CAT.HEAD.FORM inf,
-    DTR default-fv-lex-rule &
-	[ INFLECTED -]].
+; ERB 2007-05-21  There might be a better way to untangle this,
+; but for now,  making this a head-change-only ltow rule (which
+; type doesn't exist in matrix.tdl).
+
+;inf-verb-lex-rule := infl-ltow-rule &
+;  [ SYNSEM.LOCAL.CAT.HEAD.FORM inf,
+;    DTR default-fv-lex-rule &
+;	[ INFLECTED -]].
+
+inf-verb-lex-rule := head-change-only-lex-rule & nocoord & inflecting-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD verb &
+			   [ AUX #aux,
+			     MOD #mod,
+			     FORM inf ],
+     INFLECTED +,
+     DTR default-fv-lex-rule &
+         [ INFLECTED -,
+	   SYNSEM.LOCAL.CAT.HEAD [ AUX #aux,
+				   MOD #mod ]]].
 
 
 fv-lex-rule := infl-add-only-no-ccont-ltol-rule & verb-tense-rule-dtr.
 
+;;; ERB 2007-05-21 For coordination, adding subjunctive FV rule.
+;;; For contrast, add FORM value to default-fv-lex-rule too.
+
 default-fv-lex-rule := fv-lex-rule & imp-dtr &
-  [ DTR default-fv-dtr ] .
+  [ DTR default-fv-dtr,
+    SYNSEM.LOCAL.CAT.HEAD.FORM dec ] .
+
+subjunctive-fv-lex-rule := fv-lex-rule & 
+  [ DTR default-fv-dtr,
+    SYNSEM.LOCAL.CAT.HEAD.FORM subj ].
 
 neg-fv-lex-rule := fv-lex-rule &
-  [ DTR neg-ability-lex-rule ] .
+  [ DTR neg-ability-lex-rule,
+    SYNSEM.LOCAL.CAT.HEAD.FORM dec-or-subj ] .
 
 
 ;;; Class prefix rules
@@ -904,3 +1000,10 @@ c15+c16+c17-rel-concord-lex-rule := relative-concord-lex-rule &
 
 ;c17-rel-concord-lex-rule := relative-concord-lex-rule &
 ;   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c17 ] > ].
+
+;;; ERB 2007-05-21 Trying to cut down on the number of active edges
+;;; in generation.
+
+head-adj-int-phrase :+ binary-rule-right-to-left.
+
+

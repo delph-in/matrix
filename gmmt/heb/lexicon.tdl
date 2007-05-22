@@ -92,7 +92,7 @@ axri-acc-pp-marker := case-marker-p-lex &
 ;;;need to figure this pronoun out - it/this?
 zh_pronoun := demonstrative-pronoun-lex &
         [ STEM < "zh" >,
-          SYNSEM.LKEYS.KEYREL.PRED "pronoun_n_rel",
+          SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel",
           SYNSEM.LKEYS.ALTKEYREL.PRED proximal+dem_a_rel,
 	  SYNSEM.LOCAL.CAT.HEAD.PROPER_PRONOUN_COMMON it_pronoun,
           SYNSEM.LOCAL [CAT.HEAD.CASE nom,
@@ -429,7 +429,7 @@ am := embedded-interrogative-complementizer-lex-item &
 
 mhr := adverb-lex &
    [ STEM < "mhr" >, 
-     SYNSEM.LKEYS.KEYREL.PRED "_fast_r_rel" ].
+     SYNSEM.LKEYS.KEYREL.PRED "_quickly_r_rel" ].
 
 
 la := neg-adv-lex &

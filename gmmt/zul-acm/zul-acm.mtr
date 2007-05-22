@@ -1,5 +1,9 @@
 ;;; Hey, emacs(1), this is -*- Mode: TDL; Coding: utf-8; -*- got it?
 
+; ERB 2007-05-21: Zulu has overt pronouns, so no need for this.
+; Except that I don't see any overt 3rd person pronouns, so 
+; that might be a problem.
+
 pronoun-delete-rule := monotonic_omtr &
  [ INPUT [ RELS < [ PRED "_pronoun_n_rel",
 		     ARG0 #x,

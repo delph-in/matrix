@@ -564,11 +564,15 @@ ci := pronoun-lex &
 			[ PER second,
 				NUM sg ] ].
 
-vi-sg := pronoun-lex &
-	[ STEM < "vi" >,
-		SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG
-			[ PER second,
-				NUM sg ] ].
+; ERB 2007-05-21  Don't know what this is for, and it's
+; giving us lots of realizations (esp coming from eng),
+; so leave it out for now.
+
+;vi-sg := pronoun-lex &
+;	[ STEM < "vi" >,
+;		SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG
+;			[ PER second,
+;				NUM sg ] ].
 
 vi-non-sg := pronoun-lex &
 	[ STEM < "vi" >,
@@ -576,23 +580,26 @@ vi-non-sg := pronoun-lex &
 			[ PER second,
 				NUM non-sg ] ].
 
+; ERB 2007-05-27 Likewise, just one of these is enough
+; until they contrast in more than just form!
+
 li := 3sg-pronoun-lex &
 	[ STEM < "li" > ].
 
-sxi := 3sg-pronoun-lex &
-	[ STEM < "sxi" > ].
+;sxi := 3sg-pronoun-lex &
+;	[ STEM < "sxi" > ].
 
-gxi := 3sg-pronoun-lex &
-	[ STEM < "gxi" > ].
+;gxi := 3sg-pronoun-lex &
+;	[ STEM < "gxi" > ].
 
-oni := 3sg-pronoun-lex &
-	[ STEM < "oni" > ].
+;oni := 3sg-pronoun-lex &
+;	[ STEM < "oni" > ].
 
-hi := 3sg-pronoun-lex &
-	[ STEM < "hi" > ].
+;hi := 3sg-pronoun-lex &
+;	[ STEM < "hi" > ].
 
-zi := 3sg-pronoun-lex &
-	[ STEM < "zi" > ].
+;zi := 3sg-pronoun-lex &
+;	[ STEM < "zi" > ].
 
 ili := pronoun-lex &
 	[ STEM < "ili" >,
@@ -600,17 +607,17 @@ ili := pronoun-lex &
 			[ PER third,
 				NUM non-sg ] ].
 
-si-sg := 3sg-pronoun-lex &
-	[ STEM < "si" > ].
+;si-sg := 3sg-pronoun-lex &
+;	[ STEM < "si" > ].
 
-si-non-sg := pronoun-lex &
-	[ STEM < "si" >,
-		SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG
-			[ PER third,
-				NUM non-sg ] ].
+;si-non-sg := pronoun-lex &
+;	[ STEM < "si" >,
+;		SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG
+;			[ PER third,
+;				NUM non-sg ] ].
 
-tio := 3sg-pronoun-lex &
-	[ STEM < "tio" > ].
+;tio := 3sg-pronoun-lex &
+;	[ STEM < "tio" > ].
 
 ; COMPLEMENTIZERS
 

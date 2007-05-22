@@ -34,12 +34,16 @@ E.TENSE : TENSE
   past     <> past
   present  <> pres
   future   <> fut
-  *        <> !
+  present  <> [e]
+;  *        <> !
+
+; ERB 2007-05-21 To keep the number of strings manageable,
+; taking prop-or-ques in the input to mean prop.
 
 SF : SF
   prop <> prop
   ques <> ques
-  prop-or-ques <> prop-or-ques
+  prop << prop-or-ques
   comm <> comm
 
 ;;; ERB 2007-05-19 I think we have to put the most specific
