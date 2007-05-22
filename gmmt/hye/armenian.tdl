@@ -78,7 +78,14 @@ remote+dem_q_rel := distal+dem_q_rel.      ; away from speaker and hearer
 hearer+dem_q_rel := distal+dem_q_rel.      ; near hearer
 def_q_rel := non+demonstrative_q_rel.      ; definite
 indef_q_rel := non+demonstrative_q_rel.    ; indefinite
-exist_q_rel := reg_quant_rel.
+
+;;; Relations for demonstratives
+
+demonstrative_a_rel := predsort.
+proximal+dem_a_rel := demonstrative_a_rel. ;; close to speaker.
+distal+dem_a_rel := demonstrative_a_rel. ;; away from speaker.
+remote+dem_a_rel := distal+dem_a_rel. ;;away from speaker and hearer
+hearer+dem_a_rel := distal+dem_a_rel. ;;near hearer
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; lexical types
@@ -96,15 +103,15 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
 common-noun-lex := noun-lex &
   [ INFLECTED -,
     SYNSEM.LOCAL [ CAT.VAL.SPR
-		       < [ LOCAL.CONT.RELS <! [ PRED exist_q_rel ] !> ] >,
+		       < [ LOCAL.CONT.RELS <! [ PRED "exist_q_rel" ] !> ] >,
 		   CONT.HOOK.INDEX.PNG [ PER third ] ] ].
 
 ;pronouns
 pronoun-lex := noun-lex &
   [ SYNSEM [ LOCAL [ CAT.VAL.SPR
-                     < [ LOCAL.CONT.RELS <! [ PRED exist_q_rel ] !> ] >,
+                     < [ LOCAL.CONT.RELS <! [ PRED "exist_q_rel" ] !> ] >,
                      CONT.HOOK.INDEX.COG-ST activ-or-more ],
-             LKEYS.KEYREL.PRED 'pronoun_n_rel ]].
+             LKEYS.KEYREL.PRED "_pronoun_n_rel" ]].
 
 1sg-pronoun-lex := pronoun-lex &
   [ INFLECTED +,
@@ -398,7 +405,7 @@ covert-det-phrase := head-only &
 
 any-covert-det-phrase := covert-det-phrase &
   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR
-    < [ LOCAL.CONT.RELS <! [ PRED #pred & exist_q_rel ] !> ] >,
+    < [ LOCAL.CONT.RELS <! [ PRED #pred & "exist_q_rel" ] !> ] >,
     C-CONT.RELS <! [ PRED #pred ] !> ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -641,3 +648,7 @@ adjective-lex := basic-int-mod-adj-lex &
                        VAL [ SPR < >,
                              COMPS < >,
                              SUBJ < > ] ] ].
+
+demonstrative-adj-lex := adjective-lex &
+[ SYNSEM [ LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.COG-ST activ+fam ] >,
+	   LKEYS.KEYREL arg1-relation & [ PRED demonstrative_a_rel ] ] ].
