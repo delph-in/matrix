@@ -107,6 +107,10 @@ luce := sg-female-common-noun-lex &
    [ STEM < "luce" >,
      SYNSEM.LKEYS.KEYREL.PRED "_light_n_rel" ].
 
+male := sg-male-opt-spr-common-noun-lex &
+   [ STEM < "male" >, 
+     SYNSEM.LKEYS.KEYREL.PRED "_harm_n_rel" ].
+
 maria := sg-female-proper-noun-lex &
    [ STEM < "maria" >,
      SYNSEM.LKEYS.KEYREL.PRED "_Mary_n_rel" ].
@@ -394,7 +398,15 @@ e-copula := 3sg-irreg-copula-verb-lex  &
    [ STEM < "è" >,
      SYNSEM.LKEYS.KEYREL.PRED "_be_v_rel" ].
 
-f := are-def-trans-verb-lex &
+;f := are-def-trans-verb-lex &
+;   [ STEM < "f" >,
+;     SYNSEM.LKEYS.KEYREL.PRED "_make_v_rel" ].
+
+
+; ERB 2007-05-22 Treating 'non mi-f-a male' as
+; a ditransitive verb.
+
+f := are-ditrans-verb-lex &
    [ STEM < "f" >,
      SYNSEM.LKEYS.KEYREL.PRED "_make_v_rel" ].
 
@@ -710,9 +722,9 @@ oggi := adverb-lex &
    [ STEM < "oggi" >,
      SYNSEM.LKEYS.KEYREL.PRED "_today_r_rel" ].
 
-male := adverb-lex &
-   [ STEM < "male" >,
-     SYNSEM.LKEYS.KEYREL.PRED "_badly_r_rel" ].
+;male := adverb-lex &
+;   [ STEM < "male" >,
+;     SYNSEM.LKEYS.KEYREL.PRED "_badly_r_rel" ].
 
 bene := adverb-lex &
    [ STEM < "bene" >,
@@ -724,7 +736,7 @@ ieri := adverb-lex &
 
 velocemente := adverb-lex &
    [ STEM < "velocemente" >,
-     SYNSEM.LKEYS.KEYREL.PRED "_fast_r_rel" ].
+     SYNSEM.LKEYS.KEYREL.PRED "_quickly_r_rel" ].
 
 lentamente := adverb-lex &
    [ STEM < "lentamente" >,

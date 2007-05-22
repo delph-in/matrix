@@ -112,11 +112,13 @@ spec-head-phrase := basic-head-spec-phrase & head-final.
 ;;; ERB 2007-05-17 I'm pretty sure we only see bare NPs in Italian
 ;;; with indefinite plurals, so adding the relevant constraints.
 
+;;; Want 'male' to be a bare-np, so putting OPT + instead, and
+;;; changing noun entries.
+
 indef-bare-np-phrase := basic-bare-np-phrase &
 [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !>,
   SYNSEM.LOCAL [ CAT.HEAD.NTYPE common,
-		 CONT.HOOK.INDEX [ PNG.NUM non-sg,
-				 COG-ST type-id ]]].
+		 CONT.HOOK.INDEX [ COG-ST type-id ]]].
 
 proper-bare-np-phrase := basic-bare-np-phrase &
 [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !>,
@@ -215,38 +217,33 @@ acc-opt-lex-rule := infl-val-change-only-ltol-rule &
 
 dat-acc-opt-lex-rule := infl-val-change-only-ltol-rule &
   [ INFLECTED +,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX [ COG-ST in-foc,
-				   SPECI + ],
     SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
 			   SPR #spr,
                            SUBJ #subj ],
     DTR acc-opt-lex-rule &
-        [ SYNSEM.LOCAL.CAT[VAL [ COMPS < [OPT-CS activ-or-more] >,
+        [ SYNSEM.LOCAL.CAT[VAL [ COMPS < [OPT-CS in-foc] >,
 				 SPR #spr,
 				 SUBJ #subj ],
 			    HEAD.FORM base]]].
 
 dat-opt-lex-rule := infl-val-change-only-ltol-rule &
   [ INFLECTED +,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX [ COG-ST in-foc,
-				   SPECI + ],
     SYNSEM.LOCAL.CAT[VAL [ COMPS < #comps >,
 			   SPR #spr,
                            SUBJ #subj ],
 		     HEAD.AGM +],
-    DTR [ SYNSEM.LOCAL.CAT[ VAL [ COMPS < #comps, [OPT-CS activ-or-more] >,
+    DTR [ SYNSEM.LOCAL.CAT[ VAL [ COMPS < #comps, [OPT-CS in-foc] >,
 				 SPR #spr,
 				 SUBJ #subj ],
 			    HEAD.FORM base ]]].
 
 inf-acc-opt-lex-rule := infl-val-change-only-ltol-rule &
   [ INFLECTED +,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX [ COG-ST in-foc,
-				   SPECI + ],
     SYNSEM.LOCAL.CAT[VAL [ COMPS #comps,
 			   SPR #spr,
                            SUBJ #subj ]],
-    DTR.SYNSEM.LOCAL.CAT [ VAL [ COMPS [ FIRST [OPT-CS activ-or-more, LOCAL.CAT.HEAD.CASE acc], 
+    DTR.SYNSEM.LOCAL.CAT [ VAL [ COMPS [ FIRST [OPT-CS in-foc, 
+						LOCAL.CAT.HEAD.CASE acc], 
 				       REST #comps ],
 			       SPR #spr,
 			       SUBJ #subj ],
@@ -254,12 +251,10 @@ inf-acc-opt-lex-rule := infl-val-change-only-ltol-rule &
 
 inf-dat-opt-lex-rule := infl-val-change-only-ltol-rule &
   [ INFLECTED +,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX [ COG-ST in-foc,
-				   SPECI + ],
     SYNSEM.LOCAL.CAT.VAL [ COMPS < #comps >,
 			   SPR #spr,
                            SUBJ #subj ],
-    DTR [ SYNSEM.LOCAL.CAT[ VAL [ COMPS < #comps, [OPT-CS activ-or-more] >,
+    DTR [ SYNSEM.LOCAL.CAT[ VAL [ COMPS < #comps, [OPT-CS in-foc] >,
 				 SPR #spr,
 				 SUBJ #subj ],
 			    HEAD.FORM non-base ]]].
@@ -503,7 +498,7 @@ hearer+dem_a_rel := distal+dem_a_rel.      ; near hearer
 pronoun-lex := noun-lex &
   [ SYNSEM [ LOCAL.CAT.VAL.SPR 
                 < [ OPT + ] >,
-	     LKEYS.KEYREL.PRED "pronoun_n_rel" ] ,
+	     LKEYS.KEYREL.PRED "_pronoun_n_rel" ] ,
     SYNSEM.LOCAL.CAT.HEAD.NTYPE pronoun,
     SYNSEM.LOCAL.CONT.HOOK.INDEX [ COG-ST activ-or-more,
 				   SPECI + ]].
@@ -548,9 +543,12 @@ pl-female-lex := noun-lex &
    [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND female,
 					NUM non-sg ] ].
 
-sg-male-common-noun-lex := common-noun-lex & sg-male-lex.
+sg-male-common-noun-lex := common-noun-lex & sg-male-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].			  
+sg-male-opt-spr-common-noun-lex := common-noun-lex & sg-male-lex.
 pl-male-common-noun-lex := common-noun-lex & pl-male-lex.
-sg-female-common-noun-lex := common-noun-lex & sg-female-lex.
+sg-female-common-noun-lex := common-noun-lex & sg-female-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].			  
 pl-female-common-noun-lex := common-noun-lex & pl-female-lex.
 
 sg-male-proper-noun-lex := proper-noun-lex & sg-male-lex.

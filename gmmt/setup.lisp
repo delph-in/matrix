@@ -4,9 +4,10 @@
   '(:arb :eng :epo :fas :fin :hai :hau :heb :hye :isl :ita :mal :spa :zul))
 
 (setf *mmt-transfer-grammars*
-  '((:any :isl :isl-acm)
-    (:any :hau :hau-acm)
-    (:any :zul :zul-acm)
-    (:any :eng :identity)
+  '((:any :eng :eng-acm)
     (:any :epo :identity)
+    (:any :hau :hau-acm)
+    (:any :isl :isl-acm)
+    (:any :ita :ita-acm)
+    (:any :zul :zul-acm)
     (:any :any :identity)))
