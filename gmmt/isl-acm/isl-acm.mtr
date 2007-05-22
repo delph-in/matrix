@@ -19,7 +19,7 @@ pro-insert-arg1-mtr := monotonic_mtr &
 pro-insert-arg2-mtr := monotonic_mtr &
 [ INPUT.RELS < >,
   CONTEXT.RELS < [ ARG0.SF prop-or-ques,
-		   ARG2 #x & x ] >,
+		   ARG2 #x & [ COG-ST fam-or-more ]] >,
   FILTER.RELS < [ ARG0 #x ] >,
   OUTPUT [ RELS < [ PRED "_pronoun_n_rel",
 		    ARG0 #x,
@@ -35,7 +35,7 @@ pro-insert-arg2-mtr := monotonic_mtr &
 pro-insert-arg3-mtr := monotonic_mtr &
 [ INPUT.RELS < >,
   CONTEXT.RELS < [ ARG0.SF prop-or-ques,
-		   ARG3 #x & x ] >,
+		   ARG3 #x & [ COG-ST fam-or-more ]] >,
   FILTER.RELS < [ ARG0 #x ] >,
   OUTPUT [ RELS < [ PRED "_pronoun_n_rel",
 		    ARG0 #x,
