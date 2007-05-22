@@ -229,14 +229,14 @@ kuolla := itr-verb-lex &
 ;;; START DETS
 
 ; proximal
-tAmA := det-lex &
+tAmA := demonstrative-det-lex &
 [ STEM < "tAmA" >,
-  SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
+  SYNSEM.LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ].
 
 ; distal
-tuo := det-lex &
+tuo := demonstrative-det-lex &
 [ STEM < "tuo" >,
-  SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
+  SYNSEM.LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ].
 
 ;;; END DETS
 
@@ -292,7 +292,7 @@ se := pronoun-lex &
 ; sfd
 nAlkAinen := adj-lex &
 [ STEM < "nAlkAinen" >,
-  SYNSEM [ LKEYS.KEYREL.PRED '_hungry_adj_rel ] ].
+  SYNSEM [ LKEYS.KEYREL.PRED '_hungry_a_rel ] ].
 
 iso := adj-lex &
 [ STEM < "iso" > ].
@@ -326,7 +326,7 @@ aina := adv-lex &
 ; quickly (fast)
 nopeasti := adv-lex &
 [ STEM < "nopeasti" >,
-  SYNSEM [ LKEYS.KEYREL.PRED '_fast_adv_rel ] ].
+  SYNSEM [ LKEYS.KEYREL.PRED '_quickly_r_rel ] ].
 
 ; slowly
 hiitasti := adv-lex &

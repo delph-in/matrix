@@ -194,7 +194,9 @@ noun-lex := basic-noun-lex & basic-one-arg & nominal-lex & no-hcons-lex-item &
   ARG-ST < #spr >,
   INFLECTED - ].
 
-det-lex := basic-determiner-lex & basic-zero-arg & nominal-lex &
+basic-det-lex := nominal-lex.
+
+det-lex := basic-determiner-lex & basic-zero-arg & basic-det-lex &
 [ SYNSEM.LOCAL.CAT [ HEAD.MOD < >,
 		     VAL [ SPR < >,
 			   SUBJ < >,
@@ -202,6 +204,27 @@ det-lex := basic-determiner-lex & basic-zero-arg & nominal-lex &
 			   SPEC < [ LOCAL.CAT.HEAD.CASE nom ] > ] ],
   ARG-ST < >,
   INFLECTED - ].
+
+demonstrative-det-lex := norm-hook-lex-item & basic-zero-arg & basic-det-lex &
+  [ INFLECTED -,
+    SYNSEM [ LOCAL [ CAT [ HEAD det & [ MOD < > ],
+			   VAL [ SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #ind & [ COG-ST activ+fam ],
+							      LTOP #larg & #lbl ],
+				 SPR < >,
+				 SUBJ < >,
+				 COMPS < > ] ],
+		     CONT [ HCONS < ! qeq & 
+				    [ HARG #harg,
+				      LARG #larg ] ! >,
+			    RELS < ! [ PRED "exist_q_rel"],
+				   #lkey & arg1-relation &
+				   [ LBL #lbl,
+				     ARG1 #ind] ! > ] ] ,
+	     LKEYS [ KEYREL quant-relation &
+			    [ ARG0 #ind,
+			      RSTR #harg ],
+		     ALTKEYREL #lkey ] ] ].
+
 
 ;; RGM 4-30-05 Added adj-lex for lab4
 
@@ -240,7 +263,7 @@ scopal-adv-lex := basic-scopal-adverb-lex &
 bare-np-phrase := basic-bare-np-phrase &
 [ HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun &
                                      [ PRO - ] ],
-                          CONT.HOOK.INDEX.COG-ST activ-or-less ],
+                          CONT.HOOK.INDEX.COG-ST type-id ],
   C-CONT.RELS <! [PRED "exist_q_rel"] !> ].
 
 ;; RGM 4-9-05 Finnish nominals that occur in the subject and object positions have
@@ -327,8 +350,13 @@ pronoun-lex := noun-lex &
 			      PRO + ] ],
 	   LKEYS.KEYREL.PRED '_pronoun_n_rel ] ].
 
-common-noun-lex := noun-lex &
+old-common-noun-lex := noun-lex &
 [ SYNSEM.LOCAL [ CAT [ VAL.SPR < [ LOCAL.CONT.RELS < ! [ PRED "exist_q_rel" ] ! > ] >,
+		       HEAD [ PRO - ] ],
+		 CONT.HOOK.INDEX.PNG.PER third ] ].
+
+common-noun-lex := noun-lex &
+[ SYNSEM.LOCAL [ CAT [ VAL.SPR < [ LOCAL.CAT.HEAD det ] >,
 		       HEAD [ PRO - ] ],
 		 CONT.HOOK.INDEX.PNG.PER third ] ].
 
@@ -415,6 +443,11 @@ sg := number.
 non-sg := number.
 pl := non-sg.
 
+tense := *top*.
+present := tense.
+past := tense.
+future := tense.
+
 ; RGM 5-29-05 Adding MSG copying to same-cont-lex-rule
 
 ;same-cont-lex-rule :+ [ SYNSEM.LOCAL.CONT.MSG #msg,
@@ -430,6 +463,14 @@ demonstrative_q_rel := reg_quant_rel.
 non+demonstrative_q_rel := reg_quant_rel.
 proximal+dem_q_rel := demonstrative_q_rel.
 distal+dem_q_rel := demonstrative_q_rel.
+
+;;; Relations for demonstratives
+
+demonstrative_a_rel := predsort.
+proximal+dem_a_rel := demonstrative_a_rel. ;; close to speaker.
+distal+dem_a_rel := demonstrative_a_rel. ;; away from speaker.
+remote+dem_a_rel := distal+dem_a_rel. ;;away from speaker and hearer
+hearer+dem_a_rel := distal+dem_a_rel. ;;near hearer
 
 ; ERB (2005-06-01) To make transfer work...
 
@@ -630,11 +671,11 @@ num_det-lex-rule := det-lex-rule & infl-add-only-no-ccont-ltol-rule.
 
 sg_det-lex-rule := num_det-lex-rule &
 [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg ] ] >,
-  DTR det-lex ].
+  DTR basic-det-lex ].
 
 pl_det-lex-rule := num_det-lex-rule &
 [ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM pl ] ] >,
-  DTR det-lex ].
+  DTR basic-det-lex ].
 
 ; Adds +CASE after +NUM
 det_case-lex-rule := det-lex-rule & infl-add-only-no-ccont-ltol-rule &
