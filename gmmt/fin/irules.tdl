@@ -55,51 +55,143 @@ ques-lex :=
 %suffix (* +Ques)
 ques-lex-rule.
 
-; nominal rules
+; noun inflection
 
-sg_nominal :=
+sg_noun :=
 %suffix (* +Sg)
-sg_nominal-lex-rule.
+sg_noun-lex-rule.
 
-pl_nominal :=
+pl_noun :=
 %suffix (* +Pl)
-pl_nominal-lex-rule.
+pl_noun-lex-rule.
 
-case_nom :=
+noun_case_nom :=
 %suffix (* +Nom)
-case_nom-lex-rule.
+noun_case_nom-lex-rule.
 
-case_acc :=
+noun_case_acc :=
 %suffix (* +Acc)
-case_acc-lex-rule.
+noun_case_acc-lex-rule.
 
-case_part :=
+noun_case_part :=
 %suffix (* +Part)
-case_part-lex-rule.
+noun_case_part-lex-rule.
 
-case_elat :=
+noun_case_elat :=
 %suffix (* +Elat)
-case_elat-lex-rule.
+noun_case_elat-lex-rule.
 
-case_illat :=
+noun_case_illat :=
 %suffix (* +Illat)
-case_illat-lex-rule.
+noun_case_illat-lex-rule.
 
-case_iness :=
+noun_case_iness :=
 %suffix (* +Iness)
-case_iness-lex-rule.
+noun_case_iness-lex-rule.
 
-case_adess :=
+noun_case_adess :=
 %suffix (* +Adess)
-case_adess-lex-rule.
+noun_case_adess-lex-rule.
 
-case_ablat :=
+noun_case_ablat :=
 %suffix (* +Ablat)
-case_ablat-lex-rule.
+noun_case_ablat-lex-rule.
 
-case_allat :=
+noun_case_allat :=
 %suffix (* +Allat)
-case_allat-lex-rule.
+noun_case_allat-lex-rule.
+
+; det inflection
+
+sg_det :=
+%suffix (* +Sg)
+sg_det-lex-rule.
+
+pl_det :=
+%suffix (* +Pl)
+pl_det-lex-rule.
+
+det_case_nom :=
+%suffix (* +Nom)
+det_case_nom-lex-rule.
+
+det_case_acc :=
+%suffix (* +Acc)
+det_case_acc-lex-rule.
+
+det_case_part :=
+%suffix (* +Part)
+det_case_part-lex-rule.
+
+det_case_elat :=
+%suffix (* +Elat)
+det_case_elat-lex-rule.
+
+det_case_illat :=
+%suffix (* +Illat)
+det_case_illat-lex-rule.
+
+det_case_iness :=
+%suffix (* +Iness)
+det_case_iness-lex-rule.
+
+det_case_adess :=
+%suffix (* +Adess)
+det_case_adess-lex-rule.
+
+det_case_ablat :=
+%suffix (* +Ablat)
+det_case_ablat-lex-rule.
+
+det_case_allat :=
+%suffix (* +Allat)
+det_case_allat-lex-rule.
+
+; adj inflection
+
+sg_adj :=
+%suffix (* +Sg)
+sg_adj-lex-rule.
+
+pl_adj :=
+%suffix (* +Pl)
+pl_adj-lex-rule.
+
+adj_case_nom :=
+%suffix (* +Nom)
+adj_case_nom-lex-rule.
+
+adj_case_acc :=
+%suffix (* +Acc)
+adj_case_acc-lex-rule.
+
+adj_case_part :=
+%suffix (* +Part)
+adj_case_part-lex-rule.
+
+adj_case_elat :=
+%suffix (* +Elat)
+adj_case_elat-lex-rule.
+
+adj_case_illat :=
+%suffix (* +Illat)
+adj_case_illat-lex-rule.
+
+adj_case_iness :=
+%suffix (* +Iness)
+adj_case_iness-lex-rule.
+
+adj_case_adess :=
+%suffix (* +Adess)
+adj_case_adess-lex-rule.
+
+adj_case_ablat :=
+%suffix (* +Ablat)
+adj_case_ablat-lex-rule.
+
+adj_case_allat :=
+%suffix (* +Allat)
+adj_case_allat-lex-rule.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; OLD RULES

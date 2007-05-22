@@ -231,24 +231,12 @@ kuolla := itr-verb-lex &
 ; proximal
 tAmA := det-lex &
 [ STEM < "tAmA" >,
-  SYNSEM [ LKEYS.KEYREL.PRED exist_q_rel,
-	   LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ] > ] ].
-
-nAmA := det-lex &
-[ STEM < "nAmA" >,
-  SYNSEM [ LKEYS.KEYREL.PRED exist_q_rel,
-	   LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM pl ] > ] ].
+  SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
 
 ; distal
 tuo := det-lex &
 [ STEM < "tuo" >,
-  SYNSEM [ LKEYS.KEYREL.PRED exist_q_rel,
-	   LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ] > ] ].
-
-nuo := det-lex &
-[ STEM < "nuo" >,
-  SYNSEM [ LKEYS.KEYREL.PRED exist_q_rel,
-	   LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.NUM pl ] > ] ].
+  SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
 
 ;;; END DETS
 
@@ -256,37 +244,32 @@ nuo := det-lex &
 
 ;;; PERSONAL PRONOUNS
 
-minA := pronoun-nom-lex &
+minA := pronoun-lex &
 	[ STEM < "minA" >,
 	  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
 					     NUM sg ] ].
 
-minua := pronoun-part-lex &
-	 [ STEM < "minua" >,
-	   SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG [ PER first,
-						NUM sg ]]].
-
-sinA := pronoun-nom-lex &
+sinA := pronoun-lex &
 	[ STEM < "sinA" >,
 	  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
 					     NUM sg ] ].
 
-hAn := pronoun-nom-lex &
+hAn := pronoun-lex &
        [ STEM < "hAn" >,
 	 SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
 					    NUM sg ] ].
 
-me := pronoun-nom-lex &
+me := pronoun-lex &
       [ STEM < "me" >,
 	SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
 					   NUM pl ] ].
 
-te := pronoun-nom-lex &
+te := pronoun-lex &
       [ STEM < "te" >,
 	SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
 					   NUM pl ] ].
 
-he := pronoun-nom-lex &
+he := pronoun-lex &
       [ STEM < "he" >,
 	SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
 					   NUM pl ] ].

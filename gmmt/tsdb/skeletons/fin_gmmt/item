@@ -1,7 +1,7 @@
 1@author@@@1@{wo,agr,c}@koira+Pl+Nom nukkua+3p+Pl@1@2@`Dogs sleep.'@Ryan Mattson (revised by Scott Drellishak)@May 20, 2007
 2@author@@@1@{wo,agr,c}@koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc@1@3@`Dogs chase cars.'@Ryan Mattson (revised by Scott Drellishak)@May 20, 2007
 3@author@@@1@{wo,pn,agr,c}@minA metsAstAA+1p+Sg sinA+Sg+Acc@1@3@`I chase you.'@Ryan Mattson (revised by Scott Drellishak)@May 20, 2007
-4@author@@@1@{wo,det,agr,c}@nuo+Pl+Nom koira+Pl+Nom nukkua+3p+Pl@1@3@`These dogs sleep.'@Ryan Mattson (revised by Scott Drellishak)@May 20, 2007
+4@author@@@1@{wo,det,agr,c}@tuo+Pl+Nom koira+Pl+Nom nukkua+3p+Pl@1@3@`These dogs sleep.'@Ryan Mattson (revised by Scott Drellishak)@May 20, 2007
 5@author@@@1@{wo,pro-d,agr,c}@koira+Pl+Nom syOdA+3p+Pl@1@2@`Dogs eat.'@Ryan Mattson (revised by Scott Drellishak)@May 20, 2007
 6@author@@@1@{wo,pn,agr,c,m}@minA voida+1p+Sg syOdA+Inf lasi+Sg+Part@1@4@`I can eat glass.'@Ryan Mattson (revised by Scott Drellishak)@May 20, 2007
 7@author@@@1@{wo,pn,agr,c,neg}@hAn ei sattua+3p+Sg minA+Sg+Part@1@4@`It doesnt hurt me.'@Ryan Mattson (revised by Scott Drellishak)@May 20, 2007

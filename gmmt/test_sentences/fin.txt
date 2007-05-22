@@ -4,7 +4,7 @@ koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
 
 minA metsAstAA+1p+Sg sinA+Sg+Acc
 
-nuo+Pl+Nom koira+Pl+Nom nukkua+3p+Pl
+tuo+Pl+Nom koira+Pl+Nom nukkua+3p+Pl
 
 koira+Pl+Nom syOdA+3p+Pl
 

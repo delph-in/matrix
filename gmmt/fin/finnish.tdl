@@ -120,7 +120,7 @@ verb-lex := basic-verb-lex &
 ; RGM 5-18-05 Added subj-raising-verb-lex to allow for 'voida' ('can') verb in
 ; 'minA voin syOdA lasia' ('i can eat glass')
 
-subj-raising-verb-lex := verb-lex & trans-first-arg-raising-lex-item &
+subj-raising-verb-lex := verb-lex & trans-first-arg-raising-lex-item-1 &
 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CAT.HEAD.CASE nom ] >,
 			 COMPS < #comps & [ LOCAL.CAT.HEAD verb & [ FORM inf ]]>],
   ARG-ST < #subj, #comps > ].
@@ -191,7 +191,8 @@ noun-lex := basic-noun-lex & basic-one-arg & nominal-lex & no-hcons-lex-item &
 		     VAL [ SPR < #spr >,
 			 SUBJ < >,
 			 COMPS < > ] ],
-  ARG-ST < #spr > ].
+  ARG-ST < #spr >,
+  INFLECTED - ].
 
 det-lex := basic-determiner-lex & basic-zero-arg & nominal-lex &
 [ SYNSEM.LOCAL.CAT [ HEAD.MOD < >,
@@ -199,7 +200,8 @@ det-lex := basic-determiner-lex & basic-zero-arg & nominal-lex &
 			   SUBJ < >,
 			   COMPS < >,
 			   SPEC < [ LOCAL.CAT.HEAD.CASE nom ] > ] ],
-  ARG-ST < > ].
+  ARG-ST < >,
+  INFLECTED - ].
 
 ;; RGM 4-30-05 Added adj-lex for lab4
 
@@ -210,7 +212,8 @@ adj-lex := basic-int-mod-adj-lex & nominal-lex &
 			   SUBJ < >,
 			   COMPS < >,
 			   SPEC < > ],
-		     POSTHEAD - ]].
+		     POSTHEAD - ],
+  INFLECTED - ].
 
 adv-lex := basic-int-adverb-lex &
 [ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD verb,
@@ -238,7 +241,7 @@ bare-np-phrase := basic-bare-np-phrase &
 [ HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun &
                                      [ PRO - ] ],
                           CONT.HOOK.INDEX.COG-ST activ-or-less ],
-  C-CONT.RELS <! [PRED exist_q_rel] !> ].
+  C-CONT.RELS <! [PRED "exist_q_rel"] !> ].
 
 ;; RGM 4-9-05 Finnish nominals that occur in the subject and object positions have
 ;; different semantic meanings when it comes to their definiteness. The following
@@ -249,7 +252,7 @@ bare-np-phrase := basic-bare-np-phrase &
 
 pronoun-bare-np-phrase := basic-bare-np-phrase &
 [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.PRO +,
-  VAL.SPR < [ LOCAL.CONT.RELS < ! [ PRED #pred & exist_q_rel ] ! > ] > ],
+  VAL.SPR < [ LOCAL.CONT.RELS < ! [ PRED #pred & "exist_q_rel" ] ! > ] > ],
   C-CONT.RELS < ! [ PRED #pred ] ! > ].
 
 ;; RGM 5-4-05 Created subtype of declarative-clause (from matrix.tdl)
@@ -317,21 +320,15 @@ int-comp-lex := complementizer-lex-item &
 ;; now inheriting from common-noun-lex.
 
 pronoun-lex := noun-lex &
-[ SYNSEM [ LOCAL.CAT [ VAL [ SPR < [ LOCAL.CONT.RELS < ! [ PRED exist_q_rel ] ! >] >,
+[ SYNSEM [ LOCAL.CAT [ VAL [ SPR < [ LOCAL.CONT.RELS < ! [ PRED "exist_q_rel" ] ! >] >,
 			     COMPS < >,
 			     SUBJ < > ],
 		       HEAD [ CASE case,
 			      PRO + ] ],
-	   LKEYS.KEYREL.PRED 'pronoun_n_rel ] ].
-
-pronoun-nom-lex := pronoun-lex &
-[ SYNSEM.LOCAL.CAT.HEAD.CASE nom ].
-
-pronoun-part-lex := pronoun-lex &
-[ SYNSEM.LOCAL.CAT.HEAD.CASE part ].
+	   LKEYS.KEYREL.PRED '_pronoun_n_rel ] ].
 
 common-noun-lex := noun-lex &
-[ SYNSEM.LOCAL [ CAT [ VAL.SPR < [ LOCAL.CONT.RELS < ! [ PRED exist_q_rel ] ! > ] >,
+[ SYNSEM.LOCAL [ CAT [ VAL.SPR < [ LOCAL.CONT.RELS < ! [ PRED "exist_q_rel" ] ! > ] >,
 		       HEAD [ PRO - ] ],
 		 CONT.HOOK.INDEX.PNG.PER third ] ].
 
@@ -380,7 +377,9 @@ ques-lex-rule := infl-head-change-only-ltol-rule &
 	   HCONS <! !> ],
   DTR [ C-CONT [ RELS <! !>,
 		 HCONS <! !> ],
-	SYNSEM.LOCAL.CAT [ HEAD verb & [ QUES - ],
+	SYNSEM.LOCAL.CAT [ HEAD verb & [ QUES -,
+					 NEG -,
+					 FORM fin ],
                            VAL #val ] ] ].
 
 ; RGM 5-15-05 Added IMPERATIVE feature to CAT
@@ -389,9 +388,9 @@ cat :+ [ IMPERATIVE bool ].
 
 ; RGM 5-15-05 Added non-branching rule for imperative clauses, lab6
 
-;imperative-head-opt-subj-phrase := imp-head-opt-subj-phrase &
-;[ SYNSEM.LOCAL.CAT.IMPERATIVE +,
-;  HEAD-DTR [ SYNSEM.LOCAL.CAT.IMPERATIVE + ]].
+imperative-head-opt-subj-phrase := imp-head-opt-subj-phrase &
+[ SYNSEM.LOCAL.CAT.IMPERATIVE +,
+  HEAD-DTR.SYNSEM.LOCAL.CAT.IMPERATIVE + ].
 
 ; RGM 5-15-05 Added imperative clause
 
@@ -431,7 +430,6 @@ demonstrative_q_rel := reg_quant_rel.
 non+demonstrative_q_rel := reg_quant_rel.
 proximal+dem_q_rel := demonstrative_q_rel.
 distal+dem_q_rel := demonstrative_q_rel.
-exist_q_rel := reg_quant_rel.
 
 ; ERB (2005-06-01) To make transfer work...
 
@@ -550,13 +548,17 @@ neg_verb-lex-rule := infl-head-change-only-ltol-rule &
 ; 			SYNSEM.LOCAL.CAT [ IMPERATIVE -,
 ; 					   HEAD #head ]]].
 
-;imp_verb-lex-rule := const-ltow-rule &
-;		     same-head-lex-rule &
-;		     same-val-lex-rule &
-;		     same-hc-light-lex-rule &
-;		     same-posthead-lex-rule &
-;[ SYNSEM.LOCAL.CAT.IMPERATIVE +,
-;  DTR verb-lex ].
+imp_verb-lex-rule := const-ltol-rule &
+		     same-head-lex-rule &
+		     same-val-lex-rule &
+		     same-hc-light-lex-rule &
+		     same-posthead-lex-rule &
+[ SYNSEM.LOCAL.CAT.IMPERATIVE +,
+  DTR verb-lex ].
+
+imperative_verb_rule := const-ltow-rule &
+[ SYNSEM.LOCAL.CAT [ HEAD verb,
+		     IMPERATIVE + ] ].
 
 
 inf_verb-lex-rule := infl-ltow-rule &
@@ -564,60 +566,160 @@ inf_verb-lex-rule := infl-ltow-rule &
   DTR verb-lex ].
 
 ;;;;;
-; Nominal rules
+; Noun inflection
 ;;;;;
 
-; Adds +NUM after lexical item
-;num_nominal-lex-rule := infl-cont-change-only-ltol-rule &
-;[ C-CONT [ RELS <! !>,
-;	   HCONS <! !> ]].
-
-finnish-lex-rule := lex-rule &
-[ SYNSEM.LOCAL.CAT.HEAD.PRO #pro,
+noun-lex-rule := lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD noun & [ PRO #pro ],
   DTR.SYNSEM.LOCAL.CAT.HEAD.PRO #pro ].
 
-num_nominal-lex-rule := finnish-lex-rule & infl-add-only-no-ccont-ltol-rule.
+num_noun-lex-rule := noun-lex-rule & infl-add-only-no-ccont-ltol-rule.
 
-sg_nominal-lex-rule := num_nominal-lex-rule &
+sg_noun-lex-rule := num_noun-lex-rule &
 [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg ],
-  DTR nominal-lex ].
+  DTR noun-lex ].
 
-pl_nominal-lex-rule := num_nominal-lex-rule &
+pl_noun-lex-rule := num_noun-lex-rule &
 [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NUM pl ],
-  DTR nominal-lex ].
+  DTR noun-lex ].
 
 ; Adds +CASE after +NUM
-case-lex-rule := finnish-lex-rule & infl-head-change-only-ltol-rule &
+noun_case-lex-rule := noun-lex-rule & infl-head-change-only-ltol-rule &
 [ C-CONT [ RELS <! !>,
 	   HCONS <! !> ],
-  DTR num_nominal-lex-rule ].
+  DTR num_noun-lex-rule ].
 
-case_nom-lex-rule := case-lex-rule &
+noun_case_nom-lex-rule := noun_case-lex-rule &
 [ SYNSEM.LOCAL.CAT.HEAD.CASE nom ].
 
-case_acc-lex-rule := case-lex-rule &
+noun_case_acc-lex-rule := noun_case-lex-rule &
 [ SYNSEM.LOCAL.CAT.HEAD.CASE acc ].
 
-case_part-lex-rule := case-lex-rule &
+noun_case_part-lex-rule := noun_case-lex-rule &
 [ SYNSEM.LOCAL.CAT.HEAD.CASE part ].
 
-case_elat-lex-rule := case-lex-rule &
+noun_case_elat-lex-rule := noun_case-lex-rule &
 [ SYNSEM.LOCAL.CAT.HEAD.CASE elat ].
 
-case_illat-lex-rule := case-lex-rule &
+noun_case_illat-lex-rule := noun_case-lex-rule &
 [ SYNSEM.LOCAL.CAT.HEAD.CASE illat ].
 
-case_iness-lex-rule := case-lex-rule &
+noun_case_iness-lex-rule := noun_case-lex-rule &
 [ SYNSEM.LOCAL.CAT.HEAD.CASE iness ].
 
-case_adess-lex-rule := case-lex-rule &
+noun_case_adess-lex-rule := noun_case-lex-rule &
 [ SYNSEM.LOCAL.CAT.HEAD.CASE adess ].
 
-case_ablat-lex-rule := case-lex-rule &
+noun_case_ablat-lex-rule := noun_case-lex-rule &
 [ SYNSEM.LOCAL.CAT.HEAD.CASE ablat ].
 
-case_allat-lex-rule := case-lex-rule &
+noun_case_allat-lex-rule := noun_case-lex-rule &
 [ SYNSEM.LOCAL.CAT.HEAD.CASE allat ].
+
+noun_word-lex-rule := const-ltow-rule &
+[ DTR noun_case-lex-rule ].
+
+;;;;;
+; Det inflection
+;;;;;
+
+det-lex-rule := lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD det ].
+
+num_det-lex-rule := det-lex-rule & infl-add-only-no-ccont-ltol-rule.
+
+sg_det-lex-rule := num_det-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg ] ] >,
+  DTR det-lex ].
+
+pl_det-lex-rule := num_det-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM pl ] ] >,
+  DTR det-lex ].
+
+; Adds +CASE after +NUM
+det_case-lex-rule := det-lex-rule & infl-add-only-no-ccont-ltol-rule &
+[ DTR num_det-lex-rule ].
+
+det_case_nom-lex-rule := det_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.CASE nom ] > ].
+
+det_case_acc-lex-rule := det_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.CASE acc ] > ].
+
+det_case_part-lex-rule := det_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.CASE part ] > ].
+
+det_case_elat-lex-rule := det_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.CASE elat ] > ].
+
+det_case_illat-lex-rule := det_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.CASE illat ] > ].
+
+det_case_iness-lex-rule := det_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.CASE iness ] > ].
+
+det_case_adess-lex-rule := det_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.CASE adess ] > ].
+
+det_case_ablat-lex-rule := det_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.CASE ablat ] > ].
+
+det_case_allat-lex-rule := det_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.VAL.SPEC < [  LOCAL.CAT.HEAD.CASE allat ] > ].
+
+det_word-lex-rule := const-ltow-rule &
+[ DTR det_case-lex-rule ].
+
+;;;;;
+; Adj inflection
+;;;;;
+
+adj-lex-rule := lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD adj ].
+
+num_adj-lex-rule := adj-lex-rule & infl-add-only-no-ccont-ltol-rule.
+
+sg_adj-lex-rule := num_adj-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg ] ] >,
+  DTR adj-lex ].
+
+pl_adj-lex-rule := num_adj-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM pl ] ] >,
+  DTR adj-lex ].
+
+; Adds +CASE after +NUM
+adj_case-lex-rule := adj-lex-rule & infl-add-only-no-ccont-ltol-rule &
+[ DTR num_adj-lex-rule ].
+
+adj_case_nom-lex-rule := adj_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE nom ] > ].
+
+adj_case_acc-lex-rule := adj_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE acc ] > ].
+
+adj_case_part-lex-rule := adj_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE part ] > ].
+
+adj_case_elat-lex-rule := adj_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE elat ] > ].
+
+adj_case_illat-lex-rule := adj_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE illat ] > ].
+
+adj_case_iness-lex-rule := adj_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE iness ] > ].
+
+adj_case_adess-lex-rule := adj_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE adess ] > ].
+
+adj_case_ablat-lex-rule := adj_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE ablat ] > ].
+
+adj_case_allat-lex-rule := adj_case-lex-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.MOD <[  LOCAL.CAT.HEAD.CASE allat ] > ].
+
+adj_word-lex-rule := const-ltow-rule &
+[ DTR adj_case-lex-rule ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Commented rules below were pre-XFST interface ;
@@ -770,6 +872,10 @@ np-coord-phrase :+
   LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case,
   RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
 
+np-bottom-coord-phrase :+
+[ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+  NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
+
 np-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule.
 
 np-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule.
@@ -796,7 +902,7 @@ vp-coord-phrase :+
                                        FORM #form,
                                        NEG #neg ] ].
 
-s-bottom-coord-phrase :+
+vp-bottom-coord-phrase :+
   [ SYNSEM.LOCAL.CAT.HEAD [ QUES #ques,
                             INV #inv,
                             FORM #form,
