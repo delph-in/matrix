@@ -38,9 +38,9 @@ neg-fv-lex :=
   %suffix (* -e)
   neg-fv-lex-rule.
 
-subj-fv-lex :=
-%suffix (* -e)
-subjunctive-fv-lex-rule.
+;subj-fv-lex :=
+;%suffix (* -e)
+;subjunctive-fv-lex-rule.
 
 ;;; ERB 2007-05-16  Modeling homophony/syncretism by adding 
 ;;; collapsing rules that use the same form.
