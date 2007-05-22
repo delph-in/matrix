@@ -1,3 +1,4 @@
+;;; -*- Mode: TDL; Package: LKB -*-
 ; NOUNS
 
 aut := common-noun-lex &

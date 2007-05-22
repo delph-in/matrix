@@ -1,3 +1,4 @@
+;;; -*- Mode: TDL; Package: LKB -*-
 ; Version of my_language.tdl for Esperanto, by Jonathan Pool, May 2005.
 ; Contains language-specific types.
 
@@ -154,7 +155,7 @@ ditrans-verb-lex := verb-lex & ditransitive-lex-item &
               REST null ] ] ].
 
 ; Raising verb.
-raising-verb-lex := verb-lex & trans-first-arg-raising-lex-item &
+raising-verb-lex := verb-lex & trans-first-arg-raising-lex-item-1 &
   [ SYNSEM.LOCAL.CAT.VAL
     [ SUBJ.FIRST #sj,
       COMPS
@@ -268,8 +269,10 @@ bare-adjective-lex := all-adjective-lex &
 all-adverb-lex := basic-adverb-lex &
   [ SYNSEM.LOCAL.CAT
       [ HEAD.MOD
-        < [ LOCAL.CAT.VAL [ SUBJ < >,
-                            SPR null ] ] >,
+        < [ LOCAL.CAT [ HEAD verb,
+			VAL [ SUBJ < [ ] >,
+			      COMPS < >,
+			      SPR null ] ] ] >,
         VAL
           [ SPR null,
             SUBJ null,
@@ -481,6 +484,9 @@ head-opt-comp-phrase := basic-head-opt-comp-phrase &
   [ HEAD-DTR.SYNSEM
     [ LOCAL.CAT.VAL.SUBJ cons,
       MODIFIED notmod ] ].
+
+head-adj-int-phrase :+
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.SENTENCE - ].
 
 bare-imperative-phrase := basic-head-opt-subj-phrase & head-compositional &
   [ SYNSEM.LOCAL.CAT
@@ -839,7 +845,7 @@ s-coord-phrase := event-coord-phrase & right-branching &
     [ HEAD verb &
       [ VFORM #vf,
         VCFORM #vcf ],
-      SENTENCE #sen,
+      SENTENCE #sen & -,
       ROOTMOM #rm ],
     NBR-DTR.SYNSEM.LOCAL.CAT
       [ HEAD verb &
@@ -864,6 +870,7 @@ s-bottom-coord-rule := binary-bottom-coord-rule &
   [ SYNSEM.LOCAL.CAT.HEAD verb & [ VCFORM #vcf ],
     ARGS.REST.FIRST.SYNSEM.LOCAL.CAT
       [ HEAD verb & [ VCFORM #vcf ],
+	SENTENCE -,
         VAL [ SUBJ < >,
               COMPS < > ] ] ].
 

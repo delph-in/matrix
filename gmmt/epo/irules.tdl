@@ -52,18 +52,18 @@ imp-verb-lri :=
 	%suffix (* u)
 	imp-verb-lex-rule.
 
-cond-verb-lri :=
-	%suffix (* us)
-	cond-verb-lex-rule.
+;cond-verb-lri :=
+;	%suffix (* us)
+;	cond-verb-lex-rule.
 
-past-verb-lri :=
-	%suffix (* is)
-	past-verb-lex-rule.
+;past-verb-lri :=
+;	%suffix (* is)
+;	past-verb-lex-rule.
 
 pres-verb-lri :=
 	%suffix (* as)
 	pres-verb-lex-rule.
 
-fut-verb-lri :=
-	%suffix (* os)
-	fut-verb-lex-rule.
+;fut-verb-lri :=
+;	%suffix (* os)
+;	fut-verb-lex-rule.
