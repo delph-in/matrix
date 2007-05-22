@@ -32,6 +32,6 @@
 ;;;
 (mt:read-transfer-rules 
  (list
-  (lkb-pathname (this-directory) "isl-acm.mtr"))
+  (lkb-pathname (this-directory) "eng-acm.mtr"))
  "Accomodation for Icelandic"
  :in :in :out :out :filter nil)
