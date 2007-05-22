@@ -41,6 +41,18 @@ noneed := needinf.
 ; Prepare for sentence licensing.
 lex-item :+ [ SYNSEM.LOCAL.CAT.SENTENCE - ].
 
+; ERB 2007-05-21 NTYPE is for tracking common nouns
+; to keep them out of the prop+prop-bare-np phrase.
+
+noun :+ [ NTYPE ntype ].
+
+ntype := *top*.
+common := ntype.
+prop+pro := ntype.
+proper := prop+pro.
+pronoun := prop+pro.
+
+
 ; ###################################################
 
 ; WORDS
@@ -191,18 +203,17 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
 ; Common noun.
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL
-      [ CAT.VAL.SPR
-          < [ LOCAL.CONT.RELS <! [ PRED exist_q_rel ] !> ] >,
+      [ CAT [ HEAD.NTYPE common,
+	      VAL.SPR < [ LOCAL.CONT.RELS <! [ PRED "exist_q_rel" ] !> ] > ],
         CONT.HOOK.INDEX.PNG.PER third ],
     NEEDINF needcat ].
 
 ; Pronoun.
 pronoun-lex := noun-lex &
-  [ SYNSEM
-      [ LOCAL.CAT.VAL.SPR
-          < [ LOCAL.CONT [ RELS <! [ PRED exist_q_rel ] !>,
-                           HOOK.INDEX.COG-ST activ-or-more ] ] >,
-        LKEYS.KEYREL.PRED 'pronoun_n_rel ],
+  [ SYNSEM [ LOCAL [ CAT [ HEAD.NTYPE pronoun,
+			   VAL.SPR < [ OPT + ] > ] ,
+		     CONT.HOOK.INDEX.COG-ST in-foc ],
+	     LKEYS.KEYREL.PRED "_pronoun_n_rel" ],
     NEEDINF needcase ].
 
 ; Third-person singular pronoun.
@@ -471,14 +482,15 @@ head-spec-phrase := basic-head-spec-phrase & head-final &
 
 ; No-spec noun-phrase supertype
 nsnp-phrase := basic-bare-np-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.PREMODIFIABLE - ].
+  [ SYNSEM.LOCAL.CAT.VAL.PREMODIFIABLE -,
+    C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
 
 ; Head-covert-specifier phrase.
 head-nospec-phrase := nsnp-phrase &
-  [ HEAD-DTR.SYNSEM.LOCAL
-      [ CAT.VAL.SPR < [ LOCAL.CONT.RELS <! [ PRED #pred ] !> ] >,
-        CONT.HOOK.INDEX.COG-ST type-id ],
-    C-CONT.RELS <! [ PRED #pred & exist_q_rel ] !> ].
+  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.COG-ST type-id ].
+
+pronoun-nsnp-phrase := nsnp-phrase &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NTYPE pronoun ].
 
 head-opt-comp-phrase := basic-head-opt-comp-phrase &
   [ HEAD-DTR.SYNSEM

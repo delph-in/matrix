@@ -11,6 +11,7 @@ comp-head-2 := comp-head-phrase-2.
 
 head-spec := head-spec-phrase.
 head-nospec := head-nospec-phrase.
+pro-nsnp := pronoun-nsnp-phrase.
 head-adj-int := head-adj-int-phrase.
 adj-head-int := adj-head-int-phrase.
 head-opt-comp := head-opt-comp-phrase.

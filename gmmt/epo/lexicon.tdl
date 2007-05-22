@@ -125,7 +125,7 @@ vitr := common-noun-lex &
 
 malsat := adjective-lex &
 	[ STEM < "malsat" >,
-		SYNSEM.LKEYS.KEYREL.PRED '_hungry_adj_rel ].
+		SYNSEM.LKEYS.KEYREL.PRED '_hungry_a_rel ].
 
 bon := adjective-lex &
 	[ STEM < "bon" >,
@@ -259,7 +259,7 @@ preskaux := bare-sc-adverb-lex &
 
 rapid := infl-is-adverb-lex &
 	[ STEM < "rapid" >,
-		SYNSEM.LKEYS.KEYREL.PRED '_fast_adv_rel ].
+		SYNSEM.LKEYS.KEYREL.PRED '_quickly_r_rel ].
 
 subit := infl-is-adverb-lex &
 	[ STEM < "subit" >,
@@ -514,16 +514,16 @@ vund := trans-verb-lex &
 
 cxies := bare-det-lex &
 	[ STEM < "cxies" >,
-		SYNSEM.LKEYS.KEYREL.PRED exist_q_rel ].
+		SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
 
 cxiu-det := infl-det-lex &
 	[ STEM < "cxiu" >,
-		SYNSEM.LKEYS.KEYREL.PRED exist_q_rel ].
+		SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
 
 la := bare-det-lex &
 	[ STEM < "la" >,
 		SYNSEM
-			[ LKEYS.KEYREL.PRED exist_q_rel,
+			[ LKEYS.KEYREL.PRED "exist_q_rel",
 				LOCAL.CAT.VAL.SPEC
 					< [ LOCAL
 						[ CAT.HEAD.CASE case,
@@ -532,17 +532,17 @@ la := bare-det-lex &
 
 mia-det := infl-det-lex &
 	[ STEM < "mia" >,
-		SYNSEM.LKEYS.KEYREL.PRED exist_q_rel ].
+		SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
 ; To be generated with a lexical rule from "mi" later.
 
 nia-det := infl-det-lex &
 	[ STEM < "nia" >,
-		SYNSEM.LKEYS.KEYREL.PRED exist_q_rel ].
+		SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
 ; To be generated with a lexical rule from "ni" later.
 
 tiu-det := infl-det-lex &
 	[ STEM < "tiu" >,
-		SYNSEM.LKEYS.KEYREL.PRED exist_q_rel ].
+		SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
 
 ; PRONOUNS
 
@@ -628,3 +628,4 @@ cxu := interrogative-complementizer-lex-item &
 kaj := conj-lex &
 	[ STEM < "kaj" >,
 		SYNSEM.LKEYS.KEYREL.PRED '_and_coord_rel ].
+
