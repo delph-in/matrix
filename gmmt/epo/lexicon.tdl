@@ -540,9 +540,9 @@ nia-det := infl-det-lex &
 		SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
 ; To be generated with a lexical rule from "ni" later.
 
-tiu-det := infl-det-lex &
-	[ STEM < "tiu" >,
-		SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
+tiu-det := demonstrative-det-lex &
+  [ STEM < "tiu" >,
+    SYNSEM.LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ].
 
 ; PRONOUNS
 

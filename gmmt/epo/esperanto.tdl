@@ -931,7 +931,6 @@ demonstrative_q_rel := reg_quant_rel.
 non+demonstrative_q_rel := reg_quant_rel.
 def_q_rel := reg_quant_rel.
 indef_q_rel := reg_quant_rel.
-exist_q_rel := reg_quant_rel.
 
 ; ###################################################
 
@@ -1110,3 +1109,33 @@ pres-verb-lex-rule := indic-verb-lex-rule &
 fut-verb-lex-rule := indic-verb-lex-rule &
   [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E.TENSE future,
 		   CAT.HEAD.VFORM indicative ]].
+
+;;; Relations for demonstratives
+
+demonstrative_a_rel := predsort.
+proximal+dem_a_rel := demonstrative_a_rel. ;; close to speaker.
+distal+dem_a_rel := demonstrative_a_rel. ;; away from speaker.
+remote+dem_a_rel := distal+dem_a_rel. ;;away from speaker and hearer
+hearer+dem_a_rel := distal+dem_a_rel. ;;near hearer
+
+demonstrative-det-lex := norm-hook-lex-item & basic-zero-arg &
+  [ INFLECTED -,
+    NEEDINF neednum,
+    SYNSEM [ LOCAL [ CAT [ HEAD det & [ MOD < > ],
+			   VAL [ SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #ind & [ COG-ST activ+fam ],
+							      LTOP #larg & #lbl ],
+				 SPR < >,
+				 SUBJ < >,
+				 COMPS < >,
+				 PREMODIFIABLE - ] ],
+		     CONT [ HCONS < ! qeq & 
+				    [ HARG #harg,
+				      LARG #larg ] ! >,
+			    RELS < ! [ PRED "exist_q_rel"],
+				   #lkey & arg1-relation &
+				   [ LBL #lbl,
+				     ARG1 #ind] ! > ] ] ,
+	     LKEYS [ KEYREL quant-relation &
+			    [ ARG0 #ind,
+			      RSTR #harg ],
+		     ALTKEYREL #lkey ] ] ].
