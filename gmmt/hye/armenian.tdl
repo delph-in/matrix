@@ -1,3 +1,4 @@
+;;; -*- Mode: TDL; Package: LKB -*-
 ; Western Armenian in a non-standard plain-ASCII transliteration (which is
 ; actually closer to the Eastern Armenian pronunciation).
 
@@ -544,7 +545,7 @@ subjunc_verb-lex-rule := const-ltol-rule &
     PN-MARKED -,
     SYNSEM #synsem ].
 
-imper_verb-lex-rule := const-ltol-rule &
+imper_verb-lex-rule := const-ltow-rule &
   [ DTR.SYNSEM.LOCAL.CAT.HEAD verb,
     DTR.KE-MARKED -,
     DTR.PN-MARKED -,

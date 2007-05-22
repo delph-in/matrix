@@ -6,5 +6,5 @@
 nom_sg_noun := nom_sg_noun-lex-rule.
 acc_sg_noun := acc_sg_noun-lex-rule.
 
-subjunc_verb := subjunc_verb-lex-rule.
+;subjunc_verb := subjunc_verb-lex-rule.
 imper_verb := imper_verb-lex-rule.

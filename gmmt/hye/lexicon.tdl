@@ -1,3 +1,4 @@
+;;; -*- Mode: TDL; Package: LKB -*-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; NOUNS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -494,9 +495,9 @@ or := decl-comp-lex &
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; the (after or before a vowel)
-n := def-det-lex &
-  [ STEM < "n" >,
-    SYNSEM.LKEYS.KEYREL.PRED exist_q_rel ].
+;n := def-det-lex &
+;  [ STEM < "n" >,
+;    SYNSEM.LKEYS.KEYREL.PRED exist_q_rel ].
 
 ; the (after a consonant)
 e := def-det-lex &
@@ -538,5 +539,3 @@ ev_1 := conj-lex &
   [ STEM < "ev" >,
     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
     CFORM "1" ] .
-
-; 
