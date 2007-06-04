@@ -82,6 +82,8 @@ def update_filter_table(filter):
 
 def update_groups_table(filter):
 
+    print filter.name
+
     global last_group_id
     
     # Get the specification of filters.
@@ -338,6 +340,10 @@ def normalize_gs_helper(gs,finished):
             return_value = [binary_new_gs,finished]
             #print "return value from case 6: " + str(return_value)
 
+
+        else:
+            print gs
+            raise ValueError, "Something is wrong with Group_spec."
 
     #print "return value: " + str(return_value)
     return return_value

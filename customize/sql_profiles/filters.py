@@ -188,6 +188,22 @@ class AlwaysFilter(Filter):
     def apply_filter(self,sent):
         return 0
 
+
+class NegTrigMatchFilter(Filter):
+    # Checking for something that must be present, but if something
+    # else isn't present.
+
+    def __init__(self,name,mrs_id_list,re1,re2,comment,fv = None):
+        Filter.__init__(self,name,mrs_id_list,comment,fv)
+        self.re1 = re1
+        self.re2 = re2
+
+    def apply_filter(self,sent):
+        if (not re.search(self.re1,sent) and re.search(self.re2,sent)):
+            return 1
+        else:
+            return 0
+
 ######################################################################
 # This function will be called in other files which define 
 # and then invoke it.
