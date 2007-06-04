@@ -1,5 +1,7 @@
 #!/usr/local/bin/python2.4
 
+# FIXME:  NotFilter should probably be MatchFilter throughout.
+
 ########################################################################
 # Universal filters.  This file just defines the filter_list of universal
 # filtesr.  See run_u_filters.py for actually running them, and

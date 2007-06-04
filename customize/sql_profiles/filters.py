@@ -109,6 +109,24 @@ class AndNotFilter(Filter):
         else:
             return 1
 
+
+class AndMatchFilter(Filter):        
+    # Checking for something that must be present, but only under
+    # some particular condition.
+    def __init__(self,name,mrs_id_list,re1,re2,comment,fv = None):
+        Filter.__init__(self,name,mrs_id_list,comment,fv)
+        self.re1 = re1
+        self.re2 = re2
+
+    def apply_filter(self,sent):
+        if re.search(self.re1,sent):
+            if re.search(self.re2,sent):
+                return 1
+            else:
+                return 0
+        else:
+            return 1
+
 class NotCopresentFilter(Filter):        
     # Checking for two things that can't be copresent.
 
@@ -146,7 +164,7 @@ class NotFilter(Filter):
         self.re1 = re1
 
     def apply_filter(self,sent):
-        if not re.search(self.re1,sent):
+        if re.search(self.re1,sent):
             return 0
         else:
             return 1
