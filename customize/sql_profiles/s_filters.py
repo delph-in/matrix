@@ -58,7 +58,8 @@ n2_subj_neg = ['neg1','neg2']
 all_ques = ['ques1','ques2','ques3','ques4']
 n1_subj_ques = ['ques1','ques2']
 n2_subj_ques = ['ques3','ques4']
-             
+all = [ 'wo1', 'wo2', 'wo3', 'wo4', 'wo5', 'wo6', 'wo7', 'wo8', 'wo9', 'wo10', 'neg1', 'neg2', 'neg3', 'neg4', 'ques1', 'ques2', 'ques3', 'ques4']
+ 
 filter_list = [
 
 ####################################################################
@@ -565,8 +566,6 @@ filter_list = [
                 fv = ['and',['or','wordorder:svo','wordorder:vos'],'ques:inv','qinvverb:main-aux','auxorder:right']),
 
 
-*** TO HERE ***
-
     # O V S -> O S V
     # S O V -> O S V
     # O V S -> O V S Aux
@@ -574,17 +573,66 @@ filter_list = [
     # O V S -> Aux S O V
     # S O V -> Aux S O V
 
-    if ch('wordorder') == 'ovs' or ch('wordorder') == 'sov':
-      if re.search('ques[12]',mrs_id):
-        if not ((re.search('n2.* n1.* tv',sent) and not re.search('aux',sent)) or \
-                re.search('n2.* tv.* n1.* aux',sent) or \
-                re.search('aux.* n2.* n1.* tv',sent)):
-          return True
-      if re.search('ques[34]',mrs_id):
-        if not ((re.search('n1.* n2.* tv',sent) and not re.search('aux',sent)) or \
-                re.search('n1.* tv.* n2.* aux',sent) or \
-                re.search('aux.* n1.* n2.* tv',sent)):
-          return True
+    MatchFilter(name = "ovs-sov-inv-1",
+                mrs_id_list = n1_subj_ques,
+                re1 = 'n2.* n1.* tv'
+                comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is no auxiliary. Subj = n1",
+                fv = ['and',['or','wordorder:ovs','wordorder:sov'],'ques:inv','qinvverb:main']),
+
+    MatchFilter(name = "ovs-sov-inv-2",
+                mrs_id_list = n2_subj_ques,
+                re1 = 'n1.* n2.* tv'
+                comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is no auxiliary. Subj = n2",
+                fv = ['and',['or','wordorder:ovs','wordorder:sov'],'ques:inv','qinvverb:main']),
+
+    MatchFilter(name = "ovs-sov-inv-3",
+                mrs_id_list = n1_subj_ques,
+                re1 = 'aux.* n1.* n2.* tv'
+                comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is an auxiliary which precedes V/VP. Subj = n1",
+                fv = ['and',['or','wordorder:ovs','wordorder:sov'],'ques:inv','qinvverb:aux','auxorder:left']),
+
+    MatchFilter(name = "ovs-sov-inv-4",
+                mrs_id_list = n2_subj_ques,
+                re1 = 'aux.* n2.* n1.* tv'
+                comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is an auxiliary which precedes V/VP. Subj = n2",
+                fv = ['and',['or','wordorder:ovs','wordorder:sov'],'ques:inv','qinvverb:aux','auxorder:left']),
+
+    MatchFilter(name = "ovs-sov-inv-5",
+                mrs_id_list = n1_subj_ques,
+                re1 = 'n2.* tv.* n1.* aux'
+                comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is an auxiliary which follows V/VP. Subj = n1",
+                fv = ['and',['or','wordorder:ovs','wordorder:sov'],'ques:inv','qinvverb:aux','auxorder:right']),
+
+    MatchFilter(name = "ovs-sov-inv-6",
+                mrs_id_list = n2_subj_ques,
+                re1 = 'n1.* tv.* n2.* aux'
+                comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is an auxiliary which follows V/VP. Subj = n2",
+                fv = ['and',['or','wordorder:ovs','wordorder:sov'],'ques:inv','qinvverb:aux','auxorder:right']),
+
+    MatchFilter(name = "ovs-sov-inv-7",
+                mrs_id_list = n1_subj_ques,
+                re1 = 'aux.* n1.* n2.* tv|n2.* n1.* tv'
+                comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is potentially an auxiliary which precedes V/VP. Subj = n1",
+                fv = ['and',['or','wordorder:ovs','wordorder:sov'],'ques:inv','qinvverb:main-aux','auxorder:left']),
+
+    MatchFilter(name = "ovs-sov-inv-8",
+                mrs_id_list = n2_subj_ques,
+                re1 = 'aux.* n2.* n1.* tv|n1.* n2.* tv',
+                comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is potentially an auxiliary which precedes V/VP. Subj = n2",
+                fv = ['and',['or','wordorder:ovs','wordorder:sov'],'ques:inv','qinvverb:main-aux','auxorder:left']),
+
+    MatchFilter(name = "ovs-sov-inv-9",
+                mrs_id_list = n1_subj_ques,
+                re1 = 'n2.* tv.* n1.* aux|n2.* n1.* tv'
+                comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is potentially an auxiliary which follows V/VP. Subj = n1",
+                fv = ['and',['or','wordorder:ovs','wordorder:sov'],'ques:inv','qinvverb:main-aux','auxorder:right']),
+
+    MatchFilter(name = "ovs-sov-inv-10",
+                mrs_id_list = n2_subj_ques,
+                re1 = 'n1.* tv.* n2.* aux|n1.* n2.* tv',
+                comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is potentially an auxiliary which follows V/VP. Subj = n2",
+                fv = ['and',['or','wordorder:ovs','wordorder:sov'],'ques:inv','qinvverb:main-aux','auxorder:right']),
+
   
     # V S O -> V S O
     # V S O -> Aux S V O (VP auxes won't work in VSO languages)
@@ -593,17 +641,6 @@ filter_list = [
     # O S V -> O V S Aux (VP auxes won't work in OSV languages)
     # O S V -> Aux S O V
 
-    if ch('wordorder') == 'vso' or ch('wordorder') == 'osv':
-      if re.search('ques[12]',mrs_id):
-        if not ((re.search('tv.* n1.* n2',sent) and not re.search('aux',sent)) or \
-                re.search('aux.* n1.* tv.* n2',sent) or \
-                re.search('tv.* n2.* n1.* aux',sent)):
-          return True
-      if re.search('ques[34]',mrs_id):
-        if not ((re.search('tv.* n2.* n1',sent) and not re.search('aux',sent)) or \
-                re.search('aux.* n2.* tv.* n1',sent) or \
-                re.search('tv.* n1.* n2.* aux',sent)):
-          return True
     
     # As for V-final or V-initial languages, the predictions are weird.
     # That is, we get homophony with declaratives.  I think we should just
@@ -614,7 +651,24 @@ filter_list = [
 
 
 ######################################################################
-# filter_lexicon(sent)
+# Filters for lexical properties
+
+# Non-finite forms of verbs.  Note that the requirement that all -nf forms
+# be in the context of an auxiliary is handled as a universal filter.
+
+    AndMatchFilter(name = "non-finite-verb-1",
+                   mrs_id_list = all,
+                   re1 = 'aux.* iv|iv .*aux',
+                   re2 = 'iv-nf',
+                   comment = "If auxiliaries take complements in non-finite form, check whether the other verb is non-finite, if an auxiliary is present.  Note that this assumes at most one non-aux verb, and will need to be updated. Because the non-finite forms are handled separately for each verb, need to do filters separately for iv and tv.",
+                   fv = ['iverb-nonfinite:iv-nf']),
+    AndMatchFilter(name = "non-finite-verb-2",
+                   mrs_id_list = all,
+                   re1 = 'aux.* tv|tv .*aux',
+                   re2 = 'tv-nf',
+                   comment = "If auxiliaries take complements in non-finite form, check whether the other verb is non-finite, if an auxiliary is present.  Note that this assumes at most one non-aux verb, and will need to be updated. Because the non-finite forms are handled separately for each verb, need to do filters separately for iv and tv.",
+                   fv = ['tverb-nonfinite:tv-nf']),
+
 
 # ERB 2006-10-12 The general filters related to this are all in
 # filter_word_order.
