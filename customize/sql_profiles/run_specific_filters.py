@@ -82,7 +82,7 @@ def update_filter_table(filter):
 
 def update_groups_table(filter):
 
-    print filter.name
+    # print filter.name
 
     global last_group_id
     
@@ -213,7 +213,7 @@ def update_group_filter_table(f_id,groups):
 #################################################################
 # normalize_group_spec(group_spec): Takes in the group specification
 # from a filter definition and converts it to disjunctive normal
-# form (and or of ands).
+# form (an or of ands).
 
 def normalize_group_spec(group_spec):
 
@@ -255,7 +255,7 @@ def normalize_group_spec(group_spec):
 
 #################################################################
 # normalize_gs_helper(gs,finished): Recursive helper function for
-# normalize_group_spect().  `finished' tracks whether there was
+# normalize_group_spec().  `finished' tracks whether there was
 # anything to do on this pass.  _FIX_ME_ Perhaps there is some way
 # to do it in one pass?
 
@@ -339,6 +339,30 @@ def normalize_gs_helper(gs,finished):
             binary_new_gs = make_binary_gs(new_gs)
             return_value = [binary_new_gs,finished]
             #print "return value from case 6: " + str(return_value)
+
+        #Operator is 'and'.  Left dtr is 'or'.  Right dtr is 'and'.
+        elif (left_dtr[0] == 'or' and right_dtr[0] == 'and'):
+            finished = False
+            flat_dtr_1 = ['and',left_dtr[1],right_dtr[1],right_dtr[2]]
+            flat_dtr_2 = ['and',left_dtr[2],right_dtr[1],right_dtr[2]]
+            bin_dtr_1 = make_binary_gs(flat_dtr_1)
+            bin_dtr_2 = make_binary_gs(flat_dtr_2)
+            [dtr1,foo] = normalize_gs_helper(bin_dtr_1,False)
+            [dtr2,foo] = normalize_gs_helper(bin_dtr_2,False)
+            new_gs = ['or',dtr1,dtr2]
+            return_value = [new_gs,finished]
+
+        #Operator is 'and'.  Left dtr is 'and'.  Right dtr is 'or'.
+        elif (left_dtr[0] == 'and' and right_dtr[0] == 'or'):
+            finished = False
+            flat_dtr_1 = ['and',right_dtr[1],left_dtr[1],left_dtr[2]]
+            flat_dtr_2 = ['and',right_dtr[2],left_dtr[1],left_dtr[2]]
+            bin_dtr_1 = make_binary_gs(flat_dtr_1)
+            bin_dtr_2 = make_binary_gs(flat_dtr_2)
+            [dtr1,foo] = normalize_gs_helper(bin_dtr_1,False)
+            [dtr2,foo] = normalize_gs_helper(bin_dtr_2,False)
+            new_gs = ['or',dtr1,dtr2]
+            return_value = [new_gs,finished]
 
 
         else:

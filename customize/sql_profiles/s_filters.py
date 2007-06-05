@@ -769,15 +769,15 @@ filter_list = [
     
     # Impossible specifiers.  Since overt specifiers change the MRS, keying off the mrs_id instead of the string.  That is,
     # the regexes are dummies here.
+    # ERB 2007-06-05 Recasting as AlwaysFilter
 
-    NotFilter(name = "n1-no-spr",
+
+    AlwaysFilter(name = "n1-no-spr",
               mrs_id_list = n1_with_det,
-              re1 = ' ',
               comment = "If n1 is defined as having no specifier possible, then no string with an mrs_id corresponding to an overt det on n1 should be grammatical.",
               fv = ['noun1spr:nil']),
-    NotFilter(name = "n2-no-spr",
+    AlwaysFilter(name = "n2-no-spr",
               mrs_id_list = n2_with_det,
-              re1 = ' ',
               comment = "If n2 is defined as having no specifier possible, then no string with an mrs_id corresponding to an overt det on n2 should be grammatical.",
               fv = ['noun2spr:nil']),
     
