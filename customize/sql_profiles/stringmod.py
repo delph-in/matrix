@@ -1,8 +1,13 @@
+#################################################################################
+# StringMod class creates objects which modify strings in semantically
+# neutral ways.  Call by add_permutes.py.
+
 # It's time to update add_permutes so that it handles the non-semantics changing
 # variations.  That is, we will ask the developers to now:
 
 # 1) provide harvester strings
-# 2) modify add_permutes to add the semantically-equivalent variations
+# 2) add instances of StringMod to represent semantically neutral
+#    modifications.
 
 # We should still record non-harvester seed strings in the DB so we can look
 # them up and see if they have already been done.  That way, when someone comes
@@ -45,47 +50,12 @@
 # when we get to more complex clauses (and, ahem, coordination) we
 # might need to count things within the input string.
 
-def create_seed_strings_from_harvester(harv,mrs_tag):
-
-    # Find out which string modifications are appropriate for
-    # the mrs tag in question.  
-
-    mods_list = []
-
-    for mod on string_mods:
-        if mod.applies(mrs_tag)
-        mods_list.append(mod)
-
-    # Call create_seed_strings_helper with the list of
-    # string modifications.
-
-    return create_seed_strings_helper([harv],mods_list)
-
-def create_seed_strings(string_list,mods_list):
-
-    # Base case: If we've reached the end of the mods_list
-    # return the string_list.
-    
-    if mods_list == []:
-        return string_list
-    else:
-        # New string list is the old one appended to the a list
-        # with every string in it modified according to the
-        # first thing on mods_list.
-
-        # This means that every modification is optional and
-        # independent.
-        
-        string_list = string_list + mods_list[0].modify(string_list)
-        return create_seed_strings(string_list,mods_list[1:])
-    
-
 # String modification class.  These have two properties:
 # the list of mrs_ids they apply to (again we want to have a single
 # place to declare that) and the modification that they perform.
-# At the point that these modifications see the strings, they
-# are still strings with white space (and not lists of words).
-# We might want to revisit that at some point.
+
+# The input to the StringMod modifications is a list of strings,
+# where strings in turn are triples of lists: [words, prefixes, suffixes].
 
 class StringMod:
 
@@ -109,12 +79,15 @@ class StringModAddAff:
         return return_strings
 
     def modstring1(self,string):
-        string = self.affix + "- " + string
-        return string
+        [words,prefixes,suffixes] = string
+        prefixes += self.affix + "-"
+        return [words,prefixes,suffixes]
 
     def modstring2(self,string):
-        string = "-" + self.affix + " " + string
-        return string
+        [words,prefixes,suffixes] = string
+        suffixes += "-" + self.affix
+        return [words,prefixes,suffixes]
+
 
 class StringModOne(StringMod)
 
@@ -141,8 +114,9 @@ class StringModAddWord(StringModOne):
         self.word = word
         
     def modstring(self,string):
-        string = word + " " + string
-        return string
+        [words,prefixes,suffixes] = string
+        words += self.word
+        return [words,prefixes,suffixes]
 
 class StringModChangeWord(StringModOne):
 
@@ -156,8 +130,11 @@ class StringModChangeWord(StringModOne):
         self.new_word = new_word
 
     def modstring(self,string):
-        re.sub(self.old_word,self.new_word,string)
-        return string
+        [words,prefixes,suffixes] = string
+        s = glue(words)
+        re.sub(self.old_word,self.new_word,s)
+        words = s.split(' ')
+        return [words,prefixes,suffixes]
 
 class StringModDropWord(StringModOne):
 
@@ -171,8 +148,11 @@ class StringModDropWord(StringModOne):
         self.drop_word
 
     def modstring(self,string):
-        re.sub(self.drop_word,"",string)
-        return string
+        [words,prefixes,affixes] = string
+        s = glue(words)
+        re.sub(self.drop_word,"",s)
+        words = s.split(' ')
+        return [words,prefixes,suffixes]
 
 
 
@@ -187,6 +167,24 @@ string_mods = [ StringModAddWord(g.all,"p-nom"),
                 StringModDropWord(g.ques, "qpart") # assume harvesters for questions have 'qpart'.
                 ]
                 
+
+#############################################################################
+# Helper function.  I bet this is already defined, but can't find it right
+# now
+
+def glue (words):
+
+    string = ''
+    l = len(words)
+    e = l - 2
+    for w in words[0:e]:
+        string += w
+        string += ' '
+    string += words[l]
+
+    return string
+
+                   
 
 
 # Semantically non-neutral variations are:

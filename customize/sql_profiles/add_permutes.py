@@ -32,6 +32,7 @@ import MySQLdb
 import re
 import sys
 from copy import deepcopy
+from stringmod import string_mods
 
 #Connect to MySQL server
 
@@ -45,6 +46,73 @@ cursor = db.cursor()
 ######################################################################
 # A function that takes a list of words and returns a list of lists
 # containing all permutations of those words; no duplicates
+
+def process_harvester(s,mrs_tag):
+
+    # Read in harvester string + mrs_tag and create the other seed
+    # strings in the equivalence class.   This function will
+    # return a list of seed strings (including the harvester string)
+    # and their associated prefixes and suffixes.  This assumes
+    # that all prefixes and suffixes are handled in the StringMod
+    # functions, and all harvester strings are affix-free.
+
+    strings = create_seed_strings_from_harvester(s,mrs_tag)
+
+    # Normalize the seed strings for storage in the DB
+    # Check for any seed strings not already in the DB, and add them.
+
+    new_strings = []
+
+    for s in strings:
+
+        [words,prefixes,affixes] = s
+        words.sort()
+        prefixes.sort()
+        affixes.sort()
+        storage_form = words + prefixes + affixes
+        storage_string = glue(storage_form)
+
+        cursor.execute("SELECT seed_str_value, seed_id FROM seed_str WHERE seed_str_value = %s",(storage_string)) 
+        seed_tuple = cursor.fetchall()
+        
+        if len(seed_tuple) > 1:
+            raise ValueError, "MatrixTDB.seed_str contains more than one seed string with the same form."
+
+        if len(seed_tuple) == 0:
+            # We have a new seed string. Don't even have to check if it's a new
+            # seed-mrs pair.  Just add it to the list.  And add them to the DB.
+            new_strings += s
+            cursor.execute("INSERT INTO seed_str SET seed_str_value = %s",(storage_string))
+            cursor.execute("SELECT LAST_INSERT_ID()")
+            seed_id_tuple = cursor.fetchone()
+            seed_id = seed_id_tuple[0]
+            cursor.execute("INSERT INTO str_lst SET sl_mrs_tag = %s, sl_seed_id = %s",(mrs_tag,seed_id))
+
+        if len(seed_tuple) == 1:
+            # We have an existing seed string.  Check to see if we already have it
+            # paired with this MRS.
+            cursor.execute("SELECT seed_str_value, sl_mrs_tag FROM seed_str, str_lst WHERE sl_seed_id = seed_id AND seed_str_value = %s AND sl_mrs_tag = %s", (storage_string,mrs_tag))
+            mrs_tuple = cursor.fetchall()
+
+            if len(mrs_tuple) > 1:
+                raise ValueError, "A string is paired with the same mrs_tag twice in MatrixTDB.str_lst."
+            
+            if len(mrs_tuple) == 0:
+                # We haven't seen this string with this MRS yet, so add it.
+                new_strings += s
+                cursor.execute("SELECT seed_id FROM seed_str WHERE seed_str_value = %s",(storage_string))
+                seed_id_tuple = cursor.fetchone()
+                seed_id = seed_id_tuple[0]
+                cursor.execute("INSERT INTO str_lst SET sl_mrs_tag = %s, sl_seed_id = %s",(mrs_tag,seed_id))
+
+            # else, we've seen this seed-mrs pair already, so do nothing.
+
+    # Find the unique permutations of each of the seed strings that
+    # weren't already in the DB.
+
+    *** HERE *** 
+
+
 
 def uniq_permute(s):
 
@@ -92,6 +160,58 @@ def uniq_permute(s):
     # Return result
     
     return perms
+
+
+##############################################################################
+# Before we do the permutation, we need to get the master list of seed
+# strings on the basis of the harvester strings.
+# create_seed_strings_from_harvester takes a harvester string and
+# calls create_seed_strings on it to return the semantic equivalence
+# class, including the harvester.
+
+def create_seed_strings_from_harvester(harv,mrs_tag):
+
+    # Find out which string modifications are appropriate for
+    # the mrs tag in question.  
+
+    mods_list = []
+
+    for mod on string_mods:
+        if mod.applies(mrs_tag)
+        mods_list.append(mod)
+
+    # Break harvester string into sequence of words.
+
+    words = harv.split(' ')
+
+    # Call create_seed_strings_helper with the list of
+    # string modifications.
+
+    # Strings are now triples of words, prefixes, suffixes.
+
+    input_string = [words,[],[]]
+
+    return create_seed_strings_helper(input_string,mods_list)
+
+def create_seed_strings(string_list,mods_list):
+
+    # Base case: If we've reached the end of the mods_list
+    # return the string_list.
+    
+    if mods_list == []:
+        return string_list
+    else:
+        # New string list is the old one appended to the a list
+        # with every string in it modified according to the
+        # first thing on mods_list.
+
+        # This means that every modification is optional and
+        # independent.
+        
+        string_list = string_list + mods_list[0].modify(string_list)
+        return create_seed_strings(string_list,mods_list[1:])
+    
+
 
 
 ######################################################################

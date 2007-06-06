@@ -10,12 +10,7 @@
 from filters import NotFilter
 from filters import AndNotFilter
 from filters import MatchFilter
-
-########################################################################
-# Lists of mrs_ids.  _FIX_ME_: Find a way to put these in just one place
-# so that I don't have duplication across the files.
-
-all = [ 'wo1', 'wo2', 'wo3', 'wo4', 'wo5', 'wo6', 'wo7', 'wo8', 'wo9', 'wo10', 'neg1', 'neg2', 'neg3', 'neg4', 'ques1', 'ques2', 'ques3', 'ques4']
+import g
 
 ########################################################################
 # Filters
@@ -95,7 +90,7 @@ filter_list = [AndNotFilter(name = "uf1",
                            comment = "If the question particle appears in the middle of the string, then this is clearly no good. --- Applies to examples with matrix questions.  Different filter will be needed once we do embedded question."),
 
                AndNotFilter(name = "uf14",
-                            mrs_id_list = all,
+                            mrs_id_list = g.all,
                             re1 = '-nf',
                             re2 = 'aux',
                             comment = "So far, the non-finite forms should only appear in the context of an auxiliary.")]
