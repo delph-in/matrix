@@ -45,7 +45,7 @@ cursor = db.cursor()
 
 ######################################################################
 # A function that takes a list of words and returns a list of lists
-# containing all permutations of those words; no duplicates
+# containing all new seed strings to find permutations of.
 
 def process_harvester(s,mrs_tag):
 
@@ -107,44 +107,16 @@ def process_harvester(s,mrs_tag):
 
             # else, we've seen this seed-mrs pair already, so do nothing.
 
-    # Find the unique permutations of each of the seed strings that
-    # weren't already in the DB.
-
-    *** HERE *** 
-
+    # Okay, pass out the list of new_strings and their common mrs_tag so that we can
+    # then run them through the permute functions.
+    
+    return new_strings
 
 
 def uniq_permute(s):
 
-    # Break off prefixes and suffixes, to store them somewhere for
-    # reattaching to each possible word as prefixes or suffixes later.
-    
-    # Break off prefixes and suffixies
-    # _FIX_ME_ This should eventually be a parameter that gets defined
-    # somewhere.
-    
-    s = re.sub('neg-','neg- ',s)
-    s = re.sub('-neg',' -neg',s)
-    s = re.sub('co1-', 'co1- ',s)
-    s = re.sub('-co', ' -co',s)
-    s = re.sub('co2-', 'co2- ',s)
-    string = s.split(' ')
+    [words,prefixes,suffixes] = s
 
-    # Step through string array to separate out bases from prefixes
-    # from suffixes.
-    words = []
-    prefixes = []
-    suffixes = []
-
-    for item in string:
-        if re.search(r'-$',item):
-            prefixes.append(item)
-        else:
-            if re.search(r'^-', item):
-                suffixes.append(item)
-            else:
-                words.append(item)
-    
     # Call permute_outer_helper to actually do the permuting
 
     perms = permute_helper(words)
@@ -153,9 +125,6 @@ def uniq_permute(s):
     # word in each permutation.
 
     perms = add_prefix_suffix(perms,prefixes,suffixes)
-
-    # Glue words back together with white space.
-
 
     # Return result
     
@@ -501,66 +470,83 @@ def glue_on_affixes(affixes,stem,flag):
     return words
 
 #######################################################################
+# get_harvester_strings_to_update(osp_id): given a user-supplied
+# osp_id or 'a', return the list of harvester strings to process.
+# harvester strings are tuples of [string,mrs_tag,osp_id]
+
+def get_harvester_strings_to_update(osp_id):
+
+    harvs = []
+
+    if type(osp_id) == int:
+
+        cursor.execute("SELECT hs_string, hs_mrs_tag FROM harv_str WHERE hs_osp_id = %s",(osp_id))
+        harv_tuples = cursor.fetchal()
+
+        elif osp_id == 'a':
+
+            cursor.execute("SELECT hs_string, hs_mrs_tag FROM harv_str",())
+            harv_tuples = cursor.fetchal()
+
+        else:
+            raise ValueError "Invalid osp_id."
+
+
+    if len(harv_tuples) == 0:
+        raise ValueError "No harvester strings in MatrixTDB for that osp_id."
+        
+
+    for harv_tup in harv_tuples:
+        (hs_string,hs_mrs_tag) = harv_tup
+        harvs.append([hs_string,hs_mrs_tag,osp_id])
+
+    return harvs
+
+
+#######################################################################
 # Main program
 
-# Find all of the string-mrs_id pairs in str_lst
+# Ask the user for a specific osp_id to work from, or 'all'.
+# If specific osp_id, just look for harvester strings belonging to that
+# osp_id.
 
-# Actual plan:
-cursor.execute("SELECT seed_str_value, sl_mrs_tag, mrs_value  FROM seed_str, str_lst,mrs WHERE seed_str.seed_id = str_lst.sl_seed_id AND str_lst.sl_mrs_tag = mrs.mrs_tag")
+osp_id = input("Please input original source profile id (osp_id) for the source\n
+profile you're working with.  If you've updated the string\n
+modifications and wish to update seed strings for all harvester\n
+strings, enter 'a'")
 
-# For testing purposes:
-# cursor.execute("SELECT seed_str_value, sl_mrs_tag, mrs_value  FROM seed_str, str_lst,mrs WHERE seed_str.seed_id = str_lst.sl_seed_id AND str_lst.sl_mrs_tag = mrs.mrs_tag AND seed_str.seed_id = 57")
+harv = get_harvester_strings_to_update(osp_id)
 
+for h in harv:
 
-records = cursor.fetchall()
+    [hs,mrs_tag,osp_id] = h  # Get harvester string and its tag and the osp_id for that string
+    new_strings = process_harvester(hs,mrs_tag) # run stringmods and find all new seed strings for that harvester
 
-# Process each of the returned records:
+    for s in new_strings:
 
-for record in records:
+        perms = uniq_permute(s) # Get all permutations of the string
 
-    string = record[0]
-    mrs_id = record[1]
-    mrs_value = record[2]
+        for p in perms:
+            
+            input = ''
+            for w in perm:
+                input += w
+                input += ' '
+                
+            length = len(perm)
 
-    # Find all (unique) permutations of the string
-
-    perms = uniq_permute(string)
-    #perms = [[string]]
-    
-    # Add item, parse, result records for each permutation
-
-    for perm in perms:
-        # Insert record into item, retrieving i_id
-        # Deliberately leave i_wf uninstantiated, since we need to fill
-        # that in on the basis of the filters
-
-        input = ''
-        for w in perm:
-            input += w
-            input += ' '
+            cursor.execute("INSERT INTO item SET i_input = %s, i_length = %s, i_osp_id = %s, i_author = %s",(input,length,osp_id,"add_permutes.py"))
         
-        length = len(perm)
+            cursor.execute("SELECT LAST_INSERT_ID()")
+            i_id_tuple = cursor.fetchone()
+            i_id = i_id_tuple[0]
 
-        #_FIX_ME_ Find appropriate default values/fill in other column
-        
-        cursor.execute("INSERT INTO item SET i_input = %s, i_length = %s",(input,length))
+            cursor.execute("INSERT INTO parse SET p_i_id = %s, p_readings = 1, p_osp_id = %s",
+                           (i_id,osp_id))
 
-        cursor.execute("SELECT LAST_INSERT_ID()")
-        i_id_tuple = cursor.fetchone()
-        i_id = i_id_tuple[0]
-
-        # _FIX_ME_ Find appropriate default values
-        # Assuming one reading per parse at this point.  Will need to map
-        # multiple ones in when we figure out how many are legit in particular
-        # language.
-        cursor.execute("INSERT INTO parse SET p_i_id = %s, p_readings = 1",
-                       (i_id))
-
-        cursor.execute("SELECT LAST_INSERT_ID()")
-        p_parse = cursor.fetchone()
-        p_parse_id = p_parse[0]
-
-        # _FIX_ME_ Find appropriate default values
-
-        cursor.execute("INSERT INTO result SET r_parse_id = %s, r_mrs_tag = %s, r_mrs = %s", (p_parse_id,mrs_id,mrs_value))
+            cursor.execute("SELECT LAST_INSERT_ID()")
+            p_parse = cursor.fetchone()
+            p_parse_id = p_parse[0]
+            
+            cursor.execute("INSERT INTO result SET r_parse_id = %s, r_mrs = %s, r_osp_id = %s", (p_parse_id,mrs_tag,osp_id))
 

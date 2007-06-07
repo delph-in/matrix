@@ -165,8 +165,8 @@ def check_for_known_mrs_tags(mrs_dict):
             new_mrs_tags += tag
 
     if len(known_mrs_tags) == 0:
-        input =  "All of the mrs_tags you are reporting are new.\n If this is right, press 'y' to continue.  Press any other key to abort."
-        if input != 'y':
+        res  =  input("All of the mrs_tags you are reporting are new.\n If this is right, press 'y' to continue.  Press any other key to abort.")
+        if res != 'y':
             sys.exit
             
     if len(known_mrs_tags) > 0:
@@ -196,16 +196,16 @@ def check_for_known_mrs_tags(mrs_dict):
             sys.exit
         elif len(same_string_tags) > 0 
             print "The following mrs_tags already exist in MatrixTDB with\n the harvester string indicated.\n"
-            input "If you mean to update the MRSs associated with them,\n press 'y' to continue (any other key will abort): "
-            if input != 'y':
+            res = input("If you mean to update the MRSs associated with them,\n press 'y' to continue (any other key will abort): ")
+            if res != 'y':
                 sys.exit
 
             if len(new_mrs_tags) > 0:
                 print "In addition, you are adding hte follwoing new mrs tags:\n"
                 print new_mrs_tags
                 print "\n"
-                print "If this is correct, press 'y' to continue (any other key to abort): "
-                if input != 'y':
+                res = input("If this is correct, press 'y' to continue (any other key to abort): ")
+                if res != 'y':
                     sys.exit
 
     return [new_mrs_tags,known_mrs_tags]
@@ -217,11 +217,11 @@ def check_for_known_mrs_tags(mrs_dict):
 def update_orig_source_profile(lt_id):
 
   user = os.environ['USER']
-  comment = input "Enter a description of this source profile (1000 char max) :"
+  comment = input("Enter a description of this source profile (1000 char max) :")
   t = datetime.datetime.now()
-  timestamp = t.strftime("%Y-%m-%d_%H:%M")
+  timestamp = t.strftime("%Y-%m-%d %H:%M")
 
-  cursor.execute("INSERT INTO orig_source_profile SET osp_developer_name = %s AND osp_prod_date = %s AND osp_orig_lt_id = %s and osp_comment = %s", (user,timestamp,lt_id,comment))
+  cursor.execute("INSERT INTO orig_source_profile SET osp_developer_name = %s, osp_prod_date = %s, osp_orig_lt_id = %s and osp_comment = %s", (user,timestamp,lt_id,comment))
   cursor.execute("SELECT LAST_INSERT_ID()")
   osp_id = cursor.fetchone()[0]
 
@@ -230,11 +230,19 @@ def update_orig_source_profile(lt_id):
 ###########################################################################
 # Update harvester string table with strings and mrs_tags
 
-def update_harv_str(new_mrs_tags,mrs_dict,osp_id):
+def update_harv_str(new_mrs_tags,known_mrs_tags,mrs_dict,osp_id):
 
-  # Assume that harv_str has fields hs_id (auto increment), hs_string, hs_mrs_tag and hs_osp_id
+  # Assume that harv_str has fields hs_id (auto increment), hs_string, hs_mrs_tag and hs_init_osp_id and hs_cur_osp_id
   for tag in new_mrs_tags:
-    cursor.execute("INSERT INTO harv_str SET hs_string = %s, hs_mrs_tag = %s hs_osp_id = %s",(mrs_dict[tag],tag,osp_id))
+    harv = find_string(tag,mrs_dict)
+    cursor.execute("INSERT INTO harv_str SET hs_string = %s,  hs_mrs_tag = %s, hs_init_osp_id = %s, hs_cur_osp_id = %s",(harv,tag,osp_id,osp_id))
+
+  # For known mrs_tags that we're going over, update hs_current_osp_id to correspond to current source profile
+
+  for tag in known_mrs_tags:
+    cursor.execute("UPDATE INTO harv_str SET hs_cur_osp_id = %s WHERE hs_mrs_tag = %s",(osp_id,tag))
+    
+    
 
 ###########################################################################
 # Find string corresponding to a given mrs_tag.  Need a little subroutine
@@ -296,7 +304,7 @@ def update_mrs(mrs_dict,osp_id,new_mrs_tags,known_mrs_tags,dir,timestamp):
     mrs_value = mrs_values[p_id]
     current = 1
     
-    cursor.execute("INSERT INTO mrs SET mrs_tag = %s AND mrs_value = %s AND mrs_current =%s AND mrs_osp_id = %s",(tag,mrs_value,current,osp_id))
+    cursor.execute("INSERT INTO mrs SET mrs_tag = %s, mrs_value = %s, mrs_current =%s, mrs_osp_id = %s",(tag,mrs_value,current,osp_id))
 
   # For known mrs tags, deprecate the most recent entry and then create a new entry 
   
@@ -312,7 +320,7 @@ def update_mrs(mrs_dict,osp_id,new_mrs_tags,known_mrs_tags,dir,timestamp):
     p_id = parse_id[i_id]
     mrs_value = mrs_values[p_id]
 
-    cursor.execute("INSERT INTO mrs SET mrs_tag = %s AND mrs_value = %s AND mrs_current =%s AND mrs_osp_id = %s",(tag,mrs_value,current,osp_id))
+    cursor.execute("INSERT INTO mrs SET mrs_tag = %s, mrs_value = %s, mrs_current =%s, mrs_osp_id = %s",(tag,mrs_value,current,osp_id))
 
 ##########################################################################
 # Reading in tsdb files
@@ -343,7 +351,7 @@ def import_to_sp(itsdb_dir,osp_id):
   items = read_profile_file(itsdb_dir + "item")
 
   for item in items:
-    cursor.execute("INSERT INTO sp_item SET spi_input = %s AND spi_wf = %s AND spi_length = %s AND spi_author = %s AND osp_id = %s",(item[6],item[7],item[8],item[10],osp_id)))
+    cursor.execute("INSERT INTO sp_item SET spi_input = %s, spi_wf = %s, spi_length = %s, spi_author = %s, osp_id = %s",(item[6],item[7],item[8],item[10],osp_id)))
     # We're not using the tsdb i_id because in the general case we'll be adding to a table.
     # So, we need to get the spi_id and link it to the i_id for use in the next load.
     cursor.execute("SELECT LAST_INSERT_ID()")
@@ -353,7 +361,7 @@ def import_to_sp(itsdb_dir,osp_id):
   parses = read_profile_file(itsdb_dir + "parse")
 
   for parse in parses:
-    cursor.execute("INSERT INTO sp_parse SET spp_run_id = %s AND spp_i_id = %s AND spp_readings = %s AND spp_osp_id = %s",(parse[1],spi_ids[parse[2]],parse[3],osp_id))
+    cursor.execute("INSERT INTO sp_parse SET spp_run_id = %s, spp_i_id = %s, spp_readings = %s, spp_osp_id = %s",(parse[1],spi_ids[parse[2]],parse[3],osp_id))
     cursor.execute("SELECT LAST_INSERT_ID()")
     spp_parse_id = cursor.fetchone()[0]
     spp_parse_ids[parse[0]] = spp_parse_id
@@ -374,7 +382,7 @@ def import_to_sp(itsdb_dir,osp_id):
     if mrs_tag_1 != mrs_tag_2:
       raise ValueError, "import_to_sp found inconsistent mrs tags."
 
-    cursor.execute("INSERT INTO sp_result SET spr_parse_id = %s AND spr_mrs = %s AND spr_osp = %s",(spp_parse_ids[result[0]],mrs_tag_1,osp_id))
+    cursor.execute("INSERT INTO sp_result SET spr_parse_id = %s, spr_mrs = %s, spr_osp_id = %s",(spp_parse_ids[result[0]],mrs_tag_1,osp_id))
 
 ##########################################################################
 # Main program
@@ -415,8 +423,10 @@ lt_id = create_or_update_lt(choices)
 [osp_id,timestamp] = update_orig_source_profile(lt_id)
 
 # 4) Update harvester string table with strings and mrs_tags
+# Make hs_current_osp_id reflect current source profile for
+# mrs_tags getting new mrs_values.
 
-update_harv_str(new_mrs_tags,mrs_dict,osp_id)
+update_harv_str(new_mrs_tags,known_mrs_tags,mrs_dict,osp_id)
 
 # 5) Update mrs table with mrs_tags and mrs_values
 
