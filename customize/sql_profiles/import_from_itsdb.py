@@ -75,6 +75,7 @@ import os
 sys.path.append("..")
 
 from validate import validate_choices
+from sql_lg_type import create_or_update_lt
 
 #Connect to MySQL server
 
@@ -154,6 +155,7 @@ def check_for_known_mrs_tags(mrs_dict):
         db_tags += tup[0]
 
     input_tags = mrs_dict.values()
+    input_strings = mrs_dict.keys()
 
     for tag in input_tags:
         if db_tags.count(tag) > 0:
@@ -166,15 +168,47 @@ def check_for_known_mrs_tags(mrs_dict):
         if input != 'y':
             sys.exit
             
-
     if len(known_mrs_tags) > 0:
+
+        # We have some known mrs tags.  Find out if they correspond to
+        # the same string as before or not.
+        same_string_tags = []
+        diff_string_tags = []
+
         for tag in known_mrs_tags:
-    
+            # We can assume that each mrs_tag appears only once
+            # in mrs_dict, because we checked in validate_string_list()
+            newstring = True
+            for string in input_strings:
+                if mrs_dict[string] == tag:
+                    same_string_tags += tag
+                    newstring = False
+                if newstring:
+                    diff_string_tags += tag
 
-###########################################################################
-# Look up LT or create new entries in lt and lt_feat_grp
+        if len(diff_string_tags) > 0:
+            print "The following mrs_tags are already in MatrixTDB with\n different harvester strings associated with them.\n"
+            print diff_string_tags
+            print "\n"
+            print "Either you have inadvertently reused an mrs_tag or you\n should be modifying stringmod.py rather than\n adding harvester strings.\n"
+            print "MatrixTDB has not been modified.\n"
+            sys.exit
+        elif len(same_string_tags) > 0 
+            print "The following mrs_tags already exist in MatrixTDB with\n the harvester string indicated.\n"
+            input "If you mean to update the MRSs associated with them,\n press 'y' to continue (any other key will abort): "
+            if input != 'y':
+                sys.exit
 
-def update_lt_and_lt_feat_grp(choices)
+            if len(new_mrs_tags) > 0:
+                print "In addition, you are adding hte follwoing new mrs tags:\n"
+                print new_mrs_tags
+                print "\n"
+                print "If this is correct, press 'y' to continue (any other key to abort): "
+                if input != 'y':
+                    sys.exit
+
+    return [new_mrs_tags,known_mrs_tags]
+
 
 ###########################################################################
 # Create new row in orig_source_profile
@@ -218,8 +252,12 @@ if len(wrong) > 0:
 [new_mrs_tags,known_mrs_tags] = check_for_known_mrs_tags(mrs_dict)
 
 # 1) Look up or create LT entry in lt and lt_feat_grp
+# This will also make sure that lt_feat_grp is up to date
+# for an existing language type.  Defined in sql_lg_type.py
 
-lt_id = update_lt_and_lt_feat_grp(choices)
+lt_id = create_or_update_lt(choices)
+
+# *** TO HERE ***
 
 # 2) Ask user for comment to store about this source profile
 # 3) Create a new row in orig_source_profile with information
