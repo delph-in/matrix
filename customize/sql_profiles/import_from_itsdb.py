@@ -71,6 +71,7 @@
 import shutil
 import sys
 import os
+import datetime
 
 sys.path.append("..")
 
@@ -213,17 +214,167 @@ def check_for_known_mrs_tags(mrs_dict):
 ###########################################################################
 # Create new row in orig_source_profile
 
-def update_orig_source_profile(lt_id)
+def update_orig_source_profile(lt_id):
+
+  user = os.environ['USER']
+  comment = input "Enter a description of this source profile (1000 char max) :"
+  t = datetime.datetime.now()
+  timestamp = t.strftime("%Y-%m-%d_%H:%M")
+
+  cursor.execute("INSERT INTO orig_source_profile SET osp_developer_name = %s AND osp_prod_date = %s AND osp_orig_lt_id = %s and osp_comment = %s", (user,timestamp,lt_id,comment))
+  cursor.execute("SELECT LAST_INSERT_ID()")
+  osp_id = cursor.fetchone()[0]
+
+  return [osp_id,timestamp]
 
 ###########################################################################
 # Update harvester string table with strings and mrs_tags
 
-def update_harv_str(harv_mrs,osp_id)
+def update_harv_str(new_mrs_tags,mrs_dict,osp_id):
+
+  # Assume that harv_str has fields hs_id (auto increment), hs_string, hs_mrs_tag and hs_osp_id
+  for tag in new_mrs_tags:
+    cursor.execute("INSERT INTO harv_str SET hs_string = %s, hs_mrs_tag = %s hs_osp_id = %s",(mrs_dict[tag],tag,osp_id))
+
+###########################################################################
+# Find string corresponding to a given mrs_tag.  Need a little subroutine
+# here because the strings are the keys in mrs_dict, not vice versa.  Also
+# Note that we can assume that the tags are unique in mrs_dict.values(), i.e.,
+# no two strings have the same tag as their value.
+
+def find_string(tag,mrs_dict):
+
+  strings = mrs_dict.values()
+  for s in strings:
+    if mrs_dict[s] == tag:
+      return True
+
+  raise ValueError, "find_string() was passed an mrs tag with no corresponding string."
 
 ###########################################################################
 # Update mrs table with mrs_tags and mrs_values
+# _FIX_ME_ Still assuming one mrs per harvester string, but this doesn't
+# allow for ambiguous harvester strings, which we will surely arrive at one day.
 
-def update_mrs(harv_mrs,osp_id,new_mrs_tags,known_mrs_tags)
+def update_mrs(mrs_dict,osp_id,new_mrs_tags,known_mrs_tags,dir,timestamp):
+
+  # Read in info from itsdb files
+
+  mrs_values = {}
+  harv_id = {}
+  parse_id = {}
+  input_strings = mrs_dict.keys()
+  
+  i = open(dir + "item", 'r')
+  for l in i.readlines():
+    l = l.strip()
+    l = l.split('@')
+    harv_id[l[6]] = l[0]  #key is i_input, value is i_id
+  i.close()
+
+  p = open(dir + "parse", 'r')
+  for l in p.readlines():
+    l = l.strip()
+    l = l.split('@')
+    parse_id[l[2]] = l[0] #key is p_i_id, value is parse_id
+  p.close()
+
+  r = open(dir + "result", 'r')
+  for l in r.readlines():
+    l = l.strip()
+    l = l.split('@')
+    mrs_values[l[0]] = l[13] #key is parse_id, value is mrs_value
+  r.close()
+       
+  # For new mrs tags, create a new entry in mrs:
+
+  for tag in new_mrs_tags:
+
+    i_input = find_string(tag,mrs_dict)
+    i_id = harv_id[i_input]
+    p_id = parse_id[i_id]
+    mrs_value = mrs_values[p_id]
+    current = 1
+    
+    cursor.execute("INSERT INTO mrs SET mrs_tag = %s AND mrs_value = %s AND mrs_current =%s AND mrs_osp_id = %s",(tag,mrs_value,current,osp_id))
+
+  # For known mrs tags, deprecate the most recent entry and then create a new entry 
+  
+  for tag in known_mrs_tags:
+
+    cursor.execute("SELECT mrs_id FROM mrs WHERE mrs_tag = %s AND mrs_current = 1",(tag))
+    mrs_to_deprecate = cursor.fetchone()[0]
+
+    cursor.execute("UPDATE mrs SET mrs_current = 0 and mrs_date = %s WHERE mrs_id = %s",(timestamp,mrs_to_deprecate))
+
+    i_input = find_string(tag)
+    i_id = harv_id[i_input]
+    p_id = parse_id[i_id]
+    mrs_value = mrs_values[p_id]
+
+    cursor.execute("INSERT INTO mrs SET mrs_tag = %s AND mrs_value = %s AND mrs_current =%s AND mrs_osp_id = %s",(tag,mrs_value,current,osp_id))
+
+##########################################################################
+# Reading in tsdb files
+
+def read_profile_file(file):
+  contents = []
+  f = open(file, 'r')
+  for l in f.readlines():
+    l = l.strip()
+    contents.append(l.split('@'))
+  f.close()
+  return contents
+
+
+##########################################################################
+# Finally, we're ready to import the data from the itsdb profile into
+# MatrixTDB.
+
+# 6) Add rows from tsdb_profile/item,parse,result to sp_item,
+# sp_parse, sp_result, replacing mrs in sp_result with mrs_tag
+
+def import_to_sp(itsdb_dir,osp_id):
+
+  spi_ids = {}
+  spp_ids = {}
+  spr_ids = {}
+
+  items = read_profile_file(itsdb_dir + "item")
+
+  for item in items:
+    cursor.execute("INSERT INTO sp_item SET spi_input = %s AND spi_wf = %s AND spi_length = %s AND spi_author = %s AND osp_id = %s",(item[6],item[7],item[8],item[10],osp_id)))
+    # We're not using the tsdb i_id because in the general case we'll be adding to a table.
+    # So, we need to get the spi_id and link it to the i_id for use in the next load.
+    cursor.execute("SELECT LAST_INSERT_ID()")
+    spi_id = cursor.fetchone()[0]
+    spi_ids[item[0]] = spi_id
+
+  parses = read_profile_file(itsdb_dir + "parse")
+
+  for parse in parses:
+    cursor.execute("INSERT INTO sp_parse SET spp_run_id = %s AND spp_i_id = %s AND spp_readings = %s AND spp_osp_id = %s",(parse[1],spi_ids[parse[2]],parse[3],osp_id))
+    cursor.execute("SELECT LAST_INSERT_ID()")
+    spp_parse_id = cursor.fetchone()[0]
+    spp_parse_ids[parse[0]] = spp_parse_id
+
+  results = read_profile_file(itsdb_dir + "result")
+
+  for result in results:
+
+    # We need to get the mrs_tag to insert instead of the mrs_value.  Since we have two ways to access the mrs_tag
+    # (through the value and the harvester string), try both and see if they match, by way of error checking.
+    mrs_value = result[13]
+    cursor.execute = ("SELECT mrs_tag FROM mrs WHERE mrs_value = %s AND mrs_current = 1",(mrs_value))
+    mrs_tag_1 = cursor.fetchone()[0]
+    cursor.execute = ("SELECT spi_input FROM sp_item, sp_parse WHERE spi_id = spp_i_id AND spp_parse_id = %s",(spp_parse_ids[result[0]]))
+    harv_string = cursor.fetchone()[0]
+    mrs_tag_2 = mrs_dict[harv_string]
+
+    if mrs_tag_1 != mrs_tag_2:
+      raise ValueError, "import_to_sp found inconsistent mrs tags."
+
+    cursor.execute("INSERT INTO sp_result SET spr_parse_id = %s AND spr_mrs = %s AND spr_osp = %s",(spp_parse_ids[result[0]],mrs_tag_1,osp_id))
 
 ##########################################################################
 # Main program
@@ -257,28 +408,27 @@ if len(wrong) > 0:
 
 lt_id = create_or_update_lt(choices)
 
-# *** TO HERE ***
-
 # 2) Ask user for comment to store about this source profile
 # 3) Create a new row in orig_source_profile with information
 # about this source profile.  
 
-osp_id = update_orig_source_profile(lt_id)
+[osp_id,timestamp] = update_orig_source_profile(lt_id)
 
 # 4) Update harvester string table with strings and mrs_tags
 
-update_harv_str(harv_mrs,osp_id)
+update_harv_str(new_mrs_tags,mrs_dict,osp_id)
 
 # 5) Update mrs table with mrs_tags and mrs_values
 
-update_mrs(harv_mrs,osp_id,new_mrs_tags,known_mrs_tags)
+update_mrs(harv_mrs,osp_id,new_mrs_tags,known_mrs_tags,itsdb_dir,timestamp)
 
 # 6) Add rows from tsdb_profile/item,parse,result to sp_item,
 # sp_parse, sp_result, replacing mrs in sp_result with mrs_tag
 
-import_to_sp_item(itsdb_dir + "item",osp_id)
-import_to_sp_parse(itsdb_dir + "parse",osp_id)
-import_to_sp_result(itsdb_dir + "result",osp_id)
+import_to_sp(itsdb_dir,"item",osp_id)
+import_to_sp(itsdb_dir,"parse",osp_id)
+import_to_sp(itsdb_dir,"result",osp_id)
+
 
 # 7) Print out osp_orig_src_prof_id for user to use as input
 # to add_permutes.py
