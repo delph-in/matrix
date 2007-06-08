@@ -510,7 +510,7 @@ def get_harvester_strings_to_update(osp_id):
 # If specific osp_id, just look for harvester strings belonging to that
 # osp_id.
 
-osp_id = input("Please input original source profile id (osp_id) for the source\n
+osp_id = raw_input("Please input original source profile id (osp_id) for the source\n
 profile you're working with.  If you've updated the string\n
 modifications and wish to update seed strings for all harvester\n
 strings, enter 'a'")

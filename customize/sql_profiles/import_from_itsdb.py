@@ -72,11 +72,13 @@ import shutil
 import sys
 import os
 import datetime
+import MySQLdb
 
 sys.path.append("..")
 
 from validate import validate_choices
 from sql_lg_type import create_or_update_lt
+from utils import read_choices
 
 #Connect to MySQL server
 
@@ -165,9 +167,9 @@ def check_for_known_mrs_tags(mrs_dict):
             new_mrs_tags += tag
 
     if len(known_mrs_tags) == 0:
-        res  =  input("All of the mrs_tags you are reporting are new.\n If this is right, press 'y' to continue.  Press any other key to abort.")
+        res  =  raw_input("All of the mrs_tags you are reporting are new.\n If this is right, press 'y' to continue.  Press any other key to abort. ")
         if res != 'y':
-            sys.exit
+            sys.exit()
             
     if len(known_mrs_tags) > 0:
 
@@ -193,20 +195,20 @@ def check_for_known_mrs_tags(mrs_dict):
             print "\n"
             print "Either you have inadvertently reused an mrs_tag or you\n should be modifying stringmod.py rather than\n adding harvester strings.\n"
             print "MatrixTDB has not been modified.\n"
-            sys.exit
-        elif len(same_string_tags) > 0 
+            sys.exit()
+        elif len(same_string_tags) > 0:
             print "The following mrs_tags already exist in MatrixTDB with\n the harvester string indicated.\n"
-            res = input("If you mean to update the MRSs associated with them,\n press 'y' to continue (any other key will abort): ")
+            res = raw_input("If you mean to update the MRSs associated with them,\n press 'y' to continue (any other key will abort): ")
             if res != 'y':
-                sys.exit
+                sys.exit()
 
             if len(new_mrs_tags) > 0:
                 print "In addition, you are adding hte follwoing new mrs tags:\n"
                 print new_mrs_tags
                 print "\n"
-                res = input("If this is correct, press 'y' to continue (any other key to abort): ")
+                res = raw_input("If this is correct, press 'y' to continue (any other key to abort): ")
                 if res != 'y':
-                    sys.exit
+                    sys.exit()
 
     return [new_mrs_tags,known_mrs_tags]
 
@@ -217,7 +219,7 @@ def check_for_known_mrs_tags(mrs_dict):
 def update_orig_source_profile(lt_id):
 
   user = os.environ['USER']
-  comment = input("Enter a description of this source profile (1000 char max) :")
+  comment = raw_input("Enter a description of this source profile (1000 char max) :")
   t = datetime.datetime.now()
   timestamp = t.strftime("%Y-%m-%d %H:%M")
 
@@ -351,7 +353,7 @@ def import_to_sp(itsdb_dir,osp_id):
   items = read_profile_file(itsdb_dir + "item")
 
   for item in items:
-    cursor.execute("INSERT INTO sp_item SET spi_input = %s, spi_wf = %s, spi_length = %s, spi_author = %s, osp_id = %s",(item[6],item[7],item[8],item[10],osp_id)))
+    cursor.execute("INSERT INTO sp_item SET spi_input = %s, spi_wf = %s, spi_length = %s, spi_author = %s, spi_osp_id = %s",(item[6],item[7],item[8],item[10],osp_id))
     # We're not using the tsdb i_id because in the general case we'll be adding to a table.
     # So, we need to get the spi_id and link it to the i_id for use in the next load.
     cursor.execute("SELECT LAST_INSERT_ID()")
@@ -391,20 +393,21 @@ def import_to_sp(itsdb_dir,osp_id):
 
 itsdb_dir = sys.argv[1]
 harv_mrs = sys.argv[2]
-choices = sys.argv[3]
+choices_file = sys.argv[3]
 
 if not (os.path.exists(itsdb_dir) and
         os.path.exists(itsdb_dir + "item") and
         os.path.exists(itsdb_dir + "parse") and
-        os.path.exists(itsdb_dir + "result"))
-    raise ValueError "The first argument must be the path to a directory containing an [incr tsdb()] profile, ending in /."
+        os.path.exists(itsdb_dir + "result")):
+    raise ValueError, "The first argument must be the path to a directory containing an [incr tsdb()] profile, ending in /."
 
 mrs_dict = validate_string_list(harv_mrs,itsdb_dir)
 
-wrong = validate_choices(choices)
+wrong = validate_choices(choices_file)
+choices = read_choices(choices_file)
 
 if len(wrong) > 0:
-    raise ValueError "Invalid choices file."
+    raise ValueError, "Invalid choices file."
 
 # Check for presence of known mrs tags, and query user
 

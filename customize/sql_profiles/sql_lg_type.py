@@ -110,8 +110,10 @@ def check_lt_for_grp_ids(grp_ids,choices):
 
 def check_existing_lt_for_completeness(lt_id,choices):
 
+    print "lt_id is " + str(lt_id)
+
     for f in choices.keys():
-        cursor.execute("SELECT fg_grp_id FROM feat_grp, lt_feat_grp WHERE fg_feat = %s AND fg_value = %s AND lfg_grp_id = fg_grp_id AND lfg_lt_id = %s",(f,v,lt_id))
+        cursor.execute("SELECT fg_grp_id FROM feat_grp, lt_feat_grp WHERE fg_feat = %s AND fg_value = %s AND lfg_grp_id = fg_grp_id AND lfg_lt_id = %s",(f,choices[f],lt_id))
         res = cursor.fetchall()
         if len(res) == 0: # we found a fv pair which isn't already in lfg_feat_grp for the lt.
             return False
@@ -128,11 +130,14 @@ def lt_exists(choices):
     # is consistent (i.e., subsumed by choices)
 
     cursor.execute("SELECT lt_id FROM lt")
-    lt_ids = cursor.fetchall
+    lt_ids = cursor.fetchall()
 
+    print "lt_ids is: " + str(lt_ids)
+    
     for lt_id_tuple in lt_ids:  
         lt_id = lt_id_tuple[0]
 
+# *** PROBLEM IS HERE ***
 
         cursor.execute("SELECT lfg_grp_id FROM lt_feat_grp WHERE lfg_lt_id = %s",(lt_id))
         grp_ids = cursor.fetchall()
@@ -143,7 +148,7 @@ def lt_exists(choices):
             # also in that lt.
 
             if check_existing_lt_for_completeness(grp_ids,choices):
-                return True
+                return lt_id
 
     return False
         
@@ -232,8 +237,12 @@ def create_or_update_lt(choices):
     update_feat_group(choices)
         
     # Add a row for the language type
-    
-    cursor.execute("INSERT INTO lt SET lt_origin = %s", sys.argv[2])
+
+    res = ''
+    while (res != 'r' or res != 'p'):
+        res = input("Is this language type randomly generated? [r/p] ")
+
+    cursor.execute("INSERT INTO lt SET lt_origin = %s", res)
     cursor.execute("SELECT LAST_INSERT_ID()")
     lt_id = cursor.fetchone()[0]
 
