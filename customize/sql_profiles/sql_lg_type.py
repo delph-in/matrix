@@ -60,8 +60,37 @@
 import sys
 import MySQLdb
 sys.path.append("..")
-from utils import read_choices
 
+######################################################################
+# read_choices(choices_file)
+#   Read the choices in choices_file and return them in a dict
+#   but don't store language, sentence1 or sentence2
+
+def read_choices(choices_file):
+  choices = {}
+
+  try:
+    if type(choices_file) == str:
+      f = open(choices_file, 'r')
+    else:
+      f = choices_file
+      f.seek(0)
+
+    lines = f.readlines()
+
+    if type(choices_file) == str:
+      f.close()
+
+    for l in lines:
+      l = l.strip()
+      if l:
+        (a, v) = l.split('=')
+        if a != 'language' and a != 'sentence1' and a != 'sentence2':
+            choices[a] = v
+  except:
+    pass
+
+  return choices
 ###############################################################
 # check_lt_for_fvs(fvs,choices): Check whether all of the feature-value
 # pairs in a group are represented in the language type.
@@ -110,8 +139,6 @@ def check_lt_for_grp_ids(grp_ids,choices):
 
 def check_existing_lt_for_completeness(lt_id,choices):
 
-    print "lt_id is " + str(lt_id)
-
     for f in choices.keys():
         cursor.execute("SELECT fg_grp_id FROM feat_grp, lt_feat_grp WHERE fg_feat = %s AND fg_value = %s AND lfg_grp_id = fg_grp_id AND lfg_lt_id = %s",(f,choices[f],lt_id))
         res = cursor.fetchall()
@@ -132,12 +159,10 @@ def lt_exists(choices):
     cursor.execute("SELECT lt_id FROM lt")
     lt_ids = cursor.fetchall()
 
-    print "lt_ids is: " + str(lt_ids)
+    # print "lt_ids is: " + str(lt_ids)
     
     for lt_id_tuple in lt_ids:  
         lt_id = lt_id_tuple[0]
-
-# *** PROBLEM IS HERE ***
 
         cursor.execute("SELECT lfg_grp_id FROM lt_feat_grp WHERE lfg_lt_id = %s",(lt_id))
         grp_ids = cursor.fetchall()
@@ -147,7 +172,7 @@ def lt_exists(choices):
             # Now make sure that all of the information in choices is
             # also in that lt.
 
-            if check_existing_lt_for_completeness(grp_ids,choices):
+            if check_existing_lt_for_completeness(lt_id,choices):
                 return lt_id
 
     return False
@@ -180,13 +205,18 @@ def singleton_group_exists(f,v):
 
 def update_feat_group(choices):
 
+    # print "choices is " + str(choices)
+
     for f in choices.keys():
         v = choices[f]
         if not singleton_group_exists(f,v):
             cursor.execute("SELECT MAX(fg_grp_id) FROM feat_grp")
             fg_grp_id = cursor.fetchone()[0]
-            fg_grp_id = fg_grp_id + 1
-            cursor.execute("INSERT INTO feat_group SET fg_grp_id = %s and fg_feat = %s and fg_value = %s",(fg_grp_id,f,v))
+            if type(fg_grp_id) == long:
+                fg_grp_id = fg_grp_id + 1
+            else:
+                fg_grp_id = 1
+            cursor.execute("INSERT INTO feat_grp SET fg_grp_id = %s, fg_feat = %s, fg_value = %s",(fg_grp_id,f,v))
 
 ###############################################################
 # update_lt_in_lfg(choices,lt_id): Update the lt_feat_grp table to
@@ -200,10 +230,12 @@ def update_lt_in_lfg(choices,lt_id):
     cursor.execute("SELECT fg_grp_id FROM feat_grp")
     g_ids = cursor.fetchall()
 
-    for g_id in g_ids:
+    for tup in g_ids:
+
+        # print tup
 
         # Strip off extra layer of parens
-        g_id = g_id[0]
+        g_id = tup[0]
 
         # Get all of the feature-value pairs in a group
         cursor.execute("SELECT fg_feat, fg_value FROM feat_grp WHERE fg_grp_id = %s",(g_id))
@@ -239,8 +271,8 @@ def create_or_update_lt(choices):
     # Add a row for the language type
 
     res = ''
-    while (res != 'r' or res != 'p'):
-        res = input("Is this language type randomly generated? [r/p] ")
+    while (res != 'r' and res != 'p'):
+        res = raw_input("Is this language type randomly generated? [r/p] ")
 
     cursor.execute("INSERT INTO lt SET lt_origin = %s", res)
     cursor.execute("SELECT LAST_INSERT_ID()")

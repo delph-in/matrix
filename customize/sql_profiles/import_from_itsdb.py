@@ -78,7 +78,7 @@ sys.path.append("..")
 
 from validate import validate_choices
 from sql_lg_type import create_or_update_lt
-from utils import read_choices
+from sql_lg_type import read_choices
 
 #Connect to MySQL server
 
@@ -155,16 +155,16 @@ def check_for_known_mrs_tags(mrs_dict):
     db_tags = []
 
     for tup in mrs_tuple:
-        db_tags += tup[0]
+        db_tags.append(tup[0])
 
     input_tags = mrs_dict.values()
     input_strings = mrs_dict.keys()
 
     for tag in input_tags:
         if db_tags.count(tag) > 0:
-            known_mrs_tags += tag
+            known_mrs_tags.append(tag)
         else:
-            new_mrs_tags += tag
+            new_mrs_tags.append(tag)
 
     if len(known_mrs_tags) == 0:
         res  =  raw_input("All of the mrs_tags you are reporting are new.\n If this is right, press 'y' to continue.  Press any other key to abort. ")
@@ -179,15 +179,21 @@ def check_for_known_mrs_tags(mrs_dict):
         diff_string_tags = []
 
         for tag in known_mrs_tags:
-            # We can assume that each mrs_tag appears only once
-            # in mrs_dict, because we checked in validate_string_list()
-            newstring = True
-            for string in input_strings:
-                if mrs_dict[string] == tag:
-                    same_string_tags += tag
-                    newstring = False
-                if newstring:
-                    diff_string_tags += tag
+
+          s1 = find_string(tag,mrs_dict)
+          cursor.execute("SELECT hs_string FROM harv_str WHERE hs_mrs_tag = %s",(tag))
+
+          s2_tup = cursor.fetchone()
+
+          if s2_tup:
+            s2 = s2_tup[0]
+          else:
+            s2 = ''
+          
+          if s1 == s2:
+            same_string_tags.append(tag)
+          else:
+            diff_string_tags.append(tag)
 
         if len(diff_string_tags) > 0:
             print "The following mrs_tags are already in MatrixTDB with\n different harvester strings associated with them.\n"
@@ -219,11 +225,13 @@ def check_for_known_mrs_tags(mrs_dict):
 def update_orig_source_profile(lt_id):
 
   user = os.environ['USER']
-  comment = raw_input("Enter a description of this source profile (1000 char max) :")
+  comment = raw_input("Enter a description of this source profile (1000 char max): ")
   t = datetime.datetime.now()
   timestamp = t.strftime("%Y-%m-%d %H:%M")
 
-  cursor.execute("INSERT INTO orig_source_profile SET osp_developer_name = %s, osp_prod_date = %s, osp_orig_lt_id = %s and osp_comment = %s", (user,timestamp,lt_id,comment))
+ # this is how it should be, but osp_comment doesn't exist right now.
+ # cursor.execute("INSERT INTO orig_source_profile SET osp_developer_name = %s, osp_prod_date = %s, osp_orig_lt_id = %s and osp_comment = %s", (user,timestamp,lt_id,comment))
+  cursor.execute("INSERT INTO orig_source_profile SET osp_developer_name = %s, osp_prod_date = %s, osp_orig_lt_id = %s", (user,timestamp,lt_id))
   cursor.execute("SELECT LAST_INSERT_ID()")
   osp_id = cursor.fetchone()[0]
 
@@ -235,6 +243,8 @@ def update_orig_source_profile(lt_id):
 def update_harv_str(new_mrs_tags,known_mrs_tags,mrs_dict,osp_id):
 
   # Assume that harv_str has fields hs_id (auto increment), hs_string, hs_mrs_tag and hs_init_osp_id and hs_cur_osp_id
+
+  # print new_mrs_tags
   for tag in new_mrs_tags:
     harv = find_string(tag,mrs_dict)
     cursor.execute("INSERT INTO harv_str SET hs_string = %s,  hs_mrs_tag = %s, hs_init_osp_id = %s, hs_cur_osp_id = %s",(harv,tag,osp_id,osp_id))
@@ -242,7 +252,7 @@ def update_harv_str(new_mrs_tags,known_mrs_tags,mrs_dict,osp_id):
   # For known mrs_tags that we're going over, update hs_current_osp_id to correspond to current source profile
 
   for tag in known_mrs_tags:
-    cursor.execute("UPDATE INTO harv_str SET hs_cur_osp_id = %s WHERE hs_mrs_tag = %s",(osp_id,tag))
+    cursor.execute("UPDATE harv_str SET hs_cur_osp_id = %s WHERE hs_mrs_tag = %s",(osp_id,tag))
     
     
 
@@ -254,10 +264,11 @@ def update_harv_str(new_mrs_tags,known_mrs_tags,mrs_dict,osp_id):
 
 def find_string(tag,mrs_dict):
 
-  strings = mrs_dict.values()
+  strings = mrs_dict.keys()
   for s in strings:
+    # print s, mrs_dict[s]
     if mrs_dict[s] == tag:
-      return True
+      return s
 
   raise ValueError, "find_string() was passed an mrs tag with no corresponding string."
 
@@ -317,12 +328,12 @@ def update_mrs(mrs_dict,osp_id,new_mrs_tags,known_mrs_tags,dir,timestamp):
 
     cursor.execute("UPDATE mrs SET mrs_current = 0 and mrs_date = %s WHERE mrs_id = %s",(timestamp,mrs_to_deprecate))
 
-    i_input = find_string(tag)
+    i_input = find_string(tag,mrs_dict)
     i_id = harv_id[i_input]
     p_id = parse_id[i_id]
     mrs_value = mrs_values[p_id]
 
-    cursor.execute("INSERT INTO mrs SET mrs_tag = %s, mrs_value = %s, mrs_current =%s, mrs_osp_id = %s",(tag,mrs_value,current,osp_id))
+    cursor.execute("INSERT INTO mrs SET mrs_tag = %s, mrs_value = %s, mrs_current = 1, mrs_osp_id = %s",(tag,mrs_value,osp_id))
 
 ##########################################################################
 # Reading in tsdb files
@@ -348,7 +359,6 @@ def import_to_sp(itsdb_dir,osp_id):
 
   spi_ids = {}
   spp_ids = {}
-  spr_ids = {}
 
   items = read_profile_file(itsdb_dir + "item")
 
@@ -366,25 +376,37 @@ def import_to_sp(itsdb_dir,osp_id):
     cursor.execute("INSERT INTO sp_parse SET spp_run_id = %s, spp_i_id = %s, spp_readings = %s, spp_osp_id = %s",(parse[1],spi_ids[parse[2]],parse[3],osp_id))
     cursor.execute("SELECT LAST_INSERT_ID()")
     spp_parse_id = cursor.fetchone()[0]
-    spp_parse_ids[parse[0]] = spp_parse_id
+    spp_ids[parse[0]] = spp_parse_id
 
   results = read_profile_file(itsdb_dir + "result")
 
   for result in results:
 
+    print result
+    print result[0]
+    print spp_ids[result[0]]
+
     # We need to get the mrs_tag to insert instead of the mrs_value.  Since we have two ways to access the mrs_tag
     # (through the value and the harvester string), try both and see if they match, by way of error checking.
+
+
+    ### PROBLEM IS HERE ###
+    # For some reason, both of the following SELECT statements are returning () when
+    # run this way, though when put directly in MySQL, they work.
+    
     mrs_value = result[13]
+    print "SELECT mrs_tag FROM mrs WHERE mrs_value = '%s' AND mrs_current = 1" % mrs_value
     cursor.execute = ("SELECT mrs_tag FROM mrs WHERE mrs_value = %s AND mrs_current = 1",(mrs_value))
     mrs_tag_1 = cursor.fetchone()[0]
-    cursor.execute = ("SELECT spi_input FROM sp_item, sp_parse WHERE spi_id = spp_i_id AND spp_parse_id = %s",(spp_parse_ids[result[0]]))
+
+    cursor.execute = ("SELECT spi_input FROM sp_item, sp_parse WHERE spi_id = spp_i_id AND spp_parse_id = %s",(spp_ids[result[0]]))
     harv_string = cursor.fetchone()[0]
     mrs_tag_2 = mrs_dict[harv_string]
 
-    if mrs_tag_1 != mrs_tag_2:
-      raise ValueError, "import_to_sp found inconsistent mrs tags."
+    #if mrs_tag_1 != mrs_tag_2:
+    #  raise ValueError, "import_to_sp found inconsistent mrs tags."
 
-    cursor.execute("INSERT INTO sp_result SET spr_parse_id = %s, spr_mrs = %s, spr_osp_id = %s",(spp_parse_ids[result[0]],mrs_tag_1,osp_id))
+    cursor.execute("INSERT INTO sp_result SET spr_parse_id = %s, spr_mrs = %s, spr_osp_id = %s",(spp_parse_ids[result[0]],mrs_tag_2,osp_id))
 
 ##########################################################################
 # Main program
@@ -433,15 +455,12 @@ update_harv_str(new_mrs_tags,known_mrs_tags,mrs_dict,osp_id)
 
 # 5) Update mrs table with mrs_tags and mrs_values
 
-update_mrs(harv_mrs,osp_id,new_mrs_tags,known_mrs_tags,itsdb_dir,timestamp)
+update_mrs(mrs_dict,osp_id,new_mrs_tags,known_mrs_tags,itsdb_dir,timestamp)
 
 # 6) Add rows from tsdb_profile/item,parse,result to sp_item,
 # sp_parse, sp_result, replacing mrs in sp_result with mrs_tag
 
-import_to_sp(itsdb_dir,"item",osp_id)
-import_to_sp(itsdb_dir,"parse",osp_id)
-import_to_sp(itsdb_dir,"result",osp_id)
-
+import_to_sp(itsdb_dir,osp_id)
 
 # 7) Print out osp_orig_src_prof_id for user to use as input
 # to add_permutes.py
