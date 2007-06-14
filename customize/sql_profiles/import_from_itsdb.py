@@ -204,6 +204,7 @@ def check_for_known_mrs_tags(mrs_dict):
             sys.exit()
         elif len(same_string_tags) > 0:
             print "The following mrs_tags already exist in MatrixTDB with\n the harvester string indicated.\n"
+            print same_string_tags
             res = raw_input("If you mean to update the MRSs associated with them,\n press 'y' to continue (any other key will abort): ")
             if res != 'y':
                 sys.exit()
@@ -382,31 +383,21 @@ def import_to_sp(itsdb_dir,osp_id):
 
   for result in results:
 
-    print result
-    print result[0]
-    print spp_ids[result[0]]
-
     # We need to get the mrs_tag to insert instead of the mrs_value.  Since we have two ways to access the mrs_tag
     # (through the value and the harvester string), try both and see if they match, by way of error checking.
 
-
-    ### PROBLEM IS HERE ###
-    # For some reason, both of the following SELECT statements are returning () when
-    # run this way, though when put directly in MySQL, they work.
-    
     mrs_value = result[13]
-    print "SELECT mrs_tag FROM mrs WHERE mrs_value = '%s' AND mrs_current = 1" % mrs_value
-    cursor.execute = ("SELECT mrs_tag FROM mrs WHERE mrs_value = %s AND mrs_current = 1",(mrs_value))
+    cursor.execute("SELECT mrs_tag FROM mrs WHERE mrs_value = %s AND mrs_current = 1",(mrs_value))
     mrs_tag_1 = cursor.fetchone()[0]
 
-    cursor.execute = ("SELECT spi_input FROM sp_item, sp_parse WHERE spi_id = spp_i_id AND spp_parse_id = %s",(spp_ids[result[0]]))
+    cursor.execute("SELECT spi_input FROM sp_item, sp_parse WHERE spi_id = spp_i_id AND spp_parse_id = %s",(spp_ids[result[0]]))
     harv_string = cursor.fetchone()[0]
     mrs_tag_2 = mrs_dict[harv_string]
 
     #if mrs_tag_1 != mrs_tag_2:
     #  raise ValueError, "import_to_sp found inconsistent mrs tags."
 
-    cursor.execute("INSERT INTO sp_result SET spr_parse_id = %s, spr_mrs = %s, spr_osp_id = %s",(spp_parse_ids[result[0]],mrs_tag_2,osp_id))
+    cursor.execute("INSERT INTO sp_result SET spr_parse_id = %s, spr_mrs = %s, spr_osp_id = %s",(spp_ids[result[0]],mrs_tag_2,osp_id))
 
 ##########################################################################
 # Main program
@@ -439,7 +430,7 @@ if len(wrong) > 0:
 # This will also make sure that lt_feat_grp is up to date
 # for an existing language type.  Defined in sql_lg_type.py
 
-lt_id = create_or_update_lt(choices)
+lt_id = create_or_update_lt(choices,cursor)
 
 # 2) Ask user for comment to store about this source profile
 # 3) Create a new row in orig_source_profile with information
@@ -465,7 +456,7 @@ import_to_sp(itsdb_dir,osp_id)
 # 7) Print out osp_orig_src_prof_id for user to use as input
 # to add_permutes.py
 
-print "The original source profile id for your profile is: " + osp_id
+print "The original source profile id for your profile is: " + str(osp_id)
 
 # 8) Print out message about updating g.py to map include ne
 # mrs_tags in the mrs_tag sets they belong in, and updating
@@ -473,12 +464,13 @@ print "The original source profile id for your profile is: " + osp_id
 # stringmod.py as well.
 
 if len(known_mrs_tags) > 0:
-    print "The following mrs_tags now have updated mrs_values in MatrixTDB:\n" + known_mrs_tags
+    print "The following mrs_tags now have updated mrs_values in MatrixTDB:\n"
+    print known_mrs_tags
 
 if len(new_mrs_tags) > 0:
-    print "The following mrs_tags and their corresponding strings and values have been added to MatrixTDB:\n" + new_mrs_tags + "\n"
+    print "The following mrs_tags and their corresponding strings and values have been added to MatrixTDB:\n" + str(new_mrs_tags) + "\n"
     print "Be sure to map them to the right sets of mrs_tags\n in g.py (for proper functioning of existing filters).\n"
     print "Be sure to update s_filters.py, u_filters.py and\n potentially stringmod.py to reflect your new strings."
-    print "Then run add_permutes.py with the osp_id " + osp_id + "."
+    print "Then run add_permutes.py with the osp_id " + str(osp_id) + "."
     print "Then run run_u_filters.py and run_specific_filters.py."
 

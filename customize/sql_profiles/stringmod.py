@@ -50,6 +50,31 @@
 # when we get to more complex clauses (and, ahem, coordination) we
 # might need to count things within the input string.
 
+# g.py defines global variables for classes of mrs tags.
+
+import g
+import re
+from copy import deepcopy
+
+#############################################################################
+# Helper function.  I bet this is already defined, but can't find it right
+# now
+
+def glue(words):
+
+    string = ''
+    l = len(words)
+    e = l - 2
+    for w in words[0:e]:
+        string += w
+        string += ' '
+    string += words[l-1]
+
+    return string
+
+
+
+#############################################################################
 # String modification class.  These have two properties:
 # the list of mrs_ids they apply to (again we want to have a single
 # place to declare that) and the modification that they perform.
@@ -65,31 +90,34 @@ class StringMod:
     def applies(self,mrs_id):
         return mrs_id in self.mrs_id_list
 
-class StringModAddAff:
+class StringModAddAff(StringMod):
+
 
     def __init__(self,mrs_id_list,affix):
         StringMod.__init__(self,mrs_id_list)
         self.affix = affix
+        self.name = affix
 
     def modify(self,string_list):
         return_strings = []
-        for string on string_list:
-            return_strings += self.modstring1(string)
-            return_strings += self.modstring2(string)
+        for string in string_list:
+            return_strings.append(self.modstring1(deepcopy(string)))
+            return_strings.append(self.modstring2(deepcopy(string)))
         return return_strings
 
     def modstring1(self,string):
         [words,prefixes,suffixes] = string
-        prefixes += self.affix + "-"
+        prefixes.append(self.affix + "-")
+
         return [words,prefixes,suffixes]
 
     def modstring2(self,string):
         [words,prefixes,suffixes] = string
-        suffixes += "-" + self.affix
+        suffixes.append("-" + self.affix)
         return [words,prefixes,suffixes]
 
 
-class StringModOne(StringMod)
+class StringModOne(StringMod):
 
     def __init__(self,mrs_id_list):
         StringMod.__init__(self,mrs_id_list)
@@ -99,8 +127,8 @@ class StringModOne(StringMod)
 
     def modify(self,string_list):
         return_strings = []
-        for string on string_list:
-            return_strings += self.modstring(string)
+        for string in string_list:
+            return_strings.append(self.modstring(deepcopy(string)))
         return return_strings
 
     def modstring(self,string):
@@ -112,10 +140,12 @@ class StringModAddWord(StringModOne):
     def __init__(self,mrs_id_list,word):
         StringModOne.__init__(self,mrs_id_list)
         self.word = word
+        self.name = word
         
     def modstring(self,string):
+
         [words,prefixes,suffixes] = string
-        words += self.word
+        words.append(self.word)
         return [words,prefixes,suffixes]
 
 class StringModChangeWord(StringModOne):
@@ -145,10 +175,10 @@ class StringModDropWord(StringModOne):
 
     def __init__(self,mrs_id_list,drop_word):
         StringModOne.__init__(self,mrs_id_list)
-        self.drop_word
+        self.drop_word = drop_word
 
     def modstring(self,string):
-        [words,prefixes,affixes] = string
+        [words,prefixes,suffixes] = string
         s = glue(words)
         re.sub(self.drop_word,"",s)
         words = s.split(' ')
@@ -167,22 +197,6 @@ string_mods = [ StringModAddWord(g.all,"p-nom"),
                 StringModDropWord(g.ques, "qpart") # assume harvesters for questions have 'qpart'.
                 ]
                 
-
-#############################################################################
-# Helper function.  I bet this is already defined, but can't find it right
-# now
-
-def glue (words):
-
-    string = ''
-    l = len(words)
-    e = l - 2
-    for w in words[0:e]:
-        string += w
-        string += ' '
-    string += words[l]
-
-    return string
 
                    
 

@@ -32,7 +32,9 @@ import MySQLdb
 import re
 import sys
 from copy import deepcopy
+from copy import copy
 from stringmod import string_mods
+from stringmod import glue
 
 #Connect to MySQL server
 
@@ -81,7 +83,7 @@ def process_harvester(s,mrs_tag):
         if len(seed_tuple) == 0:
             # We have a new seed string. Don't even have to check if it's a new
             # seed-mrs pair.  Just add it to the list.  And add them to the DB.
-            new_strings += s
+            new_strings.append(s)
             cursor.execute("INSERT INTO seed_str SET seed_str_value = %s",(storage_string))
             cursor.execute("SELECT LAST_INSERT_ID()")
             seed_id_tuple = cursor.fetchone()
@@ -99,7 +101,7 @@ def process_harvester(s,mrs_tag):
             
             if len(mrs_tuple) == 0:
                 # We haven't seen this string with this MRS yet, so add it.
-                new_strings += s
+                new_strings.append(s)
                 cursor.execute("SELECT seed_id FROM seed_str WHERE seed_str_value = %s",(storage_string))
                 seed_id_tuple = cursor.fetchone()
                 seed_id = seed_id_tuple[0]
@@ -109,7 +111,9 @@ def process_harvester(s,mrs_tag):
 
     # Okay, pass out the list of new_strings and their common mrs_tag so that we can
     # then run them through the permute functions.
-    
+
+    #print new_strings
+
     return new_strings
 
 
@@ -145,9 +149,9 @@ def create_seed_strings_from_harvester(harv,mrs_tag):
 
     mods_list = []
 
-    for mod on string_mods:
-        if mod.applies(mrs_tag)
-        mods_list.append(mod)
+    for mod in string_mods:
+        if mod.applies(mrs_tag):
+            mods_list.append(mod)
 
     # Break harvester string into sequence of words.
 
@@ -157,10 +161,13 @@ def create_seed_strings_from_harvester(harv,mrs_tag):
     # string modifications.
 
     # Strings are now triples of words, prefixes, suffixes.
+    # Make this a list containing one such string, since
+    # helper functions expect to be working with a list of
+    # such objects.
 
-    input_string = [words,[],[]]
+    input_string = [[words,[],[]]]
 
-    return create_seed_strings_helper(input_string,mods_list)
+    return create_seed_strings(input_string,mods_list)
 
 def create_seed_strings(string_list,mods_list):
 
@@ -177,7 +184,9 @@ def create_seed_strings(string_list,mods_list):
         # This means that every modification is optional and
         # independent.
         
-        string_list = string_list + mods_list[0].modify(string_list)
+        string_list_copy = deepcopy(string_list)
+        mods_list[0].modify(string_list_copy)
+        string_list = string_list + string_list_copy
         return create_seed_strings(string_list,mods_list[1:])
     
 
@@ -440,7 +449,7 @@ def glue_on_affixes(affixes,stem,flag):
 
     if len(affixes) == 0:
         print "Error: We shouldn't call glue_on_affixes if we have no affixes."
-        sys.exit
+        sys.exit()
 
     affix_perms = permute_helper(affixes)
 
@@ -467,6 +476,7 @@ def glue_on_affixes(affixes,stem,flag):
             w += stem
             words.append(w)
 
+    print "Output of glue_on_affixes is" + str(word)
     return words
 
 #######################################################################
@@ -480,25 +490,31 @@ def get_harvester_strings_to_update(osp_id):
 
     if type(osp_id) == int:
 
-        cursor.execute("SELECT hs_string, hs_mrs_tag FROM harv_str WHERE hs_osp_id = %s",(osp_id))
-        harv_tuples = cursor.fetchal()
+        cursor.execute("SELECT hs_string, hs_mrs_tag FROM harv_str WHERE hs_cur_osp_id = %s",(osp_id))
+        harv_tuples = cursor.fetchall()
 
-        elif osp_id == 'a':
+    elif osp_id == 'a':
 
-            cursor.execute("SELECT hs_string, hs_mrs_tag FROM harv_str",())
-            harv_tuples = cursor.fetchal()
+        cursor.execute("SELECT hs_string, hs_mrs_tag,hs_cur_osp_id FROM harv_str",())
+        harv_tuples = cursor.fetchall()
 
-        else:
-            raise ValueError "Invalid osp_id."
+    else:
+        raise ValueError, "Invalid osp_id."
 
 
     if len(harv_tuples) == 0:
-        raise ValueError "No harvester strings in MatrixTDB for that osp_id."
+        raise ValueError, "No harvester strings in MatrixTDB for that osp_id."
         
 
-    for harv_tup in harv_tuples:
-        (hs_string,hs_mrs_tag) = harv_tup
-        harvs.append([hs_string,hs_mrs_tag,osp_id])
+    if type(osp_id) == int:
+        for harv_tup in harv_tuples:
+            (hs_string,hs_mrs_tag) = harv_tup
+            harvs.append([hs_string,hs_mrs_tag,osp_id])
+
+    elif osp_id == 'a':
+        for harv_tup in harv_tuples:
+            (hs_string,hs_mrs_tag,osp_id) = harv_tup
+            harvs.append([hs_string,hs_mrs_tag,osp_id])
 
     return harvs
 
@@ -510,43 +526,45 @@ def get_harvester_strings_to_update(osp_id):
 # If specific osp_id, just look for harvester strings belonging to that
 # osp_id.
 
-osp_id = raw_input("Please input original source profile id (osp_id) for the source\n
-profile you're working with.  If you've updated the string\n
-modifications and wish to update seed strings for all harvester\n
-strings, enter 'a'")
+def main():
+    osp_id = raw_input("Please input original source profile id (osp_id) for the source\n profile you're working with.  If you've updated the string\n modifications and wish to update seed strings for all harvester\n strings, enter 'a' ")
 
-harv = get_harvester_strings_to_update(osp_id)
+    harv = get_harvester_strings_to_update(osp_id)
 
-for h in harv:
+    for h in harv:
 
-    [hs,mrs_tag,osp_id] = h  # Get harvester string and its tag and the osp_id for that string
-    new_strings = process_harvester(hs,mrs_tag) # run stringmods and find all new seed strings for that harvester
+        [hs,mrs_tag,osp_id] = h  # Get harvester string and its tag and the osp_id for that string
+        new_strings = process_harvester(hs,mrs_tag) # run stringmods and find all new seed strings for that harvester
 
-    for s in new_strings:
-
-        perms = uniq_permute(s) # Get all permutations of the string
-
-        for p in perms:
+        for s in new_strings:
             
-            input = ''
-            for w in perm:
-                input += w
-                input += ' '
+            perms = uniq_permute(s) # Get all permutations of the string
+
+            for p in perms:
+            
+                input = ''
+                for w in p:
+                    input += w
+                    input += ' '
                 
-            length = len(perm)
+                length = len(p)
 
-            cursor.execute("INSERT INTO item SET i_input = %s, i_length = %s, i_osp_id = %s, i_author = %s",(input,length,osp_id,"add_permutes.py"))
+                cursor.execute("INSERT INTO item SET i_input = %s, i_length = %s, i_osp_id = %s, i_author = %s",(input,length,osp_id,"add_permutes.py"))
         
-            cursor.execute("SELECT LAST_INSERT_ID()")
-            i_id_tuple = cursor.fetchone()
-            i_id = i_id_tuple[0]
+                cursor.execute("SELECT LAST_INSERT_ID()")
+                i_id_tuple = cursor.fetchone()
+                i_id = i_id_tuple[0]
 
-            cursor.execute("INSERT INTO parse SET p_i_id = %s, p_readings = 1, p_osp_id = %s",
-                           (i_id,osp_id))
+                cursor.execute("INSERT INTO parse SET p_i_id = %s, p_readings = 1, p_osp_id = %s",
+                               (i_id,osp_id))
 
-            cursor.execute("SELECT LAST_INSERT_ID()")
-            p_parse = cursor.fetchone()
-            p_parse_id = p_parse[0]
+                cursor.execute("SELECT LAST_INSERT_ID()")
+                p_parse = cursor.fetchone()
+                p_parse_id = p_parse[0]
             
-            cursor.execute("INSERT INTO result SET r_parse_id = %s, r_mrs = %s, r_osp_id = %s", (p_parse_id,mrs_tag,osp_id))
+                cursor.execute("INSERT INTO result SET r_parse_id = %s, r_mrs = %s, r_osp_id = %s", (p_parse_id,mrs_tag,osp_id))
+
+
+if __name__ == "__main__":
+  main()
 
