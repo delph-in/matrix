@@ -112,8 +112,6 @@ def process_harvester(s,mrs_tag):
     # Okay, pass out the list of new_strings and their common mrs_tag so that we can
     # then run them through the permute functions.
 
-    #print new_strings
-
     return new_strings
 
 
@@ -166,8 +164,9 @@ def create_seed_strings_from_harvester(harv,mrs_tag):
     # such objects.
 
     input_string = [[words,[],[]]]
+    return_strings = create_seed_strings(input_string,mods_list)
 
-    return create_seed_strings(input_string,mods_list)
+    return return_strings
 
 def create_seed_strings(string_list,mods_list):
 
@@ -185,8 +184,8 @@ def create_seed_strings(string_list,mods_list):
         # independent.
         
         string_list_copy = deepcopy(string_list)
-        mods_list[0].modify(string_list_copy)
-        string_list = string_list + string_list_copy
+        more_strings =  mods_list[0].modify(string_list_copy)
+        string_list = string_list + more_strings
         return create_seed_strings(string_list,mods_list[1:])
     
 
@@ -476,7 +475,6 @@ def glue_on_affixes(affixes,stem,flag):
             w += stem
             words.append(w)
 
-    print "Output of glue_on_affixes is" + str(word)
     return words
 
 #######################################################################
