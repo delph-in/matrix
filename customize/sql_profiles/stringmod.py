@@ -64,7 +64,7 @@ def glue(words):
 
     string = ''
     l = len(words)
-    e = l - 2
+    e = l - 1
     for w in words[0:e]:
         string += w
         string += ' '
@@ -99,10 +99,13 @@ class StringModAddAff(StringMod):
         self.name = affix
 
     def modify(self,string_list):
+        print self.name
         return_strings = []
         for string in string_list:
+            print "Input is " + str(string)
             return_strings.append(self.modstring1(deepcopy(string)))
             return_strings.append(self.modstring2(deepcopy(string)))
+            print "Output is " + str(return_strings)
         return return_strings
 
     def modstring1(self,string):
@@ -128,7 +131,9 @@ class StringModOne(StringMod):
     def modify(self,string_list):
         return_strings = []
         for string in string_list:
-            return_strings.append(self.modstring(deepcopy(string)))
+            result = self.modstring(deepcopy(string))
+            if len(result) > 0:
+                return_strings.append(result)
         return return_strings
 
     def modstring(self,string):
@@ -143,9 +148,11 @@ class StringModAddWord(StringModOne):
         self.name = word
         
     def modstring(self,string):
-
+        print self.name
         [words,prefixes,suffixes] = string
+        print "Input is " + str(words)
         words.append(self.word)
+        print "Output is " + str(words)
         return [words,prefixes,suffixes]
 
 class StringModChangeWord(StringModOne):
@@ -158,12 +165,16 @@ class StringModChangeWord(StringModOne):
         StringModOne.__init__(self,mrs_id_list)
         self.old_word = old_word
         self.new_word = new_word
+        self.name = old_word + " to " + new_word
 
     def modstring(self,string):
         [words,prefixes,suffixes] = string
+        print self.name
+        print "Input is " + str(words)
         s = glue(words)
-        re.sub(self.old_word,self.new_word,s)
-        words = s.split(' ')
+        t = re.sub(self.old_word,self.new_word,s)
+        words = t.split(' ')
+        print "Output is " + str(words)
         return [words,prefixes,suffixes]
 
 class StringModDropWord(StringModOne):
@@ -176,13 +187,22 @@ class StringModDropWord(StringModOne):
     def __init__(self,mrs_id_list,drop_word):
         StringModOne.__init__(self,mrs_id_list)
         self.drop_word = drop_word
+        self.name = "drop " + drop_word
 
     def modstring(self,string):
         [words,prefixes,suffixes] = string
-        s = glue(words)
-        re.sub(self.drop_word,"",s)
-        words = s.split(' ')
-        return [words,prefixes,suffixes]
+        print self.name
+        print "Input is " + str(words)
+        c = words.count(self.drop_word)
+        i = 0
+        while i < c:
+            words.remove(self.drop_word)
+            i += 1
+        print "Output is " + str(words)
+        if c > 0:
+            return [words,prefixes,suffixes]
+        else:
+            return []
 
 
 
@@ -194,7 +214,8 @@ string_mods = [ StringModAddWord(g.all,"p-nom"),
                 StringModChangeWord(g.trans,"tv","tv-nf"),
                 StringModChangeWord(g.intrans,"iv","iv-nf"),
                 StringModDropWord(g.neg, "neg"),  # assume harvesters for negation have 'neg' as word.
-                StringModDropWord(g.ques, "qpart") # assume harvesters for questions have 'qpart'.
+                StringModDropWord(g.ques, "qpart"), # assume harvesters for questions have 'qpart'.
+                StringModChangeWord(["foo"],"bar","foo") # for testing
                 ]
                 
 

@@ -227,6 +227,8 @@ def update_orig_source_profile(lt_id):
 
   user = os.environ['USER']
   comment = raw_input("Enter a description of this source profile (1000 char max): ")
+  if comment == "":
+    raise ValueError, "You must enter a comment."
   t = datetime.datetime.now()
   timestamp = t.strftime("%Y-%m-%d %H:%M")
 
