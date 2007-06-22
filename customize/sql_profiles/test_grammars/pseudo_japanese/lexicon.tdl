@@ -1,7 +1,3 @@
-neg := neg-adv-lex &
-  [ STEM < "neg" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ] .
-
 co_1 := conj-lex &
   [ STEM < "co" >,
     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
@@ -9,7 +5,7 @@ co_1 := conj-lex &
 
 ;;; Nouns
 
-n1 := obl-spr-noun-lex &
+n1 := noun-lex &
   [ STEM < "n1" >,
     SYNSEM.LKEYS.KEYREL.PRED "_n1_n_rel" ] .
 
@@ -19,28 +15,25 @@ n2 := noun-lex &
 
 ;;; Verbs
 
-iv := finite-intrans-verb-lex &
+iv := intransitive-verb-lex &
   [ STEM < "iv" >,
     SYNSEM.LKEYS.KEYREL.PRED "_iv_v_rel" ] .
 
-iv-nf := non-finite-intrans-verb-lex &
-  [ STEM < "iv-nf" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_iv_v_rel" ] .
-
-tv := finite-trans-verb-lex &
+tv := transitive-verb-lex &
   [ STEM < "tv" >,
     SYNSEM.LKEYS.KEYREL.PRED "_tv_v_rel" ] .
 
-tv-nf := non-finite-trans-verb-lex &
-  [ STEM < "tv-nf" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_tv_v_rel" ] .
-
-;;; Auxiliaries
-
-aux := subj-raise-aux-no-sem &
-  [ STEM < "aux" > ] .
-
 ;;; Other
+
+;;; Case-marking adpositions
+
+subj-marker := case-marker-p-lex &
+  [ STEM < "p-nom" >,
+    SYNSEM.LOCAL.CAT.HEAD.FORM p-nom ] .
+
+obj-marker := case-marker-p-lex &
+  [ STEM < "p-acc" >,
+    SYNSEM.LOCAL.CAT.HEAD.FORM p-acc ] .
 
 ;;; Determiners
 
@@ -48,7 +41,6 @@ det := determiner-lex &
   [ STEM < "det" >,
     SYNSEM.LKEYS.KEYREL.PRED "_det_q_rel" ] .
 
-sel-adv := neg-adv-lex &
-  [ STEM < "sel-adv" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ] .
+qpart := qpart-lex-item &
+  [ STEM < "qpart" > ] .
 

@@ -2,6 +2,6 @@
 
 
 
-(defparameter *grammar-version* "pseudo_english (Matrix-10-2006)")
+(defparameter *grammar-version* "pseudo_japanese (Matrix-10-2006)")
 
 
