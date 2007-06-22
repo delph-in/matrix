@@ -274,7 +274,9 @@ def create_or_update_lt(choices,cursor):
     while (res != 'r' and res != 'p'):
         res = raw_input("Is this language type  [r]andomly generated or [p]urpose-built? [r/p] ")
 
-    cursor.execute("INSERT INTO lt SET lt_origin = %s", res)
+    comment = raw_input("Enter a short comment describing this language type: ")
+
+    cursor.execute("INSERT INTO lt SET lt_origin = %s, lt_comment = %s", (res,comment))
     cursor.execute("SELECT LAST_INSERT_ID()")
     lt_id = cursor.fetchone()[0]
 
