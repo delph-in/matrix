@@ -509,7 +509,7 @@ ids = cursor.fetchall()
 for id in ids:
     key = id[0]
     #print "Working on " + str(key)
-    cursor.execute("SELECT r_mrs_tag, i_input FROM result,parse,item WHERE result.r_result_id = %s AND result.r_parse_id = parse.p_parse_id AND parse.p_i_id = item.i_id", (key))
+    cursor.execute("SELECT r_mrs, i_input FROM result,parse,item WHERE result.r_result_id = %s AND result.r_parse_id = parse.p_parse_id AND parse.p_i_id = item.i_id", (key))
     (mrs_id, string) = cursor.fetchone()
 
     filter_values = filter_one_result(mrs_id,string,filter_list)

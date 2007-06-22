@@ -75,7 +75,7 @@ filter_list = [
                           fv = ['or', 'wordorder:sov','wordorder:svo','wordorder:osv','wordorder:v-final']),
 
     AndNotFilter(name = "s-v-order2",
-                 mrs_id_list = g.n1_subj_ques
+                 mrs_id_list = g.n1_subj_ques,
                  re1 = 'qpart',
                  re2 = '(tv|iv).*n1',
                  comment = "If the word order for the language has subjects before verbs, and n1 is the subject, check that n1 precedes the verb.  Special case for ques1 and ques2 where we want to check that we're not in the inversion case, which needs to be worried about separately.",

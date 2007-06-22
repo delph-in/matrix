@@ -205,8 +205,9 @@ class NegTrigMatchFilter(Filter):
             return 0
 
 ######################################################################
-# This function will be called in other files which define 
+# This function will be called in other files which define filters
 # and then invoke it.
+# 6/19/07 This seems to be used only for the universal filters.
 
 def filter_results(filter_list,filter_type):
 
@@ -221,6 +222,8 @@ def filter_results(filter_list,filter_type):
     #Check whether all of the filters already correspond to fields
     #in the DB, and if not, create those fields.
 
+    # FIX ME: There's code in run_specific_filters.py that does
+    # something similar.
 
     for f in filter_list:
 
@@ -233,43 +236,52 @@ def filter_results(filter_list,filter_type):
     
 
     #Get list of ids from DB.  
+    #6/19/07 We have 21 million records in result now, so we can't load them all at once.
+    
+    #6/20/07 Last night the process stopped at item 6,900,001.  Restarting
 
-    cursor.execute("SELECT r_result_id FROM result")
+    #6/20/07 We seem to be missing entries for 6,900,002, and possibly a couple
+    #of others.
+
+    cursor.execute("SELECT r_result_id FROM result LIMIT 8052044, 100000")
     ids = cursor.fetchall()
+    limit =  9608642
 
-    #print ids
+    while ids != ():
 
-    #`ids' is now a tuple containing elements for each item in the
-    #relevant table.  Each of those elements is a tuple which contains
-    #just the r_result_id.
+        print "Now working results " + str(limit) + " through " + str(limit + 1000000)
 
-    #Based on the r_result_id, we are now going to get the string
-    #and mrs_id.
+        #`ids' is now a tuple containing elements for each item in a 100,000 slice of the
+        #relevant table.  Each of those elements is a tuple which contains
+        #just the r_result_id.
 
-    for id in ids:
-        key = id[0]
-        #print "Working on " + str(key)
-        cursor.execute("SELECT r_mrs_tag, i_input FROM result,parse,item WHERE result.r_result_id = %s AND result.r_parse_id = parse.p_parse_id AND parse.p_i_id = item.i_id", (key))
-        (mrs_id, string) = cursor.fetchone()
+        #Based on the r_result_id, we are now going to get the string
+        #and mrs_id.
 
-        filter_values = filter_one_result(mrs_id,string,filter_list)
-        #print filter_values
+        for id in ids:
+            key = id[0]
+            cursor.execute("SELECT r_mrs, i_input FROM result,parse,item WHERE result.r_result_id = %s AND result.r_parse_id = parse.p_parse_id AND parse.p_i_id = item.i_id", (key))
+            (mrs_id, string) = cursor.fetchone()
 
-        #Should do error checking here: Are all of the values legit?
+            filter_values = filter_one_result(mrs_id,string,filter_list)
 
-        for filter_key in filter_values.keys():
-            cursor.execute("SELECT filter_id FROM filter WHERE filter_name = %s",
-                           (filter_key))
-            f_id = cursor.fetchall()
-            if len(f_id) > 1:
-                print "Error: Multiple filters with the same name." + filter_key
-            else:
-                value = filter_values[filter_key]
-                if not value == 2:
-                    f_id = f_id[0][0]
-                    #print "INSERT INTO res_fltr SET rf_res_id = %s, rf_fltr_id = %s, rf_value = %s", (key, f_id, filter_values[filter_key])
-                    cursor.execute("INSERT INTO res_fltr SET rf_res_id = %s, rf_fltr_id = %s, rf_value = %s",
-                                   (key, f_id, filter_values[filter_key]))
+            #Should do error checking here: Are all of the values legit?
 
+            for filter_key in filter_values.keys():
+                cursor.execute("SELECT filter_id FROM filter WHERE filter_name = %s",
+                               (filter_key))
+                f_id = cursor.fetchall()
+                if len(f_id) > 1:
+                    print "Error: Multiple filters with the same name." + filter_key
+                else:
+                    value = filter_values[filter_key]
+                    if not value == 2:
+                        f_id = f_id[0][0]
+                        cursor.execute("INSERT INTO res_fltr SET rf_res_id = %s, rf_fltr_id = %s, rf_value = %s",
+                                       (key, f_id, filter_values[filter_key]))
+
+        cursor.execute("SELECT r_result_id FROM result LIMIT %s, 100000", (limit))
+        ids = cursor.fetchall()
+        limit += 100000
     
 
