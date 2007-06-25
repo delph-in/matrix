@@ -17,6 +17,7 @@
 import MySQLdb
 import sys
 from filters import filter_one_result
+from sql_lg_type import update_lt_in_lfg
 
 # Edit this line to import different filters.
 
@@ -53,6 +54,49 @@ def update_tables_for_filters(filter_list):
         # groups_filter, and reinstantiate.
         update_group_filter_table(f_id,groups)
 
+        # Make sure that all of the existing language types
+        # are updated to see the new groups added, if any.
+
+        update_all_lts_in_lfg
+
+
+###################################################################
+# Every time we add filters and feature groups, we should make
+# sure that lt_feat_grp is up to date, too.
+
+def update_all_lts_in_lfg():
+
+        cursor.execute("SELECT lt_id FROM lt")
+        lt_ids = cursor.fetchall()
+
+        for lt_id in lt_ids:
+            lt_id[0]
+
+            choices = create_choices_from_lt_id(lt_id)
+            update_lt_in_lfg(choices,lt_id,cursor)
+
+################################################################
+# Sometimes we want to get a choices object out of the lt_feat_grp
+# table, instead of a file
+
+def create_choices_from_lt_id(lt_id):
+
+    choices = {}
+
+    cursor.execute("SELECT lfg_grp_id FROM lt_feat_grp WHERE lfg_lt_id = %s",(lt_id))
+    fg_ids = cursor.fetchall()
+
+    for fg_id in fg_ids:
+
+        cursor.execute("SELECT fg_feat, fg_value FROM feat_grp WHERE fg_grp_id = %s",(fg_id[0]))
+        fvs = cursor.fetchall()
+        if len(fvs) == 1:
+
+            #This is a singleton group, so add the info to choices
+            fv = fvs[0]
+            choices[fv[0]] = fv[1]
+
+    return choices
 
 #################################################################
 # update_filter_table(filter): Make sure the filter itself is
@@ -500,7 +544,9 @@ update_tables_for_filters(filter_list)
 # we're moving the non universally ungrammatical strings to another
 # table.
 
-cursor.execute("SELECT r_result_id FROM result WHERE r_wf = 1")
+# ERB 2007-06-22 Picking up where I left off in a run that crashed.
+
+cursor.execute("SELECT r_result_id FROM result WHERE r_wf = 1  and r_result_id > 17800922")
 ids = cursor.fetchall()
 
 # _FIX_ME_: The following is copied from filters.filter_results.
