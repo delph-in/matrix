@@ -38,8 +38,9 @@ if [ $? = 1 ]
 then
     echo ""
     echo "You must first go to ~/public_html on homer and create the target"
-    echo "directory \"$1\" and a subdirectory of \"$1\" called"
-    echo "\"matrix-core\"."
+    echo "directory \"$1\", a subdirectory of \"$1\" called"
+    echo "\"matrix-core\", and subdirectories of \"matrix-core\" called"
+    echo "\"lkb\" and \"pet\"."
     exit
 fi
 
@@ -48,7 +49,15 @@ then
     if [ $copylocal ]
     then
         mkdir -p "$cptarg/matrix-core"
+        mkdir -p "$cptarg/matrix-core/lkb"
+        mkdir -p "$cptarg/matrix-core/pet"
     fi
-    matrixfiles=`echo ../*.* ../README ../lkb ../pet ../modules/basic_script | sed 's/..\/my_language.tdl//g' | sed 's/..\/CVS//g'`
-    $cpcmd -r $matrixfiles "$cptarg/matrix-core"
+    matrixfiles=`echo ../*.* ../README ../modules/basic_script | sed 's/..\/my_language.tdl//g' | sed 's/..\/CVS//g'`
+    $cpcmd $matrixfiles "$cptarg/matrix-core"
+
+    lkbfiles=`echo ../lkb/* | sed 's/..\/lkb\/CVS//g'`
+    $cpcmd $lkbfiles "$cptarg/matrix-core/lkb"
+
+    petfiles=`echo ../pet/* | sed 's/..\/pet\/CVS//g'`
+    $cpcmd $petfiles "$cptarg/matrix-core/pet"
 fi
