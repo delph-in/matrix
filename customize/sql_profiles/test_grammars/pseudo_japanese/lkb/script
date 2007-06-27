@@ -101,5 +101,6 @@
 ;;;
 
 (if (eq (length *last-parses*) 1)
-   (setf *last-parses* '("det n1 iv-neg" "det n1 n2 tv qpart")))
+   (setf *last-parses* '("det n1 p-nom iv-neg" "det n1 p-nom n2 p-acc tv qpart")))
+
 
