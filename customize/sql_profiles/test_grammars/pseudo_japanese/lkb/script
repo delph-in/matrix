@@ -34,7 +34,7 @@
 (list
 (lkb-pathname (parent-directory) "matrix.tdl")
 (lkb-pathname (parent-directory) "head-types.tdl")
-   (lkb-pathname (parent-directory) "pseudo_english.tdl")
+   (lkb-pathname (parent-directory) "pseudo_japanese.tdl")
 ))
 
 ;;;
@@ -101,5 +101,5 @@
 ;;;
 
 (if (eq (length *last-parses*) 1)
-   (setf *last-parses* '("det n1 aux-neg iv-nf" "aux det n1 tv-nf n2")))
+   (setf *last-parses* '("det n1 iv-neg" "det n1 n2 tv qpart")))
 

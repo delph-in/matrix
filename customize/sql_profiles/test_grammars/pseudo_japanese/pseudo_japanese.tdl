@@ -1,7 +1,6 @@
 comp-head-phrase := basic-head-1st-comp-phrase & head-final .
 
-subj-head-phrase := decl-head-subj-phrase & head-final &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ] .
+subj-head-phrase := decl-head-subj-phrase & head-final .
 
 ; Rules for bulding NPs.  Note that the Matrix uses SPR for
 ;                the specifier of nouns and SUBJ for the subject (specifier) of verbs.
@@ -13,6 +12,29 @@ head-spec-phrase := basic-head-spec-phrase & head-final .
 
 bare-np-phrase := basic-bare-np-phrase &
   [ C-CONT.RELS <! [ PRED "unspec_q_rel" ] !> ] .
+
+; This lexical rule adds the neg_r_rel to the verb's
+; 	RELS list.  It is instantiated by a spelling-changing
+; 	rule as specified in irules.tdl.
+
+neg-infl-lex-rule := cont-change-only-lex-rule & inflecting-lex-rule &
+  [ C-CONT [ HOOK [ XARG #xarg,
+                    LTOP #ltop,
+                    INDEX #ind ],
+             RELS <! event-relation &
+                     [ PRED "_neg_r_rel",
+                       LBL #ltop,
+                       ARG1 #harg ] !>,
+             HCONS <! qeq &
+                      [ HARG #harg,
+                        LARG #larg ] !> ],
+    SYNSEM.LKEYS #lkeys,
+    DTR lex-item &
+        [ SYNSEM [ LKEYS #lkeys,
+                   LOCAL [ CONT.HOOK [ XARG #xarg,
+                                       INDEX #ind,
+                                       LTOP #larg ],
+                           CAT.HEAD verb ] ] ] ] .
 
 ;;; Coordination Strategy 1
 
