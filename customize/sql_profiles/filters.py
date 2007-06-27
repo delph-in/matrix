@@ -60,13 +60,14 @@ import sys
 # the values assigned by each filter to the string-mrs pair.  Each
 # particular filter should return its name and its value.
 
-def filter_one_result(mrs_id, sent,filter_list):
+def filter_one_result(mrs_id, sent,filter_list,filter_id_hash):
 
     filter_values = {}
 
     for f in filter_list:
-        key = f.name
-        filter_values[key] = f.exe(mrs_id, sent)
+        filter_values[filter_id_hash[f.name]] = f.exe(mrs_id, sent)
+        if filter_values[filter_id_hash[f.name]] == 0:
+            break
 
     return filter_values
 
