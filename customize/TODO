@@ -68,3 +68,7 @@ bug:  Consider doing something to check whether matrix-core/matrix.tdl
       needed in matrix-core (roots.tdl, for example, isn't used).  Consider
       removing files that are completely produced by customize.py from
       matrix/ itself.
+
+[6/27/2007 sfd]
+
+bug:  basic-script shouldn't end up in customized grammars
