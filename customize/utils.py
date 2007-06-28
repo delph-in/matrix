@@ -28,33 +28,3 @@ def tokenize_def(str):
       result.append(str[a:i])
 
   return result
-
-
-######################################################################
-# read_choices(choices_file)
-#   Read the choices in choices_file and return them in a dict
-
-def read_choices(choices_file):
-  choices = {}
-
-  try:
-    if type(choices_file) == str:
-      f = open(choices_file, 'r')
-    else:
-      f = choices_file
-      f.seek(0)
-
-    lines = f.readlines()
-
-    if type(choices_file) == str:
-      f.close()
-
-    for l in lines:
-      l = l.strip()
-      if l:
-        (a, v) = l.split('=')
-        choices[a] = v
-  except:
-    pass
-
-  return choices

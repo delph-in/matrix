@@ -17,11 +17,11 @@ from distutils.dir_util import remove_tree
 
 import utils
 tokenize_def = utils.tokenize_def
-read_choices = utils.read_choices
 import customize
 customize_matrix = customize.customize_matrix
 import validate
 validate_choices = validate.validate_choices
+from choices import ChoicesFile
 
 def dummy():
   pass # let emacs know the indentation is 2 spaces
@@ -318,7 +318,7 @@ def sub_page(section, def_file, cookie):
   print HTTP_header + '\n'
   print HTML_pretitle
 
-  choices = read_choices('sessions/' + cookie + '/choices')
+  choices = ChoicesFile('sessions/' + cookie + '/choices')
 
   f = open(def_file, 'r')
   line = f.readlines()
@@ -349,7 +349,7 @@ def sub_page(section, def_file, cookie):
         print '<hr>'
       elif word[0] == 'Check':
         (vn, fn, bf, af) = word[1:]
-        checked = choices.has_key(vn)
+        checked = choices.is_set(vn)
         print_input('checkbox', vn, '', checked, bf, af);
       elif word[0] == 'Radio':
         (vn, fn, bf, af) = word[1:]
@@ -359,16 +359,14 @@ def sub_page(section, def_file, cookie):
           word = tokenize_def(line[i])
           (rval, rfrn, rbef, raft) = word[1:]
           checked = False
-          if choices.has_key(vn) and choices[vn] == rval:
+          if choices.is_set(vn) and choices.get(vn) == rval:
             checked = True
           print_input('radio', vn, rval, checked, rbef, raft)
           i += 1
         print af
       elif word[0] == 'Text':
         (vn, fn, bf, af, sz) = word[1:]
-        value = ''
-        if choices.has_key(vn):
-          value = choices[vn]
+        value = choices.get(vn)
         print_input('text', vn, value, False, bf, af, sz)
     i += 1
 
@@ -423,7 +421,7 @@ def save_choices(form_data, def_file, choices_file):
   section = form_data['section'].value
 
   # Read the current choices file (if any) into old_choices
-  old_choices = read_choices(choices_file)
+  old_choices = ChoicesFile(choices_file)
 
   # Open the def file and store it in line[]
   f = open(def_file, 'r')
@@ -433,7 +431,10 @@ def save_choices(form_data, def_file, choices_file):
   # Now pass through the def file, writing out either the old choices
   # for each section or, for the section we're saving, the new choices
   f = open(choices_file, 'w')
+  f.write('version=' + str(old_choices.current_version()) + '\n\n')
+
   cur_sec = ''
+  done = {}
   for l in line:
     word = tokenize_def(l)
     if len(word) == 0:
@@ -445,15 +446,17 @@ def save_choices(form_data, def_file, choices_file):
       f.write('section=' + cur_sec + '\n')
     elif word[0] == 'Check' or word[0] == 'Radio' or word[0] == 'Text':
       a = word[1]
-      v = ''
-      if cur_sec == section:
-        if form_data.has_key(a):
-          v = form_data[a].value
-      else:
-        if old_choices.has_key(a):
-          v = old_choices[a]
-      if a and v:
-        f.write(a + '=' + v + '\n')
+      if not done.has_key(a):
+        done[a] = ' '
+        v = ''
+        if cur_sec == section:
+          if form_data.has_key(a):
+            v = form_data[a].value
+        else:
+          if old_choices.is_set(a):
+            v = old_choices.get(a)
+        if a and v:
+          f.write(a + '=' + v + '\n')
   f.close()
 
 

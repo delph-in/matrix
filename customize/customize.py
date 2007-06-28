@@ -11,12 +11,12 @@ if os.name == 'nt':
   import gzip
 import zipfile
 
-from utils import read_choices
+from choices import ChoicesFile
 
 ######################################################################
 # globals
 
-choices = {}
+ch = {}
 
 mylang = None
 rules = None
@@ -51,10 +51,10 @@ def has_auxiliaries_p():
   mylang.add('fin := form.')
   mylang.add('inf := form.')
 
-  return ch('neg-infl-type') == 'aux' or \
-         ch('neg-sel-adv') == 'aux' or \
-         ch('qinvverb') == 'aux' or \
-         ch('auxverb')
+  return ch.get('neg-infl-type') == 'aux' or \
+         ch.get('neg-sel-adv') == 'aux' or \
+         ch.get('q-inv-verb') == 'aux' or \
+         ch.get('aux-verb')
 
 
 # ERB 2006-09-21 This function assembles an inflectional rule out
@@ -78,17 +78,6 @@ def add_irule(instance_name,type_name,affix_type,affix_form):
   rule += type_name + '.\n'
 
   irules.add_literal(rule)
-
-######################################################################
-# ch(s)
-#   Return the value of choice s, or '' if it has none
-
-def ch(s):
-  if choices.has_key(s):
-    return choices[s]
-  else:
-    return ''
-
 
 ######################################################################
 # customize_word_order()
@@ -610,7 +599,7 @@ def ch(s):
 
 def customize_word_order():
 
-  wo = ch('wordorder')
+  wo = ch.get('word-order')
 
 # Add type definitions.  
 
@@ -794,14 +783,14 @@ in for head-adjunct phrases here:')
 
 def customize_np_word_order():
 
-  if ch('hasDets') == 't':
+  if ch.get('has-dets') == 'yes':
     mylang.add('head-spec-phrase := basic-head-spec-phrase.',
                'Rules for bulding NPs.  Note that the Matrix uses SPR for\n\
                the specifier of nouns and SUBJ for the subject (specifier) of verbs.')
 
-    if ch('NounDetOrder') == 'HeadSpec':
+    if ch.get('noun-det-order') == 'noun-det':
       mylang.add('head-spec-phrase := head-initial.')
-    if ch('NounDetOrder') == 'SpecHead':
+    if ch.get('noun-det-order') == 'det-noun':
       mylang.add('head-spec-phrase := head-final.')
 
     rules.add('head-spec := head-spec-phrase.')
@@ -835,37 +824,37 @@ def determine_consistent_order(wo,hc):
   # Assuming that adpositions are consistent within a language (i.e., you won't
   # find subject postpositions and object prepositions).
 
-  adpOrder = ''
-  if ch('subjAdp'):
-    adpOrder = ch('subjAdp')
-  elif ch('objAdp'):
-    adpOrder = ch('objAdp')
+  adporder = ''
+  if ch.get('subj-adp-order'):
+    adporder = ch.get('subj-adp-order')
+  elif ch.get('obj-adp-order'):
+    adporder = ch.get('obj-adp-order')
 
   # ERB 2006-10-05 Fixing bug in free word order case.
 
-  if adpOrder:
+  if adporder:
     if wo == 'free':
-      if adpOrder == 'pre':
+      if adporder == 'before':
         adp = 'free-prep'
-      elif adpOrder == 'post':
+      elif adporder == 'after':
         adp = 'free-post'
-    elif hc == 'comp-head' and adpOrder == 'pre':
+    elif hc == 'comp-head' and adporder == 'before':
       adp = 'ov-prep'
-    elif hc == 'head-comp' and adpOrder == 'post':
+    elif hc == 'head-comp' and adporder == 'after':
       adp = 'vo-post'
 
 
   # Now what about auxiliaries?
 
-  if ch('auxverb'):
+  if ch.get('aux-verb'):
     if wo == 'free':
-      if ch('auxorder') == 'left':
+      if ch.get('aux-order') == 'before':
         aux = 'free-auxv'
-      elif ch('auxorder') == 'right':
+      elif ch.get('aux-order') == 'after':
         aux = 'free-vaux'
-    elif hc == 'comp-head' and ch('auxorder') == 'left':
+    elif hc == 'comp-head' and ch.get('aux-order') == 'before':
       aux = 'ov-auxv'
-    elif hc == 'head-comp' and ch('auxorder') == 'right':
+    elif hc == 'head-comp' and ch.get('aux-order') == 'after':
       aux = 'vo-vaux'
 
   # ERB 2006-10-05 And what about the order of question particles wrt
@@ -873,15 +862,15 @@ def determine_consistent_order(wo,hc):
   # and other complementizers will behave the same way.  Are there languages
   # in which that is not true?
 
-  if ch('qpartposthead'):
+  if ch.get('q-part-order'):
     if wo == 'free':
-      if ch('qpartposthead') == '+':
+      if ch.get('q-part-order') == 'after':
         qpart_order = 'free-sq'
-      elif ch('qpartposthead') == '-':
+      elif ch.get('q-part-order') == 'before':
         qpart_order = 'free-qs'
-    elif hc == 'comp-head' and ch('qpartposthead') == '-':
+    elif hc == 'comp-head' and ch.get('q-part-order') == 'before':
       qpart_order = 'ov-qs'
-    elif hc == 'head-comp' and ch('qpartposthead') == '+':
+    elif hc == 'head-comp' and ch.get('q-part-order') == 'after':
       qpart_order = 'vo-sq'
 
    # return what we learned
@@ -1319,28 +1308,28 @@ def customize_sentential_negation():
   # and how they combine.
 
   advAlone = ''
-  multineg = ch('multineg')
-  if ch('adv_neg') == 'on' or multineg == 'comp':
+  multineg = ch.get('multi-neg')
+  if ch.get('adv-neg') == 'on' or multineg == 'comp':
     advAlone = 'always'
-  if multineg == 'bothopt' or multineg == 'advobl':
+  if multineg == 'both-opt' or multineg == 'adv-obl':
     advAlone = 'sometimes'
-  if multineg == 'bothobl' or multineg == 'inflobl':
+  if multineg == 'both-obl' or multineg == 'infl-obl':
     advAlone = 'never'
 
   # ERB 2006-09-16 TODO: The perl script had an else on the above if
   # statment which generated a "probable script error" if we fell into
   # it.  It's probably good idea to put that in here, too.
 
-  if ch('adv_neg') == 'on' and ch('neg-adv') == 'sel-adv':
+  if ch.get('adv-neg') == 'on' and ch.get('neg-adv') == 'sel-adv':
     create_neg_add_lex_rule(advAlone)
     create_neg_adv_lex_item(advAlone)
 
-  if ch('infl_neg') == 'on' and multineg != 'bothobl' and multineg != 'advobl':
+  if ch.get('infl-neg') == 'on' and multineg != 'both-obl' and multineg != 'adv-obl':
     create_neg_infl_lex_rule()
 
-  if ch('adv_neg') == 'on' and ch('neg-adv') == 'ind-adv':
+  if ch.get('adv-neg') == 'on' and ch.get('neg-adv') == 'ind-adv':
     if advAlone == 'never':
-      # Override user input: multineg as bothobl or inflobl means
+      # Override user input: multi-neg as bothobl or inflobl means
       # we go with the selected adverb analysis.
       create_neg_add_lex_rule(advAlone)
 
@@ -1399,11 +1388,11 @@ def create_neg_add_lex_rule(advAlone):
 
   #Decide what to do with AUX value.
 
-  if ch('neg-sel-adv') == 'aux':
+  if ch.get('neg-sel-adv') == 'aux':
     mylang.add('neg-add-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
                'This rule applies only to auxiliaries.')
 
-  if ch('neg-sel-adv') == 'main' and has_auxiliaries_p():
+  if ch.get('neg-sel-adv') == 'main' and has_auxiliaries_p():
     mylang.add('neg-add-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].'
                'This rule applies only to main verbs.')
 
@@ -1428,19 +1417,19 @@ def create_neg_add_lex_rule(advAlone):
 
     lrules.add('neg-add-lr := const-neg-add-lex-rule.')
 
-    add_irule('neg-add-ir','infl-neg-add-lex-rule',ch('neg-aff'),ch('neg-aff-form'))
+    add_irule('neg-add-ir','infl-neg-add-lex-rule',ch.get('neg-aff'),ch.get('neg-aff-orth'))
 
   if advAlone == 'never':
     mylang.add('neg-add-lex-rule := inflecting-lex-rule.'
                'This type is instantiated in irules.tdl.')
       
-    add_irule('neg-add-ir','neg-add-lex-rule',ch('neg-aff'),ch('neg-aff-form'))
+    add_irule('neg-add-ir','neg-add-lex-rule',ch.get('neg-aff'),ch.get('neg-aff-orth'))
 
 # ERB 2006-09-21 Create negative inflection lexical rule
 #Inflection without selected adverb
 #This one adds the '_neg_r_rel, and as such is only used
 #when inflection appears alone (infl strategy only, both
-#strategies with multineg = comp, bothopt, inflobl).
+#strategies with multi-neg = comp, bothopt, inflobl).
 
 #Spell _neg_r_rel with leading _ even though it is introduced
 #by the lexical rule so that "the cat didn't sleep" and "the
@@ -1481,15 +1470,15 @@ def create_neg_infl_lex_rule():
 	RELS list.  It is instantiated by a spelling-changing\n\
 	rule as specified in irules.tdl.')
 
-  if ch('neg-infl-type') == 'aux':
+  if ch.get('neg-infl-type') == 'aux':
     mylang.add('neg-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
                'This rule applies only to auxiliaries.')
 
-  if ch('neg-infl-type') == 'main' and has_auxiliaries_p():
+  if ch.get('neg-infl-type') == 'main' and has_auxiliaries_p():
     mylang.add('neg-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
                'This rule applies only to main verbs.')
 
-  add_irule('neg-infl-lr','neg-infl-lex-rule',ch('neg-aff'),ch('neg-aff-form'))
+  add_irule('neg-infl-lr','neg-infl-lex-rule',ch.get('neg-aff'),ch.get('neg-aff-orth'))
 
 # ERB 2006-09-22 Create lexical types and lexical entries for 
 
@@ -1512,29 +1501,29 @@ def create_neg_adv_lex_item(advAlone):
     To keep spurious parses down, as a starting point, we have\n
     assumed that it only modifies verbs (e.g., non-finite verbs).''')
 
-  if ch('negprepostmod') == 'pre':
+  if ch.get('neg-order') == 'before':
     mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
-  elif ch('negprepostmod') == 'post':
+  elif ch.get('neg-order') == 'after':
     mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
 
-  if ch('negmod') == 's':
+  if ch.get('neg-mod') == 's':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
                                                                                    COMPS null ]].''')
-  elif ch('negmod') == 'vp':
+  elif ch.get('neg-mod') == 'vp':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
                                                                                    COMPS null ]].''')
-  elif ch('negmod') == 'v':
+  elif ch.get('neg-mod') == 'v':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HG-LIGHT - to allow us to pick out\n
     lexical Vs for V-level attachment of negative adverbs.''')
 
   # ERB 2006-09-22 Validation should really make sure we have a value of
-  # negadvform before we get here, but just in case, checking first, since
+  # neg-adv-orth before we get here, but just in case, checking first, since
   # the script gets really unhappy if I try to write to an empty type.
 
-  if(ch('negadvform')):
-    lexicon.add(ch('negadvform') + ' := neg-adv-lex &\
-                [ STEM < \"'+ ch('negadvform') +'\" >,\
+  if(ch.get('neg-adv-orth')):
+    lexicon.add(ch.get('neg-adv-orth') + ' := neg-adv-lex &\
+                [ STEM < \"'+ ch.get('neg-adv-orth') +'\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"_neg_r_rel\" ].')
                                          
 
@@ -1548,7 +1537,7 @@ def create_neg_adv_lex_item(advAlone):
               'Rule instances for head-modifier structures. Corresponding types\n' +
               'are defined in matrix.tdl.  The matrix customization script did\n' +
               'not need to add any further constraints, so no corresponding tyes\n' +
-              'appear in ' + choices['language'].lower() + '.tdl')
+              'appear in ' + ch.get('language').lower() + '.tdl')
     rules.add('adj-head-int := adj-head-int-phrase.')
     rules.add('head-adj-scop := head-adj-scop-phrase.')
     rules.add('adj-head-scop := adj-head-scop-phrase.')
@@ -1891,11 +1880,11 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
 def customize_coordination():
   for n in (1, 2):
     i = str(n)
-    if choices.has_key('cs' + i):
-      mark = ch('cs' + i + 'mark')
-      pat = ch('cs' + i + 'pat')
-      orth = ch('cs' + i + 'orth')
-      order = ch('cs' + i + 'order')
+    if ch.is_set('cs' + i):
+      mark = ch.get('cs' + i + '_mark')
+      pat = ch.get('cs' + i + '_pat')
+      orth = ch.get('cs' + i + '_orth')
+      order = ch.get('cs' + i + '_order')
 
       pre = ''
       suf = ''
@@ -1948,7 +1937,7 @@ def customize_coordination():
               left += 'conj-last-'
 
       for pos in ('n', 'np', 'vp', 's'):
-        if ch('cs' + i + pos):
+        if ch.get('cs' + i + '_' + pos):
           define_coord_strat(i, pos, top, mid, bot, left, pre, suf)
 
 
@@ -2006,10 +1995,10 @@ def customize_coordination():
 # CPs as roots. 
 
 def customize_yesno_questions():
-  ques = ch('ques')
-  qinvverb = ch('qinvverb')
-  qpartposthead = ch('qpartposthead')
-  qpartform = ch('qpartform')
+  ques = ch.get('ques')
+  qinvverb = ch.get('q-inv-verb')
+  qpartposthead = ch.get('q-part-order')
+  qpartform = ch.get('q-part-orth')
 
 # ERB 2006-10-15 We're doing this in has_auxiliaries_p() now.
 #   if qinvverb == 'aux':
@@ -2091,7 +2080,7 @@ def customize_yesno_questions():
   # which I think doesn't handle the facts well.  These look more like complementizers
   # to me.
 
-  if ques == 'qpart':
+  if ques == 'q-part':
     comment = \
              'We treat question particles as complementizers.\n' + \
              'Here is the lexical type for complementizers.'
@@ -2114,7 +2103,7 @@ def customize_yesno_questions():
          [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
     mylang.add(typedef,comment)
 
-    #   if ques == 'qpart':
+    #   if ques == 'q-part':
     #     comment = \
     #       'This grammar includes head-modifier rules.  To keep out\n' + \
     #       'extraneous parses, constrain the value of MOD on various subtypes\n' + \
@@ -2149,15 +2138,15 @@ def customize_yesno_questions():
 
 def customize_nouns():
 
-  noun1 = ch('noun1')
-  noun1pred = ch('noun1pred')
-  noun1spr = ch('noun1spr')
-  noun2 = ch('noun2')
-  noun2pred = ch('noun2pred')
-  noun2spr = ch('noun2spr')
+  noun1 = ch.get('noun1')
+  noun1pred = ch.get('noun1_pred')
+  noun1det = ch.get('noun1_det')
+  noun2 = ch.get('noun2')
+  noun2pred = ch.get('noun2_pred')
+  noun2det = ch.get('noun2_det')
 
   # Do the noun entries have the same behavior wrt to overt determiners?
-  singlentype = (noun1spr and noun2spr and noun1spr == noun2spr)
+  singlentype = (noun1det and noun2det and noun1det == noun2det)
 
   # Add the lexical types to mylang
   mylang.add_literal(';;; Lexical types')
@@ -2180,9 +2169,9 @@ def customize_nouns():
       'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &\
          [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & \
                                           [ LOCAL.CAT.HEAD det'
-    if noun1spr == 'obl':
+    if noun1det == 'obl':
       typedef += ', OPT - ] >, '
-    elif noun1spr == 'nil':
+    elif noun1det == 'imp':
       typedef += ', OPT + ] >, '
     else:
       typedef += ' ] >, '
@@ -2198,13 +2187,13 @@ def customize_nouns():
            ARG-ST < #spr > ].'
     mylang.add(typedef)
 
-    if noun1spr == 'obl' or noun2spr == 'obl':
+    if noun1det == 'obl' or noun2det == 'obl':
       typedef = \
         'obl-spr-noun-lex := noun-lex & \
            [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
       mylang.add(typedef)
 
-    if noun1spr == 'nil' or noun2spr == 'nil':
+    if noun1det == 'imp' or noun2det == 'imp':
       typedef = \
         'no-spr-noun-lex := noun-lex & \
            [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
@@ -2220,14 +2209,14 @@ keeps such nouns out.')
   lexicon.add_literal(';;; Nouns')
 
   for i in (1, 2):
-    noun = ch('noun' + str(i))
+    noun = ch.get('noun' + str(i))
     if noun:
-      pred = ch('noun' + str(i) + 'pred')
-      spr = ch('noun' + str(i) + 'spr')
+      pred = ch.get('noun' + str(i) + '_pred')
+      det = ch.get('noun' + str(i) + '_det')
       typedef = noun + ' := '
-      if singlentype or spr == 'opt':
+      if singlentype or det == 'opt':
         typedef += 'noun-lex & '
-      elif spr == 'obl':
+      elif det == 'obl':
         typedef += 'obl-spr-noun-lex & '
       else:
         typedef += 'no-spr-noun-lex & '
@@ -2237,31 +2226,26 @@ keeps such nouns out.')
 
 def customize_verbs():
 
-  iverb = ch('iverb')
-  ivpred = ch('ivpred')
-  iverbSubj = ch('iverbSubj')
-  tverbnf = ch('iverb-nonfinite')
+  iverbsubj = ch.get('iverb-subj')
 
-  tverb = ch('tverb')
-  tvpred = ch('tvpred')
-  tverbSubj = ch('tverbSubj')
-  tverbObj = ch('tverbObj')
-  tverbnf = ch('tverb-nonfinite')
+  tvpred = ch.get('tvpred')
+  tverbsubj = ch.get('tverb-subj')
+  tverbobj = ch.get('tverb-obj')
 
-  subjAdp = ch('subjAdp')
-  subjAdpForm = ch('subjAdpForm')
-  objAdp = ch('objAdp')
-  objAdpForm = ch('objAdpForm')
+  subjadporder = ch.get('subj-adp-order')
+  subjadporth = ch.get('subj-adp-orth')
+  objadporder = ch.get('obj-adp-order')
+  objadporth = ch.get('obj-adp-orth')
 
-  negmod = ch('negmod')
-  negadv = ch('neg-adv')
-  auxcomp = ch('auxcomp')
+  negmod = ch.get('neg-mod')
+  negadv = ch.get('neg-adv')
+  auxcomp = ch.get('aux-comp')
 
   # Do the verbs take the same category (NP or PP) for their subjects?
-  singlevtype = (iverbSubj and tverbSubj and iverbSubj != tverbSubj)
+  singlevtype = (iverbsubj and tverbsubj and iverbsubj != tverbsubj)
 
   # Do we need to constrain HC-LIGHT on verbs, to distinguish V from VP?
-  hclight = ((negadv == 'ind-adv' and negmod == 'V') or auxcomp == 'V')
+  hclight = ((negadv == 'ind-adv' and negmod == 'v') or auxcomp == 'v')
     
 
 
@@ -2285,7 +2269,7 @@ def customize_verbs():
     typedef += '],'
   typedef += 'CONT.HOOK.XARG #xarg ], ARG-ST < #subj & ';
   if singlevtype:
-    if iverbSubj == 'np':
+    if iverbsubj == 'np':
       typedef += '[ LOCAL [ CAT [ HEAD noun, '
     else:
       typedef += '[ LOCAL [ CAT [ HEAD adp, '
@@ -2318,7 +2302,7 @@ def customize_verbs():
     typedef += '].'
   else:
     typedef += ','
-    if iverbSubj == 'np':
+    if iverbsubj == 'np':
       typedef += 'ARG-ST < [ LOCAL.CAT.HEAD noun ] > ].'
     else:
       typedef += 'ARG-ST < [ LOCAL.CAT.HEAD adp & [ FORM p-nom ]] > ].'
@@ -2330,12 +2314,12 @@ def customize_verbs():
   if singlevtype:
     typedef += 'ARG-ST < [ ],'
   else:
-    if tverbSubj == 'np':
+    if tverbsubj == 'np':
       typedef += 'ARG-ST < [ LOCAL.CAT.HEAD noun ],'
     else:
       typedef += 'ARG-ST < [ LOCAL.CAT.HEAD adp & [ FORM p-nom ]],'
   typedef += '#comps & [ LOCAL.CAT [ VAL [ SPR < >, COMPS < > ],'
-  if tverbObj == 'np':
+  if tverbobj == 'np':
     typedef += 'HEAD noun ] ] > ].'
   else:
     typedef += 'HEAD adp & [FORM p-acc] ] ] > ].'
@@ -2383,11 +2367,11 @@ def customize_verbs():
   # share a lot of TDL in common  - sfd
 
   # ERB 2006-11-06 Fixed some bugs in generation of non-finite forms.
-  # Was looking up ch(i + 'verbnf'), but matrixdef uses 'verb-nonfinite').
+  # Was looking up ch.get(i + 'verbnf'), but matrixdef uses 'verb-nonfinite').
   for i in ('i', 't'):
-    verb = ch(i + 'verb')
-    verbpred = ch(i + 'vpred')
-    verbnf = ch(i + 'verb-nonfinite')
+    verb = ch.get(i + 'verb')
+    verbpred = ch.get(i + 'verb-pred')
+    verbnf = ch.get(i + 'verb-non-finite')
     tivity = 'trans'
     if i == 'i':
       tivity = 'intrans'
@@ -2421,12 +2405,12 @@ def customize_verbs():
 
 def customize_auxiliaries():
 
-  auxverb = ch('auxverb')
-  auxsem = ch('auxsem')
-  auxcomp = ch('auxcomp')
-  auxorder = ch('auxorder')
-  auxsubj = ch('auxsubj')
-  auxpred = ch('auxpred')
+  auxverb = ch.get('aux-verb')
+  auxsem = ch.get('aux-sem')
+  auxcomp = ch.get('aux-comp')
+  auxorder = ch.get('aux-order')
+  auxsubj = ch.get('aux-subj')
+  auxpred = ch.get('aux-pred')
 
   # Lexical type for auxiliaries.  There's probably more we can give them
   # here, if we ask more questions (are there auxiliaries with both independent
@@ -2435,7 +2419,7 @@ def customize_auxiliaries():
   # ERB 2006-10-03 Removing if statement in the middle of a string...
 
   #                                      HEAD '
-  #       if auxsubj == 'noun':
+  #       if auxsubj == 'np':
   #         typedef += 'noun ]],'
   #       else:
   #         typedef += 'adp ]],'
@@ -2447,7 +2431,7 @@ def customize_auxiliaries():
   if has_auxiliaries_p():
     auxtypename = ''
     mylang.add_literal(';;; Auxiliaries')
-    if auxcomp == 'VP':
+    if auxcomp == 'vp':
       typedef = 'subj-raise-aux := trans-first-arg-raising-lex-item  & \
                  [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < #subj >, \
                                             COMPS < #comps >, \
@@ -2465,7 +2449,7 @@ def customize_auxiliaries():
                                               [ FORM inf ]]] > ].'
       mylang.add(typedef)
 
-      if auxsubj == 'noun':
+      if auxsubj == 'np':
         mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
       else:
         mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD adp ].')
@@ -2493,7 +2477,7 @@ def customize_auxiliaries():
         mylang.add(typedef)
 
         
-    elif auxcomp == 'V': 
+    elif auxcomp == 'v': 
       comment = \
         '; Somewhat surprisingly, this inherits from basic-two-arg, so\n' + \
         '; that the non-local features are amalgamated from subj, the\n' + \
@@ -2502,7 +2486,7 @@ def customize_auxiliaries():
 
       # ERB Removing if statement in the middle of a string.
       #                                       HEAD 
-      #       if auxsubj == 'noun':
+      #       if auxsubj == 'np':
       #         typedef += 'noun ]],'
       #       else:
       #         typedef += 'adp ]],'
@@ -2527,7 +2511,7 @@ def customize_auxiliaries():
                               CONT.HOOK.XARG #xarg ]] > ].'
       mylang.add(typedef)
 
-      if auxsubj == 'noun':
+      if auxsubj == 'np':
         mylang.add('arg-comp-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
       else:
         mylang.add('arg-comp-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD adp ].')
@@ -2565,7 +2549,7 @@ def customize_auxiliaries():
         mylang.add(typedef)
 
         
-    elif auxcomp == 'S':
+    elif auxcomp == 's':
       typedef = \
         's-comp-aux := basic-one-arg & \
            [ SYNSEM.LOCAL.CAT [ HEAD verb & [ AUX + ], \
@@ -2619,13 +2603,13 @@ def customize_auxiliaries():
 
 def customize_adpositions():
 
-  subjAdp = ch('subjAdp')
-  subjAdpForm = ch('subjAdpForm')
-  objAdp = ch('objAdp')
-  objAdpForm = ch('objAdpForm')
+  subjadporder = ch.get('subj-adp-order')
+  subjadporth = ch.get('subj-adp-orth')
+  objadporder = ch.get('obj-adp-order')
+  objadporth = ch.get('obj-adp-orth')
 
   # Lexical types for adpositions (if present):
-  if subjAdp or objAdp:
+  if subjadporder or objadporder:
     comment = \
       ';;; Case-marking adpositions\n' + \
       ';;; Case marking adpositions are constrained not to\n' + \
@@ -2649,9 +2633,9 @@ def customize_adpositions():
   # constrain which appears in which argument.  Will need to revisit this
   # when we have a real module for case.
 
-  if subjAdp:
+  if subjadporder:
     mylang.add('p-nom := form.','FORM value for subject marking adpositions.')
-  if objAdp:
+  if objadporder:
     mylang.add('p-acc := form.','FORM value for object marking adpositions.')
   
 
@@ -2662,20 +2646,20 @@ def customize_adpositions():
   # sfd ToDo? Some of these could be further parameterized.  Probably
   # not necessary unless they become iterators, though.
 
-  if subjAdpForm or objAdpForm:
+  if subjadporth or objadporth:
     lexicon.add_literal(';;; Case-marking adpositions')
 
-  if subjAdpForm:
+  if subjadporth:
     typedef = \
       'subj-marker := case-marker-p-lex & \
-                        [ STEM < "' + subjAdpForm + '" >, \
+                        [ STEM < "' + subjadporth + '" >, \
                           SYNSEM.LOCAL.CAT.HEAD.FORM p-nom  ].'
     lexicon.add(typedef)
 
-  if objAdpForm:
+  if objadporth:
     typedef = \
       'obj-marker := case-marker-p-lex & \
-                     [ STEM < "' + objAdpForm + '" >, \
+                     [ STEM < "' + objadporth + '" >, \
                        SYNSEM.LOCAL.CAT.HEAD.FORM p-acc ].'
     lexicon.add(typedef)
 
@@ -2683,13 +2667,13 @@ def customize_adpositions():
 
 def customize_determiners():
 
-  det1 = ch('det1')
-  det1pred = ch('det1pred')
-  det2 = ch('det2')
-  det2pred = ch('det2pred')
+  det1 = ch.get('det1')
+  det1pred = ch.get('det1_pred')
+  det2 = ch.get('det2')
+  det2pred = ch.get('det2_pred')
 
   # Lexical type for determiners, if the language has any:
-  if ch('hasDets') == 't':
+  if ch.get('has-dets') == 'yes':
     comment = \
       ';;; Determiners\n' + \
       ';;; SPEC is non-empty, and already specified by basic-determiner-lex.'
@@ -2723,8 +2707,7 @@ def customize_determiners():
 
 def customize_misc_lex():
 
-  negmod = ch('negmod')
-  negadv = ch('neg-adv')
+  negadv = ch.get('neg-adv')
 
   # Negative adverb
   if negadv:
@@ -2735,10 +2718,10 @@ def customize_misc_lex():
     lexicon.add(typedef)
 
   # Question particle
-  if ch('ques') == 'qpart':
+  if ch.get('ques') == 'q-part':
     typedef = \
-      ch('qpartform') + ' := qpart-lex-item & \
-                   [ STEM < "' + ch('qpartform') + '" > ].'
+      ch.get('q-part-orth') + ' := qpart-lex-item & \
+                   [ STEM < "' + ch.get('q-part-orth') + '" > ].'
     lexicon.add(typedef)
 
 
@@ -2770,11 +2753,11 @@ def customize_test_sentences(matrix_path):
     for l in lines:
       l = l.strip()
       if l == ';;; Modules: LOAD my_language.tdl':
-        myl = choices['language'].lower() + '.tdl'
+        myl = ch.get('language').lower() + '.tdl'
         s.write('   (lkb-pathname (parent-directory) "' + myl + '")\n')
       elif l == ';;; Modules: Default sentences':
-        s1 = ch('sentence1')
-        s2 = ch('sentence2')
+        s1 = ch.get('sentence1')
+        s2 = ch.get('sentence2')
         s.write('(if (eq (length *last-parses*) 1)\n')
         s.write('   (setf *last-parses* \'("' + s1 + '" "' + s2 + '")))\n')
       else:
@@ -2822,7 +2805,7 @@ def customize_roots():
   # and question particles, we're going to need to make sure that FORM is
   # compatible with comp.
 
-  if ch('ques') == 'qpart':
+  if ch.get('ques') == 'q-part':
     roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD +vc ].')
   else:
     roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD verb ].')
@@ -2879,11 +2862,9 @@ def make_zip(dir):
 #   assumes that validation of the choices has already occurred.
 
 def customize_matrix(path, arch_type):
-  global choices
-  choices = {}
-  
   choices_file = path + '/choices'
-  choices = read_choices(choices_file)
+  global ch
+  ch = ChoicesFile(choices_file)
 
   matrix_path = path + '/matrix/'
 
@@ -2895,7 +2876,7 @@ def customize_matrix(path, arch_type):
 
   # Create TDL object for each output file
   global mylang, rules, irules, lrules, lexicon, roots
-  mylang =  tdl.TDLfile(matrix_path + choices['language'].lower() + '.tdl')
+  mylang =  tdl.TDLfile(matrix_path + ch.get('language').lower() + '.tdl')
   rules =   tdl.TDLfile(matrix_path + 'rules.tdl')
   irules =  tdl.TDLfile(matrix_path + 'irules.tdl')
   lrules =  tdl.TDLfile(matrix_path + 'lrules.tdl')
@@ -2912,7 +2893,7 @@ def customize_matrix(path, arch_type):
   version_lsp = tdl.TDLfile(matrix_path + 'Version.lsp')
 
   version_lsp.add_literal('(in-package :common-lisp-user)\n\n')
-  version_lsp.add_literal('(defparameter *grammar-version* \"' + choices['language'] + ' (Matrix-10-2006)\")\n')
+  version_lsp.add_literal('(defparameter *grammar-version* \"' + ch.get('language') + ' (Matrix-10-2006)\")\n')
 
   # Call the various customization functions
   customize_word_order()
