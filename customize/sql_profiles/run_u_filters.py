@@ -4,6 +4,7 @@ import filters
 from u_filters import filter_list
 import sys
 import MySQLdb
+import datetime
 
 ##########################################################################
 # find_filter_from_name(n,filter_list)
@@ -70,22 +71,30 @@ def update_res_fltr(filter_list):
         filter_ids.append(filter_id)
         filter_id_hash[name] = filter_id
 
+
+    limit = 8700000
+
     print filter_ids
-    f_string = make_string(filter_ids,0)
+    f_string = make_string(filter_ids,limit)
     print f_string
+
+    limit += 100000
 
     #cursor.execute("SELECT r_result_id, r_mrs FROM result, fltr_mrs WHERE r_mrs = fm_mrs_tag AND (fm_fltr_id = %s) LIMIT 10",(f_string))
     cursor.execute(f_string)
 
     ids = cursor.fetchall()
     
-    limit = 100000
-
     dupes = []
-    
+
     while ids != ():
 
-        print "Now working results " + str(limit-100000) + " through " + str(limit)
+        update_string = "Now working results " + str(limit-100000) + " through " + str(limit)
+        print update_string
+        file = open('ufltrs_updates','a')
+        file.write(update_string)
+        file.write("\n")
+        file.close()
 
         #`ids' is now a tuple containing elements for each item in a 100,000 slice of the
         #relevant table.  Each of those elements is a tuple which contains
@@ -120,7 +129,12 @@ def update_res_fltr(filter_list):
                         dupes.append(cursor.fetchall())
 
         else:
-            print "Last item updated: " + str(key)
+            update_string = "Last item updated: " + str(key) + " at " + str(datetime.datetime.now())
+            print update_string
+            file = open('ufltrs_updates','a')
+            file.write(update_string)
+            file.write("\n")
+            file.close()
 
         f_string = make_string(filter_ids,limit)
         cursor.execute(f_string)

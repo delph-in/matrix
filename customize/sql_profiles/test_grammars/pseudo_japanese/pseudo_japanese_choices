@@ -8,6 +8,7 @@ NounDetOrder=SpecHead
 
 section=sentential_negation
 infl_neg=on
+adv_neg=off
 neg-infl-type=aux-main
 neg-aff=suffix
 neg-aff-form=-neg

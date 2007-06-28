@@ -225,6 +225,8 @@ def update_feat_group(choices,cursor):
 
 def update_lt_in_lfg(choices,lt_id,cursor):
 
+    print lt_id
+
     # Get all feature groups from DB
 
     cursor.execute("SELECT fg_grp_id FROM feat_grp")
@@ -241,9 +243,22 @@ def update_lt_in_lfg(choices,lt_id,cursor):
         cursor.execute("SELECT fg_feat, fg_value FROM feat_grp WHERE fg_grp_id = %s",(g_id))
         fvs = cursor.fetchall()
 
+        # Find out if we already have this group associated with this lt:
+        cursor.execute("SELECT * FROM lt_feat_grp WHERE lfg_lt_id = %s AND lfg_grp_id = %s",(lt_id,g_id))
+        row = cursor.fetchall()
+
+        if row == ():
+          row_exists_p = False
+        else:
+          row_exists_p = True
+
         # Check if they are all in the lt definition
         if check_lt_for_fvs(fvs,choices):
-            cursor.execute("INSERT INTO lt_feat_grp SET lfg_lt_id = %s, lfg_grp_id =%s",(lt_id,g_id))
+          if not(row_exists_p):
+            cursor.execute("INSERT INTO lt_feat_grp SET lfg_lt_id = %s, lfg_grp_id = %s",(lt_id,g_id))
+        else:
+          if row_exists_p:
+            cursor.execute("DELETE FROM lt_feat_grp WHERE lfg_lt_id = %s, lfg_grp_id = %s",(lt_id,g_id))
 
 
 

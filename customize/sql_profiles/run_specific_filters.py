@@ -16,7 +16,8 @@
 
 import MySQLdb
 import sys
-from filters import filter_one_result
+import datetime
+#from filters import filter_one_result
 from sql_lg_type import update_lt_in_lfg
 
 # Edit this line to import different filters.
@@ -39,6 +40,7 @@ last_group_id = None
 
 def update_tables_for_filters(filter_list):
 
+    filter_id_hash = {}
 
     for f in filter_list:
         #print "filter name: " + f.name
@@ -57,8 +59,12 @@ def update_tables_for_filters(filter_list):
         # Make sure that all of the existing language types
         # are updated to see the new groups added, if any.
 
-        update_all_lts_in_lfg
+        update_all_lts_in_lfg()
 
+        # Add filter to filter hash for quick access later
+        filter_id_hash[f.name] = f_id
+
+    return filter_id_hash
 
 ###################################################################
 # Every time we add filters and feature groups, we should make
@@ -70,10 +76,8 @@ def update_all_lts_in_lfg():
         lt_ids = cursor.fetchall()
 
         for lt_id in lt_ids:
-            lt_id[0]
-
-            choices = create_choices_from_lt_id(lt_id)
-            update_lt_in_lfg(choices,lt_id,cursor)
+            choices = create_choices_from_lt_id(lt_id[0])
+            update_lt_in_lfg(choices,lt_id[0],cursor)
 
 ################################################################
 # Sometimes we want to get a choices object out of the lt_feat_grp
@@ -416,6 +420,19 @@ def normalize_gs_helper(gs,finished):
     #print "return value: " + str(return_value)
     return return_value
 
+###########################################################################
+# filter_one_result copied & modified from filters.py
+
+def filter_one_result(mrs_id, sent,filter_list,filter_id_hash):
+
+    filter_values = {}
+
+    for f in filter_list:
+        filter_values[filter_id_hash[f.name]] = f.exe(mrs_id, sent)
+
+    return filter_values
+
+
 #################################################################
 # make_binary_gs(group_spec): Takes group_spec with arbitrary
 # arity and converts it to binary format.
@@ -521,7 +538,16 @@ def flatten_binary_gs(gs):
 
     return new_dtrs
             
-    
+
+#######################################################################
+# make_string: for constructing the main select query
+
+def make_string(limit):
+
+    output = "SELECT r_result_id, r_mrs, i_input FROM result, item  WHERE result.r_parse_id = item.i_id AND r_wf = 1  and result.r_result_id < 12000000 LIMIT " + str(limit) + ", 100000"
+    return output
+
+
 
 ############################################################################
 # Main program
@@ -529,52 +555,62 @@ def flatten_binary_gs(gs):
 # Set up the cursor
 
 db = MySQLdb.connect(host="localhost", user="ebender",
-                      passwd="tr33house", db="MatrixTDB")
+                     passwd="tr33house", db="MatrixTDB")
 
 cursor = db.cursor()
     
 
-# First check whether the filters are properly recorded in
-# filter and fltr_lt
 
-update_tables_for_filters(filter_list)
 
-# Then pull all strings that pass the universal filters, and record
-# their values for the specific filters.  Perhaps update this if
-# we're moving the non universally ungrammatical strings to another
-# table.
+def main():
 
-# ERB 2007-06-22 Picking up where I left off in a run that crashed.
+    # First check whether the filters are properly recorded in
+    # filter and fltr_lt
 
-cursor.execute("SELECT r_result_id FROM result WHERE r_wf = 1  and r_result_id > 17800922")
-ids = cursor.fetchall()
+    filter_id_hash = update_tables_for_filters(filter_list)
 
-# _FIX_ME_: The following is copied from filters.filter_results.
-# Some refactoring is needed here.
+    # Then pull all strings that pass the universal filters, and record
+    # their values for the specific filters.  Perhaps update this if
+    # we're moving the non universally ungrammatical strings to another
+    # table.
 
-for id in ids:
-    key = id[0]
-    #print "Working on " + str(key)
-    cursor.execute("SELECT r_mrs, i_input FROM result,parse,item WHERE result.r_result_id = %s AND result.r_parse_id = parse.p_parse_id AND parse.p_i_id = item.i_id", (key))
-    (mrs_id, string) = cursor.fetchone()
+    # ERB 2007-06-22 Picking up where I left off in a run that crashed.
 
-    filter_values = filter_one_result(mrs_id,string,filter_list)
-    #print filter_values
+    f_string = make_string(7000000)
 
-    #Should do error checking here: Are all of the values legit?
+    cursor.execute(f_string)
+    ids = cursor.fetchall()
 
-    for filter_key in filter_values.keys():
-        if filter_values[filter_key] < 2:  #Ignore the cases where the filter said "don't care"
-            cursor.execute("SELECT filter_id FROM filter WHERE filter_name = %s",
-                           (filter_key))
-            f_id = cursor.fetchall()
-            if len(f_id) > 1:
-                raise ValueError, "Error: Multiple filters with the same name." + filter_key
-            else:
-                f_id = f_id[0][0]
-                #print "INSERT INTO res_sfltr SET rsf_res_id = %s, rsf_fltr_id = %s, rsf_value = %s", (key, f_id, filter_values[filter_key])
-                cursor.execute("INSERT INTO res_sfltr SET rsf_res_id = %s, rsf_sfltr_id = %s, rsf_value = %s",
-                               (key, f_id, filter_values[filter_key]))
+    limit = 7100000
+
+    while ids != ():
+
+        print "Working on results " + str(limit-100000) + " through " + str(limit)
+
+        for id in ids:
+            (res_id, mrs_id, string) = id
+
+            filter_values = filter_one_result(mrs_id,string,filter_list,filter_id_hash)
+
+            for f_id in filter_values.keys():
+                value = filter_values[f_id]
+
+                if value != 2:
+                    cursor.execute("INSERT LOW_PRIORITY INTO res_sfltr SET rsf_res_id = %s, rsf_sfltr_id = %s, rsf_value = %s",
+                                   (res_id, f_id, value))
+
+        else:
+            print "Updated item " + str(res_id) + " at " + str(datetime.datetime.now())
+
+        f_string = make_string(limit)
+        cursor.execute(f_string)
+        ids = cursor.fetchall()
+        limit += 100000
+
+
+if __name__ == "__main__":
+    #    main ()
+    update_all_lts_in_lfg()
 
 
 # Testing:

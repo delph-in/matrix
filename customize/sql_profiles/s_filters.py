@@ -11,6 +11,11 @@
 # for the shared properties and then instances for the differences.
 # ... depends on how flexible the class system is.  Multiple inheritance?...
 
+# Some (many?) of these assume that the lts are fully specified for the
+# things they care about (e.g., neg-aff-only-1 and neg-adv-only-2), which
+# will give different behavior from the grammar starts for underspecified
+# lts...
+
 #################################################################
 # Initial set of language-type specific word order filters.
 
@@ -265,16 +270,28 @@ filter_list = [
                 comment = "If we haven't selected adverbial negation, we shouldn't see the adverbs. NB: There is no value 'off' for the feature infl_neg in matrixdef.  But the code for figuring out which groups are relevant to which language types will do the right thing if we use a non-value for the feature here.",
                 fv = ['adv_neg:off']),
 
-    MatchFilter(name = "neg-affix-only",
+    MatchFilter(name = "neg-affix-only-1",
               mrs_id_list = g.all_neg,
               re1 = '-neg|neg-',
               comment = "If we only selected inflectional negation, we should see one in every negated sentence",
               fv = ['and', 'infl_neg:on','adv_neg:off']),
 
-    MatchFilter(name = "neg-adv-only",
+    MatchFilter(name = "neg-adv-only-2",
               mrs_id_list = g.all_neg,
               re1 = '(\s|^)neg(\s|$)',
               comment = "If we only selected adverbial negation, we should see one in every negated sentence.",
+              fv = ['and', 'infl_neg:off','adv_neg:on']),
+
+    NotFilter(name = "neg-affix-only-1",
+              mrs_id_list = g.all_neg,
+              re1 = '(\s|^)neg(\s|$)',
+              comment = "If we only selected inflectional negation, we shouldn't see the adverb",
+              fv = ['and', 'infl_neg:on','adv_neg:off']),
+
+    NotFilter(name = "neg-adv-only-2",
+              mrs_id_list = g.all_neg,
+              re1 = '-neg|neg-',
+              comment = "If we only selected adverbial negation, we shouldn't see the affix",
               fv = ['and', 'infl_neg:off','adv_neg:on']),
 
     MatchAndFilter(name = "neg-both-req",
