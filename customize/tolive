@@ -23,14 +23,14 @@ fi
 
 if [ $copylocal ]
 then
-    cpcmd="cp -v"
+    cpcmd="cp -p -v"
     cptarg="../../$1"
 else
     cpcmd="scp"
     cptarg="uwcl@homer.u.washington.edu:public_html/$1"
 fi
 
-mainfiles="matrix.cgi matrix.css matrixdef customize.py deffile.py tdl.py utils.py validate.py"
+mainfiles="matrix.cgi matrix.css matrixdef customize.py deffile.py choices.py tdl.py utils.py validate.py"
 
 $cpcmd $mainfiles $cptarg
 
