@@ -139,14 +139,6 @@ Section matrix-yes-no "Matrix Yes/No Questions"
 Label "Please indicate which strategy your language uses to form matrix yes-no questions. Notes: You may leave this section blank, in which case your grammar will not include any information about questions. At present, you may select only one strategy."
 
 Radio ques "Yes/No questions" "" ""
-. inv "Subject-verb inversion" "" "Subject-verb inversion: "
-
-Radio q-inv-verb "Inverted verb in questions" "" ""
-. main "Main" "" "main verbs only "
-. aux "Auxiliary" "" "auxiliaries only "
-. main-aux "Main and auxiliary" "" "any verb<br>"
-
-Radio ques "Yes/No Questions" "" ""
 . q-part "Question particle" "" "A separate question particle: "
 
 Radio q-part-order "Question particle order" "" ""
@@ -154,6 +146,29 @@ Radio q-part-order "Question particle order" "" ""
 . after "After" "" "sentence final<br>"
 
 Text q-part-orth "Question particle spelling" "&nbsp;&nbsp;&nbsp;&nbsp;Spelling of question particle: " "" 40
+
+Radio ques "fr ques" "<br>" ""
+. q-infl "fr q-infl" "" "Verbal inflection:<br>"
+
+Radio q-infl-type "fr q-infl-type" "&nbsp;&nbsp;&nbsp;&nbsp;On: " ""
+. aux "fr aux" "" "auxiliaries only "
+. main "fr main" "" "main verbs only "
+. aux-main "fr aux-main" "" "any finite verb (main or auxiliary)<br>"
+
+Radio ques-aff "fr ques-aff" "&nbsp;&nbsp;&nbsp;&nbsp;Affix type: " ""
+. prefix "fr prefix" "" "prefix "
+. suffix "fr suffix" "" "suffix<br>"
+
+Text ques-aff-orth "fr ques-aff-orth" "&nbsp;&nbsp;&nbsp;&nbsp;Affix Spelling: " "" 10
+
+Radio ques "Yes/No Questions" "<br>" ""
+. inv "Subject-verb inversion" "" "Subject-verb inversion: "
+
+Radio q-inv-verb "Inverted verb in questions" "" ""
+. main "Main" "" "main verbs only "
+. aux "Auxiliary" "" "auxiliaries only "
+. main-aux "Main and auxiliary" "" "any verb<br>"
+
 
 Radio ques "Yes/No questions" "<br>" ""
 . int "Intonation" "" "Intonation only"

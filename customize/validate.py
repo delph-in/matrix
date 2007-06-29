@@ -188,6 +188,18 @@ def validate_yesno_questions():
       err = 'Subject-verb inversion strategy for yes-no questions is not supported for V-final, V-initial, or free word order languages.  If you believe you have a counterexample to this, please contact us.'
       add_err('inv', err)
 
+  if ques == 'q-infl':
+    if (not ch.get('q-infl-type')):
+      err = 'If matrix yes-no questions are expressed through affixation, you must specify what the affix attaches to.'
+      add_err('q-infl-type', err)
+    if (not ch.get('ques-aff')):
+      err = "If matrix yes-no questions are expressed through affixation, you must specify whether it's a prefix or a suffix"
+      add_err('ques-aff', err)
+    if (not ch.get('ques-aff-orth')):
+      err = 'If matrix yes-no questions are expressed through affixation, you must specify the form of the affix'
+      add_err('ques-aff-orth', err)
+                                              
+
 
 ######################################################################
 # validate_lexicon()
@@ -337,6 +349,10 @@ def validate_lexicon():
     if (ch.get('qinverb') == 'aux'):
       err = 'You specified that matrix yes-no questions are expressed through subject-auxiliary inversion, but you did not specify an auxiliary in the lexicon.'
       add_err('aux-verb', err)
+    if (ch.get('q-infl-type') == 'aux'):
+      err = 'You specified that matrix yes-no questions are expressed through inflection of auxiliary verbs, but you did not specify an auxiliary in the lexicon.'
+      add_err('aux-verb', err)
+
 
   # ERB 2006-0929
   # If they said that either noun takes an obligatory determiner, did they say their language has

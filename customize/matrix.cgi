@@ -72,7 +72,7 @@ function clear_form()
 HTML_mainprebody = '''<body>
 <h1>LinGO Grammar Matrix</h1>
 <h1>Matrix customization and download page</h1>
-<h2>Version of 1/21/2007</h2>
+<h2>Version of 6/29/2007</h2>
 
 <p>By filling out this form, you will produce an initial starter
 package for your grammar, consisting of the language-independent core,
@@ -107,17 +107,17 @@ Please download it <a href="%s">here</a>.
 <p>To unpack the archive, if your browswer hasn't already done it for
 you, first try saving it on your desktop and double clicking it.  If
 that doesn't work, and you're using Linux or Mac OS X, from a command
-prompt, type <tt>??????????</tt>.
+prompt, type <tt>tar xzf matrix.tar.gz</tt> or <tt>unzip matrix.zip</tt>.
 
 <p>Once you've unpacked the archive you should find a directory called
-<tt>??????????</tt>.  Inside the directory are several files.  Here is
+<tt>matrix</tt>.  Inside the directory are several files.  Here is
 an explanation of some:
 
 <ul>
 <li><tt>matrix.tdl</tt>: Language independent type and constraint
 definitions.  You should not need to modify this file.
-<li><tt>$mm::my_language</tt>: Types and constraints specific to your
-language.
+<li><tt>my_language.tdl</tt>: Types and constraints specific to your
+language.  (Actual file name depends on the name of your language.)
 <li><tt>lexicon.tdl</tt>: Lexical entries for your language.
 <li><tt>rules.tdl</tt>: Phrase structure rule instance entries for
 your language.
@@ -127,7 +127,7 @@ entries for your language.
 entries for your language.
 <li><tt>lkb/script</tt>: The script file for loading your grammar into
 the LKB.
-<li><tt>modules_choices.txt</tt>: A record of the information you
+<li><tt>choices</tt>: A record of the information you
 provided in the matrix configuration form.
 </ul>
 

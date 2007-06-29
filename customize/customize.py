@@ -10,6 +10,7 @@ import tarfile
 if os.name == 'nt':
   import gzip
 import zipfile
+import sys
 
 from choices import ChoicesFile
 
@@ -1294,7 +1295,8 @@ def specialize_word_order(hc,orders):
 
 # Unhandled case:  Main verbs take inflection + adverb, auxiliaries only
 # inflection (or vice versa).  Negation involves two markers, one on
-# either side of the constituent.
+# either side of the constituent.  Negation involves two markers, one
+# on either side of the constituent.
 
 # ERB 2006-09-16 First pass at replicating functionality from
 # perl script.
@@ -1952,8 +1954,11 @@ def customize_coordination():
 # 2. Seed strings, requirements of POS lexicon:
 
 # The only addition to the POS lexicon is qpart, the question particle:
+# Also -ques|ques- the affix
 
 # qpart
+# -ques
+# ques-
 
 # The seed strings are written assuming an SVO language with no
 # adpositions (in order to illustrate inversion).  Again all the
@@ -1975,6 +1980,16 @@ def customize_coordination():
 # tv det s det o 
 # aux det s tv det o
 
+# s tv-ques o
+# s ques-tv o
+# s aux-ques tv o
+# s ques-aux tv o
+
+# det s tv-ques det o
+# det s ques-tv det o
+# det s aux-ques tv det o
+# det s ques-aux tv det o
+
 # Since this module actually involves changes to word order, the
 # seed strings/permutation interaction is actually different.  I
 # think it will come down to being careful with the filters...
@@ -1995,22 +2010,11 @@ def customize_coordination():
 # CPs as roots. 
 
 def customize_yesno_questions():
+
   ques = ch.get('ques')
   qinvverb = ch.get('q-inv-verb')
   qpartposthead = ch.get('q-part-order')
   qpartform = ch.get('q-part-orth')
-
-# ERB 2006-10-15 We're doing this in has_auxiliaries_p() now.
-#   if qinvverb == 'aux':
-#     comment = \
-#       'Your grammar has auxiliaries, so we are adding the features AUX\n' + \
-#       'and FORM to the type verb.  We are assuming that auxiliaries\n' + \
-#       'select non-finite verbal projections for their complements.\n' + \
-#       '\n' + \
-#       'To allow for a simpler statement of word order rules (in some\n' + \
-#       'grammars) we add the feature AUX to the type head, rather than verb.'
-#     mylang.add('head :+ [ AUX bool ].', comment)
-#     mylang.add('verb :+ [ FORM form ].')
 
   if ques == 'inv':
     comment = \
@@ -2055,8 +2059,8 @@ def customize_yesno_questions():
 
     lrules.add('inv-lr := subj-v-inv-lrule.')
 
-  # ERB 2007-01-21 Then we need the non-branching construction which
-  # corrects to MC + and adds SF ques.
+    # ERB 2007-01-21 Then we need the non-branching construction which
+    # corrects to MC + and adds SF ques.
 
     comment = \
            'This rule takes [MC na] inverted phrases and licneses' + \
@@ -2103,33 +2107,25 @@ def customize_yesno_questions():
          [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
     mylang.add(typedef,comment)
 
-    #   if ques == 'q-part':
-    #     comment = \
-    #       'This grammar includes head-modifier rules.  To keep out\n' + \
-    #       'extraneous parses, constrain the value of MOD on various subtypes\n' + \
-    #       'of head.  This may need to be loosened later.  This constraint\n' + \
-    #       'says that only adverbs, adjectives, and adpositions can be modifiers.'
-    #     mylang.add('+nvcdmo :+ [ MOD < > ].', comment)
-    
-    #     typedef = '''
-    #     qpart-le := basic-scopal-adverb-lex &
-    #       [ SYNSEM [ LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD verb,
-    #                                                       VAL [ SUBJ < >,
-    #                                                             COMPS < > ]]]>,
-    #                              VAL [ SUBJ < >,
-    #                                    SPR < >,
-    #                                    COMPS < > ],
-    #                              POSTHEAD ''' + qpartposthead + '''],
-    #                  LKEYS.KEYREL.PRED question_m_rel ]].'''
-    #     mylang.add(typedef)
+  if ques == 'q-infl':
+
+    mylang.add('ques-infl-lex-rule := add-only-no-ccont-rule & inflecting-lex-rule &\
+    [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques,\
+    DTR.SYNSEM.LOCAL.CAT.HEAD verb ].',
+               'Constrains SF to ques. Instantiated by a verbal affix.')
+
+    if ch.get('q-infl-type') == 'aux':
+      mylang.add('ques-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+                 'This rule applies only to auxiliaries.')
+
+    if ch.get('q-infl-type') == 'main' and has_auxiliaries_p():
+      mylang.add('ques-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
+                 'This rule applies only to main verbs.')
 
 
-# ERB 2006-10-15: This is done in customize_lexicon, for now.
-#
-#  if qpartform:
-#    typedef = qpartform + ' := qpart-lex-item & [ STEM < "' + qpartform + '" > ].'
-#    lexicon.add(typedef)
+    add_irule('ques-infl-lr','ques-infl-lex-rule',ch.get('ques-aff'),ch.get('ques-aff-orth'))
 
+                                  
 
 ######################################################################
 # customize_lexicon()
@@ -2824,6 +2820,14 @@ def customize_roots():
 #   dir.(tar.gz|zip) that contains the contents of dir
 
 def make_tgz(dir):
+
+  # ERB First get rid of existing file because gzip won't
+  # overwrite existing .tgz meaning you can only customize
+  # grammar once per session.
+
+  if os.path.exists('matrix.tar.gz'):
+    os.remove('matrix.tar.gz')
+  
   archive = dir + '.tar'
   t = tarfile.open(archive, 'w')
   t.add(dir)
