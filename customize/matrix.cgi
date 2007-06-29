@@ -100,7 +100,7 @@ HTML_customprebody = '''<h3>Customized Matrix</h3>
 <p>A customized copy of the Matrix has been created for you.  
 Please download it <a href="%s">here</a>.
 
-<p>This file will be removed from the system in 15 minutes..
+<p>This file will be removed from the system in 15 minutes.
 
 <h3>Instructions</h3>
 
