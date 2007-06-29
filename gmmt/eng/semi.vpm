@@ -40,11 +40,11 @@ PNG.PERNUM : PERS NUM
 *   >> ! !
 !   << * *
 
-E.TENSE : TENSE
-  past     <> past
-  present  <> pres
-  future   <> fut
-  *        <> !
+;E.TENSE : TENSE
+;  past     <> past
+;  present  <> pres
+;  future   <> fut
+;  *        <> !
 
 SF : SF
   prop <> prop

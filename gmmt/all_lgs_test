@@ -1,0 +1,35 @@
+#!/bin/bash
+
+
+DATE=`date "+%Y-%m-%d"`
+#LGS=[eng hau]
+
+
+for src in eng epo fas fin hai hau heb hye isl ita spa zul; do
+   	for tgt in eng epo fas fin hai hau heb hye isl ita spa zul; do
+      
+		if [ "${tgt}" != "${src}" ]; then
+
+			`echo ~/logon/batch --binary --from $src --to $tgt --ascii ~/logon/uw/mmt/test_sentences/${src}.txt`
+
+		fi
+
+   	done
+done
+
+
+mkdir ~/logon/uw/mmt/alt/${DATE}
+cd ~/logon/uw/mmt/alt/
+mv ~/*.fan ./${DATE}/
+
+`echo "Results for ${DATE}" > summary.${DATE}`
+
+for file in $( ls $DATE ); do
+	`echo $file >> summary.${DATE}`
+	`grep "|<" $DATE/$file | grep "= 0" | wc >> summary.${DATE}`
+done
+
+
+
+
+	

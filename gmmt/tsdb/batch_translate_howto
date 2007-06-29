@@ -4,7 +4,7 @@ Create an input file with test sentences in matrix/gmmt, called <src-lg>.txt
 
 In the logon/ directory, replacing <src-lg> and <tgt-lg> as appropriate:
 
-./batch --binary --from <src-lg> --to <tgt-lg> --ascii ./uw/mmt/test_sentences/<src-lg>.txt
+./batch --from <src-lg> --to <tgt-lg> --ascii ./uw/mmt/test_sentences/<src-lg>.txt
 
 Point your tsdb Database Root at 
 
