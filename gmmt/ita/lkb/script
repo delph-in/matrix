@@ -46,7 +46,7 @@
 ;;; 2006-05-30 Transfer rules for 567 MT demo
 
 ;#+:mt
-;(lkb-load-lisp (this-directory) "mt.lsp" t)
+(lkb-load-lisp (this-directory) "mt.lsp" t)
 
 ;#+:mt
 ;(mt:read-transfer-rules 

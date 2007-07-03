@@ -1,4 +1,4 @@
 ;;; Hey, emacs(1), this is -*- Mode: TDL; Coding: utf-8; -*- got it?
 
-make-bad := make-bad-mtr.
+make-harm := make-harm-mtr.
 make-pursuit := make-pursuit-mtr.

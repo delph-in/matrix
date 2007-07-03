@@ -31,18 +31,27 @@ quantifier_rel := predsort.
 pronoun_q_rel := quantifier_rel. ; Pronouns
 reg_quant_rel := quantifier_rel. ; Everything else
 
-; Demonstrative types
-non_indef_q_rel := reg_quant_rel.          ; Both definite and demonstrative
-demonstrative_q_rel := non_indef_q_rel.
-non+demonstrative_q_rel := reg_quant_rel.
-proximal+dem_q_rel := demonstrative_q_rel. ; close to speaker
-distal+dem_q_rel := demonstrative_q_rel.   ; away from speaker
-remote+dem_q_rel := distal+dem_q_rel.      ; away from speaker and hearer
-hearer+dem_q_rel := distal+dem_q_rel.      ; near hearer
+; ; Demonstrative types
+; non_indef_q_rel := reg_quant_rel.          ; Both definite and demonstrative
+; demonstrative_q_rel := non_indef_q_rel.
+; non+demonstrative_q_rel := reg_quant_rel.
+; proximal+dem_q_rel := demonstrative_q_rel. ; close to speaker
+; distal+dem_q_rel := demonstrative_q_rel.   ; away from speaker
+; remote+dem_q_rel := distal+dem_q_rel.      ; away from speaker and hearer
+; hearer+dem_q_rel := distal+dem_q_rel.      ; near hearer
 
 
-def_q_rel := non_indef_q_rel & non+demonstrative_q_rel.      ; definite
-indef_q_rel := non+demonstrative_q_rel.    ; indefinite
+;;; Relations for demonstratives
+
+demonstrative_a_rel := predsort.
+proximal+dem_a_rel := demonstrative_a_rel. ;; close to speaker.
+distal+dem_a_rel := demonstrative_a_rel. ;; away from speaker.
+remote+dem_a_rel := distal+dem_a_rel. ;;away from speaker and hearer
+hearer+dem_a_rel := distal+dem_a_rel. ;;near hearer
+
+
+;def_q_rel := non_indef_q_rel & non+demonstrative_q_rel.      ; definite
+;indef_q_rel := non+demonstrative_q_rel.    ; indefinite
 
 
 ; Case types
@@ -111,9 +120,10 @@ pronoun-lex := noun-lex &
   INFLECTED - ].
 
 
+; ERb 2007-07-02 Probably no need to go digging in the SPR's RELS anymore.
+
 common-noun-lex := noun-lex &
-[ SYNSEM.LOCAL [ CAT.VAL.SPR < [ LOCAL.CONT.RELS < ! [PRED "exist_q_rel"] ! > ] >,
-		 CONT.HOOK.INDEX.PNG [ PER third ] ],
+[ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG [ PER third ] ],
   INFLECTED - ].
 
 ; BUGBUG Need to implement proper nouns.  Currently, I'm treating them as common nounds.
@@ -125,12 +135,35 @@ kardan-noun-lex := compound-noun-lex &
 [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] >,
   COMP_AUX '_make_v_rel ].
 
-demonstrative-lex := basic-determiner-lex &
-[ SYNSEM.LOCAL [ CAT [ HEAD det & [ MOD < > ],
-		       VAL [ SUBJ <>,
-			     COMPS <>,
-			     SPR <>]],
-		 CONT.HOOK.INDEX.COG-ST activ+fam ]].
+;demonstrative-lex := basic-determiner-lex &
+;[ SYNSEM.LOCAL [ CAT [ HEAD det & [ MOD < > ],
+;		       VAL [ SUBJ <>,
+;			     COMPS <>,
+;			     SPR <>]],
+;		 CONT.HOOK.INDEX.COG-ST activ+fam ]].
+
+;;; ERB 2007-07-02 Copied from English
+
+demon-det-lex := norm-hook-lex-item & basic-zero-arg &
+   [ SYNSEM [ LOCAL [ CAT [ HEAD det,
+			    VAL [ SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #ind & 
+								     [COG-ST activ+fam],
+							       LTOP #larg ],
+				  SPR < >,
+				  SUBJ < >,
+				  COMPS < > ]],
+		      CONT [ HCONS < ! qeq & 
+				     [ HARG #harg,
+				       LARG #larg ] ! >, 
+			     RELS <![ PRED "exist_q_rel"], 
+				   #lkey & arg1-relation & 
+				   [LBL #larg,
+				    ARG1 #ind] ! >] ] ,
+	      LKEYS [ KEYREL quant-relation &
+			     [ ARG0 #ind,
+			       RSTR #harg ], ALTKEYREL #lkey]]].
+
+
 
 noun-phrase-cat := cat &
 [ HEAD noun,
@@ -197,10 +230,15 @@ present-ditransitive-verb-lex := present-verb-lex & ditransitive-verb-lex.
 
 
 ; Verbs like budan, kardan, etc. that combine with non-verbal elements to form compound verbs.
+; ERB 2007-07-02 Guessing that these don't combine with nouns marked
+; for indefiniteness.  Giving [ COG-ST uniq-or-more ] to cut down on
+; realizations in MT.
+
 compound-verb-lex := verb-lex &
 [ SYNSEM.LOCAL [ CAT [ HEAD.HEAD_FINAL +,
 		       VAL [ COMPS < #comp1 &
-				     [ LOCAL.CAT non-acc-noun-phrase-cat ],
+				     [ LOCAL [ CONT.HOOK.INDEX.COG-ST uniq-or-more,
+					       CAT non-acc-noun-phrase-cat ]],
 				     ...> ] ] ],
   ARG-ST < [], #comp1, ... > ].
 
@@ -391,14 +429,32 @@ covert-det-def-phrase := covert-det-phrase &
 
 
 ; Lexical rules
+
+; ERB 2007-07-02
+; This was requiring SPR < [LOCAL.CONT.RELS <! [PRED "exist_q_rel"] !> ] >,
+; but it's not clear why (probably some relic of having multiple 
+; bare-np phrases, now gone).
+
 indef_n_lex_rule := infl-ltow-rule &
 [ SYNSEM.LOCAL
-    [ CAT.VAL.SPR < [LOCAL.CONT.RELS <! [PRED "exist_q_rel"] !> ] >,
-      CONT.HOOK.INDEX.COG-ST type-id ],
+    [ CONT.HOOK.INDEX.COG-ST type-id ],
   DTR.SYNSEM.LOCAL.CAT.HEAD.DEFINITE -].
 
 ; def_n_lex_rule changes SYNSEM.LOCAL.CAT.HEAD.DEFINITE from - to +.  Since this is an ltol rule we have
 ; to copy up the daughter SYNSEM ourselves and make the appropriate change.
+
+; ERB 2007-07-02  This one is saying "uniq-or-more" for the COG-ST of
+; the mother and "uniq+fam+act" for the COG-ST of the daughter.  It should
+; only say one or the other. It's currently saying effectively "uniq+fam+act"
+; Add that to the fact that we're pushing the pronouns through this lex
+; rule and they say "activ-or-more" and you end up with the pronouns having
+; a COG-ST value of "activated".  In the long run, we might want to
+; create a separate rule for the pronouns.  For now, I'm going to remove
+; the "uniq+fam+act" constraint here.
+
+; ERB 2007-07-02 Also, not longer any reason to go digging in the
+; SPR's RELS list.
+
 def_n_lex_rule := const-ltol-rule &
 [ INFLECTED -,
   SYNSEM [ OPT #opt,
@@ -406,8 +462,7 @@ def_n_lex_rule := const-ltol-rule &
 				KEYS #keys,
 				CASE #case,
 				DEFINITE + ],
-			 VAL #val & [ SPR < [ LOCAL.CONT [ RELS <! [PRED "exist_q_rel"] !>,
-                                                           HOOK.INDEX.COG-ST uniq-or-more ] ] > ],
+			 VAL #val & [ SPR < [ LOCAL.CONT [ HOOK.INDEX.COG-ST uniq-or-more ] ] > ],
 			 MC #mc,
 			 POSTHEAD #posthead ],
 		   CONT #cont,
@@ -426,8 +481,7 @@ def_n_lex_rule := const-ltol-rule &
 			     VAL #val,
 			     MC #mc,
 			     POSTHEAD #posthead ],
-		       CONT #cont &
-			 [ HOOK.INDEX.COG-ST uniq+fam+act ],
+		       CONT #cont,
 		       AGR #agr,
 		       CTXT #ctxt ],
 	       NON-LOCAL #non-local,

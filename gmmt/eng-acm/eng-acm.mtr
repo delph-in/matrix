@@ -4,5 +4,5 @@ pro-insert-arg1 := pro-insert-arg1-mtr.
 pro-insert-arg2 := pro-insert-arg2-mtr.
 pro-insert-arg3 := pro-insert-arg3-mtr.
 
-make-bad := make-bad-mtr.
+make-harm := make-harm-mtr.
 make-pursuit := make-pursuit-mtr.

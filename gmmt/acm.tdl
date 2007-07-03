@@ -58,10 +58,22 @@ pro-insert-arg3-mtr := monotonic_mtr &
 
 ; overt pronouns -> pro-drop
 
+pronoun-delete-mtr := monotonic_omtr &
+ [ INPUT [ RELS < [ PRED "_pronoun_n_rel",
+		     ARG0 #x,
+		     LBL #larg ],
+		 [ PRED "exist_q_rel",
+		   ARG0 #x,
+		   RSTR #harg ] >,
+	   HCONS < qeq & [ LARG #larg,
+			    HARG #harg ] > ],
+   OUTPUT [ RELS < >,
+	    HCONS < > ]].
+
 
 ; MWEs
 
-make-bad-mtr := monotonic_mtr &
+make-harm-mtr := monotonic_mtr &
 [ INPUT [ RELS < [ PRED "_make_v_rel",
 		   LBL #lbl,
 		   ARG0 #arg0,
@@ -80,6 +92,29 @@ make-bad-mtr := monotonic_mtr &
 		    ARG1 #arg1,
 		    ARG2 #arg3 ] >,
 	   HCONS < > ]].
+
+
+hurt-mtr := monotonic_mtr &
+[ INPUT [ RELS < [ PRED "_hurt_v_rel",
+		   LBL #lbl,
+		   ARG0 #arg0,
+		   ARG1 #arg1,
+		   ARG2 #arg2 ] >,
+	  HCONS < > ],
+  OUTPUT [ RELS < [ PRED "_make_v_rel",
+		    LBL #lbl,
+		    ARG0 #arg0,
+		    ARG1 #arg1,
+		    ARG2 #pursuit,
+		    ARG3 #arg2 ],
+		  [ PRED "_harm_n_rel",
+		    LBL #larg,
+		    ARG0 #pursuit ],
+		  [ PRED "exist_q_rel",
+		    ARG0 #pursuit,
+		    RSTR #harg ] >,
+	   HCONS < [ HARG #harg,
+		     LARG #larg ] > ]].
 
 
 make-pursuit-mtr := monotonic_mtr &
@@ -101,4 +136,27 @@ make-pursuit-mtr := monotonic_mtr &
 		    ARG1 #arg1,
 		    ARG2 #arg3 ] >,
 	   HCONS < > ]].
+
+
+chase-mtr := monotonic_mtr &
+[ INPUT [ RELS < [ PRED "_chase_v_rel",
+		   LBL #lbl,
+		   ARG0 #arg0,
+		   ARG1 #arg1,
+		   ARG2 #arg2 ] >,
+	  HCONS < > ],
+  OUTPUT [ RELS < [ PRED "_make_v_rel",
+		    LBL #lbl,
+		    ARG0 #arg0,
+		    ARG1 #arg1,
+		    ARG2 #pursuit,
+		    ARG3 #arg2 ],
+		  [ PRED "_pursuit_n_rel",
+		    LBL #larg,
+		    ARG0 #pursuit ],
+		  [ PRED "exist_q_rel",
+		    ARG0 #pursuit,
+		    RSTR #harg ] >,
+	   HCONS < [ HARG #harg,
+		     LARG #larg ] > ]].
 

@@ -18,6 +18,7 @@
    ;; ... plus additional MRS and MTR type definitions for this language pair
    ;;
    (lkb-pathname (parent-directory) "mrs.tdl")
+   (lkb-pathname (parent-directory) "acm.tdl")
    (lkb-pathname (parent-directory) "mtr.tdl")))
 
 ;;;
@@ -33,5 +34,5 @@
 (mt:read-transfer-rules 
  (list
   (lkb-pathname (this-directory) "fas-acm.mtr"))
- "Accomodation for Icelandic"
+ "Accomodation for Farsi"
  :in :in :out :out :filter nil)
