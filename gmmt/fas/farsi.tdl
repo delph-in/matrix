@@ -309,7 +309,8 @@ clausal-particle := raise-sem-lex-item & basic-one-arg &
                            SUBJ < > ] ] ].
 
 polar-question-particle-lex := clausal-particle & 
-[ SYNSEM.LOCAL.CAT.HEAD polar_question_particle ].
+[ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,
+		 CAT.HEAD polar_question_particle ]].
 
 
 ;complementizer-lex := clausal-particle & 
@@ -455,6 +456,9 @@ indef_n_lex_rule := infl-ltow-rule &
 ; ERB 2007-07-02 Also, not longer any reason to go digging in the
 ; SPR's RELS list.
 
+; ERB 2007-07-03 Instead of constraining the COG-ST inside SPR, doing it
+; directly on CONT.HOOK.INDEX.
+
 def_n_lex_rule := const-ltol-rule &
 [ INFLECTED -,
   SYNSEM [ OPT #opt,
@@ -462,10 +466,10 @@ def_n_lex_rule := const-ltol-rule &
 				KEYS #keys,
 				CASE #case,
 				DEFINITE + ],
-			 VAL #val & [ SPR < [ LOCAL.CONT [ HOOK.INDEX.COG-ST uniq-or-more ] ] > ],
+			 VAL #val,
 			 MC #mc,
 			 POSTHEAD #posthead ],
-		   CONT #cont,
+		   CONT #cont & [ HOOK.INDEX.COG-ST uniq-or-more ],
 		    AGR #agr,
 		   CTXT #ctxt ],
 	   NON-LOCAL #non-local,

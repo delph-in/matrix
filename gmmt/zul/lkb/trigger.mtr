@@ -3,7 +3,11 @@ ukuthi-trigger-rule := generator-rule &
    FLAGS [ EQUAL < #h >,
 	   TRIGGER "ukuthi" ]].
 
+; Trying to see what happens if we only put this
+; in when there is an actual question (not prop-or-ques)
+
 na-trigger-rule := generator-rule &
- [ CONTEXT.RELS <! [ ARG0.SF prop-or-ques & #s ] !>,
-   FLAGS [ SUBSUME < #s >,
+ [ CONTEXT.RELS <! [ ARG0.SF ques & #s ] !>,
+   FLAGS [ EQUAL < #s >,
 	   TRIGGER "na" ]].
+

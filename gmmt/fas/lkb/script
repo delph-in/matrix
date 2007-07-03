@@ -29,7 +29,10 @@
   (list 
    (lkb-pathname (parent-directory) "matrix.tdl")
    (lkb-pathname (parent-directory) "head-types.tdl")
-   (lkb-pathname (parent-directory) "farsi.tdl")))
+   (lkb-pathname (parent-directory) "farsi.tdl")
+	; ERB 2007-07-3 Support for tigger rules
+   (lkb-pathname (this-directory) "trigger.tdl")
+))
 
 ;;;
 ;;; Next, the lexicon itself, instantiating (lexical) types of the grammar
@@ -91,3 +94,9 @@
 
 
 (setf *last-parses* '("in gorbe ketabra xand" "man mitavanam shishera bexoram" "gorbe amad"))
+
+(mt:read-transfer-rules 
+ (list
+  (lkb-pathname (this-directory) "trigger.mtr"))
+ "Generation Trigger Rules"
+ :filter nil :task :trigger :recurse nil :edges 200)

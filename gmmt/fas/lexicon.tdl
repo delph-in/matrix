@@ -510,32 +510,37 @@ anBUGBUG := demon-det-lex &  [ STEM <"an">,
 
 
 ; Prepositions
+
+; ERB 2007-07-03 Commenting these out: Bill didn't associate any
+; semantics with them, so they are just slowing the generator down
+; (and do not actually appear in any of our test sentences.)
+
 ; English gloss: in
-dar := preposition-lex & [ STEM <"dar"> ].
+;dar := preposition-lex & [ STEM <"dar"> ].
 
 ; English gloss: to
-be := preposition-lex & [ STEM <"be"> ].
+;be := preposition-lex & [ STEM <"be"> ].
 
 ; English gloss: with, despite
-ba := preposition-lex & [ STEM <"ba"> ].
+;ba := preposition-lex & [ STEM <"ba"> ].
 
 ; English gloss: as far as, until
-ta := preposition-lex & [ STEM <"ta"> ].
+;ta := preposition-lex & [ STEM <"ta"> ].
 
 ; English gloss: from, by, through, since, than
-az := preposition-lex & [ STEM <"az"> ].
+;az := preposition-lex & [ STEM <"az"> ].
 
 ; English gloss: on
-bar := preposition-lex & [ STEM <"bar"> ].
+;bar := preposition-lex & [ STEM <"bar"> ].
 
 ; English gloss: without
-bi := preposition-lex & [ STEM <"bi"> ].
+;bi := preposition-lex & [ STEM <"bi"> ].
 
 ; English gloss: except
-joz := preposition-lex & [ STEM <"joz"> ].
+;joz := preposition-lex & [ STEM <"joz"> ].
 
 ; English gloss: like
-cun := preposition-lex & [ STEM <"cun"> ].
+;cun := preposition-lex & [ STEM <"cun"> ].
 
 
 ; Particles
