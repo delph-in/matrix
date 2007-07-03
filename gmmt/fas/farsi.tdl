@@ -579,7 +579,7 @@ subjunctive_lex_rule := verb_prefix_rule &
 ; SYNSEM.LOCAL.CAT.HEAD.NEG_PREFIX diacritic flag to +.  Since this
 ; rule does more than just change TAM, it does not derive from
 ; verb_prefix_rule.
-adv-relation := arg1-relation.
+adv-relation := arg1-ev-relation.
 negation-lex-rule := infl-ltol-rule &
 [ SYNSEM [ LOCAL [ CAT [ HEAD [ MOD #mod,
 				KEYS #keys,
@@ -593,9 +593,11 @@ negation-lex-rule := infl-ltol-rule &
 		   AGR #agr ],
 	   NON-LOCAL #non-loc ],
   C-CONT [ HOOK [ INDEX #ind,    
+		  LTOP #ltop,
 		  XARG #xarg ],
 	   RELS < ! adv-relation &
 		  [ PRED '_neg_r_rel,
+		    LBL #ltop,
 		    ARG1 #harg ] ! > ,
 	   HCONS < ! qeq &
 		   [ HARG #harg,

@@ -307,11 +307,13 @@ navaxt := past-intransitive-verb-lex & [ STEM <"navaxt">,
 						 LKEYS.KEYREL.PRED '_play_v_rel ] ].
 
 ; English gloss: sleep
+; ERB 2007-07-03 For MMT: Drop the informatio nthat this is the past
+; tense stem, and let it work both ways.
+
 ; Infinitive: xabidan
 ; [Lambton 1979]
 xabid := intransitive-verb-lex & [ STEM <"xabid">,
-				   SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
-					    LKEYS.KEYREL.PRED '_sleep_v_rel ] ].
+				   SYNSEM [ LKEYS.KEYREL.PRED '_sleep_v_rel ] ].
 
 ; English gloss: wake up
 ; [iranianlanguages.com]
