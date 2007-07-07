@@ -584,14 +584,12 @@ verb-lex := basic-verb-lex &
 
 ;modal-verb-lex := verb-lex & trans-first-arg-raising-lex-item &
 modal-verb-lex := verb-lex & trans-first-arg-raising-lex-item-1 &
-   [ SYNSEM [ LOCAL.CAT.VAL.COMPS < #comps >,
-	      LKEYS.KEYREL.ARG1 #arg],
+   [ SYNSEM [ LOCAL.CAT.VAL.COMPS < #comps > ],
      ARG-ST < [ ],
               #comps &
               [ LOCAL [ CAT [ HEAD verb & [FORM inf],
 			      VAL [ SUBJ < [] >,
-				    COMPS < > ]],
-			CONT.HOOK.LTOP #arg ]] > ].
+				    COMPS < > ]]]] > ].
 
 ;modal2-verb-lex := verb-lex & trans-first-arg-raising-lex-item &
 modal2-verb-lex := verb-lex & trans-first-arg-raising-lex-item-1 &

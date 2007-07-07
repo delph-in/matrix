@@ -208,8 +208,7 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
 ; Common noun.
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL
-      [ CAT [ HEAD.NTYPE common,
-	      VAL.SPR < [ LOCAL.CONT.RELS <! [ PRED "exist_q_rel" ] !> ] > ],
+      [ CAT [ HEAD.NTYPE common ],
         CONT.HOOK.INDEX.PNG.PER third ],
     NEEDINF needcat ].
 
@@ -488,7 +487,7 @@ head-spec-phrase := basic-head-spec-phrase & head-final &
 ; No-spec noun-phrase supertype
 nsnp-phrase := basic-bare-np-phrase &
   [ SYNSEM.LOCAL.CAT.VAL.PREMODIFIABLE -,
-    C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
+    C-CONT.RELS.LIST.FIRST.PRED "exist_q_rel" ].
 
 ; Head-covert-specifier phrase.
 head-nospec-phrase := nsnp-phrase &
@@ -734,7 +733,7 @@ basic-np-top-coord-rule := nom-coord-phrase &
     [ HOOK
       [ LTOP #ltop,
         INDEX #ind ],
-      RELS <! [ ARG0 #ind, RSTR #ltop ] !>,
+      RELS <! [ PRED "exist_q_rel", ARG0 #ind, RSTR #ltop ] !>,
       HCONS <! !> ],
     NBR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < >,
     BR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].

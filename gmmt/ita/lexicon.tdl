@@ -559,17 +559,17 @@ vuole-trans := 3sg-irreg-trans-verb-lex &
 che := decl-comp-lex-item &
    [ STEM <"che"> ].
 
-se := int-comp-lex-item &
-   [ STEM <"se"> ].
+;se := int-comp-lex-item &
+;   [ STEM <"se"> ].
 
-ad := prep-lex-item & 
-   [ STEM <"ad"> ].
+;ad := prep-lex-item & 
+;   [ STEM <"ad"> ].
 
-a := prep-lex-item & 
-   [ STEM <"a"> ].
+;a := prep-lex-item & 
+;   [ STEM <"a"> ].
 
-per := prep-lex-item & 
-   [ STEM <"per"> ].
+;per := prep-lex-item & 
+;   [ STEM <"per"> ].
 
 ;;; Determiners
 

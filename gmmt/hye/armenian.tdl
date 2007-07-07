@@ -159,13 +159,18 @@ indef-det-lex := det-lex &
   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX.COG-ST type-id ] > ].
 
 ; verbs
+
+; ERb 2007-07-05 Identify XARG with subj's index.
+
 verb-lex := basic-verb-lex &
   [ INFLECTED -,
     PN-MARKED -,
-    SYNSEM.LOCAL.CAT [ HEAD verb & [ MOD < > ],
+    SYNSEM.LOCAL [ CONT.HOOK.XARG #xarg,
+		   CAT [ HEAD verb & [ MOD < > ],
                        VAL [ SPR < >,
-                             SUBJ < synsem & #subj >,
-                             SPEC < > ]],
+                             SUBJ < synsem & #subj &
+				    [ LOCAL.CONT.HOOK.INDEX #xarg ] >,
+                             SPEC < > ]]],
     ARG-ST.FIRST #subj &
               [ LOCAL.CAT [ HEAD noun,
                             VAL.SPR < > ]]].
@@ -222,26 +227,50 @@ nom-acc-dat-optobj-ditrans-verb-lex := ditrans-verb-lex &
              [ OPT -,
                LOCAL.CAT.HEAD.CASE dat ]> ].
 
-potential-aux-verb-lex := verb-lex &
+; ERB 2007-07-05 In the new message-free universe, we want
+; a qeq between the ARG1 and the complement's LTOP here.  That's
+; provided by trans-first-arg-raising-lex-item-1 in matrix.tdl,
+; but we seem not to be inheriting that here...  I'm going to
+; switch that over.  It looks like this was doing argument
+; composition, but in fact, I think that will be compatible with
+; trans-first-arg-raising-lex-item-1 anyway (since the ARG-ST
+; only has two elements on it, even if the COMPS list is longer).
+
+
+
+potential-aux-verb-lex := trans-first-arg-raising-lex-item-1 &
+			  verb-lex &
   [ KE-MARKED +,
-    SYNSEM [ LOCAL [ CAT [ HEAD verb,
-			   VAL [ SUBJ <#subj & 
-				       synsem & 
-				       [ LOCAL.CAT [ HEAD noun & [ CASE nom ],
-						     VAL [ SPR < >,
-							   COMPS < > ]]]>,
-				 COMPS [ FIRST #verb,
-					 REST #comps ]]]],
-             LKEYS.KEYREL [ ARG1 #ltop ]],
-    ARG-ST [ FIRST #subj,
-             REST [ FIRST #verb &
-                          [ OPT -,
-                            LOCAL [ CONT.HOOK.LTOP #ltop,
-                                    CAT [HEAD verb &
-                                              [ FORM inf ],
-                                         VAL [ SUBJ <#subj>,
-                                               COMPS #comps ]]]],
-                    REST #comps ]]].
+    SYNSEM.LOCAL [ CAT [ VAL [ SUBJ < [ LOCAL.CAT.HEAD.CASE nom ] >, 
+			       COMPS [ FIRST #verb,
+				       REST #comps ] ]]],
+    ARG-ST.REST [ FIRST #verb &
+			[ OPT -,
+			  LOCAL.CAT [ HEAD verb &
+					   [ FORM inf ],
+				      VAL [ SUBJ cons,
+					    COMPS #comps ]]]]].
+
+; potential-aux-verb-lex := verb-lex &
+;   [ KE-MARKED +,
+;     SYNSEM [ LOCAL [ CAT [ HEAD verb,
+; 			   VAL [ SUBJ <#subj & 
+; 				       synsem & 
+; 				       [ LOCAL.CAT [ HEAD noun & [ CASE nom ],
+; 						     VAL [ SPR < >,
+; 							   COMPS < > ]]]>,
+; 				 COMPS [ FIRST #verb,
+; 					 REST #comps ]]]],
+;              LKEYS.KEYREL [ ARG1 #ltop ]],
+;     ARG-ST [ FIRST #subj,
+;              REST [ FIRST #verb &
+;                           [ OPT -,
+;                             LOCAL [ CONT.HOOK.LTOP #ltop,
+;                                     CAT [HEAD verb &
+;                                               [ FORM inf ],
+;                                          VAL [ SUBJ <#subj>,
+;                                                COMPS #comps ]]]],
+;                     REST #comps ]]].
 
 negative-aux-verb-lex := verb-lex &
   [ INFLECTED -,

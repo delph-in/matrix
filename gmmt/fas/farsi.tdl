@@ -177,10 +177,10 @@ non-acc-noun-phrase-cat := noun-phrase-cat &
 
 
 ; Verbs
+; ERB 2007-07-03 This had [ MC - ], for reasons I cannot divine.
 
 verb-lex := basic-verb-lex &
-[ SYNSEM.LOCAL [ CAT [MC -,
-                      HEAD verb & [ MOD < >,
+[ SYNSEM.LOCAL [ CAT [HEAD verb & [ MOD < >,
                                     NEG_PREFIX -,
 				    TAM #tam &
 					[ASPECT complete,

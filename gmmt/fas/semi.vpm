@@ -34,7 +34,7 @@ E.TENSE : TENSE
   past_tense     <> past
   present_tense  <> pres
   future_tense   <> fut
-  tense  <> [e]
+  present_tense  <> [e]
 ;  *        <> !
 
 SF : SF

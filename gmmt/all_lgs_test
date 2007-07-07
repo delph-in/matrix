@@ -1,13 +1,28 @@
 #!/bin/bash
 
+if [ "$1" = "nocomp" ]; then
+	echo "No previous file for comparison."
+else if [ -e "alt/$1" ]; then
+	echo "Comparing with $1" 
+else
+	echo "Usage: all_lgs_test nocomp | comparison file"
+	exit 1
+fi
+fi
 
 DATE=`date "+%Y-%m-%d"`
 #LGS=[eng hau]
 
+if [ -e "~/logon/uw/mmt/alt/${DATE}" ]; then
+    echo "alt/${DATE} exists.  Please move it out of the way."
+    exit 1
+fi
 
-for src in eng epo fas fin hai hau heb hye isl ita spa zul; do
-   	for tgt in eng epo fas fin hai hau heb hye isl ita spa zul; do
-      
+for src in eng epo fas fin hai hau heb; do
+#for src in eng epo fas fin hai hau heb hye isl ita spa zul; do
+#   	for tgt in eng epo fas fin hai hau heb hye isl ita spa zul; do
+   	for tgt in hye; do
+    
 		if [ "${tgt}" != "${src}" ]; then
 
 			`echo ~/logon/batch --binary --from $src --to $tgt --ascii ~/logon/uw/mmt/test_sentences/${src}.txt`
@@ -22,13 +37,18 @@ mkdir ~/logon/uw/mmt/alt/${DATE}
 cd ~/logon/uw/mmt/alt/
 mv ~/*.fan ./${DATE}/
 
-`echo "Results for ${DATE}" > summary.${DATE}`
+echo "Results for ${DATE}" > summary.${DATE}
 
 for file in $( ls $DATE ); do
 	`echo $file >> summary.${DATE}`
 	`grep "|<" $DATE/$file | grep "= 0" | wc >> summary.${DATE}`
 done
 
+cd ~/logon/uw/mmt/
+python formatresults.py alt/summary.${DATE} alt/$1
+mv table.tex alt/table.$DATE.tex
+cd ~/logon/uw/mmt/alt
+pdflatex table.$DATE.tex
 
 
 
