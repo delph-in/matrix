@@ -1,0 +1,51 @@
+sag xabidand
+koira+Pl+Nom nukkua+3p+Pl
+
+sag mashinra dombal kardand
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+man tora dombal kardam
+minA metsAstAA+1p+Sg sinA+Sg+Acc
+
+in sag xabidand
+tuo+Pl+Nom koira+Pl+Nom nukkua+3p+Pl
+
+sag xordand
+koira+Pl+Nom syOdA+3p+Pl
+
+man tavanam shishera bexoram
+minA voida+1p+Sg syOdA+Inf lasi+Sg+Part
+
+an manra dard nekonad
+hAn ei sattua+3p+Sg minA+Sg+Part
+
+sag mashinra dombal kardand
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+man andishidam ke to dunesti ke sag mashinra dombal kardand
+minA ajatella+1p+Sg ettA sinA tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+man porsidam aya to dunesti ke sag mashinra dombal kardand
+minA kysyA+1p+Sg jos sinA tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+gorbe va sag mashinra dombal kardand
+kissa+Pl+Nom ja koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+gorbe mashinra dombal kardand va gorbe sagra dombal kardand
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc ja kissa+Pl+Nom metsAstAA+3p+Pl koira+Pl+Acc
+
+gorbe mashinra dombal kardand va xabidand
+kissa+Pl+Nom metsAstAA+3p+Pl koira+Pl+Acc ja nukkua+3p+Pl
+
+aya gorbe sagra dombal kardand
+metsAstAA+3p+Pl+Ques kissa+Pl+Nom koira+Pl+Acc
+
+sagra dombal bekon
+metsAstAA koira+Sg+Acc
+
+sag gurisnah xordand
+nAlkAinen+Pl+Nom koira+Pl+Nom syOdA+3p+Pl
+
+sag gurisnah xordand zud
+nAlkAinen+Pl+Nom koira+Pl+Nom syOdA+3p+Pl nopeasti
+

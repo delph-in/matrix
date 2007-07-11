@@ -18,14 +18,16 @@ if [ -e "~/logon/uw/mmt/alt/${DATE}" ]; then
     exit 1
 fi
 
-for src in eng epo fas fin hai hau heb; do
-#for src in eng epo fas fin hai hau heb hye isl ita spa zul; do
-#   	for tgt in eng epo fas fin hai hau heb hye isl ita spa zul; do
-   	for tgt in hye; do
+languages="eng epo fas fin hai hau heb hye isl ita spa zul";
+#for src in $languages; do
+for src in "ita"; do
+   	for tgt in $languages; do
     
 		if [ "${tgt}" != "${src}" ]; then
-
-			`echo ~/logon/batch --binary --from $src --to $tgt --ascii ~/logon/uw/mmt/test_sentences/${src}.txt`
+			killall pvmd3;
+			killall -9 pvmd3;
+			sleep 2;
+			$LOGONROOT/batch --binary --from $src --to $tgt --ascii $LOGONROOT/uw/mmt/test_sentences/${src}.txt
 
 		fi
 

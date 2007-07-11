@@ -1,0 +1,51 @@
+Dogs sleep.
+sag xabidand
+
+Dogs chase cars.
+sag mashinra dombal kardand
+
+I chase you.
+man tora dombal kardam
+
+These dogs sleep.
+in sag xabidand
+
+Dogs eat.
+sag xordand
+
+I can eat glass.
+man tavanam shishera bexoram
+
+It doesnt hurt me.
+an manra dard nekonad
+
+The dogs chase cars.
+sag mashinra dombal kardand
+
+I think that you know that dogs chase cars.
+man andishidam ke to dunesti ke sag mashinra dombal kardand
+
+I ask whether you know that dogs chase cars.
+man porsidam aya to dunesti ke sag mashinra dombal kardand
+
+Cats and dogs chase cars.
+gorbe va sag mashinra dombal kardand
+
+Dogs chase cars and cats chase dogs.
+gorbe mashinra dombal kardand va gorbe sagra dombal kardand
+
+Cats chase dogs and sleep.
+gorbe mashinra dombal kardand va xabidand
+
+Do cats chase dogs?
+aya gorbe sagra dombal kardand
+
+Chase the dog.
+sagra dombal bekon
+
+Hungry dogs eat.
+sag gurisnah xordand
+
+Hungry dogs eat quickly.
+sag gurisnah xordand zud
+
