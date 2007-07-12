@@ -24,7 +24,7 @@ head-adj-int := finnish-head-adj-int-phrase.
 ;decl := decl-clause.
 
 ;lab6 additions below
-;int := int-clause.
+int := int-clause.
 imperative-head-opt-subj := imperative-head-opt-subj-phrase.
 ;imp := imp-clause.
 ;cp-interrogative := cp-interrogative-clause.

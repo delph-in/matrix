@@ -273,10 +273,14 @@ bare-np-phrase := basic-bare-np-phrase &
 
 ;; RGM 4-14-05 Commented out 4-9-05 entries and created entries for lab3
 
+;pronoun-bare-np-phrase := basic-bare-np-phrase &
+;[ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.PRO +,
+;  VAL.SPR < [ LOCAL.CONT.RELS < ! [ PRED #pred & "exist_q_rel" ] ! > ] > ],
+;  C-CONT.RELS < ! [ PRED #pred ] ! > ].
+
 pronoun-bare-np-phrase := basic-bare-np-phrase &
-[ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.PRO +,
-  VAL.SPR < [ LOCAL.CONT.RELS < ! [ PRED #pred & "exist_q_rel" ] ! > ] > ],
-  C-CONT.RELS < ! [ PRED #pred ] ! > ].
+[ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.PRO + ],
+  C-CONT.RELS < ! [ PRED "exist_q_rel" ] ! > ].
 
 ;; RGM 5-4-05 Created subtype of declarative-clause (from matrix.tdl)
 
@@ -305,6 +309,16 @@ pronoun-bare-np-phrase := basic-bare-np-phrase &
 ;				VAL [ SPR < >,
 ;				      COMPS < >,
 ;				      SUBJ < anti-synsem > ]]]].
+
+int-clause := interrogative-clause & head-only &
+  [ SYNSEM.LOCAL.CAT [ HEAD.INV +,
+                       VAL #val,
+                       MC + ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na,
+                                VAL #val &
+                                    [ SUBJ < >,
+                                      COMPS < > ] ],
+    C-CONT.HOOK.INDEX.SF ques ] .
 
 cp-interrogative-clause := interrogative-clause & head-only &
 [ SYNSEM.LOCAL [ CAT [ IMPERATIVE -,
