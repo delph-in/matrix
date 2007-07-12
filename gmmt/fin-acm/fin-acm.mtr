@@ -2,3 +2,8 @@
 
 make-harm := make-harm-mtr.
 make-pursuit := make-pursuit-mtr.
+
+;; Pro-drop for subjects only
+
+pro-insert-arg2 := pro-insert-arg2-mtr.
+pro-insert-arg3 := pro-insert-arg3-mtr.

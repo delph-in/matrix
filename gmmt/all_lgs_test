@@ -20,15 +20,13 @@ fi
 
 languages="eng epo fas fin hai hau heb hye isl ita spa zul";
 #for src in $languages; do
+count=2;
 for src in "ita"; do
    	for tgt in $languages; do
     
 		if [ "${tgt}" != "${src}" ]; then
-			killall pvmd3;
-			killall -9 pvmd3;
-			sleep 2;
-			$LOGONROOT/batch --binary --from $src --to $tgt --ascii $LOGONROOT/uw/mmt/test_sentences/${src}.txt
-
+		    $LOGONROOT/batch --binary --from $src --to $tgt --ascii $LOGONROOT/uw/mmt/test_sentences/${src}2${tgt}.txt
+			    sleep 250;
 		fi
 
    	done
