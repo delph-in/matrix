@@ -36,7 +36,8 @@
 (list
 (lkb-pathname (parent-directory) "matrix.tdl")
 (lkb-pathname (parent-directory) "head-types.tdl")
-   (lkb-pathname (parent-directory) "english.tdl")
+(lkb-pathname (parent-directory) "english.tdl")
+(lkb-pathname (this-directory) "transfer.tdl")
 ))
 
 ;;;
@@ -113,3 +114,8 @@
 (if (eq (length *last-parses*) 1)
    (setf *last-parses* '("the cat sleeps" "the cat eats the dog")))
 
+(mt:read-transfer-rules 
+ (list
+  (lkb-pathname (this-directory) "trigger.mtr"))
+ "Generation Trigger Rules"
+ :filter nil :task :trigger :recurse nil :edges 200 :subsume nil)

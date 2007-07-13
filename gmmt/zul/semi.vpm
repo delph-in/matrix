@@ -17,11 +17,28 @@
 ;;; carried over will be deleted.
 ;;;
 
+;PNG.PER : PERS
+;  first  <> 1
+;  second <> 2
+;  third  <> 3
+;  *      <> !
+
+;PNG.PER PNG.NCL : PERS NUM
+;  third sg-ncl <> 3 sg
+;  third pl-ncl <> 3 non-sg
+
+PNG.NCL : NUM
+  sg-ncl >> sg
+  pl-ncl >> non-sg
+
+PNG.NCL : PERS NUM
+  sg-ncl << 3 sg
+  pl-ncl << 3 non-sg
+
 PNG.PER : PERS
-  first  <> 1
+  first <> 1
   second <> 2
-  third  <> 3
-  *      <> !
+  third <> 3
 
 PNG.NUM : NUM
   sg   <> sg
@@ -29,6 +46,7 @@ PNG.NUM : NUM
   dual <> dual
   pl   <> pl
   *    <> !
+
 
 E.TENSE : TENSE
   past     <> past
@@ -45,6 +63,7 @@ SF : SF
   prop <> prop
   ques <> ques
   prop << prop-or-ques
+  prop-or-ques >> prop-or-ques
   comm <> comm
 
 ;;; ERB 2007-05-19 I think we have to put the most specific

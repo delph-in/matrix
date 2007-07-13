@@ -130,4 +130,4 @@
  (list
   (lkb-pathname (this-directory) "trigger.mtr"))
  "Generation Trigger Rules"
- :filter nil :task :trigger :recurse nil :edges 200)
+ :filter nil :task :trigger :recurse nil :edges 200 :subsume nil)

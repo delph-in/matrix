@@ -12,7 +12,6 @@ ukuthi-trigger-rule := generator-rule &
 ;	   TRIGGER "na" ]].
 
 na-trigger-rule := generator-rule &
-  [ CONTEXT.HOOK.INDEX.SF ques& #s,
-    FLAGS [ EQUAL < #s >,
-	    TRIGGER "na" ]].
+  [ CONTEXT.HOOK.INDEX.SF ques,
+    FLAGS [ TRIGGER "na" ]].
 

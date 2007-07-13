@@ -4,7 +4,7 @@ Dogs sleep.
 koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
 Dogs chase cars.
 
-minA metsAstAA+1p+Sg sinA+Sg+Acc
+minA+Sg+Nom metsAstAA+1p+Sg sinA+Sg+Acc
 I chase you.
 
 tuo+Pl+Nom koira+Pl+Nom nukkua+3p+Pl
@@ -13,19 +13,19 @@ These dogs sleep.
 koira+Pl+Nom syOdA+3p+Pl
 Dogs eat.
 
-minA voida+1p+Sg syOdA+Inf lasi+Sg+Part
+minA+Sg+Nom voida+1p+Sg syOdA+Inf lasi+Sg+Part
 I can eat glass.
 
-hAn ei sattua+3p+Sg minA+Sg+Part
+hAn+Sg+Nom ei sattua+3p+Sg minA+Sg+Part
 It doesnt hurt me.
 
 koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
 The dogs chase cars.
 
-minA ajatella+1p+Sg ettA sinA tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+minA+Sg+Nom ajatella+1p+Sg ettA sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
 I think that you know that dogs chase cars.
 
-minA kysyA+1p+Sg jos sinA tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+minA+Sg+Nom kysyA+1p+Sg jos sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
 I ask whether you know that dogs chase cars.
 
 kissa+Pl+Nom ja koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc

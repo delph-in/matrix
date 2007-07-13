@@ -24,6 +24,8 @@ adj-head-int := adj-head-int-phrase .
 
 basic-head-opt-comp := basic-head-opt-comp-phrase .
 
+;opt-comp := head-opt-comp.
+
 imp := imp-phrase.
 
 opt-subj := opt-subj-phrase.

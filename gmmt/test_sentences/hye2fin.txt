@@ -5,7 +5,7 @@ shuner inkhnasharzher ke-halatsen
 koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
 
 es khez ke-halatsem
-minA metsAstAA+1p+Sg sinA+Sg+Acc
+minA+Sg+Nom metsAstAA+1p+Sg sinA+Sg+Acc
 
 ays shuner e ke-khnanan
 tuo+Pl+Nom koira+Pl+Nom nukkua+3p+Pl
@@ -14,19 +14,19 @@ shuner k-uten
 koira+Pl+Nom syOdA+3p+Pl
 
 es apaki krnam utel
-minA voida+1p+Sg syOdA+Inf lasi+Sg+Part
+minA+Sg+Nom voida+1p+Sg syOdA+Inf lasi+Sg+Part
 
 an intsi chhi vnaser
-hAn ei sattua+3p+Sg minA+Sg+Part
+hAn+Sg+Nom ei sattua+3p+Sg minA+Sg+Part
 
 shuner e inkhnasharzher ke-halatsen
 koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
 
 es kartsem or dun gitnas or shuner inkhnasharzher ke-halatsen
-minA ajatella+1p+Sg ettA sinA tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+minA+Sg+Nom ajatella+1p+Sg ettA sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
 
 es xntrem the dun gitnas or shuner inkhnasharzher ke-halatsen
-minA kysyA+1p+Sg jos sinA tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+minA+Sg+Nom kysyA+1p+Sg jos sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
 
 katuer ev shuner inkhnasharzher ke-halatsen
 kissa+Pl+Nom ja koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc

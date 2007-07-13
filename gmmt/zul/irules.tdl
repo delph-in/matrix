@@ -135,9 +135,9 @@ c2+c2a-subj-concord :=
 ;  %prefix (* u-)
 ;  c3-subj-concord-lex-rule.
 
-c4+c9-subj-concord :=
+c4-subj-concord :=
   %prefix (* i-)
-  c4+c9-subj-concord-lex-rule.
+  c4-subj-concord-lex-rule.
 
 c5-subj-concord :=
   %prefix (* li-)
@@ -155,9 +155,9 @@ c8+c10-subj-concord :=
   %prefix (* zi-)
   c8+c10-subj-concord-lex-rule.
 
-;c9-subj-concord :=
-;  %prefix (* i-)
-;  c9-subj-concord-lex-rule.
+c9-subj-concord :=
+  %prefix (* i-)
+  c9-subj-concord-lex-rule.
 
 ;c10-subj-concord :=
 ;  %prefix (* zi-)
@@ -220,9 +220,9 @@ c3-obj-concord :=
   %prefix (* wu-)
   c3-obj-concord-lex-rule.
 
-c4+c9-obj-concord :=
+c4-obj-concord :=
   %prefix (* yi-)
-  c4+c9-obj-concord-lex-rule.
+  c4-obj-concord-lex-rule.
 
 c5-obj-concord :=
   %prefix (* li-)
@@ -240,9 +240,9 @@ c8+c10-obj-concord :=
   %prefix (* zi-)
   c8+c10-obj-concord-lex-rule.
 
-;c9-obj-concord :=
-;  %prefix (* yi-)
-;  c9-obj-concord-lex-rule.
+c9-obj-concord :=
+  %prefix (* yi-)
+  c9-obj-concord-lex-rule.
 
 ;c10-obj-concord :=
 ;  %prefix (* zi-)
@@ -374,9 +374,9 @@ c2+c2a-rel-concord-lex-rule.
 ;%prefix (* o-)
 ;c3-rel-concord-lex-rule.
 
-c4+c9-rel-concord :=
+c4_rel-concord :=
 %prefix (* e-)
-c4+c9-rel-concord-lex-rule.
+c4-rel-concord-lex-rule.
 
 c5-rel-concord :=
 %prefix (* eli-)
@@ -394,9 +394,9 @@ c8+c10-rel-concord :=
 %prefix (* ezi-)
 c8+c10-rel-concord-lex-rule.
 
-;c9-rel-concord :=
-;%prefix (* e-)
-;c9-rel-concord-lex-rule.
+c9-rel-concord :=
+%prefix (* e-)
+c9-rel-concord-lex-rule.
 
 ;c10-rel-concord :=
 ;%prefix (* ezi-)

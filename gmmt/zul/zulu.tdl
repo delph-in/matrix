@@ -170,8 +170,11 @@ transitive-verb-lex := verb-lex & transitive-lex-item &
 ; can only go through the other no-obj concord rule (which says OPT -,
 ; and disallows object drop) or through the object concord rules.
 
+; ERB 2007-07-12 In fact, they have to say OPT-CS in-foc, on the current
+; treatment.
+
 no-ini-trans-verb-lex := transitive-verb-lex &
-  [ ARG-ST.REST.FIRST.OPT-CS uniq+fam+act ].
+  [ ARG-ST.REST.FIRST.OPT-CS uniq-or-more ].
 
 
 ; first object is optional, but OPT is underspecified so 
@@ -191,16 +194,28 @@ ditransitive-verb-lex := verb-lex & ditransitive-lex-item
 
 
 ; embedded clauses are always propositions.
+; ERB 2007-07-12 No.  They always have the same form, but the SF
+; value can vary depending on the embedding verb.  Assuming for
+; now that there are three types as in English: prop only (tell),
+; prop-or-ques (know), and ques only (ask).
 
 clause-comp-verb-lex := clausal-second-arg-trans-lex-item & verb-lex &
 			takes-oc & imp-dtr &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL [CAT [HEAD comp,
-					       VAL  [ SPR < >,
-						      SUBJ < >,
-						      COMPS < >,
-						      SPEC < > ],
-					       MC - ], 
-					  CONT.HOOK.INDEX.SF prop ] ] > ] .
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps & [ LOCAL [CAT [HEAD comp,
+							VAL  [ SPR < >,
+							       SUBJ < >,
+							       COMPS < >,
+							       SPEC < > ],
+							MC - ], 
+					  CONT.HOOK.INDEX.SF prop-or-ques ] ] >,
+    ARG-ST.REST.FIRST #comps ] .
+
+prop-comp-verb-lex := clause-comp-verb-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.SF prop ].
+
+ques-comp-verb-lex := clause-comp-verb-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.SF ques ].
+
 
 aux-verb-lex := trans-first-arg-raising-lex-item-1 & verb-lex & imp-dtr &
  [ SYNSEM [ LOCAL [ CAT [ HEAD.AUX +,
@@ -350,13 +365,27 @@ pl := non-sg.
 ;;; ERB 2007-05-16 Adding lots of disjunctive classes to 
 ;;; better handle homophony/syncretism in the various paradigms. 
 
+;;; ERB 2007-07-12 Further adding underspecified types for
+;;; `plural' and `singular' for semi.vpm.  It seems that
+;;; c14 and above don't form sg/pl pairs.  I'm going to assume
+;;; for now that these are abstract concepts etc and therefore
+;;; should map to singular in the interlingua.
+
+;;; ERB 2007-07-12 In fact, sg-ncl and pl-ncl have to be supertypes
+;;; to c8+c10 et al so that when we have a verb with just that information
+;;; in the MRS (because of argument drop), we can still make use of
+;;; the info through the semi.
 
 nclass := *top*.
+
+sg-ncl := nclass.
+pl-ncl := nclass.
+
 c1+c2 := nclass.
-c1+c1a+c3 := nclass.
+c1+c1a+c3 := sg-ncl.
 c1+c3 := c1+c1a+c3.
 c1+c1a := c1+c1a+c3.
-c2+c2a := nclass.
+c2+c2a := pl-ncl.
 c1 := c1+c2 & c1+c3 & c1+c1a.
 c2 := c1+c2 & c2+c2a.
 
@@ -364,31 +393,31 @@ c1a+c2a := nclass.
 c1a := c1a+c2a & c1+c1a.
 c2a := c1a+c2a & c2+c2a.
 
-c4+c9 := nclass.
+;c4+c9 := nclass.
 c3+c4 := nclass.
 c3 := c3+c4 & c1+c3.
-c4 := c3+c4 & c4+c9.
+c4 := c3+c4 & pl-ncl.
 
 c5+c6 := nclass.
-c5 := c5+c6.
-c6 := c5+c6.
+c5 := c5+c6 & sg-ncl.
+c6 := c5+c6 & pl-ncl.
 
 c7+c8 := nclass.
-c8+c10 := nclass.
-c7 := c7+c8.
+c8+c10 := pl-ncl.
+c7 := c7+c8 & sg-ncl.
 c8 := c7+c8 & c8+c10.
 
 c9+c10 := nclass.
 c11+c10 := nclass.
-c9 := c9+c10 & c4+c9.
+c9 := c9+c10 & sg-ncl.
 c10 := c9+c10 & c11+c10 & c8+c10.
-c11 := c11+c10.
+c11 := c11+c10 & sg-ncl.
 
-c14 := nclass.
+c14 := sg-ncl.
 
 ; ERB 2007-05-15 Lots of syncretism for these three
 
-c15+c16+c17 := nclass.
+c15+c16+c17 := sg-ncl.
 c15+c17 := c15+c16+c17.
 
 c15 := c15+c17.
@@ -738,8 +767,12 @@ c2+c2a-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
 ;   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c3 ] > ] .
 
 ; ERB 2007-05-16
-c4+c9-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c4+c9 ] > ] .
+; ERB 2007-07-12 In fact, we need to split c4 and c9 in order to
+; get the semi working, as we want to predict underspecified noun class
+; from input number values, and c4 and c9 don't have the same number.
+
+c4-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c4 ] > ] .
 
 c5-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c5 ] > ] .
@@ -753,8 +786,8 @@ c7-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
 c8+c10-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c8+c10 ] > ] .
 
-;c9-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
-;   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c9 ] > ] .
+c9-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c9 ] > ] .
 
 ;c10-subj-concord-lex-rule := 3rd-subj-concord-lex-rule &
 ;   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c10 ] > ] .
@@ -818,9 +851,16 @@ no-obj-concord-lex-rule2 := constant-lex-rule & obj-concord-lex-rule &
 ;;; there is no need.  Just not saying [ OPT - ] does the right thing
 ;;; (i.e., allows object drop).
 
+;;; ERB 2007-07-17 In fact, we can't say uniq+fam+act here, because
+;;; these are the same ones that get used with object drop, when we
+;;; want in-foc.  So changing this to uniq-or-more, and putting
+;;; activ-or-less on common nouns.  Also adding OPT-CS in-foc.
+
 add-obj-concord-lex-rule := inflecting-lex-rule & obj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAl.CONT.HOOK.INDEX [ COG-ST uniq+fam+act,
-							    SPECI + ]], ... > ] .
+   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX [ COG-ST uniq-or-more,
+							    SPECI + ],
+				    OPT-CS in-foc ], ... > ] .
+
 3rd-obj-concord-lex-rule := add-obj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.PER third ], ... > ] .
 
@@ -839,8 +879,8 @@ c2+c2a-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
 c3-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c3 ], ... > ] .
 
-c4+c9-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c4+c9 ], ... > ] .
+c4-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c4 ], ... > ] .
 
 c5-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c5 ], ... > ] .
@@ -854,8 +894,8 @@ c7-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
 c8+c10-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c8+c10 ], ... > ] .
 
-;c9-obj-concord-lex-rule := 3rd-obj-concord-lex-rule & 
-;   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c9 ], ... > ] .
+c9-obj-concord-lex-rule := 3rd-obj-concord-lex-rule & 
+   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c9 ], ... > ] .
 
 ;c10-obj-concord-lex-rule := 3rd-obj-concord-lex-rule &
 ;   [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c10 ], ... > ] .
@@ -965,8 +1005,8 @@ c2+c2a-rel-concord-lex-rule := relative-concord-lex-rule &
 ;c3-rel-concord-lex-rule := relative-concord-lex-rule &
 ;   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c3 ] > ].
 
-c4+c9-rel-concord-lex-rule := relative-concord-lex-rule &
-   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c4+c9 ] > ].
+c4-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c4 ] > ].
 
 c5-rel-concord-lex-rule := relative-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c5 ] > ].
@@ -980,8 +1020,8 @@ c7-rel-concord-lex-rule := relative-concord-lex-rule &
 c8+c10-rel-concord-lex-rule := relative-concord-lex-rule &
    [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c8+c10 ] > ].
 
-;c9-rel-concord-lex-rule := relative-concord-lex-rule &
-;   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c9 ] > ].
+c9-rel-concord-lex-rule := relative-concord-lex-rule &
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c9 ] > ].
 
 ;c10-rel-concord-lex-rule := relative-concord-lex-rule &
 ;   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG.NCL c10 ] > ].

@@ -4,7 +4,7 @@ Dogs sleep.
 izin-ja zi-zi-xosh-a izi-moto
 Dogs chase cars.
 
-zi-ya-zi-xosh-a
+ngi-ya-ni-xosh-a
 I chase you.
 
 izin-ja lezi zi-ya-lal-a
@@ -25,7 +25,7 @@ The dogs chase cars.
 ngi-ya-cabang-a ukuthi u-ya-az-a ukuthi izin-ja zi-ya-zi-xosh-a izi-moto
 I think that you know that dogs chase cars.
 
-ngi-ya-zibuz-a ukuthi u-ya-az-a ukuthi izin-ja zi-ya-zi-xosh-a izi-moto
+ngi-ya-buz-a ukuthi u-ya-az-a ukuthi izin-ja zi-ya-zi-xosh-a izi-moto
 I ask whether you know that dogs chase cars.
 
 ama-kati na-izin-ja  a-ya-zi-xosh-a izi-moto

@@ -18,15 +18,12 @@ if [ -e "~/logon/uw/mmt/alt/${DATE}" ]; then
     exit 1
 fi
 
-languages="eng epo fas fin hai hau heb hye isl ita spa zul";
-#for src in $languages; do
-count=2;
-for src in "ita"; do
+languages="eng epo fas fin hau heb hye isl ita zul";
+for src in $languages; do
    	for tgt in $languages; do
     
 		if [ "${tgt}" != "${src}" ]; then
 		    $LOGONROOT/batch --binary --from $src --to $tgt --ascii $LOGONROOT/uw/mmt/test_sentences/${src}2${tgt}.txt
-			    sleep 250;
 		fi
 
    	done

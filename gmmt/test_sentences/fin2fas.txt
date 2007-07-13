@@ -4,7 +4,7 @@ sag xabidand
 koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
 sag mashinra dombal kardand
 
-minA metsAstAA+1p+Sg sinA+Sg+Acc
+minA+Sg+Nom metsAstAA+1p+Sg sinA+Sg+Acc
 man tora dombal kardam
 
 tuo+Pl+Nom koira+Pl+Nom nukkua+3p+Pl
@@ -13,19 +13,19 @@ in sag xabidand
 koira+Pl+Nom syOdA+3p+Pl
 sag xordand
 
-minA voida+1p+Sg syOdA+Inf lasi+Sg+Part
+minA+Sg+Nom voida+1p+Sg syOdA+Inf lasi+Sg+Part
 man tavanam shishera bexoram
 
-hAn ei sattua+3p+Sg minA+Sg+Part
+hAn+Sg+Nom ei sattua+3p+Sg minA+Sg+Part
 an manra dard nekonad
 
 koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
 sag mashinra dombal kardand
 
-minA ajatella+1p+Sg ettA sinA tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+minA+Sg+Nom ajatella+1p+Sg ettA sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
 man andishidam ke to dunesti ke sag mashinra dombal kardand
 
-minA kysyA+1p+Sg jos sinA tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+minA+Sg+Nom kysyA+1p+Sg jos sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
 man porsidam aya to dunesti ke sag mashinra dombal kardand
 
 kissa+Pl+Nom ja koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
