@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.4
+#!/usr/local/bin/python2.5
 
 ######################################################################
 # This script interacts with the MySQL DB storing the string-mrs pairs

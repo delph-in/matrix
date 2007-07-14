@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.4
+#!/usr/local/bin/python2.5
 
 ###############################################################################
 # Utility for testing filters.  Allows user to pass in a particular string of

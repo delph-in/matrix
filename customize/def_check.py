@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.4
+#!/usr/local/bin/python2.5
 
 # ERB I've found too many bugs that come from using
 # the wrong variable name.  This script is intended

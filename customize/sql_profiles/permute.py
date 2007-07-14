@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.4
+#!/usr/local/bin/python2.5
 
 # !!!!! This is being replaced by add_permutes.py !!!!!!
 

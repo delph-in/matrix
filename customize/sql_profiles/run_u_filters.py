@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.4
+#!/usr/local/bin/python2.5
 
 import filters
 from u_filters import filter_list
