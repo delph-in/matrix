@@ -187,7 +187,7 @@ Text noun1_pred "Noun 1 predicate" "<br>Predicate name (e.g. _cat_n_rel): " "" 4
 Radio noun1_det "Noun 1 determiner" "<br>For this noun, a specifier (determiner) is " ""
 . obl "Obligatory" "" "obligatory "
 . opt "Optional" "" "optional "
-. nil "Impossible" "" "impossible "
+. imp "Impossible" "" "impossible "
 
 Label "Noun 2:"
 
@@ -198,7 +198,7 @@ Text noun2_pred "Noun 2 predicate" "<br>Predicate name (e.g. _cat_n_rel): " "" 4
 Radio noun2_det "Noun 2 determiner" "<br>For this noun, a specifier (determiner) is " ""
 . obl "Obligatory" "" "obligatory "
 . opt "Optional" "" "optional "
-. nil "Impossible" "" "impossible"
+. imp "Impossible" "" "impossible"
 
 Label "Intransitive verb:"
 
