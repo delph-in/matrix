@@ -150,19 +150,19 @@ Radio q-part-order "Question particle order" "" ""
 
 Text q-part-orth "Question particle spelling" "&nbsp;&nbsp;&nbsp;&nbsp;Spelling of question particle: " "" 40
 
-Radio ques "fr ques" "<br>" ""
-. q-infl "fr q-infl" "" "Verbal inflection:<br>"
+Radio ques "Yes/No questions" "<br>" ""
+. q-infl "Inflection" "" "Verbal inflection:<br>"
 
-Radio q-infl-type "fr q-infl-type" "&nbsp;&nbsp;&nbsp;&nbsp;On: " ""
-. aux "fr aux" "" "auxiliaries only "
-. main "fr main" "" "main verbs only "
-. aux-main "fr aux-main" "" "any finite verb (main or auxiliary)<br>"
+Radio q-infl-type "Inflection type" "&nbsp;&nbsp;&nbsp;&nbsp;On: " ""
+. aux "Auxiliaries only" "" "auxiliaries only "
+. main "Main verbs only" "" "main verbs only "
+. aux-main "Main or auxiliary verbs" "" "any finite verb (main or auxiliary)<br>"
 
-Radio ques-aff "fr ques-aff" "&nbsp;&nbsp;&nbsp;&nbsp;Affix type: " ""
-. prefix "fr prefix" "" "prefix "
-. suffix "fr suffix" "" "suffix<br>"
+Radio ques-aff "Affix type" "&nbsp;&nbsp;&nbsp;&nbsp;Affix type: " ""
+. prefix "Prefix" "" "prefix "
+. suffix "Suffix" "" "suffix<br>"
 
-Text ques-aff-orth "fr ques-aff-orth" "&nbsp;&nbsp;&nbsp;&nbsp;Affix Spelling: " "" 10
+Text ques-aff-orth "Affix spelling" "&nbsp;&nbsp;&nbsp;&nbsp;Affix Spelling: " "" 10
 
 Radio ques "Yes/No Questions" "<br>" ""
 . inv "Subject-verb inversion" "" "Subject-verb inversion: "
