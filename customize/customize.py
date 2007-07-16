@@ -2638,8 +2638,6 @@ def customize_adpositions():
 
   # Lexical entries
 
-  lexicon.add_literal(';;; Other')
-
   # sfd ToDo? Some of these could be further parameterized.  Probably
   # not necessary unless they become iterators, though.
 
@@ -2704,15 +2702,7 @@ def customize_determiners():
 
 def customize_misc_lex():
 
-  negadv = ch.get('neg-adv')
-
-  # Negative adverb
-  if negadv:
-    typedef = \
-      negadv + ' := neg-adv-lex & \
-                    [ STEM < "' + negadv + '" >, \
-                      SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ].'
-    lexicon.add(typedef)
+  #lexicon.add_literal(';;; Other')
 
   # Question particle
   if ch.get('ques') == 'q-part':

@@ -42,7 +42,7 @@ Radio neg-aff "Negative affix type" "Affix type: " ""
 . prefix "Prefix" "" "prefix "
 . suffix "Suffix" "" "suffix<br>"
 
-Text neg-aff-orth "Negative affix spelling" "Affix Spelling: " "" 10
+Text neg-aff-orth "Negative affix spelling" "Affix Spelling: " "" 20
 
 Label
 
@@ -67,8 +67,11 @@ Radio neg-adv "Negative adverb" "" ""
 Radio neg-sel-adv "Negative adverb selects" "" ""
 . main "Main verbs" "" "main verbs "
 . aux "Auxiliary verbs" "" "auxiliaries "
-. main-aux "Main or auxiliary verbs" "" "any finite verb"
+. main-aux "Main or auxiliary verbs" "" "any finite verb<br>"
 
+Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "" 20
+
+Label
 Label "Notes: The following options are not yet implemented: Negative inflection of non-finite verbs, special negative auxiliaries."
 
 Radio multi-neg "Negative inflection and adverb" "If you have selected both inflectional and adverbial negation, please indicate which of the following best describes your language:<br>" ""
@@ -281,12 +284,6 @@ Text obj-adp-orth "Object adposition spelling" "Spelling: " "" 40
 Radio obj-adp-order "Object adposition type" "<br>" ""
 . before "Preposition" "" "preposition "
 . after "Postposition" "" "postposition "
-
-Label "Negative adverb (if applicable):"
-
-Text neg-adv-orth "Negative adverb spelling" "Spelling: " "" 40
-
-Label
 
 
 Section test-sentences "Some Test Sentences"
