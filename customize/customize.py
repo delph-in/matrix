@@ -2195,8 +2195,9 @@ def customize_nouns():
            [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
       mylang.add(typedef)
 
-      mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.OPT - ].',
-                 'Nouns which cannot take specifiers mark their SPR requirement\n\
+      if ch.get('has-dets') == 'yes':
+        mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.OPT - ].',
+                   'Nouns which cannot take specifiers mark their SPR requirement\n\
 as OPT +.  Making the non-head daughter OPT - in this rule\n\
 keeps such nouns out.')
                  
