@@ -1,5 +1,3 @@
-#!/usr/local/bin/python2.5
-
 ######################################################################
 # tokenize_def(str)
 #   split a string into words, treating double-quoted strings as

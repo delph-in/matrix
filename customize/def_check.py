@@ -1,5 +1,3 @@
-#!/usr/local/bin/python2.5
-
 # ERB I've found too many bugs that come from using
 # the wrong variable name.  This script is intended
 # to check all of the variables we are using and check

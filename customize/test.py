@@ -1,5 +1,3 @@
-#!/usr/local/bin/python2.5
-
 import tdl
 
 foo = tdl.TDLfile('foo')
