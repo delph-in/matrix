@@ -160,7 +160,7 @@ Radio ques-aff "Affix type" "&nbsp;&nbsp;&nbsp;&nbsp;Affix type: " ""
 . prefix "Prefix" "" "prefix "
 . suffix "Suffix" "" "suffix<br>"
 
-Text ques-aff-orth "Affix spelling" "&nbsp;&nbsp;&nbsp;&nbsp;Affix Spelling: " "" 10
+Text ques-aff-orth "Affix spelling" "&nbsp;&nbsp;&nbsp;&nbsp;Affix Spelling: " "<br>" 10
 
 Check q-inv "Subject-verb inversion" "" "Subject-verb inversion: "
 
