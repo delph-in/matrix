@@ -2111,7 +2111,7 @@ def customize_yesno_questions():
 
     mylang.add('ques-infl-lex-rule := add-only-no-ccont-rule & inflecting-lex-rule &\
     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques,\
-    DTR.SYNSEM.LOCAL.CAT.HEAD verb ].',
+    DTR lex-item & [ SYNSEM.LOCAL.CAT.HEAD verb ]].',
                'Constrains SF to ques. Instantiated by a verbal affix.')
 
     if ch.get('q-infl-type') == 'aux':
