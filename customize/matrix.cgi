@@ -492,11 +492,11 @@ else:
 if not os.path.exists('sessions'):
   os.mkdir('sessions')
 
-# look for any sessions older than an hour and delete them
+# look for any sessions older than 24 hours and delete them
 now = time.time()
 sessions = glob.glob('sessions/*')
 for s in sessions:
-  if now - os.path.getmtime(s) > 3600:
+  if now - os.path.getmtime(s) > 86400:
     remove_tree(s)
 
 # figure out the path to the current session's directory, creating it
