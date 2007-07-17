@@ -2011,12 +2011,11 @@ def customize_coordination():
 
 def customize_yesno_questions():
 
-  ques = ch.get('ques')
   qinvverb = ch.get('q-inv-verb')
   qpartposthead = ch.get('q-part-order')
   qpartform = ch.get('q-part-orth')
 
-  if ques == 'inv':
+  if ch.get('q-inv'):
     comment = \
       'For the analysis of inverted yes-no questions, we add the feature INV.'
     mylang.add('verb :+ [ INV bool ].', comment)
@@ -2084,7 +2083,7 @@ def customize_yesno_questions():
   # which I think doesn't handle the facts well.  These look more like complementizers
   # to me.
 
-  if ques == 'q-part':
+  if ch.get('q-part'):
     comment = \
              'We treat question particles as complementizers.\n' + \
              'Here is the lexical type for complementizers.'
@@ -2095,7 +2094,8 @@ def customize_yesno_questions():
                               VAL [ SPR < >,
                                     SUBJ < >,
                                     COMPS < #comp > ]],
-           ARG-ST < #comp & [ LOCAL.CAT [ HEAD verb,
+           ARG-ST < #comp & [ LOCAL.CAT [ MC +,
+                                          HEAD verb,
                                           VAL [ SUBJ < >,
                                                 COMPS < > ]]] > ]
                                                 .'''
@@ -2107,7 +2107,7 @@ def customize_yesno_questions():
          [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
     mylang.add(typedef,comment)
 
-  if ques == 'q-infl':
+  if ch.get('q-infl'):
 
     mylang.add('ques-infl-lex-rule := add-only-no-ccont-rule & inflecting-lex-rule &\
     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques,\
@@ -2705,7 +2705,7 @@ def customize_misc_lex():
   #lexicon.add_literal(';;; Other')
 
   # Question particle
-  if ch.get('ques') == 'q-part':
+  if ch.get('q-part'):
     typedef = \
       ch.get('q-part-orth') + ' := qpart-lex-item & \
                    [ STEM < "' + ch.get('q-part-orth') + '" > ].'
@@ -2792,7 +2792,7 @@ def customize_roots():
   # and question particles, we're going to need to make sure that FORM is
   # compatible with comp.
 
-  if ch.get('ques') == 'q-part':
+  if ch.get('q-part'):
     roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD +vc ].')
   else:
     roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD verb ].')

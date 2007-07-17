@@ -42,6 +42,8 @@ class ChoicesFile:
       version = 0
     if version < 1:
       self.convert_0_to_1()
+    if version < 2:
+      self.convert_1_to_2()
     # As we get more versions, add more version-conversion methods, and:
     # if version < N:
     #   self.convert_N-1_to_N
@@ -51,6 +53,7 @@ class ChoicesFile:
     self.delete('version')
     self.delete('section')
 
+
   # Return the value of 'key', if any.  If not, return the empty string.
   def get(self, key):
     if self.is_set(key):
@@ -58,18 +61,22 @@ class ChoicesFile:
     else:
       return ''
 
+
   # Set the value of 'key' to 'value'
   def set(self, key, value):
     self.choices[key] = value
+
 
   # Remove 'key' and its value from the list of choices
   def delete(self, key):
     if self.is_set(key):
       del self.choices[key]
 
+
   # Return true iff there if 'key' is currently set
   def is_set(self, key):
     return key in self.choices
+
 
   # Conversion methods: each of these functions assumes the choices
   # file has already been loaded, then converts an older version into
@@ -82,17 +89,20 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 1
+    return 2
+
 
   def convert_value(self, key, old, new):
     if self.is_set(key) and self.get(key) == old:
       self.set(key, new)
+
 
   def convert_key(self, old, new):
     if self.is_set(old):
       self.set(new, self.get(old))
       self.delete(old)
   
+
   def convert_0_to_1(self):
     self.convert_key('wordorder', 'word-order')
 
@@ -230,3 +240,16 @@ class ChoicesFile:
     self.convert_key('objAdp', 'obj-adp-order')
 
     self.convert_key('negadvform', 'neg-adv-orth')
+
+
+  def convert_1_to_2(self):
+    # The old 'ques' radio button has been converted into a series of
+    # checkboxes, of which 'inv' has been renamed 'q-inv' and 'int'
+    # has been removed.
+    if self.is_set('ques'):
+      ques = self.get('ques')
+      self.delete('ques')
+      if ques == 'inv':
+        ques = 'q-inv'
+      if ques != 'int':
+        self.set(ques, 'on')

@@ -139,19 +139,17 @@ Radio cs2_order "CS2 order" "that comes " ""
 
 Section matrix-yes-no "Matrix Yes/No Questions"
 
-Label "Please indicate which strategy your language uses to form matrix yes-no questions. Notes: You may leave this section blank, in which case your grammar will not include any information about questions. At present, you may select only one strategy."
+Label "Please indicate which strategy your language uses to form matrix yes-no questions. Notes: You may leave this section blank, in which case your grammar will not include any information about questions."
 
-Radio ques "Yes/No questions" "" ""
-. q-part "Question particle" "" "A separate question particle: "
+Check q-part "Yes/No question particle" "" "A separate question particle: "
 
 Radio q-part-order "Question particle order" "" ""
 . before "Before" "" "sentence initial "
 . after "After" "" "sentence final<br>"
 
-Text q-part-orth "Question particle spelling" "&nbsp;&nbsp;&nbsp;&nbsp;Spelling of question particle: " "" 40
+Text q-part-orth "Question particle spelling" "&nbsp;&nbsp;&nbsp;&nbsp;Spelling of question particle: " "<br>" 40
 
-Radio ques "Yes/No questions" "<br>" ""
-. q-infl "Inflection" "" "Verbal inflection:<br>"
+Check q-infl "Inflection" "" "Verbal inflection:<br>"
 
 Radio q-infl-type "Inflection type" "&nbsp;&nbsp;&nbsp;&nbsp;On: " ""
 . aux "Auxiliaries only" "" "auxiliaries only "
@@ -164,17 +162,12 @@ Radio ques-aff "Affix type" "&nbsp;&nbsp;&nbsp;&nbsp;Affix type: " ""
 
 Text ques-aff-orth "Affix spelling" "&nbsp;&nbsp;&nbsp;&nbsp;Affix Spelling: " "" 10
 
-Radio ques "Yes/No Questions" "<br>" ""
-. inv "Subject-verb inversion" "" "Subject-verb inversion: "
+Check q-inv "Subject-verb inversion" "" "Subject-verb inversion: "
 
 Radio q-inv-verb "Inverted verb in questions" "" ""
 . main "Main" "" "main verbs only "
 . aux "Auxiliary" "" "auxiliaries only "
 . main-aux "Main and auxiliary" "" "any verb<br>"
-
-
-Radio ques "Yes/No questions" "<br>" ""
-. int "Intonation" "" "Intonation only"
 
 
 Section basic-lexicon "Basic Lexicon"

@@ -162,12 +162,11 @@ def validate_coordination():
 #   Validate the user's choices about matrix yes/no questions.
 
 def validate_yesno_questions():
-  ques = ch.get('ques')
   qinvverb = ch.get('q-inv-verb')
   qpartorder = ch.get('q-part-order')
   qpartorth = ch.get('q-part-orth')
 
-  if ques == 'q-part':
+  if ch.get('q-part'):
     if not qpartorder:
       err = 'If you chose the question particle strategy for yes-no questions, you must specify where the question particle appears.'
       add_err('ques', err)
@@ -175,7 +174,7 @@ def validate_yesno_questions():
       err = 'If you chose the question particle strategy for yes-no questions, you must specify the form of the question particle.'
       add_err('q-part-orth', err)
 
-  if ques == 'inv':
+  if ch.get('q-inv'):
     #    if qinvverb != 'aux' and qinvverb != 'main' and qinvverb != 'main-aux':
     #      err = 'There is something wrong with the verb type (main/aux) for inverted questions.  Please contact developers.'
     #      add_err('q-inv-verb', err)
@@ -186,9 +185,9 @@ def validate_yesno_questions():
        ch.get('word-order') == 'v-initial' or \
        ch.get('word-order') == 'free':
       err = 'Subject-verb inversion strategy for yes-no questions is not supported for V-final, V-initial, or free word order languages.  If you believe you have a counterexample to this, please contact us.'
-      add_err('inv', err)
+      add_err('q-inv', err)
 
-  if ques == 'q-infl':
+  if ch.get('q-infl'):
     if (not ch.get('q-infl-type')):
       err = 'If matrix yes-no questions are expressed through affixation, you must specify what the affix attaches to.'
       add_err('q-infl-type', err)
