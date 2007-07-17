@@ -219,6 +219,8 @@ class VarNameMap:
 
 def print_input(type, name, value, checked, before, after, \
                 size = '', onclick = ''):
+  global wrong
+  
   if value:
     value = ' value="' + value + '"'
 
@@ -231,10 +233,14 @@ def print_input(type, name, value, checked, before, after, \
 
   if onclick:
     onclick = ' onclick="' + onclick + '"'
+
+  asterisk = ''
+  if name and wrong.has_key(name):
+    asterisk = '<span class="error">*</span>'
     
-  print '%s<input type="%s" name="%s"%s%s%s%s>%s' % \
-        (before, type, name, value, chkd, size, onclick, after)
-  
+  print '%s%s<input type="%s" name="%s"%s%s%s%s>%s' % \
+        (before, asterisk, type, name, value, chkd, size, onclick, after)
+
 
 ######################################################################
 # main_page(def_file, cookie)
@@ -294,7 +300,7 @@ def main_page(def_file, cookie):
   else:
     tgz_checked = True
 
-  print_input('hidden', 'customize', 'customize', False, '', '');
+  print_input('hidden', 'customize', 'customize', False, '', '')
   print_input('radio', 'delivery', 'tgz', tgz_checked, '<p class="submit">Archive type: ', ' .tar.gz')
   print_input('radio', 'delivery', 'zip', zip_checked, ' ', ' .zip<br>')
   print_input('submit', '', 'Create Grammar', False, '', '</p>')
@@ -318,7 +324,11 @@ def sub_page(section, def_file, cookie):
   print HTTP_header + '\n'
   print HTML_pretitle
 
-  choices = ChoicesFile('sessions/' + cookie + '/choices')
+  choices_file = 'sessions/' + cookie + '/choices'
+  choices = ChoicesFile(choices_file)
+
+  global wrong
+  wrong = validate_choices(choices_file)
 
   f = open(def_file, 'r')
   line = f.readlines()
@@ -338,7 +348,7 @@ def sub_page(section, def_file, cookie):
         print HTML_prebody
         print '<h2>' + word[2] + '</h2>'
         print HTML_preform
-        print_input('hidden', 'section', section, False, '', '\n');
+        print_input('hidden', 'section', section, False, '', '\n')
     elif cur_sec == section:
       if word[0] == 'Label':
         write('<p>\n')
@@ -350,7 +360,7 @@ def sub_page(section, def_file, cookie):
       elif word[0] == 'Check':
         (vn, fn, bf, af) = word[1:]
         checked = choices.is_set(vn)
-        print_input('checkbox', vn, '', checked, bf, af);
+        print_input('checkbox', vn, '', checked, bf, af)
       elif word[0] == 'Radio':
         (vn, fn, bf, af) = word[1:]
         print bf
