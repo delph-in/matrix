@@ -610,8 +610,8 @@ def main():
 
 
 if __name__ == "__main__":
-    #    main ()
-    update_all_lts_in_lfg()
+    main ()
+    #update_all_lts_in_lfg()
 
 
 # Testing:
