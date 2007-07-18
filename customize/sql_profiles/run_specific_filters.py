@@ -159,6 +159,7 @@ def update_groups_table(filter):
 # for update_groups_table().
 
 # **** START HERE **** This isn't respecting the AND groups
+# ERB 2007-07-18 Fixed now?
 
 def update_groups_table_helper(gs,groups):
 
