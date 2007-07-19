@@ -78,7 +78,7 @@ class ChoicesFile:
 
   # Return the keys for the choices dict
   def keys(self):
-    return self.keys()
+    return self.choices.keys()
 
 
   # Conversion methods: each of these functions assumes the choices
