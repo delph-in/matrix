@@ -76,6 +76,11 @@ class ChoicesFile:
     return key in self.choices
 
 
+  # Return the keys for the choices dict
+  def keys(self):
+    return self.keys()
+
+
   # Conversion methods: each of these functions assumes the choices
   # file has already been loaded, then converts an older version into
   # a newer one, updating both old key names and old value names.

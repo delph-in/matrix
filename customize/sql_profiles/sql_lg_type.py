@@ -60,37 +60,9 @@
 import sys
 import MySQLdb
 sys.path.append("..")
+from choices import ChoicesFile
+from utils import tokenize_def
 
-######################################################################
-# read_choices(choices_file)
-#   Read the choices in choices_file and return them in a dict
-#   but don't store language, sentence1 or sentence2
-
-def read_choices(choices_file):
-  choices = {}
-
-  try:
-    if type(choices_file) == str:
-      f = open(choices_file, 'r')
-    else:
-      f = choices_file
-      f.seek(0)
-
-    lines = f.readlines()
-
-    if type(choices_file) == str:
-      f.close()
-
-    for l in lines:
-      l = l.strip()
-      if l:
-        (a, v) = l.split('=')
-        if a != 'language' and a != 'sentence1' and a != 'sentence2':
-            choices[a] = v
-  except:
-    pass
-
-  return choices
 ###############################################################
 # check_lt_for_fvs(fvs,choices): Check whether all of the feature-value
 # pairs in a group are represented in the language type.
@@ -99,8 +71,7 @@ def check_lt_for_fvs(fvs,choices):
 
     for fv in fvs:
         (f,v) = fv
-        if (not choices.has_key(f) or
-            not choices[f] == v):
+        if choices.get(f) != v:
             return False
 
     return True
@@ -126,8 +97,7 @@ def check_lt_for_grp_ids(grp_ids,choices,cursor):
         # before we check it.
 
         (f,v) = cursor.fetchone()
-        if (not choices.has_key(f) or
-            not choices[f] == v):
+        if choices.get(f) != v:
             return False
 
     return True
@@ -140,7 +110,7 @@ def check_lt_for_grp_ids(grp_ids,choices,cursor):
 def check_existing_lt_for_completeness(lt_id,choices,cursor):
 
     for f in choices.keys():
-        cursor.execute("SELECT fg_grp_id FROM feat_grp, lt_feat_grp WHERE fg_feat = %s AND fg_value = %s AND lfg_grp_id = fg_grp_id AND lfg_lt_id = %s",(f,choices[f],lt_id))
+        cursor.execute("SELECT fg_grp_id FROM feat_grp, lt_feat_grp WHERE fg_feat = %s AND fg_value = %s AND lfg_grp_id = fg_grp_id AND lfg_lt_id = %s",(f,choices.get(f),lt_id))
         res = cursor.fetchall()
         if len(res) == 0: # we found a fv pair which isn't already in lfg_feat_grp for the lt.
             return False
@@ -208,7 +178,7 @@ def update_feat_group(choices,cursor):
     # print "choices is " + str(choices)
 
     for f in choices.keys():
-        v = choices[f]
+        v = choices.get(f)
         if not singleton_group_exists(f,v,cursor):
             cursor.execute("SELECT MAX(fg_grp_id) FROM feat_grp")
             fg_grp_id = cursor.fetchone()[0]
@@ -305,7 +275,14 @@ def create_or_update_lt(choices,cursor):
 # Main Program
 
 def main():
-  choices = read_choices(sys.argv[1])
+
+  choices = ChoicesFile(sys.argv[1])
+
+  # In order to have language-to-language comparisons work correctly,
+  # remove the language name and test sentences
+  choices.delete('language')
+  choices.delete('sentence1')
+  choices.delete('sentence2')
 
   # Set up the cursor
 
