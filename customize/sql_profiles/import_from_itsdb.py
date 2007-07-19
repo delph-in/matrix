@@ -78,7 +78,8 @@ sys.path.append("..")
 
 from validate import validate_choices
 from sql_lg_type import create_or_update_lt
-from sql_lg_type import read_choices
+sys.path.append("..")
+from choices import ChoicesFile
 
 #Connect to MySQL server
 
@@ -419,7 +420,7 @@ if not (os.path.exists(itsdb_dir) and
 mrs_dict = validate_string_list(harv_mrs,itsdb_dir)
 
 wrong = validate_choices(choices_file)
-choices = read_choices(choices_file)
+choices = ChoicesFile(choices_file)
 
 if len(wrong) > 0:
     raise ValueError, "Invalid choices file."

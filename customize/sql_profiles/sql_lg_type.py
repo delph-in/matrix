@@ -61,7 +61,6 @@ import sys
 import MySQLdb
 sys.path.append("..")
 from choices import ChoicesFile
-from utils import tokenize_def
 
 ###############################################################
 # check_lt_for_fvs(fvs,choices): Check whether all of the feature-value
