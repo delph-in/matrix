@@ -2,6 +2,6 @@
 
 
 
-(defparameter *grammar-version* "Esperanto")
+(defparameter *grammar-version* "epo (15-August-07)")
 
 
