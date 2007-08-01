@@ -8,6 +8,7 @@
 (setf *grammar-directory* (parent-directory))
 (lkb-load-lisp (this-directory) "globals.lsp")
 (lkb-load-lisp (this-directory) "user-fns.lsp")
+(lkb-load-lisp (this-directory) "checkpaths.lsp")
 (load-lkb-preferences (this-directory) "user-prefs.lsp")
 
 ;;;
