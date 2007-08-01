@@ -39,21 +39,34 @@ head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
    [ SYNSEM.LOCAL.CAT.IMPERATIVE #imp,
      HEAD-DTR.SYNSEM.LOCAL.CAT.IMPERATIVE #imp ].
 
-head-subj-phrase := basic-head-subj-phrase &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
-				     SPR < > ]].
+; ERB 2007-08-01 Cleaning up redundancies wrt to new version of matrix.tdl
 
-decl-head-subj-phrase := head-subj-phrase & head-final & declarative-clause &
+; head-subj-phrase := basic-head-subj-phrase &
+;    [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
+; 				     SPR < > ]].
+
+; decl-head-subj-phrase := head-subj-phrase & head-final & declarative-clause &
+; [ SYNSEM.LOCAL.CAT.IMPERATIVE -,
+;   HEAD-DTR.SYNSEM.LOCAL.CAT [ IMPERATIVE -,
+; 			      HEAD verb & [ QUES -,
+; 					    FORM fin ]]].
+
+
+decl-head-subj-phrase :+ head-final & 
 [ SYNSEM.LOCAL.CAT.IMPERATIVE -,
   HEAD-DTR.SYNSEM.LOCAL.CAT [ IMPERATIVE -,
 			      HEAD verb & [ QUES -,
-					    FORM fin ]]].
+					    FORM fin ],
+			      VAL [ COMPS <>,
+				    SPR <>]]].
 
-int-head-subj-phrase := head-subj-phrase & head-initial & interrogative-clause &
+int-head-subj-phrase := basic-head-subj-phrase & head-initial & interrogative-clause &
 [ SYNSEM.LOCAL.CAT.IMPERATIVE -,
   HEAD-DTR.SYNSEM.LOCAL.CAT [ IMPERATIVE -,
                               HEAD verb & [ INV +,
-                                            QUES + ]]].
+                                            QUES + ],
+			      VAL [ COMPS <>,
+				    SPR <> ]]].
 
 ;; RGM 4-6-04 Added head-spr-phrase to allow for SPRs to join with Ns and create NPs
 
@@ -63,22 +76,34 @@ head-spec-phrase := basic-head-spec-phrase & head-final
 				    SUBJ < > ]],
   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD det ].
 
-head-opt-subj-phrase := basic-head-opt-subj-phrase &
-[ SYNSEM.LOCAL.CAT [ IMPERATIVE - ],
-  C-CONT [ RELS <! !>,
-	   HCONS <! !> ],
-  HEAD-DTR.SYNSEM.LOCAL.CAT [ IMPERATIVE -,
-			      VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.PER non-third ] >,
-				    COMPS < > ],
-			      HEAD.FORM fin ]].
+; ERB 2007-08-01 Fixing redundancies to new version of matrix.tdl.
 
-decl-head-opt-subj-phrase := head-opt-subj-phrase & declarative-clause &
+; head-opt-subj-phrase := basic-head-opt-subj-phrase &
+; [ SYNSEM.LOCAL.CAT [ IMPERATIVE - ],
+;   C-CONT [ RELS <! !>,
+; 	   HCONS <! !> ],
+;   HEAD-DTR.SYNSEM.LOCAL.CAT [ IMPERATIVE -,
+; 			      VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.PER non-third ] >,
+; 				    COMPS < > ],
+; 			      HEAD.FORM fin ]].
+
+basic-head-opt-subj-phrase :+
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER non-third,
+				HEAD.FORM fin ]].
+
+; decl-head-opt-subj-phrase := head-opt-subj-phrase & declarative-clause &
+; [ SYNSEM.LOCAL.CAT.IMPERATIVE -,
+;   HEAD-DTR.SYNSEM.LOCAL.CAT [ IMPERATIVE -,
+; 			      HEAD verb & [ QUES -,
+; 					    FORM fin ]]].
+
+decl-head-opt-subj-phrase :+
 [ SYNSEM.LOCAL.CAT.IMPERATIVE -,
   HEAD-DTR.SYNSEM.LOCAL.CAT [ IMPERATIVE -,
 			      HEAD verb & [ QUES -,
 					    FORM fin ]]].
 
-int-head-opt-subj-phrase := head-opt-subj-phrase & interrogative-clause &
+int-head-opt-subj-phrase := basic-head-opt-subj-phrase & interrogative-clause &
 [ SYNSEM.LOCAL.CAT.IMPERATIVE -,
   HEAD-DTR.SYNSEM.LOCAL.CAT [ IMPERATIVE -,
                               HEAD verb & [ INV +,
@@ -402,15 +427,17 @@ inv-lex-rule := cat-change-only-lex-rule & same-hc-light-lex-rule & same-posthea
                              IMPERATIVE - ],
                  LKEYS #lkeys ] ] .
 
-int-clause := interrogative-clause & head-only &
-  [ SYNSEM.LOCAL.CAT [ HEAD.INV +,
-                       VAL #val,
-                       MC + ],
-    HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na,
-                                VAL #val &
-                                    [ SUBJ < >,
-                                      COMPS < > ] ],
-    C-CONT.HOOK.INDEX.SF ques ] .
+; ERB 2007-08-01 This was in there twice.
+
+;int-clause := interrogative-clause & head-only &
+;  [ SYNSEM.LOCAL.CAT [ HEAD.INV +,
+;                       VAL #val,
+;                       MC + ],
+;    HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na,
+;                                VAL #val &
+;                                    [ SUBJ < >,
+;                                      COMPS < > ] ],
+;    C-CONT.HOOK.INDEX.SF ques ] .
 
 ques-lex-rule := infl-head-change-only-ltol-rule &
 [ SYNSEM.LOCAL.CAT [ HEAD.QUES +,
@@ -457,7 +484,7 @@ sg := number.
 non-sg := number.
 pl := non-sg.
 
-tense := *top*.
+;tense := *top*.
 present := tense.
 past := tense.
 future := tense.

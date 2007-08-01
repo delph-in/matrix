@@ -16,6 +16,7 @@
 ;;; after it
 (lkb-load-lisp (this-directory) "user-fns.lsp")
 ;(lkb-load-lisp (this-directory) "user-fns-xfst.lsp")
+(lkb-load-lisp (this-directory) "checkpaths.lsp")
 (load-lkb-preferences (this-directory) "user-prefs.lsp")
 
 ;;;

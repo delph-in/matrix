@@ -2,6 +2,6 @@
 
 
 
-(defparameter *grammar-version* "Finnish")
+(defparameter *grammar-version* "fin (15-Aug-07)")
 
 
