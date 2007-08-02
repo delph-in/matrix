@@ -2,6 +2,6 @@
 
 
 
-(defparameter *grammar-version* "epo (15-August-07)")
+(defparameter *grammar-version* "epo (15-Aug-07)")
 
 
