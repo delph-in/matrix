@@ -32,6 +32,7 @@
  ((:path . "fin_gmmt") (:content . "Finnish GMMT test suite"))
  ((:path . "hye_gmmt") (:content . "Armenian GMMT test suite"))
  ((:path . "arb_567") (:content . "Modern Standard Arabic test suite from Ling 567"))
+ ((:path . "fin_567") (:content . "Farsi test suite from Ling 567"))
  ((:path . "hau_567") (:content . "Hausa test suite from Ling 567"))
  ((:path . "isl_567") (:content . "Icelandic general test suite"))
  ((:path . "ita_567") (:content . "Italian test suite from Ling 567"))
