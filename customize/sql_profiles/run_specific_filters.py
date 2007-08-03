@@ -229,10 +229,10 @@ def update_groups_table_helper(gs,groups):
         # See if we already have this group.  If not, add it.
         if g_id == None:
             last_group_id += 1
-            for fv in gs[1:]:
+            for fv in gs[1:]: 
                 [f,v] = fv.split(':')
                 cursor.execute("INSERT INTO feat_grp SET fg_grp_id = %s, fg_feat = %s, fg_value = %s", (last_group_id,f,v))
-                groups.append(last_group_id)
+            groups.append(last_group_id)
         else:
             groups.append(g_id[0])
         #print "case 3, returning groups as: " + str(groups)
@@ -253,7 +253,7 @@ def update_group_filter_table(f_id,groups):
     cursor.execute("SELECT ffg_id FROM fltr_feat_grp WHERE ffg_fltr_id = %s",(f_id))
     fl_ids = cursor.fetchall()
     if not fl_ids == ():
-        cursor.execute("DELETE FROM fltr_feat_grp WHERE ffg_id = %s",(f_id))
+        cursor.execute("DELETE FROM fltr_feat_grp WHERE ffg_fltr_id = %s",(f_id))
 
     # Now put in the current values.
     for g in groups:
