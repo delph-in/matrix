@@ -849,7 +849,7 @@ filter_list = [
               mrs_id_list = g.trans,
               re1 = 'p-acc',
               comment = "If tv is defined to take an NP complement, we shouldn't see p-acc at all.",
-              fv = ['tverObj:np']),
+              fv = ['tverb-obj:np']),
 
     MatchFilter(name = 'tv-pp-comp',
                 mrs_id_list = g.trans,
