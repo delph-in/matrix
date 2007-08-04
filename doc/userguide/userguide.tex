@@ -99,7 +99,8 @@ of the grammar that specifies how {\it mrs}s are to be interpreted.
 \section{Background and Motivation}
 \label{backmot}
 
-The Matrix grammar starter-kit \cite{Ben:Fli:Oep:02} is a
+The Matrix grammar starter-kit
+\cite{Ben:Fli:Oep:02,Fli:Ben:03,Ben:Fli:05,Dre:Ben:05} is a
 language-independent core grammar designed to facilitate the rapid
 initial development of grammars for natural languages, with
 foundations solid enough to support steady expansion to broad coverage
@@ -115,7 +116,7 @@ interface for practical applications.  The resources in the Matrix
 further enable the meaning representations to keep pace as the
 syntactic analyses of a grammar grow in complexity.
 
-The goal of the Matrix grammar starter-kit is to provide the necessary
+The goal of the Matrix grammar starter-kit is to provide the necessary\mpt{Update to reflect customization system}
 definitions of core linguistic types for words and phrases at a level
 of generality which enables quick specialization to encode the
 additional basic grammatical constraints for a particular language.
@@ -131,7 +132,7 @@ be read and used by a number of other parsers
 (cf.~\citeboth{Oep:Fli:Tsu:02}).
 
 The Matrix is constructed within the formal system of typed feature
-structures defined in \cite{Carpenter:92}, using the single operation
+structures defined in \citeboth{Carpenter:92}, using the single operation
 of unification to build phrases from the words and phrases they
 contain.  Minimal Recursion Semantics was designed to enable semantic
 composition using only this same unification of typed feature
@@ -156,14 +157,16 @@ grammar of a particular language, there are any number of design
 decisions that must be made about the content of the semantic
 representations.  In this paper, we present some design decisions that
 have emerged in work on two broad-coverage grammars the English
-Resource Grammar (ERG: \citeboth{Flickinger00}) and the JaCY Japanese
-grammar (JaCY: \citeboth{Sie:Ben:02}). 
+Resource Grammar (ERG: \citeboth{Flickinger00}) and the JACY Japanese
+grammar (JACY: \citeboth{Sie:Ben:02}).\mpt{This will be replaced with 
+broader discussion of where these representations come from, more references
+to projects involved, more languages.}
 While the influences on these design decisions
 are myriad, perhaps the most important guiding principle is the
 following: The semantic representations produced should include all
 grammatically relevant distinctions, while remaining as concise as
 possible.  Thus, for example, in the Matrix as in the ERG, past tense
-is represented simply as the attribute-value pair \mbox{[TENSE past]}
+is represented simply as the attribute-value pair \mbox{[TENSE past]}\mpt{Read \& cite Goss-Grubbs MA thesis}
 (on an event variable) rather than a more elaborate Reichenbachian
 representation relating the event time to the time of utterance,
 because this more elaborate representation can be unambiguously
@@ -179,7 +182,7 @@ confronting new linguistic phenomena.
 This section provides an overview of the semantic objects defined in the
 Matrix, used in the specification of the values of {\sc cont} in signs, both
 words and phrases.  Figure~\ref{mrsobj} gives a portion of the type hierarchies
-under {\it avm} and {\it sort}, including all of the basic semantic objects.
+under {\it avm} and {\it sort}, including all of the basic semantic objects.\mpt{Fix wide figure}
 
 \begin{figure}[ht]
 \begin{center}
@@ -232,8 +235,7 @@ the Matrix) are constrained as in (\ref{mrs-cons}).
 \begin{avm}
 {\it mrs}: \[ hook & hook\\
               rels & diff-list\\
-              hcons & diff-list\\
-              msg & basic\_message \]
+              hcons & diff-list \]
 \end{avm}
 }
 %
@@ -244,7 +246,7 @@ the value of {\sc hcons} is a difference list of {\it qeq}s
 (\S\ref{qeqsec}).  The value of {\sc hook} is a feature structure of
 type {\it hook} (\S\ref{hooksec}).  Finally, the value of {\sc msg} is
 a feature structure of type {\it basic\_message}, used to constrain the
-propositional type of a sign (\S\ref{msgsec}.
+propositional type of a sign (\S\ref{msgsec}).
 
 The type {\it mrs} also has two subtypes {\it nom-obj} and {\it psoa},
 following \namecite{Pol:Sag:94}, corresponding to semantic representations of 
@@ -257,7 +259,7 @@ see \S\ref{hooksec} below.}
 \es{\label{psoa}
 \begin{avm}
 {\it psoa}: \[ hook & \[ index & event \]\]
-\end{avm}}
+\end{avm}} \mpt{Are we actually using these for anything?  What work do they do?}
 
 \es{\label{nomobj}
 \begin{avm}
@@ -270,7 +272,8 @@ see \S\ref{hooksec} below.}
 The heart of an {\it mrs} is a bag of elementary predications,
 implemented here as a difference list of objects of type {\it
 relation} -- i.e., the value of the feature {\sc rels}.\footnote{Note
-\label{dlfn} that the Matrix doesn't include typed difference lists,
+\label{dlfn} that the Matrix doesn't include typed difference lists,\mpt{Actually, it should.  Create rels-list, and have value of RELS be [ LIST rels-list ].
+Likewise for hcons-list, where we add an additional type hcons supertype to qeq to allow other kinds of hcons on an hcons-list.}
 so that the value of {\sc rels} is in fact only constrained to be a
 difference list without further restriction -- it could just as well be a
 difference list of {\it synsem}s.  By convention, and in order to
@@ -344,18 +347,19 @@ distinguish predicate names introduced by specific lexical entries from those
 introduced by constructions or by lexical types supplying a common predicate
 for a class of lexical entries.
 
-The {\tt pos} component\mpt{what about a (adjective or adverb) and s (sahen)?} is one
-of a closed set of single lowercase letters interpreted as follows:\\
+The {\tt pos} component\mpt{what about a (adjective or adverb) and s
+(sahen)?} is one of a closed set of single lowercase letters
+interpreted as follows:\\\mpt{Create a second example which reflects
+a language with different pos distinctions; emphasize that the point
+here is coarse-grained WSD, and not universal pos inventory.}
 
 \es{
 \begin{tabular}[t]{ll}
 n & noun \\
 v & verb \\
-j & adjective \\
-r & adverb \\
-p & preposition \\
+a & adjective/adverb \\
+p & adposition \\
 q & determiner (quantifier) \\
-m & message \\
 x & all other closed-class predicates
 \end{tabular}
 }
@@ -367,14 +371,15 @@ component.  The {\tt sense} component can consist of any sequence of
 characters (letters, numbers, etc.), excluding the underscore which is
 used to separate the components of the name.  In the ERG, verb
 particle constructions are handled semantically by having the verb
-contribute a relation particular to that combination.  We distinguish
-these relations by placing the particle's orthography in the {\tt
-sense} field. Unlike the other components, the {\tt sense} component
-is optional, and if omitted, its separating underscore is also
-omitted.  By convention, a predicate name with no sense component is
-interpreted as underspecified for sense, so if more than one sense is
-present in the lexicon for a given orthography and part of speech, each
-of these predicate names should have a sense component.
+contribute a relation particular to that combination.\mpt{Illustrate
+with example, provide pointer forward.}  We distinguish these
+relations by placing the particle's orthography in the {\tt sense}
+field. Unlike the other components, the {\tt sense} component is
+optional, and if omitted, its separating underscore is also omitted.
+By convention, a predicate name with no sense component is interpreted
+as underspecified for sense, so if more than one sense is present in
+the lexicon for a given orthography and part of speech, each of these
+predicate names should have a sense component.
 
 Every relation and predicate name ends in {\bf \_rel}, for the
 convenience of the grammar writer, particularly to avoid possible
@@ -382,7 +387,8 @@ namespace collisions.  This suffix (and the leading underscore) can of
 course be suppressed by MRS display methods if desired.
 
 So for example, the following predicate names are correct for the 
-corresponding words:\\
+corresponding words:\\ \mpt{Add example strings for each.  Include
+\_bank\_n\_1\_rel.}
 
 \es{
 \begin{tabular}[t]{ll}
@@ -417,7 +423,8 @@ Matrix because it provides a useful experimental link later on, when
 developing applications that use a Matrix-derived grammar.  The grammar
 engineer can safely ignore this feature during grammar development.  If 
 an application seesm to require it, contact the authors for details on
-how to put it to use.\mpt{and cfrom/cto}
+how to put it to use.\mpt{Update to LNK and CFROM/CTO, provide actual
+explanation.}
 
 \subsection{{\it qeq}}
 \label{qeqsec}
@@ -474,27 +481,27 @@ are given in \S\ref{hconssec} below.
 While the MRS specification in \namecite{Cop:Fli:Sag:Pol:03} leaves
 open the possibility of different kinds of handle constraints, only
 {\it qeq} constraints have proven necessary so far for wide-coverage
-grammars of English (ERG) and Japanese (JaCY), and so only
+grammars of English (ERG) and Japanese (JACY), and so only
 {\it qeq} constraints are currently implemented in the 
 Matrix.\footnote{However, a large grammar implementation for German 
 (described in \namecite{Wahl:Karg:00})
 makes crucial use of {\it leq} (less than or equal) scopal
 constraints, and recent work on extending MRS representations to robust 
-processing (\namecite{Cop:03} also employs {\it leq} constraints.}
+processing \cite{Cop:03} also employs {\it leq} constraints.}
 
 \subsection{{\it hook}}
 \label{hooksec}
 
-Where the values of {\sc rels} and {\sc qeq} give a rich representation of 
+Where the values of {\sc rels} and {\sc hcons} give a rich representation of 
 the semantics of any given sign (word or phrase),
 more information is needed in order to be able to combine the semantic
-representations of signs in order to compositionally build
+representations of signs to build
 semantic representations of larger phrases.  For example, consider the
 partial feature structures for the {\it mrs}s produced by the ERG for the 
 signs {\it the dog} and {\it barks} in
 (\ref{db1}):\fn{Following \lkb\ conventions, difference lists are
 represented with the brackets $\langle$! !$\rangle$, consistent with the
-abbreviatory conventions employed in the TDL (\cite{Kri:Sch:94})
+abbreviatory conventions employed in the TDL \cite{Kri:Sch:94}
 syntax adopted in the \lkb.}
 
 \ees{\label{db1}
@@ -623,13 +630,13 @@ semarg} is shown in Figure~\ref{semarghier}.
 
 \caption{Type hierarchy rooted in {\it semarg}}
 \label{semarghier}
-\end{figure}
+\end{figure}\mpt{Add handle-or-ref-ind (p) type.}
 
 There are two subtypes of {\it semarg}.  The first, {\it handle},
 is the type of the value of all 
-handle-taking features ({\sc lbl}, {\sc harg}, {\sc larg}, {\sc marg},
+handle-taking features ({\sc lbl}, {\sc harg}, {\sc larg},
 {\sc rstr}, {\sc body}), and can be the value type for a semantic role
-filling one of the features {\sc arg1, arg2, ...}.  
+feature {\sc arg1, arg2, ...}.  
 There are no subtypes of {\it handle}, nor is it
 anticipated that grammar engineers will need to add any in the course
 of grammar development.  Furthermore, there are no features introduced
@@ -638,7 +645,7 @@ on the type {\it handle} (although it inherits {\sc instloc} from
 
 The other immediate subtype of {\it semarg} is {\it individual},
 which includes expletive indices ({\it expl-ind}), event indices (or
-event variables) {\it event} and ordinary referential indices ({\it
+event variables; {\it event}) and ordinary referential indices ({\it
 ref-ind}).  In addition, the Matrix provides for coordinate
 indices ({\it conj-ind} with subtypes {\it conj-event} and {\it
 conj-ref-ind}) which are introduced by coordination constructions (see
@@ -654,29 +661,23 @@ The contrast between {\it expl-ind} and {\it event-or-ref-index} is
 used to constrain the distribution of expletive NPs (e.g., English
 {\it it} and {\it there}, German {\it es}, or French {\it
 il}).\footnote{Although in general we intend the types given in the
-Matrix proper (as opposed to separate modules that will eventually
-come with it) to be largely language-independent, 
+Matrix core grammar to be largely language-independent, 
 {\it expl-ind} is probably not useful in languages
 which allow pro-drop to the extent that Japanese does, and which therefore
-have no use for expletive elements.}  Such expletive pronouns are given
+have no use for expletive elements.  Once there is a libary implementing
+expletive pronouns, this type will be moved out of the core grammar.}  Such expletive pronouns are given
 an {\sc index} value of type {\it expl-ind} (which is exceptionally not
 linked to any argument position in their main relation, since they
 don't introduce any relation).  Ordinary selecting heads can then require 
 dependents with
-contenful {\sc index} values (i.e., {\it event-or-ref-index}s, or
+contentful {\sc index} values (i.e., {\it event-or-ref-index}s, or
 some subtype thereof).  In languages like English (and perhaps Dutch) with
 multiple expletive pronouns, subtypes of {\it expl-ind} can be added
 to distinguish the different pronouns.  In the ERG, we have found
 this technique useful not only for implementing the selection of 
-particular expletive pronouns by particular heads (e.g., {\it rains} vs.\
+particular expletive pronouns by particular heads (e.g., {\it rain} vs.\
 existential {\it be}), but also for pronoun matching in tag questions
 (see \citeboth{Ben:Fli:99}).
-
-The type {\it individual} introduces the feature {\sc sort}, which can be
-used to identify the grammatically relevant semantic sort (if any) of the
-sign, for use in semantic selection of this sign as a dependent in a larger
-phrase.  The value of this attribute is of type {\it semsort}, discussed
-in \S\ref{keysec}.
 
 The types {\it event} and {\it ref-ind} each introduce one feature,
 as shown in (\ref{evref}):
@@ -695,7 +696,7 @@ The features {\sc tam} and {\sc png} encode tense-aspect-mood
 information (properties of events) and agreement information (person,
 number, and gender -- properties of referential indices; cf.\
 \citeboth{Pol:Sag:94}), respectively.  In the current version of the
-Matrix (v 0.6), the type {\it tam} (unsurprisingly) introduces the
+Matrix, the type {\it tam} (unsurprisingly) introduces the
 features {\sc tense}, {\sc aspect}, and {\sc mood}.  This may be too
 strong a constraint, since languages may well conflate two or more of
 these properties; see the discussion of the {\it png} type immediately
@@ -737,7 +738,9 @@ closed-class items, such as preposition selection by verbs or
 auxiliary matching in English tag questions \cite{Ben:Fli:99}.  Note
 that {\it semsort} is made a subtype of {\it sort} to make explicit
 the claim that these types used for semantic selection do not
-themselves introduce attributes of their own.
+themselves introduce attributes of their own.\mpt{This section needs to
+be fixed: SORT and semsort should be axed, the rest of it used to illustrate
+KEYS/KEY and predsort.  Combine with next section.}
 % Dan - and why do we predict that?
 
 The ERG illustrates several uses of semantic selection, which motivate
@@ -758,7 +761,7 @@ the intermediate types in the {\it semsort} hierarchy can be useful.
 
 The subhierarchy under {\it semsort} will be language-specific,
 reflecting grammaticized semantic properties motivated by
-constructions in that language.  The analysis of Japanese numeral
+constructions in that language.  The analysis of Japanese numeral\mpt{Look into Francis's work and either elaborate this point, or axe.}
 classifiers, for example, can be implemented using these semantic
 sorts, as can the quite idiosyncratic constraints for English on
 preposition selection with temporal nouns.  Here, for example, noun
@@ -775,19 +778,11 @@ Note that, as strings, {\sc pred} values are not organized into a hierarchy.
 Furthermore we expect to only need to identify particular relations
 (via {\it semsort}s which correspond to specific {\sc pred} values)
 in a reasonably small number of closed classes of lexical items.
-We therefore see now value in providing an external pointer to the
+We therefore see no value in providing an external pointer to the
 {\sc pred} value of the main predication contributed by the lexical
 head (syntactic or semantic) of a phrase.
 
 
-The final attribute of objects of type {\it mrs} is {\sc msg}.
-This attribute has as its value a subtype of the type {\it message} 
-or the type {\it no-msg}, depending on whether the phrase is clausal
-or non-clausal.  {\it Message}s are our representation of the 
-semantic types of clauses and are described in more detail in
-\S\ref{msgrelsec} below.  For clausal phrases, the value of {\sc message}
-will be a pointer to the relevant message relation in the {\sc rels} list
-of that phrase.  
 
 
 \subsection{{\it keys}}
@@ -850,7 +845,11 @@ they are only abbreviations for longer path names).
 The type {\it lexkeys} is the value of the {\sc local}  feature {\sc lkeys},
 and nothing in the Matrix propagates the value of this feature up
 to phrases.  Thus, the features on {\it lexkeys} are only
-used (if at all) in simplifying the definitions of lexical entries.
+used (if at all) in simplifying the definitions of lexical entries.\mpt{Actually, we now think that KEYREL and ALTKEYREL do do interesting linguistic work.
+In particular, they facilitate the factorization of lexical types into
+different dimensions, including a linking dimension which need not know
+anything about the actual RELS list.  Separate ``not linguistically
+interesting'' from ``not projected into the syntax''.}
 
 The type {\it lexkeys} is constrained as follows:
 
@@ -889,7 +888,7 @@ complements by simply constraining their own {\sc {-}{-}compkey} and/or
 {\sc {-}{-}ocompkey} values, as in the following (partial) lexical entries 
 adapted from
 the ERG for the verb {\it abstain} and the empty preposition {\it from} as in 
-{\it Kim abstained from the vote}:
+{\it Kim abstained from the vote}:\mpt{Update: Now treating selected prepositions as truly semantically empty.}
 
 \es{
 \begin{avm}
@@ -909,7 +908,7 @@ the ERG for the verb {\it abstain} and the empty preposition {\it from} as in
 }
 
 The lexical type for the verb {\it abstain} includes as part of its definition
-the following reentrancy which enables the use of this {\sc --compkey} 
+the following reentrancy which enables the use of this {\sc {-}{-}compkey} 
 shortcut:
 
 \es{
@@ -955,7 +954,6 @@ is shown in Figure~\ref{relhier}.
 		             \lf{\hspace{1.9in} arg1-relation}
 		             \lf{\hspace{3.2in} adv-relation}
 			     \lf{\hspace{4.6in} quant-relation}}
-			     \br{\hspace{1.0in} basic\_message}{}
 		             \br{subord-or-conj-reln}{}}
 \end{tree}
 }
@@ -1004,7 +1002,8 @@ arg0} role.  The value of this role is an {\it individual}.  For nouns,
 verbs, and adjectives, the {\sc arg0} of the main relation (i.e., the 
 {\sc keyrel} value) should be identified with
 the {\sc hook.index}, and this identification should be done on a general
-supertype.
+supertype.\mpt{This is now done in matrix.tdl, and that should
+be described.}
 
 For ordinary nouns, the value of {\sc arg0} will be a (referential) index 
 which serves as a pointer
@@ -1024,19 +1023,21 @@ semantic argument.  The type
 As discussed in \S\ref{semargsec} above, objects of type {\it ref-ind}
 bear the feature {\sc png}.  This means that the agreement information
 associated with a noun will also be found in {\sc lkeys.keyrel.arg0},
-but this information doesn't propagate up to the phrase, and so agreement
-information should always be accessed through the {\sc cont.hook.index}.
+but this information doesn't propagate up to the phrase, and so
+(semantic) agreement information should always be accessed through the
+{\sc cont.hook.index}.\footnote{The Matrix also provides a syntactic
+{\sc agr} feature, to handle cases where syntactic agreement properties
+do not align with the semantic representations.  See \citeboth{Ben:Fli:99}.}
 
 For verbs, which introduce relations of type {\it event-relation}, the
-value of {\sc arg0} is the event variable identified as the {\sc index} value.
-Again, this
-{\it event} will also show up as the value of a role feature in
-modifier relations such as those expressed by (intersective) adverbs and by 
-PPs modifying
-verbal phrases.  Other elements that might appear to notionally take
-events as arguments (e.g., clause-embedding verbs or scopal adverbs like
-{\it probably}) actually take the handle of the phrase as their
-argument.  The type {\it event-relation} is therefore constrained as follows:
+value of {\sc arg0} is the event variable identified as the {\sc
+index} value.  Again, this {\it event} will also show up as the value
+of a role feature in modifier relations such as those expressed by
+(intersective) adverbs and by PPs modifying verbal phrases.  Other
+elements that might appear to notionally take events as arguments
+(e.g., clause-embedding verbs or scopal adverbs like {\it probably})
+actually take the handle of the phrase as their argument.  The type
+{\it event-relation} is constrained as follows:
 
 \es{
 \begin{avm}
@@ -1050,7 +1051,7 @@ information associated with an event are encoded in the {\sc arg0}
 of the relation describing that event.  Again, as there is no pointer
 to the whole relation that gets passed up to the phrasal level,
 this information and
-the event index itself should be accessed via the path {\sc hook.index} 
+the event index itself should be accessed via the path {\sc cont.hook.index} 
 for semantic selection or composition. 
 
 The Matrix provides one particularly useful subtype of {\it noun-relation} 
@@ -1063,7 +1064,7 @@ called {\it named-relation}:
 \end{avm}
 }
 %
-This type is used for proper names (including names of months, days of
+This type is used for proper names (including names of months, days of\mpt{Move to quantifier-less representation of proper names and pronouns.}
 the week and days of the month), and it introduces a feature {\sc
 carg} (`constant argument') which takes as its value a string
 representing the name of the named entity.  It further constraints the
@@ -1164,7 +1165,7 @@ they may be {\it individual}s ({\it ref-ind}s or {\it event}s), or
 \end{center}
 \caption{Hierarchy below {\it arg0-relation}}
 \label{arg1234fig}
-\end{figure}
+\end{figure}\mpt{Remove adv-rel}
 
 \ees{\label{argavm}
 \item \begin{avm}
@@ -1185,73 +1186,81 @@ Note that, in keeping with the strategy for interpretation outlined
 above, it is not possible to have an {\sc arg3} without an {\sc arg1}
 and an {\sc arg2}.  That is, if a relation takes two arguments 
 beyond its distinguished event/index ({\sc arg0}), they will always
-be labelled {\sc arg1} and {\sc arg2}.  Furthermore, the {\sc arg1}
+be labelled {\sc arg1} and {\sc arg2}.  
+Furthermore, the {\sc arg1}
 should always correspond to the first (least oblique) syntactic
 argument, the {\sc arg2} to the second (next least oblique) syntactic
-argument, and so on (see \S\ref{linksec} and \citeboth{Fli:Ben:f}).
+argument, and so on (see \S\ref{linksec}).\mpt{Oblique isn't the right
+notion here --- it has to do with `deep subject', etc.  Fix and point
+to new description of linking types.}
 
-The type {\it arg1-relation} does not inherit from {\it event-relation}, to
-allow for the possibility of relational nouns and other relations that
-take more than one argument but do not express events.
-The types {\it arg1-ev-relation} through {\it arg1234-ev-relation} provide 
-event
-relations with one to four arguments.  Thus (semantically)
-intransitive verbs introduce {\it arg1-ev-relation}s, (semantically) transitive
-verbs introduce {\it arg12-ev-relation}s, etc.  Ordinary nouns introduce {\it
-noun-relation}s, which only have an {\it arg0}.  Relational nouns (such as
-{\it picture}) introduce a relation {\it noun-arg1-relation} which inherits 
-from both {\it noun-relation} and {\it arg1-relation} (not {\it
-arg1-ev-relation}).  A noun with two semantic arguments would require a 
-relation
-that inherits from {\it noun-relation} and {\it arg12-relation}, and similarly
-for a noun with three arguments, if such exist (apart from deverbal nouns,
-which are treated for English via lexical rule in the ERG).  These types all 
-inherit from {\it arg0-relation} and
-through it {\it relation}, so they will all also bear the features {\sc
-arg0}, {\sc lbl}, {\sc pred}, and {\sc wlink}.
+The type {\it arg1-relation} does not inherit from {\it
+event-relation}, to allow for the possibility of relational nouns and
+other relations that take more than one argument but do not express
+events.  The types {\it arg1-ev-relation} through {\it
+arg1234-ev-relation} provide event relations with one to four
+arguments.  Thus (semantically) intransitive verbs introduce {\it
+arg1-ev-relation}s, (semantically) transitive verbs introduce {\it
+arg12-ev-relation}s, etc.  Ordinary nouns introduce {\it
+noun-relation}s, which only have an {\it arg0}.  Relational nouns
+(such as {\it picture}) introduce a relation {\it noun-arg1-relation}
+which inherits from both {\it noun-relation} and {\it arg1-relation}
+(not {\it arg1-ev-relation}).  A noun with two semantic arguments
+would require a relation that inherits from {\it noun-relation} and
+{\it arg12-relation}, and similarly for a noun with three arguments,
+if such exist (apart from deverbal nouns,\mpt{What is the current
+analysis of deverbal nouns?  This sounds like something to include in
+the phenomena section.}  which are treated for English via lexical
+rule in the ERG).  These types all inherit from {\it arg0-relation}
+and through it {\it relation}, so they will all also bear the features
+{\sc arg0}, {\sc lbl}, {\sc pred}, and {\sc wlink}.
 
-Note that verbs are not the only lexical entries which introduce subtypes of
-{\it event-relation} in their semantics.  Adjectives can in some languages 
-serve
-directly as predicates, be subject to tense and aspect constraints, and take
-one or more arguments, all analogous to verbs.  Likewise, prepositions can also
-appear as the heads of predicative phrases, so they will also introduce
-subtypes of {\it event-relation} in their semantics.  It is worth noting that
-the choice of the name {\it event-relation} is intended to include states as 
-well
-as processes, as required by verbs as well as adjectives and prepositions.
-At present the Matrix does not introduce events into the relations for nouns,
-though it might be argued that examples in English like {\it the current
-president} motivate treating at least some nouns as event-bearing.  Since we
-do not know of grammar-internal constraints that require making reference to
-events on nouns, we will expect such temporally constrained noun phrases to
-be interpreted outside of the grammar.
+Note that verbs are not the only lexical entries which introduce
+subtypes of {\it event-relation} in their semantics.  Adjectives can
+in some languages serve directly as predicates, be subject to tense
+and aspect constraints, and take one or more arguments, all analogous
+to verbs.  Likewise, prepositions can also appear as the heads of
+predicative phrases, so they will also introduce subtypes of {\it
+event-relation} in their semantics.  It is worth noting that the
+choice of the name {\it event-relation} is intended to include states
+as well as processes, as required by verbs as well as adjectives and
+prepositions.  At present the Matrix does not introduce events into
+the relations for nouns, though it might be argued that examples in
+English like {\it the current president} motivate treating at least
+some nouns as event-bearing.  Since we do not know of grammar-internal
+constraints that require making reference to events on nouns, we will
+expect such temporally constrained noun phrases to be interpreted
+outside of the grammar.
 
-Like verbs, adjectives and prepositions identify their {\sc hook.index} value 
-with the {\sc arg0} value in their main relation, enabling them to appear as
-heads of predicative phrases, supplying an event which can be constrained for
-tense and aspect.  In the ERG, for example, the copula {\it be} does not
-supply its own relation, but only constrains tense and aspect since it often
-combines with a verb participle that already supplies the event relation, as 
-in {\it Kim was leaving}.  Since that
-grammar uses the same copula {\it be} for {\it Kim was angry}, the adjective
-{\it angry} must supply an event relation whose {\sc arg0} event will be
-constrained in this example to past tense.  Now since adjectives and
-prepositions can head phrases that modify nouns, they must also expose the
-argument position they will identify with the index of the phrase they
-modify.  This ``external argument'' of a PP or AP is its {\sc hook.xarg}
-value, identified in the lexical head's feature structure with the value of
-the rather long path {\sc head.mod.first.local.cont.hook.index}.  This value
-will be unified by the grammar rules for modification with the semantic index 
-of the noun being modified.   These two {\sc hook} attributes {\sc index} and
-{\sc xarg} enable the semantic composition desired for intersective
-modification of nouns by adjectives or PPs, and of verbs by PPs, as well as
-the use of adjectives and prepositions in predicative constructions.  The
-machinery should extend to more interesting examples like {\it The dog 
-currently in the park is barking}, where {\it currently} temporally constrains
-the event introduced by the PP {\it in the park} (its {\sc hook.index}) while 
-the PP's {\sc hook.xarg} is identified with the {\sc hook.index} of the noun
-{\it dog}.
+Like verbs, adjectives and prepositions identify their {\sc
+hook.index} value with the {\sc arg0} value in their main relation,
+enabling them to appear as heads of predicative phrases, supplying an
+event which can be constrained for tense and aspect.  In the ERG, for
+example, the copula {\it be} does not supply its own relation, but
+only constrains tense and aspect since it often combines with a verb
+participle that already supplies the event relation, as in {\it Kim
+was leaving}.  Since that\mpt{This paragraph is just too dense.
+Extend in chapter on specific analyses, provide pointer forward and
+highlights here.}  grammar uses the same copula {\it be} for {\it Kim
+was angry}, the adjective {\it angry} must supply an event relation
+whose {\sc arg0} event will be constrained in this example to past
+tense.  Now since adjectives and prepositions can head phrases that
+modify nouns, they must also expose the argument position they will
+identify with the index of the phrase they modify.  This ``external
+argument'' of a PP or AP is its {\sc hook.xarg} value, identified in
+the lexical head's feature structure with the value of the rather long
+path {\sc head.mod.first.local.cont.hook.index}.  This value will be
+unified by the grammar rules for modification with the semantic index
+of the noun being modified.  These two {\sc hook} attributes {\sc
+index} and {\sc xarg} enable the semantic composition desired for
+intersective modification of nouns by adjectives or PPs, and of verbs
+by PPs, as well as the use of adjectives and prepositions in
+predicative constructions.  The machinery should extend to more
+interesting examples like {\it The dog currently in the park is
+barking}, where {\it currently} temporally constrains the event
+introduced by the PP {\it in the park} (its {\sc hook.index}) while
+the PP's {\sc hook.xarg} is identified with the {\sc hook.index} of
+the noun {\it dog}.
 
 Adverbs,\mpt{out of date} unlike adjectives and prepositions, do not appear predicatively, and
 hence do not need to introduce an independent event.  So they simply identify
@@ -1301,65 +1310,9 @@ quantifiers should be distinguished by their {\sc pred} values
 the ERG).
 The Matrix does not yet adopt any hypothesis about whether the inventory
 of quantifier relations might be made language-independent, though it
-would clearly be desirable if such an inventory could be defined.
+would clearly be desirable if such an inventory could be defined.\mpt{Elaborate? Ref to papers on different kinds of quantifiers, relationship between
+our quantifier rels and GQs as the semantic side of NPs.}
 
-
-\subsubsection{Messages}
-\label{msgrelsec}
-
-We provide the {\it message} type in the Matrix as an MRS encoding
-of the distinctions among types of semantics of clauses developed in
-\namecite{Gin:Sag:00}.  Clauses can express
-commands, questions, or propositions, either as simple sentences or in
-embedded contexts as sentential complements, relative clauses, etc.  The
-type {\it message} is a subtype of {\it relation} which introduces the
-attribute {\sc marg} (message argument), whose value will be the highest
-scoping handle of the clause.  The {\sc pred} value of the message relation
-is used to distinguish the three clause types, drawing from the pred sorts
-given in the hierarchy in Figure~\ref{msgfig}\mpt{RMRS/Matrix
-  mismatch: inconsistent in the text}, all of which carry the suffix
-{\it \_m\_rel} for quick identification.
-
-\begin{figure}
-\begin{center}
-
-{\it
-\begin{tree}
-\br{message\_m\_rel}{\lf{command\_m\_rel}
-             \br{\hspace{0.5in}prop-or-ques\_m\_rel}{
-                               \br{abstr-ques\_m\_rel}{\lf{\hspace{-0.8in}question\_m\_rel}
-                                              \lf{\hspace{0.5in}ne\_m\_rel}}
-                               \lf{\hspace{1.0in}proposition\_m\_rel}}}
-\end{tree}
-}
-
-\end{center}
-\caption{Subhierarchy under {\it message}}
-\label{msgfig}
-\end{figure}
-
-This type hierarchy has a bit more structure than might otherwise be
-expected as we anticipate that the {\it messsage} type of a clause (through
-{\sc cont.msg}) will used in semantic selection by
-clause-taking verbs.  As some verbs (like {\it know}) accept sentential
-complements which are either propositions or questions but not commands,
-the Matrix provides the intermediate type {\it prop-or-ques\_m\_rel} which
-the verb {\it know} can use to constrain its complement's {\sc msg.pred} value.
-Among questions, all of which will be assigned the {\sc msg.pred} value
-{\it abstr-ques\_m\_rel} by the grammar, we distinguish between
-ordinary questions (with {\sc msg.pred} value {\it question\_m\_rel})
-and the type of confirmation-seeking question expressed by a tag question in 
-English, the particle {\it ne} in Japanese, the particle {\it ne} in German, 
-or the equivalent in
-other languages, for which the Matrix supplies the pred sort 
-{\it ne\_m\_rel}.\fn{On {\it ne\_rel}, see \citeboth{Ben:Fli:99}.}
-
-The ERG has adopted the further assumption that all questions contain an
-immediately embedded proposition, motivated both by (reasonable but perhaps
-controversial) hypotheses about inference in discourse, and by concerns for
-simplicity in the hierarchy of constructions for English.  This choice of
-implementation for the semantics of questions is supported by the Matrix, but 
-not required by it.
 
 \subsubsection{Subordination and Coordination}
 \label{coordsec}
@@ -1378,8 +1331,8 @@ the main and subordinate clauses, while for coordination they correspond to
 the {\sc ltop} values of the two conjuncts.  These
 are the values of the features {\sc l-hndl} and {\sc r-hndl}, with the names
 chosen to encode explicitly the order of left and right conjuncts,
-since this order can be semantically (or pragmatically) relevant at least for
-coordination.
+since this order can be semantically (or pragmatically) relevant, at least for
+coordination.\mpt{Out of date: subord now just arg12}
 
 \es{
 \begin{avm}
@@ -1396,18 +1349,19 @@ is, however, more to be said about coordination.  Coordination of clauses,
 predicates or noun phrases requires the construction of a single {\it
 individual} ({\it event} or {\it ref-ind}) that can be the value of a
 role feature in any outside predicate that takes the conjoined
-entity as an argument.  This is achieved by giving {\it conjunction-relation}
-the three additional features shown in (\ref{conjrel}):
+entity as an argument.  This is achieved by using {\sc arg0} for
+the conjoined index and giving {\it conjunction-relation}
+the two additional features shown in (\ref{conjrel}):\mpt{Detail and refs on collective v. distributive readings?}
 
 \es{\label{conjrel}
 \begin{avm}
-\[ c-arg & conj-index\\
+\[ arg0 & conj-index\\
    l-index & index\\ 
    r-index & index \]
 \end{avm}
 }
 %
-The value of {\sc c-arg} is the conjoined index ({\it conj-index}) which
+The value of {\sc arg0} is the conjoined index ({\it conj-index}) which
 serves as a pointer to the separate conjoined entity.  
 
 Of course, it is possible to conjoin more than two noun phrases,
@@ -1416,7 +1370,8 @@ features for any given relation, we represent multi-coordination via a
 series of chained binary {\it conjunction-relation}s, 
 where the {\sc r-index} of
 all but the lowest {\it conjunction-relation} is the {\sc c-arg} of the next
-{\it conjunction-relation}.
+{\it conjunction-relation}.\mpt{Give example here (or maybe in specific
+analyses chapter with pointer forward here).}
 
 Note that in the coordination of noun phrases, the {\sc l-hndl} and 
 {\sc r-hndl} values of the {\it conjunction-relation} will be identified 
@@ -1426,7 +1381,8 @@ will not be identified with the {\sc lbl} values of any relations in the
 phrase, given our treatment of quantifiers as underspecified with respect to
 scope.  In all other cases of coordination (clauses, VPs, predicative phrases,
 etc.), the values of {\sc l-hndl} and {\sc r-hndl} will be identified with
-the {\sc lbl} values of relations in the phrase.
+the {\sc lbl} values of relations in the phrase.\mpt{See what Rui has to say
+about the right answer to this.}
 
 
 \subsubsection{Miscellaneous Special Relations}
@@ -1441,7 +1397,8 @@ with two noun daughters that are combined by a rule which introduces this
 relation does not introduce any new attributes, but rather constrains the
 two arguments to both be of type {\it ref-ind}.  Such a constraint might have
 value, but if not, the grammar writer could simply use the relation type
-{\it arg12-relation}, and assign the appropriate unique {\sc pred} value.
+{\it arg12-relation}, and assign the appropriate unique {\sc pred} value.\mpt{No need for these types. Introduce instead as distinguished {\sc pred} values
+in specific analyses section.}
 
 Similarly, the Matrix supplies the {\it verb-ellipsis-relation} as a subtype of
 {\it arg1-relation}, intended for analyses of elided verb phrases as in the
@@ -1468,14 +1425,15 @@ fifty meters tall} may lead the grammar writer to a new relation type for
 these degree phrases.  Similarly, comparative constructions, like in the 
 English examples {\it Kim is taller than Sandy was} or {\it dogs have more
 legs than ostriches}, may require the introduction of relations with 
-additional attributes to encode all of the relevant constraints.  
+additional attributes to encode all of the relevant constraints.\mpt{More detail
+on these in specific analyses section.}
 
 When adding a new relation, be sure to place it correctly in the {\it relation}
 hierarchy so that it inherits exactly the attributes and constraints that it
 needs from existing types.  And before choosing to make the addition, consider
 whether an existing relation type might in fact serve, given the existence of
 the Sem-I component (described in \S\ref{semisec} below) to provide a unique
-interpretation of the attributes {\sc arg1 ... arg4} for each relation.
+interpretation of the attributes {\sc arg1 ... arg4} for each relation.\mpt{Odd use of second person reference}
 
 \section{Features of Indices: Agreement and TAM}
 \label{AgrTAM}
@@ -1487,7 +1445,7 @@ and gender for referential indices, or tense, aspect, and mood for events.
 Even a seemingly uncontroversial step like introducing separate attributes for 
 each of these properties on indices has proven to be unproductive, since
 a given language may conflate two such attributes morphologically and
-syntactically.
+syntactically.\mpt{Add COG-ST and SF.}
 
 For example, the ERG captures the distribution of person and number in English
 by introducing types which conflate these two properties, enabling a direct
@@ -1544,7 +1502,8 @@ in particular languages for other agreement attributes, so we have left the
 internal structure of the values for the attributes {\sc png} and {\sc tam}
 unspecified in the Matrix.  In future work, we hope to include possible
 tense/aspect systems as modules in the Matrix, i.e., as components that we 
-expect to be useful in many but not all languages.
+expect to be useful in many but not all languages.\mpt{Update with pointers
+to Laurie and Scott's work.}
 
 The treatment of tense, aspect, and mood is equally underspecified in the
 current version of the Matrix, though it is expected that a more elaborated
@@ -1613,7 +1572,7 @@ are inherited by all phrases and lexical rules.  In addition, the type
 {\sc hook} of the semantics provided by the rule itself (the value of
 a feature called {\sc c-cont}; see \S\ref{ccontsec} below).  More
 specialized phrase types identify the {\sc hook} of the {\sc c-cont}
-with the {\sc hook} of the head or non-head daughter, as appropriate.
+with the {\sc hook} of the head or non-head daughter, as appropriate.\mpt{Add ternary phrases! Explain purpose of these types.}
 
 \begin{figure}[ht]
 \begin{center}
@@ -1650,7 +1609,8 @@ last}), which allows us to state the accumulation of values using the
 same single operation of unification of typed feature structures.
 (\ref{dla}) shows the constraints on the type {\it
 basic-unary-phrase}, including the `diff-list appends' that implement
-principles 1 and 2.
+principles 1 and 2.\mpt{Explain or point to explanation of C-CONT here. 
+Somewhere mention Fregean compositionality `and how they are put together'.}
 
 \enumsentence{\label{dla}
 \begin{avm}
@@ -1675,7 +1635,7 @@ principles 1 and 2.
 The type {\it head-compositional} (a subtype of {\it headed-phrase})
 provides the constraint that identifies the {\sc hook} of the {\sc
 c-cont} (and therefore also of the mother) with the {\sc hook} of the
-head-daughter:
+head-daughter:\mpt{Add intro: There are three possibilities.}
 
 \es{
 \begin{avm}
@@ -1694,7 +1654,7 @@ and {\it basic-head-opt-comp-phrase} are unary phrases, but it is still
 necessary to determine whether or not they are head-compositional, as
 there are also unary phrases which contribute constructional semantics
 and therefore do not identify the {\sc hook} of the {\sc c-cont} with the
-{\sc hook} of the daughter (see \S\ref{ccontsec} below). 
+{\sc hook} of the daughter (see \S\ref{ccontsec} below).\mpt{More explanation of what these types do, for non-Matrix users.}
 
 The type {\it head-mod-phrase} does not inherit from {\it
 head-compositional}, but one of its subtypes {\it isect-mod-phrase} does, to
@@ -1722,7 +1682,7 @@ which supplies a message relation that takes widest scope, and hence the
 Instead, the {\sc c-cont.hook.ltop} value is identified with the handle (label)
 of the newly supplied message relation, and the {\sc c-cont.hook.index} value
 is identified with that of the head daughter.  See the next section for a
-discussion of how constructions can contribute semantics.
+discussion of how constructions can contribute semantics.\mpt{Need a new example.}
 
 So we have (syntactically) headed phrases where the semantic head is
 the syntactic head, headed phrases where the semantic head is instead
@@ -1764,27 +1724,22 @@ daughters.  Likewise, the {\sc hook} value of a phrase is always
 identified with its {\sc c-cont}'s value for {\sc hook}, where for
 most phrases this {\sc hook} in {\sc c-cont} will simply be identified
 with that of one of the daughters of the phrase, namely the semantic
-head daughter.
+head daughter.\mpt{Why are we doing this?  What is gained over just
+having head-compositional identify mother's HOOK with head-dtr's, etc.}
 
 \subsubsection{Syntactic Constructions}
 
-One example of a phrase type in the Matrix that does introduce its own
-semantic content is the type for (non-relative) clauses ({\it
-non-rel-clause}), which introduces a relation encoding the
-illocutionary force of the clause.  Such relations (e.g., {\it
-prpstn\_m\_rel}, mentioned above) are of type {\it message}, following the
-analysis in \cite{Gin:Sag:00}.
-
-We illustrate construction-introduced semantic content further with
-the treatment of noun-noun compounds in the ERG.  In the analysis of the sentence {\it the office chair
-arrived}, the phrase {\it office chair} is built using a syntactic
-rule specifically for noun-noun compounds, and this rule introduces a
-generic two-place relation {\bf n-n-cmpnd\_rel} which relates the variables
-introduced by the two nouns.  The syntactic structure is sketched in
-(\ref{compound}), where the head-specifier rule is used to combine the
-determiner and the compound noun, while the head-subject rule combines
-the full NP with the verb phrase {\it arrived}.  The corresponding MRS
-semantics is shown in (\ref{compsem}):
+We illustrate construction-introduced semantic content with the
+treatment of noun-noun compounds in the ERG.  In the analysis of the
+sentence {\it the office chair arrived}, the phrase {\it office chair}
+is built using a syntactic rule specifically for noun-noun compounds,
+and this rule introduces a generic two-place relation {\bf
+n-n-cmpnd\_rel} which relates the variables introduced by the two
+nouns.  The syntactic structure is sketched in (\ref{compound}), where
+the head-specifier rule is used to combine the determiner and the
+compound noun, while the head-subject rule combines the full NP with
+the verb phrase {\it arrived}.  The corresponding MRS semantics is
+shown in (\ref{compsem}):
 
 \enumsentence{\label{compound}
 \begin{tree}\psset{treefit=tight}
@@ -1950,7 +1905,7 @@ their arguments will combine with the semantics of the selecting entry.
 These constraints linking the semantic hooks of syntactic arguments to the
 appropriate semantic argument positions are introduced in lexical entries
 and interact with corresponding constraints in the constructions
-that combine a word or phrase with one or more of its syntactic arguments.
+that combine a word or phrase with one or more of its syntactic arguments.\mpt{Update this whole section with pointers to Matrix types.}
 
 For example, a transitive verb like English {\it chase} subcategorizes for an 
 NP subject and an NP object, where in the ERG the verb combines with its 
@@ -2087,13 +2042,13 @@ introduced by the modifier, as desired.
 \label{bvsec}
 
 One of the requirements for an {\it mrs} to be well-formed is that each of
-the referential indices ({\it ref-ind}) must be bound by a quantifier.  In
+the referential indices ({\it ref-ind}) must be bound by a quantifier.\mpt{Rephrase?}  In
 the Matrix this means that within a sentence each time a noun phrase is
 constructed which introduces a referential index (the {\sc arg0} value of
 the relation supplied by the head noun), that {\sc arg0} value 
 must be identified with the {\sc arg0} value of exactly one 
 {\it quant-relation} in the {\it mrs} for the sentence.  In addition, if the
-value of an argument role in some relation {\sc arg1 ... arg4} is constrained
+value of an argument role in some relation {\sc arg1 ... arg4} is constrained\mpt{Reconsider?  Check in current Matrix.}
 to be of type {\it ref-ind}, then that variable will have to be bound by a
 quantifier.  This means that if the grammar writer defines a lexical entry
 for a verb with optional arguments, the values of the {\sc argn} roles in
@@ -2112,7 +2067,7 @@ Note that semantic variables of type {\it event} in the Matrix are not bound by
 quantifiers, so they do not affect the well-formedness of an {\it mrs}, even
 if they appear as the argument of some predicate.  And indices introduced by
 expletive pronouns, which will be (subtypes of) {\it expl-ind}, are not
-expected to appear as arguments of relations in an {\it mrs}.
+expected to appear as arguments of relations in an {\it mrs}.\mpt{Find a way to enforce this?}
 
 \subsection{Imposing Handle Constraints}
 \label{hconssec}
@@ -2127,13 +2082,13 @@ kinds of handle constraints used in Matrix grammars.
 \subsubsection{Embedded Clauses}
 \label{msgsec}
 
-A clause is taken in the Matrix to be a saturated projection of a verb (or
+A clause is taken in the Matrix to be a saturated projection of a verb (or\mpt{Update this section}
 perhaps some other tense-bearing predicate) which introduces a message
 relation (a proposition, question, or command).  As discussed above, each
 message relation introduces just one argument role called {\sc marg}, whose
 value will constrain the handle with the next-highest scope in that clause
 (ignoring quantifiers), by means of a {\it qeq} constraint 
-(cf. \S\ref{qeqsec}). 
+(cf.\ \S\ref{qeqsec}). 
 This next-highest scoping handle will typically be the value of the {\sc lbl}
 attribute of the head verb's relation.  For simplex sentences with only one
 clause, the {\sc lbl} value of the one message relation will be identified
@@ -2188,30 +2143,32 @@ of the {\it qeq}, and the {\sc ltop} of the N-bar is identified with the
 introduction of a {\it qeq} for the semantics within every noun phrase
 ensures that all possible readings of the phrase are correctly represented,
 allowing just the right range of variation in quantifier scope.
-For a fuller discussion of these issues, see \namecite{Cop:Fli:Sag:Pol:03}.
+For a fuller discussion of these issues, see \namecite{Cop:Fli:Sag:Pol:03}.\mpt{Add ex}
 
 \subsubsection{Scopal Modifiers}
 
-Some modifiers like the English adverb {\sc probably} are treated as scopal,
-which means that instead of taking as their argument the {\it ref-ind} or
-{\it event} of the phrase they modify, they identify their semantic relation's
-argument position with the top handle of the phrase they modify.  This
-expresses the fact that the semantic content of the modified phrase falls
-within the scope of the semantic predicate introduced by the modifier.  As
-with the other examples of scopal interactions we have seen, here too we want
-to allow for intervening quantifiers in the underspecified representation
-for a sentence like {\it Every manager will probably hire some consultants}.
-So the lexical entry for {\it probably} does not identify the {\sc ltop} of the
-verb phrase it modifies directly with its {\sc arg0}, but rather introduces
-a {\it qeq} relation whose {\sc harg} is identified with the adverb's 
-{\sc arg0} and whose {\sc larg} is identified with the {\sc ltop} of its
-{\sc mod} value.\mpt{maybe mention that these are less common than
-  intersective modifiers?}
+Some modifiers like the English adverb {\it probably} are treated as
+scopal, which means that instead of taking as their argument the {\it
+ref-ind} or {\it event} of the phrase they modify, they identify their
+semantic relation's argument position with the top handle of the
+phrase they modify.  This expresses the fact that the semantic content
+of the modified phrase falls within the scope of the semantic
+predicate introduced by the modifier.  As with the other examples of
+scopal interactions we have seen, here too we want to allow for
+intervening quantifiers in the underspecified representation for a
+sentence like {\it Every manager will probably hire some consultants}.
+So the lexical entry for {\it probably} does not identify the {\sc
+ltop} of the verb phrase it modifies directly with its {\sc
+arg0},\mpt{Give ex} but rather introduces a {\it qeq} relation whose
+{\sc harg} is identified with the adverb's {\sc arg0} and whose {\sc
+larg} is identified with the {\sc ltop} of its {\sc mod}
+value.\mpt{maybe mention that these are less common than intersective
+modifiers?}
  
 \subsection{Syntax-Semantics Mismatches}
 \label{xargsec}
 
-When defining the linking between syntactic arguments of a lexical entry
+When defining the linking between syntactic arguments of a lexical entry\mpt{Update this section with actual Matrix linking types}
 and the corresponding semantic argument positions in the relation introduced
 by that entry, a grammar writer will often encounter mismatches.  A single
 syntactic argument may have its index be linked to
@@ -2517,7 +2474,7 @@ making use of an English-specific subtype of the Matrix {\it expl-ind} named
 \es{
 \begin{avm}
 \[ {\it expl-subj-verb}\\
-   subj & \q< \[ hook.index & {\it it-ind} \]\\
+   subj & \q< \[ hook.index & {\it it-ind} \] \q>\\
    keyrel & \[ arg0 & event \] \]
 \end{avm}
 }
