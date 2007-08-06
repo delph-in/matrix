@@ -52,7 +52,6 @@ pronoun := prop+pro.
 
 ; ERB 2007-05-21 Actual tense information:
 
-tense := *top*.
 present := tense.
 past := tense.
 future := tense.
@@ -615,6 +614,7 @@ comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.
 ; VPs may follow their complements but CPs may not.
 comp-verb-head-phrase := comp-head-phrase &
   [ SYNSEM.LOCAL.CAT.HEAD verb ].
+
 
 ; ###################################################
 

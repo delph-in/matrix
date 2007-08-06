@@ -81,6 +81,12 @@ reference grammars and in some cases native speaker
 consultants to assess the facts of the language as they
 attempt to model it.
 
+All of the grammars use ascii transliteration, which may
+or may not correspond to any standard transliteration.
+In addition, many of the grammars assume (but do not include)
+a morphophonological analyzer, and so parse and generate
+strings of regularized forms.
+
 For the MMT system, 9 of these grammars were selected and
 then updated for consistency with the current version of the
 Matrix and current conventions for the MRS representations.
