@@ -1,9 +1,0 @@
-i cani mangi-ano
-
-mangi-ano is are-trans-verb-lex -> 3PL-ARE-BASE-VERB -> HEAD-OPT-COMP
-
-and in:
-
-tu mangi-i
-
-mangi-i are-trans-verb-lex -> 2SG-BASE-VERB -> HEAD-OPT-COMP
