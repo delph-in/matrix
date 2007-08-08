@@ -2,16 +2,16 @@ LOGON release check list:
 
 	doc	Version.lsp	tsdb	checkpaths	warnings
 	---	-----------	----	----------	--------
-eng
+eng		x
 epo	x	x		x	x
 fas	x	x			x	
 fin	x	x			x		x
-hau	x
-heb
-hye
-isl	x
-ita
-zul	x
+hau	x	x
+heb	x	x
+hye	x	x
+isl	x	x
+ita	x	x
+zul	x	x
 
 Grammars
 
