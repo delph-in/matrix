@@ -1,0 +1,56 @@
+Joshua Johanson
+Italian
+
+Italian has both case and agreement, so I went with door number one – case, one kind of agreement, and 2+ lexical rules.  
+
+Case
+In Italian, case only appears in the pronouns.  There are four types of pronouns that appear in Italian; nominative, accusative, dative and prepositional.  The nominative case denotes an object that is the subject of the sentence.  In Italian, these pronouns are io, tu, Lei, lei, lui, noi, voi, Loro and loro.  The accusative case denotes objects that are receiving the action.  These pronouns are mi, ti, La, la, lo, ci, vi, Le, li and le.  The dative case is used to indicate the recipient of an action.  The pronouns are mi, ti, Le, le, gli, ci, vi, Loro and loro.  The prepositional pronouns only appear in prepositional phrases.  They are me, te, Lei, lei, lui, noi, voi, Loro and loro.  However, depending on your analysis of Italian pronouns, the dative and accusative pronouns could actually be considered inflections on the verb.  In this analysis, I have decided to treat accusative and dative pronouns as inflections rather than separate words.
+
+Nouns are not marked with any type of case.  The same noun can be in a nominative, accusative or prepositional role without any modifications.  There is, however, a different pronoun for each case.  In order to keep nominative and prepositional pronouns out of the accusative argument of the verb, each transitive verb requires its second argument to be of case accusative, even nothing in the grammar is inherently accusative.
+
+There are two methods of getting a noun into the accusative position
+for a verb.  It can either undergo a lexical rule that changes its
+case to an accusative case or it can be left underspecified.  If you
+leave it underspecified, it can be any case.  This is a problem, since
+nouns can never be dative.  Only pronouns and prepositional phrases
+can fulfill a dative argument on the verb.  However, in this
+representation, dative pronouns are considered inflections, so in the
+end nothing is considered dative.  Verb can be marked as only allowing
+prepositional phrases to fulfill its dative argument, and lexical
+rules can add the required inflection while fulfilling its requirement
+for a prepositional phrase.  Since there no longer is a dative case,
+nouns can be left underspecified and can take on any case without
+worrying about accidentally becoming dative.  This is done even though
+traditional Italian grammaticians have always placed dative as a case
+in Italian.
+
+So, in summary, my grammar has three cases, nominative, accusative and prepositional.  All verbs can only take nominatives as subjects.  I declared this on the basic verb type.  Even though no lexical entry is ever defined as being accusative, transitive verbs only take words that are accusative as their second argument.  This bars pronouns, which always has their case marked as something besides accusative, from going into that position while allowing nouns, which always have their case underspecified, to show up in that position.  If a pronoun needs to go in the accusative position, it is realized through a lexical rule that fulfills the verbs requirement for an accusative argument and adds the appropriate affix.  Ditransitive verbs require prepositional phrases to fulfill its dative role, but a lexical role adding a pronoun as an affix can fulfill this role.
+
+Prepositional phrases cannot have pronouns in any other form besides prepositional.  I have read some things that consider this a separate case and some things that haven’t.  Right now I am considering them to be a separate case, though that might change when I look into creating prepositional phrases.
+
+Agreement
+Italian nouns agree with their determiners and adjectival modifiers in number and gender.  There are three genders in Italian masculine, feminine and (I just barely learned this) neuter.  Gender acts like noun classes, but has loose connections with actual gender.  Most male people are masculine, and most female people are feminine.  There are exceptions.  For example, all pilots are masculine, and all people are feminine (even a group of males).   Other than that, gender acts mostly as an arbitrary noun class to which things are assigned.  Neuter objects are rare.  There are only traces of neuter in Italian, remnants of its Latin heritage, being mostly contained with the body parts.  Neuter objects act like male objects in the singular, but feminine objects in the plural. 
+
+Determiners that agree with singular, masculine nouns are il, lo, l’, un, uno, quello, codesto, and questo.  I have listed definite, indefinite and demonstrative determiners together because that distinction does not impact agreement.  Singular feminine determiners are la, l’, una, un’, quella, codesta, and questa.  Plural masculine determiners are i, gli, quelli, codesti, and questi.  Plural feminine determiners are le, quelle, codeste, and queste.  There are several more determiners, and which determiners you use vary greatly on your dialect.  Each source had a different set of demonstrative determiners, all of which are represented on the internet.  I decided to go with the ones that had the greatest use on the internet, which I hope can be taken as a representation of standard Italian.  Most adjectives can be made to agree with any noun through morphological changes.  Most adjectives will end in ‘a’ for feminine singular, ‘o’ for masculine singular, ‘e’ for feminine plural and ‘i’ for masculine plural.  If an adjective naturally ends in an ‘e’ for singular, it will change to an ‘i’ for both feminine and masculine.
+
+Italian verbs agree with their subject in both person and number.  Because verb always contains this information, a pronoun can and usually is dropped.  The verb still has to agree with what the pronoun would have been had it not been dropped.  Note that it is not the subject that is agreeing with the verb, but the verb that is agreeing with the subject.  This is the type of agreement I choose to demonstrate for this project.
+
+In the grammar, regular verbs are stored in the lexicon in their base form without number or person.  They then undergo a lexical rule that adds an ending that will signify what person and number their subject has to be.  All regular verbs lexemes must undergo a lexical rule before it can be used in the grammar.  Only nouns and pronouns with the right number and person can be the subject of these verbs.  Irregular verbs do not undergo a lexical rule and must have its person and number requirements defined in the lexicon.  
+
+Lexical Rules
+For this assignment, I used 10 lexical rules.  All these rules were used to conjugate verbs to agree in number and person with its subjects.
+
+In Italian, the stem of the verb is thought of in its infinitival form.  Italian has three types of verbs.  Verbs whose infinitival ending are either ‘are’, ‘ere’ or ‘ire’.  Each one has different rules governing conjugation, though the rules sometimes overlap.  Since many of these rules interact with phonological characteristics of the words, I originally handled all morphology through a common inflection rule irules.txt.  These rules took the verb in its infinitival form and conjugated it appropriately, taking into account other phonological affects, like addition of the silent ‘h’ to preserve pronunciation.  Unfortunately, after I wrote it I discover that that portion of the grammar was not working as I expected it to.  Each new rule had to be written for a specific verb type.  
+
+‘are’, ‘ere’ and ‘ire’ could be considered fundamentally different verbs, but the phonological changes couldn’t be considered a subtype of averb, so I only created three verb types.  I took off the last three letters of the infinitival verb to create a stem to be inflected and put into the lexicon.  
+
+The three verb types inherit from the verb-lex.  I created a new ALTS value, called VERB-CLASS that stored the type of verb it was.  Since many of the conjugations of ‘ere’ and ‘ire’ verbs are actually the same, I put them together in a subtype. There are two direct children of the type verb-class – ‘are’ and ‘non-are’.  ‘non-are’ in turn had two children, ‘ere’ and ‘ire’ verbs.  I then created three type of verbs, are-verb-lex, ere-verb-lex and ire-verb-lex that each inherited from verb-lex, but changed the alt value to the appropriate values.  Each of the these were combined with intransitive and transitive verb to create an instance of each combination.  Each verb in the lexicon was assigned one of these new types, except for irregular verbs.  Most irregular verbs still fall into one of these three categories, but since these categories are only used for conjugating, and the irregular verbs don’t conjugate the same one other verbs do, these verbs are fully inflected and appear in the lexicon in their fully inflected form.
+
+I then created inflectional rules that properly conjugate each type of verb.  The list is as follows:
+
+sg 1st - all add o
+sg 2nd - all add i
+sg 3rd - are add a, non-are add e
+pl 1st - all add iamo
+pl 2nd - are add ate, ere add ete, ire add ite
+pl 3rd - are and ano, non-are add ono
