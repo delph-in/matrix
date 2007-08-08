@@ -2,6 +2,6 @@
 
 
 
-(defparameter *grammar-version* "Malayalam (Matrix-10-2006)")
+(defparameter *grammar-version* "mal (Ling 567)")
 
 

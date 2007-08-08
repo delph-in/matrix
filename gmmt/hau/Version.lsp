@@ -2,6 +2,6 @@
 
 
 
-(defparameter *grammar-version* "Hausa (Matrix-10-2006)")
+(defparameter *grammar-version* "hau (15-Aug-2007)")
 
 

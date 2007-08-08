@@ -2,6 +2,6 @@
 
 
 
-(defparameter *grammar-version* "Modern_Standard_Arabic (Start 1-26)")
+(defparameter *grammar-version* "arb (Ling 567)")
 
 

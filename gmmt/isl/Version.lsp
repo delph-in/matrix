@@ -2,6 +2,6 @@
 
 
 
-(defparameter *grammar-version* "Icelandic (01-2007)")
+(defparameter *grammar-version* "isl (15-Aug-2007)")
 
 

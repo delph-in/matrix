@@ -2,6 +2,6 @@
 
 
 
-(defparameter *grammar-version* "Haida")
+(defparameter *grammar-version* "hai (15-Aug-2007)")
 
 

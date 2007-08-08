@@ -2,6 +2,6 @@
 
 
 
-(defparameter *grammar-version* "Zulu")
+(defparameter *grammar-version* "zul (15-Aug-2007)")
 
 

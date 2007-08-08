@@ -2,6 +2,6 @@
 
 
 
-(defparameter *grammar-version* "Armenian")
+(defparameter *grammar-version* "hye (15-Aug-2007)")
 
 

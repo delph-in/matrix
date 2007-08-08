@@ -2,6 +2,6 @@
 
 
 
-(defparameter *grammar-version* "Hebrew (Matrix-10-2006)")
+(defparameter *grammar-version* "heb (15-Aug-2007)")
 
 
