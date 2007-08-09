@@ -382,28 +382,6 @@ interrogative-complementizer-lex-item := complementizer-lex-item &
     [ CAT.QUESTION +,
       CONT.HOOK.INDEX.SF ques ] ].
 
-; Conjunction.
-; modified from norm-hook-lex-item -- have to deal with the fact that a
-; coordination-relation has different args.
-conj-lex := basic-zero-arg & single-rel-lex-item & no-hcons-lex-item &
-  [ SYNSEM
-    [ LOCAL
-      [ CAT
-        [ HEAD conj &
-          [ MOD null ],
-          VAL
-            [ SPR null,
-              COMPS null,
-              SUBJ null ] ],
-        CONT
-          [ HOOK
-            [ LTOP #ltop,
-              INDEX #index ],
-            RELS.LIST.FIRST #keyrel ] ],
-      LKEYS.KEYREL #keyrel & coordination-relation &
-        [ LBL #ltop,
-          C-ARG #index ] ] ].
-
 ; ###################################################
 
 ; PHRASES
@@ -412,11 +390,6 @@ conj-lex := basic-zero-arg & single-rel-lex-item & no-hcons-lex-item &
 
 ; Prepare for coordination
 
-;coordination-relation := conjunction-relation.
-
-implicit-coord-rel := coordination-relation &
-  [ PRED 'implicit_coord_rel ].
-
 coordl := *top*.
 coordb := coordl.
 coordm := coordl.
@@ -424,26 +397,10 @@ coordt := coordl.
 coordn := coordl.
 
 local-min :+
-  [ COORD bool,
-    COORDL coordl,
-    COORD-REL coordination-relation ].
+  [ COORDL coordl ].
 
 headed-phrase :+
-  [ SYNSEM.LOCAL
-      [ COORD -,
-        COORDL coordn,
-      COORD-REL #crel ],
-    HEAD-DTR.SYNSEM.LOCAL
-      [ COORD -,
-        COORD-REL #crel ] ].
-
-binary-headed-phrase :+
-  [ NON-HEAD-DTR.SYNSEM.LOCAL.COORD - ].
-
-;word-or-lexrule :+
-;  [ SYNSEM.LOCAL
-;    [ COORD -,
-;      COORDL coordn ] ].
+  [ SYNSEM.LOCAL.COORDL coordn ].
 
 nocoord :+
   [ SYNSEM.LOCAL.COORDL coordn ].
@@ -624,203 +581,201 @@ comp-verb-head-phrase := comp-head-phrase &
 
 ;;; General 
 
-branching-phrase := phrase &
-  [ NBR-DTR sign,
-    BR-DTR sign ].
+;branching-phrase := phrase &
+;  [ NBR-DTR sign,
+;    BR-DTR sign ].
 
-right-branching := binary-phrase & branching-phrase &
-  [ NBR-DTR #nbr,
-    BR-DTR #br,
-    ARGS < #nbr, #br > ].
+;right-branching := binary-phrase & branching-phrase &
+;  [ NBR-DTR #nbr,
+;    BR-DTR #br,
+;    ARGS < #nbr, #br > ].
 
-coord-phrase :+ branching-phrase &
-  [ SYNSEM.LOCAL
-    [ CAT
-      [ HEAD.MOD #mod,
-        VAL #val ]],
-    NBR-DTR.SYNSEM.LOCAL
-      [ CAT
-        [ HEAD.MOD #mod,
-          VAL #val ]],
-    BR-DTR.SYNSEM.LOCAL.CAT
-      [ HEAD.MOD #mod,
-        VAL #val ] ].
+;coord-phrase :+ branching-phrase &
+;  [ SYNSEM.LOCAL
+;    [ CAT
+;      [ HEAD.MOD #mod,
+;        VAL #val ]],
+;    NBR-DTR.SYNSEM.LOCAL
+;      [ CAT
+;        [ HEAD.MOD #mod,
+;          VAL #val ]],
+;    BR-DTR.SYNSEM.LOCAL.CAT
+;      [ HEAD.MOD #mod,
+;        VAL #val ] ].
 
 ;bottom-coord-phrase := phrase & [ SYNSEM.LOCAL.COORDL coordb ].
 bottom-coord-phrase :+ [ SYNSEM.LOCAL.COORDL coordb ].
 
-top-coord-rule := coord-phrase &
-  [ SYNSEM.LOCAL
-    [ COORD -,
-      COORDL coordt ],
-    C-CONT.HOOK
-      [ LTOP #rltop,
-        INDEX #rind ],
-    NBR-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX #lind,
-    BR-DTR.SYNSEM.LOCAL
-      [ COORD-REL.L-INDEX #lind,
-        CONT.HOOK
-          [ LTOP #rltop,
-            INDEX #rind ] ] ].
+;top-coord-rule := coord-phrase &
+;  [ SYNSEM.LOCAL
+;    [ COORD -,
+;      COORDL coordt ],
+;    C-CONT.HOOK
+;      [ LTOP #rltop,
+;        INDEX #rind ],
+;    NBR-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX #lind,
+;    BR-DTR.SYNSEM.LOCAL
+;      [ COORD-REL.L-INDEX #lind,
+;        CONT.HOOK
+;          [ LTOP #rltop,
+;            INDEX #rind ] ] ].
+top-coord-rule :+ [ SYNSEM.LOCAL.COORDL coordt ].
 
-mid-coord-rule := coord-phrase &
-  [ SYNSEM.LOCAL
-    [ COORD +,
-      COORDL coordm,
-      COORD-REL implicit-coord-rel &
-        [ LBL #ltop,
-          C-ARG #cind,
-          R-INDEX #rind ] ],
-    C-CONT.HOOK
-      [ LTOP #ltop,
-        INDEX #cind ],
-    NBR-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX #lind,
-    BR-DTR.SYNSEM.LOCAL
-      [ COORD-REL.L-INDEX #lind,
-        CONT.HOOK.INDEX #rind ] ].
+;mid-coord-rule := coord-phrase &
+;  [ SYNSEM.LOCAL
+;    [ COORD +,
+;      COORDL coordm,
+;      COORD-REL implicit-coord-rel &
+;        [ LBL #ltop,
+;          C-ARG #cind,
+;          R-INDEX #rind ] ],
+;    C-CONT.HOOK
+;      [ LTOP #ltop,
+;        INDEX #cind ],
+;    NBR-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX #lind,
+;    BR-DTR.SYNSEM.LOCAL
+;      [ COORD-REL.L-INDEX #lind,
+;        CONT.HOOK.INDEX #rind ] ].
+mid-coord-rule :+ [ SYNSEM.LOCAL.COORDL coordm ].
 
-binary-bottom-coord-rule := bottom-coord-phrase & binary-phrase &
-  [ SYNSEM.LOCAL
-    [ CAT
-      [ HEAD.MOD #mod,
-        VAL #val ],
-      COORD +,
-      COORD-REL #crel ],
-    C-CONT
-      [ HOOK
-        [ LTOP #lbl,
-          INDEX #carg ],
-        RELS <! !>,
-        HCONS <! !> ],
-    ARGS <
-      [ SYNSEM
-        [ LOCAL.CAT.HEAD conj,
-          LKEYS.KEYREL #crel &
-            [ LBL #lbl,
-              C-ARG #carg,
-              R-INDEX #rind ] ] ],
-      [ SYNSEM.LOCAL
-        [ CAT
-          [ HEAD.MOD #mod,
-            VAL #val ],
-          COORD -,
-          CONT.HOOK [ INDEX #rind ] ] ]
-      > ].
+;binary-bottom-coord-rule := bottom-coord-phrase & binary-phrase &
+;  [ SYNSEM.LOCAL
+;    [ CAT
+;      [ HEAD.MOD #mod,
+;        VAL #val ],
+;      COORD +,
+;      COORD-REL #crel ],
+;    C-CONT
+;      [ HOOK
+;        [ LTOP #lbl,
+;          INDEX #carg ],
+;        RELS <! !>,
+;        HCONS <! !> ],
+;    ARGS <
+;      [ SYNSEM
+;        [ LOCAL.CAT.HEAD conj,
+;          LKEYS.KEYREL #crel &
+;            [ LBL #lbl,
+;              C-ARG #carg,
+;              R-INDEX #rind ] ] ],
+;      [ SYNSEM.LOCAL
+;        [ CAT
+;          [ HEAD.MOD #mod,
+;            VAL #val ],
+;          COORD -,
+;          CONT.HOOK [ INDEX #rind ] ] ]
+;      > ].
 
 ; monopoly: Mandatory monosyndeton with optional polysyndeton.  This
 ; is the familiar Indo-European pattern, in which at least one
 ; coordinator is mandator ("A B and C") and more than one is possible
 ; ("A and B and C").
 
-monopoly-top-coord-rule := top-coord-rule &
-  [ NBR-DTR.SYNSEM.LOCAL.COORD -,
-    BR-DTR.SYNSEM.LOCAL.COORD + ].
+;monopoly-top-coord-rule := top-coord-rule &
+;  [ NBR-DTR.SYNSEM.LOCAL.COORD -,
+;    BR-DTR.SYNSEM.LOCAL.COORD + ].
 
-monopoly-mid-coord-rule := mid-coord-rule &
-  [ NBR-DTR.SYNSEM.LOCAL.COORD -,
-    BR-DTR.SYNSEM.LOCAL.COORD + ].
+;monopoly-mid-coord-rule := mid-coord-rule &
+;  [ NBR-DTR.SYNSEM.LOCAL.COORD -,
+;    BR-DTR.SYNSEM.LOCAL.COORD + ].
 
 ;;; Noun 
 
-nom-coord-phrase := coord-phrase & right-branching &
-  [ SYNSEM.LOCAL.CAT.HEAD noun & [ CASE #case ],
-    NBR-DTR.SYNSEM.LOCAL.CAT.HEAD noun & [ CASE #case ],
-    BR-DTR.SYNSEM.LOCAL.CAT.HEAD noun & [ CASE #case ] ].
+np-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
 
-; Reconsider SPR < > below -- need to separate N' from NP cleanly.
-basic-np-top-coord-rule := nom-coord-phrase &
-  [ C-CONT
-    [ HOOK
-      [ LTOP #ltop,
-        INDEX #ind ],
-      RELS <! [ PRED "exist_q_rel", ARG0 #ind, RSTR #ltop ] !>,
-      HCONS <! !> ],
-    NBR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < >,
-    BR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].
+;basic-np-top-coord-rule :+ nom-coord-phrase &
+;  [ C-CONT
+;    [ HOOK
+;      [ LTOP #ltop,
+;        INDEX #ind ],
+;      RELS <! [ PRED "exist_q_rel", ARG0 #ind, RSTR #ltop ] !>,
+;      HCONS <! !> ],
+;    NBR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < >,
+;    BR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].
 
-basic-np-mid-coord-rule := nom-coord-phrase &
-  [ SYNSEM.LOCAL.COORD-REL #crel,
-    C-CONT
-      [ RELS <! [ ARG0 #rind, RSTR #rltop ], #crel !>,
-        HCONS <! !> ],
-    BR-DTR.SYNSEM.LOCAL.CONT.HOOK
-      [ LTOP #rltop,
-        INDEX #rind ] ].
+;basic-np-mid-coord-rule := nom-coord-phrase &
+;  [ SYNSEM.LOCAL.COORD-REL #crel,
+;    C-CONT
+;      [ RELS <! [ ARG0 #rind, RSTR #rltop ], #crel !>,
+;        HCONS <! !> ],
+;    BR-DTR.SYNSEM.LOCAL.CONT.HOOK
+;      [ LTOP #rltop,
+;        INDEX #rind ] ].
 
 np-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule.
 
 np-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule.
 
-np-bottom-coord-rule := binary-bottom-coord-rule &
-  [ SYNSEM.LOCAL.CAT.HEAD noun & [ CASE #case ],
-    ARGS.REST.FIRST.SYNSEM.LOCAL.CAT.HEAD noun & [ CASE #case ] ].
+np-bottom-coord-rule := conj-first-bottom-coord-rule & np-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
 
 ;;; Adjective/verb (event)
 
-event-coord-phrase := coord-phrase &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E #tam,
-    NBR-DTR.SYNSEM.LOCAL.CONT.HOOK
-      [ LTOP #lhndl,
-        INDEX #lind ],
-    BR-DTR.SYNSEM.LOCAL.COORD-REL
-      [ L-HNDL #lhndl,
-        L-INDEX #lind,
-        R-INDEX.E #tam ] ].
+;event-coord-phrase := coord-phrase &
+;  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E #tam,
+;    NBR-DTR.SYNSEM.LOCAL.CONT.HOOK
+;      [ LTOP #lhndl,
+;        INDEX #lind ],
+;    BR-DTR.SYNSEM.LOCAL.COORD-REL
+;      [ L-HNDL #lhndl,
+;        L-INDEX #lind,
+;        R-INDEX.E #tam ] ].
 
 ;;; Adjective
 
-adj-coord-phrase := event-coord-phrase & right-branching &
-  [ SYNSEM.LOCAL.CAT
-    [ POSTHEAD #ph,
-      HEAD adj ],
-    NBR-DTR.SYNSEM.LOCAL.CAT
-      [ POSTHEAD #ph,
-        HEAD adj ],
-    BR-DTR.SYNSEM.LOCAL.CAT
-      [ POSTHEAD #ph,
-        HEAD adj ] ].
+;adj-coord-phrase := event-coord-phrase & right-branching &
+;  [ SYNSEM.LOCAL.CAT
+;    [ POSTHEAD #ph,
+;      HEAD adj ],
+;    NBR-DTR.SYNSEM.LOCAL.CAT
+;      [ POSTHEAD #ph,
+;        HEAD adj ],
+;    BR-DTR.SYNSEM.LOCAL.CAT
+;      [ POSTHEAD #ph,
+;        HEAD adj ] ].
 
-basic-adj-top-coord-rule := adj-coord-phrase &
-  [ C-CONT
-    [ RELS <! !>,
-      HCONS <! !> ] ].
+;basic-adj-top-coord-rule := adj-coord-phrase &
+;  [ C-CONT
+;    [ RELS <! !>,
+;      HCONS <! !> ] ].
 
-basic-adj-mid-coord-rule := adj-coord-phrase &
-  [ SYNSEM.LOCAL.COORD-REL #crel &
-    [ R-HNDL #rhndl ],
-    C-CONT
-      [ RELS <! #crel !>,
-        HCONS <! !> ],
-    NBR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr,
-    BR-DTR.SYNSEM.LOCAL
-      [ CAT.VAL.SPR #spr,
-        CONT.HOOK.LTOP #rhndl ] ].
+;basic-adj-mid-coord-rule := adj-coord-phrase &
+;  [ SYNSEM.LOCAL.COORD-REL #crel &
+;    [ R-HNDL #rhndl ],
+;    C-CONT
+;      [ RELS <! #crel !>,
+;        HCONS <! !> ],
+;    NBR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr,
+;    BR-DTR.SYNSEM.LOCAL
+;      [ CAT.VAL.SPR #spr,
+;        CONT.HOOK.LTOP #rhndl ] ].
 
 adj-top-coord-rule := basic-adj-top-coord-rule & monopoly-top-coord-rule.
 
 adj-mid-coord-rule := basic-adj-mid-coord-rule & monopoly-mid-coord-rule.
 
-adj-bottom-coord-rule := binary-bottom-coord-rule &
-  [ SYNSEM.LOCAL.CAT.HEAD adj,
-    ARGS.REST.FIRST.SYNSEM.LOCAL.CAT.HEAD adj ].
-
+adj-bottom-coord-rule := conj-first-bottom-coord-rule & adj-bottom-coord-phrase.
 ;;; Verb
 
-v-coord-phrase := event-coord-phrase & right-branching &
+v-coord-phrase := event-coord-phrase &
   [ SYNSEM.LOCAL.CAT
     [ HEAD verb &
       [ VFORM #vf,
         VCFORM #vcf ],
       SENTENCE #sen,
       ROOTMOM #rm ],
-    NBR-DTR.SYNSEM.LOCAL.CAT
+    LCOORD-DTR.SYNSEM.LOCAL.CAT
       [ HEAD verb &
         [ VFORM #vf,
           VCFORM #vcf ],
         VAL.SUBJ cons,
         SENTENCE #sen,
         ROOTMOM #rm ],
-    BR-DTR.SYNSEM.LOCAL.CAT
+    RCOORD-DTR.SYNSEM.LOCAL.CAT
       [ HEAD verb &
         [ VFORM #vf,
           VCFORM #vcf ],
@@ -832,8 +787,8 @@ basic-v-top-coord-rule := v-coord-phrase &
   [ C-CONT
     [ RELS <! !>,
       HCONS <! !> ],
-    NBR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr,
-    BR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr ].
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr ].
 
 basic-v-mid-coord-rule := v-coord-phrase &
   [ SYNSEM.LOCAL.COORD-REL #crel &
@@ -841,8 +796,8 @@ basic-v-mid-coord-rule := v-coord-phrase &
     C-CONT
       [ RELS <! #crel !>,
         HCONS <! !> ],
-    NBR-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr,
-    BR-DTR.SYNSEM.LOCAL
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr,
+    RCOORD-DTR.SYNSEM.LOCAL
       [ CAT.VAL.SPR #spr,
         CONT.HOOK.LTOP #rhndl ] ].
 
@@ -850,41 +805,31 @@ v-top-coord-rule := basic-v-top-coord-rule & monopoly-top-coord-rule.
 
 v-mid-coord-rule := basic-v-mid-coord-rule & monopoly-mid-coord-rule.
 
-v-bottom-coord-rule := binary-bottom-coord-rule &
+v-bottom-coord-rule := conj-first-bottom-coord-rule &
   [ SYNSEM.LOCAL.CAT.HEAD verb & [ VCFORM #vcf ],
-    ARGS.REST.FIRST.SYNSEM.LOCAL.CAT
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT
       [ HEAD verb & [ VCFORM #vcf ],
         VAL.SUBJ cons ] ].
 
-s-coord-phrase := event-coord-phrase & right-branching &
-  [ SYNSEM.LOCAL.CAT
-    [ HEAD verb &
-      [ VFORM #vf,
-        VCFORM #vcf ],
-      SENTENCE #sen & -,
-      ROOTMOM #rm ],
-    NBR-DTR.SYNSEM.LOCAL.CAT
-      [ HEAD verb &
-        [ VFORM #vf,
-          VCFORM #vcf ],
-        VAL [ SUBJ < >,
-              COMPS < > ],
-        SENTENCE #sen,
-        ROOTMOM #rm ],
-    BR-DTR.SYNSEM.LOCAL.CAT
-      [ HEAD verb &
-        [ VFORM #vf,
-          VCFORM #vcf ],
-        VAL [ SUBJ < >,
-              COMPS < > ],
-        SENTENCE #sen,
-        ROOTMOM #rm ] ].
+s-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT [ HEAD [ VFORM #vf,
+			      VCFORM #vcf ],
+		       SENTENCE #sen & -,
+		       ROOTMOM #rm ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD [ VFORM #vf,
+					 VCFORM #vcf ],
+				  SENTENCE #sen,
+				  ROOTMOM #rm ],
+    RCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD [ VFORM #vf,
+					 VCFORM #vcf ],
+				  SENTENCE #sen,
+				  ROOTMOM #rm ] ].
 
 s-top-coord-rule := basic-s-top-coord-rule & monopoly-top-coord-rule.
 s-mid-coord-rule := basic-s-mid-coord-rule & monopoly-mid-coord-rule.
-s-bottom-coord-rule := binary-bottom-coord-rule &
+s-bottom-coord-rule := conj-first-bottom-coord-rule &
   [ SYNSEM.LOCAL.CAT.HEAD verb & [ VCFORM #vcf ],
-    ARGS.REST.FIRST.SYNSEM.LOCAL.CAT
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT
       [ HEAD verb & [ VCFORM #vcf ],
 	SENTENCE -,
         VAL [ SUBJ < >,
