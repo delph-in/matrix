@@ -79,29 +79,25 @@ lasi := common-noun-lex &
 opiskelija := common-noun-lex &
 [ STEM < "opiskelija" >,
   SYNSEM [ LKEYS.KEYREL.PRED '_student_n_rel,
-	   LOCAL [ CONT.HOOK.INDEX.PNG [ NUM sg,
-					 PER third ],
+	   LOCAL [ CONT.HOOK.INDEX.PNG [ PER third ],
 		   CAT.HEAD.CASE nom ] ] ].
 
 tomaatti := common-noun-lex &
 [ STEM < "tomaatti" >,
   SYNSEM [ LKEYS.KEYREL.PRED '_tomato_n_rel,
-	   LOCAL [ CONT.HOOK.INDEX.PNG [ NUM sg,
-					 PER third ],
+	   LOCAL [ CONT.HOOK.INDEX.PNG [ PER third ],
 		   CAT.HEAD.CASE nom ] ] ].
 
 mies := common-noun-lex &
 [ STEM < "mies" >,
   SYNSEM [ LKEYS.KEYREL.PRED '_man_n_rel,
-	   LOCAL [ CONT.HOOK.INDEX.PNG [ NUM sg,
-					 PER third ],
+	   LOCAL [ CONT.HOOK.INDEX.PNG [ PER third ],
 		   CAT.HEAD.CASE nom ] ] ].
 
 apina := common-noun-lex &
 [ STEM < "apina" >,
   SYNSEM [ LKEYS.KEYREL.PRED '_monkey_n_rel,
-	   LOCAL [ CONT.HOOK.INDEX.PNG [ NUM sg,
-					 PER third ] ] ] ].
+	   LOCAL [ CONT.HOOK.INDEX.PNG [ PER third ] ] ] ].
 
 ;;; END NOUNS
 
