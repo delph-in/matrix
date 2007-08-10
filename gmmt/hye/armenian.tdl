@@ -18,7 +18,7 @@ ins := case.
 ; agreement features
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-png := avm &
+png :+
   [ PER person,
     NUM number ].
 
@@ -39,15 +39,11 @@ inf := form.
 neg := form.
 imper := form.
 
-mood := *top*.
 indic := mood.
 subjunc := mood.
 
-sign := basic-sign &
-  [ SYNSEM synsem,
-    ARGS list,
-    INFLECTED bool,
-    KE-MARKED bool,
+sign :+
+  [ KE-MARKED bool,
     PN-MARKED bool,
     ROOT bool ].
 
@@ -55,12 +51,10 @@ sign := basic-sign &
 ; parts of speech
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-noun := head &
+noun :+
   [ CASE case ].
-verb := head &
+verb :+
   [ FORM form ].
-det := head.
-comp := head.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; relationships
