@@ -37,4 +37,5 @@
  ((:path . "isl_567") (:content . "Icelandic general test suite"))
  ((:path . "ita_567") (:content . "Italian test suite from Ling 567"))
  ((:path . "mal_567") (:content . "Malayalam test suite from Ling 567"))
- ((:path . "zul_567") (:content . "Zulu test suite from Ling 567")))
+ ((:path . "zul_567") (:content . "Zulu test suite from Ling 567"))
+ ((:path . "fin") (:content . "Finnish test suite from Ling 567")))
