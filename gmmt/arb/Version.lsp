@@ -2,6 +2,6 @@
 
 
 
-(defparameter *grammar-version* "arb (Ling 567)")
+(defparameter *grammar-version* "arb (15-Aug-2007)")
 
 

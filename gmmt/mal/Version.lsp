@@ -2,6 +2,6 @@
 
 
 
-(defparameter *grammar-version* "mal (Ling 567)")
+(defparameter *grammar-version* "mal (15-Aug-2007)")
 
 
