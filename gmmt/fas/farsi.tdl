@@ -10,13 +10,13 @@ non-matrix := head.
 
 tam-head := head & [ TAM tam ].
 
-noun := non-matrix & [ CASE case,
+noun :+ non-matrix & [ CASE case,
 		       DEFINITE bool ]. ; BUGBUG Diacritic feature
 
-verb := matrix & tam-head & [ HEAD_FINAL bool,
+verb :+ matrix & tam-head & [ HEAD_FINAL bool,
 			      NEG_PREFIX bool ]. ; BUGBUG Diacritic feature
 
-det := non-matrix.
+det :+ non-matrix.
 
 preposition := non-matrix.
 
@@ -76,7 +76,7 @@ imperative := non-subjunctive.
 subjunctive := non-imperative.
 
 ; Agreement types
-png := avm &
+png :+
 [ PER person,
   NUM number,
   GEND gender ].
