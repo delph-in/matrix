@@ -61,7 +61,7 @@ codes for the source and target languages respectively
 (twice in the string each).
 
 The script all_lg_test will do a test run of all of the
-language pairs.  
+language pairs.
 
 
 3. Provenance of grammars
@@ -81,10 +81,10 @@ reference grammars and in some cases native speaker
 consultants to assess the facts of the language as they
 attempt to model it.
 
-All of the grammars use ascii transliteration, which may
-or may not correspond to any standard transliteration.
-In addition, many of the grammars assume (but do not include)
-a morphophonological analyzer, and so parse and generate
+All of the grammars use ascii transliteration, which may or
+may not correspond to any standard transliteration.  In
+addition, many of the grammars assume (but do not include) a
+morphophonological analyzer, and so parse and generate
 strings of regularized forms.
 
 For the MMT system, 9 of these grammars were selected and
@@ -105,8 +105,8 @@ Language 	Code	Orig. Author	Orig. Dev Date	Modifications
 Armenian	hye	S. Drellishak	2004		Drellishak, Bender
 English		eng	S. Drellishak	2007		Drellishak, Bender
 Esperanto	epo	J. Pool		2005		Drellishak, Bender
+Farsi		fas	W. McNeill	2004		Drellishak, Bender
 Finnish		fin	R. Mattson	2005		Drellishak, Bender
-Haida		hai	K. Trease	2006		Drellishak, Bender
 Hausa		hau	K. Hutchins	2007		Bender, Drellishak
 Hebrew		heb	M. Zabludowski	2006		Zabludowski, Bender, 
 							  Drellishak
@@ -118,23 +118,33 @@ Zulu		zul	K. O'Hara	2007		Bender, Drellishak
 
 4. Files
 
-In the mmt directory, there are find subdirectories for each monolingual
-grammar identified by the three letter language codes given above.
-Inside each grammar directory, there is a subdirectory called "doc"
-which contains student write ups from the course in which the grammars
-were developed, as well as the instructors responses to those write ups.
+In the mmt directory, there are find subdirectories for each
+monolingual grammar identified by the three letter language
+codes given above.  Inside each grammar directory, there is
+a subdirectory called "doc" which contains student write ups
+from the course in which the grammars were developed, as
+well as the instructors responses to those write ups.
 
-Also in the mmt directory are the transfer grammars (eng-acm et al),
-the shared files for the transfer grammars (mrs.tdl, mtr.tdl, and acm.tdl),
-a directory called test_sentences and a directory called tsdb. test_sentences
-stores the input sentences for each language (again identified by the
-three letter code), as well as bitexts for each language pair.  The
-bitexts themselves can be created by the script create_bitexts.py.
+Also in the mmt directory are the transfer grammars (eng-acm
+et al), the shared files for the transfer grammars (mrs.tdl,
+mtr.tdl, and acm.tdl), a directory called test_sentences and
+a directory called tsdb. test_sentences stores the input
+sentences for each language (again identified by the three
+letter code), as well as bitexts for each language pair.
+The bitexts themselves can be created by the script
+create_bitexts.py.
 
-The tsdb/home directory contains (untreebanked) profiles for each
-monolingual grammar over the the test suites created by the
-students as they developed their grammars, as well as snapshots of
-system performance for each language pair.  tsdb/skeletons provides
-skeletons for the monolingual test suites.
+The tsdb/home directory contains (untreebanked) profiles for
+each monolingual grammar over the the test suites created by
+the students as they developed their grammars.
+tsdb/skeletons provides skeletons for the monolingual test
+suites and MMT sentences for each language.
 
+5. Acknowledgments
+
+The initial work of adapting these grammars for the MMT
+system was supported by a gift from the Utilika Foundation
+to the Turing Center at the University of Washington.
+Development of the Grammar Matrix is currently supported by
+NSF grant BCS-0644097.
 
