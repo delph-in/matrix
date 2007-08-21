@@ -4,8 +4,8 @@ LOGON release check list:
 	---	-----------	----	----------	--------
 eng		x			x		x
 epo	x	x		x	x		x
-fas	x	x			x		x
-fin	x	x			x		x
+fas	x	x		x	x		x
+fin	x	x		x	x		x
 hau	x	x			x		x
 heb	x	x			x		x
 hye	x	x			x		x

@@ -1,51 +1,51 @@
 Cani dorm-ono
-sag xabidand
+sagha mixaband
 
 Cani insegu-ono macchine
-sag mashinra dombal kardand
+sagha mashinhara dombal mikonand
 
 Ti-insegu-o
-man tora dombal kardam
+man tora dombal mikonam
 
 Questi cani dorm-ono
-in sag xabidand
+in sagha mixaband
 
 Cani mangi-ano
-sag xordand
+sagha qaza mixorand
 
 Posso mangi-are il vetro
-man tavanam shishera bexoram
+man mitavanam shishe bexoram
 
 Non mi-f-a male
-an manra dard nekonad
+an manra narahat nemikonad
 
 I cani insegu-ono macchine
 sag mashinra dombal kardand
 
 Pens-o che sai che cani insegu-ono macchine
-man andishidam ke to dunesti ke sag mashinra dombal kardand
+man fekr mikonam ke to midani ke sagha mashinhara dombal mikonand
 
 Domand-o se sai che cani insegu-ono macchine
-man porsidam aya to dunesti ke sag mashinra dombal kardand
+man miporsam ke aya to midani ke sagha mashinhara dombal mikonand
 
 Cani e gatti insegu-ono macchine
-gorbe va sag mashinra dombal kardand
+gorbeha va sagha mashinhara dombal mikonand
 
 Cani insegu-ono macchine e gatti insegu-ono cani
-gorbe mashinra dombal kardand va gorbe sagra dombal kardand
+sagha mashinhara dombal mikonand va gorbeha saghara dombal mikonand
 
 Gatti insegu-ono cani e dorm-ono
-gorbe mashinra dombal kardand va xabidand
+gorbeha mashinhara dombal mikonand va mixaband
 
 Gatti insegu-ono cani
-aya gorbe sagra dombal kardand
+aya gorbeha saghara dombal mikonand
 
 insegu-i il cane
 sagra dombal bekon
 
 Cani affamat-i mangi-ano
-sag gurisnah xordand
+saghaye gorosne qaza mixorand
 
 Cani affamat-i mangi-ano velocemente
-sag gurisnah xordand zud
+saghaye gorosne tond qaza mixorand
 

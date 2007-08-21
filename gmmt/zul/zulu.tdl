@@ -1047,3 +1047,9 @@ c15+c16+c17-rel-concord-lex-rule := relative-concord-lex-rule &
 head-adj-int-phrase :+ binary-rule-right-to-left.
 
 
+;;; ERB 2007-08-11 This is just for testing generation machinery.
+
+det-lex := basic-determiner-lex & basic-zero-arg &
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
+                           COMPS < >,
+                           SUBJ < > ] ] .

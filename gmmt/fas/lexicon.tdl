@@ -152,7 +152,21 @@ shishe := common-noun-lex & [ STEM < "shishe" >,
 ; English gloss: harm
 ; kardan + "to hurt"
 dard := kardan-noun-lex & [ STEM < "dard" >, 
-			    SYNSEM.LKEYS.KEYREL.PRED '_harm_n_rel ].
+			    SYNSEM.LKEYS.KEYREL.PRED '_hurt_n_rel ].
+
+; ERB 2007-08-19 Nick Pendar supplied narahat as the nominal in
+; "It doens't hurt me".  For convenience, I'm keeping dard around,
+; and glossing it as 'hurt', while making narahat 'harm'.
+
+narahat := kardan-noun-lex &
+ [ STEM < "narahat" >,
+   SYNSEM.LKEYS.KEYREL.PRED "_harm_n_rel" ].
+
+; ERB 2007-08-20 Hacked clausal comp complex predicate
+
+fekr := kardan2-noun-lex &
+ [ STEM < "fekr" >,
+   SYNSEM.LKEYS.KEYREL.PRED "_thought_n_rel" ].
 
 ; sfd
 ; English gloss: pursuit
@@ -240,12 +254,28 @@ deraxt := common-noun-lex & [ STEM < "deraxt" >,
 ; [Lambton 1979]
 kard := past-transitive-compound-verb-lex &
   [ STEM <"kard">,
-    SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+    SYNSEM [ LOCAL.CAT.HEAD [ COMP_AUX "kardan_1",
+			      TAM.TENSE past_tense ],
              LKEYS.KEYREL.PRED '_make_v_rel ] ].
 
 kon := present-transitive-compound-verb-lex &
   [ STEM <"kon">,
-    SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
+    SYNSEM [ LOCAL.CAT.HEAD [ COMP_AUX "kardan_1",
+			      TAM.TENSE present_tense ],
+             LKEYS.KEYREL.PRED '_make_v_rel ] ].
+
+; ERB 2007-08-20 Hacked complex predicates.
+
+kard2 := past-clausal-comp-compound-verb-lex &
+  [ STEM <"kard">,
+    SYNSEM [ LOCAL.CAT.HEAD [ COMP_AUX "kardan_2",
+			      TAM.TENSE past_tense ],
+             LKEYS.KEYREL.PRED '_make_v_rel ] ].
+
+kon2 := present-clausal-comp-compound-verb-lex &
+  [ STEM <"kon">,
+    SYNSEM [ LOCAL.CAT.HEAD [ COMP_AUX "kardan_2",
+			      TAM.TENSE present_tense ],
              LKEYS.KEYREL.PRED '_make_v_rel ] ].
 
 ; Intransitive Verbs
@@ -312,8 +342,10 @@ navaxt := past-intransitive-verb-lex & [ STEM <"navaxt">,
 
 ; Infinitive: xabidan
 ; [Lambton 1979]
-xabid := intransitive-verb-lex & [ STEM <"xabid">,
+
+xabid := intransitive-verb-lex & [ STEM <"xab">,
 				   SYNSEM [ LKEYS.KEYREL.PRED '_sleep_v_rel ] ].
+
 
 ; English gloss: wake up
 ; [iranianlanguages.com]
@@ -372,14 +404,22 @@ xar := present-transitive-verb-lex & [ STEM <"xar">,
 ; Infinitive xordan
 ; [Lambton 1979]
 
-; BUGBUG Is this the correct present stem?
-xord_eat := past-transitive-verb-lex & [ STEM <"xord">,
-					 SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
-						  LKEYS.KEYREL.PRED '_eat_v_rel ] ].
+; ERB 2007-08-19 Nick Pendar gives the stem as 'xor' and says
+; that it can't be used intransitively.
 
-xor_eat := present-transitive-verb-lex & [ STEM <"xor">,
-					   SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
-						    LKEYS.KEYREL.PRED '_eat_v_rel ] ].
+; BUGBUG Is this the correct present stem?
+xord_eat := past-transitive-verb-lex & 
+  [ STEM <"xord">,
+    SYNSEM [ LOCAL.CAT [ VAL.COMPS.FIRST.OPT -,
+			 HEAD.TAM.TENSE past_tense ],
+	     LKEYS.KEYREL.PRED '_eat_v_rel ] ].
+
+
+xor_eat := present-transitive-verb-lex & 
+ [ STEM <"xor">,
+   SYNSEM [ LOCAL.CAT [ VAL.COMPS.FIRST.OPT -,
+			HEAD.TAM.TENSE present_tense ],
+	    LKEYS.KEYREL.PRED '_eat_v_rel ] ].
 
 
 ; English gloss: drink
@@ -562,12 +602,12 @@ va_1 := conj-lex &
 
 ; Adverbs
 
-zud := adverb-lex &
-  [ STEM <"zud">,
+tond := adverb-lex &
+  [ STEM <"tond">,
     SYNSEM.LKEYS.KEYREL.PRED "_quickly_r_rel" ].
 
 ; Adjectives
 
-gurisnah := adjective-lex &
-  [ STEM <"gurisnah">,
+gorosne := adjective-lex &
+  [ STEM <"gorosne">,
     SYNSEM.LKEYS.KEYREL.PRED "_hungry_a_rel" ].

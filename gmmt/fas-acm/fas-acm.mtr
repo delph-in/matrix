@@ -2,3 +2,6 @@
 
 chase := chase-mtr.
 hurt := hurt-mtr.
+eat-ini := eat-ini-mtr.
+think := think-mtr.
+eat-ini := eat-ini-mtr.

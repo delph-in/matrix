@@ -6,3 +6,6 @@ pro-insert-arg3 := pro-insert-arg3-mtr.
 
 make-harm := make-harm-mtr.
 make-pursuit := make-pursuit-mtr.
+
+eat-food := eat-food-mtr.
+make-thought := make-thought-mtr.

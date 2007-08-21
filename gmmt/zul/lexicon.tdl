@@ -549,3 +549,9 @@ ukuthi := emb-comp-lex-item &
 
 ;ukuba := emb-comp-lex-item &
 ;  [ STEM < "ukuba" > ] .
+
+;;; ERB 2007-08-11 This is just for testing generation machinery.
+
+unspec := det-lex &
+  [ STEM < "unspec" >,
+    SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].

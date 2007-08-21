@@ -1,51 +1,51 @@
-sag xabidand
+sagha mixaband
 Dogs sleep.
 
-sag mashinra dombal kardand
+sagha mashinhara dombal mikonand
 Dogs chase cars.
 
-man tora dombal kardam
+man tora dombal mikonam
 I chase you.
 
-in sag xabidand
+in sagha mixaband
 These dogs sleep.
 
-sag xordand
+sagha qaza mixorand
 Dogs eat.
 
-man tavanam shishera bexoram
+man mitavanam shishe bexoram
 I can eat glass.
 
-an manra dard nekonad
+an manra narahat nemikonad
 It doesnt hurt me.
 
 sag mashinra dombal kardand
 The dogs chase cars.
 
-man andishidam ke to dunesti ke sag mashinra dombal kardand
+man fekr mikonam ke to midani ke sagha mashinhara dombal mikonand
 I think that you know that dogs chase cars.
 
-man porsidam aya to dunesti ke sag mashinra dombal kardand
+man miporsam ke aya to midani ke sagha mashinhara dombal mikonand
 I ask whether you know that dogs chase cars.
 
-gorbe va sag mashinra dombal kardand
+gorbeha va sagha mashinhara dombal mikonand
 Cats and dogs chase cars.
 
-gorbe mashinra dombal kardand va gorbe sagra dombal kardand
+sagha mashinhara dombal mikonand va gorbeha saghara dombal mikonand
 Dogs chase cars and cats chase dogs.
 
-gorbe mashinra dombal kardand va xabidand
+gorbeha mashinhara dombal mikonand va mixaband
 Cats chase dogs and sleep.
 
-aya gorbe sagra dombal kardand
+aya gorbeha saghara dombal mikonand
 Do cats chase dogs?
 
 sagra dombal bekon
 Chase the dog.
 
-sag gurisnah xordand
+saghaye gorosne qaza mixorand
 Hungry dogs eat.
 
-sag gurisnah xordand zud
+saghaye gorosne tond qaza mixorand
 Hungry dogs eat quickly.
 

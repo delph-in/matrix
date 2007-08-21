@@ -13,9 +13,9 @@ acc_lex :=
 %suffix (* ra)
 acc_lex_rule.
 
-;progressive_lex :=
-;%prefix (* mi)
-;progressive_lex_rule.
+progressive_lex :=
+%prefix (* mi)
+progressive_lex_rule.
 
 subjunctive_lex :=
 %prefix (* be)
@@ -52,3 +52,15 @@ negation-lex-rule.
 3pl_lex :=
 %suffix(* and)
 3pl_lex_rule.
+
+; ERB 2007-08-19
+
+pl-noun := 
+%suffix (* ha)
+pl-noun-lex-rule.
+
+; ERb 2007-08-20
+
+ezafe :=
+%suffix (* ye)
+ezafe-lex-rule.
