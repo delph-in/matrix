@@ -20,9 +20,10 @@
 ;;;
 
 (((:path . "epo") (:content . "Espertanto test suite from Ling 567"))
- ((:path . "fas") (:content . "Farsi test suite from Ling 567"))
+ ((:path . "fas") (:content . "Farsi test suite from Ling 471"))
  ((:path . "fin") (:content . "Finnish test suite from Ling 567"))
  ((:path . "hau") (:content . "Hausa test suite from Ling 567"))
+ ((:path . "isl") (:content . "Icelandic test suite from Ling 567"))
  ((:path . "zul") (:content . "Zulu test suite from Ling 567"))
  ((:path . "hau_mmt") (:content . "Hausa MMT test sentences"))
  ((:path . "heb_mmt") (:content . "Hebrew MMT test sentences"))
