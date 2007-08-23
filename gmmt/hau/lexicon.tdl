@@ -755,17 +755,17 @@ SYNSEM [ LKEYS.KEYREL.PRED "_perfectly_r_rel"]].
 
 ; ERB 2007-05-16 One translation of 'quickly' will do.
 
-;zumbur := adverb-lex &
-;[ STEM < "zumbur">,
-;SYNSEM[LKEYS.KEYREL.PRED "_quickly_r_rel"]].
+zumbur := adverb-lex &
+[ STEM < "zumbur">,
+SYNSEM[LKEYS.KEYREL.PRED "_quickly_r_rel"]].
 
 gòòbe := adverb-lex &
 [ STEM < "gòobe">,
 SYNSEM[LKEYS.KEYREL.PRED "_tomorrow_r_rel"]].
 
-maza := adverb-lex &
-[ STEM <"maza">,
-SYNSEM[LKEYS.KEYREL.PRED "_quickly_r_rel"]].
+;maza := adverb-lex &
+;[ STEM <"maza">,
+;SYNSEM[LKEYS.KEYREL.PRED "_quickly_r_rel"]].
 
 sau-biyu :=  adverb-lex &
 [ STEM <"sau-biyu">,
