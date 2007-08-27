@@ -8,7 +8,7 @@ fas	x	x		x	x		x
 fin	x	x		x	x		x
 hau	x	x		x	x		x
 heb	x	x			x		x
-hye	x	x			x		x
+hye	x	x		x	x		x
 isl	x	x		x	x		x
 ita	x	x		x	x		x
 zul	x	x		x	x		x
@@ -16,9 +16,7 @@ zul	x	x		x	x		x
 tsdb = skeletons and gold standards for mmt and general test suites
 (up to date) 
 
-bookmark: remove tsdb/ directories from within grammar directories
 find heb master test suite?
-find hye master test suite?
 
 
 Grammars
