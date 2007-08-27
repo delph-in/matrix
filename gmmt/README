@@ -20,7 +20,7 @@ clause-embedding verbs), the system targets a tiny toy
 domain (sentences about dogs and cats chasing cars and
 sleeping), and side-steps many important issues in transfer
 by positing a pseudo-interlingua.  Even with this
-oversimplification, we still need to transfer rules to
+oversimplification, we still need to posit transfer rules to
 handle residual mismatches between the MRSs for the
 different languages.  The two main sources of mismatch are
 the treatment of pro-drop (as these grammars do not posit
@@ -33,7 +33,7 @@ transfer grammar per target language, which instantiates
 transfer rules which accommodate the expectations of the
 target language's (monolingual) grammar.  For further
 generalization, the transfer rule types are taken from the
-Transfer Matrix (mtr.tdl, mrs.tdl).  Specific transfer rules
+Transfer MatriX (mtr.tdl, mrs.tdl).  Specific transfer rules
 (e.g., pronoun insertion) are defined as types as well in a
 single shared file (acm.tdl).  Particular transfer grammars
 then instantiate only the transfer rules in acm.tdl that are
@@ -61,7 +61,9 @@ codes for the source and target languages respectively
 (twice in the string each).
 
 The script all_lg_test will do a test run of all of the
-language pairs.
+language pairs.  It invokes format_results.py to output
+a pdf file with a table summarizing coverage over the
+17 test sentences.
 
 
 3. Provenance of grammars
@@ -118,16 +120,16 @@ Zulu		zul	K. O'Hara	2007		Bender, Drellishak
 
 4. Files
 
-In the mmt directory, there are find subdirectories for each
+In the mmt directory, there are subdirectories for each
 monolingual grammar identified by the three letter language
 codes given above.  Inside each grammar directory, there is
 a subdirectory called "doc" which contains student write ups
 from the course in which the grammars were developed, as
-well as the instructors responses to those write ups.
+well as the instructor's responses to those write ups.
 
 Also in the mmt directory are the transfer grammars (eng-acm
 et al), the shared files for the transfer grammars (mrs.tdl,
-mtr.tdl, and acm.tdl), a directory called test_sentences and
+mtr.tdl, and acm.tdl), a directory called test_sentences, and
 a directory called tsdb. test_sentences stores the input
 sentences for each language (again identified by the three
 letter code), as well as bitexts for each language pair.
@@ -136,9 +138,10 @@ create_bitexts.py.
 
 The tsdb/home directory contains (untreebanked) profiles for
 each monolingual grammar over the the test suites created by
-the students as they developed their grammars.
-tsdb/skeletons provides skeletons for the monolingual test
-suites and MMT sentences for each language.
+the students as they developed their grammars and separate
+profiles for the MMT sentences.  tsdb/skeletons provides
+skeletons for the general test suites and MMT sentences
+for each language.
 
 5. Acknowledgments
 
