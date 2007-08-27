@@ -494,6 +494,10 @@ or := decl-comp-lex &
 ;;; DETERMINERS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+; ERB 2007-08-27 This entry is commented out pending an implementation
+; of its phonological dependencies, to keep the number of realizations
+; under control in generation.  
+
 ; the (after or before a vowel)
 ;n := def-det-lex &
 ;  [ STEM < "n" >,
