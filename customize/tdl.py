@@ -209,7 +209,7 @@ class TDLelem_typedef(TDLelem):
     TDLset_indent(2)
     for ch in self.child:
       ch.write()
-    TDLwrite(' .\n\n')
+    TDLwrite('.\n\n')
 
   def set_comment(self, comment):
     self.comment = comment
