@@ -141,7 +141,8 @@ each monolingual grammar over the the test suites created by
 the students as they developed their grammars and separate
 profiles for the MMT sentences.  tsdb/skeletons provides
 skeletons for the general test suites and MMT sentences
-for each language.
+for each language.  (For heb and eng, only MMT sentences
+are available.)
 
 5. Acknowledgments
 
