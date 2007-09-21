@@ -54,7 +54,7 @@ identified by its three letter ISO code.
 A single language pair can be invoked with the following
 command (issued in the $LOGONROOT directory):
 
-./batch --binary --from :src --to :tgt --ascii ./uw/mmt/test_sentences/src2tgt.txt 
+./batch --binary --from src --to tgt --ascii ./uw/mmt/test_sentences/src2tgt.txt 
 
 where `src' and `tgt' are replaced with the three-letter
 codes for the source and target languages respectively
