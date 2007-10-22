@@ -13,6 +13,7 @@ class ChoicesFile:
   # initialize by passing either a file name or ???file handle
   def __init__(self, choices_file):
     self.file_name = choices_file
+    self.iter_stack = []
     self.choices = {}
     try:
       if type(choices_file) == str:
@@ -52,35 +53,106 @@ class ChoicesFile:
     self.delete('section')
 
 
-  # Return the value of 'key', if any.  If not, return the empty string.
-  def get(self, key):
-    if self.is_set(key):
-      return self.choices[key]
-    else:
-      return ''
-
-
-  # Set the value of 'key' to 'value'
-  def set(self, key, value):
-    self.choices[key] = value
-
-
-  # Remove 'key' and its value from the list of choices
-  def delete(self, key):
-    if self.is_set(key):
-      del self.choices[key]
-
-
-  # Return true iff there if 'key' is currently set
-  def is_set(self, key):
-    return key in self.choices
-
-
   # Return the keys for the choices dict
   def keys(self):
     return self.choices.keys()
 
 
+  ######################################################################
+  # Choices values and iterators:
+  #
+  # The ChoicesFile data is stored in a flat dictionary, but the names
+  # of the values in that dictionary form a hierarchical structure.
+  # Names consist of strings of alphabetic (plus dash) strings,
+  # optionally separated into segments by a trailing number and an
+  # underscore.  For example, noun2_morph would be the morph value of
+  # the second of a series of nouns, while noun2_morph3_orth would be
+  # the orth value of the third morph value of the second noun.
+  #
+  # The programmer deals with iterators using the iter_begin,
+  # iter_next, and iter_end methods.  iter_begin starts the iteration,
+  # pushing a value name on the stack.  iter_next moves to the next
+  # integer value.  iter_end pops a value off the stack.
+  #
+  # Example code:
+  #
+  #   choices.begin_iter('noun')       # iterate through all nouns
+  #   while choices.is_set('type'):    # some value every noun will have
+  #     type = choices.get('type')
+  #     choices.begin_iter('morph')    # sub-iterate through all morphs
+  #     while choices.is_set('orth'):  # some value every morph will have
+  #       orth = choices.get('orth')
+  #       order = choices.get('order')
+  #       choices.iter_next()          # advance the morph iteration
+  #     choices.iter_end()             # end the morph iteration
+  #     choices.iter_next()            # advance the noun iteration
+  #   choices.iter_end()               # end the noun iteration
+  
+
+  def iter_begin(self, key):
+    self.iter_stack.append([key, 1])
+
+  def iter_next(self):
+    self.iter_stack[-1][1] += 1
+
+  def iter_end(self):
+    self.iter_stack.pop()
+
+  def iter_prefix(self):
+    prefix = ''
+    for i in self.iter_stack:
+      prefix += i[0] + str(i[1]) + '_'
+    return prefix
+
+  ######################################################################
+  # Methods for accessing full-name values.  These methods are
+  # insensitive to the current iterator state, and take the full name
+  # of a dictionary entry (e.g. noun2_morph) rather than
+
+  # Return the value of 'key', if any.  If not, return the empty string.
+  def get_full(self, key):
+    if self.is_set_full(key):
+      return self.choices[key]
+    else:
+      return ''
+
+  # Set the value of 'key' to 'value'
+  def set_full(self, key, value):
+    self.choices[key] = value
+
+  # Remove 'key' and its value from the list of choices
+  def delete_full(self, key):
+    if self.is_set_full(key):
+      del self.choices[key]
+
+  # Return true iff there if 'key' is currently set
+  def is_set_full(self, key):
+    return key in self.choices
+
+
+  ######################################################################
+  # Methods for accessing values.  These methods are sensitive to the
+  # current iterator state, prepending the current iter_prefix to the
+  # passed keys.
+
+  # Return the value of 'key', if any.  If not, return the empty string.
+  def get(self, key):
+    return self.get_full(self.iter_prefix() + key)
+
+  # Set the value of 'key' to 'value'
+  def set(self, key, value):
+    self.set_full(self.iter_prefix() + key, value)
+
+  # Remove 'key' and its value from the list of choices
+  def delete(self, key):
+    self.delete_full(self.iter_prefix() + key)
+
+  # Return true iff there if 'key' is currently set
+  def is_set(self, key):
+    return self.is_set_full(self.iter_prefix() + key)
+
+
+  ######################################################################
   # Conversion methods: each of these functions assumes the choices
   # file has already been loaded, then converts an older version into
   # a newer one, updating both old key names and old value names.
