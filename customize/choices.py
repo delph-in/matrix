@@ -77,10 +77,10 @@ class ChoicesFile:
   # Example code:
   #
   #   choices.begin_iter('noun')       # iterate through all nouns
-  #   while choices.is_set('type'):    # some value every noun will have
+  #   while choices.iter_valid():
   #     type = choices.get('type')
   #     choices.begin_iter('morph')    # sub-iterate through all morphs
-  #     while choices.is_set('orth'):  # some value every morph will have
+  #     while choices.iter_valid():
   #       orth = choices.get('orth')
   #       order = choices.get('order')
   #       choices.iter_next()          # advance the morph iteration
@@ -88,12 +88,21 @@ class ChoicesFile:
   #     choices.iter_next()            # advance the noun iteration
   #   choices.iter_end()               # end the noun iteration
   
-
   def iter_begin(self, key):
-    self.iter_stack.append([key, 1])
+    self.iter_stack.append([key, 1, True])
+    self.iter_stack[-1][2] = self.__calc_iter_valid()
+
+  # Are there any choices with a name prefixed by the current
+  # iterator?  Useful as the condition in loops.
+  def iter_valid(self):
+    if len(self.iter_stack) > 0:
+      return self.iter_stack[-1][2]
+    else:
+      return False
 
   def iter_next(self):
     self.iter_stack[-1][1] += 1
+    self.iter_stack[-1][2] = self.__calc_iter_valid()
 
   def iter_end(self):
     self.iter_stack.pop()
@@ -103,6 +112,18 @@ class ChoicesFile:
     for i in self.iter_stack:
       prefix += i[0] + str(i[1]) + '_'
     return prefix
+
+  # Based on the current top of the iterator stack, decide if the
+  # iterator is valid -- that is, if there are exist any values in the
+  # choices dictionary for which the current iterator is a prefix.
+  # Users should not call this.
+  def __calc_iter_valid(self):
+    prefix = self.iter_prefix()
+    valid = False
+    for k in self.keys():
+      if k[0:len(prefix)] == prefix:
+        return True
+    return False
 
   ######################################################################
   # Methods for accessing full-name values.  These methods are
