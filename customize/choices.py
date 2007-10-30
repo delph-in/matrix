@@ -126,6 +126,19 @@ class ChoicesFile:
     return False
 
   ######################################################################
+  # Methods for saving and restoring the iterator state (the stack)
+
+  def iter_state(self):
+    return self.iter_stack
+
+  def iter_set_state(self,state):
+    self.iter_stack = state
+
+  def iter_reset(self):
+    self.iter_stack = []
+
+
+  ######################################################################
   # Methods for accessing full-name values.  These methods are
   # insensitive to the current iterator state, and take the full name
   # of a dictionary entry (e.g. noun2_morph) rather than
@@ -172,7 +185,7 @@ class ChoicesFile:
   def is_set(self, key):
     return self.is_set_full(self.iter_prefix() + key)
 
-
+  
   ######################################################################
   # Conversion methods: each of these functions assumes the choices
   # file has already been loaded, then converts an older version into
