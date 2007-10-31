@@ -518,6 +518,69 @@ def get_harvester_strings_to_update(osp_id):
 
 
 #######################################################################
+# all_coord_strats(pat, sent)
+#   Replace all occurrences of pat in sent with all possible
+#   coordinated versions, and return a list of all the resulting
+#   sentences (or the empty list, if pat doesn't appear)
+
+def all_coord_strats(pat, sent):
+    if not re.search(pat, sent):
+        return []
+    
+    # c[123] are the three coordinands
+    c1 = pat
+    c2 = re.sub('1', '2', pat)
+    c3 = re.sub('1', '3', pat)
+
+    # create a list of substitutions for pat
+    subs = []
+    # lexical mark
+    subs.append('%s %s %s co' % (c1, c2, c3))
+    subs.append('%s %s co %s' % (c1, c2, c3))
+    subs.append('%s co %s co %s' % (c1, c2, c3))
+    subs.append('%s co %s co %s co' % (c1, c2, c3))
+    subs.append('co %s co %s co %s' % (c1, c2, c3))
+    # affix mark
+    subs.append('%s %s %s-co' % (c1, c2, c3))
+    subs.append('%s %s co-%s' % (c1, c2, c3))
+    subs.append('%s co-%s co-%s' % (c1, c2, c3))
+    subs.append('%s-co %s-co %s-co' % (c1, c2, c3))
+    subs.append('co-%s co-%s co-%s' % (c1, c2, c3))
+
+    # now make the list of sentences by replaces pat with all
+    # the possible substitutions, and return it
+    sents = []
+    for sub in subs:
+        sents.append(re.sub(pat, sub, sent))
+
+    return sents
+
+
+#######################################################################
+# insert_item(input, length, osp_id, mrs_tag)
+#   Insert an item into the 'item' table, along with the corresponding
+#   entries in the 'parse' and 'result' tables.
+
+insert_item(input, length, osp_id, mrs_tag):
+    cursor.execute("INSERT INTO item SET i_input = %s, i_length = %s, i_osp_id = %s, i_author = %s",(input,length,osp_id,"add_permutes.py"))
+        
+    cursor.execute("SELECT LAST_INSERT_ID()")
+    i_id_tuple = cursor.fetchone()
+    i_id = i_id_tuple[0]
+
+    cursor.execute("INSERT INTO parse SET p_i_id = %s, p_readings = 1, p_osp_id = %s",
+                   (i_id,osp_id))
+
+    cursor.execute("SELECT LAST_INSERT_ID()")
+    p_parse = cursor.fetchone()
+    p_parse_id = p_parse[0]
+            
+    cursor.execute("INSERT INTO result SET r_parse_id = %s, r_mrs = %s, r_osp_id = %s", (p_parse_id,mrs_tag,osp_id))
+
+    return i_id
+
+
+#######################################################################
 # Main program
 
 # Ask the user for a specific osp_id to work from, or 'all'.
@@ -539,7 +602,7 @@ def main():
             perms = uniq_permute(s) # Get all permutations of the string
 
             for p in perms:
-            
+
                 input = ''
                 for w in p:
                     input += w
@@ -547,20 +610,45 @@ def main():
                 
                 length = len(p)
 
-                cursor.execute("INSERT INTO item SET i_input = %s, i_length = %s, i_osp_id = %s, i_author = %s",(input,length,osp_id,"add_permutes.py"))
-        
-                cursor.execute("SELECT LAST_INSERT_ID()")
-                i_id_tuple = cursor.fetchone()
-                i_id = i_id_tuple[0]
+                insert_item(input, length, osp_id, mrs_tag)
 
-                cursor.execute("INSERT INTO parse SET p_i_id = %s, p_readings = 1, p_osp_id = %s",
-                               (i_id,osp_id))
+                # If it's a simple intransitive sentence, then create
+                # coordinated versions by replacing N, NP, VP, and S,
+                # changing the mrs_tag as well.
 
-                cursor.execute("SELECT LAST_INSERT_ID()")
-                p_parse = cursor.fetchone()
-                p_parse_id = p_parse[0]
-            
-                cursor.execute("INSERT INTO result SET r_parse_id = %s, r_mrs = %s, r_osp_id = %s", (p_parse_id,mrs_tag,osp_id))
+                # FIX: This needs to be generalized.  There should be a
+                # super-class called Something that has subclasses.
+                # Each subclass has a source and target MRS tag, and
+                # when the input has the source MRS, it applies some
+                # permutation to the sentence and produces the target
+                # MRS tag.
+
+                if False:
+                # FIX: if mrs_tag in n1_subj:
+                # FIX: if mrs_tag in ['wo1']:
+                    # N coordination
+                    for s in all_coord_strats('n1', input):
+                        insert_item(s, -1, osp_id, ???)
+
+                    # NP coordination
+                    for s in all_coord_strats('det1 n1', input):
+                        insert_item(s, -1, osp_id, ???)
+                    for s in all_coord_strats('n1 det1', input):
+                        insert_item(s, -1, osp_id, ???)
+
+                    # VP coordination
+                    for s in all_coord_strats('iv1', input):
+                        insert_item(s, ???, osp_id, ???)
+
+                    # S coordination
+                    for s in all_coord_strats('det1 n1 iv1', input):
+                        insert_item(s, -1, osp_id, ???)
+                    for s in all_coord_strats('n1 det1 iv1', input):
+                        insert_item(s, -1, osp_id, ???)
+                    for s in all_coord_strats('iv1 det1 n1', input):
+                        insert_item(s, -1, osp_id, ???)
+                    for s in all_coord_strats('iv1 n1 det1', input):
+                        insert_item(s, -1, osp_id, ???)
 
 
 if __name__ == "__main__":

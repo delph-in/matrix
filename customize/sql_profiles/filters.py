@@ -75,7 +75,6 @@ def filter_one_result(mrs_id, sent,filter_list,filter_id_hash):
 # Filter class
 
 class Filter:
-
     def __init__(self,name,mrs_id_list,comment,fv = None):
         self.name = name
         self.mrs_id_list = mrs_id_list
@@ -96,22 +95,39 @@ class Filter:
         print "Error"
         assert False
 
-class AndNotFilter(Filter):        
-    # Checking for something that can't be present, but only under
-    # some particular condition.
-    def __init__(self,name,mrs_id_list,re1,re2,comment,fv = None):
+
+class FalseFilter(Filter):
+    def apply_filter(self,sent):
+        return 0
+
+
+class MatchFilter(Filter):
+    # Checking for something that must present
+    def __init__(self,name,mrs_id_list,re1,comment,fv = None):
         Filter.__init__(self,name,mrs_id_list,comment,fv)
         self.re1 = re1
-        self.re2 = re2
 
     def apply_filter(self,sent):
-        if re.search(self.re1,sent) and not re.search(self.re2,sent):
+        if re.search(self.re1,sent):
+            return 1
+        else:
+            return 0
+
+
+class NotMatchFilter(Filter):
+    # Checking for something that can't be present.
+    def __init__(self,name,mrs_id_list,re1,comment,fv = None):
+        Filter.__init__(self,name,mrs_id_list,comment,fv)
+        self.re1 = re1
+
+    def apply_filter(self,sent):
+        if re.search(self.re1,sent):
             return 0
         else:
             return 1
 
 
-class AndMatchFilter(Filter):        
+class IfFilter(Filter):
     # Checking for something that must be present, but only under
     # some particular condition.
     def __init__(self,name,mrs_id_list,re1,re2,comment,fv = None):
@@ -128,82 +144,85 @@ class AndMatchFilter(Filter):
         else:
             return 1
 
-class NotCopresentFilter(Filter):        
-    # Checking for two things that can't be copresent.
 
+class IfNotFilter(Filter):
+    # Checking for something that must not be present, but only under
+    # some particular condition.
     def __init__(self,name,mrs_id_list,re1,re2,comment,fv = None):
         Filter.__init__(self,name,mrs_id_list,comment,fv)
         self.re1 = re1
         self.re2 = re2
 
     def apply_filter(self,sent):
-        if (re.search(self.re1,sent) and re.search(self.re2,sent)):
-            return 0
+        if re.search(self.re1,sent):
+            if re.search(self.re2,sent):
+                return 0
+            else:
+                return 1
         else:
             return 1
 
-class MatchAndFilter(Filter):        
+
+class OrFilter(Filter):
+    # Checking for two things, one of which must be present.  This is
+    # logically equivalent to checking for something that must be present,
+    # but only if something else isn't present (if not A then B), and
+    # used to be called NegTrigMatchFilter.
+    def __init__(self,name,mrs_id_list,re1,re2,comment,fv = None):
+        Filter.__init__(self,name,mrs_id_list,comment,fv)
+        self.re1 = re1
+        self.re2 = re2
+
+    def apply_filter(self,sent):
+        if re.search(self.re1,sent) or re.search(self.re2,sent):
+            return 1
+        else:
+            return 0
+
+
+class AndFilter(Filter):
     # Checking for two things that must both be present.
-
     def __init__(self,name,mrs_id_list,re1,re2,comment,fv = None):
         Filter.__init__(self,name,mrs_id_list,comment,fv)
         self.re1 = re1
         self.re2 = re2
 
     def apply_filter(self,sent):
-        if not (re.search(self.re1,sent) and re.search(self.re2,sent)):
-            return 0
-        else:
-            return 1
-
-
-class NotFilter(Filter):
-    # Checking for something that can't be present.
-
-    def __init__(self,name,mrs_id_list,re1,comment,fv = None):
-        Filter.__init__(self,name,mrs_id_list,comment,fv)
-        self.re1 = re1
-
-    def apply_filter(self,sent):
-        if re.search(self.re1,sent):
-            return 0
-        else:
-            return 1
-
-class MatchFilter(Filter):
-    # Checking for something that must present
-
-    def __init__(self,name,mrs_id_list,re1,comment,fv = None):
-        Filter.__init__(self,name,mrs_id_list,comment,fv)
-        self.re1 = re1
-
-    def apply_filter(self,sent):
-        if re.search(self.re1,sent):
+        if re.search(self.re1,sent) and re.search(self.re2,sent):
             return 1
         else:
             return 0
 
 
-class AlwaysFilter(Filter):
-
-    def apply_filter(self,sent):
-        return 0
-
-
-class NegTrigMatchFilter(Filter):
-    # Checking for something that must be present, but if something
-    # else isn't present.
-
+class AndNotFilter(Filter):
+    # Checking for one things that must be present and another
+    # thing that must NOT be present.
     def __init__(self,name,mrs_id_list,re1,re2,comment,fv = None):
         Filter.__init__(self,name,mrs_id_list,comment,fv)
         self.re1 = re1
         self.re2 = re2
 
     def apply_filter(self,sent):
-        if (not re.search(self.re1,sent) and re.search(self.re2,sent)):
+        if re.search(self.re1,sent) and not re.search(self.re2,sent):
             return 1
         else:
             return 0
+
+
+class NandFilter(Filter):
+    # Checking for two things that can't both be present.  This is
+    # the logical NAND (NOT AND) condition.
+    def __init__(self,name,mrs_id_list,re1,re2,comment,fv = None):
+        Filter.__init__(self,name,mrs_id_list,comment,fv)
+        self.re1 = re1
+        self.re2 = re2
+
+    def apply_filter(self,sent):
+        if re.search(self.re1,sent) and re.search(self.re2,sent):
+            return 0
+        else:
+            return 1
+
 
 ######################################################################
 # This function will be called in other files which define filters
