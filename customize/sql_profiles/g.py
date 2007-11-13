@@ -42,3 +42,4 @@ trans = ['wo3', 'wo4', 'wo5', 'wo6', 'wo7', 'wo8', 'wo9', 'wo10', 'neg1', 'neg2'
 intrans = ['wo1','wo2']
 neg = ['neg1','neg2','neg3','neg4']
 ques = ['ques1','ques2','ques3','ques4']
+coord = ['wo2-coord-n','wo2-coord-np','wo2-coord-vp','wo2-coord-s']

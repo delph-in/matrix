@@ -29,12 +29,12 @@
 # Preliminaries
 
 import MySQLdb
-import re
 import sys
 from copy import deepcopy
 from copy import copy
 from stringmod import string_mods
 from stringmod import glue
+from post_permutes import post_permutes
 
 #Connect to MySQL server
 
@@ -518,50 +518,15 @@ def get_harvester_strings_to_update(osp_id):
 
 
 #######################################################################
-# all_coord_strats(pat, sent)
-#   Replace all occurrences of pat in sent with all possible
-#   coordinated versions, and return a list of all the resulting
-#   sentences (or the empty list, if pat doesn't appear)
-
-def all_coord_strats(pat, sent):
-    if not re.search(pat, sent):
-        return []
-    
-    # c[123] are the three coordinands
-    c1 = pat
-    c2 = re.sub('1', '2', pat)
-    c3 = re.sub('1', '3', pat)
-
-    # create a list of substitutions for pat
-    subs = []
-    # lexical mark
-    subs.append('%s %s %s co' % (c1, c2, c3))
-    subs.append('%s %s co %s' % (c1, c2, c3))
-    subs.append('%s co %s co %s' % (c1, c2, c3))
-    subs.append('%s co %s co %s co' % (c1, c2, c3))
-    subs.append('co %s co %s co %s' % (c1, c2, c3))
-    # affix mark
-    subs.append('%s %s %s-co' % (c1, c2, c3))
-    subs.append('%s %s co-%s' % (c1, c2, c3))
-    subs.append('%s co-%s co-%s' % (c1, c2, c3))
-    subs.append('%s-co %s-co %s-co' % (c1, c2, c3))
-    subs.append('co-%s co-%s co-%s' % (c1, c2, c3))
-
-    # now make the list of sentences by replaces pat with all
-    # the possible substitutions, and return it
-    sents = []
-    for sub in subs:
-        sents.append(re.sub(pat, sub, sent))
-
-    return sents
-
-
-#######################################################################
 # insert_item(input, length, osp_id, mrs_tag)
 #   Insert an item into the 'item' table, along with the corresponding
 #   entries in the 'parse' and 'result' tables.
 
-insert_item(input, length, osp_id, mrs_tag):
+def insert_item(input, length, osp_id, mrs_tag):
+    # if the length (# of words) isn't specified, calculate it
+    if length == -1:
+        length = 
+
     cursor.execute("INSERT INTO item SET i_input = %s, i_length = %s, i_osp_id = %s, i_author = %s",(input,length,osp_id,"add_permutes.py"))
         
     cursor.execute("SELECT LAST_INSERT_ID()")
@@ -612,45 +577,11 @@ def main():
 
                 insert_item(input, length, osp_id, mrs_tag)
 
-                # If it's a simple intransitive sentence, then create
-                # coordinated versions by replacing N, NP, VP, and S,
-                # changing the mrs_tag as well.
-
-                # FIX: This needs to be generalized.  There should be a
-                # super-class called Something that has subclasses.
-                # Each subclass has a source and target MRS tag, and
-                # when the input has the source MRS, it applies some
-                # permutation to the sentence and produces the target
-                # MRS tag.
-
-                if False:
-                # FIX: if mrs_tag in n1_subj:
-                # FIX: if mrs_tag in ['wo1']:
-                    # N coordination
-                    for s in all_coord_strats('n1', input):
-                        insert_item(s, -1, osp_id, ???)
-
-                    # NP coordination
-                    for s in all_coord_strats('det1 n1', input):
-                        insert_item(s, -1, osp_id, ???)
-                    for s in all_coord_strats('n1 det1', input):
-                        insert_item(s, -1, osp_id, ???)
-
-                    # VP coordination
-                    for s in all_coord_strats('iv1', input):
-                        insert_item(s, ???, osp_id, ???)
-
-                    # S coordination
-                    for s in all_coord_strats('det1 n1 iv1', input):
-                        insert_item(s, -1, osp_id, ???)
-                    for s in all_coord_strats('n1 det1 iv1', input):
-                        insert_item(s, -1, osp_id, ???)
-                    for s in all_coord_strats('iv1 det1 n1', input):
-                        insert_item(s, -1, osp_id, ???)
-                    for s in all_coord_strats('iv1 n1 det1', input):
-                        insert_item(s, -1, osp_id, ???)
+                for pp in post_permutes:
+                    if mrs_tag == pp.mrs_id:
+                        for s in pp.apply(input):
+                            insert_item(s, -1, osp_id, pp.new_mrs_id)
 
 
 if __name__ == "__main__":
   main()
-
