@@ -69,3 +69,8 @@ t8.dump()
 t9 = tdl.TDLfile('')
 t9.add('t := [ SYNSEM [ LOCAL [ CAT [ HEAD verb ] ] ] ].')
 t9.dump()
+
+t10 = tdl.TDLfile('')
+t10.add('t := type & [ ARG-ST < [ ], [ ] > ].')
+t10.add('t := [ ARG-ST < [ HEAD noun ], [ ] > ].')
+t10.dump()

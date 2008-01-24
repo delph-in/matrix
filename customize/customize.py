@@ -45,6 +45,8 @@ roots = None
 
 def has_auxiliaries_p():
 
+  # sfd ToDo: This function definitely should have side-effects.  Move
+  # this elsewhere.
   mylang.add('head :+ [ AUX bool, FORM form ].')
   mylang.add('form := avm.')
   mylang.add('fin := form.')
@@ -58,16 +60,16 @@ def has_auxiliaries_p():
 
 # ERB 2006-09-21 This function assembles an inflectional rule out
 # of the appropriate information and adds it to irules.tdl.
-# Assumes we consistently use 'prefix' and 'suffix' as values in the
-# html form.
+# Assumes we consistently use either 'prefix' and 'suffix' or 'before'
+# and 'after' as values in the html form.
 # Should this actually be a method on TDLfile?
 
 def add_irule(instance_name,type_name,affix_type,affix_form):
 
   rule = instance_name + ' :=\n'
-  if affix_type == 'prefix':
+  if affix_type == 'prefix' or affix_type == 'before':
     rule += '%prefix (* ' + affix_form + ')\n'
-  elif affix_type == 'suffix':
+  elif affix_type == 'suffix' or affix_type == 'after':
     rule += '%suffix (* ' + affix_form + ')\n'
 
 # TODO: generate error here.
@@ -78,11 +80,217 @@ def add_irule(instance_name,type_name,affix_type,affix_form):
 
   irules.add_literal(rule)
 
+
+######################################################################
+# customize_features()
+#   Create the type definitions associated with the user's choices
+#   about features, currently only case.
+
+# case_details()
+#   Create and return a list containing information about the cases
+#   in the language described by the current choices.  This list consists
+#   of tuples with three values: [variable prefix, label, abbreviation]
+
+def case_details():
+  # first, make two lists: the choices-variable prefixes and the
+  # user-provided case labels
+  cm = ch.get('case-marking')
+  prefixes = []
+  labels = []
+  if cm == 'nom-acc':
+    prefixes.append('nom')
+    labels.append(ch.get('nom-case-label'))
+    prefixes.append('acc')
+    labels.append(ch.get('acc-case-label'))
+  elif cm == 'erg-abs':
+    prefixes.append('erg')
+    labels.append(ch.get('erg-case-label'))
+    prefixes.append('abs')
+    labels.append(ch.get('abs-case-label'))
+  elif cm == 'tripartite':
+    prefixes.append('s')
+    labels.append(ch.get('s-case-label'))
+    prefixes.append('a')
+    labels.append(ch.get('a-case-label'))
+    prefixes.append('o')
+    labels.append(ch.get('o-case-label'))
+
+  # if possible without causing collisions, shorten the case labels to
+  # three-letter abbreviations; otherwise, just use the labels as the
+  # abbreviations
+  abbrevs = [ l[0:3] for l in labels ]
+  if len(set(abbrevs)) != len(abbrevs):
+    abbrevs = labels
+
+  cases = []
+  for i in range(0, len(prefixes)):
+    cases.append([ prefixes[i], labels[i], abbrevs[i] ])
+
+  return cases
+
+
+def has_aff_case(lex_type = ''):
+  cases = case_details()
+  for p, l, a in cases:
+    pat = ch.get(p + '-case-pat')
+
+    matched = False
+    if lex_type == '':
+      matched = True
+    elif lex_type == 'noun' and pat in ['noun', 'det-noun', 'unmarked']:
+      matched = True
+    elif lex_type == 'det' and pat in ['det', 'det-noun']:
+      matched = True
+
+    if matched and pat != 'np':
+      return True
+
+  return False
+
+
+def has_adp_case():
+  cases = case_details()
+  for p, l, a in cases:
+    if ch.get(p + '-case-pat') == 'np':
+      return True
+  return False
+
+
+# customize_case_type()
+#   Create a type for case, derived from *top*
+
+def customize_case_type():
+  if ch.get('case-marking') != 'none':
+    comment = ';;; Case'
+    mylang.add_literal(comment)
+    mylang.add('case := *top*.', '', True)
+    cases = case_details()
+    for p, l, a in cases:
+      mylang.add(a + ' := case.', l, True)
+    if has_aff_case() and has_adp_case():
+      mylang.add('no-case := case.', '', True)
+
+
+# customize_case_adpositions()
+#   Create the appropriate types for case-marking adpositions
+
+def customize_case_adpositions():
+  cases = case_details()
+  has_adps = has_adp_case()
+  if has_adps:
+    comment = \
+      ';;; Case-marking adpositions\n' + \
+      ';;; Case marking adpositions are constrained not to\n' + \
+      ';;; be modifiers.'
+    mylang.add_literal(comment)
+
+    typedef = \
+      'case-marker-p-lex := basic-one-arg & raise-sem-lex-item & \
+          [ SYNSEM.LOCAL.CAT [ HEAD adp & [ MOD < > ], \
+                               VAL [ SPR < >, \
+                                     SUBJ < >, \
+                                     COMPS < #comps >, \
+                                     SPEC < > ]], \
+            ARG-ST < #comps & [ LOCAL.CAT [ HEAD noun, \
+                                             VAL.SPR < > ]] > ].'
+    mylang.add(typedef)
+    if has_aff_case():
+      typedef = \
+        'case-marker-p-lex := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE no-case ] > ].'
+      mylang.add(typedef)
+
+  # Lexical entries
+  if has_adps:
+    lexicon.add_literal(';;; Case-marking adpositions')
+    if has_aff_case():
+      mylang.add('head :+ [ CASE case ].')
+    else:
+      mylang.add('adp :+ [ CASE case ].')
+
+  for p, l, a in cases:
+    if ch.get(p + '-case-pat') == 'np':
+      typedef = \
+        a + '-marker := case-marker-p-lex & \
+                          [ STEM < "' + ch.get(p + '-case-orth') + '" >, \
+                            SYNSEM.LOCAL.CAT.HEAD.CASE ' + a + ' ].'
+      lexicon.add(typedef)
+
+
+# customize_case_affixes()
+#   Given a list of pairs [variable prefix, label, abbreviation], create the
+#   appropriate inflectional rules for case affixes
+
+def customize_case_affixes():
+  if has_aff_case():
+    mylang.add_literal(';;; Lexical rules for case')
+
+  added_noun_rule = False
+  added_det_rule = False
+  cases = case_details()
+  for p, l, a in cases:
+    pat = ch.get(p + '-case-pat')
+    if pat == 'unmarked':
+      typedef = \
+        a + '-noun-lex-rule := const-ltow-rule & \
+          [ DTR.SYNSEM.LOCAL.CAT.HEAD noun & \
+                                      [ CASE ' + a + '] ].'
+      mylang.add(typedef)
+      lrules.add(a + '-noun := ' + a + '-noun-lex-rule.')
+      added_noun_rule = True
+    if pat == 'noun' or pat == 'det-noun':
+      typedef = \
+        a + '-noun-lex-rule := infl-ltow-rule & \
+          [ DTR.SYNSEM.LOCAL.CAT.HEAD noun & \
+                                      [ CASE ' + a + '] ].'
+      mylang.add(typedef)
+      add_irule(a + '-noun', a + '-noun-lex-rule',
+                ch.get(p + '-case-order'), ch.get(p + '-case-orth'))
+      added_noun_rule = True
+    if pat == 'det' or pat == 'det-noun':
+      typedef = \
+        a + '-det-lex-rule := infl-ltow-rule & \
+          [ DTR.SYNSEM.LOCAL.CAT \
+              [ HEAD det, \
+                VAL.SPEC < [ LOCAL.CAT.HEAD.CASE ' + a + '] > ] ].'
+      mylang.add(typedef)
+      add_irule(a + '-det', a + '-det-lex-rule',
+                ch.get(p + '-case-order'), ch.get(p + '-case-orth'))
+      added_det_rule = True
+
+  # If the language also has case-marking adpositions, we need a const
+  # lexical rule that marks dets/nouns as 'no-case'
+  if has_adp_case():
+    if added_noun_rule:
+      typedef = \
+        'no-case-noun-lex-rule := const-ltow-rule & \
+          [ DTR.SYNSEM.LOCAL.CAT.HEAD noun & \
+                                      [ CASE no-case ] ].'
+      mylang.add(typedef)
+      lrules.add('no-case-noun := no-case-noun-lex-rule.')
+    if added_det_rule:
+      typedef = \
+        'no-case-det-lex-rule := const-ltow-rule & \
+          [ DTR.SYNSEM.LOCAL.CAT \
+              [ HEAD det, \
+                VAL.SPEC < [ LOCAL.CAT.HEAD.CASE no-case ] > ] ].'
+      mylang.add(typedef)
+      lrules.add('no-case-noun := no-case-noun-lex-rule.')
+
+
+def customize_case():
+  customize_case_type()
+  customize_case_affixes()
+
+
+def customize_features():
+  customize_case()
+
+
 ######################################################################
 # customize_word_order()
 #   Create the type definitions associated with the user's choices
-#   about basic word order, including information from lexicon about
-#   adpositions and auxiliaries. 
+#   about basic word order, including information about adpositions
+#   and auxiliaries. 
 
 # ERB 2006-09-15 DOCUMENTATION
 
@@ -375,7 +583,7 @@ def add_irule(instance_name,type_name,affix_type,affix_form):
 
 # subj-head-phrase := basic-head-subj-phrase & head-final.
 
-# ; Rules for bulding NPs.  Note that the Matrix uses SPR for
+# ; Rules for building NPs.  Note that the Matrix uses SPR for
 # ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
 
 # head-spec-phrase := basic-head-spec-phrase & head-final.
@@ -719,24 +927,24 @@ def customize_major_constituent_order(wo):
 
   if wo == 'free':
     mylang.add('synsem :+ [ ATTACH xmod ].',
-               'We can\'t just use the V-final and V-initial word\n\
-order modules together to get a good free word order\n\
-module. The root of the problem seems to be that we\n\
-need the subject to be able to attach inside the\n\
-object(s) for VSO and OSV, but at the same time, we\n\
-don\'t want complete flexibility on order of attachment\n\
-when the verb is in the middle -- that would give\n\
-spurious ambiguity.  This solution adopts the xmod\n\
-hierarchy to enforce right-first attachment.  That is,\n\
-all arguments appears to the right of the verb must\n\
-attach before all arguments appearing to the left.  The\n\
-linguistic prediction of this analysis is that free\n\
-word order languages do not have a consistent VP\n\
-consituent, even when the verb and object are adjacent\n\
-(OV order).  Using a separate feature for tracking\n\
-argument attachment (as opposed to modifier\n\
-attachment).  We might be able to collapse these one\n\
-day, but that\'s not obvious.')
+               'We can\'t just use the V-final and V-initial word\n' +
+               'order modules together to get a good free word order\n' +
+               'module. The root of the problem seems to be that we\n' +
+               'need the subject to be able to attach inside the\n' +
+               'object(s) for VSO and OSV, but at the same time, we\n' +
+               'don\'t want complete flexibility on order of attachment\n' +
+               'when the verb is in the middle -- that would give\n' +
+               'spurious ambiguity.  This solution adopts the xmod\n' +
+               'hierarchy to enforce right-first attachment.  That is,\n' +
+               'all arguments appears to the right of the verb must\n' +
+               'attach before all arguments appearing to the left.  The\n' +
+               'linguistic prediction of this analysis is that free\n' +
+               'word order languages do not have a consistent VP\n' +
+               'consituent, even when the verb and object are adjacent\n' +
+               '(OV order).  Using a separate feature for tracking\n' +
+               'argument attachment (as opposed to modifier\n' +
+               'attachment).  We might be able to collapse these one\n' +
+               'day, but that\'s not obvious.')
 
     mylang.add('head-initial-head-nexus := head-initial & \
                 [ SYNSEM.ATTACH lmod,\
@@ -783,9 +991,10 @@ in for head-adjunct phrases here:')
 def customize_np_word_order():
 
   if ch.get('has-dets') == 'yes':
-    mylang.add('head-spec-phrase := basic-head-spec-phrase.',
-               'Rules for bulding NPs.  Note that the Matrix uses SPR for\n\
-               the specifier of nouns and SUBJ for the subject (specifier) of verbs.')
+    mylang.add(
+      'head-spec-phrase := basic-head-spec-phrase.',
+      'Rules for building NPs.  Note that the Matrix uses SPR for\n' +
+      'the specifier of nouns and SUBJ for the subject (specifier) of verbs.')
 
     if ch.get('noun-det-order') == 'noun-det':
       mylang.add('head-spec-phrase := head-initial.')
@@ -801,8 +1010,7 @@ def customize_np_word_order():
 
   mylang.add('bare-np-phrase := basic-bare-np-phrase &\
   [ C-CONT.RELS <! [ PRED \"unspec_q_rel\" ] !> ].',
-             'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\n\
-             introduced to match the semantic effect of bare NPs in your language.')
+             'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
 
   rules.add('bare-np := bare-np-phrase.')
 
@@ -824,10 +1032,10 @@ def determine_consistent_order(wo,hc):
   # find subject postpositions and object prepositions).
 
   adporder = ''
-  if ch.get('subj-adp-order'):
-    adporder = ch.get('subj-adp-order')
-  elif ch.get('obj-adp-order'):
-    adporder = ch.get('obj-adp-order')
+  cases = case_details()
+  for p, l, a in cases:
+    if ch.get(p + '-case-pat') == 'np':
+      adporder = ch.get(p + '-case-order')
 
   # ERB 2006-10-05 Fixing bug in free word order case.
 
@@ -1012,7 +1220,7 @@ def specialize_word_order(hc,orders):
     head_comp_is_not.append('aux')
   if adp == 'free-prep' or adp == 'ov-prep':
     comp_head_is_not.append('adp')
-  if adp == 'free-post' or adp == 'vo-prep':
+  if adp == 'free-post' or adp == 'vo-post':
     head_comp_is_not.append('adp')
   if qpart_order == 'free-qs' or qpart_order == 'ov-qs':
     comp_head_is_not.append('comp')
@@ -1034,12 +1242,12 @@ def specialize_word_order(hc,orders):
   if len(head_comp_is) == 1:
     head = head_comp_is[0]
     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
-               'head-comp-phrase can requires things that are [ HEAD ' + head + ' ].')
+               'head-comp-phrase requires things that are [ HEAD ' + head + ' ].')
 
   if len(comp_head_is) == 1:
     head = comp_head_is[0]
     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
-               'comp-head-phrase can requires things that are [ HEAD ' + head + ' ].')
+               'comp-head-phrase requires things that are [ HEAD ' + head + ' ].')
 
   # Now the case where we do have disjunctive constraints.   NB: The order
   # here is important, since we're constructing the string which has to
@@ -1061,7 +1269,7 @@ def specialize_word_order(hc,orders):
       head += 'c'
 
     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
-               'head-comp-phrase can requires things that are one of: ' + str(head_comp_is))
+               'head-comp-phrase requires things that are one of: ' + str(head_comp_is))
 
   if len(comp_head_is) > 1:
     head = '+'
@@ -1073,7 +1281,7 @@ def specialize_word_order(hc,orders):
       head += 'c'
 
     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
-               'head-comp-phrase can requires things that are one of: ' + str(head_comp_is))
+               'head-comp-phrase requires things that are one of: ' + str(head_comp_is))
 
   # Now the negative constraints.  This is where we extracted the information
   # that head-comp or comp-head can't be certain things.  Of course, in tdl
@@ -2194,12 +2402,20 @@ def customize_nouns():
       mylang.add(typedef)
 
       if ch.get('has-dets') == 'yes':
-        mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.OPT - ].',
-                   'Nouns which cannot take specifiers mark their SPR requirement\n\
-as OPT +.  Making the non-head daughter OPT - in this rule\n\
-keeps such nouns out.')
-                 
-      
+        mylang.add(
+          'head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.OPT - ].',
+          'Nouns which cannot take specifiers mark their SPR requirement\n' +
+          'as OPT +.  Making the non-head daughter OPT - in this rule\n' +
+          'keeps such nouns out.')
+
+  if has_aff_case('noun'):
+    mylang.add('noun-lex := [ INFLECTED - ].')
+  if has_aff_case():
+    if has_adp_case():
+      mylang.add('head :+ [ CASE case ].')
+    else:
+      mylang.add('noun :+ [ CASE case ].')
+
   # Add the lexical entries
   lexicon.add_literal(';;; Nouns')
 
@@ -2220,29 +2436,15 @@ keeps such nouns out.')
       lexicon.add(typedef)
 
 def customize_verbs():
-
-  iverbsubj = ch.get('iverb-subj')
-
-  tvpred = ch.get('tvpred')
-  tverbsubj = ch.get('tverb-subj')
-  tverbobj = ch.get('tverb-obj')
-
-  subjadporder = ch.get('subj-adp-order')
-  subjadporth = ch.get('subj-adp-orth')
-  objadporder = ch.get('obj-adp-order')
-  objadporth = ch.get('obj-adp-orth')
+  cm = ch.get('case-marking')
+  cases = case_details()
 
   negmod = ch.get('neg-mod')
   negadv = ch.get('neg-adv')
   auxcomp = ch.get('aux-comp')
 
-  # Do the verbs take the same category (NP or PP) for their subjects?
-  singlevtype = (iverbsubj and tverbsubj and iverbsubj != tverbsubj)
-
   # Do we need to constrain HC-LIGHT on verbs, to distinguish V from VP?
   hclight = ((negadv == 'ind-adv' and negmod == 'v') or auxcomp == 'v')
-    
-
 
   # Lexical types for verbs
   # I'm adding the constraint to associate XARG with the
@@ -2253,28 +2455,36 @@ def customize_verbs():
 
   mylang.add_literal(';;; Verbs')
     
+  # verb lexical type
   typedef = \
     'verb-lex := basic-verb-lex & \
-       [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >, \
-                                    SPEC < >, \
-                                    SUBJ < #subj > ]'
-  if has_auxiliaries_p():
-    typedef += ', HEAD.AUX - ],'
-  else:
-    typedef += '],'
-  typedef += 'CONT.HOOK.XARG #xarg ], ARG-ST < #subj & ';
-  if singlevtype:
-    if iverbsubj == 'np':
-      typedef += '[ LOCAL [ CAT [ HEAD noun, '
-    else:
-      typedef += '[ LOCAL [ CAT [ HEAD adp, '
-    typedef += 'VAL [ SPR < >, COMPS < > ]], \
-                CONT.HOOK.INDEX #xarg ]], ... > ].'
-  else:
-    typedef += \
-      '[ LOCAL [ CAT.VAL [ SPR < >, COMPS < > ], \
-       CONT.HOOK.INDEX #xarg ]], ... > ].'
+       [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >, \
+                                  SPEC < >, \
+                                  SUBJ < #subj > ], \
+                        CONT.HOOK.XARG #xarg ], \
+         ARG-ST < #subj & \
+                  [ LOCAL [ CAT.VAL [ SPR < >, \
+                                      COMPS < > ], \
+                            CONT.HOOK.INDEX #xarg ] ], ... > ].'
   mylang.add(typedef)
+
+  if has_auxiliaries_p():
+    typedef = 'verb-lex := [ SYNSEM.LOCAL.CAT.VAL.HEAD.AUX - ].'
+    mylang.add(typedef)
+
+  if cm == 'nom-acc':
+    for p, l, a in cases:
+      if p == 'nom':
+        abb = a
+    if ch.get('nom-case-pat') == 'np':
+      typedef = 'verb-lex := \
+                   [ ARG-ST.FIRST.LOCAL.CAT.HEAD adp & \
+                                                 [ CASE ' + abb + ' ] ] > ].'
+    else:
+      typedef = 'verb-lex := \
+                   [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun & \
+                                                 [ CASE ' + abb + ' ] ] > ].'
+    mylang.add(typedef)
 
   if hclight:
     comment = \
@@ -2290,35 +2500,109 @@ def customize_verbs():
     mylang.add_literal(comment)
     mylang.add('verb-lex :+ [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].')
 
+  # intransitive verb lexical type
   typedef = \
     'intransitive-verb-lex := verb-lex & intransitive-lex-item & \
-       [ SYNSEM.LOCAL.CAT.VAL.COMPS < >'
-  if singlevtype:
-    typedef += '].'
-  else:
-    typedef += ','
-    if iverbsubj == 'np':
-      typedef += 'ARG-ST < [ LOCAL.CAT.HEAD noun ] > ].'
-    else:
-      typedef += 'ARG-ST < [ LOCAL.CAT.HEAD adp & [ FORM p-nom ]] > ].'
+       [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].'
   mylang.add(typedef)
 
+  # intransitive subject
+  if cm == 'erg-abs' or cm == 'tripartite':
+    if cm == 'erg-abs':
+      pat = ch.get('abs-case-pat')
+      prefix = 'abs'
+    else:
+      pat = ch.get('s-case-pat')
+      prefix = 's'
+    for p, l, a in cases:
+      if p == prefix:
+        abb = a
+    if pat == 'np':
+      typedef = 'intransitive-verb-lex := \
+                   [ ARG-ST < [ LOCAL.CAT.HEAD adp & \
+                                               [ CASE ' + abb + ' ] ] > ].'
+      mylang.add(typedef)
+    else:
+      typedef = 'intransitive-verb-lex := \
+                   [ ARG-ST < [ LOCAL.CAT.HEAD noun & \
+                                               [ CASE ' + abb + ' ] ] > ].'
+      mylang.add(typedef)
+  elif cm == 'none':
+    typedef = 'intransitive-verb-lex := \
+                 [ ARG-ST < [ LOCAL.CAT.HEAD noun ] > ].'
+    mylang.add(typedef)
+    
+
+  # transitive verb lexical type
   typedef = \
     'transitive-verb-lex := verb-lex & transitive-lex-item & \
-       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,'
-  if singlevtype:
-    typedef += 'ARG-ST < [ ],'
-  else:
-    if tverbsubj == 'np':
-      typedef += 'ARG-ST < [ LOCAL.CAT.HEAD noun ],'
-    else:
-      typedef += 'ARG-ST < [ LOCAL.CAT.HEAD adp & [ FORM p-nom ]],'
-  typedef += '#comps & [ LOCAL.CAT [ VAL [ SPR < >, COMPS < > ],'
-  if tverbobj == 'np':
-    typedef += 'HEAD noun ] ] > ].'
-  else:
-    typedef += 'HEAD adp & [FORM p-acc] ] ] > ].'
+       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >, \
+         ARG-ST < [ ], \
+                  #comps & \
+                  [ LOCAL.CAT [ VAL [ SPR < >, \
+                                      COMPS < > ] ] ] > ].'
   mylang.add(typedef)
+
+  # transitive subject
+  if cm == 'erg-abs' or cm == 'tripartite':
+    if cm == 'erg-abs':
+      pat = ch.get('erg-case-pat')
+      prefix = 'erg'
+    else:
+      pat = ch.get('a-case-pat')
+      prefix = 'a'
+    for p, l, a in cases:
+      if p == prefix:
+        abb = a
+    if pat == 'np':
+      typedef = 'transitive-verb-lex := \
+                   [ ARG-ST < [ LOCAL.CAT.HEAD adp & \
+                                               [ CASE ' + abb + ' ] ], \
+                              [ ] > ].'
+      mylang.add(typedef)
+    else:
+      typedef = 'transitive-verb-lex := \
+                   [ ARG-ST < [ LOCAL.CAT.HEAD noun & \
+                                               [ CASE ' + abb + ' ] ], \
+                              [ ] > ].'
+      mylang.add(typedef)
+  elif cm == 'none':
+    typedef = 'transitive-verb-lex := \
+                 [ ARG-ST < [ LOCAL.CAT.HEAD noun ], \
+                   [ ] > ].'
+    mylang.add(typedef)
+
+  # transitive object
+  if cm != 'none':
+    if cm == 'nom-acc':
+      pat = ch.get('acc-case-pat')
+      prefix = 'acc'
+    elif cm == 'erg-abs':
+      pat = ch.get('abs-case-pat')
+      prefix = 'abs'
+    else:
+      pat = ch.get('o-case-pat')
+      prefix = 'o'
+    for p, l, a in cases:
+      if p == prefix:
+        abb = a
+    if pat == 'np':
+      typedef = 'transitive-verb-lex := \
+                   [ ARG-ST < [ ], \
+                              [ LOCAL.CAT.HEAD adp & \
+                                               [ CASE ' + abb + ' ] ] > ].'
+      mylang.add(typedef)
+    else:
+      typedef = 'transitive-verb-lex := \
+                   [ ARG-ST < [ ], \
+                              [ LOCAL.CAT.HEAD noun & \
+                                               [ CASE ' + abb + ' ] ] > ].'
+      mylang.add(typedef)
+  else:
+    typedef = 'transitive-verb-lex := \
+                 [ ARG-ST < [ ], \
+                            [ LOCAL.CAT.HEAD noun ] > ].'
+    mylang.add(typedef)
 
   # If there are auxiliaries, define finite and non-finite verb types,
   # cross-classify with trans and intrans.
@@ -2354,15 +2638,11 @@ def customize_verbs():
          non-finite-verb-lex & intransitive-verb-lex.'
     mylang.add(typedef)
 
-    # Lexical entries
-
+  # Lexical entries
   lexicon.add_literal(';;; Verbs')
 
   # Do intransitve and transitive verbs in the same loop, since they
-  # share a lot of TDL in common  - sfd
-
-  # ERB 2006-11-06 Fixed some bugs in generation of non-finite forms.
-  # Was looking up ch.get(i + 'verbnf'), but matrixdef uses 'verb-nonfinite').
+  # share a lot of TDL in common
   for i in ('i', 't'):
     verb = ch.get(i + 'verb')
     verbpred = ch.get(i + 'verb-pred')
@@ -2596,68 +2876,6 @@ def customize_auxiliaries():
       typedef = auxverb + ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + auxpred + '" ].'
       lexicon.add(typedef)
 
-def customize_adpositions():
-
-  subjadporder = ch.get('subj-adp-order')
-  subjadporth = ch.get('subj-adp-orth')
-  objadporder = ch.get('obj-adp-order')
-  objadporth = ch.get('obj-adp-orth')
-
-  # Lexical types for adpositions (if present):
-  if subjadporder or objadporder:
-    comment = \
-      ';;; Case-marking adpositions\n' + \
-      ';;; Case marking adpositions are constrained not to\n' + \
-      ';;; be modifiers.'
-    mylang.add_literal(comment)
-
-    typedef = \
-      'case-marker-p-lex := basic-one-arg & raise-sem-lex-item & \
-          [ SYNSEM.LOCAL.CAT [ HEAD adp & [ MOD < > ], \
-                               VAL [ SPR < >, \
-                                     SUBJ < >, \
-                                     COMPS < #comps >, \
-                                     SPEC < > ]], \
-            ARG-ST < #comps & [ LOCAL.CAT [ HEAD noun, \
-                                             VAL.SPR < > ]] > ].'
-
-    mylang.add(typedef)
-
-  # ERB 2006-10-17
-  # Making the adpositions have distinct forms so that verbs can actually
-  # constrain which appears in which argument.  Will need to revisit this
-  # when we have a real module for case.
-
-  if subjadporder:
-    mylang.add('p-nom := form.','FORM value for subject marking adpositions.')
-  if objadporder:
-    mylang.add('p-acc := form.','FORM value for object marking adpositions.')
-  
-
-  # Lexical entries
-
-  # sfd ToDo? Some of these could be further parameterized.  Probably
-  # not necessary unless they become iterators, though.
-
-  if subjadporth or objadporth:
-    lexicon.add_literal(';;; Case-marking adpositions')
-
-  if subjadporth:
-    typedef = \
-      'subj-marker := case-marker-p-lex & \
-                        [ STEM < "' + subjadporth + '" >, \
-                          SYNSEM.LOCAL.CAT.HEAD.FORM p-nom  ].'
-    lexicon.add(typedef)
-
-  if objadporth:
-    typedef = \
-      'obj-marker := case-marker-p-lex & \
-                     [ STEM < "' + objadporth + '" >, \
-                       SYNSEM.LOCAL.CAT.HEAD.FORM p-acc ].'
-    lexicon.add(typedef)
-
-
-
 def customize_determiners():
 
   det1 = ch.get('det1')
@@ -2678,6 +2896,9 @@ def customize_determiners():
                                    COMPS < >, \
                                    SUBJ < > ]].'
     mylang.add(typedef)
+
+  if has_aff_case('det'):
+    mylang.add('determiner-lex := [ INFLECTED - ].')
 
   # Determiners
   if det1 or det2:
@@ -2713,9 +2934,9 @@ def customize_misc_lex():
 def customize_lexicon():
 
   customize_nouns()
+  customize_case_adpositions()
   customize_verbs()
   customize_auxiliaries()
-  customize_adpositions()
   customize_determiners()
   customize_misc_lex()
   
@@ -2889,6 +3110,7 @@ def customize_matrix(path, arch_type):
   version_lsp.add_literal('(defparameter *grammar-version* \"' + ch.get('language') + ' (Matrix-10-2006)\")\n')
 
   # Call the various customization functions
+  customize_features()
   customize_word_order()
   customize_sentential_negation()
   customize_coordination()

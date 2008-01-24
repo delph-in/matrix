@@ -20,7 +20,7 @@ def isid(s):
   if s == '...':
     return True
   for c in s:
-    if not c.isalnum() and c != '-' and c != '+' and c != '_':
+    if not c.isalnum() and c != '-' and c != '+' and c != '_' and c != '*':
       return False
   return True
   
@@ -193,11 +193,12 @@ class TDLelem_typedef(TDLelem):
   def __init__(self, type, op):
     self.child = []
     self.comment = ""
+    self.one_line = False
     self.type = type
     self.op = op
 
   def write(self):
-    if self.comment:
+    if self.comment and not self.one_line:
       for l in self.comment.split('\n'):
         TDLwrite('; ' + l + '\n')
       TDLwrite('\n')
@@ -209,13 +210,24 @@ class TDLelem_typedef(TDLelem):
     TDLset_indent(2)
     for ch in self.child:
       ch.write()
-    TDLwrite('.\n\n')
+
+    TDLwrite('.')
+    if self.one_line:
+      if self.comment:
+        TDLwrite('  ; ' + self.comment)
+    TDLwrite('\n\n')
 
   def set_comment(self, comment):
     self.comment = comment
 
   def get_comment(self):
     return self.comment
+
+  def set_one_line(self, one_line):
+    self.one_line = one_line
+
+  def get_one_line(self):
+    return self.one_line
 
 
 ###########################################################################
@@ -333,9 +345,13 @@ class TDLelem_feat(TDLelem):
     while cur:
       if first_elem:
         TDLwrite('< ')
+        old_i = TDLget_indent()
         first_elem = False
       else:
-        TDLwrite(', ') # pairs will never get this far
+        # pairs will never get this far
+        TDLwrite(',\n')
+        for i in range(old_i):
+          TDLwrite(' ')
 
       if cur.child[0].attr == 'REST':
         f = cur.child[1].child[0]
@@ -663,12 +679,12 @@ def TDLmerge(e1, e2):
             e0.add(copy.deepcopy(e2.child[i]))
     else:
       for c in e1.child + e2.child:
-        handled = 0
+        handled = False
         for c0 in e0.child:
           if TDLmergeable(c0, c):
             e0.child.remove(c0)
             e0.add(TDLmerge(c0, c))
-            handled = 1
+            handled = True
             break
         if not handled:
           e0.add(copy.deepcopy(c))
@@ -706,9 +722,10 @@ class TDLfile:
   ###########################################################################
   # Add a type definition to this file, merging with an existing definition
   # if possible.
-  def add(self, tdl_type, comment = ''):
+  def add(self, tdl_type, comment = '', one_line = False):
     typedef = TDLparse(tdl_type)
     typedef.set_comment(comment)
+    typedef.set_one_line(one_line)
     handled = 0
     for i in range(len(self.typedefs)):
       if TDLmergeable(self.typedefs[i], typedef):

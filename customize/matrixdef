@@ -3,6 +3,129 @@ Section language "Language"
 Text language "Language name" "e.g. Basque or Hawaiian_Creole: " "" 50
 
 
+Section features "Features"
+
+Label "<h3>Case</h3>"
+
+Label "Blake (2001) defines <span style=\"font-variant:small-caps\">case</span> as &quot;a system of marking dependent nouns for the type of relationship they bear to their heads.&quot; For example, case commonly marks the subject or the direct object of a verb. The marking might consist of affixation or some other morpholological process that marks words, or it might be a adposition that marks whole noun phrases."
+Label "This questionnaire allows you to describe <span style=\"font-variant:small-caps\">core case marking</span> in your language; that is, the pattern of cases marking the mandatory arguments of transitive and intransitive verbs.  Following Dixon (1968), we refer to the grammatical relations commonly expressed by case using the following abbreviations: A refers to the agent of a transitive verb; O refers to the patient (or object) of a transitive verb; and S refers to the lone argument (or subject) of intransitive verbs."
+
+Radio case-marking "Core case marking" "<p>What kind of core case marking does your language exhibit?</p>" ""
+. none "None" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>None</b><br>Verbal argument roles are determined only by word order, by intonation, or pragmatically.</p>"
+. nom-acc "Nominative-accusative" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Nominative-accusative</b><br>"
+
+Text nom-case-label "Nominative case label" "S and A take a case called the " " (e.g. nominative, subjective)<br>" 20
+
+Select nom-case-pat "Nominative case pattern" "...that is " " "
+. unmarked "Unmarked" "unmarked"
+. noun "Nouns" "an affix on nouns"
+. det "Determiners" "an affix on determiners"
+. det-noun "Determiners and nouns" "an affix on determiners and nouns"
+. np "Noun phrases" "an adposition on noun phrases"
+
+Select nom-case-order "Nominative case order" "that appears " " "
+. after "After" "at the end"
+. before "Before" "at the beginning"
+
+Text nom-case-orth "Nominative case spelling" " and is spelled " "<br>" 10
+
+Text acc-case-label "Accusative case label" "O takes a case called the " " (e.g. accusative, objective)<br>" 20
+
+Select acc-case-pat "Accusative case pattern" "...that is " " "
+. unmarked "Unmarked" "unmarked"
+. noun "Nouns" "an affix on nouns"
+. det "Determiners" "an affix on determiners"
+. det-noun "Determiners and nouns" "an affix on determiners and nouns"
+. np "Noun phrases" "an adposition on noun phrases"
+
+Select acc-case-order "Accusative case order" "that appears " " "
+. after "After" "at the end"
+. before "Before" "at the beginning"
+
+Text acc-case-orth "Accusative case spelling" " and is spelled " "</p>" 10
+
+Radio case-marking "Core case marking" "" ""
+. erg-abs "Ergative-absolutive" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Ergative-absolutive</b><br>"
+
+Text erg-case-label "Ergative case label" "A takes a case called the " " (e.g. ergative, relative, narrative)<br>" 20
+
+Select erg-case-pat "Ergative case pattern" "...that is " " "
+. unmarked "Unmarked" "unmarked"
+. noun "Nouns" "an affix on nouns"
+. det "Determiners" "an affix on determiners"
+. det-noun "Determiners and nouns" "an affix on determiners and nouns"
+. np "Noun phrases" "an adposition on noun phrases"
+
+Select erg-case-order "Ergative case order" "that appears " " "
+. after "After" "at the end"
+. before "Before" "at the beginning"
+
+Text erg-case-orth "Ergative case spelling" " and is spelled " "<br>" 10
+
+Text abs-case-label "Absolutive case label" "S and O take a case called the " " (e.g. absolutive, nominative)<br>" 20
+
+Select abs-case-pat "Absolutive case pattern" "...that is " " "
+. unmarked "Unmarked" "unmarked"
+. noun "Nouns" "an affix on nouns"
+. det "Determiners" "an affix on determiners"
+. det-noun "Determiners and nouns" "an affix on determiners and nouns"
+. np "Noun phrases" "an adposition on noun phrases"
+
+Select abs-case-order "Absolutive case order" "that appears " " "
+. after "After" "at the end"
+. before "Before" "at the beginning"
+
+Text abs-case-orth "Absolutive case spelling" " and is spelled " "</p>" 10
+
+Radio case-marking "Core case marking" "" ""
+. tripartite "Tripartite" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Tripartite</b><br>"
+
+Text s-case-label "S case label" "S takes a case called the " " (e.g. nominative, subjective)<br>" 20
+
+Select s-case-pat "S case pattern" "...that is " " "
+. unmarked "Unmarked" "unmarked"
+. noun "Nouns" "an affix on nouns"
+. det "Determiners" "an affix on determiners"
+. det-noun "Determiners and nouns" "an affix on determiners and nouns"
+. np "Noun phrases" "an adposition on noun phrases"
+
+Select s-case-order "S case order" "that appears " " "
+. after "After" "at the end"
+. before "Before" "at the beginning"
+
+Text s-case-orth "S case spelling" " and is spelled " "<br>" 10
+
+Text a-case-label "A case label" "A takes a case called the " " (e.g. ergative, agentive)<br>" 20
+
+Select a-case-pat "A case pattern" "...that is " " "
+. unmarked "Unmarked" "unmarked"
+. noun "Nouns" "an affix on nouns"
+. det "Determiners" "an affix on determiners"
+. det-noun "Determiners and nouns" "an affix on determiners and nouns"
+. np "Noun phrases" "an adposition on noun phrases"
+
+Select a-case-order "A case order" "that appears " " "
+. after "After" "at the end"
+. before "Before" "at the beginning"
+
+Text a-case-orth "A case spelling" " and is spelled " "<br>" 10
+
+Text o-case-label "O case label" "O takes a case called the " " (e.g. absolutive, patientive)<br>" 20
+
+Select o-case-pat "O case pattern" "...that is " " "
+. unmarked "Unmarked" "unmarked"
+. noun "Nouns" "an affix on nouns"
+. det "Determiners" "an affix on determiners"
+. det-noun "Determiners and nouns" "an affix on determiners and nouns"
+. np "Noun phrases" "an adposition on noun phrases"
+
+Select o-case-order "O case order" "that appears " " "
+. after "After" "at the end"
+. before "Before" "at the beginning"
+
+Text o-case-orth "O case spelling" " and is spelled " "</p>" 10
+
+
 Section word-order "Word Order"
 
 Radio word-order "Basic word order" "Please indicate which pattern best describes the basic word order of your language in matrix (main) clauses:<br>" ""
@@ -31,7 +154,7 @@ Section sentential-negation "Sentential Negation"
 
 Label "Please indicate which strategy or strategies your language uses for sentential negation (as distinct from constituent negation). (You may leave this section blank, in which case your grammar will not include any information about negation.)"
 
-Check infl-neg "Negation by inflection" "" "Verbal inflection:<br>"
+Check infl-neg "Negation by inflection" "<p>" "Verbal inflection:<br>"
 
 Radio neg-infl-type "Negative inflection type" "On: " ""
 . aux "Auxiliaries only" "" "auxiliaries only "
@@ -42,11 +165,9 @@ Radio neg-aff "Negative affix type" "Affix type: " ""
 . prefix "Prefix" "" "prefix "
 . suffix "Suffix" "" "suffix<br>"
 
-Text neg-aff-orth "Negative affix spelling" "Affix Spelling: " "" 20
+Text neg-aff-orth "Negative affix spelling" "Affix Spelling: " "</p>" 20
 
-Label
-
-Check adv-neg "Adverbial negation" "" "An adverb:<br>"
+Check adv-neg "Adverbial negation" "<p>" "An adverb:<br>"
 
 Radio neg-adv "Negative adverb" "" ""
 . ind-adv "Independent" "" "...which is an independent modifier of "
@@ -69,12 +190,11 @@ Radio neg-sel-adv "Negative adverb selects" "" ""
 . aux "Auxiliary verbs" "" "auxiliaries "
 . main-aux "Main or auxiliary verbs" "" "any finite verb<br>"
 
-Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "" 20
+Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p>" 20
 
-Label
 Label "Notes: The following options are not yet implemented: Negative inflection of non-finite verbs, special negative auxiliaries."
 
-Radio multi-neg "Negative inflection and adverb" "If you have selected both inflectional and adverbial negation, please indicate which of the following best describes your language:<br>" ""
+Radio multi-neg "Negative inflection and adverb" "<p>If you have selected both inflectional and adverbial negation, please indicate which of the following best describes your language:<br>" "</p>"
 . comp "Complementary distribution" "" "Inflectional and adverbial negation are used in complementary distribution.<br>"
 . both-opt "Both optional" "" "Inflectional and adverbial negation can appear independently or together.<br>"
 . both-obl "Both obligatory" "" "Both inflection and the adverb are required to express sentential negation.<br>"
@@ -202,10 +322,6 @@ Text iverb "Intransitive verb" "Spelling (finite form): " "<br>" 40
 
 Text iverb-pred "Intransitive verb predicate" "Predicate name (e.g. _sleep_v_rel): " "<br>" 40
 
-Radio iverb-subj "Intransitive verb subject" "The subject (sole argument) of this verb is a: " ""
-. np "Noun phrase" "" "noun phrase "
-. adp "Adpositional phrase" "" "adpositional phrase<br>"
-
 Text iverb-non-finite "Intransitive verb (non-finite)" "If your language has auxiliaries and this intransitive verb appears in a different form when it is the (head of the) complement of the auxiliary specified below, please specify that form here: " "" 40
 
 Label "Transitive verb:"
@@ -213,14 +329,6 @@ Label "Transitive verb:"
 Text tverb "Transitive verb" "Spelling (finite form): " "<br>" 40
 
 Text tverb-pred "Transitive verb predicate" "Predicate name (e.g. _see_v_rel): " "<br>" 40
-
-Radio tverb-subj "Transitive verb subject" "The subject of this verb is a: " ""
-. np "Noun phrase" "" "noun phrase "
-. adp "Adpositional phrase" "" "adpositional phrase<br>"
-
-Radio tverb-obj "Transitive verb object" "The object of this verb is a: " ""
-. np "Noun phrase" "" "noun phrase "
-. adp "Adpositional phrase" "" "adpositional phrase<br>"
 
 Text tverb-non-finite "Transitive verb (non-finite)" "If your language has auxiliaries and this transitive verb appears in a different form when it is the (head of the) complement of the auxiliary specified below, please specify that form here: " "" 40
 
@@ -254,39 +362,17 @@ Label "Determiners (if applicable):"
 
 Label "If your nouns require determiners, define at least one here. You may use the second to handle a different determiner form (e.g., for languages where number, gender, or case are marked on determiners). Note that the grammar start won't actually include any constraints implementing agreement."
 
-Text det1 "Determiner 1" "Spelling: " "" 40
-Text det1_pred "Determiner 1 predicate" "<br>Predicate name (e.g. _indef_q_rel): " "" 40
+Text det1 "Determiner 1" "Spelling: " "<br>" 40
+Text det1_pred "Determiner 1 predicate" "Predicate name (e.g. _indef_q_rel): " "<br><br>" 40
 
-Label
-
-Text det2 "Determiner 2" "Spelling: " "" 40
-Text det2_pred "Determiner 2 predicate" "<br>Predicate name (e.g. _indef_q_rel): " "" 40
-
-Label "Case marking adposition -- Subjects (if applicable):"
-
-Text subj-adp-orth "Subject adposition spelling" "Spelling: " "" 40
-
-Radio subj-adp-order "Subject adposition type" "<br>" ""
-. before "Preposition" "" "preposition "
-. after "Postposition" "" "postposition "
-
-Label "Case marking adposition -- Objects (if applicable):"
-
-Text obj-adp-orth "Object adposition spelling" "Spelling: " "" 40
-
-Radio obj-adp-order "Object adposition type" "<br>" ""
-. before "Preposition" "" "preposition "
-. after "Postposition" "" "postposition "
+Text det2 "Determiner 2" "Spelling: " "<br>" 40
+Text det2_pred "Determiner 2 predicate" "Predicate name (e.g. _indef_q_rel): " "<br>" 40
 
 
 Section test-sentences "Some Test Sentences"
 
 Label "By filling out the following two fields, you will give the LKB default strings to put into the parse dialog.  Please write two sentences using <b>only</b> the vocabulary defined above.  NB: This script can only handle lower ascii alphanumeric characters."
 
-Text sentence1 "Sentence 1" "Sentence 1: " "" 100
+Text sentence1 "Sentence 1" "<p>Sentence 1: " "</p>" 100
 
-Label
-
-Text sentence2 "Sentence 2" "Sentence 2: " "" 100
-
-Label
+Text sentence2 "Sentence 2" "<p>Sentence 2: " "</p>" 100

@@ -15,9 +15,9 @@ def tokenize_def(str):
     if i < len(str) and str[i] == '"':
       i += 1
       a = i
-      while i < len(str) and str[i] != '"':
+      while i < len(str) and not (str[i] == '"' and str[i-1] != '\\'):
         i += 1
-      result.append(str[a:i])
+      result.append(str[a:i].replace('\\"', '"'))
       i += 1
     elif i < len(str):
       a = i

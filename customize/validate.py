@@ -30,6 +30,54 @@ def validate_language():
     add_err('language','You must specify the name of your language')
 
 
+
+######################################################################
+# validate_one_case(l, pre)
+#   A helper function to validate the user's choices about one case.
+#   l is the case label (e.g. 'nominative'), while pre is the first
+#   few characters of the associated choices names (e.g. 'nom')
+
+def validate_one_case(l, pre):
+  if not ch.get(pre + '-case-label'):
+    add_err(pre + '-case-label', 'You must specify a ' +l+ ' case label.')
+  if not ch.get(pre + '-case-pat'):
+    add_err(pre + '-case-pat', 'You must specify a ' +l+ ' case pattern.')
+  if ch.get(pre + '-case-pat') == 'unmarked':
+    if ch.get(pre + '-case-order'):
+      add_err(pre + '-case-order',
+              'If ' +l+ ' case is unmarked, you cannot specify an order.')
+    if ch.get(pre + '-case-orth'):
+      add_err(pre + '-case-orth',
+              'If ' +l+ ' case is unmarked, you cannot specify a spelling.')
+  else:
+    if not ch.get(pre + '-case-order'):
+      add_err(pre + '-case-order', 'You must specify a ' +l+ ' case order.')
+    if not ch.get(pre + '-case-orth'):
+      add_err(pre + '-case-orth', 'You must specify a ' +l+ ' case spelling.')
+
+
+######################################################################
+# validate_features()
+#   Validate the user's choices about features
+
+def validate_features():
+  cm = ch.get('case-marking')
+
+  if not cm:
+    add_err('case-marking', 'You must specify if/how case is marked.')
+
+  if cm == 'nom-acc':
+    validate_one_case('nominative', 'nom')
+    validate_one_case('accusative', 'acc')
+  elif cm == 'erg-abs':
+    validate_one_case('ergative', 'erg')
+    validate_one_case('absolutive', 'abs')
+  elif cm == 'tripartite':
+    validate_one_case('S', 's')
+    validate_one_case('A', 'a')
+    validate_one_case('O', 'o')
+
+
 ######################################################################
 # validate_word_order()
 #   Validate the user's choices about basic word order.
@@ -212,19 +260,11 @@ def validate_lexicon():
 
   iverb = ch.get('iverb')
   iverbpred = ch.get('iverb-pred')
-  iverbsubj = ch.get('iverb-subj')
   iverbnonfinite = ch.get('iverb-non-finite')
 
   tverb = ch.get('tverb')
   tverbpred = ch.get('tverb-pred')
-  tverbsubj = ch.get('tverb-subj')
-  tverbobj = ch.get('tverb-obj')
   tverbnonfinite = ch.get('tverb-non-finite')
-
-  subjadporder = ch.get('subj-adp-order')
-  subjadporth = ch.get('subj-adp-orth')
-  objadporder = ch.get('obj-adp-order')
-  objadporth = ch.get('obj-adp-orth')
 
   det1 = ch.get('det1')
   det1_pred = ch.get('det1_pred')
@@ -279,21 +319,10 @@ def validate_lexicon():
   # sfd ToDo: As above, separate error messages
   if (noun1 and not noun1_det) or \
      (noun2 and not noun2_det) or \
-     (iverb and not iverbsubj) or \
-     (tverb and not (tverbsubj and tverbobj)) or \
-     (subjadporder and not subjadporth) or \
-     (subjadporth and not subjadporder) or \
-     (objadporder and not objadporth) or \
-     (objadporth and not objadporder) or \
      (auxverb and not (auxsem and auxcomp and auxorder)):
     err = 'You must answer all questions for each lexical entry you specify.'
     add_err('noun1_det', err)
     add_err('noun2_det', err)
-    add_err('iverb-subj', err)
-    add_err('tverb-subj', err)
-    add_err('tverb-obj', err)
-    add_err('subj-adp-orth', err)
-    add_err('obj-adp-orth', err)
     add_err('aux-sem', err)
     add_err('aux-comp', err)
     add_err('aux-order', err)
@@ -309,28 +338,6 @@ def validate_lexicon():
   if auxverb and auxcomp == 'v' and not auxsubj:
     err = 'If your auxiliary takes a V or VP complement, you must specify whether its subject is an NP or a PP.'
     add_err('aux-subj', err)
-
-  # ERB 2006-09-29
-  # If they said that any argument of a verb as a PP, did they define an
-  # appropriate adposition?
-
-  if (((tverbsubj == 'adp') or (iverbsubj == 'adp')) and not subjadporder):
-    err = 'You said that one or more of your verbs takes a PP subject, but you did not define a subject-marking adposition.'
-    add_err('subj-adp-order', err)
-    add_err('subj-adp-orth', err)
-
-  if ((tverbobj == 'pp') and not objadporder):
-    err = 'You said that your transitive verb takes a PP object, but you did not define an object-marking adposition.'
-    add_err('obj-adp-order', err)
-    add_err('obj-adp-orth', err)
-
-  # ERB 2006-09-29
-  # Since we aren't supporting both pre- and post- positions in the same grammar
-
-  if ((subjadporder == 'before' and objadporder == 'after') or (subjadporder == 'after' and objadporder == 'before')):
-    err = 'We assume that argument-marking adpositions in any given language are uniformly prepositions or uniformly postpositions.  If your language is a counterexample to this, please contact the developers.'
-    add_err('subj-adp-order', err)
-    add_err('obj-adp-order', err)
 
   # ERB 2006-09-29
   # If they said that either negation or questions required auxiliaries, did they specify
@@ -423,6 +430,7 @@ def validate_choices(choices_file, extra = False):
   ch = ChoicesFile(choices_file)
 
   validate_language()
+  validate_features()
   validate_word_order()
   validate_sentential_negation()
   validate_coordination()

@@ -63,6 +63,11 @@ function clear_form()
       elm.checked = ''
     }
   }
+  elements = document.getElementsByTagName('select');
+  for (i = 0; elements.item(i); i++) {
+    elm = elements.item(i)
+    elm.value = '';
+  }
 }
 </script>
 <link rel="stylesheet" href="matrix.css">
@@ -72,7 +77,7 @@ function clear_form()
 HTML_mainprebody = '''<body>
 <h1>LinGO Grammar Matrix</h1>
 <h1>Matrix customization and download page</h1>
-<h2>Version of 6/29/2007</h2>
+<h2>Version of 1/25/2008</h2>
 
 <p>By filling out this form, you will produce an initial starter
 package for your grammar, consisting of the language-independent core,
@@ -195,7 +200,9 @@ class VarNameMap:
           ty = w[0]
           vn = w[1]
           fn = w[2]
-          if ty == 'Text' or ty == 'Radio' or ty == '.' or ty == 'Check':
+          if ty == 'Text' or ty == 'Check' or \
+             ty == 'Radio' or ty == 'Select' or \
+             ty == '.':
             self.v2f[vn] = fn
             self.f2v[fn] = vn
 
@@ -243,6 +250,37 @@ def print_input(type, name, value, checked, before, after, \
 
 
 ######################################################################
+# print_select(name)
+#   Write out an HTML <select> tag with the specified name
+
+def print_select(name):
+  global wrong
+  
+  asterisk = ''
+  if name and wrong.has_key(name):
+    asterisk = '<span class="error">*</span>'
+    
+  print '%s<select name="%s">' % \
+        (asterisk, name)
+
+
+######################################################################
+# print_option(name, selected, html)
+#   Write out an HTML <option> tag with the specified attributes and
+#   surrounding text
+
+def print_option(name, selected, html):
+  global wrong
+  
+  sld = ''
+  if selected:
+    sld = ' selected'
+
+  print '<option value="%s"%s>%s</option>' % \
+        (name, sld, html)
+
+
+######################################################################
 # main_page(def_file, cookie)
 #   Create and print the main matrix page based on the arguments,
 #   which are the name of a matrix definition file and a cookie that
@@ -269,15 +307,34 @@ def main_page(def_file, cookie):
   f = open(def_file, 'r')
   line = f.readlines()
   f.close()
-  
+
+  global wrong
+  wrong = validate_choices(choices_file)
+
+  # pass through the definition file once, augmenting the list of validation
+  # errors with section names so that we can put red asterisks on the links
+  # to the assocated sub-pages on the main page.
   for l in line:
     word = tokenize_def(l)
     if len(word) == 0:
       pass
     elif word[0] == 'Section':
-      print '<div class="section"><span id="' + word[1] + 'button" onclick="toggle_display(\'' +\
-            word[1] + '\',\'' + word[1] + 'button\')">&#9658;</span> ' +\
-            '<a href="matrix.cgi?subpage=' + word[1] + '">' +\
+      cur_sec = word[1]
+    elif wrong.has_key(word[1]) and not wrong.has_key(cur_sec):
+      wrong[cur_sec] = 'error in section'
+
+  # now pass through again to actually emit the page
+  for l in line:
+    word = tokenize_def(l)
+    if len(word) == 0:
+      pass
+    elif word[0] == 'Section':
+      print '<div class="section"><span id="' + word[1] + \
+            'button" onclick="toggle_display(\'' + \
+            word[1] + '\',\'' + word[1] + 'button\')">&#9658;</span> '
+      if wrong.has_key(word[1]):
+        print '<span class="error">* </span>'
+      print '<a href="matrix.cgi?subpage=' + word[1] + '">' + \
             word[2] + '</a>'
       print '<div class="values" id="' + word[1] + '" style="display:none">'
       cur_sec = ''
@@ -374,6 +431,22 @@ def sub_page(section, def_file, cookie):
           print_input('radio', vn, rval, checked, rbef, raft)
           i += 1
         print af
+      elif word[0] == 'Select':
+        (vn, fn, bf, af) = word[1:]
+        print bf
+        print_select(vn)
+        print_option('', False, '')
+        i += 1
+        while line[i] != '\n':
+          word = tokenize_def(line[i])
+          (sval, sfrn, shtml) = word[1:]
+          selected = False
+          if choices.is_set(vn) and choices.get(vn) == sval:
+            selected = True
+          print_option(sval, selected, shtml)
+          i += 1
+        print '</select>'
+        print af
       elif word[0] == 'Text':
         (vn, fn, bf, af, sz) = word[1:]
         value = choices.get(vn)
@@ -454,7 +527,8 @@ def save_choices(form_data, def_file, choices_file):
         f.write('\n')
       cur_sec = word[1]
       f.write('section=' + cur_sec + '\n')
-    elif word[0] == 'Check' or word[0] == 'Radio' or word[0] == 'Text':
+    elif word[0] == 'Check' or word[0] == 'Text' or \
+         word[0] == 'Radio' or word[0] == 'Select':
       a = word[1]
       if not done.has_key(a):
         done[a] = ' '

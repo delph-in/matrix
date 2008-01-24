@@ -198,7 +198,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 2
+    return 3
 
 
   def convert_value(self, key, old, new):
@@ -362,3 +362,82 @@ class ChoicesFile:
         ques = 'q-inv'
       if ques != 'int':
         self.set(ques, 'on')
+
+  def convert_2_to_3(self):
+    # Added a fuller implementation of case marking on core arguments,
+    # so convert the old case-marking adposition stuff to the new
+    # choices
+    S = self.get('iverb-subj')
+    A = self.get('tverb-subj')
+    O = self.get('tverb-obj')
+
+    Sorth = Aorth = Oorth = ''
+    Sorder = Aorder = Oorder = ''
+    if S == 'adp':
+      Sorth = self.get('subj-adp-orth')
+      Sorder = self.get('subj-adp-order')
+    if A == 'adp':
+      Aorth = self.get('subj-adp-orth')
+      Aorder = self.get('subj-adp-order')
+    if O == 'adp':
+      Oorth = self.get('obj-adp-orth')
+      Aorder = self.get('obj-adp-order')
+
+    if Sorth == '' and Aorth == '' and Oorth == '':
+      self.set('case-marking', 'none')
+    elif Sorth == Aorth and Sorth != Oorth:
+      self.set('case-marking', 'nom-acc')
+      self.set('nom-case-label', 'nominative')
+      self.set('acc-case-label', 'accusative')
+      if Aorth:
+        self.set('nom-case-pat', 'np')
+        self.set('nom-case-order', Aorder)
+      else:
+        self.set('nom-case-pat', 'none')
+      if Oorth:
+        self.set('acc-case-pat', 'np')
+        self.set('acc-case-order', Oorder)
+      else:
+        self.set('acc-case-pat', 'none')
+    elif Sorth != Aorth and Sorth == Oorth:
+      self.set('case-marking', 'erg-asb')
+      self.set('erg-case-label', 'ergative')
+      self.set('abs-case-label', 'absolutive')
+      if Aorth:
+        self.set('erg-case-pat', 'np')
+        self.set('erg-case-order', Aorder)
+      else:
+        self.set('erg-case-pat', 'none')
+      if Oorth:
+        self.set('abs-case-pat', 'np')
+        self.set('abs-case-order', Oorder)
+      else:
+        self.set('abs-case-pat', 'none')
+    else:
+      self.set('case-marking', 'tripartite')
+      self.set('s-case-label', 'subjective')
+      self.set('a-case-label', 'agentive')
+      self.set('o-case-label', 'objective')
+      if Sorth:
+        self.set('s-case-pat', 'np')
+        self.set('s-case-order', Sorder)
+      else:
+        self.set('s-case-pat', 'none')
+      if Aorth:
+        self.set('a-case-pat', 'np')
+        self.set('a-case-order', Aorder)
+      else:
+        self.set('a-case-pat', 'none')
+      if Oorth:
+        self.set('o-case-pat', 'np')
+        self.set('o-case-order', Oorder)
+      else:
+        self.set('o-case-pat', 'none')
+
+    self.delete('iverb-subj')
+    self.delete('tverb-subj')
+    self.delete('tverb-obj')
+    self.delete('subj-adp-orth')
+    self.delete('subj-adp-order')
+    self.delete('obj-adp-orth')
+    self.delete('obj-adp-order')
