@@ -2469,7 +2469,7 @@ def customize_verbs():
   mylang.add(typedef)
 
   if has_auxiliaries_p():
-    typedef = 'verb-lex := [ SYNSEM.LOCAL.CAT.VAL.HEAD.AUX - ].'
+    typedef = 'verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].'
     mylang.add(typedef)
 
   if cm == 'nom-acc':
