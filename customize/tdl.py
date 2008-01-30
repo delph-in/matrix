@@ -20,7 +20,7 @@ def isid(s):
   if s == '...':
     return True
   for c in s:
-    if not c.isalnum() and c != '-' and c != '+' and c != '_' and c != '*':
+    if not (c.isalnum() or ord(c) > 127 or c in ['-', '+', '_', '*']):
       return False
   return True
   
