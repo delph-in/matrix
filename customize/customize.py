@@ -1283,13 +1283,19 @@ def specialize_word_order(hc,orders):
     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'head-comp-phrase requires things that are one of: ' + str(head_comp_is))
 
-  # Now the negative constraints.  This is where we extracted the information
-  # that head-comp or comp-head can't be certain things.  Of course, in tdl
-  # we only have positive constraints.  So, we have to translate the information
-  # to positive constraints.  Currently, these will always involve disjunctive
-  # types, since we have more pos types than things we're collecting negative info
-  # about.  The other case is that we have no negative constraints, in which case
-  # there's nothing to do.  We can just leave the HEAD value completely underspecified.
+  # Now the negative constraints.  This is where we extracted the
+  # information that head-comp or comp-head can't be certain things.
+  # Of course, in tdl we only have positive constraints.  So, we have
+  # to translate the information to positive constraints.  Currently,
+  # these will always involve disjunctive types, since we have more
+  # pos types than things we're collecting negative info about.  The
+  # other case is that we have no negative constraints, in which case
+  # there's nothing to do.  We can just leave the HEAD value
+  # completely underspecified.
+
+  if head_comp_is_not.count('aux'):
+    mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
+    head_comp_is_not.remove('aux')
 
   if len(head_comp_is_not) > 0:
     head = '+n'
@@ -1305,6 +1311,10 @@ def specialize_word_order(hc,orders):
     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'The head of head-comp-phrase can\'t be: ' + str(head_comp_is_not))
 
+  if comp_head_is_not.count('aux'):
+    mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
+    comp_head_is_not.remove('aux')
+
   if len(comp_head_is_not) > 0:
     head = '+n'
     if comp_head_is_not.count('verb') == 0:
@@ -1318,29 +1328,6 @@ def specialize_word_order(hc,orders):
 
     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'The head of comp-head-phrase can\'t be: ' + str(comp_head_is_not))
-
-
-  # ERB 2006-10-05 Auxiliaries are a bit special, because they involve a
-  # feature as well.  The negative constraint (is not an auxiliary) is
-  # just a constraint on the value of the feature: AUX -.  The positive
-  # constraint (can be an auxiliary) is verb & [AUX +].  That confused
-  # me for a moment, because "can be an auxiliary" seems consistent with
-  # "can be a verb that is not an auxiliary", but in fact, the only cases
-  # where we would want that are the free word order cases, and we're not
-  # putting anything into the positive constraint lists when word
-  # order is free (see above).  The only time we have an entry for verb in
-  # one of these lists is if auxiliaries show up where non-auxes
-  # can't.  I'm using "verb" as the entry instead of "aux" because that allows
-  # me to use the values in the list directly to produce some of the positive
-  # constraints above.
-
-  if comp_head_is_not.count('verb'):
-    mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
-               'comp-head-phrase is restricted from taking auxiliaries as its head.')
-
-  if head_comp_is_not.count('verb'):
-    mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
-               'head-comp-phrase is restricted from taking auxiliaries as its head.')
 
 
 # ERB 2006-10-05 Below is what I had before I had to generalize because
