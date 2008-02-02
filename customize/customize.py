@@ -2793,8 +2793,7 @@ def customize_auxiliaries():
                         LKEYS.KEYREL event-relation & \
                                      [ ARG1 #harg ]], \
                ARG-ST < [ ], \
-                        [ LOCAL.CONT.HOOK [ XARG #xarg, \
-                        LTOP #larg ]] > ].'
+                        [ LOCAL.CONT.HOOK.LTOP #larg ] > ].'
         mylang.add(typedef)
       else:
         comment = \
