@@ -45,8 +45,8 @@ roots = None
 
 def has_auxiliaries_p():
 
-  # sfd ToDo: This function definitely should have side-effects.  Move
-  # this elsewhere.
+  # sfd ToDo: This function definitely shouldn't have side-effects.
+  # Move this elsewhere.
   mylang.add('head :+ [ AUX bool, FORM form ].')
   mylang.add('form := avm.')
   mylang.add('fin := form.')
