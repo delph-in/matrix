@@ -94,6 +94,16 @@
 (index-for-generator)
 
 ;;;
+;;; For the MMT system.  Uncomment semi.vpm line when adding such
+;;; a file.
+;;;
+
+;(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
+
+(lkb-load-lisp (this-directory) "mt.lsp" t)
+
+
+;;;
 ;;; The following overwrites the LKB's default for what 
 ;;; appears in the parse input dialog box.  Putting a
 ;;; short list of basic sentences from your language
