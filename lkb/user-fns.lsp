@@ -59,9 +59,14 @@
 ;;;
 ;;; assign priorities to parser tasks and lexical entries
 ;;;
+
+;;; ERB 2008-03-12 rule-priory has to return a value for every
+;;; rule or the mmt system fails.
+
 (defun rule-priority (rule)
   (case (rule-id rule)
-    (subj 1000)))
+    (subj 1000)
+    (t 0)))
 
 (defun gen-rule-priority (rule)
   (rule-priority rule))
