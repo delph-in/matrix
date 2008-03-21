@@ -24,7 +24,7 @@ fi
 if [ $copylocal ]
 then
     cpcmd="cp -p -v"
-    cptarg="../../$1"
+    cptarg="$1"
 else
     cpcmd="scp"
     cptarg="uwcl@homer.u.washington.edu:public_html/$1"
