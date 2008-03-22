@@ -76,10 +76,10 @@ class ChoicesFile:
   #
   # Example code:
   #
-  #   choices.begin_iter('noun')       # iterate through all nouns
+  #   choices.iter_begin('noun')       # iterate through all nouns
   #   while choices.iter_valid():
   #     type = choices.get('type')
-  #     choices.begin_iter('morph')    # sub-iterate through all morphs
+  #     choices.iter_begin('morph')    # sub-iterate through all morphs
   #     while choices.iter_valid():
   #       orth = choices.get('orth')
   #       order = choices.get('order')

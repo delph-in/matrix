@@ -1,7 +1,15 @@
+#Section iteratortest "Iterator Test"
+#BeginIter foo{i} "a Foo"
+#  Text text "Foo text" "Enter a Foo: " "" 20
+#  BeginIter bar{j} "a Bar"
+#    Text text "Bar text" "&nbsp;&nbsp;&nbsp; Enter a Bar: " "" 20
+#  EndIter bar
+#EndIter foo
+
+
 Section language "Language"
 
-Text language "Language name" "e.g. Basque or Hawaiian_Creole: " "" 50
-
+Text language "Language name" "<p>e.g. Basque or Hawaiian_Creole: " "</p>" 50
 
 Section features "Features"
 
