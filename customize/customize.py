@@ -52,10 +52,10 @@ def has_auxiliaries_p():
   mylang.add('fin := form.')
   mylang.add('inf := form.')
 
-  return ch.get('neg-infl-type') == 'aux' or \
-         ch.get('neg-sel-adv') == 'aux' or \
-         ch.get('q-inv-verb') == 'aux' or \
-         ch.get('aux-verb')
+  return ch.get_full('neg-infl-type') == 'aux' or \
+         ch.get_full('neg-sel-adv') == 'aux' or \
+         ch.get_full('q-inv-verb') == 'aux' or \
+         ch.get_full('aux-verb')
 
 
 # ERB 2006-09-21 This function assembles an inflectional rule out
@@ -2326,22 +2326,25 @@ def customize_yesno_questions():
 #   lexicon.
 
 def customize_nouns():
+  # Figure out which kinds of determiner-marking are in the language
+  seen = {'obl':False, 'opt':False, 'imp':False}
+  seenCount = 0
 
-  noun1 = ch.get('noun1')
-  noun1pred = ch.get('noun1_pred')
-  noun1det = ch.get('noun1_det')
-  noun2 = ch.get('noun2')
-  noun2pred = ch.get('noun2_pred')
-  noun2det = ch.get('noun2_det')
+  ch.iter_begin('noun')
+  while ch.iter_valid():
+    det = ch.get('det')
+    if not seen[det]:
+      seen[det] = True
+      seenCount += 1
+    ch.iter_next()
+  ch.iter_end()
 
-  # Do the noun entries have the same behavior wrt to overt determiners?
-  singlentype = (noun1det and noun2det and noun1det == noun2det)
+  singlentype = (seenCount == 1)
 
   # Add the lexical types to mylang
   mylang.add_literal(';;; Lexical types')
 
   # Lexical types for nouns
-
   mylang.add_literal(';;; Nouns')
     
   # Playing fast and loose with the meaning of OPT on SPR.  Using
@@ -2352,48 +2355,42 @@ def customize_nouns():
   # ERB 2006-11-28 Update: To make that weird use of OPT work, the
   # head-spec rule has to require [OPT -] on its non-head daughter.
   # Adding that just in case we add the no-spr-noun-lex type.
+
+  typedef = \
+    'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
+       [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
+                                  COMPS < >, \
+                                  SUBJ < >, \
+                                  SPEC < > ] ], \
+         ARG-ST < #spr > ].'
+  mylang.add(typedef)
   
   if singlentype:
-    typedef = \
-      'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &\
-         [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & \
-                                          [ LOCAL.CAT.HEAD det'
-    if noun1det == 'obl':
-      typedef += ', OPT - ] >, '
-    elif noun1det == 'imp':
-      typedef += ', OPT + ] >, '
-    else:
-      typedef += ' ] >, '
-    typedef += 'COMPS < >, SUBJ < >, SPEC < > ] ], ARG-ST < #spr > ].'
-    mylang.add(typedef)
+    if seen['obl']:
+      typedef = 'noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
+      mylang.add(typedef)
+    elif seen['imp']:
+      typedef = 'noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
+      mylang.add(typedef)
   else:
-    typedef = \
-      'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &\
-         [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
-                                    COMPS < >, \
-                                    SUBJ < >, \
-                                    SPEC < > ] ], \
-           ARG-ST < #spr > ].'
-    mylang.add(typedef)
-
-    if noun1det == 'obl' or noun2det == 'obl':
+    if seen['obl']:
       typedef = \
         'obl-spr-noun-lex := noun-lex & \
            [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
       mylang.add(typedef)
 
-    if noun1det == 'imp' or noun2det == 'imp':
+    if seen['imp']:
       typedef = \
         'no-spr-noun-lex := noun-lex & \
            [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
       mylang.add(typedef)
 
-      if ch.get('has-dets') == 'yes':
-        mylang.add(
-          'head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.OPT - ].',
-          'Nouns which cannot take specifiers mark their SPR requirement\n' +
-          'as OPT +.  Making the non-head daughter OPT - in this rule\n' +
-          'keeps such nouns out.')
+  if seen['imp'] and ch.get('has-dets') == 'yes':
+    mylang.add(
+      'head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.OPT - ].',
+      'Nouns which cannot take specifiers mark their SPR requirement\n' +
+      'as OPT +.  Making the non-head daughter OPT - in this rule\n' +
+      'keeps such nouns out.')
 
   if has_aff_case('noun'):
     mylang.add('noun-lex := [ INFLECTED - ].')
@@ -2406,21 +2403,26 @@ def customize_nouns():
   # Add the lexical entries
   lexicon.add_literal(';;; Nouns')
 
-  for i in (1, 2):
-    noun = ch.get('noun' + str(i))
-    if noun:
-      pred = ch.get('noun' + str(i) + '_pred')
-      det = ch.get('noun' + str(i) + '_det')
-      typedef = noun + ' := '
-      if singlentype or det == 'opt':
-        typedef += 'noun-lex & '
-      elif det == 'obl':
-        typedef += 'obl-spr-noun-lex & '
-      else:
-        typedef += 'no-spr-noun-lex & '
-      typedef += '[ STEM < "' + noun + '" >, \
-                    SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-      lexicon.add(typedef)
+  ch.iter_begin('noun')
+  while ch.iter_valid():
+    orth = ch.get('orth')
+    pred = ch.get('pred')
+    det = ch.get('det')
+
+    typedef = orth + ' := '
+    if singlentype or det == 'opt':
+      typedef += 'noun-lex & '
+    elif det == 'obl':
+      typedef += 'obl-spr-noun-lex & '
+    else:
+      typedef += 'no-spr-noun-lex & '
+    typedef += '[ STEM < "' + orth + '" >, \
+                  SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+    lexicon.add(typedef)
+
+    ch.iter_next()
+  ch.iter_end()
+
 
 def customize_verbs():
   cm = ch.get('case-marking')
@@ -2628,41 +2630,46 @@ def customize_verbs():
   # Lexical entries
   lexicon.add_literal(';;; Verbs')
 
-  # Do intransitve and transitive verbs in the same loop, since they
-  # share a lot of TDL in common
-  for i in ('i', 't'):
-    verb = ch.get(i + 'verb')
-    verbpred = ch.get(i + 'verb-pred')
-    verbnf = ch.get(i + 'verb-non-finite')
-    tivity = 'trans'
-    if i == 'i':
+  # Now create the lexical entries for all the defined verb types
+  ch.iter_begin('verb')
+  while ch.iter_valid():
+    orth = ch.get('orth')
+    pred = ch.get('pred')
+    nf = ch.get('non-finite')
+
+    if ch.get('valence') == 'trans':
+      tivity = 'trans'
+    else:
       tivity = 'intrans'
-    if verb:
-      if has_auxiliaries_p():
-        typedef = \
-          verb + ' := finite-' + tivity + '-verb-lex & \
-                      [ STEM < "' + verb + '" >, \
-                          SYNSEM.LKEYS.KEYREL.PRED "' + verbpred + '" ].'
-        lexicon.add(typedef)
 
-        if verbnf:
-          typedef = verbnf
-        else:
-          typedef = verb + "2"
-        typedef += ' := non-finite-' + tivity + '-verb-lex & [ STEM < "'
-        if verbnf:
-           typedef += verbnf
-        else:
-          typedef += verb
-        typedef += '" >, SYNSEM.LKEYS.KEYREL.PRED "' + verbpred + '" ].'
-        lexicon.add(typedef)
-      else: # not has_auxiliaries_p()
-        typedef = \
-          verb + ' := ' + tivity + 'itive-verb-lex & \
-                      [ STEM < "' + verb + '" >, \
-                        SYNSEM.LKEYS.KEYREL.PRED "' + verbpred + '" ].'
-        lexicon.add(typedef)
+    if has_auxiliaries_p():
+      typedef = \
+        orth + ' := finite-' + tivity + '-verb-lex & \
+                    [ STEM < "' + orth + '" >, \
+                        SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+      lexicon.add(typedef)
 
+      
+      if nf:
+        typedef = nf
+      else:
+        typedef = orth + '2'
+      typedef += ' := non-finite-' + tivity + '-verb-lex & [ STEM < "'
+      if nf:
+         typedef += nf
+      else:
+        typedef += orth
+      typedef += '" >, SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+      lexicon.add(typedef)
+    else: # not has_auxiliaries_p()
+      typedef = \
+        orth + ' := ' + tivity + 'itive-verb-lex & \
+                    [ STEM < "' + orth + '" >, \
+                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+      lexicon.add(typedef)
+
+    ch.iter_next()
+  ch.iter_end()
 
 
 def customize_auxiliaries():
@@ -2864,11 +2871,6 @@ def customize_auxiliaries():
 
 def customize_determiners():
 
-  det1 = ch.get('det1')
-  det1pred = ch.get('det1_pred')
-  det2 = ch.get('det2')
-  det2pred = ch.get('det2_pred')
-
   # Lexical type for determiners, if the language has any:
   if ch.get('has-dets') == 'yes':
     comment = \
@@ -2887,22 +2889,21 @@ def customize_determiners():
     mylang.add('determiner-lex := [ INFLECTED - ].')
 
   # Determiners
-  if det1 or det2:
+  if ch.get('det1_orth'):
     lexicon.add_literal(';;; Determiners')
 
-  if det1:
+  ch.iter_begin('det')
+  while ch.iter_valid():
+    orth = ch.get('orth')
+    pred = ch.get('pred')
     typedef = \
-      det1 + ' := determiner-lex & \
-                  [ STEM < "' + det1 + '" >, \
-                    SYNSEM.LKEYS.KEYREL.PRED "' + det1pred + '" ].'
+      orth + ' := determiner-lex & \
+                  [ STEM < "' + orth + '" >, \
+                    SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
     lexicon.add(typedef)
-
-  if det2:
-    typedef = \
-      det2 + ' := determiner-lex & \
-                  [ STEM < "' + det2 + '" >, \
-                    SYNSEM.LKEYS.KEYREL.PRED "' + det2pred + '" ].'
-    lexicon.add(typedef)
+    
+    ch.iter_next()
+  ch.iter_end()
 
 
 def customize_misc_lex():

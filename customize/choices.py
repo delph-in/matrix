@@ -43,6 +43,10 @@ class ChoicesFile:
       self.convert_0_to_1()
     if version < 2:
       self.convert_1_to_2()
+    if version < 3:
+      self.convert_2_to_3()
+    if version < 4:
+      self.convert_3_to_4()
     # As we get more versions, add more version-conversion methods, and:
     # if version < N:
     #   self.convert_N-1_to_N
@@ -198,7 +202,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 3
+    return 4
 
 
   def convert_value(self, key, old, new):
@@ -441,3 +445,27 @@ class ChoicesFile:
     self.delete('subj-adp-order')
     self.delete('obj-adp-orth')
     self.delete('obj-adp-order')
+
+  def convert_3_to_4(self):
+    # Added a fuller implementation of case marking on core arguments,
+    # so convert the old case-marking adposition stuff to the new
+    # choices
+    self.convert_key('noun1', 'noun1_orth')
+    self.convert_key('noun2', 'noun2_orth')
+
+    self.convert_key('iverb', 'verb1_orth')
+    self.convert_key('iverb-pred', 'verb1_pred')
+    self.convert_key('iverb-non-finite', 'verb1_non-finite')
+    if self.get('verb1_orth'):
+      self.set('verb1_valence', 'intrans')
+
+    self.convert_key('tverb', 'verb2_orth')
+    self.convert_key('tverb-pred', 'verb2_pred')
+    self.convert_key('tverb-non-finite', 'verb2_non-finite')
+    if self.get('verb2_orth'):
+      self.set('verb2_valence', 'trans')
+
+    self.convert_key('det1', 'det1_orth')
+    self.convert_key('det1pred', 'det1_pred')
+    self.convert_key('det2', 'det2_orth')
+    self.convert_key('det2pred', 'det2_pred')

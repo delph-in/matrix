@@ -134,12 +134,8 @@ function do_clone_region(name, iter_var, bAnim)
 
   n = d.cloneNode(true);
 
-  re = new RegExp(name + '{' + iter_var + '}', 'g');
-  n.innerHTML = n.innerHTML.replace(re, name + cur);
-
-  //capName = name.charAt(0).toUpperCase() + name.slice(1);
-  //re = new RegExp(capName + ' N', 'g');
-  //n.innerHTML = n.innerHTML.replace(re, capName + ' ' + cur);
+  re = new RegExp('{' + iter_var + '}', 'g');
+  n.innerHTML = n.innerHTML.replace(re, cur);
 
   n.id = name + cur;
   n.style.display = '';
@@ -466,14 +462,28 @@ class MatrixDefFile:
     # pass through the definition file once, augmenting the list of validation
     # errors with section names so that we can put red asterisks on the links
     # to the assocated sub-pages on the main page.
+    prefix = ''
     for l in line:
       word = tokenize_def(l)
-      if len(word) == 0:
+      if len(word) < 2:
         pass
       elif word[0] == 'Section':
         cur_sec = word[1]
-      elif errors.has_key(word[1]) and not errors.has_key(cur_sec):
-        errors[cur_sec] = 'error in section'
+      elif word[0] == 'BeginIter':
+        if prefix:
+          prefix += '_'
+        prefix += re.sub('\\{.*\\}', '.*', word[1])
+      elif word[0] == 'EndIter':
+        prefix = re.sub('_?' + word[1] + '[^_]*$', '', prefix)
+      elif word[0] != 'Label' and not errors.has_key(cur_sec):
+        pat = '^' + prefix
+        if prefix:
+          pat += '_'
+        pat += word[1] + '$'
+        for k in errors.keys():
+          if re.search(pat, k):
+            errors[cur_sec] = 'error in section'
+            break
 
     # now pass through again to actually emit the page
     for l in line:
@@ -533,11 +543,12 @@ class MatrixDefFile:
 
   # Turn a list of lines containing matrix definitions into a string
   # containing HTML.
-  def defs_to_html(self, lines, choices, errors, prefix):
+  def defs_to_html(self, lines, choices, errors, prefix, vars):
     html = ''
     i = 0
+    
     while i < len(lines):
-      word = tokenize_def(lines[i])
+      word = tokenize_def(replace_vars(lines[i], vars))
       if len(word) == 0:
         pass
       elif word[0] == 'Label':
@@ -595,6 +606,9 @@ class MatrixDefFile:
         iter_orig = word[1]
         (iter_name, iter_var) = word[1].replace('}', '').split('{')
         label = word[2]
+        iter_min = 0
+        if len(word) > 3:
+          iter_min = int(word[3])
         i += 1
         beg = i
         while True:
@@ -609,16 +623,23 @@ class MatrixDefFile:
         html += '<div class="iterator" style="display: none" id="' + \
                 prefix + iter_name + '_TEMPLATE">\n'
         html += self.defs_to_html(lines[beg:end], choices, errors,
-                                  prefix + iter_orig + '_')
+                                  prefix + iter_orig + '_', vars)
         html += '</div>\n\n'
 
         choices.iter_begin(iter_name)
-        while choices.iter_valid():
+        cur = 1
+        while choices.iter_valid() or cur <= iter_min:
           pre = choices.iter_prefix()
-          html += '<div id="' + pre[0:-1] + '">\n'  # trim the trailing '_'
-          html += self.defs_to_html(lines[beg:end], choices, errors, pre)
+          vars[iter_var] = cur
+
+          # pre[0:-1] trims the trailing '_'
+          html += '<div class="iterator" id="' + pre[0:-1] + '">\n'
+          html += self.defs_to_html(lines[beg:end], choices, errors, pre, vars)
           html += '</div>\n'
+
           choices.iter_next()
+          del vars[iter_var]
+          cur += 1
         choices.iter_end()
 
         html += '<div class="anchor" id="' + \
@@ -652,29 +673,40 @@ class MatrixDefFile:
     lines = f.readlines()
     f.close()
 
-    cur_sec = ''
-    cur_sec_friendly = ''
-    cur_sec_begin = 0
+    section_begin = -1
+    section_end = -1
+    section_friendly = ''
+
     i = 0
     while i < len(lines):
       word = tokenize_def(lines[i])
       if len(word) == 0:
         pass
       elif word[0] == 'Section':
-        if cur_sec and cur_sec == section:
-          print '<title>' + cur_sec_friendly + '</title>'
-          print HTML_posttitle
-          print HTML_prebody
-          print '<h2>' + cur_sec_friendly + '</h2>'
-          print HTML_preform
-          print html_input(errors, 'hidden', 'section', section,
-                             False, '', '\n')
-          print self.defs_to_html(lines[cur_sec_begin:i], choices, errors, '')
+        if section_begin != -1:
+          section_end = i
           break
+        if word[1] == section:
+          section_begin = i + 1
+          section_friendly = word[2]
         cur_sec = word[1]
         cur_sec_friendly = word[2]
         cur_sec_begin = i + 1
       i += 1
+
+    if section_begin != -1:
+      if section_end == -1:
+        section_end = i
+
+      print '<title>' + section_friendly + '</title>'
+      print HTML_posttitle
+      print HTML_prebody
+      print '<h2>' + section_friendly + '</h2>'
+      print HTML_preform
+      print html_input(errors, 'hidden', 'section', section,
+                       False, '', '\n')
+      print self.defs_to_html(lines[section_begin:section_end],
+                              choices, errors, '', {})
 
     print html_input(errors, 'submit', '', 'Submit', False, '<p>', '')
     print html_input(errors, 'button', '', 'Clear', False, '', '</p>', '',

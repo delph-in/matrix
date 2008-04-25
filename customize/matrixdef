@@ -1,12 +1,3 @@
-#Section iteratortest "Iterator Test"
-#BeginIter foo{i} "a Foo"
-#  Text text "Foo text" "Enter a Foo: " "" 20
-#  BeginIter bar{j} "a Bar"
-#    Text text "Bar text" "&nbsp;&nbsp;&nbsp; Enter a Bar: " "" 20
-#  EndIter bar
-#EndIter foo
-
-
 Section language "Language"
 
 Text language "Language name" "<p>e.g. Basque or Hawaiian_Creole: " "</p>" 50
@@ -298,49 +289,76 @@ Radio q-inv-verb "Inverted verb in questions" "" ""
 . main-aux "Main and auxiliary" "" "any verb<br>"
 
 
-Section basic-lexicon "Basic Lexicon"
+Section lexicon "Lexicon"
 
-Label "Please use full form lexical entries (not stem forms or citation forms). This form can only accept lower ascii alphanumerics (a-z, A-Z, 0-9, _)."
+Label "On this page you will specify basic lexical types and lexical items for your language.  For each lexical item you must provide the spelling of the stem and a predicate (e.g. _cat_n_rel, _sleep_v_rel)."
 
-Label "Noun 1:"
+Label "In addition to lexical types, you can define inflectional morphology for nouns, verbs, and determiners.  To do so, first define one or more inflectional <span style=\"font-variant:small-caps\">slots</span>, which determine the order morphemes appear, then define one or more <span style=\"font-variant:small-caps\">morphemes</span> that can appear in each slot, along with the <span style=\"font-variant:small-caps\">features</span> specified by each morpheme.  To determine the order of morphemes, you must define one or more <span style=\"font-variant:small-caps\">inputs</span> for each slot.  For morphemes that attach directly to stems, the input will be a lexical type; for morphemes that attach to already-inflected stems, the input will be another slot."
 
-Text noun1 "Noun 1" "Spelling: " "" 40
+Label "<h3>Noun Types</h3>"
 
-Text noun1_pred "Noun 1 predicate" "<br>Predicate name (e.g. _cat_n_rel): " "" 40
+BeginIter noun{i} "a Noun Type" 1
 
-Radio noun1_det "Noun 1 determiner" "<br>For this noun, a specifier (determiner) is " ""
-. obl "Obligatory" "" "obligatory "
-. opt "Optional" "" "optional "
-. imp "Impossible" "" "impossible "
+  Text orth "Noun {i} spelling" "<b>Noun Type {i}:</b><br>Spelling: " "" 30
 
-Label "Noun 2:"
+  Text pred "Noun {i} predicate" " Predicate: " "<br>" 30
 
-Text noun2 "Noun 2" "Spelling: " "" 40
+  Radio det "Noun {i} determiner" "For this noun type, a determiner is " ""
+  . obl "Obligatory" "" "obligatory "
+  . opt "Optional" "" "optional "
+  . imp "Impossible" "" "impossible "
 
-Text noun2_pred "Noun 2 predicate" "<br>Predicate name (e.g. _cat_n_rel): " "" 40
+EndIter noun
 
-Radio noun2_det "Noun 2 determiner" "<br>For this noun, a specifier (determiner) is " ""
-. obl "Obligatory" "" "obligatory "
-. opt "Optional" "" "optional "
-. imp "Impossible" "" "impossible"
+#Label "<h3>Noun Inflection</h3>"
+#
+#BeginIter noun-slot{i} "a Slot"
+#
+#  Select order "Noun slot {i} order" "<b>noun-slot{i}</b> appears " " the following input(s):"
+#  . after "After" "after"
+#  . before "Before" "before"
+#
+#  BeginIter dtr{j} "an Input"
+#
+#    Text type "Noun {i} input {j} type" "Input: " "" 20
+#
+#  EndIter dtr
+#
+#  Label "...and can be filled by the following morpheme(s):"
+#
+#  BeginIter morph{j} "a Morpheme"
+#
+#    Text orth "Noun slot {i} morpheme {j} spelling" "A morpheme spelled: " " with the following feature(s):" 20
+#
+#    BeginIter feat{k} "a Feature"
+#
+#      Text name "Noun slot {i} morpheme {j} feature {k} name" "Name: " " " 20
+#
+#      Text name "Noun slot {i} morpheme {j} feature {k} value" "Value: " "" 20
+#
+#    EndIter feat
+#
+#  EndIter morph
+#
+#EndIter noun-slot
 
-Label "Intransitive verb:"
+Label "<h3>Verb Types</h3>"
 
-Text iverb "Intransitive verb" "Spelling (finite form): " "<br>" 40
+BeginIter verb{i} "a Verb Type" 2
 
-Text iverb-pred "Intransitive verb predicate" "Predicate name (e.g. _sleep_v_rel): " "<br>" 40
+  Text orth "Verb {i} spelling" "<b>Verb Type {i}:</b><br>Spelling: " "" 30
 
-Text iverb-non-finite "Intransitive verb (non-finite)" "If your language has auxiliaries and this intransitive verb appears in a different form when it is the (head of the) complement of the auxiliary specified below, please specify that form here: " "" 40
+  Text pred "Verb {i} predicate" " Predicate: " "<br>" 30
 
-Label "Transitive verb:"
+  Radio valence "Verb {i} valence" "This verb type is " ""
+  . intrans "Intransitive" "" "intransitive "
+  . trans "Transitive" "" "transitive<br>"
 
-Text tverb "Transitive verb" "Spelling (finite form): " "<br>" 40
+  Text non-finite "Verb {i} (non-finite)" "If your language has auxiliaries and this verb appears in a different form when it is the (head of the) complement of the auxiliary specified below, please specify that form here: " "" 30
 
-Text tverb-pred "Transitive verb predicate" "Predicate name (e.g. _see_v_rel): " "<br>" 40
+EndIter verb
 
-Text tverb-non-finite "Transitive verb (non-finite)" "If your language has auxiliaries and this transitive verb appears in a different form when it is the (head of the) complement of the auxiliary specified below, please specify that form here: " "" 40
-
-Label "Auxiliary verb (if applicable):"
+Label "<h3>Auxiliary verb</h3>"
 
 Text aux-verb "Auxiliary verb" "Spelling (finite form): " "" 40
 
@@ -366,16 +384,17 @@ Radio aux-subj "Auxiliary verb subject" "If the auxiliary takes a VP or V comple
 . np "Noun phrase" "" "noun phrase "
 . adp "Adpositional phrase" "" "adpositional phrase "
 
-Label "Determiners (if applicable):"
+Label "<h3>Determiners</h3>"
 
 Label "If your nouns require determiners, define at least one here. You may use the second to handle a different determiner form (e.g., for languages where number, gender, or case are marked on determiners). Note that the grammar start won't actually include any constraints implementing agreement."
 
-Text det1 "Determiner 1" "Spelling: " "<br>" 40
-Text det1_pred "Determiner 1 predicate" "Predicate name (e.g. _indef_q_rel): " "<br><br>" 40
+BeginIter det{i} "a Determiner"
 
-Text det2 "Determiner 2" "Spelling: " "<br>" 40
-Text det2_pred "Determiner 2 predicate" "Predicate name (e.g. _indef_q_rel): " "<br>" 40
+  Text orth "Determiner {i} spelling" "<b>Determiner {i}:</b><br>Spelling: " "" 30
 
+  Text pred "Determiner {i} predicate" " Predicate: " "<br>" 30
+
+EndIter det
 
 Section test-sentences "Some Test Sentences"
 

@@ -3,5 +3,9 @@ html { overflow: scroll }
 .values { padding-left: 1.2em }
 .submit { margin-left: 10% }
 .error { color: #FF0000 }
-div.iterator { background-color: #EEEEEE }
 div.anchor { display: none }
+div.iterator {
+  padding-left: 2px;
+  margin: 2px 0px 2px 10px;
+  border-left: 3px solid #AAAAAA;
+}

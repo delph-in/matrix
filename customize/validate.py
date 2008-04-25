@@ -106,7 +106,7 @@ def validate_word_order():
   if (ch.get('noun-det-order') and (not ch.get('has-dets'))):
     add_err('has-dets','You specified an order of nouns and dets, but not whether your language has determiners at all.')
 
-  if ((ch.get('det1') or ch.get('det2')) and (ch.get('has-dets') == 'no')):
+  if ch.get('det1_orth') and ch.get('has-dets') == 'no':
     add_err('has-dets','You specified lexical entries for determiners, but said your language has none.')
 
 
@@ -251,25 +251,8 @@ def validate_yesno_questions():
 #   Validate the user's choices about the test lexicon.
 
 def validate_lexicon():
-  noun1 = ch.get('noun1')
+  noun1_orth = ch.get('noun1_orth')
   noun1_pred = ch.get('noun1_pred')
-  noun1_det = ch.get('noun1_det')
-  noun2 = ch.get('noun2')
-  noun2_pred = ch.get('noun2_pred')
-  noun2_det = ch.get('noun2_det')
-
-  iverb = ch.get('iverb')
-  iverbpred = ch.get('iverb-pred')
-  iverbnonfinite = ch.get('iverb-non-finite')
-
-  tverb = ch.get('tverb')
-  tverbpred = ch.get('tverb-pred')
-  tverbnonfinite = ch.get('tverb-non-finite')
-
-  det1 = ch.get('det1')
-  det1_pred = ch.get('det1_pred')
-  det2 = ch.get('det2')
-  det2_pred = ch.get('det2_pred')
 
   auxverb = ch.get('aux-verb')
   auxsem = ch.get('aux-sem')
@@ -277,7 +260,10 @@ def validate_lexicon():
   auxorder = ch.get('aux-order')
   auxsubj = ch.get('aux-subj')
 
-  # ERB 2006-09-29: What are these two picking up?  I don't see the match in matrixdef.
+  # First, handle the non-iterated lexical entries
+
+  # ERB 2006-09-29: What are these two picking up?  I don't see the
+  # match in matrixdef.
 
   # neg = ch.get('neg')
   # negadv = ch.get('negadv')
@@ -288,50 +274,17 @@ def validate_lexicon():
   #    err = 'If your language expresses sentential negation with a negative adverb, you must specify whether it is independent or selected.'
   #    add_err('negadv', err)
 
-
-
   # Did they specify enough lexical entries?
-  if not (noun1 and iverb and tverb):
-    err = 'You must create an intransitive verb entry, a transitive verb entry, and at least one noun entry.'
-    add_err('noun1', err)
-    add_err('iverb', err)
-    add_err('tverb', err)
-    
-  # Did they give pred names?
-  # sfd ToDo: If/when we start showing exactly which form fields were in
-  # error, this should be broken out into separate error messages for each
-  # choice
-  if (noun1 and not noun1_pred) or \
-     (noun2 and not noun2_pred) or \
-     (det1 and not det1_pred) or \
-     (det2 and not det2_pred) or \
-     (iverb and not iverbpred) or \
-     (tverb and not tverbpred):
-    err = 'You must specify a predicate value for each noun, (main) verb, and determiner you specify.'
-    add_err('noun1_pred', err)
-    add_err('noun2_pred', err)
-    add_err('det1_pred', err)
-    add_err('det2_pred', err)
-    add_err('iverb-pred', err)
-    add_err('tverb-pred', err)
+  if not noun1_orth:
+    err = 'You must create at least one noun class.'
+    add_err('noun1_orth', err)
 
   # Did they answer all of the questions about lexical entries?
-  # sfd ToDo: As above, separate error messages
-  if (noun1 and not noun1_det) or \
-     (noun2 and not noun2_det) or \
-     (auxverb and not (auxsem and auxcomp and auxorder)):
+  if auxverb and not (auxsem and auxcomp and auxorder):
     err = 'You must answer all questions for each lexical entry you specify.'
-    add_err('noun1_det', err)
-    add_err('noun2_det', err)
     add_err('aux-sem', err)
     add_err('aux-comp', err)
     add_err('aux-order', err)
-
-  # Did they give us the same form for both finite and nonfinite verbs?
-  if (iverbnonfinite and iverb == iverbnonfinite) or (tverbnonfinite and tverb == tverbnonfinite):
-    err = 'If you provide a form for a verb when it cooccurs with an auxiliary, it must be different from the other (finite) form.'
-    add_err('iverb-non-finite', err)
-    add_err('tverb-non-finite', err)
 
   # If they're specifying an auxiliary, and they say it takes a VP or V
   # complement, did they tell us what type of subject?
@@ -340,9 +293,8 @@ def validate_lexicon():
     add_err('aux-subj', err)
 
   # ERB 2006-09-29
-  # If they said that either negation or questions required auxiliaries, did they specify
-  # an auxiliary?
-
+  # If they said that either negation or questions required
+  # auxiliaries, did they specify an auxiliary?
   if (not ch.get('aux-verb')):
     if (ch.get('neg-infl-type') == 'aux'):
       err = 'You specified that sentential negation is expressed through inflection of auxiliary verbs, but you did not specify an auxiliary in the lexicon.'
@@ -357,20 +309,90 @@ def validate_lexicon():
       err = 'You specified that matrix yes-no questions are expressed through inflection of auxiliary verbs, but you did not specify an auxiliary in the lexicon.'
       add_err('aux-verb', err)
 
+  # Now, do the iterated lexical entries
+  
+  # Nouns
+  ch.iter_begin('noun')
+  while ch.iter_valid():
+    orth = ch.get('orth')
+    pred = ch.get('pred')
+    det = ch.get('det')
 
-  # ERB 2006-0929
-  # If they said that either noun takes an obligatory determiner, did they say their language has
-  # determiners? ToDo: Consider whether this error should point to all things involved, or just
-  # the has-dets field.
+    # Did they give a spelling?
+    if not orth:
+      err = 'You must specify a spelling for each noun you define.'
+      add_err(ch.iter_prefix() + 'orth', err)
 
-  if (noun1_det == 'obl' or noun2_det == 'obl') and ch.get('has-dets') == 'no':
-    err = 'You specified that one or more of your nouns obligatorily takes a determiner, but also that your language does not have determiners.'
-    add_err('has-dets', err)
-    if (noun1_det == 'obl'):
-      add_err('noun1_det', err)
-    if (noun2_det == 'obl'):
-      add_err('noun2_det', err)
+    # Did they give a predicate?
+    if not pred:
+      err = 'You must specify a predicate for each noun you define.'
+      add_err(ch.iter_prefix() + 'pred', err)
+
+    # Did they answer the question about determiners?
+    if not det:
+      err = 'You must specify whether each noun you define takes a determiner.'
+      add_err(ch.iter_prefix() + 'det', err)
+
+    # If they said the noun takes an obligatory determiner, did they
+    # say their language has determiners?
+    if det == 'obl' and ch.get_full('has-dets') == 'no':
+      err = 'You defined a noun that obligatorily takes a determiner, but also said your language does not have determiners.'
+      add_err('has-dets', err)
+      add_err(ch.iter_prefix() + 'det', err)
     
+    ch.iter_next()
+  ch.iter_end()
+
+  # Verbs
+  seenTrans = False
+  seenIntrans = False
+  ch.iter_begin('verb')
+  while ch.iter_valid():
+    orth = ch.get('orth')
+    pred = ch.get('pred')
+    val = ch.get('valence')
+    nf = ch.get('non-finite')
+
+    if val == 'trans':
+      seenTrans = True
+    if val == 'intrans':
+      seenIntrans = True
+
+    if not orth:
+      err = 'You must specify a spelling for each verb you define.'
+      add_err(ch.iter_prefix() + 'orth', err)
+
+    if not pred:
+      err = 'You must specify a predicate for each verb you define.'
+      add_err(ch.iter_prefix() + 'pred', err)
+
+    # Did they give us the same form for both finite and nonfinite verbs?
+    if orth == nf:
+      err = 'If you provide a form for a verb when it cooccurs with an auxiliary, it must be different from the other (finite) form.'
+      add_err(ch.iter_prefix() + 'non-finite', err)
+
+    ch.iter_next()
+  ch.iter_end()
+
+  if not (seenTrans and seenIntrans):
+    err = 'You must create intransitive and transitive verb classes.'
+    add_err('verb1_valence', err)
+    add_err('verb2_valence', err)
+
+  # Determiners
+  ch.iter_begin('det')
+  while ch.iter_valid():
+    if not ch.get('orth'):
+      err = 'You must specify a spelling for each determiner you define.'
+      add_err(ch.iter_prefix() + 'orth', err)
+
+    if not ch.get('pred'):
+      err = 'You must specify a predicate for each determiner you define.'
+      add_err(ch.iter_prefix() + 'pred', err)
+
+    ch.iter_next()
+  ch.iter_end()
+
 
 ######################################################################
 # validate_test_sentences()
@@ -389,9 +411,9 @@ def validate_extra_constraints():
   if ch.get('aux-sem') == 'pred':
     err = 'Only semantically empty auxiliaries in test grammars.'
     add_err('aux-sem', err)
-  if ch.get('has-dets') == 'yes' and not ch.get('det1'):
+  if ch.get('has-dets') == 'yes' and not ch.get('det1_orth'):
     err = 'To get uniform semantics, we always want det1 specified.'
-    add_err('det1', err)
+    add_err('det1_orth', err)
   if not ((ch.get('cs1') == 'on' and ch.get('cs1_n') == 'on') or \
           (ch.get('cs2') == 'on' and ch.get('cs2n') == 'on')):
     err = 'The test grammars must have some way to coordinate nouns.'
