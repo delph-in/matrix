@@ -1,5 +1,7 @@
 ;;; -*- Mode: TDL; Package: DISCO -*-
 ;;;
+;;; $Id: pet.tdl,v 1.2 2008-05-23 01:44:21 sfd Exp $
+;;;
 
 :begin :type.
 

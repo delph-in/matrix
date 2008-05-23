@@ -1,3 +1,6 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+;;;
+;;; $Id: roots.tdl,v 1.8 2008-05-23 01:44:21 sfd Exp $
 ;;;
 ;;; A sample start symbol: Accept fully-saturated verbal projections only; if
 ;;; a grammar makes use of the head-subject and head-complement types as

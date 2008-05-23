@@ -1,6 +1,8 @@
 ;;; -*- Mode: TDL; Package: LKB -*-
 ;;;
-;;;  HPSG Grammar Matrix Version 0.9
+;;; HPSG Grammar Matrix
+;;;
+;;; $Id: matrix.tdl,v 1.51 2008-05-23 01:44:21 sfd Exp $
 ;;;
 ;;;  Copyright (c) 2002-2005
 ;;;    Emily M. Bender, Dan Flickinger, Stephan Oepen

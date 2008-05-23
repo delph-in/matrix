@@ -1,8 +1,10 @@
 ------------------------------------------------------------------------------
-LinGO Grammar Matrix v 0.8, August 30, 2004 (erb)
+LinGO Grammar Matrix
+
+$Id: README,v 1.13 2008-05-23 01:44:21 sfd Exp $
 
 NB: This version of the Matrix requires LKB version
-$Date: 2004-09-13 04:43:24 $ or later.  
+$Date: 2008-05-23 01:44:21 $ or later.  
 
 Changes since v 0.6:
 

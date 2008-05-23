@@ -1,4 +1,6 @@
 ;;; -*- Mode: TDL; Package: LKB -*-
+;;;
+;;; $Id: labels.tdl,v 1.8 2008-05-23 01:44:21 sfd Exp $
 
 ;;; These label definitions are used by the LKB to put
 ;;; labels on the nodes of the trees it displays.  They
