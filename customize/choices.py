@@ -1,5 +1,9 @@
+### $Id: choices.py,v 1.13 2008-05-28 21:08:12 sfd Exp $
+
 ######################################################################
 # imports
+
+import re
 
 ######################################################################
 # globals
@@ -93,7 +97,16 @@ class ChoicesFile:
   #   choices.iter_end()               # end the noun iteration
   
   def iter_begin(self, key):
-    self.iter_stack.append([key, 1, True])
+    var = 1
+    # If key contains a number at the end (i.e. 'noun5'), initialize
+    # the iteration at that number rather than the default of 1.
+    s = re.search('[0-9]+$', key)
+    if s:
+      offset = s.span()[0]
+      var = int(key[offset:])
+      key = key[0:offset]
+      
+    self.iter_stack.append([key, var, True])
     self.iter_stack[-1][2] = self.__calc_iter_valid()
 
   # Are there any choices with a name prefixed by the current

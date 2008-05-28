@@ -1,7 +1,9 @@
 #!/bin/bash
 
-#Note to Emily... for publishing this as www.delph-in.net/matrix:
-#tolive -m matrix/customize
+### $Id: tolive,v 1.7 2008-05-28 21:08:12 sfd Exp $
+
+#Note:  To publish to www.delph-in.net/matrix:
+#       ./tolive -m matrix/customize
 
 while [ "$1" = -m -o "$1" = -l ]
 do
@@ -30,9 +32,13 @@ else
     cptarg="uwcl@homer.u.washington.edu:public_html/$1"
 fi
 
-mainfiles="matrix.cgi matrix.css matrixdef customize.py deffile.py choices.py tdl.py utils.py validate.py"
+date -u > datestamp
+
+mainfiles="matrix.cgi matrix.css matrixdef customize.py deffile.py choices.py tdl.py utils.py validate.py datestamp"
 
 $cpcmd $mainfiles $cptarg
+
+rm -f datestamp
 
 if [ $? = 1 ]
 then
@@ -52,7 +58,7 @@ then
         mkdir -p "$cptarg/matrix-core/lkb"
         mkdir -p "$cptarg/matrix-core/pet"
     fi
-    matrixfiles=`echo ../*.* ../README ../modules/basic_script | sed 's/..\/my_language.tdl//g' | sed 's/..\/CVS//g'`
+    matrixfiles=`echo ../*.* ../README ../modules/basic_script | sed 's/..\/my_language.tdl//g' | sed 's/..\/Version.lsp//g' | sed 's/..\/CVS//g' | sed 's/..\/[^ ]*~//g'`
     $cpcmd $matrixfiles "$cptarg/matrix-core"
 
     lkbfiles=`echo ../lkb/* | sed 's/..\/lkb\/CVS//g'`

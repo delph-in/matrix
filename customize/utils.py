@@ -1,3 +1,5 @@
+### $Id: utils.py,v 1.8 2008-05-28 21:08:12 sfd Exp $
+
 ######################################################################
 # tokenize_def(str)
 #   split a string into words, treating double-quoted strings as

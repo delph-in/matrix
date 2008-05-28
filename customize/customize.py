@@ -1,7 +1,10 @@
+### $Id: customize.py,v 1.56 2008-05-28 21:08:12 sfd Exp $
+
 ######################################################################
 # imports
 
 import os
+import datetime
 import shutil
 import tdl
 import tarfile
@@ -2940,59 +2943,65 @@ def is_ltow(name, namelist):
   # will recurse infintely.
   if '_' in name:
     name = name.replace('_', '')
+
   state = ch.iter_state()
   ch.iter_reset()
-  ch.iter_begin('morph')
-  while ch.iter_valid():
-    n = ch.iter_prefix()
-    opt = ch.get('opt')
-    ch.iter_begin('dtr')
+
+  for slotprefix in ('noun', 'verb', 'det'):
+    ch.iter_begin(slotprefix + '-slot')
     while ch.iter_valid():
-      if name in ch.get('type'):
-        if name in namelist:
-          ch.iter_set_state(state)
-          return False
-        if (opt == 'no'):
-          ch.iter_set_state(state)
-          return False
-        else:
-          ch.iter_set_state(state)
-          namelist.append(name)
-          return is_ltow(n, namelist)
+      n = ch.iter_prefix()
+      opt = ch.get('opt')
+      ch.iter_begin('input')
+      while ch.iter_valid():
+        if name in ch.get('type'):
+          if name in namelist:
+            ch.iter_set_state(state)
+            return False
+          if opt:
+            ch.iter_set_state(state)
+            namelist.append(name)
+            return is_ltow(n, namelist)
+          else:
+            ch.iter_set_state(state)
+            return False
+        ch.iter_next()
+      ch.iter_end()
       ch.iter_next()
     ch.iter_end()
-    ch.iter_next()
+
   ch.iter_set_state(state)
   return True
+
 
 def back_to_word(name):
   state = ch.iter_state()
   ch.iter_reset()
-  ch.iter_begin('morph')
-  while ch.iter_valid():
-    ch.iter_begin('forces')
+
+  for slotprefix in ('noun', 'verb', 'det'):
+    ch.iter_begin(slotprefix + '-slot')
     while ch.iter_valid():
-      if ch.get('type') == name:
-        ch.iter_set_state(state)
-        return True
+      ch.iter_begin('forces')
+      while ch.iter_valid():
+        if ch.get('type') == name:
+          ch.iter_set_state(state)
+          return True
+        ch.iter_next()
+      ch.iter_end()
       ch.iter_next()
     ch.iter_end()
-    ch.iter_next()
-  ch.iter_end()
+
   ch.iter_set_state(state)
   return False
 
 
 def get_name(label):
-  # Given the choices-file label for a morpheme (e.g. 'morph3')
-  # return the name associated with the paradigm or rule type.
-  n = ch.get_full(label+"_type")
-  if 'pdm' in n:
-    return ch.get_full(n+'_name')
-  else:
-    return n
+  # Given the choices-file label for a slot (e.g. 'noun-slot3')
+  # return the name associated with the rule type.
+  return ch.get_full(label + '_name')
 
-def add_root(root, root_dict, dtr, iv, tv, n):
+
+def add_root(root, root_dict, inp, iv, tv, n):
   # If both iverb and tverb are possible daughters, we can have
   # verb-lex inherit from the intermediate type.  For now we just
   # track whether or not this is the case.
@@ -3005,74 +3014,79 @@ def add_root(root, root_dict, dtr, iv, tv, n):
   else:
     if root == 'noun':
       n = True
-    mylang.add(root_dict[root]+':= '+dtr+'.')
+    mylang.add(root_dict[root]+':= '+inp+'.')
   return iv, tv, n
 
-def find_basetype(morph, root_dict, iv=False, tv=False, n=False):
+
+def find_basetype(slot, root_dict, iv=False, tv=False, n=False):
   state = ch.iter_state()
   ch.iter_reset()
-  ch.iter_begin('morph', int(morph[5:]))
-  ch.iter_begin('dtr')
+  
+  ch.iter_begin(slot)
+  ch.iter_begin('input')
   while ch.iter_valid():
-    dtrtype = ch.get('type')
-    if dtrtype in root_dict:
-      if dtrtype == 'verb':
+    inputtype = ch.get('type')
+    if inputtype in root_dict:
+      if inputtype == 'verb':
         iv = True
         tv = True
-      elif dtrtype == 'iverb':
+      elif inputtype == 'iverb':
         iv = True
-      elif dtrtype == 'tverb':
+      elif inputtype == 'tverb':
         tv = True
-      elif dtrtype == 'noun':
+      elif inputtype == 'noun':
         n = True
     else:
-      iv, tv, n = find_basetype(dtrtype, root_dict, iv, tv, n)
+      iv, tv, n = find_basetype(inputtype, root_dict, iv, tv, n)
     ch.iter_next()
+  ch.iter_end()
+  ch.iter_end()
+
   ch.iter_set_state(state)
   return iv, tv, n
+
 
 def bt_match(basetype, root):
   for bt in basetype:
     if bt in root:
       return True, bt
 
-def intermediate_rule(morph, root_dict, basetype, dtr=None, depth=0, opt=False):
-  if not dtr:
-    p = ch.get_full(morph+'_type')
-    name = ch.get_full(p+'_name')
-    dtr = name+'-rule-dtr'
-    mylang.add(dtr+' := avm.')
-  if morph in root_dict:
-      return dtr
 
-  if depth and ch.get_full(morph+'_opt') == 'no':
+def intermediate_rule(slot, root_dict, basetype, inp=None, depth=0, opt=False):
+  if not inp:
+    inp = ch.get_full(slot + '_name') + '-rule-dtr'
+    mylang.add(inp + ' := avm.')
+  if slot in root_dict:
+      return inp  # sfd: funny indentation and return value looks wrong...
+
+  if depth and not ch.get_full(slot + '_opt'):
     opt = True
-    return opt, dtr
+    return opt, inp
 
-  ch.iter_begin('dtr')
+  ch.iter_begin('input')
   while ch.iter_valid():
-    d = ch.get('type')
-    if d not in root_dict:
-      mylang.add(get_name(d)+'-lex-rule := '+dtr+'.')
-      if ch.get_full(d+'_opt') == 'yes':
+    i = ch.get('type')
+    if i not in root_dict:
+      mylang.add(get_name(i) + '-lex-rule := ' + inp + '.')
+      if ch.get_full(i + '_opt'):
         state1 = ch.iter_state()
         ch.iter_reset()
-        ch.iter_begin(d[0:len(d)-1], int(d[len(d)-1]))
-        ch.iter_begin('dtr')
+        ch.iter_begin(i)
+        ch.iter_begin('input')
         while ch.iter_valid():
           rec = ch.get('type')
           if rec not in root_dict:
-            mylang.add(get_name(rec)+'-lex-rule := '+dtr+'.')
+            mylang.add(get_name(rec) + '-lex-rule := ' + inp + '.')
             state2 = ch.iter_state()
             ch.iter_reset()
-            ch.iter_begin(rec[0:len(rec)-1], int(rec[len(rec)-1]))
-            opt, dtr = intermediate_rule(rec, root_dict, basetype, dtr, depth+1, opt)
+            ch.iter_begin(rec)
+            opt, inp = intermediate_rule(rec, root_dict, basetype, inp, depth+1, opt)
             ch.iter_set_state(state2)
           ch.iter_next()
         ch.iter_set_state(state1)
     ch.iter_next()
   ch.iter_end()
-  return opt, dtr
+  return opt, inp
 
 
 def customize_inflection():
@@ -3081,9 +3095,9 @@ def customize_inflection():
   # root_dict is a dictionary mapping the choices file encodings
   # to the actual rule names.
   root_dict = {'noun':'noun-lex',
-           'verb':'verb-lex',
-           'iverb':'intransitive-verb-lex',
-           'tverb':'transitive-verb-lex'}
+               'verb':'verb-lex',
+               'iverb':'intransitive-verb-lex',
+               'tverb':'transitive-verb-lex'}
 
   # reqs1, reqs2, reqd, and tracker are all used to keep track
   # of non-consecutive dependencies between paradigms.
@@ -3091,290 +3105,303 @@ def customize_inflection():
   reqs2 = {}
   reqd = []
   tracker = False
-  
-  # Big main loop to iterate over all the morph information
-  ch.iter_begin('morph')
-  while ch.iter_valid():
-    aff = ch.get('aff')  # prefix or suffix   
-    t = ch.get('type') # pdm ID
-    name = ch.get_full(t+'_name') # pdm name, eg 'tense'
-    basetype = [] # list of roots this affix can attach to
-    
-    # populate the basetype list with the appropriate values
-    iv, tv, n = find_basetype(ch.iter_prefix().rstrip('_'), root_dict)
-    if iv and tv:
-      basetype.append('verb-lex')
-    elif iv:
-      basetype.append('intransitive-verb-lex')
-    elif tv:
-      basetype.append('transitive-verb-lex')
-    if n:
-      basetype.append('noun-lex')
-    
-    # find the number of dtr values so we know if it has 1 or more
-    dtrs = 0 
-    ch.iter_begin('dtr')
-    while ch.iter_valid():
-      dtrs += 1
-      d_label = ch.get('type')
-      ch.iter_next()
-    ch.iter_end()
-    
-    # Single Daughter
-    if dtrs == 1:
-      # If the single daughter is a root, set dtr to the root name
-      if d_label in root_dict:
-        dtr = root_dict[d_label]
-        basetype.append(root_dict[d_label])
-      else:
-        # If the single daughter is optional, build an intermediate rule for it and its
-        # daughter values, and set dtr to the intermediate rule type
-        if ch.get_full(d_label+'_opt') ==  'yes':
-          non_opt, dtr = intermediate_rule(ch.iter_prefix().rstrip('_'), root_dict, basetype)
-          # non_opt tracks if there is a non-optional rule that occurs between this rule and the basetype
-          # If not, we need all the basetypes to inherit from the intermediate rule as well.
-          if not non_opt:
-            for bt in basetype:
-              mylang.add(bt+' := '+dtr+'.')
-        # If the single daughter is non-optional, make it the dtr value.
-        else:
-          dtr = get_name(d_label) + '-lex-rule'
-    # Multiple daughters
-    else: 
-      # Build an intermediate rule
-      non_opt, dtr = intermediate_rule(ch.iter_prefix().rstrip('_'), root_dict, basetype)
-      # If no intervening non-optional rules, have the basetype(s) inherit from the
-      # intermediate rule.
-      if not non_opt:
-        for bt in basetype:
-          mylang.add(bt+' := '+dtr+'.')
-   
-    # If this rule requires that another rule follow it, then we need
-    # to define word-to-lexeme rule for this grammar.
-    ch.iter_begin('forces')
-    if ch.iter_valid():
-      wtol = True
-      mylang.add('word-to-lexeme-rule := lex-rule &\
-      [INFLECTED -, DTR.INFLECTED +].')
-    else:
-      wtol = False
-    ch.iter_end()
-    
-    opt = ch.get('opt') # is this rule optional?
-    ltow = is_ltow(ch.iter_prefix().rstrip('_'), []) # is this a lexeme-to-word rule?
-    wtoltow = back_to_word(ch.iter_prefix().rstrip('_')) # does this rule sastisfy a previous word-to-lexeme rule?
-    const = False 
-    subrules = False
 
-    # Iterate over the pdm values to see if any element of the paradigm should be a
-    # constant-lex-rule
-    state = ch.iter_state()
-    ch.iter_reset()
-    ch.iter_begin('pdm')
-    while ch.iter_prefix() != t + '_':
-      ch.iter_next()
-    ch.iter_begin('aff')
-    if ch.iter_valid():
-      subrules = True
+  # Big main loop to iterate over all the slots
+  for slotprefix in ('noun', 'verb', 'det'):
+    ch.iter_begin(slotprefix + '-slot')
+    while ch.iter_valid():
+      order = ch.get('order')
+      opt = ch.get('opt')
+      name = ch.get('name')
+
+      if order == 'before':
+        aff = 'prefix'
+      else:
+        aff = 'suffix'
+
+      basetype = []  # list of roots this affix can attach to
+
+      # populate the basetype list with the appropriate values
+      iv, tv, n = find_basetype(ch.iter_prefix().rstrip('_'), root_dict)
+      if iv and tv:
+        basetype.append('verb-lex')
+      elif iv:
+        basetype.append('intransitive-verb-lex')
+      elif tv:
+        basetype.append('transitive-verb-lex')
+      if n:
+        basetype.append('noun-lex')
+
+      # find the number of input values so we know if it has 1 or more
+      inputs = 0 
+      ch.iter_begin('input')
       while ch.iter_valid():
-        if ch.get('orth') == 'NONE':
+        inputs += 1
+        i_type = ch.get('type')
+        ch.iter_next()
+      ch.iter_end()
+
+      # Single Input
+      if inputs == 1:
+        # If the single daughter is a root, set input to the root name
+        if i_type in root_dict:
+          inp = root_dict[i_type]
+          basetype.append(root_dict[i_type])
+        else:
+          # If the single input is optional, build an intermediate
+          # rule for it and its input values, and set inp to the
+          # intermediate rule type
+          if ch.get_full(i_type+'_opt'):
+            non_opt, inp = intermediate_rule(ch.iter_prefix().rstrip('_'),
+                                             root_dict, basetype)
+            # non_opt tracks if there is a non-optional rule that occurs
+            # between this rule and the basetype. If not, we need all the
+            # basetypes to inherit from the intermediate rule as well.
+            if not non_opt:
+              for bt in basetype:
+                mylang.add(bt+' := '+inp+'.')
+          # If the single input is non-optional, make it the input value.
+          else:
+            inp = get_name(i_type) + '-lex-rule'
+      # Multiple inputs
+      else:
+        # Build an intermediate rule
+        non_opt, inp = intermediate_rule(ch.iter_prefix().rstrip('_'),
+                                         root_dict, basetype)
+        # If no intervening non-optional rules, have the basetype(s)
+        # inherit from the intermediate rule.
+        if not non_opt:
+          for bt in basetype:
+            mylang.add(bt+' := '+inp+'.')
+
+      # If this rule requires that another rule follow it, then we need
+      # to define word-to-lexeme rule for this grammar.
+      ch.iter_begin('forces')
+      if ch.iter_valid():
+        wtol = True
+        mylang.add('word-to-lexeme-rule := lex-rule &\
+        [INFLECTED -, DTR.INFLECTED +].')
+      else:
+        wtol = False
+      ch.iter_end()
+
+      ltow = is_ltow(ch.iter_prefix().rstrip('_'), []) # lexeme-to-word rule?
+      wtoltow = back_to_word(ch.iter_prefix().rstrip('_')) # satisfy a previous word-to-lexeme rule?
+      const = False 
+      subrules = 0
+      morph_orth = ''
+
+      # Iterate over the morphemes to see if any element of the
+      # paradigm should be a constant-lex-rule
+      ch.iter_begin('morph')
+      while ch.iter_valid():
+        subrules += 1
+        morph_orth = ch.get('orth')
+        if morph_orth == '':
           const = True
         ch.iter_next()
       ch.iter_end()
-    else:
-      ch.iter_end()
-      if ch.get('orth') == 'NONE':
-        const = True
-    
-    # Need to specify whether each rule is ltol, ltow, or wtol AND 
-    # whether the rule is constant or inflecting. Trying to put as much
-    # information in the supertype as possible.
 
-    # Specify information for supertype
-    if (opt == 'no' and ltow) or wtoltow: 
-      if const:
-        if subrules:
-          mylang.add(name+'-lex-rule := lexeme-to-word-rule & \
-          [DTR ' + dtr + '].')
-        else:
-          mylang.add(name+'-lex-rule := const-ltow-rule & \
-          [DTR ' + dtr + '].')
-      else:
-        mylang.add(name+'-lex-rule := infl-ltow-rule & \
-        [DTR ' + dtr + '].')
-      if basetype:
-        for bt in basetype:
-          mylang.add(bt+ " := [INFLECTED -].")
+      # Need to specify whether each rule is ltol, ltow, or wtol AND
+      # whether the rule is constant or inflecting. Trying to put as much
+      # information in the supertype as possible.
 
-    elif wtol:
-      if const:
-        if subrules:
-          mylang.add(name+'-lex-rule := word-to-lexeme-rule &\
-          [DTR '+dtr+'].')
-        else:
-          mylang.add(name+'-lex-rule := word-to-lexeme-rule & constant-lex-rule &\
-          [DTR '+dtr+'].')
-      else:
-        mylang.add(name+'-lex-rule := word-to-lexeme-rule & inflecting-lex-rule &\
-        [DTR '+dtr+'].')     
-
-    else:
-      if const:
-        if subrules:
-          mylang.add(name+'-lex-rule := lexeme-to-lexeme-rule & \
-          [DTR '+dtr+'].')
-        else:
-          mylang.add(name+'-lex-rule := const-ltol-rule & \
-          [DTR ' + dtr + '].')
-      else:
-        mylang.add(name+'-lex-rule := infl-ltol-rule & \
-        [DTR ' +dtr+ '].')
-    
-    # Specify for subtypes, if any
-    if subrules:
-      ch.iter_begin('aff')
-      while ch.iter_valid():
-        affname = ch.get('name')
-        if ch.get('orth') == 'NONE':
-          if ltow:
-            mylang.add(affname+'-lex-rule := const-ltow-rule & '+name+'-lex-rule.')
-          elif wtol:
-            mylang.add(affname+'-lex-rule := constant-lex-rule & '+name+'-lex-rule.')
+      # Specify information for supertype
+      if (not opt and ltow) or wtoltow:
+        if const:
+          if subrules > 0:
+            mylang.add(name+'-lex-rule := lexeme-to-word-rule & \
+            [DTR ' + inp + '].')
           else:
-            mylang.add(affname+'-lex-rule := const-ltol-rule & '+name+'-lex-rule.')
-          lrules.add(affname+'-lex := '+name+'-lex-rule.')
+            mylang.add(name+'-lex-rule := const-ltow-rule & \
+            [DTR ' + inp + '].')
         else:
-          if const:
+          mylang.add(name+'-lex-rule := infl-ltow-rule & \
+          [DTR ' + inp + '].')
+        if basetype:
+          for bt in basetype:
+            mylang.add(bt+ " := [INFLECTED -].")
+
+      elif wtol:
+        if const:
+          if subrules > 0:
+            mylang.add(name+'-lex-rule := word-to-lexeme-rule &\
+            [DTR ' + inp + '].')
+          else:
+            mylang.add(name+'-lex-rule := word-to-lexeme-rule & constant-lex-rule &\
+            [DTR ' + inp + '].')
+        else:
+          mylang.add(name+'-lex-rule := word-to-lexeme-rule & inflecting-lex-rule &\
+          [DTR ' + inp + '].')     
+
+      else:
+        if const:
+          if subrules > 0:
+            mylang.add(name+'-lex-rule := lexeme-to-lexeme-rule & \
+            [DTR ' + inp + '].')
+          else:
+            mylang.add(name+'-lex-rule := const-ltol-rule & \
+            [DTR ' + inp + '].')
+        else:
+          mylang.add(name+'-lex-rule := infl-ltol-rule & \
+          [DTR ' + inp + '].')
+
+      # Specify for subtypes, if any
+      if subrules > 0:
+        ch.iter_begin('morph')
+        while ch.iter_valid():
+          morphname = ch.get('name')
+
+          if not morphname:
+            morphname = name
+
+          if ch.get('orth') == '':
             if ltow:
-              mylang.add(affname+'-lex-rule := infl-ltow-rule & '+name+'-lex-rule.')             
+              mylang.add(morphname+'-lex-rule := const-ltow-rule & '+name+'-lex-rule.')
             elif wtol:
-              mylang.add(affname+'-lex-rule := inflecting-lex-rule & '+name+'-lex-rule.')
+              mylang.add(morphname+'-lex-rule := constant-lex-rule & '+name+'-lex-rule.')
             else:
-              mylang.add(affname+'-lex-rule := infl-ltol-rule & '+name+'-lex-rule.')
+              mylang.add(morphname+'-lex-rule := const-ltol-rule & '+name+'-lex-rule.')
+            lrules.add(morphname+'-lex := '+name+'-lex-rule.')
           else:
-            mylang.add(affname+'-lex-rule := '+name+'-lex-rule.') 
-          add_irule(affname+'-'+aff,
-                    affname+'-lex-rule',
-                    aff,
-                    ch.get('orth'))              
-        ch.iter_next()
-    else:
-      if const:
-        lrules.add(name+'-lex := '+name+'-lex-rule.')
+            if const:
+              if ltow:
+                mylang.add(morphname+'-lex-rule := infl-ltow-rule & '+name+'-lex-rule.')             
+              elif wtol:
+                mylang.add(morphname+'-lex-rule := inflecting-lex-rule & '+name+'-lex-rule.')
+              else:
+                mylang.add(morphname+'-lex-rule := infl-ltol-rule & '+name+'-lex-rule.')
+            elif morphname != name:
+              mylang.add(morphname+'-lex-rule := '+name+'-lex-rule.') 
+            add_irule(morphname+'-'+aff,
+                      morphname+'-lex-rule',
+                      aff,
+                      ch.get('orth'))              
+          ch.iter_next()
+        ch.iter_end()
       else:
-        add_irule(name+'-'+aff,
-                  name+'-lex-rule',
-                  aff,
-                  ch.get('orth'))
- 
-    # Done with pdm for now, back to the morph we were on
-    ch.iter_set_state(state) 
-    
-    # Keep track of non-consecutive requirements
-    reqs1, reqd = req(basetype, reqs1, reqd, tracker, 'req')
-    reqs2, reqd = req(basetype, reqs2, reqd, tracker, 'disreq')
- 
-   # Done with this morph, go on to the next one
-    ch.iter_next()
-  
-  # Done with morphs
-  ch.iter_end()
+        if const:
+          lrules.add(name + '-lex := ' + name + '-lex-rule.')
+        else:
+          add_irule(name+'-'+aff,
+                    name+'-lex-rule',
+                    aff,
+                    morph_orth)
 
-  # For rules that have requirments, we need to copy up all the other
+      # Keep track of non-consecutive requirements
+      reqs1, reqd = req(basetype, reqs1, reqd, tracker, 'req')
+      reqs2, reqd = req(basetype, reqs2, reqd, tracker, 'disreq')
+
+      # Done with this slot, go on to the next one
+      ch.iter_next()
+
+    # Done with slots
+    ch.iter_end()
+
+  # For rules that have requirements, we need to copy up all the other
   # TRACK information
   add_single_tracks(reqs1, reqd, 'req')
   add_single_tracks(reqs2, reqd, 'disreq')
+
   # For all other rules, copy up the whole TRACK feature
   if reqd:
     copy_all_tracks(reqd)
 
 
 def req(basetype, reqs, reqd, tracker, reqtype):
-  mtype = ch.iter_prefix().rstrip('_') # morph type; assumes req() has been called from a 'morph' context.
-  mtr = get_name(mtype) 
+  stype = ch.iter_prefix().rstrip('_') # slot type; assumes req() has been called from a 'slot' context.
+  name = get_name(stype) 
   ch.iter_begin(reqtype)
   if ch.iter_valid():
     # Keep track of which rules have non-consecutive co-occurance constraints
-    reqs[mtype] = []
-    reqd.append(mtype)
-    # If this is the first rule that has a TRACK requirement, we need to add the feature TRACK
+    reqs[stype] = []
+    reqd.append(stype)
+    # If this is the first rule that has a TRACK requirement, we need
+    # to add the feature TRACK
     if not tracker:
       mylang.add('track := avm.')
       mylang.add('word-or-lexrule :+ [TRACK track].')
       tracker = True
     # Iterate over all the requirements for this rule.
     while ch.iter_valid():
-      dtr = get_name(ch.get('type'))
       # Again, keeping track of which rules have been constrained
       reqd.append(ch.get('type'))
-      reqs[mtype].append(ch.get('type'))
+      reqs[stype].append(ch.get('type'))
       # Add a feature to track corresponding to this rule.
-      mylang.add('track :+ ['+mtr+' bool].')
-      # Set the root type(s) as having the track feature corresponding to this rule as + or -
+      mylang.add('track :+ [' + name + ' bool].')
+      # Set the root type(s) as having the track feature corresponding
+      # to this rule as + or -
       if reqtype == 'req':
         for bt in basetype:
-          mylang.add(bt + ':= [TRACK.'+mtr+' -].')
+          mylang.add(bt + ':= [TRACK.' + name + ' -].')
       else:
         for bt in basetype:
-          mylang.add(bt + ':= [TRACK.'+mtr+' +].')
+          mylang.add(bt + ':= [TRACK.' + name + ' +].')
       # Next requirement
       ch.iter_next()
-  # back to morph
+  # back to slot
   ch.iter_end()
   return reqs, reqd
 
 def add_single_tracks(reqs, reqd, reqtype):
-  # Begin iterating over morphs
-  ch.iter_begin('morph')
-  while ch.iter_valid():
-    morph = ch.iter_prefix().rstrip('_')
-    mtr = get_name(morph)
-    # We only need to do this for rules with TRACK constraints.
-    if morph not in reqs:
-      ch.iter_next()
-      continue
-    # Start a second morph loop
-    state = ch.iter_state()
-    ch.iter_reset()
-    ch.iter_begin('morph')
+  # Begin iterating over slots
+  for slotprefix in ('noun', 'verb', 'det'):
+    ch.iter_begin(slotprefix + '-slot')
     while ch.iter_valid():
-      m2 = ch.iter_prefix().rstrip('_')
-      # Skip this morph if it's the same as the one in the outer loop.
-      if m2 == morph:
+      slot = ch.iter_prefix().rstrip('_')
+      name = get_name(slot)
+      # We only need to do this for rules with TRACK constraints.
+      if slot not in reqs:
         ch.iter_next()
         continue
-      dtr = get_name(m2)
-      # If the inner-loop rule sets or fulfills a constraint on the outer-loop rule
-      # constrain the TRACK values of each rule as appropriate.
-      if m2 in reqs[morph]:
-        if reqtype == 'req':
-          mylang.add(mtr+'-lex-rule := [TRACK.'+mtr+' -, DTR.TRACK.'+mtr+' +].')
-          mylang.add(dtr+'-lex-rule := [TRACK.'+mtr+' +, DTR.TRACK.'+mtr+' -].')
-        else:
-          mylang.add(mtr+'-lex-rule := [TRACK.'+mtr+' -, DTR.TRACK.'+mtr+' +].')
-          mylang.add(dtr+'-lex-rule := [TRACK.'+mtr+' -, DTR.TRACK.'+mtr+' +].')
-      # If this rule doesn't have anything to say about the outer-loop rule, but has
-      # TRACK constraints for other rules, we need to copy up the TRACK feature corresponding
-      # to the outer-loop rule.
-      elif m2 in reqs or m2 in reqd:
-        mylang.add(dtr+'-lex-rule := [TRACK.'+mtr+' #track, DTR.TRACK.'+mtr+' #track].')
+      # Start a second slot loop
+      state = ch.iter_state()
+      ch.iter_reset()
+      for slotprefix2 in ('noun', 'verb', 'det'):
+        ch.iter_begin(slotprefix2 + '-slot')
+        while ch.iter_valid():
+          s2 = ch.iter_prefix().rstrip('_')
+          # Skip this slot if it's the same as the one in the outer loop.
+          if s2 == slot:
+            ch.iter_next()
+            continue
+          name2 = get_name(s2)
+          # If the inner-loop rule sets or fulfills a constraint on the
+          # outer-loop rule constrain the TRACK values of each rule as
+          # appropriate.
+          if s2 in reqs[slot]:
+            if reqtype == 'req':
+              mylang.add(name+'-lex-rule := [TRACK.'+name+' -, DTR.TRACK.'+name+' +].')
+              mylang.add(name2+'-lex-rule := [TRACK.'+name+' +, DTR.TRACK.'+name+' -].')
+            else:
+              mylang.add(name+'-lex-rule := [TRACK.'+name+' -, DTR.TRACK.'+name+' +].')
+              mylang.add(name2+'-lex-rule := [TRACK.'+name+' -, DTR.TRACK.'+name+' +].')
+          # If this rule doesn't have anything to say about the outer-loop
+          # rule, but has TRACK constraints for other rules, we need to
+          # copy up the TRACK feature corresponding to the outer-loop
+          # rule.
+          elif s2 in reqs or s2 in reqd:
+            mylang.add(name2+'-lex-rule := [TRACK.'+name+' #track, DTR.TRACK.'+name+' #track].')
+          ch.iter_next()
+        ch.iter_end()
+      ch.iter_set_state(state)
       ch.iter_next()
-    ch.iter_set_state(state)
-    ch.iter_next()
-  ch.iter_end()
+    ch.iter_end()
 
 def copy_all_tracks(reqd):
-  # If a grammar makes use of the TRACK feature, inflectional rules that don't have anything to say about
-  # the contents of TRACK need to copy the whole TRACK feature up unchanged.
-  ch.iter_begin('morph')
-  while ch.iter_valid():
-    morph = ch.iter_prefix().rstrip('_')
-    mtr = get_name(morph)
-    if morph not in reqd:
-      mylang.add(mtr + '-lex-rule := [TRACK #track, \
-      DTR.TRACK #track].') 
-    ch.iter_next()
-  ch.iter_end()
+  # If a grammar makes use of the TRACK feature, inflectional rules
+  # that don't have anything to say about the contents of TRACK need
+  # to copy the whole TRACK feature up unchanged.
+  for slotprefix in ('noun', 'verb', 'det'):
+    ch.iter_begin(slotprefix + '-slot')
+    while ch.iter_valid():
+      slot = ch.iter_prefix().rstrip('_')
+      name = get_name(slot)
+      if slot not in reqd:
+        mylang.add(name + '-lex-rule := [TRACK #track, \
+        DTR.TRACK #track].') 
+      ch.iter_next()
+    ch.iter_end()
     
            
 ######################################################################
@@ -3528,17 +3555,31 @@ def customize_matrix(path, arch_type):
   lexicon = tdl.TDLfile(matrix_path + 'lexicon.tdl')
   roots =   tdl.TDLfile(matrix_path + 'roots.tdl')
 
-  # ERB 2006-10-05 Customizing Version.lsp, too, to make it easier
-  # to keep track of different grammars.  It's probably better to
-  # use some other object type than tdl (since this is just lisp), but
-  # doing it quick and dirty for now.  Also, we should store the
-  # Matrix version info somewhere that this can pull it from.
+  # date/time
+  try:
+    f = open('datestamp', 'r')
+    matrix_dt = f.readlines()[0].strip()
+    f.close()
+  except:
+    pass
 
+  current_dt = datetime.datetime.utcnow().strftime('%a %b %d %H:%M:%S UTC %Y')
+
+  # Put the current date/time in my_language.tdl...
+  mylang.add_literal(';;; Grammar of ' + ch.get('language') + '\n' +
+                     ';;; created at:\n' +
+                     ';;;     ' + current_dt + '\n' +
+                     ';;; based on Matrix customization system version of:\n' +
+                     ';;;     ' + matrix_dt)
+
+  # BUT, put the date/time of the Matrix version in Version.lsp (along
+  # with the name of the language.
   global version_lsp
   version_lsp = tdl.TDLfile(matrix_path + 'Version.lsp')
 
-  version_lsp.add_literal('(in-package :common-lisp-user)\n\n')
-  version_lsp.add_literal('(defparameter *grammar-version* \"' + ch.get('language') + ' (Matrix-10-2006)\")\n')
+  version_lsp.add_literal('(in-package :common-lisp-user)\n\n' +
+                          '(defparameter *grammar-version* \"' +
+                          ch.get('language') + ' (' + current_dt + ')\")')
 
   # Call the various customization functions
   customize_features()

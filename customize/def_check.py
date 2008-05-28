@@ -1,3 +1,5 @@
+### $Id: def_check.py,v 1.4 2008-05-28 21:08:12 sfd Exp $
+
 # ERB I've found too many bugs that come from using
 # the wrong variable name.  This script is intended
 # to check all of the variables we are using and check

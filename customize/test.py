@@ -1,3 +1,5 @@
+### $Id: test.py,v 1.12 2008-05-28 21:08:12 sfd Exp $
+
 import tdl
 
 foo = tdl.TDLfile('foo')

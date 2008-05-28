@@ -1,11 +1,48 @@
+/* $Id: matrix.css,v 1.7 2008-05-28 21:08:12 sfd Exp $ */
+
 html { overflow: scroll }
+
 .section { background-color: #E0FFFF; margin: 1px 10% }
+
 .values { padding-left: 1.2em }
+
 .submit { margin-left: 10% }
+
 .error { color: #FF0000 }
+
 div.anchor { display: none }
+
 div.iterator {
   padding-left: 2px;
-  margin: 2px 0px 2px 10px;
-  border-left: 3px solid #AAAAAA;
+  margin: 2px 0px 2px 16px;
+  border-left-width: 3px;
+  border-left-style: solid;
+}
+
+div.iterator {
+  border-left-color: #AAAAAA;
+}
+
+div.iterator div.iterator {
+  border-left-color: #FFAAAA;
+}
+
+div.iterator div.iterator div.iterator {
+  border-left-color: #AAFFAA;
+}
+
+div.iterator div.iterator div.iterator div.iterator {
+  border-left-color: #AAAAFF;
+}
+
+div.iterator div.iterator div.iterator div.iterator div.iterator {
+  border-left-color: #FFFFAA;
+}
+
+div.iterator div.iterator div.iterator div.iterator div.iterator div.iterator {
+  border-left-color: #FFAAFF;
+}
+
+div.iterator div.iterator div.iterator div.iterator div.iterator div.iterator div.iterator {
+  border-left-color: #AAFF;
 }

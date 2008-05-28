@@ -1,3 +1,5 @@
+### $Id: deffile.py,v 1.6 2008-05-28 21:08:12 sfd Exp $
+
 ######################################################################
 # This module is currently a bit of a hybrid.  Most of the code is
 # part of the MatrixDefFile class, which is used both to parse
@@ -190,7 +192,7 @@ function disp(on, off)
 HTML_mainprebody = '''<body>
 <h1>LinGO Grammar Matrix</h1>
 <h1>Matrix customization and download page</h1>
-<h2>Version of 1/25/2008</h2>
+<h2>Version of %s</h2>
 
 <p>By filling out this form, you will produce an initial starter
 package for your grammar, consisting of the language-independent core,
@@ -443,7 +445,15 @@ class MatrixDefFile:
     print HTML_pretitle
     print '<title>The Matrix</title>'
     print HTML_posttitle
-    print HTML_mainprebody
+
+    try:
+      f = open('datestamp', 'r')
+      datestamp = f.readlines()[0].strip()
+      f.close()
+    except:
+      pass
+
+    print HTML_mainprebody % (datestamp)
 
     choices_file = 'sessions/' + cookie + '/choices'
 
@@ -475,7 +485,8 @@ class MatrixDefFile:
         prefix += re.sub('\\{.*\\}', '.*', word[1])
       elif word[0] == 'EndIter':
         prefix = re.sub('_?' + word[1] + '[^_]*$', '', prefix)
-      elif word[0] != 'Label' and not errors.has_key(cur_sec):
+      elif word[0] != 'Label' and word[0][0] != '#' and \
+           not errors.has_key(cur_sec):
         pat = '^' + prefix
         if prefix:
           pat += '_'
