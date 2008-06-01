@@ -1,4 +1,4 @@
-### $Id: customize.py,v 1.56 2008-05-28 21:08:12 sfd Exp $
+### $Id: customize.py,v 1.57 2008-06-01 11:17:36 sfd Exp $
 
 ######################################################################
 # imports
@@ -89,51 +89,8 @@ def add_irule(instance_name,type_name,affix_type,affix_form):
 #   Create the type definitions associated with the user's choices
 #   about features, currently only case.
 
-# case_details()
-#   Create and return a list containing information about the cases
-#   in the language described by the current choices.  This list consists
-#   of tuples with three values: [variable prefix, label, abbreviation]
-
-def case_details():
-  # first, make two lists: the choices-variable prefixes and the
-  # user-provided case labels
-  cm = ch.get('case-marking')
-  prefixes = []
-  labels = []
-  if cm == 'nom-acc':
-    prefixes.append('nom')
-    labels.append(ch.get('nom-case-label'))
-    prefixes.append('acc')
-    labels.append(ch.get('acc-case-label'))
-  elif cm == 'erg-abs':
-    prefixes.append('erg')
-    labels.append(ch.get('erg-case-label'))
-    prefixes.append('abs')
-    labels.append(ch.get('abs-case-label'))
-  elif cm == 'tripartite':
-    prefixes.append('s')
-    labels.append(ch.get('s-case-label'))
-    prefixes.append('a')
-    labels.append(ch.get('a-case-label'))
-    prefixes.append('o')
-    labels.append(ch.get('o-case-label'))
-
-  # if possible without causing collisions, shorten the case labels to
-  # three-letter abbreviations; otherwise, just use the labels as the
-  # abbreviations
-  abbrevs = [ l[0:3] for l in labels ]
-  if len(set(abbrevs)) != len(abbrevs):
-    abbrevs = labels
-
-  cases = []
-  for i in range(0, len(prefixes)):
-    cases.append([ prefixes[i], labels[i], abbrevs[i] ])
-
-  return cases
-
-
 def has_aff_case(lex_type = ''):
-  cases = case_details()
+  cases = ch.cases()
   for p, l, a in cases:
     pat = ch.get(p + '-case-pat')
 
@@ -152,7 +109,7 @@ def has_aff_case(lex_type = ''):
 
 
 def has_adp_case():
-  cases = case_details()
+  cases = ch.cases()
   for p, l, a in cases:
     if ch.get(p + '-case-pat') == 'np':
       return True
@@ -167,7 +124,7 @@ def customize_case_type():
     comment = ';;; Case'
     mylang.add_literal(comment)
     mylang.add('case := *top*.', '', True)
-    cases = case_details()
+    cases = ch.cases()
     for p, l, a in cases:
       mylang.add(a + ' := case.', l, True)
     if has_aff_case() and has_adp_case():
@@ -178,7 +135,7 @@ def customize_case_type():
 #   Create the appropriate types for case-marking adpositions
 
 def customize_case_adpositions():
-  cases = case_details()
+  cases = ch.cases()
   has_adps = has_adp_case()
   if has_adps:
     comment = \
@@ -229,7 +186,7 @@ def customize_case_affixes():
 
   added_noun_rule = False
   added_det_rule = False
-  cases = case_details()
+  cases = ch.cases()
   for p, l, a in cases:
     pat = ch.get(p + '-case-pat')
     if pat == 'unmarked':
@@ -1035,7 +992,7 @@ def determine_consistent_order(wo,hc):
   # find subject postpositions and object prepositions).
 
   adporder = ''
-  cases = case_details()
+  cases = ch.cases()
   for p, l, a in cases:
     if ch.get(p + '-case-pat') == 'np':
       adporder = ch.get(p + '-case-order')
@@ -2429,7 +2386,7 @@ def customize_nouns():
 
 def customize_verbs():
   cm = ch.get('case-marking')
-  cases = case_details()
+  cases = ch.cases()
 
   negmod = ch.get('neg-mod')
   negadv = ch.get('neg-adv')
@@ -3091,6 +3048,7 @@ def intermediate_rule(slot, root_dict, basetype, inp=None, depth=0, opt=False):
 
 def customize_inflection():
   # Build a rule hierarchy for inflectional affixes.
+  features = ch.features()
 
   # root_dict is a dictionary mapping the choices file encodings
   # to the actual rule names.
@@ -3251,40 +3209,62 @@ def customize_inflection():
         ch.iter_begin('morph')
         while ch.iter_valid():
           morphname = ch.get('name')
-
           if not morphname:
             morphname = name
 
+          # The lexical type and the super-type names
+          ltype = morphname + '-lex-rule'
+          stype = name + '-lex-rule'
+
+          # Create appropriate sub-rule for the morpheme
           if ch.get('orth') == '':
             if ltow:
-              mylang.add(morphname+'-lex-rule := const-ltow-rule & '+name+'-lex-rule.')
+              mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
             elif wtol:
-              mylang.add(morphname+'-lex-rule := constant-lex-rule & '+name+'-lex-rule.')
+              mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
             else:
-              mylang.add(morphname+'-lex-rule := const-ltol-rule & '+name+'-lex-rule.')
-            lrules.add(morphname+'-lex := '+name+'-lex-rule.')
+              mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
+            lrules.add(morphname + '-lex := ' + stype + '.')
           else:
             if const:
               if ltow:
-                mylang.add(morphname+'-lex-rule := infl-ltow-rule & '+name+'-lex-rule.')             
+                mylang.add(ltype + ' := infl-ltow-rule & ' + stype + '.')
               elif wtol:
-                mylang.add(morphname+'-lex-rule := inflecting-lex-rule & '+name+'-lex-rule.')
+                mylang.add(ltype + ' := inflecting-lex-rule & ' + stype + '.')
               else:
-                mylang.add(morphname+'-lex-rule := infl-ltol-rule & '+name+'-lex-rule.')
+                mylang.add(ltype + ' := infl-ltol-rule & ' + stype + '.')
             elif morphname != name:
-              mylang.add(morphname+'-lex-rule := '+name+'-lex-rule.') 
-            add_irule(morphname+'-'+aff,
-                      morphname+'-lex-rule',
+              mylang.add(ltype + ' := ' + stype + '.')
+            add_irule(morphname + '-' + aff,
+                      ltype,
                       aff,
-                      ch.get('orth'))              
+                      ch.get('orth'))
+
+          # Specify features on the morpheme's rule
+          ch.iter_begin('feat')
+          while ch.iter_valid():
+            n = ch.get('name')
+            v = ch.get('value')
+
+            geom = ''
+            for f in features:
+              if f[0] == n:
+                geom = f[1]
+            
+            if geom:
+              mylang.add(ltype +
+                         ' := [ DTR.' + geom + ' ' + v + ' ].')
+            ch.iter_next()
+          ch.iter_end()
+          
           ch.iter_next()
         ch.iter_end()
       else:
         if const:
           lrules.add(name + '-lex := ' + name + '-lex-rule.')
         else:
-          add_irule(name+'-'+aff,
-                    name+'-lex-rule',
+          add_irule(name + '-' + aff,
+                    name + '-lex-rule',
                     aff,
                     morph_orth)
 

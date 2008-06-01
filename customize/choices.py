@@ -1,4 +1,4 @@
-### $Id: choices.py,v 1.13 2008-05-28 21:08:12 sfd Exp $
+### $Id: choices.py,v 1.14 2008-06-01 11:17:36 sfd Exp $
 
 ######################################################################
 # imports
@@ -203,6 +203,72 @@ class ChoicesFile:
     return self.is_set_full(self.iter_prefix() + key)
 
   
+  ######################################################################
+  # Methods for accessing "derived" values -- that is, groups of values
+  # that are implied by the list of choices, but not directly stored
+  # in it.  For example, it is convenient to be able to get a list of
+  # all features defined in the languages, even though they're not
+  # all stored in a single place.
+
+  # cases()
+  #   Create and return a list containing information about the cases
+  #   in the language described by the current choices.  This list consists
+  #   of tuples with three values: [variable prefix, label, abbreviation]
+  def cases(self):
+    # first, make two lists: the choices-variable prefixes and the
+    # user-provided case labels
+    cm = self.get_full('case-marking')
+    prefixes = []
+    labels = []
+    if cm == 'nom-acc':
+      prefixes.append('nom')
+      labels.append(self.get_full('nom-case-label'))
+      prefixes.append('acc')
+      labels.append(self.get_full('acc-case-label'))
+    elif cm == 'erg-abs':
+      prefixes.append('erg')
+      labels.append(self.get_full('erg-case-label'))
+      prefixes.append('abs')
+      labels.append(self.get_full('abs-case-label'))
+    elif cm == 'tripartite':
+      prefixes.append('s')
+      labels.append(self.get_full('s-case-label'))
+      prefixes.append('a')
+      labels.append(self.get_full('a-case-label'))
+      prefixes.append('o')
+      labels.append(self.get_full('o-case-label'))
+
+    # if possible without causing collisions, shorten the case labels to
+    # three-letter abbreviations; otherwise, just use the labels as the
+    # abbreviations
+    abbrevs = [ l[0:3] for l in labels ]
+    if len(set(abbrevs)) != len(abbrevs):
+      abbrevs = labels
+
+    cases = []
+    for i in range(0, len(prefixes)):
+      cases.append([ prefixes[i], labels[i], abbrevs[i] ])
+
+    return cases
+
+
+  # features()
+  #   Create and return a list containing information about the features
+  #   in the language described by the current choices.  This list consists
+  #   of tuples with three strings:
+  #     [feature name, feature geometry, comma-separated list of values]
+  #   Note that the feature geometry is empty if the feature requires
+  #   more complex treatment that just FEAT=VAL (e.g. negation).
+  def features(self):
+    return \
+      [ ['case', 'SYNSEM.LOCAL.CAT.HEAD.CASE', 'nom,acc'],
+        ['person', 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER', '1st,2nd,3rd'],
+        ['number', 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM', 'sg,pl'],
+        ['gender', 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND', 'masc,fem,neut'],
+        ['coordination', 'SYNSEM.LOCAL.COORD', '+,-'],
+        ['negation', '', '+'] ]
+
+
   ######################################################################
   # Conversion methods: each of these functions assumes the choices
   # file has already been loaded, then converts an older version into

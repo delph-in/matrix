@@ -1,8 +1,9 @@
-### $Id: matrixdef,v 1.20 2008-05-28 21:08:12 sfd Exp $
+### $Id: matrixdef,v 1.21 2008-06-01 11:17:36 sfd Exp $
 
 Section language "Language"
 
 Text language "Language name" "<p>e.g. Basque or Hawaiian_Creole: " "</p>" 50
+
 
 Section features "Features"
 
@@ -301,7 +302,7 @@ Label "<h3>Noun Types</h3>"
 
 BeginIter noun{i} "a Noun Type" 1
 
-  Text orth "Noun {i} spelling" "<b>noun-type{i}:</b><br>Spelling: " "" 30
+  Text orth "Noun {i} spelling" "<b><a name=\"noun-type{i}_NAME\">noun-type{i}</a></b>:<br>Spelling: " "" 30
 
   Text pred "Noun {i} predicate" " Predicate: " "<br>" 30
 
@@ -316,7 +317,7 @@ Label "<h3>Noun Inflection</h3>"
 
 BeginIter noun-slot{i} "a Slot"
 
-  Text name "Noun slot {i} name" "<b>noun-slot{i}</b>:<br>Name: " " " 20
+  Text name "Noun slot {i} name" "<b><a name=\"noun-slot{i}_NAME\">noun-slot{i}</a></b>:<br>Name: " " " 20
 
   Check opt "Noun slot {i} optional" ", which is " " optional"
 
@@ -326,25 +327,33 @@ BeginIter noun-slot{i} "a Slot"
 
   BeginIter input{j} "an Input"
 
-    Text type "Noun slot {i} input {j} type" "Input: " "" 20
+    Select type "Noun slot {i} input {j} type" "Input: " ""
+    fillpat [a-z]+-(type|slot)
+    . noun "Any noun" "any noun"
+    . verb "Any verb" "any verb"
+    . iverb "Any intransitive verb" "any intransitive verb"
+    . tverb "Any transitive verb" "any transitive verb"
 
   EndIter input
 
   BeginIter forces{j} "a Forced Slot"
 
-    Text type "Noun slot {i} forces {j} type" "Forced slot: " "" 20
+    Select type "Noun slot {i} forces {j} type" "Forced slot: " ""
+    fillpat [a-z]+-(type|slot)
 
   EndIter forces
 
   BeginIter req{j} "a Required Slot"
 
-    Text type "Noun slot {i} req {j} type" "If <b>noun-slot{i}</b> appears, " " must also appear." 20
+    Select type "Noun slot {i} req {j} type" "If <b>noun-slot{i}</b> appears, " " must also appear."
+    fillpat [a-z]+-(type|slot)
 
   EndIter req
 
   BeginIter disreq{j} "a Forbidden Slot"
 
-    Text type "Noun slot {i} req {j} type" "If <b>noun-slot{i}</b> appears, " " must <b>not</b> appear." 20
+    Select type "Noun slot {i} req {j} type" "If <b>noun-slot{i}</b> appears, " " must <b>not</b> appear."
+    fillpat [a-z]+-(type|slot)
 
   EndIter disreq
 
@@ -352,15 +361,17 @@ BeginIter noun-slot{i} "a Slot"
 
   BeginIter morph{j} "a Morpheme"
 
-    Text orth "Noun slot {i} morpheme {j} name" "Name: " ", " 20
+    Text name "Noun slot {i} morpheme {j} name" "Name: " ", " 20
 
     Text orth "Noun slot {i} morpheme {j} spelling" "spelling: " ", with the following features:<br>" 20
 
     BeginIter feat{k} "a Feature"
 
-      Text name "Noun slot {i} morpheme {j} feature {k} name" "Name: " " " 20
+      Select name "Noun slot {i} morpheme {j} feature {k} name" "Name: " " "
+      fillnames
 
-      Text value "Noun slot {i} morpheme {j} feature {k} value" "Value: " "" 20
+      Select value "Noun slot {i} morpheme {j} feature {k} value" "Value: " ""
+      fillvalues noun-slot{i}_morph{j}_feat{k}_name
 
     EndIter feat
 
@@ -372,7 +383,7 @@ Label "<h3>Verb Types</h3>"
 
 BeginIter verb{i} "a Verb Type" 2
 
-  Text orth "Verb {i} spelling" "<b>verb-type{i}:</b><br>Spelling: " "" 30
+  Text orth "Verb {i} spelling" "<b><a name=\"verb-type{i}_NAME\">verb-type{i}</a></b>:<br>Spelling: " "" 30
 
   Text pred "Verb {i} predicate" " Predicate: " "<br>" 30
 
@@ -410,17 +421,137 @@ Radio aux-subj "Auxiliary verb subject" "If the auxiliary takes a VP or V comple
 . np "Noun phrase" "" "noun phrase "
 . adp "Adpositional phrase" "" "adpositional phrase "
 
+Label "<h3>Verb Inflection</h3>"
+
+BeginIter verb-slot{i} "a Slot"
+
+  Text name "Verb slot {i} name" "<b><a name=\"verb-slot{i}_NAME\">verb-slot{i}</a></b>:<br>Name: " " " 20
+
+  Check opt "Verb slot {i} optional" ", which is " " optional"
+
+  Select order "Verb slot {i} order" " and appears " " the following inputs:<br>"
+  . after "After" "after"
+  . before "Before" "before"
+
+  BeginIter input{j} "an Input"
+
+    Select type "Verb slot {i} input {j} type" "Input: " ""
+    fillpat [a-z]+-(type|slot)
+
+  EndIter input
+
+  BeginIter forces{j} "a Forced Slot"
+
+    Select type "Verb slot {i} forces {j} type" "Forced slot: " ""
+    fillpat [a-z]+-(type|slot)
+
+  EndIter forces
+
+  BeginIter req{j} "a Required Slot"
+
+    Select type "Verb slot {i} req {j} type" "If <b>verb-slot{i}</b> appears, " " must also appear."
+
+  EndIter req
+
+  BeginIter disreq{j} "a Forbidden Slot"
+
+    Select type "Verb slot {i} req {j} type" "If <b>verb-slot{i}</b> appears, " " must <b>not</b> appear."
+    fillpat [a-z]+-(type|slot)
+
+  EndIter disreq
+
+  Label "Morpheme(s) that appear in this slot:"
+
+  BeginIter morph{j} "a Morpheme"
+
+    Text name "Verb slot {i} morpheme {j} name" "Name: " ", " 20
+
+    Text orth "Verb slot {i} morpheme {j} spelling" "spelling: " ", with the following features:<br>" 20
+
+    BeginIter feat{k} "a Feature"
+
+      Text name "Verb slot {i} morpheme {j} feature {k} name" "Name: " " " 20
+
+      Text value "Verb slot {i} morpheme {j} feature {k} value" "Value: " "" 20
+
+    EndIter feat
+
+  EndIter morph
+
+EndIter verb-slot
+
 Label "<h3>Determiners</h3>"
 
 Label "If your nouns require determiners, define at least one here. You may use the second to handle a different determiner form (e.g., for languages where number, gender, or case are marked on determiners). Note that the grammar start won't actually include any constraints implementing agreement."
 
 BeginIter det{i} "a Determiner"
 
-  Text orth "Determiner {i} spelling" "<b>determiner{i}:</b><br>Spelling: " "" 30
+  Text orth "Determiner {i} spelling" "<b><a name=\"determiner{i}_NAME\">determiner{i}</a></b>:<br>Spelling: " "" 30
 
   Text pred "Determiner {i} predicate" " Predicate: " "<br>" 30
 
 EndIter det
+
+Label "<h3>Determiner Inflection</h3>"
+
+BeginIter det-slot{i} "a Slot"
+
+  Text name "Determiner slot {i} name" "<b><a name=\"det-slot{i}_NAME\">det-slot{i}</a></b>:<br>Name: " " " 20
+
+  Check opt "Determiner slot {i} optional" ", which is " " optional"
+
+  Select order "Determiner slot {i} order" " and appears " " the following inputs:<br>"
+  . after "After" "after"
+  . before "Before" "before"
+
+  BeginIter input{j} "an Input"
+
+    Select type "Determiner slot {i} input {j} type" "Input: " ""
+    fillpat [a-z]+-(type|slot)
+
+  EndIter input
+
+  BeginIter forces{j} "a Forced Slot"
+
+    Select type "Determiner slot {i} forces {j} type" "Forced slot: " ""
+    fillpat [a-z]+-(type|slot)
+
+  EndIter forces
+
+  BeginIter req{j} "a Required Slot"
+
+    Select type "Determiner slot {i} req {j} type" "If <b>det-slot{i}</b> appears, " " must also appear."
+    fillpat [a-z]+-(type|slot)
+
+  EndIter req
+
+  BeginIter disreq{j} "a Forbidden Slot"
+
+    Select type "Determiner slot {i} req {j} type" "If <b>det-slot{i}</b> appears, " " must <b>not</b> appear."
+    fillpat [a-z]+-(type|slot)
+
+  EndIter disreq
+
+  Label "Morpheme(s) that appear in this slot:"
+
+  BeginIter morph{j} "a Morpheme"
+
+    Text name "Determiner slot {i} morpheme {j} name" "Name: " ", " 20
+
+    Text orth "Determiner slot {i} morpheme {j} spelling" "spelling: " ", with the following features:<br>" 20
+
+    BeginIter feat{k} "a Feature"
+
+      Text name "Determiner slot {i} morpheme {j} feature {k} name" "Name: " " " 20
+
+      Text value "Determiner slot {i} morpheme {j} feature {k} value" "Value: " "" 20
+
+    EndIter feat
+
+  EndIter morph
+
+EndIter det-slot
+
 
 Section test-sentences "Some Test Sentences"
 
