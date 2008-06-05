@@ -1,4 +1,4 @@
-### $Id: customize.py,v 1.57 2008-06-01 11:17:36 sfd Exp $
+### $Id: customize.py,v 1.58 2008-06-05 23:24:48 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -53,7 +53,8 @@ def has_auxiliaries_p():
   mylang.add('head :+ [ AUX bool, FORM form ].')
   mylang.add('form := avm.')
   mylang.add('fin := form.')
-  mylang.add('inf := form.')
+# LAP 2008-06-05 changed inf to nonfin as there may be several nonfinite forms
+  mylang.add('nonfin := form.')
 
   return ch.get_full('neg-infl-type') == 'aux' or \
          ch.get_full('neg-sel-adv') == 'aux' or \
@@ -2555,78 +2556,83 @@ def customize_verbs():
 
   # If there are auxiliaries, define finite and non-finite verb types,
   # cross-classify with trans and intrans.
-  if has_auxiliaries_p():
-    comment = \
-      ';;; Types for finite and non-finite verbs.  These will\n' + \
-      ';;; most likely need to be replaced with lexical rules\n' + \
-      ';;; deriving the finite and non-finite forms from verb stems.'
-    mylang.add_literal(comment)
+# LAP 2008-05-06  changed the verb type based implementation to lexical rule based
+# for finite/nonfinite -- removed the type definitions here
+
+#  if has_auxiliaries_p():
+#    comment = \
+#      ';;; Types for finite and non-finite verbs.  These will\n' + \
+#      ';;; most likely need to be replaced with lexical rules\n' + \
+#      ';;; deriving the finite and non-finite forms from verb stems.'
+#    mylang.add_literal(comment)
 
 
-    typedef = \
-      'finite-verb-lex := verb-lex & \
-         [ SYNSEM.LOCAL.CAT.HEAD.FORM fin ].'
-    mylang.add(typedef)
+#    typedef = \
+#      'finite-verb-lex := verb-lex & \
+#         [ SYNSEM.LOCAL.CAT.HEAD.FORM fin ].'
+#    mylang.add(typedef)
 
-    typedef = \
-      'non-finite-verb-lex := verb-lex & \
-         [ SYNSEM.LOCAL.CAT.HEAD.FORM inf ].'
-    mylang.add(typedef)
+#    typedef = \
+#      'non-finite-verb-lex := verb-lex & \
+#         [ SYNSEM.LOCAL.CAT.HEAD.FORM inf ].'
+#    mylang.add(typedef)
 
-    typedef = \
-      'finite-trans-verb-lex := finite-verb-lex & transitive-verb-lex.'
-    mylang.add(typedef)
-    typedef = \
-      'non-finite-trans-verb-lex := non-finite-verb-lex & transitive-verb-lex.'
-    mylang.add(typedef)
-    typedef = \
-      'finite-intrans-verb-lex := finite-verb-lex & intransitive-verb-lex.'
-    mylang.add(typedef)
-    typedef = \
-      'non-finite-intrans-verb-lex := \
-         non-finite-verb-lex & intransitive-verb-lex.'
-    mylang.add(typedef)
+#    typedef = \
+#      'finite-trans-verb-lex := finite-verb-lex & transitive-verb-lex.'
+#    mylang.add(typedef)
+#    typedef = \
+#      'non-finite-trans-verb-lex := non-finite-verb-lex & transitive-verb-lex.'
+#    mylang.add(typedef)
+#    typedef = \
+#      'finite-intrans-verb-lex := finite-verb-lex & intransitive-verb-lex.'
+#    mylang.add(typedef)
+#    typedef = \
+#      'non-finite-intrans-verb-lex := \
+#         non-finite-verb-lex & intransitive-verb-lex.'
+#    mylang.add(typedef)
 
   # Lexical entries
   lexicon.add_literal(';;; Verbs')
+
+# LAP 2008-06-05 removed structure for creating finite/nonfinte type hierarchy below 
+# as part of change to a lexical-rule based implementation
 
   # Now create the lexical entries for all the defined verb types
   ch.iter_begin('verb')
   while ch.iter_valid():
     orth = ch.get('orth')
     pred = ch.get('pred')
-    nf = ch.get('non-finite')
+#    nf = ch.get('non-finite')
 
     if ch.get('valence') == 'trans':
       tivity = 'trans'
     else:
       tivity = 'intrans'
 
-    if has_auxiliaries_p():
-      typedef = \
-        orth + ' := finite-' + tivity + '-verb-lex & \
-                    [ STEM < "' + orth + '" >, \
-                        SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-      lexicon.add(typedef)
-
-      
-      if nf:
-        typedef = nf
-      else:
-        typedef = orth + '2'
-      typedef += ' := non-finite-' + tivity + '-verb-lex & [ STEM < "'
-      if nf:
-         typedef += nf
-      else:
-        typedef += orth
-      typedef += '" >, SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-      lexicon.add(typedef)
-    else: # not has_auxiliaries_p()
-      typedef = \
-        orth + ' := ' + tivity + 'itive-verb-lex & \
-                    [ STEM < "' + orth + '" >, \
-                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-      lexicon.add(typedef)
+#    if has_auxiliaries_p():
+#      typedef = \
+#        orth + ' := finite-' + tivity + '-verb-lex & \
+#                    [ STEM < "' + orth + '" >, \
+#                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+#      lexicon.add(typedef)
+  
+#     if nf:
+#       typedef = nf
+#     else:
+#       typedef = orth + '2'
+#     typedef += ' := non-finite-' + tivity + '-verb-lex & [ STEM < "'
+#     if nf:
+#        typedef += nf
+#     else:
+#      typedef += orth
+#      typedef += '" >, SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+#      lexicon.add(typedef)
+#    else: # not has_auxiliaries_p()
+    typedef = \
+      orth + ' := ' + tivity + 'itive-verb-lex & \
+                   [ STEM < "' + orth + '" >, \
+                     SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+    lexicon.add(typedef)
 
     ch.iter_next()
   ch.iter_end()
@@ -2660,6 +2666,7 @@ def customize_auxiliaries():
   if has_auxiliaries_p():
     auxtypename = ''
     mylang.add_literal(';;; Auxiliaries')
+# LAP 2008-06-05 changed FORM inf to nonfin below
     if auxcomp == 'vp':
       typedef = 'subj-raise-aux := trans-first-arg-raising-lex-item  & \
                  [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < #subj >, \
@@ -2675,7 +2682,7 @@ def customize_auxiliaries():
                             [ LOCAL.CAT [ VAL [ SUBJ < [ ] >, \
                                                 COMPS < > ], \
                                           HEAD verb & \
-                                              [ FORM inf ]]] > ].'
+                                              [ FORM nonfin ]]] > ].'
       mylang.add(typedef)
 
       if auxsubj == 'np':
@@ -2721,6 +2728,7 @@ def customize_auxiliaries():
       #         typedef += 'adp ]],'
       #       typedef += \
 
+# LAP 2008-06-05 changed inf to nonfin below
       typedef = \
         'arg-comp-aux := basic-two-arg & \
            [ SYNSEM.LOCAL.CAT [ HEAD verb & [ AUX + ], \
@@ -2736,7 +2744,7 @@ def customize_auxiliaries():
                     [ LIGHT +, \
                       LOCAL [ CAT [ VAL [ SUBJ <[ ]>, \
                                           COMPS #vcomps ], \
-                                    HEAD verb & [ FORM inf ]], \
+                                    HEAD verb & [ FORM nonfin ]], \
                               CONT.HOOK.XARG #xarg ]] > ].'
       mylang.add(typedef)
 
@@ -2776,7 +2784,7 @@ def customize_auxiliaries():
              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
         mylang.add(typedef)
 
-        
+# LAP 2008-06-05 changed inf to nonfin below        
     elif auxcomp == 's':
       typedef = \
         's-comp-aux := basic-one-arg & \
@@ -2788,7 +2796,7 @@ def customize_auxiliaries():
              ARG-ST < #comps & \
                       [ LOCAL.CAT [ VAL [ SUBJ < >, \
                                           COMPS < > ], \
-                                    HEAD verb & [ FORM inf ]]] > ].'
+                                    HEAD verb & [ FORM nonfin ]]] > ].'
       mylang.add(typedef)
 
       if auxsem == 'pred':
