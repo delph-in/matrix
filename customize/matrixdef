@@ -1,4 +1,4 @@
-### $Id: matrixdef,v 1.21 2008-06-01 11:17:36 sfd Exp $
+### $Id: matrixdef,v 1.22 2008-06-08 20:46:39 lpoulson Exp $
 
 Section language "Language"
 
@@ -391,35 +391,43 @@ BeginIter verb{i} "a Verb Type" 2
   . intrans "Intransitive" "" "intransitive "
   . trans "Transitive" "" "transitive<br>"
 
-  Text non-finite "Verb {i} (non-finite)" "If your language has auxiliaries and this verb appears in a different form when it is the (head of the) complement of the auxiliary specified below, please specify that form here: " "" 30
-
 EndIter verb
 
-Label "<h3>Auxiliary verb</h3>"
+Label "<h3>Auxiliary verb Types</h3>"
 
-Text aux-verb "Auxiliary verb" "Spelling (finite form): " "" 40
+BeginIter aux{i} "an Aux Type" 1
 
-Radio aux-sem "Auxiliary verb semantics" "<br>This auxiliary verb contributes:<br>" ""
-. pred "Predicate" "" "An independent predicate (e.g. _can_v_rel): "
+  Text orth "Aux {i} spelling" "<b><a name=\"aux-type{i}_NAME\">aux-type{i}</a></b>:<br>Spelling: " "" 40
 
-Text aux-pred "Auxiliary verb predicate" "" "" 40
+  Radio sem "Aux {i} semantics" "<br>This auxiliary verb contributes:<br>" ""
+  . pred "Predicate" "" "An independent predicate (e.g. _can_v_rel): "
 
-Radio aux-sem "Auxiliary verb semantics" "<br>" ""
-. no-pred "No predicate" "" "Tense/aspect information only<br>"
+  Text pred "Aux{i} predicate" "Predicate: " "" 40
 
-Radio aux-comp "Auxiliary verb complement" "<br>This auxiliary verb takes as its complement:<br>" ""
-. s "S" "" "a saturated sentence<br>"
-. vp "VP" "" "a VP, raising the subject<br>"
-. v "V" "" "a V, raising all of its arguments (argument composition)<br>"
+  Radio sem "Aux {i} semantics" "<br>" ""
+  . no-pred "No predicate" "" "Tense/aspect information only"
 
-Radio aux-order "Auxiliary verb order" "This auxiliary verb appears " ""
-. before "Before" "" "before "
-. after "After" "" "after "
-. either "Either" "" "on either side of its complement.<br>"
+  Radio comp "Aux {i} complement" "<br>This auxiliary verb takes as its complement a:<br>" ""
+  . s "S" "" "saturated sentence<br>"
+  . vp "VP" "" "VP, raising the subject<br>"
+  . v "V" "" "V, raising all of its arguments (argument composition)"
 
-Radio aux-subj "Auxiliary verb subject" "If the auxiliary takes a VP or V complement, its subject is a: " ""
-. np "Noun phrase" "" "noun phrase "
-. adp "Adpositional phrase" "" "adpositional phrase "
+  Radio form "Aux {i} complement verb form" "<br>The form of the verb in this auxiliary's complement must be:<br>" ""
+  . f "finite" "" "finite<br>"
+  . nf "nonfinite" "" "non-finite: "
+
+  Text nonfinform "Aux {i} nonfinite complement form" "Non-finite form (e.g. infinitive): " "<br>" 40
+
+  Radio order "Aux {i} order" "This auxiliary verb appears " ""
+  . before "Before" "" "before "
+  . after "After" "" "after "
+  . either "Either" "" "on either side of its complement.<br>"
+
+  Radio subj "Aux {i} subject" "If the auxiliary takes a VP or V complement, its subject is a: " ""
+  . np "Noun phrase" "" "noun phrase "
+  . adp "Adpositional phrase" "" "adpositional phrase "
+
+EndIter aux
 
 Label "<h3>Verb Inflection</h3>"
 
