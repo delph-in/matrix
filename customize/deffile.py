@@ -1,4 +1,4 @@
-### $Id: deffile.py,v 1.7 2008-06-01 11:17:36 sfd Exp $
+### $Id: deffile.py,v 1.8 2008-06-12 09:55:56 sfd Exp $
 
 ######################################################################
 # This module is currently a bit of a hybrid.  Most of the code is
@@ -172,22 +172,22 @@ function remove_region(name)
 }
 
 // Remove the auto-filled OPTIONs of a SELECT
-function remove_filled_options(select)
+function remove_temp_options(select)
 {
   for (i = select.options.length - 1; i >= 0; i--) {
     o = select.options[i];
-    if (o.className == 'filled') {
+    if (o.className == 'temp') {
       select.removeChild(o);
     }
   }
 }
 
-function fill_pattern(name, pattern)
+function fill_regex(name, pattern)
 {
   select = document.getElementsByName(name)[0];
   oldval = select.value;  // store the previously selected option
 
-  remove_filled_options(select);
+  remove_temp_options(select);
 
   // Pass through the links in the document, looking for ones whose
   // name attribute matches the pattern.  When one is found, use its
@@ -206,7 +206,7 @@ function fill_pattern(name, pattern)
       }
 
       o = document.createElement('option');
-      o.className = 'filled';
+      o.className = 'temp';
       o.value = val;
       o.innerHTML = val + desc;
 
@@ -217,9 +217,9 @@ function fill_pattern(name, pattern)
   select.value = oldval;  // restore the selected option
 }
 
-// An array of strings, each of the form 'name:value,value,...'
+// An array of strings, each of the form 'name:value|friendly value,...'
 features = [
-  %s
+%s
 ];
 
 function fill_feature_names(select_name)
@@ -227,13 +227,13 @@ function fill_feature_names(select_name)
   select = document.getElementsByName(select_name)[0];
   old_val = select.value;  // store the previously selected option
 
-  remove_filled_options(select);
+  remove_temp_options(select);
 
   for (i = 0; i < features.length; i++) {
     f = features[i].split(':');
     
     o = document.createElement('option');
-    o.className = 'filled';
+    o.className = 'temp';
     o.value = f[0];
     o.innerHTML = f[0];
 
@@ -248,7 +248,7 @@ function fill_feature_values(select_name, other_name)
   select = document.getElementsByName(select_name)[0];
   old_val = select.value;  // store the previously selected option
 
-  remove_filled_options(select);
+  remove_temp_options(select);
 
   other_val = document.getElementsByName(other_name)[0].value;
 
@@ -259,14 +259,50 @@ function fill_feature_values(select_name, other_name)
       v = v[1].split(',');
 
       for (j = 0; j < v.length; j++) {
+        n = v[j].split('|');
         o = document.createElement('option');
-        o.className = 'filled';
-        o.value = v[j];
-        o.innerHTML = v[j];
+        o.className = 'temp';
+        o.value = n[0];
+        o.innerHTML = n[1];
 
         select.appendChild(o);
       }
     }
+  }
+
+  select.value = old_val;  // restore the selected option
+}
+
+verb_case_patterns = [
+%s
+];
+
+morph_case_patterns = [
+%s
+];
+
+function fill_case_patterns(select_name, morph)
+{
+  select = document.getElementsByName(select_name)[0];
+  old_val = select.value;  // store the previously selected option
+
+  remove_temp_options(select);
+
+  if (morph) {
+    pats = morph_case_patterns;
+  } else {
+    pats = verb_case_patterns;
+  }
+
+  for (i = 0; i < pats.length; i++) {
+    p = pats[i].split(':');
+    
+    o = document.createElement('option');
+    o.className = 'temp';
+    o.value = p[0];
+    o.innerHTML = p[1];
+
+    select.appendChild(o);
   }
 
   select.value = old_val;  // restore the selected option
@@ -431,13 +467,18 @@ def html_select(errors, name, onfocus = ''):
 
 # Return an HTML <option> tag with the specified attributes and
 # surrounding text
-def html_option(errors, name, selected, html):
+def html_option(errors, name, selected, html, temp=False):
   sld = ''
   if selected:
     sld = ' selected'
 
-  return '<option value="%s"%s>%s</option>' % \
-         (name, sld, html)
+  if temp:
+    temp = ' class="temp"'
+  else:
+    temp = ''
+
+  return '<option value="%s"%s%s>%s</option>' % \
+         (name, sld, temp, html)
 
 
 # split a string into words, treating double-quoted strings as
@@ -474,12 +515,13 @@ def replace_vars(word, iter_vars):
   return word
 
 
-# From a list of triples of strings [name, featGeom, friendlyName], return
-# a string containing a JavaScript-formatted list.
-def create_js_list(list):
+# From a list of triples of strings [string1, string2, ...], return
+# a string containing a JavaScript-formatted list of strings of the
+# form 'string1:string2'.
+def js_array(list):
   val = ''
   for l in list:
-    val += '\'' + l[0] + ':' + l[2] + '\',\n'
+    val += '\'' + l[0] + ':' + l[1] + '\',\n'
   val = val[0:-2]  # trim off the last ,\n
   return val
 
@@ -491,7 +533,7 @@ def create_js_list(list):
 # on the contents, to produce HTML pages and save choices files.
 
 class MatrixDefFile:
-  def_file = ""
+  def_file = ''
   v2f = {}
   f2v = {}
 
@@ -544,7 +586,7 @@ class MatrixDefFile:
     print 'Set-cookie: session=' + cookie + '\n'
     print HTML_pretitle
     print '<title>The Matrix</title>'
-    print HTML_posttitle % ('')
+    print HTML_posttitle % ('', '', '')
 
     try:
       f = open('datestamp', 'r')
@@ -636,7 +678,7 @@ class MatrixDefFile:
     print html_input(errors, 'radio', 'delivery', 'zip', zip_checked,
                      ' ', ' .zip<br>')
     print html_input(errors, 'submit', '', 'Create Grammar', False, '', '</p>',
-                     '', '', len(errors) > 0)
+                     '', '', False and len(errors) > 0)
     print html_input(errors, 'button', '', 'Download Choices File', False,
                      '<p class="submit">', '</p>', '',
                      'window.location.href=\'' + choices_file + '\'')
@@ -663,10 +705,9 @@ class MatrixDefFile:
       if len(word) == 0:
         pass
       elif word[0] == 'Label':
-        html += '<p>'
         for w in word[1:]:
           html += w
-        html += '</p>\n'
+        html += '\n'
       elif word[0] == 'Separator':
         html += '<hr>'
       elif word[0] == 'Check':
@@ -681,7 +722,7 @@ class MatrixDefFile:
         html += bf + '\n'
         i += 1
         while lines[i] != '\n':
-          word = tokenize_def(lines[i])
+          word = tokenize_def(replace_vars(lines[i], vars))
           (rval, rfrn, rbef, raft) = word[1:]
           checked = False
           if choices.is_set_full(vn) and choices.get_full(vn) == rval:
@@ -701,15 +742,15 @@ class MatrixDefFile:
         fill_type = ''
         fill_arg = ''
         if lines[i] != '\n':
-          word = tokenize_def(lines[i])
+          word = tokenize_def(replace_vars(lines[i], vars))
           fill_type = word[0]
           if len(word) > 1:
             fill_arg = word[1]
 
         if fill_type[0:4] == 'fill':
-          if fill_type == 'fillpat':
+          if fill_type == 'fillregex':
             html += html_select(errors, vn,
-                                'fill_pattern(\'' + vn + \
+                                'fill_regex(\'' + vn + \
                                 '\', \'' + fill_arg + '\')') + '\n'
           elif fill_type == 'fillnames':
             html += html_select(errors, vn,
@@ -718,19 +759,41 @@ class MatrixDefFile:
             html += html_select(errors, vn,
                                 'fill_feature_values(\'' + vn + \
                                 '\', \'' + fill_arg + '\')') + '\n'
-          sval = ''
-          selected = False
+          elif fill_type == 'fillverbpat':
+            html += html_select(errors, vn,
+                                'fill_case_patterns(\'' + vn + \
+                                '\', false)') + '\n'
+          elif fill_type == 'fillmorphpat':
+            html += html_select(errors, vn,
+                                'fill_case_patterns(\'' + vn + \
+                                '\', true)') + '\n'
+
+          html += html_option(errors, '', False, '') + '\n'
+
           if choices.is_set_full(vn):
             sval = choices.get_full(vn)
-            selected = True
-          html += html_option(errors, sval, selected, sval) + '\n'
+            shtml = sval
+            # If we're filling in a SELECT that shows friendly names,
+            # we have to look it up.
+            if fill_type in ['fillvalues']:
+              for f in choices.features():
+                if f[0] == choices.get_full(fill_arg):
+                  for v in f[1].split(','):
+                    n = v.split('|')
+                    if n[0] == shtml:
+                      shtml = n[1]
+            elif fill_type in ['fillverbpat']:
+              for p in choices.patterns():
+                if p[0] == shtml:
+                  shtml = p[1]
+            html += html_option(errors, sval, True, shtml, True) + '\n'
           i += 1
         else:
           html += html_select(errors, vn) + '\n'
           html += html_option(errors, '', False, '') + '\n'
 
         while lines[i] != '\n':
-          word = tokenize_def(lines[i])
+          word = tokenize_def(replace_vars(lines[i], vars))
           (sval, sfrn, shtml) = word[1:]
           selected = False
           if choices.is_set_full(vn) and choices.get_full(vn) == sval:
@@ -843,7 +906,10 @@ class MatrixDefFile:
         section_end = i
 
       print '<title>' + section_friendly + '</title>'
-      print HTML_posttitle % (create_js_list(choices.features()))
+      print HTML_posttitle % \
+            (js_array(choices.features()),
+             js_array([c for c in choices.patterns() if not c[2]]),
+             js_array([c for c in choices.patterns() if c[2]]))
       print HTML_prebody
       print '<h2>' + section_friendly + '</h2>'
       print HTML_preform

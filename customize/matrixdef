@@ -1,4 +1,4 @@
-### $Id: matrixdef,v 1.22 2008-06-08 20:46:39 lpoulson Exp $
+### $Id: matrixdef,v 1.23 2008-06-12 09:55:56 sfd Exp $
 
 Section language "Language"
 
@@ -9,123 +9,95 @@ Section features "Features"
 
 Label "<h3>Case</h3>"
 
-Label "Blake (2001) defines <span style=\"font-variant:small-caps\">case</span> as &quot;a system of marking dependent nouns for the type of relationship they bear to their heads.&quot; For example, case commonly marks the subject or the direct object of a verb. The marking might consist of affixation or some other morpholological process that marks words, or it might be a adposition that marks whole noun phrases."
-Label "This questionnaire allows you to describe <span style=\"font-variant:small-caps\">core case marking</span> in your language; that is, the pattern of cases marking the mandatory arguments of transitive and intransitive verbs.  Following Dixon (1968), we refer to the grammatical relations commonly expressed by case using the following abbreviations: A refers to the agent of a transitive verb; O refers to the patient (or object) of a transitive verb; and S refers to the lone argument (or subject) of intransitive verbs."
+Label "<p>Blake (2001) defines <span style=\"font-variant:small-caps\">case</span> as &quot;a system of marking dependent nouns for the type of relationship they bear to their heads.&quot; For example, case commonly marks the subject or the direct object of a verb. The marking might consist of affixation or some other morpholological process that marks words, or it might be a adposition that marks whole noun phrases.</p>"
+Label "<p>This questionnaire allows you to describe <span style=\"font-variant:small-caps\">core case marking</span> in your language; that is, the pattern of cases marking the mandatory arguments of transitive and intransitive verbs.  Following Dixon (1968), we refer to the grammatical relations commonly expressed by case using the following abbreviations: A refers to the agent of a transitive verb; O refers to the patient (or object) of a transitive verb; and S refers to the lone argument (or subject) of intransitive verbs.</p>"
 
-Radio case-marking "Core case marking" "<p>What kind of core case marking does your language exhibit?</p>" ""
-. none "None" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>None</b><br>Verbal argument roles are determined only by word order, by intonation, or pragmatically.</p>"
+Radio case-marking "Core case marking" "<p>What type of core case marking does your language exhibit?</p>" ""
+. none "None" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>None</b><br>(Verbal argument roles are determined only by word order, by intonation, or pragmatically.)</p>"
 . nom-acc "Nominative-accusative" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Nominative-accusative</b><br>"
 
-Text nom-case-label "Nominative case label" "S and A take a case called the " " (e.g. nominative, subjective)<br>" 20
+Text nom-acc-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
 
-Select nom-case-pat "Nominative case pattern" "...that is " " "
-. unmarked "Unmarked" "unmarked"
-. noun "Nouns" "an affix on nouns"
-. det "Determiners" "an affix on determiners"
-. det-noun "Determiners and nouns" "an affix on determiners and nouns"
-. np "Noun phrases" "an adposition on noun phrases"
-
-Select nom-case-order "Nominative case order" "that appears " " "
-. after "After" "at the end"
-. before "Before" "at the beginning"
-
-Text nom-case-orth "Nominative case spelling" " and is spelled " "<br>" 10
-
-Text acc-case-label "Accusative case label" "O takes a case called the " " (e.g. accusative, objective)<br>" 20
-
-Select acc-case-pat "Accusative case pattern" "...that is " " "
-. unmarked "Unmarked" "unmarked"
-. noun "Nouns" "an affix on nouns"
-. det "Determiners" "an affix on determiners"
-. det-noun "Determiners and nouns" "an affix on determiners and nouns"
-. np "Noun phrases" "an adposition on noun phrases"
-
-Select acc-case-order "Accusative case order" "that appears " " "
-. after "After" "at the end"
-. before "Before" "at the beginning"
-
-Text acc-case-orth "Accusative case spelling" " and is spelled " "</p>" 10
+Text nom-acc-acc-case-name "Accusative case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
 
 Radio case-marking "Core case marking" "" ""
 . erg-abs "Ergative-absolutive" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Ergative-absolutive</b><br>"
 
-Text erg-case-label "Ergative case label" "A takes a case called the " " (e.g. ergative, relative, narrative)<br>" 20
+Text erg-abs-erg-case-name "Ergative case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
 
-Select erg-case-pat "Ergative case pattern" "...that is " " "
-. unmarked "Unmarked" "unmarked"
-. noun "Nouns" "an affix on nouns"
-. det "Determiners" "an affix on determiners"
-. det-noun "Determiners and nouns" "an affix on determiners and nouns"
-. np "Noun phrases" "an adposition on noun phrases"
-
-Select erg-case-order "Ergative case order" "that appears " " "
-. after "After" "at the end"
-. before "Before" "at the beginning"
-
-Text erg-case-orth "Ergative case spelling" " and is spelled " "<br>" 10
-
-Text abs-case-label "Absolutive case label" "S and O take a case called the " " (e.g. absolutive, nominative)<br>" 20
-
-Select abs-case-pat "Absolutive case pattern" "...that is " " "
-. unmarked "Unmarked" "unmarked"
-. noun "Nouns" "an affix on nouns"
-. det "Determiners" "an affix on determiners"
-. det-noun "Determiners and nouns" "an affix on determiners and nouns"
-. np "Noun phrases" "an adposition on noun phrases"
-
-Select abs-case-order "Absolutive case order" "that appears " " "
-. after "After" "at the end"
-. before "Before" "at the beginning"
-
-Text abs-case-orth "Absolutive case spelling" " and is spelled " "</p>" 10
+Text erg-abs-abs-case-name "Absolutive case name" "S and O take a case named the " " (e.g. absolutive, nominative)<br>" 20
 
 Radio case-marking "Core case marking" "" ""
 . tripartite "Tripartite" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Tripartite</b><br>"
 
-Text s-case-label "S case label" "S takes a case called the " " (e.g. nominative, subjective)<br>" 20
+Text tripartite-s-case-name "S case name" "S takes a case named the " " (e.g. nominative, subjective)<br>" 20
 
-Select s-case-pat "S case pattern" "...that is " " "
-. unmarked "Unmarked" "unmarked"
-. noun "Nouns" "an affix on nouns"
-. det "Determiners" "an affix on determiners"
-. det-noun "Determiners and nouns" "an affix on determiners and nouns"
-. np "Noun phrases" "an adposition on noun phrases"
+Text tripartite-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
 
-Select s-case-order "S case order" "that appears " " "
-. after "After" "at the end"
-. before "Before" "at the beginning"
+Text tripartite-o-case-name "O case name" "O takes a case named the " " (e.g. absolutive, patientive)<br>" 20
 
-Text s-case-orth "S case spelling" " and is spelled " "<br>" 10
+Radio case-marking "Core case marking" "" ""
+. split-s "Split-S" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Split-S</b><br>"
 
-Text a-case-label "A case label" "A takes a case called the " " (e.g. ergative, agentive)<br>" 20
+Label "(The S argument of some intransitive verbs is marked by the same case as the agent of transitives, while for other verbs the S argument is marked by the same case as the patient.)<br>"
 
-Select a-case-pat "A case pattern" "...that is " " "
-. unmarked "Unmarked" "unmarked"
-. noun "Nouns" "an affix on nouns"
-. det "Determiners" "an affix on determiners"
-. det-noun "Determiners and nouns" "an affix on determiners and nouns"
-. np "Noun phrases" "an adposition on noun phrases"
+Text split-s-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
 
-Select a-case-order "A case order" "that appears " " "
-. after "After" "at the end"
-. before "Before" "at the beginning"
+Text split-s-o-case-name "O case name" "O takes a case named the " " (e.g. absolutive, patientive)<br>" 20
 
-Text a-case-orth "A case spelling" " and is spelled " "<br>" 10
+Radio case-marking "Core case marking" "" ""
+. fluid-s "Fluid-S" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Fluid-S</b><br>"
 
-Text o-case-label "O case label" "O takes a case called the " " (e.g. absolutive, patientive)<br>" 20
+Label "(The S argument of any intransitive verb can be marked either by the same case as the transitive agent or patient, depending on pragmatic factors, e.g. whether the S is perceived as being in control of the action.)<br>"
 
-Select o-case-pat "O case pattern" "...that is " " "
-. unmarked "Unmarked" "unmarked"
-. noun "Nouns" "an affix on nouns"
-. det "Determiners" "an affix on determiners"
-. det-noun "Determiners and nouns" "an affix on determiners and nouns"
-. np "Noun phrases" "an adposition on noun phrases"
+Text fluid-s-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
 
-Select o-case-order "O case order" "that appears " " "
-. after "After" "at the end"
-. before "Before" "at the beginning"
+Text fluid-s-o-case-name "O case name" "O takes a case named the " " (e.g. absolutive, patientive)<br>" 20
 
-Text o-case-orth "O case spelling" " and is spelled " "</p>" 10
+Radio case-marking "Core case marking" "" ""
+. split-n "Split N" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Split conditioned on features of the noun phrase arguments</b><br>"
+
+Label "(Some classes of noun phrases (e.g. pronouns) show a nominative-accusative pattern, while others (e.g. common nouns) show an ergative-absolutive pattern.  You will have an opportunity to define these classes on the Lexicon page.)<br>"
+
+Text split-n-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
+
+Text split-n-acc-case-name "Accusative case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
+
+Text split-n-erg-case-name "Ergative case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
+
+Text split-n-abs-case-name "Absolutive case name" "S and O take a case named the " " (e.g. absolutive, nominative)<br>" 20
+
+Radio case-marking "Core case marking" "" ""
+. split-v "Split V" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Split conditioned on features of the verb</b><br>"
+
+Label "(Depending on some feature of the verb (e.g. tense or aspect), the core arguments are sometimes marked in a nominative-accusative pattern and other times in an ergative-absolutive pattern.  You will have an opportunity to define these features on the Lexicon page.)<br>"
+
+Text split-v-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
+
+Text split-v-acc-case-name "Accusative case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
+
+Text split-v-erg-case-name "Ergative case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
+
+Text split-v-abs-case-name "Absolutive case name" "S and O take a case named the " " (e.g. absolutive, nominative)<br>" 20
+
+Radio case-marking "Core case marking" "" ""
+. focus "Focus" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Focus-case</b><br>"
+
+Label "(A number of Austronesian languages, including several Philippine languages, have a system where A and O are marked by cases.  An additional case, sometimes called the <span style=\"font-variant:small-caps\">focus</span>, is mandatory in every clause and has its grammatical role assigned by the morphology of the verb.  You will have an opportunity to define this morphology on the Lexicon page.)<br>"
+
+Text focus-focus-case-name "Focus case name" "The focus case is named the " "<br>" 20
+
+Text focus-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
+
+Text focus-o-case-name "O case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
+
+Label "<p><b>Additional Cases</b></p><p>If your language has any additional cases not covered above that occur in simple intransitive or transitive clauses (e.g. if you language has verbs whose O is marked by the dative), define those cases here:</p>"
+
+BeginIter case{i} "a Case"
+
+  Text name "Case name" "Name: " "" 20
+
+EndIter case
 
 
 Section word-order "Word Order"
@@ -141,7 +113,7 @@ Radio word-order "Basic word order" "Please indicate which pattern best describe
 . v-initial "Verb-initial" "" "V-initial<br>"
 . free "Free word order" "" "free (pragmatically determined word order)"
 
-Label "Note: Modules for V2 order (auxiliary second, all else free or finite verb second, non-finite verb clause-finally) and differing word order between matrix and subordinate clauses are currently under development."
+Label "<p>Note: Modules for V2 order (auxiliary second, all else free or finite verb second, non-finite verb clause-finally) and differing word order between matrix and subordinate clauses are currently under development.</p>"
 
 Radio has-dets "Has determiners" "Does your language have determiners (as independent words)?" ""
 . yes "Yes" "" "yes"
@@ -154,7 +126,7 @@ Radio noun-det-order "Order of determiners and nouns" "If so, what is the order 
 
 Section sentential-negation "Sentential Negation"
 
-Label "Please indicate which strategy or strategies your language uses for sentential negation (as distinct from constituent negation). (You may leave this section blank, in which case your grammar will not include any information about negation.)"
+Label "<p>Please indicate which strategy or strategies your language uses for sentential negation (as distinct from constituent negation). (You may leave this section blank, in which case your grammar will not include any information about negation.)</p>"
 
 Check infl-neg "Negation by inflection" "<p>" "Verbal inflection:<br>"
 
@@ -194,7 +166,7 @@ Radio neg-sel-adv "Negative adverb selects" "" ""
 
 Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p>" 20
 
-Label "Notes: The following options are not yet implemented: Negative inflection of non-finite verbs, special negative auxiliaries."
+Label "<p>Notes: The following options are not yet implemented: Negative inflection of non-finite verbs, special negative auxiliaries.</p>"
 
 Radio multi-neg "Negative inflection and adverb" "<p>If you have selected both inflectional and adverbial negation, please indicate which of the following best describes your language:<br>" "</p>"
 . comp "Complementary distribution" "" "Inflectional and adverbial negation are used in complementary distribution.<br>"
@@ -203,14 +175,14 @@ Radio multi-neg "Negative inflection and adverb" "<p>If you have selected both i
 . adv-obl "Adverb obligatory" "" "The adverb is obligatory, but inflection may appear in addition.<br>"
 . infl-obl "Inflection obligatory" "" "The inflection is obligatory, but the adverb may appear in addition."
 
-Label "Note: We assume that when negation is expressed via both inflection and an adverb at the same time, the adverb is treated as a selected complement."
+Label "<p>Note: We assume that when negation is expressed via both inflection and an adverb at the same time, the adverb is treated as a selected complement.</p>"
 
 
 Section coordination "Coordination"
 
-Label "Languages can have have multiple ways of marking coordination that can differ among the various parts of speech. The Matrix supports both lexical and morphological marking of coordination in several patterns. These patterns include:"
+Label "<p>Languages can have have multiple ways of marking coordination that can differ among the various parts of speech. The Matrix supports both lexical and morphological marking of coordination in several patterns. These patterns include:</p>"
 
-Label "Monosyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B and C&quot; (one coordinand marked; also permits &quot;A and B and C&quot;)<br>Polysyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A and B and C&quot; (for N coordinands, N-1 marked)<br>N-Polysyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;and A and B and C&quot; (all coordinands marked)<br>Asyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B C&quot; (no marking; also called &quot;juxtaposition&quot;)"
+Label "<p>Monosyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B and C&quot; (one coordinand marked; also permits &quot;A and B and C&quot;)<br>Polysyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A and B and C&quot; (for N coordinands, N-1 marked)<br>N-Polysyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;and A and B and C&quot; (all coordinands marked)<br>Asyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B C&quot; (no marking; also called &quot;juxtaposition&quot;)</p>"
 
 Check cs1 "Coordination strategy 1" "" "Coordination Strategy 1:<br>&nbsp;&nbsp;&nbsp;&nbsp;in which"
 
@@ -261,7 +233,7 @@ Radio cs2_order "CS2 order" "that comes " ""
 
 Section matrix-yes-no "Matrix Yes/No Questions"
 
-Label "Please indicate which strategy your language uses to form matrix yes-no questions. Notes: You may leave this section blank, in which case your grammar will not include any information about questions."
+Label "<p>Please indicate which strategy your language uses to form matrix yes-no questions. Notes: You may leave this section blank, in which case your grammar will not include any information about questions.</p>"
 
 Check q-part "Yes/No question particle" "" "A separate question particle: "
 
@@ -294,15 +266,17 @@ Radio q-inv-verb "Inverted verb in questions" "" ""
 
 Section lexicon "Lexicon"
 
-Label "On this page you will specify basic lexical types and lexical items for your language.  For each lexical item you must provide the spelling of the stem and a predicate (e.g. _cat_n_rel, _sleep_v_rel)."
+Label "<p>On this page you will specify basic lexical types and lexical items for your language.  For each lexical item you must provide the spelling of the stem and a predicate (e.g. _cat_n_rel, _sleep_v_rel).</p>"
 
-Label "In addition to lexical types, you can define inflectional morphology for nouns, verbs, and determiners.  To do so, first define one or more inflectional <span style=\"font-variant:small-caps\">slots</span>, which determine the order morphemes appear, then define one or more <span style=\"font-variant:small-caps\">morphemes</span> that can appear in each slot, along with the <span style=\"font-variant:small-caps\">features</span> specified by each morpheme.  To determine the order of morphemes, you must define one or more <span style=\"font-variant:small-caps\">inputs</span> for each slot.  For morphemes that attach directly to stems, the input will be a lexical type; for morphemes that attach to already-inflected stems, the input will be another slot."
+Label "<p>In addition to lexical types, you can define inflectional morphology for nouns, verbs, and determiners.  To do so, first define one or more inflectional <span style=\"font-variant:small-caps\">slots</span>, which determine the order morphemes appear, then define one or more <span style=\"font-variant:small-caps\">morphemes</span> that can appear in each slot, along with the <span style=\"font-variant:small-caps\">features</span> specified by each morpheme.  To determine the order of morphemes, you must define one or more <span style=\"font-variant:small-caps\">inputs</span> for each slot.  For morphemes that attach directly to stems, the input will be a lexical type; for morphemes that attach to already-inflected stems, the input will be another slot.</p>"
 
 Label "<h3>Noun Types</h3>"
 
 BeginIter noun{i} "a Noun Type" 1
 
-  Text orth "Noun {i} spelling" "<b><a name=\"noun-type{i}_NAME\">noun-type{i}</a></b>:<br>Spelling: " "" 30
+  Text name "Noun {i} name" "<b><a name=\"noun{i}_NAME\">noun{i}</a></b>:<br>Name: " "<br>" 20
+
+  Text orth "Noun {i} spelling" "Spelling: " "" 30
 
   Text pred "Noun {i} predicate" " Predicate: " "<br>" 30
 
@@ -328,7 +302,7 @@ BeginIter noun-slot{i} "a Slot"
   BeginIter input{j} "an Input"
 
     Select type "Noun slot {i} input {j} type" "Input: " ""
-    fillpat [a-z]+-(type|slot)
+    fillregex (noun|verb|det)(-slot)?
     . noun "Any noun" "any noun"
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
@@ -339,25 +313,25 @@ BeginIter noun-slot{i} "a Slot"
   BeginIter forces{j} "a Forced Slot"
 
     Select type "Noun slot {i} forces {j} type" "Forced slot: " ""
-    fillpat [a-z]+-(type|slot)
+    fillregex (noun|verb|det)(-slot)?
 
   EndIter forces
 
   BeginIter req{j} "a Required Slot"
 
     Select type "Noun slot {i} req {j} type" "If <b>noun-slot{i}</b> appears, " " must also appear."
-    fillpat [a-z]+-(type|slot)
+    fillregex (noun|verb|det)(-slot)?
 
   EndIter req
 
   BeginIter disreq{j} "a Forbidden Slot"
 
     Select type "Noun slot {i} req {j} type" "If <b>noun-slot{i}</b> appears, " " must <b>not</b> appear."
-    fillpat [a-z]+-(type|slot)
+    fillregex (noun|verb|det)(-slot)?
 
   EndIter disreq
 
-  Label "Morpheme(s) that appear in this slot:"
+  Label "<p>Morpheme(s) that appear in this slot:</p>"
 
   BeginIter morph{j} "a Morpheme"
 
@@ -383,13 +357,14 @@ Label "<h3>Verb Types</h3>"
 
 BeginIter verb{i} "a Verb Type" 2
 
-  Text orth "Verb {i} spelling" "<b><a name=\"verb-type{i}_NAME\">verb-type{i}</a></b>:<br>Spelling: " "" 30
+  Text name "Verb {i} name" "<b><a name=\"verb{i}_NAME\">verb{i}</a></b>:<br>Name: " "<br>" 20
+
+  Text orth "Verb {i} spelling" "Spelling: " "" 30
 
   Text pred "Verb {i} predicate" " Predicate: " "<br>" 30
 
-  Radio valence "Verb {i} valence" "This verb type is " ""
-  . intrans "Intransitive" "" "intransitive "
-  . trans "Transitive" "" "transitive<br>"
+  Select valence "Verb {i} arguments" "Argument structure: " "<br>"
+  fillverbpat
 
 EndIter verb
 
@@ -444,14 +419,18 @@ BeginIter verb-slot{i} "a Slot"
   BeginIter input{j} "an Input"
 
     Select type "Verb slot {i} input {j} type" "Input: " ""
-    fillpat [a-z]+-(type|slot)
+    fillregex (noun|verb|det)(-slot)?
+    . noun "Any noun" "any noun"
+    . verb "Any verb" "any verb"
+    . iverb "Any intransitive verb" "any intransitive verb"
+    . tverb "Any transitive verb" "any transitive verb"
 
   EndIter input
 
   BeginIter forces{j} "a Forced Slot"
 
     Select type "Verb slot {i} forces {j} type" "Forced slot: " ""
-    fillpat [a-z]+-(type|slot)
+    fillregex (noun|verb|det)(-slot)?
 
   EndIter forces
 
@@ -464,11 +443,11 @@ BeginIter verb-slot{i} "a Slot"
   BeginIter disreq{j} "a Forbidden Slot"
 
     Select type "Verb slot {i} req {j} type" "If <b>verb-slot{i}</b> appears, " " must <b>not</b> appear."
-    fillpat [a-z]+-(type|slot)
+    fillregex (noun|verb|det)(-slot)?
 
   EndIter disreq
 
-  Label "Morpheme(s) that appear in this slot:"
+  Label "<p>Morpheme(s) that appear in this slot:</p>"
 
   BeginIter morph{j} "a Morpheme"
 
@@ -478,9 +457,11 @@ BeginIter verb-slot{i} "a Slot"
 
     BeginIter feat{k} "a Feature"
 
-      Text name "Verb slot {i} morpheme {j} feature {k} name" "Name: " " " 20
+      Select name "Verb slot {i} morpheme {j} feature {k} name" "Name: " " "
+      fillnames
 
-      Text value "Verb slot {i} morpheme {j} feature {k} value" "Value: " "" 20
+      Select value "Verb slot {i} morpheme {j} feature {k} value" "Value: " ""
+      fillvalues verb-slot{i}_morph{j}_feat{k}_name
 
     EndIter feat
 
@@ -490,11 +471,13 @@ EndIter verb-slot
 
 Label "<h3>Determiners</h3>"
 
-Label "If your nouns require determiners, define at least one here. You may use the second to handle a different determiner form (e.g., for languages where number, gender, or case are marked on determiners). Note that the grammar start won't actually include any constraints implementing agreement."
+Label "<p>If your nouns require determiners, define at least one here. You may use the second to handle a different determiner form (e.g., for languages where number, gender, or case are marked on determiners). Note that the grammar start won't actually include any constraints implementing agreement.</p>"
 
 BeginIter det{i} "a Determiner"
 
-  Text orth "Determiner {i} spelling" "<b><a name=\"determiner{i}_NAME\">determiner{i}</a></b>:<br>Spelling: " "" 30
+  Text name "Determiner {i} name" "<b><a name=\"det{i}_NAME\">det{i}</a></b>:<br>Name: " "<br>" 20
+
+  Text orth "Determiner {i} spelling" "Spelling: " "" 30
 
   Text pred "Determiner {i} predicate" " Predicate: " "<br>" 30
 
@@ -515,32 +498,36 @@ BeginIter det-slot{i} "a Slot"
   BeginIter input{j} "an Input"
 
     Select type "Determiner slot {i} input {j} type" "Input: " ""
-    fillpat [a-z]+-(type|slot)
+    fillregex (noun|verb|det)(-slot)?
+    . noun "Any noun" "any noun"
+    . verb "Any verb" "any verb"
+    . iverb "Any intransitive verb" "any intransitive verb"
+    . tverb "Any transitive verb" "any transitive verb"
 
   EndIter input
 
   BeginIter forces{j} "a Forced Slot"
 
     Select type "Determiner slot {i} forces {j} type" "Forced slot: " ""
-    fillpat [a-z]+-(type|slot)
+    fillregex (noun|verb|det)(-slot)?
 
   EndIter forces
 
   BeginIter req{j} "a Required Slot"
 
     Select type "Determiner slot {i} req {j} type" "If <b>det-slot{i}</b> appears, " " must also appear."
-    fillpat [a-z]+-(type|slot)
+    fillregex (noun|verb|det)(-slot)?
 
   EndIter req
 
   BeginIter disreq{j} "a Forbidden Slot"
 
     Select type "Determiner slot {i} req {j} type" "If <b>det-slot{i}</b> appears, " " must <b>not</b> appear."
-    fillpat [a-z]+-(type|slot)
+    fillregex (noun|verb|det)(-slot)?
 
   EndIter disreq
 
-  Label "Morpheme(s) that appear in this slot:"
+  Label "<p>Morpheme(s) that appear in this slot:</p>"
 
   BeginIter morph{j} "a Morpheme"
 
@@ -550,9 +537,11 @@ BeginIter det-slot{i} "a Slot"
 
     BeginIter feat{k} "a Feature"
 
-      Text name "Determiner slot {i} morpheme {j} feature {k} name" "Name: " " " 20
+      Select name "Determiner slot {i} morpheme {j} feature {k} name" "Name: " " "
+      fillnames
 
-      Text value "Determiner slot {i} morpheme {j} feature {k} value" "Value: " "" 20
+      Select value "Determiner slot {i} morpheme {j} feature {k} value" "Value: " ""
+      fillvalues det-slot{i}_morph{j}_feat{k}_name
 
     EndIter feat
 
@@ -560,10 +549,32 @@ BeginIter det-slot{i} "a Slot"
 
 EndIter det-slot
 
+Label "<h3>Case-marking Adpositions</h3>"
+
+BeginIter adp{i} "an Adposition"
+
+  Text orth "Adposition {i} spelling" "Spelling: " "" 20
+
+  Select order "Noun slot {i} order" ", appearing " " an NP, on which it sets the following features:<br>"
+  . after "After" "after"
+  . before "Before" "before"
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Adposition {i} feature {j} name" "Name: " " "
+    fillnames
+
+    Select value "Adposition {i} feature {j} value" "Value: " ""
+    fillvalues adp{i}_feat{j}_name
+
+  EndIter feat
+
+EndIter adp
+
 
 Section test-sentences "Some Test Sentences"
 
-Label "By filling out the following two fields, you will give the LKB default strings to put into the parse dialog.  Please write two sentences using <b>only</b> the vocabulary defined above.  NB: This script can only handle lower ascii alphanumeric characters."
+Label "<p>By filling out the following two fields, you will give the LKB default strings to put into the parse dialog.  Please write two sentences using <b>only</b> the vocabulary defined above.  NB: This script can only handle lower ascii alphanumeric characters.</p>"
 
 Text sentence1 "Sentence 1" "<p>Sentence 1: " "</p>" 100
 

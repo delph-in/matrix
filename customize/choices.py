@@ -1,4 +1,4 @@
-### $Id: choices.py,v 1.14 2008-06-01 11:17:36 sfd Exp $
+### $Id: choices.py,v 1.15 2008-06-12 09:55:56 sfd Exp $
 
 ######################################################################
 # imports
@@ -39,21 +39,24 @@ class ChoicesFile:
     except:
       pass
 
-    if self.is_set('version'):
-      version = int(self.get('version'))
-    else:
-      version = 0
-    if version < 1:
-      self.convert_0_to_1()
-    if version < 2:
-      self.convert_1_to_2()
-    if version < 3:
-      self.convert_2_to_3()
-    if version < 4:
-      self.convert_3_to_4()
-    # As we get more versions, add more version-conversion methods, and:
-    # if version < N:
-    #   self.convert_N-1_to_N
+    if choices_file:  # don't up-rev if we're creating an empty ChoicesFile
+      if self.is_set('version'):
+        version = int(self.get('version'))
+      else:
+        version = 0
+      if version < 1:
+        self.convert_0_to_1()
+      if version < 2:
+        self.convert_1_to_2()
+      if version < 3:
+        self.convert_2_to_3()
+      if version < 4:
+        self.convert_3_to_4()
+      if version < 5:
+        self.convert_4_to_5()
+      # As we get more versions, add more version-conversion methods, and:
+      # if version < N:
+      #   self.convert_N-1_to_N
 
     # Remove pseudo-choices that don't actually represent the answer to
     # any question in the questionnaire.
@@ -213,60 +216,201 @@ class ChoicesFile:
   # cases()
   #   Create and return a list containing information about the cases
   #   in the language described by the current choices.  This list consists
-  #   of tuples with three values: [variable prefix, label, abbreviation]
+  #   of tuples with three values:
+  #     [canonical name, friendly name, abbreviation]
   def cases(self):
-    # first, make two lists: the choices-variable prefixes and the
-    # user-provided case labels
+    # first, make two lists: the canonical and user-provided case names
     cm = self.get_full('case-marking')
-    prefixes = []
-    labels = []
+    canon = []
+    user = []
     if cm == 'nom-acc':
-      prefixes.append('nom')
-      labels.append(self.get_full('nom-case-label'))
-      prefixes.append('acc')
-      labels.append(self.get_full('acc-case-label'))
+      canon.append('nom')
+      user.append(self.get_full(cm + '-nom-case-name'))
+      canon.append('acc')
+      user.append(self.get_full(cm + '-acc-case-name'))
     elif cm == 'erg-abs':
-      prefixes.append('erg')
-      labels.append(self.get_full('erg-case-label'))
-      prefixes.append('abs')
-      labels.append(self.get_full('abs-case-label'))
+      canon.append('erg')
+      user.append(self.get_full(cm + '-erg-case-name'))
+      canon.append('abs')
+      user.append(self.get_full(cm + '-abs-case-name'))
     elif cm == 'tripartite':
-      prefixes.append('s')
-      labels.append(self.get_full('s-case-label'))
-      prefixes.append('a')
-      labels.append(self.get_full('a-case-label'))
-      prefixes.append('o')
-      labels.append(self.get_full('o-case-label'))
+      canon.append('s')
+      user.append(self.get_full(cm + '-s-case-name'))
+      canon.append('a')
+      user.append(self.get_full(cm + '-a-case-name'))
+      canon.append('o')
+      user.append(self.get_full(cm + '-o-case-name'))
+    elif cm in ['split-s']:
+      canon.append('a')
+      user.append(self.get_full(cm + '-a-case-name'))
+      canon.append('o')
+      user.append(self.get_full(cm + '-o-case-name'))
+    elif cm in ['fluid-s']:
+      a_name = self.get_full(cm + '-a-case-name')
+      o_name = self.get_full(cm + '-o-case-name')
+      canon.append('a+o')
+      user.append(a_name + '+' + o_name)
+      canon.append('a')
+      user.append(a_name)
+      canon.append('o')
+      user.append(o_name)
+    elif cm in ['split-n', 'split-v']:
+      canon.append('nom')
+      user.append(self.get_full(cm + '-nom-case-name'))
+      canon.append('acc')
+      user.append(self.get_full(cm + '-acc-case-name'))
+      canon.append('erg')
+      user.append(self.get_full(cm + '-erg-case-name'))
+      canon.append('abs')
+      user.append(self.get_full(cm + '-abs-case-name'))
+    elif cm in ['focus']:
+      canon.append('focus')
+      user.append(self.get_full(cm + '-focus-case-name'))
+      canon.append('a')
+      user.append(self.get_full(cm + '-a-case-name'))
+      canon.append('o')
+      user.append(self.get_full(cm + '-o-case-name'))
 
-    # if possible without causing collisions, shorten the case labels to
-    # three-letter abbreviations; otherwise, just use the labels as the
+    # if possible without causing collisions, shorten the case names to
+    # three-letter abbreviations; otherwise, just use the names as the
     # abbreviations
-    abbrevs = [ l[0:3] for l in labels ]
-    if len(set(abbrevs)) != len(abbrevs):
-      abbrevs = labels
+    abbrev = [ l[0:3] for l in user ]
+    if len(set(abbrev)) != len(abbrev):
+      abbrev = user
 
     cases = []
-    for i in range(0, len(prefixes)):
-      cases.append([ prefixes[i], labels[i], abbrevs[i] ])
+    for i in range(0, len(canon)):
+      cases.append([canon[i], user[i], abbrev[i]])
 
     return cases
 
+
+  # patterns()
+  #   Create and return a list containing information about the
+  #   case-marking patterns implied by the current case choices.
+  #   This list consists of tuples:
+  #     [canonical pattern name, friendly pattern name, rule?]
+  #   A pattern name is:
+  #     (in)?transitive \(subject case-object case)
+  #   In a canonical name (which is used in the choices file), the
+  #   case names are the same as those used in the choices variable
+  #   names.  The friendly name uses the names supplied by the
+  #   user.  The third argument is either True if the case pattern
+  #   is one that should be used in lexical rules or False if it
+  #   should be used on lexical types (subtypes of verb-lex).
+  def patterns(self):
+    cm = self.get_full('case-marking')
+    cases = self.cases()
+
+    patterns = []
+
+    if cm == 'none':
+      patterns += [ ['intrans', '', False] ]
+      patterns += [ ['trans', '', False] ]
+    elif cm == 'nom-acc':
+      patterns += [ ['nom', '', False] ]
+      patterns += [ ['nom-acc', '', False] ]
+    elif cm == 'erg-abs':
+      patterns += [ ['abs', '', False] ]
+      patterns += [ ['erg-abs', '', False] ]
+    elif cm == 'tripartite':
+      patterns += [ ['s', '', False] ]
+      patterns += [ ['a-o', '', False] ]
+    elif cm == 'split-s':
+      patterns += [ ['a', '', False] ]
+      patterns += [ ['o', '', False] ]
+      patterns += [ ['a-o', '', False] ]
+    elif cm == 'fluid-s':
+      patterns += [ ['a', '', False] ]
+      patterns += [ ['o', '', False] ]
+      patterns += [ ['a+o', '', False] ]
+      patterns += [ ['a-o', '', False] ]
+    elif cm == 'split-n':
+      patterns += [ ['s', '', False] ]
+      patterns += [ ['a-o', '', False] ]
+    elif cm == 'split-v':
+      patterns += [ ['intrans', '', False] ]
+      patterns += [ ['trans', '', False] ]
+      patterns += [ ['nom', '', True] ]
+      patterns += [ ['abs', '', True] ]
+      patterns += [ ['nom-acc', '', True] ]
+      patterns += [ ['erg-abs', '', True] ]
+    elif cm == 'focus':
+      patterns += [ ['intrans', '', False] ]
+      patterns += [ ['trans', '', False] ]
+      patterns += [ ['focus', '', True] ]
+      patterns += [ ['focus-o', '', True] ]
+      patterns += [ ['a-focus', '', True] ]
+
+    # Now fill in the friendly names based on the canonical names
+    for i in range(0, len(patterns)):
+      if patterns[i][0] in ['trans', 'intrans']:
+        patterns[i][1] = patterns[i][0] + 'itive'
+      else:
+        w = patterns[i][0].split('-')
+        for j in range(0, len(w)):
+          for c in cases:
+            if w[j] == c[0]:
+              w[j] = c[1]
+        if len(w) == 1:
+          patterns[i][1] = 'intransitive (%s)' % (w[0])
+        elif len(w) == 2:
+          patterns[i][1] = 'transitive (%s-%s)' % (w[0], w[1])
+
+    return patterns
 
   # features()
   #   Create and return a list containing information about the features
   #   in the language described by the current choices.  This list consists
   #   of tuples with three strings:
-  #     [feature name, feature geometry, comma-separated list of values]
+  #     [feature name, list of values, feature geometry]
   #   Note that the feature geometry is empty if the feature requires
-  #   more complex treatment that just FEAT=VAL (e.g. negation).
+  #   more complex treatment that just FEAT=VAL (e.g. negation).  The
+  #   list of values is separated by commas, and each item in the list is
+  #   a pair of the form 'name|friendly name'.
   def features(self):
-    return \
-      [ ['case', 'SYNSEM.LOCAL.CAT.HEAD.CASE', 'nom,acc'],
-        ['person', 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER', '1st,2nd,3rd'],
-        ['number', 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM', 'sg,pl'],
-        ['gender', 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND', 'masc,fem,neut'],
-        ['coordination', 'SYNSEM.LOCAL.COORD', '+,-'],
-        ['negation', '', '+'] ]
+    features = []
+
+    # Case
+    cases = self.cases()
+    values = ''
+    for c in cases:
+      if values:
+        values += ','
+      values += c[0] + '|' + c[1]
+    if values:
+      features += [ ['case', values, 'LOCAL.CAT.HEAD.CASE'] ]
+
+    # Case patterns
+    patterns = self.patterns()
+    values = ''
+    for p in patterns:
+      if values:
+        values += ','
+      if p[2]:
+        values += p[0] + '|' + p[1]
+    if values:
+      features += [ ['argument structure', values, ''] ]
+
+    # Misc
+    features += \
+      [ ['person',
+         '1st|first,2nd|second,3rd|third',
+         'LOCAL.CONT.HOOK.INDEX.PNG.PER'],
+        ['number',
+         'sg|singular,pl|plural',
+         'LOCAL.CONT.HOOK.INDEX.PNG.NUM'],
+        ['gender',
+         'masc|masculine,fem|feminine,neut|neuter',
+         'LOCAL.CONT.HOOK.INDEX.PNG.GEND'],
+        ['coordination',
+         'coord|coordinated',
+         ''],
+        ['negation',
+         'neg|negative',
+         ''] ]
+
+    return features
 
 
   ######################################################################
@@ -281,7 +425,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 4
+    return 5
 
 
   def convert_value(self, key, old, new):
@@ -467,7 +611,8 @@ class ChoicesFile:
       Aorder = self.get('obj-adp-order')
 
     if Sorth == '' and Aorth == '' and Oorth == '':
-      self.set('case-marking', 'none')
+      if len(self.keys()):  # don't add this if the choices file is empty
+        self.set('case-marking', 'none')
     elif Sorth == Aorth and Sorth != Oorth:
       self.set('case-marking', 'nom-acc')
       self.set('nom-case-label', 'nominative')
@@ -548,3 +693,126 @@ class ChoicesFile:
     self.convert_key('det1pred', 'det1_pred')
     self.convert_key('det2', 'det2_orth')
     self.convert_key('det2pred', 'det2_pred')
+
+  def convert_4_to_5(self):
+    # An even fuller implementation of case marking, with some of the
+    # work shifted off on Kelly's morphology code.
+    # Get a list of choices-variable prefixes, one for each case
+    prefixes = []
+    cm = self.get('case-marking')
+    if cm == 'nom-acc':
+      prefixes.append('nom')
+      prefixes.append('acc')
+    elif cm == 'erg-abs':
+      prefixes.append('erg')
+      prefixes.append('abs')
+    elif cm == 'tripartite':
+      prefixes.append('s')
+      prefixes.append('a')
+      prefixes.append('o')
+
+    cur_ns = 1       # noun slot
+    cur_nm = 1       # noun morph
+    cur_ni = 'noun'  # noun input
+    last_ns_order = ''
+
+    cur_ds = 1       # det slot
+    cur_dm = 1       # det morph
+    cur_ni = 'det'   # det input
+    last_ds_order = ''
+
+    cur_adp = 1
+
+    for p in prefixes:
+      label = self.get(p + '-case-label')
+      pat = self.get(p + '-case-pat')
+      order = self.get(p + '-case-order')
+      orth = self.get(p + '-case-orth')
+
+      # create noun slot and morph
+      if pat in ('noun', 'noun-det'):
+        if last_ns_order and last_ns_order != order:
+          cur_ni = 'noun-slot' + cur_ns
+          cur_ns += 1
+          cur_nm = 1
+
+        ns_pre = 'noun-slot' + cur_ns
+        nm_pre = ns_pre + '_morph' + cur_nm
+
+        self.set(ns_pre + '_input1_type', cur_ni)
+        self.set(ns_pre + '_name', 'case')
+        self.set(ns_pre + '_order', order)
+
+        self.set(nm_pre + '_name', label)
+        self.set(nm_pre + '_orth', orth)
+        self.set(nm_pre + '_feat1_name', 'case')
+        self.set(nm_pre + '_feat1_value', label)
+        cur_nm += 1
+
+      # create det slot and morph
+      if pat in ('det', 'noun-det'):
+        if last_ds_order and last_ds_order != order:
+          cur_di = 'det-slot' + cur_ds
+          cur_ds += 1
+          cur_dm = 1
+
+        ds_pre = 'det-slot' + cur_ds
+        dm_pre = ds_pre + '_morph' + cur_dm
+
+        self.set(ds_pre + '_input1_type', cur_di)
+        self.set(ds_pre + '_name', 'case')
+        self.set(ds_pre + '_order', order)
+
+        self.set(dm_pre + '_name', label)
+        self.set(dm_pre + '_orth', orth)
+        self.set(dm_pre + '_feat1_name', 'case')
+        self.set(dm_pre + '_feat1_value', label)
+        cur_dm += 1
+
+      # create adposition
+      if pat == 'np':
+        adp_pre = 'adp' + cur_adp
+        self.set(adp_pre + '_orth', orth)
+        self.set(adp_pre + '_order', order)
+        self.set(adp_pre + '_feat1_name', 'case')
+        self.set(adp_pre + '_feat1_value', label)
+
+    self.convert_key('nom-case-label', 'nom-acc-nom-case-name')
+    self.convert_key('acc-case-label', 'nom-acc-acc-case-name')
+
+    self.convert_key('erg-case-label', 'erg-abs-erg-case-name')
+    self.convert_key('abs-case-label', 'erg-abs-abs-case-name')
+
+    self.convert_key('s-case-label', 'tripartite-s-case-name')
+    self.convert_key('a-case-label', 'tripartite-a-case-name')
+    self.convert_key('o-case-label', 'tripartite-o-case-name')
+
+    for p in ['nom', 'acc', 'erg', 'abs', 's', 'a', 'o']:
+      self.delete(p + '-case-pat')
+      self.delete(p + '-case-order')
+      self.delete(p + '-case-orth')
+
+    self.iter_begin('verb')
+    while self.iter_valid():
+      v = self.get('valence')
+      if v == 'intrans':
+        if cm == 'none':
+          pass
+        elif cm == 'nom-acc':
+          self.set('valence', 'nom')
+        elif cm == 'erg-abs':
+          self.set('valence', 'abs')
+        elif cm == 'tripartite':
+          self.set('valence', 's')
+      elif v == 'trans':
+        if cm == 'none':
+          pass
+        elif cm == 'nom-acc':
+          self.set('valence', 'nom-acc')
+        elif cm == 'erg-abs':
+          self.set('valence', 'erg-abs')
+        elif cm == 'tripartite':
+          self.set('valence', 'a-o')
+
+      self.iter_next()
+    self.iter_end()

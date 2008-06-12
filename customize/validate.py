@@ -1,4 +1,4 @@
-### $Id: validate.py,v 1.32 2008-05-28 21:08:12 sfd Exp $
+### $Id: validate.py,v 1.33 2008-06-12 09:55:56 sfd Exp $
 
 ######################################################################
 # imports
@@ -34,28 +34,14 @@ def validate_language():
 
 
 ######################################################################
-# validate_one_case(l, pre)
+# validate_one_case(pre)
 #   A helper function to validate the user's choices about one case.
-#   l is the case label (e.g. 'nominative'), while pre is the first
-#   few characters of the associated choices names (e.g. 'nom')
+#   pre is the first few characters of the associated choices names
+#  (e.g. 'nom-acc-nom')
 
-def validate_one_case(l, pre):
-  if not ch.get(pre + '-case-label'):
-    add_err(pre + '-case-label', 'You must specify a ' +l+ ' case label.')
-  if not ch.get(pre + '-case-pat'):
-    add_err(pre + '-case-pat', 'You must specify a ' +l+ ' case pattern.')
-  if ch.get(pre + '-case-pat') == 'unmarked':
-    if ch.get(pre + '-case-order'):
-      add_err(pre + '-case-order',
-              'If ' +l+ ' case is unmarked, you cannot specify an order.')
-    if ch.get(pre + '-case-orth'):
-      add_err(pre + '-case-orth',
-              'If ' +l+ ' case is unmarked, you cannot specify a spelling.')
-  else:
-    if not ch.get(pre + '-case-order'):
-      add_err(pre + '-case-order', 'You must specify a ' +l+ ' case order.')
-    if not ch.get(pre + '-case-orth'):
-      add_err(pre + '-case-orth', 'You must specify a ' +l+ ' case spelling.')
+def validate_one_case(pre):
+  if not ch.get(pre + '-case-name'):
+    add_err(pre + '-case-name', 'You must specify a name for every case.')
 
 
 ######################################################################
@@ -68,16 +54,19 @@ def validate_features():
   if not cm:
     add_err('case-marking', 'You must specify if/how case is marked.')
 
-  if cm == 'nom-acc':
-    validate_one_case('nominative', 'nom')
-    validate_one_case('accusative', 'acc')
-  elif cm == 'erg-abs':
-    validate_one_case('ergative', 'erg')
-    validate_one_case('absolutive', 'abs')
-  elif cm == 'tripartite':
-    validate_one_case('S', 's')
-    validate_one_case('A', 'a')
-    validate_one_case('O', 'o')
+  if cm in ['nom-acc', 'split-n', 'split-v']:
+    validate_one_case(cm + '-nom')
+    validate_one_case(cm + '-acc')
+  if cm in ['erg-abs', 'split-n', 'split-v']:
+    validate_one_case(cm + '-erg')
+    validate_one_case(cm + '-abs')
+  if cm in ['tripartite', 'split-s', 'fluid-s', 'focus']:
+    validate_one_case(cm + '-a')
+    validate_one_case(cm + '-o')
+  if cm in ['tripartite']:
+    validate_one_case(cm + '-s')
+  if cm in ['focus']:
+    validate_one_case(cm + '-focus')
 
 
 ######################################################################
@@ -355,9 +344,12 @@ def validate_lexicon():
     val = ch.get('valence')
     nf = ch.get('non-finite')
 
-    if val == 'trans':
+    if not val:
+      err = 'You must specify the argument structure of each verb you define.'
+      add_err(ch.iter_prefix() + 'valence', err)
+    elif val == 'trans' or val.find('-') != -1:
       seenTrans = True
-    if val == 'intrans':
+    else:
       seenIntrans = True
 
     if not orth:
