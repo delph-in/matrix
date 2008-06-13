@@ -1,4 +1,4 @@
-### $Id: validate.py,v 1.33 2008-06-12 09:55:56 sfd Exp $
+### $Id: validate.py,v 1.34 2008-06-13 06:03:46 sfd Exp $
 
 ######################################################################
 # imports
@@ -253,18 +253,6 @@ def validate_lexicon():
 
   # First, handle the non-iterated lexical entries
 
-  # ERB 2006-09-29: What are these two picking up?  I don't see the
-  # match in matrixdef.
-
-  # neg = ch.get('neg')
-  # negadv = ch.get('negadv')
-
-  # ERB 2006-09-29: Doing this over in validate_sentential_negation()
-  # If negation involves an adverb, did they say which kind?
-  #  if neg and not negadv:
-  #    err = 'If your language expresses sentential negation with a negative adverb, you must specify whether it is independent or selected.'
-  #    add_err('negadv', err)
-
   # Did they specify enough lexical entries?
   if not noun1_orth:
     err = 'You must create at least one noun class.'
@@ -386,6 +374,34 @@ def validate_lexicon():
 
     ch.iter_next()
   ch.iter_end()
+
+  # Inflectional Slots
+  for slotprefix in ('noun', 'verb', 'det'):
+    ch.iter_begin(slotprefix + '-slot')
+    while ch.iter_valid():
+      if not ch.get('order'):
+        err = 'You must specify an order for every slot you define.'
+        add_err(ch.iter_prefix() + 'order', err)
+
+      ch.iter_begin('morph')
+      while ch.iter_valid():
+        ch.iter_begin('feat')
+        while ch.iter_valid():
+          if not ch.get('name'):
+            err = 'You must choose which feature you are specifying.'
+            add_err(ch.iter_prefix() + 'name', err)
+          if not ch.get('value'):
+            err = 'You must choose a value for each feature you specify.'
+            add_err(ch.iter_prefix() + 'value', err)
+          
+          ch.iter_next()
+        ch.iter_end()
+
+        ch.iter_next()
+      ch.iter_end()
+
+      ch.iter_next()
+    ch.iter_end()
 
 
 ######################################################################

@@ -1,4 +1,4 @@
-### $Id: deffile.py,v 1.8 2008-06-12 09:55:56 sfd Exp $
+### $Id: deffile.py,v 1.9 2008-06-13 06:03:46 sfd Exp $
 
 ######################################################################
 # This module is currently a bit of a hybrid.  Most of the code is
@@ -456,7 +456,8 @@ def html_input(errors, type, name, value, checked, before, after,
 def html_select(errors, name, onfocus = ''):
   asterisk = ''
   if name and errors.has_key(name):
-    asterisk = '<span class="error">*</span>'
+    asterisk = '<span class="error" title="%s">*</span>' % \
+               (errors[name])
 
   if onfocus:
     onfocus = ' onfocus="' + onfocus + '"'
