@@ -1,8 +1,8 @@
-### $Id: matrixdef,v 1.23 2008-06-12 09:55:56 sfd Exp $
+### $Id: matrixdef,v 1.24 2008-06-25 22:39:31 bender Exp $
 
 Section language "Language"
 
-Text language "Language name" "<p>e.g. Basque or Hawaiian_Creole: " "</p>" 50
+Text language "Language name" "<p>e.g. Warlpiri or Hawaiian_Creole: " "</p>" 50
 
 
 Section features "Features"
