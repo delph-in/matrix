@@ -1,4 +1,4 @@
-/* $Id: matrix.css,v 1.7 2008-05-28 21:08:12 sfd Exp $ */
+/* $Id: matrix.css,v 1.8 2008-06-26 22:28:50 sfd Exp $ */
 
 html { overflow: scroll }
 
@@ -44,5 +44,5 @@ div.iterator div.iterator div.iterator div.iterator div.iterator div.iterator {
 }
 
 div.iterator div.iterator div.iterator div.iterator div.iterator div.iterator div.iterator {
-  border-left-color: #AAFF;
+  border-left-color: #AAFFFF;
 }

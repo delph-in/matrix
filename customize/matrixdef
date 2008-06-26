@@ -1,13 +1,35 @@
-### $Id: matrixdef,v 1.24 2008-06-25 22:39:31 bender Exp $
+### $Id: matrixdef,v 1.25 2008-06-26 22:28:50 sfd Exp $
 
 Section language "Language"
 
 Text language "Language name" "<p>e.g. Warlpiri or Hawaiian_Creole: " "</p>" 50
 
 
-Section features "Features"
+Section word-order "Word Order"
 
-Label "<h3>Case</h3>"
+Radio word-order "Basic word order" "Please indicate which pattern best describes the basic word order of your language in matrix (main) clauses:<br>" ""
+. sov "Subject, Object, Verb" "" "SOV<br>"
+. svo "Subject, Verb, Object" "" "SVO<br>"
+. vso "Verb, Subject, Object" "" "VSO<br>"
+. osv "Object, Subject, Verb" "" "OSV<br>"
+. ovs "Object, Verb, Subject" "" "OVS<br>"
+. vos "Verb, Subject, Object" "" "VOS<br>"
+. v-final "Verb-final" "" "V-final<br>"
+. v-initial "Verb-initial" "" "V-initial<br>"
+. free "Free word order" "" "free (pragmatically determined word order)"
+
+Label "<p>Note: Modules for V2 order (auxiliary second, all else free or finite verb second, non-finite verb clause-finally) and differing word order between matrix and subordinate clauses are currently under development.</p>"
+
+Radio has-dets "Has determiners" "Does your language have determiners (as independent words)?" ""
+. yes "Yes" "" "yes"
+. no "No" "" "no<br><br>"
+
+Radio noun-det-order "Order of determiners and nouns" "If so, what is the order of determiners with respect to nouns?" ""
+. noun-det "Noun-Det" "" "Noun-Det"
+. det-noun "Det-Noun" "" "Det-Noun"
+
+
+Section case "Case"
 
 Label "<p>Blake (2001) defines <span style=\"font-variant:small-caps\">case</span> as &quot;a system of marking dependent nouns for the type of relationship they bear to their heads.&quot; For example, case commonly marks the subject or the direct object of a verb. The marking might consist of affixation or some other morpholological process that marks words, or it might be a adposition that marks whole noun phrases.</p>"
 Label "<p>This questionnaire allows you to describe <span style=\"font-variant:small-caps\">core case marking</span> in your language; that is, the pattern of cases marking the mandatory arguments of transitive and intransitive verbs.  Following Dixon (1968), we refer to the grammatical relations commonly expressed by case using the following abbreviations: A refers to the agent of a transitive verb; O refers to the patient (or object) of a transitive verb; and S refers to the lone argument (or subject) of intransitive verbs.</p>"
@@ -95,33 +117,34 @@ Label "<p><b>Additional Cases</b></p><p>If your language has any additional case
 
 BeginIter case{i} "a Case"
 
-  Text name "Case name" "Name: " "" 20
+  Text name "Case {i} name" "Name: " "" 20
 
 EndIter case
 
 
-Section word-order "Word Order"
+#Section person "Person"
+#
+#Label "<p>Under Construction</p>"
 
-Radio word-order "Basic word order" "Please indicate which pattern best describes the basic word order of your language in matrix (main) clauses:<br>" ""
-. sov "Subject, Object, Verb" "" "SOV<br>"
-. svo "Subject, Verb, Object" "" "SVO<br>"
-. vso "Verb, Subject, Object" "" "VSO<br>"
-. osv "Object, Subject, Verb" "" "OSV<br>"
-. ovs "Object, Verb, Subject" "" "OVS<br>"
-. vos "Verb, Subject, Object" "" "VOS<br>"
-. v-final "Verb-final" "" "V-final<br>"
-. v-initial "Verb-initial" "" "V-initial<br>"
-. free "Free word order" "" "free (pragmatically determined word order)"
 
-Label "<p>Note: Modules for V2 order (auxiliary second, all else free or finite verb second, non-finite verb clause-finally) and differing word order between matrix and subordinate clauses are currently under development.</p>"
+#Section number "Number"
+#
+#Label "<p>Under Construction</p>"
 
-Radio has-dets "Has determiners" "Does your language have determiners (as independent words)?" ""
-. yes "Yes" "" "yes"
-. no "No" "" "no<br><br>"
 
-Radio noun-det-order "Order of determiners and nouns" "If so, what is the order of determiners with respect to nouns?" ""
-. noun-det "Noun-Det" "" "Noun-Det"
-. det-noun "Det-Noun" "" "Det-Noun"
+Section gender "Gender"
+
+Label "<p>Insert prose here.  A single root type named <i>gender</i>, and the additional types you define below.</p>"
+
+BeginIter gender{i} "a Gender"
+
+  Text name "Gender {i} name" "Name: " "" 20
+
+  Select supertype "Gender {i} supertype" ", which is a subtype of: " ""
+  fillregex gender[0-9]+_name 1
+  . gender "Gender" "gender"
+
+EndIter gender
 
 
 Section sentential-negation "Sentential Negation"
@@ -274,7 +297,7 @@ Label "<h3>Noun Types</h3>"
 
 BeginIter noun{i} "a Noun Type" 1
 
-  Text name "Noun {i} name" "<b><a name=\"noun{i}_NAME\">noun{i}</a></b>:<br>Name: " "<br>" 20
+  Text name "Noun {i} name" "<b>Noun type {i}</b>:<br>Name: " "<br>" 20
 
   Text orth "Noun {i} spelling" "Spelling: " "" 30
 
@@ -291,7 +314,7 @@ Label "<h3>Noun Inflection</h3>"
 
 BeginIter noun-slot{i} "a Slot"
 
-  Text name "Noun slot {i} name" "<b><a name=\"noun-slot{i}_NAME\">noun-slot{i}</a></b>:<br>Name: " " " 20
+  Text name "Noun slot {i} name" "<b>Noun slot {i}</b>:<br>Name: " " " 20
 
   Check opt "Noun slot {i} optional" ", which is " " optional"
 
@@ -299,10 +322,10 @@ BeginIter noun-slot{i} "a Slot"
   . after "After" "after"
   . before "Before" "before"
 
-  BeginIter input{j} "an Input"
+  BeginIter input{j} "an Input" 1
 
     Select type "Noun slot {i} input {j} type" "Input: " ""
-    fillregex (noun|verb|det)(-slot)?
+    fillregex (noun|verb|det)(-slot)?[0-9]+_name
     . noun "Any noun" "any noun"
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
@@ -313,21 +336,21 @@ BeginIter noun-slot{i} "a Slot"
   BeginIter forces{j} "a Forced Slot"
 
     Select type "Noun slot {i} forces {j} type" "Forced slot: " ""
-    fillregex (noun|verb|det)(-slot)?
+    fillregex (noun|verb|det)(-slot)?[0-9]+_name
 
   EndIter forces
 
   BeginIter req{j} "a Required Slot"
 
-    Select type "Noun slot {i} req {j} type" "If <b>noun-slot{i}</b> appears, " " must also appear."
-    fillregex (noun|verb|det)(-slot)?
+    Select type "Noun slot {i} req {j} type" "If <b>Noun slot {i}</b> appears, " " must also appear."
+    fillregex (noun|verb|det)(-slot)?[0-9]+_name
 
   EndIter req
 
   BeginIter disreq{j} "a Forbidden Slot"
 
-    Select type "Noun slot {i} req {j} type" "If <b>noun-slot{i}</b> appears, " " must <b>not</b> appear."
-    fillregex (noun|verb|det)(-slot)?
+    Select type "Noun slot {i} req {j} type" "If <b>Noun slot {i}</b> appears, " " must <b>not</b> appear."
+    fillregex (noun|verb|det)(-slot)?[0-9]+_name
 
   EndIter disreq
 
@@ -357,7 +380,7 @@ Label "<h3>Verb Types</h3>"
 
 BeginIter verb{i} "a Verb Type" 2
 
-  Text name "Verb {i} name" "<b><a name=\"verb{i}_NAME\">verb{i}</a></b>:<br>Name: " "<br>" 20
+  Text name "Verb {i} name" "<b>Verb type {i}</b>:<br>Name: " "<br>" 20
 
   Text orth "Verb {i} spelling" "Spelling: " "" 30
 
@@ -368,11 +391,11 @@ BeginIter verb{i} "a Verb Type" 2
 
 EndIter verb
 
-Label "<h3>Auxiliary verb Types</h3>"
+Label "<h3>Auxiliary Verb Types</h3>"
 
-BeginIter aux{i} "an Aux Type" 1
+BeginIter aux{i} "an Aux Type" 0
 
-  Text orth "Aux {i} spelling" "<b><a name=\"aux-type{i}_NAME\">aux-type{i}</a></b>:<br>Spelling: " "" 40
+  Text orth "Aux {i} spelling" "<b>Auxiliary type {i}</b>:<br>Spelling: " "" 40
 
   Radio sem "Aux {i} semantics" "<br>This auxiliary verb contributes:<br>" ""
   . pred "Predicate" "" "An independent predicate (e.g. _can_v_rel): "
@@ -408,7 +431,7 @@ Label "<h3>Verb Inflection</h3>"
 
 BeginIter verb-slot{i} "a Slot"
 
-  Text name "Verb slot {i} name" "<b><a name=\"verb-slot{i}_NAME\">verb-slot{i}</a></b>:<br>Name: " " " 20
+  Text name "Verb slot {i} name" "<b>Verb slot {i}</b>:<br>Name: " " " 20
 
   Check opt "Verb slot {i} optional" ", which is " " optional"
 
@@ -416,10 +439,10 @@ BeginIter verb-slot{i} "a Slot"
   . after "After" "after"
   . before "Before" "before"
 
-  BeginIter input{j} "an Input"
+  BeginIter input{j} "an Input" 1
 
     Select type "Verb slot {i} input {j} type" "Input: " ""
-    fillregex (noun|verb|det)(-slot)?
+    fillregex (noun|verb|det)(-slot)?[0-9]+_name
     . noun "Any noun" "any noun"
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
@@ -430,20 +453,20 @@ BeginIter verb-slot{i} "a Slot"
   BeginIter forces{j} "a Forced Slot"
 
     Select type "Verb slot {i} forces {j} type" "Forced slot: " ""
-    fillregex (noun|verb|det)(-slot)?
+    fillregex (noun|verb|det)(-slot)?[0-9]+_name
 
   EndIter forces
 
   BeginIter req{j} "a Required Slot"
 
-    Select type "Verb slot {i} req {j} type" "If <b>verb-slot{i}</b> appears, " " must also appear."
+    Select type "Verb slot {i} req {j} type" "If <b>Verb slot {i}</b> appears, " " must also appear."
 
   EndIter req
 
   BeginIter disreq{j} "a Forbidden Slot"
 
-    Select type "Verb slot {i} req {j} type" "If <b>verb-slot{i}</b> appears, " " must <b>not</b> appear."
-    fillregex (noun|verb|det)(-slot)?
+    Select type "Verb slot {i} req {j} type" "If <b>Verb slot {i}</b> appears, " " must <b>not</b> appear."
+    fillregex (noun|verb|det)(-slot)?[0-9]+_name
 
   EndIter disreq
 
@@ -463,6 +486,11 @@ BeginIter verb-slot{i} "a Slot"
       Select value "Verb slot {i} morpheme {j} feature {k} value" "Value: " ""
       fillvalues verb-slot{i}_morph{j}_feat{k}_name
 
+      Select head "Verb slot {i} morpheme {j} feature {k} head" "Specified on: " ""
+      . verb "The verb" "the verb"
+      . subj "The subject" "the subject NP"
+      . obj "The object" "the object NP"
+
     EndIter feat
 
   EndIter morph
@@ -475,7 +503,7 @@ Label "<p>If your nouns require determiners, define at least one here. You may u
 
 BeginIter det{i} "a Determiner"
 
-  Text name "Determiner {i} name" "<b><a name=\"det{i}_NAME\">det{i}</a></b>:<br>Name: " "<br>" 20
+  Text name "Determiner {i} name" "<b>Determiner {i}</b>:<br>Name: " "<br>" 20
 
   Text orth "Determiner {i} spelling" "Spelling: " "" 30
 
@@ -487,7 +515,7 @@ Label "<h3>Determiner Inflection</h3>"
 
 BeginIter det-slot{i} "a Slot"
 
-  Text name "Determiner slot {i} name" "<b><a name=\"det-slot{i}_NAME\">det-slot{i}</a></b>:<br>Name: " " " 20
+  Text name "Determiner slot {i} name" "<b>Determiner slot {i}</b>:<br>Name: " " " 20
 
   Check opt "Determiner slot {i} optional" ", which is " " optional"
 
@@ -495,10 +523,10 @@ BeginIter det-slot{i} "a Slot"
   . after "After" "after"
   . before "Before" "before"
 
-  BeginIter input{j} "an Input"
+  BeginIter input{j} "an Input" 1
 
     Select type "Determiner slot {i} input {j} type" "Input: " ""
-    fillregex (noun|verb|det)(-slot)?
+    fillregex (noun|verb|det)(-slot)?[0-9]+_name
     . noun "Any noun" "any noun"
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
@@ -509,21 +537,21 @@ BeginIter det-slot{i} "a Slot"
   BeginIter forces{j} "a Forced Slot"
 
     Select type "Determiner slot {i} forces {j} type" "Forced slot: " ""
-    fillregex (noun|verb|det)(-slot)?
+    fillregex (noun|verb|det)(-slot)?[0-9]+_name
 
   EndIter forces
 
   BeginIter req{j} "a Required Slot"
 
-    Select type "Determiner slot {i} req {j} type" "If <b>det-slot{i}</b> appears, " " must also appear."
-    fillregex (noun|verb|det)(-slot)?
+    Select type "Determiner slot {i} req {j} type" "If <b>Determiner slot {i}</b> appears, " " must also appear."
+    fillregex (noun|verb|det)(-slot)?[0-9]+_name
 
   EndIter req
 
   BeginIter disreq{j} "a Forbidden Slot"
 
-    Select type "Determiner slot {i} req {j} type" "If <b>det-slot{i}</b> appears, " " must <b>not</b> appear."
-    fillregex (noun|verb|det)(-slot)?
+    Select type "Determiner slot {i} req {j} type" "If <b>Determiner slot {i}</b> appears, " " must <b>not</b> appear."
+    fillregex (noun|verb|det)(-slot)?[0-9]+_name
 
   EndIter disreq
 

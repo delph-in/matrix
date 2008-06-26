@@ -1,4 +1,4 @@
-### $Id: validate.py,v 1.34 2008-06-13 06:03:46 sfd Exp $
+### $Id: validate.py,v 1.35 2008-06-26 22:28:50 sfd Exp $
 
 ######################################################################
 # imports
@@ -45,10 +45,10 @@ def validate_one_case(pre):
 
 
 ######################################################################
-# validate_features()
-#   Validate the user's choices about features
+# validate_case()
+#   Validate the user's choices about case
 
-def validate_features():
+def validate_case():
   cm = ch.get('case-marking')
 
   if not cm:
@@ -67,6 +67,40 @@ def validate_features():
     validate_one_case(cm + '-s')
   if cm in ['focus']:
     validate_one_case(cm + '-focus')
+
+
+######################################################################
+# validate_person()
+#   Validate the user's choices about person
+
+def validate_person():
+  pass
+
+
+######################################################################
+# validate_number()
+#   Validate the user's choices about number
+
+def validate_number():
+  pass
+
+
+######################################################################
+# validate_gender()
+#   Validate the user's choices about gender
+
+def validate_gender():
+  ch.iter_begin('gender')
+  while ch.iter_valid():
+    if not ch.get('name'):
+      add_err(ch.iter_prefix() + 'name',
+              'You must specify a name for each gender you define.')
+    if not ch.get('supertype'):
+      add_err(ch.iter_prefix() + 'supertype',
+              'You must specify a supertype for each gender you define.')
+      
+    ch.iter_next()
+  ch.iter_end()
 
 
 ######################################################################
@@ -393,6 +427,10 @@ def validate_lexicon():
           if not ch.get('value'):
             err = 'You must choose a value for each feature you specify.'
             add_err(ch.iter_prefix() + 'value', err)
+
+          if slotprefix == 'verb' and not ch.get('head'):
+            err = 'You must choose where the feature is specified.'
+            add_err(ch.iter_prefix() + 'head', err)
           
           ch.iter_next()
         ch.iter_end()
@@ -462,7 +500,10 @@ def validate_choices(choices_file, extra = False):
   ch = ChoicesFile(choices_file)
 
   validate_language()
-  validate_features()
+  validate_case()
+  validate_person()
+  validate_number()
+  validate_gender()
   validate_word_order()
   validate_sentential_negation()
   validate_coordination()

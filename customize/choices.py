@@ -1,4 +1,4 @@
-### $Id: choices.py,v 1.15 2008-06-12 09:55:56 sfd Exp $
+### $Id: choices.py,v 1.16 2008-06-26 22:28:50 sfd Exp $
 
 ######################################################################
 # imports
@@ -372,23 +372,37 @@ class ChoicesFile:
     features = []
 
     # Case
-    cases = self.cases()
     values = ''
-    for c in cases:
+    for c in self.cases():
       if values:
         values += ','
       values += c[0] + '|' + c[1]
+
     if values:
       features += [ ['case', values, 'LOCAL.CAT.HEAD.CASE'] ]
 
-    # Case patterns
-    patterns = self.patterns()
+    # Gender
     values = ''
-    for p in patterns:
+    self.iter_begin('gender')
+    while self.iter_valid():
+      name = self.get('name')
+      if values:
+        values += ','
+      values += name + '|' + name
+      self.iter_next()
+    self.iter_end()
+
+    if values:
+      features += [ ['gender', values, 'LOCAL.CONT.HOOK.INDEX.PNG.GEND'] ]
+
+    # Case patterns
+    values = ''
+    for p in self.patterns():
       if values:
         values += ','
       if p[2]:
         values += p[0] + '|' + p[1]
+
     if values:
       features += [ ['argument structure', values, ''] ]
 
@@ -400,9 +414,6 @@ class ChoicesFile:
         ['number',
          'sg|singular,pl|plural',
          'LOCAL.CONT.HOOK.INDEX.PNG.NUM'],
-        ['gender',
-         'masc|masculine,fem|feminine,neut|neuter',
-         'LOCAL.CONT.HOOK.INDEX.PNG.GEND'],
         ['coordination',
          'coord|coordinated',
          ''],

@@ -1,4 +1,4 @@
-### $Id: customize.py,v 1.59 2008-06-12 09:55:56 sfd Exp $
+### $Id: customize.py,v 1.60 2008-06-26 22:28:50 sfd Exp $
 
 ######################################################################
 # imports
@@ -86,9 +86,9 @@ def add_irule(instance_name,type_name,affix_type,affix_form):
 
 
 ######################################################################
-# customize_features()
+# customize_case()
 #   Create the type definitions associated with the user's choices
-#   about features, currently only case.
+#   about case.
 
 def has_aff_case(case = ''):
   result = False
@@ -265,8 +265,47 @@ def customize_case():
   customize_case_type()
 
 
-def customize_features():
-  customize_case()
+######################################################################
+# customize_person()
+#   Create the type definitions associated with the user's choices
+#   about person.
+
+def customize_person():
+  pass
+
+
+######################################################################
+# customize_number()
+#   Create the type definitions associated with the user's choices
+#   about number.
+
+def customize_number():
+  pass
+
+
+######################################################################
+# customize_gender()
+#   Create the type definitions associated with the user's choices
+#   about gender.
+
+def customize_gender():
+  cm = ch.get('case-marking')
+  cases = ch.cases()
+
+  if ch.get('gender1_name'):
+    mylang.add('png :+ [ GEND gender ].')
+    comment = ';;; Gender'
+    mylang.add_literal(comment)
+    mylang.add('gender := *top*.', '', True)
+
+  ch.iter_begin('gender')
+  while ch.iter_valid():
+    name = ch.get('name')
+    stype = ch.get('supertype')
+    mylang.add(name + ' := ' + stype + '.')
+    
+    ch.iter_next()
+  ch.iter_end()
 
 
 ######################################################################
@@ -3343,16 +3382,34 @@ def customize_inflection():
             if n == 'case':
               v = canon_to_abbr(v, cases)
 
+            # Figure out where the feature lives.  Noun slot features go
+            # on the head.  Det slot features go on the SPEC.  Verb slot
+            # features can go on either the verb itself, the subject,
+            # or the object.
             geom = ''
             for f in features:
               if f[0] == n:
                 geom = f[2]
 
+            if geom:
+              if slotprefix == 'det':
+                geom = 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.' + geom
+              elif slotprefix == 'verb':
+                h = ch.get('head')
+                if h == 'subj':
+                  geom = 'SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.' + geom
+                elif h == 'obj':
+                  geom = 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.' + geom
+                else:
+                  geom = 'SYNSEM.' + geom
+              else:
+                geom = 'SYNSEM.' + geom
+
             # If the feature has a geometry, just specify its value;
             # otherwise, handle it specially.
             if geom:
               mylang.add(ltype +
-                         ' := [ DTR.SYNSEM.' + geom + ' ' + v + ' ].')
+                         ' := [ ' + geom + ' ' + v + ' ].')
             elif n == 'argument structure':
               # constrain the ARG-ST to be passed up
               mylang.add(ltype + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].')
@@ -3667,12 +3724,14 @@ def customize_matrix(path, arch_type):
   except:
     pass
 
-  current_dt = datetime.datetime.utcnow().strftime('%a %b %d %H:%M:%S UTC %Y')
+  current_dt = datetime.datetime.utcnow()
+  tdl_dt = current_dt.strftime('%a %b %d %H:%M:%S UTC %Y')
+  lisp_dt = current_dt.strftime('%Y-%m-%d_%H:%M:%S_UTC')
 
   # Put the current date/time in my_language.tdl...
   mylang.add_literal(';;; Grammar of ' + ch.get('language') + '\n' +
                      ';;; created at:\n' +
-                     ';;;     ' + current_dt + '\n' +
+                     ';;;     ' + tdl_dt + '\n' +
                      ';;; based on Matrix customization system version of:\n' +
                      ';;;     ' + matrix_dt)
 
@@ -3683,10 +3742,13 @@ def customize_matrix(path, arch_type):
 
   version_lsp.add_literal('(in-package :common-lisp-user)\n\n' +
                           '(defparameter *grammar-version* \"' +
-                          ch.get('language') + ' (' + current_dt + ')\")')
+                          ch.get('language') + ' (' + lisp_dt + ')\")')
 
   # Call the various customization functions
-  customize_features()
+  customize_case()
+  customize_person()
+  customize_number()
+  customize_gender()
   customize_word_order()
   customize_sentential_negation()
   customize_coordination()
