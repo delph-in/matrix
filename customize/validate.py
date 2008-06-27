@@ -1,4 +1,4 @@
-### $Id: validate.py,v 1.35 2008-06-26 22:28:50 sfd Exp $
+### $Id: validate.py,v 1.36 2008-06-27 23:51:16 sfd Exp $
 
 ######################################################################
 # imports
@@ -416,6 +416,10 @@ def validate_lexicon():
       if not ch.get('order'):
         err = 'You must specify an order for every slot you define.'
         add_err(ch.iter_prefix() + 'order', err)
+
+      if not ch.get('input1_type'):
+        err = 'You must specify at least one input for every slot.'
+        add_err(ch.iter_prefix() + 'input1_type', err)
 
       ch.iter_begin('morph')
       while ch.iter_valid():

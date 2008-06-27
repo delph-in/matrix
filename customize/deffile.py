@@ -1,4 +1,4 @@
-### $Id: deffile.py,v 1.10 2008-06-26 22:28:50 sfd Exp $
+### $Id: deffile.py,v 1.11 2008-06-27 23:51:16 sfd Exp $
 
 ######################################################################
 # This module is currently a bit of a hybrid.  Most of the code is
@@ -697,7 +697,7 @@ class MatrixDefFile:
     print html_input(errors, 'radio', 'delivery', 'zip', zip_checked,
                      ' ', ' .zip<br>')
     print html_input(errors, 'submit', '', 'Create Grammar', False, '', '</p>',
-                     '', '', False and len(errors) > 0)
+                     '', '', len(errors) > 0)
     print html_input(errors, 'button', '', 'Download Choices File', False,
                      '<p class="submit">', '</p>', '',
                      'window.location.href=\'' + choices_file + '\'')
