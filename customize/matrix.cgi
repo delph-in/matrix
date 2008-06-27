@@ -1,12 +1,14 @@
 #!/usr/local/bin/python2.5
 
-### $Id: matrix.cgi,v 1.24 2008-05-28 21:08:12 sfd Exp $
+### $Id: matrix.cgi,v 1.25 2008-06-27 02:23:03 sfd Exp $
 
 ######################################################################
 # imports
 
 import sys
 import os
+import glob
+import shutil
 import cgi
 import cgitb; cgitb.enable()
 import time
@@ -23,6 +25,7 @@ from deffile import HTTP_header
 ######################################################################
 # beginning of main program
 
+# Uncomment this to see the output from print in the HTML page
 #print HTTP_header + '\n'
 
 matrixdef = MatrixDefFile('matrixdef')
@@ -87,6 +90,24 @@ if form_data.has_key('customize'):
   if len(errors):
     matrixdef.error_page(errors)
   else:
+    # create the saved-choices directory
+    if not os.path.exists('saved-choices'):
+      os.mkdir('saved-choices')
+    
+    # look at the files in saved-choices, which will have names like
+    # choices.N, figure out the next serial number, and copy the current
+    # choices file to saved-choices/choices.N+1
+    serial = 1
+    for f in glob.glob('saved-choices/choices.*'):
+      i = f.rfind('.')
+      if i != -1:
+        num = f[i + 1:]
+        if num.isdigit():
+          serial = int(num) + 1
+    shutil.copy(session_path + '/choices',
+                'saved-choices/choices.' + str(serial))
+
+    # Create the customized grammar
     customize_matrix(session_path, arch_type)
     matrixdef.custom_page(session_path, arch_type)
 elif form_data.has_key('subpage'):
