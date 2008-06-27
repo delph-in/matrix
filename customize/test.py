@@ -1,4 +1,4 @@
-### $Id: test.py,v 1.12 2008-05-28 21:08:12 sfd Exp $
+### $Id: test.py,v 1.13 2008-06-27 20:45:22 sfd Exp $
 
 import tdl
 
@@ -76,3 +76,7 @@ t10 = tdl.TDLfile('')
 t10.add('t := type & [ ARG-ST < [ ], [ ] > ].')
 t10.add('t := [ ARG-ST < [ HEAD noun ], [ ] > ].')
 t10.dump()
+
+t11 = tdl.TDLfile('')
+t11.add('t := [ FEAT ].')
+t11.dump()

@@ -1,4 +1,4 @@
-### $Id: tdl.py,v 1.15 2008-05-28 21:08:12 sfd Exp $
+### $Id: tdl.py,v 1.16 2008-06-27 20:45:22 sfd Exp $
 
 ######################################################################
 # imports
@@ -275,8 +275,9 @@ class TDLelem_conj(TDLelem):
 
     old_i = TDLget_indent()
     for ch in self.child[0:1]:
-      ch.write()
-      last_was_feat = (isinstance(ch, TDLelem_feat));
+      if ch:
+        ch.write()
+        last_was_feat = (isinstance(ch, TDLelem_feat));
     for ch in self.child[1:]:
       cur_is_feat = (isinstance(ch, TDLelem_feat));
       if cur_is_feat or last_was_feat:
