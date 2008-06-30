@@ -8,7 +8,7 @@ HOW TO USE THIS FILE:
 
 [10/4/2006 sfd]
 
-feat: Improve TDL pretty-printing
+DONE: Improve TDL pretty-printing
 DONE: Make TDLfile handle DOTTED.NAME.FORMAT correctly
 bug:  Fix layout oddities when the main-page dropdown buttons are clicked
       (by using images?)
@@ -16,25 +16,26 @@ bug:  TDLfile treats ... as an identifier -- I don't think that will merge
       correctly
 misc: validate.py and customize.py are getting pretty big -- should each
       module be split into a separate, er, module?
-feat: Do something nicer with the validation error messages.  The desired
+DONE: Do something nicer with the validation error messages.  The desired
       goal is marking every form field that needs fixing.  Somehow.
+      [ Added the red-asterisk feature. ]
 DONE: Add pretty-printing for the choices file (the random ones are just
       jumbled together)
-feat: Still need validation for all modules
+DONE: Still need validation for all modules [done but ongoing]
 bug:  Clean up the ????? stuff in the customization page, either by
       rewriting it or inserting them
 
 [10/6/2006 sfd]
 
-feat: Remove old sessions after some amount of time (days?)
+DONE: Remove old sessions after some amount of time (days?) [ 24 hours ]
 DONE: Add a Reset button to all forms
 
 [10/9/2006 sfd]
 
 DONE: Add a link/button to download the choices file
 bug:  Move the negative adverb to the sentential negation page?
-bug:  Create reasonable friendly names for everything
-bug:  Variable name harmonization
+DONE: Create reasonable friendly names for everything
+DONE: Variable name harmonization
 
 [10/11/2006 sfd]
 
@@ -59,7 +60,7 @@ bug:  randgram.py is currently forcing non-finite forms to be the same
 
 [1/21/2007 erb]
 
-feat: Edit Version.lsp to create a value of *grammar-version* which
+DONE: Edit Version.lsp to create a value of *grammar-version* which
       reflects both the date on customize.py (or perhaps matrix.tdl)
       and the language name supplied by the user.
 bug:  Consider doing something to check whether matrix-core/matrix.tdl
@@ -72,3 +73,19 @@ bug:  Consider doing something to check whether matrix-core/matrix.tdl
 [6/27/2007 sfd]
 
 bug:  basic-script shouldn't end up in customized grammars
+
+[6/30/2008 sfd]
+
+bug:  As hinted at above, the handling of script files is suspicious.
+      There's a Zulu-specific file checked into matrix/lkb that gets
+      copied up to WEB/matrix-core/lkb by tolive, then ignored.
+      There's also a basic_script in matrix/modules that gets copied
+      to WEB/matrix-core, and that's what the script file in generated
+      grammars is based on.
+feat: The creation of a matrix-core directory should be split into
+      another script (perhaps 'tocore').  In fact, tolive should be
+      reworked so it does this:
+      1) Make a temp local copy of what's going up to the web
+         directory (including the creation of a matrix-core directory)
+      2) Do a single big copy (local or remote) of those files
+      3) Blow away the temp local copy
