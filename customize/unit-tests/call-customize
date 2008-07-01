@@ -1,0 +1,25 @@
+#!/bin/bash
+
+#First argument is directory with customize.py
+#Second is choices file, with absolute path name.
+#Third is path to where the grammar should be stored,
+#which should take the form .../customize/unit-tests/grammars/language-name.
+
+cd $1
+
+if [ -e datestamp ]
+then
+    rm datestamp
+fi
+date > datestamp
+
+if [ -e $3 ]
+then
+    echo "Move $3, it is in the way"
+else
+    mkdir $3
+    cp $2 $3/choices
+    python customize-one.py $3
+fi
+
+rm datestamp
