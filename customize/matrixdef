@@ -1,9 +1,8 @@
-### $Id: matrixdef,v 1.25 2008-06-26 22:28:50 sfd Exp $
+### $Id: matrixdef,v 1.26 2008-07-02 20:38:38 lpoulson Exp $
 
 Section language "Language"
 
 Text language "Language name" "<p>e.g. Warlpiri or Hawaiian_Creole: " "</p>" 50
-
 
 Section word-order "Word Order"
 
@@ -26,8 +25,15 @@ Radio has-dets "Has determiners" "Does your language have determiners (as indepe
 
 Radio noun-det-order "Order of determiners and nouns" "If so, what is the order of determiners with respect to nouns?" ""
 . noun-det "Noun-Det" "" "Noun-Det"
-. det-noun "Det-Noun" "" "Det-Noun"
+. det-noun "Det-Noun" "" "Det-Noun<br><br>"
 
+Radio has-aux "Has auxiliaries" "Does your language have auxiliary verbs?" ""
+. yes "Yes" "" "yes"
+. no "No" "" "no<br><br>"
+
+Radio aux-comp-order "Order of auxiliary and complement" "If so, an auxiliary verb appears " ""
+. before "Before" "" "before "
+. after "After" "" "after its complement."
 
 Section case "Case"
 
@@ -398,28 +404,23 @@ BeginIter aux{i} "an Aux Type" 0
   Text orth "Aux {i} spelling" "<b>Auxiliary type {i}</b>:<br>Spelling: " "" 40
 
   Radio sem "Aux {i} semantics" "<br>This auxiliary verb contributes:<br>" ""
-  . pred "Predicate" "" "An independent predicate (e.g. _can_v_rel): "
+  . addpred "Predicate" "" "An independent predicate (e.g. _can_v_rel): "
 
   Text pred "Aux{i} predicate" "Predicate: " "" 40
 
   Radio sem "Aux {i} semantics" "<br>" ""
-  . no-pred "No predicate" "" "Tense/aspect information only"
+  . nopred "No predicate" "" "Tense/aspect information only"
 
   Radio comp "Aux {i} complement" "<br>This auxiliary verb takes as its complement a:<br>" ""
   . s "S" "" "saturated sentence<br>"
   . vp "VP" "" "VP, raising the subject<br>"
   . v "V" "" "V, raising all of its arguments (argument composition)"
 
-  Radio form "Aux {i} complement verb form" "<br>The form of the verb in this auxiliary's complement must be:<br>" ""
-  . f "finite" "" "finite<br>"
+  Radio compform "Aux {i} complement verb form" "<br>The form of the verb in this auxiliary's complement must be:<br>" ""
+  . fin "finite" "" "finite<br>"
   . nf "nonfinite" "" "non-finite: "
 
-  Text nonfinform "Aux {i} nonfinite complement form" "Non-finite form (e.g. infinitive): " "<br>" 40
-
-  Radio order "Aux {i} order" "This auxiliary verb appears " ""
-  . before "Before" "" "before "
-  . after "After" "" "after "
-  . either "Either" "" "on either side of its complement.<br>"
+  Text nonfincompform "Aux {i} nonfinite complement form" "Non-finite form (e.g. infinitive): " "<br>" 40
 
   Radio subj "Aux {i} subject" "If the auxiliary takes a VP or V complement, its subject is a: " ""
   . np "Noun phrase" "" "noun phrase "

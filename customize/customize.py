@@ -1,4 +1,4 @@
-### $Id: customize.py,v 1.60 2008-06-26 22:28:50 sfd Exp $
+### $Id: customize.py,v 1.61 2008-07-02 20:38:38 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -27,6 +27,12 @@ lrules = None
 lexicon = None
 roots = None
 
+###
+# LAP 2008-06-27 
+# changed has_aux... to simple check variable; moved adds to customize_verbs
+# removed fin/nonfin verb hierarchy
+# added multiple aux loop
+# removed order from aux loop and changed aux-order to be based on has_aux... 
 ######################################################################
 # Utility functions
 #
@@ -48,18 +54,7 @@ roots = None
 
 def has_auxiliaries_p():
 
-  # sfd ToDo: This function definitely shouldn't have side-effects.
-  # Move this elsewhere.
-  mylang.add('head :+ [ AUX bool, FORM form ].')
-  mylang.add('form := avm.')
-  mylang.add('fin := form.')
-# LAP 2008-06-05 changed inf to nonfin as there may be several nonfinite forms
-  mylang.add('nonfin := form.')
-
-  return ch.get_full('neg-infl-type') == 'aux' or \
-         ch.get_full('neg-sel-adv') == 'aux' or \
-         ch.get_full('q-inv-verb') == 'aux' or \
-         ch.get_full('aux-verb')
+  return ch.get('has-aux') == 'yes'
 
 
 # ERB 2006-09-21 This function assembles an inflectional rule out
@@ -1076,7 +1071,7 @@ def determine_consistent_order(wo,hc):
 
   # Now what about auxiliaries?
 
-  if ch.get('aux-verb'):
+  if has_auxiliaries_p():
     if wo == 'free':
       if ch.get('aux-order') == 'before':
         aux = 'free-auxv'
@@ -2572,6 +2567,12 @@ def customize_verbs():
   # might not be the first one?
 
   mylang.add_literal(';;; Verbs')
+
+  if has_auxiliaries_p():
+    mylang.add('head :+ [ AUX bool, FORM form ].')
+    mylang.add('form := avm.')
+    mylang.add('fin := form.')
+    mylang.add('nonfin := form.')
     
   # verb lexical type
   typedef = \
@@ -2632,48 +2633,8 @@ def customize_verbs():
 
   customize_verb_case()
 
-  # If there are auxiliaries, define finite and non-finite verb types,
-  # cross-classify with trans and intrans.
-# LAP 2008-05-06  changed the verb type based implementation to lexical rule based
-# for finite/nonfinite -- removed the type definitions here
-
-#  if has_auxiliaries_p():
-#    comment = \
-#      ';;; Types for finite and non-finite verbs.  These will\n' + \
-#      ';;; most likely need to be replaced with lexical rules\n' + \
-#      ';;; deriving the finite and non-finite forms from verb stems.'
-#    mylang.add_literal(comment)
-
-
-#    typedef = \
-#      'finite-verb-lex := verb-lex & \
-#         [ SYNSEM.LOCAL.CAT.HEAD.FORM fin ].'
-#    mylang.add(typedef)
-
-#    typedef = \
-#      'non-finite-verb-lex := verb-lex & \
-#         [ SYNSEM.LOCAL.CAT.HEAD.FORM inf ].'
-#    mylang.add(typedef)
-
-#    typedef = \
-#      'finite-trans-verb-lex := finite-verb-lex & transitive-verb-lex.'
-#    mylang.add(typedef)
-#    typedef = \
-#      'non-finite-trans-verb-lex := non-finite-verb-lex & transitive-verb-lex.'
-#    mylang.add(typedef)
-#    typedef = \
-#      'finite-intrans-verb-lex := finite-verb-lex & intransitive-verb-lex.'
-#    mylang.add(typedef)
-#    typedef = \
-#      'non-finite-intrans-verb-lex := \
-#         non-finite-verb-lex & intransitive-verb-lex.'
-#    mylang.add(typedef)
-
   # Lexical entries
   lexicon.add_literal(';;; Verbs')
-
-# LAP 2008-06-05 removed structure for creating finite/nonfinte type hierarchy below 
-# as part of change to a lexical-rule based implementation
 
   # Now create the lexical entries for all the defined verb types
   ch.iter_begin('verb')
@@ -2683,7 +2644,6 @@ def customize_verbs():
       name = ch.iter_prefix()[0:-1]  # trim off trailing _
     orth = ch.get('orth')
     pred = ch.get('pred')
-    nf = ch.get('non-finite')
     val = ch.get('valence')
 
     if val == 'trans' or val.find('-') != -1:
@@ -2693,49 +2653,16 @@ def customize_verbs():
     else:
       tivity = 'intrans'
 
-    if has_auxiliaries_p():
-      # need to make two lexical entries, 1 = finite, 2 = non-finite
-      stype1 = 'finite-' + tivity + '-verb-lex'
-      stype2 = 'non-' + stype1
-      
-      ltype1 = orth
-      ltype2 = nf
-      if not ltype2:
-        ltype2 = orth + '2'
+    stype = tivity + 'itive-verb-lex'
+    vtype = name + '-verb-lex'
 
-      orth1 = orth
-      orth2 = nf
-      if not orth2:
-        orth2 = orth
+    mylang.add(vtype + ' := ' + stype + '.')
 
-      vtype1 = name + '-verb-lex'
-      vtype2 = 'non-finite-' + vtype1
-
-      mylang.add(vtype1 + ' := ' + stype1 + '.')
-      mylang.add(vtype2 + ' := ' + stype2 + '.')
-
-      typedef = \
-        ltype1 + ' := ' + vtype1 + ' & \
-          [ STEM < "' + orth1 + '" >, \
-            SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-      lexicon.add(typedef)
-
-      typedef = \
-        ltype2 + ' := ' + vtype2 + ' & \
-          [ STEM < "' + orth2 + '" >, \
-            SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-      lexicon.add(typedef)
-    else: # not has_auxiliaries_p()
-      stype = tivity + 'itive-verb-lex'
-      vtype = name + '-verb-lex'
-
-      mylang.add(vtype + ' := ' + stype + '.')
-
-      typedef = \
-        orth + ' := ' + vtype + ' & \
-                    [ STEM < "' + orth + '" >, \
-                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-      lexicon.add(typedef)
+    typedef = \
+      orth + ' := ' + vtype + ' & \
+                  [ STEM < "' + orth + '" >, \
+                    SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+    lexicon.add(typedef)
 
     ch.iter_next()
   ch.iter_end()
@@ -2743,202 +2670,196 @@ def customize_verbs():
 
 def customize_auxiliaries():
 
-  auxverb = ch.get('aux-verb')
-  auxsem = ch.get('aux-sem')
-  auxcomp = ch.get('aux-comp')
-  auxorder = ch.get('aux-order')
-  auxsubj = ch.get('aux-subj')
-  auxpred = ch.get('aux-pred')
-
-  # Lexical type for auxiliaries.  There's probably more we can give them
-  # here, if we ask more questions (are there auxiliaries with both independent
-  # preds and those which just contribute tense/aspect information?)...
-
-  # ERB 2006-10-03 Removing if statement in the middle of a string...
-
-  #                                      HEAD '
-  #       if auxsubj == 'np':
-  #         typedef += 'noun ]],'
-  #       else:
-  #         typedef += 'adp ]],'
-  #       typedef += \
-
-  # ERB 2006-10-15 We want to add the auxiliaries if the lexical
-  # entry is defined, whether or not they need auxiliaries for negation
-  # or questions.
   if has_auxiliaries_p():
     auxtypename = ''
     mylang.add_literal(';;; Auxiliaries')
-# LAP 2008-06-05 changed FORM inf to nonfin below
-    if auxcomp == 'vp':
-      typedef = 'subj-raise-aux := trans-first-arg-raising-lex-item  & \
-                 [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < #subj >, \
-                                            COMPS < #comps >, \
-                                            SPR < >, \
-                                            SPEC < > ], \
-                                      HEAD verb & \
-                                           [ AUX + ]], \
-                   ARG-ST < #subj & \
-                            [ LOCAL.CAT.VAL [ SPR < >, \
-                                              COMPS < > ]],\
-                            #comps & \
-                            [ LOCAL.CAT [ VAL [ SUBJ < [ ] >, \
-                                                COMPS < > ], \
-                                          HEAD verb & \
-                                              [ FORM nonfin ]]] > ].'
-      mylang.add(typedef)
-
-      if auxsubj == 'np':
-        mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
-      else:
-        mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD adp ].')
-
-      if auxsem == 'pred':
-        auxtypename = 'subj-raise-aux-with-pred'
-        typedef = \
-          auxtypename + ' := subj-raise-aux & \
-                                       trans-first-arg-raising-lex-item-1.'
-        mylang.add(typedef)
-      else:
-        comment = \
-          '; To keep the semantically empty ones from spinning on\n' + \
-          '; generation, require complement to be [AUX -].  The\n' + \
-          '; FORM feature might be enough in the starter grammars,\n' + \
-          '; but I don\'t want to rely on this.  Then again, [ AUX - ]\n' + \
-          '; might not be true.  Be sure to put in a comment.'
-        mylang.add_literal(comment)
-
-        auxtypename = 'subj-raise-aux-no-sem'
-        typedef = \
-          auxtypename + ' := subj-raise-aux & \
-                             trans-first-arg-raising-lex-item-2 & \
-              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
-        mylang.add(typedef)
-
-        
-    elif auxcomp == 'v': 
-      comment = \
-        '; Somewhat surprisingly, this inherits from basic-two-arg, so\n' + \
-        '; that the non-local features are amalgamated from subj, the\n' + \
-        '; lexical verb complement, but not the other complements, if any.'
-      mylang.add_literal(comment)
-
-      # ERB Removing if statement in the middle of a string.
-      #                                       HEAD 
-      #       if auxsubj == 'np':
-      #         typedef += 'noun ]],'
-      #       else:
-      #         typedef += 'adp ]],'
-      #       typedef += \
-
-# LAP 2008-06-05 changed inf to nonfin below
-      typedef = \
-        'arg-comp-aux := basic-two-arg & \
-           [ SYNSEM.LOCAL.CAT [ HEAD verb & [ AUX + ], \
-                                VAL [ SUBJ < #subj >, \
-                                      COMPS < #comps . #vcomps >, \
-                                      SPR < >, \
-                                      SPEC < > ]], \
-             ARG-ST < #subj & \
-                      [ LOCAL [ CAT [ VAL [ SPR < >, \
-                                            COMPS < > ]], \
-                                CONT.HOOK.INDEX #xarg ]], \
-                    #comps & \
-                    [ LIGHT +, \
-                      LOCAL [ CAT [ VAL [ SUBJ <[ ]>, \
-                                          COMPS #vcomps ], \
-                                    HEAD verb & [ FORM nonfin ]], \
-                              CONT.HOOK.XARG #xarg ]] > ].'
-      mylang.add(typedef)
-
-      if auxsubj == 'np':
-        mylang.add('arg-comp-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
-      else:
-        mylang.add('arg-comp-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD adp ].')
-
-      if auxsem == 'pred':
-        comment = \
-          '; Not inheriting from basic-verb-lex, so need to put in' + \
-          '; event-relation by hand here.'
-        mylang.add_literal(comment)
-
-        auxtypename = 'arg-comp-aux-with-pred'
-        typedef = \
-          auxtypename + ' := arg-comp-aux & hcons-lex-item & \
-             [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & \
-                                              [ HARG #harg, \
-                                                LARG #larg ] !> ], \
-                        LKEYS.KEYREL event-relation & \
-                                     [ ARG1 #harg ]], \
-               ARG-ST < [ ], \
-                        [ LOCAL.CONT.HOOK.LTOP #larg ] > ].'
-        mylang.add(typedef)
-      else:
-        comment = \
-          '; Note that raise-sem-lex-item assumes the first complement is' + \
-          '; where the HOOK comes from.  It\'s not clear to me how you\'d' + \
-          '; tell that you had an argument composition auxiliary if it' + \
-          '; wasn\'t appearing adjacent to the verb.'
-        mylang.add_literal(comment)
-
-        auxtypename = 'arg-comp-aux-no-sem'
-        typedef = \
-          auxtypename + ' := arg-comp-aux  & raise-sem-lex-item & \
-             [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
-        mylang.add(typedef)
-
-# LAP 2008-06-05 changed inf to nonfin below        
-    elif auxcomp == 's':
-      typedef = \
-        's-comp-aux := basic-one-arg & \
-           [ SYNSEM.LOCAL.CAT [ HEAD verb & [ AUX + ], \
-                                VAL [ SUBJ < >, \
-                                      COMPS < #comps >, \
-                                      SPR < >, \
-                                      SPEC < > ]], \
-             ARG-ST < #comps & \
-                      [ LOCAL.CAT [ VAL [ SUBJ < >, \
-                                          COMPS < > ], \
-                                    HEAD verb & [ FORM nonfin ]]] > ].'
-      mylang.add(typedef)
-
-      if auxsem == 'pred':
-        mylang.add_literal('; S comp aux, with pred')
-
-        auxtypename = 's-comp-aux-with-pred'
-        typedef = \
-          auxtypename + ' := s-comp-aux & hcons-lex-item & \
-              [ SYNSEM [ LOCAL.CONT.HCONS <! qeq & \
-                                             [ HARG #harg, \
-                                               LARG #larg ] !>, \
-                         LKEYS.KEYREL event-relation & \
-                                      [ ARG1 #harg ]], \
-                ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ] > ].'
-        mylang.add(typedef)
-      else:
-        mylang.add_literal('; S comp aux, no sem')
-
-        comment = \
-          '; Better say [ AUX - ] on complement here, or we\'ll spin' + \
-          '; on generation.'
-        mylang.add_literal(comment)
-
-        auxtypename = 's-comp-aux-no-sem'
-        typedef = \
-          auxtypename + ' := s-comp-aux & raise-sem-lex-item & \
-             [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ] > ].'
-        mylang.add(typedef)
-
-## FIX ME
     lexicon.add_literal(';;; Auxiliaries')
-    typedef = \
-      auxverb + ' := ' + auxtypename + ' & \
-                     [ STEM < "' + auxverb + '" > ].'
-    lexicon.add(typedef)
     
-    if auxsem == 'pred':
-      typedef = auxverb + ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + auxpred + '" ].'
+    ch.iter_begin('aux')
+    while ch.iter_valid():
+      orth = ch.get('orth')
+      sem = ch.get('sem')
+      if sem  == 'addpred':
+        pred = ch.get('pred')
+      comp = ch.get('comp') 
+      compform= ch.get('compform')
+      if compform == 'nf':
+        compform = ch.get('nonfincompform')
+        mylang.add(compform + ' := nonfin.')
+      subj = ch.get('subj')
+
+    # Lexical type for auxiliaries. 
+
+      if comp == 'vp':
+        typedef = 'subj-raise-aux := trans-first-arg-raising-lex-item  & \
+                   [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < #subj >, \
+                                              COMPS < #comps >, \
+                                              SPR < >, \
+                                              SPEC < > ], \
+                                        HEAD verb & \
+                                             [ AUX + ]], \
+                     ARG-ST < #subj & \
+                              [ LOCAL.CAT.VAL [ SPR < >, \
+                                                COMPS < > ]],\
+                              #comps & \
+                              [ LOCAL.CAT [ VAL [ SUBJ < [ ] >, \
+                                                  COMPS < > ], \
+                                            HEAD verb ]] > ].'
+        mylang.add(typedef)
+
+        if subj == 'np':
+          mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
+        else:
+          mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD adp ].')
+
+        if sem == 'addpred':
+          auxtypename = 'subj-raise-aux-with-pred'
+          typedef = \
+            auxtypename + ' := subj-raise-aux & \
+                                         trans-first-arg-raising-lex-item-1 & \
+                [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.FORM ' + compform + '] > ].'
+          mylang.add(typedef)
+
+        else:
+          comment = \
+            '; To keep the semantically empty ones from spinning on\n' + \
+            '; generation, require complement to be [AUX -].  The\n' + \
+            '; FORM feature might be enough in the starter grammars,\n' + \
+            '; but I don\'t want to rely on this.  Then again, [ AUX - ]\n' + \
+            '; might not be true.  Be sure to put in a comment.'
+          mylang.add_literal(comment)
+
+  # LAP 2008-06-09 FIX this TODO: change wording from no-sem to no-pred
+          auxtypename = 'subj-raise-aux-no-sem'
+          typedef = \
+            auxtypename + ' := subj-raise-aux & \
+                               trans-first-arg-raising-lex-item-2 & \
+                [ ARG-ST < [ ], [ LOCAL.CAT.HEAD [ AUX -, \
+                                                   FORM ' + compform + ']] > ].'
+          mylang.add(typedef)
+
+      elif comp == 'v': 
+        comment = \
+          '; Somewhat surprisingly, this inherits from basic-two-arg, so\n' + \
+          '; that the non-local features are amalgamated from subj, the\n' + \
+          '; lexical verb complement, but not the other complements, if any.'
+        mylang.add_literal(comment)
+
+        typedef = \
+          'arg-comp-aux := basic-two-arg & \
+             [ SYNSEM.LOCAL.CAT [ HEAD verb & [ AUX + ], \
+                                  VAL [ SUBJ < #subj >, \
+                                        COMPS < #comps . #vcomps >, \
+                                        SPR < >, \
+                                        SPEC < > ]], \
+               ARG-ST < #subj & \
+                        [ LOCAL [ CAT [ VAL [ SPR < >, \
+                                              COMPS < > ]], \
+                                  CONT.HOOK.INDEX #xarg ]], \
+                      #comps & \
+                      [ LIGHT +, \
+                        LOCAL [ CAT [ VAL [ SUBJ <[ ]>, \
+                                            COMPS #vcomps ], \
+                                      HEAD verb ], \
+                                CONT.HOOK.XARG #xarg ]] > ].'
+        mylang.add(typedef)
+
+        if subj == 'np':
+          mylang.add('arg-comp-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
+        else:
+          mylang.add('arg-comp-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD adp ].')
+
+        if sem == 'addpred':
+          comment = \
+            '; Not inheriting from basic-verb-lex, so need to put in' + \
+            '; event-relation by hand here.'
+          mylang.add_literal(comment)
+
+          auxtypename = 'arg-comp-aux-with-pred'
+          typedef = \
+            auxtypename + ' := arg-comp-aux & hcons-lex-item & \
+               [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & \
+                                                [ HARG #harg, \
+                                                  LARG #larg ] !> ], \
+                          LKEYS.KEYREL event-relation & \
+                                       [ ARG1 #harg ]], \
+                 ARG-ST < [ ], \
+                          [ LOCAL [ CAT.HEAD.FORM ' + compform + ', \
+                                    CONT.HOOK.LTOP #larg ]] > ].'
+          mylang.add(typedef)
+
+        else:
+          comment = \
+            '; Note that raise-sem-lex-item assumes the first complement is' + \
+            '; where the HOOK comes from.  It\'s not clear to me how you\'d' + \
+            '; tell that you had an argument composition auxiliary if it' + \
+            '; wasn\'t appearing adjacent to the verb.'
+          mylang.add_literal(comment)
+
+          auxtypename = 'arg-comp-aux-no-sem'
+          typedef = \
+            auxtypename + ' := arg-comp-aux  & raise-sem-lex-item & \
+               [ ARG-ST < [ ], [ LOCAL.CAT.HEAD [ AUX - , \
+                                                  FORM ' + compform + ']] > ].'
+          mylang.add(typedef)
+
+      elif comp == 's':
+        typedef = \
+          's-comp-aux := basic-one-arg & \
+             [ SYNSEM.LOCAL.CAT [ HEAD verb & [ AUX + ], \
+                                  VAL [ SUBJ < >, \
+                                        COMPS < #comps >, \
+                                        SPR < >, \
+                                        SPEC < > ]], \
+               ARG-ST < #comps & \
+                        [ LOCAL.CAT [ VAL [ SUBJ < >, \
+                                            COMPS < > ], \
+                                      HEAD verb ]] > ].'
+        mylang.add(typedef)
+
+        if sem == 'addpred':
+          mylang.add_literal('; S comp aux, with pred')
+
+          auxtypename = 's-comp-aux-with-pred'
+          typedef = \
+            auxtypename + ' := s-comp-aux & hcons-lex-item & \
+                [ SYNSEM [ LOCAL.CONT.HCONS <! qeq & \
+                                               [ HARG #harg, \
+                                                 LARG #larg ] !>, \
+                           LKEYS.KEYREL event-relation & \
+                                        [ ARG1 #harg ]], \
+                  ARG-ST < [ LOCAL [ CAT.HEAD.FORM ' + compform + ' , \
+                                     CONT.HOOK.LTOP #larg ]] > ].'
+          mylang.add(typedef)
+        else:
+          mylang.add_literal('; S comp aux, no sem')
+
+  # LAP 2008-06-11 FIX this: literals may print more than once
+  #   here and elsewhere in the loop
+          comment = \
+            '; Better say [ AUX - ] on complement here, or we\'ll spin' + \
+            '; on generation.'
+          mylang.add_literal(comment)
+
+          auxtypename = 's-comp-aux-no-sem'
+          typedef = \
+            auxtypename + ' := s-comp-aux & raise-sem-lex-item & \
+               [ ARG-ST < [ LOCAL.CAT.HEAD [ AUX -, \
+                                             FORM ' + compform + ']] > ].'
+          mylang.add(typedef)
+
+      typedef = \
+        orth + ' := ' + auxtypename + ' & \
+                       [ STEM < "' + orth + '" > ].'
       lexicon.add(typedef)
+
+      if sem == 'addpred':
+        typedef = orth + ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+        lexicon.add(typedef)
+
+      ch.iter_next()
+    ch.iter_end()
+
 
 def customize_determiners():
 

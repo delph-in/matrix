@@ -1,4 +1,4 @@
-### $Id: choices.py,v 1.16 2008-06-26 22:28:50 sfd Exp $
+### $Id: choices.py,v 1.17 2008-07-02 20:38:38 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -54,6 +54,8 @@ class ChoicesFile:
         self.convert_3_to_4()
       if version < 5:
         self.convert_4_to_5()
+      if version < 6:
+        self.convert_5_to_6()
       # As we get more versions, add more version-conversion methods, and:
       # if version < N:
       #   self.convert_N-1_to_N
@@ -436,7 +438,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 5
+    return 6
 
 
   def convert_value(self, key, old, new):
@@ -743,12 +745,12 @@ class ChoicesFile:
       # create noun slot and morph
       if pat in ('noun', 'noun-det'):
         if last_ns_order and last_ns_order != order:
-          cur_ni = 'noun-slot' + cur_ns
+          cur_ni = 'noun-slot' + str(cur_ns)
           cur_ns += 1
           cur_nm = 1
 
-        ns_pre = 'noun-slot' + cur_ns
-        nm_pre = ns_pre + '_morph' + cur_nm
+        ns_pre = 'noun-slot' + str(cur_ns)
+        nm_pre = ns_pre + '_morph' + str(cur_nm)
 
         self.set(ns_pre + '_input1_type', cur_ni)
         self.set(ns_pre + '_name', 'case')
@@ -763,12 +765,12 @@ class ChoicesFile:
       # create det slot and morph
       if pat in ('det', 'noun-det'):
         if last_ds_order and last_ds_order != order:
-          cur_di = 'det-slot' + cur_ds
+          cur_di = 'det-slot' + str(cur_ds)
           cur_ds += 1
           cur_dm = 1
 
-        ds_pre = 'det-slot' + cur_ds
-        dm_pre = ds_pre + '_morph' + cur_dm
+        ds_pre = 'det-slot' + str(cur_ds)
+        dm_pre = ds_pre + '_morph' + str(cur_dm)
 
         self.set(ds_pre + '_input1_type', cur_di)
         self.set(ds_pre + '_name', 'case')
@@ -782,7 +784,7 @@ class ChoicesFile:
 
       # create adposition
       if pat == 'np':
-        adp_pre = 'adp' + cur_adp
+        adp_pre = 'adp' + str(cur_adp)
         self.set(adp_pre + '_orth', orth)
         self.set(adp_pre + '_order', order)
         self.set(adp_pre + '_feat1_name', 'case')
@@ -825,5 +827,24 @@ class ChoicesFile:
         elif cm == 'tripartite':
           self.set('valence', 'a-o')
 
+      self.iter_next()
+    self.iter_end()
+
+  def convert_5_to_6(self):
+    if self.get('aux-verb'):
+      self.set('has-aux','yes')
+#      self.set('aux1_compform', 'nonfin')
+    self.convert_key('aux-order', 'aux-comp-order')
+    self.convert_key('aux-verb', 'aux1_orth')
+    self.convert_value('aux-sem', 'no-pred', 'nopred')
+    self.convert_value('aux-sem', 'pred', 'addpred')
+    self.convert_key('aux-sem', 'aux1_sem')
+    self.convert_key('aux-comp', 'aux1_comp')
+    self.convert_key('aux-pred', 'aux1_pred')
+    self.convert_key('aux-subj', 'aux1_subj')
+
+    self.iter_begin('verb')
+    while self.iter_valid():
+      self.delete('non-finite')
       self.iter_next()
     self.iter_end()

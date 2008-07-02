@@ -1,4 +1,4 @@
-### $Id: validate.py,v 1.36 2008-06-27 23:51:16 sfd Exp $
+### $Id: validate.py,v 1.37 2008-07-02 20:38:38 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -134,6 +134,19 @@ def validate_word_order():
   if ch.get('det1_orth') and ch.get('has-dets') == 'no':
     add_err('has-dets','You specified lexical entries for determiners, but said your language has none.')
 
+  #Things to do with auxiliaries
+  if (not ch.get('has-aux')):
+    add_err('has-aux','You must specify whether your language has auxiliary verbs.')
+
+  if ((ch.get('has-aux') == 'yes') and (not ch.get('aux-comp-order'))):
+    add_err('aux-comp-order','If your language has auxiliaries, you must specify their order with respect to their complements.')
+
+  if (ch.get('aux-comp-order') and (not ch.get('has-aux'))):
+    add_err('has-aux','You specified an order for auxiliaries and their complements, but not whether your language has auxiliaries at all.')
+
+  if ch.get('aux1_orth') and ch.get('has-aux') == 'no':
+    add_err('has-aux','You specified a lexical entry for an auxiliary, but said your language has none.')
+
 
 ######################################################################
 # validate_sentential_negation()
@@ -152,7 +165,12 @@ def validate_sentential_negation():
     if (not ch.get('neg-aff-orth')):
       err = 'If sentential negation is expressed through affixation, you must specify the form of the affix'
       add_err('neg-aff-orth', err)
-    
+    # If aux is selected then has-aux = 'yes' must be chosen in word order section
+    if ((ch.get('neg-infl-type') == 'aux') or (ch.get('neg-infl-type') == 'aux-main')): 
+      if (ch.get('has-aux') == 'no'):
+        err = 'You have indicated that verbal inflection applies to auxiliaries but that your language has no auxiliaires'
+        add_err('neg-infl-type', err)
+
   # If adverb is indicated, must lexical entry, what it modifies, and ind/selected modifier
   if (ch.get('adv-neg') == 'on'):
     if (not ch.get('neg-adv')):
@@ -164,10 +182,15 @@ def validate_sentential_negation():
         add_err('neg-mod', err)
       if (not ch.get('neg-order')):
         err = 'If sentential negaton is expressed through an adverb, you must specify what side of its host the adverb attaches to.'
-        add_err('neg-order', err)
+        add_err('neg-order', err) 
     if (not ch.get('neg-adv-orth')):
       err = 'If sentential negation is expressed through an adverb, you must specify the form of the adverb.'
       add_err('neg-adv-orth', err)
+   # If aux is selected then has-aux = 'yes' must be chosen in word order section
+    if ((ch.get('neg-sel-adv') == 'aux') or (ch.get('neg-sel-adv') == 'main-aux')):
+      if (ch.get('has-aux') == 'no'):
+        err = 'You have indicated that negation is a selected complement of auxiliaries but that your language has no auxiliaires'
+        add_err('neg-sel-adv', err)  
 
   # If both strategies are checked, then they must say how they combine:
   if ((ch.get('infl-neg') == 'on') and (ch.get('adv-neg') == 'on')):
