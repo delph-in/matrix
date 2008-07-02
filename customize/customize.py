@@ -1,4 +1,4 @@
-### $Id: customize.py,v 1.61 2008-07-02 20:38:38 lpoulson Exp $
+### $Id: customize.py,v 1.62 2008-07-02 20:41:12 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -26,13 +26,7 @@ irules = None
 lrules = None
 lexicon = None
 roots = None
-
-###
-# LAP 2008-06-27 
-# changed has_aux... to simple check variable; moved adds to customize_verbs
-# removed fin/nonfin verb hierarchy
-# added multiple aux loop
-# removed order from aux loop and changed aux-order to be based on has_aux... 
+ 
 ######################################################################
 # Utility functions
 #
