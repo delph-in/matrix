@@ -1,4 +1,4 @@
-### $Id: customize.py,v 1.63 2008-07-04 01:03:33 lpoulson Exp $
+### $Id: customize.py,v 1.64 2008-07-04 01:20:11 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -2660,14 +2660,8 @@ def customize_verbs():
 
     ch.iter_next()
   ch.iter_end()
-# remove - for testing
-  print 'end of verbs'
 
 def customize_auxiliaries():
-# remove - for testing
-  print 'beginning of aux'
-  print ch.get('aux1_comp')
-  print has_auxiliaries_p()
 
   if has_auxiliaries_p():
     auxtypename = ''
@@ -2686,8 +2680,6 @@ def customize_auxiliaries():
         compform = ch.get('nonfincompform')
         mylang.add(compform + ' := nonfin.')
       subj = ch.get('subj')
-      print orth
-      print comp
 
     # Lexical type for auxiliaries. 
 
@@ -2804,8 +2796,6 @@ def customize_auxiliaries():
           mylang.add(typedef)
 
       elif comp == 's':
-        # remove - for testing
-        print 'under s'
         typedef = \
           's-comp-aux := basic-one-arg & \
              [ SYNSEM.LOCAL.CAT [ HEAD verb & [ AUX + ], \
