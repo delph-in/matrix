@@ -1,4 +1,4 @@
-### $Id: validate.py,v 1.37 2008-07-02 20:38:38 lpoulson Exp $
+### $Id: validate.py,v 1.38 2008-07-04 01:03:33 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -144,10 +144,11 @@ def validate_word_order():
   if (ch.get('aux-comp-order') and (not ch.get('has-aux'))):
     add_err('has-aux','You specified an order for auxiliaries and their complements, but not whether your language has auxiliaries at all.')
 
-  if ch.get('aux1_orth') and ch.get('has-aux') == 'no':
+  if (ch.get('aux1_orth') and (ch.get('has-aux') == 'no')):
     add_err('has-aux','You specified a lexical entry for an auxiliary, but said your language has none.')
 
-
+  if ((not ch.get('aux1_orth')) and (ch.get('has-aux') == 'yes')):
+    add_err('has-aux', 'You must add at least one auxiliary on the lexicon page.')
 ######################################################################
 # validate_sentential_negation()
 #   Validate the user's choices about sentential negation.
@@ -387,7 +388,6 @@ def validate_lexicon():
     orth = ch.get('orth')
     pred = ch.get('pred')
     val = ch.get('valence')
-    nf = ch.get('non-finite')
 
     if not val:
       err = 'You must specify the argument structure of each verb you define.'
@@ -405,11 +405,6 @@ def validate_lexicon():
       err = 'You must specify a predicate for each verb you define.'
       add_err(ch.iter_prefix() + 'pred', err)
 
-    # Did they give us the same form for both finite and nonfinite verbs?
-    if orth == nf:
-      err = 'If you provide a form for a verb when it cooccurs with an auxiliary, it must be different from the other (finite) form.'
-      add_err(ch.iter_prefix() + 'non-finite', err)
-
     ch.iter_next()
   ch.iter_end()
 
@@ -417,6 +412,51 @@ def validate_lexicon():
     err = 'You must create intransitive and transitive verb classes.'
     add_err('verb1_valence', err)
     add_err('verb2_valence', err)
+
+
+  # Auxiliaries
+  ch.iter_begin('aux')
+  while ch.iter_valid():
+    orth = ch.get('orth')
+    sem = ch.get('sem')
+    pred = ch.get('pred')
+    comp = ch.get('comp')
+    compform = ch.get('compform')
+    nonfincompform = ch.get('nonfincompform')
+    subj = ch.get('subj')
+    prefix = ch.iter_prefix()
+      
+    if not orth:
+      err = 'You must specify a spelling for each auxiliary you define.'
+      add_err(prefix + 'orth', err)
+
+    if not sem:
+      err = 'You must specify whether the auxiliary contributes a predicate.'
+      add_err(prefix + 'sem', err)
+
+    if ((sem == 'add-pred') and (not pred)):
+      err = 'You must provide a predicate.'
+      add_err(prefix + 'pred', err)
+
+    if not comp:
+      err = 'You must specify the complement type.'
+      add_err(prefix + 'comp', err)
+
+    if not compform:
+      err = 'You must specify the form of the verb in the complement.'
+      add_err(prefix + 'compform', err)
+
+    if ((compform == 'nf') and (not nonfincompform)):
+      err = 'You must specify a nonfinite form.'
+      add_err(prefix + 'nonfincompform', err)
+
+    if ((comp == 'vp') or (comp == 'v')):
+      if not subj:
+        err = 'You must specify the subject type.'
+        add_err(prefix + 'subj', err)
+    
+    ch.iter_next()
+  ch.iter_end()
 
   # Determiners
   ch.iter_begin('det')

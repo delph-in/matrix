@@ -1,4 +1,4 @@
-### $Id: matrixdef,v 1.26 2008-07-02 20:38:38 lpoulson Exp $
+### $Id: matrixdef,v 1.27 2008-07-04 01:03:33 lpoulson Exp $
 
 Section language "Language"
 
@@ -404,12 +404,12 @@ BeginIter aux{i} "an Aux Type" 0
   Text orth "Aux {i} spelling" "<b>Auxiliary type {i}</b>:<br>Spelling: " "" 40
 
   Radio sem "Aux {i} semantics" "<br>This auxiliary verb contributes:<br>" ""
-  . addpred "Predicate" "" "An independent predicate (e.g. _can_v_rel): "
+  . add-pred "Predicate" "" "An independent predicate (e.g. _can_v_rel): "
 
   Text pred "Aux{i} predicate" "Predicate: " "" 40
 
   Radio sem "Aux {i} semantics" "<br>" ""
-  . nopred "No predicate" "" "Tense/aspect information only"
+  . no-pred "No predicate" "" "Tense/aspect information only"
 
   Radio comp "Aux {i} complement" "<br>This auxiliary verb takes as its complement a:<br>" ""
   . s "S" "" "saturated sentence<br>"
