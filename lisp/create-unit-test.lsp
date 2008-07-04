@@ -13,13 +13,13 @@
 ;;; Invoke this from within the *common-lisp* buffer
 ;;; while running the lkb, as follows:
 
-;;; (create-matrix-unit-test "path-to-txt-suite" "path-to-choices")
+;;; (create-matrix-unit-test "path-to-choices" "path-to-txt-suite")
 
 ;;; TODO: Also make one for running existing unit tests.
 
 (in-package :lkb)
 
-(defun create-matrix-unit-test (txt-suite choices)
+(defun create-matrix-unit-test (choices txt-suite)
 
   ;;; Check to make sure files are where they should be
   
@@ -58,16 +58,14 @@
 		       "unit-tests/home/")))
 	(setf tsdb::*tsdb-home* home))
   
-  (tsdb::send-to-podium "tsdb_update all" :wait t)
-  (tsdb::send-to-podium (format nil "set globals(home) ~a" tsdb::*tsdb-home*))
-  
   ;;; Import test items
 
   ; directory name for profile (name is relative to *tsdb-home*)
   ; fix-me: this should have timestamnp in it.
   
   (let* ((lg-name (get-language-name choices))
-	 (profile-directory (format nil "current/~a" lg-name)))
+	 (profile-directory (format nil "current/~a" lg-name))
+	 (tex-file (format nil "~a/unit-tests/logs/~a.tex" *customization-root* lg-name)))
   
     ; add profile
 
@@ -76,64 +74,193 @@
   
     ;;; Process all items
   
-    (tsdb::tsdb-do-process profile-directory))
+    (tsdb:tsdb :process profile-directory)
   
-  ;;; Update status.  Why does it sometimes seem to need both of these?
+    ;;; It would be nice to also print out results of analyze
+    ;;; coverage/overgeneration to lisp buffer ... but that 
+    ;;; doesn't seem possible at present.  Instead, output them
+    ;;; to a .tex file in logs/ and latex it, and open it as
+    ;;; .dvi
 
-  (tsdb::send-to-podium "tsdb_update all" :wait t)
-  (tsdb::send-to-podium (format nil "set globals(home) ~a" tsdb::*tsdb-home*) :wait t)
- 
-  ;;; Kick open browse-results window
+    (let ((stream (tsdb::create-output-stream tex-file)))
+      (format stream "\\documentclass[10pt]{article}~%~%\\begin{document}~%~%\\noindent~%")
+      (close stream))
+	  
+    (tsdb::analyze-competence profile-directory :append tex-file :format :latex) 
+    (tsdb::analyze-competence profile-directory :append tex-file :wf 0 :format :latex) 
+    (let ((stream (tsdb::create-output-stream nil tex-file)))
+      (format stream "\\end{document}~%~%")
+      (close stream))
 
-  (tsdb::send-to-podium "tsdb_browse results" :wait t)
+    (let* ((cmd1 (format nil "latex ~a.tex" lg-name))
+	   (cmd2 (format nil "xdvi ~a.dvi" lg-name)))
+      (excl:chdir (format nil "~aunit-tests/logs/" *customization-root*))
+      (excl:run-shell-command cmd1 :wait t)
+      (excl:run-shell-command cmd2)))
+
     
-  ;;; It would be nice to also print out results of analyze
-  ;;; coverage/overgeneration to lisp buffer.
-)
+    ;;; Print out instructions on how to browse results
+  
+  (format nil "To browse the results, try Update | All tsdb() status, then click on the new test suite and do  Browse | Results from the [incr tsdb()] podium."))
+
+;;; Command for interactively running one unit test.  Should
+;;; leave you in a state where the grammar is loaded and the
+;;; compare | detail window is open for.
+
+
+(defun run-matrix-unit-test (lg-name)
+
+  ;;; Check that *customization-root* is defined.
+  
+  (if (or (not (find-symbol "*CUSTOMIZATION-ROOT*"))
+	  (not (boundp '*CUSTOMIZATION-ROOT*)))
+      (error "No value for *customization-root*"))
+
+  ;;; Check that a unit-test by that name exists, but not a grammar
+  
+  (let ((cust (make-pathname :directory *customization-root* :name "customize.py")))
+    (if (fad:file-exists-p cust)
+	nil
+      (error "Invalid customization root: ~S" *customization-root*)))
+
+  (let ((grammar-path (make-pathname 
+		       :directory 
+		       (pathname-directory 
+			(dir-append *customization-root* 
+				    '(:relative "unit-tests" "grammars"))) 
+		       :name lg-name)))
+    (if (fad:file-exists-p grammar-path)
+      (error "Move ~S, it is in the way" grammar-path)))
+  
+  (let ((choices-path (make-pathname 
+		       :directory 
+		       (pathname-directory 
+			(dir-append *customization-root* 
+				    '(:relative "unit-tests" "choices"))) 
+		       :name lg-name)))
+    (if (fad:file-exists-p choices-path)
+	nil
+      (error "No unit test called ~S" lg-name))
+
+    
+    ;;; Customize grammar
+  
+    (let* ((lg-name (get-language-name choices-path))
+	   (cmd (format nil "~a~a ~a ~a ~a~a~a" 
+			*customization-root* "unit-tests/call-customize"
+			*customization-root* 
+			choices-path *customization-root* "unit-tests/grammars/"
+			lg-name)))
+      (excl:run-shell-command cmd))
+  
+  ;;; Load grammar into the LKB
+
+    (let* ((lg-name (get-language-name choices-path))
+	   (script (format nil "~a~a~a~a"
+			   *customization-root*
+			   "unit-tests/grammars/"
+			   lg-name
+			   "/matrix/lkb/script")))
+      (read-script-file-aux script)))
+  
+  ;;; Check that [incr tsdb()] is running, and if not
+  ;;; start it up:
+    
+  (unless (find-package :tsdb)
+    (load-system "tsdb"))
+    
+  ;;; Set *tsdb-home* to unit-tests/home/
+
+  (let ((home (format nil "~a~a"
+		       *customization-root*
+		       "unit-tests/home/")))
+	(setf tsdb::*tsdb-home* home))
+  
+  ;;; Set *tsdb-skeleton-directory* to unit-tests/skeletons/
+  
+
+  (let ((skel (format nil "~a~a"
+		      *customization-root*
+		      "unit-tests/skeletons/")))
+    (tsdb:tsdb :skeletons skel))
+  
+  ;;; Create and process profile
+
+  (let ((target (format nil "current/~a" lg-name)))
+    (tsdb:tsdb :create target :skeleton lg-name) 
+    (tsdb:tsdb :process target))
+  
+  ;;; Do comparison
+  
+  (let ((gold (format nil "gold/~a" lg-name))
+	(target (format nil "current/~a" lg-name))
+	(log-file (format nil "~aunit-tests/logs/~a" *customization-root* lg-name)))
+    (tsdb::compare-in-detail target gold 
+			     :format :ascii 
+			     :compare '(:readings :mrs)
+			     :append log-file)
+    (format t "Here are the diffs, if any, between the current and gold standard.")
+    (excl:run-shell-command (format nil "cat ~a" log-file))
+    (excl:run-shell-command (format nil "rm ~a" log-file)))
+    
+   ;;; Give instructions on how to open window showing results
+  
+  (format t "To look at these interactively, do the following in the [incr tsdb()] podium:~%")
+  (format t "Update | All tsdb(1) status~%")
+  (format t "Right click on gold/~a~%" lg-name)
+  (format t "Left click on current/~a~%" lg-name)
+  (format t "Compare | Intersection | mrs~%")
+  (format t "Compare | Detail~%")
+  )
+
 
 (defun check-unit-test-inputs (txt-suite choices)
 
     ;;; Check that *customization-root* is defined.
-    ;;; if only I knew how to do that.
+
+  (if (or (not (find-symbol "*CUSTOMIZATION-ROOT*"))
+	  (not (boundp '*CUSTOMIZATION-ROOT*)))
+      (error "No value for *customization-root*"))
+  
     
     ;;; Check path names
     
-    (if (fad:file-exists-p txt-suite)
-	nil
-      (error "No txt-suite at path ~S." txt-suite))
+  (if (fad:file-exists-p txt-suite)
+      nil
+    (error "No txt-suite at path ~S." txt-suite))
   
-    (if (fad:file-exists-p choices)
-	nil
-      (error "No choices file at path ~S." choices))
+  (if (fad:file-exists-p choices)
+      nil
+    (error "No choices file at path ~S." choices))
     
-    (let ((cust (make-pathname :directory *customization-root* :name "customize.py")))
-      (if (fad:file-exists-p cust)
-	  nil
-	(error "Invalid customization root: ~S" *customization-root*)))
+  (let ((cust (make-pathname :directory *customization-root* :name "customize.py")))
+    (if (fad:file-exists-p cust)
+	nil
+      (error "Invalid customization root: ~S" *customization-root*)))
     
     ;;; Check language name from choices file and make sure
     ;;; that it isn't already in use among unit-tests and/or
     ;;; that there isn't already a grammar by that name in the
     ;;; grammars/ directory.
     
-    (let* ((lg-name (get-language-name choices))
-	   (choices-path (make-pathname 
-		  :directory 
-		  (pathname-directory 
-		   (dir-append *customization-root* 
-			       '(:relative "unit-tests" "choices"))) 
-		  :name lg-name))
-	   (grammar-path (make-pathname 
-		  :directory 
-		  (pathname-directory 
-		   (dir-append *customization-root* 
-			       '(:relative "unit-tests" "grammars"))) 
-		  :name lg-name))
-	   )
-      (if (fad:file-exists-p choices-path)
-	  (error "A unit test with name ~S already exists.  Create a new choices file with a different language name and start again.  Or, if you wanted to run that existing unit test, use run-unit-test." lg-name))
-      (if (fad:file-exists-p grammar-path)
-	  (error "A grammar with name ~S already exists in unit-tests/grammars. Please move it first before invoking this function." lg-name))))
+  (let* ((lg-name (get-language-name choices))
+	 (choices-path (make-pathname 
+			:directory 
+			(pathname-directory 
+			 (dir-append *customization-root* 
+				     '(:relative "unit-tests" "choices"))) 
+			:name lg-name))
+	 (grammar-path (make-pathname 
+			:directory 
+			(pathname-directory 
+			 (dir-append *customization-root* 
+				     '(:relative "unit-tests" "grammars"))) 
+			:name lg-name))
+	 )
+    (if (fad:file-exists-p choices-path)
+	(error "A unit test with name ~S already exists.  Create a new choices file with a different language name and start again.  Or, if you wanted to run that existing unit test, use run-unit-test." lg-name))
+    (if (fad:file-exists-p grammar-path)
+	(error "A grammar with name ~S already exists in unit-tests/grammars. Please move it first before invoking this function." lg-name))))
 
 
 (defun get-language-name (choices)
@@ -153,3 +280,28 @@
     (if lg-name
 	lg-name
       (error "Invalid choices file: No language name given."))))
+
+;;; Function for cleaning up files when you're done with dealing
+;;; with a unit-test interactively.  This will leave behind whatever
+;;; is in choices/, txt-suites/, skeletons/, and home/gold/, but
+;;; clean up in grammars/, logs/, and home/current/ so you can run again.
+;;; Possible improvement: Flag for just moving those out of the way for
+;;; further comparison.
+
+(defun clean-up-unit-test (lg-name)
+  
+  (let ((path (format nil "~aunit-tests" *customization-root*)))
+  
+  ;;; Remove grammar
+  
+    (excl:run-shell-command (format nil "rm -r ~a/grammars/~a" path lg-name))
+  
+  ;;; Remove log files (.tex, .aux, .dvi)
+    
+    (excl:run-shell-command (format nil "rm ~a/logs/~a.tex" path lg-name))
+    (excl:run-shell-command (format nil "rm ~a/logs/~a.aux" path lg-name))
+    (excl:run-shell-command (format nil "rm ~a/logs/~a.dvi" path lg-name))
+    
+  ;;; Remove profile
+    
+    (excl:run-shell-command (format nil "rm -r ~a/home/current/~a" path lg-name))))
