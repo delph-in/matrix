@@ -1,4 +1,4 @@
-### $Id: choices.py,v 1.18 2008-07-04 01:03:33 lpoulson Exp $
+### $Id: choices.py,v 1.19 2008-07-04 01:59:22 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -831,10 +831,6 @@ class ChoicesFile:
     self.iter_end()
 
   def convert_5_to_6(self):
-    if self.get('aux-verb'):
-      self.set('has-aux','yes')
-    elif len(self.keys()):  # don't add this if the choices file is empty
-      self.set('has-aux','no')
     self.convert_key('aux-order', 'aux-comp-order')
     self.convert_key('aux-verb', 'aux1_orth')
     self.convert_value('aux-sem', 'pred', 'add-pred')
@@ -842,6 +838,10 @@ class ChoicesFile:
     self.convert_key('aux-comp', 'aux1_comp')
     self.convert_key('aux-pred', 'aux1_pred')
     self.convert_key('aux-subj', 'aux1_subj')
+    if self.get('aux1_orth'):
+      self.set('has-aux','yes')
+    elif len(self.keys()):  # don't add this if the choices file is empty
+      self.set('has-aux','no')
 
     self.iter_begin('verb')
     while self.iter_valid():
