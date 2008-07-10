@@ -302,6 +302,8 @@
     (excl:run-shell-command (format nil "rm ~a/logs/~a.aux" path lg-name))
     (excl:run-shell-command (format nil "rm ~a/logs/~a.dvi" path lg-name))
     
-  ;;; Remove profile
+  ;;; Remove profile ... or not: these often can't be removed, and
+  ;;; get over-written by [incr tsdb()] anyway.
     
-    (excl:run-shell-command (format nil "rm -r ~a/home/current/~a" path lg-name))))
+  ;;;  (excl:run-shell-command (format nil "rm -r ~a/home/current/~a" path lg-name))
+    ))
