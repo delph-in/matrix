@@ -1,0 +1,4 @@
+This directory is used for storing log files in the process of unit tests.
+Nothing in this directory should be under cvs control, other than this
+README file.
+
