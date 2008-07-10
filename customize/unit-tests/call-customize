@@ -19,7 +19,7 @@ then
 else
     mkdir $3
     cp $2 $3/choices
-    python customize-one.py $3
+    python customize.py $3
 fi
 
 rm datestamp
