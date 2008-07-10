@@ -1,4 +1,4 @@
-### $Id: customize.py,v 1.64 2008-07-04 01:20:11 lpoulson Exp $
+### $Id: customize.py,v 1.65 2008-07-10 05:25:56 sfd Exp $
 
 ######################################################################
 # imports
@@ -255,21 +255,35 @@ def customize_case():
 
 
 ######################################################################
-# customize_person()
+# customize_person_and_number()
 #   Create the type definitions associated with the user's choices
-#   about person.
+#   about person and number.
 
-def customize_person():
-  pass
+def customize_person_and_number():
+  pernums = ch.pernums()
+  persons = ch.persons()
+  numbers = ch.numbers()
 
+  if pernums:
+    mylang.add('png :+ [ PERNUM pernum ].')
+    mylang.add_literal(';;; Pernum')
+    mylang.add('pernum := *top*.', '', True)
+    for pn in pernums:
+      mylang.add(pn[0] + ' := pernum.', '', True)
+  else:
+    if persons:
+      mylang.add('png :+ [ PER person ].')
+      mylang.add_literal(';;; Person')
+      mylang.add('person := *top*.', '', True)
+      for p in persons:
+        mylang.add(p[0] + ' := person.', '', True)
 
-######################################################################
-# customize_number()
-#   Create the type definitions associated with the user's choices
-#   about number.
-
-def customize_number():
-  pass
+    if numbers:
+      mylang.add('png :+ [ NUM number ].')
+      mylang.add_literal(';;; Number')
+      mylang.add('number := *top*.', '', True)
+      for n in numbers:
+        mylang.add(n[0] + ' := number.', '', True)
 
 
 ######################################################################
@@ -290,9 +304,15 @@ def customize_gender():
   ch.iter_begin('gender')
   while ch.iter_valid():
     name = ch.get('name')
-    stype = ch.get('supertype')
-    mylang.add(name + ' := ' + stype + '.')
-    
+
+    ch.iter_begin('supertype')
+    while ch.iter_valid():
+      stype = ch.get('name')
+      mylang.add(name + ' := ' + stype + '.')
+
+      ch.iter_next()
+    ch.iter_end()
+
     ch.iter_next()
   ch.iter_end()
 
@@ -3659,8 +3679,7 @@ def customize_matrix(path, arch_type):
 
   # Call the various customization functions
   customize_case()
-  customize_person()
-  customize_number()
+  customize_person_and_number()
   customize_gender()
   customize_word_order()
   customize_sentential_negation()

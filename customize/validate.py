@@ -1,4 +1,4 @@
-### $Id: validate.py,v 1.38 2008-07-04 01:03:33 lpoulson Exp $
+### $Id: validate.py,v 1.39 2008-07-10 05:25:56 sfd Exp $
 
 ######################################################################
 # imports
@@ -74,7 +74,23 @@ def validate_case():
 #   Validate the user's choices about person
 
 def validate_person():
-  pass
+  person = ch.get('person')
+  fp = ch.get('first-person')
+
+  if not person:
+    add_err('person',
+            'You must specify how many persons your language distinguishes.')
+  else:
+    if person in ['none', '2-non-2', '3-non-3']:
+      if fp not in ['', 'none']:
+        add_err('first-person',
+                'If your language does not have the first person, it ' + \
+                'cannot distinguish sub-values of the first person.')
+    if person in ['1-2-3', '1-non-1']:
+      if not fp:
+        add_err('first-person',
+                'If your language has the first person, you must specify ' + \
+                'whether it makes finer distinctions within that category.')
 
 
 ######################################################################
@@ -95,8 +111,8 @@ def validate_gender():
     if not ch.get('name'):
       add_err(ch.iter_prefix() + 'name',
               'You must specify a name for each gender you define.')
-    if not ch.get('supertype'):
-      add_err(ch.iter_prefix() + 'supertype',
+    if not ch.get('supertype1_name'):
+      add_err(ch.iter_prefix() + 'supertype1_name',
               'You must specify a supertype for each gender you define.')
       
     ch.iter_next()

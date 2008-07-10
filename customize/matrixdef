@@ -1,4 +1,4 @@
-### $Id: matrixdef,v 1.27 2008-07-04 01:03:33 lpoulson Exp $
+### $Id: matrixdef,v 1.28 2008-07-10 05:25:56 sfd Exp $
 
 Section language "Language"
 
@@ -128,14 +128,38 @@ BeginIter case{i} "a Case"
 EndIter case
 
 
-#Section person "Person"
-#
-#Label "<p>Under Construction</p>"
+Section number "Number"
+
+Label "<p><span style=\"font-variant:small-caps\">Number</span> is a grammatical category that distinguishes between different numbers of real-world entities.  For example, many languages distinguish a <span style=\"font-variant:small-caps\">singular</span> number from a <span style=\"font-variant:small-caps\">plural</span>, the former begin associated with one entity and the latter with more than one.  Other languages distinguish still more number values, including the <span style=\"font-variant:small-caps\">dual</span> (two entities) and the <span style=\"font-variant:small-caps\">paucal</span> (a few entities).  It is important to distinguish between number, described here, and numerals, which currently cannot be described in this questionnaire.  The answers you provide on this page will determine the values available on the lexicon page for the <tt>number</tt> feature (or the <tt>pernum</tt> feature; see the Person section of the questionnaire for more details).</p>"
+
+Label "<p>Please add all the values of number that your language's grammar distinguishes.  If your language does not have number as a grammatical category, leave this section blank.  <span style=\"color:red\">NOTE: This section of the questionnaire is currently under development and over-simplified.  In particular, the <b>first</b> value of number that you provide below will arbitrarily be treated as the singular, while the others will be treated as non-singular.</span></p>"
+
+BeginIter number{i} "a Number"
+
+  Text name "Number {i} name" "Name: " "" 20
+
+EndIter number
 
 
-#Section number "Number"
-#
-#Label "<p>Under Construction</p>"
+Section person "Person"
+
+Label "<p><span style=\"font-variant:small-caps\">Person</span> is a grammatical category that distinguishes between different discourse participants.  Natural languages generally distinguish up to three discourse participants: the speaker (the <span style=\"font-variant:small-caps\">first person</span>), the person spoken to (the <span style=\"font-variant:small-caps\">second person</span>), and anyone else (the <span style=\"font-variant:small-caps\">third person</span>).  The answers you provide on this page will determine the values available on the lexicon page for the <tt>person</tt> feature (or the <tt>pernum</tt> feature; see below).</p>"
+
+Radio person "Person" "<p>Which values of person are distinguished in your language?<br>" ""
+. none "None" "" "none<br>"
+. 1-2-3 "First, second, and third" "" "First, second, and third<br>"
+. 1-non-1 "First and non-first" "" "First and non-first<br>"
+. 2-non-2 "Second and non-second" "" "Second and non-second<br>"
+. 3-non-3 "Third and non-third" "" "Third and non-third</p>"
+
+Label "<p>Some languages make finer distinctions in the first person when more than one discource participant is referred to.  The following notation, adapted from Cysouw (2000), is used here: 1+2 refers to just the speaker and the person(s) spoken to; 1+3 refers to just the speaker and some third person(s); 1+2+3 refers to the speaker, the person(s) spoken to, and some third person(s).  (Note that if your language makes a finer distinction in the first person non-singular, your grammar will have a synthetic <tt>pernum</tt> feature rather than separate <tt>person</tt> and <tt>number</tt> features.)</p>"
+
+Radio first-person "First person" "<p>What sub-values does your language distinguish in the first person?<br>" ""
+. none "None" "" " none<br>"
+. incl-excl "Inclusive/exclusive" "" " (1+2 and 1+2+3) &nbsp; vs. &nbsp; 1+3 (inclusive/exclusive)<br>"
+. min-incl "Minimal inclusive" "" " 1+2 &nbsp; vs. &nbsp; (1+3 and 1+2+3) (minimal inclusive)<br>"
+. aug-incl "Augmented inclusive" "" " (1+2 and 1+3) &nbsp; vs. &nbsp; 1+2+3 (augmented inclusive)<br>"
+. min-aug "Minimal/augmented" "" " 1+2 &nbsp; vs. &nbsp; 1+3 &nbsp; vs. &nbsp; 1+2+3 (minimal/augmented)<br>"
 
 
 Section gender "Gender"
@@ -146,9 +170,13 @@ BeginIter gender{i} "a Gender"
 
   Text name "Gender {i} name" "Name: " "" 20
 
-  Select supertype "Gender {i} supertype" ", which is a subtype of: " ""
-  fillregex gender[0-9]+_name 1
-  . gender "Gender" "gender"
+  BeginIter supertype{j} "a Supertype" 1
+
+    Select name "Gender {i} supertype {j} name" "Supertype: " ""
+    fillregex gender[0-9]+_name 1
+    . gender "Gender" "gender"
+
+  EndIter supertype
 
 EndIter gender
 

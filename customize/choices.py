@@ -1,4 +1,4 @@
-### $Id: choices.py,v 1.19 2008-07-04 01:59:22 lpoulson Exp $
+### $Id: choices.py,v 1.20 2008-07-10 05:25:56 sfd Exp $
 
 ######################################################################
 # imports
@@ -361,6 +361,106 @@ class ChoicesFile:
 
     return patterns
 
+
+  # numbers()
+  #   Create and return a list containing information about the
+  #   values of the number feature implied by the current choices.
+  #   This list consists of tuples:
+  #     [number name]
+  def numbers(self):
+    numbers = []
+
+    self.iter_begin('number')
+    while self.iter_valid():
+      numbers += [ [self.get('name')] ]
+      self.iter_next()
+    self.iter_end()
+
+    return numbers
+
+
+  # persons()
+  #   Create and return a list containing information about the
+  #   values of the person feature implied by the current choices.
+  #   This list consists of tuples:
+  #     [person name]
+  def persons(self):
+    persons = []
+
+    person = self.get('person')
+    if person == '1-2-3':
+      persons += [ ['1st'] ]
+      persons += [ ['2nd'] ]
+      persons += [ ['3rd'] ]
+    elif person == '1-non-1':
+      persons += [ ['1st'] ]
+      persons += [ ['non-1st'] ]
+    elif person == '2-non-2':
+      persons += [ ['2nd'] ]
+      persons += [ ['non-2nd'] ]
+    elif person == '3-non-3':
+      persons += [ ['3rd'] ]
+      persons += [ ['non-3rd'] ]
+
+    return persons
+
+
+  # pernums()
+  #   Create and return a list containing information about the
+  #   values of the pernum feature implied by the current choices.
+  #   A pernum feature is implied when the user has specified that
+  #   the first-person plural has sub-types.
+  #   This list consists of tuples:
+  #     [pernum name]
+  def pernums(self):
+    pernums = []
+
+    fp = self.get('first-person')
+    if fp not in ['', 'none']:
+      doneSg = False  # the first item in the num list is the singular
+      for n in self.numbers():
+        n = n[0]
+        for p in self.persons():
+          p = p[0]
+          if doneSg and p == '1st':
+            if fp == 'incl-excl':
+              pernums += [ [p + '_' + n + '_incl'] ]
+              pernums += [ [p + '_' + n + '_excl'] ]
+            elif fp == 'min-incl':
+              pernums += [ [p + '_' + n + '_min'] ]
+              pernums += [ [p + '_' + n + '_incl'] ]
+            elif fp == 'aug-incl':
+              pernums += [ [p + '_' + n] ]
+              pernums += [ [p + '_' + n + '_aug'] ]
+            elif fp == 'min-aug':
+              pernums += [ [p + '_' + n + '_min'] ]
+              pernums += [ [p + '_' + n + '_incl'] ]
+              pernums += [ [p + '_' + n + '_aug'] ]
+          else:
+            pernums += [ [p + '_' + n] ]
+          
+        doneSg = True
+
+    return pernums
+
+
+  # genders()
+  #   Create and return a list containing information about the
+  #   genders implied by the current choices.
+  #   This list consists of tuples:
+  #     [gender name]
+  def genders(self):
+    genders = []
+
+    self.iter_begin('gender')
+    while self.iter_valid():
+      genders += [ [self.get('name')] ]
+      self.iter_next()
+    self.iter_end()
+
+    return genders
+
+
   # features()
   #   Create and return a list containing information about the features
   #   in the language described by the current choices.  This list consists
@@ -383,16 +483,42 @@ class ChoicesFile:
     if values:
       features += [ ['case', values, 'LOCAL.CAT.HEAD.CASE'] ]
 
+    # Number, Person, and Pernum
+    pernums = self.pernums()
+    if pernums:
+      values = ''
+      for pn in pernums:
+        if values:
+          values += ','
+        values += pn[0] + '|' + pn[0]
+
+      if values:
+        features += [ ['pernum', values, 'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM'] ]
+    else:
+      values = ''
+      for n in self.numbers():
+        if values:
+          values += ','
+        values += n[0] + '|' + n[0]
+
+      if values:
+        features += [ ['number', values, 'LOCAL.CONT.HOOK.INDEX.PNG.NUM'] ]
+
+      values = ''
+      for p in self.persons():
+        if values:
+          values += ','
+        values += p[0] + '|' + p[0]
+
+      if values:
+        features += [ ['person', values, 'LOCAL.CONT.HOOK.INDEX.PNG.PER'] ]
+
     # Gender
     values = ''
-    self.iter_begin('gender')
-    while self.iter_valid():
-      name = self.get('name')
+    for g in self.genders():
       if values:
         values += ','
-      values += name + '|' + name
-      self.iter_next()
-    self.iter_end()
+      values += g[0] + '|' + g[0]
 
     if values:
       features += [ ['gender', values, 'LOCAL.CONT.HOOK.INDEX.PNG.GEND'] ]
@@ -410,13 +536,7 @@ class ChoicesFile:
 
     # Misc
     features += \
-      [ ['person',
-         '1st|first,2nd|second,3rd|third',
-         'LOCAL.CONT.HOOK.INDEX.PNG.PER'],
-        ['number',
-         'sg|singular,pl|plural',
-         'LOCAL.CONT.HOOK.INDEX.PNG.NUM'],
-        ['coordination',
+      [ ['coordination',
          'coord|coordinated',
          ''],
         ['negation',

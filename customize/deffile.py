@@ -1,4 +1,4 @@
-### $Id: deffile.py,v 1.11 2008-06-27 23:51:16 sfd Exp $
+### $Id: deffile.py,v 1.12 2008-07-10 05:25:56 sfd Exp $
 
 ######################################################################
 # This module is currently a bit of a hybrid.  Most of the code is
@@ -828,7 +828,7 @@ class MatrixDefFile:
           html += html_option(errors, sval, selected, shtml) + '\n'
           i += 1
 
-        html += '</select>\n'
+        html += '</select>'
         html += af + '\n'
       elif word[0] == 'Text':
         (vn, fn, bf, af, sz) = word[1:]
@@ -863,7 +863,7 @@ class MatrixDefFile:
         choices.iter_begin(iter_name)
         cur = 1
         while choices.iter_valid() or cur <= iter_min:
-          pre = choices.iter_prefix()
+          pre = prefix + iter_name + str(cur) + '_'
           vars[iter_var] = cur
 
           # pre[0:-1] trims the trailing '_'
