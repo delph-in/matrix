@@ -1,4 +1,4 @@
-### $Id: customize.py,v 1.65 2008-07-10 05:25:56 sfd Exp $
+### $Id: customize.py,v 1.66 2008-07-10 17:28:29 bender Exp $
 
 ######################################################################
 # imports
@@ -3707,3 +3707,10 @@ def customize_matrix(path, arch_type):
   else:
     make_zip('matrix')
   os.chdir(old_dir)
+
+###############################################################
+# Allow customize_matrix() to be called directly from the
+# command line or shell scripts.
+
+if __name__ == "__main__":
+  customize_matrix(sys.argv[1], 'tgz')
