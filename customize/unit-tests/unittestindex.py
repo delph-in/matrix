@@ -1,3 +1,8 @@
+import sys
+import os
+import shutil
+import re
+
 class UnitTestIndex:
   # initialize by passing either a file name or ???file handle
   def __init__(self, index_file):
@@ -20,3 +25,21 @@ class UnitTestIndex:
   # Check whether a testname is there
   def exists(self, testname):
       return testname in self.tests
+
+if __name__ == "__main__":
+  
+  cust_root = os.environ.get("CUSTOMIZATIONROOT")
+  if not os.path.exists(cust_root + "/unit-tests/unit-test-index"):
+    raise ValueError, "Invalid path name for customization root or missing unit test index."
+
+  index = UnitTestIndex(cust_root + "/unit-tests/unit-test-index")
+
+  keys = ""
+
+  if sys.argv[1] == "--lg-names":
+    for key in index.tests.keys():
+      keys = keys + " " + key
+    print keys
+
+  if sys.argv[1] == "--comment":
+    print index.tests[sys.argv[2]]

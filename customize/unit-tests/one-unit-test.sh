@@ -34,6 +34,14 @@ count=1;
 limit=1000;
 best=1000;
 
+# Main log file to look at tsdb output.
+
+LOG="${CUSTOMIZATIONROOT}/unit-tests/logs/tsdb.${date}.log";
+
+if [ -e ${LOG}]; then
+    rm ${LOG};
+fi
+
 # Find out which unit test
 
 lgname=$1
@@ -82,15 +90,19 @@ ${CUSTOMIZATIONROOT}/unit-tests/call-customize ${CUSTOMIZATIONROOT} ${CUSTOMIZAT
 
   echo "(lkb::read-script-file-aux \"$grammar\")";
 
-  echo "(setf target \"$target\")"
-  echo "(tsdb:tsdb :create target :skeleton \"$skeleton\")"
+  echo "(setf target \"$target\")";
 
-  echo "(tsdb:tsdb :process target)"
+  echo "(tsdb:tsdb :create target :skeleton \"$lgname\")";
 
-  echo "(tsdb::compare-in-detail \"$target\" \"$gold\" :format :ascii :compare '(:readings :mrs) :append \"$log\")"
+  echo "(tsdb:tsdb :process target)";
+
+  echo "(tsdb::compare-in-detail \"$target\" \"$gold\" :format :ascii :compare '(:readings :mrs) :append \"$log\")";
 
 } | ${LOGONROOT}/bin/logon ${source} ${cat} \
       -I base -locale no_NO.UTF-8 -qq 2>&1 | tee ${LOG}
+
+# FIXME: There is probably a more appropriate set of options to
+# send to logon, but it seems to work fine as is for now.
 
 echo "What follows are the diffs, if any, for this unit test."
 
@@ -99,7 +111,7 @@ if [ -e $log ]; then
     rm $log
 fi
 
-rm -r $grammardir
+#Clean up
 
-# FIXME: There is probably a more appropriate set of options to
-# send to logon, but it seems to work fine as is for now.
+rm -r $grammardir
+rm -r "$tsdbhome/$target"
