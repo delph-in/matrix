@@ -21,8 +21,5 @@
 
 (
  ;;; new-unit-test-here
-((:path . "unit-test-13") (:content . "unit-test-13: toy toy toy"))
-((:path . "unit-test-10") (:content . "unit-test-10: yet another toy example"))
-((:path . "unit-test-9") (:content . "another toy example"))
-((:path . "unit-test-2") (:content . "toy example"))
+((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  )

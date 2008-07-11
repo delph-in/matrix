@@ -126,6 +126,7 @@ for lgname in $lgnames;
 do
     log="$logdir/$lgname.$date"
     if [ -e $log ]; then
+	echo "$lgname" >> $masterlog;
 	python unittestindex.py --comment $lgname | cat >> $masterlog;
 	cat $log >> $masterlog;
 	rm $log
