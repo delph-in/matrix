@@ -57,6 +57,8 @@ lgnames=`python unittestindex.py --lg-names`
 for lgname in $lgnames;
 do 
 
+    echo -ne "$lgname...";
+
 # Set skeleton, grammar, gold-standard for comparison, and
 # target directory.
 
@@ -99,14 +101,19 @@ do
 	echo "(tsdb::compare-in-detail \"$target\" \"$gold\" :format :ascii :compare '(:readings :mrs) :append \"$log\")";
 
     } | ${LOGONROOT}/bin/logon ${source} ${cat} \
-	-I base -locale no_NO.UTF-8 -qq 2>&1 | tee -a ${LOG}
+	-I base -locale no_NO.UTF-8 -qq 2> ${LOG} > ${LOG}
 
 # FIXME: There is probably a more appropriate set of options to
-# send to logon, but it seems to work fine as is for now.  -a
-# flag to tee is crucial, or we only get the log for the last test.
+# send to logon, but it seems to work fine as is for now. 
 
     rm -r $grammardir
     rm -r "$tsdbhome/$target"
+
+    if [ -s $log ]; then
+	echo " DIFFS! See log file";
+    else
+	echo " Success!";
+    fi
 
 done
 

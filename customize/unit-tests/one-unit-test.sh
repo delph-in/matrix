@@ -38,13 +38,20 @@ best=1000;
 
 LOG="${CUSTOMIZATIONROOT}/unit-tests/logs/tsdb.${date}.log";
 
-if [ -e ${LOG}]; then
+if [ -e ${LOG} ]; then
     rm ${LOG};
 fi
 
 # Find out which unit test
 
 lgname=$1
+
+# Let the user know what we're doing:
+
+echo "Running unit test $1 on $date";
+echo "For [incr tsdb()]'s log output, see $LOG";
+
+
 
 # Set skeleton, grammar, gold-standard for comparison, and
 # target directory.
@@ -99,7 +106,7 @@ ${CUSTOMIZATIONROOT}/unit-tests/call-customize ${CUSTOMIZATIONROOT} ${CUSTOMIZAT
   echo "(tsdb::compare-in-detail \"$target\" \"$gold\" :format :ascii :compare '(:readings :mrs) :append \"$log\")";
 
 } | ${LOGONROOT}/bin/logon ${source} ${cat} \
-      -I base -locale no_NO.UTF-8 -qq 2>&1 | tee ${LOG}
+      -I base -locale no_NO.UTF-8 -qq 2> ${LOG} > ${LOG}
 
 # FIXME: There is probably a more appropriate set of options to
 # send to logon, but it seems to work fine as is for now.
