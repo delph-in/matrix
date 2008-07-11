@@ -4,10 +4,10 @@
 
 ### Usage:
 
-### python add-unit-test.py choices-file txt-suite customization-root
+### python add-unit-test.py choices-file txt-suite
 
-### If customization root is not specified, the program assumes it
-### is being invoked from within matrix/customize/unit-tests
+### The program assumes that the environment variable CUSTOMIZATIONROOT
+### is set appropriately.
 
 import sys
 import os
@@ -18,17 +18,15 @@ from unittestindex import UnitTestIndex
 sys.path.append("..")
 from choices import ChoicesFile
 
+cust_root = os.environ.get("CUSTOMIZATIONROOT")
+
+
 # Check whether arguments correspond to existing files
 
 choices_file = sys.argv[1]
 txt_suite = sys.argv[2]
 
-if (len(sys.argv) > 3):
-    cust_root = sys.argv[3]
-else:
-    cust_root = "../"
-
-ut_root = cust_root + "unit-tests/"
+ut_root = cust_root + "/unit-tests/"
 
 if not os.path.exists(cust_root):
     raise ValueError, "Invalid path name for customization root."
