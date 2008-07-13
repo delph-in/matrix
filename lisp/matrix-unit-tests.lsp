@@ -13,95 +13,104 @@
 ;;; Invoke this from within the *common-lisp* buffer
 ;;; while running the lkb, as follows:
 
-;;; (create-matrix-unit-test "path-to-choices" "path-to-txt-suite")
+;;; (create-matrix-unit-test "choices-file" "txt-suite-file")
 
-;;; TODO: Also make one for running existing unit tests.
+;;; where choices-file and txt-suite-file are names of files in
+;;; the directory matrix/customize/unit-tests/scratch/.
 
 (in-package :lkb)
 
-(defun create-matrix-unit-test (choices txt-suite)
+(defun create-matrix-unit-test (choices-file txt-suite-file)
 
-  ;;; Check to make sure files are where they should be
+  ;;; Assume that these live in unit-tests/scratch, so it's not
+  ;;; so annoying to type them in.
   
-  (check-unit-test-inputs txt-suite choices)
+  (let ((choices (format nil "~a/unit-tests/scratch/~a" *customization-root* choices-file))
+	(txt-suite (format nil "~a/unit-tests/scratch/~a" *customization-root* txt-suite-file)))
   
-  ;;; Create grammar and store in unit-tests/grammars
+    ;;; Check to make sure files are where they should be
+  
+    (check-unit-test-inputs txt-suite choices)
+  
+    ;;; Create grammar and store in unit-tests/grammars
 
-  (let* ((lg-name (get-language-name choices))
-	 (cmd (format nil "~a~a ~a ~a ~a~a~a" 
-		      *customization-root* "unit-tests/call-customize"
-		      *customization-root* 
-		      choices *customization-root* "unit-tests/grammars/"
-		      lg-name)))
-    (excl:run-shell-command cmd))
+    (let* ((lg-name (get-language-name choices))
+	   (cmd (format nil "~a~a ~a ~a ~a~a~a" 
+			*customization-root* "unit-tests/call-customize"
+			*customization-root* 
+			choices *customization-root* "unit-tests/grammars/"
+			lg-name)))
+      (excl:run-shell-command cmd))
   
-  ;;; Load grammar into the LKB
+    ;;; Load grammar into the LKB
 
-  (let* ((lg-name (get-language-name choices))
-	 (script (format nil "~a~a~a~a"
+    (let* ((lg-name (get-language-name choices))
+	   (script (format nil "~a~a~a~a"
+			   *customization-root*
+			   "unit-tests/grammars/"
+			   lg-name
+			   "/matrix/lkb/script")))
+      (read-script-file-aux script))
+  
+    ;;; Check that [incr tsdb()] is running, and if not
+    ;;; start it up:
+    
+    (unless (find-package :tsdb)
+      (load-system "tsdb"))
+    
+    ;;; Set *tsdb-home* to unit-tests/home/
+
+    (let ((home (format nil "~a~a"
 			*customization-root*
-			"unit-tests/grammars/"
-			lg-name
-			"/matrix/lkb/script")))
-    (read-script-file-aux script))
+			"unit-tests/home/")))
+      (setf tsdb::*tsdb-home* home)
+      (tsdb:tsdb :home tsdb::*tsdb-home*))
   
-  ;;; Check that [incr tsdb()] is running, and if not
-  ;;; start it up:
-    
-  (unless (find-package :tsdb)
-    (load-system "tsdb"))
-    
-  ;;; Set *tsdb-home* to unit-tests/home/
+    ;;; Import test items
 
-  (let ((home (format nil "~a~a"
-		       *customization-root*
-		       "unit-tests/home/")))
-	(setf tsdb::*tsdb-home* home))
+    ; directory name for profile (name is relative to *tsdb-home*)
+    ; fix-me: this should maybe have timestamnp in it.
   
-  ;;; Import test items
+    (let* ((lg-name (get-language-name choices))
+	   (profile-directory (format nil "current/~a" lg-name))
+	   (tex-file (format nil "~a/unit-tests/logs/~a.tex" *customization-root* lg-name)))
+      
+      ; add profile
 
-  ; directory name for profile (name is relative to *tsdb-home*)
-  ; fix-me: this should have timestamnp in it.
+      (tsdb::do-import-items txt-suite profile-directory :format :ascii)
   
-  (let* ((lg-name (get-language-name choices))
-	 (profile-directory (format nil "current/~a" lg-name))
-	 (tex-file (format nil "~a/unit-tests/logs/~a.tex" *customization-root* lg-name)))
   
-    ; add profile
+      ;;; Process all items
+  
+      (tsdb:tsdb :process profile-directory)
+  
+      ;;; It would be nice to also print out results of analyze
+      ;;; coverage/overgeneration to lisp buffer ... but that 
+      ;;; doesn't seem possible at present.  Instead, output them
+      ;;; to a .tex file in logs/ and latex it, and open it as
+      ;;; .dvi
 
-    (tsdb::do-import-items txt-suite profile-directory :format :ascii)
-  
-  
-    ;;; Process all items
-  
-    (tsdb:tsdb :process profile-directory)
-  
-    ;;; It would be nice to also print out results of analyze
-    ;;; coverage/overgeneration to lisp buffer ... but that 
-    ;;; doesn't seem possible at present.  Instead, output them
-    ;;; to a .tex file in logs/ and latex it, and open it as
-    ;;; .dvi
-
-    (let ((stream (tsdb::create-output-stream tex-file)))
-      (format stream "\\documentclass[10pt]{article}~%~%\\begin{document}~%~%\\noindent~%")
-      (close stream))
+      (let ((stream (tsdb::create-output-stream tex-file)))
+	(format stream "\\documentclass[10pt]{article}~%~%\\begin{document}~%~%\\noindent~%")
+	(close stream))
 	  
-    (tsdb::analyze-competence profile-directory :append tex-file :format :latex) 
-    (tsdb::analyze-competence profile-directory :append tex-file :wf 0 :format :latex) 
-    (let ((stream (tsdb::create-output-stream nil tex-file)))
-      (format stream "\\end{document}~%~%")
-      (close stream))
-
-    (let* ((cmd1 (format nil "latex ~a.tex" lg-name))
-	   (cmd2 (format nil "xdvi ~a.dvi" lg-name)))
-      (excl:chdir (format nil "~aunit-tests/logs/" *customization-root*))
-      (excl:run-shell-command cmd1 :wait t)
-      (excl:run-shell-command cmd2)))
-
+      (tsdb::analyze-competence profile-directory :append tex-file :format :latex) 
+      (tsdb::analyze-competence profile-directory :append tex-file :wf 0 :format :latex) 
+      (let ((stream (tsdb::create-output-stream nil tex-file)))
+	(format stream "\\end{document}~%~%")
+	(close stream))
+      
+      (let* ((cmd1 (format nil "latex ~a.tex" lg-name))
+	     (cmd2 (format nil "xdvi ~a.dvi" lg-name)))
+	(excl:chdir (format nil "~aunit-tests/logs/" *customization-root*))
+	(excl:run-shell-command cmd1 :wait t)
+	(excl:run-shell-command cmd2)))
     
-    ;;; Print out instructions on how to browse results
+    
+      ;;; Print out instructions on how to browse results
   
-  (format nil "To browse the results, try Update | All tsdb() status, then click on the new test suite and do  Browse | Results from the [incr tsdb()] podium."))
+    (format t "~%~%To browse the results, try Options | Update | All tsdb() status,~%then click on the new test suite and do Browse | Results~%from the [incr tsdb()] podium.~%~%If you are happy with the results, the next step~%is to invoke add-unit-test.py~%~%")))
+
 
 ;;; Command for interactively running one unit test.  Should
 ;;; leave you in a state where the grammar is loaded and the
@@ -174,7 +183,8 @@
   (let ((home (format nil "~a~a"
 		       *customization-root*
 		       "unit-tests/home/")))
-	(setf tsdb::*tsdb-home* home))
+    (setf tsdb::*tsdb-home* home)
+    (tsdb:tsdb :home tsdb::*tsdb-home*))
   
   ;;; Set *tsdb-skeleton-directory* to unit-tests/skeletons/
   
@@ -199,7 +209,7 @@
 			     :format :ascii 
 			     :compare '(:readings :mrs)
 			     :append log-file)
-    (format t "Here are the diffs, if any, between the current and gold standard.")
+    (format t "Here are the diffs, if any, between the current and gold standard.~%")
     (excl:run-shell-command (format nil "cat ~a" log-file))
     (excl:run-shell-command (format nil "rm ~a" log-file)))
     
