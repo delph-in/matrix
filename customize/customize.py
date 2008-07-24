@@ -1,4 +1,4 @@
-### $Id: customize.py,v 1.66 2008-07-10 17:28:29 bender Exp $
+### $Id: customize.py,v 1.67 2008-07-24 11:16:41 sfd Exp $
 
 ######################################################################
 # imports
@@ -12,6 +12,7 @@ if os.name == 'nt':
   import gzip
 import zipfile
 import sys
+import re
 
 from choices import ChoicesFile
 
@@ -29,7 +30,20 @@ roots = None
 
 ######################################################################
 # Utility functions
-#
+
+# Given a choices variable identifying something that can have a
+# name, return that name if it exists, otherwise return the variable.
+# If label is None, then use the current iter_prefix with the trailing
+# underscore shaved off.
+def get_name(label=None):
+  if not label:
+    label = ch.iter_prefix()[:-1]
+  name = ch.get_full(label + '_name')
+  if not name:
+    name = label
+  return name
+
+
 # ERB 2006-09-16 There are properties which are derived from the
 # choices file as a whole which various modules will want to know about.
 # The first example I have is the presence of auxiliaries.  Both the
@@ -74,6 +88,315 @@ def add_irule(instance_name,type_name,affix_type,affix_form):
   irules.add_literal(rule)
 
 
+# sfd: This is BFM.  From here:
+#   http://www.daniweb.com/code/snippet864.html
+def int2bin(n, count=24):
+  """returns the binary of integer n, using count number of digits"""
+  return "".join([str((n >> y) & 1) for y in range(count-1, -1, -1)])
+
+def powerset(original_set):
+  original_list = [s for s in original_set]
+  list_size = len(original_list)
+  num_sets = 2**list_size
+  pset = []
+  # Don't include empty set
+  for i in range(num_sets)[1:]:
+    subset = []
+    binary_digits = list(int2bin(i,list_size))
+    list_indices = range(list_size)
+    for (bit,index) in zip(binary_digits,list_indices):
+      if bit == '1':
+        subset.append(original_list[index])
+    pset.append(set(subset))
+  return pset
+
+
+# Hierarchy:
+# A class for storing, operating on, and saving to TDL a type
+# hierarchy.  The hierarchy is stored as an array, each element of
+# which is itself an array of three strings: a type, a supertype, and
+# a comment.
+class Hierarchy:
+  # Initialize
+  def __init__(self, name, type = ''):
+    self.name = name
+    self.type = type
+    self.hierarchy = []
+    self.augmented = False
+
+    self.supertypes = {}
+    self.subtypes = {}
+    self.leaves = set()
+    self.coverage = {}
+
+
+  def is_empty(self):
+    return len(self.hierarchy) == 0
+
+
+  # Add a type to the hierarchy
+  def add(self, type, supertype, comment = ''):
+    self.hierarchy += [ [ type, supertype, comment ] ]
+
+
+  # Save the hierarchy to the passed TDLfile object.  The resulting
+  # TDL will look like this:
+  #
+  # type1 := supertype1  ; comment1
+  # type2 := supertype2  ; comment2
+  # type3 := supertype3  ; comment3
+  # ...
+  def save(self, tdl_file):
+    if not self.augmented:
+      self.augment()
+
+    mylang.add_literal(';;; ' + self.name[0:1].upper() + self.name[1:])
+
+    tdl_file.add(self.name + ' := *top*.', '', True)
+    for h in self.hierarchy:
+      tdl_file.add(h[0] + ' := ' + h[1] + '.', h[2], True)
+
+
+  # For each type in the hierarchy, calculate
+  def __calc_supertypes(self):
+    self.supertypes = {}
+    for h in self.hierarchy:
+      if not h[0] in self.supertypes:
+        self.supertypes[h[0]] = set()
+      if not h[1] in self.supertypes:
+        self.supertypes[h[1]] = set()
+
+      self.supertypes[h[0]].add(h[1])
+
+
+  # For each type in the hierarchy, calculate which leaf types it
+  # covers, and save this information for later.
+  def __calc_subtypes(self):
+    self.subtypes = {}
+    for h in self.hierarchy:
+      if not h[0] in self.subtypes:
+        self.subtypes[h[0]] = set()
+      if not h[1] in self.subtypes:
+        self.subtypes[h[1]] = set()
+
+      self.subtypes[h[1]].add(h[0])
+
+
+  # For each type in the hierarchy, calculate which leaf types it
+  # covers, and save this information for later.
+  def __calc_leaves(self):
+    self.__calc_subtypes()
+    
+    self.leaves = set()
+    for st in self.subtypes:
+      if len(self.subtypes[st]) == 0:
+        self.leaves.add(st)
+
+
+  # For each type in the hierarchy, calculate which leaf types it
+  # covers, and save this information for later.
+  def __calc_coverage(self):
+    self.__calc_supertypes()
+    
+    self.coverage = {}
+    for l in self.leaves:
+      working = [ l ]
+      while working:
+        w = working[0]
+        del working[0]
+        if w != '*top*':
+          if not w in self.coverage:
+            self.coverage[w] = set()
+          self.coverage[w].add(l)
+          for st in self.supertypes[w]:
+            working += [ st ]
+
+
+  # Type hierarchies as described in the questionnaire may be
+  # insufficient for some purposes.  For example, implementing the
+  # scale hierarchy of a direct-inverse language may require the
+  # existence of a grouping of leaf types that requires that does not
+  # exist.  This method adds such types to the hierarchy based on the
+  # current choices.
+  def augment(self):
+    if self.augmented:
+      return
+    self.augmented = True
+
+    # Figure out if we need to augment this hierarchy
+    seen = False
+
+    state = ch.iter_state()
+    ch.iter_reset()
+
+    ch.iter_begin('scale')
+    while ch.iter_valid():
+      ch.iter_begin('feat')
+      while ch.iter_valid():
+        if ch.get('name') == self.name:
+          seen = True
+
+        ch.iter_next()
+      ch.iter_end()
+
+      ch.iter_next()
+    ch.iter_end()
+
+    ch.iter_set_state(state)
+
+    if not seen:
+      return
+
+    # Calculate some values needed to do the augmentation
+    self.__calc_leaves()
+    self.__calc_coverage()
+
+    # The set of all subsets of the leaves
+    pset = powerset(self.leaves)
+
+    # Figure the name of each set.  If there's an existing type that
+    # covers a set, use that name instead; otherwise, make one up.
+    setnames = []
+    for s in pset:
+      name = ''
+      for k in self.coverage:
+        if self.coverage[k] == s:
+          name = k
+          break
+
+      if not name:
+        if len(s) == len(self.leaves) - 1:
+          name = 'non-' + [ss for ss in self.leaves.difference(s)][0]
+        else:
+          for n in [ss for ss in s]:
+            if name:
+              name += '-'
+            name += n
+
+      setnames += [ [s, name] ]
+
+    # Now create the new hierarchy
+    new_hier = []
+    new_hier += [ [self.name, '*top*', ''] ]
+    for size in range(len(self.leaves) - 1, 0, -1): # biggest to smallest
+      for s in pset:
+        if len(s) == size:
+          type = [sn[1] for sn in setnames if sn[0] == s][0]
+          for os in pset:
+            if len(os) == size + 1 and os.issuperset(s):
+              supertype = [sn[1] for sn in setnames if sn[0] == os][0]
+              new_hier += [ [type, supertype, self.get_comment(type)] ]
+
+    self.hierarchy = new_hier
+
+    # Re-calculate the coverage, which may have changed.
+    self.__calc_coverage()
+
+
+  # Search the hierarchy for a type and return its comment, if any
+  def get_comment(self, type):
+    for h in self.hierarchy:
+      if h[0] == type:
+        return h[2]
+
+    return ''
+
+
+  # Search the hierarchy for a type covering all the types in
+  # type_list and return it.
+  def get_type_covering(self, type_set):
+    self.augment()
+
+    # type_set may contain non-leaves, so construct a new all-leaf set
+    new_set = set()
+    for e in type_set:
+      for f in self.coverage[e]:
+        new_set.add(f)
+
+    for k in self.coverage:
+      if self.coverage[k] == new_set:
+        return k
+
+    return ''
+
+
+######################################################################
+# customize_feature_values(type_name, pos, features, cases)
+#   In the current choices file context, go through the 'feat'
+#   iterator and specify the feature/value pairs found to the
+#   passed-in type.
+
+def customize_feature_values(type_name, pos, features=None, cases=None):
+  if not features:
+    features = ch.features()
+  if not cases:
+    cases = ch.cases()
+
+  pos_geom_prefix = ''
+  if pos == 'det':
+    pos_geom_prefix = 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.'
+  else:
+    pos_geom_prefix = 'SYNSEM.'
+
+  ch.iter_begin('feat')
+  while ch.iter_valid():
+    n = ch.get('name')
+    v = ch.get('value')
+
+    if n == 'case':
+      v = canon_to_abbr(v, cases)
+
+    # The 'head' choice only appears on verb slots, and allows the user
+    # to specify features on the subject and object as well
+    h = ch.get('head')
+    geom_prefix = pos_geom_prefix
+    if h == 'subj':
+      geom_prefix += 'LOCAL.CAT.VAL.SUBJ.FIRST.'
+    elif h == 'obj':
+      geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
+
+    geom = ''
+    for f in features:
+      if f[0] == n:
+        geom = f[2]
+
+    if geom:
+      geom = geom_prefix + geom
+
+    # If the feature has a geometry, just specify its value;
+    # otherwise, handle it specially.
+    if geom:
+      mylang.add(type_name +
+                 ' := [ ' + geom + ' ' + v + ' ].')
+    elif n == 'argument structure':
+      # constrain the ARG-ST to be passed up
+      mylang.add(type_name + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].')
+
+      # get the feature geometry of CASE
+      for f in features:
+        if f[0] == 'case':
+          geom = f[2]
+
+      # specify the subj/comps CASE values
+      s_case = a_case = o_case = ''
+      c = v.split('-')
+      if len(c) > 1:
+        a_case = canon_to_abbr(c[0], cases)
+        o_case = canon_to_abbr(c[1], cases)
+        mylang.add(type_name + \
+                   ' := [ ARG-ST < [ ' + \
+                   geom + ' ' + a_case + ' ], [ ' +
+                   geom + ' ' + o_case + ' ] > ].')
+      else:
+        s_case = canon_to_abbr(c[0], cases)
+        mylang.add(type_name + \
+                   ' := [ ARG-ST.FIRST. ' + \
+                   geom + ' ' + s_case + ' ].')
+
+    ch.iter_next()
+  ch.iter_end()
+
+
 ######################################################################
 # customize_case()
 #   Create the type definitions associated with the user's choices
@@ -81,7 +404,7 @@ def add_irule(instance_name,type_name,affix_type,affix_form):
 
 def has_aff_case(case = ''):
   result = False
-  
+
   for slotprefix in ('noun', 'verb', 'det'):
     ch.iter_begin(slotprefix + '-slot')
     while ch.iter_valid():
@@ -104,7 +427,7 @@ def has_aff_case(case = ''):
 
 def has_adp_case(case = ''):
   result = False
-  
+
   ch.iter_begin('adp')
   while ch.iter_valid():
     ch.iter_begin('feat')
@@ -120,7 +443,7 @@ def has_adp_case(case = ''):
   return result
 
 
-def calc_case_head(case):
+def calc_case_head(case = ''):
   has_aff = has_aff_case(case)
   has_adp = has_adp_case(case)
 
@@ -132,44 +455,50 @@ def calc_case_head(case):
     return 'noun'
 
 
-# customize_case_type()
-#   Create a type for case, derived from *top*
-
-def customize_case_type():
+def case_hierarchy():
   cm = ch.get('case-marking')
   cases = ch.cases()
 
-  if cm != 'none':
-    comment = ';;; Case'
-    mylang.add_literal(comment)
-    mylang.add('case := *top*.', '', True)
+  hier = Hierarchy('case')
 
   # For most case patterns, just make a flat hierarchy.  For fluid-s,
   # split-n and split-v, however, a more articulated hierarchy is required.
   if cm in ['nom-acc', 'erg-abs', 'tripartite', 'split-s', 'focus']:
     for c in cases:
-      mylang.add(c[2] + ' := case.', c[1], True)
+      hier.add(c[2], 'case', c[1])
   elif cm in ['fluid-s']:
     abbr = canon_to_abbr('a+o', cases)
     for c in cases:
       if c[0] in ['a', 'o']:
-        mylang.add(c[2] + ' := ' + abbr + '.', c[1], True)
+        hier.add(c[2], abbr, c[1])
       else:
-        mylang.add(c[2] + ' := case.', c[1], True)
+        hier.add(c[2], 'case', c[1])
   elif cm in ['split-n', 'split-v']:
     nom_a = canon_to_abbr('nom', cases)
     acc_a = canon_to_abbr('acc', cases)
     erg_a = canon_to_abbr('erg', cases)
     abs_a = canon_to_abbr('abs', cases)
     for c in cases:
-      mylang.add(c[2] + ' := case.', c[1], True)
+      hier.add(c[2], 'case', c[1])
     if cm == 'split-n':
-      mylang.add('a := ' + erg_a + ' & ' + nom_a + '.',
-                 'transitive agent', True)
-      mylang.add('s := ' + nom_a + ' & ' + abs_a + '.',
-                 'intransitive subject', True)
-      mylang.add('o := ' + abs_a + ' & ' + acc_a + '.',
-                 'transitive patient', True)
+      hier.add('a', erg_a, 'transitive agent')
+      hier.add('a', nom_a)
+      hier.add('s', nom_a, 'intransitive subject')
+      hier.add('s', abs_a)
+      hier.add('o', abs_a, 'transitive patient')
+      hier.add('o', acc_a)
+
+  return hier
+
+
+# customize_case_type()
+#   Create a type for case
+
+def customize_case_type():
+  case_hier = case_hierarchy()
+
+  if not case_hier.is_empty():
+    case_hier.save(mylang)
 
 
 # customize_case_adpositions()
@@ -178,7 +507,7 @@ def customize_case_type():
 def customize_case_adpositions():
   cases = ch.cases()
   features = ch.features()
-  
+
   if has_adp_case():
     comment = \
       ';;; Case-marking adpositions\n' + \
@@ -245,7 +574,7 @@ def customize_case_adpositions():
 
         ch.iter_next()
       ch.iter_end()
-        
+
       ch.iter_next()
     ch.iter_end()
 
@@ -254,36 +583,206 @@ def customize_case():
   customize_case_type()
 
 
+def customize_direct_inverse():
+  if not ch.get_full('scale1_feat1_name'):
+    return
+
+  mylang.add('verb :+ [ DIRECTION direction ].')
+  hier = Hierarchy('direction')
+  hier.add('dir', 'direction')
+  hier.add('inv', 'direction')
+  hier.save(mylang)
+
+  cases = ch.cases()
+  features = ch.features()
+
+  state = ch.iter_state()
+  ch.iter_reset()
+
+  # Figure out which features are involved in the hierarchy
+  names = []  # feature names
+  scale_max = 0
+  ch.iter_begin('scale')
+  while ch.iter_valid():
+    scale_max += 1
+
+    ch.iter_begin('feat')
+    while ch.iter_valid():
+      names.append(ch.get('name'))
+      ch.iter_next()
+    ch.iter_end()
+
+    ch.iter_next()
+  ch.iter_end()
+
+  # Create a dictionary of the hierarchies for each feature
+  hierarchies = {}
+  for n in names:
+    hierarchies[n] = type_hierarchy(n)
+    hierarchies[n].augment()
+
+  # Now pass through the scale, creating the direct-inverse hierarchy
+  # pairwise
+  equal = ch.get_full('scale-equal')
+  supertype = 'dir-inv-scale'
+  mylang.add_literal(';;; Scale for direct-inverse')
+  mylang.add(supertype + ' := canonical-synsem.')
+  for i in range(1, scale_max + 1):
+    if equal != 'direct' and i == scale_max:
+      break
+
+    values = {}  # for each feature, a set of values
+
+    ch.iter_begin('scale' + str(i))
+
+    # get the features on the first scale entry in this range
+    ch.iter_begin('feat')
+    while ch.iter_valid():
+      name = ch.get('name')
+      if name not in values:
+        values[name] = set()
+      values[name].add(ch.get('value'))
+
+      ch.iter_next()
+    ch.iter_end()
+
+    # create the left type in the pair
+    type = 'dir-inv-' + str(i)
+
+    mylang.add(type + ' := ' + supertype + '.')
+
+    for n in values:
+      vset = values[n]
+
+      if n == 'case':
+        new_vset = set()
+        for v in vset:
+          new_vset.add(canon_to_abbr(v, cases))
+        vset = new_vset
+
+      geom = ''
+      for f in features:
+        if f[0] == n:
+          geom = f[2]
+
+      value = hierarchies[n].get_type_covering(vset)
+      if value != n:  # don't bother if it doesn't constrain anything
+        mylang.add(type + ' := [ ' + geom + ' ' + value + ' ].')
+
+    # continuing 'scale'
+    values = {}
+    if equal != 'direct':
+      ch.iter_next()
+    while ch.iter_valid():
+      ch.iter_begin('feat')
+      while ch.iter_valid():
+        name = ch.get('name')
+        if name not in values:
+          values[name] = set()
+        values[name].add(ch.get('value'))
+
+        ch.iter_next()
+      ch.iter_end()
+
+      ch.iter_next()
+    ch.iter_end()
+
+    if i == scale_max:
+      break
+
+    # create the right type in the pair
+    type = 'dir-inv-non-' + str(i)
+
+    mylang.add(type + ' := ' + supertype + '.')
+
+    for n in values:
+      vset = values[n]
+
+      if n == 'case':
+        new_vset = set()
+        for v in vset:
+          new_vset.add(canon_to_abbr(v, cases))
+        vset = new_vset
+
+      geom = ''
+      for f in features:
+        if f[0] == n:
+          geom = f[2]
+
+      value = hierarchies[n].get_type_covering(vset)
+      if value != n:  # don't bother if it doesn't constrain anything
+        mylang.add(type + ' := [ ' + geom + ' ' + value + ' ].')
+
+    supertype = type
+
+  ch.iter_set_state(state)
+
+
+# Return the number of items in the direct-inverse scale
+def direct_inverse_scale_size():
+  state = ch.iter_state()
+  ch.iter_reset()
+
+  scale_size = 0
+  ch.iter_begin('scale')
+  while ch.iter_valid():
+    scale_size += 1
+    ch.iter_next()
+  ch.iter_end()
+
+  ch.iter_set_state(state)
+
+  return scale_size
+
+
 ######################################################################
 # customize_person_and_number()
 #   Create the type definitions associated with the user's choices
 #   about person and number.
 
+def pernum_hierarchy():
+  hier = Hierarchy('pernum')
+
+  for pn in ch.pernums():
+    hier.add(pn[0], 'pernum')
+
+  return hier
+
+
+def person_hierarchy():
+  hier = Hierarchy('person')
+
+  for p in ch.persons():
+    hier.add(p[0], 'person')
+
+  return hier
+
+
+def number_hierarchy():
+  hier = Hierarchy('number')
+
+  for n in ch.numbers():
+    hier.add(n[0], 'number')
+
+  return hier
+
+
 def customize_person_and_number():
-  pernums = ch.pernums()
-  persons = ch.persons()
-  numbers = ch.numbers()
+  pernum_hier = pernum_hierarchy()
+  person_hier = person_hierarchy()
+  number_hier = number_hierarchy()
 
-  if pernums:
+  if not pernum_hier.is_empty():
     mylang.add('png :+ [ PERNUM pernum ].')
-    mylang.add_literal(';;; Pernum')
-    mylang.add('pernum := *top*.', '', True)
-    for pn in pernums:
-      mylang.add(pn[0] + ' := pernum.', '', True)
+    pernum_hier.save(mylang)
   else:
-    if persons:
+    if not person_hier.is_empty():
       mylang.add('png :+ [ PER person ].')
-      mylang.add_literal(';;; Person')
-      mylang.add('person := *top*.', '', True)
-      for p in persons:
-        mylang.add(p[0] + ' := person.', '', True)
+      person_hier.save(mylang)
 
-    if numbers:
+    if not number_hier.is_empty():
       mylang.add('png :+ [ NUM number ].')
-      mylang.add_literal(';;; Number')
-      mylang.add('number := *top*.', '', True)
-      for n in numbers:
-        mylang.add(n[0] + ' := number.', '', True)
+      number_hier.save(mylang)
 
 
 ######################################################################
@@ -291,15 +790,8 @@ def customize_person_and_number():
 #   Create the type definitions associated with the user's choices
 #   about gender.
 
-def customize_gender():
-  cm = ch.get('case-marking')
-  cases = ch.cases()
-
-  if ch.get('gender1_name'):
-    mylang.add('png :+ [ GEND gender ].')
-    comment = ';;; Gender'
-    mylang.add_literal(comment)
-    mylang.add('gender := *top*.', '', True)
+def gender_hierarchy():
+  hier = Hierarchy('gender')
 
   ch.iter_begin('gender')
   while ch.iter_valid():
@@ -308,7 +800,7 @@ def customize_gender():
     ch.iter_begin('supertype')
     while ch.iter_valid():
       stype = ch.get('name')
-      mylang.add(name + ' := ' + stype + '.')
+      hier.add(name, stype)
 
       ch.iter_next()
     ch.iter_end()
@@ -316,12 +808,99 @@ def customize_gender():
     ch.iter_next()
   ch.iter_end()
 
+  return hier
+
+
+def customize_gender():
+  gender_hier = gender_hierarchy()
+
+  if not gender_hier.is_empty():
+    mylang.add('png :+ [ GEND gender ].')
+    gender_hier.save(mylang)
+
+
+######################################################################
+# customize_other_features()
+#   Create the type definitions associated with the user's choices
+#   about other features.
+
+# Based on the name of a feature, create and return its hierarchy
+def type_hierarchy(name):
+  if name == 'case':
+    return case_hierarchy()
+  elif name == 'pernum':
+    return pernum_hierarchy()
+  elif name == 'person':
+    return person_hierarchy()
+  elif name == 'number':
+    return number_hierarchy()
+  elif name == 'gender':
+    return gender_hierarchy()
+  else:
+    for h in feature_hierarchies():
+      if h.name == name:
+        return h
+
+  return None
+
+
+def feature_hierarchies():
+  hierarchies = []
+
+  ch.iter_begin('feature')
+  while ch.iter_valid():
+    feat = ch.get('name')
+    type = ch.get('type')
+
+    hier = Hierarchy(feat, type)
+
+    ch.iter_begin('value')
+    while ch.iter_valid():
+      val = ch.get('name')
+
+      ch.iter_begin('supertype')
+      while ch.iter_valid():
+        stype = ch.get('name')
+        if stype == 'root':
+          stype = feat
+
+        hier.add(val, stype)
+
+        ch.iter_next()
+      ch.iter_end()
+
+      ch.iter_next()
+    ch.iter_end()
+
+    hierarchies.append(hier)
+
+    ch.iter_next()
+  ch.iter_end()
+
+  return hierarchies
+
+
+def customize_other_features():
+  for h in feature_hierarchies():
+    feat = h.name
+    type = h.type
+
+    if type == 'head':
+      mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].')
+    else:
+      mylang.add('png :+ [ ' + feat.upper() + ' ' + feat + ' ].')
+
+    # sfd: If it's an 'index' feature, we should make sure to strip it
+    # out in the VPM
+
+    h.save(mylang)
+
 
 ######################################################################
 # customize_word_order()
 #   Create the type definitions associated with the user's choices
 #   about basic word order, including information about adpositions
-#   and auxiliaries. 
+#   and auxiliaries.
 
 # ERB 2006-09-15 DOCUMENTATION
 
@@ -406,7 +985,7 @@ def customize_gender():
 
 # ## Ditransitive verbs.  Det on no arguments, each one separately
 # ## each pair, all three.  All of these are semantically distinct
-# ## from each other, and from the strings above.  
+# ## from each other, and from the strings above.
 
 # s io o dtv
 # det s io o dtv
@@ -720,7 +1299,7 @@ def customize_gender():
 
 # It also creates a bare np phrase for every language, because
 # a) all nouns need quantifiers and b) I suspect that all languages
-# allow bare NPs in at least some cases.  
+# allow bare NPs in at least some cases.
 
 # The free word order case does some interesting work with ditransitives
 # in order to illustrate all 24 possible orders.  This involves allowing
@@ -790,7 +1369,7 @@ def customize_gender():
 
 # The trickiest lexical types are the auxiliaries.  They are cross-classified
 # along three dimensions: V, VP or S complement, pred or no pred, and
-# (for V or VP complement) NP v. PP subject.  
+# (for V or VP complement) NP v. PP subject.
 
 # 7. Description of customization (python)
 
@@ -839,7 +1418,7 @@ def customize_word_order():
 
   wo = ch.get('word-order')
 
-# Add type definitions.  
+# Add type definitions.
 
 # Handle major constituent order first.  This function returns the hs and hc
 # values that other parts of this code will want.
@@ -854,7 +1433,7 @@ def customize_word_order():
   customize_np_word_order()
 
 # ERB 2006-09-14 Then add information as necessary to handle adpositions,
-# free auxiliaries, etc. 
+# free auxiliaries, etc.
 
 #In general, we might also find word order sensitive to
 #clause type (matrix v. subordinate) and dependent type.
@@ -1034,7 +1613,7 @@ def customize_np_word_order():
 
     rules.add('head-spec := head-spec-phrase.')
 
-    
+
     # ERB 2006-09-14 I think that all languages have some form of
     # the Bare NP phrase.  Eventually there will be some choices about
     # this (given an appropriate module).  For now, use this stand in.
@@ -1068,7 +1647,7 @@ def determine_consistent_order(wo,hc):
     adporder = ch.get('order')
     ch.iter_next()
   ch.iter_end()
-  
+
   # ERB 2006-10-05 Fixing bug in free word order case.
 
   if adporder:
@@ -1261,7 +1840,7 @@ def specialize_word_order(hc,orders):
 
 
   # ERB 2006-10-05 Add constraints to head-comp/comp-head.
-  
+
   # First the positive constraints.  We only have positive constraints if
   # the word order is not free. We should only have positive constraints for
   # one of head-comp and comp-head and negative constraints for the other.
@@ -1269,7 +1848,7 @@ def specialize_word_order(hc,orders):
   # one.
 
   # If only one part of speech type is allowed by the positive constraints,
-  # we don't have a disjunctive type.  
+  # we don't have a disjunctive type.
 
   if len(head_comp_is) == 1:
     head = head_comp_is[0]
@@ -1287,8 +1866,8 @@ def specialize_word_order(hc,orders):
   # disjunctions, as far as the LKB is concerned, they're type names, so
   # we need an exact string match.
 
-  # +nvjrcdmo. 
-  # +nvjrpdmo.  
+  # +nvjrcdmo.
+  # +nvjrpdmo.
 
 
   if len(head_comp_is) > 1:
@@ -1371,7 +1950,7 @@ def specialize_word_order(hc,orders):
 #     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo ].',
 #                'comp-head-phrase is restricted from taking prepositions as its head.')
 
-#   if adp == 'vo-post' or adp == 'free-post': 
+#   if adp == 'vo-post' or adp == 'free-post':
 #     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo ].',
 #                'head-comp-phrase is restricted from taking adpositions as its head.')
 
@@ -1628,13 +2207,13 @@ def create_neg_add_lex_rule(advAlone):
   if advAlone == 'always':
     mylang.add('neg-add-lex-rule := constant-lex-rule.'
                'Thie type is instantiated in lrules.tdl.')
-    
+
     lrules.add('neg-add-lr := neg-add-lex-rule.')
 
-      
+
     # TODO: I really just want to add a comment to this type in this case.  Will
     # this syntax do it?  If not, is there some other syntax in tdl.py that will?
-    
+
   if advAlone == 'sometimes':
     mylang.comment('neg-add-lex-rule',
                'This type has subtypes instantiated by instances in both\n\
@@ -1649,7 +2228,7 @@ def create_neg_add_lex_rule(advAlone):
   if advAlone == 'never':
     mylang.add('neg-add-lex-rule := inflecting-lex-rule.'
                'This type is instantiated in irules.tdl.')
-      
+
     add_irule('neg-add-ir','neg-add-lex-rule',ch.get('neg-aff'),ch.get('neg-aff-orth'))
 
 # ERB 2006-09-21 Create negative inflection lexical rule
@@ -1707,7 +2286,7 @@ def create_neg_infl_lex_rule():
 
   add_irule('neg-infl-lr','neg-infl-lex-rule',ch.get('neg-aff'),ch.get('neg-aff-orth'))
 
-# ERB 2006-09-22 Create lexical types and lexical entries for 
+# ERB 2006-09-22 Create lexical types and lexical entries for
 
 def create_neg_adv_lex_item(advAlone):
 
@@ -1752,7 +2331,7 @@ def create_neg_adv_lex_item(advAlone):
     lexicon.add(ch.get('neg-adv-orth') + ' := neg-adv-lex &\
                 [ STEM < \"'+ ch.get('neg-adv-orth') +'\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"_neg_r_rel\" ].')
-                                         
+
 
   # ERB 2006-10-06 And of course we need the head-modifier rules, if we're
   # going to have an independent modifier.  While we're at it, we need to
@@ -1775,7 +2354,7 @@ def create_neg_adv_lex_item(advAlone):
                'various subtypes of head.  This may need to be loosened later.\n' +
                'This constraint says that only adverbs, adjectives,\n' +
                'and adpositions can be modifiers.')
-  
+
 ######################################################################
 # Coordination
 #   Create the type definitions associated with the user's choices
@@ -2020,7 +2599,7 @@ def create_neg_adv_lex_item(advAlone):
 
 def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
   mylang.add_literal(';;; Coordination Strategy ' + num)
-  
+
   pn = pos + num
   if pos == 'n' or pos == 'np':
     headtype = 'noun'
@@ -2099,7 +2678,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
   rules.add(pn + '-bottom-coord := ' + pn + '-bottom-coord-rule.')
   if left:
     rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
-  
+
 
 ######################################################################
 # customize_coordination(): the main coordination customization routine
@@ -2198,11 +2777,11 @@ def customize_coordination():
 # Now the SVO seed strings:
 
 # s tv o qpart
-# tv s o 
+# tv s o
 # aux s tv o
 
 # det s tv det o qpart
-# tv det s det o 
+# tv det s det o
 # aux det s tv det o
 
 # s tv-ques o
@@ -2232,7 +2811,7 @@ def customize_coordination():
 # the order of question particles with respect to heads when we do the
 # head-comp and comp-head rules, just like we have to worry about the
 # adpositions.  I also had to touch the root definition, to allow for
-# CPs as roots. 
+# CPs as roots.
 
 def customize_yesno_questions():
 
@@ -2350,7 +2929,7 @@ def customize_yesno_questions():
 
     add_irule('ques-infl-lr','ques-infl-lex-rule',ch.get('ques-aff'),ch.get('ques-aff-orth'))
 
-                                  
+
 
 ######################################################################
 # customize_lexicon()
@@ -2378,7 +2957,7 @@ def customize_nouns():
 
   # Lexical types for nouns
   mylang.add_literal(';;; Nouns')
-    
+
   # Playing fast and loose with the meaning of OPT on SPR.  Using
   # OPT - to mean obligatory (as usual), OPT + to mean impossible (that's
   # weird), and leaving OPT unspecified for truly optional.  Hoping
@@ -2396,7 +2975,7 @@ def customize_nouns():
                                   SPEC < > ] ], \
          ARG-ST < #spr > ].'
   mylang.add(typedef)
-  
+
   if singlentype:
     if seen['obl']:
       typedef = 'noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
@@ -2435,11 +3014,7 @@ def customize_nouns():
 
   ch.iter_begin('noun')
   while ch.iter_valid():
-    name = ch.get('name')
-    if not name:
-      name = ch.iter_prefix()[0:-1]  # trim off trailing _
-    orth = ch.get('orth')
-    pred = ch.get('pred')
+    name = get_name()
     det = ch.get('det')
 
     if singlentype or det == 'opt':
@@ -2453,10 +3028,19 @@ def customize_nouns():
 
     mylang.add(ntype + ' := ' + stype + '.')
 
-    typedef = orth + ' := ' + ntype + ' & \
-                [ STEM < "' + orth + '" >, \
-                  SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-    lexicon.add(typedef)
+    customize_feature_values(ntype, 'noun')
+
+    ch.iter_begin('stem')
+    while ch.iter_valid():
+      orth = ch.get('orth')
+      pred = ch.get('pred')
+      typedef = orth + ' := ' + ntype + ' & \
+                  [ STEM < "' + orth + '" >, \
+                    SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+      lexicon.add(typedef)
+
+      ch.iter_next()
+    ch.iter_end()
 
     ch.iter_next()
   ch.iter_end()
@@ -2489,78 +3073,93 @@ def customize_verb_case():
 
   # Pass through the list of case-marking patterns.  If a pattern is a
   # lexical pattern (i.e. the third item in the list is False), then
-  # contrain the appropriate lexical type.  This type is either
-  # transitive-verb-lex or intransitive-verb-lex, with one exception:
-  # for nominative-accusative languages, SUBJ <[case NOM]> is specified on
-  # verb-lex instead of on intransitive-verb-lex and transitive-verb-lex.
+  # create and contrain the appropriate lexical type.  This type is a
+  # subtype of either transitive-verb-lex or intransitive-verb-lex.
+  #
   # Note: I specify ARG-ST.FIRST... below instead of ARG-ST < [], ...>
   # because TDLFile has trouble with merges and open-ended lists.
   # Which should get fixed...  - sfd
-  if cm == 'nom-acc':
-    s_type = 'verb-lex'
-    a_type = 'verb-lex'
-    o_type = 'transitive-verb-lex'
-  else:
-    s_type = 'intransitive-verb-lex'
-    a_type = 'transitive-verb-lex'
-    o_type = 'transitive-verb-lex'
-
   for p in ch.patterns():
-    if not p[2]:  # not a lex-rule pattern
-      c = p[0].split('-')
+    rule_pattern = p[2]
+
+    p = p[0].split(',')  # split off ',dirinv', if present
+    dir_inv = ''
+    if len(p) > 1 and p[1] == 'dirinv':
+      dir_inv = 'dir-inv-'
+
+    if not rule_pattern:
+      c = p[0].split('-')  # split 'agentcase-patientcase'
       if p[0] == 'trans' or len(c) > 1:  # transitive
         if p[0] == 'trans':
           a_case = ''
           o_case = ''
-          a_head = 'noun'
-          o_head = 'noun'
+          a_head = calc_case_head()
+          o_head = calc_case_head()
         else:
           a_case = canon_to_abbr(c[0], cases)
           o_case = canon_to_abbr(c[1], cases)
           a_head = calc_case_head(c[0])
           o_head = calc_case_head(c[1])
 
+        if a_case and o_case:
+          t_type = dir_inv + a_case + '-' + o_case + '-transitive-verb-lex'
+        else:
+          t_type = dir_inv + 'transitive-verb-lex'
+
+        if t_type != 'transitive-verb-lex':
+          mylang.add(t_type + ' := transitive-verb-lex.')
+
+        # constrain the head of the agent/subject
         typedef = \
-          a_type + ' := \
+          t_type + ' := \
           [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
         mylang.add(typedef)
 
+        # constrain the case of the agent/subject
         if a_case:
           typedef = \
-            a_type + ' := \
+            t_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
           mylang.add(typedef)
 
+        # constrain the head of the patient/object
         typedef = \
-          o_type + ' := \
+          t_type + ' := \
           [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
         mylang.add(typedef)
 
+        # constrain the case of the patient/object
         if o_case:
           typedef = \
-            o_type + ' := \
+            t_type + ' := \
             [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
           mylang.add(typedef)
       else:     # intransitive
-        # For split-s and fluid-s, there's more than one intrans verb type
-        if cm in ['split-s', 'fluid-s']:
-          s_type = c[0] + '-intransitive-verb-lex'
-        
         if c[0] == 'intrans':
           s_case = ''
-          s_head = 'noun'
+          s_head = calc_case_head()
         else:
           s_case = canon_to_abbr(c[0], cases)
           s_head = calc_case_head(c[0])
 
+        if s_case:
+          i_type = dir_inv + s_case + '-intransitive-verb-lex'
+        else:
+          i_type = dir_inv + 'intransitive-verb-lex'
+
+        if i_type != 'intransitive-verb-lex':
+          mylang.add(i_type + ' := intransitive-verb-lex.')
+
+        # constrain the head of the subject
         typedef = \
-          s_type + ' := \
+          i_type + ' := \
           [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + s_head + ' ].'
         mylang.add(typedef)
 
+        # constrain the case of the subject
         if s_case:
           typedef = \
-            s_type + ' := \
+            i_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + s_case + ' ].'
           mylang.add(typedef)
 
@@ -2587,7 +3186,7 @@ def customize_verbs():
     mylang.add('form := avm.')
     mylang.add('fin := form.')
     mylang.add('nonfin := form.')
-    
+
   # verb lexical type
   typedef = \
     'verb-lex := basic-verb-lex & \
@@ -2625,16 +3224,6 @@ def customize_verbs():
        [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].'
   mylang.add(typedef)
 
-  # additional intrans types for split-s and fluid-s languages
-  prefixes = []
-  cm = ch.get('case-marking')
-  if cm == 'split-s':
-    prefixes = ['a', 'o']
-  elif cm == 'fluid-s':
-    prefixes = ['a', 'o', 'a+o']
-  for p in prefixes:
-    mylang.add(p + '-intransitive-verb-lex := intransitive-verb-lex.')
-
   # transitive verb lexical type
   typedef = \
     'transitive-verb-lex := verb-lex & transitive-lex-item & \
@@ -2651,32 +3240,50 @@ def customize_verbs():
   lexicon.add_literal(';;; Verbs')
 
   # Now create the lexical entries for all the defined verb types
+  cases = ch.cases()
   ch.iter_begin('verb')
   while ch.iter_valid():
-    name = ch.get('name')
-    if not name:
-      name = ch.iter_prefix()[0:-1]  # trim off trailing _
-    orth = ch.get('orth')
-    pred = ch.get('pred')
+    name = get_name()
     val = ch.get('valence')
 
-    if val == 'trans' or val.find('-') != -1:
-      tivity = 'trans'
-    elif cm in ['split-s', 'fluid-s']:
-      tivity = val + '-intrans'
-    else:
-      tivity = 'intrans'
+    i = val.find(',')
+    dir_inv = ''
+    if i != -1:
+      val = val[:i]
+      dir_inv = 'dir-inv-'
 
-    stype = tivity + 'itive-verb-lex'
+    if val == 'trans':
+      tivity = 'trans'
+    elif val == 'intrans':
+      tivity = 'intrans'
+    elif val.find('-') != -1:
+      c = val.split('-')
+      a_case = canon_to_abbr(c[0], cases)
+      o_case = canon_to_abbr(c[1], cases)
+      tivity = a_case + '-' + o_case + '-trans'
+    else:
+      s_case = canon_to_abbr(val, cases)
+      tivity = s_case + '-intrans'
+
+    stype = dir_inv + tivity + 'itive-verb-lex'
     vtype = name + '-verb-lex'
 
     mylang.add(vtype + ' := ' + stype + '.')
 
-    typedef = \
-      orth + ' := ' + vtype + ' & \
-                  [ STEM < "' + orth + '" >, \
-                    SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-    lexicon.add(typedef)
+    customize_feature_values(vtype, 'verb', None, cases)
+
+    ch.iter_begin('stem')
+    while ch.iter_valid():
+      orth = ch.get('orth')
+      pred = ch.get('pred')
+      typedef = \
+        orth + ' := ' + vtype + ' & \
+                    [ STEM < "' + orth + '" >, \
+                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+      lexicon.add(typedef)
+
+      ch.iter_next()
+    ch.iter_end()
 
     ch.iter_next()
   ch.iter_end()
@@ -2687,21 +3294,21 @@ def customize_auxiliaries():
     auxtypename = ''
     mylang.add_literal(';;; Auxiliaries')
     lexicon.add_literal(';;; Auxiliaries')
-    
+
     ch.iter_begin('aux')
     while ch.iter_valid():
       orth = ch.get('orth')
       sem = ch.get('sem')
       if sem  == 'add-pred':
         pred = ch.get('pred')
-      comp = ch.get('comp') 
+      comp = ch.get('comp')
       compform= ch.get('compform')
       if compform == 'nf':
         compform = ch.get('nonfincompform')
         mylang.add(compform + ' := nonfin.')
       subj = ch.get('subj')
 
-    # Lexical type for auxiliaries. 
+    # Lexical type for auxiliaries.
 
       if comp == 'vp':
         typedef = 'subj-raise-aux := trans-first-arg-raising-lex-item  & \
@@ -2750,7 +3357,7 @@ def customize_auxiliaries():
                                                    FORM ' + compform + ']] > ].'
           mylang.add(typedef)
 
-      elif comp == 'v': 
+      elif comp == 'v':
         comment = \
           '; Somewhat surprisingly, this inherits from basic-two-arg, so\n' + \
           '; that the non-local features are amalgamated from subj, the\n' + \
@@ -2895,23 +3502,28 @@ def customize_determiners():
 
   ch.iter_begin('det')
   while ch.iter_valid():
-    name = ch.get('name')
-    if not name:
-      name = ch.iter_prefix()[0:-1]  # trim off trailing _
-    orth = ch.get('orth')
-    pred = ch.get('pred')
+    name = get_name()
 
     stype = 'determiner-lex'
     dtype = name + '-determiner-lex'
 
     mylang.add(dtype + ' := ' + stype + '.')
 
-    typedef = \
-      orth + ' := ' + dtype + ' & \
-                  [ STEM < "' + orth + '" >, \
-                    SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-    lexicon.add(typedef)
-    
+    customize_feature_values(dtype, 'det')
+
+    ch.iter_begin('stem')
+    while ch.iter_valid():
+      orth = ch.get('orth')
+      pred = ch.get('pred')
+      typedef = \
+        orth + ' := ' + dtype + ' & \
+                    [ STEM < "' + orth + '" >, \
+                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+      lexicon.add(typedef)
+
+      ch.iter_next()
+    ch.iter_end()
+
     ch.iter_next()
   ch.iter_end()
 
@@ -2936,13 +3548,13 @@ def customize_lexicon():
   customize_auxiliaries()
   customize_determiners()
   customize_misc_lex()
-  
+
 
 ######################################################################
 # customize_inflection(matrix_path)
 #   Create lexical rules based on the current choices
 
-def is_ltow(name, namelist):
+def is_ltow(name, namelist = []):
   # The simple way to find lexeme-to-word rules is by finding
   # the last non-optional rule. This function recursively searches
   # rules that can follow this one to find non-optional rules.
@@ -3002,12 +3614,6 @@ def back_to_word(name):
   return False
 
 
-def get_name(label):
-  # Given the choices-file label for a slot (e.g. 'noun-slot3')
-  # return the name associated with the rule type.
-  return ch.get_full(label + '_name')
-
-
 def add_root(root, root_dict, inp, iv, tv, n):
   # If both iverb and tverb are possible daughters, we can have
   # verb-lex inherit from the intermediate type.  For now we just
@@ -3028,7 +3634,7 @@ def add_root(root, root_dict, inp, iv, tv, n):
 def find_basetype(slot, root_dict, iv=False, tv=False, n=False):
   state = ch.iter_state()
   ch.iter_reset()
-  
+
   ch.iter_begin(slot)
   ch.iter_begin('input')
   while ch.iter_valid():
@@ -3059,7 +3665,7 @@ def bt_match(basetype, root):
       return True, bt
 
 
-def intermediate_rule(slot, root_dict, basetype, inp=None, depth=0, opt=False):
+def intermediate_rule(slot, root_dict, inp=None, depth=0, opt=False):
   if not inp:
     inp = ch.get_full(slot + '_name') + '-rule-dtr'
     mylang.add(inp + ' := avm.')
@@ -3087,12 +3693,13 @@ def intermediate_rule(slot, root_dict, basetype, inp=None, depth=0, opt=False):
             state2 = ch.iter_state()
             ch.iter_reset()
             ch.iter_begin(rec)
-            opt, inp = intermediate_rule(rec, root_dict, basetype, inp, depth+1, opt)
+            opt, inp = intermediate_rule(rec, root_dict, inp, depth+1, opt)
             ch.iter_set_state(state2)
           ch.iter_next()
         ch.iter_set_state(state1)
     ch.iter_next()
   ch.iter_end()
+
   return opt, inp
 
 
@@ -3101,6 +3708,9 @@ def customize_inflection():
 
   features = ch.features()
   cases = ch.cases()
+
+  # Create the scale governing direct-inverse marking.
+  customize_direct_inverse()
 
   # root_dict is a dictionary mapping the choices file encodings
   # to the actual rule names.
@@ -3113,12 +3723,87 @@ def customize_inflection():
   for lexprefix in ('noun', 'verb', 'det'):
     ch.iter_begin(lexprefix)
     while ch.iter_valid():
-      p = ch.iter_prefix()[0:-1]  # strip trailing _
+      p = ch.iter_prefix()[:-1]
+      n = get_name(p)
       l = lexprefix
       if l == 'det':
         l = 'determiner'
 
-      root_dict[p] = p + '-' + l + '-lex'
+      # If the lexical type is a direct-inverse verb, later rules
+      # should use its mandatory rules as input rather than the
+      # lexical type.  Create those rules here and put their supertype
+      # in the root_dict.
+      if lexprefix == 'verb' and ch.get('valence')[-6:] == 'dirinv':
+        ltow = is_ltow(ch.iter_prefix()[:-1])
+        if ltow:
+          super_type = 'const-ltow-rule'
+        else:
+          super_type = 'const-ltol-rule & add-only-no-ccont-rule'
+
+        direc_geom = ''
+        for f in features:
+          if f[0] == 'direction':
+            direc_geom = f[2]
+
+        rule_type = n + '-dir-inv-lex-rule'
+        input_type = ch.iter_prefix()[:-1] + '-verb-lex'
+        mylang.add(
+          rule_type + ' := ' + super_type + ' & ' + \
+          '[ DTR ' + input_type + ' ].')
+        mylang.add(input_type + ' := [ INFLECTED - ].')
+
+        super_type = rule_type
+
+        equal = ch.get_full('scale-equal')
+
+        for direc in ['dir', 'inv']:
+          direc_type = n + '-' + direc + '-lex-rule'
+          mylang.add(direc_type + ' := ' + super_type + ' &' + \
+                     '[ SYNSEM.' + direc_geom + ' ' + direc + ' ].')
+
+          size = direct_inverse_scale_size()
+          i = 1
+          delta = 1
+
+          if equal == 'direct' and direc == 'inv':
+            delta = 2
+
+          while i <= size:
+            if i == size and not (equal == 'direct' and direc == 'dir'):
+              break
+            
+            rule_type = direc_type + '-' + str(i)
+
+            if i + delta > size:
+              if direc == 'dir':
+                hi_type = 'dir-inv-' + str(i)
+                lo_type = 'dir-inv-' + str(i)
+              else:
+                hi_type = 'dir-inv-' + str(i)
+                lo_type = 'dir-inv-' + str(i + delta - 1)
+            else:
+              hi_type = 'dir-inv-' + str(i)
+              lo_type = 'dir-inv-non-' + str(i + delta - 1)
+
+            if direc == 'dir':
+              subj_type = hi_type
+              comps_type = lo_type
+            else:
+              subj_type = lo_type
+              comps_type = hi_type
+
+            mylang.add(
+              rule_type + ' := ' + direc_type + ' &' + \
+              '[ SYNSEM.LOCAL.CAT.VAL [ SUBJ < ' + subj_type + ' >,' + \
+              '                         COMPS < ' + comps_type + ' > ] ].')
+            lrules.add(
+              n + '-' + direc + '-' + str(i+1) + ' := ' + rule_type + '.')
+
+            i += 1
+
+        root_dict[p] = n + '-dir-inv-lex-rule'
+      else:
+        root_dict[p] = n + '-' + l + '-lex'
 
       ch.iter_next()
     ch.iter_end()
@@ -3136,7 +3821,7 @@ def customize_inflection():
     while ch.iter_valid():
       order = ch.get('order')
       opt = ch.get('opt')
-      name = ch.get('name')
+      name = get_name()
 
       if order == 'before':
         aff = 'prefix'
@@ -3157,7 +3842,7 @@ def customize_inflection():
         basetype.append('noun-lex')
 
       # find the number of input values so we know if it has 1 or more
-      inputs = 0 
+      inputs = 0
       ch.iter_begin('input')
       while ch.iter_valid():
         inputs += 1
@@ -3177,7 +3862,7 @@ def customize_inflection():
           # intermediate rule type
           if ch.get_full(i_type+'_opt'):
             non_opt, inp = intermediate_rule(ch.iter_prefix().rstrip('_'),
-                                             root_dict, basetype)
+                                             root_dict)
             # non_opt tracks if there is a non-optional rule that occurs
             # between this rule and the basetype. If not, we need all the
             # basetypes to inherit from the intermediate rule as well.
@@ -3191,7 +3876,7 @@ def customize_inflection():
       else:
         # Build an intermediate rule
         non_opt, inp = intermediate_rule(ch.iter_prefix().rstrip('_'),
-                                         root_dict, basetype)
+                                         root_dict)
         # If no intervening non-optional rules, have the basetype(s)
         # inherit from the intermediate rule.
         if not non_opt:
@@ -3209,9 +3894,9 @@ def customize_inflection():
         wtol = False
       ch.iter_end()
 
-      ltow = is_ltow(ch.iter_prefix().rstrip('_'), []) # lexeme-to-word rule?
+      ltow = is_ltow(ch.iter_prefix().rstrip('_')) # lexeme-to-word rule?
       wtoltow = back_to_word(ch.iter_prefix().rstrip('_')) # satisfy a previous word-to-lexeme rule?
-      const = False 
+      const = False
       subrules = 0
       morph_orth = ''
 
@@ -3256,18 +3941,21 @@ def customize_inflection():
             [DTR ' + inp + '].')
         else:
           mylang.add(name+'-lex-rule := word-to-lexeme-rule & inflecting-lex-rule &\
-          [DTR ' + inp + '].')     
+          [DTR ' + inp + '].')
 
       else:
         if const:
           if subrules > 0:
             mylang.add(name+'-lex-rule := lexeme-to-lexeme-rule & \
+                                          add-only-no-ccont-rule & \
             [DTR ' + inp + '].')
           else:
             mylang.add(name+'-lex-rule := const-ltol-rule & \
+                                          add-only-no-ccont-rule & \
             [DTR ' + inp + '].')
         else:
           mylang.add(name+'-lex-rule := infl-ltol-rule & \
+                                        add-only-no-ccont-rule & \
           [DTR ' + inp + '].')
 
       # Specify for subtypes, if any
@@ -3306,71 +3994,9 @@ def customize_inflection():
                       aff,
                       ch.get('orth'))
 
-          # Specify features on the morpheme's rule
-          ch.iter_begin('feat')
-          while ch.iter_valid():
-            n = ch.get('name')
-            v = ch.get('value')
+          # Apply the features to the lexical rule
+          customize_feature_values(ltype, slotprefix, features, cases)
 
-            if n == 'case':
-              v = canon_to_abbr(v, cases)
-
-            # Figure out where the feature lives.  Noun slot features go
-            # on the head.  Det slot features go on the SPEC.  Verb slot
-            # features can go on either the verb itself, the subject,
-            # or the object.
-            geom = ''
-            for f in features:
-              if f[0] == n:
-                geom = f[2]
-
-            if geom:
-              if slotprefix == 'det':
-                geom = 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.' + geom
-              elif slotprefix == 'verb':
-                h = ch.get('head')
-                if h == 'subj':
-                  geom = 'SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.' + geom
-                elif h == 'obj':
-                  geom = 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.' + geom
-                else:
-                  geom = 'SYNSEM.' + geom
-              else:
-                geom = 'SYNSEM.' + geom
-
-            # If the feature has a geometry, just specify its value;
-            # otherwise, handle it specially.
-            if geom:
-              mylang.add(ltype +
-                         ' := [ ' + geom + ' ' + v + ' ].')
-            elif n == 'argument structure':
-              # constrain the ARG-ST to be passed up
-              mylang.add(ltype + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].')
-
-              # get the feature geometry of CASE
-              for f in features:
-                if f[0] == 'case':
-                  geom = f[2]
-
-              # specify the subj/comps CASE values
-              s_case = a_case = o_case = ''
-              c = v.split('-')
-              if len(c) > 1:
-                a_case = canon_to_abbr(c[0], cases)
-                o_case = canon_to_abbr(c[1], cases)
-                mylang.add(ltype + \
-                           ' := [ ARG-ST < [ ' + \
-                           geom + ' ' + a_case + ' ], [ ' +
-                           geom + ' ' + o_case + ' ] > ].')
-              else:
-                s_case = canon_to_abbr(c[0], cases)
-                mylang.add(ltype + \
-                           ' := [ ARG-ST.FIRST. ' + \
-                           geom + ' ' + s_case + ' ].')
-
-            ch.iter_next()
-          ch.iter_end()
-          
           ch.iter_next()
         ch.iter_end()
       else:
@@ -3404,7 +4030,7 @@ def customize_inflection():
 
 def req(basetype, reqs, reqd, tracker, reqtype):
   stype = ch.iter_prefix().rstrip('_') # slot type; assumes req() has been called from a 'slot' context.
-  name = get_name(stype) 
+  name = get_name(stype)
   ch.iter_begin(reqtype)
   if ch.iter_valid():
     # Keep track of which rules have non-consecutive co-occurance constraints
@@ -3493,11 +4119,11 @@ def copy_all_tracks(reqd):
       name = get_name(slot)
       if slot not in reqd:
         mylang.add(name + '-lex-rule := [TRACK #track, \
-        DTR.TRACK #track].') 
+        DTR.TRACK #track].')
       ch.iter_next()
     ch.iter_end()
-    
-           
+
+
 ######################################################################
 # customize_test_sentences(matrix_path)
 #   Create the script file entries for the user's test sentences.
@@ -3574,7 +4200,7 @@ def customize_roots():
   typedef = \
     'lex-root := word-or-lexrule.'
   roots.add(typedef, comment)
-  
+
 
 ######################################################################
 # Archive helper functions
@@ -3589,7 +4215,7 @@ def make_tgz(dir):
 
   if os.path.exists('matrix.tar.gz'):
     os.remove('matrix.tar.gz')
-  
+
   archive = dir + '.tar'
   t = tarfile.open(archive, 'w')
   t.add(dir)
@@ -3681,6 +4307,7 @@ def customize_matrix(path, arch_type):
   customize_case()
   customize_person_and_number()
   customize_gender()
+  customize_other_features()
   customize_word_order()
   customize_sentential_negation()
   customize_coordination()

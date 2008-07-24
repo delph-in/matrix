@@ -1,4 +1,4 @@
-### $Id: deffile.py,v 1.12 2008-07-10 05:25:56 sfd Exp $
+### $Id: deffile.py,v 1.13 2008-07-24 11:16:41 sfd Exp $
 
 ######################################################################
 # This module is currently a bit of a hybrid.  Most of the code is
@@ -273,7 +273,7 @@ function fill_feature_values(select_name, other_name)
     var v = features[i].split(':');
 
     if (v[0] == other_val) {
-      v = v[1].split(',');
+      v = v[1].split(';');
 
       for (var j = 0; j < v.length; j++) {
         var n = v[j].split('|');
@@ -541,7 +541,7 @@ def js_array(list):
   val = ''
   for l in list:
     val += '\'' + l[0] + ':' + l[1] + '\',\n'
-  val = val[0:-2]  # trim off the last ,\n
+  val = val[:-2]  # trim off the last ,\n
   return val
 
 
@@ -805,7 +805,7 @@ class MatrixDefFile:
             if fill_type in ['fillvalues']:
               for f in choices.features():
                 if f[0] == choices.get_full(fill_arg1):
-                  for v in f[1].split(','):
+                  for v in f[1].split(';'):
                     n = v.split('|')
                     if n[0] == shtml:
                       shtml = n[1]
@@ -866,8 +866,8 @@ class MatrixDefFile:
           pre = prefix + iter_name + str(cur) + '_'
           vars[iter_var] = cur
 
-          # pre[0:-1] trims the trailing '_'
-          html += '<div class="iterator" id="' + pre[0:-1] + '">\n'
+          # pre[:-1] trims the trailing '_'
+          html += '<div class="iterator" id="' + pre[:-1] + '">\n'
           html += self.defs_to_html(lines[beg:end], choices, errors, pre, vars)
           html += '</div>\n'
 

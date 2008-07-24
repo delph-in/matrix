@@ -1,4 +1,4 @@
-### $Id: tdl.py,v 1.16 2008-06-27 20:45:22 sfd Exp $
+### $Id: tdl.py,v 1.17 2008-07-24 11:16:41 sfd Exp $
 
 ######################################################################
 # imports
@@ -163,6 +163,7 @@ class TDLelem_literal:
     self.child = []
     self.comment = ""
     self.literal = literal
+    self.one_line = False
 
   def write(self):
     if self.comment:
@@ -173,7 +174,7 @@ class TDLelem_literal:
     if debug_write:
       TDLwrite('literal\n')
 
-    tdl_file.write(self.literal + '\n\n')
+    tdl_file.write(self.literal)
 
   def set_comment(self, comment):
     self.comment = comment
@@ -213,10 +214,8 @@ class TDLelem_typedef(TDLelem):
       ch.write()
 
     TDLwrite('.')
-    if self.one_line:
-      if self.comment:
-        TDLwrite('  ; ' + self.comment)
-    TDLwrite('\n\n')
+    if self.one_line and self.comment:
+      TDLwrite('  ; ' + self.comment)
 
   def set_comment(self, comment):
     self.comment = comment
@@ -523,7 +522,7 @@ def TDLparse_list():
   elem = None
   
   # loop through all but the last child, constructing a list as we go
-  for c in child[0:-1]:
+  for c in child[:-1]:
     if elem == None:
       temp = TDLelem_feat()
       elem = temp
@@ -612,7 +611,7 @@ def TDLparse_typedef():
   type = tok.pop(0) # the type name
   op = tok.pop(0)
   while not op in (':=', ':<', ':+'):
-    type += '_' + op
+    type += '_' + op  # turn spaces in the type name to _'s
     op = tok.pop(0)
   elem = TDLelem_typedef(type, op)
   elem.add(TDLparse_conj())
@@ -662,9 +661,10 @@ def TDLmerge(e1, e2):
     c1 = e1.get_comment()
     c2 = e2.get_comment()
     c0 = c1
-    if len(c1) and len(c2):
-      c0 += '\n\n'
-    c0 += c2
+    if c1 != c2:  # if the comments are the same, don't duplicate
+      if len(c1) and len(c2):
+        c0 += '\n\n'
+      c0 += c2
     e0.set_comment(c0)
 
     # if the elements are ordered (list or dlist), merge the list
@@ -712,8 +712,14 @@ class TDLfile:
   def save(self):
     f = open(self.file_name, 'w')
     TDLset_file(f)
-    for t in self.typedefs:
-      t.write()
+    l = len(self.typedefs)
+    for i in range(0, l):
+      self.typedefs[i].write()
+      TDLwrite('\n')  # always at least one line break...
+      # ...and then another if it's not two one_line elements in a row
+      if i < l - 1:
+        if not (self.typedefs[i].one_line and self.typedefs[i+1].one_line):
+          TDLwrite('\n')
     f.close()
 
   def dump(self):

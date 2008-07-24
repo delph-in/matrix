@@ -1,4 +1,4 @@
-### $Id: choices.py,v 1.20 2008-07-10 05:25:56 sfd Exp $
+### $Id: choices.py,v 1.21 2008-07-24 11:16:41 sfd Exp $
 
 ######################################################################
 # imports
@@ -56,6 +56,8 @@ class ChoicesFile:
         self.convert_4_to_5()
       if version < 6:
         self.convert_5_to_6()
+      if version < 7:
+        self.convert_6_to_7()
       # As we get more versions, add more version-conversion methods, and:
       # if version < N:
       #   self.convert_N-1_to_N
@@ -273,6 +275,20 @@ class ChoicesFile:
       canon.append('o')
       user.append(self.get_full(cm + '-o-case-name'))
 
+    # fill in any additional cases the user has specified
+    state = self.iter_state()
+    self.iter_reset()
+
+    self.iter_begin('case')
+    while self.iter_valid():
+      name = self.get('name')
+      canon.append(name)
+      user.append(name)
+      self.iter_next()
+    self.iter_end()
+
+    self.iter_set_state(state)
+
     # if possible without causing collisions, shorten the case names to
     # three-letter abbreviations; otherwise, just use the names as the
     # abbreviations
@@ -291,25 +307,32 @@ class ChoicesFile:
   #   Create and return a list containing information about the
   #   case-marking patterns implied by the current case choices.
   #   This list consists of tuples:
-  #     [canonical pattern name, friendly pattern name, rule?]
+  #       [ canonical pattern name,
+  #         friendly pattern name,
+  #         rule?,
+  #         direct-inverse? ]
   #   A pattern name is:
-  #     (in)?transitive \(subject case-object case)
+  #       (in)?transitive \(subject case-object case)
   #   In a canonical name (which is used in the choices file), the
   #   case names are the same as those used in the choices variable
   #   names.  The friendly name uses the names supplied by the
-  #   user.  The third argument is either True if the case pattern
+  #   user.  The third element is either True if the case pattern
   #   is one that should be used in lexical rules or False if it
-  #   should be used on lexical types (subtypes of verb-lex).
+  #   should be used on lexical types (subtypes of verb-lex).  The
+  #   fourth argument is true if the verb follows a direct-inverse
+  #   marking pattern.
   def patterns(self):
     cm = self.get_full('case-marking')
     cases = self.cases()
 
     patterns = []
 
-    if cm == 'none':
-      patterns += [ ['intrans', '', False] ]
-      patterns += [ ['trans', '', False] ]
-    elif cm == 'nom-acc':
+    # First, add intransitive and transitive, which are always available
+    patterns += [ ['intrans', '', False] ]
+    patterns += [ ['trans', '', False] ]
+
+    # Second, fill in the canonical names based on the case-marking.
+    if cm == 'nom-acc':
       patterns += [ ['nom', '', False] ]
       patterns += [ ['nom-acc', '', False] ]
     elif cm == 'erg-abs':
@@ -331,20 +354,16 @@ class ChoicesFile:
       patterns += [ ['s', '', False] ]
       patterns += [ ['a-o', '', False] ]
     elif cm == 'split-v':
-      patterns += [ ['intrans', '', False] ]
-      patterns += [ ['trans', '', False] ]
       patterns += [ ['nom', '', True] ]
       patterns += [ ['abs', '', True] ]
       patterns += [ ['nom-acc', '', True] ]
       patterns += [ ['erg-abs', '', True] ]
     elif cm == 'focus':
-      patterns += [ ['intrans', '', False] ]
-      patterns += [ ['trans', '', False] ]
       patterns += [ ['focus', '', True] ]
       patterns += [ ['focus-o', '', True] ]
       patterns += [ ['a-focus', '', True] ]
 
-    # Now fill in the friendly names based on the canonical names
+    # Next, fill in the friendly names based on the canonical names
     for i in range(0, len(patterns)):
       if patterns[i][0] in ['trans', 'intrans']:
         patterns[i][1] = patterns[i][0] + 'itive'
@@ -359,6 +378,14 @@ class ChoicesFile:
         elif len(w) == 2:
           patterns[i][1] = 'transitive (%s-%s)' % (w[0], w[1])
 
+    # Finally, extend the patterns to include direct-inverse, as needed
+    if self.get('scale1_feat1_name'):
+      for i in range(0, len(patterns)):
+        if patterns[i][0] == 'trans' or patterns[i][0].find('-') != -1:
+          patterns += [ [ patterns[i][0] + ',dirinv',
+                          patterns[i][1] + ', direct-inverse',
+                          patterns[i][2] ] ]
+
     return patterns
 
 
@@ -370,11 +397,16 @@ class ChoicesFile:
   def numbers(self):
     numbers = []
 
+    state = self.iter_state()
+    self.iter_reset()
+
     self.iter_begin('number')
     while self.iter_valid():
       numbers += [ [self.get('name')] ]
       self.iter_next()
     self.iter_end()
+
+    self.iter_set_state(state)
 
     return numbers
 
@@ -387,7 +419,7 @@ class ChoicesFile:
   def persons(self):
     persons = []
 
-    person = self.get('person')
+    person = self.get_full('person')
     if person == '1-2-3':
       persons += [ ['1st'] ]
       persons += [ ['2nd'] ]
@@ -415,7 +447,7 @@ class ChoicesFile:
   def pernums(self):
     pernums = []
 
-    fp = self.get('first-person')
+    fp = self.get_full('first-person')
     if fp not in ['', 'none']:
       doneSg = False  # the first item in the num list is the singular
       for n in self.numbers():
@@ -424,20 +456,20 @@ class ChoicesFile:
           p = p[0]
           if doneSg and p == '1st':
             if fp == 'incl-excl':
-              pernums += [ [p + '_' + n + '_incl'] ]
-              pernums += [ [p + '_' + n + '_excl'] ]
+              pernums += [ [p[0] + n + '_incl'] ]
+              pernums += [ [p[0] + n + '_excl'] ]
             elif fp == 'min-incl':
-              pernums += [ [p + '_' + n + '_min'] ]
-              pernums += [ [p + '_' + n + '_incl'] ]
+              pernums += [ [p[0] + n + '_min'] ]
+              pernums += [ [p[0] + n + '_incl'] ]
             elif fp == 'aug-incl':
-              pernums += [ [p + '_' + n] ]
-              pernums += [ [p + '_' + n + '_aug'] ]
+              pernums += [ [p[0] + n] ]
+              pernums += [ [p[0] + n + '_aug'] ]
             elif fp == 'min-aug':
-              pernums += [ [p + '_' + n + '_min'] ]
-              pernums += [ [p + '_' + n + '_incl'] ]
-              pernums += [ [p + '_' + n + '_aug'] ]
+              pernums += [ [p[0] + n + '_min'] ]
+              pernums += [ [p[0] + n + '_incl'] ]
+              pernums += [ [p[0] + n + '_aug'] ]
           else:
-            pernums += [ [p + '_' + n] ]
+            pernums += [ [p[0] + n] ]
           
         doneSg = True
 
@@ -452,11 +484,16 @@ class ChoicesFile:
   def genders(self):
     genders = []
 
+    state = self.iter_state()
+    self.iter_reset()
+
     self.iter_begin('gender')
     while self.iter_valid():
       genders += [ [self.get('name')] ]
       self.iter_next()
     self.iter_end()
+
+    self.iter_set_state(state)
 
     return genders
 
@@ -477,7 +514,7 @@ class ChoicesFile:
     values = ''
     for c in self.cases():
       if values:
-        values += ','
+        values += ';'
       values += c[0] + '|' + c[1]
 
     if values:
@@ -489,7 +526,7 @@ class ChoicesFile:
       values = ''
       for pn in pernums:
         if values:
-          values += ','
+          values += ';'
         values += pn[0] + '|' + pn[0]
 
       if values:
@@ -498,7 +535,7 @@ class ChoicesFile:
       values = ''
       for n in self.numbers():
         if values:
-          values += ','
+          values += ';'
         values += n[0] + '|' + n[0]
 
       if values:
@@ -507,7 +544,7 @@ class ChoicesFile:
       values = ''
       for p in self.persons():
         if values:
-          values += ','
+          values += ';'
         values += p[0] + '|' + p[0]
 
       if values:
@@ -517,7 +554,7 @@ class ChoicesFile:
     values = ''
     for g in self.genders():
       if values:
-        values += ','
+        values += ';'
       values += g[0] + '|' + g[0]
 
     if values:
@@ -527,21 +564,53 @@ class ChoicesFile:
     values = ''
     for p in self.patterns():
       if values:
-        values += ','
+        values += ';'
       if p[2]:
         values += p[0] + '|' + p[1]
 
     if values:
       features += [ ['argument structure', values, ''] ]
 
-    # Misc
-    features += \
-      [ ['coordination',
-         'coord|coordinated',
-         ''],
-        ['negation',
-         'neg|negative',
-         ''] ]
+    # Direction
+    if self.get_full('scale1_feat1_name'):
+      features += [ ['direction',
+                     'dir|direct;inv|inverse',
+                     'LOCAL.CAT.HEAD.DIRECTION'] ]
+
+    # Other features
+    state = self.iter_state()
+    self.iter_reset()
+
+    self.iter_begin('feature')
+    while self.iter_valid():
+      feat = self.get('name')
+      type = self.get('type')
+      values = ''
+
+      self.iter_begin('value')
+      while self.iter_valid():
+        val = self.get('name')
+
+        if values:
+          values += ';'
+        values += val + '|' + val
+        
+        self.iter_next()
+      self.iter_end()
+
+      geom = ''
+      if type == 'head':
+        geom = 'LOCAL.CAT.HEAD.' + feat.upper()
+      else:
+        geom = 'LOCAL.CONT.HOOK.INDEX.PNG.' + feat.upper()
+
+      if values:
+        features += [ [feat, values, geom] ]
+      
+      self.iter_next()
+    self.iter_end()
+
+    self.iter_set_state(state)
 
     return features
 
@@ -558,7 +627,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 6
+    return 7
 
 
   def convert_value(self, key, old, new):
@@ -968,3 +1037,17 @@ class ChoicesFile:
       self.delete('non-finite')
       self.iter_next()
     self.iter_end()
+
+  def convert_6_to_7(self):
+    # Lexical types now have multiple stems
+    for lextype in ['noun', 'verb', 'det']:
+      self.iter_begin(lextype)
+      while self.iter_valid():
+        self.convert_key('orth', 'stem1_orth')
+        self.convert_key('pred', 'stem1_pred')
+
+        self.iter_next()
+      self.iter_end()
+
+    if not self.get('person') and len(self.keys()):
+      self.set('person', 'none')

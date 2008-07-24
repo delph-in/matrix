@@ -1,4 +1,4 @@
-### $Id: validate.py,v 1.39 2008-07-10 05:25:56 sfd Exp $
+### $Id: validate.py,v 1.40 2008-07-24 11:16:41 sfd Exp $
 
 ######################################################################
 # imports
@@ -68,6 +68,9 @@ def validate_case():
   if cm in ['focus']:
     validate_one_case(cm + '-focus')
 
+  if ch.get('scale1_feat1_name') and not ch.get('scale-equal'):
+    add_err('scale-equal', 'If you define a direct-inverse scale, you must say what direction the verb is when the agent and patient have equal rank.')
+
 
 ######################################################################
 # validate_person()
@@ -120,6 +123,37 @@ def validate_gender():
 
 
 ######################################################################
+# validate_other_features()
+#   Validate the user's choices about other features
+
+def validate_other_features():
+  ch.iter_begin('feature')
+  while ch.iter_valid():
+    if not ch.get('name'):
+      add_err(ch.iter_prefix() + 'name',
+              'You must specify a name for each feature you define.')
+
+    if not ch.get('type'):
+      add_err(ch.iter_prefix() + 'type',
+              'You must specify a type for each feature you define.')
+
+    ch.iter_begin('value')
+    while ch.iter_valid():
+      if not ch.get('name'):
+        add_err(ch.iter_prefix() + 'name',
+                'You must specify a name for each value you define.')
+      if not ch.get('supertype1_name'):
+        add_err(ch.iter_prefix() + 'supertype1_name',
+                'You must specify a supertype for each value you define.')
+
+      ch.iter_next()
+    ch.iter_end()
+
+    ch.iter_next()
+  ch.iter_end()
+
+
+######################################################################
 # validate_word_order()
 #   Validate the user's choices about basic word order.
 
@@ -147,7 +181,7 @@ def validate_word_order():
   if (ch.get('noun-det-order') and (not ch.get('has-dets'))):
     add_err('has-dets','You specified an order of nouns and dets, but not whether your language has determiners at all.')
 
-  if ch.get('det1_orth') and ch.get('has-dets') == 'no':
+  if ch.get('det1_stem1_orth') and ch.get('has-dets') == 'no':
     add_err('has-dets','You specified lexical entries for determiners, but said your language has none.')
 
   #Things to do with auxiliaries
@@ -316,9 +350,6 @@ def validate_yesno_questions():
 #   Validate the user's choices about the test lexicon.
 
 def validate_lexicon():
-  noun1_orth = ch.get('noun1_orth')
-  noun1_pred = ch.get('noun1_pred')
-
   auxverb = ch.get('aux-verb')
   auxsem = ch.get('aux-sem')
   auxcomp = ch.get('aux-comp')
@@ -328,9 +359,9 @@ def validate_lexicon():
   # First, handle the non-iterated lexical entries
 
   # Did they specify enough lexical entries?
-  if not noun1_orth:
+  if not ch.get('noun1_stem1_orth'):
     err = 'You must create at least one noun class.'
-    add_err('noun1_orth', err)
+    add_err('noun1_stem1_orth', err)
 
   # Did they answer all of the questions about lexical entries?
   if auxverb and not (auxsem and auxcomp and auxorder):
@@ -367,19 +398,7 @@ def validate_lexicon():
   # Nouns
   ch.iter_begin('noun')
   while ch.iter_valid():
-    orth = ch.get('orth')
-    pred = ch.get('pred')
     det = ch.get('det')
-
-    # Did they give a spelling?
-    if not orth:
-      err = 'You must specify a spelling for each noun you define.'
-      add_err(ch.iter_prefix() + 'orth', err)
-
-    # Did they give a predicate?
-    if not pred:
-      err = 'You must specify a predicate for each noun you define.'
-      add_err(ch.iter_prefix() + 'pred', err)
 
     # Did they answer the question about determiners?
     if not det:
@@ -392,7 +411,25 @@ def validate_lexicon():
       err = 'You defined a noun that obligatorily takes a determiner, but also said your language does not have determiners.'
       add_err('has-dets', err)
       add_err(ch.iter_prefix() + 'det', err)
-    
+
+    ch.iter_begin('stem')
+    while ch.iter_valid():
+      orth = ch.get('orth')
+      pred = ch.get('pred')
+
+      # Did they give a spelling?
+      if not orth:
+        err = 'You must specify a spelling for each noun you define.'
+        add_err(ch.iter_prefix() + 'orth', err)
+
+      # Did they give a predicate?
+      if not pred:
+        err = 'You must specify a predicate for each noun you define.'
+        add_err(ch.iter_prefix() + 'pred', err)
+
+      ch.iter_next()
+    ch.iter_end()
+
     ch.iter_next()
   ch.iter_end()
 
@@ -401,25 +438,31 @@ def validate_lexicon():
   seenIntrans = False
   ch.iter_begin('verb')
   while ch.iter_valid():
-    orth = ch.get('orth')
-    pred = ch.get('pred')
     val = ch.get('valence')
 
     if not val:
       err = 'You must specify the argument structure of each verb you define.'
       add_err(ch.iter_prefix() + 'valence', err)
-    elif val == 'trans' or val.find('-') != -1:
+    elif val[0:5] == 'trans' or val.find('-') != -1:
       seenTrans = True
     else:
       seenIntrans = True
 
-    if not orth:
-      err = 'You must specify a spelling for each verb you define.'
-      add_err(ch.iter_prefix() + 'orth', err)
+    ch.iter_begin('stem')
+    while ch.iter_valid():
+      orth = ch.get('orth')
+      pred = ch.get('pred')
 
-    if not pred:
-      err = 'You must specify a predicate for each verb you define.'
-      add_err(ch.iter_prefix() + 'pred', err)
+      if not orth:
+        err = 'You must specify a spelling for each verb you define.'
+        add_err(ch.iter_prefix() + 'orth', err)
+
+      if not pred:
+        err = 'You must specify a predicate for each verb you define.'
+        add_err(ch.iter_prefix() + 'pred', err)
+
+      ch.iter_next()
+    ch.iter_end()
 
     ch.iter_next()
   ch.iter_end()
@@ -477,13 +520,18 @@ def validate_lexicon():
   # Determiners
   ch.iter_begin('det')
   while ch.iter_valid():
-    if not ch.get('orth'):
-      err = 'You must specify a spelling for each determiner you define.'
-      add_err(ch.iter_prefix() + 'orth', err)
+    ch.iter_begin('stem')
+    while ch.iter_valid():
+      if not ch.get('orth'):
+        err = 'You must specify a spelling for each determiner you define.'
+        add_err(ch.iter_prefix() + 'orth', err)
 
-    if not ch.get('pred'):
-      err = 'You must specify a predicate for each determiner you define.'
-      add_err(ch.iter_prefix() + 'pred', err)
+      if not ch.get('pred'):
+        err = 'You must specify a predicate for each determiner you define.'
+        add_err(ch.iter_prefix() + 'pred', err)
+
+      ch.iter_next()
+    ch.iter_end()
 
     ch.iter_next()
   ch.iter_end()
@@ -542,9 +590,9 @@ def validate_extra_constraints():
   if ch.get('aux-sem') == 'pred':
     err = 'Only semantically empty auxiliaries in test grammars.'
     add_err('aux-sem', err)
-  if ch.get('has-dets') == 'yes' and not ch.get('det1_orth'):
+  if ch.get('has-dets') == 'yes' and not ch.get('det1_stem1_orth'):
     err = 'To get uniform semantics, we always want det1 specified.'
-    add_err('det1_orth', err)
+    add_err('det1_stem1_orth', err)
   if not ((ch.get('cs1') == 'on' and ch.get('cs1_n') == 'on') or \
           (ch.get('cs2') == 'on' and ch.get('cs2n') == 'on')):
     err = 'The test grammars must have some way to coordinate nouns.'
@@ -587,6 +635,7 @@ def validate_choices(choices_file, extra = False):
   validate_person()
   validate_number()
   validate_gender()
+  validate_other_features()
   validate_word_order()
   validate_sentential_negation()
   validate_coordination()

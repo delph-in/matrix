@@ -1,4 +1,4 @@
-/* $Id: matrix.css,v 1.8 2008-06-26 22:28:50 sfd Exp $ */
+/* $Id: matrix.css,v 1.9 2008-07-24 11:16:41 sfd Exp $ */
 
 html { overflow: scroll }
 
@@ -14,7 +14,7 @@ div.anchor { display: none }
 
 div.iterator {
   padding-left: 2px;
-  margin: 2px 0px 2px 16px;
+  margin: 4px 0px 4px 16px;
   border-left-width: 3px;
   border-left-style: solid;
 }

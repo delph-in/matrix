@@ -1,8 +1,9 @@
-### $Id: matrixdef,v 1.28 2008-07-10 05:25:56 sfd Exp $
+### $Id: matrixdef,v 1.29 2008-07-24 11:16:41 sfd Exp $
 
 Section language "Language"
 
 Text language "Language name" "<p>e.g. Warlpiri or Hawaiian_Creole: " "</p>" 50
+
 
 Section word-order "Word Order"
 
@@ -34,6 +35,93 @@ Radio has-aux "Has auxiliaries" "Does your language have auxiliary verbs?" ""
 Radio aux-comp-order "Order of auxiliary and complement" "If so, an auxiliary verb appears " ""
 . before "Before" "" "before "
 . after "After" "" "after its complement."
+
+
+Section number "Number"
+
+Label "<p><span style=\"font-variant:small-caps\">Number</span> is a grammatical category that distinguishes between different numbers of real-world entities.  For example, many languages distinguish a <span style=\"font-variant:small-caps\">singular</span> number from a <span style=\"font-variant:small-caps\">plural</span>, the former begin associated with one entity and the latter with more than one.  Other languages distinguish still more number values, including the <span style=\"font-variant:small-caps\">dual</span> (two entities) and the <span style=\"font-variant:small-caps\">paucal</span> (a few entities).  It is important to distinguish between number, described here, and numerals, which currently cannot be described in this questionnaire.  The answers you provide on this page will determine the values available on the lexicon page for the <tt>number</tt> feature (or the <tt>pernum</tt> feature; see the Person section of the questionnaire for more details).</p>"
+
+Label "<p>Please add all the values of number that your language's grammar distinguishes.  If your language does not have number as a grammatical category, leave this section blank.  <span style=\"color:red\">NOTE: This section of the questionnaire is currently under development and over-simplified.  In particular, the <b>first</b> value of number that you provide below will arbitrarily be treated as the singular, while the others will be treated as non-singular.</span></p>"
+
+BeginIter number{i} "a Number"
+
+  Text name "Number {i} name" "Name: " "" 20
+
+EndIter number
+
+
+Section person "Person"
+
+Label "<p><span style=\"font-variant:small-caps\">Person</span> is a grammatical category that distinguishes between different discourse participants.  Natural languages generally distinguish up to three discourse participants: the speaker (the <span style=\"font-variant:small-caps\">first person</span>), the person spoken to (the <span style=\"font-variant:small-caps\">second person</span>), and anyone else (the <span style=\"font-variant:small-caps\">third person</span>).  The answers you provide on this page will determine the values available on the lexicon page for the <tt>person</tt> feature (or the <tt>pernum</tt> feature; see below).</p>"
+
+Radio person "Person" "<p>Which values of person are distinguished in your language?<br>" ""
+. none "None" "" "none<br>"
+. 1-2-3 "First, second, and third" "" "First, second, and third<br>"
+. 1-non-1 "First and non-first" "" "First and non-first<br>"
+. 2-non-2 "Second and non-second" "" "Second and non-second<br>"
+. 3-non-3 "Third and non-third" "" "Third and non-third</p>"
+
+Label "<p>Some languages make finer distinctions in the first person when more than one discource participant is referred to.  The following notation, adapted from Cysouw (2000), is used here: 1+2 refers to just the speaker and the person(s) spoken to; 1+3 refers to just the speaker and some third person(s); 1+2+3 refers to the speaker, the person(s) spoken to, and some third person(s).  (Note that if your language makes a finer distinction in the first person non-singular, your grammar will have a synthetic <tt>pernum</tt> feature rather than separate <tt>person</tt> and <tt>number</tt> features.)</p>"
+
+Radio first-person "First person" "<p>What sub-values does your language distinguish in the first person?<br>" ""
+. none "None" "" " none<br>"
+. incl-excl "Inclusive/exclusive" "" " (1+2 and 1+2+3) &nbsp; vs. &nbsp; 1+3 (inclusive/exclusive)<br>"
+. min-incl "Minimal inclusive" "" " 1+2 &nbsp; vs. &nbsp; (1+3 and 1+2+3) (minimal inclusive)<br>"
+. aug-incl "Augmented inclusive" "" " (1+2 and 1+3) &nbsp; vs. &nbsp; 1+2+3 (augmented inclusive)<br>"
+. min-aug "Minimal/augmented" "" " 1+2 &nbsp; vs. &nbsp; 1+3 &nbsp; vs. &nbsp; 1+2+3 (minimal/augmented)<br>"
+
+
+Section gender "Gender"
+
+Label "<p>Insert prose here.  A single root type named <i>gender</i>, and the additional types you define below.</p>"
+
+BeginIter gender{i} "a Gender"
+
+  Text name "Gender {i} name" "Gender name: " "" 20
+
+  BeginIter supertype{j} "a Supertype" 1
+
+    Select name "Gender {i} supertype {j} name" "Supertype: " ""
+    fillregex gender[0-9]+_name 1
+    . gender "Gender" "gender"
+
+  EndIter supertype
+
+EndIter gender
+
+
+Section other-features "Other Features"
+
+Label "<p>If your language has other features beyond those that can be defined elsewhere in this questionnaire, they can be defined here.  Furthermore, if your language has synthetic features (e.g. <tt>pernum</tt> instead of <tt>person</tt> and <tt>number</tt>, <tt>gendnum</tt> instead of <tt>gender</tt> and <tt>number</tt>), you may define such features here as well.</p>"
+
+Label "<p>For each feature, you will define a type hierarchy, which consists of a root type you will name (e.g. <tt>pernum</tt>), and then a series of other values of the feature, each of which is the subtype of at least one other value (or the root).</p>"
+
+BeginIter feature{i} "a Feature"
+
+  Text name "Feature {i} name" "Feature name: " "<br>" 20
+
+  Radio type "Feature {i} type" "Is this feature:<br>" ""
+  . head "Head" "" " a syntactic feature of heads, without semantic reflex (e.g. case)?<br>"
+  . index "Index" "" " a semantic feature of indices (e.g. person, number)?<br>"
+
+  Label "Values in the feature hierarchy:"
+
+  BeginIter value{j} "a Value"
+
+   Text name "Feature {i} Value {j} name" "Value name: " "" 20
+
+    BeginIter supertype{k} "a Supertype" 1
+
+      Select name "Feature {i} Value {j} supertype {k} name" "Supertype: " ""
+      fillregex feature{i}_value[0-9]+_name 1
+      . root "Root type" "root type"
+
+    EndIter supertype
+
+  EndIter value
+
+EndIter feature
+
 
 Section case "Case"
 
@@ -127,58 +215,31 @@ BeginIter case{i} "a Case"
 
 EndIter case
 
+Separator
 
-Section number "Number"
+Label "<h3>Direct-inverse</h3>"
 
-Label "<p><span style=\"font-variant:small-caps\">Number</span> is a grammatical category that distinguishes between different numbers of real-world entities.  For example, many languages distinguish a <span style=\"font-variant:small-caps\">singular</span> number from a <span style=\"font-variant:small-caps\">plural</span>, the former begin associated with one entity and the latter with more than one.  Other languages distinguish still more number values, including the <span style=\"font-variant:small-caps\">dual</span> (two entities) and the <span style=\"font-variant:small-caps\">paucal</span> (a few entities).  It is important to distinguish between number, described here, and numerals, which currently cannot be described in this questionnaire.  The answers you provide on this page will determine the values available on the lexicon page for the <tt>number</tt> feature (or the <tt>pernum</tt> feature; see the Person section of the questionnaire for more details).</p>"
+Label "<p>In some languages, the pattern of marking of verbal arguments (or verbs themselves) is sensitive to a <span style=\"font-variant:small-caps\">scale</span> that ranks argument NPs according to how natural they are in the role of agent; for example, a language might rank animate NPs as more natural agents than inanimate NPs.  In such languages, transitive sentences in which the agent outranks the patient are marked differently from those in which the patient outranks the agent.  Such sentences are said to differ in <span style=\"font-variant:small-caps\">direction</span>.  Sentences where the agent outranks the patient are called <span style=\"font-variant:small-caps\">direct</span>, while sentences where the patient outranks the agent are called <span style=\"font-variant:small-caps\">inverse</span>.  The difference between direct and inverse sentences may be marked by a different verb form, by different cases on the argument NPs, or both.</p><p>If your languages shows the direct-inverse pattern, please describe the features that define the scale below.  The scale entries should be entered in order from the highest (most agent-like) to the lowest (most patient-like).</p>"
 
-Label "<p>Please add all the values of number that your language's grammar distinguishes.  If your language does not have number as a grammatical category, leave this section blank.  <span style=\"color:red\">NOTE: This section of the questionnaire is currently under development and over-simplified.  In particular, the <b>first</b> value of number that you provide below will arbitrarily be treated as the singular, while the others will be treated as non-singular.</span></p>"
+BeginIter scale{i} "a Scale Entry"
 
-BeginIter number{i} "a Number"
+  Label "<b>Scale entry {i}</b><br>Features:"
 
-  Text name "Number {i} name" "Name: " "" 20
+  BeginIter feat{j} "a Feature" 1
 
-EndIter number
+    Select name "Scale entry {i} feature {j} name" "Name: " " "
+    fillnames
 
+    Select value "Scale entry {i} feature {j} value" "Value: " ""
+    fillvalues scale{i}_feat{j}_name
 
-Section person "Person"
+  EndIter feat
 
-Label "<p><span style=\"font-variant:small-caps\">Person</span> is a grammatical category that distinguishes between different discourse participants.  Natural languages generally distinguish up to three discourse participants: the speaker (the <span style=\"font-variant:small-caps\">first person</span>), the person spoken to (the <span style=\"font-variant:small-caps\">second person</span>), and anyone else (the <span style=\"font-variant:small-caps\">third person</span>).  The answers you provide on this page will determine the values available on the lexicon page for the <tt>person</tt> feature (or the <tt>pernum</tt> feature; see below).</p>"
+EndIter scale
 
-Radio person "Person" "<p>Which values of person are distinguished in your language?<br>" ""
-. none "None" "" "none<br>"
-. 1-2-3 "First, second, and third" "" "First, second, and third<br>"
-. 1-non-1 "First and non-first" "" "First and non-first<br>"
-. 2-non-2 "Second and non-second" "" "Second and non-second<br>"
-. 3-non-3 "Third and non-third" "" "Third and non-third</p>"
-
-Label "<p>Some languages make finer distinctions in the first person when more than one discource participant is referred to.  The following notation, adapted from Cysouw (2000), is used here: 1+2 refers to just the speaker and the person(s) spoken to; 1+3 refers to just the speaker and some third person(s); 1+2+3 refers to the speaker, the person(s) spoken to, and some third person(s).  (Note that if your language makes a finer distinction in the first person non-singular, your grammar will have a synthetic <tt>pernum</tt> feature rather than separate <tt>person</tt> and <tt>number</tt> features.)</p>"
-
-Radio first-person "First person" "<p>What sub-values does your language distinguish in the first person?<br>" ""
-. none "None" "" " none<br>"
-. incl-excl "Inclusive/exclusive" "" " (1+2 and 1+2+3) &nbsp; vs. &nbsp; 1+3 (inclusive/exclusive)<br>"
-. min-incl "Minimal inclusive" "" " 1+2 &nbsp; vs. &nbsp; (1+3 and 1+2+3) (minimal inclusive)<br>"
-. aug-incl "Augmented inclusive" "" " (1+2 and 1+3) &nbsp; vs. &nbsp; 1+2+3 (augmented inclusive)<br>"
-. min-aug "Minimal/augmented" "" " 1+2 &nbsp; vs. &nbsp; 1+3 &nbsp; vs. &nbsp; 1+2+3 (minimal/augmented)<br>"
-
-
-Section gender "Gender"
-
-Label "<p>Insert prose here.  A single root type named <i>gender</i>, and the additional types you define below.</p>"
-
-BeginIter gender{i} "a Gender"
-
-  Text name "Gender {i} name" "Name: " "" 20
-
-  BeginIter supertype{j} "a Supertype" 1
-
-    Select name "Gender {i} supertype {j} name" "Supertype: " ""
-    fillregex gender[0-9]+_name 1
-    . gender "Gender" "gender"
-
-  EndIter supertype
-
-EndIter gender
+Select scale-equal "Direction when equal" "When the agent and patient have the same scale value, the main verb is " "<br>(The other form may be something like a reflexive.  If you select \"some other form\", the resulting grammar will not parse sentence where the agent and patient are equal.  You will need to add the other form manually."
+. direct "Direct" "direct"
+. other "Some other form" "some other form"
 
 
 Section sentential-negation "Sentential Negation"
@@ -327,28 +388,56 @@ Label "<p>On this page you will specify basic lexical types and lexical items fo
 
 Label "<p>In addition to lexical types, you can define inflectional morphology for nouns, verbs, and determiners.  To do so, first define one or more inflectional <span style=\"font-variant:small-caps\">slots</span>, which determine the order morphemes appear, then define one or more <span style=\"font-variant:small-caps\">morphemes</span> that can appear in each slot, along with the <span style=\"font-variant:small-caps\">features</span> specified by each morpheme.  To determine the order of morphemes, you must define one or more <span style=\"font-variant:small-caps\">inputs</span> for each slot.  For morphemes that attach directly to stems, the input will be a lexical type; for morphemes that attach to already-inflected stems, the input will be another slot.</p>"
 
+Separator
+
 Label "<h3>Noun Types</h3>"
 
 BeginIter noun{i} "a Noun Type" 1
 
-  Text name "Noun {i} name" "<b>Noun type {i}</b>:<br>Name: " "<br>" 20
+  Label "<b>Noun type {i}</b>:"
 
-  Text orth "Noun {i} spelling" "Spelling: " "" 30
+  Label "<div style=\"padding-left: 16px\">"
 
-  Text pred "Noun {i} predicate" " Predicate: " "<br>" 30
+  Text name "Noun {i} name" "Type name: " "<br>" 20
 
-  Radio det "Noun {i} determiner" "For this noun type, a determiner is " ""
+  Label "Stems:"
+
+  BeginIter stem{j} "a Stem" 1
+
+    Text orth "Noun {i} stem {j} spelling" "Spelling: " "" 30
+
+    Text pred "Noun {i} stem {j} predicate" " Predicate: " "" 30
+
+  EndIter stem
+
+  Label "Features:"
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Noun {i} feature {j} name" "Name: " " "
+    fillnames
+
+    Select value "Noun {i} feature {j} value" "Value: " ""
+    fillvalues noun{i}_feat{j}_name
+
+  EndIter feat
+
+  Radio det "Noun {i} determiner" "<p>For nouns of this type, a determiner is " "</p>"
   . obl "Obligatory" "" "obligatory "
   . opt "Optional" "" "optional "
   . imp "Impossible" "" "impossible "
 
+  Label "</div>"
+
 EndIter noun
+
+Separator
 
 Label "<h3>Noun Inflection</h3>"
 
 BeginIter noun-slot{i} "a Slot"
 
-  Text name "Noun slot {i} name" "<b>Noun slot {i}</b>:<br>Name: " " " 20
+  Text name "Noun slot {i} name" "<b>Noun slot {i}</b>:<br>Slot name: " " " 20
 
   Check opt "Noun slot {i} optional" ", which is " " optional"
 
@@ -392,7 +481,7 @@ BeginIter noun-slot{i} "a Slot"
 
   BeginIter morph{j} "a Morpheme"
 
-    Text name "Noun slot {i} morpheme {j} name" "Name: " ", " 20
+    Text name "Noun slot {i} morpheme {j} name" "Morpheme name: " ", " 20
 
     Text orth "Noun slot {i} morpheme {j} spelling" "spelling: " ", with the following features:<br>" 20
 
@@ -410,26 +499,61 @@ BeginIter noun-slot{i} "a Slot"
 
 EndIter noun-slot
 
+Separator
+
 Label "<h3>Verb Types</h3>"
 
 BeginIter verb{i} "a Verb Type" 2
 
-  Text name "Verb {i} name" "<b>Verb type {i}</b>:<br>Name: " "<br>" 20
+  Label "<b>Verb type {i}</b>:"
 
-  Text orth "Verb {i} spelling" "Spelling: " "" 30
+  Label "<div style=\"padding-left: 16px\">"
 
-  Text pred "Verb {i} predicate" " Predicate: " "<br>" 30
+  Text name "Verb {i} name" "Type name: " "<br>" 20
 
-  Select valence "Verb {i} arguments" "Argument structure: " "<br>"
+  BeginIter stem{j} "a Stem" 1
+
+    Text orth "Verb {i} stem {j} spelling" "Spelling: " "" 30
+
+    Text pred "Verb {i} stem {j} predicate" " Predicate: " "" 30
+
+  EndIter stem
+
+  Label "Features:"
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Verb {i} feature {j} name" "Name: " " "
+    fillnames
+
+    Select value "Verb {i} feature {j} value" "Value: " ""
+    fillvalues verb{i}_feat{j}_name
+
+    Select head "Verb {i} feature {j} head" "Specified on: " ""
+    . verb "The verb" "the verb"
+    . subj "The subject" "the subject NP"
+    . obj "The object" "the object NP"
+
+  EndIter feat
+
+  Select valence "Verb {i} arguments" "<p>Argument structure: " "</p>"
   fillverbpat
 
+  Label "</div>"
+
 EndIter verb
+
+Separator
 
 Label "<h3>Auxiliary Verb Types</h3>"
 
 BeginIter aux{i} "an Aux Type" 0
 
-  Text orth "Aux {i} spelling" "<b>Auxiliary type {i}</b>:<br>Spelling: " "" 40
+  Label "<b>Auxiliary type {i}</b>:"
+
+  Label "<div style=\"padding-left: 16px\">"
+
+  Text orth "Aux {i} spelling" "Spelling: " "" 40
 
   Radio sem "Aux {i} semantics" "<br>This auxiliary verb contributes:<br>" ""
   . add-pred "Predicate" "" "An independent predicate (e.g. _can_v_rel): "
@@ -454,13 +578,17 @@ BeginIter aux{i} "an Aux Type" 0
   . np "Noun phrase" "" "noun phrase "
   . adp "Adpositional phrase" "" "adpositional phrase "
 
+  Label "</div>"
+
 EndIter aux
+
+Separator
 
 Label "<h3>Verb Inflection</h3>"
 
 BeginIter verb-slot{i} "a Slot"
 
-  Text name "Verb slot {i} name" "<b>Verb slot {i}</b>:<br>Name: " " " 20
+  Text name "Verb slot {i} name" "<b>Verb slot {i}</b>:<br>Slot name: " " " 20
 
   Check opt "Verb slot {i} optional" ", which is " " optional"
 
@@ -503,7 +631,7 @@ BeginIter verb-slot{i} "a Slot"
 
   BeginIter morph{j} "a Morpheme"
 
-    Text name "Verb slot {i} morpheme {j} name" "Name: " ", " 20
+    Text name "Verb slot {i} morpheme {j} name" "Morpheme name: " ", " 20
 
     Text orth "Verb slot {i} morpheme {j} spelling" "spelling: " ", with the following features:<br>" 20
 
@@ -526,25 +654,51 @@ BeginIter verb-slot{i} "a Slot"
 
 EndIter verb-slot
 
+Separator
+
 Label "<h3>Determiners</h3>"
 
 Label "<p>If your nouns require determiners, define at least one here. You may use the second to handle a different determiner form (e.g., for languages where number, gender, or case are marked on determiners). Note that the grammar start won't actually include any constraints implementing agreement.</p>"
 
 BeginIter det{i} "a Determiner"
 
-  Text name "Determiner {i} name" "<b>Determiner {i}</b>:<br>Name: " "<br>" 20
+  Label "<b>Determiner type {i}</b>:"
 
-  Text orth "Determiner {i} spelling" "Spelling: " "" 30
+  Label "<div style=\"padding-left: 16px\">"
 
-  Text pred "Determiner {i} predicate" " Predicate: " "<br>" 30
+  Text name "Determiner {i} name" "Type name: " "<br>" 20
+
+  BeginIter stem{j} "a Stem" 1
+
+    Text orth "Determiner {i} spelling" "Spelling: " "" 30
+
+    Text pred "Determiner {i} predicate" " Predicate: " "<br>" 30
+
+  EndIter stem
+
+  Label "Features:"
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Determiner {i} feature {j} name" "Name: " " "
+    fillnames
+
+    Select value "Determiner {i} feature {j} value" "Value: " ""
+    fillvalues det{i}_feat{j}_name
+
+  EndIter feat
+
+  Label "</div>"
 
 EndIter det
+
+Separator
 
 Label "<h3>Determiner Inflection</h3>"
 
 BeginIter det-slot{i} "a Slot"
 
-  Text name "Determiner slot {i} name" "<b>Determiner slot {i}</b>:<br>Name: " " " 20
+  Text name "Determiner slot {i} name" "<b>Determiner slot {i}</b>:<br>Slot name: " " " 20
 
   Check opt "Determiner slot {i} optional" ", which is " " optional"
 
@@ -588,7 +742,7 @@ BeginIter det-slot{i} "a Slot"
 
   BeginIter morph{j} "a Morpheme"
 
-    Text name "Determiner slot {i} morpheme {j} name" "Name: " ", " 20
+    Text name "Determiner slot {i} morpheme {j} name" "Morpheme name: " ", " 20
 
     Text orth "Determiner slot {i} morpheme {j} spelling" "spelling: " ", with the following features:<br>" 20
 
@@ -605,6 +759,8 @@ BeginIter det-slot{i} "a Slot"
   EndIter morph
 
 EndIter det-slot
+
+Separator
 
 Label "<h3>Case-marking Adpositions</h3>"
 
