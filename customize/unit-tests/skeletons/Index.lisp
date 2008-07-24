@@ -21,5 +21,17 @@
 
 (
  ;;; new-unit-test-here
+((:path . "dir-inv-fore") (:content . "dir-inv-fore: Direct-inverse, pseudo-Fore"))
+((:path . "dir-inv-algonquian") (:content . "dir-inv-algonquian: Direct-inverse, pseudo-Algonquian"))
+((:path . "case-tripartite") (:content . "case-tripartite: Case, tripartite"))
+((:path . "case-split-v") (:content . "case-split-v: Case, split-V"))
+((:path . "case-split-s") (:content . "case-split-s: Case, split-S"))
+((:path . "case-split-n") (:content . "case-split-n: Case, split-N"))
+((:path . "case-none") (:content . "case-none: Case, none"))
+((:path . "case-nom-acc-adp") (:content . "case-nom-acc-adp: Case, nominative-accusative w/ adpositions"))
+((:path . "case-nom-acc") (:content . "case-nom-acc: Case, nominative-accusative"))
+((:path . "case-focus") (:content . "case-focus: Case, focus"))
+((:path . "case-fluid-s") (:content . "case-fluid-s: Case, fluid-S"))
+((:path . "case-erg-abs") (:content . "case-erg-abs: Case, ergative-absolutive"))
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  )

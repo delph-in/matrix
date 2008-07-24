@@ -1,1 +1,13 @@
 tiniest=A very basic grammar just to get the unit tests started.  SOV word order, no frills.
+case-erg-abs=Case, ergative-absolutive
+case-fluid-s=Case, fluid-S
+case-focus=Case, focus
+case-nom-acc=Case, nominative-accusative
+case-nom-acc-adp=Case, nominative-accusative w/ adpositions
+case-none=Case, none
+case-split-n=Case, split-N
+case-split-s=Case, split-S
+case-split-v=Case, split-V
+case-tripartite=Case, tripartite
+dir-inv-algonquian=Direct-inverse, pseudo-Algonquian
+dir-inv-fore=Direct-inverse, pseudo-Fore
