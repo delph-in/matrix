@@ -1,8 +1,9 @@
-### $Id: matrixdef,v 1.29 2008-07-24 11:16:41 sfd Exp $
+### $Id: matrixdef,v 1.30 2008-07-24 23:00:50 sfd Exp $
 
 Section language "Language"
 
-Text language "Language name" "<p>e.g. Warlpiri or Hawaiian_Creole: " "</p>" 50
+Text language "Language name" "Name of your language: " "<br>" 50
+Text iso-code "ISO code" "(optional) <a href=\"http://www.sil.org/iso639-3/codes.asp\">ISO code</a> for your language: " "" 6
 
 
 Section word-order "Word Order"
@@ -20,9 +21,11 @@ Radio word-order "Basic word order" "Please indicate which pattern best describe
 
 Label "<p>Note: Modules for V2 order (auxiliary second, all else free or finite verb second, non-finite verb clause-finally) and differing word order between matrix and subordinate clauses are currently under development.</p>"
 
+Separator
+
 Radio has-dets "Has determiners" "Does your language have determiners (as independent words)?" ""
 . yes "Yes" "" "yes"
-. no "No" "" "no<br><br>"
+. no "No" "" "no<br>"
 
 Radio noun-det-order "Order of determiners and nouns" "If so, what is the order of determiners with respect to nouns?" ""
 . noun-det "Noun-Det" "" "Noun-Det"
@@ -30,7 +33,7 @@ Radio noun-det-order "Order of determiners and nouns" "If so, what is the order 
 
 Radio has-aux "Has auxiliaries" "Does your language have auxiliary verbs?" ""
 . yes "Yes" "" "yes"
-. no "No" "" "no<br><br>"
+. no "No" "" "no<br>"
 
 Radio aux-comp-order "Order of auxiliary and complement" "If so, an auxiliary verb appears " ""
 . before "Before" "" "before "
@@ -39,9 +42,11 @@ Radio aux-comp-order "Order of auxiliary and complement" "If so, an auxiliary ve
 
 Section number "Number"
 
-Label "<p><span style=\"font-variant:small-caps\">Number</span> is a grammatical category that distinguishes between different numbers of real-world entities.  For example, many languages distinguish a <span style=\"font-variant:small-caps\">singular</span> number from a <span style=\"font-variant:small-caps\">plural</span>, the former begin associated with one entity and the latter with more than one.  Other languages distinguish still more number values, including the <span style=\"font-variant:small-caps\">dual</span> (two entities) and the <span style=\"font-variant:small-caps\">paucal</span> (a few entities).  It is important to distinguish between number, described here, and numerals, which currently cannot be described in this questionnaire.  The answers you provide on this page will determine the values available on the lexicon page for the <tt>number</tt> feature (or the <tt>pernum</tt> feature; see the Person section of the questionnaire for more details).</p>"
+Label "<p><span style=\"font-variant:small-caps\">Number</span> is a grammatical category that distinguishes between different numbers of real-world entities.  For example, many languages distinguish a <span style=\"font-variant:small-caps\">singular</span> number from a <span style=\"font-variant:small-caps\">plural</span>, the former begin associated with one entity and the latter with more than one.  Other languages distinguish still more number values, including a <span style=\"font-variant:small-caps\">dual</span> (two entities) and a <span style=\"font-variant:small-caps\">paucal</span> (a few entities).  It is important to distinguish between number, described here, and numerals, which cannot currently be described in this questionnaire.  The answers you provide on this page will determine the values available on the lexicon page for the <tt>number</tt> feature (or the <tt>pernum</tt> feature, about which see the Person section of the questionnaire for more details).</p>"
 
-Label "<p>Please add all the values of number that your language's grammar distinguishes.  If your language does not have number as a grammatical category, leave this section blank.  <span style=\"color:red\">NOTE: This section of the questionnaire is currently under development and over-simplified.  In particular, the <b>first</b> value of number that you provide below will arbitrarily be treated as the singular, while the others will be treated as non-singular.</span></p>"
+Label "<p>Please add all the values of number that your language's grammar distinguishes.  If your language does not have number as a grammatical category, leave this section blank.</p>"
+
+Label "<p><span style=\"color:red\">NOTE: This section of the questionnaire is currently under development and represents an over-simplified view of grammatical number.  In particular, note that the <b>first</b> value of number that you provide below will be treated as the singular, while the others will be treated as non-singular.</span></p>"
 
 BeginIter number{i} "a Number"
 
@@ -52,7 +57,9 @@ EndIter number
 
 Section person "Person"
 
-Label "<p><span style=\"font-variant:small-caps\">Person</span> is a grammatical category that distinguishes between different discourse participants.  Natural languages generally distinguish up to three discourse participants: the speaker (the <span style=\"font-variant:small-caps\">first person</span>), the person spoken to (the <span style=\"font-variant:small-caps\">second person</span>), and anyone else (the <span style=\"font-variant:small-caps\">third person</span>).  The answers you provide on this page will determine the values available on the lexicon page for the <tt>person</tt> feature (or the <tt>pernum</tt> feature; see below).</p>"
+Label "<p><span style=\"font-variant:small-caps\">Person</span> is a grammatical category that distinguishes between different discourse participants.  Natural languages generally distinguish up to three discourse participants: the speaker (the <span style=\"font-variant:small-caps\">first person</span>), the person spoken to (the <span style=\"font-variant:small-caps\">second person</span>), and anyone else (the <span style=\"font-variant:small-caps\">third person</span>).  The answers you provide on this page will determine what values are available later in the questionnaire for the <tt>person</tt> feature (or the <tt>pernum</tt> feature; see below).</p>"
+
+Label "<p><span style=\"color:red\">NOTE: As with the Number section, this section of the questionnaire is currently under development and produces an over-simplified hierarchy for the <tt>person</tt> feature.</span></p>"
 
 Radio person "Person" "<p>Which values of person are distinguished in your language?<br>" ""
 . none "None" "" "none<br>"
@@ -61,7 +68,7 @@ Radio person "Person" "<p>Which values of person are distinguished in your langu
 . 2-non-2 "Second and non-second" "" "Second and non-second<br>"
 . 3-non-3 "Third and non-third" "" "Third and non-third</p>"
 
-Label "<p>Some languages make finer distinctions in the first person when more than one discource participant is referred to.  The following notation, adapted from Cysouw (2000), is used here: 1+2 refers to just the speaker and the person(s) spoken to; 1+3 refers to just the speaker and some third person(s); 1+2+3 refers to the speaker, the person(s) spoken to, and some third person(s).  (Note that if your language makes a finer distinction in the first person non-singular, your grammar will have a synthetic <tt>pernum</tt> feature rather than separate <tt>person</tt> and <tt>number</tt> features.)</p>"
+Label "<p>Some languages make finer distinctions in the first person when more than one discourse participant is referred to.  The following notation, adapted from Cysouw (2000), is used here: 1+2 refers to just the speaker and the person(s) spoken to; 1+3 refers to just the speaker and some third person(s); 1+2+3 refers to the speaker, the person(s) spoken to, and some third person(s).  (Note that if your language makes a finer distinction in the first person non-singular, your grammar will have a synthetic <tt>pernum</tt> feature rather than separate <tt>person</tt> and <tt>number</tt> features.)</p>"
 
 Radio first-person "First person" "<p>What sub-values does your language distinguish in the first person?<br>" ""
 . none "None" "" " none<br>"
@@ -73,7 +80,9 @@ Radio first-person "First person" "<p>What sub-values does your language disting
 
 Section gender "Gender"
 
-Label "<p>Insert prose here.  A single root type named <i>gender</i>, and the additional types you define below.</p>"
+Label "<p>Hockett (1958) defines grammatical <span style=\"font-variant:small-caps\">gender</span>s as \"classes of nouns reflected in the behavior of associated words.\"  Gender is, therefore, a phenomenon that appears in patterns of agreement.  Some languages have no genders, others divide nouns into two genders (e.g. <span style=\"font-variant:small-caps\">masculine</span> and <span style=\"font-variant:small-caps\">feminine</span>, <span style=\"font-variant:small-caps\">animate</span> and <span style=\"font-variant:small-caps\">inanimate</span>, or <span style=\"font-variant:small-caps\">rational</span> and <span style=\"font-variant:small-caps\">non-rational</span>), while still others have more.  Some languages have genders that are subtypes of other genders; for example, a language may distinguish between inanimate nouns and animate nouns, and within the animate nouns, between masculine and feminine.  Any number of genders and the relationship between them can be described by creating a type hierarchy, below.  The hierarchy you define will determine what values of the <tt>gender</tt> feature are available later in the questionnaire.</p>"
+
+Label "<p>Please add all the values of gender that your language's grammar distinguishes.  For each you will provide at least one supertype, either one of the other types you have defined or the root <tt>gender</tt> feature, which will result in the construction of a hierarchy.  If your language does not have gender as a grammatical category, leave this section blank.</p>"
 
 BeginIter gender{i} "a Gender"
 
@@ -92,9 +101,9 @@ EndIter gender
 
 Section other-features "Other Features"
 
-Label "<p>If your language has other features beyond those that can be defined elsewhere in this questionnaire, they can be defined here.  Furthermore, if your language has synthetic features (e.g. <tt>pernum</tt> instead of <tt>person</tt> and <tt>number</tt>, <tt>gendnum</tt> instead of <tt>gender</tt> and <tt>number</tt>), you may define such features here as well.</p>"
+Label "<p>If your language has other features beyond those that can be defined elsewhere in this questionnaire, you can define those features here.  For example, if your language has synthetic features (e.g. <tt>pernum</tt> instead of <tt>person</tt> and <tt>number</tt>, <tt>gendnum</tt> instead of <tt>gender</tt> and <tt>number</tt>), they can be defined below.</p>"
 
-Label "<p>For each feature, you will define a type hierarchy, which consists of a root type you will name (e.g. <tt>pernum</tt>), and then a series of other values of the feature, each of which is the subtype of at least one other value (or the root).</p>"
+Label "<p>For each feature, you will define a type hierarchy, which consists of a root type you will name (e.g. <tt>pernum</tt>), and then a series of other values of the feature, each of which is the subtype of at least one of the other values, including the root.</p>"
 
 BeginIter feature{i} "a Feature"
 
@@ -215,11 +224,12 @@ BeginIter case{i} "a Case"
 
 EndIter case
 
-Separator
 
-Label "<h3>Direct-inverse</h3>"
+Section direct-inverse "Direct-inverse"
 
-Label "<p>In some languages, the pattern of marking of verbal arguments (or verbs themselves) is sensitive to a <span style=\"font-variant:small-caps\">scale</span> that ranks argument NPs according to how natural they are in the role of agent; for example, a language might rank animate NPs as more natural agents than inanimate NPs.  In such languages, transitive sentences in which the agent outranks the patient are marked differently from those in which the patient outranks the agent.  Such sentences are said to differ in <span style=\"font-variant:small-caps\">direction</span>.  Sentences where the agent outranks the patient are called <span style=\"font-variant:small-caps\">direct</span>, while sentences where the patient outranks the agent are called <span style=\"font-variant:small-caps\">inverse</span>.  The difference between direct and inverse sentences may be marked by a different verb form, by different cases on the argument NPs, or both.</p><p>If your languages shows the direct-inverse pattern, please describe the features that define the scale below.  The scale entries should be entered in order from the highest (most agent-like) to the lowest (most patient-like).</p>"
+Label "<p>In some languages, the pattern of marking of verbal arguments (or verbs themselves) is sensitive to a <span style=\"font-variant:small-caps\">scale</span> that ranks argument noun phrases according to how natural they are in the role of agent; for example, a language might rank animate NPs as more natural agents than inanimate NPs.  In such languages, transitive sentences in which the agent outranks the patient are marked differently from those in which the patient outranks the agent.  Such sentences are said to differ in <span style=\"font-variant:small-caps\">direction</span>.  Sentences where the agent outranks the patient are called <span style=\"font-variant:small-caps\">direct</span>, while sentences where the patient outranks the agent are called <span style=\"font-variant:small-caps\">inverse</span>.  The difference between direct and inverse sentences may be marked by a different verb form, by different cases on the argument NPs, or both.  Creating a direct-inverse scale here will make available, on the Lexicon page, argument structures for verbs that are sensitive to the scale, and also the <tt>direction</tt> feature for use in verbal inflection.</p>"
+
+Label "<p>If your language shows the direct-inverse pattern, please describe the features that define the scale below.  The scale entries should be entered in order from the highest (most agent-like) to the lowest (most patient-like).</p>"
 
 BeginIter scale{i} "a Scale Entry"
 
@@ -237,7 +247,7 @@ BeginIter scale{i} "a Scale Entry"
 
 EndIter scale
 
-Select scale-equal "Direction when equal" "When the agent and patient have the same scale value, the main verb is " "<br>(The other form may be something like a reflexive.  If you select \"some other form\", the resulting grammar will not parse sentence where the agent and patient are equal.  You will need to add the other form manually."
+Select scale-equal "Direction when equal" "When the agent and patient have the same scale value, the main verb is " "<br>(The other form may be something like a reflexive.  If you select \"some other form\", the resulting grammar will not parse sentences where the agent and patient are equally ranked.  You will need to edit the starter grammar manually to add the other form."
 . direct "Direct" "direct"
 . other "Some other form" "some other form"
 
@@ -300,7 +310,9 @@ Section coordination "Coordination"
 
 Label "<p>Languages can have have multiple ways of marking coordination that can differ among the various parts of speech. The Matrix supports both lexical and morphological marking of coordination in several patterns. These patterns include:</p>"
 
-Label "<p>Monosyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B and C&quot; (one coordinand marked; also permits &quot;A and B and C&quot;)<br>Polysyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A and B and C&quot; (for N coordinands, N-1 marked)<br>N-Polysyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;and A and B and C&quot; (all coordinands marked)<br>Asyndeton<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B C&quot; (no marking; also called &quot;juxtaposition&quot;)</p>"
+Label "<blockquote><p><span style=\"font-variant:small-caps\">Monosyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B and C&quot; (one coordinand marked; also permits &quot;A and B and C&quot;)<br><span style=\"font-variant:small-caps\">Polysyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A and B and C&quot; (for N coordinands, N-1 marked)<br><span style=\"font-variant:small-caps\">N-Polysyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;and A and B and C&quot; (all coordinands marked)<br><span style=\"font-variant:small-caps\">Asyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B C&quot; (no marking; also called &quot;juxtaposition&quot;)</blockquote></p>"
+
+Label "<p>You may define up to two coordination strategies below.  You may also leave this section blank, in which case the starter grammar produced will not have coordination.</p>"
 
 Check cs1 "Coordination strategy 1" "" "Coordination Strategy 1:<br>&nbsp;&nbsp;&nbsp;&nbsp;in which"
 
@@ -351,7 +363,7 @@ Radio cs2_order "CS2 order" "that comes " ""
 
 Section matrix-yes-no "Matrix Yes/No Questions"
 
-Label "<p>Please indicate which strategy your language uses to form matrix yes-no questions. Notes: You may leave this section blank, in which case your grammar will not include any information about questions.</p>"
+Label "<p>Please indicate which strategy your language uses to form matrix yes-no questions.  You may leave this section blank, in which case your grammar will not include a question-forming strategy.</p>"
 
 Check q-part "Yes/No question particle" "" "A separate question particle: "
 
@@ -384,9 +396,9 @@ Radio q-inv-verb "Inverted verb in questions" "" ""
 
 Section lexicon "Lexicon"
 
-Label "<p>On this page you will specify basic lexical types and lexical items for your language.  For each lexical item you must provide the spelling of the stem and a predicate (e.g. _cat_n_rel, _sleep_v_rel).</p>"
+Label "<p>On this page you will specify lexical types and lexical items within those type.  For most lexical item you must provide both the spelling of the stem and a predicate (e.g. _cat_n_rel, _sleep_v_rel).</p>"
 
-Label "<p>In addition to lexical types, you can define inflectional morphology for nouns, verbs, and determiners.  To do so, first define one or more inflectional <span style=\"font-variant:small-caps\">slots</span>, which determine the order morphemes appear, then define one or more <span style=\"font-variant:small-caps\">morphemes</span> that can appear in each slot, along with the <span style=\"font-variant:small-caps\">features</span> specified by each morpheme.  To determine the order of morphemes, you must define one or more <span style=\"font-variant:small-caps\">inputs</span> for each slot.  For morphemes that attach directly to stems, the input will be a lexical type; for morphemes that attach to already-inflected stems, the input will be another slot.</p>"
+Label "<p>In addition to lexical types, you can define inflectional morphology for nouns, verbs, and determiners.  To do so, first define one or more inflectional <span style=\"font-variant:small-caps\">slots</span>, which determine the order in which morphemes appear, then define one or more <span style=\"font-variant:small-caps\">morphemes</span> that can appear in each slot, along with the <span style=\"font-variant:small-caps\">features</span> specified by each morpheme.  To determine the order of slots, you must define one or more <span style=\"font-variant:small-caps\">inputs</span> for each.  For morphemes that attach directly to stems, the input will be a lexical type; for morphemes that attach to already-inflected stems, the input will be another slot.</p>"
 
 Separator
 
@@ -658,8 +670,6 @@ Separator
 
 Label "<h3>Determiners</h3>"
 
-Label "<p>If your nouns require determiners, define at least one here. You may use the second to handle a different determiner form (e.g., for languages where number, gender, or case are marked on determiners). Note that the grammar start won't actually include any constraints implementing agreement.</p>"
-
 BeginIter det{i} "a Determiner"
 
   Label "<b>Determiner type {i}</b>:"
@@ -787,7 +797,7 @@ EndIter adp
 
 Section test-sentences "Some Test Sentences"
 
-Label "<p>By filling out the following two fields, you will give the LKB default strings to put into the parse dialog.  Please write two sentences using <b>only</b> the vocabulary defined above.  NB: This script can only handle lower ascii alphanumeric characters.</p>"
+Label "<p>In this section, you can provide example sentences that will as defaults in the LKB's parse dialog.  Please write sentences using <b>only</b> the vocabulary defined in the Lexicon section.</p>"
 
 Text sentence1 "Sentence 1" "<p>Sentence 1: " "</p>" 100
 

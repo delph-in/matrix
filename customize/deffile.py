@@ -1,4 +1,4 @@
-### $Id: deffile.py,v 1.13 2008-07-24 11:16:41 sfd Exp $
+### $Id: deffile.py,v 1.14 2008-07-24 23:00:50 sfd Exp $
 
 ######################################################################
 # This module is currently a bit of a hybrid.  Most of the code is
@@ -335,16 +335,10 @@ HTML_mainprebody = '''<body>
 <h1>Matrix customization and download page</h1>
 <h2>Version of %s</h2>
 
-<p>By filling out this form, you will produce an initial starter
-package for your grammar, consisting of the language-independent core,
-appropriate word order, negation, and polar question modules (if
-available), some initial lexical types, and a tiny lexicon.  Note that
-this small fragment will only treat matrix (main) clauses.
-
-<p>Please note that this customization form can only accept lower
-ascii alphanumerics (a-z, A-Z, 0-9, _).  You may wish to edit the file
-<tt>lexicon.tdl</tt> in the output to fix the orthography of your
-lexical items.
+<p>Filling out this form will produce a starter grammar for a natural
+language, consisting of a language-independent core and customized
+support for the phenomena you describe below.  Note that this grammar
+fragment will only treat matrix (main) clauses.
 
 <p>Be advised that this system is highly experimental.  We are
 interested in your feedback.  If you have questions or comments,
@@ -365,8 +359,8 @@ Please download it <a href="%s">here</a>.
 
 <h3>Instructions</h3>
 
-<p>To unpack the archive, if your browswer hasn't already done it for
-you, first try saving it on your desktop and double clicking it.  If
+<p>To unpack the archive, if your browser hasn't already done it for
+you, first try saving it on your desktop and double-clicking it.  If
 that doesn't work, and you're using Linux or Mac OS X, from a command
 prompt, type <tt>tar xzf matrix.tar.gz</tt> or <tt>unzip matrix.zip</tt>.
 
@@ -395,12 +389,12 @@ provided in the matrix configuration form.
 <p>To run this grammar, start the LKB, and the load it by selected
 "Load > Complete grammar..." from the LKB menu.  You can then parse a
 sentence by selecting "Parse > Parse input..." from the LKB menu.  The
-dialogue box that pops up should include the sentences you filled into
+dialog box that pops up should include the sentences you filled into
 the form.  When a sentence parses successfully, you can try generating
-from the associated semantics by selecting "Generate" or "Generate
-from edge" from the pop-up menu.  For more on using the LKB, see the
-<a href="http://www.delph-in.net/lkb">LKB page</a> and/or Copestake
-2002 <a
+from the resulting semantic representation by selecting "Generate" or
+"Generate from edge" from the pop-up menu.  For more on using the LKB,
+see the <a href="http://www.delph-in.net/lkb">LKB page</a> and/or
+Copestake 2002 <a
 href="http://cslipublications.stanford.edu/lkb.html"><i>Implementing
 Typed Feature Structure Grammars</i></a>.
 
