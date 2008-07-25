@@ -1,4 +1,4 @@
-### $Id: matrixdef,v 1.30 2008-07-24 23:00:50 sfd Exp $
+### $Id: matrixdef,v 1.31 2008-07-25 00:40:38 sfd Exp $
 
 Section language "Language"
 
@@ -110,8 +110,8 @@ BeginIter feature{i} "a Feature"
   Text name "Feature {i} name" "Feature name: " "<br>" 20
 
   Radio type "Feature {i} type" "Is this feature:<br>" ""
-  . head "Head" "" " a syntactic feature of heads, without semantic reflex (e.g. case)?<br>"
-  . index "Index" "" " a semantic feature of indices (e.g. person, number)?<br>"
+  . head "Head" "" " a syntactic feature (will go under HEAD)?<br>"
+  . index "Index" "" " a semantic feature (will go under INDEX)?<br>"
 
   Label "Values in the feature hierarchy:"
 
