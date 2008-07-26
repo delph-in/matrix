@@ -1,4 +1,4 @@
-### $Id: matrixdef,v 1.31 2008-07-25 00:40:38 sfd Exp $
+### $Id: matrixdef,v 1.32 2008-07-26 05:28:07 sfd Exp $
 
 Section language "Language"
 
@@ -396,7 +396,7 @@ Radio q-inv-verb "Inverted verb in questions" "" ""
 
 Section lexicon "Lexicon"
 
-Label "<p>On this page you will specify lexical types and lexical items within those type.  For most lexical item you must provide both the spelling of the stem and a predicate (e.g. _cat_n_rel, _sleep_v_rel).</p>"
+Label "<p>On this page you will define lexical types and lexical items within those types.  For most lexical items you must provide both the spelling of the stem and a predicate (e.g. _cat_n_rel, _sleep_v_rel).</p>"
 
 Label "<p>In addition to lexical types, you can define inflectional morphology for nouns, verbs, and determiners.  To do so, first define one or more inflectional <span style=\"font-variant:small-caps\">slots</span>, which determine the order in which morphemes appear, then define one or more <span style=\"font-variant:small-caps\">morphemes</span> that can appear in each slot, along with the <span style=\"font-variant:small-caps\">features</span> specified by each morpheme.  To determine the order of slots, you must define one or more <span style=\"font-variant:small-caps\">inputs</span> for each.  For morphemes that attach directly to stems, the input will be a lexical type; for morphemes that attach to already-inflected stems, the input will be another slot.</p>"
 
