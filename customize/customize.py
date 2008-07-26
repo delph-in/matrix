@@ -1,4 +1,4 @@
-### $Id: customize.py,v 1.67 2008-07-24 11:16:41 sfd Exp $
+### $Id: customize.py,v 1.68 2008-07-26 08:08:11 sfd Exp $
 
 ######################################################################
 # imports
@@ -623,14 +623,10 @@ def customize_direct_inverse():
 
   # Now pass through the scale, creating the direct-inverse hierarchy
   # pairwise
-  equal = ch.get_full('scale-equal')
   supertype = 'dir-inv-scale'
   mylang.add_literal(';;; Scale for direct-inverse')
   mylang.add(supertype + ' := canonical-synsem.')
-  for i in range(1, scale_max + 1):
-    if equal != 'direct' and i == scale_max:
-      break
-
+  for i in range(1, scale_max):
     values = {}  # for each feature, a set of values
 
     ch.iter_begin('scale' + str(i))
@@ -671,8 +667,7 @@ def customize_direct_inverse():
 
     # continuing 'scale'
     values = {}
-    if equal != 'direct':
-      ch.iter_next()
+    ch.iter_next()
     while ch.iter_valid():
       ch.iter_begin('feat')
       while ch.iter_valid():
@@ -3754,8 +3749,6 @@ def customize_inflection():
 
         super_type = rule_type
 
-        equal = ch.get_full('scale-equal')
-
         for direc in ['dir', 'inv']:
           direc_type = n + '-' + direc + '-lex-rule'
           mylang.add(direc_type + ' := ' + super_type + ' &' + \
@@ -3763,10 +3756,7 @@ def customize_inflection():
 
           size = direct_inverse_scale_size()
           i = 1
-          delta = 1
-
-          if equal == 'direct' and direc == 'inv':
-            delta = 2
+          equal = ch.get_full('scale-equal')
 
           while i <= size:
             if i == size and not (equal == 'direct' and direc == 'dir'):
@@ -3774,16 +3764,18 @@ def customize_inflection():
             
             rule_type = direc_type + '-' + str(i)
 
-            if i + delta > size:
-              if direc == 'dir':
-                hi_type = 'dir-inv-' + str(i)
-                lo_type = 'dir-inv-' + str(i)
+            if equal == 'direct' and direc == 'dir':
+              if i == 1:
+                hi_type = 'dir-inv-1'
+                lo_type = 'dir-inv-scale'
+              elif i == size:
+                hi_type = lo_type = 'dir-inv-non-' + str(i-1)
               else:
                 hi_type = 'dir-inv-' + str(i)
-                lo_type = 'dir-inv-' + str(i + delta - 1)
+                lo_type = 'dir-inv-non-' + str(i-1)
             else:
               hi_type = 'dir-inv-' + str(i)
-              lo_type = 'dir-inv-non-' + str(i + delta - 1)
+              lo_type = 'dir-inv-non-' + str(i)
 
             if direc == 'dir':
               subj_type = hi_type
