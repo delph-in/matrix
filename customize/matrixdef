@@ -1,4 +1,4 @@
-### $Id: matrixdef,v 1.32 2008-07-26 05:28:07 sfd Exp $
+### $Id: matrixdef,v 1.33 2008-07-27 15:55:46 sfd Exp $
 
 Section language "Language"
 
@@ -247,7 +247,7 @@ BeginIter scale{i} "a Scale Entry"
 
 EndIter scale
 
-Select scale-equal "Direction when equal" "When the agent and patient have the same scale value, the main verb is " "<br>(The other form may be something like a reflexive.  If you select \"some other form\", the resulting grammar will not parse sentences where the agent and patient are equally ranked.  You will need to edit the starter grammar manually to add the other form."
+Select scale-equal "Direction when equal" "When the agent and patient have the same scale value, the main verb is " "<br>(The other form may be something like a reflexive.  If you select \"some other form\", the resulting grammar will not parse sentences where the agent and patient are equally ranked.  You will need to edit the starter grammar manually to add the other form.)"
 . direct "Direct" "direct"
 . other "Some other form" "some other form"
 
