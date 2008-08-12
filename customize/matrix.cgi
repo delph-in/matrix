@@ -1,6 +1,6 @@
 #!/usr/local/bin/python2.5
 
-### $Id: matrix.cgi,v 1.25 2008-06-27 02:23:03 sfd Exp $
+### $Id: matrix.cgi,v 1.26 2008-08-12 22:48:56 sfd Exp $
 
 ######################################################################
 # imports
@@ -103,7 +103,7 @@ if form_data.has_key('customize'):
       if i != -1:
         num = f[i + 1:]
         if num.isdigit():
-          serial = int(num) + 1
+          serial = max(serial, int(num) + 1)
     shutil.copy(session_path + '/choices',
                 'saved-choices/choices.' + str(serial))
 

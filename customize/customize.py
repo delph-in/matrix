@@ -1,4 +1,4 @@
-### $Id: customize.py,v 1.68 2008-07-26 08:08:11 sfd Exp $
+### $Id: customize.py,v 1.69 2008-08-12 22:48:56 sfd Exp $
 
 ######################################################################
 # imports
@@ -856,8 +856,6 @@ def feature_hierarchies():
       ch.iter_begin('supertype')
       while ch.iter_valid():
         stype = ch.get('name')
-        if stype == 'root':
-          stype = feat
 
         hier.add(val, stype)
 

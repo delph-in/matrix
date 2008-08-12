@@ -1,4 +1,4 @@
-### $Id: choices.py,v 1.21 2008-07-24 11:16:41 sfd Exp $
+### $Id: choices.py,v 1.22 2008-08-12 22:48:56 sfd Exp $
 
 ######################################################################
 # imports
@@ -58,6 +58,8 @@ class ChoicesFile:
         self.convert_5_to_6()
       if version < 7:
         self.convert_6_to_7()
+      if version < 8:
+        self.convert_7_to_8()
       # As we get more versions, add more version-conversion methods, and:
       # if version < N:
       #   self.convert_N-1_to_N
@@ -253,7 +255,7 @@ class ChoicesFile:
       a_name = self.get_full(cm + '-a-case-name')
       o_name = self.get_full(cm + '-o-case-name')
       canon.append('a+o')
-      user.append(a_name + '+' + o_name)
+      user.append('fluid')
       canon.append('a')
       user.append(a_name)
       canon.append('o')
@@ -627,7 +629,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 7
+    return 8
 
 
   def convert_value(self, key, old, new):
@@ -1051,3 +1053,25 @@ class ChoicesFile:
 
     if not self.get('person') and len(self.keys()):
       self.set('person', 'none')
+
+  def convert_7_to_8(self):
+    # Other features no longer use the magic word 'root', they instead
+    # use the name of the feature.
+    self.iter_begin('feature')
+    while self.iter_valid():
+      fname = self.get('name')
+      
+      self.iter_begin('value')
+      while self.iter_valid():
+        self.iter_begin('supertype')
+        while self.iter_valid():
+          self.convert_value('name', 'root', fname)
+
+          self.iter_next()
+        self.iter_end()
+
+        self.iter_next()
+      self.iter_end()
+
+      self.iter_next()
+    self.iter_end()

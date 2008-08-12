@@ -1,4 +1,4 @@
-### $Id: matrixdef,v 1.33 2008-07-27 15:55:46 sfd Exp $
+### $Id: matrixdef,v 1.34 2008-08-12 22:48:56 sfd Exp $
 
 Section language "Language"
 
@@ -122,8 +122,7 @@ BeginIter feature{i} "a Feature"
     BeginIter supertype{k} "a Supertype" 1
 
       Select name "Feature {i} Value {j} supertype {k} name" "Supertype: " ""
-      fillregex feature{i}_value[0-9]+_name 1
-      . root "Root type" "root type"
+      fillregex (feature{i}_name|feature{i}_value[0-9]+_name) 1
 
     EndIter supertype
 
