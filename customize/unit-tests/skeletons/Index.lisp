@@ -20,7 +20,10 @@
 ;;;
 
 (
+((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "aux-s-f-noinfl") (:content . "aux-s-f-noinfl: two aux, finite sentential compelement, no inflection, level1 test"))
+((:path . "testingcompforms") (:content . "testingcompforms: small ts - known problems"))
 ((:path . "dir-inv-fore") (:content . "dir-inv-fore: Direct-inverse, pseudo-Fore"))
 ((:path . "dir-inv-algonquian") (:content . "dir-inv-algonquian: Direct-inverse, pseudo-Algonquian"))
 ((:path . "case-tripartite") (:content . "case-tripartite: Case, tripartite"))
@@ -33,5 +36,4 @@
 ((:path . "case-focus") (:content . "case-focus: Case, focus"))
 ((:path . "case-fluid-s") (:content . "case-fluid-s: Case, fluid-S"))
 ((:path . "case-erg-abs") (:content . "case-erg-abs: Case, ergative-absolutive"))
-((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  )

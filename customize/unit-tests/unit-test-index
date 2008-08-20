@@ -1,4 +1,5 @@
-tiniest=A very basic grammar just to get the unit tests started.  SOV word order, no frills.
+tiniest=very basic grammar to get the unit tests started - SOV word order, no frills
+testingcompforms=small ts - known problems
 case-erg-abs=Case, ergative-absolutive
 case-fluid-s=Case, fluid-S
 case-focus=Case, focus
@@ -10,4 +11,4 @@ case-split-s=Case, split-S
 case-split-v=Case, split-V
 case-tripartite=Case, tripartite
 dir-inv-algonquian=Direct-inverse, pseudo-Algonquian
-dir-inv-fore=Direct-inverse, pseudo-Fore
+dir-inv-fore=Direct-inverse, pseudo-Foreaux-s-f-noinfl=two aux, finite sentential compelement, no inflection, level1 test
