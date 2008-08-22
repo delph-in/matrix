@@ -101,7 +101,7 @@
 	(close stream))
       
       (let* ((cmd1 (format nil "latex ~a.tex" lg-name))
-	     (cmd2 (format nil "xdvi ~a.dvi" lg-name)))
+	     (cmd2 (format nil "xdvi ~a.dvi &" lg-name)))
 	(excl:chdir (format nil "~aunit-tests/logs/" *customization-root*))
 	(excl:run-shell-command cmd1 :wait t)
 	(excl:run-shell-command cmd2)))
