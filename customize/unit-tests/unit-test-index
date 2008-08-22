@@ -11,4 +11,9 @@ case-split-s=Case, split-S
 case-split-v=Case, split-V
 case-tripartite=Case, tripartite
 dir-inv-algonquian=Direct-inverse, pseudo-Algonquian
-dir-inv-fore=Direct-inverse, pseudo-Foreaux-s-f-noinfl=two aux, finite sentential compelement, no inflection, level1 test
+dir-inv-fore=Direct-inverse, pseudo-Fore
+aux-s-f-noinfl=two aux, finite sentential compelement, no inflection, level1 test
+aux-vp-f-noinfl=two aux, finite vp comp, no inflection, level 1 test
+aux-v-f-noinfl=two aux, finite v vomp, no inflection, level 1 test
+aux-f-vpcomp-nfconst-formfeat=finite auxes with nf vp compleof the nf comp is constrained - level 2 test (inflection, no t&a features)
+nopaux-noinfl-vpcomp-f-formfeat=single uninflected aux with finite vp complement, level 2 test (inflection but no t&a features)

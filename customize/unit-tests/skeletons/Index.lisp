@@ -22,6 +22,10 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "nopaux-noinfl-vpcomp-f-formfeat") (:content . "nopaux-noinfl-vpcomp-f-formfeat: single uninflected aux with finite vp complement, level 2 test (inflection but no t&a features)"))
+((:path . "aux-f-vpcomp-nfconst-formfeat") (:content . "aux-f-vpcomp-nfconst-formfeat: finite auxes with nf vp compleof the nf comp is constrained - level 2 test (inflection, no t&a features)"))
+((:path . "aux-v-f-noinfl") (:content . "aux-v-f-noinfl: two aux, finite v vomp, no inflection, level 1 test"))
+((:path . "aux-vp-f-noinfl") (:content . "aux-vp-f-noinfl: two aux, finite vp comp, no inflection, level 1 test"))
 ((:path . "aux-s-f-noinfl") (:content . "aux-s-f-noinfl: two aux, finite sentential compelement, no inflection, level1 test"))
 ((:path . "testingcompforms") (:content . "testingcompforms: small ts - known problems"))
 ((:path . "dir-inv-fore") (:content . "dir-inv-fore: Direct-inverse, pseudo-Fore"))
