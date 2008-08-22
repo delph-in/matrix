@@ -188,8 +188,7 @@ done
 
 # Notify user of results:
 
-echo "Now we check for errors in the [incr tsdb()] log.";
-echo "If you see any lines with 'error' here, the test run was invalid.";
+echo "Grepping for 'error' in tsdb log:"
 echo "";
 
 grep -i "error" ${TSDBLOG};
