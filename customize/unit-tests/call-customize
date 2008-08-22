@@ -13,13 +13,22 @@ then
 fi
 date > datestamp
 
-if [ -e $3 ]
-then
+if [ -e $3 ]; then
     echo "Move $3, it is in the way"
+    return=17
+elif [ ! -e $2 ]; then
+    echo "No choices file at path $2"
+    return=18
 else
     mkdir $3
     cp $2 $3/choices
     python customize.py $3
+    return=$?
 fi
 
 rm datestamp
+
+#Set return value so that calling script can tell
+#if there were errors here or not.
+
+exit $return

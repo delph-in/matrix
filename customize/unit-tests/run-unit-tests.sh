@@ -11,12 +11,12 @@ unset DISPLAY;
 unset LUI;
 
 if [ -z "${LOGONROOT}" ]; then
-  echo "one-unit-test: unable to determine \$LOGONROOT directory; exit.";
+  echo "run-unit-tests: unable to determine \$LOGONROOT directory; exit.";
   exit 1;
 fi
 
 if [ -z "${CUSTOMIZATIONROOT}" ]; then
-  echo "one-unit-test: unable to determine \$CUSTOMIZATIONROOT directory; exit.";
+  echo "run-unit-tests: unable to determine \$CUSTOMIZATIONROOT directory; exit.";
   exit 1;
 fi
 
@@ -29,17 +29,17 @@ fi
 . ${LOGONROOT}/etc/library.bash;
 
 date=$(date "+%Y-%m-%d");
-
+datetime=$(date);
 count=1;
 limit=1000;
 best=1000;
 
 # Main log file to look at tsdb output.
 
-LOG="${CUSTOMIZATIONROOT}/unit-tests/logs/tsdb.${date}.log";
+TSDBLOG="${CUSTOMIZATIONROOT}/unit-tests/logs/tsdb.${date}.log";
 
-if [ -e ${LOG} ]; then
-    rm ${LOG};
+if [ -e ${TSDBLOG} ]; then
+    rm ${TSDBLOG};
 fi
 
 # Paraeters which are the same for all unit test:
@@ -49,8 +49,20 @@ tsdbhome="${CUSTOMIZATIONROOT}/unit-tests/home/"
 logdir="${CUSTOMIZATIONROOT}/unit-tests/logs"
 
 # Get the list of unit tests from the unit-test-index:
+# or from command-line input.
 
-lgnames=`python unittestindex.py --lg-names`
+if [ -z $1 ]; then
+
+    lgnames=`python unittestindex.py --lg-names`
+
+    if [ $? != 0 ]; then
+	echo "run-unit-tests: Problem with unit-test-index, cannot run unit tests.";
+	exit;
+    fi
+else 
+    lgnames=$1;
+fi
+
 
 # Now do essentially the same things as one-unit-test for each one:
 
@@ -73,6 +85,20 @@ do
 
     ${CUSTOMIZATIONROOT}/unit-tests/call-customize ${CUSTOMIZATIONROOT} ${CUSTOMIZATIONROOT}/unit-tests/choices/$lgname ${CUSTOMIZATIONROOT}/unit-tests/grammars/$lgname
 
+    status=$?
+
+    if [ $status = 17 ]; then
+	echo "run-unit-tests: call-customize failed for $lgname... continuining with other unit tests.";
+	echo "call-customize failed because old grammar was in the way." >> $log;
+    elif [ $status = 18 ]; then
+	echo "run-unit-tests: call-customize failed for $lgname... continuining with other unit tests.";
+	echo "no choices file at path unit-tests/choices/$lgname." >> $log;
+    elif [ $status != 0 ]; then
+
+	    echo "run-unit-tests: customization failed for $lgname... continuing with other unit tests."; 
+	    echo "Customization failed; no grammar created." >> $log;
+
+    else
 
 # Set up a bunch of lisp commands then pipe them to logon/[incr tsdb()]
 
@@ -80,41 +106,51 @@ do
 # since nothing has yet invoked [incr tsdb()] or lisp.
 # But let's give it a try anyway...
 
-    {
-	options=":error :exit :wait 300";
+	{
+	    options=":error :exit :wait 300";
 
-	echo "(setf (system:getenv \"DISPLAY\") nil)";
+	    echo "(setf (system:getenv \"DISPLAY\") nil)";
 
-	echo "(setf tsdb::*process-suppress-duplicates* nil)";
-	echo "(setf tsdb::*process-raw-print-trace-p* t)";
+	    echo "(setf tsdb::*process-suppress-duplicates* nil)";
+	    echo "(setf tsdb::*process-raw-print-trace-p* t)";
 
-	echo "(setf tsdb::*tsdb-home* \"$tsdbhome\")";
-	echo "(tsdb:tsdb :skeletons \"$skeletons\")";
+	    echo "(setf tsdb::*tsdb-home* \"$tsdbhome\")";
+	    echo "(tsdb:tsdb :skeletons \"$skeletons\")";
 
-	echo "(lkb::read-script-file-aux \"$grammar\")";
+	    echo "(lkb::read-script-file-aux \"$grammar\")";
 
-	echo "(setf target \"$target\")";
-	echo "(tsdb:tsdb :create target :skeleton \"$lgname\")";
+	    echo "(setf target \"$target\")";
+	    echo "(tsdb:tsdb :create target :skeleton \"$lgname\")";
 	
-	echo "(tsdb:tsdb :process target)";
+	    echo "(tsdb:tsdb :process target)";
 
-	echo "(tsdb::compare-in-detail \"$target\" \"$gold\" :format :ascii :compare '(:readings :mrs) :append \"$log\")";
+	    echo "(tsdb::compare-in-detail \"$target\" \"$gold\" :format :ascii :compare '(:readings :mrs) :append \"$log\")";
 
-    } | ${LOGONROOT}/bin/logon ${source} ${cat} \
-	-I base -locale no_NO.UTF-8 -qq 2> ${LOG} > ${LOG}
+	} | ${LOGONROOT}/bin/logon ${source} ${cat} \
+	    -I base -locale no_NO.UTF-8 -qq 2> ${TSDBLOG} > ${TSDBLOG}
 
 # FIXME: There is probably a more appropriate set of options to
 # send to logon, but it seems to work fine as is for now. 
 
-    rm -r $grammardir
-    rm -r "$tsdbhome/$target"
+	rm -r $grammardir
 
-    if [ -s $log ]; then
-	echo " DIFFS! See log file";
-    else
-	echo " Success!";
+# When the grammar fails to load, [incr tsdb()] is not creating
+# the directory.  So use existence of $tsdbhome/$target to check
+# for grammar load problems.
+
+	if [ -e $tsdbhome/$target ]; then
+	    rm -r "$tsdbhome/$target";
+	else
+	    echo "Probable tdl error; grammar failed to load." >> $log;
+	fi
+	   
+	
+	if [ -s $log ]; then
+	    echo " DIFFS! See log file";
+	else
+	    echo " Success!";
+	fi
     fi
-
 done
 
 # Check through tsdb log file for any errors, and report
@@ -123,21 +159,31 @@ done
 # Create one log file with results from all tests, appending on 
 # comments.
 
+# 2008-08-22: By request not overwriting the log file
+# but appending instead, with time stamps.
+
 masterlog="$logdir/unit-tests.$date"
 
-if [ -e $masterlog ]; then
-    rm $masterlog;
-fi
+#if [ -e $masterlog ]; then
+#    rm $masterlog;
+#fi
+
+echo "============ $datetime ============" >> $masterlog;
 
 for lgname in $lgnames;
 do
     log="$logdir/$lgname.$date"
-    if [ -e $log ]; then
-	echo "$lgname" >> $masterlog;
+    echo -ne "$lgname" >> $masterlog;
+    if [ -s $log ]; then
+	echo -ne ": " >> $masterlog;
 	python unittestindex.py --comment $lgname | cat >> $masterlog;
+	echo "" >> $masterlog;
 	cat $log >> $masterlog;
-	rm $log
+	echo "" >> $masterlog;
+    else
+	echo "... Success!" >> $masterlog;
     fi
+    rm $log
 done
 
 # Notify user of results:
@@ -146,7 +192,7 @@ echo "Now we check for errors in the [incr tsdb()] log.";
 echo "If you see any lines with 'error' here, the test run was invalid.";
 echo "";
 
-grep -i "error" ${LOG};
+grep -i "error" ${TSDBLOG};
 
 echo "";
 echo "Results of the unit tests can be seen in";
