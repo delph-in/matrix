@@ -1,4 +1,4 @@
-### $Id: customize.py,v 1.69 2008-08-12 22:48:56 sfd Exp $
+### $Id: customize.py,v 1.70 2008-08-28 17:36:16 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -52,17 +52,19 @@ def get_name(label=None):
 # there is in fact a distinction between main and auxiliary verbs (i.e.,
 # they need to say [ AUX - ], but only if the feature AUX is defined).
 
-# ERB 2006-10-15 If we have auxiliaries, we need to add the features
-# [ AUX bool ] and [ FORM form ], and inf and fin of FORM.  Let's just
-# have this function do that adding.  It's still useful, since we use
-# it to find out whether to constrain AUX in various places.
-
 # ERB 2006-10-15 I want this function to return true if an auxiliary is
 # defined, even if it's not needed for negation or questions.
 
 def has_auxiliaries_p():
 
-  return ch.get('has-aux') == 'yes'
+  return ch.get_full('has-aux') == 'yes'
+
+# Returns the verb type for lexical/main verbs.
+def main_or_verb():
+  if has_auxiliaries_p():
+    return 'main-verb-lex'
+  else:
+    return 'verb-lex'
 
 
 # ERB 2006-09-21 This function assembles an inflectional rule out
@@ -890,6 +892,84 @@ def customize_other_features():
 
 
 ######################################################################
+# customize_tense()
+# Create tense type definitions per the user's choices 
+
+def customize_tense():
+  tdefn = ch.get('tense-definition')
+  if tdefn:
+    comment = ';;; Tense'
+    mylang.add_literal(comment)
+
+    if tdefn == 'choose':
+      ppflist = []
+      for ten in ('non-future', 'non-past', 'past', 'present', 'future' ):
+        
+        if ch.is_set(ten):
+          if ten not in ppflist:
+            mylang.add(ten + ' := tense .')
+          ch.iter_begin(ten + '-subtype')
+          while ch.iter_valid():
+            subtype = ch.get('name')
+            mylang.add(subtype + ' := ' + ten + ' .')
+            
+            ch.iter_next()
+          ch.iter_end()
+          
+          if ten == 'non-future':
+            for moreten in ('past', 'present'):
+              if ch.is_set(moreten):
+                mylang.add(moreten + ' := ' + ten + ' .')
+                ppflist.append(moreten)       
+
+          if ten == 'non-past':
+            for moreten in ('present', 'future'):
+              if ch.is_set(moreten):
+                mylang.add(moreten + ' := ' + ten + ' .')
+                ppflist.append(moreten)
+
+    elif tdefn == 'build':
+
+      ch.iter_begin('tense')
+      while ch.iter_valid():
+        name = ch.get('name')
+
+        ch.iter_begin('supertype')
+        while ch.iter_valid():
+          supername = ch.get('name')
+
+          mylang.add(name + ' := ' + supername + '.')
+          ch.iter_next()
+        ch.iter_end()
+
+        ch.iter_next()
+      ch.iter_end()
+
+
+######################################################################
+# customize_aspect()
+# Create aspect type definitions per the user's choices
+
+def customize_aspect():
+  comment = ';;; Aspect'
+  mylang.add_literal(comment)
+
+  ch.iter_begin('aspect')
+  while ch.iter_valid():
+    name = ch.get('name')
+
+    ch.iter_begin('supertype')
+    while ch.iter_valid():
+      supername = ch.get('name')
+      
+      mylang.add(name + ' := ' + supername + '.')
+      ch.iter_next()
+    ch.iter_end()
+      
+    ch.iter_next()
+  ch.iter_end()
+
+######################################################################
 # customize_word_order()
 #   Create the type definitions associated with the user's choices
 #   about basic word order, including information about adpositions
@@ -1463,6 +1543,9 @@ def customize_major_constituent_order(wo):
 # that all rules which attach subjects attend to clausal semantics.
 # Thus, the head-subj rules that are defined here inherit from
 # decl-head-subj-phrase (imp-head-subj-phrase is also available).
+
+  comment = ';;; Phrasal types'
+  mylang.add_literal(comment)
 
 # Head-comp order
 
@@ -3072,6 +3155,7 @@ def customize_verb_case():
   # Note: I specify ARG-ST.FIRST... below instead of ARG-ST < [], ...>
   # because TDLFile has trouble with merges and open-ended lists.
   # Which should get fixed...  - sfd
+
   for p in ch.patterns():
     rule_pattern = p[2]
 
@@ -3160,10 +3244,17 @@ def customize_verb_case():
 def customize_verbs():
   negmod = ch.get('neg-mod')
   negadv = ch.get('neg-adv')
-  auxcomp = ch.get('aux-comp')
 
   # Do we need to constrain HC-LIGHT on verbs, to distinguish V from VP?
-  hclight = ((negadv == 'ind-adv' and negmod == 'v') or auxcomp == 'v')
+  hclight = (negadv == 'ind-adv' and negmod == 'v')
+
+  ch.iter_begin('aux')
+  while ch.iter_valid():
+    auxcomp = ch.get('comp')
+    if auxcomp == 'v' and hclight != True:
+      hclight = True
+    ch.iter_next()
+  ch.iter_end()
 
   # Lexical types for verbs
   # I'm adding the constraint to associate XARG with the
@@ -3174,15 +3265,40 @@ def customize_verbs():
 
   mylang.add_literal(';;; Verbs')
 
+  mainorverbtype = main_or_verb() 
+# The variable mainorverbtype is a type name for lexical/main (non-aux) verbs.
+# Note that the use of 'main' instead of 'lexical' is strictly for 
+# coding clarity 
+# If there are auxiliaries, non-aux verbs are 'main-verb-lex', and 'verb-lex'
+# includes both aux and lexical/main verbs.
+# If there are no auxiliaries then 'verb-lex' covers all verbs
+  
   if has_auxiliaries_p():
     mylang.add('head :+ [ AUX bool, FORM form ].')
     mylang.add('form := avm.')
-    mylang.add('fin := form.')
-    mylang.add('nonfin := form.')
+    mylang.add('finite := form.')
+    mylang.add('nonfinite := form.') 
+    #mainorverbtype = 'main-verb-lex'
 
-  # verb lexical type
-  typedef = \
-    'verb-lex := basic-verb-lex & \
+    typedef = \
+      'verb-lex := lex-item & \
+                 [ SYNSEM.LOCAL.CAT.HEAD verb ].'
+    mylang.add(typedef)
+    typedef = \
+      'main-verb-lex := verb-lex & basic-verb-lex & \
+                      [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].'
+    mylang.add(typedef)
+    typedef = \
+      'aux-lex := verb-lex & \
+                [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
+    mylang.add(typedef)
+
+  else:
+    #mainorverbtype = 'verb-lex'
+
+    mylang.add('verb-lex := basic-verb-lex.')
+
+  typedef = mainorverbtype + ' :=  \
        [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >, \
                                   SPEC < >, \
                                   SUBJ < #subj > ], \
@@ -3192,10 +3308,6 @@ def customize_verbs():
                                       COMPS < > ], \
                             CONT.HOOK.INDEX #xarg ] ], ... > ].'
   mylang.add(typedef)
-
-  if has_auxiliaries_p():
-    typedef = 'verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].'
-    mylang.add(typedef)
 
   if hclight:
     comment = \
@@ -3208,18 +3320,18 @@ def customize_verbs():
       ';;; phrases, which take their value for LIGHT from the head\'s\n' + \
       ';;; HC-LIGHT feature.  To make this work for us here, constraint\n' + \
       ';;; HC-LIGHT on verbs to be -.'
-    mylang.add_literal(comment)
-    mylang.add('verb-lex :+ [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].')
+#    mylang.add_literal(comment)
+    mylang.add(mainorverbtype + ' := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].')
 
   # intransitive verb lexical type
   typedef = \
-    'intransitive-verb-lex := verb-lex & intransitive-lex-item & \
+    'intransitive-verb-lex := ' + mainorverbtype + ' & intransitive-lex-item & \
        [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].'
   mylang.add(typedef)
 
   # transitive verb lexical type
   typedef = \
-    'transitive-verb-lex := verb-lex & transitive-lex-item & \
+    'transitive-verb-lex := ' + mainorverbtype + ' & transitive-lex-item & \
        [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >, \
          ARG-ST < [ ], \
                   #comps & \
@@ -3284,33 +3396,34 @@ def customize_verbs():
 def customize_auxiliaries():
 
   if has_auxiliaries_p():
-    auxtypename = ''
     mylang.add_literal(';;; Auxiliaries')
     lexicon.add_literal(';;; Auxiliaries')
+    auxtypename = ''
 
     ch.iter_begin('aux')
     while ch.iter_valid():
+      name = ch.get('name')
       orth = ch.get('orth')
       sem = ch.get('sem')
+  
       if sem  == 'add-pred':
         pred = ch.get('pred')
-      comp = ch.get('comp')
+      comp = ch.get('comp') 
       compform= ch.get('compform')
-      if compform == 'nf':
+
+      if compform == 'nonfinite':
         compform = ch.get('nonfincompform')
-        mylang.add(compform + ' := nonfin.')
+        mylang.add(compform + ' := nonfinite.')
       subj = ch.get('subj')
 
     # Lexical type for auxiliaries.
 
       if comp == 'vp':
-        typedef = 'subj-raise-aux := trans-first-arg-raising-lex-item  & \
-                   [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < #subj >, \
-                                              COMPS < #comps >, \
-                                              SPR < >, \
-                                              SPEC < > ], \
-                                        HEAD verb & \
-                                             [ AUX + ]], \
+        typedef = 'subj-raise-aux := aux-lex & trans-first-arg-raising-lex-item  & \
+                   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
+                                            COMPS < #comps >, \
+                                            SPR < >, \
+                                            SPEC < > ], \
                      ARG-ST < #subj & \
                               [ LOCAL.CAT.VAL [ SPR < >, \
                                                 COMPS < > ]],\
@@ -3328,11 +3441,11 @@ def customize_auxiliaries():
         if sem == 'add-pred':
           auxtypename = 'subj-raise-aux-with-pred'
           typedef = \
-            auxtypename + ' := subj-raise-aux & \
+            auxtypename + ' := subj-raise-aux & norm-sem-lex-item & \
                                          trans-first-arg-raising-lex-item-1 & \
                 [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.FORM ' + compform + '] > ].'
           mylang.add(typedef)
-
+          
         else:
           comment = \
             '; To keep the semantically empty ones from spinning on\n' + \
@@ -3343,11 +3456,12 @@ def customize_auxiliaries():
           mylang.add_literal(comment)
 
           auxtypename = 'subj-raise-aux-no-pred'
+# FIX ?? - changed inheritance here to remove redundancy
           typedef = \
             auxtypename + ' := subj-raise-aux & \
-                               trans-first-arg-raising-lex-item-2 & \
-                [ ARG-ST < [ ], [ LOCAL.CAT.HEAD [ AUX -, \
-                                                   FORM ' + compform + ']] > ].'
+                               raise-sem-lex-item & \
+                      [ ARG-ST < [ ], [ LOCAL.CAT.HEAD [ AUX -, \
+                                                         FORM ' + compform + ']] > ].'
           mylang.add(typedef)
 
       elif comp == 'v':
@@ -3356,14 +3470,13 @@ def customize_auxiliaries():
           '; that the non-local features are amalgamated from subj, the\n' + \
           '; lexical verb complement, but not the other complements, if any.'
         mylang.add_literal(comment)
-
+        
         typedef = \
-          'arg-comp-aux := basic-two-arg & \
-             [ SYNSEM.LOCAL.CAT [ HEAD verb & [ AUX + ], \
-                                  VAL [ SUBJ < #subj >, \
-                                        COMPS < #comps . #vcomps >, \
-                                        SPR < >, \
-                                        SPEC < > ]], \
+          'arg-comp-aux := aux-lex & basic-two-arg & \
+             [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
+                                      COMPS < #comps . #vcomps >, \
+                                      SPR < >, \
+                                      SPEC < > ], \
                ARG-ST < #subj & \
                         [ LOCAL [ CAT [ VAL [ SPR < >, \
                                               COMPS < > ]], \
@@ -3383,7 +3496,7 @@ def customize_auxiliaries():
 
         if sem == 'add-pred':
           comment = \
-            '; Not inheriting from basic-verb-lex, so need to put in' + \
+            '; Not inheriting from basic-verb-lex, so need to put in\n' + \
             '; event-relation by hand here.'
           mylang.add_literal(comment)
 
@@ -3402,9 +3515,9 @@ def customize_auxiliaries():
 
         else:
           comment = \
-            '; Note that raise-sem-lex-item assumes the first complement is' + \
-            '; where the HOOK comes from.  It\'s not clear to me how you\'d' + \
-            '; tell that you had an argument composition auxiliary if it' + \
+            '; Note that raise-sem-lex-item assumes the first complement is\n' + \
+            '; where the HOOK comes from.  It\'s not clear to me how you\'d\n' + \
+            '; tell that you had an argument composition auxiliary if it\n' + \
             '; wasn\'t appearing adjacent to the verb.'
           mylang.add_literal(comment)
 
@@ -3417,12 +3530,11 @@ def customize_auxiliaries():
 
       elif comp == 's':
         typedef = \
-          's-comp-aux := basic-one-arg & \
-             [ SYNSEM.LOCAL.CAT [ HEAD verb & [ AUX + ], \
-                                  VAL [ SUBJ < >, \
-                                        COMPS < #comps >, \
-                                        SPR < >, \
-                                        SPEC < > ]], \
+          's-comp-aux := aux-lex & basic-one-arg & \
+             [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
+                                      COMPS < #comps >, \
+                                      SPR < >, \
+                                      SPEC < > ], \
                ARG-ST < #comps & \
                         [ LOCAL.CAT [ VAL [ SUBJ < >, \
                                             COMPS < > ], \
@@ -3459,9 +3571,11 @@ def customize_auxiliaries():
                [ ARG-ST < [ LOCAL.CAT.HEAD [ AUX -, \
                                              FORM ' + compform + ']] > ].'
           mylang.add(typedef)
-
+      
+      namedtype = name + '-aux-lex'
+      mylang.add(namedtype + ' := ' + auxtypename + '.')
       typedef = \
-        orth + ' := ' + auxtypename + ' & \
+        orth + ' := ' + namedtype + ' & \
                        [ STEM < "' + orth + '" > ].'
       lexicon.add(typedef)
 
@@ -3559,7 +3673,7 @@ def is_ltow(name, namelist = []):
   state = ch.iter_state()
   ch.iter_reset()
 
-  for slotprefix in ('noun', 'verb', 'det'):
+  for slotprefix in ('noun', 'verb', 'det', 'aux'):
     ch.iter_begin(slotprefix + '-slot')
     while ch.iter_valid():
       n = ch.iter_prefix()
@@ -3590,7 +3704,7 @@ def back_to_word(name):
   state = ch.iter_state()
   ch.iter_reset()
 
-  for slotprefix in ('noun', 'verb', 'det'):
+  for slotprefix in ('noun', 'verb', 'det', 'aux'):
     ch.iter_begin(slotprefix + '-slot')
     while ch.iter_valid():
       ch.iter_begin('forces')
@@ -3607,24 +3721,7 @@ def back_to_word(name):
   return False
 
 
-def add_root(root, root_dict, inp, iv, tv, n):
-  # If both iverb and tverb are possible daughters, we can have
-  # verb-lex inherit from the intermediate type.  For now we just
-  # track whether or not this is the case.
-  if root == 'iverb':
-    iv = True
-  elif root == 'tverb':
-    tv = True
-    # if we don't need to worry about this, then we just add the
-    # type to the lexical type.
-  else:
-    if root == 'noun':
-      n = True
-    mylang.add(root_dict[root]+':= '+inp+'.')
-  return iv, tv, n
-
-
-def find_basetype(slot, root_dict, iv=False, tv=False, n=False):
+def find_basetype(slot, root_dict, root_list=[]):
   state = ch.iter_state()
   ch.iter_reset()
 
@@ -3632,42 +3729,25 @@ def find_basetype(slot, root_dict, iv=False, tv=False, n=False):
   ch.iter_begin('input')
   while ch.iter_valid():
     inputtype = ch.get('type')
-    if inputtype in root_dict:
-      if inputtype == 'verb':
-        iv = True
-        tv = True
-      elif inputtype == 'iverb':
-        iv = True
-      elif inputtype == 'tverb':
-        tv = True
-      elif inputtype == 'noun':
-        n = True
+    if inputtype in root_dict and inputtype not in root_list:
+      root_list.append(inputtype)
     else:
-      iv, tv, n = find_basetype(inputtype, root_dict, iv, tv, n)
+      root_list = find_basetype(inputtype, root_dict, root_list)
     ch.iter_next()
   ch.iter_end()
   ch.iter_end()
 
   ch.iter_set_state(state)
-  return iv, tv, n
-
-
-def bt_match(basetype, root):
-  for bt in basetype:
-    if bt in root:
-      return True, bt
-
+  return root_list
 
 def intermediate_rule(slot, root_dict, inp=None, depth=0, opt=False):
   if not inp:
     inp = ch.get_full(slot + '_name') + '-rule-dtr'
     mylang.add(inp + ' := avm.')
-  if slot in root_dict:
-      return inp  # sfd: funny indentation and return value looks wrong...
-
+ 
   if depth and not ch.get_full(slot + '_opt'):
-    opt = True
-    return opt, inp
+    nonopt = True
+    return nonopt, inp
 
   ch.iter_begin('input')
   while ch.iter_valid():
@@ -3695,6 +3775,13 @@ def intermediate_rule(slot, root_dict, inp=None, depth=0, opt=False):
 
   return opt, inp
 
+def alltypes(type_list, root_list):
+  all = True
+  for t in type_list:
+    if t not in root_list:
+      all = False
+      break
+  return all
 
 def customize_inflection():
   # Build a rule hierarchy for inflectional affixes.
@@ -3706,18 +3793,29 @@ def customize_inflection():
   customize_direct_inverse()
 
   # root_dict is a dictionary mapping the choices file encodings
-  # to the actual rule names.
+  # to the actual rule names.   
   root_dict = {'noun':'noun-lex',
                'verb':'verb-lex',
                'iverb':'intransitive-verb-lex',
                'tverb':'transitive-verb-lex',
-               'det':'determiner-lex'}
+               'mverb':'main-verb-lex',
+               'det':'determiner-lex',
+	       'aux':'aux-lex'}
 
-  for lexprefix in ('noun', 'verb', 'det'):
+  # KAO 2008-7-18 Faking the hierarchy for now by assuming that
+  # all the verbs/auxiliaries will inherit from 
+  verb_types = ['iverb', 'tverb', 'aux']
+  main_verb_types = ['iverb', 'tverb',]
+
+# root_dict = {}
+  for lexprefix in ('noun', 'verb', 'det', 'aux'):
     ch.iter_begin(lexprefix)
     while ch.iter_valid():
       p = ch.iter_prefix()[:-1]
       n = get_name(p)
+      if p in root_dict:
+        ch.iter_next()
+        continue
       l = lexprefix
       if l == 'det':
         l = 'determiner'
@@ -3798,6 +3896,7 @@ def customize_inflection():
       ch.iter_next()
     ch.iter_end()
 
+
   # reqs1, reqs2, reqd, and tracker are all used to keep track
   # of non-consecutive dependencies between paradigms.
   reqs1 = {}
@@ -3806,7 +3905,7 @@ def customize_inflection():
   tracker = False
 
   # Big main loop to iterate over all the slots
-  for slotprefix in ('noun', 'verb', 'det'):
+  for slotprefix in ('noun', 'verb', 'det','aux'):
     ch.iter_begin(slotprefix + '-slot')
     while ch.iter_valid():
       order = ch.get('order')
@@ -3817,19 +3916,25 @@ def customize_inflection():
         aff = 'prefix'
       else:
         aff = 'suffix'
-
       basetype = []  # list of roots this affix can attach to
 
       # populate the basetype list with the appropriate values
-      iv, tv, n = find_basetype(ch.iter_prefix().rstrip('_'), root_dict)
-      if iv and tv:
-        basetype.append('verb-lex')
-      elif iv:
-        basetype.append('intransitive-verb-lex')
-      elif tv:
-        basetype.append('transitive-verb-lex')
-      if n:
-        basetype.append('noun-lex')
+      root_list = find_basetype(ch.iter_prefix().rstrip('_'), root_dict, [])
+      if has_auxiliaries_p():
+        if alltypes(verb_types, root_list):
+          root_list.append('verb')
+        if alltypes(main_verb_types, root_list):
+          root_list.append('mverb')
+      else:
+        if alltypes(main_verb_types, root_list):
+          root_list.append('verb')
+
+      for r in root_list:
+        if 'verb' in root_list and r in verb_types:
+          continue
+        elif 'mverb' in root_list and r in main_verb_types:
+          continue
+        basetype.append(root_dict[r])
 
       # find the number of input values so we know if it has 1 or more
       inputs = 0
@@ -3839,6 +3944,7 @@ def customize_inflection():
         i_type = ch.get('type')
         ch.iter_next()
       ch.iter_end()
+
 
       # Single Input
       if inputs == 1:
@@ -3884,7 +3990,7 @@ def customize_inflection():
         wtol = False
       ch.iter_end()
 
-      ltow = is_ltow(ch.iter_prefix().rstrip('_')) # lexeme-to-word rule?
+      ltow = (not opt and is_ltow(ch.iter_prefix().rstrip('_'), [])) # lexeme-to-word rule?
       wtoltow = back_to_word(ch.iter_prefix().rstrip('_')) # satisfy a previous word-to-lexeme rule?
       const = False
       subrules = 0
@@ -3906,7 +4012,7 @@ def customize_inflection():
       # information in the supertype as possible.
 
       # Specify information for supertype
-      if (not opt and ltow) or wtoltow:
+      if ltow or wtoltow:
         if const:
           if subrules > 0:
             mylang.add(name+'-lex-rule := lexeme-to-word-rule & \
@@ -3940,12 +4046,10 @@ def customize_inflection():
                                           add-only-no-ccont-rule & \
             [DTR ' + inp + '].')
           else:
-            mylang.add(name+'-lex-rule := const-ltol-rule & \
-                                          add-only-no-ccont-rule & \
+            mylang.add(name+'-lex-rule := const-add-only-no-ccont-ltol-rule & \
             [DTR ' + inp + '].')
         else:
-          mylang.add(name+'-lex-rule := infl-ltol-rule & \
-                                        add-only-no-ccont-rule & \
+          mylang.add(name+'-lex-rule := infl-add-only-no-ccont-ltol-rule & \
           [DTR ' + inp + '].')
 
       # Specify for subtypes, if any
@@ -4055,7 +4159,7 @@ def req(basetype, reqs, reqd, tracker, reqtype):
 
 def add_single_tracks(reqs, reqd, reqtype):
   # Begin iterating over slots
-  for slotprefix in ('noun', 'verb', 'det'):
+  for slotprefix in ('noun', 'verb', 'det', 'aux'):
     ch.iter_begin(slotprefix + '-slot')
     while ch.iter_valid():
       slot = ch.iter_prefix().rstrip('_')
@@ -4067,7 +4171,7 @@ def add_single_tracks(reqs, reqd, reqtype):
       # Start a second slot loop
       state = ch.iter_state()
       ch.iter_reset()
-      for slotprefix2 in ('noun', 'verb', 'det'):
+      for slotprefix2 in ('noun', 'verb', 'det', 'aux'):
         ch.iter_begin(slotprefix2 + '-slot')
         while ch.iter_valid():
           s2 = ch.iter_prefix().rstrip('_')
@@ -4102,7 +4206,7 @@ def copy_all_tracks(reqd):
   # If a grammar makes use of the TRACK feature, inflectional rules
   # that don't have anything to say about the contents of TRACK need
   # to copy the whole TRACK feature up unchanged.
-  for slotprefix in ('noun', 'verb', 'det'):
+  for slotprefix in ('noun', 'verb', 'det', 'aux'):
     ch.iter_begin(slotprefix + '-slot')
     while ch.iter_valid():
       slot = ch.iter_prefix().rstrip('_')
@@ -4173,7 +4277,7 @@ def customize_roots():
   roots.add(typedef, comment)
 
   if has_auxiliaries_p():
-    roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD.FORM fin ].')
+    roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
 
   # ERB 2006-10-05 I predict a bug here:  If we a language with auxiliaries
   # and question particles, we're going to need to make sure that FORM is
@@ -4297,6 +4401,8 @@ def customize_matrix(path, arch_type):
   customize_case()
   customize_person_and_number()
   customize_gender()
+  customize_tense()
+  customize_aspect()
   customize_other_features()
   customize_word_order()
   customize_sentential_negation()

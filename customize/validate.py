@@ -1,4 +1,4 @@
-### $Id: validate.py,v 1.40 2008-07-24 11:16:41 sfd Exp $
+### $Id: validate.py,v 1.41 2008-08-28 17:36:16 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -194,11 +194,11 @@ def validate_word_order():
   if (ch.get('aux-comp-order') and (not ch.get('has-aux'))):
     add_err('has-aux','You specified an order for auxiliaries and their complements, but not whether your language has auxiliaries at all.')
 
-  if (ch.get('aux1_orth') and (ch.get('has-aux') == 'no')):
-    add_err('has-aux','You specified a lexical entry for an auxiliary, but said your language has none.')
+#  if (ch.get('aux1_orth') and (ch.get('has-aux') == 'no')):
+#    add_err('has-aux','You specified a lexical entry for an auxiliary, but said your language has none.')
 
-  if ((not ch.get('aux1_orth')) and (ch.get('has-aux') == 'yes')):
-    add_err('has-aux', 'You must add at least one auxiliary on the lexicon page.')
+#  if ((not ch.get('aux1_orth')) and (ch.get('has-aux') == 'yes')):
+#    add_err('has-aux', 'You must add at least one auxiliary on the lexicon page.')
 ######################################################################
 # validate_sentential_negation()
 #   Validate the user's choices about sentential negation.
@@ -350,6 +350,7 @@ def validate_yesno_questions():
 #   Validate the user's choices about the test lexicon.
 
 def validate_lexicon():
+
   auxverb = ch.get('aux-verb')
   auxsem = ch.get('aux-sem')
   auxcomp = ch.get('aux-comp')
@@ -395,7 +396,6 @@ def validate_lexicon():
 
   # Now, do the iterated lexical entries
   
-  # Nouns
   ch.iter_begin('noun')
   while ch.iter_valid():
     det = ch.get('det')
@@ -474,6 +474,20 @@ def validate_lexicon():
 
 
   # Auxiliaries
+  aux1_name = ch.get('aux1_name')
+  if ch.get('has-aux') == 'no':
+    if aux1_name:
+      err = 'You have indicated on the word order page that this language has no auxiliaries.'
+      add_err('aux1_name', err)
+  # This is not a good solution 
+  #   as the error does not show up 
+  #   but neither is having the error appear on the word order page
+  #   since then the error is marked where there is no error.
+  if ch.get('has-aux') == 'yes':
+    if not aux1_name:
+      err = 'You must define at least one auxiliary type.'
+      add_err('aux1_name', err)
+
   ch.iter_begin('aux')
   while ch.iter_valid():
     orth = ch.get('orth')

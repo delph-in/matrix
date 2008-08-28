@@ -1,4 +1,4 @@
-### $Id: choices.py,v 1.22 2008-08-12 22:48:56 sfd Exp $
+### $Id: choices.py,v 1.23 2008-08-28 17:36:16 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -60,6 +60,8 @@ class ChoicesFile:
         self.convert_6_to_7()
       if version < 8:
         self.convert_7_to_8()
+      if version < 9:
+        self.convert_8_to_9()
       # As we get more versions, add more version-conversion methods, and:
       # if version < N:
       #   self.convert_N-1_to_N
@@ -499,6 +501,76 @@ class ChoicesFile:
 
     return genders
 
+# forms()
+#   Create and return a list containing the values of the FORM feature
+#   that constrains the form of auxiliary complements as 
+#   defined in the current choices
+#   This list consists of tuples:
+#       [form name]
+  def forms(self):
+    forms = []
+
+    self.iter_begin('aux')
+    while self.iter_valid():
+
+      if self.iter_prefix() == 'aux1_':
+        forms += [ ['finite'], ['nonfinite'] ]
+
+      compform = self.get('compform') 
+      if compform == 'nonfinite':
+        forms += [ [self.get('nonfincompform')] ]
+
+      self.iter_next()
+    self.iter_end()
+
+    return forms
+    
+# tenses()
+#   Create and return a list containing information about the 
+#   values of the TENSE feature implied by the current choices.
+#   This list consists of tuples:
+#       [tense name]
+  def tenses(self):
+    tenses = []
+
+    tdefn = self.get_full('tense-definition')
+    
+    if tdefn == 'choose':
+      for ten in ('past', 'present', 'future', 'non-past', 'non-future'):
+
+        if self.is_set(ten):
+          tenses += [ [ten] ]
+          self.iter_begin(ten + '-subtype')
+          while self.iter_valid():
+            tenses += [ [self.get('name')] ]
+            self.iter_next()
+          self.iter_end()
+
+    elif tdefn == 'build':
+      self.iter_begin('tense')
+      while self.iter_valid():
+        tenses += [ [self.get('name')] ]
+        self.iter_next()
+      self.iter_end()
+
+    return tenses
+
+# aspects()
+#   Create and return a list containing information about the
+#   values of the APSECT feature implied by the current choices.
+#   This list consists of tuples:
+#        [aspect name]
+  def aspects(self):
+    aspects = []
+
+    self.iter_begin('aspect')
+    while self.iter_valid():
+      aspects += [ [self.get('name')] ]
+      self.iter_next()
+    self.iter_end()
+
+    return aspects
+
 
   # features()
   #   Create and return a list containing information about the features
@@ -572,6 +644,36 @@ class ChoicesFile:
 
     if values:
       features += [ ['argument structure', values, ''] ]
+    
+    # Form (auxiliary complement form)
+    values = ''
+    for f in self.forms():
+      if values:
+        values += ';'
+      values += f[0] + '|' + f[0]
+
+    if values:
+      features += [ ['form', values, 'LOCAL.CAT.HEAD.FORM'] ]
+
+    # Tense
+    values = ''
+    for t in self.tenses():
+      if values:
+        values += ';'
+      values += t[0] + '|' + t[0]
+    
+    if values:
+      features += [ ['tense', values, 'LOCAL.CONT.HOOK.INDEX.E.TENSE'] ]
+
+    # Aspect
+    values = ''
+    for a in self.aspects():
+      if values:
+        values += ';'
+      values += a[0] + '|' + a[0]
+    
+    if values:
+      features += [ ['aspect', values, 'LOCAL.CONT.HOOK.INDEX.E.ASPECT'] ]
 
     # Direction
     if self.get_full('scale1_feat1_name'):
@@ -615,7 +717,7 @@ class ChoicesFile:
     self.iter_set_state(state)
 
     return features
-
+    
 
   ######################################################################
   # Conversion methods: each of these functions assumes the choices
@@ -629,7 +731,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 8
+    return 9
 
 
   def convert_value(self, key, old, new):
@@ -1075,3 +1177,30 @@ class ChoicesFile:
 
       self.iter_next()
     self.iter_end()
+
+  def convert_8_to_9(self):
+    # finite and nonfinite feature value name changes
+    # in aux complement form values
+    for lextype in ['aux','det','verb','noun']:
+      if lextype == 'aux':
+        self.iter_begin(lextype)
+        while self.iter_valid():
+          self.convert_value('compform','fin','finite')
+          self.convert_value('compform', 'nf', 'nonfinite')
+          self.iter_next()
+        self.iter_end()
+      # in slot feature values
+      self.iter_begin(lextype + '-slot')
+      while self.iter_valid():
+        self.iter_begin('morph')
+        while self.iter_valid():
+          self.iter_begin('feat')
+          while self.iter_valid():
+            self.convert_value('value','fin','finite')
+            self.convert_value('value','nf','nonfinite')
+            self.iter_next()
+          self.iter_end()
+          self.iter_next()
+        self.iter_end()
+        self.iter_next()
+      self.iter_end()  

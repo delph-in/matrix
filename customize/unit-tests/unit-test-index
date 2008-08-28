@@ -17,3 +17,5 @@ aux-vp-f-noinfl=two aux, finite vp comp, no inflection, level 1 test
 aux-v-f-noinfl=two aux, finite v vomp, no inflection, level 1 test
 aux-f-vpcomp-nfconst-formfeat=finite auxes with nf vp compleof the nf comp is constrained - level 2 test (inflection, no t&a features)
 nopaux-noinfl-vpcomp-f-formfeat=single uninflected aux with finite vp complement, level 2 test (inflection but no t&a features)
+auxten-vpcompnfasp-tafeat=tensed auxilialevel 3 test
+noaux-toblig-aopt-onv=obligatory tense, optional aspect on v, no aux level 3 test
