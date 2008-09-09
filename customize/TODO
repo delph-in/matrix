@@ -22,7 +22,7 @@ DONE: Do something nicer with the validation error messages.  The desired
 DONE: Add pretty-printing for the choices file (the random ones are just
       jumbled together)
 DONE: Still need validation for all modules [done but ongoing]
-bug:  Clean up the ????? stuff in the customization page, either by
+DONE: Clean up the ????? stuff in the customization page, either by
       rewriting it or inserting them
 
 [10/6/2006 sfd]
@@ -82,7 +82,7 @@ bug:  As hinted at above, the handling of script files is suspicious.
       There's also a basic_script in matrix/modules that gets copied
       to WEB/matrix-core, and that's what the script file in generated
       grammars is based on.
-feat: The creation of a matrix-core directory should be split into
+DONE: The creation of a matrix-core directory should be split into
       another script (perhaps 'tocore').  In fact, tolive should be
       reworked so it does this:
       1) Make a temp local copy of what's going up to the web

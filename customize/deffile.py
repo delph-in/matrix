@@ -1,4 +1,4 @@
-### $Id: deffile.py,v 1.14 2008-07-24 23:00:50 sfd Exp $
+### $Id: deffile.py,v 1.15 2008-09-09 08:37:52 sfd Exp $
 
 ######################################################################
 # This module is currently a bit of a hybrid.  Most of the code is
@@ -14,6 +14,7 @@
 
 import sys
 import os
+import glob
 import re
 from choices import ChoicesFile
 
@@ -609,6 +610,7 @@ class MatrixDefFile:
       pass
 
     print HTML_mainprebody % (datestamp)
+    print '<div class="indented">'
 
     choices_file = 'sessions/' + cookie + '/choices'
 
@@ -685,27 +687,49 @@ class MatrixDefFile:
     else:
       tgz_checked = True
 
+    # the buttons after the subpages
     print html_input(errors, 'hidden', 'customize', 'customize', False, '', '')
     print html_input(errors, 'radio', 'delivery', 'tgz', tgz_checked,
-                     '<p class="submit">Archive type: ', ' .tar.gz')
+                     '<p>Archive type: ', ' .tar.gz')
     print html_input(errors, 'radio', 'delivery', 'zip', zip_checked,
                      ' ', ' .zip<br>')
     print html_input(errors, 'submit', '', 'Create Grammar', False, '', '</p>',
                      '', '', len(errors) > 0)
+
+    print '<hr>\n'
     print html_input(errors, 'button', '', 'Download Choices File', False,
-                     '<p class="submit">', '</p>', '',
+                     '<p>', '</p>', '',
                      'window.location.href=\'' + choices_file + '\'')
     
     print HTML_postform
-    print HTML_uploadpreform
-    
-    print html_input(errors, 'submit', '', 'Upload Choices File:', False,
-                     '<p class="submit">', '')
-    print html_input(errors, 'file', 'choices', '', False, '', '</p>', '20')
-    
-    print HTML_uploadpostform
-    print HTML_postbody
 
+    # the FORM for uploading choices files
+    print HTML_uploadpreform
+    print html_input(errors, 'submit', '', 'Upload Choices File:', False,
+                     '<p>', '')
+    print html_input(errors, 'file', 'choices', '', False, '', '</p>', '20')
+    print HTML_uploadpostform
+
+    # the list of sample choices files
+    if os.path.exists('sample-choices'):
+      print '<h3>Sample Grammars:</h3>\n' + \
+            '<p>Click a link below to have the questionnaire ' + \
+            'filled out automatically.</p>'
+      print '<p>'
+      globlist = glob.glob('sample-choices/*')
+      globlist.sort()
+      for f in globlist:
+        f = f.replace('\\', '/')
+        choices = ChoicesFile(f)
+        lang = choices.get('language')
+        if not lang:
+          lang = '[empty questionnaire]'
+        print '<a href="matrix.cgi?choices=' + f + '">' + \
+              lang + '</a><br>\n'
+      print '</p>'
+
+    print '</div>'
+    print HTML_postbody
 
   # Turn a list of lines containing matrix definitions into a string
   # containing HTML.
@@ -970,6 +994,21 @@ class MatrixDefFile:
 
     for e in errors:
       print errors[e] + '<br>'
+
+    print HTML_postbody
+
+
+  # Inform the user that cookies must be enabled
+  def cookie_error_page(self):
+    print HTTP_header + '\n'
+    print HTML_pretitle
+    print '<title>Cookies Required</title>'
+    print HTML_prebody
+
+    print '<div style="position:absolute; top:45%; width:100%">\n' + \
+          '<p style="color:red; text-align:center; font-size:16pt">' + \
+          'Cookies must be enabled for this site in your browser in order ' + \
+          'to fill out the questionnaire.</p>\n'
 
     print HTML_postbody
 

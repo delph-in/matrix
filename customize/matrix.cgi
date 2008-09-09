@@ -1,6 +1,6 @@
 #!/usr/local/bin/python2.5
 
-### $Id: matrix.cgi,v 1.26 2008-08-12 22:48:56 sfd Exp $
+### $Id: matrix.cgi,v 1.27 2008-09-09 08:37:52 sfd Exp $
 
 ######################################################################
 # imports
@@ -19,8 +19,10 @@ from distutils.dir_util import remove_tree
 from deffile import MatrixDefFile
 from customize import customize_matrix
 from validate import validate_choices
+from choices import ChoicesFile
 
 from deffile import HTTP_header
+
 
 ######################################################################
 # beginning of main program
@@ -34,7 +36,9 @@ form_data = cgi.FieldStorage()
 
 # Get the cookie.  If there's not one, make one.
 http_cookie = os.getenv('HTTP_COOKIE')
+browser_cookie = False
 if http_cookie:
+  browser_cookie = True
   cookie = http_cookie.split('=')[1]
 else:
   cookie = str(randint(1000,9999))
@@ -58,11 +62,18 @@ session_path = 'sessions/' + cookie
 if cookie and not os.path.exists(session_path):
   os.mkdir(session_path)
 
-# if the 'choices' field is defined, we have an uploaded choices file
-# to replace the current one
+# if the 'choices' field is defined, we have either the contents of an
+# uploaded choices file or the name of a sample choices file (which
+# will begin with 'sample-choices/') to replace the current choices.
 if form_data.has_key('choices'):
-  data = form_data['choices'].value
-  if data:
+  choices = form_data['choices'].value
+  if choices:
+    if choices[:15] == 'sample-choices/':
+      f = open(choices, 'r')
+      data = f.read()
+      f.close()
+    else:
+      data = choices
     f = open(session_path + '/choices', 'w')
     f.write(data)
     f.close()
@@ -90,27 +101,33 @@ if form_data.has_key('customize'):
   if len(errors):
     matrixdef.error_page(errors)
   else:
-    # create the saved-choices directory
-    if not os.path.exists('saved-choices'):
-      os.mkdir('saved-choices')
-    
-    # look at the files in saved-choices, which will have names like
-    # choices.N, figure out the next serial number, and copy the current
-    # choices file to saved-choices/choices.N+1
-    serial = 1
-    for f in glob.glob('saved-choices/choices.*'):
-      i = f.rfind('.')
-      if i != -1:
-        num = f[i + 1:]
-        if num.isdigit():
-          serial = max(serial, int(num) + 1)
-    shutil.copy(session_path + '/choices',
-                'saved-choices/choices.' + str(serial))
+    # If the user said it's OK, archive the choices file
+    choices = ChoicesFile(session_path + '/choices')
+    if choices.get('archive') == 'yes':
+      # create the saved-choices directory
+      if not os.path.exists('saved-choices'):
+        os.mkdir('saved-choices')
+
+      # look at the files in saved-choices, which will have names like
+      # choices.N, figure out the next serial number, and copy the current
+      # choices file to saved-choices/choices.N+1
+      serial = 1
+      for f in glob.glob('saved-choices/choices.*'):
+        i = f.rfind('.')
+        if i != -1:
+          num = f[i + 1:]
+          if num.isdigit():
+            serial = max(serial, int(num) + 1)
+      shutil.copy(session_path + '/choices',
+                  'saved-choices/choices.' + str(serial))
 
     # Create the customized grammar
     customize_matrix(session_path, arch_type)
     matrixdef.custom_page(session_path, arch_type)
 elif form_data.has_key('subpage'):
-  matrixdef.sub_page(form_data['subpage'].value, cookie, errors)
+  if browser_cookie:
+    matrixdef.sub_page(form_data['subpage'].value, cookie, errors)
+  else:
+    matrixdef.cookie_error_page()
 else:
   matrixdef.main_page(cookie, errors)

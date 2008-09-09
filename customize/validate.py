@@ -1,4 +1,4 @@
-### $Id: validate.py,v 1.41 2008-08-28 17:36:16 lpoulson Exp $
+### $Id: validate.py,v 1.42 2008-09-09 08:37:53 sfd Exp $
 
 ######################################################################
 # imports
@@ -24,12 +24,15 @@ def add_err(key,err):
     wrong[key] = err
   
 ######################################################################
-# validate_language()
-#   Validate the user's choice about language
+# validate_general()
+#   Validate the user's choices about general information
 
-def validate_language():
+def validate_general():
   if not ch.get('language'):
     add_err('language','You must specify the name of your language')
+
+  if not ch.get('archive'):
+    add_err('archive','You must answer whether you will allow your answers to be retained.')
 
 
 
@@ -644,7 +647,7 @@ def validate_choices(choices_file, extra = False):
   global ch
   ch = ChoicesFile(choices_file)
 
-  validate_language()
+  validate_general()
   validate_case()
   validate_person()
   validate_number()

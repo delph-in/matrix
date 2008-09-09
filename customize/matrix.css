@@ -1,12 +1,12 @@
-/* $Id: matrix.css,v 1.9 2008-07-24 11:16:41 sfd Exp $ */
+/* $Id: matrix.css,v 1.10 2008-09-09 08:37:52 sfd Exp $ */
 
 html { overflow: scroll }
 
-.section { background-color: #E0FFFF; margin: 1px 10% }
+.section { background-color: #E0FFFF; margin-top: 1px; margin-bottom: 1px }
 
 .values { padding-left: 1.2em }
 
-.submit { margin-left: 10% }
+.indented { margin-left: 10%; margin-right: 10% }
 
 .error { color: #FF0000 }
 

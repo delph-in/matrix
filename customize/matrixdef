@@ -1,9 +1,27 @@
-### $Id: matrixdef,v 1.35 2008-08-28 17:36:16 lpoulson Exp $
+### $Id: matrixdef,v 1.36 2008-09-09 08:37:52 sfd Exp $
 
-Section language "Language"
+Section general "General Information"
 
-Text language "Language name" "Name of your language: " "<br>" 50
-Text iso-code "ISO code" "(optional) <a href=\"http://www.sil.org/iso639-3/codes.asp\">ISO code</a> for your language: " "" 6
+Label "<h3>Language</h3>"
+
+Text language "Language name" "<p>Name of your language: " "<br>" 50
+Text iso-code "ISO code" "<a href=\"http://www.sil.org/iso639-3/codes.asp\">ISO code</a> for your language: " " (optional) </p>" 6
+
+Label "<h3>Archiving</h3>"
+
+Label "<p>The developers of the Grammar Matrix project would like to retain your answers to this questionnaire in an archive.  We hope that, as the number of linguistic phenomena covered by the questionnaire grows, these archived sets of answers can be used as the basis for a database that will be useful to linguistic typological research.</p>"
+
+Radio archive "Archive" "<p>May we retain your answers to this questionnaire?<br>" ""
+. yes "Yes" "" " yes<br>"
+. no "No" "" " no</p>"
+
+Label "<p>If you answered \"yes\", we ask that you also (optionally) provide the information below.  This information will be used to distinguish multiple linguists working on the same language, to help us improve the Grammar Matrix, and possibly to contact you in the future.  We will not share your answers or identifying information outside the project, unless required by law.</p>"
+
+Text email "Email address" "<table border=\"0\"><tr><td valign=\"top\">Your email address: <td>" "</tr>" 40
+
+Text affiliation "Affiliation" "<tr><td valign=\"top\">Your affiliation: <td>" "</tr>" 40
+
+Text motivation "Motivation" "<tr><td valign=\"top\">Your reason for using this system: <td>" "<br>(e.g. descriptive linguistic research, for a class)</tr></table>" 80
 
 
 Section word-order "Word Order"
