@@ -1,4 +1,4 @@
-### $Id: validate.py,v 1.42 2008-09-09 08:37:53 sfd Exp $
+### $Id: validate.py,v 1.43 2008-09-18 22:22:49 sfd Exp $
 
 ######################################################################
 # imports
@@ -28,8 +28,19 @@ def add_err(key,err):
 #   Validate the user's choices about general information
 
 def validate_general():
-  if not ch.get('language'):
+  lang = ch.get('language')
+  
+  if not lang:
     add_err('language','You must specify the name of your language')
+  else:
+    bad_lang = False
+    if lang[0] in '.~':
+      bad_lang = True
+    for c in ch.get('language'):
+      if ord(c) < 32 or c in '?*:<>|/\\"^':
+        bad_lang = True
+    if bad_lang:
+      add_err('language','The language name contains an illegal character')
 
   if not ch.get('archive'):
     add_err('archive','You must answer whether you will allow your answers to be retained.')
