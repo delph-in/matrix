@@ -1,4 +1,4 @@
-### $Id: customize.py,v 1.70 2008-08-28 17:36:16 lpoulson Exp $
+### $Id: customize.py,v 1.71 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -140,7 +140,6 @@ class Hierarchy:
   def add(self, type, supertype, comment = ''):
     self.hierarchy += [ [ type, supertype, comment ] ]
 
-
   # Save the hierarchy to the passed TDLfile object.  The resulting
   # TDL will look like this:
   #
@@ -157,7 +156,6 @@ class Hierarchy:
     tdl_file.add(self.name + ' := *top*.', '', True)
     for h in self.hierarchy:
       tdl_file.add(h[0] + ' := ' + h[1] + '.', h[2], True)
-
 
   # For each type in the hierarchy, calculate
   def __calc_supertypes(self):
@@ -893,7 +891,7 @@ def customize_other_features():
 
 ######################################################################
 # customize_tense()
-# Create tense type definitions per the user's choices 
+# Create tense feature value hierarchies per the user's choices 
 
 def customize_tense():
   tdefn = ch.get('tense-definition')
@@ -903,7 +901,7 @@ def customize_tense():
 
     if tdefn == 'choose':
       ppflist = []
-      for ten in ('non-future', 'non-past', 'past', 'present', 'future' ):
+      for ten in ('nonfuture', 'nonpast', 'past', 'present', 'future' ):
         
         if ch.is_set(ten):
           if ten not in ppflist:
@@ -916,13 +914,13 @@ def customize_tense():
             ch.iter_next()
           ch.iter_end()
           
-          if ten == 'non-future':
+          if ten == 'nonfuture':
             for moreten in ('past', 'present'):
               if ch.is_set(moreten):
                 mylang.add(moreten + ' := ' + ten + ' .')
                 ppflist.append(moreten)       
 
-          if ten == 'non-past':
+          if ten == 'nonpast':
             for moreten in ('present', 'future'):
               if ch.is_set(moreten):
                 mylang.add(moreten + ' := ' + ten + ' .')
@@ -948,7 +946,7 @@ def customize_tense():
 
 ######################################################################
 # customize_aspect()
-# Create aspect type definitions per the user's choices
+# Create aspect feature value definitions per the user's choices
 
 def customize_aspect():
   comment = ';;; Aspect'
@@ -3241,6 +3239,51 @@ def customize_verb_case():
           mylang.add(typedef)
 
 
+###############################################################
+# customize_form()
+#   Create the FORM hierarchies associated with the user's choices
+#   about verb forms
+ 
+def form_hierarchy():
+  hier = Hierarchy('form')
+
+  # add FORM finite and nonfinte values if there are auxiliaries 
+  #or if user specified
+  if has_auxiliaries_p() or ch.get_full('noaux-fin-nf') == 'yes':
+    hier.add('nonfinite', 'form')
+    hier.add('finite', 'form')
+
+# FIX? ?Change this to use class function to determine supertype
+    for p in ('nf', 'fin'):
+
+      ch.iter_begin(p + '-subform')
+      while ch.iter_valid():
+
+        if p == 'nf':
+          super = 'nonfinite'
+        elif p == 'fin':
+          super = 'finite'
+
+        sub = ch.get('name')
+        hier.add(sub, super)
+
+        ch.iter_next()
+      ch.iter_end()
+
+  return hier  
+
+def customize_form():
+  form_hier = form_hierarchy()
+
+  if not form_hier.is_empty():
+    mylang.add('head :+ [FORM form].')
+    form_hier.save(mylang)
+
+
+##########################################################
+# customize_verbs()
+#
+
 def customize_verbs():
   negmod = ch.get('neg-mod')
   negadv = ch.get('neg-adv')
@@ -3274,10 +3317,7 @@ def customize_verbs():
 # If there are no auxiliaries then 'verb-lex' covers all verbs
   
   if has_auxiliaries_p():
-    mylang.add('head :+ [ AUX bool, FORM form ].')
-    mylang.add('form := avm.')
-    mylang.add('finite := form.')
-    mylang.add('nonfinite := form.') 
+    mylang.add('head :+ [ AUX bool ].')
     #mainorverbtype = 'main-verb-lex'
 
     typedef = \
@@ -3295,7 +3335,6 @@ def customize_verbs():
 
   else:
     #mainorverbtype = 'verb-lex'
-
     mylang.add('verb-lex := basic-verb-lex.')
 
   typedef = mainorverbtype + ' :=  \
@@ -3408,12 +3447,9 @@ def customize_auxiliaries():
   
       if sem  == 'add-pred':
         pred = ch.get('pred')
-      comp = ch.get('comp') 
-      compform= ch.get('compform')
 
-      if compform == 'nonfinite':
-        compform = ch.get('nonfincompform')
-        mylang.add(compform + ' := nonfinite.')
+      comp = ch.get('comp') 
+      compform = ch.get('compform')
       subj = ch.get('subj')
 
     # Lexical type for auxiliaries.
@@ -4401,6 +4437,7 @@ def customize_matrix(path, arch_type):
   customize_case()
   customize_person_and_number()
   customize_gender()
+  customize_form()
   customize_tense()
   customize_aspect()
   customize_other_features()

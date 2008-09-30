@@ -1,4 +1,4 @@
-### $Id: validate.py,v 1.43 2008-09-18 22:22:49 sfd Exp $
+### $Id: validate.py,v 1.44 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -358,6 +358,60 @@ def validate_yesno_questions():
       add_err('ques-aff-orth', err)
                                               
 
+# validate_tanda()
+#  Validate the user's choices about tense, aspect and form features
+
+def validate_tanda():
+  """
+  Validate the user's choices about tense, aspect and form features
+  """
+  
+  ## validate tense
+  chosen = ""
+  ten = ('past', 'present', 'future', 'nonpast', 'nonfuture') 
+  for t in ten:
+    if ch.is_set(t):
+      chosen = 'yes'
+      break
+  if ch.get('tense-definition') == "choose" and (not (chosen == 'yes')):
+    err = 'You have chosen to select among hierarchy elements. You need to select at least one tense element.'
+    for t in ten:
+      add_err(t, err)
+
+  if ch.get('tense-definition') == "build" and (not (ch.get('tense1_name'))):
+    err = "You have chosen to build your own tense hierarchy. You need to enter at least one tense subtype."
+    add_err('tense1_name', err)
+
+    ch.iter_begin('tense')
+    while ch.iter_valid():
+      if not ch.get('name'):
+        add_err(ch.iter_prefix() + 'name',
+              'You must specify a name for each tense subtype you define.')
+      if not ch.get('supertype1_name'):
+        add_err(ch.iter_prefix() + 'supertype1_name',
+              'You must specify a supertype for each tense subtype you define.')
+
+      ch.iter_next()
+    ch.iter_end()
+  
+  ## validate aspect
+  ch.iter_begin('aspect')
+  while ch.iter_valid():
+    if not ch.get('name'):
+      add_err(ch.iter_prefix() + 'name',
+            'You must specify a name for each aspect subtype you define.')
+    if not ch.get('supertype1_name'):
+      add_err(ch.iter_prefix() + 'supertype1_name',
+            'You must specify at least one supertype for each aspect subtype you define.')
+
+    ch.iter_next()
+  ch.iter_end()
+
+  ## validate form
+  if ch.get('has-aux') == 'yes' and ch.get('noaux-fin-nf') == 'on':
+    err = 'You have indicated on the word order page that your language has auxiliaries.'
+    add_err('noaux-fin-nf', err)
+  
 
 ######################################################################
 # validate_lexicon()
@@ -491,15 +545,12 @@ def validate_lexicon():
   aux1_name = ch.get('aux1_name')
   if ch.get('has-aux') == 'no':
     if aux1_name:
-      err = 'You have indicated on the word order page that this language has no auxiliaries.'
+      err = 'You have indicated on the word order page that your language has no auxiliaries.'
       add_err('aux1_name', err)
-  # This is not a good solution 
-  #   as the error does not show up 
-  #   but neither is having the error appear on the word order page
-  #   since then the error is marked where there is no error.
+
   if ch.get('has-aux') == 'yes':
     if not aux1_name:
-      err = 'You must define at least one auxiliary type.'
+      err = 'You have indicated on the word order page that your language has auxiliaries. You must define at least one auxiliary type.'
       add_err('aux1_name', err)
 
   ch.iter_begin('aux')
@@ -509,7 +560,6 @@ def validate_lexicon():
     pred = ch.get('pred')
     comp = ch.get('comp')
     compform = ch.get('compform')
-    nonfincompform = ch.get('nonfincompform')
     subj = ch.get('subj')
     prefix = ch.iter_prefix()
       
@@ -532,10 +582,6 @@ def validate_lexicon():
     if not compform:
       err = 'You must specify the form of the verb in the complement.'
       add_err(prefix + 'compform', err)
-
-    if ((compform == 'nf') and (not nonfincompform)):
-      err = 'You must specify a nonfinite form.'
-      add_err(prefix + 'nonfincompform', err)
 
     if ((comp == 'vp') or (comp == 'v')):
       if not subj:
@@ -665,6 +711,7 @@ def validate_choices(choices_file, extra = False):
   validate_gender()
   validate_other_features()
   validate_word_order()
+  validate_tanda()
   validate_sentential_negation()
   validate_coordination()
   validate_yesno_questions()

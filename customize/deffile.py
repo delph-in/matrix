@@ -1,4 +1,4 @@
-### $Id: deffile.py,v 1.15 2008-09-09 08:37:52 sfd Exp $
+### $Id: deffile.py,v 1.16 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
 # This module is currently a bit of a hybrid.  Most of the code is
@@ -261,14 +261,19 @@ function fill_feature_names(select_name)
   select.value = old_val;  // restore the selected option
 }
 
-function fill_feature_values(select_name, other_name)
+function fill_feature_values(select_name, other_name, literal_feature)
 {
   var select = document.getElementsByName(select_name)[0];
   var old_val = select.value;  // store the previously selected option
 
   remove_temp_options(select);
 
-  var other_val = document.getElementsByName(other_name)[0].value;
+  if (literal_feature == 1) {
+    var other_val = other_name;
+  }  
+  else {
+    var other_val = document.getElementsByName(other_name)[0].value;
+  }
 
   for (var i = 0; i < features.length; i++) {
     var v = features[i].split(':');
@@ -801,9 +806,14 @@ class MatrixDefFile:
             html += html_select(errors, vn,
                                 'fill_feature_names(\'' + vn + '\')') + '\n'
           elif fill_type == 'fillvalues':
-            html += html_select(errors, vn,
-                                'fill_feature_values(\'' + vn + \
-                                '\', \'' + fill_arg1 + '\')') + '\n'
+            if fill_arg2:
+              html += html_select(errors, vn,
+                                  'fill_feature_values(\'' + vn + \
+                                  '\', \'' + fill_arg1 + '\', true)') + '\n'
+            else:
+              html += html_select(errors, vn,
+                                  'fill_feature_values(\'' + vn + \
+                                  '\', \'' + fill_arg1 + '\')') + '\n'
           elif fill_type == 'fillverbpat':
             html += html_select(errors, vn,
                                 'fill_case_patterns(\'' + vn + \

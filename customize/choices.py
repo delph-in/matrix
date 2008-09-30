@@ -1,4 +1,4 @@
-### $Id: choices.py,v 1.23 2008-08-28 17:36:16 lpoulson Exp $
+### $Id: choices.py,v 1.24 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -62,6 +62,8 @@ class ChoicesFile:
         self.convert_7_to_8()
       if version < 9:
         self.convert_8_to_9()
+      if version < 10:
+        self.convert_9_to_10()
       # As we get more versions, add more version-conversion methods, and:
       # if version < N:
       #   self.convert_N-1_to_N
@@ -190,7 +192,6 @@ class ChoicesFile:
   # Return true iff there if 'key' is currently set
   def is_set_full(self, key):
     return key in self.choices
-
 
   ######################################################################
   # Methods for accessing values.  These methods are sensitive to the
@@ -509,19 +510,17 @@ class ChoicesFile:
 #       [form name]
   def forms(self):
     forms = []
+   
+    if self.get('has-aux') == 'yes' or  self.get('noaux-fin-nf') == 'on':
+      forms += [ ['finite'], ['nonfinite'] ]
 
-    self.iter_begin('aux')
-    while self.iter_valid():
+      for p in ['nf', 'fin']: 
+        self.iter_begin(p + '-subform')
+        while self.iter_valid():
+          forms += [ [self.get('name')] ]
 
-      if self.iter_prefix() == 'aux1_':
-        forms += [ ['finite'], ['nonfinite'] ]
-
-      compform = self.get('compform') 
-      if compform == 'nonfinite':
-        forms += [ [self.get('nonfincompform')] ]
-
-      self.iter_next()
-    self.iter_end()
+          self.iter_next()
+        self.iter_end()
 
     return forms
     
@@ -536,7 +535,8 @@ class ChoicesFile:
     tdefn = self.get_full('tense-definition')
     
     if tdefn == 'choose':
-      for ten in ('past', 'present', 'future', 'non-past', 'non-future'):
+
+      for ten in ('past', 'present', 'future', 'nonpast', 'nonfuture'):
 
         if self.is_set(ten):
           tenses += [ [ten] ]
@@ -731,7 +731,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 9
+    return 10
 
 
   def convert_value(self, key, old, new):
@@ -1204,3 +1204,33 @@ class ChoicesFile:
         self.iter_end()
         self.iter_next()
       self.iter_end()  
+
+  def convert_9_to_10(self):
+    """
+    previous versions defined (only) nonfinite compforms for each auxiliary 
+    iff the aux comp was constrained to be nonfinite. 
+    The current version creates a hierarchy of verb forms and then for each 
+    aux constrains the form of the complement.  
+    For each auxiliary, this conversion takes the value of the specified (nonfinite)compform 
+    and assigns it as the value of a member of the nonfinite hierarchy 
+    as well as the value of the auxiliary's compform.
+    """
+    self.convert_key('non-past', 'nonpast')
+    self.convert_key('non-future', 'nonfuture') 
+
+    i = 0
+    self.iter_begin('aux')
+    while self.iter_valid():
+      i += 1
+      v = self.get('nonfincompform')
+      k = 'nf-subform' + str(i) + '_name'
+      self.convert_value('compform', 'nonfinite', v)
+
+      if self.is_set('nonfincompform'):
+        self.set_full(k,v)
+      self.delete('nonfincompform')
+
+      self.iter_next()
+    self.iter_end()
+      
+      

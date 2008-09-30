@@ -1,4 +1,4 @@
-### $Id: matrixdef,v 1.36 2008-09-09 08:37:52 sfd Exp $
+### $Id: matrixdef,v 1.37 2008-09-30 23:50:02 lpoulson Exp $
 
 Section general "General Information"
 
@@ -268,17 +268,20 @@ Select scale-equal "Direction when equal" "When the agent and patient have the s
 . direct "Direct" "direct"
 . other "Some other form" "some other form"
 
-Section tense-aspect "Tense and Aspect"
 
-Label "<h3>Tense</h3>" 
+Section tense-aspect "Tense and Aspect related Features"
+
+Label "<h3>Tense</h3>"
 
 Label "You may define a tense hierarchy in one of two ways:"
+
 Label "<ul><li>Select among the following common hierarchy elements and add subtypes as needed, or <li>Build your own hierarchy.</ul>"
 
 Radio tense-definition "Tense hierarchy definition style" "" ""
 . choose "Choose" "" "<b>Select among common hierarchy elements</b><br>"
 
-Label "<br>Which of the following are tense hierarchy elements in your language?<br><br>" ""
+Label "<div style=\"padding-left: 16px\">"
+Label "<br>Which of the following are tense hierarchy elements in your language?<br><br>"
 
 Check past "Past" "" "<b>past</b><br>"
   BeginIter past-subtype{i} "a subtype"
@@ -295,25 +298,29 @@ Check future "Future" "" "<b>future</b><br>"
     Text name "Future subtype {i} name" "Subtype: " "" 20
   EndIter future-subtype
 
-Check non-past "Non-Past" "" "<b>non-past</b> &nbsp;&nbsp;&nbsp;&nbsp;(If present and/or future are also selected they are assumed to be subtypes of non-past.)<br>"
-  BeginIter non-past-subtype{i} "a subtype"
+Check nonpast "Non-Past" "" "<b>nonpast</b> &nbsp;&nbsp;&nbsp;&nbsp;(If present and/or future are also selected they are assumed to be subtypes of nonpast.)<br>"
+  BeginIter nonpast-subtype{i} "a subtype"
     Text name "Non-Past subtype {i} name" "Subtype: " "" 20
-  EndIter non-past-subtype
+  EndIter nonpast-subtype
 
-Check non-future "Non-Future" "" "<b>non-future</b> &nbsp;&nbsp;&nbsp;&nbsp;(If present and/or past are also selected they are assumed to be subtypes of non-future.)<br>"
-  BeginIter non-future-subtype{i} "a subtype"
+Check nonfuture "Non-Future" "" "<b>nonfuture</b> &nbsp;&nbsp;&nbsp;&nbsp;(If present and/or past are also selected they are assumed to be subtypes of nonfuture.)<br>"
+  BeginIter nonfuture-subtype{i} "a subtype"
     Text name "Non-Future subtype {i} name" "Subtype: " "" 20
-  EndIter non-future-subtype
+  EndIter nonfuture-subtype
+
+Label "</div>"
 
 Radio tense-definition "Tense hierarchy definition style" "" ""
 . build "Build" "" "<b>Build your own tense hierarchy</b><br>"
+
+Label "<div style=\"padding-left: 16px\">"
 
 Label "<br>Build your hierarchy from the top down starting with subtypes of the supertype: tense.</p>"
 Label "Example:<br>"
 Label "subtype name: nonpast<br>"
 Label "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;supertype: tense<br><br>"
 
-BeginIter tense{i} "a tense type"
+BeginIter tense{i} "a tense type" 1
 
   Text name "tense {i} name" "Subtype name: " "" 20
 
@@ -327,9 +334,13 @@ BeginIter tense{i} "a tense type"
 
 EndIter tense
 
-Label "<br><h3>Aspect</h3>"
+Label "</div>"
 
-Label "<p>This implementation assumes no universally accepted hierarchy or terminology of grammatical aspect. You may build an appropriate hierarchy of grammatical aspect values below.</p>"
+Separator
+
+Label "<h3>Aspect</h3>"
+
+Label "<p>This implementation assumes no universal hierarchy or terminology of grammatical aspect. You may build an appropriate hierarchy of grammatical aspect values below.</p>"
 
 Label "<h4>Build your own aspect hierarchy</h4>"
 Label "Build your hierarchy from the top down starting with subtypes of the supertype: aspect.</p>"
@@ -337,7 +348,7 @@ Label "Example:<br>"
 Label "subtype name: imperfective<br>"
 Label "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;supertype: aspect<br><br>"
 
-BeginIter aspect{i} "an aspect type"
+BeginIter aspect{i} "an aspect type" 
 
   Text name "aspect {i} name" "Subtype name: " "" 20
   BeginIter supertype{j} "a Supertype" 1
@@ -350,6 +361,33 @@ BeginIter aspect{i} "an aspect type"
 
 EndIter aspect
 
+Separator
+
+Label "<h3>Verb Form</h3>"
+Label "<p>In addition to the semantic features tense and aspect, this implementation utilizes a syntactic feature characterizing the form the verb takes. The FORM feature is currently used to distinguish finite from non-finite forms and to constrain auxiliary complement forms.</p>"
+Label "<p>If you indicated that your language has auxiliary verbs this implementation assumes that there is a finite/non-finite distinction and adds finite and nonfinite FORM values.<br>"
+
+Check noaux-fin-nf "Finite-nonfinite" "" "My language has no auxiliaries but does make a syntactically relevant finite/non-finite distinction.</p>"
+
+Label "<p>Expand the hierarchy of verb FORM values, as applicable for your language:</p>" 
+
+Label "<div style=\"padding-left: 16px\">"
+
+Label "Define subtypes of <b>nonfinite</b> (e.g., pastparticiple, nf2):"
+  BeginIter nf-subform{i} "a subtype"
+    Text name "Nonfinite subtype {i} name" "Subtype name: " "&nbsp;&nbsp;&nbsp;&nbsp;note: Names cannot contain spaces or special characters." 20
+  EndIter nf-subform
+
+Label "<br>"
+
+Label "Define subtypes of <b>finite</b>:"
+  BeginIter fin-subform{i} "a subtype"
+    Text name "Finite subtype {i} name" "Subtype name: " "&nbsp;&nbsp;&nbsp;&nbsp;note: Names cannot contain spaces or special characters." 20
+  EndIter fin-subform
+
+Label "</div>"
+
+Separator
 
 Section sentential-negation "Sentential Negation"
 
@@ -658,20 +696,20 @@ Separator
 
 Label "<h3>Auxiliary Verb Types</h3>"
 
-BeginIter aux{i} "an Aux Type" 
+BeginIter aux{i} "an Aux Type" 1
 
   Label "<b>Auxiliary type {i}</b>:"
 
   Label "<div style=\"padding-left: 16px\">"
 
-  Text name "Aux {i} type name" "<b>Auxiliary type {i}</b>:<br>Name: " "<br>" 20
+  Text name "Aux {i} type name" "Type name: " "<br>" 20
 
   Text orth "Aux {i} spelling" "Spelling: " "" 30
 
   Radio sem "Aux {i} semantics" "<br>This auxiliary verb contributes:<br>" ""
   . add-pred "Predicate" "" "An independent predicate (e.g. _can_v_rel)"
 
-  Text pred "Aux{i} predicate " "&nbsp;&nbsp;&nbsp;Predicate: " "" 30
+  Text pred "Aux {i} predicate" "&nbsp;&nbsp;&nbsp;Predicate: " "" 30
 
   Radio sem "Aux {i} semantics" "<br>" ""
   . no-pred "No predicate" "" "Tense/aspect information only"
@@ -679,13 +717,10 @@ BeginIter aux{i} "an Aux Type"
   Radio comp "Aux {i} complement" "<br>This auxiliary verb takes as its complement a:<br>" ""
   . s "S" "" "saturated sentence<br>"
   . vp "VP" "" "VP, raising the subject<br>"
-  . v "V" "" "V, raising all of its arguments (argument composition)"
+  . v "V" "" "V, raising all of its arguments (argument composition)<br>"
 
-  Radio compform "Aux {i} complement verb form" "<br>The form of the verb in this auxiliary's complement must be:<br>" ""
-  . finite "finite" "" "finite<br>"
-  . nonfinite "nonfinite" "" "non-finite"
-
-  Text nonfincompform "Aux {i} non-finite complement form" "&nbsp;&nbsp;&nbsp;Non-finite form (e.g. infinitive): " "<br>" 30
+  Select compform "Aux {i} complement verb form" "The form of the verb heading this auxiliary's complement must be: " "<br>"
+  fillvalues form 1
 
   Radio subj "Aux {i} subject" "If the auxiliary takes a VP or V complement, its subject is a: " ""
   . np "Noun phrase" "" "noun phrase "
