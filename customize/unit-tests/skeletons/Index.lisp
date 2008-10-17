@@ -22,6 +22,11 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "nf-twoforms-withtwoaux-vp-1008") (:content . "nf-twoforms-withtwoaux-vp-1008: testing-- two nonfinite forms"))
+((:path . "nf-form-withaux-vp-1008") (:content . "nf-form-withaux-vp-1008: testing nonfinite form constraint for aux complement"))
+((:path . "fin-forms-noaux-1008") (:content . "fin-forms-noaux-1008: testing finite/nonfinite distinction when there are no auxiliaries"))
+((:path . "auxcomp-markfeature-vp-1015") (:content . "auxcomp-markfeature-vp-1015: testing KEYS.KEY mhat is being used to distinguish etre and avoir type auxiliary verb classes"))
+((:path . "auxcomp-feature-engstative-vp-1013") (:content . "auxcomp-feature-engstative-vp-1013: testing verb class feature stative and aux constrained to nonstative"))
 ((:path . "noaux-toblig-aopt-onv") (:content . "noaux-toblig-aopt-onv: obligatory tense, optional aspect on v, no aux level 3 test"))
 ((:path . "auxten-vpcompnfasp-tafeat") (:content . "auxten-vpcompnfasp-tafeat: tensed auxilialevel 3 test"))
 ((:path . "nopaux-noinfl-vpcomp-f-formfeat") (:content . "nopaux-noinfl-vpcomp-f-formfeat: single uninflected aux with finite vp complement, level 2 test (inflection but no t&a features)"))

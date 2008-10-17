@@ -3119,7 +3119,6 @@ def customize_nouns():
     ch.iter_next()
   ch.iter_end()
 
-
 # Given the canonical (i.e. choices variable) name of a case, return
 # its abbreviation from the list of cases, which should be created by
 # calling ChoicesFile.cases().  If there is no abbreviation, return
@@ -3241,19 +3240,21 @@ def customize_verb_case():
 
 ###############################################################
 # customize_form()
-#   Create the FORM hierarchies associated with the user's choices
-#   about verb forms
  
 def form_hierarchy():
+  """
+  Create the FORM hierarchies associated with the user's choices
+  about verb forms
+  Adds FORM finite and nonfinte values if there are auxiliaries 
+  or if user specified
+  """
   hier = Hierarchy('form')
 
-  # add FORM finite and nonfinte values if there are auxiliaries 
-  #or if user specified
-  if has_auxiliaries_p() or ch.get_full('noaux-fin-nf') == 'yes':
+  if has_auxiliaries_p() or ch.is_set_full('noaux-fin-nf'):
+
     hier.add('nonfinite', 'form')
     hier.add('finite', 'form')
 
-# FIX? ?Change this to use class function to determine supertype
     for p in ('nf', 'fin'):
 
       ch.iter_begin(p + '-subform')
@@ -3281,8 +3282,37 @@ def customize_form():
 
 
 ##########################################################
+# customize_mark()
+
+def mark_hierarchy():
+  """
+  Define the values of the feature HEAD.KEYS.KEY based on the user's choices.
+  This is a flat hierarchy as (currently) only the leaves may be specified by the user.
+  """
+  hier = []
+
+  ch.iter_begin('mark')
+  while ch.iter_valid():
+    v = ch.get('name')
+    hier += [[v, 'mark']]
+    
+    ch.iter_next()
+  ch.iter_end()
+
+  return hier
+
+def customize_mark():
+  mark_hier = mark_hierarchy()
+
+  if mark_hier:
+    mylang.add('head :+ [KEYS.KEY mark].')
+    mylang.add('mark := predsort.')
+    for m in mark_hier:
+      mylang.add(m[0] + ' := ' + m[1] + '.')
+
+
+##########################################################
 # customize_verbs()
-#
 
 def customize_verbs():
   negmod = ch.get('neg-mod')
@@ -3432,6 +3462,74 @@ def customize_verbs():
     ch.iter_next()
   ch.iter_end()
 
+
+
+#######################################################
+
+def add_arg_tdl(add_tdl, argnum):
+  """
+  A utility function that creates tdl strings of the proper type for adding 
+  feature/value pairs to the complement arguments of auxiliary verbs.
+  Called by add_compform_tdl() and add_compfeature_tdl().
+  add_tdl = tdl to be added (in customize_auxiliaries it can be either 
+  compform_tdl or compfeature_tdl)
+  one-arg = a variable to indicate whether it is a one argument list ('1') 
+  or second argument on a two argument list ('2') 
+  """ 
+  onearg = '[ ARG-ST < [ ' +  add_tdl + ' ] > ]'
+  secondarg = '[ ARG-ST < [ ], [ ' + add_tdl + ' ] > ]' 
+  if argnum == '1':
+    return onearg
+  elif argnum == '2':
+    return secondarg
+
+def create_compfeature_tdl(feature):
+  """
+  A function that creates a tdl string for a feature's geometry.
+  Called by add_compfeature_tdl().
+  feature = the feature for which to create the tdl string
+  """
+  compfeature_tdl = ""
+  features = ch.features()
+  for f in features:
+    if f[0] == feature:
+      geom = f[2]
+      compvalue = ch.get('compvalue')
+      compfeature_tdl += geom + ' ' + compvalue
+  return compfeature_tdl
+
+def add_compform_tdl(type, argnum):
+  """
+  A function that defines a type defintion statement adding compform_tdl and 
+  adds the type definition to mylang.tdl.
+  Called by customize_auxiliaries.
+  type = namedtype in customize_auxiliaries
+  argnum = 1 or 2 depending whether it is the only argument or the second argument (of 2)
+  """
+  compform = ch.get('compform')
+  compform_tdl = 'LOCAL.CAT.HEAD.FORM ' + compform
+  typedef = type + ' := ' + add_arg_tdl(compform_tdl, str(argnum)) + '.'
+  mylang.add(typedef)
+
+def add_compfeature_tdl(type, argnum):
+  """
+  A function that defines type definition statements for auxiliary complement 
+  feature/value pairs and adds the type defintions to mylang.tdl.
+  Called by customize_auxiliaries().
+  type = namedtype in customize_auxiliaries
+  argnum = 1 or 2 depending whether it is the only argument or the second argument (of 2)
+  """
+  ch.iter_begin('compfeature')
+  while ch.iter_valid():
+    feature = ch.get('name')
+    compfeature_tdl = create_compfeature_tdl(feature)
+    typedef = type + ' := ' + add_arg_tdl(compfeature_tdl, str(argnum)) + '.'
+    mylang.add(typedef)
+
+    ch.iter_next()
+  ch.iter_end()
+
+
 def customize_auxiliaries():
 
   if has_auxiliaries_p():
@@ -3443,13 +3541,14 @@ def customize_auxiliaries():
     while ch.iter_valid():
       name = ch.get('name')
       orth = ch.get('orth')
+      namedtype = name + '-aux-lex'      
+
       sem = ch.get('sem')
   
       if sem  == 'add-pred':
         pred = ch.get('pred')
 
       comp = ch.get('comp') 
-      compform = ch.get('compform')
       subj = ch.get('subj')
 
     # Lexical type for auxiliaries.
@@ -3476,12 +3575,16 @@ def customize_auxiliaries():
 
         if sem == 'add-pred':
           auxtypename = 'subj-raise-aux-with-pred'
+
+          # includes: constraining the FORM of the (2nd) argument (complement)
           typedef = \
-            auxtypename + ' := subj-raise-aux & norm-sem-lex-item & \
-                                         trans-first-arg-raising-lex-item-1 & \
-                [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.FORM ' + compform + '] > ].'
+              auxtypename + ' := subj-raise-aux & norm-sem-lex-item & \
+                                        trans-first-arg-raising-lex-item-1 .'
           mylang.add(typedef)
           
+          add_compform_tdl(namedtype, 2)
+          add_compfeature_tdl(namedtype, 2)
+
         else:
           comment = \
             '; To keep the semantically empty ones from spinning on\n' + \
@@ -3492,13 +3595,14 @@ def customize_auxiliaries():
           mylang.add_literal(comment)
 
           auxtypename = 'subj-raise-aux-no-pred'
-# FIX ?? - changed inheritance here to remove redundancy
+          # changed inheritance here to remove redundancy
           typedef = \
-            auxtypename + ' := subj-raise-aux & \
-                               raise-sem-lex-item & \
-                      [ ARG-ST < [ ], [ LOCAL.CAT.HEAD [ AUX -, \
-                                                         FORM ' + compform + ']] > ].'
+            auxtypename + ' := subj-raise-aux & raise-sem-lex-item & \
+                      [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
+          
+          add_compform_tdl(namedtype, 2)
+          add_compfeature_tdl(namedtype, 2)
 
       elif comp == 'v':
         comment = \
@@ -3544,10 +3648,11 @@ def customize_auxiliaries():
                                                   LARG #larg ] !> ], \
                           LKEYS.KEYREL event-relation & \
                                        [ ARG1 #harg ]], \
-                 ARG-ST < [ ], \
-                          [ LOCAL [ CAT.HEAD.FORM ' + compform + ', \
-                                    CONT.HOOK.LTOP #larg ]] > ].'
+                 ARG-ST < [ ], [ LOCAL.CONT.HOOK.LTOP #larg ] > ].'
           mylang.add(typedef)
+
+          add_compform_tdl(namedtype, 2)
+          add_compfeature_tdl(namedtype, 2)
 
         else:
           comment = \
@@ -3560,9 +3665,11 @@ def customize_auxiliaries():
           auxtypename = 'arg-comp-aux-no-pred'
           typedef = \
             auxtypename + ' := arg-comp-aux  & raise-sem-lex-item & \
-               [ ARG-ST < [ ], [ LOCAL.CAT.HEAD [ AUX - , \
-                                                  FORM ' + compform + ']] > ].'
+               [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
+
+          add_compform_tdl(namedtype, 2)
+          add_compfeature_tdl(namedtype, 2)
 
       elif comp == 's':
         typedef = \
@@ -3588,9 +3695,12 @@ def customize_auxiliaries():
                                                  LARG #larg ] !>, \
                            LKEYS.KEYREL event-relation & \
                                         [ ARG1 #harg ]], \
-                  ARG-ST < [ LOCAL [ CAT.HEAD.FORM ' + compform + ' , \
-                                     CONT.HOOK.LTOP #larg ]] > ].'
+                  ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ] > ].'
           mylang.add(typedef)
+
+          add_compform_tdl(namedtype, 1)
+          add_compfeature_tdl(namedtype, 1)
+
         else:
           mylang.add_literal('; S comp aux, no predicate')
 
@@ -3604,11 +3714,12 @@ def customize_auxiliaries():
           auxtypename = 's-comp-aux-no-pred'
           typedef = \
             auxtypename + ' := s-comp-aux & raise-sem-lex-item & \
-               [ ARG-ST < [ LOCAL.CAT.HEAD [ AUX -, \
-                                             FORM ' + compform + ']] > ].'
+               [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
-      
-      namedtype = name + '-aux-lex'
+          
+          add_compform_tdl(namedtype, 1)
+          add_compfeature_tdl(namedtype, 1)
+
       mylang.add(namedtype + ' := ' + auxtypename + '.')
       typedef = \
         orth + ' := ' + namedtype + ' & \
@@ -4312,7 +4423,7 @@ def customize_roots():
                         COORD - ] ].'
   roots.add(typedef, comment)
 
-  if has_auxiliaries_p():
+  if has_auxiliaries_p() or ch.is_set_full('noaux-fin-nf'):
     roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
 
   # ERB 2006-10-05 I predict a bug here:  If we a language with auxiliaries
@@ -4438,6 +4549,7 @@ def customize_matrix(path, arch_type):
   customize_person_and_number()
   customize_gender()
   customize_form()
+  customize_mark()
   customize_tense()
   customize_aspect()
   customize_other_features()

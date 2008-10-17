@@ -412,6 +412,12 @@ def validate_tanda():
     err = 'You have indicated on the word order page that your language has auxiliaries.'
     add_err('noaux-fin-nf', err)
   
+#  if ch.get('has-aux') == 'no' and (ch.get('nf-subform1_name') or ch.get('fin-subform1_name')):
+  if ch.get('has-aux') == 'no' and not (ch.get('noaux-fin-nf') == 'on'):
+    if ch.is_set('nf-subform1_name'):
+
+      err = 'You have indicated that your language has no auxiliaries but you have entered subforms of finite or non-finite.'
+      add_err('noaux-fin-nf', err)
 
 ######################################################################
 # validate_lexicon()
@@ -588,6 +594,14 @@ def validate_lexicon():
         err = 'You must specify the subject type.'
         add_err(prefix + 'subj', err)
     
+    ch.iter_begin('compfeature')
+    while ch.iter_valid():
+      if ch.get('name') and not ch.get('compvalue'):
+        err = 'You must specify a value for this feature.'
+        add_err(ch.iter_prefix() + 'compvalue', err)
+      ch.iter_next()
+    ch.iter_end()
+
     ch.iter_next()
   ch.iter_end()
 

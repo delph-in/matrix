@@ -271,7 +271,9 @@ Select scale-equal "Direction when equal" "When the agent and patient have the s
 
 Section tense-aspect "Tense and Aspect related Features"
 
-Label "<h3>Tense</h3>"
+Label "<h3>Semantic</h3>"
+
+Label "<h4>Tense</h4>"
 
 Label "You may define a tense hierarchy in one of two ways:"
 
@@ -338,7 +340,7 @@ Label "</div>"
 
 Separator
 
-Label "<h3>Aspect</h3>"
+Label "<h4>Aspect</h4>"
 
 Label "<p>This implementation assumes no universal hierarchy or terminology of grammatical aspect. You may build an appropriate hierarchy of grammatical aspect values below.</p>"
 
@@ -363,8 +365,10 @@ EndIter aspect
 
 Separator
 
-Label "<h3>Verb Form</h3>"
-Label "<p>In addition to the semantic features tense and aspect, this implementation utilizes a syntactic feature characterizing the form the verb takes. The FORM feature is currently used to distinguish finite from non-finite forms and to constrain auxiliary complement forms.</p>"
+Label "<h3>Syntactic</h3>"
+
+Label "<h4>Verb Form</h4>"
+Label "<p>In addition to the semantic features tense and aspect, this implementation utilizes a syntactic feature characterizing the form the verb takes. The FORM feature is currently used to distinguish finite from non-finite forms and to constrain auxiliary complement forms. It essentially tracks inflectional categories.</p>"
 Label "<p>If you indicated that your language has auxiliary verbs this implementation assumes that there is a finite/non-finite distinction and adds finite and nonfinite FORM values.<br>"
 
 Check noaux-fin-nf "Finite-nonfinite" "" "My language has no auxiliaries but does make a syntactically relevant finite/non-finite distinction.</p>"
@@ -386,6 +390,15 @@ Label "Define subtypes of <b>finite</b>:"
   EndIter fin-subform
 
 Label "</div>"
+
+Separator 
+
+Label "<h4>Mark feature</h4>"
+
+Label "<p>This syntactic feature is for use to define characteristics having a quasi-semantic nature, i.e., those that have become grammaticalized and/or are not clearly associated with a specific semantic feature. For example, in languages that have distinct auxiliaries each applying to a somewhat arbitrary class of verbs, values of this feature can be defined to distinguish/mark the verb classes.</p>"
+  BeginIter mark{i} "a mark value"
+    Text name "Mark value {i} name" "Value name: " "&nbsp;&nbsp;&nbsp;&nbsp;note: Names cannot contain spaces or special characters." 20
+  EndIter mark
 
 Separator
 
@@ -702,11 +715,11 @@ BeginIter aux{i} "an Aux Type" 1
 
   Label "<div style=\"padding-left: 16px\">"
 
-  Text name "Aux {i} type name" "Type name: " "<br>" 20
+  Text name "Aux {i} type name" "Type name: " "<br>" 30
 
-  Text orth "Aux {i} spelling" "Spelling: " "" 30
+  Text orth "Aux {i} spelling" "Exemplar stem (spelling): " "" 20
 
-  Radio sem "Aux {i} semantics" "<br>This auxiliary verb contributes:<br>" ""
+  Radio sem "Aux {i} semantics" "<br>This auxiliary verb type contributes:<br>" ""
   . add-pred "Predicate" "" "An independent predicate (e.g. _can_v_rel)"
 
   Text pred "Aux {i} predicate" "&nbsp;&nbsp;&nbsp;Predicate: " "" 30
@@ -714,18 +727,30 @@ BeginIter aux{i} "an Aux Type" 1
   Radio sem "Aux {i} semantics" "<br>" ""
   . no-pred "No predicate" "" "Tense/aspect information only"
 
-  Radio comp "Aux {i} complement" "<br>This auxiliary verb takes as its complement a:<br>" ""
+  Radio comp "Aux {i} complement" "<br>This auxiliary verb type takes as its complement a:<br>" ""
   . s "S" "" "saturated sentence<br>"
   . vp "VP" "" "VP, raising the subject<br>"
   . v "V" "" "V, raising all of its arguments (argument composition)<br>"
 
-  Select compform "Aux {i} complement verb form" "The form of the verb heading this auxiliary's complement must be: " "<br>"
+  Select compform "Aux {i} complement verb form" "The form of the verb heading this auxiliary type's complement must be: " "<br>"
   fillvalues form 1
 
-  Radio subj "Aux {i} subject" "If the auxiliary takes a VP or V complement, its subject is a: " ""
+  Radio subj "Aux {i} subject" "If this auxiliary type takes a VP or V complement, its subject is a: " "<br><br>"
   . np "Noun phrase" "" "noun phrase "
   . adp "Adpositional phrase" "" "adpositional phrase "
 
+  Label "In addition, the complement of this auxiliary type is constrained to have the following feature values."
+
+  BeginIter compfeature{j} "a complement feature"
+    
+    Select name "Aux {i} complement feature {j} name" "Feature: " ""
+    fillnames
+
+    Select compvalue "Aux {i} complement feature {j} value" "Value: " ""
+    fillvalues aux{i}_compfeature{j}_name
+
+  EndIter compfeature
+  
   Label "</div>"
 
 EndIter aux

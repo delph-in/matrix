@@ -510,7 +510,10 @@ class ChoicesFile:
 #       [form name]
   def forms(self):
     forms = []
-   
+
+    state = self.iter_state()
+    self.iter_reset()
+    
     if self.get('has-aux') == 'yes' or  self.get('noaux-fin-nf') == 'on':
       forms += [ ['finite'], ['nonfinite'] ]
 
@@ -522,8 +525,34 @@ class ChoicesFile:
           self.iter_next()
         self.iter_end()
 
+    self.iter_set_state(state)
+
     return forms
+
+# marks()
+#   Create and return a list containing the values of the KEYS.KEY feature
+#   that can be used to differentiate based on values of this quasi-semantic, i.e., syntactic feature.
+#   'Mark' is used instead of 'key' as 'key' is used extensively elsewhere in the code.
+#   This list consists of tuples:
+#       [mark name]
+  def marks(self):
+
+    marks = []
+
+    state = self.iter_state()
+    self.iter_reset()
     
+    self.iter_begin('mark')
+    while self.iter_valid():
+      marks += [ [self.get('name')] ]
+
+      self.iter_next()
+    self.iter_end()
+    
+    self.iter_set_state(state)
+
+    return marks
+
 # tenses()
 #   Create and return a list containing information about the 
 #   values of the TENSE feature implied by the current choices.
@@ -531,6 +560,9 @@ class ChoicesFile:
 #       [tense name]
   def tenses(self):
     tenses = []
+
+    state = self.iter_state()
+    self.iter_reset()
 
     tdefn = self.get_full('tense-definition')
     
@@ -553,6 +585,8 @@ class ChoicesFile:
         self.iter_next()
       self.iter_end()
 
+    self.iter_set_state(state)
+
     return tenses
 
 # aspects()
@@ -563,11 +597,16 @@ class ChoicesFile:
   def aspects(self):
     aspects = []
 
+    state = self.iter_state()
+    self.iter_reset()
+
     self.iter_begin('aspect')
     while self.iter_valid():
       aspects += [ [self.get('name')] ]
       self.iter_next()
     self.iter_end()
+
+    self.iter_set_state(state)
 
     return aspects
 
@@ -654,6 +693,16 @@ class ChoicesFile:
 
     if values:
       features += [ ['form', values, 'LOCAL.CAT.HEAD.FORM'] ]
+
+    # Mark (misc.syntactic feature)
+    values = ''
+    for m in self.marks():
+      if values:
+        values += ';'
+      values += m[0] + '|' + m[0]
+    
+    if values:
+      features += [ ['mark', values, 'LOCAL.CAT.HEAD.KEYS.KEY'] ]
 
     # Tense
     values = ''

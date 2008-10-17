@@ -92,12 +92,12 @@ DONE: The creation of a matrix-core directory should be split into
 
 [8/28/2008 lap]
 
-feat: chnage this file so that it is in reverse order (newest entry first)
-feat: create FORM hierarchy section and remove FORM value definition from aux defintion
-bug: due to FORM features being assigned in aux definition, questionnaire page must be submitted after aux is defined in order to finish page
+feat: change this file so that it is in reverse order (newest entry first)
+DONE: create FORM hierarchy section and remove FORM value definition from aux defintion
+DONE: fixed by adding new FORM section - due to FORM features being assigned in aux definition, questionnaire page must be submitted after aux is defined in order to finish page
 feat: add verb type or verb feature value as elements of constraint on aux comp
 feat: currently: all verb types defined must specify trans or intrans - this means that most verb classes will have to be defined twice. More desirable: define types that can include both trans and intrans (perhaps define two types within the system for each user defined type (unless otherwise specified). Then specify valence per stem (causing stem to be assigned to the appropriate type).
-bug: finish validate.py
+DONE: updated validate.py
 bug: in the case where there are no auxiliaries, 'any auxiliary' still appears on the slot input list
 bug: (verb) slot input list is redundant and does not include the verb type hierarchy - it would be better if, for example, main-verb occurred on the list when appropriate
 bug: slot code: conflicts with assignment on INFLECTED -/+ values
