@@ -1252,7 +1252,7 @@ def customize_aspect():
 # head :+ [ AUX bool ] .
 
 # ; comp-head-phrase is restricted from taking prepositions as its head.
-# ; comp-head-phrase is restricted from taking auxiliaries as its head.
+# ; comp-head-phrase is restricted from taking auxiliaries as its head. 
 
 # comp-head-phrase := basic-head-1st-comp-phrase & head-final &
 #    [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo & [ AUX - ]].
@@ -1734,19 +1734,18 @@ def determine_consistent_order(wo,hc):
       adp = 'ov-prep'
     elif hc == 'head-comp' and adporder == 'after':
       adp = 'vo-post'
-
-
+  
   # Now what about auxiliaries?
 
   if has_auxiliaries_p():
     if wo == 'free':
-      if ch.get('aux-order') == 'before':
+      if ch.get('aux-comp-order') == 'before':
         aux = 'free-auxv'
-      elif ch.get('aux-order') == 'after':
+      elif ch.get('aux-comp-order') == 'after':
         aux = 'free-vaux'
-    elif hc == 'comp-head' and ch.get('aux-order') == 'before':
+    elif hc == 'comp-head' and ch.get('aux-comp-order') == 'before':
       aux = 'ov-auxv'
-    elif hc == 'head-comp' and ch.get('aux-order') == 'after':
+    elif hc == 'head-comp' and ch.get('aux-comp-order') == 'after':
       aux = 'vo-vaux'
 
   # ERB 2006-10-05 And what about the order of question particles wrt
@@ -1834,6 +1833,7 @@ def determine_consistent_order(wo,hc):
 
 def specialize_word_order(hc,orders):
 
+
   adp = orders['adp']
   aux = orders['aux']
   qpart_order = orders['qpart_order']
@@ -1870,7 +1870,7 @@ def specialize_word_order(hc,orders):
   head_comp_is = []
   comp_head_is = []
 
-  # VO order
+  # VO order #ASF 2008-10-28 should 'verb' be 'aux'? To check with test unit
   if aux == 'vo-vaux':
      comp_head_is.append('verb')
   if adp == 'vo-post':
