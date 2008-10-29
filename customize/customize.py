@@ -1870,7 +1870,7 @@ def specialize_word_order(hc,orders):
   head_comp_is = []
   comp_head_is = []
 
-  # VO order #ASF 2008-10-28 should 'verb' be 'aux'? To check with test unit
+  # VO order 
   if aux == 'vo-vaux':
      comp_head_is.append('verb')
   if adp == 'vo-post':
@@ -1878,9 +1878,11 @@ def specialize_word_order(hc,orders):
   if qpart_order == 'vo-sq':
     comp_head_is.append('comp')
 
-  # OV order
+  # OV order # 2008-10-28 ASF changed 'aux' to 'verb' (aux is not a head)
+  # Problem: the condition SS.LOC.CAT.HEAD verb is not the right restriction
+  # the head needs to be an auxiliary
   if aux == 'ov-auxv':
-    head_comp_is.append('aux')
+    head_comp_is.append('verb')
   if adp == 'ov-prep':
     head_comp_is.append('adp')
   if qpart_order == 'ov-qs':
