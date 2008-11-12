@@ -39,7 +39,7 @@ http_cookie = os.getenv('HTTP_COOKIE')
 browser_cookie = False
 if http_cookie:
   browser_cookie = True
-  cookie = http_cookie.split('=')[1]
+  cookie = http_cookie.split('=', 1)[1]
 else:
   cookie = str(randint(1000,9999))
   while os.path.exists('sessions/' + cookie):

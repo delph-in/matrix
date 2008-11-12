@@ -21,6 +21,8 @@ from choices import ChoicesFile
 
 ch = {}
 
+hierarchies = {}
+
 mylang = None
 rules = None
 irules = None
@@ -124,7 +126,6 @@ class Hierarchy:
     self.name = name
     self.type = type
     self.hierarchy = []
-    self.augmented = False
 
     self.supertypes = {}
     self.subtypes = {}
@@ -147,17 +148,17 @@ class Hierarchy:
   # type2 := supertype2  ; comment2
   # type3 := supertype3  ; comment3
   # ...
-  def save(self, tdl_file):
-    if not self.augmented:
-      self.augment()
-
+  def save(self, tdl_file, define = True):
     mylang.add_literal(';;; ' + self.name[0:1].upper() + self.name[1:])
 
-    tdl_file.add(self.name + ' := *top*.', '', True)
+    if define:
+      tdl_file.add(self.name + ' := *top*.', '', True)
+
     for h in self.hierarchy:
       tdl_file.add(h[0] + ' := ' + h[1] + '.', h[2], True)
 
-  # For each type in the hierarchy, calculate
+  # For each type in the hierarchy, calculate which types it is
+  # the immediate supertype of, and save this information for later.
   def __calc_supertypes(self):
     self.supertypes = {}
     for h in self.hierarchy:
@@ -169,8 +170,8 @@ class Hierarchy:
       self.supertypes[h[0]].add(h[1])
 
 
-  # For each type in the hierarchy, calculate which leaf types it
-  # covers, and save this information for later.
+  # For each type in the hierarchy, calculate which types it is
+  # the immediate subtype of, and save this information for later.
   def __calc_subtypes(self):
     self.subtypes = {}
     for h in self.hierarchy:
@@ -182,8 +183,8 @@ class Hierarchy:
       self.subtypes[h[1]].add(h[0])
 
 
-  # For each type in the hierarchy, calculate which leaf types it
-  # covers, and save this information for later.
+  # Calculate the leaf types (i.e. types with no subtypes) and save
+  # this information for later.
   def __calc_leaves(self):
     self.__calc_subtypes()
     
@@ -196,6 +197,7 @@ class Hierarchy:
   # For each type in the hierarchy, calculate which leaf types it
   # covers, and save this information for later.
   def __calc_coverage(self):
+    self.__calc_leaves()
     self.__calc_supertypes()
     
     self.coverage = {}
@@ -212,87 +214,6 @@ class Hierarchy:
             working += [ st ]
 
 
-  # Type hierarchies as described in the questionnaire may be
-  # insufficient for some purposes.  For example, implementing the
-  # scale hierarchy of a direct-inverse language may require the
-  # existence of a grouping of leaf types that requires that does not
-  # exist.  This method adds such types to the hierarchy based on the
-  # current choices.
-  def augment(self):
-    if self.augmented:
-      return
-    self.augmented = True
-
-    # Figure out if we need to augment this hierarchy
-    seen = False
-
-    state = ch.iter_state()
-    ch.iter_reset()
-
-    ch.iter_begin('scale')
-    while ch.iter_valid():
-      ch.iter_begin('feat')
-      while ch.iter_valid():
-        if ch.get('name') == self.name:
-          seen = True
-
-        ch.iter_next()
-      ch.iter_end()
-
-      ch.iter_next()
-    ch.iter_end()
-
-    ch.iter_set_state(state)
-
-    if not seen:
-      return
-
-    # Calculate some values needed to do the augmentation
-    self.__calc_leaves()
-    self.__calc_coverage()
-
-    # The set of all subsets of the leaves
-    pset = powerset(self.leaves)
-
-    # Figure the name of each set.  If there's an existing type that
-    # covers a set, use that name instead; otherwise, make one up.
-    setnames = []
-    for s in pset:
-      name = ''
-      for k in self.coverage:
-        if self.coverage[k] == s:
-          name = k
-          break
-
-      if not name:
-        if len(s) == len(self.leaves) - 1:
-          name = 'non-' + [ss for ss in self.leaves.difference(s)][0]
-        else:
-          for n in [ss for ss in s]:
-            if name:
-              name += '-'
-            name += n
-
-      setnames += [ [s, name] ]
-
-    # Now create the new hierarchy
-    new_hier = []
-    new_hier += [ [self.name, '*top*', ''] ]
-    for size in range(len(self.leaves) - 1, 0, -1): # biggest to smallest
-      for s in pset:
-        if len(s) == size:
-          type = [sn[1] for sn in setnames if sn[0] == s][0]
-          for os in pset:
-            if len(os) == size + 1 and os.issuperset(s):
-              supertype = [sn[1] for sn in setnames if sn[0] == os][0]
-              new_hier += [ [type, supertype, self.get_comment(type)] ]
-
-    self.hierarchy = new_hier
-
-    # Re-calculate the coverage, which may have changed.
-    self.__calc_coverage()
-
-
   # Search the hierarchy for a type and return its comment, if any
   def get_comment(self, type):
     for h in self.hierarchy:
@@ -302,22 +223,79 @@ class Hierarchy:
     return ''
 
 
-  # Search the hierarchy for a type covering all the types in
-  # type_list and return it.
+  # Search the hierarchy for a type covering all the types in type_set
+  # and return it.  Type hierarchies as described in the questionnaire
+  # may be insufficient for some purposes.  For example, implementing
+  # the scale hierarchy of a direct-inverse language may require the
+  # existence of a grouping of leaf types that requires that does not
+  # exist.  This method will add such types to the hierarchy as
+  # necessary.
   def get_type_covering(self, type_set):
-    self.augment()
+    if type(type_set) == 'list':
+      type_set = set(type_set)
+
+    self.__calc_coverage()
+    cov = self.coverage
 
     # type_set may contain non-leaves, so construct a new all-leaf set
     new_set = set()
     for e in type_set:
-      for f in self.coverage[e]:
-        new_set.add(f)
+      for l in cov[e]:
+        new_set.add(l)
 
-    for k in self.coverage:
-      if self.coverage[k] == new_set:
+    # check for an existing type covering the right set of leaves
+    for k in cov:
+      if cov[k] == new_set:
         return k
 
-    return ''
+    # Need to create a new type in the hierarchy:
+    # Find types in the hierarchy that are supersets and subsets of
+    supers = []
+    subs = []
+    for k in cov:
+      if cov[k].issuperset(new_set):
+        supers += [ k ]
+      elif cov[k].issubset(new_set):
+        subs += [ k ]
+
+    # prune supers and subs
+    toremove = []
+    for i in range(len(supers) - 1, -1, -1):
+      for j in range(len(supers) -1, -1, -1):
+        if i != j and cov[supers[i]].issuperset(cov[supers[j]]):
+          toremove += [ i ]
+    for i in toremove:
+      del(supers[i])
+
+    toremove = []
+    for i in range(len(subs) - 1, -1, -1):
+      for j in range(len(subs) -1, -1, -1):
+        if i != j and cov[subs[i]].issubset(cov[subs[j]]):
+          toremove += [ i ]
+    for i in toremove:
+      del(subs[i])
+
+    # figure out the name of the new type
+    new_type = ''
+    if len(new_set) == len(self.leaves) - 1:
+      new_type = 'non-' + [t for t in self.leaves.difference(new_set)][0]
+    else:
+      for n in [t for t in new_set]:
+        if new_type:
+          new_type += '-'
+        new_type += n
+
+    # now insert the new type between supers and subs, making sure to
+    # remove any direct inheritance of the subs by the supers
+    for i in range(len(self.hierarchy) - 1, -1, -1):
+      if self.hierarchy[i][0] in subs and self.hierarchy[i][1] in supers:
+        del(self.hierarchy[i])
+    for s in supers:
+      self.hierarchy += [ [new_type, s, ''] ]
+    for s in subs:
+      self.hierarchy += [ [s, new_type, ''] ]
+
+    return new_type
 
 
 ######################################################################
@@ -341,10 +319,10 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
   ch.iter_begin('feat')
   while ch.iter_valid():
     n = ch.get('name')
-    v = ch.get('value')
+    v = ch.get('value').split(', ')
 
     if n == 'case':
-      v = canon_to_abbr(v, cases)
+      v = [canon_to_abbr(c, cases) for c in v]
 
     # The 'head' choice only appears on verb slots, and allows the user
     # to specify features on the subject and object as well
@@ -366,8 +344,14 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
     # If the feature has a geometry, just specify its value;
     # otherwise, handle it specially.
     if geom:
-      mylang.add(type_name +
-                 ' := [ ' + geom + ' ' + v + ' ].')
+      if n in hierarchies:
+        value = hierarchies[n].get_type_covering(v)
+        mylang.add(type_name +
+                   ' := [ ' + geom + ' ' + value + ' ].')
+      else:
+        for value in v:
+          mylang.add(type_name +
+                     ' := [ ' + geom + ' ' + value + ' ].')
     elif n == 'argument structure':
       # constrain the ARG-ST to be passed up
       mylang.add(type_name + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].')
@@ -377,21 +361,22 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
         if f[0] == 'case':
           geom = f[2]
 
-      # specify the subj/comps CASE values
-      s_case = a_case = o_case = ''
-      c = v.split('-')
-      if len(c) > 1:
-        a_case = canon_to_abbr(c[0], cases)
-        o_case = canon_to_abbr(c[1], cases)
-        mylang.add(type_name + \
-                   ' := [ ARG-ST < [ ' + \
-                   geom + ' ' + a_case + ' ], [ ' +
-                   geom + ' ' + o_case + ' ] > ].')
-      else:
-        s_case = canon_to_abbr(c[0], cases)
-        mylang.add(type_name + \
-                   ' := [ ARG-ST.FIRST. ' + \
-                   geom + ' ' + s_case + ' ].')
+      for argst in v:
+        # specify the subj/comps CASE values
+        s_case = a_case = o_case = ''
+        c = argst.split('-')
+        if len(c) > 1:
+          a_case = canon_to_abbr(c[0], cases)
+          o_case = canon_to_abbr(c[1], cases)
+          mylang.add(type_name + \
+                     ' := [ ARG-ST < [ ' + \
+                     geom + ' ' + a_case + ' ], [ ' +
+                     geom + ' ' + o_case + ' ] > ].')
+        else:
+          s_case = canon_to_abbr(c[0], cases)
+          mylang.add(type_name + \
+                     ' := [ ARG-ST.FIRST. ' + \
+                     geom + ' ' + s_case + ' ].')
 
     ch.iter_next()
   ch.iter_end()
@@ -455,7 +440,7 @@ def calc_case_head(case = ''):
     return 'noun'
 
 
-def case_hierarchy():
+def init_case_hierarchy():
   cm = ch.get('case-marking')
   cases = ch.cases()
 
@@ -488,17 +473,16 @@ def case_hierarchy():
       hier.add('o', abs_a, 'transitive patient')
       hier.add('o', acc_a)
 
-  return hier
+  if not hier.is_empty():
+    hierarchies[hier.name] = hier
 
 
 # customize_case_type()
 #   Create a type for case
 
 def customize_case_type():
-  case_hier = case_hierarchy()
-
-  if not case_hier.is_empty():
-    case_hier.save(mylang)
+  if 'case' in hierarchies:
+    hierarchies['case'].save(mylang)
 
 
 # customize_case_adpositions()
@@ -615,12 +599,6 @@ def customize_direct_inverse():
     ch.iter_next()
   ch.iter_end()
 
-  # Create a dictionary of the hierarchies for each feature
-  hierarchies = {}
-  for n in names:
-    hierarchies[n] = type_hierarchy(n)
-    hierarchies[n].augment()
-
   # Now pass through the scale, creating the direct-inverse hierarchy
   # pairwise
   supertype = 'dir-inv-scale'
@@ -735,49 +713,48 @@ def direct_inverse_scale_size():
 #   Create the type definitions associated with the user's choices
 #   about person and number.
 
-def pernum_hierarchy():
-  hier = Hierarchy('pernum')
-
-  for pn in ch.pernums():
-    hier.add(pn[0], 'pernum')
-
-  return hier
-
-
-def person_hierarchy():
+def init_person_hierarchy():
   hier = Hierarchy('person')
 
   for p in ch.persons():
     hier.add(p[0], 'person')
 
-  return hier
+  if not hier.is_empty():
+    hierarchies[hier.name] = hier
 
 
-def number_hierarchy():
+def init_number_hierarchy():
   hier = Hierarchy('number')
 
   for n in ch.numbers():
     hier.add(n[0], 'number')
 
-  return hier
+  if not hier.is_empty():
+    hierarchies[hier.name] = hier
+
+
+def init_pernum_hierarchy():
+  hier = Hierarchy('pernum')
+
+  for pn in ch.pernums():
+    hier.add(pn[0], 'pernum')
+
+  if not hier.is_empty():
+    hierarchies[hier.name] = hier
 
 
 def customize_person_and_number():
-  pernum_hier = pernum_hierarchy()
-  person_hier = person_hierarchy()
-  number_hier = number_hierarchy()
-
-  if not pernum_hier.is_empty():
+  if 'pernum' in hierarchies:
     mylang.add('png :+ [ PERNUM pernum ].')
-    pernum_hier.save(mylang)
+    hierarchies['pernum'].save(mylang)
   else:
-    if not person_hier.is_empty():
+    if 'person' in hierarchies:
       mylang.add('png :+ [ PER person ].')
-      person_hier.save(mylang)
+      hierarchies['person'].save(mylang)
 
-    if not number_hier.is_empty():
+    if 'number' in hierarchies:
       mylang.add('png :+ [ NUM number ].')
-      number_hier.save(mylang)
+      hierarchies['number'].save(mylang)
 
 
 ######################################################################
@@ -785,7 +762,7 @@ def customize_person_and_number():
 #   Create the type definitions associated with the user's choices
 #   about gender.
 
-def gender_hierarchy():
+def init_gender_hierarchy():
   hier = Hierarchy('gender')
 
   ch.iter_begin('gender')
@@ -803,15 +780,14 @@ def gender_hierarchy():
     ch.iter_next()
   ch.iter_end()
 
-  return hier
+  if not hier.is_empty():
+    hierarchies[hier.name] = hier
 
 
 def customize_gender():
-  gender_hier = gender_hierarchy()
-
-  if not gender_hier.is_empty():
+  if 'gender' in hierarchies:
     mylang.add('png :+ [ GEND gender ].')
-    gender_hier.save(mylang)
+    hierarchies['gender'].save(mylang)
 
 
 ######################################################################
@@ -819,29 +795,7 @@ def customize_gender():
 #   Create the type definitions associated with the user's choices
 #   about other features.
 
-# Based on the name of a feature, create and return its hierarchy
-def type_hierarchy(name):
-  if name == 'case':
-    return case_hierarchy()
-  elif name == 'pernum':
-    return pernum_hierarchy()
-  elif name == 'person':
-    return person_hierarchy()
-  elif name == 'number':
-    return number_hierarchy()
-  elif name == 'gender':
-    return gender_hierarchy()
-  else:
-    for h in feature_hierarchies():
-      if h.name == name:
-        return h
-
-  return None
-
-
-def feature_hierarchies():
-  hierarchies = []
-
+def init_other_hierarchies():
   ch.iter_begin('feature')
   while ch.iter_valid():
     feat = ch.get('name')
@@ -865,51 +819,53 @@ def feature_hierarchies():
       ch.iter_next()
     ch.iter_end()
 
-    hierarchies.append(hier)
+    if not hier.is_empty():
+      hierarchies[hier.name] = hier
 
     ch.iter_next()
   ch.iter_end()
 
-  return hierarchies
-
 
 def customize_other_features():
-  for h in feature_hierarchies():
+  for name in hierarchies:
+    h = hierarchies[name]
     feat = h.name
     type = h.type
 
-    if type == 'head':
-      mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].')
-    else:
-      mylang.add('png :+ [ ' + feat.upper() + ' ' + feat + ' ].')
+    # if this hierarchy isn't handled elsewhere, handle it here
+    if feat not in ['case', 'person', 'number', 'pernum', 'gender',
+                    'form', 'mark', 'tense', 'aspect']:
+      if type == 'head':
+        mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].')
+      else:
+        mylang.add('png :+ [ ' + feat.upper() + ' ' + feat + ' ].')
 
-    # sfd: If it's an 'index' feature, we should make sure to strip it
-    # out in the VPM
+      # sfd: If it's an 'index' feature, we should make sure to strip it
+      # out in the VPM
 
-    h.save(mylang)
+      h.save(mylang)
 
 
 ######################################################################
 # customize_tense()
 # Create tense feature value hierarchies per the user's choices 
 
-def customize_tense():
+def init_tense_hierarchy():
+  hier = Hierarchy('tense')
+
   tdefn = ch.get('tense-definition')
   if tdefn:
-    comment = ';;; Tense'
-    mylang.add_literal(comment)
-
     if tdefn == 'choose':
       ppflist = []
       for ten in ('nonfuture', 'nonpast', 'past', 'present', 'future' ):
         
         if ch.is_set(ten):
           if ten not in ppflist:
-            mylang.add(ten + ' := tense .')
+            hier.add(ten, 'tense')
           ch.iter_begin(ten + '-subtype')
           while ch.iter_valid():
             subtype = ch.get('name')
-            mylang.add(subtype + ' := ' + ten + ' .')
+            hier.add(subtype, ten)
             
             ch.iter_next()
           ch.iter_end()
@@ -917,13 +873,13 @@ def customize_tense():
           if ten == 'nonfuture':
             for moreten in ('past', 'present'):
               if ch.is_set(moreten):
-                mylang.add(moreten + ' := ' + ten + ' .')
+                hier.add(moreten, ten)
                 ppflist.append(moreten)       
 
           if ten == 'nonpast':
             for moreten in ('present', 'future'):
               if ch.is_set(moreten):
-                mylang.add(moreten + ' := ' + ten + ' .')
+                hier.add(moreten, ten)
                 ppflist.append(moreten)
 
     elif tdefn == 'build':
@@ -936,21 +892,28 @@ def customize_tense():
         while ch.iter_valid():
           supername = ch.get('name')
 
-          mylang.add(name + ' := ' + supername + '.')
+          hier.add(name, supername)
           ch.iter_next()
         ch.iter_end()
 
         ch.iter_next()
       ch.iter_end()
 
+  if not hier.is_empty():
+    hierarchies[hier.name] = hier
+
+
+def customize_tense():
+  if 'tense' in hierarchies:
+    hierarchies['tense'].save(mylang, False)
+
 
 ######################################################################
 # customize_aspect()
 # Create aspect feature value definitions per the user's choices
 
-def customize_aspect():
-  comment = ';;; Aspect'
-  mylang.add_literal(comment)
+def init_aspect_hierarchy():
+  hier = Hierarchy('aspect')
 
   ch.iter_begin('aspect')
   while ch.iter_valid():
@@ -960,12 +923,21 @@ def customize_aspect():
     while ch.iter_valid():
       supername = ch.get('name')
       
-      mylang.add(name + ' := ' + supername + '.')
+      hier.add(name, supername)
       ch.iter_next()
     ch.iter_end()
       
     ch.iter_next()
   ch.iter_end()
+
+  if not hier.is_empty():
+    hierarchies[hier.name] = hier
+
+
+def customize_aspect():
+  if 'aspect' in hierarchies:
+    hierarchies['aspect'].save(mylang, False)
+
 
 ######################################################################
 # customize_word_order()
@@ -3243,7 +3215,7 @@ def customize_verb_case():
 ###############################################################
 # customize_form()
  
-def form_hierarchy():
+def init_form_hierarchy():
   """
   Create the FORM hierarchies associated with the user's choices
   about verb forms
@@ -3273,44 +3245,43 @@ def form_hierarchy():
         ch.iter_next()
       ch.iter_end()
 
-  return hier  
+  if not hier.is_empty():
+    hierarchies[hier.name] = hier
+
 
 def customize_form():
-  form_hier = form_hierarchy()
-
-  if not form_hier.is_empty():
+  if 'form' in hierarchies:
     mylang.add('head :+ [FORM form].')
-    form_hier.save(mylang)
+    hierarchies['form'].save(mylang)
 
 
 ##########################################################
 # customize_mark()
 
-def mark_hierarchy():
+def init_mark_hierarchy():
   """
   Define the values of the feature HEAD.KEYS.KEY based on the user's choices.
   This is a flat hierarchy as (currently) only the leaves may be specified by the user.
   """
-  hier = []
+  hier = Hierarchy('mark')
 
   ch.iter_begin('mark')
   while ch.iter_valid():
     v = ch.get('name')
-    hier += [[v, 'mark']]
+    hier.add(v, 'mark')
     
     ch.iter_next()
   ch.iter_end()
 
-  return hier
+  if not hier.is_empty():
+    hierarchies[hier.name] = hier
+
 
 def customize_mark():
-  mark_hier = mark_hierarchy()
-
-  if mark_hier:
+  if 'mark' in hierarchies:
     mylang.add('head :+ [KEYS.KEY mark].')
     mylang.add('mark := predsort.')
-    for m in mark_hier:
-      mylang.add(m[0] + ' := ' + m[1] + '.')
+    hierarchies['mark'].save(mylang, False)
 
 
 ##########################################################
@@ -4546,7 +4517,20 @@ def customize_matrix(path, arch_type):
                           '(defparameter *grammar-version* \"' +
                           ch.get('language') + ' (' + lisp_dt + ')\")')
 
+  # Initialize various type hierarchies
+  init_case_hierarchy()
+  init_person_hierarchy()
+  init_number_hierarchy()
+  init_pernum_hierarchy()
+  init_gender_hierarchy()
+  init_tense_hierarchy()
+  init_aspect_hierarchy()
+  init_form_hierarchy()
+  init_mark_hierarchy()
+  init_other_hierarchies()
+
   # Call the various customization functions
+  customize_inflection()
   customize_case()
   customize_person_and_number()
   customize_gender()
@@ -4560,7 +4544,6 @@ def customize_matrix(path, arch_type):
   customize_coordination()
   customize_yesno_questions()
   customize_lexicon()
-  customize_inflection()
   customize_test_sentences(matrix_path)
   customize_roots()
 

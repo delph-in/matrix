@@ -113,6 +113,6 @@ for l in lines:
         f.write("\"))\n")
 f.close()
 
-# Reminders about cvs
+# Reminders about svn
 
-print "Success!\n Use cvs add to add choices/" + lg_name + ", txt-suites/" + lg_name + ",\n skeletons." + lg_name + ", and home/gold/" + lg_name + ".\n Then do cvs commit in unit-tests."
+print "Success!\n Use svn add to add choices/" + lg_name + ", txt-suites/" + lg_name + ",\n skeletons." + lg_name + ", and home/gold/" + lg_name + ".\n Then do svn commit in unit-tests."

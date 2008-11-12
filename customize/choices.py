@@ -34,7 +34,7 @@ class ChoicesFile:
       for l in lines:
         l = l.strip()
         if l:
-          (key, value) = l.split('=')
+          (key, value) = l.split('=', 1)
           self.set(key, value)
     except:
       pass

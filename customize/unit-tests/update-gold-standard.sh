@@ -37,5 +37,5 @@ cp $current/relations $gold/relations;
 cp $current/result $gold/result;
 cp $current/run $gold/run;
 
-echo "Copy successful.  Be sure to run cvs commit in $gold."
+echo "Copy successful.  Be sure to run svn commit in $gold."
 

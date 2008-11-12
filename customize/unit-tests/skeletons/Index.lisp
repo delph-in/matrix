@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "multi-select-case") (:content . "multi-select-case: multi-select of feature values, namely case"))
 ((:path . "nf-twoforms-withtwoaux-vp-1008") (:content . "nf-twoforms-withtwoaux-vp-1008: testing-- two nonfinite forms"))
 ((:path . "nf-form-withaux-vp-1008") (:content . "nf-form-withaux-vp-1008: testing nonfinite form constraint for aux complement"))
 ((:path . "fin-forms-noaux-1008") (:content . "fin-forms-noaux-1008: testing finite/nonfinite distinction when there are no auxiliaries"))

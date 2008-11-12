@@ -579,7 +579,7 @@ BeginIter noun{i} "a Noun Type" 1
     Select name "Noun {i} feature {j} name" "Name: " " "
     fillnames
 
-    Select value "Noun {i} feature {j} value" "Value: " ""
+    MultiSelect value "Noun {i} feature {j} value" "Value: " ""
     fillvalues noun{i}_feat{j}_name
 
   EndIter feat
@@ -652,7 +652,7 @@ BeginIter noun-slot{i} "a Slot"
       Select name "Noun slot {i} morpheme {j} feature {k} name" "Name: " " "
       fillnames
 
-      Select value "Noun slot {i} morpheme {j} feature {k} value" "Value: " ""
+      MultiSelect value "Noun slot {i} morpheme {j} feature {k} value" "Value: " ""
       fillvalues noun-slot{i}_morph{j}_feat{k}_name
 
     EndIter feat
@@ -688,7 +688,7 @@ BeginIter verb{i} "a Verb Type" 2
     Select name "Verb {i} feature {j} name" "Name: " " "
     fillnames
 
-    Select value "Verb {i} feature {j} value" "Value: " ""
+    MultiSelect value "Verb {i} feature {j} value" "Value: " ""
     fillvalues verb{i}_feat{j}_name
 
     Select head "Verb {i} feature {j} head" "Specified on: " ""
@@ -815,7 +815,7 @@ BeginIter verb-slot{i} "a Slot"
       Select name "Verb slot {i} morpheme {j} feature {k} name" "Name: " " "
       fillnames
 
-      Select value "Verb slot {i} morpheme {j} feature {k} value" "Value: " ""
+      MultiSelect value "Verb slot {i} morpheme {j} feature {k} value" "Value: " ""
       fillvalues verb-slot{i}_morph{j}_feat{k}_name
 
       Select head "Verb slot {i} morpheme {j} feature {k} head" "Specified on: " ""
@@ -856,7 +856,7 @@ BeginIter det{i} "a Determiner"
     Select name "Determiner {i} feature {j} name" "Name: " " "
     fillnames
 
-    Select value "Determiner {i} feature {j} value" "Value: " ""
+    MultiSelect value "Determiner {i} feature {j} value" "Value: " ""
     fillvalues det{i}_feat{j}_name
 
   EndIter feat
@@ -924,7 +924,7 @@ BeginIter det-slot{i} "a Slot"
       Select name "Determiner slot {i} morpheme {j} feature {k} name" "Name: " " "
       fillnames
 
-      Select value "Determiner slot {i} morpheme {j} feature {k} value" "Value: " ""
+      MultiSelect value "Determiner slot {i} morpheme {j} feature {k} value" "Value: " ""
       fillvalues det-slot{i}_morph{j}_feat{k}_name
 
     EndIter feat
@@ -950,7 +950,7 @@ BeginIter adp{i} "an Adposition"
     Select name "Adposition {i} feature {j} name" "Name: " " "
     fillnames
 
-    Select value "Adposition {i} feature {j} value" "Value: " ""
+    MultiSelect value "Adposition {i} feature {j} value" "Value: " ""
     fillvalues adp{i}_feat{j}_name
 
   EndIter feat

@@ -496,9 +496,13 @@ def TDLparse_feat():
 def TDLparse_list():
   global tok
   tok.pop(0) # '<'
-  seen_dot = False
+
+  term = True       # is the list terminated (i.e. doesn't end in ...)?
+  seen_dot = False  # were the items separated by a .?
   child = []
   while tok[0] != '>':
+    if tok[0] == '...':
+      term = False
     child.append(TDLparse_conj())
     if tok[0] == ',':
       tok.pop(0)
@@ -522,7 +526,7 @@ def TDLparse_list():
   elem = None
   
   # loop through all but the last child, constructing a list as we go
-  for c in child[:-1]:
+  for i in range(len(child) - 1):
     if elem == None:
       temp = TDLelem_feat()
       elem = temp
@@ -536,40 +540,44 @@ def TDLparse_list():
       cur = temp
     temp = TDLelem_av('FIRST')
     cur.add(temp)
-    temp.add(c)
+    temp.add(child[i])
 
-    # set up for the next iteration (or the finish)
-    temp = TDLelem_av('REST')
-    cur.add(temp)
-    cur = temp # leave cur pointing to an av
+    # Unless we're at the end of an unterminated list...
+    if term or i < len(child) - 2:
+      # ...set up for the next iteration (or the finish)
+      temp = TDLelem_av('REST')
+      cur.add(temp)
+      cur = temp # leave cur pointing to an av
 
-  # deal with the last child as indicated by seen_dot
-  if seen_dot:
-    cur.add(child[-1])
-  else:
-    if elem == None:
-      temp = TDLelem_feat()
-      elem = temp
-      cur = temp
+  # Unless the list is unterminated...
+  if term:
+    # ...add the last child to the list as indicated by seen_dot
+    if seen_dot:
+      cur.add(child[-1])
     else:
+      if elem == None:
+        temp = TDLelem_feat()
+        elem = temp
+        cur = temp
+      else:
+        temp = TDLelem_conj()
+        cur.add(temp)
+        cur = temp
+        temp = TDLelem_feat()
+        cur.add(temp)
+        cur = temp
+      temp = TDLelem_av('FIRST')
+      cur.add(temp)
+      temp.add(child[-1])
+      temp = TDLelem_av('REST')
+      cur.add(temp)
+      cur = temp
       temp = TDLelem_conj()
       cur.add(temp)
       cur = temp
-      temp = TDLelem_feat()
+      temp = TDLelem_type('null')
       cur.add(temp)
       cur = temp
-    temp = TDLelem_av('FIRST')
-    cur.add(temp)
-    temp.add(child[-1])
-    temp = TDLelem_av('REST')
-    cur.add(temp)
-    cur = temp
-    temp = TDLelem_conj()
-    cur.add(temp)
-    cur = temp
-    temp = TDLelem_type('null')
-    cur.add(temp)
-    cur = temp
   
   return elem
 
@@ -726,6 +734,7 @@ class TDLfile:
     TDLset_file(sys.stdout)
     for t in self.typedefs:
       t.write()
+    print '\n'
 
   ###########################################################################
   # Add a type definition to this file, merging with an existing definition

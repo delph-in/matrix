@@ -31,270 +31,14 @@ HTML_pretitle = '''<html>
 <head>
 '''
 
-HTML_posttitle = '''<script type="text/javascript">
-function toggle_display(para_id, button_id)
-{
-  p = document.getElementById(para_id);
-  b = document.getElementById(button_id);
-  if (p.style.display == 'none') {
-    p.style.display = 'block';
-    b.innerHTML = '&#9660;';
-  } else {
-    p.style.display = 'none';
-    b.innerHTML = '&#9658;';
-  }
-}
+HTML_posttitle = '''<script type="text/javascript" src="matrix.js">
+</script>
 
-function clear_form()
-{
-  var elements = document.getElementsByTagName('input');
-  for (var i = 0; elements.item(i); i++) {
-    var elm = elements.item(i)
-    if (elm.type == 'text') {
-      elm.value = '';
-    } else if (elm.type == 'radio' || elm.type == 'checkbox') {
-      elm.checked = ''
-    }
-  }
-  elements = document.getElementsByTagName('select');
-  for (var i = 0; elements.item(i); i++) {
-    var elm = elements.item(i)
-    elm.value = '';
-  }
-}
-
-var animations = [];
-var an_max = 0;
-function animate()
-{
-  for (var i = an_max - 1; i >= 0; i--) {
-    var a = animations[i];
-    var n = document.getElementById(a.id);
-    if (a.ticks) {
-      var v = Number(n.style[a.property].replace(/px/, ''));
-      if (a.factor > 0) {
-        v *= a.factor;
-      } else {
-        v += a.step;
-      }
-      n.style[a.property] = v + 'px';
-      a.ticks--;
-    } else {
-      n.style[a.property] = '';
-      //n.style.overflow = '';
-      animations =
-        animations.slice(0,i).concat(animations.slice(i + 1, an_max));
-      an_max--;
-    }
-  }
-
-  setTimeout('animate()', 10);
-}
-
-function focus_all_fields()
-{
-  var f = document.forms[0];
-  if (f) {
-    var e = f.elements;
-    for (var i = 0; i < e.length; i++) {
-      e[i].focus();
-      e[i].blur();
-    }
-    window.scrollTo(0, 0);
-  }
-}
-
-function expand_region(id)
-{
-  var n = document.getElementById(id);
-
-  //n.style.overflow = 'hidden';
-
-  var a = { id: id, property: 'maxHeight', factor: 2, ticks: 10 };
-  n.style[a.property] = '1px';
-
-  animations[an_max++] = a;
-}
-
-function prev_div(n, name)
-{
-  var p = n.previousSibling;
-  while (p && p.tagName != 'DIV') {
-    p = p.previousSibling;
-  }
-
-  if (p.id == name + '_TEMPLATE' || p.id == name + '_ANCHOR')
-    return null;
-  else
-    return p;
-}
-
-function do_clone_region(name, iter_var, bAnim)
-{
-  var d = document.getElementById(name + '_TEMPLATE');
-  var a = document.getElementById(name + '_ANCHOR');
-  var p = prev_div(a, name);
-
-  var cur = 1;
-  if (p && p.id) {
-    var pid = p.id;
-    if (pid.indexOf(name) == 0) {
-      pid = pid.slice(name.length);
-      var i = pid.search(/[0-9]+/);
-      if (i != -1) {
-        cur = Number(pid.slice(i));
-        cur++;
-      }
-    }
-  }
-
-  var n = d.cloneNode(true);
-
-  var re = new RegExp('{' + iter_var + '}', 'g');
-  n.innerHTML = n.innerHTML.replace(re, cur);
-
-  n.id = name + cur;
-  n.style.display = '';
-
-  a.parentNode.insertBefore(n, a);
-
-  if (bAnim) {
-    expand_region(n.id);
-  }
-}
-
-function clone_region(name, iter_var)
-{
-  do_clone_region(name, iter_var, true);
-}
-
-function clone_region_noanim(name, iter_var)
-{
-  do_clone_region(name, iter_var, false);
-}
-
-function remove_region(name)
-{
-  var a = document.getElementById(name + '_ANCHOR');
-  var p = prev_div(a, name);
-  
-  if (p && p.id) {
-    if (p.id.indexOf(name) == 0) {
-      p.parentNode.removeChild(p);
-    }
-  }
-}
-
-// Remove the auto-filled OPTIONs of a SELECT
-function remove_temp_options(select)
-{
-  for (var i = select.options.length - 1; i >= 0; i--) {
-    var o = select.options[i];
-    if (o.className == 'temp') {
-      select.removeChild(o);
-    }
-  }
-}
-
-function fill_regex(name, pattern, nameOnly)
-{
-  var select = document.getElementsByName(name)[0];
-  var old_val = select.value;  // store the previously selected option
-
-  remove_temp_options(select);
-
-  // Pass through the links in the document, looking for ones whose
-  // name attribute matches the pattern.  When one is found, use its
-  // contents to create an option.
-  pattern = '^' + pattern + '$';
-
-  var e = document.forms[0].elements;
-  for (var i = 0; i < e.length; i++) {
-    if (e[i].name.search(pattern) != -1) {
-      var val = e[i].name.replace(/_[^_]*$/, '');
-
-      var desc = val
-      var f = document.getElementsByName(val + '_name');
-      if (f && f[0] && f[0].value) {
-        if (nameOnly) {
-          val = desc = f[0].value;
-        } else {
-          desc = f[0].value + ' (' + desc + ')';
-        }
-      }
-
-      var o = document.createElement('option');
-      o.className = 'temp';
-      o.value = val;
-      o.innerHTML = desc;
-
-      select.appendChild(o);
-    }
-  }
-
-  select.value = old_val;  // restore the selected option
-}
-
+<script type="text/javascript">
 // An array of strings, each of the form 'name:value|friendly value,...'
 var features = [
 %s
 ];
-
-function fill_feature_names(select_name)
-{
-  var select = document.getElementsByName(select_name)[0];
-  var old_val = select.value;  // store the previously selected option
-
-  remove_temp_options(select);
-
-  for (var i = 0; i < features.length; i++) {
-    var f = features[i].split(':');
-    
-    var o = document.createElement('option');
-    o.className = 'temp';
-    o.value = f[0];
-    o.innerHTML = f[0];
-
-    select.appendChild(o);
-  }
-
-  select.value = old_val;  // restore the selected option
-}
-
-function fill_feature_values(select_name, other_name, literal_feature)
-{
-  var select = document.getElementsByName(select_name)[0];
-  var old_val = select.value;  // store the previously selected option
-
-  remove_temp_options(select);
-
-  if (literal_feature == 1) {
-    var other_val = other_name;
-  }  
-  else {
-    var other_val = document.getElementsByName(other_name)[0].value;
-  }
-
-  for (var i = 0; i < features.length; i++) {
-    var v = features[i].split(':');
-
-    if (v[0] == other_val) {
-      v = v[1].split(';');
-
-      for (var j = 0; j < v.length; j++) {
-        var n = v[j].split('|');
-        var o = document.createElement('option');
-        o.className = 'temp';
-        o.value = n[0];
-        o.innerHTML = n[1];
-
-        select.appendChild(o);
-      }
-    }
-  }
-
-  select.value = old_val;  // restore the selected option
-}
 
 var verb_case_patterns = [
 %s
@@ -303,35 +47,8 @@ var verb_case_patterns = [
 var morph_case_patterns = [
 %s
 ];
-
-function fill_case_patterns(select_name, morph)
-{
-  var select = document.getElementsByName(select_name)[0];
-  var old_val = select.value;  // store the previously selected option
-
-  remove_temp_options(select);
-
-  var pats;
-  if (morph) {
-    pats = morph_case_patterns;
-  } else {
-    pats = verb_case_patterns;
-  }
-
-  for (var i = 0; i < pats.length; i++) {
-    var p = pats[i].split(':');
-    
-    var o = document.createElement('option');
-    o.className = 'temp';
-    o.value = p[0];
-    o.innerHTML = p[1];
-
-    select.appendChild(o);
-  }
-
-  select.value = old_val;  // restore the selected option
-}
 </script>
+
 <link rel="stylesheet" href="matrix.css">
 </head>
 '''
@@ -410,7 +127,7 @@ Typed Feature Structure Grammars</i></a>.
 <a href="http://www.delph-in.net/lkb">To the LKB page</a>
 '''
 
-HTML_prebody = '''<body onload="animate(); focus_all_fields();">
+HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init();">
 '''
 
 HTML_method = 'post'
@@ -471,17 +188,21 @@ def html_input(errors, type, name, value, checked, before, after,
 
 
 # Return an HTML <select> tag with the specified name
-def html_select(errors, name, onfocus = ''):
+def html_select(errors, name, multi, onfocus = ''):
   asterisk = ''
   if name and errors.has_key(name):
     asterisk = '<span class="error" title="%s">*</span>' % \
                (errors[name])
 
+  multi_attr = ''
+  if multi:
+    multi_attr = ' class="multi"'
+
   if onfocus:
     onfocus = ' onfocus="' + onfocus + '"'
 
-  return '%s<select name="%s"%s>' % \
-         (asterisk, name, onfocus)
+  return '%s<select name="%s"%s%s>' % \
+         (asterisk, name, multi_attr, onfocus)
 
 
 # Return an HTML <option> tag with the specified attributes and
@@ -577,7 +298,7 @@ class MatrixDefFile:
           ty = w[0]
           vn = w[1]
           fn = w[2]
-          if ty in ['Text', 'Check', 'Radio', 'Select', '.']:
+          if ty in ['Text', 'Check', 'Radio', 'Select', 'MultiSelect', '.']:
             self.v2f[vn] = fn
             self.f2v[fn] = vn
 
@@ -676,7 +397,7 @@ class MatrixDefFile:
         for c in choice:
           c = c.strip()
           if c:
-            (a, v) = c.split('=')
+            (a, v) = c.split('=', 1)
             if a == 'section':
               cur_sec = v.strip()
             elif cur_sec == word[1]:
@@ -773,7 +494,8 @@ class MatrixDefFile:
                              rbef, raft) + '\n'
           i += 1
         html += af + '\n'
-      elif word[0] == 'Select':
+      elif word[0] in ['Select', 'MultiSelect']:
+        multi = (word[0] == 'MultiSelect')
         (vn, fn, bf, af) = word[1:]
         vn = prefix + vn
 
@@ -795,31 +517,31 @@ class MatrixDefFile:
         if fill_type[0:4] == 'fill':
           if fill_type == 'fillregex':
             if fill_arg2:
-              html += html_select(errors, vn,
+              html += html_select(errors, vn, multi,
                                   'fill_regex(\'' + vn + \
                                   '\', \'' + fill_arg1 + '\', true)') + '\n'
             else:
-              html += html_select(errors, vn,
+              html += html_select(errors, vn, multi,
                                   'fill_regex(\'' + vn + \
                                   '\', \'' + fill_arg1 + '\')') + '\n'
           elif fill_type == 'fillnames':
-            html += html_select(errors, vn,
+            html += html_select(errors, vn, multi,
                                 'fill_feature_names(\'' + vn + '\')') + '\n'
           elif fill_type == 'fillvalues':
             if fill_arg2:
-              html += html_select(errors, vn,
+              html += html_select(errors, vn, multi,
                                   'fill_feature_values(\'' + vn + \
                                   '\', \'' + fill_arg1 + '\', true)') + '\n'
             else:
-              html += html_select(errors, vn,
+              html += html_select(errors, vn, multi,
                                   'fill_feature_values(\'' + vn + \
                                   '\', \'' + fill_arg1 + '\')') + '\n'
           elif fill_type == 'fillverbpat':
-            html += html_select(errors, vn,
+            html += html_select(errors, vn, multi,
                                 'fill_case_patterns(\'' + vn + \
                                 '\', false)') + '\n'
           elif fill_type == 'fillmorphpat':
-            html += html_select(errors, vn,
+            html += html_select(errors, vn, multi,
                                 'fill_case_patterns(\'' + vn + \
                                 '\', true)') + '\n'
 
@@ -827,24 +549,32 @@ class MatrixDefFile:
 
           if choices.is_set_full(vn):
             sval = choices.get_full(vn)
-            shtml = sval
+            shtml = ''
             # If we're filling in a SELECT that shows friendly names,
             # we have to look it up.
             if fill_type in ['fillvalues']:
-              for f in choices.features():
-                if f[0] == choices.get_full(fill_arg1):
-                  for v in f[1].split(';'):
-                    n = v.split('|')
-                    if n[0] == shtml:
-                      shtml = n[1]
+              for sv in sval.split(', '):
+                for f in choices.features():
+                  if f[0] == choices.get_full(fill_arg1):
+                    for v in f[1].split(';'):
+                      n = v.split('|')
+                      if n[0] == sv:
+                        if shtml:
+                          shtml += ', '
+                        shtml += n[1]
             elif fill_type in ['fillverbpat']:
-              for p in choices.patterns():
-                if p[0] == shtml:
-                  shtml = p[1]
+              for sv in sval.split(', '):
+                for p in choices.patterns():
+                  if p[0] == sv:
+                    if shtml:
+                      shtml += ', '
+                    shtml += p[1]
+            else:
+              shtml = sval
             html += html_option(errors, sval, True, shtml, True) + '\n'
           i += 1
         else:
-          html += html_select(errors, vn) + '\n'
+          html += html_select(errors, vn, multi) + '\n'
           html += html_option(errors, '', False, '') + '\n'
 
         while lines[i] != '\n':
@@ -866,7 +596,7 @@ class MatrixDefFile:
                            bf, af, sz) + '\n'
       elif word[0] == 'BeginIter':
         iter_orig = word[1]
-        (iter_name, iter_var) = word[1].replace('}', '').split('{')
+        (iter_name, iter_var) = word[1].replace('}', '').split('{', 1)
         label = word[2]
         iter_min = 0
         if len(word) > 3:
@@ -1034,7 +764,7 @@ class MatrixDefFile:
       word = tokenize_def(lines[i])
       if len(word) == 0:
         pass
-      elif word[0] in ['Check', 'Text', 'Radio', 'Select']:
+      elif word[0] in ['Check', 'Text', 'Radio', 'Select', 'MultiSelect']:
         a = choices.iter_prefix() + word[1]
         if not already_saved.has_key(a):
           already_saved[a] = True
@@ -1045,7 +775,7 @@ class MatrixDefFile:
             f.write(a + '=' + v + '\n')
       elif word[0] == 'BeginIter':
         iter_orig = word[1]
-        (iter_name, iter_var) = word[1].replace('}', '').split('{')
+        (iter_name, iter_var) = word[1].replace('}', '').split('{', 1)
         i += 1
         beg = i
         while True:

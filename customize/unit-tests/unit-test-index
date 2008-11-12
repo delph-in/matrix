@@ -24,3 +24,4 @@ auxcomp-markfeature-vp-1015=testing KEYS.KEY mhat is being used to distinguish e
 fin-forms-noaux-1008=testing finite/nonfinite distinction when there are no auxiliaries
 nf-form-withaux-vp-1008=testing nonfinite form constraint for aux complement
 nf-twoforms-withtwoaux-vp-1008=testing-- two nonfinite forms
+multi-select-case=multi-select of feature values, namely case
