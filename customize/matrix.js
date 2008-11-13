@@ -32,16 +32,6 @@ function event_target(e)
   return e.srcElement;
 }
 
-function enable_submit(enable)
-{
-  var inputs = document.getElementsByTagName('input');
-  for (var i = 0; i < inputs.length; i++) {
-    if (inputs[i].type == 'submit') {
-      inputs[i].disabled = !enable;
-    }
-  }
-}
-
 //////////////////////////////////////////////////////////////////////
 // Main Page functions
 
@@ -267,7 +257,7 @@ function set_select_value(select, value, text)
     var o = document.createElement('option');
     o.className = 'temp';
     o.value = value;
-    o.text = text;
+    o.innerHTML = text;
     select.appendChild(o);
   }
 
@@ -285,7 +275,7 @@ function fill_regex(name, pattern, nameOnly)
   var old_val = select.value;  // store the previously selected option
   var old_text = old_val;
   if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].text;
+    old_text = select.options[select.selectedIndex].innerHTML;
   }
 
   remove_temp_options(select);
@@ -313,7 +303,7 @@ function fill_regex(name, pattern, nameOnly)
       var o = document.createElement('option');
       o.className = 'temp';
       o.value = val;
-      o.text = desc;
+      o.innerHTML = desc;
 
       select.appendChild(o);
     }
@@ -332,7 +322,7 @@ function fill_feature_names(select_name)
   var old_val = select.value;  // store the previously selected option
   var old_text = old_val;
   if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].text;
+    old_text = select.options[select.selectedIndex].innerHTML;
   }
 
   remove_temp_options(select);
@@ -343,7 +333,7 @@ function fill_feature_names(select_name)
     var o = document.createElement('option');
     o.className = 'temp';
     o.value = f[0];
-    o.text = f[0];
+    o.innerHTML = f[0];
 
     select.appendChild(o);
   }
@@ -362,7 +352,7 @@ function fill_feature_values(select_name, other_name, literal_feature)
   var old_val = select.value;  // store the previously selected option
   var old_text = old_val;
   if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].text;
+    old_text = select.options[select.selectedIndex].innerHTML;
   }
 
   remove_temp_options(select);
@@ -385,7 +375,7 @@ function fill_feature_values(select_name, other_name, literal_feature)
         var o = document.createElement('option');
         o.className = 'temp';
         o.value = n[0];
-        o.text = n[1];
+        o.innerHTML = n[1];
 
         select.appendChild(o);
       }
@@ -406,7 +396,7 @@ function fill_case_patterns(select_name, morph)
   var old_val = select.value;  // store the previously selected option
   var old_text = old_val;
   if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].text;
+    old_text = select.options[select.selectedIndex].innerHTML;
   }
 
   remove_temp_options(select);
@@ -424,7 +414,7 @@ function fill_case_patterns(select_name, morph)
     var o = document.createElement('option');
     o.className = 'temp';
     o.value = p[0];
-    o.text = p[1];
+    o.innerHTML = p[1];
 
     select.appendChild(o);
   }
@@ -489,7 +479,7 @@ function multi_create(select)
   t.id = select.name + '_multitext';
   t.type = 'text';
   if (select.selectedIndex != -1) {
-    t.value = select.options[select.selectedIndex].text;
+    t.value = select.options[select.selectedIndex].innerHTML;
   }
   t.size = Math.max(10, t.value.length);
   t.readonly = 'readonly';
@@ -519,6 +509,15 @@ function multi_box(select_name)
   return document.getElementById(select_name + '_multibox');
 }
 
+// multi_back()
+// Find and return the background associated with a multi-SELECT
+// control.  The background should only exist if the multi-SELECT is
+// in the open state.
+function multi_back(select_name)
+{
+  return document.getElementById(select_name + '_multiback');
+}
+
 // multi_open()
 // Create and fill the drop-down box for a multi-SELECT control.
 function multi_open(select_name)
@@ -530,6 +529,7 @@ function multi_open(select_name)
   var span = document.createElement('span');
   span.id = select.name + '_multibox';
   span.style.position = 'absolute';
+  span.style.zIndex = 2;
   span.style.left = text.offsetLeft;
   span.style.top = text.offsetTop + text.offsetHeight;
   span.style.minWidth = text.offsetWidth - 6;
@@ -556,14 +556,31 @@ function multi_open(select_name)
         check.checked = true;  // Must be done AFTER insertion on IE
       }
 
-      var label = document.createTextNode(' ' + ops[i].text);
+      var label = document.createTextNode(' ' + ops[i].innerHTML);
       span.appendChild(label);
     }
   }
 
   text.parentNode.insertBefore(span, text);
 
-  enable_submit(false);
+  // Create the background, an invisible SPAN tag that covers the whole
+  // page and captures any mouse clicks outside the box.
+  span = document.createElement('span');
+  span.id = select.name + '_multiback';
+  span.style.position = 'absolute';
+  span.style.zIndex = 1;
+  span.style.left = 0;
+  span.style.top = 0;
+  span.style.width = document.body.scrollWidth;
+  span.style.height = document.body.scrollHeight;
+  span.style.backgroundColor = 'white';
+  span.style.opacity = 0;
+  span.style.filter = 'alpha(opacity=0)';
+  span.onclick = function() {
+    multi_click(select.name);
+  }
+
+  text.parentNode.insertBefore(span, text);
 }
 
 // multi_close()
@@ -572,6 +589,7 @@ function multi_open(select_name)
 function multi_close(select_name)
 {
   var box = multi_box(select_name);
+  var back = multi_back(select_name);
   var select = document.getElementsByName(select_name)[0];
   var ops = select.options;
 
@@ -590,7 +608,7 @@ function multi_close(select_name)
 
       for (var i = 0; i < ops.length; i++) {
         if (v == ops[i].value) {
-          v = ops[i].text;
+          v = ops[i].innerHTML;
         }
       }
 
@@ -605,8 +623,7 @@ function multi_close(select_name)
   text.size = Math.max(10, text.value.length);
 
   box.parentNode.removeChild(box);
-
-  enable_submit(true);
+  back.parentNode.removeChild(back);
 }
 
 // multi_click()
