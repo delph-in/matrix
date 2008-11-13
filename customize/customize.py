@@ -92,28 +92,8 @@ def add_irule(instance_name,type_name,affix_type,affix_form):
   irules.add_literal(rule)
 
 
-# sfd: This is BFM.  From here:
-#   http://www.daniweb.com/code/snippet864.html
-def int2bin(n, count=24):
-  """returns the binary of integer n, using count number of digits"""
-  return "".join([str((n >> y) & 1) for y in range(count-1, -1, -1)])
-
-def powerset(original_set):
-  original_list = [s for s in original_set]
-  list_size = len(original_list)
-  num_sets = 2**list_size
-  pset = []
-  # Don't include empty set
-  for i in range(num_sets)[1:]:
-    subset = []
-    binary_digits = list(int2bin(i,list_size))
-    list_indices = range(list_size)
-    for (bit,index) in zip(binary_digits,list_indices):
-      if bit == '1':
-        subset.append(original_list[index])
-    pset.append(set(subset))
-  return pset
-
+######################################################################
+# Hierarchy class
 
 # Hierarchy:
 # A class for storing, operating on, and saving to TDL a type
