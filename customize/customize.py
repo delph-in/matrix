@@ -1575,6 +1575,10 @@ def customize_major_constituent_order(wo):
 # ERB 2006-09-14 This looks like a case for :+, even in this code,
 # since we're adding to something defined in matrix.tdl.
 
+# ASF 2008-11-18, if has aux and aux precedes verb, 
+# branching in other direction
+
+
   if wo == 'free':
     mylang.add('synsem :+ [ ATTACH xmod ].',
                'We can\'t just use the V-final and V-initial word\n' +
@@ -1595,12 +1599,19 @@ def customize_major_constituent_order(wo):
                'argument attachment (as opposed to modifier\n' +
                'attachment).  We might be able to collapse these one\n' +
                'day, but that\'s not obvious.')
-
-    mylang.add('head-initial-head-nexus := head-initial & \
+    
+    if has_auxiliaries_p() and  ch.get('aux-comp-order') == 'before':
+      mylang.add('head-initial-head-nexus := head-initial & \
+                [ SYNSEM.ATTACH rmod,\
+                  HEAD-DTR.SYNSEM.ATTACH notmod-or-rmod ].')
+      mylang.add('head-final-head-nexus := head-final &\
+                [ SYNSEM.ATTACH lmod ].')
+    else: 
+      mylang.add('head-initial-head-nexus := head-initial & \
                 [ SYNSEM.ATTACH lmod,\
                   HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
 
-    mylang.add('head-final-head-nexus := head-final &\
+      mylang.add('head-final-head-nexus := head-final &\
                 [ SYNSEM.ATTACH rmod ].')
 
     mylang.add('head-mod-phrase :+\
