@@ -1497,6 +1497,20 @@ def customize_major_constituent_order(wo):
   comment = ';;; Phrasal types'
   mylang.add_literal(comment)
 
+# ASF 2008-11-03 v2 analysis requires MC feature is not passed up to mother in
+# head - comp and not from mod to mother, putting it back for other wo options
+
+  if not wo == 'v2':
+    mylang.add_literal(';Constraint on MC used to be part of matrix.tdl\n;' + 
+               ';it applies to all wo implementations, except for v2')
+    mylang.add('basic-head-comp-phrase :+\
+                [ SYNSEM.LOCAL.CAT.MC #mc,\
+                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+    mylang.add('basic-head-mod-phrase-simple :+\
+                [ SYNSEM.LOCAL.CAT.MC #mc, \
+                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+  
+
 # Head-comp order
 
   if wo == 'sov' or wo == 'osv' or wo == 'ovs' or wo == 'v-final':
@@ -1597,6 +1611,36 @@ mother and head-daughter for all other kinds of phrases\n\
 if we do this.  Just for illustration, I\'m putting it\n\
 in for head-adjunct phrases here:')
 
+
+# ASF (2008-11-03) Another big special case: v2
+#
+# This implementation does Autronesian-type v2, but without discontinuous nps.
+# The only word order constraint is that the (verbal) head of the phrase must
+# be in second position.
+# It can be preceded by a noun phrase, verb or verbal cluster.
+# Interaction with auxiliaries is not implemented for now, because it is not
+# clear what may occur (so auxiliaries can occur anywhere for now, as long as
+# the v2 constraint is respected)
+# Also note that the implementation may needed to be revised when more complex
+# phenomena (such as clause final verbal cluster and vp-fronting) need to be 
+# implemented
+#
+# need to look at the results with v or vp raising auxiliaries (do they differ
+# the way they should...
+  
+  if wo == 'v2':
+    mylang.add('verbal-head-nexus := headed-phrase & \
+                [ SYNSEM.LOCAL.CAT.HEAD verb ].')
+    mylang.add('head-initial-head-nexus := head-initial & \
+                [ SYNSEM.LOCAL.CAT.MC na & #mc, \
+                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].') 
+    mylang.add('head-final-head-nexus := head-final & \
+                [ SYNSEM.LOCAL.CAT.MC bool, \
+                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
+
+#rules shared among free and v2
+
+  if wo == 'free' or wo == 'v2':
     mylang.add('head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
     mylang.add('subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
     mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.')
@@ -1604,9 +1648,10 @@ in for head-adjunct phrases here:')
     mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
     mylang.add('comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.')
 
+
 # Add rule definitions for major constituent order.
 
-  if wo == 'free':
+  if wo == 'free' or wo == 'v2':
     rules.add('head-comp := head-comp-phrase.')
     rules.add('head-subj := head-subj-phrase.')
     rules.add('comp-head := comp-head-phrase.')
@@ -1818,23 +1863,27 @@ def specialize_word_order(hc,orders):
   # We only need to do this is if the word order is not free, and we only
   # need to do it for one of head-comp or comp-head, depending on the order
   # of o and v.
+  # ASF for aux, changed 'verb' into 'aux'
 
   head_comp_is = []
   comp_head_is = []
 
   # VO order 
   if aux == 'vo-vaux':
-     comp_head_is.append('verb')
+     comp_head_is.append('aux')
   if adp == 'vo-post':
     comp_head_is.append('adp')
   if qpart_order == 'vo-sq':
     comp_head_is.append('comp')
 
-  # OV order # 2008-10-28 ASF changed 'aux' to 'verb' (aux is not a head)
+  # OV order 
+  # 2008-10-28 ASF changed 'aux' to 'verb' (aux is not a head)
   # Problem: the condition SS.LOC.CAT.HEAD verb is not the right restriction
-  # the head needs to be an auxiliary
+  # the head needs to be an auxiliary: either change consequences below on AUX +
+  # condition or make aux a special kind of verb.
+  # ASF changed back into 'aux'
   if aux == 'ov-auxv':
-    head_comp_is.append('verb')
+    head_comp_is.append('aux')
   if adp == 'ov-prep':
     head_comp_is.append('adp')
   if qpart_order == 'ov-qs':
@@ -1878,14 +1927,24 @@ def specialize_word_order(hc,orders):
   # If only one part of speech type is allowed by the positive constraints,
   # we don't have a disjunctive type.
 
+  # ASF for aux-comp and comp-aux, restriction should be AUX +
+
   if len(head_comp_is) == 1:
     head = head_comp_is[0]
-    mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+    if head == 'aux':
+      mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+               'head-comp-phrase requires auxiliary heads.')
+    else:
+      mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'head-comp-phrase requires things that are [ HEAD ' + head + ' ].')
 
   if len(comp_head_is) == 1:
     head = comp_head_is[0]
-    mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+    if head == 'aux':
+      mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+               'comp-head-phrase requires auxiliary heads.')
+    else:
+      mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'comp-head-phrase requires things that are [ HEAD ' + head + ' ].')
 
   # Now the case where we do have disjunctive constraints.   NB: The order
@@ -2348,7 +2407,7 @@ def create_neg_adv_lex_item(advAlone):
                                                                                    COMPS null ]].''')
   elif ch.get('neg-mod') == 'v':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
-    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HG-LIGHT - to allow us to pick out\n
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
     lexical Vs for V-level attachment of negative adverbs.''')
 
   # ERB 2006-09-22 Validation should really make sure we have a value of
@@ -3503,12 +3562,18 @@ def customize_auxiliaries():
 
       comp = ch.get('comp') 
       subj = ch.get('subj')
+      subjc = ch.get('subj_case') 
+      cases = ch.cases()
+      subjcase = canon_to_abbr(subjc, cases)        
 
     # Lexical type for auxiliaries.
+    # ASF: added sharing content values of vcomp's subject and aux subject, else
+    # with multiple auxiliaries, it is not passed up (subject is lost in mrs)
+    # 2008-11-17
 
       if comp == 'vp':
         typedef = 'subj-raise-aux := aux-lex & trans-first-arg-raising-lex-item  & \
-                   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
+                   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CONT #cont ] >, \
                                             COMPS < #comps >, \
                                             SPR < >, \
                                             SPEC < > ], \
@@ -3516,15 +3581,20 @@ def customize_auxiliaries():
                               [ LOCAL.CAT.VAL [ SPR < >, \
                                                 COMPS < > ]],\
                               #comps & \
-                              [ LOCAL.CAT [ VAL [ SUBJ < [ ] >, \
+                              [ LOCAL.CAT [ VAL [ SUBJ < [ LOCAL.CONT #cont ] >, \
                                                   COMPS < > ], \
                                             HEAD verb ]] > ].'
         mylang.add(typedef)
 
-        if subj == 'np':
-          mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
-        else:
+        if subj == 'adp':
           mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD adp ].')
+        else:
+          mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
+          if subj == 'np-comp-case':
+            mylang.add('subj-raise-aux := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE #case  ], \
+                                                     [ LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE #case ] > ] > ].')
+          elif subj == 'np-aux-case':
+            mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + subjcase + ' ].')
 
         if sem == 'add-pred':
           auxtypename = 'subj-raise-aux-with-pred'
@@ -3566,7 +3636,7 @@ def customize_auxiliaries():
         
         typedef = \
           'arg-comp-aux := aux-lex & basic-two-arg & \
-             [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
+             [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CONT #cont ] >, \
                                       COMPS < #comps . #vcomps >, \
                                       SPR < >, \
                                       SPEC < > ], \
@@ -3576,16 +3646,21 @@ def customize_auxiliaries():
                                   CONT.HOOK.INDEX #xarg ]], \
                       #comps & \
                       [ LIGHT +, \
-                        LOCAL [ CAT [ VAL [ SUBJ <[ ]>, \
+                        LOCAL [ CAT [ VAL [ SUBJ < [ LOCAL.CONT #cont ] >, \
                                             COMPS #vcomps ], \
                                       HEAD verb ], \
                                 CONT.HOOK.XARG #xarg ]] > ].'
         mylang.add(typedef)
 
-        if subj == 'np':
-          mylang.add('arg-comp-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
-        else:
+        if subj == 'adp':
           mylang.add('arg-comp-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD adp ].')
+        else:
+          mylang.add('arg-comp-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
+          if subj == 'np-comp-case':
+            mylang.add('arg-comp-aux := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE #case ], \
+                                                   [ LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE #case ] > ] > ].')
+          elif subj == 'np-aux-case':
+            mylang.add('arg-comp-aux := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE ' + subjcase + ' ].')
 
         if sem == 'add-pred':
           comment = \

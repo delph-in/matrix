@@ -22,6 +22,10 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "aux-assigns-subj-case-vp") (:content . "aux-assigns-subj-case-vp: grammar tests case restrictions imposed by auxiliary: here the auxiliary aentence"))
+((:path . "vos-vp-aux-case-rais") (:content . "vos-vp-aux-case-rais: testing case constraints imposed by the auxiliary: here it raises the case value from its vcomp's subject"))
+((:path . "v2-aux-eitherside-vp") (:content . "v2-aux-eitherside-vp: v2nd word order with one auxiliary that takes a vp complement on either side"))
+((:path . "v2-aux-eitherside-v") (:content . "v2-aux-eitherside-v: v2nd word order with one auxiliary that takes a v (not vp) complement which can appear freely on either side ofthe aux"))
 ((:path . "multi-select-case") (:content . "multi-select-case: multi-select of feature values, namely case"))
 ((:path . "nf-twoforms-withtwoaux-vp-1008") (:content . "nf-twoforms-withtwoaux-vp-1008: testing-- two nonfinite forms"))
 ((:path . "nf-form-withaux-vp-1008") (:content . "nf-form-withaux-vp-1008: testing nonfinite form constraint for aux complement"))

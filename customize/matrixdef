@@ -35,9 +35,10 @@ Radio word-order "Basic word order" "Please indicate which pattern best describe
 . vos "Verb, Subject, Object" "" "VOS<br>"
 . v-final "Verb-final" "" "V-final<br>"
 . v-initial "Verb-initial" "" "V-initial<br>"
-. free "Free word order" "" "free (pragmatically determined word order)"
+. free "Free word order" "" "free (pragmatically determined word order)<br>"
+. v2 "v2 word order" "" "finite verb or auxiliary in second position, else free word order"
 
-Label "<p>Note: Modules for V2 order (auxiliary second, all else free or finite verb second, non-finite verb clause-finally) and differing word order between matrix and subordinate clauses are currently under development.</p>"
+Label "<p>Note: Modules for V2 order (finite verb second, non-finite verb clause-finally) and differing word order between matrix and subordinate clauses are currently under development.</p>"
 
 Separator
 
@@ -57,6 +58,7 @@ Radio aux-comp-order "Order of auxiliary and complement" "If so, an auxiliary ve
 . before "Before" "" "before "
 . after "After" "" "after its complement."
 
+Label "<p><span style=\"color:red\">NOTE: As Modules for V2 order are still under development, relative order of auxiliaries and their complements have not been implemented yet.</p>"
 
 Section number "Number"
 
@@ -735,11 +737,18 @@ BeginIter aux{i} "an Aux Type" 1
   Select compform "Aux {i} complement verb form" "The form of the verb heading this auxiliary type's complement must be: " "<br>"
   fillvalues form 1
 
-  Radio subj "Aux {i} subject" "If this auxiliary type takes a VP or V complement, its subject is a: " "<br><br>"
-  . np "Noun phrase" "" "noun phrase "
-  . adp "Adpositional phrase" "" "adpositional phrase "
+   Radio subj "Aux {i} subject" "If this auxiliary type takes a VP or V complement, its subject is a: <br>" "<br>"
+  . np "Noun phrase" "" "noun phrase without case restrictions <br> "
+  . np-comp-case "NP comp case" "" "noun phrase bearing the case the verbal complement assigns to its subject <br>" 
+  . np-aux-case "NP aux case" "" "noun phrase, receiving the following case from its auxiliary: "
 
-  Label "In addition, the complement of this auxiliary type is constrained to have the following feature values."
+  Select subj_case "Aux {i} subject-case" "&nbsp;&nbsp;&nbsp;" "" 
+  fillvalues case 1
+
+  Radio subj "Aux {i} subject" "<br>" ""
+  . adp "Adpositional phrase" "" "adpositional phrase <br>"
+
+  Label "In addition, the complement of this auxiliary type is constrained to have the following feature values:"
 
   BeginIter compfeature{j} "a complement feature"
     
