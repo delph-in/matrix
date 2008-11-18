@@ -22,6 +22,11 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "free-aux-after-vp") (:content . "free-aux-after-vp: testing word order with auxiliaries following their vp-compl, else free word order"))
+((:path . "vos-aux-after-vp") (:content . "vos-aux-after-vp: testing word order for vos languages in which the auxiliary follows its vp complement"))
+((:path . "vos-aux-before-vp") (:content . "vos-aux-before-vp: testing word order for vos languages with auxiliaries preceding their vp complement"))
+((:path . "ovs-aux-before-vp") (:content . "ovs-aux-before-vp: tests word order ovs with auxiliaries that precede their vp complement"))
+((:path . "ovs-aux-after-vp") (:content . "ovs-aux-after-vp: testing ovs word order with auxiliaries that follow their vp complement"))
 ((:path . "aux-assigns-subj-case-vp") (:content . "aux-assigns-subj-case-vp: grammar tests case restrictions imposed by auxiliary: here the auxiliary aentence"))
 ((:path . "vos-vp-aux-case-rais") (:content . "vos-vp-aux-case-rais: testing case constraints imposed by the auxiliary: here it raises the case value from its vcomp's subject"))
 ((:path . "v2-aux-eitherside-vp") (:content . "v2-aux-eitherside-vp: v2nd word order with one auxiliary that takes a vp complement on either side"))
