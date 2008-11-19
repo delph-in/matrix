@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "free-aux-before-vp") (:content . "free-aux-before-vp: testing free word order with auxiliary that needs to come before its verbal complements"))
 ((:path . "free-aux-after-vp") (:content . "free-aux-after-vp: testing word order with auxiliaries following their vp-compl, else free word order"))
 ((:path . "vos-aux-after-vp") (:content . "vos-aux-after-vp: testing word order for vos languages in which the auxiliary follows its vp complement"))
 ((:path . "vos-aux-before-vp") (:content . "vos-aux-before-vp: testing word order for vos languages with auxiliaries preceding their vp complement"))
