@@ -1538,8 +1538,12 @@ def customize_major_constituent_order(wo):
 
 # Subjects attach before complements
 
+
   if wo == 'vso' or wo == 'osv':
-    mylang.add(hc + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
+    if has_auxiliaries_p():  #has-aux and order is harmonic
+      mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
+    else:
+      mylang.add(hc + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
 
 # ERB 2006-09-14 Free word order is a big fat special case:
 
@@ -1751,10 +1755,15 @@ def determine_consistent_order(wo,hc):
         aux = 'free-auxv'
       elif ch.get('aux-comp-order') == 'after':
         aux = 'free-vaux'
+    if wo == 'v-initial' and ch.get('aux-comp-order') == 'before':
+      aux = 'harmonic-auxv-rule'
+    if wo == 'v-final' and ch.get('aux-comp-order') == 'after':
+      aux = 'harmonic-vaux-rule'
     elif hc == 'comp-head' and ch.get('aux-comp-order') == 'before':
       aux = 'ov-auxv'
     elif hc == 'head-comp' and ch.get('aux-comp-order') == 'after':
       aux = 'vo-vaux'
+    
 
   # ERB 2006-10-05 And what about the order of question particles wrt
   # to other kinds of head-comp?  I'm assuming for now that question particles
@@ -1845,17 +1854,41 @@ def specialize_word_order(hc,orders):
   adp = orders['adp']
   aux = orders['aux']
   qpart_order = orders['qpart_order']
-
+  # for non-harmonic order and v (not vp) comps, we need a different procedure 
+  if ch.get('aux1_comp') == 'v':
+    if  aux == 'ov-auxv':
+      aux = 'auxv-rule'
+    elif aux == 'vo-vaux':
+      aux = 'vaux-rule' 
   # ERB 2006-09-15 First add head-comp or comp-head if they aren't
   # already there.  I don't think we have to worry about constraining
   # SUBJ or COMPS on these additional rules because they'll only be for
-  # adp or auxv or qpart, so far.
+  # adp or auxv or qpart, so far
 
   if hc == 'comp-head' and (adp == 'ov-prep' or aux == 'ov-auxv' or qpart_order == 'ov-qs'):
     mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial.')
 
   if hc == 'head-comp' and (adp == 'vo-post' or aux == 'vo-vaux' or qpart_order == 'vo-sq'):
     mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final.')
+
+  # ASF 2008-11-18, special auxiliary rule that allows for auxiliaries to combine with v's  
+  # when aux-comp is non-harmonic in comparison with the rest of the grammar
+
+  if aux == 'auxv-rule' or aux == 'harmonic-auxv-rule':
+    mylang.add('''aux-comp-phrase := basic-marker-comp-phrase & marker-initial-phrase & 
+                                   [ SYNSEM.LOCAL.CAT.HEAD.FORM #vform,
+                                     MARKER-DTR.SYNSEM.LOCAL.CAT [ HEAD [ AUX +,
+                                                                          FORM #vform ]
+                                                                   VAL.SUBJ < [ ] > ],
+                                     NON-MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX - ] ].''')
+
+  if aux == 'vaux-rule' or aux == 'harmonic-vaux-rule':
+    mylang.add('''comp-aux-phrase := basic-marker-comp-phrase & marker-final-phrase &
+                                   [ SYNSEM.LOCAL.CAT.HEAD.FORM #vform,
+                                     MARKER-DTR.SYNSEM.LOCAL.CAT [ HEAD [ AUX +,
+                                                                          FORM #vform ]
+                                                                   VAL.SUBJ < [ ] > ],
+                                     NON-MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX - ] ].''')
 
   # Add rules to rules.tdl when necessary
 
@@ -1864,6 +1897,12 @@ def specialize_word_order(hc,orders):
 
   if aux == 'vo-vaux' or adp == 'vo-post' or qpart_order == 'vo-sq':
     rules.add('comp-head := comp-head-phrase.')
+
+  if aux == 'auxv-rule' or aux == 'harmonic-auxv-rule':
+    rules.add('aux-comp := aux-comp-phrase.')
+
+  if aux == 'vaux-rule' or aux == 'harmonic-vaux-rule':
+    rules.add('comp-aux := comp-aux-phrase.')
 
   # ERB 2006-09-15 AUX if we're going to mention it, so the tdl compiles.
 
@@ -1874,7 +1913,7 @@ def specialize_word_order(hc,orders):
   # We only need to do this is if the word order is not free, and we only
   # need to do it for one of head-comp or comp-head, depending on the order
   # of o and v.
-  # ASF for aux, changed 'verb' into 'aux'
+  
 
   head_comp_is = []
   comp_head_is = []
@@ -1892,7 +1931,7 @@ def specialize_word_order(hc,orders):
   # Problem: the condition SS.LOC.CAT.HEAD verb is not the right restriction
   # the head needs to be an auxiliary: either change consequences below on AUX +
   # condition or make aux a special kind of verb.
-  # ASF changed back into 'aux'
+
   if aux == 'ov-auxv':
     head_comp_is.append('aux')
   if adp == 'ov-prep':
@@ -1910,12 +1949,13 @@ def specialize_word_order(hc,orders):
   # to be done for both head-comp and comp-head in a free word order language
   # with inconsistent constraints on comp, adp, and aux.
 
+
   head_comp_is_not = []
   comp_head_is_not = []
 
-  if aux == 'free-auxv' or aux == 'ov-auxv':
+  if aux == 'free-auxv' or aux == 'ov-auxv' or aux == 'auxv-rule' or aux == 'harmonic-vaux-rule':
     comp_head_is_not.append('aux')
-  if aux == 'free-vaux' or aux == 'vo-vaux':
+  if aux == 'free-vaux' or aux == 'vo-vaux' or aux == 'vaux-rule' or aux == 'harmonic-auxv-rule':
     head_comp_is_not.append('aux')
   if adp == 'free-prep' or adp == 'ov-prep':
     comp_head_is_not.append('adp')
@@ -3340,15 +3380,21 @@ def customize_mark():
 def customize_verbs():
   negmod = ch.get('neg-mod')
   negadv = ch.get('neg-adv')
+  wo = ch.get('word-order')
 
   # Do we need to constrain HC-LIGHT on verbs, to distinguish V from VP?
   hclight = (negadv == 'ind-adv' and negmod == 'v')
+  hclightallverbs = False
 
+  if wo == 'vso' or wo == 'osv':
+    wo = 'req-hcl-vp'
   ch.iter_begin('aux')
   while ch.iter_valid():
     auxcomp = ch.get('comp')
     if auxcomp == 'v' and hclight != True:
       hclight = True
+    if auxcomp == 'vp' and wo == 'req-hcl-vp':
+      hclightallverbs = True
     ch.iter_next()
   ch.iter_end()
 
@@ -3400,8 +3446,10 @@ def customize_verbs():
                                       COMPS < > ], \
                             CONT.HOOK.INDEX #xarg ] ], ... > ].'
   mylang.add(typedef)
-
-  if hclight:
+  
+  if hclightallverbs:
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].')  
+  elif hclight:
     comment = \
       ';;; If there are aspects of the syntax which pick out\n' + \
       ';;; lexical Vs (transitive or intransitive) such as V-attachment\n' + \
@@ -3575,24 +3623,29 @@ def customize_auxiliaries():
       subj = ch.get('subj')
       subjc = ch.get('subj_case') 
       cases = ch.cases()
-      subjcase = canon_to_abbr(subjc, cases)        
+      subjcase = canon_to_abbr(subjc, cases)      
 
     # Lexical type for auxiliaries.
-    # ASF: added sharing content values of vcomp's subject and aux subject, else
-    # with multiple auxiliaries, it is not passed up (subject is lost in mrs)
-    # 2008-11-17
+    # ASF 2008-11-25 added constraints SS.LOC.CONT.HOOK.XARG #xarg and 
+    # ARG-ST.FIRST.LOCAL.CONT.HOOK.INDEX #xarg for subj-raise-aux and 
+    # arg-comp-aux, to insure the subject is passed up when several auxs are 
+    # present in sentence. Implemented here, because it required least changes
+    # it may be cleaner to have this in general verb-lex, as well as the first
+    # ARG is #subj constraint (but not possible for aux with s-comp)
 
       if comp == 'vp':
         typedef = 'subj-raise-aux := aux-lex & trans-first-arg-raising-lex-item  & \
-                   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CONT #cont ] >, \
+                   [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #subj >, \
                                             COMPS < #comps >, \
                                             SPR < >, \
                                             SPEC < > ], \
+                                    CONT.HOOK.XARG #xarg ], \
                      ARG-ST < #subj & \
-                              [ LOCAL.CAT.VAL [ SPR < >, \
-                                                COMPS < > ]],\
+                              [ LOCAL [ CAT.VAL [ SPR < >, \
+                                                  COMPS < > ],\
+                                        CONT.HOOK.INDEX #xarg ] ], \
                               #comps & \
-                              [ LOCAL.CAT [ VAL [ SUBJ < [ LOCAL.CONT #cont ] >, \
+                              [ LOCAL.CAT [ VAL [ SUBJ < [ ] >, \
                                                   COMPS < > ], \
                                             HEAD verb ]] > ].'
         mylang.add(typedef)
@@ -3604,7 +3657,7 @@ def customize_auxiliaries():
           if subj == 'np-comp-case':
             mylang.add('subj-raise-aux := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE #case  ], \
                                                      [ LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE #case ] > ] > ].')
-          elif subj == 'np-aux-case':
+          elif subj == 'np-aux-case': 
             mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + subjcase + ' ].')
 
         if sem == 'add-pred':
@@ -3647,17 +3700,18 @@ def customize_auxiliaries():
         
         typedef = \
           'arg-comp-aux := aux-lex & basic-two-arg & \
-             [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CONT #cont ] >, \
+             [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #subj  >, \
                                       COMPS < #comps . #vcomps >, \
                                       SPR < >, \
                                       SPEC < > ], \
+                              CONT.HOOK.XARG #xarg ], \
                ARG-ST < #subj & \
                         [ LOCAL [ CAT [ VAL [ SPR < >, \
                                               COMPS < > ]], \
                                   CONT.HOOK.INDEX #xarg ]], \
                       #comps & \
                       [ LIGHT +, \
-                        LOCAL [ CAT [ VAL [ SUBJ < [ LOCAL.CONT #cont ] >, \
+                        LOCAL [ CAT [ VAL [ SUBJ < [ ] >, \
                                             COMPS #vcomps ], \
                                       HEAD verb ], \
                                 CONT.HOOK.XARG #xarg ]] > ].'
@@ -3671,7 +3725,7 @@ def customize_auxiliaries():
             mylang.add('arg-comp-aux := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE #case ], \
                                                    [ LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE #case ] > ] > ].')
           elif subj == 'np-aux-case':
-            mylang.add('arg-comp-aux := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE ' + subjcase + ' ].')
+            mylang.add('arg-comp-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + subjcase + ' ].')
 
         if sem == 'add-pred':
           comment = \
