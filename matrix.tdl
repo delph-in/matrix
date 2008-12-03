@@ -1643,18 +1643,20 @@ basic-head-spec-phrase := head-valence-phrase & phrasal &
 
 ; ERB (2005-08-12) We need to copy of HC-LIGHT as well, for cases
 ; where there are multiple complements.
+; ASF (2008-11-03) for the current v2 analysis, we need head-comp-phrase
+; that does not pass up the MC feature..token id between mother and head
+; daughter removed
+
 
 basic-head-comp-phrase := head-valence-phrase & head-compositional &
 			  binary-headed-phrase &
   [ SYNSEM phr-synsem-min &
-	   [ LOCAL.CAT [ MC #mc,
-			 VAL [ SUBJ #subj,
+	   [ LOCAL.CAT [ VAL [ SUBJ #subj,
 			       SPR #spr ],
 			 POSTHEAD #ph,
 			 HC-LIGHT #light ],
              LIGHT #light ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC #mc,
-                                  VAL [ SUBJ #subj,
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
                                         SPR #spr ],
 				  HC-LIGHT #light,
                                   POSTHEAD #ph ]], 
@@ -1776,6 +1778,77 @@ decl-head-opt-subj-phrase := basic-head-opt-subj-phrase & declarative-clause &
 imp-head-opt-subj-phrase := basic-head-opt-subj-phrase & imperative-clause.
 
 
+; ASF 2008-11-18 Introducing a "basic-marker-comp-phrase", which basically
+; behaves just like a head-comp-phrase, except that the phrase's head is not
+; token-identical to that of the HEAD-DTR. We found this solution necessary to
+; implement non-harmonic word order of auxiliaries that take a verb (not vp) as
+; complement. The general idea of behaviour as head-comp, but without sharing 
+; all head-features could be useful for other phenomena, hence our decision to
+; put it in the matrix. 
+
+; ASF 2008-11-18 The name MARKER-DTR is based on theoretical HPSG's HEAD-MARKER 
+; structure, but note that the marker-comp construction does not correspond to 
+; PS-84's head-marker structure (since the complement is not a head)
+
+
+
+marker-phrase := binary-phrase &
+  [ SYNSEM.LOCAL [ AGR #agr,
+                   COORD -,
+                   COORD-REL #crel,
+                   CONT.HOOK #hook ],
+    C-CONT.HOOK #hook,
+    MARKER-DTR.SYNSEM.LOCAL local &
+	 	      [ AGR #agr,
+                        COORD -,
+                        COORD-REL #crel,
+                        CONT.HOOK #hook ] ].
+
+
+basic-binary-marker-phrase := marker-phrase &
+ [ NON-MARKER-DTR sign & [ SYNSEM.LOCAL.COORD - ] ].
+
+basic-marker-comp-phrase := basic-binary-marker-phrase &
+  [ SYNSEM phr-synsem-min &
+	   [ LOCAL.CAT [ MC #mc,
+			 VAL [ SUBJ #subj,
+			       SPR #spr,
+                               COMPS #comps ],
+			 POSTHEAD #ph,
+			 HC-LIGHT #light ],
+             NON-LOCAL [ SLASH #slash,
+                         REL #rel,
+                         QUE #que ],
+             LIGHT #light ],
+    MARKER-DTR.SYNSEM [ LOCAL.CAT [ MC #mc,
+                                  VAL [ SUBJ #subj,
+                                        SPR #spr, 
+                                        COMPS < #synsem . #comps > ],
+				  HC-LIGHT #light,
+                                  POSTHEAD #ph ], 
+                      NON-LOCAL [ SLASH #slash,
+                                  REL #rel,
+                                  QUE #que ] ],
+    NON-MARKER-DTR.SYNSEM canonical-synsem & #synsem  & 
+                                      [ LOCAL.COORD - ],
+    C-CONT [ RELS <! !>,
+	     HCONS <! !> ] ].
+
+
+
+marker-initial-phrase := basic-binary-marker-phrase &
+ [ MARKER-DTR #marker,
+   NON-MARKER-DTR #non-marker,
+   ARGS < #marker, #non-marker > ].
+
+
+marker-final-phrase := basic-binary-marker-phrase &
+ [ MARKER-DTR #marker,
+   NON-MARKER-DTR #non-marker,
+   ARGS < #non-marker, #marker > ].
+
+
+
 ; ERB 2004-12-14 Type for optional specifier (determiner) phrases.
 ; Build NPs out of N's.  The specification [OPT +] on the head
 ; daughter's SPR value is meant to allow this rule to apply to
@@ -1892,10 +1965,12 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
 
 ; ERB 2004-05-10 Bug fix: non-head daughter's MOD..LIGHT value should
 ; be matched to head-daughters LIGHT value.
+; ASF (2008-11-03) for the v2 analysis, the MC feature cannot be shared between
+; mother and non-head-daughter, token-identity removed
+
 
 basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
-  [ SYNSEM [ LOCAL.CAT.MC #mc,
-	     NON-LOCAL [ SLASH [ LIST #first,
+  [ SYNSEM [ NON-LOCAL [ SLASH [ LIST #first,
 				 LAST #last ],
 			 REL 0-dlist ] ],
     HEAD-DTR.SYNSEM 
@@ -1922,8 +1997,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
 					LIGHT #light,
                                         MODIFIED #modif ] > ],
                          VAL [ COMPS olist,
-                               SPR olist ],
-                         MC #mc ],
+                               SPR olist ] ],
              NON-LOCAL [ SLASH [ LIST #first,
                                  LAST #middle ],
                          QUE 0-dlist & [ LIST null ] ] ],
