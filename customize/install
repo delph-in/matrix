@@ -18,7 +18,7 @@
 #      To install to a local directory without copying matrix-core:
 #           ./install -l [root directory of installation]
 #      To create a copy of matrix-core:
-#           ./install -mc [parent directory of matrix-core]
+#           ./install -c [parent directory of matrix-core]
 
 
 # parse command line
