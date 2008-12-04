@@ -183,7 +183,7 @@ do
     else
 	echo "... Success!" >> $masterlog;
     fi
-    rm $log
+    rm -f $log
 done
 
 # Notify user of results:
