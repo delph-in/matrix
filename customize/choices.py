@@ -64,6 +64,8 @@ class ChoicesFile:
         self.convert_8_to_9()
       if version < 10:
         self.convert_9_to_10()
+      if version < 11:
+        self.convert_10_to_11()
       # As we get more versions, add more version-conversion methods, and:
       # if version < N:
       #   self.convert_N-1_to_N
@@ -780,7 +782,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 10
+    return 11
 
 
   def convert_value(self, key, old, new):
@@ -1256,7 +1258,7 @@ class ChoicesFile:
 
   def convert_9_to_10(self):
     """
-    previous versions defined (only) nonfinite compforms for each auxiliary 
+    Previous versions defined (only) nonfinite compforms for each auxiliary 
     iff the aux comp was constrained to be nonfinite. 
     The current version creates a hierarchy of verb forms and then for each 
     aux constrains the form of the complement.  
@@ -1281,5 +1283,17 @@ class ChoicesFile:
 
       self.iter_next()
     self.iter_end()
-      
-      
+  
+  def convert_10_to_11(self):
+    """
+    Previous versions allowed only one stem per auxiliary type.
+    This conversion changes auxiliary orth and pred values to stem1 orth and pred.
+    """
+    self.iter_begin('aux')
+
+    while self.iter_valid():
+      self.convert_key('orth', 'stem1_orth')
+      self.convert_key('pred', 'stem1_pred')
+
+      self.iter_next()
+    self.iter_end()

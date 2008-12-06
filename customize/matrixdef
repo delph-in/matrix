@@ -271,11 +271,12 @@ Select scale-equal "Direction when equal" "When the agent and patient have the s
 . other "Some other form" "some other form"
 
 
-Section tense-aspect "Tense and Aspect related Features"
+Section tense-aspect "Verbal Features"
 
-Label "<h3>Semantic</h3>"
+Label "<h3>Semantic Features</h3>"
+Label "<div style=\"padding-left: 16px\">"
 
-Label "<h4>Tense</h4>"
+Label "<h4>TENSE</h4>"
 
 Label "You may define a tense hierarchy in one of two ways:"
 
@@ -284,7 +285,8 @@ Label "<ul><li>Select among the following common hierarchy elements and add subt
 Radio tense-definition "Tense hierarchy definition style" "" ""
 . choose "Choose" "" "<b>Select among common hierarchy elements</b><br>"
 
-Label "<div style=\"padding-left: 16px\">"
+Label "<div style=\"padding-left: 35px\">"
+
 Label "<br>Which of the following are tense hierarchy elements in your language?<br><br>"
 
 Check past "Past" "" "<b>past</b><br>"
@@ -302,12 +304,12 @@ Check future "Future" "" "<b>future</b><br>"
     Text name "Future subtype {i} name" "Subtype: " "" 20
   EndIter future-subtype
 
-Check nonpast "Non-Past" "" "<b>nonpast</b> &nbsp;&nbsp;&nbsp;&nbsp;(If present and/or future are also selected they are assumed to be subtypes of nonpast.)<br>"
+Check nonpast "Non-Past" "" "<b>nonpast</b> &nbsp;&nbsp;&nbsp;&nbsp;(note: If present and/or future are also selected they are assumed to be subtypes of nonpast.)<br>"
   BeginIter nonpast-subtype{i} "a subtype"
     Text name "Non-Past subtype {i} name" "Subtype: " "" 20
   EndIter nonpast-subtype
 
-Check nonfuture "Non-Future" "" "<b>nonfuture</b> &nbsp;&nbsp;&nbsp;&nbsp;(If present and/or past are also selected they are assumed to be subtypes of nonfuture.)<br>"
+Check nonfuture "Non-Future" "" "<b>nonfuture</b> &nbsp;&nbsp;&nbsp;&nbsp;(note: If present and/or past are also selected they are assumed to be subtypes of nonfuture.)<br>"
   BeginIter nonfuture-subtype{i} "a subtype"
     Text name "Non-Future subtype {i} name" "Subtype: " "" 20
   EndIter nonfuture-subtype
@@ -317,17 +319,12 @@ Label "</div>"
 Radio tense-definition "Tense hierarchy definition style" "" ""
 . build "Build" "" "<b>Build your own tense hierarchy</b><br>"
 
-Label "<div style=\"padding-left: 16px\">"
-
+Label "<div style=\"padding-left: 35px\">"
 Label "<br>Build your hierarchy from the top down starting with subtypes of the supertype: tense.</p>"
-Label "Example:<br>"
-Label "subtype name: nonpast<br>"
-Label "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;supertype: tense<br><br>"
 
-BeginIter tense{i} "a tense type" 1
+BeginIter tense{i} "a tense type" 
 
-  Text name "tense {i} name" "Subtype name: " "" 20
-
+  Text name "tense {i} name" "Tense name: " "" 20
   BeginIter supertype{j} "a Supertype" 1
 
     Select name "Tense {i} supertype {j} name" "Supertype: " ""
@@ -337,24 +334,14 @@ BeginIter tense{i} "a tense type" 1
   EndIter supertype
 
 EndIter tense
-
 Label "</div>"
 
-Separator
+Label "<h4>ASPECT</h4>"
 
-Label "<h4>Aspect</h4>"
-
-Label "<p>This implementation assumes no universal hierarchy or terminology of grammatical aspect. You may build an appropriate hierarchy of grammatical aspect values below.</p>"
-
-Label "<h4>Build your own aspect hierarchy</h4>"
-Label "Build your hierarchy from the top down starting with subtypes of the supertype: aspect.</p>"
-Label "Example:<br>"
-Label "subtype name: imperfective<br>"
-Label "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;supertype: aspect<br><br>"
-
+Label "<p>Add discussion here"
 BeginIter aspect{i} "an aspect type" 
 
-  Text name "aspect {i} name" "Subtype name: " "" 20
+  Text name "aspect {i} name" "Aspect name: " "" 20
   BeginIter supertype{j} "a Supertype" 1
 
     Select name "Aspect {i} supertype {j} name" "Supertype: " ""
@@ -365,44 +352,42 @@ BeginIter aspect{i} "an aspect type"
 
 EndIter aspect
 
-Separator
-
-Label "<h3>Syntactic</h3>"
-
-Label "<h4>Verb Form</h4>"
-Label "<p>In addition to the semantic features tense and aspect, this implementation utilizes a syntactic feature characterizing the form the verb takes. The FORM feature is currently used to distinguish finite from non-finite forms and to constrain auxiliary complement forms. It essentially tracks inflectional categories.</p>"
-Label "<p>If you indicated that your language has auxiliary verbs this implementation assumes that there is a finite/non-finite distinction and adds finite and nonfinite FORM values.<br>"
-
-Check noaux-fin-nf "Finite-nonfinite" "" "My language has no auxiliaries but does make a syntactically relevant finite/non-finite distinction.</p>"
-
-Label "<p>Expand the hierarchy of verb FORM values, as applicable for your language:</p>" 
-
-Label "<div style=\"padding-left: 16px\">"
-
-Label "Define subtypes of <b>nonfinite</b> (e.g., pastparticiple, nf2):"
-  BeginIter nf-subform{i} "a subtype"
-    Text name "Nonfinite subtype {i} name" "Subtype name: " "&nbsp;&nbsp;&nbsp;&nbsp;note: Names cannot contain spaces or special characters." 20
-  EndIter nf-subform
-
+Label "</div>"
 Label "<br>"
 
-Label "Define subtypes of <b>finite</b>:"
+Label "<h3>Syntactic Features</h3>"
+
+Label "<div style=\"padding-left: 16px\">"
+Label "<h4>FORM</h4>"
+Label "<p>In addition to the semantic features tense and aspect, your grammar may utilize a syntactic feature characterizing the form the verb takes. The FORM feature distinguishes finite from non-finite forms and can be used to constrain auxiliary complement forms.</p>"
+Label "<p>If you have indicated on the word order page that your language has auxiliary verbs your grammar will include 'finite' and 'nonfinite' FORM values. If your language does not have auxiliaries you may still include 'finite' and 'nonfinite' FORM values in your grammar:<br>" 
+Check noaux-fin-nf "Finite-nonfinite" "" "My language has no auxiliaries but does make a syntactically relevant finite/non-finite distinction.</p>"
+
+Label "<p>It is often the case that languages have multiple non-finite forms, e.g., English: infinitive, past participle, present participle. If applicable, you may expand the hierarchy of verb FORM values in your grammar by providing subtypes of 'finite' and 'nonfinite':</p>" 
+
+Label "<div style=\"padding-left: 35px\">"
+
+Label "<b>nonfinite</b>:"
+  BeginIter nf-subform{i} "a subtype"
+    Text name "Nonfinite subtype {i} name" "nonfinite subtype name: " "" 20
+  EndIter nf-subform
+
+Label "<b>finite</b>:"
   BeginIter fin-subform{i} "a subtype"
-    Text name "Finite subtype {i} name" "Subtype name: " "&nbsp;&nbsp;&nbsp;&nbsp;note: Names cannot contain spaces or special characters." 20
+    Text name "Finite subtype {i} name" "finite subtype name: " "" 20
   EndIter fin-subform
 
 Label "</div>"
 
-Separator 
+Label "<h4>MARK</h4>"
 
-Label "<h4>Mark feature</h4>"
-
-Label "<p>This syntactic feature is for use to define characteristics having a quasi-semantic nature, i.e., those that have become grammaticalized and/or are not clearly associated with a specific semantic feature. For example, in languages that have distinct auxiliaries each applying to a somewhat arbitrary class of verbs, values of this feature can be defined to distinguish/mark the verb classes.</p>"
+Label "<p>This syntactic feature defines quasi-semantic qualities, i.e., those that have become grammaticalized or are not clearly associated with a specific semantic feature. For example, in languages with distinct auxiliary verbs each associated with a particular classes of verbs, as in many Romance languages, this feature can distinguish/mark members of the verb classes.</p>"
   BeginIter mark{i} "a mark value"
     Text name "Mark value {i} name" "Value name: " "&nbsp;&nbsp;&nbsp;&nbsp;note: Names cannot contain spaces or special characters." 20
   EndIter mark
 
-Separator
+Label "</div>"
+Label "<br>"
 
 Section sentential-negation "Sentential Negation"
 
@@ -562,17 +547,7 @@ BeginIter noun{i} "a Noun Type" 1
 
   Label "<div style=\"padding-left: 16px\">"
 
-  Text name "Noun {i} name" "Type name: " "<br>" 20
-
-  Label "Stems:"
-
-  BeginIter stem{j} "a Stem" 1
-
-    Text orth "Noun {i} stem {j} spelling" "Spelling: " "" 30
-
-    Text pred "Noun {i} stem {j} predicate" " Predicate: " "" 30
-
-  EndIter stem
+  Text name "Noun {i} name" "Type name: " "<br><br>" 20
 
   Label "Features:"
 
@@ -590,6 +565,16 @@ BeginIter noun{i} "a Noun Type" 1
   . obl "Obligatory" "" "obligatory "
   . opt "Optional" "" "optional "
   . imp "Impossible" "" "impossible "
+
+  Label "Stems:"
+
+  BeginIter stem{j} "a Stem" 1
+
+    Text orth "Noun {i} stem {j} spelling" "Spelling: " "" 30
+
+    Text pred "Noun {i} stem {j} predicate" " Predicate: " "" 30
+
+  EndIter stem
 
   Label "</div>"
 
@@ -673,15 +658,7 @@ BeginIter verb{i} "a Verb Type" 2
 
   Label "<div style=\"padding-left: 16px\">"
 
-  Text name "Verb {i} name" "Type name: " "<br>" 20
-
-  BeginIter stem{j} "a Stem" 1
-
-    Text orth "Verb {i} stem {j} spelling" "Spelling: " "" 30
-
-    Text pred "Verb {i} stem {j} predicate" " Predicate: " "" 30
-
-  EndIter stem
+  Text name "Verb {i} name" "Type name: " "<br><br>" 20
 
   Label "Features:"
 
@@ -703,6 +680,15 @@ BeginIter verb{i} "a Verb Type" 2
   Select valence "Verb {i} arguments" "<p>Argument structure: " "</p>"
   fillverbpat
 
+  Label "Stems:"
+  BeginIter stem{j} "a Stem" 1
+
+    Text orth "Verb {i} stem {j} spelling" "Spelling: " "" 30
+
+    Text pred "Verb {i} stem {j} predicate" " Predicate: " "" 30
+
+  EndIter stem
+
   Label "</div>"
 
 EndIter verb
@@ -711,55 +697,81 @@ Separator
 
 Label "<h3>Auxiliary Verb Types</h3>"
 
-BeginIter aux{i} "an Aux Type" 1
+BeginIter aux{i} "an Auxiliary Type" 
 
   Label "<b>Auxiliary type {i}</b>:"
 
   Label "<div style=\"padding-left: 16px\">"
+  
+  Text name "Aux {i} type name" "Type name: " "" 30
+  
+  Label "<p>Auxiliary Features:</p>"
+  Label "<div style=\"padding-left: 30px\">"
 
-  Text name "Aux {i} type name" "Type name: " "<br>" 30
+  Radio sem "Aux {i} semantics" "This auxiliary type contributes:<br>" ""
+  . no-pred "No predicate" "" "No predicate, so it does not directly contribute semantic values, e.g., English auxiliary 'be'.<br>"
 
-  Text orth "Aux {i} spelling" "Exemplar stem (spelling): " "" 20
+  Radio sem "Aux {i} semantics" "" ""
+  . add-pred "Predicate" "" "An independent predicate, e.g., English modal auxiliary 'can'."
 
-  Radio sem "Aux {i} semantics" "<br>This auxiliary verb type contributes:<br>" ""
-  . add-pred "Predicate" "" "An independent predicate (e.g. _can_v_rel)"
+  Label "<p>If this type contributes a predicate, you may also specify semantic feature values on the auxiliary, e.g., English epistemic modal 'might'. Note that these features place no constraints on the semantic values of the complement. Constraints on the complement may be defined further below in the complement section </p>" 
 
-  Text pred "Aux {i} predicate" "&nbsp;&nbsp;&nbsp;Predicate: " "" 30
+  BeginIter feat{j} "an auxiliary feature"
 
-  Radio sem "Aux {i} semantics" "<br>" ""
-  . no-pred "No predicate" "" "Tense/aspect information only"
+     Select name "Aux {i} feature {j} name" "Name: " ""
+     fillnames
 
-  Radio comp "Aux {i} complement" "<br>This auxiliary verb type takes as its complement a:<br>" ""
+     Select value "Aux {i} feature {j} value" "Value: " ""
+     fillvalues aux{i}_feat{j}_name
+
+  EndIter feat
+
+  Label "</div>"
+
+  Label "<p>Stem(s):</p>"
+        
+  Label "<div style=\"padding-left: 30px\">" 
+  BeginIter stem{j} "a Stem" 1
+    Text orth "Aux {i} stem {j} spelling" "Spelling: " "" 30
+    Text pred "Aux {i} stem {j} predicate" "&nbsp;&nbsp;&nbsp;&nbsp;If applicable, predicate: " "" 30
+  EndIter stem
+
+  Label "</div>"
+
+  Label "<p>Complement:</p>"
+  Label "<div style=\"padding-left: 30px\">"
+  Radio comp "Aux {i} complement" "The complement of this auxiliary type is a:<br>" ""
   . s "S" "" "saturated sentence<br>"
   . vp "VP" "" "VP, raising the subject<br>"
-  . v "V" "" "V, raising all of its arguments (argument composition)<br>"
+  . v "V" "" "V, raising all of its arguments (argument composition)<br><br>"
 
-  Select compform "Aux {i} complement verb form" "The form of the verb heading this auxiliary type's complement must be: " "<br>"
+  Select compform "Aux {i} complement verb form" "The verb that is the head of this complement must be of the form:" ""
   fillvalues form 1
 
-   Radio subj "Aux {i} subject" "If this auxiliary type takes a VP or V complement, its subject is a: <br>" "<br>"
-  . np "Noun phrase" "" "noun phrase without case restrictions <br> "
-  . np-comp-case "NP comp case" "" "noun phrase bearing the case the verbal complement assigns to its subject <br>" 
-  . np-aux-case "NP aux case" "" "noun phrase, receiving the following case from its auxiliary: "
-
-  Select subj_case "Aux {i} subject-case" "&nbsp;&nbsp;&nbsp;" "" 
-  fillvalues case 1
-
-  Radio subj "Aux {i} subject" "<br>" ""
-  . adp "Adpositional phrase" "" "adpositional phrase <br>"
-
-  Label "In addition, the complement of this auxiliary type is constrained to have the following feature values:"
+  Label "<br><br>In addition, this complement must have the following feature values:"
 
   BeginIter compfeature{j} "a complement feature"
-    
-    Select name "Aux {i} complement feature {j} name" "Feature: " ""
+
+    Select name "Aux {i} complement feature {j} name" "Name: " ""
     fillnames
 
     Select compvalue "Aux {i} complement feature {j} value" "Value: " ""
     fillvalues aux{i}_compfeature{j}_name
 
   EndIter compfeature
-  
+
+  Radio subj "Aux {i} subject" "If this auxiliary type takes a VP or V complement, its subject is a:<br>" ""
+  . np "Noun phrase" "" "noun phrase without case restrictions <br> "
+  . np-comp-case "NP comp case" "" "noun phrase bearing the case the verbal complement assigns to its subject <br>"
+  . np-aux-case "NP aux case" "" "noun phrase, receiving the following case from its auxiliary: "
+
+  Select subj_case "Aux {i} subject-case" "" ""
+  fillvalues case 1
+
+  Radio subj "Aux {i} subject" "" ""
+  . adp "Adpositional phrase" "<br>" "adpositional phrase"
+
+  Label "</div>" 
   Label "</div>"
 
 EndIter aux

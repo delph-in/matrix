@@ -35,3 +35,4 @@ vos-aux-before-vp=testing word order for vos languages with auxiliaries precedin
 vos-aux-after-vp=testing word order for vos languages in which the auxiliary follows its vp complement
 free-aux-after-vp=testing word order with auxiliaries following their vp-compl, else free word order
 free-aux-before-vp=testing free word order with auxiliary that needs to come before its verbal complements
+multi-featured-aux=very! short test of features on the auxiliary itself

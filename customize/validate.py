@@ -218,6 +218,9 @@ def validate_word_order():
 #   Validate the user's choices about sentential negation.
 
 def validate_sentential_negation():
+  
+  neginfltype = ch.get('neg-infl-type')
+  negseladv = ch.get('neg-sel-adv')
 
   # If affix is indicated, must select prefix/suffix and main/aux/either and give form.
   if (ch.get('infl-neg') == 'on'):
@@ -231,9 +234,8 @@ def validate_sentential_negation():
       err = 'If sentential negation is expressed through affixation, you must specify the form of the affix'
       add_err('neg-aff-orth', err)
     # If aux is selected then has-aux = 'yes' must be chosen in word order section
-    if ((ch.get('neg-infl-type') == 'aux') or (ch.get('neg-infl-type') == 'aux-main')): 
-      if (ch.get('has-aux') == 'no'):
-        err = 'You have indicated that verbal inflection applies to auxiliaries but that your language has no auxiliaires'
+    if ((neginfltype == 'aux' or neginfltype == 'aux-main') and ch.get('has-aux') != 'yes'):
+        err = 'You have not indicated on the word order page that your language has auxiliaries.'
         add_err('neg-infl-type', err)
 
   # If adverb is indicated, must lexical entry, what it modifies, and ind/selected modifier
@@ -251,10 +253,10 @@ def validate_sentential_negation():
     if (not ch.get('neg-adv-orth')):
       err = 'If sentential negation is expressed through an adverb, you must specify the form of the adverb.'
       add_err('neg-adv-orth', err)
+
    # If aux is selected then has-aux = 'yes' must be chosen in word order section
-    if ((ch.get('neg-sel-adv') == 'aux') or (ch.get('neg-sel-adv') == 'main-aux')):
-      if (ch.get('has-aux') == 'no'):
-        err = 'You have indicated that negation is a selected complement of auxiliaries but that your language has no auxiliaires'
+    if ((negseladv == 'aux' or negseladv == 'main-aux') and ch.get('has-aux') != 'yes'):
+        err = 'You have not indicated on the word order page that your language has auxiliaries.'
         add_err('neg-sel-adv', err)  
 
   # If both strategies are checked, then they must say how they combine:
@@ -324,6 +326,7 @@ def validate_yesno_questions():
   qinvverb = ch.get('q-inv-verb')
   qpartorder = ch.get('q-part-order')
   qpartorth = ch.get('q-part-orth')
+  qinfltype = ch.get('q-infl-type')
 
   if ch.get('q-part'):
     if not qpartorder:
@@ -345,6 +348,9 @@ def validate_yesno_questions():
        ch.get('word-order') == 'free':
       err = 'Subject-verb inversion strategy for yes-no questions is not supported for V-final, V-initial, or free word order languages.  If you believe you have a counterexample to this, please contact us.'
       add_err('q-inv', err)
+    if ((qinvverb == 'aux' or qinvverb == 'aux-main') and ch.get('has-aux') != 'yes'):
+      err = 'You have not indicated on the word order page that your language has auxiliaries.'
+      add_err('q-inv-verb', err)
 
   if ch.get('q-infl'):
     if (not ch.get('q-infl-type')):
@@ -356,7 +362,9 @@ def validate_yesno_questions():
     if (not ch.get('ques-aff-orth')):
       err = 'If matrix yes-no questions are expressed through affixation, you must specify the form of the affix'
       add_err('ques-aff-orth', err)
-                                              
+    if ((qinfltype == 'aux' or qinfltype == 'aux-main') and ch.get('has-aux') != 'yes'):
+      err = 'You have not indicated on the word order page that your language has auxiliaries.'
+      add_err('q-infl-type', err)
 
 # validate_tanda()
 #  Validate the user's choices about tense, aspect and form features
@@ -372,15 +380,18 @@ def validate_tanda():
   for t in ten:
     if ch.is_set(t):
       chosen = 'yes'
-      break
+    elif ch.get(t + '-subtype1_name'):
+      err = 'You cannot add a subtype if the supertype is not selected.'
+      add_err(t, err)
+
   if ch.get('tense-definition') == "choose" and (not (chosen == 'yes')):
     err = 'You have chosen to select among hierarchy elements. You need to select at least one tense element.'
     for t in ten:
       add_err(t, err)
 
-  if ch.get('tense-definition') == "build" and (not (ch.get('tense1_name'))):
-    err = "You have chosen to build your own tense hierarchy. You need to enter at least one tense subtype."
-    add_err('tense1_name', err)
+  if ch.get('tense-definition') == "build" and (not ch.get('tense1_name')):
+    err = "You have chosen to build your own tense hierarchy so you must enter at least one tense subtype."
+    add_err('tense-definition', err)
 
     ch.iter_begin('tense')
     while ch.iter_valid():
@@ -425,48 +436,12 @@ def validate_tanda():
 
 def validate_lexicon():
 
-  auxverb = ch.get('aux-verb')
-  auxsem = ch.get('aux-sem')
-  auxcomp = ch.get('aux-comp')
-  auxorder = ch.get('aux-order')
-  auxsubj = ch.get('aux-subj')
-
   # First, handle the non-iterated lexical entries
 
   # Did they specify enough lexical entries?
   if not ch.get('noun1_stem1_orth'):
     err = 'You must create at least one noun class.'
     add_err('noun1_stem1_orth', err)
-
-  # Did they answer all of the questions about lexical entries?
-  if auxverb and not (auxsem and auxcomp and auxorder):
-    err = 'You must answer all questions for each lexical entry you specify.'
-    add_err('aux-sem', err)
-    add_err('aux-comp', err)
-    add_err('aux-order', err)
-
-  # If they're specifying an auxiliary, and they say it takes a VP or V
-  # complement, did they tell us what type of subject?
-  if auxverb and auxcomp == 'v' and not auxsubj:
-    err = 'If your auxiliary takes a V or VP complement, you must specify whether its subject is an NP or a PP.'
-    add_err('aux-subj', err)
-
-  # ERB 2006-09-29
-  # If they said that either negation or questions required
-  # auxiliaries, did they specify an auxiliary?
-  if (not ch.get('aux-verb')):
-    if (ch.get('neg-infl-type') == 'aux'):
-      err = 'You specified that sentential negation is expressed through inflection of auxiliary verbs, but you did not specify an auxiliary in the lexicon.'
-      add_err('aux-verb', err)
-    if (ch.get('negseladv') == 'aux'):
-      err = 'You specified that sentential negation is expressed through an adverb selected by auxiliary verbs, but you did not specify an auxiliary in the lexicon.'
-      add_err('aux-verb', err)
-    if (ch.get('qinverb') == 'aux'):
-      err = 'You specified that matrix yes-no questions are expressed through subject-auxiliary inversion, but you did not specify an auxiliary in the lexicon.'
-      add_err('aux-verb', err)
-    if (ch.get('q-infl-type') == 'aux'):
-      err = 'You specified that matrix yes-no questions are expressed through inflection of auxiliary verbs, but you did not specify an auxiliary in the lexicon.'
-      add_err('aux-verb', err)
 
   # Now, do the iterated lexical entries
   
@@ -548,38 +523,43 @@ def validate_lexicon():
 
 
   # Auxiliaries
+
   aux1_name = ch.get('aux1_name')
-  if ch.get('has-aux') == 'no':
+  if ch.get('has-aux') != 'yes':
     if aux1_name:
-      err = 'You have indicated on the word order page that your language has no auxiliaries.'
-      add_err('aux1_name', err)
+      err = 'You have indicated that your language has no auxiliaries but have entered an auxiliary on the Lexicon page.'
+      add_err('has-aux', err)
 
   if ch.get('has-aux') == 'yes':
     if not aux1_name:
-      err = 'You have indicated on the word order page that your language has auxiliaries. You must define at least one auxiliary type.'
-      add_err('aux1_name', err)
+      err = 'You have indicated that your language has auxiliaries. You must define at least one auxiliary type on the Lexicon page.'
+      add_err('has-aux', err)
 
   ch.iter_begin('aux')
   while ch.iter_valid():
-    orth = ch.get('orth')
     sem = ch.get('sem')
     pred = ch.get('pred')
     comp = ch.get('comp')
     compform = ch.get('compform')
     subj = ch.get('subj')
     prefix = ch.iter_prefix()
-      
-    if not orth:
-      err = 'You must specify a spelling for each auxiliary you define.'
-      add_err(prefix + 'orth', err)
+    
+    if not ch.get('stem1_orth'):
+      err = 'You must specify a stem for each auxiliary type defined.'
+      add_err(prefix + 'stem1_orth', err)
 
     if not sem:
       err = 'You must specify whether the auxiliary contributes a predicate.'
       add_err(prefix + 'sem', err)
 
-    if ((sem == 'add-pred') and (not pred)):
-      err = 'You must provide a predicate.'
-      add_err(prefix + 'pred', err)
+    if (sem == 'add-pred'):
+      ch.iter_begin('feat')
+      while ch.iter_valid():
+        if ch.get('name') and not ch.get('value'):
+          err = 'You must specify a value for this feature.'
+          add_err(ch.iter_prefix() + 'value', err)
+        ch.iter_next()
+      ch.iter_end()
 
     if not comp:
       err = 'You must specify the complement type.'
@@ -602,8 +582,20 @@ def validate_lexicon():
       ch.iter_next()
     ch.iter_end()
 
+    ch.iter_begin('stem')
+    while ch.iter_valid():
+      if not ch.get('pred') and (sem == 'add-pred'):
+        err = 'You have indicated that this type contributes a predicate. You must specify the predicate name.'
+        add_err(ch.iter_prefix() + 'pred', err)
+      if ch.get('pred') and not (sem == 'add-pred'):
+        err = 'You have specified a predicate but indicated that this type does not contribute a predicate.'
+        add_err(prefix + 'sem', err)
+      ch.iter_next()
+    ch.iter_end()
+    
     ch.iter_next()
   ch.iter_end()
+
 
   # Determiners
   ch.iter_begin('det')

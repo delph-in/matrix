@@ -3574,7 +3574,7 @@ def add_compform_tdl(type, argnum):
   A function that defines a type defintion statement adding compform_tdl and 
   adds the type definition to mylang.tdl.
   Called by customize_auxiliaries.
-  type = namedtype in customize_auxiliaries
+  type = auxtypename variable in customize_auxiliaries
   argnum = 1 or 2 depending whether it is the only argument or the second argument (of 2)
   """
   compform = ch.get('compform')
@@ -3587,7 +3587,7 @@ def add_compfeature_tdl(type, argnum):
   A function that defines type definition statements for auxiliary complement 
   feature/value pairs and adds the type defintions to mylang.tdl.
   Called by customize_auxiliaries().
-  type = namedtype in customize_auxiliaries
+  type = userstypename variable in customize_auxiliaries
   argnum = 1 or 2 depending whether it is the only argument or the second argument (of 2)
   """
   ch.iter_begin('compfeature')
@@ -3600,25 +3600,48 @@ def add_compfeature_tdl(type, argnum):
     ch.iter_next()
   ch.iter_end()
 
+def add_subj_tdl(type, subj, subjcase):
+  """
+  A function to add subject related tdl to type definition if the complement
+  is either a V or a VP.
+  Called by customize_auxiliaries().
+  type = supertype variable in customize_auxiliaries()
+  subj = subj variable in customize_auxiliaries()
+  """
+  if subj == 'adp':
+    mylang.add(type + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD adp ].')
+  else:
+    mylang.add(type + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
+    if subj == 'np-comp-case':
+      mylang.add(type + ' := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE #case  ], \
+                                        [ LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE #case ] > ] > ].')
+    elif subj == 'np-aux-case': 
+      mylang.add(type + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + subjcase + ' ].')
+
+def get_auxtypename(sem, supertype):
+  """
+  A function that creates the auxiliary type name.
+  sem = sem variable from customize_auxiliaries()
+  supertype = supertype variable from customize_auxiliaries()
+  """
+  if sem == 'add-pred':
+    auxtypename = supertype + '-with-pred'
+  else:
+    auxtypename = supertype + '-no-pred'
+  return auxtypename
 
 def customize_auxiliaries():
 
   if has_auxiliaries_p():
     mylang.add_literal(';;; Auxiliaries')
     lexicon.add_literal(';;; Auxiliaries')
-    auxtypename = ''
 
     ch.iter_begin('aux')
     while ch.iter_valid():
       name = ch.get('name')
-      orth = ch.get('orth')
-      namedtype = name + '-aux-lex'      
+      userstypename = name + '-aux-lex'      
 
       sem = ch.get('sem')
-  
-      if sem  == 'add-pred':
-        pred = ch.get('pred')
-
       comp = ch.get('comp') 
       subj = ch.get('subj')
       subjc = ch.get('subj_case') 
@@ -3634,7 +3657,10 @@ def customize_auxiliaries():
     # ARG is #subj constraint (but not possible for aux with s-comp)
 
       if comp == 'vp':
-        typedef = 'subj-raise-aux := aux-lex & trans-first-arg-raising-lex-item  & \
+        supertype = 'subj-raise-aux'
+        auxtypename = get_auxtypename(sem, supertype)
+
+        typedef = supertype + ' := aux-lex & trans-first-arg-raising-lex-item  & \
                    [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #subj >, \
                                             COMPS < #comps >, \
                                             SPR < >, \
@@ -3649,28 +3675,16 @@ def customize_auxiliaries():
                                                   COMPS < > ], \
                                             HEAD verb ]] > ].'
         mylang.add(typedef)
-
-        if subj == 'adp':
-          mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD adp ].')
-        else:
-          mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
-          if subj == 'np-comp-case':
-            mylang.add('subj-raise-aux := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE #case  ], \
-                                                     [ LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE #case ] > ] > ].')
-          elif subj == 'np-aux-case': 
-            mylang.add('subj-raise-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + subjcase + ' ].')
+        
+        add_subj_tdl(supertype, subj, subjcase)
 
         if sem == 'add-pred':
-          auxtypename = 'subj-raise-aux-with-pred'
-
           # includes: constraining the FORM of the (2nd) argument (complement)
-          typedef = \
-              auxtypename + ' := subj-raise-aux & norm-sem-lex-item & \
+          typedef = auxtypename + ' := ' + supertype + ' & norm-sem-lex-item & \
                                         trans-first-arg-raising-lex-item-1 .'
           mylang.add(typedef)
-          
-          add_compform_tdl(namedtype, 2)
-          add_compfeature_tdl(namedtype, 2)
+
+          customize_feature_values(userstypename, 'aux')
 
         else:
           comment = \
@@ -3680,26 +3694,26 @@ def customize_auxiliaries():
             '; but I don\'t want to rely on this.  Then again, [ AUX - ]\n' + \
             '; might not be true.  Be sure to put in a comment.'
           mylang.add_literal(comment)
-
-          auxtypename = 'subj-raise-aux-no-pred'
+          
           # changed inheritance here to remove redundancy
-          typedef = \
-            auxtypename + ' := subj-raise-aux & raise-sem-lex-item & \
+          typedef = auxtypename + ' := ' + supertype + ' & raise-sem-lex-item & \
                       [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
           
-          add_compform_tdl(namedtype, 2)
-          add_compfeature_tdl(namedtype, 2)
+        add_compform_tdl(auxtypename, 2)
+        add_compfeature_tdl(userstypename, 2)
 
       elif comp == 'v':
+        supertype = 'arg-comp-aux'
+        auxtypename = get_auxtypename(sem, supertype) 
+
         comment = \
           '; Somewhat surprisingly, this inherits from basic-two-arg, so\n' + \
           '; that the non-local features are amalgamated from subj, the\n' + \
           '; lexical verb complement, but not the other complements, if any.'
         mylang.add_literal(comment)
         
-        typedef = \
-          'arg-comp-aux := aux-lex & basic-two-arg & \
+        typedef = supertype + ' := aux-lex & basic-two-arg & \
              [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #subj  >, \
                                       COMPS < #comps . #vcomps >, \
                                       SPR < >, \
@@ -3716,16 +3730,8 @@ def customize_auxiliaries():
                                       HEAD verb ], \
                                 CONT.HOOK.XARG #xarg ]] > ].'
         mylang.add(typedef)
-
-        if subj == 'adp':
-          mylang.add('arg-comp-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD adp ].')
-        else:
-          mylang.add('arg-comp-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
-          if subj == 'np-comp-case':
-            mylang.add('arg-comp-aux := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE #case ], \
-                                                   [ LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE #case ] > ] > ].')
-          elif subj == 'np-aux-case':
-            mylang.add('arg-comp-aux := [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + subjcase + ' ].')
+        
+        add_subj_tdl(supertype, subj, subjcase)
 
         if sem == 'add-pred':
           comment = \
@@ -3733,9 +3739,7 @@ def customize_auxiliaries():
             '; event-relation by hand here.'
           mylang.add_literal(comment)
 
-          auxtypename = 'arg-comp-aux-with-pred'
-          typedef = \
-            auxtypename + ' := arg-comp-aux & hcons-lex-item & \
+          typedef = auxtypename + ' := ' + supertype + ' & hcons-lex-item & \
                [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & \
                                                 [ HARG #harg, \
                                                   LARG #larg ] !> ], \
@@ -3743,9 +3747,6 @@ def customize_auxiliaries():
                                        [ ARG1 #harg ]], \
                  ARG-ST < [ ], [ LOCAL.CONT.HOOK.LTOP #larg ] > ].'
           mylang.add(typedef)
-
-          add_compform_tdl(namedtype, 2)
-          add_compfeature_tdl(namedtype, 2)
 
         else:
           comment = \
@@ -3755,18 +3756,18 @@ def customize_auxiliaries():
             '; wasn\'t appearing adjacent to the verb.'
           mylang.add_literal(comment)
 
-          auxtypename = 'arg-comp-aux-no-pred'
-          typedef = \
-            auxtypename + ' := arg-comp-aux  & raise-sem-lex-item & \
+          typedef = auxtypename + ' := ' + supertype + '  & raise-sem-lex-item & \
                [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
 
-          add_compform_tdl(namedtype, 2)
-          add_compfeature_tdl(namedtype, 2)
+        add_compform_tdl(auxtypename, 2)
+        add_compfeature_tdl(userstypename, 2)
 
       elif comp == 's':
-        typedef = \
-          's-comp-aux := aux-lex & basic-one-arg & \
+        supertype = 's-comp-aux'
+        auxtypename = get_auxtypename(sem, supertype)
+
+        typedef = supertype + ' := aux-lex & basic-one-arg & \
              [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
                                       COMPS < #comps >, \
                                       SPR < >, \
@@ -3780,9 +3781,7 @@ def customize_auxiliaries():
         if sem == 'add-pred':
           mylang.add_literal('; S comp aux, with pred')
 
-          auxtypename = 's-comp-aux-with-pred'
-          typedef = \
-            auxtypename + ' := s-comp-aux & hcons-lex-item & \
+          typedef = auxtypename + ' := ' + supertype + ' & hcons-lex-item & \
                 [ SYNSEM [ LOCAL.CONT.HCONS <! qeq & \
                                                [ HARG #harg, \
                                                  LARG #larg ] !>, \
@@ -3790,9 +3789,6 @@ def customize_auxiliaries():
                                         [ ARG1 #harg ]], \
                   ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ] > ].'
           mylang.add(typedef)
-
-          add_compform_tdl(namedtype, 1)
-          add_compfeature_tdl(namedtype, 1)
 
         else:
           mylang.add_literal('; S comp aux, no predicate')
@@ -3804,24 +3800,30 @@ def customize_auxiliaries():
             '; on generation.'
           mylang.add_literal(comment)
 
-          auxtypename = 's-comp-aux-no-pred'
-          typedef = \
-            auxtypename + ' := s-comp-aux & raise-sem-lex-item & \
+          typedef = auxtypename + ' := ' + supertype + ' & raise-sem-lex-item & \
                [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
           
-          add_compform_tdl(namedtype, 1)
-          add_compfeature_tdl(namedtype, 1)
+        add_compform_tdl(auxtypename, 1)
+        add_compfeature_tdl(userstypename, 1)
 
-      mylang.add(namedtype + ' := ' + auxtypename + '.')
-      typedef = \
-        orth + ' := ' + namedtype + ' & \
+      mylang.add(userstypename + ' := ' + auxtypename + '.')
+      
+      # add stems to lexicon
+      ch.iter_begin('stem')
+      while ch.iter_valid():
+        orth = ch.get('orth')
+        typedef = orth + ' := ' + userstypename + ' & \
                        [ STEM < "' + orth + '" > ].'
-      lexicon.add(typedef)
-
-      if sem == 'add-pred':
-        typedef = orth + ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
         lexicon.add(typedef)
+
+        if sem == 'add-pred':
+          pred = ch.get('pred')
+          typedef = orth + ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+          lexicon.add(typedef)
+
+        ch.iter_next()
+      ch.iter_end()
 
       ch.iter_next()
     ch.iter_end()
