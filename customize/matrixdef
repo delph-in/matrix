@@ -338,7 +338,7 @@ Label "</div>"
 
 Label "<h4>ASPECT</h4>"
 
-Label "<p>Add discussion here"
+Label "<p><span style=\"color:red\">Under Construction</p>"
 BeginIter aspect{i} "an aspect type" 
 
   Text name "aspect {i} name" "Aspect name: " "" 20
