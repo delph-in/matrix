@@ -534,12 +534,13 @@ def validate_lexicon():
     if not aux1_name:
       err = 'You have indicated that your language has auxiliaries. You must define at least one auxiliary type on the Lexicon page.'
       add_err('has-aux', err)
-
+  
+  comp = ch.get('aux-comp')
   ch.iter_begin('aux')
   while ch.iter_valid():
     sem = ch.get('sem')
     pred = ch.get('pred')
-    comp = ch.get('comp')
+#    comp = ch.get('comp')
     compform = ch.get('compform')
     subj = ch.get('subj')
     prefix = ch.iter_prefix()
@@ -561,9 +562,9 @@ def validate_lexicon():
         ch.iter_next()
       ch.iter_end()
 
-    if not comp:
-      err = 'You must specify the complement type.'
-      add_err(prefix + 'comp', err)
+ #   if not comp:
+ #     err = 'You must specify the complement type.'
+ #     add_err(prefix + 'comp', err)
 
     if not compform:
       err = 'You must specify the form of the verb in the complement.'

@@ -66,6 +66,8 @@ class ChoicesFile:
         self.convert_9_to_10()
       if version < 11:
         self.convert_10_to_11()
+      if version < 12:
+        self.convert_11_to_12()
       # As we get more versions, add more version-conversion methods, and:
       # if version < N:
       #   self.convert_N-1_to_N
@@ -782,7 +784,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 11
+    return 12
 
 
   def convert_value(self, key, old, new):
@@ -1297,3 +1299,19 @@ class ChoicesFile:
 
       self.iter_next()
     self.iter_end()
+
+  def convert_11_to_12(self):
+   """
+   Previously the kind of comp (s, vp, v) was defined for each auxiliary type.
+   Since our current word order implementation couldn't handle differences on this level anyway,
+   this is no answered by one question for all auxiliaries.
+   This conversion gives aux-comp the value of the first aux's comp, and deletes all type specific aux-comp values.
+   """
+   
+   if self.get('has-aux') == 'yes':
+     auxval = self.get('aux1_comp')
+     self.set('aux-comp',auxval)
+     i = 0
+     while self.iter_valid():
+       i += 1
+       self.delete('aux' + i + '_comp')
