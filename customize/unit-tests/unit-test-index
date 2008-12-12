@@ -50,3 +50,4 @@ v-initial-aux-before-v="testing v-initial word order with aux preceding its v-co
 vso-aux-after-v="testing vso word order where the auxiliary follows its v-complement"
 vso-aux-before-v-cluster="testing vso word order where the aux precedes its v-comp forming a verbal cluster"
 vso-aux-before-v-no-cluster="test vso word order where aux precedes its v-complement and does not form a verbal cluster"
+free-one-aux-max-v=tests free word order with no verbal clusters, thus maximum one aux

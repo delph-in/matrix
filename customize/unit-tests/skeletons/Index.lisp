@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "free-one-aux-max-v") (:content . "free-one-aux-max-v: tests free word order with no verbal clusters, thus maximum one aux"))
 ((:path . "vso-aux-before-v-no-cluster") (:content . "vso-aux-before-v-no-cluster: test vso word order where aux precedes its v-complement and does not form a verbal cluster"))
 ((:path . "vso-aux-before-v-cluster") (:content . "vso-aux-before-v-cluster: testing vso word order where the aux precedes its v-comp forming a verbal cluster"))
 ((:path . "vso-aux-after-v") (:content . "vso-aux-after-v: testing vso word order where the auxiliary follows its v-complement"))
