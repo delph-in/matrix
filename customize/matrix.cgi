@@ -37,10 +37,16 @@ form_data = cgi.FieldStorage()
 # Get the cookie.  If there's not one, make one.
 http_cookie = os.getenv('HTTP_COOKIE')
 browser_cookie = False
+cookie = ''
 if http_cookie:
-  browser_cookie = True
-  cookie = http_cookie.split('=', 1)[1]
-else:
+  for c in http_cookie.split(';'):
+    (name, value) = c.split('=', 1)
+    if name == 'session' and len(value) == 4 and value.isdigit():
+      browser_cookie = True
+      cookie = value
+      break
+
+if not cookie:
   cookie = str(randint(1000,9999))
   while os.path.exists('sessions/' + cookie):
     cookie = str(randint(1000,9999))
