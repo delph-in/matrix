@@ -208,11 +208,25 @@ def validate_word_order():
   if (ch.get('aux-comp-order') and (not ch.get('has-aux'))):
     add_err('has-aux','You specified an order for auxiliaries and their complements, but not whether your language has auxiliaries at all.')
 
-#  if (ch.get('aux1_orth') and (ch.get('has-aux') == 'no')):
-#    add_err('has-aux','You specified a lexical entry for an auxiliary, but said your language has none.')
+  if ((ch.get('has-aux') == 'yes') and (not ch.get('aux-comp'))):
+    add_err('aux-comp','If your language has auxiliaries, you must specify whether they take s, vp, or v complements.')
 
-#  if ((not ch.get('aux1_orth')) and (ch.get('has-aux') == 'yes')):
-#    add_err('has-aux', 'You must add at least one auxiliary on the lexicon page.')
+  wo = ch.get('word-order')
+  co = ch.get('aux-comp-order')
+  ac = ch.get('aux-comp')
+
+  if ac == 'v' and (wo == 'free' or (wo == 'vso' and co == 'before') or (wo == 'osv' and co == 'after')):
+    if (not ch.get('v-cluster')):    
+      add_err('v-cluster','with this general word order and auxiliary v-comp order, you need to specify whether your language forms vc-clusters or not.')
+  if ac == 'vp' and ch.get('v-cluster') == 'yes':
+    add_err('v-cluster','If your auxiliary takes a vp-complement, we assume it does not form verbal clusters.')
+
+  if (((wo == 'vso' and co == 'after') or (wo == 'osv' and co == 'before')) and ac == 'vp'):
+    add_err('aux-comp-order','This auxiliary-complement order is not compatible with your general word order and auxiliary complement type vp.')
+
+  if wo == 'v2' and ch.get('v-cluster') == 'yes':
+    add_err('v-cluster','Sorry, but verbal clusters have not been implemented yet for v2 languages. Please answer "no" to this question.') 
+
 ######################################################################
 # validate_sentential_negation()
 #   Validate the user's choices about sentential negation.

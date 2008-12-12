@@ -1786,18 +1786,23 @@ def determine_consistent_order(wo,hc):
 def determine_vcluster(auxcomp, auxorder, wo):
 
   vcluster = False
+
   if auxcomp == 'vp':    
     if (wo == 'v-initial' and auxorder == 'before') or (wo == 'v-final' and auxorder == 'after'):
       vcluster = True
   elif auxcomp == 'v':
     if ch.get('v-cluster') == 'yes' or wo == 'v-initial' or wo == 'v-final':
       vcluster = True
-    elif auxorder == 'before':     
-      if wo == 'sov' or wo == 'ovs' or wo == 'osv':
+    if wo == 'sov' or wo == 'ovs' or wo == 'osv':
+      if auxorder == 'before':        
         vcluster = True  
-    elif auxorder == 'after':  
-      if wo == 'vos' or wo == 'svo' or wo == 'vso':
+      elif wo == 'sov' or wo == 'ovs':
+        vcluster = False 
+    if wo == 'vos' or wo == 'svo' or wo == 'vso':
+      if auxorder == 'after':
         vcluster = True
+      elif wo == 'vos' or wo == 'svo':
+        vcluster = False
   return vcluster
 
 # ERB 2006-09-15 Subroutine for emitting additional information about
