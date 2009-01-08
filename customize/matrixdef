@@ -54,9 +54,30 @@ Radio has-aux "Has auxiliaries" "Does your language have auxiliary verbs?" ""
 . yes "Yes" "" "yes"
 . no "No" "" "no<br>"
 
-Radio aux-comp-order "Order of auxiliary and complement" "If so, an auxiliary verb appears " ""
-. before "Before" "" "before "
-. after "After" "" "after its complement."
+Label "<p>If so, please specify the following auxiliary properties:</p>"
+Label "<div style=\"padding-left: 30px\">"
+
+ Label "<p>Word Order:</p>"  
+  Radio aux-comp-order "Order of auxiliary and complement" "Does auxiliary verb appear before or after its complement? <br>" ""
+  . before "Before" "" "before <br>"
+  . after "After" "" "after <br>"
+
+ Label "<p>Complements:</p>"
+  Radio aux-comp "Aux {i} complement" "The complements of auxiliaries are:<br>" ""
+  . s "S" "" "saturated sentences<br>"
+  . vp "VP" "" "VPs, raising the subject<br>"
+  . v "V" "" "Vs, raising all of its arguments (argument composition)<br><br>" 
+
+Label "<div style=\"padding-left: 30px\">"
+    Label "If auxiliaries take a V complement and your language has vso,osv or free word order, please answer the question below. In this case, the word order of the grammar will depend on whether verbs appear in a verbal cluster or not. In case of a verbal cluster, verbs are immediately adjacent to each other, without other arguments interferring. In case of a vso language for instance, a preceding auxiliary forming a verbal cluster would result in the order aux-vso. If no verbal cluster is formed, the order will be aux-svo.<br><br>"
+  Radio v-cluster "verb cluster" "Do the auxiliaries form a cluster?<br>" ""
+  . yes "Yes" "" "yes<br>"
+  . no "No" "" "no<br><br>" 
+
+Label "NOTE: If the verbal cluster question is answered by \"no\" for a free word order language (with V auxiliary complement), the resulting grammar will allow only one auxiliary per clause.  When the auxiliary-complement order is non-harmonic (i.e. does not correspond to the general head-comp order), we assume your language has verbal clusters. Furthermore, we assume that v-initial and v-final languages form verbal clusters. If any of these assumptions does not apply to the language you work with, please let us know."
+
+
+  Label "</div>"
 
 Label "<p><span style=\"color:red\">NOTE: As Modules for V2 order are still under development, relative order of auxiliaries and their complements have not been implemented yet.</p>"
 
@@ -338,7 +359,7 @@ Label "</div>"
 
 Label "<h4>ASPECT</h4>"
 
-Label "<p><span style=\"color:red\">Under Construction</p>"
+Label "<p>Add discussion here"
 BeginIter aspect{i} "an aspect type" 
 
   Text name "aspect {i} name" "Aspect name: " "" 20
@@ -740,10 +761,7 @@ BeginIter aux{i} "an Auxiliary Type"
 
   Label "<p>Complement:</p>"
   Label "<div style=\"padding-left: 30px\">"
-  Radio comp "Aux {i} complement" "The complement of this auxiliary type is a:<br>" ""
-  . s "S" "" "saturated sentence<br>"
-  . vp "VP" "" "VP, raising the subject<br>"
-  . v "V" "" "V, raising all of its arguments (argument composition)<br><br>"
+  Label "Due to interactions with the word order implementation, the question whether the complement is a sentence, a vp, or a v has been moved to the word order page, assumming it is the same for all auxiliaries within a language. If you work with a language where depending on the auxiliary the complement may be a vp, v or sentence, let us know.<br><br>"
 
   Select compform "Aux {i} complement verb form" "The verb that is the head of this complement must be of the form:" ""
   fillvalues form 1
