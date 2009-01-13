@@ -68,6 +68,8 @@ Label "<div style=\"padding-left: 30px\">"
   . vp "VP" "" "VPs, raising the subject<br>"
   . v "V" "" "Vs, raising all of its arguments (argument composition)<br><br>" 
 
+Label "If you work with a language where the complement type (v, vp or s) varies depending on the auxiliary please let us know.<br><br>"
+
 Label "<div style=\"padding-left: 30px\">"
     Label "If auxiliaries take a V complement and your language has vso,osv or free word order, please answer the question below. In this case, the word order of the grammar will depend on whether verbs appear in a verbal cluster or not. In case of a verbal cluster, verbs are immediately adjacent to each other, without other arguments interferring. In case of a vso language for instance, a preceding auxiliary forming a verbal cluster would result in the order aux-vso. If no verbal cluster is formed, the order will be aux-svo.<br><br>"
   Radio v-cluster "verb cluster" "Do the auxiliaries form a cluster?<br>" ""
@@ -761,7 +763,6 @@ BeginIter aux{i} "an Auxiliary Type"
 
   Label "<p>Complement:</p>"
   Label "<div style=\"padding-left: 30px\">"
-  Label "Due to interactions with the word order implementation, the question whether the complement is a sentence, a vp, or a v has been moved to the word order page, assumming it is the same for all auxiliaries within a language. If you work with a language where depending on the auxiliary the complement may be a vp, v or sentence, let us know.<br><br>"
 
   Select compform "Aux {i} complement verb form" "The verb that is the head of this complement must be of the form:" ""
   fillvalues form 1
