@@ -631,6 +631,29 @@ def validate_lexicon():
     ch.iter_next()
   ch.iter_end()
 
+  # Feature on all lexical types
+  for lextype in ('noun', 'verb', 'aux', 'det', 'adp'):
+    ch.iter_begin(lextype)
+    while ch.iter_valid():
+      ch.iter_begin('feat')
+      while ch.iter_valid():
+        if not ch.get('name'):
+          err = 'You must choose which feature you are specifying.'
+          add_err(ch.iter_prefix() + 'name', err)
+        if not ch.get('value'):
+          err = 'You must choose a value for each feature you specify.'
+          add_err(ch.iter_prefix() + 'value', err)
+
+        if lextype == 'verb' and not ch.get('head'):
+          err = 'You must choose where the feature is specified.'
+          add_err(ch.iter_prefix() + 'head', err)
+
+        ch.iter_next()
+      ch.iter_end()
+
+      ch.iter_next()
+    ch.iter_end()
+
   # Inflectional Slots
   for slotprefix in ('noun', 'verb', 'det'):
     ch.iter_begin(slotprefix + '-slot')
