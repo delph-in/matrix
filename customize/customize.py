@@ -1537,6 +1537,9 @@ def customize_major_constituent_order(wo):
     mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
 
 # Subjects attach before complements
+# ASF 2008-11-20 in order to allow for aux with vp-comp for VSO and OSV 
+# languages, the standard analysis needs to be adapted to a LIGHT + 
+# constraint on the hs-rule.
 
   auxcomp = ch.get('aux-comp')
   if wo == 'vso' or wo == 'osv':
@@ -1579,9 +1582,6 @@ def customize_major_constituent_order(wo):
 # ERB 2006-09-14 This looks like a case for :+, even in this code,
 # since we're adding to something defined in matrix.tdl.
 
-# ASF 2008-11-18, if has aux and aux precedes verb, 
-# branching in other direction
-
 
   if wo == 'free':
     mylang.add('synsem :+ [ ATTACH xmod ].',
@@ -1604,6 +1604,9 @@ def customize_major_constituent_order(wo):
                'attachment).  We might be able to collapse these one\n' +
                'day, but that\'s not obvious.')
     
+# ASF 2008-11-18, if free wo lgge has aux and aux precedes verb, 
+# the enforced attachment must apply in the other direction.
+
     if has_auxiliaries_p() and  ch.get('aux-comp-order') == 'before':
       mylang.add('head-initial-head-nexus := head-initial & \
                 [ SYNSEM.ATTACH rmod,\
@@ -1636,12 +1639,10 @@ in for head-adjunct phrases here:')
 # Interaction with auxiliaries is not implemented for now, because it is not
 # clear what may occur (so auxiliaries can occur anywhere for now, as long as
 # the v2 constraint is respected)
-# Also note that the implementation may needed to be revised when more complex
-# phenomena (such as clause final verbal cluster and vp-fronting) need to be 
+# Also note that the implementation may need to be revised when more complex
+# phenomena (such as clause final verbal cluster and vp-fronting) are
 # implemented
 #
-# need to look at the results with v or vp raising auxiliaries (do they differ
-# the way they should...
   
   if wo == 'v2':
     mylang.add('verbal-head-nexus := headed-phrase & \
@@ -1748,18 +1749,27 @@ def determine_consistent_order(wo,hc):
       adp = 'vo-post'
   
   # Now what about auxiliaries?
-
+  # ASF 2008-12-07 for non-harmonic order and v (not vp) comps,
+  # we need a different procedure (see if auxcomp...)
+   
   if has_auxiliaries_p():
+    auxcomp = ch.get('aux-comp')  
     if wo == 'free':
       if ch.get('aux-comp-order') == 'before':
         aux = 'free-auxv'
       elif ch.get('aux-comp-order') == 'after':
         aux = 'free-vaux'
     elif hc == 'comp-head' and ch.get('aux-comp-order') == 'before':
-      aux = 'ov-auxv'
+      if auxcomp == 'v':
+        aux = 'auxv-rule'  
+      else:
+        aux = 'ov-auxv'
     elif hc == 'head-comp' and ch.get('aux-comp-order') == 'after':
-      aux = 'vo-vaux'
-
+      if auxcomp == 'v':
+        aux = 'vaux-rule'
+      else:
+        aux = 'vo-vaux'
+     
   # ERB 2006-10-05 And what about the order of question particles wrt
   # to other kinds of head-comp?  I'm assuming for now that question particles
   # and other complementizers will behave the same way.  Are there languages
@@ -1803,6 +1813,8 @@ def determine_vcluster(auxcomp, auxorder, wo):
         vcluster = True
       elif wo == 'vos' or wo == 'svo':
         vcluster = False
+  if not has_auxiliaries_p():
+    vcluster = False
   return vcluster
 
 # ERB 2006-09-15 Subroutine for emitting additional information about
@@ -1878,16 +1890,10 @@ def specialize_word_order(hc,orders):
   auxorder = ch.get('aux-comp-order')
   vcluster = determine_vcluster(auxcomp, auxorder, wo)
      
-  # ASF 2008-12-07 for non-harmonic order and v (not vp) comps, we need a different procedure
-
-  if auxcomp == 'v':
-    if  aux == 'ov-auxv':
-      aux = 'auxv-rule'    
-    elif aux == 'vo-vaux':
-      aux = 'vaux-rule' 
-
   # ASF 2008-12-07 If verbal cluster is present, introduce relevant feature
-  # and pass-up in lex-rule
+  # and pass-up in lex-rule.
+  # Also add relevant constraint to basic-head-comp-phrase 
+
   if vcluster:
     mylang.add('lex-or-phrase-synsem :+ [ VERB-CL luk ].',
                 'Introducing VERB-CL keeps track whether main-verb is present in cluster')
@@ -1906,8 +1912,10 @@ def specialize_word_order(hc,orders):
   if hc == 'head-comp' and (adp == 'vo-post' or aux == 'vo-vaux' or qpart_order == 'vo-sq'):
     mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final.')
 
-  # ASF 2008-11-18, special auxiliary rule that allows for auxiliaries to combine with v's  
-  # when aux-comp is non-harmonic in comparison with the rest of the grammar
+  # ASF 2008-11-18, special auxiliary rule that allows for auxiliaries 
+  # to combine with v's when aux-comp order is not harmonic
+  # the vcluster + constraint is added to head-comp-phrase, since this
+  # aux-rule is always combined with the verbal cluster analysis.
 
   if aux == 'auxv-rule':
     mylang.add('''aux-comp-phrase := basic-marker-comp-phrase & marker-initial-phrase & 
@@ -1992,10 +2000,6 @@ def specialize_word_order(hc,orders):
     comp_head_is.append('comp')
 
   # OV order 
-  # 2008-10-28 ASF changed 'aux' to 'verb' (aux is not a head)
-  # Problem: the condition SS.LOC.CAT.HEAD verb is not the right restriction
-  # the head needs to be an auxiliary: either change consequences below on AUX +
-  # condition or make aux a special kind of verb.
 
   if aux == 'ov-auxv':
     head_comp_is.append('aux')
@@ -2044,6 +2048,9 @@ def specialize_word_order(hc,orders):
   # we don't have a disjunctive type.
 
   # ASF for aux-comp and comp-aux, restriction should be AUX +
+  # ASF for v-final and v-initial, added SUBJ < [] > constraint to form
+  # a verbal cluster at the beginning or end of the sentence.
+
 
   if len(head_comp_is) == 1:
     head = head_comp_is[0]
@@ -3457,14 +3464,15 @@ def customize_verbs():
   hclightallverbs = False
 
   vc = ch.get('v-cluster')
-  if wo == 'vso' or wo == 'osv':
-    wo = 'req-hcl-vp'
-  if auxcomp == 'v' and hclight != True:      
-    hclight = True
-    if wo != 'free' or vc == 'yes':
+  if has_auxiliaries_p():
+    if wo == 'vso' or wo == 'osv':
+      wo = 'req-hcl-vp'
+    if auxcomp == 'v' and hclight != True:
+      hclight = True
+      if wo != 'free' or vc == 'yes':
+        hclightallverbs = True
+    if auxcomp == 'vp' and wo == 'req-hcl-vp':
       hclightallverbs = True
-  if auxcomp == 'vp' and wo == 'req-hcl-vp':
-    hclightallverbs = True
   
   if wo == 'req-hcl-vp':
     wo = ch.get('word-order')
