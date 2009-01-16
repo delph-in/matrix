@@ -2057,7 +2057,7 @@ def specialize_word_order(hc,orders):
     if head == 'aux':
       mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
                'head-comp-phrase requires auxiliary heads.')
-      if wo == 'v-final':
+      if wo == 'v-final' and auxcomp == 'vp': 
         mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] > ].')
     else:
       mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
@@ -2068,7 +2068,7 @@ def specialize_word_order(hc,orders):
     if head == 'aux':
       mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
                'comp-head-phrase requires auxiliary heads.')      
-      if wo == 'v-initial':
+      if wo == 'v-initial' and auxcomp == 'vp':
         mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] > ].')
     else:
       mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
