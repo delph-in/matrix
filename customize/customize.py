@@ -239,20 +239,24 @@ class Hierarchy:
         subs += [ k ]
 
     # prune supers and subs
-    toremove = []
+    toremove = set()
     for i in range(len(supers) - 1, -1, -1):
       for j in range(len(supers) -1, -1, -1):
         if i != j and cov[supers[i]].issuperset(cov[supers[j]]):
-          toremove += [ i ]
-    for i in toremove:
+          toremove.add(i)
+    remove_array = [e for e in toremove]
+    remove_array.sort(reverse=True)
+    for i in remove_array:
       del(supers[i])
 
-    toremove = []
+    toremove = set()
     for i in range(len(subs) - 1, -1, -1):
       for j in range(len(subs) -1, -1, -1):
         if i != j and cov[subs[i]].issubset(cov[subs[j]]):
-          toremove += [ i ]
-    for i in toremove:
+          toremove.add(i)
+    remove_array = [e for e in toremove]
+    remove_array.sort(reverse=True)
+    for i in remove_array:
       del(subs[i])
 
     # figure out the name of the new type
@@ -4743,8 +4747,12 @@ def customize_matrix(path, arch_type):
   init_mark_hierarchy()
   init_other_hierarchies()
 
-  # Call the various customization functions
+  # Customize inflection and lexicon first, since they can cause
+  # augmentation of the hierarchies
   customize_inflection()
+  customize_lexicon()
+
+  # Call the other customization functions
   customize_case()
   customize_person_and_number()
   customize_gender()
@@ -4757,7 +4765,6 @@ def customize_matrix(path, arch_type):
   customize_sentential_negation()
   customize_coordination()
   customize_yesno_questions()
-  customize_lexicon()
   customize_test_sentences(matrix_path)
   customize_roots()
 
