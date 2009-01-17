@@ -549,7 +549,7 @@ function multi_open(select_name)
 
       var check = document.createElement('input');
       check.type = 'checkbox';
-      check.id = select_name + '_' + ops[i].value;
+      check.id = select_name + '__' + ops[i].value;
       check.onkeypress = function(e) { return multi_keypress(e, select.name); }
       span.appendChild(check);
       if (indexOf(vals, ops[i].value) != -1) {
@@ -603,7 +603,7 @@ function multi_close(select_name)
         fvalue += ', ';
       }
 
-      var v = check.id.replace(/.*_/, '');
+      var v = check.id.replace(/.*__/, '');
       ivalue += v;
 
       for (var i = 0; i < ops.length; i++) {
