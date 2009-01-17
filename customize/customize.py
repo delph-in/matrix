@@ -818,7 +818,7 @@ def customize_other_features():
 
     # if this hierarchy isn't handled elsewhere, handle it here
     if feat not in ['case', 'person', 'number', 'pernum', 'gender',
-                    'form', 'mark', 'tense', 'aspect']:
+                    'form', 'mark', 'tense', 'aspect', 'situation']:
       if type == 'head':
         mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].')
       else:
@@ -894,7 +894,7 @@ def customize_tense():
 
 ######################################################################
 # customize_aspect()
-# Create aspect feature value definitions per the user's choices
+# Create viewpoint aspect feature value definitions per the user's choices
 
 def init_aspect_hierarchy():
   hier = Hierarchy('aspect')
@@ -922,6 +922,36 @@ def customize_aspect():
   if 'aspect' in hierarchies:
     hierarchies['aspect'].save(mylang, False)
 
+# customize_situation()
+# Create situation aspect feature value definitions per the user's choices
+ 
+def init_situation_hierarchy():
+  hier = Hierarchy('situation')
+
+  ch.iter_begin('situation')
+  while ch.iter_valid():
+    name = ch.get('name')
+
+    ch.iter_begin('supertype')
+    while ch.iter_valid():
+      supername = ch.get('name')
+      
+      hier.add(name, supername)
+      ch.iter_next()
+    ch.iter_end()
+      
+    ch.iter_next()
+  ch.iter_end()
+
+  if not hier.is_empty():
+    hierarchies[hier.name] = hier
+
+
+def customize_situation():
+  if 'situation' in hierarchies:
+    mylang.add('situation := sort.')
+    mylang.add('tam :+ [SITUATION situation].')
+    hierarchies['situation'].save(mylang, False)
 
 ######################################################################
 # customize_word_order()
@@ -4743,6 +4773,7 @@ def customize_matrix(path, arch_type):
   init_gender_hierarchy()
   init_tense_hierarchy()
   init_aspect_hierarchy()
+  init_situation_hierarchy()
   init_form_hierarchy()
   init_mark_hierarchy()
   init_other_hierarchies()
@@ -4760,6 +4791,7 @@ def customize_matrix(path, arch_type):
   customize_mark()
   customize_tense()
   customize_aspect()
+  customize_situation()
   customize_other_features()
   customize_word_order()
   customize_sentential_negation()

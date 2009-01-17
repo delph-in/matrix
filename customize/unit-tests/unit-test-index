@@ -51,3 +51,6 @@ vso-aux-after-v="testing vso word order where the auxiliary follows its v-comple
 vso-aux-before-v-cluster="testing vso word order where the aux precedes its v-comp forming a verbal cluster"
 vso-aux-before-v-no-cluster="test vso word order where aux precedes its v-complement and does not form a verbal cluster"
 free-one-aux-max-v=tests free word order with no verbal clusters, thus maximum one aux
+view-inf-situ-inher=inflected viewpoint and inherent situation aspect
+view-situ-aspect-infl=situation and viewpoint aspect as inflection
+test-stative=testing assignment of prog-asp to non-stative-ing comp, ignoring tense/person/number/spelling, only transitive

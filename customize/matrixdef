@@ -301,9 +301,11 @@ Label "<div style=\"padding-left: 16px\">"
 
 Label "<h4>TENSE</h4>"
 
-Label "You may define a tense hierarchy in one of two ways:"
+Label "Comrie (1985: p.9) defines tense as \"... grammaticalized expression of location in time\". Which categories of tense are grammaticalized varies across languages. You may create a hierarchy of values for the feature <span style=\"font-variant:small-caps\">tense</span> as appropriate for your language. If your language does not have tense as a grammatical category, leave this section blank."
 
-Label "<ul><li>Select among the following common hierarchy elements and add subtypes as needed, or <li>Build your own hierarchy.</ul>"
+Label "You may define a hierarchy of values for the <span style=\"font-variant:small-caps\">tense</span> feature in one of two ways:"
+
+Label "<ul><li>Select among the following common hierarchy elements and supplement with subtypes as needed, or <li>Build your own hierarchy.</ul>"
 
 Radio tense-definition "Tense hierarchy definition style" "" ""
 . choose "Choose" "" "<b>Select among common hierarchy elements</b><br>"
@@ -327,12 +329,12 @@ Check future "Future" "" "<b>future</b><br>"
     Text name "Future subtype {i} name" "Subtype: " "" 20
   EndIter future-subtype
 
-Check nonpast "Non-Past" "" "<b>nonpast</b> &nbsp;&nbsp;&nbsp;&nbsp;(note: If present and/or future are also selected they are assumed to be subtypes of nonpast.)<br>"
+Check nonpast "Non-Past" "" "<b>nonpast</b> &nbsp;&nbsp;&nbsp;&nbsp; <font size=-1>(note: If present and/or future are also selected they are assumed to be subtypes of nonpast.)<br></font>"
   BeginIter nonpast-subtype{i} "a subtype"
     Text name "Non-Past subtype {i} name" "Subtype: " "" 20
   EndIter nonpast-subtype
 
-Check nonfuture "Non-Future" "" "<b>nonfuture</b> &nbsp;&nbsp;&nbsp;&nbsp;(note: If present and/or past are also selected they are assumed to be subtypes of nonfuture.)<br>"
+Check nonfuture "Non-Future" "" "<b>nonfuture</b> &nbsp;&nbsp;&nbsp;&nbsp; <font size=-1>(note: If present and/or past are also selected they are assumed to be subtypes of nonfuture.)<br></font>"
   BeginIter nonfuture-subtype{i} "a subtype"
     Text name "Non-Future subtype {i} name" "Subtype: " "" 20
   EndIter nonfuture-subtype
@@ -340,7 +342,7 @@ Check nonfuture "Non-Future" "" "<b>nonfuture</b> &nbsp;&nbsp;&nbsp;&nbsp;(note:
 Label "</div>"
 
 Radio tense-definition "Tense hierarchy definition style" "" ""
-. build "Build" "" "<b>Build your own tense hierarchy</b><br>"
+. build "Build" "" "<b>Build your own <span style=\"font-variant:small-caps\">tense</span> hierarchy</b><br>"
 
 Label "<div style=\"padding-left: 35px\">"
 Label "<br>Build your hierarchy from the top down starting with subtypes of the supertype: tense.</p>"
@@ -361,7 +363,18 @@ Label "</div>"
 
 Label "<h4>ASPECT</h4>"
 
-Label "<p>Add discussion here"
+Label "<p>According to Kibort (2008), \"The term 'aspect' designates the perspective taken on the internal temporal organisation of the situation, and so 'aspects' distinguish different ways of viewing the internal temporal constituency of the same situation (Comrie 1976:3ff,...; Bybee 2003:157). The 'situation' is meant here as [a] general term covering events, processes, states, etc., as expressed by the verb phrase or the construction. Unlike tense, which is situation-external time, aspect is situation-internal and non-deictic, as it is not concerned with relating the time of the situation to any other time point.\""
+
+Label "<p>\"Aspectual meaning of a clause can be broken up into two independent aspectual components (Smith 1991/1997): Aspectual viewpoint [and] Situation type ... .\" Aspectual viewpoint conveys \"the temporal perspective from which the situation is presented.\" Situation type \"classifies the situation according to its temporal properties.\" (Kibort 2008)" 
+
+Label "<p>See references below, especially Kibort (2008), for more detail."
+
+Label "<div style=\"padding-left: 35px\">"
+
+Label "<p><b>VIEWPOINT Aspect</b>"
+
+Label "<p>Viewpoint aspect is also commonly referred to as grammatical aspect.  The most common viewpoint opposition is perfective/imperfective. You may create a hierarchy of values for the feature <span style=\"font-variant:small-caps\">aspect</span>, reflecting viewpoint aspect, as appropriate for your language. If your language does not have viewpoint aspect (also commonly referred to as grammatical aspect) as a grammatical category, leave this section blank."
+
 BeginIter aspect{i} "an aspect type" 
 
   Text name "aspect {i} name" "Aspect name: " "" 20
@@ -375,14 +388,36 @@ BeginIter aspect{i} "an aspect type"
 
 EndIter aspect
 
+
+Label "<p><b>SITUATION Aspect</b>"
+
+Label "<p>The term \"situation aspect\" overlaps with, or subsumes, lexical aspect, inherent aspect and some uses of the term Aktionsart. Situation aspect values may be conveyed by the meaning of the verb or through overt morphological marking however situation aspect values may depend on qualities of verbal arguments or sentential adjuncts (for example). In this case the values are compositionally derived."
+
+Label "<p><span style=\"color:red\">Note: The implementation of situation aspect is still under development; There is, as yet, no implementation of compositionally derived situation aspect. Currently the <span style=\"font-variant:small-caps\">situation</span> feature may be used to represent inherent lexical qualities or those conveyed through overt morphological marking. This more accurately reflects uses of the term \"lexical aspect\".</p>"
+
+Label "<p>You may create a hierarchy of values for the feature <span style=\"font-variant:small-caps\">situation</span>, reflecting inherent or morphologically marked situation aspect. If this is not appropriate for your language, leave this section blank.
+
+BeginIter situation{i} "a situation type" 
+
+  Text name "situation {i} name" "Situation name: " "" 20
+  BeginIter supertype{j} "a Supertype" 1
+
+    Select name "Situation {i} supertype {j} name" "Supertype: " ""
+    fillregex situation[0-9]+_name 1
+    . situation "Situation" "situation"
+
+  EndIter supertype
+
+EndIter situation
+
+label "</div>"
 Label "</div>"
-Label "<br>"
 
 Label "<h3>Syntactic Features</h3>"
 
 Label "<div style=\"padding-left: 16px\">"
 Label "<h4>FORM</h4>"
-Label "<p>In addition to the semantic features tense and aspect, your grammar may utilize a syntactic feature characterizing the form the verb takes. The FORM feature distinguishes finite from non-finite forms and can be used to constrain auxiliary complement forms.</p>"
+Label "<p>In addition to the semantic features tense and aspect, your grammar may utilize a syntactic feature characterizing the form the verb takes. The FORM feature distinguishes finite from non-finite forms and can be used to constrain auxiliary complement forms. If not applicable, you may leave this section blank.</p>"
 Label "<p>If you have indicated on the word order page that your language has auxiliary verbs your grammar will include 'finite' and 'nonfinite' FORM values. If your language does not have auxiliaries you may still include 'finite' and 'nonfinite' FORM values in your grammar:<br>" 
 Check noaux-fin-nf "Finite-nonfinite" "" "My language has no auxiliaries but does make a syntactically relevant finite/non-finite distinction.</p>"
 
@@ -404,13 +439,21 @@ Label "</div>"
 
 Label "<h4>MARK</h4>"
 
-Label "<p>This syntactic feature defines quasi-semantic qualities, i.e., those that have become grammaticalized or are not clearly associated with a specific semantic feature. For example, in languages with distinct auxiliary verbs each associated with a particular classes of verbs, as in many Romance languages, this feature can distinguish/mark members of the verb classes.</p>"
+Label "<p>This syntactic feature defines quasi-semantic qualities, i.e., those that have become grammaticalized or are not clearly associated with a specific semantic feature. This feature may be useful in differentiating members of verb classes. For example, in languages with distinct auxiliaries each associated with a particular classes of verbs, e.g., the French auxiliaries: &ecirc;tre and avoir, this feature can distinguish/mark members of the verb classes. If not applicable, you may leave this section blank.</p>"
   BeginIter mark{i} "a mark value"
     Text name "Mark value {i} name" "Value name: " "&nbsp;&nbsp;&nbsp;&nbsp;note: Names cannot contain spaces or special characters." 20
   EndIter mark
 
 Label "</div>"
-Label "<br>"
+
+Label "<h4>References</h4>"
+<font size=-1>
+Label "<p><font size=-1>Bybee, Joan L. 2003. Aspect. In: Frawley, W.J. (ed.) International Encyclopedia of Linguistics. Second Edition. Oxford: OUP. 157-158."
+Label "<p><font size=-1>Comrie, Bernard. 1976. Aspect. Cambridge: CUP.</font>"
+Label "<p><font size=-1>Comrie, Bernard. 1985. Tense. Cambridge: CUP.</font>"
+Label "<p><font size=-1>Kibort, Anna. \"Aspect.\" Grammatical Features. 7 January 2008. <a href=\"http://www.features.surrey.ac.uk/features/aspect.html\">http://www.features.surrey.ac.uk/features/aspect.html</a>.</font>"
+Label "<p><font size=-1>Smith, Carlota. 1997. The Parameter of Aspect. (Second Edition). Dordrecht: Kluwer Academic Publishers. (Revised version of Smith, Carlota. 1991. The Parameter of Aspect. Dordrecht: Kluwer Academic Publishers).</font>"
+
 
 Section sentential-negation "Sentential Negation"
 

@@ -595,7 +595,7 @@ class ChoicesFile:
 
 # aspects()
 #   Create and return a list containing information about the
-#   values of the APSECT feature implied by the current choices.
+#   values of the Viewpoint ASPECT feature implied by the current choices.
 #   This list consists of tuples:
 #        [aspect name]
   def aspects(self):
@@ -614,6 +614,26 @@ class ChoicesFile:
 
     return aspects
 
+# situations()
+#   Create and return a list containing information about the
+#   values of the SITUATION aspect feature implied by the current choices.
+#   This list consists of tuples:
+#        [situation name]
+  def situations(self):
+    situations = []
+
+    state = self.iter_state()
+    self.iter_reset()
+
+    self.iter_begin('situation')
+    while self.iter_valid():
+      situations += [ [self.get('name')] ]
+      self.iter_next()
+    self.iter_end()
+
+    self.iter_set_state(state)
+
+    return situations
 
   # features()
   #   Create and return a list containing information about the features
@@ -718,7 +738,7 @@ class ChoicesFile:
     if values:
       features += [ ['tense', values, 'LOCAL.CONT.HOOK.INDEX.E.TENSE'] ]
 
-    # Aspect
+    # Viewpoint Aspect
     values = ''
     for a in self.aspects():
       if values:
@@ -727,6 +747,16 @@ class ChoicesFile:
     
     if values:
       features += [ ['aspect', values, 'LOCAL.CONT.HOOK.INDEX.E.ASPECT'] ]
+
+    #Situation Aspect
+    values = ''
+    for s in self.situations():
+      if values:
+        values += ';'
+      values += s[0] + '|' + s[0]
+    
+    if values:
+      features += [ ['situation', values, 'LOCAL.CONT.HOOK.INDEX.E.SITUATION'] ]
 
     # Direction
     if self.get_full('scale1_feat1_name'):

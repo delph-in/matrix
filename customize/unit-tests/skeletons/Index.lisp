@@ -22,6 +22,9 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "test-stative") (:content . "test-stative: testing assignment of prog-asp to non-stative-ing comp, ignoring tense/person/number/spelling, only transitive"))
+((:path . "view-situ-aspect-infl") (:content . "view-situ-aspect-infl: situation and viewpoint aspect as inflection"))
+((:path . "view-inf-situ-inher") (:content . "view-inf-situ-inher: inflected viewpoint and inherent situation aspect"))
 ((:path . "free-one-aux-max-v") (:content . "free-one-aux-max-v: tests free word order with no verbal clusters, thus maximum one aux"))
 ((:path . "vso-aux-before-v-no-cluster") (:content . "vso-aux-before-v-no-cluster: test vso word order where aux precedes its v-complement and does not form a verbal cluster"))
 ((:path . "vso-aux-before-v-cluster") (:content . "vso-aux-before-v-cluster: testing vso word order where the aux precedes its v-comp forming a verbal cluster"))

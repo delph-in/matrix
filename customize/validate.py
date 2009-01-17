@@ -381,11 +381,11 @@ def validate_yesno_questions():
       add_err('q-infl-type', err)
 
 # validate_tanda()
-#  Validate the user's choices about tense, aspect and form features
+#  Validate the user's choices about tense, aspect (viewpoint and situation) and form features
 
 def validate_tanda():
   """
-  Validate the user's choices about tense, aspect and form features
+  Validate the user's choices about tense, aspect (viewpoint and situation) and form features
   """
   
   ## validate tense
@@ -424,10 +424,23 @@ def validate_tanda():
   while ch.iter_valid():
     if not ch.get('name'):
       add_err(ch.iter_prefix() + 'name',
-            'You must specify a name for each aspect subtype you define.')
+            'You must specify a name for each viewpoint aspect subtype you define.')
     if not ch.get('supertype1_name'):
       add_err(ch.iter_prefix() + 'supertype1_name',
-            'You must specify at least one supertype for each aspect subtype you define.')
+            'You must specify at least one supertype for each viewpoint aspect subtype you define.')
+
+    ch.iter_next()
+  ch.iter_end()
+
+  ## validate situation
+  ch.iter_begin('situation')
+  while ch.iter_valid():
+    if not ch.get('name'):
+      add_err(ch.iter_prefix() + 'name',
+            'You must specify a name for each situation aspect subtype you define.')
+    if not ch.get('supertype1_name'):
+      add_err(ch.iter_prefix() + 'supertype1_name',
+            'You must specify at least one supertype for each situation aspect subtype you define.')
 
     ch.iter_next()
   ch.iter_end()
