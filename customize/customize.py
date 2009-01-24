@@ -362,6 +362,30 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
                      ' := [ ARG-ST.FIRST. ' + \
                      geom + ' ' + s_case + ' ].')
 
+    elif (n == 'negation' and v[0] == '+'):
+      # ERB 2009-01-22 This is where we deal with the
+      # negative affixes.  
+      mylang.add(type_name + ':= \
+                     [ C-CONT [ HOOK [ XARG #xarg,\
+	                     LTOP #ltop,\
+	                     INDEX #ind ],\
+	              RELS <! event-relation &\
+	                      [ PRED "_neg_r_rel",\
+	                        LBL #ltop,\
+	                        ARG1 #harg ] !>,\
+	              HCONS <! qeq &\
+	                       [ HARG #harg,\
+	                         LARG #larg ] !> ],\
+	              SYNSEM.LKEYS #lkeys,\
+	            DTR [ SYNSEM [ LKEYS #lkeys,\
+	                    LOCAL [ CONT.HOOK [ XARG #xarg,\
+                                                INDEX #ind,\
+	                                        LTOP #larg ],\
+	                          CAT.HEAD verb]]]].',
+                 'This lexical rule adds the neg_r_rel to the verb\'s\n\
+	          RELS list.  It is instantiated by a spelling-changing\n\
+	          rule as specified in irules.tdl.')
+
     ch.iter_next()
   ch.iter_end()
 
@@ -2361,6 +2385,10 @@ def customize_sentential_negation():
   # on whether there are other options (negation via selected adverb)
   # and how they combine.
 
+  # ERB 2009-01-23 This is all moot right now since the interim system
+  # doesn't do the interaction between the two, but it probably won't 
+  # break anything to leave it in.
+
   advAlone = ''
   multineg = ch.get('multi-neg')
   if ch.get('adv-neg') == 'on' or multineg == 'comp':
@@ -2381,7 +2409,12 @@ def customize_sentential_negation():
   if ch.get('infl-neg') == 'on' and multineg != 'both-obl' and multineg != 'adv-obl':
     create_neg_infl_lex_rule()
 
-  if ch.get('adv-neg') == 'on' and ch.get('neg-adv') == 'ind-adv':
+  # ERB 2009-01-23 Migrating negation to modern customization system.
+  # This intermediate version only does independent adverbs, and so
+  # I'm removing ch.get('neg-adv') == 'ind-adv' as a second part of
+  # the test below.
+
+  if ch.get('adv-neg') == 'on': # and ch.get('neg-adv') == 'ind-adv':
     if advAlone == 'never':
       # Override user input: multi-neg as bothobl or inflobl means
       # we go with the selected adverb analysis.
@@ -4417,8 +4450,12 @@ def customize_inflection():
             mylang.add(name+'-lex-rule := const-add-only-no-ccont-ltol-rule & \
             [DTR ' + inp + '].')
         else:
-          mylang.add(name+'-lex-rule := infl-add-only-no-ccont-ltol-rule & \
-          [DTR ' + inp + '].')
+          if neginflrule(features):
+            mylang.add(name+'-lex-rule := infl-cont-change-only-ltol-rule & \
+             [DTR ' + inp + '].')
+          else:
+            mylang.add(name+'-lex-rule := infl-add-only-no-ccont-ltol-rule & \
+             [DTR ' + inp + '].')
 
       # Specify for subtypes, if any
       if subrules > 0:
@@ -4585,6 +4622,33 @@ def copy_all_tracks(reqd):
       ch.iter_next()
     ch.iter_end()
 
+
+def neginflrule(features):
+  # ERB 2009-01-23
+  # Subroutine for determining if the rule at hand is the type
+  # that needs to add negative semantics (negative inflection lex rule)
+  # FIXME: For now assuming that negation will always be in a slot
+  # by itself, so that if one morpheme in a slot needs to be a 
+  # cont-change-only-lex-rule, they all do.  This is wrong, but fixing
+  # it properly requires refactoring the morphotactic code, I'm afraid.
+  # Where this is currently being called, it seems to be inside another
+  # iter_begin(), and so the prefix is already set appropriately.
+  # Check whether this is so when using this function in new contexts.
+  result = False
+  ch.iter_begin('morph')
+  while ch.iter_valid():
+    ch.iter_begin('feat')
+    while ch.iter_valid():
+      name = ch.get('name')
+      value = ch.get('value')
+      if (name == 'negation' and value == '+'):
+        result = True
+      ch.iter_next()
+    ch.iter_end()
+    ch.iter_next()
+  ch.iter_end()
+        
+  return result
 
 ######################################################################
 # customize_test_sentences(matrix_path)

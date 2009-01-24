@@ -236,34 +236,40 @@ def validate_sentential_negation():
   neginfltype = ch.get('neg-infl-type')
   negseladv = ch.get('neg-sel-adv')
 
+  # ERB 2009-01-23 Commenting out the following because infl-neg is
+  # now handled with customize_inflection.  We should eventually give
+  # a warning if infl-neg is selected but no lexical rules actually
+  # use it.  I think it would make sense for that warning to go
+  # on the negation page.
+
   # If affix is indicated, must select prefix/suffix and main/aux/either and give form.
-  if (ch.get('infl-neg') == 'on'):
-    if (not ch.get('neg-infl-type')):
-      err = 'If sentential negation is expressed through affixation, you must specify what the affix attaches to.'
-      add_err('neg-infl-type', err)
-    if (not ch.get('neg-aff')):
-      err = 'If sentential negation is expressed through affixation, you must specify whether its a prefix or a suffix'
-      add_err('neg-aff', err)
-    if (not ch.get('neg-aff-orth')):
-      err = 'If sentential negation is expressed through affixation, you must specify the form of the affix'
-      add_err('neg-aff-orth', err)
-    # If aux is selected then has-aux = 'yes' must be chosen in word order section
-    if ((neginfltype == 'aux' or neginfltype == 'aux-main') and ch.get('has-aux') != 'yes'):
-        err = 'You have not indicated on the word order page that your language has auxiliaries.'
-        add_err('neg-infl-type', err)
+#   if (ch.get('infl-neg') == 'on'):
+#     if (not ch.get('neg-infl-type')):
+#       err = 'If sentential negation is expressed through affixation, you must specify what the affix attaches to.'
+#       add_err('neg-infl-type', err)
+#     if (not ch.get('neg-aff')):
+#       err = 'If sentential negation is expressed through affixation, you must specify whether its a prefix or a suffix'
+#       add_err('neg-aff', err)
+#     if (not ch.get('neg-aff-orth')):
+#       err = 'If sentential negation is expressed through affixation, you must specify the form of the affix'
+#       add_err('neg-aff-orth', err)
+#     # If aux is selected then has-aux = 'yes' must be chosen in word order section
+#     if ((neginfltype == 'aux' or neginfltype == 'aux-main') and ch.get('has-aux') != 'yes'):
+#         err = 'You have not indicated on the word order page that your language has auxiliaries.'
+#         add_err('neg-infl-type', err)
 
   # If adverb is indicated, must lexical entry, what it modifies, and ind/selected modifier
   if (ch.get('adv-neg') == 'on'):
-    if (not ch.get('neg-adv')):
-      err = 'If sentential negation is expressed through an adverb, you must specify whether the adverb is a selected complement or an independent modifier.'
-      add_err('neg-adv', err)
-    if (ch.get('neg-adv') == 'ind-adv'):
-      if (not ch.get('neg-mod')):
-        err = 'If sentential negaton is expressed through an adverb, you must specify what type of constituent the adverb modifies.'
-        add_err('neg-mod', err)
-      if (not ch.get('neg-order')):
-        err = 'If sentential negaton is expressed through an adverb, you must specify what side of its host the adverb attaches to.'
-        add_err('neg-order', err) 
+#    if (not ch.get('neg-adv')):
+#      err = 'If sentential negation is expressed through an adverb, you must specify whether the adverb is a selected complement or an independent modifier.'
+#      add_err('neg-adv', err)
+#    if (ch.get('neg-adv') == 'ind-adv'):
+    if (not ch.get('neg-mod')):
+      err = 'If sentential negaton is expressed through an adverb, you must specify what type of constituent the adverb modifies.'
+      add_err('neg-mod', err)
+    if (not ch.get('neg-order')):
+      err = 'If sentential negaton is expressed through an adverb, you must specify what side of its host the adverb attaches to.'
+      add_err('neg-order', err) 
     if (not ch.get('neg-adv-orth')):
       err = 'If sentential negation is expressed through an adverb, you must specify the form of the adverb.'
       add_err('neg-adv-orth', err)
@@ -273,11 +279,13 @@ def validate_sentential_negation():
         err = 'You have not indicated on the word order page that your language has auxiliaries.'
         add_err('neg-sel-adv', err)  
 
-  # If both strategies are checked, then they must say how they combine:
-  if ((ch.get('infl-neg') == 'on') and (ch.get('adv-neg') == 'on')):
-    if (not ch.get('multi-neg')):
-      err = 'If you have selected both affix and adverb realizations of sentential negation, you must specify how they interact.'
-      add_err('multi-neg', err)
+   # ERB 2009-01-23 Currently not possible to say how they combine.
+
+#   # If both strategies are checked, then they must say how they combine:
+#   if ((ch.get('infl-neg') == 'on') and (ch.get('adv-neg') == 'on')):
+#     if (not ch.get('multi-neg')):
+#       err = 'If you have selected both affix and adverb realizations of sentential negation, you must specify how they interact.'
+#       add_err('multi-neg', err)
 
 ######################################################################
 # validate_coordination()

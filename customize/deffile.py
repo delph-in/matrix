@@ -58,15 +58,25 @@ HTML_mainprebody = '''<body>
 <h1>Matrix customization and download page</h1>
 <h2>Version of %s</h2>
 
+<p>The <a href="http://www.delph-in.net/matrix">LinGO Grammar
+Matrix</a> is developed at the University of Washington in the context
+of the <a href="http://www.delph-in.net/">DELPH-IN Consortium<a>,
+by <a  href="http://faculty.washington.edu/ebender">Emily M. Bender</a>
+and colleagues.  This material is based up work supported by
+the National Science Foundation under Grant No. BCS-0644097.
+Additional support for Grammar Matrix development came from a gift
+to the Turing Center from the Utilika Foundation.  Any opinions,
+findings, and conclusions or recommendations expressed in this
+material are those of the author(s) and do not necessarily
+reflect the views of the National Science Foundation.
+
 <p>Filling out this form will produce a starter grammar for a natural
 language, consisting of a language-independent core and customized
 support for the phenomena you describe below.  Note that this grammar
-fragment will only treat matrix (main) clauses.
-
-<p>Be advised that this system is highly experimental.  We are
-interested in your feedback.  If you have questions or comments,
-please email Emily Bender at: ebender at u dot washington dot
-edu.
+fragment will only treat matrix (main) clauses. Be advised that this
+system is highly experimental.  We are interested in your feedback.
+If you have questions or comments, please email Emily Bender at:
+ebender at u dot washington dot edu.
 
 <p>[<a href="http://www.delph-in.net/matrix/">Back to Matrix main
 page</a>]

@@ -764,6 +764,10 @@ class ChoicesFile:
                      'dir|direct;inv|inverse',
                      'LOCAL.CAT.HEAD.DIRECTION'] ]
 
+    # Negaton
+    if self.get_full('infl-neg'):
+      features += [ ['negation', '+', '' ] ]
+
     # Other features
     state = self.iter_state()
     self.iter_reset()
