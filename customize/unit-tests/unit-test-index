@@ -54,3 +54,5 @@ free-one-aux-max-v=tests free word order with no verbal clusters, thus maximum o
 view-inf-situ-inher=inflected viewpoint and inherent situation aspect
 view-situ-aspect-infl=situation and viewpoint aspect as inflection
 test-stative=testing assignment of prog-asp to non-stative-ing comp, ignoring tense/person/number/spelling, only transitive
+mini-infl-neg=Negation as inflection, simple case
+pre-vp-adv-neg=Negation as independent pre-VP modifier

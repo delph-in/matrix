@@ -22,6 +22,8 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "pre-vp-adv-neg") (:content . "pre-vp-adv-neg: Negation as independent pre-VP modifier"))
+((:path . "mini-infl-neg") (:content . "mini-infl-neg: Negation as inflection, simple case"))
 ((:path . "test-stative") (:content . "test-stative: testing assignment of prog-asp to non-stative-ing comp, ignoring tense/person/number/spelling, only transitive"))
 ((:path . "view-situ-aspect-infl") (:content . "view-situ-aspect-infl: situation and viewpoint aspect as inflection"))
 ((:path . "view-inf-situ-inher") (:content . "view-inf-situ-inher: inflected viewpoint and inherent situation aspect"))
