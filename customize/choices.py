@@ -768,7 +768,7 @@ class ChoicesFile:
 
     # Negaton
     if self.get_full('infl-neg'):
-      features += [ ['negation', 'plus', '' ] ]
+      features += [ ['negation', 'plus|plus', '' ] ]
 
     # Other features
     state = self.iter_state()
