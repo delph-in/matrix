@@ -2163,8 +2163,8 @@ def specialize_word_order(hc,orders):
     if comp_head_is.count('comp'):
       head += 'c'
 
-    mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
-               'head-comp-phrase requires things that are one of: ' + str(head_comp_is))
+    mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+               'comp-head-phrase requires things that are one of: ' + str(head_comp_is))
 
   # Now the negative constraints.  This is where we extracted the
   # information that head-comp or comp-head can't be certain things.
