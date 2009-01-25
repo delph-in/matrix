@@ -2141,11 +2141,13 @@ def specialize_word_order(hc,orders):
   # +nvjrcdmo.
   # +nvjrpdmo.
 
-
+  
   if len(head_comp_is) > 1:
     head = '+'
-    if head_comp_is.count('verb'):
+    auxresthc = False
+    if head_comp_is.count('aux'):
       head += 'v'
+      auxresthc = True 
     if head_comp_is.count('adp'):
       head += 'p'
     if head_comp_is.count('comp'):
@@ -2153,11 +2155,15 @@ def specialize_word_order(hc,orders):
 
     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'head-comp-phrase requires things that are one of: ' + str(head_comp_is))
+    if auxresthc:
+      mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
 
   if len(comp_head_is) > 1:
     head = '+'
-    if comp_head_is.count('verb'):
+    auxrestch = False
+    if comp_head_is.count('aux'):
       head += 'v'
+      auxrestch = True
     if comp_head_is.count('adp'):
       head += 'p'
     if comp_head_is.count('comp'):
@@ -2165,6 +2171,8 @@ def specialize_word_order(hc,orders):
 
     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'comp-head-phrase requires things that are one of: ' + str(head_comp_is))
+    if auxrestch:
+      mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
 
   # Now the negative constraints.  This is where we extracted the
   # information that head-comp or comp-head can't be certain things.
