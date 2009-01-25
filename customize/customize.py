@@ -362,7 +362,7 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
                      ' := [ ARG-ST.FIRST. ' + \
                      geom + ' ' + s_case + ' ].')
 
-    elif (n == 'negation' and v[0] == '+'):
+    elif (n == 'negation' and v[0] == 'plus'):
       # ERB 2009-01-22 This is where we deal with the
       # negative affixes.  
       mylang.add(type_name + ':= \
@@ -4641,7 +4641,7 @@ def neginflrule(features):
     while ch.iter_valid():
       name = ch.get('name')
       value = ch.get('value')
-      if (name == 'negation' and value == '+'):
+      if (name == 'negation' and value == 'plus'):
         result = True
       ch.iter_next()
     ch.iter_end()

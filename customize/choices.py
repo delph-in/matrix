@@ -68,6 +68,8 @@ class ChoicesFile:
         self.convert_10_to_11()
       if version < 12:
         self.convert_11_to_12()
+      if version < 13:
+        self.convert_12_to_13()
       # As we get more versions, add more version-conversion methods, and:
       # if version < N:
       #   self.convert_N-1_to_N
@@ -766,7 +768,7 @@ class ChoicesFile:
 
     # Negaton
     if self.get_full('infl-neg'):
-      features += [ ['negation', '+', '' ] ]
+      features += [ ['negation', 'plus', '' ] ]
 
     # Other features
     state = self.iter_state()
@@ -818,7 +820,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 12
+    return 13
 
 
   def convert_value(self, key, old, new):
@@ -1349,3 +1351,22 @@ class ChoicesFile:
      while self.iter_valid():
        i += 1
        self.delete('aux' + i + '_comp')
+
+  def convert_12_to_13(self):
+    # EB stupidly used "+" as a feature value.  Updating this
+    # to "plus".  Feature name was "negation".
+    for lextype in ['aux','det','verb','noun']:
+      self.iter_begin(lextype + '-slot')
+      while self.iter_valid():
+        self.iter_begin('morph')
+        while self.iter_valid():
+          self.iter_begin('feat')
+          while self.iter_valid():
+            if self.get('name') == 'negation':
+              self.convert_value('value','+','plus')
+            self.iter_next()
+          self.iter_end()
+          self.iter_next()
+        self.iter_end()
+        self.iter_next()
+      self.iter_end()  

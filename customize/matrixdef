@@ -459,7 +459,7 @@ Section sentential-negation "Sentential Negation"
 
 Label "<p>Please indicate which strategy or strategies your language uses for sentential negation (as distinct from constituent negation). (You may leave this section blank, in which case your grammar will not include any information about negation.)</p>"
 
-Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <tt>negation</tt> with possible value <tt>+</tt> for use in defining morphemes on the lexicon page.  Morphemes associated with the feature <tt>[negation +]</tt> will give rise to lexical rules which add the semantics of negation.</p>" 
+Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <tt>negation</tt> with possible value <tt>plus</tt> for use in defining morphemes on the lexicon page.  Morphemes associated with the feature <tt>[negation plus]</tt> will give rise to lexical rules which add the semantics of negation.</p>" 
 
 Check adv-neg "Adverbial negation" "<p>" "An adverb which is an independent modifier of:<br>"
 
