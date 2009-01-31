@@ -15,6 +15,7 @@ import sys
 import re
 
 from choices import ChoicesFile
+from utils import TDLencode
 
 ######################################################################
 # globals
@@ -540,7 +541,7 @@ def customize_case_adpositions():
 
       abbr = name_to_abbr(cn, cases)
 
-      adp_type = abbr + '-marker'
+      adp_type = TDLencode(abbr + '-marker')
       typedef = \
         adp_type + ' := case-marker-p-lex & \
                         [ STEM < "' + orth + '" > ].'
@@ -562,7 +563,7 @@ def customize_case_adpositions():
 
         typedef = \
           adp_type + ' := [ SYNSEM.' + geom + ' ' + v + ' ].'
-        lexicon.add(typedef)
+        lexicon.add(typedef, merge=True)
 
         ch.iter_next()
       ch.iter_end()
@@ -725,7 +726,8 @@ def init_person_hierarchy():
   hier = Hierarchy('person')
 
   for p in ch.persons():
-    hier.add(p[0], 'person')
+    for st in p[1].split(';'):
+      hier.add(p[0], st)
 
   if not hier.is_empty():
     hierarchies[hier.name] = hier
@@ -735,7 +737,8 @@ def init_number_hierarchy():
   hier = Hierarchy('number')
 
   for n in ch.numbers():
-    hier.add(n[0], 'number')
+    for st in n[1].split(';'):
+      hier.add(n[0], st)
 
   if not hier.is_empty():
     hierarchies[hier.name] = hier
@@ -745,7 +748,8 @@ def init_pernum_hierarchy():
   hier = Hierarchy('pernum')
 
   for pn in ch.pernums():
-    hier.add(pn[0], 'pernum')
+    for st in pn[1].split(';'):
+      hier.add(pn[0], st)
 
   if not hier.is_empty():
     hierarchies[hier.name] = hier
@@ -773,20 +777,9 @@ def customize_person_and_number():
 def init_gender_hierarchy():
   hier = Hierarchy('gender')
 
-  ch.iter_begin('gender')
-  while ch.iter_valid():
-    name = ch.get('name')
-
-    ch.iter_begin('supertype')
-    while ch.iter_valid():
-      stype = ch.get('name')
-      hier.add(name, stype)
-
-      ch.iter_next()
-    ch.iter_end()
-
-    ch.iter_next()
-  ch.iter_end()
+  for g in ch.genders():
+    for st in g[1].split(';'):
+      hier.add(g[0], st)
 
   if not hier.is_empty():
     hierarchies[hier.name] = hier
@@ -2617,8 +2610,9 @@ def create_neg_adv_lex_item(advAlone):
   # the script gets really unhappy if I try to write to an empty type.
 
   if(ch.get('neg-adv-orth')):
-    lexicon.add(ch.get('neg-adv-orth') + ' := neg-adv-lex &\
-                [ STEM < \"'+ ch.get('neg-adv-orth') +'\" >,\
+    orth = ch.get('neg-adv-orth')
+    lexicon.add(TDLencode(orth) + ' := neg-adv-lex &\
+                [ STEM < \"'+ orth +'\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"_neg_r_rel\" ].')
 
 
@@ -2985,12 +2979,12 @@ def customize_coordination():
       suf = ''
 
       if mark == 'word':
-        lexicon.add(orth + '_1 := conj-lex &\
+        lexicon.add(TDLencode(orth) + '_1 := conj-lex &\
                     [ STEM < "' + orth + '" >,\
                       SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",\
                       CFORM "1" ].')
         if pat == 'omni':
-          lexicon.add(orth + '_ns := nosem-conj-lex &\
+          lexicon.add(TDLencode(orth) + '_ns := nosem-conj-lex &\
                         [ STEM < "' + orth + '" > ].')
 
       if pat == 'a':
@@ -3323,7 +3317,7 @@ def customize_nouns():
     while ch.iter_valid():
       orth = ch.get('orth')
       pred = ch.get('pred')
-      typedef = orth + ' := ' + ntype + ' & \
+      typedef = TDLencode(orth) + ' := ' + ntype + ' & \
                   [ STEM < "' + orth + '" >, \
                     SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
@@ -3683,7 +3677,7 @@ def customize_verbs():
       orth = ch.get('orth')
       pred = ch.get('pred')
       typedef = \
-        orth + ' := ' + vtype + ' & \
+        TDLencode(orth) + ' := ' + vtype + ' & \
                     [ STEM < "' + orth + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
@@ -3980,14 +3974,15 @@ def customize_auxiliaries():
       ch.iter_begin('stem')
       while ch.iter_valid():
         orth = ch.get('orth')
-        typedef = orth + ' := ' + userstypename + ' & \
+        typedef = TDLencode(orth) + ' := ' + userstypename + ' & \
                        [ STEM < "' + orth + '" > ].'
         lexicon.add(typedef)
 
         if sem == 'add-pred':
           pred = ch.get('pred')
-          typedef = orth + ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-          lexicon.add(typedef)
+          typedef = TDLencode(orth) + \
+                    ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+          lexicon.add(typedef, merge=True)
 
         ch.iter_next()
       ch.iter_end()
@@ -4032,7 +4027,7 @@ def customize_determiners():
       orth = ch.get('orth')
       pred = ch.get('pred')
       typedef = \
-        orth + ' := ' + dtype + ' & \
+        TDLencode(orth) + ' := ' + dtype + ' & \
                     [ STEM < "' + orth + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
@@ -4050,9 +4045,10 @@ def customize_misc_lex():
 
   # Question particle
   if ch.get('q-part'):
+    orth = ch.get('q-part-orth')
     typedef = \
-      ch.get('q-part-orth') + ' := qpart-lex-item & \
-                   [ STEM < "' + ch.get('q-part-orth') + '" > ].'
+      TDLencode(orth) + ' := qpart-lex-item & \
+                   [ STEM < "' + orth + '" > ].'
     lexicon.add(typedef)
 
 
@@ -4806,7 +4802,7 @@ def customize_matrix(path, arch_type):
   rules =   tdl.TDLfile(matrix_path + 'rules.tdl')
   irules =  tdl.TDLfile(matrix_path + 'irules.tdl')
   lrules =  tdl.TDLfile(matrix_path + 'lrules.tdl')
-  lexicon = tdl.TDLfile(matrix_path + 'lexicon.tdl')
+  lexicon = tdl.TDLfile(matrix_path + 'lexicon.tdl', False)
   roots =   tdl.TDLfile(matrix_path + 'roots.tdl')
 
   # date/time

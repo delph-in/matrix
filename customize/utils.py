@@ -1,11 +1,10 @@
 ### $Id: utils.py,v 1.8 2008-05-28 21:08:12 sfd Exp $
 
-######################################################################
-# tokenize_def(str)
-#   split a string into words, treating double-quoted strings as
-#   single words.
-
 def tokenize_def(str):
+  """
+  Split a string into words, treating double-quoted strings as
+  single words.
+  """
   i = 0
   result = []
 
@@ -28,3 +27,17 @@ def tokenize_def(str):
       result.append(str[a:i])
 
   return result
+
+
+def TDLencode(string):
+  """
+  Encode a string in such a way as to make it a legal TDL type name
+  """
+  val = ''
+  for c in string:
+    if not (c.isalnum() or ord(c) > 127 or c in ['_', '-', '+', '*']):
+      val += '%' + '%2X' % (ord(c))
+    else:
+      val += c
+
+  return val

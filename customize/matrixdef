@@ -87,13 +87,19 @@ Section number "Number"
 
 Label "<p><span style=\"font-variant:small-caps\">Number</span> is a grammatical category that distinguishes between different numbers of real-world entities.  For example, many languages distinguish a <span style=\"font-variant:small-caps\">singular</span> number from a <span style=\"font-variant:small-caps\">plural</span>, the former begin associated with one entity and the latter with more than one.  Other languages distinguish still more number values, including a <span style=\"font-variant:small-caps\">dual</span> (two entities) and a <span style=\"font-variant:small-caps\">paucal</span> (a few entities).  It is important to distinguish between number, described here, and numerals, which cannot currently be described in this questionnaire.  The answers you provide on this page will determine the values available on the lexicon page for the <tt>number</tt> feature (or the <tt>pernum</tt> feature, about which see the Person section of the questionnaire for more details).</p>"
 
-Label "<p>Please add all the values of number that your language's grammar distinguishes.  If your language does not have number as a grammatical category, leave this section blank.</p>"
-
-Label "<p><span style=\"color:red\">NOTE: This section of the questionnaire is currently under development and represents an over-simplified view of grammatical number.  In particular, note that the <b>first</b> value of number that you provide below will be treated as the singular, while the others will be treated as non-singular.</span></p>"
+Label "<p>Please describe the number hierarchy in your language.  Add all the values of number that the language's grammar distinguishes.  For each you may provide one or more supertypes, using the other number values you have defined or the root type <tt>number</tt> (which will be assumed if no supertype is provided).  If your language does not have number as a grammatical category, leave this section blank.</p>"
 
 BeginIter number{i} "a Number"
 
-  Text name "Number {i} name" "Name: " "" 20
+  Text name "Number {i} name" "Number name: " "" 20
+
+  BeginIter supertype{j} "a Supertype"
+
+    Select name "Number {i} supertype {j} name" "Supertype: " ""
+    fillregex number[0-9]+_name 1
+    . number "Number" "number"
+
+  EndIter supertype
 
 EndIter number
 
@@ -102,8 +108,6 @@ Section person "Person"
 
 Label "<p><span style=\"font-variant:small-caps\">Person</span> is a grammatical category that distinguishes between different discourse participants.  Natural languages generally distinguish up to three discourse participants: the speaker (the <span style=\"font-variant:small-caps\">first person</span>), the person spoken to (the <span style=\"font-variant:small-caps\">second person</span>), and anyone else (the <span style=\"font-variant:small-caps\">third person</span>).  The answers you provide on this page will determine what values are available later in the questionnaire for the <tt>person</tt> feature (or the <tt>pernum</tt> feature; see below).</p>"
 
-Label "<p><span style=\"color:red\">NOTE: As with the Number section, this section of the questionnaire is currently under development and produces an over-simplified hierarchy for the <tt>person</tt> feature.</span></p>"
-
 Radio person "Person" "<p>Which values of person are distinguished in your language?<br>" ""
 . none "None" "" "none<br>"
 . 1-2-3 "First, second, and third" "" "First, second, and third<br>"
@@ -111,27 +115,47 @@ Radio person "Person" "<p>Which values of person are distinguished in your langu
 . 2-non-2 "Second and non-second" "" "Second and non-second<br>"
 . 3-non-3 "Third and non-third" "" "Third and non-third</p>"
 
-Label "<p>Some languages make finer distinctions in the first person when more than one discourse participant is referred to.  The following notation, adapted from Cysouw (2000), is used here: 1+2 refers to just the speaker and the person(s) spoken to; 1+3 refers to just the speaker and some third person(s); 1+2+3 refers to the speaker, the person(s) spoken to, and some third person(s).  (Note that if your language makes a finer distinction in the first person non-singular, your grammar will have a synthetic <tt>pernum</tt> feature rather than separate <tt>person</tt> and <tt>number</tt> features.)</p>"
+Label "<p>Some languages are best analyzed as having a subtypes of the first person for some values of the <tt>number</tt> feature.  For example, many languages make a distinction in the plural between the first person <span style=\"font-variant:small-caps\">exclusive</span>, which does not include the person spoken to, and the first person <span style=\"font-variant:small-caps\">inclusive</span>, which does.  Some of the known distinctions made in the first person include:</p>"
 
-Radio first-person "First person" "<p>What sub-values does your language distinguish in the first person?<br>" ""
+Label "<p>???: inclusive/exclusive, minimal/augmented...</p>"
+
+Radio first-person "First person" "<p>What subtypes does your language distinguish in the first person?<br>" ""
 . none "None" "" " none<br>"
-. incl-excl "Inclusive/exclusive" "" " (1+2 and 1+2+3) &nbsp; vs. &nbsp; 1+3 (inclusive/exclusive)<br>"
-. min-incl "Minimal inclusive" "" " 1+2 &nbsp; vs. &nbsp; (1+3 and 1+2+3) (minimal inclusive)<br>"
-. aug-incl "Augmented inclusive" "" " (1+2 and 1+3) &nbsp; vs. &nbsp; 1+2+3 (augmented inclusive)<br>"
-. min-aug "Minimal/augmented" "" " 1+2 &nbsp; vs. &nbsp; 1+3 &nbsp; vs. &nbsp; 1+2+3 (minimal/augmented)<br>"
+. incl-excl "Inclusive/exclusive" "" " inclusive and exclusive"
+
+MultiSelect incl-excl-number "Inclusive/exclusive number" " in the: " "<br>"
+fillnumbers
+
+Radio first-person "First person" "" ""
+. other "Other" "" " other:</p>"
+
+Label "<div style=\"padding-left: 16px\">"
+
+Label "Please provide names for the subtypes distinguished by your language.  The names you provide below will be prefixed with the appropriate person and number value; for example, if you enter a subtype named \"excl\" of the first person for the number values <tt>dual</tt> and <tt>plural</tt>, the system will produce two subtypes named <tt>1dual_excl</tt> and <tt>1plural_excl</tt>.)<br>"
+
+BeginIter person-subtype{i} "a Subtype"
+
+  Text name "Subtype {i} name" "Name: " "" 20
+
+  MultiSelect number "Subtype {i} number" " in the first person: " ""
+  fillnumbers
+
+EndIter person-subtype
+
+Label "</div>"
 
 
 Section gender "Gender"
 
 Label "<p>Hockett (1958) defines grammatical <span style=\"font-variant:small-caps\">gender</span>s as \"classes of nouns reflected in the behavior of associated words.\"  Gender is, therefore, a phenomenon that appears in patterns of agreement.  Some languages have no genders, others divide nouns into two genders (e.g. <span style=\"font-variant:small-caps\">masculine</span> and <span style=\"font-variant:small-caps\">feminine</span>, <span style=\"font-variant:small-caps\">animate</span> and <span style=\"font-variant:small-caps\">inanimate</span>, or <span style=\"font-variant:small-caps\">rational</span> and <span style=\"font-variant:small-caps\">non-rational</span>), while still others have more.  Some languages have genders that are subtypes of other genders; for example, a language may distinguish between inanimate nouns and animate nouns, and within the animate nouns, between masculine and feminine.  Any number of genders and the relationship between them can be described by creating a type hierarchy, below.  The hierarchy you define will determine what values of the <tt>gender</tt> feature are available later in the questionnaire.</p>"
 
-Label "<p>Please add all the values of gender that your language's grammar distinguishes.  For each you will provide at least one supertype, either one of the other types you have defined or the root <tt>gender</tt> feature, which will result in the construction of a hierarchy.  If your language does not have gender as a grammatical category, leave this section blank.</p>"
+Label "<p>Please describe the gender hierarchy in your language.  Add all the values of gender that the language's grammar distinguishes.  For each you may provide one or more supertypes, using the other gender values you have defined or the root type <tt>gender</tt> (which will be assumed if no supertype is provided).  If your language does not have gender as a grammatical category, leave this section blank.</p>"
 
 BeginIter gender{i} "a Gender"
 
   Text name "Gender {i} name" "Gender name: " "" 20
 
-  BeginIter supertype{j} "a Supertype" 1
+  BeginIter supertype{j} "a Supertype"
 
     Select name "Gender {i} supertype {j} name" "Supertype: " ""
     fillregex gender[0-9]+_name 1

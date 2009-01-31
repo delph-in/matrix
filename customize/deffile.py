@@ -47,6 +47,10 @@ var verb_case_patterns = [
 var morph_case_patterns = [
 %s
 ];
+
+var numbers = [
+%s
+];
 </script>
 
 <link rel="stylesheet" href="matrix.css">
@@ -336,7 +340,7 @@ class MatrixDefFile:
     print 'Set-cookie: session=' + cookie + '\n'
     print HTML_pretitle
     print '<title>The Matrix</title>'
-    print HTML_posttitle % ('', '', '')
+    print HTML_posttitle % ('', '', '', '')
 
     try:
       f = open('datestamp', 'r')
@@ -554,6 +558,9 @@ class MatrixDefFile:
             html += html_select(errors, vn, multi,
                                 'fill_case_patterns(\'' + vn + \
                                 '\', true)') + '\n'
+          elif fill_type == 'fillnumbers':
+            html += html_select(errors, vn, multi,
+                                'fill_numbers(\'' + vn + '\')') + '\n'
 
           html += html_option(errors, '', False, '') + '\n'
 
@@ -704,7 +711,8 @@ class MatrixDefFile:
       print HTML_posttitle % \
             (js_array(choices.features()),
              js_array([c for c in choices.patterns() if not c[2]]),
-             js_array([c for c in choices.patterns() if c[2]]))
+             js_array([c for c in choices.patterns() if c[2]]),
+             js_array([n for n in choices.numbers()]))
       print HTML_prebody
       print '<h2>' + section_friendly + '</h2>'
       print HTML_preform
@@ -767,7 +775,7 @@ class MatrixDefFile:
   # values from choices into the file handle f.  The section in lines
   # need not correspond to a whole named section (e.g. "Language"), but
   # can be any part of the file not containing a section line.
-  def save_choices_section(self, lines, f, choices):
+  def save_choices_section(self, lines, f, choices, iter_level = 0):
     already_saved = {}  # don't save a variable more than once
     i = 0
     while i < len(lines):
@@ -782,6 +790,8 @@ class MatrixDefFile:
           if choices.is_set_full(a):
             v = choices.get_full(a)
           if a and v:
+            for i in range(iter_level):
+              f.write('  ')
             f.write(a + '=' + v + '\n')
       elif word[0] == 'BeginIter':
         iter_orig = word[1]
@@ -799,7 +809,7 @@ class MatrixDefFile:
 
         choices.iter_begin(iter_name)
         while choices.iter_valid():
-          self.save_choices_section(lines[beg:end], f, choices)
+          self.save_choices_section(lines[beg:end], f, choices, iter_level + 1)
           choices.iter_next()
         choices.iter_end()
 

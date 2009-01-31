@@ -115,7 +115,14 @@ def validate_person():
 #   Validate the user's choices about number
 
 def validate_number():
-  pass
+  ch.iter_begin('number')
+  while ch.iter_valid():
+    if not ch.get('name'):
+      add_err(ch.iter_prefix() + 'name',
+              'You must specify a name for each number you define.')
+
+    ch.iter_next()
+  ch.iter_end()
 
 
 ######################################################################
@@ -128,10 +135,7 @@ def validate_gender():
     if not ch.get('name'):
       add_err(ch.iter_prefix() + 'name',
               'You must specify a name for each gender you define.')
-    if not ch.get('supertype1_name'):
-      add_err(ch.iter_prefix() + 'supertype1_name',
-              'You must specify a supertype for each gender you define.')
-      
+
     ch.iter_next()
   ch.iter_end()
 
@@ -755,7 +759,119 @@ def validate_extra_constraints():
 #       err = 'You have not selected adverbial negation.'
 #       add_err('adv-neg', err)
 
+
+######################################################################
+# Validation of TDL type names
+
+def validate_types():
+  """
+  Consider every choice that results in the definition of a type in
+  the output TDL, and make sure that (a) the types are legal and (b)
+  they're unique.
+  """
+  pass
+
+
+######################################################################
+# Validation of features and feature values
+
+def validate_features():
+  """
+  Consider every choice that results in the definition of a feature or
+  a feature value.  Make sure that the features are actually defined
+  by the current choices, and that values are appropriate for the
+  features for which they're specified.
+  """
+  # Make two lists:
+  # 1) a list of feature name variables and their values
+  # 2) a list of feature value variables and their values, along with
+  #    the feature name each is the value of
+  name_list = []
+  value_list = []
+
+  ch.iter_begin('scale')
+  while ch.iter_valid():
+    ch.iter_begin('feat')
+    while ch.iter_valid():
+      name_list += \
+        [[ ch.iter_prefix() + 'name', ch.get('name') ]]
+      value_list += \
+        [[ ch.iter_prefix() + 'value', ch.get('name'), ch.get('value') ]]
+
+      ch.iter_next()
+    ch.iter_end()
       
+    ch.iter_next()
+  ch.iter_end()
+
+  for lexprefix in ('noun', 'verb', 'det', 'aux'):
+    ch.iter_begin(lexprefix)
+    while ch.iter_valid():
+      ch.iter_begin('feat')
+      while ch.iter_valid():
+        name_list += \
+          [[ ch.iter_prefix() + 'name', ch.get('name') ]]
+        value_list += \
+          [[ ch.iter_prefix() + 'value', ch.get('name'), ch.get('value') ]]
+
+        ch.iter_next()
+      ch.iter_end()
+
+      ch.iter_next()
+    ch.iter_end()
+
+  for slotprefix in ('noun', 'verb', 'det', 'aux'):
+    ch.iter_begin(lexprefix + '-slot')
+    while ch.iter_valid():
+      ch.iter_begin('morph')
+      while ch.iter_valid():
+        ch.iter_begin('feat')
+        while ch.iter_valid():
+          name_list += \
+            [[ ch.iter_prefix() + 'name', ch.get('name') ]]
+          value_list += \
+            [[ ch.iter_prefix() + 'value', ch.get('name'), ch.get('value') ]]
+
+          ch.iter_next()
+        ch.iter_end()
+
+        ch.iter_next()
+      ch.iter_end()
+
+      ch.iter_next()
+    ch.iter_end()
+
+  # Check the name list to ensure they're all valid features
+  features = ch.features()
+  for item in name_list:
+    var = item[0]   # choices variable name
+    name = item[1]  # feature name
+    valid = False
+    for f in features:
+      if f[0] == name:
+        valid = True
+    if not valid:
+      add_err(var, 'You have selected an invalid feature name.')
+
+  # Check the value list to ensure they're all valid values
+  features = ch.features()
+  for item in value_list:
+    var = item[0]    # choices variable name
+    name = item[1]   # feature name
+    value = item[2]  # feature value
+    for subval in value.split(', '):
+      valid = False
+      for f in features:
+        if f[0] == name:
+          for v in f[1].split(';'):
+            (vn, vf) = v.split('|')
+            if vn == subval:
+              valid = True
+      if not valid:
+        break
+    if not valid:
+      add_err(var, 'You have selected an invalid feature value.')
+
 
 ######################################################################
 # validate_choices(choices_file)
@@ -783,9 +899,10 @@ def validate_choices(choices_file, extra = False):
   validate_lexicon()
   validate_test_sentences()
 
+  validate_types()
+  validate_features()
+
   if extra:
     validate_extra_constraints()
 
   return wrong
-
-

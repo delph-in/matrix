@@ -21,7 +21,7 @@ def isid(s):
   if s == '...':
     return True
   for c in s:
-    if not (c.isalnum() or ord(c) > 127 or c in ['-', '+', '_', '*']):
+    if not (c.isalnum() or ord(c) > 127 or c in ['-', '+', '_', '*', '%']):
       return False
   return True
   
@@ -132,6 +132,12 @@ class TDLelem:
   def get_comment(self):
     return ''
 
+  def set_type(self, type_name):
+    pass
+
+  def get_type(self):
+    return ''
+
   def sort(self):
     new_child = []
     # corefs first
@@ -182,6 +188,12 @@ class TDLelem_literal:
   def get_comment(self):
     return self.comment
 
+  def set_type(self, type_name):
+    pass
+
+  def get_type(self):
+    return ''
+
 
 ###########################################################################
 # A TDLelem_typedef corresponds to a statement like:
@@ -222,6 +234,12 @@ class TDLelem_typedef(TDLelem):
 
   def get_comment(self):
     return self.comment
+
+  def set_type(self, type_name):
+    self.type = type_name
+
+  def get_type(self):
+    return self.type
 
   def set_one_line(self, one_line):
     self.one_line = one_line
@@ -713,15 +731,20 @@ def TDLmerge(e1, e2):
 # be added to the TDLfile using the add() method.
 
 class TDLfile:
-  def __init__(self, file_name):
+  def __init__(self, file_name, merge_by_default = True):
     self.file_name = file_name  # we'll eventually save to this file
     self.typedefs = []
+    self.merge_by_default = merge_by_default
+
 
   def save(self):
+    if not self.merge_by_default:
+      self.disambiguate_types()
+
     f = open(self.file_name, 'w')
     TDLset_file(f)
     l = len(self.typedefs)
-    for i in range(0, l):
+    for i in range(l):
       self.typedefs[i].write()
       TDLwrite('\n')  # always at least one line break...
       # ...and then another if it's not two one_line elements in a row
@@ -730,33 +753,65 @@ class TDLfile:
           TDLwrite('\n')
     f.close()
 
+
+  def disambiguate_types(self):
+    """
+    Pass through the contents of the TDL file.  Ensure that every type
+    defined is unique.  If not, make it unique my appending _1, _2, etc.
+    """
+    type_count = {}
+    for i in range(len(self.typedefs)):
+      t = self.typedefs[i].get_type()
+      if type_count.has_key(t):
+        type_count[t] += 1
+      else:
+        type_count[t] = 1
+
+    for i in range(len(self.typedefs)):
+      t = self.typedefs[i].get_type()
+      if type_count[t] > 1:
+        index = 1
+        new_type = t + '_' + str(index)
+        while type_count.has_key(new_type):
+          index += 1
+          new_type = t + '_' + str(index)
+        self.typedefs[i].set_type(new_type)
+        type_count[new_type] = 1
+
+
   def dump(self):
     TDLset_file(sys.stdout)
     for t in self.typedefs:
       t.write()
     print '\n'
 
+
   ###########################################################################
   # Add a type definition to this file, merging with an existing definition
-  # if possible.
-  def add(self, tdl_type, comment = '', one_line = False):
+  # if possible (unless the TDLfile is not set to merge_by_default and that's
+  # not overriden here).
+  def add(self, tdl_type, comment = '', one_line = False, merge = False):
     typedef = TDLparse(tdl_type)
     typedef.set_comment(comment)
     typedef.set_one_line(one_line)
-    handled = 0
-    for i in range(len(self.typedefs)):
-      if TDLmergeable(self.typedefs[i], typedef):
-        self.typedefs[i] = TDLmerge(self.typedefs[i], typedef)
-        handled = 1
-        break
-        
+
+    handled = False
+    if self.merge_by_default or merge:
+      for i in range(len(self.typedefs)):
+        if TDLmergeable(self.typedefs[i], typedef):
+          self.typedefs[i] = TDLmerge(self.typedefs[i], typedef)
+          handled = True
+          break
+
     if not handled:
       self.typedefs.append(typedef)
+
 
   ###########################################################################
   # ERB 2006-09-22 Add just a comment to an existing type in the file.
   def comment(self, tdl_type, comment):
     self.add(tdl_type + ':= [].', comment)
+
 
   ###########################################################################
   # Add a literal to this file, which doesn't merge

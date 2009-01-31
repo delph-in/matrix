@@ -70,6 +70,8 @@ class ChoicesFile:
         self.convert_11_to_12()
       if version < 13:
         self.convert_12_to_13()
+      if version < 14:
+        self.convert_13_to_14()
       # As we get more versions, add more version-conversion methods, and:
       # if version < N:
       #   self.convert_N-1_to_N
@@ -404,7 +406,7 @@ class ChoicesFile:
   #   Create and return a list containing information about the
   #   values of the number feature implied by the current choices.
   #   This list consists of tuples:
-  #     [number name]
+  #     [name, supertype;supertype;...]
   def numbers(self):
     numbers = []
 
@@ -413,7 +415,22 @@ class ChoicesFile:
 
     self.iter_begin('number')
     while self.iter_valid():
-      numbers += [ [self.get('name')] ]
+      name = self.get('name')
+
+      stype = ''
+      self.iter_begin('supertype')
+      while self.iter_valid():
+        if stype:
+          stype += ';'
+        stype += self.get('name')
+        self.iter_next()
+      self.iter_end()
+
+      if not stype:
+        stype = 'number'
+
+      numbers += [[name, stype]]
+      
       self.iter_next()
     self.iter_end()
 
@@ -426,24 +443,24 @@ class ChoicesFile:
   #   Create and return a list containing information about the
   #   values of the person feature implied by the current choices.
   #   This list consists of tuples:
-  #     [person name]
+  #     [name, supertype]
   def persons(self):
     persons = []
 
     person = self.get_full('person')
     if person == '1-2-3':
-      persons += [ ['1st'] ]
-      persons += [ ['2nd'] ]
-      persons += [ ['3rd'] ]
+      persons += [['1st', 'person']]
+      persons += [['2nd', 'person']]
+      persons += [['3rd', 'person']]
     elif person == '1-non-1':
-      persons += [ ['1st'] ]
-      persons += [ ['non-1st'] ]
+      persons += [['1st', 'person']]
+      persons += [['non-1st', 'person']]
     elif person == '2-non-2':
-      persons += [ ['2nd'] ]
-      persons += [ ['non-2nd'] ]
+      persons += [['2nd', 'person']]
+      persons += [['non-2nd', 'person']]
     elif person == '3-non-3':
-      persons += [ ['3rd'] ]
-      persons += [ ['non-3rd'] ]
+      persons += [['3rd', 'person']]
+      persons += [['non-3rd', 'person']]
 
     return persons
 
@@ -454,35 +471,56 @@ class ChoicesFile:
   #   A pernum feature is implied when the user has specified that
   #   the first-person plural has sub-types.
   #   This list consists of tuples:
-  #     [pernum name]
+  #     [name, supertype;supertype;...]
   def pernums(self):
     pernums = []
 
-    fp = self.get_full('first-person')
+    state = self.iter_state()
+    self.iter_reset()
+
+    fp = self.get('first-person')
     if fp not in ['', 'none']:
-      doneSg = False  # the first item in the num list is the singular
+      pernums += [['number', 'pernum']]
+      pernums += [['person', 'pernum']]
+
+      num_leaves = []
       for n in self.numbers():
-        n = n[0]
-        for p in self.persons():
-          p = p[0]
-          if doneSg and p == '1st':
+        if not n[0] in num_leaves:
+          num_leaves += [n[0]]
+        for st in n[1].split(';'):
+          if st in num_leaves:
+            num_leaves.remove(st)
+
+        pernums += [[n[0], n[1]]]
+
+      per_leaves = []
+      for p in self.persons():
+        if p[0] not in per_leaves:
+          per_leaves += [p[0]]
+
+        pernums += [[p[0], p[1]]]
+
+      for n in num_leaves:
+        for p in per_leaves:
+          pn = p[0] + n
+          pernums += [[pn, p + ';' + n]]
+          if p == '1st':
             if fp == 'incl-excl':
-              pernums += [ [p[0] + n + '_incl'] ]
-              pernums += [ [p[0] + n + '_excl'] ]
-            elif fp == 'min-incl':
-              pernums += [ [p[0] + n + '_min'] ]
-              pernums += [ [p[0] + n + '_incl'] ]
-            elif fp == 'aug-incl':
-              pernums += [ [p[0] + n] ]
-              pernums += [ [p[0] + n + '_aug'] ]
-            elif fp == 'min-aug':
-              pernums += [ [p[0] + n + '_min'] ]
-              pernums += [ [p[0] + n + '_incl'] ]
-              pernums += [ [p[0] + n + '_aug'] ]
-          else:
-            pernums += [ [p[0] + n] ]
-          
-        doneSg = True
+              for num in self.get('incl-excl-number').split(', '):
+                if num == n:
+                  pernums += [[pn + '_incl', pn]]
+                  pernums += [[pn + '_excl', pn]]
+            elif fp == 'other':
+              self.iter_begin('person-subtype')
+              while self.iter_valid():
+                name = self.get('name')
+                for num in self.get('number').split(', '):
+                  if num == n:
+                    pernums += [[pn + '_' + name, pn]]
+                self.iter_next()
+              self.iter_end()
+
+    self.iter_set_state(state)
 
     return pernums
 
@@ -491,7 +529,7 @@ class ChoicesFile:
   #   Create and return a list containing information about the
   #   genders implied by the current choices.
   #   This list consists of tuples:
-  #     [gender name]
+  #     [name, supertype;supertype;...]
   def genders(self):
     genders = []
 
@@ -500,7 +538,22 @@ class ChoicesFile:
 
     self.iter_begin('gender')
     while self.iter_valid():
-      genders += [ [self.get('name')] ]
+      name = self.get('name')
+
+      stype = ''
+      self.iter_begin('supertype')
+      while self.iter_valid():
+        if stype:
+          stype += ';'
+        stype += self.get('name')
+        self.iter_next()
+      self.iter_end()
+
+      if not stype:
+        stype = 'gender'
+
+      genders += [[name, stype]]
+      
       self.iter_next()
     self.iter_end()
 
@@ -644,8 +697,8 @@ class ChoicesFile:
   #     [feature name, list of values, feature geometry]
   #   Note that the feature geometry is empty if the feature requires
   #   more complex treatment that just FEAT=VAL (e.g. negation).  The
-  #   list of values is separated by commas, and each item in the list is
-  #   a pair of the form 'name|friendly name'.
+  #   list of values is separated by semicolons, and each item in the list
+  #   is a pair of the form 'name|friendly name'.
   def features(self):
     features = []
 
@@ -820,7 +873,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 13
+    return 14
 
 
   def convert_value(self, key, old, new):
@@ -1337,20 +1390,20 @@ class ChoicesFile:
     self.iter_end()
 
   def convert_11_to_12(self):
-   """
-   Previously the kind of comp (s, vp, v) was defined for each auxiliary type.
-   Since our current word order implementation couldn't handle differences on this level anyway,
-   this is no answered by one question for all auxiliaries.
-   This conversion gives aux-comp the value of the first aux's comp, and deletes all type specific aux-comp values.
-   """
+    """
+    Previously the kind of comp (s, vp, v) was defined for each auxiliary type.
+    Since our current word order implementation couldn't handle differences on this level anyway,
+    this is no answered by one question for all auxiliaries.
+    This conversion gives aux-comp the value of the first aux's comp, and deletes all type specific aux-comp values.
+    """
    
-   if self.get('has-aux') == 'yes':
-     auxval = self.get('aux1_comp')
-     self.set('aux-comp',auxval)
-     i = 0
-     while self.iter_valid():
-       i += 1
-       self.delete('aux' + i + '_comp')
+    if self.get('has-aux') == 'yes':
+      auxval = self.get('aux1_comp')
+      self.set('aux-comp',auxval)
+      i = 0
+      while self.iter_valid():
+        i += 1
+        self.delete('aux' + i + '_comp')
 
   def convert_12_to_13(self):
     # EB stupidly used "+" as a feature value.  Updating this
@@ -1370,3 +1423,42 @@ class ChoicesFile:
         self.iter_end()
         self.iter_next()
       self.iter_end()  
+
+  def convert_13_to_14(self):
+    """
+    Revised the Person subpage.  Convert the old single radio button
+    for defining subtypes under 1p-non-sg into the choices for defining
+    your own subtypes.
+    """
+    numbers = []
+    self.iter_begin('number')
+    while self.iter_valid():
+      numbers += [ self.get('name') ]
+      self.iter_next()
+    self.iter_end()
+
+    number = ''
+    for n in numbers[1:]:
+      if len(number):
+        number += ', '
+      number += n
+
+    fp = self.get('first-person')
+    subtypes = []
+    if fp == 'incl-excl':
+      self.set('incl-excl-number', number)
+    elif fp == 'min-incl':
+      subtypes = ['min', 'incl']
+    elif fp == 'aug-incl':
+      subtypes = ['aug']
+    elif fp == 'min-aug':
+      subtypes = ['min', 'incl', 'aug']
+
+    if len(subtypes) and len(number):
+      self.set('first-person', 'other')
+      self.iter_begin('person-subtype')
+      for st in subtypes:
+        self.set('name', st)
+        self.set('number', number)
+        self.iter_next()
+      self.iter_end()

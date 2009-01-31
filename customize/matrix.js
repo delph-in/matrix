@@ -423,6 +423,34 @@ function fill_case_patterns(select_name, morph)
   force_layout(select.parentNode);
 }
 
+// fill_numbers()
+// Fill a SELECT tag with OPTIONs created from the array numbers[],
+// where every OPTION is a value of the number feature.
+function fill_numbers(select_name)
+{
+  var select = document.getElementsByName(select_name)[0];
+  var old_val = select.value;  // store the previously selected option
+  var old_text = old_val;
+  if (select.selectedIndex != -1) {
+    old_text = select.options[select.selectedIndex].innerHTML;
+  }
+
+  remove_temp_options(select);
+
+  for (var i = 0; i < numbers.length; i++) {
+    var n = numbers[i].split(':');
+    var o = document.createElement('option');
+    o.className = 'temp';
+    o.value = n[0];
+    o.innerHTML = n[0];
+
+    select.appendChild(o);
+  }
+
+  set_select_value(select, old_val, old_text);
+  force_layout(select.parentNode);
+}
+
 //////////////////////////////////////////////////////////////////////
 // Multi-SELECT functions
 //
