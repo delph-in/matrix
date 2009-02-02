@@ -790,7 +790,7 @@ class MatrixDefFile:
           if choices.is_set_full(a):
             v = choices.get_full(a)
           if a and v:
-            for i in range(iter_level):
+            for j in range(iter_level):
               f.write('  ')
             f.write(a + '=' + v + '\n')
       elif word[0] == 'BeginIter':
