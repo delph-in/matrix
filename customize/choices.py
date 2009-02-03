@@ -480,25 +480,30 @@ class ChoicesFile:
 
     fp = self.get('first-person')
     if fp not in ['', 'none']:
-      pernums += [['number', 'pernum']]
-      pernums += [['person', 'pernum']]
-
       num_leaves = []
+      num_supers = []
       for n in self.numbers():
         if not n[0] in num_leaves:
           num_leaves += [n[0]]
         for st in n[1].split(';'):
-          if st in num_leaves:
-            num_leaves.remove(st)
-
-        pernums += [[n[0], n[1]]]
+          if st not in num_supers:
+            num_supers += [st]
+        st = n[1]
+        if st == 'number':
+          st = 'pernum'
+        pernums += [[n[0], st]]
+      for st in num_supers:
+        if st in num_leaves:
+          num_leaves.remove(st)
 
       per_leaves = []
       for p in self.persons():
         if p[0] not in per_leaves:
           per_leaves += [p[0]]
-
-        pernums += [[p[0], p[1]]]
+        st = p[1]
+        if st == 'person':
+          st = 'pernum'
+        pernums += [[p[0], st]]
 
       for n in num_leaves:
         for p in per_leaves:

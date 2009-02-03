@@ -230,41 +230,60 @@ class Hierarchy:
         return k
 
     # Need to create a new type in the hierarchy:
-    # Find types in the hierarchy that are supersets and subsets of
+    # If there are types in the hierarchy that have the same coverage,
+    # then the approach where we distinguish nodes by their coverage
+    # won't work.  In that case, simply create a new supertype under
+    # the root.
+    bad_hierarchy = False
+    for k in cov:
+      for l in cov:
+        if k != l and cov[k] == cov[l]:
+          bad_hierarchy = True
+          break
+        
     supers = []
     subs = []
-    for k in cov:
-      if cov[k].issuperset(new_set):
-        supers += [ k ]
-      elif cov[k].issubset(new_set):
-        subs += [ k ]
+    if bad_hierarchy:
+      supers = [self.name]
+      subs = type_set
+    else:
+      # Find types in the hierarchy that are supersets and subsets of
+      for k in cov:
+        if cov[k].issuperset(new_set):
+          supers += [ k ]
+        elif cov[k].issubset(new_set):
+          subs += [ k ]
 
-    # prune supers and subs
-    toremove = set()
-    for i in range(len(supers) - 1, -1, -1):
-      for j in range(len(supers) -1, -1, -1):
-        if i != j and cov[supers[i]].issuperset(cov[supers[j]]):
-          toremove.add(i)
-    remove_array = [e for e in toremove]
-    remove_array.sort(reverse=True)
-    for i in remove_array:
-      del(supers[i])
+      # prune supers and subs
+      toremove = set()
+      for i in range(len(supers) - 1, -1, -1):
+        for j in range(len(supers) -1, -1, -1):
+          if i != j and cov[supers[i]].issuperset(cov[supers[j]]):
+            toremove.add(i)
+      remove_array = [e for e in toremove]
+      remove_array.sort(reverse=True)
+      for i in remove_array:
+        del(supers[i])
 
-    toremove = set()
-    for i in range(len(subs) - 1, -1, -1):
-      for j in range(len(subs) -1, -1, -1):
-        if i != j and cov[subs[i]].issubset(cov[subs[j]]):
-          toremove.add(i)
-    remove_array = [e for e in toremove]
-    remove_array.sort(reverse=True)
-    for i in remove_array:
-      del(subs[i])
+      toremove = set()
+      for i in range(len(subs) - 1, -1, -1):
+        for j in range(len(subs) -1, -1, -1):
+          if i != j and cov[subs[i]].issubset(cov[subs[j]]):
+            toremove.add(i)
+      remove_array = [e for e in toremove]
+      remove_array.sort(reverse=True)
+      for i in remove_array:
+        del(subs[i])
 
     # figure out the name of the new type
     new_type = ''
-    if len(new_set) == len(self.leaves) - 1:
-      new_type = 'non-' + [t for t in self.leaves.difference(new_set)][0]
-    else:
+    for h in self.hierarchy:
+      covh = cov[h[0]]
+      if len(covh.intersection(new_set)) == 0 and \
+         len(covh.union(new_set)) == len(self.leaves):
+        new_type = 'non-' + h[0]
+        break
+    if not new_type:
       for n in [t for t in new_set]:
         if new_type:
           new_type += '-'
