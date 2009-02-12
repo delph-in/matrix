@@ -32,6 +32,28 @@ function event_target(e)
   return e.srcElement;
 }
 
+// For logging debugging info to the end of the page
+function timestamp(s)
+{
+  var d = document;
+  var curTime = new Date();
+  d.body.appendChild(d.createTextNode(s + ':\t' + curTime.getTime() / 1000));
+  d.body.appendChild(d.createElement('br'));
+}
+
+// Returns true iff the node and all its ancestors are NOT display:none
+function is_displayed(node)
+{
+  while (node && node.style) {
+    if (node.style.display == 'none') {
+      return false;
+    }
+    node = node.parentNode;
+  }
+
+  return true;
+}
+
 //////////////////////////////////////////////////////////////////////
 // Main Page functions
 
@@ -85,10 +107,12 @@ function focus_all_fields()
     if (f) {
       var e = f.elements;
       for (var i = 0; i < e.length; i++) {
-        e[i].focus();
-        e[i].blur();
+        // fill_regex can be very slow, so don't do it at load time
+        if (e[i].onfocus &&
+            e[i].onfocus.toString().search(/fill_regex/) == -1) {
+          e[i].onfocus();
+        }
       }
-      window.scrollTo(0, 0);
     }
   } catch (err) {
   }
@@ -242,7 +266,19 @@ function remove_temp_options(select)
   }
 }
 
-// set_select_value():
+// Fill a SELECT tag with temp OPTIONs defined by the passed-in arrays
+function insert_temp_options(select, values, texts)
+{
+  for (var i = 0; i < values.length; i++) {
+    var o = document.createElement('option');
+    o.className = 'temp';
+    o.value = values[i];
+    o.innerHTML = texts[i];
+
+    select.appendChild(o);
+  }
+}
+
 // Set the value of a SELECT, adding a temporary OPTION if necessary
 function set_select_value(select, value, text)
 {
@@ -285,6 +321,8 @@ function fill_regex(name, pattern, nameOnly)
   // Pass through the form fields in the page, looking for ones whose
   // name attribute matches the pattern.  When one is found, use its
   // contents to create an option.
+  var values = new Array();
+  var texts = new Array();
   var e = document.forms[0].elements;
   for (var i = 0; i < e.length; i++) {
     if (e[i].name.search(pattern) != -1) {
@@ -300,14 +338,13 @@ function fill_regex(name, pattern, nameOnly)
         }
       }
 
-      var o = document.createElement('option');
-      o.className = 'temp';
-      o.value = val;
-      o.innerHTML = desc;
-
-      select.appendChild(o);
+      var len = values.length;
+      values[len] = val;
+      texts[len] = desc;
     }
   }
+
+  insert_temp_options(select, values, texts);
 
   set_select_value(select, old_val, old_text);
   force_layout(select.parentNode);
@@ -467,20 +504,6 @@ function fill_numbers(select_name)
 // have no NAME attribute of their own so they don't get submitted as
 // form results.)  The temporary box's ID can be similarly derived by
 // appending '_multibox'.
-
-// is_displayed(node)
-// Returns true iff the node and all its ancestors are NOT display:none
-function is_displayed(node)
-{
-  while (node && node.style) {
-    if (node.style.display == 'none') {
-      return false;
-    }
-    node = node.parentNode;
-  }
-
-  return true;
-}
 
 // multi_init()
 // Pass through the page, and for each SELECT that has CLASS=multi,
