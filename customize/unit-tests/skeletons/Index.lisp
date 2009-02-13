@@ -22,6 +22,9 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "Finnish") (:content . "Finnish: Finnish test for morphotactics"))
+((:path . "Slave") (:content . "Slave: Slave test for morphotactics"))
+((:path . "Zulu") (:content . "Zulu: Zulu test for morphotactics"))
 ((:path . "pre-vp-adv-neg") (:content . "pre-vp-adv-neg: Negation as independent pre-VP modifier"))
 ((:path . "mini-infl-neg") (:content . "mini-infl-neg: Negation as inflection, simple case"))
 ((:path . "test-stative") (:content . "test-stative: testing assignment of prog-asp to non-stative-ing comp, ignoring tense/person/number/spelling, only transitive"))

@@ -66,7 +66,7 @@
 (defparameter *start-symbol* '(root)
   "specifing valid parses")
 
-(defparameter *maximal-lex-rule-applications* 7
+(defparameter *maximal-lex-rule-applications* 42
    "The number of lexical rule applications which may be made
    before it is assumed that some rules are applying circularly")
 
