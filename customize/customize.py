@@ -4552,7 +4552,7 @@ def customize_inflection():
 
 def req(basetype, reqs, reqd, tracker, reqtype):
   stype = ch.iter_prefix().rstrip('_') # slot type; assumes req() has been called from a 'slot' context.
-  name = get_name(stype)
+  name = "T-"+get_name(stype)
   ch.iter_begin(reqtype)
   if ch.iter_valid():
     # Keep track of which rules have non-consecutive co-occurance constraints
@@ -4592,6 +4592,7 @@ def add_single_tracks(reqs, reqd, reqtype):
     while ch.iter_valid():
       slot = ch.iter_prefix().rstrip('_')
       name = get_name(slot)
+      tname = "T-"+name
       # We only need to do this for rules with TRACK constraints.
       if slot not in reqs:
         ch.iter_next()
@@ -4607,23 +4608,23 @@ def add_single_tracks(reqs, reqd, reqtype):
           if s2 == slot:
             ch.iter_next()
             continue
-          name2 = get_name(s2)
+          name2 = "T-"+get_name(s2)
           # If the inner-loop rule sets or fulfills a constraint on the
           # outer-loop rule constrain the TRACK values of each rule as
           # appropriate.
           if s2 in reqs[slot]:
             if reqtype == 'req':
-              mylang.add(name+'-lex-rule := [TRACK.'+name+' -, DTR.TRACK.'+name+' +].')
-              mylang.add(name2+'-lex-rule := [TRACK.'+name+' +, DTR.TRACK.'+name+' -].')
+              mylang.add(name+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
+              mylang.add(name2+'-lex-rule := [TRACK.'+tname+' +, DTR.TRACK.'+tname+' -].')
             else:
-              mylang.add(name+'-lex-rule := [TRACK.'+name+' -, DTR.TRACK.'+name+' +].')
-              mylang.add(name2+'-lex-rule := [TRACK.'+name+' -, DTR.TRACK.'+name+' +].')
+              mylang.add(name+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
+              mylang.add(name2+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
           # If this rule doesn't have anything to say about the outer-loop
           # rule, but has TRACK constraints for other rules, we need to
           # copy up the TRACK feature corresponding to the outer-loop
           # rule.
           elif s2 in reqs or s2 in reqd:
-            mylang.add(name2+'-lex-rule := [TRACK.'+name+' #track, DTR.TRACK.'+name+' #track].')
+            mylang.add(name2+'-lex-rule := [TRACK.'+tname+' #track, DTR.TRACK.'+tname+' #track].')
           ch.iter_next()
         ch.iter_end()
       ch.iter_set_state(state)
