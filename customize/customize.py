@@ -4608,7 +4608,7 @@ def add_single_tracks(reqs, reqd, reqtype):
           if s2 == slot:
             ch.iter_next()
             continue
-          name2 = "T-"+get_name(s2)
+          name2 = get_name(s2)
           # If the inner-loop rule sets or fulfills a constraint on the
           # outer-loop rule constrain the TRACK values of each rule as
           # appropriate.
@@ -4831,7 +4831,7 @@ def customize_matrix(path, arch_type):
     matrix_dt = f.readlines()[0].strip()
     f.close()
   except:
-    pass
+    matrix_dt= 'unknown time'
 
   current_dt = datetime.datetime.utcnow()
   tdl_dt = current_dt.strftime('%a %b %d %H:%M:%S UTC %Y')
