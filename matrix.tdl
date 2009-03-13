@@ -465,7 +465,7 @@ qeq := avm &
 semarg := avm &
 "INSTLOC is used by generator to index input.  Changed from
 value instloc to value string in July 2004.  The grammar
-should never need to make reference to it beyond this."
+should never need to make reference to it beyond this." 
   [ INSTLOC string ].
 
 handle := semarg.
@@ -2128,7 +2128,7 @@ norm-hook-lex-item := norm-ltop-lex-item &
 ; Also, reconsider whether I want to do this for intersective as
 ; well as scopal modifiers, or just the scopal guys.
 
-raise-index-mod-lex-item := norm-ltop-lex-item 
+raise-index-mod-lex-item := norm-ltop-lex-item &
   [ SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX #index ] >,
 		   CONT.HOOK.INDEX #index ] ].
 
