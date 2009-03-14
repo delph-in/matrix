@@ -85,7 +85,7 @@ Label "<p><span style=\"color:red\">NOTE: As Modules for V2 order are still unde
 
 Section number "Number"
 
-Label "<p><span style=\"font-variant:small-caps\">Number</span> is a grammatical category that distinguishes between different numbers of real-world entities.  For example, many languages distinguish a <span style=\"font-variant:small-caps\">singular</span> number from a <span style=\"font-variant:small-caps\">plural</span>, the former begin associated with one entity and the latter with more than one.  Other languages distinguish still more number values, including a <span style=\"font-variant:small-caps\">dual</span> (two entities) and a <span style=\"font-variant:small-caps\">paucal</span> (a few entities).  It is important to distinguish between number, described here, and numerals, which cannot currently be described in this questionnaire.  The answers you provide on this page will determine the values available on the lexicon page for the <tt>number</tt> feature (or the <tt>pernum</tt> feature, about which see the Person section of the questionnaire for more details).</p>"
+Label "<p><span class=\"dfn\">Number</span> is a grammatical category that distinguishes between different numbers of real-world entities.  For example, many languages distinguish a <span class=\"dfn\">singular</span> number from a <span class=\"dfn\">plural</span>, the former begin associated with one entity and the latter with more than one.  Other languages distinguish still more number values, including a <span class=\"dfn\">dual</span> (two entities) and a <span class=\"dfn\">paucal</span> (a few entities).  It is important to distinguish between number, described here, and numerals, which cannot currently be described in this questionnaire.  The answers you provide on this page will determine the values available on the lexicon page for the <span class=\"feat\">number</span> feature (or the <span class=\"feat\">pernum</span> feature, about which see the Person section of the questionnaire for more details).</p>"
 
 Label "<p>Please describe the number hierarchy in your language.  Add all the values of number that the language's grammar distinguishes.  For each you may provide one or more supertypes, using the other number values you have defined or the root type <tt>number</tt> (which will be assumed if no supertype is provided).  If your language does not have number as a grammatical category, leave this section blank.</p>"
 
@@ -106,7 +106,7 @@ EndIter number
 
 Section person "Person"
 
-Label "<p><span style=\"font-variant:small-caps\">Person</span> is a grammatical category that distinguishes between different discourse participants.  Natural languages generally distinguish up to three discourse participants: the speaker (the <span style=\"font-variant:small-caps\">first person</span>), the person spoken to (the <span style=\"font-variant:small-caps\">second person</span>), and anyone else (the <span style=\"font-variant:small-caps\">third person</span>).  The answers you provide on this page will determine what values are available later in the questionnaire for the <tt>person</tt> feature (or the <tt>pernum</tt> feature; see below).</p>"
+Label "<p><span class=\"dfn\">Person</span> is a grammatical category that distinguishes between different discourse participants.  Natural languages generally distinguish up to three discourse participants: the speaker (the <span class=\"dfn\">first person</span>), the person spoken to (the <span class=\"dfn\">second person</span>), and anyone else (the <span class=\"dfn\">third person</span>).  The answers you provide on this page will determine what values are available later in the questionnaire for the <span class=\"feat\">person</span> feature (or the <span class=\"feat\">pernum</span> feature; see below).</p>"
 
 Radio person "Person" "<p>Which values of person are distinguished in your language?<br>" ""
 . none "None" "" "none<br>"
@@ -115,7 +115,7 @@ Radio person "Person" "<p>Which values of person are distinguished in your langu
 . 2-non-2 "Second and non-second" "" "Second and non-second<br>"
 . 3-non-3 "Third and non-third" "" "Third and non-third</p>"
 
-Label "<p>Some languages are best analyzed as having a subtypes of the first person for some values of the <tt>number</tt> feature.  For example, many languages make a distinction in the plural between the first person <span style=\"font-variant:small-caps\">exclusive</span>, which does not include the person spoken to, and the first person <span style=\"font-variant:small-caps\">inclusive</span>, which does.  Some of the known distinctions made in the first person include:</p>"
+Label "<p>Some languages are best analyzed as having a subtypes of the first person for some values of the <span class=\"feat\">number</span> feature.  For example, many languages make a distinction in the plural between the first person <span class=\"dfn\">exclusive</span>, which does not include the person spoken to, and the first person <span class=\"dfn\">inclusive</span>, which does.  Some of the known distinctions made in the first person include:</p>"
 
 Label "<p>???: inclusive/exclusive, minimal/augmented...</p>"
 
@@ -147,7 +147,7 @@ Label "</div>"
 
 Section gender "Gender"
 
-Label "<p>Hockett (1958) defines grammatical <span style=\"font-variant:small-caps\">gender</span>s as \"classes of nouns reflected in the behavior of associated words.\"  Gender is, therefore, a phenomenon that appears in patterns of agreement.  Some languages have no genders, others divide nouns into two genders (e.g. <span style=\"font-variant:small-caps\">masculine</span> and <span style=\"font-variant:small-caps\">feminine</span>, <span style=\"font-variant:small-caps\">animate</span> and <span style=\"font-variant:small-caps\">inanimate</span>, or <span style=\"font-variant:small-caps\">rational</span> and <span style=\"font-variant:small-caps\">non-rational</span>), while still others have more.  Some languages have genders that are subtypes of other genders; for example, a language may distinguish between inanimate nouns and animate nouns, and within the animate nouns, between masculine and feminine.  Any number of genders and the relationship between them can be described by creating a type hierarchy, below.  The hierarchy you define will determine what values of the <tt>gender</tt> feature are available later in the questionnaire.</p>"
+Label "<p>Hockett (1958) defines grammatical <span class=\"dfn\">gender</span>s as \"classes of nouns reflected in the behavior of associated words.\"  Gender is, therefore, a phenomenon that appears in patterns of agreement.  Some languages have no genders, others divide nouns into two genders (e.g. <span class=\"dfn\">masculine</span> and <span class=\"dfn\">feminine</span>, <span class=\"dfn\">animate</span> and <span class=\"dfn\">inanimate</span>, or <span class=\"dfn\">rational</span> and <span class=\"dfn\">non-rational</span>), while still others have more.  Some languages have genders that are subtypes of other genders; for example, a language may distinguish between inanimate nouns and animate nouns, and within the animate nouns, between masculine and feminine.  Any number of genders and the relationship between them can be described by creating a type hierarchy, below.  The hierarchy you define will determine what values of the <span class=\"feat\">gender</span> feature are available later in the questionnaire.</p>"
 
 Label "<p>Please describe the gender hierarchy in your language.  Add all the values of gender that the language's grammar distinguishes.  For each you may provide one or more supertypes, using the other gender values you have defined or the root type <tt>gender</tt> (which will be assumed if no supertype is provided).  If your language does not have gender as a grammatical category, leave this section blank.</p>"
 
@@ -168,9 +168,9 @@ EndIter gender
 
 Section other-features "Other Features"
 
-Label "<p>If your language has other features beyond those that can be defined elsewhere in this questionnaire, you can define those features here.  For example, if your language has synthetic features (e.g. <tt>pernum</tt> instead of <tt>person</tt> and <tt>number</tt>, <tt>gendnum</tt> instead of <tt>gender</tt> and <tt>number</tt>), they can be defined below.</p>"
+Label "<p>If your language has other features beyond those that can be defined elsewhere in this questionnaire, you can define those features here.  For example, if your language has synthetic features (e.g. <span class=\"feat\">pernum</span> instead of <span class=\"feat\">person</span> and <span class=\"feat\">number</span>, <span class=\"feat\">gendnum</span> instead of <span class=\"feat\">gender</span> and <span class=\"feat\">number</span>), they can be defined below.</p>"
 
-Label "<p>For each feature, you will define a type hierarchy, which consists of a root type you will name (e.g. <tt>pernum</tt>), and then a series of other values of the feature, each of which is the subtype of at least one of the other values, including the root.</p>"
+Label "<p>For each feature, you will define a type hierarchy, which consists of a root type you will name (e.g. <span class=\"feat\">pernum</span>), and then a series of other values of the feature, each of which is the subtype of at least one of the other values, including the root.</p>"
 
 BeginIter feature{i} "a Feature"
 
@@ -200,8 +200,8 @@ EndIter feature
 
 Section case "Case"
 
-Label "<p>Blake (2001) defines <span style=\"font-variant:small-caps\">case</span> as &quot;a system of marking dependent nouns for the type of relationship they bear to their heads.&quot; For example, case commonly marks the subject or the direct object of a verb. The marking might consist of affixation or some other morpholological process that marks words, or it might be a adposition that marks whole noun phrases.</p>"
-Label "<p>This questionnaire allows you to describe <span style=\"font-variant:small-caps\">core case marking</span> in your language; that is, the pattern of cases marking the mandatory arguments of transitive and intransitive verbs.  Following Dixon (1968), we refer to the grammatical relations commonly expressed by case using the following abbreviations: A refers to the agent of a transitive verb; O refers to the patient (or object) of a transitive verb; and S refers to the lone argument (or subject) of intransitive verbs.</p>"
+Label "<p>Blake (2001) defines <span class=\"dfn\">case</span> as &quot;a system of marking dependent nouns for the type of relationship they bear to their heads.&quot; For example, case commonly marks the subject or the direct object of a verb. The marking might consist of affixation or some other morpholological process that marks words, or it might be a adposition that marks whole noun phrases.</p>"
+Label "<p>This questionnaire allows you to describe <span class=\"dfn\">core case marking</span> in your language; that is, the pattern of cases marking the mandatory arguments of transitive and intransitive verbs.  Following Dixon (1968), we refer to the grammatical relations commonly expressed by case using the following abbreviations: A refers to the agent of a transitive verb; O refers to the patient (or object) of a transitive verb; and S refers to the lone argument (or subject) of intransitive verbs.</p>"
 
 Radio case-marking "Core case marking" "<p>What type of core case marking does your language exhibit?</p>" ""
 . none "None" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>None</b><br>(Verbal argument roles are determined only by word order, by intonation, or pragmatically.)</p>"
@@ -274,7 +274,7 @@ Text split-v-abs-case-name "Absolutive case name" "S and O take a case named the
 Radio case-marking "Core case marking" "" ""
 . focus "Focus" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Focus-case</b><br>"
 
-Label "(A number of Austronesian languages, including several Philippine languages, have a system where A and O are marked by cases.  An additional case, sometimes called the <span style=\"font-variant:small-caps\">focus</span>, is mandatory in every clause and has its grammatical role assigned by the morphology of the verb.  You will have an opportunity to define this morphology on the Lexicon page.)<br>"
+Label "(A number of Austronesian languages, including several Philippine languages, have a system where A and O are marked by cases.  An additional case, sometimes called the <span class=\"dfn\">focus</span>, is mandatory in every clause and has its grammatical role assigned by the morphology of the verb.  You will have an opportunity to define this morphology on the Lexicon page.)<br>"
 
 Text focus-focus-case-name "Focus case name" "The focus case is named the " "<br>" 20
 
@@ -293,7 +293,7 @@ EndIter case
 
 Section direct-inverse "Direct-inverse"
 
-Label "<p>In some languages, the pattern of marking of verbal arguments (or verbs themselves) is sensitive to a <span style=\"font-variant:small-caps\">scale</span> that ranks argument noun phrases according to how natural they are in the role of agent; for example, a language might rank animate NPs as more natural agents than inanimate NPs.  In such languages, transitive sentences in which the agent outranks the patient are marked differently from those in which the patient outranks the agent.  Such sentences are said to differ in <span style=\"font-variant:small-caps\">direction</span>.  Sentences where the agent outranks the patient are called <span style=\"font-variant:small-caps\">direct</span>, while sentences where the patient outranks the agent are called <span style=\"font-variant:small-caps\">inverse</span>.  The difference between direct and inverse sentences may be marked by a different verb form, by different cases on the argument NPs, or both.  Creating a direct-inverse scale here will make available, on the Lexicon page, argument structures for verbs that are sensitive to the scale, and also the <tt>direction</tt> feature for use in verbal inflection.</p>"
+Label "<p>In some languages, the pattern of marking of verbal arguments (or verbs themselves) is sensitive to a <span class=\"dfn\">scale</span> that ranks argument noun phrases according to how natural they are in the role of agent; for example, a language might rank animate NPs as more natural agents than inanimate NPs.  In such languages, transitive sentences in which the agent outranks the patient are marked differently from those in which the patient outranks the agent.  Such sentences are said to differ in <span class=\"dfn\">direction</span>.  Sentences where the agent outranks the patient are called <span class=\"dfn\">direct</span>, while sentences where the patient outranks the agent are called <span class=\"dfn\">inverse</span>.  The difference between direct and inverse sentences may be marked by a different verb form, by different cases on the argument NPs, or both.  Creating a direct-inverse scale here will make available, on the Lexicon page, argument structures for verbs that are sensitive to the scale, and also the <span class=\"feat\">direction</span> feature for use in verbal inflection.</p>"
 
 Label "<p>If your language shows the direct-inverse pattern, please describe the features that define the scale below.  The scale entries should be entered in order from the highest (most agent-like) to the lowest (most patient-like).</p>"
 
@@ -325,9 +325,9 @@ Label "<div style=\"padding-left: 16px\">"
 
 Label "<h4>TENSE</h4>"
 
-Label "Comrie (1985: p.9) defines tense as \"... grammaticalized expression of location in time\". Which categories of tense are grammaticalized varies across languages. You may create a hierarchy of values for the feature <span style=\"font-variant:small-caps\">tense</span> as appropriate for your language. If your language does not have tense as a grammatical category, leave this section blank."
+Label "Comrie (1985: p.9) defines <span class=\"dfn\">tense</span> as \"... grammaticalized expression of location in time\". Which categories of tense are grammaticalized varies across languages. You may create a hierarchy of values for the feature <span class=\"feat\">tense</span> as appropriate for your language. If your language does not have tense as a grammatical category, leave this section blank."
 
-Label "You may define a hierarchy of values for the <span style=\"font-variant:small-caps\">tense</span> feature in one of two ways:"
+Label "You may define a hierarchy of values for the <span class=\"feat\">tense</span> feature in one of two ways:"
 
 Label "<ul><li>Select among the following common hierarchy elements and supplement with subtypes as needed, or <li>Build your own hierarchy.</ul>"
 
@@ -366,7 +366,7 @@ Check nonfuture "Non-Future" "" "<b>nonfuture</b> &nbsp;&nbsp;&nbsp;&nbsp; <font
 Label "</div>"
 
 Radio tense-definition "Tense hierarchy definition style" "" ""
-. build "Build" "" "<b>Build your own <span style=\"font-variant:small-caps\">tense</span> hierarchy</b><br>"
+. build "Build" "" "<b>Build your own <span class=\"feat\">tense</span> hierarchy</b><br>"
 
 Label "<div style=\"padding-left: 35px\">"
 Label "<br>Build your hierarchy from the top down starting with subtypes of the supertype: tense.</p>"
@@ -397,7 +397,7 @@ Label "<div style=\"padding-left: 35px\">"
 
 Label "<p><b>VIEWPOINT Aspect</b>"
 
-Label "<p>Viewpoint aspect is also commonly referred to as grammatical aspect.  The most common viewpoint opposition is perfective/imperfective. You may create a hierarchy of values for the feature <span style=\"font-variant:small-caps\">aspect</span>, reflecting viewpoint aspect, as appropriate for your language. If your language does not have viewpoint aspect (also commonly referred to as grammatical aspect) as a grammatical category, leave this section blank."
+Label "<p>Viewpoint aspect is also commonly referred to as grammatical aspect.  The most common viewpoint opposition is perfective/imperfective. You may create a hierarchy of values for the feature <span class=\"feat\">aspect</span>, reflecting viewpoint aspect, as appropriate for your language. If your language does not have viewpoint aspect (also commonly referred to as grammatical aspect) as a grammatical category, leave this section blank."
 
 BeginIter aspect{i} "an aspect type" 
 
@@ -417,9 +417,9 @@ Label "<p><b>SITUATION Aspect</b>"
 
 Label "<p>The term \"situation aspect\" overlaps with, or subsumes, lexical aspect, inherent aspect and some uses of the term Aktionsart. Situation aspect values may be conveyed by the meaning of the verb or through overt morphological marking however situation aspect values may depend on qualities of verbal arguments or sentential adjuncts (for example). In this case the values are compositionally derived."
 
-Label "<p><span style=\"color:red\">Note: The implementation of situation aspect is still under development; There is, as yet, no implementation of compositionally derived situation aspect. Currently the <span style=\"font-variant:small-caps\">situation</span> feature may be used to represent inherent lexical qualities or those conveyed through overt morphological marking. This more accurately reflects uses of the term \"lexical aspect\".</p>"
+Label "<p><span style=\"color:red\">Note: The implementation of situation aspect is still under development; There is, as yet, no implementation of compositionally derived situation aspect. Currently the <span class=\"feat\">situation</span> feature may be used to represent inherent lexical qualities or those conveyed through overt morphological marking. This more accurately reflects uses of the term \"lexical aspect\".</p>"
 
-Label "<p>You may create a hierarchy of values for the feature <span style=\"font-variant:small-caps\">situation</span>, reflecting inherent or morphologically marked situation aspect. If this is not appropriate for your language, leave this section blank.
+Label "<p>You may create a hierarchy of values for the feature <span class=\"feat\">situation</span>, reflecting inherent or morphologically marked situation aspect. If this is not appropriate for your language, leave this section blank.
 
 BeginIter situation{i} "a situation type" 
 
@@ -483,7 +483,7 @@ Section sentential-negation "Sentential Negation"
 
 Label "<p>Please indicate which strategy or strategies your language uses for sentential negation (as distinct from constituent negation). (You may leave this section blank, in which case your grammar will not include any information about negation.)</p>"
 
-Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <tt>negation</tt> with possible value <tt>plus</tt> for use in defining morphemes on the lexicon page.  Morphemes associated with the feature <tt>[negation plus]</tt> will give rise to lexical rules which add the semantics of negation.</p>" 
+Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <span class=\"feat\">negation</span> with possible value <tt>plus</tt> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">negation</span> <tt>plus</tt>] will produce lexical rules that add the semantics of negation.</p>" 
 
 Check adv-neg "Adverbial negation" "<p>" "An adverb which is an independent modifier of:<br>"
 
@@ -507,7 +507,7 @@ Section coordination "Coordination"
 
 Label "<p>Languages can have have multiple ways of marking coordination that can differ among the various parts of speech. The Matrix supports both lexical and morphological marking of coordination in several patterns. These patterns include:</p>"
 
-Label "<blockquote><p><span style=\"font-variant:small-caps\">Monosyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B and C&quot; (one coordinand marked; also permits &quot;A and B and C&quot;)<br><span style=\"font-variant:small-caps\">Polysyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A and B and C&quot; (for N coordinands, N-1 marked)<br><span style=\"font-variant:small-caps\">N-Polysyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;and A and B and C&quot; (all coordinands marked)<br><span style=\"font-variant:small-caps\">Asyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B C&quot; (no marking; also called &quot;juxtaposition&quot;)</blockquote></p>"
+Label "<blockquote><p><span class=\"dfn\">Monosyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B and C&quot; (one coordinand marked; also permits &quot;A and B and C&quot;)<br><span class=\"dfn\">Polysyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A and B and C&quot; (for N coordinands, N-1 marked)<br><span class=\"dfn\">N-Polysyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;and A and B and C&quot; (all coordinands marked)<br><span class=\"dfn\">Asyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B C&quot; (no marking; also called &quot;juxtaposition&quot;)</blockquote></p>"
 
 Label "<p>You may define up to two coordination strategies below.  You may also leave this section blank, in which case the starter grammar produced will not have coordination.</p>"
 
@@ -593,9 +593,9 @@ Radio q-inv-verb "Inverted verb in questions" "" ""
 
 Section lexicon "Lexicon"
 
-Label "<p>On this page you will define lexical types and lexical items within those types.  For most lexical items you must provide both the spelling of the stem and a predicate (e.g. _cat_n_rel, _sleep_v_rel).</p>"
+Label "<p>On this page you will define <span class=\"dfn\">lexical types</span> and <span class=\"dfn\">lexical items</span> within those types.  For most lexical items you must provide both the spelling of the stem and a <span class=\"dfn\">predicate</span> (or <span class=\"dfn\">relation</span>) that identifies the stem's semantic contribution (e.g. <tt>_cat_n_rel</tt> for the noun relation contributed by <i>cat</i> or <tt>_sleep_v_rel</tt> for the verb relation contributed by <i>sleep</i>).</p>"
 
-Label "<p>In addition to lexical types, you can define inflectional morphology for nouns, verbs, and determiners.  To do so, first define one or more inflectional <span style=\"font-variant:small-caps\">slots</span>, which determine the order in which morphemes appear, then define one or more <span style=\"font-variant:small-caps\">morphemes</span> that can appear in each slot, along with the <span style=\"font-variant:small-caps\">features</span> specified by each morpheme.  To determine the order of slots, you must define one or more <span style=\"font-variant:small-caps\">inputs</span> for each.  For morphemes that attach directly to stems, the input will be a lexical type; for morphemes that attach to already-inflected stems, the input will be another slot.</p>"
+Label "<p>In addition to lexical types, you can define inflectional morphology for nouns, verbs, and determiners.  To do so, first define one or more inflectional <span class=\"dfn\">slots</span>, which determine the order in which morphemes appear, then define one or more <span class=\"dfn\">morphemes</span> that can appear in each slot, along with the <span class=\"dfn\">features</span> specified by each morpheme.  To determine the order of slots, you must define one or more <span class=\"dfn\">inputs</span> for each.  For morphemes that attach directly to stems, the input will be a lexical type; for morphemes that attach to already-inflected stems, the input will be another slot.</p>"
 
 Separator
 
@@ -1022,7 +1022,9 @@ BeginIter adp{i} "an Adposition"
 
   Text orth "Adposition {i} spelling" "Spelling: " "" 20
 
-  Select order "Noun slot {i} order" ", appearing " " an NP, on which it sets the following features:<br>"
+  Check opt "Adposition {i} optional" ", which is " " optional"
+
+  Select order "Adposition {i} order" " and appears " " a noun phrase<br><br>Features:<br>"
   . after "After" "after"
   . before "Before" "before"
 

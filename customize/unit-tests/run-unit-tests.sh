@@ -64,6 +64,13 @@ else
 fi
 
 
+# Create fresh copy of matrix-core
+
+rm -rf ${CUSTOMIZATIONROOT}/matrix-core
+pushd ${CUSTOMIZATIONROOT}
+./install -c matrix-core >/dev/null
+popd
+
 # Now do essentially the same things as one-unit-test for each one:
 
 for lgname in $lgnames;

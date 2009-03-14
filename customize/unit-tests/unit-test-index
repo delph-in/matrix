@@ -59,3 +59,6 @@ pre-vp-adv-neg=Negation as independent pre-VP modifier
 Zulu=Zulu test for morphotactics
 Slave=Slave test for morphotactics
 Finnish=Finnish test for morphotactics
+case-mixed=case, mixed adpositional and morphological marking
+case-mixed-optadp=case with mixed optional adpositional and morphological marking
+case-optadp=case with optional adpositional marking

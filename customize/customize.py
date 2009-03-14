@@ -352,6 +352,9 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
         value = hierarchies[n].get_type_covering(v)
         mylang.add(type_name +
                    ' := [ ' + geom + ' ' + value + ' ].')
+        if n == 'case' and ch.has_optadp_case():
+          mylang.add(type_name +
+                   ' := [ ' + geom + '-MARKED + ].')
       else:
         for value in v:
           mylang.add(type_name +
@@ -415,59 +418,6 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
 #   Create the type definitions associated with the user's choices
 #   about case.
 
-def has_aff_case(case = ''):
-  result = False
-
-  for slotprefix in ('noun', 'verb', 'det'):
-    ch.iter_begin(slotprefix + '-slot')
-    while ch.iter_valid():
-      ch.iter_begin('morph')
-      while ch.iter_valid():
-        ch.iter_begin('feat')
-        while ch.iter_valid():
-          if ch.get('name') == 'case' and \
-             (ch.get('value') == case or not case):
-            result = True
-          ch.iter_next()
-        ch.iter_end()
-        ch.iter_next()
-      ch.iter_end()
-      ch.iter_next()
-    ch.iter_end()
-
-  return result
-
-
-def has_adp_case(case = ''):
-  result = False
-
-  ch.iter_begin('adp')
-  while ch.iter_valid():
-    ch.iter_begin('feat')
-    while ch.iter_valid():
-      if ch.get('name') == 'case' and \
-         (ch.get('value') == case or not case):
-        result = True
-      ch.iter_next()
-    ch.iter_end()
-    ch.iter_next()
-  ch.iter_end()
-
-  return result
-
-
-def calc_case_head(case = ''):
-  has_aff = has_aff_case(case)
-  has_adp = has_adp_case(case)
-
-  if has_aff and has_adp:
-    return '+np'
-  elif has_adp:
-    return 'adp'
-  else:
-    return 'noun'
-
-
 def init_case_hierarchy():
   cm = ch.get('case-marking')
   cases = ch.cases()
@@ -520,7 +470,7 @@ def customize_case_adpositions():
   cases = ch.cases()
   features = ch.features()
 
-  if has_adp_case():
+  if ch.has_adp_case():
     comment = \
       ';;; Case-marking adpositions\n' + \
       ';;; Case marking adpositions are constrained not to\n' + \
@@ -539,6 +489,12 @@ def customize_case_adpositions():
             ARG-ST < #comps & [ LOCAL.CAT [ HEAD noun & [ CASE #case ], \
                                             VAL.SPR < > ]] > ].'
     mylang.add(typedef)
+
+    if ch.has_optadp_case():
+      mylang.add('+np :+ [ CASE-MARKED bool ].')
+      typedef = \
+        'case-marker-p-lex := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].'
+      mylang.add(typedef)
 
     # Lexical entries
     lexicon.add_literal(';;; Case-marking adpositions')
@@ -1295,7 +1251,7 @@ def customize_situation():
 # ; introduced to match the semantic effect of bare NPs in your language.
 
 # bare-np-phrase := basic-bare-np-phrase &
-#    [ C-CONT.RELS <! [ PRED "unspec_q_rel" ] !> ].
+#    [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
 
 # And in rules.tdl, we get:
 
@@ -1776,7 +1732,7 @@ def customize_np_word_order():
     # this (given an appropriate module).  For now, use this stand in.
 
   mylang.add('bare-np-phrase := basic-bare-np-phrase &\
-  [ C-CONT.RELS <! [ PRED \"unspec_q_rel\" ] !> ].',
+  [ C-CONT.RELS <! [ PRED \"exist_q_rel\" ] !> ].',
              'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
 
   rules.add('bare-np := bare-np-phrase.')
@@ -3306,9 +3262,7 @@ def customize_nouns():
       'keeps such nouns out.')
 
   if ch.get('case-marking') != 'none':
-    if has_adp_case():
-      mylang.add('+np :+ [ CASE case ].')
-    else:
+    if not ch.has_adp_case():
       mylang.add('noun :+ [ CASE case ].')
 
   # Add the lexical entries
@@ -3395,13 +3349,13 @@ def customize_verb_case():
         if p[0] == 'trans':
           a_case = ''
           o_case = ''
-          a_head = calc_case_head()
-          o_head = calc_case_head()
+          a_head = ch.case_head()
+          o_head = ch.case_head()
         else:
           a_case = canon_to_abbr(c[0], cases)
           o_case = canon_to_abbr(c[1], cases)
-          a_head = calc_case_head(c[0])
-          o_head = calc_case_head(c[1])
+          a_head = ch.case_head(c[0])
+          o_head = ch.case_head(c[1])
 
         if a_case and o_case:
           t_type = dir_inv + a_case + '-' + o_case + '-transitive-verb-lex'
@@ -3439,10 +3393,10 @@ def customize_verb_case():
       else:     # intransitive
         if c[0] == 'intrans':
           s_case = ''
-          s_head = calc_case_head()
+          s_head = ch.case_head()
         else:
           s_case = canon_to_abbr(c[0], cases)
-          s_head = calc_case_head(c[0])
+          s_head = ch.case_head(c[0])
 
         if s_case:
           i_type = dir_inv + s_case + '-intransitive-verb-lex'
@@ -4420,16 +4374,36 @@ def customize_inflection():
       subrules = 0
       morph_orth = ''
 
-      # Iterate over the morphemes to see if any element of the
-      # paradigm should be a constant-lex-rule
+      # Iterate over the morphemes and their features to see if any
+      # element of the paradigm should be a constant-lex-rule, to
+      # count up the number of subrules, and to see if any of the
+      # morphemes mark case.
+      seen_case = False
       ch.iter_begin('morph')
       while ch.iter_valid():
         subrules += 1
         morph_orth = ch.get('orth')
         if morph_orth == '':
           const = True
+
+        ch.iter_begin('feat')
+        while ch.iter_valid():
+          if ch.get('name') == 'case':
+            seen_case = True
+          ch.iter_next()
+        ch.iter_end()
+        
         ch.iter_next()
       ch.iter_end()
+
+      synth_cases = []
+      if seen_case and ch.has_mixed_case():
+        for c in cases:
+          if ch.has_adp_case(c[0]):
+            const = True
+            synth_cases += [ c[0] ]
+
+      subrules += len(synth_cases)
 
       # Need to specify whether each rule is ltol, ltow, or wtol AND
       # whether the rule is constant or inflecting. Trying to put as much
@@ -4486,7 +4460,7 @@ def customize_inflection():
         while ch.iter_valid():
           morphname = ch.get('name')
           if not morphname:
-            morphname = name
+            morphname = get_name()
 
           # The lexical type and the super-type names
           ltype = morphname + '-lex-rule'
@@ -4520,6 +4494,30 @@ def customize_inflection():
           customize_feature_values(ltype, slotprefix, features, cases)
 
           ch.iter_next()
+
+          # Before we finish, synthesize any necessary const
+          # case-marking rules
+          if not ch.iter_valid() and synth_cases:
+            geom = ''
+            for f in features:
+              if f[0] == 'case':
+                geom = f[2]
+
+            # create a rule for each case that needs it
+            for c in synth_cases:
+              morphname = name + '-synth-' + c
+              ltype = morphname + '-lex-rule'
+              if ltow:
+                mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
+              elif wtol:
+                mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
+              else:
+                mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
+              lrules.add(morphname + '-lex := ' + ltype + '.')
+
+              abbr = canon_to_abbr(c, cases)
+              mylang.add(ltype + ' := [ SYNSEM.' + geom + ' ' + abbr + ' ].')
+          
         ch.iter_end()
       else:
         if const:

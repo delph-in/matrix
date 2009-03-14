@@ -22,6 +22,9 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "case-optadp") (:content . "case-optadp: case with optional adpositional marking"))
+((:path . "case-mixed-optadp") (:content . "case-mixed-optadp: case with mixed optional adpositional and morphological marking"))
+((:path . "case-mixed") (:content . "case-mixed: case, mixed adpositional and morphological marking"))
 ((:path . "Finnish") (:content . "Finnish: Finnish test for morphotactics"))
 ((:path . "Slave") (:content . "Slave: Slave test for morphotactics"))
 ((:path . "Zulu") (:content . "Zulu: Zulu test for morphotactics"))

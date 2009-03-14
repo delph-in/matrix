@@ -197,7 +197,7 @@ class ChoicesFile:
     if self.is_set_full(key):
       del self.choices[key]
 
-  # Return true iff there if 'key' is currently set
+  # Return True iff there if 'key' is currently set
   def is_set_full(self, key):
     return key in self.choices
 
@@ -218,17 +218,129 @@ class ChoicesFile:
   def delete(self, key):
     self.delete_full(self.iter_prefix() + key)
 
-  # Return true iff there if 'key' is currently set
+  # Return True iff there if 'key' is currently set
   def is_set(self, key):
     return self.is_set_full(self.iter_prefix() + key)
 
-  
+
   ######################################################################
   # Methods for accessing "derived" values -- that is, groups of values
   # that are implied by the list of choices, but not directly stored
   # in it.  For example, it is convenient to be able to get a list of
   # all features defined in the languages, even though they're not
   # all stored in a single place.
+
+  # has_noun_case()
+  #   Returns True iff the target language has either morphologically
+  #   or lexically marked case (restricting the calculation to the
+  #   passed-in case if it's non-empty).
+  def has_noun_case(self, case = ''):
+    result = False
+
+    state = self.iter_state()
+    self.iter_reset()
+
+    # check lexical types
+    self.iter_begin('noun')
+    while self.iter_valid():
+      self.iter_begin('feat')
+      while self.iter_valid():
+        if self.get('name') == 'case' and \
+           (self.get('value') == case or not case):
+          result = True
+        self.iter_next()
+      self.iter_end()
+      self.iter_next()
+    self.iter_end()
+
+    # check morphemes
+    for slotprefix in ('noun', 'verb', 'det'):
+      self.iter_begin(slotprefix + '-slot')
+      while self.iter_valid():
+        self.iter_begin('morph')
+        while self.iter_valid():
+          self.iter_begin('feat')
+          while self.iter_valid():
+            if self.get('name') == 'case' and \
+               (self.get('value') == case or not case):
+              result = True
+            self.iter_next()
+          self.iter_end()
+          self.iter_next()
+        self.iter_end()
+        self.iter_next()
+      self.iter_end()
+
+    self.iter_set_state(state)
+
+    return result
+
+
+  # has_adp_case()
+  #   Returns True iff the target language has case-marking
+  #   adpositions (restricting the calculation to the passed-in case
+  #   if it's non-empty).  If the check_opt argument is True, only
+  #   return True if the adposition is optional.
+  def has_adp_case(self, case = '', check_opt = False):
+    result = False
+
+    state = self.iter_state()
+    self.iter_reset()
+
+    self.iter_begin('adp')
+    while self.iter_valid():
+      opt = self.get('opt')
+      self.iter_begin('feat')
+      while self.iter_valid():
+        if self.get('name') == 'case' and \
+           (self.get('value') == case or not case) and \
+           (opt or not check_opt):
+          result = True
+        self.iter_next()
+      self.iter_end()
+      self.iter_next()
+    self.iter_end()
+
+    self.iter_set_state(state)
+
+    return result
+
+
+  # has_optadp_case()
+  #   Returns True iff the target language has optional case-marking
+  #   adpositions (restricting the calculation to the passed-in case
+  #   if it's non-empty).
+  def has_optadp_case(self, case = ''):
+    return self.has_adp_case(case, True)
+
+
+  # has_mixed_case()
+  #   Returns True iff the target language has both case-marking
+  #   adpositions and case on nouns (restricting the calculation to
+  #   the passed-in case if it's non-empty).
+  def has_mixed_case(self, case = ''):
+    has_noun = self.has_noun_case(case)
+    has_adp = self.has_adp_case(case)
+
+    return has_noun and has_adp
+
+
+  # case_head()
+  #   Returns the appropriate head type for case-marked arguments in
+  #   the target language (restricting the calculation to the
+  #   passed-in case if it's non-empty).
+  def case_head(self, case = ''):
+    has_noun = self.has_noun_case(case)
+    has_adp = self.has_adp_case(case)
+    has_optadp = self.has_optadp_case(case)
+
+    if (has_noun and has_adp) or has_optadp:
+      return '+np'
+    elif has_adp:
+      return 'adp'
+    else:
+      return 'noun'
+
 
   # cases()
   #   Create and return a list containing information about the cases
@@ -340,11 +452,7 @@ class ChoicesFile:
 
     patterns = []
 
-    # First, add intransitive and transitive, which are always available
-    patterns += [ ['intrans', '', False] ]
-    patterns += [ ['trans', '', False] ]
-
-    # Second, fill in the canonical names based on the case-marking.
+    # Fill in the canonical names based on the case-marking.
     if cm == 'nom-acc':
       patterns += [ ['nom', '', False] ]
       patterns += [ ['nom-acc', '', False] ]
@@ -376,7 +484,11 @@ class ChoicesFile:
       patterns += [ ['focus-o', '', True] ]
       patterns += [ ['a-focus', '', True] ]
 
-    # Next, fill in the friendly names based on the canonical names
+    # Add intransitive and transitive, which are always available.
+    patterns += [ ['intrans', '', False] ]
+    patterns += [ ['trans', '', False] ]
+
+    # Fill in the friendly names based on the canonical names
     for i in range(0, len(patterns)):
       if patterns[i][0] in ['trans', 'intrans']:
         patterns[i][1] = patterns[i][0] + 'itive'
@@ -403,8 +515,8 @@ class ChoicesFile:
 
 
   # numbers()
-  #   Create and return a list containing information about the
-  #   values of the number feature implied by the current choices.
+  #   Create and return a list containing information about the values
+  #   of the number feature implied by the current choices.
   #   This list consists of tuples:
   #     [name, supertype;supertype;...]
   def numbers(self):
@@ -440,8 +552,8 @@ class ChoicesFile:
 
 
   # persons()
-  #   Create and return a list containing information about the
-  #   values of the person feature implied by the current choices.
+  #   Create and return a list containing information about the values
+  #   of the person feature implied by the current choices.
   #   This list consists of tuples:
   #     [name, supertype]
   def persons(self):
@@ -466,10 +578,10 @@ class ChoicesFile:
 
 
   # pernums()
-  #   Create and return a list containing information about the
-  #   values of the pernum feature implied by the current choices.
-  #   A pernum feature is implied when the user has specified that
-  #   the first-person plural has sub-types.
+  #   Create and return a list containing information about the values
+  #   of the pernum feature implied by the current choices.  A pernum
+  #   feature is implied when the user has specified that the
+  #   first-person plural has sub-types.
   #   This list consists of tuples:
   #     [name, supertype;supertype;...]
   def pernums(self):
@@ -566,12 +678,12 @@ class ChoicesFile:
 
     return genders
 
-# forms()
-#   Create and return a list containing the values of the FORM feature
-#   that constrains the form of auxiliary complements as 
-#   defined in the current choices
-#   This list consists of tuples:
-#       [form name]
+  # forms()
+  #   Create and return a list containing the values of the FORM
+  #   feature that constrains the form of auxiliary complements as
+  #   defined in the current choices.
+  #   This list consists of tuples:
+  #     [form name]
   def forms(self):
     forms = []
 
@@ -593,12 +705,14 @@ class ChoicesFile:
 
     return forms
 
-# marks()
-#   Create and return a list containing the values of the KEYS.KEY feature
-#   that can be used to differentiate based on values of this quasi-semantic, i.e., syntactic feature.
-#   'Mark' is used instead of 'key' as 'key' is used extensively elsewhere in the code.
-#   This list consists of tuples:
-#       [mark name]
+  # marks()
+  #   Create and return a list containing the values of the KEYS.KEY
+  #   feature that can be used to differentiate based on values of
+  #   this quasi-semantic, i.e., syntactic feature.  'Mark' is used
+  #   instead of 'key' as 'key' is used extensively elsewhere in the
+  #   code.
+  #   This list consists of tuples:
+  #     [mark name]
   def marks(self):
 
     marks = []
@@ -617,11 +731,11 @@ class ChoicesFile:
 
     return marks
 
-# tenses()
-#   Create and return a list containing information about the 
-#   values of the TENSE feature implied by the current choices.
-#   This list consists of tuples:
-#       [tense name]
+  # tenses()
+  #   Create and return a list containing information about the values
+  #   of the TENSE feature implied by the current choices.
+  #   This list consists of tuples:
+  #     [tense name]
   def tenses(self):
     tenses = []
 
@@ -653,11 +767,11 @@ class ChoicesFile:
 
     return tenses
 
-# aspects()
-#   Create and return a list containing information about the
-#   values of the Viewpoint ASPECT feature implied by the current choices.
-#   This list consists of tuples:
-#        [aspect name]
+  # aspects()
+  #   Create and return a list containing information about the values
+  #   of the viewpoint ASPECT feature implied by the current choices.
+  #   This list consists of tuples:
+  #     [aspect name]
   def aspects(self):
     aspects = []
 
@@ -674,11 +788,11 @@ class ChoicesFile:
 
     return aspects
 
-# situations()
-#   Create and return a list containing information about the
-#   values of the SITUATION aspect feature implied by the current choices.
-#   This list consists of tuples:
-#        [situation name]
+  # situations()
+  #   Create and return a list containing information about the values
+  #   of the SITUATION aspect feature implied by the current choices.
+  #   This list consists of tuples:
+  #     [situation name]
   def situations(self):
     situations = []
 
@@ -696,14 +810,14 @@ class ChoicesFile:
     return situations
 
   # features()
-  #   Create and return a list containing information about the features
-  #   in the language described by the current choices.  This list consists
-  #   of tuples with three strings:
-  #     [feature name, list of values, feature geometry]
+  #   Create and return a list containing information about the
+  #   features in the language described by the current choices.  This
+  #   list consists of tuples with three strings:
+  #       [feature name, list of values, feature geometry]
   #   Note that the feature geometry is empty if the feature requires
   #   more complex treatment that just FEAT=VAL (e.g. negation).  The
-  #   list of values is separated by semicolons, and each item in the list
-  #   is a pair of the form 'name|friendly name'.
+  #   list of values is separated by semicolons, and each item in the
+  #   list is a pair of the form 'name|friendly name'.
   def features(self):
     features = []
 
