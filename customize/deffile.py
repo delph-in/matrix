@@ -85,6 +85,13 @@ ebender at u dot washington dot edu.
 <p>[<a href="http://www.delph-in.net/matrix/">Back to Matrix main
 page</a>]
 
+<p>NOTE: Throughout the questionnaire, questions or subpages that lack
+a required answer or contain an incorrect answer are marked with a red
+asterisk: <span class="error" title="This asterisk is an exception.
+It has a tooltip even though it is not associated with an
+error.">*</span>.  Hovering the mouse cursor over an asterisk will
+show a tooltip describing the error.</p>
+
 '''
 
 HTML_customprebody = '''<h3>Customized Matrix</h3>
@@ -403,7 +410,7 @@ class MatrixDefFile:
               'button" onclick="toggle_display(\'' + \
               word[1] + '\',\'' + word[1] + 'button\')">&#9658;</span> '
         if errors.has_key(word[1]):
-          print '<span class="error">* </span>'
+          print '<span class="error" title="This section contains one or more errors.">* </span>'
         print '<a href="matrix.cgi?subpage=' + word[1] + '">' + \
               word[2] + '</a>'
         print '<div class="values" id="' + word[1] + '" style="display:none">'

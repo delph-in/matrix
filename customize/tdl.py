@@ -797,7 +797,7 @@ class TDLfile:
 
     handled = False
     if self.merge_by_default or merge:
-      for i in range(len(self.typedefs)):
+      for i in range(len(self.typedefs) - 1, -1, -1):
         if TDLmergeable(self.typedefs[i], typedef):
           self.typedefs[i] = TDLmerge(self.typedefs[i], typedef)
           handled = True

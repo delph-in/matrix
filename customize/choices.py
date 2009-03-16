@@ -72,6 +72,8 @@ class ChoicesFile:
         self.convert_12_to_13()
       if version < 14:
         self.convert_13_to_14()
+      if version < 15:
+        self.convert_14_to_15()
       # As we get more versions, add more version-conversion methods, and:
       # if version < N:
       #   self.convert_N-1_to_N
@@ -492,6 +494,8 @@ class ChoicesFile:
     for i in range(0, len(patterns)):
       if patterns[i][0] in ['trans', 'intrans']:
         patterns[i][1] = patterns[i][0] + 'itive'
+        if cm != 'none':
+          patterns[i][1] += ' (case unspecified)'
       else:
         w = patterns[i][0].split('-')
         for j in range(0, len(w)):
@@ -564,6 +568,11 @@ class ChoicesFile:
       persons += [['1st', 'person']]
       persons += [['2nd', 'person']]
       persons += [['3rd', 'person']]
+    elif person == '1-2-3-4':
+      persons += [['1st', 'person']]
+      persons += [['2nd', 'person']]
+      persons += [['3rd', 'person']]
+      persons += [['4th', 'person']]
     elif person == '1-non-1':
       persons += [['1st', 'person']]
       persons += [['non-1st', 'person']]
@@ -992,7 +1001,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 14
+    return 15
 
 
   def convert_value(self, key, old, new):
@@ -1581,3 +1590,28 @@ class ChoicesFile:
         self.set('number', number)
         self.iter_next()
       self.iter_end()
+
+  def convert_14_to_15(self):
+    """
+    Revised slot co-occurrence constraints in the Lexicon subpage.
+    Before, there were three iterators, req, disreq, and forces, each
+    of which contained a single choice, type.  Now there's a single
+    iterator, constraint, that contains the choices type (req, disreq,
+    or forces) and other-slot.
+    """
+    constraints = []
+
+    for contype in [ 'forces', 'req', 'disreq' ]:
+      self.iter_begin(contype)
+      while self.iter_valid():
+        constraints += [ [ contype, self.get('type') ] ]
+        self.delete('type')
+        self.iter_next()
+      self.iter_end()
+
+    self.iter_begin('constraint')
+    for c in constraints:
+      self.set('type', c[0])
+      self.set('other-slot', c[1])
+      self.iter_next()
+    self.iter_end()

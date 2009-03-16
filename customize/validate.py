@@ -103,7 +103,7 @@ def validate_person():
         add_err('first-person',
                 'If your language does not have the first person, it ' + \
                 'cannot distinguish sub-values of the first person.')
-    if person in ['1-2-3', '1-non-1']:
+    if person in ['1-2-3', '1-2-3-4', '1-non-1']:
       if not fp:
         add_err('first-person',
                 'If your language has the first person, you must specify ' + \

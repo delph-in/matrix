@@ -480,7 +480,7 @@ def customize_case_adpositions():
     mylang.add('+np :+ [ CASE case ].')
 
     typedef = \
-      'case-marker-p-lex := basic-one-arg & raise-sem-lex-item & \
+      'case-marking-adp-lex := basic-one-arg & raise-sem-lex-item & \
           [ SYNSEM.LOCAL.CAT [ HEAD adp & [ CASE #case, MOD < > ], \
                                VAL [ SPR < >, \
                                      SUBJ < >, \
@@ -493,7 +493,7 @@ def customize_case_adpositions():
     if ch.has_optadp_case():
       mylang.add('+np :+ [ CASE-MARKED bool ].')
       typedef = \
-        'case-marker-p-lex := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].'
+        'case-marking-adp-lex := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].'
       mylang.add(typedef)
 
     # Lexical entries
@@ -518,7 +518,7 @@ def customize_case_adpositions():
 
       adp_type = TDLencode(abbr + '-marker')
       typedef = \
-        adp_type + ' := case-marker-p-lex & \
+        adp_type + ' := case-marking-adp-lex & \
                         [ STEM < "' + orth + '" > ].'
       lexicon.add(typedef)
 
@@ -1308,7 +1308,7 @@ def customize_situation():
 # ;;; Case marking adpositions are constrained not to
 # ;;; be modifiers.
 
-# case-marker-p-lex := basic-one-arg &
+# case-marking-adp-lex := basic-one-arg &
 #   raise-sem-lex-item &
 #   [ SYNSEM.LOCAL.CAT [ HEAD adp &
 #                             [ MOD < > ],
@@ -4085,9 +4085,9 @@ def back_to_word(name):
   for slotprefix in ('noun', 'verb', 'det', 'aux'):
     ch.iter_begin(slotprefix + '-slot')
     while ch.iter_valid():
-      ch.iter_begin('forces')
+      ch.iter_begin('constraint')
       while ch.iter_valid():
-        if ch.get('type') == name:
+        if ch.get('type') == 'forces' and ch.get('other-slot') == name:
           ch.iter_set_state(state)
           return True
         ch.iter_next()
@@ -4357,16 +4357,19 @@ def customize_inflection():
           for bt in basetype:
             mylang.add(bt+' := '+inp+'.')
 
-      # If this rule requires that another rule follow it, then we need
+      # If this rule forces another rule to follow it, then we need
       # to define word-to-lexeme rule for this grammar.
-      ch.iter_begin('forces')
-      if ch.iter_valid():
-        wtol = True
-        mylang.add('word-to-lexeme-rule := lex-rule &\
-        [INFLECTED -, DTR.INFLECTED +].')
-      else:
-        wtol = False
+      wtol = False
+      ch.iter_begin('constraint')
+      while ch.iter_valid():
+        if ch.get('type') == 'forces':
+          wtol = True
+        ch.iter_next()
       ch.iter_end()
+
+      if wtol:
+        mylang.add('word-to-lexeme-rule := lex-rule &\
+                      [INFLECTED -, DTR.INFLECTED +].')
 
       ltow = (not opt and is_ltow(ch.iter_prefix().rstrip('_'), [])) # lexeme-to-word rule?
       wtoltow = back_to_word(ch.iter_prefix().rstrip('_')) # satisfy a previous word-to-lexeme rule?
@@ -4551,36 +4554,46 @@ def customize_inflection():
 def req(basetype, reqs, reqd, tracker, reqtype):
   stype = ch.iter_prefix().rstrip('_') # slot type; assumes req() has been called from a 'slot' context.
   name = "T-"+get_name(stype)
-  ch.iter_begin(reqtype)
-  if ch.iter_valid():
-    # Keep track of which rules have non-consecutive co-occurance constraints
-    reqs[stype] = []
-    reqd.append(stype)
-    # If this is the first rule that has a TRACK requirement, we need
-    # to add the feature TRACK
-    if not tracker:
-      mylang.add('track := avm.')
-      mylang.add('word-or-lexrule :+ [TRACK track].')
-      tracker = True
-    # Iterate over all the requirements for this rule.
-    while ch.iter_valid():
-      # Again, keeping track of which rules have been constrained
-      reqd.append(ch.get('type'))
-      reqs[stype].append(ch.get('type'))
+
+  seen_reqtype = False
+  ch.iter_begin('constraint')
+  while ch.iter_valid():
+    if ch.get('type') == reqtype:
+      if not seen_reqtype:
+        seen_reqtype = True
+
+        # Keep track of rules having non-consecutive co-occurence constraints
+        reqs[stype] = []
+        reqd.append(stype)
+
+        # If this is the first rule that has a TRACK requirement, we need
+        # to add the feature TRACK
+        if not tracker:
+          mylang.add('track := avm.')
+          mylang.add('word-or-lexrule :+ [TRACK track].')
+          tracker = True
+
+      # Keep track of which rules have been constrained
+      other = ch.get('other-slot')
+      reqd.append(other)
+      reqs[stype].append(other)
+
       # Add a feature to track corresponding to this rule.
       mylang.add('track :+ [' + name + ' bool].')
+
       # Set the root type(s) as having the track feature corresponding
       # to this rule as + or -
       if reqtype == 'req':
-        for bt in basetype:
-          mylang.add(bt + ':= [TRACK.' + name + ' -].')
-      else:
-        for bt in basetype:
-          mylang.add(bt + ':= [TRACK.' + name + ' +].')
-      # Next requirement
-      ch.iter_next()
-  # back to slot
+        val = '-'
+      elif reqtype == 'disreq':
+        val = '+'
+
+      for bt in basetype:
+        mylang.add(bt + ':= [TRACK.' + name + ' ' + val + ' ].')
+
+    ch.iter_next()
   ch.iter_end()
+
   return reqs, reqd
 
 def add_single_tracks(reqs, reqd, reqtype):
@@ -4614,7 +4627,7 @@ def add_single_tracks(reqs, reqd, reqtype):
             if reqtype == 'req':
               mylang.add(name+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
               mylang.add(name2+'-lex-rule := [TRACK.'+tname+' +, DTR.TRACK.'+tname+' -].')
-            else:
+            elif reqtype == 'disreq':
               mylang.add(name+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
               mylang.add(name2+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
           # If this rule doesn't have anything to say about the outer-loop
