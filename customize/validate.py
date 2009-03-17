@@ -296,52 +296,57 @@ def validate_sentential_negation():
 #   Validate the user's choices about coordination.
 
 def validate_coordination():
-  for n in (1, 2):
-    i = str(n)
-    if ch.is_set('cs' + i):
-      cs_n =     ch.get('cs' + i + '_n')
-      cs_np =    ch.get('cs' + i + '_np')
-      cs_vp =    ch.get('cs' + i + '_vp')
-      cs_s =     ch.get('cs' + i + '_s')
-      cs_pat =   ch.get('cs' + i + '_pat')
-      cs_mark =  ch.get('cs' + i + '_mark')
-      cs_order = ch.get('cs' + i + '_order')
-      cs_orth =  ch.get('cs' + i + '_orth')
+  i = 0
+  ch.iter_begin('cs')
+  while ch.iter_valid():
+    i += 1
 
-      if not (cs_n or cs_np or cs_vp or cs_s):
-        err = 'You must specify a phrase type for Coordination Strategy ' + i
-        add_err('cs' + i + '_n', err)
-        add_err('cs' + i + '_np', err)
-        add_err('cs' + i + '_vp', err)
-        add_err('cs' + i + '_s', err)
+    cs_n =     ch.get('n')
+    cs_np =    ch.get('np')
+    cs_vp =    ch.get('vp')
+    cs_s =     ch.get('s')
+    cs_pat =   ch.get('pat')
+    cs_mark =  ch.get('mark')
+    cs_order = ch.get('order')
+    cs_orth =  ch.get('orth')
 
-      if cs_pat == 'a':
-        if cs_mark:
-          err = 'You must not specify word/affix for asyndetic Coordination Strategy ' + i
-          add_err('cs' + i + '_mark', err)
-        if cs_order:
-          err = 'You must not specify before/after for asyndetic Coordination Strategy ' + i
-          add_err('cs' + i + '_order', err)
-        if cs_orth:
-          err = 'You must not specify a spelling for asyndetic Coordination Strategy ' + i
-          add_err('cs' + i + '_orth', err)
-      else:
-        if not cs_pat:
-          err = 'You must specify a pattern for Coordination Strategy ' + i
-          add_err('cs' + i + '_pat', err)
-        if not cs_mark:
-          err = 'You must specify word/affix for Coordination Strategy ' + i
-          add_err('cs' + i + '_mark', err)
-        if not cs_order:
-          err = 'You must specify before/after for Coordination Strategy ' + i
-          add_err('cs' + i + '_order', err)
-        if not cs_orth:
-          err = 'You must specify a spelling for Coordination Strategy ' + i
-          add_err('cs' + i + '_orth', err)
+    if not (cs_n or cs_np or cs_vp or cs_s):
+      err = 'You must specify a phrase type for coordination strategy ' + str(i)
+      add_err(ch.iter_prefix() + 'n', err)
+      add_err(ch.iter_prefix() + 'np', err)
+      add_err(ch.iter_prefix() + 'vp', err)
+      add_err(ch.iter_prefix() + 's', err)
 
-      if cs_mark == 'affix' and (cs_np or cs_vp or cs_s):
-        err = 'Marking coordination with an affix is not supported on phrases (NPs, VPs, or sentences)'
-        add_err('cs' + i + '_mark', err)
+    if cs_pat == 'a':
+      if cs_mark:
+        err = 'You must not specify word/affix for an asyndetic coordination strategy.'
+        add_err(ch.iter_prefix() + 'mark', err)
+      if cs_order:
+        err = 'You must not specify before/after for an asyndetic coordination strategy.'
+        add_err(ch.iter_prefix() + 'order', err)
+      if cs_orth:
+        err = 'You must not specify a spelling for an asyndetic coordination strategy.'
+        add_err(ch.iter_prefix() + 'orth', err)
+    else:
+      if not cs_pat:
+        err = 'You must specify a pattern for coordination strategy ' + str(i)
+        add_err(ch.iter_prefix() + 'pat', err)
+      if not cs_mark:
+        err = 'You must specify word/affix for coordination strategy ' + str(i)
+        add_err(ch.iter_prefix() + 'mark', err)
+      if not cs_order:
+        err = 'You must specify before/after for coordination strategy ' + str(i)
+        add_err(ch.iter_prefix() + 'order', err)
+      if not cs_orth:
+        err = 'You must specify a spelling for coordination strategy ' + str(i)
+        add_err(ch.iter_prefix() + 'orth', err)
+
+    if cs_mark == 'affix' and (cs_np or cs_vp or cs_s):
+      err = 'Marking coordination with an affix is not yet supported on phrases (NPs, VPs, or sentences)'
+      add_err(ch.iter_prefix() + 'mark', err)
+
+    ch.iter_next()
+  ch.iter_end()
 
 
 ######################################################################

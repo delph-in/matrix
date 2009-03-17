@@ -2942,68 +2942,73 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
 # customize_coordination(): the main coordination customization routine
 
 def customize_coordination():
-  for n in (1, 2):
-    i = str(n)
-    if ch.is_set('cs' + i):
-      mark = ch.get('cs' + i + '_mark')
-      pat = ch.get('cs' + i + '_pat')
-      orth = ch.get('cs' + i + '_orth')
-      order = ch.get('cs' + i + '_order')
+  i = 0
+  ch.iter_begin('cs')
+  while ch.iter_valid():
+    i += 1
 
-      pre = ''
-      suf = ''
+    mark = ch.get('mark')
+    pat = ch.get('pat')
+    orth = ch.get('orth')
+    order = ch.get('order')
 
-      if mark == 'word':
-        lexicon.add(TDLencode(orth) + '_1 := conj-lex &\
-                    [ STEM < "' + orth + '" >,\
-                      SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",\
-                      CFORM "1" ].')
-        if pat == 'omni':
-          lexicon.add(TDLencode(orth) + '_ns := nosem-conj-lex &\
-                        [ STEM < "' + orth + '" > ].')
+    pre = ''
+    suf = ''
 
-      if pat == 'a':
+    if mark == 'word':
+      lexicon.add(TDLencode(orth) + ' := conj-lex &\
+                  [ STEM < "' + orth + '" >,\
+                    SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",\
+                    CFORM "' + str(i) + '" ].')
+      if pat == 'omni':
+        lexicon.add(TDLencode(orth) + '_nosem := nosem-conj-lex &\
+                      [ STEM < "' + orth + '" >,\
+                        CFORM "' + str(i) + '" ].')
+
+    if pat == 'a':
+      top = 'apoly-'
+      mid = ''
+      bot = 'unary-'
+      left = ''
+    else:
+      if pat == 'mono':
+        top = 'monopoly-'
+        mid = 'monopoly-'
+        bot = ''
+        left = ''
+      elif pat == 'omni':
+        top = 'omni-'
+        mid = 'omni-'
+        bot = 'omni-'
+        left = 'omni-'
+      elif pat == 'poly':
         top = 'apoly-'
         mid = ''
-        bot = 'unary-'
+        bot = ''
         left = ''
-      else:
-        if pat == 'mono':
-          top = 'monopoly-'
-          mid = 'monopoly-'
-          bot = ''
-          left = ''
-        elif pat == 'omni':
-          top = 'omni-'
-          mid = 'omni-'
-          bot = 'omni-'
-          left = 'omni-'
-        elif pat == 'poly':
-          top = 'apoly-'
-          mid = ''
-          bot = ''
-          left = ''
 
-        if mark == 'affix':
-          bot = 'infl-'
-          if order == 'before':
-            pre = orth
-          else:
-            suf = orth
+      if mark == 'affix':
+        bot = 'infl-'
+        if order == 'before':
+          pre = orth
         else:
-          if order == 'before':
-            bot += 'conj-first-'
-            if left:
-              left += 'conj-first-'
-          else:
-            bot += 'conj-last-'
-            if left:
-              left += 'conj-last-'
+          suf = orth
+      else:
+        if order == 'before':
+          bot += 'conj-first-'
+          if left:
+            left += 'conj-first-'
+        else:
+          bot += 'conj-last-'
+          if left:
+            left += 'conj-last-'
 
-      for pos in ('n', 'np', 'vp', 's'):
-        if ch.get('cs' + i + '_' + pos):
-          define_coord_strat(i, pos, top, mid, bot, left, pre, suf)
+    for pos in ('n', 'np', 'vp', 's'):
+      if ch.get(pos):
+        define_coord_strat(str(i), pos, top, mid, bot, left, pre, suf)
 
+    ch.iter_next()
+  ch.iter_end()
 
 
 ######################################################################

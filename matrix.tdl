@@ -2846,7 +2846,10 @@ null-coord-rel := coordination-relation &
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Conjunction parts of speech
 
-conj-lex := basic-zero-arg & single-rel-lex-item & no-hcons-lex-item &
+basic-conj-lex := basic-zero-arg & no-hcons-lex-item &
+  [ CFORM string ].
+
+conj-lex := basic-conj-lex & single-rel-lex-item &
   [ CFORM string,
     SYNSEM [ LOCAL [ CAT [ HEAD conj & [ MOD null ],
                            VAL [ SPR < >,
@@ -2861,7 +2864,7 @@ conj-lex := basic-zero-arg & single-rel-lex-item & no-hcons-lex-item &
 ; A nosem-conj-lex is a conjunction that contributes no relation.
 ; Used below in "omnisyndeton" coordination.
 
-nosem-conj-lex := basic-zero-arg & no-hcons-lex-item &
+nosem-conj-lex := basic-conj-lex &
   [ SYNSEM [ LOCAL [ CAT [ HEAD conj & [ MOD null ],
                            VAL [ SPR < >,
                                  COMPS < >,
@@ -2870,7 +2873,6 @@ nosem-conj-lex := basic-zero-arg & no-hcons-lex-item &
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Coordination phrases and rules
-
 coord-phrase := binary-phrase &
   [ SYNSEM.LOCAL [ COORD-STRAT #cstrat,
                    CAT [ HEAD.MOD #mod,
@@ -3018,11 +3020,12 @@ omni-binary-bottom-coord-rule := bottom-coord-phrase & binary-phrase &
   [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
                          VAL #val ],
                    COORD +,
-                   COORD-REL null-coord-rel ],
+                   COORD-REL null-coord-rel,
+                   COORD-STRAT #cform ],
     C-CONT [ HOOK [ INDEX #rind ],
 	     RELS <! !>,
 	     HCONS <! !> ],
-    CONJ-DTR nosem-conj-lex,
+    CONJ-DTR nosem-conj-lex & [ CFORM #cform ],
     NONCONJ-DTR sign & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
                                               VAL #val ],
                                         COORD -,
@@ -3044,11 +3047,13 @@ omni-binary-left-coord-rule := omni-left-coord-rule & binary-phrase &
   [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
                          VAL #val ],
                    COORD -,
-                   COORD-REL #crel ],
+                   COORD-REL #crel,
+                   COORD-STRAT #cform ],
     C-CONT [ HOOK [ INDEX #rind ],
 	     RELS <! !>,
 	     HCONS <! !> ],
-    CONJ-DTR conj-lex & [ SYNSEM.LKEYS.KEYREL #crel ],
+    CONJ-DTR conj-lex & [ CFORM #cform,
+                          SYNSEM.LKEYS.KEYREL #crel ],
     NONCONJ-DTR sign & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
                                               VAL #val ],
                                         COORD -,
@@ -3082,9 +3087,11 @@ infl-left-coord-rule := omni-left-coord-rule &
              HCONS <! !> ]].
 
 omni-coord-phrase := coord-phrase &
-  [ C-CONT.HOOK [ LTOP #lbl, INDEX #carg ],
+  [ SYNSEM.LOCAL.COORD-STRAT #cstrat,
+    C-CONT.HOOK [ LTOP #lbl, INDEX #carg ],
     LCOORD-DTR omni-left-coord-rule &
-               [ SYNSEM.LOCAL [ COORD-REL [ LBL #lbl,
+               [ SYNSEM.LOCAL [ COORD-STRAT #cstrat,
+                                COORD-REL [ LBL #lbl,
                                             C-ARG #carg,
                                             L-INDEX #lind,
                                             R-INDEX #rind ],

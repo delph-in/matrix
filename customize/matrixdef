@@ -172,38 +172,6 @@ Label "<p>Hockett, Charles F. 1958. A Course in Modern Linguistics. New York: Ma
 Label "</font>"
 
 
-Section other-features "Other Features"
-
-Label "<p>If your language has other features beyond those that can be defined elsewhere in this questionnaire, you can define those features here.  For example, if your language has merged features (e.g. <span class=\"feat\">pernum</span> instead of <span class=\"feat\">person</span> and <span class=\"feat\">number</span>, <span class=\"feat\">gendnum</span> instead of <span class=\"feat\">gender</span> and <span class=\"feat\">number</span>), they can be defined below.</p>"
-
-Label "<p>For each feature, you will define a type hierarchy, which consists of a root type you will name (e.g. <span class=\"feat\">pernum</span>), and then a series of other values of the feature, each of which is the subtype of at least one of the other values, possibly the root.</p>"
-
-BeginIter feature{i} "a Feature"
-
-  Text name "Feature {i} name" "Feature name: " "<br>" 20
-
-  Radio type "Feature {i} type" "Is this feature:<br>" ""
-  . head "Head" "" " a syntactic feature (will go under HEAD)?<br>"
-  . index "Index" "" " a semantic feature (will go under INDEX)?<br>"
-
-  Label "Values in the feature hierarchy:"
-
-  BeginIter value{j} "a Value"
-
-   Text name "Feature {i} Value {j} name" "Value name: " "" 20
-
-    BeginIter supertype{k} "a Supertype" 1
-
-      Select name "Feature {i} Value {j} supertype {k} name" "Supertype: " ""
-      fillregex (feature{i}_name|feature{i}_value[0-9]+_name) 1
-
-    EndIter supertype
-
-  EndIter value
-
-EndIter feature
-
-
 Section case "Case"
 
 Label "<p>Blake (2001) defines <span class=\"dfn\">case</span> as &quot;a system of marking dependent nouns for the type of relationship they bear to their heads.&quot; For example, case commonly marks the subject or the direct object of a verb. The marking might consist of affixation or some other morpholological process that marks words, or it might be a adposition that marks whole noun phrases.</p>"
@@ -424,7 +392,6 @@ BeginIter aspect{i} "an aspect type"
 
 EndIter aspect
 
-
 Label "<p><b>Situation Aspect</b>"
 
 Label "<p>The term \"situation aspect\" overlaps with, or subsumes, lexical aspect, inherent aspect and some uses of the term Aktionsart. Situation aspect values may be conveyed by the meaning of the verb or through overt morphological marking however situation aspect values may depend on qualities of verbal arguments or sentential adjuncts (for example). In this case the values are compositionally derived."
@@ -494,6 +461,38 @@ Label "<p>Smith, Carlota. 1997. The Parameter of Aspect. (Second Edition). Dordr
 Label "</font>"
 
 
+Section other-features "Other Features"
+
+Label "<p>If your language has other features beyond those that can be defined elsewhere in this questionnaire, you can define those features here.  For example, if your language has merged features (e.g. <span class=\"feat\">pernum</span> instead of <span class=\"feat\">person</span> and <span class=\"feat\">number</span>, <span class=\"feat\">gendnum</span> instead of <span class=\"feat\">gender</span> and <span class=\"feat\">number</span>), they can be defined below.</p>"
+
+Label "<p>For each feature, you will define a type hierarchy, which consists of a root type you will name (e.g. <span class=\"feat\">pernum</span>), and then a series of other values of the feature, each of which is the subtype of at least one of the other values, possibly the root.</p>"
+
+BeginIter feature{i} "a Feature"
+
+  Text name "Feature {i} name" "Feature name: " "<br>" 20
+
+  Radio type "Feature {i} type" "Is this feature:<br>" ""
+  . head "Head" "" " a syntactic feature (which will go under <span class=\"feat\">head</span>)?<br>"
+  . index "Index" "" " a semantic feature (which will go under <span class=\"feat\">index</span>)?<br>"
+
+  Label "Values in the feature hierarchy:"
+
+  BeginIter value{j} "a Value"
+
+   Text name "Feature {i} Value {j} name" "Value name: " "" 20
+
+    BeginIter supertype{k} "a Supertype" 1
+
+      Select name "Feature {i} Value {j} supertype {k} name" "Supertype: " ""
+      fillregex (feature{i}_name|feature{i}_value[0-9]+_name) 1
+
+    EndIter supertype
+
+  EndIter value
+
+EndIter feature
+
+
 Section sentential-negation "Sentential Negation"
 
 Label "<p>Please indicate which strategy or strategies your language uses for sentential negation (as distinct from constituent negation). (You may leave this section blank, in which case your grammar will not include any information about negation.)</p>"
@@ -520,57 +519,40 @@ Label "<p>Notes: This section is under construction.  We hope to soon return the
 
 Section coordination "Coordination"
 
-Label "<p>Languages can have have multiple ways of marking coordination that can differ among the various parts of speech. The Matrix supports both lexical and morphological marking of coordination in several patterns. These patterns include:</p>"
+Label "<p>Languages can have multiple strategies for marking coordination that differ among the various parts of speech. The Matrix supports both lexical and morphological marking of coordination and several different marking patterns, including:</p>"
 
-Label "<blockquote><p><span class=\"dfn\">Monosyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B and C&quot; (one coordinand marked; also permits &quot;A and B and C&quot;)<br><span class=\"dfn\">Polysyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A and B and C&quot; (for N coordinands, N-1 marked)<br><span class=\"dfn\">N-Polysyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;and A and B and C&quot; (all coordinands marked)<br><span class=\"dfn\">Asyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B C&quot; (no marking; also called &quot;juxtaposition&quot;)</blockquote></p>"
+Label "<div style=\"padding-left: 16px\"><p><span class=\"dfn\">Monosyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B and C&quot; (last coordinand is marked; also allows &quot;A and B and C&quot;)<br><span class=\"dfn\">Polysyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A and B and C&quot; (all coordinands but the first are marked)<br><span class=\"dfn\">Omnisyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;and A and B and C&quot; (all coordinands are marked)<br><span class=\"dfn\">Asyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B C&quot; (no marking; also known as <span class=\"dfn\">juxtaposition</span>)</div></p>"
 
-Label "<p>You may define up to two coordination strategies below.  You may also leave this section blank, in which case the starter grammar produced will not have coordination.</p>"
+Label "<p>You may define any number of coordination strategies below.  You may also leave this section blank, in which case the starter grammar produced will not support coordination.</p>"
 
-Check cs1 "Coordination strategy 1" "" "Coordination Strategy 1:<br>&nbsp;&nbsp;&nbsp;&nbsp;in which"
+BeginIter cs{i} "a Coordination Strategy"
 
-Check cs1_n "CS1 coordinates Ns" "" "nouns "
-Check cs1_np "CS1 coordinates NPs" "" "NPs "
-Check cs1_vp "CS1 coordinates VPs" "" "VPs "
-Check cs1_s "CS1 coordinates Ss" "" "sentences<br>"
+Label "<p>Coordination Strategy {i}:<br>&nbsp;&nbsp;&nbsp;&nbsp;in which"
 
-Radio cs1_pat "CS1 pattern" "&nbsp;&nbsp;&nbsp;&nbsp;are marked in a " ""
+Check n "Coordination Strategy {i} coordinates Ns" "" "nouns "
+Check np "Coordination Strategy {i} coordinates NPs" "" "NPs "
+Check vp "Coordination Strategy {i} coordinates VPs" "" "VPs "
+Check s "Coordination Strategy {i} coordinates Ss" "" "sentences<br>"
+
+Radio pat "Coordination Strategy {i} pattern" "&nbsp;&nbsp;&nbsp;&nbsp;are marked in a " ""
 . mono "Monosyndeton" "" "monosyndeton "
 . poly "Polysyndeton" "" "polysyndeton "
-. omni "N-polysyndeton" "" "N-polysyndeton "
+. omni "Omnisyndeton" "" "omnisyndeton "
 . a "Asyndeton" "" "asyndeton &nbsp; pattern<br>"
 
-Radio cs1_mark "CS1 mark" "&nbsp;&nbsp;&nbsp;&nbsp;by a " ""
+Radio mark "Coordination Strategy {i} mark" "&nbsp;&nbsp;&nbsp;&nbsp;by a " ""
 . word "Word" "" "word "
 . affix "Affix" "" "affix "
 
-Text cs1_orth "CS1 spelling" "spelled " "" 10
+Text orth "Coordination Strategy {i} spelling" "spelled " "" 10
 
-Radio cs1_order "CS1 order" "that comes " ""
+Radio order "Coordination Strategy {i} order" "that comes " ""
 . before "Before" "" "before "
-. after "After" "" "after the coordinand<br><br>"
+. after "After" "" "after the coordinand"
 
-Check cs2 "Coordination strategy 2" "" "Coordination Strategy 2:<br>&nbsp;&nbsp;&nbsp;&nbsp;in which"
+Label "</p>"
 
-Check cs2_n "CS2 coordinates Ns" "" "nouns "
-Check cs2_np "CS2 coordinates NPs" "" "NPs "
-Check cs2_vp "CS2 coordinates VPs" "" "VPs "
-Check cs2_s "CS2 coordinates Ss" "" "sentences<br>"
-
-Radio cs2_pat "CS2 pattern" "&nbsp;&nbsp;&nbsp;&nbsp;are marked in a " ""
-. mono "Monosyndeton" "" "monosyndeton "
-. poly "Polysyndeton" "" "polysyndeton "
-. omni "N-polysyndeton" "" "N-polysyndeton "
-. a "Asyndeton" "" "asyndeton &nbsp; pattern<br>"
-
-Radio cs2_mark "CS2 mark" "&nbsp;&nbsp;&nbsp;&nbsp;by a " ""
-. word "Word" "" "word "
-. affix "Affix" "" "affix "
-
-Text cs2_orth "CS2 spelling" "spelled " "" 10
-
-Radio cs2_order "CS2 order" "that comes " ""
-. before "Before" "" "before "
-. after "After" "" "after the coordinand "
+EndIter cs
 
 
 Section matrix-yes-no "Matrix Yes/No Questions"

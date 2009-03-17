@@ -87,10 +87,12 @@ page</a>]
 
 <p>NOTE: Throughout the questionnaire, questions or subpages that lack
 a required answer or contain an incorrect answer are marked with a red
-asterisk: <span class="error" title="This asterisk is an exception.
-It has a tooltip even though it is not associated with an
-error.">*</span>.  Hovering the mouse cursor over an asterisk will
-show a tooltip describing the error.</p>
+asterisk:
+
+<span class="error" title="This asterisk is an exception. It has a tooltip even though it is not associated with an error.">*</span>.
+
+Hovering the mouse cursor over an asterisk will show a tooltip
+describing the error.</p>
 
 '''
 

@@ -24,29 +24,29 @@ div.iterator {
 }
 
 div.iterator {
-  border-left-color: #AAAAAA;
+  border-color: #808080;
 }
 
 div.iterator div.iterator {
-  border-left-color: #FFAAAA;
+  border-color: #FF8080;
 }
 
 div.iterator div.iterator div.iterator {
-  border-left-color: #AAFFAA;
+  border-color: #8080FF;
 }
 
 div.iterator div.iterator div.iterator div.iterator {
-  border-left-color: #AAAAFF;
+  border-color: #80FF80;
 }
 
 div.iterator div.iterator div.iterator div.iterator div.iterator {
-  border-left-color: #FFFFAA;
+  border-color: #FFFF80;
 }
 
 div.iterator div.iterator div.iterator div.iterator div.iterator div.iterator {
-  border-left-color: #FFAAFF;
+  border-color: #FF80FF;
 }
 
 div.iterator div.iterator div.iterator div.iterator div.iterator div.iterator div.iterator {
-  border-left-color: #AAFFFF;
+  border-color: #80FFFF;
 }
