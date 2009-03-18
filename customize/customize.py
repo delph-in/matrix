@@ -3669,6 +3669,22 @@ def customize_verbs():
 
 
 #######################################################
+def customize_users_auxtype(userstype, supertype, argnum):
+  """
+  A utility that declares the userstype as subtype of supertype and 
+  adds calls the functions that add features to the type.
+  Called by customize_auxiliaries.
+  userstype = userstypename in customize_auxiliaries
+  supertype = userstypename in customize_auxiliaries
+  argnum = a variable to indicate whether comp is only argument on list ('1') 
+  or second argument on a two argument list ('2') 
+  """
+ 
+  customize_feature_values(userstype, 'aux')
+  mylang.add(userstype + ' := ' + supertype + '.') 
+  add_compform_tdl(userstype,argnum)
+  add_compfeature_tdl(userstype,argnum)
+
 
 def add_arg_tdl(add_tdl, argnum):
   """
@@ -3677,7 +3693,7 @@ def add_arg_tdl(add_tdl, argnum):
   Called by add_compform_tdl() and add_compfeature_tdl().
   add_tdl = tdl to be added (in customize_auxiliaries it can be either 
   compform_tdl or compfeature_tdl)
-  one-arg = a variable to indicate whether it is a one argument list ('1') 
+  argnum = a variable to indicate whether comp is only argument on list ('1') 
   or second argument on a two argument list ('2') 
   """ 
   onearg = '[ ARG-ST < [ ' +  add_tdl + ' ] > ]'
@@ -3808,17 +3824,13 @@ def customize_auxiliaries():
                               [ LOCAL.CAT [ VAL [ SUBJ < [ ] >, \
                                                   COMPS < > ], \
                                             HEAD verb ]] > ].'
-        mylang.add(typedef)
-        
+        mylang.add(typedef)        
         add_subj_tdl(supertype, subj, subjcase)
 
         if sem == 'add-pred':
-          # includes: constraining the FORM of the (2nd) argument (complement)
           typedef = auxtypename + ' := ' + supertype + ' & norm-sem-lex-item & \
                                         trans-first-arg-raising-lex-item-1 .'
           mylang.add(typedef)
-
-          customize_feature_values(userstypename, 'aux')
 
         else:
           comment = \
@@ -3828,14 +3840,12 @@ def customize_auxiliaries():
             '; but I don\'t want to rely on this.  Then again, [ AUX - ]\n' + \
             '; might not be true.  Be sure to put in a comment.'
           mylang.add_literal(comment)
-          
           # changed inheritance here to remove redundancy
           typedef = auxtypename + ' := ' + supertype + ' & raise-sem-lex-item & \
                       [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
-          
-        add_compform_tdl(auxtypename, 2)
-        add_compfeature_tdl(userstypename, 2)
+        
+        customize_users_auxtype(userstypename, auxtypename, 2)
 
       elif comp == 'v':
         supertype = 'arg-comp-aux'
@@ -3862,8 +3872,7 @@ def customize_auxiliaries():
                                             COMPS #vcomps ], \
                                       HEAD verb ], \
                                 CONT.HOOK.XARG #xarg ]] > ].'
-        mylang.add(typedef)
-        
+        mylang.add(typedef)      
         add_subj_tdl(supertype, subj, subjcase)
 
 # ASF 2008-12-07 For now we restrict free word order with v-comp to
@@ -3899,8 +3908,7 @@ def customize_auxiliaries():
                [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
 
-        add_compform_tdl(auxtypename, 2)
-        add_compfeature_tdl(userstypename, 2)
+        customize_users_auxtype(userstypename, auxtypename, 2)
 
       elif comp == 's':
         supertype = 's-comp-aux'
@@ -3943,10 +3951,7 @@ def customize_auxiliaries():
                [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
           
-        add_compform_tdl(auxtypename, 1)
-        add_compfeature_tdl(userstypename, 1)
-
-      mylang.add(userstypename + ' := ' + auxtypename + '.')
+        customize_users_auxtype(userstypename, auxtypename, 1)
       
       # add stems to lexicon
       ch.iter_begin('stem')
