@@ -1599,19 +1599,26 @@ class ChoicesFile:
     iterator, constraint, that contains the choices type (req, disreq,
     or forces) and other-slot.
     """
-    constraints = []
 
-    for contype in [ 'forces', 'req', 'disreq' ]:
-      self.iter_begin(contype)
+    for slotprefix in ('noun', 'verb', 'det', 'aux'):
+      self.iter_begin(slotprefix + '-slot')
       while self.iter_valid():
-        constraints += [ [ contype, self.get('type') ] ]
-        self.delete('type')
+        constraints = []
+
+        for contype in ('forces', 'req', 'disreq'):
+          self.iter_begin(contype)
+          while self.iter_valid():
+            constraints += [ [ contype, self.get('type') ] ]
+            self.delete('type')
+            self.iter_next()
+          self.iter_end()
+
+        self.iter_begin('constraint')
+        for c in constraints:
+          self.set('type', c[0])
+          self.set('other-slot', c[1])
+          self.iter_next()
+        self.iter_end()
+
         self.iter_next()
       self.iter_end()
-
-    self.iter_begin('constraint')
-    for c in constraints:
-      self.set('type', c[0])
-      self.set('other-slot', c[1])
-      self.iter_next()
-    self.iter_end()
