@@ -74,6 +74,8 @@ class ChoicesFile:
         self.convert_13_to_14()
       if version < 15:
         self.convert_14_to_15()
+      if version < 16:
+        self.convert_15_to_16()
       # As we get more versions, add more version-conversion methods, and:
       # if version < N:
       #   self.convert_N-1_to_N
@@ -714,32 +716,6 @@ class ChoicesFile:
 
     return forms
 
-  # marks()
-  #   Create and return a list containing the values of the KEYS.KEY
-  #   feature that can be used to differentiate based on values of
-  #   this quasi-semantic, i.e., syntactic feature.  'Mark' is used
-  #   instead of 'key' as 'key' is used extensively elsewhere in the
-  #   code.
-  #   This list consists of tuples:
-  #     [mark name]
-  def marks(self):
-
-    marks = []
-
-    state = self.iter_state()
-    self.iter_reset()
-    
-    self.iter_begin('mark')
-    while self.iter_valid():
-      marks += [ [self.get('name')] ]
-
-      self.iter_next()
-    self.iter_end()
-    
-    self.iter_set_state(state)
-
-    return marks
-
   # tenses()
   #   Create and return a list containing information about the values
   #   of the TENSE feature implied by the current choices.
@@ -901,16 +877,6 @@ class ChoicesFile:
     if values:
       features += [ ['form', values, 'LOCAL.CAT.HEAD.FORM'] ]
 
-    # Mark (misc.syntactic feature)
-    values = ''
-    for m in self.marks():
-      if values:
-        values += ';'
-      values += m[0] + '|' + m[0]
-    
-    if values:
-      features += [ ['mark', values, 'LOCAL.CAT.HEAD.KEYS.KEY'] ]
-
     # Tense
     values = ''
     for t in self.tenses():
@@ -1001,7 +967,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 15
+    return 16
 
 
   def convert_value(self, key, old, new):
@@ -1621,4 +1587,37 @@ class ChoicesFile:
         self.iter_end()
 
         self.iter_next()
+      self.iter_end()
+
+  def convert_15_to_16(self):
+    """
+    Removes the feature MARK. Converts MARK feature to featureX_name (Other Features)
+    where X places it at the end of the list of other features:
+    --mark -> featureX_name=mark
+    --featureX_type=head 
+    All MARK values are converted to featureX values:
+    --markY_name=mY -> featureX_valueY_name=mY
+    --featureX_valueY_supertype_name=mark
+    """
+    mvalues = []
+    self.iter_begin('mark')
+    while self.iter_valid():
+      mvalues.append(self.get('name'))
+      self.iter_next()
+    self.iter_end()
+
+    if len(mvalues) != 0:
+      self.iter_begin('feature')
+      while self.iter_valid():
+        self.iter_next()
+      self.set('name','mark')
+      self.set('type','head')
+      self.iter_begin('value')
+      for mv in mvalues:
+        self.set('name', mv)
+        self.iter_begin('supertype')
+        self.set('name','mark')
+        self.iter_end()
+        self.iter_next()
+      self.iter_end()
       self.iter_end()

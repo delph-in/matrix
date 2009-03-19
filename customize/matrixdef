@@ -298,7 +298,9 @@ Select scale-equal "Direction when equal" "When the agent and patient have the s
 . other "Some other form" "some other form"
 
 
-Section tense-aspect "Verbal Features"
+Section tense-aspect "Tense and Aspect"
+
+Label "<p>You may define three semantic features directly related to tense and aspect on this page as well as a syntactic feature related to verb forms. If additional features are needed for defining tense and aspect in your language,e.g., for defining arbitrary or quasi-semantic verb classes, you may define them on the Other Features page.</p>" 
 
 Label "<h3>Semantic Features</h3>"
 Label "<div style=\"padding-left: 16px\">"
@@ -418,7 +420,7 @@ Label "</div>"
 
 Separator
 
-Label "<h3>Syntactic Features</h3>"
+Label "<h3>Syntactic Feature</h3>"
 
 Label "<div style=\"padding-left: 16px\">"
 Label "<h4><span class=\"feat\">form</span></h4>"
@@ -441,14 +443,6 @@ Label "<b>finite</b>:"
   EndIter fin-subform
 
 Label "</div>"
-
-Label "<h4>MARK</h4>"
-
-Label "<p>This syntactic feature defines quasi-semantic qualities, i.e., those that have become grammaticalized or are not clearly associated with a specific semantic feature. This feature may be useful in differentiating members of verb classes. For example, in a language where each auxiliary is associated with a distinct class of verbs (e.g., the French auxiliaries <i>&ecirc;tre</i> and <i>avoir</i>), this feature can be used to distinguish members of the verb classes. If not applicable, you may leave this section blank.</p>"
-  BeginIter mark{i} "a mark value"
-    Text name "Mark value {i} name" "Value name: " "&nbsp;&nbsp;&nbsp;&nbsp;note: Names cannot contain spaces or special characters." 20
-  EndIter mark
-
 Label "</div>"
 
 Label "<h4>References</h4>"

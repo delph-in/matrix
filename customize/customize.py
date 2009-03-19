@@ -810,7 +810,7 @@ def customize_other_features():
 
     # if this hierarchy isn't handled elsewhere, handle it here
     if feat not in ['case', 'person', 'number', 'pernum', 'gender',
-                    'form', 'mark', 'tense', 'aspect', 'situation']:
+                    'form', 'tense', 'aspect', 'situation']:
       if type == 'head':
         mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].')
       else:
@@ -3469,35 +3469,6 @@ def customize_form():
 
 
 ##########################################################
-# customize_mark()
-
-def init_mark_hierarchy():
-  """
-  Define the values of the feature HEAD.KEYS.KEY based on the user's choices.
-  This is a flat hierarchy as (currently) only the leaves may be specified by the user.
-  """
-  hier = Hierarchy('mark')
-
-  ch.iter_begin('mark')
-  while ch.iter_valid():
-    v = ch.get('name')
-    hier.add(v, 'mark')
-    
-    ch.iter_next()
-  ch.iter_end()
-
-  if not hier.is_empty():
-    hierarchies[hier.name] = hier
-
-
-def customize_mark():
-  if 'mark' in hierarchies:
-    mylang.add('head :+ [KEYS.KEY mark].')
-    mylang.add('mark := predsort.')
-    hierarchies['mark'].save(mylang, False)
-
-
-##########################################################
 # customize_verbs()
 
 def customize_verbs():
@@ -4884,7 +4855,6 @@ def customize_matrix(path, arch_type):
   init_aspect_hierarchy()
   init_situation_hierarchy()
   init_form_hierarchy()
-  init_mark_hierarchy()
   init_other_hierarchies()
 
   # Customize inflection and lexicon first, since they can cause
@@ -4897,7 +4867,6 @@ def customize_matrix(path, arch_type):
   customize_person_and_number()
   customize_gender()
   customize_form()
-  customize_mark()
   customize_tense()
   customize_aspect()
   customize_situation()
