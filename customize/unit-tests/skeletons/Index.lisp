@@ -22,6 +22,10 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "auxfeatures-onlyformmarked") (:content . "auxfeatures-onlyformmarked: testing features on the auxiliaryFORM marked on the complement verb"))
+((:path . "compfeatures-onlyformmarked") (:content . "compfeatures-onlyformmarked: testing features on auxiliary complement but only FORM is marked on the verb"))
+((:path . "compfeatures") (:content . "compfeatures: testing features on the auxiliary complement"))
+((:path . "auxfeatures") (:content . "auxfeatures: testing features on auxiliary verb"))
 ((:path . "case-optadp") (:content . "case-optadp: case with optional adpositional marking"))
 ((:path . "case-mixed-optadp") (:content . "case-mixed-optadp: case with mixed optional adpositional and morphological marking"))
 ((:path . "case-mixed") (:content . "case-mixed: case, mixed adpositional and morphological marking"))

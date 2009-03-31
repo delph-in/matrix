@@ -62,3 +62,7 @@ Finnish=Finnish test for morphotactics
 case-mixed=case, mixed adpositional and morphological marking
 case-mixed-optadp=case with mixed optional adpositional and morphological marking
 case-optadp=case with optional adpositional marking
+auxfeatures=testing features on auxiliary verb
+compfeatures=testing features on the auxiliary complement
+compfeatures-onlyformmarked=testing features on auxiliary complement but only FORM is marked on the verb
+auxfeatures-onlyformmarked=testing features on the auxiliaryFORM marked on the complement verb
