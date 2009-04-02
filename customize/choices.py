@@ -234,11 +234,13 @@ class ChoicesFile:
   # all features defined in the languages, even though they're not
   # all stored in a single place.
 
-  # has_noun_case()
-  #   Returns True iff the target language has either morphologically
-  #   or lexically marked case (restricting the calculation to the
-  #   passed-in case if it's non-empty).
   def has_noun_case(self, case = ''):
+    """
+    Returns True iff the target language has either morphologically or
+    lexically marked case (restricting the calculation to the
+    passed-in case if it's non-empty).
+    """
+
     result = False
 
     state = self.iter_state()
@@ -280,12 +282,14 @@ class ChoicesFile:
     return result
 
 
-  # has_adp_case()
-  #   Returns True iff the target language has case-marking
-  #   adpositions (restricting the calculation to the passed-in case
-  #   if it's non-empty).  If the check_opt argument is True, only
-  #   return True if the adposition is optional.
   def has_adp_case(self, case = '', check_opt = False):
+    """
+    Returns True iff the target language has case-marking adpositions
+    (restricting the calculation to the passed-in case if it's
+    non-empty).  If the check_opt argument is True, only return True
+    if the adposition is optional.
+    """
+
     result = False
 
     state = self.iter_state()
@@ -310,19 +314,23 @@ class ChoicesFile:
     return result
 
 
-  # has_optadp_case()
-  #   Returns True iff the target language has optional case-marking
-  #   adpositions (restricting the calculation to the passed-in case
-  #   if it's non-empty).
   def has_optadp_case(self, case = ''):
+    """
+    Returns True iff the target language has optional case-marking
+    adpositions (restricting the calculation to the passed-in case if
+    it's non-empty).
+    """
+
     return self.has_adp_case(case, True)
 
 
-  # has_mixed_case()
-  #   Returns True iff the target language has both case-marking
-  #   adpositions and case on nouns (restricting the calculation to
-  #   the passed-in case if it's non-empty).
   def has_mixed_case(self, case = ''):
+    """
+    Returns True iff the target language has both case-marking
+    adpositions and case on nouns (restricting the calculation to the
+    passed-in case if it's non-empty).
+    """
+
     has_noun = self.has_noun_case(case)
     has_adp = self.has_adp_case(case)
 
@@ -330,10 +338,13 @@ class ChoicesFile:
 
 
   # case_head()
-  #   Returns the appropriate head type for case-marked arguments in
-  #   the target language (restricting the calculation to the
-  #   passed-in case if it's non-empty).
   def case_head(self, case = ''):
+    """
+    Returns the appropriate head type for case-marked arguments in the
+    target language (restricting the calculation to the passed-in case
+    if it's non-empty).
+    """
+
     has_noun = self.has_noun_case(case)
     has_adp = self.has_adp_case(case)
     has_optadp = self.has_optadp_case(case)
@@ -344,6 +355,67 @@ class ChoicesFile:
       return 'adp'
     else:
       return 'noun'
+
+
+  def has_dirinv(self):
+    """
+    Returns True iff the target language has a direct-inverse scale.
+    """
+    result = False
+
+    state = self.iter_state()
+    self.iter_reset()
+
+    self.iter_begin('scale')
+    result = self.iter_valid()
+
+    self.iter_set_state(state)
+
+    return result
+
+
+  def has_scale(self):
+    """
+    Returns True iff the target language requires the SCALE feature,
+    which contains the arguments in the order they are ranked by
+    the direct-inverse hierarchy.
+    """
+    result = False
+
+    state = self.iter_state()
+    self.iter_reset()
+
+    # verb lexical items
+    self.iter_begin('verb')
+    while self.iter_valid():
+      self.iter_begin('feat')
+      while self.iter_valid():
+        if self.get('head') in ['higher', 'lower']:
+          result = True
+        self.iter_next()
+      self.iter_end()
+      self.iter_next()
+    self.iter_end()
+
+    # verb morphs
+    self.iter_begin('verb-slot')
+    while self.iter_valid():
+      self.iter_begin('morph')
+      while self.iter_valid():
+        self.iter_begin('feat')
+        while self.iter_valid():
+          if self.get('head') in ['higher', 'lower']:
+            result = True
+          self.iter_next()
+        self.iter_end()
+        self.iter_next()
+      self.iter_end()
+      self.iter_next()
+    self.iter_end()
+
+    self.iter_set_state(state)
+
+    return result
 
 
   # cases()

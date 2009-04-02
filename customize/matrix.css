@@ -28,15 +28,15 @@ div.iterator {
 }
 
 div.iterator div.iterator {
-  border-color: #FF8080;
-}
-
-div.iterator div.iterator div.iterator {
   border-color: #8080FF;
 }
 
-div.iterator div.iterator div.iterator div.iterator {
+div.iterator div.iterator div.iterator {
   border-color: #80FF80;
+}
+
+div.iterator div.iterator div.iterator div.iterator {
+  border-color: #FF80FF;
 }
 
 div.iterator div.iterator div.iterator div.iterator div.iterator {
@@ -44,9 +44,9 @@ div.iterator div.iterator div.iterator div.iterator div.iterator {
 }
 
 div.iterator div.iterator div.iterator div.iterator div.iterator div.iterator {
-  border-color: #FF80FF;
+  border-color: #80FFFF;
 }
 
 div.iterator div.iterator div.iterator div.iterator div.iterator div.iterator div.iterator {
-  border-color: #80FFFF;
+  border-color: #FF8080;
 }

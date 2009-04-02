@@ -32,6 +32,19 @@ function event_target(e)
   return e.srcElement;
 }
 
+// HACK: IE uses a different name for the cssRules array in styleSheets
+function get_css_rule(name)
+{
+  var r = document.styleSheets[0].cssRules;
+  if (!r) r = document.styleSheets[0].rules;
+  for (var i = 0; i < r.length; i++) {
+    if (r[i].selectorText == name) {
+      return r[i];
+    }
+  }
+  return null;
+}
+
 // For logging debugging info to the end of the page
 function timestamp(s)
 {
@@ -125,8 +138,26 @@ function focus_all_fields()
 // instantaneously.
 var animations = [];
 var an_max = 0;
+var blink_count = 0;
 function animate()
 {
+/*
+  blink_count++;
+  var r = get_css_rule('.error');
+  if (r) {
+
+    var bcm = blink_count % 100;
+    var br = 20;
+    if (bcm < br) {
+      r.style.opacity = (br - bcm) / br;
+    } else if (bcm < 2 * br) {
+      r.style.opacity = (bcm - br) / br;
+    } else {
+      r.style.opacity = 1;
+    }
+  }
+*/
+
   for (var i = an_max - 1; i >= 0; i--) {
     var a = animations[i];
     var n = document.getElementById(a.id);

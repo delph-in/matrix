@@ -362,7 +362,7 @@ def validate_yesno_questions():
   if ch.get('q-part'):
     if not qpartorder:
       err = 'If you chose the question particle strategy for yes-no questions, you must specify where the question particle appears.'
-      add_err('ques', err)
+      add_err('q-part-order', err)
     if not qpartorth:
       err = 'If you chose the question particle strategy for yes-no questions, you must specify the form of the question particle.'
       add_err('q-part-orth', err)
@@ -576,8 +576,8 @@ def validate_lexicon():
 
   if ch.get('has-aux') == 'yes':
     if not aux1_name:
-      err = 'You have indicated that your language has auxiliaries. You must define at least one auxiliary type on the Lexicon page.'
-      add_err('has-aux', err)
+      err = 'You have indicated that your language has auxiliaries. You must define at least one auxiliary type.'
+      add_err('auxlabel', err)
   
   comp = ch.get('aux-comp')
   ch.iter_begin('aux')
@@ -676,6 +676,10 @@ def validate_lexicon():
 
         if lextype == 'verb' and not ch.get('head'):
           err = 'You must choose where the feature is specified.'
+          add_err(ch.iter_prefix() + 'head', err)
+
+        if not ch.has_dirinv() and ch.get('head') in ['higher', 'lower']:
+          err = 'That choice is not available in languages without a direct-inverse scale.'
           add_err(ch.iter_prefix() + 'head', err)
 
         ch.iter_next()

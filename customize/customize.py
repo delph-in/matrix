@@ -286,7 +286,7 @@ class Hierarchy:
     if not new_type:
       for n in [t for t in new_set]:
         if new_type:
-          new_type += '-'
+          new_type += '+'
         new_type += n
 
     # now insert the new type between supers and subs, making sure to
@@ -336,6 +336,10 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
       geom_prefix += 'LOCAL.CAT.VAL.SUBJ.FIRST.'
     elif h == 'obj':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
+    elif h == 'higher':
+      geom_prefix = 'SCALE.FIRST.'
+    elif h == 'lower':
+      geom_prefix = 'SCALE.REST.FIRST.'
 
     geom = ''
     for f in features:
@@ -560,6 +564,10 @@ def customize_direct_inverse():
   hier.add('dir', 'direction')
   hier.add('inv', 'direction')
   hier.save(mylang)
+
+  if ch.has_scale():
+    mylang.add('word-or-lexrule :+ [ SCALE list ].')
+    mylang.add('lex-rule :+ [ SCALE #1, DTR.SCALE #1 ].')
 
   cases = ch.cases()
   features = ch.features()
@@ -4208,6 +4216,17 @@ def customize_inflection():
           direc_type = n + '-' + direc + '-lex-rule'
           mylang.add(direc_type + ' := ' + super_type + ' &' + \
                      '[ SYNSEM.' + direc_geom + ' ' + direc + ' ].')
+          if ch.has_scale():
+            if direc == 'dir':
+              mylang.add(direc_type + ' := \
+                           [ SCALE < #1, #2 >, \
+                             SYNSEM.LOCAL.CAT.VAL [ SUBJ < #1 >, \
+                                                    COMPS < #2 > ] ].')
+            else:
+              mylang.add(direc_type + ' := \
+                           [ SCALE < #1, #2 >, \
+                             SYNSEM.LOCAL.CAT.VAL [ SUBJ < #2 >, \
+                                                    COMPS < #1 > ] ].')
 
           size = direct_inverse_scale_size()
           i = 1
@@ -4440,11 +4459,16 @@ def customize_inflection():
 
       # Specify for subtypes, if any
       if subrules > 0:
+        morphcount = 0
         ch.iter_begin('morph')
         while ch.iter_valid():
+          morphcount += 1
           morphname = ch.get('name')
           if not morphname:
-            morphname = get_name()
+            if name:
+              morphname = name + '-morph' + str(morphcount)
+            else:
+              morphname = get_name()
 
           # The lexical type and the super-type names
           ltype = morphname + '-lex-rule'

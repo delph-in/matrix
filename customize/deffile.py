@@ -57,7 +57,7 @@ var numbers = [
 </head>
 '''
 
-HTML_mainprebody = '''<body>
+HTML_mainprebody = '''<body onload="animate()">
 <h1>LinGO Grammar Matrix</h1>
 <h1>Matrix customization and download page</h1>
 <h2>Version of %s</h2>
@@ -381,7 +381,7 @@ class MatrixDefFile:
     prefix = ''
     for l in line:
       word = tokenize_def(l)
-      if len(word) < 2:
+      if len(word) < 2 or word[0][0] == '#':
         pass
       elif word[0] == 'Section':
         cur_sec = word[1]
@@ -391,8 +391,8 @@ class MatrixDefFile:
         prefix += re.sub('\\{.*\\}', '.*', word[1])
       elif word[0] == 'EndIter':
         prefix = re.sub('_?' + word[1] + '[^_]*$', '', prefix)
-      elif word[0] != 'Label' and word[0][0] != '#' and \
-           not errors.has_key(cur_sec):
+      elif not (errors.has_key(cur_sec) or
+                (word[0] == 'Label' and len(word) < 3)):
         pat = '^' + prefix
         if prefix:
           pat += '_'
@@ -491,9 +491,10 @@ class MatrixDefFile:
       if len(word) == 0:
         pass
       elif word[0] == 'Label':
-        for w in word[1:]:
-          html += w
-        html += '\n'
+        if len(word) > 2 and errors.has_key(word[1]):
+          html += '<span class="error" title="%s">*</span>' % \
+                  (errors[word[1]])
+        html += word[-1] + '\n'
       elif word[0] == 'Separator':
         html += '<hr>'
       elif word[0] == 'Check':

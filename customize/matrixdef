@@ -718,6 +718,8 @@ BeginIter verb{i} "a Verb Type" 2
     . verb "The verb" "the verb"
     . subj "The subject" "the subject NP"
     . obj "The object" "the object NP"
+    . higher "Higher-ranked" "the higher-ranked NP"
+    . lower "Higher-ranked" "the lower-ranked NP"
 
   EndIter feat
 
@@ -739,7 +741,8 @@ EndIter verb
 
 Separator
 
-Label "<h3>Auxiliary Verb Types</h3>"
+Label "<h3>"
+Label auxlabel "Auxiliary Verb Types</h3>"
 
 BeginIter aux{i} "an Auxiliary Type" 
 
@@ -866,6 +869,8 @@ BeginIter verb-slot{i} "a Slot"
       . verb "The verb" "the verb"
       . subj "The subject" "the subject NP"
       . obj "The object" "the object NP"
+      . higher "Higher-ranked" "the higher-ranked NP"
+      . lower "Higher-ranked" "the lower-ranked NP"
 
     EndIter feat
 
