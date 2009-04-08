@@ -578,17 +578,15 @@ def validate_lexicon():
     if not aux1_name:
       err = 'You have indicated that your language has auxiliaries. You must define at least one auxiliary type.'
       add_err('auxlabel', err)
-  
+
   comp = ch.get('aux-comp')
   ch.iter_begin('aux')
   while ch.iter_valid():
     sem = ch.get('sem')
     pred = ch.get('pred')
-#    comp = ch.get('comp')
-    compform = ch.get('compform')
     subj = ch.get('subj')
     prefix = ch.iter_prefix()
-    
+
     if not ch.get('stem1_orth'):
       err = 'You must specify a stem for each auxiliary type defined.'
       add_err(prefix + 'stem1_orth', err)
@@ -606,26 +604,27 @@ def validate_lexicon():
         ch.iter_next()
       ch.iter_end()
 
- #   if not comp:
- #     err = 'You must specify the complement type.'
- #     add_err(prefix + 'comp', err)
-
-    if not compform:
-      err = 'You must specify the form of the verb in the complement.'
-      add_err(prefix + 'compform', err)
-
     if ((comp == 'vp') or (comp == 'v')):
       if not subj:
         err = 'You must specify the subject type.'
         add_err(prefix + 'subj', err)
-    
+
     ch.iter_begin('compfeature')
+    compform = 'no'
     while ch.iter_valid():
-      if ch.get('name') and not ch.get('compvalue'):
+      name = ch.get('name')
+      if name == 'form':
+        compform = 'yes'
+      if name and not ch.get('value'):
         err = 'You must specify a value for this feature.'
-        add_err(ch.iter_prefix() + 'compvalue', err)
+        add_err(ch.iter_prefix() + 'value', err)
       ch.iter_next()
+
+    if not compform == 'yes':
+      err = 'You must specify the form of the verb in the complement, i.e., the value of the complement feature FORM.'
+      add_err(prefix + 'complabel', err)
     ch.iter_end()
+
 
     ch.iter_begin('stem')
     while ch.iter_valid():
@@ -637,7 +636,7 @@ def validate_lexicon():
         add_err(prefix + 'sem', err)
       ch.iter_next()
     ch.iter_end()
-    
+
     ch.iter_next()
   ch.iter_end()
 

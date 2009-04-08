@@ -76,6 +76,8 @@ class ChoicesFile:
         self.convert_14_to_15()
       if version < 16:
         self.convert_15_to_16()
+      if version < 17:
+        self.convert_16_to_17()
       # As we get more versions, add more version-conversion methods, and:
       # if version < N:
       #   self.convert_N-1_to_N
@@ -939,7 +941,7 @@ class ChoicesFile:
     if values:
       features += [ ['argument structure', values, ''] ]
     
-    # Form (auxiliary complement form)
+    # Form
     values = ''
     for f in self.forms():
       if values:
@@ -1039,7 +1041,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 16
+    return 17
 
 
   def convert_value(self, key, old, new):
@@ -1693,3 +1695,23 @@ class ChoicesFile:
         self.iter_next()
       self.iter_end()
       self.iter_end()
+
+  def convert_16_to_17(self):
+    """
+    Relates to Auxiliary complement feature definition:
+    --replaces 'compvalue' with 'value'
+    --replaces compform=Y with compfeatureX_name=form, compfeature_value=Y
+    """
+    self.iter_begin('aux')
+    while self.iter_valid():
+      complementform = self.get('compform')
+      self.iter_begin('compfeature')
+      while self.iter_valid():
+        self.convert_key('compvalue', 'value')
+        self.iter_next()
+      self.set('name', 'form')
+      self.set('value', complementform)
+      self.iter_end()
+
+      self.iter_next()
+    self.iter_end()

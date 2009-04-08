@@ -212,6 +212,11 @@ class Hierarchy:
   # exist.  This method will add such types to the hierarchy as
   # necessary.
   def get_type_covering(self, type_set):
+
+    type_list = list(type_set)
+    if len(type_list) == 1:
+      return type_list[0]    
+
     if type(type_set) == 'list':
       type_set = set(type_set)
 
@@ -309,6 +314,7 @@ class Hierarchy:
 #   passed-in type.
 
 def customize_feature_values(type_name, pos, features=None, cases=None):
+
   if not features:
     features = ch.features()
   if not cases:
@@ -320,7 +326,12 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
   else:
     pos_geom_prefix = 'SYNSEM.'
 
-  ch.iter_begin('feat')
+  if pos == 'auxcomplement':
+    iter_feat = 'compfeature'
+  else:
+    iter_feat = 'feat'
+
+  ch.iter_begin(iter_feat)
   while ch.iter_valid():
     n = ch.get('name')
     v = ch.get('value').split(', ')
@@ -328,10 +339,12 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
     if n == 'case':
       v = [canon_to_abbr(c, cases) for c in v]
 
+    geom_prefix = pos_geom_prefix
+
     # The 'head' choice only appears on verb slots, and allows the user
     # to specify features on the subject and object as well
     h = ch.get('head')
-    geom_prefix = pos_geom_prefix
+#    geom_prefix = pos_geom_prefix
     if h == 'subj':
       geom_prefix += 'LOCAL.CAT.VAL.SUBJ.FIRST.'
     elif h == 'obj':
@@ -340,6 +353,9 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
       geom_prefix = 'SCALE.FIRST.'
     elif h == 'lower':
       geom_prefix = 'SCALE.REST.FIRST.'
+
+    if pos == 'auxcomplement':
+      geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
 
     geom = ''
     for f in features:
@@ -412,7 +428,6 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
                  'This lexical rule adds the neg_r_rel to the verb\'s\n\
 	          RELS list.  It is instantiated by a spelling-changing\n\
 	          rule as specified in irules.tdl.')
-
     ch.iter_next()
   ch.iter_end()
 
@@ -3648,85 +3663,19 @@ def customize_verbs():
 
 
 #######################################################
-def customize_users_auxtype(userstype, supertype, argnum):
+def customize_users_auxtype(userstype, supertype):
   """
   A utility that declares the userstype as subtype of supertype and 
-  adds calls the functions that add features to the type.
+  calls the functions that specify feature values on the type.
   Called by customize_auxiliaries.
   userstype = userstypename in customize_auxiliaries
   supertype = userstypename in customize_auxiliaries
-  argnum = a variable to indicate whether comp is only argument on list ('1') 
-  or second argument on a two argument list ('2') 
   """
  
   customize_feature_values(userstype, 'aux')
+  customize_feature_values(userstype, 'auxcomplement')
   mylang.add(userstype + ' := ' + supertype + '.') 
-  add_compform_tdl(userstype,argnum)
-  add_compfeature_tdl(userstype,argnum)
 
-
-def add_arg_tdl(add_tdl, argnum):
-  """
-  A utility function that creates tdl strings of the proper type for adding 
-  feature/value pairs to the complement arguments of auxiliary verbs.
-  Called by add_compform_tdl() and add_compfeature_tdl().
-  add_tdl = tdl to be added (in customize_auxiliaries it can be either 
-  compform_tdl or compfeature_tdl)
-  argnum = a variable to indicate whether comp is only argument on list ('1') 
-  or second argument on a two argument list ('2') 
-  """ 
-  onearg = '[ ARG-ST < [ ' +  add_tdl + ' ] > ]'
-  secondarg = '[ ARG-ST < [ ], [ ' + add_tdl + ' ] > ]' 
-  if argnum == '1':
-    return onearg
-  elif argnum == '2':
-    return secondarg
-
-def create_compfeature_tdl(feature):
-  """
-  A function that creates a tdl string for a feature's geometry.
-  Called by add_compfeature_tdl().
-  feature = the feature for which to create the tdl string
-  """
-  compfeature_tdl = ""
-  features = ch.features()
-  for f in features:
-    if f[0] == feature:
-      geom = f[2]
-      compvalue = ch.get('compvalue')
-      compfeature_tdl += geom + ' ' + compvalue
-  return compfeature_tdl
-
-def add_compform_tdl(type, argnum):
-  """
-  A function that defines a type defintion statement adding compform_tdl and 
-  adds the type definition to mylang.tdl.
-  Called by customize_auxiliaries.
-  type = auxtypename variable in customize_auxiliaries
-  argnum = 1 or 2 depending whether it is the only argument or the second argument (of 2)
-  """
-  compform = ch.get('compform')
-  compform_tdl = 'LOCAL.CAT.HEAD.FORM ' + compform
-  typedef = type + ' := ' + add_arg_tdl(compform_tdl, str(argnum)) + '.'
-  mylang.add(typedef)
-
-def add_compfeature_tdl(type, argnum):
-  """
-  A function that defines type definition statements for auxiliary complement 
-  feature/value pairs and adds the type defintions to mylang.tdl.
-  Called by customize_auxiliaries().
-  type = userstypename variable in customize_auxiliaries
-  argnum = 1 or 2 depending whether it is the only argument or the second argument (of 2)
-  """
-  ch.iter_begin('compfeature')
-  while ch.iter_valid():
-    feature = ch.get('name')
-    compfeature_tdl = create_compfeature_tdl(feature)
-    typedef = type + ' := ' + add_arg_tdl(compfeature_tdl, str(argnum)) + '.'
-    mylang.add(typedef)
-
-    ch.iter_next()
-  ch.iter_end()
 
 def add_subj_tdl(type, subj, subjcase):
   """
@@ -3824,7 +3773,7 @@ def customize_auxiliaries():
                       [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
         
-        customize_users_auxtype(userstypename, auxtypename, 2)
+        customize_users_auxtype(userstypename, auxtypename)
 
       elif comp == 'v':
         supertype = 'arg-comp-aux'
@@ -3887,7 +3836,7 @@ def customize_auxiliaries():
                [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
 
-        customize_users_auxtype(userstypename, auxtypename, 2)
+        customize_users_auxtype(userstypename, auxtypename)
 
       elif comp == 's':
         supertype = 's-comp-aux'
@@ -3930,7 +3879,7 @@ def customize_auxiliaries():
                [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
           
-        customize_users_auxtype(userstypename, auxtypename, 1)
+        customize_users_auxtype(userstypename, auxtypename)
       
       # add stems to lexicon
       ch.iter_begin('stem')

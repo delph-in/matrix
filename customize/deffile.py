@@ -491,9 +491,9 @@ class MatrixDefFile:
       if len(word) == 0:
         pass
       elif word[0] == 'Label':
-        if len(word) > 2 and errors.has_key(word[1]):
+        if len(word) > 2 and errors.has_key(prefix + word[1]):
           html += '<span class="error" title="%s">*</span>' % \
-                  (errors[word[1]])
+                  (errors[prefix + word[1]])
         html += word[-1] + '\n'
       elif word[0] == 'Separator':
         html += '<hr>'
