@@ -1153,13 +1153,6 @@ headed-phrase := phrase &
                    COORD -,
                    COORD-REL #crel ] ].
 
-headed-phrase :+
-  [ SYNSEM.LOCAL [ COORD -,
-                   COORD-REL #crel ],
-    HEAD-DTR.SYNSEM.LOCAL [ COORD -,
-                            COORD-REL #crel ]].
-
-
 non-headed-phrase := phrase.
 
 ; Most but not all phrases have SYNSEM phr-synsem; head-complement
