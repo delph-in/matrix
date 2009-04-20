@@ -759,7 +759,7 @@ BeginIter aux{i} "an Auxiliary Type"
   . add-pred "Predicate" "" "An independent predicate, e.g., English modal auxiliary 'can'."
 
   Label "<div style=\"padding-left: 25px\">"
-  Label "<p>If this type contributes a predicate, you may also specify semantic feature values on the auxiliary, e.g., English epistemic modal 'might'. Note that these features place no constraints on the semantic values of the complement. Constraints on the complement may be defined further below in the complement section </p>" 
+  Label "<p>If this type contributes a predicate, you may also specify semantic feature values on the auxiliary, e.g., English epistemic modal 'might'. Note that these features place no constraints on the semantic values of the complement. Constraints on the complement may be defined in the complement section below.</p>" 
 
   BeginIter feat{j} "an auxiliary feature"
 
