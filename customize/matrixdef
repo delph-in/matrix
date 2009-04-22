@@ -744,22 +744,21 @@ Separator
 Label "<h3>"
 Label auxlabel "Auxiliary Verb Types</h3>"
 
+  Label "<p>Auxiliaries may contribute a independent predicate, e.g., English modal <i>can</i>. If you define a type that contributes a predicate, you may also specify semantic feature values on the auxiliary, if desired. Alternatively, auxiliaries may contribute no predicate of their own, e.g., English auxiliary <i>be</i>. In this case, they do not directly contribute semantic values; instead, they may contribute indirectly by placing constraints on their complements.  Note that auxiliary features defined here place no constraints on the semantic values of the complement; constraints on the complement should be defined as complement features.</p>" 
+
 BeginIter aux{i} "an Auxiliary Type" 
 
   Label "<b>Auxiliary type {i}</b>:"
 
   Label "<div style=\"padding-left: 16px\">"
 
-  Text name "Aux {i} type name" "Type name: " "" 30
+  Text name "Aux {i} type name" "Type name: " "<br>" 30
 
-  Label "<p>Auxiliary:</p>"
-  Label "<div style=\"padding-left: 30px\">"
-
-  Radio sem "Aux {i} semantics" "This auxiliary type contributes:<br>" ""
-  . add-pred "Predicate" "" "An independent predicate, e.g., English modal auxiliary 'can'."
+  Radio sem "Aux {i} semantics" "<br>This auxiliary type contributes:<br>" ""
+  . no-pred "No predicate" "" "No predicate.<br>"
+  . add-pred "Predicate" "" "An independent predicate."
 
   Label "<div style=\"padding-left: 25px\">"
-  Label "<p>If this type contributes a predicate, you may also specify semantic feature values on the auxiliary, e.g., English epistemic modal 'might'. Note that these features place no constraints on the semantic values of the complement. Constraints on the complement may be defined in the complement section below.</p>" 
 
   BeginIter feat{j} "an auxiliary feature"
 
@@ -767,48 +766,12 @@ BeginIter aux{i} "an Auxiliary Type"
      fillnames
 
      MultiSelect value "Aux {i} feature {j} value" "Value: " ""
-     fillvalues aux{i}_feat{j}_name
+     fillvalues aux{i}_feat2{j}_name
 
   EndIter feat
   Label "</div>"
 
-  Radio sem "Aux {i} semantics" "" ""
-  . no-pred "No predicate" "" "No predicate, so it does not directly contribute semantic values, e.g., English auxiliary 'be'."
-
-  Label "</div>"
-
-  Label "<p>Stem(s):</p>"        
-  Label "<div style=\"padding-left: 30px\">" 
-
-  BeginIter stem{j} "a Stem" 1
-
-    Text orth "Aux {i} stem {j} spelling" "Spelling: " "" 30
-
-    Text pred "Aux {i} stem {j} predicate" "&nbsp;&nbsp;&nbsp;&nbsp;If applicable, predicate: " "" 30
-
-  EndIter stem
-  Label "</div>"
-
-  Label complabel "Complement Features:"
-  Label "<div style=\"padding-left: 30px\">"
-
-  Label "<br>You may specify feature values for the complement of this auxiliary type here.&nbsp;&nbsp;&nbsp;&nbsp;Note: A value for the feature FORM is required.<br><br>"
-
-  BeginIter compfeature{j} "a complement feature" 1
-
-    Select name "Aux {i} complement feature {j} name" "Name: " ""
-    fillnames
-
-    MultiSelect value "Aux {i} complement feature {j} value" "Value: " ""
-    fillvalues aux{i}_compfeature{j}_name
-
-  EndIter compfeature
-  Label "</div>"
-
-  Label "<p>Subject:</p>"
-  Label "<div style=\"padding-left: 30px\">"
-
-  Radio subj "Aux {i} subject" "If this auxiliary type takes a VP or V complement, its subject is a:<br>" ""
+  Radio subj "Aux {i} subject" "If this auxiliary type takes a VP or V complement select the subject type:<br>" ""
   . np "Noun phrase" "" "noun phrase without case restrictions <br>"
   . np-comp-case "NP comp case" "" "noun phrase bearing the case the verbal complement assigns to its subject <br>"
   . np-aux-case "NP aux case" "" "noun phrase, receiving the following case from its auxiliary: "
@@ -819,7 +782,28 @@ BeginIter aux{i} "an Auxiliary Type"
   Radio subj "Aux {i} subject" "" ""
   . adp "Adpositional phrase" "<br>" "adpositional phrase<br><br>"
 
-  Label "</div>"
+  Label "Complement Features:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Note: A value for the feature FORM is required.)<br>"
+
+  BeginIter compfeature{j} "a complement feature" 1
+
+    Select name "Aux {i} complement feature {j} name" "Name: " ""
+    fillnames
+
+    MultiSelect value "Aux {i} complement feature {j} value" "Value: " ""
+    fillvalues aux{i}_compfeature{j}_name
+
+  EndIter compfeature
+
+  Label "Stems:"        
+
+  BeginIter stem{j} "a Stem" 1
+
+    Text orth "Aux {i} stem {j} spelling" "Spelling: " "" 30
+
+    Text pred "Aux {i} stem {j} predicate" "&nbsp;&nbsp;&nbsp;&nbsp;Predicate (if applicable): " "" 30
+
+  EndIter stem
+
   Label "</div>"
 
 EndIter aux
