@@ -1970,8 +1970,8 @@ def specialize_word_order(hc,orders):
     mylang.add('''aux-comp-phrase := basic-marker-comp-phrase & marker-initial-phrase & 
                                    [ SYNSEM [ LOCAL.CAT.HEAD.FORM #vform,
                                               VERB-CL #vc ],
-                                     MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD [ AUX +,
-                                                                        FORM #vform ],
+                                     MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX +,
+                                                                               FORM #vform ],
                                      NON-MARKER-DTR.SYNSEM [ LOCAL.CAT.HEAD verb,
                                                              VERB-CL #vc ] ].''')
     mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
@@ -1979,8 +1979,8 @@ def specialize_word_order(hc,orders):
     mylang.add('''comp-aux-phrase := basic-marker-comp-phrase & marker-final-phrase &
                                    [ SYNSEM [ LOCAL.CAT.HEAD.FORM #vform,
                                               VERB-CL #vc ],
-                                     MARKER-DTR.SYNSEM.LOCAL.CAT. HEAD [ AUX +,
-                                                                          FORM #vform ],
+                                     MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX +,
+                                                                               FORM #vform ],
                                      NON-MARKER-DTR.SYNSEM [ LOCAL.CAT.HEAD verb,
                                                              VERB-CL #vc ] ].''')
     mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
