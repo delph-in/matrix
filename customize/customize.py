@@ -2000,12 +2000,12 @@ def specialize_word_order(hc,orders):
     if wo == 'free' or wo == 'vso' or wo == 'osv':      
       if auxorder == 'before' and aux != 'ov-auxv':
         mylang.add('aux-comp-phrase := basic-head-1st-comp-phrase & head-initial & \
-                    [ SYNSEM.LOCAL.CAT.HEAD.AUX +, \
+                    [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ], \
                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
         aux = 'auxc'
       elif auxorder == 'after' and aux != 'vo-vaux':
         mylang.add('comp-aux-phrase := basic-head-1st-comp-phrase & head-final & \
-                    [ SYNSEM.LOCAL.CAT.HEAD.AUX +, \
+                    [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ], \
                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
         aux = 'caux'  
       if wo == 'free':
@@ -2099,12 +2099,13 @@ def specialize_word_order(hc,orders):
   # ASF for aux-comp and comp-aux, restriction should be AUX +
   # ASF for v-final and v-initial, added SUBJ < [] > constraint to form
   # a verbal cluster at the beginning or end of the sentence.
+  # ASF 2009-04-21: should also be restricted to being a verb.
 
 
   if len(head_comp_is) == 1:
     head = head_comp_is[0]
     if head == 'aux':
-      mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+      mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ] ].',
                'head-comp-phrase requires auxiliary heads.')
       if wo == 'v-final' and auxcomp == 'vp': 
         mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] > ].')
@@ -2115,7 +2116,7 @@ def specialize_word_order(hc,orders):
   if len(comp_head_is) == 1:
     head = comp_head_is[0]
     if head == 'aux':
-      mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+      mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ] ].',
                'comp-head-phrase requires auxiliary heads.')      
       if wo == 'v-initial' and auxcomp == 'vp':
         mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] > ].')
@@ -2147,7 +2148,7 @@ def specialize_word_order(hc,orders):
     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'head-comp-phrase requires things that are one of: ' + str(head_comp_is))
     if auxresthc:
-      mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
+      mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ] ].')
 
   if len(comp_head_is) > 1:
     head = '+'
@@ -2163,7 +2164,7 @@ def specialize_word_order(hc,orders):
     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'comp-head-phrase requires things that are one of: ' + str(head_comp_is))
     if auxrestch:
-      mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
+      mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ] ].')
 
   # Now the negative constraints.  This is where we extracted the
   # information that head-comp or comp-head can't be certain things.
