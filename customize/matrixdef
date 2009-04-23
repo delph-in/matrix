@@ -771,7 +771,7 @@ BeginIter aux{i} "an Auxiliary Type"
   EndIter feat
   Label "</div>"
 
-  Radio subj "Aux {i} subject" "If this auxiliary type takes a VP or V complement select the subject type:<br>" ""
+  Radio subj "Aux {i} subject" "If this auxiliary type takes a VP or V complement, select the subject type:<br>" ""
   . np "Noun phrase" "" "noun phrase without case restrictions <br>"
   . np-comp-case "NP comp case" "" "noun phrase bearing the case the verbal complement assigns to its subject <br>"
   . np-aux-case "NP aux case" "" "noun phrase, receiving the following case from its auxiliary: "
