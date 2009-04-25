@@ -376,11 +376,11 @@ class ChoicesFile:
     return result
 
 
-  def has_scale(self):
+  def has_SCARGS(self):
     """
-    Returns True iff the target language requires the SCALE feature,
-    which contains the arguments in the order they are ranked by
-    the direct-inverse hierarchy.
+    Returns True iff the target language requires the SC-ARGS feature,
+    which contains the arguments in the order they are ranked by the
+    direct-inverse hierarchy.
     """
     result = False
 

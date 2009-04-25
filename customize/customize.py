@@ -289,10 +289,7 @@ class Hierarchy:
         new_type = 'non-' + h[0]
         break
     if not new_type:
-      for n in [t for t in new_set]:
-        if new_type:
-          new_type += '+'
-        new_type += n
+      new_type = '+'.join(subs)
 
     # now insert the new type between supers and subs, making sure to
     # remove any direct inheritance of the subs by the supers
@@ -350,9 +347,9 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
     elif h == 'obj':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
     elif h == 'higher':
-      geom_prefix = 'SCALE.FIRST.'
+      geom_prefix = 'SC-ARGS.FIRST.'
     elif h == 'lower':
-      geom_prefix = 'SCALE.REST.FIRST.'
+      geom_prefix = 'SC-ARGS.REST.FIRST.'
 
     if pos == 'auxcomplement':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
@@ -372,7 +369,7 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
         value = hierarchies[n].get_type_covering(v)
         mylang.add(type_name +
                    ' := [ ' + geom + ' ' + value + ' ].')
-        if n == 'case' and ch.has_optadp_case():
+        if n == 'case' and ch.has_mixed_case():
           mylang.add(type_name +
                    ' := [ ' + geom + '-MARKED + ].')
       else:
@@ -460,15 +457,26 @@ def init_case_hierarchy():
     acc_a = canon_to_abbr('acc', cases)
     erg_a = canon_to_abbr('erg', cases)
     abs_a = canon_to_abbr('abs', cases)
-    for c in cases:
-      hier.add(c[2], 'case', c[1])
-    if cm == 'split-n':
-      hier.add('a', erg_a, 'transitive agent')
-      hier.add('a', nom_a)
-      hier.add('s', nom_a, 'intransitive subject')
-      hier.add('s', abs_a)
-      hier.add('o', abs_a, 'transitive patient')
-      hier.add('o', acc_a)
+    if cm == 'split-v':
+      for c in cases:
+        hier.add(c[2], 'case', c[1])
+    else:  # 'split-n':
+      hier.add('a', 'case', 'transitive agent')
+      hier.add('s', 'case', 'intransitive subject')
+      hier.add('o', 'case', 'transitive patient')
+      for c in cases:
+        if c[2] == erg_a:
+          hier.add(c[2], 'a', c[1])
+        elif c[2] == nom_a:
+          hier.add(c[2], 'a', c[1])
+          hier.add(c[2], 's', c[1])
+        elif c[2] == abs_a:
+          hier.add(c[2], 's', c[1])
+          hier.add(c[2], 'o', c[1])
+        elif c[2] == acc_a:
+          hier.add(c[2], 'o', c[1])
+        else:
+          hier.add(c[2], 'case', c[1])
 
   if not hier.is_empty():
     hierarchies[hier.name] = hier
@@ -509,7 +517,7 @@ def customize_case_adpositions():
                                             VAL.SPR < > ]] > ].'
     mylang.add(typedef)
 
-    if ch.has_optadp_case():
+    if ch.has_mixed_case():
       mylang.add('+np :+ [ CASE-MARKED bool ].')
       typedef = \
         'case-marking-adp-lex := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].'
@@ -580,9 +588,9 @@ def customize_direct_inverse():
   hier.add('inv', 'direction')
   hier.save(mylang)
 
-  if ch.has_scale():
-    mylang.add('word-or-lexrule :+ [ SCALE list ].')
-    mylang.add('lex-rule :+ [ SCALE #1, DTR.SCALE #1 ].')
+  if ch.has_SCARGS():
+    mylang.add('word-or-lexrule :+ [ SC-ARGS list ].')
+    mylang.add('lex-rule :+ [ SC-ARGS #1, DTR.SC-ARGS #1 ].')
 
   cases = ch.cases()
   features = ch.features()
@@ -4167,15 +4175,15 @@ def customize_inflection():
           direc_type = n + '-' + direc + '-lex-rule'
           mylang.add(direc_type + ' := ' + super_type + ' &' + \
                      '[ SYNSEM.' + direc_geom + ' ' + direc + ' ].')
-          if ch.has_scale():
+          if ch.has_SCARGS():
             if direc == 'dir':
               mylang.add(direc_type + ' := \
-                           [ SCALE < #1, #2 >, \
+                           [ SC-ARGS < #1, #2 >, \
                              SYNSEM.LOCAL.CAT.VAL [ SUBJ < #1 >, \
                                                     COMPS < #2 > ] ].')
             else:
               mylang.add(direc_type + ' := \
-                           [ SCALE < #1, #2 >, \
+                           [ SC-ARGS < #1, #2 >, \
                              SYNSEM.LOCAL.CAT.VAL [ SUBJ < #2 >, \
                                                     COMPS < #1 > ] ].')
 

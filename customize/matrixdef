@@ -660,7 +660,7 @@ BeginIter noun-slot{i} "a Slot"
 
   BeginIter morph{j} "a Morpheme"
 
-    Text name "Noun slot {i} morpheme {j} name" "Morpheme name: " ", " 20
+    Text name "Noun slot {i} morpheme {j} name" "<b>Morpheme {j}</b>: Name: " ", " 20
 
     Text orth "Noun slot {i} morpheme {j} spelling" "spelling: " ", with the following features:<br>" 20
 
@@ -838,7 +838,7 @@ BeginIter verb-slot{i} "a Slot"
 
   BeginIter morph{j} "a Morpheme"
 
-    Text name "Verb slot {i} morpheme {j} name" "Morpheme name: " ", " 20
+    Text name "Verb slot {i} morpheme {j} name" "<b>Morpheme {j}</b>: Name: " ", " 20
 
     Text orth "Verb slot {i} morpheme {j} spelling" "spelling: " ", with the following features:<br>" 20
 
@@ -942,7 +942,7 @@ BeginIter det-slot{i} "a Slot"
 
   BeginIter morph{j} "a Morpheme"
 
-    Text name "Determiner slot {i} morpheme {j} name" "Morpheme name: " ", " 20
+    Text name "Determiner slot {i} morpheme {j} name" "<b>Morpheme {j}</b>: Name: " ", " 20
 
     Text orth "Determiner slot {i} morpheme {j} spelling" "spelling: " ", with the following features:<br>" 20
 

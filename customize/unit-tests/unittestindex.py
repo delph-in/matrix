@@ -37,9 +37,7 @@ if __name__ == "__main__":
   keys = ""
 
   if sys.argv[1] == "--lg-names":
-    for key in index.tests.keys():
-      keys = keys + " " + key
-    print keys
+    print " ".join(sorted(index.tests.keys()))
 
   if sys.argv[1] == "--comment":
     print index.tests[sys.argv[2]]
