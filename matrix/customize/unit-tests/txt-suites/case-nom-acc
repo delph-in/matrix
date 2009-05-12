@@ -1,0 +1,12 @@
+n1-NOM iv
+n1-NOM tv n2-ACC
+*n1 iv
+*n1-ACC iv
+*n1 tv n2
+*n1-NOM tv n2
+*n1-ACC tv n2
+*n1 tv n2-NOM
+*n1-NOM tv n2-NOM
+*n1-ACC tv n2-NOM
+*n1 tv n2-ACC
+*n1-ACC tv n2-ACC

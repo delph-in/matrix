@@ -1,0 +1,17 @@
+1@unknown@formal@none@1@S@nNOM ivfin1@1@2@small test suite only intrans verbs, assumes fin comp@lpoulson@13-7-2008
+2@unknown@formal@none@1@S@nNOM ivfin2@1@2@@lpoulson@13-7-2008
+3@unknown@formal@none@1@@ivfin1 nNOM@0@2@assumes SVO@lpoulson@13-7-2008
+4@unknown@formal@none@1@@iv nNOM@0@2@tests uninflected verb form@lpoulson@13-7-2008
+5@unknown@formal@none@1@@aux nNOM ivfin1@0@3@tests uninflected aux@lpoulson@13-7-2008
+6@unknown@formal@none@1@@auxfin1 nNOM iv@0@3@tests uninflected verb in comp@lpoulson@13-7-2008
+7@unknown@formal@none@1@@auxfin1 nNOM ivfin1@0@3@tests fin aux w/ fin comp@lpoulson@13-7-2008
+8@unknown@formal@none@1@@nNOM auxfin1 ivfin1@0@3@tests order@lpoulson@13-7-2008
+9@unknown@formal@none@1@@auxfin1 nNOM ivfin2@0@3@tests non-agreement in tense@lpoulson@13-7-2008
+10@unknown@formal@none@1@S@auxfin1 nNOM ivnf1@1@3@assumes fin aux requires a nf1 comp form@lpoulson@13-7-2008
+11@unknown@formal@none@1@S@auxfin2 nNOM ivnf1@1@3@@lpoulson@13-7-2008
+12@unknown@formal@none@1@@auxfin1 nNOM ivnf2@0@3@tests aux w/ wrong nf form@lpoulson@13-7-2008
+13@unknown@formal@none@1@S@pauxfin1 nNOM ivnf2@1@3@assumes paux requires a nf2 comp form@lpoulson@13-7-2008
+14@unknown@formal@none@1@S@pauxfin2 nNOM ivnf2@1@3@@lpoulson@13-7-2008
+15@unknown@formal@none@1@@ivnf2 nNOM pauxfin1@0@3@tests order@lpoulson@13-7-2008
+16@unknown@formal@none@1@@pauxfin1 nNOM ivnf1@0@3@tests wrong nf form@lpoulson@13-7-2008
+17@unknown@formal@none@1@@paux nNOM ivfin1@0@3@tests fin comp@lpoulson@13-7-2008

@@ -1,0 +1,268 @@
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial .
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ] .
+
+; Rules for bulding NPs.  Note that the Matrix uses SPR for
+;                the specifier of nouns and SUBJ for the subject (specifier) of verbs.
+
+head-spec-phrase := basic-head-spec-phrase & head-final .
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+;              introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "unspec_q_rel" ] !> ] .
+
+; This lexical rule adds a selected negative
+; 
+;                                                adverb to the beginning of the COMPS list
+
+neg-add-lex-rule := local-change-only-lex-rule & same-ctxt-lex-rule & same-agr-lex-rule & same-head-lex-rule & same-hc-light-lex-rule & same-posthead-lex-rule & constant-lex-rule &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ #subj,
+                             SPR #spr,
+                             SPEC #spec,
+                             COMPS < [ LOCAL.CONT [ HOOK [ INDEX #negind,
+                                                           LTOP #negltop ],
+                                                    HCONS <! [ LARG #larg ] !> ],
+                                       LKEYS.KEYREL.PRED "_neg_r_rel" ] . #comps > ],
+                   CONT.HOOK [ INDEX #negind,
+                               LTOP #negltop,
+                               XARG #xarg ] ],
+    DTR lex-item &
+        [ SYNSEM.LOCAL [ CONT.HOOK [ LTOP #larg,
+                                     XARG #xarg ],
+                         CAT [ VAL [ SUBJ #subj,
+                                     SPR #spr,
+                                     SPEC #spec,
+                                     COMPS #comps ],
+                               HEAD verb &
+                                    [ AUX + ] ] ] ] ] .
+
+; Type for negative adverbs.
+
+neg-adv-lex := basic-scopal-adverb-lex &
+  [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
+                             COMPS < >,
+                             SUBJ < > ],
+                       HEAD.MOD < [ LOCAL.CAT.HEAD verb ] > ] ] .
+
+; This grammar includes head-modifier rules.  To keep
+; out extraneous parses, constrain the value of MOD on
+; various subtypes of head.  This may need to be loosened later.
+; This constraint says that only adverbs, adjectives,
+; and adpositions can be modifiers.
+
++nvcdmo :+ [ MOD < > ] .
+
+; This lexical rule adds the neg_r_rel to the verb's
+; 	RELS list.  It is instantiated by a spelling-changing
+; 	rule as specified in irules.tdl.
+; 
+; This rule applies only to auxiliaries.
+
+neg-infl-lex-rule := cont-change-only-lex-rule & inflecting-lex-rule &
+  [ C-CONT [ HOOK [ XARG #xarg,
+                    LTOP #ltop,
+                    INDEX #ind ],
+             RELS <! event-relation &
+                     [ PRED "_neg_r_rel",
+                       LBL #ltop,
+                       ARG1 #harg ] !>,
+             HCONS <! qeq &
+                      [ HARG #harg,
+                        LARG #larg ] !> ],
+    SYNSEM.LKEYS #lkeys,
+    DTR lex-item &
+        [ SYNSEM [ LKEYS #lkeys,
+                   LOCAL [ CONT.HOOK [ XARG #xarg,
+                                       INDEX #ind,
+                                       LTOP #larg ],
+                           CAT.HEAD verb &
+                                    [ AUX + ] ] ] ] ] .
+
+;;; Coordination Strategy 1
+
+n1-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+n1-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+n1-bottom-coord-rule := conj-first-bottom-coord-rule & n-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+;;; Coordination Strategy 1
+
+np1-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+np1-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+np1-bottom-coord-rule := conj-first-bottom-coord-rule & np-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+;;; Coordination Strategy 1
+
+vp1-top-coord-rule := basic-vp-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+vp1-mid-coord-rule := basic-vp-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+vp1-bottom-coord-rule := conj-first-bottom-coord-rule & vp-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+;;; Coordination Strategy 1
+
+s1-top-coord-rule := basic-s-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+s1-mid-coord-rule := basic-s-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+s1-bottom-coord-rule := conj-first-bottom-coord-rule & s-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+; For the analysis of inverted yes-no questions, we add the feature INV.
+
+verb :+ [ INV bool ] .
+
+; All verbs start off as not inverted.
+
+verb-lex := basic-verb-lex &
+  [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
+                               SPEC < >,
+                               SUBJ < #subj > ],
+                         HEAD [ INV -,
+                                AUX - ] ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST < #subj &
+             [ LOCAL [ CAT.VAL [ SPR < >,
+                                 COMPS < > ],
+                       CONT.HOOK.INDEX #xarg ] ], ... > ] .
+
+; Rule for inverted subject verb order in questions.
+; The incompatible SUBJ values on SYNSEM and DTR are
+; what keeps this one from spinning.
+
+subj-v-inv-lrule := cat-change-only-lex-rule & same-hc-light-lex-rule & same-posthead-lex-rule & constant-lex-rule &
+  [ SYNSEM [ LOCAL.CAT [ HEAD verb &
+                              [ INV +,
+                                AUX + ],
+                         VAL [ COMPS < #subj . #comps >,
+                               SUBJ < >,
+                               SPR #spr,
+                               SPEC #spec ],
+                         MC na ],
+             LKEYS #lkeys ],
+    DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ < #subj >,
+                                 COMPS #comps,
+                                 SPR #spr,
+                                 SPEC #spec ],
+                 LKEYS #lkeys ] ] .
+
+; This rule takes [MC na] inverted phrases and licnesesthem as main clauses with question semantics.
+; 
+
+int-cl := interrogative-clause & head-only &
+  [ SYNSEM.LOCAL.CAT [ HEAD.INV +,
+                       VAL #val,
+                       MC + ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na,
+                                VAL #val &
+                                    [ SUBJ < >,
+                                      COMPS < > ] ],
+    C-CONT.HOOK.INDEX.SF ques ] .
+
+;;; Lexical types
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det ] >,
+                           COMPS < >,
+                           SUBJ < >,
+                           SPEC < > ],
+    ARG-ST < #spr > ] .
+
+obl-spr-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ] .
+
+;;; Verbs
+
+head :+ [ AUX bool,
+    FORM form ] .
+
+form := avm .
+
+fin := form .
+
+inf := form .
+
+intransitive-verb-lex := verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ] > ] .
+
+transitive-verb-lex := verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ], #comps &
+                                      [ LOCAL.CAT [ VAL [ SPR < >,
+                                                          COMPS < > ],
+                                                    HEAD noun ] ] > ] .
+
+;;; Types for finite and non-finite verbs.  These will
+;;; most likely need to be replaced with lexical rules
+;;; deriving the finite and non-finite forms from verb stems.
+
+finite-verb-lex := verb-lex &
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM fin ] .
+
+non-finite-verb-lex := verb-lex &
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM inf ] .
+
+finite-trans-verb-lex := finite-verb-lex & transitive-verb-lex .
+
+non-finite-trans-verb-lex := non-finite-verb-lex & transitive-verb-lex .
+
+finite-intrans-verb-lex := finite-verb-lex & intransitive-verb-lex .
+
+non-finite-intrans-verb-lex := non-finite-verb-lex & intransitive-verb-lex .
+
+;;; Auxiliaries
+
+subj-raise-aux := trans-first-arg-raising-lex-item &
+  [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < #subj >,
+                             COMPS < #comps >,
+                             SPR < >,
+                             SPEC < > ],
+                       HEAD verb &
+                            [ AUX + ] ],
+    ARG-ST < #subj &
+             [ LOCAL.CAT [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ], #comps &
+                                          [ LOCAL.CAT [ VAL [ SUBJ < [  ] >,
+                                                              COMPS < > ],
+                                                        HEAD verb &
+                                                             [ FORM inf ] ] ] > ] .
+
+; To keep the semantically empty ones from spinning on
+; generation, require complement to be [AUX -].  The
+; FORM feature might be enough in the starter grammars,
+; but I don't want to rely on this.  Then again, [ AUX - ]
+; might not be true.  Be sure to put in a comment.
+
+subj-raise-aux-no-sem := subj-raise-aux & trans-first-arg-raising-lex-item-2 &
+  [ ARG-ST < [  ], [ LOCAL.CAT.HEAD.AUX - ] > ] .
+
+;;; Determiners
+;;; SPEC is non-empty, and already specified by basic-determiner-lex.
+
+determiner-lex := basic-determiner-lex & basic-zero-arg &
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
+                           COMPS < >,
+                           SUBJ < > ] ] .
+
