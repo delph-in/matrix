@@ -1,0 +1,196 @@
+Ryan Mattson
+Lab 7
+5-22-05
+Ling 567
+
+(lab 7 test suite: lab7.items)
+
+`Sentential Negation'
+
+Sentential negation in Finnish is done with an adverb modifier
+that shows up right before the verb being negated in its `root'
+form (not infinitival, but the form that the personal ending
+would attach to). This is best illustrated with a constrasting
+positive example:
+
+1) minA syO-n lasia
+   i-nom eat-1p-sg glass-part
+   i eat glass
+
+2) minA en syO lasia
+   i-nom neg-1p-sg eat-neg glass-part
+   i don't eat glass
+
+The particular adverb that shows up is dependent on the PNG of
+the verb.
+
+en := scopal-adv-lex &
+[ STEM < "en" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_neg_r_rel,
+	   LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+							      NUM sg ]]>]].
+
+The adverb looks into its MODs PNG, as illustrated with this
+lexical entry. There are six adverbs in all which correspond
+to the six possible PNG values of verbs:
+
+en     1pSg
+et     2pSg
+ei     3pSg
+emme   1pPl
+ette   2pPl
+eivAt  3pPl
+
+I implemented negation as an adverbial modifier, because it
+seemed to match well the facts of Finnish. I defined an
+instance of adj-head-scop-phrase, as the adverb occurs before
+the head verb I then created a subtype of
+basic-scopal-adv-lex:
+
+scopal-adv-lex := basic-scopal-adverb-lex &
+[ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT.HEAD verb & [ NEG + ]] >,
+		     VAL [ SPR < >,
+			   SUBJ < >,
+			   COMPS < >,
+			   SPEC < > ]],
+  ARG-ST < > ].
+
+The adverbs that inherit from this type require the HEAD of
+their MOD list to be of type verb with a HEAD feature of
+verb that I added called NEG, which is a boolean value. I
+created this so that the verbs would be properly inflected
+for the negative form (interestingly, it's almost an
+uninflection that is occurring, as opposed to an inflection).
+What I really needed was some way to use the uninflected
+verb, but get a PNG value on it. Unfortunately I couldn't
+figure out a mechanism to do this.
+
+I ended up writing a neg_verb-lex-rule:
+
+neg_verb-lex-rule := infl-ltol-rule &
+[ SYNSEM.LOCAL [ CAT.HEAD.NEG + ],
+  C-CONT [ RELS <! !>,
+	   HCONS <! !> ],
+  DTR 1sg_verb-lex-rule & [ SYNSEM.LOCAL [ CAT.HEAD.NEG - ],
+			    C-CONT [ RELS <! !>,
+				     HCONS <! !> ]]].
+
+This lexical rule takes a verb that has undergone the
+1sg_verb-lex-rule and uninflects the 1pSg ending from the
+verb (which is typically just `n'). I followed this
+pattern simply out of convenience for getting the
+proper form of the verb, though the only support for this
+process in any literature I have is from a pedagogical
+grammar book. (From Start to Finnish, Leila White, 2003)
+
+One issue with this lexical rule is that the output negative
+verb always assumes its subject is `minA,' which is incorrect,
+and this is represented in the Indexed MRS as:
+
+...
+h10:_hurt_v(e11..., x13:SEMSORT:BOOL:FIRST:SG, x12...),
+...
+
+That MRS snippet also shows another problem with the
+negative lexical rule. The correct argument indicies are
+not being copied up through the rule correctly (x13 and
+x12 don't exist as indicies anywhere except that relation).
+
+The grammar currently generates negative sentences for all
+verbs that are listed in the lexicon file, based on this
+simple irule (where !v is any possible vowel of Finnish):
+
+neg_verb :=
+%suffix (!vn !v)
+neg_verb-lex-rule.
+
+A good example of the correct syntax, but incorrect
+semantics is with the sentence
+
+3) minA  en      syO     lasia
+   i-nom neg-adv eat-neg glass-part
+   i don't eat glass
+
+The indexed MRS shows that eat does not have the correct
+argument indicies. (as illustrated above)
+
+Update: The problem was fixed with the suggestion of
+copying up the VAL features, however this broke the
+overall functionality, because the only subj/neg combo
+that would work was the 1pSg (minA en) combo. I tried
+implementing a different version of the irule, however
+this caused 100% CPU usage to be eaten, and didn't seem
+to stop parsing at all (I would have to kill the lkb
+process). That rule looks like:
+
+neg_verb :=
+%suffix (!vn !v) (!vt !v) (!vmme !v) (!vtte !v) (!vv!at !v) (sattuu satu)
+neg_verb-lex-rule.
+
+`Can' in Finnish
+
+The verb `voida' (`can') in Finnish is an auxiliary verb
+that can occur in front of any non-auxiliary infinitive.
+An example is the following sentence:
+
+4) minA  voin      syOdA   lasia
+   i-nom can-1p-sg eat-inf glass-part
+   i can eat glass
+
+`voida' is inflected like any other verb for person and
+number, but the following verb (`syOdA') is in its
+infinitival form. The infinitival verb still has its
+appropriate complements in their appropriate forms.
+
+I followed the guidelines of using can as an auxiliary
+verb in order to implement it in Finnish, and they generally
+worked fine. I created the type subj-raising-verb-lex that
+inherits from verb-lex and trans-first-arg-raising-lex-item:
+
+subj-raising-verb-lex := verb-lex & trans-first-arg-raising-lex-item &
+[ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CAT.HEAD.CASE nom ] >,
+			 COMPS < #comps & [ LOCAL.CAT.HEAD verb & [ FORM inf ]]>],
+  ARG-ST < #subj, #comps > ].
+
+I specified that the element on the comps list of any item
+that inherits from this type will be constrained to being
+a verb with a HEAD feature FORM of type inf, which is a new
+feature I added to verb (along with fin, to contrast). This
+feature gets set through the following lexical rule:
+
+inf_verb-lex-rule := infl-ltow-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.FORM inf,
+  DTR verb-lex ].
+
+It's very simple, only requiring its daugther to be an
+uninflected verb which is by default (on verb-lex) left
+underspecified for FORM. The inflectional rules to create
+finite verbs set those items to be [FORM fin]. I also 
+had to further constrain verb-lex:
+
+verb-lex := basic-verb-lex &
+[ SYNSEM.LOCAL [ CAT [ HEAD verb & [ QUES -,
+				     INV -,
+				     NEG -,
+				     MOD < > ],
+		       VAL [ SPR < >,
+			     SUBJ < #subj & [ LOCAL [ CAT [ HEAD noun,
+							    VAL.SPR < > ],
+						      CONT.HOOK.INDEX #ind ]]>],
+		       IMPERATIVE - ],
+		 CONT.HOOK.XARG #ind ],
+  ARG-ST < #subj, ... >,
+  INFLECTED - ].
+
+The constraints added during this lab where identifying
+the INDEX of the item on the verbs SUBJ list to be
+the XARG of the verb itself. Before this, `voida' was not
+correctly showing the argument indicies.
+
+The infinitive inflectional rule is currently limiting
+what verbs can be complements to `voida' because I'm
+hand-specifying each verbs infitival form, but this should
+be cleared up as soon as I implement an appropriate
+lexical item in the XFST interface. The only verb that
+is being inflected for an infinitival form is `syOdA'
+(to eat).

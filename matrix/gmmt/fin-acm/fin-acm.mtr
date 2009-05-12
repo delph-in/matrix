@@ -1,0 +1,12 @@
+;;; Hey, emacs(1), this is -*- Mode: TDL; Coding: utf-8; -*- got it?
+
+make-harm := make-harm-mtr.
+make-pursuit := make-pursuit-mtr.
+
+eat-food := eat-food-mtr.
+make-thought := make-thought-mtr.
+
+;; Pro-drop for subjects only
+
+pro-insert-arg2 := pro-insert-arg2-mtr.
+pro-insert-arg3 := pro-insert-arg3-mtr.

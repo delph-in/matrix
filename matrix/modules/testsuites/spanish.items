@@ -1,0 +1,35 @@
+; Spanish has:
+
+; SVO order (and possibly also VSO, VOS, and OVS subject to pragmatics, but
+; here we'll assume the non-SVO variants are enabled via syntactic 
+; alternations).
+; Typically the overt subject is omitted, but we ignore this here too.
+; Human objects are marked with a 'personal' "a".
+; Negation marked by selected adverb (selected by the verb)
+; Yes-no questions marked by subject-verb inversion (assuming basic SVO order)
+
+;Kim vio' a Sandy
+;Kim saw Sandy
+n tv n
+s tv o
+*n n tv
+
+;Kim no vio' a Sandy
+;Kim did not see Sandy
+n negadv tv n
+*n tv negadv n
+*negadv n tv n
+*n tv n negadv
+*n tv negadv n
+
+;Vio' Kim a Sandy?
+;Did Kim see Sandy?
+tv n n
+;*n tv n
+;*n n tv
+
+;No vio' Kim a Sandy?
+;Did Kim not see Sandy?
+negadv tv n n
+*tv n negadv n
+*tv n n negadv

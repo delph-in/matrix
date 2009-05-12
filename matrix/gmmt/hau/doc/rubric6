@@ -1,0 +1,133 @@
+----------------------------------------------
+Comments
+
+ Hausa has demonstrative determiners, as well as demonstrative
+ pronouns. I did not include demonstrative pronouns in my test suite,
+ so I am mainly focusing on demonstrative determiners(wata, "this.fem"
+ and wani "this.masc).  I hope to add demonstrative pronouns later on.
+ Demonstrative pronouns are split by m/f/non-sg, and include this(by
+ me), that(by you), that(there), and that (distant).
+
+"there" is ambiguous (in English) between "by you" and "distant",
+so I'm puzlzed what the "that (there)" category is meant to indicate.
+If there really is a four-way distinction in Hausa, I'll need
+to revise my hierarchy of demonstrative rels.
+
+ I added a demonstrative-determiner-lex type, but I can't get it to
+ work.  I've been having problems with unification between the type and
+ the lexicon.  I'm trying to add the gender and number information in
+ the entries in the lexicon (through SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG),
+ but it says that this doesn't unify with the type constraints.  I'm
+ particularly confused about why the LKB doesn't complain when I put
+ [GEN fem] into the demonstrative-determiner-lex itself, but I can't
+ write a subtype that adds the GEN information (f-demonstrative-lex,
+ see hausa.tdl file, directly under demonstrative-determiner-lex).  I
+ left demonstratives inheriting from determiner-lex, as this gave them
+ the correct behavior (but not the "exist_n_rel" or COG-ST
+ information).
+
+It's far better to post to EPost in these cases (esp. since I haven't
+been getting to the grading until a few days after you turn the
+labs in). 
+
+At any rate, I tried making an instance of f-demonstrative-lex in your
+lexicon.tdl, and it worked just fine.  That is, the LKB didn't complain,
+and a sentence with the word I created parsed.  All that was missing
+was the specific PRED value on the demonstrative relation.  You should
+use the ALTKEY feature to get this information in on the lexical entries.
+(This means that the demonstrative-determiner-lex type needs to 
+identify the second RELS element with the LKEYS.ALTKEY value.
+
+ Hausa has subject pro-drop, in that it requires that pronouns be
+ dropped when they appear as subjects.  This means that the subject is
+ understood by context.  To take care of this I added an instance of
+ basic-head-opt-subj-phrase.  This allows subject-less sentences, such
+ as "taa-zoo", (she-came).  In the last lab I added a PRO feature to
+ distinguish pronouns from other words, and made all nouns PRO -.  I
+ then required verbs to take a PRO + subject.  This took care of making
+ sentences with pronoun subjects ungrammatical (such as "*ita taa-zoo",
+ *she came).
+
+As you are probably noticing in Lab 7, you actually want to use
+decl-head-opt-subj-phrase, so that you get the right SF value.
+
+ As far as I can tell, Hausa doesn't have optional objects.  There are
+ a few exception, but these seem to be rare enough that I'm not going
+ to cover them.  I can't find the page in my reference grammar, but the
+ example given for these exceptions was something like "my wife, she is
+ doing lunch", when it is understood that she is cooking lunch.
+
+What about the verb 'eat'?  Can it really not drop its object?
+
+ Adjectives in Hausa appear both before and after their head noun.
+ When appearing before the noun, they have to take on a linker suffix
+ -n/-r~/-n (m/f/pl).  To cover this, I made an adj-lex-rule which adds
+ POSTHEAD - to an adjective. I also made three subtype rules for m/f/pl
+ which add gender/number information.  made instances of these three
+ rules in the irules.tdl file to add the correct suffix.  As I have it
+ now, the rule fails to give POSTHEAD- and suffixes to prenominal
+ adjectives.  I think
+
+If your adjectives start off underspecified for POSTHEAD, though, then
+the suffix-less ones should also show up prenominally.  (Unless you've
+paired this rule with a zero rule that puts in the POSTHEAD + information.)
+
+ f-adj := 
+ %suffix (!c!c !c-r~) (!c !c-r~)
+ f-adj-lex-rule.
+
+ m-adj := 
+ %suffix (!c!c !c-n) (!c !c-n)
+ m-adj-lex-rule.
+
+ ;;;Adjectives
+  faraa := f-adjective-lex &
+ [ STEM < "faraa" >,
+ SYNSEM [ LKEYS.KEYREL.PRED "_white_j_rel" ]].
+
+ farii := m-adjective-lex &
+ [ STEM < "farii" >,
+ SYNSEM [ LKEYS.KEYREL.PRED "_white_j_rel"]].
+
+From this, it looks like adjectives also have gender suffixes
+that appear before the linker suffix.  Have you considered making
+a lexical rule for this?
+
+Also, I couldn't get any examples to parse with your m-adj-lex-rule.
+The problem seems to be that you're constraining the adjective's own
+HOOK.INDEX (whose value is an event variable, and thus can't take the
+feature PNG) instead of the HOOK.INDEX of the thin on its MOD list.
+
+
+ To get the right behavior, I needed to constrain the adjectives to
+ have the same gender and number information as their head noun.  I
+ tried to make a co-reference on the PNG value of the first item of the
+ adjective-lex's mod list, and adjective-lex itself, but I kept getting
+ an error in "unification with ARG1-EV-RELATION at
+ synsem.local.cont.rels.list.first".  To get around this, I made three
+ subtypes m-adjective, f-adjective and pl-adjective which placed
+ gender/number constraint on the MOD value.  I then had my adjectives
+ inherit from the apropriate subtype.  I think it's simpler to do it
+ the first way, but I just couldn't figure out that error, and I wanted
+ to move on to adding a suffix rule for adjectives.
+
+Right --- there is no need for the adjectives to have inherent
+PNG.  The lexical rules which add the suffixes can constrain the
+MOD..PNG, and that's it.  No generalization lost, since the lexical
+rules will all need to say something about PNG anyway.
+
+ For adverbs, I added an adverb-lex rule, and tested it with jiyà
+ "yesterday".  Adverbs in Hausa generally show up at the end of the
+ sentence, after the subject, verb and object (if any) information.
+ Temporal verbs like jiyà can show up at the beginning of the sentence
+ as well.  I added three examples to my test suite to show adverbs and
+ stacking adverbs (taa-dafà miyàa sòosai jiyà, "she cooked soup
+ perfectly yesterday").  One is ungrammatical, since it appears between
+ the verb and its object.  My grammar overgenerates, since this
+ sentence is parsed as grammatical.
+
+It sounds like you should constrain the adverbs to modify only S
+(COMPS <>, SUBJ <>, HEAD verb), and leave POSTHEAD underspecified
+on the temporal ones.  Would that do it?
+
+

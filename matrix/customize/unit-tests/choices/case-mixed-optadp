@@ -1,0 +1,59 @@
+version=14
+
+section=general
+language=case-mixed-optadp
+archive=no
+
+section=word-order
+word-order=svo
+has-dets=no
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=other-features
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nom
+nom-acc-acc-case-name=acc
+
+section=direct-inverse
+
+section=tense-aspect
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=lexicon
+  noun1_det=imp
+    noun1_stem1_orth=n1
+    noun1_stem1_pred=_n1_n_rel
+    noun1_stem2_orth=n2
+    noun1_stem2_pred=_n2_n_rel
+  noun-slot1_order=after
+    noun-slot1_input1_type=noun
+    noun-slot1_morph1_orth=-ACC
+      noun-slot1_morph1_feat1_name=case
+      noun-slot1_morph1_feat1_value=acc
+  verb1_valence=nom
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_valence=nom-acc
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+  adp1_orth=NOM
+  adp1_opt=on
+  adp1_order=before
+    adp1_feat1_name=case
+    adp1_feat1_value=nom
+
+section=test-sentences

@@ -1,0 +1,8 @@
+;;; Hey, emacs(1), this is -*- Mode: TDL; Coding: utf-8; -*- got it?
+
+pro-drop := pronoun-delete-mtr.
+make-pursuit := make-pursuit-mtr.
+hurt := hurt-mtr.
+
+eat-food := eat-food-mtr.
+make-thought := make-thought-mtr.

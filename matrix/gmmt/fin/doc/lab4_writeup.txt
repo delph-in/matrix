@@ -1,0 +1,90 @@
+Ryan Mattson
+5-1-05
+Lab#4 Writeup
+LING 567
+
+The ditransitive verb sentences I added to my testsuite are designed to take
+advantage of the relatively free word order in Finnish. The following
+illustrate the general paradigm:
+
+1) He   annavat tomaatit     miehelle
+   they give    tomatoes-acc man-allat
+   'They are giving the tomatoes to the man'
+
+2) He   annavat miehelle  tomaatit
+   they give    man-allat tomatoes-acc
+   'They are giving tomatoes to the man'
+
+3) He   annavat miehelle
+   they give    man-allat
+   'They are giving [something known in context] to the man'
+
+In any case, the word order is free regarding the objects of the verb, but
+in the case of a verb like 'antaa' (seen above) one object is not necessary
+to the grammaticality of the sentence. The allative case object is needed,
+though, to establish the target that is being given something. I have not
+had the time yet to implement a freer word order, but I will get to that
+soon. As of yet I haven't included duplicate types to allow for the switching
+of the order of the objects, either, thus no parses are expected for test
+items that are in a different order than the currently implemented dtr-verb-lex
+type. (To note: an abundant amount of parses are showing up for sentences
+using the complement order that isn't implemented. These are spurious parses
+being licensed by a mishmash of other rules, which I will begin to track
+down soon.)
+
+In Finnish, only first and second person subjects to verbs are optional. The
+third person subject is always required. In order to accommodate this
+phenomenon I created two subtypes to 'person:' third and non-third, with two
+sub-types to 'non-third:' first and second. This allowed me to constrain
+my head-opt-subj-phrase to only allow for optional subjects that agreed
+with the type non-third.
+
+The grammar is behaving as expected with subject optionality. Third person
+subjects are required (no parses show up with a third person conjugated
+verb that is missing the third person personal pronoun as a subject) and
+first and second parses can omit the subject.
+
+However the grammar is overgenerating when it comes to complement optionality.
+The complement rules are not constrained enough, it seems, to rule out
+structures licensed by the recently implemented adjective rules, and this
+rule is showing up in a lot of places to allow for some very bizarre trees.
+The adjective rule, then, needs to be further constrained to only work on
+things of type adjective.
+
+Modification in Finnish seems to want adjectives to come in front of nouns, but
+wants adverbs to come after verbs. I'm going to talk to my Finnish instructor
+and ask about the exact argument structure when it comes to these modifiers,
+but from my current experience it sounds ungrammatical to put adjectives after
+their nouns and adverbs before their verbs. The constraints needed to be 
+placed on these adjectives are [POSTHEAD -], but the adverbs need to be 
+[POSTHEAD +]. One easy to deal with aspect of Finnish adjectives is that 
+there is no set order for them, unlike in English:
+
+4) a) The big red house
+      *The red big house
+
+   b) Punainen iso talo
+      red      big house
+      Iso punainen talo
+      big red      house
+
+Both 4a and 4b are perfectly valid to say in Finnish. The POSTHEAD constraints
+seem to license the appropriate structures. On a whim I tried stacking
+adjectives, and the grammar licenses appropriate structures, except it is
+currently overgenerating. The adjectives are being stuck in at various levels,
+and the grammar needs to be further constrained so that adjectives attach at
+the correct part of the tree. I believe the same needs to be done for adverbs.
+
+One aspect of adverb behavior that I'm not sure about is the licensing of
+adverbs that are sisters to S and license a second root node above. This is
+the one overgeneration of adverbs, and I'm guessing that to rule this out
+the type that adverbs can modify needs to be something that excludes the root
+node more than just requesting something of [HEAD verb] (which root nodes
+do get).
+
+A final note: there is an extreme amount of overgeneration happening with
+some ditransitive verb sentences. I'm not exactly sure why all these structures
+are being licensed, but it's going to take either a lot of work going through
+and correcting each thing, or there's one or two rules that I'm not writing
+correctly that are causing the overgeneration. I have yet to track down the
+exact problem.
