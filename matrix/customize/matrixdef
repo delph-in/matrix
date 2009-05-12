@@ -583,15 +583,13 @@ Radio q-inv-verb "Inverted verb in questions" "" ""
 
 Section lex-types "Lexical Types"
 
-Label "<p>On this page <span class=\"dfn\">lexical types</span> may be defined. Types can be auto-generated for feature based dimensions. For these types, the feature is specified on the head. In addition, subtypes are generated, cross-classifying selected dimensions. Additional types may also be defined inheriting from any defined type.</p>"
+Label "<p>On this page <span class=\"dfn\">lexical types</span> may be defined. Types can be auto-generated for feature based dimensions. For these types, the feature is specified on the head. In addition, if more than one dimension is selected subtypes are generated, cross-classifying the selected dimensions. Additional types may also be defined inheriting from any defined or auto-generated type.</p>"
 
 Separator
 
 Label "<h3>Noun Types</h3>"
 
-Label "<p>Select feature dimensions to auto-generate noun types.</p>" 
-
-MultiSelect noun-dim "Feature dimensions for noun type generation" "Feature dimension(s) for noun type generation: " ""
+MultiSelect noun-dim "Feature dimensions for noun type generation" "Select feature dimension(s) for auto-generating noun types: " ""
 fillnames
 
 Label "<p>Add additional noun types:</p>"
@@ -632,10 +630,9 @@ Separator
 
 Label "<h3>Verb Types</h3>"
 
-Label "<p>Select feature dimensions to auto-generate verb types:</p>" 
-Label "Note that transitive and intransitive verb types are automatically generated as well as subtypes cross-classified with all chosen dimensions.</p>"
+Label "Note that transitive and intransitive verb types are automatically generated as well as subtypes cross-classified with any chosen dimensions.</p>"
 
-MultiSelect verb-dim "Feature dimensions for verb type generation" "Feature dimension(s) for verb type generation: " ""
+MultiSelect verb-dim "Feature dimensions for verb type generation" "Select feature dimension(s) for auto-generating verb types: " ""
 fillnames
 
 Label "<p>Add additional verb types:</p>"
@@ -659,7 +656,7 @@ BeginIter verb{i} "a Verb Type"
   BeginIter feat{j} "a Feature"
 
     Select name "Verb {i} feature {j} name" "Name: " " "
-    fillnames
+    fillnames case
 
     MultiSelect value "Verb {i} feature {j} value" "Value: " ""
     fillvalues verb{i}_feat{j}_name
@@ -680,9 +677,7 @@ Separator
 
 Label auxlabel "<h3>Auxiliary Verb Types</h3>"
 
-Label "<p>Select feature dimensions to auto-generate auxiliary types:</p>" 
-
-MultiSelect aux-dim "Feature dimensions for auxiliary type generation" "Feature dimension(s) for auxiliary type generation: " ""
+MultiSelect aux-dim "Feature dimensions for auxiliary type generation" "Select feature dimension(s) for auto-generating auxiliary types: " ""
 fillnames
 
 Label "<p>Add additional auxiliary types:</p>"
@@ -742,11 +737,9 @@ EndIter aux
 
 Separator
 
-Label "<h3>Determiner Types</h3>"
+Label "<h3>Determiner Types</h3>" 
 
-Label "<p>Select feature dimensions to auto-generate determiner types:</p>" 
-
-MultiSelect det-dim "Feature dimensions for determiner type generation" "Feature dimension(s) for determiner type generation: " ""
+MultiSelect det-dim "Feature dimensions for determiner type generation" "Select feature dimension(s) for auto-generating determiner types: " ""
 fillnames
 
 Label "<p>Add additional determiner types:</p>"

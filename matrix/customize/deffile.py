@@ -553,7 +553,12 @@ class MatrixDefFile:
                                   'fill_regex(\'' + vn + \
                                   '\', \'' + fill_arg1 + '\')') + '\n'
           elif fill_type == 'fillnames':
-            html += html_select(errors, vn, multi,
+            if fill_arg1:
+              html += html_select(errors, vn, multi, 
+                                  'fill_feature_names(\'' + vn + \
+                                  '\', \'' + fill_arg1 + '\')') + '\n'
+            else:
+              html += html_select(errors, vn, multi,
                                 'fill_feature_names(\'' + vn + '\')') + '\n'
           elif fill_type == 'fillvalues':
             if fill_arg2:
