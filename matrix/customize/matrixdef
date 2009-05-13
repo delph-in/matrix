@@ -610,7 +610,7 @@ BeginIter noun{i} "a Noun Type" 1
   BeginIter feat{j} "a Feature"
 
     Select name "Noun {i} feature {j} name" "Name: " " "
-    fillnames
+    fillnames case|form
 
     MultiSelect value "Noun {i} feature {j} value" "Value: " ""
     fillvalues noun{i}_feat{j}_name
@@ -656,7 +656,7 @@ BeginIter verb{i} "a Verb Type"
   BeginIter feat{j} "a Feature"
 
     Select name "Verb {i} feature {j} name" "Name: " " "
-    fillnames case,form
+    fillnames case|form
 
     MultiSelect value "Verb {i} feature {j} value" "Value: " ""
     fillvalues verb{i}_feat{j}_name

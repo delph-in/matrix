@@ -403,18 +403,22 @@ function fill_feature_names(select_name, exclude)
     
     var o = document.createElement('option');
     o.className = 'temp';
-    var x = new Array();
-    var y = 0;
-    x = exclude.split(',');
-    for (var i = 0; i < x.length; i++) {
-      if (x[i] == f[0]) {
-	  var y = 1;
-      }
+    
+    var inlist = 'no';
+
+    if (typeof(exclude) != 'undefined') {
+       var xlist = exclude.split('|');
+  
+       for (var j = 0; j < xlist.length; j++) {
+	   if (xlist[j] == f[0]) {
+	       inlist = 'yes';
+	   }
+       }
     }
-    if (y == 0) {
+
+    if (inlist == 'no') {
 	o.value = f[0];
 	o.innerHTML = f[0];
-
 	select.appendChild(o);
     }
   }
@@ -422,6 +426,7 @@ function fill_feature_names(select_name, exclude)
   set_select_value(select, old_val, old_text);
   force_layout(select.parentNode);
 }
+
 
 // fill_feature_values()
 // Fill a SELECT tag with OPTIONs created from the array features[],
