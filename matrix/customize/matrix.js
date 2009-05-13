@@ -383,7 +383,7 @@ function fill_regex(name, pattern, nameOnly)
 
 // fill_feature_names()
 // Fill a SELECT tag with OPTIONs created from the array features[],
-// where every OPTION is a feature name. 'Exclude' argument allows you to exclude
+// where every OPTION is a feature name. The 'exclude' argument allows you to exclude
 // various features from the list of options. Note that it now is only
 // a single feature but needs to be expanded to accomodate a list of
 // features to exclude.
@@ -403,13 +403,19 @@ function fill_feature_names(select_name, exclude)
     
     var o = document.createElement('option');
     o.className = 'temp';
-    var x = exclude;
-    if (x != f[0]) {
+    var x = new Array();
+    var y = 0;
+    x = exclude.split(',');
+    for (var i = 0; i < x.length; i++) {
+      if (x[i] == f[0]) {
+	  var y = 1;
+      }
+    }
+    if (y == 0) {
+	o.value = f[0];
+	o.innerHTML = f[0];
 
-      o.value = f[0];
-      o.innerHTML = f[0];
-
-      select.appendChild(o);
+	select.appendChild(o);
     }
   }
 
