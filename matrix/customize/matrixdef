@@ -610,7 +610,7 @@ BeginIter noun{i} "a Noun Type" 1
   BeginIter feat{j} "a Feature"
 
     Select name "Noun {i} feature {j} name" "Name: " " "
-    fillnames case|form
+    fillnames
 
     MultiSelect value "Noun {i} feature {j} value" "Value: " ""
     fillvalues noun{i}_feat{j}_name
@@ -633,7 +633,7 @@ Label "<h3>Verb Types</h3>"
 Label "Note that transitive and intransitive verb types are automatically generated as well as subtypes cross-classified with any chosen dimensions.</p>"
 
 MultiSelect verb-dim "Feature dimensions for verb type generation" "Select feature dimension(s) for auto-generating verb types: " ""
-fillnames
+fillnames case|form
 
 Label "<p>Add additional verb types:</p>"
 
@@ -678,7 +678,7 @@ Separator
 Label auxlabel "<h3>Auxiliary Verb Types</h3>"
 
 MultiSelect aux-dim "Feature dimensions for auxiliary type generation" "Select feature dimension(s) for auto-generating auxiliary types: " ""
-fillnames
+fillnames case|form
 
 Label "<p>Add additional auxiliary types:</p>"
 
@@ -702,7 +702,7 @@ BeginIter aux{i} "an Auxiliary Type"
   BeginIter feat{j} "an auxiliary feature"
 
      Select name "Aux {i} feature {j} name" "Name: " ""
-     fillnames
+     fillnames case
 
      MultiSelect value "Aux {i} feature {j} value" "Value: " ""
      fillvalues aux{i}_feat{j}_name
@@ -726,7 +726,7 @@ BeginIter aux{i} "an Auxiliary Type"
   BeginIter compfeature{j} "a complement feature" 1
 
     Select name "Aux {i} complement feature {j} name" "Name: " ""
-    fillnames
+    fillnames case
 
     MultiSelect value "Aux {i} complement feature {j} value" "Value: " ""
     fillvalues aux{i}_compfeature{j}_name

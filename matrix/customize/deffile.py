@@ -469,6 +469,7 @@ class MatrixDefFile:
             '<p>Click a link below to have the questionnaire ' + \
             'filled out automatically.</p>'
       print '<p>'
+
       globlist = glob.glob('sample-choices/*')
       globlist.sort()
       for f in globlist:
