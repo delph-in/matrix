@@ -876,7 +876,9 @@ class ChoicesFile:
     This list consists of tuples:
     [type name]
     """
-    types = []
+    types = [['noun', 'noun'], ['verb', 'verb'], ['det', 'det'], ['intrans-verb', 'verb'], ['trans-verb', 'verb']]
+    if self.get('has-aux') == 'yes':
+      types += [ ['aux', 'aux'], ['main-verb', 'verb']]
 
     state = self.iter_state()
     self.iter_reset()

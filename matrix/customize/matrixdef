@@ -675,12 +675,12 @@ EndIter verb
 
 Separator
 
-Label auxlabel "<h3>Auxiliary Verb Types</h3>"
+Label "<h3>Auxiliary Verb Types</h3>"
 
-MultiSelect aux-dim "Feature dimensions for auxiliary type generation" "Select feature dimension(s) for auto-generating auxiliary types: " ""
+MultiSelect aux-dim "Feature dimensions for auxiliary type generation" "Select feature dimension(s) for auto-generating general auxiliary types: " "<br><br>"
 fillnames case|form
 
-Label "<p>Add additional auxiliary types:</p>"
+Label auxlabel "Add additional auxiliary types:<br>"
 
 Label "<p>Note that auxiliaries may contribute a independent predicate, e.g., English modal <i>can</i>. These auxiliaries should inherit from withpred-aux-lex. If you define a type that contributes a predicate, you may also specify semantic feature values on the auxiliary, if desired. Alternatively, auxiliaries may contribute no predicate of their own, e.g., English auxiliary <i>be</i> and should inherit from nopred-aux-lex.</p>" 
 
@@ -754,6 +754,7 @@ BeginIter det{i} "a Determiner"
 
   MultiSelect supertype "Determiner type {i} supertypes(s)" "Supertype(s): " "<br>"
   fillregex (det)[0-9]+_name
+  . det "det-lex" "det"
 
   Label "Features:"
 

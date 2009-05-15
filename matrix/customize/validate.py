@@ -576,7 +576,7 @@ def validate_lexicon():
 
   if ch.get('has-aux') == 'yes':
     if not aux1_name:
-      err = 'You have indicated that your language has auxiliaries. You must define at least one auxiliary type.'
+      err = 'You have indicated that your language has auxiliaries. You must define at least one specific auxiliary type.'
       add_err('auxlabel', err)
 
   comp = ch.get('aux-comp')

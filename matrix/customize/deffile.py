@@ -469,13 +469,15 @@ class MatrixDefFile:
             '<p>Click a link below to have the questionnaire ' + \
             'filled out automatically.</p>'
       print '<p>'
-
+      
       globlist = glob.glob('sample-choices/*')
       globlist.sort()
+
       for f in globlist:
         f = f.replace('\\', '/')
         choices = ChoicesFile(f)
         lang = choices.get('language')
+
         if not lang:
           lang = '[empty questionnaire]'
         print '<a href="matrix.cgi?choices=' + f + '">' + \
