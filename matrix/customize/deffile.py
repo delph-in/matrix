@@ -537,6 +537,7 @@ class MatrixDefFile:
         fill_type = ''
         fill_arg1 = ''
         fill_arg2 = ''
+        fillstring = ''
         if lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
           fill_type = word[0]
@@ -548,46 +549,29 @@ class MatrixDefFile:
         if fill_type[0:4] == 'fill':
           if fill_type == 'fillregex':
             if fill_arg2:
-              html += html_select(errors, vn, multi,
-                                  'fill_regex(\'' + vn + \
-                                  '\', \'' + fill_arg1 + '\', true)') + '\n'
+              fillstring = 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
             else:
-              html += html_select(errors, vn, multi,
-                                  'fill_regex(\'' + vn + \
-                                  '\', \'' + fill_arg1 + '\')') + '\n'
+              fillstring = 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\')'
           elif fill_type == 'fillnames':
             if fill_arg1:
-              html += html_select(errors, vn, multi, 
-                                  'fill_feature_names(\'' + vn + \
-                                  '\', \'' + fill_arg1 + '\')') + '\n'
+              fillstring = 'fill_feature_names(\'' + vn + '\', \'' + fill_arg1 + '\')'
             else:
-              html += html_select(errors, vn, multi,
-                                'fill_feature_names(\'' + vn + '\')') + '\n'
+              fillstring = 'fill_feature_names(\'' + vn + '\')'
           elif fill_type == 'fillvalues':
             if fill_arg2:
-              html += html_select(errors, vn, multi,
-                                  'fill_feature_values(\'' + vn + \
-                                  '\', \'' + fill_arg1 + '\', true)') + '\n'
+              fillstring = 'fill_feature_values(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
             else:
-              html += html_select(errors, vn, multi,
-                                  'fill_feature_values(\'' + vn + \
-                                  '\', \'' + fill_arg1 + '\')') + '\n'
+              fillstring = 'fill_feature_values(\'' + vn + '\', \'' + fill_arg1 + '\')'
           elif fill_type == 'fillverbpat':
-            html += html_select(errors, vn, multi,
-                                'fill_case_patterns(\'' + vn + \
-                                '\', false)') + '\n'
+            fillstring = 'fill_case_patterns(\'' + vn + '\', false)'
           elif fill_type == 'fillmorphpat':
-            html += html_select(errors, vn, multi,
-                                'fill_case_patterns(\'' + vn + \
-                                '\', true)') + '\n'
+            fillstring = 'fill_case_patterns(\'' + vn + '\', true)'
           elif fill_type == 'fillnumbers':
-            html += html_select(errors, vn, multi,
-                                'fill_numbers(\'' + vn + '\')') + '\n'
+            fillstring = 'fill_numbers(\'' + vn + '\')'
           elif fill_type == 'filltypes':
-            
-            html += html_select(errors, vn, multi,
-                                'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\')') + '\n'
+            fillstring = 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\')'
 
+          html += html_select(errors, vn, multi, fillstring) + '\n'
           html += html_option(errors, '', False, '') + '\n'
 
           if choices.is_set_full(vn):
