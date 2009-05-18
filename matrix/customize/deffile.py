@@ -538,83 +538,88 @@ class MatrixDefFile:
         fill_arg1 = ''
         fill_arg2 = ''
         fillstring = ''
-        if lines[i] != '\n':
+
+        while lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
           fill_type = word[0]
-          if len(word) > 1:
-            fill_arg1 = word[1]
-          if len(word) > 2:
-            fill_arg2 = word[2]
 
-        if fill_type[0:4] == 'fill':
-          if fill_type == 'fillregex':
-            if fill_arg2:
-              fillstring = 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
-            else:
-              fillstring = 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\')'
-          elif fill_type == 'fillnames':
-            if fill_arg1:
-              fillstring = 'fill_feature_names(\'' + vn + '\', \'' + fill_arg1 + '\')'
-            else:
-              fillstring = 'fill_feature_names(\'' + vn + '\')'
-          elif fill_type == 'fillvalues':
-            if fill_arg2:
-              fillstring = 'fill_feature_values(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
-            else:
-              fillstring = 'fill_feature_values(\'' + vn + '\', \'' + fill_arg1 + '\')'
-          elif fill_type == 'fillverbpat':
-            fillstring = 'fill_case_patterns(\'' + vn + '\', false)'
-          elif fill_type == 'fillmorphpat':
-            fillstring = 'fill_case_patterns(\'' + vn + '\', true)'
-          elif fill_type == 'fillnumbers':
-            fillstring = 'fill_numbers(\'' + vn + '\')'
-          elif fill_type == 'filltypes':
-            fillstring = 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\')'
+          if fill_type[0:4] == 'fill':
+            if len(word) > 1:
+              fill_arg1 = word[1]
+            if len(word) > 2:
+              fill_arg2 = word[2]
+            if fillstring != '':
+              fillstring += '; ' 
 
-          html += html_select(errors, vn, multi, fillstring) + '\n'
-          html += html_option(errors, '', False, '') + '\n'
+            if fill_type == 'fillregex':
+              if fill_arg2:
+                fillstring = 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
+              else:
+                fillstring = 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\')'
+            elif fill_type == 'fillnames':
+              if fill_arg1:
+                fillstring = 'fill_feature_names(\'' + vn + '\', \'' + fill_arg1 + '\')'
+              else:
+                fillstring = 'fill_feature_names(\'' + vn + '\')'
+            elif fill_type == 'fillvalues':
+              if fill_arg2:
+                fillstring = 'fill_feature_values(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
+              else:
+                fillstring = 'fill_feature_values(\'' + vn + '\', \'' + fill_arg1 + '\')'
+            elif fill_type == 'fillverbpat':
+              fillstring = 'fill_case_patterns(\'' + vn + '\', false)'
+            elif fill_type == 'fillmorphpat':
+              fillstring = 'fill_case_patterns(\'' + vn + '\', true)'
+            elif fill_type == 'fillnumbers':
+              fillstring = 'fill_numbers(\'' + vn + '\')'
+            elif fill_type == 'filltypes':
+              fillstring = 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\')'
 
-          if choices.is_set_full(vn):
-            sval = choices.get_full(vn)
-            shtml = ''
-            # If we're filling in a SELECT that shows friendly names,
-            # we have to look it up.
-            if fill_type in ['fillvalues']:
-              for sv in sval.split(', '):
-                for f in choices.features():
-                  if f[0] == choices.get_full(fill_arg1):
-                    for v in f[1].split(';'):
-                      n = v.split('|')
-                      if n[0] == sv:
-                        if shtml:
-                          shtml += ', '
-                        shtml += n[1]
-            elif fill_type in ['fillverbpat']:
-              for sv in sval.split(', '):
-                for p in choices.patterns():
-                  if p[0] == sv:
-                    if shtml:
-                      shtml += ', '
-                    shtml += p[1]
-            else:
-              shtml = sval
-            html += html_option(errors, sval, True, shtml, True) + '\n'
-          i += 1
+            html += html_select(errors, vn, multi, fillstring) + '\n'
+            html += html_option(errors, '', False, '') + '\n'
+
+            if choices.is_set_full(vn):
+              sval = choices.get_full(vn)
+              shtml = ''
+              # If we're filling in a SELECT that shows friendly names,
+              # we have to look it up.
+              if fill_type in ['fillvalues']:
+                for sv in sval.split(', '):
+                  for f in choices.features():
+                    if f[0] == choices.get_full(fill_arg1):
+                      for v in f[1].split(';'):
+                        n = v.split('|')
+                        if n[0] == sv:
+                          if shtml:
+                            shtml += ', '
+                          shtml += n[1]
+              elif fill_type in ['fillverbpat']:
+                for sv in sval.split(', '):
+                  for p in choices.patterns():
+                    if p[0] == sv:
+                      if shtml:
+                        shtml += ', '
+                      shtml += p[1]
+              else:
+                shtml = sval
+              html += html_option(errors, sval, True, shtml, True) + '\n'
+            i += 1
         else:
           html += html_select(errors, vn, multi) + '\n'
           html += html_option(errors, '', False, '') + '\n'
 
-        while lines[i] != '\n':
-          word = tokenize_def(replace_vars(lines[i], vars))
-          (sval, sfrn, shtml) = word[1:]
-          selected = False
-          if choices.is_set_full(vn) and choices.get_full(vn) == sval:
-            selected = True
-          html += html_option(errors, sval, selected, shtml) + '\n'
-          i += 1
+#        while lines[i] != '\n':
+#          word = tokenize_def(replace_vars(lines[i], vars))
+        (sval, sfrn, shtml) = word[1:]
+        selected = False
+        if choices.is_set_full(vn) and choices.get_full(vn) == sval:
+          selected = True
+        html += html_option(errors, sval, selected, shtml) + '\n'
+        i += 1
 
         html += '</select>'
         html += af + '\n'
+
       elif word[0] == 'Text':
         (vn, fn, bf, af, sz) = word[1:]
         vn = prefix + vn
