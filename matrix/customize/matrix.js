@@ -336,7 +336,7 @@ function set_select_value(select, value, text)
 // form fields on the page whose NAME matches the pattern.  If the
 // nameOnly flag is true, make the OPTION's VALUE attribute equal to
 // its contents.
-function fill_regex(name, pattern, nameOnly)
+function fill_regex(name, pattern, nameOnly, prefix)
 {
   var select = document.getElementsByName(name)[0];
   var old_val = select.value;  // store the previously selected option
@@ -347,6 +347,7 @@ function fill_regex(name, pattern, nameOnly)
 
   remove_temp_options(select);
 
+  var selfname = prefix.replace(/_[a-z0-9_]*$/,'');
   pattern = '^' + pattern + '$';
 
   // Pass through the form fields in the page, looking for ones whose
@@ -354,24 +355,30 @@ function fill_regex(name, pattern, nameOnly)
   // contents to create an option.
   var values = new Array();
   var texts = new Array();
+
   var e = document.forms[0].elements;
   for (var i = 0; i < e.length; i++) {
+
     if (e[i].name.search(pattern) != -1) {
       var val = e[i].name.replace(/_[^_]*$/, '');
+      
+      if (val != selfname) {
+	  var desc = val;
+	  var f = document.getElementsByName(val + '_name');
 
-      var desc = val
-      var f = document.getElementsByName(val + '_name');
-      if (f && f[0] && f[0].value) {
-        if (nameOnly) {
-          val = desc = f[0].value;
-        } else {
-          desc = f[0].value + ' (' + desc + ')';
-        }
+	  if (f && f[0] && f[0].value) {
+	      if (nameOnly) {
+		  val = desc = f[0].value;
+	      } 
+	      else {
+		  desc = f[0].value + ' (' + desc + ')';
+	      }
+	  }
+
+	  var len = values.length;
+	  values[len] = val;
+	  texts[len] = desc;
       }
-
-      var len = values.length;
-      values[len] = val;
-      texts[len] = desc;
     }
   }
 
@@ -540,7 +547,7 @@ function fill_numbers(select_name)
 // fill_types()
 // Fill a SELECT tag with OPTIONs created from the array types[],
 // where every OPTION is a type name.
-function fill_types(select_name, type_cat)
+function fill_types(select_name, type_cat, prefix)
 {
   var select = document.getElementsByName(select_name)[0];
   var old_val = select.value;  // store the previously selected option
@@ -553,36 +560,42 @@ function fill_types(select_name, type_cat)
 
   var values = new Array();
   var texts = new Array();
+  var selfname = prefix.replace(/_[a-z0-9_]*$/,'');
+  //  var selfname = prefix.replace(/_$/,'');
 
   //collect options from the type fields on the questionnaire
   var pattern = '^'  + '(' + type_cat + ')' + '[0-9]+_name' + '$';
-
+ 
   // Pass through the form fields in the page, looking for ones whose
   // name attribute matches the pattern.  When one is found, use its
   // contents to create an option.
 
   var e = document.forms[0].elements;
   for (var i = 0; i < e.length; i++) {
-    if (e[i].name.search(pattern) != -1) {
-      var val = e[i].name.replace(/_[^_]*$/, '');
 
-      var desc = val
-      var f = document.getElementsByName(val + '_name');
-      if (f && f[0] && f[0].value) {
-          val = desc = f[0].value;
+      if (e[i].name.search(pattern) != -1) {
+	  var val = e[i].name.replace(/_[^_]*$/, '');
+
+	  if (val != selfname) {
+	      var desc = val;
+	      var f = document.getElementsByName(val + '_name');
+
+	      if (f && f[0] && f[0].value) {
+		  val = desc = f[0].value;
+	      }
+
+	      var len = values.length;
+	      values[len] = val;
+	      texts[len] = desc;
+	  }
       }
-
-      var len = values.length;
-      values[len] = val;
-      texts[len] = desc;
-    }
   }
   
   //collect options from the types() array in choices
   for (var i = 0; i < types.length; i++) {
     var t = types[i].split(':');
 
-    if (t[1] == type_cat) {
+    if (t[1] == type_cat && values.indexOf(t[0]) == -1) {
        values.push(t[0]);
        texts.push(t[0]);
     }

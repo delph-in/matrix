@@ -552,9 +552,9 @@ class MatrixDefFile:
 
             if fill_type == 'fillregex':
               if fill_arg2:
-                fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
+                fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', true, \'' + prefix + '\')'
               else:
-                fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\')'
+                fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + prefix + '\')'
             elif fill_type == 'fillnames':
               if fill_arg1:
                 fillstring += 'fill_feature_names(\'' + vn + '\', \'' + fill_arg1 + '\')'
@@ -572,7 +572,7 @@ class MatrixDefFile:
             elif fill_type == 'fillnumbers':
               fillstring += 'fill_numbers(\'' + vn + '\')'
             elif fill_type == 'filltypes':
-              fillstring += 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\')'
+              fillstring += 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\', \'' + prefix + '\')'
 
             html += html_select(errors, vn, multi, fillstring) + '\n'
             html += html_option(errors, '', False, '') + '\n'
