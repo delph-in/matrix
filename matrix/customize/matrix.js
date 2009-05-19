@@ -551,18 +551,44 @@ function fill_types(select_name, type_cat)
 
   remove_temp_options(select);
 
-  for (var i = 0; i < types.length; i++) {
-    var t = types[i].split(':');
-    var o = document.createElement('option');
-    o.className = 'temp';
+  var values = new Array();
+  var texts = new Array();
 
-    if (t[1] == type_cat) {
-      o.value = t[0];
-      o.innerHTML = t[0];
+  //collect options from the type fields on the questionnaire
+  var pattern = '^'  + '(' + type_cat + ')' + '[0-9]+_name' + '$';
 
-      select.appendChild(o);
+  // Pass through the form fields in the page, looking for ones whose
+  // name attribute matches the pattern.  When one is found, use its
+  // contents to create an option.
+
+  var e = document.forms[0].elements;
+  for (var i = 0; i < e.length; i++) {
+    if (e[i].name.search(pattern) != -1) {
+      var val = e[i].name.replace(/_[^_]*$/, '');
+
+      var desc = val
+      var f = document.getElementsByName(val + '_name');
+      if (f && f[0] && f[0].value) {
+          val = desc = f[0].value;
+      }
+
+      var len = values.length;
+      values[len] = val;
+      texts[len] = desc;
     }
   }
+  
+  //collect options from the types() array in choices
+  for (var i = 0; i < types.length; i++) {
+    var t = types[i].split(':');
+
+    if (t[1] == type_cat) {
+       values.push(t[0]);
+       texts.push(t[0]);
+    }
+  }
+
+  insert_temp_options(select, values, texts);
 
   set_select_value(select, old_val, old_text);
   force_layout(select.parentNode);

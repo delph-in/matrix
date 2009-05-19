@@ -590,7 +590,7 @@ Separator
 Label "<h3>Noun Types</h3>"
 
 MultiSelect noun-dim "Feature dimensions for noun type generation" "Select feature dimension(s) for auto-generating noun types: " ""
-fillnames
+fillnames 
 
 Label "<p>Add additional noun types:</p>"
 
@@ -603,7 +603,7 @@ BeginIter noun{i} "a Noun Type" 1
   Text name "Noun {i} name" "Type name: " "" 30
 
   MultiSelect supertype "Verb type {i} supertypes(s)" "Supertype(s): " "<br>"
-  fillregex (noun)[0-9]+_name
+  filltypes noun
 
   Label "Features:"
 
@@ -646,10 +646,7 @@ BeginIter verb{i} "a Verb Type"
   Text name "Verb type {i} name" "Type name: " "" 30
  
   MultiSelect supertype "Verb type {i} supertypes(s)" "Supertype(s): " "<br>"
-  fillregex (verb)[0-9]+_name
-  . verb "verb-lex" "verb"
-  . trans "trans-verb-lex" "trans-verb"
-  . intrans "intrans-verb-lex" "intrans-verb"
+  filltypes verb
 
   Label "Features:"
 
@@ -690,12 +687,10 @@ BeginIter aux{i} "an Auxiliary Type"
 
   Label "<div style=\"padding-left: 16px\">"
 
-  Text name "Aux {i} type name" "Type name: " "<br>" 30
+  Text name "Aux {i} type name" "Type name: " "" 30
 
   MultiSelect supertype "Auxiliary type {i} supertypes(s)" "Supertype(s): " "<br>"
-  fillregex (aux)[0-9]+_name
-  . no-pred "nopred-aux-lex" "nopred"
-  . with-pred "withpred-aux-lex" "withpred"
+  filltypes aux
 
   Label "<div style=\"padding-left: 25px\">"
 
@@ -753,8 +748,7 @@ BeginIter det{i} "a Determiner"
   Text name "Determiner {i} name" "Type name: " "" 30
 
   MultiSelect supertype "Determiner type {i} supertypes(s)" "Supertype(s): " "<br>"
-  fillregex (det)[0-9]+_name
-  . det "det-lex" "det"
+  filltypes det
 
   Label "Features:"
 

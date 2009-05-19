@@ -534,13 +534,13 @@ class MatrixDefFile:
 
         # look ahead and see if we have an auto-filled drop-down
         i += 1
-        print i
-        while lines[i] != '\n':
-          fill_type = ''
-          fill_arg1 = ''
-          fill_arg2 = ''
-          fillstring = ''
 
+        fill_type = ''
+        fill_arg1 = ''
+        fill_arg2 = ''
+        fillstring = ''
+
+        if lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
           fill_type = word[0]
 
@@ -548,9 +548,7 @@ class MatrixDefFile:
             if len(word) > 1:
               fill_arg1 = word[1]
             if len(word) > 2:
-              fill_arg2 = word[2]
-            if fillstring != '':
-              fillstring += '; ' 
+              fill_arg2 = word[2] 
 
             if fill_type == 'fillregex':
               if fill_arg2:
@@ -605,12 +603,12 @@ class MatrixDefFile:
                 shtml = sval
               html += html_option(errors, sval, True, shtml, True) + '\n'
             i += 1
-            print i
 
           else:
             html += html_select(errors, vn, multi) + '\n'
             html += html_option(errors, '', False, '') + '\n'
 
+          while lines[i] != '\n':
             word = tokenize_def(replace_vars(lines[i], vars))
             (sval, sfrn, shtml) = word[1:]
             selected = False
@@ -618,7 +616,6 @@ class MatrixDefFile:
               selected = True
             html += html_option(errors, sval, selected, shtml) + '\n'
             i +=1
-            print i
 
         html += '</select>'
         html += af + '\n'
