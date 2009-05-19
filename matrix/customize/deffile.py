@@ -534,12 +534,13 @@ class MatrixDefFile:
 
         # look ahead and see if we have an auto-filled drop-down
         i += 1
-        fill_type = ''
-        fill_arg1 = ''
-        fill_arg2 = ''
-        fillstring = ''
-
+        print i
         while lines[i] != '\n':
+          fill_type = ''
+          fill_arg1 = ''
+          fill_arg2 = ''
+          fillstring = ''
+
           word = tokenize_def(replace_vars(lines[i], vars))
           fill_type = word[0]
 
@@ -553,27 +554,27 @@ class MatrixDefFile:
 
             if fill_type == 'fillregex':
               if fill_arg2:
-                fillstring = 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
+                fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
               else:
-                fillstring = 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\')'
+                fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\')'
             elif fill_type == 'fillnames':
               if fill_arg1:
-                fillstring = 'fill_feature_names(\'' + vn + '\', \'' + fill_arg1 + '\')'
+                fillstring += 'fill_feature_names(\'' + vn + '\', \'' + fill_arg1 + '\')'
               else:
-                fillstring = 'fill_feature_names(\'' + vn + '\')'
+                fillstring += 'fill_feature_names(\'' + vn + '\')'
             elif fill_type == 'fillvalues':
               if fill_arg2:
-                fillstring = 'fill_feature_values(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
+                fillstring += 'fill_feature_values(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
               else:
-                fillstring = 'fill_feature_values(\'' + vn + '\', \'' + fill_arg1 + '\')'
+                fillstring += 'fill_feature_values(\'' + vn + '\', \'' + fill_arg1 + '\')'
             elif fill_type == 'fillverbpat':
-              fillstring = 'fill_case_patterns(\'' + vn + '\', false)'
+              fillstring += 'fill_case_patterns(\'' + vn + '\', false)'
             elif fill_type == 'fillmorphpat':
-              fillstring = 'fill_case_patterns(\'' + vn + '\', true)'
+              fillstring += 'fill_case_patterns(\'' + vn + '\', true)'
             elif fill_type == 'fillnumbers':
-              fillstring = 'fill_numbers(\'' + vn + '\')'
+              fillstring += 'fill_numbers(\'' + vn + '\')'
             elif fill_type == 'filltypes':
-              fillstring = 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\')'
+              fillstring += 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\')'
 
             html += html_select(errors, vn, multi, fillstring) + '\n'
             html += html_option(errors, '', False, '') + '\n'
@@ -604,18 +605,20 @@ class MatrixDefFile:
                 shtml = sval
               html += html_option(errors, sval, True, shtml, True) + '\n'
             i += 1
-        else:
-          html += html_select(errors, vn, multi) + '\n'
-          html += html_option(errors, '', False, '') + '\n'
+            print i
 
-#        while lines[i] != '\n':
-#          word = tokenize_def(replace_vars(lines[i], vars))
-        (sval, sfrn, shtml) = word[1:]
-        selected = False
-        if choices.is_set_full(vn) and choices.get_full(vn) == sval:
-          selected = True
-        html += html_option(errors, sval, selected, shtml) + '\n'
-        i += 1
+          else:
+            html += html_select(errors, vn, multi) + '\n'
+            html += html_option(errors, '', False, '') + '\n'
+
+            word = tokenize_def(replace_vars(lines[i], vars))
+            (sval, sfrn, shtml) = word[1:]
+            selected = False
+            if choices.is_set_full(vn) and choices.get_full(vn) == sval:
+              selected = True
+            html += html_option(errors, sval, selected, shtml) + '\n'
+            i +=1
+            print i
 
         html += '</select>'
         html += af + '\n'
