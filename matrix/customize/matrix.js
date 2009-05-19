@@ -561,7 +561,6 @@ function fill_types(select_name, type_cat, prefix)
   var values = new Array();
   var texts = new Array();
   var selfname = prefix.replace(/_[a-z0-9_]*$/,'');
-  //  var selfname = prefix.replace(/_$/,'');
 
   //collect options from the type fields on the questionnaire
   var pattern = '^'  + '(' + type_cat + ')' + '[0-9]+_name' + '$';
@@ -585,7 +584,7 @@ function fill_types(select_name, type_cat, prefix)
 	      }
 
 	      var len = values.length;
-	      values[len] = val;
+	      values[len] = val + '_' + type_cat + '_lex';
 	      texts[len] = desc;
 	  }
       }
