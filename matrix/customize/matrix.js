@@ -561,13 +561,17 @@ function fill_types(select_name, type_cat, prefix)
   var values = new Array();
   var texts = new Array();
   var selfname = prefix.replace(/_[a-z0-9_]*$/,'');
+  var lex_ext = '-' + type_cat + '-lex';
 
   //collect options from the type fields on the questionnaire
   var pattern = '^'  + '(' + type_cat + ')' + '[0-9]+_name' + '$';
- 
+
   // Pass through the form fields in the page, looking for ones whose
   // name attribute matches the pattern.  When one is found, use its
   // contents to create an option.
+  // Note that this assumes a strict naming convention for 
+  // lexical types within the customization and no hyphens
+  // in the user defined names.
 
   var e = document.forms[0].elements;
   for (var i = 0; i < e.length; i++) {
@@ -581,24 +585,29 @@ function fill_types(select_name, type_cat, prefix)
 
 	      if (f && f[0] && f[0].value) {
 		  val = f[0].value;
+		  val = val + lex_ext;
+		  desc = val;
 	      }
-
 	      var len = values.length;
-	      val = val + '-' + type_cat + '-lex'; 
-	      desc = val;
 	      values[len] = val;
 	      texts[len] = desc;
 	  }
       }
   }
   
-  //collect options from the types() array in choices
+  // Collect options from the types() array in choices
+  // except for the current (self) type
+  // Note that this assumes a strict naming convention for 
+  // lexical types within the customization and no hyphens
+  // in the user defined names.
   for (var i = 0; i < types.length; i++) {
     var t = types[i].split(':');
-
-    if (t[1] == type_cat && values.indexOf(t[0]) == -1) {
-       values.push(t[0]);
-       texts.push(t[0]);
+    if (t[1] == type_cat) {
+	var lextype_self = selfname + lex_ext; 
+	if (values.indexOf(t[0]) == -1 && texts.indexOf(lextype_self) == -1) {
+	    values.push(t[0]);
+	    texts.push(t[0]);
+	}
     }
   }
 
