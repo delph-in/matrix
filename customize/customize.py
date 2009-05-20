@@ -310,12 +310,14 @@ class Hierarchy:
 #   iterator and specify the feature/value pairs found to the
 #   passed-in type.
 
-def customize_feature_values(type_name, pos, features=None, cases=None):
+def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=None):
 
   if not features:
     features = ch.features()
   if not cases:
     cases = ch.cases()
+  if not tdlfile:
+    tdlfile = mylang
 
   pos_geom_prefix = ''
   if pos == 'det':
@@ -367,18 +369,22 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
     if geom:
       if n in hierarchies:
         value = hierarchies[n].get_type_covering(v)
-        mylang.add(type_name +
-                   ' := [ ' + geom + ' ' + value + ' ].')
+        tdlfile.add(type_name +
+                    ' := [ ' + geom + ' ' + value + ' ].',
+                    merge=True)
         if n == 'case' and ch.has_mixed_case():
-          mylang.add(type_name +
-                   ' := [ ' + geom + '-MARKED + ].')
+          tdlfile.add(type_name +
+                      ' := [ ' + geom + '-MARKED + ].',
+                      merge=True)
       else:
         for value in v:
-          mylang.add(type_name +
-                     ' := [ ' + geom + ' ' + value + ' ].')
+          tdlfile.add(type_name +
+                      ' := [ ' + geom + ' ' + value + ' ].',
+                      merge=True)
     elif n == 'argument structure':
       # constrain the ARG-ST to be passed up
-      mylang.add(type_name + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].')
+      tdlfile.add(type_name + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].',
+                  merge=True)
 
       # get the feature geometry of CASE
       for f in features:
@@ -392,20 +398,22 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
         if len(c) > 1:
           a_case = canon_to_abbr(c[0], cases)
           o_case = canon_to_abbr(c[1], cases)
-          mylang.add(type_name + \
-                     ' := [ ARG-ST < [ ' + \
-                     geom + ' ' + a_case + ' ], [ ' +
-                     geom + ' ' + o_case + ' ] > ].')
+          tdlfile.add(type_name + \
+                      ' := [ ARG-ST < [ ' + \
+                      geom + ' ' + a_case + ' ], [ ' +
+                      geom + ' ' + o_case + ' ] > ].',
+                      merge=True)
         else:
           s_case = canon_to_abbr(c[0], cases)
-          mylang.add(type_name + \
-                     ' := [ ARG-ST.FIRST. ' + \
-                     geom + ' ' + s_case + ' ].')
+          tdlfile.add(type_name + \
+                      ' := [ ARG-ST.FIRST. ' + \
+                      geom + ' ' + s_case + ' ].',
+                      merge=True)
 
     elif (n == 'negation' and v[0] == 'plus'):
       # ERB 2009-01-22 This is where we deal with the
       # negative affixes.  
-      mylang.add(type_name + ':= \
+      tdlfile.add(type_name + ':= \
                      [ C-CONT [ HOOK [ XARG #xarg,\
 	                     LTOP #ltop,\
 	                     INDEX #ind ],\
@@ -424,7 +432,8 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
 	                          CAT.HEAD verb]]]].',
                  'This lexical rule adds the neg_r_rel to the verb\'s\n\
 	          RELS list.  It is instantiated by a spelling-changing\n\
-	          rule as specified in irules.tdl.')
+	          rule as specified in irules.tdl.',
+                  merge=True)
     ch.iter_next()
   ch.iter_end()
 
@@ -549,26 +558,7 @@ def customize_case_adpositions():
                         [ STEM < "' + orth + '" > ].'
       lexicon.add(typedef)
 
-      ch.iter_begin('feat')
-      while ch.iter_valid():
-        # Figure out the name and feature geometry of the feature
-        n = ch.get('name')
-        geom = ''
-        for f in features:
-          if f[0] == n:
-            geom = f[2]
-
-        # Use the abbreviation of the value, if available
-        v = ch.get('value')
-        if n == 'case':
-          v = canon_to_abbr(v, cases)
-
-        typedef = \
-          adp_type + ' := [ SYNSEM.' + geom + ' ' + v + ' ].'
-        lexicon.add(typedef, merge=True)
-
-        ch.iter_next()
-      ch.iter_end()
+      customize_feature_values(adp_type, 'adp', tdlfile=lexicon)
 
       ch.iter_next()
     ch.iter_end()
@@ -4163,7 +4153,7 @@ def customize_inflection():
             direc_geom = f[2]
 
         rule_type = n + '-dir-inv-lex-rule'
-        input_type = ch.iter_prefix()[:-1] + '-verb-lex'
+        input_type = n + '-verb-lex'
         mylang.add(
           rule_type + ' := ' + super_type + ' & ' + \
           '[ DTR ' + input_type + ' ].')
