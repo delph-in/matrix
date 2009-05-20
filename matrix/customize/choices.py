@@ -875,10 +875,13 @@ class ChoicesFile:
     choices file. Need to include required types and inferred types as well.
     This list consists of tuples:
     [type name]
+    NOTE: IDEA ON 5/19/09 - ADD ANOTHER ELEMENT TO THE ARRAY WHICH IS THE SUPERTYPE. 
+    THIS CAN BE USED TO CREATE THE PROPER -LEX VERSION OF THE TYPE.NOTE: also
+    need to check these names against the one's created by the customization system.
     """
-    types = [['noun', 'noun'], ['verb', 'verb'], ['det', 'det'], ['intrans-verb', 'verb'], ['trans-verb', 'verb']]
+    types = [['noun-lex', 'noun'], ['verb-lex', 'verb'], ['det-lex', 'det'], ['intrans-verb-lex', 'verb'], ['trans-verb-lex', 'verb']]
     if self.get('has-aux') == 'yes':
-      types += [ ['aux', 'aux'], ['main-verb', 'verb']]
+      types += [ ['aux-lex', 'aux'], ['withpred-aux-lex', 'aux'], ['nopred-aux-lex', 'aux'], ['main-verb-lex', 'verb']]
 
     state = self.iter_state()
     self.iter_reset()

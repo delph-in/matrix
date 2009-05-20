@@ -580,11 +580,13 @@ function fill_types(select_name, type_cat, prefix)
 	      var f = document.getElementsByName(val + '_name');
 
 	      if (f && f[0] && f[0].value) {
-		  val = desc = f[0].value;
+		  val = f[0].value;
 	      }
 
 	      var len = values.length;
-	      values[len] = val + '_' + type_cat + '_lex';
+	      val = val + '-' + type_cat + '-lex'; 
+	      desc = val;
+	      values[len] = val;
 	      texts[len] = desc;
 	  }
       }
