@@ -1,0 +1,65 @@
+pro-insert-arg1-omtr := monotonic_omtr &
+[ INPUT [ HOOK.INDEX #e,
+	  RELS <! !> ],
+  CONTEXT.RELS <! [ ARG1 ref-ind & #x &
+			 [ COG-ST #cs,
+			   PNG #png ]] !>,
+  FILTER.RELS <! [ ARG0 #x ] !>,
+  OUTPUT [ HOOK.INDEX #e,
+	   RELS <! noun-relation &
+		[ PRED "_pronoun_n_rel",
+		ARG0 #x &
+		       [ COG-ST #cs,
+			 PNG #png ],
+		LBL #larg ],
+		quant-relation &
+		[ PRED "_exist_q_rel",
+		  ARG0 #x,
+		  RSTR #harg ] !>,
+	HCONS <! qeq &
+		[ HARG #harg,
+		  LARG #larg ] !> ],
+  FLAGS.EQUAL < #x > ].
+
+pro-insert-arg2-omtr := monotonic_omtr &
+[ INPUT.RELS <! !>,
+  CONTEXT.RELS <! [ ARG2 ref-ind & #x &
+			 [ COG-ST #cs,
+			   PNG #png ]] !>,
+  FILTER.RELS <! [ ARG0 #x ] !>,
+  OUTPUT [ RELS <! noun-relation &
+		[ PRED "_pronoun_n_rel",
+		ARG0 #x &
+		       [ COG-ST #cs,
+			 PNG #png ],
+		LBL #larg ],
+		quant-relation &
+		[ PRED "_exist_q_rel",
+		  ARG0 #x,
+		  RSTR #harg ] !>,
+	HCONS <! qeq &
+		[ HARG #harg,
+		  LARG #larg ] !> ],
+  FLAGS.EQUAL < #x > ].
+
+
+pro-insert-arg3-omtr := monotonic_omtr &
+[ INPUT.RELS <! !>,
+  CONTEXT.RELS <! [ ARG3 ref-ind & #x &
+			 [ COG-ST #cs,
+			   PNG #png ]] !>,
+  FILTER.RELS <! [ ARG0 #x ] !>,
+  OUTPUT [ RELS <! noun-relation &
+		[ PRED "_pronoun_n_rel",
+		ARG0 #x &
+		       [ COG-ST #cs,
+			 PNG #png ],
+		LBL #larg ],
+		quant-relation &
+		[ PRED "_exist_q_rel",
+		  ARG0 #x,
+		  RSTR #harg ] !>,
+	HCONS <! qeq &
+		[ HARG #harg,
+		  LARG #larg ] !> ],
+  FLAGS.EQUAL < #x > ].

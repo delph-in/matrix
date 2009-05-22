@@ -1,0 +1,3 @@
+clean-up-mtr := monotonic_mtr &
+ [ INPUT.RELS <! [ PRED marker-pred ] !>,
+   OUTPUT.RELS <! !> ].

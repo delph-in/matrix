@@ -1,0 +1,55 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
+;;;  Phrase structur rule instances.
+
+;;;  Rules for SOV word order.
+
+comp-head := comp-head-phrase.
+;subj-head := subj-head-phrase.
+decl-subj-head := decl-subj-head-phrase.
+int-subj-head := int-subj-head-phrase.
+
+
+;;; Rule(s) for building NPs.
+
+;;;kpt: create new instances for lab 5
+;;;bare-np := bare-np-phrase.
+pronoun-np := pronoun-bare-np-phrase.
+pn-bare-np := pn-bare-np-phrase.
+cn-bare-np := cn-bare-np-phrase.
+
+;;;kpt: create instance of declarative clause rule for lab 6
+;decl-clause := decl-clause.
+
+;;;kpt: create an instance of interrogative clause rule for lab 7
+;int-clause := int-clause.
+
+;;;kpt: create an instance of imperative clause rule for lab 7
+;imp-phrase := imp-construction.
+imp-clause := imp-clause.
+
+;;;kpt: instance of head-opt-comp phrase for lab 8
+comp-opt := comp-opt-construction.
+
+;;;kpt: create an instance of head-adj-int-phrase
+adj-phrase := head-adj-phrase-construction.
+
+;;;kpt: create instance of adj-head-scop-phrase, so we can build our negative adverbs
+adj-head := adj-head-scop-phrase &
+   [ SYNSEM.LOCAL.CAT [ HEAD verb,
+						VAL [ SUBJ < >,
+							  COMPS < > ] ],
+	 NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].
+ 
+
+
+
+
+n1-top-coord := n1-top-coord-rule.
+n1-bottom-coord := n1-bottom-coord-rule.
+
+np1-top-coord := np1-top-coord-rule.
+np1-bottom-coord := np1-bottom-coord-rule.
+
+s1-top-coord := s1-top-coord-rule.
+s1-bottom-coord := s1-bottom-coord-rule.

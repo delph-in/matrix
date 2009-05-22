@@ -1,0 +1,33 @@
+CASE
+
+Hausa's pronouns are the only NPs which reflect a case  system.  There are eight sets of pronouns, varying by  their use in the sentence.  I'm going to concentrate on the independent (subject), direct object and indirect object pronouns, and ignore the free possessive (i.e. mine, theirs), bound genitive (i.e. his, her, their), reflexive (i.e. yourself, myself) and reciprocal (i.e. ourselves) forms.  Is that enough to work with this quarter, or should I try to 
+
+Independent pronouns are used with the stabilizer  (cee/nee) in nonverbal sentences and as the focus in  verbal sentences.  It is also used for direct object  when the it doesn't follow the verb (when an indirect  object separates it from the verb).  It appears in a subject position when conjoined with another NP ('we and they', 'I and the girl') or modified by some determiner or relative clause ('the her I was talking about').
+
+The Strong and Weak Object pronouns differ only in  their tones (high vs. low).  The first is used for  verb grades 1 and 4, and the second for all other  verbs.  They are only used for a direct object which  immediately follows the verb (no indirect object  present).
+
+The indirect object pronouns are used for indirect  objects (which must occur directly after the verb).   They incorporate the indirect object morpheme ma-  (which in some persons and genders has mutated into  mi- or mu-). (note that nouns functioning as indirect  objects are marked with the particle wa-)
+
+AGREEMENT
+
+Pronouns in Hausa are classified by number, person and  gender (only in 2nd and 3rd person singular), while  nouns and noun phrases are only classified as either  masculine, feminine or plural. The PAC (which I have  chosen to interpret as an affix to the verb) must  agree with the person/number/gender of the subject of  the sentence.  Demonstratives, adjectives and the  definiteness suffix (equivalent to 'the') agree with  the gender and number of the noun they modify.   Adjectives can be either post-nominal or pre-nominal,  but prenominally they must end in a 'linker' suffix.   This linker is '-n if the noun is masculine or plural,  and 'r. (the retroflex r) if the noun is feminine.  For example 'the white house' , 'gidaa farii' = 'farin gidaa'., and 'the white car', 'mootàa faraa' = 'farar. mootàa' .
+
+MAIN CLAUSE YES-NO QUESTIONS
+Questions show the same word order as declarative  sentences.  Main clause yes-no questions may be marked  by intonation, the lengthening of the last vowel in  the sentence (optionally adding low tone to the last syllable) or the adding of a sentence-initial or  sentence-final question word.  The word 'koo' (or) may be either a sentence-initial or a sentence-final question marker.  
+
+MODALS
+
+Modals are part of a group of around 30 aspectual verbs (AV) which modify a verbal clause by adding information about aspect, modaltiy or manner.  While some translate to an auxiliary (like 'can') in English, others translate to an English adverb (like 'almost') or other modifier.  These aspectual verbs take as a complement an embedded, nonfinite VP.  This may be an infinitive phrase, a verbal noun, or a verbal noun phrase. 
+I don't really understand how the reference grammar is describing the complement of the aspectual verb.  It says that the complement VP must have the 'same subject interpretation'.  But verbs by themselves (without PAC) aren't inflected for subject agreement.  Does this sound like it's describing subject raising?  The whole sentence only has one PAC, so there is only one subject marked for the AV and all its complements.
+
+COORDINATION
+
+The conjuntion 'dà' ('and'), is used to join NPs or post-nominal adjectives, but not sentences.  It may optionally appear in front of the first item, as well as between all the joined items.  Joining sentences is done by placing them next to one another.  In this way, 'we ate and drank', becomes 'mun ci mun sha' or 'we ate we drank'.  Is this a phenomenon that can be covered in the grammar matrix?  I'm thinking I might ignore this form of coordination.
+
+ Optionally, sentences may also be joined by  adverbial connectors like 'kuma', 'also, in addition'.  The conjunction 'koo' ('or'),  is used in the same places that 'dà' is, except it can also be used to join sentences.  When optionally  placed in front of the sentence (as well as between  the joined items) 'koo' indicates  'whether..or/either..or'.  Phrases or setences can be  contrasted by placing 'ammaa' ('but') between them.   
+
+RELATIVE CLAUSES
+
+Relative clauses occur after the NP they modify.  They consist of the relativizer 'dà' (that/who/which) plus an embedded clause.  Optionally, 'dà' can be replaced by a relative pronoun that agrees in number and gender with the noun it's modifying (wândà/wâddà/wa'dàndà - m/f/pl).  If the modified noun is a pronoun (i.e. there is no other overt noun, as pronoun subjects by themselves don't appear with the PAC), then the relative pronoun must be used instead of the relativizer.  
+
+Inside the relative clause, the PAC must have a REL form.  This means that instead of Continuous, Completeive or Potential, the PAC must be in the Rel-continuous, Preterite, or Future.

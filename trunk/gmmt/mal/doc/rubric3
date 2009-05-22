@@ -1,0 +1,89 @@
+-----------------------------------------------------------------
+
+Comments:
+
+
+#	could use the wrong case ending for the phonological ending
+
+I wouldn't bother with this:  That's a morphophonological fact
+rather than a moprhosyntactic one, so you're likely to be abstracting
+away from it anyway.
+
+
+* noun-nom intrans-verb
+Source: {a:107}
+Vetted: {s}
+Judgment: {g}
+Phenomena: {case}
+avan unanaunnu
+avan unanaunnu
+he eat-PRES   
+he is having his meal
+
+You should probably gloss 'avan' as he-NOM, corresponding
+(perhaps) to avan-0 in the morpheme by morpheme line.  Alternatively,
+you can call it he.NOM, corresponding to just avan.
+
+No examples for negation of non-copular sentences?  I think
+you'll want some!
+
+ Yes-no questions are marked with the interrogative particle -oo. The
+ declarative and the corresponding yes-no question are the same aside
+ from the addition of -oo. To negate the sentence, the particle is
+ attached to the end of the sentence.
+
+I don't think you mean "to negate the sentence" here.
+
+
+ kumaar naalae varumoo enn? kutatai coodiccu
+ Kumar tomorrow come-FUT QP child ask-PAST
+ the child asked whether Kumar would come tomorrow.
+
+This is an example of an embedded question.  It appears that Malayalam
+does not overtly mark it as such, relying instead on the embeding verb
+to constrain the sentence force of the embedded clause.  Can you find
+some examples of embedded declaratives?  ("think", "believe", "claim"
+etc tend to embed declaratives.)  ... Wait!  Isn't that -oo on the embedded
+verb making it phrased as a yes-no question?  You've glossed it as future,
+but isn't that the question marker?
+
+You might also try putting the question marker at the beginning of
+the embedded clause, for another type of ungrammatical example.
+
+
+ The modal verbs (expressed as a prefix for a verb, verb, or suffix
+ for a verb) in Malayalam are
+
+	-aam	become
+	-anam	want
+	-atte	to be suitable
+	kali	can
+	sa:dhik-	can
+	okk-	can
+	parr-	can
+	
+ Modal suffixes can be used to express potential.
+ Physical ability, learned ability and permission may be expressed by a dative 
+ subject, and the modal suffic -aam appended to the verb.
+
+What is the difference between all of those things glossed 'can'?
+Why is -aam glossed as 'become' in this chart, but used as 'can' or ABIL
+in the examples?  How does the modal suffix interact with any
+suffixes for agreement or tense?
+
+Regarding coordination, it looks like Cases II and III are 
+non-constituent coordination, so we probably won't be covering them.
+
+
+ # It's ungrammatical to mark only one of the NPs with the coordinating suffix
+ Source: {WBannister}
+ Vetted: {f}
+ Judgment: {u}
+ Phenomena: {Coordination}
+ raaman kr^shanaane goovindan maadhavaneyum kanatau
+ raaman kr^shanaane goovindan maadhavane-yum kanatau
+ Raman Krishnan-ACC Govindan Madhavan-ACC-COORD see-PAST
+ Raman saw Krishnan and Govidan saw Madhavan.
+
+Probably better to phrase this in terms of marking conjuncts,
+since there are four NPs there.

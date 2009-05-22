@@ -1,0 +1,51 @@
+sagha mixaband
+koira+Pl+Nom nukkua+3p+Pl
+
+sagha mashinhara dombal mikonand
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+man tora dombal mikonam
+minA+Sg+Nom metsAstAA+1p+Sg sinA+Sg+Acc
+
+in sagha mixaband
+tuo+Pl+Nom koira+Pl+Nom nukkua+3p+Pl
+
+sagha qaza mixorand
+koira+Pl+Nom syOdA+3p+Pl
+
+man mitavanam shishe bexoram
+minA+Sg+Nom voida+1p+Sg syOdA+Inf lasi+Sg+Part
+
+an manra narahat nemikonad
+hAn+Sg+Nom ei sattua+3p+Sg minA+Sg+Part
+
+sag mashinra dombal kardand
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+man fekr mikonam ke to midani ke sagha mashinhara dombal mikonand
+minA+Sg+Nom ajatella+1p+Sg ettA sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+man miporsam ke aya to midani ke sagha mashinhara dombal mikonand
+minA+Sg+Nom kysyA+1p+Sg jos sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+gorbeha va sagha mashinhara dombal mikonand
+kissa+Pl+Nom ja koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+sagha mashinhara dombal mikonand va gorbeha saghara dombal mikonand
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc ja kissa+Pl+Nom metsAstAA+3p+Pl koira+Pl+Acc
+
+gorbeha mashinhara dombal mikonand va mixaband
+kissa+Pl+Nom metsAstAA+3p+Pl koira+Pl+Acc ja nukkua+3p+Pl
+
+aya gorbeha saghara dombal mikonand
+metsAstAA+3p+Pl+Ques kissa+Pl+Nom koira+Pl+Acc
+
+sagra dombal bekon
+metsAstAA koira+Sg+Acc
+
+saghaye gorosne qaza mixorand
+nAlkAinen+Pl+Nom koira+Pl+Nom syOdA+3p+Pl
+
+saghaye gorosne tond qaza mixorand
+nAlkAinen+Pl+Nom koira+Pl+Nom syOdA+3p+Pl nopeasti
+

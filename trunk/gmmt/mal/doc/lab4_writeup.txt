@@ -1,0 +1,112 @@
+* Document the choices you made on the customization page and why. 
+If you skipped over any sections because the option you needed wasn't there, 
+please describe how your language differs from the options provided.
+
+Delimeters 
+	I specified that Malayalam does have delimeters, although they are never required.
+	The term 'oru' can be used to change a noun to an indefinite form.
+	Oru is optional on all nouns.
+	
+Sentential Negation
+	There are 2 different negative forms of 'be' which can be used to negate
+	a sentence.  There are also 2 suffixes which can be added to verbs to 
+	negate the sentence.
+	
+	I entered one of the verb suffixes, alla.  I'll need to refine rules to
+	allow the other cases.
+	
+Coordination
+	My test cases both illustrate coordination of nouns - subject in one case, 
+	and object in the other.
+	(Coordination in Malayalam is more complex, but I will stick to NPs for now.)
+	
+	I chose a coordination system which is N-polysyndeton, in which nouns are
+	marked by the suffix -um after each ccordinand.
+
+Matrix yes-no questions
+	I chose that Malayalam has a separate question particle, -oo, which is
+	sentence final.
+	There are cases where the suffix is added to verbs which are not sentence
+	final, so the rules may need to be revised for other cases.
+	
+# Document what happened when you tried parsing a sentence with your starter 
+grammar. Did it parse? Did it return the expect structures? If it didn't parse 
+or didn't return the expected structures, why not? 
+(That is, what can you find out about why not?)
+
+The sentence with my starter grammar was "kutatai ammaye vilaiccu"
+It parsed just fine!
+It was interesting to see the tree drawn in the Malayalam sentence order, with 
+the verb at the end of the sentence, and therefor at the right side of the 
+branches.  Not like the HPSG trees for English, so it took me a minute to 
+realize it was fine.
+
+# Document the current coverage/overgeneration of your grammar on your test 
+suite, per [incr tsdb()], before and after you expanded the vocabulary.
+
+	Unfortunately, despite many hours and downloads of various programs, 
+	I can't run tsdb yet. I had it working in the office, but from home 
+	I can't get the linux environment to connect to the internet.
+	
+	knoppix fails to find an x-driver, so crashes.
+	Xwindows can't find a font driver, so won't open.
+	Parallels (linux VM) is running, but won't connect to the internet.
+	
+	I was able to run lkb and tsbd at the office with Parallels, 
+	so at least I've verified that I have it installed, and it does run :-}
+
+	I created a batch file from all my test sentences, and ran them
+	with the LKB.  The output from my initial set is test_suite_out1.txt
+	The last set of results I have are test_suite_out2.txt
+	
+	
+
+# In about a page, discuss which phenomena will give you the biggest bang for 
+the buck in terms of improving coverage/overgeneration over your test suite. 
+I.e., consider things that occur in many of your sentences. Are there any 
+phenomena which are unnecessarily complicating your test suite? That is, are 
+you inspired to simplify any of your sentences to have them illustrate fewer 
+phenomena at a time? 
+
+The biggest problems with coverage/overgeneration seem to be occurring with
+the rules regarding case, and coordination.  I also need to add more word 
+types to allow some of my more complex sentences.  
+	There doesn't seem to be any limits on the cases allowed for subject and 
+object nouns.  (Of course with flexible word order, those rules will be 
+difficult.) Perhaps some rules could be written to prevent both nouns from 
+being ACC, or requiring al least one NOM noun in a sentence?  It seems that
+all sentences which have a noun have at least one noun in nominative form 
+with the exception of sentences with modals, in which case the subject is
+in dative form.
+	Coordination is not working very well and could be improved.  The rules 
+are working to add the coordinating suffix to nouns and not to verbs, thank 
+goodness.  However, the rules currently overgenerate because there doesn't
+seem to be a requirement that both nouns have a coordinating suffix. The 
+rules allow only one noun to have the suffix. Of course I have a more 
+complicated case in which there are multiple sets of coordinating 
+subject/object pairs with a single verb which applies to all the pairs. 
+A saw B and C saw D is written as: A B-um C D-um saw.  
+	There are a few word types which I would like to add.  Adverbs such as now, 
+and adjectives such as good occur in some of my sentences, but there are not 
+types for these yet.  I also have a few sentences with specifiers like 'this' 
+so rules for those words would be helpful in completing my tests.
+	One area where I can simplify my test cases is to use fewer different 
+words.  I used many different names, following the sentences I found in
+the book, and many different verbs which don't necessarily add information
+about the grammar.  As I get a feel for the language, I might be able
+to reduce the vocabulary.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

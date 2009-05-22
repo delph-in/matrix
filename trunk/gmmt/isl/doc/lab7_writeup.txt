@@ -1,0 +1,89 @@
+Katie Sickles
+LING 567
+Lab7
+
+General Changes:
+
+	I made the change to have my test suite now be the morpheme line
+rather than the standard orthography line. The inflection in the irules
+now reflect this as well (eg -um). I've decided that this better
+represents the stems and suffixes of the language.
+
+Fixes:
+	
+	The adverbs now work correctly. There was just a syntax error in the
+lexical entry that prevented the grammar from being loaded. Sentences such
+as:
+
+	Kona borda-ar helst mat-inn
+	woman.FEM.NOM eat.3sg gladly food.MASC.ACC-the.MASC.ACC
+	'a woman gladly eats the food'
+	
+	The ditransives and transitives with optional object now load in the
+grammar, but still no parses for them yet.
+
+Matrix yes/no questions:
+	
+	In Icelandic the questions are former by inverting the subject and verb:
+	
+	Elska-ar kott-ur-inn hund-inn?
+	love.3sg cat.MASC-NOM.MASC-the.NOM.MASC dog.ACC.MASC-the.ACC.MASC
+	'does the cat love the dog?'
+	
+The customization script already provided the types and rules to account 
+for this. This sentence parsed, but I found through generation that the
+grammar would erronously allow the base form of the verb:
+
+	*Elska kott-ur-inn hund-inn
+	
+This is was happening since the subject-inversion rule was applying to any
+verb. I fixed this by requiring that it's daughter had to be of type
+num+pers+lex+rule (the top verb lex rule). This constrained it to only
+applying to verbs that had already been conjugated (gone through one of
+the verb lex rules).
+
+Embedded clauses:
+
+	This embedded clauses appear with complementizers and following a few
+set of verbs such as 'ask', 'say', or 'wish':
+
+	eg heyra ad kott-ur-inn elska-ar hund-inn
+	I hear.1sg CL cat-NOM.sg-the.NOM.sg love.3sg dog.ACC.SG-the.ACC.sg
+	'I hear that the cat loves the dog'
+	
+The structure of these embedded clauses is the complementizer taking a
+sentence as its complement. To implement this I created the clause-emb-verb-lex
+type and had the verb "heyra" be of that type rather than a transitive
+verb. This new type required it's comp be [ HEAD comp ], so that it
+must take an complement with a complementizer as it's head.
+	I had to create a new lex item for the complementizer. This type
+has a ARG-ST of one item that is made of its comp. The comp list constrains
+its element to be [ HEAD verb ]. This originally overgenerated, so I also
+constrained the comp to be [ MC - ]. This fixed the overgeneration and
+still parsed the grammatical phrases.
+
+Imperatives:
+
+	There are three imperative forms for the verbs. One for 2sg and 2pl
+as well as one for 1pl:
+
+	Hoppa
+	jump.2sg.imp
+	
+	Hoppa-id
+	jump.2pl.imp
+	
+	Hoppa-um
+	jump.1pl.imp
+	
+Due to this phenomena, I didn't constrain the imp-head-opt-phrase to be
+2nd person. The person distinction was taken care of in the imperative
+lexical rules. This phenomena still doesn't parse. When I look at the 
+parse chart, it shows that imperative lexical rule applied, but it
+doesn't form the phrase.
+
+Test Suite:
+
+	The overall coverage was greatly improved with this lab. It went from
+around 35% to 55%.
+	

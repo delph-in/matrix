@@ -1,0 +1,65 @@
+----------------------------------------------
+Comments
+
+ * As an interesting note, when the following noun has been made definite
+   but 
+
+The suspense!
+
+ I searched for quite some time on this subject, and only encountered
+ papers covering that which I already learned; that Arabic has rather
+ systematic subject pro-drop and object incorporation as pronouns, but
+ I found nothing concerning the possibility for the type of Discourse
+ related object drop we're interested in.
+
+We're interested in the systematic kind too :-)
+
+ As far as I can tell, subject prodrop is allowed with definite
+ instantiation, and object prodrop is not allowed; it must be made
+ up with pronoun incorporation (where the COG-ST is made explicit
+ by the pronoun).
+
+If you have access to a native (or near-native) speaker, I'd
+be interested to know how they translate:
+
+-- Are you hungry?
+-- No, I've already eaten.
+
+-- What do you do in your spare time?
+-- I read.
+
+ ...this latter case seems to be constrained to dropping the subject for
+ activ-or-more. Furthermore, this seems to happen for all verbs, so I added
+ OPT-CS activ-or-more to the verb-lex's SUBJ constraints.
+
+The current implementation of basic-head-opt-subj-phrase doesn't actually
+reference OPT-CS in the way that basic-head-opt-comp-phrase does.  It's
+rather brazenly stamping [ COG-ST in-foc ] on the erstwhile subject.
+I think you're right that I should allow for cross-linguistic variation
+here, and even if I don't, [ COG-ST in-foc ] is too strong.
+
+ Broken:
+
+ I haven't investigated thoroughly, but it seems when I try incorporating
+ both the direct and indirect object
+
+??
+
+ ** Something I still haven't figured out, however, is when generating I
+ get extra parses which seem to take definiteness and case as optional
+ on adjectives, but not nouns.
+
+Provide examples when you make comments like this so I can take
+a look...
+
+ adverb-lex := basic-adverb-lex & intersective-mod-lex &
+   [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL.CAT.HEAD verb ] >,
+	 		   VAL [ SPR < >,
+		 		 SUBJ < >,
+			 	 COMPS < >,
+				 SPEC < > ],
+			   POSTHEAD + ] ] ] ].
+
+This is overgenerating, since you're allowing it to attach to any
+verbal constituent.
+

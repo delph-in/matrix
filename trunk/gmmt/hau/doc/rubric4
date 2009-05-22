@@ -1,0 +1,122 @@
+-------------------------------------------------------
+Comments
+
+ I skipped Setential Negation, because while Hausa has adverbs which
+ are used to negate the whole sentence, none of the options seemed to
+ fit the positioning of these adverbs. The options given were to the
+ right, left or either side of the category it modifies. Hause has both
+ adverbs appearing at the start and finish of the sentence they're
+ negating.  I thought that the option for the adverb appearing on
+ either side might work, but the sentence can't just have one negative
+ particle, it has to have both.
+
+This is interesting.  I see two basic possibilities.  One is a
+special construction which is *ternary* branching (three daughters),
+and realizes the negative particles on each side and the sentence
+in the middle.  There are no ternary branching rules in the matrix,
+so you'd have to either define some new supertypes or else inherit
+from a very bland supertype (e.g., headed-phrase, or maybe phrase)
+and put a lot of constraints on the type that defines your rule.
+
+The second possibility is to attach the negative particles one at
+a time with (for example) the head-complement rule.  The result of
+attaching just one would need to be constrained from doing anything
+before the other one attached, probably.
+
+Some questions about this construction:
+
+1. Is it the same in matrix v. subordinate clauses?
+2. Is it the same in statements v. questions?
+3. Can anything appear 'outside' the negative particles (before
+the first one or after the last one)?
+4. Are the negative particles used for anything other than
+sentential negation, and if so, how are they realized in those
+other contexts?  Are both still required?
+
+The answers to these questions should shed some light on what
+the best analysis is.
+
+ For Coordination, I choose Polysyndeton, though Hausa also allows
+ optional N-Polysyndeton (and occuring in front of the list of
+ conjoined items).  Are we going to consider 'or' (disjunction)? It
+ behaves differently, in that it IS allowed to connect sentences (where
+ 'and', 'dà' isn't)).
+
+It's not in the course plans....
+
+ I left blank the section on Yes-No Matrix Questions. Hausa uses four
+ different methods of marking questions, from intonation, lengthening
+ the last vowel of the last word, and adding various words (like the
+ word or, 'koo')either sentence-initially or sentence-finally.  I'm not
+ sure which is used most often, as the reference grammar just describes
+ all four.
+
+That's quite some variety! It sounds to me like the vowel lengthening
+is another kind of sentence-final marker: just one that is phonologically
+deficient (all it is is length, and it is dependent on the preceding
+vowel for the rest of its features).  Alternatively, there might be
+an intonation-based analysis.  At any rate, intonation questions come
+"for free".  That the markers can come on either side is interesting.
+Do they ever appear together?  Is each marker restricted to which side
+of the sentence it can appear on?
+
+ For the basic lexicon, I added two nouns('girl' and 'soup'), a
+ demonstrative ('that'), and two verbs ('came','cooked') with the
+ appropriate-inflection PAC attached as a prefix.  Auxiliaries would be
+ difficult with a limited vocabulary since they take a inflectional
+ PAC, but their complement VPs don't (I'm counting these verbs as
+ having a 'zero' form PAC).
+
+Actually, the script is set up for this --- that's why it asks whether
+the verb has a special form for when it appears as the complement to
+an auxiliary.
+
+Your grammar gives two errors when it loads.  Be sure to watch the
+LKB top window and address any errors that appear, even if the grammar
+seems to load successfully.  (These both have to do with lexical
+entries.) (It looked like a stray string from tsdb++ got into your
+lexicon file.  Perhaps you were visiting that buffer and inadvertently
+pasted something in?)
+
+ When I first tried to parsing one of the sample sentences from the
+ starter-grammar, it didn't work because of the format I used to list
+ the verbs.  My testsuite was set up to separate the PAC from the verb
+ with a dash and didn't accept that as one word.  The basic sentence I
+ was trying (that girl came, 'wata yaarinyàa taazoo') was covered by
+ the head-complement rule, and parsed as I expected it to.  It had a
+ NP-VP tree structure, with the NP expanded into a D and N.  I'm not
+ sure why it produced two parses, and I can't see the difference from
+ the parse chart, because both parses have a HEAD-SPEC being the mother
+ of DETERMINER-LEX and NOUN-LEX.
+
+Examining the "derivations" column from Browse > Results, it appears
+that at the time you had a typo in your lexical entry for wani so
+that it was also spelled 'wata'.  So, there were two possible edges
+for the substring 'wata', giving two possible edges for everything above that.
+This error appears to be fixed in the grammar that you handed in though.
+
+When you turn in labs, please only include two tsdb++ profiles, the
+'before' snap shot and the 'after' snapshot. 
+
+ I realized that most of the errors came from pronouns not being in the
+ lexicon, so the biggest improvement I could make in coverage is to add
+ them.  To do this, I'd have to add the full case system information to
+ the feature structures of the pronouns, so that the object pronouns
+ are not allowed in subject positions, or as direct objects when an
+ indirect object is present (without an indirect object, pronouns
+ acting as direct objects take the object form).  An alternative would
+ be to restructure a lot of my examples to not include pronouns.  I
+ think this would be a smarter way to improve coverage, and would help
+ reveal more about what grammar rules need to be written.  It might
+ change the ratio of grammatical to ungrammatical sentences, since
+ regular nouns can occur as subjects or direct objects (indirect
+ objects are marked by a particle).
+
+But since we're tackling case and pronouns this week anyway...
+
+abantwana := noun-lex &
+  [ STEM < "abantwana" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_children_n_rel" ] .
+
+The PRED name shouldn't show the number information.  We'll be
+recording that separately in the NUM value.

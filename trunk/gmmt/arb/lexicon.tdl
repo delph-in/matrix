@@ -1,0 +1,433 @@
+;-----======== LAB 8: MODALS ========----------
+
+can := modal-verb-lex &
+  [ STEM < "i?dar" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_can_v_rel" ] .
+
+possible := modal-verb-lex &
+  [ STEM < "imkin" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_be_possible_v_rel" ] .
+
+
+;-----========= LAB 6: DEMONSTRATIVES =========-------------
+
+demon_msg := demon_adjective &
+  [ STEM < "Da:" >,
+    SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [GEND masc,
+				       NUM sg] ] > ] .
+
+demon_fsg := demon_adjective &
+  [ STEM < "Di" >,
+    SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [GEND fem,
+				       NUM sg] ] > ] .
+
+demon_pl := demon_adjective &
+  [ STEM < "?ula:?i" >,
+    SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [NUM pl] ] > ] .
+
+demon_mdu_nom := demon_adjective &
+  [ STEM < "Da:ni" >,
+    SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL [ CONT.HOOK.INDEX.PNG [ GEND masc,
+					  NUM du],
+		    CAT.HEAD [ CASE nom ] ] ] > ] .
+
+demon_mdu_acc := demon_adjective &
+  [ STEM < "Dayni" >,
+    SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL [ CONT.HOOK.INDEX.PNG [GEND masc,
+					 NUM du],
+		    CAT.HEAD [ CASE acc ] ] ] > ].
+
+demon_fdu_nom := demon_adjective &
+  [ STEM < "ta:ni" >,
+    SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL [ CONT.HOOK.INDEX.PNG [GEND fem,
+					 NUM du ],
+		    CAT.HEAD [ CASE nom ] ] ] >  ].
+
+demon_fdu_acc := demon_adjective &
+  [ STEM < "tayni" >,
+    SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL [ CONT.HOOK.INDEX.PNG [GEND fem,
+					 NUM du ],
+		    CAT.HEAD [ CASE acc ] ] ]  >  ].
+
+
+
+
+la := neg-adv-lex &
+  [ STEM < "la:" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ] .
+
+wa_1 := conj-lex &
+  [ STEM < "wa" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
+    CFORM "1" ] .
+
+;wa_ns := nosem-conj-lex &
+;  [ STEM < "wa" > ] .
+
+;------====== Nouns (All in nominative form at this point) ===-
+
+
+
+book := common-noun-lex &
+  [ STEM < "kita:b" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_book_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.GEND masc ] ].  
+
+child := common-noun-lex &
+  [ STEM < "walad" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_child_n_rel",
+	     LOCAL [ CONT.HOOK.INDEX.PNG [GEND masc,
+					  NUM sg] ] ] ].
+
+boy := common-noun-lex &
+  [ STEM < "sabi" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_boy_n_rel",
+	     LOCAL [CONT.HOOK.INDEX.PNG [ GEND masc,
+					  NUM sg] ] ] ].
+
+children := common-noun-lex &
+ [ STEM < "?awlad" >,
+   SYNSEM [ LKEYS.KEYREL.PRED "_child_n_rel",
+	    LOCAL [ CONT.HOOK.INDEX.PNG [ GEND masc,
+					  NUM pl ] ] ] ] .
+
+man := common-noun-lex &
+  [ STEM < "rajul" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_man_n_rel" ,
+	     LOCAL [ CONT.HOOK.INDEX.PNG [ GEND masc,
+					   NUM sg] ] ]] .
+
+men := common-noun-lex &
+  [ STEM < "rija:l" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_man_n_rel" ,
+	     LOCAL [ CONT.HOOK.INDEX.PNG [ GEND masc,
+					   NUM pl] ] ]] .
+
+woman := common-noun-lex & 
+  [ STEM < "mara" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_woman_n_rel",
+	     LOCAL [ CONT.HOOK.INDEX.PNG [ GEND fem,
+					   NUM sg] ] ] ] .
+
+
+
+cat := common-noun-lex & 
+  [ STEM < "kutta" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_cat_n_rel",
+	     LOCAL [ CONT.HOOK.INDEX.PNG [ GEND fem,
+					   NUM sg] ] ] ] .
+
+dog := common-noun-lex &
+  [ STEM < "kalb" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_dog_n_rel" ,
+	     LOCAL [ CONT.HOOK.INDEX.PNG [ GEND masc,
+					   NUM sg] ] ]] .
+
+
+snake := common-noun-lex &
+  [ STEM < "haiyi" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_snake_n_rel" ,
+	     LOCAL [ CONT.HOOK.INDEX.PNG [ GEND masc,
+					   NUM sg] ] ]] .
+
+
+king := common-noun-lex &
+  [ STEM < "malik" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_king_n_rel" ,
+	     LOCAL [ CONT.HOOK.INDEX.PNG [ GEND masc,
+					   NUM sg] ] ]] .
+
+food := common-noun-lex &
+  [ STEM < "taam" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_food_n_rel" ,
+	     LOCAL [ CONT.HOOK.INDEX.PNG [ GEND masc,
+					   NUM sg] ] ]] .
+
+doctor := common-noun-lex &
+  [ STEM < "tabib" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_doctor_n_rel" ,
+	     LOCAL [ CONT.HOOK.INDEX.PNG [ GEND masc,
+					   NUM sg] ] ]] .
+
+grass := common-noun-lex &
+  [ STEM < "hashish" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_grass_n_rel" ,
+	     LOCAL [ CONT.HOOK.INDEX.PNG [ GEND masc,
+					   NUM sg] ] ]] .
+
+horse := common-noun-lex &
+  [ STEM < "husan" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_horse_n_rel" ,
+	     LOCAL [ CONT.HOOK.INDEX.PNG [ GEND masc,
+					   NUM sg] ] ]] .
+
+fire := common-noun-lex &
+  [ STEM < "nar" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_fire_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg, GEND fem ] ] ] .
+
+
+girl := common-noun-lex &
+  [ STEM < "bint" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_girl_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg, GEND fem ] ] ] .
+
+girls := common-noun-lex &
+  [ STEM < "bana:t" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_girls_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG [NUM pl, GEND fem] ] ] .
+
+
+
+lesson := common-noun-lex &
+  [ STEM < "dars" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_test_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.GEND masc ] ] .
+
+bicycle := common-noun-lex &
+  [ STEM < "darra:j">,
+    SYNSEM [ LKEYS.KEYREL.PRED "_bicycle_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.GEND masc ] ] .
+
+glass := common-noun-lex &
+  [ STEM < "kizaz" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_glass_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.GEND masc ] ] .
+;; Adjectives
+
+stupid := posthead-adj &
+   [ STEM < "gabi:y" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_stupid_a_rel"] .
+
+small := posthead-adj &
+   [ STEM < "sagheer" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_small_a_rel"] .
+
+big := posthead-adj &
+   [ STEM < "kebir" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_big_a_rel"] .
+
+beautiful := posthead-adj &
+   [ STEM < "kwaiyis" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_beautiful_a_rel"] .
+
+new := posthead-adj &
+   [ STEM < "jedid" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_new_a_rel"] .
+
+old := posthead-adj &
+   [ STEM < "ikhtyar" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_old_a_rel"] .
+
+short := posthead-adj &
+   [ STEM < "kasir" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_short_a_rel"] .
+
+long := posthead-adj &
+   [ STEM < "tawil" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_long_a_rel"] .
+
+
+;;; Verbs
+
+sleep := intransitive-verb-lex &
+  [ STEM < "ynam" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_sleep_v_rel" ] ] .	     
+
+come := intransitive-verb-lex &
+  [ STEM < "iza" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_come_v_rel" ] ] .	     
+
+jump := intransitive-verb-lex &
+  [ STEM < "nittu" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_jump_v_rel" ] ] .	     
+
+
+fall := intransitive-verb-lex &
+  [ STEM < "wiku" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_fall_v_rel" ] ] .
+
+
+insarafa := intransitive-verb-lex &
+  [ STEM < "ins.arifu" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_leave_v_rel" ] .
+
+adribu := transitive-verb-lex &
+  [ STEM < "adribu" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_hit_v_rel" ] .
+
+arkudu := intransitive-verb-lex &
+  [ STEM < "arkud" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_run_v_rel" ] .
+
+atbakh := intransitive-verb-lex &
+  [ STEM < "atbakh" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_cook_v_rel" ].
+
+askun := intransitive-verb-lex &
+  [ STEM < "askunn" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_live_v_rel" ].
+
+work := intransitive-verb-lex &
+  [ STEM < "ishtar?al" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_work_v_rel" ].
+
+play := intransitive-verb-lex &
+  [ STEM < "li?ib" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_play_v_rel" ].
+
+read := transitive-verb-lex &
+  [ STEM < "i?ra" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_read_v_rel" ].
+
+take := transitive-verb-lex &
+  [ STEM < "akhad" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_take_v_rel" ].
+
+want := transitive-verb-lex &
+  [ STEM < "ririb" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_want_v_rel" ].
+
+call := transitive-verb-lex &
+  [ STEM < "indah" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_call_v_rel" ].
+
+see := transitive-verb-lex &
+  [ STEM < "shaf" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ].
+
+love := transitive-verb-lex &
+  [ STEM < "habb" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_love_v_rel" ].
+
+give := ditransitive-verb-lex &
+  [ STEM < "atay" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_give_v_rel" ].
+
+think := prop-only-embedding-verb-lex &
+  [ STEM < "aftikir" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_think_v_rel" ] .
+
+ask := ques-only-embedding-verb-lex &
+  [ STEM < "istakh" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_ask_v_rel" ] .
+
+eat := transitive-verb-lex &
+  [ STEM <"akal">,
+    SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ] .
+
+hurt := transitive-verb-lex & 
+  [ STEM < "yuga">,
+    SYNSEM.LKEYS.KEYREL.PRED "_hurt_v_rel" ] .
+
+buy := transitive-verb-lex & 
+  [ STEM < "ishtara">,
+    SYNSEM.LKEYS.KEYREL.PRED "_buy_v_rel" ] .
+
+;;; Other
+
+quickly := adverb-lex & 
+  [ STEM < "kawam" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_quickly_adv_rel" ].
+
+gladly := adverb-lex & 
+  [ STEM < "firhan" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_gladly_adv_rel" ].
+
+badly := adverb-lex & 
+  [ STEM < "battal" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_badly_adv_rel" ].
+
+a := qpart-lex-item &
+  [ STEM < "a" > ,
+    SYNSEM.LOCAL.CAT.MC + ] .
+
+interrogative-comp := interr-comp-lex &
+  [ STEM < "?in" > ] .
+
+declarative-comp := declar-comp-lex &
+  [ STEM < "?anna" > ] .
+
+;;; --------============ PRONOUNS ===========-------
+
+1sg_pn := pronoun-lex &
+  [ STEM < "?ana" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX [ PNG [ PER first,
+					 NUM sg],
+				   COG-ST activ-or-more &
+				       [ SPECI + ]] ].
+1pl_pn := pronoun-lex &
+  [ STEM <"nah.nu">,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX [ PNG [ PER first,
+				       NUM pl],
+				   COG-ST activ-or-more &
+				       [ SPECI + ]] ].
+2msg_pn := pronoun-lex &
+  [ STEM < "?anta" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX [PNG [ PER second,
+				       GEND masc,
+				       NUM sg],
+				  COG-ST activ-or-more &
+				      [ SPECI + ]] ].
+2fsg_pn := pronoun-lex &
+  [ STEM < "?anti" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX [PNG [ PER second,
+				       GEND fem,
+				       NUM sg],
+				  COG-ST activ-or-more &
+				      [ SPECI + ] ] ].
+2du_pn := pronoun-lex &
+  [ STEM < "?antuma:" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX [PNG [ PER second,
+				       NUM du],
+				  COG-ST activ-or-more &
+				      [ SPECI + ] ] ].
+2mpl_pn := pronoun-lex &
+  [ STEM < "?antum" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX [PNG [ PER second,
+				       GEND masc,
+				       NUM pl] ,
+				  COG-ST activ-or-more &
+				      [ SPECI + ] ] ].
+2fpl_pn := pronoun-lex &
+  [ STEM < "?antunna" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX [PNG [ PER second,
+				       GEND fem,
+				       NUM pl] ,
+				  COG-ST activ-or-more &
+				      [ SPECI + ] ] ].
+
+3msg_pn := pronoun-lex &
+  [ STEM < "huwa" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX [PNG [ PER third,
+				       GEND masc,
+				       NUM sg] ,
+				  COG-ST activ-or-more &
+				      [ SPECI + ] ] ].
+3fsg_pn := pronoun-lex &
+  [ STEM < "hiya" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX [PNG [ PER third,
+				       GEND fem,
+				       NUM sg] ,
+				  COG-ST activ-or-more &
+				      [ SPECI + ] ] ].
+3du_pn := pronoun-lex &
+  [ STEM < "huma:" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX [PNG [ PER third,
+				       NUM du] ,
+				  COG-ST activ-or-more &
+				      [ SPECI + ] ] ].
+3mpl_pn := pronoun-lex &
+  [ STEM < "hum" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX [PNG [ PER third,
+				       GEND masc,
+				       NUM pl] ,
+				  COG-ST activ-or-more &
+				      [ SPECI + ] ] ].
+3fpl_pn := pronoun-lex &
+  [ STEM < "hunna" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX [PNG [ PER third,
+				       GEND fem,
+				       NUM pl] ,
+				  COG-ST activ-or-more &
+				      [ SPECI + ] ] ].

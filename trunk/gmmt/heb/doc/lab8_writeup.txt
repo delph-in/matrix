@@ -1,0 +1,744 @@
+Lab8 Writeup
+
+Pro-Drop in Hebrew:
+
+Hebrew seems to be closest to the description:
+Any subject can be left out with the definite interpretation. Non-subject arguments of certain verbs can also be omitted. Their interpretation (definite or indefinite) is lexically determined by the verb. But Hebrew also exhibits some behavior consistent with the description: 
+In languages with optional agreement marking on the verb, it may be the case that you see the `any old subject' or `any old direct object' being left out pattern only when agreement marking is present. Without agreement marking, you may only find lexically licensed definite/indefinite null instantiation. 
+
+Any subject can be left out with the definite interpretation. However, some sentences with pro-drop sound pragmatically odd when the referent cannot be identified from the context. 
+Some verb forms have sufficient inflection (PER, NUM, and/or GEND) to identify the referent of the subject
+Other verb forms require an appropriate context for the subject to be dropped.
+
+Examples of the first case are the second person past tense verb forms, which inflect for person, number, and gender, such as sentence pairs #1 and #2, and first person past tense verb forms, which inflect for person and number, such as sentence pair #3.
+
+1. PAST TENSE 2ND PERSON
+ath		qra:PAAL.PAST-t		spr
+pron:NOM.2SG.M	read:PAAL.PAST-2SG.M	book:SG.M
+'You (SG.M) read (past) a book.’
+
+qra:PAAL.PAST-t		spr
+read:PAAL.PAST-2SG.M	book:SG.M
+'You (SG.M) read (past) a book.’
+
+2. PAST TENSE 2ND PERSON
+atn		qra:PAAL.PAST-tn	spr
+pron:NOM.2PL.F	read:PAAL.PAST-2PL.F	book:SG.M
+'You (SG.M) read (past) a book.’
+
+qra:PAAL.PAST-tn	spr
+read:PAAL.PAST-2PL.F	book:SG.M
+'You (PL.F) read (past) a book.’
+
+3.
+ani		qra:PAAL.PAST-ti	spr
+pron:NOM.1SG	read:PAAL.PAST-1SG	book:SG.M
+'I read (past) a book.’
+
+qra:PAAL.PAST-ti	spr
+read:PAAL.PAST-1SG	book:SG.M
+'I read (past) a book.’
+
+Examples of verb forms that require an appropriate context for the pro-drop to occur are past tense third person verb forms, which inflect for person, number and gender, and present tense verb forms, which inflect for number and gender only.
+
+4. 
+ani		qra:PAAL.PAST-t		spr
+pron:NOM.1SG	read:PAAL.PAST-SG.F	book:SG.M
+'I am reading a book.’
+
+qra:PAAL.PAST-t		spr
+read:PAAL.PAST-SG.F	book:SG.M
+'I am reading a book.’
+
+The pro-drop example above is very odd out of context as the verb form could apply to a first, second, or third person feminine NP and even if it applied only to third person NPs (as in past tense forms) the referent would still be unknown. But it is OK in a sequence as follows: "Let me tell you what I do every morning: go to the store, read books...". This is not attrocious in English either, I suppose, but I would say that in Hebrew subject pronoun omission would be the norm in this case and that its appearance would indicate special emphasis. That is, I would say that unlike in English this is probably an example of pro-drop and not ellipsis.
+
+There are also some subjectless constructions which involve an indefinite interpretation:
+
+5.
+amr:PAAL.PRES-im    e		ird:PAAL.FUT	    gem
+say:PAAL.PRES-PL.M  that	fall:PAAL.FUT.3SG.M rain:SG.M
+'They say it will rain.'
+
+The construction above (#5) is ambiguous between a definite reading "Some men who we can identify from the context are saying that it will rain" and "There is a rumor that it will rain.".
+
+In examples such as this, the pro-drop is obligatory for the second interpretation:
+
+6.
+hm	    amr:PAAL.PRES-im    e	ird:PAAL.FUT	    gem
+they	    say:PAAL.PRES-PL.M  that	fall:PAAL.FUT.3SG.M rain:SG.M
+'They say it will rain.'
+
+This (#6) is grammatical but cannot be interpreted to mean "There is a rumor that...".
+
+Similarly, at least in the case of PAAL, only the masculine plural verb forms compatible with third person plural masculine subjects may be used this way:
+
+7.
+amr:PAAL.PRES-wt    e		ird:PAAL.FUT	    gem
+say:PAAL.PRES-PL.F  that	fall:PAAL.FUT.3SG.M rain:SG.M
+'They say it will rain.'
+
+The above sentence (#7) can only mean that some females who we can identify from the context are saying that it is going to rain and NOT that there is a rumor that it will rain.
+
+There are other binyanim in which the third person singular rather than the plural plays a similar role:
+
+7a. I think this is the impersonal passive mentioned in class
+amr:NIFAL.PRES		e	ird:PAAL.FUT	    gem
+say:NIFAL.PRES.SG.M	that	fall:PAAL.FUT.3SG.M rain:SG.M
+'It is said that it will rain.'
+
+Hebrew equivalents of "there is..." and "it is cold" type constructions obligatorily involve no subject at all. The latter don't involve a verb either.
+
+8.
+ie:PRES	ynn-im
+is	cloud:M-PL
+'There are clouds.'
+
+9. 
+* zh	ie:PRES	ynn-im
+  this	is	cloud:M-PL
+'There are clouds.'
+
+10.
+* hwa	ie:PRES	ynn-im
+  it	is	cloud:M-PL
+'There are clouds.'
+
+11.
+qr
+cold:ADJ.SG.M
+'It is cold.'	
+
+12.
+zh	qr
+this	cold:ADJ.SG.M
+'This is cold.'
+
+13.
+hwa	qr
+it	cold:ADJ.SG.M
+'It is cold.'
+
+Sentence #12 and #13 are acceptable but only if "this" and "it" have specific referents.
+	
+In normal every day speech there is no pro-dropping of non-subject arguments (except for some imperatives and answers to questions which we will analyze as ellipsis):
+
+14.
+amr:PAAL.PAST-ti	e	ird:PAAL.FUT		gem
+say:PAAL.PAST-1SG	that	fall:PAAL.FUT.3SG.M	rain:SG.M
+'I said it will rain.'
+
+15.
+amr:PAAL.PAST-ti
+say:PAAL.PAST-1SG
+'I said.'
+
+The sentence above (#15) is acceptable only in answer to "Have you said that...".
+
+However, just as in English, many verbs may be either transitive or intransitive:
+
+16.
+akl:PAAL.PAST-ti
+eat:PAAL.PAST-1SG
+'I ate.'
+
+17.
+akl:PAAL.PAST-ti	lxm
+eat:PAAL.PAST-1SG	bread:M.SG
+'I ate bread.'
+
+Whether this verb (#16), when instransitive should be considered to have a missing indefinite referent, whereas the Hebrew equivalent of "breathe" which can also be either transitive or not should be considered as having no missing referent I have no opinion on for now. I do not understand the distinctions in English yet. Do some instransitive verbs in Hebrew have a missing definite referent? Probably not (except for those cases of elipsis mentiones earlier), but I would have to investigate this further to be sure.
+
+Literary Hebrew allows for some incorporated objects (#19). The incorporated objects are in complementary distribution with overt accusative object pronouns (#20). By definition, the referents must be definite. Moreover, when the object is incorporated, the sentence sounds better when the subject is omitted (#21). 
+
+18. Standard:
+
+ahb:PAAL.PAST-ti	awta
+love:PAAL.PAST-1SG	pron:ACC.3SG.F	
+'I loved her/it.'
+
+19. Literary:
+
+ahb:PAAL.PAST-ti-h
+love:PAAL.PAST-1SG-3SG.F	
+'I loved her/it.'
+
+20. 
+* ahb:PAAL.PAST-ti-h		awta
+  love:PAAL.PAST-1SG-3SG.F	pron:ACC.3SG.F	
+'I loved her/it.'
+
+21.
+? ani	ahb:PAAL.PAST-ti-h
+  I	love:PAAL.PAST-1SG-3SG.F	
+'I loved her/it.'
+
+This object incorporation occurs with direct objects only. There are no equivalent suffixes for objects of prepositions. The object incorporation occurs only in some verb forms. In fact it seems to be disappearing entirely. The only verb form I can think of that is still occasionally seen in literature or songs is the past tense verb form that is compatible with a first person singular subject (though there may be a few others I am failing to come up with right now). The Bible has other ones.
+
+Another issue potentially related to dropping non-subject arguments and maybe incorporation is the analysis of the binyanim: NIFAL, HITPAEL, and PUAL. The first and the third sometimes express passives and the second sometimes expresses reflexives and reciprocals. I don't know whether the missing arguments in these cases can be treated as the optionally missing agent arguments of passivized verbs in English. But I will ignore this issue for now.
+
+In fact, the only phenomena of those I mentioned so far that I intend to attempt to deal with for lab8 is the phenomenon of optional subjects in straightforward constructions such as "I read a book." and the missing indefinite complements, as in the English verb "eat", assuming for the time being that their analysis in Hebrew is the same as it is in English. I will not look for now at obligatorily missing subjects or any other missing or incorporated complements.
+
+To make the subject optional I followed the lab8 directions and created an instance of basic-head-opt-subj-phrase in rules.tdl. That was sufficient to make subjects optional.
+
+Handling indefinite complements of transitive verbs:
+
+To handle verbs like "eat" I added, as suggested in the instructions for lab8, an instance of basic-head-opt-comp-phrase to rules.tdl and I changed the lexical entry of the verb "qra" (read) to a new type transitive-with-optional-object-verb-lex, which requires a [DEF-OPT -] COMP.
+The transitive "qra" parsed correctly. The intransitive "qra" yielded 2 parses. One involved the sequence (subj-head-phrase, basic-head-opt-comp-phrase) and the other the sequence (basic-head-opt-comp-phrase, subj-head). As I only wanted the second I added a constraint to my head-subj and subj-head rules making the head daughter have an empty COMPS value. As you pointed out on E-Post, this was not a good idea as it eliminated the grammar's ability to parse word orders such as OVS. So as you suggested, I eliminated the first parse by forcing my basic-head-opt-comp-phrase rule to take a lexical daughter. This required creating another subtype of the basic-head-opt-comp-phrase rule:
+
+basic-indef-head-opt-comp-phrase := basic-head-opt-comp-phrase &
+[ HEAD-DTR lexeme-to-word-rule ].
+
+This will do for now as I do not have any post ltow lexical rules at this time.
+
+So now, the grammar correctly parses the follwing:
+
+22.
+ani qra:PAAL.PRES spr
+pron:NOM.1SG read:PAAL.PRES.SG.M book:M.SG
+'I am reading a book.'
+
+23.
+ani qra:PAAL.PRES
+pron:NOM.1SG read:PAAL.PRES.SG.M
+'I am reading.'
+
+24.
+qra:PAAL.PRES
+read:PAAL.PRES.SG.M
+'I am reading.'
+
+25.
+qra:PAAL.PRES spr
+read:PAAL.PRES.SG.M book:M.SG
+'I am reading a book.'
+
+as well as the other 5 variants of word orders associated with the above sentences.
+
+Ditransitives:
+
+The ditransitibe verb I added to the lexicon is "teach":
+
+26.
+lmd_piel := ditransitive-verb-lex &
+   [ STEM < "lmd:PIEL" >,
+     INFLECTED -,
+     SYNSEM.LOCAL.CAT.HEAD.VERB-PRESENT-TENSE-SG-F-SUFFIX-TYPE t-suffix,
+     SYNSEM.LKEYS.KEYREL.PRED "_teach_v_rel" ].
+
+Since either object argument or both may be dropped I should be getting the following:
+
+27.
+ani lmd:PIEL.PAST-ti awtw mtmviqh
+pron:NOM.1SG teach:PAAL.PAST-1SG pron:ACC.3SG.M math:F.SG
+'I taught him math.'
+
+28.
+ani lmd:PIEL.PAST-ti awtw
+pron:NOM.1SG teach:PAAL.PAST-1SG pron:ACC.3SG.M
+'I taught him.'
+
+29.
+ani lmd:PIEL.PAST-ti mtmviqh
+pron:NOM.1SG teach:PAAL.PAST-1SG math:F.SG
+'I taught math.'
+
+30.
+ani lmd:PIEL.PAST-ti
+pron:NOM.1SG teach:PAAL.PAST-1SG
+'I taught.'
+
+Since as far as the grammar is concerned "him" and "math" are no
+different from each other, each of these sentences should yield 2
+parses. The question then is: how many parses should the grammar
+produce for sentences #28, #29 and #30? If there are no semantic roles
+involved, one for each should be enough (that is, whether "math" is
+the beneficiary or the patient doesn't matter to the syntax). But once
+we add RELS we will want to end up with 2 potential parses for each of
+these. Since by the time I added the ditransitives I had already added
+the basic-indef-head-opt-comp-phrase rule, the optionality of one comp
+was already in place. But the optionality of the second comp was not
+handled by the grammar. Before I made any changes, the grammar
+produced 2 parses for #27, 1 for #28 and #29 and, but none for #30.
+
+So I made the following changes:
+
+head-opt-follows := avm.
+basic-head-opt-comp-phrase :+ head-opt-follows.
+lexeme-to-word-rule :+ head-opt-follows.
+
+basic-indef-head-opt-comp-phrase := basic-head-opt-comp-phrase &
+[ HEAD-DTR head-opt-follows ].
+
+So now that the basic-indef-head-opt-comp-phrase is able to apply
+twice, the grammar produces 2 parses for #27, 1 for #28, 1 for #29,
+and 1 for #30. Getting it to produce two parses for #28 and #29 will
+have to be handled differently once the semantic roles are in place.
+
+The only problem left to be resolved at this point was that of semantics. What do we want the semantics of the ones with the missing ones to look like? I was getting nothing for the one where both are missing. MSG is not showing up in those in which only the subject is dropped.
+
+Imitating that strategy that worked for restoring the MSG.PRED value in imperatives, I made the following changes:
+
+basic-indef-head-opt-comp-phrase := basic-head-opt-comp-phrase &
+[ HEAD-DTR head-opt-follows,
+  C-CONT.RELS <! !> ].
+
+basic-head-opt-subj-phrase :+ [ C-CONT.RELS <! !> ].
+
+The MSG.PRED values now appear in the indexed MRSs in all the above examples.
+
+The semanctics seems OK. The missing arguments are visible only in the line that introduces the event with their png.
+
+Before embarking on modification I decided to fix the semanctics of questions and check why my grammar won't generate sentences with adejctives.
+
+Fixing the semantics:
+
+The sentence "Do cats sleep?" is supposed to yield the following MRS:
+
+< h1, e2:SEMSORT:TENSE:ASPECT:MOOD,
+{ h3:_cat_n_rel(x4:SEMSORT:BOOL:THIRD:PL),
+  h5:indef_q_rel(x4,h7,h6),
+  h8:_sleep_v_rel(e2,x4),
+  h1:question_m_rel(h9),
+  h9:proposition_m_rel(h10)},
+{h6 qeq h3,
+ h10 qeq h8 }>
+
+My grammar's MRS was as follows:
+
+< h1, e2:SEMSORT:TENSE:ASPECT:MOOD,
+{ h3:_cat_n_rel(x4:SEMSORT:BOOL:THIRD:NON-SG:MASC),
+  h5:reg_quant(x4,h6,h7),
+  h8:_sleep_v_rel(e2,x4),
+  h1:question_m_rel(h9),
+{h6 qeq h3,
+ h9 qeq h8 }>
+
+The sentence "Cats know whether dogs sleep." is suppose to have the following MRS:
+
+< h1, e2:SEMSORT:TENSE:ASPECT:MOOD,
+{ h3:_cat_n_rel(x4:SEMSORT:BOOL:THIRD:PL),
+  h5:indef_q_rel(x4,h7,h6),
+  h8:_know_v_rel(e2,x4,h9),
+  h11:_dog_n_rel(x12:SEMSORT:BOOL:THIRD:PL),
+  h13:indef_q_rel(x12,h15,h14),
+  h16:_sleep_v_rel(e17:SEMSORT:TENSE:ASPECT:MOOD,x12),
+  h9:question_m_rel(h10),
+  h10:proposition_m_rel(h18),
+  h1:proposition_m_rel(h19)},
+{h6 qeq h3,
+ h14 qeq h11,
+ h18 qeq h16,
+ h19 qeq h8  }>
+
+My grammar's MRS was as follows:
+
+< h1, e2:SEMSORT:TENSE:ASPECT:MOOD,
+{ h3:_cat_n_rel(x4:SEMSORT:BOOL:THIRD:NON-SG:MASC),
+  h5:reg_quant_rel(x4,h6,h7),
+  h8:_know_v_rel(e2,x4,h9),
+  h10:_dog_n_rel(x12:SEMSORT:BOOL:THIRD:NON-SG:MASC),
+  h12:reg_quant_rel(x11,h13,h14),
+  h15:_sleep_v_rel(e17:SEMSORT:TENSE:ASPECT:MOOD,x11),
+  h9:question_m_rel(h17),
+  h1:prop-or-ques_m_rel(h18)},
+{h6 qeq h3,
+ h13 qeq h10,
+ h17 qeq h15,
+ h18 qeq h8  }>
+
+Ignoring the issue of the definiteness not being displayed, which I understood from Emily's e-post is not a problem of my grammar but rather of the way the indexed MRS displays it. The differences between the MRSs is due the fact that my grammar is missing a step in question formation. Instead of adding the question MSG on top of the proposition MSG, I replaced the proposition MSG with the question MSG. 
+
+I made many revisions to the part of the grammar dealing with clauses. 
+It seems that given the requirement that there be that extra relation in questions, the interrogative versus declarative dimension is more primary than the embedded versus matrix dimension.
+So the new complementizer type hierarchy is as follows:
+
+comp :+ [ COMPLEMENTIZER-TYPE complementizer-type ].
+complementizer-type := *top*.
+embedded-complementizer := complementizer-type.
+main-complementizer:= complementizer-type.
+interrogative-complementizer := complementizer-type.
+declarative-complementizer := complementizer-type.
+embedded-interrogative-complementizer := embedded-complementizer & interrogative-complementizer.
+embedded-declarative-complementizer := embedded-complementizer & declarative-complementizer.
+main-interrogative-complementizer := main-complementizer & interrogative-complementizer.
+
+The complementizer lexical type definitions are:
+
+embedded-declarative-complementizer-lex-item := no-hcons-lex-item & basic-one-arg &
+[ SYNSEM.LOCAL.CAT.VAL  [ SPR < >,
+			  SUBJ < >,
+			  COMPS < #comps &
+				  [ LOCAL.CAT.HEAD verb,
+				    LOCAL.CONT.MSG #msg,
+				    LOCAL.CONT.MSG message,
+				    LOCAL.CONT.HOOK #hook,
+				    LOCAL.CAT.MC #mc,
+				    LOCAL.CAT.MC -,
+				    LOCAL.CONT.MSG.PRED proposition_m_rel ] >,
+				 
+			  SPEC < > ],
+  SYNSEM.LOCAL.CONT.RELS < ! ! >,
+  SYNSEM.LOCAL.CONT.HOOK #hook,
+  SYNSEM.LOCAL.CONT.MSG #msg,
+  SYNSEM.LOCAL.CAT.MC #mc,
+  SYNSEM.LOCAL.CAT.HEAD comp,
+  SYNSEM.LOCAL.CAT.HEAD.COMPLEMENTIZER-TYPE embedded-declarative-complementizer,
+  ARG-ST < #comps  > ]. 
+
+The interrogative complementizer introduces the extra relation. 
+
+interrogative-complementizer-lex-item := no-hcons-lex-item & basic-one-arg &
+[ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps & [ LOCAL.CAT.HEAD verb,
+					  LOCAL.CAT.HEAD.FORM fin,
+					  LOCAL.CAT.VAL.SUBJ < >,
+					  LOCAL.CAT.VAL.SPR < >,
+					  LOCAL.CAT.VAL.SPEC < >,
+					  LOCAL.CAT.VAL.COMPS < >,
+					  LOCAL.CAT.IMPERATIVE -,
+					  LOCAL.CONT.MSG.PRED proposition_m_rel,
+					  LOCAL.CAT.P-OR-Q +,
+					  LOCAL.CONT.HOOK.LTOP #marg,
+					  LOCAL.CAT.MC #mc ] >, 
+  SYNSEM.LOCAL.CONT.HOOK.LTOP #ltop,
+  SYNSEM.LOCAL.CONT.MSG.LBL #ltop,
+  SYNSEM.LOCAL.CONT.MSG #rel,
+  SYNSEM.LOCAL.CONT.MSG.PRED question_m_rel,
+  SYNSEM.LOCAL.CONT.RELS <! #rel !>,
+  SYNSEM.LOCAL.CONT.MSG.MARG #marg,
+  SYNSEM.LOCAL.CAT.VAL.SUBJ < >,
+  SYNSEM.LOCAL.CAT.VAL.SPR < >,
+  SYNSEM.LOCAL.CAT.VAL.SPEC < >,
+  SYNSEM.LOCAL.CAT.HEAD comp,
+  SYNSEM.LOCAL.CAT.HEAD.COMPLEMENTIZER-TYPE interrogative-complementizer,
+  SYNSEM.LOCAL.CAT.MC #mc,
+  ARG-ST < #comps > ].
+
+main-interrogative-complementizer-lex-item := interrogative-complementizer-lex-item &
+[ SYNSEM.LOCAL.CAT.VAL  [ COMPS <  [ LOCAL.CAT.MC + ] > ],
+  SYNSEM.LOCAL.CAT.HEAD.COMPLEMENTIZER-TYPE main-interrogative-complementizer ].
+
+embedded-interrogative-complementizer-lex-item := interrogative-complementizer-lex-item &
+[ SYNSEM.LOCAL.CAT.VAL  [ COMPS <  [ LOCAL.CAT.MC - ] > ],
+  SYNSEM.LOCAL.CAT.HEAD.COMPLEMENTIZER-TYPE embedded-interrogative-complementizer ].
+
+There is still only one rule for sentences that can be either declarative or interrogative:
+
+prop-or-ques-clause := non-rel-clause &
+[  SYNSEM.LOCAL.CONT.MSG [ MARG #marg ],
+   SYNSEM.LOCAL.CAT.IMPERATIVE -,
+   C-CONT [ RELS <! *top* !>,
+	    HCONS <! qeq &
+		   [ HARG #marg,
+		     LARG #ltop ] !> ],
+   HEAD-DTR.SYNSEM.LOCAL.CONT [ MSG no-msg,
+				HOOK.LTOP #ltop ],
+   HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb,
+   HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM fin,
+   HEAD-DTR.SYNSEM.LOCAL.CAT.IMPERATIVE -,
+   HEAD-DTR.SYNSEM.LOCAL.CAT.P-OR-Q -,
+   HEAD-DTR.SYNSEM.LOCAL.CAT.VAL  [ SPR < >,
+				    SUBJ < >,
+				    COMPS < >,
+				    SPEC < > ],
+   HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc,
+   SYNSEM.LOCAL.CAT.VAL  [ SPR < >,
+			   SUBJ < >,
+			   COMPS < >,
+			   SPEC < > ],
+   SYNSEM.LOCAL.CONT.MSG [ PRED prop-or-ques_m_rel ],
+   SYNSEM.LOCAL.CAT.MC #mc,
+   SYNSEM.LOCAL.CAT.P-OR-Q + ].
+
+In order to force the head-comp-phrase rule to apply AFTER the prop-or-ques rule, I introduced the P-OR-Q feature, which is a CAT feature and it starts out with the value [P-OR-Q -] in all everbs and then the negative value gets copied until the prop-or-ques rule is reached and it changes the value to [P-OR-Q +]. The interrogative-complementizer-lex-item type definition requires that the daughter's complement be [P-OR-Q +]. I am sure that there is a more elegant way of achieving this but this seems to work, so I will leave it alone for now and concentrate on solving other problems.
+
+cat :+ [ P-OR-Q bool ].
+
+head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+		      HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc,
+		      SYNSEM.LOCAL.CAT.P-OR-Q #p-or-q,
+		      HEAD-DTR.SYNSEM.LOCAL.CAT.P-OR-Q #p-or-q ].
+
+lex-rule :+ [ SYNSEM.LOCAL.CAT.P-OR-Q #p-or-q,
+	      DTR.SYNSEM.LOCAL.CAT.P-or-Q #p-or-q ].
+
+head-subj-phrase :+ [ SYNSEM.LOCAL.CAT.P-OR-Q #p-or-q,
+		      HEAD-DTR.SYNSEM.LOCAL.CAT.P-OR-Q #p-or-q ].
+subj-head-phrase :+ [ SYNSEM.LOCAL.CAT.P-OR-Q #p-or-q,
+		      HEAD-DTR.SYNSEM.LOCAL.CAT.P-OR-Q #p-or-q ].
+head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.P-OR-Q #p-or-q,
+		      HEAD-DTR.SYNSEM.LOCAL.CAT.P-OR-Q #p-or-q ].
+comp-head-phrase :+ [ SYNSEM.LOCAL.CAT.P-OR-Q #p-or-q,
+		      HEAD-DTR.SYNSEM.LOCAL.CAT.P-OR-Q #p-or-q ].
+head-comp-phrase-2 :+[ SYNSEM.LOCAL.CAT.P-OR-Q #p-or-q,
+		       HEAD-DTR.SYNSEM.LOCAL.CAT.P-OR-Q #p-or-q ].
+comp-head-phrase-2 :+ [ SYNSEM.LOCAL.CAT.P-OR-Q #p-or-q,
+			HEAD-DTR.SYNSEM.LOCAL.CAT.P-OR-Q #p-or-q ].
+
+
+;;;OK. I am noticing now that I my subject pro dropping was perhaps too extreme. It seems that in embedded clauses it is more constrained. It will require some thought to work this out. Later.
+
+Generation:
+Before moving on to modification, I tested what was wrong with my generation. It turned out that all my ltol rules were spinning. I fixed that by constraining the daughter in each rule to a lex-item. This solved the problem. But once I started generating I noticed that my fix caused a new problem.
+
+The generator generated sentences in which the noun and the adjective did not agree in definiteness. The parser rejected them but the generator didn't. In fact though, the parser didn't reject them with the regular message "no parse found" but with "Error: unifications failed to reunify upon drawing parse tree". Further investigation revealed that the moment when this happened was when the hebrew-head-adj-int-phrase applied.  Since it's been a few weeks since I worked on the adjectives and no longer remembered how I got them to work in the first place, I had to retrace everything. So here it is for your sake, but mainly for mine so that next time I can look up the notes on this:
+
+Hebrew has demonstrative adjectives and non-demonstrative adjectives. Since the demonstratives are a closed class I handled their gender and number inflection inside the lexicon:
+
+zat := demonstrative-adj-lex &
+   [ STEM < "zat" >,
+     INFLECTED -,
+     SYNSEM.LKEYS.KEYREL.PRED "_this_adj_rel",
+     SYNSEM.LOCAL.CAT.HEAD.ADJECTIVE-TYPE demonstrative-adjective,
+     SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg,
+							       GEND fem ] ] > ].
+
+The non-deminstrative adjective entries in the lexicon are uninflected for gender and number:
+
+myniin := non-demonstrative-adj-lex &
+   [ STEM < "myniin" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_interesting_adj_rel",
+     INFLECTED -,
+     SYNSEM.LOCAL.CAT.HEAD.ADJECTIVE-TYPE non-demonstrative-adjective,
+     SYNSEM.LOCAL.CAT.HEAD.VERB-PRESENT-TENSE-SG-F-SUFFIX-TYPE t-suffix ].
+
+The adjective-lex type defintions for the two adjective types both inherit from adjective-lex:
+
+adjective-lex := basic-adjective-lex &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD adj &
+				[ MOD < [ LOCAL [ CAT.HEAD noun,
+							 CAT.VAL.SPR 1-list,
+							 CONT.HOOK [ INDEX #ind,
+								     LTOP #ltop ] ] ] > ],
+			   VAL [ SPR < >,
+				 SUBJ < >,
+				 COMPS < >,
+				 SPEC < > ],
+			   POSTHEAD + ],
+		     CONT.HOOK [ LTOP #ltop ] ],
+	     LKEYS.KEYREL.ARG1 #ind ],
+    INFLECTED - ].
+
+non-demonstrative-adj-lex := adjective-lex &
+[ SYNSEM [ LOCAL [ CAT [ HEAD [ MOD < [  MODORDER adj-modorder ] > ]]]],
+  SYNSEM [ MODORDER adj-modorder ],
+  SYNSEM.INFLECTED-FOR-NUMBER - ].
+	   
+demonstrative-adj-lex := adjective-lex &
+[ SYNSEM [ LOCAL [ CAT [ HEAD [ MOD < [  MODORDER adj-modorder ] > ]]]],
+  SYNSEM [ MODORDER dem-modorder ],
+  SYNSEM.INFLECTED-FOR-NUMBER + ] .
+
+The non-demonstratives go through ltol rules that inflect them for gender amd number (the masculine singular has no inflectional suffix but it too goes through an inflectional ltol rule that gice sit the suffix :ADJ)
+
+sg-f-t-adjective-inflection-rule := infl-add-only-no-ccont-ltol-rule &
+ [ DTR lex-item,
+   DTR.SYNSEM.INFLECTED-FOR-NUMBER -,
+   SYNSEM.INFLECTED-FOR-NUMBER +,
+   SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ GEND fem,
+							     NUM sg ],
+				 MODORDER #modorder_of_nom ] >,
+   DTR.SYNSEM.LOCAL.CAT.HEAD adj & 
+				   [ VERB-PRESENT-TENSE-SG-F-SUFFIX-TYPE t-suffix,
+				     ADJECTIVE-TYPE non-demonstrative-adjective ],
+   DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ MODORDER #modorder_of_nom ] >,
+   SYNSEM [ MODORDER #modorder_of_adj ], 
+   DTR.SYNSEM [ MODORDER #modorder_of_adj ] ] .
+
+The demonstratives also go through an inflectional rule that attaches :ADJ to them as a suffix.
+
+dem-adjective-inflection-rule := infl-add-only-no-ccont-ltol-rule &
+ [ DTR lex-item,
+   SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG #png,
+				 MODORDER #modorder_of_nom  ] >,
+   DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG #png,
+				      MODORDER #modorder_of_nom ] >,
+   DTR.SYNSEM.LOCAL.CAT.HEAD adj  & [ ADJECTIVE-TYPE demonstrative-adjective ],
+   SYNSEM [ MODORDER #modorder_of_adj ], 
+   DTR.SYNSEM [ MODORDER #modorder_of_adj ] ].
+
+Once the gender and number suffixes are attached to the adjectives are ready to become definite or indefinite words:
+
+def-h-adj-rule := infl-ltow-rule & 
+  [ DTR lexeme-to-lexeme-rule &
+	[ SYNSEM [ MODORDER #modorder_of_adj ], 
+	  DTR.SYNSEM [ MODORDER #modorder_of_adj ], 
+	  SYNSEM.LOCAL.CAT.HEAD.MOD < [ MODORDER #modorder_of_nom ] >,
+	  DTR.SYNSEM.LOCAL.CAT.HEAD adj &
+		 [ MOD < [ MODORDER #modorder_of_nom,
+			   LOCAL [ CAT.HEAD.CASE nom,
+				   CONT.HOOK.INDEX.DEF + ] ] > ] ] ].
+
+indef-adj-rule := const-ltow-rule &
+  [ DTR lexeme-to-lexeme-rule &
+    [ SYNSEM [ MODORDER #modorder_of_adj ], 
+      DTR.SYNSEM [ MODORDER #modorder_of_adj ], 
+      SYNSEM.LOCAL.CAT.HEAD.MOD < [ MODORDER #modorder_of_nom ] >,
+      DTR.SYNSEM.LOCAL.CAT.HEAD adj & 
+	     [ MOD < [ MODORDER #modorder_of_nom,
+		       LOCAL.CONT.HOOK.INDEX.DEF - ] > ] ] ] .
+
+So at this point, an adjective's MOD should be specified for definiteness.
+Tracing the parse charts and feature structures for adjectives up to this point showed that for some reason this wasn't happening. The value of the MOD's  [LOCAL.CONT.HOOK.INDEX.DEF] remained unspecified. That is because it was the mother's and not the daughter's DEF that I should have constrained (how come it was working before????). Moroever, I am not sure my syntax was right in the previous ones in terms of the brackets. I fixed that, and the new rules are:
+
+def-h-adj-rule := infl-ltow-rule & 
+  [ DTR lexeme-to-lexeme-rule,
+    SYNSEM [ MODORDER #modorder_of_adj ], 
+    DTR.SYNSEM [ MODORDER #modorder_of_adj ], 
+    SYNSEM.LOCAL.CAT.HEAD.MOD < [ MODORDER #modorder_of_nom,
+				  LOCAL.CONT.HOOK.INDEX.DEF + ] >,
+    DTR.SYNSEM.LOCAL.CAT.HEAD adj &
+	[ MOD < [ MODORDER #modorder_of_nom ] > ] ].
+		
+
+indef-adj-rule := const-ltow-rule &
+  [ DTR lexeme-to-lexeme-rule,
+    SYNSEM [ MODORDER #modorder_of_adj ], 
+    DTR.SYNSEM [ MODORDER #modorder_of_adj ], 
+    SYNSEM.LOCAL.CAT.HEAD.MOD < [ MODORDER #modorder_of_nom,
+				  LOCAL.CONT.HOOK.INDEX.DEF - ] >,
+    DTR.SYNSEM.LOCAL.CAT.HEAD adj & 
+	[ MOD < [ MODORDER #modorder_of_nom ] > ] ].
+		       
+This solved the weird error message problem and the generation problem. Though for the life of me I can't see how come it worked before.
+
+More modification:
+Since I already had rules for adjectives in the grammar I decided to add adverbs.
+
+I added the adverb rule:
+
+adverb-lex := basic-adverb-lex & intersective-mod-lex &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL.CAT.HEAD verb ]>,
+			   VAL [ SPR < >,
+				 SUBJ < >,
+				 COMPS < >,
+				 SPEC < > ]]]]].
+and one lexical entry:
+
+mhr := adverb-lex &
+   [ STEM < "mhr" >, 
+     SYNSEM.LKEYS.KEYREL.PRED "_fast_r_rel" ].
+
+Each sentence with "mhr" got two parses, one with the adverb modifying the VP and one with the adverb modifying the S. The grammar used the adjective rule to get these parses. This is undesirable because while the adjective's position is fixed (it has to immediately follow the noun it modifies), the adverb's position is freer. Here are some examples:
+
+#1799
+Source: author
+Vetted: t
+Judgment: g
+Phenomena: adverbs
+hia qwrat mhr
+hia qra:PAAL.PRES-t mhr
+pron:NOM.3SG.F read:PAAL.PRES-SG.F fast
+'She reads fast.'
+
+#1800 
+Source: author
+Vetted: t
+Judgment: g
+Phenomena: adverbs
+hia qwrat sprim mhr
+hia qra:PAAL.PRES-t spr-im mhr
+pron:NOM.3SG.F read:PAAL.PRES-SG.F book:M.NON-SG fast
+'She reads books fast.'
+
+#1801 
+Source: author
+Vetted: t
+Judgment: g
+Phenomena: adverbs
+hia qrah mhr at cl hsprim w hxwbrwt halh
+hia qra:PAAL.PAST-h mhr at cl h-spr-im w h-xwbrt-wt h-alh
+pron:NOM.3SG.F read:PAAL.PAST-3SG.F fast ACC all the-book:M.NON-SG w the-pamphlet:F.NON-SG the-these
+'She read all those books and pamphlets fast.'
+
+#1802
+Source: author
+Vetted: t
+Judgment: g
+Phenomena: adverbs
+hia qrah at cl hsprim w hxwbrwt halh mhr
+hia qra:PAAL.PAST-h at cl h-spr-im w h-xwbrt-wt h-alh mhr
+pron:NOM.3SG.F read:PAAL.PAST-3SG.F ACC all the-book:M.NON-SG w the-pamphlet:F.NON-SG the-these fast
+'She read all those books and pamphlets fast.'
+
+#1803
+Source: author
+Vetted: t
+Judgment: g
+Phenomena: adverbs
+mhr hia qrah at cl hsprim w hxwbrwt halh
+mhr hia qra:PAAL.PAST-h at cl h-spr-im w h-xwbrt-wt h-alh
+fast pron:NOM.3SG.F read:PAAL.PAST-3SG.F ACC all the-book:M.NON-SG w the-pamphlet:F.NON-SG the-these
+'She read all those books and pamphlets fast.'
+
+#1804
+Source: author
+Vetted: t
+Judgment: g
+Phenomena: adverbs
+hia mhr qrah at cl hsprim w hxwbrwt halh
+hia mhr qra:PAAL.PAST-h at cl h-spr-im w h-xwbrt-wt h-alh
+pron:NOM.3SG.F fast read:PAAL.PAST-3SG.F ACC all the-book:M.NON-SG w the-pamphlet:F.NON-SG the-these
+'She read all those books and pamphlets fast.'
+
+Can they absolutely anywhere? No. I need to do a full analysis of where adverbs can and cannot go, but this I feel is something I want to do much later after my grammar can handle lots of other things that seem more pressing. For now, I decided to just add an adverb rule so that all orders are accepted and to prevent the adjective rule from applying to adverbs.  
+
+The latter was accomplished by adding to the adj rule the constraint that the head of the non-head daughter had to be adj.
+
+hebrew-head-adj-int-phrase := head-adj-int-phrase &
+[ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adj,
+  SYNSEM.MODORDER #modorder,
+  NON-HEAD-DTR.SYNSEM [ LOCAL [ CAT [ HEAD [ MOD < [  MODORDER #modorder2 ] > ]]]],
+  HEAD-DTR.SYNSEM.MODORDER #modorder2,
+  NON-HEAD-DTR.SYNSEM.MODORDER #modorder ].
+
+The former was accomplished with:
+
+head-adv-int-phrase := head-adj-int-phrase &
+[ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].
+
+adv-head-int-phrase := adj-head-int-phrase &
+[ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].
+
+So this yields the following results:
+
+1 parse with the avderb modifying the the VP.
+ild mhr hlk:PAAL.PRES
+boy fast walk:PAAL.PRES.SG.M
+'A boy is walking fast.'
+
+1 parse with the avderb modifying the the S.
+mhr ild hlk:PAAL.PRES
+fast boy walk:PAAL.PRES.SG.M
+'A boy is walking fast.'
+
+2 parses: 1 with adverb modifying the VP and 1 with it modifying the S.
+ild hlk:PAAL.PRES mhr
+boy walk:PAAL.PRES.SG.M fast
+'A boy is walking fast.'
+
+While in the third example is not ambiguous, and the adverb is really only modifying the VP and  not the S, there are other adverbs that could modify the entire S. Actually, the tree structure here is not entirely meaningful and the labels are misleading. The tree structure is a function of the order in which the rules apply. It may be that the adverb should be in the same relation to the verb whether it procedes it or follows it, but the way the grammar is written there is no way to achieve this right now. The S modification versus the VP modification is just a byproduct of that. But I think it is OK for now to leave the two parses anyway as I don't have a full analysis of adverbs in Hebrew and I do not know how, if at all, one can create flat structures in the LKB.
+
+
+TSDB:
+
+The reults now are 36.6 in coverage and 5.5 in overgeneration. So the improvement in coverage is minute (2.5). But the overgeneration went down from 9.1.
+
+Comparing the details of last week's grammar with today's (so your instructions in class last week were helpful), I discovered several problems, which I had to fix:
+1. The null subject rules were letting imperatives through so imperatives were getting two parses. 
+2. Sentences with interrogative complementizers and an embedded transitive verb (e.g. read) were getting two parses, one with the embedded sentence going through the prop-or-ques rule (correct) and one without it (incorrect). It seems that the P-OR-Q constraint that I described above in the context of the head-comp-phrase rule didn't work for transitives.Why? Because I added the constraint as follows:
+verb-lex :+ [ SYNSEM.LOCAL.CAT.P-OR-Q - ].
+not realizing that transitives didn't inherit from verb-lex but from basic-verb-lex. I fixed that by adding the constraint in intransitives and transitives separately.
+
+By the way, even though the fixes above concerned quite a few sentence, the coverage and generation results did not budge. That is because all the examples I fixed were all cases of getting rid of a second bad parse, which is not measured in the overall coverage and overgeneration numbers. 
+
+Why was the change from last week so minute though? My test suite doesn't include many adverbs so whatever adverb ruleshandling machinery I added to the grammar is of little consequence to the test suite. Only two of the examples in the detail comparison are of null subjects. I didn't consider null indefinite instantiation of objects of transitives when designing the test suite so there are no examples of them in the test suite. Oh well, maybe next week there will be a bigger jump.
+
+Remaining issues:
+
+While "She reads fast" gets two parses "She doesn't read fast" gets only one. I am not sure this makes sense. But will leave this for later.
+
+
+
+
+
+

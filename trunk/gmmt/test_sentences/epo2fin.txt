@@ -1,0 +1,51 @@
+hundoj dormas
+koira+Pl+Nom nukkua+3p+Pl
+
+hundoj casas autojn
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+mi casas vin
+minA+Sg+Nom metsAstAA+1p+Sg sinA+Sg+Acc
+
+tiuj hundoj dormas
+tuo+Pl+Nom koira+Pl+Nom nukkua+3p+Pl
+
+hundoj mangxas
+koira+Pl+Nom syOdA+3p+Pl
+
+mi povas mangxi vitron
+minA+Sg+Nom voida+1p+Sg syOdA+Inf lasi+Sg+Part
+
+li ne doloras min
+hAn+Sg+Nom ei sattua+3p+Sg minA+Sg+Part
+
+la hundoj casas autojn
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+mi pensas ke vi scias ke hundoj casas autojn
+minA+Sg+Nom ajatella+1p+Sg ettA sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+mi demandas cxu vi scias ke hundoj casas autojn
+minA+Sg+Nom kysyA+1p+Sg jos sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+katoj kaj hundoj casas autojn
+kissa+Pl+Nom ja koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+hundoj casas autojn kaj katoj casas hundojn
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc ja kissa+Pl+Nom metsAstAA+3p+Pl koira+Pl+Acc
+
+katoj casas hundojn kaj dormas
+kissa+Pl+Nom metsAstAA+3p+Pl koira+Pl+Acc ja nukkua+3p+Pl
+
+cxu katoj casas hundojn?
+metsAstAA+3p+Pl+Ques kissa+Pl+Nom koira+Pl+Acc
+
+casu la hundon!
+metsAstAA koira+Sg+Acc
+
+malsataj hundoj mangxas
+nAlkAinen+Pl+Nom koira+Pl+Nom syOdA+3p+Pl
+
+malsataj hundoj mangxas rapide
+nAlkAinen+Pl+Nom koira+Pl+Nom syOdA+3p+Pl nopeasti
+

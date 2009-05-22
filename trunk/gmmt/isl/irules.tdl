@@ -1,0 +1,291 @@
+
+m-nom-sg-det :=
+%suffix (* -inn)
+m-nom-sg-det-lex-rule.
+
+m-acc-sg-det :=
+%suffix (* -inn)
+m-acc-sg-det-lex-rule.
+
+m-nom-pl-det :=
+%suffix (* -nir)
+m-nom-pl-det-lex-rule.
+
+m-acc-pl-det :=
+%suffix (* -na)
+m-acc-pl-det-lex-rule.
+
+m-dat-pl-det :=
+%suffix (* -num)
+m-dat-pl-det-lex-rule.
+
+m-dat-sg-det :=
+%suffix (* -num)
+m-dat-sg-det-lex-rule.
+
+f-nom-sg-det :=
+%suffix (* -in)
+f-nom-sg-det-lex-rule.
+
+f-acc-sg-det :=
+%suffix (* -ina)
+f-acc-sg-det-lex-rule.
+
+f-dat-sg-det :=
+%suffix (* -inni)
+f-dat-sg-det-lex-rule.
+
+n-nom-sg-det :=
+%suffix (* -ið)
+n-nom-sg-det-lex-rule.
+
+n-acc-sg-det :=
+%suffix (* -ið)
+n-acc-sg-det-lex-rule.
+
+n-dat-sg-det :=
+%suffix (* -nu)
+n-dat-sg-det-lex-rule.
+
+m-cl1to3-nom-noun :=
+%suffix (* -ur)
+m-clto3-sg-nom-lex-rule.
+
+;; ERB 2007-05-11  Added class one plural rules.
+
+m-cl1-pl-nom-noun := 
+%suffix (* -ar)
+m-cl1-nom-pl-lex-rule.
+
+m-cl1-pl-acc-noun := 
+%suffix (* -a)
+m-cl1-acc-pl-lex-rule.
+
+;; EBR 2007-05-11 Added instance here, type was defined.
+
+m-cl1to3-pl-dat-noun := 
+%suffix (* -um)
+m-cl1to3-pl-dat-lex-rule.
+
+
+m-cl1-dat-noun :=
+%suffix (* -i)
+m-cl1-sg-dat-lex-rule.
+
+m-cl3-dat-noun :=
+%suffix (* -i)
+m-cl3-sg-dat-lex-rule.
+
+;; ERB 2007-05-11
+
+m-cl3-nom-pl-noun :=
+%suffix (* -ir)
+m-cl3-nom-pl-lex-rule.
+
+m-cl3-acc-pl-noun :=
+%suffix (* -i)
+m-cl3-acc-pl-lex-rule.
+
+
+f-cl1-acc-noun :=
+%suffix (* -u)
+f-cl1-sg-acc-lex-rule.
+
+f-cl1-dat-noun :=
+%suffix (* -u)
+f-cl1-sg-dat-lex-rule.
+
+n-dat-noun :=
+%suffix (* -i)
+n-sg-dat-lex-rule.
+
+1pl_verb :=
+%suffix (* -um)
+1pl_verb-lex-rule.
+
+2sg_verb :=
+%suffix (* -ar)
+2sg_verb-lex-rule.
+
+2pl_verb :=
+%suffix (* -ið)
+2pl_verb-lex-rule.
+
+3sg_verb :=
+%suffix (* -ar)
+3sg_verb-lex-rule.
+
+2-pl-imp :=
+%suffix (* -ið)
+2-pl-imp-lex-rule.
+
+1-pl-imp :=
+%suffix (* -um)
+1-pl-imp-lex-rule.
+
+weak-m-sg-nom-adj :=
+%suffix (* -i)
+weak-m-sg-nom-adj-lex-rule.
+
+weak-m-sg-acc-adj :=
+%suffix (* -a)
+weak-m-sg-acc-adj-lex-rule.
+
+weak-m-sg-dat-adj :=
+%suffix (* -a)
+weak-m-sg-dat-adj-lex-rule.
+
+weak-f-sg-nom-adj :=
+%suffix (* -a)
+weak-f-sg-nom-adj-lex-rule.
+
+weak-f-sg-acc-adj :=
+%suffix (* -u)
+weak-f-sg-acc-adj-lex-rule.
+
+weak-f-sg-dat-adj :=
+%suffix (* -u)
+weak-f-sg-dat-adj-lex-rule.
+
+weak-n-sg-adj :=
+%suffix (* -a)
+weak-n-sg-adj-lex-rule.
+
+weak-pl-adj :=
+%suffix (* -u)
+weak-pl-adj-lex-rule.
+
+1-pl-aux :=
+%suffix (* -um)
+1-pl-aux-lex-rule.
+
+2-sg-aux :=
+%suffix (* -ur)
+2-sg-aux-lex-rule.
+
+2-pl-aux :=
+%suffix (* -id)
+2-pl-aux-lex-rule.
+
+3-sg-aux :=
+%suffix (* -ur)
+3-sg-aux-lex-rule.
+
+3-pl-aux :=
+%suffix (* -a)
+3-pl-aux-lex-rule.
+
+;;; ERB 2007-05-15 Adding a lexical rule for "supine" verbs.  Not
+;;; bothering with morphophonology, just putting the one in for the
+;;; class containing "eat".
+
+supine-verb := 
+%suffix (* -ð)
+supine-verb-lex-rule.
+
+;;; ERB 2007-05-11 Strong adj rules.
+;;; There's actually at least two declensions here.  Just doing
+;;; the one that 'hungry' belongs to.
+
+;;; ERB 2007-05-11 Not modeling the syncretism here, so we're
+;;; going to get extra edges.
+
+; Constant lex rule for this one.
+
+;f-sg-nom-strong :=
+;%suffix (* -)
+;f-sg-nom-strong-adj-lex-rule.
+
+f-sg-acc-strong :=
+%suffix (* -a)
+f-sg-acc-strong-adj-lex-rule.
+
+f-sg-dat-strong :=
+%suffix (* -ri)
+f-sg-dat-strong-adj-lex-rule.
+
+f-sg-gen-strong :=
+%suffix (* -rar)
+f-sg-gen-strong-adj-lex-rule.
+
+f-pl-nom-strong :=
+%suffix (* -ar)
+f-pl-nom-strong-adj-lex-rule.
+
+f-pl-acc-strong :=
+%suffix (* -ar)
+f-pl-acc-strong-adj-lex-rule.
+
+f-pl-dat-strong :=
+%suffix (* -um)
+f-pl-dat-strong-adj-lex-rule.
+
+f-pl-gen-strong :=
+%suffix (* -ra)
+f-pl-gen-strong-adj-lex-rule.
+
+m-sg-nom-strong :=
+%suffix (* -ur)
+m-sg-nom-strong-adj-lex-rule.
+
+m-sg-acc-strong :=
+%suffix (* -an)
+m-sg-acc-strong-adj-lex-rule.
+
+m-sg-dat-strong :=
+%suffix (* -um)
+m-sg-dat-strong-adj-lex-rule.
+
+m-sg-gen-strong :=
+%suffix (* -s)
+m-sg-gen-strong-adj-lex-rule.
+
+m-pl-nom-strong :=
+%suffix (* -ir)
+m-pl-nom-strong-adj-lex-rule.
+
+m-pl-acc-strong :=
+%suffix (* -a)
+m-pl-acc-strong-adj-lex-rule.
+
+m-pl-dat-strong :=
+%suffix (* -um)
+m-pl-dat-strong-adj-lex-rule.
+
+m-pl-gen-strong :=
+%suffix (* -ra)
+m-pl-gen-strong-adj-lex-rule.
+
+n-sg-nom-strong :=
+%suffix (* -t)
+n-sg-nom-strong-adj-lex-rule.
+
+n-sg-acc-strong :=
+%suffix (* -t)
+n-sg-acc-strong-adj-lex-rule.
+
+n-sg-dat-strong :=
+%suffix (* -u)
+n-sg-dat-strong-adj-lex-rule.
+
+n-sg-gen-strong :=
+%suffix (* -s)
+n-sg-gen-strong-adj-lex-rule.
+
+;;; These two are constant lex rules.
+
+;n-pl-nom-strong :=
+;%suffix (* -)
+;n-pl-nom-strong-adj-lex-rule.
+
+;n-pl-acc-strong :=
+;%suffix (* -)
+;n-pl-acc-strong-adj-lex-rule.
+
+n-pl-dat-strong :=
+%suffix (* -um)
+n-pl-dat-strong-adj-lex-rule.
+
+n-pl-gen-strong :=
+%suffix (* -ra)
+n-pl-gen-strong-adj-lex-rule.

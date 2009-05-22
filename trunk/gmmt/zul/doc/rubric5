@@ -1,0 +1,62 @@
+------------------------------------------------------
+Comments
+
+ One tricky bit is that class 10 is the plural of both classes 9 and
+ 11.  For this I created two supertypes c9-or-c10 and c11-or-c10 (the
+ eleven is first so I'll remember it's singular).  Class 9 inherits
+ from the first one, class 11 from the second one, and class 10 from
+ both.
+
+Nice!
+
+ I wrote these as infl-ltow-lex-rules, as that's what I had written
+ down in my notes from class, but I wonder now why that works, because
+ I am usually changing the NCL value.  Perhaps because I am further
+ constraining the value, rather than changing it entirely?
+
+Right --- further constraining something counts as "adding" information.
+The output is consistent with the input (which is why we have to go
+out of our way to make sure they don't spin).
+
+ In building my test suite, I encountered some strange variations of
+ the agreement system.
+
+Such as?
+
+ (object concord) - ltol
+ verb tense -ltol
+ subject concord -ltow
+ (negation) -ltow(?)
+
+This is an example of what's currently wrong with the way the customization
+script produces lexical rules.  We just assume there's at most one affix,
+and call the rules ltow.  For Zulu, apparently what you want is word-to-word
+(so [INFLECTED +] ltol, actually) for the negation rule.  The question is
+how to figure out things like *that* from the questionnaire in the general
+case.
+
+ One side effect of implementing tense is that I can no longer parse
+ imperatives, which don't have tense markers.  I felt this was an
+ acceptable trade off for now.
+
+Indeed.
+
+ Subject concords are implemented pretty much the same as object
+ concords.  The DTR value of subj-concord-lex-rule is
+ verb-tense-lex-rule, because every verb form has both a subject
+ concord and a tense marker, or neither.  The agreement information is
+ also pulled from the PNG values of the (one element on the ) SUBJ list
+ of the input verb.
+
+"pulled from"?
+
+ My grammar also generates as I would expect it to.  A sentence with an
+ intransitive verb generates two sentences: one declarative and one
+ with the question marker.  This isn't surprising, as we haven't
+ provided any means of differentiating the two yet.  With a transitive
+ verb, there are 4 generations: the declarative/interrogative pairs as
+ above, for verbs with and without the object concord.
+
+Nice!  The double generation from declaratives is expected: Because we
+allow for intonation questions, the MRS for the declarative is
+underspecified between a proposition and question.

@@ -1,0 +1,25 @@
+Lab 7 Grading Rubric
+
+
+Even within the broad classes of scopal and intersective
+adverbs, expect some subclasses with different MOD values.
+
+"Intersectal" is odd, "intersective" being the usual form.
+
+Rather than restrict the phrase type that scopal adverbs can attach
+to, I would prefer a strategy of restricting the VAL inside MOD of
+those adverbs.  I would be tempted to create a verbal 'ne', looking to
+modify a [SUBJ cons, HEAD verb] constituent.  (Since there's a
+reasonably good chance we'll need to do something semantically
+different with constituent negation 'ne', this extra entry might not
+be such a bad thing.)  The problem then becomes requiring the verb to
+have not yet picked up any of its complements, either, though
+modifiers are okay.  One strategy that ones to mind: use the features
+LIGHT and HC-LIGHT (misnamed perhaps, for this use) so that both
+lexical Vs and lexical Vs with modifiers (but no arguments) attached
+are [LIGHT +].  This will probably require minor changes to the
+constraints on HC-LIGHT in the Matrix.
+
+I think in order to get all of the word orders, you might need to
+go with an argument-composition analysis instead of a subject-raising
+analysis.

@@ -1,0 +1,4 @@
+; ----- IMPERATIVES (ZERO MARKED)
+
+imperative_verb_rule :=
+  imperative-lex-rule .

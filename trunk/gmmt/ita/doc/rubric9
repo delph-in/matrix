@@ -1,0 +1,51 @@
+Lab 9 Grading Rubric
+ 
+---------------------------------------------------------------
+
+ Non mangi-o la pasta.  (I don't eat the staple+food)
+
+;-)
+
+ lexical top
+
+LTOP stands for 'local top' (as in the topmost handle of
+the local mrs).
+
+ the argrument optionality marker
+
+Probably  better to call these incorporated pronouns.
+
+ In Italian the modal can also take all of the verb's arguments and add
+ an argument optionality marker on itself.  Even though I have received
+ significant help from the teacher on this, I did not have time to
+ complete this.  It is semantic sugar, and there will be at least one
+ parse for the machine translation extravaganza.  These sentences
+ should also parse, but don't
+
+That's too bad.  :-(
+
+Listening to the talk on Clitic Cimbing in Spanish last Friday,
+I realized we could make things a little simpler.  Potere either
+takes a bare verb and 'raise' all of its arguments (argument composition)
+or it takes a VP.  Then the argument-composition potere can undergo
+some set of clitic rules, but doesn't have to.  You'd get structures
+like this:
+
+[potere mangiare] la pasta
+
+... so maybe you should somehow require the argument composition
+potere to undergo at least one clitic rule.  As long as it takes
+all of the arguments over or just the subject, though, you'll get
+the clitic clumping effect.
+
+Your head-opt-subj rule needs to inherit from head-compositional.
+Without that, the qeq for the prop-or-ques_m_rel gets broken.
+
+
+You're right that the reflexive verbs need to be handled
+separately.  I think the way to go is with the ones that are
+*lexically* required to be reflexive, that affix is really just
+an agreement marker with the subject.  
+
+Still, that's not what's going on with mi-duole, and I'm surprised
+that it generates duole, since duole shouldn't have 1sg on the ARG2.

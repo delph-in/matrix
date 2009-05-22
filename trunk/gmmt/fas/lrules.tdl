@@ -1,0 +1,19 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+; File for spelling preserving lexical rules, i.e., instances
+; of (subtypes of) const-ltol-rule or const-ltow-rule.
+
+; %suffix should not appear in this file (see irules.tdl).
+
+def_n_lex := def_n_lex_rule.
+non_acc_lex := non_acc_lex_rule.
+zero_acc := zero_acc_lex_rule.
+
+3sg_past_lex := 3sg_past_lex_rule.
+
+;covert_verb_prefix := covert_verb_prefix_rule.
+
+imperative_verb := imperative_verb_rule.
+
+; ERB 2007-08-19
+
+sg-noun := sg-noun-lex-rule.

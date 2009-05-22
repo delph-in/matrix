@@ -1,0 +1,64 @@
+;; -*- Mode: TDL; Package: LKB -*-
+
+;; rules.tdl
+;; Created 4-6-04
+;; Ryan G. Mattson (ryangm@u.washington.edu)
+
+head-comp := head-comp-phrase.
+;subj-head := subj-head-phrase.
+decl-head-subj := decl-head-subj-phrase.
+int-head-subj := int-head-subj-phrase.
+head-spec := head-spec-phrase.
+bare-np := bare-np-phrase.
+pronoun-bare-np := pronoun-bare-np-phrase.
+
+;lab4 additions below
+;head-opt-subj := head-opt-subj-phrase.
+decl-head-opt-subj := decl-head-opt-subj-phrase.
+int-head-opt-subj := int-head-opt-subj-phrase.
+head-opt-comp := head-opt-comp-phrase.
+adj-head-int := finnish-adj-head-int-phrase.
+head-adj-int := finnish-head-adj-int-phrase.
+
+;lab5 additions below
+;decl := decl-clause.
+
+;lab6 additions below
+int := int-clause.
+imperative-head-opt-subj := imperative-head-opt-subj-phrase.
+;imp := imp-clause.
+;cp-interrogative := cp-interrogative-clause.
+
+;lab7 additions
+adj-head-scop := adj-head-scop-phrase.
+
+;lab8 additions
+; second-non-first-np-top := second-non-first-np-top-coord.
+; third-second-np-top := third-second-np-top-coord.
+; third-third-np-top := third-third-np-top-coord.
+; person-first-np-top := person-first-np-top-coord.
+; first-person-np-top := first-person-np-top-coord.
+; second-non-first-np-mid := second-non-first-np-mid-coord.
+; third-second-np-mid := third-second-np-mid-coord.
+; third-third-np-mid := third-third-np-mid-coord.
+; person-first-np-mid := person-first-np-mid-coord.
+; first-person-np-mid := first-person-np-mid-coord.
+np-top-coord := np-top-coord-rule.
+np-mid-coord := np-mid-coord-rule.
+
+np-bottom-coord := np-bottom-coord-rule.
+
+vp-top-coord := vp-top-coord-rule.
+vp-mid-coord := vp-mid-coord-rule.
+vp-bottom-coord := vp-bottom-coord-rule.
+
+s-top-coord := s-top-coord-rule.
+s-mid-coord := s-mid-coord-rule.
+s-bottom-coord := s-bottom-coord-rule.
+
+adj-top-coord := adj-top-coord-rule.
+adj-mid-coord := adj-mid-coord-rule.
+adj-bottom-coord := adj-bottom-coord-rule.
+
+; end of file
+
