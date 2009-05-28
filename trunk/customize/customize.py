@@ -434,6 +434,8 @@ def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=
 	          RELS list.  It is instantiated by a spelling-changing\n\
 	          rule as specified in irules.tdl.',
                   merge=True)
+    elif(n=='OPT' and v[0] == '+') and h == 'subj':
+      tdlfile.add(type_name + ':= subj-drop-verb-lex.', merge = True)
     ch.iter_next()
   ch.iter_end()
 
@@ -3652,6 +3654,7 @@ def customize_verbs():
   while ch.iter_valid():
     name = get_name()
     val = ch.get('valence')
+    
 
     i = val.find(',')
     dir_inv = ''
@@ -3671,7 +3674,7 @@ def customize_verbs():
     else:
       s_case = canon_to_abbr(val, cases)
       tivity = s_case + '-intrans'
-
+    
     stype = dir_inv + tivity + 'itive-verb-lex'
     vtype = name + '-verb-lex'
 
