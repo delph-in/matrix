@@ -74,6 +74,13 @@ findings, and conclusions or recommendations expressed in this
 material are those of the author(s) and do not necessarily
 reflect the views of the National Science Foundation.
 
+<p>Publications reporting on work based on grammars derived from this
+system should cite <a
+href="http://faculty.washington.edu/ebender/papers/gee03.pdf">Bender,
+Flickinger and Oepen 2002</a> <a
+href="http://faculty.washington.edu/ebender/bibtex/BenFliOep02.bib.txt">[.bib]</a>
+and <a href="http://faculty.washington.edu/ebender/papers/modules05.pdf">Bender and Flickinger 2005</a> <a href="http://faculty.washington.edu/ebender/bibtex/BenFli05.bib.txt">[.bib]</a>.
+
 <p>Filling out this form will produce a starter grammar for a natural
 language, consisting of a language-independent core and customized
 support for the phenomena you describe below.  Note that this grammar
