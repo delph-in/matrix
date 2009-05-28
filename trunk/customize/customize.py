@@ -3216,6 +3216,41 @@ def customize_yesno_questions():
     add_irule('ques-infl-lr','ques-infl-lex-rule',ch.get('ques-aff'),ch.get('ques-aff-orth'))
 
 
+######################################################################
+# customize_arg_op()
+#   Create phrase-structure and lexical rules associated with user's
+#   choices on argument optionality page.
+
+def customize_arg_op():
+  """ Create the lexical types, lexical, rules and phrase structure
+      rules to allow argument dropping"""
+  #Figure out the constraints on subject dropping and write the 
+  #appropriate tdl 
+
+  if ch.get('subj-drop') == 'subj-drop-all':
+    rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.')
+  if ch.get('subj-drop') == 'subj-drop-lex':
+    rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.')
+    mylang.add('no-subj-drop-verb-lex := verb-lex &\
+                         [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].')
+    mylang.add('subj-drop-verb-lex := verb-lex.')
+  
+
+  #Figure out the constraints on object dropping and write the 
+  #appropriate tdl
+  if ch.get('obj-drop')=='obj-drop-all' and not ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not':
+    rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
+  if ch.get('obj-drop') == 'obj-drop-lex' and not ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not':
+    rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
+    mylang.add('no-obj-drop-verb-lex := transitive-verb-lex &\
+                        [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].')
+    mylang.add('obj-drop-verb-lex := transitive-verb-lex.')
+  if ch.get('subj-drop') == 'subj-drop-lex' and ch.get('obj-drop') == 'obj-drop-lex':
+    mylang.add('subj-drop-only-verb-lex := subj-drop-verb-lex & no-obj-drop-verb-lex.')
+    mylang.add('obj-drop-only-verb-lex := obj-drop-verb-lex & no-subj-drop-verb-lex.')
+    mylang.add('subj-obj-drop-verb-lex := subj-drop-verb-lex & obj-drop-verb-lex.')
+    mylang.add('no-drop-verb-lex := no-subj-drop-verb-lex & no-obj-drop-verb-lex.')
+
 
 ######################################################################
 # customize_lexicon()
@@ -4848,6 +4883,7 @@ def customize_matrix(path, arch_type):
   customize_sentential_negation()
   customize_coordination()
   customize_yesno_questions()
+  customize_arg_op()
   customize_test_sentences(matrix_path)
   customize_roots()
 

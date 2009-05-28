@@ -991,6 +991,10 @@ class ChoicesFile:
     if self.get_full('infl-neg'):
       features += [ ['negation', 'plus|plus', '' ] ]
 
+    # Argument Optionality
+    if self.get_full('subj-drop') or self.get_full('obj-drop'):
+      features +=[['OPT', '+|+', '']]
+
     # Other features
     state = self.iter_state()
     self.iter_reset()

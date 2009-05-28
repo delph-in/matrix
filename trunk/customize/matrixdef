@@ -582,9 +582,77 @@ Radio q-inv-verb "Inverted verb in questions" "" ""
 . main-aux "Main and auxiliary" "" "any verb<br>"
 
 
+Section arg-opt "Argument Optionality"
+Label "<p>  Languages place different restrictions on argument optionality.  Some require that subjects (and objects of transitive verbs) always be overtly realized as separate words. Others allow subjects and/or objects to be dropped for all verbs or only for certain verbs or in particular contexts.  For example, English always requires overt subjects (I studied) whereas in Arabic the corresponding sentence does not require a pronoun (darastu).  In languages which allow arugment dropping a marker is often attached to the verb that contains all of the information that a pronoun would--person, number, and gender.  This is not always the case, however.  Japanese for instance allows subject dropping but does not mark the verb for person, number or gender.</p>"
+
+Label "<p>Does your language allow argument optionality?  If so, choose the option that best describes your language.  If not, leave this page blank.</p>"
+Label "<p> NOTE: The questionnaire is only able to handle subject and object marking that occurs on the verb.  It is unable to handle clitics which can attach to words other than the verb.</p>"
+
+Label "<h3>Subject Dropping</h3>"
+Label "<p>In some languages subjects can always be dropped and in others they can only be dropped for certain verbs or in certain contexts.  (Tamil generally allows subject dropping but does not allow verbs relating to the weather to drop their subjects.)*  Arabic allows subjects to be dropped for all verbs, tenses and persons whereas Hebrew does not allow subjects to be dropped in the present tense.  If your language only allows subjects to be dropped for certain combinations of verb tenses/aspects and persons/number, please choose the feature values for those combinations.</p>"
+
+Radio subj-drop "Subject Drop" "<p>Subject dropping can occur </p>" ""
+. subj-drop-all "Subj Drop Always" "" "with any verb<br>"
+. subj-drop-lex "Subj Drop Some" "" "only with certain verbs"
+
+Label "<p>NOTE: When completing the lexicon page, for each verb type which allows subject dropping, select the feature <span class=\"feat\">OPT</span> + and marked on the subject.</p>"
+
+Radio subj-mark-drop "Subj Mark Drop" "<p>When a subject is dropped, a subject marker on the verb is</p>" ""
+. subj-mark-drop-req "Subj Mark Req" "" "required<br>"
+. subj-mark-drop-opt "Subj Mark Opt" "" "optional<br>"
+. subj-mark-drop-not "Subj Mark Not" "" "not permitted"
+
+Radio subj-mark-no-drop "Subj Mark No Drop" "<p>When a subject is overt (not dropped), a subject marker on the verb is</p>" ""
+. subj-mark-no-drop-req "Subj Mark Req" "" "required<br>"
+. subj-mark-no-drop-opt "Subj Mark Opt" "" "optional<br>"
+. subj-mark-no-drop-not "Subj Mark Not" "" "not permitted"
+
+Radio subj-con  "Subject Context" "<p>Subject dropping occurs in </p>" ""
+. subj-con-always "Subj Context All" "" "all contexts<br>"
+. subj-con-some "Subj Context Some" "" "some contexts"
+
+Label "<p><b>Contexts</b></p>"
+
+BeginIter context{i} "a Context"
+  Label "<b>Context {i}</b><br>"
+  Label "Features:"
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Context {i} feature {j} name" "Name: " " "
+    fillnames
+
+    MultiSelect value "Context {i} feature {j} value" "Value: " ""
+    fillvalues context{i}_feat{j}_name
+
+  EndIter feat    
+
+EndIter context
+
+Label "<h3>Object Dropping</h3>"
+Label "<p>Some languages allow all transitive verbs to drop their objects. In other languages object dropping is restricted to certain verbs.  English is an example of the latter.  In general transitive verbs must have an overt object, but there are a few verbs such as eat which allow object dropping.</p>"
+
+Radio obj-drop "Object Drop" "<p>Object dropping is </p>" ""
+. obj-drop-all "Obj Drop Always" "" "always allowed<br>"
+. obj-drop-lex "Obj Drop Lex" "" "lexically licensed"
+
+Label "<p>NOTE: When completing the lexicon page, for each verb which allows subject dropping, select the feature <span class=\"feat\">OPT</span> + and marked on the object.</p>"
+
+Radio obj-mark-drop "Obj Mark Drop" "<p>When an object is dropped, an object marker on the verb is  </p>" ""
+. obj-mark-drop-req "Obj Mark Req" "" "required<br>"
+. obj-mark-drop-opt "Obj Mark Opt" "" "optional<br>"
+. obj-mark-drop-not "Obj Mark Not" "" "not permitted<br>"
+
+Radio obj-mark-no-drop "Obj Mark Drop" "<p>When an object is overt (not dropped), an object marker on the verb is</p>" ""
+. obj-mark-no-drop-req "Obj Mark Req" "" "required<br>"
+. obj-mark-no-drop-opt "Obj Mark Opt" "" "optional<br>"
+. obj-mark-no-drop-not "Obj Mark Not" "" "not permitted<br>"
+
+
 Section lexicon "Lexicon"
 
-Label "<p>On this page you will define <span class=\"dfn\">lexical types</span> and <span class=\"dfn\">lexical items</span> within those types.  For most lexical items you must provide both the spelling of the stem and a <span class=\"dfn\">predicate</span> (or <span class=\"dfn\">relation</span>) that identifies the stem's semantic contribution (e.g. <tt>_cat_n_rel</tt> for the noun relation contributed by <i>cat</i> or <tt>_sleep_v_rel</tt> for the verb relation contributed by <i>sleep</i>).</p>"
+Label "<p>On this page you will define <span class=\"dfn\">lexical types</span> and <span class=\"dfn\">lexical items</span> within those types.  For most lexical items you must provide both the spelling of the stem and a <span class=\"dfn\">predicate</span> (or <span class=\"dfn\">relation</span>) that identifies the stem's semantic contribution (e.g. <tt>_cat_n_rel</tt> for the noun relation contributed by <i>cat</i> or <tt>_sleep_v_rel</tt> for the verb relation contributed by <i>sleep</i>).  If you completed the Argument Optionality page, be sure to specify whether each verb type allows subject and or object dropping by selecting the correct value for the <span class=\"feat\">opt</span> feature.</p>"
+
 
 Label "<p>In addition to lexical types, you can define inflectional morphology for nouns, verbs, and determiners.  To do so, first define one or more inflectional <span class=\"dfn\">slots</span>, which determine the order in which morphemes appear, then define one or more <span class=\"dfn\">morphemes</span> that can appear in each slot, along with the <span class=\"dfn\">features</span> specified by each morpheme.  To determine the order of slots, you must define one or more <span class=\"dfn\">inputs</span> for each.  For morphemes that attach directly to stems, the input will be a lexical type; for morphemes that attach to already-inflected stems, the input will be another slot.</p>"
 
