@@ -528,9 +528,9 @@ def customize_case_adpositions():
 
     if ch.has_mixed_case():
       mylang.add('+np :+ [ CASE-MARKED bool ].')
-      typedef = \
-        'case-marking-adp-lex := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].'
-      mylang.add(typedef)
+      mylang.add(
+        'case-marking-adp-lex := \
+         [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].')
 
     # Lexical entries
     lexicon.add_literal(';;; Case-marking adpositions')
@@ -3406,6 +3406,13 @@ def customize_verb_case():
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
           mylang.add(typedef)
 
+        # constrain CASE-MARKING of the agent/subject, if appropriate
+        if a_case and ch.has_mixed_case() and not ch.has_optadp_case(a_case):
+          typedef = \
+            t_type + ' := \
+            [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
+          mylang.add(typedef)
+
         # constrain the head of the patient/object
         typedef = \
           t_type + ' := \
@@ -3417,6 +3424,13 @@ def customize_verb_case():
           typedef = \
             t_type + ' := \
             [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
+          mylang.add(typedef)
+
+        # constrain CASE-MARKING of the patient/object, if appropriate
+        if o_case and ch.has_mixed_case() and not ch.has_optadp_case(o_case):
+          typedef = \
+            t_type + ' := \
+            [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
           mylang.add(typedef)
       else:     # intransitive
         if c[0] == 'intrans':
@@ -3445,6 +3459,13 @@ def customize_verb_case():
           typedef = \
             i_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + s_case + ' ].'
+          mylang.add(typedef)
+
+        # constrain CASE-MARKING of the subject, if appropriate
+        if s_case and ch.has_mixed_case() and not ch.has_optadp_case(s_case):
+          typedef = \
+            i_type + ' := \
+            [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
           mylang.add(typedef)
 
 
@@ -4474,6 +4495,7 @@ def customize_inflection():
 
               abbr = canon_to_abbr(c, cases)
               mylang.add(ltype + ' := [ SYNSEM.' + geom + ' ' + abbr + ' ].')
+              mylang.add(ltype + ' := [ SYNSEM.' + geom + '-MARKED - ].')
           
         ch.iter_end()
       else:
