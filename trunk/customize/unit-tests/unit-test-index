@@ -68,3 +68,4 @@ compfeatures-onlyformmarked=testing features on auxiliary complement but only FO
 auxfeatures-onlyformmarked=testing features on the auxiliaryFORM marked on the complement verb
 subj-drop=All subjects caobjects can be dropped.  No markers for subject dropping.
 lex-subj-drop=Lexical subject dropping with no marker.  No object dropping
+all-subj-drop-wth-req-marker=All subject droppiuired marker for both dropped and overt subjects.  No object dropping.
