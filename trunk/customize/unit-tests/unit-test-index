@@ -67,3 +67,4 @@ compfeatures=testing features on the auxiliary complement
 compfeatures-onlyformmarked=testing features on auxiliary complement but only FORM is marked on the verb
 auxfeatures-onlyformmarked=testing features on the auxiliaryFORM marked on the complement verb
 subj-drop=All subjects caobjects can be dropped.  No markers for subject dropping.
+lex-subj-drop=Lexical subject dropping with no marker.  No object dropping

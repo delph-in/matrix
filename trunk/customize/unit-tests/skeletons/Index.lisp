@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "lex-subj-drop") (:content . "lex-subj-drop: Lexical subject dropping with no marker.  No object dropping"))
 ((:path . "subj-drop") (:content . "subj-drop: All subjects caobjects can be dropped.  No markers for subject dropping."))
 ((:path . "auxfeatures-onlyformmarked") (:content . "auxfeatures-onlyformmarked: testing features on the auxiliaryFORM marked on the complement verb"))
 ((:path . "compfeatures-onlyformmarked") (:content . "compfeatures-onlyformmarked: testing features on auxiliary complement but only FORM is marked on the verb"))
