@@ -213,7 +213,7 @@ Text split-s-o-case-name "O case name" "O takes a case named the " " (e.g. absol
 Radio case-marking "Core case marking" "" ""
 . fluid-s "Fluid-S" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Fluid-S</b><br>"
 
-Label "(The S argument of any intransitive verb can be marked either by the same case as the transitive agent or patient, depending on pragmatic factors, e.g. whether the S is perceived as being in control of the action.)<br>"
+Label "(The S argument of some intransitive verbs is marked by the same case as the agent of transitives, while for other verbs the S argument is marked by the same case as the patient, and for still other verbs the S argument can be marked by either case, depending on pragmatic factors (e.g. whether the S is perceived as being in control of the action.)<br>"
 
 Text fluid-s-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
 
