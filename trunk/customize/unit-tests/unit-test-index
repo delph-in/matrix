@@ -70,3 +70,4 @@ subj-drop=All subjects caobjects can be dropped.  No markers for subject droppin
 lex-subj-drop=Lexical subject dropping with no marker.  No object dropping
 all-subj-drop-wth-req-marker=All subject droppiuired marker for both dropped and overt subjects.  No object dropping.
 all-subj-drop-wth-opt-marker=Subject dropping for all verbs with a marker left optionally for both dropped and overt subjects
+arg-opt-all-comps-drop-wth-no-marker=All complements can be dropped. No marker.
