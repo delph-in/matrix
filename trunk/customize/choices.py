@@ -993,7 +993,12 @@ class ChoicesFile:
 
     # Argument Optionality
     if self.get_full('subj-drop') or self.get_full('obj-drop'):
-      features +=[['OPT', '+|+', '']]
+      features +=[['OPT', 'plus|plus;minus|minus', '']]
+    
+    # Overt Argument
+    if (self.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-not' and self.get_full('obj-mark-drop') == 'obj-mark-drop-req' or 
+        self.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-not' and self.get_full('subj-mark-drop') == 'subj-mark-drop-req'):
+      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
 
     # Other features
     state = self.iter_state()

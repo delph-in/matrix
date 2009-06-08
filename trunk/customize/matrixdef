@@ -18,7 +18,7 @@ Radio archive "Archive" "<p>May we retain your answers to this questionnaire?<br
 Label "<p>If you answered \"yes\", we ask that you also (optionally) provide the information below.  This information will be used to distinguish multiple linguists working on the same language, to help us improve the Grammar Matrix, and possibly to contact you in the future.  We will not share your answers or identifying information outside the project, unless required by law.</p>"
 
 Text email "Email address" "<table border=\"0\"><tr><td valign=\"top\">Your email address: <td>" "</tr>" 40
-
+one-name
 Text affiliation "Affiliation" "<tr><td valign=\"top\">Your affiliation: <td>" "</tr>" 40
 
 Text motivation "Motivation" "<tr><td valign=\"top\">Your reason for using this system: <td>" "<br>(e.g. descriptive linguistic research, for a class)</tr></table>" 80
@@ -583,13 +583,13 @@ Radio q-inv-verb "Inverted verb in questions" "" ""
 
 
 Section arg-opt "Argument Optionality"
-Label "<p>  Languages place different restrictions on argument optionality.  Some require that subjects (and objects of transitive verbs) always be overtly realized as separate words. Others allow subjects and/or objects to be dropped for all verbs or only for certain verbs or in particular contexts.  For example, English always requires overt subjects (I studied) whereas in Arabic the corresponding sentence does not require a pronoun (darastu).  In languages which allow arugment dropping a marker is often attached to the verb that contains all of the information that a pronoun would--person, number, and gender.  This is not always the case, however.  Japanese for instance allows subject dropping but does not mark the verb for person, number or gender.</p>"
+Label "<p>  Languages place different restrictions on argument optionality.  Some require that subjects (and objects of transitive verbs) always be overtly realized as separate words. Others allow subjects and/or objects to be dropped for all verbs or only for certain verbs or in particular contexts.  For example, English always requires overt subjects (I studied) whereas in Arabic the corresponding sentence does not require a pronoun (darastu).  In languages which allow arugment dropping a marker is often attached to the verb that contains all of the information that a pronoun would--person, number, and gender.  This is not always the case, however.  Japanese for instance allows subject dropping but does not mark the verb for person, number or gender (Dryer 2008).</p>"
 
 Label "<p>Does your language allow argument optionality?  If so, choose the option that best describes your language.  If not, leave this page blank.</p>"
 Label "<p> NOTE: The questionnaire is only able to handle subject and object marking that occurs on the verb.  It is unable to handle clitics which can attach to words other than the verb.</p>"
 
 Label "<h3>Subject Dropping</h3>"
-Label "<p>In some languages subjects can always be dropped and in others they can only be dropped for certain verbs or in certain contexts.  (Tamil generally allows subject dropping but does not allow verbs relating to the weather to drop their subjects.)*  Arabic allows subjects to be dropped for all verbs, tenses and persons whereas Hebrew does not allow subjects to be dropped in the present tense.  If your language only allows subjects to be dropped for certain combinations of verb tenses/aspects and persons/number, please choose the feature values for those combinations.</p>"
+Label "<p>In some languages subjects can always be dropped and in others they can only be dropped for certain verbs or in certain contexts.  Tamil generally allows subject dropping but does not allow verbs relating to the weather to drop their subjects (Asher 1985).  Arabic allows subjects to be dropped for all verbs, tenses and persons whereas Hebrew does not allow subjects to be dropped in the present tense (Vainikka and Levy 1999).  If your language only allows subjects to be dropped for certain combinations of verb tenses/aspects and persons/number, please choose the feature values for those combinations.</p>"
 
 Radio subj-drop "Subject Drop" "<p>Subject dropping can occur </p>" ""
 . subj-drop-all "Subj Drop Always" "" "with any verb<br>"
@@ -606,6 +606,8 @@ Radio subj-mark-no-drop "Subj Mark No Drop" "<p>When a subject is overt (not dro
 . subj-mark-no-drop-req "Subj Mark Req" "" "required<br>"
 . subj-mark-no-drop-opt "Subj Mark Opt" "" "optional<br>"
 . subj-mark-no-drop-not "Subj Mark Not" "" "not permitted"
+
+Label "<p>NOTE: When completing the lexicon page, for each morpheme that is optional or required when an subject is dropped and not permitted when an overt subject is present, select <span class=\"feat\">overt-arg</span> not permitted and marked on the subject.</p>"
 
 Radio subj-con  "Subject Context" "<p>Subject dropping occurs in </p>" ""
 . subj-con-always "Subj Context All" "" "all contexts<br>"
@@ -648,6 +650,7 @@ Radio obj-mark-no-drop "Obj Mark Drop" "<p>When an object is overt (not dropped)
 . obj-mark-no-drop-opt "Obj Mark Opt" "" "optional<br>"
 . obj-mark-no-drop-not "Obj Mark Not" "" "not permitted<br>"
 
+Label "<p>NOTE: When completing the lexicon page, for each morpheme that is optional or required when an object is dropped and not permitted when an overt object is present, select <span class=\"feat\">overt-arg</span> not permitted and marked on the object.</p>"
 
 Section lexicon "Lexicon"
 
