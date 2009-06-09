@@ -453,6 +453,11 @@ def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=
     elif(n=='overt-arg' and h == 'subj') and v[0] == 'not-permitted':
       tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
 
+    elif (n=='dropped-arg' and h == 'obj' and v[0] == 'not-permitted'):
+      tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+    
+    #elif(n=='dropped-arg' and h == 'subj') and v[0] == 'not-permitted':
+     # tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
 
       
     ch.iter_next()
@@ -3300,6 +3305,17 @@ def customize_arg_op():
   if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-opt' :
     mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
 
+  if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req' and ch.get('obj-mark-drop') == 'obj-mark-drop-not' :
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+
+  if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-not' :
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+
+  if ch.get('obj-mark-drop')== 'obj-mark-drop-opt' and ch.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+
+  if ch.get('subj-mark-drop')== 'subj-mark-drop-opt' and ch.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
 
 #def customize_subj_phrase(phrase)
   #Trying to get the subject/object marker co-occurrence to work out
@@ -4421,14 +4437,20 @@ def customize_inflection():
       # count up the number of subrules, and to see if any of the
       # morphemes mark case.
       # SS 2009-06-07 added check to see if a const rule which changes the COMPS of the mother to OPT -
-      # is needed.  The code assumes that a given slot will have the same co-occurrence restrictions for all morphemes.
-      # i.e. if one morpheme is not permitted to appear with an overt argument but is required with a dropped argument,
-      # all the other morphemes in this slot will have the same restrictions.  This is necessary because the const rule that 
-      # generated will change the value of the COMPS of the mother OPT - for all items which are not marked by one of morphemes in 
-      # in this slot.
+      # is needed.  The code assumes that a given slot will have the same co-occurrence restrictions 
+      # for all morphemes. i.e. if one morpheme is not permitted to appear with an overt argument 
+      # but is required with a dropped argument, all the other morphemes in this slot will have the 
+      # same restrictions.  This is necessary because the const rule that 
+      # generated will change the value of the COMPS of the mother OPT - for all items which are not 
+      # marked by one of morphemes in this slot.
+      # SS 2009-06-07 Now adding capability for when the marker is not permitted with a dropped 
+      # argument and is required (or optional )overt argument.  This is done by increasing the subrules 
+      # count just like above.  The subrules created are different. 
 
       opt_head_obj = False
       opt_head_subj = False
+      drp_head_obj = False
+      drp_head_subj = False
       seen_case = False
       ch.iter_begin('morph')
       while ch.iter_valid():
@@ -4436,7 +4458,12 @@ def customize_inflection():
         morph_orth = ch.get('orth')
         if morph_orth == '':
           const = True
-
+        if ch.get_full('obj-mark-drop')== 'obj-mark-drop-opt' and ch.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+          drp_head_obj = True
+          const = True
+        if ch.get_full('subj-mark-drop')== 'subj-mark-drop-opt' and ch.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+          drp_head_subj = True
+          const = True
         ch.iter_begin('feat')
         while ch.iter_valid():
           if ch.get('name') == 'case':
@@ -4446,6 +4473,12 @@ def customize_inflection():
               opt_head_obj = True
             elif ch.get('head') == 'subj':
               opt_head_subj = True
+            const = True
+          if ch.get('name') == 'dropped-arg':
+            if ch.get('head') == 'obj':
+              drp_head_obj = True
+            elif ch.get('head') == 'subj':
+              drp_head_subj = True
             const = True
           ch.iter_next()
         ch.iter_end()
@@ -4463,6 +4496,8 @@ def customize_inflection():
       subrules += len(synth_cases)
       
       if (opt_head_obj) or (opt_head_subj):
+        subrules += 1
+      if (drp_head_obj) or (drp_head_subj):
         subrules += 1
 
       # Need to specify whether each rule is ltol, ltow, or wtol AND
@@ -4596,6 +4631,20 @@ def customize_inflection():
              mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
             if (opt_head_subj):
               mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+
+          if not ch.iter_valid() and (drp_head_obj or drp_head_subj):
+            ltype = name + '-drop-lex-rule'
+            if ltow:
+              mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
+            elif wtol:
+              mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
+            else:
+              mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
+            lrules.add(name + '-drop-lex := ' + name + '-drop-lex-rule.')
+            if (drp_head_obj):
+             mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
+            if (drp_head_subj):
+              mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
             
         ch.iter_end()
       else:
