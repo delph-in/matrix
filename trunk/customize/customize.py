@@ -447,11 +447,11 @@ def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=
       if h == 'obj':
         tdlfile.add(type_name + ':= no-obj-drop-verb-lex.', merge = True)
     
-    elif(n=='overt-arg' and h == 'obj') and  v == 'not-permitted':
-        tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
+    elif (n=='overt-arg' and h == 'obj' and v[0] == 'not-permitted'):
+      tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
     
     elif(n=='overt-arg' and h == 'subj') and v == 'not-permitted':
-        tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
+      tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
 
 
       
