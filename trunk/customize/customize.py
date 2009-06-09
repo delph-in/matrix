@@ -434,18 +434,25 @@ def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=
 	          RELS list.  It is instantiated by a spelling-changing\n\
 	          rule as specified in irules.tdl.',
                   merge=True)
-    elif(n=='OPT' and v[0] == 'plus'):
+   
       # SS 2009-05-26 argument optionality is added to user defined types here
-      if h == 'subj':
-        tdlfile.add(type_name + ':= subj-drop-verb-lex.', merge = True)
-      if h == 'obj':
-        tdlfile.add(type_name + ':= obj-drop-verb-lex.', merge = True)
+      # I think works leaving the types that allow object dropping underspecified
+      # This way they are allowed to undergo the head-comp or head-subj rules if 
+      # otherwise possible.  If they are specified as OPT + then this is not possible
+      # in some cases because depending on the co-occurrence of the morpheme with overt
+      # and dropped arguments, the basic-head-comp and basic-head-subj rules' head-dtrs are
+      # constrained to be OPT -
+     #elif(n=='OPT' and v[0] == 'plus'):
+      #if h == 'subj':
+        #tdlfile.add(type_name + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
+      #if h == 'obj':
+        #tdlfile.add(type_name + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
 
     elif(n=='OPT' and v[0] == 'minus'):
       if h == 'subj':
-        tdlfile.add(type_name + ':= no-subj-drop-verb-lex.', merge = True)
+        tdlfile.add(type_name + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
       if h == 'obj':
-        tdlfile.add(type_name + ':= no-obj-drop-verb-lex.', merge = True)
+        tdlfile.add(type_name + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
     
     elif (n=='overt-arg' and h == 'obj' and v[0] == 'not-permitted'):
       tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
@@ -456,8 +463,8 @@ def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=
     elif (n=='dropped-arg' and h == 'obj' and v[0] == 'not-permitted'):
       tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
     
-    #elif(n=='dropped-arg' and h == 'subj') and v[0] == 'not-permitted':
-     # tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+    elif(n=='dropped-arg' and h == 'subj') and v[0] == 'not-permitted':
+      tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
 
       
     ch.iter_next()
@@ -3294,15 +3301,15 @@ def customize_arg_op():
     ch.iter_next()
   ch.iter_end()
 
-  #Trying to get co-occurrence of marker dropping to work
-
-  if (ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and (ch.get('subj-mark-drop')== 'subj-mark-drop-opt'or ch.get('subj-mark-drop')=='subj-mark-drop-req')):
-    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
-
-  if ch.get('obj-drop')=='obj-drop-all' and ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-req') or ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-req'))):
-    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
-
+  #Trying to get co-occurrence of marker dropping to work.  These if statements look at the co-occurrence
+  #choices the user made and constrains the head-dtr of the basic-head-(subj/obj)-phrase if necessary.  
+  #This is done to prevent markers that are not allowed to occur with overt arguments from attaching to 
+  #a HEAD-DTR of the rule. 
+ 
   if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-opt' :
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+  
+  if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-req' :
     mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
 
   if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req' and ch.get('obj-mark-drop') == 'obj-mark-drop-not' :
@@ -3316,6 +3323,19 @@ def customize_arg_op():
 
   if ch.get('subj-mark-drop')== 'subj-mark-drop-opt' and ch.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-req':
     mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+
+  if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req' and ch.get('subj-mark-drop') == 'subj-mark-drop-not' :
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+
+  if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and ch.get('subj-mark-drop') == 'subj-mark-drop-not' :
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+
+  if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and ch.get('subj-mark-drop')== 'subj-mark-drop-opt':
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+
+  if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and ch.get('subj-mark-drop')=='subj-mark-drop-req':
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+
 
 #def customize_subj_phrase(phrase)
   #Trying to get the subject/object marker co-occurrence to work out
