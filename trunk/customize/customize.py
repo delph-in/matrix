@@ -450,7 +450,7 @@ def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=
     elif (n=='overt-arg' and h == 'obj' and v[0] == 'not-permitted'):
       tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
     
-    elif(n=='overt-arg' and h == 'subj') and v == 'not-permitted':
+    elif(n=='overt-arg' and h == 'subj') and v[0] == 'not-permitted':
       tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
 
 
@@ -3295,6 +3295,9 @@ def customize_arg_op():
     mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
 
   if ch.get('obj-drop')=='obj-drop-all' and ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-req') or ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-req'))):
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+
+  if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-opt' :
     mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
 
 
