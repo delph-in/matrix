@@ -447,10 +447,10 @@ def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=
       if h == 'obj':
         tdlfile.add(type_name + ':= no-obj-drop-verb-lex.', merge = True)
     
-    elif(n=='overt-arg' and h == 'obj'):
+    elif(n=='overt-arg' and h == 'obj') and  v == 'not-permitted':
         tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
     
-    elif(n=='overt-arg' and h == 'subj'):
+    elif(n=='overt-arg' and h == 'subj') and v == 'not-permitted':
         tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
 
 
@@ -4417,6 +4417,15 @@ def customize_inflection():
       # element of the paradigm should be a constant-lex-rule, to
       # count up the number of subrules, and to see if any of the
       # morphemes mark case.
+      # SS 2009-06-07 added check to see if a const rule which changes the COMPS of the mother to OPT -
+      # is needed.  The code assumes that a given slot will have the same co-occurrence restrictions for all morphemes.
+      # i.e. if one morpheme is not permitted to appear with an overt argument but is required with a dropped argument,
+      # all the other morphemes in this slot will have the same restrictions.  This is necessary because the const rule that 
+      # generated will change the value of the COMPS of the mother OPT - for all items which are not marked by one of morphemes in 
+      # in this slot.
+
+      opt_head_obj = False
+      opt_head_subj = False
       seen_case = False
       ch.iter_begin('morph')
       while ch.iter_valid():
@@ -4429,6 +4438,12 @@ def customize_inflection():
         while ch.iter_valid():
           if ch.get('name') == 'case':
             seen_case = True
+          if ch.get('name') == 'overt-arg':
+            if ch.get('head') == 'obj':
+              opt_head_obj = True
+            elif ch.get('head') == 'subj':
+              opt_head_subj = True
+            const = True
           ch.iter_next()
         ch.iter_end()
         
@@ -4443,6 +4458,9 @@ def customize_inflection():
             synth_cases += [ c[0] ]
 
       subrules += len(synth_cases)
+      
+      if (opt_head_obj) or (opt_head_subj):
+        subrules += 1
 
       # Need to specify whether each rule is ltol, ltow, or wtol AND
       # whether the rule is constant or inflecting. Trying to put as much
@@ -4561,7 +4579,21 @@ def customize_inflection():
 
               abbr = canon_to_abbr(c, cases)
               mylang.add(ltype + ' := [ SYNSEM.' + geom + ' ' + abbr + ' ].')
-          
+  
+          if not ch.iter_valid() and (opt_head_obj or opt_head_subj):
+            ltype = name + '-no-drop-lex-rule'
+            if ltow:
+              mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
+            elif wtol:
+              mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
+            else:
+              mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
+            lrules.add(name + '-no-drop-lex := ' + name + '-no-drop-lex-rule.')
+            if (opt_head_obj):
+             mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+            if (opt_head_subj):
+              mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+            
         ch.iter_end()
       else:
         if const:
