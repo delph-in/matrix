@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "arg-opt-all-subj-drop-marker-opt-wth-drop-opt-wthout") (:content . "arg-opt-all-subj-drop-marker-opt-wth-drop-opt-wthout: Subject dropping allowed for al verb types. Marker optional for both dropped and overt subjects."))
 ((:path . "arg-opt-all-subj-drop-marker-opt-wth-drop-np-wthout") (:content . "arg-opt-all-subj-drop-marker-opt-wth-drop-np-wthout: Subject dropping for all verb types. Marker optional with drop and not permitted with overt subj."))
 ((:path . "arg-opt-all-subj-drop-marker-np-wth-drop-req-wthout") (:content . "arg-opt-all-subj-drop-marker-np-wth-drop-req-wthout: Subject dropping for all verb types. Marker not permitted with dropped subj and req with overt arg."))
 ((:path . "arg-opt-all-subj-drop-marker-np-wth-drop-opt-wthout") (:content . "arg-opt-all-subj-drop-marker-np-wth-drop-opt-wthout: Subject dropping is allowed for all verb types.  A marker is not permitted with a dropped subject and is optional with an overt one.  Object dropping is not allowed."))
