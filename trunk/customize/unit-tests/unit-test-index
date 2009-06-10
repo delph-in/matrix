@@ -79,3 +79,4 @@ arg-opt-all-comps-drop-marker-opt-wth-drop-np-wthout="Object dropping is allowed
 arg-opt-all-comps-drop-marker-np-wth-drop-req-wthout="Object dropping is allowed for all verb types.  A marker is required with overt arguments and not permitted with dropped arguments."
 arg-opt-all-comps-drop-marker-np-wth-drop-opt-wthout="Object dropping is allowed for all verb types a marker is not permitted with dropped arguments and is optional for overt."
 arg-opt-all-comps-drop-marker-opt-wth-drop-req-wthout="Object dropping for all verb types.  Marker is optional for dropped objects and required for overt objects."
+arg-opt-all-subj-drop-marker-np-wth-drop-opt-wthout=Subject dropping is allowed for all verb types.  A marker is not permitted with a dropped subject and is optional with an overt one.  Object dropping is not allowed.
