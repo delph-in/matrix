@@ -1,0 +1,38 @@
+iverb1-subj-3fs
+n1 iverb1-subj-3fs 
+n1 iverb2-subj-3fs
+n2 iverb1-subj-3fs
+n2 iverb2-subj-3fs 
+n1 tverb1-subj-3fs n2
+n1 tverb2-subj-3fs n2
+tverb1-subj-3fs n2
+*iverb2-subj-3fs
+*iverb2-subj-3fs n2
+*iverb1-subj-3fs n1
+*iverb2-subj-3fs n1
+*tverb2-subj-3fs n2
+*tverb1-subj-3fs
+*tverb2-subj-3fs
+*n1 tverb1-subj-3fs
+*n2 tverb1-subj-3fs
+*n1 tverb2-subj-3fs
+*n2 tverb2-subj-3fs
+*iverb1
+*n1 iverb1
+*n1 iverb2
+*n2 iverb1
+*n2 iverb2
+*n1 tverb1 n2
+*n1 tverb2 n2
+*tverb1 n2
+*iverb2
+*iverb2 n2
+*iverb1 n1
+*iverb2 n1
+*tverb2 n2
+*tverb1
+*tverb2
+*n1 tverb1
+*n2 tverb1
+*n1 tverb2
+*n2 tverb2

@@ -320,8 +320,11 @@ def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=
     tdlfile = mylang
 
   pos_geom_prefix = ''
+  
   if pos == 'det':
     pos_geom_prefix = 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.'
+  elif pos == 'con':
+    pos_geom_prefix = 'HEAD-DTR.SYNSEM.'
   else:
     pos_geom_prefix = 'SYNSEM.'
 
@@ -3256,9 +3259,9 @@ def customize_arg_op():
   #Figure out the constraints on subject dropping and write the 
   #appropriate types to mylang.tdl or rules.tdl
 
-  if ch.get('subj-drop') == 'subj-drop-all':
+  if ch.get('subj-drop') == 'subj-drop-all' and not (ch.get('subj-con') == 'subj-con-some'):
     rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.') 
-  if ch.get('subj-drop') == 'subj-drop-lex':
+  if ch.get('subj-drop') == 'subj-drop-lex' and not (ch.get('subj-con') == 'subj-con-some'):
     rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.')
     mylang.add('no-subj-drop-verb-lex := verb-lex &\
                          [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].')
@@ -3289,7 +3292,7 @@ def customize_arg_op():
   while ch.iter_valid():
     name = 'context' + str(i)
     ptype = name + '-decl-head-opt-subj-phrase'
-    customize_feature_values(ptype, 'verb')
+    customize_feature_values(ptype, 'con')
     typedef = ptype + ':= decl-head-opt-subj-phrase.'
     mylang.add(typedef)
     rules.add(name + '-decl-head-opt-subj := '+ name + '-decl-head-opt-subj-phrase.')
@@ -4642,7 +4645,7 @@ def customize_inflection():
             if (opt_head_obj):
              mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
             if (opt_head_subj):
-              mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+              mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
 
           if not ch.iter_valid() and (drp_head_obj or drp_head_subj):
             ltype = name + '-drop-lex-rule'
@@ -4656,7 +4659,7 @@ def customize_inflection():
             if (drp_head_obj):
              mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
             if (drp_head_subj):
-              mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
+              mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
             
         ch.iter_end()
       else:
