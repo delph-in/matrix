@@ -87,3 +87,4 @@ arg-opt-all-subj-drop-marker-opt-wth-drop-req-wthout=Subject dropping allowed fo
 arg-opt-all-subj-drop-marker-req-wth-drop-np-wthout=Subject dropping allowed for all verb types. Marker required for drop and not permitted with overt subj.
 arg-opt-all-subj-drop-marker-req-wth-drop-opt-wthout=Subject dropping allowed for all verb types.  Marker req for drop and opt for overt subj.
 arg-opt-all-subj-drop-marker-req-wth-drop-req-wthout=Subject dropping for all verb types. Marker required for both dropped and overt subjects
+arg-opt-lex-subj-drop-no-marker=Lexical based subject dropping. No marker.
