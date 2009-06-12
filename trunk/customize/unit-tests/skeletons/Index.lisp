@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "arg-opt-lex-cntxt-2feat-subj-drop-marker-req-wth-drop-req-wthout") (:content . "arg-opt-lex-cntxt-2feat-subj-drop-marker-req-wth-drop-req-wthout: Subject dropping only in one context with multiple features.  One specified on the verb.  One on the subj."))
 ((:path . "arg-opt-lex-cntxt-subj-drop-marker-req-wth-drop-req-wthout") (:content . "arg-opt-lex-cntxt-subj-drop-marker-req-wth-drop-req-wthout: Subject dropping according to one context with one feature specified on the verb."))
 ((:path . "arg-opt-lex-subj-drop-marker-req-wth-drop-req-wthout") (:content . "arg-opt-lex-subj-drop-marker-req-wth-drop-req-wthout: Lexically based subject dropping. Marker required for dropped and overt subjs."))
 ((:path . "arg-opt-lex-subj-drop-no-marker") (:content . "arg-opt-lex-subj-drop-no-marker: Lexical based subject dropping. No marker."))
