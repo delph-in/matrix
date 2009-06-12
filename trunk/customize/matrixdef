@@ -607,7 +607,9 @@ Radio subj-mark-no-drop "Subj Mark No Drop" "<p>When a subject is overt (not dro
 . subj-mark-no-drop-opt "Subj Mark Opt" "" "optional<br>"
 . subj-mark-no-drop-not "Subj Mark Not" "" "not permitted"
 
-Label "<p>NOTE: When completing the lexicon page, for each morpheme that is optional or required when an subject is dropped and not permitted when an overt subject is present, select <span class=\"feat\">overt-arg</span> not permitted and marked on the subject.</p>"
+Label "<p>NOTE: When completing the lexicon page, for each morpheme that is optional or required when a subject is dropped and not permitted when an overt subject is present, select <span class=\"feat\">overt-arg</span> not permitted and marked on the subject.</p>"
+
+Label "<p>      For each morpheme that is not permitted when a subject is dropped and required or optional when an overt subject is present, select <span class=\"feat\">drp-arg</span> not permitted and marked on the subject.</p>"
 
 Radio subj-con  "Subject Context" "<p>Subject dropping occurs in </p>" ""
 . subj-con-always "Subj Context All" "" "all contexts<br>"
@@ -658,6 +660,8 @@ Radio obj-mark-no-drop "Obj Mark Drop" "<p>When an object is overt (not dropped)
 . obj-mark-no-drop-not "Obj Mark Not" "" "not permitted<br>"
 
 Label "<p>NOTE: When completing the lexicon page, for each morpheme that is optional or required when an object is dropped and not permitted when an overt object is present, select <span class=\"feat\">overt-arg</span> not permitted and marked on the object.</p>"
+
+Label "<p>      For each morpheme that is not permitted when an object is dropped and required or optional when an overt object is present, select <span class=\"feat\">drp-arg</span> not permitted and marked on the object.</p>"
 
 Label "<h4>References</h4>"
 Label "<font size=\"2\">"
