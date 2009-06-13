@@ -320,8 +320,11 @@ def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=
     tdlfile = mylang
 
   pos_geom_prefix = ''
+  
   if pos == 'det':
     pos_geom_prefix = 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.'
+  elif pos == 'con':
+    pos_geom_prefix = 'HEAD-DTR.SYNSEM.'
   else:
     pos_geom_prefix = 'SYNSEM.'
 
@@ -434,6 +437,35 @@ def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=
 	          RELS list.  It is instantiated by a spelling-changing\n\
 	          rule as specified in irules.tdl.',
                   merge=True)
+    ## Specifiying OPT- on each user defined type instead of creating a supertype because
+    #It the supertype would need to inherit from transitive-verb-lex and the code already puts 
+    #transitive-verb-lex as a supertype of user-defined typ thus causing an inheritance issue.
+    #elif(n=='OPT' and v[0] == 'plus'):
+      # SS 2009-05-26 argument optionality is added to user defined types here
+      #if h == 'subj':
+      #  tdlfile.add(type_name + ':= subj-drop-verb-lex.', merge = True)
+      #if h == 'obj':
+      #  tdlfile.add(type_name + ':= obj-drop-verb-lex.', merge = True)
+
+    elif(n=='OPT' and v[0] == 'minus'):
+      if h == 'subj':
+        tdlfile.add(type_name + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+      if h == 'obj':
+        tdlfile.add(type_name + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+    
+    elif (n=='overt-arg' and h == 'obj' and v[0] == 'not-permitted'):
+      tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
+    
+    elif(n=='overt-arg' and h == 'subj') and v[0] == 'not-permitted':
+      tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
+
+    elif (n=='dropped-arg' and h == 'obj' and v[0] == 'not-permitted'):
+      tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+    
+    elif(n=='dropped-arg' and h == 'subj' and v[0] == 'not-permitted'):
+      tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+
+      
     ch.iter_next()
   ch.iter_end()
 
@@ -3216,6 +3248,94 @@ def customize_yesno_questions():
     add_irule('ques-infl-lr','ques-infl-lex-rule',ch.get('ques-aff'),ch.get('ques-aff-orth'))
 
 
+######################################################################
+# customize_arg_op()
+#   Create phrase-structure and lexical rules associated with user's
+#   choices on argument optionality page.
+
+def customize_arg_op():
+  """ Create the lexical types, lexical, rules and phrase structure
+      rules to allow argument dropping"""
+  #Figure out the constraints on subject dropping and write the 
+  #appropriate types to mylang.tdl or rules.tdl
+
+  if ch.get('subj-drop') == 'subj-drop-all' and not (ch.get('subj-con') == 'subj-con-some'):
+    rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.') 
+  if ch.get('subj-drop') == 'subj-drop-lex' and not (ch.get('subj-con') == 'subj-con-some'):
+    rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.')
+    mylang.add('no-subj-drop-verb-lex := verb-lex &\
+                         [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].')
+    mylang.add('subj-drop-verb-lex := verb-lex.')
+  
+
+  #Figure out the constraints on object dropping and write the 
+  #appropriate types to mylang.tdl or rules.tdl
+  if ch.get('obj-drop')=='obj-drop-all':
+    rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
+
+  if ch.get('obj-drop') == 'obj-drop-lex':
+    rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
+    mylang.add('no-obj-drop-verb-lex := transitive-verb-lex &\
+                        [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].')
+    mylang.add('obj-drop-verb-lex := transitive-verb-lex.')
+
+  if ch.get('subj-drop') == 'subj-drop-lex' and ch.get('obj-drop') == 'obj-drop-lex':
+    mylang.add('subj-drop-only-verb-lex := subj-drop-verb-lex & no-obj-drop-verb-lex.')
+    mylang.add('obj-drop-only-verb-lex := obj-drop-verb-lex & no-subj-drop-verb-lex.')
+    mylang.add('subj-obj-drop-verb-lex := subj-drop-verb-lex & obj-drop-verb-lex.')
+    mylang.add('no-drop-verb-lex := no-subj-drop-verb-lex & no-obj-drop-verb-lex.')
+
+
+  #Create phrase-structure rules for each context
+  ch.iter_begin('context')
+  i=1
+  while ch.iter_valid():
+    name = 'context' + str(i)
+    ptype = name + '-decl-head-opt-subj-phrase'
+    customize_feature_values(ptype, 'con')
+    typedef = ptype + ':= decl-head-opt-subj-phrase.'
+    mylang.add(typedef)
+    rules.add(name + '-decl-head-opt-subj := '+ name + '-decl-head-opt-subj-phrase.')
+    i = i+1
+    ch.iter_next()
+  ch.iter_end()
+
+  #Trying to get co-occurrence of marker dropping to work
+
+  if (ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and (ch.get('subj-mark-drop')== 'subj-mark-drop-opt'or ch.get('subj-mark-drop')=='subj-mark-drop-req')):
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+
+  if ch.get('obj-drop')=='obj-drop-all' and ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-req') or ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-req'))):
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+
+  if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-opt' :
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+
+  if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req' and ch.get('obj-mark-drop') == 'obj-mark-drop-not' :
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+
+  if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-not' :
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+
+  if ch.get('obj-mark-drop')== 'obj-mark-drop-opt' and ch.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+
+  if ch.get('subj-mark-drop')== 'subj-mark-drop-opt' and ch.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+
+  if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and ch.get('subj-mark-drop') == 'subj-mark-drop-opt' :
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+
+  if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req' and ch.get('subj-mark-drop') == 'subj-mark-drop-not' :
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+
+  if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and ch.get('subj-mark-drop') == 'subj-mark-drop-not' :
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+
+#def customize_subj_phrase(phrase)
+  #Trying to get the subject/object marker co-occurrence to work out
+  #if (ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and (ch.get('subj-mark-drop')== 'subj-mark-drop-opt'or ch.get('subj-mark-drop')=='subj-mark-drop-req')):
+   # mylang.add(phrase + ':= [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
 
 ######################################################################
 # customize_lexicon()
@@ -3638,6 +3758,7 @@ def customize_verbs():
   while ch.iter_valid():
     name = get_name()
     val = ch.get('valence')
+    
 
     i = val.find(',')
     dir_inv = ''
@@ -3657,7 +3778,7 @@ def customize_verbs():
     else:
       s_case = canon_to_abbr(val, cases)
       tivity = s_case + '-intrans'
-
+    
     stype = dir_inv + tivity + 'itive-verb-lex'
     vtype = name + '-verb-lex'
 
@@ -4351,6 +4472,21 @@ def customize_inflection():
       # element of the paradigm should be a constant-lex-rule, to
       # count up the number of subrules, and to see if any of the
       # morphemes mark case.
+      # SS 2009-06-07 added check to see if a const rule which changes the COMPS of the mother to OPT -
+      # is needed.  The code assumes that a given slot will have the same co-occurrence restrictions 
+      # for all morphemes. i.e. if one morpheme is not permitted to appear with an overt argument 
+      # but is required with a dropped argument, all the other morphemes in this slot will have the 
+      # same restrictions.  This is necessary because the const rule that 
+      # generated will change the value of the COMPS of the mother OPT - for all items which are not 
+      # marked by one of morphemes in this slot.
+      # SS 2009-06-07 Now adding capability for when the marker is not permitted with a dropped 
+      # argument and is required (or optional )overt argument.  This is done by increasing the subrules 
+      # count just like above.  The subrules created are different. 
+
+      opt_head_obj = False
+      opt_head_subj = False
+      drp_head_obj = False
+      drp_head_subj = False
       seen_case = False
       ch.iter_begin('morph')
       while ch.iter_valid():
@@ -4358,11 +4494,28 @@ def customize_inflection():
         morph_orth = ch.get('orth')
         if morph_orth == '':
           const = True
-
+        if ch.get_full('obj-mark-drop')== 'obj-mark-drop-opt' and ch.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+          drp_head_obj = True
+          const = True
+        if ch.get_full('subj-mark-drop')== 'subj-mark-drop-opt' and ch.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+          drp_head_subj = True
+          const = True
         ch.iter_begin('feat')
         while ch.iter_valid():
           if ch.get('name') == 'case':
             seen_case = True
+          if ch.get('name') == 'overt-arg':
+            if ch.get('head') == 'obj':
+              opt_head_obj = True
+            elif ch.get('head') == 'subj':
+              opt_head_subj = True
+            const = True
+          if ch.get('name') == 'dropped-arg':
+            if ch.get('head') == 'obj':
+              drp_head_obj = True
+            elif ch.get('head') == 'subj':
+              drp_head_subj = True
+            const = True
           ch.iter_next()
         ch.iter_end()
         
@@ -4377,6 +4530,11 @@ def customize_inflection():
             synth_cases += [ c[0] ]
 
       subrules += len(synth_cases)
+      
+      if (opt_head_obj) or (opt_head_subj):
+        subrules += 1
+      if (drp_head_obj) or (drp_head_subj):
+        subrules += 1
 
       # Need to specify whether each rule is ltol, ltow, or wtol AND
       # whether the rule is constant or inflecting. Trying to put as much
@@ -4495,8 +4653,35 @@ def customize_inflection():
 
               abbr = canon_to_abbr(c, cases)
               mylang.add(ltype + ' := [ SYNSEM.' + geom + ' ' + abbr + ' ].')
-              mylang.add(ltype + ' := [ SYNSEM.' + geom + '-MARKED - ].')
-          
+              mylang.add(ltype + ' := [ SYNSEM.' + geom + '-MARKED - ].')          
+          if not ch.iter_valid() and (opt_head_obj or opt_head_subj):
+            ltype = name + '-no-drop-lex-rule'
+            if ltow:
+              mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
+            elif wtol:
+              mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
+            else:
+              mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
+            lrules.add(name + '-no-drop-lex := ' + name + '-no-drop-lex-rule.')
+            if (opt_head_obj):
+             mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+            if (opt_head_subj):
+              mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+
+          if not ch.iter_valid() and (drp_head_obj or drp_head_subj):
+            ltype = name + '-drop-lex-rule'
+            if ltow:
+              mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
+            elif wtol:
+              mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
+            else:
+              mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
+            lrules.add(name + '-drop-lex := ' + name + '-drop-lex-rule.')
+            if (drp_head_obj):
+             mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
+            if (drp_head_subj):
+              mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
+            
         ch.iter_end()
       else:
         if const:
@@ -4870,6 +5055,7 @@ def customize_matrix(path, arch_type):
   customize_sentential_negation()
   customize_coordination()
   customize_yesno_questions()
+  customize_arg_op()
   customize_test_sentences(matrix_path)
   customize_roots()
 

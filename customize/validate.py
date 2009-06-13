@@ -881,6 +881,23 @@ def validate_features():
       add_err(var, 'You have selected an invalid feature value.')
 
 
+def validate_arg_opt():
+  """Check to see if the user completed the necessary portions of the arg
+   opt page"""
+
+  if ch.get('subj-drop') and not ch.get('subj-mark-drop'):
+    add_err('subj-mark-drop', 'You must select whether a subject marker is required, optional or not permitted with subject dropping.')
+
+  if ch.get('subj-drop') and not ch.get('subj-mark-no-drop'):
+    add_err('subj-mark-no-drop', 'You must select whether a subject marker is required, optional or not permitted with an overt subject.')
+
+  if ch.get('obj-drop') and not ch.get('obj-mark-drop'):
+    add_err('obj-mark-drop', 'You must select whether an object marker is required, optional or not permitted with object dropping.')
+
+  if ch.get('obj-drop') and not ch.get('obj-mark-no-drop'):
+    add_err('obj-mark-no-drop', 'You must select whether a object marker is required, optional or not permitted with an overt object.')
+  
+
 ######################################################################
 # validate_choices(choices_file)
 #   Validate the choices file found in choices_file.  Return
@@ -909,6 +926,7 @@ def validate_choices(choices_file, extra = False):
 
   validate_types()
   validate_features()
+  validate_arg_opt()
 
   if extra:
     validate_extra_constraints()
