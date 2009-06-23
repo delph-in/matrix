@@ -868,6 +868,30 @@ class ChoicesFile:
 
     return situations
 
+
+  def types(self):
+    """
+    Create and return a list containing type names. FIX - these are based on the 
+    choices file. Need to include required types and inferred types as well.
+    This list consists of tuples:
+    [type name]
+    """
+    types = []
+
+    state = self.iter_state()
+    self.iter_reset()
+
+    for t in ['noun', 'verb', 'aux', 'det']:
+      self.iter_begin(t)
+      while self.iter_valid():
+        types += [ [self.get('name'), t] ]
+        self.iter_next()
+      self.iter_end()
+
+    self.iter_set_state(state)
+    return types
+  
+
   # features()
   #   Create and return a list containing information about the
   #   features in the language described by the current choices.  This

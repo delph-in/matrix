@@ -51,6 +51,10 @@ var morph_case_patterns = [
 var numbers = [
 %s
 ];
+
+var types = [
+%s
+];
 </script>
 
 <link rel="stylesheet" href="matrix.css">
@@ -356,7 +360,7 @@ class MatrixDefFile:
     print 'Set-cookie: session=' + cookie + '\n'
     print HTML_pretitle
     print '<title>The Matrix</title>'
-    print HTML_posttitle % ('', '', '', '')
+    print HTML_posttitle % ('', '', '', '', '')
 
     try:
       f = open('datestamp', 'r')
@@ -578,6 +582,10 @@ class MatrixDefFile:
           elif fill_type == 'fillnumbers':
             html += html_select(errors, vn, multi,
                                 'fill_numbers(\'' + vn + '\')') + '\n'
+          elif fill_type == 'filltypes':
+            
+            html += html_select(errors, vn, multi,
+                                'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\')') + '\n'
 
           html += html_option(errors, '', False, '') + '\n'
 
@@ -729,7 +737,9 @@ class MatrixDefFile:
             (js_array(choices.features()),
              js_array([c for c in choices.patterns() if not c[2]]),
              js_array([c for c in choices.patterns() if c[2]]),
-             js_array([n for n in choices.numbers()]))
+             js_array([n for n in choices.numbers()]),
+             js_array([t for t in choices.types()]))
+
       print HTML_prebody
       print '<h2>' + section_friendly + '</h2>'
       print HTML_preform

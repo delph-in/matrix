@@ -855,7 +855,7 @@ BeginIter aux{i} "an Auxiliary Type"
      fillnames
 
      MultiSelect value "Aux {i} feature {j} value" "Value: " ""
-     fillvalues aux{i}_feat2{j}_name
+     fillvalues aux{i}_feat{j}_name
 
   EndIter feat
   Label "</div>"

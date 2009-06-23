@@ -519,6 +519,37 @@ function fill_numbers(select_name)
   force_layout(select.parentNode);
 }
 
+// fill_types()
+// Fill a SELECT tag with OPTIONs created from the array types[],
+// where every OPTION is a type name.
+function fill_types(select_name, type_cat)
+{
+  var select = document.getElementsByName(select_name)[0];
+  var old_val = select.value;  // store the previously selected option
+  var old_text = old_val;
+  if (select.selectedIndex != -1) {
+    old_text = select.options[select.selectedIndex].innerHTML;
+  }
+
+  remove_temp_options(select);
+
+  for (var i = 0; i < types.length; i++) {
+    var t = types[i].split(':');
+    var o = document.createElement('option');
+    o.className = 'temp';
+
+    if (t[1] == type_cat) {
+      o.value = t[0];
+      o.innerHTML = t[0];
+
+      select.appendChild(o);
+    }
+  }
+
+  set_select_value(select, old_val, old_text);
+  force_layout(select.parentNode);
+}
+
 //////////////////////////////////////////////////////////////////////
 // Multi-SELECT functions
 //
