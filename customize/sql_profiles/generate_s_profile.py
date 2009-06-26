@@ -123,18 +123,22 @@ def genFile(itemIds, profpath, conn, filename):
     Output: none
     Functionality: generates a file in a incr_tsdb() profile.
     """
+    numIrrelClms = 0
     if filename == "item":
         # ...set up query for item file
         query = "SELECT * FROM item_tsdb WHERE i_id = "
+        numIrrelClms = 1                    # there is 1 irrelevant column in item_tsdb
     elif filename == "parse":
         # ...set up query for parse file
         query = "SELECT * FROM parse WHERE p_i_id = "
+        numIrrelClms = 1                    # there is 1 irrelevant column in parse
     elif filename == "result":
         # ...set up query for result file
         query = "SELECT r.* FROM result r " + \
                     "JOIN parse p " + \
                     "ON r.r_parse_id = p.p_parse_id " + \
                     "WHERE p.p_i_id = "
+        numIrrelClms = 3                    # there are 3 irrelevant columns in result
     else:
         # TODO: make this so it generates the empty files...also consider special files like run
         #           and relations
@@ -147,10 +151,9 @@ def genFile(itemIds, profpath, conn, filename):
         # ...get the relevant row from the relevant table
         row = conn.selQuery(query + str(id) + ';')[0]
         rowstring = ''          # initalize string in output file representing that row
-        
-        for column in row:   # for each column in returned row...
-            # TODO: remove irrelevant columns...see relations file in profile1 and compare to
-            # tables in MatrixTDB to determine relevance
+
+        # don't worry about the last, irrelevant columns, but for every relevant column in the row...
+        for column in row[:-irrelClm]:   
             try:
                 # ...add it to the output row...
                 rowstring = rowstring + column + '@'
