@@ -76,7 +76,7 @@ popd
 for lgname in $lgnames;
 do 
 
-    printf "%-40s" "$lgname...";
+    printf "%-70s" "$lgname...";
 
 # Set skeleton, grammar, gold-standard for comparison, and
 # target directory.

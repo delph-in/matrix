@@ -22,6 +22,15 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "Sahaptin-short") (:content . "Sahaptin-short: Sahaptin, shorter version (sfd dissertation)"))
+((:path . "Sahaptin") (:content . "Sahaptin: Sahaptin (sfd dissertation)"))
+((:path . "case-mixed2") (:content . "case-mixed2: mixed adpositional and morphological marking (2)"))
+((:path . "Tagalog") (:content . "Tagalog: Tagalog (sfd dissertation)"))
+((:path . "Hindi") (:content . "Hindi: Hindi (sfd dissertation)"))
+((:path . "German") (:content . "German: German (sfd dissertation)"))
+((:path . "Fore") (:content . "Fore: Fore (sfd dissertation)"))
+((:path . "Dyirbal") (:content . "Dyirbal: Dyirbal (sfd dissertation)"))
+((:path . "Cree") (:content . "Cree: Plains Cree (sfd dissertation)"))
 ((:path . "arg-opt-lex-cntxt-2feat-subj-drop-marker-req-wth-drop-req-wthout") (:content . "arg-opt-lex-cntxt-2feat-subj-drop-marker-req-wth-drop-req-wthout: Subject dropping only in one context with multiple features.  One specified on the verb.  One on the subj."))
 ((:path . "arg-opt-lex-cntxt-subj-drop-marker-req-wth-drop-req-wthout") (:content . "arg-opt-lex-cntxt-subj-drop-marker-req-wth-drop-req-wthout: Subject dropping according to one context with one feature specified on the verb."))
 ((:path . "arg-opt-lex-subj-drop-marker-req-wth-drop-req-wthout") (:content . "arg-opt-lex-subj-drop-marker-req-wth-drop-req-wthout: Lexically based subject dropping. Marker required for dropped and overt subjs."))
