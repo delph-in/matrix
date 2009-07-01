@@ -22,6 +22,9 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "infl-q-main-verb") (:content . "infl-q-main-verb: Question marking as inflection on the main verb, no other affixes"))
+((:path . "subj-aux-inv-q") (:content . "subj-aux-inv-q: Questions marked by subj-aux inversion."))
+((:path . "qpart-yes-no") (:content . "qpart-yes-no: Questions marked via sentence-initial question particle."))
 ((:path . "infl-neg-sole-suffix") (:content . "infl-neg-sole-suffix: Negation as the only suffix, optional"))
 ((:path . "infl-neg-nonfinal-suffix") (:content . "infl-neg-nonfinal-suffix: Inflectional negation as optional non-final suffix, optionality with check box"))
 ((:path . "infl-neg-nonfinal-multipath") (:content . "infl-neg-nonfinal-multipath: Inflectional negation as optional non-final suffix, with optionality modeled through multiple inputs on next slot."))
