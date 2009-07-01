@@ -2420,25 +2420,14 @@ def customize_sentential_negation():
   # doesn't do the interaction between the two, but it probably won't 
   # break anything to leave it in.
 
+  # ERB 2009-07-01 It was adding defunct lex rules in at least some
+  # cases, so taking it out for now.  This much still seems to be
+  # required:
+
   advAlone = ''
   multineg = ch.get('multi-neg')
   if ch.get('adv-neg') == 'on' or multineg == 'comp':
     advAlone = 'always'
-  if multineg == 'both-opt' or multineg == 'adv-obl':
-    advAlone = 'sometimes'
-  if multineg == 'both-obl' or multineg == 'infl-obl':
-    advAlone = 'never'
-
-  # ERB 2006-09-16 TODO: The perl script had an else on the above if
-  # statment which generated a "probable script error" if we fell into
-  # it.  It's probably good idea to put that in here, too.
-
-  if ch.get('adv-neg') == 'on' and ch.get('neg-adv') == 'sel-adv':
-    create_neg_add_lex_rule(advAlone)
-    create_neg_adv_lex_item(advAlone)
-
-  if ch.get('infl-neg') == 'on' and multineg != 'both-obl' and multineg != 'adv-obl':
-    create_neg_infl_lex_rule()
 
   # ERB 2009-01-23 Migrating negation to modern customization system.
   # This intermediate version only does independent adverbs, and so
@@ -2446,159 +2435,8 @@ def customize_sentential_negation():
   # the test below.
 
   if ch.get('adv-neg') == 'on': # and ch.get('neg-adv') == 'ind-adv':
-    if advAlone == 'never':
-      # Override user input: multi-neg as bothobl or inflobl means
-      # we go with the selected adverb analysis.
-      create_neg_add_lex_rule(advAlone)
-
     create_neg_adv_lex_item(advAlone)
 
-# ERB 2006-09-21 neg-add-lex rule, for negation strategies that involve
-# selected adverbs.
-
-def create_neg_add_lex_rule(advAlone):
-
-  # ERB 2006-09-17 The lexical rule conditions both need these
-  # variables, so declare them here.
-
-  pre = ''
-  suf = ''
-  orth = ''
-  rule = ''
-
-  # This first bit is shared by all the grammar types where we want
-  # the neg-add-lex-rule.
-
-  # ERB 2006-09-21 The value of COMPS on the mother is prettier
-  # with the . notation rather than FIRST/REST, but for now tdl.py
-  # isn't handling that case.
-  #                                 COMPS < [ LOCAL [ CONT [ HOOK [ INDEX #negind,\
-  #                                                                  LTOP #negltop ],\
-  #                                                          HCONS <! [ LARG #larg ] !> #]],\
-  #                                                   LKEYS.KEYREL.PRED \"_neg_r_rel\" ] . #comps > ],\
-
-  mylang.add('''neg-add-lex-rule := local-change-only-lex-rule &
-                       same-ctxt-lex-rule &
-                       same-agr-lex-rule &
-                       same-head-lex-rule &
-                       same-hc-light-lex-rule &
-                       same-posthead-lex-rule &
-     [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ #subj,
-                                  SPR #spr,
-                                  SPEC #spec ,
-                                  COMPS [ FIRST [ LOCAL.CONT [ HOOK [ INDEX #negind,
-                                                                      LTOP #negltop ],
-                                                               HCONS <! [ LARG #larg ] !> ],
-                                                  LKEYS.KEYREL.PRED "_neg_r_rel" ],
-                                          REST #comps ]],
-                        CONT.HOOK [ INDEX #negind,
-                                      LTOP #negltop,
-                                      XARG #xarg ]],
-        DTR lex-item &  [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ #subj,
-                                                     SPR #spr,
-                                                     SPEC #spec,
-                                                     COMPS #comps ],
-                                               HEAD verb ],
-                                         CONT.HOOK [ LTOP #larg,
-                                                     XARG #xarg ]]]].''',
-                                               '''This lexical rule adds a selected negative\n
-                                               adverb to the beginning of the COMPS list''')
-
-  #Decide what to do with AUX value.
-
-  if ch.get('neg-sel-adv') == 'aux':
-    mylang.add('neg-add-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
-               'This rule applies only to auxiliaries.')
-
-  if ch.get('neg-sel-adv') == 'main' and has_auxiliaries_p():
-    mylang.add('neg-add-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].'
-               'This rule applies only to main verbs.')
-
-    #Make subtypes and instances as appropriate, depending on advAlone condition.
-
-  if advAlone == 'always':
-    mylang.add('neg-add-lex-rule := constant-lex-rule.'
-               'Thie type is instantiated in lrules.tdl.')
-
-    lrules.add('neg-add-lr := neg-add-lex-rule.')
-
-
-    # TODO: I really just want to add a comment to this type in this case.  Will
-    # this syntax do it?  If not, is there some other syntax in tdl.py that will?
-
-  if advAlone == 'sometimes':
-    mylang.comment('neg-add-lex-rule',
-               'This type has subtypes instantiated by instances in both\n\
-               irules.tdl and lrules.tdl.')
-    mylang.add('infl-neg-add-lex-rule := neg-add-lex-rule & inflecting-lex-rule.')
-    mylang.add('const-neg-add-lex-rule := neg-add-lex-rule & constant-lex-rule.')
-
-    lrules.add('neg-add-lr := const-neg-add-lex-rule.')
-
-    add_irule('neg-add-ir','infl-neg-add-lex-rule',ch.get('neg-aff'),ch.get('neg-aff-orth'))
-
-  if advAlone == 'never':
-    mylang.add('neg-add-lex-rule := inflecting-lex-rule.'
-               'This type is instantiated in irules.tdl.')
-
-    add_irule('neg-add-ir','neg-add-lex-rule',ch.get('neg-aff'),ch.get('neg-aff-orth'))
-
-# ERB 2006-09-21 Create negative inflection lexical rule
-#Inflection without selected adverb
-#This one adds the '_neg_r_rel, and as such is only used
-#when inflection appears alone (infl strategy only, both
-#strategies with multi-neg = comp, bothopt, inflobl).
-
-#Spell _neg_r_rel with leading _ even though it is introduced
-#by the lexical rule so that "the cat didn't sleep" and "the
-#cat did not sleep" have the same representation.
-
-#Copying up LKEYS here because I use the KEYREL.PRED to select
-#the neg adv in the neg-add-lex-rule.  We don't want the output
-#of this rule to be a possible first complement to a neg-add aux.
-#If we find another way to select the neg adv, something will
-#probably need to be changed here.
-
-#ERB 2007-02-26 Fixing a bug here: The rule's C-CONT.HOOK.INDEX
-#should be identified with the DTR's INDEX, not with the ARG0
-#of the _neg_r_rel.
-
-def create_neg_infl_lex_rule():
-
-  mylang.add('neg-infl-lex-rule := cont-change-only-lex-rule &\
-	                     inflecting-lex-rule &\
-	   [ C-CONT [ HOOK [ XARG #xarg,\
-	                     LTOP #ltop,\
-	                     INDEX #ind ],\
-	              RELS <! event-relation &\
-	                      [ PRED "_neg_r_rel",\
-	                        LBL #ltop,\
-	                        ARG1 #harg ] !>,\
-	              HCONS <! qeq &\
-	                       [ HARG #harg,\
-	                         LARG #larg ] !> ],\
-	     SYNSEM.LKEYS #lkeys,\
-	     DTR lex-item & \
-	         [ SYNSEM [ LKEYS #lkeys,\
-	                    LOCAL [ CONT.HOOK [ XARG #xarg,\
-                                                INDEX #ind,\
-	                                        LTOP #larg ],\
-	                          CAT.HEAD verb]]]].',
-             'This lexical rule adds the neg_r_rel to the verb\'s\n\
-	RELS list.  It is instantiated by a spelling-changing\n\
-	rule as specified in irules.tdl.')
-
-  if ch.get('neg-infl-type') == 'aux':
-    mylang.add('neg-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
-               'This rule applies only to auxiliaries.')
-
-  if ch.get('neg-infl-type') == 'main' and has_auxiliaries_p():
-    mylang.add('neg-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
-               'This rule applies only to main verbs.')
-
-  add_irule('neg-infl-lr','neg-infl-lex-rule',ch.get('neg-aff'),ch.get('neg-aff-orth'))
-
-# ERB 2006-09-22 Create lexical types and lexical entries for
 
 def create_neg_adv_lex_item(advAlone):
 
