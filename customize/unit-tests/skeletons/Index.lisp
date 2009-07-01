@@ -22,6 +22,10 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "infl-neg-sole-suffix") (:content . "infl-neg-sole-suffix: Negation as the only suffix, optional"))
+((:path . "infl-neg-nonfinal-suffix") (:content . "infl-neg-nonfinal-suffix: Inflectional negation as optional non-final suffix, optionality with check box"))
+((:path . "infl-neg-nonfinal-multipath") (:content . "infl-neg-nonfinal-multipath: Inflectional negation as optional non-final suffix, with optionality modeled through multiple inputs on next slot."))
+((:path . "infl-neg-final-opt-suffix") (:content . "infl-neg-final-opt-suffix: Negative affix as optional suffix at end of suffix string"))
 ((:path . "Sahaptin-short") (:content . "Sahaptin-short: Sahaptin, shorter version (sfd dissertation)"))
 ((:path . "Sahaptin") (:content . "Sahaptin: Sahaptin (sfd dissertation)"))
 ((:path . "case-mixed2") (:content . "case-mixed2: mixed adpositional and morphological marking (2)"))

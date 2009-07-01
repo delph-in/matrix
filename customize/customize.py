@@ -4468,6 +4468,13 @@ def customize_inflection():
       subrules = 0
       morph_orth = ''
 
+
+      # ERB 2009-07-01 Decide if we're talking about a rule that
+      # is only adding information. FIXME: This is a band-aid to
+      # get negation to work properly and needs to be refactored.
+
+      addonlyltow = (not neginflrule(features))
+
       # Iterate over the morphemes and their features to see if any
       # element of the paradigm should be a constant-lex-rule, to
       # count up the number of subrules, and to see if any of the
@@ -4555,6 +4562,18 @@ def customize_inflection():
         if basetype:
           for bt in basetype:
             mylang.add(bt+ " := [INFLECTED -].")
+        #ERB 2009-07-01 Add in add-only-no-ccont-rule if needed, 
+        #but cont-change-only-rule for negation.
+        #Adding this here because it used to be part of lexeme-to-word-rule
+        #and I've changed matrix.tdl.  FIXME: This is needs to be refactored.
+        #While refactoring: note that we should use matrix-provided
+        #subtypes where available, I think, like infl-cont-change-only-lex-rule.
+        if neginflrule(features):
+          mylang.add(name+'-lex-rule := cont-change-only-lex-rule & \
+             [DTR ' + inp + '].')
+        else:
+          mylang.add(name+'-lex-rule := add-only-no-ccont-rule & \
+             [DTR ' + inp + '].')
 
       elif wtol:
         if const:

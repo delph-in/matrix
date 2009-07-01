@@ -846,14 +846,15 @@ lex-rule := phrase-or-lexrule & word-or-lexrule &
 ; value, since that means identifying RELS and HCONS lists, breaking
 ; the diff-list append.
 
-lexeme-to-word-rule := same-local-lex-rule &
-		       same-modified-lex-rule &
-		       same-light-lex-rule &
-		       same-non-local-lex-rule &
+; ERB 2009-07-01 We've known for a long time now that it's simply
+; not true that the switch from lexeme to word should always happen
+; in an add-only-no-ccont-lex-rule.  I'm going to remove that constraint
+; now and make lexeme-to-word-rule only affect the INFLECTED value,
+; as it should.
+
+lexeme-to-word-rule := lex-rule &
   [ INFLECTED +,
-    DTR [ INFLECTED - ],
-    C-CONT [RELS <! !>,
-	    HCONS <! !>]].
+    DTR [ INFLECTED - ]].
 
 ; Lexeme-to-lexeme rules can make more radical changes to the SYNSEM value.
 ; (ERB 2004-02-11) This used to inherit from "lexeme" but now there is no
