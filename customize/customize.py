@@ -437,6 +437,14 @@ def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=
 	          RELS list.  It is instantiated by a spelling-changing\n\
 	          rule as specified in irules.tdl.',
                   merge=True)
+
+
+    elif (n == 'question' and v[0] == 'plus'):
+      # ERB 2009-07-01 Adding in semantics for question affixes
+      tdlfile.add(type_name + ':= \
+                     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].',
+                  merge=True)
+
     ## Specifiying OPT- on each user defined type instead of creating a supertype because
     #It the supertype would need to inherit from transitive-verb-lex and the code already puts 
     #transitive-verb-lex as a supertype of user-defined typ thus causing an inheritance issue.
@@ -3022,7 +3030,7 @@ def customize_yesno_questions():
     # corrects to MC + and adds SF ques.
 
     comment = \
-           'This rule takes [MC na] inverted phrases and licneses' + \
+           'This rule takes [MC na] inverted phrases and licenses' + \
            'them as main clauses with question semantics.\n'
 
     typedef = '''
@@ -3067,23 +3075,24 @@ def customize_yesno_questions():
          [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
     mylang.add(typedef,comment)
 
-  if ch.get('q-infl'):
+# ERB 2009-07-01 To remove:
+#   if ch.get('q-infl'):
 
-    mylang.add('ques-infl-lex-rule := add-only-no-ccont-rule & inflecting-lex-rule &\
-    [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques,\
-    DTR lex-item & [ SYNSEM.LOCAL.CAT.HEAD verb ]].',
-               'Constrains SF to ques. Instantiated by a verbal affix.')
+#     mylang.add('ques-infl-lex-rule := add-only-no-ccont-rule & inflecting-lex-rule &\
+#     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques,\
+#     DTR lex-item & [ SYNSEM.LOCAL.CAT.HEAD verb ]].',
+#                'Constrains SF to ques. Instantiated by a verbal affix.')
 
-    if ch.get('q-infl-type') == 'aux':
-      mylang.add('ques-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
-                 'This rule applies only to auxiliaries.')
+#     if ch.get('q-infl-type') == 'aux':
+#       mylang.add('ques-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+#                  'This rule applies only to auxiliaries.')
 
-    if ch.get('q-infl-type') == 'main' and has_auxiliaries_p():
-      mylang.add('ques-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
-                 'This rule applies only to main verbs.')
+#     if ch.get('q-infl-type') == 'main' and has_auxiliaries_p():
+#       mylang.add('ques-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
+#                  'This rule applies only to main verbs.')
 
 
-    add_irule('ques-infl-lr','ques-infl-lex-rule',ch.get('ques-aff'),ch.get('ques-aff-orth'))
+#     add_irule('ques-infl-lr','ques-infl-lex-rule',ch.get('ques-aff'),ch.get('ques-aff-orth'))
 
 
 ######################################################################
@@ -4702,6 +4711,7 @@ def neginflrule(features):
   ch.iter_end()
         
   return result
+
 
 ######################################################################
 # customize_test_sentences(matrix_path)

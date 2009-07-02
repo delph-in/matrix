@@ -78,6 +78,8 @@ class ChoicesFile:
         self.convert_15_to_16()
       if version < 17:
         self.convert_16_to_17()
+      if version < 18:
+        self.convert_17_to_18()
       # As we get more versions, add more version-conversion methods, and:
       # if version < N:
       #   self.convert_N-1_to_N
@@ -157,6 +159,15 @@ class ChoicesFile:
       prefix += i[0] + str(i[1]) + '_'
     return prefix
 
+  def iter_max(self,key):
+    count = 0
+    self.iter_begin(key)
+    while self.iter_valid():
+      count += 1
+      self.iter_next()
+    self.iter_end()
+    return count
+      
   # Based on the current top of the iterator stack, decide if the
   # iterator is valid -- that is, if there are exist any values in the
   # choices dictionary for which the current iterator is a prefix.
@@ -1015,6 +1026,10 @@ class ChoicesFile:
     if self.get_full('infl-neg'):
       features += [ ['negation', 'plus|plus', '' ] ]
 
+    # Questions
+    if self.get_full('q-infl'):
+      features += [ ['question', 'plus|plus', '' ] ]
+
     # Argument Optionality
     if self.get_full('subj-drop') or self.get_full('obj-drop'):
       features +=[['OPT', 'plus|plus;minus|minus', '']]
@@ -1096,7 +1111,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 17
+    return 18
 
 
   def convert_value(self, key, old, new):
@@ -1629,8 +1644,10 @@ class ChoicesFile:
         self.delete('aux' + i + '_comp')
 
   def convert_12_to_13(self):
-    # EB stupidly used "+" as a feature value.  Updating this
-    # to "plus".  Feature name was "negation".
+    """ 
+    ERB: stupidly used "+" as a feature value.  Updating this
+    to "plus".  Feature name was "negation".
+    """
     for lextype in ['aux','det','verb','noun']:
       self.iter_begin(lextype + '-slot')
       while self.iter_valid():
@@ -1770,3 +1787,35 @@ class ChoicesFile:
 
       self.iter_next()
     self.iter_end()
+
+  def convert_17_to_18(self):
+    """
+    Retrofitted yesno questions library to integrate question affixes
+    with morphotactic infrastructure.  'aux-main' possibility for 
+    q-infl-type said in the prose 'any finite verb', but I don't think
+    we had actually implemented this.  This translation does not
+    put [FORM fin] on the q-infl rule, since this rule will end up
+    as a separate path from any other verbal inflection, again mimicking
+    what was going on in the old system.
+    """
+    if self.get('q-infl') == 'on':
+      n = self.iter_max('verb-slot') + 1
+      pref = 'verb-slot' + str(n)
+      if self.get('ques-aff') == 'suffix':
+        self.set(pref + '_order', 'after')
+      if self.get('ques-aff') == 'prefix':
+        self.set(pref + '_order', 'before')
+      if self.get('q-infl-type') == 'main':
+        self.set(pref + '_input1_type', 'iverb')
+        self.set(pref + '_input2_type', 'tverb')
+      if self.get('q-infl-type') == 'aux':
+        self.set(pref + '_input1_type', 'aux')
+      if self.get('q-infl-type') == 'aux-main':
+        self.set(pref + '_input1_type', 'verb')
+      if self.is_set('ques-aff-orth'):
+        self.set(pref + '_morph1_orth', self.get('ques-aff-orth'))
+      self.set(pref + '_name', 'q-infl')
+      self.set(pref + '_morph1_feat1_name', 'question')
+      self.set(pref + '_morph1_feat1_value', 'plus')
+      self.set(pref + '_opt', 'on')
+
