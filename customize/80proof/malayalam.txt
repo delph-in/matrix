@@ -1,0 +1,785 @@
+Language: Malayalam
+Language code: mal
+Author: Safiyyah Saleem
+Date: April 1, 2009
+Source a: Malayalam by R.E. Asher and T.C. Kumari
+
+
+
+#Ex 1 demonstrates basic SOV word order.  
+Source: a:193
+Vetted: f
+Judgment: g
+Phenomena: {word order, case}
+kuTTi ammaye viLiccu
+kuTTi amma-e viLi-ccu
+child.nom mother-acc call-past
+The child called the mother.
+
+#Ex 2 demonstrates SVO word order.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {word order}
+kuTTi viLiccu ammaye 
+kuTTi viLi-ccu amma-e 
+child.nom call-past mother-acc
+The child called the mother.
+
+#Ex 3 demonstrates VSO word order.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {word order}
+viLiccu kuTTi ammaye 
+viLi-ccu kuTTi amma-e 
+call-past child.nom mother-acc 
+The child called the mother.
+
+#Ex 4 demonstrates basic VOS word order.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {word order}
+viLiccu ammaye kuTTi  
+viLi-ccu amma-e  kuTTi 
+call-past mother-acc child.nom  
+The child called the mother.
+
+#Ex 5 demonstrates OSV word order.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {word order}
+ammaye kuTTi  viLiccu
+amma-e kuTTi  viLi-ccu
+mother-acc child.nom  call-past
+The child called the mother.
+
+
+#Ex 6 demonstrates OVS word order.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {word order}
+ammaye viLiccu kuTTi  
+amma-e viLi-ccu kuTTi  
+mother-acc call-past child.nom  
+The child called the mother.
+
+#Ex 7 demonstrates an ungrammatical use of the accusative case.  Subjects (for most verbs must appear in the nominative case.  Here the subject (incorrectly) has an accusative case marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {case}
+kuTTie ammaye viLiccu
+kuTTi-e amma-e viLi-ccu
+child mother-acc call-past
+The child called the mother.
+
+#Ex 8 demonstrates an ungrammatical use of the accusative case.  Subjects (for most verbs must appear in the nominative case.  Here the direct object is (incorrectly) in the nominative case. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {case}
+kuTTi ammay viLiccu
+kuTTi amma viLi-ccu
+child.nom mother call-past
+The child called the mother.
+
+#Ex 9 demonstrates a grammatical use of case with an intransitive verb.  Intransitive subjects are in the nominative case (a:198)
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {case}
+kuTTi ciriccu
+kuTTi cirikk-tu
+child.nom laugh-past
+'The child laughed.'   
+
+#Ex 10 demonstrates an ungrammatical use of case with an intransitive verb.  Intransitive subjects are in the nominative case (a:274)
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {case}
+kuTTiye ciriccu
+kuTTi-e cirikk-tu
+child-acc laugh-past
+The child laughed
+
+#Ex 11 demonstrates a grammatical use of sociative case for direct objects of verbs related to "say."
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {case}
+amma kuTTiiyooTE paRaNNu
+amma kuTTi-ooTE paRa-NNu
+mother.nom child-soc tell-past
+'The mother told the child.'
+
+#Ex 12 demonstrates an ungrammatical use of case for direct objects of verbs related to "say."  The direct object should be sociative.  Here it is nominative. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {case}
+amma kuTTi paRaNNu
+amma kuTTi paRa-NNu
+mother.nom child tell-past
+'The mother told the child.'
+
+#Ex 13 demonstrates an ungrammatical use of case for direct objects of verbs related to "say."  The direct object should be sociative.  Here it is accusative. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {case}
+amma kuTTi paRaNNu
+amma kuTTi paRa-NNu
+mother.nom child tell-past
+'The mother told the child.'
+
+#Ex 14 demonstrates verbs that take a dative subject.  These verbs are usually related to something that is nonvolitional.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {case}
+kuTTikkE veedaniccu
+kuTTi-kke veedani-ccu
+child-dat feel.pain-past
+'The child felt pain.'
+
+#Ex 15 demonstrates verbs that take a dative subject.  Here the subject is "incorrectly" accusative.  
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {case}
+kuTTiye veedaniccu
+kuTTi-e veedani-ccu
+child-acc feel.pain-past
+'The child felt pain.'
+
+
+#Ex 16 demonstrates an ungrammatical use of verbs that take a dative subject.  Here the subject is "incorrectly" nominative.  
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {case}
+kuTTi veedaniccu
+kuTTi veedani-ccu
+child.nom feel.pain-past
+'The child felt pain.'
+
+#Ex 17 demonstrates verbs that take a dative subject.  Here the subject is "incorrectly" sociative.  
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {case}
+kuTTiyooTEE veedaniccu
+kuTTi-ooTE veedani-ccu
+child-soc feel.pain-past
+'The child felt pain.'
+
+#Ex 18 demonstrates that only human and some animate nouns take the accusative case when they appear as direct objects.   Inanimate nouns are nominative when appearing as a direct object.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {case}
+kuTTi pustakam vaayiccu
+kuTTi pustakam vaayi-ccu
+child.nom book.nom read-past
+The child read the book.
+
+#Ex 19 demonstrates an ungrammatical example of an inanimate noun taking the accusative as a direct object.  It should be nominative. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {case}
+kuTTi pustakame vaayiccu
+kuTTi pustakam-e vaayi-ccu
+child.nom book.acc read-past
+The child read the book.
+
+
+#Ex 20 demonstrates an ungrammatical example of an inanimate noun taking the dative as a direct object.  It should be nominative. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {case}
+kuTTi pustakamkke vaayiccu
+kuTTi pustakam-kke vaayi-ccu
+child.nom book.acc read-past
+The child read the book.
+
+#Ex 21 demonstrates an ungrammatical example of an inanimate noun taking the sociative as a direct object.  It should be nominative. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {case}
+kuTTi pustakamyooTE vaayiccu
+kuTTi pustakam-ooTE vaayi-ccu
+child.nom book.acc read-past
+The child read the book.
+
+
+#Ex 22 demonstrates the use of "oru" the indefinite article.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {word order, case, det}
+oru kuTTi ammaye viLiccu
+oru kuTTi amma-e viLi-ccu
+one child.nom mother-acc call-past
+'A child called the mother.'
+
+
+#Ex 23 demonstrates an ungrammtical use of "oru" the indefinite article.  Here it comes after the noun.  It should precede it.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {word order, case, det}
+kuTTi ammaye oru viLiccu
+kuTTi amma-e oru viLi-ccu
+child.nom mother-acc one call-past
+'The child called a mother.'
+
+#Ex 24 demonstrates an ungrammtical use of "oru" the indefinite article. Here it appears before a plural noun.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {word order, case, det}
+oru kuTTimaar ammaye viLiccu
+oru kuTTi-maar amma-e viLi-ccu
+one child.pl mother-acc call-past
+'A children called the mother.'
+
+#Ex 25 demonstrates first person singular pronoun. Naan
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {pn}
+Naan ciriccu
+Naan cirikk-tu
+I laugh-past
+'I laughed.' 
+
+#Ex 26 demonstrates first person plural inclusive pronoun. Nammal
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {pn}
+NammaL ciriccu
+NammaL cirikk-tu
+we.incl laugh-past
+'We laughed.'
+
+#Ex 27 demonstrates first person plural exclusive pronoun. NaNNal
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {pn}
+NaNNal ciriccu
+NaNNal cirikk-tu
+we.excl laugh-past
+'We laughed.' 
+
+#Ex 28 demonstrates second person singular pronoun. nii
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {pn}
+nii ciriccu
+nii cirikk-tu
+you laugh-past
+'You laughed.' 
+
+#Ex 29 demonstrates second person plural pronoun. niNNal
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {pn}
+niNNal ciriccu
+niNNal cirikk-tu
+you.pl laugh-past
+'You laughed.' 
+
+#Ex 30 demonstrates third person masculine singular pronoun. avan
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {pn}
+avan ciriccu
+avan cirikk-tu
+he laugh-past
+'He laughed.' 
+
+#Ex 31 demonstrates third person feminine singular pronoun. Naan
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {pn}
+avaL ciriccu
+avaL cirikk-tu
+she laugh-past
+'She laughed.' 
+
+#Ex 32 demonstrates third person neuter singular pronoun. atE
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {pn}
+atE ciriccu
+atE cirikk-tu
+it laugh-past
+'It laughed.' 
+
+#Ex 33 demonstrates third person human plural pronoun. avar
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {case}
+avar ciriccu
+avar cirikk-tu
+they laugh-past
+'They laughed.' 
+
+#Ex 34 demonstrates third person neuter plural pronoun. ava
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {pn}
+ava ciriccu
+ava cirikk-tu
+they laugh-past
+'They laughed.' 
+
+#Ex 35 demonstrates the present tense.  It is formed by adding a suffix "-unnu" to the verb  root.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {tam}
+kuTTi cirikkunnu
+kuTTi cirikk-unnu
+child.nom laugh-present
+'The child laughs.'
+
+#Ex 36 demonstrates an ungrammatical use of tense.  Here the verb appears without the tense marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi cirikk
+kuTTi cirikk
+child.nom laugh
+'The child laughs.'
+
+#Ex 37 demonstrates an ungrammatical use of tense.  Here the tense marker appears before the verb.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi unnucirikk
+kuTTi unnu-cirikk
+child.nom pres-laugh
+'The child laughs.'
+
+#Ex 38 demonstrates an ungrammatical use of the present tense.  Here the tense marker appears before the verb.  The hyphen is kept before the the suffix as this is the wway it will be entered into the customization system.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {case}
+kuTTi -unnucirikk
+kuTTi -unnucirikk
+child.nom pres-laugh
+'The child laughs.'
+
+#Ex 39 demonstrates an ungrammatical use of the past tense.  Here the tense marker appears before the verb.  The hyphen is kept before the the suffix as this is the wway it will be entered into the customization system.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi ccuciri
+kuTTi -tucirikk
+child.nom past-laugh
+'The child laughed.'  
+
+
+#Ex 40 demonstrates an ungrammatical use of the past tense.  Here the tense marker appears before the verb.  
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi ccuciri
+kuTTi tu-cirikk
+child.nom past-laugh
+'The child laughed.'  
+
+#Ex 41 demonstrates the imperfective.  It is formed by adding "-uNTE" to the present tense stem or by adding "aaNE" to the infinitive.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {tam}
+kuTTi cirikkunnuNTE
+kuTTi cirikk-unnu-uNTE
+child.nom laugh-present-imperfect.pres
+'The child is laughing.'
+
+#Ex 42 demonstrates the an ungrammatical use of the  imperfective.  It is formed by adding "-uNTE" to the present tense stem or by adding "aaNE" to the infinitive.  Here the present tense marker (incorrectly) comes after the imperefective marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi cirikkuNTEunne
+kuTTi cirikk-uNTE-unnu
+child.nom laugh-imperfect.pres-present
+'The child is laughing.'
+
+#Ex 43 demonstrates an ungrammatical use of the  imperfective.  It is formed by adding "-uNTE" to the present tense stem or by adding "aaNE" to the infinitive.  Here neither the present tense marker nor the infinitive marker is present.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi cirikkuNTE
+kuTTi cirikk-uNTE
+child.nom laugh-imperfect.pres
+'The child is laughing.'
+
+#Ex 44 demonstrates the imperfective.  It is formed by adding "-uNTE" to the present tense stem or by adding "aaNE" to the infinitive. Here the imperfective marker is prefixed to the present tense stem.  The hyphen is deliberately kept since this is the way it will be entered into the customization system.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi uNTEcirikkunne
+kuTTi -uNTEcirikk-unnu
+child.nom imperfect.pres-laugh-present
+'The child is laughing.'
+
+#Ex 45 demonstrates the imperfective.  Here it is formed by adding "-aaNE" to the infinitive.  The infinitive is formed by adding "-uka" to the verb root.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {tam}
+kuTTi cirikkukayaaNe
+kuTTi cirikk-uka-aaNe
+child.nom laugh-infinitive-imperfect
+'The child is laughing.'
+
+#Ex 46 demonstrates negation.  The negative indicative is formed by adding "-illa" to the present and past tense stems.  For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {neg}
+kuTTi cirikkukayilla
+kuTTi cirikk-uka-illa
+child.nom laugh-infinitive-neg
+'The child will not laugh.'
+
+
+#Ex 47 demonstrates negation.  The negative indicative is formed by adding "-illa" to the present and past tense stems.  For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {neg}
+kuTTi cirikkilla
+kuTTi cirikk-illa
+child.nom laugh-infinitive-neg
+'The child will not laugh.'
+
+
+#Ex 48 demonstrates negation.  The negative indicative is formed by adding "-illa" to the present and past tense stems.  For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {neg}
+kuTTi cirikkunnilla
+kuTTi cirikk-unnu-illa
+child.nom laugh-pres-neg
+'The child is not laughing.'
+
+#Ex 49 demonstrates negation.  The negative indicative is formed by adding "-illa" to the present and past tense stems.  For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {neg}
+kuTTi ciriccilla
+kuTTi cirikk-tu-illa
+child.nom laugh-past-neg
+'The child will not laugh.'
+
+
+#Ex 50 demonstrates an ungrammatical use of negation.  The negative indicative is formed by adding "-illa" to the present and past tense stems.  For the future, the negative is formed by adding "-illa" tothe infinitive or the verb stem.  Here the negative marker comes beforethe infinitive marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {neg}
+kuTTi cirikkillayuka
+kuTTi cirikk-illa-uka
+child.nom laugh-neg-infinitive
+'The child will not laugh.'
+
+#Ex 51 demonstrates negation.  The negative indicative is formed by adding "-illa" to the present and past tense stems.  For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem. Here the negative marker (incorrectly) comes before the past tense marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {neg}
+kuTTi cirikkillaccu
+kuTTi cirikk-illa-tu
+child.nom laugh-neg-past
+'The child will not laugh.'
+
+#Ex 52 demonstrates negation.  The negative indicative is formed by adding "-illa" to the present and past tense stems.  For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem. Here the negative maker (incorrectly) comes before the present tense marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {neg}
+kuTTi cirikkillayunnu
+kuTTi cirikk-illa-unnu
+child.nom laugh-neg-pres
+'The child is not laughing.'
+
+#Ex 53 demonstrates a yes-no question.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {q}
+kuTTi ammaye viLiccoo
+kuTTi amma-e viLi-ccu-oo
+child.nom mother-acc call-past-ques
+'Did the child call the mother?'
+
+
+#Ex 54 demonstrates NP coordination.  The suffix "-um" is added to each coordinand.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {crd}
+raamanum kuTTiyum ciriccu
+raaman-um kuTTi-um cirikk-tu
+Raman.nom-and child.nom-and laugh-past
+'Raman and the child laughed.'   
+
+
+#Ex 55 demonstrates ungrammatical NP coordination.  Here one of the coordinands does not have the suffix.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {crd}
+raamanum kuTTiyum ciriccu
+raaman kuTTi-um cirikk-tu
+Raman.nom child.nom-and laugh-past
+'Raman and the child laughed.'   
+
+#Ex 56 demonstrates NP coordination for direct objects.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {crd}
+kuTTi raamaneyum ammayeyum viLiccu
+kuTTi raaman-e-um amma-e-um viLi-ccu
+child.nom raman-acc-and mother-acc-and call-past
+The child called Raman and the mother.
+
+
+#Ex 57 demonstrates ungrammatical NP coordination for direct objects. Here the coordination suffix comes before the case suffix. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {crd}
+kuTTi raamanume ammayume viLiccu
+kuTTi raaman-um-e amma-e-um viLi-ccu
+child.nom raman-and-acc mother-acc call-past
+The child called Raman and the mother.
+
+#Ex 58 demonstrates coordination.  The coordination suffix cannot attach to finite verbs.  Instead the infinitive of the verbs is used in addition with a dummy verb "ceyyuku" (do).
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {crd}
+raaman viiZukayum kuTTi cirikkukayum ceytu
+raaman viiZ-uka-um kuTTi cirikk-uka-um ceyy-tu
+Raman fall-infin-and child laugh-infin-and do-past
+'Raman fell and the child laughed.'
+
+#Ex 59 demonstrates coordination.  The coordination suffix cannot attach to finite verbs.  Instead the infinitive of the verbs is used in addition with a dummy verb "ceyyuku" (do).
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {crd}
+raaman viiZukayum cirikkukayum ceytu
+raaman viiZ-uka-um cirikk-uka-um ceyy-tu
+Raman fall-infin-and laugh-infin-and do-past
+'Raman fell and laughed.'
+
+#Ex 60 demonstrates ungrammatical coordination.  The coordination suffix cannot attach to finite verbs.  Instead the infinitive of the verbs is used in addition with a dummy verb "ceyyuku" (do).  Here the coordination suffix is missing from one of the coordinands.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {crd}
+raaman viiZuka kuTTi cirikkukayum ceytu
+raaman viiZ-uka kuTTi cirikk-uka-um ceyy-tu
+Raman fall-infin child laugh-infin-and do-past
+'Raman fell and the child laughed.'
+
+#Ex 61 demonstrates coordination.  The coordination suffix cannot attach to finite verbs.  Instead the infinitive of the verbs is used in addition with a dummy verb "ceyyuku" (do).  Here the coordination suffix is (incorrectly) attached to finite verbs.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {crd}
+raaman viiNum kuTTi ciriccyum ceytu
+raaman viiZ-tu-um kuTTi cirikk-tu-um ceyy-tu
+Raman fall-past-and child laugh-past-and do-past
+'Raman fell and the child laughed.'
+
+#Ex 62 demonstrates coordination.  The coordination suffix cannot attach to finite verbs.  Instead the infinitive of the verbs is used in addition with a dummy verb "ceyyuku" (do).  Here the dummy verb is missing.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {crd}
+raaman viiZukayum kuTTi cirikkukayum
+raaman viiZ-uka-um kuTTi cirikk-uka-um
+Raman fall-infin-and child laugh-infin-and
+'Raman fell and the child laughed.'
+
+#Ex 63 demonstrates the past imperfective.  It is formed by adding "-uNTE" to the present tense stem or by adding "aaNE" to the infinitive.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {tam}
+kuTTi cirikkunnuNTaayirunnu
+kuTTi cirikk-unnu-uNTE-irunnu
+child.nom laugh-present-imperfect-past
+'The child was laughing.'
+
+
+#Ex 64 demonstrates the future imperfective.  It is formed by adding "-uNTE" to the present tense stem or by adding "aaNE" to the infinitive.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {tam}
+kuTTi cirikkunnuNTaakum
+kuTTi cirikk-unnu-uNTE-aakum
+child.nom laugh-present-imperfect-fut
+'The child will be laughing.'
+
+#Ex 65 demonstrates the past imperfective.  Here it is formed by adding "-aaNE" to the infinitive.  The infinitive is formed by adding "-uka" to the verb root.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {tam}
+kuTTi cirikkukayaayirunnu
+kuTTi cirikk-uka-aaNe-irunnu
+child.nom laugh-infinitive-imperfect-past
+'The child was laughing.'
+
+
+#Ex 66 demonstrates the present habitual.  It is formed by adding "-aaRE" and "-uNTE" to the verb stem.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {tam}
+kuTTi cirikkaaRuNTE
+kuTTi cirikk-aaRE-uNTE
+child.nom laugh-hab-hab.pres
+'The child laughs.'
+
+
+#Ex 67 demonstrates an ungrammatical form of the habitual.  It is formed by adding "-aaRE" and "-uNTE" to the verb stem.  Here "-aaRe" is missing
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi cirikkuNTE
+kuTTi cirikk-uNTE
+child.nom laugh-hab.pres
+'The child laughs.'
+
+#Ex 68 demonstrates an ungrammatical form of the habitual.  It is formed by adding "-aaRE" and "-uNTE" to the verb stem.  Here "-uNTE" is missing.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi cirikkaaR
+kuTTi cirikk-aaRE
+child.nom laugh-hab
+'The child laughs.'
+
+#Ex 69 demonstrates past habitual.  It is formed by adding "-aaRE" and "-uNTE" to the verb stem.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {tam}
+kuTTi cirikkaaRuNTaayirunnu
+kuTTi cirikk-aaRE-uNTE-irunnu
+child.nom laugh-hab-hab-past
+'The child used to laugh.'
+
+
+#Ex 70 demonstrates future habitual.  It is formed by adding "-aaRE" and "-uNTE" to the verb stem.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {tam}
+kuTTi cirikkaaRuNTaakum
+kuTTi cirikk-aaRE-uNTE-aakum
+child.nom laugh-hab-hab-fut
+'The child will laugh.'
+
+#Ex 71 demonstrates ungrammatical present habitual.  It is formed by adding "-aaRE" and "-uNTE" to the verb stem.  Here they are attached to the present tense stem.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi cirikkunnaaRuNTaayirunnu
+kuTTi cirikk-unnu-aaRE-uNTE
+child.nom laugh-pres-hab-hab.pres
+'The child was laughing.'
+
+#Ex 72 demonstrates an ungrammtical form of the  past habitual.  It is formed by adding "-aaRE" and "-uNTE" to the verb stem.  Here they are attached to the past tense verb stem
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi ciriccaaRuNTaayirunnu
+kuTTi cirikk-tu-aaRE-uNTE-irunnu
+child.nom laugh-hab-hab-past
+'The child was laughing.'
+
+
+#Ex 73 demonstrates an ungrammitical form of the future habitual.  It is formed by adding "-aaRE" and "-uNTE" to the verb stem.  Here they are attached to the future tense verb stem
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi cirikkumaaRuNTaakum
+kuTTi cirikk-um-aaRE-uNTE-aakum
+child.nom laugh-fut-hab-hab-fut
+'The child will laugh.'
+
+#Ex 74 demonstrates an ungrammtical form of the future habitual.  It is formed by adding "-aaRE" and "-uNTE" to the verb stem.  Here it is attached to the infinitive.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi cirikkukayaaRuNTaakum
+kuTTi cirikk-uka-aaRE-uNTE-aakum
+child.nom laugh-infin-hab-hab-past
+'The child will laugh.'
+
+#Ex 75 demonstrates an ungrammtical form of the past habitual.  It is formed by adding "-aaRE" and "-uNTE" to the verb stem.  Here they are attached to the infinitive
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi cirikkukayaaRuNTaayirunnu
+kuTTi cirikk-uka-aaRE-uNTE-irunnu
+child.nom laugh-hab-hab-past
+'The child used to laugh.'
+
+#Ex 76 demonstrates an ungrammatical form of the present habitual.  It is formed by adding "-aaRE" and "-uNTE" to the verb stem.  Here they are attached to the infinitive
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi cirikkukayaaRuNTE
+kuTTi cirikk-uka-aaRE-uNTE
+child.nom laugh-infin-hab-hab.pres
+'The child laughs.'
+
