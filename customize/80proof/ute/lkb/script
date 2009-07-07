@@ -34,7 +34,7 @@
 (list
 (lkb-pathname (parent-directory) "matrix.tdl")
 (lkb-pathname (parent-directory) "head-types.tdl")
-   (lkb-pathname (parent-directory) "err.tdl")
+   (lkb-pathname (parent-directory) "chemehuevi.tdl")
 ))
 
 ;;;
@@ -111,5 +111,5 @@
 ;;;
 
 (if (eq (length *last-parses*) 1)
-   (setf *last-parses* '("the cat bakes a cake" "the cat is baking the cake")))
+   (setf *last-parses* '("" "")))
 

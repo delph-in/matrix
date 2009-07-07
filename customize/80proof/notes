@@ -16,6 +16,12 @@ Unifications specified are invalid or do not unify
 Type NOMINATIVE-LEX-RULE has an invalid constraint specification
 Error: Problems in type file
 
+Repairs:
+
+Changed all instances of "nominative" to "nom" in choices
+file, and all instances of "accusative" to "acc".  Then used
+off-line customization system to create grammar.
+
 jig:
 
 Redundancy involving NON-FEMININE

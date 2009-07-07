@@ -1,32 +1,67 @@
 ;;; Nouns
 
-cat := noun1-noun-lex &
-  [ STEM < "cat" >,
+aipaci := noun1-noun-lex &
+  [ STEM < "aipaci" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_boy_n_rel" ].
+
+puusi := noun1-noun-lex &
+  [ STEM < "puusi" >,
     SYNSEM.LKEYS.KEYREL.PRED "_cat_n_rel" ].
 
-cake := noun2-noun-lex &
-  [ STEM < "cake" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_cake_n_rel" ].
+wii := noun1-noun-lex &
+  [ STEM < "wii" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_knife_n_rel" ].
+
+mamI_1 := third-person-dual-noun-lex &
+  [ STEM < "mamI" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+nII := first-person-sing-noun-lex &
+  [ STEM < "nII" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+Imi := second-person-sing-noun-lex &
+  [ STEM < "Imi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+ina := third-person-singular-here-noun-lex &
+  [ STEM < "ina" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+maNa := third-person-singular-visible-noun-lex &
+  [ STEM < "maNa" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+uNa := third-person-singular-invisible-noun-lex &
+  [ STEM < "uNa" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+icI := third-person-inanimate-here-noun-lex &
+  [ STEM < "icI" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+mamI_2 := third-person-plural-visible-noun-lex &
+  [ STEM < "mamI" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
 
 ;;; Verbs
 
-sleeps := verb1-verb-lex &
-  [ STEM < "sleeps" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_sleep_v_rel" ].
+puni := verb1-verb-lex &
+  [ STEM < "puni" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ].
 
-bakes := verb2-verb-lex &
-  [ STEM < "bakes" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_bake_v_rel" ].
+nukwi := non-momentus-verb-lex &
+  [ STEM < "nukwi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_run_v_rel" ].
 
-;;; Auxiliaries
+tIraqi%3Fi := momentus-verb-lex &
+  [ STEM < "tIraqi?i" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_dash_off_v_rel" ].
 
-is := foo-aux-lex &
-  [ STEM < "is" > ].
+wI%3Fi := mom-changeable-verb-lex &
+  [ STEM < "wI?i" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_fall_v_rel" ].
 
-a := det1-determiner-lex &
-  [ STEM < "a" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_indef_q_rel" ].
-
-the := det2-determiner-lex &
-  [ STEM < "the" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_def_q_rel" ].
+maga := non-mom-tran-verb-lex &
+  [ STEM < "maga" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_give_v_rel" ].
