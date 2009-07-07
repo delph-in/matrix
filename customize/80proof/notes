@@ -89,6 +89,32 @@ jig:
 Redundancy involving NON-FEMININE
 NON-FEMININE: NEUTER is redundant - it is an ancestor of VEGETABLE 
 
+Repairs:
+
+Changed definition of gender hierarchy to relatively
+flat, with fem and non-fem, the latter having subtypes
+masc, neut, and veg.
+
+Moved animacy out of gender and made it an "other feature"
+with possible values "anim/inam".  
+
+Changed number to sg/non-sg, with du and pl under non-sg.
+Some elements specify non-sg, others du, nothing outside
+of pronouns direclty says sg, nothing directly says pl.
+
+Initial coverage:  
+Coverage: 11/56 36.7%
+Overgeneration: 0
+Error: 39/56
+
+Problem:
+
+case slot can't take number slot as its input.  Tried fixing
+this and ran into ?bug with -lex-rule-dtr being inherited by
+noun-lex and the subtypes of noun-lex.
+
+
+
 ----
 nyn:
 ----
