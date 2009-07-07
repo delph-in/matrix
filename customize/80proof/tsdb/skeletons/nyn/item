@@ -1,0 +1,736 @@
+1@unknown@formal@none@1@S@Language: Runyankore@1@2@@ebender@6-7-2009
+2@unknown@formal@none@1@S@Language code: nyn@1@3@@ebender@6-7-2009
+3@unknown@formal@none@1@S@Author: Safiyyah Saleem@1@3@@ebender@6-7-2009
+4@unknown@formal@none@1@S@Date: March 15, 2009@1@4@@ebender@6-7-2009
+5@unknown@formal@none@1@S@Source a: Nkore-Kiga by Charles Taylor (1985)@1@7@@ebender@6-7-2009
+6@unknown@formal@none@1@S@Source b: A Runyankore Grammar by H.F. Morris and B. E. R. Kirwan@1@13@@ebender@6-7-2009
+7@unknown@formal@none@1@TD@Nkore(Nyankore, Runyankore) and Kiga (Rukiga, Chiga, Ciga) are Bantu languages spoken in Uganda. The primary reference (a) treats them as dialects of each other. Like other Bantu languages, there is an elaborate class system for nouns. The primary reference lists 17 different noun classes. Three are modeled for agreement puporses in the test suite. Pronouns are not normally used as subjects (or, I believe objects) unless emphasis is intended. Normally the overt subject is dropped and only the subject prefix remains on the verb. Since emphasis is outside the scope of this project, I have only modeled the latter.@1@99@@ebender@6-7-2009
+8@unknown@formal@none@1@TD@Ex 1 demonstrates SVO word order. The basic word order.@1@10@@ebender@6-7-2009
+9@unknown@formal@none@1@S@Source: {a:91}@1@2@@ebender@6-7-2009
+10@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+11@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+12@unknown@formal@none@1@S@Phenomena: {word order}@1@3@@ebender@6-7-2009
+13@unknown@formal@none@1@S@omuntu akwata enkoni@1@3@@ebender@6-7-2009
+14@unknown@formal@none@1@S@o-mu-ntu a-kwata e-n-koni@1@3@@ebender@6-7-2009
+15@unknown@formal@none@1@S@c1.vwl-c1.prfx-person c1.3sg.subj-hold c9.vwl-c9.prfx-stick@1@3@@ebender@6-7-2009
+16@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+17@unknown@formal@none@1@TD@Ex 2 demonstrates 0SV word order. If the object is fronted, it must be marked on the verb.@1@18@@ebender@6-7-2009
+18@unknown@formal@none@1@S@Source: {a:91}@1@2@@ebender@6-7-2009
+19@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+20@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+21@unknown@formal@none@1@S@Phenomena : {word order, agr}@1@5@@ebender@6-7-2009
+22@unknown@formal@none@1@S@enkoni omuntu agikwata@1@3@@ebender@6-7-2009
+23@unknown@formal@none@1@S@e-n-koni o-mu-ntu a-gi-kwata@1@3@@ebender@6-7-2009
+24@unknown@formal@none@1@S@c9.vwl-c9.prfx-stick c1.vwl-c1.prfx-person c1.3sg.subj-c9.obj-hold@1@3@@ebender@6-7-2009
+25@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+26@unknown@formal@none@1@TD@Ex 3 demonstrates SOV word order. If the object precedes the verb, it must be marked on the verb.@1@19@@ebender@6-7-2009
+27@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+28@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+29@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+30@unknown@formal@none@1@S@Phenomena: {word order}@1@3@@ebender@6-7-2009
+31@unknown@formal@none@1@S@omuntu enkoni agikwata@1@3@@ebender@6-7-2009
+32@unknown@formal@none@1@S@o-mu-ntu e-n-koni a-gi-kwata@1@3@@ebender@6-7-2009
+33@unknown@formal@none@1@S@c1.vwl-c1.prfx-person c9.vwl-c9.prfx-stick c1.3sg.subj-c9.obj-hold@1@3@@ebender@6-7-2009
+34@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+35@unknown@formal@none@1@TD@Ex 4 demonstrates ungrammtical SOV word order. If the object precedes the verb, it must be marked on the verb. Here it does not.@1@24@@ebender@6-7-2009
+36@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+37@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+38@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+39@unknown@formal@none@1@S@Phenomena: {word order}@1@3@@ebender@6-7-2009
+40@unknown@formal@none@1@S@omuntu enkoni akwata@1@3@@ebender@6-7-2009
+41@unknown@formal@none@1@S@o-mu-ntu e-n-koni a-kwata@1@3@@ebender@6-7-2009
+42@unknown@formal@none@1@S@c1.vwl-c1.prfx-person c9.vwl-c9.prfx-stick c1.3sg.subj-hold@1@3@@ebender@6-7-2009
+43@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+44@unknown@formal@none@1@TD@Ex 5 demonstrates ungrammtical 0SV word order. If the object is fronted, it must be marked on the verb.@1@19@@ebender@6-7-2009
+45@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+46@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+47@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+48@unknown@formal@none@1@S@Phenomena : {word order}@1@4@@ebender@6-7-2009
+49@unknown@formal@none@1@S@enkoni omuntu akwata@1@3@@ebender@6-7-2009
+50@unknown@formal@none@1@S@e-n-koni o-mu-ntu a-kwata@1@3@@ebender@6-7-2009
+51@unknown@formal@none@1@S@c9.vwl-c9.prfx-stick c1.vwl-c1.prfx-person c1.3sg.subj-hold@1@3@@ebender@6-7-2009
+52@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+53@unknown@formal@none@1@TD@Ex 6 demonstrates ungrammatical VSO word order.@1@7@@ebender@6-7-2009
+54@unknown@formal@none@1@S@Source: {a:91}@1@2@@ebender@6-7-2009
+55@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+56@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+57@unknown@formal@none@1@S@Phenomena: {word order}@1@3@@ebender@6-7-2009
+58@unknown@formal@none@1@S@akwata omuntu enkoni@1@3@@ebender@6-7-2009
+59@unknown@formal@none@1@S@a-kwata o-mu-ntu e-n-koni@1@3@@ebender@6-7-2009
+60@unknown@formal@none@1@S@c1.3sg.subj-hold c1.vwl-c1.prfx-person c9.vwl-c9.prfx-stick@1@3@@ebender@6-7-2009
+61@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+62@unknown@formal@none@1@TD@Ex 7 demonstrates ungrammatical VOS word order.@1@7@@ebender@6-7-2009
+63@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+64@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+65@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+66@unknown@formal@none@1@S@Phenomena: {word order}@1@3@@ebender@6-7-2009
+67@unknown@formal@none@1@S@akwata enkoni omuntu@1@3@@ebender@6-7-2009
+68@unknown@formal@none@1@S@a-kwata e-n-koni o-mu-ntu@1@3@@ebender@6-7-2009
+69@unknown@formal@none@1@S@c1.3sg.subj-hold c9.vwl-c9.prfx-stick c1.vwl-c1.prfx-person@1@3@@ebender@6-7-2009
+70@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+71@unknown@formal@none@1@TD@Ex 8 demonstrates OVS word order.@1@6@@ebender@6-7-2009
+72@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+73@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+74@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+75@unknown@formal@none@1@S@Phenomena: {word order}@1@3@@ebender@6-7-2009
+76@unknown@formal@none@1@S@enkoni agikwata omuntu@1@3@@ebender@6-7-2009
+77@unknown@formal@none@1@S@e-n-koni a-gi-kwata o-mu-ntu@1@3@@ebender@6-7-2009
+78@unknown@formal@none@1@S@c9.vwl-c9.prfx-stick c1.3sg.subj-c9.obj-hold c1.vwl-c1.prfx-person@1@3@@ebender@6-7-2009
+79@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+80@unknown@formal@none@1@TD@Ex 9 demonstrates ungrammatical subj-verb agreement. A subject prefix that agrees with the class of the subject must attach to the verb stem. Here it is missing@1@27@@ebender@6-7-2009
+81@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+82@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+83@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+84@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+85@unknown@formal@none@1@S@omuntu kwata enkoni@1@3@@ebender@6-7-2009
+86@unknown@formal@none@1@S@o-mu-ntu kwata e-n-koni@1@3@@ebender@6-7-2009
+87@unknown@formal@none@1@S@c1.vwl-c1.prfx-person hold c9.vwl-c9.prfx-stick@1@3@@ebender@6-7-2009
+88@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+89@unknown@formal@none@1@TD@Ex 10 demonstrates ungrammatical subject-verb agreement for an intransitive verb. A subject prefix that agrees with the class of the subject must attach to the verb stem. Here the class of the subject marker does not agree with the class of the overt NP.@1@44@@ebender@6-7-2009
+90@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+91@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+92@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+93@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+94@unknown@formal@none@1@S@omushaija beeshongora@1@2@@ebender@6-7-2009
+95@unknown@formal@none@1@S@o-mu-shaija ba-eshongora@1@2@@ebender@6-7-2009
+96@unknown@formal@none@1@S@c1.vwl-c1.prfx-person c2.3pl.subj-sing@1@2@@ebender@6-7-2009
+97@unknown@formal@none@1@S@'The man sings.'@1@3@@ebender@6-7-2009
+98@unknown@formal@none@1@TD@Ex 11 demonstrates grammatical subject-verb agreement for an intransitive verb. A subject prefix that agrees with the class of the subject must attach to the verb stem.@1@27@@ebender@6-7-2009
+99@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+100@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+101@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+102@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+103@unknown@formal@none@1@S@omushaija aeshongora@1@2@@ebender@6-7-2009
+104@unknown@formal@none@1@S@o-mu-shaija a-eshongora@1@2@@ebender@6-7-2009
+105@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-sing@1@2@@ebender@6-7-2009
+106@unknown@formal@none@1@S@'The man sings.'@1@3@@ebender@6-7-2009
+107@unknown@formal@none@1@TD@Ex 12 demonstrates grammatical first person singular subject-verb agreement. Free pronouns are only used for emphasis. Here only the bound subject prefix occurs.@1@23@@ebender@6-7-2009
+108@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+109@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+110@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+111@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+112@unknown@formal@none@1@S@nyeshongora@1@1@@ebender@6-7-2009
+113@unknown@formal@none@1@S@n-eshongora@1@1@@ebender@6-7-2009
+114@unknown@formal@none@1@S@c1.1sg.subj-sing@1@1@@ebender@6-7-2009
+115@unknown@formal@none@1@S@'I sing.'@1@2@@ebender@6-7-2009
+116@unknown@formal@none@1@TD@Ex 13 demonstrates grammatical second person singular subject-verb agreement. Free pronouns are only used for emphasis. Here only the bound subject prefix occurs.@1@23@@ebender@6-7-2009
+117@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+118@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+119@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+120@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+121@unknown@formal@none@1@S@weshongora@1@1@@ebender@6-7-2009
+122@unknown@formal@none@1@S@o-eshongora@1@1@@ebender@6-7-2009
+123@unknown@formal@none@1@S@c1.2sg.subj-sing@1@1@@ebender@6-7-2009
+124@unknown@formal@none@1@S@'You sing.'@1@2@@ebender@6-7-2009
+125@unknown@formal@none@1@TD@Ex 14 demonstrates grammatical first person plural subject-verb agreement. Free pronouns are only used for emphasis. Here only the bound subject prefix occurs.@1@23@@ebender@6-7-2009
+126@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+127@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+128@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+129@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+130@unknown@formal@none@1@S@tweshongora@1@1@@ebender@6-7-2009
+131@unknown@formal@none@1@S@tu-eshongora@1@1@@ebender@6-7-2009
+132@unknown@formal@none@1@S@c1.1pl.subj-sing@1@1@@ebender@6-7-2009
+133@unknown@formal@none@1@S@'We sing.'@1@2@@ebender@6-7-2009
+134@unknown@formal@none@1@TD@Ex 15 demonstrates grammatical second person plural subject-verb agreement. Free pronouns are only used for emphasis. Here only the bound subject prefix occurs.@1@23@@ebender@6-7-2009
+135@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+136@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+137@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+138@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+139@unknown@formal@none@1@S@mweshongora@1@1@@ebender@6-7-2009
+140@unknown@formal@none@1@S@mu-eshongora@1@1@@ebender@6-7-2009
+141@unknown@formal@none@1@S@c1.2pl-subj-sing@1@1@@ebender@6-7-2009
+142@unknown@formal@none@1@S@'You sing.'@1@2@@ebender@6-7-2009
+143@unknown@formal@none@1@TD@Ex 16 demonstrates grammatical third person plural subject-verb agreement. Free pronouns are only used for emphasis. Here only the bound subject prefix occurs.@1@23@@ebender@6-7-2009
+144@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+145@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+146@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+147@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+148@unknown@formal@none@1@S@beeshongora@1@1@@ebender@6-7-2009
+149@unknown@formal@none@1@S@ba-eshongora@1@1@@ebender@6-7-2009
+150@unknown@formal@none@1@S@c1.3pl.subj-sing@1@1@@ebender@6-7-2009
+151@unknown@formal@none@1@S@'They sing.'@1@2@@ebender@6-7-2009
+152@unknown@formal@none@1@TD@Ex 17 demonstrates a grammatical yes/no question. Yes no questions are identical in wording and tone to declarative statements. There is a slight difference in intonation. The primary difference is that yes/no questions do not have phonemic whisper on the final syllable (a:6).@1@43@@ebender@6-7-2009
+153@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+154@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+155@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+156@unknown@formal@none@1@S@Phenomena: {q}@1@2@@ebender@6-7-2009
+157@unknown@formal@none@1@S@omushaija aeshongora@1@2@@ebender@6-7-2009
+158@unknown@formal@none@1@S@o-mu-shaija a-eshongora-+voice@1@2@@ebender@6-7-2009
+159@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-sing-voiced@1@2@@ebender@6-7-2009
+160@unknown@formal@none@1@S@'Does the man sing?'@1@4@@ebender@6-7-2009
+161@unknown@formal@none@1@TD@Ex 18 demonstrates an ungrammatical yes/no question. Yes no questions are identical in wording and tone to declarative statements. There is a slight difference in intonation. The primary difference is the yes/no questions do not have phonemic whisper on the final syllable (a:6). Here the voiced contrast does not occur on the final syllable.@1@54@@ebender@6-7-2009
+162@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+163@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+164@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+165@unknown@formal@none@1@S@Phenomena: {q}@1@2@@ebender@6-7-2009
+166@unknown@formal@none@1@S@omushaija aeshongora@1@2@@ebender@6-7-2009
+167@unknown@formal@none@1@S@o-mu-shaija-+voice a-eshongora@1@2@@ebender@6-7-2009
+168@unknown@formal@none@1@S@c1.vwl-c1.prfx-man-voiced c1.3sg.subj-sing@1@2@@ebender@6-7-2009
+169@unknown@formal@none@1@S@'Does the man sing?'@1@4@@ebender@6-7-2009
+170@unknown@formal@none@1@TD@Ex 19 demonstrates a grammatical yes/no question. Yes no questions are identical in wording and tone to declarative statements. There is a slight difference in intonation. The primary difference is that yes/no questions do not have phonemic whisper on the final syllable (a:6). Here the voiced contrasts occurs on the final word in he sentence which is the direct object.@1@60@@ebender@6-7-2009
+171@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+172@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+173@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+174@unknown@formal@none@1@S@Phenomena: {q}@1@2@@ebender@6-7-2009
+175@unknown@formal@none@1@S@omuntu akwata enkoni@1@3@@ebender@6-7-2009
+176@unknown@formal@none@1@S@o-mu-ntu a-kwata e-n-koni-+voice@1@3@@ebender@6-7-2009
+177@unknown@formal@none@1@S@c1.vwl-c1.prfx-person c1.3sg.subj-hold c9.vwl-c9.prfx-stick-voice@1@3@@ebender@6-7-2009
+178@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+179@unknown@formal@none@1@TD@Ex 20 demonstrates an ungrammatical yes/no question. Yes no questions are identical in wording and tone to declarative statements. There is a slight difference in intonation. The primary difference is that yes/no questions do not have phonemic whisper on the final syllable (a:6). Here the voiced contrasts (incorrectly) occurs on a verb which is not in sentence final position.@1@59@@ebender@6-7-2009
+180@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+181@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+182@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+183@unknown@formal@none@1@S@Phenomena: {q}@1@2@@ebender@6-7-2009
+184@unknown@formal@none@1@S@omuntu akwata enkoni@1@3@@ebender@6-7-2009
+185@unknown@formal@none@1@S@o-mu-ntu a-kwata-+voice e-n-koni@1@3@@ebender@6-7-2009
+186@unknown@formal@none@1@S@c1.vwl-c1.prfx-person c1.3sg.subj-hold-voice c9.vwl-c9.prfx-stick@1@3@@ebender@6-7-2009
+187@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+188@unknown@formal@none@1@TD@Ex 21 a grammatical yes/no question. Yes no questions are identical in wording and tone to declarative statements. There is a slight difference in intonation. The primary difference is that yes/no questions do not have phonemic whisper on the final syllable (a:6). Here the voiced contrasts occurs on the final word in he sentence which is the verb since the direct object has been fronted.@1@65@@ebender@6-7-2009
+189@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+190@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+191@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+192@unknown@formal@none@1@S@Phenomena : {q}@1@3@@ebender@6-7-2009
+193@unknown@formal@none@1@S@enkoni omuntu agikwata@1@3@@ebender@6-7-2009
+194@unknown@formal@none@1@S@e-n-koni o-mu-ntu a-gi-kwata-+voice@1@3@@ebender@6-7-2009
+195@unknown@formal@none@1@S@c9.vwl-c9.prfx-stick c1.vwl-c1.prfx-person c1.3sg.subj-c9.obj-hold-voice@1@3@@ebender@6-7-2009
+196@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+197@unknown@formal@none@1@TD@Ex 22 an ungrammatical yes/no question. Yes no questions are identical in wording and tone to declarative statements. There is a slight difference in intonation. The primary difference is that yes/no questions do not have phonemic whisper on the final syllable (a:6). Here the voiced constrast attaches to thedirect object when it is not in sentence final position.@1@58@@ebender@6-7-2009
+198@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+199@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+200@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+201@unknown@formal@none@1@S@Phenomena : {q}@1@3@@ebender@6-7-2009
+202@unknown@formal@none@1@S@enkoni omuntu agikwata@1@3@@ebender@6-7-2009
+203@unknown@formal@none@1@S@e-n-koni-+voice o-mu-ntu a-gi-kwata@1@3@@ebender@6-7-2009
+204@unknown@formal@none@1@S@c9.vwl-c9.prfx-stick-voice c1.vwl-c1.prfx-person c1.3sg.subj-c9.obj-hold@1@3@@ebender@6-7-2009
+205@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+206@unknown@formal@none@1@TD@Ex 23 demonstrates an ungrammatical yes/no question. Yes no questions are identical in wording and tone to declarative statements. There is a slight difference in intonation. The primary difference is that yes/no questions do not have phonemic whisper on the final syllable (a:6). Here the voiced contrasts (incorrectly) occurs on the subject.@1@52@@ebender@6-7-2009
+207@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+208@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+209@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+210@unknown@formal@none@1@S@Phenomena: {q}@1@2@@ebender@6-7-2009
+211@unknown@formal@none@1@S@omuntu akwata enkoni@1@3@@ebender@6-7-2009
+212@unknown@formal@none@1@S@o-mu-ntu a-kwata-+voice e-n-koni@1@3@@ebender@6-7-2009
+213@unknown@formal@none@1@S@c1.vwl-c1.prfx-person-voice c1.3sg.subj-hold-voice c9.vwl-c9.prfx-stick@1@3@@ebender@6-7-2009
+214@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+215@unknown@formal@none@1@TD@Ex 24 an ungrammatical yes/no question. Yes no questions are identical in wording and tone to declarative statements. There is a slight difference in intonation. The primary difference is that yes/no questions do not have phonemic whisper on the final syllable (a:6). Here the voiced contrasts (incorrectly) occurs on a direct object that is not in sentence final position.@1@59@@ebender@6-7-2009
+216@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+217@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+218@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+219@unknown@formal@none@1@S@Phenomena: {q}@1@2@@ebender@6-7-2009
+220@unknown@formal@none@1@S@omuntu enkoni agikwata@1@3@@ebender@6-7-2009
+221@unknown@formal@none@1@S@o-mu-ntu e-n-koni-+voice a-gi-kwata@1@3@@ebender@6-7-2009
+222@unknown@formal@none@1@S@c1.vwl-c1.prfx-person c9.vwl-c9.prfx-stick-voice c1.3sg.subj-c9.obj-hold@1@3@@ebender@6-7-2009
+223@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+224@unknown@formal@none@1@TD@Ex 25 demonstrates verb-subject agreement with a class 5 subject.@1@10@@ebender@6-7-2009
+225@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+226@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+227@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+228@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+229@unknown@formal@none@1@S@eizooba rirenga@1@2@@ebender@6-7-2009
+230@unknown@formal@none@1@S@e-ri-zooba ri-renga@1@2@@ebender@6-7-2009
+231@unknown@formal@none@1@S@c5.vwl-c5.prfx-sun c5.subj-set.@1@2@@ebender@6-7-2009
+232@unknown@formal@none@1@S@The sun sets.@1@3@@ebender@6-7-2009
+233@unknown@formal@none@1@TD@Ex 26 demonstrates ungrammatical verb-subject agreement with a class 5 subject. Here the verb subject prefix is for a class 1 noun.@1@22@@ebender@6-7-2009
+234@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+235@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+236@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+237@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+238@unknown@formal@none@1@S@eizooba arenga@1@2@@ebender@6-7-2009
+239@unknown@formal@none@1@S@e-ri-zooba a-renga@1@2@@ebender@6-7-2009
+240@unknown@formal@none@1@S@c5.vwl-c5.prfx-sun c1.subj-set.@1@2@@ebender@6-7-2009
+241@unknown@formal@none@1@S@The sun sets.@1@3@@ebender@6-7-2009
+242@unknown@formal@none@1@TD@Ex 27 demonstrates ungrammatical verb-subject agreement with a class 5 subject. Here the object prefix is used instead of the subject prefix@1@22@@ebender@6-7-2009
+243@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+244@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+245@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+246@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+247@unknown@formal@none@1@S@omushaija mweshongora@1@2@@ebender@6-7-2009
+248@unknown@formal@none@1@S@o-mu-shaija mu-eshongora@1@2@@ebender@6-7-2009
+249@unknown@formal@none@1@S@c1.vwl-c1.prfx-person c1.3sg.obj-sing@1@2@@ebender@6-7-2009
+250@unknown@formal@none@1@S@'The man sings.'@1@3@@ebender@6-7-2009
+251@unknown@formal@none@1@TD@Ex 28 present continuous tense. The present has two tenses: universal tense and present continous tense. The universal is unmarked on the verb. It is used to refer to events that are habitual. The present continous can be applied to all verbs, even those which do not take the continuous/progressive in English. The present continous is formed by adding "ni-" before the obligatory subject prefix.@1@65@@ebender@6-7-2009
+252@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+253@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+254@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+255@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+256@unknown@formal@none@1@S@omushaija naaeshongora@1@2@@ebender@6-7-2009
+257@unknown@formal@none@1@S@o-mu-shaija ni-a-eshongora@1@2@@ebender@6-7-2009
+258@unknown@formal@none@1@S@c1.vwl-c1.prfx-man PRES.CONT-c1.3sg.subj-sing@1@2@@ebender@6-7-2009
+259@unknown@formal@none@1@S@'The man is singing.'@1@4@@ebender@6-7-2009
+260@unknown@formal@none@1@TD@Ex 29 is an ungrammatical example of present continuous tense. The present has two tenses: universal tense and present continous tense. The universal is unmarked on the verb. It is used to refer to events that are habitual. The present continous can be applied to all verbs, even those which do not take the continuous/progressive in English. The present continous is formed by adding "ni-" before the obligatory subject prefix. Here the present continuous prefix (incorrectly) comes after the subject prefix.@1@81@@ebender@6-7-2009
+261@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+262@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+263@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+264@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+265@unknown@formal@none@1@S@omushaija aneeshongora@1@2@@ebender@6-7-2009
+266@unknown@formal@none@1@S@o-mu-shaija a-ni-eshongora@1@2@@ebender@6-7-2009
+267@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-PRES.CONT-sing@1@2@@ebender@6-7-2009
+268@unknown@formal@none@1@S@'The man is singing.'@1@4@@ebender@6-7-2009
+269@unknown@formal@none@1@TD@Ex 30 is an ungrammatical example of present continuous tense. The present has two tenses: universal tense and present continous tense. The universal is unmarked on the verb. It is used to refer to events that are habitual. The present continous can be applied to all verbs, even those which do not take the continuous/progressive in English. The present continous is formed by adding "ni-" before the obligatory subject prefix. Here the present continuous prefix is (incorrectly) attached after the verb stem. The prefix is deliberately left with the hypen afterwards since this is the way that it will be entered into the customization system.@1@105@@ebender@6-7-2009
+270@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+271@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+272@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+273@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+274@unknown@formal@none@1@S@omushaija naaeshongora@1@2@@ebender@6-7-2009
+275@unknown@formal@none@1@S@o-mu-shaija a-eshongorani-@1@2@@ebender@6-7-2009
+276@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-sing-PRES.CONT@1@2@@ebender@6-7-2009
+277@unknown@formal@none@1@S@'The man is singing.'@1@4@@ebender@6-7-2009
+278@unknown@formal@none@1@TD@Ex 31 is an ungrammatical example of present continuous tense. The present has two tenses: universal tense and present continous tense. The universal is unmarked on the verb. It is used to refer to events that are habitual. The present continous can be applied to all verbs, even those which do not take the continuous/progressive in English. The present continous is formed by adding "ni-" before the obligatory subject prefix. Here the present continuous prefix is (incorrectly) attached after the verb stem.@1@82@@ebender@6-7-2009
+279@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+280@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+281@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+282@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+283@unknown@formal@none@1@S@omushaija naaeshongora@1@2@@ebender@6-7-2009
+284@unknown@formal@none@1@S@o-mu-shaija a-eshongora-ni@1@2@@ebender@6-7-2009
+285@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-sing-PRES.CONT@1@2@@ebender@6-7-2009
+286@unknown@formal@none@1@S@'The man is singing.'@1@4@@ebender@6-7-2009
+287@unknown@formal@none@1@TD@Ex 32 demonstrates ungrammatical placement of the subject prefix. It must appear before the verb stem. Here it appears after. The hyphen is deliberately left on the end since this is the way the morpheme will be entered into the customization system.@1@42@@ebender@6-7-2009
+288@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+289@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+290@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+291@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+292@unknown@formal@none@1@S@omushaija eshongoraa@1@2@@ebender@6-7-2009
+293@unknown@formal@none@1@S@o-mu-shaija eshongoraa-@1@2@@ebender@6-7-2009
+294@unknown@formal@none@1@S@c1.vwl-c1.prfx-man sing-c1.3sg.subj@1@2@@ebender@6-7-2009
+295@unknown@formal@none@1@S@'The man sings.'@1@3@@ebender@6-7-2009
+296@unknown@formal@none@1@TD@Ex 33 demonstrates ungrammatical placement of the subject prefix. It must appear before the verb stem. Here it appears after.@1@20@@ebender@6-7-2009
+297@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+298@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+299@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+300@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+301@unknown@formal@none@1@S@omushaija eshongoraa@1@2@@ebender@6-7-2009
+302@unknown@formal@none@1@S@o-mu-shaija eshongora-a@1@2@@ebender@6-7-2009
+303@unknown@formal@none@1@S@c1.vwl-c1.prfx-man sing-c1.3sg.subj@1@2@@ebender@6-7-2009
+304@unknown@formal@none@1@S@'The man sings.'@1@3@@ebender@6-7-2009
+305@unknown@formal@none@1@TD@Ex 34 demonstrates the remote past tense. There are three past tenses: today past, yesterday past, and remote past. The remote past is used to refer to events that happened before yesterday. It is formed by infixing "-ka" between the subject prefix and the verb stem.@1@46@@ebender@6-7-2009
+306@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+307@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+308@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+309@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+310@unknown@formal@none@1@S@omushaija akeeshongora@1@2@@ebender@6-7-2009
+311@unknown@formal@none@1@S@o-mu-shaija a-ka-eshongora@1@2@@ebender@6-7-2009
+312@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-remote.past-sing@1@2@@ebender@6-7-2009
+313@unknown@formal@none@1@S@'The man sang.'@1@3@@ebender@6-7-2009
+314@unknown@formal@none@1@TD@Ex 35 demonstrates the remote past tense. There are three past tenses: today past, yesterday past, and remote past. The remote past is used to refer to events that happened before yesterday. It is formed by infixing "-ka" between the subject prefix and the verb stem. Here it (incorrectly) comes before the subject prefix.@1@54@@ebender@6-7-2009
+315@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+316@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+317@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+318@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+319@unknown@formal@none@1@S@omushaija kaaeshongora@1@2@@ebender@6-7-2009
+320@unknown@formal@none@1@S@o-mu-shaija ka-a-eshongora@1@2@@ebender@6-7-2009
+321@unknown@formal@none@1@S@c1.vwl-c1.prfx-man remote.past-c1.3sg.subj-sing@1@2@@ebender@6-7-2009
+322@unknown@formal@none@1@S@'The man sang.'@1@3@@ebender@6-7-2009
+323@unknown@formal@none@1@TD@Ex 36 demonstrates the remote past tense. There are three past tenses: today past, yesterday past, and remote past. The remote past is used to refer to events that happened before yesterday. It is formed by infixing "-ka" between the subject prefix and the verb stem. Here it (incorrectly) comes before the subject prefix. The hyphen is deliberately left on the end since this is how the morpheme will be entered into the customization system.@1@75@@ebender@6-7-2009
+324@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+325@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+326@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+327@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+328@unknown@formal@none@1@S@omushaija aeshongoraka@1@2@@ebender@6-7-2009
+329@unknown@formal@none@1@S@o-mu-shaija a-eshongoraka-@1@2@@ebender@6-7-2009
+330@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-sing-remote.past@1@2@@ebender@6-7-2009
+331@unknown@formal@none@1@S@'The man sang.'@1@3@@ebender@6-7-2009
+332@unknown@formal@none@1@TD@Ex 37 If the object is marked on the verb, the remote past suffix comes before the object prefix. (a:170 for example)@1@22@@ebender@6-7-2009
+333@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+334@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+335@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+336@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+337@unknown@formal@none@1@S@omuntu enkoni akagikwata@1@3@@ebender@6-7-2009
+338@unknown@formal@none@1@S@o-mu-ntu e-n-koni a-ka-gi-kwata@1@3@@ebender@6-7-2009
+339@unknown@formal@none@1@S@c1.vwl-c1.prfx-person c9.vwl-c9.prfx-stick c1.3sg.subj-remote.past-c9.obj-hold@1@3@@ebender@6-7-2009
+340@unknown@formal@none@1@S@'Someone held a stick.'@1@4@@ebender@6-7-2009
+341@unknown@formal@none@1@TD@Ex 38 demonstrates the remote past tense. There are three past tenses: today past, yesterday past, and remote past. The remote past is used to refer to events that happened before yesterday. It is formed by infixing "-ka" between the subject prefix and the verb stem. Here it (incorrectly) comes before the subject prefix.@1@54@@ebender@6-7-2009
+342@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+343@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+344@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+345@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+346@unknown@formal@none@1@S@omushaija aeshongoraka@1@2@@ebender@6-7-2009
+347@unknown@formal@none@1@S@o-mu-shaija a-eshongora-ka@1@2@@ebender@6-7-2009
+348@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-sing-remote.past@1@2@@ebender@6-7-2009
+349@unknown@formal@none@1@S@'The man sang.'@1@3@@ebender@6-7-2009
+350@unknown@formal@none@1@TD@Ex 39 If the object is marked on the verb, the remote past suffix comes before the object prefix. (a:170 for example). Here it (incorrectly) comes after the object prefix.@1@30@@ebender@6-7-2009
+351@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+352@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+353@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+354@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+355@unknown@formal@none@1@S@omuntu enkoni agikakwata@1@3@@ebender@6-7-2009
+356@unknown@formal@none@1@S@o-mu-ntu e-n-koni a-gi-ka-kwata@1@3@@ebender@6-7-2009
+357@unknown@formal@none@1@S@c1.vwl-c1.prfx-person c9.vwl-c9.prfx-stick c1.3sg.subj-c9.obj-remote.past-hold@1@3@@ebender@6-7-2009
+358@unknown@formal@none@1@S@'Someone held a stick.'@1@4@@ebender@6-7-2009
+359@unknown@formal@none@1@TD@Ex 40 If the object is marked on the verb, present continous suffix still comes before the subject prefix.@1@19@@ebender@6-7-2009
+360@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+361@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+362@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+363@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+364@unknown@formal@none@1@S@omuntu enkoni naagikwata@1@3@@ebender@6-7-2009
+365@unknown@formal@none@1@S@o-mu-ntu e-n-koni ni-a-gi-kwata@1@3@@ebender@6-7-2009
+366@unknown@formal@none@1@S@c1.vwl-c1.prfx-person c9.vwl-c9.prfx-stick pres.cont-c1.3sg.subj-c9.obj-hold@1@3@@ebender@6-7-2009
+367@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+368@unknown@formal@none@1@TD@Ex 41 If the object is marked on the verb, present continous suffix still comes before the subject prefix. Here it comes in between the subject and object prefixes.@1@29@@ebender@6-7-2009
+369@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+370@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+371@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+372@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+373@unknown@formal@none@1@S@omuntu enkoni anigikwata@1@3@@ebender@6-7-2009
+374@unknown@formal@none@1@S@o-mu-ntu e-n-koni a-ni-gi-kwata@1@3@@ebender@6-7-2009
+375@unknown@formal@none@1@S@c1.vwl-c1.prfx-person c9.vwl-c9.prfx-stick c1.3sg.subj-pres.cont-c9.obj-hold@1@3@@ebender@6-7-2009
+376@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+377@unknown@formal@none@1@TD@Ex 42 If the object is marked on the verb, present continous suffix still comes before the subject prefix. Here it comes after the object prefix.@1@26@@ebender@6-7-2009
+378@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+379@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+380@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+381@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+382@unknown@formal@none@1@S@omuntu enkoni anigikwata@1@3@@ebender@6-7-2009
+383@unknown@formal@none@1@S@o-mu-ntu e-n-koni a-gi-ni-kwata@1@3@@ebender@6-7-2009
+384@unknown@formal@none@1@S@c1.vwl-c1.prfx-person c9.vwl-c9.prfx-stick c1.3sg.subj-c9.obj-pres.cont-hold@1@3@@ebender@6-7-2009
+385@unknown@formal@none@1@S@'Someone is holding a stick.'@1@5@@ebender@6-7-2009
+386@unknown@formal@none@1@TD@Ex 43 demonstrates the perfect aspect. Perfect aspect is formed by adding a form of the verb "be" "-ba" before the modified form of the main verb. The modified form of the main verb is formed in several different ways depending on the verb stem. I have simplified the representation here as simple suffixation of the "-ire" to the verb stem. In practice, the process can be simple deletion of the final "a" of the original verb stem and addition of the suffix, or it can involve infixation of various affixes before the final consonant.@1@95@@ebender@6-7-2009
+387@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+388@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+389@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+390@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+391@unknown@formal@none@1@S@omushaija akaba a-eshongora-ire@1@3@@ebender@6-7-2009
+392@unknown@formal@none@1@S@o-mu-shaija a-ka-ba a-eshongora-ire@1@3@@ebender@6-7-2009
+393@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-remote.past-be c1.3sg.subj-sing-modified@1@3@@ebender@6-7-2009
+394@unknown@formal@none@1@S@'The man had sung (two + days ago).'@1@8@@ebender@6-7-2009
+395@unknown@formal@none@1@TD@Ex 44 demonstrates an ungrammatical use of the perfect aspect. Perfect aspect is formed by adding a form of the verb "be" "-ba" before the modified form of the main verb. The modified form of the main verb is formed in several different ways depending on the verb stem. I have simplified the representation here as simple suffixation of the "-ire" to the verb stem. In practice, the process can be simple deletion of the final "a" of the original verb stem and addition of the suffix, or it can involve infixation of various affixes before the final consonant. Here the original form of the main verb is used instead of the modified form@1@114@@ebender@6-7-2009
+396@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+397@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+398@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+399@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+400@unknown@formal@none@1@S@omushaija akaba a-eshongora@1@3@@ebender@6-7-2009
+401@unknown@formal@none@1@S@o-mu-shaija a-ka-ba a-eshongora@1@3@@ebender@6-7-2009
+402@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-remote.past-be c1.3sg.subj-sing@1@3@@ebender@6-7-2009
+403@unknown@formal@none@1@S@'The man had sung (two + days ago).'@1@8@@ebender@6-7-2009
+404@unknown@formal@none@1@TD@Ex 45 demonstrates an ungrammatical use of the perfect aspect. Perfect aspect is formed by adding a form of the verb "be" "-ba" before the modified form of the main verb. The modified form of the main verb is formed in several different ways depending on the verb stem. I have simplified the representation here as simple suffixation of the "-ire" to the verb stem. In practice, the process can be simple deletion of the final "a" of the original verb stem and addition of the suffix, or it can involve infixation of various affixes before the final consonant. This form is also used for the "yesterday" past tense. Here "-ba" (incorrectly) comes after the main verb.@1@117@@ebender@6-7-2009
+405@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+406@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+407@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+408@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+409@unknown@formal@none@1@S@omushaija a-eshongora-ire akaba@1@3@@ebender@6-7-2009
+410@unknown@formal@none@1@S@o-mu-shaija a-eshongora-ire a-ka-ba@1@3@@ebender@6-7-2009
+411@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-sing-modified c1.3sg.subj-remote.past-be@1@3@@ebender@6-7-2009
+412@unknown@formal@none@1@S@'The man had sung (two + days ago).'@1@8@@ebender@6-7-2009
+413@unknown@formal@none@1@TD@Ex 46 demonstrates a grammatical use of the yesterday past tense. It uses the modified form of the verb. The modified form of the main verb is formed in several different ways depending on the verb stem. I have simplified the representation here as simple suffixation of the "-ire" to the verb stem. In practice, the process can be simple deletion of the final "a" of the original verb stem and addition of the suffix, or it can involve infixation of various affixes before the final consonant. It can also imply a perfective aspect.@1@94@@ebender@6-7-2009
+414@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+415@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+416@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+417@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+418@unknown@formal@none@1@S@omushaija a-eshongora-ire@1@2@@ebender@6-7-2009
+419@unknown@formal@none@1@S@o-mu-shaija a-eshongora-ire@1@2@@ebender@6-7-2009
+420@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-sing-modified.yesterday.past@1@2@@ebender@6-7-2009
+421@unknown@formal@none@1@S@'The man sang (yesterday) /has sung (now).'@1@7@@ebender@6-7-2009
+422@unknown@formal@none@1@TD@Ex 47 demonstrates an ungrammatical use of the yesterday past tense. Here the obligatory subject prefix is missing.@1@18@@ebender@6-7-2009
+423@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+424@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+425@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+426@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+427@unknown@formal@none@1@S@omushaija eshongora-ire@1@2@@ebender@6-7-2009
+428@unknown@formal@none@1@S@o-mu-shaija eshongora-ire@1@2@@ebender@6-7-2009
+429@unknown@formal@none@1@S@c1.vwl-c1.prfx-man sing-modified.yesterday.past@1@2@@ebender@6-7-2009
+430@unknown@formal@none@1@S@'The man sang (yesterday) /has sung (at some time).'@1@9@@ebender@6-7-2009
+431@unknown@formal@none@1@TD@Ex 48 demonstrates an ungrammatical use of the perfect aspect. Here the obligatory subject prefix is missing from "-ba."@1@19@@ebender@6-7-2009
+432@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+433@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+434@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+435@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+436@unknown@formal@none@1@S@omushaija kaba a-eshongora-ire@1@3@@ebender@6-7-2009
+437@unknown@formal@none@1@S@o-mu-shaija ka-ba a-eshongora-ire@1@3@@ebender@6-7-2009
+438@unknown@formal@none@1@S@c1.vwl-c1.prfx-man remote.past-be c1.3sg.subj-sing-modified@1@3@@ebender@6-7-2009
+439@unknown@formal@none@1@S@'The man had sung (two + days ago).'@1@8@@ebender@6-7-2009
+440@unknown@formal@none@1@TD@Ex 49 demonstrates an ugrammatical use of the perfect aspect. Here the obligatory subject prefix is missing from the main verb.@1@21@@ebender@6-7-2009
+441@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+442@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+443@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+444@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+445@unknown@formal@none@1@S@omushaija akaba eshongora-ire@1@3@@ebender@6-7-2009
+446@unknown@formal@none@1@S@o-mu-shaija a-ka-ba eshongora-ire@1@3@@ebender@6-7-2009
+447@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-remote.past-be sing-modified@1@3@@ebender@6-7-2009
+448@unknown@formal@none@1@S@'The man had sung (two + days ago).'@1@8@@ebender@6-7-2009
+449@unknown@formal@none@1@TD@Ex 50 demonstrates the present continuous combined with the perfect aspect@1@11@@ebender@6-7-2009
+450@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+451@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+452@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+453@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+454@unknown@formal@none@1@S@omushaija naaba a-eshongora-ire@1@3@@ebender@6-7-2009
+455@unknown@formal@none@1@S@o-mu-shaija ni-a-ba a-eshongora-ire@1@3@@ebender@6-7-2009
+456@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-pres.cont-be c1.3sg.subj-sing-modified@1@3@@ebender@6-7-2009
+457@unknown@formal@none@1@S@'The man has sung (now).'@1@5@@ebender@6-7-2009
+458@unknown@formal@none@1@TD@Ex 51 From (a:151) it appears that the verb "-ba can appear with a modified verb form in all tenses except for the "universal tense" the unmarked tense.@1@28@@ebender@6-7-2009
+459@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+460@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+461@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+462@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+463@unknown@formal@none@1@S@omushaija aba a-eshongora-ire@1@3@@ebender@6-7-2009
+464@unknown@formal@none@1@S@o-mu-shaija a-ba a-eshongora-ire@1@3@@ebender@6-7-2009
+465@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-be c1.3sg.subj-sing-modified@1@3@@ebender@6-7-2009
+466@unknown@formal@none@1@S@'The man had sung (now).'@1@5@@ebender@6-7-2009
+467@unknown@formal@none@1@TD@Ex 52 demonstrates that the initial vowel on a noun is required. The phenomena code is incorrect as this is not a determiner relationship.@1@24@@ebender@6-7-2009
+468@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+469@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+470@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+471@unknown@formal@none@1@S@Phenomena: {det}@1@2@@ebender@6-7-2009
+472@unknown@formal@none@1@S@mushaija aeshongora@1@2@@ebender@6-7-2009
+473@unknown@formal@none@1@S@mu-shaija a-eshongora@1@2@@ebender@6-7-2009
+474@unknown@formal@none@1@S@c1.prfx-man c1.3sg.subj-sing@1@2@@ebender@6-7-2009
+475@unknown@formal@none@1@S@'The man sings.'@1@3@@ebender@6-7-2009
+476@unknown@formal@none@1@TD@Ex 53 demonstrates that the class prefix vowel on a noun is required. The phenomena code is incorrect as this is not a determiner relationship.@1@25@@ebender@6-7-2009
+477@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+478@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+479@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+480@unknown@formal@none@1@S@Phenomena: {det}@1@2@@ebender@6-7-2009
+481@unknown@formal@none@1@S@oshaija aeshongora@1@2@@ebender@6-7-2009
+482@unknown@formal@none@1@S@o-shaija a-eshongora@1@2@@ebender@6-7-2009
+483@unknown@formal@none@1@S@c1.vwl-man c1.3sg.subj-sing@1@2@@ebender@6-7-2009
+484@unknown@formal@none@1@S@'The man sings.'@1@3@@ebender@6-7-2009
+485@unknown@formal@none@1@TD@Ex 54 demonstrates negation of the universal tense. It is formed by prefixing "ti-" before the subject prefix.@1@18@@ebender@6-7-2009
+486@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+487@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+488@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+489@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+490@unknown@formal@none@1@S@omushaija taeshongora@1@2@@ebender@6-7-2009
+491@unknown@formal@none@1@S@o-mu-shaija ti-a-eshongora@1@2@@ebender@6-7-2009
+492@unknown@formal@none@1@S@c1.vwl-c1.prfx-man neg-c1.3sg.subj-sing@1@2@@ebender@6-7-2009
+493@unknown@formal@none@1@S@'The man does not sing.'@1@5@@ebender@6-7-2009
+494@unknown@formal@none@1@TD@Ex 55 demonstrates ungrammatical negation of the universal tense. It is formed by prefixing "ti-" before the subject prefix. Here the negation particle is (incorrectly) added after the subject prefix.@1@30@@ebender@6-7-2009
+495@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+496@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+497@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+498@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+499@unknown@formal@none@1@S@omushaija atieshongora@1@2@@ebender@6-7-2009
+500@unknown@formal@none@1@S@o-mu-shaija a-ti-eshongora@1@2@@ebender@6-7-2009
+501@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-neg-sing@1@2@@ebender@6-7-2009
+502@unknown@formal@none@1@S@'The man does not sing.'@1@5@@ebender@6-7-2009
+503@unknown@formal@none@1@TD@Ex 56 demonstrates ungrammatical negation of the universal tense. It is formed by prefixing "ti-" before the subject prefix. Here the negation particle is (incorrectly) added after the verb stem. The hyphen is deliberately left on here since this is the way the morpheme will be entered into the customization system.@1@51@@ebender@6-7-2009
+504@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+505@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+506@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+507@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+508@unknown@formal@none@1@S@omushaija aeshongorati@1@2@@ebender@6-7-2009
+509@unknown@formal@none@1@S@o-mu-shaija a-eshongorati-@1@2@@ebender@6-7-2009
+510@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-sing-neg@1@2@@ebender@6-7-2009
+511@unknown@formal@none@1@S@'The man does not sing.'@1@5@@ebender@6-7-2009
+512@unknown@formal@none@1@TD@Ex 57 demonstrates ungrammatical negation of the universal tense. It is formed by prefixing "ti-" before the subject prefix. Here the negation particle is (incorrectly) added after the verb stem. The hyphen is deliberately left on here since this is the way the morpheme will be entered into the customization system.@1@51@@ebender@6-7-2009
+513@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+514@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+515@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+516@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+517@unknown@formal@none@1@S@omushaija aeshongorati@1@2@@ebender@6-7-2009
+518@unknown@formal@none@1@S@o-mu-shaija a-eshongora-ti@1@2@@ebender@6-7-2009
+519@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-sing-neg@1@2@@ebender@6-7-2009
+520@unknown@formal@none@1@S@'The man does not sing.'@1@5@@ebender@6-7-2009
+521@unknown@formal@none@1@TD@Ex 58 demonstrates negation of the present continuous tense. It is formed by prefixing "ti-" before the subject prefix and infixing "-riku-" between the subject prefix and the verb stem.@1@30@@ebender@6-7-2009
+522@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+523@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+524@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+525@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+526@unknown@formal@none@1@S@omushaija tarikweshongora@1@2@@ebender@6-7-2009
+527@unknown@formal@none@1@S@o-mu-shaija ti-a-riku-eshongora@1@2@@ebender@6-7-2009
+528@unknown@formal@none@1@S@c1.vwl-c1.prfx-man neg-c1.3sg.subj-neg-sing@1@2@@ebender@6-7-2009
+529@unknown@formal@none@1@S@'The man is not singing.'@1@5@@ebender@6-7-2009
+530@unknown@formal@none@1@TD@Ex 59 demonstrates ungrammatical negation of the present continuous tense. It is formed by prefixing "ti-" before the subject prefix and infixing "-riku-" between the subject prefix and the verb stem. Here "riku-" is (incorrectly) placed before the subject prefix.@1@40@@ebender@6-7-2009
+531@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+532@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+533@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+534@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+535@unknown@formal@none@1@S@omushaija tirikwaeshongora@1@2@@ebender@6-7-2009
+536@unknown@formal@none@1@S@o-mu-shaija ti-riku-a-eshongora@1@2@@ebender@6-7-2009
+537@unknown@formal@none@1@S@c1.vwl-c1.prfx-man neg-neg-c1.3sg.subj-sing@1@2@@ebender@6-7-2009
+538@unknown@formal@none@1@S@'The man is not singing.'@1@5@@ebender@6-7-2009
+539@unknown@formal@none@1@TD@Ex 60 demonstrates ungrammatical negation of the present continuous tense. It is formed by prefixing "ti-" before the subject prefix and infixing "-riku-" between the subject prefix and the verb stem. Here the subject prefix (incorrectly) comes before "ti-"@1@39@@ebender@6-7-2009
+540@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+541@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+542@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+543@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+544@unknown@formal@none@1@S@omushaija atirikweshongora@1@2@@ebender@6-7-2009
+545@unknown@formal@none@1@S@o-mu-shaija a-ti-riku-eshongora@1@2@@ebender@6-7-2009
+546@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-neg-neg-sing@1@2@@ebender@6-7-2009
+547@unknown@formal@none@1@S@'The man is not singing.'@1@5@@ebender@6-7-2009
+548@unknown@formal@none@1@TD@Ex 61 demonstrates ungrammatical negation of the present continuous tense. It is formed by prefixing "ti-" before the subject prefix and infixing "-riku-" between the subject prefix and the verb stem. Here "riku-" is (incorrectly) placed after the verb stem. The hyphen is left on the end as this is the way the morpheme will be entered into the customization system.@1@61@@ebender@6-7-2009
+549@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+550@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+551@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+552@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+553@unknown@formal@none@1@S@omushaija taeshongorariku@1@2@@ebender@6-7-2009
+554@unknown@formal@none@1@S@o-mu-shaija ti-a-eshongorariku-@1@2@@ebender@6-7-2009
+555@unknown@formal@none@1@S@c1.vwl-c1.prfx-man neg-c1.3sg.subj-sing-neg@1@2@@ebender@6-7-2009
+556@unknown@formal@none@1@S@'The man is not singing.'@1@5@@ebender@6-7-2009
+557@unknown@formal@none@1@TD@Ex 62 demonstrates ungrammatical negation of the present continuous tense. It is formed by prefixing "ti-" before the subject prefix and infixing "-riku-" between the subject prefix and the verb stem. Here "riku-" is (incorrectly) placed after the verb stem.@1@40@@ebender@6-7-2009
+558@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+559@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+560@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+561@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+562@unknown@formal@none@1@S@omushaija taeshongorariku@1@2@@ebender@6-7-2009
+563@unknown@formal@none@1@S@o-mu-shaija ti-a-eshongora-riku@1@2@@ebender@6-7-2009
+564@unknown@formal@none@1@S@c1.vwl-c1.prfx-man neg-c1.3sg.subj-sing-neg@1@2@@ebender@6-7-2009
+565@unknown@formal@none@1@S@'The man is not singing.'@1@5@@ebender@6-7-2009
+566@unknown@formal@none@1@TD@Ex 63 demonstrates negation of the remote past. It is formed by prefixing "ti-" before the subject prefix, adding "-ra-" after the subject prefix, and attaching all of this to the modified form of the verb.@1@36@@ebender@6-7-2009
+567@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+568@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+569@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+570@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+571@unknown@formal@none@1@S@omushaija taraeshongora-ire@1@2@@ebender@6-7-2009
+572@unknown@formal@none@1@S@o-mu-shaija ti-a-ra-eshongora-ire@1@2@@ebender@6-7-2009
+573@unknown@formal@none@1@S@c1.vwl-c1.prfx-man neg-c1.3sg.subj-neg-sing-modified@1@2@@ebender@6-7-2009
+574@unknown@formal@none@1@S@'The man did not sing.'@1@5@@ebender@6-7-2009
+575@unknown@formal@none@1@TD@Ex 64 demonstrates ungrammatical negation of the remote past. It is formed by prefixing "ti-" before the subject prefix, adding "-ra-" after the subject prefix, and attaching all of this to the modified form of the verb. Here the infix "-ra-" is (incorrectly) replaced by the remote past infix "-ka-"@1@50@@ebender@6-7-2009
+576@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+577@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+578@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+579@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+580@unknown@formal@none@1@S@omushaija takaeshongora-ire@1@2@@ebender@6-7-2009
+581@unknown@formal@none@1@S@o-mu-shaija ti-a-ka-eshongora-ire@1@2@@ebender@6-7-2009
+582@unknown@formal@none@1@S@c1.vwl-c1.prfx-man neg-c1.3sg.subj-remote.past-sing-modified@1@2@@ebender@6-7-2009
+583@unknown@formal@none@1@S@'The man did not sing.'@1@5@@ebender@6-7-2009
+584@unknown@formal@none@1@TD@Ex 65 demonstrates ungrammatical negation of the remote past. It is formed by prefixing "ti-" before the subject prefix, adding "-ra-" after the subject prefix, and attaching all of this to the modified form of the verb. Here the infix "-ra-" is (incorrectly) placed after the verb stem.@1@48@@ebender@6-7-2009
+585@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+586@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+587@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+588@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+589@unknown@formal@none@1@S@omushaija taeshongora-ra-ire@1@2@@ebender@6-7-2009
+590@unknown@formal@none@1@S@o-mu-shaija ti-a-eshongora-ra-ire@1@2@@ebender@6-7-2009
+591@unknown@formal@none@1@S@c1.vwl-c1.prfx-man neg-c1.3sg.subj-sing-neg-modified@1@2@@ebender@6-7-2009
+592@unknown@formal@none@1@S@'The man did not sing.'@1@5@@ebender@6-7-2009
+593@unknown@formal@none@1@TD@Ex 66 demonstrates NP/N coordination. The clitic "na-" is placed before the last coordinand. The verb subject marker agrees with the plural form of the subjects' class. The plural form for Class 1 is Class 2.@1@36@@ebender@6-7-2009
+594@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+595@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+596@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+597@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+598@unknown@formal@none@1@S@omukazi n'omushaija beeshongora@1@3@@ebender@6-7-2009
+599@unknown@formal@none@1@S@o-mu-kazi na-o-mu-shaija ba-eshongora@1@3@@ebender@6-7-2009
+600@unknown@formal@none@1@S@c1.vwl-c1.prfx-woman and-c1.vwl-c1.prfx-man c2.subject-sing@1@3@@ebender@6-7-2009
+601@unknown@formal@none@1@S@'The woman and the man sing.'@1@6@@ebender@6-7-2009
+602@unknown@formal@none@1@TD@Ex 67 demonstrates ungrammatical NP/N coordination. The clitic "na-" is placed before the last coordinand. The verb subject marker agrees with the plural form of the subjects' class. The plural form for Class 1 is Class 2. Here the subject marker is Class 1. It should be Class 2@1@49@@ebender@6-7-2009
+603@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+604@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+605@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+606@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+607@unknown@formal@none@1@S@omukazi n'omushaija a-eshongora@1@3@@ebender@6-7-2009
+608@unknown@formal@none@1@S@o-mu-kazi na-o-mu-shaija a-eshongora@1@3@@ebender@6-7-2009
+609@unknown@formal@none@1@S@c1.vwl-c1.prfx-woman and-c1.vwl-c1.prfx-man c1.subject-sing@1@3@@ebender@6-7-2009
+610@unknown@formal@none@1@S@'The woman and the man sing.'@1@6@@ebender@6-7-2009
+611@unknown@formal@none@1@TD@Ex 68 demonstrates ungrammatical NP/N coordination. The clitic "na-" is placed before the last coordinand. The verb subject marker agrees with the plural form of the subjects' class. The plural form for Class 1 is Class 2. Here "na-" (and) is missing.@1@42@@ebender@6-7-2009
+612@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+613@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+614@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+615@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+616@unknown@formal@none@1@S@omukazi omushaija beeshongora@1@3@@ebender@6-7-2009
+617@unknown@formal@none@1@S@o-mu-kazi o-mu-shaija ba-eshongora@1@3@@ebender@6-7-2009
+618@unknown@formal@none@1@S@c1.vwl-c1.prfx-woman and-c1.vwl-c1.prfx-man c2.subject-sing@1@3@@ebender@6-7-2009
+619@unknown@formal@none@1@S@'The woman and the man sing.'@1@6@@ebender@6-7-2009
+620@unknown@formal@none@1@TD@Ex 69 demonstrates ungrammatical NP/N coordination. The clitic "na-" is placed before the last coordinand. The verb subject marker agrees with the plural form of the subjects' class. The plural form for Class 1 is Class 2. Here "na-" (and) is (incorrectly) attached to the first coordinand.@1@47@@ebender@6-7-2009
+621@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+622@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+623@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+624@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+625@unknown@formal@none@1@S@n'omukazi omushaija ba-eshongora@1@3@@ebender@6-7-2009
+626@unknown@formal@none@1@S@na-o-mu-kazi o-mu-shaija ba-eshongora@1@3@@ebender@6-7-2009
+627@unknown@formal@none@1@S@and-c1.vwl-c1.prfx-woman c1.vwl-c1.prfx-man c2.subject-sing@1@3@@ebender@6-7-2009
+628@unknown@formal@none@1@S@'The woman and the man sing.'@1@6@@ebender@6-7-2009
+629@unknown@formal@none@1@TD@Ex 70 demonstrates ungrammatical NP/N coordination. The clitic "na-" is placed before the last coordinand. The verb subject marker agrees with the plural form of the subjects' class. The plural form for Class 1 is Class 2. Here "na-" (incorrectly) appears before both coordinands.@1@44@@ebender@6-7-2009
+630@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+631@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+632@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+633@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+634@unknown@formal@none@1@S@n'omukazi n'omushaija ba-eshongora@1@3@@ebender@6-7-2009
+635@unknown@formal@none@1@S@na-o-mu-kazi na-o-mu-shaija ba-eshongora@1@3@@ebender@6-7-2009
+636@unknown@formal@none@1@S@and-c1.vwl-c1.prfx-woman and-c1.vwl-c1.prfx-man c2.subject-sing@1@3@@ebender@6-7-2009
+637@unknown@formal@none@1@S@'The woman and the man sing.'@1@6@@ebender@6-7-2009
+638@unknown@formal@none@1@TD@Ex 71 demonstrates ungrammatical NP/N coordination. The clitic "na-" is placed before the last coordinand. The verb subject marker agrees with the plural form of the subjects' class. The plural form for Class 1 is Class 2. Here "na-" is (incorrectly) attached as an infix.@1@45@@ebender@6-7-2009
+639@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+640@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+641@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+642@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+643@unknown@formal@none@1@S@omukazi onamushaija a-eshongora@1@3@@ebender@6-7-2009
+644@unknown@formal@none@1@S@o-mu-kazi o-na-mu-shaija a-eshongora@1@3@@ebender@6-7-2009
+645@unknown@formal@none@1@S@c1.vwl-c1.prfx-woman c1.vwl-and-c1.prfx-man c1.subject-sing@1@3@@ebender@6-7-2009
+646@unknown@formal@none@1@S@'The woman and the man sing.'@1@6@@ebender@6-7-2009
+647@unknown@formal@none@1@TD@Ex 72 demonstrates ungrammatical NP/N coordination. The clitic "na-" is placed before the last coordinand. The verb subject marker agrees with the plural form of the subjects' class. The plural form for Class 1 is Class 2. Here "na-" is attached to the end of the verb. The hypen is left because this is how the morpheme will be entered in the customization system.@1@64@@ebender@6-7-2009
+648@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+649@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+650@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+651@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+652@unknown@formal@none@1@S@omukazi omushaijana a-eshongora@1@3@@ebender@6-7-2009
+653@unknown@formal@none@1@S@o-mu-kazi o-mu-shaijana- a-eshongora@1@3@@ebender@6-7-2009
+654@unknown@formal@none@1@S@c1.vwl-c1.prfx-woman c1.vwl-c1.prfx-man-and c1.subject-sing@1@3@@ebender@6-7-2009
+655@unknown@formal@none@1@S@'The woman and the man sing.'@1@6@@ebender@6-7-2009
+656@unknown@formal@none@1@TD@Ex 73 demonstrates ungrammatical NP/N coordination. The clitic "na-" is placed before the last coordinand. The verb subject marker agrees with the plural form of the subjects' class. The plural form for Class 1 is Class 2. Here "na-" is attached to the end of the verb. The hypen is left because this is how the morpheme will be entered in the customization system.@1@64@@ebender@6-7-2009
+657@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+658@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+659@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+660@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+661@unknown@formal@none@1@S@omukazi omushaijana a-eshongora@1@3@@ebender@6-7-2009
+662@unknown@formal@none@1@S@o-mu-kazi o-mu-shaija-na a-eshongora@1@3@@ebender@6-7-2009
+663@unknown@formal@none@1@S@c1.vwl-c1.prfx-woman c1.vwl-c1.prfx-man-and c1.subject-sing@1@3@@ebender@6-7-2009
+664@unknown@formal@none@1@S@'The woman and the man sing.'@1@6@@ebender@6-7-2009
+665@unknown@formal@none@1@TD@Ex 74 demonstrates VP coordination. Neither reference showed or discussed examples where coordinated Vs have scope over the same object. VP coordination can be done in two ways. One way is to us a pronominal suffix along with "na-". Another way uses "kandi" another word for "and." The first method is shown here.@1@53@@ebender@6-7-2009
+666@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+667@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+668@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+669@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+670@unknown@formal@none@1@S@omushaija aeshongora@1@2@@ebender@6-7-2009
+671@unknown@formal@none@1@S@o-mu-shaija a-eshongora na-we a-zaana@1@4@@ebender@6-7-2009
+672@unknown@formal@none@1@S@c1.vwl-c1.prfx-man and-3sg c1.3sg.subj-sing@1@3@@ebender@6-7-2009
+673@unknown@formal@none@1@S@'The man sings and plays.'@1@5@@ebender@6-7-2009
+674@unknown@formal@none@1@TD@Ex 75 subject-verb agreement for a Class 2 subject.@1@9@@ebender@6-7-2009
+675@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+676@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+677@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+678@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+679@unknown@formal@none@1@S@abashaija beeshongora@1@2@@ebender@6-7-2009
+680@unknown@formal@none@1@S@a-ba-shaija ba-eshongora@1@2@@ebender@6-7-2009
+681@unknown@formal@none@1@S@c2.vwl-c2.prfx-man c2.3pl.subj-sing@1@2@@ebender@6-7-2009
+682@unknown@formal@none@1@S@'The men sing.'@1@3@@ebender@6-7-2009
+683@unknown@formal@none@1@TD@Ex 76 subject-verb agreement for a Class 2 subject.@1@9@@ebender@6-7-2009
+684@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+685@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+686@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+687@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+688@unknown@formal@none@1@S@abashaija eeshongora@1@2@@ebender@6-7-2009
+689@unknown@formal@none@1@S@a-ba-shaija a-eshongora@1@2@@ebender@6-7-2009
+690@unknown@formal@none@1@S@c2.vwl-c2.prfx-man c1.3sg.subj-sing@1@2@@ebender@6-7-2009
+691@unknown@formal@none@1@S@'The men sing.'@1@3@@ebender@6-7-2009
+692@unknown@formal@none@1@TD@Ex 77 demonstrates S coordination. "kandi" is used before the second (final?) coordinand.@1@13@@ebender@6-7-2009
+693@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+694@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+695@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+696@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+697@unknown@formal@none@1@S@omushaija aeshongora kandi abakazi bazaana@1@5@@ebender@6-7-2009
+698@unknown@formal@none@1@S@o-mu-shaija a-eshongora kandi a-ba-kazi ba-zaana@1@5@@ebender@6-7-2009
+699@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-sing and c2.vwl-c2.prfx-woman c2.3pl.subj-play@1@5@@ebender@6-7-2009
+700@unknown@formal@none@1@S@'The man sings and the women play.'@1@7@@ebender@6-7-2009
+701@unknown@formal@none@1@TD@Ex 78 demonstrates ungrammatical S coordination. "kandi" is used before the second (final?) coordinand. Here it comes before the first.@1@20@@ebender@6-7-2009
+702@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+703@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+704@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+705@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+706@unknown@formal@none@1@S@kandi omushaija eeshongora abakazi bazaana@1@5@@ebender@6-7-2009
+707@unknown@formal@none@1@S@kandi o-mu-shaija a-eshongora a-ba-kazi ba-zaana@1@5@@ebender@6-7-2009
+708@unknown@formal@none@1@S@and c1.vwl-c1.prfx-man c1.3sg.subj-sing c2.vwl-c2.prfx-woman c2.3pl.subj-play@1@5@@ebender@6-7-2009
+709@unknown@formal@none@1@S@'The man sings and the women play.'@1@7@@ebender@6-7-2009
+710@unknown@formal@none@1@TD@Ex 79 demonstrates ungrammatical S coordination. "kandi" is used before the second (final?) coordinand. Here after the subject of the second S.@1@22@@ebender@6-7-2009
+711@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+712@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+713@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+714@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+715@unknown@formal@none@1@S@omushaija eeshongora abakazi kandi bazaana@1@5@@ebender@6-7-2009
+716@unknown@formal@none@1@S@o-mu-shaija a-eshongora a-ba-kazi kandi ba-zaana@1@5@@ebender@6-7-2009
+717@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-sing c2.vwl-c2.prfx-woman and c2.3pl.subj-play@1@5@@ebender@6-7-2009
+718@unknown@formal@none@1@S@'The man sings and the women play.'@1@7@@ebender@6-7-2009
+719@unknown@formal@none@1@TD@Ex 80 demonstrates ungrammatical S coordination. "kandi" is used before the second (final?) coordinand. Here it comes at the end of the second.@1@23@@ebender@6-7-2009
+720@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+721@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+722@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+723@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+724@unknown@formal@none@1@S@omushaija eeshongora abakazi bazaana kandi@1@5@@ebender@6-7-2009
+725@unknown@formal@none@1@S@o-mu-shaija a-eshongora a-ba-kazi ba-zaana kandi@1@5@@ebender@6-7-2009
+726@unknown@formal@none@1@S@c1.vwl-c1.prfx-man c1.3sg.subj-sing c2.vwl-c2.prfx-woman c2.3pl.subj-play and@1@5@@ebender@6-7-2009
+727@unknown@formal@none@1@S@'The man sings and the women play.'@1@7@@ebender@6-7-2009
+728@unknown@formal@none@1@TD@Ex 81 demonstrates ungrammatical VP coordination. Neither reference showed or discussed examples where coordinated Vs have scope over the same object. VP coordination can be done in two ways. One way is to us a pronominal suffix along with "na-". Here the proniminal suffix is not attached.@1@47@@ebender@6-7-2009
+729@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+730@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+731@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+732@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+733@unknown@formal@none@1@S@omushaija aeshongora@1@2@@ebender@6-7-2009
+734@unknown@formal@none@1@S@o-mu-shaija a-eshongora na-a-zaana@1@3@@ebender@6-7-2009
+735@unknown@formal@none@1@S@c1.vwl-c1.prfx-man and-c1.3sg.subj-sing@1@2@@ebender@6-7-2009
+736@unknown@formal@none@1@S@'The man sings and plays.'@1@5@@ebender@6-7-2009

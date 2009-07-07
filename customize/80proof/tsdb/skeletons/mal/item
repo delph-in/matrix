@@ -1,0 +1,689 @@
+1@unknown@formal@none@1@S@Language: Malayalam@1@2@@ebender@6-7-2009
+2@unknown@formal@none@1@S@Language code: mal@1@3@@ebender@6-7-2009
+3@unknown@formal@none@1@S@Author: Safiyyah Saleem@1@3@@ebender@6-7-2009
+4@unknown@formal@none@1@S@Date: April 1, 2009@1@4@@ebender@6-7-2009
+5@unknown@formal@none@1@S@Source a: Malayalam by R.E. Asher and T.C. Kumari@1@9@@ebender@6-7-2009
+6@unknown@formal@none@1@TD@Ex 1 demonstrates basic SOV word order.@1@7@@ebender@6-7-2009
+7@unknown@formal@none@1@S@Source: a:193@1@2@@ebender@6-7-2009
+8@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+9@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+10@unknown@formal@none@1@S@Phenomena: {word order, case}@1@4@@ebender@6-7-2009
+11@unknown@formal@none@1@S@kuTTi ammaye viLiccu@1@3@@ebender@6-7-2009
+12@unknown@formal@none@1@S@kuTTi amma-e viLi-ccu@1@3@@ebender@6-7-2009
+13@unknown@formal@none@1@S@child.nom mother-acc call-past@1@3@@ebender@6-7-2009
+14@unknown@formal@none@1@S@The child called the mother.@1@5@@ebender@6-7-2009
+15@unknown@formal@none@1@TD@Ex 2 demonstrates SVO word order.@1@6@@ebender@6-7-2009
+16@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+17@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+18@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+19@unknown@formal@none@1@S@Phenomena: {word order}@1@3@@ebender@6-7-2009
+20@unknown@formal@none@1@S@kuTTi viLiccu ammaye@1@3@@ebender@6-7-2009
+21@unknown@formal@none@1@S@kuTTi viLi-ccu amma-e@1@3@@ebender@6-7-2009
+22@unknown@formal@none@1@S@child.nom call-past mother-acc@1@3@@ebender@6-7-2009
+23@unknown@formal@none@1@S@The child called the mother.@1@5@@ebender@6-7-2009
+24@unknown@formal@none@1@TD@Ex 3 demonstrates VSO word order.@1@6@@ebender@6-7-2009
+25@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+26@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+27@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+28@unknown@formal@none@1@S@Phenomena: {word order}@1@3@@ebender@6-7-2009
+29@unknown@formal@none@1@S@viLiccu kuTTi ammaye@1@3@@ebender@6-7-2009
+30@unknown@formal@none@1@S@viLi-ccu kuTTi amma-e@1@3@@ebender@6-7-2009
+31@unknown@formal@none@1@S@call-past child.nom mother-acc@1@3@@ebender@6-7-2009
+32@unknown@formal@none@1@S@The child called the mother.@1@5@@ebender@6-7-2009
+33@unknown@formal@none@1@TD@Ex 4 demonstrates basic VOS word order.@1@7@@ebender@6-7-2009
+34@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+35@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+36@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+37@unknown@formal@none@1@S@Phenomena: {word order}@1@3@@ebender@6-7-2009
+38@unknown@formal@none@1@S@viLiccu ammaye kuTTi@1@3@@ebender@6-7-2009
+39@unknown@formal@none@1@S@viLi-ccu amma-e kuTTi@1@3@@ebender@6-7-2009
+40@unknown@formal@none@1@S@call-past mother-acc child.nom@1@3@@ebender@6-7-2009
+41@unknown@formal@none@1@S@The child called the mother.@1@5@@ebender@6-7-2009
+42@unknown@formal@none@1@TD@Ex 5 demonstrates OSV word order.@1@6@@ebender@6-7-2009
+43@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+44@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+45@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+46@unknown@formal@none@1@S@Phenomena: {word order}@1@3@@ebender@6-7-2009
+47@unknown@formal@none@1@S@ammaye kuTTi viLiccu@1@3@@ebender@6-7-2009
+48@unknown@formal@none@1@S@amma-e kuTTi viLi-ccu@1@3@@ebender@6-7-2009
+49@unknown@formal@none@1@S@mother-acc child.nom call-past@1@3@@ebender@6-7-2009
+50@unknown@formal@none@1@S@The child called the mother.@1@5@@ebender@6-7-2009
+51@unknown@formal@none@1@TD@Ex 6 demonstrates OVS word order.@1@6@@ebender@6-7-2009
+52@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+53@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+54@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+55@unknown@formal@none@1@S@Phenomena: {word order}@1@3@@ebender@6-7-2009
+56@unknown@formal@none@1@S@ammaye viLiccu kuTTi@1@3@@ebender@6-7-2009
+57@unknown@formal@none@1@S@amma-e viLi-ccu kuTTi@1@3@@ebender@6-7-2009
+58@unknown@formal@none@1@S@mother-acc call-past child.nom@1@3@@ebender@6-7-2009
+59@unknown@formal@none@1@S@The child called the mother.@1@5@@ebender@6-7-2009
+60@unknown@formal@none@1@TD@Ex 7 demonstrates an ungrammatical use of the accusative case. Subjects (for most verbs must appear in the nominative case. Here the subject (incorrectly) has an accusative case marker.@1@29@@ebender@6-7-2009
+61@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+62@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+63@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+64@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+65@unknown@formal@none@1@S@kuTTie ammaye viLiccu@1@3@@ebender@6-7-2009
+66@unknown@formal@none@1@S@kuTTi-e amma-e viLi-ccu@1@3@@ebender@6-7-2009
+67@unknown@formal@none@1@S@child mother-acc call-past@1@3@@ebender@6-7-2009
+68@unknown@formal@none@1@S@The child called the mother.@1@5@@ebender@6-7-2009
+69@unknown@formal@none@1@TD@Ex 8 demonstrates an ungrammatical use of the accusative case. Subjects (for most verbs must appear in the nominative case. Here the direct object is (incorrectly) in the nominative case.@1@30@@ebender@6-7-2009
+70@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+71@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+72@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+73@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+74@unknown@formal@none@1@S@kuTTi ammay viLiccu@1@3@@ebender@6-7-2009
+75@unknown@formal@none@1@S@kuTTi amma viLi-ccu@1@3@@ebender@6-7-2009
+76@unknown@formal@none@1@S@child.nom mother call-past@1@3@@ebender@6-7-2009
+77@unknown@formal@none@1@S@The child called the mother.@1@5@@ebender@6-7-2009
+78@unknown@formal@none@1@TD@Ex 9 demonstrates a grammatical use of case with an intransitive verb. Intransitive subjects are in the nominative case (a:198)@1@20@@ebender@6-7-2009
+79@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+80@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+81@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+82@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+83@unknown@formal@none@1@S@kuTTi ciriccu@1@2@@ebender@6-7-2009
+84@unknown@formal@none@1@S@kuTTi cirikk-tu@1@2@@ebender@6-7-2009
+85@unknown@formal@none@1@S@child.nom laugh-past@1@2@@ebender@6-7-2009
+86@unknown@formal@none@1@S@'The child laughed.'@1@3@@ebender@6-7-2009
+87@unknown@formal@none@1@TD@Ex 10 demonstrates an ungrammatical use of case with an intransitive verb. Intransitive subjects are in the nominative case (a:274)@1@20@@ebender@6-7-2009
+88@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+89@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+90@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+91@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+92@unknown@formal@none@1@S@kuTTiye ciriccu@1@2@@ebender@6-7-2009
+93@unknown@formal@none@1@S@kuTTi-e cirikk-tu@1@2@@ebender@6-7-2009
+94@unknown@formal@none@1@S@child-acc laugh-past@1@2@@ebender@6-7-2009
+95@unknown@formal@none@1@S@The child laughed@1@3@@ebender@6-7-2009
+96@unknown@formal@none@1@TD@Ex 11 demonstrates a grammatical use of sociative case for direct objects of verbs related to "say."@1@17@@ebender@6-7-2009
+97@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+98@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+99@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+100@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+101@unknown@formal@none@1@S@amma kuTTiiyooTE paRaNNu@1@3@@ebender@6-7-2009
+102@unknown@formal@none@1@S@amma kuTTi-ooTE paRa-NNu@1@3@@ebender@6-7-2009
+103@unknown@formal@none@1@S@mother.nom child-soc tell-past@1@3@@ebender@6-7-2009
+104@unknown@formal@none@1@S@'The mother told the child.'@1@5@@ebender@6-7-2009
+105@unknown@formal@none@1@TD@Ex 12 demonstrates an ungrammatical use of case for direct objects of verbs related to "say." The direct object should be sociative. Here it is nominative.@1@26@@ebender@6-7-2009
+106@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+107@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+108@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+109@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+110@unknown@formal@none@1@S@amma kuTTi paRaNNu@1@3@@ebender@6-7-2009
+111@unknown@formal@none@1@S@amma kuTTi paRa-NNu@1@3@@ebender@6-7-2009
+112@unknown@formal@none@1@S@mother.nom child tell-past@1@3@@ebender@6-7-2009
+113@unknown@formal@none@1@S@'The mother told the child.'@1@5@@ebender@6-7-2009
+114@unknown@formal@none@1@TD@Ex 13 demonstrates an ungrammatical use of case for direct objects of verbs related to "say." The direct object should be sociative. Here it is accusative.@1@26@@ebender@6-7-2009
+115@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+116@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+117@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+118@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+119@unknown@formal@none@1@S@amma kuTTi paRaNNu@1@3@@ebender@6-7-2009
+120@unknown@formal@none@1@S@amma kuTTi paRa-NNu@1@3@@ebender@6-7-2009
+121@unknown@formal@none@1@S@mother.nom child tell-past@1@3@@ebender@6-7-2009
+122@unknown@formal@none@1@S@'The mother told the child.'@1@5@@ebender@6-7-2009
+123@unknown@formal@none@1@TD@Ex 14 demonstrates verbs that take a dative subject. These verbs are usually related to something that is nonvolitional.@1@19@@ebender@6-7-2009
+124@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+125@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+126@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+127@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+128@unknown@formal@none@1@S@kuTTikkE veedaniccu@1@2@@ebender@6-7-2009
+129@unknown@formal@none@1@S@kuTTi-kke veedani-ccu@1@2@@ebender@6-7-2009
+130@unknown@formal@none@1@S@child-dat feel.pain-past@1@2@@ebender@6-7-2009
+131@unknown@formal@none@1@S@'The child felt pain.'@1@4@@ebender@6-7-2009
+132@unknown@formal@none@1@TD@Ex 15 demonstrates verbs that take a dative subject. Here the subject is "incorrectly" accusative.@1@15@@ebender@6-7-2009
+133@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+134@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+135@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+136@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+137@unknown@formal@none@1@S@kuTTiye veedaniccu@1@2@@ebender@6-7-2009
+138@unknown@formal@none@1@S@kuTTi-e veedani-ccu@1@2@@ebender@6-7-2009
+139@unknown@formal@none@1@S@child-acc feel.pain-past@1@2@@ebender@6-7-2009
+140@unknown@formal@none@1@S@'The child felt pain.'@1@4@@ebender@6-7-2009
+141@unknown@formal@none@1@TD@Ex 16 demonstrates an ungrammatical use of verbs that take a dative subject. Here the subject is "incorrectly" nominative.@1@19@@ebender@6-7-2009
+142@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+143@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+144@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+145@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+146@unknown@formal@none@1@S@kuTTi veedaniccu@1@2@@ebender@6-7-2009
+147@unknown@formal@none@1@S@kuTTi veedani-ccu@1@2@@ebender@6-7-2009
+148@unknown@formal@none@1@S@child.nom feel.pain-past@1@2@@ebender@6-7-2009
+149@unknown@formal@none@1@S@'The child felt pain.'@1@4@@ebender@6-7-2009
+150@unknown@formal@none@1@TD@Ex 17 demonstrates verbs that take a dative subject. Here the subject is "incorrectly" sociative.@1@15@@ebender@6-7-2009
+151@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+152@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+153@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+154@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+155@unknown@formal@none@1@S@kuTTiyooTEE veedaniccu@1@2@@ebender@6-7-2009
+156@unknown@formal@none@1@S@kuTTi-ooTE veedani-ccu@1@2@@ebender@6-7-2009
+157@unknown@formal@none@1@S@child-soc feel.pain-past@1@2@@ebender@6-7-2009
+158@unknown@formal@none@1@S@'The child felt pain.'@1@4@@ebender@6-7-2009
+159@unknown@formal@none@1@TD@Ex 18 demonstrates that only human and some animate nouns take the accusative case when they appear as direct objects. Inanimate nouns are nominative when appearing as a direct object.@1@30@@ebender@6-7-2009
+160@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+161@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+162@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+163@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+164@unknown@formal@none@1@S@kuTTi pustakam vaayiccu@1@3@@ebender@6-7-2009
+165@unknown@formal@none@1@S@kuTTi pustakam vaayi-ccu@1@3@@ebender@6-7-2009
+166@unknown@formal@none@1@S@child.nom book.nom read-past@1@3@@ebender@6-7-2009
+167@unknown@formal@none@1@S@The child read the book.@1@5@@ebender@6-7-2009
+168@unknown@formal@none@1@TD@Ex 19 demonstrates an ungrammatical example of an inanimate noun taking the accusative as a direct object. It should be nominative.@1@21@@ebender@6-7-2009
+169@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+170@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+171@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+172@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+173@unknown@formal@none@1@S@kuTTi pustakame vaayiccu@1@3@@ebender@6-7-2009
+174@unknown@formal@none@1@S@kuTTi pustakam-e vaayi-ccu@1@3@@ebender@6-7-2009
+175@unknown@formal@none@1@S@child.nom book.acc read-past@1@3@@ebender@6-7-2009
+176@unknown@formal@none@1@S@The child read the book.@1@5@@ebender@6-7-2009
+177@unknown@formal@none@1@TD@Ex 20 demonstrates an ungrammatical example of an inanimate noun taking the dative as a direct object. It should be nominative.@1@21@@ebender@6-7-2009
+178@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+179@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+180@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+181@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+182@unknown@formal@none@1@S@kuTTi pustakamkke vaayiccu@1@3@@ebender@6-7-2009
+183@unknown@formal@none@1@S@kuTTi pustakam-kke vaayi-ccu@1@3@@ebender@6-7-2009
+184@unknown@formal@none@1@S@child.nom book.acc read-past@1@3@@ebender@6-7-2009
+185@unknown@formal@none@1@S@The child read the book.@1@5@@ebender@6-7-2009
+186@unknown@formal@none@1@TD@Ex 21 demonstrates an ungrammatical example of an inanimate noun taking the sociative as a direct object. It should be nominative.@1@21@@ebender@6-7-2009
+187@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+188@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+189@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+190@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+191@unknown@formal@none@1@S@kuTTi pustakamyooTE vaayiccu@1@3@@ebender@6-7-2009
+192@unknown@formal@none@1@S@kuTTi pustakam-ooTE vaayi-ccu@1@3@@ebender@6-7-2009
+193@unknown@formal@none@1@S@child.nom book.acc read-past@1@3@@ebender@6-7-2009
+194@unknown@formal@none@1@S@The child read the book.@1@5@@ebender@6-7-2009
+195@unknown@formal@none@1@TD@Ex 22 demonstrates the use of "oru" the indefinite article.@1@10@@ebender@6-7-2009
+196@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+197@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+198@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+199@unknown@formal@none@1@S@Phenomena: {word order, case, det}@1@5@@ebender@6-7-2009
+200@unknown@formal@none@1@S@oru kuTTi ammaye viLiccu@1@4@@ebender@6-7-2009
+201@unknown@formal@none@1@S@oru kuTTi amma-e viLi-ccu@1@4@@ebender@6-7-2009
+202@unknown@formal@none@1@S@one child.nom mother-acc call-past@1@4@@ebender@6-7-2009
+203@unknown@formal@none@1@S@'A child called the mother.'@1@5@@ebender@6-7-2009
+204@unknown@formal@none@1@TD@Ex 23 demonstrates an ungrammtical use of "oru" the indefinite article. Here it comes after the noun. It should precede it.@1@21@@ebender@6-7-2009
+205@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+206@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+207@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+208@unknown@formal@none@1@S@Phenomena: {word order, case, det}@1@5@@ebender@6-7-2009
+209@unknown@formal@none@1@S@kuTTi ammaye oru viLiccu@1@4@@ebender@6-7-2009
+210@unknown@formal@none@1@S@kuTTi amma-e oru viLi-ccu@1@4@@ebender@6-7-2009
+211@unknown@formal@none@1@S@child.nom mother-acc one call-past@1@4@@ebender@6-7-2009
+212@unknown@formal@none@1@S@'The child called a mother.'@1@5@@ebender@6-7-2009
+213@unknown@formal@none@1@TD@Ex 24 demonstrates an ungrammtical use of "oru" the indefinite article. Here it appears before a plural noun.@1@18@@ebender@6-7-2009
+214@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+215@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+216@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+217@unknown@formal@none@1@S@Phenomena: {word order, case, det}@1@5@@ebender@6-7-2009
+218@unknown@formal@none@1@S@oru kuTTimaar ammaye viLiccu@1@4@@ebender@6-7-2009
+219@unknown@formal@none@1@S@oru kuTTi-maar amma-e viLi-ccu@1@4@@ebender@6-7-2009
+220@unknown@formal@none@1@S@one child.pl mother-acc call-past@1@4@@ebender@6-7-2009
+221@unknown@formal@none@1@S@'A children called the mother.'@1@5@@ebender@6-7-2009
+222@unknown@formal@none@1@TD@Ex 25 demonstrates first person singular pronoun. Naan@1@8@@ebender@6-7-2009
+223@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+224@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+225@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+226@unknown@formal@none@1@S@Phenomena: {pn}@1@2@@ebender@6-7-2009
+227@unknown@formal@none@1@S@Naan ciriccu@1@2@@ebender@6-7-2009
+228@unknown@formal@none@1@S@Naan cirikk-tu@1@2@@ebender@6-7-2009
+229@unknown@formal@none@1@S@I laugh-past@1@2@@ebender@6-7-2009
+230@unknown@formal@none@1@S@'I laughed.'@1@2@@ebender@6-7-2009
+231@unknown@formal@none@1@TD@Ex 26 demonstrates first person plural inclusive pronoun. Nammal@1@9@@ebender@6-7-2009
+232@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+233@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+234@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+235@unknown@formal@none@1@S@Phenomena: {pn}@1@2@@ebender@6-7-2009
+236@unknown@formal@none@1@S@NammaL ciriccu@1@2@@ebender@6-7-2009
+237@unknown@formal@none@1@S@NammaL cirikk-tu@1@2@@ebender@6-7-2009
+238@unknown@formal@none@1@S@we.incl laugh-past@1@2@@ebender@6-7-2009
+239@unknown@formal@none@1@S@'We laughed.'@1@2@@ebender@6-7-2009
+240@unknown@formal@none@1@TD@Ex 27 demonstrates first person plural exclusive pronoun. NaNNal@1@9@@ebender@6-7-2009
+241@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+242@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+243@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+244@unknown@formal@none@1@S@Phenomena: {pn}@1@2@@ebender@6-7-2009
+245@unknown@formal@none@1@S@NaNNal ciriccu@1@2@@ebender@6-7-2009
+246@unknown@formal@none@1@S@NaNNal cirikk-tu@1@2@@ebender@6-7-2009
+247@unknown@formal@none@1@S@we.excl laugh-past@1@2@@ebender@6-7-2009
+248@unknown@formal@none@1@S@'We laughed.'@1@2@@ebender@6-7-2009
+249@unknown@formal@none@1@TD@Ex 28 demonstrates second person singular pronoun. nii@1@8@@ebender@6-7-2009
+250@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+251@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+252@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+253@unknown@formal@none@1@S@Phenomena: {pn}@1@2@@ebender@6-7-2009
+254@unknown@formal@none@1@S@nii ciriccu@1@2@@ebender@6-7-2009
+255@unknown@formal@none@1@S@nii cirikk-tu@1@2@@ebender@6-7-2009
+256@unknown@formal@none@1@S@you laugh-past@1@2@@ebender@6-7-2009
+257@unknown@formal@none@1@S@'You laughed.'@1@2@@ebender@6-7-2009
+258@unknown@formal@none@1@TD@Ex 29 demonstrates second person plural pronoun. niNNal@1@8@@ebender@6-7-2009
+259@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+260@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+261@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+262@unknown@formal@none@1@S@Phenomena: {pn}@1@2@@ebender@6-7-2009
+263@unknown@formal@none@1@S@niNNal ciriccu@1@2@@ebender@6-7-2009
+264@unknown@formal@none@1@S@niNNal cirikk-tu@1@2@@ebender@6-7-2009
+265@unknown@formal@none@1@S@you.pl laugh-past@1@2@@ebender@6-7-2009
+266@unknown@formal@none@1@S@'You laughed.'@1@2@@ebender@6-7-2009
+267@unknown@formal@none@1@TD@Ex 30 demonstrates third person masculine singular pronoun. avan@1@9@@ebender@6-7-2009
+268@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+269@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+270@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+271@unknown@formal@none@1@S@Phenomena: {pn}@1@2@@ebender@6-7-2009
+272@unknown@formal@none@1@S@avan ciriccu@1@2@@ebender@6-7-2009
+273@unknown@formal@none@1@S@avan cirikk-tu@1@2@@ebender@6-7-2009
+274@unknown@formal@none@1@S@he laugh-past@1@2@@ebender@6-7-2009
+275@unknown@formal@none@1@S@'He laughed.'@1@2@@ebender@6-7-2009
+276@unknown@formal@none@1@TD@Ex 31 demonstrates third person feminine singular pronoun. Naan@1@9@@ebender@6-7-2009
+277@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+278@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+279@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+280@unknown@formal@none@1@S@Phenomena: {pn}@1@2@@ebender@6-7-2009
+281@unknown@formal@none@1@S@avaL ciriccu@1@2@@ebender@6-7-2009
+282@unknown@formal@none@1@S@avaL cirikk-tu@1@2@@ebender@6-7-2009
+283@unknown@formal@none@1@S@she laugh-past@1@2@@ebender@6-7-2009
+284@unknown@formal@none@1@S@'She laughed.'@1@2@@ebender@6-7-2009
+285@unknown@formal@none@1@TD@Ex 32 demonstrates third person neuter singular pronoun. atE@1@9@@ebender@6-7-2009
+286@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+287@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+288@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+289@unknown@formal@none@1@S@Phenomena: {pn}@1@2@@ebender@6-7-2009
+290@unknown@formal@none@1@S@atE ciriccu@1@2@@ebender@6-7-2009
+291@unknown@formal@none@1@S@atE cirikk-tu@1@2@@ebender@6-7-2009
+292@unknown@formal@none@1@S@it laugh-past@1@2@@ebender@6-7-2009
+293@unknown@formal@none@1@S@'It laughed.'@1@2@@ebender@6-7-2009
+294@unknown@formal@none@1@TD@Ex 33 demonstrates third person human plural pronoun. avar@1@9@@ebender@6-7-2009
+295@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+296@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+297@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+298@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+299@unknown@formal@none@1@S@avar ciriccu@1@2@@ebender@6-7-2009
+300@unknown@formal@none@1@S@avar cirikk-tu@1@2@@ebender@6-7-2009
+301@unknown@formal@none@1@S@they laugh-past@1@2@@ebender@6-7-2009
+302@unknown@formal@none@1@S@'They laughed.'@1@2@@ebender@6-7-2009
+303@unknown@formal@none@1@TD@Ex 34 demonstrates third person neuter plural pronoun. ava@1@9@@ebender@6-7-2009
+304@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+305@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+306@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+307@unknown@formal@none@1@S@Phenomena: {pn}@1@2@@ebender@6-7-2009
+308@unknown@formal@none@1@S@ava ciriccu@1@2@@ebender@6-7-2009
+309@unknown@formal@none@1@S@ava cirikk-tu@1@2@@ebender@6-7-2009
+310@unknown@formal@none@1@S@they laugh-past@1@2@@ebender@6-7-2009
+311@unknown@formal@none@1@S@'They laughed.'@1@2@@ebender@6-7-2009
+312@unknown@formal@none@1@TD@Ex 35 demonstrates the present tense. It is formed by adding a suffix "-unnu" to the verb root.@1@18@@ebender@6-7-2009
+313@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+314@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+315@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+316@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+317@unknown@formal@none@1@S@kuTTi cirikkunnu@1@2@@ebender@6-7-2009
+318@unknown@formal@none@1@S@kuTTi cirikk-unnu@1@2@@ebender@6-7-2009
+319@unknown@formal@none@1@S@child.nom laugh-present@1@2@@ebender@6-7-2009
+320@unknown@formal@none@1@S@'The child laughs.'@1@3@@ebender@6-7-2009
+321@unknown@formal@none@1@TD@Ex 36 demonstrates an ungrammatical use of tense. Here the verb appears without the tense marker.@1@16@@ebender@6-7-2009
+322@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+323@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+324@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+325@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+326@unknown@formal@none@1@S@kuTTi cirikk@1@2@@ebender@6-7-2009
+327@unknown@formal@none@1@S@kuTTi cirikk@1@2@@ebender@6-7-2009
+328@unknown@formal@none@1@S@child.nom laugh@1@2@@ebender@6-7-2009
+329@unknown@formal@none@1@S@'The child laughs.'@1@3@@ebender@6-7-2009
+330@unknown@formal@none@1@TD@Ex 37 demonstrates an ungrammatical use of tense. Here the tense marker appears before the verb.@1@16@@ebender@6-7-2009
+331@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+332@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+333@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+334@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+335@unknown@formal@none@1@S@kuTTi unnucirikk@1@2@@ebender@6-7-2009
+336@unknown@formal@none@1@S@kuTTi unnu-cirikk@1@2@@ebender@6-7-2009
+337@unknown@formal@none@1@S@child.nom pres-laugh@1@2@@ebender@6-7-2009
+338@unknown@formal@none@1@S@'The child laughs.'@1@3@@ebender@6-7-2009
+339@unknown@formal@none@1@TD@Ex 38 demonstrates an ungrammatical use of the present tense. Here the tense marker appears before the verb. The hyphen is kept before the the suffix as this is the wway it will be entered into the customization system.@1@39@@ebender@6-7-2009
+340@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+341@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+342@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+343@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+344@unknown@formal@none@1@S@kuTTi -unnucirikk@1@2@@ebender@6-7-2009
+345@unknown@formal@none@1@S@kuTTi -unnucirikk@1@2@@ebender@6-7-2009
+346@unknown@formal@none@1@S@child.nom pres-laugh@1@2@@ebender@6-7-2009
+347@unknown@formal@none@1@S@'The child laughs.'@1@3@@ebender@6-7-2009
+348@unknown@formal@none@1@TD@Ex 39 demonstrates an ungrammatical use of the past tense. Here the tense marker appears before the verb. The hyphen is kept before the the suffix as this is the wway it will be entered into the customization system.@1@39@@ebender@6-7-2009
+349@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+350@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+351@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+352@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+353@unknown@formal@none@1@S@kuTTi ccuciri@1@2@@ebender@6-7-2009
+354@unknown@formal@none@1@S@kuTTi -tucirikk@1@2@@ebender@6-7-2009
+355@unknown@formal@none@1@S@child.nom past-laugh@1@2@@ebender@6-7-2009
+356@unknown@formal@none@1@S@'The child laughed.'@1@3@@ebender@6-7-2009
+357@unknown@formal@none@1@TD@Ex 40 demonstrates an ungrammatical use of the past tense. Here the tense marker appears before the verb.@1@18@@ebender@6-7-2009
+358@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+359@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+360@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+361@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+362@unknown@formal@none@1@S@kuTTi ccuciri@1@2@@ebender@6-7-2009
+363@unknown@formal@none@1@S@kuTTi tu-cirikk@1@2@@ebender@6-7-2009
+364@unknown@formal@none@1@S@child.nom past-laugh@1@2@@ebender@6-7-2009
+365@unknown@formal@none@1@S@'The child laughed.'@1@3@@ebender@6-7-2009
+366@unknown@formal@none@1@TD@Ex 41 demonstrates the imperfective. It is formed by adding "-uNTE" to the present tense stem or by adding "aaNE" to the infinitive.@1@23@@ebender@6-7-2009
+367@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+368@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+369@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+370@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+371@unknown@formal@none@1@S@kuTTi cirikkunnuNTE@1@2@@ebender@6-7-2009
+372@unknown@formal@none@1@S@kuTTi cirikk-unnu-uNTE@1@2@@ebender@6-7-2009
+373@unknown@formal@none@1@S@child.nom laugh-present-imperfect.pres@1@2@@ebender@6-7-2009
+374@unknown@formal@none@1@S@'The child is laughing.'@1@4@@ebender@6-7-2009
+375@unknown@formal@none@1@TD@Ex 42 demonstrates the an ungrammatical use of the imperfective. It is formed by adding "-uNTE" to the present tense stem or by adding "aaNE" to the infinitive. Here the present tense marker (incorrectly) comes after the imperefective marker.@1@39@@ebender@6-7-2009
+376@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+377@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+378@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+379@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+380@unknown@formal@none@1@S@kuTTi cirikkuNTEunne@1@2@@ebender@6-7-2009
+381@unknown@formal@none@1@S@kuTTi cirikk-uNTE-unnu@1@2@@ebender@6-7-2009
+382@unknown@formal@none@1@S@child.nom laugh-imperfect.pres-present@1@2@@ebender@6-7-2009
+383@unknown@formal@none@1@S@'The child is laughing.'@1@4@@ebender@6-7-2009
+384@unknown@formal@none@1@TD@Ex 43 demonstrates an ungrammatical use of the imperfective. It is formed by adding "-uNTE" to the present tense stem or by adding "aaNE" to the infinitive. Here neither the present tense marker nor the infinitive marker is present.@1@39@@ebender@6-7-2009
+385@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+386@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+387@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+388@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+389@unknown@formal@none@1@S@kuTTi cirikkuNTE@1@2@@ebender@6-7-2009
+390@unknown@formal@none@1@S@kuTTi cirikk-uNTE@1@2@@ebender@6-7-2009
+391@unknown@formal@none@1@S@child.nom laugh-imperfect.pres@1@2@@ebender@6-7-2009
+392@unknown@formal@none@1@S@'The child is laughing.'@1@4@@ebender@6-7-2009
+393@unknown@formal@none@1@TD@Ex 44 demonstrates the imperfective. It is formed by adding "-uNTE" to the present tense stem or by adding "aaNE" to the infinitive. Here the imperfective marker is prefixed to the present tense stem. The hyphen is deliberately kept since this is the way it will be entered into the customization system.@1@52@@ebender@6-7-2009
+394@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+395@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+396@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+397@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+398@unknown@formal@none@1@S@kuTTi uNTEcirikkunne@1@2@@ebender@6-7-2009
+399@unknown@formal@none@1@S@kuTTi -uNTEcirikk-unnu@1@2@@ebender@6-7-2009
+400@unknown@formal@none@1@S@child.nom imperfect.pres-laugh-present@1@2@@ebender@6-7-2009
+401@unknown@formal@none@1@S@'The child is laughing.'@1@4@@ebender@6-7-2009
+402@unknown@formal@none@1@TD@Ex 45 demonstrates the imperfective. Here it is formed by adding "-aaNE" to the infinitive. The infinitive is formed by adding "-uka" to the verb root.@1@26@@ebender@6-7-2009
+403@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+404@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+405@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+406@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+407@unknown@formal@none@1@S@kuTTi cirikkukayaaNe@1@2@@ebender@6-7-2009
+408@unknown@formal@none@1@S@kuTTi cirikk-uka-aaNe@1@2@@ebender@6-7-2009
+409@unknown@formal@none@1@S@child.nom laugh-infinitive-imperfect@1@2@@ebender@6-7-2009
+410@unknown@formal@none@1@S@'The child is laughing.'@1@4@@ebender@6-7-2009
+411@unknown@formal@none@1@TD@Ex 46 demonstrates negation. The negative indicative is formed by adding "-illa" to the present and past tense stems. For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem.@1@36@@ebender@6-7-2009
+412@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+413@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+414@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+415@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+416@unknown@formal@none@1@S@kuTTi cirikkukayilla@1@2@@ebender@6-7-2009
+417@unknown@formal@none@1@S@kuTTi cirikk-uka-illa@1@2@@ebender@6-7-2009
+418@unknown@formal@none@1@S@child.nom laugh-infinitive-neg@1@2@@ebender@6-7-2009
+419@unknown@formal@none@1@S@'The child will not laugh.'@1@5@@ebender@6-7-2009
+420@unknown@formal@none@1@TD@Ex 47 demonstrates negation. The negative indicative is formed by adding "-illa" to the present and past tense stems. For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem.@1@36@@ebender@6-7-2009
+421@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+422@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+423@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+424@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+425@unknown@formal@none@1@S@kuTTi cirikkilla@1@2@@ebender@6-7-2009
+426@unknown@formal@none@1@S@kuTTi cirikk-illa@1@2@@ebender@6-7-2009
+427@unknown@formal@none@1@S@child.nom laugh-infinitive-neg@1@2@@ebender@6-7-2009
+428@unknown@formal@none@1@S@'The child will not laugh.'@1@5@@ebender@6-7-2009
+429@unknown@formal@none@1@TD@Ex 48 demonstrates negation. The negative indicative is formed by adding "-illa" to the present and past tense stems. For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem.@1@36@@ebender@6-7-2009
+430@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+431@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+432@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+433@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+434@unknown@formal@none@1@S@kuTTi cirikkunnilla@1@2@@ebender@6-7-2009
+435@unknown@formal@none@1@S@kuTTi cirikk-unnu-illa@1@2@@ebender@6-7-2009
+436@unknown@formal@none@1@S@child.nom laugh-pres-neg@1@2@@ebender@6-7-2009
+437@unknown@formal@none@1@S@'The child is not laughing.'@1@5@@ebender@6-7-2009
+438@unknown@formal@none@1@TD@Ex 49 demonstrates negation. The negative indicative is formed by adding "-illa" to the present and past tense stems. For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem.@1@36@@ebender@6-7-2009
+439@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+440@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+441@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+442@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+443@unknown@formal@none@1@S@kuTTi ciriccilla@1@2@@ebender@6-7-2009
+444@unknown@formal@none@1@S@kuTTi cirikk-tu-illa@1@2@@ebender@6-7-2009
+445@unknown@formal@none@1@S@child.nom laugh-past-neg@1@2@@ebender@6-7-2009
+446@unknown@formal@none@1@S@'The child will not laugh.'@1@5@@ebender@6-7-2009
+447@unknown@formal@none@1@TD@Ex 50 demonstrates an ungrammatical use of negation. The negative indicative is formed by adding "-illa" to the present and past tense stems. For the future, the negative is formed by adding "-illa" tothe infinitive or the verb stem. Here the negative marker comes beforethe infinitive marker.@1@47@@ebender@6-7-2009
+448@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+449@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+450@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+451@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+452@unknown@formal@none@1@S@kuTTi cirikkillayuka@1@2@@ebender@6-7-2009
+453@unknown@formal@none@1@S@kuTTi cirikk-illa-uka@1@2@@ebender@6-7-2009
+454@unknown@formal@none@1@S@child.nom laugh-neg-infinitive@1@2@@ebender@6-7-2009
+455@unknown@formal@none@1@S@'The child will not laugh.'@1@5@@ebender@6-7-2009
+456@unknown@formal@none@1@TD@Ex 51 demonstrates negation. The negative indicative is formed by adding "-illa" to the present and past tense stems. For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem. Here the negative marker (incorrectly) comes before the past tense marker.@1@47@@ebender@6-7-2009
+457@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+458@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+459@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+460@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+461@unknown@formal@none@1@S@kuTTi cirikkillaccu@1@2@@ebender@6-7-2009
+462@unknown@formal@none@1@S@kuTTi cirikk-illa-tu@1@2@@ebender@6-7-2009
+463@unknown@formal@none@1@S@child.nom laugh-neg-past@1@2@@ebender@6-7-2009
+464@unknown@formal@none@1@S@'The child will not laugh.'@1@5@@ebender@6-7-2009
+465@unknown@formal@none@1@TD@Ex 52 demonstrates negation. The negative indicative is formed by adding "-illa" to the present and past tense stems. For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem. Here the negative maker (incorrectly) comes before the present tense marker.@1@47@@ebender@6-7-2009
+466@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+467@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+468@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+469@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
+470@unknown@formal@none@1@S@kuTTi cirikkillayunnu@1@2@@ebender@6-7-2009
+471@unknown@formal@none@1@S@kuTTi cirikk-illa-unnu@1@2@@ebender@6-7-2009
+472@unknown@formal@none@1@S@child.nom laugh-neg-pres@1@2@@ebender@6-7-2009
+473@unknown@formal@none@1@S@'The child is not laughing.'@1@5@@ebender@6-7-2009
+474@unknown@formal@none@1@TD@Ex 53 demonstrates a yes-no question.@1@6@@ebender@6-7-2009
+475@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+476@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+477@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+478@unknown@formal@none@1@S@Phenomena: {q}@1@2@@ebender@6-7-2009
+479@unknown@formal@none@1@S@kuTTi ammaye viLiccoo@1@3@@ebender@6-7-2009
+480@unknown@formal@none@1@S@kuTTi amma-e viLi-ccu-oo@1@3@@ebender@6-7-2009
+481@unknown@formal@none@1@S@child.nom mother-acc call-past-ques@1@3@@ebender@6-7-2009
+482@unknown@formal@none@1@S@'Did the child call the mother?'@1@6@@ebender@6-7-2009
+483@unknown@formal@none@1@TD@Ex 54 demonstrates NP coordination. The suffix "-um" is added to each coordinand.@1@13@@ebender@6-7-2009
+484@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+485@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+486@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+487@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+488@unknown@formal@none@1@S@raamanum kuTTiyum ciriccu@1@3@@ebender@6-7-2009
+489@unknown@formal@none@1@S@raaman-um kuTTi-um cirikk-tu@1@3@@ebender@6-7-2009
+490@unknown@formal@none@1@S@Raman.nom-and child.nom-and laugh-past@1@3@@ebender@6-7-2009
+491@unknown@formal@none@1@S@'Raman and the child laughed.'@1@5@@ebender@6-7-2009
+492@unknown@formal@none@1@TD@Ex 55 demonstrates ungrammatical NP coordination. Here one of the coordinands does not have the suffix.@1@16@@ebender@6-7-2009
+493@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+494@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+495@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+496@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+497@unknown@formal@none@1@S@raamanum kuTTiyum ciriccu@1@3@@ebender@6-7-2009
+498@unknown@formal@none@1@S@raaman kuTTi-um cirikk-tu@1@3@@ebender@6-7-2009
+499@unknown@formal@none@1@S@Raman.nom child.nom-and laugh-past@1@3@@ebender@6-7-2009
+500@unknown@formal@none@1@S@'Raman and the child laughed.'@1@5@@ebender@6-7-2009
+501@unknown@formal@none@1@TD@Ex 56 demonstrates NP coordination for direct objects.@1@8@@ebender@6-7-2009
+502@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+503@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+504@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+505@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+506@unknown@formal@none@1@S@kuTTi raamaneyum ammayeyum viLiccu@1@4@@ebender@6-7-2009
+507@unknown@formal@none@1@S@kuTTi raaman-e-um amma-e-um viLi-ccu@1@4@@ebender@6-7-2009
+508@unknown@formal@none@1@S@child.nom raman-acc-and mother-acc-and call-past@1@4@@ebender@6-7-2009
+509@unknown@formal@none@1@S@The child called Raman and the mother.@1@7@@ebender@6-7-2009
+510@unknown@formal@none@1@TD@Ex 57 demonstrates ungrammatical NP coordination for direct objects. Here the coordination suffix comes before the case suffix.@1@18@@ebender@6-7-2009
+511@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+512@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+513@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+514@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+515@unknown@formal@none@1@S@kuTTi raamanume ammayume viLiccu@1@4@@ebender@6-7-2009
+516@unknown@formal@none@1@S@kuTTi raaman-um-e amma-e-um viLi-ccu@1@4@@ebender@6-7-2009
+517@unknown@formal@none@1@S@child.nom raman-and-acc mother-acc call-past@1@4@@ebender@6-7-2009
+518@unknown@formal@none@1@S@The child called Raman and the mother.@1@7@@ebender@6-7-2009
+519@unknown@formal@none@1@TD@Ex 58 demonstrates coordination. The coordination suffix cannot attach to finite verbs. Instead the infinitive of the verbs is used in addition with a dummy verb "ceyyuku" (do).@1@28@@ebender@6-7-2009
+520@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+521@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+522@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+523@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+524@unknown@formal@none@1@S@raaman viiZukayum kuTTi cirikkukayum ceytu@1@5@@ebender@6-7-2009
+525@unknown@formal@none@1@S@raaman viiZ-uka-um kuTTi cirikk-uka-um ceyy-tu@1@5@@ebender@6-7-2009
+526@unknown@formal@none@1@S@Raman fall-infin-and child laugh-infin-and do-past@1@5@@ebender@6-7-2009
+527@unknown@formal@none@1@S@'Raman fell and the child laughed.'@1@6@@ebender@6-7-2009
+528@unknown@formal@none@1@TD@Ex 59 demonstrates coordination. The coordination suffix cannot attach to finite verbs. Instead the infinitive of the verbs is used in addition with a dummy verb "ceyyuku" (do).@1@28@@ebender@6-7-2009
+529@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+530@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+531@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+532@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+533@unknown@formal@none@1@S@raaman viiZukayum cirikkukayum ceytu@1@4@@ebender@6-7-2009
+534@unknown@formal@none@1@S@raaman viiZ-uka-um cirikk-uka-um ceyy-tu@1@4@@ebender@6-7-2009
+535@unknown@formal@none@1@S@Raman fall-infin-and laugh-infin-and do-past@1@4@@ebender@6-7-2009
+536@unknown@formal@none@1@S@'Raman fell and laughed.'@1@4@@ebender@6-7-2009
+537@unknown@formal@none@1@TD@Ex 60 demonstrates ungrammatical coordination. The coordination suffix cannot attach to finite verbs. Instead the infinitive of the verbs is used in addition with a dummy verb "ceyyuku" (do). Here the coordination suffix is missing from one of the coordinands.@1@40@@ebender@6-7-2009
+538@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+539@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+540@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+541@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+542@unknown@formal@none@1@S@raaman viiZuka kuTTi cirikkukayum ceytu@1@5@@ebender@6-7-2009
+543@unknown@formal@none@1@S@raaman viiZ-uka kuTTi cirikk-uka-um ceyy-tu@1@5@@ebender@6-7-2009
+544@unknown@formal@none@1@S@Raman fall-infin child laugh-infin-and do-past@1@5@@ebender@6-7-2009
+545@unknown@formal@none@1@S@'Raman fell and the child laughed.'@1@6@@ebender@6-7-2009
+546@unknown@formal@none@1@TD@Ex 61 demonstrates coordination. The coordination suffix cannot attach to finite verbs. Instead the infinitive of the verbs is used in addition with a dummy verb "ceyyuku" (do). Here the coordination suffix is (incorrectly) attached to finite verbs.@1@38@@ebender@6-7-2009
+547@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+548@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+549@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+550@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+551@unknown@formal@none@1@S@raaman viiNum kuTTi ciriccyum ceytu@1@5@@ebender@6-7-2009
+552@unknown@formal@none@1@S@raaman viiZ-tu-um kuTTi cirikk-tu-um ceyy-tu@1@5@@ebender@6-7-2009
+553@unknown@formal@none@1@S@Raman fall-past-and child laugh-past-and do-past@1@5@@ebender@6-7-2009
+554@unknown@formal@none@1@S@'Raman fell and the child laughed.'@1@6@@ebender@6-7-2009
+555@unknown@formal@none@1@TD@Ex 62 demonstrates coordination. The coordination suffix cannot attach to finite verbs. Instead the infinitive of the verbs is used in addition with a dummy verb "ceyyuku" (do). Here the dummy verb is missing.@1@34@@ebender@6-7-2009
+556@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+557@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+558@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+559@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
+560@unknown@formal@none@1@S@raaman viiZukayum kuTTi cirikkukayum@1@4@@ebender@6-7-2009
+561@unknown@formal@none@1@S@raaman viiZ-uka-um kuTTi cirikk-uka-um@1@4@@ebender@6-7-2009
+562@unknown@formal@none@1@S@Raman fall-infin-and child laugh-infin-and@1@4@@ebender@6-7-2009
+563@unknown@formal@none@1@S@'Raman fell and the child laughed.'@1@6@@ebender@6-7-2009
+564@unknown@formal@none@1@TD@Ex 63 demonstrates the past imperfective. It is formed by adding "-uNTE" to the present tense stem or by adding "aaNE" to the infinitive.@1@24@@ebender@6-7-2009
+565@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+566@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+567@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+568@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+569@unknown@formal@none@1@S@kuTTi cirikkunnuNTaayirunnu@1@2@@ebender@6-7-2009
+570@unknown@formal@none@1@S@kuTTi cirikk-unnu-uNTE-irunnu@1@2@@ebender@6-7-2009
+571@unknown@formal@none@1@S@child.nom laugh-present-imperfect-past@1@2@@ebender@6-7-2009
+572@unknown@formal@none@1@S@'The child was laughing.'@1@4@@ebender@6-7-2009
+573@unknown@formal@none@1@TD@Ex 64 demonstrates the future imperfective. It is formed by adding "-uNTE" to the present tense stem or by adding "aaNE" to the infinitive.@1@24@@ebender@6-7-2009
+574@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+575@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+576@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+577@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+578@unknown@formal@none@1@S@kuTTi cirikkunnuNTaakum@1@2@@ebender@6-7-2009
+579@unknown@formal@none@1@S@kuTTi cirikk-unnu-uNTE-aakum@1@2@@ebender@6-7-2009
+580@unknown@formal@none@1@S@child.nom laugh-present-imperfect-fut@1@2@@ebender@6-7-2009
+581@unknown@formal@none@1@S@'The child will be laughing.'@1@5@@ebender@6-7-2009
+582@unknown@formal@none@1@TD@Ex 65 demonstrates the past imperfective. Here it is formed by adding "-aaNE" to the infinitive. The infinitive is formed by adding "-uka" to the verb root.@1@27@@ebender@6-7-2009
+583@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+584@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+585@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+586@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+587@unknown@formal@none@1@S@kuTTi cirikkukayaayirunnu@1@2@@ebender@6-7-2009
+588@unknown@formal@none@1@S@kuTTi cirikk-uka-aaNe-irunnu@1@2@@ebender@6-7-2009
+589@unknown@formal@none@1@S@child.nom laugh-infinitive-imperfect-past@1@2@@ebender@6-7-2009
+590@unknown@formal@none@1@S@'The child was laughing.'@1@4@@ebender@6-7-2009
+591@unknown@formal@none@1@TD@Ex 66 demonstrates the present habitual. It is formed by adding "-aaRE" and "-uNTE" to the verb stem.@1@18@@ebender@6-7-2009
+592@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+593@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+594@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+595@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+596@unknown@formal@none@1@S@kuTTi cirikkaaRuNTE@1@2@@ebender@6-7-2009
+597@unknown@formal@none@1@S@kuTTi cirikk-aaRE-uNTE@1@2@@ebender@6-7-2009
+598@unknown@formal@none@1@S@child.nom laugh-hab-hab.pres@1@2@@ebender@6-7-2009
+599@unknown@formal@none@1@S@'The child laughs.'@1@3@@ebender@6-7-2009
+600@unknown@formal@none@1@TD@Ex 67 demonstrates an ungrammatical form of the habitual. It is formed by adding "-aaRE" and "-uNTE" to the verb stem. Here "-aaRe" is missing@1@25@@ebender@6-7-2009
+601@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+602@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+603@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+604@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+605@unknown@formal@none@1@S@kuTTi cirikkuNTE@1@2@@ebender@6-7-2009
+606@unknown@formal@none@1@S@kuTTi cirikk-uNTE@1@2@@ebender@6-7-2009
+607@unknown@formal@none@1@S@child.nom laugh-hab.pres@1@2@@ebender@6-7-2009
+608@unknown@formal@none@1@S@'The child laughs.'@1@3@@ebender@6-7-2009
+609@unknown@formal@none@1@TD@Ex 68 demonstrates an ungrammatical form of the habitual. It is formed by adding "-aaRE" and "-uNTE" to the verb stem. Here "-uNTE" is missing.@1@25@@ebender@6-7-2009
+610@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+611@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+612@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+613@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+614@unknown@formal@none@1@S@kuTTi cirikkaaR@1@2@@ebender@6-7-2009
+615@unknown@formal@none@1@S@kuTTi cirikk-aaRE@1@2@@ebender@6-7-2009
+616@unknown@formal@none@1@S@child.nom laugh-hab@1@2@@ebender@6-7-2009
+617@unknown@formal@none@1@S@'The child laughs.'@1@3@@ebender@6-7-2009
+618@unknown@formal@none@1@TD@Ex 69 demonstrates past habitual. It is formed by adding "-aaRE" and "-uNTE" to the verb stem.@1@17@@ebender@6-7-2009
+619@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+620@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+621@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+622@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+623@unknown@formal@none@1@S@kuTTi cirikkaaRuNTaayirunnu@1@2@@ebender@6-7-2009
+624@unknown@formal@none@1@S@kuTTi cirikk-aaRE-uNTE-irunnu@1@2@@ebender@6-7-2009
+625@unknown@formal@none@1@S@child.nom laugh-hab-hab-past@1@2@@ebender@6-7-2009
+626@unknown@formal@none@1@S@'The child used to laugh.'@1@5@@ebender@6-7-2009
+627@unknown@formal@none@1@TD@Ex 70 demonstrates future habitual. It is formed by adding "-aaRE" and "-uNTE" to the verb stem.@1@17@@ebender@6-7-2009
+628@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+629@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+630@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+631@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+632@unknown@formal@none@1@S@kuTTi cirikkaaRuNTaakum@1@2@@ebender@6-7-2009
+633@unknown@formal@none@1@S@kuTTi cirikk-aaRE-uNTE-aakum@1@2@@ebender@6-7-2009
+634@unknown@formal@none@1@S@child.nom laugh-hab-hab-fut@1@2@@ebender@6-7-2009
+635@unknown@formal@none@1@S@'The child will laugh.'@1@4@@ebender@6-7-2009
+636@unknown@formal@none@1@TD@Ex 71 demonstrates ungrammatical present habitual. It is formed by adding "-aaRE" and "-uNTE" to the verb stem. Here they are attached to the present tense stem.@1@27@@ebender@6-7-2009
+637@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+638@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+639@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+640@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+641@unknown@formal@none@1@S@kuTTi cirikkunnaaRuNTaayirunnu@1@2@@ebender@6-7-2009
+642@unknown@formal@none@1@S@kuTTi cirikk-unnu-aaRE-uNTE@1@2@@ebender@6-7-2009
+643@unknown@formal@none@1@S@child.nom laugh-pres-hab-hab.pres@1@2@@ebender@6-7-2009
+644@unknown@formal@none@1@S@'The child was laughing.'@1@4@@ebender@6-7-2009
+645@unknown@formal@none@1@TD@Ex 72 demonstrates an ungrammtical form of the past habitual. It is formed by adding "-aaRE" and "-uNTE" to the verb stem. Here they are attached to the past tense verb stem@1@32@@ebender@6-7-2009
+646@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+647@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+648@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+649@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+650@unknown@formal@none@1@S@kuTTi ciriccaaRuNTaayirunnu@1@2@@ebender@6-7-2009
+651@unknown@formal@none@1@S@kuTTi cirikk-tu-aaRE-uNTE-irunnu@1@2@@ebender@6-7-2009
+652@unknown@formal@none@1@S@child.nom laugh-hab-hab-past@1@2@@ebender@6-7-2009
+653@unknown@formal@none@1@S@'The child was laughing.'@1@4@@ebender@6-7-2009
+654@unknown@formal@none@1@TD@Ex 73 demonstrates an ungrammitical form of the future habitual. It is formed by adding "-aaRE" and "-uNTE" to the verb stem. Here they are attached to the future tense verb stem@1@32@@ebender@6-7-2009
+655@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+656@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+657@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+658@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+659@unknown@formal@none@1@S@kuTTi cirikkumaaRuNTaakum@1@2@@ebender@6-7-2009
+660@unknown@formal@none@1@S@kuTTi cirikk-um-aaRE-uNTE-aakum@1@2@@ebender@6-7-2009
+661@unknown@formal@none@1@S@child.nom laugh-fut-hab-hab-fut@1@2@@ebender@6-7-2009
+662@unknown@formal@none@1@S@'The child will laugh.'@1@4@@ebender@6-7-2009
+663@unknown@formal@none@1@TD@Ex 74 demonstrates an ungrammtical form of the future habitual. It is formed by adding "-aaRE" and "-uNTE" to the verb stem. Here it is attached to the infinitive.@1@29@@ebender@6-7-2009
+664@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+665@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+666@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+667@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+668@unknown@formal@none@1@S@kuTTi cirikkukayaaRuNTaakum@1@2@@ebender@6-7-2009
+669@unknown@formal@none@1@S@kuTTi cirikk-uka-aaRE-uNTE-aakum@1@2@@ebender@6-7-2009
+670@unknown@formal@none@1@S@child.nom laugh-infin-hab-hab-past@1@2@@ebender@6-7-2009
+671@unknown@formal@none@1@S@'The child will laugh.'@1@4@@ebender@6-7-2009
+672@unknown@formal@none@1@TD@Ex 75 demonstrates an ungrammtical form of the past habitual. It is formed by adding "-aaRE" and "-uNTE" to the verb stem. Here they are attached to the infinitive@1@29@@ebender@6-7-2009
+673@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+674@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+675@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+676@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+677@unknown@formal@none@1@S@kuTTi cirikkukayaaRuNTaayirunnu@1@2@@ebender@6-7-2009
+678@unknown@formal@none@1@S@kuTTi cirikk-uka-aaRE-uNTE-irunnu@1@2@@ebender@6-7-2009
+679@unknown@formal@none@1@S@child.nom laugh-hab-hab-past@1@2@@ebender@6-7-2009
+680@unknown@formal@none@1@S@'The child used to laugh.'@1@5@@ebender@6-7-2009
+681@unknown@formal@none@1@TD@Ex 76 demonstrates an ungrammatical form of the present habitual. It is formed by adding "-aaRE" and "-uNTE" to the verb stem. Here they are attached to the infinitive@1@29@@ebender@6-7-2009
+682@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+683@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+684@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+685@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+686@unknown@formal@none@1@S@kuTTi cirikkukayaaRuNTE@1@2@@ebender@6-7-2009
+687@unknown@formal@none@1@S@kuTTi cirikk-uka-aaRE-uNTE@1@2@@ebender@6-7-2009
+688@unknown@formal@none@1@S@child.nom laugh-infin-hab-hab.pres@1@2@@ebender@6-7-2009
+689@unknown@formal@none@1@S@'The child laughs.'@1@3@@ebender@6-7-2009

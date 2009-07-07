@@ -1,0 +1,708 @@
+1@unknown@formal@none@1@S@Language: West Greenlandic@1@3@@ebender@6-7-2009
+2@unknown@formal@none@1@S@Language code: kal@1@3@@ebender@6-7-2009
+3@unknown@formal@none@1@S@Author: Safiyyah Saleem@1@3@@ebender@6-7-2009
+4@unknown@formal@none@1@S@Date: April 1, 2009@1@4@@ebender@6-7-2009
+5@unknown@formal@none@1@S@Source a: West Greenlandic by Michael Fortescue@1@7@@ebender@6-7-2009
+6@unknown@formal@none@1@S@Source b: Greenlandic - A Simple Introduction - Verbs at http://www.geocities.com/jerry_mccarthy_uk/grnintrov.htm@1@11@@ebender@6-7-2009
+7@unknown@formal@none@1@TD@Ex 1 demonstrates basic SOV word order.@1@7@@ebender@6-7-2009
+8@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+9@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+10@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+11@unknown@formal@none@1@S@Phenomena: {word order, case}@1@4@@ebender@6-7-2009
+12@unknown@formal@none@1@S@inuup puisi pisaraa@1@3@@ebender@6-7-2009
+13@unknown@formal@none@1@S@inuk-p puisi pisar-vaa@1@3@@ebender@6-7-2009
+14@unknown@formal@none@1@S@person-rel seal.abs catch-indic.3s(subj).3s(obj)@1@3@@ebender@6-7-2009
+15@unknown@formal@none@1@S@'The person caught the seal.'@1@5@@ebender@6-7-2009
+16@unknown@formal@none@1@TD@Ex 2 deomonstrates SVO word order.@1@6@@ebender@6-7-2009
+17@unknown@formal@none@1@S@Source: a:181@1@2@@ebender@6-7-2009
+18@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+19@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+20@unknown@formal@none@1@S@Phenomena: {word order, case}@1@4@@ebender@6-7-2009
+21@unknown@formal@none@1@S@inuup pisaraa puisi@1@3@@ebender@6-7-2009
+22@unknown@formal@none@1@S@inuk-p pisar-vaa puisi@1@3@@ebender@6-7-2009
+23@unknown@formal@none@1@S@person-rel catch-indic.3s(subj).3s(obj) seal.abs@1@3@@ebender@6-7-2009
+24@unknown@formal@none@1@S@'The person caught the seal.'@1@5@@ebender@6-7-2009
+25@unknown@formal@none@1@TD@Ex 3 deomonstrates VSO word order.@1@6@@ebender@6-7-2009
+26@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+27@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+28@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+29@unknown@formal@none@1@S@Phenomena: {word order, case}@1@4@@ebender@6-7-2009
+30@unknown@formal@none@1@S@pisaraa inuup puisi@1@3@@ebender@6-7-2009
+31@unknown@formal@none@1@S@pisar-vaa inuk-p puisi@1@3@@ebender@6-7-2009
+32@unknown@formal@none@1@S@catch-indic.3s(subj).3s(obj) person-rel seal.abs@1@3@@ebender@6-7-2009
+33@unknown@formal@none@1@S@'The hunter caught the seal.'@1@5@@ebender@6-7-2009
+34@unknown@formal@none@1@TD@Ex 4 deomonstrates VOS word order.@1@6@@ebender@6-7-2009
+35@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+36@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+37@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+38@unknown@formal@none@1@S@Phenomena: {word order, case}@1@4@@ebender@6-7-2009
+39@unknown@formal@none@1@S@pisaraa puisi inuup@1@3@@ebender@6-7-2009
+40@unknown@formal@none@1@S@pisar-vaa puisi inuk-p@1@3@@ebender@6-7-2009
+41@unknown@formal@none@1@S@catch-indic.3s(subj).3s(obj) seal.abs person-rel@1@3@@ebender@6-7-2009
+42@unknown@formal@none@1@S@'The hunter caught the seal.'@1@5@@ebender@6-7-2009
+43@unknown@formal@none@1@TD@Ex 5 deomonstrates OVS word order.@1@6@@ebender@6-7-2009
+44@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+45@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+46@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+47@unknown@formal@none@1@S@Phenomena: {word order, case}@1@4@@ebender@6-7-2009
+48@unknown@formal@none@1@S@puisi pisaraa inuup@1@3@@ebender@6-7-2009
+49@unknown@formal@none@1@S@puisi pisar-vaa inuk-p@1@3@@ebender@6-7-2009
+50@unknown@formal@none@1@S@seal.abs catch-indic.3s(subj).3s(obj) person-rel@1@3@@ebender@6-7-2009
+51@unknown@formal@none@1@S@'The person caught the seal.'@1@5@@ebender@6-7-2009
+52@unknown@formal@none@1@TD@Ex 6 deomonstrates OSV word order.@1@6@@ebender@6-7-2009
+53@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+54@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+55@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+56@unknown@formal@none@1@S@Phenomena: {word order, case}@1@4@@ebender@6-7-2009
+57@unknown@formal@none@1@S@puisi inuup pisaraa@1@3@@ebender@6-7-2009
+58@unknown@formal@none@1@S@puisi inuk-p pisar-vaa@1@3@@ebender@6-7-2009
+59@unknown@formal@none@1@S@seal.abs person-rel catch-indic.3s(subj).3s(obj)@1@3@@ebender@6-7-2009
+60@unknown@formal@none@1@S@'The person caught the seal.'@1@5@@ebender@6-7-2009
+61@unknown@formal@none@1@TD@Ex 7 demonstrates that an intransitive verb takes a subject in the absolutive case. (I am not confident that the top line shows the proper spelling according to source b, if a verb base ends in a consonant "p" is used instead of "v".) Vocabulary for "qimmiq/dog" and "qilut/bark" taken from a:280@1@52@@ebender@6-7-2009
+62@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+63@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+64@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+65@unknown@formal@none@1@S@Phenomena: {word order, case, agr}@1@5@@ebender@6-7-2009
+66@unknown@formal@none@1@S@qimmiq qilutpuq@1@2@@ebender@6-7-2009
+67@unknown@formal@none@1@S@qimmiq qilut-vu-q@1@2@@ebender@6-7-2009
+68@unknown@formal@none@1@S@dog.abs bark-indic-3s@1@2@@ebender@6-7-2009
+69@unknown@formal@none@1@S@'The dog barked.'@1@3@@ebender@6-7-2009
+70@unknown@formal@none@1@TD@Ex 8 demonstrates an ungrammatical use of a plural absolutive marker with a singular indicative marker on the verb.@1@19@@ebender@6-7-2009
+71@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+72@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+73@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+74@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
+75@unknown@formal@none@1@S@qimmit qilutpuq@1@2@@ebender@6-7-2009
+76@unknown@formal@none@1@S@qimmiq-t qilut-vu-q@1@2@@ebender@6-7-2009
+77@unknown@formal@none@1@S@dog.abs.plural bark-indic-3s@1@2@@ebender@6-7-2009
+78@unknown@formal@none@1@S@'The dog barked.'@1@3@@ebender@6-7-2009
+79@unknown@formal@none@1@TD@Ex 9 deomonstrates an ungrammatical use of a singular absolutive marker with a plural indicative marker or the verb.@1@19@@ebender@6-7-2009
+80@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+81@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+82@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+83@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+84@unknown@formal@none@1@S@qimmiq qilutput@1@2@@ebender@6-7-2009
+85@unknown@formal@none@1@S@qimmiq qilut-ppu-t@1@2@@ebender@6-7-2009
+86@unknown@formal@none@1@S@dog.abs bark-indic-3pl@1@2@@ebender@6-7-2009
+87@unknown@formal@none@1@S@'The dog barked.'@1@3@@ebender@6-7-2009
+88@unknown@formal@none@1@TD@Ex 10 demonstrates that an intransitive verb takes a subject in the absolutive case.@1@14@@ebender@6-7-2009
+89@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+90@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+91@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+92@unknown@formal@none@1@S@Phenomena: {word order, case, agr}@1@5@@ebender@6-7-2009
+93@unknown@formal@none@1@S@qimmit qilutput@1@2@@ebender@6-7-2009
+94@unknown@formal@none@1@S@qimmiq-t qilut-ppu-t@1@2@@ebender@6-7-2009
+95@unknown@formal@none@1@S@dog-abs.pl bark-indic-3pl@1@2@@ebender@6-7-2009
+96@unknown@formal@none@1@S@'The dogs barked.'@1@3@@ebender@6-7-2009
+97@unknown@formal@none@1@TD@Ex 11 demonstrates an ungrammatical use of an intransitive verb. Here the subject has a relative case marker. It should be absolutive.@1@22@@ebender@6-7-2009
+98@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+99@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+100@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+101@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+102@unknown@formal@none@1@S@qimmip qilutvuq@1@2@@ebender@6-7-2009
+103@unknown@formal@none@1@S@qimmiq-p qilut-vuq@1@2@@ebender@6-7-2009
+104@unknown@formal@none@1@S@dog-rel bark-indic.3s@1@2@@ebender@6-7-2009
+105@unknown@formal@none@1@S@'The dog barked.'@1@3@@ebender@6-7-2009
+106@unknown@formal@none@1@TD@Ex 12 demonstrates an ungrammatical use of an intransitive verb. Here the subject has an instrumental case marker. It should be absolutive.@1@22@@ebender@6-7-2009
+107@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+108@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+109@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+110@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+111@unknown@formal@none@1@S@qimmimik qilutvuq@1@2@@ebender@6-7-2009
+112@unknown@formal@none@1@S@qimmiq-mik qilut-vu-q@1@2@@ebender@6-7-2009
+113@unknown@formal@none@1@S@dog-instr bark-indic-3s@1@2@@ebender@6-7-2009
+114@unknown@formal@none@1@S@'The dog barked.'@1@3@@ebender@6-7-2009
+115@unknown@formal@none@1@TD@Ex 13 demonstrates ungrammatical case marking for a transitive verb. The subject should be in the realtive case and the direct object should be in the absolutive case. Here both are in the absolutive case.@1@35@@ebender@6-7-2009
+116@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+117@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+118@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+119@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+120@unknown@formal@none@1@S@inuk puisi pisaraa@1@3@@ebender@6-7-2009
+121@unknown@formal@none@1@S@inuk puisi pisar-va-a@1@3@@ebender@6-7-2009
+122@unknown@formal@none@1@S@person.abs seal.abs catch-indic-3s(subj).3s(obj)@1@3@@ebender@6-7-2009
+123@unknown@formal@none@1@S@'The person caught the seal.'@1@5@@ebender@6-7-2009
+124@unknown@formal@none@1@TD@Ex 14 demonstrates ungrammatical case marking for a transitive verb. The subject should be in the realtive case and the direct object should be in the absolutive case. Here both are in the relative case.@1@35@@ebender@6-7-2009
+125@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+126@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+127@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+128@unknown@formal@none@1@S@Phenomena: {case}@1@2@@ebender@6-7-2009
+129@unknown@formal@none@1@S@inuup puisip pisaraa@1@3@@ebender@6-7-2009
+130@unknown@formal@none@1@S@inuk-p puisi-p pisar-va-a@1@3@@ebender@6-7-2009
+131@unknown@formal@none@1@S@person.abs seal.abs catch-indic-3s(subj).3s(obj)@1@3@@ebender@6-7-2009
+132@unknown@formal@none@1@S@'The person caught the seal.'@1@5@@ebender@6-7-2009
+133@unknown@formal@none@1@TD@Ex 15 demonstrates the future tense. It can be formed by using one of three different affixes. Here it is formed by adding "-ssa"@1@24@@ebender@6-7-2009
+134@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+135@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+136@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+137@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+138@unknown@formal@none@1@S@qimmiq qilutssapuq@1@2@@ebender@6-7-2009
+139@unknown@formal@none@1@S@qimmiq qilut-ssa-vu-q@1@2@@ebender@6-7-2009
+140@unknown@formal@none@1@S@dog.abs bark-future-indic-3s@1@2@@ebender@6-7-2009
+141@unknown@formal@none@1@S@'The dog will bark.'@1@4@@ebender@6-7-2009
+142@unknown@formal@none@1@TD@Ex 16 demonstrates an ungrammatical formation of the future tense. It can be formed by using one of three different affixes. Here it is formed by adding "-ssa" (incorrectly) after the subject/object marker.@1@33@@ebender@6-7-2009
+143@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+144@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+145@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+146@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+147@unknown@formal@none@1@S@qimmiq qilutpuqssa@1@2@@ebender@6-7-2009
+148@unknown@formal@none@1@S@qimmiq qilut-vu-q-ssa@1@2@@ebender@6-7-2009
+149@unknown@formal@none@1@S@dog.abs bark-indic-3s-future@1@2@@ebender@6-7-2009
+150@unknown@formal@none@1@S@'The dog will bark.'@1@4@@ebender@6-7-2009
+151@unknown@formal@none@1@TD@Ex 17 demonstrates an ungrammatical formation of the future tense. It can be formed by using one of three different affixes. Here it is formed by adding "-ssa" (incorrectly) before the verb stem.@1@33@@ebender@6-7-2009
+152@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+153@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+154@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+155@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+156@unknown@formal@none@1@S@qimmiq ssaqilutpuq@1@2@@ebender@6-7-2009
+157@unknown@formal@none@1@S@qimmiq -ssaqilut-vu-q@1@2@@ebender@6-7-2009
+158@unknown@formal@none@1@S@dog.abs future-bark-indic-3s@1@2@@ebender@6-7-2009
+159@unknown@formal@none@1@S@'The dog will bark.'@1@4@@ebender@6-7-2009
+160@unknown@formal@none@1@TD@Ex 18 demonstrates an ungrammatical formation of the future tense. It can be formed by using one of three different affixes. Here it is formed by adding "-ssa" (incorrectly) before the verb stem.@1@33@@ebender@6-7-2009
+161@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+162@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+163@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+164@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+165@unknown@formal@none@1@S@qimmiq ssaqilutpuq@1@2@@ebender@6-7-2009
+166@unknown@formal@none@1@S@qimmiq -ssa-qilut-vu-q@1@2@@ebender@6-7-2009
+167@unknown@formal@none@1@S@dog.abs future-bark-indic-3s@1@2@@ebender@6-7-2009
+168@unknown@formal@none@1@S@'The dog will bark.'@1@4@@ebender@6-7-2009
+169@unknown@formal@none@1@TD@Ex 19 demonstrates an ungrammatical formation of the future tense. It can be formed by using one of three different affixes. Here it is formed by adding "-ssa" (incorrectly) before the verb stem.@1@33@@ebender@6-7-2009
+170@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+171@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+172@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+173@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+174@unknown@formal@none@1@S@qimmiq ssaqilutpuq@1@2@@ebender@6-7-2009
+175@unknown@formal@none@1@S@qimmiq ssa-qilut-vu-q@1@2@@ebender@6-7-2009
+176@unknown@formal@none@1@S@dog.abs future-bark-indic-3s@1@2@@ebender@6-7-2009
+177@unknown@formal@none@1@S@'The dog will bark.'@1@4@@ebender@6-7-2009
+178@unknown@formal@none@1@TD@Ex 20 demonstrates an ungrammatical formation of the future tense. It can be formed by using one of three different affixes. Here it is formed by adding "-ssa" (incorrectly) on the noun.@1@32@@ebender@6-7-2009
+179@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+180@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+181@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+182@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+183@unknown@formal@none@1@S@qimmiq-ssa qilutpuq@1@2@@ebender@6-7-2009
+184@unknown@formal@none@1@S@qimmiq-ssa qilut-vu-q@1@2@@ebender@6-7-2009
+185@unknown@formal@none@1@S@dog.abs future-bark-indic-3s@1@2@@ebender@6-7-2009
+186@unknown@formal@none@1@S@'The dog will bark.'@1@4@@ebender@6-7-2009
+187@unknown@formal@none@1@TD@Ex 21 demonstrates the (relative) past tense. It is formed by adding "-sima" to the verb stem and has aspectual meaning of perfective as well as a relative past.@1@29@@ebender@6-7-2009
+188@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+189@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+190@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+191@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+192@unknown@formal@none@1@S@qimmiq qilutsimavuq@1@2@@ebender@6-7-2009
+193@unknown@formal@none@1@S@qimmiq qilut-sima-vu-q@1@2@@ebender@6-7-2009
+194@unknown@formal@none@1@S@dog.abs bark-past-indic-3s@1@2@@ebender@6-7-2009
+195@unknown@formal@none@1@S@'The dog barked/has barked.'@1@4@@ebender@6-7-2009
+196@unknown@formal@none@1@TD@Ex 22 demonstrates an ungrammatical formation of the (relative) past tense. It is formed by adding "-sima" to the verb stem and has aspectual meaning of perfective as well as a relative past. Here it is (incorrectly) placed after the subject/object/mood marker.@1@42@@ebender@6-7-2009
+197@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+198@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+199@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+200@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+201@unknown@formal@none@1@S@qimmiq qilutvuqsima@1@2@@ebender@6-7-2009
+202@unknown@formal@none@1@S@qimmiq qilut-vu-q-sima@1@2@@ebender@6-7-2009
+203@unknown@formal@none@1@S@dog.abs bark-indic-3s-past@1@2@@ebender@6-7-2009
+204@unknown@formal@none@1@S@'The dog barked/has barked.'@1@4@@ebender@6-7-2009
+205@unknown@formal@none@1@TD@Ex 23 demonstrates an ungrammatical formation of the (relative) past tense. It is formed by adding "-sima" to the verb stem and has aspectual meaning of perfective as well as a relative past. Here it is (incorrectly) placed after before the verb stem@1@43@@ebender@6-7-2009
+206@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+207@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+208@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+209@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+210@unknown@formal@none@1@S@qimmiq simaqilutvuq@1@2@@ebender@6-7-2009
+211@unknown@formal@none@1@S@qimmiq -simaqilut-vu-q@1@2@@ebender@6-7-2009
+212@unknown@formal@none@1@S@dog.abs past-bark-indic-3s@1@2@@ebender@6-7-2009
+213@unknown@formal@none@1@S@'The dog barked/has barked.'@1@4@@ebender@6-7-2009
+214@unknown@formal@none@1@TD@Ex 24 demonstrates an ungrammatical formation of the (relative) past tense. It is formed by adding "-sima" to the verb stem and has aspectual meaning of perfective as well as a relative past. Here it is (incorrectly) placed before the verb stem.@1@42@@ebender@6-7-2009
+215@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+216@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+217@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+218@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+219@unknown@formal@none@1@S@qimmiq simaqilutvuq@1@2@@ebender@6-7-2009
+220@unknown@formal@none@1@S@qimmiq sima-qilut-vu-q@1@2@@ebender@6-7-2009
+221@unknown@formal@none@1@S@dog.abs past-bark-indic-3s@1@2@@ebender@6-7-2009
+222@unknown@formal@none@1@S@'The dog barked/has barked.'@1@4@@ebender@6-7-2009
+223@unknown@formal@none@1@TD@Ex 25 demonstrates the future perfective. It is formed by adding "-sima" to the verb stem and a future affix after that.@1@22@@ebender@6-7-2009
+224@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+225@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+226@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+227@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+228@unknown@formal@none@1@S@qimmiq qilutsimassavuq@1@2@@ebender@6-7-2009
+229@unknown@formal@none@1@S@qimmiq qilut-sima-ssa-vu-q@1@2@@ebender@6-7-2009
+230@unknown@formal@none@1@S@dog.abs bark-perf-fut-indic-3s@1@2@@ebender@6-7-2009
+231@unknown@formal@none@1@S@'The dog will have barked.'@1@5@@ebender@6-7-2009
+232@unknown@formal@none@1@TD@Ex 26 demonstrates an ungrammatical formation of the future perfective. It is formed by adding "-sima" to the verb stem and a future affix after that. Here "-sima" (incorrectly) comes after the future tense marker.@1@35@@ebender@6-7-2009
+233@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+234@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+235@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+236@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+237@unknown@formal@none@1@S@qimmiq qilutssasimavuq@1@2@@ebender@6-7-2009
+238@unknown@formal@none@1@S@qimmiq qilut-ssa-sima-vu-q@1@2@@ebender@6-7-2009
+239@unknown@formal@none@1@S@dog.abs bark-fut-perf-indic-3s@1@2@@ebender@6-7-2009
+240@unknown@formal@none@1@S@'The dog will have barked.'@1@5@@ebender@6-7-2009
+241@unknown@formal@none@1@TD@Ex 27 demonstrates an ungrammatical formation of the future perfective. It is formed by adding "-sima" to the verb stem and a future affix after that. Here "-sima" (incorrectly) comes after the subject/object/mood marker.@1@34@@ebender@6-7-2009
+242@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+243@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+244@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+245@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+246@unknown@formal@none@1@S@qimmiq qilutssavuqsima@1@2@@ebender@6-7-2009
+247@unknown@formal@none@1@S@qimmiq qilut-ssa-vu-q-sima@1@2@@ebender@6-7-2009
+248@unknown@formal@none@1@S@dog.abs bark-fut-indic-3s-perf@1@2@@ebender@6-7-2009
+249@unknown@formal@none@1@S@'The dog will have barked.'@1@5@@ebender@6-7-2009
+250@unknown@formal@none@1@TD@Ex 28 demonstrates an ungrammatical formation of the future perfective. It is formed by adding "-sima" to the verb stem and a future affix after that. Here "-sima" and "-ssa" (incorrectly) come after the subject/object/mood marker.@1@36@@ebender@6-7-2009
+251@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+252@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+253@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+254@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+255@unknown@formal@none@1@S@qimmiq qilutvuqsimassa@1@2@@ebender@6-7-2009
+256@unknown@formal@none@1@S@qimmiq qilut-vu-q-sima-ssa@1@2@@ebender@6-7-2009
+257@unknown@formal@none@1@S@dog.abs bark-indic-3s-perf-fut@1@2@@ebender@6-7-2009
+258@unknown@formal@none@1@S@'The dog will have barked.'@1@5@@ebender@6-7-2009
+259@unknown@formal@none@1@TD@Ex 29 demonstrates an ungrammatical formation of the future perfective. It is formed by adding "-sima" to the verb stem and a future affix after that. Here "-sima" and "-ssa" (incorrectly) come after the subject/object/mood marker.@1@36@@ebender@6-7-2009
+260@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+261@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+262@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+263@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+264@unknown@formal@none@1@S@qimmiq qilutvuqssasima@1@2@@ebender@6-7-2009
+265@unknown@formal@none@1@S@qimmiq qilut-vu-q-ssa-sima@1@2@@ebender@6-7-2009
+266@unknown@formal@none@1@S@dog.abs bark-indic-3s-fut-perf@1@2@@ebender@6-7-2009
+267@unknown@formal@none@1@S@'The dog will have barked.'@1@5@@ebender@6-7-2009
+268@unknown@formal@none@1@TD@Ex 30 demonstrates an ungrammatical formation of the future perfective. It is formed by adding "-sima" to the verb stem and a future affix after that. Here "-ssa" (incorrectly) comes after the subject/object/mood marker.@1@34@@ebender@6-7-2009
+269@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+270@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+271@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+272@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+273@unknown@formal@none@1@S@qimmiq qilutsimavuqssa@1@2@@ebender@6-7-2009
+274@unknown@formal@none@1@S@qimmiq qilut-sima-vu-q-ssa@1@2@@ebender@6-7-2009
+275@unknown@formal@none@1@S@dog.abs bark-perf-indic-3s-fut@1@2@@ebender@6-7-2009
+276@unknown@formal@none@1@S@'The dog will have barked.'@1@5@@ebender@6-7-2009
+277@unknown@formal@none@1@TD@Ex 31 demonstrates the habitual aspect. It is formed by adding "-tar" after the veb stem and before the subject/mood marker.@1@21@@ebender@6-7-2009
+278@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+279@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+280@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+281@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+282@unknown@formal@none@1@S@qimmiq qiluttarpuq@1@2@@ebender@6-7-2009
+283@unknown@formal@none@1@S@qimmiq qilut-tar-vu-q@1@2@@ebender@6-7-2009
+284@unknown@formal@none@1@S@dog.abs bark-hab-indic-3s@1@2@@ebender@6-7-2009
+285@unknown@formal@none@1@S@'The dog barks.'@1@3@@ebender@6-7-2009
+286@unknown@formal@none@1@TD@Ex 32 demonstrates the habitual aspect. It is formed by adding "-tar" after the veb stem and before the subject/mood marker. Here "-tar" appears (incorrectly) after the subject/mood marker.@1@29@@ebender@6-7-2009
+287@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+288@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+289@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+290@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+291@unknown@formal@none@1@S@qimmiq qilutpuqtar@1@2@@ebender@6-7-2009
+292@unknown@formal@none@1@S@qimmiq qilut-vu-q-tar@1@2@@ebender@6-7-2009
+293@unknown@formal@none@1@S@dog.abs bark-indic-3s-hab@1@2@@ebender@6-7-2009
+294@unknown@formal@none@1@S@'The dog barks.'@1@3@@ebender@6-7-2009
+295@unknown@formal@none@1@TD@Ex 33 demonstrates the habitual aspect. It is formed by adding "-tar" after the veb stem and before the subject/mood marker. Here "-tar" appears (incorrectly) before the verb stem.@1@29@@ebender@6-7-2009
+296@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+297@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+298@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+299@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+300@unknown@formal@none@1@S@qimmiq tarqilutpuq@1@2@@ebender@6-7-2009
+301@unknown@formal@none@1@S@qimmiq -tarqilut-vu-q@1@2@@ebender@6-7-2009
+302@unknown@formal@none@1@S@dog.abs hab-bark-indic-3s@1@2@@ebender@6-7-2009
+303@unknown@formal@none@1@S@'The dog barks.'@1@3@@ebender@6-7-2009
+304@unknown@formal@none@1@TD@Ex 34 demonstrates the habitual aspect. It is formed by adding "-tar" after the veb stem and before the subject/mood marker. Here "-tar" appears (incorrectly) before the verb stem.@1@29@@ebender@6-7-2009
+305@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+306@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+307@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+308@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+309@unknown@formal@none@1@S@qimmiq tarqilutpuq@1@2@@ebender@6-7-2009
+310@unknown@formal@none@1@S@qimmiq tar-qilut-vu-q@1@2@@ebender@6-7-2009
+311@unknown@formal@none@1@S@dog.abs hab-bark-indic-3s@1@2@@ebender@6-7-2009
+312@unknown@formal@none@1@S@'The dog barks.'@1@3@@ebender@6-7-2009
+313@unknown@formal@none@1@TD@Ex 35 demonstrates the habitual aspect. It is formed by adding "-tar" after the veb stem and before the subject/mood marker. Here "-tar" and the subject/mood marker appear (incorrectly) before the verb stem.@1@33@@ebender@6-7-2009
+314@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+315@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+316@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+317@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
+318@unknown@formal@none@1@S@qimmiq tarqilutpuq@1@2@@ebender@6-7-2009
+319@unknown@formal@none@1@S@qimmiq -tar-vu-qqilut@1@2@@ebender@6-7-2009
+320@unknown@formal@none@1@S@dog.abs hab-indic-3s-bark@1@2@@ebender@6-7-2009
+321@unknown@formal@none@1@S@'The dog barks.'@1@3@@ebender@6-7-2009
+322@unknown@formal@none@1@TD@Ex 36 demonstrates a yes-no question. They are formed by using the interrogative mood inflection. Some of the interrogative mood inflections are the same as the indicative inflections.@1@28@@ebender@6-7-2009
+323@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+324@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+325@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+326@unknown@formal@none@1@S@Phenomena: q@1@2@@ebender@6-7-2009
+327@unknown@formal@none@1@S@illit niririirpit@1@2@@ebender@6-7-2009
+328@unknown@formal@none@1@S@illit niri-riir-vi-t@1@2@@ebender@6-7-2009
+329@unknown@formal@none@1@S@you.sing eat-already-inter-2s@1@2@@ebender@6-7-2009
+330@unknown@formal@none@1@S@'Have you already eaten?'@1@4@@ebender@6-7-2009
+331@unknown@formal@none@1@TD@Ex 37 demonstrates a yes-no question. They are formed by using the interrogative mood inflection.@1@15@@ebender@6-7-2009
+332@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+333@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+334@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+335@unknown@formal@none@1@S@Phenomena: q@1@2@@ebender@6-7-2009
+336@unknown@formal@none@1@S@qimmiq qilutpa@1@2@@ebender@6-7-2009
+337@unknown@formal@none@1@S@qimmiq qilut-va@1@2@@ebender@6-7-2009
+338@unknown@formal@none@1@S@dog.abs bark-inter.3s@1@2@@ebender@6-7-2009
+339@unknown@formal@none@1@S@'Did the dog bark?'@1@4@@ebender@6-7-2009
+340@unknown@formal@none@1@TD@Ex 38 demonstrates a yes-no question. They are formed by using the interrogative mood inflection. Some of the interrogative mood inflections are the same as the indicative inflections.@1@28@@ebender@6-7-2009
+341@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+342@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+343@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+344@unknown@formal@none@1@S@Phenomena: q@1@2@@ebender@6-7-2009
+345@unknown@formal@none@1@S@illit nirivit@1@2@@ebender@6-7-2009
+346@unknown@formal@none@1@S@illit niri-vi-t@1@2@@ebender@6-7-2009
+347@unknown@formal@none@1@S@you.sing eat-inter-2s@1@2@@ebender@6-7-2009
+348@unknown@formal@none@1@S@'Did you eat?'@1@3@@ebender@6-7-2009
+349@unknown@formal@none@1@TD@Ex 39 demonstrates an ungrammatical yes-no question. They are formed by using the interrogative mood inflection. Here the subject/mood marker comes before the verb stem@1@25@@ebender@6-7-2009
+350@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+351@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+352@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+353@unknown@formal@none@1@S@Phenomena: q@1@2@@ebender@6-7-2009
+354@unknown@formal@none@1@S@qimmiq vaqilut@1@2@@ebender@6-7-2009
+355@unknown@formal@none@1@S@qimmiq -vaqilut@1@2@@ebender@6-7-2009
+356@unknown@formal@none@1@S@dog.abs inter.3s-bark@1@2@@ebender@6-7-2009
+357@unknown@formal@none@1@S@'Did the dog bark?'@1@4@@ebender@6-7-2009
+358@unknown@formal@none@1@TD@Ex 40 demonstrates sentential negation. It is formed by adding the suffix "-nngit." The placement of the suffix determines the scope of the negation. For true sentential negation it comes after any aspectual markers close to the end of the verb. If there are no other affixes it is ambiguous between predicatve and sentential negation. For the indicative, "-la" is used instead of the regular "-vu"@1@66@@ebender@6-7-2009
+359@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+360@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+361@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+362@unknown@formal@none@1@S@Phenomena: neg@1@2@@ebender@6-7-2009
+363@unknown@formal@none@1@S@qimmiq qilutnngitlaq@1@2@@ebender@6-7-2009
+364@unknown@formal@none@1@S@qimmiq qilut-nngit-la-q@1@2@@ebender@6-7-2009
+365@unknown@formal@none@1@S@dog.abs bark-neg-indic.neg-3s@1@2@@ebender@6-7-2009
+366@unknown@formal@none@1@S@'The dog did not bark.'@1@5@@ebender@6-7-2009
+367@unknown@formal@none@1@TD@Ex 41 demonstrates an ungrammatical use the negative affix "-nngit." With this affix, "-la" is used instead of "-vu" as the mood marker.@1@23@@ebender@6-7-2009
+368@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+369@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+370@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+371@unknown@formal@none@1@S@Phenomena: neg@1@2@@ebender@6-7-2009
+372@unknown@formal@none@1@S@qimmiq qilutnngitvuq@1@2@@ebender@6-7-2009
+373@unknown@formal@none@1@S@qimmiq qilut-nngit-vu-q@1@2@@ebender@6-7-2009
+374@unknown@formal@none@1@S@dog.abs bark-neg-indic-3s@1@2@@ebender@6-7-2009
+375@unknown@formal@none@1@S@'The dog did not bark.@1@5@@ebender@6-7-2009
+376@unknown@formal@none@1@TD@Ex 42 demonstrates an ungrammatical use the negative affix "-nngit." Here the negative suffix "-nngit" comes after the subject/mood/marker@1@19@@ebender@6-7-2009
+377@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+378@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+379@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+380@unknown@formal@none@1@S@Phenomena: neg@1@2@@ebender@6-7-2009
+381@unknown@formal@none@1@S@qimmiq qilutlaqnngit@1@2@@ebender@6-7-2009
+382@unknown@formal@none@1@S@qimmiq qilu-la-q-nngit@1@2@@ebender@6-7-2009
+383@unknown@formal@none@1@S@dog.abs bark-indic-3s-neg@1@2@@ebender@6-7-2009
+384@unknown@formal@none@1@S@'The dog did not bark.'@1@5@@ebender@6-7-2009
+385@unknown@formal@none@1@TD@Ex 43 demonstrates S coordination. "Two sentences may be conjoined by the addition of the enclitic "-lu" (and) to the first constituent of the second sentence." (a: 120)@1@28@@ebender@6-7-2009
+386@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+387@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+388@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+389@unknown@formal@none@1@S@Phenomena: crd@1@2@@ebender@6-7-2009
+390@unknown@formal@none@1@S@inuup puisi pisaraa qimmiqlu qilutpuq@1@5@@ebender@6-7-2009
+391@unknown@formal@none@1@S@inuk-p puisi pisar-va-a qimmiq-lu qilut-vu-q@1@5@@ebender@6-7-2009
+392@unknown@formal@none@1@S@person-rel seal.abs catch-indic-3s(subj).3s(obj) dog.abs-and bark-indic-3s@1@5@@ebender@6-7-2009
+393@unknown@formal@none@1@S@'The person caught the seal and the dog barked.'@1@9@@ebender@6-7-2009
+394@unknown@formal@none@1@TD@Ex 44 demonstrates an ungrammatical use of S coordination. "Two sentences may be conjoined by the addition of the enclitic "-lu" (and) to the first constituent of the second sentence." (a: 120) Here the encltic "-lu" is missing@1@38@@ebender@6-7-2009
+395@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+396@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+397@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+398@unknown@formal@none@1@S@Phenomena: crd@1@2@@ebender@6-7-2009
+399@unknown@formal@none@1@S@inuup puisi pisaraa qimmiq qilutpuq@1@5@@ebender@6-7-2009
+400@unknown@formal@none@1@S@inuk-p puisi pisar-va-a qimmiq qilut-vu-q@1@5@@ebender@6-7-2009
+401@unknown@formal@none@1@S@person-rel seal.abs catch-indic-3s(subj).3s(obj) dog.abs bark-indic-3s@1@5@@ebender@6-7-2009
+402@unknown@formal@none@1@S@'The person caught the seal and the dog barked.'@1@9@@ebender@6-7-2009
+403@unknown@formal@none@1@TD@Ex 45 demonstrates an ungrammatical use of S coordination. "Two sentences may be conjoined by the addition of the enclitic "-lu" (and) to the first constituent of the second sentence." (a: 120) Here the enclitic "-lu" does not appear on the first constituent of the second sentence.@1@47@@ebender@6-7-2009
+404@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+405@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+406@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+407@unknown@formal@none@1@S@Phenomena: crd@1@2@@ebender@6-7-2009
+408@unknown@formal@none@1@S@inuup puisi pisaraa qimmiq qilutpuqlu@1@5@@ebender@6-7-2009
+409@unknown@formal@none@1@S@inuk-p puisi pisar-va-a qimmiq qilut-vu-q-lu@1@5@@ebender@6-7-2009
+410@unknown@formal@none@1@S@person-rel seal.abs catch-indic-3s(subj).3s(obj) dog.abs-and bark-indic-3s-and@1@5@@ebender@6-7-2009
+411@unknown@formal@none@1@S@'The person caught the seal and the dog barked.'@1@9@@ebender@6-7-2009
+412@unknown@formal@none@1@TD@Ex 46 demonstrates an ungrammatical use of S coordination. "Two sentences may be conjoined by the addition of the enclitic "-lu" (and) to the first constituent of the second sentence." (a: 120) Here the enclitic "-lu" appears twice.@1@38@@ebender@6-7-2009
+413@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+414@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+415@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+416@unknown@formal@none@1@S@Phenomena: crd@1@2@@ebender@6-7-2009
+417@unknown@formal@none@1@S@inuup puisi pisaraa qimmiqlu qilutpuqlu@1@5@@ebender@6-7-2009
+418@unknown@formal@none@1@S@inuk-p puisi pisar-va-a qimmiq-lu qilut-vu-q-lu@1@5@@ebender@6-7-2009
+419@unknown@formal@none@1@S@person-rel seal.abs catch-indic-3s(subj).3s(obj) dog.abs-and bark-indic-3s-and@1@5@@ebender@6-7-2009
+420@unknown@formal@none@1@S@'The person caught the seal and the dog barked.'@1@9@@ebender@6-7-2009
+421@unknown@formal@none@1@TD@Ex 47 demonstrates NP coordination. "Two NPs may be coordinated by enclitics "-lu" or "lunnitt" on the first constiuent of the last or on each NP in a stronger "both-and" or "either-or" sense" (a:126).@1@34@@ebender@6-7-2009
+422@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+423@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+424@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+425@unknown@formal@none@1@S@Phenomena: {word order, case}@1@4@@ebender@6-7-2009
+426@unknown@formal@none@1@S@tuluit qallunaat kalaallillu puisi pisaraat@1@5@@ebender@6-7-2009
+427@unknown@formal@none@1@S@tulu-t qallunaa-t kalaalli-t-lu puisi pisar-va-at@1@5@@ebender@6-7-2009
+428@unknown@formal@none@1@S@englishman-pl dane-pl greenlander-pl-and seal.abs catch-indic-3pl(subj).3s(obj)@1@5@@ebender@6-7-2009
+429@unknown@formal@none@1@S@'Englishmen, Danes and Greenlanders caught the seal.'@1@7@@ebender@6-7-2009
+430@unknown@formal@none@1@TD@Ex 48 demonstrates NP coordination. "Two NPs may be coordinated by enclitics "-lu" or "lunnitt" on the first constiuent of the last or on each NP in a stronger "both-and" or "either-or" sense" (a:126). Here "-lu" is missing@1@38@@ebender@6-7-2009
+431@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+432@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+433@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+434@unknown@formal@none@1@S@Phenomena: {word order, case}@1@4@@ebender@6-7-2009
+435@unknown@formal@none@1@S@tuluit qallunaat kalaallil puisi pisaraat@1@5@@ebender@6-7-2009
+436@unknown@formal@none@1@S@tulu-t qallunaa-t kalaalli-t puisi pisar-va-at@1@5@@ebender@6-7-2009
+437@unknown@formal@none@1@S@englishman-pl dane-pl greenlander-pl seal.abs catch-indic-3pl(subj).3s(obj)@1@5@@ebender@6-7-2009
+438@unknown@formal@none@1@S@'Englishmen, Danes and Greenlanders caught the seal.'@1@7@@ebender@6-7-2009
+439@unknown@formal@none@1@TD@Ex 49 demonstrates a verb-subject agreement.@1@6@@ebender@6-7-2009
+440@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+441@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+442@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+443@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+444@unknown@formal@none@1@S@illit nirivutit@1@2@@ebender@6-7-2009
+445@unknown@formal@none@1@S@illit niri-vu-tit@1@2@@ebender@6-7-2009
+446@unknown@formal@none@1@S@you.sing eat-indic-2s@1@2@@ebender@6-7-2009
+447@unknown@formal@none@1@S@'You ate.'@1@2@@ebender@6-7-2009
+448@unknown@formal@none@1@TD@Ex 50 demonstrates a verb-subject agreement.@1@6@@ebender@6-7-2009
+449@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+450@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+451@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+452@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+453@unknown@formal@none@1@S@uanga nirivunga@1@2@@ebender@6-7-2009
+454@unknown@formal@none@1@S@uanga niri-vu-nga@1@2@@ebender@6-7-2009
+455@unknown@formal@none@1@S@1s eat-indic-1s@1@2@@ebender@6-7-2009
+456@unknown@formal@none@1@S@'I ate.'@1@2@@ebender@6-7-2009
+457@unknown@formal@none@1@TD@Ex 51 demonstrates a verb-subject agreement.@1@6@@ebender@6-7-2009
+458@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+459@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+460@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+461@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+462@unknown@formal@none@1@S@uagut nirivugut@1@2@@ebender@6-7-2009
+463@unknown@formal@none@1@S@uagut niri-vu-gut@1@2@@ebender@6-7-2009
+464@unknown@formal@none@1@S@1pl eat-indic-1pl@1@2@@ebender@6-7-2009
+465@unknown@formal@none@1@S@'We ate.'@1@2@@ebender@6-7-2009
+466@unknown@formal@none@1@TD@Ex 52 demonstrates a verb-subject agreement.@1@6@@ebender@6-7-2009
+467@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+468@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+469@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+470@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+471@unknown@formal@none@1@S@ilissi nirivusi@1@2@@ebender@6-7-2009
+472@unknown@formal@none@1@S@ilissi niri-vu-si@1@2@@ebender@6-7-2009
+473@unknown@formal@none@1@S@2pl eat-indic-2pl@1@2@@ebender@6-7-2009
+474@unknown@formal@none@1@S@'You ate.'@1@2@@ebender@6-7-2009
+475@unknown@formal@none@1@TD@Ex 53 demonstrates a verb-subject agreement.@1@6@@ebender@6-7-2009
+476@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+477@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+478@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+479@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+480@unknown@formal@none@1@S@una nirivuq@1@2@@ebender@6-7-2009
+481@unknown@formal@none@1@S@una niri-vu-q@1@2@@ebender@6-7-2009
+482@unknown@formal@none@1@S@3s eat-indic-3s@1@2@@ebender@6-7-2009
+483@unknown@formal@none@1@S@'S/he ate.'@1@2@@ebender@6-7-2009
+484@unknown@formal@none@1@TD@Ex 54 demonstrates a verb-subject agreement.@1@6@@ebender@6-7-2009
+485@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+486@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+487@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+488@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+489@unknown@formal@none@1@S@uku niripput@1@2@@ebender@6-7-2009
+490@unknown@formal@none@1@S@uku niri-ppu-t@1@2@@ebender@6-7-2009
+491@unknown@formal@none@1@S@3pl eat-indic-3pl@1@2@@ebender@6-7-2009
+492@unknown@formal@none@1@S@'They ate.'@1@2@@ebender@6-7-2009
+493@unknown@formal@none@1@TD@Ex 55 demonstrates an ungrammatical example where the subject marker on the verb does not agree with the subject.@1@19@@ebender@6-7-2009
+494@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+495@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+496@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+497@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+498@unknown@formal@none@1@S@uanga nirivugut@1@2@@ebender@6-7-2009
+499@unknown@formal@none@1@S@uanga niri-vu-gut@1@2@@ebender@6-7-2009
+500@unknown@formal@none@1@S@1s eat-indic-1pl@1@2@@ebender@6-7-2009
+501@unknown@formal@none@1@S@'I ate.'@1@2@@ebender@6-7-2009
+502@unknown@formal@none@1@TD@Ex 56 demonstrates an ungrammatical example where the subject marker on the verb does not agree with the subject.@1@19@@ebender@6-7-2009
+503@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+504@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+505@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+506@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+507@unknown@formal@none@1@S@uku nirippuq@1@2@@ebender@6-7-2009
+508@unknown@formal@none@1@S@uku niri-ppu-q@1@2@@ebender@6-7-2009
+509@unknown@formal@none@1@S@3pl eat-indic-3s@1@2@@ebender@6-7-2009
+510@unknown@formal@none@1@S@'They ate.'@1@2@@ebender@6-7-2009
+511@unknown@formal@none@1@TD@Ex 57 demonstrates an ungrammatical example where the subject marker on the verb does not agree with the subject.@1@19@@ebender@6-7-2009
+512@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+513@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+514@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+515@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+516@unknown@formal@none@1@S@ilissi nirivunga@1@2@@ebender@6-7-2009
+517@unknown@formal@none@1@S@ilissi niri-vu-nga@1@2@@ebender@6-7-2009
+518@unknown@formal@none@1@S@2pl eat-indic-1s@1@2@@ebender@6-7-2009
+519@unknown@formal@none@1@S@'You ate.'@1@2@@ebender@6-7-2009
+520@unknown@formal@none@1@TD@Ex 58 demonstrates an ungrammatical example where the subject marker on the verb does not agree with the subject.@1@19@@ebender@6-7-2009
+521@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+522@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+523@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+524@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+525@unknown@formal@none@1@S@una nirivusi@1@2@@ebender@6-7-2009
+526@unknown@formal@none@1@S@una niri-vu-si@1@2@@ebender@6-7-2009
+527@unknown@formal@none@1@S@3s eat-indic-2pl@1@2@@ebender@6-7-2009
+528@unknown@formal@none@1@S@'S/he ate.'@1@2@@ebender@6-7-2009
+529@unknown@formal@none@1@TD@Ex 59 demonstrates an ungrammatical example where the subject marker on the verb does not agree with the subject.@1@19@@ebender@6-7-2009
+530@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+531@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+532@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+533@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+534@unknown@formal@none@1@S@illit nirivut@1@2@@ebender@6-7-2009
+535@unknown@formal@none@1@S@illit niri-vu-t@1@2@@ebender@6-7-2009
+536@unknown@formal@none@1@S@you.sing eat-indic-3pl@1@2@@ebender@6-7-2009
+537@unknown@formal@none@1@S@'You ate.'@1@2@@ebender@6-7-2009
+538@unknown@formal@none@1@TD@Ex 60 demonstrates an ungrammatical example where the subject marker on the verb does not agree with the subject.@1@19@@ebender@6-7-2009
+539@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+540@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+541@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+542@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+543@unknown@formal@none@1@S@uku nirivupput@1@2@@ebender@6-7-2009
+544@unknown@formal@none@1@S@uku niri-vu-ppu-t@1@2@@ebender@6-7-2009
+545@unknown@formal@none@1@S@3pl eat-indic-indic-3pl@1@2@@ebender@6-7-2009
+546@unknown@formal@none@1@S@'They ate.'@1@2@@ebender@6-7-2009
+547@unknown@formal@none@1@TD@Ex 61 demonstrates subject-object-verb agreement.@1@5@@ebender@6-7-2009
+548@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+549@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+550@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+551@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+552@unknown@formal@none@1@S@uangap illit pisarvakkit@1@3@@ebender@6-7-2009
+553@unknown@formal@none@1@S@uanga-p illit pisar-va-kkit@1@3@@ebender@6-7-2009
+554@unknown@formal@none@1@S@I-rel 2s catch-indic.1s(subj).2s(obj)@1@3@@ebender@6-7-2009
+555@unknown@formal@none@1@S@'I caught you.'@1@3@@ebender@6-7-2009
+556@unknown@formal@none@1@TD@Ex 62 demonstrates subject-object-verb agreement.@1@5@@ebender@6-7-2009
+557@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+558@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+559@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+560@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+561@unknown@formal@none@1@S@uangap illissi pisarvassi@1@3@@ebender@6-7-2009
+562@unknown@formal@none@1@S@uanga-p illissi pisar-va-ssi@1@3@@ebender@6-7-2009
+563@unknown@formal@none@1@S@I-rel 2pl catch-indic.1s(subj).2pl(obj)@1@3@@ebender@6-7-2009
+564@unknown@formal@none@1@S@'I caught you.'@1@3@@ebender@6-7-2009
+565@unknown@formal@none@1@TD@Ex 63 demonstrates subject-object-verb agreement.@1@5@@ebender@6-7-2009
+566@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+567@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+568@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+569@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+570@unknown@formal@none@1@S@uangap puisi pisarvara@1@3@@ebender@6-7-2009
+571@unknown@formal@none@1@S@uanga-p puisi pisar-va-ra@1@3@@ebender@6-7-2009
+572@unknown@formal@none@1@S@I-rel seal catch-indic.1s(subj).3s(obj)@1@3@@ebender@6-7-2009
+573@unknown@formal@none@1@S@'I caught the seal.'@1@4@@ebender@6-7-2009
+574@unknown@formal@none@1@TD@Ex 64 demonstrates subject-object-verb agreement.@1@5@@ebender@6-7-2009
+575@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+576@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+577@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+578@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+579@unknown@formal@none@1@S@uanga-p puisit pisarvakka@1@3@@ebender@6-7-2009
+580@unknown@formal@none@1@S@uanga-p puisi-t pisar-va-kka@1@3@@ebender@6-7-2009
+581@unknown@formal@none@1@S@I-rel seal.pl catch-indic.1s(subj).3pl(obj)@1@3@@ebender@6-7-2009
+582@unknown@formal@none@1@S@'I caught seals.'@1@3@@ebender@6-7-2009
+583@unknown@formal@none@1@TD@Ex 65 demonstrates subject-object-verb agreement.@1@5@@ebender@6-7-2009
+584@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+585@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+586@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+587@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+588@unknown@formal@none@1@S@illip puisi pisarvat@1@3@@ebender@6-7-2009
+589@unknown@formal@none@1@S@illit-p puisi pisar-va-t@1@3@@ebender@6-7-2009
+590@unknown@formal@none@1@S@2s-rel seal catch-indic.2s(subj).3s(obj)@1@3@@ebender@6-7-2009
+591@unknown@formal@none@1@S@'you caught the seal.'@1@4@@ebender@6-7-2009
+592@unknown@formal@none@1@TD@Ex 66 demonstrates subject-object-verb agreement.@1@5@@ebender@6-7-2009
+593@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+594@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+595@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+596@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+597@unknown@formal@none@1@S@illit puisit pisarvasi@1@3@@ebender@6-7-2009
+598@unknown@formal@none@1@S@illi-p puisi-t pisar-va-si@1@3@@ebender@6-7-2009
+599@unknown@formal@none@1@S@2s-rel seal.pl catch-indic.2pl(subj).3pl(obj)@1@3@@ebender@6-7-2009
+600@unknown@formal@none@1@S@'You caught seals.@1@3@@ebender@6-7-2009
+601@unknown@formal@none@1@TD@Ex 67 demonstrates subject-object-verb agreement.@1@5@@ebender@6-7-2009
+602@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+603@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+604@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+605@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+606@unknown@formal@none@1@S@qimmip puisit pisarvai@1@3@@ebender@6-7-2009
+607@unknown@formal@none@1@S@qimmiq-p puisi-t pisar-va-i@1@3@@ebender@6-7-2009
+608@unknown@formal@none@1@S@dog-rel.sing seal.pl catch-indic.3s(subj).3pl(obj)@1@3@@ebender@6-7-2009
+609@unknown@formal@none@1@S@'The dog caught seals.@1@4@@ebender@6-7-2009
+610@unknown@formal@none@1@TD@Ex 68 demonstrates subject-object-verb agreement.@1@5@@ebender@6-7-2009
+611@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+612@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+613@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+614@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+615@unknown@formal@none@1@S@qimmip puisi pisaraa@1@3@@ebender@6-7-2009
+616@unknown@formal@none@1@S@qimmiq-p puisi pisar-va-a@1@3@@ebender@6-7-2009
+617@unknown@formal@none@1@S@dog-rel.sing seal catch-indic.3s(subj).3s(obj)@1@3@@ebender@6-7-2009
+618@unknown@formal@none@1@S@'The dog caught the seal.@1@5@@ebender@6-7-2009
+619@unknown@formal@none@1@TD@Ex 69 demonstrates subject-object-verb agreement.@1@5@@ebender@6-7-2009
+620@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+621@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+622@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
+623@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+624@unknown@formal@none@1@S@illip uanga pisarvarma@1@3@@ebender@6-7-2009
+625@unknown@formal@none@1@S@illit-p uanga pisar-va-ma@1@3@@ebender@6-7-2009
+626@unknown@formal@none@1@S@2s-rel 1s.abs catch-indic.2s(subj).1s(obj)@1@3@@ebender@6-7-2009
+627@unknown@formal@none@1@S@'You caught me.'@1@3@@ebender@6-7-2009
+628@unknown@formal@none@1@TD@Ex 70 demonstrates an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object.@1@19@@ebender@6-7-2009
+629@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+630@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+631@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+632@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+633@unknown@formal@none@1@S@qimmip puisi pisarvarma@1@3@@ebender@6-7-2009
+634@unknown@formal@none@1@S@qimmiq-p puisi pisar-va-ma@1@3@@ebender@6-7-2009
+635@unknown@formal@none@1@S@dog-rel.sing seal catch-indic.3s(subj).3s(obj)@1@3@@ebender@6-7-2009
+636@unknown@formal@none@1@S@'The dog caught the seal.@1@5@@ebender@6-7-2009
+637@unknown@formal@none@1@TD@Ex 71 demonstrates an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object.@1@19@@ebender@6-7-2009
+638@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+639@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+640@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+641@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+642@unknown@formal@none@1@S@illip uanga pisarvarma@1@3@@ebender@6-7-2009
+643@unknown@formal@none@1@S@illit-p uanga pisar-va-si@1@3@@ebender@6-7-2009
+644@unknown@formal@none@1@S@2s-rel 1s.abs catch-indic.2p(subj).3p(obj)@1@3@@ebender@6-7-2009
+645@unknown@formal@none@1@S@'You caught me.'@1@3@@ebender@6-7-2009
+646@unknown@formal@none@1@TD@Ex 72 demonstrates an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object.@1@19@@ebender@6-7-2009
+647@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+648@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+649@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+650@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+651@unknown@formal@none@1@S@uangap illit pisarvassi@1@3@@ebender@6-7-2009
+652@unknown@formal@none@1@S@uanga-p illit pisar-va-ssi@1@3@@ebender@6-7-2009
+653@unknown@formal@none@1@S@I-rel 2s catch-indic.1s(subj).2pl(obj)@1@3@@ebender@6-7-2009
+654@unknown@formal@none@1@S@'I caught you.'@1@3@@ebender@6-7-2009
+655@unknown@formal@none@1@TD@Ex 73 demonstrates an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object.@1@19@@ebender@6-7-2009
+656@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+657@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+658@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+659@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+660@unknown@formal@none@1@S@uangap illissi pisarvara@1@3@@ebender@6-7-2009
+661@unknown@formal@none@1@S@uanga-p illissi pisar-va-ra@1@3@@ebender@6-7-2009
+662@unknown@formal@none@1@S@I-rel 2pl catch-indic.1s(subj).3s(obj)@1@3@@ebender@6-7-2009
+663@unknown@formal@none@1@S@'I caught you.'@1@3@@ebender@6-7-2009
+664@unknown@formal@none@1@TD@Ex 74 demonstrates an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object.@1@19@@ebender@6-7-2009
+665@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+666@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+667@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+668@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+669@unknown@formal@none@1@S@uangap puisi pisarvakka@1@3@@ebender@6-7-2009
+670@unknown@formal@none@1@S@uanga-p puisi pisar-va-kka@1@3@@ebender@6-7-2009
+671@unknown@formal@none@1@S@I-rel seal catch-indic.1s(subj).3pl(obj)@1@3@@ebender@6-7-2009
+672@unknown@formal@none@1@S@'I caught the seal.'@1@4@@ebender@6-7-2009
+673@unknown@formal@none@1@TD@Ex 75 demonstrates an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object.@1@19@@ebender@6-7-2009
+674@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+675@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+676@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+677@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+678@unknown@formal@none@1@S@uanga-p puisit pisarvat@1@3@@ebender@6-7-2009
+679@unknown@formal@none@1@S@uanga-p puisi-t pisar-va-t@1@3@@ebender@6-7-2009
+680@unknown@formal@none@1@S@I-rel seal.pl catch-indic.2s(subj).3s(obj)@1@3@@ebender@6-7-2009
+681@unknown@formal@none@1@S@'I caught seals.'@1@3@@ebender@6-7-2009
+682@unknown@formal@none@1@TD@Ex 76 demonstrates an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object.@1@19@@ebender@6-7-2009
+683@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+684@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+685@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+686@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+687@unknown@formal@none@1@S@illip puisi pisarvat@1@3@@ebender@6-7-2009
+688@unknown@formal@none@1@S@illit-p puisi pisar-va-t@1@3@@ebender@6-7-2009
+689@unknown@formal@none@1@S@2s-rel seal catch-indic.2s(subj).3s(obj)@1@3@@ebender@6-7-2009
+690@unknown@formal@none@1@S@'you caught the seal.'@1@4@@ebender@6-7-2009
+691@unknown@formal@none@1@TD@Ex 77 demonstrates an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object.@1@19@@ebender@6-7-2009
+692@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+693@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+694@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+695@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+696@unknown@formal@none@1@S@illit puisit pisarvai@1@3@@ebender@6-7-2009
+697@unknown@formal@none@1@S@illi-p puisi-t pisar-va-i@1@3@@ebender@6-7-2009
+698@unknown@formal@none@1@S@2s-rel seal.pl catch-indic.3s(subj).3pl(obj)@1@3@@ebender@6-7-2009
+699@unknown@formal@none@1@S@'You caught seals.@1@3@@ebender@6-7-2009
+700@unknown@formal@none@1@TD@Ex 78 demonstrates an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object@1@19@@ebender@6-7-2009
+701@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
+702@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
+703@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
+704@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
+705@unknown@formal@none@1@S@qimmip puisit pisarvat@1@3@@ebender@6-7-2009
+706@unknown@formal@none@1@S@qimmiq-p puisi-t pisar-va-t@1@3@@ebender@6-7-2009
+707@unknown@formal@none@1@S@dog-rel.sing seal.pl catch-indic.2s(subj).3s(obj)@1@3@@ebender@6-7-2009
+708@unknown@formal@none@1@S@'The dog caught seals.@1@4@@ebender@6-7-2009
