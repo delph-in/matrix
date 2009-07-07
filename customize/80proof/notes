@@ -6,7 +6,9 @@ hau, kal, and mal don't validate (but no red stars).
 
 First attempt at loading grammars.
 
+----
 ute: 
+----
 
 Invalid type ACCUSATIVE
 Unifications specified are invalid or do not unify
@@ -22,12 +24,28 @@ Changed all instances of "nominative" to "nom" in choices
 file, and all instances of "accusative" to "acc".  Then used
 off-line customization system to create grammar.
 
+Next problem:
+
+Error in MOM-SUFFIX-MARKER-LEX-RULE:
+  Unification with constraint of TAM failed at path (SYNSEM
+                                                     LOCAL
+                                                     CONT
+                                                     HOOK
+                                                     INDEX
+                                                     E)
+
+
+
+----
 jig:
+----
 
 Redundancy involving NON-FEMININE
 NON-FEMININE: NEUTER is redundant - it is an ancestor of VEGETABLE 
 
+----
 nyn:
+----
 
 Cycle involving TRANSITIVE-VERB-LEX
 
