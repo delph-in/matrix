@@ -1,509 +1,56 @@
-1@unknown@formal@none@1@S@Language: Jingulu@1@2@@ebender@6-7-2009
-2@unknown@formal@none@1@S@Language cod?: jig@1@3@@ebender@6-7-2009
-3@unknown@formal@none@1@S@Author: Safiyyah Saleem@1@3@@ebender@6-7-2009
-4@unknown@formal@none@1@S@Date: May 15 2009@1@4@@ebender@6-7-2009
-5@unknown@formal@none@1@S@Source a: A grammar of jingulu: An Aboriginal language of the Northern Territory@1@13@@ebender@6-7-2009
-6@unknown@formal@none@1@TD@Ex 1 demonstrates SVO word order@1@6@@ebender@6-7-2009
-7@unknown@formal@none@1@S@Source: a:77@1@2@@ebender@6-7-2009
-8@unknown@formal@none@1@S@Vetted: s@1@2@@ebender@6-7-2009
-9@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-10@unknown@formal@none@1@S@Phenomena: word order@1@3@@ebender@6-7-2009
-11@unknown@formal@none@1@S@uliyijanga ngunjaju karalu@1@3@@ebender@6-7-2009
-12@unknown@formal@none@1@S@uliyija-nga ngunja-ju karalu@1@3@@ebender@6-7-2009
-13@unknown@formal@none@1@S@sun-erg burn-do ground@1@3@@ebender@6-7-2009
-14@unknown@formal@none@1@S@The sun is burning the ground.@1@6@@ebender@6-7-2009
-15@unknown@formal@none@1@TD@Ex 2 demonstrates SOV word order@1@6@@ebender@6-7-2009
-16@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-17@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-18@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-19@unknown@formal@none@1@S@Phenomena: word order@1@3@@ebender@6-7-2009
-20@unknown@formal@none@1@S@uliyijanga karalu ngunjaju@1@3@@ebender@6-7-2009
-21@unknown@formal@none@1@S@uliyija-nga karalu ngunja-ju@1@3@@ebender@6-7-2009
-22@unknown@formal@none@1@S@sun-erg ground burn-do@1@3@@ebender@6-7-2009
-23@unknown@formal@none@1@S@The sun is burning the ground.@1@6@@ebender@6-7-2009
-24@unknown@formal@none@1@TD@Ex 3 demonstrates OVS word order@1@6@@ebender@6-7-2009
-25@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-26@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-27@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-28@unknown@formal@none@1@S@Phenomena: word order@1@3@@ebender@6-7-2009
-29@unknown@formal@none@1@S@karalu ngunjaju uliyijanga@1@3@@ebender@6-7-2009
-30@unknown@formal@none@1@S@karalu ngunja-ju uliyija-nga@1@3@@ebender@6-7-2009
-31@unknown@formal@none@1@S@ground burn-do sun-erg@1@3@@ebender@6-7-2009
-32@unknown@formal@none@1@S@The sun is burning the ground.@1@6@@ebender@6-7-2009
-33@unknown@formal@none@1@TD@Ex 4 demonstrates VSO word order@1@6@@ebender@6-7-2009
-34@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-35@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-36@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-37@unknown@formal@none@1@S@Phenomena: word order@1@3@@ebender@6-7-2009
-38@unknown@formal@none@1@S@ngunjaju uliyijanga karalu@1@3@@ebender@6-7-2009
-39@unknown@formal@none@1@S@ngunja-ju uliyija-nga karalu@1@3@@ebender@6-7-2009
-40@unknown@formal@none@1@S@burn-do sun-erg ground@1@3@@ebender@6-7-2009
-41@unknown@formal@none@1@S@The sun is burning the ground.@1@6@@ebender@6-7-2009
-42@unknown@formal@none@1@TD@Ex 5 demonstrates OSV word order@1@6@@ebender@6-7-2009
-43@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-44@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-45@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-46@unknown@formal@none@1@S@Phenomena: word order@1@3@@ebender@6-7-2009
-47@unknown@formal@none@1@S@karalu uliyijanga ngunjaju@1@3@@ebender@6-7-2009
-48@unknown@formal@none@1@S@karalu uliyija-nga ngunja-ju@1@3@@ebender@6-7-2009
-49@unknown@formal@none@1@S@ground sun-erg burn-do@1@3@@ebender@6-7-2009
-50@unknown@formal@none@1@S@The sun is burning the ground.@1@6@@ebender@6-7-2009
-51@unknown@formal@none@1@TD@Ex 6 demonstrates VOS word order@1@6@@ebender@6-7-2009
-52@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-53@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-54@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-55@unknown@formal@none@1@S@Phenomena: word order@1@3@@ebender@6-7-2009
-56@unknown@formal@none@1@S@ngunjaju karalu uliyijanga@1@3@@ebender@6-7-2009
-57@unknown@formal@none@1@S@ngunja-ju karalu uliyija-nga@1@3@@ebender@6-7-2009
-58@unknown@formal@none@1@S@burn-do ground sun-erg@1@3@@ebender@6-7-2009
-59@unknown@formal@none@1@S@The sun is burning the ground.@1@6@@ebender@6-7-2009
-60@unknown@formal@none@1@TD@Ex 7 demonstrates a yes no question. Yes/no questions are formed by adding the question word "jani" to the beginning of the sentence. (a:99)@1@24@@ebender@6-7-2009
-61@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-62@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-63@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-64@unknown@formal@none@1@S@Phenomena: q@1@2@@ebender@6-7-2009
-65@unknown@formal@none@1@S@jani uliyijanga ngunjaju karalu@1@4@@ebender@6-7-2009
-66@unknown@formal@none@1@S@jani uliyija-nga ngunja-ju karalu@1@4@@ebender@6-7-2009
-67@unknown@formal@none@1@S@ques sun-erg burn-do ground@1@4@@ebender@6-7-2009
-68@unknown@formal@none@1@S@The sun is burning the ground.@1@6@@ebender@6-7-2009
-69@unknown@formal@none@1@TD@Ex 8 demonstrates a yes no question. Yes/no questions are formed by adding the question word "jani" to the beginning of the sentence. Here it incorrectly comes at the end of the sentence. (a:99)@1@34@@ebender@6-7-2009
-70@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-71@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-72@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-73@unknown@formal@none@1@S@Phenomena: q@1@2@@ebender@6-7-2009
-74@unknown@formal@none@1@S@uliyijanga ngunjaju karalu jani@1@4@@ebender@6-7-2009
-75@unknown@formal@none@1@S@uliyija-nga ngunja-ju karalu jani@1@4@@ebender@6-7-2009
-76@unknown@formal@none@1@S@sun-erg burn-do ground ques@1@4@@ebender@6-7-2009
-77@unknown@formal@none@1@S@The sun is burning the ground.@1@6@@ebender@6-7-2009
-78@unknown@formal@none@1@TD@Ex 9 demonstrates a yes no question. Yes/no questions are formed by adding the question word "jani" to the beginning of the sentence. Here it incorrectly comes in the middle of the sentence. (a:99)@1@34@@ebender@6-7-2009
-79@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-80@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-81@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-82@unknown@formal@none@1@S@Phenomena: q@1@2@@ebender@6-7-2009
-83@unknown@formal@none@1@S@uliyijanga ngunjaju jani karalu@1@4@@ebender@6-7-2009
-84@unknown@formal@none@1@S@uliyija-nga ngunja-ju janikaralu@1@3@@ebender@6-7-2009
-85@unknown@formal@none@1@S@sun-erg burn-do ques ground@1@4@@ebender@6-7-2009
-86@unknown@formal@none@1@S@The sun is burning the ground.@1@6@@ebender@6-7-2009
-87@unknown@formal@none@1@TD@Ex 10 demonstrates sentential negation. It is formed by adding "angkula" (usually clause-initialy). (101)@1@14@@ebender@6-7-2009
-88@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-89@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-90@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-91@unknown@formal@none@1@S@Phenomena: neg@1@2@@ebender@6-7-2009
-92@unknown@formal@none@1@S@angkula uliyijanga ngunjaju karalu@1@4@@ebender@6-7-2009
-93@unknown@formal@none@1@S@angkula uliyija-nga ngunja-ju karalu@1@4@@ebender@6-7-2009
-94@unknown@formal@none@1@S@neg sun-erg burn-do ground@1@4@@ebender@6-7-2009
-95@unknown@formal@none@1@S@The sun is not burning the ground.@1@7@@ebender@6-7-2009
-96@unknown@formal@none@1@TD@Ex 11 demonstrates verb subject agreement for transitive verbs. 189 for inanimate instrumental case for subject of transitive@1@18@@ebender@6-7-2009
-97@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-98@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-99@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-100@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-101@unknown@formal@none@1@S@ngayarni ngunjaju karalu@1@3@@ebender@6-7-2009
-102@unknown@formal@none@1@S@ngaya-rni ngunja-nga-ju karalu@1@3@@ebender@6-7-2009
-103@unknown@formal@none@1@S@I-erg burn-1s-do ground@1@3@@ebender@6-7-2009
-104@unknown@formal@none@1@S@I am burning the ground.@1@5@@ebender@6-7-2009
-105@unknown@formal@none@1@TD@Ex 12 demonstrates verb subject agreement for transitive verbs. Animate subjects of transitive verbs are in the ergative case.@1@19@@ebender@6-7-2009
-106@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-107@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-108@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-109@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-110@unknown@formal@none@1@S@mindiyilirni ngunjamindiju karalu@1@3@@ebender@6-7-2009
-111@unknown@formal@none@1@S@mindiyili-rni ngunja-mind-ju karalu@1@3@@ebender@6-7-2009
-112@unknown@formal@none@1@S@we.dual.incl-erg burn-we.dual.incl-do ground@1@3@@ebender@6-7-2009
-113@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-114@unknown@formal@none@1@TD@Ex 13 demonstrates verb subject agreement for transitive verbs. Animate subjects of transitive verbs are in the ergative case.@1@19@@ebender@6-7-2009
-115@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-116@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-117@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-118@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-119@unknown@formal@none@1@S@nginyiylirni ngunjanginyuju karalu@1@3@@ebender@6-7-2009
-120@unknown@formal@none@1@S@nginyiyli-rni ngunja-nginy-ju karalu@1@3@@ebender@6-7-2009
-121@unknown@formal@none@1@S@we.dual.excl-erg burn-we.dual.excl-do ground@1@3@@ebender@6-7-2009
-122@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-123@unknown@formal@none@1@TD@Ex 14 demonstrates verb subject agreement for transitive verbs. Animate subjects of transitive verbs are in the ergative case.@1@19@@ebender@6-7-2009
-124@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-125@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-126@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-127@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-128@unknown@formal@none@1@S@ngurrawalarni ngunjangurraju karalu@1@3@@ebender@6-7-2009
-129@unknown@formal@none@1@S@ngurrawala-rni ngunja-ngurr-ju karalu@1@3@@ebender@6-7-2009
-130@unknown@formal@none@1@S@1pl.incl-erg burn-1pl.incl-do ground@1@3@@ebender@6-7-2009
-131@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-132@unknown@formal@none@1@TD@Ex 15 demonstrates verb subject agreement for transitive verbs. Animate subjects of transitive verbs are in the ergative case.@1@19@@ebender@6-7-2009
-133@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-134@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-135@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-136@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-137@unknown@formal@none@1@S@ngirrikarni ngunjangirriju karalu@1@3@@ebender@6-7-2009
-138@unknown@formal@none@1@S@ngirrika-rni ngunja-ngirr-ju karalu@1@3@@ebender@6-7-2009
-139@unknown@formal@none@1@S@1pl.excl-erg burn-1pl.excl-do ground@1@3@@ebender@6-7-2009
-140@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-141@unknown@formal@none@1@TD@Ex 16 demonstrates verb subject agreement for transitive verbs. Animate subjects of transitive verbs are in the ergative case.@1@19@@ebender@6-7-2009
-142@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-143@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-144@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-145@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-146@unknown@formal@none@1@S@ngurrawalarni ngunjangurraju karalu@1@3@@ebender@6-7-2009
-147@unknown@formal@none@1@S@ngurrawala-rni ngunja-ngurr-ju karalu@1@3@@ebender@6-7-2009
-148@unknown@formal@none@1@S@1pl.incl-erg burn-1pl.incl-do ground@1@3@@ebender@6-7-2009
-149@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-150@unknown@formal@none@1@TD@Ex 17 demonstrates verb subject agreement for transitive verbs. Animate subjects of transitive verbs are in the ergative case.@1@19@@ebender@6-7-2009
-151@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-152@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-153@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-154@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-155@unknown@formal@none@1@S@ngurrawalarni ngunjangurraju karalu@1@3@@ebender@6-7-2009
-156@unknown@formal@none@1@S@nyama-rni ngunja-nya-ju karalu@1@3@@ebender@6-7-2009
-157@unknown@formal@none@1@S@2s.-erg burn-2s-do ground@1@3@@ebender@6-7-2009
-158@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-159@unknown@formal@none@1@TD@Ex 18 demonstrates verb subject agreement for transitive verbs. Animate subjects of transitive verbs are in the ergative case.@1@19@@ebender@6-7-2009
-160@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-161@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-162@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-163@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-164@unknown@formal@none@1@S@kunyiyilirni ngunjakunyiju karalu@1@3@@ebender@6-7-2009
-165@unknown@formal@none@1@S@kunyiyli-rni ngunja-kunyi-ju karalu@1@3@@ebender@6-7-2009
-166@unknown@formal@none@1@S@2.dual.-erg burn-2.dual-do ground@1@3@@ebender@6-7-2009
-167@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-168@unknown@formal@none@1@TD@Ex 19 demonstrates verb subject agreement for transitive verbs. Animate subjects of transitive verbs are in the ergative case.@1@19@@ebender@6-7-2009
-169@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-170@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-171@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-172@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-173@unknown@formal@none@1@S@kunyiyilirni ngunjakurriju karalu@1@3@@ebender@6-7-2009
-174@unknown@formal@none@1@S@kurrawala-rni ngunja-kurri-ju karalu@1@3@@ebender@6-7-2009
-175@unknown@formal@none@1@S@2.pl.-erg burn-2.pl-do ground@1@3@@ebender@6-7-2009
-176@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-177@unknown@formal@none@1@TD@Ex 20 demonstrates verb subject agreement for transitive verbs. Animate subjects of transitive verbs are in the ergative case.@1@19@@ebender@6-7-2009
-178@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-179@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-180@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-181@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-182@unknown@formal@none@1@S@marlukayilarni ngunjawunyiju karalu@1@3@@ebender@6-7-2009
-183@unknown@formal@none@1@S@marluka-bila-rni ngunja-wunyi-ju karalu@1@3@@ebender@6-7-2009
-184@unknown@formal@none@1@S@old.man-dual-erg burn-3dl-do ground@1@3@@ebender@6-7-2009
-185@unknown@formal@none@1@S@The two old men are burning the ground.@1@8@@ebender@6-7-2009
-186@unknown@formal@none@1@TD@Ex 21 demonstrates verb subject agreement for transitive verbs. Animate subjects of transitive verbs are in the ergative case.@1@19@@ebender@6-7-2009
-187@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-188@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-189@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-190@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-191@unknown@formal@none@1@S@marlukayilarni ngunjawurriju karalu@1@3@@ebender@6-7-2009
-192@unknown@formal@none@1@S@marluka-bala-rni ngunja-wurri-ju karalu@1@3@@ebender@6-7-2009
-193@unknown@formal@none@1@S@old.man-plural-erg burn-3dl-do ground@1@3@@ebender@6-7-2009
-194@unknown@formal@none@1@S@The old men are burning the ground.@1@7@@ebender@6-7-2009
-195@unknown@formal@none@1@TD@Ex 22 demonstrates an intransitive verb that is formed using a "light verb." If the coverbal root is not present, then the 3s marker appears.@1@25@@ebender@6-7-2009
-196@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-197@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-198@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-199@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-200@unknown@formal@none@1@S@marlukayilarni ngunjawunyiju@1@2@@ebender@6-7-2009
-201@unknown@formal@none@1@S@marluka-rni manyan ya-ju@1@3@@ebender@6-7-2009
-202@unknown@formal@none@1@S@old.man-erg sleep 3s-do@1@3@@ebender@6-7-2009
-203@unknown@formal@none@1@S@The old man is sleeping@1@5@@ebender@6-7-2009
-204@unknown@formal@none@1@TD@Ex 23 demonstrates an ungrammatical intransitive verb that is formed using a "light verb." If the coverbal root is not present, then the 3s marker appears. Here it is incorrectly missing@1@31@@ebender@6-7-2009
-205@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-206@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-207@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-208@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-209@unknown@formal@none@1@S@marlukayilarni ngunjawunyiju karalu@1@3@@ebender@6-7-2009
-210@unknown@formal@none@1@S@marluka manyan ju@1@3@@ebender@6-7-2009
-211@unknown@formal@none@1@S@old.man.nom sleep do@1@3@@ebender@6-7-2009
-212@unknown@formal@none@1@S@The old man is sleeping@1@5@@ebender@6-7-2009
-213@unknown@formal@none@1@TD@Ex 24 demonstrates ungrammatical verb subject agreement for transitive verbs. Animate subjects of transitive verbs are in the ergative case.@1@20@@ebender@6-7-2009
-214@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-215@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-216@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-217@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-218@unknown@formal@none@1@S@marlukayilarni ngunjakurriju karalu@1@3@@ebender@6-7-2009
-219@unknown@formal@none@1@S@marluka-bala-rni ngunja-kurri-ju karalu@1@3@@ebender@6-7-2009
-220@unknown@formal@none@1@S@old.man-plural-erg burn-2pl-do ground@1@3@@ebender@6-7-2009
-221@unknown@formal@none@1@S@The old men are burning the ground.@1@7@@ebender@6-7-2009
-222@unknown@formal@none@1@TD@Ex 25 demonstrates ungrammatical verb subject agreement for transitive verbs. Animate subjects of transitive verbs are in the ergative case.@1@20@@ebender@6-7-2009
-223@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-224@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-225@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-226@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-227@unknown@formal@none@1@S@marlukayilarni ngunjangaju karalu@1@3@@ebender@6-7-2009
-228@unknown@formal@none@1@S@marluka-bila-rni ngunja-nga-ju karalu@1@3@@ebender@6-7-2009
-229@unknown@formal@none@1@S@old.man-dual-erg burn-1s-do ground@1@3@@ebender@6-7-2009
-230@unknown@formal@none@1@S@The two old men are burning the ground.@1@8@@ebender@6-7-2009
-231@unknown@formal@none@1@TD@Ex 26 demonstrates ungrammatical verb subject agreement for transitive verbs. Animate subjects of transitive verbs are in the ergative case. Here the r required subject marker is not present@1@29@@ebender@6-7-2009
-232@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-233@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-234@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-235@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-236@unknown@formal@none@1@S@marlukayilarni ngunjaiju karalu@1@3@@ebender@6-7-2009
-237@unknown@formal@none@1@S@marluka-bila-rni ngunja-ju karalu@1@3@@ebender@6-7-2009
-238@unknown@formal@none@1@S@old.man-dual-erg burn-3dl-do ground@1@3@@ebender@6-7-2009
-239@unknown@formal@none@1@S@The two old men are burning the ground.@1@8@@ebender@6-7-2009
-240@unknown@formal@none@1@TD@Ex 27 demonstrates verb subject agreement for transitive verbs. Animate subjects of transitive verbs are in the ergative case. It is grammatical for dl and plural subjects/objects to take singular agreement markers.@1@32@@ebender@6-7-2009
-241@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-242@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-243@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-244@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-245@unknown@formal@none@1@S@kunyiyilirni ngunjanyaju karalu@1@3@@ebender@6-7-2009
-246@unknown@formal@none@1@S@kurrawala-rni ngunja-nya-ju karalu@1@3@@ebender@6-7-2009
-247@unknown@formal@none@1@S@2.pl.-erg burn-2.s-do ground@1@3@@ebender@6-7-2009
-248@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-249@unknown@formal@none@1@TD@Ex 28 demonstrates verb subject agreement for transitive verbs. Animate subjects of transitive verbs are in the ergative case. It is grammatical for dl and plural subjects/objects to take singular agreement markers. Number disagreement is permissible. Here a singular subject incorrectly takes a plural agreement marker@1@46@@ebender@6-7-2009
-250@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-251@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-252@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-253@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-254@unknown@formal@none@1@S@ngurrawalarni ngunjakurriju karalu@1@3@@ebender@6-7-2009
-255@unknown@formal@none@1@S@nyama-rni ngunja-kurri-ju karalu@1@3@@ebender@6-7-2009
-256@unknown@formal@none@1@S@2s.-erg burn-2pl-do ground@1@3@@ebender@6-7-2009
-257@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-258@unknown@formal@none@1@TD@Ex 29 demonstrates an ungrammatical intransitive verb that is formed using a "light verb." If the coverbal root is not present, then the 3s marker appears. The subject of an intransitive is nominative.@1@33@@ebender@6-7-2009
-259@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-260@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-261@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-262@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-263@unknown@formal@none@1@S@marlukarni manyan yaju@1@3@@ebender@6-7-2009
-264@unknown@formal@none@1@S@marluka-rni manyan ya-ju@1@3@@ebender@6-7-2009
-265@unknown@formal@none@1@S@old.man.nom sleep do@1@3@@ebender@6-7-2009
-266@unknown@formal@none@1@S@The old man is sleeping@1@5@@ebender@6-7-2009
-267@unknown@formal@none@1@TD@Ex 30 demonstrates ungrammatical case Animate subjects of transitive verbs are in the ergative case.@1@15@@ebender@6-7-2009
-268@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-269@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-270@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-271@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-272@unknown@formal@none@1@S@marlukayilarni ngunjawurriju karalu@1@3@@ebender@6-7-2009
-273@unknown@formal@none@1@S@marluka-bala-rni ngunja-wurri-ju karalu@1@3@@ebender@6-7-2009
-274@unknown@formal@none@1@S@old.man-plural-erg burn-3dl-do ground@1@3@@ebender@6-7-2009
-275@unknown@formal@none@1@S@The old men are burning the ground.@1@7@@ebender@6-7-2009
-276@unknown@formal@none@1@TD@Ex 31 demonstrates ungrammatical verb subject agreement for transitive verbs. Here the person of the subject and verb marker disagree.@1@20@@ebender@6-7-2009
-277@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-278@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-279@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-280@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-281@unknown@formal@none@1@S@kunyiyilirni ngunjamindju karalu@1@3@@ebender@6-7-2009
-282@unknown@formal@none@1@S@kunyiyli-rni ngunja-mind-ju karalu@1@3@@ebender@6-7-2009
-283@unknown@formal@none@1@S@2.dual.-erg burn-1.dual.incl-do ground@1@3@@ebender@6-7-2009
-284@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-285@unknown@formal@none@1@TD@Ex 32 demonstrates verb subject agreement for transitive verbs. Here the person of the subject and verb marker disagree.@1@19@@ebender@6-7-2009
-286@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-287@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-288@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-289@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-290@unknown@formal@none@1@S@kunyiyilirni ngunjakunyiju karalu@1@3@@ebender@6-7-2009
-291@unknown@formal@none@1@S@kunyiyli-rni ngunja-wurri-ju karalu@1@3@@ebender@6-7-2009
-292@unknown@formal@none@1@S@2.dual.-erg burn-3pl-do ground@1@3@@ebender@6-7-2009
-293@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-294@unknown@formal@none@1@TD@Ex 33 demonstrates ungrammatical verb subject agreement for transitive verbs. Here the person of the subject and verb marker disagree.@1@20@@ebender@6-7-2009
-295@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-296@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-297@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-298@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-299@unknown@formal@none@1@S@ngurrawalarni ngunjayaju karalu@1@3@@ebender@6-7-2009
-300@unknown@formal@none@1@S@ngurrawala-rni ngunja-ya-ju karalu@1@3@@ebender@6-7-2009
-301@unknown@formal@none@1@S@1pl.incl-erg burn-3s.incl-do ground@1@3@@ebender@6-7-2009
-302@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-303@unknown@formal@none@1@TD@Ex 34 demonstrates verb subject agreement for transitive verbs. Here the person of the subject and verb marker disagree.@1@19@@ebender@6-7-2009
-304@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-305@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-306@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-307@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-308@unknown@formal@none@1@S@ngurrawalarni ngunjawunyiju karalu@1@3@@ebender@6-7-2009
-309@unknown@formal@none@1@S@ngurrawala-rni ngunja-wunyi-ju karalu@1@3@@ebender@6-7-2009
-310@unknown@formal@none@1@S@1pl.incl-erg burn-3dl.incl-do ground@1@3@@ebender@6-7-2009
-311@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-312@unknown@formal@none@1@TD@Ex 35 demonstrates ungrammatical verb subject agreement for transitive verbs. Here the person of the subject and verb marker disagree.@1@20@@ebender@6-7-2009
-313@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-314@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-315@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-316@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-317@unknown@formal@none@1@S@ngirrikarni ngunjangirriju karalu@1@3@@ebender@6-7-2009
-318@unknown@formal@none@1@S@ngirrika-rni ngunja-nya-ju karalu@1@3@@ebender@6-7-2009
-319@unknown@formal@none@1@S@1pl.excl-erg burn-2s-do ground@1@3@@ebender@6-7-2009
-320@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-321@unknown@formal@none@1@TD@Ex 36 demonstrates ungrammatical verb subject agreement for transitive verbs. Here the person of the subject and verb marker disagree.@1@20@@ebender@6-7-2009
-322@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-323@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-324@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-325@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-326@unknown@formal@none@1@S@mindiyilirni ngunjakurriju karalu@1@3@@ebender@6-7-2009
-327@unknown@formal@none@1@S@mindiyili-rni ngunja-kurri-ju karalu@1@3@@ebender@6-7-2009
-328@unknown@formal@none@1@S@we.dual.incl-erg burn-2pl-do ground@1@3@@ebender@6-7-2009
-329@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-330@unknown@formal@none@1@TD@Ex 37 demonstrates ungrammatical verb subject agreement for transitive verbs. Here the person of the subject and verb marker disagree.@1@20@@ebender@6-7-2009
-331@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-332@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-333@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-334@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-335@unknown@formal@none@1@S@ngayarni ngunjawunyiju karalu@1@3@@ebender@6-7-2009
-336@unknown@formal@none@1@S@ngaya-rni ngunja-wunyi-ju karalu@1@3@@ebender@6-7-2009
-337@unknown@formal@none@1@S@I-erg burn-1s-do ground@1@3@@ebender@6-7-2009
-338@unknown@formal@none@1@S@I am burning the ground.@1@5@@ebender@6-7-2009
-339@unknown@formal@none@1@TD@Ex 38 demonstrates verb subject agreement for transitive verbs. 189 for inanimate instrumental case for subject of transitive@1@18@@ebender@6-7-2009
-340@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-341@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-342@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-343@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-344@unknown@formal@none@1@S@ngayarni ngunjaju karalu@1@3@@ebender@6-7-2009
-345@unknown@formal@none@1@S@ngaya-rni ngunja-nga-ju karalu@1@3@@ebender@6-7-2009
-346@unknown@formal@none@1@S@I-erg burn-1s-do ground@1@3@@ebender@6-7-2009
-347@unknown@formal@none@1@S@I am burning the ground.@1@5@@ebender@6-7-2009
-348@unknown@formal@none@1@TD@Ex 39 demonstrates ungrammatical use of object agreement markers. Some logical combinations not possible. First person singular combined either first person or second person is not allowed@1@27@@ebender@6-7-2009
-349@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-350@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-351@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-352@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-353@unknown@formal@none@1@S@ngayarni ngunjaju nyama@1@3@@ebender@6-7-2009
-354@unknown@formal@none@1@S@ngaya-rni ngiji-nga-nyu-ju nyama@1@3@@ebender@6-7-2009
-355@unknown@formal@none@1@S@I-erg see-1s-2-do 2s@1@3@@ebender@6-7-2009
-356@unknown@formal@none@1@S@I see you@1@3@@ebender@6-7-2009
-357@unknown@formal@none@1@TD@Ex 40 demonstrates object agreement markers.@1@6@@ebender@6-7-2009
-358@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-359@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-360@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-361@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-362@unknown@formal@none@1@S@ngayarni ngunjaju nyama@1@3@@ebender@6-7-2009
-363@unknown@formal@none@1@S@mindiyili-rni ngiji-mindi-nyu-ju nyama@1@3@@ebender@6-7-2009
-364@unknown@formal@none@1@S@1dl.incl see-1dl-2-do 2s.nom@1@3@@ebender@6-7-2009
-365@unknown@formal@none@1@S@We see you@1@3@@ebender@6-7-2009
-366@unknown@formal@none@1@TD@Ex 41 demonstrates ungrammatical object agreement markers.@1@7@@ebender@6-7-2009
-367@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-368@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-369@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-370@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-371@unknown@formal@none@1@S@ngayarni ngunjaju nyama@1@3@@ebender@6-7-2009
-372@unknown@formal@none@1@S@mindiyili-rni ngiji-nyu-mindi-ju nyama@1@3@@ebender@6-7-2009
-373@unknown@formal@none@1@S@1dl.incl see-1dl-2-do 2s.nom@1@3@@ebender@6-7-2009
-374@unknown@formal@none@1@S@We see you@1@3@@ebender@6-7-2009
-375@unknown@formal@none@1@TD@Ex 42 demonstrates object agreement markers. Second person and Second person are not allowed to combine@1@16@@ebender@6-7-2009
-376@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-377@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-378@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-379@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-380@unknown@formal@none@1@S@ngayarni ngunjanyanyuju nyama@1@3@@ebender@6-7-2009
-381@unknown@formal@none@1@S@nyama-rni ngiji-nya-nyu-ju nyama@1@3@@ebender@6-7-2009
-382@unknown@formal@none@1@S@2s see-2s2-do 2s.nom@1@3@@ebender@6-7-2009
-383@unknown@formal@none@1@S@You see you@1@3@@ebender@6-7-2009
-384@unknown@formal@none@1@TD@Ex 43 demonstrates object agreement markers. Second person and Second person are not allowed to combine@1@16@@ebender@6-7-2009
-385@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-386@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-387@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-388@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-389@unknown@formal@none@1@S@ngayarni ngunjanyunyuju nyama@1@3@@ebender@6-7-2009
-390@unknown@formal@none@1@S@nyama-rni ngiji-nyu-nyu-ju nyama@1@3@@ebender@6-7-2009
-391@unknown@formal@none@1@S@2s see-2s2-do 2s.nom@1@3@@ebender@6-7-2009
-392@unknown@formal@none@1@S@You see you@1@3@@ebender@6-7-2009
-393@unknown@formal@none@1@TD@Ex 44 demonstrates object agreement markers. Second person and Second person are not allowed to combine@1@16@@ebender@6-7-2009
-394@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-395@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-396@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-397@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-398@unknown@formal@none@1@S@ngayarni ngunjaju nyama@1@3@@ebender@6-7-2009
-399@unknown@formal@none@1@S@nyama-rni ngiji-nya-na-ju ngaya@1@3@@ebender@6-7-2009
-400@unknown@formal@none@1@S@2s see-2s2-do 2s.nom@1@3@@ebender@6-7-2009
-401@unknown@formal@none@1@S@You see me@1@3@@ebender@6-7-2009
-402@unknown@formal@none@1@TD@Ex 45 demonstrates past tense@1@5@@ebender@6-7-2009
-403@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-404@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-405@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-406@unknown@formal@none@1@S@Phenomena: word order@1@3@@ebender@6-7-2009
-407@unknown@formal@none@1@S@uliyijanga ngunjanu karalu@1@3@@ebender@6-7-2009
-408@unknown@formal@none@1@S@uliyija-nga ngunja-nu karalu@1@3@@ebender@6-7-2009
-409@unknown@formal@none@1@S@sun-erg burn-do.past ground@1@3@@ebender@6-7-2009
-410@unknown@formal@none@1@S@The sun burnt the ground.@1@5@@ebender@6-7-2009
-411@unknown@formal@none@1@TD@Ex 46 demonstrates habitual aspect@1@5@@ebender@6-7-2009
-412@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-413@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-414@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-415@unknown@formal@none@1@S@Phenomena: word order@1@3@@ebender@6-7-2009
-416@unknown@formal@none@1@S@uliyijanga ngunjawardi karalu@1@3@@ebender@6-7-2009
-417@unknown@formal@none@1@S@uliyija-nga ngunja-ardi karalu@1@3@@ebender@6-7-2009
-418@unknown@formal@none@1@S@sun-erg burn-do.habitual ground@1@3@@ebender@6-7-2009
-419@unknown@formal@none@1@S@The sun burns the ground.@1@5@@ebender@6-7-2009
-420@unknown@formal@none@1@TD@Ex 47 demonstrates past habitual aspect tense@1@7@@ebender@6-7-2009
-421@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-422@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-423@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-424@unknown@formal@none@1@S@Phenomena: word order@1@3@@ebender@6-7-2009
-425@unknown@formal@none@1@S@uliyijanga ngunjaku karalu@1@3@@ebender@6-7-2009
-426@unknown@formal@none@1@S@uliyija-nga ngunja-ka karalu@1@3@@ebender@6-7-2009
-427@unknown@formal@none@1@S@sun-erg burn-do.past.habitual ground@1@3@@ebender@6-7-2009
-428@unknown@formal@none@1@S@The sun used to burn the ground.@1@7@@ebender@6-7-2009
-429@unknown@formal@none@1@TD@Ex 48 demonstrates ungrammatical use of the past habitual aspect tense. The "light verb" should come at the end. Here it preceedes the coverbal@1@24@@ebender@6-7-2009
-430@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-431@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-432@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-433@unknown@formal@none@1@S@Phenomena: word order@1@3@@ebender@6-7-2009
-434@unknown@formal@none@1@S@uliyijanga ngunjaku karalu@1@3@@ebender@6-7-2009
-435@unknown@formal@none@1@S@uliyija-nga -kangunja karalu@1@3@@ebender@6-7-2009
-436@unknown@formal@none@1@S@sun-erg do.past.habitual-burnground@1@2@@ebender@6-7-2009
-437@unknown@formal@none@1@S@The sun used to burn the ground.@1@7@@ebender@6-7-2009
-438@unknown@formal@none@1@TD@Ex 49 demonstrates ungrammatical verb subject agreement for transitive verbs. The subject marker should come after the coverbal but before the "light verb". Here it does not.@1@27@@ebender@6-7-2009
-439@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-440@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-441@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-442@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-443@unknown@formal@none@1@S@ngirrikarni ngunjajungirri karalu@1@3@@ebender@6-7-2009
-444@unknown@formal@none@1@S@ngirrika-rni ngunja-ju-ngirr karalu@1@3@@ebender@6-7-2009
-445@unknown@formal@none@1@S@1pl.excl-erg burn-l-do-1pl.exc ground@1@3@@ebender@6-7-2009
-446@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-447@unknown@formal@none@1@TD@Ex 50 demonstrates ungrammatical verb subject agreement for transitive verbs. The subject marker should come after the coverbal but before the "light verb". Here it does not.@1@27@@ebender@6-7-2009
-448@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-449@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-450@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-451@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-452@unknown@formal@none@1@S@ngirrikarni ngunjajungirri karalu@1@3@@ebender@6-7-2009
-453@unknown@formal@none@1@S@ngirrika-rni -ngirr ngunja-jukaralu@1@3@@ebender@6-7-2009
-454@unknown@formal@none@1@S@1pl.excl-erg 1pl.exc-burn-l-do ground@1@3@@ebender@6-7-2009
-455@unknown@formal@none@1@S@We are burning the ground.@1@5@@ebender@6-7-2009
-456@unknown@formal@none@1@TD@Ex 51 demonstrates coordination. Juxtaposition is used.@1@7@@ebender@6-7-2009
-457@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-458@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-459@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-460@unknown@formal@none@1@S@Phenomena: coord@1@2@@ebender@6-7-2009
-461@unknown@formal@none@1@S@uliyijanga ngunjaju karalu@1@3@@ebender@6-7-2009
-462@unknown@formal@none@1@S@uliyija-nga ngunja-ju karalu marluka-rni manyan ya-ju@1@6@@ebender@6-7-2009
-463@unknown@formal@none@1@S@sun-erg burn-do ground old.man-erg sleep 3s-do@1@6@@ebender@6-7-2009
-464@unknown@formal@none@1@S@The sun is burning the ground and the old man is sleeping@1@12@@ebender@6-7-2009
-465@unknown@formal@none@1@TD@Ex 52 demonstrates ungrammatical coordination. Juxtaposition is used.. The words in each S must stay together. Here they do not@1@20@@ebender@6-7-2009
-466@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-467@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-468@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-469@unknown@formal@none@1@S@Phenomena: coord@1@2@@ebender@6-7-2009
-470@unknown@formal@none@1@S@uliyijanga ngunjaju karalu@1@3@@ebender@6-7-2009
-471@unknown@formal@none@1@S@uliyija-nga marluka-rni ngunja-ju karalu manyan ya-ju@1@6@@ebender@6-7-2009
-472@unknown@formal@none@1@S@sun-erg old.man-erg burn-do ground sleep 3s-do@1@6@@ebender@6-7-2009
-473@unknown@formal@none@1@S@The sun is burning the ground and the old man is sleeping@1@12@@ebender@6-7-2009
-474@unknown@formal@none@1@TD@Ex 53 demonstrates grammatical instrumental case for inanimate subjects. I do not know why "sun" was allowed to take ergative case but wind is not.@1@25@@ebender@6-7-2009
-475@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-476@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-477@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
-478@unknown@formal@none@1@S@Phenomena: word order@1@3@@ebender@6-7-2009
-479@unknown@formal@none@1@S@wunbaarndi ngunjaju karalu@1@3@@ebender@6-7-2009
-480@unknown@formal@none@1@S@wunba-arndi ngunja-ju karalu@1@3@@ebender@6-7-2009
-481@unknown@formal@none@1@S@wind-instr burn-do ground@1@3@@ebender@6-7-2009
-482@unknown@formal@none@1@S@The wind is burning the ground.@1@6@@ebender@6-7-2009
-483@unknown@formal@none@1@TD@Ex 54 demonstrates ungrammatical ergative case for inanimate subjects. I do not know why "sun" was allowed to take ergative case but wind is not.@1@25@@ebender@6-7-2009
-484@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-485@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-486@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-487@unknown@formal@none@1@S@Phenomena: word order@1@3@@ebender@6-7-2009
-488@unknown@formal@none@1@S@wunbaani ngunjaju karalu@1@3@@ebender@6-7-2009
-489@unknown@formal@none@1@S@wunba-rni ngunja-ju karalu@1@3@@ebender@6-7-2009
-490@unknown@formal@none@1@S@wind-erg burn-do ground@1@3@@ebender@6-7-2009
-491@unknown@formal@none@1@S@The wind is burning the ground.@1@6@@ebender@6-7-2009
-492@unknown@formal@none@1@TD@Ex 55 demonstrates ungrammatical instrumental case for inanimate subjects. I do not know why "sun" was allowed to take ergative case but wind is not.@1@25@@ebender@6-7-2009
-493@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-494@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-495@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-496@unknown@formal@none@1@S@Phenomena: word order@1@3@@ebender@6-7-2009
-497@unknown@formal@none@1@S@wunbanga ngunjaju karalu@1@3@@ebender@6-7-2009
-498@unknown@formal@none@1@S@wunba-nga ngunja-ju karalu@1@3@@ebender@6-7-2009
-499@unknown@formal@none@1@S@wind-erg.f burn-do ground@1@3@@ebender@6-7-2009
-500@unknown@formal@none@1@S@The wind is burning the ground.@1@6@@ebender@6-7-2009
-501@unknown@formal@none@1@TD@Ex 56 demonstrates ungrammatical instrumental case for an animate subject@1@10@@ebender@6-7-2009
-502@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
-503@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
-504@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
-505@unknown@formal@none@1@S@Phenomena: agr@1@2@@ebender@6-7-2009
-506@unknown@formal@none@1@S@ngayaarndi ngunjaju karalu@1@3@@ebender@6-7-2009
-507@unknown@formal@none@1@S@ngaya-arndi ngunja-nga-ju karalu@1@3@@ebender@6-7-2009
-508@unknown@formal@none@1@S@I-erg burn-1s-do ground@1@3@@ebender@6-7-2009
-509@unknown@formal@none@1@S@I am burning the ground.@1@5@@ebender@6-7-2009
+1@A grammar of jingulu: An Aboriginal language of the Northern Territory:77@@@1@wo@uliyija-nga ngunja-ju karalu@1@3@The sun is burning the ground. @Safiyyah Saleem@May 15 2009
+2@author@@@1@wo@uliyija-nga karalu ngunja-ju @1@3@The sun is burning the ground. @Safiyyah Saleem@May 15 2009
+3@author@@@1@wo@karalu ngunja-ju uliyija-nga@1@3@The sun is burning the ground. @Safiyyah Saleem@May 15 2009
+4@author@@@1@wo@ngunja-ju uliyija-nga karalu @1@3@The sun is burning the ground. @Safiyyah Saleem@May 15 2009
+5@author@@@1@wo@karalu uliyija-nga ngunja-ju @1@3@The sun is burning the ground. @Safiyyah Saleem@May 15 2009
+6@author@@@1@wo@ngunja-ju karalu uliyija-nga @1@3@The sun is burning the ground. @Safiyyah Saleem@May 15 2009
+7@author@@@1@q@jani uliyija-nga ngunja-ju karalu@1@4@The sun is burning the ground. @Safiyyah Saleem@May 15 2009
+8@author@@@1@q@uliyija-nga ngunja-ju karalu jani@0@4@The sun is burning the ground. @Safiyyah Saleem@May 15 2009
+9@author@@@1@q@uliyija-nga ngunja-ju janikaralu@0@3@The sun is burning the ground. @Safiyyah Saleem@May 15 2009
+10@author@@@1@neg@angkula uliyija-nga ngunja-ju karalu@1@4@The sun is not burning the ground. @Safiyyah Saleem@May 15 2009
+11@author@@@1@agr@ngaya-rni ngunja-nga-ju karalu@1@3@I am burning the ground. @Safiyyah Saleem@May 15 2009
+12@author@@@1@agr@mindiyili-rni ngunja-mind-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+13@author@@@1@agr@nginyiyli-rni ngunja-nginy-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+14@author@@@1@agr@ngurrawala-rni ngunja-ngurr-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+15@author@@@1@agr@ngirrika-rni ngunja-ngirr-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+16@author@@@1@agr@ngurrawala-rni ngunja-ngurr-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+17@author@@@1@agr@nyama-rni ngunja-nya-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+18@author@@@1@agr@kunyiyli-rni ngunja-kunyi-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+19@author@@@1@agr@kurrawala-rni ngunja-kurri-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+20@author@@@1@agr@marluka-bila-rni ngunja-wunyi-ju karalu@1@3@The two old men are burning the ground. @Safiyyah Saleem@May 15 2009
+21@author@@@1@agr@marluka-bala-rni ngunja-wurri-ju karalu@1@3@The old men are burning the ground. @Safiyyah Saleem@May 15 2009
+22@author@@@1@agr@marluka-rni  manyan ya-ju@1@3@The old man is sleeping @Safiyyah Saleem@May 15 2009
+23@author@@@1@agr@marluka manyan ju@0@3@The old man is sleeping @Safiyyah Saleem@May 15 2009
+24@author@@@1@agr@marluka-bala-rni ngunja-kurri-ju karalu@0@3@The old men are burning the ground. @Safiyyah Saleem@May 15 2009
+25@author@@@1@agr@marluka-bila-rni ngunja-nga-ju karalu@0@3@The two old men are burning the ground. @Safiyyah Saleem@May 15 2009
+26@author@@@1@agr@marluka-bila-rni ngunja-ju karalu@0@3@The two old men are burning the ground. @Safiyyah Saleem@May 15 2009
+27@author@@@1@agr@kurrawala-rni ngunja-nya-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+28@author@@@1@agr@nyama-rni ngunja-kurri-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+29@author@@@1@agr@marluka-rni manyan ya-ju@0@3@The old man is sleeping @Safiyyah Saleem@May 15 2009
+30@author@@@1@agr@marluka-bala-rni ngunja-wurri-ju karalu@1@3@The old men are burning the ground. @Safiyyah Saleem@May 15 2009
+31@author@@@1@agr@kunyiyli-rni ngunja-mind-ju karalu@0@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+32@author@@@1@agr@kunyiyli-rni ngunja-wurri-ju karalu@0@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+33@author@@@1@agr@ngurrawala-rni ngunja-ya-ju karalu@0@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+34@author@@@1@agr@ngurrawala-rni ngunja-wunyi-ju karalu@0@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+35@author@@@1@agr@ngirrika-rni ngunja-nya-ju karalu@0@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+36@author@@@1@agr@mindiyili-rni ngunja-kurri-ju karalu@0@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+37@author@@@1@agr@ngaya-rni ngunja-wunyi-ju karalu@0@3@I am burning the ground. @Safiyyah Saleem@May 15 2009
+38@author@@@1@agr@ngaya-rni ngunja-nga-ju karalu@1@3@I am burning the ground. @Safiyyah Saleem@May 15 2009
+39@author@@@1@agr@ngaya-rni ngiji-nga-nyu-ju nyama@0@3@I see you@Safiyyah Saleem@May 15 2009
+40@author@@@1@agr@mindiyili-rni ngiji-mindi-nyu-ju nyama@1@3@We see you@Safiyyah Saleem@May 15 2009
+41@author@@@1@agr@mindiyili-rni ngiji-nyu-mindi-ju nyama@0@3@We see you@Safiyyah Saleem@May 15 2009
+42@author@@@1@agr@nyama-rni ngiji-nya-nyu-ju nyama@0@3@You see you@Safiyyah Saleem@May 15 2009
+43@author@@@1@agr@nyama-rni ngiji-nyu-nyu-ju nyama@0@3@You see you@Safiyyah Saleem@May 15 2009
+44@author@@@1@agr@nyama-rni ngiji-nya-na-ju ngaya@0@3@You see me@Safiyyah Saleem@May 15 2009
+45@author@@@1@wo@uliyija-nga ngunja-nu karalu@1@3@The sun burnt the ground. @Safiyyah Saleem@May 15 2009
+46@author@@@1@wo@uliyija-nga ngunja-ardi karalu@1@3@The sun burns the ground. @Safiyyah Saleem@May 15 2009
+47@author@@@1@wo@uliyija-nga ngunja-ka karalu@1@3@The sun used to burn the ground. @Safiyyah Saleem@May 15 2009
+48@author@@@1@wo@uliyija-nga -kangunja karalu@0@3@The sun used to burn the ground. @Safiyyah Saleem@May 15 2009
+49@author@@@1@agr@ngirrika-rni ngunja-ju-ngirr karalu@0@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+50@author@@@1@agr@ngirrika-rni -ngirr ngunja-jukaralu@0@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+51@author@@@1@coord@uliyija-nga ngunja-ju karalu marluka-rni  manyan ya-ju@1@6@The sun is burning the ground and the old man is sleeping@Safiyyah Saleem@May 15 2009
+52@author@@@1@coord@uliyija-nga marluka-rni ngunja-ju karalu  manyan ya-ju@0@6@The sun is burning the ground and the old man is sleeping@Safiyyah Saleem@May 15 2009
+53@author@@@1@wo@wunba-arndi ngunja-ju karalu@1@3@The wind is burning the ground. @Safiyyah Saleem@May 15 2009
+54@author@@@1@wo@wunba-rni ngunja-ju karalu@0@3@The wind is burning the ground. @Safiyyah Saleem@May 15 2009
+55@author@@@1@wo@wunba-nga ngunja-ju karalu@0@3@The wind is burning the ground. @Safiyyah Saleem@May 15 2009
+56@author@@@1@agr@ngaya-arndi ngunja-nga-ju karalu@0@3@I am burning the ground. @Safiyyah Saleem@May 15 2009

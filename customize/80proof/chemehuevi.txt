@@ -461,8 +461,7 @@ Judgment: g
 Phenomena: {q}
 aipacira puusi magaj 
 aipaci-raa puusi-a maga-jI  
-boy-ques cat-OBL 
-gave-pres  
+boy-ques cat-OBL gave-pres  
 'Does/Did the boy give a cat7'
 
 #Ex 45 illustrates an ungrammatical yes/no question.  Yes-No questions are formed by adding the enclitic /-raa/ to the first word in the sentence.   The past tense marker /-vII/ does not occur in questions (Press 85).  Here it incorrectly does.
