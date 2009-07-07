@@ -6,7 +6,11 @@ ntu := class1-2-noun-lex &
 
 zooba := class5-noun-lex &
   [ STEM < "zooba" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_sun_" ].
+    SYNSEM.LKEYS.KEYREL.PRED "_sun_n_rel" ].
+
+koni := class9-noun-lex &
+  [ STEM < "koni" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_stick_n_rel" ].
 
 ;;; Verbs
 

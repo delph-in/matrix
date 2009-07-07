@@ -46,7 +46,7 @@ Changed this:
 to this:
 
     verb-slot6_morph1_orth=-ku
-      verb-slot6_morph1_feat1_name=aspect
+      verb-slot6_morph1_feat1_name=situation
       verb-slot6_morph1_feat1_value=mom-plus
       verb-slot6_morph1_feat1_head=verb
 
@@ -128,4 +128,8 @@ Coverage: 0%
 Overgeneration: 0%
 Errors: 76/81
 
+Repairs:
+
+Added noun type for class 9 and stem for stick.
+Fixed _n_rel on _sun_n_rel
 

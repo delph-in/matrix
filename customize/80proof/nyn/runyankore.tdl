@@ -1,6 +1,6 @@
 ;;; Grammar of Runyankore
 ;;; created at:
-;;;     Tue Jul 07 05:16:49 UTC 2009
+;;;     Tue Jul 07 16:39:15 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -193,6 +193,9 @@ class1-2-noun-lex := noun-lex &
 
 class5-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND class-5 ].
+
+class9-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND class-9 ].
 
 ;;; Verbs
 
