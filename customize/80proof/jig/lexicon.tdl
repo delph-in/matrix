@@ -32,7 +32,7 @@ ngurrawala := 1pl-incl-pronoun-noun-lex &
   [ STEM < "ngurrawala" >,
     SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
 
-ngirrika := ngirrika-noun-lex &
+ngirrika := 1plu-excl-noun-lex &
   [ STEM < "ngirrika" >,
     SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
 

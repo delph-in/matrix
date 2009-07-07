@@ -1,32 +1,35 @@
 ;;; Grammar of jingulu
 ;;; created at:
-;;;     Mon Jul 06 23:57:28 UTC 2009
+;;;     Tue Jul 07 18:22:36 UTC 2009
 ;;; based on Matrix customization system version of:
-;;;     Thu Jul  2 05:49:34 UTC 2009
+;;;     Tue Jul  7 16:33:47 UTC 2009
 
 number-rule-dtr := avm.
 
-noun1-noun-lex := number-rule-dtr & noun-lex &
+noun1-noun-lex := number-rule-dtr & case-marker-rule-dtr & noun-lex &
   [ INFLECTED -,
     SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND feminine ].
 
-noun2-noun-lex := number-rule-dtr & noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND neuter+inanimate ].
+noun2-noun-lex := number-rule-dtr & case-marker-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND neuter,
+                                       ANIMACY inam ] ].
 
-noun3-noun-lex := number-rule-dtr & noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND animate+non-feminine ].
+noun3-noun-lex := number-rule-dtr & case-marker-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND masculine,
+                                       ANIMACY anim ] ].
 
-number-lex-rule := infl-add-only-no-ccont-ltol-rule &
+number-lex-rule := infl-add-only-no-ccont-ltol-rule & case-marker-rule-dtr &
   [ DTR number-rule-dtr ].
 
 dual-marker-lex-rule := number-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM dual ].
 
 plural-marker-lex-rule := number-lex-rule &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM plural ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM non-sg ].
 
-case-marker-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
-  [ DTR noun-lex ].
+case-marker-rule-dtr := avm.
 
 noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
   [ INFLECTED -,
@@ -38,23 +41,27 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
                                  [ LOCAL.CAT.HEAD det,
                                    OPT + ] > ] ].
 
+case-marker-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
+  [ DTR case-marker-rule-dtr ].
+
 ergative-case-marker-lex-rule := infl-ltow-rule & case-marker-lex-rule &
   [ SYNSEM.LOCAL [ CAT.HEAD.CASE erg,
-                   CONT.HOOK.INDEX.PNG.GEND animate ] ].
+                   CONT.HOOK.INDEX.PNG.ANIMACY anim ] ].
 
 nominative-case-marker-lex-rule := const-ltow-rule & case-marker-lex-rule &
   [ SYNSEM.LOCAL.CAT.HEAD.CASE nom ].
 
 instrumental-case-marker-lex-rule := infl-ltow-rule & case-marker-lex-rule &
   [ SYNSEM.LOCAL [ CAT.HEAD.CASE erg,
-                   CONT.HOOK.INDEX.PNG.GEND inanimate ] ].
+                   CONT.HOOK.INDEX.PNG.ANIMACY inam ] ].
 
 feminine-case-marker-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
   [ DTR noun1-noun-lex ].
 
 feminine-erg-case-marker-lex-rule := feminine-case-marker-lex-rule &
   [ SYNSEM.LOCAL [ CAT.HEAD.CASE erg,
-                   CONT.HOOK.INDEX.PNG.GEND feminine ] ].
+                   CONT.HOOK.INDEX.PNG [ GEND feminine,
+                                         ANIMACY anim ] ] ].
 
 subj-agreement-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
   [ DTR verb1-verb-lex ].
@@ -72,10 +79,10 @@ verb1-verb-lex := erg-nom-transitive-verb-lex &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1dual_excl ].
 
 1pl-incl-agreement-marker-lex-rule := infl-ltow-rule & subj-agreement-lex-rule &
-  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM pernum ].
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1dual_incl+1plural_incl ].
 
 1pl-excl-agreement-marker-lex-rule := infl-ltow-rule & subj-agreement-lex-rule &
-  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM pernum ].
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1dual_excl+1plural_excl ].
 
 2sg-agreement-marker-lex-rule := infl-ltow-rule & subj-agreement-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2nd ].
@@ -84,7 +91,7 @@ verb1-verb-lex := erg-nom-transitive-verb-lex &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2dual ].
 
 2pl-agreement-marker-lex-rule := infl-ltow-rule & subj-agreement-lex-rule &
-  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM pernum ].
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2dual+2plural ].
 
 3s-agreement-marker-lex-rule := const-ltow-rule & subj-agreement-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd ].
@@ -93,7 +100,7 @@ verb1-verb-lex := erg-nom-transitive-verb-lex &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3dual ].
 
 3pl-subj-agreement-marker-lex-rule := infl-ltow-rule & subj-agreement-lex-rule &
-  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM pernum ].
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3dual+3plural ].
 
 object-agreement-lex-rule := lexeme-to-lexeme-rule & add-only-no-ccont-rule &
   [ DTR transitive-verb-lex ].
@@ -158,34 +165,32 @@ aux-lex := verb-lex &
 noun :+ [ CASE case ].
 
 1s-pronoun-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 1st,
-                                       GEND animate ] ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 1singular,
+                                       ANIMACY anim ] ].
 
 1dl-incl-pronoun-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 1dual_incl,
-                                       GEND animate ] ].
+                                       ANIMACY anim ] ].
 
 1dl-excl-pronoun-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 1dual_excl,
-                                       GEND animate ] ].
+                                       ANIMACY anim ] ].
 
 1pl-incl-pronoun-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM pernum,
-                                       GEND animate ] ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 1dual_incl+1plural_incl,
+                                       ANIMACY anim ] ].
 
-ngirrika-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM pernum,
-                                       GEND animate ] ].
+1plu-excl-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1dual_excl+1plural_excl ].
 
 2s-pronoun-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 2nd,
-                                       GEND animate ] ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2singular ].
 
 2dl-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND animate ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2dual ].
 
 2pl-pronoun-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND animate ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2dual+2plural ].
 
 ;;; Verbs
 
@@ -255,34 +260,45 @@ erg := case.  ; ergative
 nom := case.  ; nominative
 
 png :+ [ PERNUM pernum,
-    GEND gender ].
+    GEND gender,
+    ANIMACY animacy ].
 
 ;;; Pernum
 
 pernum := *top*.
-plural := pernum.
-dual := plural.
+non-sg := pernum.
+plural := non-sg.
+dual := non-sg.
+singular := pernum.
 1st := pernum.
 2nd := pernum.
 3rd := pernum.
+1plural := 1st & plural.
+1plural_incl := 1plural & 1dual_incl+1plural_incl.
+1plural_excl := 1plural & 1dual_excl+1plural_excl.
+2plural := plural & 2dual+2plural.
+3plural := plural & 3dual+3plural.
 1dual := 1st & dual.
-1dual_incl := 1dual.
-1dual_excl := 1dual.
-2dual := 2nd & dual.
-3dual := 3rd & dual.
+1dual_incl := 1dual & 1dual_incl+1plural_incl.
+1dual_excl := 1dual & 1dual_excl+1plural_excl.
+2dual := dual & 2dual+2plural.
+3dual := dual & 3dual+3plural.
+1singular := 1st & singular.
+2singular := 2nd & singular.
+3singular := 3rd & singular.
+1dual_incl+1plural_incl := non-sg & 1st.
+1dual_excl+1plural_excl := 1st & non-sg.
+2dual+2plural := 2nd & non-sg.
+3dual+3plural := 3rd & non-sg.
 
 ;;; Gender
 
 gender := *top*.
-feminine := masculine.
-neuter := masculine & neuter+inanimate.
-vegetable := neuter.
-masculine := gender.
-non-feminine := vegetable & neuter & animate+non-feminine.
-neuter+inanimate := gender.
-inanimate := neuter+inanimate.
-animate+non-feminine := gender.
-animate := animate+non-feminine.
+feminine := gender.
+non-feminine := gender.
+vegetable := non-feminine.
+masculine := non-feminine.
+neuter := non-feminine.
 
 ;;; Form
 
@@ -300,6 +316,12 @@ future := tense.
 
 habitual := aspect.
 non-habitual := aspect.
+
+;;; Animacy
+
+animacy := *top*.
+anim := animacy.
+inam := animacy.
 
 ;;; Phrasal types
 
