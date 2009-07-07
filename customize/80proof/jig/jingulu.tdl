@@ -1,8 +1,8 @@
 ;;; Grammar of jingulu
 ;;; created at:
-;;;     Tue Jul 07 18:22:36 UTC 2009
+;;;     Tue Jul 07 22:47:46 UTC 2009
 ;;; based on Matrix customization system version of:
-;;;     Tue Jul  7 16:33:47 UTC 2009
+;;;     unknown time
 
 number-rule-dtr := avm.
 
@@ -31,16 +31,6 @@ plural-marker-lex-rule := number-lex-rule &
 
 case-marker-rule-dtr := avm.
 
-noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
-  [ INFLECTED -,
-    ARG-ST < #spr >,
-    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
-                           SUBJ < >,
-                           SPEC < >,
-                           SPR < #spr &
-                                 [ LOCAL.CAT.HEAD det,
-                                   OPT + ] > ] ].
-
 case-marker-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
   [ DTR case-marker-rule-dtr ].
 
@@ -63,59 +53,44 @@ feminine-erg-case-marker-lex-rule := feminine-case-marker-lex-rule &
                    CONT.HOOK.INDEX.PNG [ GEND feminine,
                                          ANIMACY anim ] ] ].
 
-subj-agreement-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
+subj-agreement-lex-rule := lexeme-to-lexeme-rule & add-only-no-ccont-rule &
   [ DTR verb1-verb-lex ].
 
-verb1-verb-lex := erg-nom-transitive-verb-lex &
-  [ INFLECTED - ].
-
-1s-subj-agreement-marker-lex-rule := infl-ltow-rule & subj-agreement-lex-rule &
+1s-subj-agreement-marker-lex-rule := infl-ltol-rule & subj-agreement-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1st ].
 
-1dl-incl-agreement-marker-lex-rule := infl-ltow-rule & subj-agreement-lex-rule &
+1dl-incl-agreement-marker-lex-rule := infl-ltol-rule & subj-agreement-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1dual_incl ].
 
-1dl-excl-agreement-marker-lex-rule := infl-ltow-rule & subj-agreement-lex-rule &
+1dl-excl-agreement-marker-lex-rule := infl-ltol-rule & subj-agreement-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1dual_excl ].
 
-1pl-incl-agreement-marker-lex-rule := infl-ltow-rule & subj-agreement-lex-rule &
+1pl-incl-agreement-marker-lex-rule := infl-ltol-rule & subj-agreement-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1dual_incl+1plural_incl ].
 
-1pl-excl-agreement-marker-lex-rule := infl-ltow-rule & subj-agreement-lex-rule &
+1pl-excl-agreement-marker-lex-rule := infl-ltol-rule & subj-agreement-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1dual_excl+1plural_excl ].
 
-2sg-agreement-marker-lex-rule := infl-ltow-rule & subj-agreement-lex-rule &
+2sg-agreement-marker-lex-rule := infl-ltol-rule & subj-agreement-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2nd ].
 
-2dl-agreement-marker-lex-rule := infl-ltow-rule & subj-agreement-lex-rule &
+2dl-agreement-marker-lex-rule := infl-ltol-rule & subj-agreement-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2dual ].
 
-2pl-agreement-marker-lex-rule := infl-ltow-rule & subj-agreement-lex-rule &
+2pl-agreement-marker-lex-rule := infl-ltol-rule & subj-agreement-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2dual+2plural ].
 
-3s-agreement-marker-lex-rule := const-ltow-rule & subj-agreement-lex-rule &
+3s-agreement-marker-lex-rule := const-ltol-rule & subj-agreement-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd ].
 
-3dl-subj-agreement-marker-lex-rule := infl-ltow-rule & subj-agreement-lex-rule &
+3dl-subj-agreement-marker-lex-rule := infl-ltol-rule & subj-agreement-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3dual ].
 
-3pl-subj-agreement-marker-lex-rule := infl-ltow-rule & subj-agreement-lex-rule &
+3pl-subj-agreement-marker-lex-rule := infl-ltol-rule & subj-agreement-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3dual+3plural ].
 
-object-agreement-lex-rule := lexeme-to-lexeme-rule & add-only-no-ccont-rule &
+object-agreement-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
   [ DTR transitive-verb-lex ].
-
-first-person-object-marker-lex-rule := infl-ltol-rule & object-agreement-lex-rule &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1st ].
-
-second-person-object-marker-lex-rule := infl-ltol-rule & object-agreement-lex-rule &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2nd ].
-
-third-person-object-marker-lex-rule := const-ltol-rule & object-agreement-lex-rule &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd ].
-
-light-verb-tense-markers-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
-  [ DTR object-agreement-lex-rule ].
 
 transitive-verb-lex := main-verb-lex & transitive-lex-item &
   [ INFLECTED -,
@@ -125,6 +100,21 @@ transitive-verb-lex := main-verb-lex & transitive-lex-item &
              [ LOCAL.CAT [ VAL [ SPR < >,
                                  COMPS < > ],
                            HEAD noun ] ] > ].
+
+first-person-object-marker-lex-rule := infl-ltow-rule & object-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1st ].
+
+second-person-object-marker-lex-rule := infl-ltow-rule & object-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2nd ].
+
+third-person-object-marker-lex-rule := const-ltow-rule & object-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd ].
+
+light-verb-tense-markers-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
+  [ DTR subj-agreement-lex-rule ].
+
+verb1-verb-lex := erg-nom-transitive-verb-lex &
+  [ INFLECTED - ].
 
 present-tense-lex-rule := light-verb-tense-markers-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E [ TENSE present,
@@ -161,6 +151,15 @@ aux-lex := verb-lex &
 ;;; Lexical types
 
 ;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
+  [ ARG-ST < #spr >,
+    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
+                           SUBJ < >,
+                           SPEC < >,
+                           SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det,
+                                   OPT + ] > ] ].
 
 noun :+ [ CASE case ].
 

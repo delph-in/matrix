@@ -109,11 +109,40 @@ Error: 39/56
 
 Problem:
 
-case slot can't take number slot as its input.  Tried fixing
-this and ran into ?bug with -lex-rule-dtr being inherited by
-noun-lex and the subtypes of noun-lex.
+case slot can't take number slot as its input.  Tried fixing this by
+adding possible input for noun-slot2 and ran into ?bug with
+-lex-rule-dtr being inherited by noun-lex and the subtypes of
+noun-lex.
+
+Tried removing this:
+  noun-slot1_opt=on
+
+Still having the same error, so trying putting this one back
+in and then having noun-slot2 only take noun-slot1 as input.
+
+  noun-slot1_opt=on
 
 
+also: not getting any parses of verbs without object markers
+because subject marker slot isn't available as input for
+tense marker.  (Or maybe because object marker isn't optional?)
+Try making the tense marker take the subject marker as an
+additional possible input, and run into same -lex-rule-dtr
+bug.
+
+Not sure why this is working now, but here's the current
+state of affairs:
+
+    verb-slot3_input1_type=verb-slot2
+    verb-slot3_input2_type=verb-slot1
+
+It doesn't make sense to make the object marker optional,
+because it only applies to tverbs as input.
+
+Current competence:
+Coverage: 14/30 46.7%
+Overgeneration: 3/26 11.5%
+Error: 14/56
 
 ----
 nyn:
