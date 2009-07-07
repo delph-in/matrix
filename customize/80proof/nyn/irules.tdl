@@ -23,11 +23,6 @@ present-continuous-prefix :=
 present-continuous-lex-rule.
 
 
-non-present-tense-prefix :=
-%prefix (* )
-non-present-tense-lex-rule.
-
-
 remote-past-marker-prefix :=
 %prefix (* ka-)
 remote-past-marker-lex-rule.

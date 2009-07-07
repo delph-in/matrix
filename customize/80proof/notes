@@ -116,5 +116,16 @@ for it:
     verb-slot2_input1_type=verb-slot6
   verb-slot3_name=remote-marker
 
+Safiyyah explained that this was intended to house an empty
+morpheme, so I added one.  Also added (per Safiyyah's instructions)
+verb-slot3 and verb-slot4 as possible inputs to verb-slot6.
+
+Now the grammar loads without errors!
+
+Results:
+
+Coverage: 0%
+Overgeneration: 0%
+Errors: 76/81
 
 

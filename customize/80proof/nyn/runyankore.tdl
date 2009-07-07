@@ -1,6 +1,6 @@
 ;;; Grammar of Runyankore
 ;;; created at:
-;;;     Tue Jul 07 04:40:30 UTC 2009
+;;;     Tue Jul 07 05:16:49 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -43,6 +43,18 @@ verb-lex := remote-marker-rule-dtr & lex-item &
     SYNSEM.LOCAL.CAT [ HEAD verb,
                        HC-LIGHT - ] ].
 
+main-verb-lex := yesterday-past-modified-verb-form-rule-dtr & verb-lex & basic-verb-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL [ CAT [ HEAD.AUX -,
+                         VAL [ SPR < >,
+                               SPEC < >,
+                               SUBJ < #subj > ] ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT.VAL [ SPR < >,
+                                     COMPS < > ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+
 present-universal-lex-rule := const-ltow-rule & present-tense-marker-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E [ TENSE present,
                                      ASPECT habitual ] ].
@@ -51,19 +63,21 @@ present-continuous-lex-rule := infl-ltow-rule & present-tense-marker-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E [ TENSE present,
                                      ASPECT continuous ] ].
 
-non-present-tense-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
+non-present-tense-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
   [ TRACK #track,
     DTR subject-marker-lex-rule &
         [ TRACK #track ] ].
 
+non-pres-tense-lex-rule := const-ltow-rule & non-present-tense-lex-rule.
+
 remote-marker-rule-dtr := avm.
 
-object-marker-lex-rule := remote-marker-rule-dtr & infl-ltow-rule & add-only-no-ccont-rule &
+object-marker-lex-rule := remote-marker-rule-dtr & infl-add-only-no-ccont-ltol-rule & subject-marker-rule-dtr &
   [ TRACK #track,
     DTR transitive-verb-lex &
         [ TRACK #track ] ].
 
-remote-marker-lex-rule := infl-add-only-no-ccont-ltol-rule &
+remote-marker-lex-rule := infl-add-only-no-ccont-ltol-rule & subject-marker-rule-dtr &
   [ TRACK.T-remote-marker -,
     DTR remote-marker-rule-dtr &
         [ TRACK.T-remote-marker + ] ].
@@ -79,18 +93,7 @@ track :+ [ T-remote-marker bool ].
 
 yesterday-past-modified-verb-form-rule-dtr := avm.
 
-main-verb-lex := yesterday-past-modified-verb-form-rule-dtr & verb-lex & basic-verb-lex &
-  [ SYNSEM.LOCAL [ CAT [ HEAD.AUX -,
-                         VAL [ SPR < >,
-                               SPEC < >,
-                               SUBJ < #subj > ] ],
-                   CONT.HOOK.XARG #xarg ],
-    ARG-ST.FIRST #subj &
-                 [ LOCAL [ CAT.VAL [ SPR < >,
-                                     COMPS < > ],
-                           CONT.HOOK.INDEX #xarg ] ] ].
-
-yesterday-past-modified-verb-form-lex-rule := infl-add-only-no-ccont-ltol-rule &
+yesterday-past-modified-verb-form-lex-rule := infl-add-only-no-ccont-ltol-rule & subject-marker-rule-dtr &
   [ TRACK.T-remote-marker -,
     DTR yesterday-past-modified-verb-form-rule-dtr &
         [ TRACK.T-remote-marker + ] ].
@@ -100,15 +103,6 @@ yesterday-past-marker-lex-rule := yesterday-past-modified-verb-form-lex-rule &
 
 modified-verb-form-marker-lex-rule := yesterday-past-modified-verb-form-lex-rule &
   [ SYNSEM.LOCAL.CAT.HEAD.FORM nonfinite ].
-
-transitive-verb-lex := main-verb-lex & transitive-lex-item &
-  [ INFLECTED -,
-    SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
-    ARG-ST < [ LOCAL.CAT.HEAD noun ],
-             #comps &
-             [ LOCAL.CAT [ VAL [ SPR < >,
-                                 COMPS < > ],
-                           HEAD noun ] ] > ].
 
 class9-obj-marker-lex-rule := object-marker-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.GEND class-9 ].
@@ -143,9 +137,11 @@ class5-obj-marker-lex-rule := object-marker-lex-rule &
                                                                  PER 3rd,
                                                                  GEND class-5 ] ].
 
+subject-marker-rule-dtr := avm.
+
 subject-marker-lex-rule := infl-add-only-no-ccont-ltol-rule &
   [ TRACK #track,
-    DTR verb-lex &
+    DTR subject-marker-rule-dtr &
         [ TRACK #track ] ].
 
 class1-3s-subj-marker-lex-rule := subject-marker-lex-rule &
@@ -209,6 +205,14 @@ aux-lex := verb-lex &
 intransitive-verb-lex := main-verb-lex & intransitive-lex-item &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
     ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].
+
+transitive-verb-lex := main-verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] > ].
 
 trans-verb-lex := transitive-verb-lex.
 
