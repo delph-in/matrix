@@ -34,6 +34,43 @@ Error in MOM-SUFFIX-MARKER-LEX-RULE:
                                                      INDEX
                                                      E)
 
+Repairs:
+
+Changed this:
+
+    verb-slot6_morph1_orth=-ku
+      verb-slot6_morph1_feat1_name=aspect
+      verb-slot6_morph1_feat1_value=mom-plus
+      verb-slot6_morph1_feat1_head=verb
+
+to this:
+
+    verb-slot6_morph1_orth=-ku
+      verb-slot6_morph1_feat1_name=aspect
+      verb-slot6_morph1_feat1_value=mom-plus
+      verb-slot6_morph1_feat1_head=verb
+
+Next problem:
+
+Undefined wild card `?I' in NON-SINGULAR-SUFFIX
+Undefined wild card `?M' in NON-SINGULAR-SUFFIX
+Undefined wild card `?I' in NON-SINGULAR-SUFFIX
+Nothing following character set character '?' in NON-SINGULAR-SUFFIX
+Error: no valid morphological patterns in NON-SINGULAR-SUFFIX: rule-ignored
+Undefined wild card `?A' in PLURAL-SUFFIX
+Undefined wild card `?M' in PLURAL-SUFFIX
+Undefined wild card `?I' in PLURAL-SUFFIX
+Nothing following character set character '?' in PLURAL-SUFFIX
+Error: no valid morphological patterns in PLURAL-SUFFIX: rule-ignored
+Undefined wild card `?A' in PERFECTIVE-MARKER-SUFFIX
+Undefined wild card `?K' in PERFECTIVE-MARKER-SUFFIX
+Undefined wild card `?U' in PERFECTIVE-MARKER-SUFFIX
+Nothing following character set character '?' in PERFECTIVE-MARKER-SUFFIX
+Error: no valid morphological patterns in PERFECTIVE-MARKER-SUFFIX: rule-ignored
+Undefined wild card `?I' in NEG-SUFFIX-SUFFIX
+Nothing following character set character '?' in NEG-SUFFIX-SUFFIX
+Error: no valid morphological patterns in NEG-SUFFIX-SUFFIX: rule-ignored
+
 
 
 ----
