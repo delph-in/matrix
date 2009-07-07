@@ -1,0 +1,27 @@
+7/6/09
+------
+
+Customized grammars from Safiyyah's choices files.
+hau, kal, and mal don't validate (but no red stars).
+
+First attempt at loading grammars.
+
+ute: 
+
+Invalid type ACCUSATIVE
+Unifications specified are invalid or do not unify
+Type ACCUSATIVE-LEX-RULE has an invalid constraint specification
+Invalid type NOMINATIVE
+Unifications specified are invalid or do not unify
+Type NOMINATIVE-LEX-RULE has an invalid constraint specification
+Error: Problems in type file
+
+jig:
+
+Redundancy involving NON-FEMININE
+NON-FEMININE: NEUTER is redundant - it is an ancestor of VEGETABLE 
+
+nyn:
+
+Cycle involving TRANSITIVE-VERB-LEX
+
