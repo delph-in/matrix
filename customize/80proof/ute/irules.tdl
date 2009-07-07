@@ -14,12 +14,12 @@ mom-present-lex-rule.
 
 
 non-singular-suffix :=
-%suffix (* -?Imi)
+%suffix (* -7Imi)
 non-singular-lex-rule.
 
 
 plural-suffix :=
-%suffix (* -?ami)
+%suffix (* -7ami)
 plural-lex-rule.
 
 
@@ -34,7 +34,7 @@ result-lex-rule.
 
 
 perfective-marker-suffix :=
-%suffix (* -ma?aku)
+%suffix (* -ma7aku)
 perfective-marker-lex-rule.
 
 
@@ -44,7 +44,7 @@ mom-suffix-marker-lex-rule.
 
 
 neg-suffix-suffix :=
-%suffix (* -wa?i)
+%suffix (* -wa7i)
 neg-suffix-lex-rule.
 
 

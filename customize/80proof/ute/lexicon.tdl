@@ -54,12 +54,12 @@ nukwi := non-momentus-verb-lex &
   [ STEM < "nukwi" >,
     SYNSEM.LKEYS.KEYREL.PRED "_run_v_rel" ].
 
-tIraqi%3Fi := momentus-verb-lex &
-  [ STEM < "tIraqi?i" >,
+tIraqi7i := momentus-verb-lex &
+  [ STEM < "tIraqi7i" >,
     SYNSEM.LKEYS.KEYREL.PRED "_dash_off_v_rel" ].
 
-wI%3Fi := mom-changeable-verb-lex &
-  [ STEM < "wI?i" >,
+wI7i := mom-changeable-verb-lex &
+  [ STEM < "wI7i" >,
     SYNSEM.LKEYS.KEYREL.PRED "_fall_v_rel" ].
 
 maga := non-mom-tran-verb-lex &

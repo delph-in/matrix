@@ -71,6 +71,10 @@ Undefined wild card `?I' in NEG-SUFFIX-SUFFIX
 Nothing following character set character '?' in NEG-SUFFIX-SUFFIX
 Error: no valid morphological patterns in NEG-SUFFIX-SUFFIX: rule-ignored
 
+Repairs:
+
+Replaced ? with 7 in choices and test suite file.  Grammar
+loads!
 
 
 ----

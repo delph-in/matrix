@@ -3,7 +3,7 @@
 3@unknown@formal@none@1@S@Author: Safiyyah Saleem@1@3@@ebender@6-7-2009
 4@unknown@formal@none@1@S@Date: February 5, 2009@1@4@@ebender@6-7-2009
 5@unknown@formal@none@1@S@Source a: Chemehuevi: A grammar and lexicon by Margaret L. Press, Linguistics volume 92@1@14@@ebender@6-7-2009
-6@unknown@formal@none@1@S@Source b: http://www.ethnologue.com/show_language.asp?code=ute@1@3@@ebender@6-7-2009
+6@unknown@formal@none@1@S@Source b: http://www.ethnologue.com/show_language.asp7code=ute@1@3@@ebender@6-7-2009
 7@unknown@formal@none@1@TD@Chemehuevi is a Uto-Aztecan language. According to Ethnologue, other dialects include Ute and Southern Paiute.@1@15@@ebender@6-7-2009
 8@unknown@formal@none@1@TD@Case-Nouns can be in the nominative or oblique case. Nominative is the default case. Press notes that final vowels are always dropped. Thus a for the noun stem "aipaci" the nominative surface form is "aipac." The oblique case marker is /-a/ for most nouns that do not end in /a/. For nouns that end in /a/, the oblique case marker is /-ja/. There are also nouns which can take either case marker and nonproductive case-markers for certain words. Since the final vowel is dropped, the sign that a noun is oblique is the reappearance of the final vowel of the stem. Thus "aipaci-a" is realized as "aipaci"(Press 53). The morpheme by morpheme line uses the original stem before final vowel deletion.@1@121@@ebender@6-7-2009
 9@unknown@formal@none@1@TD@Ex 1 illustrates a grammatical sentence with SOV word order. Based on a sentence from (Press 118) and vocab from (Press 120). Subjects can appear as enclitics that can attach to verbs or objects. I have not modeled that it the test suite.@1@43@@ebender@6-7-2009
@@ -78,31 +78,31 @@
 78@unknown@formal@none@1@S@aipaci-a nukwi-jI@1@2@@ebender@6-7-2009
 79@unknown@formal@none@1@S@boy-acc run-pres@1@2@@ebender@6-7-2009
 80@unknown@formal@none@1@S@'The boy is running.'@1@4@@ebender@6-7-2009
-81@unknown@formal@none@1@TD@Ex 9 illustrates an ungrammatical sentence where the singular animate subject is takes the non-singular marker /-?umi/ for animate nouns@1@20@@ebender@6-7-2009
+81@unknown@formal@none@1@TD@Ex 9 illustrates an ungrammatical sentence where the singular animate subject is takes the non-singular marker /-7umi/ for animate nouns@1@20@@ebender@6-7-2009
 82@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 83@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 84@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 85@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
-86@unknown@formal@none@1@S@aipac nukwijI?um@1@2@@ebender@6-7-2009
-87@unknown@formal@none@1@S@aipaci nukwi-jI-?Imi@1@2@@ebender@6-7-2009
+86@unknown@formal@none@1@S@aipac nukwijI7um@1@2@@ebender@6-7-2009
+87@unknown@formal@none@1@S@aipaci nukwi-jI-7Imi@1@2@@ebender@6-7-2009
 88@unknown@formal@none@1@S@boy.nom run-pres-non.sing@1@2@@ebender@6-7-2009
 89@unknown@formal@none@1@S@'The boy is running.'@1@4@@ebender@6-7-2009
-90@unknown@formal@none@1@TD@Ex 10 illustrates a grammatical sentence where the plural subject is takes the non-singular marker /-?umi/ for animate nouns. This is used to mark two or more. A different plural marker is used to mark three or more. Since pronouns (aside from first person inclusive) do not distinguish between dual and plural, plurals can combine with either.@1@57@@ebender@6-7-2009
+90@unknown@formal@none@1@TD@Ex 10 illustrates a grammatical sentence where the plural subject is takes the non-singular marker /-7umi/ for animate nouns. This is used to mark two or more. A different plural marker is used to mark three or more. Since pronouns (aside from first person inclusive) do not distinguish between dual and plural, plurals can combine with either.@1@57@@ebender@6-7-2009
 91@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 92@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 93@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
 94@unknown@formal@none@1@S@Phenomena: {c,tam, agr}@1@3@@ebender@6-7-2009
-95@unknown@formal@none@1@S@mam nukwijI?um@1@2@@ebender@6-7-2009
-96@unknown@formal@none@1@S@mamI nukwi-jI-?Imi@1@2@@ebender@6-7-2009
+95@unknown@formal@none@1@S@mam nukwijI7um@1@2@@ebender@6-7-2009
+96@unknown@formal@none@1@S@mamI nukwi-jI-7Imi@1@2@@ebender@6-7-2009
 97@unknown@formal@none@1@S@they run-pres-non.sing@1@2@@ebender@6-7-2009
 98@unknown@formal@none@1@S@'They(two) are running.'@1@3@@ebender@6-7-2009
-99@unknown@formal@none@1@TD@Ex 11 illustrates an ungrammatical sentence where the inanimate subject takes the non-singular marker /-?umi/ for animate nouns. This is used to mark two or more. Inanimate nouns are optionally marked for plurality do not combine with verbs that have the non-singular suffix.@1@43@@ebender@6-7-2009
+99@unknown@formal@none@1@TD@Ex 11 illustrates an ungrammatical sentence where the inanimate subject takes the non-singular marker /-7umi/ for animate nouns. This is used to mark two or more. Inanimate nouns are optionally marked for plurality do not combine with verbs that have the non-singular suffix.@1@43@@ebender@6-7-2009
 100@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 101@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 102@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 103@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
-104@unknown@formal@none@1@S@wii nukwijI?um@1@2@@ebender@6-7-2009
-105@unknown@formal@none@1@S@wii nukwi-jI-?Imi@1@2@@ebender@6-7-2009
+104@unknown@formal@none@1@S@wii nukwijI7um@1@2@@ebender@6-7-2009
+105@unknown@formal@none@1@S@wii nukwi-jI-7Imi@1@2@@ebender@6-7-2009
 106@unknown@formal@none@1@S@knife run-pres-non.sing@1@2@@ebender@6-7-2009
 107@unknown@formal@none@1@S@'The (two) knives are running.'@1@5@@ebender@6-7-2009
 108@unknown@formal@none@1@TD@Ex 12 illustrates a grammatical sentence where the inanimate subject does not combine with a verb that has the non-singular marker. This is used to mark two or more. Inanimate nouns are optionally marked for plurality do not combine with verbs that have the non-singular suffix.@1@46@@ebender@6-7-2009
@@ -119,8 +119,8 @@
 119@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 120@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
 121@unknown@formal@none@1@S@Phenomena: {c,tam, agr}@1@3@@ebender@6-7-2009
-122@unknown@formal@none@1@S@mam nukwijI?um@1@2@@ebender@6-7-2009
-123@unknown@formal@none@1@S@mamI nukwi-jI-?ami@1@2@@ebender@6-7-2009
+122@unknown@formal@none@1@S@mam nukwijI7um@1@2@@ebender@6-7-2009
+123@unknown@formal@none@1@S@mamI nukwi-jI-7ami@1@2@@ebender@6-7-2009
 124@unknown@formal@none@1@S@they run-pres-3pl@1@2@@ebender@6-7-2009
 125@unknown@formal@none@1@S@'They(two) are running.'@1@3@@ebender@6-7-2009
 126@unknown@formal@none@1@TD@Ex 14 illustrates an ungrammatical sentence where the plural subject combines with a verb that has both a pronominal enclitic attached instead of the plural marker an the non-singular marker. A verb can one or the other, not both. Here the enclitic comes first.@1@44@@ebender@6-7-2009
@@ -128,8 +128,8 @@
 128@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 129@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 130@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
-131@unknown@formal@none@1@S@mam nukwijI?am?Im@1@2@@ebender@6-7-2009
-132@unknown@formal@none@1@S@mamI nukwi-jI-?ami-?Imi@1@2@@ebender@6-7-2009
+131@unknown@formal@none@1@S@mam nukwijI7am7Im@1@2@@ebender@6-7-2009
+132@unknown@formal@none@1@S@mamI nukwi-jI-7ami-7Imi@1@2@@ebender@6-7-2009
 133@unknown@formal@none@1@S@they run-pres-3pl-non.sing@1@2@@ebender@6-7-2009
 134@unknown@formal@none@1@S@'They(two) are running.'@1@3@@ebender@6-7-2009
 135@unknown@formal@none@1@TD@Ex 15 illustrates an ungrammatical sentence where the plural subject combines with a verb that has both a pronominal enclitic attached instead of the plural marker an the non-singular marker. A verb can one or the other, not both. Here the enclitic comes second.@1@44@@ebender@6-7-2009
@@ -137,8 +137,8 @@
 137@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 138@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 139@unknown@formal@none@1@S@Phenomena: {agr}@1@2@@ebender@6-7-2009
-140@unknown@formal@none@1@S@mam nukwijI?Im?am@1@2@@ebender@6-7-2009
-141@unknown@formal@none@1@S@mamI nukwi-jI-?Imi-?ami@1@2@@ebender@6-7-2009
+140@unknown@formal@none@1@S@mam nukwijI7Im7am@1@2@@ebender@6-7-2009
+141@unknown@formal@none@1@S@mamI nukwi-jI-7Imi-7ami@1@2@@ebender@6-7-2009
 142@unknown@formal@none@1@S@they run-pres-3pl-non.sing@1@2@@ebender@6-7-2009
 143@unknown@formal@none@1@S@'They(two) are running.'@1@3@@ebender@6-7-2009
 144@unknown@formal@none@1@TD@Ex 16 illustrates an ungrammatical sentence where the object of a transitive verb is in the nominative case.@1@18@@ebender@6-7-2009
@@ -204,7 +204,7 @@
 204@unknown@formal@none@1@S@icI nukwi-jI@1@2@@ebender@6-7-2009
 205@unknown@formal@none@1@S@3.inanim.prox run-pres@1@2@@ebender@6-7-2009
 206@unknown@formal@none@1@S@'It is running.'@1@3@@ebender@6-7-2009
-207@unknown@formal@none@1@TD@Ex 23 illustrates agreement with a third person plural animate pronoun subject and a verb. For three or more, the suffix /-ka/ is added to verbs with both animate and inanimate subjects. It precedes tense markers. For animate subjects when /-ka/ is present the (non-sing) marker /-?um/ is optional. Here it is not given (Press 78).@1@56@@ebender@6-7-2009
+207@unknown@formal@none@1@TD@Ex 23 illustrates agreement with a third person plural animate pronoun subject and a verb. For three or more, the suffix /-ka/ is added to verbs with both animate and inanimate subjects. It precedes tense markers. For animate subjects when /-ka/ is present the (non-sing) marker /-7um/ is optional. Here it is not given (Press 78).@1@56@@ebender@6-7-2009
 208@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 209@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 210@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
@@ -213,13 +213,13 @@
 213@unknown@formal@none@1@S@mamI nukwi-ka-jI@1@2@@ebender@6-7-2009
 214@unknown@formal@none@1@S@3pl.anim.visible run-several-pres@1@2@@ebender@6-7-2009
 215@unknown@formal@none@1@S@'They are running.'@1@3@@ebender@6-7-2009
-216@unknown@formal@none@1@TD@Ex 24 illustrates agreement with a third person plural animate pronoun subject and a verb. For three or more, the suffix /-ka/ is added to verbs with both animate and inanimate subjects. It precedes tense markers. For animate subjects when /-ka/ is present the (non-sing) marker /-?um/ is optional. Here it is given (Press 78).@1@55@@ebender@6-7-2009
+216@unknown@formal@none@1@TD@Ex 24 illustrates agreement with a third person plural animate pronoun subject and a verb. For three or more, the suffix /-ka/ is added to verbs with both animate and inanimate subjects. It precedes tense markers. For animate subjects when /-ka/ is present the (non-sing) marker /-7um/ is optional. Here it is given (Press 78).@1@55@@ebender@6-7-2009
 217@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 218@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 219@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
 220@unknown@formal@none@1@S@Phenomena: {agr,pn}@1@2@@ebender@6-7-2009
-221@unknown@formal@none@1@S@mam nukwikajI?Im@1@2@@ebender@6-7-2009
-222@unknown@formal@none@1@S@mamI nukwi-ka-jI-?um@1@2@@ebender@6-7-2009
+221@unknown@formal@none@1@S@mam nukwikajI7Im@1@2@@ebender@6-7-2009
+222@unknown@formal@none@1@S@mamI nukwi-ka-jI-7um@1@2@@ebender@6-7-2009
 223@unknown@formal@none@1@S@3pl.anim.visible run-sev-pres-non.sing@1@2@@ebender@6-7-2009
 224@unknown@formal@none@1@S@'They are running.'@1@3@@ebender@6-7-2009
 225@unknown@formal@none@1@TD@Ex 25 illustrates agreement with a third person plural animate pronoun object and a verb. Verbs may optionally agree with their objects(Press 77). "When the object of a verb is three or more a suffix /-tu/ is added, preceding tenses (ordered optionally before or after /-ka/, if there is one" (Press 78).@1@52@@ebender@6-7-2009
@@ -240,7 +240,7 @@
 240@unknown@formal@none@1@S@nII mamI-a puni-kai-vII@1@3@@ebender@6-7-2009
 241@unknown@formal@none@1@S@1sg 3pl.anim.visible-obl look-result-past@1@3@@ebender@6-7-2009
 242@unknown@formal@none@1@S@I saw them.@1@3@@ebender@6-7-2009
-243@unknown@formal@none@1@TD@Ex 27 illustrates an ungrammatical use of the present tense for a [-mom] verb. Press classifies verbs by a feature she calls momentaneous. Verbs can be [-mom] "nukwi-run", [+mom] "tIrawi?i-dash off", or can take either aspectual meaning [*mom] "kwIhI-catch." This feature constrains the tense/aspect suffixes that can attach to a verb. The present tense suffix /-jI/ cannot attach to [- mom] verbs. Instead they take a zero suffix for present tense. For [- mom] verbs the present tense suffix /-ji/ must be used for present tense, they cannot take the zero present tense marker (Press 64).@1@96@@ebender@6-7-2009
+243@unknown@formal@none@1@TD@Ex 27 illustrates an ungrammatical use of the present tense for a [-mom] verb. Press classifies verbs by a feature she calls momentaneous. Verbs can be [-mom] "nukwi-run", [+mom] "tIrawi7i-dash off", or can take either aspectual meaning [*mom] "kwIhI-catch." This feature constrains the tense/aspect suffixes that can attach to a verb. The present tense suffix /-jI/ cannot attach to [- mom] verbs. Instead they take a zero suffix for present tense. For [- mom] verbs the present tense suffix /-ji/ must be used for present tense, they cannot take the zero present tense marker (Press 64).@1@96@@ebender@6-7-2009
 244@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 245@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 246@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
@@ -249,58 +249,58 @@
 249@unknown@formal@none@1@S@maNa nukwi@1@2@@ebender@6-7-2009
 250@unknown@formal@none@1@S@3sg.anim.visible run.pres@1@2@@ebender@6-7-2009
 251@unknown@formal@none@1@S@'He/She is running.'@1@3@@ebender@6-7-2009
-252@unknown@formal@none@1@TD@Ex 28 illustrates a grammatical use of the present tense for a [+mom] verb. Press classifies verbs by a feature she calls momentaneous. Verbs can be [-mom] "nukwi-run", [+mom] "tIrawi?i-dash off", or can take either aspectual meaning [*mom] "kwIhI-catch." This feature constrains the tense/aspect suffixes that can attach to a verb. The present tense suffix /-jI/ cannot attach to [- mom] verbs. Instead they take a zero suffix for present tense. For [- mom] verbs the present tense suffix /-ji/ must be used for present tense, they cannot take the zero present tense marker (Press 64).@1@96@@ebender@6-7-2009
+252@unknown@formal@none@1@TD@Ex 28 illustrates a grammatical use of the present tense for a [+mom] verb. Press classifies verbs by a feature she calls momentaneous. Verbs can be [-mom] "nukwi-run", [+mom] "tIrawi7i-dash off", or can take either aspectual meaning [*mom] "kwIhI-catch." This feature constrains the tense/aspect suffixes that can attach to a verb. The present tense suffix /-jI/ cannot attach to [- mom] verbs. Instead they take a zero suffix for present tense. For [- mom] verbs the present tense suffix /-ji/ must be used for present tense, they cannot take the zero present tense marker (Press 64).@1@96@@ebender@6-7-2009
 253@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 254@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 255@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
 256@unknown@formal@none@1@S@Phenomena: {agr,pn}@1@2@@ebender@6-7-2009
 257@unknown@formal@none@1@S@maN tIraqi@1@2@@ebender@6-7-2009
-258@unknown@formal@none@1@S@maNa tIraqi?i@1@2@@ebender@6-7-2009
+258@unknown@formal@none@1@S@maNa tIraqi7i@1@2@@ebender@6-7-2009
 259@unknown@formal@none@1@S@3sg.anim.visible dash.off.pres@1@2@@ebender@6-7-2009
 260@unknown@formal@none@1@S@'He/She dashes off.'@1@3@@ebender@6-7-2009
-261@unknown@formal@none@1@TD@Ex 29 illustrates an ungrammatical use of the present tense for a [+mom] verb. Press classifies verbs by a feature she calls momentaneous. Verbs can be [-mom] "nukwi-run", [+mom] "tIrawi?i-dash off", or can take either aspectual meaning [*mom] "kwIhI-catch." This feature constrains the tense/aspect suffixes that can attach to a verb. The present tense suffix /-jI/ cannot attach to [- mom] verbs. Instead they take a zero suffix for present tense. For [- mom] verbs the present tense suffix /-ji/ must be used for present tense, they cannot take the zero present tense marker (Press 64).@1@96@@ebender@6-7-2009
+261@unknown@formal@none@1@TD@Ex 29 illustrates an ungrammatical use of the present tense for a [+mom] verb. Press classifies verbs by a feature she calls momentaneous. Verbs can be [-mom] "nukwi-run", [+mom] "tIrawi7i-dash off", or can take either aspectual meaning [*mom] "kwIhI-catch." This feature constrains the tense/aspect suffixes that can attach to a verb. The present tense suffix /-jI/ cannot attach to [- mom] verbs. Instead they take a zero suffix for present tense. For [- mom] verbs the present tense suffix /-ji/ must be used for present tense, they cannot take the zero present tense marker (Press 64).@1@96@@ebender@6-7-2009
 262@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 263@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 264@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 265@unknown@formal@none@1@S@Phenomena: {agr,pn}@1@2@@ebender@6-7-2009
-266@unknown@formal@none@1@S@maN tIraqi?ij@1@2@@ebender@6-7-2009
-267@unknown@formal@none@1@S@maNa tIraqi?i-jI@1@2@@ebender@6-7-2009
+266@unknown@formal@none@1@S@maN tIraqi7ij@1@2@@ebender@6-7-2009
+267@unknown@formal@none@1@S@maNa tIraqi7i-jI@1@2@@ebender@6-7-2009
 268@unknown@formal@none@1@S@3sg.anim.visible dash.off-pres@1@2@@ebender@6-7-2009
 269@unknown@formal@none@1@S@'He/She dashes off.'@1@3@@ebender@6-7-2009
-270@unknown@formal@none@1@TD@Ex 30 illustrates one of the perfectives "finish". It is formed by adding /-ma?aku/. It occurs with with /-vII/-past and the perfective enclitic /-caa/ (Press 68).@1@26@@ebender@6-7-2009
+270@unknown@formal@none@1@TD@Ex 30 illustrates one of the perfectives "finish". It is formed by adding /-ma7aku/. It occurs with with /-vII/-past and the perfective enclitic /-caa/ (Press 68).@1@26@@ebender@6-7-2009
 271@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 272@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 273@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
 274@unknown@formal@none@1@S@Phenomena: {agr,pn}@1@2@@ebender@6-7-2009
-275@unknown@formal@none@1@S@maNaca nukwima?ak@1@2@@ebender@6-7-2009
-276@unknown@formal@none@1@S@maNa-caa nukwi-ma?aku@1@2@@ebender@6-7-2009
+275@unknown@formal@none@1@S@maNaca nukwima7ak@1@2@@ebender@6-7-2009
+276@unknown@formal@none@1@S@maNa-caa nukwi-ma7aku@1@2@@ebender@6-7-2009
 277@unknown@formal@none@1@S@3sg.anim.visible-perf run-finish@1@2@@ebender@6-7-2009
 278@unknown@formal@none@1@S@'He/She has finished running.'@1@4@@ebender@6-7-2009
-279@unknown@formal@none@1@TD@Ex 31 illustrates one of the perfectives "finish". It is formed by adding /-ma?aku/. It occurs with with /-vII/-past and the perfective enclitic /-caa/ (Press 68).@1@26@@ebender@6-7-2009
+279@unknown@formal@none@1@TD@Ex 31 illustrates one of the perfectives "finish". It is formed by adding /-ma7aku/. It occurs with with /-vII/-past and the perfective enclitic /-caa/ (Press 68).@1@26@@ebender@6-7-2009
 280@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 281@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 282@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
 283@unknown@formal@none@1@S@Phenomena: {agr,pn}@1@2@@ebender@6-7-2009
-284@unknown@formal@none@1@S@maN nukwima?akuvI@1@2@@ebender@6-7-2009
-285@unknown@formal@none@1@S@maNa nukwi-ma?aku-vII@1@2@@ebender@6-7-2009
+284@unknown@formal@none@1@S@maN nukwima7akuvI@1@2@@ebender@6-7-2009
+285@unknown@formal@none@1@S@maNa nukwi-ma7aku-vII@1@2@@ebender@6-7-2009
 286@unknown@formal@none@1@S@3sg.anim.visible run-finish-past@1@2@@ebender@6-7-2009
 287@unknown@formal@none@1@S@'He/She finished running.'@1@3@@ebender@6-7-2009
-288@unknown@formal@none@1@TD@Ex 32 illustrates an ungrammtical use of one of the perfectives "finish". It is formed by adding /-ma?aku/. It occurs with with /-vII/-past and the perfective enclitic /-caa/ (Press 68). Here the present tense /-ji/ is used (incorrectly).@1@38@@ebender@6-7-2009
+288@unknown@formal@none@1@TD@Ex 32 illustrates an ungrammtical use of one of the perfectives "finish". It is formed by adding /-ma7aku/. It occurs with with /-vII/-past and the perfective enclitic /-caa/ (Press 68). Here the present tense /-ji/ is used (incorrectly).@1@38@@ebender@6-7-2009
 289@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 290@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 291@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 292@unknown@formal@none@1@S@Phenomena: {tam}@1@2@@ebender@6-7-2009
-293@unknown@formal@none@1@S@maN nukwima?akujI@1@2@@ebender@6-7-2009
-294@unknown@formal@none@1@S@maNa nukwi-ma?aku-jI@1@2@@ebender@6-7-2009
+293@unknown@formal@none@1@S@maN nukwima7akujI@1@2@@ebender@6-7-2009
+294@unknown@formal@none@1@S@maNa nukwi-ma7aku-jI@1@2@@ebender@6-7-2009
 295@unknown@formal@none@1@S@3sg.anim.visible run-finish-pres@1@2@@ebender@6-7-2009
 296@unknown@formal@none@1@S@'He/She finished running.'@1@3@@ebender@6-7-2009
-297@unknown@formal@none@1@TD@Ex 33 illustrates an ungrammatical use of one of the perfectives "finish". It is formed by adding /-ma?aku/. It occurs with with /-vII/-past and the perfective enclitic /-caa/ (Press 68). Here neither the perfective enclitic /-caa/ nor the past /-vII/ is used.@1@42@@ebender@6-7-2009
+297@unknown@formal@none@1@TD@Ex 33 illustrates an ungrammatical use of one of the perfectives "finish". It is formed by adding /-ma7aku/. It occurs with with /-vII/-past and the perfective enclitic /-caa/ (Press 68). Here neither the perfective enclitic /-caa/ nor the past /-vII/ is used.@1@42@@ebender@6-7-2009
 298@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 299@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 300@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 301@unknown@formal@none@1@S@Phenomena: {agr,pn}@1@2@@ebender@6-7-2009
-302@unknown@formal@none@1@S@maN nukwima?ak@1@2@@ebender@6-7-2009
-303@unknown@formal@none@1@S@maNa nukwi-ma?aku@1@2@@ebender@6-7-2009
+302@unknown@formal@none@1@S@maN nukwima7ak@1@2@@ebender@6-7-2009
+303@unknown@formal@none@1@S@maNa nukwi-ma7aku@1@2@@ebender@6-7-2009
 304@unknown@formal@none@1@S@3sg.anim.visible run-finish@1@2@@ebender@6-7-2009
 305@unknown@formal@none@1@S@'He/She finished running.'@1@3@@ebender@6-7-2009
 306@unknown@formal@none@1@TD@Ex 34 illustrates a suffix that can be used to add [+mom] to (some) verbs. There are different ways of making a verb [+mom]@1@24@@ebender@6-7-2009
@@ -308,8 +308,8 @@
 308@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 309@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
 310@unknown@formal@none@1@S@Phenomena: {agr,pn}@1@2@@ebender@6-7-2009
-311@unknown@formal@none@1@S@maN wI?ik@1@2@@ebender@6-7-2009
-312@unknown@formal@none@1@S@maNa wI?i-ku@1@2@@ebender@6-7-2009
+311@unknown@formal@none@1@S@maN wI7ik@1@2@@ebender@6-7-2009
+312@unknown@formal@none@1@S@maNa wI7i-ku@1@2@@ebender@6-7-2009
 313@unknown@formal@none@1@S@3sg.anim.visible fall-mom.pres@1@2@@ebender@6-7-2009
 314@unknown@formal@none@1@S@'He/She falls.'@1@2@@ebender@6-7-2009
 315@unknown@formal@none@1@TD@Ex 35 illustrates an ungrammatical use of#Ex 34 illustrates a suffix that can be used to add [+mom] to (some) verbs. Once the suffix is added, the verb behaives like other [+mom] verbs and must take the zero suffix to mark present tense. Here the present tense marker /-jI/ is incorrectly used.@1@52@@ebender@6-7-2009
@@ -317,71 +317,71 @@
 317@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 318@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 319@unknown@formal@none@1@S@Phenomena: {agr,pn}@1@2@@ebender@6-7-2009
-320@unknown@formal@none@1@S@maN wI?ikuj@1@2@@ebender@6-7-2009
-321@unknown@formal@none@1@S@maNa wi?i-ku-jI@1@2@@ebender@6-7-2009
+320@unknown@formal@none@1@S@maN wI7ikuj@1@2@@ebender@6-7-2009
+321@unknown@formal@none@1@S@maNa wi7i-ku-jI@1@2@@ebender@6-7-2009
 322@unknown@formal@none@1@S@3sg.anim.visible fall-mom-pres@1@2@@ebender@6-7-2009
 323@unknown@formal@none@1@S@'He/She falls.' a suffix that can be used to add [+mom] to (some) verbs. There are different ways of making a verb [+mom]@1@23@@ebender@6-7-2009
-324@unknown@formal@none@1@TD@Ex 36 illustrates a grammatical negative sentence. The negative is usually formed by adding a negative suffix (wa?i)to the main verb. The negative marker /kacu/ may also appear in the clause. The negative does not occur with the present tense marker /-jI/.@1@42@@ebender@6-7-2009
+324@unknown@formal@none@1@TD@Ex 36 illustrates a grammatical negative sentence. The negative is usually formed by adding a negative suffix (wa7i)to the main verb. The negative marker /kacu/ may also appear in the clause. The negative does not occur with the present tense marker /-jI/.@1@42@@ebender@6-7-2009
 325@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 326@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 327@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
 328@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
 329@unknown@formal@none@1@S@maN nukwiwa@1@2@@ebender@6-7-2009
-330@unknown@formal@none@1@S@maNa nukwi-wa?i@1@2@@ebender@6-7-2009
+330@unknown@formal@none@1@S@maNa nukwi-wa7i@1@2@@ebender@6-7-2009
 331@unknown@formal@none@1@S@3sg.anim.visible run-neg@1@2@@ebender@6-7-2009
 332@unknown@formal@none@1@S@'He/She does not run.'@1@4@@ebender@6-7-2009
-333@unknown@formal@none@1@TD@Ex 37 illustrates an ungrammatical negative sentence. The negative is usually formed by adding a negative suffix (wa?i)to the main verb. The negative marker /kacu/ may also appear in the clause. The negative does not occur with the present tense marker /-jI/.@1@42@@ebender@6-7-2009
+333@unknown@formal@none@1@TD@Ex 37 illustrates an ungrammatical negative sentence. The negative is usually formed by adding a negative suffix (wa7i)to the main verb. The negative marker /kacu/ may also appear in the clause. The negative does not occur with the present tense marker /-jI/.@1@42@@ebender@6-7-2009
 334@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 335@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 336@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 337@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
 338@unknown@formal@none@1@S@maN nukwijIwa@1@2@@ebender@6-7-2009
-339@unknown@formal@none@1@S@maNa nukwi-jI-wa?i@1@2@@ebender@6-7-2009
+339@unknown@formal@none@1@S@maNa nukwi-jI-wa7i@1@2@@ebender@6-7-2009
 340@unknown@formal@none@1@S@3sg.anim.visible run-pres-neg@1@2@@ebender@6-7-2009
 341@unknown@formal@none@1@S@'He/She does not run.'@1@4@@ebender@6-7-2009
-342@unknown@formal@none@1@TD@Ex 38 illustrates a grammatical negative sentence. The negative is usually formed by adding a negative suffix (wa?i)to the main verb. The negative marker /kacu/ may also appear in the clause. The negative does not occur with the present tense marker /-jI/, but it does occur with the past tense marker /-vII/.@1@52@@ebender@6-7-2009
+342@unknown@formal@none@1@TD@Ex 38 illustrates a grammatical negative sentence. The negative is usually formed by adding a negative suffix (wa7i)to the main verb. The negative marker /kacu/ may also appear in the clause. The negative does not occur with the present tense marker /-jI/, but it does occur with the past tense marker /-vII/.@1@52@@ebender@6-7-2009
 343@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 344@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 345@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
 346@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
 347@unknown@formal@none@1@S@maN nukwivIIwa@1@2@@ebender@6-7-2009
-348@unknown@formal@none@1@S@maNa nukwi-vII-wa?i@1@2@@ebender@6-7-2009
+348@unknown@formal@none@1@S@maNa nukwi-vII-wa7i@1@2@@ebender@6-7-2009
 349@unknown@formal@none@1@S@3sg.anim.visible run-past-neg@1@2@@ebender@6-7-2009
 350@unknown@formal@none@1@S@'He/She did not run.'@1@4@@ebender@6-7-2009
-351@unknown@formal@none@1@TD@Ex 39 illustrates an ungrammatical negative sentence. The negative is usually formed by adding a negative suffix (wa?i)to the main verb. The negative marker /kacu/ may also appear in the clause. The past tense marker /-vII/ must precede the negative suffix.@1@41@@ebender@6-7-2009
+351@unknown@formal@none@1@TD@Ex 39 illustrates an ungrammatical negative sentence. The negative is usually formed by adding a negative suffix (wa7i)to the main verb. The negative marker /kacu/ may also appear in the clause. The past tense marker /-vII/ must precede the negative suffix.@1@41@@ebender@6-7-2009
 352@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 353@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 354@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 355@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
 356@unknown@formal@none@1@S@maN nukwiwavI@1@2@@ebender@6-7-2009
-357@unknown@formal@none@1@S@maNa nukwi-wa?i-vII@1@2@@ebender@6-7-2009
+357@unknown@formal@none@1@S@maNa nukwi-wa7i-vII@1@2@@ebender@6-7-2009
 358@unknown@formal@none@1@S@3sg.anim.visible run-past-neg@1@2@@ebender@6-7-2009
 359@unknown@formal@none@1@S@'He/She did not run.'@1@4@@ebender@6-7-2009
-360@unknown@formal@none@1@TD@Ex 40 illustrates a grammatical negative sentence. The negative is usually formed by adding a negative suffix (wa?i)to the main verb. The negative marker /kacu/ may also appear in the clause. The negative does not occur with the present tense marker /-jI/, but it does occur with the past tense marker /-vII/. Here the optional negative marker /kac/ is also used. /kac/ can appear almost anywhere in the sentence as long as the constraints on other morphemes are satisfied (Press 99). There was no discussion about a difference in meaning when /kac/ was included. The only comment was that it was often left out in colloquial speech. In the book, it is classified as an adverb.@1@116@@ebender@6-7-2009
+360@unknown@formal@none@1@TD@Ex 40 illustrates a grammatical negative sentence. The negative is usually formed by adding a negative suffix (wa7i)to the main verb. The negative marker /kacu/ may also appear in the clause. The negative does not occur with the present tense marker /-jI/, but it does occur with the past tense marker /-vII/. Here the optional negative marker /kac/ is also used. /kac/ can appear almost anywhere in the sentence as long as the constraints on other morphemes are satisfied (Press 99). There was no discussion about a difference in meaning when /kac/ was included. The only comment was that it was often left out in colloquial speech. In the book, it is classified as an adverb.@1@116@@ebender@6-7-2009
 361@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 362@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 363@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
 364@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
 365@unknown@formal@none@1@S@maN kac nukwivIIwa@1@3@@ebender@6-7-2009
-366@unknown@formal@none@1@S@maNa kac nukwi-vII-wa?i@1@3@@ebender@6-7-2009
+366@unknown@formal@none@1@S@maNa kac nukwi-vII-wa7i@1@3@@ebender@6-7-2009
 367@unknown@formal@none@1@S@3sg.anim.visible neg run-past-neg@1@3@@ebender@6-7-2009
 368@unknown@formal@none@1@S@'He/She did not run.'@1@4@@ebender@6-7-2009
-369@unknown@formal@none@1@TD@Ex 41 illustrates an ungrammatical negative sentence. The negative is usually formed by adding a negative suffix (wa?i)to the main verb. The negative marker /kacu/ may also appear in the clause. The negative does not occur with the present tense marker /-jI/, but it does occur with the past tense marker /-vII/. Here the optional negative marker /kac/ is also used. /kac/ can appear almost anywhere in the sentence as long as the constraints on other morphemes are satisfied (Press 99). One of the syntactic constraints is the a free subject must appear in sentence initial position. Here the negative marker /kac/ incorrectly precedes the subject /maNa/@1@107@@ebender@6-7-2009
+369@unknown@formal@none@1@TD@Ex 41 illustrates an ungrammatical negative sentence. The negative is usually formed by adding a negative suffix (wa7i)to the main verb. The negative marker /kacu/ may also appear in the clause. The negative does not occur with the present tense marker /-jI/, but it does occur with the past tense marker /-vII/. Here the optional negative marker /kac/ is also used. /kac/ can appear almost anywhere in the sentence as long as the constraints on other morphemes are satisfied (Press 99). One of the syntactic constraints is the a free subject must appear in sentence initial position. Here the negative marker /kac/ incorrectly precedes the subject /maNa/@1@107@@ebender@6-7-2009
 370@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 371@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 372@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 373@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
 374@unknown@formal@none@1@S@kac maN nukwivIIwa@1@3@@ebender@6-7-2009
-375@unknown@formal@none@1@S@kac maNa nukwi-vII-wa?i@1@3@@ebender@6-7-2009
+375@unknown@formal@none@1@S@kac maNa nukwi-vII-wa7i@1@3@@ebender@6-7-2009
 376@unknown@formal@none@1@S@neg 3sg.anim.visible run-past-neg@1@3@@ebender@6-7-2009
 377@unknown@formal@none@1@S@'He/She did not run.'@1@4@@ebender@6-7-2009
-378@unknown@formal@none@1@TD@Ex 42 illustrates a grammatical negative sentence. The negative is usually formed by adding a negative suffix (wa?i)to the main verb. The negative marker /kacu/ may also appear in the clause. The negative does not occur with the present tense marker /-jI/, but it does occur with the past tense marker /-vII/. Here the optional negative marker /kac/ is also used. /kac/ can appear almost anywhere in the sentence as long as the constraints on other morphemes are satisfied (Press 99). There was no discussion about a difference in meaning when /kac/ was included. The only comment was that it was often left out in colloquial speech. In the book, it is classified as an adverb.@1@116@@ebender@6-7-2009
+378@unknown@formal@none@1@TD@Ex 42 illustrates a grammatical negative sentence. The negative is usually formed by adding a negative suffix (wa7i)to the main verb. The negative marker /kacu/ may also appear in the clause. The negative does not occur with the present tense marker /-jI/, but it does occur with the past tense marker /-vII/. Here the optional negative marker /kac/ is also used. /kac/ can appear almost anywhere in the sentence as long as the constraints on other morphemes are satisfied (Press 99). There was no discussion about a difference in meaning when /kac/ was included. The only comment was that it was often left out in colloquial speech. In the book, it is classified as an adverb.@1@116@@ebender@6-7-2009
 379@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 380@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 381@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
 382@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
 383@unknown@formal@none@1@S@maN nukwivIIwa kac@1@3@@ebender@6-7-2009
-384@unknown@formal@none@1@S@maNa nukwi-vII-wa?i kac@1@3@@ebender@6-7-2009
+384@unknown@formal@none@1@S@maNa nukwi-vII-wa7i kac@1@3@@ebender@6-7-2009
 385@unknown@formal@none@1@S@3sg.anim.visible run-past-neg neg@1@3@@ebender@6-7-2009
 386@unknown@formal@none@1@S@'He/She did not run.'@1@4@@ebender@6-7-2009
 387@unknown@formal@none@1@TD@Ex 43 illustrates an ungrammatical negative sentence using /kac/. One of the syntactic constraints is that verbs must be either sentence final or the second to last word in the sentence. Only one full word may come after a verb (postfixes are allowed).@1@43@@ebender@6-7-2009
@@ -390,7 +390,7 @@
 390@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 391@unknown@formal@none@1@S@Phenomena: {neg}@1@2@@ebender@6-7-2009
 392@unknown@formal@none@1@S@aipac magavIwa puusi kac@1@4@@ebender@6-7-2009
-393@unknown@formal@none@1@S@aipaci maga-vII-wa?i puusi-a kac@1@4@@ebender@6-7-2009
+393@unknown@formal@none@1@S@aipaci maga-vII-wa7i puusi-a kac@1@4@@ebender@6-7-2009
 394@unknown@formal@none@1@S@boy gave-past-neg cat-OBL neg@1@4@@ebender@6-7-2009
 395@unknown@formal@none@1@S@'The boy did not give a cat.'@1@7@@ebender@6-7-2009
 396@unknown@formal@none@1@TD@Ex 44 illustrates a grammatical yes/no question. Yes-No questions are formed by adding the enclitic /-raa/ to the first word in the sentence. Since this test suite does not model bound subjects, this means that the question enclitic will always attach to the subject in this test suite. It is important to note that this is not truly always the case. When attached pronouns are present, /-raa/ precedes them. The past tense marker /-vII/ does not occur in questions (Press 85).@1@81@@ebender@6-7-2009
@@ -402,7 +402,7 @@
 402@unknown@formal@none@1@S@aipaci-raa puusi-a maga-jI@1@3@@ebender@6-7-2009
 403@unknown@formal@none@1@S@boy-ques cat-OBL@1@2@@ebender@6-7-2009
 404@unknown@formal@none@1@S@gave-pres@1@1@@ebender@6-7-2009
-405@unknown@formal@none@1@S@'Does/Did the boy give a cat?'@1@6@@ebender@6-7-2009
+405@unknown@formal@none@1@S@'Does/Did the boy give a cat7'@1@6@@ebender@6-7-2009
 406@unknown@formal@none@1@TD@Ex 45 illustrates an ungrammatical yes/no question. Yes-No questions are formed by adding the enclitic /-raa/ to the first word in the sentence. The past tense marker /-vII/ does not occur in questions (Press 85). Here it incorrectly does.@1@39@@ebender@6-7-2009
 407@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 408@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
@@ -411,7 +411,7 @@
 411@unknown@formal@none@1@S@aipacira magavI puusi@1@3@@ebender@6-7-2009
 412@unknown@formal@none@1@S@aipaci-raa maga-vII puusi-a@1@3@@ebender@6-7-2009
 413@unknown@formal@none@1@S@boy-ques gave-past cat-OBL@1@3@@ebender@6-7-2009
-414@unknown@formal@none@1@S@'Does/Did the boy give a cat?'@1@6@@ebender@6-7-2009
+414@unknown@formal@none@1@S@'Does/Did the boy give a cat7'@1@6@@ebender@6-7-2009
 415@unknown@formal@none@1@TD@Ex 46 illustrates an ungrammatical yes/no question. Here the question enclitic is incorrectly attached to the second word in the sentences.@1@21@@ebender@6-7-2009
 416@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 417@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
@@ -420,7 +420,7 @@
 420@unknown@formal@none@1@S@aipacira puusi magajIra@1@3@@ebender@6-7-2009
 421@unknown@formal@none@1@S@aipaci puusi-a-raa maga-jI@1@3@@ebender@6-7-2009
 422@unknown@formal@none@1@S@boy cat-OBL-ques gave-pres@1@3@@ebender@6-7-2009
-423@unknown@formal@none@1@S@'Does/Did the boy give a cat?'@1@6@@ebender@6-7-2009
+423@unknown@formal@none@1@S@'Does/Did the boy give a cat7'@1@6@@ebender@6-7-2009
 424@unknown@formal@none@1@TD@Ex 47 illustrates an ungrammatical yes/no question. Here the question enclitic is incorrectly attached to the third word in the sentences.@1@21@@ebender@6-7-2009
 425@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 426@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
@@ -429,14 +429,14 @@
 429@unknown@formal@none@1@S@aipacira puusi magajiraa@1@3@@ebender@6-7-2009
 430@unknown@formal@none@1@S@aipaci puusi-a maga-jI-raa@1@3@@ebender@6-7-2009
 431@unknown@formal@none@1@S@boy cat-OBL gave-pres-ques@1@3@@ebender@6-7-2009
-432@unknown@formal@none@1@S@'Does/Did the boy give a cat?'@1@6@@ebender@6-7-2009
+432@unknown@formal@none@1@S@'Does/Did the boy give a cat7'@1@6@@ebender@6-7-2009
 433@unknown@formal@none@1@TD@Ex 48 illustrates a grammatical S coordination. S coordination can be done with juxtaposition (Press 102).@1@16@@ebender@6-7-2009
 434@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 435@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 436@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 437@unknown@formal@none@1@S@Phenomena: {crd}@1@2@@ebender@6-7-2009
 438@unknown@formal@none@1@S@Im nukwij maN tIraqi@1@4@@ebender@6-7-2009
-439@unknown@formal@none@1@S@Imi nukwi-jI maNa tIraqi?i@1@4@@ebender@6-7-2009
+439@unknown@formal@none@1@S@Imi nukwi-jI maNa tIraqi7i@1@4@@ebender@6-7-2009
 440@unknown@formal@none@1@S@2sg run-pres 3sg.visible dash.off.pres@1@4@@ebender@6-7-2009
 441@unknown@formal@none@1@S@I am running and he dashes off.@1@7@@ebender@6-7-2009
 442@unknown@formal@none@1@TD@Ex 49 illustrates grammatical V coordination. V coordination does not occur with finite verbs. One of the verbs must take a subordinating suffix. Press notes that the frequent use of /-su/ "too" may make the meaning more coordinate than subordinate.@1@40@@ebender@6-7-2009
@@ -444,8 +444,8 @@
 444@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 445@unknown@formal@none@1@S@Judgment: g@1@2@@ebender@6-7-2009
 446@unknown@formal@none@1@S@Phenomena: {coord}@1@2@@ebender@6-7-2009
-447@unknown@formal@none@1@S@maN nukwiga wi?ivIs@1@3@@ebender@6-7-2009
-448@unknown@formal@none@1@S@maNa nukwi-gai wi?i-vII-su@1@3@@ebender@6-7-2009
+447@unknown@formal@none@1@S@maN nukwiga wi7ivIs@1@3@@ebender@6-7-2009
+448@unknown@formal@none@1@S@maNa nukwi-gai wi7i-vII-su@1@3@@ebender@6-7-2009
 449@unknown@formal@none@1@S@3sg.anim.visible run-sub fall-past-too@1@3@@ebender@6-7-2009
 450@unknown@formal@none@1@S@'He ran and fell.'@1@4@@ebender@6-7-2009
 451@unknown@formal@none@1@TD@Ex 50 illustrates an ungrammatical V coordination. V coordination does not occur with finite verbs. One of the verbs must take a subordinating suffix. Press notes that the frequent use of /-su/ "too" may make the meaning more coordinate than subordinate.@1@41@@ebender@6-7-2009
@@ -453,8 +453,8 @@
 453@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 454@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 455@unknown@formal@none@1@S@Phenomena: {coord}@1@2@@ebender@6-7-2009
-456@unknown@formal@none@1@S@maN nukwivI wi?ivIs@1@3@@ebender@6-7-2009
-457@unknown@formal@none@1@S@maNa nukwi-vII wi?i-vII-su@1@3@@ebender@6-7-2009
+456@unknown@formal@none@1@S@maN nukwivI wi7ivIs@1@3@@ebender@6-7-2009
+457@unknown@formal@none@1@S@maNa nukwi-vII wi7i-vII-su@1@3@@ebender@6-7-2009
 458@unknown@formal@none@1@S@3sg.anim.visible run-past fall-past-too@1@3@@ebender@6-7-2009
 459@unknown@formal@none@1@S@'He ran and fell.'@1@4@@ebender@6-7-2009
 460@unknown@formal@none@1@TD@Ex 51 illustrates grammatical V coordination. V coordination does not occur with finite verbs. One of the verbs must take a subordinating suffix. Press notes that the frequent use of /-su/ "too" may make the meaning more coordinate than subordinate.@1@40@@ebender@6-7-2009
@@ -462,8 +462,8 @@
 462@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 463@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 464@unknown@formal@none@1@S@Phenomena: {coord}@1@2@@ebender@6-7-2009
-465@unknown@formal@none@1@S@maN nukwi wi?ivIs@1@3@@ebender@6-7-2009
-466@unknown@formal@none@1@S@maNa nukwi wi?i-vII-su@1@3@@ebender@6-7-2009
+465@unknown@formal@none@1@S@maN nukwi wi7ivIs@1@3@@ebender@6-7-2009
+466@unknown@formal@none@1@S@maNa nukwi wi7i-vII-su@1@3@@ebender@6-7-2009
 467@unknown@formal@none@1@S@3sg.anim.visible run fall-past-too@1@3@@ebender@6-7-2009
 468@unknown@formal@none@1@S@'He ran and fell.'@1@4@@ebender@6-7-2009
 469@unknown@formal@none@1@TD@Ex 52 illustrates grammatical NP coordination. There are two ways to coordinate NPs /-gajaa/ is used when the two NPs are not considered to have engaged int the action together. This suffix also appears with just one NP. Press does not mention if three or more NPs can be coordinated. The other suffix is used for "with."@1@57@@ebender@6-7-2009
@@ -484,16 +484,16 @@
 484@unknown@formal@none@1@S@anni margareti uNa-gaja Johni-a puni-kai-vII@1@5@@ebender@6-7-2009
 485@unknown@formal@none@1@S@Ann Margaret John-OBL 1sg-OBL-too look-result-past@1@5@@ebender@6-7-2009
 486@unknown@formal@none@1@S@Ann and Margaret saw John.@1@5@@ebender@6-7-2009
-487@unknown@formal@none@1@TD@Ex 54 illustrates an ungrammatical use of the perfect aspect marker /-ma?aku/. It occurs with with /-vII/-past and the perfective enclitic /-caa/ (Press 68). The aspect marker must appear before the tense marker. Here it incorrectly appears after it.@1@39@@ebender@6-7-2009
+487@unknown@formal@none@1@TD@Ex 54 illustrates an ungrammatical use of the perfect aspect marker /-ma7aku/. It occurs with with /-vII/-past and the perfective enclitic /-caa/ (Press 68). The aspect marker must appear before the tense marker. Here it incorrectly appears after it.@1@39@@ebender@6-7-2009
 488@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 489@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 490@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 491@unknown@formal@none@1@S@Phenomena: {agr,pn}@1@2@@ebender@6-7-2009
-492@unknown@formal@none@1@S@maN nukwivIma?ak@1@2@@ebender@6-7-2009
-493@unknown@formal@none@1@S@maNa nukwi-vII-ma?aku@1@2@@ebender@6-7-2009
+492@unknown@formal@none@1@S@maN nukwivIma7ak@1@2@@ebender@6-7-2009
+493@unknown@formal@none@1@S@maNa nukwi-vII-ma7aku@1@2@@ebender@6-7-2009
 494@unknown@formal@none@1@S@3sg.anim.visible run-past-finish@1@2@@ebender@6-7-2009
 495@unknown@formal@none@1@S@'He/She finished running.'@1@3@@ebender@6-7-2009
-496@unknown@formal@none@1@TD@Ex 55 illustrates an ungrammatical use of /-ka/. For three or more, the suffix /-ka/ is added to verbs with both animate and inanimate subjects. It precedes tense markers. For animate subjects when /-ka/ is present the (non-sing) marker /-?um/ is optional. Here it is not given (Press 78). The tense marker incorrectly appears before /-ka/@1@56@@ebender@6-7-2009
+496@unknown@formal@none@1@TD@Ex 55 illustrates an ungrammatical use of /-ka/. For three or more, the suffix /-ka/ is added to verbs with both animate and inanimate subjects. It precedes tense markers. For animate subjects when /-ka/ is present the (non-sing) marker /-7um/ is optional. Here it is not given (Press 78). The tense marker incorrectly appears before /-ka/@1@56@@ebender@6-7-2009
 497@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 498@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 499@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
@@ -511,12 +511,12 @@
 511@unknown@formal@none@1@S@nII mamI puni-kai-tu-vII@1@3@@ebender@6-7-2009
 512@unknown@formal@none@1@S@1sg 3pl.anim.visible look-result-obj.pl-past@1@3@@ebender@6-7-2009
 513@unknown@formal@none@1@S@I saw them.@1@3@@ebender@6-7-2009
-514@unknown@formal@none@1@TD@Ex 57 illustrates one of the perfectives "finish". It is formed by adding /-ma?aku/. It occurs with with /-vII/-past and the perfective enclitic /-caa/ (Press 68). The aspect marker must precede the tense marker. Here it does not.@1@38@@ebender@6-7-2009
+514@unknown@formal@none@1@TD@Ex 57 illustrates one of the perfectives "finish". It is formed by adding /-ma7aku/. It occurs with with /-vII/-past and the perfective enclitic /-caa/ (Press 68). The aspect marker must precede the tense marker. Here it does not.@1@38@@ebender@6-7-2009
 515@unknown@formal@none@1@S@Source: author@1@2@@ebender@6-7-2009
 516@unknown@formal@none@1@S@Vetted: f@1@2@@ebender@6-7-2009
 517@unknown@formal@none@1@S@Judgment: u@1@2@@ebender@6-7-2009
 518@unknown@formal@none@1@S@Phenomena: {agr,pn}@1@2@@ebender@6-7-2009
-519@unknown@formal@none@1@S@maN nukwivIma?ak@1@2@@ebender@6-7-2009
-520@unknown@formal@none@1@S@maNa nukwi-vII-ma?aku@1@2@@ebender@6-7-2009
+519@unknown@formal@none@1@S@maN nukwivIma7ak@1@2@@ebender@6-7-2009
+520@unknown@formal@none@1@S@maNa nukwi-vII-ma7aku@1@2@@ebender@6-7-2009
 521@unknown@formal@none@1@S@3sg.anim.visible run-past-finish@1@2@@ebender@6-7-2009
 522@unknown@formal@none@1@S@'He/She finished running.'@1@3@@ebender@6-7-2009
