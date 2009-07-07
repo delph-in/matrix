@@ -34,8 +34,8 @@ section=gender
 
 section=case
 case-marking=nom-acc
-nom-acc-nom-case-name=nominative
-nom-acc-acc-case-name=accusative
+nom-acc-nom-case-name=nom
+nom-acc-acc-case-name=acc
 
 section=direct-inverse
 
