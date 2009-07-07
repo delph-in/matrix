@@ -1,0 +1,32 @@
+;;; Nouns
+
+ntu := class1-2-noun-lex &
+  [ STEM < "ntu" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_person_n_rel" ].
+
+zooba := class5-noun-lex &
+  [ STEM < "zooba" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sun_" ].
+
+;;; Verbs
+
+kwata := transitive-verb-lex &
+  [ STEM < "kwata" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_hold_v_rel" ].
+
+eshongora := intransitive-verb-lex &
+  [ STEM < "eshongora" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sing_v_rel" ].
+
+;;; Auxiliaries
+
+ba := perfect-aux-lex &
+  [ STEM < "ba" > ].
+
++voice := qpart-lex-item &
+  [ STEM < "+voice" > ].
+
+kandi := conj-lex &
+  [ STEM < "kandi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
+    CFORM "2" ].

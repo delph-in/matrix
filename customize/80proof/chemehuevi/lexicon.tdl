@@ -1,0 +1,32 @@
+;;; Nouns
+
+cat := noun1-noun-lex &
+  [ STEM < "cat" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_cat_n_rel" ].
+
+cake := noun2-noun-lex &
+  [ STEM < "cake" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_cake_n_rel" ].
+
+;;; Verbs
+
+sleeps := verb1-verb-lex &
+  [ STEM < "sleeps" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sleep_v_rel" ].
+
+bakes := verb2-verb-lex &
+  [ STEM < "bakes" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_bake_v_rel" ].
+
+;;; Auxiliaries
+
+is := foo-aux-lex &
+  [ STEM < "is" > ].
+
+a := det1-determiner-lex &
+  [ STEM < "a" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_indef_q_rel" ].
+
+the := det2-determiner-lex &
+  [ STEM < "the" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_def_q_rel" ].

@@ -1,0 +1,9 @@
+nominative-suffix :=
+%suffix (* NOM)
+nominative-lex-rule.
+
+
+accusative-suffix :=
+%suffix (* ACC)
+accusative-lex-rule.
+

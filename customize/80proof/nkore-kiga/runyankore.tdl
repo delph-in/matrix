@@ -1,0 +1,381 @@
+;;; Grammar of Runyankore
+;;; created at:
+;;;     Mon Jul 06 23:58:28 UTC 2009
+;;; based on Matrix customization system version of:
+;;;     Thu Jul  2 05:49:34 UTC 2009
+
+initial-vowel-prefix-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
+  [ TRACK #track,
+    DTR noun-lex &
+        [ TRACK #track ] ].
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
+  [ INFLECTED -,
+    ARG-ST < #spr >,
+    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
+                           SUBJ < >,
+                           SPEC < >,
+                           SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det,
+                                   OPT + ] > ] ].
+
+class1-intitial-vowel-prefix-lex-rule := initial-vowel-prefix-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND class-1,
+                                       NUM plural ] ].
+
+class2-initial-vowel-prefix-lex-rule := initial-vowel-prefix-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND class-2,
+                                       NUM plural ] ].
+
+class5-initial-vowel-prefix-lex-rule := initial-vowel-prefix-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND class-5 ].
+
+class9-initial-vowel-prefix-lex-rule := initial-vowel-prefix-lex-rule.
+
+present-tense-marker-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
+  [ TRACK #track,
+    DTR subject-marker-lex-rule &
+        [ TRACK #track ] ].
+
+verb-lex := remote-marker-rule-dtr & lex-item &
+  [ INFLECTED -,
+    TRACK.T-remote-marker +,
+    SYNSEM.LOCAL.CAT [ HEAD verb,
+                       HC-LIGHT - ] ].
+
+present-universal-lex-rule := const-ltow-rule & present-tense-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E [ TENSE present,
+                                     ASPECT habitual ] ].
+
+present-continuous-lex-rule := infl-ltow-rule & present-tense-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E [ TENSE present,
+                                     ASPECT continuous ] ].
+
+non-present-tense-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
+  [ TRACK #track,
+    DTR subject-marker-lex-rule &
+        [ TRACK #track ] ].
+
+remote-marker-rule-dtr := avm.
+
+object-marker-lex-rule := remote-marker-rule-dtr & infl-ltow-rule & add-only-no-ccont-rule &
+  [ TRACK #track,
+    DTR transitive-verb-lex &
+        [ TRACK #track ] ].
+
+remote-marker-lex-rule := infl-add-only-no-ccont-ltol-rule &
+  [ TRACK.T-remote-marker -,
+    DTR remote-marker-rule-dtr &
+        [ TRACK.T-remote-marker + ] ].
+
+remote-past-marker-lex-rule := remote-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE remote-past ].
+
+track := avm.
+
+word-or-lexrule :+ [ TRACK track ].
+
+track :+ [ T-remote-marker bool ].
+
+yesterday-past-modified-verb-form-rule-dtr := avm.
+
+main-verb-lex := yesterday-past-modified-verb-form-rule-dtr & verb-lex & basic-verb-lex &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.AUX -,
+                         VAL [ SPR < >,
+                               SPEC < >,
+                               SUBJ < #subj > ] ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT.VAL [ SPR < >,
+                                     COMPS < > ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+
+yesterday-past-modified-verb-form-lex-rule := infl-add-only-no-ccont-ltol-rule &
+  [ TRACK.T-remote-marker -,
+    DTR yesterday-past-modified-verb-form-rule-dtr &
+        [ TRACK.T-remote-marker + ] ].
+
+yesterday-past-marker-lex-rule := yesterday-past-modified-verb-form-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE yesterday-past ].
+
+modified-verb-form-marker-lex-rule := yesterday-past-modified-verb-form-lex-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM nonfinite ].
+
+transitive-verb-lex := main-verb-lex & transitive-lex-item & transitive-verb-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] > ].
+
+class9-obj-marker-lex-rule := object-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.GEND class-9 ].
+
+class1-1s-obj-marker-lex-rule := object-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PER 1st,
+                                                                 NUM singular,
+                                                                 GEND class-1 ] ].
+
+class1-2s-obj-marker-lex-rule := object-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                 PER 2nd,
+                                                                 GEND class-1 ] ].
+
+class1-3s-obj-marker-lex-rule := object-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PER 3rd,
+                                                                 NUM singular,
+                                                                 GEND class-1 ] ].
+
+class2-1pl-obj-marker-lex-rule := object-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                 PER 1st,
+                                                                 GEND class-2 ] ].
+
+class2-2-3pl-obj-marker-lex-rule := object-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                 PER non-1st,
+                                                                 GEND class-2 ] ].
+
+class5-obj-marker-lex-rule := object-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                 PER 3rd,
+                                                                 GEND class-5 ] ].
+
+subject-marker-lex-rule := infl-add-only-no-ccont-ltol-rule &
+  [ TRACK #track,
+    DTR verb-lex &
+        [ TRACK #track ] ].
+
+class1-3s-subj-marker-lex-rule := subject-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ GEND class-1,
+                                                                PER 3rd,
+                                                                NUM singular ] ].
+
+class1-1s-subj-marker-lex-rule := subject-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                PER 1st,
+                                                                GEND class-1 ] ].
+
+class1-2s-subj-marker-lex-rule := subject-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                PER 2nd,
+                                                                GEND class-1 ] ].
+
+class2-1pl-subj-marker-lex-rule := subject-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                PER 1st,
+                                                                GEND class-2 ] ].
+
+class2-2pl-subj-marker-lex-rule := subject-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                PER 2nd,
+                                                                GEND class-2 ] ].
+
+class2-3pl-subj-marker-lex-rule := subject-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                PER 3rd,
+                                                                GEND class-2 ] ].
+
+class5-subj-marker-lex-rule := subject-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ GEND class-5,
+                                                                NUM singular,
+                                                                PER 3rd ] ].
+
+class9-subj-marker-lex-rule := subject-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                PER 3rd,
+                                                                GEND class-9 ] ].
+
+;;; Lexical types
+
+;;; Nouns
+
+class1-2-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND class-1+class-2 ].
+
+class5-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND class-5 ].
+
+;;; Verbs
+
+head :+ [ AUX bool,
+    FORM form ].
+
+aux-lex := verb-lex &
+  [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].
+
+intransitive-verb-lex := main-verb-lex & intransitive-lex-item & intransitive-verb-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].
+
+;;; Auxiliaries
+
+; Somewhat surprisingly, this inherits from basic-two-arg, so
+; that the non-local features are amalgamated from subj, the
+; lexical verb complement, but not the other complements, if any.
+
+arg-comp-aux := aux-lex & basic-two-arg &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #subj >,
+                             COMPS < #comps . #vcomps >,
+                             SPR < >,
+                             SPEC < > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST < #subj &
+             [ LOCAL [ CONT.HOOK.INDEX #xarg,
+                       CAT [ VAL [ SPR < >,
+                                   COMPS < > ],
+                             HEAD noun ] ] ],
+             #comps &
+             [ LIGHT +,
+               LOCAL [ CAT [ VAL [ SUBJ < [  ] >,
+                                   COMPS #vcomps ],
+                             HEAD verb ],
+                       CONT.HOOK.XARG #xarg ] ] > ].
+
+; Note that raise-sem-lex-item assumes the first complement is
+; where the HOOK comes from.  It's not clear to me how you'd
+; tell that you had an argument composition auxiliary if it
+; wasn't appearing adjacent to the verb.
+
+arg-comp-aux-no-pred := arg-comp-aux & raise-sem-lex-item &
+  [ ARG-ST < [  ],
+             [ LOCAL.CAT.HEAD.AUX - ] > ].
+
+perfect-aux-lex := arg-comp-aux-no-pred &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E.ASPECT perfective,
+                   CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM nonfinite ] ].
+
+png :+ [ PER person,
+    NUM number,
+    GEND gender ].
+
+;;; Person
+
+person := *top*.
+1st := person.
+non-1st := person.
+2nd := non-1st.
+3rd := non-1st.
+
+;;; Number
+
+number := *top*.
+singular := number.
+plural := number.
+
+;;; Gender
+
+gender := *top*.
+class-5 := gender.
+class-9 := gender.
+class-1+class-2 := gender.
+class-1 := class-1+class-2.
+class-2 := class-1+class-2.
+
+;;; Form
+
+form := *top*.
+nonfinite := form.
+finite := form.
+
+;;; Tense
+
+present := tense.
+past := tense.
+future := tense.
+remote-past := past.
+yesterday-past := past.
+today-past := past.
+
+;;; Aspect
+
+continuous := aspect.
+habitual := aspect.
+perfective := aspect.
+
+;;; Phrasal types
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+; The head of head-comp-phrase can't be: ['comp']
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
+  [ SYNSEM.LOCAL.CAT.HEAD +nvjrpdmo ].
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
+
+; comp-head-phrase requires things that are [ HEAD comp ].
+
+comp-head-phrase := basic-head-1st-comp-phrase & head-final &
+  [ SYNSEM.LOCAL.CAT.HEAD comp ].
+
+;;; Coordination Strategy 1
+
+n1-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+n1-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+n1-bottom-coord-rule := infl-bottom-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1",
+    SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel",
+    DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
+
+;;; Coordination Strategy 2
+
+vp2-top-coord-rule := basic-vp-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "2" ].
+
+vp2-mid-coord-rule := basic-vp-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "2" ].
+
+vp2-bottom-coord-rule := conj-first-bottom-coord-rule & vp-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "2" ].
+
+;;; Coordination Strategy 2
+
+s2-top-coord-rule := basic-s-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "2" ].
+
+s2-mid-coord-rule := basic-s-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "2" ].
+
+s2-bottom-coord-rule := conj-first-bottom-coord-rule & s-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "2" ].
+
+; We treat question particles as complementizers.
+; Here is the lexical type for complementizers.
+
+complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
+  [ SYNSEM.LOCAL.CAT [ HEAD comp &
+                            [ MOD < > ],
+                       VAL [ SPR < >,
+                             SUBJ < >,
+                             COMPS < #comp > ] ],
+    ARG-ST < #comp &
+             [ LOCAL.CAT [ MC +,
+                           HEAD verb,
+                           VAL [ SUBJ < >,
+                                 COMPS < > ] ] ] > ].
+
+; Subtype for question particles. Constrains SF to ques.
+
+qpart-lex-item := complementizer-lex-item &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].
