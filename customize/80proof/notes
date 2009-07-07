@@ -144,6 +144,31 @@ Coverage: 14/30 46.7%
 Overgeneration: 3/26 11.5%
 Error: 14/56
 
+Next issue:
+
+Missing lexical entry for ngiji/see.  Added like this:
+
+    verb1_stem2_orth=ngiji
+    verb1_stem2_pred=_see_v_rel
+
+
+But that's still not enough. Tried making obj marker (which
+apparently comes after the subject marker in these examples)
+take subject marker rules as input, but that runs into problems
+with the tense lex rules which don't want obj marker input.
+... because of this:
+
+    verb-slot3_input1_type=verb-slot2
+    verb-slot3_input1_type=verb-slot1
+
+changed to:
+
+    verb-slot3_input1_type=verb-slot2
+    verb-slot3_input2_type=verb-slot1
+
+That fixed three errors, all on ungrammatical examples.
+
+
 ----
 nyn:
 ----

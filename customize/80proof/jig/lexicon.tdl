@@ -54,6 +54,10 @@ ngunja := verb1-verb-lex &
   [ STEM < "ngunja" >,
     SYNSEM.LKEYS.KEYREL.PRED "_burn_v_rel" ].
 
+ngiji := verb1-verb-lex &
+  [ STEM < "ngiji" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ].
+
 manyan := verb2-verb-lex &
   [ STEM < "manyan" >,
     SYNSEM.LKEYS.KEYREL.PRED "_sleep_v_rel" ].
