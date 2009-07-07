@@ -133,3 +133,97 @@ Repairs:
 Added noun type for class 9 and stem for stick.
 Fixed _n_rel on _sun_n_rel
 
+---
+hau
+---
+
+Problem:
+
+Cycle involving TRANSITIVE-VERB-LEX
+
+Repairs:
+
+Changed the following:
+
+
+  verb1_name=transitive -> verb1_name=trans
+  verb2_name=intransitive -> verb2_name=intrans
+
+New problem:
+
+Error in 1PL-COMPLETIVE-WSP-TAM-AUX-LEX:
+   No possible type for features (PNG E) at path (SYNSEM
+                                                  LOCAL
+                                                  CAT
+                                                  VAL
+                                                  COMPS
+                                                  FIRST
+                                                  LOCAL
+                                                  CONT
+                                                  HOOK
+                                                  INDEX)
+Error in 1S-COMPLETIVE-WSP-TAM-AUX-LEX:
+   No possible type for features (PNG E) at path (SYNSEM
+                                                  LOCAL
+                                                  CAT
+                                                  VAL
+                                                  COMPS
+                                                  FIRST
+                                                  LOCAL
+                                                  CONT
+                                                  HOOK
+                                                  INDEX)
+Error in 2FS-COMPLETIVE-TAM-WSP-AUX-LEX:
+   No possible type for features (PNG E) at path (SYNSEM
+                                                  LOCAL
+                                                  CAT
+                                                  VAL
+                                                  COMPS
+                                                  FIRST
+                                                  LOCAL
+                                                  CONT
+                                                  HOOK
+                                                  INDEX)
+Error in 2MS-COMPLETIVE-WSP-TAM-AUX-LEX:
+   No possible type for features (E PNG) at path (SYNSEM
+                                                  LOCAL
+                                                  CAT
+                                                  VAL
+                                                  COMPS
+                                                  FIRST
+                                                  LOCAL
+                                                  CONT
+                                                  HOOK
+                                                  INDEX)
+Error in 2PL-COMPLETIVE-WSP-TAM-AUX-LEX:
+   No possible type for features (PNG E) at path (SYNSEM
+                                                  LOCAL
+                                                  CAT
+                                                  VAL
+                                                  COMPS
+                                                  FIRST
+                                                  LOCAL
+                                                  CONT
+                                                  HOOK
+                                                  INDEX)
+Error in 3PL-COMPLETIVE-WSP-TAM-AUX-LEX:
+   No possible type for features (PNG E) at path (SYNSEM
+                                                  LOCAL
+                                                  CAT
+                                                  VAL
+                                                  COMPS
+                                                  FIRST
+                                                  LOCAL
+                                                  CONT
+                                                  HOOK
+                                                  INDEX)
+Error in 4PL-COMPLETIVE-WSP-TAM-AUX-LEX:
+   No possible type for features (E PNG) at path (SYNSEM
+                                                  LOCAL
+                                                  CAT
+                                                  VAL
+                                                  COMPS
+                                                  FIRST
+                                                  LOCAL
+                                                  CONT
+                                                  HOOK
