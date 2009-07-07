@@ -166,7 +166,30 @@ changed to:
     verb-slot3_input1_type=verb-slot2
     verb-slot3_input2_type=verb-slot1
 
-That fixed three errors, all on ungrammatical examples.
+That fixed three errors, all on ungrammatical examples.  In fact,
+all remaining errors are on ungrammatical examples, and the changes
+noted above also increased ambiguity.  So maybe they are actually
+regressions. *** Check this ***
+
+Next issue:
+
+-rni (and probably other case markers) weren't taking
+pronouns as input.  Tried fixing like this:
+
+    noun-slot2_input2_type=noun4
+    noun-slot2_input3_type=noun5
+    noun-slot2_input4_type=noun6
+    noun-slot2_input5_type=noun7
+    noun-slot2_input6_type=noun8
+    noun-slot2_input7_type=noun9
+    noun-slot2_input8_type=noun10
+    noun-slot2_input9_type=noun11
+
+Competence:
+
+Coverage: 25/30 83.3%
+Overgeneration: 6/26 23.1%
+Error: 10/56
 
 
 ----

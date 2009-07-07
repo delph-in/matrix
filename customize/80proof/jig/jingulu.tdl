@@ -1,6 +1,6 @@
 ;;; Grammar of jingulu
 ;;; created at:
-;;;     Tue Jul 07 23:22:19 UTC 2009
+;;;     Tue Jul 07 23:36:55 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -30,6 +30,42 @@ plural-marker-lex-rule := number-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM non-sg ].
 
 case-marker-rule-dtr := avm.
+
+1s-pronoun-noun-lex := case-marker-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 1singular,
+                                       ANIMACY anim ] ].
+
+1dl-incl-pronoun-noun-lex := case-marker-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 1dual_incl,
+                                       ANIMACY anim ] ].
+
+1dl-excl-pronoun-noun-lex := case-marker-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 1dual_excl,
+                                       ANIMACY anim ] ].
+
+1pl-incl-pronoun-noun-lex := case-marker-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 1dual_incl+1plural_incl,
+                                       ANIMACY anim ] ].
+
+1plu-excl-noun-lex := case-marker-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1dual_excl+1plural_excl ].
+
+2s-pronoun-noun-lex := case-marker-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2singular ].
+
+2dl-noun-lex := case-marker-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2dual ].
+
+2pl-pronoun-noun-lex := case-marker-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2dual+2plural ].
 
 case-marker-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
   [ DTR case-marker-rule-dtr ].
@@ -155,34 +191,6 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
                                    OPT + ] > ] ].
 
 noun :+ [ CASE case ].
-
-1s-pronoun-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 1singular,
-                                       ANIMACY anim ] ].
-
-1dl-incl-pronoun-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 1dual_incl,
-                                       ANIMACY anim ] ].
-
-1dl-excl-pronoun-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 1dual_excl,
-                                       ANIMACY anim ] ].
-
-1pl-incl-pronoun-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 1dual_incl+1plural_incl,
-                                       ANIMACY anim ] ].
-
-1plu-excl-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1dual_excl+1plural_excl ].
-
-2s-pronoun-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2singular ].
-
-2dl-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2dual ].
-
-2pl-pronoun-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2dual+2plural ].
 
 ;;; Verbs
 
