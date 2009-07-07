@@ -10,11 +10,11 @@ zooba := class5-noun-lex &
 
 ;;; Verbs
 
-kwata := transitive-verb-lex &
+kwata := trans-verb-lex &
   [ STEM < "kwata" >,
     SYNSEM.LKEYS.KEYREL.PRED "_hold_v_rel" ].
 
-eshongora := intransitive-verb-lex &
+eshongora := intrans-verb-lex &
   [ STEM < "eshongora" >,
     SYNSEM.LKEYS.KEYREL.PRED "_sing_v_rel" ].
 

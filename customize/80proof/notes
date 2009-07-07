@@ -76,6 +76,11 @@ Repairs:
 Replaced ? with 7 in choices and test suite file.  Grammar
 loads!
 
+Results:
+
+Coverage: 10/27 positive examples, 37%
+Overgeneration: 3/30 negative examples, 10%
+Error: Unanalyzed lexical items in 26 examples
 
 ----
 jig:
@@ -89,4 +94,27 @@ nyn:
 ----
 
 Cycle involving TRANSITIVE-VERB-LEX
+
+Repairs:
+
+Changed the following:
+
+
+  verb1_name=transitive -> verb1_name=trans
+  verb2_name=intransitive -> verb2_name=intrans
+
+Next problem:
+
+Error: pattern with no affixation ignored in NON-PRESENT-TENSE-PREFIX
+Error: no valid morphological patterns in NON-PRESENT-TENSE-PREFIX: rule-ignored
+
+The issue is that there is a slot with no morphemes defined
+for it:
+
+  verb-slot2_name=non-present-tense
+  verb-slot2_order=before
+    verb-slot2_input1_type=verb-slot6
+  verb-slot3_name=remote-marker
+
+
 
