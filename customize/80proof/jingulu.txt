@@ -91,7 +91,7 @@ Vetted: f
 Judgment: u
 Phenomena: q
 uliyijanga ngunjaju jani karalu
-uliyija-nga ngunja-ju janikaralu
+uliyija-nga ngunja-ju jani karalu
 sun-erg burn-do ques ground
 The sun is burning the ground. 
 
