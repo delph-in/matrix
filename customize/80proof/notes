@@ -304,6 +304,26 @@ Errors 35
 
 Realized that negation morpheme had not been added.  This will account for some of the errors.
 
+EB:
+
+Changed inputs for verb-slot4 from this:
+
+	verb-slot4_input1_type=iverb
+	verb-slot4_input2_type=tverb
+	
+to this:
+
+	verb-slot4_input1_type=verb
+	verb-slot4_input2_type=verb-slot5
+
+My thinking was that "any verb" (i.e. just verb) would be less
+likely to have the extra supertype problem, and that verb-slot5 was
+motiviated in parallelism to the remote past marker. This results
+in a grammar that loads (yay!) and has the same coverage/overgeneration
+as above.
+
+   
+
   
 ---
 hau

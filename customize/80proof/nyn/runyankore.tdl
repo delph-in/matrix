@@ -1,8 +1,8 @@
 ;;; Grammar of Runyankore
 ;;; created at:
-;;;     Wed Jul 08 04:57:28 UTC 2009
+;;;     Wed Jul 08 17:06:29 UTC 2009
 ;;; based on Matrix customization system version of:
-;;;     Tue Jul  7 16:33:47 UTC 2009
+;;;     unknown time
 
 initial-vowel-prefix-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
   [ TRACK #track,
@@ -37,24 +37,11 @@ present-tense-marker-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
     DTR subject-marker-lex-rule &
         [ TRACK #track ] ].
 
-verb-lex := remote-marker-rule-dtr & subject-marker-rule-dtr & lex-item &
+verb-lex := remote-marker-rule-dtr & yesterday-past-modified-verb-form-rule-dtr & subject-marker-rule-dtr & lex-item &
   [ INFLECTED -,
     TRACK.T-non-present-tense-dummy -,
     SYNSEM.LOCAL.CAT [ HEAD verb,
                        HC-LIGHT - ] ].
-
-main-verb-lex := yesterday-past-modified-verb-form-rule-dtr & verb-lex & basic-verb-lex &
-  [ INFLECTED -,
-    TRACK.T-non-present-tense-dummy -,
-    SYNSEM.LOCAL [ CAT [ HEAD.AUX -,
-                         VAL [ SPR < >,
-                               SPEC < >,
-                               SUBJ < #subj > ] ],
-                   CONT.HOOK.XARG #xarg ],
-    ARG-ST.FIRST #subj &
-                 [ LOCAL [ CAT.VAL [ SPR < >,
-                                     COMPS < > ],
-                           CONT.HOOK.INDEX #xarg ] ] ].
 
 present-universal-lex-rule := const-ltow-rule & present-tense-marker-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E [ TENSE present,
@@ -82,7 +69,7 @@ track :+ [ T-non-present-tense-dummy bool ].
 
 remote-marker-rule-dtr := avm.
 
-object-marker-lex-rule := remote-marker-rule-dtr & infl-add-only-no-ccont-ltol-rule &
+object-marker-lex-rule := remote-marker-rule-dtr & yesterday-past-modified-verb-form-rule-dtr & infl-add-only-no-ccont-ltol-rule &
   [ TRACK #track,
     DTR transitive-verb-lex &
         [ TRACK #track ] ].
@@ -211,6 +198,17 @@ class9-noun-lex := noun-lex &
 
 head :+ [ AUX bool,
     FORM form ].
+
+main-verb-lex := verb-lex & basic-verb-lex &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.AUX -,
+                         VAL [ SPR < >,
+                               SPEC < >,
+                               SUBJ < #subj > ] ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT.VAL [ SPR < >,
+                                     COMPS < > ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
 
 aux-lex := verb-lex &
   [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].
