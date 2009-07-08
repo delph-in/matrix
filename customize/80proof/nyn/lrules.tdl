@@ -1,3 +1,9 @@
 present-universal-lex := present-universal-lex-rule.
 
-non-pres-tense-lex := non-pres-tense-lex-rule.
+non-present-tense-lex := non-present-tense-lex-rule.
+
+modified-verb-no-tense-lex := modified-verb-no-tense-lex-rule.
+
+non-remote-past-marker-lex := non-remote-past-marker-lex-rule.
+
+non-yesterday-past-lex := non-yesterday-past-lex-rule.

@@ -502,7 +502,7 @@ c1.vwl-c1.prfx-man remote.past-be c1.3sg.subj-sing-modified
 #Ex 49 demonstrates an ugrammatical use of the perfect aspect. Here the obligatory subject prefix is missing from the main verb.
 Source: author
 Vetted: f
-Judgment: g
+Judgment: u
 Phenomena: {tam}
 omushaija akaba eshongora-ire
 o-mu-shaija a-ka-ba eshongora-ire

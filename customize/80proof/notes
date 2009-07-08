@@ -236,6 +236,75 @@ Repairs:
 Added noun type for class 9 and stem for stick.
 Fixed _n_rel on _sun_n_rel
 
+
+SS-think that the grammar is not working because the tense lexical rules are 
+incorrect.  As discussed in the meeting, I changed the tense lexical rules so that 
+each had an extra rule without a morpheme that marked all the other tenses.
+
+Coverage : 0%
+Overgeneration: 0%
+Errors: 65/81
+
+Added missing lexical items:
+kazi class 1 woman_n_rel
+shaija class 1 _man_n_rel
+renga intransitive _set_v_rel
+
+Did interactive unification on the first test item and found that the class was that
+the subject was marked as plural and the verb agreement marker was singular. 
+This was incorrect in the choices file.  Changed
+
+     noun-slot1_morph1_feat2_value=plural
+to
+     noun-slot1_morph1_feat2_value=singular
+
+Ran grammar again (after deleting the subject-marker-lex-rule from main-verb-lex again)
+
+Coverage: 28.6%
+Overgeneration: 3.8%
+Errors: 40/81
+
+
+
+Found another lexical item that was missing
+zaana intransitive _play_v_rel
+
+Well-formed and 0 parses: 12
+11 of these grammatical items that are not parsing are not expected to parse given
+the current system.
+
+Examples 2 and 3 demonstrate OSV and SOV word orders which are possible in addition
+to the standard SVO.  
+
+Examples 12, 13, 14, 15, 16 demonstrate subject dropping.  The reference grammar 
+stated that overt pronouns are always emphatic.  Pro-drop is normal, so I did not
+include pronouns in the test suite.  (Maybe this should be done for the next go round)
+
+Examples 37 and 40 have non-standard SOV word order to demonstrate the object marker
+Object markers do not occur if the direct object follows the verb.
+
+Example 49 was mistakenly labeled as grammatical it was meant to be an ungrammatical 
+example demonstrating that the both the main verb and auxliary require subject markers
+. I changed this in the test-suite and made a new item  file and placed it in tsdb/skeletons/nyn.
+
+Example 66 demonstrates a form of coordination that the system does not do
+
+Example 50 is the only that that I think the system should be able to handle
+The problem is that for the perfect both the aux and the main verb must be marked for 
+subject.  The way that the rules are currently set up the main verb is being marked
+for univ-present and the aux is marked for continuous-present. I am going to change the rules so that there is one lexeme-to-word rule which will only apply to something that has the modified form or yesterday-past-tense.
+
+Running the grammar again and actually doing interactive unification instead of 
+guessing at the problem.  It seems that the aux is not able to take the cont.pres
+because it conflicts with the perfective.
+
+Coverage 33%
+Overgeneration 3.7 %
+Errors 35
+
+Realized that negation morpheme had not been added.  This will account for some of the errors.
+
+  
 ---
 hau
 ---

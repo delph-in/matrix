@@ -4,6 +4,14 @@ ntu := class1-2-noun-lex &
   [ STEM < "ntu" >,
     SYNSEM.LKEYS.KEYREL.PRED "_person_n_rel" ].
 
+shaija := class1-2-noun-lex &
+  [ STEM < "shaija" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_man_n_rel" ].
+
+kazi := class1-2-noun-lex &
+  [ STEM < "kazi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_woman_n_rel" ].
+
 zooba := class5-noun-lex &
   [ STEM < "zooba" >,
     SYNSEM.LKEYS.KEYREL.PRED "_sun_n_rel" ].
@@ -21,6 +29,14 @@ kwata := trans-verb-lex &
 eshongora := intrans-verb-lex &
   [ STEM < "eshongora" >,
     SYNSEM.LKEYS.KEYREL.PRED "_sing_v_rel" ].
+
+renga := intrans-verb-lex &
+  [ STEM < "renga" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_set_v_rel" ].
+
+zaana := intrans-verb-lex &
+  [ STEM < "zaana" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_play_v_rel" ].
 
 ;;; Auxiliaries
 
