@@ -208,6 +208,37 @@ Coverage: 25/30 = 83.3%
 Overgeneration: 4/26 = 15.4%
 Error: 10/56
 
+Next issue:
+
+There is spurious ambiguity in the current jig grammar because the
+tense lexical rules can take the verb as a daughter directly.  This
+looks like a customization bug (from the choices file, I don't think
+this should happen).  In addition, however, the object markers are
+effectively optional, and I don't think this is intended. The problem
+is that the order, when both are present/overt is
+subject-object-tense.  Since intransitives don't need object markers,
+the tense rules have to be able to attach directly to subject markers
+in the case of intransitive verbs.  BUT: With transitive verbs, the
+object markers are presumably required.  (At least, I'm guessing so.
+The ambiguity is arising because the third person objects are marked
+with zeros...)
+
+One solution is to make two sets of subject markers, one for
+transitives and one for intransitives.  Then the tense marker rules
+could attach to object markers or intranstive subject markers.  What I
+do in the Wambaya grammar (not possible through the customization
+system) is to put an zero-marked "intransitive" marker in the object
+marker slot, requiring an empty COMPS list.
+
+A complication, though, is some ungrammatical examples illustrating
+incompatibility of 1st and 2nd person subject markers with certain
+object markers.  I can't tell from the notes if this is because those
+combinations of subjects and objects are just ineffable, or if "I see
+you" would be expressed some other way.  If they are just ineffable,
+it would be simple enough to say that the object markers also put some
+constraints on the subjects of the verbs they attach to.  Another
+solution is to make separate slots for the 1sg and 2nd subject markers
+and have the object markers disallow them as input.
 
 
 
