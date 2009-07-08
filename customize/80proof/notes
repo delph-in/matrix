@@ -192,6 +192,25 @@ Overgeneration: 6/26 23.1%
 Error: 10/56
 
 
+Next issue:
+
+Overgeneration of 1/2 subject agreement markers with
+3rd person subjects.  The problem here is that the
+common nouns weren't specified as third person in the
+choices file.  Fixed like this (for each of noun1-3):
+
+    noun1_feat2_name=pernum
+    noun1_feat2_value=3rd
+
+Resulting comptence figures:
+
+Coverage: 25/30 = 83.3%
+Overgeneration: 4/26 = 15.4%
+Error: 10/56
+
+
+
+
 ----
 nyn:
 ----

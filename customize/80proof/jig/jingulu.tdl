@@ -1,6 +1,6 @@
 ;;; Grammar of jingulu
 ;;; created at:
-;;;     Tue Jul 07 23:36:55 UTC 2009
+;;;     Wed Jul 08 22:59:25 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -8,17 +8,20 @@ number-rule-dtr := avm.
 
 noun1-noun-lex := number-rule-dtr & case-marker-rule-dtr & noun-lex &
   [ INFLECTED -,
-    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND feminine ].
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND feminine,
+                                       PERNUM 3rd ] ].
 
 noun2-noun-lex := number-rule-dtr & case-marker-rule-dtr & noun-lex &
   [ INFLECTED -,
     SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND neuter,
-                                       ANIMACY inam ] ].
+                                       ANIMACY inam,
+                                       PERNUM 3rd ] ].
 
 noun3-noun-lex := number-rule-dtr & case-marker-rule-dtr & noun-lex &
   [ INFLECTED -,
     SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND masculine,
-                                       ANIMACY anim ] ].
+                                       ANIMACY anim,
+                                       PERNUM 3rd ] ].
 
 number-lex-rule := infl-add-only-no-ccont-ltol-rule & case-marker-rule-dtr &
   [ DTR number-rule-dtr ].
