@@ -1,6 +1,6 @@
 ;;; Grammar of Malayalam
 ;;; created at:
-;;;     Mon Jul 13 23:31:21 UTC 2009
+;;;     Mon Jul 13 23:37:35 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -57,7 +57,7 @@ forma-tense-rule-dtr := avm.
 nom-acc-trans-verb-lex := forma-tense-rule-dtr & past-present-negative-rule-dtr & question-lex-rule-rule-dtr & nom-acc-transitive-verb-lex &
   [ INFLECTED - ].
 
-dat-intrans-verb-lex := forma-tense-rule-dtr & past-present-negative-rule-dtr & question-lex-rule-rule-dtr & transitive-verb-lex &
+dat-intrans-verb-lex := forma-tense-rule-dtr & past-present-negative-rule-dtr & question-lex-rule-rule-dtr & intransitive-verb-lex &
   [ INFLECTED -,
     SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD.CASE dat ].
 
