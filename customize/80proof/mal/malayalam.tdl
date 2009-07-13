@@ -1,6 +1,6 @@
 ;;; Grammar of Malayalam
 ;;; created at:
-;;;     Mon Jul 13 23:09:48 UTC 2009
+;;;     Mon Jul 13 23:31:21 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -61,7 +61,7 @@ dat-intrans-verb-lex := forma-tense-rule-dtr & past-present-negative-rule-dtr & 
   [ INFLECTED -,
     SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD.CASE dat ].
 
-forma-tense-lex-rule := infl-add-only-no-ccont-ltol-rule & past-present-negative-rule-dtr & question-lex-rule-rule-dtr &
+forma-tense-lex-rule := infl-ltow-rule & add-only-no-ccont-rule & past-present-negative-rule-dtr & question-lex-rule-rule-dtr &
   [ DTR forma-tense-rule-dtr ].
 
 forma-past-tense-marker-lex-rule := forma-tense-lex-rule &
@@ -79,7 +79,7 @@ aux-lex := formb-past-tense-rule-dtr & past-present-negative-rule-dtr & question
   [ INFLECTED -,
     SYNSEM.LOCAL.CAT.HEAD.AUX + ].
 
-formb-past-tense-lex-rule := infl-add-only-no-ccont-ltol-rule & past-present-negative-rule-dtr & question-lex-rule-rule-dtr &
+formb-past-tense-lex-rule := infl-ltow-rule & add-only-no-ccont-rule & past-present-negative-rule-dtr & question-lex-rule-rule-dtr &
   [ DTR formb-past-tense-rule-dtr ].
 
 formb-past-tense-marker-lex-rule := formb-past-tense-lex-rule &
@@ -88,17 +88,17 @@ formb-past-tense-marker-lex-rule := formb-past-tense-lex-rule &
 formb-present-tense-marker-lex-rule := formb-past-tense-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE present ].
 
-infinitive-lex-rule := infl-add-only-no-ccont-ltol-rule &
+infinitive-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
   [ DTR verb-lex ].
-
-infinitive-marker-lex-rule := infinitive-lex-rule.
-
-negative-marker-lex-rule := infl-ltow-rule & cont-change-only-lex-rule &
-  [ DTR infinitive-lex-rule ].
 
 verb-lex := tense-aspect-rule-dtr & lex-item &
   [ INFLECTED -,
     SYNSEM.LOCAL.CAT.HEAD verb ].
+
+infinitive-marker-lex-rule := infinitive-lex-rule.
+
+negative-marker-lex-rule := infl-cont-change-only-ltol-rule &
+  [ DTR infinitive-lex-rule ].
 
 ; This lexical rule adds the neg_r_rel to the verb's
 ; 	          RELS list.  It is instantiated by a spelling-changing
@@ -125,7 +125,7 @@ negative-infl-marker-lex-rule := negative-marker-lex-rule &
 
 past-present-negative-rule-dtr := avm.
 
-past-present-negative-lex-rule := infl-ltow-rule & cont-change-only-lex-rule &
+past-present-negative-lex-rule := infl-cont-change-only-ltol-rule &
   [ DTR past-present-negative-rule-dtr ].
 
 ; This lexical rule adds the neg_r_rel to the verb's

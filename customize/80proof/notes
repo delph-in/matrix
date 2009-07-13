@@ -543,3 +543,53 @@ Added stem for "fall":
 #58, 59 don't parse because affix-marked coordination
 is not supported for phrases (NP, VP, S)
 
+Something very puzzling here:
+
+TSNLP(3): (lkb::do-parse-tty "atE cirikk-tu")
+Error: 
+Rule PAST_VERB returned from morph analyser is undefined (error in grammar
+       loading?)
+
+There is nothing called "past_verb" anywhere in the
+.tdl, so I have now idea how the morph analyzer is getting
+that. Even tried restarting the LKB to make sure it
+wasn't left over from some other grammar.
+
+Found the culprit: We'd left in an irregs.tab file initalized
+with an example from English:
+
+"
+ate PAST_VERB eat
+"
+
+Not sure if it's legit to remove this or not.
+
+Coverage: 10/39 25.6%
+Overgeneration: 2/37 5.4%
+Errors: 22
+
+Problem with this example:
+
+kuTTi amma-e viLi-ccu
+child.nom mother-acc call-past
+The child called the mother.
+
+
+appears to be that the past tense rule is ltol, i.e.,
+viLi-ccu is [INFLECTED -].
+
+Fixed that by making verb-slot4 and verb-slot5 (negation
+markers) optional.
+
+  verb-slot4_opt=on
+  verb-slot5_opt=on
+
+Coverage 29/39 74.4%
+Overgeneration 2/37 5.4%
+Errors: 24
+
+That seems to have introduced a new error for this example (#65):
+
+kuTTi cirikk-uka-aaNe-irunnu
+child.nom laugh-infinitive-imperfect-past
+'The child was laughing.'
