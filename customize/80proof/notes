@@ -477,3 +477,34 @@ Error in 4PL-COMPLETIVE-WSP-TAM-AUX-LEX:
                                                   LOCAL
                                                   CONT
                                                   HOOK
+
+---
+mal
+---
+
+Choices file doesn't validate, but doesn't leave any red stars.
+Trying customize-one.py led to the system spinning.
+
+Problem was disjunctive gender value on noun12: inanimate, non-rational.
+Changed that to just inanimate, and got a grammar that loaded, but
+with a cycle on non-rational, because noun10 still had that disjunctive
+value.  Change that to just inanimate, and got on to next problem.
+
+Cycle involving NOM-ACC-TRANSITIVE-VERB-LEX
+
+Changed:
+
+  verb1_name=nom-acc-transitive
+
+to:
+
+  verb1_name=nom-acc-trans
+
+... and made similar changes for all the verb type names.
+
+Grammar loads!
+
+Coverage: 10/39 25.6%
+Overgeneration: 2/37 5.4%
+Errors: 29
+

@@ -1,0 +1,84 @@
+;;; Nouns
+
+kuTTi := animate-nouns-noun-lex &
+  [ STEM < "kuTTi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_child_n_rel" ].
+
+amma := animate-nouns-noun-lex &
+  [ STEM < "amma" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_mother_n_rel" ].
+
+raamaan := animate-nouns-noun-lex &
+  [ STEM < "raamaan" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_name_n_rel" ].
+
+pustakam := inanimate-nouns-noun-lex &
+  [ STEM < "pustakam" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_book_n_rel" ].
+
+Naan := 1s-pronoun-noun-lex &
+  [ STEM < "Naan" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+Nammal := 1pl-incl-pronoun-noun-lex &
+  [ STEM < "Nammal" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+NaNNal := 1pl-excl-pronoun-noun-lex &
+  [ STEM < "NaNNal" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+nii := 2s-pronoun-noun-lex &
+  [ STEM < "nii" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+niNNal := 2pl-pronoun-noun-lex &
+  [ STEM < "niNNal" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+avan := 3s-masc-pronoun-noun-lex &
+  [ STEM < "avan" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+avaL := 3s-fem-pronoun-noun-lex &
+  [ STEM < "avaL" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+atE := 3s-neuter-pronoun-noun-lex &
+  [ STEM < "atE" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+avar := 3pl-rational-pronoun-noun-lex &
+  [ STEM < "avar" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+ava := 3pl-non-human-pronoun-noun-lex &
+  [ STEM < "ava" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+;;; Verbs
+
+viLi := nom-acc-trans-verb-lex &
+  [ STEM < "viLi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_call_v_rel" ].
+
+cirikk := nom-intrans-verb-lex &
+  [ STEM < "cirikk" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_laugh_v_rel" ].
+
+paRa := nom-soc-trans-verb-lex &
+  [ STEM < "paRa" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_tell_v_rel" ].
+
+veedani := dat-intrans-verb-lex &
+  [ STEM < "veedani" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_feelpain_v_rel" ].
+
+;;; Auxiliaries
+
+ceyy := aux1-aux-lex &
+  [ STEM < "ceyy" > ].
+
+oru := indefinite-article-determiner-lex &
+  [ STEM < "oru" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_indef_det_rel" ].
