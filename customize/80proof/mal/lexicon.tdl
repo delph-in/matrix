@@ -8,8 +8,8 @@ amma := animate-nouns-noun-lex &
   [ STEM < "amma" >,
     SYNSEM.LKEYS.KEYREL.PRED "_mother_n_rel" ].
 
-raamaan := animate-nouns-noun-lex &
-  [ STEM < "raamaan" >,
+raaman := animate-nouns-noun-lex &
+  [ STEM < "raaman" >,
     SYNSEM.LKEYS.KEYREL.PRED "_name_n_rel" ].
 
 pustakam := inanimate-nouns-noun-lex &
@@ -62,9 +62,17 @@ viLi := nom-acc-trans-verb-lex &
   [ STEM < "viLi" >,
     SYNSEM.LKEYS.KEYREL.PRED "_call_v_rel" ].
 
+vaayi := nom-acc-trans-verb-lex &
+  [ STEM < "vaayi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_read_v_rel" ].
+
 cirikk := nom-intrans-verb-lex &
   [ STEM < "cirikk" >,
     SYNSEM.LKEYS.KEYREL.PRED "_laugh_v_rel" ].
+
+viiZ := nom-intrans-verb-lex &
+  [ STEM < "viiZ" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_fall_v_rel" ].
 
 paRa := nom-soc-trans-verb-lex &
   [ STEM < "paRa" >,

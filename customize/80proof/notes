@@ -508,3 +508,38 @@ Coverage: 10/39 25.6%
 Overgeneration: 2/37 5.4%
 Errors: 29
 
+Added stem for "read":
+
+    verb1_stem2_orth=vaayi
+    verb1_stem2_pred=_read_v_rel
+
+Coverage: 10/39 25.6%
+Overgeneration: 2/37 5.4%
+Errors: 25
+
+Changed spelling of one stem:
+
+    noun1_stem3_orth=raamaan
+    noun1_stem3_pred=_name_n_rel
+
+    noun1_stem3_orth=raaman
+    noun1_stem3_pred=_name_n_rel
+
+Coverage: 10/39 25.6%
+Overgeneration: 2/37 5.4%
+Errors: 23
+
+#56 not parsing because coordination is
+not fully retrofitted to new morphotactics. In particular,
+infl-bottom-coord-rule requires that the daughter be
+[INFLECTED -], but the daughter in this case has
+gone through a lexeme-to-word-rule.  
+
+Added stem for "fall":
+
+    verb2_stem2_orth=viiZ
+    verb2_stem2_pred=_fall_v_rel
+
+#58, 59 don't parse because affix-marked coordination
+is not supported for phrases (NP, VP, S)
+
