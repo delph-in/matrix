@@ -240,7 +240,11 @@ constraints on the subjects of the verbs they attach to.  Another
 solution is to make separate slots for the 1sg and 2nd subject markers
 and have the object markers disallow them as input.
 
-
+7/14/09: use "requires" and/or "other features" to let the object
+marking rules select for the transitive verbs.  *** Interesting
+interaction *** not yet considered in the customization system:
+lexical rules that care about valence.  cf Wambaya TAM is sensitive to
+png on subject & presence/absence of object.
 
 ----
 nyn:
@@ -477,6 +481,8 @@ Error in 4PL-COMPLETIVE-WSP-TAM-AUX-LEX:
                                                   LOCAL
                                                   CONT
                                                   HOOK
+
+Next: hack choices file to put that on the subject.
 
 ---
 mal
