@@ -966,3 +966,19 @@ marking, so the grammar is apparently correctly ruling it
 out.  Replace with correct grammatical example? Also add
 correct grammatical example?  Also, the 2s pronoun should
 be illit, not illi.
+
+More error analysis:
+
+#Ex 7  demonstrates that an intransitive verb takes a subject in the absolutive case.  (I am not confident that the top line shows the proper spelling according to source b, if a verb base ends in a consonant "p" is used instead of "v".) Vocabulary for "qimmiq/dog" and "qilut/bark" taken from a:280
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {word order, case, agr}
+qimmiq qilutpuq
+qimmiq qilut-vu-q
+dog.abs bark-indic-3s
+'The dog barked.'
+
+The grammar thinks that qilut-vu-q is not fully inflected.  Apparently
+the same problem with 10.
+
