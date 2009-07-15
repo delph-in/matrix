@@ -82,13 +82,13 @@ hàdiizà taa dafà-CForm ruwaa
 Hadiza(3fs) 3fs.COM boil-CForm water
 Hadiza boiled water.
 
-# Example 8 3ms completive verb with mandatory weak subject pronoun. 
+# Example 8 3ms completive verb with mandatory weak subject pronoun. Note: Edited by EB to change koomà to koomàa. 
 Source: {a:569,c}
 Vetted: s
 Judgment: g
 Phenomena: {tam, agreement}
-Muusaa yaa koomà gidàa
-Muusaa yaa koomà-CForm gidàa
+Muusaa yaa koomàa gidàa
+Muusaa yaa koomàa-CForm gidàa
 Musa.3ms 3ms.COM return-CForm home
 Musa returned home.
 

@@ -491,6 +491,84 @@ coverage 1/38 2.6%
 overgeneration 0
 error 49
 
+Added lexical entry for gidàa (house).
+
+    noun1_stem11_orth=gidàa
+    noun1_stem11_pred=_house_n_rel
+
+coverage 1/38 2.6%
+overgeneration 0
+error 45
+
+Added hyphen to suffix BFORM:
+
+    verb-slot1_morph2_orth=-BFORM
+
+.. no change
+
+At least some examples we're losing because
+of incorporated pronouns/object prodrop, e.g.:
+
+# Example 30 Fourth person negative-completive. Negative-Completive is the negative counterpart for both the completive and preterite.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {tam, agreement, negation}
+bà à san sù ba 
+bà à san-BForm-su_ ba 
+NEG 4pl know them NEG
+ do not know them.
+
+This one is not parsing, apparently because of the spelling
+of the verb:
+
+# Example 8 3ms completive verb with mandatory weak subject pronoun. 
+Source: {a:569,c}
+Vetted: s
+Judgment: g
+Phenomena: {tam, agreement}
+Muusaa yaa koomà gidàa
+Muusaa yaa koomà-CForm gidàa
+Musa.3ms 3ms.COM return-CForm home
+Musa returned home.
+
+Changing verb to koomàa as it is in other examples.
+
+Coverage: 2/38 5.3%
+Overgeneration: 0
+Error: 44
+
+Added verb entry for zoo "come", though strictly speaking
+I doubt this is a true transitive verb:
+
+    verb2_stem6_orth=zoo
+    verb2_stem6_pred=_come_v_rel
+
+Added noun entry for nân "here" (arbitrarily as masculine),
+though strictly speaking this probably isn't a common noun.
+
+    noun1_stem12_orth=nân
+    noun1_stem12_pred=_here_n_rel
+
+Coverage: 3/38 7.9%
+Overgeneration: 0
+Error: 43
+
+Negative examples won't parse because Hausa does two part
+negation (not covered in negation library):
+
+# Example 4 Negated habitual verb with mandatory weak subject pronoun. Modified from (a:565)
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {tam,negation}
+hàdiizà bàa takàn zoo nân
+hàdiizà bàa ta-kàn zoo-AForm nân ba
+hàdiizà.fs NEG 3fs-HAB come-AForm here NEG
+Hadiza does not come here.
+
+
+
 
 ---
 mal
