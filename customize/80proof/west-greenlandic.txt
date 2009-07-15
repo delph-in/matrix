@@ -633,8 +633,8 @@ Source: author
 Vetted: f
 Judgment: g
 Phenomena: agr
-uangap illissi pisarvassi
-uanga-p illissi pisar-va-ssi
+uangap ilissi pisarvassi
+uanga-p ilissi pisar-va-ssi
 I-rel 2pl catch-indic.1s(subj).2pl(obj)
 'I caught you.'
 
