@@ -1,6 +1,6 @@
 ;;; Grammar of Malayalam
 ;;; created at:
-;;;     Wed Jul 15 20:01:17 UTC 2009
+;;;     Wed May 13 22:35:43 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -156,9 +156,6 @@ fake-tensed-aspect-marker-lex-rule := infl-add-only-no-ccont-ltol-rule & tense-a
 imperfective-marker-lex-rule := fake-tensed-aspect-marker-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.ASPECT imperfective ].
 
-habitual-marker-lex-rule := fake-tensed-aspect-marker-lex-rule &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.ASPECT habitual ].
-
 infinitive-aspect-marker-lex-rule := infl-add-only-no-ccont-ltol-rule & tense-aspect-rule-dtr &
   [ DTR infinitive-lex-rule ].
 
@@ -186,6 +183,9 @@ formc-past-tense-lex-rule := formc-tense-lex-rule &
 
 tense-aspect-rule-dtr := avm.
 
+habitual-aspect-marker-lex-rule := tense-aspect-rule-dtr & infl-add-only-no-ccont-ltol-rule &
+  [ DTR verb-lex ].
+
 tense-aspect-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
   [ DTR tense-aspect-rule-dtr ].
 
@@ -202,6 +202,9 @@ fake-tense-lex-rule := infl-add-only-no-ccont-ltol-rule &
   [ DTR verb-lex ].
 
 fake-present-lex-rule := fake-tense-lex-rule.
+
+habitual-aspect-marker-affix-lex-rule := habitual-aspect-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.ASPECT habitual ].
 
 ;;; Lexical types
 

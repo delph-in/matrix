@@ -64,13 +64,8 @@ past-present-neg-marker-lex-rule.
 
 
 imperfective-marker-suffix :=
-%suffix (*  -uNTE)
+%suffix (* -uNTE)
 imperfective-marker-lex-rule.
-
-
-habitual-marker-suffix :=
-%suffix (* -aaRE-uNTE)
-habitual-marker-lex-rule.
 
 
 imperfective-aspect-marker-suffix :=
@@ -101,6 +96,11 @@ past-aspect-marker-lex-rule.
 fake-present-suffix :=
 %suffix (* -unnu)
 fake-present-lex-rule.
+
+
+habitual-aspect-marker-affix-suffix :=
+%suffix (* -aaRE-uNTE)
+habitual-aspect-marker-affix-lex-rule.
 
 
 n1-bottom :=

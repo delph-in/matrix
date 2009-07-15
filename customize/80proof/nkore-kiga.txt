@@ -519,10 +519,10 @@ o-mu-shaija ni-a-ba a-eshongora-ire
 c1.vwl-c1.prfx-man c1.3sg.subj-pres.cont-be c1.3sg.subj-sing-modified
 'The man has sung (now).'
 
-#Ex 51 From (a:151) it appears that the verb "-ba can appear with a modified verb form in all tenses except for the "universal tense" the unmarked tense.
+#Ex 51 From (a:151) it appears that the verb "-ba can appear with a modified verb form in all tenses except for the "universal tense" the unmarked tense. SS 7/7/09--this understanding was incorrect.  "ba" can appear with any tense (a:155)
 Source: author
 Vetted: f
-Judgment: u
+Judgment: g
 Phenomena: {tam}
 omushaija aba a-eshongora-ire
 o-mu-shaija a-ba a-eshongora-ire
