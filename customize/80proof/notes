@@ -567,8 +567,32 @@ hàdiizà bàa ta-kàn zoo-AForm nân ba
 hàdiizà.fs NEG 3fs-HAB come-AForm here NEG
 Hadiza does not come here.
 
+Added lexical entry for "rat":
+
+    noun2_stem4_orth=kuusùu
+    noun2_stem4_pred=_rat_n_rel
+
+LKB was token-breaking on ` (and turning ` into white space),
+so I changed ` to \, in choices file and test suite. ... but
+that gave itsdb problems (even though it worked interactively
+through the LKB), so I changed \ to 7 everywhere.
+
+Coverage: 4/38 10.5%
+Overgeneration: 0
+Error: 37
+
+There seems to be two problems with this one:
+
+yaaròo baa ya-à gyaarà-CForm kèekè
+boy NEG he-cont repair-CForm bicycle
+The boy is not repairing a bicycle.
 
 
+First, baa elsewhere is bàa. Second, there is
+no auxiliary ya.  Maybe it was supposed to be
+'yaa'.  It looks to me like this example is testing
+phonology we don't handle.  Would it make sense to
+have the morpheme segmented line regularize further?
 
 ---
 mal

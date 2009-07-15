@@ -98,7 +98,7 @@ Vetted: f
 Judgment: g
 Phenomena: {tam, agreement}
 kuusàa sun ga dookìn
-kuusùu-pl sun ga-CForm dookì-`n
+kuusùu-pl sun ga-CForm dookì-7n
 rat.3ms-pl 3pl.COM see-CForm horse/the
 The rats saw the horse.
 
@@ -485,74 +485,74 @@ he-cont repair-AForm boy bicycle
 The boy is repairing a bicycle.
 
 
-# Example 46 The definite article "`n/`R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine native noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns).
+# Example 46 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine native noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns).
 Source: author
 Vetted: f
 Judgment: g
 Phenomena: {cogst}
 yaaròn yanàa gyaarà kèekè
-yaaròo-`n ya-nàa gyaarà-CForm kèekè
+yaaròo-7n ya-nàa gyaarà-CForm kèekè
 boy-DEF.masc he-cont repair-CForm  bicycle
 The boy is repairing a bicycle.
 
-# Example 47 The definite article "`n/`R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP.  The feminine form can be directly applied to any type of feminine noun ending in a vowel (with the exception of the feminine singular pronoun which takes the masculine form).
+# Example 47 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP.  The feminine form can be directly applied to any type of feminine noun ending in a vowel (with the exception of the feminine singular pronoun which takes the masculine form).
 Source: author
 Vetted: f
 Judgment: g
 Phenomena: {cogst}
 yaaròo yanàa gyaaràa mootàR
-yaaròo ya-nàa gyaarà-CForm  mootàa-`R
+yaaròo ya-nàa gyaarà-CForm  mootàa-7R
 boy he-cont repair-CForm  the car-Def.fem
 The boy is repairing the car.
 
-# Example 48 The definite article "`n/`R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns).  This example is ungrammatical because the feminine form is used with a masculine noun.
+# Example 48 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns).  This example is ungrammatical because the feminine form is used with a masculine noun.
 Source: author
 Vetted: f
 Judgment: u
 Phenomena: {cogst}
 yaaròR yanàa gyaaràa kèekè
-yaaròo-`R ya-nàa gyaarà-CForm  kèekè
+yaaròo-7R ya-nàa gyaarà-CForm  kèekè
 boy-DEF.fem he-cont repair-CForm  bicycle
 The boy is repairing a bicycle.
 
-# Example 49 The definite article "`n/`R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP.  The feminine form can be directly applied to almost any type of feminine noun ending in a vowel (with the exception of the feminine singular pronoun which takes the masculine form).  This example is ungrammatical because the masculine form in used with a feminine noun.
+# Example 49 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP.  The feminine form can be directly applied to almost any type of feminine noun ending in a vowel (with the exception of the feminine singular pronoun which takes the masculine form).  This example is ungrammatical because the masculine form in used with a feminine noun.
 Source: author
 Vetted: f
 Judgment: u
 Phenomena: {cogst}
 yaaròo yanàa gyaarà mootàn
-yaaròo ya-nàa gyaarà-CForm  mootàa-`n
+yaaròo ya-nàa gyaarà-CForm  mootàa-7n
 boy he-cont repair-CForm  the car.fem-Def.masc
 The boy is repairing the car.
 
-# Example 50 The definite article "`n/`R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP.  The feminine form can be directly applied to any type of feminine noun ending in the vowel /a(a) (with the exception of the feminine singular pronoun which takes the masculine form). This example is ungrammatical because the definite article is placed before the noun.
+# Example 50 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP.  The feminine form can be directly applied to any type of feminine noun ending in the vowel /a(a) (with the exception of the feminine singular pronoun which takes the masculine form). This example is ungrammatical because the definite article is placed before the noun.
 Source: author
 Vetted: f
 Judgment: u
 Phenomena: {cogst}
-yaaròo yanàa gyaarà `Rmootàa
-yaaròo ya-nàa gyaarà-CForm  `R-mootàa
+yaaròo yanàa gyaarà 7Rmootàa
+yaaròo ya-nàa gyaarà-CForm  7R-mootàa
 boy he-cont repair-CForm  Def.fem-car.fem
 The boy is repairing the car.
 
-# Example 51 The definite article "`n/`R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine native noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns). Instead of attaching to the word directly consonant-final words, foreign words, proper names, pronouns, numerals, and ideophones often make use of a connector Di.  If Di is used the masculine definite article is used.
+# Example 51 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine native noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns). Instead of attaching to the word directly consonant-final words, foreign words, proper names, pronouns, numerals, and ideophones often make use of a connector Di.  If Di is used the masculine definite article is used.
 Source: author
 Vetted: f
 Judgment: g
 Phenomena: {cogst}
 yaaròn yanàa gyaarà bûus Dîn
-yaaròo-`n ya-nàa gyaarà-CForm  bûus Di-`n
+yaaròo-7n ya-nàa gyaarà-CForm  bûus Di-7n
 boy-DEF he-cont repair-CForm  bicycle PART-DEF.masc
 The boy is repairing the bicycle.
 
 
-# Example 52 The definite article "`n/`R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine native noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns). Instead of attaching to the word directly consonant-final words, foreign words, proper names, pronouns, numerals, and ideophones often make use of a connector Di.  If Di is used the masculine definite article is used. This example is ungrammatical because the feminine definite article is used after Di.
+# Example 52 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine native noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns). Instead of attaching to the word directly consonant-final words, foreign words, proper names, pronouns, numerals, and ideophones often make use of a connector Di.  If Di is used the masculine definite article is used. This example is ungrammatical because the feminine definite article is used after Di.
 Source: author
 Vetted: f
 Judgment: u
 Phenomena: {cogst}
 yaaròn yanàa gyaarà bûus DîR
-yaaròo-`n ya-nàa gyaarà-CForm  bûus Di-`R
+yaaròo-7n ya-nàa gyaarà-CForm  bûus Di-7R
 boy-DEF he-cont repair-CForm  bicycle PART-DEF.fem
 The boy is repairing the bicycle.
 
@@ -562,7 +562,7 @@ Vetted: f
 Judgment: g
 Phenomena: {crd}
 shi dà muusa sun ga dookìn
-shi dà muusa sun ga-CForm  dookì-`n
+shi dà muusa sun ga-CForm  dookì-7n
 3ms and Musa 3pl.COM see-CForm  horse-the
 He and Musa saw the horse.
 
@@ -572,7 +572,7 @@ Vetted: f
 Judgment: g
 Phenomena: {crd}
 dà bello dà muusa sun ga dookìn
-dà bello dà muusa sun ga-CForm  dookì-`n
+dà bello dà muusa sun ga-CForm  dookì-7n
 and Bello.masc Musa.masc 3pl.COM see-CForm  horse-the
 Bello and Musa saw the horse.
 
@@ -582,7 +582,7 @@ Vetted: f
 Judgment: u
 Phenomena: {crd}
 shi dà muusa dà sun ga dookìn
-shi dà muusa dà sun ga-CForm  dookì-`n
+shi dà muusa dà sun ga-CForm  dookì-7n
 3ms and Musa and 3pl.COM see-CForm  horse-the
 He and Musa saw the horse.
 
@@ -593,7 +593,7 @@ Vetted: f
 Judgment: u
 Phenomena: {crd}
 shi dà muusa yaa ga dookìn
-shi dà muusa yaa ga-CForm  dookì-`n
+shi dà muusa yaa ga-CForm  dookì-7n
 3ms and Musa 3ms.COM see-CForm  horse-the
 He and Musa saw the horse.
 
@@ -603,7 +603,7 @@ Vetted: f
 Judgment: u
 Phenomena: {crd}
 yaaròo yaa ga dookìn yaa dafà ruwaa
-yaaròo yaa ga dookì-`n yaa dafà-CForm  ruwaa
+yaaròo yaa ga dookì-7n yaa dafà-CForm  ruwaa
 boy 3ms.COM see horse-the 3ms.COM boil-CForm  water
 The boy saw the horse and boiled water.
 
@@ -613,7 +613,7 @@ Vetted: f
 Judgment: g
 Phenomena: {crd}
 yaaròo zaa yà ga dookìn yà dafà ruwaa
-yaaròo zaa yà ga dookì-`n yà dafà-CForm  ruwaa
+yaaròo zaa yà ga dookì-7n yà dafà-CForm  ruwaa
 boy FUT 3ms see horse-the 3ms boil-CForm  water
 The boy will see the horse and boil water.
 
