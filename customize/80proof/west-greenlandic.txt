@@ -11,7 +11,7 @@ Vetted: f
 Judgment: g
 Phenomena: {word order, case}
 inuup puisi pisaraa
-inuk-p puisi pisar-vaa
+inuk-p puisi pisar-va-a
 person-rel seal.abs catch-indic.3s(subj).3s(obj)
 'The person caught the seal.'
 
@@ -21,7 +21,7 @@ Vetted: f
 Judgment: g
 Phenomena: {word order, case}
 inuup pisaraa puisi 
-inuk-p pisar-vaa puisi 
+inuk-p pisar-va-a puisi 
 person-rel catch-indic.3s(subj).3s(obj) seal.abs 
 'The person caught the seal.'
 
@@ -31,7 +31,7 @@ Vetted: f
 Judgment: g
 Phenomena: {word order, case}
 pisaraa inuup  puisi 
-pisar-vaa inuk-p  puisi 
+pisar-va-a inuk-p  puisi 
 catch-indic.3s(subj).3s(obj) person-rel  seal.abs 
 'The hunter caught the seal.'
 
@@ -42,7 +42,7 @@ Vetted: f
 Judgment: g
 Phenomena: {word order, case}
 pisaraa puisi inuup  
-pisar-vaa puisi inuk-p   
+pisar-va-a puisi inuk-p   
 catch-indic.3s(subj).3s(obj) seal.abs person-rel   
 'The hunter caught the seal.'
 
@@ -52,7 +52,7 @@ Vetted: f
 Judgment: g
 Phenomena: {word order, case}
 puisi pisaraa  inuup   
-puisi pisar-vaa  inuk-p  
+puisi pisar-va-a  inuk-p  
 seal.abs catch-indic.3s(subj).3s(obj)  person-rel   
 'The person caught the seal.'
 
@@ -62,8 +62,8 @@ Vetted: f
 Judgment: g
 Phenomena: {word order, case}
 puisi inuup pisaraa    
-puisi inuk-p pisar-vaa    
-seal.abs person-rel catch-indic.3s(subj).3s(obj)    
+puisi inuk-p pisar-va-a    
+seal.abs person-rel catch-indic-3s(subj).3s(obj)    
 'The person caught the seal.'
 
 #Ex 7  demonstrates that an intransitive verb takes a subject in the absolutive case.  (I am not confident that the top line shows the proper spelling according to source b, if a verb base ends in a consonant "p" is used instead of "v".) Vocabulary for "qimmiq/dog" and "qilut/bark" taken from a:280
@@ -112,7 +112,7 @@ Vetted: f
 Judgment: u
 Phenomena: {case}
 qimmip qilutvuq
-qimmiq-p qilut-vuq
+qimmiq-p qilut-vu-q
 dog-rel bark-indic.3s
 'The dog barked.'
 
@@ -687,7 +687,7 @@ Judgment: g
 Phenomena: agr
 qimmip puisit pisarvai
 qimmiq-p puisi-t pisar-va-i
-dog-rel.sing seal.pl catch-indic.3s(subj).3pl(obj)
+dog-rel.sing seal.pl catch-indic-3s(subj).3pl(obj)
 'The dog caught seals.
 
 #Ex 68 demonstrates subject-object-verb agreement.  
@@ -697,7 +697,7 @@ Judgment: g
 Phenomena: agr
 qimmip puisi pisaraa
 qimmiq-p puisi pisar-va-a
-dog-rel.sing seal catch-indic.3s(subj).3s(obj)
+dog-rel.sing seal catch-indic-3s(subj).3s(obj)
 'The dog caught the seal.
 
 #Ex 69 demonstrates subject-object-verb agreement.  
@@ -717,7 +717,7 @@ Judgment: u
 Phenomena: agr
 qimmip puisi pisarvarma
 qimmiq-p puisi pisar-va-ma
-dog-rel.sing seal catch-indic.3s(subj).3s(obj)
+dog-rel.sing seal catch-indic-3s(subj).3s(obj)
 'The dog caught the seal.
 
 #Ex 71 demonstrates an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object. 
@@ -790,7 +790,7 @@ Judgment: u
 Phenomena: agr
 illit puisit pisarvai
 illi-p puisi-t pisar-va-i
-2s-rel seal.pl catch-indic.3s(subj).3pl(obj)
+2s-rel seal.pl catch-indic-3s(subj).3pl(obj)
 'You caught seals.
 
 #Ex 78 demonstrates  an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object

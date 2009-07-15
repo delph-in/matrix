@@ -854,3 +854,19 @@ Changed spelling of this affix from -pput:
     verb-slot1_morph9_orth=-ppu
 
 
+Changed input from verb-slot10:
+
+    verb-slot1_input1_type=verb2
+
+Undid last change.  Changed spelling of -pput/-ppu to -ppu-t
+
+Coverage 14/34 41.2%
+Overgeneration 2/34 4.5%
+Error 32
+
+Changed spelling of affix in item 11 from -vuq to -vu-q
+
+Coverage 14/34 41.2%
+Overgeneration 2/34 4.5%
+Error 31
+

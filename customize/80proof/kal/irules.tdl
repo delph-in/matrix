@@ -59,7 +59,7 @@ plural-instrumental-case-marker-lex-rule.
 
 
 3pl-intransitive-indic-mood-subj-marker-suffix :=
-%suffix (* -pput)
+%suffix (* -ppu-t)
 3pl-intransitive-indic-mood-subj-marker-lex-rule.
 
 
