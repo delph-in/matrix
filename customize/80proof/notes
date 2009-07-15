@@ -820,3 +820,22 @@ Added input for verb-slot5:
 Coverage 8/34 23.5%
 Overgeneration 2/34 4.5%
 Error 41
+
+SS--I loaded the grammar and received an error for the imperfective-marker-rule.  The error stated there was a strange character.  I checked irules.tdl and noticed an
+extra space.  I removed the space and reloaded the grammar without errors.
+
+Trying to fix the problems with Ex 71, 66, 69, 70, I removed the second morpheme -aaRE-uNTe from the faked-tense-aspect-marker slot and created a new slot for it that takes any verb as an input.  The new grammar has slightly improved coverage.
+
+Coverage 79.5%
+Overgeneration 2.7%
+
+Ex 71 was eliminated
+Ex 66 parsed
+
+I think that the problem with #69 and #70 is that I did not update the tense-aspect 
+slot to have the new slot as input.
+
+Coverage 84.6%
+Overgeneration 2.7%
+
+I think that this is the most that we will be able to do.
