@@ -484,6 +484,14 @@ Error in 4PL-COMPLETIVE-WSP-TAM-AUX-LEX:
 
 Next: hack choices file to put that on the subject.
 
+Hacked choices file to add auxN_featN_head=subj to all
+of those, and now the grammar loads, but parses little:
+
+coverage 1/38 2.6%
+overgeneration 0
+error 49
+
+
 ---
 mal
 ---
