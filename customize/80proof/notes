@@ -613,3 +613,33 @@ to this:
 Coverage 30/39 76.9%
 Overgeneration 2/37 5.4%
 Errors: 24
+
+Two ungrammatical examples parsing:
+
+#Ex 36 demonstrates an ungrammatical use of tense.  Here the verb appears without the tense marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi cirikk
+kuTTi cirikk
+child.nom laugh
+'The child laughs.'
+
+--> The problem here is a bug in the morphotactics that
+lead to tense-aspect-rule-dtr being a supertype of verb-lex,
+despite nothing in the choices file indicating that.
+
+#Ex 71 demonstrates ungrammatical present habitual.  It is formed by adding "-aaRE" and "-uNTE" to the verb stem.  Here they are attached to the present tense stem.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi cirikkunnaaRuNTaayirunnu
+kuTTi cirikk-unnu-aaRE-uNTE
+child.nom laugh-pres-hab-hab.pres
+'The child was laughing.'
+
+--> This one we might be able to fix, since there
+seem to be two ways of doing -aaRe-uNTe, all at once
+or in two pieces.
