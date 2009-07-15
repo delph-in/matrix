@@ -808,3 +808,15 @@ doing anything with [QUESTION minus].
 Coverage 2/34 5.9%
 Overgeneration 0
 Error 59
+
+Added input for verb-slot5:
+
+    verb-slot5_input1_type=verb-slot8
+
+... but that was circular until I removed this:
+
+    verb-slot8_input2_type=verb-slot5
+
+Coverage 8/34 23.5%
+Overgeneration 2/34 4.5%
+Error 41
