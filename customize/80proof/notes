@@ -753,3 +753,58 @@ child.nom laugh-pres-hab-hab.pres
 --> This one we might be able to fix, since there
 seem to be two ways of doing -aaRe-uNTe, all at once
 or in two pieces.
+
+---
+kal:
+---
+
+Original choices file didn't load:
+
+Cycle involving TRANSITIVE-VERB-LEX
+
+Changed   
+	  verb1_name=transitive
+	  verb2_name=intransitive
+
+to
+
+	  verb1_name=trans
+	  verb2_name=intrans
+
+New error:
+
+3S-3P-SUBJ-OBJ-MARKER-LEX-RULE
+
+3s-3p-subj-obj-marker-lex-rule := transitive-subj-obj-markers-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular & plural,
+                                                                PER 3rd ] ].
+
+We shouldn't be outputting such tdl :)  (Though this is a choices
+file that doesn't pass validation; possibly this is why.)
+
+Changed subj to obj on these:
+
+      verb-slot4_morph9_feat3_name=number
+      verb-slot4_morph9_feat3_value=plural
+      verb-slot4_morph9_feat3_head=obj
+      verb-slot4_morph9_feat4_name=person
+      verb-slot4_morph9_feat4_value=3rd
+      verb-slot4_morph9_feat4_head=obj
+
+New error:
+
+Feature MOOD is introduced at multiple types (TAM PNG)
+
+It looks like mood is basically just a reflection
+of SF, so I removed the feature and replaced all 
+references to it (other than those that end up with
+just [MOOD mood]) with [QUESTION plus] and [QUESTION minus]
+respectively.  In some cases, the QUESTION feature was
+already being used.  This probably isn't going to get
+the facts right for indicative markers (e.g., the
+indicative negative marker), since I don't think we're
+doing anything with [QUESTION minus].
+
+Coverage 2/34 5.9%
+Overgeneration 0
+Error 59
