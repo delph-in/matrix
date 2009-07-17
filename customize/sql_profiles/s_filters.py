@@ -52,7 +52,10 @@ filter_list = [
     MatchFilter(name = "s-o-order1",
               mrs_id_list = g.n1_subj_n2_obj,
               re1 = 'n1.*n2',
-              comment = "If the word order for the language type has subjects before objects, and n1 is the subject and n2 is the object, check that n1 precedes n2.   (Worry some about what to do with inversion constructions ... do they affect this?)",
+              comment = "If the word order for the language type has subjects before objects, " + \
+                                "and n1 is the subject and n2 is the object, check that n1 precedes n2.   " + \
+                                "(Worry some about what to do with inversion constructions ... do they " + \
+                                "affect this?)",
               fv = ['or', 'word-order:svo','word-order:sov','word-order:vso']),
 
     MatchFilter(name = "s-o-order2",
@@ -70,62 +73,73 @@ filter_list = [
     MatchFilter(name = "s-o-order4",
               mrs_id_list = g.n2_subj_n1_obj,
               re1 = 'n1.*n2',
-              comment = "If the word order for the language type has objects before subjects, and n2 is the subject and n1 is the object, check that n1 precedes n2.   (Worry some about what to do with inversion constructions ... do they affect this?)",
+              comment = "If the word order for the language type has objects before subjects, " + \
+                                "and n2 is the subject and n1 is the object, check that n1 precedes " + \
+                                "n2.   (Worry some about what to do with inversion constructions ... " + \
+                                "do they affect this?)",
               fv = ['or', 'word-order:ovs','word-order:osv','word-order:vos']),
 
     OrFilter(name = "s-v-order1",
              mrs_id_list = g.n1_subj_not_ques,
              re1 = 'aux',
-             re2 = 'n1.* [ti]v1',
-             comment = "If the word order for the language has subjects before verbs, and n1 is the subject, check that n1 precedes the verb.  This doesn't apply to ques1 and ques2.  For those we need to check if qpart (or, eventually, question inflection) is present.  Also doesn't apply if there's an auxiliary in the sentence.  Then we need to check separately.",
+             re2 = 'n1.* [ti]v(?:[1-9])?',
+             comment = "If the word order for the language has subjects before verbs, and n1 is " + \
+                               "the subject, check that n1 precedes the verb.  This doesn't apply to " + \
+                                "ques1 and ques2.  For those we need to check if qpart (or, eventually, " + \
+                                "question inflection) is present.  Also doesn't apply if there's an " + \
+                                "auxiliary in the sentence.  Then we need to check separately.",
              fv = ['or', 'word-order:sov','word-order:svo','word-order:osv','word-order:v-final']),
 
     IfNotFilter(name = "s-v-order2",
                 mrs_id_list = g.n1_subj_ques,
                 re1 = 'qpart',
-                re2 = '[ti]v1.*n1',
+                re2 = '[ti]v(?:[1-9])?.*n1',
                 comment = "If the word order for the language has subjects before verbs, and n1 is the subject, check that n1 precedes the verb.  Special case for ques1 and ques2 where we want to check that we're not in the inversion case, which needs to be worried about separately.",
                 fv = ['or', 'word-order:sov','word-order:svo','word-order:osv','word-order:v-final']),
 
     OrFilter(name = "s-v-order3",
              mrs_id_list = g.n1_subj_not_ques,
              re1 = 'aux',
-             re2 = '[ti]v1.* n1',
-             comment = "If the word order for the language has verbs before subjects, and n1 is the subject, check that n1 follows the verb.  This doesn't apply to ques1 and ques2.  For those we need to check if qpart (or, eventually, question inflection) is present.  Also doesn't apply if there's an auxiliary in the sentence.  Then we need to check separately.",
+             re2 = '[ti]v(?:[1-9])?.* n1',
+             comment = "If the word order for the language has verbs before subjects, and n1 " + \
+                                 "is the subject, check that n1 follows the verb.  This doesn't apply " + \
+                                 "to ques1 and ques2.  For those we need to check if qpart (or, " + \
+                                 "eventually, question inflection) is present.  Also doesn't apply if " + \
+                                 "there's an auxiliary in the sentence.  Then we need to check separately.",
              fv = ['or', 'word-order:vos','word-order:ovs','word-order:vso','word-order:v-initial']),
 
     IfNotFilter(name = "s-v-order4",
                  mrs_id_list = g.n1_subj_ques,
                  re1 = 'qpart',
-                 re2 = 'n1.*[ti]v1',
+                 re2 = 'n1.*[ti]v(?:[1-9])?',
                  comment = "If the word order for the language has verbs before subjects, and n1 is the subject, check that n1 follows the verb.  Special case for ques1 and ques2 where we want to check that we're not in the inversion case, which needs to be worried about separately.",
                  fv = ['or', 'word-order:vos','word-order:ovs','word-order:vso','word-order:v-initial']),
 
     OrFilter(name = "s-v-order5",
              mrs_id_list = g.n2_subj_n1_obj_not_ques,
              re1 = 'aux',
-             re2 = 'n2.* [ti]v1',
+             re2 = 'n2.* [ti]v(?:[1-9])?',
              comment = "If the word order for the language has subjects before verbs, and n2 is the subject, check that n2 precedes the verb.  This doesn't apply to ques3 and ques4.  For those we need to check if qpart (or, eventually, question inflection) is present.  Also doesn't apply if there's an auxiliary in the sentence.  Then we need to check separately.",
              fv = ['or', 'word-order:sov','word-order:svo','word-order:osv','word-order:v-final']),
 
     IfNotFilter(name = "s-v-order6",
                 mrs_id_list = g.n2_subj_ques,
                 re1 = 'qpart',
-                re2 = '[ti]v1.*n2',
+                re2 = '[ti]v(?:[1-9])?.*n2',
                 comment = "If the word order for the language has subjects before verbs, and n2 is the subject, check that n2 precedes the verb.  Special case for ques1 and ques2 where we want to check that we're not in the inversion case, which needs to be worried about separately.",
                 fv = ['or', 'word-order:sov','word-order:svo','word-order:osv','word-order:v-final']),
 
     OrFilter(name = "s-v-order7",
              mrs_id_list = g.n2_subj_n1_obj_not_ques,
              re1 = 'aux',
-             re2 = '[ti]v1.* n2',
+             re2 = '[ti]v(?:[1-9])?.* n2',
              comment = "If the word order for the language has verbs before subjects, and n2 is the subject, check that n2 follows the verb.  This doesn't apply to ques1 and ques2.  For those we need to check if qpart (or, eventually, question inflection) is present. Also doesn't apply if there's an auxiliary in the sentence.  Then we need to check separately.",
              fv = ['or', 'word-order:vos','word-order:ovs','word-order:vso','word-order:v-initial']),
 
     IfNotFilter(name = "s-v-order8",
                 mrs_id_list = g.n2_subj_ques,
                 re1 = 'qpart',
-                re2 = 'n2.*[ti]v1',
+                re2 = 'n2.*[ti]v(?:[1-9])?',
                 comment = "If the word order for the language has verbs before subjects, and n2 is the subject, check that n2 follows the verb.  Special case for ques1 and ques2 where we want to check that we're not in the inversion case, which needs to be worried about separately.",
                 fv = ['or', 'word-order:vos','word-order:ovs','word-order:vso','word-order:v-initial']),
 
@@ -163,14 +177,14 @@ filter_list = [
     IfFilter(name = 's-aux-order-5',
              mrs_id_list = g.n1_subj_not_ques,
              re1 = 'aux',
-             re2 = 'n1.* [ti]v1',
+             re2 = 'n1.* [ti]v(?:[1-9])?',
              comment = "If there's an auxiliary, but it's an s-comp auxiliary, then check that the subject is in the right place wrt the main verb.  In this case the subject should precede the main verb.",
              fv = ['and','aux-comp:s',['or','word-order:sov','word-order:svo','word-order:osv','word-order:v-final']]),
 
     IfFilter(name = 's-aux-order-6',
              mrs_id_list = g.n1_subj_not_ques,
              re1 = 'aux',
-             re2 = '[ti]v1.* n1',
+             re2 = '[ti]v(?:[1-9])?.* n1',
              comment = "If there's an auxiliary, but it's an s-comp auxiliary, then check that the subject is in the right place wrt the main verb.  In this case the subject should follow the main verb.",
              fv = ['and','aux-comp:s',['or','word-order:vos','word-order:ovs','word-order:vso','word-order:v-initial']]),
 
@@ -178,39 +192,41 @@ filter_list = [
     IfFilter(name = 's-aux-order-7',
              mrs_id_list = g.n2_subj_n1_obj_not_ques,
              re1 = 'aux',
-             re2 = 'n2.* [ti]v1',
+             re2 = 'n2.* [ti]v(?:[1-9])?',
              comment = "If there's an auxiliary, but it's an s-comp auxiliary, then check that the subject is in the right place wrt the main verb.  In this case the subject should precede the main verb.",
              fv = ['and','aux-comp:s',['or','word-order:sov','word-order:svo','word-order:osv','word-order:v-final']]),
 
     IfFilter(name = 's-aux-order-8',
              mrs_id_list = g.n2_subj_n1_obj_not_ques,
              re1 = 'aux',
-             re2 = '[ti]v1.* n2',
+             re2 = '[ti]v(?:[1-9])?.* n2',
              comment = "If there's an auxiliary, but it's an s-comp auxiliary, then check that the subject is in the right place wrt the main verb.  In this case the subject should follow the main verb.",
              fv = ['and','aux-comp:s',['or','word-order:vos','word-order:ovs','word-order:vso','word-order:v-initial']]),
 
 
     NotMatchFilter(name = "o-v-order1",
                    mrs_id_list = g.n1_subj_n2_obj,
-                   re1 = 'tv1.*n2',
-                   comment = "If the word order for the language has objects before verbs, and n2 is the object, check that it precedes the verb.",
+                   re1 = 'tv(?:[1-9])?.*n2',
+                   comment = "If the word order for the language has objects before verbs, and " + \
+                                     "n2 is the object, check that it precedes the verb.",
                    fv = ['or', 'word-order:sov','word-order:osv','word-order:ovs','word-order:v-final']),
              
     NotMatchFilter(name = "o-v-order2",
                    mrs_id_list = g.n1_subj_n2_obj,
-                   re1 = 'n2.*tv1',
-                   comment = "If the word order for the language has objects after verbs, and n2 is the object, check that it follows the verb.",
+                   re1 = 'n2.*tv(?:[1-9])?',
+                   comment = "If the word order for the language has objects after verbs, and n2 " + \
+                                     "the object, check that it follows the verb.",
                    fv = ['or', 'word-order:vos','word-order:vso','word-order:svo','word-order:v-initial']),
 
     NotMatchFilter(name = "o-v-order3",
                    mrs_id_list = g.n2_subj_n1_obj,
-                   re1 = 'tv1.*n1',
+                   re1 = 'tv(?:[1-9])?.*n1',
                    comment = "If the word order for the language has objects before verbs, and n1 is the object, check that it precedes the verb.",
                    fv = ['or', 'word-order:sov','word-order:osv','word-order:ovs','word-order:v-final']),
              
     NotMatchFilter(name = "o-v-order4",
                    mrs_id_list = g.n2_subj_n1_obj,
-                   re1 = 'n1.*tv1',
+                   re1 = 'n1.*tv(?:[1-9])?',
                    comment = "If the word order for the language has objects after verbs, and n1 is the object, check that it follows the verb.",
                    fv = ['or', 'word-order:vos','word-order:vso','word-order:svo','word-order:v-initial']),
 
@@ -246,13 +262,13 @@ filter_list = [
 
     MatchFilter(name = "det-n-order5",
                 mrs_id_list = g.two_dets_n1_n2,
-                re1 = 'n1 det1 .*n2 det2|n2 det2 .*n1 det1'
+                re1 = 'n1 det1 .*n2 det2|n2 det2 .*n1 det1',
                 comment = "If the language has determiners following nouns, and n1 and n2 both have determiners attached, the nouns and determiners should occur in the proper order.",
                 fv = ['noun-det-order:noun-det']),
 
     MatchFilter(name = "det-n-order6",
                 mrs_id_list = g.two_dets_n1_n2,
-                re1 = 'det1 n1 .*det2 n2|det2 n2 .*det1 n1'
+                re1 = 'det1 n1 .*det2 n2|det2 n2 .*det1 n1',
                 comment = "If the language has determiners preceding nouns, and n1 and n2 both have determiners attached, the nouns and determiners should occur in the proper order.",
                 fv = ['noun-det-order:det-noun']),
 
@@ -262,28 +278,42 @@ filter_list = [
     NotMatchFilter(name = "neg-infl",
                    mrs_id_list = g.all_neg,
                    re1 = '-neg|neg-',
-                   comment = "If we haven't selected inflectional negation, we shouldn't see the affix. NB: There is no value 'off' for the feature infl-neg in matrixdef.  But the code for figuring out which groups are relevant to which language types will do the right thing if we use a non-value for the feature here.",
+                   comment = "If we haven't selected inflectional negation, we shouldn't see the " + \
+                                     "affix. NB: There is no value 'off' for the feature infl-neg in " + \
+                                     "matrixdef.  But the code for figuring out which groups are relevant " + \
+                                     "to which language types will do the right thing if we use a non-value " + \
+                                     "for the feature here.",
                    fv = ['infl-neg:']),
 
     NotMatchFilter(name = "neg-adv",
                    mrs_id_list = g.all_neg,
                    re1 = '(\s|^)neg(\s|$)',
-                   comment = "If we haven't selected adverbial negation, we shouldn't see the adverbs. NB: There is no value 'off' for the feature infl-neg in matrixdef.  But the code for figuring out which groups are relevant to which language types will do the right thing if we use a non-value for the feature here.",
+                   comment = "If we haven't selected adverbial negation, we shouldn't see the " + \
+                                     "adverbs. NB: There is no value 'off' for the feature infl-neg in " + \
+                                     "matrixdef.  But the code for figuring out which groups are relevant " + \
+                                     "to which language types will do the right thing if we use a " + \
+                                     "non-value for the feature here.",
                    fv = ['adv-neg:']),
 
     MatchFilter(name = "neg-affix-only-1",
               mrs_id_list = g.all_neg,
               re1 = '-neg|neg-',
-              comment = "If we only selected inflectional negation, we should see one in every negated sentence",
+              comment = "If we only selected inflectional negation, we should see one in every " + \
+                                "negated sentence",
               fv = ['and', 'infl-neg:on','adv-neg:']),
 
-    MatchFilter(name = "neg-adv-only-2",
+    # this was a duplicate filter with neg-adv-only-2, but based on filter pattern, comment, and fv
+    # KEN renamed to neg-adv-only-2
+    MatchFilter(name = "neg-adv-only-1",
               mrs_id_list = g.all_neg,
               re1 = '(\s|^)neg(\s|$)',
-              comment = "If we only selected adverbial negation, we should see one in every negated sentence.",
+              comment = "If we only selected adverbial negation, we should see one in every " + \
+                                "negated sentence.",
               fv = ['and', 'infl-neg:','adv-neg:on']),
 
-    NotMatchFilter(name = "neg-affix-only-1",
+    # this was a duplicate filter with neg-affix-only-1, but based on filter pattern, comment, and fv
+    # KEN renamed to neg-affix-only-1
+    NotMatchFilter(name = "neg-affix-only-2",
                    mrs_id_list = g.all_neg,
                    re1 = '(\s|^)neg(\s|$)',
                    comment = "If we only selected inflectional negation, we shouldn't see the adverb",
@@ -323,15 +353,15 @@ filter_list = [
 
     IfFilter(name = "neg-infl-aux",
              mrs_id_list = g.all_neg,
-             re1 = '-neg|neg-'
+             re1 = '-neg|neg-',
              re2 = 'aux-neg|neg-aux',
              comment = "If the affix only attaches to aux and an affix is present, it should only attach to aux.",
              fv = ['and', 'infl-neg:on', 'neg-infl-type:aux']),
 
     IfFilter(name = "neg-infl-main",
            mrs_id_list = g.all_neg,
-           re1 = '-neg|neg-'
-           re2 = '[ti]v[1-9]-neg|neg-[ti]v[1-9]'
+           re1 = '-neg|neg-',
+           re2 = '[ti]v[1-9]-neg|neg-[ti]v[1-9]',
            comment = "If the affix only attaches to main verbs and an affix is present, it should only attach to a verb.",
            fv = ['and', 'infl-neg:on', 'neg-infl-type:main']),
 
@@ -361,13 +391,15 @@ filter_list = [
 
     NotMatchFilter(name = 'neg-adv-vp-1',
                    mrs_id_list = g.n1_subj_neg,
-                   re1 = '(n2|tv1).* neg.* (n2|tv1)',
+                   # TODO: double check these REs are using parens the right way.
+                   # TODO: do the same throughout this file and u_filters as well.
+                   re1 = '(n2|tv(?:[1-9])?).* neg.* (n2|tv(?:[1-9])?)',
                    comment = "If the negative adverb is an independent modifier of VP, it cannot intervene between the object (n2) and the verb).",
                    fv = ['and','adv-neg:on','neg-adv:ind-adv','neg-mod:vp']),
 
     NotMatchFilter(name = 'neg-adv-vp-2',
                    mrs_id_list = g.n2_subj_neg,
-                   re1 = '(n1|tv1).* neg.* (n1|tv1)',
+                   re1 = '(n1|tv(?:[1-9])?).* neg.* (n1|tv(?:[1-9])?)',
                    comment = "If the negative adverb is an independent modifier of VP, it cannot intervene between the object (n1) and the verb).",
                    fv = ['and','adv-neg:on','neg-adv:ind-adv','neg-mod:vp']),
 
@@ -383,14 +415,16 @@ filter_list = [
     NotMatchFilter(name = 'sel-adv-v-init-1',
                    mrs_id_list = g.all_neg,
                    re1 = 'neg .*tv[1-9]',
-                   comment = "If the word order is v-initial and neg is a selected adverb, it has to appear after the verb.",
+                   comment = "If the word order is v-initial and neg is a selected adverb, it has to " + \
+                                     "appear after the verb.",
                    fv = ['and','adv-neg:on','neg-adv:sel-adv','word-order:v-initial']),
 
     AndNotFilter(name = 'sel-adv-v-init-2',
                  mrs_id_list = g.all_neg,
                  re1 = '(-neg|neg-.* neg(\s|$))|((\s|^)neg .*-neg|neg-)',
                  re2 = 'neg .*tv[1-9]',
-                 comment = "If the word order is v-initial and neg adverb is a selected adverb by virtue of co-occurring with the affix, it has to appear after the verb.",
+                 comment = "If the word order is v-initial and neg adverb is a selected adverb by " + \
+                                   "virtue of co-occurring with the affix, it has to appear after the verb.",
                  fv = ['and','adv-neg:on','infl-neg:on','word-order:v-initial']),
 
     NotMatchFilter(name = 'sel-adv-v-final-1',
@@ -399,62 +433,65 @@ filter_list = [
                    comment = "If the word order is v-final and neg is a selected adverb, it has to appear before the verb.",
                    fv = ['and','adv-neg:on','neg-adv:sel-adv','word-order:v-final']),
 
-    AndNotFilter(name = 'sel-adv-v-init-2',
+    # this was a duplicate with the filter two above.  based on pattern, comment, and fv, KEN
+    # renamed from sel-adv-v-init-2 to sel-adv-v-final-2
+    AndNotFilter(name = 'sel-adv-v-final-2',
                  mrs_id_list = g.all_neg,
                  re1 = '(-neg|neg-.* neg(\s|$))|((\s|^)neg .*-neg|neg-)',
                  re2 = 'tv[1-9] .*neg',
-                 comment = "If the word order is v-final and neg adverb is a selected adverb by virtue of co-occurring with the affix, it has to appear before the verb.",
+                 comment = "If the word order is v-final and neg adverb is a selected adverb by " + \
+                                  "virtue of co-occurring with the affix, it has to appear before the verb.",
                  fv = ['and','adv-neg:on','infl-neg:on','word-order:v-final']),
 
     MatchFilter(name = 'sel-adv-vo-1',
                 mrs_id_list = g.n1_subj_neg,
-                re1 = 'tv1( n2| aux){,2} neg',
+                re1 = 'tv(?:[1-9])?( n2| aux){,2} neg',
                 comment = "If the word order is SVO or VOS and neg is a selected adverb, neg has to appear after the verb with at most an aux and the object (here, n2) intervening.",
                 fv = ['and','adv-neg:on','neg-adv:sel-adv',['or','word-order:svo','word-order:vos']]),
 
     MatchFilter(name = 'sel-adv-vo-2',
                 mrs_id_list = g.n2_subj_neg,
-                re1 = 'tv1( n1| aux){,2} neg',
+                re1 = 'tv(?:[1-9])?( n1| aux){,2} neg',
                 comment = "If the word order is SVO or VOS and neg is a selected adverb, neg has to appear after the verb with at most an aux and the object (here, n1) intervening.",
                 fv = ['and','adv-neg:on','neg-adv:sel-adv',['or','word-order:svo','word-order:vos']]),
 
     IfFilter(name = 'sel-adv-vo-3',
              mrs_id_list = g.n1_subj_neg,
              re1 = '(-neg|neg-.* neg(\s|$))|((\s|^)neg .*-neg|neg-)',
-             re2 = 'tv1(-neg){,1}( n2| aux){,2} neg',
+             re2 = 'tv(?:[1-9])?(-neg){,1}( n2| aux){,2} neg',
              comment = "If the word order is SVO or VOS and neg is a selected adverb by virtue of co-occuring with the negative affix, neg has to appear after the verb with at most an aux and the object (here, n2) intervening.",
              fv = ['and','adv-neg:on','infl-neg:on',['or','word-order:svo','word-order:vos']]),
 
     IfFilter(name = 'sel-adv-vo-4',
              mrs_id_list = g.n2_subj_neg,
              re1 = '(-neg|neg-.* neg(\s|$))|((\s|^)neg .*-neg|neg-)',
-             re2 = 'tv1(-neg){,1}( n1| aux){,2} neg',
+             re2 = 'tv(?:[1-9])?(-neg){,1}( n1| aux){,2} neg',
              comment = "If the word order is SVO or VOS and neg is a selected adverb by virtue of co-occuring with the negative affix, neg has to appear after the verb with at most an aux and the object (here, n1) intervening.",
              fv = ['and','adv-neg:on','infl-neg:on',['or','word-order:svo','word-order:vos']]),
 
     MatchFilter(name = 'sel-adv-ov-1',
                 mrs_id_list = g.n1_subj_neg,
-                re1 = 'neg( n2| aux){,2} (neg-){,1}tv1',
+                re1 = 'neg( n2| aux){,2} (neg-){,1}tv(?:[1-9])?',
                 comment = "If the word order is SOV or OVS and neg is a selected adverb, neg has to appear before the verb with at most an aux and the object (here, n2) intervening.",
                 fv = ['and','adv-neg:on','neg-adv:sel-adv',['or','word-order:sov','word-order:ovs']]),
 
     MatchFilter(name = 'sel-adv-ov-2',
                 mrs_id_list = g.n2_subj_neg,
-                re1 = 'neg( n1| aux){,2} (neg-){,1}tv1',
+                re1 = 'neg( n1| aux){,2} (neg-){,1}tv(?:[1-9])?',
                 comment = "If the word order is SOV or OVS and neg is a selected adverb, neg has to appear before the verb with at most an aux and the object (here, n1) intervening.",
                 fv = ['and','adv-neg:on','neg-adv:sel-adv',['or','word-order:sov','word-order:ovs']]),
 
     IfFilter(name = 'sel-adv-ov-3',
              mrs_id_list = g.n1_subj_neg,
              re1 = '(-neg|neg-.* neg(\s|$))|((\s|^)neg .*-neg|neg-)',
-             re2 = 'neg( n2| aux){,2} (neg-){,1}tv1',
+             re2 = 'neg( n2| aux){,2} (neg-){,1}tv(?:[1-9])?',
              comment = "If the word order is SOV or OVS and neg is a selected adverb by virtue of co-occuring with the negative affix, neg has to appear before the verb with at most an aux and the object (here, n2) intervening.",
              fv = ['and','adv-neg:on','infl-neg:on',['or','word-order:sov','word-order:ovs']]),
 
     IfFilter(name = 'sel-adv-ov-4',
              mrs_id_list = g.n2_subj_neg,
              re1 = '(-neg|neg-.* neg(\s|$))|((\s|^)neg .*-neg|neg-)',
-             re2 = 'neg( n1| aux){,2} (neg-){,1}tv1',
+             re2 = 'neg( n1| aux){,2} (neg-){,1}tv(?:[1-9])?',
              comment = "If the word order is SOV or OVS and neg is a selected adverb by virtue of co-occuring with the negative affix, neg has to appear before the verb with at most an aux and the object (here, n1) intervening.",
              fv = ['and','adv-neg:on','infl-neg:on',['or','word-order:sov','word-order:ovs']]),
 
@@ -515,7 +552,8 @@ filter_list = [
 
     FalseFilter(name = 'no-overt-q',
                 mrs_id_list = g.all_ques,
-                comment = "If a language has no over mark of yes-no questions, reject all strings associated with the ques[1-4] mrs_ids.",
+                comment = "If a language has no over mark of yes-no questions, reject all " + \
+                                  "strings associated with the ques[1-4] mrs_ids.",
                 fv = ['and','q-part:','q-infl:','q-inv:']),
 
     MatchFilter(name = 'always-qpart',
@@ -564,61 +602,61 @@ filter_list = [
 
     MatchFilter(name = "svo-vos-inv-1",
                 mrs_id_list = g.n1_subj_ques,
-                re1 = 'tv1.* n1.* n2',
+                re1 = 'tv(?:[1-9])?.* n1.* n2',
                 comment = "This filter checks for the right word order in questions when the word order is SVO or VOS, questions are marked by subject-verb inversion, and there is no auxiliary. Subj = n1",
                 fv = ['and',['or','word-order:svo','word-order:vos'],'q-inv:on','q-inv-verb:main']),
 
     MatchFilter(name = "svo-vos-inv-2",
                 mrs_id_list = g.n2_subj_ques,
-                re1 = 'tv1.* n2.* n1',
+                re1 = 'tv(?:[1-9])?.* n2.* n1',
                 comment = "This filter checks for the right word order in questions when the word order is SVO or VOS, questions are marked by subject-verb inversion, and there is no auxiliary. Subj = n2",
                 fv = ['and',['or','word-order:svo','word-order:vos'],'q-inv:on','q-inv-verb:main']),
 
     MatchFilter(name = "svo-vos-inv-3",
                 mrs_id_list = g.n1_subj_ques,
-                re1 = 'aux.* n1.* tv1.* n2',
+                re1 = 'aux.* n1.* tv(?:[1-9])?.* n2',
                 comment = "This filter checks for the right word order in questions when the word order is SVO or VOS, questions are marked by subject-verb inversion, and there is an auxiliary which precedes V/VP. Subj = n1",
                 fv = ['and',['or','word-order:svo','word-order:vos'],'q-inv:on','q-inv-verb:aux','aux-order:before']),
 
     MatchFilter(name = "svo-vos-inv-4",
                 mrs_id_list = g.n2_subj_ques,
-                re1 = 'aux.* n2.* tv1.* n1',
+                re1 = 'aux.* n2.* tv(?:[1-9])?.* n1',
                 comment = "This filter checks for the right word order in questions when the word order is SVO or VOS, questions are marked by subject-verb inversion, and there is an auxiliary which precedes V/VP. Subj = n2",
                 fv = ['and',['or','word-order:svo','word-order:vos'],'q-inv:on','q-inv-verb:aux','aux-order:before']),
 
     MatchFilter(name = "svo-vos-inv-5",
                 mrs_id_list = g.n1_subj_ques,
-                re1 = 'tv1.* n2.* n1.* aux',
+                re1 = 'tv(?:[1-9])?.* n2.* n1.* aux',
                 comment = "This filter checks for the right word order in questions when the word order is SVO or VOS, questions are marked by subject-verb inversion, and there is an auxiliary which follows V/VP. Subj = n1",
                 fv = ['and',['or','word-order:svo','word-order:vos'],'q-inv:on','q-inv-verb:aux','aux-order:after']),
 
     MatchFilter(name = "svo-vos-inv-6",
                 mrs_id_list = g.n2_subj_ques,
-                re1 = 'tv1.* n1.* n2.* aux',
+                re1 = 'tv(?:[1-9])?.* n1.* n2.* aux',
                 comment = "This filter checks for the right word order in questions when the word order is SVO or VOS, questions are marked by subject-verb inversion, and there is an auxiliary which follows V/VP. Subj = n2",
                 fv = ['and',['or','word-order:svo','word-order:vos'],'q-inv:on','q-inv-verb:aux','aux-order:after']),
 
     MatchFilter(name = "svo-vos-inv-7",
                 mrs_id_list = g.n1_subj_ques,
-                re1 = 'aux.* n1.* tv1.* n2|tv1.* n1.* n2',
+                re1 = 'aux.* n1.* tv(?:[1-9])?.* n2|tv(?:[1-9])?.* n1.* n2',
                 comment = "This filter checks for the right word order in questions when the word order is SVO or VOS, questions are marked by subject-verb inversion, and there is potentially an auxiliary which precedes V/VP. Subj = n1",
                 fv = ['and',['or','word-order:svo','word-order:vos'],'q-inv:on','q-inv-verb:main-aux','aux-order:before']),
 
     MatchFilter(name = "svo-vos-inv-8",
                 mrs_id_list = g.n2_subj_ques,
-                re1 = 'aux.* n2.* tv1.* n1|tv1.* n2.* n1',
+                re1 = 'aux.* n2.* tv(?:[1-9])?.* n1|tv(?:[1-9])?.* n2.* n1',
                 comment = "This filter checks for the right word order in questions when the word order is SVO or VOS, questions are marked by subject-verb inversion, and there is potentially an auxiliary which precedes V/VP. Subj = n2",
                 fv = ['and',['or','word-order:svo','word-order:vos'],'q-inv:on','q-inv-verb:main-aux','aux-order:before']),
 
     MatchFilter(name = "svo-vos-inv-9",
                 mrs_id_list = g.n1_subj_ques,
-                re1 = 'tv1.* n2.* n1.* aux|tv1.* n1.* n2',
+                re1 = 'tv(?:[1-9])?.* n2.* n1.* aux|tv(?:[1-9])?.* n1.* n2',
                 comment = "This filter checks for the right word order in questions when the word order is SVO or VOS, questions are marked by subject-verb inversion, and there is potentially an auxiliary which follows V/VP. Subj = n1",
                 fv = ['and',['or','word-order:svo','word-order:vos'],'q-inv:on','q-inv-verb:main-aux','aux-order:after']),
 
     MatchFilter(name = "svo-vos-inv-10",
                 mrs_id_list = g.n2_subj_ques,
-                re1 = 'tv1.* n1.* n2.* aux|tv1.* n2.* n1',
+                re1 = 'tv(?:[1-9])?.* n1.* n2.* aux|tv(?:[1-9])?.* n2.* n1',
                 comment = "This filter checks for the right word order in questions when the word order is SVO or VOS, questions are marked by subject-verb inversion, and there is potentially an auxiliary which follows V/VP. Subj = n2",
                 fv = ['and',['or','word-order:svo','word-order:vos'],'q-inv:on','q-inv-verb:main-aux','aux-order:after']),
 
@@ -632,61 +670,61 @@ filter_list = [
 
     MatchFilter(name = "ovs-sov-inv-1",
                 mrs_id_list = g.n1_subj_ques,
-                re1 = 'n2.* n1.* tv1',
+                re1 = 'n2.* n1.* tv(?:[1-9])?',
                 comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is no auxiliary. Subj = n1",
                 fv = ['and',['or','word-order:ovs','word-order:sov'],'q-inv:on','q-inv-verb:main']),
 
     MatchFilter(name = "ovs-sov-inv-2",
                 mrs_id_list = g.n2_subj_ques,
-                re1 = 'n1.* n2.* tv1',
+                re1 = 'n1.* n2.* tv(?:[1-9])?',
                 comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is no auxiliary. Subj = n2",
                 fv = ['and',['or','word-order:ovs','word-order:sov'],'q-inv:on','q-inv-verb:main']),
 
     MatchFilter(name = "ovs-sov-inv-3",
                 mrs_id_list = g.n1_subj_ques,
-                re1 = 'aux.* n1.* n2.* tv1',
+                re1 = 'aux.* n1.* n2.* tv(?:[1-9])?',
                 comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is an auxiliary which precedes V/VP. Subj = n1",
                 fv = ['and',['or','word-order:ovs','word-order:sov'],'q-inv:on','q-inv-verb:aux','aux-order:before']),
 
     MatchFilter(name = "ovs-sov-inv-4",
                 mrs_id_list = g.n2_subj_ques,
-                re1 = 'aux.* n2.* n1.* tv1',
+                re1 = 'aux.* n2.* n1.* tv(?:[1-9])?',
                 comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is an auxiliary which precedes V/VP. Subj = n2",
                 fv = ['and',['or','word-order:ovs','word-order:sov'],'q-inv:on','q-inv-verb:aux','aux-order:before']),
 
     MatchFilter(name = "ovs-sov-inv-5",
                 mrs_id_list = g.n1_subj_ques,
-                re1 = 'n2.* tv1.* n1.* aux',
+                re1 = 'n2.* tv(?:[1-9])?.* n1.* aux',
                 comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is an auxiliary which follows V/VP. Subj = n1",
                 fv = ['and',['or','word-order:ovs','word-order:sov'],'q-inv:on','q-inv-verb:aux','aux-order:after']),
 
     MatchFilter(name = "ovs-sov-inv-6",
                 mrs_id_list = g.n2_subj_ques,
-                re1 = 'n1.* tv1.* n2.* aux',
+                re1 = 'n1.* tv(?:[1-9])?.* n2.* aux',
                 comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is an auxiliary which follows V/VP. Subj = n2",
                 fv = ['and',['or','word-order:ovs','word-order:sov'],'q-inv:on','q-inv-verb:aux','aux-order:after']),
 
     MatchFilter(name = "ovs-sov-inv-7",
                 mrs_id_list = g.n1_subj_ques,
-                re1 = 'aux.* n1.* n2.* tv1|n2.* n1.* tv1',
+                re1 = 'aux.* n1.* n2.* tv(?:[1-9])?|n2.* n1.* tv(?:[1-9])?',
                 comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is potentially an auxiliary which precedes V/VP. Subj = n1",
                 fv = ['and',['or','word-order:ovs','word-order:sov'],'q-inv:on','q-inv-verb:main-aux','aux-order:before']),
 
     MatchFilter(name = "ovs-sov-inv-8",
                 mrs_id_list = g.n2_subj_ques,
-                re1 = 'aux.* n2.* n1.* tv1|n1.* n2.* tv1',
+                re1 = 'aux.* n2.* n1.* tv(?:[1-9])?|n1.* n2.* tv(?:[1-9])?',
                 comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is potentially an auxiliary which precedes V/VP. Subj = n2",
                 fv = ['and',['or','word-order:ovs','word-order:sov'],'q-inv:on','q-inv-verb:main-aux','aux-order:before']),
 
     MatchFilter(name = "ovs-sov-inv-9",
                 mrs_id_list = g.n1_subj_ques,
-                re1 = 'n2.* tv1.* n1.* aux|n2.* n1.* tv1',
+                re1 = 'n2.* tv(?:[1-9])?.* n1.* aux|n2.* n1.* tv(?:[1-9])?',
                 comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is potentially an auxiliary which follows V/VP. Subj = n1",
                 fv = ['and',['or','word-order:ovs','word-order:sov'],'q-inv:on','q-inv-verb:main-aux','aux-order:after']),
 
     MatchFilter(name = "ovs-sov-inv-10",
                 mrs_id_list = g.n2_subj_ques,
-                re1 = 'n1.* tv1.* n2.* aux|n1.* n2.* tv1',
+                re1 = 'n1.* tv(?:[1-9])?.* n2.* aux|n1.* n2.* tv(?:[1-9])?',
                 comment = "This filter checks for the right word order in questions when the word order is OVS or SOV, questions are marked by subject-verb inversion, and there is potentially an auxiliary which follows V/VP. Subj = n2",
                 fv = ['and',['or','word-order:ovs','word-order:sov'],'q-inv:on','q-inv-verb:main-aux','aux-order:after']),
 
@@ -716,25 +754,35 @@ filter_list = [
 
     IfFilter(name = "non-finite-verb-1",
              mrs_id_list = g.all,
-             re1 = 'aux.* iv1|iv1 .*aux',
-             re2 = 'iv-nf',
-             comment = "If auxiliaries take complements in non-finite form, check whether the other verb is non-finite, if an auxiliary is present.  Note that this assumes at most one non-aux verb, and will need to be updated. Because the non-finite forms are handled separately for each verb, need to do filters separately for iv and tv.",
+             re1 = 'aux.* iv(?:[1-9])?|iv(?:[1-9])? .*aux',
+             re2 = 'iv(?:[1-9])?-nf',
+             comment = "If auxiliaries take complements in non-finite form, check whether the " + \
+                               "other verb is non-finite, if an auxiliary is present.  Note that this " + \
+                               "assumes at most one non-aux verb, and will need to be updated. " + \
+                               "Because the non-finite forms are handled separately for each verb, " + \
+                               "need to do filters separately for iv and tv.",
              fv = ['iverb-non-finite:iv-nf']),
     IfFilter(name = "non-finite-verb-2",
              mrs_id_list = g.all,
-             re1 = 'aux.* tv1|tv1 .*aux',
-             re2 = 'tv1-nf',
-             comment = "If auxiliaries take complements in non-finite form, check whether the other verb is non-finite, if an auxiliary is present.  Note that this assumes at most one non-aux verb, and will need to be updated. Because the non-finite forms are handled separately for each verb, need to do filters separately for iv and tv.",
+             re1 = 'aux.* tv(?:[1-9])?|tv(?:[1-9])? .*aux',
+             re2 = 'tv(?:[1-9])?-nf',
+             comment = "If auxiliaries take complements in non-finite form, check whether the " + \
+                               "other verb is non-finite, if an auxiliary is present.  Note that this " + \
+                                "assumes at most one non-aux verb, and will need to be updated. " + \
+                                "Because the non-finite forms are handled separately for each verb, " + \
+                                 "need to do filters separately for iv and tv.",
              fv = ['tverb-non-finite:tv-nf']),
     NotMatchFilter(name = "non-finite-verb-3",
                    mrs_id_list = g.all,
-                   re1 = 'iv-nf',
-                   comment = "If the intransitive verb doesn't take a special form after the auxiliary, then we shouldn't see iv-nf.",
+                   re1 = 'iv(?:[1-9])?-nf',
+                   comment = "If the intransitive verb doesn't take a special form after the " + \
+                                     "auxiliary, then we shouldn't see iv-nf.",
                    fv = ['iverb-non-finite:']),
     NotMatchFilter(name = "non-finite-verb-4",
                    mrs_id_list = g.all,
-                   re1 = 'tv1-nf',
-                   comment = "If the transitive verb doesn't take a special form after the auxiliary, then we shouldn't see tv-nf.",
+                   re1 = 'tv(?:[1-9])?-nf',
+                   comment = "If the transitive verb doesn't take a special form after the auxiliary, " + \
+                                     "then we shouldn't see tv-nf.",
                    fv = ['tverb-non-finite:']),
     
 
@@ -923,7 +971,8 @@ filter_list = [
     NotMatchFilter(name = 'no-aux',
                    mrs_id_list = g.all,
                    re1 = 'aux',
-                   comment = "If the language doesn't have an auxiliary, we should never see aux in the string.",
+                   comment = "If the language doesn't have an auxiliary, we should never see " + \
+                                     "aux in the string.",
                    fv = ['aux-verb:']),
               
 
@@ -1136,13 +1185,13 @@ filter_list = [
 
     MatchFilter(name = 'coord-vp-mono-before',
                 mrs_id_list = ['wo2-coord-vp'],
-                re1 = 'iv1 iv1 co iv3',
+                re1 = 'iv(?:[1-9])? iv(?:[1-9])? co iv(?:[1-9])?',
                 comment = "If NP coordination is monosyndetic and the mark comes before the coordinand, there must be a properly-marked coordinated VP",
                 fv = ['and','cs1_pat:mono','cs1_order:before']),
 
     MatchFilter(name = 'coord-vp-mono-after',
                 mrs_id_list = ['wo2-coord-vp'],
-                re1 = 'iv1 iv2 iv3 co',
+                re1 = 'iv(?:[1-9])? iv(?:[1-9])? iv(?:[1-9])? co',
                 comment = "If NP coordination is monosyndetic and the mark comes after the coordinand, there must be a properly-marked coordinated VP",
                 fv = ['and','cs1_pat:mono','cs1_order:after']),
 
@@ -1150,13 +1199,13 @@ filter_list = [
 
     MatchFilter(name = 'coord-vp-poly-before',
                 mrs_id_list = ['wo2-coord-vp'],
-                re1 = 'iv1 co iv2 co iv3',
+                re1 = 'iv(?:[1-9])? co iv(?:[1-9])? co iv(?:[1-9])?',
                 comment = "If VP coordination is polysyndetic and the mark comes before the coordinand, there must be a properly-marked coordinated VP",
                 fv = ['and','cs1_pat:poly','cs1_order:before']),
 
     MatchFilter(name = 'coord-vp-poly-after',
                 mrs_id_list = ['wo2-coord-vp'],
-                re1 = 'iv1 iv2 co iv3 co',
+                re1 = 'iv(?:[1-9])? iv(?:[1-9])? co iv(?:[1-9])? co',
                 comment = "If VP coordination is polysyndetic and the mark comes after the coordinand, there must be a properly-marked coordinated VP",
                 fv = ['and','cs1_pat:poly','cs1_order:after']),
 
@@ -1164,13 +1213,13 @@ filter_list = [
 
     MatchFilter(name = 'coord-vp-omni-before',
                 mrs_id_list = ['wo2-coord-vp'],
-                re1 = 'co iv1 co iv2 co iv3',
+                re1 = 'co iv(?:[1-9])? co iv(?:[1-9])? co iv(?:[1-9])?',
                 comment = "If VP coordination is omnisyndetic and the mark comes before the coordinand, there must be a properly-marked coordinated VP",
                 fv = ['and','cs1_pat:omni','cs1_order:before']),
 
     MatchFilter(name = 'coord-vp-omni-after',
                 mrs_id_list = ['wo2-coord-vp'],
-                re1 = 'iv1 co iv2 co iv3 co',
+                re1 = 'iv(?:[1-9])? co iv(?:[1-9])? co iv(?:[1-9])? co',
                 comment = "If VP coordination is omnisyndetic and the mark comes after the coordinand, there must be a properly-marked coordinated VP",
                 fv = ['and','cs1_pat:omni','cs1_order:after']),
 
@@ -1178,7 +1227,7 @@ filter_list = [
 
     MatchFilter(name = 'coord-vp-a',
                 mrs_id_list = ['wo2-coord-vp'],
-                re1 = 'iv1 iv2 iv3',
+                re1 = 'iv(?:[1-9])? iv(?:[1-9])? iv(?:[1-9])?',
                 comment = "If VP coordination is asyndetic, there must be a properly-marked coordinated VP",
                 fv = ['cs1_pat:a']),
 
@@ -1186,13 +1235,13 @@ filter_list = [
 
     MatchFilter(name = 'coord-s-mono-before',
                 mrs_id_list = ['wo2-coord-s'],
-                re1 = 'det1 n1 iv1 det2 n2 iv2 co det3 n3 iv3',
+                re1 = 'det1 n1 iv(?:[1-9])? det2 n2 iv(?:[1-9])? co det3 n3 iv(?:[1-9])?',
                 comment = "If S coordination is monosyndetic and the mark comes before the coordinand, there must be a properly-marked coordinated S",
                 fv = ['and','cs1_pat:mono','cs1_order:before']),
 
     MatchFilter(name = 'coord-s-mono-after',
                 mrs_id_list = ['wo2-coord-s'],
-                re1 = 'det1 n1 iv1 det2 n2 iv2 det3 n3 iv3 co',
+                re1 = 'det1 n1 iv(?:[1-9])? det2 n2 iv(?:[1-9])? det3 n3 iv(?:[1-9])? co',
                 comment = "If S coordination is monosyndetic and the mark comes after the coordinand, there must be a properly-marked coordinated S",
                 fv = ['and','cs1_pat:mono','cs1_order:after']),
 
@@ -1200,13 +1249,13 @@ filter_list = [
 
     MatchFilter(name = 'coord-s-poly-before',
                 mrs_id_list = ['wo2-coord-s'],
-                re1 = 'det1 n1 iv1 co det2 n2 iv2 co det3 n3 iv3',
+                re1 = 'det1 n1 iv(?:[1-9])? co det2 n2 iv(?:[1-9])? co det3 n3 iv(?:[1-9])?',
                 comment = "If S coordination is polysyndetic and the mark comes before the coordinand, there must be a properly-marked coordinated S",
                 fv = ['and','cs1_pat:poly','cs1_order:before']),
 
     MatchFilter(name = 'coord-s-poly-after',
                 mrs_id_list = ['wo2-coord-s'],
-                re1 = 'det1 n1 iv1 det2 n2 iv2 co det3 n3 iv3 co',
+                re1 = 'det1 n1 iv(?:[1-9])? det2 n2 iv(?:[1-9])? co det3 n3 iv(?:[1-9])? co',
                 comment = "If S coordination is polysyndetic and the mark comes after the coordinand, there must be a properly-marked coordinated S",
                 fv = ['and','cs1_pat:poly','cs1_order:after']),
 
@@ -1214,13 +1263,13 @@ filter_list = [
 
     MatchFilter(name = 'coord-s-omni-before',
                 mrs_id_list = ['wo2-coord-s'],
-                re1 = 'co det1 n1 iv1 co det2 n2 iv2 co det3 n3 iv3',
+                re1 = 'co det1 n1 iv(?:[1-9])? co det2 n2 iv(?:[1-9])? co det3 n3 iv(?:[1-9])?',
                 comment = "If S coordination is omnisyndetic and the mark comes before the coordinand, there must be a properly-marked coordinated S",
                 fv = ['and','cs1_pat:omni','cs1_order:before']),
 
     MatchFilter(name = 'coord-s-omni-after',
                 mrs_id_list = ['wo2-coord-s'],
-                re1 = 'det1 n1 iv1 co det2 n2 iv2 co det3 n3 iv3 co',
+                re1 = 'det1 n1 iv(?:[1-9])? co det2 n2 iv(?:[1-9])? co det3 n3 iv(?:[1-9])? co',
                 comment = "If S coordination is omnisyndetic and the mark comes after the coordinand, there must be a properly-marked coordinated S",
                 fv = ['and','cs1_pat:omni','cs1_order:after']),
 
@@ -1228,7 +1277,9 @@ filter_list = [
 
     MatchFilter(name = 'coord-s-a',
                 mrs_id_list = ['wo2-coord-s'],
-                re1 = 'det1 n1 iv1 det2 n2 iv2 det3 n3 iv3',
+                # TODO: verify sentences with multilpe verbs don't really call for verbs with
+                # specific number (e.g., v1 v2 instead of v[1-9]?.
+                re1 = 'det1 n1 iv(?:[1-9])? det2 n2 iv(?:[1-9])? det3 n3 iv(?:[1-9])?',
                 comment = "If S coordination is asyndetic, there must be a properly-marked coordinated S",
                 fv = ['cs1_pat:a']),
 

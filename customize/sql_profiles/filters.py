@@ -78,17 +78,69 @@ class Filter:
     def __init__(self,name,mrs_id_list,comment,fv = None):
         self.name = name
         self.mrs_id_list = mrs_id_list
+        # TODO: don't use predefined 'type' function...is it supposed to be comment anyway?
         self.type = type
         self.fv = fv
 
     def check_mrs_id(self,mrs_id):
         return mrs_id in self.mrs_id_list
 
-    def exe(self,mrs_id,sent):
-        if not self.check_mrs_id(mrs_id):
-            return 2
+    # TODO: this function is wrong b/c it doesn't consider the fv lists in s_filters.py that end in a
+    # colon.  E.g., fv = 'aux-verb:' which i think means if aux-verb is off given the context.  Of
+    # course it looks like what's actually in the choices file is has-aux:, not aux-verb:
+    def check_fv(self, fvset, fvlist = None):
+        # TODO: there has to be a cleaner way to do this.
+        # TODO: abstract this fv thing into a class instead of this list structure.
+        if fvlist is None:
+            if self.fv is None:
+                # if it has None for self.fv, then it's probs a u filter
+                # and it cares regardless of the lt's fvs
+                # TODO: clean this up: two points of return
+                return True
+            else:
+                fvlist = self.fv
+                
+        if fvlist[0] == 'and':
+            for item in fvlist[1:]:
+                answer = self.check_fv(fvset, item)
+                # as soon as I get a False, get out of here
+                if not answer:
+                    break
+        elif fvlist[0] == 'or':
+            for item in fvlist[1:]:
+                answer = self.check_fv(fvset, item)
+                # as soon as I get a True, get out of here
+                if answer:
+                    break
         else:
-            return self.apply_filter(sent)
+            # TODO: there has to be a cleaner way to do this.
+            # now what?
+            # i should always be a string here, not a list of strings        
+            if type(fvlist) is list:
+                # or if i'm a list i should be a list of just one string
+                if len(fvlist) > 1:
+                    print >> sys.stderr, self.name
+                    print >> sys.stderr, self.fv
+                    print >> sys.stderr, len(fvlist)
+                    for fv in fvlist:
+                        print >> sys.stderr, fv
+                    raise TypeError, "Ill-formed fv"
+                else:
+                    fvlist = fvlist[0]
+            if fvlist in fvset:
+                answer = True
+            else:
+                answer = False
+
+        return answer
+
+    def exe(self,mrs_id,sent, fvSet):
+        if self.check_mrs_id(mrs_id) and self.check_fv(fvSet):
+            answer = self.apply_filter(sent)
+        else:
+            answer = 2
+
+        return answer
 
     #Might not need this here.
     def apply_filter(self,sent):
@@ -143,7 +195,6 @@ class IfFilter(Filter):
                 return 0
         else:
             return 1
-
 
 class IfNotFilter(Filter):
     # Checking for something that must not be present, but only under
@@ -303,5 +354,68 @@ def filter_results(filter_list,filter_type):
         cursor.execute("SELECT r_result_id FROM result LIMIT %s, 100000", (limit))
         ids = cursor.fetchall()
         limit += 100000
-    
 
+def getFilterID(fname, conn):
+    """
+    Function: getFilterID
+    Input:
+        fname - the name of a filter
+        conn - a MatrixTDBConn
+        TODO: Do I need to add 'type' here to distinguish two that may have same name?
+    Output: answer - the ID of this filter in MatrixTDB
+    Functionality: looks in MatrixTDB for a filter of this name.
+    """
+    row = conn.selQuery("SELECT filter_id FROM filter " + \
+                                            "WHERE filter_name = %s", (fname))
+    try:
+        answer = row[0][0]
+    except IndexError:
+        answer = 0
+        
+    return answer
+    
+def insertFilter(fname, ftype, conn):
+    """
+    Function: addFilter
+    Input:
+        fname - the name of a filter
+        ftype - the type of filter, either u (universal) or s (specific)
+        conn - a MatrixTDBConn
+    Output: newID - the ID of this filter added to MatrixTDB
+    Functionality: adds this filter to the filter table of MatrixTDB.
+    """
+    conn.execute("INSERT INTO filter SET filter_name = %s, filter_type = %s", (fname, ftype))
+    fID = conn.selQuery("SELECT LAST_INSERT_ID()")[0][0]
+    return fID
+
+def insertFilteredSpecResult(resID, fltrID, appliedResult, conn):
+    """
+    Function: insertFilteredSpecResult
+    Input:
+    Output:
+    Functionality:
+    Author: KEN (Scott Halgrim, captnpi@u.washington.edu)
+    Date: 7/9/09    
+    TODO: comment this
+    """
+    
+    conn.execute("INSERT INTO res_sfltr "+ \
+                             "(rsf_res_id, rsf_sfltr_id, rsf_value) " + \
+                         "VALUES (%s, %s, %s)", (resID, fltrID, appliedResult))
+    return
+
+def insertFilteredResult(resID, fltrID, appliedResult, conn):
+    """
+    Function: insertFilteredResult
+    Input:
+    Output:
+    Functionality:
+    Author: KEN (Scott Halgrim, captnpi@u.washington.edu)
+    Date: 7/8/09    
+    TODO: comment this
+    """
+    
+    conn.execute("INSERT INTO res_fltr "+ \
+                             "(rf_res_id, rf_fltr_id, rf_value) " + \
+                         "VALUES (%s, %s, %s)", (resID, fltrID, appliedResult))
+    return

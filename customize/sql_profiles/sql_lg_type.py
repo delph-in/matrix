@@ -65,29 +65,43 @@ from choices import ChoicesFile
 ###############################################################
 # check_lt_for_fvs(fvs,choices): Check whether all of the feature-value
 # pairs in a group are represented in the language type.
+# NB: choices is not a ChoicesFile, it is a dict of fv pairs.
 
 def check_lt_for_fvs(fvs,choices):
 
     for fv in fvs:
         (f,v) = fv
-        if choices.get(f) != v:
-            return False
+        try:
+            if choices[f] != v:
+                answer = False
+                break
+        except KeyError:
+            # this goofy little test below handles the syntax in filters that checks for absence of a
+            # feature altogether.  That sytnax is, e.g., "fv = ['aux-verb:']", meaning that it applies
+            # to anything without that feature in it.  We will get a KeyError if the feature isn't in
+            # the choices dict, and here we verify that the syntax given in the fvs was indeed that
+            # it was checking for absence.  If it was an empty string (looking for absence), we leave
+            # it alone.  If it was looking for an actual value, though, then this isn't a match and we
+            # move on.
+            if not (v == ''):
+                answer = False
+                break
+    else:
+        answer = True
 
-    return True
+    return answer
 
 ###############################################################
 # check_lt_for_grp_ids(grp_ids,choices): Check whether all of the feature-value
 # pairs in a set of grp_ids (e.g., from an existing lt) are
 # represented in a (new) set of choices.
 
-def check_lt_for_grp_ids(grp_ids,choices,cursor):
+def check_lt_for_grp_ids(grp_ids,choices,conn):
 
     # grp_ids is one of those obnoxious tuples from cursor.fetchal()
 
     for grp_id_tuple in grp_ids:
         grp_id = grp_ids[0]
-
-        cursor.execute("SELECT fg_feat, fg_value FROM feat_grp WHERE fg_grp_id = %s",(grp_id))
 
         # Just check the first feature from each feature group
         # since the non-singleton groups should all be redundant
@@ -95,7 +109,9 @@ def check_lt_for_grp_ids(grp_ids,choices,cursor):
         # cheaper than deciding whether each group is singleton
         # before we check it.
 
-        (f,v) = cursor.fetchone()
+        (f, v) = conn.selQuery("SELECT fg_feat, fg_value FROM feat_grp " + \
+                              "WHERE fg_grp_id = %s",(grp_id))[0]
+
         if choices.get(f) != v:
             return False
 
@@ -106,11 +122,13 @@ def check_lt_for_grp_ids(grp_ids,choices,cursor):
 # the other way: Check whether all of the fv pairs in choices
 # are already in the lt.
 
-def check_existing_lt_for_completeness(lt_id,choices,cursor):
+def check_existing_lt_for_completeness(lt_id,choices,conn):
 
     for f in choices.keys():
-        cursor.execute("SELECT fg_grp_id FROM feat_grp, lt_feat_grp WHERE fg_feat = %s AND fg_value = %s AND lfg_grp_id = fg_grp_id AND lfg_lt_id = %s",(f,choices.get(f),lt_id))
-        res = cursor.fetchall()
+        res = conn.selQuery("SELECT fg_grp_id FROM feat_grp, lt_feat_grp " + \
+                                       "WHERE fg_feat = %s AND fg_value = %s " + \
+                                        "AND lfg_grp_id = fg_grp_id AND lfg_lt_id = %s", \
+                                                                                                            (f,choices.get(f),lt_id))
         if len(res) == 0: # we found a fv pair which isn't already in lfg_feat_grp for the lt.
             return False
 
@@ -120,28 +138,27 @@ def check_existing_lt_for_completeness(lt_id,choices,cursor):
 # lt_exists(choices): Check whether we've already created
 # the language type represented by the f:v dictionary choices
 
-def lt_exists(choices,cursor):
+def lt_exists(choices,conn):
 
     # Check existing language types until we find one that
     # is consistent (i.e., subsumed by choices)
 
-    cursor.execute("SELECT lt_id FROM lt")
-    lt_ids = cursor.fetchall()
+    lt_ids = conn.selQuery("SELECT lt_id FROM lt")
 
     # print "lt_ids is: " + str(lt_ids)
     
     for lt_id_tuple in lt_ids:  
         lt_id = lt_id_tuple[0]
 
-        cursor.execute("SELECT lfg_grp_id FROM lt_feat_grp WHERE lfg_lt_id = %s",(lt_id))
-        grp_ids = cursor.fetchall()
+        grp_ids = conn.selQuery("SELECT lfg_grp_id FROM lt_feat_grp " + \
+                                             "WHERE lfg_lt_id = %s", (lt_id))
 
-        if check_lt_for_grp_ids(grp_ids,choices,cursor):
+        if check_lt_for_grp_ids(grp_ids,choices,conn):
 
             # Now make sure that all of the information in choices is
             # also in that lt.
 
-            if check_existing_lt_for_completeness(lt_id,choices,cursor):
+            if check_existing_lt_for_completeness(lt_id,choices,conn):
                 return lt_id
 
     return False
@@ -151,17 +168,17 @@ def lt_exists(choices,cursor):
 # singleton_group_exists(f,v): Check whether the pair f:v is
 # already in as a singleton group
 
-def singleton_group_exists(f,v,cursor):
+def singleton_group_exists(f,v,conn):
 
-    cursor.execute("SELECT fg_grp_id FROM feat_grp WHERE fg_feat = %s and fg_value = %s", (f,v))
-    grp_ids = cursor.fetchall()
+    grp_ids = conn.selQuery("SELECT fg_grp_id FROM feat_grp " +
+                                        "WHERE fg_feat = %s and fg_value = %s", (f,v))
 
     if len(grp_ids) == 0: # No entries at all for that fv pair
         return False
 
     for grp_id in grp_ids:
-        cursor.execute("SELECT fg_id FROM feat_grp WHERE fg_grp_id = %s",(grp_id[0]))
-        rows = cursor.fetchall()
+        rows = conn.selQuery("SELECT fg_id FROM feat_grp WHERE fg_grp_id = %s",(grp_id[0]))
+
         if len(rows) == 1: # Found an entry that is the sole member of its group
             return True
 
@@ -172,34 +189,31 @@ def singleton_group_exists(f,v,cursor):
 # update_feat_group(choices): Make sure that all f:v pairs
 # are in feat_group as singleton groups.
 
-def update_feat_group(choices,cursor):
-
-    # print "choices is " + str(choices)
+def update_feat_group(choices,conn):
 
     for f in choices.keys():
         v = choices.get(f)
-        if not singleton_group_exists(f,v,cursor):
-            cursor.execute("SELECT MAX(fg_grp_id) FROM feat_grp")
-            fg_grp_id = cursor.fetchone()[0]
-            if type(fg_grp_id) == long:
+        # print >> sys.stderr, "choice: ", f, v   # debugging
+        if not singleton_group_exists(f,v,conn):
+            fg_grp_id = conn.selQuery("SELECT max(fg_grp_id) FROM feat_grp")[0][0]
+            if type(fg_grp_id) is long:
                 fg_grp_id = fg_grp_id + 1
             else:
+                # returned no rows
                 fg_grp_id = 1
-            cursor.execute("INSERT INTO feat_grp SET fg_grp_id = %s, fg_feat = %s, fg_value = %s",(fg_grp_id,f,v))
+            conn.execute("INSERT INTO feat_grp SET fg_grp_id = %s, fg_feat = %s, fg_value = %s",(fg_grp_id,f,v))
 
 ###############################################################
 # update_lt_in_lfg(choices,lt_id): Update the lt_feat_grp table to
 # reflect all currently defined feature groups which correspond
 # to this language type.
+# NB: choices is not a ChoicesFile, it is a dict of fv pairs.
 
-def update_lt_in_lfg(choices,lt_id,cursor):
-
-    print lt_id
+def update_lt_in_lfg(choices,lt_id,conn):
 
     # Get all feature groups from DB
 
-    cursor.execute("SELECT fg_grp_id FROM feat_grp")
-    g_ids = cursor.fetchall()
+    g_ids = conn.selQuery("SELECT DISTINCT fg_grp_id FROM feat_grp")
 
     for tup in g_ids:
 
@@ -209,12 +223,12 @@ def update_lt_in_lfg(choices,lt_id,cursor):
         g_id = tup[0]
 
         # Get all of the feature-value pairs in a group
-        cursor.execute("SELECT fg_feat, fg_value FROM feat_grp WHERE fg_grp_id = %s",(g_id))
-        fvs = cursor.fetchall()
+        fvs = conn.selQuery("SELECT fg_feat, fg_value FROM feat_grp " + \
+                                      "WHERE fg_grp_id = %s",(g_id))
 
         # Find out if we already have this group associated with this lt:
-        cursor.execute("SELECT * FROM lt_feat_grp WHERE lfg_lt_id = %s AND lfg_grp_id = %s",(lt_id,g_id))
-        row = cursor.fetchall()
+        row = conn.selQuery("SELECT * FROM lt_feat_grp " + \
+                                        "WHERE lfg_lt_id = %s AND lfg_grp_id = %s",(lt_id,g_id))
 
         if row == ():
           row_exists_p = False
@@ -222,14 +236,17 @@ def update_lt_in_lfg(choices,lt_id,cursor):
           row_exists_p = True
 
         # Check if they are all in the lt definition
+        # NB: choices is not a ChoicesFile, it is a dict of fv pairs
         if check_lt_for_fvs(fvs,choices):
           if not(row_exists_p):
-            cursor.execute("INSERT INTO lt_feat_grp SET lfg_lt_id = %s, lfg_grp_id = %s",(lt_id,g_id))
+            conn.execute("INSERT INTO lt_feat_grp " + \
+                                 "SET lfg_lt_id = %s, lfg_grp_id = %s",(lt_id,g_id))
         else:
           if row_exists_p:
-            cursor.execute("DELETE FROM lt_feat_grp WHERE lfg_lt_id = %s, lfg_grp_id = %s",(lt_id,g_id))
+            conn.execute("DELETE FROM lt_feat_grp " + \
+                                 "WHERE lfg_lt_id = %s, lfg_grp_id = %s",(lt_id,g_id))
 
-
+    return
 
 ###############################################################
 # create_or_update_lt(choices): Given a new language type described
@@ -238,19 +255,19 @@ def update_lt_in_lfg(choices,lt_id,cursor):
 # not already there, and update lt_lfg to list all of the
 # feature groups appropriate for this language type.
 
-def create_or_update_lt(choices,cursor):
+def create_or_update_lt(choices,conn):
 
     # Check if the language type already exists, if so,
     # call update_lt_in_lfg instead and return lt_id.
 
-    lt_id = lt_exists(choices,cursor)  # Return lt_id or False
+    lt_id = lt_exists(choices,conn)  # Return lt_id or False
     if lt_id:
-        update_lt_in_lfg(choices,lt_id,cursor)
+        update_lt_in_lfg(choices,lt_id,conn)
         return lt_id
 
     # Put all f:v pairs in to feat_group as singleton groups
 
-    update_feat_group(choices,cursor)
+    update_feat_group(choices,conn)
         
     # Add a row for the language type
 
@@ -260,13 +277,12 @@ def create_or_update_lt(choices,cursor):
 
     comment = raw_input("Enter a short comment describing this language type: ")
 
-    cursor.execute("INSERT INTO lt SET lt_origin = %s, lt_comment = %s", (res,comment))
-    cursor.execute("SELECT LAST_INSERT_ID()")
-    lt_id = cursor.fetchone()[0]
+    conn.execute("INSERT INTO lt SET lt_origin = %s, lt_comment = %s", (res,comment))
+    lt_id = conn.selQuery("SELECT LAST_INSERT_ID()")[0][0]
 
     # Update lt_feat_group and return lt_id
-
-    update_lt_in_lfg(choices,lt_id,cursor)
+    # return 1 # debugging    
+    update_lt_in_lfg(choices,lt_id,conn)
     return lt_id
 
 

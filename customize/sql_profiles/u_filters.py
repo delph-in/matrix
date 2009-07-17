@@ -19,6 +19,8 @@ filter_list = [IfFilter(name = "uf1",
                         mrs_id_list = g.no_det_n1_subj,
                         re1 = 'p-nom',
                         re2 = 'p-nom n1|n1 p-nom',
+                        # TODO: look at this b/c i don't think it precludes 'p-nom n1 aux p-nom' being false
+                        # though given the way we don't dup words when creating seed strings we're probably okay
                         comment = "If n1 is the subject, and there is no determiner for it, any p-nom in the sentence needs to be adjacent to n1."),
                
                IfFilter(name = "uf2", 
@@ -51,7 +53,7 @@ filter_list = [IfFilter(name = "uf1",
                
                MatchFilter(name = "uf7",
                            mrs_id_list = g.two_dets_n1_n2,
-                           re1 = 'n1 det1 .*n2 det2|n2 det2 .*n1 det1|det1 n1 .*det2 n2|det2 n2 .*det1 n1'
+                           re1 = 'n1 det1 .*n2 det2|n2 det2 .*n1 det1|det1 n1 .*det2 n2|det2 n2 .*det1 n1',
                            comment = "If there are two dets, each one has to be next to its associated noun."),
 
                IfFilter(name = "uf8",

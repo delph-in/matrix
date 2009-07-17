@@ -35,22 +35,13 @@ from copy import copy
 from stringmod import string_mods
 from stringmod import glue
 from post_permutes import post_permutes
-
-#Connect to MySQL server
-
-db = MySQLdb.connect(host="localhost", user="ebender",
-                     passwd="tr33house", db="MatrixTDB")
-
-#Create a cursor
-
-cursor = db.cursor()
+from matrix_tdb_conn import MatrixTDBConn
 
 ######################################################################
 # A function that takes a list of words and returns a list of lists
 # containing all new seed strings to find permutations of.
 
 def process_harvester(s,mrs_tag):
-
     # Read in harvester string + mrs_tag and create the other seed
     # strings in the equivalence class.   This function will
     # return a list of seed strings (including the harvester string)
@@ -60,13 +51,14 @@ def process_harvester(s,mrs_tag):
 
     strings = create_seed_strings_from_harvester(s,mrs_tag)
 
+    print >> sys.stderr, len(strings), "strings for mrs_tag", mrs_tag # debugging
+
     # Normalize the seed strings for storage in the DB
     # Check for any seed strings not already in the DB, and add them.
 
     new_strings = []
 
     for s in strings:
-
         [words,prefixes,affixes] = s
         words.sort()
         prefixes.sort()
@@ -74,27 +66,28 @@ def process_harvester(s,mrs_tag):
         storage_form = words + prefixes + affixes
         storage_string = glue(storage_form)
 
-        cursor.execute("SELECT seed_str_value, seed_id FROM seed_str WHERE seed_str_value = %s",(storage_string)) 
-        seed_tuple = cursor.fetchall()
+        seed_tuple = conn.selQuery("SELECT seed_str_value, seed_id FROM seed_str " + \
+                                                  "WHERE seed_str_value = %s",(storage_string)) 
         
         if len(seed_tuple) > 1:
+            # TODO: consider making this the primary key if we want uniqueness.
             raise ValueError, "MatrixTDB.seed_str contains more than one seed string with the same form."
 
         if len(seed_tuple) == 0:
             # We have a new seed string. Don't even have to check if it's a new
             # seed-mrs pair.  Just add it to the list.  And add them to the DB.
             new_strings.append(s)
-            cursor.execute("INSERT INTO seed_str SET seed_str_value = %s",(storage_string))
-            cursor.execute("SELECT LAST_INSERT_ID()")
-            seed_id_tuple = cursor.fetchone()
-            seed_id = seed_id_tuple[0]
-            cursor.execute("INSERT INTO str_lst SET sl_mrs_tag = %s, sl_seed_id = %s",(mrs_tag,seed_id))
-
+            conn.execute("INSERT INTO seed_str SET seed_str_value = %s",(storage_string))
+            seed_id = conn.selQuery("SELECT LAST_INSERT_ID()")[0][0]
+            conn.execute("INSERT INTO str_lst " + \
+                                 "SET sl_mrs_tag = %s, sl_seed_id = %s",(mrs_tag,seed_id))
         if len(seed_tuple) == 1:
             # We have an existing seed string.  Check to see if we already have it
             # paired with this MRS.
-            cursor.execute("SELECT seed_str_value, sl_mrs_tag FROM seed_str, str_lst WHERE sl_seed_id = seed_id AND seed_str_value = %s AND sl_mrs_tag = %s", (storage_string,mrs_tag))
-            mrs_tuple = cursor.fetchall()
+            mrs_tuple = conn.selQuery("SELECT seed_str_value, sl_mrs_tag " + \
+                                                     "FROM seed_str, str_lst " + \
+                                                     "WHERE sl_seed_id = seed_id AND seed_str_value = %s " + \
+                                                      "AND sl_mrs_tag = %s", (storage_string,mrs_tag))
 
             if len(mrs_tuple) > 1:
                 raise ValueError, "A string is paired with the same mrs_tag twice in MatrixTDB.str_lst."
@@ -102,10 +95,10 @@ def process_harvester(s,mrs_tag):
             if len(mrs_tuple) == 0:
                 # We haven't seen this string with this MRS yet, so add it.
                 new_strings.append(s)
-                cursor.execute("SELECT seed_id FROM seed_str WHERE seed_str_value = %s",(storage_string))
-                seed_id_tuple = cursor.fetchone()
-                seed_id = seed_id_tuple[0]
-                cursor.execute("INSERT INTO str_lst SET sl_mrs_tag = %s, sl_seed_id = %s",(mrs_tag,seed_id))
+                seed_id = conn.selQuery("SELECT seed_id FROM seed_str " + \
+                                                      "WHERE seed_str_value = %s",(storage_string))[0][0]
+                conn.execute("INSERT INTO str_lst " + \
+                                     "SET sl_mrs_tag = %s, sl_seed_id = %s",(mrs_tag,seed_id))
 
             # else, we've seen this seed-mrs pair already, so do nothing.
 
@@ -141,7 +134,6 @@ def uniq_permute(s):
 # class, including the harvester.
 
 def create_seed_strings_from_harvester(harv,mrs_tag):
-
     # Find out which string modifications are appropriate for
     # the mrs tag in question.  
 
@@ -186,15 +178,17 @@ def create_seed_strings(string_list,mods_list):
         string_list_copy = deepcopy(string_list)
         more_strings =  mods_list[0].modify(string_list_copy)
         string_list = string_list + more_strings
+        # TODO: is there a reason to do this recursively and not just as a loop?
+        # TODO: I think we can avoid this copying, too, and make things more efficient.
+        # b/c I think the modifies are non-destructive to their input lists...and some of them do
+        # some copying too.
         return create_seed_strings(string_list,mods_list[1:])
-    
-
-
 
 ######################################################################
 # Recursive permute function called by uniq_permute() above.
 
 def permute_helper(words):
+    # TODO: look into a cheaper way to do this involving sets
 
     # Permute_helper should keep track of words that it has used already
     # at that level, and not try a word if it's already done one which
@@ -486,15 +480,20 @@ def get_harvester_strings_to_update(osp_id):
 
     harvs = []
 
+    # in case the user's input is interpreted as a string at first, try to convert it to an int
+    try:
+        osp_id = int(osp_id)
+    except ValueError:
+        pass
+
     if type(osp_id) == int:
-
-        cursor.execute("SELECT hs_string, hs_mrs_tag FROM harv_str WHERE hs_cur_osp_id = %s",(osp_id))
-        harv_tuples = cursor.fetchall()
-
+        harv_tuples = conn.selQuery("SELECT hs_string, hs_mrs_tag " + \
+                                                   "FROM harv_str " + \
+                                                  "WHERE hs_cur_osp_id = %s",(osp_id))
     elif osp_id == 'a':
 
-        cursor.execute("SELECT hs_string, hs_mrs_tag,hs_cur_osp_id FROM harv_str",())
-        harv_tuples = cursor.fetchall()
+        harv_tuples = conn.selQuery("SELECT hs_string, hs_mrs_tag,hs_cur_osp_id " + \
+                                               "FROM harv_str",())
 
     else:
         raise ValueError, "Invalid osp_id."
@@ -511,36 +510,31 @@ def get_harvester_strings_to_update(osp_id):
 
     elif osp_id == 'a':
         for harv_tup in harv_tuples:
+            # consider a different variable for osp_id here so it doesn't overwrite the original
+            # also consider putting these two for loops into one...no need to duplicate code with a
+            # little changing
             (hs_string,hs_mrs_tag,osp_id) = harv_tup
             harvs.append([hs_string,hs_mrs_tag,osp_id])
 
     return harvs
 
-
 #######################################################################
-# insert_item(input, length, osp_id, mrs_tag)
+# insert_item(instring, length, osp_id, mrs_tag)
 #   Insert an item into the 'item' table, along with the corresponding
 #   entries in the 'parse' and 'result' tables.
 
-def insert_item(input, length, osp_id, mrs_tag):
-    # if the length (# of words) isn't specified, calculate it
-    if length == -1:
-        length = 
+def insert_item(instring, length, osp_id, mrs_tag):
+    conn.execute("INSERT INTO item_tsdb " + \
+                     "SET i_input = %s, i_length = %s, i_osp_id = %s, i_author = %s",
+                                                                                           (instring,length,osp_id,"add_permutes.py"))
+    i_id = conn.selQuery("SELECT LAST_INSERT_ID()")[0][0]
 
-    cursor.execute("INSERT INTO item SET i_input = %s, i_length = %s, i_osp_id = %s, i_author = %s",(input,length,osp_id,"add_permutes.py"))
-        
-    cursor.execute("SELECT LAST_INSERT_ID()")
-    i_id_tuple = cursor.fetchone()
-    i_id = i_id_tuple[0]
+    conn.execute("INSERT INTO parse SET p_i_id = %s, p_readings = 1, p_osp_id = %s",
+                                                                                                                        (i_id,osp_id))
 
-    cursor.execute("INSERT INTO parse SET p_i_id = %s, p_readings = 1, p_osp_id = %s",
-                   (i_id,osp_id))
-
-    cursor.execute("SELECT LAST_INSERT_ID()")
-    p_parse = cursor.fetchone()
-    p_parse_id = p_parse[0]
-            
-    cursor.execute("INSERT INTO result SET r_parse_id = %s, r_mrs = %s, r_osp_id = %s", (p_parse_id,mrs_tag,osp_id))
+    p_parse_id = conn.selQuery("SELECT LAST_INSERT_ID()")[0][0]           
+    conn.execute("INSERT INTO result SET r_parse_id = %s, r_mrs = %s, r_osp_id = %s",
+                                                                                                (p_parse_id,mrs_tag,osp_id))
 
     return i_id
 
@@ -553,35 +547,50 @@ def insert_item(input, length, osp_id, mrs_tag):
 # osp_id.
 
 def main():
-    osp_id = raw_input("Please input original source profile id (osp_id) for the source\n profile you're working with.  If you've updated the string\n modifications and wish to update seed strings for all harvester\n strings, enter 'a' ")
+    osp_id = raw_input("Please input original source profile id (osp_id) for the source\n" + \
+                                 "profile you're working with.  If you've updated the string\n" + \
+                                  "modifications and wish to update seed strings for all harvester\n" + \
+                                  "strings, enter 'a' ")
 
     harv = get_harvester_strings_to_update(osp_id)
 
     for h in harv:
-
         [hs,mrs_tag,osp_id] = h  # Get harvester string and its tag and the osp_id for that string
         new_strings = process_harvester(hs,mrs_tag) # run stringmods and find all new seed strings for that harvester
+
+        print >>sys.stderr, len(new_strings), " new_strings for mrs_tag", mrs_tag # debugging
 
         for s in new_strings:
             
             perms = uniq_permute(s) # Get all permutations of the string
 
+            print >> sys.stderr, len(perms), "permutes for mrs_tag", mrs_tag # debugging
+
             for p in perms:
-
-                input = ''
+                # TODO: should we use glue for this?
+                instring = ''
                 for w in p:
-                    input += w
-                    input += ' '
-                
-                length = len(p)
+                    instring += w
+                    instring += ' '
 
-                insert_item(input, length, osp_id, mrs_tag)
+                # TODO: consider moving length calc into insert_item...it's an unnecessary add'l variable.
+                length = len(p)
+                insert_item(instring, length, osp_id, mrs_tag)
 
                 for pp in post_permutes:
                     if mrs_tag == pp.mrs_id:
-                        for s in pp.apply(input):
+                        for s in pp.apply(instring):
                             insert_item(s, -1, osp_id, pp.new_mrs_id)
+    return
 
 
-if __name__ == "__main__":
-  main()
+# set to true for running on my machine.  set to False before commiting to repository.
+moduleTest = True
+
+# consider passing in conn intsead of using a global variable.
+if __name__ == "__main__":      # only run if run as main module...not if imported
+    conn = MatrixTDBConn()           # connect to MySQL server
+    main()
+elif moduleTest:                        # or if i'm testing, run it on MatrixTDB2
+    conn = MatrixTDBConn('2')       # connect to MySQL server 
+    main()

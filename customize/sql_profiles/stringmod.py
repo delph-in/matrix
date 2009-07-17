@@ -168,6 +168,7 @@ class StringModChangeWord(StringModOne):
         self.name = old_word + " to " + new_word
 
     def modstring(self,string):
+        # TODO: make this more efficient.
         [words,prefixes,suffixes] = string
         print self.name
         print "Input is " + str(words)
@@ -217,10 +218,6 @@ string_mods = [ StringModAddWord(g.all,"p-nom"),
                 StringModDropWord(g.ques, "qpart"), # assume harvesters for questions have 'qpart'.
                 StringModChangeWord(["foo"],"bar","foo") # for testing
                 ]
-                
-
-                   
-
 
 # Semantically non-neutral variations are:
 

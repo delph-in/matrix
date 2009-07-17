@@ -5,6 +5,7 @@ from u_filters import filter_list
 import sys
 import MySQLdb
 import datetime
+from matrix_tdb_conn import MatrixTDBConn
 
 ##########################################################################
 # find_filter_from_name(n,filter_list)
@@ -35,7 +36,9 @@ def make_string(int_list,limit):
 #    output += str(limit)
 #    output += ", 100000"
 
-    output = "SELECT r_result_id, i_input, r_mrs FROM result FORCE INDEX (PRIMARY), item WHERE r_parse_id = i_id LIMIT " + str(limit) + ", 100000"
+    output = "SELECT r_result_id, i_input, r_mrs " + \
+                 "FROM result FORCE INDEX (PRIMARY), item " + \
+                  "WHERE r_parse_id = i_id LIMIT " + str(limit) + ", 100000"
 
     return output
 
@@ -52,15 +55,10 @@ def update_res_fltr(filter_list):
         name = f.name
         mrs_tag_list = f.mrs_id_list
     
-        cursor.execute("SELECT filter_id FROM filter WHERE filter_name = %s", (name))
-        filter_id = cursor.fetchone()
+        filter_id = filters.getFilterID(name, conn)
 
-        if filter_id == ():
-            cursor.execute("INSERT INTO filter SET filter_name = %s, filter_type = %s", (name,"u"))
-            cursor.execute("SELECT LAST_INSERT_ID()")
-            filter_id = cursor.fetchone()[0]
-        else:
-            filter_id = filter_id[0]
+        if not filter_id:
+            filter_id = insertFilter(name, "u")
 
         for mrs_tag in mrs_tag_list:
             cursor.execute("SELECT * FROM fltr_mrs WHERE fm_fltr_id = %s AND fm_mrs_tag = %s",(filter_id,mrs_tag))
@@ -91,6 +89,7 @@ def update_res_fltr(filter_list):
 
         update_string = "Now working results " + str(limit-100000) + " through " + str(limit)
         print update_string
+        # TODO: don't use predefined 'file'
         file = open('ufltrs_updates','a')
         file.write(update_string)
         file.write("\n")
@@ -103,6 +102,7 @@ def update_res_fltr(filter_list):
         #Based on the r_result_id, we are now going to get the string
         #and mrs_id.
 
+        # TODO: don't use predefined 'id'
         for id in ids:
 
             (key, string, mrs_id) = id
@@ -115,17 +115,22 @@ def update_res_fltr(filter_list):
                 value = filter_values[f_id]
 
                 if not value == 2:
-                    num = cursor.execute("UPDATE res_fltr SET rf_value = %s WHERE rf_res_id = %s AND  rf_fltr_id = %s",
-                                         (value, key, f_id))
+                    num = cursor.execute("UPDATE res_fltr SET rf_value = %s " + \
+                                                     "WHERE rf_res_id = %s AND  rf_fltr_id = %s",
+                                                        (value, key, f_id))
                     if num == 0:
-                        cursor.execute("SELECT * FROM res_fltr WHERE rf_res_id = %s AND rf_fltr_id = %s", (key, f_id))
+                        cursor.execute("SELECT * FROM res_fltr " + \
+                                               "WHERE rf_res_id = %s AND rf_fltr_id = %s", (key, f_id))
                         row = cursor.fetchall()
                         if row == ():
-                            cursor.execute("INSERT INTO res_fltr SET rf_value = %s, rf_res_id =%s, rf_fltr_id = %s", (value, key, f_id))
+                            cursor.execute("INSERT INTO res_fltr " + \
+                                                   "SET rf_value = %s, rf_res_id =%s, rf_fltr_id = %s",
+                                                    (value, key, f_id))
                         if len(row) > 1:
                             dupes.append(row)
                     if num > 1:
-                        cursor.execute("SELECT * FROM res_fltr WHERE rf_res_id = %s AND rf_fltr_id = %s", (key, f_id))
+                        cursor.execute("SELECT * FROM res_fltr " + \
+                                               "WHERE rf_res_id = %s AND rf_fltr_id = %s", (key, f_id))
                         dupes.append(cursor.fetchall())
 
         else:
@@ -147,86 +152,140 @@ def update_res_fltr(filter_list):
 #     add_to_res_fltr(osp_id)
 
 def add_to_res_fltr(osp_id):
+    """
+    Function: add_to_res_fltr
+    Input:
+    Output:
+    Functionality:
+    Author: KEN (Scott Halgrim, captnpi@u.washington.edu)
+    Date: 7/6/09    
+    Notes: This used to just consist of a message saying it hadn't been coded yet.  I'm guessing
+               the idea is to apply all relevant filters to all results for osp_id and record the results
+               of those applications to res_fltr.
+    """
+    resultRows = conn.selQuery("SELECT i.i_input, r.r_result_id, r.r_mrs " + \
+                                              "FROM item_tsdb i INNER JOIN parse p "  + \
+                                                    "ON i.i_id = p.p_i_id INNER JOIN result r " + \
+                                                     "ON p.p_parse_id = r.r_parse_id " + \
+                                               "WHERE i.i_osp_id = %s", (osp_id))
 
-    print "Ooops, this hasn't been coded yet."
-        
+    failedSeeds = set()
+    passedAllSeeds = set()
 
+    for row in resultRows:
+        seedString = row[0]
+        resultID = row[1]
+        mrsTag = row[2]
+
+        # TODO: consider querying for past fails
+        # TODO: consider counting how many fails there are for a string and recording that in a
+        # column, even if I only record up to one row for a given string fail in res_fltr.
+        # TODO: consider this implementation.  If a string fails for one mrs tag would the same
+        #               string necessarily fail for all mrs tags?  is that even a problem?
+        while not ((seedString in failedSeeds) or (seedString in passedAllSeeds)):
+
+            for f in filter_list:
+                if mrsTag in f.mrs_id_list:
+                    fID = filters.getFilterID(f.name, conn)
+
+                    if not fID:
+                        fID = filters.insertFilter(f.name, 'u', conn)
+
+                    applyResult = f.apply_filter(seedString)
+
+                    if applyResult == 0:
+                        filters.insertFilteredResult(resultID, fID, applyResult, conn)
+                        failedSeeds.add(seedString)
+                        break
+            else:
+                passedAllSeeds.add(seedString)
+    print >> sys.stderr, len(failedSeeds), " strings failed at least one filter."
+    print >> sys.stderr, len(passedAllSeeds), " strings passed all relevant filters."
+
+    # sanity check...should be 0
+    print >> sys.stderr, len(failedSeeds.intersection(passedAllSeeds)), " strings failed at " + \
+                                                  "least one filter while also passing all relevant filters."
+    
+    return
 
 ##########################################################################
 # Main program
+def main():
+    # Determine whether we are running u_filters because there are new
+    # items in the DB or because we need to update the values in res_fltr
+    # for particular u_filters.
 
-# Set up cursor
+    ans = ''
 
-db = MySQLdb.connect(host="localhost", user="ebender",
-                     passwd="tr33house", db="MatrixTDB")
+    while (ans != 'r' and ans != 'a'):
+        ans = raw_input("Are you [r]eplacing the results for certain filters on existing items\n" + \
+                                "or [a]dding rows to res_fltr for new items? [r/a]: ")
 
-cursor = db.cursor()
+    # First the case where we're replacing values
 
+    if ans == 'r':
 
-# Determine whether we are running u_filters because there are new
-# items in the DB or because we need to update the values in res_fltr
-# for particular u_filters.
+        name = raw_input("\nType the name of the first filter you would like to update: ")
 
-ans = ''
+        names = []
 
-while (ans != 'r' and ans != 'a'):
-    ans = raw_input("Are you [r]eplacing the results for certain filters on existing items\n or [a]dding rows to res_fltr for new items? [r/a]: ")
+        while (name != 'end' and name != ''):
+            names.append(name)
+            name = raw_input("Type another filter name, or 'end' (or <ret>) if you have no more: ")
 
-# First the case where we're replacing values
+        current_filter_list = []
 
-if ans == 'r':
+        for n in names:
+            current_filter_list.append(find_filter_from_name(n,filter_list))
 
-    name = raw_input("\nType the name of the first filter you would like to update: ")
+        conf = raw_input("\nI will now delete all rows in res_fltr for the filters\n" + str(current_filter_list) + "\n and repopulate with new values.  Confirm: [y/n] ")
 
-    names = []
+        if conf != 'y':
+            print "\nAborting.  No rows modified."
+            sys.exit()
 
-    while (name != 'end' and name != ''):
-        names.append(name)
-        name = raw_input("Type another filter name, or 'end' (or <ret>) if you have no more: ")
+        # Now that we know which filters and have the go ahead, do the DB work:
 
-    current_filter_list = []
+        dupes = update_res_fltr(current_filter_list)
 
-    for n in names:
-        current_filter_list.append(find_filter_from_name(n,filter_list))
+        # Save those dupes to a file.
 
-    conf = raw_input("\nI will now delete all rows in res_fltr for the filters\n" + str(current_filter_list) + "\n and repopulate with new values.  Confirm: [y/n] ")
+        f = open('dupes', 'w')
+        for d in dupes:
+            for i in d:
+                for c in i:
+                    f.write(str(c))
+                    f.write(",")
+                f.write("\n")
 
-    if conf != 'y':
-        print "\nAborting.  Now rows modified."
-        sys.exit()
+        f.close()
 
-    # Now that we know which filters and have the go ahead, do the DB work:
+    # Next the case where we're adding to res_fltr for new strings
 
-    dupes = update_res_fltr(current_filter_list)
+    if ans == 'a':
 
-    # Save those dupes to a file.
+        osp_id = raw_input("\nWhat is the osp_id for the results you would lke to filter: ")
 
-    f = open('dupes', 'w')
-    for d in dupes:
-        for i in d:
-            for c in i:
-                f.write(str(c))
-                f.write(",")
-            f.write("\n")
+        count = conn.selQuery("SELECT count(r_result_id) FROM result where r_osp_id = %s",(osp_id))[0][0]
 
-    f.close()
+        if count == 0:
+            print "That is not a valid osp_id."
+            sys.exit()
+        else:
+            print "There are " + str(count) + " results to filter."
 
-# Next the case where we're adding to res_fltr for new strings
+        add_to_res_fltr(osp_id)
 
-if ans == 'a':
+    return
 
-    osp_id = raw_input("\nWhat is the osp_id for the results you would lke to filter: ")
+# set to true for running on my machine.  set to False before commiting to repository.
+moduleTest = True
 
-    cursor.execute("SELECT count(r_result_id) FROM result where r_osp_id = %s",(osp_id))
-    count = cursor.fetchone()[0]
-
-    if count == 0:
-        print "That is not a valid osp_id."
-        sys.exit()
-    else:
-        print "There are " + str(count) + " results to filter."
-
-
-    add_to_res_fltr(osp_id)
-
+# consider passing in conn intsead of using a global variable.
+if __name__ == "__main__":      # only run if run as main module...not if imported
+    conn = MatrixTDBConn()           # connect to MySQL server
+    main()
+elif moduleTest:                        # or if i'm testing, run it on MatrixTDB2
+    conn = MatrixTDBConn('2')       # connect to MySQL server 
+    #main()
 
