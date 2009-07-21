@@ -1,0 +1,905 @@
+Language: Abkhaz
+Language code: abk
+Author: Safiyyah Saleem
+Date: May 1 2009
+Source a: Abkhaz by Viacheslav A. Chirkba
+
+
+
+#Ex 1 demonstrates the standard SOV word order
+Source: a:60
+Vetted: s
+Judgment: g
+Phenomena: word order
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba-jt
+the-boy the-girl her-he-see-dynamic.finite
+The boy saw the girl.
+
+
+#Ex 2 demonstrates the SVO word order
+Source: a:60
+Vetted: s
+Judgment: g
+Phenomena: word order
+at͡ʂʰkʷʰən dəjəbajt atəpha 
+a-t͡ʂʰkʷʰən də-jə-ba-jt a-təpha 
+the-boy her-he-see-dynamic.finite the-girl 
+The boy saw the girl.
+
+#Ex 3 demonstrates the VOS word order
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+dəjəbajt atəpha at͡ʂʰkʷʰən
+də-jə-ba-jt a-təpha a-t͡ʂʰkʷʰən
+her-he-see-dynamic.finite the-girl  the-boy
+The boy saw the girl.
+
+#Ex 4 demonstrates the OSV word order
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+atəpha at͡ʂʰkʷʰən dəjəbajt
+a-təpha a-t͡ʂʰkʷʰən də-jə-ba-jt
+the-girl  the-boy her-he-see-dynamic.finite
+The boy saw the girl.
+
+#Ex 5 demonstrates the VSO word order
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+dəjəbajt at͡ʂʰkʷʰən atəpha 
+də-jə-ba-jt a-t͡ʂʰkʷʰən a-təpha 
+her-he-see-dynamic.finite the-boy the-girl  
+The boy saw the girl.
+
+#Ex 6 demonstrates the VSO word order
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+atəpha  dəjəbajt at͡ʂʰkʷʰən 
+a-təpha  də-jə-ba-jt a-t͡ʂʰkʷʰən 
+the-girl  her-he-see-dynamic.finite the-boy 
+The boy saw the girl.
+
+#Ex 7 demonstrates the indefinite article.  It is a suffix '-k'
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: det
+t͡ʂʰkʷʰən-k atəpha dəjəbajt
+t͡ʂʰkʷʰən-k a-təpha də-jə-ba-jt
+boy-a the-girl her-he-see-dynamic.finite
+A boy saw the girl.
+
+#Ex 8 demonstrates an incorrect use of the d?finite article.  It is a prefix "-a" and here it appears as a suffix.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: det
+t͡ʂʰkʷʰəna atəpha dəjəbajt
+t͡ʂʰkʷʰən-a a-təpha də-jə-ba-jt
+boy-the the-girl her-he-see-dynamic.finite
+The boy saw the girl.
+
+
+#Ex 9 demonstrates an incorrect use of the d?finite article.  It is a prefix "-a" and here it appears as a suffix.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: det
+t͡ʂʰkʷʰəna atəpha dəjəbajt
+t͡ʂʰkʷʰəna- a-təpha də-jə-ba-jt
+boy-the the-girl her-he-see-dynamic.finite
+The boy saw the girl.
+
+
+#Ex 10 demonstrates an incorrect use of the indefinite article.  It is a suffix '-k' here it appears as a prefix
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: det
+kt͡ʂʰkʷʰən atəpha dəjəbajt
+k-t͡ʂʰkʷʰən a-təpha də-jə-ba-jt
+a-boy the-girl her-he-see-dynamic.finite
+A boy saw the girl.
+
+
+#Ex 11 demonstrates an incorrect use of the indefinite article.  It is a suffix '-k' here it appears as a prefix
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: det
+kt͡ʂʰkʷʰən atəpha dəjəbajt
+-kt͡ʂʰkʷʰən a-təpha də-jə-ba-jt
+a-boy the-girl her-he-see-dynamic.finite
+A boy saw the girl.
+
+#Ex 12 demonstrates the present tense of a dynamic verb. It is formed by adding the suffix "-wa" after the verb stem and before the dynamic/finite marker.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: tam
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba-wa-jt
+the-boy the-girl her-he-see-present-dynamic.finite
+The boy sees the girl.       
+
+#Ex 13 demonstrates an ungrammatical use of the present tense of a dynamic verb. It is formed by adding the suffix "-wa" after the verb stem and before the dynamic/finite marker.  Here it is incorrectly placed after the dynamic/finite marker
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba-jt-wa
+the-boy the-girl her-he-see-dynamic.finite-present
+The boy sees the girl.
+
+#Ex 14 demonstrates an ungrammatical use of the present tense of a dynamic verb. It is formed by adding the suffix "-wa" after the verb stem and before the dynamic/finite marker.  Here it is incorrectly placed before the verb stem
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-wa-ba-jt
+the-boy the-girl her-he-present-see-dynamic.finite
+The boy sees the girl.
+
+#Ex 15 demonstrates the  habitual aspect. It is formed by adding the suffix "-la" after the verb and before the tense marker
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: tam
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba-la-wa-jt
+the-boy the-girl her-he-see-habitual-present-dynamic.finite
+The boy sees the girl regularly.
+
+#Ex 16 demonstrates the  habitual aspect. It is formed by adding the suffix "-la" after the verb and before the tense marker.  Here "-la" incorrectly comes after the tense marker. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba-wa-la-jt
+the-boy the-girl her-he-see-present-habitual-dynamic.finite
+The boy sees the girl regularly.
+
+#Ex 17 demonstrates the  habitual aspect. It is formed by adding the suffix "-la" after the verb and before the tense marker.  Here "-la" incorrectly comes after the dynamic/finite marker. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba-wa-jt-la
+the-boy the-girl her-he-see-present-dynamic.finite-habitual
+The boy sees the girl regularly.
+
+#Ex 18 demonstrates the  habitual aspect. It is formed by adding the suffix "-la" after the verb and before the tense marker.  Here "-la" incorrectly comes before the verb stem
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-la-ba-wa-jt
+the-boy the-girl her-he-habitual-see-present-dynamic.finite
+The boy sees the girl.
+
+#Ex 18 demonstrates an ungrammatical useof the present tense.  It is formed by adding the suffix "-wa" after the verb and before the dynamic/finite marker. Here "-wa" incorrectly comes before the verb stem. (This example does not place a hyphen after the suffix because this is how it will be entered into the customixzation system.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-waba-la-jt
+the-boy the-girl her-he-habitual-see-present-dynamic.finite
+The boy sees the girl.
+
+#Ex 19 demonstrates an ungrammatical use of  the  habitual aspect. It is formed by adding the suffix "-la" after the verb and before the tense marker.  Here "-la" incorrectly comes before the verb stem
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-la-ba-wa-jt
+the-boy the-girl her-he-habitual-see-present-dynamic.finite
+The boy sees the girl.
+
+#Ex 20 demonstrates and ungrammatical use of  the  habitual aspect. It is formed by adding the suffix "-la" after the verb and before the tense marker.  Here "-la" is used twice.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba-la-la-wa-jt
+the-boy the-girl her-he-habitual-see-present-present-dynamic.finite
+The boy sees the girl.
+
+#Ex 21 demonstrates an ungrammatical use of the the present tense of a dynamic verb. It is formed by adding the suffix "-wa" after the verb stem and before the dynamic/finite marker. Here the suffix is used twice.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba-wa-wa-jt
+the-boy the-girl her-he-see-present-present-dynamic.finite
+The boy sees the girl.       
+
+#Ex 22 demonstrates an ungrammatical use of the present tense of a dynamic verb. It is formed by adding the suffix "-wa" after the verb stem and before the dynamic/finite marker.  Here the dynamic/finite marker is missing.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba-wa
+the-boy the-girl her-he-see-present
+The boy sees the girl.       
+
+#Ex 23 demonstrates an ungrammatical use of the aorist tense.  The aorist tense has a zero marker that comes before the dynamic/finite marker.  Here the dynamic/finite marker is missing.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: word order
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba
+the-boy the-girl her-he-see
+The boy saw the girl.
+
+#Ex 24 demonstrates yes/no questions.  Yes/no questions are formed by adding different suffixes to the verb.  One suffix is "-ma".  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: q
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən  a-təpha də-jə-ba-ma
+the-boy the-girl her-he-see-question
+Did the boy see her?
+
+#Ex 25 demonstrates an ungrammatical yes/no question.  Yes/no questions are formed by adding different suffixes to the verb.  One suffix is "-ma".  Here the dynamic/finite marker is includ?d.  It should not appear in a question
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: q
+at͡ʂʰkʷʰən atəpha dəjəbajtma
+a-t͡ʂʰkʷʰən  a-təpha də-jə-ba-jt-ma
+the-boy the-girl her-he-see-dynamic/finite-question
+Did the boy see her?
+
+#Ex 26 demonstrates an ungrammatical yes/no questions.  Yes/no questions are formed by adding different suffixes to the verb.  One suffix is "-ma".  Here the suffix appears before the present tense marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: q
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən  a-təpha də-jə-ba-ma-wa
+the-boy the-girl her-he-see-question-present
+Did the boy see her?
+
+#Ex 27 demonstrates yes/no questions.  Yes/no questions are formed by adding different suffixes to the verb.  One suffix is "-ma".  Here the  dynamic/finite marker is (incorrectly) includ?d
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: q
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən  a-təpha də-jə-ba-ma-jt
+the-boy the-girl her-he-see-question-dynamic/finite
+Did the boy see her?
+
+#Ex 28 demonstrates an ungrammatical yes/no questions.  Yes/no questions are formed by adding different suffixes to the verb.  One suffix is "-ma".  Here the suffix appears before the present tense marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: q
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən  a-təpha də-jə-ba-ma-wa-jt
+the-boy the-girl her-he-see-question-present-dynamic/finite
+Did the boy see her?
+
+#Ex 29 demonstrates negation.  The present tense is negated by adding the suffix "-m" after the tense marker.  The dynamic/finite marker does not appear on the verb.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: neg
+at͡ʂʰkʷʰən atəpha dəjəbawam
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba-wa-m
+the-boy the-girl her-he-see-neg
+The boy does not see the girl.
+
+#Ex 30 demonstrates an ungrammatical use of negation.  The present tense is negated by adding the suffix "-m" after the tense marker.  The dynamic/finite marker does not appear on the verb.  Here the dynamic/finite marker (incorrectly) appears.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: neg
+at͡ʂʰkʷʰən atəpha dəjəbawamjt
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba-wa-m-jt
+the-boy the-girl her-he-see-neg-dynamic.finite
+The boy does not see the girl.
+
+#Ex 31 demonstrates an ungrammatical use of negation.  The present tense is negated by adding the suffix "-m" after the tense marker.  The dynamic/finite marker does not appear on the verb.  Here the dynamic/finite marker (incorrectly) appears.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: neg
+at͡ʂʰkʷʰən atəpha dəjəbawajtm
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba-wa-jt-m
+the-boy the-girl her-he-see-dynamic.finite-neg
+The boy does not see the girl.
+
+#Ex 32 demonstrates an ungrammatical use of negation.  The present tense is negated by adding the suffix "-m" after the tense marker.  Here the tense marker is missing.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: neg
+at͡ʂʰkʷʰən atəpha dəjəbam
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba-m
+the-boy the-girl her-he-see-neg
+The boy does not see the girl.
+
+#Ex 32 demonstrates negation of the aorist tense.  It is formed by placing "m-" before the verb stem and keeping the dynamic/finite marker.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: neg
+at͡ʂʰkʷʰən atəpha dəjəbawajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-m-ba-jt
+the-boy the-girl her-he-neg-see-dynamic/finite
+The boy did not see the girl.
+
+#Ex 33 demonstrates ungrammatical negation of the aorist tense.  It is formed by placing "m-" before the verb stem and keeping the dynamic/finite marker.  Here the dynamic/finite marker is missing
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: neg
+at͡ʂʰkʷʰən atəpha dəjəbawajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-m-ba
+the-boy the-girl her-he-neg-see
+The boy did not see the girl.
+
+
+#Ex 34 demonstrates ungrammatical negation of the aorist tense.  It is formed by placing "m-" before the verb stem and keeping the dynamic/finite marker.  Here the neg marker comes before the subject marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: neg
+at͡ʂʰkʷʰən atəpha dəjəbawajt
+a-t͡ʂʰkʷʰən a-təpha də-m-jə-ba-jt
+the-boy the-girl her-neg-he-see-jt
+The boy did not see the girl.
+
+#Ex 35 demonstrates ungrammatical negation of the aorist tense.  It is formed by placing "m-" before the verb stem and keeping the dynamic/finite marker.  Here the neg marker comes before the subject marker and object marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: neg
+at͡ʂʰkʷʰən atəpha dəjəbawajt
+a-t͡ʂʰkʷʰən a-təpha m-də-jə-ba-jt
+the-boy the-girl neg-her-he-see-jt
+The boy did not see the girl.
+
+#Ex 36 demonstrates verb subject agreement.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+sará atəpha dəzəbajt
+sará a-təpha də-s-ba-jt
+I the-girl her-I-see-dynamic.finite
+I saw the girl.
+
+#Ex 37 demonstrates verb subject agreement.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+hará atəpha dəaabajt
+hará a-təpha də-h-ba-jt
+we.incl the-girl her-we-see-dynamic.finite
+We saw the girl.
+
+#Ex 38 demonstrates verb subject agreement.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+wará atəpha dəwəbajt
+wará a-təpha də-w-ba-jt
+you.masc the-girl her-you.masc-see-dynamic.finite
+You saw the girl.
+
+#Ex 39 demonstrates verb subject agreement.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+ʃʷará atəpha dəʃʷəbajt
+ʃʷará a-təpha də-ʃʷə-ba-jt
+you.pl.incl the-girl her-you.pl.-l-see-dynamic.finite
+You saw the girl.
+
+#Ex 40 demonstrates verb subject agreement.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+ʃʷart atəpha dəʃʷəbajt
+ʃʷart a-təpha d?-ʃʷə-ba-jt
+you.pl.excl the-girl her-you.pl-l-see-dynamic.finite
+You saw the girl.
+
+#Ex 41 demonstrates verb subject agreement.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+hart atəpha dəaabajt
+hart a-təpha də-h-ba-jt
+we.excl the-girl her-we-see-dynamic.finite
+We saw the girl.
+
+#Ex 42 demonstrates verb subject agreement.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+bará atəpha dəbəbajt
+bará a-təpha də-b-ba-jt
+you.fem the-girl her-you.fem-see-dynamic.finite
+You saw the girl.
+
+#Ex 43 demonstrates verb subject agreement.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+jará atəpha dəjəbajt
+jará a-təpha də-jə-ba-jt
+he the-girl her-he-see-dynamic.finite
+He saw the girl.
+
+#Ex 44 demonstrates verb subject agreement.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+lará atəpha dələbajt
+lará a-təpha də-lə-ba-jt
+she the-girl her-she-see-dynamic.finite
+She saw the girl.
+
+#Ex 45 demonstrates verb subject agreement.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+dará atəpha dədəbajt
+dará a-təpha də-rə-ba-jt
+they the-girl her-they-see-dynamic.finite
+They saw the girl.
+
+#Ex 46 demonstrates verb subject agreement.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+amat atəpha dəabajt
+a-mat a-təpha də-a-ba-jt
+the-snake the-girl her-it-see-dynamic.finite
+The snake saw the girl.
+
+#Ex 47 demonstrates ungrammatical verb subject agreement.  Non-human subject incorrectly takes human subject marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+amat atəpha dəjəbajt
+a-mat a-təpha də-jə-ba-jt
+the-snake the-girl her-he-see-dynamic.finite
+The snake saw the girl.
+
+#Ex 48 demonstrates ungrammatical verb subject agreement.  Third person plural takes third person masculine agreement marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+dará atəpha dəjəbajt
+dará a-təpha də-jə-ba-jt
+they the-girl her-he-see-dynamic.finite
+They saw the girl.
+
+#Ex 49 demonstrates ungrammatical verb subject agreement.  Third person feminine singular takes a first person singular agreement marker
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+lará atəpha dəsəbajt
+lará a-təpha də-s-ba-jt
+she the-girl her-I-see-dynamic.finite
+She saw the girl.
+
+#Ex 50 demonstrates ungrammatical  verb subject agreement.  Third person masculine singular subject takes a second person plural agreement marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+jará atəpha dəʃʷəbajt
+jará a-təpha də-ʃʷə-ba-jt
+he the-girl her-you.pl-see-dynamic.finite
+He saw the girl.
+
+#Ex 51 demonstrates ungrammatical verb subject agreement.  Second person feminine singular subject takes a first person plural agreement marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+bará atəpha dəaabajt
+bará a-təpha də-h-ba-jt
+you.fem the-girl her-we-see-dynamic.finite
+You saw the girl.
+
+#Ex 52 demonstrates ungrammatical verb subject agreement.  First person plural subject takes a third person non-human singular agreement marker
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+hart atəpha dəabajt
+hart a-təpha də-a-ba-jt
+we.excl the-girl her-we-see-dynamic.finite
+We saw the girl.
+
+#Ex 53 demonstrates ungrammatical verb subject agreement.  Second person plural subject takes a second person masculine singular agreement marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+ʃʷart atəpha dəwəbajt
+ʃʷart a-təpha də-w-ba-jt
+you.pl.excl the-girl her-you.masc.sing-l-see-dynamic.finite
+You saw the girl.
+
+#Ex 54 demonstrates ungrammatical verb subject agreement.  Second person masculine singular subject takes a second person feminine singular agreement marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+wará atəpha dəbəbajt
+wará a-təpha də-b-ba-jt
+you.masc the-girl her-you.fem-see-dynamic.finite
+You saw the girl.
+
+#Ex 55 demonstrates ungrammatical verb subject agreement.  Second person masculine singular subject takes a third person masculine agreement marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+wará atəpha dəjəbajt
+wará a-təpha də-jə-ba-jt
+you.masc the-girl her-he-see-dynamic.finite
+You saw the girl.
+
+#Ex 56 demonstrates ungrammatical verb subject agreement.  First person plural subject takes a third person plural agreement marker
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+hará atəpha dərəbajt
+hará a-təpha də-r-ba-jt
+we.incl the-girl her-they-see-dynamic.finite
+We saw the girl.
+
+#Ex 57 demonstrates ungrammatical verb subject agreement.  First person plural subject takes a first person singular agreement marker
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+hará atəpha dəzəbajt
+hará a-təpha də-s-ba-jt
+we.incl the-girl her-I-see-dynamic.finite
+We saw the girl.
+
+#Ex 58 demonstrates ungrammatical verb subject agreement.  First person singular subject takes a first person plural agreement marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+sará atəpha dəaabajt
+sará a-təpha də-h-ba-jt
+I the-girl her-we-see-dynamic.finite
+I saw the girl.
+
+#Ex 59 demonstrates ungrammatical verb subject agreement.  First person singular subject takes a third person feminine singular agreement marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+sará atəpha dələbajt
+sará a-təpha də-lə-ba-jt
+I the-girl her-she-see-dynamic.finite
+I saw the girl.
+
+#Ex 60 demonstrates verb object agreement. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+at͡ʂʰkʷʰən sará səjəbajt
+a-t͡ʂʰkʷʰən sará s-jə-ba-jt
+the-boy 1sing 1sing-he-see-dynamic.finite
+The boy saw me.
+
+#Ex 61 demonstrates verb object agreement. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+at͡ʂʰkʷʰən hará hajəbajt
+a-t͡ʂʰkʷʰən hará h-jə-ba-jt
+the-boy 1pl 1pl-he-see-dynamic.finite
+The boy saw us.
+
+#Ex 62 demonstrates verb object agreement. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+at͡ʂʰkʷʰən wará wəjəbajt
+a-t͡ʂʰkʷʰən wará w-jə-ba-jt
+the-boy you.sing.masc you.sing.masc-he-see-dynamic.finite
+The boy saw you.
+
+#Ex 63 demonstrates verb object agreement. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+at͡ʂʰkʷʰən bará bəjəbajt
+a-t͡ʂʰkʷʰən bará b-jə-ba-jt
+the-boy you.sing.fem you.sing.fem-he-see-dynamic.finite
+The boy saw you.
+
+#Ex 64 demonstrates verb object agreement. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+at͡ʂʰkʷʰən ʃʷará ʃʷ?əjəbajt
+a-t͡ʂʰkʷʰən ʃʷará ʃʷə-jə-ba-jt
+the-boy you.pl you.pl-he-see-dynamic.finite
+The boy saw you.
+
+#Ex 65 demonstrates verb object agreement. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+at͡ʂʰkʷʰən a-ab dəjəbajt
+a-t͡ʂʰkʷʰən a-ab də-jə-ba-jt
+the-boy the-father 3rd.human.sing-he-see-dynamic.finite
+The boy saw the father.
+
+#Ex 66 demonstrates verb object agreement. The normal order of subject and object are inverted to avoid the 3rd non-human sing/3rd plural marker from occurring directly after the object.  When that happens the object marker is dropped.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+a-mat at͡ʂʰkʷʰən j?j?bajt
+a-mat a-t͡ʂʰkʷʰən  j-jə-ba-jt
+the- snake the-boy it-he-see-dynamic.finite
+The boy saw the snake.
+
+#Ex 67 demonstrates verb object agreement
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+atəphat?sa at͡ʂʰkʷʰən j?j?bajt
+a-təpha-t?sa a-t͡ʂʰkʷʰən j-jə-ba-jt
+the-girl -pl the-boy 3rd.pl-he-see-dynamic.finite
+The boy saw the girls.
+
+#Ex 68 demonstrates verb object agreement. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+a-mat-k?a at͡ʂʰkʷʰən  jəjəbajt
+a-mat-k?a  a-t͡ʂʰkʷʰən j-jə-ba-jt
+snake-pl  the-boy 3rd.pl-he-see-dynamic.finite
+The boy saw the snakes.
+
+Ex 69 demonstrates ungrammatical verb object agreement.  Plural non-human object takes singular human object marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+at͡ʂʰkʷʰən a-mat-kʷ dəjəbajt
+a-t͡ʂʰkʷʰən a-mat-kʷa d-j?-ba-jt
+the-boy snake-pl 3rd.human.sing-he-see-dynamic.finite
+The boy saw the snake.
+
+#Ex 70 demonstrates ungrammatical verb object agreement.  Plural human object takes singular human object marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+at͡ʂʰkʷʰən atəphat͡ɕʷʰa dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha-t͡ɕʷʰa də-jə-ba-jt
+the-boy the-girl -pl 3rd.human.sing-he-see-dynamic.finite
+The boy saw the girl.
+
+#Ex 71 demonstrates ungrammatical verb object agreement.  Singular non-human object takes human object marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+at͡ʂʰkʷʰən a-mat dəjəbajt
+a-t͡ʂʰkʷʰən a-mat d-jə-ba-jt
+the-boy snake they-he-see-dynamic.finite
+The boy saw the snake.
+
+#Ex 72 demonstrates ungrammatical verb object agreement.  Second person plural object takes second person singular object marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+at͡ʂʰkʷʰən ʃʷará bəjəbajt
+a-t͡ʂʰkʷʰən ʃʷará b-jə-ba-jt
+the-boy you.pl 2.sing.fem-he-see-dynamic.finite
+The boy saw you.
+
+#Ex 73 demonstrates ungrammatical verb object agreement.  First person singular object third person singular object marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+at͡ʂʰkʷʰən sará dəjəbajt
+a-t͡ʂʰkʷʰən sará d-jə-ba-jt
+the-boy 1sing 3sing-he-see-dynamic.finite
+The boy saw me.
+
+#Ex 74 demonstrates ungrammatical verb object agreement. First person plural object takes first person singular object marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: word order
+at͡ʂʰkʷʰən hará zəjəbajt
+a-t͡ʂʰkʷʰən hará s-jə-ba-jt
+the-boy 1pl 1singl-he-see-dynamic.finite
+The boy saw us.
+
+#Ex 75 demonstrates NP coordination.  NP coordination is formed by adding the suffix "-j" to each of the coordinands.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+atəphaj aab at͡ʂʰkʷʰən jəjəbajt
+a-təpha-j a-ab-j a-t͡ʂʰkʷʰən jə-jə-ba-jt
+the-girl -and the-father-and the-boy 3rd.pl-he-see-dynamic.finite
+The boy saw the girl and the father             
+
+#Ex 76 demonstrates ungrammatical NP coordination.  NP coordination is formed by adding the suffix "-j" to each of the coordinands.  Here it is missing from one of them.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+atəpha aabj at͡ʂʰkʷʰən jəjəbajt
+a-təpha a-ab-j a-t͡ʂʰkʷʰən jə-jə-ba-jt
+the-girl the-father-and the-boy 3rd.pl-he-see-dynamic.finite
+The boy saw the girl and the father             
+
+#Ex 77 demonstrates NP coordination. NP coordination is formed by adding the suffix "-j" to each of the coordinands.  Here it is missing from one of them.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+atəphaj aab at͡ʂʰkʷʰən jəjəbajt
+a-təpha-j a-ab a-t͡ʂʰkʷʰən jə-jə-ba-jt
+the-girl -and the-father the-boy 3rd.pl-he-see-dynamic.finite
+The boy saw the girl and the father             
+
+#Ex 78 demonstrates NP coordination. NP coordination is formed by adding the suffix "-j" to each of the coordinands.  Here it is missing from both of them.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+atəphat?s aab at͡ʂʰkʷʰən j?j?bajt
+a-təpha a-ab a-t͡ʂʰkʷʰən j?-j?-ba-jt
+the-girl  the-father-and the-boy 3rd.pl-he-see-dynamic.finite
+The boy saw the girl and the father             
+
+#Ex 79 demonstrates NP coordination. NP coordination is formed by adding the suffix "-j" to each of the coordinands.  Here it is added as prefix
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+atəphaj aab at͡ʂʰkʷʰən j?j?bajt
+a-təpha-j -ja-ab a-t͡ʂʰkʷʰən j?-j?-ba-jt
+the-girl-and and-the-father-and the-boy 3rd.pl-he-see-dynamic.finite
+The boy saw the girl and the father       
+
+#Ex 80 demonstrates NP coordination. NP coordination is formed by adding the suffix "-j" to each of the coordinands.  Here it is added as prefix
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+atəphaj aab at͡ʂʰkʷʰən jəjəbajt
+a-təpha-j a-jab a-t͡ʂʰkʷʰən jə-jə-ba-jt
+the-girl-and the-and-father-and the-boy 3rd.pl-he-see-dynamic.finite
+The boy saw the girl and the father       
+
+#Ex 81 demonstrates NP coordination. NP coordination is formed by adding the suffix "-j" to each of the coordinands.  Here it is added as prefix
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+atəphaj aab at͡ʂʰkʷʰən jəjəbajt
+a-təpha-j a-j-ab a-t͡ʂʰkʷʰən jə-jə-ba-jt
+the-girl-and the-and-father-and the-boy 3rd.pl-he-see-dynamic.finite
+The boy saw the girl and the father       
+
+#Ex 82 demonstrates an intransitive stative verb.  Stative verbs only have past, present, and future as finite tenses.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: tam
+atəpha dət͡ɕʷʰaw+p
+a-təpha də-t͡ɕʷʰa-w+p
+the-girl 3.human.sing-sleep-present.stative
+The girl is sleeping.
+
+#Ex 83 demonstrates an intransitive stative verb.  Stative verbs only have past, present, and future as finite tenses.  Here the dynamic finite marker is incorrectly added after the stative tense marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+atəpha dət͡ɕʷʰaw+p
+a-təpha də-t͡ɕʷʰa-w+p-jt
+the-girl 3.human.sing-sleep-present.stative-dynamic.finite
+The girl is sleeping.
+
+Ex 83 demonstrates an intransitive stative verb.  Stative verbs only have past, present, and future as finite tenses.  Here the dynamic tense marker is incorrectly used instead of the stative tense marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+atəpha dət͡ɕʷʰaw+p
+a-təpha də-t͡ɕʷʰa-wa
+the-girl 3.human.sing-sleep-present.dynamic
+The girl is sleeping.
+
+Ex 84 demonstrates an intransitive stative verb.  Stative verbs only have past, present, and future as finite tenses.  Here the stative tense marker is missing
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+atəpha dət͡ɕʷʰaw+p
+a-təpha də-t͡ɕʷʰa
+the-girl 3.human.sing-sleep
+The girl is sleeping.
+
+Ex 85 demonstrates a past tense stative verb.  Stative verbs only have past, present, and future as finite tenses.  
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+atəpha dət͡ɕʷʰan
+a-təpha də-t͡ɕʷʰa-n
+the-girl 3.human.sing-sleep-past.stative
+The girl was sleeping.
+
+#Ex 86 demonstrates an "intransitive" dynamic verb.  Chirikba states that dynamic verbs can be either transitive or intransitive.  Transitive verbs follow an ergative-absolutive marking placement.  Intransitives do not.  I am not sure why "hit" appears to be intransitive (there is a direct object) and "saw" appears to be transitive.  The difference between the two appears to be that "intransitives" take SOV marking and "transitives" take OSV argument marking.  The markers are the same regardless and I think that the only difference truly appears in the semantics.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+sará  at͡ʂʰkʷʰən  səjəbajt
+sará  a-t͡ʂʰkʷʰən s-jə-sə-jt
+sará  the-boy I-him-see-dynamic.finite
+I hit the boy
+
+
+
