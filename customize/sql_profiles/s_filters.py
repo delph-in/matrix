@@ -1283,5 +1283,15 @@ filter_list = [
                 comment = "If S coordination is asyndetic, there must be a properly-marked coordinated S",
                 fv = ['cs1_pat:a']),
 
+    # No case-marking.
+    # added by KEN 7/21/09
 
+    NotMatchFilter(name = 'no-case',
+                    # TODO: does it need to be all?  probably, but double-check it can't be smaller
+                    # it doesn't hurt that it's all, just would take longer if unnecessary.
+                   mrs_id_list = g.all,
+                   re1 = 'p-',
+                   comment = "If the language doesn't have case-marking, we should never see " + \
+                                     "case-marking adpositions.",
+                   fv = ['case-marking:none']),
 ]

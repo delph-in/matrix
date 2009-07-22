@@ -58,7 +58,6 @@ def update_tables_for_filters(filter_list):
 
         # Make delete (?) all of the existing rows for that filter in
         # groups_filter, and reinstantiate.
-#        print >> sys.stderr, "calling update_group_filter_table"        
         update_group_filter_table(f_id,groups)
 
     # Make sure that all of the existing language types
@@ -66,7 +65,6 @@ def update_tables_for_filters(filter_list):
     # KEN moved this line out of the for loop b/c it was a time sink and I don't see why it needed
     # to be run once for every filter...seems it can be run at end.
 
-#    print >> sys.stderr, "calling update_all_lts_in_lfg"        
     update_all_lts_in_lfg()        
 
     return filter_id_hash
@@ -678,11 +676,21 @@ def main():
             # TODO: deal with case where the filters have already run on these results.  should
             # i overwrite them?  inform user?  can't just insert again due to uniqueness constraints.
             # TODO: consider whether it makes sense to record all fails or not.
-            try:
-                if applyResult == 0:            # only insert fails for now.  TODO: consider others?
+            # TODO: figure out how to make this go faster if we only want to run new filters.
+            if applyResult == 0:            # only insert fails for now.  TODO: consider others?
+                try:
                     filters.insertFilteredSpecResult(res_id, fID, applyResult, conn)
-            except MySQLdb.IntegrityError:
-                print >> sys.stderr, "IntegrityError, res_id:", res_id, "fID:", fID, "applyResult:", applyResult
+                except MySQLdb.IntegrityError:
+                    existResult = conn.selQuery("SELECT rsf_value FROM res_sfltr " + \
+                                                              "WHERE rsf_res_id = %s " + \
+                                                              "AND rsf_sfltr_id = %s", (res_id, fID))[0][0]
+                    if existResult == 0:
+                        pass        # we're okay here because the same result is already in there.
+                    else:
+                        # TODO: figure out what to do here if this is necessary
+                        print >> sys.stderr, "You are trying to change the value of running filter " + \
+                                                      fID + " on result " + res_id + " and I don't know what " + \
+                                                     "to do with that.  Ignoring for now."
     return
 
 # set to true for running on my machine.  set to False before commiting to repository.

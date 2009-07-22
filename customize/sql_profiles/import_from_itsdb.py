@@ -5,7 +5,28 @@ Date: 7/12/09 - taken over on this date
 Project: MatrixTDB RA, summer 2009
 Project Owner: Emily M. Bender
 Contents:
-  - TODO: ???update later???
+    - code that adds the parent directory to the path
+    - validate_string_list - function that validates the combo of a file with harvester strings and the
+                                   [incr_tsdb()] profile.
+    - check_for_known_mrs_tags - function that checks that mrs tags in input file do not
+                                                 have different sentences associated with them if they are
+                                                 in the database.
+    - update_orig_source_profile - function that creates a source profile in db and links it to a
+                                                language type
+    - update_harv_str - function that inserts new mrs tags into harv_str and links them to osp_id.
+                                Links existing mrs tags to osp_id as well.
+    - find_string - function that, given the mrs tag that is the value in a dict, returns the string that
+                        is the key to that tag in the dict
+    - update_mrs - function that reads in a [incr_tsdb()] profile for semantics and updates database
+                          with those semantics
+    - read_profile_file - function that breaks up a [incr_tsdb()] file into a two-dimensional list
+    - import_to_sp - function that imports a [incr_tsdb()] profile into the sp_* tables in the database
+    - validateProfile - function that validates a [incr_tsdb()] profile is good enough for our purposes
+    - main - function that runs through all the steps of importing a set of harvester strings and the
+                corresponding mrs tags and [incr_tsdb()] profile to MatrixTDB
+    - main code that pulls arguments off the command line to call main()
+    - module testing code that allows for local testing of unit functions and the entire module.  It
+      can be ignored.
 """
 ############################################################
 # Script for importing data from [incr tsdb()] profile into
@@ -125,12 +146,12 @@ def validate_string_list(harv_mrs, itsdbDir):
             raise ValueError, "File " + harv_mrs + " is not a well-formed input file. " + \
                                       "Line format should be mrs_tag@string"
 
-    items = []                                              # initialize list of items from source profile
     itemFile = open(itsdbDir + "item", 'r')        # open item file from source profile
 
-    # split item file up into array of lines where each line is an array of its @-separated elements
-    # TODO: don't i have to split it and then access an index to get the actual string?
-    ilines = [line.strip().split('@') for line in itemFile.readlines()]
+    # extract sentence strings from item file and put into list
+    ilines = [line.strip().split('@')[6] for line in itemFile.readlines()]
+
+    itemFile.close()                                    # close the item file
 
     for item in ilines:                             # for each item in the profile...
         if not mrs_dict.has_key(item):      # ..verify it is was given in the harv string file
@@ -141,7 +162,7 @@ def validate_string_list(harv_mrs, itsdbDir):
     mrs_keys = mrs_dict.keys()          # get the set of given harvester strings
 
     for string in mrs_keys:                  # for each harvester string...
-        if items.count(string) == 0:        # ...verify it is in the profile as an item...
+        if ilines.count(string) == 0:        # ...verify it is in the profile as an item...
             # ...if not, raise an error.
             raise ValueError, "Item " + string + " in " + harv_mrs + " is not represented in " + \
                                       itsdbDir + "item."
@@ -169,11 +190,14 @@ def check_for_known_mrs_tags(mrs_dict, conn):
                         those strings
         conn - a MatrixTDBConn
     Output:
-        new_mrs_tags - TODO: update this docstring
-        known_mrs_tags
-    Functionality: 
+        new_mrs_tags - a set of mrs tags that are values of mrs_dict that are not already in the db.
+        known_mrs_tags - a set of mrs tags that are values of mrs_dict taht are already in the db.
+    Functionality: If all mrs tags in mrs_dict, verifies with user this is intended.  For mrs tags in
+                         db, determines if those tags keys in mrs_dict match the strings in the db.
+                         If not, warns user and exits.  For those mrs tags with strings identical to those
+                         already in db, verifies user wants to update MRSs and exits if not.
     """
-
+    # TODO: I think this function could be broken up
     new_mrs_tags = set()          # initialize output set of new mrs tags
     known_mrs_tags = set()       # initialize output set of known mrs tags
 
@@ -186,6 +210,8 @@ def check_for_known_mrs_tags(mrs_dict, conn):
     input_tags = set(mrs_dict.values())
     input_strings = set(mrs_dict.keys())    # get a set of the harv strings given in same file
 
+    # TODO: could i make this faster with sets?  like, using differences and intersections instead
+    # of for loops?
     for tag in input_tags:                           # for each mrs tag given...
         if tag in db_tags:                             # ...if that tag is already in the db
             known_mrs_tags.add(tag)           # ...add it to the set of known tags
@@ -205,12 +231,14 @@ def check_for_known_mrs_tags(mrs_dict, conn):
         diff_string_tags = []               # initialize list of strings that are different.
 
         for tag in known_mrs_tags:          # for every mrs tag that we already knew about...
-            s1 = find_string(tag,mrs_dict)     # get the corresponding harvester string as s1
+            s1 = find_string(tag,mrs_dict)     # get the given harvester string as s1
             try:
-                s2 = db.selQuery("SELECT hs_string FROM harv_str " + \
+                # get the string that is in the database for this tag as s2
+                # TODO: would we have a case where the tag has two strings in db?
+                s2 = conn.selQuery("SELECT hs_string FROM harv_str " + \
                                            "WHERE hs_mrs_tag = %s",(tag))[0][0]
             except IndexError:
-                s2 = ''
+                s2 = ''         # make s2 the empty string if tag wasn't associated with a string
 
             # TODO: test this function with the new indenting.
             if s1 == s2:
@@ -218,81 +246,118 @@ def check_for_known_mrs_tags(mrs_dict, conn):
             else:
                 diff_string_tags.append(tag)
 
-            if len(diff_string_tags) > 0:
-                print "The following mrs_tags are already in MatrixTDB with\n different harvester strings associated with them.\n"
-                print diff_string_tags
-                print "\n"
-                print "Either you have inadvertently reused an mrs_tag or you\n should be modifying stringmod.py rather than\n adding harvester strings.\n"
-                print "MatrixTDB has not been modified.\n"
-                sys.exit()
-            elif len(same_string_tags) > 0:
-                print "The following mrs_tags already exist in MatrixTDB with\n the harvester string indicated.\n"
-                print same_string_tags
-                res = raw_input("If you mean to update the MRSs associated with them,\n press 'y' to continue (any other key will abort): ")
-                if res != 'y':
-                    sys.exit()
+        if len(diff_string_tags) > 0:
+            # we shouldn't ge using old mrs tags for new strings here, so if we are inform user of
+            # what they did wrong and exit
+            print "The following mrs_tags are already in MatrixTDB with\n different harvester " + \
+                     "strings associated with them.\n"
+            print diff_string_tags
+            print "\n"
+            print "Either you have inadvertently reused an mrs_tag or you\n should be " + \
+                     "modifying stringmod.py rather than\n adding harvester strings.\n"
+            print "MatrixTDB has not been modified.\n"
+            sys.exit()
+        elif len(same_string_tags) > 0:
+            # if the user is using old mrs tags with old strings...
+            print "The following mrs_tags already exist in MatrixTDB with\n the harvester " + \
+                    "string indicated.\n"
+            print same_string_tags
 
-            if len(new_mrs_tags) > 0:
-                print "In addition, you are adding hte following new mrs tags:\n"
-                print new_mrs_tags
-                print "\n"
-                res = raw_input("If this is correct, press 'y' to continue (any other key to abort): ")
-                if res != 'y':
-                    sys.exit()
+            # ...ask them if they want to update the MRSs associated with those.
+            res = raw_input("If you mean to update the MRSs associated with them,\n press " + \
+                                    "'y' to continue (any other key will abort): ")
+            if res != 'y':          # if that's not what they want,...
+                sys.exit()        # ...exit
 
+        # if they gave some mrs tags in their file that aren't in the database...
+        if len(new_mrs_tags) > 0:
+            # ...tell them which tags they're adding.
+            print "In addition, you are adding the following new mrs tags:\n"
+            print new_mrs_tags
+            print "\n"
+
+            # verify they want to add those
+            res = raw_input("If this is correct, press 'y' to continue (any other key to abort): ")
+            if res != 'y':      # if they don't...
+                sys.exit()    # ...exit
+
+    # return sets of mrs tags they gave us either as new tags or tags already in db.
     return [new_mrs_tags,known_mrs_tags]
 
 
 ###########################################################################
 # Create new row in orig_source_profile
 
-def update_orig_source_profile(lt_id):
+def update_orig_source_profile(lt_id, conn):
+    """
+    Function: update_org_source_profile
+    Input:
+        lt_id - a language type ID
+        conn - a MatrixTDBConn, a connection to the MatrixTDB database        
+    Output:
+        osp_id - the id of a source profile entered that links to lt_id
+        timestamp - a formatted time representing when source profile was added to db
+    Functionality: Prompts user for input to db and creates a source profile in db and links it to
+                         lt_id
+    """
     try:
-        user = os.environ['USER']
-    except KeyError:
-        # so it works on Windows XP, too
-        user = os.environ['USERNAME']
+        user = os.environ['USER']           # get the user's username from Unix system
+    except KeyError:                           # if 'USER' isn't a key, they might be on Windows...
+        user = os.environ['USERNAME'] # ...so get their username from Windows.
 
-    comment = raw_input("Enter a description of this source profile (1000 char max): ")
+    comment = ''                                 # initialize comment from user
+    while comment == '':                      # while they haven't entered a comment...
+        # ...prompt user for a comment.
+        comment = raw_input("Enter a non-empty description of this source profile " + \
+                                        "(1000 char max): ")
 
-    if comment == "":
-        # TODO: make this more graceful
-        raise ValueError, "You must enter a comment."
+    t = datetime.datetime.now()                             # get current date and time
+    timestamp = t.strftime("%Y-%m-%d %H:%M")  # format the current date/time
 
-    t = datetime.datetime.now()
-    timestamp = t.strftime("%Y-%m-%d %H:%M")
+    # insert the source profile into the database and link it to the language type lt_id
+    conn.execute("INSERT INTO orig_source_profile " + \
+                        "SET osp_developer_name = %s, osp_prod_date = %s, " + \
+                         "osp_orig_lt_id = %s, osp_comment = %s", (user, timestamp, lt_id, comment))
 
-    # this is how it should be, but osp_comment doesn't exist right now.
-    db.execute("INSERT INTO orig_source_profile " + \
-                      "SET osp_developer_name = %s, osp_prod_date = %s, " + \
-                       "osp_orig_lt_id = %s, osp_comment = %s", (user,timestamp,lt_id,comment))
+    # get the ID of inserted source profile
+    osp_id = conn.selQuery("SELECT LAST_INSERT_ID()")[0][0]
 
-    osp_id = db.selQuery("SELECT LAST_INSERT_ID()")[0][0]
-
-    return [osp_id,timestamp]
+    return [osp_id, timestamp]       # return output
 
 ###########################################################################
 # Update harvester string table with strings and mrs_tags
 
-def update_harv_str(new_mrs_tags,known_mrs_tags,mrs_dict,osp_id):
+def update_harv_str(new_mrs_tags, known_mrs_tags, mrs_dict, osp_id, conn):
+    """
+    Function: update_harv_str
+    Input:
+        new_mrs_tags - a set of mrs tags that are values of mrs_dict that are not already in the db
+        known_mrs_tags - a set of mrs tags that are values of mrs_dict taht are already in the db
+        mrs_dict - a dict whose keys are the harvester strings and whose tags are the mrs tags for
+                        those strings
+        osp_id - the ID of an original source profile
+        conn - a MatrixTDBConn, a connection to the MatrixTDB database        
+    Output: none
+    Functionality: Inserts new mrs tags into harv_str and links them to osp_id.  Links existing
+                         mrs tags to osp_id as well.
+    """
+    # TODO: would this make more sense to go through the mrs_dict, comparing for inclusion in
+    # new_mrs_tags and known_mrs_tags?
+    for tag in new_mrs_tags:                    # for every mrs tag not already in db...
+        harv = find_string(tag, mrs_dict)       # ...get the harvester string corresponding to it
 
-    # Assume that harv_str has fields hs_id (auto increment), hs_string, hs_mrs_tag and
-    # hs_init_osp_id and hs_cur_osp_id
+        # insert the string/tag combo into the database and link it to osp_id for both its original
+        # osp and its current osp
+        conn.execute("INSERT INTO harv_str " + \
+                           "SET hs_string = %s,  hs_mrs_tag = %s, hs_init_osp_id = %s, " + \
+                            "hs_cur_osp_id = %s", (harv, tag, osp_id, osp_id))
 
-    # print new_mrs_tags
-    for tag in new_mrs_tags:
-        harv = find_string(tag,mrs_dict)
-        db.execute("INSERT INTO harv_str " + \
-                         "SET hs_string = %s,  hs_mrs_tag = %s, hs_init_osp_id = %s, " + \
-                          "hs_cur_osp_id = %s", (harv,tag,osp_id,osp_id))
+    for tag in known_mrs_tags:      # for every mrs tag that we already had in db...
+        # ...set its current osp to osp_id
+        conn.execute("UPDATE harv_str SET hs_cur_osp_id = %s " + \
+                           "WHERE hs_mrs_tag = %s", (osp_id, tag))
 
-    # For known mrs_tags that we're going over, update hs_current_osp_id to correspond to current source profile
-
-    for tag in known_mrs_tags:
-        db.execute("UPDATE harv_str SET hs_cur_osp_id = %s " + \
-                         "WHERE hs_mrs_tag = %s",(osp_id,tag))
-
-    return    
+    return
 
 ###########################################################################
 # Find string corresponding to a given mrs_tag.  Need a little subroutine
@@ -325,84 +390,126 @@ def find_string(tag, mrs_dict):
 ###########################################################################
 # Update mrs table with mrs_tags and mrs_values
 # _FIX_ME_ Still assuming one mrs per harvester string, but this doesn't
-# allow for ambiguous harvester strings, which we will surely arrive at one day.
+# allow for abiguous harvester strings, which we will surely arrive at one day.
 
-def update_mrs(mrs_dict,osp_id,new_mrs_tags,known_mrs_tags,dir,timestamp):
+def update_mrs(mrs_dict, osp_id, new_mrs_tags, known_mrs_tags, profDir, timestamp, conn):
+    """
+    Function: update_mrs
+    Input:
+        mrs_dict - a dict whose keys are the harvester strings and whose tags are the mrs tags for
+                        those strings
+        osp_id - the ID of an original source profile
+        new_mrs_tags - a set of mrs tags that are values of mrs_dict that were not already in the
+                                db
+        known_mrs_tags - a set of mrs tags that are values of mrs_dict that were already in the db
+        profDir- a path to an [incr_tsdb()] profile
+        timestamp - formatted string representing time original source profile was inserted into db.
+        conn - a MatrixTDBConn, a connection to MatrixTDB
+    Output: none
+    Functionality: reads in the [incr_tsdb()] profile in profDir to get semantics.  For each mrs tag,
+                         inserts its semantics into mrs table.  Additionally, for each mrs tag we already
+                         knew about, deprecates existing record in mrs table and inserts a new one with
+                         the new semantics.
+    """
+    # TODO: now that new_mrs_tags have been inserted into harv_str, is there a reason I have
+    # them as two separte sets here?  Should I refactor?
 
-  # Read in info from itsdb files
+    # Read in info from itsdb files
+    harv_id = {}                # initalize dict mapping harvester strings to item IDs
+    parse_id = {}             # initialize dict mapping item IDs to parse IDs
+    mrs_values = {}         # initalize dict mapping parse IDs to mrs semantics values    
 
-  mrs_values = {}
-  harv_id = {}
-  parse_id = {}
-  input_strings = mrs_dict.keys()
-  
-  i = open(dir + "item", 'r')
-  for l in i.readlines():
-    l = l.strip()
-    l = l.split('@')
-    harv_id[l[6]] = l[0]  #key is i_input, value is i_id
-  i.close()
+    # get the harvester strings out of mrs_dict and assign to input_strings    
+    input_strings = mrs_dict.keys() 
 
-  p = open(dir + "parse", 'r')
-  for l in p.readlines():
-    l = l.strip()
-    l = l.split('@')
-    parse_id[l[2]] = l[0] #key is p_i_id, value is parse_id
-  p.close()
+    itemFile = open(profDir + "item", 'r')      # open the profile's item file
 
-  r = open(dir + "result", 'r')
-  for l in r.readlines():
-    l = l.strip()
-    l = l.split('@')
-    mrs_values[l[0]] = l[13] #key is parse_id, value is mrs_value
-  r.close()
+    for line in itemFile.readlines():             # for each item in the file
+        line = line.strip()                            # strip off line's leading and trailing whitespace
+        line = line.split('@')                        # split line into columns delimited by '@'
+
+        # populate harv_id dict.  key is i_input (the string), value is i_id (a unique id)
+        harv_id[line[6]] = line[0]
+
+    itemFile.close()                                   # close item file
+    parseFile = open(profDir + "parse", 'r')    # open the profile's parse file
+
+    for line in parseFile.readlines():           # for each parse in the file
+        line = line.strip()                            # strip off line's leading and trailing whitespace
+        line = line.split('@')                        # split line into columns delimited by '@'
+
+        # populate parse_id dict.k ey is p_i_id (unique id of item), value is parse_id (unique id of
+        # parse)
+        parse_id[line[2]] = line[0]
+
+    parseFile.close()                              # close parse file
+    resFile = open(profDir + "result", 'r')     # open the profile's result file
+
+    for line in resFile.readlines():             # for each result in the file   
+        line = line.strip()                           # strip off line's leading and trailing whitespace
+        line = line.split('@')                       # split line into columns delimited by '@'
+
+        # populate mrs_values dict. key is parse_id (unique id of parse), value is mrs_value
+        # (semantics of sentence)
+        mrs_values[line[0]] = line[13]
+        
+    resFile.close()                                  # close the result file
        
-  # For new mrs tags, create a new entry in mrs:
+    # For new mrs tags, create a new entry in mrs table:
+    for tag in new_mrs_tags:                            # for every new mrs tag
+        i_input = find_string(tag, mrs_dict)          # get the harvester string
+        i_id = harv_id[i_input]                             # get the item ID for that string
+        p_id = parse_id[i_id]                              # get the parse id for that string/item
+        mrs_value = mrs_values[p_id]                # get the semantics of that string/item/parse
 
-  for tag in new_mrs_tags:
+        # insert the mrs into the mrs table, setting its semantics, current flag, and  osp
+        # appropriately.
+        conn.execute("INSERT INTO mrs SET mrs_tag = %s, mrs_value = %s, " + \
+                            "mrs_current =1, mrs_osp_id = %s",(tag, mrs_value, osp_id))
 
-    i_input = find_string(tag, mrs_dict)
-    i_id = harv_id[i_input]
-    p_id = parse_id[i_id]
-    mrs_value = mrs_values[p_id]
-    current = 1
-    
-    db.execute("INSERT INTO mrs SET mrs_tag = %s, mrs_value = %s, " + \
-                      "mrs_current =%s, mrs_osp_id = %s",(tag,mrs_value,current,osp_id))
+    for tag in known_mrs_tags:                      # for every mrs tag we already knew about
+        # set its current line in the mrs table to be mrs_current = 0 (deprecate it)
+        conn.execute("UPDATE mrs " + \
+                             "SET mrs_current = 0, mrs_date = %s " + \
+                             "WHERE mrs_tag = %s " + \
+                             "AND mrs_current = 1", (timestamp, tag))
+        i_input = find_string(tag,mrs_dict)             # get the tag's harvester string
+        i_id = harv_id[i_input]                               # get the item ID for that string
+        p_id = parse_id[i_id]                                # get the parse id for that string/item
+        mrs_value = mrs_values[p_id]                  # get the semantics of that string/item/parse
 
-  # For known mrs tags, deprecate the most recent entry and then create a new entry 
-  
-  for tag in known_mrs_tags:
-
-    # i think these two queries should be updated to be just one.
-    mrs_to_deprecate = db.selQuery("SELECT mrs_id FROM mrs " + \
-                                                     "WHERE mrs_tag = %s " + \
-                                                     "AND mrs_current = 1",(tag))[0][0]
-
-    db.execute("UPDATE mrs SET mrs_current = 0, mrs_date = %s " + \
-                     "WHERE mrs_id = %s",(timestamp,mrs_to_deprecate))
-
-    i_input = find_string(tag,mrs_dict)
-    i_id = harv_id[i_input]
-    p_id = parse_id[i_id]
-    mrs_value = mrs_values[p_id]
-
-    db.execute("INSERT INTO mrs " + \
-                     "SET mrs_tag = %s, mrs_value = %s, mrs_current = 1, " + \
-                      "mrs_osp_id = %s",(tag,mrs_value,osp_id))
+        # insert the mrs into the mrs table, setting its semantics, current flag, and  osp
+        # appropriately.
+        conn.execute("INSERT INTO mrs " + \
+                            "SET mrs_tag = %s, mrs_value = %s, mrs_current = 1, " + \
+                             "mrs_osp_id = %s",(tag, mrs_value, osp_id))
+    return
 
 ##########################################################################
 # Reading in tsdb files
 
-def read_profile_file(file):
-  contents = []
-  f = open(file, 'r')
-  for l in f.readlines():
-    l = l.strip()
-    contents.append(l.split('@'))
-  f.close()
-  return contents
+def read_profile_file(filename):
+    """
+    Function: read_profile_file
+    Input: filename - the name of a file in a [incr_tsdb()] profile
+    Output: contents - a list of lists.  The outer list is a list of each row in the file and the inner
+                               lists are the columns/fields in each row
+    Functionality: Breaks up a [incr_tsdb()] file into a list (representing each row) of lists
+                        (representing each field in the row)
+    """
+    # TODO: couldn't this function be used in update_mrs?
+    contents = []                                # initalize output list
+    f = open(filename, 'r')                     # open the profile file
+    
+    for line in f.readlines():                    # for every line in the file
+        line = line.strip()                         # strip off its leading and trailing whitespace
 
+        # break it into a list of columns delimited by @ and add that list to the output list
+        contents.append(line.split('@'))    
+        
+    f.close()                                         # close the file
+
+    return contents                               # return the output
 
 ##########################################################################
 # Finally, we're ready to import the data from the itsdb profile into
@@ -411,54 +518,76 @@ def read_profile_file(file):
 # 6) Add rows from tsdb_profile/item,parse,result to sp_item,
 # sp_parse, sp_result, replacing mrs in sp_result with mrs_tag
 
-def import_to_sp(itsdb_dir,osp_id, mrs_dict):
+def import_to_sp(itsdb_dir,osp_id, mrs_dict, conn):
+    """
+    Function: import_to_sp
+    Input:
+        itsdb_dir - a path to an [incr_tsdb()] profile
+        osp_id - the ID of an original source profile
+        mrs_dict - a dict whose keys are the harvester strings and whose tags are the mrs tags for
+                        those strings
+        conn - a MatrixTDBConn, a connection to the MatrixTDB database
+    Output: none
+    Functionality: imports a [incr_tsdb()] profile into the sp_* tables in the database.  Links all
+                         rows with globally unique IDs, eventually casting aside the profile-wide-unqiue
+                         IDs from the profile.
+    """
+    # initialize dict of item IDs.  The keys are the item IDs from the item file in the profile and the
+    # values are the correspdonding value of the spi_id column in the sp_item table.  I think this
+    # allows us to work between the intra-profile uniqueness of item IDs in the file and our
+    # global, inter-profile uniqueness required for the database.
     spi_ids = {}
+
+    # initialize dict of parse IDs.  The keys are the parse IDs from the parse file in the profile and
+    # the values are the correspdonding value of the spp_parse_id column in the sp_parse table.  I
+    # think this allows us to work between the intra-profile uniqueness of parse IDs in the file and
+    # our global, inter-profile uniqueness required for the database.    
     spp_ids = {}
+    items = read_profile_file(itsdb_dir + "item")        # convert item file into two-dimensional list
 
-    items = read_profile_file(itsdb_dir + "item")
-
-    for item in items:
-        db.execute("INSERT INTO sp_item " + \
-                         "SET spi_input = %s, spi_wf = %s, spi_length = %s, spi_author = %s, " + \
-                         "spi_osp_id = %s",(item[6],item[7],item[8],item[10],osp_id))
+    for item in items:                                              # for each item in item file...
+        # ...insert the columns we care about into the sp_item table plus our add'l column of osp_id
+        conn.execute("INSERT INTO sp_item " + \
+                            "SET spi_input = %s, spi_wf = %s, spi_length = %s, spi_author = %s, " + \
+                            "spi_osp_id = %s", (item[6], item[7], item[8], item[10], osp_id))
         # We're not using the tsdb i_id because in the general case we'll be adding to a table.
         # So, we need to get the spi_id and link it to the i_id for use in the next load.
-        spi_id = db.selQuery("SELECT LAST_INSERT_ID()")[0][0]
-        spi_ids[item[0]] = spi_id
 
-    parses = read_profile_file(itsdb_dir + "parse")
+        # Get the spi_id value from row just entered and store it in dict linking item IDs from profile
+        # to the IDs in the table.
+        spi_ids[item[0]] = conn.selQuery("SELECT LAST_INSERT_ID()")[0][0]
 
-    for parse in parses:
-        db.execute("INSERT INTO sp_parse " + \
-                         "SET spp_run_id = %s, spp_i_id = %s, spp_readings = %s, spp_osp_id = %s",
-                                                                           (parse[1],spi_ids[parse[2]],parse[3],osp_id))
-        spp_parse_id = db.selQuery("SELECT LAST_INSERT_ID()")[0][0]
-        spp_ids[parse[0]] = spp_parse_id
+    parses = read_profile_file(itsdb_dir + "parse")     # convert parse file into two-dimensional list
 
-    results = read_profile_file(itsdb_dir + "result")
+    for parse in parses:                                          # for each parse in parse file...
+        # ...insert the columns we care about into the sp_parse table plus our add'l column of
+        # osp_id.  Use the item id from the parse file (parse[2]) to access the unique table id
+        # of the item in sp_item via the spi_ids dict
+        conn.execute("INSERT INTO sp_parse " + \
+                           "SET spp_run_id = %s, spp_i_id = %s, spp_readings = %s, " + \
+                                   "spp_osp_id = %s", (parse[1], spi_ids[parse[2]], parse[3], osp_id))
 
-    for result in results:
+        # get the spp_parse_id value of the row we just entered and enter it in the spp_ids dict
+        # to link the parse id from the profile (parse[0]) to this id we used in the table
+        spp_ids[parse[0]] = conn.selQuery("SELECT LAST_INSERT_ID()")[0][0]
 
-        # We need to get the mrs_tag to insert instead of the mrs_value.  Since we have two ways to
-        # access the mrs_tag (through the value and the harvester string), try both and see if they
-        # match, by way of error checking.
+    results = read_profile_file(itsdb_dir + "result")   # convert result file into two-dimensional list
 
-        mrs_value = result[13]
-        mrs_tag_1 = db.selQuery("SELECT mrs_tag FROM mrs " + \
-                                              "WHERE mrs_value = %s " + \
-                                                    "AND mrs_current = 1",(mrs_value))[0][0]
+    for result in results:                                        # for each result in result file...
+        # ...get the harvester string out of the sp_item table by using the parse id from the result
+        # file (result[0]) to get the parse id in the table, and then querying through to sp_item
+        harv_string = conn.selQuery("SELECT spi_input " + \
+                                                  "FROM sp_item " + \
+                                                  "INNER JOIN sp_parse " + \
+                                                        "ON spi_id = spp_i_id " + \
+                                                  "WHERE  spp_parse_id = %s", (spp_ids[result[0]]))[0][0]
+        mrs_tag = mrs_dict[harv_string]             # use the harvester string to get the mrs tag
 
-        harv_string = db.selQuery("SELECT spi_input FROM sp_item, sp_parse " + \
-                                              "WHERE spi_id = spp_i_id AND spp_parse_id = %s",
-                                                                                                      (spp_ids[result[0]]))[0][0]
-        mrs_tag_2 = mrs_dict[harv_string]
-
-        #if mrs_tag_1 != mrs_tag_2:
-        #  raise ValueError, "import_to_sp found inconsistent mrs tags."
-    
-        db.execute("INSERT INTO sp_result " + \
-                         "SET spr_parse_id = %s, spr_mrs = %s, spr_osp_id = %s",
-                                                                                     (spp_ids[result[0]],mrs_tag_2,osp_id))
+        # insert into sp_result table, setting columns we care about appropriately, including our
+        # add'l column of osp_id
+        conn.execute("INSERT INTO sp_result " + \
+                            "SET spr_parse_id = %s, spr_mrs = %s, spr_osp_id = %s",
+                                                                                (spp_ids[result[0]], mrs_tag, osp_id))
 
     return
 
@@ -471,8 +600,8 @@ def validateProfile(itsdbDir):
                          parse
     """
     # check that the path exists as well as the three files we're importing
-    if (os.path.exists(itsdb_dir) and os.path.exists(itsdb_dir + "item") and
-            os.path.exists(itsdb_dir + "parse") and os.path.exists(itsdb_dir + "result")):
+    if (os.path.exists(itsdbDir) and os.path.exists(itsdbDir + "item") and
+            os.path.exists(itsdbDir + "parse") and os.path.exists(itsdbDir + "result")):
         answer = True           # if so, set output to True
     else:                             # if not, ...
         answer = False          # ...set output to False
@@ -483,16 +612,22 @@ def validateProfile(itsdbDir):
 # Main program
 
 # Check that inputs are all well formed
-def main(itsdb_dir, harv_mrs, choices_filename, conn = MatrixTDBConn()):
+def main(itsdb_dir, harv_mrs, choices_filename, conn = None):
     """
     Function: main
     Input:
         itsdb_dir - a path to an [incr_tsdb()] profile
         harv_mrs - a path to and the name of a file linking the test items to mrs tags
         choices_filename - a path to and name of a choices file from the customization system
+                                    TODO: yeah, but why is this being given here?
+        conn - a MatrixTDBConn, a connection to the MatrixTDB database
     Output: none
-    Functionality: TOOD: write later, after re-factoring.
+    Functionality: runs through all the steps of importing a set of harvester strings and the
+                         corresponding mrs tags and [incr_tsdb()] profile to MatrixTDB
     """
+    if conn is None:                            # if the user doesn't supply a connection to a db...
+        conn = MatrixTDBConn()           # ...use this one by default
+        
     if not validateProfile(itsdb_dir):          # if the [incr_tsdb()] profile isn't valid...
         # ...raise an error
         raise ValueError, "The first argument must be the path to a directory containing a valid " + \
@@ -515,93 +650,88 @@ def main(itsdb_dir, harv_mrs, choices_filename, conn = MatrixTDBConn()):
     choices = ChoicesFile(choices_filename)
 
     # Check for presence of known mrs tags, and query user
-    [new_mrs_tags,known_mrs_tags] = check_for_known_mrs_tags(mrs_dict, conn)
+    [new_mrs_tags, known_mrs_tags] = check_for_known_mrs_tags(mrs_dict, conn)
     
     # 1) Look up or create LT entry in lt and lt_feat_grp
     # This will also make sure that lt_feat_grp is up to date
     # for an existing language type.  Defined in sql_lg_type.py
-    lt_id = create_or_update_lt(choices,db)
+    lt_id = create_or_update_lt(choices, conn)
 
-  # 2) Ask user for comment to store about this source profile
-  # 3) Create a new row in orig_source_profile with information
-  # about this source profile.  
+    # 2) Ask user for comment to store about this source profile
+    # 3) Create a new row in orig_source_profile with information
+    # about this source profile.
+    [osp_id, timestamp] = update_orig_source_profile(lt_id, conn)
 
-  [osp_id,timestamp] = update_orig_source_profile(lt_id)
+    # Insert new mrs tags into harv_str and links them to osp_id.  Link existing mrs tags to osp_id
+    # as well.
+    update_harv_str(new_mrs_tags, known_mrs_tags, mrs_dict, osp_id, conn)
 
-  # 4) Update harvester string table with strings and mrs_tags
-  # Make hs_current_osp_id reflect current source profile for
-  # mrs_tags getting new mrs_values.
+    # 5) Update mrs table with mrs_tags and mrs_values
+    update_mrs(mrs_dict, osp_id, new_mrs_tags, known_mrs_tags, itsdb_dir, timestamp, conn)
 
-  update_harv_str(new_mrs_tags,known_mrs_tags,mrs_dict,osp_id)
+    # 6) Add rows from tsdb_profile/item,parse,result to sp_item,
+    # sp_parse, sp_result, replacing mrs in sp_result with mrs_tag
+    import_to_sp(itsdb_dir, osp_id, mrs_dict, conn)
 
-  # 5) Update mrs table with mrs_tags and mrs_values
+    # 7) Print out osp_orig_src_prof_id for user to use as input
+    # to add_permutes.py
+    print "The original source profile id for your profile is: " + str(osp_id)
 
-  update_mrs(mrs_dict,osp_id,new_mrs_tags,known_mrs_tags,itsdb_dir,timestamp)
+    # 8) Print out message about updating g.py to map include ne
+    # mrs_tags in the mrs_tag sets they belong in, and updating
+    # u_filters.py and s_filters.py to handle new strings, and updating
+    # stringmod.py as well.
 
-  # 6) Add rows from tsdb_profile/item,parse,result to sp_item,
-  # sp_parse, sp_result, replacing mrs in sp_result with mrs_tag
+    if len(known_mrs_tags) > 0:
+        print "The following mrs_tags now have updated mrs_values in MatrixTDB:\n"
+        print known_mrs_tags
 
-  import_to_sp(itsdb_dir,osp_id, mrs_dict)
+    if len(new_mrs_tags) > 0:
+        print "The following mrs_tags and their corresponding strings and values have been " + \
+                "added to MatrixTDB:\n" + str(new_mrs_tags) + "\nBe sure to map them to the " + \
+                "right sets of mrs_tags\n in g.py (for proper functioning of existing filters).\nBe " + \
+                "sure to update s_filters.py, u_filters.py and\n potentially stringmod.py to reflect " + \
+                "your new strings.  Then run add_permutes.py with the osp_id " + str(osp_id) + \
+                ".  Then run run_u_filters.py and run_specific_filters.py."
 
-  # 7) Print out osp_orig_src_prof_id for user to use as input
-  # to add_permutes.py
-
-  print "The original source profile id for your profile is: " + str(osp_id)
-
-  # 8) Print out message about updating g.py to map include ne
-  # mrs_tags in the mrs_tag sets they belong in, and updating
-  # u_filters.py and s_filters.py to handle new strings, and updating
-  # stringmod.py as well.
-
-  if len(known_mrs_tags) > 0:
-      print "The following mrs_tags now have updated mrs_values in MatrixTDB:\n"
-      print known_mrs_tags
-
-  if len(new_mrs_tags) > 0:
-      print "The following mrs_tags and their corresponding strings and values have been added to MatrixTDB:\n" + str(new_mrs_tags) + "\n"
-      print "Be sure to map them to the right sets of mrs_tags\n in g.py (for proper functioning of existing filters).\n"
-      print "Be sure to update s_filters.py, u_filters.py and\n potentially stringmod.py to reflect your new strings."
-      print "Then run add_permutes.py with the osp_id " + str(osp_id) + "."
-      print "Then run run_u_filters.py and run_specific_filters.py."
-
-  return
+    return
 
 # set to true for running on my machine.  set to False before commiting to repository.
 moduleTest = True
 
 if __name__ == '__main__':      # only run if run as main module...not if imported
-  if len(sys.argv < 4):                # if the user gave too few arguments....
-    # ...give an error message indicating usage.
-    print >> sys.stderr, "Usage: python import_from_itsdb.py itsdb_directory " + \
-                                 "harv_mrs_filename choices_filename"
-  else:                                             # if the user gave at least three arguments...
-    # ...get the directory of the [incr_tsdb()] directory from the command line...
-    itsdbDir = sys.argv[1]
+    if len(sys.argv < 4):                # if the user gave too few arguments....
+        # ...give an error message indicating usage.
+        print >> sys.stderr, "Usage: python import_from_itsdb.py itsdb_directory " + \
+                                     "harv_mrs_filename choices_filename"
+    else:                                             # if the user gave at least three arguments...
+        # ...get the directory of the [incr_tsdb()] directory from the command line...
+        itsdbDir = sys.argv[1]
 
-    # ...and the name of the file linking test sentences to mrs tags...
-    harvMrsFilename = sys.argv[2]
+        # ...and the name of the file linking test sentences to mrs tags...
+        harvMrsFilename = sys.argv[2]
 
-    # ...and the name of the choices file for the customization system
-    choicesFilename = sys.argv[3]
-    
-    #Connect to MySQL server
-    conn = MatrixTDBConn()
+        # ...and the name of the choices file for the customization system
+        choicesFilename = sys.argv[3]
+        
+        #Connect to MySQL server
+        conn = MatrixTDBConn()
 
-    # call the main program to import a source profile into MatrixTDB
-    main(itsdbDir, harvMrsFilename, choicesFilename, conn)
-    
+        # call the main program to import a source profile into MatrixTDB
+        main(itsdbDir, harvMrsFilename, choicesFilename, conn)
+        
 elif moduleTest:                        # if we are testing this module locally...
-  conn = MatrixTDBConn('2')      # ...create a connection to the smaller, newer database...
+    conn = MatrixTDBConn('2')      # ...create a connection to the smaller, newer database...
 
-  # ... and notify the user moduleTest is set to True.
-  print >> sys.stderr, "Note: module testing turned on in import_from_itsdb.py.  " + \
-                               "Unless testing locally, set moduleTest to False."
-  mypath = "C:\RA\matrix\customize\sql_profiles\harv2\\" # set root path
-  itsdbDir = mypath + "sourceprof\\attempt1\\"                 # set path to source [incr_tsdb()] profile
+    # ... and notify the user moduleTest is set to True.
+    print >> sys.stderr, "Note: module testing turned on in import_from_itsdb.py.  " + \
+                                 "Unless testing locally, set moduleTest to False."
+    mypath = "C:\RA\matrix\customize\sql_profiles\harv2\\" # set root path
+    itsdbDir = mypath + "sourceprof\\attempt1\\"        # set path to source [incr_tsdb()] profile
 
-  # set path and filename of file linking test sentences to mrs tags
-  harvMrsFilename = mypath + "harv_mrs_2"
-  choicesFilename = mypath + "choices1"     # set path to and name of choices file
+    # set path and filename of file linking test sentences to mrs tags
+    harvMrsFilename = mypath + "harv_mrs_2"
+    choicesFilename = mypath + "choices1"     # set path to and name of choices file
 
     # call the main program to import a source profile into MatrixTDB2
-   # main(istdbDir, harvMrsFilename, choicesFilename, conn)
+    main(itsdbDir, harvMrsFilename, choicesFilename, conn)

@@ -37,7 +37,7 @@ n2_subj_neg = ['neg1','neg2']
 all_ques = ['ques1','ques2','ques3','ques4']
 n1_subj_ques = ['ques1','ques2']
 n2_subj_ques = ['ques3','ques4']
-# TODO: don't assign to native function all
+# TODO: don't assign to built-in function all
 all = ['wo1', 'wo2', 'wo3', 'wo4', 'wo5', 'wo6', 'wo7', 'wo8', 'wo9', 'wo10', 'neg1', 'neg2', 'neg3', 'neg4', 'ques1', 'ques2', 'ques3', 'ques4']
 trans = ['wo3', 'wo4', 'wo5', 'wo6', 'wo7', 'wo8', 'wo9', 'wo10', 'neg1', 'neg2', 'neg3', 'neg4', 'ques1', 'ques2', 'ques3', 'ques4']
 intrans = ['wo1','wo2']
