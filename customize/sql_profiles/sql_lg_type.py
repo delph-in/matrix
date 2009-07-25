@@ -1,3 +1,11 @@
+"""
+File: sql_lg_type.py
+Author: KEN (captnpi@u.washington.edu, Scott Halgrim) - taking over from ???
+Date: summer '09 (KEN started working on it then)
+Project: MatrixTDB
+Project Owner: Emily M. Bender
+Contents: TODO: finish this docstring
+"""
 ###############################################################
 # Read in choices file and create appropriate representations
 # in MatrixTDB.lt,lt_grp.
@@ -417,6 +425,11 @@ def create_or_update_lt(choices, conn):
 # Main Program
 
 def main():
+    """
+    Function: main
+    Input: none
+    Output: none, but prints TODO: finish this docstring
+    """
 
   choices = ChoicesFile(sys.argv[1])
 

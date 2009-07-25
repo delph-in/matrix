@@ -95,7 +95,8 @@ filter_list = [IfFilter(name = "uf1",
                         mrs_id_list = g.all,
                         re1 = '-nf',
                         re2 = 'aux',
-                        comment = "So far, the non-finite forms should only appear in the context of an auxiliary."),
+                        comment = "So far, the non-finite forms should only appear in the context " + \
+                                          "an auxiliary."),
 
                IfFilter(name = "uf15",
                         mrs_id_list = g.ques,

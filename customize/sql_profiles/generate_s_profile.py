@@ -74,6 +74,16 @@ queryItemsFailedSFltrs="""SELECT p_i_id FROM parse
                                         WHERE rsf_value = 0
                                             AND lfg_lt_id = %s"""
 
+queryItemsFailOne="""SELECT p_i_id, rsf_sfltr_id FROM
+                                    (SELECT p_i_id, rsf_sfltr_id, count(*) numFails FROM parse
+                                     INNER JOIN result ON p_parse_id = r_parse_id
+                                     INNER JOIN res_sfltr ON r_result_id = rsf_res_id
+                                     INNER JOIN fltr_feat_grp ON rsf_sfltr_id = ffg_fltr_id
+                                     INNER JOIN lt_feat_grp ON ffg_grp_id = lfg_grp_id
+                                     WHERE rsf_value = 0 AND lfg_lt_id = %s
+                                     GROUP BY p_i_id) subq
+                                     WHERE numFails = 1"""
+
 def main(lngTypeID, profpath):
     """
     Function: main
@@ -91,29 +101,50 @@ def main(lngTypeID, profpath):
 
     return
 
-def getGrammItems(ltID, conn):
+def getGrammItems(ltID, upass, conn):
     """
     Function: getGrammItems
     Input:
         ltID - a language type ID
-        conn - a MatrixTDBConn
+        upass - a set of item IDs that passed all universal filters
+        conn - a MatrixTDBConn, a connection to the MatrixTDB database
     Output: itemsPassedAllFltrs - a set of item IDs, each of which passed all universal filters and
                                                  all specific filters relevant to language type ltID
     Functionality: generates a set of all items that passed all relevant filters
     """
-    # query database for all items that passed all universal filters...
-    selResults = conn.selQuery(queryItemsPassedUFltrs)
-    itemsPassedUFltrs = db_utils.selColumnToSet(selResults)   # ...and convert to a set of IDs
 
     # query database for all items that failed any specific filter for this language type...
     selResults = conn.selQuery(queryItemsFailedSFltrs, (ltID))
     itemsFailedSFltrs = db_utils.selColumnToSet(selResults)         # ...and convert to a set of IDs
 
     # get set of grammatical items
-    itemsPassedAllFltrs = itemsPassedUFltrs.difference(itemsFailedSFltrs)
+    itemsPassedAllFltrs = upass.difference(itemsFailedSFltrs)
 
     return itemsPassedAllFltrs  # return the item IDs that passed all filters
 
+def getFailOneItems(lt_id, conn):
+    """
+    Function: getFailOneItems
+    Input:
+        ltID - a language type ID
+        upass - a set of item IDs that passed all universal filters
+        conn - a MatrixTDBConn, a connection to the MatrixTDB database
+    Output: TODO; finish this docsring
+    Functionality:
+    """
+    usedFilters = set()
+    unGrammItemIDs = set()
+    failOneRows = conn.selQuery(queryItemsFailOne, (lt_id))
+
+    print >> sys.stderr, "len(failOneRows):", len(failOneRows)
+    for row in failOneRows:
+        filterID = row[1]
+        if filterID not in usedFilters:
+            usedFilters.add(filterID)
+            unGrammItemIDs.add(row[0])
+
+    print >> sys.stderr, "len(unGrammItemIDs):", len(unGrammItemIDs)
+    return unGrammItemIDs
 
 def genFile(itemIds, profpath, conn, filename):
     """
@@ -180,9 +211,9 @@ def genRelationsFile(path):
     Output: none
     Functionality: create the relations file in a [incr_tsdb()] profile
     """
-    outfile = open(path+'relations')        # open the relations file
-    outfile.write(relFileContents)           # write its contents, imported from relations_def
-    outfile.close()                                # close the file
+    outfile = open(path+'relations', 'w')        # open the relations file
+    outfile.write(relFileContents)                # write its contents, imported from relations_def
+    outfile.close()                                     # close the file
     
     return
 
@@ -229,6 +260,8 @@ def readInIds(idfile):
     Functionality: reads in a stored set of IDs to save time when testing.  This is not a production
                          function: it only serves to get around running the 20 minute query that finds all
                          items that didn't fail any universal filters
+    Tables accessed: none
+    Tables modified: none
     """
     infile = open(idfile)           # open the file
     lines = infile.readlines()    # put its lines in a list
@@ -263,16 +296,25 @@ elif moduleTest:
     print >>sys.stderr, "Warning: moduleTest on for generate_s_profile"
     lt_id = 21
     #main(lt_id)
-    # TODO: set something up to create directories if they don't exist
+    # TODO: set up code to create directories if they don't exist
     sqlprofpath = "C:\\RA\matrix\customize\sql_profiles\\"
-    profilepath = sqlprofpath + "testoutprofile\\profile20090712\\"
-    itemListName = sqlprofpath + "itemlist20090712"
+    profilepath = sqlprofpath + "testoutprofile\\profile20090722\\"
+    itemListName = sqlprofpath + "itemlist20090722"
     #grammItemIDsLT1 = sqlprofpath + "15grammItemsLT1.txt"
     myconn = MatrixTDBConn('2')
     #idset = readInIds(grammItemIDsLT1)
-    print >> sys.stderr, "getting grammatical items"
-    idset = getGrammItems(lt_id, myconn)
-    #print >> sys.stderr, "generating profile"
-    #genProfile(idset, profilepath, myconn)
+    
+    # query database for all items that passed all universal filters...
+    selResults = myconn.selQuery(queryItemsPassedUFltrs)
+    upass = db_utils.selColumnToSet(selResults)   # ...and convert to a set of IDs
+
+    passAll = getGrammItems(lt_id, upass, myconn)
+
+    failOne = getFailOneItems(lt_id, myconn)
+
+    idset = passAll.union(failOne)
+
+    # TODO: when generating my profile am I supposed to indicate within passes and fails?
+    genProfile(idset, profilepath, myconn)
     #genItemList(idset, itemListName, myconn)    # TODO: do i need to add this to main?
-    #myconn.close()                                          # TODO: close connections throughout code
+    myconn.close()                                          # TODO: close connections throughout code
