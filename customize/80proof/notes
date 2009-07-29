@@ -1310,3 +1310,62 @@ prefix won't take a stative verb as an input.  I'm not sure
 I'm looking at the right lex rule, though, so passing this
 one over to Safiyyah.
 
+Looking at overgeneration cases now:
+
+#Ex 23 demonstrates an ungrammatical use of the aorist tense.  The aorist tense has a zero marker that comes before the dynamic/finite marker.  Here the dynamic/finite marker is missing.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: word order
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba
+the-boy the-girl her-he-see
+The boy saw the girl.
+
+This will require some debugging of the lex rule dependencies,
+I think. (#24 in [incr tsdb()]).
+
+This one (#35 to [incr tsdb()]) seems to be related:
+
+#Ex 33 demonstrates ungrammatical negation of the aorist tense.  It is formed by placing "m-" before the verb stem and keeping the dynamic/finite marker.  Here the dynamic/finite marker is missing
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: neg
+at͡ʂʰkʷʰən atəpha dəjəbawajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-m-ba
+the-boy the-girl her-he-neg-see
+The boy did not see the girl.
+
+This one was because the morph was underconstrained:
+
+#Ex 50 demonstrates ungrammatical  verb subject agreement.  Third person masculine singular subject takes a second person plural agreement marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+jará atəpha dəʃʷəbajt
+jará a-təpha də-ʃʷə-ba-jt
+he the-girl her-you.pl-see-dynamic.finite
+He saw the girl.
+
+added this:
+
+      verb-slot1_morph5_feat1_name=pernum
+      verb-slot1_morph5_feat1_value=2plural
+      verb-slot1_morph5_feat1_head=subj
+
+      verb-slot3_morph5_feat1_name=pernum
+      verb-slot3_morph5_feat1_value=2plural
+      verb-slot3_morph5_feat1_head=obj
+
+      verb-slot4_morph5_feat1_name=pernum
+      verb-slot4_morph5_feat1_value=2plural
+      verb-slot4_morph5_feat1_head=subj
+
+Now 50 (aka 52) no longer parses.  (only one of those was relevant
+in this case, but they all needed it ;)
+
+Coverage: 30/35 85.7%
+Overgenerarion: 5/54 9.3%
+Error: 35

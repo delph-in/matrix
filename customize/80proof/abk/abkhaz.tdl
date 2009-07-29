@@ -1,6 +1,6 @@
 ;;; Grammar of Abkhaz
 ;;; created at:
-;;;     Wed Jul 29 23:16:13 UTC 2009
+;;;     Wed Jul 29 23:41:56 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -91,7 +91,8 @@ ergative-subj-marker-lex-rule := infl-add-only-no-ccont-ltol-rule & dynamic-tens
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM singular,
                                                                 GEND non-feminine ] ].
 
-2pl-erg-subj-marker-lex-rule := ergative-subj-marker-lex-rule.
+2pl-erg-subj-marker-lex-rule := ergative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2plural ].
 
 2fem-erg-subj-marker-lex-rule := ergative-subj-marker-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 2singular,
@@ -159,7 +160,8 @@ non-ergative-obj-marker-lex-rule := infl-add-only-no-ccont-ltol-rule &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM singular,
                                                                  GEND non-feminine ] ].
 
-2pl-non-erg-obj-marker-lex-rule := non-ergative-obj-marker-lex-rule.
+2pl-non-erg-obj-marker-lex-rule := non-ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2plural ].
 
 2fem-non-erg-obj-marker-lex-rule := non-ergative-obj-marker-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 2singular,
@@ -194,7 +196,8 @@ non-ergative-subj-marker-lex-rule := infl-add-only-no-ccont-ltol-rule & dynamic-
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM singular,
                                                                 GEND non-feminine ] ].
 
-2pl-non-erg-subj-marker-lex-rule := non-ergative-subj-marker-lex-rule & stative-subj-marker-lex-rule.
+2pl-non-erg-subj-marker-lex-rule := non-ergative-subj-marker-lex-rule & stative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2plural ].
 
 2fem-non-erg-subj-marker-lex-rule := non-ergative-subj-marker-lex-rule & stative-subj-marker-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 2singular,
