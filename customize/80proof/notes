@@ -1062,7 +1062,7 @@ t͡ʂʰkʷʰən-k a-təpha də-jə-ba-jt
 boy-a the-girl her-he-see-dynamic.finite
 A boy saw the girl.
 
-*** Not parsing, because the indefinite suffix isn't defined.
+Not parsing, because the indefinite suffix isn't defined.
 But the definite prefix is.  So maybe we can do an indefinite
 suffix, even if we can't get the meaning quite right.
 
@@ -1281,4 +1281,32 @@ Overgenerarion: 6/54 11.1%
 Error: 35
 
 
+#Ex 34 demonstrates ungrammatical negation of the aorist tense.  It is formed by placing "m-" before the verb stem and keeping the dynamic/finite marker.  Here the neg marker comes before the subject marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: neg
+at͡ʂʰkʷʰən atəpha dəjəbawajt
+a-t͡ʂʰkʷʰən a-təpha də-m-jə-ba-jt
+the-boy the-girl her-neg-he-see-jt
+The boy did not see the girl.
+
+The problem here is that the verb form is coming up as
+[INFLECTED -].  I suspect this might have something to
+do with the unusual order of affixes noted in the comment.
+
+#Ex 82 demonstrates an intransitive stative verb.  Stative verbs only have past, present, and future as finite tenses.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: tam
+atəpha dət͡ɕʷʰaw-p
+a-təpha də-t͡ɕʷʰa-w-p
+the-girl 3.human.sing-sleep-present.stative
+The girl is sleeping.
+
+The problem here seems to be that the lexical rule for the
+prefix won't take a stative verb as an input.  I'm not sure
+I'm looking at the right lex rule, though, so passing this
+one over to Safiyyah.
 
