@@ -1,6 +1,6 @@
 ;;; Grammar of Abkhaz
 ;;; created at:
-;;;     Wed Jul 29 23:41:56 UTC 2009
+;;;     Wed Jul 29 23:47:00 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -345,7 +345,7 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1singular ].
 
 1plural-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1st ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1plural_incl ].
 
 1pl-excl-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1plural_excl ].
