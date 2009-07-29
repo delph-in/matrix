@@ -711,7 +711,7 @@ a-mat-k?a  a-t͡ʂʰkʷʰən j-jə-ba-jt
 snake-pl  the-boy 3rd.pl-he-see-dynamic.finite
 The boy saw the snakes.
 
-Ex 69 demonstrates ungrammatical verb object agreement.  Plural non-human object takes singular human object marker.
+#Ex 69 demonstrates ungrammatical verb object agreement.  Plural non-human object takes singular human object marker.
 Source: author
 Vetted: f
 Judgment: u
@@ -861,7 +861,7 @@ a-təpha də-t͡ɕʷʰa-w+p-jt
 the-girl 3.human.sing-sleep-present.stative-dynamic.finite
 The girl is sleeping.
 
-Ex 83 demonstrates an intransitive stative verb.  Stative verbs only have past, present, and future as finite tenses.  Here the dynamic tense marker is incorrectly used instead of the stative tense marker.
+#Ex 83 demonstrates an intransitive stative verb.  Stative verbs only have past, present, and future as finite tenses.  Here the dynamic tense marker is incorrectly used instead of the stative tense marker.
 Source: author
 Vetted: f
 Judgment: u
@@ -871,7 +871,7 @@ a-təpha də-t͡ɕʷʰa-wa
 the-girl 3.human.sing-sleep-present.dynamic
 The girl is sleeping.
 
-Ex 84 demonstrates an intransitive stative verb.  Stative verbs only have past, present, and future as finite tenses.  Here the stative tense marker is missing
+#Ex 84 demonstrates an intransitive stative verb.  Stative verbs only have past, present, and future as finite tenses.  Here the stative tense marker is missing
 Source: author
 Vetted: f
 Judgment: u
@@ -881,7 +881,7 @@ a-təpha də-t͡ɕʷʰa
 the-girl 3.human.sing-sleep
 The girl is sleeping.
 
-Ex 85 demonstrates a past tense stative verb.  Stative verbs only have past, present, and future as finite tenses.  
+#Ex 85 demonstrates a past tense stative verb.  Stative verbs only have past, present, and future as finite tenses.  
 Source: author
 Vetted: f
 Judgment: u

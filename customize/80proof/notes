@@ -982,3 +982,65 @@ dog.abs bark-indic-3s
 The grammar thinks that qilut-vu-q is not fully inflected.  Apparently
 the same problem with 10.
 
+---
+abk:
+---
+
+Initial choices file customizes but creates a grammar that
+doesn't load:
+
+Unifications specified are invalid or do not unify
+Type 3SING-LEX-RULE has an invalid constraint specification
+Invalid type AORIST
+Unifications specified are invalid or do not unify
+Type AORIST-MARKER-LEX-RULE has an invalid constraint specification
+Invalid type AORIST
+Unifications specified are invalid or do not unify
+Type AORIST-NEGATIVE-MARKER-LEX-RULE has an invalid constraint specification
+Error: Problems in type file
+
+The problem with 3SING-LEX-RULE was several morphs with the name value
+"3sing", which despite belonging to different slots, ended up getting
+defined as the same type.
+
+    verb-slot1_morph1_name=3sing
+    verb-slot2_morph1_name=3sing
+    verb-slot3_morph1_name=3sing
+    verb-slot4_morph1_name=3sing
+    verb-slot11_morph1_name=3sing
+
+The problem with aorist was (apparently) that it had
+no supertype declared, which led to the system not defining
+it in the tdl at all:
+
+section=tense-aspect
+tense-definition=build
+  tense1_name=present
+    tense1_supertype1_name=tense
+  tense2_name=aorist
+  tense3_name=past
+    tense3_supertype1_name=tense
+  aspect1_name=indefinite
+    aspect1_supertype1_name=aspect
+  aspect2_name=habitual
+    aspect2_supertype1_name=aspect
+
+Added:
+
+    tense2_supertype1_name=tense
+
+Now the grmmar loads, but I get these warnings:
+
+WARNING: Rule `1SING-NON-ERG-SUBJ-MARKER-PREFIX' redefined.
+WARNING: Rule `1PL-NON-ERG-SUBJ-MARKER-PREFIX' redefined.
+WARNING: Rule `2SING-MASC-NON-ERG-SUBJ-MARKER-PREFIX' redefined.
+WARNING: Rule `2PL-NON-ERG-SUBJ-MARKER-PREFIX' redefined.
+WARNING: Rule `2FEM-NON-ERG-SUBJ-MARKER-PREFIX' redefined.
+WARNING: Rule `3SING-FEM-NON-ERG-SUBJ-MARKER-PREFIX' redefined.
+WARNING: Rule `3PL-NON-ERG-SUBJ-MARKER-PREFIX' redefined.
+
+Initial results:
+
+Coverage 25/35 71.4%
+Overgeneration 6/54 11.1%
+Error 43
