@@ -26,4 +26,5 @@
  ((:path . "mal") (:content . "80proof test suite: Malayalam."))
  ((:path . "nyn") (:content . "80proof test suite: Nkore-Kiga."))
  ((:path . "kal") (:content . "80proof test suite: West Greenlandic."))
+ ((:path . "abk") (:content . "80proof test suite: Abkhaz."))
  )
