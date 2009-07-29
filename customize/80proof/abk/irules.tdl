@@ -13,6 +13,11 @@ human-plural-suffix :=
 human-plural-lex-rule.
 
 
+indef-marker-suffix :=
+%suffix (* -k)
+indef-marker-lex-rule.
+
+
 3sing-erg-subj-prefix :=
 %prefix (* jə-)
 3sing-erg-subj-lex-rule.

@@ -1222,5 +1222,63 @@ Coverage: 29/35 82.9%
 Overgeneration: 6/54 11.1%
 Error: 36
 
+*** This one is giving an error:
+
+#Ex 66 demonstrates verb object agreement. The normal order of subject and object are inverted to avoid the 3rd non-human sing/3rd plural marker from occurring directly after the object.  When that happens the object marker is dropped.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+a-mat at͡ʂʰkʷʰən j?j?bajt
+a-mat a-t͡ʂʰkʷʰən  j-jə-ba-jt
+the- snake the-boy it-he-see-dynamic.finite
+The boy saw the snake.
+
+... but I don't understand how the comment relates to the
+example, so I'm leaving this one for Safiyyah.
+
+*** This one seems related:
+
+#Ex 67 demonstrates verb object agreement
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+atəphat?sa at͡ʂʰkʷʰən j?j?bajt
+a-təpha-t͡ʂʰa a-t͡ʂʰkʷʰən j-jə-ba-jt
+the-girl -pl the-boy 3rd.pl-he-see-dynamic.finite
+The boy saw the girls.
+
+I think that we probably need separate slots for these markers,
+but that's a job for Safiyyah :)
+
+Same thing here:
+
+#Ex 68 demonstrates verb object agreement. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+a-mat-k?a at͡ʂʰkʷʰən  jəjəbajt
+a-mat-kʷʰa  a-t͡ʂʰkʷʰən j-jə-ba-jt
+snake-pl  the-boy 3rd.pl-he-see-dynamic.finite
+The boy saw the snakes.
+
+Added indefinite marker (for #7):
+
+  noun-slot3_name=indef
+  noun-slot3_order=after
+    noun-slot3_input1_type=noun1
+    noun-slot3_input2_type=noun2
+    noun-slot3_input3_type=noun3
+    noun-slot3_morph1_name=indef-marker
+    noun-slot3_morph1_orth=-k
+    noun-slot3_constraint1_type=Cannot co-occur
+    noun-slot3_constraint1_other-slot=noun-slot1
+
+Coverage: 30/35 85.7%
+Overgenerarion: 6/54 11.1%
+Error: 35
+
 
 

@@ -1,22 +1,22 @@
 ;;; Grammar of Abkhaz
 ;;; created at:
-;;;     Wed Jul 29 23:07:14 UTC 2009
+;;;     Wed Jul 29 23:16:13 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
 determiner-rule-dtr := avm.
 
-masc-noun-lex := determiner-rule-dtr & noun-lex &
+masc-noun-lex := determiner-rule-dtr & indef-rule-dtr & noun-lex &
   [ INFLECTED -,
     SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND masculine,
                                        PERNUM 3rd ] ].
 
-fem-noun-lex := determiner-rule-dtr & noun-lex &
+fem-noun-lex := determiner-rule-dtr & indef-rule-dtr & noun-lex &
   [ INFLECTED -,
     SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND feminine,
                                        PERNUM 3rd ] ].
 
-neuter-noun-lex := determiner-rule-dtr & noun-lex &
+neuter-noun-lex := determiner-rule-dtr & indef-rule-dtr & noun-lex &
   [ INFLECTED -,
     SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND non-human,
                                        PERNUM 3rd ] ].
@@ -43,6 +43,15 @@ human-plural-lex-rule := infl-ltow-rule & number-marker-lex-rule &
 
 singular-lex-rule := const-ltow-rule & number-marker-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM singular ].
+
+indef-rule-dtr := avm.
+
+indef-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
+  [ TRACK #track,
+    DTR indef-rule-dtr &
+        [ TRACK #track ] ].
+
+indef-marker-lex-rule := indef-lex-rule.
 
 ergative-subj-marker-rule-dtr := avm.
 
