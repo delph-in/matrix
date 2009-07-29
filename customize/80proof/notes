@@ -1369,3 +1369,32 @@ in this case, but they all needed it ;)
 Coverage: 30/35 85.7%
 Overgenerarion: 5/54 9.3%
 Error: 35
+
+This one was overgenerating:
+
+#Ex 56 demonstrates ungrammatical verb subject agreement.  First person plural subject takes a third person plural agreement marker
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+hará atəpha dərəbajt
+hará a-təpha də-r-ba-jt
+we.incl the-girl her-they-see-dynamic.finite
+We saw the girl.
+
+
+... because of an (apparently) underspecified
+feature value for pernum on the noun:
+
+    noun5_feat1_value=1st, 1plural_incl
+
+change to:
+
+    noun5_feat1_value=1plural_incl
+
+That fixed #76 as well.
+
+Coverage: 30/35 85.7%
+Overgenerarion: 3/54 5.6%
+Error: 35
+
