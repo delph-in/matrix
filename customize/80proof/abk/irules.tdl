@@ -1,0 +1,272 @@
+definite-marker-prefix :=
+%prefix (* a-)
+definite-marker-lex-rule.
+
+
+non-human-plural-suffix :=
+%suffix (* -kʷʰa)
+non-human-plural-lex-rule.
+
+
+human-plural-suffix :=
+%suffix (* -t͡ʂʰa)
+human-plural-lex-rule.
+
+
+3sing-erg-subj-prefix :=
+%prefix (* jə-)
+3sing-erg-subj-lex-rule.
+
+
+1sing-erg-subj-marker-prefix :=
+%prefix (* s-)
+1sing-erg-subj-marker-lex-rule.
+
+
+1pl-erg-subj-marker-prefix :=
+%prefix (* h-)
+1pl-erg-subj-marker-lex-rule.
+
+
+2sing-masc-erg-subj-marker-prefix :=
+%prefix (* w-)
+2sing-masc-erg-subj-marker-lex-rule.
+
+
+2pl-erg-subj-marker-prefix :=
+%prefix (* ʃʷə-)
+2pl-erg-subj-marker-lex-rule.
+
+
+2fem-erg-subj-marker-prefix :=
+%prefix (* b-)
+2fem-erg-subj-marker-lex-rule.
+
+
+3sing-fem-erg-subj-marker-prefix :=
+%prefix (* lə-)
+3sing-fem-erg-subj-marker-lex-rule.
+
+
+3pl-erg-subj-marker-prefix :=
+%prefix (* rə-)
+3pl-erg-subj-marker-lex-rule.
+
+
+3sing-neut-subj-marker-prefix :=
+%prefix (* a-)
+3sing-neut-subj-marker-lex-rule.
+
+
+3sing-erg-obj-prefix :=
+%prefix (* jə-)
+3sing-erg-obj-lex-rule.
+
+
+1sing-erg-obj-marker-prefix :=
+%prefix (* s-)
+1sing-erg-obj-marker-lex-rule.
+
+
+1pl-erg-obj-marker-prefix :=
+%prefix (* h-)
+1pl-erg-obj-marker-lex-rule.
+
+
+2sing-masc-erg-obj-marker-prefix :=
+%prefix (* w-)
+2sing-masc-erg-obj-marker-lex-rule.
+
+
+2pl-erg-obj-marker-prefix :=
+%prefix (* ʃʷə-)
+2pl-erg-obj-marker-lex-rule.
+
+
+2fem-erg-obj-marker-prefix :=
+%prefix (* b-)
+2fem-erg-obj-marker-lex-rule.
+
+
+3sing-fem-erg-obj-marker-prefix :=
+%prefix (* də-)
+3sing-fem-erg-obj-marker-lex-rule.
+
+
+3pl-erg-obj-marker-prefix :=
+%prefix (* jə-)
+3pl-erg-obj-marker-lex-rule.
+
+
+3sing-non-erg-obj-prefix :=
+%prefix (* jə-)
+3sing-non-erg-obj-lex-rule.
+
+
+1sing-non-erg-obj-marker-prefix :=
+%prefix (* s-)
+1sing-non-erg-obj-marker-lex-rule.
+
+
+1pl-non-erg-obj-marker-prefix :=
+%prefix (* h-)
+1pl-non-erg-obj-marker-lex-rule.
+
+
+2sing-masc-non-erg-obj-marker-prefix :=
+%prefix (* w-)
+2sing-masc-non-erg-obj-marker-lex-rule.
+
+
+2pl-non-erg-obj-marker-prefix :=
+%prefix (* ʃʷə-)
+2pl-non-erg-obj-marker-lex-rule.
+
+
+2fem-non-erg-obj-marker-prefix :=
+%prefix (* b-)
+2fem-non-erg-obj-marker-lex-rule.
+
+
+3sing-fem-non-erg-obj-marker-prefix :=
+%prefix (* lə-)
+3sing-fem-non-erg-obj-marker-lex-rule.
+
+
+3pl-non-erg-obj-marker-prefix :=
+%prefix (* rə-)
+3pl-non-erg-obj-marker-lex-rule.
+
+
+3sing-neut-obj-marker-prefix :=
+%prefix (* a-)
+3sing-neut-obj-marker-lex-rule.
+
+
+3sing-non-erg-subj-prefix :=
+%prefix (* jə-)
+3sing-non-erg-subj-lex-rule.
+
+
+1sing-non-erg-subj-marker-prefix :=
+%prefix (* s-)
+1sing-non-erg-subj-marker-lex-rule.
+
+
+1pl-non-erg-subj-marker-prefix :=
+%prefix (* h-)
+1pl-non-erg-subj-marker-lex-rule.
+
+
+2sing-masc-non-erg-subj-marker-prefix :=
+%prefix (* w-)
+2sing-masc-non-erg-subj-marker-lex-rule.
+
+
+2pl-non-erg-subj-marker-prefix :=
+%prefix (* ʃʷə-)
+2pl-non-erg-subj-marker-lex-rule.
+
+
+2fem-non-erg-subj-marker-prefix :=
+%prefix (* b-)
+2fem-non-erg-subj-marker-lex-rule.
+
+
+3sing-fem-non-erg-subj-marker-prefix :=
+%prefix (* də-)
+3sing-fem-non-erg-subj-marker-lex-rule.
+
+
+3pl-non-erg-subj-marker-prefix :=
+%prefix (* jə-)
+3pl-non-erg-subj-marker-lex-rule.
+
+
+present-marker-suffix :=
+%suffix (* -wa)
+present-marker-lex-rule.
+
+
+habitual-aspect-marker-suffix :=
+%suffix (* -la)
+habitual-aspect-marker-lex-rule.
+
+
+dynamic-finite-suffix-suffix :=
+%suffix (* -jt)
+dynamic-finite-suffix-lex-rule.
+
+
+question-affix-suffix :=
+%suffix (* -ma)
+question-affix-lex-rule.
+
+
+aorist-negative-marker-prefix :=
+%prefix (* m-)
+aorist-negative-marker-lex-rule.
+
+
+present-negative-marker-suffix :=
+%suffix (* -m)
+present-negative-marker-lex-rule.
+
+
+3sing-stat-subj-prefix :=
+%prefix (* jə-)
+3sing-stat-subj-lex-rule.
+
+
+1sing-non-erg-subj-marker-prefix :=
+%prefix (* s-)
+1sing-non-erg-subj-marker-lex-rule.
+
+
+1pl-non-erg-subj-marker-prefix :=
+%prefix (* h-)
+1pl-non-erg-subj-marker-lex-rule.
+
+
+2sing-masc-non-erg-subj-marker-prefix :=
+%prefix (* w-)
+2sing-masc-non-erg-subj-marker-lex-rule.
+
+
+2pl-non-erg-subj-marker-prefix :=
+%prefix (* ʃʷə-)
+2pl-non-erg-subj-marker-lex-rule.
+
+
+2fem-non-erg-subj-marker-prefix :=
+%prefix (* b-)
+2fem-non-erg-subj-marker-lex-rule.
+
+
+3sing-fem-non-erg-subj-marker-prefix :=
+%prefix (* də-)
+3sing-fem-non-erg-subj-marker-lex-rule.
+
+
+3pl-non-erg-subj-marker-prefix :=
+%prefix (* jə-)
+3pl-non-erg-subj-marker-lex-rule.
+
+
+stative-present-marker-suffix :=
+%suffix (* -w+p)
+stative-present-marker-lex-rule.
+
+
+stative-past-marker-suffix :=
+%suffix (* -n)
+stative-past-marker-lex-rule.
+
+
+n1-bottom :=
+  %suffix (* -j)
+  n1-bottom-coord-rule.
+
+n1-left :=
+  %suffix (* -j)
+  n1-left-coord-rule.

@@ -1,0 +1,510 @@
+;;; Grammar of Abkhaz
+;;; created at:
+;;;     Wed Jul 29 21:32:20 UTC 2009
+;;; based on Matrix customization system version of:
+;;;     unknown time
+
+determiner-rule-dtr := avm.
+
+masc-noun-lex := determiner-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND masculine,
+                                       PERNUM 3rd ] ].
+
+fem-noun-lex := determiner-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND feminine,
+                                       PERNUM 3rd ] ].
+
+neuter-noun-lex := determiner-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND non-human,
+                                       PERNUM 3rd ] ].
+
+determiner-lex-rule := infl-add-only-no-ccont-ltol-rule &
+  [ TRACK #track,
+    DTR determiner-rule-dtr &
+        [ TRACK #track ] ].
+
+definite-marker-lex-rule := determiner-lex-rule.
+
+number-marker-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
+  [ TRACK #track,
+    DTR determiner-lex-rule &
+        [ TRACK #track ] ].
+
+non-human-plural-lex-rule := infl-ltow-rule & number-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND non-human,
+                                       PERNUM plural ] ].
+
+human-plural-lex-rule := infl-ltow-rule & number-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM plural,
+                                       GEND human ] ].
+
+singular-lex-rule := const-ltow-rule & number-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM singular ].
+
+ergative-subj-marker-rule-dtr := avm.
+
+aorist-negative-lex-rule := ergative-subj-marker-rule-dtr & non-ergative-obj-marker-rule-dtr & infl-cont-change-only-ltol-rule &
+  [ TRACK [ T-dynamic-tense-marker -,
+            T-aorist-negative - ],
+    DTR aorist-negative-rule-dtr &
+        [ TRACK [ T-dynamic-tense-marker +,
+                  T-aorist-negative + ] ] ].
+
+dynamic-ergative-verb-lex := ergative-subj-marker-rule-dtr & non-ergative-obj-marker-rule-dtr & dynamic-tense-marker-rule-dtr & aspect-marker-rule-dtr & aorist-negative-rule-dtr & transitive-verb-lex &
+  [ TRACK [ T-dynamic-tense-marker +,
+            T-aorist-negative + ],
+    INFLECTED - ].
+
+dynamic-non-ergative-verb-lex := ergative-subj-marker-rule-dtr & non-ergative-obj-marker-rule-dtr & dynamic-tense-marker-rule-dtr & aspect-marker-rule-dtr & aorist-negative-rule-dtr & transitive-verb-lex &
+  [ TRACK [ T-dynamic-tense-marker +,
+            T-aorist-negative + ],
+    INFLECTED - ].
+
+ergative-subj-marker-lex-rule := infl-add-only-no-ccont-ltol-rule & dynamic-tense-marker-rule-dtr &
+  [ TRACK #track,
+    DTR ergative-subj-marker-rule-dtr &
+        [ TRACK #track ] ].
+
+3sing-erg-subj-lex-rule := ergative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3singular,
+                                                                GEND masculine ] ].
+
+1sing-erg-subj-marker-lex-rule := ergative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1singular ].
+
+1pl-erg-subj-marker-lex-rule := ergative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1plural ].
+
+2sing-masc-erg-subj-marker-lex-rule := ergative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM singular,
+                                                                GEND non-feminine ] ].
+
+2pl-erg-subj-marker-lex-rule := ergative-subj-marker-lex-rule.
+
+2fem-erg-subj-marker-lex-rule := ergative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 2singular,
+                                                                GEND feminine ] ].
+
+3sing-fem-erg-subj-marker-lex-rule := ergative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.GEND feminine ].
+
+3pl-erg-subj-marker-lex-rule := ergative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3plural ].
+
+3sing-neut-subj-marker-lex-rule := ergative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3singular,
+                                                                GEND non-human ] ].
+
+ergative-obj-marker-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
+  [ TRACK #track,
+    DTR ergative-subj-marker-lex-rule &
+        [ TRACK #track ] ].
+
+3sing-erg-obj-lex-rule := ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3singular,
+                                                                 GEND non-human ] ].
+
+1sing-erg-obj-marker-lex-rule := ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1singular ].
+
+1pl-erg-obj-marker-lex-rule := ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1plural ].
+
+2sing-masc-erg-obj-marker-lex-rule := ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM singular,
+                                                                 GEND non-feminine ] ].
+
+2pl-erg-obj-marker-lex-rule := ergative-obj-marker-lex-rule.
+
+2fem-erg-obj-marker-lex-rule := ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 2singular,
+                                                                 GEND feminine ] ].
+
+3sing-fem-erg-obj-marker-lex-rule := ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.GEND human ].
+
+3pl-erg-obj-marker-lex-rule := ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3plural ].
+
+non-ergative-obj-marker-rule-dtr := avm.
+
+non-ergative-obj-marker-lex-rule := infl-add-only-no-ccont-ltol-rule &
+  [ TRACK #track,
+    DTR non-ergative-obj-marker-rule-dtr &
+        [ TRACK #track ] ].
+
+3sing-non-erg-obj-lex-rule := non-ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3singular,
+                                                                 GEND masculine ] ].
+
+1sing-non-erg-obj-marker-lex-rule := non-ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1singular ].
+
+1pl-non-erg-obj-marker-lex-rule := non-ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1plural ].
+
+2sing-masc-non-erg-obj-marker-lex-rule := non-ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM singular,
+                                                                 GEND non-feminine ] ].
+
+2pl-non-erg-obj-marker-lex-rule := non-ergative-obj-marker-lex-rule.
+
+2fem-non-erg-obj-marker-lex-rule := non-ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 2singular,
+                                                                 GEND feminine ] ].
+
+3sing-fem-non-erg-obj-marker-lex-rule := non-ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.GEND feminine ].
+
+3pl-non-erg-obj-marker-lex-rule := non-ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3plural ].
+
+3sing-neut-obj-marker-lex-rule := non-ergative-obj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3singular,
+                                                                 GEND non-human ] ].
+
+non-ergative-subj-marker-lex-rule := infl-add-only-no-ccont-ltol-rule & dynamic-tense-marker-rule-dtr &
+  [ TRACK #track,
+    DTR non-ergative-obj-marker-lex-rule &
+        [ TRACK #track ] ].
+
+3sing-non-erg-subj-lex-rule := non-ergative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3singular,
+                                                                GEND non-human ] ].
+
+1sing-non-erg-subj-marker-lex-rule := non-ergative-subj-marker-lex-rule & stative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1singular ].
+
+1pl-non-erg-subj-marker-lex-rule := non-ergative-subj-marker-lex-rule & stative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1plural ].
+
+2sing-masc-non-erg-subj-marker-lex-rule := non-ergative-subj-marker-lex-rule & stative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM singular,
+                                                                GEND non-feminine ] ].
+
+2pl-non-erg-subj-marker-lex-rule := non-ergative-subj-marker-lex-rule & stative-subj-marker-lex-rule.
+
+2fem-non-erg-subj-marker-lex-rule := non-ergative-subj-marker-lex-rule & stative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 2singular,
+                                                                GEND feminine ] ].
+
+3sing-fem-non-erg-subj-marker-lex-rule := non-ergative-subj-marker-lex-rule & stative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.GEND human ].
+
+3pl-non-erg-subj-marker-lex-rule := non-ergative-subj-marker-lex-rule & stative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3plural ].
+
+dynamic-tense-marker-rule-dtr := avm.
+
+aspect-marker-lex-rule := dynamic-tense-marker-rule-dtr & infl-add-only-no-ccont-ltol-rule &
+  [ TRACK #track,
+    DTR aspect-marker-rule-dtr &
+        [ TRACK #track ] ].
+
+dynamic-tense-marker-lex-rule := lexeme-to-lexeme-rule & add-only-no-ccont-rule &
+  [ TRACK [ T-dynamic-tense-marker -,
+            T-aorist-negative - ],
+    DTR dynamic-tense-marker-rule-dtr &
+        [ TRACK [ T-dynamic-tense-marker +,
+                  T-aorist-negative + ] ] ].
+
+present-marker-lex-rule := infl-ltol-rule & dynamic-tense-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE present ].
+
+aorist-marker-lex-rule := const-ltol-rule & dynamic-tense-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E [ TENSE aorist,
+                                     ASPECT indefinite ] ].
+
+track := avm.
+
+word-or-lexrule :+ [ TRACK track ].
+
+track :+ [ T-dynamic-tense-marker bool,
+    T-aorist-negative bool ].
+
+aspect-marker-rule-dtr := avm.
+
+habitual-aspect-marker-lex-rule := aspect-marker-lex-rule.
+
+dynamic-finite-marker-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
+  [ TRACK #track,
+    DTR dynamic-tense-marker-lex-rule &
+        [ TRACK #track ] ].
+
+dynamic-finite-suffix-lex-rule := dynamic-finite-marker-lex-rule.
+
+question-marker-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
+  [ TRACK #track,
+    DTR dynamic-tense-marker-lex-rule &
+        [ TRACK #track ] ].
+
+question-affix-lex-rule := question-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].
+
+aorist-negative-rule-dtr := avm.
+
+; This lexical rule adds the neg_r_rel to the verb's
+; 	          RELS list.  It is instantiated by a spelling-changing
+; 	          rule as specified in irules.tdl.
+
+aorist-negative-marker-lex-rule := aorist-negative-lex-rule &
+  [ C-CONT [ HOOK [ XARG #xarg,
+                    LTOP #ltop,
+                    INDEX #ind ],
+             RELS <! event-relation &
+                     [ PRED "_neg_r_rel",
+                       LBL #ltop,
+                       ARG1 #harg ] !>,
+             HCONS <! qeq &
+                      [ HARG #harg,
+                        LARG #larg ] !> ],
+    DTR.SYNSEM [ LKEYS #lkeys,
+                 LOCAL [ CONT.HOOK [ XARG #xarg,
+                                     INDEX #ind,
+                                     LTOP #larg ],
+                         CAT.HEAD verb ] ],
+    SYNSEM [ LKEYS #lkeys,
+             LOCAL.CONT.HOOK.INDEX.E.TENSE aorist ] ].
+
+; This lexical rule adds the neg_r_rel to the verb's
+; 	          RELS list.  It is instantiated by a spelling-changing
+; 	          rule as specified in irules.tdl.
+
+present-negative-marker-lex-rule := infl-ltow-rule & cont-change-only-lex-rule &
+  [ C-CONT [ HOOK [ XARG #xarg,
+                    LTOP #ltop,
+                    INDEX #ind ],
+             RELS <! event-relation &
+                     [ PRED "_neg_r_rel",
+                       LBL #ltop,
+                       ARG1 #harg ] !>,
+             HCONS <! qeq &
+                      [ HARG #harg,
+                        LARG #larg ] !> ],
+    SYNSEM [ LKEYS #lkeys,
+             LOCAL.CONT.HOOK.INDEX.E.TENSE present ],
+    TRACK #track,
+    DTR dynamic-tense-marker-lex-rule &
+        [ SYNSEM [ LKEYS #lkeys,
+                   LOCAL [ CONT.HOOK [ XARG #xarg,
+                                       INDEX #ind,
+                                       LTOP #larg ],
+                           CAT.HEAD verb ] ],
+          TRACK #track ] ].
+
+stative-subj-marker-lex-rule := infl-add-only-no-ccont-ltol-rule &
+  [ TRACK #track,
+    DTR non-ergative-obj-marker-lex-rule &
+        [ TRACK #track ] ].
+
+3sing-stat-subj-lex-rule := stative-subj-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3singular,
+                                                                GEND non-human ] ].
+
+stative-tense-marker-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
+  [ TRACK #track,
+    DTR stative-subj-marker-lex-rule &
+        [ TRACK #track ] ].
+
+stative-present-marker-lex-rule := stative-tense-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE present ].
+
+stative-past-marker-lex-rule := stative-tense-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE past ].
+
+;;; Lexical types
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
+  [ ARG-ST < #spr >,
+    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
+                           SUBJ < >,
+                           SPEC < >,
+                           SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det,
+                                   OPT + ] > ] ].
+
+1sing-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1singular ].
+
+1plural-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1st ].
+
+1pl-excl-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1plural_excl ].
+
+2sing-masc-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 2singular,
+                                       GEND masculine ] ].
+
+2pl-incl-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2plural ].
+
+2pl-excl-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2plural ].
+
+2sing-fem-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 2singular,
+                                       GEND feminine ] ].
+
+3sing-masc-neut-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3singular,
+                                       GEND non-feminine ] ].
+
+3sing-fem-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3singular,
+                                       GEND feminine ] ].
+
+3pl-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3plural ].
+
+;;; Verbs
+
+verb-lex := basic-verb-lex &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+                             SPEC < >,
+                             SUBJ < #subj > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT.VAL [ SPR < >,
+                                     COMPS < > ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+
+intransitive-verb-lex := verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].
+
+transitive-verb-lex := verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] > ].
+
+stative-verb-lex := intransitive-verb-lex.
+
+png :+ [ PERNUM pernum,
+    GEND gender ].
+
+;;; Pernum
+
+pernum := *top*.
+singular := pernum.
+plural := pernum.
+1st := pernum.
+2nd := pernum.
+3rd := pernum.
+1singular := 1st & singular.
+2singular := 2nd & singular.
+3singular := 3rd & singular.
+1plural := 1st & plural.
+1plural_incl := 1plural.
+1plural_excl := 1plural.
+2plural := 2nd & plural.
+3plural := 3rd & plural.
+
+;;; Gender
+
+gender := *top*.
+human := gender.
+masculine := human & non-feminine.
+feminine := human.
+non-feminine := gender.
+non-human := non-feminine.
+
+;;; Tense
+
+present := tense.
+aorist := tense.
+past := tense.
+
+;;; Aspect
+
+indefinite := aspect.
+habitual := aspect.
+
+;;; Phrasal types
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+; We can't just use the V-final and V-initial word
+; order modules together to get a good free word order
+; module. The root of the problem seems to be that we
+; need the subject to be able to attach inside the
+; object(s) for VSO and OSV, but at the same time, we
+; don't want complete flexibility on order of attachment
+; when the verb is in the middle -- that would give
+; spurious ambiguity.  This solution adopts the xmod
+; hierarchy to enforce right-first attachment.  That is,
+; all arguments appears to the right of the verb must
+; attach before all arguments appearing to the left.  The
+; linguistic prediction of this analysis is that free
+; word order languages do not have a consistent VP
+; consituent, even when the verb and object are adjacent
+; (OV order).  Using a separate feature for tracking
+; argument attachment (as opposed to modifier
+; attachment).  We might be able to collapse these one
+; day, but that's not obvious.
+
+synsem :+ [ ATTACH xmod ].
+
+head-initial-head-nexus := head-initial &
+  [ SYNSEM.ATTACH lmod,
+    HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].
+
+head-final-head-nexus := head-final &
+  [ SYNSEM.ATTACH rmod ].
+
+; We'll need to add identification of ATTACH between
+; mother and head-daughter for all other kinds of phrases
+; if we do this.  Just for illustration, I'm putting it
+; in for head-adjunct phrases here:
+
+head-mod-phrase :+ [ SYNSEM.ATTACH #attach,
+    HEAD-DTR.SYNSEM.ATTACH #attach ].
+
+head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.
+
+subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.
+
+comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.
+
+head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.
+
+comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
+
+;;; Coordination Strategy 1
+
+n1-top-coord-rule := basic-n-top-coord-rule & omni-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+n1-mid-coord-rule := basic-n-mid-coord-rule & omni-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+n1-bottom-coord-rule := infl-bottom-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1",
+    SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel",
+    DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
+
+n1-left-coord-rule := infl-left-coord-rule & n-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel" ].

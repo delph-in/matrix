@@ -1,0 +1,67 @@
+;;; Nouns
+
+t͡ʂʰkʷʰən := masc-noun-lex &
+  [ STEM < "t͡ʂʰkʷʰən" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_boy_n_rel" ].
+
+təpha := fem-noun-lex &
+  [ STEM < "təpha" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_girl_n_rel" ].
+
+mat := neuter-noun-lex &
+  [ STEM < "mat" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_snake_n_rel" ].
+
+sará := 1sing-noun-lex &
+  [ STEM < "sará" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+hará := 1plural-noun-lex &
+  [ STEM < "hará" >,
+    SYNSEM.LKEYS.KEYREL.PRED "pron_n_rel" ].
+
+hart := 1pl-excl-noun-lex &
+  [ STEM < "hart" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+wará := 2sing-masc-noun-lex &
+  [ STEM < "wará" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+ʃʷará := 2pl-incl-noun-lex &
+  [ STEM < "ʃʷará" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+ʃʷart := 2pl-excl-noun-lex &
+  [ STEM < "ʃʷart" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+bará := 2sing-fem-noun-lex &
+  [ STEM < "bará" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+jará := 3sing-masc-neut-noun-lex &
+  [ STEM < "jará" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+lará := 3sing-fem-noun-lex &
+  [ STEM < "lará" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+dará := 3pl-noun-lex &
+  [ STEM < "dará" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+;;; Verbs
+
+t͡ɕʷʰa := stative-verb-lex &
+  [ STEM < "t͡ɕʷʰa" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sleep_v_rel" ].
+
+ba := dynamic-ergative-verb-lex &
+  [ STEM < "ba" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ].
+
+sə := dynamic-non-ergative-verb-lex &
+  [ STEM < "sə" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_hit_v_rel" ].
