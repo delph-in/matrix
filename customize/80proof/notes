@@ -1158,5 +1158,49 @@ Coverage: 26/35 74.3%
 Overgeneration: 6/54 11.1%
 Error: 42
 
+Corrected ? to another character in these two examples:
+
+#Ex 42 demonstrates verb subject agreement.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+bará atəpha dəbəbajt
+bará a-təpha də-b-ba-jt
+you.fem the-girl her-you.fem-see-dynamic.finite
+You saw the girl.
+
+
+#Ex 67 demonstrates verb object agreement
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+atəphat?sa at͡ʂʰkʷʰən j?j?bajt
+a-təpha-t͡ʂʰa a-t͡ʂʰkʷʰən j-jə-ba-jt
+the-girl -pl the-boy 3rd.pl-he-see-dynamic.finite
+The boy saw the girls.
+
+That fixed 42, but not 67 (aka 69).
+
+Changed #68 (aka 70) similarly:
+
+#Ex 68 demonstrates verb object agreement. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+a-mat-k?a at͡ʂʰkʷʰən  jəjəbajt
+a-mat-kʷʰa  a-t͡ʂʰkʷʰən j-jə-ba-jt
+snake-pl  the-boy 3rd.pl-he-see-dynamic.finite
+The boy saw the snakes.
+
+Changed +p to -p in choices file and item (affects 84 & 85).
+
+Coverage: 27/35 77.1%
+Overgeneration: 6/54 11.1%
+Error: 40
+
+
 
 

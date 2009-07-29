@@ -254,7 +254,7 @@ present-negative-marker-lex-rule.
 
 
 stative-present-marker-suffix :=
-%suffix (* -w+p)
+%suffix (* -w-p)
 stative-present-marker-lex-rule.
 
 
