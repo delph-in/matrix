@@ -175,10 +175,12 @@ unexpressed := synsem-min &
 
 unexpressed-reg := unexpressed & non-canonical.
 
-anti-synsem := unexpressed &
-"A contrasting type to ordinary synsems (expressed
-and unexpressed) which is sometimes useful.  No longer
-explicitly used in the Matrix.".
+
+; A contrasting type to ordinary synsems (expressed
+; and unexpressed) which is sometimes useful.  No longer
+; explicitly used in the Matrix.
+
+anti-synsem := unexpressed.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LOCAL & NON-LOCAL values
@@ -462,10 +464,12 @@ qeq := avm &
   [ HARG handle,
     LARG handle ].        
 
+
+; "INSTLOC is used by generator to index input.  Changed from
+; value instloc to value string in July 2004.  The grammar
+; should never need to make reference to it beyond this." 
+
 semarg := avm &
-"INSTLOC is used by generator to index input.  Changed from
-value instloc to value string in July 2004.  The grammar
-should never need to make reference to it beyond this." 
   [ INSTLOC string ].
 
 handle := semarg.
@@ -2193,10 +2197,10 @@ basic-zero-arg := lex-item &
 zero-arg-nonslash := lex-item &
   [ SYNSEM.NON-LOCAL.SLASH 0-dlist ].
 
-zero-arg-nonrel : = lex-item &
+zero-arg-nonrel := lex-item &
   [ SYNSEM.NON-LOCAL.REL 0-dlist ].
 
-zero-arg-nonque : = lex-item &
+zero-arg-nonque := lex-item &
   [ SYNSEM.NON-LOCAL.QUE 0-dlist ].
 
 ; Non-argument taking items which introduce no non-local values.

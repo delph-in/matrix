@@ -9,8 +9,9 @@
 ;; type hierarchy
 ;;
 
+:include "head-types".
 :include "matrix".
-:include "my_language".
+
 
 :end :type.
 

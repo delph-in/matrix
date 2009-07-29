@@ -226,7 +226,7 @@ def validate_word_order():
     add_err('v-cluster','If your auxiliary takes a vp-complement, we assume it does not form verbal clusters.')
 
   if (((wo == 'vso' and co == 'after') or (wo == 'osv' and co == 'before')) and ac == 'vp'):
-    add_err('aux-comp-order','This auxiliary-complement order is not compatible with your general word order and auxiliary complement type vp.')
+    add_err('aux-comp','The general word order and aux-comp order are not compatible with vp complements.')
 
   if wo == 'v2' and ch.get('v-cluster') == 'yes':
     add_err('v-cluster','Sorry, but verbal clusters have not been implemented yet for v2 languages. Please answer "no" to this question.') 

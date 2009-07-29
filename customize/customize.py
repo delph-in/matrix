@@ -4739,6 +4739,26 @@ def customize_test_sentences(matrix_path):
   except:
     pass
 
+######################################################################
+# customize_pettdl()
+#
+
+def customize_pettdl(matrix_path):
+  try:
+    p_in = open('matrix-core/pet.tdl', 'r')
+    lines = p_in.readlines()
+    p_in.close()
+    p_out = open(matrix_path + 'pet.tdl', 'w')
+    for l in lines:
+      l = l.strip()
+      p_out.write(l + '\n')
+      if l == ':include "matrix".':
+        myl = ch.get('language').lower()
+        p_out.write(':include "' + myl + '".\n')
+    p_out.close()
+  except:
+    pass
+
 
 ######################################################################
 # customize_roots()
@@ -4924,6 +4944,7 @@ def customize_matrix(path, arch_type):
   customize_yesno_questions()
   customize_arg_op()
   customize_test_sentences(matrix_path)
+  customize_pettdl(matrix_path)
   customize_roots()
 
   # Save the output files
