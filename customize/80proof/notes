@@ -1039,8 +1039,124 @@ WARNING: Rule `2FEM-NON-ERG-SUBJ-MARKER-PREFIX' redefined.
 WARNING: Rule `3SING-FEM-NON-ERG-SUBJ-MARKER-PREFIX' redefined.
 WARNING: Rule `3PL-NON-ERG-SUBJ-MARKER-PREFIX' redefined.
 
+These warnings are because the irules.tdl file contains duplicate
+entries for each of the above rules.  The entries are exact
+duplicates, so there is no harm done wrt to parsing, but it is
+definitely a bug somewhere.
+
 Initial results:
 
 Coverage 25/35 71.4%
 Overgeneration 6/54 11.1%
 Error 43
+
+Error analysis:
+
+#Ex 7 demonstrates the indefinite article.  It is a suffix '-k'
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: det
+t͡ʂʰkʷʰən-k atəpha dəjəbajt
+t͡ʂʰkʷʰən-k a-təpha də-jə-ba-jt
+boy-a the-girl her-he-see-dynamic.finite
+A boy saw the girl.
+
+Not parsing, because the indefinite suffix isn't defined.
+
+#Ex 15 demonstrates the  habitual aspect. It is formed by adding the suffix "-la" after the verb and before the tense marker
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: tam
+at͡ʂʰkʷʰən atəpha dəjəbajt
+a-t͡ʂʰkʷʰən a-təpha də-jə-ba-la-wa-jt
+the-boy the-girl her-he-see-habitual-present-dynamic.finite
+The boy sees the girl regularly.
+
+While chasing down this one, I noticed that this rule doesn't
+have any featural content:  
+
+  verb-slot6_order=after
+    verb-slot6_input1_type=verb2
+    verb-slot6_input2_type=verb3
+    verb-slot6_morph1_name=habitual-aspect-marker
+    verb-slot6_morph1_orth=-la
+
+It should probably constrain the aspect, at least!
+
+The problem with #15 seems to be that the aspect marker won't
+take the obj marker as an input, and the subj marker won't take
+the aspect marker as an input.  Try this:
+
+  verb-slot6_name=aspect-marker
+  verb-slot6_opt=on
+  verb-slot6_order=after
+    verb-slot6_input1_type=verb-slot1
+    verb-slot6_input2_type=verb-slot2
+    verb-slot6_input3_type=verb-slot3
+    verb-slot6_input4_type=verb-slot4
+    verb-slot6_morph1_name=habitual-aspect-marker
+    verb-slot6_morph1_orth=-la
+
+Output now parses twice.
+
+Trying with aspect information:
+
+  verb-slot6_name=aspect-marker
+  verb-slot6_opt=on
+  verb-slot6_order=after
+    verb-slot6_input1_type=verb-slot1
+    verb-slot6_input2_type=verb-slot2
+    verb-slot6_input3_type=verb-slot3
+    verb-slot6_input4_type=verb-slot4
+    verb-slot6_morph1_name=habitual-aspect-marker
+    verb-slot6_morph1_orth=-la
+    verb-slot6_morph1_feat1_name=aspect
+    verb-slot6_morph1_feat1_value=habitual
+
+That rescued ex #15, but also doubled the ambiguity just
+about everywhere, so I think it's probably not quite right!
+
+Backed out the change to check that that really happened (since
+the 32 examples with increased ambiguity can't all involve
+verb-slot6) and sure enough, it did.  I think there might be something
+buggy here in the slot code, but maybe the problem was that
+verb-slot6 was optional twice (with the opt check box and because
+the other things could hop over it and get to 1,2,3,4).  That
+combined with saying 1,2,3,4 instead of just 1,4 like verb-slot
+5 might have done it.  Trying this now:
+
+  verb-slot6_name=aspect-marker
+  verb-slot6_order=after
+    verb-slot6_input1_type=verb-slot1
+    verb-slot6_input2_type=verb-slot2
+    verb-slot6_input3_type=verb-slot3
+    verb-slot6_input4_type=verb-slot4
+    verb-slot6_morph1_name=habitual-aspect-marker
+    verb-slot6_morph1_orth=-la
+    verb-slot6_morph1_feat1_name=aspect
+    verb-slot6_morph1_feat1_value=habitual
+
+That gained one (#15) but lost two (#24, #35).
+
+Next try:
+
+  verb-slot6_name=aspect-marker
+  verb-slot6_opt=on
+  verb-slot6_order=after
+    verb-slot6_input1_type=verb-slot1
+    verb-slot6_input2_type=verb-slot4
+    verb-slot6_morph1_name=habitual-aspect-marker
+    verb-slot6_morph1_orth=-la
+    verb-slot6_morph1_feat1_name=aspect
+    verb-slot6_morph1_feat1_value=habitual
+
+That worked (once I fixed a typo from input4 to input2).
+
+Coverage: 26/35 74.3%
+Overgeneration: 6/54 11.1%
+Error: 42
+
+
+

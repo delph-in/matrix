@@ -1,6 +1,6 @@
 ;;; Grammar of Abkhaz
 ;;; created at:
-;;;     Wed Jul 29 21:32:20 UTC 2009
+;;;     Wed Jul 29 22:38:23 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -53,17 +53,17 @@ aorist-negative-lex-rule := ergative-subj-marker-rule-dtr & non-ergative-obj-mar
         [ TRACK [ T-dynamic-tense-marker +,
                   T-aorist-negative + ] ] ].
 
-dynamic-ergative-verb-lex := ergative-subj-marker-rule-dtr & non-ergative-obj-marker-rule-dtr & dynamic-tense-marker-rule-dtr & aspect-marker-rule-dtr & aorist-negative-rule-dtr & transitive-verb-lex &
+dynamic-ergative-verb-lex := ergative-subj-marker-rule-dtr & non-ergative-obj-marker-rule-dtr & aspect-marker-rule-dtr & aorist-negative-rule-dtr & transitive-verb-lex &
   [ TRACK [ T-dynamic-tense-marker +,
             T-aorist-negative + ],
     INFLECTED - ].
 
-dynamic-non-ergative-verb-lex := ergative-subj-marker-rule-dtr & non-ergative-obj-marker-rule-dtr & dynamic-tense-marker-rule-dtr & aspect-marker-rule-dtr & aorist-negative-rule-dtr & transitive-verb-lex &
+dynamic-non-ergative-verb-lex := ergative-subj-marker-rule-dtr & non-ergative-obj-marker-rule-dtr & aspect-marker-rule-dtr & aorist-negative-rule-dtr & transitive-verb-lex &
   [ TRACK [ T-dynamic-tense-marker +,
             T-aorist-negative + ],
     INFLECTED - ].
 
-ergative-subj-marker-lex-rule := infl-add-only-no-ccont-ltol-rule & dynamic-tense-marker-rule-dtr &
+ergative-subj-marker-lex-rule := infl-add-only-no-ccont-ltol-rule & dynamic-tense-marker-rule-dtr & aspect-marker-rule-dtr &
   [ TRACK #track,
     DTR ergative-subj-marker-rule-dtr &
         [ TRACK #track ] ].
@@ -166,7 +166,7 @@ non-ergative-obj-marker-lex-rule := infl-add-only-no-ccont-ltol-rule &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3singular,
                                                                  GEND non-human ] ].
 
-non-ergative-subj-marker-lex-rule := infl-add-only-no-ccont-ltol-rule & dynamic-tense-marker-rule-dtr &
+non-ergative-subj-marker-lex-rule := infl-add-only-no-ccont-ltol-rule & dynamic-tense-marker-rule-dtr & aspect-marker-rule-dtr &
   [ TRACK #track,
     DTR non-ergative-obj-marker-lex-rule &
         [ TRACK #track ] ].
@@ -227,7 +227,8 @@ track :+ [ T-dynamic-tense-marker bool,
 
 aspect-marker-rule-dtr := avm.
 
-habitual-aspect-marker-lex-rule := aspect-marker-lex-rule.
+habitual-aspect-marker-lex-rule := aspect-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.ASPECT habitual ].
 
 dynamic-finite-marker-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
   [ TRACK #track,
