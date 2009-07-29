@@ -4,6 +4,10 @@ t͡ʂʰkʷʰən := masc-noun-lex &
   [ STEM < "t͡ʂʰkʷʰən" >,
     SYNSEM.LKEYS.KEYREL.PRED "_boy_n_rel" ].
 
+ab := masc-noun-lex &
+  [ STEM < "ab" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_father_n_rel" ].
+
 təpha := fem-noun-lex &
   [ STEM < "təpha" >,
     SYNSEM.LKEYS.KEYREL.PRED "_girl_n_rel" ].

@@ -1062,7 +1062,9 @@ t͡ʂʰkʷʰən-k a-təpha də-jə-ba-jt
 boy-a the-girl her-he-see-dynamic.finite
 A boy saw the girl.
 
-Not parsing, because the indefinite suffix isn't defined.
+*** Not parsing, because the indefinite suffix isn't defined.
+But the definite prefix is.  So maybe we can do an indefinite
+suffix, even if we can't get the meaning quite right.
 
 #Ex 15 demonstrates the  habitual aspect. It is formed by adding the suffix "-la" after the verb and before the tense marker
 Source: author
@@ -1201,6 +1203,24 @@ Coverage: 27/35 77.1%
 Overgeneration: 6/54 11.1%
 Error: 40
 
+#Ex 65 demonstrates verb object agreement. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+at͡ʂʰkʷʰən a-ab dəjəbajt
+a-t͡ʂʰkʷʰən a-ab də-jə-ba-jt
+the-boy the-father 3rd.human.sing-he-see-dynamic.finite
+The boy saw the father.
+
+Not parsing because of a-ab.  Added stem for "father":
+
+    noun1_stem2_orth=ab
+    noun1_stem2_pred=_father_n_rel
+
+Coverage: 29/35 82.9%
+Overgeneration: 6/54 11.1%
+Error: 36
 
 
 
