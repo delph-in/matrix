@@ -10,6 +10,7 @@
 ;;
 
 :include "matrix".
+:include "jingulu".
 :include "my_language".
 
 :end :type.

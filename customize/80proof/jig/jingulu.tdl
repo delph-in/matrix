@@ -1,6 +1,6 @@
 ;;; Grammar of jingulu
 ;;; created at:
-;;;     Wed Jul 08 22:59:25 UTC 2009
+;;;     Wed Jul 29 23:52:04 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -92,8 +92,19 @@ feminine-erg-case-marker-lex-rule := feminine-case-marker-lex-rule &
                    CONT.HOOK.INDEX.PNG [ GEND feminine,
                                          ANIMACY anim ] ] ].
 
-subj-agreement-lex-rule := lexeme-to-lexeme-rule & add-only-no-ccont-rule & light-verb-tense-markers-rule-dtr &
-  [ DTR verb1-verb-lex ].
+subj-agreement-rule-dtr := avm.
+
+verb1-verb-lex := subj-agreement-rule-dtr & erg-nom-transitive-verb-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CAT.HEAD.TRANS-HACK isTrans ].
+
+verb2-verb-lex := subj-agreement-rule-dtr & nom-intransitive-verb-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CAT.HEAD [ FORM nonfinite,
+                            TRANS-HACK isIntrans ] ].
+
+subj-agreement-lex-rule := lexeme-to-lexeme-rule & add-only-no-ccont-rule &
+  [ DTR subj-agreement-rule-dtr ].
 
 1s-subj-agreement-marker-lex-rule := infl-ltol-rule & subj-agreement-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1st ].
@@ -128,25 +139,23 @@ subj-agreement-lex-rule := lexeme-to-lexeme-rule & add-only-no-ccont-rule & ligh
 3pl-subj-agreement-marker-lex-rule := infl-ltol-rule & subj-agreement-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3dual+3plural ].
 
-object-agreement-lex-rule := lexeme-to-lexeme-rule & add-only-no-ccont-rule & light-verb-tense-markers-rule-dtr &
+object-agreement-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
   [ DTR subj-agreement-lex-rule ].
 
-first-person-object-marker-lex-rule := infl-ltol-rule & object-agreement-lex-rule &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1st ].
+first-person-object-marker-lex-rule := infl-ltow-rule & object-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT [ VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1st,
+                       HEAD.TRANS-HACK isTrans ] ].
 
-second-person-object-marker-lex-rule := infl-ltol-rule & object-agreement-lex-rule &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2nd ].
+second-person-object-marker-lex-rule := infl-ltow-rule & object-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT [ VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2nd,
+                       HEAD.TRANS-HACK isTrans ] ].
 
-third-person-object-marker-lex-rule := const-ltol-rule & object-agreement-lex-rule &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd ].
-
-light-verb-tense-markers-rule-dtr := avm.
-
-verb1-verb-lex := light-verb-tense-markers-rule-dtr & erg-nom-transitive-verb-lex &
-  [ INFLECTED - ].
+third-person-object-marker-lex-rule := const-ltow-rule & object-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT [ VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd,
+                       HEAD.TRANS-HACK isTrans ] ].
 
 light-verb-tense-markers-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
-  [ DTR light-verb-tense-markers-rule-dtr ].
+  [ DTR subj-agreement-lex-rule ].
 
 present-tense-lex-rule := light-verb-tense-markers-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E [ TENSE present,
@@ -198,6 +207,7 @@ noun :+ [ CASE case ].
 ;;; Verbs
 
 head :+ [ FORM form,
+    TRANS-HACK trans-hack,
     AUX bool ].
 
 verb-lex := lex-item &
@@ -235,9 +245,6 @@ erg-nom-transitive-verb-lex := transitive-verb-lex &
                               [ CASE erg ] ],
              [ LOCAL.CAT.HEAD noun &
                               [ CASE nom ] ] > ].
-
-verb2-verb-lex := nom-intransitive-verb-lex &
-  [ SYNSEM.LOCAL.CAT.HEAD.FORM nonfinite ].
 
 ;;; Auxiliaries
 
@@ -333,6 +340,12 @@ non-habitual := aspect.
 animacy := *top*.
 anim := animacy.
 inam := animacy.
+
+;;; Trans-hack
+
+trans-hack := *top*.
+isTrans := trans-hack.
+isIntrans := trans-hack.
 
 ;;; Phrasal types
 

@@ -1,7 +1,7 @@
 		Coverage	Overgeneration	Errors
 abk		85.7%		5.6%		35
 hau		10.5%		0%		37
-jig		83.3%		3.8%		13 -- not checked in?
+jig		83.3%		3.8%		13 
 kal		41.2%		4.5%		29
 mal		84.6%		2.7%		25
 nyn		35.7%		1.9%		35

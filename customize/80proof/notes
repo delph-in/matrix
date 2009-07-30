@@ -246,6 +246,11 @@ interaction *** not yet considered in the customization system:
 lexical rules that care about valence.  cf Wambaya TAM is sensitive to
 png on subject & presence/absence of object.
 
+7/29/09: "requires" didn't work because you can't select verb
+stem classes in that way (it seems), but "other features" seems to
+have worked.  I don't know why I didn't check in that version of the choices
+file, but I'm doing so now.
+
 ----
 nyn:
 ----
