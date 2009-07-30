@@ -82,6 +82,68 @@ Coverage: 10/27 positive examples, 37%
 Overgeneration: 3/30 negative examples, 10%
 Error: Unanalyzed lexical items in 26 examples
 
+We might want to revine the NUMBER value for this example, if
+the comment is accurate:
+
+#Ex 24 illustrates agreement with a third person plural animate pronoun subject and a verb. For three or more, the suffix /-ka/ is added to verbs with both animate and inanimate subjects.  It precedes tense markers.  For animate subjects when /-ka/ is present the (non-sing) marker /-7um/ is optional.  Here it is given (Press 78).
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {agr,pn}
+mam nukwikajI7Im
+mamI nukwi-ka-jI-7um
+3pl.anim.visible run-sev-pres-non.sing
+'They are running.'
+
+Also, the example isn't parsing because of the form of
+the non.sing suffix, which (I believe) is this rule:
+
+non-singular-suffix :=
+%suffix (* -7Imi)
+non-singular-lex-rule.
+
+#Ex 25 illustrates agreement with a third person plural animate pronoun object and a verb. Verbs may optionally agree with their objects(Press 77).  "When the object of a verb is three or more a suffix /-tu/ is added, preceding tenses (ordered optionally before or after /-ka/, if there is one" (Press 78). 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {agr,pn,tam}
+nI mamI punitukaivI
+nII mamI-a puni-tu-kai-vI
+1sg 3pl.anim.visible-obl look-obj.pl-result-past
+I saw them.
+
+Similarly, we might want to adjust the NUMBER value for
+-tu.  
+
+Here (#25) the problem seems to be that the result lex rule
+doesn't want the plural obj lex rule as an input.
+
+Try removing this:
+
+  verb-slot10_opt=on
+
+That didn't work (same effect---clearly a bug in the slot code).
+Try the other way around: make verb-slot10 optional, and then have
+anything that selects for verb-slot10 and verb-slot8 only select
+verb-slot10.  That gives this:
+
+Type ASPECTUAL-MARKERS-LEX-RULE's constraint specification clashes with its parents'
+Type MOM-SUFFIX-LEX-RULE's constraint specification clashes with its parents'
+Type MOM-SUFFIX-MARKER-LEX-RULE's constraint specification clashes with its parents'
+Type PERFECTIVE-MARKER-LEX-RULE's constraint specification clashes with its parents'
+Type RESULTATIVE-LEX-RULE's constraint specification clashes with its parents'
+Type RESULT-LEX-RULE's constraint specification clashes with its parents'
+
+... because the -dtr types are all subtypes of avm, but this change
+leads to rules that are infl-add-only-no-ccont-lex-rule, which somehow
+gets [DTR word-or-lexrule].  What that isn't a problem more of the time
+is puzzling to me just now.  I think the fix (in general) is to have
+the -rule-dtr types inherit from word-or-lexrule.  But fixing that by
+hand still doesn't solve the problem with #25.
+
+I'm coming to the conclusion that #25 is hopeless with the current
+system, but would be open to ideas from others!
+
 ----
 jig:
 ----
