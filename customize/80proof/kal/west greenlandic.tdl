@@ -1,6 +1,6 @@
 ;;; Grammar of west greenlandic
 ;;; created at:
-;;;     Wed Jul 15 23:22:46 UTC 2009
+;;;     Wed Jul 29 23:52:16 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -194,6 +194,12 @@ all-2p-subj-obj-marker-lex-rule := transitive-subj-obj-markers-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
                                                                   PER 2nd ],
                            COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                   PER 3rd ] ] ].
+
+3p-3s-subj-obj-marker-lex-rule := transitive-subj-obj-markers-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PER 3rd,
+                                                                  NUM singular ],
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
                                                                    PER 3rd ] ] ].
 
 transitive-tense-marker-lex-rule := lexeme-to-lexeme-rule & add-only-no-ccont-rule &

@@ -128,6 +128,11 @@ all-2p-subj-obj-marker-lex-rule.
 2p-3pl-subj-obj-marker-lex-rule.
 
 
+3p-3s-subj-obj-marker-suffix :=
+%suffix (* -at)
+3p-3s-subj-obj-marker-lex-rule.
+
+
 future-marker-suffix :=
 %suffix (* -ssa)
 future-marker-lex-rule.
