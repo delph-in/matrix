@@ -1695,11 +1695,11 @@ def customize_major_constituent_order(wo):
 # the enforced attachment must apply in the other direction.
 
     if has_auxiliaries_p() and  ch.get('aux-comp-order') == 'before':
-      mylang.add('head-initial-head-nexus := head-initial & \
-                [ SYNSEM.ATTACH rmod,\
-                  HEAD-DTR.SYNSEM.ATTACH notmod-or-rmod ].')
-      mylang.add('head-final-head-nexus := head-final &\
-                [ SYNSEM.ATTACH lmod ].')
+      mylang.add('head-final-head-nexus := head-final & \
+                [ SYNSEM.ATTACH lmod,\
+                  HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
+      mylang.add('head-initial-head-nexus := head-initial &\
+                [ SYNSEM.ATTACH rmod ].')
     else: 
       mylang.add('head-initial-head-nexus := head-initial & \
                 [ SYNSEM.ATTACH lmod,\
