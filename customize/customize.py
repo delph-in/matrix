@@ -4748,12 +4748,12 @@ def customize_pettdl(matrix_path):
     p_in = open('matrix-core/pet.tdl', 'r')
     lines = p_in.readlines()
     p_in.close()
-    p_out = open(matrix_path + 'pet.tdl', 'w')
+    myl = ch.get('language').lower()
+    p_out = open(matrix_path + myl + '-pet.tdl', 'w')
     for l in lines:
       l = l.strip()
       p_out.write(l + '\n')
       if l == ':include "matrix".':
-        myl = ch.get('language').lower()
         p_out.write(':include "' + myl + '".\n')
     p_out.close()
   except:
