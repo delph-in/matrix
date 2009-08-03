@@ -8,10 +8,6 @@ puusi := noun1-noun-lex &
   [ STEM < "puusi" >,
     SYNSEM.LKEYS.KEYREL.PRED "_cat_n_rel" ].
 
-wii := noun1-noun-lex &
-  [ STEM < "wii" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_knife_n_rel" ].
-
 mamI_1 := third-person-dual-noun-lex &
   [ STEM < "mamI" >,
     SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
@@ -43,6 +39,10 @@ icI := third-person-inanimate-here-noun-lex &
 mamI_2 := third-person-plural-visible-noun-lex &
   [ STEM < "mamI" >,
     SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+wii := noun10-noun-lex &
+  [ STEM < "wii" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_knife_n_rel" ].
 
 ;;; Verbs
 

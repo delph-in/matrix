@@ -356,6 +356,100 @@ that morph for now to see what happens.
 Taking that out reduced the spurious ambiguity, without
 any other changes.
 
+This one isn't parsing because no tense marker is attached.
+I think a zero morpheme (perhaps restricted to a certain
+verb type) is missing from the tense-marker slot, but I can't
+really tell what's going on from the comment.
+
+#Ex 28 illustrates a grammatical use of the present tense for a [+mom] verb.  Press classifies verbs by a feature she calls momentaneous.  Verbs can be [-mom] "nukwi-run", [+mom] "tIrawi7i-dash off", or can take either aspectual meaning [*mom] "kwIhI-catch."  This feature constrains the tense/aspect suffixes that can attach to a verb.  The present tense suffix /-jI/ cannot attach to  [- mom] verbs.  Instead they take a zero suffix for present tense.  For [- mom] verbs the present tense suffix /-ji/ must be used for present tense, they cannot take the zero present tense marker (Press 64).
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {agr,pn}
+maN tIraqi
+maNa tIraqi7i
+3sg.anim.visible dash.off.pres
+'He/She dashes off.'
+
+The final grammatical example that is not parsing:
+
+#Ex 34 illustrates a suffix that can be used to add [+mom] to (some) verbs.  There are different ways of making a verb [+mom]
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {agr,pn}
+maN wI7ik
+maNa wI7i-ku
+3sg.anim.visible fall-mom.pres
+'He/She falls.'
+
+Here, the problem seems to be that the -ku rule is
+ending up ltol, even though it is optional and not
+the input for any other rule.  I think this is a bug
+in the morphotactics code. A possible work-around is
+to make it non-optional, and put a zero-morpheme in that
+same slot with no effect.  I'll try that for now but
+this is really not quite right :)
+
+First attempt:
+
+    verb-slot6_morph1_name=non-mom-zero-suffix
+      verb-slot6_morph2_feat1_name=situation
+      verb-slot6_morph2_feat1_value=mom-minus
+      verb-slot6_morph2_feat1_head=verb
+
+That doesn't help.  These two rules are still ltol,
+which isn't the intended effect.
+
+Back to overgeneration:
+
+#Ex 9 illustrates an ungrammatical sentence where the singular animate subject is takes the non-singular marker /-7umi/ for animate nouns
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {agr}
+aipac nukwijI7um
+aipaci nukwi-jI-7Imi
+boy.nom run-pres-non.sing
+'The boy is running.'
+
+The problem here is that there apparently aren't
+any number rules for nouns. There's only one slot
+for noun morphology, and it encodes case.  So aipaci
+is just underspecified for number.  I'd define 
+the slot, but I don't know where it goes, nor what
+the plural morpheme looks like.
+
+#Ex 11 illustrates an ungrammatical sentence where the inanimate subject takes the non-singular marker /-7umi/ for animate nouns.  This is used to mark two or more. Inanimate nouns are optionally marked for plurality do not combine with verbs that have the non-singular suffix.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {agr}
+wii nukwijI7um
+wii nukwi-jI-7Imi
+knife run-pres-non.sing
+'The (two) knives are running.'
+
+The problem here is the knife was in the same noun
+class as boy and cat, and that noun class was not specified
+for animacy.
+
+Added the following:
+
+  noun10_det=imp
+    noun10_feat1_name=gender
+    noun10_feat1_value=inanimate
+    noun10_stem1_orth=wii
+    noun10_stem1_pred=_knife_n_rel
+
+    noun1_feat1_name=gender
+    noun1_feat1_value=animate
+
+
+Coverage: 14/27 51.9%
+Overgeneration: 4/30 13.3%
+Error: 26
+
 
 ----
 jig:
