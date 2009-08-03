@@ -1,6 +1,6 @@
 ;;; Grammar of Runyankore
 ;;; created at:
-;;;     Wed Jul 08 17:06:29 UTC 2009
+;;;     Mon Aug 03 23:37:24 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -38,8 +38,8 @@ present-tense-marker-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
         [ TRACK #track ] ].
 
 verb-lex := remote-marker-rule-dtr & yesterday-past-modified-verb-form-rule-dtr & subject-marker-rule-dtr & lex-item &
-  [ INFLECTED -,
-    TRACK.T-non-present-tense-dummy -,
+  [ TRACK.T-non-present-tense-dummy -,
+    INFLECTED -,
     SYNSEM.LOCAL.CAT [ HEAD verb,
                        HC-LIGHT - ] ].
 
@@ -180,6 +180,35 @@ class9-subj-marker-lex-rule := subject-marker-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
                                                                 PER 3rd,
                                                                 GEND class-9 ] ].
+
+neg-present-lex-rule := infl-ltow-rule & cont-change-only-lex-rule &
+  [ TRACK #track,
+    DTR subject-marker-lex-rule &
+        [ TRACK #track ] ].
+
+; This lexical rule adds the neg_r_rel to the verb's
+; 	          RELS list.  It is instantiated by a spelling-changing
+; 	          rule as specified in irules.tdl.
+
+neg-pres-lex-rule := neg-present-lex-rule &
+  [ C-CONT [ HOOK [ XARG #xarg,
+                    LTOP #ltop,
+                    INDEX #ind ],
+             RELS <! event-relation &
+                     [ PRED "_neg_r_rel",
+                       LBL #ltop,
+                       ARG1 #harg ] !>,
+             HCONS <! qeq &
+                      [ HARG #harg,
+                        LARG #larg ] !> ],
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.E [ TENSE present,
+                                       ASPECT habitual ],
+             LKEYS #lkeys ],
+    DTR.SYNSEM [ LKEYS #lkeys,
+                 LOCAL [ CONT.HOOK [ XARG #xarg,
+                                     INDEX #ind,
+                                     LTOP #larg ],
+                         CAT.HEAD verb ] ] ].
 
 ;;; Lexical types
 

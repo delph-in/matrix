@@ -43,8 +43,8 @@ zaana := intrans-verb-lex &
 ba := perfect-aux-lex &
   [ STEM < "ba" > ].
 
-+voice := qpart-lex-item &
-  [ STEM < "+voice" > ].
+voice := qpart-lex-item &
+  [ STEM < "voice" > ].
 
 kandi := conj-lex &
   [ STEM < "kandi" >,

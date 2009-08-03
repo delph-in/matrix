@@ -73,7 +73,7 @@ section=coordination
 section=matrix-yes-no
 q-part=on
 q-part-order=after
-q-part-orth=+voice
+q-part-orth=voice
 
 section=arg-opt
 
@@ -366,5 +366,19 @@ section=lexicon
       verb-slot6_morph8_feat3_name=gender
       verb-slot6_morph8_feat3_value=class-9
       verb-slot6_morph8_feat3_head=subj
+  verb-slot7_name=neg-present
+  verb-slot7_order=before
+    verb-slot7_input1_type=verb-slot6
+    verb-slot7_morph1_name=neg-pres
+    verb-slot7_morph1_orth=ti-
+      verb-slot7_morph1_feat1_name=tense
+      verb-slot7_morph1_feat1_value=present
+      verb-slot7_morph1_feat1_head=verb
+      verb-slot7_morph1_feat2_name=aspect
+      verb-slot7_morph1_feat2_value=habitual
+      verb-slot7_morph1_feat2_head=verb
+      verb-slot7_morph1_feat3_name=negation
+      verb-slot7_morph1_feat3_value=plus
+      verb-slot7_morph1_feat3_head=verb
 
 section=test-sentences

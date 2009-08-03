@@ -113,6 +113,11 @@ class9-subj-marker-prefix :=
 class9-subj-marker-lex-rule.
 
 
+neg-pres-prefix :=
+%prefix (* ti-)
+neg-pres-lex-rule.
+
+
 n1-bottom :=
   %prefix (* na-)
   n1-bottom-coord-rule.

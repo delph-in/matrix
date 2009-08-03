@@ -665,9 +665,10 @@ Added noun type for class 9 and stem for stick.
 Fixed _n_rel on _sun_n_rel
 
 
-SS-think that the grammar is not working because the tense lexical rules are 
-incorrect.  As discussed in the meeting, I changed the tense lexical rules so that 
-each had an extra rule without a morpheme that marked all the other tenses.
+SS-think that the grammar is not working because the tense lexical
+rules are incorrect.  As discussed in the meeting, I changed the tense
+lexical rules so that each had an extra rule without a morpheme that
+marked all the other tenses.
 
 Coverage : 0%
 Overgeneration: 0%
@@ -678,15 +679,16 @@ kazi class 1 woman_n_rel
 shaija class 1 _man_n_rel
 renga intransitive _set_v_rel
 
-Did interactive unification on the first test item and found that the class was that
-the subject was marked as plural and the verb agreement marker was singular. 
-This was incorrect in the choices file.  Changed
+Did interactive unification on the first test item and found that the
+class was that the subject was marked as plural and the verb agreement
+marker was singular.  This was incorrect in the choices file.  Changed
 
      noun-slot1_morph1_feat2_value=plural
 to
      noun-slot1_morph1_feat2_value=singular
 
-Ran grammar again (after deleting the subject-marker-lex-rule from main-verb-lex again)
+Ran grammar again (after deleting the subject-marker-lex-rule from
+main-verb-lex again)
 
 Coverage: 28.6%
 Overgeneration: 3.8%
@@ -722,7 +724,7 @@ and made a new item file and placed it in tsdb/skeletons/nyn.
 Example 66 demonstrates a form of coordination that the system does not do
 
 Example 50 is the only that that I think the system should be able to
-handle The problem is that for the perfect both the aux and the main
+handle. The problem is that for the perfect both the aux and the main
 verb must be marked for subject.  The way that the rules are currently
 set up the main verb is being marked for univ-present and the aux is
 marked for continuous-present. I am going to change the rules so that
@@ -759,8 +761,71 @@ in a grammar that loads (yay!) and has the same coverage/overgeneration
 as above.
 
    
+Looking now at the ones with errors that are well-formed.
+There are 7 of these: 17, 19, 21, 54, 58, 63, 74.
 
-  
+17 at least was having a problem because the lkb was 
+splitting +voice on +.  Changed in choices and item. But
+that didn't fix anything since the +voice affix was a
+clause-final question marker functioning as an affix.
+To consider: Should we call it syntactically a clitic and
+break it off?  Will try that way for now. Changing it back
+to +voice so that the lkb segments it off, and then adding
+it as a sentence final question marking particle.  That's
+actually what the choices file had, except that the qpart
+was spelling +voice instead of voice. ... But that's not
+good enough, because the item file has -+voice, so I need
+to get rid of that hyphen.
+
+Coverage: 12/28 42.9%
+Overgeneration: 1/53 1.9%
+Error: 27
+
+... and there's a lot of ambiguity.  None was added from
+the previous state (except that the two new examples are
+7 ways ambiguous).
+
+Added negative morpheme:
+
+    verb-slot1_morph4_name=neg-present
+    verb-slot1_morph4_orth=ti-
+      verb-slot1_morph4_feat1_name=tense
+      verb-slot1_morph4_feat1_value=present
+      verb-slot1_morph4_feat1_head=verb
+      verb-slot1_morph4_feat2_name=aspect
+      verb-slot1_morph4_feat2_value=habitual
+      verb-slot1_morph4_feat2_head=verb
+      verb-slot1_morph4_feat3_name=negation
+      verb-slot1_morph4_feat3_value=plus
+      verb-slot1_morph4_feat3_head=verb
+
+That fixes at least one negative example, but leads
+to surprising extra ambiguity on other examples.  
+
+The problem seems to be that as soon as I put a negative
+morpheme in that slot, the whole thing becomes cont-change-only-lex-rule,
+and then things are underconstrained.  This is a bug in the 
+way negation was retrofitted to the lex rules code, but the
+work around (I think) is to define a separate slot for
+the negative morpheme.  That took it back to the original
+ambiguity level.
+
+  verb-slot7_name=neg-present
+  verb-slot7_order=before
+    verb-slot7_input1_type=verb-slot6
+    verb-slot7_morph1_name=neg-pres
+    verb-slot7_morph1_orth=ti-
+      verb-slot7_morph1_feat1_name=tense
+      verb-slot7_morph1_feat1_value=present
+      verb-slot7_morph1_feat1_head=verb
+      verb-slot7_morph1_feat2_name=aspect
+      verb-slot7_morph1_feat2_value=habitual
+      verb-slot7_morph1_feat2_head=verb
+      verb-slot7_morph1_feat3_name=negation
+      verb-slot7_morph1_feat3_value=plus
+      verb-slot7_morph1_feat3_head=verb
+
+
 ---
 hau
 ---
