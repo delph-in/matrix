@@ -290,6 +290,72 @@ That saved 4 examples that weren't parsing before, but
 added parses for 2 ungrammatical examples and made one
 previously parsing example ambiguous.
 
+One of the examples now parsing is this one:
+
+#Ex 27 illustrates an ungrammatical use of the present tense for a [-mom] verb.  Press classifies verbs by a feature she calls momentaneous.  Verbs can be [-mom] "nukwi-run", [+mom] "tIrawi7i-dash off", or can take either aspectual meaning [*mom] "kwIhI-catch."  This feature constrains the tense/aspect suffixes that can attach to a verb.  The present tense suffix /-jI/ cannot attach to  [- mom] verbs.  Instead they take a zero suffix for present tense.  For [- mom] verbs the present tense suffix /-ji/ must be used for present tense, they cannot take the zero present tense marker (Press 64).
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {agr,pn}
+maN nukwi
+maNa nukwi
+3sg.anim.visible run.pres
+'He/She is running.'
+
+I can't understand the comment, though, regarding whether
+this is supposed to have -ji, -jI, or -0 as a tense
+marking suffix.
+
+Here is other new overgeneration example:
+
+#Ex 33 illustrates an ungrammatical use of one of the perfectives "finish".  It is formed by adding /-ma7aku/.  It occurs with with /-vII/-past and the perfective enclitic /-caa/ (Press 68). Here neither the perfective enclitic /-caa/ nor the past /-vII/ is used.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {agr,pn}
+maN nukwima7ak
+maNa nukwi-ma7aku
+3sg.anim.visible run-finish
+'He/She finished running.'
+
+-caa is not defined.  -vII is slot1, which can take 4, 5, 8
+or 9 as input. -ma7aku is slot 5, and marked optional. In the
+parse, the example is going through the nom-mom-pres-lex rule,
+which is also slot1.  So something should make non-mom-pres-lex
+and -ma7aku incompatible. 
+
+The extra parse for an ungrammatical example is this one:
+
+#Ex 23 illustrates agreement with a third person plural animate pronoun subject and a verb. For three or more, the suffix /-ka/ is added to verbs with both animate and inanimate subjects.  It precedes tense markers.  For animate subjects when /-ka/ is present the (non-sing) marker /-7um/ is optional.  Here it is not given (Press 78).
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {agr,pn}
+mam nukwikaj
+mamI nukwi-ka-jI
+3pl.anim.visible run-several-pres
+'They are running.'
+
+And the culprit is apparently this morpheme:
+
+    verb-slot2_morph3_name=underspecified
+      verb-slot2_morph3_feat1_name=number
+      verb-slot2_morph3_feat1_value=non-dual
+      verb-slot2_morph3_feat1_head=subj
+      verb-slot2_morph3_feat2_name=gender
+      verb-slot2_morph3_feat2_value=animate
+      verb-slot2_morph3_feat2_head=subj
+
+I'm not sure what this is doing.  If slot2 is obligatory
+(which it isn't currently) then it needs a catch-all
+option that will pass through anything not covered
+by the other morphs.  If it's optional, it shouldn't
+have any zero morphs in it.  Trying deleting 
+that morph for now to see what happens. 
+
+Taking that out reduced the spurious ambiguity, without
+any other changes.
+
 
 ----
 jig:
