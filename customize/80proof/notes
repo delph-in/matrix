@@ -144,6 +144,153 @@ hand still doesn't solve the problem with #25.
 I'm coming to the conclusion that #25 is hopeless with the current
 system, but would be open to ideas from others!
 
+#Ex 30 illustrates one of the perfectives "finish".  It is formed by adding /-ma7aku/.  It occurs with with /-vII/-past and the perfective enclitic /-caa/ (Press 68).
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {agr,pn}
+maNaca nukwima7ak
+maNa-caa nukwi-ma7aku
+3sg.anim.visible-perf run-finish
+'He/She has finished running.'
+
+The trouble with #30 seems to be that there is
+no affix -caa defined.  I can't tell from the
+gloss what it's supposed to be, though.
+
+#Ex 40 illustrates a grammatical negative sentence.  The negative is usually formed by adding a negative suffix (wa7i)to the main verb. The negative marker /kacu/ may also appear in the clause.  The negative does not occur with the present tense marker /-jI/, but it does occur with the past tense marker /-vII/. Here the optional negative marker /kac/ is also used.  /kac/ can appear almost anywhere in the sentence as long as the constraints on other morphemes are satisfied (Press 99).  There was no discussion about a difference in meaning when /kac/ was included.  The only comment was that it was often left out in colloquial speech.  In the book, it is classified as an adverb.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {neg}
+maN kac nukwivIIwa
+maNa kac nukwi-vII-wa7i
+3sg.anim.visible neg run-past-neg
+'He/She did not run.'
+
+Current negation library doesn't handle two-part negation (affix
+and adverb together), so we'll miss this one.  Likewise #42.
+
+#Ex 44 illustrates a grammatical yes/no question.  Yes-No questions are formed by adding the enclitic /-raa/ to the first word in the sentence.  Since this test suite does not model bound subjects, this means that the question enclitic will always attach to the subject in this test suite.  It is important to note that this is not truly always the case.  When attached pronouns are present, /-raa/ precedes them.  The past tense marker /-vII/ does not occur in questions (Press 85).
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {q}
+aipacira puusi magaj 
+aipaci-raa puusi-a maga-jI  
+boy-ques cat-OBL gave-pres  
+'Does/Did the boy give a cat7'
+
+Unhandled question marking strategy.
+
+#Ex 49 illustrates grammatical V coordination.  V coordination does not occur with finite verbs.  One of the verbs must take a subordinating suffix.  Press notes that the frequent use of /-su/ "too" may make the meaning more coordinate than subordinate.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {coord}
+maN nukwiga wi7ivIs
+maNa nukwi-gai wi7i-vII-su
+3sg.anim.visible run-sub fall-past-too
+'He ran and fell.'
+
+Unhandled coordination strategy.
+
+
+#Ex 52 illustrates grammatical NP coordination.  There are two ways to coordinate NPs /-gajaa/ is used when the two NPs are not considered to have engaged int the action together.  This suffix also appears with just one NP. Press does not mention if three or more NPs can be coordinated.  The other suffix is used for "with."
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {coord}
+ann Johni nInigaja punikaivI
+anni Johni-a nII-a-gaja puni-kai-vII
+Ann John-OBL 1sg-OBL-too look-result-past
+Ann saw John and me.
+
+#Ex 53 illustrates grammatical NP coordination.  There are two ways to coordinate NPs /-gajaa/.  This suffix also appears with just one NP.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {coord}
+ann johni nInigaja punikaivI
+anni margareti uNa-gaja Johni-a puni-kai-vII
+Ann Margaret John-OBL 1sg-OBL-too look-result-past
+Ann and Margaret saw John.
+
+We might be able to handle #52 and 53, by calling
+them N coordination (so that we can use the affix
+strategy), but this might be in accurate.  Something
+is wrong in the glossing on #53.
+
+#Ex 2 illustrates a grammatical sentence with SVO word order.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {agr,word order, tam, c}
+aipac punikaivI  puusi 
+aipaci puni-kai-vII  puusi-a
+boy  look-result-past cat.OBL
+The boy saw the cat.
+
+The customization system doesn't allow "SOV or SVO" as a possible
+word order.
+
+#Ex 13 illustrates a grammatical sentence where the plural subject combines with a verb that has a pronominal enclitic attached instead of the plural marker.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {c,tam, agr}
+mam nukwijI7um
+mamI nukwi-jI-7ami
+they run-pres-3pl
+'They(two) are running.'
+
+The problem here is that -jI can't attach directly to the
+verb stem, so we get the zero non-plural rule first, which
+is incompatible with the plural marker later.  Leaving this
+one for Safiyyah, who hopefully has a better understanding
+of this suffix system.
+
+
+#Ex 19 illustrates agreement with a third person singular animate pronoun subject and a verb.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {agr,pn}
+in nukwij
+ina nukwi-jI
+3sg.anim.prox run-pres
+'He/She is running.'
+
+The grammar is analyzing this one as necessarily taking the inanimate
+agreement marker (zero morph). Maybe what's really going on is
+that there's a marked form which is only compatible with animates
+and an unmarked form which is underspecified?  Try removing
+this slot (and renaming slot10 slot9 throughout).
+
+  verb-slot9_name=inanimate-subj-agreement
+  verb-slot9_order=after
+    verb-slot9_input1_type=verb-slot1
+    verb-slot9_morph1_name=inanimate-subj-agreement-marker
+      verb-slot9_morph1_feat1_name=gender
+      verb-slot9_morph1_feat1_value=inanimate
+      verb-slot9_morph1_feat1_head=subj
+
+Just doing that leaves nukwi-jI as uninflected.  Try making
+the slots that take slot1 (-jI) as input optional.
+
+  verb-slot2_opt=on
+  verb-slot7_opt=on
+
+
+Coverage: 14/27 51.9%
+Overgeneration: 5/30 16.7%
+Error: 26
+
+That saved 4 examples that weren't parsing before, but
+added parses for 2 ungrammatical examples and made one
+previously parsing example ambiguous.
+
+
 ----
 jig:
 ----
