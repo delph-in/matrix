@@ -87,8 +87,8 @@ Source: {a:569,c}
 Vetted: s
 Judgment: g
 Phenomena: {tam, agreement}
-Muusaa yaa koomàa gidàa
-Muusaa yaa koomàa-CForm gidàa
+muusaa yaa koomàa gidàa
+muusaa yaa koomàa-CForm gidàa
 Musa.3ms 3ms.COM return-CForm home
 Musa returned home.
 
@@ -169,8 +169,8 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: agreement
-Muusaa taa koomàa gidàa
-Muusaa taa koomàa-CForm gidàa
+muusaa taa koomàa gidàa
+muusaa taa koomàa-CForm gidàa
 Musa.3ms 3fs.COM-CForm return home
 Musa returned home.
 
@@ -179,8 +179,8 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: agreement
-Muusaa kun koomàa gidàa
-Muusaa kun koomàa-CForm gidàa
+muusaa kun koomàa gidàa
+muusaa kun koomàa-CForm gidàa
 Musa.3ms 2pl.COM return-CForm home
 Musa returned home.
 
@@ -189,8 +189,8 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: agreement
-Muusaa naa koomàa gidàa
-Muusaa naa koomàa-CForm gidàa
+muusaa naa koomàa gidàa
+muusaa naa koomàa-CForm gidàa
 Musa.3ms 1s.COM return-CForm home
 Musa returned home.
 
@@ -199,8 +199,8 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: agreement
-Muusaa kin koomàa gidàa
-Muusaa kin koomàa-CForm gidàa
+muusaa kin koomàa gidàa
+muusaa kin koomàa-CForm gidàa
 Musa.3ms 2fs.COM return-CForm home
 Musa returned home.
 
@@ -252,8 +252,8 @@ Source: a:574
 Vetted: s
 Judgment: g
 Phenomena: {tam, agreement, negation}
-Muusaa bài tàfi bicì ba
-Muusaa bà-yà tàfi-CForm bicì ba
+muusaa bài tàfi bicì ba
+muusaa bà-yà tàfi-CForm bicì ba
 Musa NEG-3ms go-CForm Bichi NEG
 Musa has not gone to Bichi.
 
@@ -339,23 +339,23 @@ na-nàa gyaarà-CForm kèekè
 I-cont repair-CForm bicycle
 I am repairing a bicycle.
 
-#Example 32 is a grammatical example of a negative-continous verb. The negative continous is formed by having the negative marker "baa" followed by a pronoun containing the TAM "-à." "The complex made up of the negative marker plus the PAC exhibits a fixed H-L tome pattern.
+#Example 32 is a grammatical example of a negative-continous verb. The negative continous is formed by having the negative marker "bàa" followed by a pronoun containing the TAM "-à." "The complex made up of the negative marker plus the PAC exhibits a fixed H-L tome pattern.
 Source: author
 Vetted: f
 Judgment: g
 Phenomena: {tam, agreement,negation}
-yaaròo baa yàa gyaarà kèekè
-yaaròo baa ya-à gyaarà-CForm kèekè
+yaaròo bàa yàa gyaarà kèekè
+yaaròo bàa ya-à gyaarà-CForm kèekè
 boy NEG he-cont repair-CForm bicycle
 The boy is not repairing a bicycle.
 
-#Example 33 is an ungrammatical example of a negative-continous verb. The negative continous is formed by having the negative marker "baa" followed by a pronoun containing the TAM "-à." "The complex made up of the negative marker plus the PAC exhibits a fixed H-L tome pattern.  Here the negative marker (incorrectly) comes after the pronoun +TAM.
+#Example 33 is an ungrammatical example of a negative-continous verb. The negative continous is formed by having the negative marker "bàa" followed by a pronoun containing the TAM "-à." "The complex made up of the negative marker plus the PAC exhibits a fixed H-L tome pattern.  Here the negative marker (incorrectly) comes after the pronoun +TAM.
 Source: author
 Vetted: f
 Judgment: u
 Phenomena: {negation}
-yaaròo yàa baa gyaarà kèekè
-yaaròo ya-à baa gyaarà-CForm kèekè
+yaaròo yàa bàa gyaarà kèekè
+yaaròo ya-à bàa gyaarà-CForm kèekè
 boy  he-cont NEG repair-CForm bicycle
 The boy is not repairing a bicycle.
 
@@ -365,7 +365,7 @@ Vetted: f
 Judgment: g
 Phenomena: {tam, agreement}
 yaaròo zaa yà gyaarà kèekè
-yaaròo zaa ya gyaarà-CForm kèekè
+yaaròo zaa-ya gyaarà-CForm kèekè
 boy FUT he repair-CForm bicycle
 The boy will repair a bicycle.
 
@@ -375,7 +375,7 @@ Vetted: f
 Judgment: u
 Phenomena: {tam}
 yaaròo yà zaa gyaarà kèekè
-yaaròo ya zaa gyaarà-CForm kèekè
+yaaròo ya-zaa gyaarà-CForm kèekè
 boy he FUT repair-CForm bicycle
 The boy will repair a bicycle.
 
@@ -427,7 +427,7 @@ Vetted: f
 Judgment: g
 Phenomena: {tam, agreement}
 kèekè yaaròo zaa yà gyaarà
-kèekè yaaròo zaa ya gyaarà-AForm
+kèekè yaaròo zaa-ya gyaarà-AForm
 bicycle boy FUT he repair-AForm
 It is the bicycle the boy will repair.
 
@@ -542,8 +542,8 @@ Judgment: g
 Phenomena: {cogst}
 yaaròn yanàa gyaarà bûus Dîn
 yaaròo-7n ya-nàa gyaarà-CForm  bûus Di-7n
-boy-DEF he-cont repair-CForm  bicycle PART-DEF.masc
-The boy is repairing the bicycle.
+boy-DEF he-cont repair-CForm  bus PART-DEF.masc
+The boy is repairing the bus.
 
 
 # Example 52 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine native noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns). Instead of attaching to the word directly consonant-final words, foreign words, proper names, pronouns, numerals, and ideophones often make use of a connector Di.  If Di is used the masculine definite article is used. This example is ungrammatical because the feminine definite article is used after Di.
@@ -561,8 +561,8 @@ Source: author
 Vetted: f
 Judgment: g
 Phenomena: {crd}
-shi dà muusa sun ga dookìn
-shi dà muusa sun ga-CForm  dookì-7n
+shi dà muusaa sun ga dookìn
+shi dà muusaa sun ga-CForm  dookì-7n
 3ms and Musa 3pl.COM see-CForm  horse-the
 He and Musa saw the horse.
 
@@ -571,8 +571,8 @@ Source: author
 Vetted: f
 Judgment: g
 Phenomena: {crd}
-dà bello dà muusa sun ga dookìn
-dà bello dà muusa sun ga-CForm  dookì-7n
+dà bello dà muusaa sun ga dookìn
+dà bello dà muusaa sun ga-CForm  dookì-7n
 and Bello.masc Musa.masc 3pl.COM see-CForm  horse-the
 Bello and Musa saw the horse.
 
@@ -581,8 +581,8 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: {crd}
-shi dà muusa dà sun ga dookìn
-shi dà muusa dà sun ga-CForm  dookì-7n
+shi dà muusaa dà sun ga dookìn
+shi dà muusaa dà sun ga-CForm  dookì-7n
 3ms and Musa and 3pl.COM see-CForm  horse-the
 He and Musa saw the horse.
 
@@ -592,8 +592,8 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: {crd}
-shi dà muusa yaa ga dookìn
-shi dà muusa yaa ga-CForm  dookì-7n
+shi dà muusaa yaa ga dookìn
+shi dà muusaa yaa ga-CForm  dookì-7n
 3ms and Musa 3ms.COM see-CForm  horse-the
 He and Musa saw the horse.
 
@@ -613,8 +613,8 @@ Vetted: f
 Judgment: g
 Phenomena: {crd}
 yaaròo zaa yà ga dookìn yà dafà ruwaa
-yaaròo zaa yà ga dookì-7n yà dafà-CForm  ruwaa
-boy FUT 3ms see horse-the 3ms boil-CForm  water
+yaaròo zaa-ya ga-CForm dookì-7n yà dafà-CForm  ruwaa
+boy FUT 3ms see-CForm horse-the 3ms boil-CForm  water
 The boy will see the horse and boil water.
 
 

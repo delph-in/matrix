@@ -1263,6 +1263,256 @@ no auxiliary ya.  Maybe it was supposed to be
 phonology we don't handle.  Would it make sense to
 have the morpheme segmented line regularize further?
 
+SS--I began by looking at the first item that was coded as grammatical 
+and did not parse.  I did a TSQL query in tsdb looking at well-formed and unanalyzed
+items.
+
+Example 1
+yaaròo ya-nàa gyaarà-CForm kèekè
+boy he-cont repair-CForm bicycle
+The boy is repairing a bicycle.
+
+
+I think that the problem is that "ya-" was coded as 2nd in the choices file.  It
+should be 3rd.  I changed
+
+verb-slot2_morph4_orth=ya-
+      verb-slot2_morph4_feat2_value=2nd to
+
+verb-slot2_morph4_orth=ya-
+      verb-slot2_morph4_feat2_value=3rd
+
+This example now parses.  
+
+Coverage 23.7%
+Overgeneration 0
+
+I did the same query again and looked at the first item.  It seems that "dafa" boil was placed under intransitive verbs.  It should have been transitive.  I fixed this in te choices file.
+
+hàdiizà taa dafà-CForm ruwaa
+Hadiza(3fs) 3fs.COM boil-CForm water
+Hadiza boiled water
+
+This fixed it and the example now parses.
+
+Coverage 26.3
+Overgeneration 0
+
+There are 38 positive items. 10 of these are now parsing.  Of the remaining 28
+
+9 demonstrate two part negation which is not handled in the negation library 
+(Items 4, 24, 25, 26, 27, 28, 29, 30, 31)
+
+7 reflect that independent pronouns do not appear as subjects (These examples are
+of first and second person were a full NP is not possible).
+
+(Items 10, 11, 12, 13, 14, 15, 32, 44)
+
+For Item 33
+
+yaaròo baa ya-à gyaarà-CForm kèeke
+boy NEG he-cont repair-CForm bicycle
+The boy is not repairing a bicycle.
+
+The negative-continuous tense/aspect/mood aux needed to be added.  I put the following
+in the choices file
+ verb-slot2_input3_type=aux13
+
+ aux13_name=negative-continuous-tam
+  aux13_sem=no-pred
+    aux13_feat1_name=aspect
+    aux13_feat1_value=continuous
+  aux13_subj=np
+    aux13_compfeature1_name=form
+    aux13_compfeature1_value=nonfinite
+    aux13_stem1_orth=à
+
+The sentence now parses
+Coverage 28.9%  11/38
+Overgeneration 3.3% One item is overgenerating
+
+#Example 33 is an ungrammatical example of a negative-continous verb. The negative continous is formed by having the negative marker "bàa" followed by a pronoun containing the TAM "-à." "The complex made up of the negative marker plus the PAC exhibits a fixed H-L tome pattern.  Here the negative marker (incorrectly) comes after the pronoun +TAM.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {negation}
+yaaròo yàa bàa gyaarà kèekè
+yaaròo ya-à bàa gyaarà-CForm kèekè
+boy  he-cont NEG repair-CForm bicycle
+The boy is not repairing a bicycle.
+At first I thought this was happening because of 
+
+neg-order=either
+
+I changed it to neg-order=before and the problem still happened.
+
+Now, I think this is overgenerating because the way the grammar is written the 
+rule says it is allowed to come before a VP
+"gyaarà kèekè" is a VP.  I do not know how to constrict it so that it only comes
+before the aux.
+
+Item 35 was partially not parsing because of a spelling convention.  If the weak
+subject pronoun comes after the tense/aspect/mood aux, the convention is to write
+them as two separate words.  Since we are regularizing spelling I changed this in
+the test suite.  I also needed to add the suffix to the choices file (the other wsps
+were prefixes.  This one is a suffix)
+
+verb-slot3_name=suffix-light-syllable-wsp
+      verb-slot3_opt=on
+      verb-slot3_order=after
+      verb-slot3_input1_type=aux14
+    verb-slot3_morph1_name=3ms-suffix-wsp
+    verb-slot3_morph1_orth=ya-
+      verb-slot3_morph1_feat1_name=number
+      verb-slot3_morph1_feat1_value=singular
+      verb-slot3_morph1_feat1_head=subj
+      verb-slot3_morph1_feat2_name=person
+      verb-slot3_morph1_feat2_value=3rd
+      verb-slot3_morph1_feat2_head=subj
+
+
+aux14_name=future-tam
+  aux14_sem=no-pred
+    aux14_feat1_name=tense
+    aux14_feat1_value=future
+  aux14_subj=np
+    aux14_compfeature1_name=form
+    aux14_compfeature1_value=nonfinite
+    aux14_stem1_orth=zaa
+
+
+The item now parses.
+
+Coverage 31.6 % 12/38
+Overgeneration 3.3 % 1/30
+
+
+
+The next two items 39 and 40 were not parsing because the auxes were not entered into the grammar.  I added
+aux15_name=3m-subjunctive-tamless-wsp-tam
+  aux15_sem=no-pred
+    aux15_feat1_name=number
+    aux15_feat1_value=singular
+    aux15_feat1_head=subj
+    aux15_feat2_name=person
+    aux15_feat2_value=3rd
+    aux15_feat2_head=subj
+    aux15_feat3_name=gender
+    aux15_feat3_value=masculine
+    aux15_feat3_head=subj
+  aux15_subj=np
+    aux15_compfeature1_name=form
+    aux15_compfeature1_value=nonfinite
+    aux15_stem1_orth=yà
+  aux16_name=3f-subjunctive-tamless-wsp-tam
+  aux16_sem=no-pred
+    aux16_feat1_name=number
+    aux16_feat1_value=singular
+    aux16_feat1_head=subj
+    aux16_feat2_name=person
+    aux16_feat2_value=3rd
+    aux16_feat2_head=subj
+    aux16_feat3_name=gender
+    aux16_feat3_value=feminine
+    aux16_feat3_head=subj
+  aux16_subj=np
+    aux16_compfeature1_name=form
+    aux16_compfeature1_value=nonfinite
+    aux16_stem1_orth=tà
+
+and I added that the coordination strategy 3 works for vps as well as sentences.
+  cs3_vp=on
+
+Coverage 14/38 = 36.8
+Overgeneration 1/30 = 3.3
+
+Item 41 represents non standard word order and is not covered by the current
+system
+
+Item 52 has a connector that does not attach to the noun that is used to connect
+the determiner to the noun is some cases.  This connector was not in the grammar.
+
+I added
+noun3_name=foreign
+    noun3_feat1_name=person
+    noun3_feat1_value=3rd
+  noun3_det=opt
+    noun3_stem1_orth=bûus
+    noun3_stem1_pred=_bus_n_rel
+det1_name=connector
+    det1_stem1_orth=Di
+    det1_stem1_pred=_def_det_rel
+  det-slot1_name=det-suffix
+  det-slot1_order=after
+    det-slot1_input1_type=det1
+    det-slot1_morph1_name=masc-connector
+    det-slot1_morph1_orth=-7n
+
+and changed the has-det choice to yes and that it comes after the noun.
+
+Item 52 now parses.
+
+Coverage 15/38 39.5%
+Overgeneration 1/30 3.3%
+
+Item 54 contained "shi" 3ms pronoun that was not in the grammar's lexicon.
+I added 
+ noun4_name=3ms-pronoun
+    noun4_feat1_name=gender
+    noun4_feat1_value=masculine
+    noun4_feat2_name=person
+    noun4_feat2_value=3rd
+    noun4_feat3_name=number
+    noun4_feat3_value=singular
+  noun4_det=imp
+    noun4_stem1_orth=shi
+    noun4_stem1_pred=_pronoun_n_rel
+
+and changed the spelling of muusaa in the test suite to be consistent.  In some 
+places it had two 'a's and in some it had one.
+
+Item 54 now parses.
+
+I added "bello" as well.  
+
+Coverage 17/38 = 44.7%
+Overgeneration 2/30 = 6.7%
+
+#Example 56 Ungrammatical coordination agreement.  Noun phrases can be coordinated 
+with the conjuction 'dà.' It can be polysndeton or N-syndeton.  dà Bello dà Musa 
+(Bello and Musa) is acceptable and shii dà Musa (he and Musa) is acceptable as well. 
+"If two (or more) singular nouns are conjoined, they become grammatically plural" 
+(a:137).  Here "yaa" is a third person masculine singular TAM+wsp.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {crd}
+shi dà muusaa yaa ga dookìn
+shi dà muusaa yaa ga-CForm  dookì-7n
+3ms and Musa 3ms.COM see-CForm  horse-the
+He and Musa saw the horse.
+
+
+I do not think that the coordination library is able to eliminate this.
+
+
+Item 55 should be looked at more as it as 5 different parses.  
+
+Item 59 was not parsing because of an error in the test suite the lexical verbs
+must end in a particular form.  In this case the -CForm had been left off.
+
+This item now parses
+
+Coverage 18/38 = 47.4%
+Overgeneration 2/30 = 6.7%
+
+Items 60 and 68 are questioning strategies that are not covered in the question
+library. Item 60 uses a sentence final question morpheme and Item 68 uses a sentence
+final word.  The word can be either sentence final or sentence initial and you must
+choose either or.
+
+I think that this is as far as Hausa will go.  Ambiguity for two items still needs to
+be looked at.
 ---
 mal
 ---
