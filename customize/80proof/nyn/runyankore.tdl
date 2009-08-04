@@ -1,6 +1,6 @@
 ;;; Grammar of Runyankore
 ;;; created at:
-;;;     Tue Aug 04 00:28:50 UTC 2009
+;;;     Tue Aug 04 00:41:49 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -32,27 +32,20 @@ class5-initial-vowel-prefix-lex-rule := initial-vowel-prefix-lex-rule &
 
 class9-initial-vowel-prefix-lex-rule := initial-vowel-prefix-lex-rule.
 
-present-tense-marker-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
+present-tense-marker-lex-rule := lexeme-to-lexeme-rule & add-only-no-ccont-rule &
   [ TRACK #track,
     DTR subject-marker-lex-rule &
         [ TRACK #track ] ].
 
-verb-lex := remote-marker-rule-dtr & yesterday-past-modified-verb-form-rule-dtr & subject-marker-rule-dtr & lex-item &
-  [ INFLECTED -,
-    TRACK [ T-non-present-tense-dummy -,
-            T-neg-present - ],
-    SYNSEM.LOCAL.CAT [ HEAD verb,
-                       HC-LIGHT - ] ].
-
-present-universal-lex-rule := const-ltow-rule & present-tense-marker-lex-rule &
+present-universal-lex-rule := const-ltol-rule & present-tense-marker-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E [ TENSE present,
                                      ASPECT habitual ] ].
 
-present-continuous-lex-rule := infl-ltow-rule & present-tense-marker-lex-rule &
+present-continuous-lex-rule := infl-ltol-rule & present-tense-marker-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E [ TENSE present,
                                      ASPECT continuous ] ].
 
-non-present-tense-lex-rule := const-ltow-rule & present-tense-marker-lex-rule &
+non-present-tense-lex-rule := const-ltol-rule & present-tense-marker-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE non-present ].
 
 non-present-tense-dummy-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
@@ -61,6 +54,13 @@ non-present-tense-dummy-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule
     DTR subject-marker-lex-rule &
         [ TRACK [ T-non-present-tense-dummy +,
                   T-neg-present #track ] ] ].
+
+verb-lex := remote-marker-rule-dtr & yesterday-past-modified-verb-form-rule-dtr & subject-marker-rule-dtr & remote-past-neg-rule-dtr & lex-item &
+  [ INFLECTED -,
+    TRACK [ T-non-present-tense-dummy -,
+            T-neg-present - ],
+    SYNSEM.LOCAL.CAT [ HEAD verb,
+                       HC-LIGHT - ] ].
 
 modified-verb-no-tense-lex-rule := const-ltow-rule & non-present-tense-dummy-lex-rule.
 
@@ -73,7 +73,7 @@ track :+ [ T-non-present-tense-dummy bool,
 
 remote-marker-rule-dtr := avm.
 
-object-marker-lex-rule := remote-marker-rule-dtr & yesterday-past-modified-verb-form-rule-dtr & infl-add-only-no-ccont-ltol-rule &
+object-marker-lex-rule := remote-marker-rule-dtr & yesterday-past-modified-verb-form-rule-dtr & infl-add-only-no-ccont-ltol-rule & remote-past-neg-rule-dtr &
   [ TRACK #track,
     DTR transitive-verb-lex &
         [ TRACK #track ] ].
@@ -152,7 +152,7 @@ neg-pres-tense-lex-rule := subject-marker-rule-dtr & lexeme-to-lexeme-rule & add
 neg-past-tense-lex-rule := subject-marker-rule-dtr & infl-add-only-no-ccont-ltol-rule &
   [ TRACK [ T-non-present-tense-dummy #track,
             T-neg-present + ],
-    DTR yesterday-past-modified-verb-form-lex-rule &
+    DTR remote-past-neg-lex-rule &
         [ TRACK [ T-non-present-tense-dummy #track,
                   T-neg-present - ] ] ].
 
@@ -240,6 +240,15 @@ neg-pres-cont-lex-rule := infl-ltol-rule & neg-pres-tense-lex-rule &
 
 neg-past-lex-rule := neg-past-tense-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE remote-past ].
+
+remote-past-neg-rule-dtr := avm.
+
+remote-past-neg-lex-rule := infl-add-only-no-ccont-ltol-rule &
+  [ TRACK #track,
+    DTR remote-past-neg-rule-dtr &
+        [ TRACK #track ] ].
+
+remote-past-ire-lex-rule := remote-past-neg-lex-rule.
 
 ;;; Lexical types
 

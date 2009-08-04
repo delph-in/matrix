@@ -993,6 +993,31 @@ by ti-:
 
 No it's not an error, but it still doesn't parse.
 
+The problem is that there are only two -ire morphemes currently.
+One is non-finite, and the other is yesterday past.  It seems
+that we need one more that is finite, and requires the -ra-
+prefix. Try adding:
+
+  verb-slot10_name=remote-past-neg
+  verb-slot10_order=after
+    verb-slot10_input1_type=verb
+    verb-slot10_input2_type=verb-slot5
+    verb-slot10_morph1_name=remote-past-ire
+    verb-slot10_morph1_orth=-ire
+    verb-slot10_constraint1_type=req
+    verb-slot10_constraint1_other-slot=verb-slot9
+
+    verb-slot9_input1_type=verb-slot10
+
+That loads, but won't parse, because of a conflict
+on the TRACK feature.  Try taking these out:
+
+    verb-slot10_constraint1_type=req
+    verb-slot10_constraint1_other-slot=verb-slot9
+
+
+That added one, and killed off a lot of spurious ambiguity,
+but also lost 4 items: 28, 34, 43, 44.
 
 ---
 hau

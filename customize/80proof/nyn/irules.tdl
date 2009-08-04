@@ -128,6 +128,11 @@ neg-past-prefix :=
 neg-past-lex-rule.
 
 
+remote-past-ire-suffix :=
+%suffix (* -ire)
+remote-past-ire-lex-rule.
+
+
 n1-bottom :=
   %prefix (* na-)
   n1-bottom-coord-rule.
