@@ -7,3 +7,5 @@ modified-verb-no-tense-lex := modified-verb-no-tense-lex-rule.
 non-remote-past-marker-lex := non-remote-past-marker-lex-rule.
 
 non-yesterday-past-lex := non-yesterday-past-lex-rule.
+
+neg-pres-lex := neg-pres-lex-rule.

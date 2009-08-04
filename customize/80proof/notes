@@ -825,6 +825,154 @@ ambiguity level.
       verb-slot7_morph1_feat3_value=plus
       verb-slot7_morph1_feat3_head=verb
 
+Coverage: 13/28 46.4%
+Overgeneration: 1/53 1.9%
+Error: 26
+
+This one isn't parsing because we don't have -riku-:
+
+#Ex 58 demonstrates negation of the present continuous tense.  It is formed by prefixing "ti-" before the subject prefix and infixing "-riku-" between the subject prefix and the verb stem.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {neg}
+omushaija tarikweshongora
+o-mu-shaija ti-a-riku-eshongora
+c1.vwl-c1.prfx-man neg-c1.3sg.subj-neg-sing
+'The man is not singing.'
+ 
+Remove aspect info from ti-, then have a slot before the
+subject marker that ti requires which gives the aspect
+info. Zero morpheme there gives habitual for "universal".
+In fact, I think "ti-" doesn't carry any tense information:
+
+#Ex 63 demonstrates negation of the remote past.  It is formed by prefixing "ti-" before the subject prefix, adding "-ra-" after the subject prefix, and attaching all of this to the modified form of the verb.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {neg}
+omushaija taraeshongora-ire
+o-mu-shaija ti-a-ra-eshongora-ire
+c1.vwl-c1.prfx-man neg-c1.3sg.subj-neg-sing-modified
+'The man did not sing.'
+
+First attempt:
+
+  verb-slot7_name=neg-present
+  verb-slot7_order=before
+    verb-slot7_input1_type=verb-slot6
+    verb-slot7_morph1_name=negation
+    verb-slot7_morph1_orth=ti-
+      verb-slot7_morph1_feat1_name=negation
+      verb-slot7_morph1_feat1_value=plus
+      verb-slot7_morph1_feat1_head=verb
+    verb-slot7_constraint1_type=req
+    verb-slot7_constraint1_other-slot=verb-slot8
+  verb-slot8_name=neg-tense
+  verb-slot8_order=before
+    verb-slot8_input1_type=iverb
+    verb-slot8_input2_type=tverb
+    verb-slot8_morph1_name=neg-pres
+      verb-slot8_morph1_feat1_name=tense
+      verb-slot8_morph1_feat1_value=present
+      verb-slot8_morph1_feat1_head=verb
+      verb-slot8_morph1_feat2_name=aspect
+      verb-slot8_morph1_feat2_value=habitual
+      verb-slot8_morph1_feat2_head=verb
+    verb-slot8_morph2_name=neg-pres-cont
+    verb-slot8_morph2_orth=riku-
+      verb-slot8_morph2_feat1_name=tense
+      verb-slot8_morph2_feat1_value=present
+      verb-slot8_morph2_feat1_head=verb
+      verb-slot8_morph2_feat2_name=aspect
+      verb-slot8_morph2_feat2_value=continuous
+      verb-slot8_morph2_feat2_head=verb
+    verb-slot8_morph3_name=neg-past
+    verb-slot8_morph3_orth=ra-
+      verb-slot8_morph3_feat1_name=tense
+      verb-slot8_morph3_feat1_value=remote-past
+      verb-slot8_morph3_feat1_head=verb
+    verb-slot8_constraint1_type=forces
+    verb-slot8_constraint1_other-slot=verb-slot7
+
+I've got the negative morpheme and the negated tense morphemes
+mutually selecting each other.  Not sure how to require the -ire
+bit in the past tense example.  What happens if two alternative
+slots are required by the same morpheme?
+
+Also had to add:
+
+    verb-slot6_input3_type=verb-slot8
+
+
+.. and that gave me a redundancy on main-verb-lex, since
+it also got subj-marker-rule-dtr.  This is probably a morphotactics
+bug.
+
+Reading in type file matrix
+Reading in type file head-types
+Reading in type file runyankore
+Checking type hierarchy
+Redundancy involving MAIN-VERB-LEX
+[16:52:38] gc-after-hook(): {L#76 N=21m O=0 E=90%} [S=859m R=406m].
+[16:52:40] gc-after-hook(): {L#77 N=21m O=0 E=96%} [S=859m R=406m].
+[16:52:41] gc-after-hook(): {L#78 N=21m O=0 E=96%} [S=859m R=406m].
+[16:52:43] gc-after-hook(): {L#79 N=21m O=0 E=93%} [S=859m R=406m].
+[16:52:44] gc-after-hook(): {L#80 N=21m O=0 E=93%} [S=859m R=406m].
+
+MAIN-VERB-LEX: SUBJECT-MARKER-RULE-DTR is redundant - it is an ancestor of VERB-LEX 
+[16:52:46] gc-after-hook(): {L#81 N=21m O=0 E=93%} [S=859m R=406m].
+[16:52:47] gc-after-hook(): {L#82 N=21m O=0 E=93%} [S=859m R=406m].
+Error: Problems in type file
+
+Try changing this:
+
+    verb-slot8_input1_type=tverb
+    verb-slot8_input1_type=iverb
+
+To this:
+
+    verb-slot8_input1_type=verb
+
+That gave a new morphotactics bug:
+
+Error in GLBTYPE5:
+  Unification with constraint of VERB-LEX failed at path (DTR)
+[17:10:10] gc-after-hook(): {L#83 N=32m O=0 E=87%} [S=859m R=406m].
+
+Error in NEG-PAST-LEX-RULE:
+  Unification with constraint of VERB-LEX failed at path (DTR)
+Error in NEG-PRES-CONT-LEX-RULE:
+  Unification with constraint of VERB-LEX failed at path (DTR)
+Error in NEG-PRES-LEX-RULE:
+  Unification with constraint of VERB-LEX failed at path (DTR)
+Error in NEG-TENSE-LEX-RULE:
+  Unification with constraint of VERB-LEX failed at path (DTR)
+Error: Problems in type file
+
+Here the problem is that neg-tense-lex-rule is wtol, but
+verb-lex is [INFLECTED -].  Maybe this is because of the mutual
+selection thing that I was doing.  I'll try doing just one.
+
+Removing this:
+
+    verb-slot7_constraint1_type=req
+    verb-slot7_constraint1_other-slot=verb-slot8
+
+Same problem.  Try removing the other one:
+
+    verb-slot8_constraint1_type=forces
+    verb-slot8_constraint1_other-slot=verb-slot7
+
+That loads... and fixes the -riku- example, but not
+the -ra- example.  It also adds ambiguity to 7 other
+sentences, while reducing ambiguity on 1.
+
+Coverage: 14/28 50%
+Overgeneration: 1/53 1.9%
+Error: 25
+
+
 
 ---
 hau

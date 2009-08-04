@@ -1,6 +1,6 @@
 ;;; Grammar of Runyankore
 ;;; created at:
-;;;     Mon Aug 03 23:37:24 UTC 2009
+;;;     Tue Aug 04 00:17:13 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -38,8 +38,9 @@ present-tense-marker-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
         [ TRACK #track ] ].
 
 verb-lex := remote-marker-rule-dtr & yesterday-past-modified-verb-form-rule-dtr & subject-marker-rule-dtr & lex-item &
-  [ TRACK.T-non-present-tense-dummy -,
-    INFLECTED -,
+  [ INFLECTED -,
+    TRACK [ T-non-present-tense-dummy -,
+            T-neg-present - ],
     SYNSEM.LOCAL.CAT [ HEAD verb,
                        HC-LIGHT - ] ].
 
@@ -55,9 +56,11 @@ non-present-tense-lex-rule := const-ltow-rule & present-tense-marker-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE non-present ].
 
 non-present-tense-dummy-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
-  [ TRACK.T-non-present-tense-dummy -,
+  [ TRACK [ T-non-present-tense-dummy -,
+            T-neg-present #track ],
     DTR subject-marker-lex-rule &
-        [ TRACK.T-non-present-tense-dummy + ] ].
+        [ TRACK [ T-non-present-tense-dummy +,
+                  T-neg-present #track ] ] ].
 
 modified-verb-no-tense-lex-rule := const-ltow-rule & non-present-tense-dummy-lex-rule.
 
@@ -65,7 +68,8 @@ track := avm.
 
 word-or-lexrule :+ [ TRACK track ].
 
-track :+ [ T-non-present-tense-dummy bool ].
+track :+ [ T-non-present-tense-dummy bool,
+    T-neg-present bool ].
 
 remote-marker-rule-dtr := avm.
 
@@ -88,9 +92,11 @@ non-remote-past-marker-lex-rule := const-ltol-rule & remote-marker-lex-rule &
 yesterday-past-modified-verb-form-rule-dtr := avm.
 
 yesterday-past-modified-verb-form-lex-rule := lexeme-to-lexeme-rule & add-only-no-ccont-rule & subject-marker-rule-dtr &
-  [ TRACK.T-non-present-tense-dummy +,
+  [ TRACK [ T-non-present-tense-dummy +,
+            T-neg-present #track ],
     DTR yesterday-past-modified-verb-form-rule-dtr &
-        [ TRACK.T-non-present-tense-dummy - ] ].
+        [ TRACK [ T-non-present-tense-dummy -,
+                  T-neg-present #track ] ] ].
 
 yesterday-past-marker-lex-rule := infl-ltol-rule & yesterday-past-modified-verb-form-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE yesterday-past ].
@@ -135,6 +141,13 @@ class5-obj-marker-lex-rule := object-marker-lex-rule &
                                                                  GEND class-5 ] ].
 
 subject-marker-rule-dtr := avm.
+
+neg-tense-lex-rule := subject-marker-rule-dtr & lexeme-to-lexeme-rule & add-only-no-ccont-rule &
+  [ TRACK [ T-non-present-tense-dummy #track,
+            T-neg-present + ],
+    DTR verb-lex &
+        [ TRACK [ T-non-present-tense-dummy #track,
+                  T-neg-present - ] ] ].
 
 subject-marker-lex-rule := infl-add-only-no-ccont-ltol-rule &
   [ TRACK #track,
@@ -182,15 +195,17 @@ class9-subj-marker-lex-rule := subject-marker-lex-rule &
                                                                 GEND class-9 ] ].
 
 neg-present-lex-rule := infl-ltow-rule & cont-change-only-lex-rule &
-  [ TRACK #track,
+  [ TRACK [ T-non-present-tense-dummy #track,
+            T-neg-present - ],
     DTR subject-marker-lex-rule &
-        [ TRACK #track ] ].
+        [ TRACK [ T-non-present-tense-dummy #track,
+                  T-neg-present + ] ] ].
 
 ; This lexical rule adds the neg_r_rel to the verb's
 ; 	          RELS list.  It is instantiated by a spelling-changing
 ; 	          rule as specified in irules.tdl.
 
-neg-pres-lex-rule := neg-present-lex-rule &
+negation-lex-rule := neg-present-lex-rule &
   [ C-CONT [ HOOK [ XARG #xarg,
                     LTOP #ltop,
                     INDEX #ind ],
@@ -201,14 +216,23 @@ neg-pres-lex-rule := neg-present-lex-rule &
              HCONS <! qeq &
                       [ HARG #harg,
                         LARG #larg ] !> ],
-    SYNSEM [ LOCAL.CONT.HOOK.INDEX.E [ TENSE present,
-                                       ASPECT habitual ],
-             LKEYS #lkeys ],
+    SYNSEM.LKEYS #lkeys,
     DTR.SYNSEM [ LKEYS #lkeys,
                  LOCAL [ CONT.HOOK [ XARG #xarg,
                                      INDEX #ind,
                                      LTOP #larg ],
                          CAT.HEAD verb ] ] ].
+
+neg-pres-lex-rule := const-ltol-rule & neg-tense-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E [ TENSE present,
+                                     ASPECT habitual ] ].
+
+neg-pres-cont-lex-rule := infl-ltol-rule & neg-tense-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E [ TENSE present,
+                                     ASPECT continuous ] ].
+
+neg-past-lex-rule := infl-ltol-rule & neg-tense-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE remote-past ].
 
 ;;; Lexical types
 

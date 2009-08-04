@@ -113,9 +113,19 @@ class9-subj-marker-prefix :=
 class9-subj-marker-lex-rule.
 
 
-neg-pres-prefix :=
+negation-prefix :=
 %prefix (* ti-)
-neg-pres-lex-rule.
+negation-lex-rule.
+
+
+neg-pres-cont-prefix :=
+%prefix (* riku-)
+neg-pres-cont-lex-rule.
+
+
+neg-past-prefix :=
+%prefix (* ra-)
+neg-past-lex-rule.
 
 
 n1-bottom :=

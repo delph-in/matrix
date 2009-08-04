@@ -379,8 +379,7 @@ section=lexicon
     verb-slot7_constraint1_other-slot=verb-slot8
   verb-slot8_name=neg-tense
   verb-slot8_order=before
-    verb-slot8_input1_type=iverb
-    verb-slot8_input2_type=tverb
+    verb-slot8_input1_type=verb
     verb-slot8_morph1_name=neg-pres
       verb-slot8_morph1_feat1_name=tense
       verb-slot8_morph1_feat1_value=present
@@ -401,7 +400,5 @@ section=lexicon
       verb-slot8_morph3_feat1_name=tense
       verb-slot8_morph3_feat1_value=remote-past
       verb-slot8_morph3_feat1_head=verb
-    verb-slot8_constraint1_type=forces
-    verb-slot8_constraint1_other-slot=verb-slot7
 
 section=test-sentences
