@@ -1041,6 +1041,21 @@ to this:
 Leaving it like that for now, since the overall coverage is
 better.
 
+
+At least some of the over generation has to do with the
+dependency between the negative prefix and the 
+negative tense markers.  I'm geting neg-pres-tense-lex
+without ti-, and since it's a zero, it comes up optionally
+in any present tense form.  Putting this back in leads
+to a grammar that won't load:
+
+    verb-slot8_constraint1_type=forces
+    verb-slot8_constraint1_other-slot=verb-slot7
+
+That only accounts for 1 of the 8 parses, though.  The
+others seem to have to do with all of the non-Xtense-lex
+rules.  Turning that over to Safiyyah.
+
 ---
 hau
 ---
