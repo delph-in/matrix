@@ -1,0 +1,180 @@
+---
+mal
+---
+
+Choices file doesn't validate, but doesn't leave any red stars.
+Trying customize-one.py led to the system spinning.
+
+Problem was disjunctive gender value on noun12: inanimate, non-rational.
+Changed that to just inanimate, and got a grammar that loaded, but
+with a cycle on non-rational, because noun10 still had that disjunctive
+value.  Change that to just inanimate, and got on to next problem.
+
+Cycle involving NOM-ACC-TRANSITIVE-VERB-LEX
+
+Changed:
+
+  verb1_name=nom-acc-transitive
+
+to:
+
+  verb1_name=nom-acc-trans
+
+... and made similar changes for all the verb type names.
+
+Grammar loads!
+
+Coverage: 10/39 25.6%
+Overgeneration: 2/37 5.4%
+Errors: 29
+
+Added stem for "read":
+
+    verb1_stem2_orth=vaayi
+    verb1_stem2_pred=_read_v_rel
+
+Coverage: 10/39 25.6%
+Overgeneration: 2/37 5.4%
+Errors: 25
+
+Changed spelling of one stem:
+
+    noun1_stem3_orth=raamaan
+    noun1_stem3_pred=_name_n_rel
+
+    noun1_stem3_orth=raaman
+    noun1_stem3_pred=_name_n_rel
+
+Coverage: 10/39 25.6%
+Overgeneration: 2/37 5.4%
+Errors: 23
+
+#56 not parsing because coordination is
+not fully retrofitted to new morphotactics. In particular,
+infl-bottom-coord-rule requires that the daughter be
+[INFLECTED -], but the daughter in this case has
+gone through a lexeme-to-word-rule.  
+
+Added stem for "fall":
+
+    verb2_stem2_orth=viiZ
+    verb2_stem2_pred=_fall_v_rel
+
+#58, 59 don't parse because affix-marked coordination
+is not supported for phrases (NP, VP, S)
+
+Something very puzzling here:
+
+TSNLP(3): (lkb::do-parse-tty "atE cirikk-tu")
+Error: 
+Rule PAST_VERB returned from morph analyser is undefined (error in grammar
+       loading?)
+
+There is nothing called "past_verb" anywhere in the
+.tdl, so I have now idea how the morph analyzer is getting
+that. Even tried restarting the LKB to make sure it
+wasn't left over from some other grammar.
+
+Found the culprit: We'd left in an irregs.tab file initalized
+with an example from English:
+
+"
+ate PAST_VERB eat
+"
+
+Not sure if it's legit to remove this or not.
+
+Coverage: 10/39 25.6%
+Overgeneration: 2/37 5.4%
+Errors: 22
+
+Problem with this example:
+
+kuTTi amma-e viLi-ccu
+child.nom mother-acc call-past
+The child called the mother.
+
+
+appears to be that the past tense rule is ltol, i.e.,
+viLi-ccu is [INFLECTED -].
+
+Fixed that by making verb-slot4 and verb-slot5 (negation
+markers) optional.
+
+  verb-slot4_opt=on
+  verb-slot5_opt=on
+
+Coverage 29/39 74.4%
+Overgeneration 2/37 5.4%
+Errors: 24
+
+That seems to have introduced a new error for this example (#65):
+
+kuTTi cirikk-uka-aaNe-irunnu
+child.nom laugh-infinitive-imperfect-past
+'The child was laughing.'
+
+Item 14 wasn't parsing and furthermore was getting subj-head
+and comp-head attachment for subject of intransitive verb.
+Changed this:
+
+  verb4_valence=trans
+
+to this:
+
+  verb4_valence=intrans
+
+Coverage 30/39 76.9%
+Overgeneration 2/37 5.4%
+Errors: 24
+
+Two ungrammatical examples parsing:
+
+#Ex 36 demonstrates an ungrammatical use of tense.  Here the verb appears without the tense marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi cirikk
+kuTTi cirikk
+child.nom laugh
+'The child laughs.'
+
+--> The problem here is a bug in the morphotactics that
+lead to tense-aspect-rule-dtr being a supertype of verb-lex,
+despite nothing in the choices file indicating that.
+
+#Ex 71 demonstrates ungrammatical present habitual.  It is formed by adding "-aaRE" and "-uNTE" to the verb stem.  Here they are attached to the present tense stem.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+kuTTi cirikkunnaaRuNTaayirunnu
+kuTTi cirikk-unnu-aaRE-uNTE
+child.nom laugh-pres-hab-hab.pres
+'The child was laughing.'
+
+--> This one we might be able to fix, since there
+seem to be two ways of doing -aaRe-uNTe, all at once
+or in two pieces.
+
+SS--I loaded the grammar and received an error for the imperfective-marker-rule.  The error stated there was a strange character.  I checked irules.tdl and noticed an
+extra space.  I removed the space and reloaded the grammar without errors.
+
+Trying to fix the problems with Ex 71, 66, 69, 70, I removed the second morpheme -aaRE-uNTe from the faked-tense-aspect-marker slot and created a new slot for it that takes any verb as an input.  The new grammar has slightly improved coverage.
+
+Coverage 79.5%
+Overgeneration 2.7%
+
+Ex 71 was eliminated
+Ex 66 parsed
+
+I think that the problem with #69 and #70 is that I did not update the tense-aspect 
+slot to have the new slot as input.
+
+Coverage 84.6%
+Overgeneration 2.7%
+
+I think that this is the most that we will be able to do.
+
+

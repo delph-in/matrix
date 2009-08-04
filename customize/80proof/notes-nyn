@@ -1,0 +1,436 @@
+----
+nyn:
+----
+
+Cycle involving TRANSITIVE-VERB-LEX
+
+Repairs:
+
+Changed the following:
+
+
+  verb1_name=transitive -> verb1_name=trans
+  verb2_name=intransitive -> verb2_name=intrans
+
+Next problem:
+
+Error: pattern with no affixation ignored in NON-PRESENT-TENSE-PREFIX
+Error: no valid morphological patterns in NON-PRESENT-TENSE-PREFIX: rule-ignored
+
+The issue is that there is a slot with no morphemes defined
+for it:
+
+  verb-slot2_name=non-present-tense
+  verb-slot2_order=before
+    verb-slot2_input1_type=verb-slot6
+  verb-slot3_name=remote-marker
+
+Safiyyah explained that this was intended to house an empty
+morpheme, so I added one.  Also added (per Safiyyah's instructions)
+verb-slot3 and verb-slot4 as possible inputs to verb-slot6.
+
+Now the grammar loads without errors!
+
+Results:
+
+Coverage: 0%
+Overgeneration: 0%
+Errors: 76/81
+
+Repairs:
+
+Added noun type for class 9 and stem for stick.
+Fixed _n_rel on _sun_n_rel
+
+
+SS-think that the grammar is not working because the tense lexical
+rules are incorrect.  As discussed in the meeting, I changed the tense
+lexical rules so that each had an extra rule without a morpheme that
+marked all the other tenses.
+
+Coverage : 0%
+Overgeneration: 0%
+Errors: 65/81
+
+Added missing lexical items:
+kazi class 1 woman_n_rel
+shaija class 1 _man_n_rel
+renga intransitive _set_v_rel
+
+Did interactive unification on the first test item and found that the
+class was that the subject was marked as plural and the verb agreement
+marker was singular.  This was incorrect in the choices file.  Changed
+
+     noun-slot1_morph1_feat2_value=plural
+to
+     noun-slot1_morph1_feat2_value=singular
+
+Ran grammar again (after deleting the subject-marker-lex-rule from
+main-verb-lex again)
+
+Coverage: 28.6%
+Overgeneration: 3.8%
+Errors: 40/81
+
+
+
+Found another lexical item that was missing
+zaana intransitive _play_v_rel
+
+Well-formed and 0 parses: 12
+
+11 of these grammatical items that are not parsing are not expected to
+parse given the current system.
+
+Examples 2 and 3 demonstrate OSV and SOV word orders which are
+possible in addition to the standard SVO.
+
+Examples 12, 13, 14, 15, 16 demonstrate subject dropping.  The
+reference grammar stated that overt pronouns are always emphatic.
+Pro-drop is normal, so I did not include pronouns in the test suite.
+(Maybe this should be done for the next go round)
+
+Examples 37 and 40 have non-standard SOV word order to demonstrate the
+object marker Object markers do not occur if the direct object follows
+the verb.
+
+Example 49 was mistakenly labeled as grammatical it was meant to be an
+ungrammatical example demonstrating that the both the main verb and
+auxliary require subject markers . I changed this in the test-suite
+and made a new item file and placed it in tsdb/skeletons/nyn.
+
+Example 66 demonstrates a form of coordination that the system does not do
+
+Example 50 is the only that that I think the system should be able to
+handle. The problem is that for the perfect both the aux and the main
+verb must be marked for subject.  The way that the rules are currently
+set up the main verb is being marked for univ-present and the aux is
+marked for continuous-present. I am going to change the rules so that
+there is one lexeme-to-word rule which will only apply to something
+that has the modified form or yesterday-past-tense.
+
+Running the grammar again and actually doing interactive unification
+instead of guessing at the problem.  It seems that the aux is not able
+to take the cont.pres because it conflicts with the perfective.
+
+Coverage 33%
+Overgeneration 3.7 %
+Errors 35
+
+Realized that negation morpheme had not been added.  This will account
+for some of the errors.
+
+EB:
+
+Changed inputs for verb-slot4 from this:
+
+	verb-slot4_input1_type=iverb
+	verb-slot4_input2_type=tverb
+	
+to this:
+
+	verb-slot4_input1_type=verb
+	verb-slot4_input2_type=verb-slot5
+
+My thinking was that "any verb" (i.e. just verb) would be less
+likely to have the extra supertype problem, and that verb-slot5 was
+motiviated in parallelism to the remote past marker. This results
+in a grammar that loads (yay!) and has the same coverage/overgeneration
+as above.
+
+   
+Looking now at the ones with errors that are well-formed.
+There are 7 of these: 17, 19, 21, 54, 58, 63, 74.
+
+17 at least was having a problem because the lkb was 
+splitting +voice on +.  Changed in choices and item. But
+that didn't fix anything since the +voice affix was a
+clause-final question marker functioning as an affix.
+To consider: Should we call it syntactically a clitic and
+break it off?  Will try that way for now. Changing it back
+to +voice so that the lkb segments it off, and then adding
+it as a sentence final question marking particle.  That's
+actually what the choices file had, except that the qpart
+was spelling +voice instead of voice. ... But that's not
+good enough, because the item file has -+voice, so I need
+to get rid of that hyphen.
+
+Coverage: 12/28 42.9%
+Overgeneration: 1/53 1.9%
+Error: 27
+
+... and there's a lot of ambiguity.  None was added from
+the previous state (except that the two new examples are
+7 ways ambiguous).
+
+Added negative morpheme:
+
+    verb-slot1_morph4_name=neg-present
+    verb-slot1_morph4_orth=ti-
+      verb-slot1_morph4_feat1_name=tense
+      verb-slot1_morph4_feat1_value=present
+      verb-slot1_morph4_feat1_head=verb
+      verb-slot1_morph4_feat2_name=aspect
+      verb-slot1_morph4_feat2_value=habitual
+      verb-slot1_morph4_feat2_head=verb
+      verb-slot1_morph4_feat3_name=negation
+      verb-slot1_morph4_feat3_value=plus
+      verb-slot1_morph4_feat3_head=verb
+
+That fixes at least one negative example, but leads
+to surprising extra ambiguity on other examples.  
+
+The problem seems to be that as soon as I put a negative
+morpheme in that slot, the whole thing becomes cont-change-only-lex-rule,
+and then things are underconstrained.  This is a bug in the 
+way negation was retrofitted to the lex rules code, but the
+work around (I think) is to define a separate slot for
+the negative morpheme.  That took it back to the original
+ambiguity level.
+
+  verb-slot7_name=neg-present
+  verb-slot7_order=before
+    verb-slot7_input1_type=verb-slot6
+    verb-slot7_morph1_name=neg-pres
+    verb-slot7_morph1_orth=ti-
+      verb-slot7_morph1_feat1_name=tense
+      verb-slot7_morph1_feat1_value=present
+      verb-slot7_morph1_feat1_head=verb
+      verb-slot7_morph1_feat2_name=aspect
+      verb-slot7_morph1_feat2_value=habitual
+      verb-slot7_morph1_feat2_head=verb
+      verb-slot7_morph1_feat3_name=negation
+      verb-slot7_morph1_feat3_value=plus
+      verb-slot7_morph1_feat3_head=verb
+
+Coverage: 13/28 46.4%
+Overgeneration: 1/53 1.9%
+Error: 26
+
+This one isn't parsing because we don't have -riku-:
+
+#Ex 58 demonstrates negation of the present continuous tense.  It is formed by prefixing "ti-" before the subject prefix and infixing "-riku-" between the subject prefix and the verb stem.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {neg}
+omushaija tarikweshongora
+o-mu-shaija ti-a-riku-eshongora
+c1.vwl-c1.prfx-man neg-c1.3sg.subj-neg-sing
+'The man is not singing.'
+ 
+Remove aspect info from ti-, then have a slot before the
+subject marker that ti requires which gives the aspect
+info. Zero morpheme there gives habitual for "universal".
+In fact, I think "ti-" doesn't carry any tense information:
+
+#Ex 63 demonstrates negation of the remote past.  It is formed by prefixing "ti-" before the subject prefix, adding "-ra-" after the subject prefix, and attaching all of this to the modified form of the verb.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {neg}
+omushaija taraeshongora-ire
+o-mu-shaija ti-a-ra-eshongora-ire
+c1.vwl-c1.prfx-man neg-c1.3sg.subj-neg-sing-modified
+'The man did not sing.'
+
+First attempt:
+
+  verb-slot7_name=neg-present
+  verb-slot7_order=before
+    verb-slot7_input1_type=verb-slot6
+    verb-slot7_morph1_name=negation
+    verb-slot7_morph1_orth=ti-
+      verb-slot7_morph1_feat1_name=negation
+      verb-slot7_morph1_feat1_value=plus
+      verb-slot7_morph1_feat1_head=verb
+    verb-slot7_constraint1_type=req
+    verb-slot7_constraint1_other-slot=verb-slot8
+  verb-slot8_name=neg-tense
+  verb-slot8_order=before
+    verb-slot8_input1_type=iverb
+    verb-slot8_input2_type=tverb
+    verb-slot8_morph1_name=neg-pres
+      verb-slot8_morph1_feat1_name=tense
+      verb-slot8_morph1_feat1_value=present
+      verb-slot8_morph1_feat1_head=verb
+      verb-slot8_morph1_feat2_name=aspect
+      verb-slot8_morph1_feat2_value=habitual
+      verb-slot8_morph1_feat2_head=verb
+    verb-slot8_morph2_name=neg-pres-cont
+    verb-slot8_morph2_orth=riku-
+      verb-slot8_morph2_feat1_name=tense
+      verb-slot8_morph2_feat1_value=present
+      verb-slot8_morph2_feat1_head=verb
+      verb-slot8_morph2_feat2_name=aspect
+      verb-slot8_morph2_feat2_value=continuous
+      verb-slot8_morph2_feat2_head=verb
+    verb-slot8_morph3_name=neg-past
+    verb-slot8_morph3_orth=ra-
+      verb-slot8_morph3_feat1_name=tense
+      verb-slot8_morph3_feat1_value=remote-past
+      verb-slot8_morph3_feat1_head=verb
+    verb-slot8_constraint1_type=forces
+    verb-slot8_constraint1_other-slot=verb-slot7
+
+I've got the negative morpheme and the negated tense morphemes
+mutually selecting each other.  Not sure how to require the -ire
+bit in the past tense example.  What happens if two alternative
+slots are required by the same morpheme?
+
+Also had to add:
+
+    verb-slot6_input3_type=verb-slot8
+
+
+.. and that gave me a redundancy on main-verb-lex, since
+it also got subj-marker-rule-dtr.  This is probably a morphotactics
+bug.
+
+Reading in type file matrix
+Reading in type file head-types
+Reading in type file runyankore
+Checking type hierarchy
+Redundancy involving MAIN-VERB-LEX
+[16:52:38] gc-after-hook(): {L#76 N=21m O=0 E=90%} [S=859m R=406m].
+[16:52:40] gc-after-hook(): {L#77 N=21m O=0 E=96%} [S=859m R=406m].
+[16:52:41] gc-after-hook(): {L#78 N=21m O=0 E=96%} [S=859m R=406m].
+[16:52:43] gc-after-hook(): {L#79 N=21m O=0 E=93%} [S=859m R=406m].
+[16:52:44] gc-after-hook(): {L#80 N=21m O=0 E=93%} [S=859m R=406m].
+
+MAIN-VERB-LEX: SUBJECT-MARKER-RULE-DTR is redundant - it is an ancestor of VERB-LEX 
+[16:52:46] gc-after-hook(): {L#81 N=21m O=0 E=93%} [S=859m R=406m].
+[16:52:47] gc-after-hook(): {L#82 N=21m O=0 E=93%} [S=859m R=406m].
+Error: Problems in type file
+
+Try changing this:
+
+    verb-slot8_input1_type=tverb
+    verb-slot8_input1_type=iverb
+
+To this:
+
+    verb-slot8_input1_type=verb
+
+That gave a new morphotactics bug:
+
+Error in GLBTYPE5:
+  Unification with constraint of VERB-LEX failed at path (DTR)
+[17:10:10] gc-after-hook(): {L#83 N=32m O=0 E=87%} [S=859m R=406m].
+
+Error in NEG-PAST-LEX-RULE:
+  Unification with constraint of VERB-LEX failed at path (DTR)
+Error in NEG-PRES-CONT-LEX-RULE:
+  Unification with constraint of VERB-LEX failed at path (DTR)
+Error in NEG-PRES-LEX-RULE:
+  Unification with constraint of VERB-LEX failed at path (DTR)
+Error in NEG-TENSE-LEX-RULE:
+  Unification with constraint of VERB-LEX failed at path (DTR)
+Error: Problems in type file
+
+Here the problem is that neg-tense-lex-rule is wtol, but
+verb-lex is [INFLECTED -].  Maybe this is because of the mutual
+selection thing that I was doing.  I'll try doing just one.
+
+Removing this:
+
+    verb-slot7_constraint1_type=req
+    verb-slot7_constraint1_other-slot=verb-slot8
+
+Same problem.  Try removing the other one:
+
+    verb-slot8_constraint1_type=forces
+    verb-slot8_constraint1_other-slot=verb-slot7
+
+That loads... and fixes the -riku- example, but not
+the -ra- example.  It also adds ambiguity to 7 other
+sentences, while reducing ambiguity on 1.
+
+Coverage: 14/28 50%
+Overgeneration: 1/53 1.9%
+Error: 25
+
+
+The problem here is that teh neg-past morpheme can't
+appear after the -ire slot.  Try making a separate slot
+for -ra- which takes -ire as its input, and is also required
+by ti-:
+
+    verb-slot7_constraint2_type=req
+    verb-slot7_constraint2_other-slot=verb-slot9
+  verb-slot9_name=neg-past-tense
+  verb-slot9_order=before
+    verb-slot9_input1_type=verb-slot4
+    verb-slot9_morph1_name=neg-past
+    verb-slot9_morph1_orth=ra-
+      verb-slot9_morph1_feat1_name=tense
+      verb-slot9_morph1_feat1_value=remote-past
+      verb-slot9_morph1_feat1_head=verb
+
+    verb-slot6_input4_type=verb-slot9
+
+No it's not an error, but it still doesn't parse.
+
+The problem is that there are only two -ire morphemes currently.
+One is non-finite, and the other is yesterday past.  It seems
+that we need one more that is finite, and requires the -ra-
+prefix. Try adding:
+
+  verb-slot10_name=remote-past-neg
+  verb-slot10_order=after
+    verb-slot10_input1_type=verb
+    verb-slot10_input2_type=verb-slot5
+    verb-slot10_morph1_name=remote-past-ire
+    verb-slot10_morph1_orth=-ire
+    verb-slot10_constraint1_type=req
+    verb-slot10_constraint1_other-slot=verb-slot9
+
+    verb-slot9_input1_type=verb-slot10
+
+That loads, but won't parse, because of a conflict
+on the TRACK feature.  Try taking these out:
+
+    verb-slot10_constraint1_type=req
+    verb-slot10_constraint1_other-slot=verb-slot9
+
+
+That added one, and killed off a lot of spurious ambiguity,
+but also lost 4 items: 28, 34, 43, 44.  The problem
+seems to be that the changes above had the side effect
+of making present-tense-marker-rule ltol (slot 1), even
+though it seems like it ought to be independent.  Submitting
+this as another morphotactics bug.  Confirming by taking
+this back out:
+
+  verb-slot10_name=remote-past-neg
+  verb-slot10_order=after
+    verb-slot10_input1_type=verb
+    verb-slot10_input2_type=verb-slot5
+    verb-slot10_morph1_name=remote-past-ire
+    verb-slot10_morph1_orth=-ire
+
+And reverting this:
+
+    verb-slot9_input1_type=verb-slot10
+to this:
+
+    verb-slot9_input1_type=verb-slot4
+
+Leaving it like that for now, since the overall coverage is
+better.
+
+
+At least some of the over generation has to do with the
+dependency between the negative prefix and the 
+negative tense markers.  I'm geting neg-pres-tense-lex
+without ti-, and since it's a zero, it comes up optionally
+in any present tense form.  Putting this back in leads
+to a grammar that won't load:
+
+    verb-slot8_constraint1_type=forces
+    verb-slot8_constraint1_other-slot=verb-slot7
+
+That only accounts for 1 of the 8 parses, though.  The
+others seem to have to do with all of the non-Xtense-lex
+rules.  Turning that over to Safiyyah.
+

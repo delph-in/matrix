@@ -1,0 +1,169 @@
+----
+jig:
+----
+
+Redundancy involving NON-FEMININE
+NON-FEMININE: NEUTER is redundant - it is an ancestor of VEGETABLE 
+
+Repairs:
+
+Changed definition of gender hierarchy to relatively
+flat, with fem and non-fem, the latter having subtypes
+masc, neut, and veg.
+
+Moved animacy out of gender and made it an "other feature"
+with possible values "anim/inam".  
+
+Changed number to sg/non-sg, with du and pl under non-sg.
+Some elements specify non-sg, others du, nothing outside
+of pronouns direclty says sg, nothing directly says pl.
+
+Initial coverage:  
+Coverage: 11/56 36.7%
+Overgeneration: 0
+Error: 39/56
+
+Problem:
+
+case slot can't take number slot as its input.  Tried fixing this by
+adding possible input for noun-slot2 and ran into ?bug with
+-lex-rule-dtr being inherited by noun-lex and the subtypes of
+noun-lex.
+
+Tried removing this:
+  noun-slot1_opt=on
+
+Still having the same error, so trying putting this one back
+in and then having noun-slot2 only take noun-slot1 as input.
+
+  noun-slot1_opt=on
+
+
+also: not getting any parses of verbs without object markers
+because subject marker slot isn't available as input for
+tense marker.  (Or maybe because object marker isn't optional?)
+Try making the tense marker take the subject marker as an
+additional possible input, and run into same -lex-rule-dtr
+bug.
+
+Not sure why this is working now, but here's the current
+state of affairs:
+
+    verb-slot3_input1_type=verb-slot2
+    verb-slot3_input2_type=verb-slot1
+
+It doesn't make sense to make the object marker optional,
+because it only applies to tverbs as input.
+
+Current competence:
+Coverage: 14/30 46.7%
+Overgeneration: 3/26 11.5%
+Error: 14/56
+
+Next issue:
+
+Missing lexical entry for ngiji/see.  Added like this:
+
+    verb1_stem2_orth=ngiji
+    verb1_stem2_pred=_see_v_rel
+
+
+But that's still not enough. Tried making obj marker (which
+apparently comes after the subject marker in these examples)
+take subject marker rules as input, but that runs into problems
+with the tense lex rules which don't want obj marker input.
+... because of this:
+
+    verb-slot3_input1_type=verb-slot2
+    verb-slot3_input1_type=verb-slot1
+
+changed to:
+
+    verb-slot3_input1_type=verb-slot2
+    verb-slot3_input2_type=verb-slot1
+
+That fixed three errors, all on ungrammatical examples.  In fact,
+all remaining errors are on ungrammatical examples, and the changes
+noted above also increased ambiguity.  So maybe they are actually
+regressions. *** Check this ***
+
+Next issue:
+
+-rni (and probably other case markers) weren't taking
+pronouns as input.  Tried fixing like this:
+
+    noun-slot2_input2_type=noun4
+    noun-slot2_input3_type=noun5
+    noun-slot2_input4_type=noun6
+    noun-slot2_input5_type=noun7
+    noun-slot2_input6_type=noun8
+    noun-slot2_input7_type=noun9
+    noun-slot2_input8_type=noun10
+    noun-slot2_input9_type=noun11
+
+Competence:
+
+Coverage: 25/30 83.3%
+Overgeneration: 6/26 23.1%
+Error: 10/56
+
+
+Next issue:
+
+Overgeneration of 1/2 subject agreement markers with
+3rd person subjects.  The problem here is that the
+common nouns weren't specified as third person in the
+choices file.  Fixed like this (for each of noun1-3):
+
+    noun1_feat2_name=pernum
+    noun1_feat2_value=3rd
+
+Resulting comptence figures:
+
+Coverage: 25/30 = 83.3%
+Overgeneration: 4/26 = 15.4%
+Error: 10/56
+
+Next issue:
+
+There is spurious ambiguity in the current jig grammar because the
+tense lexical rules can take the verb as a daughter directly.  This
+looks like a customization bug (from the choices file, I don't think
+this should happen).  In addition, however, the object markers are
+effectively optional, and I don't think this is intended. The problem
+is that the order, when both are present/overt is
+subject-object-tense.  Since intransitives don't need object markers,
+the tense rules have to be able to attach directly to subject markers
+in the case of intransitive verbs.  BUT: With transitive verbs, the
+object markers are presumably required.  (At least, I'm guessing so.
+The ambiguity is arising because the third person objects are marked
+with zeros...)
+
+One solution is to make two sets of subject markers, one for
+transitives and one for intransitives.  Then the tense marker rules
+could attach to object markers or intranstive subject markers.  What I
+do in the Wambaya grammar (not possible through the customization
+system) is to put an zero-marked "intransitive" marker in the object
+marker slot, requiring an empty COMPS list.
+
+A complication, though, is some ungrammatical examples illustrating
+incompatibility of 1st and 2nd person subject markers with certain
+object markers.  I can't tell from the notes if this is because those
+combinations of subjects and objects are just ineffable, or if "I see
+you" would be expressed some other way.  If they are just ineffable,
+it would be simple enough to say that the object markers also put some
+constraints on the subjects of the verbs they attach to.  Another
+solution is to make separate slots for the 1sg and 2nd subject markers
+and have the object markers disallow them as input.
+
+7/14/09: use "requires" and/or "other features" to let the object
+marking rules select for the transitive verbs.  *** Interesting
+interaction *** not yet considered in the customization system:
+lexical rules that care about valence.  cf Wambaya TAM is sensitive to
+png on subject & presence/absence of object.
+
+7/29/09: "requires" didn't work because you can't select verb
+stem classes in that way (it seems), but "other features" seems to
+have worked.  I don't know why I didn't check in that version of the choices
+file, but I'm doing so now.
+
