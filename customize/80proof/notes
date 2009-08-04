@@ -1017,7 +1017,29 @@ on the TRACK feature.  Try taking these out:
 
 
 That added one, and killed off a lot of spurious ambiguity,
-but also lost 4 items: 28, 34, 43, 44.
+but also lost 4 items: 28, 34, 43, 44.  The problem
+seems to be that the changes above had the side effect
+of making present-tense-marker-rule ltol (slot 1), even
+though it seems like it ought to be independent.  Submitting
+this as another morphotactics bug.  Confirming by taking
+this back out:
+
+  verb-slot10_name=remote-past-neg
+  verb-slot10_order=after
+    verb-slot10_input1_type=verb
+    verb-slot10_input2_type=verb-slot5
+    verb-slot10_morph1_name=remote-past-ire
+    verb-slot10_morph1_orth=-ire
+
+And reverting this:
+
+    verb-slot9_input1_type=verb-slot10
+to this:
+
+    verb-slot9_input1_type=verb-slot4
+
+Leaving it like that for now, since the overall coverage is
+better.
 
 ---
 hau
