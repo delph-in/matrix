@@ -973,6 +973,26 @@ Overgeneration: 1/53 1.9%
 Error: 25
 
 
+The problem here is that teh neg-past morpheme can't
+appear after the -ire slot.  Try making a separate slot
+for -ra- which takes -ire as its input, and is also required
+by ti-:
+
+    verb-slot7_constraint2_type=req
+    verb-slot7_constraint2_other-slot=verb-slot9
+  verb-slot9_name=neg-past-tense
+  verb-slot9_order=before
+    verb-slot9_input1_type=verb-slot4
+    verb-slot9_morph1_name=neg-past
+    verb-slot9_morph1_orth=ra-
+      verb-slot9_morph1_feat1_name=tense
+      verb-slot9_morph1_feat1_value=remote-past
+      verb-slot9_morph1_feat1_head=verb
+
+    verb-slot6_input4_type=verb-slot9
+
+No it's not an error, but it still doesn't parse.
+
 
 ---
 hau

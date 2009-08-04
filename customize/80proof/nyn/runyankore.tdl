@@ -1,6 +1,6 @@
 ;;; Grammar of Runyankore
 ;;; created at:
-;;;     Tue Aug 04 00:17:13 UTC 2009
+;;;     Tue Aug 04 00:28:50 UTC 2009
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 
@@ -142,10 +142,17 @@ class5-obj-marker-lex-rule := object-marker-lex-rule &
 
 subject-marker-rule-dtr := avm.
 
-neg-tense-lex-rule := subject-marker-rule-dtr & lexeme-to-lexeme-rule & add-only-no-ccont-rule &
+neg-pres-tense-lex-rule := subject-marker-rule-dtr & lexeme-to-lexeme-rule & add-only-no-ccont-rule &
   [ TRACK [ T-non-present-tense-dummy #track,
             T-neg-present + ],
     DTR verb-lex &
+        [ TRACK [ T-non-present-tense-dummy #track,
+                  T-neg-present - ] ] ].
+
+neg-past-tense-lex-rule := subject-marker-rule-dtr & infl-add-only-no-ccont-ltol-rule &
+  [ TRACK [ T-non-present-tense-dummy #track,
+            T-neg-present + ],
+    DTR yesterday-past-modified-verb-form-lex-rule &
         [ TRACK [ T-non-present-tense-dummy #track,
                   T-neg-present - ] ] ].
 
@@ -223,15 +230,15 @@ negation-lex-rule := neg-present-lex-rule &
                                      LTOP #larg ],
                          CAT.HEAD verb ] ] ].
 
-neg-pres-lex-rule := const-ltol-rule & neg-tense-lex-rule &
+neg-pres-lex-rule := const-ltol-rule & neg-pres-tense-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E [ TENSE present,
                                      ASPECT habitual ] ].
 
-neg-pres-cont-lex-rule := infl-ltol-rule & neg-tense-lex-rule &
+neg-pres-cont-lex-rule := infl-ltol-rule & neg-pres-tense-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E [ TENSE present,
                                      ASPECT continuous ] ].
 
-neg-past-lex-rule := infl-ltol-rule & neg-tense-lex-rule &
+neg-past-lex-rule := neg-past-tense-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE remote-past ].
 
 ;;; Lexical types
