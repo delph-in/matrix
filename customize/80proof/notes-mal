@@ -177,4 +177,23 @@ Overgeneration 2.7%
 
 I think that this is the most that we will be able to do.
 
+08/06/2009 EVALUATION:
+First run: repoduced results from scorecard
 
+MRSs: Look good except for example 53:
+Coordination is marked twice in the MRS, once with the correct arguments, once without anything. Need to check where this is coming from in malayam.tdl file.
+
+ungrammatical examples that are not parsing: all for correct reasons, except:
+60,61,62: do not parse, because suffixes to VPs and Ss are not supported. Restrictions on specific verb forms, etc. can to my knowledge not be dealt with for coordination, in the current customization system.
+67-68: In my opinion, these examples are not really testing anything under the current 'choices': since the two affixes are added as if they were one (kind of a hack, I guess), we are simply testing whether the system rejects a sequence that is a subset of an affix. This feels a bit like cheating to reduce the overgeneration percentage.
+19: I'm not sure, it depends: can inanimates not occur with accusative at all, or just not when functioning as a direct object?
+24: Also hard to tell why it is not parsing: we would need a grammatical plural example to compare.
+
+overgeneration: example 36, see explanation above.
+
+undergeneration: example 47, not sure what is supposed to happen (could be data error).
+32: 'ate'-bug
+56,58,59: problem that np,vp and s coordination are not supported. Several things to note here: 1. old requirement that suffix can only attach to inflected - (seems silly), 2. system does not support 'phrasal' affixes 3. requirements such as 'must attach of verb of such and such form, auxiliary required' are not supported.
+65: Past-marker cannot take a form that is inflected + (which imperfective assigns). I can't find attempts to solve this in the notes, so maybe we want to have another look at this? 
+
+things to look at: example 13, not parsing because of wrong reason, but I'm guessing a typo. 

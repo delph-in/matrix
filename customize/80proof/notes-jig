@@ -167,3 +167,48 @@ stem classes in that way (it seems), but "other features" seems to
 have worked.  I don't know why I didn't check in that version of the choices
 file, but I'm doing so now.
 
+8/05/2009 EVALUATION:
+First run: repoduced reported results in scorecard.
+Repair: typo in 'choices' (or data): word meaning 'wind' spelled differently.
+Grammar covers one more sentence.
+
+MRS parsed examples:
+MRSs look correct, there are two points I am not sure about:
+- Plural entities are DUAL + PLURAL
+- "sun" and "wind" are underspecified for number (but could be solved in choices if necessary)
+
+Analysis per phenomenon:
+subject-verb agreement:
+works, correct instances are parsed, incorrect strings are not parsed because of agreement mismatch.
+question-particle position:
+Correct, interaction between particles only being able to head head-comp, not comp-head, only taking verbal complements, and only verbs that have empty COMPS list. Last observation was tested by additional example (q-word in second position)
+object markers:
+Don't parse, because -ju cannot take a second-agreement-marker as daughter. Grammatical example does not parse, ungrammatical examples do not parse for the wrong reasons. Seems to require another repair.
+Light verbs:
+Do not work, don't know why yet.
+Coordination:
+Does not work, because light verbs do not work. I'm not sure whether light verbs are obligatory in coordinated structures, this is not tested for.
+Word Order:
+Free word order works.
+
+8/6/2009 ASF
+Looking into parse errors: 
+- problem with object markers: tense-markers cannot take arguments with a morpheme in this slot. Tried reintroducing option:
+
+    verb-slot3_input2_type=verb-slot2
+
+It is not clear from the notes when and why this was removed. Grammatical example 40 is parsed now, so are ungrammatical examples with forbidden agreement combinations. As far as I can tell, this has not been looked into in detail yet (no attempt to exclude them through choices). Despite increased overgeneration, this seems an improvement since the ungrammatical examples were excluded for the wrong reasons before.
+The other-features choices as explained above do not work, I'm not sure whether they worked before, and there is something missing in 'choices' or whether it only seemed to work, because the tense-marker could not take the second verb-slot.Maybe another solution where markers of different groups fall into different slots would work? E.g. slot for intransitive verbs and one for transitive verbs?
+Similar idea might work to make sure that interaction between subj- and obj- markers work correctly.
+
+Repair: verb-slot3_input1_type-verb-slot2
+
+slot 3 should only take slot2, rather than either slot1 or 2. This removed spurious ambiguity, and all examples are still parsed. Only interaction 2nd and 1st person is still overgenerating.
+
+LIGHT-VERBS: REPAIR1
+Examples with light-verb were not parsing because nonfinite forms where considered 'non-inflected'. Added a morphological rule that creates nonfinite verbs. Possibly, other rules should make verbs 'finite' now (though this data test does not contain ungrammatical examples that are parsed because of this additional rule). 
+
+LIGHT-VERBS: REPAIR2
+Examples with light-verbs were still not parsing, because of case missmatch of subject. There are two possibilities: either auxiliary requires ergative case, in that case 'choices' should be adapted to aux-case, or there is a typo in the test-suite, and case should be "nom". Assumming test-suite was correct, I adapted choices.
+
+Adapted choices file is under choices-jingulu-antske
