@@ -196,4 +196,7 @@ undergeneration: example 47, not sure what is supposed to happen (could be data 
 56,58,59: problem that np,vp and s coordination are not supported. Several things to note here: 1. old requirement that suffix can only attach to inflected - (seems silly), 2. system does not support 'phrasal' affixes 3. requirements such as 'must attach of verb of such and such form, auxiliary required' are not supported.
 65: Past-marker cannot take a form that is inflected + (which imperfective assigns). I can't find attempts to solve this in the notes, so maybe we want to have another look at this? 
 
-things to look at: example 13, not parsing because of wrong reason, but I'm guessing a typo. 
+spurious ambiguity: the coordination affix can attach either directly to the noun-stem or to the noun after the applying the const-lex-rule "singular agreement". This can be seen as similar to the problem of affix-marked coordination in general: it is not interacting with the morphology done elsewhere.
+
+Things to look at: example 13, not parsing because of wrong reason, but I'm guessing a typo. 
+
