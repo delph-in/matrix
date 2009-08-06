@@ -132,8 +132,8 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: {case}
-amma kuTTi paRaNNu
-amma kuTTi paRa-NNu
+amma kuTTie paRaNNu
+amma kuTTi-e paRa-NNu
 mother.nom child tell-past
 'The mother told the child.'
 
@@ -502,7 +502,7 @@ Phenomena: {neg}
 kuTTi ciriccilla
 kuTTi cirikk-tu-illa
 child.nom laugh-past-neg
-'The child will not laugh.'
+'The child did not laugh.'
 
 
 #Ex 50 demonstrates an ungrammatical use of negation.  The negative indicative is formed by adding "-illa" to the present and past tense stems.  For the future, the negative is formed by adding "-illa" tothe infinitive or the verb stem.  Here the negative marker comes beforethe infinitive marker.
