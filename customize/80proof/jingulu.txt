@@ -247,7 +247,7 @@ marluka-bala-rni ngunja-kurri-ju karalu
 old.man-plural-erg burn-2pl-do ground
 The old men are burning the ground. 
 
-#Ex 25 demonstrates ungrammatical verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. 
+#Ex 25 demonstrates ungrammatical verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. Here a third person subject is combined with a first person subject marker.
 Source: author
 Vetted: f
 Judgment: u
@@ -257,14 +257,14 @@ marluka-bila-rni ngunja-nga-ju karalu
 old.man-dual-erg burn-1s-do ground
 The two old men are burning the ground. 
 
-#Ex 26 demonstrates ungrammatical verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case.  Here the r required subject marker is not present
+#Ex 26 demonstrates ungrammatical verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case.  Here the required subject marker is not present.  Originally I though this was ungrammatical, but upon further reflection since number disagreement is not truly ungrammatical, this could be analyzed as the 3s marker being here since it is a zero marker.
 Source: author
 Vetted: f
-Judgment: u
+Judgment: g
 Phenomena: agr
 marlukayilarni ngunjaiju karalu
 marluka-bila-rni ngunja-ju karalu
-old.man-dual-erg burn-3dl-do ground
+old.man-dual-erg burn-do ground
 The two old men are burning the ground. 
 
 #Ex 27 demonstrates verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. It is grammatical for dl and plural subjects/objects to take singular agreement markers.

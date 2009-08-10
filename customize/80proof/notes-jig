@@ -212,3 +212,69 @@ LIGHT-VERBS: REPAIR2
 Examples with light-verbs were still not parsing, because of case missmatch of subject. There are two possibilities: either auxiliary requires ergative case, in that case 'choices' should be adapted to aux-case, or there is a typo in the test-suite, and case should be "nom". Assumming test-suite was correct, I adapted choices.
 
 Adapted choices file is under choices-jingulu-antske
+
+8/9/2009 SS answers to questions from Antske
+
+- example 23: is it ungrammatical because of the missing ya- or the missing -nri, or both?
+It is ungrammatical because of the missing ya-
+
+- example 29 and 22 are identical, which one should be different?
+
+22 should have been different and not had the ergative suffix.  Intransitive verbs take nominative/absolutive subjects (basically the unmarked form).  Test suite changed to reflect this along with some more explanation in the comment .
+
+- is example 30 supposed to be grammatical or ungrammatical, the description says ungrammatical, the judgment grammatical, could it be a copy-paste error: it is identical to example 21?
+It should be ungrammatical (but isn't in the way it was written) the ergative marker "-rni" should have been deleted.  Test suite changed
+
+- In 33 the verb is not recognized, should ngunya-ya-yu be ngunya-nya-yu?
+The verb shouldn't be recognized here because the 3s marker "ya" should only appear if the coverbal root does not appear.  "Light verbs" such as "ju" either have a coverbal root that attaches to them or a lexical main verb that is separate from them.  If the coverbal root is not present, then the 3s marker cannot appear. If it is absent the 3s marker must appear.  Here it shouldn't appear, so I would expect the verb not to be recongnized.
+
+
+- What are 48 and 50 supposed to look like: they contain suffixes that are not attached to anything, is this what they are testing?
+In a way, it is supposed to be testing the ordering of the affixes.  Making sure that a suffix cannot appear as a prefix.  There was spacing error in 50 that fixed.
+
+- Is example 49 testing the ordering of suffixes on the verb, or something else?
+Yes this was testing the ordering of the affixes
+
+- Is example 28 grammatical or ungrammatical? The description and judgment differ.
+I think my understanding of the language changed and I changed the grammaticality judgement, but didn't change the comment.  So, the grammaticaly judgement is correct and the description is incorrect. 
+
+I found the discussion of number and agreement to be confusing because I wanted "disagreement" to exist if number existed.  But after reading through the pages a few more times I finally decided that true syntactic disagreement doesn't exist for number.  Plural trumps singular and dual trumps plural as far the semantic representation goes, but the string is not ungrammatical when the pronoun and subject/object marker do not agree in number.
+
+I changed the explanation in the test suite.
+
+- example 29 and 22 more observations: What is the case in these examples supposed to be? The choices file and some descriptions (as well as gloss in example 29) suggest the subject should have nominative case: in the examples it bears an ergative, which case is correct? If example 22 is correct, 23 most likely is not (it has different case, but according to the description it is not testing for case).
+
+The grammatical example (22) should have nominative/absolutive case for the subject and the ungrammatical one (29) should be ergative
+
+- suffix "-mind" appears as "-mindi" in example 40 and 41, should this be "-mind" as well?
+Yes.  The vowel can appear in different forms depeneding (I think) on the environment, but I meant to so the voweless form as the citation form for our purposes.
+
+Some minor points (that I could adapt, but wasn't sure whether I should touch the test-suite)
+
+- example 42,43,44 have the same glosses
+*I changed the gloss for 43 and altered 44.  It was supposed to be demonstrating that first person subject and object markers could not combine.  The second person subject marker had incorrectly b*een copied from the previous example and left.
+
+- example 17-19 have 1st person translation, instead of 2nd (what would be expected from glosses).
+Yes. Changed
+
+Choices file choices-jingulu changed so that the aux "ju" accepts subjects based on its complement and added under choices-jingulu-safiyyah.
+
+Coverage: 90%
+Overgeneration 15.4%
+
+The majority of the overgeneration is due to object marker that should not co-occur coming together.  There was one overgeneration that when looked at futher is actually a grammatical example.
+
+#Ex 26 demonstrates ungrammatical verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case.  Here the required subject marker is not present
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+marlukayilarni ngunjaiju karalu
+marluka-bila-rni ngunja-ju karalu
+old.man-dual-erg burn-do ground
+The two old men are burning the ground. 
+
+The 3s marker is not supposed to appear and since number disagreement is not really ungrammatical, this should be labeled as grammatical.  The test suite was changed to reflect this.
+
+Coverage: 90.3
+Overgeneration 12.%
