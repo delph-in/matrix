@@ -14,20 +14,20 @@
 14@author@@@1@agr@ngurrawala-rni ngunja-ngurr-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
 15@author@@@1@agr@ngirrika-rni ngunja-ngirr-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
 16@author@@@1@agr@ngurrawala-rni ngunja-ngurr-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
-17@author@@@1@agr@nyama-rni ngunja-nya-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
-18@author@@@1@agr@kunyiyli-rni ngunja-kunyi-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
-19@author@@@1@agr@kurrawala-rni ngunja-kurri-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+17@author@@@1@agr@nyama-rni ngunja-nya-ju karalu@1@3@You (singular) are burning the ground. @Safiyyah Saleem@May 15 2009
+18@author@@@1@agr@kunyiyli-rni ngunja-kunyi-ju karalu@1@3@You (two) are burning the ground. @Safiyyah Saleem@May 15 2009
+19@author@@@1@agr@kurrawala-rni ngunja-kurri-ju karalu@1@3@You (two or more) are burning the ground. @Safiyyah Saleem@May 15 2009
 20@author@@@1@agr@marluka-bila-rni ngunja-wunyi-ju karalu@1@3@The two old men are burning the ground. @Safiyyah Saleem@May 15 2009
 21@author@@@1@agr@marluka-bala-rni ngunja-wurri-ju karalu@1@3@The old men are burning the ground. @Safiyyah Saleem@May 15 2009
-22@author@@@1@agr@marluka-rni  manyan ya-ju@1@3@The old man is sleeping @Safiyyah Saleem@May 15 2009
+22@author@@@1@agr@marluka  manyan ya-ju@1@3@The old man is sleeping @Safiyyah Saleem@May 15 2009
 23@author@@@1@agr@marluka manyan ju@0@3@The old man is sleeping @Safiyyah Saleem@May 15 2009
 24@author@@@1@agr@marluka-bala-rni ngunja-kurri-ju karalu@0@3@The old men are burning the ground. @Safiyyah Saleem@May 15 2009
 25@author@@@1@agr@marluka-bila-rni ngunja-nga-ju karalu@0@3@The two old men are burning the ground. @Safiyyah Saleem@May 15 2009
 26@author@@@1@agr@marluka-bila-rni ngunja-ju karalu@0@3@The two old men are burning the ground. @Safiyyah Saleem@May 15 2009
 27@author@@@1@agr@kurrawala-rni ngunja-nya-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
-28@author@@@1@agr@nyama-rni ngunja-kurri-ju karalu@1@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+28@author@@@1@agr@nyama-rni ngunja-kurri-ju karalu@1@3@You(plural) are burning the ground. @Safiyyah Saleem@May 15 2009
 29@author@@@1@agr@marluka-rni manyan ya-ju@0@3@The old man is sleeping @Safiyyah Saleem@May 15 2009
-30@author@@@1@agr@marluka-bala-rni ngunja-wurri-ju karalu@1@3@The old men are burning the ground. @Safiyyah Saleem@May 15 2009
+30@author@@@1@agr@marluka-bala ngunja-wurri-ju karalu@1@3@The old men are burning the ground. @Safiyyah Saleem@May 15 2009
 31@author@@@1@agr@kunyiyli-rni ngunja-mind-ju karalu@0@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
 32@author@@@1@agr@kunyiyli-rni ngunja-wurri-ju karalu@0@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
 33@author@@@1@agr@ngurrawala-rni ngunja-ya-ju karalu@0@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
@@ -37,17 +37,17 @@
 37@author@@@1@agr@ngaya-rni ngunja-wunyi-ju karalu@0@3@I am burning the ground. @Safiyyah Saleem@May 15 2009
 38@author@@@1@agr@ngaya-rni ngunja-nga-ju karalu@1@3@I am burning the ground. @Safiyyah Saleem@May 15 2009
 39@author@@@1@agr@ngaya-rni ngiji-nga-nyu-ju nyama@0@3@I see you@Safiyyah Saleem@May 15 2009
-40@author@@@1@agr@mindiyili-rni ngiji-mindi-nyu-ju nyama@1@3@We see you@Safiyyah Saleem@May 15 2009
-41@author@@@1@agr@mindiyili-rni ngiji-nyu-mindi-ju nyama@0@3@We see you@Safiyyah Saleem@May 15 2009
+40@author@@@1@agr@mindiyili-rni ngiji-mind-nyu-ju nyama@1@3@We see you@Safiyyah Saleem@May 15 2009
+41@author@@@1@agr@mindiyili-rni ngiji-nyu-mind-ju nyama@0@3@We see you@Safiyyah Saleem@May 15 2009
 42@author@@@1@agr@nyama-rni ngiji-nya-nyu-ju nyama@0@3@You see you@Safiyyah Saleem@May 15 2009
 43@author@@@1@agr@nyama-rni ngiji-nyu-nyu-ju nyama@0@3@You see you@Safiyyah Saleem@May 15 2009
-44@author@@@1@agr@nyama-rni ngiji-nya-na-ju ngaya@0@3@You see me@Safiyyah Saleem@May 15 2009
+44@author@@@1@agr@ngaya-rni ngiji-nga-na-ju ngaya@0@3@I see me@Safiyyah Saleem@May 15 2009
 45@author@@@1@wo@uliyija-nga ngunja-nu karalu@1@3@The sun burnt the ground. @Safiyyah Saleem@May 15 2009
 46@author@@@1@wo@uliyija-nga ngunja-ardi karalu@1@3@The sun burns the ground. @Safiyyah Saleem@May 15 2009
 47@author@@@1@wo@uliyija-nga ngunja-ka karalu@1@3@The sun used to burn the ground. @Safiyyah Saleem@May 15 2009
 48@author@@@1@wo@uliyija-nga -kangunja karalu@0@3@The sun used to burn the ground. @Safiyyah Saleem@May 15 2009
 49@author@@@1@agr@ngirrika-rni ngunja-ju-ngirr karalu@0@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
-50@author@@@1@agr@ngirrika-rni -ngirr ngunja-jukaralu@0@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
+50@author@@@1@agr@ngirrika-rni -ngirrngunja-ju karalu@0@3@We are burning the ground. @Safiyyah Saleem@May 15 2009
 51@author@@@1@coord@uliyija-nga ngunja-ju karalu marluka-rni  manyan ya-ju@1@6@The sun is burning the ground and the old man is sleeping@Safiyyah Saleem@May 15 2009
 52@author@@@1@coord@uliyija-nga marluka-rni ngunja-ju karalu  manyan ya-ju@0@6@The sun is burning the ground and the old man is sleeping@Safiyyah Saleem@May 15 2009
 53@author@@@1@wo@wunba-arndi ngunja-ju karalu@1@3@The wind is burning the ground. @Safiyyah Saleem@May 15 2009
