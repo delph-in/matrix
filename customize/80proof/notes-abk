@@ -414,3 +414,129 @@ Coverage: 30/35 85.7%
 Overgenerarion: 3/54 5.6%
 Error: 35
 
+8/10/2009-SS Disclosure: Unlike with changes to other grammars, I did not keep detailed notes as I was making changes. There were a lot of false starts--changes that didn't work out--and I did not keep track of these systematically.  In order to get some of the details I had to go back and diff the changes I made to choices-abkh with the version of the file I started with. I diffed by final version with the original.  This means that while the changes noted here are accurate, it is possible that the sequence and motivation behind them is not.
+
+ 
+I started with the three sentences that were well-formed but were errors in tsdb indicating that a lexical anlysis could not be found for them.
+
+Exs 68, 69, 70.  I also fixed the numbering in the abkhaz.txt file so that it matched tsdb.
+
+#Ex 68 demonstrates verb object agreement. The normal order of subject and object are inverted to avoid the 3rd non-human sing/3rd plural marker from occurring directly after the object.  When that happens the object marker is dropped.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+a-mat at͡ʂʰkʷʰən j?j?bajt
+a-mat a-t͡ʂʰkʷʰən  j-jə-ba-jt
+the- snake the-boy it-he-see-dynamic.finite
+The boy saw the snake.
+
+#Ex 69 demonstrates verb object agreement
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+atəphat?sa at͡ʂʰkʷʰən j?j?bajt
+a-təpha-t͡ʂʰa a-t͡ʂʰkʷʰən j-jə-ba-jt
+the-girl -pl the-boy 3rd.pl-he-see-dynamic.finite
+The boy saw the girls.
+
+#Ex 70 demonstrates verb object agreement. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+a-mat-k?a at͡ʂʰkʷʰən  jəjəbajt
+a-mat-kʷʰa  a-t͡ʂʰkʷʰən j-jə-ba-jt
+snake-pl  the-boy 3rd.pl-he-see-dynamic.finite
+The boy saw the snakes.
+
+All three of these failed because j-jə-ba-jt was not being analyzed.  
+I added (after a few false starts getting the gender values not quite right) the following to the choices-abk.
+
+ verb-slot2_morph9_name=3pl-no-vowel-erg-obj-marker
+    verb-slot2_morph9_orth=j-
+      verb-slot2_morph9_feat1_name=pernum
+      verb-slot2_morph9_feat1_value=3plural
+      verb-slot2_morph9_feat1_head=obj
+    verb-slot2_morph10_name=3s-non-human-no-vowel-obj-marker
+    verb-slot2_morph10_orth=j-
+      verb-slot2_morph10_feat1_name=gender
+      verb-slot2_morph10_feat1_value=non-human
+      verb-slot2_morph10_feat1_head=obj
+      verb-slot2_morph10_feat2_name=pernum
+      verb-slot2_morph10_feat2_value=3singular
+      verb-slot2_morph10_feat2_head=obj
+
+Coverage 94.3% 33/35
+Overgeneration 1.9% 1/54
+
+All three parsed.  I think this introduced ambiguity in lexical rules.  (The ambiguity may have been introduced by a change that I did not keep track of) The ergative verb was being allowed to go through non-ergative subject and object marker rules.  I split apart the rule where the ergative and non-ergative verbs were both serving as input
+
+verb-slot13_name=erg-aorist-negative
+  verb-slot13_order=before
+    verb-slot13_input1_type=verb2
+    verb-slot13_morph1_name=erg-aorist-negative-marker
+    verb-slot13_morph1_orth=m-
+      verb-slot13_morph1_feat1_name=negation
+      verb-slot13_morph1_feat1_value=plus
+      verb-slot13_morph1_feat1_head=verb
+      verb-slot13_morph1_feat2_name=tense
+      verb-slot13_morph1_feat2_value=aorist
+      verb-slot13_morph1_feat2_head=verb
+
+Trying to fix the ambiguity, showed up errors in the way some of the lex rules were ordered.  I kept making small changes that I didn't keep track of.  
+
+At one point Ex 15 was not parsing
+
+Ex 84 would not parse because the stative verb was not serving as input to the
+subj-marker-lex rule for statives.  I added
+verb-slot11_input2_type=verb1
+
+Ex 88 showed up as an overgeneration error, but looking at the example it should have been coded as grammatical (and was originally intended to demonstrate grammaticality). I change abkhaz.txt and created a new item file, but for some reason the new file did not change the grammaticality judgement.  I finally decided to go into the item file and manually change 88 from 0 to 1.   
+
+
+This is as far as my recollection of the sequence of changes goes.  At some point I also made the following changes to choices-abkhaz
+
+I changed noun7's gender constraint to non-human and masculine (The customization system prints this out as non-feminine).  Previously it was masculine only
+noun7_name=2sing-masc
+noun7_name=2sing-masc-non-human
+
+
+noun7_feat2_value=masculine
+noun7_feat2_value=masculine, non-human
+
+I changed one of the inputs for verb_slot1 to verb_slot13 instead of verb_slot9 because verb_slot9 had been split into two and the part that went into 13 should be the input for 1.
+
+I constrainted verb-slot1_morph4, verb-slot2_morph4, verb-slot3_morph4 and verb-slot4_morph4 and verbslot11_morph4 to be 2singlar instead of just singular.  This was probably motivated by overgeneration
+
+I changed the names of some of the lexical rules to be more transparent
+
+I changed one of the input values of verb_slot5 to verb_slot2 instead of verb_slot1 so that the obj-subj prefix markers would be attached to verb before the tense markers.
+
+I added that for verb_slot6_feat1_head=verb.  It had been unspecified and showed and red asterisk on the lexicon page of the website.
+
+There is still some ambiguity, but for two of the examples, I don't think that there is a way to resolve it given the current system
+
+#Ex 46 demonstrates verb subject agreement.  
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+lará atəpha dələbajt
+lará a-təpha də-lə-ba-jt
+she the-girl her-she-see-dynamic.finite
+She saw the girl.
+
+#Ex 67 demonstrates verb object agreement. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+at͡ʂʰkʷʰən a-ab dəjəbajt
+a-t͡ʂʰkʷʰən a-ab də-jə-ba-jt
+the-boy the-father 3rd.human.sing-he-see-dynamic.finite
+The boy saw the father.
+
+
+I think that when the nouns come from the same class, word order is used to determine the semantics.  The subject precedes the object.
