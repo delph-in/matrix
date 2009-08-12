@@ -12,7 +12,7 @@ Contents: A set of database utilities
 def selColumnToSet(resultTuple):
     """
     Function: selColumnToSet
-    Input: resultTuple - the results of a select query as returned my a MatrixTDBConn
+    Input: resultTuple - the results of a select query as returned by a MatrixTDBConn
     Output: answer - the distinct items in the first column of the input results
     Functionality: Converts the items in the first column of the results of a select query to a set
                          of distinct items

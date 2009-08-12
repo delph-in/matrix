@@ -1,3 +1,15 @@
+"""
+File: g.py
+Author: KEN (captnpi@u.washington.edu, Scott Halgrim) - taking over from ???
+Date: 7/30/09 - taken over on this date
+Project: MatrixTDB RA, summer 2009
+Project Owner: Emily M. Bender
+Contents:
+    - a series of lists that define groupings of semantic tags or classes.  These lists are used
+      when creating filters to say that a filter applies to these groups of semantic classes.
+Note: g as in global
+"""
+
 # Variables storing sets of MRSs ids.  We can add to these and update multiple
 # filters at once as we add harvester strings.
 
@@ -38,8 +50,10 @@ all_ques = ['ques1','ques2','ques3','ques4']
 n1_subj_ques = ['ques1','ques2']
 n2_subj_ques = ['ques3','ques4']
 # TODO: don't assign to built-in function all
-all = ['wo1', 'wo2', 'wo3', 'wo4', 'wo5', 'wo6', 'wo7', 'wo8', 'wo9', 'wo10', 'neg1', 'neg2', 'neg3', 'neg4', 'ques1', 'ques2', 'ques3', 'ques4']
-trans = ['wo3', 'wo4', 'wo5', 'wo6', 'wo7', 'wo8', 'wo9', 'wo10', 'neg1', 'neg2', 'neg3', 'neg4', 'ques1', 'ques2', 'ques3', 'ques4']
+all = ['wo1', 'wo2', 'wo3', 'wo4', 'wo5', 'wo6', 'wo7', 'wo8', 'wo9', 'wo10', 'neg1', 'neg2', 'neg3',
+                                                                                   'neg4', 'ques1', 'ques2', 'ques3', 'ques4']
+trans = ['wo3', 'wo4', 'wo5', 'wo6', 'wo7', 'wo8', 'wo9', 'wo10', 'neg1', 'neg2', 'neg3', 'neg4',
+                                                                                             'ques1', 'ques2', 'ques3', 'ques4']
 intrans = ['wo1','wo2']
 neg = ['neg1','neg2','neg3','neg4']
 ques = ['ques1','ques2','ques3','ques4']

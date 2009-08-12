@@ -241,4 +241,6 @@ score:
   parse-id :integer :key
   result-id :integer
   rank :integer
-  score :string"""
+  score :string
+
+"""

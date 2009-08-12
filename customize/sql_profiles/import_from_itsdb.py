@@ -196,6 +196,8 @@ def check_for_known_mrs_tags(mrs_dict, conn):
                          db, determines if those tags keys in mrs_dict match the strings in the db.
                          If not, warns user and exits.  For those mrs tags with strings identical to those
                          already in db, verifies user wants to update MRSs and exits if not.
+    Tables accessed: harv_str, mrs
+    Tables modified: none
     """
     # TODO: I think this function could be broken up
     new_mrs_tags = set()          # initialize output set of new mrs tags
@@ -230,8 +232,8 @@ def check_for_known_mrs_tags(mrs_dict, conn):
         same_string_tags = []           # initalize list of strings that are the same
         diff_string_tags = []               # initialize list of strings that are different.
 
-        for tag in known_mrs_tags:          # for every mrs tag that we already knew about...
-            s1 = find_string(tag,mrs_dict)     # get the given harvester string as s1
+        for tag in known_mrs_tags:            # for every mrs tag that we already knew about...
+            s1 = find_string(tag, mrs_dict)     # get the given harvester string as s1
             try:
                 # get the string that is in the database for this tag as s2
                 # TODO: would we have a case where the tag has two strings in db?
@@ -282,7 +284,7 @@ def check_for_known_mrs_tags(mrs_dict, conn):
                 sys.exit()    # ...exit
 
     # return sets of mrs tags they gave us either as new tags or tags already in db.
-    return [new_mrs_tags,known_mrs_tags]
+    return [new_mrs_tags, known_mrs_tags]
 
 
 ###########################################################################
@@ -290,7 +292,7 @@ def check_for_known_mrs_tags(mrs_dict, conn):
 
 def update_orig_source_profile(lt_id, conn):
     """
-    Function: update_org_source_profile
+    Function: update_orig_source_profile
     Input:
         lt_id - a language type ID
         conn - a MatrixTDBConn, a connection to the MatrixTDB database        
@@ -299,6 +301,8 @@ def update_orig_source_profile(lt_id, conn):
         timestamp - a formatted time representing when source profile was added to db
     Functionality: Prompts user for input to db and creates a source profile in db and links it to
                          lt_id
+    Tables accessed: orig_source_profile
+    Tables modified: orig_source_profile
     """
     try:
         user = os.environ['USER']           # get the user's username from Unix system
@@ -340,6 +344,8 @@ def update_harv_str(new_mrs_tags, known_mrs_tags, mrs_dict, osp_id, conn):
     Output: none
     Functionality: Inserts new mrs tags into harv_str and links them to osp_id.  Links existing
                          mrs tags to osp_id as well.
+    Tables accessed: harv_str
+    Tables modified: harv_str
     """
     # TODO: would this make more sense to go through the mrs_dict, comparing for inclusion in
     # new_mrs_tags and known_mrs_tags?
@@ -410,6 +416,8 @@ def update_mrs(mrs_dict, osp_id, new_mrs_tags, known_mrs_tags, profDir, timestam
                          inserts its semantics into mrs table.  Additionally, for each mrs tag we already
                          knew about, deprecates existing record in mrs table and inserts a new one with
                          the new semantics.
+    Tables accessed: mrs
+    Tables modified: mrs
     """
     # TODO: now that new_mrs_tags have been inserted into harv_str, is there a reason I have
     # them as two separte sets here?  Should I refactor?
@@ -518,7 +526,7 @@ def read_profile_file(filename):
 # 6) Add rows from tsdb_profile/item,parse,result to sp_item,
 # sp_parse, sp_result, replacing mrs in sp_result with mrs_tag
 
-def import_to_sp(itsdb_dir,osp_id, mrs_dict, conn):
+def import_to_sp(itsdb_dir, osp_id, mrs_dict, conn):
     """
     Function: import_to_sp
     Input:
@@ -531,6 +539,8 @@ def import_to_sp(itsdb_dir,osp_id, mrs_dict, conn):
     Functionality: imports a [incr_tsdb()] profile into the sp_* tables in the database.  Links all
                          rows with globally unique IDs, eventually casting aside the profile-wide-unqiue
                          IDs from the profile.
+    Tables accessed: sp_item, sp_parse, sp_result
+    Tables modified: sp_item, sp_parse, sp_result
     """
     # initialize dict of item IDs.  The keys are the item IDs from the item file in the profile and the
     # values are the correspdonding value of the spi_id column in the sp_item table.  I think this
@@ -697,7 +707,7 @@ def main(itsdb_dir, harv_mrs, choices_filename, conn = None):
     return
 
 # set to true for running on my machine.  set to False before commiting to repository.
-moduleTest = True
+moduleTest = False
 
 if __name__ == '__main__':      # only run if run as main module...not if imported
     if len(sys.argv < 4):                # if the user gave too few arguments....
@@ -726,12 +736,17 @@ elif moduleTest:                        # if we are testing this module locally.
     # ... and notify the user moduleTest is set to True.
     print >> sys.stderr, "Note: module testing turned on in import_from_itsdb.py.  " + \
                                  "Unless testing locally, set moduleTest to False."
-    mypath = "C:\RA\matrix\customize\sql_profiles\harv2\\" # set root path
-    itsdbDir = mypath + "sourceprof\\attempt1\\"        # set path to source [incr_tsdb()] profile
 
-    # set path and filename of file linking test sentences to mrs tags
-    harvMrsFilename = mypath + "harv_mrs_2"
-    choicesFilename = mypath + "choices1"     # set path to and name of choices file
+    # get path of source profile
+    itsdbDir = raw_input("Enter full path of source profile:\n")
+
+    # get name of choices file
+    choicesFilename = raw_input("enter full path and name of choices file of grammar used " + \
+                                                "to create source profile:\n")
+
+    # get name of file with harvester strings and mrs tags
+    harvMrsFilename = raw_input("enter full path and name of file with harvester strings and " + \
+                                                "mrs tags:\n")
 
     # call the main program to import a source profile into MatrixTDB2
     main(itsdbDir, harvMrsFilename, choicesFilename, conn)

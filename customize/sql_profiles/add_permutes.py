@@ -33,6 +33,9 @@ Contents: (listed, when possible, in order of execution)
                              and attaches each permutation onto a word
     verify_perms - verifies the output of fix_affix_spelling
     insert_item - inserts a string into the item_tsdb, parse, and result tables
+    insert_many_items - function that, like insert_item (except does for many string/mrs pairs, not
+                                   just one), inserts a set of string/mrs pairs into the item_tsdb, parse, and
+                                   result tables
 Tables Accessed: seed_str, str_lst, item_tsdb, parse, result, harv_str
 Tables Updated: seed_str, str_lst, item_tsdb, parse, result
 """
@@ -79,19 +82,20 @@ from matrix_tdb_conn import MatrixTDBConn
 # A function that takes a list of words and returns a list of lists
 # containing all new seed strings to find permutations of.
 
-def process_harvester(s, mrs_tag):
+def process_harvester(s, mrs_tag, conn):
     """
     Function: process_harvester
     Input:
         s - a harvester string
         mrs_tag - the semantic class for s
+        conn - a MatrixTDBConn, a connection to the MatrixTDB database        
     Output: new_strings - a list of seed strings created from s that we either haven't seen at all
                                     before in the database or that we haven't seen paired with mrs_tag.
                                     These strings are triples of words, prefixes, and suffixes
     Functionality: Creates seed strings from harvester string and makes sure that database is
                          updated with those seed strings and associated with the right mrs_tags
     Tables Accessed: seed_str, str_lst
-    Tables Potentially Updated: seed_str, str_lst
+    Tables Modified: seed_str, str_lst
     """
     # Take in harvester string + mrs_tag and create the other seed
     # strings in the equivalence class.   This function will
@@ -699,7 +703,7 @@ def get_harvester_strings_to_update(osp_id, conn):
 #   Insert an item into the 'item' table, along with the corresponding
 #   entries in the 'parse' and 'result' tables.
 
-def insert_item(instring, length, osp_id, mrs_tag):
+def insert_item(instring, osp_id, mrs_tag, conn):
     """
     Function: insert_item
     Input:
@@ -713,9 +717,8 @@ def insert_item(instring, length, osp_id, mrs_tag):
     Tables modified: item_tsdb, parse, result
     """
 
-    if length == -1:                            # if the length is -1
-        lenth = len(instring.split())        # calculate it
-        
+    length = len(instring.split())        # calculate num tokens in string
+
     # insert into item_tsdb table
     conn.execute("INSERT INTO item_tsdb " + \
                      "SET i_input = %s, i_length = %s, i_osp_id = %s, i_author = %s",
@@ -732,6 +735,98 @@ def insert_item(instring, length, osp_id, mrs_tag):
                                                                                                 (p_parse_id, mrs_tag, osp_id))
 
     return i_id             # return output
+
+def insert_many_items(stringList, osp_id, conn):
+    """
+    Function: insert_many_items
+    Input:
+        stringList - a list of (string, mrsTag) tuples that need to be inserted into item_tsdb, parse,
+                         and result
+        osp_id - the original source profile these strings have their genesis in
+        conn - a MatrixTDBConn, a connection to the MatrixTDB database
+    Output: none
+    Functionality: like insert_item (except does for many string/mrs pairs, not just one), inserts a
+                         set of string/mrs pairs into the item_tsdb, parse, and result tables
+    History: This was written on 8/10/09 for the purpose of making add_permutes go faster.  It's
+                 reduced the adding permutes of neg1 and ques1 from 30 hours to 15 minutes.
+    Tables accessed: item_tsdb, parse, result
+    Tables modified: item_tsdb, parse, result
+    """
+    # because I call this on x mod 1000 == 0, I call this with lists of length 0
+    # and because I start by inserting just the first one, check to see there are actually items
+    # in the list
+    if len(stringList) > 0:
+        # lock the three relevant tables from other people writing to them while this function is
+        # working with them
+        conn.execute("LOCK TABLES item_tsdb WRITE, parse WRITE, result WRITE")
+
+        # since we may execute several inserts, group as a transaction so they can be rolled
+        # back should there be a problem like a disconnect in this function
+        conn.execute("START TRANSACTION")
+        instring = stringList[0][0]             # extract the string from the tuple
+        mrs_tag = stringList[0][1]            # extract the mrs tag from the tuple
+        initID = insert_item(instring, osp_id, mrs_tag, conn) # insert first string to get a starting ID
+
+        # set the next ID for parse and result to the id just created so it gets incremented in loop
+        # below
+        nextID = initID
+        itemVals = ''                               # initialize VALUES clause for inserts into item_tsdb
+        parseVals = ''                             # initialize VALUES clause for inserts into parse
+        resultVals = ''                             # initialize VALUES clause for inserts into result
+
+        # string that ends every set of values for inserts into item_tsdb        
+        itemEndAll = ',' + str(osp_id) + ",'add_permutes.py'),"
+
+        # string that ends every set of values for inserts into parse
+        parseEndAll = ",1,"+ str(osp_id) + ")," 
+
+        # string that ends every set of values for inserts into parse
+        resultEndAll = "'," + str(osp_id) + "),"
+
+        for stringMrsTuple in stringList[1:]:       # for the second thru last string/mrs pair sent in...
+            instring = stringMrsTuple[0]             # ...get the string...
+            mrs_tag = stringMrsTuple[1]            # ...and the mrs tag
+
+            # increment the parse and result ID to what the next item id will be set to
+            nextID += 1                                    
+            length = len(instring.split())              # get number of words in string
+
+            # add this pair's values to the VALUES clause of the item_tsdb INSERT statement
+            itemVals = itemVals + "('" + instring + "'," + str(length) + itemEndAll
+
+            # add this pair's values to the VALUES clause of the parse INSERT statement
+            parseVals = parseVals + "(" + str(nextID) + parseEndAll
+
+            # add this pair's values to the VALUES clause of the result INSERT statement
+            resultVals = resultVals + "("+ str(nextID) + ",'" + mrs_tag + resultEndAll
+
+        # strip off the last comma from the VALUES clause of the item_tsdb INSERT statement
+        itemVals = itemVals[:-1]
+
+        # strip off the last comma from the VALUES clause of the item_tsdb INSERT statement
+        parseVals = parseVals[:-1]
+
+        # strip off the last comma from the VALUES clause of the item_tsdb INSERT statement
+        resultVals = resultVals[:-1]
+
+        # excute insert into item_tsdb        
+        conn.execute('INSERT INTO item_tsdb (i_input, i_length, i_osp_id, i_author) ' + \
+                             'VALUES ' + itemVals)
+
+        # excute insert into parse        
+        conn.execute('INSERT INTO parse (p_i_id, p_readings, p_osp_id) ' + \
+                             'VALUES ' + parseVals)
+
+        # excute insert into result        
+        conn.execute('INSERT INTO result (r_parse_id, r_mrs, r_osp_id) ' + \
+                             'VALUES ' + resultVals)
+
+        conn.execute("COMMIT")                  # commit all inserts
+        conn.execute("UNLOCK TABLES")    # release lock
+    else:       # if there are no items in the list...
+        pass   # ...just get out of here
+
+    return        
 
 #######################################################################
 # Main program
@@ -768,48 +863,59 @@ def main(conn):
         # run stringmods, find all new seed strings for that harvester, and update database with
         # those seed strings and link them to mrs_tag in db.  new_strings is a list of triples of
         # words, prefixes and affixes
-        new_strings = process_harvester(hs, mrs_tag)
+        new_strings = process_harvester(hs, mrs_tag, conn)
 
         # for every seed string we either hadn't seen before or hadn't seen paired with mrs_tag
         for s in new_strings:
             perms = uniq_permute(s) # Get all permutations of the string
 
-            for p in perms:                 # for every permutation
-                # TODO: should we use glue for this?
+            # for monitoring
+            print >> sys.stderr, "Processing", len(perms), "permutations of", s
+
+            stringList = []                     # initialize list of string/mrs pairs to be inserted
+
+            for i in range(len(perms)):                 # for every permutation
+                if ((i%1000) == 0):                       # if this number of permutation is divisble by 1000
+                    # print out a monitoring message
+                    print >> sys.stderr, 'i:', i, 'inserting', len(stringList), 'new items'
+
+                    # and insert those 1000 string/mrs pairs into parse, item_tsdb, and result
+                    insert_many_items(stringList, osp_id, conn)
+                    stringList = []                                     # reset list to empty to bulid back up
+                    
+                p = perms[i]                                # set p to current permutation               
                 instring = ''                   # initialize instring to empty string
                 for w in p:                     # for every word in permutation 
                     instring += w           # tack it...
                     instring += ' '             # ...and a space onto instring
-                                                    # TODO: is trailing space cool?
 
-                # TODO: consider moving length calc into insert_item...
-                # ...it's an unnecessary add'l variable.
-                length = len(p)                                               # get number of word in permutation
+                instring = instring[:-1]    # strip off final space
 
-                # insert string into tables used to export profile: item_tsdb, parse, and result
-                insert_item(instring, length, osp_id, mrs_tag)     
+                stringList.append((instring, mrs_tag))  # add this string/mrs pair to list to be inserted
 
                 for pp in post_permutes:                # for every possible post_permute
                     if mrs_tag == pp.mrs_id:            # if it applies to this harvester string's sem class
 
                         # for every coordination that PostPermute produces...
                         for s in pp.applyMe(instring):
+                            # add this string and its new mrs tag to list to be inserted
+                            stringList.append((s, pp.new_mrs_id))
 
-                            # insert it into tables used to export profile: item_tsdb, parse, and result
-                            # with new semantic class
-                            insert_item(s, -1, osp_id, pp.new_mrs_id)
+            # print monitoring statement
+            print >> sys.stderr, 'flushing: inserting', len(stringList), 'new items'
+            insert_many_items(stringList, osp_id, conn) # as a flush when we end-up mid mod 1000
+                            
     return
 
 # set to true for running on my machine.  set to False before commiting to repository.
-moduleTest = True
+moduleTest = False
 
-# consider passing in conn intsead of using a global variable.
 if __name__ == "__main__":      # only run if run as main module...not if imported
-    conn = MatrixTDBConn()           # connect to MySQL server
+    myconn = MatrixTDBConn()           # connect to MySQL server
     main(conn)                              # run the main function
 elif moduleTest:                        # or if i'm testing, run it on MatrixTDB2
-    conn = MatrixTDBConn('2')       # connect to MySQL server
+    myconn = MatrixTDBConn('2')       # connect to MySQL server
     # ... and notify the user moduleTest is set to True.
     print >> sys.stderr, "Note: module testing turned on in import_from_itsdb.py.  " + \
                                  "Unless testing locally, set moduleTest to False."    
-    main(conn)                              # run the main function
+    main(myconn)                              # run the main function

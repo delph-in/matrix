@@ -4,8 +4,42 @@ Author: KEN (captnpi@u.washington.edu, Scott Halgrim) - taking over from ???
 Date: summer '09 (KEN started working on it then)
 Project: MatrixTDB
 Project Owner: Emily M. Bender
-Contents: TODO: finish this docstring
+Contents:
+    - omitFeatures - a list of features that are irrelevant when comparing two language types for
+                            equalness
+    - check_lt_for_fvs - function that compares the feat/val pairs of a feature group in with a dict of
+                                feat/val pairs to see if those in the feat group  are the same as those in
+                                the dict.  used to try to find an existing language type in the database
+                                given a set of feat/val pairs
+    - check_lt_for_grp_ids - function that checks to see if the grp_ids that define a language type
+                                       in Matrix TDB have feature/value combos that match the language
+                                       type defined by a dict of feat/val pairs representing a chocies file
+    - check_existing_lt_for_completeness - function that checks that all the feature/value combos
+                                                              in a choices file match those of a language type
+    - lt_exists - function that finds the id of a language type in MatrixTDB that matches the
+                     language type defined by a choices if one exists.
+    - singleton_group_exists - function that determines whether or not f/v exist as a singleton
+                                          feat/val group in MatrixTDB.
+    - update_feat_group - function that inserts every feat/val combo in a choices file into the
+                                   database as a singleton group if such a group doesn't already exist
+    - update_lt_in_lfg - function that ensures that a language type is linked to the right feature
+                               groups
+    - create_or_update_lt - function that, if a language type that matches a choices file exists, it
+                                     returns its ID.  If not, it creates one (with input from user) and returns
+                                     that ID.
+    - main - function that reads in a choices file.  If that file is already in MatrixTDB as a language
+                type, returns the ID of that language type.  If not, it adds it as a language type and
+                returns that new ID
+    - main code that gets the name of a choices file from the command line or the user and uses
+      it to call main
+Tables accessed: lt, lt_feat_grp, feat_grp
+Tables modified: feat_grp, lt, lt_feat_grp                               
 """
+
+# there are certain features in a choices file that are irrelevant when comparing whether
+# a language type is equal to another, and so we don't enter those into the database.
+omitFeatures = ['language', 'sentence1', 'sentence2']
+
 ###############################################################
 # Read in choices file and create appropriate representations
 # in MatrixTDB.lt,lt_grp.
@@ -69,6 +103,7 @@ import sys
 import MySQLdb
 sys.path.append("..")
 from choices import ChoicesFile
+from matrix_tdb_conn import MatrixTDBConn
 
 ###############################################################
 # check_lt_for_fvs(fvs,choices): Check whether all of the feature-value
@@ -150,8 +185,9 @@ def check_lt_for_grp_ids(grp_ids,choices,conn):
                               "WHERE fg_grp_id = %s",(grp_id))[0]
 
         # if the choices file's value of the feature doesn't match the value of the feature in the group
-        # for the language type we're checking, then...
-        if choices.get(f) != v:         # TODO: seems this should use get_full, not get
+        # for the language type we're checking, and if it's not a feature we don't care about, then...
+        # TODO: seems this should use get_full, not get
+        if (f not in omitFeatures) and (choices.get(f) != v):
             answer = False      # ...this language type doesn't match choices file
             break                   # and get out of here
     else:                            # but if every feature's value matched...
@@ -171,11 +207,15 @@ def check_existing_lt_for_completeness(lt_id, choices, conn):
         lt_id - a language type ID from MatrixTDB
         choices - a ChoicesFile representing another language type
         conn - a MatrixTDBConn, a connection to the MatrixTDB database
-    Output: answer- TODO: finish dosctring
+    Output: answer- True if every feat/val pair in choices exists in lt_id
     Functionality: checks that all the feature/value combos in a choices file match those of
                          language type lt_id
     """
-    for f in choices.keys():        # for every feature in the choices file...
+    # create a list of features in the choices that we care about by taking out those features
+    # that are irrelevant
+    relevantKeys = set(choices.keys()).difference(set(omitFeatures))
+    
+    for f in relevantKeys:        # for every relevant feature in the choices file...
         # check that that feature/value combo is included in the language type in MatrixTDB.
         res = conn.selQuery("SELECT fg_grp_id FROM feat_grp " + \
                                        "INNER JOIN lt_feat_grp ON fg_grp_id = lfg_grp_id " + \
@@ -204,6 +244,8 @@ def lt_exists(choices,conn):
                              f/v pairs in choices, False otherwise
     Functionality: Finds the id of a language type in MatrixTDB that matches the language type
                          defined by choices if one exists.
+    Tables accessed: lt, lt_feat_grp
+    Tables modified: none
     """
 
     # Check existing language types until we find one that
@@ -223,13 +265,13 @@ def lt_exists(choices,conn):
         # getting the f/v pairs from both places as sets and comparing?
         
         # if every f/v pair in this set of group IDs matches the lt defined by choices...
-        if check_lt_for_grp_ids(grp_ids,choices,conn):
+        if check_lt_for_grp_ids(grp_ids, choices, conn):
 
             # Now make sure that all of the information in choices is
             # also in that lt.
 
             # ...and if every f/v in choices exists in MatrixTDB for lt_id... 
-            if check_existing_lt_for_completeness(lt_id,choices,conn):
+            if check_existing_lt_for_completeness(lt_id, choices, conn):
                 answer = lt_id        # ...then there is a match
                 break                     # so get out of the for loop looking for a match
     else:                           # if i never find a match...
@@ -252,6 +294,8 @@ def singleton_group_exists(f, v, conn):
     Output: answer - True if f and v exist as a singleton group (a group with only one feat/val pair
                               in it) in MatrixTDB. False otherwise.
     Functionality: Determines whether or not f/v exist as a singleton feat/val group in MatrixTDB.
+    Tables accessed: feat_grp
+    Tables modified: none
     """
     # get rows with group IDs with this feat/val combo in it
     grpIDrows = conn.selQuery("SELECT fg_grp_id FROM feat_grp " +
@@ -283,21 +327,26 @@ def update_feat_group(choices, conn):
     Ouput: none
     Functionality: Inserts every feat/val combo in choices file into database as a singleton group if
                          such a group doesn't already exist
-    """
+    Tables accessed: feat_grp
+    Tables modified: feat_grp
+    """    
     for f in choices.keys():            # for every feature in the ChoicesFile...
         v = choices.get(f)               # ...get that feature's value
 
-        if not singleton_group_exists(f, v, conn):      # if f/v do not exist as singleton group in db...
+        # if f is not one of the featues we don't want to track, and if f/v do not exist as singleton
+        # group in db...
+        if (f not in omitFeatures) and (not singleton_group_exists(f, v, conn)):
             try:
-                # ...get the highest group ID in the database...
-                fg_grp_id = conn.selQuery("SELECT max(fg_grp_id) FROM feat_grp")[0][0]
-            except IndexError:
-                # ...or if there were no grp ids in the database yet, set initial group id to 1...
+                # ...get the highest group ID in the database and add 1 to it for the next group id
+                fg_grp_id = conn.selQuery("SELECT max(fg_grp_id) FROM feat_grp")[0][0] + 1
+            except TypeError:
+                # ...or if there were no grp ids in the database yet you get a TypeError for trying to
+                # add None and int.  In that case set initial group id to 1...
                 fg_grp_id = 1
 
             # ...and enter f/v as singleton group into database
             conn.execute("INSERT INTO feat_grp " + \
-                                 "SET fg_grp_id = %s, fg_feat = %s, fg_value = %s", (fg_grp_id ,f, v))
+                                 "SET fg_grp_id = %s, fg_feat = %s, fg_value = %s", (fg_grp_id, f, v))
 
     return
 
@@ -305,8 +354,8 @@ def update_feat_group(choices, conn):
 # update_lt_in_lfg(choices,lt_id): Update the lt_feat_grp table to
 # reflect all currently defined feature groups which correspond
 # to this language type.
-# NB: choices is sometimes a ChoicesFile (when called from sql_lg_type.create_or_update_lt)
-#        and is sometimes a dict of fv pairs (when called from
+# NB: choices is sometimes a ChoicesFile (when called from sql_lg_type.create_or_update_lt
+#         or sql_lg_type.main) and is sometimes a dict of fv pairs (when called from
 #        run_specific_filters.update_all_lts_in_lg).
 
 def update_lt_in_lfg(choices, lt_id, conn):
@@ -314,17 +363,18 @@ def update_lt_in_lfg(choices, lt_id, conn):
     Function:update_lt_in_lfg
     Input:
         choices - either a ChoicesFile object or a dict of feature/value pairs, depending on where
-                       this function was called from TODO: add to this to clarify
+                       this function was called from.  When called from sql_lg_type.create_or_update_lt
+                       it is a ChoicesFile.  When called from run_specific_filters.update_all_lts_in_lg,
+                        it is a dict of fv pairs.
         lt_id - a language type ID
         conn - a MatrixTDBConn, a connection to MatrixTDB
     Output: none
     Functionality: For every feature group in the database, checks to see if all of the feat/val pairs
                          in that group are in choices.  If they are, it ensures there is a link from lt_id
                          to that group.  If they are not, it ensures there is not a link from lt_id to that
-                         group.  So it ensures that lt_id is linked to the right feature groups.  TODO:
-                         does choices represent the feat/vals in lt_id?  Verify by looking at all places this
-                         is called and update this doco.  IThere is a link when called from
-                         create_or_update_lt
+                         group.  So it ensures that lt_id is linked to the right feature groups.
+    Tables accessed: feat_grp, lt_feat_grp
+    Tables modified: lt_feat_grp
     """
 
     # Get all feature groups from DB
@@ -387,6 +437,8 @@ def create_or_update_lt(choices, conn):
                 if one already existed
     Functionality: If a language type that matches choices exists, it returns its ID.  If not, it
                          creates one (with input from user) and returns that ID.
+    Tables accessed: lt, lt_feat_grp, feat_grp
+    Tables modified: feat_grp, lt, lt_feat_grp
     """
 
     # TODO: this function can probably be broken up into smaller ones
@@ -395,7 +447,7 @@ def create_or_update_lt(choices, conn):
     # call update_lt_in_lfg instead and return lt_id.
 
     # get lang type ID of lang type in MatrixTDB if one matches choices (False otherwise)
-    lt_id = lt_exists(choices,conn)
+    lt_id = lt_exists(choices, conn)
 
     # If no existing language type for this choices file was found...
     if not lt_id:                                                       # if a matching lt was found...
@@ -424,34 +476,54 @@ def create_or_update_lt(choices, conn):
 ###############################################################
 # Main Program
 
-def main():
+def main(chcFilename, conn):
     """
     Function: main
-    Input: none
-    Output: none, but prints TODO: finish this docstring
+    Input:
+        chcFilename - the name of a choices file
+        conn - a MatrixTDBConn, a connection to MatrixTDB
+    Output: none
+    Functionality: reads in a choices file.  If that file is already in MatrixTDB as a language type,
+                         returns the ID of that language type.  If not, it adds it as a language type and
+                         returns that new ID
+    Tables accessed: lt, lt_feat_grp, feat_grp
+    Tables modified: feat_grp, lt, lt_feat_grp                         
     """
+    # create ChoicesFile from choices file
+    choices = ChoicesFile(chcFilename)
 
-  choices = ChoicesFile(sys.argv[1])
+    # make sure the choices file is in the database as a language type
+    lt_id = create_or_update_lt(choices, conn)
 
-  # In order to have language-to-language comparisons work correctly,
-  # remove the language name and test sentences
-  choices.delete('language')
-  choices.delete('sentence1')
-  choices.delete('sentence2')
+    # Okay, we're done.  Print out the lt_id for future reference.
+    print "Language type id (lt_id) is: " + str(lt_id)
 
-  # Set up the cursor
+    return
 
-  db = MySQLdb.connect(host="localhost", user="ebender",
-                       passwd="tr33house", db="MatrixTDB")
+# set to true for running main code on my machine.  set to False before commiting to repository
+# or before running main code of modules that import this module
+moduleTest = False
 
-  cursor = db.cursor()
+if __name__ == "__main__":          # only run if run as main module...not if imported
+    try:
+        chcFilename = sys.argv[1]    # get choices filename from command line
+        myconn = MatrixTDBConn()    # connect to MySQL server
 
-  lt_id = create_or_update_lt(choices,cursor)
+        # print id of language type that matches choices file, or create it and print that ID
+        main(chcFilename, myconn)
+    except IndexError:                      # if user doesn't give enough arguments...
+        # ...let them know with error message...
+        print >> sys.stderr, "Usage: python sgl_lg_type.py choicesFilename"
+        sys.exit()                              # ...and exit
+elif moduleTest:                            # if module test is true...
+    myconn = MatrixTDBConn('2')      # ...create a connection to the smaller, newer database...
 
-  # Okay, we're done.  Print out the lt_id for future reference.
+    # ... and notify the user moduleTest is set to True.
+    print >> sys.stderr, "Note: module testing turned on in sgl_lg_type.py.  " + \
+                                 "Unless testing locally, set moduleTest to False."
 
-  print "Language type id (lt_id) is: " + str(lt_id)
+    # get name of choices file from user
+    chcFilename = raw_input("Enter full path of choices filename:\n")
 
-if __name__ == "__main__":
-  main()
-
+    # print id of language type that matches choices file, or create it and print that ID    
+    main(chcFilename, myconn)

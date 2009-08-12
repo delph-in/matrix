@@ -115,7 +115,6 @@ class StringMod:
     Functionality: encapsulates types of modifications that can be done to harvester strings to
                          generate semantically equivalent seed strings
     """
-
     def __init__(self,mrs_id_list):
         """
         Method: __init__
