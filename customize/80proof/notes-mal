@@ -199,4 +199,37 @@ undergeneration: example 47, not sure what is supposed to happen (could be data 
 spurious ambiguity: the coordination affix can attach either directly to the noun-stem or to the noun after the applying the const-lex-rule "singular agreement". This can be seen as similar to the problem of affix-marked coordination in general: it is not interacting with the morphology done elsewhere.
 
 Things to look at: example 13, not parsing because of wrong reason, but I'm guessing a typo. 
+ 
+Example 13: confirmed to be a typo. Now not parsing because of right reasons.
 
+08/13 
+65: The problem is related to the ordering of morphemes: if the past-marker is defined before the optional negation marker, the example parses, but #49 does not. If the past-marker is defined later than the optional negation marker (partially standing in the same position), it needs an INFLECTED + argument (this looks like a bug in the morphology code to me). If the negation marker is defined later, then this marker no longer creates an INFLECTED + form, preventing the verb from combining with its complement. 
+Changing the order of defining the morphemes can break more structures, though one variant only breaks #49, let's see if we can introduce a hack by defining a slot that only takes the negation marker as daughter and renders the verb inflected +.
+
+Hack works, so now coverage is 34/39, i.e. 87.2%. The hack and explanation of morphology bug should probably be mentioned in the paper, though.
+
+#19 is not excluded for the right reasons: in our grammar inanimates cannot take accusative. The reason for this 'wrong' analysis is that this phenomenon simply has not been added yet to the customization system.
+
+#24 is not excluded for the right reasons: the plural form is not inflected, it seems that this should be fixable though. Trying to adapt choices file accordingly
+Problem was that plural nouns could not take case, fixed by adding plural slot to case markers (only animate case for now, since no inanimate examples). Added feature to determiner that pernum = 3rd-singular. Now 24 fails for the right reasons.
+
+Adding this optional rule as input for case marking introduced spurious ambiguity. I made the number marking obligatory, and the input of animate case markers a number marked noun. Spurious ambiguity remained, and strangely only left when I removed:
+  noun_slot2_input2=noun3
+ 
+This most definitely seems like a bug, I'm not sure why noun3 (1sg pronouns) was a possible input for this slot, there are no examples in the test suite.
+If they must be able to take these case markings though, we'll need to add an additional slot especially for them.
+
+SUMMARY OF RESULTS:
+ 
+Parsing coverage: 34/39  (87.2%)
+Treebank coverage: 33/39 (84.6%)  (MRS-coordination)
+Overgeneration: 1/37 (2.7%)
+Not parsing for wrong reasons: 4/37 (10.8%)
+In three cases (#60-#62) because affixal coordination does not work in the first place, in one case (#19) because the phenomenon in question (a specific noun bears different case when it occurs as an object) is not handled by the customization system yet.
+In my opinion, #67-#68 are not really being tested with the current choices file (see explanation above), adapt?
+
+Explanations of undergeneration:
+undergeneration: example 47, not sure what is supposed to happen (could be data error).
+32: 'ate'-bug
+56,58,59: problem that np,vp and s coordination are not supported. Several things to note here: 1. old requirement that suffix can only attach to inflected - (seems silly), 2. system does not support 'phrasal' affixes 3. requirements such as 'must attach of verb of such and such form, auxiliary required' are not supported.
+ 
