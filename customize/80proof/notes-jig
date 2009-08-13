@@ -211,8 +211,6 @@ Examples with light-verb were not parsing because nonfinite forms where consider
 LIGHT-VERBS: REPAIR2
 Examples with light-verbs were still not parsing, because of case missmatch of subject. There are two possibilities: either auxiliary requires ergative case, in that case 'choices' should be adapted to aux-case, or there is a typo in the test-suite, and case should be "nom". Assumming test-suite was correct, I adapted choices.
 
-Adapted choices file is under choices-jingulu-antske
-
 8/9/2009 SS answers to questions from Antske
 
 - example 23: is it ungrammatical because of the missing ya- or the missing -nri, or both?
@@ -278,3 +276,13 @@ The 3s marker is not supposed to appear and since number disagreement is not rea
 
 Coverage: 90.3
 Overgeneration 12.%
+
+08/12 ASF
+
+Since there seems to be no number agreement (see notes Safiyyah above), I removed 'dual' and 'plural' from the choices file and changed the values into 2nd. Example 28 is now parsed, no spurious ambiguity or overgeneration introduced.
+
+It may possibly be more correct to remove the numbers from all agreement morphemes, but I'll leave that decision to Safiyyah.
+
+Retested introducing more than one slot to account for incompatibility of certain subject and object agreement markers. It is a trade-off between removing over-generation and introducing spurious ambiguity.
+
+I'm adding choices-jig-additional-slots, as an option where the additional slots are there (overgeneration 0%, spurious ambiguity for all examples that have a 3rd person subject or object).
