@@ -455,3 +455,46 @@ choose either or.
 
 I think that this is as far as Hausa will go.  Ambiguity for two items still needs to
 be looked at.
+
+SS-Implementing Argument Optionality
+I added
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-req
+subj-con=subj-con-always
+obj-drop=obj-drop-all
+obj-mark-drop=obj-mark-drop-req
+obj-mark-no-drop=obj-mark-no-drop-req
+
+
+And an object marker rule.
+
+verb-slot4_name=object-marker
+  verb-slot4_order=after
+    verb-slot4_input1_type=verb-slot1
+    verb-slot4_morph1_name=3rd-pl-obj-marker
+    verb-slot4_morph1_orth=-su
+      verb-slot4_morph1_feat1_name=number
+      verb-slot4_morph1_feat1_value=plural
+      verb-slot4_morph1_feat1_head=obj
+      verb-slot4_morph1_feat2_name=person
+      verb-slot4_morph1_feat2_value=3rd
+      verb-slot4_morph1_feat2_head=obj
+      verb-slot4_morph1_feat3_name=form
+      verb-slot4_morph1_feat3_value=FormB
+      verb-slot4_morph1_feat3_head=verb
+    verb-slot4_morph2_name=non-formB
+      verb-slot4_morph2_feat1_name=form
+      verb-slot4_morph2_feat1_value=FormA, FormC, FormD
+      verb-slot4_morph2_feat1_head=verb
+
+
+This increased coverage 
+
+Coverage 24/38 63.2%
+Overgeneration 2/30 6.7%
+
+
+These changes are saved under choices-hausa-arg-opt
