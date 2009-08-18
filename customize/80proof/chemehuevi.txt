@@ -122,7 +122,7 @@ knife run-pres-non.sing
 #Ex 12 illustrates a grammatical sentence where the inanimate subject does not combine with a verb that has the non-singular marker.  This is used to mark two or more. Inanimate nouns are optionally marked for plurality do not combine with verbs that have the non-singular suffix.
 Source: author
 Vetted: f
-Judgment: u
+Judgment: g
 Phenomena: {agr}
 wii nukwij
 wii nukwi-jI
@@ -257,7 +257,7 @@ Vetted: f
 Judgment: g
 Phenomena: {agr,pn,tam}
 nI mamI punitukaivI
-nII mamI-a puni-tu-kai-vI
+nII mamI-a puni-tu-kai-vII
 1sg 3pl.anim.visible-obl look-obj.pl-result-past
 I saw them.
 
@@ -273,7 +273,7 @@ nII mamI-a puni-kai-vII
 I saw them.
 
 
-#Ex 27 illustrates an ungrammatical use of the present tense for a [-mom] verb.  Press classifies verbs by a feature she calls momentaneous.  Verbs can be [-mom] "nukwi-run", [+mom] "tIrawi7i-dash off", or can take either aspectual meaning [*mom] "kwIhI-catch."  This feature constrains the tense/aspect suffixes that can attach to a verb.  The present tense suffix /-jI/ cannot attach to  [- mom] verbs.  Instead they take a zero suffix for present tense.  For [- mom] verbs the present tense suffix /-ji/ must be used for present tense, they cannot take the zero present tense marker (Press 64).
+#Ex 27 illustrates an ungrammatical use of the present tense for a [-mom] verb.  Press classifies verbs by a feature she calls momentaneous.  Verbs can be [-mom] "nukwi-run", [+mom] "tIrawi7i-dash off", or can take either aspectual meaning [*mom] "kwIhI-catch."  This feature constrains the tense/aspect suffixes that can attach to a verb.  The present tense suffix /-jI/ cannot attach to  [+mom] verbs.  Instead they take a zero suffix for present tense.  For [- mom] verbs the present tense suffix /-ji/ must be used for present tense, they cannot take the zero present tense marker (Press 64).
 Source: author
 Vetted: f
 Judgment: u
@@ -284,7 +284,7 @@ maNa nukwi
 'He/She is running.'
 
 
-#Ex 28 illustrates a grammatical use of the present tense for a [+mom] verb.  Press classifies verbs by a feature she calls momentaneous.  Verbs can be [-mom] "nukwi-run", [+mom] "tIrawi7i-dash off", or can take either aspectual meaning [*mom] "kwIhI-catch."  This feature constrains the tense/aspect suffixes that can attach to a verb.  The present tense suffix /-jI/ cannot attach to  [- mom] verbs.  Instead they take a zero suffix for present tense.  For [- mom] verbs the present tense suffix /-ji/ must be used for present tense, they cannot take the zero present tense marker (Press 64).
+#Ex 28 illustrates a grammatical use of the present tense for a [+mom] verb.  Press classifies verbs by a feature she calls momentaneous.  Verbs can be [-mom] "nukwi-run", [+mom] "tIrawi7i-dash off", or can take either aspectual meaning [*mom] "kwIhI-catch."  This feature constrains the tense/aspect suffixes that can attach to a verb.  The present tense suffix /-jI/ cannot attach to  [+mom] verbs.  Instead they take a zero suffix for present tense.  For [- mom] verbs the present tense suffix /-ji/ must be used for present tense, they cannot take the zero present tense marker (Press 64).
 Source: author
 Vetted: f
 Judgment: g
@@ -498,7 +498,7 @@ boy cat-OBL gave-pres-ques
 #Ex 48 illustrates a grammatical S coordination.  S coordination can be done with juxtaposition (Press 102). 
 Source: author
 Vetted: f
-Judgment: u
+Judgment: g
 Phenomena: {crd}
 Im nukwij maN tIraqi
 Imi nukwi-jI maNa tIraqi7i
@@ -535,7 +535,7 @@ maNa nukwi wi7i-vII-su
 3sg.anim.visible run fall-past-too
 'He ran and fell.'
 
-#Ex 52 illustrates grammatical NP coordination.  There are two ways to coordinate NPs /-gajaa/ is used when the two NPs are not considered to have engaged int the action together.  This suffix also appears with just one NP. Press does not mention if three or more NPs can be coordinated.  The other suffix is used for "with."
+#Ex 52 illustrates grammatical NP coordination.  There are two ways to coordinate NPs /-gajaa/ is used when the two NPs are not considered to have engaged int the action together.   This suffix also appears with just one NP. Press does not mention if three or more NPs can be coordinated.  The other suffix is used for "with."(Press:104)
 Source: author
 Vetted: f
 Judgment: g
@@ -545,14 +545,14 @@ anni Johni-a nII-a-gaja puni-kai-vII
 Ann John-OBL 1sg-OBL-too look-result-past
 Ann saw John and me.
 
-#Ex 53 illustrates grammatical NP coordination.  There are two ways to coordinate NPs /-gajaa/.  This suffix also appears with just one NP.
+#Ex 53 illustrates grammatical NP coordination.  There are two ways to coordinate NPs /-gajaa/.  This suffix also appears with just one NP. (Press:104)
 Source: author
 Vetted: f
 Judgment: g
 Phenomena: {coord}
-ann johni nInigaja punikaivI
+ann margaret unagaja Johni punikaivI
 anni margareti uNa-gaja Johni-a puni-kai-vII
-Ann Margaret John-OBL 1sg-OBL-too look-result-past
+Ann Margaret she-too John-OBL look-result-past
 Ann and Margaret saw John.
 
 

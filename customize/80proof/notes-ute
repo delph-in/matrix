@@ -443,3 +443,91 @@ Overgeneration: 4/30 13.3%
 Error: 26
 
 
+SS-Ex 13 interactive unification works.  I am not sure why the sentence does not parse.  Will ask about this tomorrow. 
+
+Ex 28-- does not parse because the verb is prevented from going through the zero marker present tense rule for [+mom] verbs.  The lexical rules were defined incorrectly.  Perhaps, because the explanation given in the test suite had the situation reversed. [+mom] verbs must take the zero present tense marker [-mom] must take -jI as the present tense marker.  I think the lexical rules have this reversed.  I updated the comment part of the chemehuevi.txt, the examples themselves were correct.  
+
+I changed 
+
+verb-slot1_morph3_feat1_value=mom-minus to
+verb-slot1_morph3_feat1_value=mom-plus
+
+The names of these lexical rules should be changed as well to reflect the correct mom values.
+
+Coverage stayed the same 51.9%, but there were changes in the details.
+
+Ex 28 now parses
+Ex 27 used to parse and shouldn't have.  Now it does not.
+Ex 33 used to parse and shouldn't have.  Now it does not
+Ex 36 is not parsing now and it should.  This is an example of a negative sentence, before the verb nukwi was allowed to go through the zero-marker present tense rule when it shouldn't have.  Now that it isn't allowed to go through this rule, this example is not parsing.
+Ex 48 now parses and it should (**Later on I realized that although this should parse it had been labeled as ungrammatical this was changed later on).
+
+Coverage: 14/27 51.9%
+Overgeneration: 10% 3/30
+Errors: 26
+
+Ex34 was not going through the tense rule, I added verb_slot6 as input for verb_slot1.
+
+Coverage: 15/27 55.6%
+Overgeneration : 3/20 10%
+
+Ex34 is the additional sentence that parses, so that worked!
+
+Ex36 was not going through the tense rule because "nukwi" is [+mom] and when unnegated must take the '-jI' marker for the present tense, but '-jI' is not allowed to occur with the negation marker.  I created a new lexical rule for tense on negated verbs
+
+verb-slot10_name=neg-tense
+  verb-slot10_order=after
+    verb-slot10_input1_type=verb-slot9
+    verb-slot10_input2_type=verb-slot8
+    verb-slot10_input3_type=verb-slot4
+    verb-slot10_input4_type=verb-slot5
+    verb-slot10_input5_type=verb-slot6
+    verb-slot10_morph1_name=neg-past
+    verb-slot10_morph1_orth=-vII
+      verb-slot10_morph1_feat1_name=tense
+      verb-slot10_morph1_feat1_value=past
+      verb-slot10_morph1_feat1_head=verb
+    verb-slot10_morph2_name=neg-non-past
+
+I also changed the input of verb_slot7 neg-marker to verb-slot10 and made verb-slot7 and 10 non-optional.
+
+Coverage:59.3% 16/27
+Overgeneration: 3/30 10%
+
+On to the errors list. 
+
+Ex24 was on the errors list because "-7um' had not been entered as lex rule.  I added it a subrule for more-animate-subj-agreement. Looking at the reference grammar again, I think that the two differen non-singular subrules are actually allophones.
+
+Coverage increased by 1 to 17/27 63%
+Overgeneration 3/30 10%
+
+The detail report shows exactly one change--the expected one.  Nothing seems to have been broken.  
+
+Ex25 there was an error in the test suite. The past tense morpheme is '-vII' and in this example one of the 'I's was left off and it was given as '-vI'.  I changed the test suite and item file.
+
+This parses now.
+
+Coverage 18/27 66.7%
+Overgeneration 3/30 10%
+
+The detail report shows only the expected change.
+
+Ex 30 contains an enclitic "-caa"that attaches to the subject.  It co-occurs with the perfective marker.  This is probably not possible to get.
+
+Per Emily's comments, I think that 52 and 53 are the only ones left to try for.
+The names "anni, johni, and margeti" were not in the lexicon.  I added them.
+
+53 is now off the error list, but still not parsing.  I think that 52 is still or the list because it the coordination suffix attaches after the case marker.
+
+Even though 53 is off of the error list, I don't see how to get the semantics correct for this.
+
+Overgeneration
+
+
+Ex 9 was overgenerating because number was underspecified for aipaci.  I added number singular as a feature for this noun type.  It is still overgenerating.  Here is a problem with the zero morpheme rules. 
+
+Exs 12 and 48 were mislabeled as ungrammatical.  They were meant to be grammatical examples.  I changed the test suite and the item file.
+
+Coverage: 20/29 69%
+Overgeneration: 1/28 3.6%
+
