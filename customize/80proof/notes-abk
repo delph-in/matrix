@@ -540,3 +540,26 @@ The boy saw the father.
 
 
 I think that when the nouns come from the same class, word order is used to determine the semantics.  The subject precedes the object.
+
+8/18/2009-SS Safiyyah's response to Antske's questions
+
+Abkhaz: #41 and #42: their MRSs are identical, the glosses say something about exclusive/inclusive, but I am not sure what this would mean for 2nd person, what is the difference between the two?
+
+According to one of the references grammars some grammarians think that the difference between the two first person and two second person plural pronouns is inclusive-exclusive, but others reject this view.  The author does not come down on either side, but also doesn't offer what the other grammarians consider the difference to be.  Are they just two variant forms with no semantic difference?  The author doesn't really say.  Since inclusive-exclusive was given as a possible difference, I included it.  It really doesn't come to play in grammar though because there is no inclusive-exclusive distinction in argument markers.
+
+#54: what are the glosses of the verb supposed to be?
+the verb is "ba" and it is supposed to be glossed as see.  That is the way that it is in the test suite.  Perhaps, I am not understanding the question.
+
+#58: should "də-r-ba-jt" be "də-rə-ba-jt"?
+Yes it should.  I changed the test suite.
+
+#71: should "d-j?-ba-jt" be "də-jə-ba-jt"?
+Yes it should. I changed the test suite.
+
+#72: should "a-təpha-t͡ɕʷʰa" be "a-təpha-t͡ʂʰa"?
+Actually, I think that 72 is correct and #69 and the grammar had the wrong spelling for the human-plural morpheme.  I changed the test suite.
+
+#80 + #81: should "j?-j?-ba-jt" be "jə-jə-ba-jt"?
+Yes.  I changed the test suite.
+
+I cleaned up the extraneous question marks.  This was left over from when I had unicode characters and did not save the file with correct encoding. 

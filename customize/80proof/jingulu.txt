@@ -301,7 +301,7 @@ The old man is sleeping
 #Ex 30 demonstrates ungrammatical case  Animate subjects of transitive verbs are in the ergative case. Here the ergative suffix "-rni" is missing.
 Source: author
 Vetted: f
-Judgment: g
+Judgment: u
 Phenomena: agr
 marlukayila ngunjawurriju karalu
 marluka-bala ngunja-wurri-ju karalu
@@ -514,8 +514,8 @@ Vetted: f
 Judgment: g
 Phenomena: coord
 uliyijanga ngunjaju karalu
-uliyija-nga ngunja-ju karalu marluka-rni  manyan ya-ju
-sun-erg burn-do ground old.man-erg sleep 3s-do
+uliyija-nga ngunja-ju karalu marluka  manyan ya-ju
+sun-erg burn-do ground old.man sleep 3s-do
 The sun is burning the ground and the old man is sleeping
 
 

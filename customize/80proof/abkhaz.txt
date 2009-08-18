@@ -77,7 +77,7 @@ t͡ʂʰkʷʰən-k a-təpha də-jə-ba-jt
 boy-a the-girl her-he-see-dynamic.finite
 A boy saw the girl.
 
-#Ex 8 demonstrates an incorrect use of the d?finite article.  It is a prefix "-a" and here it appears as a suffix.
+#Ex 8 demonstrates an incorrect use of the definite article.  It is a prefix "-a" and here it appears as a suffix.
 Source: author
 Vetted: f
 Judgment: u
@@ -88,7 +88,7 @@ boy-the the-girl her-he-see-dynamic.finite
 The boy saw the girl.
 
 
-#Ex 9 demonstrates an incorrect use of the d?finite article.  It is a prefix "-a" and here it appears as a suffix.
+#Ex 9 demonstrates an incorrect use of the definite article.  It is a prefix "-a" and here it appears as a suffix.
 Source: author
 Vetted: f
 Judgment: u
@@ -260,7 +260,7 @@ a-t͡ʂʰkʷʰən  a-təpha də-jə-ba-ma
 the-boy the-girl her-he-see-question
 Did the boy see her?
 
-#Ex 26 demonstrates an ungrammatical yes/no question.  Yes/no questions are formed by adding different suffixes to the verb.  One suffix is "-ma".  Here the dynamic/finite marker is includ?d.  It should not appear in a question
+#Ex 26 demonstrates an ungrammatical yes/no question.  Yes/no questions are formed by adding different suffixes to the verb.  One suffix is "-ma".  Here the dynamic/finite marker is included.  It should not appear in a question
 Source: author
 Vetted: f
 Judgment: u
@@ -280,7 +280,7 @@ a-t͡ʂʰkʷʰən  a-təpha də-jə-ba-ma-wa
 the-boy the-girl her-he-see-question-present
 Did the boy see her?
 
-#Ex 28 demonstrates yes/no questions.  Yes/no questions are formed by adding different suffixes to the verb.  One suffix is "-ma".  Here the  dynamic/finite marker is (incorrectly) includ?d
+#Ex 28 demonstrates yes/no questions.  Yes/no questions are formed by adding different suffixes to the verb.  One suffix is "-ma".  Here the  dynamic/finite marker is (incorrectly) included
 Source: author
 Vetted: f
 Judgment: u
@@ -587,7 +587,7 @@ Vetted: f
 Judgment: u
 Phenomena: agr
 hará atəpha dərəbajt
-hará a-təpha də-r-ba-jt
+hará a-təpha də-rə-ba-jt
 we.incl the-girl her-they-see-dynamic.finite
 We saw the girl.
 
@@ -666,7 +666,7 @@ Source: author
 Vetted: f
 Judgment: g
 Phenomena: agr
-at͡ʂʰkʷʰən ʃʷará ʃʷ?əjəbajt
+at͡ʂʰkʷʰən ʃʷará ʃʷəjəbajt
 a-t͡ʂʰkʷʰən ʃʷará ʃʷə-jə-ba-jt
 the-boy you.pl you.pl-he-see-dynamic.finite
 The boy saw you.
@@ -686,7 +686,7 @@ Source: author
 Vetted: f
 Judgment: g
 Phenomena: agr
-a-mat at͡ʂʰkʷʰən j?j?bajt
+a-mat at͡ʂʰkʷʰən jəjəbajt
 a-mat a-t͡ʂʰkʷʰən  j-jə-ba-jt
 the- snake the-boy it-he-see-dynamic.finite
 The boy saw the snake.
@@ -696,8 +696,8 @@ Source: author
 Vetted: f
 Judgment: g
 Phenomena: agr
-atəphat?sa at͡ʂʰkʷʰən j?j?bajt
-a-təpha-t͡ʂʰa a-t͡ʂʰkʷʰən j-jə-ba-jt
+atəphat͡ɕʷʰa at͡ʂʰkʷʰən jəjəbajt
+a-təpha-t͡ɕʷʰa a-t͡ʂʰkʷʰən j-jə-ba-jt
 the-girl -pl the-boy 3rd.pl-he-see-dynamic.finite
 The boy saw the girls.
 
@@ -706,7 +706,7 @@ Source: author
 Vetted: f
 Judgment: g
 Phenomena: agr
-a-mat-k?a at͡ʂʰkʷʰən  jəjəbajt
+a-mat-kʷʰa at͡ʂʰkʷʰən  jəjəbajt
 a-mat-kʷʰa  a-t͡ʂʰkʷʰən j-jə-ba-jt
 snake-pl  the-boy 3rd.pl-he-see-dynamic.finite
 The boy saw the snakes.
@@ -717,7 +717,7 @@ Vetted: f
 Judgment: u
 Phenomena: agr
 at͡ʂʰkʷʰən a-mat-kʷ dəjəbajt
-a-t͡ʂʰkʷʰən a-mat-kʷa d-j?-ba-jt
+a-t͡ʂʰkʷʰən a-mat-kʷa d-jə-ba-jt
 the-boy snake-pl 3rd.human.sing-he-see-dynamic.finite
 The boy saw the snake.
 
@@ -806,8 +806,8 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: agr
-atəphat?s aab at͡ʂʰkʷʰən j?j?bajt
-a-təpha a-ab a-t͡ʂʰkʷʰən j?-j?-ba-jt
+atəpha aab at͡ʂʰkʷʰən jəjəbajt
+a-təpha a-ab a-t͡ʂʰkʷʰən jə-jə-ba-jt
 the-girl  the-father-and the-boy 3rd.pl-he-see-dynamic.finite
 The boy saw the girl and the father             
 
@@ -816,8 +816,8 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: agr
-atəphaj aab at͡ʂʰkʷʰən j?j?bajt
-a-təpha-j -ja-ab a-t͡ʂʰkʷʰən j?-j?-ba-jt
+atəphaj aab at͡ʂʰkʷʰən jəjəbajt
+a-təpha-j -ja-ab a-t͡ʂʰkʷʰən jə-jə-ba-jt
 the-girl-and and-the-father-and the-boy 3rd.pl-he-see-dynamic.finite
 The boy saw the girl and the father       
 

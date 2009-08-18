@@ -233,3 +233,10 @@ undergeneration: example 47, not sure what is supposed to happen (could be data 
 32: 'ate'-bug
 56,58,59: problem that np,vp and s coordination are not supported. Several things to note here: 1. old requirement that suffix can only attach to inflected - (seems silly), 2. system does not support 'phrasal' affixes 3. requirements such as 'must attach of verb of such and such form, auxiliary required' are not supported.
  
+8/17/2009 Safiyyah's responses to Antske's questions
+
+#47: the description points to #46, where the negation marker is attached to the infinitive marker. What is #47 testing? An additional tense with negation? Or is it an ungrammatical example of missing tense/infinitive marker?
+
+The negative future can be formed by adding "-lla" to the verb stem or to the infinitive.  #47 tests the former and #46 tests the latter.  The reference grammar does not give any semantic difference between the two forms.  It only mentions that the shorter form (attaching to the verb stem) is used in colloquial language.
+
+I added another line to the explanation in the test suite that, hopefully, makes this clearer. 

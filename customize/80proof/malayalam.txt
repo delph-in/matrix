@@ -462,7 +462,7 @@ kuTTi cirikk-uka-aaNe
 child.nom laugh-infinitive-imperfect
 'The child is laughing.'
 
-#Ex 46 demonstrates negation.  The negative indicative is formed by adding "-illa" to the present and past tense stems.  For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem.
+#Ex 46 demonstrates negation.  The negative indicative is formed by adding "-illa" to the present and past tense stems.  For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem.  here it is added to the infinitive.
 Source: author
 Vetted: f
 Judgment: g
@@ -473,7 +473,7 @@ child.nom laugh-infinitive-neg
 'The child will not laugh.'
 
 
-#Ex 47 demonstrates negation.  The negative indicative is formed by adding "-illa" to the present and past tense stems.  For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem.
+#Ex 47 demonstrates negation.  The negative indicative is formed by adding "-illa" to the present and past tense stems.  For the future, the negative is formed by adding "-illa" to the infinitive or the verb stem.  Here it is attached to the verb stem. 
 Source: author
 Vetted: f
 Judgment: g

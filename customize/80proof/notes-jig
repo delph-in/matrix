@@ -286,3 +286,12 @@ It may possibly be more correct to remove the numbers from all agreement morphem
 Retested introducing more than one slot to account for incompatibility of certain subject and object agreement markers. It is a trade-off between removing over-generation and introducing spurious ambiguity.
 
 I'm adding choices-jig-additional-slots, as an option where the additional slots are there (overgeneration 0%, spurious ambiguity for all examples that have a 3rd person subject or object).
+
+8/9/2009 Safiyyah's response to Antske's questions
+
+Jingulu
+- in the second part of sentence 51: should the subject bear an ergative marker, or should it be nominative, like 22?
+It should be like 22.  I changed the test suite.
+
+- 30 is ungrammatical, right? In jingulu.txt it is still marked 'g', so we are counting it as a false negative.
+Yes. It should be ungrammatical.  I changed the test suite.
