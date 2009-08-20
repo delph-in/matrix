@@ -240,3 +240,41 @@ undergeneration: example 47, not sure what is supposed to happen (could be data 
 The negative future can be formed by adding "-lla" to the verb stem or to the infinitive.  #47 tests the former and #46 tests the latter.  The reference grammar does not give any semantic difference between the two forms.  It only mentions that the shorter form (attaching to the verb stem) is used in colloquial language.
 
 I added another line to the explanation in the test suite that, hopefully, makes this clearer. 
+
+8/20/2009 ASF
+
+Since #47 is grammatical, I made -uka (infinitive marker) optional in 'choices'. This seems to reflect the appropriate behavior,
+and #47 is now parsed.
+
+FINAL RESULTS
+
+
+
+Coverage: 89.7%, Treebank coverage: 87.2%
+Overgeneration: 2.8%, Correctness Failure: 88.6%
+Overall performance Ungrammatical examples: 86.1%
+Spurious Ambiguity: 1 example with 4 parses.
+Total number of examples: 75
+Grammatical: 39
+Ungrammatical: 37 - 1 (43 and 67 are identical) = 36
+
+Phenomenon based analysis:
+
+Word Order (#1-#6, #21-22):     +
+Case             (#7-#20):      -
+Det/Definiteness (#21-#24):     +
+Pers/Nr/Gen      (#25-#34):     +
+Tense/Aspect     (#35-#45):     +
+Negation         (#46-#52):     +
+Yes-No Questions (#53):         +
+Coordination     (#54-#61):     -
+Morphology (#35-#45,#62-#76):   + 
+Agreement        (#24):         +
+
+Total:  8/10 phenomena: 80%
+
+Maybe "determiner" and "agreement" should be counted as one in this case.
+I separated them, because one of the other grammars has affixes for determiners,
+and this does not work.
+Case mostly works, but we cannot deal with nouns that have different case marking in a specific function only. The count is thus strict: if part of the phenomenon does not work, it gets a -.
+Coordination does not work at all: the only form that works gets an incorrect semantic representation, and has spurious ambiguity. Ungrammatical examples are excluded for the wrong reasons, and could not be excluded for the right ones.

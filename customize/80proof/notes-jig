@@ -312,7 +312,7 @@ Yes. It should be ungrammatical.  I changed the test suite.
 Sum up for jingulu: using the "additional slots"-option, since it has the most complete description of the phenomena in its choices.
 
 Coverage: 100%, Treebank coverage: 100%
-Overgeneration: 100%, Correctness Failure: 100%
+Overgeneration: 0%, Correctness Ungrammatical examples: 100%
 Spurious Ambiguity: 14 examples, each with 3 parses.
 Total number of examples: 54
 Grammatical: 30 - 1 (16 and 14 are identical) = 29
@@ -329,7 +329,8 @@ Morphology (#39-#44,#49-#50):   -
 Tense/Aspect    (#45-#48):      +
 Coordination    (#51-#52):      +
 Case            (#53-#56):      + 
+Pers/Nr/Gen                     +
 
-Total:  7/8 phenomena: 87.5%
+Total:  8/9 phenomena: 88.9%
 
 Morphology is responsible for the spurious ambiguity.
