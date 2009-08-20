@@ -680,16 +680,16 @@ kuTTi cirikk-aaRE-uNTE
 child.nom laugh-hab-hab.pres
 'The child laughs.'
 
-
+#EMB --- removed, identical to 43.
 #Ex 67 demonstrates an ungrammatical form of the habitual.  It is formed by adding "-aaRE" and "-uNTE" to the verb stem.  Here "-aaRe" is missing
-Source: author
-Vetted: f
-Judgment: u
-Phenomena: {tam}
-kuTTi cirikkuNTE
-kuTTi cirikk-uNTE
-child.nom laugh-hab.pres
-'The child laughs.'
+#Source: author
+#Vetted: f
+#Judgment: u
+#Phenomena: {tam}
+#kuTTi cirikkuNTE
+#kuTTi cirikk-uNTE
+#child.nom laugh-hab.pres
+#'The child laughs.'
 
 #Ex 68 demonstrates an ungrammatical form of the habitual.  It is formed by adding "-aaRE" and "-uNTE" to the verb stem.  Here "-uNTE" is missing.
 Source: author
