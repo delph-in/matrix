@@ -548,7 +548,7 @@ Judgment: u
 Phenomena: agr
 hart atəpha dəabajt
 hart a-təpha də-a-ba-jt
-we.excl the-girl her-we-see-dynamic.finite
+we.excl the-girl her-3s.non.human-see-dynamic.finite
 We saw the girl.
 
 #Ex 55 demonstrates ungrammatical verb subject agreement.  Second person plural subject takes a second person masculine singular agreement marker.
