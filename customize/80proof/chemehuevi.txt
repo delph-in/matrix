@@ -588,12 +588,13 @@ nII mamI puni-kai-tu-vII
 1sg 3pl.anim.visible look-result-obj.pl-past
 I saw them.
 
+#EMB: Removed: same as 54.
 #Ex 57 illustrates one of the perfectives "finish".  It is formed by adding /-ma7aku/.  It occurs with with /-vII/-past and the perfective enclitic /-caa/ (Press 68). The aspect marker must precede the tense marker.  Here it does not.
-Source: author
-Vetted: f
-Judgment: u
-Phenomena: {agr,pn}
-maN nukwivIma7ak
-maNa nukwi-vII-ma7aku
-3sg.anim.visible run-past-finish
-'He/She finished running.'
+#Source: author
+#Vetted: f
+#Judgment: u
+#Phenomena: {agr,pn}
+#maN nukwivIma7ak
+#maNa nukwi-vII-ma7aku
+#3sg.anim.visible run-past-finish
+#'He/She finished running.'

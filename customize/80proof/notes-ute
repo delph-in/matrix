@@ -567,7 +567,7 @@ Failing for wrong reasons:
 FINAL EVALUATION:
 
 
-Coverage: 82.8%, Treebank coverage: 75.9%
+3.4\%Coverage: 82.8%, Treebank coverage: 75.9%
 Overgeneration: 0%, Correct Failures: 81.5%
 Overall performance Ungrammatical examples: 81.5%
 Spurious Ambiguity: 1 example with 2 parses.
