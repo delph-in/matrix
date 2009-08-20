@@ -285,6 +285,17 @@ It may possibly be more correct to remove the numbers from all agreement morphem
 
 Retested introducing more than one slot to account for incompatibility of certain subject and object agreement markers. It is a trade-off between removing over-generation and introducing spurious ambiguity.
 
+<<<<<<< .mine
+I'm adding choices-jig-additional-slots, as an option where the additional slots are there (overgeneration 0%, spurious ambiguity for all examples that have a 3rd person subject or object).
+
+Description (possibly draft for the paper) of problems in morphology:
+
+In Jingulu, verbs bear both subject and object agreement markers, which generally co-occur, though some combinations are incompatible.
+The first singular subject marker may not co-occur with first or second object markers, and second person subject morphemes may not be followed by second person either.
+In principle, the matrix customization system can account for this, when separate slots are defined for subject and object markers in first and second person. Third person object morphemes may follow any subject-morpheme slot, the first person object may follow all but first singular subject, whereas the second person object only follows morphemes from the slot containing first person dual and plural and third person subjects.
+Introducing these additional slots makes the right predictions on relevant examples in our date set (hence the 100% coverage and 0% overgeneration), but it also leads to spurious ambiguity for those examples where zero markers are present.This error occurs, because when a morpheme can take more than one input slot, the customization system automatically makes these slots optional. In other words, the customization system does not allow the option that at least one of the possible outputs must occur. This bug might be the result of unclarities around the notion of 'slots'. The name suggests that it refers to the positions in which morphemes may occur, but in fact, the 'slots' represent more than that: all morphemic interactions are defined for the entire slots. In order to account for the interaction between specific subject and object markers in Jingulu, we needed to define separate slots for morphemes that occur in the same position. Since these same position morphemes cannot go occur, it is a sensible reaction for the system to make them optional rather than obligatory. What is missing is, as mentioned above, the option that in these cases at least one of the slots must be present. The implementation would be straigt-forward: all that is needed is to create a supertype of the possible slots, and force the selecting morpheme to combine with this supertype. A better solution would, however, be to allow for morphemic groups within the slots. The slots could be used to define the position of specific morphemes, and interactions between morphemes on the level of morphemic sub-groups. This would result in more straight-forward representation of the facts of the language, as well as more straight-forward implementation of interactions between morphemes. A similar phenomenon (tense markers selecting for different agreement markers) has been implemented in the sample Turkish grammar described in Fokkens, Poulson and Bender 2009.
+
+
 I'm adding choices-jig-additional-slots, as an option where the additional slots are there (overgeneration 0%, spurious ambiguity for all examples that have a 3rd person subject or object).
 
 8/9/2009 Safiyyah's response to Antske's questions
@@ -295,3 +306,30 @@ It should be like 22.  I changed the test suite.
 
 - 30 is ungrammatical, right? In jingulu.txt it is still marked 'g', so we are counting it as a false negative.
 Yes. It should be ungrammatical.  I changed the test suite.
+
+08/20 ASF
+
+Sum up for jingulu: using the "additional slots"-option, since it has the most complete description of the phenomena in its choices.
+
+Coverage: 100%, Treebank coverage: 100%
+Overgeneration: 100%, Correctness Failure: 100%
+Spurious Ambiguity: 14 examples, each with 3 parses.
+Total number of examples: 54
+Grammatical: 30 - 1 (16 and 14 are identical) = 29
+Ungrammatical: 26 - 1 (11 and 38 are identical) = 25
+
+Phenomenon based analysis:
+
+Word Order      (#1-#9):        +
+Y/N questions   (#7-#9):        +
+Negation        (#10):          +
+Agreement  (#11-#21,#24-#44):   +
+Aux/Light verbs (#22-#23):      +
+Morphology (#39-#44,#49-#50):   -  
+Tense/Aspect    (#45-#48):      +
+Coordination    (#51-#52):      +
+Case            (#53-#56):      + 
+
+Total:  7/8 phenomena: 87.5%
+
+Morphology is responsible for the spurious ambiguity.

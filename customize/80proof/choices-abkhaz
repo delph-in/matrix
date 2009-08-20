@@ -215,7 +215,6 @@ section=lexicon
       verb-slot1_morph1_feat2_value=masculine
       verb-slot1_morph1_feat2_head=subj
     verb-slot1_morph2_name=1sing-erg-subj-marker
-    verb-slot1_morph2_orth=s-
       verb-slot1_morph2_feat1_name=pernum
       verb-slot1_morph2_feat1_value=1singular
       verb-slot1_morph2_feat1_head=subj

@@ -1,10 +1,17 @@
-		Coverage	Overgeneration	Errors
+		Coverage	Overgeneration	Errors   Sp.Ambiguity(nr of parses) 
 abk		100%		0%		32
 hau		47.4%		6.7%		22
-jig		83.3%		3.8%		13 
+jig		100%		0%		8        14(3)
 kal		41.2%		4.5%		29
 mal		84.6%		2.7%		25
 nyn		50.5%		1.9%		24
 ute		69.0%		3.6%		23
 hau-opt		63.2%		6.7%		17
+
+TREEBANK COVERAGE AND CORRECTNESS OF FAILING PARSES
+
+               Tree-cov        Correct failures    Phenomena 
+abk
+hau
+jig            100%            0%                  7/8
 
