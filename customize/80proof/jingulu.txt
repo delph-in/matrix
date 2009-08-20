@@ -333,9 +333,9 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: agr
-ngurrawalarni ngunjayaju karalu
-ngurrawala-rni ngunja-ya-ju karalu
-1pl.incl-erg burn-3s.incl-do ground
+ngurrawalarni ngunjanyaju karalu
+ngurrawala-rni ngunja-nya-ju karalu
+1pl.incl-erg burn-2s-do ground
 We are burning the ground. 
 
 #Ex 34 demonstrates verb subject agreement for transitive verbs. Here the person of the subject and verb marker disagree. 
