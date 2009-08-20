@@ -1,23 +1,23 @@
 		Coverage	Overgeneration	Errors   Sp.Ambiguity(nr of parses) 
-abk		100%		0%		32
+abk		100%		0%		29       1(2)
 hau		47.4%		6.7%		22
 jig		100%		0%		8        14(3)
 kal		41.2%		4.5%		29
 mal		89.7%		2.8%		24       1(4)
 nyn		50.5%		1.9%		24
-ute		69.0%		3.6%		23
+ute		82.8%		0%		21       1(2)
 hau-opt		63.2%		6.7%		17
 
 TREEBANK COVERAGE AND CORRECTNESS OF FAILING PARSES
 
                Tree-cov        Correct failures    Phenomena 
-abk
+abk            94.4%           100%                -:1 +/-:2 +:6
 hau
-jig            100%            100%                8/9
+jig            100%            100%                -:0 +/-:1 +:8
 kal
-mal            87.2%           86.1% (88.6%)       8/10
+mal            87.2%           86.1% (88.6%)       -:1 +/-:1 +:8
 nyn
-ute
+ute            75.9%           81.5%               -:3 +/-:3 +:5
 hau-opt
 
 NB: correct failures presents the total of ungrammatical sentences that

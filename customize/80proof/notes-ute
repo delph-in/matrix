@@ -531,3 +531,48 @@ Exs 12 and 48 were mislabeled as ungrammatical.  They were meant to be grammatic
 Coverage: 20/29 69%
 Overgeneration: 1/28 3.6%
 
+8/20/09 ASF
+
+simplified number hierarchy: non-singular and non-plural have (appropriate) subtypes dual, singular and plural. #9 is no longer parsed.
+
+made one noun-class out of two for "mamI": grammar does not suggest they are separate pronouns, but one that can be dual or plural (i.e. non-singular) removed ambiguity on examples 10 and 26.
+
+removed empty non-plural marker from verbal-morphemes and made this slot optional. Example 13 is now parsed, but #12 no longer receives the right "number". Since the interpretation seems to be a 'default' interpretation we don't really handle, this seems the most appropriate thing to do at this point.
+
+verbal morphology could be modified a lot, but I am leaving it the way it is for now.
+
+added a suffix -caa and an empty suffix to nouns (not adding any features) example 52 now parses (30 still does not) mystery why 52 all of a sudden works, but I am not complaining :-). Also added a zero morpheme to the verb, combining with -caa nouns and adding perfective aspect. #30 parses now.
+
+added suffix -gai "subordinate" and vp-coordination strategy. #49 now parses, but so does #50. In the end, this coordination strategy does not work: it is a choice between slighty less coverage and overgeneration.
+Since it would not have worked at all, if it were a transitive vp, I am considering removing it again.
+
+removed coordination -su and -gai again: it would not work for transitives, and does not work properly for intransitives either (overgeneration).
+
+added 'present tense' to zero marker to correct MRS of #34 and #36.
+This is all we can do.
+
+Summary of observations:
+
+#2: Chemehuevi allows two word orders, this option is not supported by the matrix yet.
+#40,#42: form of negation not handled (modifier + affix)
+#44: second position question-marker is not handled yet
+#49: coordination of phrases marked by affixes + form restrictions on one of the coordinands (neither is supported, hence #50 fails for the wrong reasons).
+
+Failing for wrong reasons:
+#41,#43: fails for the same reason as grammatical #40 and #42.
+#45: fails for same reason as #44, restrictions on TAM imposed by question markers are not supported yet.
+#50,#51:fail because of lacking -su coordination: restrictions on finiteness cannot be imposed in coordination library.
+
+
+FINAL EVALUATION:
+
+
+Coverage: 82.8%, Treebank coverage: 75.9%
+Overgeneration: 0%, Correct Failures: 81.5%
+Overall performance Ungrammatical examples: 81.5%
+Spurious Ambiguity: 1 example with 2 parses.
+Total number of examples: 56
+Grammatical: 29
+Ungrammatical: 28 - 1 (54 and 57 are identical) = 27
+
+Phenomenon based analysis:
