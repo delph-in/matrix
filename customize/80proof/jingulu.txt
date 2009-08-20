@@ -155,15 +155,16 @@ ngirrika-rni ngunja-ngirr-ju karalu
 1pl.excl-erg burn-1pl.excl-do ground
 We are burning the ground. 
 
+#EMB removed: Identical to #14
 #Ex 16 demonstrates verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. 
-Source: author
-Vetted: f
-Judgment: g
-Phenomena: agr
-ngurrawalarni ngunjangurraju karalu
-ngurrawala-rni ngunja-ngurr-ju karalu
-1pl.incl-erg burn-1pl.incl-do ground
-We are burning the ground. 
+#Source: author
+#Vetted: f
+#Judgment: g
+#Phenomena: agr
+#ngurrawalarni ngunjangurraju karalu
+#ngurrawala-rni ngunja-ngurr-ju karalu
+#1pl.incl-erg burn-1pl.incl-do ground
+#We are burning the ground. 
 
 #Ex 17 demonstrates verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. 
 Source: author
@@ -378,15 +379,16 @@ ngaya-rni ngunja-wunyi-ju karalu
 I-erg burn-1s-do ground
 I am burning the ground. 
 
+#EMB removed -- identical to #11
 #Ex 38 demonstrates verb subject agreement for transitive verbs.  189 for inanimate instrumental case for subject of transitive
-Source: author
-Vetted: f
-Judgment: g
-Phenomena: agr
-ngayarni ngunjaju karalu
-ngaya-rni ngunja-nga-ju karalu
-I-erg burn-1s-do ground
-I am burning the ground. 
+#Source: author
+#Vetted: f
+#Judgment: g
+#Phenomena: agr
+#ngayarni ngunjaju karalu
+#ngaya-rni ngunja-nga-ju karalu
+#I-erg burn-1s-do ground
+#I am burning the ground. 
 
 #Ex 39 demonstrates ungrammatical use of object agreement markers.  Some logical combinations not possible. First person singular combined either first person or second person is not allowed
 Source: author
