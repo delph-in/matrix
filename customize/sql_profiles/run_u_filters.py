@@ -29,7 +29,6 @@ from u_filters import filter_list
 import sys, datetime, MySQLdb
 import datetime
 from matrix_tdb_conn import MatrixTDBConn
-
 ##########################################################################
 # find_filter_from_name(n, filter_list)
 
@@ -243,11 +242,18 @@ def add_to_res_fltr(osp_id, conn):
     print >> sys.stderr, "There are", len(resultRows), "results in osp", osp_id    
     resultIDsInOSP = db_utils.selColumnToSet(resultRows)
 
+    # these lines that get the number of pre-filtered results seems to be the biggest time
+    # consumer, and it's only for a sanity check, so consider removing
     preFilteredResultRows = conn.selQuery("SELECT rf_res_id FROM res_fltr")
     preFailedResults = \
                         db_utils.selColumnToSet(preFilteredResultRows).intersection(resultIDsInOSP)
     print >> sys.stderr, len(preFailedResults), "have already been filtered"
 
+    # TODO: can i speed up this query by doing an outer join where r_result_id is null instead of
+    # the 'not in' clause?  (It actually seems faster this way, 9 seconds to 24)
+    # TODO: better yet, can i just remove that all together since I'm already deleting everything
+    # from res_fltr before I call this?  Or maybe I should leave this in just in case I want to use
+    # this function without doing the pre-deletion
     resultsToFilterRows = conn.selQuery("SELECT r.r_result_id, i.i_input, r.r_mrs " + \
                                                           "FROM item_tsdb i INNER JOIN parse p "  + \
                                                              "ON i.i_id = p.p_i_id INNER JOIN result r " + \
@@ -312,9 +318,10 @@ def add_to_res_fltr(osp_id, conn):
     # tell the user how many item/results failed at least one filter
     print >> sys.stderr, len(failedResults), " strings failed at least one filter."
 
-    # tell the user how many item/results passed all relevant filters.  should add up with
-    # len(failedSeeds) to be the total number of results for this osp id
-    print >> sys.stderr, len(passedAllResults), " strings passed all relevant filters."
+    # tell the user how many item/results passed all universal filters. 
+    print >> sys.stderr, len(passedAllResults), " strings passed all universal filters."
+    # next line is an experiment I tried on 8/12/09 but went a different direction on 8/13
+    # updatePassAllTable(passedAllResults, osp_id, conn)
 
     # tell the user how many item/results both passed all filters and failed at least one
     # sanity check...should be 0
@@ -323,6 +330,49 @@ def add_to_res_fltr(osp_id, conn):
     
     return
 
+def updatePassAllTable(passAll, ospToUpdate, conn):
+    # NOT USING FOR NOW 8/13/09
+    # probably quickest just to delete all and re-insert all
+    if len(passAll) > 0:
+        print >> sys.stderr, "rebuilding res_pass_univ"
+        ospRows = conn.selQuery("SELECT DISTINCT r_osp_id FROM result")
+        ospIDs = db_utils.selColumnToSet(ospRows)
+        tableState = {}
+
+        for osp in ospIDs:
+            if osp != ospToUpdate:
+                resultRows = conn.selQuery("SELECT rpu_res_id FROM res_pass_univ " + \
+                                                           "INNER JOIN result on rpu_res_id = r_result_id " + \
+                                                           "WHERE r_osp_id = %s", (osp))
+                resultIDs = db_utils.selColumnToSet(resultRows)
+
+                if len(resultIDs) > 0:
+                    tableState[osp] = resultIDs
+                
+        conn.execute("DELETE FROM res_pass_univ")
+
+        for osp in tableState.keys():
+            resultIDs = tableState[osp]
+            valuesClause = 'VALUE '            
+
+            for resID in resultIDs:
+                valuesClause += '(' + str(resID) + '),'
+
+            valuesClause = valuesClause[:-1]
+            insertStmt = 'INSERT INTO res_pass_univ (rpu_res_id) ' + valuesClause
+            conn.execute(insertStmt)
+
+        valuesClause = 'VALUE '
+        
+        for resID in passAll:
+            valuesClause += '(' + str(resID) + '),'
+
+        valuesClause = valuesClause[:-1]
+        insertStmt = 'INSERT INTO res_pass_univ (rpu_res_id) ' + valuesClause
+        conn.execute(insertStmt)            
+        
+        return
+    
 def insertManyUnivFails(failResFltrPairs, conn):
     # TODO: comment
     if len(failResFltrPairs) > 0:
@@ -347,99 +397,37 @@ def main(conn):
     Input:
         conn - a MatrixTDBConn, a connection to the MatrixTDB database    
     Output: none
-    Functionality: Asks the user if the want to replace the result of some filters or if they want to
-                         run filters on new results that they've imported.  The replace case is not
-                         working.  In the add case, it gets an osp_id then calls add_to_res_fltr to record
-                         the first fail of every result in that original source profile in res_fltr.
+    Functionality: Gets an osp_id from the user, deletes any existing results for that ops, then
+                         calls add_to_res_fltr to record the first fail of every result in that original source profile in res_fltr.
     Tables Accessed: result, filter, fltr_mrs, res_fltr, parse, item_tsdb
     Tables Modified: filter, fltr_mrs, res_fltr
-    Note: The case where a user wants to replace results for certain filters is untested and known
-             not to work.  See comments below and for update_res_fltr for more details.
     """
-    # Determine whether we are running u_filters because there are new
-    # items in the DB or because we need to update the values in res_fltr
-    # for particular u_filters.
+    # ask the user for the original source profile of the id tey want to filter.
+    osp_id = raw_input("\nWhat is the osp_id for the results you would lke to filter: ")
 
-    ans = ''                                                # initialize user response to empty string
+    # delete all existing results for that osp in res_fltr
+    conn.execute("DELETE FROM res_fltr WHERE rf_res_id in " + \
+                             "(SELECT r_result_id FROM result " + \
+                                     "WHERE r_osp_id = %s)", (osp_id))    
 
-    while (ans != 'r' and ans != 'a'):              # until they give us an answer we want...
-        # ...ask them if they want to replace or add results for certain filters
-        ans = raw_input("Are you [r]eplacing the results for certain filters on existing items\n" + \
-                                "or [a]dding rows to res_fltr for new items? [r/a]: ")
+    # get a count of how many [incr_tsdb()++] results (as opposed to the result of running a
+    # filter on an item/result) exist for that osp id.
+    count = conn.selQuery("SELECT count(r_result_id) FROM result where r_osp_id = %s",
+                                                                                                                  (osp_id))[0][0]
 
-    # First the case where we're replacing values
-    if ans == 'r':
-        # NOTE: KEN has not tested this case.  And it is known not to work due to
-        # bugs in update_res_fltr.  See comments on that function for more details.
-        
-        # get the name of the filter to update from user
-        name = raw_input("\nType the name of the first filter you would like to update: ")
+    # TODO: look into possible disconnect with add_permutes.  where that function does not
+    # update the osp_id of a result if someone imports a harvester string/mrs tag that generates
+    # a seed/mrs combo that already exists...then this function would not pick up on it...and
+    # it might confuse the user and, worse, might not get all filter/result combos in there if
+    # the original importer hadn't made it this far.
 
-        names = []          # initialize names list
-
-        while (name != 'end' and name != ''):   # until they tell us they're done
-            names.append(name)                   # put the last-entered name in the list
-
-            # and ask for a new one
-            name = raw_input("Type another filter name, or 'end' (or <ret>) if you have no more: ")
-
-        current_filter_list = []                        # initialize list of filters
-
-        for n in names:                                 # for every name the user gave us
-            # add the corresponding filter to the list of filters
-            current_filter_list.append(find_filter_from_name(n, filter_list))
-
-        # confirm with user s/he really wants to delete all existing records of running these
-        # u filters on aoo strings
-        conf = raw_input("\nI will now delete all rows in res_fltr for the filters\n" + \
-                                    str(current_filter_list) + "\n and repopulate with new values.  " + \
-                                     "Confirm: [y/n]\n")
-
-
-        if conf != 'y':                                                 # if they don't confirm
-            print "\nAborting.  No rows modified."         # print status
-            sys.exit()                                                # and exit
-
-        # Now that we know which filters and have the go ahead, do the DB work:
-        # at this point in the ans == 'r' case, KEN got confused and couldn't continue commenting.
-        # The code is known not to work.  See comments for update_res_fltr for more details.
-        dupes = update_res_fltr(current_filter_list, conn)
-
-        # Save those dupes to a file.
-
-        f = open('dupes', 'w')
-        for d in dupes:
-            for i in d:
-                for c in i:
-                    f.write(str(c))
-                    f.write(",")
-                f.write("\n")
-
-        f.close()
-
-    # Next the case where we're adding to res_fltr for new strings
-    if ans == 'a':
-        # as the user for the original source profile of the id tey want to filter.
-        osp_id = raw_input("\nWhat is the osp_id for the results you would lke to filter: ")
-
-        # get a count of how many [incr_tsdb()++] results (as opposed to the result of running a
-        # filter on an item/result) exist for that osp id.
-        count = conn.selQuery("SELECT count(r_result_id) FROM result where r_osp_id = %s",
-                                                                                                                      (osp_id))[0][0]
-
-        # TODO: look into possible disconnect with add_permutes.  where that function does not
-        # update the osp_id of a result if someone imports a harvester string/mrs tag that generates
-        # a seed/mrs combo that already exists...then this function would not pick up on it...and
-        # it might confuse the user and, worse, might not get all filter/result combos in there if
-        # the original importer hadn't made it this far.
-
-        if count == 0:                                      # if there are no results for that osp in the database
-            print >> sys.stdderr, "That is not a valid osp_id."       # tell the user it's an error
-            sys.exit()                                                               # and exit
-        else:                                                   # otherwise...
-            # ...run every filter on every result/item in osp_id and record first fail of every string into
-            # res_fltr
-            add_to_res_fltr(osp_id, conn)
+    if count == 0:                                      # if there are no results for that osp in the database
+        print >> sys.stdderr, "That is not a valid osp_id."       # tell the user it's an error
+        sys.exit()                                                               # and exit
+    else:                                                   # otherwise...
+        # ...run every filter on every result/item in osp_id and record first fail of every string into
+        # res_fltr
+        add_to_res_fltr(osp_id, conn)
 
     return
 

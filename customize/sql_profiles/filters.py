@@ -1,4 +1,3 @@
-#!/usr/local/bin/python2.5
 """
 File: filters.py
 Author: KEN (captnpi@u.washington.edu, Scott Halgrim) - taking over from ???
@@ -16,10 +15,14 @@ Contents:
     - IfFilter - subclass of Filter that fails sentences containing one regex but not another
     - IfNotFilter - subclass of Filter failing sentences containg one regex and another
     - OrFilter - subclass of Filter failing sentences not containing at least one of two regexes.
-    - AndFilter - subclass of Filter failing sentences not containing both of two regexes
+    - AndFilter - deprecated subclass of Filter failing sentences not containing both of two
+                      regexes.  Deprecated on 8/19/09 and decided to go with two MatchFilters to
+                      create same functionality.  Comments of those two MatchFilters should reference
+                      each other for documentation
     - AndNotFilter - subclass of Filter failing sentences either not containing one regex or
                            containing the other
-    - NandFilter  - subclsas of Filter failing sentences containing both of two regexes.
+    - NandFilter  - deprecated subclass of Filter failing sentences containing both of two regexes.
+                         It is no longer used because it is logically equivalent to IfNotFilter
     - filter_results - function that is no longer relevant
     - getFilterID - function that, given a filter's name, returns its ID in MatrixTDB
     - insertFilter - function that adds a filter to the filter table of MatrixTDB.
@@ -571,6 +574,9 @@ class AndFilter(Filter):
     Superclass: Filter
     Members: re1, re2 - strings representing regular expressions.  Both must be present
     Functionality: filters out strings that are missing re1, re2, or both
+    History: 8/19/09: deprecated.  It is logically equivalent to two MatchFilters, and those should
+                             be used in place of this one.  The comments of related MatchFilters should
+                             reference each other for documentation
     """                    
     # Checking for two things that must both be present.    
     def __init__(self, name, mrs_id_list, re1, re2, comment, fv = None):
@@ -589,7 +595,12 @@ class AndFilter(Filter):
         Functionality: constructor
         Tables accessed: none
         Tables modified: none
-        """                        
+        History: 8/19/09: added warning message to tell user it was deprecated
+        """
+        # first warn user about creating depcreated class
+        print >> sys.stderr, 'You are instantiating AndFilter, a deprecated class, for filter', name, \
+                                      '.  Please use the logicallequivalence of two MatchFilter classes ' + \
+                                      "instead.  Those two filters' comments should reference each other."
         Filter.__init__(self, name, mrs_id_list, comment, fv)   # call superclass constructor
         self.re1 = re1                                                          # set self.re1 to re1
         self.re2 = re2                                                          # set self.re2 to re2
@@ -676,6 +687,8 @@ class NandFilter(Filter):
     Members: re1, re2 - strings representing regular expressions, both of which can't be present
                                  (but just one can be)
     Functionality: filters out strings that contain both re1 and re2
+    History: 8/19/09: deprecated.  It is logically equivalent to IfNotFilter, and that one should be
+                 used in place of this one
     """     
     # Checking for two things that can't both be present.  This is
     # the logical NAND (NOT AND) condition.
@@ -696,7 +709,11 @@ class NandFilter(Filter):
         Functionality: constructor
         Tables accessed: none
         Tables modified: none
-        """                        
+        History: 8/19/09: added warning message to tell user it was deprecated
+        """
+        # first warn user about creating depcreated class
+        print >> sys.stderr, 'You are instantiating NandFilter, a deprecated class, for filter', name, \
+                                      '.  Please use the logically equivalent class IfNotFilter instead.'
         Filter.__init__(self, name, mrs_id_list, comment, fv)   # call superclass constructor
         self.re1 = re1                                                          # set self.re1 to re1
         self.re2 = re2                                                          # set self.re2 to re2

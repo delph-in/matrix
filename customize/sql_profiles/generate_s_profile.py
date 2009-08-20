@@ -58,27 +58,26 @@ queryItemIDs="""SELECT i_id
 # however due to the amount of time and memory needed to get all item IDs, this is not being
 # used currently
 queryItemsFailedUFltrs="""SELECT p.p_i_id
-                                        FROM parse p, result r, res_fltr rf
-                                        WHERE rf.rf_value = 0
-                                        AND rf.rf_res_id = r.r_result_id
-                                        AND r.r_parse_id = p.p_parse_id;"""
+                                        FROM parse p
+                                            INNER JOIN result r ON p.p_parse_id = r.r_parse_id
+                                            INNER JOIN res_fltr rf ON r.r_parse_id = rf.rf_res_id
+                                        WHERE rf.rf_value = 0"""
 
 # This query generates all item IDs where the item passed all universal filters.  It takes between
 # 19-24 minutes to run currently on MatrixTDB.
-# TODO: this query could be made better by changing last two things in where clause to
-# inner joins
+# I don't know how it ever ran that quickly on MatrixTDB because it takes over 30 minutes
+# currently on MatrixTDB2 and currently means with only five harvester strings in it.
 queryItemsPassedUFltrs="""SELECT i_id FROM item_tsdb
                                           WHERE i_id NOT IN
-                                          (SELECT p.p_i_id from parse p, result r, res_fltr rf
-                                          WHERE rf.rf_value=0
-                                          AND rf.rf_res_id=r.r_result_id
-                                          AND r.r_parse_id=p.p_parse_id);"""
+                                          (SELECT p.p_i_id from parse p
+                                              INNER JOIN result r ON p.p_parse_id = r.r_parse_id
+                                              INNER JOIN res_fltr rf ON r.r_result_id = rf.rf_res_id
+                                            WHERE rf.rf_value = 0)"""
 
 # This query generates all items that failed any specific filter.  The list of items returned from this
 # is subtracted from the list of items that passed all universal filters in order to get a list of items
 # that passed all filters.  The query needs to have the language type id and a semicolon added
 # at the end
-# TODO: this query could be improved by changing some conditions to inner joins
 # NB: I don't do DISTINCT here because it takes the db longer than it does for python to convert
 # it to a set which gives me the same result in the end.
 queryItemsFailedSFltrs="""SELECT p_i_id FROM parse
@@ -111,14 +110,32 @@ def main(lngTypeID, dbroot, profilename, conn):
     Output: none
     Functionality: Finds all grammatical items for a language type ID and generates a profile
                          for those items. TODO: update this docstring
-    TODO: set up something somewhere to generate profpath folders if they don't exist
+    TODO: set up something somwhere to generate profpath folders if they don't exist
     """
+    # This bit of rem'd code was the way I was handling it with three harvester strings, but started
+    # taking too long with five harvester strings, so I went a different direction
     # get a list of all items that pass all universal filters    
-    selResults = conn.selQuery(queryItemsPassedUFltrs)
-    upass = db_utils.selColumnToSet(selResults)   # ...and convert to a set of IDs
+    # selResults = conn.selQuery(queryItemsPassedUFltrs)
+    # upass = db_utils.selColumnToSet(selResults)   # ...and convert to a set of IDs
+
+    # here is that new direction
+    selResults = conn.selQuery(queryItemIDs)
+    allItemIDs = db_utils.selColumnToSet(selResults)
+    selResults = conn.selQuery(queryItemsFailedUFltrs)
+    failItemIDs = db_utils.selColumnToSet(selResults)
+    upass = allItemIDs.difference(failItemIDs)
+    allItemIDs.clear()  # to free up memory
+    failItemIDs.clear() # to free up memory
+
+    # monitoring progress
+    print >> sys.stderr, "found", len(upass), "items that passed all universal filters"
 
     # get itemIDs that also pass specific filters relevant to this language type
     passAll = getGrammItems(lngTypeID, upass, conn)
+
+    # monitoring progress
+    print >> sys.stderr, "found", len(passAll), "items that also passed all specific filters for " + \
+                                  "language type"
 
     # get a dict that has all the strings that passed all relevant filters as the keys and a list of
     # the IDs that are that string as its values
@@ -126,6 +143,10 @@ def main(lngTypeID, dbroot, profilename, conn):
 
     # get a sampling of item IDs that fail exactly  one specific filter
     failOne = getFailOneItems(lngTypeID, readingCounter, conn)
+
+    # monitoring progress
+    print >> sys.stderr, "sampled", len(failOne), "items that failed exactly one specific filter " + \
+                                  "relevant to this language type"
 
     # generate a profile with items that passed all relevant filters and a sampling of those that
     # failed exactly one specific filter
@@ -201,6 +222,10 @@ def getGrammItems(ltID, upass, conn):
     selResults = conn.selQuery(queryItemsFailedSFltrs, (ltID))
     itemsFailedSFltrs = db_utils.selColumnToSet(selResults)         # ...and convert to a set of IDs
 
+    # monitoring progress
+    print >> sys.stderr, "found", len(itemsFailedSFltrs), "items that failed specific filters " + \
+                                  " to this language type"
+
     # get set of grammatical items  These are item/mrs pairings.  So while a sentence may be
     # ungrammatical when paired with some mrs tag, when represented as an item id here it is
     # an item/mrs pair that is grammatical for this language type.
@@ -236,7 +261,9 @@ def getFailOneItems(lt_id, passAllStringsToIDs, conn):
     # run a query to get a list of items that failed exactly one specific filter
     failOneRows = conn.selQuery(queryItemsFailOne, (lt_id))
 
-    print >> sys.stderr, "len(failOneRows):", len(failOneRows) # for monitoring
+    # monitoring progress
+    print >> sys.stderr, "There are", len(failOneRows), "total items that failed exactly one " + \
+                                  "specific filters relevant to this language type"
 
     for row in failOneRows:             # for every item that failed exactly one specific filter...
         itemID = row[0]                    # ...get the item ID
@@ -252,7 +279,7 @@ def getFailOneItems(lt_id, passAllStringsToIDs, conn):
                                                                                                                         (itemID))[0][0]
             # check to verify the string doesn't have a grammatical reading with a different semantics
             # pairing
-            if not passAllStringsToIDs.has_key(i_input):
+            if not i_input in passAllStringsToIDs:
 
                 usedFilters.add(filterID)       # if not, then add this filter to the list of filters represented
                 unGrammItemIDs.add(itemID) # and add the item to the set of ungrammatical items
@@ -260,7 +287,6 @@ def getFailOneItems(lt_id, passAllStringsToIDs, conn):
                 # I skip as early as possible with the if statement that checks filterID not in
                 # usedFilters
 
-    print >> sys.stderr, "len(unGrammItemIDs):", len(unGrammItemIDs) # monitoring
     return unGrammItemIDs                                                                # return output
 
 def genParseFile(passReadingCounter, failOne, profpath, conn):
@@ -464,8 +490,9 @@ def genResultFile(passReadingCounter, failOne, profpath, conn):
         # for every grammatical semantic pairing
         for resID in idList:
 
-            # get the data for the output row form the database
-            row = conn.selQuery("SELECT r.r_parse_id, r.r_result_id, r.r_time, r.r_ctasks, " + \
+            # get the data for the output row from the database
+            try: # debugging
+                row = conn.selQuery("SELECT r.r_parse_id, r.r_result_id, r.r_time, r.r_ctasks, " + \
                                             "r.r_ftasks, r.r_etasks, r.r_stasks, r.r_size, r.r_aedges, " + \
                                             "r.r_pedges, r.r_derivation, r.r_surface, r.r_tree, " + \
                                             "m.mrs_value, r.r_flags " + \
@@ -473,6 +500,8 @@ def genResultFile(passReadingCounter, failOne, profpath, conn):
                                             "INNER JOIN parse p ON r.r_parse_id = p.p_parse_id " + \
                                             "INNER JOIN mrs m ON r.r_mrs = m.mrs_tag " + \
                                             "WHERE mrs_current = 1 AND p.p_i_id = %s", (resID))[0]
+            except IndexError:
+                print >> sys.stderr, "sel query in genResultFile returns no rows on resID", resID
 
             # initalize string in output file representing that row
             rowstring = str(parseID) + '@' + str(resID) + '@'
@@ -508,7 +537,7 @@ def genEmptyFile(profpath, filename):
     Functionality: Creates an empty file in an [incr_tsdb()] profile
     """
     # TODO: is there a better, quicker, way to do the next line?
-    outfile = open(profpath+'item', 'wb')  #open file, in essence creating it
+    outfile = open(profpath+filename, 'wb')  #open file, in essence creating it
     outfile.close()                                # close file without writing anything to it
 
     return
@@ -711,7 +740,7 @@ if __name__ == '__main__':      # only run if run as main module...not if import
          # ...give user usage info
         print "Usage: python generate_s_profile.py language_type_id profilePath"
 # the code following here only exists for testing on my local PC.  It can be ignored.
-elif moduleTest:                    
+elif moduleTest:
     print >>sys.stderr, "Warning: moduleTest on for generate_s_profile"
     lt_id = raw_input("Enter language type id:\n")
     profDBroot = raw_input("Enter full path of db root, ending in '/':\n")

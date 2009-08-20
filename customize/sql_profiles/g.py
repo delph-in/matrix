@@ -45,7 +45,9 @@ n1_obj_with_det = ['wo8','wo10','neg4','ques4']
 n2_obj_with_det = ['wo4','wo6','neg2','ques2']
 all_neg = ['neg1','neg2','neg3','neg4']
 n1_subj_neg = ['neg1','neg2']
-n2_subj_neg = ['neg1','neg2']
+# 8/17/09 KEN changed from neg1, neg2 to mirror n1_subj_ques and n2_subj_ques and because
+# neg3 and neg4 are the neg sem classes where n2 is the subject
+n2_subj_neg = ['neg3','neg4']
 all_ques = ['ques1','ques2','ques3','ques4']
 n1_subj_ques = ['ques1','ques2']
 n2_subj_ques = ['ques3','ques4']

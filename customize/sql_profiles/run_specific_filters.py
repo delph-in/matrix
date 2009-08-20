@@ -129,7 +129,7 @@ def update_all_lts_in_lfg(conn):
     lt_ids = conn.selQuery("SELECT lt_id FROM lt")
 
     for lt_id in lt_ids:        # for each language type in the database...
-        # get a dict of feat/val combos or lack of features that define thie language type
+        # get a dict of feat/val combos or lack of features that define this language type
         # NOTE: this choices variable is a dict, not a ChoicesFile
         choices = create_choices_from_lt_id(lt_id[0], conn)
 
@@ -296,12 +296,15 @@ def update_groups_table_helper(gs, groups, conn):
             gs = gs[0]               # ...set gs to its only item
         [f,v] = gs.split(':')         # split the item into feature and value
         try:
-            # get the group id of this feat/val combo
-            g_id = conn.selQuery("SELECT fg_grp_id " + \
-                                            "FROM feat_grp " + \
-                                            "WHERE fg_feat = %s AND fg_value = %s", (f,v))[0][0]
+            # get the group id of this feat/val combo as a singleton group
+            g_id = conn.selQuery("SELECT fg_grp_id FROM " + \
+                                                "(SELECT fg_grp_id, fg_feat, fg_value, count(*) num " + \
+                                                 "FROM feat_grp " + \
+                                                 "GROUP BY fg_grp_id) subq " + \
+                                            "WHERE num = 1 AND fg_feat = %s AND fg_value = %s",
+                                                                                                                         (f,v))[0][0]
             groups.append(g_id)     # and append that group id to groups list
-        except IndexError:  # but if that feat/val combo isn't in the database...
+        except IndexError:  # but if that feat/val combo isn't in the database as a singleton group...
             last_group_id += 1      # ...increment the highest group id...
 
             # ...and insert this feat/val combo into db as a group with that new highest group id
@@ -926,6 +929,8 @@ def main(conn):
     osp_id = raw_input("\nWhat is the osp_id for the results you would lke to filter: ")
 
     # get the set of item/results from that osp that pass all universal filters
+    # TODO: can I speed this u pby getting rid of the NOT IN clause and instead doing an OUTER
+    # JOIN where r_result_id is null?
     passAllUnivs = conn.selQuery("SELECT r_result_id, r_mrs,  i_input " + \
                                      "FROM result INNER JOIN parse on  r_parse_id = p_parse_id " + \
                                          "INNER JOIN item_tsdb ON p_i_id = i_id " + \
@@ -934,6 +939,11 @@ def main(conn):
                                                  "(SELECT rf_res_id " + \
                                                    "FROM res_fltr " + \
                                                    "WHERE rf_value = 0)", (osp_id))
+
+    # delete all existing results for that osp in res_sfltr
+    conn.execute("DELETE FROM res_sfltr WHERE rsf_res_id in " + \
+                             "(SELECT r_result_id FROM result " + \
+                                     "WHERE r_osp_id = %s)", (osp_id))
 
     if len(passAllUnivs) == 0:                  # if no strings in that osp_id pass all u filters...
         print "That is not a valid osp_id."   # ...give error message
@@ -949,10 +959,12 @@ def main(conn):
     resultsToInsert = set()
     thousandCounter = 1
 
-    for row in passAllUnivs:             # for every result that passed all u filters
+    for i in range(len(passAllUnivs)):             # for every result that passed all u filters
+        row = passAllUnivs[i]
         res_id, mrs_id, string = row   # get its result_id, its mrs tag, and the string
 
-        print >> sys.stderr, "working on string", string # for monitoring progress only
+        if ((i % 1000) == 0):
+            print >> sys.stderr, "working on string number", i # for monitoring progress only
 
         # TODO: why do all the string results above have a space at the end?  consider fixing.
 
@@ -973,14 +985,15 @@ def main(conn):
             if applyResult == 0:            # if the result/item failed the filter...
                 resultsToInsert.add((res_id, fID, applyResult))
                 if ((len(resultsToInsert) % 1000) == 0):
-                    print sys.stderr, 'inserting 1000 specific results, up to', 1000*thousandCounter
+                    print >> sys.stderr, 'inserting 1000 specific results, up to', 1000*thousandCounter
                     thousandCounter += 1
                     filters.insertManyFilteredSpecResults(resultsToInsert, conn)
                     resultsToInsert.clear()
 
-        print sys.stderr, 'flushing final', len(resultsToInsert), 'specific results into res_sfltr'
-        filters.insertManyFilteredSpecResults(resultsToInsert, conn)
-        resultsToInsert.clear()
+    print >> sys.stderr, 'flushing final', len(resultsToInsert), 'specific results into res_sfltr'
+
+    # insert final set of specific results
+    filters.insertManyFilteredSpecResults(resultsToInsert, conn)
         
     return
 
@@ -997,6 +1010,9 @@ if __name__ == "__main__":      # only run if run as main module...not if import
     main(myconn)
     myconn.close()
 elif moduleTest:                        # or if i'm testing, run it on MatrixTDB2
+    # notify user moduleTest is set to True
+    print >> sys.stderr, "Note: module testing turned on in run_specific_filters.py.  " + \
+                                 "Unless testing locally, set moduleTest to False."    
     myconn = MatrixTDBConn('2')       # connect to MySQL server 
 
     # update database with specific filters, make sure they are associated with correct feature

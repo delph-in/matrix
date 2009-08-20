@@ -35,9 +35,6 @@ from filters import NotMatchFilter
 from filters import IfFilter
 from filters import IfNotFilter
 from filters import OrFilter
-from filters import AndFilter
-from filters import AndNotFilter
-from filters import NandFilter
 import g
 
 #################################################################
@@ -359,10 +356,7 @@ filter_list = [
                    mrs_id_list = g.all_neg,
                    re1 = '(\s|^)neg(\s|$)',
                    comment = "If we haven't selected adverbial negation, we shouldn't see the " + \
-                                     "adverbs. NB: There is no value 'off' for the feature infl-neg in " + \
-                                     "matrixdef.  But the code for figuring out which groups are relevant " + \
-                                     "to which language types will do the right thing if we use a " + \
-                                     "non-value for the feature here.",
+                                     "adverbs.",
                    fv = ['adv-neg:']),
 
     MatchFilter(name = "neg-affix-only-1",
@@ -395,15 +389,27 @@ filter_list = [
                    comment = "If we only selected adverbial negation, we shouldn't see the affix",
                    fv = ['and', 'infl-neg:','adv-neg:on']),
 
-    AndFilter(name = "neg-both-req",
+    # 8/19/09 KEN broke AndFilter neg-both-req into two MatchFilters: neg-both-req1 and
+    # neg-both-req2 due to logical equivalence and giving us fewer Filter subclasses
+    MatchFilter(name = "neg-both-req1",
               mrs_id_list = g.all_neg,
               re1 = '-neg|neg-',
-              re2 = '(\s|^)neg(\s|$)',
-              comment = "If both are required for negation, we should see always see both affix " + \
-                                 "& adv.",
+              comment = "If both adv and sel are required for negation, we should see always " + \
+                                "see both affix & adv.  This filter works in conjunction with " + \
+                                "neg-both-req2 to ensure they are both there.",
               fv = ['and', 'infl-neg:on','adv-neg:on','multi-neg:both-obl']),
 
-    NandFilter(name = "neg-comp-dist",
+    MatchFilter(name = "neg-both-req2",
+              mrs_id_list = g.all_neg,
+              re1 = '(\s|^)neg(\s|$)',
+              comment = "If both adv and sel are required for negation, we should see always " + \
+                                "see both affix & adv.  This filter works in conjunction with " + \
+                                "neg-both-req1 to ensure they are both there.",
+              fv = ['and', 'infl-neg:on','adv-neg:on','multi-neg:both-obl']),
+
+    # 8/19/09 KEN made IfNot instead of Nand becuase those two types of filters are logically
+    # equivalent
+    IfNotFilter(name = "neg-comp-dist",
                mrs_id_list = g.all_neg,
                re1 = '-neg|neg-',
                re2 = '(\s|^)neg(\s|$)',
@@ -436,41 +442,53 @@ filter_list = [
     IfFilter(name = "neg-infl-main",
            mrs_id_list = g.all_neg,
            re1 = '-neg|neg-',
-           re2 = '[ti]v[1-9]-neg|neg-[ti]v[1-9]',
+           re2 = '[ti]v(?:[1-9])?-neg|neg-[ti]v(?:[1-9])?',
            comment = "If the affix only attaches to main verbs and an affix is present, it should " + \
                              "only attach to a verb.",
            fv = ['and', 'infl-neg:on', 'neg-infl-type:main']),
 
     NotMatchFilter(name = "neg-adv-left",
                    mrs_id_list = g.all_neg,
-                   re1 = '[ti]v[1-9].* neg',
+                   re1 = '[ti]v(?:[1-9])?.* neg',
                    comment = "If there is an independent modifier adverb, it should not show up " + \
                                     "on the wrong side of the verb.",
-                   fv = ['and','adv-neg:on','neg-adv:ind-adv','neg-order:before']),
+                   fv = ['and','adv-neg:on',
+                                 # 'neg-adv:ind-adv', # KEN remmed 8/14/09 b/c it's not a feature in choices
+                                                             # file anymore
+                                 'neg-order:before']),
 
     NotMatchFilter(name = "neg-adv-right",
                    mrs_id_list = g.all_neg,
-                   re1 = 'neg.* [ti]v[1-9]',
+                   re1 = 'neg.* [ti]v(?:[1-9])?',
                    comment = "If there is an independent modifier adverb, it should not show up " + \
                                     "on the wrong side of the verb.",
-                   fv = ['and','adv-neg:on','neg-adv:ind-adv','neg-order:after']),
+                   fv = ['and','adv-neg:on',
+                                 # 'neg-adv:ind-adv', # KEN remmed 8/14/09 b/c it's not a feature in choices
+                                                             # file anymore
+                                 'neg-order:after']),
 
     NotMatchFilter(name = "neg-adv-s",
                    mrs_id_list = g.all_neg,
-                   re1 = '(n[1-9]|[ti]v[1-9]|aux).* neg.* (n[1-9]|[ti]v[1-9]|aux)',
+                   re1 = '(n(?:[1-9])?|[ti]v(?:[1-9])?|aux).* neg.* (n(?:[1-9])?|[ti]v(?:[1-9])?|aux)',
                    comment = "If the negative adverb is an independent modifier of S, it should " + \
                                     "not appear between the verb and any arguments.  This filter will " + \
                                     "obviously not work for any multiclausal cases.",
-                   fv = ['and','adv-neg:on','neg-adv:ind-adv','neg-mod:s']),
+                   fv = ['and','adv-neg:on',
+                                 # 'neg-adv:ind-adv', # KEN remmed 8/14/09 b/c it's not a feature in choices
+                                                             # file anymore
+                                 'neg-mod:s']),
 
     MatchFilter(name = "neg-adv-v",
                 mrs_id_list = g.all_neg,
-                re1 = 'neg (tv[1-9]|iv[1-9]|aux)|(tv[1-9]|iv[1-9]|aux) neg',
+                re1 = 'neg (tv(?:[1-9])?|iv(?:[1-9])?|aux)|(tv(?:[1-9])?|iv(?:[1-9])?|aux) neg',
                 comment = "If the negative adverb is an independent modifier of V, it should be " + \
                                     "adjacent to the verb.  As we get a more refined theory of " + \
                                     "auxiliaries, we may wish to distinguish auxiliaries from main verbs " + \
                                     "here.",
-                fv = ['and','adv-neg:on','neg-adv:ind-adv','neg-mod:v']),
+                fv = ['and','adv-neg:on',
+                                 # 'neg-adv:ind-adv', # KEN remmed 8/14/09 b/c it's not a feature in choices
+                                                             # file anymore
+                                 'neg-mod:v']),
 
     NotMatchFilter(name = 'neg-adv-vp-1',
                    mrs_id_list = g.n1_subj_neg,
@@ -479,14 +497,20 @@ filter_list = [
                    re1 = '(n2|tv(?:[1-9])?).* neg.* (n2|tv(?:[1-9])?)',
                    comment = "If the negative adverb is an independent modifier of VP, it cannot " + \
                                     "intervene between the object (n2) and the verb).",
-                   fv = ['and','adv-neg:on','neg-adv:ind-adv','neg-mod:vp']),
+                   fv = ['and','adv-neg:on',
+                                 # 'neg-adv:ind-adv', # KEN remmed 8/14/09 b/c it's not a feature in choices
+                                                             # file anymore
+                                 'neg-mod:vp']),
 
     NotMatchFilter(name = 'neg-adv-vp-2',
                    mrs_id_list = g.n2_subj_neg,
                    re1 = '(n1|tv(?:[1-9])?).* neg.* (n1|tv(?:[1-9])?)',
                    comment = "If the negative adverb is an independent modifier of VP, it cannot " + \
                                     "intervene between the object (n1) and the verb).",
-                   fv = ['and','adv-neg:on','neg-adv:ind-adv','neg-mod:vp']),
+                   fv = ['and','adv-neg:on',
+                                 # 'neg-adv:ind-adv', # KEN remmed 8/14/09 b/c it's not a feature in choices
+                                                             # file anymore
+                                 'neg-mod:vp']),
 
 # Selected modifiers:
 # If the choices file specifies the adverb as a selected complement of
@@ -499,32 +523,45 @@ filter_list = [
 
     NotMatchFilter(name = 'sel-adv-v-init-1',
                    mrs_id_list = g.all_neg,
-                   re1 = 'neg .*tv[1-9]',
+                   re1 = 'neg .*tv(?:[1-9])?',
                    comment = "If the word order is v-initial and neg is a selected adverb, it has to " + \
                                      "appear after the verb.",
-                   fv = ['and','adv-neg:on','neg-adv:sel-adv','word-order:v-initial']),
+                   fv = ['and','adv-neg:on',
+                                 'neg-adv:sel-adv', # KEN left in 8/14/09 b/c even though it's not a feature
+                                                          # in choices file anymore, remming it would make it
+                                                          # apply to inflectional negation and we don't want that
+                                  'word-order:v-initial']),
 
-    AndNotFilter(name = 'sel-adv-v-init-2',
+    # 8/20/09 KEN changed from an AndNotFilter.  The old re2 is now re1 and the old re1 is
+    # commented below.  the old re1 should be covered by other filters
+    NotMatchFilter(name = 'sel-adv-v-init-2',
                  mrs_id_list = g.all_neg,
-                 re1 = '(-neg|neg-.* neg(\s|$))|((\s|^)neg .*-neg|neg-)',
-                 re2 = 'neg .*tv[1-9]',
+                 # re1 = '(-neg|neg-.* neg(\s|$))|((\s|^)neg .*-neg|neg-)',
+                 re1 = 'neg .*tv(?:[1-9])?',
                  comment = "If the word order is v-initial and neg adverb is a selected adverb by " + \
                                    "virtue of co-occurring with the affix, it has to appear after the verb.",
                  fv = ['and','adv-neg:on','infl-neg:on','word-order:v-initial']),
 
     NotMatchFilter(name = 'sel-adv-v-final-1',
                    mrs_id_list = g.all_neg,
-                   re1 = 'tv[1-9] .*neg',
+                   re1 = 'tv(?:[1-9])? .*neg',
                    comment = "If the word order is v-final and neg is a selected adverb, it has to " + \
                                      "appear before the verb.",
-                   fv = ['and','adv-neg:on','neg-adv:sel-adv','word-order:v-final']),
+                   fv = ['and','adv-neg:on',
+                                 'neg-adv:sel-adv', # KEN left in 8/14/09 b/c even though it's not a feature
+                                                          # in choices file anymore, remming it would make it
+                                                          # apply to inflectional negation and we don't want that
+                                  'word-order:v-final']),
+                         
 
     # this was a duplicate with the filter two above.  based on pattern, comment, and fv, KEN
     # renamed from sel-adv-v-init-2 to sel-adv-v-final-2
-    AndNotFilter(name = 'sel-adv-v-final-2',
+    # 8/20/09 KEN changed from an AndNotFilter.  The old re2 is now re1 and the old re1 is
+    # commented below.  the old re1 should be covered by other filters
+    NotMatchFilter(name = 'sel-adv-v-final-2',
                  mrs_id_list = g.all_neg,
-                 re1 = '(-neg|neg-.* neg(\s|$))|((\s|^)neg .*-neg|neg-)',
-                 re2 = 'tv[1-9] .*neg',
+                 # re1 = '(-neg|neg-.* neg(\s|$))|((\s|^)neg .*-neg|neg-)',
+                 re1 = 'tv(?:[1-9])? .*neg',
                  comment = "If the word order is v-final and neg adverb is a selected adverb by " + \
                                   "virtue of co-occurring with the affix, it has to appear before the verb.",
                  fv = ['and','adv-neg:on','infl-neg:on','word-order:v-final']),
@@ -535,7 +572,11 @@ filter_list = [
                 comment = "If the word order is SVO or VOS and neg is a selected adverb, neg " + \
                                   "has to appear after the verb with at most an aux and the object " + \
                                   "(here, n2) intervening.",
-                fv = ['and','adv-neg:on','neg-adv:sel-adv',['or','word-order:svo','word-order:vos']]),
+                fv = ['and','adv-neg:on',
+                                 'neg-adv:sel-adv', # KEN left in 8/14/09 b/c even though it's not a feature
+                                                          # in choices file anymore, remming it would make it
+                                                          # apply to inflectional negation and we don't want that
+                                  ['or','word-order:svo','word-order:vos']]),
 
     MatchFilter(name = 'sel-adv-vo-2',
                 mrs_id_list = g.n2_subj_neg,
@@ -543,7 +584,11 @@ filter_list = [
                 comment = "If the word order is SVO or VOS and neg is a selected adverb, neg " + \
                                   "has to appear after the verb with at most an aux and the object " + \
                                   "(here, n1) intervening.",
-                fv = ['and','adv-neg:on','neg-adv:sel-adv',['or','word-order:svo','word-order:vos']]),
+                fv = ['and','adv-neg:on',
+                                 'neg-adv:sel-adv', # KEN left in 8/14/09 b/c even though it's not a feature
+                                                          # in choices file anymore, remming it would make it
+                                                          # apply to inflectional negation and we don't want that
+                                  ['or','word-order:svo','word-order:vos']]),
 
     IfFilter(name = 'sel-adv-vo-3',
              mrs_id_list = g.n1_subj_neg,
@@ -569,7 +614,11 @@ filter_list = [
                 comment = "If the word order is SOV or OVS and neg is a selected adverb, neg " + \
                                   "has to appear before the verb with at most an aux and the object " + \
                                   "(here, n2) intervening.",
-                fv = ['and','adv-neg:on','neg-adv:sel-adv',['or','word-order:sov','word-order:ovs']]),
+                fv = ['and','adv-neg:on',
+                                 'neg-adv:sel-adv', # KEN left in 8/14/09 b/c even though it's not a feature
+                                                          # in choices file anymore, remming it would make it
+                                                          # apply to inflectional negation and we don't want that
+                                  ['or','word-order:svo','word-order:ovs']]),
 
     MatchFilter(name = 'sel-adv-ov-2',
                 mrs_id_list = g.n2_subj_neg,
@@ -577,7 +626,11 @@ filter_list = [
                 comment = "If the word order is SOV or OVS and neg is a selected adverb, neg " + \
                                   "has to appear before the verb with at most an aux and the object " + \
                                   "(here, n1) intervening.",
-                fv = ['and','adv-neg:on','neg-adv:sel-adv',['or','word-order:sov','word-order:ovs']]),
+                fv = ['and','adv-neg:on',
+                                 'neg-adv:sel-adv', # KEN left in 8/14/09 b/c even though it's not a feature
+                                                          # in choices file anymore, remming it would make it
+                                                          # apply to inflectional negation and we don't want that
+                                  ['or','word-order:svo','word-order:ovs']]),
 
     IfFilter(name = 'sel-adv-ov-3',
              mrs_id_list = g.n1_subj_neg,
@@ -602,14 +655,22 @@ filter_list = [
                 re1 = 'n1( n2){,1} neg',
                 comment = "If the word order is VSO and neg is a selected adverb, neg has to " + \
                                  "appear after the subject with at most the object (here, n2) intervening.",
-                fv = ['and','adv-neg:on','neg-adv:sel-adv','word-order:vso']),
+                fv = ['and','adv-neg:on',
+                                 'neg-adv:sel-adv', # KEN left in 8/14/09 b/c even though it's not a feature
+                                                          # in choices file anymore, remming it would make it
+                                                          # apply to inflectional negation and we don't want that
+                                  'word-order:vso']),
 
     MatchFilter(name = 'sel-adv-vso-2',
                 mrs_id_list = g.n2_subj_neg,
                 re1 = 'n2( n1){,1} neg',
                 comment = "If the word order is VSO and neg is a selected adverb, neg has to " + \
                                  "appear after the subject with at most the object (here, n1) intervening.",
-                fv = ['and','adv-neg:on','neg-adv:sel-adv','word-order:vso']),
+                fv = ['and','adv-neg:on',
+                                 'neg-adv:sel-adv', # KEN left in 8/14/09 b/c even though it's not a feature
+                                                          # in choices file anymore, remming it would make it
+                                                          # apply to inflectional negation and we don't want that
+                                  'word-order:vso']),
 
     IfFilter(name = 'sel-adv-vso-3',
              mrs_id_list = g.n1_subj_neg,
@@ -634,14 +695,23 @@ filter_list = [
                 re1 = 'neg( n2){,1} n1',
                 comment = "If the word order is VSO and neg is a selected adverb, neg has to " + \
                                "appear before the subject with at most the object (here, n2) intervening.",
-                fv = ['and','adv-neg:on','neg-adv:sel-adv','word-order:osv']),
+                fv = ['and','adv-neg:on',
+                                 'neg-adv:sel-adv', # KEN left in 8/14/09 b/c even though it's not a feature
+                                                          # in choices file anymore, remming it would make it
+                                                          # apply to inflectional negation and we don't want that
+                                  'word-order:osv']),
 
     MatchFilter(name = 'sel-adv-osv-2',
                 mrs_id_list = g.n2_subj_neg,
                 re1 = 'neg( n1){,1} n2',
                 comment = "If the word order is VSO and neg is a selected adverb, neg has to " + \
                                "appear before the subject with at most the object (here, n1) intervening.",
-                fv = ['and','adv-neg:on','neg-adv:sel-adv','word-order:osv']),
+                fv = ['and','adv-neg:on',
+                                 'neg-adv:sel-adv', # KEN left in 8/14/09 b/c even though it's not a feature
+                                                          # in choices file anymore, remming it would make it
+                                                          # apply to inflectional negation and we don't want that
+                                  'word-order:osv']),
+
 
     IfFilter(name = 'sel-adv-osv-3',
              mrs_id_list = g.n1_subj_neg,
@@ -663,6 +733,14 @@ filter_list = [
 
 ######################################################################
 # Filters for yes-no questions
+
+    # 8/14/09 KEN added by starting from neg-infl
+    NotMatchFilter(name = "ques-infl",
+                   mrs_id_list = g.all_ques,
+                   re1 = '-ques|ques-',
+                   comment = "If we haven't selected verbal inflection on yes-no questions, we " + \
+                                     "shouldn't see the affix.",
+                   fv = ['q-infl:']),
 
     FalseFilter(name = 'no-overt-q',
                 mrs_id_list = g.all_ques,
@@ -1024,7 +1102,9 @@ filter_list = [
                                "also have an auxiliary.  Only applies to mrs_ids corresponding to iv.",
              fv = ['iverb-subj:np']),
 
-    AndNotFilter(name = "tv-np-subj-scomp-aux",
+    # 8/20/09 KEN changed from AndNotFilter based on what comment said it should do and
+    # e-mail exchange with Emily
+    IfNotFilter(name = "tv-np-subj-scomp-aux",
                  mrs_id_list = g.trans,
                  re1 = 'aux',
                  re2 = 'p-nom',
@@ -1035,7 +1115,9 @@ filter_list = [
                                   "applies to mrs_ids corresponding to tv.",
                  fv = ['and','tverb-subj:np','aux-comp:s']),
 
-    AndNotFilter(name = "iv-np-subj-scomp-aux",
+    # 8/20/09 KEN changed from AndNotFilter based on what comment said it should do and
+    # e-mail exchange with Emily
+    IfNotFilter(name = "iv-np-subj-scomp-aux",
                  mrs_id_list = g.intrans,
                  re1 = 'aux',
                  re2 = 'p-nom',
@@ -1046,7 +1128,9 @@ filter_list = [
                                    "applies to mrs_ids corresponding to iv.",
                  fv = ['and','iverb-subj:np','aux-comp:s']),
 
-    AndNotFilter(name = "v*comp-aux-np-subj",
+    # 8/20/09 KEN changed from AndNotFilter based on what comment said it should do and
+    # e-mail exchange with Emily
+    IfNotFilter(name = "v*comp-aux-np-subj",
                  mrs_id_list = g.all,
                  re1 = 'aux',
                  re2 = 'p-nom',
@@ -1206,7 +1290,7 @@ filter_list = [
     IfFilter(name = 'vcomp-aux-auxleft',
              mrs_id_list = g.all,
              re1 = 'aux',
-             re2 = 'aux [ti]v[1-9]',
+             re2 = 'aux [ti]v(?:[1-9])?',
              comment = "If the auxiliary takes a V complement and appears before the verb, it " + \
                                "should be to the left of the V, in any wo except free.",
              fv = ['and','aux-comp:v','aux-order:before',['or','word-order:sov','word-order:svo',
@@ -1217,7 +1301,7 @@ filter_list = [
     IfFilter(name = 'vcomp-aux-auxright',
              mrs_id_list = g.all,
              re1 = 'aux',
-             re2 = '[ti]v[1-9] aux|[ti]v[1-9]-nf aux',
+             re2 = '[ti]v(?:[1-9])? aux|[ti]v(?:[1-9])?-nf aux',
              comment = "If the auxiliary takes a V complement and appears after the verb, it " + \
                                "should be to the right of the V, in any wo except free.  Allow for -nf " + \
                                "forms of the verb.",
@@ -1229,7 +1313,7 @@ filter_list = [
     IfFilter(name = 'vcomp-aux-either-order',
              mrs_id_list = g.all,
              re1 = 'aux',
-             re2 = '[ti]v[1-9] aux|[ti]v[1-9]-nf aux|aux [ti]v[1-9]',
+             re2 = '[ti]v(?:[1-9])? aux|[ti]v(?:[1-9])?-nf aux|aux [ti]v(?:[1-9])?',
              comment = "If the auxiliary takes a V complement and can appear on either side of " + \
                                "the V, it should be adjacent to the V, in any wo except free.  Allow for " + \
                                "-nf forms of the verb.",
@@ -1240,10 +1324,11 @@ filter_list = [
 
     # 3. VP comp auxiliaries
 
-    AndNotFilter(name = 'vpcomp-n1-subj',
+    # 8/19/09 KEN changed from AndNotFilter based on discussion with Emily
+    IfNotFilter(name = 'vpcomp-n1-subj',
                  mrs_id_list = g.n1_subj_n2_obj_not_ques,
                  re1 = 'aux',
-                 re2 = 'aux.* n1.* tv[1-9]|tv[1-9].* n1.* aux',
+                 re2 = 'aux.* n1.* tv(?:[1-9])?|tv(?:[1-9])?.* n1.* aux',
                  comment = "If the auxiliary takes a VP complement, and n1 is the subject, " + \
                                    "then n1 shouldn't appear between the auxiliary and the verb in " + \
                                    "non-questions. Exception is free word order.",
@@ -1252,10 +1337,11 @@ filter_list = [
                                                           'word-order:v-final','word-order:v-initial']]),
 
 
-    AndNotFilter(name = 'vpcomp-n2-subj',
+    # 8/19/09 KEN changed from AndNotFilter based on discussion with Emily
+    IfNotFilter(name = 'vpcomp-n2-subj',
                  mrs_id_list = g.n2_subj_n1_obj_not_ques,
                  re1 = 'aux',
-                 re2 = 'aux.* n2.* tv[1-9]|tv[1-9].* n2.* aux',
+                 re2 = 'aux.* n2.* tv(?:[1-9])?|tv(?:[1-9])?.* n2.* aux',
                  comment = "If the auxiliary takes a VP complement, and n2 is the subject, then " + \
                                    "n2 shouldn't appear between the auxiliary and the verb in " + \
                                    "non-questions. Exception is free word order.",
@@ -1267,7 +1353,7 @@ filter_list = [
     IfFilter(name = 'vpcomp-aux-free-1',
              mrs_id_list = g.n1_subj_n2_obj,
              re1 = 'aux',
-             re2 = 'tv[1-9](-nf) (neg )(p-acc )(det2 )n2|n2 (det2 )(p-acc )(neg )tv[1-9]',
+             re2 = 'tv(?:[1-9])?(-nf) (neg )(p-acc )(det2 )n2|n2 (det2 )(p-acc )(neg )tv(?:[1-9])?',
              comment = "If the languge has free word order but VP-comp auxiliaries, then the " + \
                                 "only things that can intervene between tv and its object (for now) are " + \
                                  "det, p-acc, and neg.  Here object = n2.",
@@ -1276,7 +1362,7 @@ filter_list = [
     IfFilter(name = 'vpcomp-aux-free-2',
              mrs_id_list = g.n2_subj_n1_obj,
              re1 = 'aux',
-             re2 = 'tv[1-9](-nf) (neg )(p-acc )(det1 )n1|n1 (det1 )(p-acc )(neg )tv[1-9]',
+             re2 = 'tv(?:[1-9])?(-nf) (neg )(p-acc )(det1 )n1|n1 (det1 )(p-acc )(neg )tv(?:[1-9])?',
              comment = "If the languge has free word order but VP-comp auxiliaries, then the " + \
                                "only things that can intervene between tv and its object (for now) are " + \
                                "det, p-acc, and neg.  Here object = n1.",
@@ -1285,10 +1371,12 @@ filter_list = [
 
     # 4. S comp
 
-    AndNotFilter(name = 's-comp-aux',
+    # 8/20/09 KEN changed from AndNotFilter based on what comment said it should do and
+    # e-mail exchange with Emily
+    IfNotFilter(name = 's-comp-aux',
                  mrs_id_list = g.all,
                  re1 = 'aux',
-                 re2 = 'n[12].* aux.* [ti]v[1-9]|[ti]v[1-9].* aux.* n[12]',
+                 re2 = 'n[12].* aux.* [ti]v(?:[1-9])?|[ti]v(?:[1-9])?.* aux.* n[12]',
                  comment = "If the auxiliary takes s complements, it shouldn't intervene between " + \
                                    "the verb and either noun, in any word order.",
                  fv = ['aux-comp:s']),
@@ -1298,7 +1386,7 @@ filter_list = [
     IfFilter(name = 's-or-vp-comp-aux-left',
              mrs_id_list = g.all,
              re1 = 'aux',
-             re2 = 'aux.* [ti]v[1-9]',
+             re2 = 'aux.* [ti]v(?:[1-9])?',
              comment = "Because the general VP/S comp filters doesn't check order, need a " + \
                                "set of second filters to check aux-v order in the VP/S comp case.  " + \
                                "This one checks for aux before v.",
@@ -1308,7 +1396,7 @@ filter_list = [
     IfFilter(name = 's-or-vp-comp-aux-right',
              mrs_id_list = g.all,
              re1 = 'aux',
-             re2 = '[ti]v[1-9].* aux',
+             re2 = '[ti]v(?:[1-9])?.* aux',
              comment = "Because the general VP/S comp filters doesn't check order, need a " + \
                                "set of second filters to check aux-v order in the VP/S comp case.  " + \
                                "This one checks for aux after v.",

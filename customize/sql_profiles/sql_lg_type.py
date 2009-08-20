@@ -36,6 +36,8 @@ Tables accessed: lt, lt_feat_grp, feat_grp
 Tables modified: feat_grp, lt, lt_feat_grp                               
 """
 
+import os.path
+
 # there are certain features in a choices file that are irrelevant when comparing whether
 # a language type is equal to another, and so we don't enter those into the database.
 omitFeatures = ['language', 'sentence1', 'sentence2']
@@ -489,6 +491,11 @@ def main(chcFilename, conn):
     Tables accessed: lt, lt_feat_grp, feat_grp
     Tables modified: feat_grp, lt, lt_feat_grp                         
     """
+    # ChoicesFile is really robust and will create an object even without a valid filename, which
+    # will cause all sorts of problems in the database, so verify here we've been given an actual
+    # filename
+    assert os.path.isfile(chcFilename), chcFilename + " not a file."
+    
     # create ChoicesFile from choices file
     choices = ChoicesFile(chcFilename)
 
@@ -511,6 +518,8 @@ if __name__ == "__main__":          # only run if run as main module...not if im
 
         # print id of language type that matches choices file, or create it and print that ID
         main(chcFilename, myconn)
+
+        myconn.close()
     except IndexError:                      # if user doesn't give enough arguments...
         # ...let them know with error message...
         print >> sys.stderr, "Usage: python sgl_lg_type.py choicesFilename"
@@ -527,3 +536,5 @@ elif moduleTest:                            # if module test is true...
 
     # print id of language type that matches choices file, or create it and print that ID    
     main(chcFilename, myconn)
+
+    myconn.close()

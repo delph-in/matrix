@@ -9,7 +9,7 @@ Contents:
       MySQLdb
 """
 
-import MySQLdb.connections, getpass
+import MySQLdb.connections, getpass, sys
 
 class MatrixTDBConn(MySQLdb.connections.Connection):
     """
@@ -17,7 +17,7 @@ class MatrixTDBConn(MySQLdb.connections.Connection):
     Superclass: MySQLdb.connections.Connection
     Members:
         connID - the id of the connection to the MySQL database
-        cursor - the cursor of the connection
+        tdbCursor - the cursor of the connection
         dbSuffix - the suffix to add to the name of the database.  For connecting to my fresh
                        database, MatrixTDB2, for example.  Defaults to the empty string.
     Functionality: connection to MatrixTDB MySQL database. Abstracts some details of
@@ -36,13 +36,22 @@ class MatrixTDBConn(MySQLdb.connections.Connection):
         """
         self.uname=raw_input("Username:")   # prompt user for username password
         self.pword=getpass.getpass("Password:")     # prompt user for database password
+        self.dbSuffix = dbSuffix
+        self.connect()
 
+        return
+
+    def connect(self):
+        """
+        TODO: comment
+        """
         # connect to the database
-        MySQLdb.connections.Connection.__init__(self, host="capuchin.ling.washington.edu", user=self.uname, \
-                                               passwd=self.pword, db="MatrixTDB"+dbSuffix)
+        MySQLdb.connections.Connection.__init__(self, host="capuchin.ling.washington.edu", \
+                                                                        user=self.uname, passwd=self.pword, \
+                                                                        db="MatrixTDB"+self.dbSuffix)
 
         self.connID = self.thread_id()      # get the connection ID
-        self.cursor = self.cursor()           # get the connection's cursor
+        self.tdbCursor = self.cursor()           # get the connection's cursor
         return
 
     def execute(self, query,args=None):
@@ -55,8 +64,13 @@ class MatrixTDBConn(MySQLdb.connections.Connection):
         Output: number of rows affected, if any
         Functionality: executes a query through this connection
         """
-        # for now, just pass call on to cursor
-        return self.cursor.execute(query, args)
+        try:
+            answer = self.tdbCursor.execute(query, args)        # for now, just pass call on to cursor
+        except MySQLdb.OperationalError:                    # but if I lost my connection
+            print >> sys.stderr, 'lost connection...reconnecting'   # inform user
+            self.connect()                                                          # reconnect
+            answer = self.tdbCursor.execute(query, args)        # and try again
+        return answer                                                   # return its output
 
     def selQuery(self, query, args=None):
         """
@@ -71,4 +85,4 @@ class MatrixTDBConn(MySQLdb.connections.Connection):
         TODO: test boundary case of no rows selected.  Is it None or an empty tuple
         """
         self.execute(query, args)       # execute the query
-        return self.cursor.fetchall()      # return all rows
+        return self.tdbCursor.fetchall()      # return all rows

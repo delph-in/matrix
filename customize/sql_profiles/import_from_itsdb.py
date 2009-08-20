@@ -647,6 +647,11 @@ def main(itsdb_dir, harv_mrs, choices_filename, conn = None):
     # this will raise an error if not.
     # also assign harvstring/mrsTag as key/value pairs to mrs_dict
     mrs_dict = validate_string_list(harv_mrs, itsdb_dir)
+    '
+    # ChoicesFile is really robust and will create an object even without a valid filename, which
+    # will cause all sorts of problems in the database, so verify here we've been given an actual
+    # filename
+    assert os.path.isfile(choices_filename), choices_filename + " not a file."   
 
     # validate the choices file.  put those choices that are into the dict wrong
     wrong = validate_choices(choices_filename)
@@ -731,7 +736,7 @@ if __name__ == '__main__':      # only run if run as main module...not if import
         main(itsdbDir, harvMrsFilename, choicesFilename, conn)
         
 elif moduleTest:                        # if we are testing this module locally...
-    conn = MatrixTDBConn('2')      # ...create a connection to the smaller, newer database...
+    myconn = MatrixTDBConn('2')      # ...create a connection to the smaller, newer database...
 
     # ... and notify the user moduleTest is set to True.
     print >> sys.stderr, "Note: module testing turned on in import_from_itsdb.py.  " + \
@@ -749,4 +754,6 @@ elif moduleTest:                        # if we are testing this module locally.
                                                 "mrs tags:\n")
 
     # call the main program to import a source profile into MatrixTDB2
-    main(itsdbDir, harvMrsFilename, choicesFilename, conn)
+    main(itsdbDir, harvMrsFilename, choicesFilename, myconn)
+
+    myconn.close() # close connection

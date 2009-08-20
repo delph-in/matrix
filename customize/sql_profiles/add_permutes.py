@@ -139,7 +139,7 @@ def process_harvester(s, mrs_tag, conn):
             # seed-mrs pair.  Just add it to the list.  And add them to the DB.
             new_strings.append(s)       # add it to the list of new strings
 
-            # insert the sring into the database
+            # insert the string into the database
             conn.execute("INSERT INTO seed_str SET seed_str_value = %s", (storage_string))
             seed_id = conn.selQuery("SELECT LAST_INSERT_ID()")[0][0]    # get the string's ID
 
@@ -173,10 +173,11 @@ def process_harvester(s, mrs_tag, conn):
 
             # else, we've seen this seed-mrs pair already, so do nothing.
 
+    # print a status message telling the user how many new string/mrs pairs we found
     print "Process harvester found", len(new_strings), "seed strings that are either not in the " + \
             "database or not paired with the semantic class given for the harvester string."
 
-    # Okay, pass out the list of new_strings and their common mrs_tag so that we can
+    # Okay, pass out the list of new_strings for mrs_tag so that we can
     # then run them through the permute functions.
     return new_strings
 
@@ -198,11 +199,9 @@ def uniq_permute(s):
 
     # Create larger list appending each suffix and prefix to each possible
     # word in each permutation.
-    # TODO: this function hasn't been tested by KEN
     perms = add_prefix_suffix(perms, prefixes, suffixes)
 
-    # Return output
-    return perms
+    return perms                                 # return output
 
 
 ##############################################################################
@@ -221,11 +220,13 @@ def create_seed_strings_from_harvester(harv, mrs_tag):
     Output: return-strings - all the seed strings for harv where the strings are triples of words,
                                       prefixes, and suffixes
     Functionality: Creates a list of seed strings from a harvester string
+    Tables accessed: none
+    Tables modified: none
     """
     # Find out which string modifications are appropriate for
     # the mrs tag in question.  
 
-    mods_list = []
+    mods_list = []                          # initialize list of string mods to perform on this harvester
 
     for mod in string_mods:             # for every possible string modification...
         if mod.applies(mrs_tag):         # ...if it applies to the semantic class mrs_tag...
@@ -256,14 +257,14 @@ def create_seed_strings(string_list, mods_list):
         string_list - a list of strings to be modified, where a string is a triple of words, prefixes, and
                          suffixes
         mods_list - the list of modifications to be performed on each string in string_list
-    Output: string_list plus the recursive result of running every mod in mods_list on everything in
-                string_list appended to it
+    Output: answer - string_list plus the recursive result of running every mod in mods_list on
+                             everything in string_list appended to it
     Functionality: runs every mod in mods_list on every string in string_list recursively.
+    Tables accessed: none
+    Tables modified: none
     """
-
-    # Base case: If we've reached the end of the mods_list...
-    if mods_list == []:           # TODO: fix multiple points of return
-        return string_list          # ...return the string_list.
+    if mods_list == []:                 # Base case: If we've reached the end of the mods_list...
+        answer = string_list          # ...set string_list input to output
     else:
         # New string list is the old one appended to the a list
         # with every string in it modified according to the
@@ -286,8 +287,10 @@ def create_seed_strings(string_list, mods_list):
         # some copying too.
 
         # recursively run all old and new strings on the cdr of mods_list (all other mods after the
-        # first) and return that list 
-        return create_seed_strings(string_list, mods_list[1:])
+        # first) and set that list to output
+        answer = create_seed_strings(string_list, mods_list[1:])
+
+    return answer               # return output
 
 ######################################################################
 # Recursive permute function called by uniq_permute() above and glue_on_affixes
@@ -316,34 +319,34 @@ def permute_helper(words):
     # Base case: We're down to just one word, return the list containing
     # just that singleton list.
     if len(words) == 1:
-        # TODO: really?  we take a list of one word and put it in another list?
-        return [words]      # TODO: fix mutlipe points of return
+        # TODO: really?  we take a list of one word and put it in another list?  look into this
+        perms = [words]      # put the list in another list and set to output
+    else:                           # otherwise, if we have more than just one word...
+        # ...try each word in the list, make sure we haven't tried it
+        # at this level before, and recursively call permute_helper.
+        
+        for i in range(len(words)):             # for every word in the input list
+            if words[i] not in tested:           # if we haven't used this word yet...
+                # ...Record that we're using this word now.
+                tested.append(words[i])
 
-    # Otherwise, try each word in the list, make sure we haven't tried it
-    # at this level before, and recursively call permute_helper.
-    
-    for i in range(len(words)):             # for every word in the input list
-        if words[i] not in tested:           # if we haven't used this word yet...
-            # ...Record that we're using this word now.
-            tested.append(words[i])
+                # Make a new list with the rest of the words.
+                rest_words = []
+                # TODO: could be done faster with a set probably
+                # ...maybe not given a word might repeat in a sentence and we don't want to lose that
+                for j in range (len(words)):               # for every word in the input list...
+                    if i != j:                                      # ...that is not the current word we're using...
+                        rest_words.append(words[j])   # ...add it to rest_words list
 
-            # Make a new list with the rest of the words.
-            rest_words = []
-            # TODO: could be done faster with a set probably
-            # ...maybe not given a word might repeat in a sentence and we don't want to lose that
-            for j in range (len(words)):               # for every word in the input list...
-                if i != j:                                      # ...that is not the current word we're using...
-                    rest_words.append(words[j])   # ...add it to rest_words list
+                # Recursively get all the permutations of the rest of the words.
+                rest_perms = permute_helper(rest_words)
+                
+                # Prepend our word to each permutation, and store result in perms.
 
-            # Recursively get all the permutations of the rest of the words.
-            rest_perms = permute_helper(rest_words)
-            
-            # Prepend our word to each permutation, and store result in perms.
-
-            for r in rest_perms:        # for every permutation of the rest of the words we get...
-                perm = [words[i]]       # set this permutation to be prepended with current word
-                perm += r                  # add in permutation of rest of words
-                perms.append(perm)  # and add that to the output list
+                for r in rest_perms:        # for every permutation of the rest of the words we get...
+                    perm = [words[i]]       # set this permutation to be prepended with current word
+                    perm += r                  # add in permutation of rest of words
+                    perms.append(perm)  # and add that to the output list
 
     return perms                        # return output
 
@@ -361,9 +364,10 @@ def add_prefix_suffix(perms, prefixes, suffixes):
                     in a seed string
         prefixes - a list of prefixes for the seed string 
         suffixes - a list of suffixes for the seed string
-    Output: suffixed_perms
-    Functionality: same as perms except bigger, with prefixes and suffixes added to words in
-                         every possible permutation
+    Output: suffixed_perms - same as perms except bigger, with prefixes and suffixes added to
+                                         words in every possible permutation
+    Functionality: takes a list of words, prefixes, and suffixes and adds the prefixes and suffixes to
+                         words in every possible permutation
     Tables Accessed: none
     Tables Modified:none
     """
@@ -389,6 +393,7 @@ def add_prefix_suffix(perms, prefixes, suffixes):
 
         # put the prefixes onto every word in every possible way.
         prefixed_perms = fix_affix_spelling(prefixed_perms, flag)
+        
         # at this point, prefixed_perms is a list of permutations where each permutation is a list
         # of words and each word is just a string, with or without prefixes.
     else:                                       # if there are no prefixes
@@ -411,7 +416,7 @@ def add_prefix_suffix(perms, prefixes, suffixes):
         flag = 'suf'
 
         # put the suffixes on every applicable word in every possible way
-        suffixed_perms = fix_affix_spelling(suffixed_perms,flag)
+        suffixed_perms = fix_affix_spelling(suffixed_perms, flag)
         # at this point, suffixed_perms is a list of permutations where each permutation is a list
         # of words and each word is just a string, with or without affixes.
     else:                                                   # if there are no suffixes
@@ -427,8 +432,8 @@ def attach_affixes(perms, affixes):
         perms - a list of lists of words, where each inner list is a unique permutation of the words
                     in a seed string
         affixes - a list of affixes, either prefixes or suffixes, for the seed string 
-    Output: more permutations of perms with the affixes applied.  It attaches affixes in the form:
-                [[[word, affix], affix], affix], nesting them in such a way.
+    Output: answer - more permutations of perms with the affixes applied.  It attaches affixes in
+                             the form: [[[word, affix], affix], affix], nesting them in such a way.
     Functionality: Creates more permutations where for every permutation in perms there will now
                          be several permutations, where each new permutation has all of the affixes
                          added to one of its words
@@ -445,31 +450,33 @@ def attach_affixes(perms, affixes):
 
     if len(affixes) == 0:       # if there are no affixes
         # TODO: fix multiple points of return
-        return perms            # just return the input list of permutations
+        answer = perms            # just return the input list of permutations
+    else:                               # but if we do have affixes
+        # recursive step
+        new_perms = []          # initialize a list to store permutations with affixes added to words
+        affix = affixes[0]          # we will be concerned with first affix in list
 
-    # recursive step
-    new_perms = []          # initialize a list to store permutations with affixes added to words
-    affix = affixes[0]          # we will be concerned with first affix in list
+        # take each permutation
+        for perm in perms:                          # for each permutation
 
-    # take each permutation
-    for perm in perms:                          # for each permutation
+            # adding the result to new_perms as we go.
+            for i in range (len(perm)):             # for each word in that permutation
+                save = perm[i]                        # get that word
 
-        # adding the result to new_perms as we go.
-        for i in range (len(perm)):             # for each word in that permutation
-            save = perm[i]                        # get that word
+                # create a list of that word followed by the first affix
+                wordAffixList = [perm[i],affix]                  
+                perm[i] = wordAffixList                 # and put that list where the word was
 
-            # create a list of that word followed by the first affix
-            wordAffixList = [perm[i],affix]                  
-            perm[i] = wordAffixList                 # and put that list where the word was
+                # now make a copy of the permutation with its word replaced with the list [word,affix]   
+                snapshot = deepcopy(perm)
+                new_perms.append(snapshot)      # and add that copy to the list of new permutations
+                perm[i] = save                            # replace the word back into the permutation
 
-            # now make a copy of the permutation with its word replaced with the list [word,affix]   
-            snapshot = deepcopy(perm)
-            new_perms.append(snapshot)      # and add that copy to the list of new permutations
-            perm[i] = save                            # replace the word back into the permutation
+        # set to output the results of recursively running this function using the new affix-added
+        # permutations we came up with here and the rest of the affixes we didn't use here
+        answer =  attach_affixes(new_perms, affixes[1:])
 
-    # return the results of recursively running this function using the new affix-added permutations
-    # we came up with here and the rest of the affixes we didn't use here
-    return attach_affixes(new_perms, affixes[1:])
+    return answer                                           # return output
 
 def verify_perms(return_perms) :
     """
@@ -477,7 +484,7 @@ def verify_perms(return_perms) :
     Input: a list of permutations of words where each word has had its affixes attached in every
              possible permutation
     Output: none, but a ValueError will be raised if the form of return_perms is incorrect
-    Functionality: used to verify the output of fix_affix_spelling.
+    Functionality: verifies the output of fix_affix_spelling.
     Tables accessed: none
     Tables modified: none
     """
@@ -575,7 +582,7 @@ def my_unpack(nested_list, affix_list):
         nested_list - a list that is [[[word, affix], affix], affix] nested indefinitely deep.  Created as
                            such by attach_affixes
         affix_list - a list of affixes that have been unpacked thus far in this recursive function
-    Output: the same as nested list, but unpacked as [word, [affix, affix, affix]]
+    Output: return_value - the same as nested list, but unpacked as [word, [affix, affix, affix]]
     Functionality: Unpacks the list format produced by attach_affixes into a list whose first
                          element is a word and whose second element is a list of affixes
     Tables accessed: none
@@ -881,7 +888,7 @@ def main(conn):
 
                     # and insert those 1000 string/mrs pairs into parse, item_tsdb, and result
                     insert_many_items(stringList, osp_id, conn)
-                    stringList = []                                     # reset list to empty to bulid back up
+                    stringList = []                                     # reset list to empty to build back up
                     
                 p = perms[i]                                # set p to current permutation               
                 instring = ''                   # initialize instring to empty string
@@ -893,13 +900,18 @@ def main(conn):
 
                 stringList.append((instring, mrs_tag))  # add this string/mrs pair to list to be inserted
 
-                for pp in post_permutes:                # for every possible post_permute
-                    if mrs_tag == pp.mrs_id:            # if it applies to this harvester string's sem class
-
-                        # for every coordination that PostPermute produces...
-                        for s in pp.applyMe(instring):
-                            # add this string and its new mrs tag to list to be inserted
-                            stringList.append((s, pp.new_mrs_id))
+### KEN commenting out for now.  See e-mail exchange with Emily on 8/18 for details.
+### Basically, it causes processing problems for generate_s_profile.
+### Should add back in when ready to debug...but for now just want non-coordinating harv
+### grammar to work.
+#                for pp in post_permutes:                # for every possible post_permute
+#                    if mrs_tag == pp.mrs_id:            # if it applies to this harvester string's sem class
+#
+#                        # for every coordination that PostPermute produces...
+#                        for s in pp.applyMe(instring):
+#                            # add this string and its new mrs tag to list to be inserted
+#                            stringList.append((s, pp.new_mrs_id))
+### END KEN commenting out post-permutes code
 
             # print monitoring statement
             print >> sys.stderr, 'flushing: inserting', len(stringList), 'new items'
@@ -916,6 +928,7 @@ if __name__ == "__main__":      # only run if run as main module...not if import
 elif moduleTest:                        # or if i'm testing, run it on MatrixTDB2
     myconn = MatrixTDBConn('2')       # connect to MySQL server
     # ... and notify the user moduleTest is set to True.
-    print >> sys.stderr, "Note: module testing turned on in import_from_itsdb.py.  " + \
+    print >> sys.stderr, "Note: module testing turned on in add_permutes.py.  " + \
                                  "Unless testing locally, set moduleTest to False."    
     main(myconn)                              # run the main function
+    myconn.close()                             # close connection to db

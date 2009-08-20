@@ -1,4 +1,3 @@
-#!/usr/local/bin/python2.5
 """
 File: u_filters.py
 Author: KEN (captnpi@u.washington.edu, Scott Halgrim) - taking over from ???
@@ -28,31 +27,41 @@ filter_list = [IfFilter(name = "uf1",
                         mrs_id_list = g.no_det_n1_subj,
                         re1 = 'p-nom',
                         re2 = 'p-nom n1|n1 p-nom',
-                        # TODO: look at this b/c i don't think it precludes 'p-nom n1 aux p-nom' being false
-                        # though given the way we don't dup words when creating seed strings we're probably okay
+                        # NB: This filter doesn't filter out 'p-nom n1 aux p-nom', even though it probably
+                        # should, but since we don't duplicate words when creating seed strings, we'll
+                        # be okay as long as somebody doesn't introduce a harvester string with two
+                        # p-noms in it.
                         comment = "If n1 is the subject, and there is no determiner for it, any " + \
-                                          "p-nom in the sentence needs to be adjacent to n1."),
+                                          "p-nom in the sentence needs to be adjacent to n1.  NB: It " + \
+                                           "says 'any' p-nom, but this will only ensure one p-nom is " + \
+                                           "adjacent to n1"),
                
                IfFilter(name = "uf2", 
                         mrs_id_list = g.no_det_n2_subj,
                         re1 = 'p-nom',
                         re2 = 'p-nom n2|n2 p-nom',
                         comment = "If n2 is the subject, and there is no determiner for it, any " + \
-                                          "p-nom in the sentence needs to be adjacent to n2."),
+                                          "p-nom in the sentence needs to be adjacent to n2.  NB: It " + \
+                                           "says 'any' p-nom, but this will only ensure one p-nom is " + \
+                                           "adjacent to n2"),
                
                IfFilter(name = "uf3", 
                         mrs_id_list = g.no_det_n2_subj,
                         re1 = 'p-acc',
                         re2 = 'p-acc n1|n1 p-acc',
                         comment = "If n1 is the object, and there is no determiner for it, any " + \
-                                          "p-acc in the sentence needs to be adjacent to n1."),
+                                          "p-acc in the sentence needs to be adjacent to n1.  NB: It " + \
+                                           "says 'any' p-acc, but this will only ensure one p-acc is " + \
+                                           "adjacent to n2"),
                
                IfFilter(name = "uf4",
                         mrs_id_list = g.no_det_n2_obj,
                         re1 = 'p-acc',
                         re2 = 'p-acc n2|n2 p-acc',
                         comment = "If n2 is the object, and there is no determiner for it, any " + \
-                                          "p-acc in the sentence needs to be adjacent to n2."),
+                                          "p-acc in the sentence needs to be adjacent to n2.  NB: It " + \
+                                           "says 'any' p-acc, but this will only ensure one p-nom is " + \
+                                           "adjacent to n2"),
                
                MatchFilter(name = "uf5",
                            mrs_id_list = g.one_det_on_n1,
@@ -110,9 +119,9 @@ filter_list = [IfFilter(name = "uf1",
                IfFilter(name = "uf12",
                         mrs_id_list = g.neg,
                         re1 = '(neg-)|(-neg)',
-                        re2 = '(neg-[a-z-]*(tv|iv|aux))|((tv|iv|aux)[a-z-]*-neg)',
+                        re2 = '(neg-(?:[a-z]+-)*([ti]v(?:[1-9])?|aux))|(([ti]v(?:[1-9])?|aux)(?:-[a-z]+)*-neg)',
                         comment = "If there's a negative affix in the sentence, it has to be attached " + \
-                                          "to tv, iv, or aux.  '[a-z-]*' is meant to allow other affixes in " + \
+                                          "to tv, iv, or aux.  '[a-z]+-*' is meant to allow other prefixes in " + \
                                           "between. Not tested as of 3/24/07"),
 
                NotMatchFilter(name = "uf13",
@@ -133,9 +142,9 @@ filter_list = [IfFilter(name = "uf1",
                IfFilter(name = "uf15",
                         mrs_id_list = g.ques,
                         re1 = "-ques|ques-",
-                        re2 = '(ques-[a-z-]*(tv|iv|aux))|((tv|iv|aux)[a-z-]*-ques)',
+                        re2 = '(ques-(?:[a-z]+-)*([ti]v(?:[1-9])?|aux))|(([ti]v(?:[1-9])?|aux)(?:-[a-z]+)*-ques)',
                         comment = "If there's a question affix in the sentence, it has to be attached " + \
-                                          "to tv, iv, or aux.  '[a-z-]*' is meant to allow other affixes in " + \
+                                          "to tv, iv, or aux.  '([a-z]+-)*' is meant to allow other prefixes in " + \
                                           "between. Not tested as of 3/24/07"),
 
                MatchFilter(name = "uf16",
