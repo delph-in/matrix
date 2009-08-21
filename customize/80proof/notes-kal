@@ -206,3 +206,12 @@ dog.abs bark-indic-3s
 The grammar thinks that qilut-vu-q is not fully inflected.  Apparently
 the same problem with 10.
 
+SS--I switched verb-slot1(intrans-indic-lex-rule) with verb-slot11. Now, qilut-vu-q is fully inflected.
+
+This is very strange.
+
+Coverage: 25/34 73.5%
+Overgeneration: 2/44 4.5%
+
+Ex 43 is unsupported coordination
+Ex 51
