@@ -6,7 +6,7 @@ iso-code=nyn
 archive=no
 
 section=word-order
-word-order=free
+word-order=sov
 has-dets=no
 has-aux=yes
 aux-comp-order=before

@@ -520,3 +520,72 @@ Ex 2,3, 21,37,40 all have nonstandard word order.  It may be intersting to choos
 
 EX 66 and 74 are unsupported coordination strategies.
 
+8/21/2009 ASF
+Ex 66 now parses: added an morphological empty rule so that affix could attach.
+Ungrammatical example 67 now also parses, but before it was failing for the wrong reasons. Pb with 67: number of the coordinated phrase is underspecified, the customization system does not allow to make this plural. Nothing can be done.
+
+Coverage (without arg-optionality): 17/28: 60.7%
+Overgeneration: 1/52 1.9%
+
+Tried adding free word order, coverage increases to 22/28, overgeneration to 6/52. Since no interaction between morphology and word order exists so far, this can probably not be resolved. We need to make a decision on which results to present. Leaning towards the 'free word order' results, since fixed order also excludes some unrelated phenomena.
+
+Coverage (no opt): 22/28: 78.6%
+Overgeneration:    6/52:  11.5%
+
+Also done for with optionality:
+
+Coverage: 27/28  96.4%
+Overgeneration: 6/52   11.5%
+
+Treebank coverage checked: all parses are correct.
+
+FINAL RESULTS
+
+NO-OPT-SOV-ORDER
+
+Coverage: 60.7%, Treebank coverage: 60.7%
+Overgeneration: 1.9%, Correctness Failure: 98.1%
+Overall performance Ungrammatical examples: 96.1%
+Spurious Ambiguity: none
+
+OPT-SOV-ORDER
+
+Coverage: 78.6%, Treebank coverage: 78.6%
+Overgeneration: 1.9%, Correctness Failure: 98.1%
+Overall performance Ungrammatical examples: 96.1%
+Spurious Ambiguity: none
+
+NO-OPT-FREE-ORDER
+
+Coverage: 78.6%, Treebank coverage: 78.6%
+Overgeneration: 11.5%, Correctness Failure: 97.8%
+Overall performance Ungrammatical examples: 86.5%
+Spurious Ambiguity: none
+
+OPT-FREE-ORDER
+
+Coverage: 96.4%, Treebank coverage: 96.4%
+Overgeneration: 11.5%, Correctness Failure: 97.8%
+Overall performance Ungrammatical examples: 86.5%
+Spurious Ambiguity: none
+Total number of examples: 80
+Grammatical: 28
+Ungrammatical: 53 (20 and 23 are identical) = 52
+
+
+Phenomenon based analysis:
+
+pers,nr,gend           +
+auxiliaries            +
+morphology             +
+case                   n.a.
+coord np               +/-
+      v/vp             -
+      s                +
+Determiners            n.a.
+Negation               +
+Tense and Aspect       +
+Agreement object       +
+Agreement subj         +
+word order             -
+yes-no questions       +

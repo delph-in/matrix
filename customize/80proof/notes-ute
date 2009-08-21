@@ -576,3 +576,25 @@ Grammatical: 29
 Ungrammatical: 28 - 1 (54 and 57 are identical) = 27
 
 Phenomenon based analysis:
+Semantics pers          +
+          number        +/-
+          gender        +
+Auxiliaries             n.a.
+Morphological process   +/-
+case                    +
+coord    NP             +
+         VP             -
+         S              +
+Determiners             n.a.
+Negation                +/-
+Tense Aspect            +
+Agreement Obj           +
+          Subj          +
+word order              -
+yes-no questions        -
+
+number and morpho-tactics: mostly work, there is just one point where the interaction does not: number can be marked at two places (both of which may provide a plural marker), but default interpretation is 'dual-sg'. It is not possible to add this with a zero-suffix at either number-slot, because it may end up in conflict with a plural marker. Number thus remains underspecified.
+Negation: one strategy (affix) works, but strategy with optional negative marker in addition is not supported by the system.
+word order: some things do work, but - was put here since the basic fact of Chemehuevi (word order is SOV or SVO) is not supported by the sytem.
+yes-no questions: strategy second position clitic is not supported
+v-coordination: affixal, the common pb.

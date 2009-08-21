@@ -267,11 +267,15 @@ Pers/Nr/Gen      (#25-#34):     +
 Tense/Aspect     (#35-#45):     +
 Negation         (#46-#52):     +
 Yes-No Questions (#53):         +
-Coordination     (#54-#61):     -
+Coordination np  (#54-#61):     -
+s-coord                         -
+vp-coord                        -
 Morphology (#35-#45,#62-#76):   + 
-Agreement        (#24):         +
+Agreement        (#24):         n.a.
+Agreement obj                   n.a.
+Auxiliaries                     n.a.
 
-Total:  8/10 phenomena: 80%
+Total:  7/11 phenomena: 80%
 
 Maybe "determiner" and "agreement" should be counted as one in this case.
 I separated them, because one of the other grammars has affixes for determiners,

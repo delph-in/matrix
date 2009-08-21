@@ -4,21 +4,23 @@ hau		47.4%		6.7%		22
 jig		100%		0%		8        14(3)
 kal		90.9%		0%		26
 mal		89.7%		2.8%		24       1(4)
-nyn		57.1%		0%		23
+nyn		78.6%		11.5%		23       0
 ute		82.8%		0%		21       1(2)
 hau-opt		63.2%		6.7%		17
-nyn-opt		75.0%		0%		23
+nyn-opt		96.4%		11.5%		23       0
+
 TREEBANK COVERAGE AND CORRECTNESS OF FAILING PARSES
 
                Tree-cov        Correct failures    Phenomena 
-abk            94.4%           100%                -:1 +/-:2 +:6
+abk            94.4%           100%                -:2 +/-:1 +:9
 hau
-jig            100%            100%                -:0 +/-:1 +:8
+jig            100%            100%                -:0 +/-:1 +:12
 kal
-mal            87.2%           86.1% (88.6%)       -:1 +/-:1 +:8
-nyn
-ute            75.9%           81.5%               -:3 +/-:3 +:5
+mal            87.2%           86.1% (88.6%)       -:2 +/-:2 +:9
+nyn            78.6%           86.5% (97.8%)       see nyn-opt
+ute            75.9%           81.5%               -:3 +/-:3 +:8
 hau-opt
+nyn-opt        96.4%           86.5% (97.8%)       -:2 +/-:1 +:11
 
 NB: correct failures presents the total of ungrammatical sentences that
 are not parsed for the correct reasons (i.e. excluding overgeneration and those that do not parse for the wrong reasons). The number in parentheses represents how many not parsed ungrammatical sentences are not parsing for the right reasons.

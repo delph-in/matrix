@@ -589,10 +589,13 @@ Tense/Aspect     (#12-#24):     +
 Yes-No Questions (#25-#29):     +
 Negation         (#30-#37):     +
 Pers/nr/gender   (#38-#76):     + 
-Agreement        (#38-#76):     +
-Coordination     (#77-#83):     -
-
-Total:  6/9 phenomena: 66.7%
+Agreement-subj   (#38-#76):     +
+Agreement-obj                   +
+Coordination np  (#77-#83):     -
+coord-s                         n.a.
+coord-vp                        n.a.
+case                            n.a.
+auxiliaries                     n.a.
 
 Definiteness: determiners expressed by affixes are not supported in the system.
 Word order: word order interacts with agreement morphemes, this is not supported by the system. Counted as word order, because word order change triggers the agreement according to Arie Spruit "Abkhaz Studies".

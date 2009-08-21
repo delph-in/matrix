@@ -323,14 +323,18 @@ Phenomenon based analysis:
 Word Order      (#1-#9):        +
 Y/N questions   (#7-#9):        +
 Negation        (#10):          +
-Agreement  (#11-#21,#24-#44):   +
+Agreement-subj  (#11-#21):      +
+Agreement-obj                   +
 Aux/Light verbs (#22-#23):      +
-Morphology (#39-#44,#49-#50):   -  
+Morphology (#39-#44,#49-#50):   +/-  
 Tense/Aspect    (#45-#48):      +
-Coordination    (#51-#52):      +
+S-Coordination    (#51-#52):    +
 Case            (#53-#56):      + 
 Pers/Nr/Gen                     +
+Determiners                     n.a.
+N-coord                         n.a.
+V-coord                         n.a.
 
-Total:  8/9 phenomena: 88.9%
+ 
 
 Morphology is responsible for the spurious ambiguity.
