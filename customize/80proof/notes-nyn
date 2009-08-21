@@ -434,3 +434,60 @@ That only accounts for 1 of the 8 parses, though.  The
 others seem to have to do with all of the non-Xtense-lex
 rules.  Turning that over to Safiyyah.
 
+SS--
+
+Created grammar from choices-nkore-kiga.
+
+Coverage 50.0% 14/28
+Overgeneration: 1.9% 1/53
+
+scorecard says coverage should be 50.5 but this is probably a typ as 15/28 =53.5%
+
+Ex 50 is not parsing because of a conflict between continuous and perfective aspects. I thought about adding perfective-continuous as a supertype of continuous and perfective, but I could not figure out how to make sure that things that were non-continuous did not end up being underspecfied.  I decided to add another rule specifically for perfective-present-continuous.
+
+verb-slot10_name=perfect-continuous
+  verb-slot10_order=after
+    verb-slot10_input1_type=verb-slot6
+    verb-slot10_morph1_name=perfect-present-continuous
+    verb-slot10_morph1_orth=ni-
+      verb-slot10_morph1_feat1_name=tense
+      verb-slot10_morph1_feat1_value=present
+      verb-slot10_morph1_feat1_head=verb
+      verb-slot10_morph1_feat2_name=aspect
+      verb-slot10_morph1_feat2_value=perfective-continuous
+      verb-slot10_morph1_feat2_head=verb
+
+This was wrong.  Ex 30 which is ungrammatical is no parsing when it shouldn't.  The order of the affixes is wrong.
+
+#Ex 30 is an ungrammatical example of  present continuous tense.  The present has two tenses: universal tense and present continous tense.  The universal is unmarked on the verb. It is used to refer to events that are habitual. The present continous can be applied to all verbs, even those which do not take the continuous/progressive in English.  The present continous is formed by adding "ni-" before the obligatory subject prefix.  Here the present continuous prefix is (incorrectly) attached after the verb stem. The prefix is deliberately left with the hypen afterwards since this is the way that it will be entered into the customization system.  
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {tam}
+omushaija naaeshongora
+o-mu-shaija a-eshongorani-
+c1.vwl-c1.prfx-man c1.3sg.subj-sing-PRES.CONT
+'The man is singing.'
+
+
+I changed
+verb-slot10_order=after
+to
+verb-slot10_order=before
+
+This worked and Ex 50 is now parsing, but it also increased spurius ambiguity on Ex 28 from 3 to 6.
+
+I tried constraining perfect-continuous rule to selecting for a non-finite verb, but this was incorrect as the tense marker appears on the auxliary not on the main verb.
+
+This lead to losing Ex 50.
+
+I would like to be able to access the AUX feature but don't know how to do that because +,- breaks the grammar.
+
+I added AUX2 to other features.  And I got Ex 50 along with the increased spurious ambiguity from Ex 28. I am going to constrain all main verbs to be AUX2 minus.  I think that right now they are underspecified.
+
+
+This worked.  Ex 50 parses and Ex 28 doesn't have 6 parses.  It still has the 3 from before.
+
+Coverage: 15/28 53.6%
+Overgeneration: 1/53 1.9%
+
