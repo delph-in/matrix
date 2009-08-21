@@ -20,62 +20,61 @@
 20@author@@@1@{q}@o-mu-ntu a-kwata+voice e-n-koni@0@3@'Someone is holding a stick.'@Safiyyah Saleem@March 15, 2009
 21@author@@@1@{q}@e-n-koni o-mu-ntu a-gi-kwata+voice @1@3@'Someone is holding a stick.'@Safiyyah Saleem@March 15, 2009
 22@author@@@1@{q}@e-n-koni+voice o-mu-ntu a-gi-kwata @0@3@'Someone is holding a stick.'@Safiyyah Saleem@March 15, 2009
-23@author@@@1@{q}@o-mu-ntu a-kwata+voice e-n-koni@0@3@'Someone is holding a stick.'@Safiyyah Saleem@March 15, 2009
-24@author@@@1@{q}@o-mu-ntu e-n-koni+voice a-gi-kwata @0@3@'Someone is holding a stick.'@Safiyyah Saleem@March 15, 2009
-25@author@@@1@{agr}@e-ri-zooba ri-renga@1@2@The sun sets.@Safiyyah Saleem@March 15, 2009
-26@author@@@1@{agr}@e-ri-zooba a-renga@0@2@The sun sets.@Safiyyah Saleem@March 15, 2009
-27@author@@@1@{agr}@o-mu-shaija mu-eshongora@0@2@'The man sings.'@Safiyyah Saleem@March 15, 2009
-28@author@@@1@{tam}@o-mu-shaija ni-a-eshongora@1@2@'The man is singing.'@Safiyyah Saleem@March 15, 2009
-29@author@@@1@{tam}@o-mu-shaija a-ni-eshongora@0@2@'The man is singing.'@Safiyyah Saleem@March 15, 2009
-30@author@@@1@{tam}@o-mu-shaija a-eshongorani-@0@2@'The man is singing.'@Safiyyah Saleem@March 15, 2009
-31@author@@@1@{tam}@o-mu-shaija a-eshongora-ni@0@2@'The man is singing.'@Safiyyah Saleem@March 15, 2009
-32@author@@@1@{agr}@o-mu-shaija eshongoraa-@0@2@'The man sings.'@Safiyyah Saleem@March 15, 2009
-33@author@@@1@{agr}@o-mu-shaija eshongora-a@0@2@'The man sings.'@Safiyyah Saleem@March 15, 2009
-34@author@@@1@{tam}@o-mu-shaija a-ka-eshongora@1@2@'The man sang.'@Safiyyah Saleem@March 15, 2009
-35@author@@@1@{tam}@o-mu-shaija ka-a-eshongora@0@2@'The man sang.'@Safiyyah Saleem@March 15, 2009
-36@author@@@1@{tam}@o-mu-shaija a-eshongoraka-@0@2@'The man sang.'@Safiyyah Saleem@March 15, 2009
-37@author@@@1@{tam}@o-mu-ntu e-n-koni a-ka-gi-kwata @1@3@'Someone held a stick.'@Safiyyah Saleem@March 15, 2009
-38@author@@@1@{tam}@o-mu-shaija a-eshongora-ka@0@2@'The man sang.'@Safiyyah Saleem@March 15, 2009
-39@author@@@1@{tam}@o-mu-ntu e-n-koni a-gi-ka-kwata @0@3@'Someone held a stick.'@Safiyyah Saleem@March 15, 2009
-40@author@@@1@{tam}@o-mu-ntu e-n-koni ni-a-gi-kwata @1@3@'Someone is holding a stick.'@Safiyyah Saleem@March 15, 2009
-41@author@@@1@{tam}@o-mu-ntu e-n-koni a-ni-gi-kwata @0@3@'Someone is holding a stick.'@Safiyyah Saleem@March 15, 2009
-42@author@@@1@{tam}@o-mu-ntu e-n-koni a-gi-ni-kwata @0@3@'Someone is holding a stick.'@Safiyyah Saleem@March 15, 2009
-43@author@@@1@{tam}@o-mu-shaija a-ka-ba a-eshongora-ire@1@3@'The man had sung (two + days ago).'@Safiyyah Saleem@March 15, 2009
-44@author@@@1@{tam}@o-mu-shaija a-ka-ba a-eshongora@0@3@'The man had sung (two + days ago).'@Safiyyah Saleem@March 15, 2009
-45@author@@@1@{tam}@o-mu-shaija  a-eshongora-ire a-ka-ba@0@3@'The man had sung (two + days ago).'@Safiyyah Saleem@March 15, 2009
-46@author@@@1@{tam}@o-mu-shaija  a-eshongora-ire@1@2@'The man sang (yesterday) /has sung (now).'@Safiyyah Saleem@March 15, 2009
-47@author@@@1@{tam}@o-mu-shaija  eshongora-ire@0@2@'The man sang (yesterday) /has sung (at some time).'@Safiyyah Saleem@March 15, 2009
-48@author@@@1@{tam}@o-mu-shaija ka-ba a-eshongora-ire@0@3@'The man had sung (two + days ago).'@Safiyyah Saleem@March 15, 2009
-49@author@@@1@{tam}@o-mu-shaija a-ka-ba eshongora-ire@0@3@'The man had sung (two + days ago).'@Safiyyah Saleem@March 15, 2009
-50@author@@@1@{tam}@o-mu-shaija ni-a-ba a-eshongora-ire@1@3@'The man has sung (now).'@Safiyyah Saleem@March 15, 2009
-51@author@@@1@{tam}@o-mu-shaija a-ba a-eshongora-ire@1@3@'The man had sung (now).'@Safiyyah Saleem@March 15, 2009
-52@author@@@1@{det}@mu-shaija a-eshongora@0@2@'The man sings.'@Safiyyah Saleem@March 15, 2009
-53@author@@@1@{det}@o-shaija a-eshongora@0@2@'The man sings.'@Safiyyah Saleem@March 15, 2009
-54@author@@@1@{neg}@o-mu-shaija ti-a-eshongora@1@2@'The man does not sing.'@Safiyyah Saleem@March 15, 2009
-55@author@@@1@{neg}@o-mu-shaija a-ti-eshongora@0@2@'The man does not sing.'@Safiyyah Saleem@March 15, 2009
-56@author@@@1@{neg}@o-mu-shaija a-eshongorati-@0@2@'The man does not sing.'@Safiyyah Saleem@March 15, 2009
-57@author@@@1@{neg}@o-mu-shaija a-eshongora-ti@0@2@'The man does not sing.'@Safiyyah Saleem@March 15, 2009
-58@author@@@1@{neg}@o-mu-shaija ti-a-riku-eshongora@1@2@'The man is not singing.'@Safiyyah Saleem@March 15, 2009
-59@author@@@1@{neg}@o-mu-shaija ti-riku-a-eshongora@0@2@'The man is not singing.'@Safiyyah Saleem@March 15, 2009
-60@author@@@1@{neg}@o-mu-shaija a-ti-riku-eshongora@0@2@'The man is not singing.'@Safiyyah Saleem@March 15, 2009
-61@author@@@1@{neg}@o-mu-shaija ti-a-eshongorariku-@0@2@'The man is not singing.'@Safiyyah Saleem@March 15, 2009
-62@author@@@1@{neg}@o-mu-shaija ti-a-eshongora-riku@0@2@'The man is not singing.'@Safiyyah Saleem@March 15, 2009
-63@author@@@1@{neg}@o-mu-shaija ti-a-ra-eshongora-ire@1@2@'The man did not sing.'@Safiyyah Saleem@March 15, 2009
-64@author@@@1@{neg}@o-mu-shaija ti-a-ka-eshongora-ire@0@2@'The man did not sing.'@Safiyyah Saleem@March 15, 2009
-65@author@@@1@{neg}@o-mu-shaija ti-a-eshongora-ra-ire@0@2@'The man did not sing.'@Safiyyah Saleem@March 15, 2009
-66@author@@@1@{crd}@o-mu-kazi na-o-mu-shaija ba-eshongora@1@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
-67@author@@@1@{crd}@o-mu-kazi na-o-mu-shaija a-eshongora@0@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
-68@author@@@1@{crd}@o-mu-kazi o-mu-shaija ba-eshongora@0@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
-69@author@@@1@{crd}@na-o-mu-kazi o-mu-shaija ba-eshongora@0@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
-70@author@@@1@{crd}@na-o-mu-kazi na-o-mu-shaija ba-eshongora@0@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
-71@author@@@1@{crd}@o-mu-kazi o-na-mu-shaija a-eshongora@0@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
-72@author@@@1@{crd}@o-mu-kazi o-mu-shaijana- a-eshongora@0@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
-73@author@@@1@{crd}@o-mu-kazi o-mu-shaija-na a-eshongora@0@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
-74@author@@@1@{crd}@o-mu-shaija a-eshongora na-we a-zaana@1@4@'The man sings and plays.'@Safiyyah Saleem@March 15, 2009
-75@author@@@1@{agr}@a-ba-shaija ba-eshongora @1@2@'The men sing.'@Safiyyah Saleem@March 15, 2009
-76@author@@@1@{agr}@a-ba-shaija a-eshongora @0@2@'The men sing.'@Safiyyah Saleem@March 15, 2009
-77@author@@@1@{crd}@o-mu-shaija a-eshongora kandi a-ba-kazi ba-zaana@1@5@'The man sings and the women play.'@Safiyyah Saleem@March 15, 2009
-78@author@@@1@{crd}@kandi o-mu-shaija a-eshongora a-ba-kazi ba-zaana@0@5@'The man sings and the women play.'@Safiyyah Saleem@March 15, 2009
-79@author@@@1@{crd}@o-mu-shaija a-eshongora a-ba-kazi kandi ba-zaana@0@5@'The man sings and the women play.'@Safiyyah Saleem@March 15, 2009
-80@author@@@1@{crd}@o-mu-shaija a-eshongora a-ba-kazi ba-zaana kandi@0@5@'The man sings and the women play.'@Safiyyah Saleem@March 15, 2009
-81@author@@@1@{crd}@o-mu-shaija a-eshongora na-a-zaana@0@3@'The man sings and plays.'@Safiyyah Saleem@March 15, 2009
+23@author@@@1@{q}@o-mu-ntu e-n-koni+voice a-gi-kwata @0@3@'Someone is holding a stick.'@Safiyyah Saleem@March 15, 2009
+24@author@@@1@{agr}@e-ri-zooba ri-renga@1@2@The sun sets.@Safiyyah Saleem@March 15, 2009
+25@author@@@1@{agr}@e-ri-zooba a-renga@0@2@The sun sets.@Safiyyah Saleem@March 15, 2009
+26@author@@@1@{agr}@o-mu-shaija mu-eshongora@0@2@'The man sings.'@Safiyyah Saleem@March 15, 2009
+27@author@@@1@{tam}@o-mu-shaija ni-a-eshongora@1@2@'The man is singing.'@Safiyyah Saleem@March 15, 2009
+28@author@@@1@{tam}@o-mu-shaija a-ni-eshongora@0@2@'The man is singing.'@Safiyyah Saleem@March 15, 2009
+29@author@@@1@{tam}@o-mu-shaija a-eshongorani-@0@2@'The man is singing.'@Safiyyah Saleem@March 15, 2009
+30@author@@@1@{tam}@o-mu-shaija a-eshongora-ni@0@2@'The man is singing.'@Safiyyah Saleem@March 15, 2009
+31@author@@@1@{agr}@o-mu-shaija eshongoraa-@0@2@'The man sings.'@Safiyyah Saleem@March 15, 2009
+32@author@@@1@{agr}@o-mu-shaija eshongora-a@0@2@'The man sings.'@Safiyyah Saleem@March 15, 2009
+33@author@@@1@{tam}@o-mu-shaija a-ka-eshongora@1@2@'The man sang.'@Safiyyah Saleem@March 15, 2009
+34@author@@@1@{tam}@o-mu-shaija ka-a-eshongora@0@2@'The man sang.'@Safiyyah Saleem@March 15, 2009
+35@author@@@1@{tam}@o-mu-shaija a-eshongoraka-@0@2@'The man sang.'@Safiyyah Saleem@March 15, 2009
+36@author@@@1@{tam}@o-mu-ntu e-n-koni a-ka-gi-kwata @1@3@'Someone held a stick.'@Safiyyah Saleem@March 15, 2009
+37@author@@@1@{tam}@o-mu-shaija a-eshongora-ka@0@2@'The man sang.'@Safiyyah Saleem@March 15, 2009
+38@author@@@1@{tam}@o-mu-ntu e-n-koni a-gi-ka-kwata @0@3@'Someone held a stick.'@Safiyyah Saleem@March 15, 2009
+39@author@@@1@{tam}@o-mu-ntu e-n-koni ni-a-gi-kwata @1@3@'Someone is holding a stick.'@Safiyyah Saleem@March 15, 2009
+40@author@@@1@{tam}@o-mu-ntu e-n-koni a-ni-gi-kwata @0@3@'Someone is holding a stick.'@Safiyyah Saleem@March 15, 2009
+41@author@@@1@{tam}@o-mu-ntu e-n-koni a-gi-ni-kwata @0@3@'Someone is holding a stick.'@Safiyyah Saleem@March 15, 2009
+42@author@@@1@{tam}@o-mu-shaija a-ka-ba a-eshongora-ire@1@3@'The man had sung (two + days ago).'@Safiyyah Saleem@March 15, 2009
+43@author@@@1@{tam}@o-mu-shaija a-ka-ba a-eshongora@0@3@'The man had sung (two + days ago).'@Safiyyah Saleem@March 15, 2009
+44@author@@@1@{tam}@o-mu-shaija  a-eshongora-ire a-ka-ba@0@3@'The man had sung (two + days ago).'@Safiyyah Saleem@March 15, 2009
+45@author@@@1@{tam}@o-mu-shaija  a-eshongora-ire@1@2@'The man sang (yesterday) /has sung (now).'@Safiyyah Saleem@March 15, 2009
+46@author@@@1@{tam}@o-mu-shaija  eshongora-ire@0@2@'The man sang (yesterday) /has sung (at some time).'@Safiyyah Saleem@March 15, 2009
+47@author@@@1@{tam}@o-mu-shaija ka-ba a-eshongora-ire@0@3@'The man had sung (two + days ago).'@Safiyyah Saleem@March 15, 2009
+48@author@@@1@{tam}@o-mu-shaija a-ka-ba eshongora-ire@0@3@'The man had sung (two + days ago).'@Safiyyah Saleem@March 15, 2009
+49@author@@@1@{tam}@o-mu-shaija ni-a-ba a-eshongora-ire@1@3@'The man has sung (now).'@Safiyyah Saleem@March 15, 2009
+50@author@@@1@{tam}@o-mu-shaija a-ba a-eshongora-ire@1@3@'The man had sung (now).'@Safiyyah Saleem@March 15, 2009
+51@author@@@1@{det}@mu-shaija a-eshongora@0@2@'The man sings.'@Safiyyah Saleem@March 15, 2009
+52@author@@@1@{det}@o-shaija a-eshongora@0@2@'The man sings.'@Safiyyah Saleem@March 15, 2009
+53@author@@@1@{neg}@o-mu-shaija ti-a-eshongora@1@2@'The man does not sing.'@Safiyyah Saleem@March 15, 2009
+54@author@@@1@{neg}@o-mu-shaija a-ti-eshongora@0@2@'The man does not sing.'@Safiyyah Saleem@March 15, 2009
+55@author@@@1@{neg}@o-mu-shaija a-eshongorati-@0@2@'The man does not sing.'@Safiyyah Saleem@March 15, 2009
+56@author@@@1@{neg}@o-mu-shaija a-eshongora-ti@0@2@'The man does not sing.'@Safiyyah Saleem@March 15, 2009
+57@author@@@1@{neg}@o-mu-shaija ti-a-riku-eshongora@1@2@'The man is not singing.'@Safiyyah Saleem@March 15, 2009
+58@author@@@1@{neg}@o-mu-shaija ti-riku-a-eshongora@0@2@'The man is not singing.'@Safiyyah Saleem@March 15, 2009
+59@author@@@1@{neg}@o-mu-shaija a-ti-riku-eshongora@0@2@'The man is not singing.'@Safiyyah Saleem@March 15, 2009
+60@author@@@1@{neg}@o-mu-shaija ti-a-eshongorariku-@0@2@'The man is not singing.'@Safiyyah Saleem@March 15, 2009
+61@author@@@1@{neg}@o-mu-shaija ti-a-eshongora-riku@0@2@'The man is not singing.'@Safiyyah Saleem@March 15, 2009
+62@author@@@1@{neg}@o-mu-shaija ti-a-ra-eshongora-ire@1@2@'The man did not sing.'@Safiyyah Saleem@March 15, 2009
+63@author@@@1@{neg}@o-mu-shaija ti-a-ka-eshongora-ire@0@2@'The man did not sing.'@Safiyyah Saleem@March 15, 2009
+64@author@@@1@{neg}@o-mu-shaija ti-a-eshongora-ra-ire@0@2@'The man did not sing.'@Safiyyah Saleem@March 15, 2009
+65@author@@@1@{crd}@o-mu-kazi na-o-mu-shaija ba-eshongora@1@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
+66@author@@@1@{crd}@o-mu-kazi na-o-mu-shaija a-eshongora@0@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
+67@author@@@1@{crd}@o-mu-kazi o-mu-shaija ba-eshongora@0@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
+68@author@@@1@{crd}@na-o-mu-kazi o-mu-shaija ba-eshongora@0@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
+69@author@@@1@{crd}@na-o-mu-kazi na-o-mu-shaija ba-eshongora@0@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
+70@author@@@1@{crd}@o-mu-kazi o-na-mu-shaija a-eshongora@0@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
+71@author@@@1@{crd}@o-mu-kazi o-mu-shaijana- a-eshongora@0@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
+72@author@@@1@{crd}@o-mu-kazi o-mu-shaija-na a-eshongora@0@3@'The woman and the man sing.'@Safiyyah Saleem@March 15, 2009
+73@author@@@1@{crd}@o-mu-shaija a-eshongora na-we a-zaana@1@4@'The man sings and plays.'@Safiyyah Saleem@March 15, 2009
+74@author@@@1@{agr}@a-ba-shaija ba-eshongora @1@2@'The men sing.'@Safiyyah Saleem@March 15, 2009
+75@author@@@1@{agr}@a-ba-shaija a-eshongora @0@2@'The men sing.'@Safiyyah Saleem@March 15, 2009
+76@author@@@1@{crd}@o-mu-shaija a-eshongora kandi a-ba-kazi ba-zaana@1@5@'The man sings and the women play.'@Safiyyah Saleem@March 15, 2009
+77@author@@@1@{crd}@kandi o-mu-shaija a-eshongora a-ba-kazi ba-zaana@0@5@'The man sings and the women play.'@Safiyyah Saleem@March 15, 2009
+78@author@@@1@{crd}@o-mu-shaija a-eshongora a-ba-kazi kandi ba-zaana@0@5@'The man sings and the women play.'@Safiyyah Saleem@March 15, 2009
+79@author@@@1@{crd}@o-mu-shaija a-eshongora a-ba-kazi ba-zaana kandi@0@5@'The man sings and the women play.'@Safiyyah Saleem@March 15, 2009
+80@author@@@1@{crd}@o-mu-shaija a-eshongora na-a-zaana@0@3@'The man sings and plays.'@Safiyyah Saleem@March 15, 2009
