@@ -623,9 +623,9 @@ Source: author
 Vetted: f
 Judgment: g
 Phenomena: agr
-uangap illit pisarvakkit
-uanga-p illit pisar-va-kkit
-I-rel 2s catch-indic.1s(subj).2s(obj)
+uanga illit pisarvakkit
+uanga illit pisar-va-kkit
+I.rel 2s catch-indic.1s(subj).2s(obj)
 'I caught you.'
 
 #Ex 62 demonstrates subject-object-verb agreement.  
@@ -633,9 +633,9 @@ Source: author
 Vetted: f
 Judgment: g
 Phenomena: agr
-uangap ilissi pisarvassi
-uanga-p ilissi pisar-va-ssi
-I-rel 2pl catch-indic.1s(subj).2pl(obj)
+uanga ilissi pisarvassi
+uanga ilissi pisar-va-ssi
+I.rel 2pl catch-indic.1s(subj).2pl(obj)
 'I caught you.'
 
 #Ex 63 demonstrates subject-object-verb agreement.  
@@ -643,9 +643,9 @@ Source: author
 Vetted: f
 Judgment: g
 Phenomena: agr
-uangap puisi pisarvara
-uanga-p puisi pisar-va-ra
-I-rel seal catch-indic.1s(subj).3s(obj)
+uanga puisi pisarvara
+uanga puisi pisar-va-ra
+I.rel seal catch-indic.1s(subj).3s(obj)
 'I caught the seal.'
 
 
@@ -654,9 +654,9 @@ Source: author
 Vetted: f
 Judgment: g
 Phenomena: agr
-uanga-p puisit pisarvakka
-uanga-p puisi-t pisar-va-kka
-I-rel seal.pl catch-indic.1s(subj).3pl(obj)
+uanga puisit pisarvakka
+uanga puisi-t pisar-va-kka
+I.rel seal.pl catch-indic.1s(subj).3pl(obj)
 'I caught seals.'
 
 
@@ -665,9 +665,9 @@ Source: author
 Vetted: f
 Judgment: g
 Phenomena: agr
-illip puisi pisarvat
-illit-p puisi pisar-va-t
-2s-rel seal catch-indic.2s(subj).3s(obj)
+illit puisi pisarvat
+illit puisi pisar-va-t
+2s.rel seal catch-indic.2s(subj).3s(obj)
 'you caught the seal.'
 
 #Ex 66 demonstrates subject-object-verb agreement.  
@@ -676,8 +676,8 @@ Vetted: f
 Judgment: g
 Phenomena: agr
 illit puisit pisarvasi
-illit-p puisi-t pisar-va-tit
-2s-rel seal.pl catch-indic-2s(subj).3pl(obj)
+illit puisi-t pisar-va-tit
+2s.rel seal.pl catch-indic-2s(subj).3pl(obj)
 'You caught seals.
 
 #Ex 67 demonstrates subject-object-verb agreement.  
@@ -705,9 +705,9 @@ Source: author
 Vetted: f
 Judgment: g
 Phenomena: agr
-illip uanga pisarvarma
-illit-p uanga pisar-va-ma
-2s-rel 1s.abs catch-indic.2s(subj).1s(obj)
+illit uanga pisarvarma
+illit uanga pisar-va-ma
+2s.rel 1s.abs catch-indic.2s(subj).1s(obj)
 'You caught me.'
 
 #Ex 70 demonstrates an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object. 
@@ -725,9 +725,9 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: agr
-illip uanga pisarvarma
-illit-p uanga pisar-va-si
-2s-rel 1s.abs catch-indic.2p(subj).3p(obj)
+illit uanga pisarvarma
+illit uanga pisar-va-si
+2s.rel 1s.abs catch-indic.2p(subj).3p(obj)
 'You caught me.'
 
 
@@ -736,9 +736,9 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: agr
-uangap illit pisarvassi
-uanga-p illit pisar-va-ssi
-I-rel 2s catch-indic.1s(subj).2pl(obj)
+uanga illit pisarvassi
+uanga illit pisar-va-ssi
+I.rel 2s catch-indic.1s(subj).2pl(obj)
 'I caught you.'
 
 #Ex 73 demonstrates  an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object. 
@@ -746,9 +746,9 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: agr
-uangap ilissi pisarvara
-uanga-p ilissi pisar-va-ra
-I-rel 2pl catch-indic.1s(subj).3s(obj)
+uanga ilissi pisarvara
+uanga ilissi pisar-va-ra
+I.rel 2pl catch-indic.1s(subj).3s(obj)
 'I caught you.'
 
 #Ex 74 demonstrates  an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object.  
@@ -756,9 +756,9 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: agr
-uangap puisi pisarvakka
-uanga-p puisi pisar-va-kka
-I-rel seal catch-indic.1s(subj).3pl(obj)
+uanga puisi pisarvakka
+uanga puisi pisar-va-kka
+I.rel seal catch-indic.1s(subj).3pl(obj)
 'I caught the seal.'
 
 
@@ -767,9 +767,9 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: agr
-uanga-p puisit pisarvat
-uanga-p puisi-t pisar-va-t
-I-rel seal.pl catch-indic.2s(subj).3s(obj)
+uanga puisit pisarvat
+uanga puisi-t pisar-va-t
+I.rel seal.pl catch-indic.2s(subj).3s(obj)
 'I caught seals.'
 
 
@@ -778,9 +778,9 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: agr
-illip puisi pisarvat
-illit-p puisi pisar-va-tit
-2s-rel seal catch-indic.2s(subj).3p(obj)
+illit puisi pisarvat
+illit puisi pisar-va-tit
+2s.rel seal catch-indic.2s(subj).3p(obj)
 'you caught the seal.'
 
 #Ex 77 demonstrates  an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object. 
@@ -789,8 +789,8 @@ Vetted: f
 Judgment: u
 Phenomena: agr
 illit puisit pisarvai
-illi-p puisi-t pisar-va-i
-2s-rel seal.pl catch-indic-3s(subj).3pl(obj)
+illit puisi-t pisar-va-i
+2s.rel seal.pl catch-indic-3s(subj).3pl(obj)
 'You caught seals.
 
 #Ex 78 demonstrates  an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object
