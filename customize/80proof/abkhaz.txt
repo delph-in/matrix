@@ -198,17 +198,7 @@ Phenomena: tam
 at͡ʂʰkʷʰən atəpha dəjəbajt
 a-t͡ʂʰkʷʰən a-təpha də-jə-waba-la-jt
 the-boy the-girl her-he-habitual-see-present-dynamic.finite
-The boy sees the girl.
-
-#Ex 20 demonstrates an ungrammatical use of  the  habitual aspect. It is formed by adding the suffix "-la" after the verb and before the tense marker.  Here "-la" incorrectly comes before the verb stem
-Source: author
-Vetted: f
-Judgment: u
-Phenomena: tam
-at͡ʂʰkʷʰən atəpha dəjəbajt
-a-t͡ʂʰkʷʰən a-təpha də-jə-la-ba-wa-jt
-the-boy the-girl her-he-habitual-see-present-dynamic.finite
-The boy sees the girl.
+The boy sees the girl.
 
 #Ex 21 demonstrates and ungrammatical use of  the  habitual aspect. It is formed by adding the suffix "-la" after the verb and before the tense marker.  Here "-la" is used twice.
 Source: author
