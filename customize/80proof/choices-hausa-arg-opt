@@ -273,6 +273,7 @@ section=lexicon
     aux5_feat2_head=subj
     aux5_feat3_name=number
     aux5_feat3_value=plural
+    aux5_feat3_head=subj
   aux5_subj=np
     aux5_compfeature1_name=form
     aux5_compfeature1_value=nonfinite
