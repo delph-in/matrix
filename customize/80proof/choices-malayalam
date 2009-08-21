@@ -260,6 +260,7 @@ section=lexicon
       verb-slot2_morph2_feat1_value=present
       verb-slot2_morph2_feat1_head=verb
   verb-slot3_name=infinitive
+  verb-slot3_opt=on
   verb-slot3_order=after
     verb-slot3_input1_type=verb
     verb-slot3_morph1_name=infinitive-marker
