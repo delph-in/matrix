@@ -515,7 +515,7 @@ maNa nukwi-gai wi7i-vII-su
 3sg.anim.visible run-sub fall-past-too
 'He ran and fell.'
 
-#Ex 50 illustrates an ungrammatical V coordination.  V coordination does not occur with finite verbs.  One of the verbs must take a subordinating suffix.  Press notes that the frequent use of /-su/ "too" may make the meaning more coordinate than subordinate.
+#Ex 50 illustrates an ungrammatical V coordination.  V coordination does not occur with finite verbs.  One of the verbs must take a subordinating suffix.  Press notes that the frequent use of /-su/ "too" may make the meaning more coordinate than subordinate. Here the subordinating marker /-gai/ is missing and the past tense marker appears on the first verb.
 Source: author
 Vetted: f
 Judgment: u
@@ -525,7 +525,7 @@ maNa nukwi-vII wi7i-vII-su
 3sg.anim.visible run-past fall-past-too
 'He ran and fell.'
 
-#Ex 51 illustrates grammatical V coordination.  V coordination does not occur with finite verbs.  One of the verbs must take a subordinating suffix.  Press notes that the frequent use of /-su/ "too" may make the meaning more coordinate than subordinate.
+#Ex 51 illustrates ungrammatical V coordination.  V coordination does not occur with finite verbs.  One of the verbs must take a subordinating suffix.  Press notes that the frequent use of /-su/ "too" may make the meaning more coordinate than subordinate. Here the subordinating marker /-gai/ is missing. 
 Source: author
 Vetted: f
 Judgment: u
