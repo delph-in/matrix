@@ -231,15 +231,16 @@ e-n-koni-+voice o-mu-ntu a-gi-kwata
 c9.vwl-c9.prfx-stick-voice c1.vwl-c1.prfx-person c1.3sg.subj-c9.obj-hold 
 'Someone is holding a stick.'
 
+#EMB - removed, duplicate of 20.
 #Ex 23 demonstrates an ungrammatical yes/no question.  Yes no questions are identical in wording and tone to declarative statements.  There is a slight difference in intonation.  The primary difference is that yes/no questions do not have phonemic whisper on the final syllable (a:6). Here the voiced contrasts (incorrectly) occurs on the subject.
-Source: author
-Vetted: f
-Judgment: u
-Phenomena: {q}
-omuntu akwata enkoni
-o-mu-ntu a-kwata-+voice e-n-koni
-c1.vwl-c1.prfx-person-voice c1.3sg.subj-hold-voice c9.vwl-c9.prfx-stick
-'Someone is holding a stick.'
+#Source: author
+#Vetted: f
+#Judgment: u
+#Phenomena: {q}
+#omuntu akwata enkoni
+#o-mu-ntu a-kwata-+voice e-n-koni
+#c1.vwl-c1.prfx-person-voice c1.3sg.subj-hold-voice c9.vwl-c9.prfx-stick
+#'Someone is holding a stick.'
 
 #Ex 24 an ungrammatical yes/no question.  Yes no questions are identical in wording and tone to declarative statements.  There is a slight difference in intonation.  The primary difference is that yes/no questions do not have phonemic whisper on the final syllable (a:6). Here the voiced contrasts (incorrectly) occurs on a direct object that is not in sentence final position.
 Source: author
