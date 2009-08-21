@@ -491,3 +491,32 @@ This worked.  Ex 50 parses and Ex 28 doesn't have 6 parses.  It still has the 3 
 Coverage: 15/28 53.6%
 Overgeneration: 1/53 1.9%
 
+I added an AUX2 HEAD feature so that the perfective was allowed to be perfective-habitual and perfective-continuous.  Previously, there were feature clashes which prevented Ex 50 from parsing and Ex 51 from having a correct MRS.  (Ex 51 had 12 parses none of which was correct).
+
+There was a serious problem with spurious ambiguity and so I redid the lexical rules.  There were several iterations (over 20 databases created for tsdb ++) but what seemed to finally work was having specific dummy rules for the different tenses that selected for a particular tense.  This eliminated having multiple routes and the incorrect forms where a verb with no overt tense marker went through the no-tense-marker-lex-rule (now eliminated) instead of the universal-present-lex rule.  
+
+
+In addition to changing the input and optionality of lexical rules, I created a new FORM negated and negated plus that prevent a neg-pres-lex-rule which was zero morpheme from applying when the universal-present and present-continuous (affirmative) rules were there.  It would have been better to have negation minus as a possible value.  
+
+
+All of the examples that parse have one MRS.
+
+Coverage: 16/28 57.1%
+Overgeneration: 0%
+
+I do not think that it is possible to get the other examples they involve argument drop, word order differences, and unsupported coordination strategies.
+
+
+Adding argument drop
+
+Implementing argument optionality for subjects added 5 examples
+
+Coverage: 21/28 75.0%
+Overgeneration: 0
+
+Spurious ambiguity is still gone.  1 MRS for all analyzed items.
+
+Ex 2,3, 21,37,40 all have nonstandard word order.  It may be intersting to choose free word order and see if these parse.  Of course, overgeneration would then become a problem VOS and VSO are not allowed I believe.
+
+EX 66 and 74 are unsupported coordination strategies.
+

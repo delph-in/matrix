@@ -4,10 +4,10 @@ hau		47.4%		6.7%		22
 jig		100%		0%		8        14(3)
 kal		41.2%		4.5%		29
 mal		89.7%		2.8%		24       1(4)
-nyn		50.5%		1.9%		24
+nyn		57.1%		0%		23
 ute		82.8%		0%		21       1(2)
 hau-opt		63.2%		6.7%		17
-
+nyn-opt		75.0%		0%		23
 TREEBANK COVERAGE AND CORRECTNESS OF FAILING PARSES
 
                Tree-cov        Correct failures    Phenomena 

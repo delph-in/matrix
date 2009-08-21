@@ -90,6 +90,10 @@ q-part-order=after
 q-part-orth=voice
 
 section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-req
+subj-con=subj-con-always
 
 section=lexicon
   noun1_name=class1-2
