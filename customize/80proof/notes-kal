@@ -214,4 +214,32 @@ Coverage: 25/34 73.5%
 Overgeneration: 2/44 4.5%
 
 Ex 43 is unsupported coordination
-Ex 51
+Ex 51 was not parsing because of plural pronouns could not go through the case-marker-rule.
+
+I created another rule for this based on the reference grammar, but this caused other examples where the pronoun was marked as -p for the absolutive that had been parsing to not parse.  
+
+Apparently, I misanalyzed the came marking system for pronouns.  I thought that it was the same as nouns, but in another section it states that 1st and 2nd person pronouns do not have an overt marker for either the ergative/relative or absolutive cases.  In the test suite, the ergative/relative case is overtly marked on pronouns as "-p" similar to other nouns.
+
+This may need to be changed.
+
+Coverage:  90.9%
+Overgeneration: 4.4%
+
+Ex 70 was overgenerating because noun1 was left underspecified for person.
+
+Added
+
+noun1_feat1_name=person
+    noun1_feat1_value=3rd
+
+This may also fix 76.
+
+Fixed 70 but not 76.
+
+Ex 76 was supposed to ungrammatical, but the subjec/object marker used agreed with the subject and object.  I changed the test suite to make the example actually ungrammatical. 
+
+Coverage: 90.95
+Overgeneration: 0%
+
+
+

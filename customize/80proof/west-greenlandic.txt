@@ -611,11 +611,11 @@ you.sing eat-indic-3pl
 #Ex 60 demonstrates an ungrammatical example where the subject marker on the verb does not agree with the subject.
 Source: author
 Vetted: f
-Judgment: g
+Judgment: u
 Phenomena: agr
-uku nirivupput
-uku niri-vu-ppu-t
-3pl eat-indic-indic-3pl
+uku nirivuq
+uku niri-vu-q
+3pl eat-indic-3s
 'They ate.'
 
 #Ex 61 demonstrates subject-object-verb agreement.  
@@ -676,8 +676,8 @@ Vetted: f
 Judgment: g
 Phenomena: agr
 illit puisit pisarvasi
-illi-p puisi-t pisar-va-si
-2s-rel seal.pl catch-indic.2pl(subj).3pl(obj)
+illit-p puisi-t pisar-va-tit
+2s-rel seal.pl catch-indic-2s(subj).3pl(obj)
 'You caught seals.
 
 #Ex 67 demonstrates subject-object-verb agreement.  
@@ -746,8 +746,8 @@ Source: author
 Vetted: f
 Judgment: u
 Phenomena: agr
-uangap illissi pisarvara
-uanga-p illissi pisar-va-ra
+uangap ilissi pisarvara
+uanga-p ilissi pisar-va-ra
 I-rel 2pl catch-indic.1s(subj).3s(obj)
 'I caught you.'
 
@@ -779,8 +779,8 @@ Vetted: f
 Judgment: u
 Phenomena: agr
 illip puisi pisarvat
-illit-p puisi pisar-va-t
-2s-rel seal catch-indic.2s(subj).3s(obj)
+illit-p puisi pisar-va-tit
+2s-rel seal catch-indic.2s(subj).3p(obj)
 'you caught the seal.'
 
 #Ex 77 demonstrates  an ungrammatical example where the subject/object marker on the verb does not agree with the subject/object. 
