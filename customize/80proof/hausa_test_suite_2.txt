@@ -32,7 +32,7 @@ yaaròo nàa gyaarà-CForm kèekè
 boy CONT repair-CForm bicycle
 The boy is repairing a bicycle.
 
-# Example 4 Habitual verb with weak subject pronoun optionally deleted. Modified from (a:565)
+# Example 3 Habitual verb with weak subject pronoun optionally deleted. Modified from (a:565)
 Source: author
 Vetted: f
 Judgment: g
@@ -112,7 +112,7 @@ an yi-CForm ruwaa
 4pl.COM do-CForm rain
 It rained.
 
-# Example 10 First person plural completitive with mandatory weak subject pronoun. 
+# Example 11 First person plural completitive with mandatory weak subject pronoun. 
 Source: {a:569, c}
 Vetted: s
 Judgment: g
@@ -122,7 +122,7 @@ naa san-BForm-su_
 I.COM know-BForm-them
 I knew them
 
-# Example 11 First person plural completitive with mandatory weak subject pronoun. 
+# Example 12 First person plural completitive with mandatory weak subject pronoun. 
 Source: {author}
 Vetted: f
 Judgment: g
@@ -132,7 +132,7 @@ mun san-BForm-su_
 We.COM know-them
 We knew them.
 
-# Example 12 Masculine second person singular completitive with mandatory weak subject pronoun. 
+# Example 13 Masculine second person singular completitive with mandatory weak subject pronoun. 
 Source: {author}
 Vetted: f
 Judgment: g
@@ -142,7 +142,7 @@ kaa san-BForm-su_
 You.2ms.COM know-BForm-them
 You knew them.
 
-# Example 13 Feminine second person singular completitive with mandatory weak subject pronoun. 
+# Example 14 Feminine second person singular completitive with mandatory weak subject pronoun. 
 Source: {author}
 Vetted: f
 Judgment: g
@@ -153,7 +153,7 @@ You.2fs.COM knew-BForm-them
 You knew them.
 
 
-# Example 14 Second person plural completitive with mandatory weak subject pronoun. 
+# Example 15 Second person plural completitive with mandatory weak subject pronoun. 
 Source: {author}
 Vetted: f
 Judgment: g
@@ -164,7 +164,7 @@ You.pl.COM know-BForm-them
 You knew them.
 
 
-# Example 15 ungrammatical subject/Tense Aspect Marker agreement. 
+# Example 16 ungrammatical subject/Tense Aspect Marker agreement. 
 Source: author
 Vetted: f
 Judgment: u
@@ -174,7 +174,7 @@ muusaa taa koomàa-CForm gidàa
 Musa.3ms 3fs.COM-CForm return home
 Musa returned home.
 
-# Example 16 ungrammatical subject/Tense Aspect Marker agreement. 
+# Example 17 ungrammatical subject/Tense Aspect Marker agreement. 
 Source: author
 Vetted: f
 Judgment: u
@@ -184,7 +184,7 @@ muusaa kun koomàa-CForm gidàa
 Musa.3ms 2pl.COM return-CForm home
 Musa returned home.
 
-# Example 17 ungrammatical subject/Tense Aspect Marker agreement. 
+# Example 18 ungrammatical subject/Tense Aspect Marker agreement. 
 Source: author
 Vetted: f
 Judgment: u
@@ -194,7 +194,7 @@ muusaa naa koomàa-CForm gidàa
 Musa.3ms 1s.COM return-CForm home
 Musa returned home.
 
-# Example 18 ungrammatical subject/Tense Aspect Marker agreement. 
+# Example 19 ungrammatical subject/Tense Aspect Marker agreement. 
 Source: author
 Vetted: f
 Judgment: u
@@ -205,7 +205,7 @@ Musa.3ms 2fs.COM return-CForm home
 Musa returned home.
 
 
-# Example 19  ungrammatical subject/Tense Aspect Marker agreement.  
+# Example 20  ungrammatical subject/Tense Aspect Marker agreement.  
 Source: author
 Vetted: f
 Judgment: u
@@ -215,7 +215,7 @@ kuurì-pl mun dafà-CForm ruwaa
 young_pupil(M)-pl 1pl.COM boil-CForm water
 Young pupils boiled water.
 
-# Example 20  ungrammatical subject/Tense Aspect Marker agreement.  
+# Example 21  ungrammatical subject/Tense Aspect Marker agreement.  
 Source: author
 Vetted: f
 Judgment: u
@@ -226,7 +226,7 @@ Hadiza.3fs 3pl.COM boil-CForm water
 Hadiza boiled water.
 
 
-# Example 21  ungrammatical subject/Tense Aspect Marker agreement.  
+# Example 22  ungrammatical subject/Tense Aspect Marker agreement.  
 Source: author
 Vetted: f
 Judgment: u
@@ -236,7 +236,7 @@ hàdiizà an dafà-CForm ruwaa
 Hadiza.3fs 4pl.COM boil-CForm water
 Hadiza boiled water.
 
-# Example 22  ungrammatical subject/Tense Aspect Marker agreement.  
+# Example 23  ungrammatical subject/Tense Aspect Marker agreement.  
 Source: author
 Vetted: f
 Judgment: u
@@ -247,7 +247,7 @@ Hadiza.3fs 3ms.COM boil-CForm water
 Hadiza boiled water.
 
 
-# Example 23 Negative-Completive is the counterpart for both the completive and preterite.  
+# Example 24 Negative-Completive is the counterpart for both the completive and preterite.  
 Source: a:574
 Vetted: s
 Judgment: g
@@ -257,7 +257,7 @@ muusaa bà-yà tàfi-CForm bicì ba
 Musa NEG-3ms go-CForm Bichi NEG
 Musa has not gone to Bichi.
 
-# Example 24 First person plural negative-completive. Negative-Completive is the negative counterpart for both the completive and preterite.  
+# Example 25 First person plural negative-completive. Negative-Completive is the negative counterpart for both the completive and preterite.  
 Source: a:574
 Vetted: s
 Judgment: g
@@ -267,7 +267,7 @@ bà mù san-BForm-su_ ba
 NEG we know-BForm-them NEG
 We do not know them.
 
-# Example 25 First person singular Negative-Completive.  Negative-Completive is the negative counterpart for both the completive and preterite.  
+# Example 26 First person singular Negative-Completive.  Negative-Completive is the negative counterpart for both the completive and preterite.  
 Source: author
 Vetted: f
 Judgment: g
@@ -277,7 +277,7 @@ bà-nì san-BForm-su_ ba
 NEG-I know-BForm-them NEG
 I do not know them.
 
-# Example 26 Third person feminine singular negative-completive. Negative-Completive is the negative counterpart for both the completive and preterite.  
+# Example 27 Third person feminine singular negative-completive. Negative-Completive is the negative counterpart for both the completive and preterite.  
 Source: author
 Vetted: f
 Judgment: g
@@ -288,7 +288,7 @@ Hàdiizà NEG she know-BForm-them NEG
 Hàdiizà does not know them.
 
 
-# Example 27 Second person masculine singular negative-completive. Negative-Completive is the negative counterpart for both the completive and preterite.  
+# Example 28 Second person masculine singular negative-completive. Negative-Completive is the negative counterpart for both the completive and preterite.  
 Source: author
 Vetted: f
 Judgment: g
@@ -299,7 +299,7 @@ NEG you.2ms know-BForm-them NEG
 You do not know them.
 
 
-# Example 28 Second person plural negative-completive. Negative-Completive is the negative counterpart for both the completive and preterite.  
+# Example 29 Second person plural negative-completive. Negative-Completive is the negative counterpart for both the completive and preterite.  
 Source: author
 Vetted: f
 Judgment: g
@@ -309,7 +309,7 @@ bà-kù san-BForm-su_ ba
 NEG-you.pl know them NEG
 You do not know them.
 
-# Example 29 Third person plural negative-completive. Negative-Completive is the negative counterpart for both the completive and preterite.  
+# Example 30 Third person plural negative-completive. Negative-Completive is the negative counterpart for both the completive and preterite.  
 Source: author
 Vetted: f
 Judgment: g
@@ -319,7 +319,7 @@ bàakoo-pl bà sù san-BForm-su_ ba
 guest(M)-pl NEG they know-BForm-them NEG
 The guests do not know them.
 
-# Example 30 Fourth person negative-completive. Negative-Completive is the negative counterpart for both the completive and preterite.  
+# Example 31 Fourth person negative-completive. Negative-Completive is the negative counterpart for both the completive and preterite.  
 Source: author
 Vetted: f
 Judgment: g
@@ -329,7 +329,7 @@ bà à san-BForm-su_ ba
 NEG 4pl know them NEG
  do not know them.
 
-#Example 31 is a grammatical example of a continuous verb.  I am anayzing the first person singular wsp as "na."  This appears to be the basic form and various phonological rules are applied to get the actual spoken version.  The standard orthography differs from the spoken version as well (a:576).
+#Example 32 is a grammatical example of a continuous verb.  I am anayzing the first person singular wsp as "na."  This appears to be the basic form and various phonological rules are applied to get the actual spoken version.  The standard orthography differs from the spoken version as well (a:576).
 Source: author
 Vetted: f
 Judgment: g
@@ -339,7 +339,7 @@ na-nàa gyaarà-CForm kèekè
 I-cont repair-CForm bicycle
 I am repairing a bicycle.
 
-#Example 32 is a grammatical example of a negative-continous verb. The negative continous is formed by having the negative marker "bàa" followed by a pronoun containing the TAM "-à." "The complex made up of the negative marker plus the PAC exhibits a fixed H-L tome pattern.
+#Example 33 is a grammatical example of a negative-continous verb. The negative continous is formed by having the negative marker "bàa" followed by a pronoun containing the TAM "-à." "The complex made up of the negative marker plus the PAC exhibits a fixed H-L tome pattern.
 Source: author
 Vetted: f
 Judgment: g
@@ -349,7 +349,7 @@ yaaròo bàa ya-à gyaarà-CForm kèekè
 boy NEG he-cont repair-CForm bicycle
 The boy is not repairing a bicycle.
 
-#Example 33 is an ungrammatical example of a negative-continous verb. The negative continous is formed by having the negative marker "bàa" followed by a pronoun containing the TAM "-à." "The complex made up of the negative marker plus the PAC exhibits a fixed H-L tome pattern.  Here the negative marker (incorrectly) comes after the pronoun +TAM.
+#Example 34 is an ungrammatical example of a negative-continous verb. The negative continous is formed by having the negative marker "bàa" followed by a pronoun containing the TAM "-à." "The complex made up of the negative marker plus the PAC exhibits a fixed H-L tome pattern.  Here the negative marker (incorrectly) comes after the pronoun +TAM.
 Source: author
 Vetted: f
 Judgment: u
@@ -359,7 +359,7 @@ yaaròo ya-à bàa gyaarà-CForm kèekè
 boy  he-cont NEG repair-CForm bicycle
 The boy is not repairing a bicycle.
 
-#Example 34 is a grammatical example of a future tense verb.  "It is made up of a TAM "zaa" followed by a wsp with default L tone.  Note that the order of the TAM + wsp is the reverse of the order in other PACs (a:584)."  In the standard orthography if the TAM comes before the wsp, they are written as two words.
+#Example 35 is a grammatical example of a future tense verb.  "It is made up of a TAM "zaa" followed by a wsp with default L tone.  Note that the order of the TAM + wsp is the reverse of the order in other PACs (a:584)."  In the standard orthography if the TAM comes before the wsp, they are written as two words.
 Source: author
 Vetted: f
 Judgment: g
@@ -369,7 +369,7 @@ yaaròo zaa-ya gyaarà-CForm kèekè
 boy FUT he repair-CForm bicycle
 The boy will repair a bicycle.
 
-#Example 35 is an ugrammatical example of a future tense verb.  "It is made up of a TAM "zaa" followed by a wsp with default L tone.  Note that the order of the TAM + wsp is the reverse of the order in other PACs (a:584)."  Here the TAM (incorrectly) comes after the wsp. In the standard orthography if the TAM comes before the wsp they are written as two separate words.
+#Example 36 is an ugrammatical example of a future tense verb.  "It is made up of a TAM "zaa" followed by a wsp with default L tone.  Note that the order of the TAM + wsp is the reverse of the order in other PACs (a:584)."  Here the TAM (incorrectly) comes after the wsp. In the standard orthography if the TAM comes before the wsp they are written as two separate words.
 Source: author
 Vetted: f
 Judgment: u
@@ -380,7 +380,7 @@ boy he FUT repair-CForm bicycle
 The boy will repair a bicycle.
 
 
-#Example 36 is a grammatical example of a habitual verb. "The habitual consists of a light syllable wsp (which gets H tone by polarity) plus the TAM marker "-kàn."  The habitual occurs in general and Rel environments.  In principle it is allowed in the negative, although, many speakers switch to the negative-continuous.  There is free variation in the length of the initial bà(a) of the negative...The habitual deotnes customary action, without explicit reference to time.  It often expresses an ongoing habit, where it is best translated by the English present tense, 'I do so and so.'  It can, however, also refer to past time as indicated by English 'used to'" (a:59). If an appropriate time adverb were used the following example could be glossed as "He used to go to the bank."
+#Example 37 is a grammatical example of a habitual verb. "The habitual consists of a light syllable wsp (which gets H tone by polarity) plus the TAM marker "-kàn."  The habitual occurs in general and Rel environments.  In principle it is allowed in the negative, although, many speakers switch to the negative-continuous.  There is free variation in the length of the initial bà(a) of the negative...The habitual deotnes customary action, without explicit reference to time.  It often expresses an ongoing habit, where it is best translated by the English present tense, 'I do so and so.'  It can, however, also refer to past time as indicated by English 'used to'" (a:59). If an appropriate time adverb were used the following example could be glossed as "He used to go to the bank."
 Source: author
 Vetted: f
 Judgment: g
@@ -390,7 +390,7 @@ yaaròo ya-kàn ci naamà
 boy he-HAB eat.CFORM meat
 The boy eats meat.
 
-#Example 37 is an ungrammatical example of a habitual verb. It is ungrammatical because the TAM comes after the wsp. "The habitual consists of a light syllable wsp (which gets H tone by polarity) plus the TAM marker "-kàn."  The habitual occurs in general and Rel environments.  In principle it is allowed in the negative, although, many speakers switch to the negative-continuous.  There is free variation in the length of the initial bà(a) of the negative...The habitual deotnes customary action, without explicit reference to time.  It often expresses an ongoing habit, where it is best translated by the English present tense, 'I do so and so.'  It can, however, also refer to past time as indicated by English 'used to'" (a:59). If an appropriate time adverb were used the following example could be glossed as "He used to go to the bank."
+#Example 38 is an ungrammatical example of a habitual verb. It is ungrammatical because the TAM comes after the wsp. "The habitual consists of a light syllable wsp (which gets H tone by polarity) plus the TAM marker "-kàn."  The habitual occurs in general and Rel environments.  In principle it is allowed in the negative, although, many speakers switch to the negative-continuous.  There is free variation in the length of the initial bà(a) of the negative...The habitual deotnes customary action, without explicit reference to time.  It often expresses an ongoing habit, where it is best translated by the English present tense, 'I do so and so.'  It can, however, also refer to past time as indicated by English 'used to'" (a:59). If an appropriate time adverb were used the following example could be glossed as "He used to go to the bank."
 Source: author
 Vetted: f
 Judgment: u
@@ -400,7 +400,7 @@ yaaròo kàn-ya ci naamà
 boy he-HAB eat.CFORM meat
 The boy eats meat.
 
-#Example 38 is a grammatical example of a subjunctive verb.  The subjunctive's TAM is phonologically zero.  It appears in a variety of environments including after modal adverbials, subordinating conjunction, negative commands, and a "softer" imperative.  Newman makes a distinction between the subjunctive TAM which is phonologically zero and the netural form which lacks a TAM (a:591). 
+#Example 39 is a grammatical example of a subjunctive verb.  The subjunctive's TAM is phonologically zero.  It appears in a variety of environments including after modal adverbials, subordinating conjunction, negative commands, and a "softer" imperative.  Newman makes a distinction between the subjunctive TAM which is phonologically zero and the netural form which lacks a TAM (a:591). 
 Source: a:593
 Vetted: s
 Judgment: g
@@ -410,7 +410,7 @@ muusaa yà daawoo-AForm
 Musa he return-AForm
 Musa should return
 
-#Example 39 is a grammatical example of a verb not marked for tense and aspect.  Newman makes a distinction between the subjunctive TAM which is phonologically zero and the netural form which lacks a TAM. "The netural form is found in a number of different constructions in which grammatical specification of tense/aspect is not essential since it is deducible form the sentential or pragmatic context." The appear as the consequent clause of conditional sentences, in (a:594)
+#Example 40 is a grammatical example of a verb not marked for tense and aspect.  Newman makes a distinction between the subjunctive TAM which is phonologically zero and the netural form which lacks a TAM. "The netural form is found in a number of different constructions in which grammatical specification of tense/aspect is not essential since it is deducible form the sentential or pragmatic context." The appear as the consequent clause of conditional sentences, in (a:594)
 Source: a:596
 Vetted: s
 Judgment: g
@@ -421,7 +421,7 @@ dollar.fem 3fs rise-AForm 3fs fall-AForm
 (The value of) the dollar rises and falls.
 
 
-#Example 40 The standard word order is SVO; however it is possible to have other word orders with focus and topicalization.  Focus is formed by fronting the focused constituent before the S and optionally adding a stabilizer (nee/cee/nee)(m/f/pl).  The stabilizer can be deleted and Newman says that "it is not clear in the least what accounts for the presence of absence of STAB in focus construction nor what is its actual frequency of occurrence."  Since the STAB can be deleted I do not think it is possible to say that OSV is ungrammatical based solely on the surface form.  An important restriction on focus is that the TAM of the S that follows be a Rel form.
+#Example 41 The standard word order is SVO; however it is possible to have other word orders with focus and topicalization.  Focus is formed by fronting the focused constituent before the S and optionally adding a stabilizer (nee/cee/nee)(m/f/pl).  The stabilizer can be deleted and Newman says that "it is not clear in the least what accounts for the presence of absence of STAB in focus construction nor what is its actual frequency of occurrence."  Since the STAB can be deleted I do not think it is possible to say that OSV is ungrammatical based solely on the surface form.  An important restriction on focus is that the TAM of the S that follows be a Rel form.
 Source: author
 Vetted: f
 Judgment: g
@@ -432,7 +432,7 @@ bicycle boy FUT he repair-AForm
 It is the bicycle the boy will repair.
 
 
-# Example 41 An ungrammatical continuous verb with full person-aspect-complex.  The PAC must occur before the verb.  Here it (incorrectly) comes after the verb. Based on a:564.
+# Example 42 An ungrammatical continuous verb with full person-aspect-complex.  The PAC must occur before the verb.  Here it (incorrectly) comes after the verb. Based on a:564.
 Source: author
 Vetted: f
 Judgment: u
@@ -443,7 +443,7 @@ boy repair-AForm he-cont bicycle
 The boy is repairing a bicycle.
 
 
-# Example 42 Ungrammatical. "If the underlying subject is a simple personal pronoun, it is obligatorily deleted."  Here it is (incorrectly) kept.
+# Example 43 Ungrammatical. "If the underlying subject is a simple personal pronoun, it is obligatorily deleted."  Here it is (incorrectly) kept.
 Source: a:718
 Vetted: s
 Judgment: u
@@ -454,7 +454,7 @@ they FUT 3pl return-AForm
 They will return.
 
 
-# Example 43 Continuous verb with full person-aspect-complex. "If the underlying subject is a simple personal pronoun, it is obligatorily deleted." 
+# Example 44 Continuous verb with full person-aspect-complex. "If the underlying subject is a simple personal pronoun, it is obligatorily deleted." 
 Source: a:718
 Vetted: s
 Judgment: g
@@ -464,7 +464,7 @@ zaa sù daawoo-AForm
 FUT 3pl return-AForm
 They will return.
 
-# Example 44 Ungrammatical VOS. Based on a:564
+# Example 45 Ungrammatical VOS. Based on a:564
 Source: a:564
 Vetted: author
 Judgment: u
@@ -474,7 +474,7 @@ ya-nàa gyaarà-CForm kèekè yaaròo
 he-cont repair-CForm bicycle boy
 The boy is repairing a bicycle.
 
-# Example 45 Ungrammatical VSO. Based on a:564
+# Example 46 Ungrammatical VSO. Based on a:564
 Source: a:564
 Vetted: author
 Judgment: u
@@ -485,7 +485,7 @@ he-cont repair-AForm boy bicycle
 The boy is repairing a bicycle.
 
 
-# Example 46 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine native noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns).
+# Example 47 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine native noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns).
 Source: author
 Vetted: f
 Judgment: g
@@ -495,7 +495,7 @@ yaaròo-7n ya-nàa gyaarà-CForm kèekè
 boy-DEF.masc he-cont repair-CForm  bicycle
 The boy is repairing a bicycle.
 
-# Example 47 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP.  The feminine form can be directly applied to any type of feminine noun ending in a vowel (with the exception of the feminine singular pronoun which takes the masculine form).
+# Example 48 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP.  The feminine form can be directly applied to any type of feminine noun ending in a vowel (with the exception of the feminine singular pronoun which takes the masculine form).
 Source: author
 Vetted: f
 Judgment: g
@@ -505,7 +505,7 @@ yaaròo ya-nàa gyaarà-CForm  mootàa-7R
 boy he-cont repair-CForm  the car-Def.fem
 The boy is repairing the car.
 
-# Example 48 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns).  This example is ungrammatical because the feminine form is used with a masculine noun.
+# Example 49 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns).  This example is ungrammatical because the feminine form is used with a masculine noun.
 Source: author
 Vetted: f
 Judgment: u
@@ -515,7 +515,7 @@ yaaròo-7R ya-nàa gyaarà-CForm  kèekè
 boy-DEF.fem he-cont repair-CForm  bicycle
 The boy is repairing a bicycle.
 
-# Example 49 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP.  The feminine form can be directly applied to almost any type of feminine noun ending in a vowel (with the exception of the feminine singular pronoun which takes the masculine form).  This example is ungrammatical because the masculine form in used with a feminine noun.
+# Example 50 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP.  The feminine form can be directly applied to almost any type of feminine noun ending in a vowel (with the exception of the feminine singular pronoun which takes the masculine form).  This example is ungrammatical because the masculine form in used with a feminine noun.
 Source: author
 Vetted: f
 Judgment: u
@@ -525,7 +525,7 @@ yaaròo ya-nàa gyaarà-CForm  mootàa-7n
 boy he-cont repair-CForm  the car.fem-Def.masc
 The boy is repairing the car.
 
-# Example 50 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP.  The feminine form can be directly applied to any type of feminine noun ending in the vowel /a(a) (with the exception of the feminine singular pronoun which takes the masculine form). This example is ungrammatical because the definite article is placed before the noun.
+# Example 51 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP.  The feminine form can be directly applied to any type of feminine noun ending in the vowel /a(a) (with the exception of the feminine singular pronoun which takes the masculine form). This example is ungrammatical because the definite article is placed before the noun.
 Source: author
 Vetted: f
 Judgment: u
@@ -535,7 +535,7 @@ yaaròo ya-nàa gyaarà-CForm  7R-mootàa
 boy he-cont repair-CForm  Def.fem-car.fem
 The boy is repairing the car.
 
-# Example 51 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine native noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns). Instead of attaching to the word directly consonant-final words, foreign words, proper names, pronouns, numerals, and ideophones often make use of a connector Di.  If Di is used the masculine definite article is used.
+# Example 52 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine native noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns). Instead of attaching to the word directly consonant-final words, foreign words, proper names, pronouns, numerals, and ideophones often make use of a connector Di.  If Di is used the masculine definite article is used.
 Source: author
 Vetted: f
 Judgment: g
@@ -546,7 +546,7 @@ boy-DEF he-cont repair-CForm  bus PART-DEF.masc
 The boy is repairing the bus.
 
 
-# Example 52 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine native noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns). Instead of attaching to the word directly consonant-final words, foreign words, proper names, pronouns, numerals, and ideophones often make use of a connector Di.  If Di is used the masculine definite article is used. This example is ungrammatical because the feminine definite article is used after Di.
+# Example 53 The definite article "7n/7R" (m/f) is optional and not analagous to the English definite article.  Instead it indicates an item previously referred to in the discourse (a:372). It can also attach to the end of an a relative NP. The masculine form can be directly applied to any type of masculine native noun ending in a vowel.  It is also applied to the feminine singular pronoun (and all other pronouns). Instead of attaching to the word directly consonant-final words, foreign words, proper names, pronouns, numerals, and ideophones often make use of a connector Di.  If Di is used the masculine definite article is used. This example is ungrammatical because the feminine definite article is used after Di.
 Source: author
 Vetted: f
 Judgment: u
@@ -556,7 +556,7 @@ yaaròo-7n ya-nàa gyaarà-CForm  bûus Di-7R
 boy-DEF he-cont repair-CForm  bicycle PART-DEF.fem
 The boy is repairing the bicycle.
 
-#Example 53 Noun phrases can be coordinated with the conjuction 'dà.' It can be polysndeton or N-syndeton.  dà Bello dà Musa (Bello and Musa) is acceptable and shii dà Musa (he and Musa) is acceptable as well.  'dà' is not used to with adjectives they are modifying the same referent.  If 'dà' is inserted before he second adjective it is interpreted as modifying a different referent.  "Dan-dambe doogoo dà KàKKarfaa" (a tall boxer and a strong one).
+#Example 54 Noun phrases can be coordinated with the conjuction 'dà.' It can be polysndeton or N-syndeton.  dà Bello dà Musa (Bello and Musa) is acceptable and shii dà Musa (he and Musa) is acceptable as well.  'dà' is not used to with adjectives they are modifying the same referent.  If 'dà' is inserted before he second adjective it is interpreted as modifying a different referent.  "Dan-dambe doogoo dà KàKKarfaa" (a tall boxer and a strong one).
 Source: author
 Vetted: f
 Judgment: g
@@ -566,7 +566,7 @@ shi dà muusaa sun ga-CForm  dookì-7n
 3ms and Musa 3pl.COM see-CForm  horse-the
 He and Musa saw the horse.
 
-#Example 54 Noun phrases can be coordinated with the conjuction 'dà.' It can be polysndeton or N-syndeton.  dà Bello dà Musa (Bello and Musa) is acceptable and shii dà Musa (he and Musa) is acceptable as well.  'dà' is not used to with adjectives they are modifying the same referent.  If 'dà' is inserted before he second adjective it is interpreted as modifying a different referent.  "Dan-dambe doogoo dà KàKKarfaa" (a tall boxer and a strong one).
+#Example 55 Noun phrases can be coordinated with the conjuction 'dà.' It can be polysndeton or N-syndeton.  dà Bello dà Musa (Bello and Musa) is acceptable and shii dà Musa (he and Musa) is acceptable as well.  'dà' is not used to with adjectives they are modifying the same referent.  If 'dà' is inserted before he second adjective it is interpreted as modifying a different referent.  "Dan-dambe doogoo dà KàKKarfaa" (a tall boxer and a strong one).
 Source: author
 Vetted: f
 Judgment: g
@@ -576,7 +576,7 @@ dà bello dà muusaa sun ga-CForm  dookì-7n
 and Bello.masc Musa.masc 3pl.COM see-CForm  horse-the
 Bello and Musa saw the horse.
 
-#Example 55 Ungrammatical coordination. Noun phrases can be coordinated with the conjuction 'dà.' It can be polysndeton or N-syndeton.  dà Bello dà Musa (Bello and Musa) is acceptable and shii dà Musa (he and Musa) is acceptable as well.  'dà' is not used to with adjectives they are modifying the same referent.  If 'dà' is inserted before he second adjective it is interpreted as modifying a different referent.  "Dan-dambe doogoo dà KàKKarfaa" (a tall boxer and a strong one). Here dà (incorrectly) appears after a noun.
+#Example 56 Ungrammatical coordination. Noun phrases can be coordinated with the conjuction 'dà.' It can be polysndeton or N-syndeton.  dà Bello dà Musa (Bello and Musa) is acceptable and shii dà Musa (he and Musa) is acceptable as well.  'dà' is not used to with adjectives they are modifying the same referent.  If 'dà' is inserted before he second adjective it is interpreted as modifying a different referent.  "Dan-dambe doogoo dà KàKKarfaa" (a tall boxer and a strong one). Here dà (incorrectly) appears after a noun.
 Source: author
 Vetted: f
 Judgment: u
@@ -587,7 +587,7 @@ shi dà muusaa dà sun ga-CForm  dookì-7n
 He and Musa saw the horse.
 
 
-#Example 56 Ungrammatical coordination agreement.  Noun phrases can be coordinated with the conjuction 'dà.' It can be polysndeton or N-syndeton.  dà Bello dà Musa (Bello and Musa) is acceptable and shii dà Musa (he and Musa) is acceptable as well. "If two (or more) singular nouns are conjoined, they become grammatically plural" (a:137).  Here "yaa" is a third person masculine singular TAM+wsp.
+#Example 57 Ungrammatical coordination agreement.  Noun phrases can be coordinated with the conjuction 'dà.' It can be polysndeton or N-syndeton.  dà Bello dà Musa (Bello and Musa) is acceptable and shii dà Musa (he and Musa) is acceptable as well. "If two (or more) singular nouns are conjoined, they become grammatically plural" (a:137).  Here "yaa" is a third person masculine singular TAM+wsp.
 Source: author
 Vetted: f
 Judgment: u
@@ -597,7 +597,7 @@ shi dà muusaa yaa ga-CForm  dookì-7n
 3ms and Musa 3ms.COM see-CForm  horse-the
 He and Musa saw the horse.
 
-#Example 57 dà is not used to coordinate sentences. Juxtaposition is used.
+#Example 58 dà is not used to coordinate sentences. Juxtaposition is used.
 Source: author
 Vetted: f
 Judgment: u
@@ -607,7 +607,7 @@ yaaròo yaa ga dookì-7n yaa dafà-CForm  ruwaa
 boy 3ms.COM see horse-the 3ms.COM boil-CForm  water
 The boy saw the horse and boiled water.
 
-#Example 58 dà is not used to coordinate sentences. Juxtaposition is used. "If a sequence of sentences are both are in the future, potential, habitual, or continuous, the repeated TAM marker may be deleted" (a:140).
+#Example 59 dà is not used to coordinate sentences. Juxtaposition is used. "If a sequence of sentences are both are in the future, potential, habitual, or continuous, the repeated TAM marker may be deleted" (a:140).
 Source: author
 Vetted: f
 Judgment: g
@@ -618,7 +618,7 @@ boy FUT 3ms see-CForm horse-the 3ms boil-CForm  water
 The boy will see the horse and boil water.
 
 
-#Example 59 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  If the final tone is already low there is no surface change in tone.  If the final sound is a consonant or long vowel, the vowel length addition has no affect on surface structure. I am representing this morpheme as 'Q'.  It is added to the end of the sentence (a:497).
+#Example 60 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  If the final tone is already low there is no surface change in tone.  If the final sound is a consonant or long vowel, the vowel length addition has no affect on surface structure. I am representing this morpheme as 'Q'.  It is added to the end of the sentence (a:497).
 Source: author
 Vetted: f
 Judgment: g
@@ -629,7 +629,7 @@ boy he-cont repair-CForm  bicycle-question
 Is the boy repairing a bicycle?
 
 
-#Example 60 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  If the final tone is already low there is no surface change in tone.  If the final sound is a consonant or long vowel, the vowel length addition has no affect on surface structure. I am representing this morpheme as 'Q'.  It is added to the end of the sentence (a:497). Here the the q-morhpheme incorrectly attaches to a non-sentence final word.
+#Example 61 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  If the final tone is already low there is no surface change in tone.  If the final sound is a consonant or long vowel, the vowel length addition has no affect on surface structure. I am representing this morpheme as 'Q'.  It is added to the end of the sentence (a:497). Here the the q-morhpheme incorrectly attaches to a non-sentence final word.
 Source: author
 Vetted: f
 Judgment: u
@@ -639,7 +639,7 @@ yaaròo ya-nàa gyaarà-CForm -Q kèekè
 boy he-cont repair-CForm -question bicycle
 Is the boy repairing a bicycle?
 
-#Example 61 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  If the final tone is already low there is no surface change in tone.  If the final sound is a consonant or long vowel, the vowel length addition has no affect on surface structure. I am representing this morpheme as 'Q'.  It is added to the end of the sentence (a:497). Here the q-morpheme incorrectly attaches to a non-sentence final word.
+#Example 62 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  If the final tone is already low there is no surface change in tone.  If the final sound is a consonant or long vowel, the vowel length addition has no affect on surface structure. I am representing this morpheme as 'Q'.  It is added to the end of the sentence (a:497). Here the q-morpheme incorrectly attaches to a non-sentence final word.
 Source: author
 Vetted: f
 Judgment: u
@@ -649,7 +649,7 @@ yaaròo ya-nàa-Q gyaarà-CForm  kèekè
 boy he-cont-question repair-CForm  bicycle
 Is the boy repairing a bicycle?
 
-#Example 62 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  If the final tone is already low there is no surface change in tone.  If the final sound is a consonant or long vowel, the vowel length addition has no affect on surface structure. I am representing this morpheme as 'Q'.  It is added to the end of the sentence (a:497). Here the question morpheme attaches incorrectly to a non-sentence final word.
+#Example 63 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  If the final tone is already low there is no surface change in tone.  If the final sound is a consonant or long vowel, the vowel length addition has no affect on surface structure. I am representing this morpheme as 'Q'.  It is added to the end of the sentence (a:497). Here the question morpheme attaches incorrectly to a non-sentence final word.
 Source: author
 Vetted: f
 Judgment: u
@@ -659,7 +659,7 @@ yaaròo-Q ya-nàa gyaarà-CForm  kèekè
 boy-question he-cont repair-CForm  bicycle
 Is the boy repairing a bicycle?
 
-#Example 63 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  'koo' can be used to mark yes/no questions.  It occurs at the beginning or end of the sentence. (a:500).
+#Example 64 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  'koo' can be used to mark yes/no questions.  It occurs at the beginning or end of the sentence. (a:500).
 Source: author
 Vetted: f
 Judgment: g
@@ -670,7 +670,7 @@ QUES boy he-cont repair-CForm  bicycle
 Is the boy repairing a bicycle?
 
 
-#Example 64 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  'koo' can be used to mark yes/no questions.  It occurs at the beginning or end of the sentence. (a:500). Here it occurs (incorrectly) in other than sentence initial  or final position.
+#Example 65 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  'koo' can be used to mark yes/no questions.  It occurs at the beginning or end of the sentence. (a:500). Here it occurs (incorrectly) in other than sentence initial  or final position.
 Source: author
 Vetted: f
 Judgment: u
@@ -680,7 +680,7 @@ yaaròo koo ya-nàa gyaarà-CForm  kèekè
 boy QUES he-cont repair-CForm  bicycle
 Is the boy repairing a bicycle?
 
-#Example 65 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  'koo' can be used to mark yes/no questions.  It occurs at the beginning or end of the sentence. (a:500). Here it occurs (incorrectly) in other than sentence initial  or final position.
+#Example 66 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  'koo' can be used to mark yes/no questions.  It occurs at the beginning or end of the sentence. (a:500). Here it occurs (incorrectly) in other than sentence initial  or final position.
 Source: author
 Vetted: f
 Judgment: u
@@ -690,7 +690,7 @@ yaaròo ya-nàa koo gyaarà-CForm kèekè
 boy QUES he-cont QUES repair-CForm bicycle
 Is the boy repairing a bicycle?
 
-#Example 66 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  'koo' can be used to mark yes/no questions.  It occurs at the beginning or end of the sentence. (a:500). Here it occurs (incorrectly) in other than sentence initial  or final position.
+#Example 67 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  'koo' can be used to mark yes/no questions.  It occurs at the beginning or end of the sentence. (a:500). Here it occurs (incorrectly) in other than sentence initial  or final position.
 Source: author
 Vetted: f
 Judgment: u
@@ -701,7 +701,7 @@ boy QUES he-cont repair-CForm QUES bicycle
 Is the boy repairing a bicycle?
 
 
-#Example 67 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  'koo' can be used to mark yes/no questions.  It occurs at the beginning or end of the sentence. (a:500). 
+#Example 68 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  'koo' can be used to mark yes/no questions.  It occurs at the beginning or end of the sentence. (a:500). 
 Source: author
 Vetted: f
 Judgment: g
