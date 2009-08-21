@@ -218,7 +218,7 @@ Ex 51 was not parsing because of plural pronouns could not go through the case-m
 
 I created another rule for this based on the reference grammar, but this caused other examples where the pronoun was marked as -p for the absolutive that had been parsing to not parse.  
 
-Apparently, I misanalyzed the came marking system for pronouns.  I thought that it was the same as nouns, but in another section it states that 1st and 2nd person pronouns do not have an overt marker for either the ergative/relative or absolutive cases.  In the test suite, the ergative/relative case is overtly marked on pronouns as "-p" similar to other nouns.
+Apparently, I misanalyzed the case marking system for pronouns.  I thought that it was the same as nouns, but in another section it states that 1st and 2nd person pronouns do not have an overt marker for either the ergative/relative or absolutive cases.  In the test suite, the ergative/relative case is overtly marked on pronouns as "-p" similar to other nouns.
 
 This may need to be changed.
 
