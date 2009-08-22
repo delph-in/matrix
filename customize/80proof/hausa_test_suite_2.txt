@@ -365,7 +365,7 @@ Vetted: f
 Judgment: g
 Phenomena: {tam, agreement}
 yaaròo zaa yà gyaarà kèekè
-yaaròo zaa-ya gyaarà-CForm kèekè
+yaaròo zaa ya gyaarà-CForm kèekè
 boy FUT he repair-CForm bicycle
 The boy will repair a bicycle.
 
@@ -427,7 +427,7 @@ Vetted: f
 Judgment: g
 Phenomena: {tam, agreement}
 kèekè yaaròo zaa yà gyaarà
-kèekè yaaròo zaa-ya gyaarà-AForm
+kèekè yaaròo zaa ya gyaarà-AForm
 bicycle boy FUT he repair-AForm
 It is the bicycle the boy will repair.
 
@@ -454,7 +454,7 @@ they FUT 3pl return-AForm
 They will return.
 
 
-# Example 44 Continuous verb with full person-aspect-complex. "If the underlying subject is a simple personal pronoun, it is obligatorily deleted." 
+# Example 44 Future verb with full person-aspect-complex. "If the underlying subject is a simple personal pronoun, it is obligatorily deleted." 
 Source: a:718
 Vetted: s
 Judgment: g
@@ -613,7 +613,7 @@ Vetted: f
 Judgment: g
 Phenomena: {crd}
 yaaròo zaa yà ga dookìn yà dafà ruwaa
-yaaròo zaa-ya ga-CForm dookì-7n yà dafà-CForm  ruwaa
+yaaròo zaa ya ga-CForm dookì-7n yà dafà-CForm  ruwaa
 boy FUT 3ms see-CForm horse-the 3ms boil-CForm  water
 The boy will see the horse and boil water.
 
@@ -635,8 +635,8 @@ Vetted: f
 Judgment: u
 Phenomena: {q}
 yaaròo yanàa gyaarà-Q kèekè
-yaaròo ya-nàa gyaarà-CForm -Q kèekè
-boy he-cont repair-CForm -question bicycle
+yaaròo ya-nàa gyaarà-CForm-Q kèekè
+boy he-cont repair-CForm-question bicycle
 Is the boy repairing a bicycle?
 
 #Example 62 There are for 4 ways to mark yes/no questions: question morpheme, intonation, sentence-final interrogative tag, sentence-initial interrogative word.The question morpheme consists of making the final tone low and lengthening the vowel.  If the final tone is already low there is no surface change in tone.  If the final sound is a consonant or long vowel, the vowel length addition has no affect on surface structure. I am representing this morpheme as 'Q'.  It is added to the end of the sentence (a:497). Here the q-morpheme incorrectly attaches to a non-sentence final word.

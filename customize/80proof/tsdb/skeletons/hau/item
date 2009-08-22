@@ -32,13 +32,13 @@
 32@author@@@1@{tam,agreement}@na-nàa gyaarà-CForm kèekè@1@3@I am repairing a bicycle.@Safiyyah Saleem@January, 1 2008
 33@author@@@1@{tam,agr,negation}@yaaròo bàa ya-à gyaarà-CForm kèekè@1@5@The boy is not repairing a bicycle.@Safiyyah Saleem@January, 1 2008
 34@author@@@1@{negation}@yaaròo ya-à bàa gyaarà-CForm kèekè@0@5@The boy is not repairing a bicycle.@Safiyyah Saleem@January, 1 2008
-35@author@@@1@{tam,agreement}@yaaròo zaa-ya gyaarà-CForm kèekè@1@4@The boy will repair a bicycle.@Safiyyah Saleem@January, 1 2008
+35@author@@@1@{tam,agreement}@yaaròo zaa ya gyaarà-CForm kèekè@1@5@The boy will repair a bicycle.@Safiyyah Saleem@January, 1 2008
 36@author@@@1@{tam}@yaaròo ya-zaa gyaarà-CForm kèekè@0@4@The boy will repair a bicycle.@Safiyyah Saleem@January, 1 2008
 37@author@@@1@{tam,agreement}@yaaròo ya-kàn ci naamà@1@4@The boy eats meat.@Safiyyah Saleem@January, 1 2008
 38@author@@@1@{tam}@yaaròo kàn-ya ci naamà@0@4@The boy eats meat.@Safiyyah Saleem@January, 1 2008
 39@The Hausa Language: An Encyclodpedic Reference Grammar by Paul Newman:593@@@1@{tam,agr,negation}@muusaa yà daawoo-AForm@1@3@Musa should return@Safiyyah Saleem@January, 1 2008
 40@The Hausa Language: An Encyclodpedic Reference Grammar by Paul Newman:596@@@1@{tam,agr,negation}@dalàa tà hau-AForm tà sàuka-AForm@1@5@(The value of) the dollar rises and falls.@Safiyyah Saleem@January, 1 2008
-41@author@@@1@{tam,agreement}@kèekè yaaròo zaa-ya gyaarà-AForm@1@4@It is the bicycle the boy will repair.@Safiyyah Saleem@January, 1 2008
+41@author@@@1@{tam,agreement}@kèekè yaaròo zaa ya gyaarà-AForm@1@5@It is the bicycle the boy will repair.@Safiyyah Saleem@January, 1 2008
 42@author@@@1@{tam,agreement}@yaaròo  gyaarà-AForm ya-nàa kèekè@0@4@The boy is repairing a bicycle.@Safiyyah Saleem@January, 1 2008
 43@The Hausa Language: An Encyclodpedic Reference Grammar by Paul Newman:718@@@1@{pro-d}@suu zaa sù daawoo-AForm@0@4@They will return.@Safiyyah Saleem@January, 1 2008
 44@The Hausa Language: An Encyclodpedic Reference Grammar by Paul Newman:718@@@1@{tam,pro-d}@zaa sù daawoo-AForm@1@3@They will return.@Safiyyah Saleem@January, 1 2008
@@ -56,9 +56,9 @@
 56@author@@@1@{crd}@shi dà muusaa dà sun ga-CForm  dookì-7n@0@7@He and Musa saw the horse.@Safiyyah Saleem@January, 1 2008
 57@author@@@1@{crd}@shi dà muusaa yaa ga-CForm  dookì-7n@0@6@He and Musa saw the horse.@Safiyyah Saleem@January, 1 2008
 58@author@@@1@{crd}@yaaròo yaa ga dookì-7n yaa dafà-CForm  ruwaa@0@7@The boy saw the horse and boiled water.@Safiyyah Saleem@January, 1 2008
-59@author@@@1@{crd}@yaaròo zaa-ya ga-CForm dookì-7n yà dafà-CForm  ruwaa@1@7@The boy will see the horse and boil water.@Safiyyah Saleem@January, 1 2008
+59@author@@@1@{crd}@yaaròo zaa ya ga-CForm dookì-7n yà dafà-CForm  ruwaa@1@8@The boy will see the horse and boil water.@Safiyyah Saleem@January, 1 2008
 60@author@@@1@{q}@yaaròo ya-nàa gyaarà-CForm  kèekè-Q@1@4@Is the boy repairing a bicycle?@Safiyyah Saleem@January, 1 2008
-61@author@@@1@{q}@yaaròo ya-nàa gyaarà-CForm -Q kèekè@0@5@Is the boy repairing a bicycle?@Safiyyah Saleem@January, 1 2008
+61@author@@@1@{q}@yaaròo ya-nàa gyaarà-CForm-Q kèekè@0@4@Is the boy repairing a bicycle?@Safiyyah Saleem@January, 1 2008
 62@author@@@1@{q}@yaaròo ya-nàa-Q gyaarà-CForm  kèekè@0@4@Is the boy repairing a bicycle?@Safiyyah Saleem@January, 1 2008
 63@author@@@1@{q}@yaaròo-Q ya-nàa gyaarà-CForm  kèekè@0@4@Is the boy repairing a bicycle?@Safiyyah Saleem@January, 1 2008
 64@author@@@1@{q}@koo yaaròo ya-nàa gyaarà-CForm  kèekè@1@5@Is the boy repairing a bicycle?@Safiyyah Saleem@January, 1 2008
