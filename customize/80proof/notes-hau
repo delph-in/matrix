@@ -497,6 +497,64 @@ Coverage 24/38 63.2%
 Overgeneration 2/30 6.7%
 
 
+<<<<<<< .mine
+These changes are saved under choices-hausa-arg-opt
+
+08/21 ASF
+
+Starting to look at Hausa: for now grammar does not load...tried with arg-opt, looking at without arg-opt. 
+Without arg-opt loads. Looking whether I can find another choices file with arg-opt, else I will add it to the working regular choices file.
+
+Correct files found. Checked MRSs: aspect is missing in #7, #8: added (by a somewhat hack, but could be done properly with knowledge of language). In example #39, mood is missing: this cannot be done.
+
+Treebank Coverage 23/38
+
+Not parsing grammatical examples:
+
+#4, #24-#31: all due to not supported negation by double markers.
+#41: not supported: word order alternation under specific conditions
+#44: Auxiliary values tense and person number expressed by different auxiliaries: does not parse because of constraint on complement AUX - for semantically empty auxiliaries. (Additional bug: the comment explaining this appears in the grammar for each auxiliary type (17 times in this one).
+Could also be typo in glosses (should zaa and -su be attached?)
+
+with optionality:
+
+Coverage: 63.2%, Treebank coverage: 57.9%
+Overgeneration: 6.7%, Correctness Failure: 82.1%
+Overall performance Ungrammatical examples: 76.7%
+Spurious Ambiguity: 1 * 2p, 1 * 3p, 1* 4p, 1* 5p
+
+without optionality 
+
+Coverage: 47.4%, Treebank coverage: 42.1%
+Overgeneration: 6.7%, Correctness Failure: 82.1%
+Overall performance Ungrammatical examples: 76.7%
+Spurious Ambiguity: 2 * 2p, 1* 5p
+
+
+Total number of examples: 68
+Grammatical: 38
+Ungrammatical: 30
+
+Phenomenon based analysis:
+
+Word Order                      +/-
+Case                            n.a.
+Det/Definiteness                +
+Pers/Nr/Gen                     +
+Tense/Aspect                    +
+Negation                        -
+Yes-No Questions                -
+Coordination np                 +/-
+s-coord                         n.a.
+vp-coord                        +/-
+Morphology                      + 
+Agreement                       +
+Agreement obj                   +
+Auxiliaries                     +/- (depending on correct form of #44)
+
+Coordination: gets the right semantics, but spurious ambiguity occurs. One of the reasons being that the coordination marker may also occur by itself and coordination can be mono or polysyndeton: we can have a monosyndeton coordinated phrase that is complement of a coordination marker, which does not introduce another coordinand (structure [COORD [A COORD B] Verb] for instance).
+NP's have the additional problem that the coordination marker can take the NP at different levels (pre- and post bare np) as a complement.
+
 These changes are saved under choices-hausa-arg-opt
 
 SS-Antske noticed that in Ex43 and 44 su is written as a separate word.  This is because it is combined with the the future TAM "zaa" which precedes it.  When the TAM precedes the wsp (weak subject pronoun) they are written as separate words.  Whether this is simply an orthographic convention is debatable. The reference grammar states that the support for considering them separate words is that modal particles can appear in between the TAM and wsp; however, the author goes on to state that he does not find this reason persuasive.  The example given in the book uses the modal particle "koo" which is translated as however.  Emily found this persuasive and decided that we should stick with treating them as separate words.
@@ -504,4 +562,5 @@ SS-Antske noticed that in Ex43 and 44 su is written as a separate word.  This is
 While constructing the test suite, I went back and forth as to what the correct analysis should be and thought that I had switched everything to having them be separate words, but I did not.  So, I changed Ex 35, 41, 59 to match the analysis that we are going with.  This means that we lose 2 sentences which had previously parsed.  Given the analysis Ex 35 is a true loss, but Ex 59 is really demonstrating coordination and is being lost because of the type of verb TAM that is used.  
 
 This brings (non-arg-opt) coverage to 42.1%  Overgeneration stayed the same at 6.7%.
+
 
