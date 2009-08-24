@@ -10,7 +10,6 @@
 ;;
 
 :include "matrix".
-:include "west greenlandic".
 :include "my_language".
 
 :end :type.

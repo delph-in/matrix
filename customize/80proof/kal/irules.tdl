@@ -18,54 +18,14 @@ plural-instrumental-case-marker-suffix :=
 plural-instrumental-case-marker-lex-rule.
 
 
-1sing-intransitive-mood-subj-marker-suffix :=
-%suffix (* -vu-nga)
-1sing-intransitive-mood-subj-marker-lex-rule.
+3rd-person-pronoun-relative-case-suffix :=
+%suffix (* -erg)
+3rd-person-pronoun-relative-case-lex-rule.
 
 
-1pl-intransitive-mood-subj-marker-suffix :=
-%suffix (* -vu-gut)
-1pl-intransitive-mood-subj-marker-lex-rule.
-
-
-2sing-intransitive-indic-mood-subj-marker-suffix :=
-%suffix (* -vu-tit)
-2sing-intransitive-indic-mood-subj-marker-lex-rule.
-
-
-2sing-intransitive-interog-mood-subj-marker-suffix :=
-%suffix (* -vi-t)
-2sing-intransitive-interog-mood-subj-marker-lex-rule.
-
-
-2pl-intransitive-indic-mood-subj-marker-suffix :=
-%suffix (* -vu-si)
-2pl-intransitive-indic-mood-subj-marker-lex-rule.
-
-
-2pl-intransitive-interog-mood-subj-marker-suffix :=
-%suffix (* -vi-si)
-2pl-intransitive-interog-mood-subj-marker-lex-rule.
-
-
-3sing-intransitive-indic-mood-subj-marker-suffix :=
-%suffix (* -vu-q)
-3sing-intransitive-indic-mood-subj-marker-lex-rule.
-
-
-3sing-intransitive-interog-mood-subj-marker-suffix :=
-%suffix (* -va)
-3sing-intransitive-interog-mood-subj-marker-lex-rule.
-
-
-3pl-intransitive-indic-mood-subj-marker-suffix :=
-%suffix (* -ppu-t)
-3pl-intransitive-indic-mood-subj-marker-lex-rule.
-
-
-3pl-intransitive-interog-mood-subj-marker-suffix :=
-%suffix (* -ppat)
-3pl-intransitive-interog-mood-subj-marker-lex-rule.
+transitive-negation-marker-suffix :=
+%suffix (* -nngit)
+transitive-negation-marker-lex-rule.
 
 
 negation-marker-suffix-suffix :=
@@ -173,9 +133,64 @@ intran-future-suffix :=
 intran-future-lex-rule.
 
 
-transitive-negation-marker-suffix :=
-%suffix (* -nngit)
-transitive-negation-marker-lex-rule.
+1sing-intransitive-mood-subj-marker-suffix :=
+%suffix (* -vu-nga)
+1sing-intransitive-mood-subj-marker-lex-rule.
+
+
+1pl-intransitive-mood-subj-marker-suffix :=
+%suffix (* -vu-gut)
+1pl-intransitive-mood-subj-marker-lex-rule.
+
+
+2sing-intransitive-indic-mood-subj-marker-suffix :=
+%suffix (* -vu-tit)
+2sing-intransitive-indic-mood-subj-marker-lex-rule.
+
+
+2sing-intransitive-interog-mood-subj-marker-suffix :=
+%suffix (* -vi-t)
+2sing-intransitive-interog-mood-subj-marker-lex-rule.
+
+
+2pl-intransitive-indic-mood-subj-marker-suffix :=
+%suffix (* -vu-si)
+2pl-intransitive-indic-mood-subj-marker-lex-rule.
+
+
+2pl-intransitive-interog-mood-subj-marker-suffix :=
+%suffix (* -vi-si)
+2pl-intransitive-interog-mood-subj-marker-lex-rule.
+
+
+3sing-intransitive-indic-mood-subj-marker-suffix :=
+%suffix (* -vu-q)
+3sing-intransitive-indic-mood-subj-marker-lex-rule.
+
+
+3sing-intransitive-interog-mood-subj-marker-suffix :=
+%suffix (* -va)
+3sing-intransitive-interog-mood-subj-marker-lex-rule.
+
+
+3pl-intransitive-indic-mood-subj-marker-suffix :=
+%suffix (* -ppu-t)
+3pl-intransitive-indic-mood-subj-marker-lex-rule.
+
+
+3pl-intransitive-interog-mood-subj-marker-suffix :=
+%suffix (* -ppat)
+3pl-intransitive-interog-mood-subj-marker-lex-rule.
+
+
+3sg-intransitive-indic-mood-subj-marker-suffix :=
+%suffix (* -ppu-q)
+3sg-intransitive-indic-mood-subj-marker-lex-rule.
+
+
+3pl-intransitive-indic-mood-subj-marker-suffix :=
+%suffix (* -vu-t)
+3pl-intransitive-indic-mood-subj-marker-lex-rule.
 
 
 n1-bottom :=

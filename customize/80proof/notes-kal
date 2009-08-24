@@ -246,3 +246,98 @@ I changed the case system for pronouns.
 Coverage: 90.9
 Overgeneration 0%
 
+%EMB ... evaluating MRSs
+
+Positive examples that parsed:
+
+1: Looks fine. PNG (3sg) reflected for both subj and obj.
+2: Looks fine. PNG (3sg) reflected for both subj and obj.
+3: Looks fine. PNG (3sg) reflected for both subj and obj.
+4: Looks fine. PNG (3sg) reflected for both subj and obj.
+5: Looks fine. PNG (3sg) reflected for both subj and obj.
+6: Looks fine. PNG (3sg) reflected for both subj and obj.
+7: Looks fine. 3sg subj, past tense.
+10: Looks fine. 3pl subj, past tense.
+15: Looks fine. 3sg subj, future tense.
+21: Looks fine. 3sg subj, past perfective.
+25: Looks fine. 3sg subj, future perfective.
+>31: Questionable: 3sg subj, past habitual, but gloss indicates present habitual.
+37: Looks fine. 3sg subj, question, past tense.
+38: Looks fine. 2sg subj, question, past tense.
+40: Looks fine. Negation scoping over verb, 3sg, past.
+>49: Somewhat questionable: eat as an intransitive.  Agreement looks fine.
+>50: Somewhat questionable: eat as an intransitive.  Agreement looks fine.
+>51: Somewhat questionable: eat as an intransitive.  Agreement looks fine.
+>52: Somewhat questionable: eat as an intransitive.  Agreement looks fine.
+>53: Somewhat questionable: eat as an intransitive.  Agreement looks fine.
+>54: Somewhat questionable: eat as an intransitive.  Agreement looks fine.
+61: Looks fine. 1sg subj, 2sg obj, past tense.
+62: Looks fine. 1sg subj, 2pl obj, past tense.
+63: Looks fine. 1sg subj, 3sg obj, past tense.
+64: Looks fine. 1sg subj, 3pl obj, past tense.
+65: Looks fine. 2sg subj, 3sg obj, past tense.
+66: Looks fine. 2sg subj, 3pl obj, past tense.
+67: Looks fine. 3sg subj, 3pl obj, past tense.
+68: Looks fine. 3sg subj, 3sg obj, past tense.
+69: Looks fine. 2sg subj, 1sg obj, past tense.
+
+Errors:
+
+16: Affix order error (correct)
+17: Affix order error (correct)
+18: Affix order error (correct) -- not interestingly different from 17
+19: Affix order effor (correct) -- not interestingly different from 17
+22: Affix order error (correct)
+23: Affix order error (correct)
+24: Affix order error (correct) -- not interestingly different from 24
+26: Affix order error (correct)
+27: Affix order error (correct)
+28: Affix order error (correct)
+29: Affix order error (correct)
+30: Affix order error (correct)
+32: Affix order error (correct)
+33: Affix order error (correct)
+34: Affix order error (correct) -- not interesting different from 33
+35: Affix order error (correct) -- not interesting different from 33
+>36: Grammatical example that should be parsing. Perhaps problem is already (incorporated adverb? aspect marker?)
+39: Affix order error (correct)
+41: Affix co-occurrence error (correct)
+42: Affix order error (correct)
+>45: This example is failing for the wrong reason: no analysis of affixal S coordination marks.
+>46: This example is failing for the wrong reason: no analysis of affixal S coordination marks.
+>47: Grammatical example failing for lack of affixal NP coordination.
+
+(56 and 59 had errors where they should just be parse failures.
+Added affixes and confirmed that they don't change coverage/overgen.)
+
+Well-formed, unanalyzed, no error:
+
+43: No analysis of S coordination via affixation.  NP rule is attaching -lu, but of course that doesn't work.
+
+Ill-formed, unanalyzed, no error:
+
+8: 
+9:
+11:
+12:
+13:
+14:
+20:
+44:
+48:
+55:
+56:
+57:
+58:
+59:
+60:
+70:
+71:
+72:
+73:
+74:
+75:
+76:
+77:
+78:
+
