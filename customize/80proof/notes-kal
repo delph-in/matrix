@@ -256,30 +256,31 @@ Positive examples that parsed:
 4: Looks fine. PNG (3sg) reflected for both subj and obj.
 5: Looks fine. PNG (3sg) reflected for both subj and obj.
 6: Looks fine. PNG (3sg) reflected for both subj and obj.
-7: Looks fine. 3sg subj, past tense.
-10: Looks fine. 3pl subj, past tense.
+7: Looks fine. 3sg subj, non-fut tense.
+10: Looks fine. 3pl subj, non-fut tense.
 15: Looks fine. 3sg subj, future tense.
-21: Looks fine. 3sg subj, past perfective.
+21: Looks fine. 3sg subj, non-fut perfective.
 25: Looks fine. 3sg subj, future perfective.
->31: Questionable: 3sg subj, past habitual, but gloss indicates present habitual.
-37: Looks fine. 3sg subj, question, past tense.
-38: Looks fine. 2sg subj, question, past tense.
-40: Looks fine. Negation scoping over verb, 3sg, past.
+31: Fine now: 3sg subj, non-fut habitual.
+36: Fine now.  Subj is 2sg, tense is non-fut, aspect is perfective
+37: Looks fine. 3sg subj, question, non-fut tense.
+38: Looks fine. 2sg subj, question, non-fut tense.
+40: Looks fine. Negation scoping over verb, 3sg, non-fut.
 >49: Somewhat questionable: eat as an intransitive.  Agreement looks fine.
 >50: Somewhat questionable: eat as an intransitive.  Agreement looks fine.
 >51: Somewhat questionable: eat as an intransitive.  Agreement looks fine.
 >52: Somewhat questionable: eat as an intransitive.  Agreement looks fine.
 >53: Somewhat questionable: eat as an intransitive.  Agreement looks fine.
 >54: Somewhat questionable: eat as an intransitive.  Agreement looks fine.
-61: Looks fine. 1sg subj, 2sg obj, past tense.
-62: Looks fine. 1sg subj, 2pl obj, past tense.
-63: Looks fine. 1sg subj, 3sg obj, past tense.
-64: Looks fine. 1sg subj, 3pl obj, past tense.
-65: Looks fine. 2sg subj, 3sg obj, past tense.
-66: Looks fine. 2sg subj, 3pl obj, past tense.
-67: Looks fine. 3sg subj, 3pl obj, past tense.
-68: Looks fine. 3sg subj, 3sg obj, past tense.
-69: Looks fine. 2sg subj, 1sg obj, past tense.
+61: Looks fine. 1sg subj, 2sg obj, non-fut tense.
+62: Looks fine. 1sg subj, 2pl obj, non-fut tense.
+63: Looks fine. 1sg subj, 3sg obj, non-fut tense.
+64: Looks fine. 1sg subj, 3pl obj, non-fut tense.
+65: Looks fine. 2sg subj, 3sg obj, non-fut tense.
+66: Looks fine. 2sg subj, 3pl obj, non-fut tense.
+67: Looks fine. 3sg subj, 3pl obj, non-fut tense.
+68: Looks fine. 3sg subj, 3sg obj, non-fut tense.
+69: Looks fine. 2sg subj, 1sg obj, non-fut tense.
 
 Errors:
 
@@ -299,7 +300,6 @@ Errors:
 33: Affix order error (correct)
 34: Affix order error (correct) -- not interesting different from 33
 35: Affix order error (correct) -- not interesting different from 33
->36: Grammatical example that should be parsing. Perhaps problem is already (incorporated adverb? aspect marker?)
 39: Affix order error (correct)
 41: Affix co-occurrence error (correct)
 42: Affix order error (correct)
@@ -312,9 +312,12 @@ Added affixes and confirmed that they don't change coverage/overgen.)
 
 Well-formed, unanalyzed, no error:
 
-43: No analysis of S coordination via affixation.  NP rule is attaching -lu, but of course that doesn't work.
+>43: No analysis of S coordination via affixation.  NP rule is attaching -lu, but of course that doesn't work.
 
 Ill-formed, unanalyzed, no error:
+Don't have time to go through these over slow connection right now.
+Assuming they are in fact all ruled out for the right reason, but
+we should check before final publication.
 
 8: 
 9:
@@ -341,3 +344,11 @@ Ill-formed, unanalyzed, no error:
 77:
 78:
 
+Final numbers:
+
+Parsing coverage: 31/33 93.9%
+Treebanked coverage: 93.9%
+Overgeneration: 0%
+Analyses/positive example: 1.00
+Ruled out for the wrong reason: 4/45
+Correctness on negative examples: 91.1%
