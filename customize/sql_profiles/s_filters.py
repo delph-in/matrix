@@ -467,6 +467,28 @@ filter_list = [
                                                              # file anymore
                                  'neg-order:after']),
 
+    # 8/24/09 KEN added to get miniaffixes grammar working
+    NotMatchFilter(name = 'neg-infl-right',
+                   mrs_id_list = g.all_neg,
+                   re1 = 'neg-\S*(?:[ti]v[1-9]?|aux)',
+                   comment = 'If inflectional negation happens after the verb, then "neg-" cannot ' + \
+                                     'appear before the verb (aux or iv or tv followed by an optional digit) ' + \
+                                     'in the same word as the verb (that is the \S* part)',
+                   # This is the first filter to use groups and backreferences to ensure that the same
+                   # slot that is negation is the one that specifies it comes after the verb
+                   fv = ['and', 'verb-slot([1-9])_morph[1-9]_feat[1-9]_name:negation',
+                                   r'verb-slot\1_order:after']),
+
+    # 8/24/09 KEN added as converse to neg-infl-right
+    NotMatchFilter(name = 'neg-infl-left',
+                   mrs_id_list = g.all_neg,
+                   re1 = '(?:[ti]v[1-9]?|aux)\S*-neg',
+                   comment = 'If inflectional negation happens before the verb, then "neg-" cannot ' + \
+                                     'appear after the verb (aux or iv or tv followed by an optional digit) ' + \
+                                     'in the same word as the verb (that is the \S* part)',
+                   fv = ['and', 'verb-slot([1-9])_morph[1-9]_feat[1-9]_name:negation',
+                                   'verb-slot\\1_order:before']),
+
     NotMatchFilter(name = "neg-adv-s",
                    mrs_id_list = g.all_neg,
                    re1 = '(n(?:[1-9])?|[ti]v(?:[1-9])?|aux).* neg.* (n(?:[1-9])?|[ti]v(?:[1-9])?|aux)',
@@ -1004,38 +1026,75 @@ filter_list = [
     # be in the context of an auxiliary is handled as a universal filter.
     # _FIX_ME_: Be sure that string list has some -nf in sentences without aux.
 
+    # 8/25/09 KEN created to replace old non-finite-verb-1 and non-finite-verb-2 below.  There
+    # were two main changes.  First the fv list was made regexy to deal with iterative features in
+    # choices file.  Second, the two old filters were merged because there aren't separate features
+    # for transitive and intransitive anymore.  Note other possible values to
+    # aux1_compfeature1_value feature are 'nonfinite', and 'finite, nonfinite' if both are allowed.
+    # NB: one problem with this is if we have more than one aux and one of them does not take
+    # nonfinites, this filter doesn't make sure that the -nf is on the appropriate verb...just that it's
+    # somewhere in the sentence if an aux is, too.
+    
     IfFilter(name = "non-finite-verb-1",
-             mrs_id_list = g.all,
-             re1 = 'aux.* iv(?:[1-9])?|iv(?:[1-9])? .*aux',
-             re2 = 'iv(?:[1-9])?-nf',
-             comment = "If auxiliaries take complements in non-finite form, check whether the " + \
-                               "other verb is non-finite, if an auxiliary is present.  Note that this " + \
-                               "assumes at most one non-aux verb, and will need to be updated. " + \
-                               "Because the non-finite forms are handled separately for each verb, " + \
-                               "need to do filters separately for iv and tv.",
-             fv = ['iverb-non-finite:iv-nf']),
-    IfFilter(name = "non-finite-verb-2",
-             mrs_id_list = g.all,
-             re1 = 'aux.* tv(?:[1-9])?|tv(?:[1-9])? .*aux',
-             re2 = 'tv(?:[1-9])?-nf',
-             comment = "If auxiliaries take complements in non-finite form, check whether the " + \
-                               "other verb is non-finite, if an auxiliary is present.  Note that this " + \
-                                "assumes at most one non-aux verb, and will need to be updated. " + \
-                                "Because the non-finite forms are handled separately for each verb, " + \
-                                 "need to do filters separately for iv and tv.",
-             fv = ['tverb-non-finite:tv-nf']),
+                   mrs_id_list = g.all,
+                   re1 = 'aux',
+                   re2 = '-nf|nf-',
+                   comment = "If any aux in the langauge type only takes non-finite " + \
+                                     "complements, make sure that if aux is in the sentence that " + \
+                                     "either nf- or -nf is as well",
+                   fv = ['aux[1-9]_compfeature[1-9]_value:nonfinite']),
+    
+    ################################################################
+    # 8/25/09 KEN remmed these two filters out and combined them into filter above
+    #IfFilter(name = "non-finite-verb-1",
+    #         mrs_id_list = g.all,
+    #         re1 = 'aux.* iv(?:[1-9])?|iv(?:[1-9])? .*aux',
+    #         re2 = 'iv(?:[1-9])?-nf',
+    #          comment = "If auxiliaries take complements in non-finite form, check whether the " + \
+    #                           "other verb is non-finite, if an auxiliary is present.  Note that this " + \
+    #                           "assumes at most one non-aux verb, and will need to be updated. " + \
+    #                           "Because the non-finite forms are handled separately for each verb, " + \
+    #                           "need to do filters separately for iv and tv.",
+    #         fv = ['iverb-non-finite:iv-nf']),
+    #IfFilter(name = "non-finite-verb-2",
+    #         mrs_id_list = g.all,
+    #         re1 = 'aux.* tv(?:[1-9])?|tv(?:[1-9])? .*aux',
+    #         re2 = 'tv(?:[1-9])?-nf',
+    #         comment = "If auxiliaries take complements in non-finite form, check whether the " + \
+    #                           "other verb is non-finite, if an auxiliary is present.  Note that this " + \
+    #                            "assumes at most one non-aux verb, and will need to be updated. " + \
+    #                            "Because the non-finite forms are handled separately for each verb, " + \
+    #                             "need to do filters separately for iv and tv.",
+    #         fv = ['tverb-non-finite:tv-nf']),
+    ################################################################
+
+
+    # 8/21/09 KEN modifed fv list to deal with changes to choices file.  Instead of looking for
+    # absence of iverb-non-finite feature, it now checks to see if any aux takes only finite as a
+    # complement and if so it eliminates any intransitive verb followed by -nf.  Note other
+    # possible values to aux1_compfeature1_value feature are 'nonfinite', and 'finite, nonfinite' if
+    # both are allowed.  NB: one problem with this is if we have more than one aux and one of
+    # them does allow nonfinites, this filter will disallow -nf on every intransitive verb
+    # 8/21/09 KEN also modified re1 to deal with both intransitive and transitive verbs to merge
+    # with old non-finite-verb-2 and also modified re1 to deal with nf as an affix not as suffix always
+    # adjacent to verb
     NotMatchFilter(name = "non-finite-verb-3",
                    mrs_id_list = g.all,
-                   re1 = 'iv(?:[1-9])?-nf',
-                   comment = "If the intransitive verb doesn't take a special form after the " + \
-                                     "auxiliary, then we shouldn't see iv-nf.",
-                   fv = ['iverb-non-finite:']),
-    NotMatchFilter(name = "non-finite-verb-4",
-                   mrs_id_list = g.all,
-                   re1 = 'tv(?:[1-9])?-nf',
-                   comment = "If the transitive verb doesn't take a special form after the auxiliary, " + \
-                                     "then we shouldn't see tv-nf.",
-                   fv = ['tverb-non-finite:']),
+                   re1 = '(?:[it]v[1-9]?\S*-nf)|(?:nf-\S*[it]v[1-9])',
+                   comment = "If any aux in the langauge type only takes finite complements, we " + \
+                                     "should disallow an nf affix on all verbs",
+                   fv = ['aux[1-9]_compfeature[1-9]_value:finite']),
+
+    # 8/21/09 KEN merged with non-finite-verb-3 since we now don't have separate features for
+    # trans and intrans verbs taking non-finites and instead deal with it on the aux complement,
+    # and the customization system assumes that what the aux from takes as a complement it
+    # takes the same for intransitive and transitive verbs
+#    NotMatchFilter(name = "non-finite-verb-4",
+#                   mrs_id_list = g.all,
+#                   re1 = 'tv(?:[1-9])?-nf',
+#                   comment = "If the transitive verb doesn't take a special form after the auxiliary, " + \
+#                                     "then we shouldn't see tv-nf.",
+#                   fv = ['tverb-non-finite:']),
     
 
     # Obligatory specifiers.  Since overt specifiers change the MRS, consider keying this off the
@@ -1282,7 +1341,9 @@ filter_list = [
                    re1 = 'aux',
                    comment = "If the language doesn't have an auxiliary, we should never see " + \
                                      "aux in the string.",
-                   fv = ['aux-verb:']),
+                   # 8/20/09 KEN changed fv list from 'aux-verb:', which looks like it's a deprecated
+                   # feature.  has-aux seems to always be present and be either yes or no
+                   fv = ['has-aux:no']),
               
 
     # 2. V-comp auxiliaries.
@@ -1325,6 +1386,7 @@ filter_list = [
     # 3. VP comp auxiliaries
 
     # 8/19/09 KEN changed from AndNotFilter based on discussion with Emily
+    # TODO: These next two filters don't need to be IfFilters, they can be NotMatchFilters    
     IfNotFilter(name = 'vpcomp-n1-subj',
                  mrs_id_list = g.n1_subj_n2_obj_not_ques,
                  re1 = 'aux',
@@ -1368,6 +1430,61 @@ filter_list = [
                                "det, p-acc, and neg.  Here object = n1.",
              fv = ['and','aux-comp:vp','word-order:free']),
 
+    # 8/25/09 KEN added the next ## filters to ensure the verb and object are on the right side
+    # of the aux in the case of vp comp auxes
+    IfFilter(name = 'vpcomp-aux-vp-order-1',
+             mrs_id_list = g.n1_subj_n2_obj, # TODO: should this be different for negs or questions?
+             re1 = 'aux',
+             re2 = 'aux.*(?:(?:tv[1-9]?.*n2)|(?:n2.*tv[1-9]?))',
+             comment = "If the language has VP-comp auxiliaries and the aux comes before its " + \
+                               "complement and the sentence has n2 as its object, then make sure " + \
+                               "both the verb and the object occur after the aux",
+             fv = ['and','aux-comp:vp','aux-comp-order:before']),
+
+    IfFilter(name = 'vpcomp-aux-vp-order-2',
+             mrs_id_list = g.n2_subj_n1_obj, # TODO: should this be different for negs or questions?
+             re1 = 'aux',
+             re2 = 'aux.*(?:(?:tv[1-9]?.*n1)|(?:n1.*tv[1-9]?))',
+             comment = "If the language has VP-comp auxiliaries and the aux comes before its " + \
+                               "complement and the sentence has n1 as its object, then make sure " + \
+                               "both the verb and the object occur after the aux",
+             fv = ['and','aux-comp:vp','aux-comp-order:before']),
+
+    IfFilter(name = 'vpcomp-aux-vp-order-3',
+             mrs_id_list = g.n1_subj_n2_obj, # TODO: should this be different for negs or questions?
+             re1 = 'aux',
+             re2 = '(?:(?:tv[1-9]?.*n2)|(?:n2.*tv[1-9]?)).*aux',
+             comment = "If the language has VP-comp auxiliaries and the aux comes after its " + \
+                               "complement and the sentence has n2 as its object, then make sure " + \
+                               "both the verb and the object occur before the aux",
+             fv = ['and','aux-comp:vp','aux-comp-order:after']),
+
+    IfFilter(name = 'vpcomp-aux-vp-order-4',
+             mrs_id_list = g.n2_subj_n1_obj, # TODO: should this be different for negs or questions?
+             re1 = 'aux',
+             re2 = '(?:(?:tv[1-9]?.*n1)|(?:n1.*tv[1-9]?)).*aux',
+             comment = "If the language has VP-comp auxiliaries and the aux comes after its " + \
+                               "complement and the sentence has n1 as its object, then make sure " + \
+                               "both the verb and the object occur before the aux",
+             fv = ['and','aux-comp:vp','aux-comp-order:after']),
+
+    IfFilter(name = 'vpcomp-aux-vp-order-5',
+             mrs_id_list = g.intrans, # TODO: should this be different for negs or questions?
+             re1 = 'aux',
+             re2 = 'aux.*iv[1-9]?',
+             comment = "If the language has VP-comp auxiliaries and the aux comes before its " + \
+                               "complement and the sentence is intransitive, then make sure " + \
+                               "the verb occurs after the aux",
+             fv = ['and','aux-comp:vp','aux-comp-order:before']),
+
+    IfFilter(name = 'vpcomp-aux-vp-order-6',
+             mrs_id_list = g.intrans, # TODO: should this be different for negs or questions?
+             re1 = 'aux',
+             re2 = 'iv[1-9]?.*iv',
+             comment = "If the language has VP-comp auxiliaries and the aux comes after its " + \
+                               "complement and the sentence is intransitive, then make sure " + \
+                               "the verb occurs before the aux",
+             fv = ['and','aux-comp:vp','aux-comp-order:after']),
 
     # 4. S comp
 

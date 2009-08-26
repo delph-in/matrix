@@ -1,5 +1,5 @@
 """
-File: run_spsecific_filters.py
+File: run_specific_filters.py
 Author: KEN (captnpi@u.washington.edu, Scott Halgrim) - taking over from ???
 Date: summer '09 (KEN started working on it then)
 Project: MatrixTDB
@@ -30,7 +30,7 @@ Contents:
                                       to the right feature groups
     - create_choices_from_lt_id - function that extracts a dict of feat/val pairs (or lack of features)
                                                from database that define a language type
-Tables accessed: filter, feat_grp, fltr_feat_grp, lt, lt_feat_grp, res_sfltr
+Tables accessed: filter, feat_grp, fltr_feat_grp, lt, lt_feat_grp, res_sflt
 Tables modified: filter, feat_grp, fltr_feat_grp, lt_feat_grp, res_sfltr
 """
 #################################################################
@@ -352,6 +352,10 @@ def update_groups_table_helper(gs, groups, conn):
 
         # build final query string
         query_string = prefix + from_string + where_string + feat_string + value_string + suffix
+
+        # we need to escape any backslashes for the purpose of the query
+        # this was added when we started adding backreferences to our fv lists in filters
+        query_string = query_string.replace('\\', r'\\')
 
         # execute query string, getting the group id that encompasses all of the feat/val combos
         # of the input spec

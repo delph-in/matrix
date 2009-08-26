@@ -35,7 +35,7 @@ Contents:
 Tables accessed: lt, lt_feat_grp, feat_grp
 Tables modified: feat_grp, lt, lt_feat_grp                               
 """
-
+import re
 import os.path
 
 # there are certain features in a choices file that are irrelevant when comparing whether
@@ -101,11 +101,76 @@ omitFeatures = ['language', 'sentence1', 'sentence2']
 # +------------+---------+------+-----+---------+----------------+
 
 
-import sys
+import sys, re
 import MySQLdb
 sys.path.append("..")
 from choices import ChoicesFile
 from matrix_tdb_conn import MatrixTDBConn
+
+def regexMatchWithLT(fgFeature, choices, groups):
+    """
+    Function: regexMatchWithLT
+    Input:
+        fgFeature - the feature of a feature group from a filter, stored in MatrixTDB
+        choices - a dict of features and values that represent a language type, either one already
+                      in MatrixTDB or one in a choices file
+        groups - a list of groups captured in previous regex matches in this feature group so that
+                     we can replace backreferences with the appropriate content
+    Output:
+        answer - a list indicating all the values in choices that would make this regexy filter feature
+                      name a match
+        outgroups - a list of lists of groups captured in regexes.  This list runs parallel to the answer
+                         list.  If a feature in the language type matches a regexy feature in an fv list
+                         of a filter, then any groups captured are put into a list so they can be
+                         substituted should a later feature in a feature in the same feature group has
+                         a backreference to the group.  Since we are putting together a list of possible
+                         value matches in answer, we put the parallel list of features capturing groups
+                         in outgroups
+    Functionality: tries to find a regex match for a given feature pair from a filter in a language
+                         type
+    """
+    answer = []                                                 # initialize possible values output to empty list
+    outgroups = groups                                     # initialize groups I will output to the input list
+    match = re.search(r'\\\d', fgFeature)       # check to see if the feature has a backreference in it
+
+    # this while loop replaces backreferences with content that was captured in groups in
+    # previous regex matches
+    while match:                                        # while I still have a backreference in the feature
+
+        # get the number of the backreference
+        backrefNum = int(fgFeature[match.start()+1:match.end()])
+
+        # debugging
+        # print >> sys.stderr, 'found backref match in fgFeature:', fgFeature, 'backrefNum:', \
+         #                             backrefNum, 'groups:', groups
+
+        # get the content of the matched group.  Subtract 1 because backreferences start at 1 in
+        # regex notation
+        group = groups[backrefNum-1]
+
+        # replace the backreference with the content of the matched group        
+        fgFeature = fgFeature[:match.start()] + group + fgFeature[match.end():]
+        match = re.search(r'\\\d', fgFeature)           # try to find more backreferences in feature
+
+        # print >> sys.stderr, 'fgFeature:', fgFeature # debugging
+
+    for ltFeature in choices:                     # for each feat/val pair in the language type...
+        # ...see if the filter's feature name matches the language type is a match for the filter's
+        # feature name when it is interpreted as a regex
+        match2 = re.match('^' + fgFeature + '$', ltFeature)
+        if match2:
+            # if so, add its value to the list of possible matches
+            answer.append(choices[ltFeature])
+
+            # and add the groups captured as a list to the list of lists that are the groups captured
+            # for all possible matches
+            outgroups.append(list(match2.groups()))
+
+            # debugging
+            # print >> sys.stderr, 'found a regexy match. fgFeature:', fgFeature, 'ltFeature:', ltFeature, \
+            #                               ', answer:', answer, ', outgroups:', outgroups
+
+    return (answer, outgroups)                   # return output
 
 ###############################################################
 # check_lt_for_fvs(fvs,choices): Check whether all of the feature-value
@@ -118,33 +183,59 @@ def check_lt_for_fvs(fvs,choices):
     Input:
         fvs - a tuple of rows from the database reprsenting all the feature/value pairs in a feature
                group where a group is defined by feat_grp.fg_grp_id
-        choices - a dict whose keys are features and whose values are those features' values
+        choices - a dict whose keys are features and whose values are those features' values.
+                      represents a language type
     Output: answer - True if the value of every feature in fvs matches that in choices.  False
                              otherwise
     Functionality: Compares the feat/val pairs of a feature group in fvs with the choices dict of
                          feat/val pairs to see if those in fvs are the same as those in choices.
     """
+    groups = []                          # initialize list of captured groups in features
     for fv in fvs:                          # for every row of feature/value pairs...
         (f,v) = fv                           # ...set f and v
+
         try:
             # if the value of feature f in the choices dict does not equal that of the feat/val from the db           
             if choices[f] != v:
                 answer = False  # then the answer is false...choices does not match fvs
                 break                # and get out of here
-        except KeyError:
-            # this goofy little test below handles the syntax in filters that checks for absence of a
-            # feature altogether.  That sytnax is, e.g., "fv = ['aux-verb:']", meaning that it applies
-            # to anything without that feature in it.  We will get a KeyError if the feature isn't in
-            # the choices dict representing the choices file, and here we verify that the syntax
-            # given in the fvs was indeed that it was checking for absence.  If it was an empty string (looking for absence), we leave
-            # it alone.  If it was looking for an actual value, though, then this isn't a match and we
-            # move on.
-            # TODO: make this doco more clear.  This will involve making sense of how this gets
-            # called from both run_specific_filters.update_all_lts_in_lfg and
-            # sql_lg_type.create_or_update_lt
-            if not (v == ''):
-                answer = False
-                break
+        except KeyError:                # if that feature wasn't in the lt
+
+            # first check if the feature name was regexy.  If it is, get a list of all values from the lt
+            # where the feature matches that regex
+            # also get any captured groups by the regex and send the list of captured groups in
+            # with each call
+            (possibleValMatches, groups) = regexMatchWithLT(f, choices, groups)
+
+            # at this point groups is a list of lists where each list represents the groups captured
+            # in the regex that is the feature whose value is at the same index in
+            # possibleValMatches as the given list is in the groups list of lists
+
+            if len(possibleValMatches) > 0:         # if there was at least one match
+                if v in possibleValMatches:            # and there is a value in the lt that matches v
+                    # then we have a match, so get the index of the value that matches v
+                    groupInd = possibleValMatches.index(v)
+
+                    # and use that index to get the appropriate list of group matches in the right feature
+                    groups = groups[groupInd]
+                else:                                   # but if there is no match in the list
+                    answer = False              # then this feature group doesn't fit in this lt     
+                    break                               # and we can stop looking
+            else:                                           # if there were no regexy matches, though
+
+                # then we don't have that feature in this lt at all.  So let's check to see if that's what
+                # the filter's fv list was looking for...the absence of that feature.
+                # this goofy little test below handles the syntax in filters that checks for absence of a
+                # feature altogether.  That sytnax is, e.g., "fv = ['aux-verb:']", meaning that it applies
+                # to anything without that feature in it.  We will get a KeyError if the feature isn't in
+                # the choices dict representing the choices file, and here we verify that the syntax
+                # given in the fvs was indeed that it was checking for absence.  If it was an empty
+                # string (looking for absence), we leave it alone and continue looking through fv pairs
+                # in the feature group.  If it was looking for an actual value, though, then this isn't a
+                # match and we move on.
+                if not (v == ''):               # if it wasn't looking for absence
+                    answer = False        # then this lt is not a match with this feature group
+                    break                       # and we can stop checking.
     else:                           # if every feature/value in fvs matched that in choices...
         answer = True          # ...then they match, set output to True
 

@@ -726,7 +726,7 @@ def genItemList(readingCounter, failOne, itemListName, conn):
     return
 
 # set to true for running on windows on my machine.  set to False before commiting to repository.
-moduleTest = False 
+moduleTest = True 
 
 if __name__ == '__main__':      # only run if run as main module...not if imported
     try:

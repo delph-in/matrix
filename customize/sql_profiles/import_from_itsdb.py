@@ -647,7 +647,7 @@ def main(itsdb_dir, harv_mrs, choices_filename, conn = None):
     # this will raise an error if not.
     # also assign harvstring/mrsTag as key/value pairs to mrs_dict
     mrs_dict = validate_string_list(harv_mrs, itsdb_dir)
-    '
+
     # ChoicesFile is really robust and will create an object even without a valid filename, which
     # will cause all sorts of problems in the database, so verify here we've been given an actual
     # filename
