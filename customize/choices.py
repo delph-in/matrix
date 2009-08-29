@@ -4,6 +4,7 @@
 # imports
 
 import re
+import sys
 
 ######################################################################
 # globals
@@ -35,6 +36,8 @@ class ChoicesFile:
         l = l.strip()
         if l:
           (key, value) = l.split('=', 1)
+          if sys.stdout.isatty() and self.is_set(key) and key != 'section':
+            print 'WARNING: choices file defines multiple values for ' + key
           self.set(key, value)
     except:
       pass

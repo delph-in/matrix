@@ -130,7 +130,9 @@ class Hierarchy:
   # type3 := supertype3  ; comment3
   # ...
   def save(self, tdl_file, define = True):
-    mylang.add_literal(';;; ' + self.name[0:1].upper() + self.name[1:])
+    tdl_file.set_section('features')
+
+    tdl_file.add_literal(';;; ' + self.name[0:1].upper() + self.name[1:])
 
     if define:
       tdl_file.add(self.name + ' := *top*.', '', True)
@@ -553,7 +555,7 @@ def customize_case_adpositions():
       ';;; be modifiers.'
     mylang.add_literal(comment)
 
-    mylang.add('+np :+ [ CASE case ].')
+    mylang.add('+np :+ [ CASE case ].', section='addenda')
 
     typedef = \
       'case-marking-adp-lex := basic-one-arg & raise-sem-lex-item & \
@@ -567,7 +569,7 @@ def customize_case_adpositions():
     mylang.add(typedef)
 
     if ch.has_mixed_case():
-      mylang.add('+np :+ [ CASE-MARKED bool ].')
+      mylang.add('+np :+ [ CASE-MARKED bool ].', section='addenda')
       mylang.add(
         'case-marking-adp-lex := \
          [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].')
@@ -612,15 +614,15 @@ def customize_direct_inverse():
   if not ch.get_full('scale1_feat1_name'):
     return
 
-  mylang.add('verb :+ [ DIRECTION direction ].')
+  mylang.add('verb :+ [ DIRECTION direction ].', section='addenda')
   hier = Hierarchy('direction')
   hier.add('dir', 'direction')
   hier.add('inv', 'direction')
   hier.save(mylang)
 
   if ch.has_SCARGS():
-    mylang.add('word-or-lexrule :+ [ SC-ARGS list ].')
-    mylang.add('lex-rule :+ [ SC-ARGS #1, DTR.SC-ARGS #1 ].')
+    mylang.add('word-or-lexrule :+ [ SC-ARGS list ].', section='addenda')
+    mylang.add('lex-rule :+ [ SC-ARGS #1, DTR.SC-ARGS #1 ].', section='addenda')
 
   cases = ch.cases()
   features = ch.features()
@@ -646,8 +648,9 @@ def customize_direct_inverse():
 
   # Now pass through the scale, creating the direct-inverse hierarchy
   # pairwise
+  mylang.set_section('dirinv')
+  mylang.add_literal(';;; Direct-inverse scale')
   supertype = 'dir-inv-scale'
-  mylang.add_literal(';;; Scale for direct-inverse')
   mylang.add(supertype + ' := canonical-synsem.')
   for i in range(1, scale_max):
     values = {}  # for each feature, a set of values
@@ -793,15 +796,15 @@ def init_pernum_hierarchy():
 
 def customize_person_and_number():
   if 'pernum' in hierarchies:
-    mylang.add('png :+ [ PERNUM pernum ].')
+    mylang.add('png :+ [ PERNUM pernum ].', section='addenda')
     hierarchies['pernum'].save(mylang)
   else:
     if 'person' in hierarchies:
-      mylang.add('png :+ [ PER person ].')
+      mylang.add('png :+ [ PER person ].', section='addenda')
       hierarchies['person'].save(mylang)
 
     if 'number' in hierarchies:
-      mylang.add('png :+ [ NUM number ].')
+      mylang.add('png :+ [ NUM number ].', section='addenda')
       hierarchies['number'].save(mylang)
 
 
@@ -823,7 +826,7 @@ def init_gender_hierarchy():
 
 def customize_gender():
   if 'gender' in hierarchies:
-    mylang.add('png :+ [ GEND gender ].')
+    mylang.add('png :+ [ GEND gender ].', section='addenda')
     hierarchies['gender'].save(mylang)
 
 
@@ -873,9 +876,11 @@ def customize_other_features():
     if feat not in ['case', 'person', 'number', 'pernum', 'gender',
                     'form', 'tense', 'aspect', 'situation']:
       if type == 'head':
-        mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].')
+        mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].',
+                   section='addenda')
       else:
-        mylang.add('png :+ [ ' + feat.upper() + ' ' + feat + ' ].')
+        mylang.add('png :+ [ ' + feat.upper() + ' ' + feat + ' ].',
+                   section='addenda')
 
       # sfd: If it's an 'index' feature, we should make sure to strip it
       # out in the VPM
@@ -1002,8 +1007,9 @@ def init_situation_hierarchy():
 
 def customize_situation():
   if 'situation' in hierarchies:
+    mylang.set_section('features')
     mylang.add('situation := sort.')
-    mylang.add('tam :+ [SITUATION situation].')
+    mylang.add('tam :+ [SITUATION situation].', section='addenda')
     hierarchies['situation'].save(mylang, False)
 
 ######################################################################
@@ -1528,6 +1534,8 @@ def customize_word_order():
 
   wo = ch.get('word-order')
 
+  mylang.set_section('phrases')
+
 # Add type definitions.
 
 # Handle major constituent order first.  This function returns the hs and hc
@@ -1581,9 +1589,6 @@ def customize_major_constituent_order(wo):
 # Thus, the head-subj rules that are defined here inherit from
 # decl-head-subj-phrase (imp-head-subj-phrase is also available).
 
-  comment = ';;; Phrasal types'
-  mylang.add_literal(comment)
-
 # ASF 2008-11-03 v2 analysis requires MC feature is not passed up to mother in
 # head - comp and not from mod to mother, putting it back for other wo options
 
@@ -1592,10 +1597,12 @@ def customize_major_constituent_order(wo):
                ';it applies to all wo implementations, except for v2')
     mylang.add('basic-head-comp-phrase :+\
                 [ SYNSEM.LOCAL.CAT.MC #mc,\
-                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
+               section='addenda')
     mylang.add('basic-head-mod-phrase-simple :+\
                 [ SYNSEM.LOCAL.CAT.MC #mc, \
-                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
+               section='addenda')
   
 
 # Head-comp order
@@ -1689,7 +1696,8 @@ def customize_major_constituent_order(wo):
                '(OV order).  Using a separate feature for tracking\n' +
                'argument attachment (as opposed to modifier\n' +
                'attachment).  We might be able to collapse these one\n' +
-               'day, but that\'s not obvious.')
+               'day, but that\'s not obvious.',
+               section='addenda')
     
 # ASF 2008-11-18, if free wo lgge has aux and aux precedes verb, 
 # the enforced attachment must apply in the other direction.
@@ -1714,7 +1722,8 @@ def customize_major_constituent_order(wo):
                'We\'ll need to add identification of ATTACH between\n\
 mother and head-daughter for all other kinds of phrases\n\
 if we do this.  Just for illustration, I\'m putting it\n\
-in for head-adjunct phrases here:')
+in for head-adjunct phrases here:',
+               section='addenda')
 
 
 # ASF (2008-11-03) Another big special case: v2
@@ -1983,11 +1992,14 @@ def specialize_word_order(hc,orders):
 
   if vcluster:
     mylang.add('lex-or-phrase-synsem :+ [ VERB-CL luk ].',
-                'Introducing VERB-CL keeps track whether main-verb is present in cluster')
+               'Introducing VERB-CL keeps track whether main-verb is present in cluster',
+               section='addenda')
     mylang.add('lex-rule :+ [ SYNSEM.VERB-CL #vc, \
-                              DTR.SYNSEM.VERB-CL #vc ].')
+                              DTR.SYNSEM.VERB-CL #vc ].',
+               section='addenda')
     mylang.add('basic-head-comp-phrase :+ [ SYNSEM.VERB-CL #vc, \
-                       NON-HEAD-DTR.SYNSEM.VERB-CL #vc ].')
+                       NON-HEAD-DTR.SYNSEM.VERB-CL #vc ].',
+               section='addenda')
   # ERB 2006-09-15 First add head-comp or comp-head if they aren't
   # already there.  I don't think we have to worry about constraining
   # SUBJ or COMPS on these additional rules because they'll only be for
@@ -2067,7 +2079,7 @@ def specialize_word_order(hc,orders):
   # ERB 2006-09-15 AUX if we're going to mention it, so the tdl compiles.
 
   if aux != 'easy':
-    mylang.add('head :+ [AUX bool].')
+    mylang.add('head :+ [AUX bool].', section='addenda')
 
   # ERB 2006-10-05 Collect positive statements about head-comp/comp-head
   # We only need to do this is if the word order is not free, and we only
@@ -2448,6 +2460,8 @@ def customize_sentential_negation():
 
 def create_neg_adv_lex_item(advAlone):
 
+  mylang.set_section('otherlex')
+
   mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
                  [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
                                             COMPS < >,
@@ -2460,7 +2474,8 @@ def create_neg_adv_lex_item(advAlone):
   # the adverb to be a modifier.
 
   if advAlone == 'never':
-    mylang.comment('neg-adv-lex','''Constrain the MOD value of this adverb to keep\n
+    mylang.add_comment('neg-adv-lex',
+    '''Constrain the MOD value of this adverb to keep\n
     it from modifying the kind of verbs which can select it,\n
     To keep spurious parses down, as a starting point, we have\n
     assumed that it only modifies verbs (e.g., non-finite verbs).''')
@@ -2512,7 +2527,8 @@ def create_neg_adv_lex_item(advAlone):
                'out extraneous parses, constrain the value of MOD on\n' +
                'various subtypes of head.  This may need to be loosened later.\n' +
                'This constraint says that only adverbs, adjectives,\n' +
-               'and adpositions can be modifiers.')
+               'and adpositions can be modifiers.',
+               section='addenda')
 
 ######################################################################
 # Coordination
@@ -2839,10 +2855,12 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
     rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
 
 
-######################################################################
-# customize_coordination(): the main coordination customization routine
-
 def customize_coordination():
+  """
+  The main coordination customization routine
+  """
+  mylang.set_section('coord')
+
   i = 0
   ch.iter_begin('cs')
   while ch.iter_valid():
@@ -2986,11 +3004,12 @@ def customize_yesno_questions():
   if ch.get('q-inv'):
     comment = \
       'For the analysis of inverted yes-no questions, we add the feature INV.'
-    mylang.add('verb :+ [ INV bool ].', comment)
+    mylang.add('verb :+ [ INV bool ].', comment, section='addenda')
 
     comment = \
       'All verbs start off as not inverted.'
-    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].', comment)
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].',
+               comment, section='verblex')
 
 
     comment = \
@@ -3022,7 +3041,7 @@ def customize_yesno_questions():
                                      SPR #spr,
                                      SPEC #spec ],
                      LKEYS #lkeys ]].'''
-    mylang.add(typedef, comment)
+    mylang.add(typedef, comment, section='lexrules')
 
     lrules.add('inv-lr := subj-v-inv-lrule.')
 
@@ -3043,7 +3062,7 @@ def customize_yesno_questions():
                                        [SUBJ < >,
                                        COMPS < >]],
       C-CONT.HOOK.INDEX.SF ques ].'''
-    mylang.add(typedef, comment)
+    mylang.add(typedef, comment, section='phrases')
 
     rules.add('int := int-cl.')
 
@@ -3067,13 +3086,13 @@ def customize_yesno_questions():
                                           VAL [ SUBJ < >,
                                                 COMPS < > ]]] > ]
                                                 .'''
-    mylang.add(typedef,comment)
+    mylang.add(typedef, comment, section='otherlex')
 
     comment = 'Subtype for question particles. Constrains SF to ques.'
     typedef = '''
       qpart-lex-item := complementizer-lex-item &
          [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
-    mylang.add(typedef,comment)
+    mylang.add(typedef, comment, section='otherlex')
 
 # ERB 2009-07-01 To remove:
 #   if ch.get('q-infl'):
@@ -3103,6 +3122,9 @@ def customize_yesno_questions():
 def customize_arg_op():
   """ Create the lexical types, lexical, rules and phrase structure
       rules to allow argument dropping"""
+
+  mylang.set_section('verblex')
+
   #Figure out the constraints on subject dropping and write the 
   #appropriate types to mylang.tdl or rules.tdl
 
@@ -3132,6 +3154,7 @@ def customize_arg_op():
     mylang.add('subj-obj-drop-verb-lex := subj-drop-verb-lex & obj-drop-verb-lex.')
     mylang.add('no-drop-verb-lex := no-subj-drop-verb-lex & no-obj-drop-verb-lex.')
 
+  mylang.set_section('phrases')
 
   #Create phrase-structure rules for each context
   ch.iter_begin('context')
@@ -3150,34 +3173,34 @@ def customize_arg_op():
   #Trying to get co-occurrence of marker dropping to work
 
   if (ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and (ch.get('subj-mark-drop')== 'subj-mark-drop-opt'or ch.get('subj-mark-drop')=='subj-mark-drop-req')):
-    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
 
   if ch.get('obj-drop')=='obj-drop-all' and ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-req') or ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-req'))):
-    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
 
   if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-opt' :
-    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
 
   if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req' and ch.get('obj-mark-drop') == 'obj-mark-drop-not' :
-    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
 
   if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-not' :
-    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
 
   if ch.get('obj-mark-drop')== 'obj-mark-drop-opt' and ch.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-req':
-    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
 
   if ch.get('subj-mark-drop')== 'subj-mark-drop-opt' and ch.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-req':
-    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
 
   if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and ch.get('subj-mark-drop') == 'subj-mark-drop-opt' :
-    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
 
   if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req' and ch.get('subj-mark-drop') == 'subj-mark-drop-not' :
-    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
 
   if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and ch.get('subj-mark-drop') == 'subj-mark-drop-not' :
-    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
 
 #def customize_subj_phrase(phrase)
   #Trying to get the subject/object marker co-occurrence to work out
@@ -3204,12 +3227,6 @@ def customize_nouns():
   ch.iter_end()
 
   singlentype = (seenCount == 1)
-
-  # Add the lexical types to mylang
-  mylang.add_literal(';;; Lexical types')
-
-  # Lexical types for nouns
-  mylang.add_literal(';;; Nouns')
 
   # Playing fast and loose with the meaning of OPT on SPR.  Using
   # OPT - to mean obligatory (as usual), OPT + to mean impossible (that's
@@ -3258,7 +3275,7 @@ def customize_nouns():
 
   if ch.get('case-marking') != 'none':
     if not ch.has_adp_case():
-      mylang.add('noun :+ [ CASE case ].')
+      mylang.add('noun :+ [ CASE case ].', section='addenda')
 
   # Add the lexical entries
   lexicon.add_literal(';;; Nouns')
@@ -3475,7 +3492,7 @@ def init_form_hierarchy():
 
 def customize_form():
   if 'form' in hierarchies:
-    mylang.add('head :+ [FORM form].')
+    mylang.add('head :+ [FORM form].', section='addenda')
     hierarchies['form'].save(mylang)
 
 
@@ -3513,8 +3530,6 @@ def customize_verbs():
   # is another module/parameter (like, the external argument
   # might not be the first one?
 
-  mylang.add_literal(';;; Verbs')
-
   mainorverbtype = main_or_verb() 
 # The variable mainorverbtype is a type name for lexical/main (non-aux) verbs.
 # Note that the use of 'main' instead of 'lexical' is strictly for 
@@ -3524,7 +3539,7 @@ def customize_verbs():
 # If there are no auxiliaries then 'verb-lex' covers all verbs
   
   if has_auxiliaries_p():
-    mylang.add('head :+ [ AUX bool ].')
+    mylang.add('head :+ [ AUX bool ].', section='addenda')
     #mainorverbtype = 'main-verb-lex'
      
 # we need to know whether the auxiliaries form a vcluster
@@ -3699,7 +3714,6 @@ def get_auxtypename(sem, supertype):
 def customize_auxiliaries():
 
   if has_auxiliaries_p():
-    mylang.add_literal(';;; Auxiliaries')
     lexicon.add_literal(';;; Auxiliaries')
     comp = ch.get('aux-comp')
     wo = ch.get('word-order')
@@ -3954,10 +3968,19 @@ def customize_misc_lex():
 
 def customize_lexicon():
 
+  mylang.set_section('nounlex')
   customize_nouns()
+
+  mylang.set_section('otherlex')
   customize_case_adpositions()
+
+  mylang.set_section('verblex')
   customize_verbs()
+
+  mylang.set_section('auxlex')
   customize_auxiliaries()
+
+  mylang.set_section('otherlex')
   customize_determiners()
   customize_misc_lex()
 
@@ -4088,6 +4111,14 @@ def alltypes(type_list, root_list):
       break
   return all
 
+def sec_from_lex(lextype):
+  if 'noun' in lextype:
+    return 'nounlex'
+  elif 'verb' in lextype:
+    return 'verblex'
+  else:
+    return 'otherlex'
+
 def customize_inflection():
   # Build a rule hierarchy for inflectional affixes.
 
@@ -4143,10 +4174,12 @@ def customize_inflection():
 
         rule_type = n + '-dir-inv-lex-rule'
         input_type = n + '-verb-lex'
+        mylang.set_section('dirinv')
+        mylang.add_literal(';;; Direct-inverse lexical rules')
         mylang.add(
           rule_type + ' := ' + super_type + ' & ' + \
           '[ DTR ' + input_type + ' ].')
-        mylang.add(input_type + ' := [ INFLECTED - ].')
+        mylang.add(input_type + ' := [ INFLECTED - ].', section='verblex')
 
         super_type = rule_type
 
@@ -4220,6 +4253,8 @@ def customize_inflection():
   reqd = []
   tracker = False
 
+  mylang.set_section('lexrules')
+
   # Big main loop to iterate over all the slots
   for slotprefix in ('noun', 'verb', 'det','aux'):
     ch.iter_begin(slotprefix + '-slot')
@@ -4280,7 +4315,7 @@ def customize_inflection():
             # basetypes to inherit from the intermediate rule as well.
             if not non_opt:
               for bt in basetype:
-                mylang.add(bt+' := '+inp+'.')
+                mylang.add(bt+' := '+inp+'.', section=sec_from_lex(bt))
           # If the single input is non-optional, make it the input value.
           else:
             inp = get_name(i_type) + '-lex-rule'
@@ -4293,7 +4328,7 @@ def customize_inflection():
         # inherit from the intermediate rule.
         if not non_opt:
           for bt in basetype:
-            mylang.add(bt+' := '+inp+'.')
+            mylang.add(bt+' := '+inp+'.', section=sec_from_lex(bt))
 
       # If this rule forces another rule to follow it, then we need
       # to define word-to-lexeme rule for this grammar.
@@ -4408,7 +4443,7 @@ def customize_inflection():
           [DTR ' + inp + '].')
         if basetype:
           for bt in basetype:
-            mylang.add(bt+ " := [INFLECTED -].")
+            mylang.add(bt+ ' := [INFLECTED -].', section=sec_from_lex(bt))
         #ERB 2009-07-01 Add in add-only-no-ccont-rule if needed, 
         #but cont-change-only-rule for negation.
         #Adding this here because it used to be part of lexeme-to-word-rule
@@ -4597,7 +4632,7 @@ def req(basetype, reqs, reqd, tracker, reqtype):
         # to add the feature TRACK
         if not tracker:
           mylang.add('track := avm.')
-          mylang.add('word-or-lexrule :+ [TRACK track].')
+          mylang.add('word-or-lexrule :+ [TRACK track].', section='addenda')
           tracker = True
 
       # Keep track of which rules have been constrained
@@ -4606,7 +4641,7 @@ def req(basetype, reqs, reqd, tracker, reqtype):
       reqs[stype].append(other)
 
       # Add a feature to track corresponding to this rule.
-      mylang.add('track :+ [' + name + ' bool].')
+      mylang.add('track := [' + name + ' bool].')
 
       # Set the root type(s) as having the track feature corresponding
       # to this rule as + or -
@@ -4878,6 +4913,17 @@ def customize_matrix(path, arch_type):
   # Create TDL object for each output file
   global mylang, rules, irules, lrules, lexicon, roots
   mylang =  tdl.TDLfile(matrix_path + ch.get('language').lower() + '.tdl')
+  mylang.define_sections([['addenda', 'Matrix Type Addenda', True, False],
+                          ['features', 'Features', True, False],
+                          ['dirinv', 'Direct-Inverse', True, False],
+                          ['lextypes', 'Lexical Types', True, True],
+                          ['nounlex', 'Nouns', False, False],
+                          ['verblex', 'Verbs', False, False],
+                          ['auxlex', 'Auxiliaries', False, False],
+                          ['otherlex', 'Others', False, False],
+                          ['lexrules', 'Lexical Rules', True, False],
+                          ['phrases', 'Phrasal Types', True, False],
+                          ['coord', 'Coordination', True, False]])
   rules =   tdl.TDLfile(matrix_path + 'rules.tdl')
   irules =  tdl.TDLfile(matrix_path + 'irules.tdl')
   lrules =  tdl.TDLfile(matrix_path + 'lrules.tdl')
@@ -4897,11 +4943,14 @@ def customize_matrix(path, arch_type):
   lisp_dt = current_dt.strftime('%Y-%m-%d_%H:%M:%S_UTC')
 
   # Put the current date/time in my_language.tdl...
-  mylang.add_literal(';;; Grammar of ' + ch.get('language') + '\n' +
-                     ';;; created at:\n' +
-                     ';;;     ' + tdl_dt + '\n' +
-                     ';;; based on Matrix customization system version of:\n' +
-                     ';;;     ' + matrix_dt)
+  mylang.add_literal(
+    ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n' +
+    ';;; Grammar of ' + ch.get('language') + '\n' +
+    ';;; created at:\n' +
+    ';;;     ' + tdl_dt + '\n' +
+    ';;; based on Matrix customization system version of:\n' +
+    ';;;     ' + matrix_dt + '\n' +
+    ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;')
 
   # BUT, put the date/time of the Matrix version in Version.lsp (along
   # with the name of the language.

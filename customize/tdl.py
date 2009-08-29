@@ -167,9 +167,10 @@ class TDLelem:
 class TDLelem_literal:
   def __init__(self, literal):
     self.child = []
-    self.comment = ""
-    self.literal = literal
+    self.comment = ''
     self.one_line = False
+    self.section = ''
+    self.literal = literal
 
   def write(self):
     if self.comment:
@@ -206,8 +207,9 @@ class TDLelem_literal:
 class TDLelem_typedef(TDLelem):
   def __init__(self, type, op):
     self.child = []
-    self.comment = ""
+    self.comment = ''
     self.one_line = False
+    self.section = ''
     self.type = type
     self.op = op
 
@@ -726,6 +728,20 @@ def TDLmerge(e1, e2):
   return e0
 
 ###########################################################################
+# A TDLsection describes a section in a TDLfile.  It has four attributes:
+#   name (the unique name by which the section can be addressed internally)
+#   comment (the comment that will precede the section)
+#   major (Boolean; True iff this is a major section
+#   force (Boolean; True iff the comment should appear even if the section
+#          is empty)
+class TDLsection:
+  name = ''
+  comment = ''
+  major = True
+  force = False
+
+
+###########################################################################
 # A TDLfile contains the contents of a single .tdl file.  It is initialized
 # with a file name, to which it will be eventually saved.  Statements can
 # be added to the TDLfile using the add() method.
@@ -734,7 +750,50 @@ class TDLfile:
   def __init__(self, file_name, merge_by_default = True):
     self.file_name = file_name  # we'll eventually save to this file
     self.typedefs = []
+    self.sections = []
+    self.section = ''
     self.merge_by_default = merge_by_default
+
+
+  def define_sections(self, sections):
+    """
+    Use the passed-in list of sections for this file.  The sections
+    list is a list of quadruples, each of which contains:
+      name (string)
+      comment (string)
+      major (Boolean)
+      force (Boolean)
+    (see TDLsection above for an explanation of these)
+    e.g., ['addenda', 'Matrix Type Addenda', True, False]).
+    """
+    for s in sections:
+      newsec = TDLsection()
+      newsec.name = s[0]
+      newsec.comment = s[1]
+      newsec.major = s[2]
+      newsec.force = s[3]
+      self.sections += [newsec]
+
+
+  def set_section(self, section):
+    """
+    Set the current section.  All subsequent typedefs or literals
+    added will be a part of this section (unless they explicitly
+    override the section) until the next call to set_section().
+    """
+    self.section = section
+
+
+  def write_comment(self, comment, major):
+    """
+    Write out a comment.  If major is True, write a three-line
+    (i.e. major-section) comment; otherwise, write a one-line comment;
+    """
+    if major:
+      TDLwrite((len(comment) + 6) * ';' + '\n')
+    TDLwrite(';;; ' + comment + '\n')
+    if major:
+      TDLwrite((len(comment) + 6) * ';' + '\n')
 
 
   def save(self):
@@ -743,14 +802,48 @@ class TDLfile:
 
     f = open(self.file_name, 'w')
     TDLset_file(f)
-    l = len(self.typedefs)
-    for i in range(l):
-      self.typedefs[i].write()
-      TDLwrite('\n')  # always at least one line break...
-      # ...and then another if it's not two one_line elements in a row
-      if i < l - 1:
-        if not (self.typedefs[i].one_line and self.typedefs[i+1].one_line):
+
+    # make sure there's an "empty" section so that typedefs not
+    # assigned to a section still get written out
+    sections = self.sections
+    has_empty = False
+    for s in sections:
+      if s.name == '':
+        has_empty = True
+        break
+    if not has_empty:
+      sections = [TDLsection()] + sections
+
+    # pass through the list of sections, for each writing out a
+    # header comment and all typedefs in the section
+    first_typedef = True
+    last_was_one_line = False
+    for s in sections:
+      comment_written = False
+      if s.force:
+        if first_typedef:
+          first_typedef = False
+        else:
           TDLwrite('\n')
+        self.write_comment(s.comment, s.major)
+        comment_written = True
+
+      for t in self.typedefs:
+        if t.section == s.name:
+          if first_typedef:
+            first_typedef = False
+          elif not (last_was_one_line and t.one_line):
+            TDLwrite('\n') # double-space unless two one-lines in a row
+
+          if not comment_written and s.comment:
+            self.write_comment(s.comment, s.major)
+            TDLwrite('\n')
+            comment_written = True
+
+          t.write()
+          TDLwrite('\n')
+          last_was_one_line = t.one_line
+    
     f.close()
 
 
@@ -786,14 +879,20 @@ class TDLfile:
     print '\n'
 
 
-  ###########################################################################
-  # Add a type definition to this file, merging with an existing definition
-  # if possible (unless the TDLfile is not set to merge_by_default and that's
-  # not overriden here).
-  def add(self, tdl_type, comment = '', one_line = False, merge = False):
+  def add(self, tdl_type,
+          comment = '', one_line = False, merge = False, section = ''):
+    """
+    Add a type definition to this file, merging with an existing
+    definition if possible UNLESS the TDLfile is not set to
+    merge_by_default and that's not overriden by the merge argument.
+    """
     typedef = TDLparse(tdl_type)
     typedef.set_comment(comment)
     typedef.set_one_line(one_line)
+
+    typedef.section = section
+    if not section:
+      typedef.section = self.section
 
     handled = False
     if self.merge_by_default or merge:
@@ -807,15 +906,23 @@ class TDLfile:
       self.typedefs.append(typedef)
 
 
-  ###########################################################################
-  # ERB 2006-09-22 Add just a comment to an existing type in the file.
-  def comment(self, tdl_type, comment):
+  def add_comment(self, tdl_type, comment):
+    """
+    Add a comment to an existing type in this file
+    """
     self.add(tdl_type + ':= [].', comment)
 
 
-  ###########################################################################
-  # Add a literal to this file, which doesn't merge
-  def add_literal(self, literal, comment = ''):
+  def add_literal(self, literal,
+                  comment = '', section = ''):
+    """
+    Add a literal string (which will never merge) to this file
+    """
     l = TDLelem_literal(literal)
     l.set_comment(comment)
+
+    l.section = section
+    if not section:
+      l.section = self.section
+
     self.typedefs.append(l)

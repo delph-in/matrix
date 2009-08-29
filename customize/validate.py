@@ -82,6 +82,9 @@ def validate_case():
   if cm in ['focus']:
     validate_one_case(cm + '-focus')
 
+  if cm == 'none' and ch.get('case1_name'):
+    add_err('case1_name', 'You may not specify additional cases if your language has no case marking.')
+
   if ch.get('scale1_feat1_name') and not ch.get('scale-equal'):
     add_err('scale-equal', 'If you define a direct-inverse scale, you must say what direction the verb is when the agent and patient have equal rank.')
 

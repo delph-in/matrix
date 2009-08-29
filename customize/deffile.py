@@ -17,6 +17,7 @@ import os
 import glob
 import re
 from choices import ChoicesFile
+from utils import tokenize_def
 
 
 ######################################################################
@@ -255,31 +256,29 @@ def html_option(errors, name, selected, html, temp=False):
          (name, sld, temp, html)
 
 
-# split a string into words, treating double-quoted strings as
-# single words.
-def tokenize_def(str):
+# given a list of lines of text, some of which may contain
+# unterminated double-quoted strings, merge some lines as necessary so
+# that every quoted string is contained on a single line, and return
+# the merged list
+def merge_quoted_strings(line):
   i = 0
-  result = []
+  while i < len(line):
+    j = 0
+    in_quotes = False
+    while j < len(line[i]):
+      if line[i][j] == '"' and (j == 0 or line[i][j-1] != '\\'):
+        in_quotes = not in_quotes
+      j += 1
 
-  while i < len(str):
-    # skip whitespace
-    while i < len(str) and str[i].isspace():
+    # if we reach the end of a line inside a quoted string, merge with
+    # the next line and reprocess the newly-merged line
+    if in_quotes:
+      line[i] += line[i+1] # crash here implies an unbalanced '"'
+      del line[i+1]
+    else:
       i += 1
-    # if it's quoted, read to the close quote, otherwise to a space
-    if i < len(str) and str[i] == '"':
-      i += 1
-      a = i
-      while i < len(str) and not (str[i] == '"' and str[i-1] != '\\'):
-        i += 1
-      result.append(str[a:i].replace('\\"', '"'))
-      i += 1
-    elif i < len(str):
-      a = i
-      while i < len(str) and not str[i].isspace():
-        i += 1
-      result.append(str[a:i])
 
-  return result
+  return line
 
 
 # Replace variables of the form {name} in word using the dict iter_vars
@@ -321,7 +320,7 @@ class MatrixDefFile:
   # initialize the v2f and f2v dicts
   def make_name_map(self):
     f = open(self.def_file, 'r')
-    line = f.readlines()
+    line = merge_quoted_strings(f.readlines())
     f.close()
   
     for l in line:
@@ -383,8 +382,9 @@ class MatrixDefFile:
       pass
 
     f = open(self.def_file, 'r')
-    line = f.readlines()
+    line = merge_quoted_strings(f.readlines())
     f.close()
+    
 
     # pass through the definition file once, augmenting the list of validation
     # errors with section names so that we can put red asterisks on the links
@@ -419,15 +419,17 @@ class MatrixDefFile:
       if len(word) == 0:
         pass
       elif word[0] == 'Section':
-        print '<div class="section"><span id="' + word[1] + \
-              'button" onclick="toggle_display(\'' + \
-              word[1] + '\',\'' + word[1] + 'button\')">&#9658;</span> '
+        print '<div class="section"><span id="' + word[1] + 'button" ' + \
+              'onclick="toggle_display(\'' + \
+              word[1] + '\',\'' + word[1] + 'button\')"' + \
+              '>&#9658;</span> '
         if errors.has_key(word[1]):
           print '<span class="error" title="This section contains one or more errors.">* </span>'
         print '<a href="matrix.cgi?subpage=' + word[1] + '">' + \
               word[2] + '</a>'
         print '<div class="values" id="' + word[1] + '" style="display:none">'
         cur_sec = ''
+        printed_something = False
         for c in choice:
           c = c.strip()
           if c:
@@ -436,6 +438,9 @@ class MatrixDefFile:
               cur_sec = v.strip()
             elif cur_sec == word[1]:
               print self.f(a) + ' = ' + self.f(v) + '<br>'
+              printed_something = True
+        if not printed_something:
+          print '&nbsp;'
         print '</div></div>'
 
     print HTML_preform
@@ -704,7 +709,7 @@ class MatrixDefFile:
     choices = ChoicesFile(choices_file)
 
     f = open(self.def_file, 'r')
-    lines = f.readlines()
+    lines = merge_quoted_strings(f.readlines())
     f.close()
 
     section_begin = -1
@@ -862,7 +867,7 @@ class MatrixDefFile:
 
     # Open the def file and store it in line[]
     f = open(self.def_file, 'r')
-    lines = f.readlines()
+    lines = merge_quoted_strings(f.readlines())
     f.close()
 
     # Now pass through the def file, writing out either the old choices
