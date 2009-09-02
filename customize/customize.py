@@ -8,8 +8,7 @@ import datetime
 import shutil
 import tdl
 import tarfile
-if os.name == 'nt':
-  import gzip
+import gzip
 import zipfile
 import sys
 import re
@@ -4865,14 +4864,13 @@ def make_tgz(dir):
   t.add(dir)
   t.close()
 
-  if os.name == 'nt':
-    g = gzip.open(archive + '.gz', 'wb')
-    f = open(archive, 'rb')
-    g.write(f.read())
-    f.close()
-    g.close()
-  else:
-    os.system('gzip ' + archive)
+  g = gzip.open(archive + '.gz', 'wb')
+  f = open(archive, 'rb')
+  g.write(f.read())
+  f.close()
+  g.close()
+
+  os.remove(archive)
 
 
 def add_zip_files(z, dir):

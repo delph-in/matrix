@@ -59,6 +59,8 @@ if [ -z $1 ]; then
 	echo "run-unit-tests: Problem with unit-test-index, cannot run unit tests."
 	exit
     fi
+
+    ./cleanup-unit-tests.sh
 else 
     lgnames=$1
 fi
@@ -147,8 +149,6 @@ do
 
 	if [ -e $tsdbhome/$target ]; then
 	    rm -rf "$tsdbhome/$target"
-	    #rm -rf "$tsdbhome/$target"/*
-	    #rmdir "$tsdbhome/$target"
 	else
 	    echo "Probable tdl error; grammar failed to load." >> $log
 	fi

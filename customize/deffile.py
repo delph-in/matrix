@@ -445,12 +445,8 @@ class MatrixDefFile:
 
     print HTML_preform
 
-    tgz_checked = False
+    tgz_checked = True
     zip_checked = False
-    if os.name == 'nt':
-      zip_checked = True
-    else:
-      tgz_checked = True
 
     # the buttons after the subpages
     print html_input(errors, 'hidden', 'customize', 'customize', False, '', '')

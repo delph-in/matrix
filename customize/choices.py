@@ -19,6 +19,8 @@ class ChoicesFile:
   def __init__(self, choices_file):
     self.file_name = choices_file
     self.iter_stack = []
+    self.cached_values = {}
+    self.cached_iter_values = None
     self.choices = {}
     try:
       if type(choices_file) == str:
@@ -98,6 +100,11 @@ class ChoicesFile:
     return self.choices.keys()
 
 
+  def clear_cached_values(self):
+    self.cached_values = {}
+    self.cached_iter_values = None
+
+
   ######################################################################
   # Choices values and iterators:
   #
@@ -139,7 +146,19 @@ class ChoicesFile:
       key = key[0:offset]
       
     self.iter_stack.append([key, var, True])
-    self.iter_stack[-1][2] = self.__calc_iter_valid()
+
+    # if the beginning of the iterator isn't valid, try bumping up to
+    # the next valid value
+    valid = self.__iter_is_valid()
+    if not valid:
+      self.iter_next()
+      # if there was no next valid value, start at the requested
+      # position (since the caller may be writing rather than reading)
+      if not self.iter_valid():
+        self.iter_stack[-1][0] = key
+        self.iter_stack[-1][1] = var
+        self.iter_stack[-1][2] = False
+
 
   # Are there any choices with a name prefixed by the current
   # iterator?  Useful as the condition in loops.
@@ -149,18 +168,27 @@ class ChoicesFile:
     else:
       return False
 
+
   def iter_next(self):
-    self.iter_stack[-1][1] += 1
-    self.iter_stack[-1][2] = self.__calc_iter_valid()
+    next = self.__iter_next_valid()
+    if next != -1:
+      self.iter_stack[-1][1] = next
+      self.iter_stack[-1][2] = True
+    else:
+      self.iter_stack[-1][1] += 1
+      self.iter_stack[-1][2] = False
+
 
   def iter_end(self):
     self.iter_stack.pop()
+
 
   def iter_prefix(self):
     prefix = ''
     for i in self.iter_stack:
       prefix += i[0] + str(i[1]) + '_'
     return prefix
+
 
   def iter_max(self,key):
     count = 0
@@ -170,18 +198,93 @@ class ChoicesFile:
       self.iter_next()
     self.iter_end()
     return count
-      
-  # Based on the current top of the iterator stack, decide if the
-  # iterator is valid -- that is, if there are exist any values in the
-  # choices dictionary for which the current iterator is a prefix.
-  # Users should not call this.
-  def __calc_iter_valid(self):
-    prefix = self.iter_prefix()
-    valid = False
+
+
+  def __iter_calc_valid(self):
+    """
+    Pass through the keys for the current choices and pre-calculate
+    the valid numerical ranges for each iterator.  Store the values
+    found in cached_iter_values.
+    """
+    self.cached_iter_values = {}
+    pat = re.compile('([0-9]+)_')
     for k in self.keys():
-      if k[0:len(prefix)] == prefix:
-        return True
-    return False
+      offset = 0
+      klen = len(k)
+      while offset < klen:
+        match = pat.search(k[offset:])
+        if match:
+          num = int(match.group(1))
+          name = k[:offset + match.start(1)]
+
+          # in this loop, store values as sets to avoid duplicates
+          if self.cached_iter_values.has_key(name):
+            self.cached_iter_values[name].add(num)
+          else:
+            newval = set()
+            newval.add(num)
+            self.cached_iter_values[name] = newval
+            
+          offset += match.end()
+        else:
+          break
+
+    # now convert sets to sorted lists so its easy to find the max
+    for k in self.cached_iter_values.keys():
+      self.cached_iter_values[k] = sorted(list(self.cached_iter_values[k]))
+
+
+  def __iter_name_and_num(self):
+    """
+    Return the name and number of the current iteration state.
+    """
+    if not self.cached_iter_values:
+      self.__iter_calc_valid()
+
+    num = self.iter_stack[-1][1]
+
+    prefix = self.iter_prefix()
+    match = re.search('[0-9]+_$', prefix)
+    name = prefix[:match.start()]
+
+    return (name, num)
+
+
+  def __iter_is_valid(self):
+    """
+    Return true if the iterator on top of the stack is valid -- that
+    is, if there are exist any values in the choices dictionary for
+    which the current iterator is a prefix.
+    """
+    if not self.cached_iter_values:
+      self.__iter_calc_valid()
+
+    (name, num) = self.__iter_name_and_num()
+
+    return self.cached_iter_values.has_key(name) and \
+           num in self.cached_iter_values[name]
+
+
+  def __iter_next_valid(self):
+    """
+    Return the next valid numerical value for the current iterator.
+    If there is no valid value greater than the current value, return
+    -1.
+    """
+    if not self.cached_iter_values:
+      self.__iter_calc_valid()
+
+    (name, num) = self.__iter_name_and_num()
+
+    if self.cached_iter_values.has_key(name):
+      nums = self.cached_iter_values[name]
+      if num in nums:
+        i = nums.index(num) + 1
+        if i < len(nums):
+          return nums[i]
+
+    return -1
+
 
   ######################################################################
   # Methods for saving and restoring the iterator state (the stack)
@@ -189,8 +292,10 @@ class ChoicesFile:
   def iter_state(self):
     return self.iter_stack
 
+
   def iter_set_state(self,state):
     self.iter_stack = state
+
 
   def iter_reset(self):
     self.iter_stack = []
@@ -208,14 +313,19 @@ class ChoicesFile:
     else:
       return ''
 
+
   # Set the value of 'key' to 'value'
   def set_full(self, key, value):
     self.choices[key] = value
+    self.clear_cached_values()
+
 
   # Remove 'key' and its value from the list of choices
   def delete_full(self, key):
     if self.is_set_full(key):
       del self.choices[key]
+      self.clear_cached_values()
+
 
   # Return True iff there if 'key' is currently set
   def is_set_full(self, key):
@@ -230,13 +340,16 @@ class ChoicesFile:
   def get(self, key):
     return self.get_full(self.iter_prefix() + key)
 
+
   # Set the value of 'key' to 'value'
   def set(self, key, value):
     self.set_full(self.iter_prefix() + key, value)
 
+
   # Remove 'key' and its value from the list of choices
   def delete(self, key):
     self.delete_full(self.iter_prefix() + key)
+
 
   # Return True iff there if 'key' is currently set
   def is_set(self, key):
@@ -256,6 +369,10 @@ class ChoicesFile:
     lexically marked case (restricting the calculation to the
     passed-in case if it's non-empty).
     """
+
+    k = 'has_noun_case(' + case + ')'
+    if self.cached_values.has_key(k):
+      return self.cached_values[k]
 
     result = False
 
@@ -294,6 +411,8 @@ class ChoicesFile:
       self.iter_end()
 
     self.iter_set_state(state)
+
+    self.cached_values[k] = result
 
     return result
 

@@ -704,9 +704,9 @@ def TDLmerge(e1, e2):
           e0.add(TDLmerge(e1.child[i], e2.child[i]))
         else:
           if i < len(e1.child):
-            e0.add(copy.deepcopy(e1.child[i]))
+            e0.add(copy.copy(e1.child[i]))
           if i < len(e2.child):
-            e0.add(copy.deepcopy(e2.child[i]))
+            e0.add(copy.copy(e2.child[i]))
     else:
       for c in e1.child + e2.child:
         handled = False
@@ -717,11 +717,11 @@ def TDLmerge(e1, e2):
             handled = True
             break
         if not handled:
-          e0.add(copy.deepcopy(c))
+          e0.add(copy.copy(c))
   else:
     e0 = TDLelem_conj()
-    e0.add(copy.deepcopy(e1))
-    e0.add(copy.deepcopy(e2))
+    e0.add(copy.copy(e1))
+    e0.add(copy.copy(e2))
 
   e0.sort()
 
