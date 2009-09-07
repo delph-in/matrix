@@ -256,6 +256,26 @@ def html_option(errors, name, selected, html, temp=False):
          (name, sld, temp, html)
 
 
+def html_delbutton(id):
+  """
+  return the HTML for an iterator delete button that will delete
+  iterator "id"
+  """
+  # Various Unicode exxes:
+  # xD7:   Multiplication Sign
+  # x2169: Roman Numeral Ten
+  # x2179: Small Roman Numeral Ten
+  # x2573: Box Drawings Light Diagonal Cross
+  # x2613: Saltire
+  # x2715: Multiplication X
+  # x2716: Heavy Multiplication X
+  # x2717: Ballot X
+  # x2718: Heavy Ballot X
+  return '<input type="button" class="delbutton" ' + \
+         'value="&#xD7;" name="" title="Delete" ' + \
+         'onclick="remove_element(\'' + id + '\')">\n'
+
+
 # given a list of lines of text, some of which may contain
 # unterminated double-quoted strings, merge some lines as necessary so
 # that every quoted string is contained on a single line, and return
@@ -657,19 +677,26 @@ class MatrixDefFile:
 
         html += '<div class="iterator" style="display: none" id="' + \
                 prefix + iter_name + '_TEMPLATE">\n'
+        html += html_delbutton(prefix + iter_name + '{' + iter_var + '}')
+        html += '<div class="iterframe">'
         html += self.defs_to_html(lines[beg:end], choices, errors,
                                   prefix + iter_orig + '_', vars)
+        html += '</div>\n'
         html += '</div>\n\n'
 
         choices.iter_begin(iter_name)
         cur = 1
         while choices.iter_valid() or cur <= iter_min:
-          pre = prefix + iter_name + str(cur) + '_'
-          vars[iter_var] = cur
+          num = str(choices.iter_num())
+          pre = prefix + iter_name + num + '_'
+          vars[iter_var] = num
 
           # pre[:-1] trims the trailing '_'
           html += '<div class="iterator" id="' + pre[:-1] + '">\n'
+          html += html_delbutton(pre[:-1])
+          html += '<div class="iterframe">'
           html += self.defs_to_html(lines[beg:end], choices, errors, pre, vars)
+          html += '</div>\n'
           html += '</div>\n'
 
           choices.iter_next()
@@ -684,10 +711,6 @@ class MatrixDefFile:
                 'onclick="clone_region(\'' + \
                 prefix + iter_name + '\', \'' + \
                 iter_var + '\')">'
-        html += '<input type="button" name="" ' + \
-                'value="Remove ' + label + '" ' + \
-                'onclick="remove_region(\'' + \
-                prefix + iter_name + '\')"></p>\n'
 
       i += 1
 

@@ -190,6 +190,10 @@ class ChoicesFile:
     return prefix
 
 
+  def iter_num(self):
+    return self.iter_stack[-1][1]
+
+
   def iter_max(self,key):
     count = 0
     self.iter_begin(key)
@@ -282,6 +286,8 @@ class ChoicesFile:
         i = nums.index(num) + 1
         if i < len(nums):
           return nums[i]
+      else:
+        return nums[0]
 
     return -1
 

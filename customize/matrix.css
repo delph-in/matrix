@@ -14,39 +14,46 @@ html { overflow: scroll }
 
 .dfn { font-weight: bold }
 
+.delbutton {
+  color: red;
+  float: left;
+  padding: 0px 0px 0px 0px;
+  width: 1.5em;
+}
+
 div.anchor { display: none }
 
-div.iterator {
+div.iterframe {
   padding-left: 2px;
-  margin: 4px 0px 4px 16px;
+  margin: 4px 0px 4px 20px;
   border-left-width: 3px;
   border-left-style: solid;
 }
 
-div.iterator {
+div.iterframe {
   border-color: #808080;
 }
 
-div.iterator div.iterator {
+div.iterframe div.iterframe {
   border-color: #8080FF;
 }
 
-div.iterator div.iterator div.iterator {
+div.iterframe div.iterframe div.iterframe {
   border-color: #80FF80;
 }
 
-div.iterator div.iterator div.iterator div.iterator {
+div.iterframe div.iterframe div.iterframe div.iterframe {
   border-color: #FF80FF;
 }
 
-div.iterator div.iterator div.iterator div.iterator div.iterator {
+div.iterframe div.iterframe div.iterframe div.iterframe div.iterframe {
   border-color: #FFFF80;
 }
 
-div.iterator div.iterator div.iterator div.iterator div.iterator div.iterator {
+div.iterframe div.iterframe div.iterframe div.iterframe div.iterframe div.iterframe {
   border-color: #80FFFF;
 }
 
-div.iterator div.iterator div.iterator div.iterator div.iterator div.iterator div.iterator {
+div.iterframe div.iterframe div.iterframe div.iterframe div.iterframe div.iterframe div.iterframe {
   border-color: #FF8080;
 }
