@@ -27,6 +27,9 @@ Contents:
     - main code that pulls arguments off the command line to call main()
     - module testing code that allows for local testing of unit functions and the entire module.  It
       can be ignored.
+Tables accessed: harv_str, mrs, feat_grp, lt_feat_grp, orig_source_profile, mrs, sp_item,
+                           sp_parse, sp_result
+Tables modified: lt_feat_grp, orig_source_profile, harv_str, mrs, sp_item, sp_parse, sp_result
 """
 ############################################################
 # Script for importing data from [incr tsdb()] profile into
@@ -100,9 +103,7 @@ Contents:
 ##########################################################################
 # Preliminaries
 
-import sys
-import os
-import datetime
+import sys, os, datetime, db_utils
 from validate import validate_choices
 from sql_lg_type import create_or_update_lt
 from choices import ChoicesFile
@@ -129,19 +130,24 @@ def validate_string_list(harv_mrs, itsdbDir):
     Functionality:  validates the combo of file with harvester strings and the [incr_tsdb()] profile.
                          Ensures each item in the profile is a harvester string and vice-versa.  Ensures
                          each harvester string is unique and that each given mrs tag is unique.
+    Tables accessed: none
+    Tables modified: none
     """
     mrs_dict = {}               # initialize output dict
     f = open(harv_mrs)      # open the harvester string file
 
-    # convert lines in f to arrays of harvester string and then mars tag
+    # convert lines in f to arrays of harvester string and then mrs tag
     hlines = [line.strip().split('@') for line in f.readlines()]
     f.close()                       # close the harvester string file
     
     for line in hlines:         # for every harvester string line in harvester string file...
+        # ...assert that it hasn't appeared before in the file.  If it has, raise an AssertionError
+        assert (line[1] not in mrs_dict), 'bad file format: ' + line[1] + ' appears twice as a string ' + \
+                                                      'in ' + harv_mrs + ' file.'
         try:
-            # ...insert the mrs tag as the value of the string as the key
+            # If it's a unique string for the file, insert the mrs tag as the value of the string as the key
             mrs_dict[line[1]] = line[0]
-        except IndexError:                  # if the array doesn't have enough items...
+        except IndexError:                  # if the line array doesn't have enough items...
             # ...raise an error indicating problem.
             raise ValueError, "File " + harv_mrs + " is not a well-formed input file. " + \
                                       "Line format should be mrs_tag@string"
@@ -154,27 +160,22 @@ def validate_string_list(harv_mrs, itsdbDir):
     itemFile.close()                                    # close the item file
 
     for item in ilines:                             # for each item in the profile...
-        if not mrs_dict.has_key(item):      # ..verify it is was given in the harv string file
+        if item not in mrs_dict:      # ..verify it is was given in the harv string file
             # ...and if not, raise an error.
             raise ValueError, "Item " + item + " in " + itsdbDir + "item is not represented in " + \
                                       harv_mrs + "."
 
-    mrs_keys = mrs_dict.keys()          # get the set of given harvester strings
-
-    for string in mrs_keys:                  # for each harvester string...
+    for string in mrs_dict:                  # for each harvester string...
         if ilines.count(string) == 0:        # ...verify it is in the profile as an item...
             # ...if not, raise an error.
             raise ValueError, "Item " + string + " in " + harv_mrs + " is not represented in " + \
                                       itsdbDir + "item."
-        if mrs_keys.count(string) > 1:   # ...also verify it doesn't appear multiple times as an item
-            # ...if so, raise an error.
-            raise ValueError, "Item " + string + " appears more than once in " + harv_mrs + "."
 
     mrs_tags = mrs_dict.values()        # get the set of given mrs tags.
 
     for tag in mrs_tags:                        # for each given mrs tag...
         if mrs_tags.count(tag) > 1:         # ...verify it only appears once in the harv file.
-            # if it appears more than once ,raise an error.
+            # if it appears more than once, raise an error.
             raise ValueError, "Mrs tag " + string + " appears more than once in " + harv_mrs + "."
   
     return mrs_dict                             # return output
@@ -188,7 +189,7 @@ def check_for_known_mrs_tags(mrs_dict, conn):
     Input: 
         mrs_dict - a dict whose keys are the harvester strings and whose tags are the mrs tags for
                         those strings
-        conn - a MatrixTDBConn
+        conn - a MatrixTDBConn, a connection to a MatrixTDB database
     Output:
         new_mrs_tags - a set of mrs tags that are values of mrs_dict that are not already in the db.
         known_mrs_tags - a set of mrs tags that are values of mrs_dict taht are already in the db.
@@ -205,21 +206,18 @@ def check_for_known_mrs_tags(mrs_dict, conn):
 
     # get every mrs tag out of the db
     rows = conn.selQuery("SELECT mrs_tag FROM mrs")
-
-    db_tags = set([row[0] for row in rows])  # put mrs tags in database into a set
+    db_tags = db_utils.selColumnToSet(rows)  # put mrs tags in database into a set
 
     # get a set of the mrs tags given in harvester_mrs input file
     input_tags = set(mrs_dict.values())
     input_strings = set(mrs_dict.keys())    # get a set of the harv strings given in same file
 
-    # TODO: could i make this faster with sets?  like, using differences and intersections instead
-    # of for loops?
-    for tag in input_tags:                           # for each mrs tag given...
-        if tag in db_tags:                             # ...if that tag is already in the db
-            known_mrs_tags.add(tag)           # ...add it to the set of known tags
-        else:                                              # ...otherwise...
-            new_mrs_tags.add(tag)               # ...add it to the set of new tags
+    # create a set of all of the input mrs tags that are already in the database
+    known_mrs_tags = input_tags.intersection(db_tags)
 
+    # create a set of all of the input mrs tags that are not yet in the database
+    new_mrs_tags = input_tags.difference(known_mrs_tags)
+    
     if len(known_mrs_tags) == 0:                # if every given tag is new...
         # ...ask user if that was the intent.
         res  =  raw_input("All of the mrs_tags you are reporting are new.\n" + \
@@ -233,24 +231,33 @@ def check_for_known_mrs_tags(mrs_dict, conn):
         diff_string_tags = []               # initialize list of strings that are different.
 
         for tag in known_mrs_tags:            # for every mrs tag that we already knew about...
-            s1 = find_string(tag, mrs_dict)     # get the given harvester string as s1
+            inputString = find_string(tag, mrs_dict)     # get the input harvester string as inputString
+            
             try:
-                # get the string that is in the database for this tag as s2
-                # TODO: would we have a case where the tag has two strings in db?
-                s2 = conn.selQuery("SELECT hs_string FROM harv_str " + \
-                                           "WHERE hs_mrs_tag = %s",(tag))[0][0]
+                # get the string that is in the database for this tag as dbString
+                # NB: each mrs tag should have only one harvester string in the db
+                dbString = conn.selQuery("SELECT hs_string FROM harv_str " + \
+                                                      "WHERE hs_mrs_tag = %s",(tag))[0][0]
             except IndexError:
-                s2 = ''         # make s2 the empty string if tag wasn't associated with a string
+                dbString = ''   # make dbString the empty string if tag wasn't associated with a string
 
             # TODO: test this function with the new indenting.
-            if s1 == s2:
+            # if the input string is the same as that in the db already for this tag...            
+            if inputString == dbString:
+                
+                # add that tag to the list of tags that have the same input string as that already in
+                # the database
                 same_string_tags.append(tag)
-            else:
-                diff_string_tags.append(tag)
+            else:                                           # otherwise...
 
+                # ...add the tag to the list of tags with different input strings from that already in
+                # database                
+                diff_string_tags.append(tag)                   
+
+        # if there were any tags input whose harvester string is different from that of the tag already
+        # in db...
         if len(diff_string_tags) > 0:
-            # we shouldn't ge using old mrs tags for new strings here, so if we are inform user of
-            # what they did wrong and exit
+            # tell user they created a problem and exit
             print "The following mrs_tags are already in MatrixTDB with\n different harvester " + \
                      "strings associated with them.\n"
             print diff_string_tags
@@ -259,13 +266,17 @@ def check_for_known_mrs_tags(mrs_dict, conn):
                      "modifying stringmod.py rather than\n adding harvester strings.\n"
             print "MatrixTDB has not been modified.\n"
             sys.exit()
+
+        # otherwise, if the user tried to input a tag/harv_string pair already in the db...            
         elif len(same_string_tags) > 0:
-            # if the user is using old mrs tags with old strings...
+            #... let the user know about it
             print "The following mrs_tags already exist in MatrixTDB with\n the harvester " + \
                     "string indicated.\n"
             print same_string_tags
 
-            # ...ask them if they want to update the MRSs associated with those.
+            # and ask them if they want to update the MRSs associated with those.
+            # NB: by MRS here we seem to mean not the tag, which we've established is the same,
+            # but the actual semantic representation
             res = raw_input("If you mean to update the MRSs associated with them,\n press " + \
                                     "'y' to continue (any other key will abort): ")
             if res != 'y':          # if that's not what they want,...
@@ -284,8 +295,7 @@ def check_for_known_mrs_tags(mrs_dict, conn):
                 sys.exit()    # ...exit
 
     # return sets of mrs tags they gave us either as new tags or tags already in db.
-    return [new_mrs_tags, known_mrs_tags]
-
+    return (new_mrs_tags, known_mrs_tags)
 
 ###########################################################################
 # Create new row in orig_source_profile
@@ -336,7 +346,7 @@ def update_harv_str(new_mrs_tags, known_mrs_tags, mrs_dict, osp_id, conn):
     Function: update_harv_str
     Input:
         new_mrs_tags - a set of mrs tags that are values of mrs_dict that are not already in the db
-        known_mrs_tags - a set of mrs tags that are values of mrs_dict taht are already in the db
+        known_mrs_tags - a set of mrs tags that are values of mrs_dict that are already in the db
         mrs_dict - a dict whose keys are the harvester strings and whose tags are the mrs tags for
                         those strings
         osp_id - the ID of an original source profile
@@ -347,22 +357,23 @@ def update_harv_str(new_mrs_tags, known_mrs_tags, mrs_dict, osp_id, conn):
     Tables accessed: harv_str
     Tables modified: harv_str
     """
-    # TODO: would this make more sense to go through the mrs_dict, comparing for inclusion in
-    # new_mrs_tags and known_mrs_tags?
-    for tag in new_mrs_tags:                    # for every mrs tag not already in db...
-        harv = find_string(tag, mrs_dict)       # ...get the harvester string corresponding to it
+    for (harv, tag) in mrs_dict.items():    # for every string and tag in mrs_dict...
+        if tag in new_mrs_tags:               # ...if it is a new mrs tag...
 
-        # insert the string/tag combo into the database and link it to osp_id for both its original
-        # osp and its current osp
-        conn.execute("INSERT INTO harv_str " + \
-                           "SET hs_string = %s,  hs_mrs_tag = %s, hs_init_osp_id = %s, " + \
-                            "hs_cur_osp_id = %s", (harv, tag, osp_id, osp_id))
+            # ...insert the string/tag combo into the database and link it to osp_id for both its original
+            # osp and its current osp
+            conn.execute("INSERT INTO harv_str " + \
+                               "SET hs_string = %s,  hs_mrs_tag = %s, hs_init_osp_id = %s, " + \
+                                "hs_cur_osp_id = %s", (harv, tag, osp_id, osp_id))
+        elif tag in known_mrs_tags:         # ...but if it is a new mrs tag...
 
-    for tag in known_mrs_tags:      # for every mrs tag that we already had in db...
-        # ...set its current osp to osp_id
-        conn.execute("UPDATE harv_str SET hs_cur_osp_id = %s " + \
-                           "WHERE hs_mrs_tag = %s", (osp_id, tag))
-
+            # ...set its current osp to osp_id
+            conn.execute("UPDATE harv_str SET hs_cur_osp_id = %s " + \
+                               "WHERE hs_mrs_tag = %s", (osp_id, tag))
+        else:                                         # ...and if it's neither a new nor known mrs tag...
+            # ...tell the user we have a problem and exit
+            raise ValueError, 'update_harv_str: tag in mrs_dict that is neither in new_mrs_tags, ' + \
+                                      'nor in known_mrs_tags. harv: ' + harv + '. tag: ' + tag
     return
 
 ###########################################################################
@@ -381,6 +392,8 @@ def find_string(tag, mrs_dict):
     Output: answer - the harvester string corresponding to the mrs tag tag in mrs_dict
     Functionality: returns the harvester string corresponding to an mrs tag in mrs_dict.  raises a
                          ValueError if tag isn't in mrs_dict
+    Tables accessed: none
+    Tables modified: none
     """
     for (key, value) in mrs_dict.items():       # for each key/value pair in mrs_dict
         if value == tag:                                # look for the tag matching input tag
@@ -419,16 +432,11 @@ def update_mrs(mrs_dict, osp_id, new_mrs_tags, known_mrs_tags, profDir, timestam
     Tables accessed: mrs
     Tables modified: mrs
     """
-    # TODO: now that new_mrs_tags have been inserted into harv_str, is there a reason I have
-    # them as two separte sets here?  Should I refactor?
-
     # Read in info from itsdb files
+    
     harv_id = {}                # initalize dict mapping harvester strings to item IDs
     parse_id = {}             # initialize dict mapping item IDs to parse IDs
     mrs_values = {}         # initalize dict mapping parse IDs to mrs semantics values    
-
-    # get the harvester strings out of mrs_dict and assign to input_strings    
-    input_strings = mrs_dict.keys() 
 
     itemFile = open(profDir + "item", 'r')      # open the profile's item file
 
@@ -463,6 +471,9 @@ def update_mrs(mrs_dict, osp_id, new_mrs_tags, known_mrs_tags, profDir, timestam
         
     resFile.close()                                  # close the result file
        
+    # TODO: make this into one loop through mrs_dict with an if statement inside instead of
+    # two loops with all those costly calls to find_string
+    
     # For new mrs tags, create a new entry in mrs table:
     for tag in new_mrs_tags:                            # for every new mrs tag
         i_input = find_string(tag, mrs_dict)          # get the harvester string
@@ -504,6 +515,8 @@ def read_profile_file(filename):
                                lists are the columns/fields in each row
     Functionality: Breaks up a [incr_tsdb()] file into a list (representing each row) of lists
                         (representing each field in the row)
+    Tables accessed: none
+    Tables modified: none
     """
     # TODO: couldn't this function be used in update_mrs?
     contents = []                                # initalize output list
@@ -608,6 +621,8 @@ def validateProfile(itsdbDir):
     Ouptut: answer - True if itsdbDir points to a valid profile, False otherwise
     Functionality: validates that itsdbDir exists and contains the three main files: item, result, and
                          parse
+    Tables accessed: none
+    Tables modified: none
     """
     # check that the path exists as well as the three files we're importing
     if (os.path.exists(itsdbDir) and os.path.exists(itsdbDir + "item") and
@@ -634,6 +649,9 @@ def main(itsdb_dir, harv_mrs, choices_filename, conn = None):
     Output: none
     Functionality: runs through all the steps of importing a set of harvester strings and the
                          corresponding mrs tags and [incr_tsdb()] profile to MatrixTDB
+    Tables accessed: harv_str, mrs, feat_grp, lt_feat_grp, orig_source_profile, mrs, sp_item,
+                               sp_parse, sp_result
+    Tables modified: lt_feat_grp, orig_source_profile, harv_str, mrs, sp_item, sp_parse, sp_result
     """
     if conn is None:                            # if the user doesn't supply a connection to a db...
         conn = MatrixTDBConn()           # ...use this one by default
@@ -665,7 +683,7 @@ def main(itsdb_dir, harv_mrs, choices_filename, conn = None):
     choices = ChoicesFile(choices_filename)
 
     # Check for presence of known mrs tags, and query user
-    [new_mrs_tags, known_mrs_tags] = check_for_known_mrs_tags(mrs_dict, conn)
+    (new_mrs_tags, known_mrs_tags) = check_for_known_mrs_tags(mrs_dict, conn)
     
     # 1) Look up or create LT entry in lt and lt_feat_grp
     # This will also make sure that lt_feat_grp is up to date
@@ -675,7 +693,7 @@ def main(itsdb_dir, harv_mrs, choices_filename, conn = None):
     # 2) Ask user for comment to store about this source profile
     # 3) Create a new row in orig_source_profile with information
     # about this source profile.
-    [osp_id, timestamp] = update_orig_source_profile(lt_id, conn)
+    (osp_id, timestamp) = update_orig_source_profile(lt_id, conn)
 
     # Insert new mrs tags into harv_str and links them to osp_id.  Link existing mrs tags to osp_id
     # as well.

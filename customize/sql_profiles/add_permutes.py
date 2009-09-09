@@ -36,8 +36,12 @@ Contents: (listed, when possible, in order of execution)
     insert_many_items - function that, like insert_item (except does for many string/mrs pairs, not
                                    just one), inserts a set of string/mrs pairs into the item_tsdb, parse, and
                                    result tables
+    runUnivFltrs - function that runs a string/mrs combo through universal filters until one fails to
+                        see if we have a string/mrs combo that passes all universal filters
 Tables Accessed: seed_str, str_lst, item_tsdb, parse, result, harv_str
 Tables Updated: seed_str, str_lst, item_tsdb, parse, result
+History:
+    9/8/09 - made changes to only insert those permutes that pass all universal filters
 """
 #######################################################################
 # DB-ified version of make_master_resource.  Assumes harvester profile
@@ -77,6 +81,7 @@ from stringmod import string_mods
 from stringmod import glue
 from post_permutes import post_permutes
 from matrix_tdb_conn import MatrixTDBConn
+from u_filters import filter_list as ufilter_list
 
 ######################################################################
 # A function that takes a list of words and returns a list of lists
@@ -759,7 +764,7 @@ def insert_many_items(stringList, osp_id, conn):
     Tables accessed: item_tsdb, parse, result
     Tables modified: item_tsdb, parse, result
     """
-    # because I call this on x mod 1000 == 0, I call this with lists of length 0
+    # because I call this on x mod 10000 == 0, I call this with lists of length 0
     # and because I start by inserting just the first one, check to see there are actually items
     # in the list
     if len(stringList) > 0:
@@ -842,26 +847,23 @@ def insert_many_items(stringList, osp_id, conn):
 # If specific osp_id, just look for harvester strings belonging to that
 # osp_id.
 
-def main(conn):
+def main(osp_id, conn):
     """
     Function: main
     Input:
+        osp_id - the id of an original source profile in MatrixTDB
         conn - a MatrixTDBConn, a connection to the MatrixTDB database    
     Output: none
-    Functionality: prompts user for a source profile id, then generates every possible permutation
-                         of every possible seed string for the harvester strings in that source profile
-                         and inserts them into the MatrixTDB database
+    Functionality: generates every possible permutation of every possible seed string for the
+                         harvester strings in the input source profile and inserts them into the
+                         MatrixTDB database
     Tables Accessed: seed_str, str_lst, item_tsdb, parse, result, harv_str
     Tables Updated: seed_str, str_lst, item_tsdb, parse, result
+    History:
+        9/8/09 - started changing code not to really add all permutes...just those that pass all
+                    universal filters
     """
-    # get the id of the original source profile the user wants to add permutes for.  This is given to
-    # you by import_from_itsdb.
-    osp_id = raw_input("Please input original source profile id (osp_id) for the source\n" + \
-                                 "profile you're working with.  If you've updated the string\n" + \
-                                  "modifications and wish to update seed strings for all harvester\n" + \
-                                  "strings, enter 'a' ")
-
-    # ...get that osp's harvester strings and mrs tags
+    # get the osp's harvester strings and mrs tags
     harv = get_harvester_strings_to_update(osp_id, conn)
 
     for h in harv:                                                      # for every harvester string
@@ -874,36 +876,38 @@ def main(conn):
 
         # for every seed string we either hadn't seen before or hadn't seen paired with mrs_tag
         for s in new_strings:
-            perms = uniq_permute(s) # Get all permutations of the string
+            perms = uniq_permute(s)     # Get all permutations of the string
+            print >> sys.stderr, "Processing", len(perms), "permutations of", s       # for monitoring
+            passAllList = []                # initialize list of string/mrs pairs that pass all universal filters
 
-            # for monitoring
-            print >> sys.stderr, "Processing", len(perms), "permutations of", s
-
-            stringList = []                     # initialize list of string/mrs pairs to be inserted
-
-            for i in range(len(perms)):                 # for every permutation
-                if ((i%1000) == 0):                       # if this number of permutation is divisble by 1000
-                    # print out a monitoring message
-                    print >> sys.stderr, 'i:', i, 'inserting', len(stringList), 'new items'
-
-                    # and insert those 1000 string/mrs pairs into parse, item_tsdb, and result
-                    insert_many_items(stringList, osp_id, conn)
-                    stringList = []                                     # reset list to empty to build back up
-                    
-                p = perms[i]                                # set p to current permutation               
+            for p in perms:                         # for every permutation
                 instring = ''                   # initialize instring to empty string
+                
                 for w in p:                     # for every word in permutation 
                     instring += w           # tack it...
                     instring += ' '             # ...and a space onto instring
 
                 instring = instring[:-1]    # strip off final space
 
-                stringList.append((instring, mrs_tag))  # add this string/mrs pair to list to be inserted
+                # if the string/tag combo passes all universal filters...
+                if runUnivFltrs(instring, mrs_tag):
+
+                    # ...add this string/mrs pair to list to be inserted                    
+                    passAllList.append((instring, mrs_tag))
+
+            # print monitoring message of how many permutes passed all universal filters
+            print >> sys.stderr, 'inserting', len(passAllList), 'items that passed all universal filters'
+
+            # insert the parse/result/item for those items that pass all universal filters
+            insert_many_items(passAllList, osp_id, conn)
+            passAllList = []                    # and reset the list of items that passed all univs to empty
 
 ### KEN commenting out for now.  See e-mail exchange with Emily on 8/18 for details.
 ### Basically, it causes processing problems for generate_s_profile.
 ### Should add back in when ready to debug...but for now just want non-coordinating harv
 ### grammar to work.
+### Note: when adding this code back, integrate it with new strategy only to insert those that
+### pass all universal filters.
 #                for pp in post_permutes:                # for every possible post_permute
 #                    if mrs_tag == pp.mrs_id:            # if it applies to this harvester string's sem class
 #
@@ -913,22 +917,67 @@ def main(conn):
 #                            stringList.append((s, pp.new_mrs_id))
 ### END KEN commenting out post-permutes code
 
-            # print monitoring statement
-            print >> sys.stderr, 'flushing: inserting', len(stringList), 'new items'
-            insert_many_items(stringList, osp_id, conn) # as a flush when we end-up mid mod 1000
-                            
     return
 
+def runUnivFltrs(string, mrs):
+    """
+    Function: runUnivFltrs
+    Input:
+        string - the string to run the filters on
+        mrs - the mrs tag of the string
+    Output: answer - True if the string/mrs combo passes all universal filters.  False otherwise.
+    Functionality: runs string/mrs combo through universal filters until one fails to see if we have
+                         a string/mrs combo that passes all universal filters
+    Tables accessed: None
+    Tables modified: None
+    """
+
+    for f in ufilter_list:                           # for each universal filter
+        if mrs in f.mrs_id_list:                # if that filter applies to this mrs tag
+            if f.apply_filter(string) == 0:    # apply the filter.  If the result is 0 for fail...
+                answer = False                 # ...set the output to Flase
+                break                               # and stop looking...we don't have one that passes all
+    else:                                           # if we never get one that fails...
+        answer = True                         # ...set output to True
+
+    return answer                               # return output
+
 # set to true for running on my machine.  set to False before commiting to repository.
-moduleTest = False
+moduleTest = True
 
 if __name__ == "__main__":      # only run if run as main module...not if imported
-    myconn = MatrixTDBConn()           # connect to MySQL server
-    main(conn)                              # run the main function
+    try:
+        osp_id = sys.argv[1]        # get the osp from the command line
+    except IndexError:               # if the user didn't give it...
+
+        # ...throw an error message indicating how to call the function
+        print >> sys.stderr, 'Usage: python add_permutes.py osp_id [username] [password]'
+        sys.exit()                       # and exit
+
+    try:                                        # try to get...
+        username = sys.argv[2]       # ...username...
+        password = sys.argv[3]       # ...and password off of command line
+
+        # if successful, create a connection using that username and password
+        myconn = MatrixTDBConn('2', username, password)
+
+    except IndexError:                               # if no username and/or password supplied...
+        myconn = MatrixTDBConn('2')           # connect to MySQL server and prompt for them
+        
+    main(osp_id, myconn)                         # run the main function
+    myconn.close()                                   # close the connection to the database
 elif moduleTest:                        # or if i'm testing, run it on MatrixTDB2
     myconn = MatrixTDBConn('2')       # connect to MySQL server
     # ... and notify the user moduleTest is set to True.
     print >> sys.stderr, "Note: module testing turned on in add_permutes.py.  " + \
-                                 "Unless testing locally, set moduleTest to False."    
-    main(myconn)                              # run the main function
+                                 "Unless testing locally, set moduleTest to False."
+    
+    # get the id of the original source profile the user wants to add permutes for.  This is given to
+    # you by import_from_itsdb.
+    osp_id = raw_input("Please input original source profile id (osp_id) for the source\n" + \
+                                 "profile you're working with.  If you've updated the string\n" + \
+                                  "modifications and wish to update seed strings for all harvester\n" + \
+                                  "strings, enter 'a' ")
+
+    main(osp_id, myconn)                              # run the main function
     myconn.close()                             # close connection to db

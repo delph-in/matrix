@@ -17,6 +17,10 @@ Contents:
                                      string
     string_mods - a list of instantiated StringMods that are the modifications we are using to
                          create seed strings from harvester strings
+Tables accessed: none
+Tables modified: none
+History:
+    9/4/09 - KEN changed nf from being part of an atomic word to being an affix
 """
 #################################################################################
 # StringMod class creates objects which modify strings in semantically
@@ -86,7 +90,9 @@ def glue(words):
     Input: words - a list of words to be put together into one string
     Output: string - words separated by a space
     Functionality: glues together a list of words joining them with a space
-    Note: This could be achieved more quickly with something like ' '.join(words)
+    Tables accessed: none
+    Tables modified: none
+    TODO: This could be achieved more quickly with something like ' '.join(words)
     """
     string = ''                     # initialize output
     l = len(words)               # get the length of the list
@@ -123,6 +129,8 @@ class StringMod:
             mrs_id_list - a list of mrs tags to which this modification should apply
         Output: a new StringMod
         Functionality: constructor
+        Tables accessed: none
+        Tables modified: none
         """
         self.mrs_id_list = mrs_id_list
 
@@ -134,6 +142,8 @@ class StringMod:
             mrs_id - an mrs tag
         Output: True if this modification applies to mrs_id, False otherwise.
         Functionality: tells if this StringMod applies to a given mrs tag or not.
+        Tables accessed: none
+        Tables modified: none
         """
         return mrs_id in self.mrs_id_list   # check for mrs_id existence in mrs_id_list
 
@@ -157,6 +167,8 @@ class StringModAddAff(StringMod):
             affix -the affix this StringMod will add to sentences
         Output: a new StringModAddAff instance
         Functionality: constructor
+        Tables accessed: none
+        Tables modified: none
         """
         StringMod.__init__(self,mrs_id_list)
         self.affix = affix
@@ -172,6 +184,8 @@ class StringModAddAff(StringMod):
         Output: return_strings - a list of the strings in string_list with this StringMod's affix added
                                           as a prefix and, in separate strings, as a suffix
         Functionality: Adds this StringMod's affix as a prefix and a suffix to every input string
+        Tables accessed: none
+        Tables modified: none
         """
         print self.name             # print name of this StringMod
         return_strings = []         # initialize output
@@ -196,6 +210,8 @@ class StringModAddAff(StringMod):
                        suffixes
         Output: string with this StringMod's affix added to the prefixes with a dash following it
         Functionality: adds this StringMod's affix as a prefix to string
+        Tables accessed: none
+        Tables modified: none
         """
         [words,prefixes,suffixes] = string      # unpack string
         prefixes.append(self.affix + "-")         # add this stringmod's affix as a prefix
@@ -211,6 +227,8 @@ class StringModAddAff(StringMod):
                        suffixes
         Output: string with this StringMod's affix added to the suffixes with a dash before it
         Functionality: adds this StringMod's affix as a suffix to string
+        Tables accessed: none
+        Tables modified: none
         """
         [words,prefixes,suffixes] = string                # unpack string
         suffixes.append("-" + self.affix)                   # add this stringmod's affix as a suffix
@@ -235,7 +253,9 @@ class StringModOne(StringMod):
             mrs_id_list - a list of mrs tags to which this modification should apply
         Output: a new StringModOne
         Functionality: constructor
-        """        
+        Tables accessed: none
+        Tables modified: none
+        """
         StringMod.__init__(self, mrs_id_list)       # call superclass constructor
 
     # These ones only produce one output string
@@ -251,6 +271,8 @@ class StringModOne(StringMod):
         Output: return_strings - a copy of string_list with each string modified according to
                                            modstring
         Functionality: Modifies copies of input strings according to modstring method.
+        Tables accessed: none
+        Tables modified: none
         """        
         return_strings = []                                         # initialize output
         
@@ -271,6 +293,8 @@ class StringModOne(StringMod):
             string - a string to be modified
         Output: string - same as input
         Functionality: returns its input
+        Tables accessed: none
+        Tables modified: none
         Note: This probably isn't used...I believe subclasses override it and those will be used.
         """
         return string
@@ -295,6 +319,8 @@ class StringModAddWord(StringModOne):
             word -the word this StringMod will add to sentences
         Output: a new StringModAddWord instance
         Functionality: constructor
+        Tables accessed: none
+        Tables modified: none
         """
         StringModOne.__init__(self, mrs_id_list)    # call superclass constructor
         self.word = word                                       # set member word to input word
@@ -309,6 +335,8 @@ class StringModAddWord(StringModOne):
         Output: [words, prefixes, suffixes] - same as input string but with this StringMod's word
                                                             member added to word
         Functionality: adds this StringMod's word member to string
+        Tables accessed: none
+        Tables modified: none
         """        
         print self.name                                 # print out name/word
         [words,prefixes,suffixes] = string       # unpack variable
@@ -345,6 +373,8 @@ class StringModChangeWord(StringModOne):
             new_word - the word this StringMod will change to in sentences        
         Output: a new StringModAddWord instance
         Functionality: constructor
+        Tables accessed: none
+        Tables modified: none
         """        
         StringModOne.__init__(self,mrs_id_list)         # call superclass constructor
         self.old_word = old_word                            # set old_word member to old_word input
@@ -360,6 +390,8 @@ class StringModChangeWord(StringModOne):
         Output: [words, prefixes, suffixes] - same as input string but with all occurences of
                                                             old_word changed to new_word
         Functionality: changes this StringMod's old_word to new_word in string
+        Tables accessed: none
+        Tables modified: none
         """
         # TODO: make this more efficient.
         [words, prefixes, suffixes] = string                # unpack string
@@ -398,6 +430,8 @@ class StringModDropWord(StringModOne):
             drop_word -the word this StringMod will remove from to sentences
         Output: a new StringModDropWord instance
         Functionality: constructor
+        Tables accessed: none
+        Tables modified: none
         """        
         StringModOne.__init__(self, mrs_id_list)     # call superclass constructor
         self.drop_word = drop_word                        # set drop_word member to drop_word input
@@ -413,6 +447,8 @@ class StringModDropWord(StringModOne):
                                  removed from words.  If drop_word was not in string, then this is just
                                     an empty list.
         Functionality: removes this StringMod's drop_word member from string
+        Tables accessed: none
+        Tables modified: none
         """                
         [words, prefixes, suffixes] = string        # unpack string
         print self.name                                   # print name
@@ -441,8 +477,12 @@ string_mods = [ StringModAddWord(g.all,"p-nom"),
                 StringModAddWord(g.all, "aux"),
                 StringModAddAff(g.neg, "neg"),
                 StringModAddAff(g.ques, "ques"),
-                StringModChangeWord(g.trans,"tv","tv-nf"),
-                StringModChangeWord(g.intrans,"iv","iv-nf"),
+
+                # 9/4/09 KEN rem'd these two ChangeWord mods and added the AddAff mod for nf
+                # StringModChangeWord(g.trans,"tv","tv-nf"),
+                # StringModChangeWord(g.intrans,"iv","iv-nf"),
+                StringModAddAff(g.all, 'nf'),
+                
                 # assume harvesters for negation have 'neg' as word.                
                 StringModDropWord(g.neg, "neg"),  
                 StringModDropWord(g.ques, "qpart"), # assume harvesters for questions have 'qpart'.

@@ -19,13 +19,17 @@ Contents:
                       regexes.  Deprecated on 8/19/09 and decided to go with two MatchFilters to
                       create same functionality.  Comments of those two MatchFilters should reference
                       each other for documentation
-    - AndNotFilter - subclass of Filter failing sentences either not containing one regex or
-                           containing the other
+    - AndNotFilter - deprecated subclass of Filter failing sentences either not containing one regex
+                           or containing the other.  Deprecated on 9/5/09 due to logical equivalence with
+                           one MatchFilter and one NotMatchFilter.  Comments of those two filters
+                           should reference each other
     - NandFilter  - deprecated subclass of Filter failing sentences containing both of two regexes.
                          It is no longer used because it is logically equivalent to IfNotFilter
     - filter_results - function that is no longer relevant
     - getFilterID - function that, given a filter's name, returns its ID in MatrixTDB
     - insertFilter - function that adds a filter to the filter table of MatrixTDB.
+    - insertManyFilteredSpecResults - function that inserts several specific filter results into
+                                                      res_sfltr at a time.
     - insertFilteredSpecResult - function that inserts the result of running a SPECIFIC filter on a
                                             result/item into res_sfltr
     - insertFilteredResult - function that inserts the result of running a UNIVERSAL filter on a
@@ -190,7 +194,7 @@ class Filter:
         It's called twice from itself, and once from Filter.exe.  That function is called once from
         debug_filter (which I'm not using), filter_one_result (which is not being called from any
         working code), test_s_filters (which I'm not using), and run_specific_filters.filter_one_result
-        (which is not being called from anywhere).  So this is irrelevant now.
+        (which is not being called from anywhere).  So this _is_ irrelevant now.
         """
         # TODO: there has to be a cleaner way to do this.
         # TODO: abstract this fv thing into a class instead of this list structure.
@@ -284,8 +288,7 @@ class Filter:
         Tables modified: none                             
         """
         print "Error"
-        assert False
-
+        assert False    # this will raise an AssertionError
 
 class FalseFilter(Filter):
     """
@@ -632,7 +635,10 @@ class AndNotFilter(Filter):
     Superclass: Filter
     Members: re1, re2 - strings representing regular expressions.  re1 must be present, but re2
                                   must not be
-    Functionality: filters out strings that are either missing re1 or contain re2
+    Functionality: a deprecated class that filters out strings that are either missing re1 or contain
+                         re2
+    History:
+        9/5/09 - deprecated.  It is equivalent to a MatchFilter and a NotMatchFilter.
     """     
     # Checking for one things that must be present and another
     # thing that must NOT be present.
@@ -654,6 +660,11 @@ class AndNotFilter(Filter):
         Tables accessed: none
         Tables modified: none
         """                        
+        # first warn user about creating depcreated class
+        print >> sys.stderr, 'You are instantiating AndNotFilter, a deprecated class, for filter', \
+                                      name, '.  Please use the logical equivalence of a MatchFilter and ' + \
+                                      "a NotMatchFilter instead.  Those two filters' comments should " + \
+                                      "reference each other."
         Filter.__init__(self, name, mrs_id_list, comment, fv)   # call superclass constructor
         self.re1 = re1                                                          # set self.re1 to re1
         self.re2 = re2                                                          # set self.re2 to re2
@@ -867,23 +878,36 @@ def insertFilter(fname, ftype, conn):
     return fID                                                                              # return the ID
 
 def insertManyFilteredSpecResults(resSfltrTuples, conn):
-    # TODO: comment
-    valuesClause = 'VALUES '
+    """
+    Function: insertManyFilteredSpecResults
+    Input:
+        resSfltrTuples - a set of tuples that are values to be added to res_sfltr
+        conn - a MatrixTDBConn
+    Output: none
+    Functionality: Inserts several specific filter results into res_sfltr at a time.
+    Tables accessed: res_sfltr
+    Tables modified: res_sfltr
+    """
+    valuesClause = 'VALUES '            # initalize VALUES clause
 
-    for rfr in resSfltrTuples:
-        resID = rfr[0]
-        fID = rfr[1]
-        result = rfr[2]
+    for rfr in resSfltrTuples:                 # for each res_sfltr row to insert...
+        resID = rfr[0]                            # get its result id
+        fID = rfr[1]                                # get its filter id
+        result = rfr[2]                           # get its result...only entering 0's presently
+
+        # and add that grouping to the values clause
         valuesClause += '(' + str(resID) + ',' + str(fID) + ',' + str(result) + '),'
 
-    valuesClause = valuesClause[:-1] # take off last comma
+    valuesClause = valuesClause[:-1]    # take off last comma from values clause
+
+    # create entire INSERT statment
     insertStmt = 'INSERT INTO res_sfltr (rsf_res_id, rsf_sfltr_id, rsf_value) ' + valuesClause
-    conn.execute(insertStmt)
+    conn.execute(insertStmt)                # insert those values into res_sfltr
     
     return
 
 """
-here is some old code I use to put in a try block that encoded insertFilteredSpecResult.
+here is some old code I used to put in a try block that encoded insertFilteredSpecResult.
 It's purpose was to catch an error that resulted if you tried to insert the same result/filter/id
 combo to one that was already in res_sfltr.
 
@@ -923,8 +947,6 @@ def insertFilteredSpecResult(resID, fltrID, appliedResult, conn):
         conn - a MatrixTDBConn, a connection to the MatrixTDB database        
     Output: none
     Functionality: inserts the result of running a SPECIFIC filter on a result/item into res_sfltr.
-    Author: KEN (Scott Halgrim, captnpi@u.washington.edu)
-    Date: 7/9/09
     Tables accessed: res_sfltr
     Tables modified: res_sfltr    
     """
@@ -944,8 +966,6 @@ def insertFilteredResult(resID, fltrID, appliedResult, conn):
         conn - a MatrixTDBConn, a connection to the MatrixTDB database        
     Output: none
     Functionality: inserts the result of running a UNIVERSAL filter on a result/item into res_fltr.
-    Author: KEN (Scott Halgrim, captnpi@u.washington.edu)
-    Date: 7/8/09
     Tables accessed: res_fltr
     Tables modified: res_fltr
     """

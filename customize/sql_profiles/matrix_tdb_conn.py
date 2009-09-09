@@ -7,6 +7,8 @@ Owner: Emily M. Bender
 Contents:
     - MatrixTDBConn class which further abstracts connection details to MatrixTDB using
       MySQLdb
+Tables accessed: depends on query given to execute or selQuery
+Tables modified: depends on query given to execute
 """
 
 import MySQLdb.connections, getpass, sys
@@ -16,6 +18,8 @@ class MatrixTDBConn(MySQLdb.connections.Connection):
     Class: MatrixTDBConn
     Superclass: MySQLdb.connections.Connection
     Members:
+        uname - the username for this connection
+        pword - the password for self.uname
         connID - the id of the connection to the MySQL database
         tdbCursor - the cursor of the connection
         dbSuffix - the suffix to add to the name of the database.  For connecting to my fresh
@@ -23,27 +27,42 @@ class MatrixTDBConn(MySQLdb.connections.Connection):
     Functionality: connection to MatrixTDB MySQL database. Abstracts some details of
                         MySQLdb pacakge.
     """        
-    def __init__(self, dbSuffix=''):
+    def __init__(self, dbSuffix='', username='', password=''):
         """
         Method: __init__
         Input:
             self - this MatrixTDBConn instance
-        Output:
-            a new MatrixTDBConn
+        Output: a new MatrixTDBConn
         Functionality: constructor.  Note that it asks for username and password from user.
                              Creates a connection to MatrixTDB, gets its connection id, and creates a
                              cursor for executing SQL statements.
+        Tables accessed: none
+        Tables modified: none
         """
-        self.uname=raw_input("Username:")   # prompt user for username password
-        self.pword=getpass.getpass("Password:")     # prompt user for database password
-        self.dbSuffix = dbSuffix
-        self.connect()
+
+        if username == '':                                          # if user didn't give a username
+            self.uname=raw_input("Username:")          # prompt user for username and store
+        else:                                                           # otherwise
+            self.uname = username                           # assign given username to uname
+
+        if password == '':                                          # if user didn't give a password
+            self.pword=getpass.getpass("Password:")  # prompt user for password and store
+        else:                                                           # otherwise
+            self.pword = password                              # assign given password to pword
+            
+        self.dbSuffix = dbSuffix                                 # store suffix
+        self.connect()                                              # connect to database
 
         return
 
     def connect(self):
         """
-        TODO: comment
+        Method: connect
+        Input: self - this MatrixTDBConn
+        Output: none
+        Functionality: connects to MatrixTDB database using the information stored in its members
+        Tables accessed: none
+        Tables modified: none
         """
         # connect to the database
         MySQLdb.connections.Connection.__init__(self, host="capuchin.ling.washington.edu", \
@@ -63,6 +82,8 @@ class MatrixTDBConn(MySQLdb.connections.Connection):
             args - arguments to pass along to the cursor
         Output: number of rows affected, if any
         Functionality: executes a query through this connection
+        Tables accessed: depends on query
+        Tables modified: depends on query        
         """
         try:
             answer = self.tdbCursor.execute(query, args)        # for now, just pass call on to cursor
@@ -82,6 +103,8 @@ class MatrixTDBConn(MySQLdb.connections.Connection):
         Output: rows - a tuple of rows selected where each row is a tuple made up of the columns
                              in each row selected
         Functionality: Runs a select query and returns the rows returned
+        Tables accessed: those mentioned in query
+        Tables modified: none
         TODO: test boundary case of no rows selected.  Is it None or an empty tuple
         """
         self.execute(query, args)       # execute the query

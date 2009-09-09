@@ -20,6 +20,10 @@ Contents:
                                      sentences with fully-specified verb phrases of sem class wo2
     post_permutes - list of instantiated post_permutes that are applied to string in
                             add_permutes.main
+Tables accessed: none
+Tables modified: none
+Note: The filters are not completely set up to deal with coordination yet, so the code in
+        add_permutes has been remmed out for the time being
 """
 import re
 
@@ -52,9 +56,11 @@ class PostPermute:
             new_mrs_id - the semantic class of sentences this PostPermute produces
         Output: a new PostPermute
         Functionality: constructor
+        Tables accessed: none
+        Tables modified: none
         """
-        self.mrs_id = mrs_id                    # set self.mrs_id = mrs_id
-        self.new_mrs_id = new_mrs_id     # set self.new_mrs_id = new_mrs_id
+        self.mrs_id = mrs_id                    # set self.mrs_id to mrs_id
+        self.new_mrs_id = new_mrs_id     # set self.new_mrs_id to new_mrs_id
 
         return
 
@@ -88,6 +94,8 @@ def all_coord_strats(pat, sent):
                            words
     Functionality: Creates a list of possible ways that pat could be coordinated in sent if pat
                          is in sent
+    Tables accessed: none
+    Tables modified: none
     """
     sents = []                              # initialize output
 
@@ -100,13 +108,17 @@ def all_coord_strats(pat, sent):
         # create a list of substitutions for pat...a variety of ways in which things might be
         # coordinated
         subs = []                           # initialize substitutions list
+
         # lexical mark
+        # append some ways the coordinate word(s) can be distributed among the coordinands
         subs.append('%s %s %s co' % (c1, c2, c3))
         subs.append('%s %s co %s' % (c1, c2, c3))
         subs.append('%s co %s co %s' % (c1, c2, c3))
         subs.append('%s co %s co %s co' % (c1, c2, c3))
         subs.append('co %s co %s co %s' % (c1, c2, c3))
+
         # affix mark
+        # append some ways the coordinate affix(es) can be distributed among the coordinands        
         subs.append('%s %s %s-co' % (c1, c2, c3))
         subs.append('%s %s co-%s' % (c1, c2, c3))
         subs.append('%s co-%s co-%s' % (c1, c2, c3))
@@ -137,6 +149,8 @@ class NCoordPostPermute(PostPermute):
         Input: self - this NCoordPostPermute
         Output: a new NCoordPostPermute that applies to wo2 sem class sentences
         Functionality: constructor
+        Tables accessed: none
+        Tables modified: none
         """
         self.mrs_id = 'wo2'                     # set sem class of sentences this PostPermute applies to
         self.new_mrs_id = 'wo2-coord-n'  # set sem class of sentences this PostPermute produces
@@ -150,6 +164,8 @@ class NCoordPostPermute(PostPermute):
         Output: a list of sentences like s with every occurence of n1 replaced with one of a variety
                     of coordination structures
         Functionality: Creates a list of strings coordinating nouns
+        Tables accessed: none
+        Tables modified: none
         """        
         return all_coord_strats('n1', s)    # coordinate occurences of 'n1' in s
 
@@ -170,6 +186,8 @@ class NPCoordPostPermute(PostPermute):
         Input: self - this NPCoordPostPermute
         Output: a new NPCoordPostPermute that applies to wo2 sem class sentences
         Functionality: constructor
+        Tables accessed: none
+        Tables modified: none
         """
         self.mrs_id = 'wo2'                     # set sem class of sentences this PostPermute applies to
         self.new_mrs_id = 'wo2-coord-n'  # set sem class of sentences this PostPermute produces
@@ -183,6 +201,8 @@ class NPCoordPostPermute(PostPermute):
         Output: a list of sentences like s with every occurence of det1 n1 replaced with one of a
                     variety of coordination structures
         Functionality: Creates a list of strings coordinating noun phrases
+        Tables accessed: none
+        Tables modified: none
         """
         # TODO: not all determiners have numbers...evaluate whether line below will work
         return all_coord_strats('det1 n1', s)           # coordinate occurences of 'det 1n1' in s
@@ -204,9 +224,11 @@ class VPCoordPostPermute(PostPermute):
         Input: self - this VPCoordPostPermute
         Output: a new VPCoordPostPermute that applies to wo2 sem class sentences
         Functionality: constructor
+        Tables accessed: none
+        Tables modified: none
         """        
-        self.mrs_id = 'wo2'
-        self.new_mrs_id = 'wo2-coord-vp'
+        self.mrs_id = 'wo2'                         # set old mrs_id to wo2
+        self.new_mrs_id = 'wo2-coord-vp'     # set new mrs id to wo2 coordinated np
 
     def applyMe(self, s):
         """
@@ -217,8 +239,11 @@ class VPCoordPostPermute(PostPermute):
         Output: a list of sentences like s with every occurence of iv1 replaced with one of a
                     variety of coordination structures
         Functionality: Creates a list of strings coordinating verb phrases
-        """        
-        return all_coord_strats('iv1', s)
+        Tables accessed: none
+        Tables modified: none
+        """
+        # TODO: is this going to work with iv1 in there intsead of iv?
+        return all_coord_strats('iv1', s)    # coordinate occurences of 'iv1' in s
 
 
 class SCoordPostPermute(PostPermute):
@@ -237,9 +262,11 @@ class SCoordPostPermute(PostPermute):
         Input: self - this SCoordPostPermute
         Output: a new SCoordPostPermute that applies to wo2 sem class sentences
         Functionality: constructor
+        Tables accessed: none
+        Tables modified: none
         """        
-        self.mrs_id = 'wo2'
-        self.new_mrs_id = 'wo2-coord-s'
+        self.mrs_id = 'wo2'                         # set old mrs_id to wo2
+        self.new_mrs_id = 'wo2-coord-s'     # set new mrs id to wo2 coordinated s
 
     def applyMe(self, s):
         """
@@ -250,13 +277,17 @@ class SCoordPostPermute(PostPermute):
         Output: a list of sentences like s with every occurence of det1 n1 iv1 replaced with one of a
                     variety of coordination structures
         Functionality: Creates a list of strings coordinating fully specified verb phrases
-        """        
-        return all_coord_strats('det1 n1 iv1', s)
+        Tables accessed: none
+        Tables modified: none
+        """
+        # TODO: is this going to work with iv1 in there intsead of iv?
+        return all_coord_strats('det1 n1 iv1', s)   # coordinate occurences of 'iv1' in s
 
 
 #######################################################################
 # The actual list of post-permutes
-# this gets imported by add_permutes and used in add_permutes.main
+# This gets imported by add_permutes and used in add_permutes.main, but it has been remmed
+# out there for the time being.
 post_permutes = [
     NCoordPostPermute(),
     NPCoordPostPermute(),

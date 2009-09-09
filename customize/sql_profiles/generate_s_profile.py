@@ -33,6 +33,8 @@ Contents:
       production function
     - __main__ code to get lt id from command line and call main on it
     - test code meant only for testing this module on my PC
+Tables accessed: item_tsdb, parse, result, res_fltr, res_sfltr, fltr_feat_grp, lt_feat_grp
+Tables modified: none
 """
 ###############################################################
 # Script to generate [incr tsdb()] profile with gold-standard
@@ -50,6 +52,7 @@ from relations_def import relFileContents
 # be to use Python's iterator functionality to give it a range and create the IDs as necessary.
 # Even without counting on that, we could give it the lowest and highest, have it generate a range
 # and then deal with queries that return no items
+# NOTE: Abandoned on 9/6/09 when I had 8.7 rows in item_tsdb and things got too slow
 queryItemIDs="""SELECT i_id
                          FROM item_tsdb;"""
 
@@ -57,22 +60,22 @@ queryItemIDs="""SELECT i_id
 # then be subtracted from all items in order to generate the list of items that passed all u filters.
 # however due to the amount of time and memory needed to get all item IDs, this is not being
 # used currently
+# NOTE: Abandoned on 9/6/09 when I had 8.7 rows in parse and result and things got too slow
 queryItemsFailedUFltrs="""SELECT p.p_i_id
                                         FROM parse p
                                             INNER JOIN result r ON p.p_parse_id = r.r_parse_id
                                             INNER JOIN res_fltr rf ON r.r_parse_id = rf.rf_res_id
                                         WHERE rf.rf_value = 0"""
 
-# This query generates all item IDs where the item passed all universal filters.  It takes between
-# 19-24 minutes to run currently on MatrixTDB.
-# I don't know how it ever ran that quickly on MatrixTDB because it takes over 30 minutes
-# currently on MatrixTDB2 and currently means with only five harvester strings in it.
-queryItemsPassedUFltrs="""SELECT i_id FROM item_tsdb
-                                          WHERE i_id NOT IN
-                                          (SELECT p.p_i_id from parse p
-                                              INNER JOIN result r ON p.p_parse_id = r.r_parse_id
-                                              INNER JOIN res_fltr rf ON r.r_result_id = rf.rf_res_id
-                                            WHERE rf.rf_value = 0)"""
+# a query to get all the result IDs that pass all universal filters
+# TODO: can I speed this up by getting rid of the NOT IN clause and instead doing an OUTER
+# JOIN where r_result_id is null?
+queryItemsPassAllUnivs="""SELECT r_result_id
+                                            FROM result
+                                            WHERE r_result_id NOT IN
+                                                    (SELECT rf_res_id
+                                                        FROM res_fltr
+                                                        WHERE rf_value = 0)"""
 
 # This query generates all items that failed any specific filter.  The list of items returned from this
 # is subtracted from the list of items that passed all universal filters in order to get a list of items
@@ -110,22 +113,13 @@ def main(lngTypeID, dbroot, profilename, conn):
     Output: none
     Functionality: Finds all grammatical items for a language type ID and generates a profile
                          for those items. TODO: update this docstring
+    Tables accessed: item_tsdb, parse, result, res_fltr, res_sfltr, fltr_feat_grp, lt_feat_grp
+    Tables modified: none
     TODO: set up something somwhere to generate profpath folders if they don't exist
     """
-    # This bit of rem'd code was the way I was handling it with three harvester strings, but started
-    # taking too long with five harvester strings, so I went a different direction
     # get a list of all items that pass all universal filters    
-    # selResults = conn.selQuery(queryItemsPassedUFltrs)
-    # upass = db_utils.selColumnToSet(selResults)   # ...and convert to a set of IDs
-
-    # here is that new direction
-    selResults = conn.selQuery(queryItemIDs)
-    allItemIDs = db_utils.selColumnToSet(selResults)
-    selResults = conn.selQuery(queryItemsFailedUFltrs)
-    failItemIDs = db_utils.selColumnToSet(selResults)
-    upass = allItemIDs.difference(failItemIDs)
-    allItemIDs.clear()  # to free up memory
-    failItemIDs.clear() # to free up memory
+    selResults = conn.selQuery(queryItemsPassAllUnivs)
+    upass = db_utils.selColumnToSet(selResults)   # ...and convert to a set of IDs
 
     # monitoring progress
     print >> sys.stderr, "found", len(upass), "items that passed all universal filters"
@@ -189,6 +183,8 @@ def getReadings(ltID, passAll, conn):
                                      and whose values are the IDs that correspond to each string
     Functionality: converts a set of item IDs, which may correspond to identical strings, to a dict
                          where the string gives us the IDs for that string
+    Tables accessed: item_tsdb
+    Tables modified: none
     """
     # what I want to do here is take the item IDs in passAll and create a dict going from
     # string to a list of IDs and then use that when creating the parse file
@@ -216,6 +212,8 @@ def getGrammItems(ltID, upass, conn):
     Output: itemsPassedAllFltrs - a set of item IDs, each of which passed all universal filters and
                                                  all specific filters relevant to language type ltID
     Functionality: generates a set of all items that passed all relevant filters
+    Tables accessed: parse, result, res_sfltr, fltr_feat_grp, lt_feat_grp
+    Tables modified: none
     """
 
     # query database for all items that failed any specific filter for this language type...
@@ -252,6 +250,8 @@ def getFailOneItems(lt_id, passAllStringsToIDs, conn):
                          the item's string doesn't have a grammatical reading under a different semantic
                          pairing.  Tries to represent as many filters as possible, but makes sure each
                          filter is represnted at most once
+    Tables accessed: parse, result, res_sfltr, fltr_feat_grp, lt_feat_grp, item_tsdb
+    Tables modified: none
     """
     # keeps track of filters represented in set of ungrammatical items that failed exactly one filter
     # because if possible we want to just make sure each filter is represented once in that set
@@ -535,6 +535,8 @@ def genEmptyFile(profpath, filename):
         filename - the name of the empty file to create
     Output: none
     Functionality: Creates an empty file in an [incr_tsdb()] profile
+    Tables accessed: none
+    Tables modified: none
     """
     # TODO: is there a better, quicker, way to do the next line?
     outfile = open(profpath+filename, 'wb')  #open file, in essence creating it
@@ -623,6 +625,8 @@ def genRelationsFile(path):
     Input: path - the path to write the relations file to
     Output: none
     Functionality: creates the relations file in a [incr_tsdb()] profile
+    Tables accessed: none
+    Tables modified: none
     """
     outfile = open(path+'relations', 'wb')        # open the relations file
 
@@ -726,19 +730,30 @@ def genItemList(readingCounter, failOne, itemListName, conn):
     return
 
 # set to true for running on windows on my machine.  set to False before commiting to repository.
-moduleTest = True 
+moduleTest = False 
 
 if __name__ == '__main__':      # only run if run as main module...not if imported
     try:
         lt_id = sys.argv[1]         # get the language type id from the command line
-        profPath = sys.argv[2]     # get the path of the profile
-        itemfilename = sys.argv[3]  # get the full path and name of item list file
-
-        # run main on that language type id to generate profile        
-        main(lt_id, profPath, itemfilename)
+        profDBroot = sys.argv[2]     # get the db root from the command line
+        profilename = sys.argv[3]  # get the name of the profile to generate
     except IndexError:              # if they didn't give a command line argument...
          # ...give user usage info
-        print "Usage: python generate_s_profile.py language_type_id profilePath"
+        print >> sys.stderr, "Usage: python generate_s_profile.py language_type_id dbroot " + \
+                                                                                                                      "profileName"
+    try:                                        # try to get...
+        username = sys.argv[4]       # ...username...
+        password = sys.argv[5]       # ...and password off of command line
+
+        # if successful, create a connection using that username and password
+        myconn = MatrixTDBConn('2', username, password)
+
+    except IndexError:                               # if no username and/or password supplied...
+        myconn = MatrixTDBConn('2')           # connect to MySQL server and prompt for them
+
+    # run main on that language type id to generate profile        
+    main(lt_id, profDBroot, profilename, myconn)
+    myconn.close()                              # close connection to MySQL database
 # the code following here only exists for testing on my local PC.  It can be ignored.
 elif moduleTest:
     print >>sys.stderr, "Warning: moduleTest on for generate_s_profile"
@@ -748,23 +763,4 @@ elif moduleTest:
     myconn = MatrixTDBConn('2')    
     main(lt_id, profDBroot, profilename, myconn)
     # TODO: set up code to create directories if they don't exist
-    #sqlprofpath = "C:\\RA\matrix\customize\sql_profiles\\"
-    #profilepath = sqlprofpath + "testoutprofile\\profile20090722\\"
-    #itemListName = sqlprofpath + "itemlist20090722"
-    #grammItemIDsLT1 = sqlprofpath + "15grammItemsLT1.txt"
-    #idset = readInIds(grammItemIDsLT1)
-    
-    # query database for all items that passed all universal filters...
-    #selResults = myconn.selQuery(queryItemsPassedUFltrs)
-    #upass = db_utils.selColumnToSet(selResults)   # ...and convert to a set of IDs
-
-    #passAll = getGrammItems(lt_id, upass, myconn)
-
-    #failOne = getFailOneItems(lt_id, myconn)
-
-    #idset = passAll.union(failOne)
-
-    # TODO: when generating my profile am I supposed to indicate within passes and fails?
-    #genProfile(idset, profilepath, myconn)
-    #genItemList(idset, itemListName, myconn)    # I think this was throwaway code
     myconn.close()                                          # TODO: close connections throughout code

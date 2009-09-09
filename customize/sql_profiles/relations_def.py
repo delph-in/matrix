@@ -7,8 +7,10 @@ Owner: Emily M. Bender
 Contents:
     relFileContents - the contents of the relations file in an [incr_itsdb()] profile.  Used to create
                              the relations file when generating a profile from gen_s_profile.py.
+Tables accessed: none
+Tables modified: none
 """
-
+# the contents of the relations file in every profile
 relFileContents = """item:
   i-id :integer :key
   i-origin :string

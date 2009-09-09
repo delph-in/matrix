@@ -18,6 +18,7 @@ Contents: (listed, when possible, in order of execution)
                              runs each filter on each result, recording the "result" of the first fail on every
                              string in res_fltr.  Also informs the user how many items failed a filter and
                              how many passed all filters.
+    insertManyUnivFails - function that inserts several universal filter rails into res_fltr at a time.
 Tables Accessed: result, filter, fltr_mrs, res_fltr, parse, item_tsdb
 Tables Modified: filter, fltr_mrs, res_fltr
 Note: The case in main where a user wants to replace results for certain filters is untested an
@@ -25,9 +26,8 @@ Note: The case in main where a user wants to replace results for certain filters
 """
 
 import filters, db_utils
-from u_filters import filter_list
 import sys, datetime, MySQLdb
-import datetime
+from u_filters import filter_list
 from matrix_tdb_conn import MatrixTDBConn
 ##########################################################################
 # find_filter_from_name(n, filter_list)
@@ -40,6 +40,8 @@ def find_filter_from_name(n, filter_list):
         filter_list - a list of Filters
     Output: answer - the first (ther3e should be only one) Filter in filter_list with name n
     Functionality: looks through filter_list for a Filter with name n and returns it
+    Tables accessed: none
+    Tables modified: none
     """
     for f in filter_list:       # for every filter
         if f.name == n:     # check its name...if it matches
@@ -229,62 +231,48 @@ def add_to_res_fltr(osp_id, conn):
     Tables modified: res_fltr
     TODO: recomment this after efficientizing on 8/10/09
     """
-    # there is some overkill in these up front queries, but I want these numbers at least for
-    # sanity checks now
-    
-    # define the query to generate strings, result IDs, and mrs tags for each result in the osp
-    # to be filtered
-    resultRows = conn.selQuery("SELECT r.r_result_id " + \
-                                              "FROM item_tsdb i INNER JOIN parse p "  + \
-                                                    "ON i.i_id = p.p_i_id INNER JOIN result r " + \
-                                                     "ON p.p_parse_id = r.r_parse_id " + \
-                                               "WHERE i.i_osp_id = %s", (osp_id))
-    print >> sys.stderr, "There are", len(resultRows), "results in osp", osp_id    
-    resultIDsInOSP = db_utils.selColumnToSet(resultRows)
-
-    # these lines that get the number of pre-filtered results seems to be the biggest time
-    # consumer, and it's only for a sanity check, so consider removing
-    preFilteredResultRows = conn.selQuery("SELECT rf_res_id FROM res_fltr")
-    preFailedResults = \
-                        db_utils.selColumnToSet(preFilteredResultRows).intersection(resultIDsInOSP)
-    print >> sys.stderr, len(preFailedResults), "have already been filtered"
-
-    # TODO: can i speed up this query by doing an outer join where r_result_id is null instead of
-    # the 'not in' clause?  (It actually seems faster this way, 9 seconds to 24)
-    # TODO: better yet, can i just remove that all together since I'm already deleting everything
-    # from res_fltr before I call this?  Or maybe I should leave this in just in case I want to use
-    # this function without doing the pre-deletion
+    # define the query that gets result IDs, input strings, and mrs tags for results in the OSP that
+    # have not failed any u filters in previous runs
+    # Note: Joining in the parse table here is kind of silly since when we add permutes we always
+    # set parse id = item id = result id, but I'll do it here anyway because it shouldn't add that
+    # much time to the query and in case we change things in the future.
     resultsToFilterRows = conn.selQuery("SELECT r.r_result_id, i.i_input, r.r_mrs " + \
-                                                          "FROM item_tsdb i INNER JOIN parse p "  + \
-                                                             "ON i.i_id = p.p_i_id INNER JOIN result r " + \
-                                                             "ON p.p_parse_id = r.r_parse_id " + \
-                                                          "WHERE i.i_osp_id = %s " + \
-                                                              "AND r.r_result_id NOT IN " + \
-                                                                    "(SELECT rf_res_id FROM res_fltr)", (osp_id))
+                                                          "FROM result r INNER JOIN item_tsdb i "  + \
+                                                             "ON r.r_result_id = i.i_id " + \
+                                                          "WHERE r.r_osp_id = %s ", (osp_id))
 
-    print >> sys.stderr, "which leaves", len(resultsToFilterRows), "left to filter"
+    count = len(resultsToFilterRows)          # get the number of items/results in that osp
 
+    if count == 0:                                      # if there are no results for that osp in the database
+       # tell the user it's an error        
+        print >> sys.stderr, "That is not a valid osp_id. It has no items/results to filter."
+        sys.exit()                                                                                  # and exit
+    else:                                                                                            # otherwise...
+        print >> sys.stderr, 'There are', count, 'results in that osp to filter.' # ...monitoring message
+    
+    # intialize a dict whose keys are filter names and whose values are their IDs in the database
+    fltrNamesToIDs = {}
     failedResults = set()          # initalize a set of items/results that have failed at least one filter
     passedAllResults = set()      # initalize a set of items/results that passed all filters
-    failedResFltrPairs = set()      # TODO: comment
-    fltrNamesToIDs = {}    
+    failedResFltrPairs = set()      # initialize a set of result ID/filter ID pairs that we will enter to db
 
     for row in resultsToFilterRows:          # for each result to filter
-        resultID = row[0]              # get the result ID
-        seedString = row[1]         # get the string
-        mrsTag = row[2]              # get the semantic tag
+        resultID = row[0]                         # get the result ID
+        seedString = row[1]                    # get the string
+        mrsTag = row[2]                         # get the semantic tag
 
         for f in filter_list:                                      # for every filter
             if mrsTag in f.mrs_id_list:                     # if the filter applies to this string's mrs tag
                 try:
-                    fID = fltrNamesToIDs[f.name]
-                except KeyError:
+                    fID = fltrNamesToIDs[f.name]            # try getting the filter's ID from the hash
+                except KeyError:                                 # if it's not there
                     fID = filters.getFilterID(f.name, conn)  # get the filter's ID from the database
 
                     if not fID:                     # if the filter wasn't in the database...
                         # ...insert it.
                         fID = filters.insertFilter(f.name, 'u', conn)
 
+                    # If I got from the database or inserted it, enter it into the name/ID hash
                     fltrNamesToIDs[f.name] = fID
 
                 # get the "result" of applying this filter to the profile result.  It will be 0 for fail, 1 for
@@ -292,28 +280,31 @@ def add_to_res_fltr(osp_id, conn):
                 applyResult = f.apply_filter(seedString)
 
                 if applyResult == 0:                # if it failed...
-                    # ...insert that "result' into res_fltr
-                    #filters.insertFilteredResult(resultID, fID, applyResult, conn)
 
-                    # and add the string to the set of failed results so we know to stop testing it
+                    # add the string to the set of failed results so we know to stop testing it
                     failedResults.add(resultID)
-                    failedResFltrPairs.add((resultID, fID)) # TODO: comment
 
-                    if ((len(failedResFltrPairs) % 1000) == 0):
-                        # monitoring
+                    # and add the result/filter pair into a set of fails to enter into res_fltr
+                    failedResFltrPairs.add((resultID, fID)) 
+
+                    if ((len(failedResFltrPairs) % 1000) == 0):     # if I have 1000 fails to enter
+                        # print monitoring messages
                         print >> sys.stderr, "inserting 1000 ufilter fails, up to", \
                                                                                                 len(failedResults)
                         print >> sys.stderr, "passedAllResults up to", len(passedAllResults)
-                        insertManyUnivFails(failedResFltrPairs, conn)
-                        failedResFltrPairs.clear()
+                        insertManyUnivFails(failedResFltrPairs, conn)   # insert those fails into res_fltr
+                        failedResFltrPairs.clear()                                  # clear set of fails
+
+                     # this break makes sure we don't check any string more than we have to
+                     # Once we get a fail, we're gone                        
                     break
         else:
             # if the item/result passed every filter, add it to the list of strings that passed
             # everything so we can move on in the while loop
             passedAllResults.add(resultID)
 
-    print >> sys.stderr, "flushing last", len(failedResFltrPairs), "fails"
-    insertManyUnivFails(failedResFltrPairs, conn)
+    print >> sys.stderr, "flushing last", len(failedResFltrPairs), "fails" # print monitoring message
+    insertManyUnivFails(failedResFltrPairs, conn)   # insert the last fails that were the mod of 1000
 
     # tell the user how many item/results failed at least one filter
     print >> sys.stderr, len(failedResults), " strings failed at least one filter."
@@ -374,46 +365,52 @@ def updatePassAllTable(passAll, ospToUpdate, conn):
         return
     
 def insertManyUnivFails(failResFltrPairs, conn):
-    # TODO: comment
-    if len(failResFltrPairs) > 0:
-        valuesClause = 'VALUES '
-        for rftuple in failResFltrPairs:
-            resID = rftuple[0]
-            fID = rftuple[1]
-            valuesClause += '(' + str(resID) + ',' + str(fID) + ',0),'
+    """
+    Function: insertManyUnivFails
+    Input:
+        failResFltrPairs - a set of tuples that are values to be added to res_fltr
+        conn - a MatrixTDBConn
+    Output: none
+    Functionality: Inserts several universal filter rails into res_fltr at a time.
+    Tables accessed: res_fltr
+    Tables modified: res_fltr
+    """
+    if len(failResFltrPairs) > 0:            # just ensure there are some to add
+        valuesClause = 'VALUES '        # initialize 'VALUES ' clause
+        for rftuple in failResFltrPairs:     # for every tuple to add
+            resID = rftuple[0]                  # get its result id
+            fID = rftuple[1]                      # get its filter ID
+
+            # add the result/filter/fail result to VALUES clause            
+            valuesClause += '(' + str(resID) + ',' + str(fID) + ',0),' 
 
         valuesClause = valuesClause[:-1] # take off last comma
+
+        # build entire INSERT statement
         insertStmt = 'INSERT INTO res_fltr (rf_res_id, rf_fltr_id, rf_value) ' + valuesClause
-        conn.execute(insertStmt)
+        conn.execute(insertStmt)            # insert fails into res_fltr
 
     return
         
 
 ##########################################################################
 # Main program
-def main(conn):
+def main(osp_id, conn):
     """
     Function: main
     Input:
+        osp_id - an original source profile id
         conn - a MatrixTDBConn, a connection to the MatrixTDB database    
     Output: none
-    Functionality: Gets an osp_id from the user, deletes any existing results for that ops, then
-                         calls add_to_res_fltr to record the first fail of every result in that original source profile in res_fltr.
+    Functionality: deletes any existing results for the osp entered, then calls add_to_res_fltr to
+                         record the first fail of every result in that original source profile in res_fltr.
     Tables Accessed: result, filter, fltr_mrs, res_fltr, parse, item_tsdb
     Tables Modified: filter, fltr_mrs, res_fltr
     """
-    # ask the user for the original source profile of the id tey want to filter.
-    osp_id = raw_input("\nWhat is the osp_id for the results you would lke to filter: ")
-
-    # delete all existing results for that osp in res_fltr
+    # delete all existing results for the given osp in res_fltr
     conn.execute("DELETE FROM res_fltr WHERE rf_res_id in " + \
                              "(SELECT r_result_id FROM result " + \
                                      "WHERE r_osp_id = %s)", (osp_id))    
-
-    # get a count of how many [incr_tsdb()++] results (as opposed to the result of running a
-    # filter on an item/result) exist for that osp id.
-    count = conn.selQuery("SELECT count(r_result_id) FROM result where r_osp_id = %s",
-                                                                                                                  (osp_id))[0][0]
 
     # TODO: look into possible disconnect with add_permutes.  where that function does not
     # update the osp_id of a result if someone imports a harvester string/mrs tag that generates
@@ -421,13 +418,8 @@ def main(conn):
     # it might confuse the user and, worse, might not get all filter/result combos in there if
     # the original importer hadn't made it this far.
 
-    if count == 0:                                      # if there are no results for that osp in the database
-        print >> sys.stdderr, "That is not a valid osp_id."       # tell the user it's an error
-        sys.exit()                                                               # and exit
-    else:                                                   # otherwise...
-        # ...run every filter on every result/item in osp_id and record first fail of every string into
-        # res_fltr
-        add_to_res_fltr(osp_id, conn)
+    # ...run every filter on every result/item in osp_id and record first fail of every string into res_fltr
+    add_to_res_fltr(osp_id, conn)
 
     return
 
@@ -435,13 +427,34 @@ def main(conn):
 moduleTest = False
 
 if __name__ == "__main__":      # only run if run as main module...not if imported
-    myconn = MatrixTDBConn()           # connect to MySQL server
-    main(myconn)                              # run the main function
-    myconn.close()
+    try:
+        osp_id = sys.argv[1]        # get the osp from the command line
+    except IndexError:               # if the user didn't give it...
+
+        # ...throw an error message indicating how to call the function
+        print >> sys.stderr, 'Usage: python run_u_filters.py osp_id [username] [password]'
+        sys.exit()                       # and exit
+
+    try:                                        # try to get...
+        username = sys.argv[2]       # ...username...
+        password = sys.argv[3]       # ...and password off of command line
+
+        # if successful, create a connection using that username and password
+        myconn = MatrixTDBConn('2', username, password)
+
+    except IndexError:                               # if no username and/or password supplied...
+        myconn = MatrixTDBConn('2')           # connect to MySQL server and prompt for them
+        
+    main(osp_id, myconn)                         # run the main function
+    myconn.close()                                   # close the connection to the database
 elif moduleTest:                        # or if i'm testing, run it on MatrixTDB2
-    myconn = MatrixTDBConn('2')       # connect to MySQL server
-    # ... and notify the user moduleTest is set to True.
-    print >> sys.stderr, "Note: module testing turned on in import_from_itsdb.py.  " + \
+    # and notify the user moduleTest is set to True.
+    print >> sys.stderr, "Note: module testing turned on in run_u_filters.py.  " + \
                                  "Unless testing locally, set moduleTest to False."    
-    main(myconn)                              # run the main function
-    myconn.close()
+
+    # ask the user for the original source profile of the id they want to filter.
+    osp_id = raw_input("\nWhat is the osp_id for the results you would lke to filter: ")
+    
+    myconn = MatrixTDBConn('2')       # connect to MySQL server
+    main(osp_id, myconn)                  # run the main function
+    myconn.close()                            # close connection to MySQL server

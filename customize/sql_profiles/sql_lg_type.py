@@ -7,6 +7,8 @@ Project Owner: Emily M. Bender
 Contents:
     - omitFeatures - a list of features that are irrelevant when comparing two language types for
                             equalness
+    - regexMatchWithLT - function that tries to find a regex match for a given feature pair from a
+                                    filter in a language type
     - check_lt_for_fvs - function that compares the feat/val pairs of a feature group in with a dict of
                                 feat/val pairs to see if those in the feat group  are the same as those in
                                 the dict.  used to try to find an existing language type in the database
@@ -35,8 +37,9 @@ Contents:
 Tables accessed: lt, lt_feat_grp, feat_grp
 Tables modified: feat_grp, lt, lt_feat_grp                               
 """
-import re
-import os.path
+import re, sys, os.path, MySQLdb
+from choices import ChoicesFile
+from matrix_tdb_conn import MatrixTDBConn
 
 # there are certain features in a choices file that are irrelevant when comparing whether
 # a language type is equal to another, and so we don't enter those into the database.
@@ -100,12 +103,7 @@ omitFeatures = ['language', 'sentence1', 'sentence2']
 # | lfg_grp_id | int(11) | YES  | MUL | NULL    |                |
 # +------------+---------+------+-----+---------+----------------+
 
-
-import sys, re
-import MySQLdb
-sys.path.append("..")
-from choices import ChoicesFile
-from matrix_tdb_conn import MatrixTDBConn
+sys.path.append("..")   # append the parent directory to the path
 
 def regexMatchWithLT(fgFeature, choices, groups):
     """
@@ -140,10 +138,6 @@ def regexMatchWithLT(fgFeature, choices, groups):
         # get the number of the backreference
         backrefNum = int(fgFeature[match.start()+1:match.end()])
 
-        # debugging
-        # print >> sys.stderr, 'found backref match in fgFeature:', fgFeature, 'backrefNum:', \
-         #                             backrefNum, 'groups:', groups
-
         # get the content of the matched group.  Subtract 1 because backreferences start at 1 in
         # regex notation
         group = groups[backrefNum-1]
@@ -152,23 +146,19 @@ def regexMatchWithLT(fgFeature, choices, groups):
         fgFeature = fgFeature[:match.start()] + group + fgFeature[match.end():]
         match = re.search(r'\\\d', fgFeature)           # try to find more backreferences in feature
 
-        # print >> sys.stderr, 'fgFeature:', fgFeature # debugging
-
     for ltFeature in choices:                     # for each feat/val pair in the language type...
+        
         # ...see if the filter's feature name matches the language type is a match for the filter's
         # feature name when it is interpreted as a regex
         match2 = re.match('^' + fgFeature + '$', ltFeature)
         if match2:
+            
             # if so, add its value to the list of possible matches
             answer.append(choices[ltFeature])
 
             # and add the groups captured as a list to the list of lists that are the groups captured
             # for all possible matches
             outgroups.append(list(match2.groups()))
-
-            # debugging
-            # print >> sys.stderr, 'found a regexy match. fgFeature:', fgFeature, 'ltFeature:', ltFeature, \
-            #                               ', answer:', answer, ', outgroups:', outgroups
 
     return (answer, outgroups)                   # return output
 
@@ -213,6 +203,7 @@ def check_lt_for_fvs(fvs,choices):
 
             if len(possibleValMatches) > 0:         # if there was at least one match
                 if v in possibleValMatches:            # and there is a value in the lt that matches v
+
                     # then we have a match, so get the index of the value that matches v
                     groupInd = possibleValMatches.index(v)
 
@@ -260,7 +251,7 @@ def check_lt_for_grp_ids(grp_ids,choices,conn):
                          feature/value combos that match the language type defined by choices
     """
 
-    # grp_ids is one of those obnoxious tuples from cursor.fetchal()
+    # grp_ids is one of those obnoxious tuples from cursor.fetchall()
 
     for grp_id_tuple in grp_ids:        # for each row...
         grp_id = grp_ids[0]               #...get the feature group id
@@ -628,4 +619,4 @@ elif moduleTest:                            # if module test is true...
     # print id of language type that matches choices file, or create it and print that ID    
     main(chcFilename, myconn)
 
-    myconn.close()
+    myconn.close()                          # close database connection

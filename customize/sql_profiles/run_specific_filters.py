@@ -5,6 +5,9 @@ Date: summer '09 (KEN started working on it then)
 Project: MatrixTDB
 Project Owner: Emily M. Bender
 Contents:
+    - last_group_id - global variable that tracks the highest group id (fg_grp_id) in feat_grp
+    - queryItemsPassedUFltrs - text of a query that finds all the results in an osp that pass all
+                                             universal filters
     - main code that connects to the appropriate database and calls main
     - main - function that calls update_tables_for_filters to make sure every specific filter is in the
                 database, is associated with the right feature groups, and every language type is
@@ -59,8 +62,21 @@ from matrix_tdb_conn import MatrixTDBConn
 from s_filters import filter_list
 
 # Global variables
-
+# initialize global variable that tracks the highest group id (fg_grp_id) in feat_grp
 last_group_id = None
+
+# This query generates all item IDs where the item passed all universal filters for a given osp id
+# TODO: can I speed this up by getting rid of the NOT IN clause and instead doing an OUTER
+# JOIN where r_result_id is null?
+queryItemsPassedUFltrs = """SELECT r_result_id, r_mrs,  i_input
+                                            FROM result
+                                                INNER JOIN parse on  r_parse_id = p_parse_id
+                                                INNER JOIN item_tsdb ON p_i_id = i_id
+                                            WHERE r_osp_id = %s
+                                                AND r_result_id NOT IN
+                                                    (SELECT rf_res_id
+                                                        FROM res_fltr
+                                                        WHERE rf_value = 0)"""
 
 #################################################################
 # update_tables_for_filters(filter_list) makes sure that the
@@ -174,7 +190,7 @@ def create_choices_from_lt_id(lt_id, conn):
             fv = fvs[0]            # ...this is a singleton group, so get the feature...
             choices[fv[0]] = fv[1] # and update that key's value in the output to its value 
 
-    return choices          # return output
+    return choices          # return output, a dict of feat/val pairs, not a ChoicesFile
 
 #################################################################
 # update_filter_table(filter): Make sure the filter itself is
@@ -886,10 +902,12 @@ def getLT_FVs(fvdict):
 ############################################################################
 # Main program
 
-def main(conn):
+def main(osp_id, conn):
     """
     Function: main
-    Input: conn - a MatrixTDBConn, a connection to MatrixTDB
+    Input:
+        osp_id - an original source profile id    
+        conn - a MatrixTDBConn, a connection to MatrixTDB
     Output: none
     Functionality: Calls update_tables_for_filters to make sure every specific filter is in the
                          database, is associated with the right feature groups, and every language type
@@ -927,22 +945,8 @@ def main(conn):
     # like we did in u_filters?  Is there a reason we didn't ask for the osp_id first like we
     # did in u_filters?
 
-    # get the osp_id for the results we want to filter.  Doing it by osp_id instead of just all of the
-    # strings allows us to import new strings and not re-run the specific filters on every single
-    # string we already have in the database
-    osp_id = raw_input("\nWhat is the osp_id for the results you would lke to filter: ")
-
     # get the set of item/results from that osp that pass all universal filters
-    # TODO: can I speed this u pby getting rid of the NOT IN clause and instead doing an OUTER
-    # JOIN where r_result_id is null?
-    passAllUnivs = conn.selQuery("SELECT r_result_id, r_mrs,  i_input " + \
-                                     "FROM result INNER JOIN parse on  r_parse_id = p_parse_id " + \
-                                         "INNER JOIN item_tsdb ON p_i_id = i_id " + \
-                                     "WHERE r_osp_id = %s " + \
-                                             "AND r_result_id NOT IN " + \
-                                                 "(SELECT rf_res_id " + \
-                                                   "FROM res_fltr " + \
-                                                   "WHERE rf_value = 0)", (osp_id))
+    passAllUnivs = conn.selQuery(queryItemsPassedUFltrs, (osp_id))
 
     # delete all existing results for that osp in res_sfltr
     conn.execute("DELETE FROM res_sfltr WHERE rsf_res_id in " + \
@@ -957,14 +961,13 @@ def main(conn):
 
 
     # TODO: some of this code is repeated in run_u_filters...consider combining
-    # TODO: this loop is the slowest part anywhere in the code.  start efficiency/speed
-    # improvements here
 
-    resultsToInsert = set()
+    # initalize counter that is used to indicate progress in logging messages
     thousandCounter = 1
+    resultsToInsert = set()     # intialize set that will store up many specific filter results to insert
 
     for i in range(len(passAllUnivs)):             # for every result that passed all u filters
-        row = passAllUnivs[i]
+        row = passAllUnivs[i]                        # get the row 
         res_id, mrs_id, string = row   # get its result_id, its mrs tag, and the string
 
         if ((i % 1000) == 0):
@@ -987,16 +990,24 @@ def main(conn):
             # i overwrite them?  inform user?  can't just insert again due to uniqueness constraints.
             # TODO: figure out how to make this go faster if we only want to run new filters.
             if applyResult == 0:            # if the result/item failed the filter...
-                resultsToInsert.add((res_id, fID, applyResult))
-                if ((len(resultsToInsert) % 1000) == 0):
-                    print >> sys.stderr, 'inserting 1000 specific results, up to', 1000*thousandCounter
-                    thousandCounter += 1
-                    filters.insertManyFilteredSpecResults(resultsToInsert, conn)
-                    resultsToInsert.clear()
 
+                # ...add the result/filter combo to the set of results to be added to res_sfltr
+                resultsToInsert.add((res_id, fID, applyResult))
+                
+                if ((len(resultsToInsert) % 1000) == 0):                # if we have 1000 results to insert
+
+                    # print logging message
+                    print >> sys.stderr, 'inserting 1000 specific results, up to', 1000*thousandCounter
+                    thousandCounter += 1                                    # increment thousand counter
+
+                    # insert those results into database
+                    filters.insertManyFilteredSpecResults(resultsToInsert, conn)
+                    resultsToInsert.clear()                                     # clear set of results to insert
+
+    # print logging message about the final results that were the mod 1000 of the whole group
     print >> sys.stderr, 'flushing final', len(resultsToInsert), 'specific results into res_sfltr'
 
-    # insert final set of specific results
+    # insert final set of specific results for those where i didn't get up to 1000
     filters.insertManyFilteredSpecResults(resultsToInsert, conn)
         
     return
@@ -1006,21 +1017,43 @@ moduleTest = False
 
 # consider passing in conn intsead of using a global variable.
 if __name__ == "__main__":      # only run if run as main module...not if imported
-    myconn = MatrixTDBConn()           # connect to MySQL server
+    try:
+        osp_id = sys.argv[1]        # get the osp from the command line
+    except IndexError:               # if the user didn't give it...
+
+        # ...throw an error message indicating how to call the function
+        print >> sys.stderr, 'Usage: python run_specific_filters.py osp_id [username] [password]'
+        sys.exit()                       # and exit
+
+    try:                                        # try to get...
+        username = sys.argv[2]       # ...username...
+        password = sys.argv[3]       # ...and password off of command line
+
+        # if successful, create a connection using that username and password
+        myconn = MatrixTDBConn('2', username, password)
+
+    except IndexError:                               # if no username and/or password supplied...
+        myconn = MatrixTDBConn('2')           # connect to MySQL server and prompt for them
 
     # update database with specific filters, make sure they are associated with correct feature
     # groups, make sure language types are associated with right language types, then run
     # specific filters on an osp id provided by user and record all fails
-    main(myconn)
-    myconn.close()
+    main(osp_id, myconn)
+    myconn.close()                              # close connection to MySQL server
 elif moduleTest:                        # or if i'm testing, run it on MatrixTDB2
     # notify user moduleTest is set to True
     print >> sys.stderr, "Note: module testing turned on in run_specific_filters.py.  " + \
-                                 "Unless testing locally, set moduleTest to False."    
+                                 "Unless testing locally, set moduleTest to False."
+
+    # get the osp_id for the results we want to filter.  Doing it by osp_id instead of just all of the
+    # strings allows us to import new strings and not re-run the specific filters on every single
+    # string we already have in the database
+    osp_id = raw_input("\nWhat is the osp_id for the results you would lke to filter: ")
+    
     myconn = MatrixTDBConn('2')       # connect to MySQL server 
 
     # update database with specific filters, make sure they are associated with correct feature
     # groups, make sure language types are associated with right language types, then run
     # specific filters on an osp id provided by user and record all fails
-    main(myconn)
-    myconn.close()
+    main(osp_id, myconn)
+    myconn.close()                              # close connection to MySQL server
