@@ -596,7 +596,7 @@ moduleTest = False
 if __name__ == "__main__":          # only run if run as main module...not if imported
     try:
         chcFilename = sys.argv[1]    # get choices filename from command line
-        myconn = MatrixTDBConn()    # connect to MySQL server
+        myconn = MatrixTDBConn('2')    # connect to MySQL server
 
         # print id of language type that matches choices file, or create it and print that ID
         main(chcFilename, myconn)

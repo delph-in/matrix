@@ -6,8 +6,9 @@ Project: MatrixTDB
 Project Owner: Emily M. Bender
 Contents:
     - last_group_id - global variable that tracks the highest group id (fg_grp_id) in feat_grp
-    - queryItemsPassedUFltrs - text of a query that finds all the results in an osp that pass all
-                                             universal filters
+    - queryItemsPassedUFltrs - text of a query (no longer used) that finds all the results in an osp
+                                             that pass all universal filters
+    - queryItemsOSP - text of a query that gets the strings and mrs tags in an osp id
     - main code that connects to the appropriate database and calls main
     - main - function that calls update_tables_for_filters to make sure every specific filter is in the
                 database, is associated with the right feature groups, and every language type is
@@ -68,6 +69,8 @@ last_group_id = None
 # This query generates all item IDs where the item passed all universal filters for a given osp id
 # TODO: can I speed this up by getting rid of the NOT IN clause and instead doing an OUTER
 # JOIN where r_result_id is null?
+# NB: This is not being used now thatadd_permutes is only inserting into item_tsdb/parse/result
+# those items that pass all universal filters
 queryItemsPassedUFltrs = """SELECT r_result_id, r_mrs,  i_input
                                             FROM result
                                                 INNER JOIN parse on  r_parse_id = p_parse_id
@@ -77,6 +80,13 @@ queryItemsPassedUFltrs = """SELECT r_result_id, r_mrs,  i_input
                                                     (SELECT rf_res_id
                                                         FROM res_fltr
                                                         WHERE rf_value = 0)"""
+
+# gets the id, mrs tag, and string for all those items in an OSP
+queryItemsOSP = """SELECT r_result_id, r_mrs,  i_input
+                                            FROM result
+                                                INNER JOIN parse on  r_parse_id = p_parse_id
+                                                INNER JOIN item_tsdb ON p_i_id = i_id
+                                            WHERE r_osp_id = %s"""
 
 #################################################################
 # update_tables_for_filters(filter_list) makes sure that the
@@ -946,9 +956,10 @@ def main(osp_id, conn):
     # did in u_filters?
 
     # get the set of item/results from that osp that pass all universal filters
-    passAllUnivs = conn.selQuery(queryItemsPassedUFltrs, (osp_id))
+    passAllUnivs = conn.selQuery(queryItemsOSP, (osp_id))
 
     # delete all existing results for that osp in res_sfltr
+    # TODO: consider speeding this up by just putting the osp id on res_sfltr
     conn.execute("DELETE FROM res_sfltr WHERE rsf_res_id in " + \
                              "(SELECT r_result_id FROM result " + \
                                      "WHERE r_osp_id = %s)", (osp_id))

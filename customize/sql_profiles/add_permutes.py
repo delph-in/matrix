@@ -943,7 +943,7 @@ def runUnivFltrs(string, mrs):
     return answer                               # return output
 
 # set to true for running on my machine.  set to False before commiting to repository.
-moduleTest = True
+moduleTest = False
 
 if __name__ == "__main__":      # only run if run as main module...not if imported
     try:

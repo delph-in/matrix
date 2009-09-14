@@ -53,6 +53,8 @@ from relations_def import relFileContents
 # Even without counting on that, we could give it the lowest and highest, have it generate a range
 # and then deal with queries that return no items
 # NOTE: Abandoned on 9/6/09 when I had 8.7 rows in item_tsdb and things got too slow
+# NOTE: Resurrectec on 9/14/09 when we changed add_permutes to add only items that passed
+# all universal filter to item_tsdb/parse/result
 queryItemIDs="""SELECT i_id
                          FROM item_tsdb;"""
 
@@ -70,6 +72,8 @@ queryItemsFailedUFltrs="""SELECT p.p_i_id
 # a query to get all the result IDs that pass all universal filters
 # TODO: can I speed this up by getting rid of the NOT IN clause and instead doing an OUTER
 # JOIN where r_result_id is null?
+# NB: This is not being used now thatadd_permutes is only inserting into item_tsdb/parse/result
+# those items that pass all universal filters
 queryItemsPassAllUnivs="""SELECT r_result_id
                                             FROM result
                                             WHERE r_result_id NOT IN
@@ -118,7 +122,7 @@ def main(lngTypeID, dbroot, profilename, conn):
     TODO: set up something somwhere to generate profpath folders if they don't exist
     """
     # get a list of all items that pass all universal filters    
-    selResults = conn.selQuery(queryItemsPassAllUnivs)
+    selResults = conn.selQuery(queryItemIDs)
     upass = db_utils.selColumnToSet(selResults)   # ...and convert to a set of IDs
 
     # monitoring progress
