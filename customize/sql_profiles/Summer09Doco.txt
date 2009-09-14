@@ -1,14 +1,9 @@
 - doco:
-	- how to write filters (DONE)
-	- how system works end to end
-	- backing up and restoring database
-	- database tables and their relationships
 	- emily said:
 		- A general report of what you've done would be good to have, but don't  spend more than about 30 minutes on it, I'd say.
 		- Documentation for grammar engineers adding filters should be on the  DELPH-IN wiki, and should be as much step-by-step as possible.  I like the ideas 
 		  you mention (table documentation, how filters are selected). There should also be (better) documentation on the filter types, how to add harvester
 		  strings, how to modify add permutes (and when that's necessary).
-- ask emily for access to update delph-in wiki
 
 ****************
 WHAT I DID THIS SUMMER
@@ -84,6 +79,17 @@ If you want to revert the database to a previous point, log in to the database a
 
 ****************
 HOW TO ADD NEW HARVESTER STRINGS
+- Create a source profile
+- Import the source profile
+- Add permutes of the harvester string in that source profile
+- Run specific filters on those permutes
+****************
+
+****************
+HOW TO GENERATE A PROFILE (the big task)
+- Import the language type you want to generate the profile for
+- Generate the profile (the small task)
+- Evaluate the profile
 ****************
 
 ****************
@@ -167,7 +173,7 @@ TODO: run this on patas to test these instructions
 ****************
 
 ****************
-HOW TO GENERATE A PROFILE
+HOW TO GENERATE A PROFILE (the small task)
 TODO: run this on patas to test these instructions
 - Make sure you have a language type ID that you want to generate the profile for.  You can get the ID by querying the lt table or by importing a language type 
   (see: HOW TO IMPORT A LANGUAGE TYPE)
@@ -428,19 +434,3 @@ rf_res_id - Foreign key to result.r_result_id, parse.p_parse_id, and item_tsdb.i
 rf_fltr_id - Foreign key to filter.filter_id
 rf_value - The 'result' of applying the filter to the 'result'.  0 for fail, 1 for pass, 2 for does-not-apply.
 ----------------
-
-****************
-
-****************
-HOW TO DO MORE COMPLICATED THINGS:
-- back up the database (done)
-- restore the database (done)
-- create a source profile (done)
-- import a source profile (done)
-- add permutes (done)
-- run specific filters
-- update stringmod.py
-- run universal filters (irrelevant now)
-****************
-
-
