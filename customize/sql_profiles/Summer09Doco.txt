@@ -29,10 +29,46 @@ of a word.  Furthermore, miniaffixes is a grammar where the -nf suffix comes aft
 but tv-nf-neg is not.  But since MatrixTDB considered tv-nf as an atomic word, it was not possible to produce tv-neg-nf.  nf is now an affix and the permutations
 for 14 of the 18 harvester strings (all but neg2, neg4, ques2, and ques4) are entered into the database and run through all of the filters.
 ****************
+Final status:
+
+***State of the database***
+
+MatrixTDB is still there, but I haven’t touched it since I created MatrixTDB2, which is what should be used going forward.  All the code I worked with is changed to work with MatrixTDB2 instead of MatrixTDB.
+
+MatrixTDB2 has the following information in it:
+The “easy” 14 harvester strings (the original 18 minus neg2, neg4, ques2, and ques4).
+Those strings run through “everything” (add_permutes, run_specific_filters)
+Three language types: original harvester grammar, harvester grammar changed to vfinal, miniaffixes
+
+When generating profiles for those language types, the first two evaluated great.  Miniaffixes has an overgeneration problem of 52 strings.  This overgeneration must be related to the –nf as affix solution because it was good before I did that (see State of the Code)
+
+***State of the code***
+Immediate concerns I couldn’t resolve:
+-	The overgeneration in miniaffixes.  After getting the –nf as an affix solution coded I’m not getting an overgeneration of 52 strings.
+-	Speed of add_permutes.  I tried profiling, but didn’t find any obvious solutions.  I also forced Condor to give me a big machine, but it actually ran slower and stalled out with two seed strings remaining instead of just one.  I know David rebooted one of the big machines this morning and today add_permutes on the 14 harvester strings ran twice as fast, so I may kick this one off again tonight just for kicks.
+
+Suggested fix for add_permutes speed:
+-	My latest idea is that the problem isn’t time as it is space…when the code has to keep track of a list with 16 million elements it gets bogged down.  This could be fixed by turning uniq_permute into what python calls a generator.  A generator would work something like:
+
+for perm in uniqPermGenerator(seedString):
+	# run the perm through u filters and add those that pass all to a databse.
+
+	The difference between this and what’s implemented is that the generator just generates the permutaitons as they’re needed, not all at one time.  Due to the multiple layers of permuting the words and the affixes and the affixes on the words, there should also be sub-generators built into the master generator.
+
+***State of the repository***
+Aside from the code, I’ve got the following folders and files added that have been my inputs and outputs
+-	grammars/ - this directory has the four grammars I’ve been using: harv_orig, harv_vfinal, miniaffixes, and moreaffixes.  The harv_orig folder has the five source profiles I was using at the end.
+-	dbroot/  - this contains the final three profiles I generated today: sov15 (harvester), vfinal15, miniaffixes15
+-	addPerms.cmd – a template condor script for running add_permutes.  Described on the wiki
+-	runSFltrs.cmd – a template condor script for running run_specific_filters.  Described on the wiki
+
+********Everything below this point is in a better spot in the wiki************************
+On these two pages:
+http://wiki.delph-in.net/moin/MatrixTDBProcedures
+http://wiki.delph-in.net/moin/MatrixTDBTables
 
 There are two main things you might want to do with MatrixTDB: enter new harvester strings (and seed strings and permutations) or generate a profile for a language type.  These two main things are themselves made up of big steps which are explicated in detail below.  Here are how those two main things break down into
 big steps.
-
 
 ****************
 HOW TO ADD NEW HARVESTER STRINGS
