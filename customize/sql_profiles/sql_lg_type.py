@@ -35,7 +35,9 @@ Contents:
     - main code that gets the name of a choices file from the command line or the user and uses
       it to call main
 Tables accessed: lt, lt_feat_grp, feat_grp
-Tables modified: feat_grp, lt, lt_feat_grp                               
+Tables modified: feat_grp, lt, lt_feat_grp
+History:
+    9/16/09 - Updated omitFeatures to be regexy, not just strings
 """
 import re, sys, os.path, MySQLdb
 from choices import ChoicesFile
@@ -43,7 +45,7 @@ from matrix_tdb_conn import MatrixTDBConn
 
 # there are certain features in a choices file that are irrelevant when comparing whether
 # a language type is equal to another, and so we don't enter those into the database.
-omitFeatures = ['language', 'sentence1', 'sentence2']
+omitFeatures = [re.compile('language'), re.compile('sentence[1-9][0-9]*(?:_orth)?')]
 
 ###############################################################
 # Read in choices file and create appropriate representations
@@ -268,12 +270,16 @@ def check_lt_for_grp_ids(grp_ids,choices,conn):
         (f, v) = conn.selQuery("SELECT fg_feat, fg_value FROM feat_grp " + \
                               "WHERE fg_grp_id = %s",(grp_id))[0]
 
-        # if the choices file's value of the feature doesn't match the value of the feature in the group
-        # for the language type we're checking, and if it's not a feature we don't care about, then...
-        # TODO: seems this should use get_full, not get
-        if (f not in omitFeatures) and (choices.get(f) != v):
-            answer = False      # ...this language type doesn't match choices file
-            break                   # and get out of here
+        for o in omitFeatures:      # for all of the features we're ignoring...  
+            if o.match(f):              # if this is one of those features...
+                break                    # then break out of this inner for loop and continue with outer loop
+        else:                             # but if this feature isn't one we're ignoring
+            # and the choices file's value of the feature doesn't match the value of the feature in the
+            # group for the language type we're checking
+            # TODO: seems this should use get_full, not get
+            if choices.get(f) != v:   
+                answer = False      # ...this language type doesn't match choices file
+                break                   # and get out of here
     else:                            # but if every feature's value matched...
         answer = True           # ...then the file does match th elt we're checking, so return True
 
@@ -297,8 +303,17 @@ def check_existing_lt_for_completeness(lt_id, choices, conn):
     """
     # create a list of features in the choices that we care about by taking out those features
     # that are irrelevant
-    relevantKeys = set(choices.keys()).difference(set(omitFeatures))
-    
+    relevantKeys = set(choices.keys())       # initialize a set of the keys in the choices file
+    toRemove = set()                                # initialize set of features we don't care about       
+
+    for key in relevantKeys:                        # for each key...
+        for o in omitFeatures:                      # ...check all regexs of features to remove...
+            if o.match(key):                          # ...if there is a match
+                toRemove.add(key)                 # ...add it to set of features to remove
+
+    for tr in toRemove:                             # for all ones to remove...
+        relevantKeys.remove(tr)                  # ...remove it
+        
     for f in relevantKeys:        # for every relevant feature in the choices file...
         # check that that feature/value combo is included in the language type in MatrixTDB.
         res = conn.selQuery("SELECT fg_grp_id FROM feat_grp " + \

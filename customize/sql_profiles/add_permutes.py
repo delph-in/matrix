@@ -454,7 +454,6 @@ def attach_affixes(perms, affixes):
     # base case
 
     if len(affixes) == 0:       # if there are no affixes
-        # TODO: fix multiple points of return
         answer = perms            # just return the input list of permutations
     else:                               # but if we do have affixes
         # recursive step
@@ -551,7 +550,15 @@ def fix_affix_spelling(perms, flag):
         # base case
 
         if len(perm) == 1:                       # if this permutation  was just one word long
-            return_perms = [words]          # set return_perms to all possible spellings of that word
+            # the line below is causing problems
+            # return_perms = [words]          # set return_perms to all possible spellings of that word
+            # return_perms = words # attempt to fix failed; errors out in verify_perms
+            # return_perms += words # attempt to fix failed: errors out in verify_perms
+            # return_perms.append(words) # attempt to fix failed: does same thing as original
+
+            # you need to put each possible spelling as a one-word permutation list in a list
+            # of those permutations
+            return_perms = [[word] for word in words]   # attempt at fixing problem...works?
             verify_perms(return_perms)    # verify the format of the return list
         else:                                        # but if this permutation had more than one word in it
             # Make a new list with the rest of the words.

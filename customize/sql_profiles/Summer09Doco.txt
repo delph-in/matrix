@@ -1,10 +1,3 @@
-- doco:
-	- emily said:
-		- A general report of what you've done would be good to have, but don't  spend more than about 30 minutes on it, I'd say.
-		- Documentation for grammar engineers adding filters should be on the  DELPH-IN wiki, and should be as much step-by-step as possible.  I like the ideas 
-		  you mention (table documentation, how filters are selected). There should also be (better) documentation on the filter types, how to add harvester
-		  strings, how to modify add permutes (and when that's necessary).
-
 ****************
 WHAT I DID THIS SUMMER
 - Made the code functional
@@ -104,7 +97,6 @@ Source profiles (sometimes also called 'original source profiles') are what are 
 HOW TO IMPORT A SOURCE PROFILE
 Source profiles (sometimes also called 'original source profiles') are what are used to bring the big, hairy mrs semantics into the database.  When you have a 
 [incr_tsdb()] profile that was created by processing a flat file of items you can use that to import a source profile into the database.  To do so:
-TODO: test on patas that these instructions work
 - Create a file that has each harvester string in your profile on a line preceded by its mrs tag and a '@'  E.g., wo1@n1 iv
 - Run the following command:
 	$ python import_from_itsdb.py itsdbDir harvMrsFilename choicesFilename
@@ -112,6 +104,7 @@ TODO: test on patas that these instructions work
 	itsdbDir - the absolute directory of your [incr_tsdb()] directory.  Be sure to end it in a '/'
 	harvMrsFilename - the name of the file you created above with mrs tags and harvester strings
 	choicesFilename - the choices file of the grammar you used to create the profile
+- The system will prompt for a username and password to the database
 - The system may ask you if the tags you're adding really are new or if you want to replace the existing tags with the new semantics you are importing.  Answer
   appropriately.  If the system indicates you are changing some semantics, make sure that is what you want to do.
 - The system will also ask you for a description of the source profile.  It can be up to 1000 characters.
@@ -158,47 +151,46 @@ the results of those runs through filters.  Here's how:
 
 ****************
 HOW TO IMPORT A LANGUAGE TYPE
-TODO: run this on patas to test these instructions
 - Create a choices file from the customization system
 - Run the following command:
 	$ python sql_lg_type.py filename
 	where filename is the full path and filename of the choices file you downloaded
-- The system will ask if the language type is randomly created or purpose-built.  Answer r or p as appropriate.  Unless you're just testing phenomena coverage of 
-  MatrixTDB itself, yours is probably purpose-built.
+- You will be prompted for the username and password to the database.
+- If the language type already exists, it will return its ID.
+- If the language type does not already exist, the system will ask if the language type is randomly created or purpose-built.  Answer r or p as appropriate.
+  Unless you're just testing phenomena coverage of  MatrixTDB itself, yours is probably purpose-built.
 - The system will prompt you for a short comment describing your language type.  You can enter the name of the language or the phenomena you're testing (e.g., 
   v-final), or whatever you feel is appropriate
 - The system will then create a language type in the database and give you an lt_id (language type ID) that you can use to generate a [incr_tsdb()] profile for
   validation
-- If there is already a language type that matches your choices file, the system will not insert it anew but will just give you the existing ID
 ****************
 
 ****************
 HOW TO GENERATE A PROFILE (the small task)
-TODO: run this on patas to test these instructions
 - Make sure you have a language type ID that you want to generate the profile for.  You can get the ID by querying the lt table or by importing a language type 
   (see: HOW TO IMPORT A LANGUAGE TYPE)
-TODO: run this on patas to test these instructions
 - Run the following command:
 	$ python generate_s_profile.py lt_id dbroot profilename
 	where the three arguments are:
 		- lt_id - the language type ID you are generating the profile for
 		- dbroot - the absolute path where you want the profile created
 		- profilename - the name of the profile to create
+- You will be prompted for the username and password to the database.
 - The system will generate two profiles in dbroot: [profilename] and [profilename]gold.  The gold version should be processed in [incr_tsdb()] and used as the gold
   standard
 ****************
 
 ****************
-HOW TO EVALUATE A GENERATED PROFILE
-- Start LKB and load the grammar that corresponds to the language type you generated the profile for
-- Start [incr_tsdb()] and set the dbroot to the directory where you generate the profile
-- Process all the items in the gold profile to create the gold standard
-- Set the gold profile to be the gold standard
-- Set readings and mrs to be the things compared in the intersection
-- Select the non-gold profile you are evaluating.
-- Run Compare->Detail.
-- If MatrixTDB output is good, the only differences you see should be that items with -1 readings in the gold should have 0 readings in MatrixTDB.
-- You can remove readings from the intersection and if MatrixTDB is right there will be no differences in Compare->Detail.
+HOW TO EVALUATE A GENERATED PROFILE IN [INCR_TSDB()]
+   * Start LKB and load the grammar that corresponds to the language type you generated the profile for
+   * Start [incr_tsdb()] and set the dbroot to the directory where you generate the profile
+   * Process all the items in the gold profile to create the gold standard
+   * Set the gold profile to be the gold standard
+   * Set readings and mrs to be the things compared in the intersection
+   * Select the non-gold profile you are evaluating.
+   * Run Compare->Detail.
+   * If MatrixTDB output is good, the only differences you see should be that items with -1 readings in the gold should have 0 readings in MatrixTDB.
+   * You can remove readings from the intersection and if MatrixTDB is right there will be no differences in Compare->Detail.
 ****************
 
 ****************
@@ -321,14 +313,13 @@ lt_origin - Either 'r' or 'p'.  Indicates whether the language type was purpose-
 lt_comment - A user-enetered comment about what the language type is.
 ----------------
 TABLE: lt_feat_grp
-DESCRIPTION: Intersectio ntable that matches language types up with the feature groups they have.  Used in combination with fltr_feat_grp to find filters that
+DESCRIPTION: Intersection table that matches language types up with the feature groups they have.  Used in combination with fltr_feat_grp to find filters that
 			 are relevant to a language type.
 COLUMNS:
 lfg_id - Primary key
 lfg_lt_id - Foreign key to lt.lt_id
 lfg_grp_id - A foreign key to feat_grp.fg_grp_id
 ----------------
-TODO: Verify this query gets me the right info.
 One final note on this set of tables: If you are debugging the system and trying to figure out why a given string was not grammatical, you will want to know what
 specific filters it failed.  The way to do this is to run the query that generate_s_profile runs when determine which strings fail filters specific to the relevant
 language type.  This query, in a slightly different from from that used by genereate_s_profile, is:
@@ -414,8 +405,8 @@ sl_seed_id - Foreign key to seed_str.seed_id
 Table updated by run_specific_filters:
 ----------------
 TABLE: res_sfltr
-DESCRIPTION: Intersection table that stores the 'result' of applying a specific filter to the 'result' in a [incr_tsdb()] profile.  Currently only used to store
 			 fails, not passes or does-not-applys.
+DESCRIPTION: Intersection table that stores the 'result' of applying a specific filter to the 'result' in a [incr_tsdb()] profile.  Currently only used to store
 COLUMNS:
 rsf_id - Primary key.
 rsf_res_id - Foreign key to result.r_result_id, parse.p_parse_id, and item_tsdb.i_id

@@ -733,7 +733,7 @@ def main(itsdb_dir, harv_mrs, choices_filename, conn = None):
 moduleTest = False
 
 if __name__ == '__main__':      # only run if run as main module...not if imported
-    if len(sys.argv < 4):                # if the user gave too few arguments....
+    if len(sys.argv) < 4:                # if the user gave too few arguments....
         # ...give an error message indicating usage.
         print >> sys.stderr, "Usage: python import_from_itsdb.py itsdb_directory " + \
                                      "harv_mrs_filename choices_filename"
@@ -748,10 +748,11 @@ if __name__ == '__main__':      # only run if run as main module...not if import
         choicesFilename = sys.argv[3]
         
         #Connect to MySQL server
-        conn = MatrixTDBConn()
+        myconn = MatrixTDBConn('2')
 
         # call the main program to import a source profile into MatrixTDB
-        main(itsdbDir, harvMrsFilename, choicesFilename, conn)
+        main(itsdbDir, harvMrsFilename, choicesFilename, myconn)
+        myconn.close()          # close connection to database
         
 elif moduleTest:                        # if we are testing this module locally...
     myconn = MatrixTDBConn('2')      # ...create a connection to the smaller, newer database...
