@@ -1017,518 +1017,6 @@ def customize_situation():
 #   about basic word order, including information about adpositions
 #   and auxiliaries.
 
-# ERB 2006-09-15 DOCUMENTATION
-
-# 1. Statement of domain
-
-# This module handles the basic word order facts for matrix declarative
-# clauses, include permissible orders of major constituents (V, S, O),
-# and (where applicable) determiner-noun order, adposition-NP order, and
-# auxiliary-verb order.  Since the word order section and the basic vocabulary
-# section are closely related, both are documented together here.
-
-# 2. Seed strings/requirements of POS lexicon
-
-# The phenomena covered by this module can be illustrated using the following
-# lexical entries:
-
-# det (determiner)
-# s (subject)
-# o (object)
-# io (indirect object)
-# tv (transitive verb)
-# iv (intransitive verb)
-# dtv (ditransitive verb)
-# aux (auxiliary verb)
-# p (adposition)
-
-# In these seed strings, p and aux are assumed to be semantically
-# empty.  Det does have semantic content which is distinct from the
-# semantic relation introduced by the bare-np phrase.
-
-# In the absence of a module for case (and in languages without case)
-# both 's tv o' and 'o tv s' will parse in an ostensibly svo language.  We
-# want to distinguish s and o anyway because we would expect those two strings to
-# have different semantic representations in an svo language.  That is,
-# you shouldn't be able to generate 'o tv s' from the semantics of 's tv o'
-# in a strictly svo language.
-
-# Seed strings, not all of which will have valid permutations in all languages.
-
-# Note that his module does NOT handle argument optionality, so the seed
-# strings given here don't illustrate it.
-
-# These seed strings are written assuming sov order, prepositions, det-n,
-# and auxiliaries which immediately follow the verbs they attach to.
-# They allow for optional dets and optional adps.
-
-# The module as written really only does anything interesting with io
-# (indirect objects) in the case of free word order languages.  The lexicon
-# does not currently elicit a ditransitive verb, however.
-
-## Intransitive verb, transitive verb, det on s, o, both, neither
-## p on s, o, both, neither, with and without det
-
-# s iv
-# det s iv
-# s o tv
-# det s det o tv
-# det s o tv
-# s det o tv
-# p s iv
-# p s o tv
-# p s p o tv
-# s p o tv
-# p det s iv
-# p det s o tv
-# p det s p o tv
-# det s p o tv
-# p s det o tv
-# p s p det o tv
-# s p det o tv
-# p det s det o tv
-# p det s p det o tv
-# det s p o det tv
-
-## Semantically distinct seed strings from the above:
-
-# s iv
-# det s iv
-# s o tv
-# det s o tv
-# det s det o tv
-
-# ## Ditransitive verbs.  Det on no arguments, each one separately
-# ## each pair, all three.  All of these are semantically distinct
-# ## from each other, and from the strings above.
-
-# s io o dtv
-# det s io o dtv
-# s det io o dtv
-# s io det o dtv
-# det s det io o dtv
-# det s io det o dtv
-# s det io det o dtv
-# det s det io det o dtv
-
-# ## P is semantically empty, so the strings below all share semantics
-# ## with something in the set above.
-
-# ## Ditransitive verbs.  Det on no arguments, eachone separately
-# ## each pair, all three. P on s argument only.
-
-# p s io o dtv
-# p det s io o dtv
-# p s det io o dtv
-# p s io det o dtv
-# p det s det io o dtv
-# p det s io det o dtv
-# p s det io det o dtv
-# p det s det io det o dtv
-
-# ## Ditransitive verbs.  Det on no arguments, each one separately
-# ## each pair, all three. P on io argument only.
-
-# s p io o dtv
-# det s p io o dtv
-# s det p io o dtv
-# s p io det o dtv
-# det s p det io o dtv
-# det s p io det o dtv
-# s p det io det o dtv
-# det s p det io det o dtv
-
-# ## Ditransitive verbs.  Det on no arguments, each one separately
-# ## each pair, all three. P on o argument only.
-
-# s io p o dtv
-# det s io p o dtv
-# s det io p o dtv
-# s io p det o dtv
-# det s det io p o dtv
-# det s io p det o dtv
-# s det io p det o dtv
-# det s det io p det o dtv
-
-# ## Ditransitive verbs.  Det on no arguments, each one separately
-# ## each pair, all three. P on s and io arguments only.
-
-# p s p io o dtv
-# p det s p io o dtv
-# p s p det io o dtv
-# p s p io det o dtv
-# p det s p det io o dtv
-# p det s p io det o dtv
-# p s p det io det o dtv
-# p det s p det io det o dtv
-
-# ## Ditransitive verbs.  Det on no arguments, each one separately
-# ## each pair, all three. P on s and o arguments only.
-
-# p s io p o dtv
-# p det s io p o dtv
-# p s det io p o dtv
-# p s io p det o dtv
-# p det s det io p o dtv
-# p det s io p det o dtv
-# p s det io p det o dtv
-# p det s det io p det o dtv
-
-# ## Ditransitive verbs.  Det on no arguments, each one separately
-# ## each pair, all three. P on io and o arguments only.
-
-# s p io p o dtv
-# det s p io p o dtv
-# s p det io p o dtv
-# s p io p det o dtv
-# det s p det io p o dtv
-# det s p io p det o dtv
-# s p det io p det o dtv
-# det s p det io p det o dtv
-
-# ## Ditransitive verbs.  Det on no arguments, each one separately
-# ## each pair, all three. P on all three arguments.
-
-# p s p io p o dtv
-# p det s p io p o dtv
-# p s p det io p o dtv
-# p s p io p det o dtv
-# p det s p det io p o dtv
-# p det s p io p det o dtv
-# p s p det io p det o dtv
-# p det s p det io p det o dtv
-
-# ## All of the above, with aux added at the end.
-# ## aux is semantically empty, so no new semantics here.
-
-# s iv aux
-# det s iv aux
-# s o tv aux
-# det s det o tv aux
-# det s o tv aux
-# s det o tv aux
-# p s iv aux
-# p s o tv aux
-# p s p o tv aux
-# s p o tv aux
-# p det s iv aux
-# p det s o tv aux
-# p det s p o tv aux
-# det s p o tv aux
-# p s det o tv aux
-# p s p det o tv aux
-# s p det o tv aux
-# p det s det o tv aux
-# p det s p det o tv aux
-# det s p o det tv aux
-# s io o dtv aux
-# det s io o dtv aux
-# s det io o dtv aux
-# s io det o dtv aux
-# det s det io o dtv aux
-# det s io det o dtv aux
-# s det io det o dtv aux
-# det s det io det o dtv aux
-# p s io o dtv aux
-# p det s io o dtv aux
-# p s det io o dtv aux
-# p s io det o dtv aux
-# p det s det io o dtv aux
-# p det s io det o dtv aux
-# p s det io det o dtv aux
-# p det s det io det o dtv aux
-# s p io o dtv aux
-# det s p io o dtv aux
-# s det p io o dtv aux
-# s p io det o dtv aux
-# det s p det io o dtv aux
-# det s p io det o dtv aux
-# s p det io det o dtv aux
-# det s p det io det o dtv aux
-# s io p o dtv aux
-# det s io p o dtv aux
-# s det io p o dtv aux
-# s io p det o dtv aux
-# det s det io p o dtv aux
-# det s io p det o dtv aux
-# s det io p det o dtv aux
-# det s det io p det o dtv aux
-# p s p io o dtv aux
-# p det s p io o dtv aux
-# p s p det io o dtv aux
-# p s p io det o dtv aux
-# p det s p det io o dtv aux
-# p det s p io det o dtv aux
-# p s p det io det o dtv aux
-# p det s p det io det o dtv aux
-# p s io p o dtv aux
-# p det s io p o dtv aux
-# p s det io p o dtv aux
-# p s io p det o dtv aux
-# p det s det io p o dtv aux
-# p det s io p det o dtv aux
-# p s det io p det o dtv aux
-# p det s det io p det o dtv aux
-# s p io p o dtv aux
-# det s p io p o dtv aux
-# s p det io p o dtv aux
-# s p io p det o dtv aux
-# det s p det io p o dtv aux
-# det s p io p det o dtv aux
-# s p det io p det o dtv aux
-# det s p det io p det o dtv aux
-# p s p io p o dtv aux
-# p det s p io p o dtv aux
-# p s p det io p o dtv aux
-# p s p io p det o dtv aux
-# p det s p det io p o dtv aux
-# p det s p io p det o dtv aux
-# p s p det io p det o dtv aux
-# p det s p det io p det o dtv aux
-
-# 3. TDL Samples
-
-# For a v-final language, with prepositions, auxiliaries which precede the verb,
-# and det-n order, we should get the following in mylanguage.tdl.  (Actually, this
-# is a more nicely formatted version of what we *do* get, I haven't tested it
-# as tdl yet.)
-
-# head :+ [ AUX bool ] .
-
-# ; comp-head-phrase is restricted from taking prepositions as its head.
-# ; comp-head-phrase is restricted from taking auxiliaries as its head. 
-
-# comp-head-phrase := basic-head-1st-comp-phrase & head-final &
-#    [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo & [ AUX - ]].
-
-# ; head-comp-phrase is only for prepositions and auxiliaries.
-
-# head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
-#    [ SYNSEM.LOCAL.CAT.HEAD +vp [ AUX + ]].
-
-# subj-head-phrase := basic-head-subj-phrase & head-final.
-
-# ; Rules for building NPs.  Note that the Matrix uses SPR for
-# ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
-
-# head-spec-phrase := basic-head-spec-phrase & head-final.
-
-# ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
-# ; introduced to match the semantic effect of bare NPs in your language.
-
-# bare-np-phrase := basic-bare-np-phrase &
-#    [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
-
-# And in rules.tdl, we get:
-
-# comp-head := comp-head-phrase.
-# head-comp := head-comp-phrase.
-# subj-head := subj-head-phrase.
-# head-spec := head-spec-phrase.
-# bare-np := bare-np-phrase.
-
-# The lexical types look like this:
-
-# ;;; Lexical types
-
-# ;;; Nouns
-
-# noun-lex := basic-noun-lex &
-#   basic-one-arg &
-#   [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr &
-#                                    [ LOCAL.CAT.HEAD det ] >,
-#                              COMPS < >,
-#                              SUBJ < >,
-#                              SPEC < > ] ],
-#     ARG-ST < #spr > ] .
-
-# obl-spr-noun-lex := noun-lex &
-#   [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ] .
-
-# ;;; Verbs
-
-# verb-lex := basic-verb-lex &
-#   [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
-#                                SPEC < >,
-#                                SUBJ < #subj > ] ],
-#                    CONT.HOOK.XARG #xarg ],
-#     ARG-ST < #subj &
-#              [ LOCAL [ CAT.VAL [ SPR < >,
-#                                  COMPS < > ],
-#                        CONT.HOOK.INDEX #xarg ] ], ... > ] .
-
-# intransitive-verb-lex := verb-lex &
-#   intransitive-lex-item &
-#   [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
-#     ARG-ST < [ LOCAL.CAT.HEAD adp ] > ] .
-
-# transitive-verb-lex := verb-lex &
-#   transitive-lex-item &
-#   [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
-#     ARG-ST < [ LOCAL.CAT.HEAD adp ], #comps &
-#                                      [ LOCAL.CAT [ VAL [ SPR < >,
-#                                                          COMPS < > ],
-#                                                    HEAD adp ] ] > ] .
-
-# ;;; Case-marking adpositions
-# ;;; Case marking adpositions are constrained not to
-# ;;; be modifiers.
-
-# case-marking-adp-lex := basic-one-arg &
-#   raise-sem-lex-item &
-#   [ SYNSEM.LOCAL.CAT [ HEAD adp &
-#                             [ MOD < > ],
-#                        VAL [ SPR < >,
-#                              SUBJ < >,
-#                              COMPS < #comps >,
-#                              SPEC < > ] ],
-#     ARG-ST < #comps &
-#              [ LOCAL.CAT [ HEAD noun,
-#                            VAL.SPR < > ] ] > ] .
-
-
-# ;;; Determiners
-# ;;; SPEC is non-empty, and already specified by basic-determiner-lex.
-
-# determiner-lex := basic-determiner-lex &
-#   basic-zero-arg &
-#   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
-#                            COMPS < >,
-#                            SUBJ < > ] ] .
-
-
-
-# 4. Description of cases handled
-
-# For the major constituent orders, this module handles: all fixed
-# orders of S,O, and V, V-final, V-initial and "free".  It allows for
-# strict det-n and strict n-det, as well as strict P-NP and strict
-# NP-P.  In addition, it allows auxiliaries to appear strictly left,
-# strictly right or either to the left or to the right of the
-# constituent they combine with.  The lexicon module allows for
-# auxiliaries which combine with V (argument composition), VP
-# (raising) or S (??), and contribute their own preds or not.
-# The lexicon module also allows for each verb to select for NP or
-# PP arguments in each position (subject/object), and for nouns
-# to have obligatory, optional, or no determiners.
-
-# It also creates a bare np phrase for every language, because
-# a) all nouns need quantifiers and b) I suspect that all languages
-# allow bare NPs in at least some cases.
-
-# The free word order case does some interesting work with ditransitives
-# in order to illustrate all 24 possible orders.  This involves allowing
-# the second complement to be realized by the first.
-
-# 5. Known unhandled cases
-
-# The module currently does not support word order which varies
-# according to clause type (e.g., matrix v. subordinate), V2 order,
-# free order of determiners or adpositions with respect to nouns.  It
-# also doesn't handle "splattered NP"-type free word order where the
-# major constituents are not cohesive.
-
-# There is no specialization of the bare-np phrase (to e.g., pronouns
-# only, etc).
-
-# The present lexicon module does not elicit any ditransitive verbs,
-# and this word order module does not elicit any information about the
-# relative ordering of complements when there is more than one, aside
-# from allowing free order of direct and indirect objects in the free
-# word order case.  The basic-head-1st-comp-phrase
-# v. basic-head-2nd-comp-phrase distinction provided in matrix.tdl is
-# a start in this direction, however (and indeed is used by the free
-# word order module).
-
-# In addition to adpositions and auxiliaries, there are other types of
-# words which will eventually want to use the head-comp (and maybe
-# head-subj or head-spec) phrases.  Doing so will undoubtedly require
-# some additional modifications to the (already quite complex)
-# functions determine_consistent_order() and specialize_word_order().
-# These include complementizers, question particles, degree specifiers,
-# and complement-taking substantives.
-
-# 6. Description of tdl
-
-# The general strategy is to take the basic head-complement,
-# head-subject and head-specifier phrases provided by matrix.tdl, and
-# cross-classify them with the types that determine linear precedence
-# (head-initial and head-final).  In addition, to allow only the
-# correct orders (in VSO, VOS, SOV, OSV) and to eliminate spurious
-# ambiguity (in SVO and OVS), head-subject rules are constrained to be
-# COMPS < > or head-complement rules are constrained to be SUBJ < >.
-
-# Some trickiness comes in when the orders for adpositions and/or
-# auxiliaries aren't consistent with the order of V and O, either
-# because they are more constrained (e.g., free order of V,O,S, but
-# prepositions only) or constrained to be opposite (an SOV language
-# with prepositions).  In this case, we have both head-comp and
-# comp-head rules, but one or both constrains its HEAD value (and
-# therefore what type of head daughter it can have).  These
-# constraints are either on the type of the HEAD value (making use of
-# the disjunctive head types provided in head-types.tdl) or on the AUX
-# value.  To simplify things, AUX is declared as a feature of head, so
-# that a rule that says [AUX -] is e.g., compatible with [HEAD adp].
-
-# The tdl for the lexical types is pretty straightforward, in the
-# case of nouns and verbs.  They inherit from the relevant supertypes
-# in matrix.tdl, link ARG-ST elements to VAL elements, and constrain
-# other VAL lists to be empty.  They also give the HEAD value for
-# each argument.  Nouns might further provide a value for OPT on the
-# specifier.  Verbs identify the XARG with the first ARG-ST element's
-# INDEX.  The determiners just inherit from basic-zero-arg and make
-# empty VAL lists (maybe that should be on basic-zero-arg anyway?).
-# The case-marking adpositions inherit from basic-one-arg and raise-sem-lex-item.
-# They link their sole argument, an NP, to a COMPS list. Further, they
-# are MOD < >.
-
-# The trickiest lexical types are the auxiliaries.  They are cross-classified
-# along three dimensions: V, VP or S complement, pred or no pred, and
-# (for V or VP complement) NP v. PP subject.
-
-# 7. Description of customization (python)
-
-# I have attempted to keep each tdl statement (ascription of a particular
-# constraint to a particular type) stated only once in this script,
-# even if it gets used in multiple cases.  Those cases are handled with
-# if statements which test either the input values directly (e.g.,
-# the value chosen for word order) or derived properties of those input
-# values (whether or not the order of adpositions and verbs with respect
-# to their complements is 'consistent').
-
-# customize_word_order() calls the following subroutines:
-
-#  customize_major_constituent_order(), which emits types and
-#  instances for head-subject and head-complement rules, without worrying
-#  about adp or aux.  In order to make the tdl statements even more compact
-#  while preserving a the head-comp v. comp-head naming convention,
-#  this subroutine stores part of the appropriate type and rule names
-#  in the variables hs (for head-subject) and hc (for head-complement).
-#  Since this information is also useful for the other subroutines,
-#  customize_major_constituent_order() returns it as a dictionary.
-
-#  customize_np_order() emits the head-spec (or spec-head) rule
-#  and a bare-np phrase.
-
-#  determine_consistent_order() takes the word order (wo) and head-
-#  complement order (hc) and determines whether the relative order
-#  of aux and v and/or p and np requires special treatment given the
-#  order of v and o.  It returns a dictionary storing the information
-#  for aux and adp.
-
-#  specialize_word_order() takes the head-complement order (hc) and
-#  the dictionary returned by determine_consistent_order() and emits
-#  additional tdl for types and instances as required.
-
-# Further documentation is provided in comments within the subroutines.
-
-# 8. Required changes to other modules
-
-# None --- this module is likely to change as more get added though!
-
-# ERB 2006-09-14
-# First pass at translating from old perl script.
-
 def customize_word_order():
 
   wo = ch.get('word-order')
@@ -2321,112 +1809,6 @@ def specialize_word_order(hc,orders):
 #   Create the type definitions associated with the user's choices
 #   about sentential negation.
 
-# ERB 2006-10-05 DOCUMENTATION
-
-# 1. Statement of domain
-
-# This module handles the expression of sentential negation.  It
-# provides two general strategy types (inflection v. adverb), several
-# variations on each type, and what I believe to be an exhaustive listing
-# of the possible ways of combining the two strategies.
-
-# 2. Seed strings/requirements of POS lexicon
-
-# In addition to the lexical entries given in the word order module,
-# this module requires:
-
-# neg (negative adverb)
-# -neg (negative suffix)
-# neg- (negative prefix)
-
-# Note: at some point, the permutation machinery will need to do
-# interesting things with affix order.  For now, there's not really
-# enough affixes to worry about it.
-
-# These seed strings are designed to work with languages that require
-# dets and Ps as well as those that do not.  They are written assuming
-# sov order, and use a transitive frame as the base to make the testing
-# a little more interesting (e.g., when you have aux involved).  For
-# the aux case, I'm assuming an auxiliary that follows the verb, and takes
-# a VP complement (subject raising).
-
-## These seed strings should each have one of two semantic representations,
-## the only difference being the presence v. absence of det.  So,
-## these two seed strings, parsed using a grammar that has negative
-## adverbs as independent modifiers to the left o V, should give the
-## two MRSs that we need:  (Once again, I'm assuming semantically empty aux.)
-
-# s o neg tv
-# det s det o neg tv
-
-## Negative adverb --- the module allows for attachment at V, VP, and S,
-## and to the left, right, or either.  Since we'll get all of these
-## positions (and more!) by doing the permutation then, I'm just doing
-## one set with a negative adverb, using the left of V placement:
-
-# s o neg tv
-# det s det o neg tv
-# p s p o neg tv
-# p det s p det o neg tv
-# det s det o neg tv aux
-# p det s p det o tv neg aux
-# s o tv neg aux
-# p s p o tv neg aux
-
-# ## Prefix, on main verbs and aux:
-
-# s o neg-tv
-# det s det o neg-tv
-# p s p o neg-tv
-# p det s p det o neg-tv
-# s o tv neg-aux
-# det s det o tv neg-aux
-# p s p o tv neg-aux
-# p det s p det o tv neg-aux
-
-# ## Suffix, on main verbs and aux:
-
-# s o tv-neg
-# det s det o tv-neg
-# p s p o tv-neg
-# p det s p det o tv-neg
-# s o tv aux-neg
-# det s det o tv aux-neg
-# p s p o tv aux-neg
-# p det s p det o tv aux-neg
-
-# ## Adverb plus prefix, on main verbs and aux:
-
-# s o neg neg-tv
-# det s det o neg neg-tv
-# p s p o neg neg-tv
-# p det s p det o neg neg-tv
-# s o tv neg neg-aux
-# det s det o tv neg neg-aux
-# p s p o tv neg neg-aux
-# p det s p det o tv neg neg-aux
-
-# ## Adverb plus suffix, on main verbs and aux:
-
-# s o neg tv-neg
-# det s det o neg tv-neg
-# p s p o neg tv-neg
-# p det s p det o neg tv-neg
-# s o tv neg aux-neg
-# det s det o tv neg aux-neg
-# p s p o tv neg aux-neg
-# p det s p det o tv neg aux-neg
-
-
-
-# Unhandled case:  Main verbs take inflection + adverb, auxiliaries only
-# inflection (or vice versa).  Negation involves two markers, one on
-# either side of the constituent.  Negation involves two markers, one
-# on either side of the constituent.
-
-# ERB 2006-09-16 First pass at replicating functionality from
-# perl script.
-
 def customize_sentential_negation():
 
   # ERB 2006-09-16 Calculate a bunch of derived properties based on the
@@ -2533,240 +1915,6 @@ def create_neg_adv_lex_item(advAlone):
 # Coordination
 #   Create the type definitions associated with the user's choices
 #   about coordination.
-
-# sfd 2006-09-24 DOCUMENTATION
-#
-# 1. Statement of domain
-#
-# This module handles coordination of various phrase types (currently
-# N, NP, VP, and S).  It relies on choices in the Coordination section
-# of the questionnaire.
-#
-# 2. Seed strings/requirements of POS lexicon
-#
-# The phenomena covered by this module can be illustrated using the following
-# lexical entries:
-#
-# det (determiner)
-# s1 (subject noun)
-# s2 (subject noun)
-# s3 (subject noun)
-# iv1 (intransitive verb)
-# iv2 (intransitive verb)
-# iv3 (intransitive verb)
-# co (conjunction)
-# -co or co- (affix versions of the conjunction)
-#
-# Seed strings, not all of which will have valid permutations in all languages.
-#
-# These seed strings are written assuming sov order, det-n order, and
-# mandatory determiners.  Each section below will show the coordination
-# of one phrase type in with several different coordination strategies,
-# namely:
-#   monosyndeton word before
-#   monosyndeton word after
-#   monosyndeton affix before (for N only)
-#   monosyndeton affix after  (for N only)
-#   polysyndeton word before
-#   polysyndeton word after
-#   polysyndeton affix before (for N only)
-#   polysyndeton affix after  (for N only)
-#   omnisyndeton word before
-#   omnisyndeton word after
-#   omnisyndeton affix before (for N only)
-#   omnisyndeton affix after  (for N only)
-#   asyndeton
-#
-## Coordination of nouns (each group of sentences should have the
-## same semantic representation, though with different grammars)
-#
-# det s1 s2 co s3 iv1
-# det s1 s2 s3 co iv1
-# det s1 s2 co-s3 iv1
-# det s1 s2 s3-co iv1
-#
-# det s1 co s2 co s3 iv1
-# det s1 s2 co s3 co iv1
-# det s1 co-s2 co-s3 iv1
-# det s1 s2-co s3-co iv1
-#
-# det co s1 co s2 co s3 iv1
-# det s1 co s2 co s3 co iv1
-# det co-s1 co-s2 co-s3 iv1
-# det s1-co s2-co s3-co iv1
-#
-# det s1 s2 s3 iv1
-#
-## Coordination of noun phrases (each group of sentences should have the
-## same semantic representation, though with different grammars)
-#
-# det s1 det s2 co det s3 iv1
-# det s1 det s2 det s3 co iv1
-#
-# det s1 co det s2 co det s3 iv1
-# det s1 det s2 co det s3 co iv1
-#
-# co det s1 co det s2 co det s3 iv1
-# det s1 co det s2 co det s3 co iv1
-#
-# det s1 det s2 det s3 iv1
-#
-## Coordination of verb phrases (each group of sentences should have the
-## same semantic representation, though with different grammars)
-#
-# det s1 iv1 iv2 co iv3
-# det s1 iv1 iv2 iv3 co
-#
-# det s1 iv1 co iv2 co iv3
-# det s1 iv1 iv2 co iv3 co
-#
-# det s1 co iv1 co iv2 co iv3
-# det s1 iv1 co iv2 co iv3 co
-#
-# det s1 iv1 iv2 iv3
-#
-## Coordination of sentences
-#
-# det s1 iv1 det s2 iv2 co det s3 iv3
-# det s1 iv1 det s2 iv2 det s3 iv3 co
-#
-# det s1 iv1 co det s2 iv2 co det s3 iv3
-# det s1 iv1 det s2 iv2 co det s3 iv3 co
-#
-# co det s1 iv1 co det s2 iv2 co det s3 iv3
-# det s1 iv1 co det s2 iv2 co det s3 iv3 co
-#
-# det s1 iv1 det s2 iv2 det s3 iv3
-#
-# 3. TDL Samples
-#
-# for an language with a single monosyndeton word-before strategy, we should
-# get the following TDL.
-#
-## mylanguage.tdl:
-#
-# ;;; Coordination
-#
-# n1-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# n1-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# n1-bottom-coord-rule := conj-first-bottom-coord-rule & n-bottom-coord-phrase &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-#
-# np1-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# np1-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# np1-bottom-coord-rule := conj-first-bottom-coord-rule & np-bottom-coord-phrase &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-#
-# vp1-top-coord-rule := basic-vp-top-coord-rule & monopoly-top-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# vp1-mid-coord-rule := basic-vp-mid-coord-rule & monopoly-mid-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# vp1-bottom-coord-rule := conj-first-bottom-coord-rule & vp-bottom-coord-phrase &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-#
-# s1-top-coord-rule := basic-s-top-coord-rule & monopoly-top-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# s1-mid-coord-rule := basic-s-mid-coord-rule & monopoly-mid-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# s1-bottom-coord-rule := conj-first-bottom-coord-rule & s-bottom-coord-phrase &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-#
-## lexicon.tdl:
-#
-# and_1 := conj-lex &
-#   [ STEM < "and" >,
-#     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
-#     CFORM "1" ].
-#
-# 4. Description of cases handled
-#
-# For the four phrase types N, NP, VP, and S, this module handles every
-# combination of the following three dimensions, with a few exceptions
-# noted below:
-#
-# Marking pattern: monosyndeton, polysyndeton, omnisyndeton, asyndeton
-# Type of mark: word or affix (with some spelling)
-# Position of mark: before or after coordinand
-#
-# Exceptions: when the pattern is asyndeton, type and position of mark,
-# as well as its spelling, must not be specified since they are
-# meaningless.  Also, an affix mark can currently only be specified
-# for lexical phrase types (i.e. just N).
-#
-# 5. Known unhandled cases
-#
-# There are a few coordination strategies that this module cannot encode:
-#
-# Classical Tibetan and Amharic(Haspelmath 2000):
-#   In strategies usually marked A-co B-co C, all but the *first* co
-#   can be optionally omitted, giving A-co B C (and so on for N>3).
-# Inupiaq (ref?):
-#   There is a strategy in this language that is mandatorily bisyndetic
-#   when there are two coordinands, but *mandatorily* monosyndetic for
-#   3 or more coordinands.  That is, we get A-lu B-lu for two, but
-#   A B C-lu for 3 or more.  A-lu B-lu C-lu and A B-lu C-lu are not
-#   allowed.
-# Indonesian (ref?):
-#   A strategy that uses different conjunctions based on position:
-#     A B serta C
-#     A dan B serta C
-#   * A serta B dan C
-#   * A serta B serta C
-#
-# In addition to these, there are some coordination strategies that can
-# be implemented using the Matrix rules, but which cannot be described
-# with the controls in the web questionnaire.  For example, Hebrew has
-# a strategy (ref?) that, like quite a few other strategies including
-# Latin -que (ref?), marks the first word of a coordinated phrase.  Such
-# a strategy could be implemented by adding a new binary feature, say
-# COORDMARKED, that is added by a morphological marking rule and identified
-# between all phrases and their first daughters.  Another odd strategy
-# is found in Kannada (ref?), where -uu is added to *every word* in a
-# coordinated phrase.  The implementation of this would be similar to the
-# first-word marking mentioned above, except that the new COORDMARKED
-# feature would be identified between phrases and *all* of their daughters.
-#
-# 6. Description of tdl
-#
-# For every phrase type that has a coordination strategy, there will be
-# a set of rules in mylanguage.tdl created with the same COORD-STRAT value.
-# These rules derive from the coordination rules in matrix.tdl (currently
-# near tbe bottom of the file), and specify the type of phrase being
-# coordinated.  They will have names that begin with the part of speech
-# (n, np, vp, s) and the number of the strategy.  For details about the
-# implementation, see the comments in matrix.tdl or Drellishak & Bender
-# 2005.
-#
-# 7. Description of customization (python)
-#
-# The entry point for this code is customize_coordination().  It loops
-# through every coordination strategy (currently only 1 and 2).  For each,
-# it looks at the user's choices and, from them, constructs a series of
-# parameters containing the prefixes and suffixes of the rules that
-# will be output (which also determines the prefixes and suffixes of the
-# matrix.tdl rules they will derive form.
-#
-# These are the parameters:
-#   num: the number of the strategy
-#   pos: the part of speech
-#   top: the prefix of the top rule
-#   mid: the prefix of the mid rule (empty for poly- and asyndeton)
-#   bot: the prefix of the bottom rule
-#   left: the prefix of the left rule (only for omnisyndeton)
-#   pre: the spelling of the prefix coordination mark (possibly empty)
-#   suf: the spelling of the suffix coordination mark (possibly empty)
-#
-# These parameters are passed to define_coord_strat(), a utility function
-# that outputs the actual rules.
-#
-# 8. Required changes to other modules
-#
-# None so far.
-
 
 ######################################################################
 # define_coord_strat: a utility function, defines a strategy
@@ -2933,66 +2081,6 @@ def customize_coordination():
 # customize_yesno_questions()
 #   Create the type definitions associated with the user's choices
 #   about matrix yes/no questions.
-
-# DOCUMENTATION
-
-# 2. Seed strings, requirements of POS lexicon:
-
-# The only addition to the POS lexicon is qpart, the question particle:
-# Also -ques|ques- the affix
-
-# qpart
-# -ques
-# ques-
-
-# The seed strings are written assuming an SVO language with no
-# adpositions (in order to illustrate inversion).  Again all the
-# seed strings have the same semantics, modulo determiners.  For
-# the purposes of harvesting the semantics, I recommend these two
-# strings, parsed with an SOV grammar which expresses yes no questions
-# with a sentence final question particle:
-
-# s o tv qpart
-# det s det o tv qpart
-
-# Now the SVO seed strings:
-
-# s tv o qpart
-# tv s o
-# aux s tv o
-
-# det s tv det o qpart
-# tv det s det o
-# aux det s tv det o
-
-# s tv-ques o
-# s ques-tv o
-# s aux-ques tv o
-# s ques-aux tv o
-
-# det s tv-ques det o
-# det s ques-tv det o
-# det s aux-ques tv det o
-# det s ques-aux tv det o
-
-# Since this module actually involves changes to word order, the
-# seed strings/permutation interaction is actually different.  I
-# think it will come down to being careful with the filters...
-
-# Note also that the semantic contrast between questions and non-questions
-# is that questions are marked as [ MESG ques ] while non-questions are
-# [ MESG prop-or-ques ].  The type prop-or-ques subsumes ques, but
-# in [incr tsdb()], we'll be looking at exact match semantics, not
-# unification or other measures of compatibility.
-
-# 8. Changes to other modules:
-
-# Moving to the complementizer analysis of question particles impacted
-# the word order module.  In particular, we now have to worry about
-# the order of question particles with respect to heads when we do the
-# head-comp and comp-head rules, just like we have to worry about the
-# adpositions.  I also had to touch the root definition, to allow for
-# CPs as roots.
 
 def customize_yesno_questions():
 
@@ -4748,13 +3836,14 @@ def neginflrule(features):
 
 
 ######################################################################
-# customize_test_sentences(matrix_path)
+# customize_test_sentences(grammar_path)
 #   Create the script file entries for the user's test sentences.
 
-def customize_test_sentences(matrix_path):
+def customize_test_sentences(grammar_path):
   try:
     b = open('matrix-core/basic_script', 'r')
-    s = open(matrix_path + 'lkb/script', 'w')
+    s = open(grammar_path + 'lkb/script', 'w')
+    ts = open(grammar_path + 'test_sentences', 'w')
     lines = b.readlines()
     b.close()
     for l in lines:
@@ -4763,13 +3852,21 @@ def customize_test_sentences(matrix_path):
         myl = ch.get('language').lower() + '.tdl'
         s.write('   (lkb-pathname (parent-directory) "' + myl + '")\n')
       elif l == ';;; Modules: Default sentences':
-        s1 = ch.get('sentence1')
-        s2 = ch.get('sentence2')
         s.write('(if (eq (length *last-parses*) 1)\n')
-        s.write('   (setf *last-parses* \'("' + s1 + '" "' + s2 + '")))\n')
+        s.write('   (setf *last-parses* \'(')
+        ch.iter_begin('sentence')
+        if not ch.iter_valid():
+          s.write('""')
+        while ch.iter_valid():
+          s.write('"' + ch.get('orth') + '" ')
+          ts.write(ch.get('orth') + '\n')
+          ch.iter_next()
+        ch.iter_end()
+        s.write(')))\n')
       else:
         s.write(l + '\n')
     s.close()
+    ts.close()
   except:
     pass
 
@@ -4777,13 +3874,13 @@ def customize_test_sentences(matrix_path):
 # customize_pettdl()
 #
 
-def customize_pettdl(matrix_path):
+def customize_pettdl(grammar_path):
   try:
     p_in = open('matrix-core/pet.tdl', 'r')
     lines = p_in.readlines()
     p_in.close()
     myl = ch.get('language').lower()
-    p_out = open(matrix_path + myl + '-pet.tdl', 'w')
+    p_out = open(grammar_path + myl + '-pet.tdl', 'w')
     for l in lines:
       l = l.strip()
       p_out.write(l + '\n')
@@ -4900,17 +3997,24 @@ def customize_matrix(path, arch_type):
   global ch
   ch = ChoicesFile(choices_file)
 
-  matrix_path = path + '/matrix/'
+  language = ch.get('language')
+  isocode = ch.get('iso-code')
+  if isocode:
+    grammar_dir = isocode.lower()
+  else:
+    grammar_dir = language.lower()
+
+  grammar_path = path + '/' + grammar_dir + '/'
 
   # Copy from matrix-core
-  if os.path.exists(matrix_path):
-    shutil.rmtree(matrix_path)
-  shutil.copytree('matrix-core', matrix_path)
-  shutil.copy(choices_file, matrix_path) # include a copy of choices
+  if os.path.exists(grammar_path):
+    shutil.rmtree(grammar_path)
+  shutil.copytree('matrix-core', grammar_path)
+  shutil.copy(choices_file, grammar_path) # include a copy of choices
 
   # Create TDL object for each output file
   global mylang, rules, irules, lrules, lexicon, roots
-  mylang =  tdl.TDLfile(matrix_path + ch.get('language').lower() + '.tdl')
+  mylang =  tdl.TDLfile(grammar_path + language.lower() + '.tdl')
   mylang.define_sections([['addenda', 'Matrix Type Addenda', True, False],
                           ['features', 'Features', True, False],
                           ['dirinv', 'Direct-Inverse', True, False],
@@ -4922,11 +4026,11 @@ def customize_matrix(path, arch_type):
                           ['lexrules', 'Lexical Rules', True, False],
                           ['phrases', 'Phrasal Types', True, False],
                           ['coord', 'Coordination', True, False]])
-  rules =   tdl.TDLfile(matrix_path + 'rules.tdl')
-  irules =  tdl.TDLfile(matrix_path + 'irules.tdl')
-  lrules =  tdl.TDLfile(matrix_path + 'lrules.tdl')
-  lexicon = tdl.TDLfile(matrix_path + 'lexicon.tdl', False)
-  roots =   tdl.TDLfile(matrix_path + 'roots.tdl')
+  rules =   tdl.TDLfile(grammar_path + 'rules.tdl')
+  irules =  tdl.TDLfile(grammar_path + 'irules.tdl')
+  lrules =  tdl.TDLfile(grammar_path + 'lrules.tdl')
+  lexicon = tdl.TDLfile(grammar_path + 'lexicon.tdl', False)
+  roots =   tdl.TDLfile(grammar_path + 'roots.tdl')
 
   # date/time
   try:
@@ -4953,7 +4057,7 @@ def customize_matrix(path, arch_type):
   # BUT, put the date/time of the Matrix version in Version.lsp (along
   # with the name of the language.
   global version_lsp
-  version_lsp = tdl.TDLfile(matrix_path + 'Version.lsp')
+  version_lsp = tdl.TDLfile(grammar_path + 'Version.lsp')
 
   version_lsp.add_literal('(in-package :common-lisp-user)\n\n' +
                           '(defparameter *grammar-version* \"' +
@@ -4990,8 +4094,8 @@ def customize_matrix(path, arch_type):
   customize_coordination()
   customize_yesno_questions()
   customize_arg_op()
-  customize_test_sentences(matrix_path)
-  customize_pettdl(matrix_path)
+  customize_test_sentences(grammar_path)
+  customize_pettdl(grammar_path)
   customize_roots()
 
   # Save the output files
@@ -5007,10 +4111,13 @@ def customize_matrix(path, arch_type):
   old_dir = os.getcwd()
   os.chdir(path)
   if arch_type == 'tgz':
-    make_tgz('matrix')
+    make_tgz(grammar_dir)
   else:
-    make_zip('matrix')
+    make_zip(grammar_dir)
   os.chdir(old_dir)
+
+  return grammar_dir
+
 
 ###############################################################
 # Allow customize_matrix() to be called directly from the

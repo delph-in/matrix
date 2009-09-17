@@ -782,14 +782,14 @@ class MatrixDefFile:
 
   # Create and print the "download your matrix here" page for the
   # customized matrix in the directory specified by session_path
-  def custom_page(self, session_path, arch_type):
+  def custom_page(self, session_path, grammar_dir, arch_type):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Matrix Customized</title>'
     if arch_type == 'tgz':
-      arch_file = 'matrix.tar.gz'
+      arch_file = grammar_dir + '.tar.gz'
     else:
-      arch_file = 'matrix.zip'
+      arch_file = grammar_dir + '.zip'
     print HTML_customprebody % (session_path + '/' + arch_file)
     print HTML_postbody
 

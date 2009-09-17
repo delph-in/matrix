@@ -1424,12 +1424,16 @@ BeginIter adp{i} "an Adposition"
 EndIter adp
 
 
-Section test-sentences "Some Test Sentences"
+Section test-sentences "Test Sentences"
 
 Label "<p>In this section, you can provide example sentences that will
-appear as defaults in the LKB's parse dialog.  Please use only the
-vocabulary defined in the Lexicon section.</p>"
+appear in the file <tt>test_sentences</tt> in your grammar and as
+defaults in the LKB's parse dialog.  You can mark a sentence as
+ungrammatical by beginning it with an asterisk (*). Please use only
+the vocabulary defined in the Lexicon section.</p>"
 
-Text sentence1 "Sentence 1" "<p>Sentence 1: " "</p>" 100
+BeginIter sentence{i} "a Sentence"
 
-Text sentence2 "Sentence 2" "<p>Sentence 2: " "</p>" 100
+  Text orth "Sentence {i}" "<p><b>Sentence {i}</b>: " "</p>" 100
+
+EndIter sentence

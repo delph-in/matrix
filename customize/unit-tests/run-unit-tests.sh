@@ -86,13 +86,16 @@ do
     skeleton="${CUSTOMIZATIONROOT}/unit-tests/skeletons/$lgname"
     gold="gold/$lgname"
     grammardir="${CUSTOMIZATIONROOT}/unit-tests/grammars/$lgname"
-    grammar="$grammardir/matrix/lkb/script"
     target="current/$lgname"
     log="$logdir/$lgname.$date"
 
 # Invoke customize.py
 
     ${CUSTOMIZATIONROOT}/unit-tests/call-customize ${CUSTOMIZATIONROOT} ${CUSTOMIZATIONROOT}/unit-tests/choices/$lgname ${CUSTOMIZATIONROOT}/unit-tests/grammars/$lgname
+
+# Have to calculate after the grammar is created so the "*" can find the
+# directory containing it (which is no longer named "matrix")
+    grammar=`echo "$grammardir"/*/lkb/script`
 
     status=$?
 
