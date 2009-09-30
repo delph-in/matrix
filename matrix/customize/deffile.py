@@ -534,9 +534,10 @@ class MatrixDefFile:
 
         # look ahead and see if we have an auto-filled drop-down
         i += 1
-
+        # note: the values of the following variables vary depending on the fill type
+        # e.g., for fillnames fill_arg1 is reserved for those categories to be excluded 
         fill_type = ''
-        fill_arg1 = ''
+        fill_arg1 = '' 
         fill_arg2 = ''
         fillstring = ''
 
@@ -549,6 +550,7 @@ class MatrixDefFile:
               fill_arg1 = word[1]
             if len(word) > 2:
               fill_arg2 = word[2] 
+
 
             if fill_type == 'fillregex':
               if fill_arg2:

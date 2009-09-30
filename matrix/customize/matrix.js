@@ -391,9 +391,7 @@ function fill_regex(name, pattern, nameOnly, prefix)
 // fill_feature_names()
 // Fill a SELECT tag with OPTIONs created from the array features[],
 // where every OPTION is a feature name. The 'exclude' argument allows 
-// you to exclude various features from the list of options. Note that 
-// it now is only a single feature but needs to be expanded to accomodate 
-// a list of features to exclude.
+// you to exclude various features from the list of options.
 function fill_feature_names(select_name, exclude)
 {
   var select = document.getElementsByName(select_name)[0];

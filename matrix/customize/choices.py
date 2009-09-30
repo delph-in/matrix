@@ -874,23 +874,59 @@ class ChoicesFile:
     Create and return a list containing type names. FIX - these are based on the 
     choices file. Need to include required types and inferred types as well.
     This list consists of tuples:
-    [type name]
+    [type catname]
     Note that this assumes a strict naming convention for 
     lexical types within the customization and no hyphens
     in the user defined names.
     """
-    types = [['noun-lex', 'noun'], ['verb-lex', 'verb'], ['det-lex', 'det'], ['intrans-verb-lex', 'verb'], ['trans-verb-lex', 'verb']]
+    types = [['noun-lex', 'noun'], ['verb-lex', 'verb'], ['det-lex', 'det'], ['intransitive-verb-lex', 'verb'], ['transitive-verb-lex', 'verb']]
     if self.get('has-aux') == 'yes':
       types += [ ['aux-lex', 'aux'], ['withpred-aux-lex', 'aux'], ['nopred-aux-lex', 'aux'], ['main-verb-lex', 'verb']]
+
+#if for cat ==  noun verb aux etc. 
+#if cat-dim exists
+# dimfeature = get value of cat-dim
+# dimvalues() = every value of dimfeature
+# create type entries for each dimvalue
+#if verb cross-classify with intrans and trans
+    features = self.features()   
 
     state = self.iter_state()
     self.iter_reset()
 
-    for t in ['noun', 'verb', 'aux', 'det']:
-      self.iter_begin(t)
+    for c in ['noun', 'verb', 'aux', 'det']:
+      print c
+      dim = self.get(c + '-dim').split(', ')
+      print dim
+      dimvalues = []
+
+      for d in dim:  # for each feature dimension
+        print d
+        for f in features:  # look through the features array
+          valwithfn = []
+          if f[0]== d:  # if the features match
+            valwithfn += f[1].split(';') #split out the values (result: valuename|frendlyname)
+            for w in valwithfn:
+              valuesplit = w.split('|') #split apart the two name versions
+              dimvalues += [ valuesplit[1]] #make a list of the friendly names
+              #note: this uses the friendly name as the basis for the feature - may need to revisit that
+      
+      for v in dimvalues:
+        print 'v: ' + v
+        if c != 'verb':
+          lextype_name = v + '-' + c + '-lex'
+          types += [ [lextype_name, c] ]
+
+        elif c == 'verb':
+          lextype_name = v + '+intransitive' + '-' + c + '-lex'
+          types += [ [lextype_name, c] ]
+          lextype_name = v + '+transitive'+ '-' + c + '-lex'
+          types += [ [lextype_name, c] ]            
+
+      self.iter_begin(c)
       while self.iter_valid():
-        lextype_name = self.get('name') + '-' + t + '-lex'
-        types += [ [lextype_name, t] ]
+        lextype_name = self.get('name') + '-' + c + '-lex'
+        types += [ [lextype_name, c] ]
         self.iter_next()
       self.iter_end()
 
