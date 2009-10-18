@@ -10,6 +10,15 @@ import sys
 # globals
 
 ######################################################################
+# Errors
+
+class ChoicesFileParseError(Exception):
+    def __init__(self, msg=''):
+        self.msg = msg
+    def __str__(self):
+        return repr(self.msg)
+
+######################################################################
 # ChoicesFile is a class that wraps the choices file, a list of
 # attributes and values, and provides methods for loading, accessing,
 # and saving them.
@@ -37,6 +46,10 @@ class ChoicesFile:
         pass # TODO: we should really be logging these
 
   def parse_choices(self, choice_lines):
+    """
+    Get the data structure for each choice in the choices file, then
+    merge them all together into one data structure.
+    """
     choices = {}
     for line in [l.strip() for l in choice_lines if l.strip() != '']:
       try:
@@ -67,8 +80,13 @@ class ChoicesFile:
   # This function is an ugly mess. It should have less if-statements and
   # type-specific code paths. But for now it seems to work.
   def merge_choices(self, choices, new_choice):
+    """
+    Given a structure of existing choices and one of a new choice, merge
+    the two together if there are no conflicts.
+    """
     try:
       if type(new_choice) == dict:
+        # a new choice should have no more than one key per dict
         key = new_choice.keys()[0]
         if choices.has_key(key):
           choices[key] = self.merge_choices(choices[key], new_choice[key])
@@ -83,16 +101,20 @@ class ChoicesFile:
         else:
           choices[index] = self.merge_choices(choices[index], new_choice[-1])
       else:
-        raise Exception('Duplicate Values')
+        raise ChoicesFileParseError('Attribute is multiply defined.')
         # the following should be done with logging
         #  if sys.stdout.isatty() and self.is_set(key) and key != 'section':
         #    print 'WARNING: choices file defines multiple values for ' + key
     except TypeError:
-      raise Exception('Merge Error')
+      raise ChoicesFileParseError('Merge Error')
     return choices
 
   attr_delim_re = re.compile(r'(\d+)_|_')
   def split_choice_attribute(self, attribute):
+    """
+    Split a compound attribute into a list of its component parts.
+    """
+    if attribute == '': return []
     return [a for a in self.attr_delim_re.split(attribute) if a is not None]
 
   def uprev(self):
