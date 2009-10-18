@@ -15,36 +15,87 @@ import sys
 # and saving them.
 
 class ChoicesFile:
+
   # initialize by passing either a file name or ???file handle
-  def __init__(self, choices_file):
-    self.file_name = choices_file
+  def __init__(self, choices_file=None):
+
     self.iter_stack = []
     self.cached_values = {}
     self.cached_iter_values = None
     self.choices = {}
-    try:
-      if type(choices_file) == str:
-        f = open(choices_file, 'r')
-      else:
+
+    if choices_file is not None:
+      try:
         f = choices_file
+        if type(choices_file) == str:
+          f = open(choices_file, 'r')
         f.seek(0)
+        self.choices = self.parse_choices(f.readlines())
+        if type(choices_file) == str:
+          f.close()
+      except IOError:
+        pass # TODO: we should really be logging these
 
-      lines = f.readlines()
+  def parse_choices(self, choice_lines):
+    choices = {}
+    for line in [l.strip() for l in choice_lines if l.strip() != '']:
+      try:
+        (key, value) = line.split('=',1)
+        if key == 'section':
+            continue
+        choice = self.parse_choice(self.split_choice_attribute(key), value)
+        choices = self.merge_choices(choices, choice)
+      except ValueError:
+        pass # TODO: log this!
+    return choices
 
-      if type(choices_file) == str:
-        f.close()
+  def parse_choice(self, attributes, value):
+    """
+    Using a list of attribute names and a value, construct a data
+    structure representing the choice from the choices file.
+    """
+    if len(attributes) == 0:
+      return value
+    key = attributes.pop(0)
+    try:
+      index = int(key)
+      # if there was no ValueError, then we are parsing a list item
+      return ([None] * (index-1)) + [self.parse_choice(attributes, value)]
+    except ValueError:
+      return {key: self.parse_choice(attributes, value)}
 
-      for l in lines:
-        l = l.strip()
-        if l:
-          (key, value) = l.split('=', 1)
-          if sys.stdout.isatty() and self.is_set(key) and key != 'section':
-            print 'WARNING: choices file defines multiple values for ' + key
-          self.set(key, value)
-    except:
-      pass
+  # This function is an ugly mess. It should have less if-statements and
+  # type-specific code paths. But for now it seems to work.
+  def merge_choices(self, choices, new_choice):
+    try:
+      if type(new_choice) == dict:
+        key = new_choice.keys()[0]
+        if choices.has_key(key):
+          choices[key] = self.merge_choices(choices[key], new_choice[key])
+        else:
+          choices[key] = new_choice[key]
+      elif type(new_choice) == list:
+        index = len(new_choice) - 1
+        if len(choices) < len(new_choice):
+          choices += ([None] * (index - len(choices))) + new_choice[-1:]
+        elif choices[index] is None:
+          choices[index] = new_choice[-1]
+        else:
+          choices[index] = self.merge_choices(choices[index], new_choice[-1])
+      else:
+        raise Exception('Duplicate Values')
+        # the following should be done with logging
+        #  if sys.stdout.isatty() and self.is_set(key) and key != 'section':
+        #    print 'WARNING: choices file defines multiple values for ' + key
+    except TypeError:
+      raise Exception('Merge Error')
+    return choices
 
-    if choices_file:  # don't up-rev if we're creating an empty ChoicesFile
+  attr_delim_re = re.compile(r'(\d+)_|_')
+  def split_choice_attribute(self, attribute):
+    return [a for a in self.attr_delim_re.split(attribute) if a is not None]
+
+  def uprev(self):
       if self.is_set('version'):
         version = int(self.get('version'))
       else:
@@ -88,11 +139,6 @@ class ChoicesFile:
       # As we get more versions, add more version-conversion methods, and:
       # if version < N:
       #   self.convert_N-1_to_N
-
-    # Remove pseudo-choices that don't actually represent the answer to
-    # any question in the questionnaire.
-    self.delete('version')
-    self.delete('section')
 
 
   # Return the keys for the choices dict
