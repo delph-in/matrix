@@ -229,9 +229,6 @@ def html_select(errors, name, multi, onfocus = '', action = ''):
   if onfocus:   
     onfocus = ' onfocus="' + onfocus + '"'
 
- # if action:  #test
- #   action = ' onchange="' + action + '"'
-
   return '%s<select name="%s"%s%s%s>' % \
          (asterisk, name, multi_attr, onfocus, action)
 
@@ -553,7 +550,6 @@ class MatrixDefFile:
         fill_arg1 = '' 
         fill_arg2 = ''
         fillstring = ''
-        action = '' #test
 
         if lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
@@ -590,12 +586,8 @@ class MatrixDefFile:
             elif fill_type == 'filltypes':
               fillstring += 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\', \'' + prefix + '\')'
               
-#            if dim:
- #             action =   #test - needs rethinking - still cannot work out the submit function
-  #            html += html_select(errors, vn, multi, fillstring, action) + '\n' #test - need to change above to produce new argument
-  #         else:
-            html += html_select(errors, vn, multi, fillstring) + '\n' #test - need to change above to produce new argument
 
+            html += html_select(errors, vn, multi, fillstring) + '\n' 
             html += html_option(errors, '', False, '') + '\n'
 
             if choices.is_set_full(vn):
