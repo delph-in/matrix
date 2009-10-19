@@ -45,6 +45,9 @@ class ChoicesFile:
       except IOError:
         pass # TODO: we should really be logging these
 
+  ############################################################################
+  ### Choices file parsing functions
+
   def parse_choices(self, choice_lines):
     """
     Get the data structure for each choice in the choices file, then
@@ -116,6 +119,9 @@ class ChoicesFile:
     """
     if attribute == '': return []
     return [a for a in self.attr_delim_re.split(attribute) if a is not None]
+
+  ############################################################################
+  ### Up-revisioning handler
 
   def uprev(self):
       if self.is_set('version'):
@@ -202,7 +208,7 @@ class ChoicesFile:
   #     choices.iter_end()             # end the morph iteration
   #     choices.iter_next()            # advance the noun iteration
   #   choices.iter_end()               # end the noun iteration
-  
+
   def iter_begin(self, key):
     var = 1
     # If key contains a number at the end (i.e. 'noun5'), initialize
@@ -212,7 +218,7 @@ class ChoicesFile:
       offset = s.span()[0]
       var = int(key[offset:])
       key = key[0:offset]
-      
+
     self.iter_stack.append([key, var, True])
 
     # if the beginning of the iterator isn't valid, try bumping up to
@@ -437,6 +443,12 @@ class ChoicesFile:
   # all features defined in the languages, even though they're not
   # all stored in a single place.
 
+  def has_case(self, feat, case):
+    """
+    Return true if the feature has matching case or if case is empty.
+    """
+    return feat['name'] = 'case' and (feat['value'] == case or case == '')
+
   def has_noun_case(self, case = ''):
     """
     Returns True iff the target language has either morphologically or
@@ -450,41 +462,16 @@ class ChoicesFile:
 
     result = False
 
-    state = self.iter_state()
-    self.iter_reset()
-
     # check lexical types
-    self.iter_begin('noun')
-    while self.iter_valid():
-      self.iter_begin('feat')
-      while self.iter_valid():
-        if self.get('name') == 'case' and \
-           (self.get('value') == case or not case):
-          result = True
-        self.iter_next()
-      self.iter_end()
-      self.iter_next()
-    self.iter_end()
+    for feat in [noun['feat'] for noun in self.choices['noun']]:
+      result |= self.has_case(feat, case)
 
     # check morphemes
     for slotprefix in ('noun', 'verb', 'det'):
-      self.iter_begin(slotprefix + '-slot')
-      while self.iter_valid():
-        self.iter_begin('morph')
-        while self.iter_valid():
-          self.iter_begin('feat')
-          while self.iter_valid():
-            if self.get('name') == 'case' and \
-               (self.get('value') == case or not case):
-              result = True
-            self.iter_next()
-          self.iter_end()
-          self.iter_next()
-        self.iter_end()
-        self.iter_next()
-      self.iter_end()
-
-    self.iter_set_state(state)
+      for slot in self.choices[slotprefix + '-slot']:
+        for morph in slot['morph']:
+          for feat in morph['feat']:
+            result |= self.has_case(feat, case)
 
     self.cached_values[k] = result
 
@@ -501,24 +488,10 @@ class ChoicesFile:
 
     result = False
 
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('adp')
-    while self.iter_valid():
-      opt = self.get('opt')
-      self.iter_begin('feat')
-      while self.iter_valid():
-        if self.get('name') == 'case' and \
-           (self.get('value') == case or not case) and \
-           (opt or not check_opt):
-          result = True
-        self.iter_next()
-      self.iter_end()
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
+    for adp in self.choices['adp']:
+      opt = adp['opt']
+      for feat in adp['feat']:
+        result = self.has_case(feat, case) and (opt or not check_opt)
 
     return result
 
@@ -570,17 +543,7 @@ class ChoicesFile:
     """
     Returns True iff the target language has a direct-inverse scale.
     """
-    result = False
-
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('scale')
-    result = self.iter_valid()
-
-    self.iter_set_state(state)
-
-    return result
+    return 'scale' in self.choices
 
 
   def has_SCARGS(self):
@@ -591,38 +554,13 @@ class ChoicesFile:
     """
     result = False
 
-    state = self.iter_state()
-    self.iter_reset()
+    for feat in [verb['feat'] for verb in self.choices]:
+      result |= feat['head'] in ('higher', 'lower')
 
-    # verb lexical items
-    self.iter_begin('verb')
-    while self.iter_valid():
-      self.iter_begin('feat')
-      while self.iter_valid():
-        if self.get('head') in ['higher', 'lower']:
-          result = True
-        self.iter_next()
-      self.iter_end()
-      self.iter_next()
-    self.iter_end()
-
-    # verb morphs
-    self.iter_begin('verb-slot')
-    while self.iter_valid():
-      self.iter_begin('morph')
-      while self.iter_valid():
-        self.iter_begin('feat')
-        while self.iter_valid():
-          if self.get('head') in ['higher', 'lower']:
-            result = True
-          self.iter_next()
-        self.iter_end()
-        self.iter_next()
-      self.iter_end()
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
+    for verb_slot in self.choices['verb-slot']:
+      for morph in verb_slot['morph']:
+        for feat in morph['feat']:
+          result |= feat['head'] in ('higher', 'lower')
 
     return result
 
@@ -686,18 +624,9 @@ class ChoicesFile:
       user.append(self.get_full(cm + '-o-case-name'))
 
     # fill in any additional cases the user has specified
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('case')
-    while self.iter_valid():
-      name = self.get('name')
-      canon.append(name)
-      user.append(name)
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
+    for case in self.choices['case']:
+      canon.append(case['name'])
+      user.append(case['name'])
 
     # if possible without causing collisions, shorten the case names to
     # three-letter abbreviations; otherwise, just use the names as the
@@ -809,31 +738,10 @@ class ChoicesFile:
   def numbers(self):
     numbers = []
 
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('number')
-    while self.iter_valid():
-      name = self.get('name')
-
-      stype = ''
-      self.iter_begin('supertype')
-      while self.iter_valid():
-        if stype:
-          stype += ';'
-        stype += self.get('name')
-        self.iter_next()
-      self.iter_end()
-
-      if not stype:
-        stype = 'number'
-
+    for num in self.choices['number']:
+      name = num['name']
+      stype = ';'.join([st['name'] for st in num['supertype']]) or 'number'
       numbers += [[name, stype]]
-      
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
 
     return numbers
 
@@ -879,10 +787,7 @@ class ChoicesFile:
   def pernums(self):
     pernums = []
 
-    state = self.iter_state()
-    self.iter_reset()
-
-    fp = self.get('first-person')
+    fp = self.choices['first-person']
     if fp not in ['', 'none']:
       num_leaves = []
       num_supers = []
@@ -915,21 +820,16 @@ class ChoicesFile:
           pernums += [[pn, p + ';' + n]]
           if p == '1st':
             if fp == 'incl-excl':
-              for num in self.get('incl-excl-number').split(', '):
+              for num in self.choices['incl-excl-number'].split(', '):
                 if num == n:
                   pernums += [[pn + '_incl', pn]]
                   pernums += [[pn + '_excl', pn]]
             elif fp == 'other':
-              self.iter_begin('person-subtype')
-              while self.iter_valid():
-                name = self.get('name')
-                for num in self.get('number').split(', '):
+              for p_st in self.choices['person-subtype']:
+                name = p_st['name']
+                for num in p_st['number'].split(', '):
                   if num == n:
                     pernums += [[pn + '_' + name, pn]]
-                self.iter_next()
-              self.iter_end()
-
-    self.iter_set_state(state)
 
     return pernums
 
@@ -942,31 +842,10 @@ class ChoicesFile:
   def genders(self):
     genders = []
 
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('gender')
-    while self.iter_valid():
-      name = self.get('name')
-
-      stype = ''
-      self.iter_begin('supertype')
-      while self.iter_valid():
-        if stype:
-          stype += ';'
-        stype += self.get('name')
-        self.iter_next()
-      self.iter_end()
-
-      if not stype:
-        stype = 'gender'
-
+    for gender in self.choices['gender']:
+      name = gender['name']
+      stype = ';'.join([st['name'] for st in num['supertype']]) or 'number'
       genders += [[name, stype]]
-      
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
 
     return genders
 
@@ -979,21 +858,13 @@ class ChoicesFile:
   def forms(self):
     forms = []
 
-    state = self.iter_state()
-    self.iter_reset()
-    
-    if self.get('has-aux') == 'yes' or  self.get('noaux-fin-nf') == 'on':
+    if self.choices['has-aux'] == 'yes' or \
+       self.choices['noaux-fin-nf'] == 'no':
       forms += [ ['finite'], ['nonfinite'] ]
 
-      for p in ['nf', 'fin']: 
-        self.iter_begin(p + '-subform')
-        while self.iter_valid():
-          forms += [ [self.get('name')] ]
-
-          self.iter_next()
-        self.iter_end()
-
-    self.iter_set_state(state)
+      for p in ['nf', 'fin']:
+        for p_sf in self.choices[p + '-subform']:
+          forms += [[p_sf['name']]
 
     return forms
 
@@ -1005,31 +876,17 @@ class ChoicesFile:
   def tenses(self):
     tenses = []
 
-    state = self.iter_state()
-    self.iter_reset()
+    tdefn = self.choices['tense-definition']
 
-    tdefn = self.get_full('tense-definition')
-    
     if tdefn == 'choose':
-
       for ten in ('past', 'present', 'future', 'nonpast', 'nonfuture'):
-
-        if self.is_set(ten):
-          tenses += [ [ten] ]
-          self.iter_begin(ten + '-subtype')
-          while self.iter_valid():
-            tenses += [ [self.get('name')] ]
-            self.iter_next()
-          self.iter_end()
-
+        if ten in self.choices:
+          tenses += [[ten]]
+          for t_st in self.choices[ten + '-subtype']
+            tenses += [ [t_st['name']] ]
     elif tdefn == 'build':
-      self.iter_begin('tense')
-      while self.iter_valid():
-        tenses += [ [self.get('name')] ]
-        self.iter_next()
-      self.iter_end()
-
-    self.iter_set_state(state)
+      for ten in self.choices['tense']
+        tenses += [ [ten('name')] ]
 
     return tenses
 
@@ -1039,20 +896,7 @@ class ChoicesFile:
   #   This list consists of tuples:
   #     [aspect name]
   def aspects(self):
-    aspects = []
-
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('aspect')
-    while self.iter_valid():
-      aspects += [ [self.get('name')] ]
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
-
-    return aspects
+    return [aspect['name'] for aspect in self.choices['aspect']]
 
   # situations()
   #   Create and return a list containing information about the values
@@ -1060,44 +904,16 @@ class ChoicesFile:
   #   This list consists of tuples:
   #     [situation name]
   def situations(self):
-    situations = []
-
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('situation')
-    while self.iter_valid():
-      situations += [ [self.get('name')] ]
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
-
-    return situations
-
+    return [situation['name'] for situation in self.choices['situation']]
 
   def types(self):
     """
-    Create and return a list containing type names. FIX - these are based on the 
-    choices file. Need to include required types and inferred types as well.
-    This list consists of tuples:
-    [type name]
+    Create and return a list containing type names. FIX - these are
+    based on the choices file. Need to include required types and
+    inferred types as well. This list consists of tuples: [(type, name)]
     """
-    types = []
-
-    state = self.iter_state()
-    self.iter_reset()
-
-    for t in ['noun', 'verb', 'aux', 'det']:
-      self.iter_begin(t)
-      while self.iter_valid():
-        types += [ [self.get('name'), t] ]
-        self.iter_next()
-      self.iter_end()
-
-    self.iter_set_state(state)
-    return types
-  
+    return [[self.choices[t]['name'], t]
+            for t in ('noun', 'verb', 'aux', 'det')]
 
   # features()
   #   Create and return a list containing information about the
@@ -1112,18 +928,15 @@ class ChoicesFile:
     features = []
 
     # Case
-    values = ''
-    for c in self.cases():
-      if values:
-        values += ';'
-      values += c[0] + '|' + c[1]
-
+    values = ';'.join([c[0] + '|' + c[1] for c in self.cases()])
     if values:
       features += [ ['case', values, 'LOCAL.CAT.HEAD.CASE'] ]
 
     # Number, Person, and Pernum
+
     pernums = self.pernums()
     if pernums:
+    #  values = ';'.join([pn[0] + '|' + pn[0]
       values = ''
       for pn in pernums:
         if values:
@@ -1470,460 +1283,7 @@ class ChoicesFile:
       if ques == 'inv':
         ques = 'q-inv'
       if ques != 'int':
-        self.set(ques, 'on')
-
-  def convert_2_to_3(self):
-    # Added a fuller implementation of case marking on core arguments,
-    # so convert the old case-marking adposition stuff to the new
-    # choices
-    S = self.get('iverb-subj')
-    A = self.get('tverb-subj')
-    O = self.get('tverb-obj')
-
-    Sorth = Aorth = Oorth = ''
-    Sorder = Aorder = Oorder = ''
-    if S == 'adp':
-      Sorth = self.get('subj-adp-orth')
-      Sorder = self.get('subj-adp-order')
-    if A == 'adp':
-      Aorth = self.get('subj-adp-orth')
-      Aorder = self.get('subj-adp-order')
-    if O == 'adp':
-      Oorth = self.get('obj-adp-orth')
-      Aorder = self.get('obj-adp-order')
-
-    if Sorth == '' and Aorth == '' and Oorth == '':
-      if len(self.keys()):  # don't add this if the choices file is empty
-        self.set('case-marking', 'none')
-    elif Sorth == Aorth and Sorth != Oorth:
-      self.set('case-marking', 'nom-acc')
-      self.set('nom-case-label', 'nominative')
-      self.set('acc-case-label', 'accusative')
-      if Aorth:
-        self.set('nom-case-pat', 'np')
-        self.set('nom-case-order', Aorder)
-      else:
-        self.set('nom-case-pat', 'none')
-      if Oorth:
-        self.set('acc-case-pat', 'np')
-        self.set('acc-case-order', Oorder)
-      else:
-        self.set('acc-case-pat', 'none')
-    elif Sorth != Aorth and Sorth == Oorth:
-      self.set('case-marking', 'erg-asb')
-      self.set('erg-case-label', 'ergative')
-      self.set('abs-case-label', 'absolutive')
-      if Aorth:
-        self.set('erg-case-pat', 'np')
-        self.set('erg-case-order', Aorder)
-      else:
-        self.set('erg-case-pat', 'none')
-      if Oorth:
-        self.set('abs-case-pat', 'np')
-        self.set('abs-case-order', Oorder)
-      else:
-        self.set('abs-case-pat', 'none')
-    else:
-      self.set('case-marking', 'tripartite')
-      self.set('s-case-label', 'subjective')
-      self.set('a-case-label', 'agentive')
-      self.set('o-case-label', 'objective')
-      if Sorth:
-        self.set('s-case-pat', 'np')
-        self.set('s-case-order', Sorder)
-      else:
-        self.set('s-case-pat', 'none')
-      if Aorth:
-        self.set('a-case-pat', 'np')
-        self.set('a-case-order', Aorder)
-      else:
-        self.set('a-case-pat', 'none')
-      if Oorth:
-        self.set('o-case-pat', 'np')
-        self.set('o-case-order', Oorder)
-      else:
-        self.set('o-case-pat', 'none')
-
-    self.delete('iverb-subj')
-    self.delete('tverb-subj')
-    self.delete('tverb-obj')
-    self.delete('subj-adp-orth')
-    self.delete('subj-adp-order')
-    self.delete('obj-adp-orth')
-    self.delete('obj-adp-order')
-
-  def convert_3_to_4(self):
-    # Added a fuller implementation of case marking on core arguments,
-    # so convert the old case-marking adposition stuff to the new
-    # choices
-    self.convert_key('noun1', 'noun1_orth')
-    self.convert_key('noun2', 'noun2_orth')
-
-    self.convert_key('iverb', 'verb1_orth')
-    self.convert_key('iverb-pred', 'verb1_pred')
-    self.convert_key('iverb-non-finite', 'verb1_non-finite')
-    if self.get('verb1_orth'):
-      self.set('verb1_valence', 'intrans')
-
-    self.convert_key('tverb', 'verb2_orth')
-    self.convert_key('tverb-pred', 'verb2_pred')
-    self.convert_key('tverb-non-finite', 'verb2_non-finite')
-    if self.get('verb2_orth'):
-      self.set('verb2_valence', 'trans')
-
-    self.convert_key('det1', 'det1_orth')
-    self.convert_key('det1pred', 'det1_pred')
-    self.convert_key('det2', 'det2_orth')
-    self.convert_key('det2pred', 'det2_pred')
-
-  def convert_4_to_5(self):
-    # An even fuller implementation of case marking, with some of the
-    # work shifted off on Kelly's morphology code.
-    # Get a list of choices-variable prefixes, one for each case
-    prefixes = []
-    cm = self.get('case-marking')
-    if cm == 'nom-acc':
-      prefixes.append('nom')
-      prefixes.append('acc')
-    elif cm == 'erg-abs':
-      prefixes.append('erg')
-      prefixes.append('abs')
-    elif cm == 'tripartite':
-      prefixes.append('s')
-      prefixes.append('a')
-      prefixes.append('o')
-
-    cur_ns = 1       # noun slot
-    cur_nm = 1       # noun morph
-    cur_ni = 'noun'  # noun input
-    last_ns_order = ''
-
-    cur_ds = 1       # det slot
-    cur_dm = 1       # det morph
-    cur_ni = 'det'   # det input
-    last_ds_order = ''
-
-    cur_adp = 1
-
-    for p in prefixes:
-      label = self.get(p + '-case-label')
-      pat = self.get(p + '-case-pat')
-      order = self.get(p + '-case-order')
-      orth = self.get(p + '-case-orth')
-
-      # create noun slot and morph
-      if pat in ('noun', 'noun-det'):
-        if last_ns_order and last_ns_order != order:
-          cur_ni = 'noun-slot' + str(cur_ns)
-          cur_ns += 1
-          cur_nm = 1
-
-        ns_pre = 'noun-slot' + str(cur_ns)
-        nm_pre = ns_pre + '_morph' + str(cur_nm)
-
-        self.set(ns_pre + '_input1_type', cur_ni)
-        self.set(ns_pre + '_name', 'case')
-        self.set(ns_pre + '_order', order)
-
-        self.set(nm_pre + '_name', label)
-        self.set(nm_pre + '_orth', orth)
-        self.set(nm_pre + '_feat1_name', 'case')
-        self.set(nm_pre + '_feat1_value', label)
-        cur_nm += 1
-
-      # create det slot and morph
-      if pat in ('det', 'noun-det'):
-        if last_ds_order and last_ds_order != order:
-          cur_di = 'det-slot' + str(cur_ds)
-          cur_ds += 1
-          cur_dm = 1
-
-        ds_pre = 'det-slot' + str(cur_ds)
-        dm_pre = ds_pre + '_morph' + str(cur_dm)
-
-        self.set(ds_pre + '_input1_type', cur_di)
-        self.set(ds_pre + '_name', 'case')
-        self.set(ds_pre + '_order', order)
-
-        self.set(dm_pre + '_name', label)
-        self.set(dm_pre + '_orth', orth)
-        self.set(dm_pre + '_feat1_name', 'case')
-        self.set(dm_pre + '_feat1_value', label)
-        cur_dm += 1
-
-      # create adposition
-      if pat == 'np':
-        adp_pre = 'adp' + str(cur_adp)
-        self.set(adp_pre + '_orth', orth)
-        self.set(adp_pre + '_order', order)
-        self.set(adp_pre + '_feat1_name', 'case')
-        self.set(adp_pre + '_feat1_value', label)
-
-    self.convert_key('nom-case-label', 'nom-acc-nom-case-name')
-    self.convert_key('acc-case-label', 'nom-acc-acc-case-name')
-
-    self.convert_key('erg-case-label', 'erg-abs-erg-case-name')
-    self.convert_key('abs-case-label', 'erg-abs-abs-case-name')
-
-    self.convert_key('s-case-label', 'tripartite-s-case-name')
-    self.convert_key('a-case-label', 'tripartite-a-case-name')
-    self.convert_key('o-case-label', 'tripartite-o-case-name')
-
-    for p in ['nom', 'acc', 'erg', 'abs', 's', 'a', 'o']:
-      self.delete(p + '-case-pat')
-      self.delete(p + '-case-order')
-      self.delete(p + '-case-orth')
-
-    self.iter_begin('verb')
-    while self.iter_valid():
-      v = self.get('valence')
-      if v == 'intrans':
-        if cm == 'none':
-          pass
-        elif cm == 'nom-acc':
-          self.set('valence', 'nom')
-        elif cm == 'erg-abs':
-          self.set('valence', 'abs')
-        elif cm == 'tripartite':
-          self.set('valence', 's')
-      elif v == 'trans':
-        if cm == 'none':
-          pass
-        elif cm == 'nom-acc':
-          self.set('valence', 'nom-acc')
-        elif cm == 'erg-abs':
-          self.set('valence', 'erg-abs')
-        elif cm == 'tripartite':
-          self.set('valence', 'a-o')
-
-      self.iter_next()
-    self.iter_end()
-
-  def convert_5_to_6(self):
-    self.convert_key('aux-order', 'aux-comp-order')
-    self.convert_key('aux-verb', 'aux1_orth')
-    self.convert_value('aux-sem', 'pred', 'add-pred')
-    self.convert_key('aux-sem', 'aux1_sem')
-    self.convert_key('aux-comp', 'aux1_comp')
-    self.convert_key('aux-pred', 'aux1_pred')
-    self.convert_key('aux-subj', 'aux1_subj')
-    if self.get('aux1_orth'):
-      self.set('has-aux','yes')
-    elif len(self.keys()):  # don't add this if the choices file is empty
-      self.set('has-aux','no')
-
-    self.iter_begin('verb')
-    while self.iter_valid():
-      self.delete('non-finite')
-      self.iter_next()
-    self.iter_end()
-
-  def convert_6_to_7(self):
-    # Lexical types now have multiple stems
-    for lextype in ['noun', 'verb', 'det']:
-      self.iter_begin(lextype)
-      while self.iter_valid():
-        self.convert_key('orth', 'stem1_orth')
-        self.convert_key('pred', 'stem1_pred')
-
-        self.iter_next()
-      self.iter_end()
-
-    if not self.get('person') and len(self.keys()):
-      self.set('person', 'none')
-
-  def convert_7_to_8(self):
-    # Other features no longer use the magic word 'root', they instead
-    # use the name of the feature.
-    self.iter_begin('feature')
-    while self.iter_valid():
-      fname = self.get('name')
-      
-      self.iter_begin('value')
-      while self.iter_valid():
-        self.iter_begin('supertype')
-        while self.iter_valid():
-          self.convert_value('name', 'root', fname)
-
-          self.iter_next()
-        self.iter_end()
-
-        self.iter_next()
-      self.iter_end()
-
-      self.iter_next()
-    self.iter_end()
-
-  def convert_8_to_9(self):
-    # finite and nonfinite feature value name changes
-    # in aux complement form values
-    for lextype in ['aux','det','verb','noun']:
-      if lextype == 'aux':
-        self.iter_begin(lextype)
-        while self.iter_valid():
-          self.convert_value('compform','fin','finite')
-          self.convert_value('compform', 'nf', 'nonfinite')
-          self.iter_next()
-        self.iter_end()
-      # in slot feature values
-      self.iter_begin(lextype + '-slot')
-      while self.iter_valid():
-        self.iter_begin('morph')
-        while self.iter_valid():
-          self.iter_begin('feat')
-          while self.iter_valid():
-            self.convert_value('value','fin','finite')
-            self.convert_value('value','nf','nonfinite')
-            self.iter_next()
-          self.iter_end()
-          self.iter_next()
-        self.iter_end()
-        self.iter_next()
-      self.iter_end()  
-
-  def convert_9_to_10(self):
-    """
-    Previous versions defined (only) nonfinite compforms for each auxiliary 
-    iff the aux comp was constrained to be nonfinite. 
-    The current version creates a hierarchy of verb forms and then for each 
-    aux constrains the form of the complement.  
-    For each auxiliary, this conversion takes the value of the specified (nonfinite)compform 
-    and assigns it as the value of a member of the nonfinite hierarchy 
-    as well as the value of the auxiliary's compform.
-    """
-    self.convert_key('non-past', 'nonpast')
-    self.convert_key('non-future', 'nonfuture') 
-
-    i = 0
-    self.iter_begin('aux')
-    while self.iter_valid():
-      i += 1
-      v = self.get('nonfincompform')
-      k = 'nf-subform' + str(i) + '_name'
-      self.convert_value('compform', 'nonfinite', v)
-
-      if self.is_set('nonfincompform'):
-        self.set_full(k,v)
-      self.delete('nonfincompform')
-
-      self.iter_next()
-    self.iter_end()
-  
-  def convert_10_to_11(self):
-    """
-    Previous versions allowed only one stem per auxiliary type.
-    This conversion changes auxiliary orth and pred values to stem1 orth and pred.
-    """
-    self.iter_begin('aux')
-
-    while self.iter_valid():
-      self.convert_key('orth', 'stem1_orth')
-      self.convert_key('pred', 'stem1_pred')
-
-      self.iter_next()
-    self.iter_end()
-
-  def convert_11_to_12(self):
-    """
-    Previously the kind of comp (s, vp, v) was defined for each auxiliary type.
-    Since our current word order implementation couldn't handle differences on this level anyway,
-    this is no answered by one question for all auxiliaries.
-    This conversion gives aux-comp the value of the first aux's comp, and deletes all type specific aux-comp values.
-    """
-   
-    if self.get('has-aux') == 'yes':
-      auxval = self.get('aux1_comp')
-      self.set('aux-comp',auxval)
-      i = 0
-      while self.iter_valid():
-        i += 1
-        self.delete('aux' + i + '_comp')
-
-  def convert_12_to_13(self):
-    """ 
-    ERB: stupidly used "+" as a feature value.  Updating this
-    to "plus".  Feature name was "negation".
-    """
-    for lextype in ['aux','det','verb','noun']:
-      self.iter_begin(lextype + '-slot')
-      while self.iter_valid():
-        self.iter_begin('morph')
-        while self.iter_valid():
-          self.iter_begin('feat')
-          while self.iter_valid():
-            if self.get('name') == 'negation':
-              self.convert_value('value','+','plus')
-            self.iter_next()
-          self.iter_end()
-          self.iter_next()
-        self.iter_end()
-        self.iter_next()
-      self.iter_end()  
-
-  def convert_13_to_14(self):
-    """
-    Revised the Person subpage.  Convert the old single radio button
-    for defining subtypes under 1p-non-sg into the choices for defining
-    your own subtypes.
-    """
-    numbers = []
-    self.iter_begin('number')
-    while self.iter_valid():
-      numbers += [ self.get('name') ]
-      self.iter_next()
-    self.iter_end()
-
-    number = ''
-    for n in numbers[1:]:
-      if len(number):
-        number += ', '
-      number += n
-
-    fp = self.get('first-person')
-    subtypes = []
-    if fp == 'incl-excl':
-      self.set('incl-excl-number', number)
-    elif fp == 'min-incl':
-      subtypes = ['min', 'incl']
-    elif fp == 'aug-incl':
-      subtypes = ['aug']
-    elif fp == 'min-aug':
-      subtypes = ['min', 'incl', 'aug']
-
-    if len(subtypes) and len(number):
-      self.set('first-person', 'other')
-      self.iter_begin('person-subtype')
-      for st in subtypes:
-        self.set('name', st)
-        self.set('number', number)
-        self.iter_next()
-      self.iter_end()
-
-  def convert_14_to_15(self):
-    """
-    Revised slot co-occurrence constraints in the Lexicon subpage.
-    Before, there were three iterators, req, disreq, and forces, each
-    of which contained a single choice, type.  Now there's a single
-    iterator, constraint, that contains the choices type (req, disreq,
-    or forces) and other-slot.
-    """
-
-    for slotprefix in ('noun', 'verb', 'det', 'aux'):
-      self.iter_begin(slotprefix + '-slot')
-      while self.iter_valid():
-        constraints = []
-
-        for contype in ('forces', 'req', 'disreq'):
-          self.iter_begin(contype)
-          while self.iter_valid():
-            constraints += [ [ contype, self.get('type') ] ]
-            self.delete('type')
-            self.iter_next()
-          self.iter_end()
-
-        self.iter_begin('constraint')
-        for c in constraints:
-          self.set('type', c[0])
+        self.set(ques, c[0])
           self.set('other-slot', c[1])
           self.iter_next()
         self.iter_end()
