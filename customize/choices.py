@@ -120,6 +120,13 @@ class ChoicesFile:
     if attribute == '': return []
     return [a for a in self.attr_delim_re.split(attribute) if a is not None]
 
+
+  ############################################################################
+  ### Choices file access functions
+
+  def get(self, key):
+    return self.choices.get(key, [])
+
   ############################################################################
   ### Up-revisioning handler
 
@@ -209,233 +216,233 @@ class ChoicesFile:
   #     choices.iter_next()            # advance the noun iteration
   #   choices.iter_end()               # end the noun iteration
 
-  def iter_begin(self, key):
-    var = 1
-    # If key contains a number at the end (i.e. 'noun5'), initialize
-    # the iteration at that number rather than the default of 1.
-    s = re.search('[0-9]+$', key)
-    if s:
-      offset = s.span()[0]
-      var = int(key[offset:])
-      key = key[0:offset]
-
-    self.iter_stack.append([key, var, True])
-
-    # if the beginning of the iterator isn't valid, try bumping up to
-    # the next valid value
-    valid = self.__iter_is_valid()
-    if not valid:
-      self.iter_next()
-      # if there was no next valid value, start at the requested
-      # position (since the caller may be writing rather than reading)
-      if not self.iter_valid():
-        self.iter_stack[-1][0] = key
-        self.iter_stack[-1][1] = var
-        self.iter_stack[-1][2] = False
-
-
-  # Are there any choices with a name prefixed by the current
-  # iterator?  Useful as the condition in loops.
-  def iter_valid(self):
-    if len(self.iter_stack) > 0:
-      return self.iter_stack[-1][2]
-    else:
-      return False
-
-
-  def iter_next(self):
-    next = self.__iter_next_valid()
-    if next != -1:
-      self.iter_stack[-1][1] = next
-      self.iter_stack[-1][2] = True
-    else:
-      self.iter_stack[-1][1] += 1
-      self.iter_stack[-1][2] = False
-
-
-  def iter_end(self):
-    self.iter_stack.pop()
-
-
-  def iter_prefix(self):
-    prefix = ''
-    for i in self.iter_stack:
-      prefix += i[0] + str(i[1]) + '_'
-    return prefix
-
-
-  def iter_num(self):
-    return self.iter_stack[-1][1]
-
-
-  def iter_max(self,key):
-    count = 0
-    self.iter_begin(key)
-    while self.iter_valid():
-      count += 1
-      self.iter_next()
-    self.iter_end()
-    return count
-
-
-  def __iter_calc_valid(self):
-    """
-    Pass through the keys for the current choices and pre-calculate
-    the valid numerical ranges for each iterator.  Store the values
-    found in cached_iter_values.
-    """
-    self.cached_iter_values = {}
-    pat = re.compile('([0-9]+)_')
-    for k in self.keys():
-      offset = 0
-      klen = len(k)
-      while offset < klen:
-        match = pat.search(k[offset:])
-        if match:
-          num = int(match.group(1))
-          name = k[:offset + match.start(1)]
-
-          # in this loop, store values as sets to avoid duplicates
-          if self.cached_iter_values.has_key(name):
-            self.cached_iter_values[name].add(num)
-          else:
-            newval = set()
-            newval.add(num)
-            self.cached_iter_values[name] = newval
-            
-          offset += match.end()
-        else:
-          break
-
-    # now convert sets to sorted lists so its easy to find the max
-    for k in self.cached_iter_values.keys():
-      self.cached_iter_values[k] = sorted(list(self.cached_iter_values[k]))
-
-
-  def __iter_name_and_num(self):
-    """
-    Return the name and number of the current iteration state.
-    """
-    if not self.cached_iter_values:
-      self.__iter_calc_valid()
-
-    num = self.iter_stack[-1][1]
-
-    prefix = self.iter_prefix()
-    match = re.search('[0-9]+_$', prefix)
-    name = prefix[:match.start()]
-
-    return (name, num)
-
-
-  def __iter_is_valid(self):
-    """
-    Return true if the iterator on top of the stack is valid -- that
-    is, if there are exist any values in the choices dictionary for
-    which the current iterator is a prefix.
-    """
-    if not self.cached_iter_values:
-      self.__iter_calc_valid()
-
-    (name, num) = self.__iter_name_and_num()
-
-    return self.cached_iter_values.has_key(name) and \
-           num in self.cached_iter_values[name]
-
-
-  def __iter_next_valid(self):
-    """
-    Return the next valid numerical value for the current iterator.
-    If there is no valid value greater than the current value, return
-    -1.
-    """
-    if not self.cached_iter_values:
-      self.__iter_calc_valid()
-
-    (name, num) = self.__iter_name_and_num()
-
-    if self.cached_iter_values.has_key(name):
-      nums = self.cached_iter_values[name]
-      if num in nums:
-        i = nums.index(num) + 1
-        if i < len(nums):
-          return nums[i]
-      else:
-        return nums[0]
-
-    return -1
-
-
-  ######################################################################
-  # Methods for saving and restoring the iterator state (the stack)
-
-  def iter_state(self):
-    return self.iter_stack
-
-
-  def iter_set_state(self,state):
-    self.iter_stack = state
-
-
-  def iter_reset(self):
-    self.iter_stack = []
-
-
-  ######################################################################
-  # Methods for accessing full-name values.  These methods are
-  # insensitive to the current iterator state, and take the full name
-  # of a dictionary entry (e.g. noun2_morph) rather than
-
-  # Return the value of 'key', if any.  If not, return the empty string.
-  def get_full(self, key):
-    if self.is_set_full(key):
-      return self.choices[key]
-    else:
-      return ''
-
-
-  # Set the value of 'key' to 'value'
-  def set_full(self, key, value):
-    self.choices[key] = value
-    self.clear_cached_values()
-
-
-  # Remove 'key' and its value from the list of choices
-  def delete_full(self, key):
-    if self.is_set_full(key):
-      del self.choices[key]
-      self.clear_cached_values()
-
-
-  # Return True iff there if 'key' is currently set
-  def is_set_full(self, key):
-    return key in self.choices
-
-  ######################################################################
-  # Methods for accessing values.  These methods are sensitive to the
-  # current iterator state, prepending the current iter_prefix to the
-  # passed keys.
-
-  # Return the value of 'key', if any.  If not, return the empty string.
-  def get(self, key):
-    return self.get_full(self.iter_prefix() + key)
-
-
-  # Set the value of 'key' to 'value'
-  def set(self, key, value):
-    self.set_full(self.iter_prefix() + key, value)
-
-
-  # Remove 'key' and its value from the list of choices
-  def delete(self, key):
-    self.delete_full(self.iter_prefix() + key)
-
-
-  # Return True iff there if 'key' is currently set
-  def is_set(self, key):
-    return self.is_set_full(self.iter_prefix() + key)
-
-
+#  def iter_begin(self, key):
+#    var = 1
+#    # If key contains a number at the end (i.e. 'noun5'), initialize
+#    # the iteration at that number rather than the default of 1.
+#    s = re.search('[0-9]+$', key)
+#    if s:
+#      offset = s.span()[0]
+#      var = int(key[offset:])
+#      key = key[0:offset]
+#
+#    self.iter_stack.append([key, var, True])
+#
+#    # if the beginning of the iterator isn't valid, try bumping up to
+#    # the next valid value
+#    valid = self.__iter_is_valid()
+#    if not valid:
+#      self.iter_next()
+#      # if there was no next valid value, start at the requested
+#      # position (since the caller may be writing rather than reading)
+#      if not self.iter_valid():
+#        self.iter_stack[-1][0] = key
+#        self.iter_stack[-1][1] = var
+#        self.iter_stack[-1][2] = False
+#
+#
+#  # Are there any choices with a name prefixed by the current
+#  # iterator?  Useful as the condition in loops.
+#  def iter_valid(self):
+#    if len(self.iter_stack) > 0:
+#      return self.iter_stack[-1][2]
+#    else:
+#      return False
+#
+#
+#  def iter_next(self):
+#    next = self.__iter_next_valid()
+#    if next != -1:
+#      self.iter_stack[-1][1] = next
+#      self.iter_stack[-1][2] = True
+#    else:
+#      self.iter_stack[-1][1] += 1
+#      self.iter_stack[-1][2] = False
+#
+#
+#  def iter_end(self):
+#    self.iter_stack.pop()
+#
+#
+#  def iter_prefix(self):
+#    prefix = ''
+#    for i in self.iter_stack:
+#      prefix += i[0] + str(i[1]) + '_'
+#    return prefix
+#
+#
+#  def iter_num(self):
+#    return self.iter_stack[-1][1]
+#
+#
+#  def iter_max(self,key):
+#    count = 0
+#    self.iter_begin(key)
+#    while self.iter_valid():
+#      count += 1
+#      self.iter_next()
+#    self.iter_end()
+#    return count
+#
+#
+#  def __iter_calc_valid(self):
+#    """
+#    Pass through the keys for the current choices and pre-calculate
+#    the valid numerical ranges for each iterator.  Store the values
+#    found in cached_iter_values.
+#    """
+#    self.cached_iter_values = {}
+#    pat = re.compile('([0-9]+)_')
+#    for k in self.keys():
+#      offset = 0
+#      klen = len(k)
+#      while offset < klen:
+#        match = pat.search(k[offset:])
+#        if match:
+#          num = int(match.group(1))
+#          name = k[:offset + match.start(1)]
+#
+#          # in this loop, store values as sets to avoid duplicates
+#          if self.cached_iter_values.has_key(name):
+#            self.cached_iter_values[name].add(num)
+#          else:
+#            newval = set()
+#            newval.add(num)
+#            self.cached_iter_values[name] = newval
+#
+#          offset += match.end()
+#        else:
+#          break
+#
+#    # now convert sets to sorted lists so its easy to find the max
+#    for k in self.cached_iter_values.keys():
+#      self.cached_iter_values[k] = sorted(list(self.cached_iter_values[k]))
+#
+#
+#  def __iter_name_and_num(self):
+#    """
+#    Return the name and number of the current iteration state.
+#    """
+#    if not self.cached_iter_values:
+#      self.__iter_calc_valid()
+#
+#    num = self.iter_stack[-1][1]
+#
+#    prefix = self.iter_prefix()
+#    match = re.search('[0-9]+_$', prefix)
+#    name = prefix[:match.start()]
+#
+#    return (name, num)
+#
+#
+#  def __iter_is_valid(self):
+#    """
+#    Return true if the iterator on top of the stack is valid -- that
+#    is, if there are exist any values in the choices dictionary for
+#    which the current iterator is a prefix.
+#    """
+#    if not self.cached_iter_values:
+#      self.__iter_calc_valid()
+#
+#    (name, num) = self.__iter_name_and_num()
+#
+#    return self.cached_iter_values.has_key(name) and \
+#           num in self.cached_iter_values[name]
+#
+#
+#  def __iter_next_valid(self):
+#    """
+#    Return the next valid numerical value for the current iterator.
+#    If there is no valid value greater than the current value, return
+#    -1.
+#    """
+#    if not self.cached_iter_values:
+#      self.__iter_calc_valid()
+#
+#    (name, num) = self.__iter_name_and_num()
+#
+#    if self.cached_iter_values.has_key(name):
+#      nums = self.cached_iter_values[name]
+#      if num in nums:
+#        i = nums.index(num) + 1
+#        if i < len(nums):
+#          return nums[i]
+#      else:
+#        return nums[0]
+#
+#    return -1
+#
+#
+#  ######################################################################
+#  # Methods for saving and restoring the iterator state (the stack)
+#
+#  def iter_state(self):
+#    return self.iter_stack
+#
+#
+#  def iter_set_state(self,state):
+#    self.iter_stack = state
+#
+#
+#  def iter_reset(self):
+#    self.iter_stack = []
+#
+#
+#  ######################################################################
+#  # Methods for accessing full-name values.  These methods are
+#  # insensitive to the current iterator state, and take the full name
+#  # of a dictionary entry (e.g. noun2_morph) rather than
+#
+#  # Return the value of 'key', if any.  If not, return the empty string.
+#  def get_full(self, key):
+#    if self.is_set_full(key):
+#      return self.choices[key]
+#    else:
+#      return ''
+#
+#
+#  # Set the value of 'key' to 'value'
+#  def set_full(self, key, value):
+#    self.choices[key] = value
+#    self.clear_cached_values()
+#
+#
+#  # Remove 'key' and its value from the list of choices
+#  def delete_full(self, key):
+#    if self.is_set_full(key):
+#      del self.choices[key]
+#      self.clear_cached_values()
+#
+#
+#  # Return True iff there if 'key' is currently set
+#  def is_set_full(self, key):
+#    return key in self.choices
+#
+#  ######################################################################
+#  # Methods for accessing values.  These methods are sensitive to the
+#  # current iterator state, prepending the current iter_prefix to the
+#  # passed keys.
+#
+#  # Return the value of 'key', if any.  If not, return the empty string.
+#  #def get(self, key):
+#  #  return self.get_full(self.iter_prefix() + key)
+#
+#
+#  # Set the value of 'key' to 'value'
+#  def set(self, key, value):
+#    self.set_full(self.iter_prefix() + key, value)
+#
+#
+#  # Remove 'key' and its value from the list of choices
+#  def delete(self, key):
+#    self.delete_full(self.iter_prefix() + key)
+#
+#
+#  # Return True iff there if 'key' is currently set
+#  def is_set(self, key):
+#    return self.is_set_full(self.iter_prefix() + key)
+#
+#
   ######################################################################
   # Methods for accessing "derived" values -- that is, groups of values
   # that are implied by the list of choices, but not directly stored
@@ -447,7 +454,7 @@ class ChoicesFile:
     """
     Return true if the feature has matching case or if case is empty.
     """
-    return feat['name'] = 'case' and (feat['value'] == case or case == '')
+    return feat['name'] == 'case' and (feat['value'] == case or case == '')
 
   def has_noun_case(self, case = ''):
     """
@@ -463,14 +470,15 @@ class ChoicesFile:
     result = False
 
     # check lexical types
-    for feat in [noun['feat'] for noun in self.choices['noun']]:
-      result |= self.has_case(feat, case)
+    for noun in self.get('noun'):
+      for feat in noun.get('feat',[]):
+        result |= self.has_case(feat, case)
 
     # check morphemes
     for slotprefix in ('noun', 'verb', 'det'):
-      for slot in self.choices[slotprefix + '-slot']:
-        for morph in slot['morph']:
-          for feat in morph['feat']:
+      for slot in self.get(slotprefix + '-slot'):
+        for morph in slot.get('morph',[]):
+          for feat in morph.get('feat',[]):
             result |= self.has_case(feat, case)
 
     self.cached_values[k] = result
@@ -488,7 +496,7 @@ class ChoicesFile:
 
     result = False
 
-    for adp in self.choices['adp']:
+    for adp in self.get('adp'):
       opt = adp['opt']
       for feat in adp['feat']:
         result = self.has_case(feat, case) and (opt or not check_opt)
@@ -554,12 +562,13 @@ class ChoicesFile:
     """
     result = False
 
-    for feat in [verb['feat'] for verb in self.choices]:
-      result |= feat['head'] in ('higher', 'lower')
+    for verb in self.choices['verb']:
+      for feat in verb['feat']:
+        result |= feat['head'] in ('higher', 'lower')
 
-    for verb_slot in self.choices['verb-slot']:
-      for morph in verb_slot['morph']:
-        for feat in morph['feat']:
+    for verb_slot in self.get('verb-slot'):
+      for morph in verb_slot.get('morph',[]):
+        for feat in morph.get('feat',[]):
           result |= feat['head'] in ('higher', 'lower')
 
     return result
@@ -572,34 +581,34 @@ class ChoicesFile:
   #     [canonical name, friendly name, abbreviation]
   def cases(self):
     # first, make two lists: the canonical and user-provided case names
-    cm = self.get_full('case-marking')
+    cm = self.choices['case-marking']
     canon = []
     user = []
     if cm == 'nom-acc':
       canon.append('nom')
-      user.append(self.get_full(cm + '-nom-case-name'))
+      user.append(self.choices[cm + '-nom-case-name'])
       canon.append('acc')
-      user.append(self.get_full(cm + '-acc-case-name'))
+      user.append(self.choices[cm + '-acc-case-name'])
     elif cm == 'erg-abs':
       canon.append('erg')
-      user.append(self.get_full(cm + '-erg-case-name'))
+      user.append(self.choices[cm + '-erg-case-name'])
       canon.append('abs')
-      user.append(self.get_full(cm + '-abs-case-name'))
+      user.append(self.choices[cm + '-abs-case-name'])
     elif cm == 'tripartite':
       canon.append('s')
-      user.append(self.get_full(cm + '-s-case-name'))
+      user.append(self.choices[cm + '-s-case-name'])
       canon.append('a')
-      user.append(self.get_full(cm + '-a-case-name'))
+      user.append(self.choices[cm + '-a-case-name'])
       canon.append('o')
-      user.append(self.get_full(cm + '-o-case-name'))
+      user.append(self.choices[cm + '-o-case-name'])
     elif cm in ['split-s']:
       canon.append('a')
-      user.append(self.get_full(cm + '-a-case-name'))
+      user.append(self.choices[cm + '-a-case-name'])
       canon.append('o')
-      user.append(self.get_full(cm + '-o-case-name'))
+      user.append(self.choices[cm + '-o-case-name'])
     elif cm in ['fluid-s']:
-      a_name = self.get_full(cm + '-a-case-name')
-      o_name = self.get_full(cm + '-o-case-name')
+      a_name = self.choices[cm + '-a-case-name']
+      o_name = self.choices[cm + '-o-case-name']
       canon.append('a+o')
       user.append('fluid')
       canon.append('a')
@@ -608,25 +617,26 @@ class ChoicesFile:
       user.append(o_name)
     elif cm in ['split-n', 'split-v']:
       canon.append('nom')
-      user.append(self.get_full(cm + '-nom-case-name'))
+      user.append(self.choices[cm + '-nom-case-name'])
       canon.append('acc')
-      user.append(self.get_full(cm + '-acc-case-name'))
+      user.append(self.choices[cm + '-acc-case-name'])
       canon.append('erg')
-      user.append(self.get_full(cm + '-erg-case-name'))
+      user.append(self.choices[cm + '-erg-case-name'])
       canon.append('abs')
-      user.append(self.get_full(cm + '-abs-case-name'))
+      user.append(self.choices[cm + '-abs-case-name'])
     elif cm in ['focus']:
       canon.append('focus')
-      user.append(self.get_full(cm + '-focus-case-name'))
+      user.append(self.choices[cm + '-focus-case-name'])
       canon.append('a')
-      user.append(self.get_full(cm + '-a-case-name'))
+      user.append(self.choices[cm + '-a-case-name'])
       canon.append('o')
-      user.append(self.get_full(cm + '-o-case-name'))
+      user.append(self.choices[cm + '-o-case-name'])
 
     # fill in any additional cases the user has specified
-    for case in self.choices['case']:
-      canon.append(case['name'])
-      user.append(case['name'])
+    if 'case' in self.choices:
+      for case in self.choices['case']:
+        canon.append(case['name'])
+        user.append(case['name'])
 
     # if possible without causing collisions, shorten the case names to
     # three-letter abbreviations; otherwise, just use the names as the
@@ -661,7 +671,7 @@ class ChoicesFile:
   #   fourth argument is true if the verb follows a direct-inverse
   #   marking pattern.
   def patterns(self):
-    cm = self.get_full('case-marking')
+    cm = self.choices['case-marking']
     cases = self.cases()
 
     patterns = []
@@ -720,7 +730,7 @@ class ChoicesFile:
           patterns[i][1] = 'transitive (%s-%s)' % (w[0], w[1])
 
     # Finally, extend the patterns to include direct-inverse, as needed
-    if self.get('scale1_feat1_name'):
+    if self.has_dirinv():
       for i in range(0, len(patterns)):
         if patterns[i][0] == 'trans' or patterns[i][0].find('-') != -1:
           patterns += [ [ patterns[i][0] + ',dirinv',
@@ -738,9 +748,9 @@ class ChoicesFile:
   def numbers(self):
     numbers = []
 
-    for num in self.choices['number']:
-      name = num['name']
-      stype = ';'.join([st['name'] for st in num['supertype']]) or 'number'
+    for n in self.get('number'):
+      name = n['name']
+      stype = ';'.join([s['name'] for s in n.get('supertype',[])]) or 'number'
       numbers += [[name, stype]]
 
     return numbers
@@ -754,7 +764,7 @@ class ChoicesFile:
   def persons(self):
     persons = []
 
-    person = self.get_full('person')
+    person = self.choices['person']
     if person == '1-2-3':
       persons += [['1st', 'person']]
       persons += [['2nd', 'person']]
@@ -820,12 +830,12 @@ class ChoicesFile:
           pernums += [[pn, p + ';' + n]]
           if p == '1st':
             if fp == 'incl-excl':
-              for num in self.choices['incl-excl-number'].split(', '):
+              for num in self.get('incl-excl-number').split(', '):
                 if num == n:
                   pernums += [[pn + '_incl', pn]]
                   pernums += [[pn + '_excl', pn]]
             elif fp == 'other':
-              for p_st in self.choices['person-subtype']:
+              for p_st in self.get('person-subtype'):
                 name = p_st['name']
                 for num in p_st['number'].split(', '):
                   if num == n:
@@ -842,9 +852,9 @@ class ChoicesFile:
   def genders(self):
     genders = []
 
-    for gender in self.choices['gender']:
-      name = gender['name']
-      stype = ';'.join([st['name'] for st in num['supertype']]) or 'number'
+    for g in self.get('gender'):
+      name = g['name']
+      stype = ';'.join([s['name'] for s in g.get('supertype',[])]) or 'number'
       genders += [[name, stype]]
 
     return genders
@@ -859,12 +869,11 @@ class ChoicesFile:
     forms = []
 
     if self.choices['has-aux'] == 'yes' or \
-       self.choices['noaux-fin-nf'] == 'no':
+            self.choices['noaux-fin-nf'] == 'no':
       forms += [ ['finite'], ['nonfinite'] ]
-
       for p in ['nf', 'fin']:
-        for p_sf in self.choices[p + '-subform']:
-          forms += [[p_sf['name']]
+        for p_sf in self.get(p + '-subform'):
+          forms += [[p_sf['name']]]
 
     return forms
 
@@ -882,11 +891,11 @@ class ChoicesFile:
       for ten in ('past', 'present', 'future', 'nonpast', 'nonfuture'):
         if ten in self.choices:
           tenses += [[ten]]
-          for t_st in self.choices[ten + '-subtype']
+          for t_st in self.get(ten + '-subtype'):
             tenses += [ [t_st['name']] ]
     elif tdefn == 'build':
-      for ten in self.choices['tense']
-        tenses += [ [ten('name')] ]
+      for ten in self.get('tense'):
+        tenses += [ [ten['name']] ]
 
     return tenses
 
@@ -896,7 +905,7 @@ class ChoicesFile:
   #   This list consists of tuples:
   #     [aspect name]
   def aspects(self):
-    return [aspect['name'] for aspect in self.choices['aspect']]
+    return [aspect['name'] for aspect in self.get('aspect')]
 
   # situations()
   #   Create and return a list containing information about the values
@@ -904,7 +913,7 @@ class ChoicesFile:
   #   This list consists of tuples:
   #     [situation name]
   def situations(self):
-    return [situation['name'] for situation in self.choices['situation']]
+    return [situation['name'] for situation in self.get('situation')]
 
   def types(self):
     """
@@ -912,8 +921,19 @@ class ChoicesFile:
     based on the choices file. Need to include required types and
     inferred types as well. This list consists of tuples: [(type, name)]
     """
-    return [[self.choices[t]['name'], t]
-            for t in ('noun', 'verb', 'aux', 'det')]
+    return [(self.choices[t]['name'], t)
+            for t in ('noun', 'verb', 'aux', 'det')
+            if t in self.choices]
+
+  def __get_features(self, feat_list, i1, i2, label, tdl):
+    """
+    If there are values available for the given feature, construct a
+    list of the feature label, values, and tdl code for that feature.
+    """
+    values = ';'.join([x[i1] + '|' + x[i2] for x in feat_list])
+    if values:
+      return [ [label, values, tdl] ]
+    return []
 
   # features()
   #   Create and return a list containing information about the
@@ -928,185 +948,114 @@ class ChoicesFile:
     features = []
 
     # Case
-    values = ';'.join([c[0] + '|' + c[1] for c in self.cases()])
-    if values:
-      features += [ ['case', values, 'LOCAL.CAT.HEAD.CASE'] ]
-
+    features += self.__get_features(self.cases(), 0, 1, 'case',
+                                    'LOCAL.CAT.HEAD.CASE')
     # Number, Person, and Pernum
-
     pernums = self.pernums()
     if pernums:
-    #  values = ';'.join([pn[0] + '|' + pn[0]
-      values = ''
-      for pn in pernums:
-        if values:
-          values += ';'
-        values += pn[0] + '|' + pn[0]
-
-      if values:
-        features += [ ['pernum', values, 'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM'] ]
+      features += self.__get_features(pernums, 0, 0, 'pernum',
+                                      'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM')
     else:
-      values = ''
-      for n in self.numbers():
-        if values:
-          values += ';'
-        values += n[0] + '|' + n[0]
-
-      if values:
-        features += [ ['number', values, 'LOCAL.CONT.HOOK.INDEX.PNG.NUM'] ]
-
-      values = ''
-      for p in self.persons():
-        if values:
-          values += ';'
-        values += p[0] + '|' + p[0]
-
-      if values:
-        features += [ ['person', values, 'LOCAL.CONT.HOOK.INDEX.PNG.PER'] ]
+      features += self.__get_features(self.numbers(), 0, 0, 'number',
+                                      'LOCAL.CONT.HOOK.INDEX.PNG.NUM')
+      features += self.__get_features(self.persons(), 0, 0, 'person',
+                                      'LOCAL.CONT.HOOK.INDEX.PNG.PER')
 
     # Gender
-    values = ''
-    for g in self.genders():
-      if values:
-        values += ';'
-      values += g[0] + '|' + g[0]
-
-    if values:
-      features += [ ['gender', values, 'LOCAL.CONT.HOOK.INDEX.PNG.GEND'] ]
+    features += self.__get_features(self.genders(), 0, 0, 'gender',
+                                    'LOCAL.CONT.HOOK.INDEX.PNG.GEND')
 
     # Case patterns
-    values = ''
-    for p in self.patterns():
-      if values:
-        values += ';'
-      if p[2]:
-        values += p[0] + '|' + p[1]
+    features += self.__get_features(self.patterns(), 0, 1,
+                                    'argument structure', '')
 
-    if values:
-      features += [ ['argument structure', values, ''] ]
-    
     # Form
-    values = ''
-    for f in self.forms():
-      if values:
-        values += ';'
-      values += f[0] + '|' + f[0]
-
-    if values:
-      features += [ ['form', values, 'LOCAL.CAT.HEAD.FORM'] ]
+    features += self.__get_features(self.forms(), 0, 0, 'form',
+                                    'LOCAL.CAT.HEAD.FORM')
 
     # Tense
-    values = ''
-    for t in self.tenses():
-      if values:
-        values += ';'
-      values += t[0] + '|' + t[0]
-    
-    if values:
-      features += [ ['tense', values, 'LOCAL.CONT.HOOK.INDEX.E.TENSE'] ]
+    features += self.__get_features(self.tenses(), 0, 0, 'tense',
+                                    'LOCAL.CONT.HOOK.INDEX.E.TENSE')
 
     # Viewpoint Aspect
-    values = ''
-    for a in self.aspects():
-      if values:
-        values += ';'
-      values += a[0] + '|' + a[0]
-    
-    if values:
-      features += [ ['aspect', values, 'LOCAL.CONT.HOOK.INDEX.E.ASPECT'] ]
+    features += self.__get_features(self.aspects(), 0, 0, 'aspect',
+                                    'LOCAL.CONT.HOOK.INDEX.E.ASPECT')
 
     #Situation Aspect
-    values = ''
-    for s in self.situations():
-      if values:
-        values += ';'
-      values += s[0] + '|' + s[0]
-    
-    if values:
-      features += [ ['situation', values, 'LOCAL.CONT.HOOK.INDEX.E.SITUATION'] ]
+    features += self.__get_features(self.situations(), 0, 0, 'situation',
+                                    'LOCAL.CONT.HOOK.INDEX.E.SITUATION')
 
     # Direction
-    if self.get_full('scale1_feat1_name'):
+    if self.has_dirinv():
       features += [ ['direction',
                      'dir|direct;inv|inverse',
                      'LOCAL.CAT.HEAD.DIRECTION'] ]
 
     # Negaton
-    if self.get_full('infl-neg'):
+    if 'infl-neg' in self.choices:
       features += [ ['negation', 'plus|plus', '' ] ]
 
     # Questions
-    if self.get_full('q-infl'):
+    if 'q-infl' in self.choices:
       features += [ ['question', 'plus|plus', '' ] ]
 
     # Argument Optionality
-    if self.get_full('subj-drop') or self.get_full('obj-drop'):
+    if 'subj-drop' in self.choices or 'obj-drop' in self.choices:
       features +=[['OPT', 'plus|plus;minus|minus', '']]
-    
+
+    perm_notperm_string = 'permitted|permitted;not-permitted|not-permitted'
     # Overt Argument
-    if  self.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and self.get_full('obj-mark-drop') == 'obj-mark-drop-req':
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
-    elif self.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-not' and self.get_full('obj-mark-drop') == 'obj-mark-drop-req':
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
-    elif self.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-not' and self.get_full('subj-mark-drop') == 'subj-mark-drop-req':
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
-    elif self.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-not' and self.get_full('obj-mark-drop') == 'obj-mark-drop-opt' :
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
-    elif self.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-not' and self.get_full('subj-mark-drop') == 'subj-mark-drop-opt' :
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
-    elif  self.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and self.get_full('subj-mark-drop') == 'subj-mark-drop-req':
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
+    if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
+       self.get('obj-mark-drop') == 'obj-mark-drop-req':
+      features += [['overt-arg', perm_notperm_string, '']]
+    elif self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
+         self.get('obj-mark-drop') == 'obj-mark-drop-req':
+      features += [['overt-arg', perm_notperm_string, '']]
+    elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and \
+         self.get('subj-mark-drop') == 'subj-mark-drop-req':
+      features += [['overt-arg', perm_notperm_string, '']]
+    elif self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
+         self.get('obj-mark-drop') == 'obj-mark-drop-opt' :
+      features += [['overt-arg', perm_notperm_string, '']]
+    elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and \
+         self.get('subj-mark-drop') == 'subj-mark-drop-opt' :
+      features += [['overt-arg', perm_notperm_string, '']]
+    elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and \
+         self.get('subj-mark-drop') == 'subj-mark-drop-req':
+      features += [['overt-arg', perm_notperm_string, '']]
 
     # Dropped Argument
-    if self.get_full('obj-mark-drop')== 'obj-mark-drop-not' and self.get_full('obj-mark-no-drop')== 'obj-mark-no-drop-req':
-      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
+    if self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
+       self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+      features += [['dropped-arg', perm_notperm_string,'']]
+    elif self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
+         self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt':
+      features += [['dropped-arg', perm_notperm_string,'']]
+    elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
+         self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+      features += [['dropped-arg', perm_notperm_string,'']]
+    elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
+         self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt':
+      features += [['dropped-arg', perm_notperm_string,'']]
 
-    elif self.get_full('obj-mark-drop')== 'obj-mark-drop-not' and self.get_full('obj-mark-no-drop')== 'obj-mark-no-drop-opt':
-      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
+    for feature in self.get('feature'):
+      feat_name = feature['name']
+      feat_type = feature['type']
 
-    elif self.get_full('subj-mark-drop')== 'subj-mark-drop-not' and self.get_full('subj-mark-no-drop')== 'subj-mark-no-drop-req':
-      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
-
-    elif self.get_full('subj-mark-drop')== 'subj-mark-drop-not' and self.get_full('subj-mark-no-drop')== 'subj-mark-no-drop-opt':
-      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
-
-    # Other features
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('feature')
-    while self.iter_valid():
-      feat = self.get('name')
-      type = self.get('type')
-      values = ''
-
-      self.iter_begin('value')
-      while self.iter_valid():
-        val = self.get('name')
-
-        if values:
-          values += ';'
-        values += val + '|' + val
-        
-        self.iter_next()
-      self.iter_end()
+      values = ';'.join([val['name'] + '|' + val['name']
+                         for val in feature['value']])
 
       geom = ''
-      if type == 'head':
-        geom = 'LOCAL.CAT.HEAD.' + feat.upper()
+      if feat_type == 'head':
+        geom = 'LOCAL.CAT.HEAD.' + feat_name.upper()
       else:
-        geom = 'LOCAL.CONT.HOOK.INDEX.PNG.' + feat.upper()
+        geom = 'LOCAL.CONT.HOOK.INDEX.PNG.' + feat_name.upper()
 
       if values:
         features += [ [feat, values, geom] ]
-      
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
 
     return features
-    
+
 
   ######################################################################
   # Conversion methods: each of these functions assumes the choices
@@ -1284,8 +1233,8 @@ class ChoicesFile:
         ques = 'q-inv'
       if ques != 'int':
         self.set(ques, c[0])
-          self.set('other-slot', c[1])
-          self.iter_next()
+        self.set('other-slot', c[1])
+        self.iter_next()
         self.iter_end()
 
         self.iter_next()

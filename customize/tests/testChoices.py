@@ -57,6 +57,55 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         self.assertEqual(c.parse_choices(['abc2_def=DEF2', 'abc1_def=DEF1']),
                          {'abc': [{'def':'DEF1'}, {'def':'DEF2'}]})
 
+class TestChoicesDerivedValueFunctions(unittest.TestCase):
+    def setUp(self):
+        self.c = customize.choices.ChoicesFile()
+
+    def test_has_case(self):
+        feat = {'name':'case', 'value':'abc'}
+        self.assertTrue(self.c.has_case(feat, 'abc'))
+        self.assertTrue(self.c.has_case(feat, ''))
+        self.assertFalse(self.c.has_case(feat, 'def'))
+
+    def test_has_noun_case(self):
+        pass
+    def test_has_adp_case(self):
+        pass
+    def test_has_optadp_case(self):
+        pass
+    def test_has_mixed_case(self):
+        pass
+    def test_case_head(self):
+        pass
+    def test_has_dirinv(self):
+        pass
+    def test_has_SCARGS(self):
+        pass
+    def test_cases(self):
+        pass
+    def test_patterns(self):
+        pass
+    def test_numbers(self):
+        pass
+    def test_persons(self):
+        pass
+    def test_pernums(self):
+        pass
+    def test_genders(self):
+        pass
+    def test_forms(self):
+        pass
+    def test_tenses(self):
+        pass
+    def test_aspects(self):
+        pass
+    def test_situations(self):
+        pass
+    def test_types(self):
+        pass
+    def test_features(self):
+        pass
+
 class TestExampleChoicesFiles(unittest.TestCase):
     def setUp(self):
 #        self.ch = customize.choices.ChoicesFile()
