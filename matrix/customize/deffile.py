@@ -185,8 +185,9 @@ HTML_postbody = '''</body>
 
 # Return an HTML <input> tag with the specified attributes and
 # surrounding text
+#HERE 10/5
 def html_input(errors, type, name, value, checked, before, after,
-               size = '', onclick = '', disabled = False):
+               size = '', action = '', disabled = False):
   if value:
     value = ' value="' + value + '"'
 
@@ -197,8 +198,8 @@ def html_input(errors, type, name, value, checked, before, after,
   if size:
     size = ' size="' + size + '"'
 
-  if onclick:
-    onclick = ' onclick="' + onclick + '"'
+  if action:
+    action = ' onclick="' + action + '"'
 
   dsabld = ''
   if disabled:
@@ -211,11 +212,11 @@ def html_input(errors, type, name, value, checked, before, after,
 
   return '%s%s<input type="%s" name="%s"%s%s%s%s%s>%s' % \
          (before, asterisk, type, name, value, chkd, size, dsabld,
-          onclick, after)
+          action, after)
 
 
 # Return an HTML <select> tag with the specified name
-def html_select(errors, name, multi, onfocus = ''):
+def html_select(errors, name, multi, onfocus = '', action = ''):
   asterisk = ''
   if name and errors.has_key(name):
     asterisk = '<span class="error" title="%s">*</span>' % \
@@ -225,11 +226,14 @@ def html_select(errors, name, multi, onfocus = ''):
   if multi:
     multi_attr = ' class="multi"'
 
-  if onfocus:
+  if onfocus:   
     onfocus = ' onfocus="' + onfocus + '"'
 
-  return '%s<select name="%s"%s%s>' % \
-         (asterisk, name, multi_attr, onfocus)
+ # if action:  #test
+ #   action = ' onchange="' + action + '"'
+
+  return '%s<select name="%s"%s%s%s>' % \
+         (asterisk, name, multi_attr, onfocus, action)
 
 
 # Return an HTML <option> tag with the specified attributes and
@@ -527,7 +531,16 @@ class MatrixDefFile:
         html += af + '\n'
       elif word[0] in ['Select', 'MultiSelect']:
         multi = (word[0] == 'MultiSelect')
-        (vn, fn, bf, af) = word[1:]
+        (vn, fn, bf, af) = word[1:] #variablename, friendlyname, beforestuff, afterstuff
+
+        dnamesplit = vn.rsplit('-')
+        vtest = dnamesplit[0]
+        dim = ''
+        if vtest == 'dim':
+          dim = dnamesplit[1]
+          print vtest
+          print dim
+  
         vn = prefix + vn
 
         html += bf + '\n'
@@ -540,6 +553,7 @@ class MatrixDefFile:
         fill_arg1 = '' 
         fill_arg2 = ''
         fillstring = ''
+        action = '' #test
 
         if lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
@@ -575,8 +589,13 @@ class MatrixDefFile:
               fillstring += 'fill_numbers(\'' + vn + '\')'
             elif fill_type == 'filltypes':
               fillstring += 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\', \'' + prefix + '\')'
+              
+#            if dim:
+ #             action =   #test - needs rethinking - still cannot work out the submit function
+  #            html += html_select(errors, vn, multi, fillstring, action) + '\n' #test - need to change above to produce new argument
+  #         else:
+            html += html_select(errors, vn, multi, fillstring) + '\n' #test - need to change above to produce new argument
 
-            html += html_select(errors, vn, multi, fillstring) + '\n'
             html += html_option(errors, '', False, '') + '\n'
 
             if choices.is_set_full(vn):
@@ -730,7 +749,7 @@ class MatrixDefFile:
              js_array([c for c in choices.patterns() if not c[2]]),
              js_array([c for c in choices.patterns() if c[2]]),
              js_array([n for n in choices.numbers()]),
-             js_array([t for t in choices.types()]))
+             js_array(choices.types()))
 
       print HTML_prebody
       print '<h2>' + section_friendly + '</h2>'

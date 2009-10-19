@@ -895,13 +895,10 @@ class ChoicesFile:
     self.iter_reset()
 
     for c in ['noun', 'verb', 'aux', 'det']:
-      print c
       dim = self.get(c + '-dim').split(', ')
-      print dim
       dimvalues = []
 
       for d in dim:  # for each feature dimension
-        print d
         for f in features:  # look through the features array
           valwithfn = []
           if f[0]== d:  # if the features match
@@ -912,7 +909,6 @@ class ChoicesFile:
               #note: this uses the friendly name as the basis for the feature - may need to revisit that
       
       for v in dimvalues:
-        print 'v: ' + v
         if c != 'verb':
           lextype_name = v + '-' + c + '-lex'
           types += [ [lextype_name, c] ]

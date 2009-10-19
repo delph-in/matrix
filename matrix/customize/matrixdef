@@ -445,6 +445,16 @@ Label "<b>finite</b>:"
 Label "</div>"
 Label "</div>"
 
+Label "<h3>Type Generation</h3>"
+Label "<div style=\"padding-left: 16px\">"
+
+Label "<p>If you would like to have verb types automatically generated based on all of the values of any features on this page, select those features below."
+
+MultiSelect dim-verb "Feature dimensions for verb type generation" "<p>Select feature dimension(s) for auto-generating verb types: " ""
+fillnames case|number|person|negation
+
+Label "</div>" 
+
 Label "<h4>References</h4>"
 Label "<font size=\"2\">"
 Label "<p>Bybee, Joan L. 2003. Aspect. In: Frawley, W.J. (ed.) International Encyclopedia of Linguistics. Second Edition. Oxford: OUP. 157-158."
@@ -589,7 +599,7 @@ Separator
 
 Label "<h3>Noun Types</h3>"
 
-MultiSelect noun-dim "Feature dimensions for noun type generation" "Select feature dimension(s) for auto-generating noun types: " ""
+MultiSelect dim-noun "Feature dimensions for noun type generation" "Select feature dimension(s) for auto-generating noun types: " ""
 fillnames 
 
 Label "<p>Add additional noun types:</p>"
@@ -632,7 +642,7 @@ Label "<h3>Verb Types</h3>"
 
 Label "Note that transitive and intransitive verb types are automatically generated as well as subtypes cross-classified with any chosen dimensions.</p>"
 
-MultiSelect verb-dim "Feature dimensions for verb type generation" "Select feature dimension(s) for auto-generating verb types: " ""
+MultiSelect dim-verb "Feature dimensions for verb type generation" "Select feature dimension(s) for auto-generating verb types: " ""
 fillnames case|form
 
 Label "<p>Add additional verb types:</p>"
@@ -674,7 +684,7 @@ Separator
 
 Label "<h3>Auxiliary Verb Types</h3>"
 
-MultiSelect aux-dim "Feature dimensions for auxiliary type generation" "Select feature dimension(s) for auto-generating general auxiliary types: " "<br><br>"
+MultiSelect dim-aux "Feature dimensions for auxiliary type generation" "Select feature dimension(s) for auto-generating general auxiliary types: " "<br><br>"
 fillnames case|form
 
 Label auxlabel "Add additional auxiliary types:<br>"
@@ -734,7 +744,7 @@ Separator
 
 Label "<h3>Determiner Types</h3>" 
 
-MultiSelect det-dim "Feature dimensions for determiner type generation" "Select feature dimension(s) for auto-generating determiner types: " ""
+MultiSelect dim-det "Feature dimensions for determiner type generation" "Select feature dimension(s) for auto-generating determiner types: " ""
 fillnames
 
 Label "<p>Add additional determiner types:</p>"
