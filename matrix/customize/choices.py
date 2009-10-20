@@ -871,8 +871,7 @@ class ChoicesFile:
 
   def types(self):
     """
-    Create and return a list containing type names. FIX - these are based on the 
-    choices file. Need to include required types and inferred types as well.
+    Create and return a list containing type names.
     This list consists of tuples:
     [type catname]
     Note that this assumes a strict naming convention for 
@@ -894,6 +893,10 @@ class ChoicesFile:
     state = self.iter_state()
     self.iter_reset()
 
+    #idea: for each feature-dim do a loop to create a dim-value entry and a c (category)
+    # unless it is a cat-dim to start with 
+    # this means to pull out the splitting of the word-dim and place it above
+    # also: change this to not rely on the friendly name - cahnge 1 -> 0?
     for c in ['noun', 'verb', 'aux', 'det']:
       dim = self.get(c + '-dim').split(', ')
       dimvalues = []
@@ -909,16 +912,10 @@ class ChoicesFile:
               #note: this uses the friendly name as the basis for the feature - may need to revisit that
       
       for v in dimvalues:
-        if c != 'verb':
-          lextype_name = v + '-' + c + '-lex'
-          types += [ [lextype_name, c] ]
 
-        elif c == 'verb':
-          lextype_name = v + '+intransitive' + '-' + c + '-lex'
-          types += [ [lextype_name, c] ]
-          lextype_name = v + '+transitive'+ '-' + c + '-lex'
-          types += [ [lextype_name, c] ]            
-
+        lextype_name = v + '-' + c + '-lex'
+        types += [ [lextype_name, c] ]
+           
       self.iter_begin(c)
       while self.iter_valid():
         lextype_name = self.get('name') + '-' + c + '-lex'

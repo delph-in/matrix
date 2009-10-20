@@ -145,6 +145,14 @@ EndIter person-subtype
 
 Label "</div>"
 
+Separator
+
+Label "<h3>Type Generation</h3>"
+Label "<div style=\"padding-left: 16px\">"
+
+Check per-dim "Feature dimension for noun types" "" "Generate noun types automatically based on all of the values defined for the feature on this page."
+
+Label "</div>" 
 
 Section gender "Gender"
 
@@ -445,12 +453,14 @@ Label "<b>finite</b>:"
 Label "</div>"
 Label "</div>"
 
+Separator
+
 Label "<h3>Type Generation</h3>"
 Label "<div style=\"padding-left: 16px\">"
 
 Label "<p>If you would like to have verb types automatically generated based on all of the values of any features on this page, select those features below."
 
-MultiSelect dim-verb "Feature dimensions for verb type generation" "<p>Select feature dimension(s) for auto-generating verb types: " ""
+MultiSelect verb-dim "Feature dimensions for verb type generation" "<p>Select feature dimension(s) for auto-generating verb types: " ""
 fillnames case|number|person|negation
 
 Label "</div>" 
