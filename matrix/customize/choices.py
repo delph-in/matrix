@@ -882,12 +882,11 @@ class ChoicesFile:
     if self.get('has-aux') == 'yes':
       types += [ ['aux-lex', 'aux'], ['withpred-aux-lex', 'aux'], ['nopred-aux-lex', 'aux'], ['main-verb-lex', 'verb']]
 
-#if for cat ==  noun verb aux etc. 
+#for cat ==  noun verb aux etc. 
 #if cat-dim exists
 # dimfeature = get value of cat-dim
 # dimvalues() = every value of dimfeature
 # create type entries for each dimvalue
-#if verb cross-classify with intrans and trans
     features = self.features()   
 
     state = self.iter_state()
@@ -896,7 +895,6 @@ class ChoicesFile:
     #idea: for each feature-dim do a loop to create a dim-value entry and a c (category)
     # unless it is a cat-dim to start with 
     # this means to pull out the splitting of the word-dim and place it above
-    # also: change this to not rely on the friendly name - cahnge 1 -> 0?
     for c in ['noun', 'verb', 'aux', 'det']:
       dim = self.get(c + '-dim').split(', ')
       dimvalues = []
@@ -908,8 +906,7 @@ class ChoicesFile:
             valwithfn += f[1].split(';') #split out the values (result: valuename|frendlyname)
             for w in valwithfn:
               valuesplit = w.split('|') #split apart the two name versions
-              dimvalues += [ valuesplit[1]] #make a list of the friendly names
-              #note: this uses the friendly name as the basis for the feature - may need to revisit that
+              dimvalues += [ valuesplit[0]] #make a list of the value names
       
       for v in dimvalues:
 
@@ -936,6 +933,7 @@ class ChoicesFile:
   #   more complex treatment that just FEAT=VAL (e.g. negation).  The
   #   list of values is separated by semicolons, and each item in the
   #   list is a pair of the form 'name|friendly name'.
+#test - added another item to the list = category (noun or verb)
   def features(self):
     features = []
 
@@ -947,7 +945,7 @@ class ChoicesFile:
       values += c[0] + '|' + c[1]
 
     if values:
-      features += [ ['case', values, 'LOCAL.CAT.HEAD.CASE'] ]
+      features += [ ['case', values, 'LOCAL.CAT.HEAD.CASE', 'noun'] ]
 
     # Number, Person, and Pernum
     pernums = self.pernums()
@@ -959,7 +957,7 @@ class ChoicesFile:
         values += pn[0] + '|' + pn[0]
 
       if values:
-        features += [ ['pernum', values, 'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM'] ]
+        features += [ ['pernum', values, 'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM', 'noun'] ]
     else:
       values = ''
       for n in self.numbers():
@@ -968,7 +966,7 @@ class ChoicesFile:
         values += n[0] + '|' + n[0]
 
       if values:
-        features += [ ['number', values, 'LOCAL.CONT.HOOK.INDEX.PNG.NUM'] ]
+        features += [ ['number', values, 'LOCAL.CONT.HOOK.INDEX.PNG.NUM', 'noun'] ]
 
       values = ''
       for p in self.persons():
@@ -977,7 +975,7 @@ class ChoicesFile:
         values += p[0] + '|' + p[0]
 
       if values:
-        features += [ ['person', values, 'LOCAL.CONT.HOOK.INDEX.PNG.PER'] ]
+        features += [ ['person', values, 'LOCAL.CONT.HOOK.INDEX.PNG.PER', 'noun'] ]
 
     # Gender
     values = ''
@@ -987,7 +985,7 @@ class ChoicesFile:
       values += g[0] + '|' + g[0]
 
     if values:
-      features += [ ['gender', values, 'LOCAL.CONT.HOOK.INDEX.PNG.GEND'] ]
+      features += [ ['gender', values, 'LOCAL.CONT.HOOK.INDEX.PNG.GEND', 'noun'] ]
 
     # Case patterns
     values = ''
@@ -998,7 +996,7 @@ class ChoicesFile:
         values += p[0] + '|' + p[1]
 
     if values:
-      features += [ ['argument structure', values, ''] ]
+      features += [ ['argument structure', values, '', 'noun'] ]
     
     # Form
     values = ''
@@ -1008,7 +1006,8 @@ class ChoicesFile:
       values += f[0] + '|' + f[0]
 
     if values:
-      features += [ ['form', values, 'LOCAL.CAT.HEAD.FORM'] ]
+      features += [ ['form', values, 'LOCAL.CAT.HEAD.FORM', 'verb'] ]
+#test: form might need to be 'both'
 
     # Tense
     values = ''
@@ -1018,7 +1017,7 @@ class ChoicesFile:
       values += t[0] + '|' + t[0]
     
     if values:
-      features += [ ['tense', values, 'LOCAL.CONT.HOOK.INDEX.E.TENSE'] ]
+      features += [ ['tense', values, 'LOCAL.CONT.HOOK.INDEX.E.TENSE', 'verb'] ]
 
     # Viewpoint Aspect
     values = ''
@@ -1028,7 +1027,7 @@ class ChoicesFile:
       values += a[0] + '|' + a[0]
     
     if values:
-      features += [ ['aspect', values, 'LOCAL.CONT.HOOK.INDEX.E.ASPECT'] ]
+      features += [ ['aspect', values, 'LOCAL.CONT.HOOK.INDEX.E.ASPECT', 'verb'] ]
 
     #Situation Aspect
     values = ''
@@ -1038,7 +1037,7 @@ class ChoicesFile:
       values += s[0] + '|' + s[0]
     
     if values:
-      features += [ ['situation', values, 'LOCAL.CONT.HOOK.INDEX.E.SITUATION'] ]
+      features += [ ['situation', values, 'LOCAL.CONT.HOOK.INDEX.E.SITUATION', 'verb'] ]
 
     # Direction
     if self.get_full('scale1_feat1_name'):
@@ -1048,7 +1047,8 @@ class ChoicesFile:
 
     # Negaton
     if self.get_full('infl-neg'):
-      features += [ ['negation', 'plus|plus', '' ] ]
+      features += [ ['negation', 'plus|plus', '', 'verb'] ]
+#test - note this reflects no constituent negation
 
     # Other features
     state = self.iter_state()
@@ -1079,7 +1079,7 @@ class ChoicesFile:
 
       if values:
         features += [ [feat, values, geom] ]
-      
+#test - this needs special attention but is ignored now      
       self.iter_next()
     self.iter_end()
 

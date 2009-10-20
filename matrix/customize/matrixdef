@@ -174,6 +174,15 @@ BeginIter gender{i} "a Gender"
 
 EndIter gender
 
+Separator
+
+Label "<h3>Type Generation</h3>"
+Label "<div style=\"padding-left: 16px\">"
+
+Check gen-dim "Feature dimension for noun types" "" "Generate noun types automatically based on all of the values defined for the feature on this page."
+
+Label "</div>" 
+
 Label "<h4>References</h4>"
 Label "<font size=\"2\">"
 Label "<p>Hockett, Charles F. 1958. A Course in Modern Linguistics. New York: Macmillan.</p>"
@@ -603,16 +612,12 @@ Radio q-inv-verb "Inverted verb in questions" "" ""
 
 Section lex-types "Lexical Types"
 
-Label "<p>On this page <span class=\"dfn\">lexical types</span> may be defined. Types can be auto-generated for feature based dimensions. For these types, the feature is specified on the head. In addition, if more than one dimension is selected subtypes are generated, cross-classifying the selected dimensions. Additional types may also be defined inheriting from any defined or auto-generated type.</p>"
-
+Label "<p>On this page <span class=\"dfn\">lexical types</span> may be defined."
 Separator
 
 Label "<h3>Noun Types</h3>"
 
-MultiSelect dim-noun "Feature dimensions for noun type generation" "Select feature dimension(s) for auto-generating noun types: " ""
-fillnames 
-
-Label "<p>Add additional noun types:</p>"
+Label "<p>Add noun types:</p>"
 
 BeginIter noun{i} "a Noun Type" 1
 
@@ -650,12 +655,7 @@ Separator
 
 Label "<h3>Verb Types</h3>"
 
-Label "Note that transitive and intransitive verb types are automatically generated as well as subtypes cross-classified with any chosen dimensions.</p>"
-
-MultiSelect dim-verb "Feature dimensions for verb type generation" "Select feature dimension(s) for auto-generating verb types: " ""
-fillnames case|form
-
-Label "<p>Add additional verb types:</p>"
+Label "<p>Add verb types:</p>"
 
 BeginIter verb{i} "a Verb Type"
 
@@ -694,10 +694,7 @@ Separator
 
 Label "<h3>Auxiliary Verb Types</h3>"
 
-MultiSelect dim-aux "Feature dimensions for auxiliary type generation" "Select feature dimension(s) for auto-generating general auxiliary types: " "<br><br>"
-fillnames case|form
-
-Label auxlabel "Add additional auxiliary types:<br>"
+Label auxlabel "Add auxiliary types:<br>"
 
 Label "<p>Note that auxiliaries may contribute a independent predicate, e.g., English modal <i>can</i>. These auxiliaries should inherit from withpred-aux-lex. If you define a type that contributes a predicate, you may also specify semantic feature values on the auxiliary, if desired. Alternatively, auxiliaries may contribute no predicate of their own, e.g., English auxiliary <i>be</i> and should inherit from nopred-aux-lex.</p>" 
 
@@ -754,10 +751,7 @@ Separator
 
 Label "<h3>Determiner Types</h3>" 
 
-MultiSelect dim-det "Feature dimensions for determiner type generation" "Select feature dimension(s) for auto-generating determiner types: " ""
-fillnames
-
-Label "<p>Add additional determiner types:</p>"
+Label "<p>Add determiner types:</p>"
 
 BeginIter det{i} "a Determiner"
 

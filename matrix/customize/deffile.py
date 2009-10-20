@@ -531,11 +531,11 @@ class MatrixDefFile:
         (vn, fn, bf, af) = word[1:] #variablename, friendlyname, beforestuff, afterstuff
 
         dnamesplit = vn.rsplit('-')
-        vtest = dnamesplit[0]
+        dmark = dnamesplit[0]
         dim = ''
-        if vtest == 'dim':
+        if dmark == 'dim':
           dim = dnamesplit[1]
-          print vtest
+          print dmark
           print dim
   
         vn = prefix + vn
