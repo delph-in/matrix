@@ -2,6 +2,19 @@ import unittest
 import customize.choices
 
 class TestChoicesFileParsingFunctions(unittest.TestCase):
+    def test_get(self):
+        c = customize.choices.ChoicesFile() # no file loaded
+        c.parse_choices(simple_choices_file)
+        self.assertEqual(c.get('NO_SUCH'), [])
+        self.assertEqual(c.get('language'), 'Simple')
+        self.assertEqual(c.get('iso-code'), 'smp')
+        self.assertEqual(c.get('verb1_name'), 'testverb')
+        self.assertEqual(c.get('verb2_name'), 'testverb2')
+        self.assertEqual(c.get('verb1_stem1_orth'), 'test')
+        self.assertEqual(c.get('verb1_stem1_pred'), 'test_v_1_rel')
+        self.assertEqual(c.get('verb2_stem1_orth'), 'test')
+        self.assertEqual(c.get('verb2_stem1_pred'), 'test_v_2_rel')
+
     def test_split_choice_attribute(self):
         c = customize.choices.ChoicesFile() # no file loaded
         self.assertEqual(c.split_choice_attribute(''), [])

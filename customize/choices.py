@@ -13,10 +13,10 @@ import sys
 # Errors
 
 class ChoicesFileParseError(Exception):
-    def __init__(self, msg=''):
-        self.msg = msg
-    def __str__(self):
-        return repr(self.msg)
+  def __init__(self, msg=''):
+    self.msg = msg
+  def __str__(self):
+    return repr(self.msg)
 
 ######################################################################
 # ChoicesFile is a class that wraps the choices file, a list of
@@ -44,6 +44,11 @@ class ChoicesFile:
           f.close()
       except IOError:
         pass # TODO: we should really be logging these
+
+  # A __getitem__ method so that ChoicesFile can be used with brackets,
+  # e.g., ch['language'].
+  def __getitem__(self, i):
+    return self.choices[i]
 
   ############################################################################
   ### Choices file parsing functions
@@ -125,13 +130,22 @@ class ChoicesFile:
   ### Choices file access functions
 
   def get(self, key):
-    return self.choices.get(key, [])
+    d = self.choices
+    a = self.split_choice_attribute(key)
+    for attr in [[a[i], a[i+1]] for i in range(0,len(a)-1,2)] + [[a[-1]]]:
+      if len(attr) == 2:
+        if attr[0] in d and int(attr[1]) - 1 < len(d[attr[0]]):
+          d = d[attr[0]][int(attr[1]) - 1]
+        else:
+          return []
+      else:
+        return d.get(attr[0], [])
 
   ############################################################################
   ### Up-revisioning handler
 
   def uprev(self):
-      if self.is_set('version'):
+      if 'version' in self.choices:
         version = int(self.get('version'))
       else:
         version = 0
@@ -562,8 +576,8 @@ class ChoicesFile:
     """
     result = False
 
-    for verb in self.choices['verb']:
-      for feat in verb['feat']:
+    for verb in self.get('verb'):
+      for feat in verb.get('feat', []):
         result |= feat['head'] in ('higher', 'lower')
 
     for verb_slot in self.get('verb-slot'):
@@ -581,7 +595,7 @@ class ChoicesFile:
   #     [canonical name, friendly name, abbreviation]
   def cases(self):
     # first, make two lists: the canonical and user-provided case names
-    cm = self.choices['case-marking']
+    cm = self.get('case-marking')
     canon = []
     user = []
     if cm == 'nom-acc':
@@ -633,10 +647,9 @@ class ChoicesFile:
       user.append(self.choices[cm + '-o-case-name'])
 
     # fill in any additional cases the user has specified
-    if 'case' in self.choices:
-      for case in self.choices['case']:
-        canon.append(case['name'])
-        user.append(case['name'])
+    for case in self.get('case'):
+      canon.append(case['name'])
+      user.append(case['name'])
 
     # if possible without causing collisions, shorten the case names to
     # three-letter abbreviations; otherwise, just use the names as the
@@ -671,7 +684,7 @@ class ChoicesFile:
   #   fourth argument is true if the verb follows a direct-inverse
   #   marking pattern.
   def patterns(self):
-    cm = self.choices['case-marking']
+    cm = self.get('case-marking')
     cases = self.cases()
 
     patterns = []
@@ -764,7 +777,7 @@ class ChoicesFile:
   def persons(self):
     persons = []
 
-    person = self.choices['person']
+    person = self.get('person')
     if person == '1-2-3':
       persons += [['1st', 'person']]
       persons += [['2nd', 'person']]
@@ -797,8 +810,8 @@ class ChoicesFile:
   def pernums(self):
     pernums = []
 
-    fp = self.choices['first-person']
-    if fp not in ['', 'none']:
+    fp = self.get('first-person')
+    if fp and fp != 'none':
       num_leaves = []
       num_supers = []
       for n in self.numbers():
@@ -868,8 +881,7 @@ class ChoicesFile:
   def forms(self):
     forms = []
 
-    if self.choices['has-aux'] == 'yes' or \
-            self.choices['noaux-fin-nf'] == 'no':
+    if self.get('has-aux') == 'yes' or self.get('noaux-fin-nf') == 'no':
       forms += [ ['finite'], ['nonfinite'] ]
       for p in ['nf', 'fin']:
         for p_sf in self.get(p + '-subform'):
@@ -885,7 +897,7 @@ class ChoicesFile:
   def tenses(self):
     tenses = []
 
-    tdefn = self.choices['tense-definition']
+    tdefn = self.get('tense-definition')
 
     if tdefn == 'choose':
       for ten in ('past', 'present', 'future', 'nonpast', 'nonfuture'):
@@ -1052,7 +1064,7 @@ class ChoicesFile:
         geom = 'LOCAL.CONT.HOOK.INDEX.PNG.' + feat_name.upper()
 
       if values:
-        features += [ [feat, values, geom] ]
+        features += [ [feat_name, values, geom] ]
 
     return features
 
