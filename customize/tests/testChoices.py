@@ -15,18 +15,20 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         self.assertEqual(c.get('verb2_stem1_orth'), 'test')
         self.assertEqual(c.get('verb2_stem1_pred'), 'test_v_2_rel')
 
-    def test_split_choice_attribute(self):
+    def test_split_variable_key(self):
         c = customize.choices.ChoicesFile() # no file loaded
-        self.assertEqual(c.split_choice_attribute(''), [])
-        self.assertEqual(c.split_choice_attribute('abc'),
+        self.assertEqual(c.split_variable_key(''), [])
+        self.assertEqual(c.split_variable_key('abc'),
                          ['abc'])
-        self.assertEqual(c.split_choice_attribute('abc_def'),
+        self.assertEqual(c.split_variable_key('abc_def'),
                          ['abc', 'def'])
-        self.assertEqual(c.split_choice_attribute('abc_def1_ghi'),
+        self.assertEqual(c.split_variable_key('ab-c_d3ef'),
+                         ['ab-c', 'd3ef'])
+        self.assertEqual(c.split_variable_key('abc_def1_ghi'),
                          ['abc', 'def', '1', 'ghi'])
-        self.assertEqual(c.split_choice_attribute('abc_def1'),
-                         ['abc', 'def1'])
-        self.assertEqual(c.split_choice_attribute('abc32_def1_ghi'),
+        self.assertEqual(c.split_variable_key('abc_def1'),
+                         ['abc', 'def', '1'])
+        self.assertEqual(c.split_variable_key('abc32_def1_ghi'),
                          ['abc', '32', 'def', '1', 'ghi'])
 
     def test_parse_choice(self):
@@ -127,13 +129,13 @@ class TestExampleChoicesFiles(unittest.TestCase):
 ##############################################################################
 #### Choices File Strings
 
-empty_choices_file = ''
+empty_choices_file = ['']
 
 minimal_choices_file = '''version=18
 
 section=general
 language=Minimal
-archive=no'''
+archive=no'''.splitlines()
 
 simple_choices_file = '''version=18
 
@@ -185,7 +187,7 @@ section=lexicon
     verb2_stem1_orth=test
     verb2_stem1_pred=test_v_2_rel
 
-section=test-sentences'''
+section=test-sentences'''.splitlines()
 
 if __name__ == '__main__':
     unittest.main()

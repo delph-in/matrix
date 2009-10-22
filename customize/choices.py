@@ -57,28 +57,30 @@ class ChoicesFile:
     for line in [l.strip() for l in choice_lines if l.strip() != '']:
       try:
         (key, value) = line.split('=',1)
-        if key == 'section':
+        print key, value
+        variable_subkeys = self.split_variable_key(key)
+        if key == 'section' or variable_subkeys == []:
             continue
-        choice = self.parse_choice(self.split_variable_key(key), value)
+        choice = self.parse_choice(variable_subkeys, value)
         choices = self.merge_choices(choices, choice)
       except ValueError:
         pass # TODO: log this!
     return choices
 
-  def parse_choice(self, variables, value):
+  def parse_choice(self, subkeys, value):
     """
     Using a list of variable names and a value, construct a data
     structure representing the choice from the choices file.
     """
-    if len(variables) == 0:
+    if len(subkeys) == 0:
       return value
-    key = variables.pop(0)
+    key = subkeys.pop(0)
     try:
       index = int(key)
       # if there was no ValueError, then we are parsing a list item
-      return ([None] * (index-1)) + [self.parse_choice(variables, value)]
+      return ([None] * (index-1)) + [self.parse_choice(subkeys, value)]
     except ValueError:
-      return {key: self.parse_choice(variables, value)}
+      return {key: self.parse_choice(subkeys, value)}
 
   # This function is an ugly mess. It should have less if-statements and
   # type-specific code paths. But for now it seems to work.
@@ -104,7 +106,8 @@ class ChoicesFile:
         else:
           choices[index] = self.merge_choices(choices[index], new_choice[-1])
       else:
-        raise ChoicesFileParseError('Variable is multiply defined.')
+          raise ChoicesFileParseError(
+                  'Variable is multiply defined: %s' % new_choice)
         # the following should be done with logging
         #  if sys.stdout.isatty() and self.is_set(key) and key != 'section':
         #    print 'WARNING: choices file defines multiple values for ' + key
@@ -112,7 +115,7 @@ class ChoicesFile:
       raise ChoicesFileParseError('Merge Error')
     return choices
 
-  var_delim_re = re.compile(r'(\d+)(?:_|$)')
+  var_delim_re = re.compile(r'(\d+)?(?:_|$)')
   def split_variable_key(self, key):
     """
     Split a compound variable key into a list of its component parts.
