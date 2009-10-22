@@ -57,11 +57,9 @@ class ChoicesFile:
     for line in [l.strip() for l in choice_lines if l.strip() != '']:
       try:
         (key, value) = line.split('=',1)
-        print key, value
-        variable_subkeys = self.split_variable_key(key)
-        if key == 'section' or variable_subkeys == []:
+        if key == 'section':
             continue
-        choice = self.parse_choice(variable_subkeys, value)
+        choice = self.parse_choice(self.split_variable_key(key), value)
         choices = self.merge_choices(choices, choice)
       except ValueError:
         pass # TODO: log this!
