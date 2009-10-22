@@ -45,6 +45,9 @@ class ChoicesFile:
       except IOError:
         pass # TODO: we should really be logging these
 
+    if choices_file: # don't uprev if we're creating an empty ChoicesFile
+      self.uprev()
+
   ############################################################################
   ### Choices file parsing functions
 

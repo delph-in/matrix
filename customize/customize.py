@@ -59,7 +59,7 @@ def get_name(label=None):
 
 def has_auxiliaries_p():
 
-  return ch.get_full('has-aux') == 'yes'
+  return ch.get('has-aux') == 'yes'
 
 # Returns the verb type for lexical/main verbs.
 def main_or_verb():
@@ -306,12 +306,12 @@ class Hierarchy:
 
 
 ######################################################################
-# customize_feature_values(type_name, pos, features, cases)
-#   In the current choices file context, go through the 'feat'
+# customize_feature_values(ch_dict, type_name, pos, features, cases)
+#   In the passed-in choices dictionary, go through the 'feat'
 #   iterator and specify the feature/value pairs found to the
 #   passed-in type.
 
-def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=None):
+def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None, tdlfile=None):
 
   if not features:
     features = ch.features()
@@ -334,10 +334,9 @@ def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=
   else:
     iter_feat = 'feat'
 
-  ch.iter_begin(iter_feat)
-  while ch.iter_valid():
-    n = ch.get('name')
-    v = ch.get('value').split(', ')
+  for feat in ch_dict.get(feat, []):
+    n = feat.get('name')
+    v = feat.get('value').split(', ')
 
     if n == 'case':
       v = [canon_to_abbr(c, cases) for c in v]
@@ -346,8 +345,7 @@ def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=
 
     # The 'head' choice only appears on verb slots, and allows the user
     # to specify features on the subject and object as well
-    h = ch.get('head')
-#    geom_prefix = pos_geom_prefix
+    h = feat.get('head')
     if h == 'subj':
       geom_prefix += 'LOCAL.CAT.VAL.SUBJ.FIRST.'
     elif h == 'obj':
@@ -474,10 +472,6 @@ def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=
     elif(n=='dropped-arg' and h == 'subj' and v[0] == 'not-permitted'):
       tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
 
-      
-    ch.iter_next()
-  ch.iter_end()
-
 
 ######################################################################
 # customize_case()
@@ -576,20 +570,16 @@ def customize_case_adpositions():
     # Lexical entries
     lexicon.add_literal(';;; Case-marking adpositions')
 
-    ch.iter_begin('adp')
-    while ch.iter_valid():
-      orth = ch.get('orth')
+    for adp in ch.get('adp'):
+      orth = adp.get('orth')
 
       # figure out the abbreviation for the case this adp marks
       cn = ''
       abbr = ''
-      ch.iter_begin('feat')
-      while ch.iter_valid():
-        if ch.get('name') == 'case':
-          cn = ch.get('value')
+      for feat in adp.get('feat', []):
+        if feat.get('name') == 'case':
+          cn = feat.get('value')
           break
-        ch.iter_next()
-      ch.iter_end()
 
       abbr = name_to_abbr(cn, cases)
 
@@ -599,18 +589,20 @@ def customize_case_adpositions():
                         [ STEM < "' + orth + '" > ].'
       lexicon.add(typedef)
 
-      customize_feature_values(adp_type, 'adp', tdlfile=lexicon)
-
-      ch.iter_next()
-    ch.iter_end()
+      customize_feature_values(adp, adp_type, 'adp', tdlfile=lexicon)
 
 
 def customize_case():
   customize_case_type()
 
 
+# Return the number of items in the direct-inverse scale
+def direct_inverse_scale_len():
+  return len(ch.get('scale'))
+
+
 def customize_direct_inverse():
-  if not ch.get_full('scale1_feat1_name'):
+  if not ch.get('scale1_feat1_name'):
     return
 
   mylang.add('verb :+ [ DIRECTION direction ].', section='addenda')
@@ -626,24 +618,11 @@ def customize_direct_inverse():
   cases = ch.cases()
   features = ch.features()
 
-  state = ch.iter_state()
-  ch.iter_reset()
-
   # Figure out which features are involved in the hierarchy
   names = []  # feature names
-  scale_max = 0
-  ch.iter_begin('scale')
-  while ch.iter_valid():
-    scale_max += 1
-
-    ch.iter_begin('feat')
-    while ch.iter_valid():
-      names.append(ch.get('name'))
-      ch.iter_next()
-    ch.iter_end()
-
-    ch.iter_next()
-  ch.iter_end()
+  for scale in ch.get('scale'):
+    for feat in scale.get('feat', []):
+      names.append(feat.get('name'))
 
   # Now pass through the scale, creating the direct-inverse hierarchy
   # pairwise
@@ -651,24 +630,21 @@ def customize_direct_inverse():
   mylang.add_literal(';;; Direct-inverse scale')
   supertype = 'dir-inv-scale'
   mylang.add(supertype + ' := canonical-synsem.')
-  for i in range(1, scale_max):
+
+
+  scale_len = direct_inverse_scale_len()
+  for i in range(0, scale_len - 1):
     values = {}  # for each feature, a set of values
 
-    ch.iter_begin('scale' + str(i))
-
     # get the features on the first scale entry in this range
-    ch.iter_begin('feat')
-    while ch.iter_valid():
-      name = ch.get('name')
+    for feat in ch.get('scale')[i].get('feat', []):
+      name = feat.get('name')
       if name not in values:
         values[name] = set()
-      values[name].add(ch.get('value'))
-
-      ch.iter_next()
-    ch.iter_end()
+      values[name].add(feat.get('value'))
 
     # create the left type in the pair
-    type = 'dir-inv-' + str(i)
+    type = 'dir-inv-' + str(i+1)
 
     mylang.add(type + ' := ' + supertype + '.')
 
@@ -690,28 +666,16 @@ def customize_direct_inverse():
       if value != n:  # don't bother if it doesn't constrain anything
         mylang.add(type + ' := [ ' + geom + ' ' + value + ' ].')
 
-    # continuing 'scale'
+    # rest of the scale
     values = {}
-    ch.iter_next()
-    while ch.iter_valid():
-      ch.iter_begin('feat')
-      while ch.iter_valid():
-        name = ch.get('name')
-        if name not in values:
-          values[name] = set()
-        values[name].add(ch.get('value'))
-
-        ch.iter_next()
-      ch.iter_end()
-
-      ch.iter_next()
-    ch.iter_end()
-
-    if i == scale_max:
-      break
+    for feat in ch.get('scale')[i+1:].get('feat', []):
+      name = feat.get('name')
+      if name not in values:
+        values[name] = set()
+      values[name].add(feat.get('value'))
 
     # create the right type in the pair
-    type = 'dir-inv-non-' + str(i)
+    type = 'dir-inv-non-' + str(i+1)
 
     mylang.add(type + ' := ' + supertype + '.')
 
@@ -734,25 +698,6 @@ def customize_direct_inverse():
         mylang.add(type + ' := [ ' + geom + ' ' + value + ' ].')
 
     supertype = type
-
-  ch.iter_set_state(state)
-
-
-# Return the number of items in the direct-inverse scale
-def direct_inverse_scale_size():
-  state = ch.iter_state()
-  ch.iter_reset()
-
-  scale_size = 0
-  ch.iter_begin('scale')
-  while ch.iter_valid():
-    scale_size += 1
-    ch.iter_next()
-  ch.iter_end()
-
-  ch.iter_set_state(state)
-
-  return scale_size
 
 
 ######################################################################
@@ -835,34 +780,21 @@ def customize_gender():
 #   about other features.
 
 def init_other_hierarchies():
-  ch.iter_begin('feature')
-  while ch.iter_valid():
-    feat = ch.get('name')
-    type = ch.get('type')
+  for feature in ch.get('feature'):
+    feat = feature.get('name')
+    type = feature.get('type')
 
     hier = Hierarchy(feat, type)
 
-    ch.iter_begin('value')
-    while ch.iter_valid():
+    for value in feature.get('value', []):
       val = ch.get('name')
 
-      ch.iter_begin('supertype')
-      while ch.iter_valid():
+      for supertype in value.get('supertype', []):
         stype = ch.get('name')
-
         hier.add(val, stype)
-
-        ch.iter_next()
-      ch.iter_end()
-
-      ch.iter_next()
-    ch.iter_end()
 
     if not hier.is_empty():
       hierarchies[hier.name] = hier
-
-    ch.iter_next()
-  ch.iter_end()
 
 
 def customize_other_features():
@@ -900,45 +832,34 @@ def init_tense_hierarchy():
       ppflist = []
       for ten in ('nonfuture', 'nonpast', 'past', 'present', 'future' ):
         
-        if ch.is_set(ten):
+        if ch.get(ten):
           if ten not in ppflist:
             hier.add(ten, 'tense')
-          ch.iter_begin(ten + '-subtype')
-          while ch.iter_valid():
-            subtype = ch.get('name')
-            hier.add(subtype, ten)
-            
-            ch.iter_next()
-          ch.iter_end()
+
+          for subtype in ch.get(ten + '-subtype'):
+            st = subtype.get('name')
+            hier.add(st, ten)
           
           if ten == 'nonfuture':
             for moreten in ('past', 'present'):
-              if ch.is_set(moreten):
+              if ch.get(moreten):
                 hier.add(moreten, ten)
                 ppflist.append(moreten)       
 
           if ten == 'nonpast':
             for moreten in ('present', 'future'):
-              if ch.is_set(moreten):
+              if ch.get(moreten):
                 hier.add(moreten, ten)
                 ppflist.append(moreten)
 
     elif tdefn == 'build':
 
-      ch.iter_begin('tense')
-      while ch.iter_valid():
+      for tense in ch.get('tense'):
         name = ch.get('name')
 
-        ch.iter_begin('supertype')
-        while ch.iter_valid():
+        for supertype in tense.get('supertype'):
           supername = ch.get('name')
-
           hier.add(name, supername)
-          ch.iter_next()
-        ch.iter_end()
-
-        ch.iter_next()
-      ch.iter_end()
 
   if not hier.is_empty():
     hierarchies[hier.name] = hier
@@ -956,20 +877,11 @@ def customize_tense():
 def init_aspect_hierarchy():
   hier = Hierarchy('aspect')
 
-  ch.iter_begin('aspect')
-  while ch.iter_valid():
+  for aspect in ch.get('aspect'):
     name = ch.get('name')
-
-    ch.iter_begin('supertype')
-    while ch.iter_valid():
+    for supertype in aspect.get('supertype', []):
       supername = ch.get('name')
-      
       hier.add(name, supername)
-      ch.iter_next()
-    ch.iter_end()
-      
-    ch.iter_next()
-  ch.iter_end()
 
   if not hier.is_empty():
     hierarchies[hier.name] = hier
@@ -985,20 +897,11 @@ def customize_aspect():
 def init_situation_hierarchy():
   hier = Hierarchy('situation')
 
-  ch.iter_begin('situation')
-  while ch.iter_valid():
+  for situation in ch.get('situation'):
     name = ch.get('name')
-
-    ch.iter_begin('supertype')
-    while ch.iter_valid():
+    for supertype in situation.get('supertype'):
       supername = ch.get('name')
-      
       hier.add(name, supername)
-      ch.iter_next()
-    ch.iter_end()
-      
-    ch.iter_next()
-  ch.iter_end()
 
   if not hier.is_empty():
     hierarchies[hier.name] = hier
@@ -1312,11 +1215,8 @@ def determine_consistent_order(wo,hc):
   # find subject postpositions and object prepositions).
 
   adporder = ''
-  ch.iter_begin('adp')
-  while ch.iter_valid():
-    adporder = ch.get('order')
-    ch.iter_next()
-  ch.iter_end()
+  for adp in ch.get('adp'):
+    adporder = adp.get('order')
 
   # ERB 2006-10-05 Fixing bug in free word order case.
 
@@ -2008,15 +1908,11 @@ def customize_coordination():
   """
   mylang.set_section('coord')
 
-  i = 0
-  ch.iter_begin('cs')
-  while ch.iter_valid():
-    i += 1
-
-    mark = ch.get('mark')
-    pat = ch.get('pat')
-    orth = ch.get('orth')
-    order = ch.get('order')
+  for c, cs in enumerate(ch.get('cs')):
+    mark = cs.get('mark')
+    pat = cs.get('pat')
+    orth = cs.get('orth')
+    order = cs.get('order')
 
     pre = ''
     suf = ''
@@ -2025,11 +1921,11 @@ def customize_coordination():
       lexicon.add(TDLencode(orth) + ' := conj-lex &\
                   [ STEM < "' + orth + '" >,\
                     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",\
-                    CFORM "' + str(i) + '" ].')
+                    CFORM "' + str(c+1) + '" ].')
       if pat == 'omni':
         lexicon.add(TDLencode(orth) + '_nosem := nosem-conj-lex &\
                       [ STEM < "' + orth + '" >,\
-                        CFORM "' + str(i) + '" ].')
+                        CFORM "' + str(c+1) + '" ].')
 
     if pat == 'a':
       top = 'apoly-'
@@ -2070,11 +1966,8 @@ def customize_coordination():
             left += 'conj-last-'
 
     for pos in ('n', 'np', 'vp', 's'):
-      if ch.get(pos):
-        define_coord_strat(str(i), pos, top, mid, bot, left, pre, suf)
-
-    ch.iter_next()
-  ch.iter_end()
+      if cs.get(pos):
+        define_coord_strat(str(c+1), pos, top, mid, bot, left, pre, suf)
 
 
 ######################################################################
@@ -2244,18 +2137,12 @@ def customize_arg_op():
   mylang.set_section('phrases')
 
   #Create phrase-structure rules for each context
-  ch.iter_begin('context')
-  i=1
-  while ch.iter_valid():
-    name = 'context' + str(i)
+  for c, context in enumerate(ch.get('context')):
+    name = 'context' + str(c+1)
     ptype = name + '-decl-head-opt-subj-phrase'
-    customize_feature_values(ptype, 'con')
-    typedef = ptype + ':= decl-head-opt-subj-phrase.'
-    mylang.add(typedef)
+    customize_feature_values(context, ptype, 'con')
+    mylang.add(ptype + ':= decl-head-opt-subj-phrase.')
     rules.add(name + '-decl-head-opt-subj := '+ name + '-decl-head-opt-subj-phrase.')
-    i = i+1
-    ch.iter_next()
-  ch.iter_end()
 
   #Trying to get co-occurrence of marker dropping to work
 
@@ -2274,10 +2161,10 @@ def customize_arg_op():
   if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-not' :
     mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
 
-  if ch.get('obj-mark-drop')== 'obj-mark-drop-opt' and ch.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+  if ch.get('obj-mark-drop')== 'obj-mark-drop-opt' and ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
     mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
 
-  if ch.get('subj-mark-drop')== 'subj-mark-drop-opt' and ch.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+  if ch.get('subj-mark-drop')== 'subj-mark-drop-opt' and ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
     mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
 
   if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and ch.get('subj-mark-drop') == 'subj-mark-drop-opt' :
@@ -2304,14 +2191,11 @@ def customize_nouns():
   seen = {'obl':False, 'opt':False, 'imp':False}
   seenCount = 0
 
-  ch.iter_begin('noun')
-  while ch.iter_valid():
-    det = ch.get('det')
+  for noun in ch.get('noun'):
+    det = noun.get('det')
     if not seen[det]:
       seen[det] = True
       seenCount += 1
-    ch.iter_next()
-  ch.iter_end()
 
   singlentype = (seenCount == 1)
 
@@ -2367,10 +2251,9 @@ def customize_nouns():
   # Add the lexical entries
   lexicon.add_literal(';;; Nouns')
 
-  ch.iter_begin('noun')
-  while ch.iter_valid():
+  for noun in ch.get('noun'):
     name = get_name()
-    det = ch.get('det')
+    det = noun.get('det')
 
     if singlentype or det == 'opt':
       stype = 'noun-lex'
@@ -2383,22 +2266,16 @@ def customize_nouns():
 
     mylang.add(ntype + ' := ' + stype + '.')
 
-    customize_feature_values(ntype, 'noun')
+    customize_feature_values(noun, ntype, 'noun')
 
-    ch.iter_begin('stem')
-    while ch.iter_valid():
-      orth = ch.get('orth')
-      pred = ch.get('pred')
+    for stem in noun.get('stem', []):
+      orth = stem.get('orth')
+      pred = stem.get('pred')
       typedef = TDLencode(orth) + ' := ' + ntype + ' & \
                   [ STEM < "' + orth + '" >, \
                     SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
-      ch.iter_next()
-    ch.iter_end()
-
-    ch.iter_next()
-  ch.iter_end()
 
 # Given the canonical (i.e. choices variable) name of a case, return
 # its abbreviation from the list of cases, which should be created by
@@ -2552,26 +2429,21 @@ def init_form_hierarchy():
   """
   hier = Hierarchy('form')
 
-  if has_auxiliaries_p() or ch.is_set_full('noaux-fin-nf'):
+  if has_auxiliaries_p() or ch.get('noaux-fin-nf'):
 
     hier.add('nonfinite', 'form')
     hier.add('finite', 'form')
 
     for p in ('nf', 'fin'):
 
-      ch.iter_begin(p + '-subform')
-      while ch.iter_valid():
-
+      for subform in ch.get(p + '-subform'):
         if p == 'nf':
-          super = 'nonfinite'
+          sup = 'nonfinite'
         elif p == 'fin':
-          super = 'finite'
+          sup = 'finite'
 
-        sub = ch.get('name')
-        hier.add(sub, super)
-
-        ch.iter_next()
-      ch.iter_end()
+        sub = subform.get('name')
+        hier.add(sub, sup)
 
   if not hier.is_empty():
     hierarchies[hier.name] = hier
@@ -2703,11 +2575,9 @@ def customize_verbs():
 
   # Now create the lexical entries for all the defined verb types
   cases = ch.cases()
-  ch.iter_begin('verb')
-  while ch.iter_valid():
+  for verb in ch.get('verb'):
     name = get_name()
-    val = ch.get('valence')
-    
+    val = verb.get('valence')
 
     i = val.find(',')
     dir_inv = ''
@@ -2733,25 +2603,19 @@ def customize_verbs():
 
     mylang.add(vtype + ' := ' + stype + '.')
 
-    customize_feature_values(vtype, 'verb', None, cases)
+    customize_feature_values(verb, vtype, 'verb', None, cases)
 
-    ch.iter_begin('stem')
-    while ch.iter_valid():
-      orth = ch.get('orth')
-      pred = ch.get('pred')
+    for stem in verb.get('stem', []):
+      orth = stem.get('orth')
+      pred = stem.get('pred')
       typedef = \
         TDLencode(orth) + ' := ' + vtype + ' & \
                     [ STEM < "' + orth + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
-      ch.iter_next()
-    ch.iter_end()
 
-    ch.iter_next()
-  ch.iter_end()
-
-
+# ??? sfd: I got this far
 
 #######################################################
 def customize_users_auxtype(userstype, supertype):
@@ -3286,7 +3150,7 @@ def customize_inflection():
                              SYNSEM.LOCAL.CAT.VAL [ SUBJ < #2 >, \
                                                     COMPS < #1 > ] ].')
 
-          size = direct_inverse_scale_size()
+          size = direct_inverse_scale_len()
           i = 1
           equal = ch.get_full('scale-equal')
 
