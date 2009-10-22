@@ -470,7 +470,7 @@ Label "<div style=\"padding-left: 16px\">"
 Label "<p>If you would like to have verb types automatically generated based on all of the values of any features on this page, select those features below."
 
 MultiSelect verb-dim "Feature dimensions for verb type generation" "<p>Select feature dimension(s) for auto-generating verb types: " ""
-fillnames case|number|person|negation
+fillnames verb
 
 Label "</div>" 
 
@@ -635,7 +635,7 @@ BeginIter noun{i} "a Noun Type" 1
   BeginIter feat{j} "a Feature"
 
     Select name "Noun {i} feature {j} name" "Name: " " "
-    fillnames
+    fillnames noun
 
     MultiSelect value "Noun {i} feature {j} value" "Value: " ""
     fillvalues noun{i}_feat{j}_name
@@ -673,7 +673,7 @@ BeginIter verb{i} "a Verb Type"
   BeginIter feat{j} "a Feature"
 
     Select name "Verb {i} feature {j} name" "Name: " " "
-    fillnames case|form
+    fillnames verb
 
     MultiSelect value "Verb {i} feature {j} value" "Value: " ""
     fillvalues verb{i}_feat{j}_name
@@ -714,7 +714,7 @@ BeginIter aux{i} "an Auxiliary Type"
   BeginIter feat{j} "an auxiliary feature"
 
      Select name "Aux {i} feature {j} name" "Name: " ""
-     fillnames case
+     fillnames
 
      MultiSelect value "Aux {i} feature {j} value" "Value: " ""
      fillvalues aux{i}_feat{j}_name
@@ -738,7 +738,7 @@ BeginIter aux{i} "an Auxiliary Type"
   BeginIter compfeature{j} "a complement feature" 1
 
     Select name "Aux {i} complement feature {j} name" "Name: " ""
-    fillnames case
+    fillnames
 
     MultiSelect value "Aux {i} complement feature {j} value" "Value: " ""
     fillvalues aux{i}_compfeature{j}_name
@@ -769,7 +769,7 @@ BeginIter det{i} "a Determiner"
   BeginIter feat{j} "a Feature"
 
     Select name "Determiner {i} feature {j} name" "Name: " " "
-    fillnames
+    fillnames noun
 
     MultiSelect value "Determiner {i} feature {j} value" "Value: " ""
     fillvalues det{i}_feat{j}_name

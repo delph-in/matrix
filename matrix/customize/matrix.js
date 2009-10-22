@@ -390,9 +390,11 @@ function fill_regex(name, pattern, nameOnly, prefix)
 
 // fill_feature_names()
 // Fill a SELECT tag with OPTIONs created from the array features[],
-// where every OPTION is a feature name. The 'exclude' argument allows 
+// where every OPTION is a feature name. 
+// The cat(egory) argument allows you to restrict the features by category
+//old way: The 'exclude' argument allows 
 // you to exclude various features from the list of options.
-function fill_feature_names(select_name, exclude)
+function fill_feature_names(select_name, cat)
 {
   var select = document.getElementsByName(select_name)[0];
   var old_val = select.value;  // store the previously selected option
@@ -409,19 +411,13 @@ function fill_feature_names(select_name, exclude)
     var o = document.createElement('option');
     o.className = 'temp';
     
-    var inlist = 'no';
-
-    if (typeof(exclude) != 'undefined') {
-       var xlist = exclude.split('|');
-  
-       for (var j = 0; j < xlist.length; j++) {
-	   if (xlist[j] == f[0]) {
-	       inlist = 'yes';
-	   }
-       }
+    var inlist = 'yes';
+    //note that this assumes that cat has only a single value when defined.
+    if ((cat != undefined) & (f[3] != cat)) {
+	var inlist = 'no';
     }
 
-    if (inlist == 'no') {
+    if (inlist == 'yes') {
 	o.value = f[0];
 	o.innerHTML = f[0];
 	select.appendChild(o);
