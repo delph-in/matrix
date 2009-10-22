@@ -150,7 +150,7 @@ Separator
 Label "<h3>Type Generation</h3>"
 Label "<div style=\"padding-left: 16px\">"
 
-Check per-dim "Feature dimension for noun types" "" "Generate noun types automatically based on all of the values defined for the feature on this page."
+Check person-dim "Feature dimension for noun types" "" "Generate noun types automatically based on all of the person or pernum values defined on this page."
 
 Label "</div>" 
 
@@ -179,7 +179,7 @@ Separator
 Label "<h3>Type Generation</h3>"
 Label "<div style=\"padding-left: 16px\">"
 
-Check gen-dim "Feature dimension for noun types" "" "Generate noun types automatically based on all of the values defined for the feature on this page."
+Check gender-dim "Feature dimension for noun types" "" "Generate noun types automatically based on all of the gender values defined on this page."
 
 Label "</div>" 
 
