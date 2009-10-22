@@ -62,58 +62,14 @@ class ChoicesFile:
         (key, value) = line.split('=',1)
         if key == 'section':
             continue
-        choice = self.parse_choice(self.split_variable_key(key), value)
-        choices = self.merge_choices(choices, choice)
+        choices = self.__set_variable(choices,
+                                      self.split_variable_key(key),
+                                      value,
+                                      allow_overwrite=False)
       except ValueError:
         pass # TODO: log this!
-    return choices
-
-  def parse_choice(self, subkeys, value):
-    """
-    Using a list of variable names and a value, construct a data
-    structure representing the choice from the choices file.
-    """
-    if len(subkeys) == 0:
-      return value
-    key = subkeys.pop(0)
-    try:
-      index = int(key)
-      # if there was no ValueError, then we are parsing a list item
-      return ([None] * (index-1)) + [self.parse_choice(subkeys, value)]
-    except ValueError:
-      return {key: self.parse_choice(subkeys, value)}
-
-  # This function is an ugly mess. It should have less if-statements and
-  # type-specific code paths. But for now it seems to work.
-  def merge_choices(self, choices, new_choice):
-    """
-    Given a structure of existing choices and one of a new choice, merge
-    the two together if there are no conflicts.
-    """
-    try:
-      if type(new_choice) == dict:
-        # a new choice should have no more than one key per dict
-        key = new_choice.keys()[0]
-        if choices.has_key(key):
-          choices[key] = self.merge_choices(choices[key], new_choice[key])
-        else:
-          choices[key] = new_choice[key]
-      elif type(new_choice) == list:
-        index = len(new_choice) - 1
-        if len(choices) < len(new_choice):
-          choices += ([None] * (index - len(choices))) + new_choice[-1:]
-        elif choices[index] is None:
-          choices[index] = new_choice[-1]
-        else:
-          choices[index] = self.merge_choices(choices[index], new_choice[-1])
-      else:
-          raise ChoicesFileParseError(
-                  'Variable is multiply defined: %s' % new_choice)
-        # the following should be done with logging
-        #  if sys.stdout.isatty() and self.is_set(key) and key != 'section':
-        #    print 'WARNING: choices file defines multiple values for ' + key
-    except TypeError:
-      raise ChoicesFileParseError('Merge Error')
+      except ChoicesFileParseError:
+        raise ChoicesFileParseError('Variable is multiply defined: %s' % key)
     return choices
 
   var_delim_re = re.compile(r'(\d+)?(?:_|$)')
@@ -143,7 +99,50 @@ class ChoicesFile:
   # A __getitem__ method so that ChoicesFile can be used with brackets,
   # e.g., ch['language'].
   def __getitem__(self, key):
-    return self.choices[key]
+    return self.get(key)
+
+  def __set_variable(self, choices, keys, value, allow_overwrite=True):
+    """
+    Set the value parameter in the dict/list data structure choices,
+    with the location defined by keys.
+    """
+    # if there are no more keys, we need to set the value by returning it
+    if len(keys) == 0:
+      if choices and not allow_overwrite:
+        raise ChoicesFileParseError(
+                'Variable is multiply defined.')
+      return value
+    # Now we should be dealing with either a list or dict
+    var = keys.pop(0)
+    try:
+      var = int(var)
+      # If no error was thrown, we're dealing with a list index.
+      # Create the list if it doesn't already exist
+      if not choices:
+        choices = []
+      if len(choices) < var:
+        choices += [{} for i in range(var - len(choices))]
+      choices[var - 1] = self.__set_variable(choices[var - 1],
+                                             keys,
+                                             value,
+                                             allow_overwrite)
+    except ValueError:
+      choices[var] = self.__set_variable(choices.get(var, None),
+                                         keys,
+                                         value,
+                                         allow_overwrite)
+    return choices
+
+  def __setitem__(self, key, value):
+    self.__set_variable(self.choices, self.split_variable_key(key), value)
+
+  def __delitem__(self, key):
+    raise NotImplementedError()
+
+  def __contains__(self, key):
+    if self.get(key):
+      return True
+    return False
 
   ############################################################################
   ### Up-revisioning handler
@@ -1089,14 +1088,14 @@ class ChoicesFile:
 
 
   def convert_value(self, key, old, new):
-    if self.is_set(key) and self.get(key) == old:
-      self.set(key, new)
+    if key in self and self[key] == old:
+      self[key] = new
 
 
   def convert_key(self, old, new):
-    if self.is_set(old):
-      self.set(new, self.get(old))
-      self.delete(old)
+    if old in self:
+      self[new] = self[old]
+      del self[old]
   
 
   def convert_0_to_1(self):
