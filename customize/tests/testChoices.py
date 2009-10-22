@@ -4,7 +4,7 @@ import customize.choices
 class TestChoicesFileParsingFunctions(unittest.TestCase):
     def test_get(self):
         c = customize.choices.ChoicesFile() # no file loaded
-        c.parse_choices(simple_choices_file)
+        c.choices = c.parse_choices(simple_choices_file)
         self.assertEqual(c.get('NO_SUCH'), [])
         self.assertEqual(c.get('language'), 'Simple')
         self.assertEqual(c.get('iso-code'), 'smp')

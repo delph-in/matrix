@@ -20,7 +20,7 @@ class ChoicesFileParseError(Exception):
 
 ######################################################################
 # ChoicesFile is a class that wraps the choices file, a list of
-# attributes and values, and provides methods for loading, accessing,
+# variables and values, and provides methods for loading, accessing,
 # and saving them.
 
 class ChoicesFile:
@@ -45,11 +45,6 @@ class ChoicesFile:
       except IOError:
         pass # TODO: we should really be logging these
 
-  # A __getitem__ method so that ChoicesFile can be used with brackets,
-  # e.g., ch['language'].
-  def __getitem__(self, i):
-    return self.choices[i]
-
   ############################################################################
   ### Choices file parsing functions
 
@@ -64,26 +59,26 @@ class ChoicesFile:
         (key, value) = line.split('=',1)
         if key == 'section':
             continue
-        choice = self.parse_choice(self.split_choice_attribute(key), value)
+        choice = self.parse_choice(self.split_variable_key(key), value)
         choices = self.merge_choices(choices, choice)
       except ValueError:
         pass # TODO: log this!
     return choices
 
-  def parse_choice(self, attributes, value):
+  def parse_choice(self, variables, value):
     """
-    Using a list of attribute names and a value, construct a data
+    Using a list of variable names and a value, construct a data
     structure representing the choice from the choices file.
     """
-    if len(attributes) == 0:
+    if len(variables) == 0:
       return value
-    key = attributes.pop(0)
+    key = variables.pop(0)
     try:
       index = int(key)
       # if there was no ValueError, then we are parsing a list item
-      return ([None] * (index-1)) + [self.parse_choice(attributes, value)]
+      return ([None] * (index-1)) + [self.parse_choice(variables, value)]
     except ValueError:
-      return {key: self.parse_choice(attributes, value)}
+      return {key: self.parse_choice(variables, value)}
 
   # This function is an ugly mess. It should have less if-statements and
   # type-specific code paths. But for now it seems to work.
@@ -109,7 +104,7 @@ class ChoicesFile:
         else:
           choices[index] = self.merge_choices(choices[index], new_choice[-1])
       else:
-        raise ChoicesFileParseError('Attribute is multiply defined.')
+        raise ChoicesFileParseError('Variable is multiply defined.')
         # the following should be done with logging
         #  if sys.stdout.isatty() and self.is_set(key) and key != 'section':
         #    print 'WARNING: choices file defines multiple values for ' + key
@@ -117,13 +112,13 @@ class ChoicesFile:
       raise ChoicesFileParseError('Merge Error')
     return choices
 
-  attr_delim_re = re.compile(r'(\d+)_|_')
-  def split_choice_attribute(self, attribute):
+  var_delim_re = re.compile(r'(\d+)(?:_|$)')
+  def split_variable_key(self, key):
     """
-    Split a compound attribute into a list of its component parts.
+    Split a compound variable key into a list of its component parts.
     """
-    if attribute == '': return []
-    return [a for a in self.attr_delim_re.split(attribute) if a is not None]
+    if key == '': return []
+    return [k for k in self.var_delim_re.split(key) if k]
 
 
   ############################################################################
@@ -131,15 +126,20 @@ class ChoicesFile:
 
   def get(self, key):
     d = self.choices
-    a = self.split_choice_attribute(key)
-    for attr in [[a[i], a[i+1]] for i in range(0,len(a)-1,2)] + [[a[-1]]]:
-      if len(attr) == 2:
-        if attr[0] in d and int(attr[1]) - 1 < len(d[attr[0]]):
-          d = d[attr[0]][int(attr[1]) - 1]
+    a = self.split_variable_key(key)
+    for var in [[a[i], a[i+1]] for i in range(0,len(a)-1,2)] + [[a[-1]]]:
+      if len(var) == 2:
+        if var[0] in d and int(var[1]) - 1 < len(d[var[0]]):
+          d = d[var[0]][int(var[1]) - 1]
         else:
           return []
       else:
-        return d.get(attr[0], [])
+        return d.get(var[0], [])
+
+  # A __getitem__ method so that ChoicesFile can be used with brackets,
+  # e.g., ch['language'].
+  def __getitem__(self, key):
+    return self.choices[key]
 
   ############################################################################
   ### Up-revisioning handler
@@ -1244,9 +1244,462 @@ class ChoicesFile:
       if ques == 'inv':
         ques = 'q-inv'
       if ques != 'int':
-        self.set(ques, c[0])
-        self.set('other-slot', c[1])
+        self.set(ques, 'on')
+
+  def convert_2_to_3(self):
+    # Added a fuller implementation of case marking on core arguments,
+    # so convert the old case-marking adposition stuff to the new
+    # choices
+    S = self.get('iverb-subj')
+    A = self.get('tverb-subj')
+    O = self.get('tverb-obj')
+
+    Sorth = Aorth = Oorth = ''
+    Sorder = Aorder = Oorder = ''
+    if S == 'adp':
+      Sorth = self.get('subj-adp-orth')
+      Sorder = self.get('subj-adp-order')
+    if A == 'adp':
+      Aorth = self.get('subj-adp-orth')
+      Aorder = self.get('subj-adp-order')
+    if O == 'adp':
+      Oorth = self.get('obj-adp-orth')
+      Aorder = self.get('obj-adp-order')
+
+    if Sorth == '' and Aorth == '' and Oorth == '':
+      if len(self.keys()):  # don't add this if the choices file is empty
+        self.set('case-marking', 'none')
+    elif Sorth == Aorth and Sorth != Oorth:
+      self.set('case-marking', 'nom-acc')
+      self.set('nom-case-label', 'nominative')
+      self.set('acc-case-label', 'accusative')
+      if Aorth:
+        self.set('nom-case-pat', 'np')
+        self.set('nom-case-order', Aorder)
+      else:
+        self.set('nom-case-pat', 'none')
+      if Oorth:
+        self.set('acc-case-pat', 'np')
+        self.set('acc-case-order', Oorder)
+      else:
+        self.set('acc-case-pat', 'none')
+    elif Sorth != Aorth and Sorth == Oorth:
+      self.set('case-marking', 'erg-asb')
+      self.set('erg-case-label', 'ergative')
+      self.set('abs-case-label', 'absolutive')
+      if Aorth:
+        self.set('erg-case-pat', 'np')
+        self.set('erg-case-order', Aorder)
+      else:
+        self.set('erg-case-pat', 'none')
+      if Oorth:
+        self.set('abs-case-pat', 'np')
+        self.set('abs-case-order', Oorder)
+      else:
+        self.set('abs-case-pat', 'none')
+    else:
+      self.set('case-marking', 'tripartite')
+      self.set('s-case-label', 'subjective')
+      self.set('a-case-label', 'agentive')
+      self.set('o-case-label', 'objective')
+      if Sorth:
+        self.set('s-case-pat', 'np')
+        self.set('s-case-order', Sorder)
+      else:
+        self.set('s-case-pat', 'none')
+      if Aorth:
+        self.set('a-case-pat', 'np')
+        self.set('a-case-order', Aorder)
+      else:
+        self.set('a-case-pat', 'none')
+      if Oorth:
+        self.set('o-case-pat', 'np')
+        self.set('o-case-order', Oorder)
+      else:
+        self.set('o-case-pat', 'none')
+
+    self.delete('iverb-subj')
+    self.delete('tverb-subj')
+    self.delete('tverb-obj')
+    self.delete('subj-adp-orth')
+    self.delete('subj-adp-order')
+    self.delete('obj-adp-orth')
+    self.delete('obj-adp-order')
+
+  def convert_3_to_4(self):
+    # Added a fuller implementation of case marking on core arguments,
+    # so convert the old case-marking adposition stuff to the new
+    # choices
+    self.convert_key('noun1', 'noun1_orth')
+    self.convert_key('noun2', 'noun2_orth')
+
+    self.convert_key('iverb', 'verb1_orth')
+    self.convert_key('iverb-pred', 'verb1_pred')
+    self.convert_key('iverb-non-finite', 'verb1_non-finite')
+    if self.get('verb1_orth'):
+      self.set('verb1_valence', 'intrans')
+
+    self.convert_key('tverb', 'verb2_orth')
+    self.convert_key('tverb-pred', 'verb2_pred')
+    self.convert_key('tverb-non-finite', 'verb2_non-finite')
+    if self.get('verb2_orth'):
+      self.set('verb2_valence', 'trans')
+
+    self.convert_key('det1', 'det1_orth')
+    self.convert_key('det1pred', 'det1_pred')
+    self.convert_key('det2', 'det2_orth')
+    self.convert_key('det2pred', 'det2_pred')
+
+  def convert_4_to_5(self):
+    # An even fuller implementation of case marking, with some of the
+    # work shifted off on Kelly's morphology code.
+    # Get a list of choices-variable prefixes, one for each case
+    prefixes = []
+    cm = self.get('case-marking')
+    if cm == 'nom-acc':
+      prefixes.append('nom')
+      prefixes.append('acc')
+    elif cm == 'erg-abs':
+      prefixes.append('erg')
+      prefixes.append('abs')
+    elif cm == 'tripartite':
+      prefixes.append('s')
+      prefixes.append('a')
+      prefixes.append('o')
+
+    cur_ns = 1       # noun slot
+    cur_nm = 1       # noun morph
+    cur_ni = 'noun'  # noun input
+    last_ns_order = ''
+
+    cur_ds = 1       # det slot
+    cur_dm = 1       # det morph
+    cur_ni = 'det'   # det input
+    last_ds_order = ''
+
+    cur_adp = 1
+
+    for p in prefixes:
+      label = self.get(p + '-case-label')
+      pat = self.get(p + '-case-pat')
+      order = self.get(p + '-case-order')
+      orth = self.get(p + '-case-orth')
+
+      # create noun slot and morph
+      if pat in ('noun', 'noun-det'):
+        if last_ns_order and last_ns_order != order:
+          cur_ni = 'noun-slot' + str(cur_ns)
+          cur_ns += 1
+          cur_nm = 1
+
+        ns_pre = 'noun-slot' + str(cur_ns)
+        nm_pre = ns_pre + '_morph' + str(cur_nm)
+
+        self.set(ns_pre + '_input1_type', cur_ni)
+        self.set(ns_pre + '_name', 'case')
+        self.set(ns_pre + '_order', order)
+
+        self.set(nm_pre + '_name', label)
+        self.set(nm_pre + '_orth', orth)
+        self.set(nm_pre + '_feat1_name', 'case')
+        self.set(nm_pre + '_feat1_value', label)
+        cur_nm += 1
+
+      # create det slot and morph
+      if pat in ('det', 'noun-det'):
+        if last_ds_order and last_ds_order != order:
+          cur_di = 'det-slot' + str(cur_ds)
+          cur_ds += 1
+          cur_dm = 1
+
+        ds_pre = 'det-slot' + str(cur_ds)
+        dm_pre = ds_pre + '_morph' + str(cur_dm)
+
+        self.set(ds_pre + '_input1_type', cur_di)
+        self.set(ds_pre + '_name', 'case')
+        self.set(ds_pre + '_order', order)
+
+        self.set(dm_pre + '_name', label)
+        self.set(dm_pre + '_orth', orth)
+        self.set(dm_pre + '_feat1_name', 'case')
+        self.set(dm_pre + '_feat1_value', label)
+        cur_dm += 1
+
+      # create adposition
+      if pat == 'np':
+        adp_pre = 'adp' + str(cur_adp)
+        self.set(adp_pre + '_orth', orth)
+        self.set(adp_pre + '_order', order)
+        self.set(adp_pre + '_feat1_name', 'case')
+        self.set(adp_pre + '_feat1_value', label)
+
+    self.convert_key('nom-case-label', 'nom-acc-nom-case-name')
+    self.convert_key('acc-case-label', 'nom-acc-acc-case-name')
+
+    self.convert_key('erg-case-label', 'erg-abs-erg-case-name')
+    self.convert_key('abs-case-label', 'erg-abs-abs-case-name')
+
+    self.convert_key('s-case-label', 'tripartite-s-case-name')
+    self.convert_key('a-case-label', 'tripartite-a-case-name')
+    self.convert_key('o-case-label', 'tripartite-o-case-name')
+
+    for p in ['nom', 'acc', 'erg', 'abs', 's', 'a', 'o']:
+      self.delete(p + '-case-pat')
+      self.delete(p + '-case-order')
+      self.delete(p + '-case-orth')
+
+    self.iter_begin('verb')
+    while self.iter_valid():
+      v = self.get('valence')
+      if v == 'intrans':
+        if cm == 'none':
+          pass
+        elif cm == 'nom-acc':
+          self.set('valence', 'nom')
+        elif cm == 'erg-abs':
+          self.set('valence', 'abs')
+        elif cm == 'tripartite':
+          self.set('valence', 's')
+      elif v == 'trans':
+        if cm == 'none':
+          pass
+        elif cm == 'nom-acc':
+          self.set('valence', 'nom-acc')
+        elif cm == 'erg-abs':
+          self.set('valence', 'erg-abs')
+        elif cm == 'tripartite':
+          self.set('valence', 'a-o')
+
+      self.iter_next()
+    self.iter_end()
+
+  def convert_5_to_6(self):
+    self.convert_key('aux-order', 'aux-comp-order')
+    self.convert_key('aux-verb', 'aux1_orth')
+    self.convert_value('aux-sem', 'pred', 'add-pred')
+    self.convert_key('aux-sem', 'aux1_sem')
+    self.convert_key('aux-comp', 'aux1_comp')
+    self.convert_key('aux-pred', 'aux1_pred')
+    self.convert_key('aux-subj', 'aux1_subj')
+    if self.get('aux1_orth'):
+      self.set('has-aux','yes')
+    elif len(self.keys()):  # don't add this if the choices file is empty
+      self.set('has-aux','no')
+
+    self.iter_begin('verb')
+    while self.iter_valid():
+      self.delete('non-finite')
+      self.iter_next()
+    self.iter_end()
+
+  def convert_6_to_7(self):
+    # Lexical types now have multiple stems
+    for lextype in ['noun', 'verb', 'det']:
+      self.iter_begin(lextype)
+      while self.iter_valid():
+        self.convert_key('orth', 'stem1_orth')
+        self.convert_key('pred', 'stem1_pred')
+
         self.iter_next()
+      self.iter_end()
+
+    if not self.get('person') and len(self.keys()):
+      self.set('person', 'none')
+
+  def convert_7_to_8(self):
+    # Other features no longer use the magic word 'root', they instead
+    # use the name of the feature.
+    self.iter_begin('feature')
+    while self.iter_valid():
+      fname = self.get('name')
+      
+      self.iter_begin('value')
+      while self.iter_valid():
+        self.iter_begin('supertype')
+        while self.iter_valid():
+          self.convert_value('name', 'root', fname)
+
+          self.iter_next()
+        self.iter_end()
+
+        self.iter_next()
+      self.iter_end()
+
+      self.iter_next()
+    self.iter_end()
+
+  def convert_8_to_9(self):
+    # finite and nonfinite feature value name changes
+    # in aux complement form values
+    for lextype in ['aux','det','verb','noun']:
+      if lextype == 'aux':
+        self.iter_begin(lextype)
+        while self.iter_valid():
+          self.convert_value('compform','fin','finite')
+          self.convert_value('compform', 'nf', 'nonfinite')
+          self.iter_next()
+        self.iter_end()
+      # in slot feature values
+      self.iter_begin(lextype + '-slot')
+      while self.iter_valid():
+        self.iter_begin('morph')
+        while self.iter_valid():
+          self.iter_begin('feat')
+          while self.iter_valid():
+            self.convert_value('value','fin','finite')
+            self.convert_value('value','nf','nonfinite')
+            self.iter_next()
+          self.iter_end()
+          self.iter_next()
+        self.iter_end()
+        self.iter_next()
+      self.iter_end()  
+
+  def convert_9_to_10(self):
+    """
+    Previous versions defined (only) nonfinite compforms for each auxiliary 
+    iff the aux comp was constrained to be nonfinite. 
+    The current version creates a hierarchy of verb forms and then for each 
+    aux constrains the form of the complement.  
+    For each auxiliary, this conversion takes the value of the specified (nonfinite)compform 
+    and assigns it as the value of a member of the nonfinite hierarchy 
+    as well as the value of the auxiliary's compform.
+    """
+    self.convert_key('non-past', 'nonpast')
+    self.convert_key('non-future', 'nonfuture') 
+
+    i = 0
+    self.iter_begin('aux')
+    while self.iter_valid():
+      i += 1
+      v = self.get('nonfincompform')
+      k = 'nf-subform' + str(i) + '_name'
+      self.convert_value('compform', 'nonfinite', v)
+
+      if self.is_set('nonfincompform'):
+        self.set_full(k,v)
+      self.delete('nonfincompform')
+
+      self.iter_next()
+    self.iter_end()
+  
+  def convert_10_to_11(self):
+    """
+    Previous versions allowed only one stem per auxiliary type.
+    This conversion changes auxiliary orth and pred values to stem1 orth and pred.
+    """
+    self.iter_begin('aux')
+
+    while self.iter_valid():
+      self.convert_key('orth', 'stem1_orth')
+      self.convert_key('pred', 'stem1_pred')
+
+      self.iter_next()
+    self.iter_end()
+
+  def convert_11_to_12(self):
+    """
+    Previously the kind of comp (s, vp, v) was defined for each auxiliary type.
+    Since our current word order implementation couldn't handle differences on this level anyway,
+    this is no answered by one question for all auxiliaries.
+    This conversion gives aux-comp the value of the first aux's comp, and deletes all type specific aux-comp values.
+    """
+   
+    if self.get('has-aux') == 'yes':
+      auxval = self.get('aux1_comp')
+      self.set('aux-comp',auxval)
+      i = 0
+      while self.iter_valid():
+        i += 1
+        self.delete('aux' + i + '_comp')
+
+  def convert_12_to_13(self):
+    """ 
+    ERB: stupidly used "+" as a feature value.  Updating this
+    to "plus".  Feature name was "negation".
+    """
+    for lextype in ['aux','det','verb','noun']:
+      self.iter_begin(lextype + '-slot')
+      while self.iter_valid():
+        self.iter_begin('morph')
+        while self.iter_valid():
+          self.iter_begin('feat')
+          while self.iter_valid():
+            if self.get('name') == 'negation':
+              self.convert_value('value','+','plus')
+            self.iter_next()
+          self.iter_end()
+          self.iter_next()
+        self.iter_end()
+        self.iter_next()
+      self.iter_end()  
+
+  def convert_13_to_14(self):
+    """
+    Revised the Person subpage.  Convert the old single radio button
+    for defining subtypes under 1p-non-sg into the choices for defining
+    your own subtypes.
+    """
+    numbers = []
+    self.iter_begin('number')
+    while self.iter_valid():
+      numbers += [ self.get('name') ]
+      self.iter_next()
+    self.iter_end()
+
+    number = ''
+    for n in numbers[1:]:
+      if len(number):
+        number += ', '
+      number += n
+
+    fp = self.get('first-person')
+    subtypes = []
+    if fp == 'incl-excl':
+      self.set('incl-excl-number', number)
+    elif fp == 'min-incl':
+      subtypes = ['min', 'incl']
+    elif fp == 'aug-incl':
+      subtypes = ['aug']
+    elif fp == 'min-aug':
+      subtypes = ['min', 'incl', 'aug']
+
+    if len(subtypes) and len(number):
+      self.set('first-person', 'other')
+      self.iter_begin('person-subtype')
+      for st in subtypes:
+        self.set('name', st)
+        self.set('number', number)
+        self.iter_next()
+      self.iter_end()
+
+  def convert_14_to_15(self):
+    """
+    Revised slot co-occurrence constraints in the Lexicon subpage.
+    Before, there were three iterators, req, disreq, and forces, each
+    of which contained a single choice, type.  Now there's a single
+    iterator, constraint, that contains the choices type (req, disreq,
+    or forces) and other-slot.
+    """
+
+    for slotprefix in ('noun', 'verb', 'det', 'aux'):
+      self.iter_begin(slotprefix + '-slot')
+      while self.iter_valid():
+        constraints = []
+
+        for contype in ('forces', 'req', 'disreq'):
+          self.iter_begin(contype)
+          while self.iter_valid():
+            constraints += [ [ contype, self.get('type') ] ]
+            self.delete('type')
+            self.iter_next()
+          self.iter_end()
+
+        self.iter_begin('constraint')
+        for c in constraints:
+          self.set('type', c[0])
+          self.set('other-slot', c[1])
+          self.iter_next()
         self.iter_end()
 
         self.iter_next()
