@@ -103,6 +103,14 @@ BeginIter number{i} "a Number"
 
   EndIter supertype
 
+Separator
+
+Label "<h3>Type Generation</h3>"
+Label "<div style=\"padding-left: 16px\">"
+
+Check number-dim "Number feature dimension for noun types" "" "Generate noun types automatically based on all of the number values defined on this page."
+
+Label "</div>" 
 EndIter number
 
 
@@ -150,7 +158,7 @@ Separator
 Label "<h3>Type Generation</h3>"
 Label "<div style=\"padding-left: 16px\">"
 
-Check person-dim "Feature dimension for noun types" "" "Generate noun types automatically based on all of the person or pernum values defined on this page."
+Check person-dim "Person feature dimension for noun types" "" "Generate noun types automatically based on all of the person or pernum values defined on this page."
 
 Label "</div>" 
 
@@ -179,7 +187,7 @@ Separator
 Label "<h3>Type Generation</h3>"
 Label "<div style=\"padding-left: 16px\">"
 
-Check gender-dim "Feature dimension for noun types" "" "Generate noun types automatically based on all of the gender values defined on this page."
+Check gender-dim "Gender feature dimension for noun types" "" "Generate noun types automatically based on all of the gender values defined on this page."
 
 Label "</div>" 
 
@@ -281,6 +289,15 @@ BeginIter case{i} "a Case"
 
 EndIter case
 
+Separator
+
+Label "<h3>Type Generation</h3>"
+Label "<div style=\"padding-left: 16px\">"
+
+Check case-dim "Case feature dimension for noun types" "" "Generate noun types automatically based on all of the case values defined on this page."
+
+Label "</div>" 
+
 Label "<h4>References</h4>"
 Label "<font size=\"2\">"
 Label "<p>Blake, Barry J. 2001. Case. Cambridge: Cambridge University Press.</p>"
@@ -313,7 +330,6 @@ EndIter scale
 Select scale-equal "Direction when equal" "When the agent and patient have the same scale value, the main verb is " "<br>(The other form may be something like a reflexive.  If you select \"some other form\", the resulting grammar will not parse sentences where the agent and patient are equally ranked.  You will need to edit the starter grammar manually to add the other form.)"
 . direct "Direct" "direct"
 . other "Some other form" "some other form"
-
 
 Section tense-aspect "Tense and Aspect"
 
@@ -538,7 +554,14 @@ Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p>" 
 
 Label "<p>Notes: This section is under construction.  We hope to soon return the functionality of allowing different kinds of interaction between adverbial and inflectional negation, as well as the functionality for negation by selected adverbs.</p>"
 
+Separator
 
+Label "<h3>Type Generation</h3>"
+Label "<div style=\"padding-left: 16px\">"
+
+Check negation-dim "Negation feature dimension for noun types" "" "Generate noun types automatically based on the negative value defined on this page."
+
+Label "</div>" 
 
 Section coordination "Coordination"
 

@@ -475,20 +475,12 @@ def validate_tanda():
       add_err('noaux-fin-nf', err)
 
 ######################################################################
-# validate_lexicon()
-#   Validate the user's choices about the test lexicon.
+# validate_lextypes()
 
-def validate_lexicon():
+def validate_lextypes():
 
-  # First, handle the non-iterated lexical entries
-
-  # Did they specify enough lexical entries?
-  if not ch.get('noun1_stem1_orth'):
-    err = 'You must create at least one noun class.'
-    add_err('noun1_stem1_orth', err)
-
-  # Now, do the iterated lexical entries
-  
+#if a type specified then need to have a supertype selected
+#if a noun type specified then need to answer the determiner question
   ch.iter_begin('noun')
   while ch.iter_valid():
     det = ch.get('det')
@@ -504,6 +496,30 @@ def validate_lexicon():
       err = 'You defined a noun that obligatorily takes a determiner, but also said your language does not have determiners.'
       add_err('has-dets', err)
       add_err(ch.iter_prefix() + 'det', err)
+
+    ch.iter_next()
+  ch.iter_end()
+#verb types must have trans or intrans supertypes
+
+#bunch of requirements for auxiliaries
+
+######################################################################
+# validate_lexicon()
+#   Validate the user's choices about the test lexicon.
+
+def validate_lexicon():
+
+  # First, handle the non-iterated lexical entries
+
+  # Did they specify enough lexical entries?
+  if not ch.get('noun1_stem1_orth'):
+    err = 'You must create at least one noun stem entry.'
+    add_err('noun1_stem1_orth', err)
+
+  # Now, do the iterated lexical entries
+  
+  ch.iter_begin('noun')
+  while ch.iter_valid():
 
     ch.iter_begin('stem')
     while ch.iter_valid():

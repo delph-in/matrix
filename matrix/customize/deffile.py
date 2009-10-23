@@ -293,6 +293,15 @@ def js_array(list):
   val = val[:-2]  # trim off the last ,\n
   return val
 
+# From a list of triples of strings [string1, string2, ...], return
+# a string containing a JavaScript-formatted list of strings of the
+# form 'string1:string2:string3'. This is used to convey feature values and categories.
+def js_array3(list):
+  val = ''
+  for l in list:
+    val += '\'' + l[0] + ':' + l[1] + ':' + l[3] + '\',\n'
+  val = val[:-2]  # trim off the last ,\n
+  return val
 
 ######################################################################
 # MatrixDefFile class
@@ -545,7 +554,7 @@ class MatrixDefFile:
         # look ahead and see if we have an auto-filled drop-down
         i += 1
         # note: the values of the following variables vary depending on the fill type
-        # e.g., for fillnames fill_arg1 is reserved for those categories to be excluded 
+        # e.g., for fillnames fill_arg1 is reserved for an optional category restriction (noun or verb) 
         fill_type = ''
         fill_arg1 = '' 
         fill_arg2 = ''
@@ -586,7 +595,6 @@ class MatrixDefFile:
             elif fill_type == 'filltypes':
               fillstring += 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\', \'' + prefix + '\')'
               
-
             html += html_select(errors, vn, multi, fillstring) + '\n' 
             html += html_option(errors, '', False, '') + '\n'
 
@@ -737,7 +745,7 @@ class MatrixDefFile:
 
       print '<title>' + section_friendly + '</title>'
       print HTML_posttitle % \
-            (js_array(choices.features()),
+            (js_array3(choices.features()),
              js_array([c for c in choices.patterns() if not c[2]]),
              js_array([c for c in choices.patterns() if c[2]]),
              js_array([n for n in choices.numbers()]),

@@ -1059,7 +1059,7 @@ class ChoicesFile:
                      'dir|direct;inv|inverse',
                      'LOCAL.CAT.HEAD.DIRECTION', 'verb'] ]
 
-    # Negaton
+    # Negation
     if self.get_full('infl-neg'):
       features += [ ['negation', 'plus|plus', '', 'verb'] ]
 #test - note this reflects no constituent negation

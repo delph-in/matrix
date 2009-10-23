@@ -413,10 +413,12 @@ function fill_feature_names(select_name, cat)
     
     var inlist = 'yes';
     //note that this assumes that cat has only a single value when defined.
-    if ((cat != undefined) & (f[3] != cat)) {
-	var inlist = 'no';
+    if (cat != undefined){
+      if (f[2] != cat) {
+        inlist = 'no';
+      }
     }
-
+	
     if (inlist == 'yes') {
 	o.value = f[0];
 	o.innerHTML = f[0];
