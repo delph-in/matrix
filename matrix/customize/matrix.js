@@ -598,6 +598,7 @@ function fill_types(select_name, type_cat, prefix)
   // in the user defined names.
   for (var i = 0; i < types.length; i++) {
     var t = types[i].split(':');
+
     if (t[1] == type_cat) {
 	var lextype_self = selfname + lex_ext; 
 	if (values.indexOf(t[0]) == -1 && texts.indexOf(lextype_self) == -1) {

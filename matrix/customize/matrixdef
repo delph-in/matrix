@@ -103,15 +103,15 @@ BeginIter number{i} "a Number"
 
   EndIter supertype
 
+Label "</div>" 
+EndIter number
+
 Separator
 
 Label "<h3>Type Generation</h3>"
 Label "<div style=\"padding-left: 16px\">"
 
 Check number-dim "Number feature dimension for noun types" "" "Generate noun types automatically based on all of the number values defined on this page."
-
-Label "</div>" 
-EndIter number
 
 
 Section person "Person"
@@ -559,7 +559,7 @@ Separator
 Label "<h3>Type Generation</h3>"
 Label "<div style=\"padding-left: 16px\">"
 
-Check negation-dim "Negation feature dimension for noun types" "" "Generate noun types automatically based on the negative value defined on this page."
+Check negation-dim "Negation feature dimension for verb types" "" "Generate verb types automatically based on the negative values defined on this page."
 
 Label "</div>" 
 
@@ -719,7 +719,7 @@ Label "<h3>Auxiliary Verb Types</h3>"
 
 Label auxlabel "Add auxiliary types:<br>"
 
-Label "<p>Note that auxiliaries may contribute a independent predicate, e.g., English modal <i>can</i>. These auxiliaries should inherit from withpred-aux-lex. If you define a type that contributes a predicate, you may also specify semantic feature values on the auxiliary, if desired. Alternatively, auxiliaries may contribute no predicate of their own, e.g., English auxiliary <i>be</i> and should inherit from nopred-aux-lex.</p>" 
+Label "<p>Note that auxiliaries may contribute a independent predicate, e.g., English modal <i>can</i>. These auxiliaries should inherit from withpred-aux-lex. If you define a type that contributes a predicate, you may also specify semantic feature values on the auxiliary, if desired. Alternatively, auxiliaries may contribute no predicate of their own, e.g., English auxiliary <i>be</i>, and should inherit from nopred-aux-lex.</p>" 
 
 BeginIter aux{i} "an Auxiliary Type" 
 

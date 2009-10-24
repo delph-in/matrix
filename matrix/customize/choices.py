@@ -888,16 +888,16 @@ class ChoicesFile:
       types += [ ['aux-lex', 'aux'], ['withpred-aux-lex', 'aux'], ['nopred-aux-lex', 'aux'], ['main-verb-lex', 'verb']]
 
     #look for feature-based dimension names in choices and create array of those features
-    features = self.features()   
+    features = self.features()  
     dimvalues = [] 
     dim = []
-    
+#    print features
     for f in features:
-      if (f[0] == 'pernum') and (self.get('person-dim') or self.get('number-dim')) == 'on':
+      if (f[0] == 'pernum') and (self.get('person-dim') == 'on' or self.get('number-dim') == 'on'):
         dim += [['pernum', 'noun']] 
       elif self.get(f[0] + '-dim') == 'on':
         dim += [[f[0], f[3]]]  #feature name (dimension) and category name from features() 
-    
+#    print dim
     #look for category-based dimension names in choices and add features chosen on questionnaire to array
     for c in ['noun', 'verb', 'aux', 'det']:
       dimlist = self.get(c + '-dim').split(', ') #split multilist get feature values chosen per category
@@ -934,7 +934,7 @@ class ChoicesFile:
       self.iter_end()
 
     self.iter_set_state(state)
-
+  #  print types
     return types
   
 

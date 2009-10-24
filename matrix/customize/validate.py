@@ -479,27 +479,77 @@ def validate_tanda():
 
 def validate_lextypes():
 
-#if a type specified then need to have a supertype selected
-#if a noun type specified then need to answer the determiner question
-  ch.iter_begin('noun')
-  while ch.iter_valid():
-    det = ch.get('det')
+  for x in ['noun', 'verb', 'aux', 'det']:
+  
+    ch.iter_begin(x)
+    while ch.iter_valid():
 
-    # Did they answer the question about determiners?
-    if not det:
-      err = 'You must specify whether each noun you define takes a determiner.'
-      add_err(ch.iter_prefix() + 'det', err)
+      #if a type specified then need to have a supertype selected
+      if ch.get('name') and not ch.get('supertype'):
+        err = 'You must specify at least one supertype.'
+        add_err(ch.iter_prefix() + 'supertype', err)
 
-    # If they said the noun takes an obligatory determiner, did they
-    # say their language has determiners?
-    if det == 'obl' and ch.get_full('has-dets') == 'no':
-      err = 'You defined a noun that obligatorily takes a determiner, but also said your language does not have determiners.'
-      add_err('has-dets', err)
-      add_err(ch.iter_prefix() + 'det', err)
+      if  x == 'noun':
+        det = ch.get('det')
 
-    ch.iter_next()
-  ch.iter_end()
-#verb types must have trans or intrans supertypes
+        # Did they answer the question about determiners?
+        if ch.get('name') and not det:
+          err = 'You must specify whether each noun type you define takes a determiner.'
+          add_err(ch.iter_prefix() + 'det', err)
+
+        # If they said the noun takes an obligatory determiner, did they
+        # say their language has determiners?
+        if det == 'obl' and ch.get_full('has-dets') == 'no':
+          err = 'You defined a noun type that obligatorily takes a determiner, but also said your language does not have determiners.'
+          add_err('has-dets', err)
+          add_err(ch.iter_prefix() + 'det', err)
+
+      # Auxiliaries complications
+      if x == 'aux':
+
+        if (ch.get_full('has-aux') != 'yes') and ch.get_full('aux1_name'):
+          err = 'You have indicated that your language has no auxiliaries but have entered an auxiliary type.'
+          add_err('has-aux', err)
+          add_err('aux1_name', err)
+
+        if (ch.get_full('has-aux') == 'yes') and not ch.get_full('aux1_name'):
+          err = 'You have indicated that your language has auxiliaries. You must define at least one auxiliary type.'
+          add_err('auxlabel', err)
+
+        comp = ch.get_full('aux-comp')
+        sem = ch.get('sem')
+        pred = ch.get('pred')
+        subj = ch.get('subj')
+        prefix = ch.iter_prefix()
+
+        if not sem:
+          err = 'You must specify whether the auxiliary contributes a predicate.'
+          add_err(prefix + 'sem', err)
+
+        if ((comp == 'vp') or (comp == 'v')):
+          if not subj:
+            err = 'You must specify the subject type.'
+            add_err(prefix + 'subj', err)
+
+        ch.iter_begin('compfeature')
+        compform = 'no'
+        while ch.iter_valid():
+          name = ch.get('name')
+          if name == 'form':
+            compform = 'yes'
+          if name and not ch.get('value'):
+            err = 'You must specify a value for this feature.'
+            add_err(ch.iter_prefix() + 'value', err)
+          ch.iter_next()
+
+        if not compform == 'yes':
+          err = 'You must specify the form of the verb in the complement, i.e., the value of the complement feature FORM.'
+          add_err(prefix + 'complabel', err)
+        ch.iter_end()   
+
+      ch.iter_next()
+    ch.iter_end()
+
 
 #bunch of requirements for auxiliaries
 
@@ -546,6 +596,8 @@ def validate_lexicon():
   seenTrans = False
   seenIntrans = False
   ch.iter_begin('verb')
+
+  #verb stems must have trans or intrans in supertypes.
   while ch.iter_valid():
     val = ch.get('valence')
 
@@ -584,70 +636,15 @@ def validate_lexicon():
 
   # Auxiliaries
 
-  aux1_name = ch.get('aux1_name')
-  if ch.get('has-aux') != 'yes':
-    if aux1_name:
-      err = 'You have indicated that your language has no auxiliaries but have entered an auxiliary on the Lexicon page.'
-      add_err('has-aux', err)
-
-  if ch.get('has-aux') == 'yes':
-    if not aux1_name:
-      err = 'You have indicated that your language has auxiliaries. You must define at least one specific auxiliary type.'
-      add_err('auxlabel', err)
-
-  comp = ch.get('aux-comp')
   ch.iter_begin('aux')
   while ch.iter_valid():
-    sem = ch.get('sem')
-    pred = ch.get('pred')
-    subj = ch.get('subj')
-    prefix = ch.iter_prefix()
-
-    if not ch.get('stem1_orth'):
-      err = 'You must specify a stem for each auxiliary type defined.'
-      add_err(prefix + 'stem1_orth', err)
-
-    if not sem:
-      err = 'You must specify whether the auxiliary contributes a predicate.'
-      add_err(prefix + 'sem', err)
-
-    if (sem == 'add-pred'):
-      ch.iter_begin('feat')
-      while ch.iter_valid():
-        if ch.get('name') and not ch.get('value'):
-          err = 'You must specify a value for this feature.'
-          add_err(ch.iter_prefix() + 'value', err)
-        ch.iter_next()
-      ch.iter_end()
-
-    if ((comp == 'vp') or (comp == 'v')):
-      if not subj:
-        err = 'You must specify the subject type.'
-        add_err(prefix + 'subj', err)
-
-    ch.iter_begin('compfeature')
-    compform = 'no'
-    while ch.iter_valid():
-      name = ch.get('name')
-      if name == 'form':
-        compform = 'yes'
-      if name and not ch.get('value'):
-        err = 'You must specify a value for this feature.'
-        add_err(ch.iter_prefix() + 'value', err)
-      ch.iter_next()
-
-    if not compform == 'yes':
-      err = 'You must specify the form of the verb in the complement, i.e., the value of the complement feature FORM.'
-      add_err(prefix + 'complabel', err)
-    ch.iter_end()
-
 
     ch.iter_begin('stem')
     while ch.iter_valid():
-      if not ch.get('pred') and (sem == 'add-pred'):
+      if not ch.get('pred') and (ch.get('sem') == 'add-pred'):
         err = 'You have indicated that this type contributes a predicate. You must specify the predicate name.'
         add_err(ch.iter_prefix() + 'pred', err)
-      if ch.get('pred') and not (sem == 'add-pred'):
+      if ch.get('pred') and not (ch.get('sem') == 'add-pred'):
         err = 'You have specified a predicate but indicated that this type does not contribute a predicate.'
         add_err(prefix + 'sem', err)
       ch.iter_next()
@@ -920,6 +917,7 @@ def validate_choices(choices_file, extra = False):
   validate_sentential_negation()
   validate_coordination()
   validate_yesno_questions()
+  validate_lextypes()
   validate_lexicon()
   validate_test_sentences()
 
