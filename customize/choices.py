@@ -5,6 +5,7 @@
 
 import re
 import sys
+from customize.util.misc import safe_int
 
 ######################################################################
 # globals
@@ -80,7 +81,6 @@ class ChoicesFile:
     if key == '': return []
     return [k for k in self.var_delim_re.split(key) if k]
 
-
   ############################################################################
   ### Choices file access functions
 
@@ -99,6 +99,7 @@ class ChoicesFile:
   # A __getitem__ method so that ChoicesFile can be used with brackets,
   # e.g., ch['language'].
   def __getitem__(self, key):
+    keys = self.split_variable_key(key)
     return self.get(key)
 
   def __set_variable(self, choices, keys, value, allow_overwrite=True):
@@ -137,7 +138,17 @@ class ChoicesFile:
     self.__set_variable(self.choices, self.split_variable_key(key), value)
 
   def __delitem__(self, key):
-    raise NotImplementedError()
+    # integers have an offset of -1 for list indices
+    keys = [safe_int(k, offset=-1) for k in self.split_variable_key(key)]
+    # iteratively find data struct to delete from
+    d = self.choices
+    for k in keys[:-1]:
+        d = d[k]
+    # replace, rather than deleting, list items to maintain list size
+    if type(keys[-1]) == int:
+        d[keys[-1]] = {}
+    else:
+        del d[keys[-1]]
 
   def __contains__(self, key):
     if self.get(key):
@@ -489,14 +500,14 @@ class ChoicesFile:
     # check lexical types
     for noun in self.get('noun'):
       for feat in noun.get('feat',[]):
-        result |= self.has_case(feat, case)
+        result = result or self.has_case(feat, case)
 
     # check morphemes
     for slotprefix in ('noun', 'verb', 'det'):
       for slot in self.get(slotprefix + '-slot'):
         for morph in slot.get('morph',[]):
           for feat in morph.get('feat',[]):
-            result |= self.has_case(feat, case)
+            result = result or self.has_case(feat, case)
 
     self.cached_values[k] = result
 
@@ -516,7 +527,8 @@ class ChoicesFile:
     for adp in self.get('adp'):
       opt = adp['opt']
       for feat in adp['feat']:
-        result = self.has_case(feat, case) and (opt or not check_opt)
+        result = result or (self.has_case(feat, case) and \
+                            (opt or not check_opt))
 
     return result
 
@@ -581,12 +593,12 @@ class ChoicesFile:
 
     for verb in self.get('verb'):
       for feat in verb.get('feat', []):
-        result |= feat['head'] in ('higher', 'lower')
+        result = result or feat['head'] in ('higher', 'lower')
 
     for verb_slot in self.get('verb-slot'):
       for morph in verb_slot.get('morph',[]):
         for feat in morph.get('feat',[]):
-          result |= feat['head'] in ('higher', 'lower')
+          result = result or feat['head'] in ('higher', 'lower')
 
     return result
 

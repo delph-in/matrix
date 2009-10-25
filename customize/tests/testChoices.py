@@ -14,6 +14,44 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         self.assertEqual(c.get('verb1_stem1_pred'), 'test_v_1_rel')
         self.assertEqual(c.get('verb2_stem1_orth'), 'test')
         self.assertEqual(c.get('verb2_stem1_pred'), 'test_v_2_rel')
+        self.assertEqual(c.get('verb2'),
+                {'name':'testverb2', 'valence':'trans',
+                    'stem':[{'orth':'test','pred':'test_v_2_rel'}]})
+
+    def test_set(self):
+        c = customize.choices.ChoicesFile() # no file loaded
+        self.assertEqual(c.choices, {})
+        c['abc'] = 5
+        self.assertEqual(c.choices, {'abc':5})
+        c['def2_ghi'] = 2
+        self.assertEqual(c.choices, {'abc':5, 'def':[{}, {'ghi':2}]})
+        c['def1_ghi'] = 1
+        self.assertEqual(c.choices, {'abc':5, 'def':[{'ghi':1}, {'ghi':2}]})
+
+    def test_del(self):
+        c = customize.choices.ChoicesFile() # no file loaded
+        c['abc'] = 5
+        self.assertEqual(c.choices, {'abc':5})
+        del c['abc']
+        self.assertEqual(c.choices, {})
+        c['abc1_def'] = 1
+        c['abc2_def'] = 2
+        self.assertEqual(c.choices, {'abc':[{'def':1},{'def':2}]})
+        del c['abc2_def']
+        self.assertEqual(c.choices, {'abc':[{'def':1},{}]})
+        del c['abc2']
+        self.assertEqual(c.choices, {'abc':[{'def':1},{}]})
+        c['abc2_def'] = 2
+        c['abc2_ghi'] = 3
+        del c['abc2']
+        self.assertEqual(c.choices, {'abc':[{'def':1},{}]})
+        c['abc2_def'] = 2
+        c['abc3_def'] = 3
+        self.assertEqual(c.choices, {'abc':[{'def':1},{'def':2},{'def':3}]})
+        del c['abc2']
+        self.assertEqual(c.choices, {'abc':[{'def':1},{},{'def':3}]})
+        del c['abc']
+        self.assertEqual(c.choices, {})
 
     def test_split_variable_key(self):
         c = customize.choices.ChoicesFile() # no file loaded
