@@ -219,17 +219,17 @@ function prev_div(n, name)
 // Worker function that clones the invisible tempate of an iterator,
 // replaces any iterator variables with the proper values, and inserts
 // the copy into the page.
-function do_clone_region(name, iter_var, bAnim)
+function do_clone_region(id, iter_var, bAnim)
 {
-  var d = document.getElementById(name + '_TEMPLATE');
-  var a = document.getElementById(name + '_ANCHOR');
-  var p = prev_div(a, name);
+  var d = document.getElementById(id + '_TEMPLATE');
+  var a = document.getElementById(id + '_ANCHOR');
+  var p = prev_div(a, id);
 
   var cur = 1;
   if (p && p.id) {
     var pid = p.id;
-    if (pid.indexOf(name) == 0) {
-      pid = pid.slice(name.length);
+    if (pid.indexOf(id) == 0) {
+      pid = pid.slice(id.length);
       var i = pid.search(/[0-9]+/);
       if (i != -1) {
         cur = Number(pid.slice(i));
@@ -243,7 +243,7 @@ function do_clone_region(name, iter_var, bAnim)
   var re = new RegExp('{' + iter_var + '}', 'g');
   n.innerHTML = n.innerHTML.replace(re, cur);
 
-  n.id = name + cur;
+  n.id = id + cur;
   n.style.display = '';
 
   a.parentNode.insertBefore(n, a);
@@ -257,30 +257,38 @@ function do_clone_region(name, iter_var, bAnim)
 
 // clone_region()
 // Clone a region and expand using animation
-function clone_region(name, iter_var)
+function clone_region(id, iter_var)
 {
-  do_clone_region(name, iter_var, true);
+  do_clone_region(id, iter_var, true);
 }
 
 // clone_region()
 // Clone a region and expand *without* animation
-function clone_region_noanim(name, iter_var)
+function clone_region_noanim(id, iter_var)
 {
-  do_clone_region(name, iter_var, false);
+  do_clone_region(id, iter_var, false);
 }
 
 // remove_region()
-// Remove the last item in an iterator with name
-function remove_region(name)
+// Remove the last item in an iterator with id
+function remove_region(id)
 {
-  var a = document.getElementById(name + '_ANCHOR');
-  var p = prev_div(a, name);
+  var a = document.getElementById(id + '_ANCHOR');
+  var p = prev_div(a, id);
   
   if (p && p.id) {
-    if (p.id.indexOf(name) == 0) {
+    if (p.id.indexOf(id) == 0) {
       p.parentNode.removeChild(p);
     }
   }
+}
+
+// remove_element()
+// Remove the element with id
+function remove_element(id)
+{
+  var e = document.getElementById(id);
+  e.parentNode.removeChild(e);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -613,6 +621,7 @@ function fill_types(select_name, type_cat, prefix)
   set_select_value(select, old_val, old_text);
   force_layout(select.parentNode);
 }
+
 
 //////////////////////////////////////////////////////////////////////
 // Multi-SELECT functions

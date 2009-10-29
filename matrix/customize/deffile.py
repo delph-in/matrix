@@ -17,6 +17,7 @@ import os
 import glob
 import re
 from choices import ChoicesFile
+from utils import tokenize_def
 
 
 ######################################################################
@@ -77,6 +78,13 @@ to the Turing Center from the Utilika Foundation.  Any opinions,
 findings, and conclusions or recommendations expressed in this
 material are those of the author(s) and do not necessarily
 reflect the views of the National Science Foundation.
+
+<p>Publications reporting on work based on grammars derived from this
+system should cite <a
+href="http://faculty.washington.edu/ebender/papers/gee03.pdf">Bender,
+Flickinger and Oepen 2002</a> <a
+href="http://faculty.washington.edu/ebender/bibtex/BenFliOep02.bib.txt">[.bib]</a>
+and <a href="http://faculty.washington.edu/ebender/papers/modules05.pdf">Bender and Flickinger 2005</a> <a href="http://faculty.washington.edu/ebender/bibtex/BenFli05.bib.txt">[.bib]</a>.
 
 <p>Filling out this form will produce a starter grammar for a natural
 language, consisting of a language-independent core and customized
@@ -249,31 +257,49 @@ def html_option(errors, name, selected, html, temp=False):
          (name, sld, temp, html)
 
 
-# split a string into words, treating double-quoted strings as
-# single words.
-def tokenize_def(str):
+def html_delbutton(id):
+  """
+  return the HTML for an iterator delete button that will delete
+  iterator "id"
+  """
+  # Various Unicode exxes:
+  # xD7:   Multiplication Sign
+  # x2169: Roman Numeral Ten
+  # x2179: Small Roman Numeral Ten
+  # x2573: Box Drawings Light Diagonal Cross
+  # x2613: Saltire
+  # x2715: Multiplication X
+  # x2716: Heavy Multiplication X
+  # x2717: Ballot X
+  # x2718: Heavy Ballot X
+  return '<input type="button" class="delbutton" ' + \
+         'value="&#xD7;" name="" title="Delete" ' + \
+         'onclick="remove_element(\'' + id + '\')">\n'
+
+
+# given a list of lines of text, some of which may contain
+# unterminated double-quoted strings, merge some lines as necessary so
+# that every quoted string is contained on a single line, and return
+# the merged list
+def merge_quoted_strings(line):
   i = 0
-  result = []
+  while i < len(line):
+    j = 0
+    in_quotes = False
+    while j < len(line[i]):
+      if line[i][j] == '"' and (j == 0 or line[i][j-1] != '\\'):
+        in_quotes = not in_quotes
+      j += 1
 
-  while i < len(str):
-    # skip whitespace
-    while i < len(str) and str[i].isspace():
+    # if we reach the end of a line inside a quoted string, merge with
+    # the next line and reprocess the newly-merged line
+    if in_quotes:
+      line[i] += line[i+1] # crash here implies an unbalanced '"'
+      del line[i+1]
+    else:
       i += 1
-    # if it's quoted, read to the close quote, otherwise to a space
-    if i < len(str) and str[i] == '"':
-      i += 1
-      a = i
-      while i < len(str) and not (str[i] == '"' and str[i-1] != '\\'):
-        i += 1
-      result.append(str[a:i].replace('\\"', '"'))
-      i += 1
-    elif i < len(str):
-      a = i
-      while i < len(str) and not str[i].isspace():
-        i += 1
-      result.append(str[a:i])
 
-  return result
+  return line
 
 
 # Replace variables of the form {name} in word using the dict iter_vars
@@ -324,7 +350,7 @@ class MatrixDefFile:
   # initialize the v2f and f2v dicts
   def make_name_map(self):
     f = open(self.def_file, 'r')
-    line = f.readlines()
+    line = merge_quoted_strings(f.readlines())
     f.close()
   
     for l in line:
@@ -386,8 +412,9 @@ class MatrixDefFile:
       pass
 
     f = open(self.def_file, 'r')
-    line = f.readlines()
+    line = merge_quoted_strings(f.readlines())
     f.close()
+    
 
     # pass through the definition file once, augmenting the list of validation
     # errors with section names so that we can put red asterisks on the links
@@ -422,15 +449,17 @@ class MatrixDefFile:
       if len(word) == 0:
         pass
       elif word[0] == 'Section':
-        print '<div class="section"><span id="' + word[1] + \
-              'button" onclick="toggle_display(\'' + \
-              word[1] + '\',\'' + word[1] + 'button\')">&#9658;</span> '
+        print '<div class="section"><span id="' + word[1] + 'button" ' + \
+              'onclick="toggle_display(\'' + \
+              word[1] + '\',\'' + word[1] + 'button\')"' + \
+              '>&#9658;</span> '
         if errors.has_key(word[1]):
           print '<span class="error" title="This section contains one or more errors.">* </span>'
         print '<a href="matrix.cgi?subpage=' + word[1] + '">' + \
               word[2] + '</a>'
         print '<div class="values" id="' + word[1] + '" style="display:none">'
         cur_sec = ''
+        printed_something = False
         for c in choice:
           c = c.strip()
           if c:
@@ -439,16 +468,15 @@ class MatrixDefFile:
               cur_sec = v.strip()
             elif cur_sec == word[1]:
               print self.f(a) + ' = ' + self.f(v) + '<br>'
+              printed_something = True
+        if not printed_something:
+          print '&nbsp;'
         print '</div></div>'
 
     print HTML_preform
 
-    tgz_checked = False
+    tgz_checked = True
     zip_checked = False
-    if os.name == 'nt':
-      zip_checked = True
-    else:
-      tgz_checked = True
 
     # the buttons after the subpages
     print html_input(errors, 'hidden', 'customize', 'customize', False, '', '')
@@ -539,13 +567,10 @@ class MatrixDefFile:
         multi = (word[0] == 'MultiSelect')
         (vn, fn, bf, af) = word[1:] #variablename, friendlyname, beforestuff, afterstuff
 
-        dnamesplit = vn.rsplit('-')
-        dmark = dnamesplit[0]
-        dim = ''
-        if dmark == 'dim':
-          dim = dnamesplit[1]
-          print dmark
-          print dim
+        #vnamesplit = vn.rsplit('-')
+        #if vnamesplit[0] == 'dim':
+        #  vn = vnamesplit[1]
+        #  print vn
   
         vn = prefix + vn
 
@@ -569,6 +594,10 @@ class MatrixDefFile:
               fill_arg1 = word[1]
             if len(word) > 2:
               fill_arg2 = word[2] 
+          elif fill_type == 'filltypes':
+            
+            html += html_select(errors, vn, multi,
+                                'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\')') + '\n'
 
 
             if fill_type == 'fillregex':
@@ -667,19 +696,26 @@ class MatrixDefFile:
 
         html += '<div class="iterator" style="display: none" id="' + \
                 prefix + iter_name + '_TEMPLATE">\n'
+        html += html_delbutton(prefix + iter_name + '{' + iter_var + '}')
+        html += '<div class="iterframe">'
         html += self.defs_to_html(lines[beg:end], choices, errors,
                                   prefix + iter_orig + '_', vars)
+        html += '</div>\n'
         html += '</div>\n\n'
 
         choices.iter_begin(iter_name)
         cur = 1
         while choices.iter_valid() or cur <= iter_min:
-          pre = prefix + iter_name + str(cur) + '_'
-          vars[iter_var] = cur
+          num = str(choices.iter_num())
+          pre = prefix + iter_name + num + '_'
+          vars[iter_var] = num
 
           # pre[:-1] trims the trailing '_'
           html += '<div class="iterator" id="' + pre[:-1] + '">\n'
+          html += html_delbutton(pre[:-1])
+          html += '<div class="iterframe">'
           html += self.defs_to_html(lines[beg:end], choices, errors, pre, vars)
+          html += '</div>\n'
           html += '</div>\n'
 
           choices.iter_next()
@@ -694,10 +730,6 @@ class MatrixDefFile:
                 'onclick="clone_region(\'' + \
                 prefix + iter_name + '\', \'' + \
                 iter_var + '\')">'
-        html += '<input type="button" name="" ' + \
-                'value="Remove ' + label + '" ' + \
-                'onclick="remove_region(\'' + \
-                prefix + iter_name + '\')"></p>\n'
 
       i += 1
 
@@ -715,7 +747,7 @@ class MatrixDefFile:
     choices = ChoicesFile(choices_file)
 
     f = open(self.def_file, 'r')
-    lines = f.readlines()
+    lines = merge_quoted_strings(f.readlines())
     f.close()
 
     section_begin = -1
@@ -769,14 +801,14 @@ class MatrixDefFile:
 
   # Create and print the "download your matrix here" page for the
   # customized matrix in the directory specified by session_path
-  def custom_page(self, session_path, arch_type):
+  def custom_page(self, session_path, grammar_dir, arch_type):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Matrix Customized</title>'
     if arch_type == 'tgz':
-      arch_file = 'matrix.tar.gz'
+      arch_file = grammar_dir + '.tar.gz'
     else:
-      arch_file = 'matrix.zip'
+      arch_file = grammar_dir + '.zip'
     print HTML_customprebody % (session_path + '/' + arch_file)
     print HTML_postbody
 
@@ -873,7 +905,7 @@ class MatrixDefFile:
 
     # Open the def file and store it in line[]
     f = open(self.def_file, 'r')
-    lines = f.readlines()
+    lines = merge_quoted_strings(f.readlines())
     f.close()
 
     # Now pass through the def file, writing out either the old choices

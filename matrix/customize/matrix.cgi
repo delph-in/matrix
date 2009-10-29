@@ -28,7 +28,7 @@ from deffile import HTTP_header
 # beginning of main program
 
 # Uncomment this to see the output from print in the HTML page
-#print HTTP_header + '\n'
+print HTTP_header + '\n'
 
 matrixdef = MatrixDefFile('matrixdef')
 
@@ -128,8 +128,8 @@ if form_data.has_key('customize'):
                   'saved-choices/choices.' + str(serial))
 
     # Create the customized grammar
-    customize_matrix(session_path, arch_type)
-    matrixdef.custom_page(session_path, arch_type)
+    grammar_dir = customize_matrix(session_path, arch_type)
+    matrixdef.custom_page(session_path, grammar_dir, arch_type)
 elif form_data.has_key('subpage'):
   if browser_cookie:
     matrixdef.sub_page(form_data['subpage'].value, cookie, errors)

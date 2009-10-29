@@ -4,6 +4,7 @@
 # imports
 
 import re
+import sys
 
 ######################################################################
 # globals
@@ -18,6 +19,8 @@ class ChoicesFile:
   def __init__(self, choices_file):
     self.file_name = choices_file
     self.iter_stack = []
+    self.cached_values = {}
+    self.cached_iter_values = None
     self.choices = {}
     try:
       if type(choices_file) == str:
@@ -35,6 +38,8 @@ class ChoicesFile:
         l = l.strip()
         if l:
           (key, value) = l.split('=', 1)
+          if sys.stdout.isatty() and self.is_set(key) and key != 'section':
+            print 'WARNING: choices file defines multiple values for ' + key
           self.set(key, value)
     except:
       pass
@@ -78,6 +83,8 @@ class ChoicesFile:
         self.convert_15_to_16()
       if version < 17:
         self.convert_16_to_17()
+      if version < 18:
+        self.convert_17_to_18()
       # As we get more versions, add more version-conversion methods, and:
       # if version < N:
       #   self.convert_N-1_to_N
@@ -91,6 +98,11 @@ class ChoicesFile:
   # Return the keys for the choices dict
   def keys(self):
     return self.choices.keys()
+
+
+  def clear_cached_values(self):
+    self.cached_values = {}
+    self.cached_iter_values = None
 
 
   ######################################################################
@@ -134,7 +146,19 @@ class ChoicesFile:
       key = key[0:offset]
       
     self.iter_stack.append([key, var, True])
-    self.iter_stack[-1][2] = self.__calc_iter_valid()
+
+    # if the beginning of the iterator isn't valid, try bumping up to
+    # the next valid value
+    valid = self.__iter_is_valid()
+    if not valid:
+      self.iter_next()
+      # if there was no next valid value, start at the requested
+      # position (since the caller may be writing rather than reading)
+      if not self.iter_valid():
+        self.iter_stack[-1][0] = key
+        self.iter_stack[-1][1] = var
+        self.iter_stack[-1][2] = False
+
 
   # Are there any choices with a name prefixed by the current
   # iterator?  Useful as the condition in loops.
@@ -144,12 +168,20 @@ class ChoicesFile:
     else:
       return False
 
+
   def iter_next(self):
-    self.iter_stack[-1][1] += 1
-    self.iter_stack[-1][2] = self.__calc_iter_valid()
+    next = self.__iter_next_valid()
+    if next != -1:
+      self.iter_stack[-1][1] = next
+      self.iter_stack[-1][2] = True
+    else:
+      self.iter_stack[-1][1] += 1
+      self.iter_stack[-1][2] = False
+
 
   def iter_end(self):
     self.iter_stack.pop()
+
 
   def iter_prefix(self):
     prefix = ''
@@ -157,17 +189,108 @@ class ChoicesFile:
       prefix += i[0] + str(i[1]) + '_'
     return prefix
 
-  # Based on the current top of the iterator stack, decide if the
-  # iterator is valid -- that is, if there are exist any values in the
-  # choices dictionary for which the current iterator is a prefix.
-  # Users should not call this.
-  def __calc_iter_valid(self):
-    prefix = self.iter_prefix()
-    valid = False
+
+  def iter_num(self):
+    return self.iter_stack[-1][1]
+
+
+  def iter_max(self,key):
+    count = 0
+    self.iter_begin(key)
+    while self.iter_valid():
+      count += 1
+      self.iter_next()
+    self.iter_end()
+    return count
+
+
+  def __iter_calc_valid(self):
+    """
+    Pass through the keys for the current choices and pre-calculate
+    the valid numerical ranges for each iterator.  Store the values
+    found in cached_iter_values.
+    """
+    self.cached_iter_values = {}
+    pat = re.compile('([0-9]+)_')
     for k in self.keys():
-      if k[0:len(prefix)] == prefix:
-        return True
-    return False
+      offset = 0
+      klen = len(k)
+      while offset < klen:
+        match = pat.search(k[offset:])
+        if match:
+          num = int(match.group(1))
+          name = k[:offset + match.start(1)]
+
+          # in this loop, store values as sets to avoid duplicates
+          if self.cached_iter_values.has_key(name):
+            self.cached_iter_values[name].add(num)
+          else:
+            newval = set()
+            newval.add(num)
+            self.cached_iter_values[name] = newval
+            
+          offset += match.end()
+        else:
+          break
+
+    # now convert sets to sorted lists so its easy to find the max
+    for k in self.cached_iter_values.keys():
+      self.cached_iter_values[k] = sorted(list(self.cached_iter_values[k]))
+
+
+  def __iter_name_and_num(self):
+    """
+    Return the name and number of the current iteration state.
+    """
+    if not self.cached_iter_values:
+      self.__iter_calc_valid()
+
+    num = self.iter_stack[-1][1]
+
+    prefix = self.iter_prefix()
+    match = re.search('[0-9]+_$', prefix)
+    name = prefix[:match.start()]
+
+    return (name, num)
+
+
+  def __iter_is_valid(self):
+    """
+    Return true if the iterator on top of the stack is valid -- that
+    is, if there are exist any values in the choices dictionary for
+    which the current iterator is a prefix.
+    """
+    if not self.cached_iter_values:
+      self.__iter_calc_valid()
+
+    (name, num) = self.__iter_name_and_num()
+
+    return self.cached_iter_values.has_key(name) and \
+           num in self.cached_iter_values[name]
+
+
+  def __iter_next_valid(self):
+    """
+    Return the next valid numerical value for the current iterator.
+    If there is no valid value greater than the current value, return
+    -1.
+    """
+    if not self.cached_iter_values:
+      self.__iter_calc_valid()
+
+    (name, num) = self.__iter_name_and_num()
+
+    if self.cached_iter_values.has_key(name):
+      nums = self.cached_iter_values[name]
+      if num in nums:
+        i = nums.index(num) + 1
+        if i < len(nums):
+          return nums[i]
+      else:
+        return nums[0]
+
+    return -1
+
 
   ######################################################################
   # Methods for saving and restoring the iterator state (the stack)
@@ -175,8 +298,10 @@ class ChoicesFile:
   def iter_state(self):
     return self.iter_stack
 
+
   def iter_set_state(self,state):
     self.iter_stack = state
+
 
   def iter_reset(self):
     self.iter_stack = []
@@ -194,14 +319,19 @@ class ChoicesFile:
     else:
       return ''
 
+
   # Set the value of 'key' to 'value'
   def set_full(self, key, value):
     self.choices[key] = value
+    self.clear_cached_values()
+
 
   # Remove 'key' and its value from the list of choices
   def delete_full(self, key):
     if self.is_set_full(key):
       del self.choices[key]
+      self.clear_cached_values()
+
 
   # Return True iff there if 'key' is currently set
   def is_set_full(self, key):
@@ -216,13 +346,16 @@ class ChoicesFile:
   def get(self, key):
     return self.get_full(self.iter_prefix() + key)
 
+
   # Set the value of 'key' to 'value'
   def set(self, key, value):
     self.set_full(self.iter_prefix() + key, value)
 
+
   # Remove 'key' and its value from the list of choices
   def delete(self, key):
     self.delete_full(self.iter_prefix() + key)
+
 
   # Return True iff there if 'key' is currently set
   def is_set(self, key):
@@ -242,6 +375,10 @@ class ChoicesFile:
     lexically marked case (restricting the calculation to the
     passed-in case if it's non-empty).
     """
+
+    k = 'has_noun_case(' + case + ')'
+    if self.cached_values.has_key(k):
+      return self.cached_values[k]
 
     result = False
 
@@ -280,6 +417,8 @@ class ChoicesFile:
       self.iter_end()
 
     self.iter_set_state(state)
+
+    self.cached_values[k] = result
 
     return result
 
@@ -875,8 +1014,8 @@ class ChoicesFile:
     This list consists of tuples:
     [type catname]
     Note that this assumes a strict naming convention for 
-    lexical types within the customization and no hyphens
-    in the user defined names.
+    lexical types within the customization and no hyphens 
+    in the user defined names.FIX
     Also note: There are four sources of types: 
     1) explicitly defined in initial types array below
     2) defined based on selection to generate types for a specific feature (e.g., gender)
@@ -891,16 +1030,16 @@ class ChoicesFile:
     features = self.features()  
     dimvalues = [] 
     dim = []
-#    print features
+
     for f in features:
-      if (f[0] == 'pernum') and (self.get('person-dim') == 'on' or self.get('number-dim') == 'on'):
+      if (f[0] == 'pernum') and (self.get('dim-person') == 'on' or self.get('dim-number') == 'on'):
         dim += [['pernum', 'noun']] 
-      elif self.get(f[0] + '-dim') == 'on':
+      elif self.get('dim-'+ f[0]) == 'on':
         dim += [[f[0], f[3]]]  #feature name (dimension) and category name from features() 
-#    print dim
+
     #look for category-based dimension names in choices and add features chosen on questionnaire to array
     for c in ['noun', 'verb', 'aux', 'det']:
-      dimlist = self.get(c + '-dim').split(', ') #split multilist get feature values chosen per category
+      dimlist = self.get('dim-' + c).split(', ') #split multilist get feature values chosen per category
       for l in dimlist:
         dim += [[l, c]]
       
@@ -918,7 +1057,9 @@ class ChoicesFile:
     #need to fix? throw an error if they are not the same??
     for dv in dimvalues:
       cat_name = dv[1]
-      lextype_name = dv[0] + '-' + cat_name + '-lex'
+      #TEST remove hyphens here
+      lextype_name = dv[0].replace('-','') + '-' + cat_name + '-lex'
+      print lextype_name
       types += [ [lextype_name, cat_name] ] 
   
     #collect up user defined types
@@ -928,16 +1069,17 @@ class ChoicesFile:
     for c in ['noun', 'verb', 'aux', 'det']:
       self.iter_begin(c)
       while self.iter_valid():
-        lextype_name = self.get('name') + '-' + c + '-lex'
+        #TEST remove hyphens here
+        lextype_name = self.get('name').replace('-', '') + '-' + c + '-lex'
         types += [ [lextype_name, c] ]
         self.iter_next()
       self.iter_end()
 
     self.iter_set_state(state)
-  #  print types
-    return types
   
-
+    return types
+ 
+ 
   # features()
   #   Create and return a list containing information about the
   #   features in the language described by the current choices.  This
@@ -1064,6 +1206,41 @@ class ChoicesFile:
       features += [ ['negation', 'plus|plus', '', 'verb'] ]
 #test - note this reflects no constituent negation
 
+    # Questions
+    if self.get_full('q-infl'):
+      features += [ ['question', 'plus|plus', '' ] ]
+
+    # Argument Optionality
+    if self.get_full('subj-drop') or self.get_full('obj-drop'):
+      features +=[['OPT', 'plus|plus;minus|minus', '']]
+    
+    # Overt Argument
+    if  self.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and self.get_full('obj-mark-drop') == 'obj-mark-drop-req':
+      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
+    elif self.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-not' and self.get_full('obj-mark-drop') == 'obj-mark-drop-req':
+      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
+    elif self.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-not' and self.get_full('subj-mark-drop') == 'subj-mark-drop-req':
+      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
+    elif self.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-not' and self.get_full('obj-mark-drop') == 'obj-mark-drop-opt' :
+      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
+    elif self.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-not' and self.get_full('subj-mark-drop') == 'subj-mark-drop-opt' :
+      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
+    elif  self.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and self.get_full('subj-mark-drop') == 'subj-mark-drop-req':
+      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
+
+    # Dropped Argument
+    if self.get_full('obj-mark-drop')== 'obj-mark-drop-not' and self.get_full('obj-mark-no-drop')== 'obj-mark-no-drop-req':
+      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
+
+    elif self.get_full('obj-mark-drop')== 'obj-mark-drop-not' and self.get_full('obj-mark-no-drop')== 'obj-mark-no-drop-opt':
+      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
+
+    elif self.get_full('subj-mark-drop')== 'subj-mark-drop-not' and self.get_full('subj-mark-no-drop')== 'subj-mark-no-drop-req':
+      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
+
+    elif self.get_full('subj-mark-drop')== 'subj-mark-drop-not' and self.get_full('subj-mark-no-drop')== 'subj-mark-no-drop-opt':
+      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
+
     # Other features
     state = self.iter_state()
     self.iter_reset()
@@ -1114,7 +1291,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 17
+    return 18
 
 
   def convert_value(self, key, old, new):
@@ -1647,8 +1824,10 @@ class ChoicesFile:
         self.delete('aux' + i + '_comp')
 
   def convert_12_to_13(self):
-    # EB stupidly used "+" as a feature value.  Updating this
-    # to "plus".  Feature name was "negation".
+    """ 
+    ERB: stupidly used "+" as a feature value.  Updating this
+    to "plus".  Feature name was "negation".
+    """
     for lextype in ['aux','det','verb','noun']:
       self.iter_begin(lextype + '-slot')
       while self.iter_valid():
@@ -1788,3 +1967,35 @@ class ChoicesFile:
 
       self.iter_next()
     self.iter_end()
+
+  def convert_17_to_18(self):
+    """
+    Retrofitted yesno questions library to integrate question affixes
+    with morphotactic infrastructure.  'aux-main' possibility for 
+    q-infl-type said in the prose 'any finite verb', but I don't think
+    we had actually implemented this.  This translation does not
+    put [FORM fin] on the q-infl rule, since this rule will end up
+    as a separate path from any other verbal inflection, again mimicking
+    what was going on in the old system.
+    """
+    if self.get('q-infl') == 'on':
+      n = self.iter_max('verb-slot') + 1
+      pref = 'verb-slot' + str(n)
+      if self.get('ques-aff') == 'suffix':
+        self.set(pref + '_order', 'after')
+      if self.get('ques-aff') == 'prefix':
+        self.set(pref + '_order', 'before')
+      if self.get('q-infl-type') == 'main':
+        self.set(pref + '_input1_type', 'iverb')
+        self.set(pref + '_input2_type', 'tverb')
+      if self.get('q-infl-type') == 'aux':
+        self.set(pref + '_input1_type', 'aux')
+      if self.get('q-infl-type') == 'aux-main':
+        self.set(pref + '_input1_type', 'verb')
+      if self.is_set('ques-aff-orth'):
+        self.set(pref + '_morph1_orth', self.get('ques-aff-orth'))
+      self.set(pref + '_name', 'q-infl')
+      self.set(pref + '_morph1_feat1_name', 'question')
+      self.set(pref + '_morph1_feat1_value', 'plus')
+      self.set(pref + '_opt', 'on')
+

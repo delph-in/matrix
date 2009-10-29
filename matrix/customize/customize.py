@@ -8,8 +8,7 @@ import datetime
 import shutil
 import tdl
 import tarfile
-if os.name == 'nt':
-  import gzip
+import gzip
 import zipfile
 import sys
 import re
@@ -130,7 +129,9 @@ class Hierarchy:
   # type3 := supertype3  ; comment3
   # ...
   def save(self, tdl_file, define = True):
-    mylang.add_literal(';;; ' + self.name[0:1].upper() + self.name[1:])
+    tdl_file.set_section('features')
+
+    tdl_file.add_literal(';;; ' + self.name[0:1].upper() + self.name[1:])
 
     if define:
       tdl_file.add(self.name + ' := *top*.', '', True)
@@ -310,16 +311,21 @@ class Hierarchy:
 #   iterator and specify the feature/value pairs found to the
 #   passed-in type.
 
-def customize_feature_values(type_name, pos, features=None, cases=None):
+def customize_feature_values(type_name, pos, features=None, cases=None, tdlfile=None):
 
   if not features:
     features = ch.features()
   if not cases:
     cases = ch.cases()
+  if not tdlfile:
+    tdlfile = mylang
 
   pos_geom_prefix = ''
+  
   if pos == 'det':
     pos_geom_prefix = 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.'
+  elif pos == 'con':
+    pos_geom_prefix = 'HEAD-DTR.SYNSEM.'
   else:
     pos_geom_prefix = 'SYNSEM.'
 
@@ -367,18 +373,22 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
     if geom:
       if n in hierarchies:
         value = hierarchies[n].get_type_covering(v)
-        mylang.add(type_name +
-                   ' := [ ' + geom + ' ' + value + ' ].')
+        tdlfile.add(type_name +
+                    ' := [ ' + geom + ' ' + value + ' ].',
+                    merge=True)
         if n == 'case' and ch.has_mixed_case():
-          mylang.add(type_name +
-                   ' := [ ' + geom + '-MARKED + ].')
+          tdlfile.add(type_name +
+                      ' := [ ' + geom + '-MARKED + ].',
+                      merge=True)
       else:
         for value in v:
-          mylang.add(type_name +
-                     ' := [ ' + geom + ' ' + value + ' ].')
+          tdlfile.add(type_name +
+                      ' := [ ' + geom + ' ' + value + ' ].',
+                      merge=True)
     elif n == 'argument structure':
       # constrain the ARG-ST to be passed up
-      mylang.add(type_name + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].')
+      tdlfile.add(type_name + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].',
+                  merge=True)
 
       # get the feature geometry of CASE
       for f in features:
@@ -392,20 +402,22 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
         if len(c) > 1:
           a_case = canon_to_abbr(c[0], cases)
           o_case = canon_to_abbr(c[1], cases)
-          mylang.add(type_name + \
-                     ' := [ ARG-ST < [ ' + \
-                     geom + ' ' + a_case + ' ], [ ' +
-                     geom + ' ' + o_case + ' ] > ].')
+          tdlfile.add(type_name + \
+                      ' := [ ARG-ST < [ ' + \
+                      geom + ' ' + a_case + ' ], [ ' +
+                      geom + ' ' + o_case + ' ] > ].',
+                      merge=True)
         else:
           s_case = canon_to_abbr(c[0], cases)
-          mylang.add(type_name + \
-                     ' := [ ARG-ST.FIRST. ' + \
-                     geom + ' ' + s_case + ' ].')
+          tdlfile.add(type_name + \
+                      ' := [ ARG-ST.FIRST. ' + \
+                      geom + ' ' + s_case + ' ].',
+                      merge=True)
 
     elif (n == 'negation' and v[0] == 'plus'):
       # ERB 2009-01-22 This is where we deal with the
       # negative affixes.  
-      mylang.add(type_name + ':= \
+      tdlfile.add(type_name + ':= \
                      [ C-CONT [ HOOK [ XARG #xarg,\
 	                     LTOP #ltop,\
 	                     INDEX #ind ],\
@@ -424,7 +436,45 @@ def customize_feature_values(type_name, pos, features=None, cases=None):
 	                          CAT.HEAD verb]]]].',
                  'This lexical rule adds the neg_r_rel to the verb\'s\n\
 	          RELS list.  It is instantiated by a spelling-changing\n\
-	          rule as specified in irules.tdl.')
+	          rule as specified in irules.tdl.',
+                  merge=True)
+
+
+    elif (n == 'question' and v[0] == 'plus'):
+      # ERB 2009-07-01 Adding in semantics for question affixes
+      tdlfile.add(type_name + ':= \
+                     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].',
+                  merge=True)
+
+    ## Specifiying OPT- on each user defined type instead of creating a supertype because
+    #It the supertype would need to inherit from transitive-verb-lex and the code already puts 
+    #transitive-verb-lex as a supertype of user-defined typ thus causing an inheritance issue.
+    #elif(n=='OPT' and v[0] == 'plus'):
+      # SS 2009-05-26 argument optionality is added to user defined types here
+      #if h == 'subj':
+      #  tdlfile.add(type_name + ':= subj-drop-verb-lex.', merge = True)
+      #if h == 'obj':
+      #  tdlfile.add(type_name + ':= obj-drop-verb-lex.', merge = True)
+
+    elif(n=='OPT' and v[0] == 'minus'):
+      if h == 'subj':
+        tdlfile.add(type_name + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+      if h == 'obj':
+        tdlfile.add(type_name + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+    
+    elif (n=='overt-arg' and h == 'obj' and v[0] == 'not-permitted'):
+      tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
+    
+    elif(n=='overt-arg' and h == 'subj') and v[0] == 'not-permitted':
+      tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
+
+    elif (n=='dropped-arg' and h == 'obj' and v[0] == 'not-permitted'):
+      tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+    
+    elif(n=='dropped-arg' and h == 'subj' and v[0] == 'not-permitted'):
+      tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+
+      
     ch.iter_next()
   ch.iter_end()
 
@@ -504,7 +554,7 @@ def customize_case_adpositions():
       ';;; be modifiers.'
     mylang.add_literal(comment)
 
-    mylang.add('+np :+ [ CASE case ].')
+    mylang.add('+np :+ [ CASE case ].', section='addenda')
 
     typedef = \
       'case-marking-adp-lex := basic-one-arg & raise-sem-lex-item & \
@@ -518,10 +568,10 @@ def customize_case_adpositions():
     mylang.add(typedef)
 
     if ch.has_mixed_case():
-      mylang.add('+np :+ [ CASE-MARKED bool ].')
-      typedef = \
-        'case-marking-adp-lex := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].'
-      mylang.add(typedef)
+      mylang.add('+np :+ [ CASE-MARKED bool ].', section='addenda')
+      mylang.add(
+        'case-marking-adp-lex := \
+         [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].')
 
     # Lexical entries
     lexicon.add_literal(';;; Case-marking adpositions')
@@ -549,26 +599,7 @@ def customize_case_adpositions():
                         [ STEM < "' + orth + '" > ].'
       lexicon.add(typedef)
 
-      ch.iter_begin('feat')
-      while ch.iter_valid():
-        # Figure out the name and feature geometry of the feature
-        n = ch.get('name')
-        geom = ''
-        for f in features:
-          if f[0] == n:
-            geom = f[2]
-
-        # Use the abbreviation of the value, if available
-        v = ch.get('value')
-        if n == 'case':
-          v = canon_to_abbr(v, cases)
-
-        typedef = \
-          adp_type + ' := [ SYNSEM.' + geom + ' ' + v + ' ].'
-        lexicon.add(typedef, merge=True)
-
-        ch.iter_next()
-      ch.iter_end()
+      customize_feature_values(adp_type, 'adp', tdlfile=lexicon)
 
       ch.iter_next()
     ch.iter_end()
@@ -582,15 +613,15 @@ def customize_direct_inverse():
   if not ch.get_full('scale1_feat1_name'):
     return
 
-  mylang.add('verb :+ [ DIRECTION direction ].')
+  mylang.add('verb :+ [ DIRECTION direction ].', section='addenda')
   hier = Hierarchy('direction')
   hier.add('dir', 'direction')
   hier.add('inv', 'direction')
   hier.save(mylang)
 
   if ch.has_SCARGS():
-    mylang.add('word-or-lexrule :+ [ SC-ARGS list ].')
-    mylang.add('lex-rule :+ [ SC-ARGS #1, DTR.SC-ARGS #1 ].')
+    mylang.add('word-or-lexrule :+ [ SC-ARGS list ].', section='addenda')
+    mylang.add('lex-rule :+ [ SC-ARGS #1, DTR.SC-ARGS #1 ].', section='addenda')
 
   cases = ch.cases()
   features = ch.features()
@@ -616,8 +647,9 @@ def customize_direct_inverse():
 
   # Now pass through the scale, creating the direct-inverse hierarchy
   # pairwise
+  mylang.set_section('dirinv')
+  mylang.add_literal(';;; Direct-inverse scale')
   supertype = 'dir-inv-scale'
-  mylang.add_literal(';;; Scale for direct-inverse')
   mylang.add(supertype + ' := canonical-synsem.')
   for i in range(1, scale_max):
     values = {}  # for each feature, a set of values
@@ -763,15 +795,15 @@ def init_pernum_hierarchy():
 
 def customize_person_and_number():
   if 'pernum' in hierarchies:
-    mylang.add('png :+ [ PERNUM pernum ].')
+    mylang.add('png :+ [ PERNUM pernum ].', section='addenda')
     hierarchies['pernum'].save(mylang)
   else:
     if 'person' in hierarchies:
-      mylang.add('png :+ [ PER person ].')
+      mylang.add('png :+ [ PER person ].', section='addenda')
       hierarchies['person'].save(mylang)
 
     if 'number' in hierarchies:
-      mylang.add('png :+ [ NUM number ].')
+      mylang.add('png :+ [ NUM number ].', section='addenda')
       hierarchies['number'].save(mylang)
 
 
@@ -793,7 +825,7 @@ def init_gender_hierarchy():
 
 def customize_gender():
   if 'gender' in hierarchies:
-    mylang.add('png :+ [ GEND gender ].')
+    mylang.add('png :+ [ GEND gender ].', section='addenda')
     hierarchies['gender'].save(mylang)
 
 
@@ -843,9 +875,11 @@ def customize_other_features():
     if feat not in ['case', 'person', 'number', 'pernum', 'gender',
                     'form', 'tense', 'aspect', 'situation']:
       if type == 'head':
-        mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].')
+        mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].',
+                   section='addenda')
       else:
-        mylang.add('png :+ [ ' + feat.upper() + ' ' + feat + ' ].')
+        mylang.add('png :+ [ ' + feat.upper() + ' ' + feat + ' ].',
+                   section='addenda')
 
       # sfd: If it's an 'index' feature, we should make sure to strip it
       # out in the VPM
@@ -972,8 +1006,9 @@ def init_situation_hierarchy():
 
 def customize_situation():
   if 'situation' in hierarchies:
+    mylang.set_section('features')
     mylang.add('situation := sort.')
-    mylang.add('tam :+ [SITUATION situation].')
+    mylang.add('tam :+ [SITUATION situation].', section='addenda')
     hierarchies['situation'].save(mylang, False)
 
 ######################################################################
@@ -982,521 +1017,11 @@ def customize_situation():
 #   about basic word order, including information about adpositions
 #   and auxiliaries.
 
-# ERB 2006-09-15 DOCUMENTATION
-
-# 1. Statement of domain
-
-# This module handles the basic word order facts for matrix declarative
-# clauses, include permissible orders of major constituents (V, S, O),
-# and (where applicable) determiner-noun order, adposition-NP order, and
-# auxiliary-verb order.  Since the word order section and the basic vocabulary
-# section are closely related, both are documented together here.
-
-# 2. Seed strings/requirements of POS lexicon
-
-# The phenomena covered by this module can be illustrated using the following
-# lexical entries:
-
-# det (determiner)
-# s (subject)
-# o (object)
-# io (indirect object)
-# tv (transitive verb)
-# iv (intransitive verb)
-# dtv (ditransitive verb)
-# aux (auxiliary verb)
-# p (adposition)
-
-# In these seed strings, p and aux are assumed to be semantically
-# empty.  Det does have semantic content which is distinct from the
-# semantic relation introduced by the bare-np phrase.
-
-# In the absence of a module for case (and in languages without case)
-# both 's tv o' and 'o tv s' will parse in an ostensibly svo language.  We
-# want to distinguish s and o anyway because we would expect those two strings to
-# have different semantic representations in an svo language.  That is,
-# you shouldn't be able to generate 'o tv s' from the semantics of 's tv o'
-# in a strictly svo language.
-
-# Seed strings, not all of which will have valid permutations in all languages.
-
-# Note that his module does NOT handle argument optionality, so the seed
-# strings given here don't illustrate it.
-
-# These seed strings are written assuming sov order, prepositions, det-n,
-# and auxiliaries which immediately follow the verbs they attach to.
-# They allow for optional dets and optional adps.
-
-# The module as written really only does anything interesting with io
-# (indirect objects) in the case of free word order languages.  The lexicon
-# does not currently elicit a ditransitive verb, however.
-
-## Intransitive verb, transitive verb, det on s, o, both, neither
-## p on s, o, both, neither, with and without det
-
-# s iv
-# det s iv
-# s o tv
-# det s det o tv
-# det s o tv
-# s det o tv
-# p s iv
-# p s o tv
-# p s p o tv
-# s p o tv
-# p det s iv
-# p det s o tv
-# p det s p o tv
-# det s p o tv
-# p s det o tv
-# p s p det o tv
-# s p det o tv
-# p det s det o tv
-# p det s p det o tv
-# det s p o det tv
-
-## Semantically distinct seed strings from the above:
-
-# s iv
-# det s iv
-# s o tv
-# det s o tv
-# det s det o tv
-
-# ## Ditransitive verbs.  Det on no arguments, each one separately
-# ## each pair, all three.  All of these are semantically distinct
-# ## from each other, and from the strings above.
-
-# s io o dtv
-# det s io o dtv
-# s det io o dtv
-# s io det o dtv
-# det s det io o dtv
-# det s io det o dtv
-# s det io det o dtv
-# det s det io det o dtv
-
-# ## P is semantically empty, so the strings below all share semantics
-# ## with something in the set above.
-
-# ## Ditransitive verbs.  Det on no arguments, eachone separately
-# ## each pair, all three. P on s argument only.
-
-# p s io o dtv
-# p det s io o dtv
-# p s det io o dtv
-# p s io det o dtv
-# p det s det io o dtv
-# p det s io det o dtv
-# p s det io det o dtv
-# p det s det io det o dtv
-
-# ## Ditransitive verbs.  Det on no arguments, each one separately
-# ## each pair, all three. P on io argument only.
-
-# s p io o dtv
-# det s p io o dtv
-# s det p io o dtv
-# s p io det o dtv
-# det s p det io o dtv
-# det s p io det o dtv
-# s p det io det o dtv
-# det s p det io det o dtv
-
-# ## Ditransitive verbs.  Det on no arguments, each one separately
-# ## each pair, all three. P on o argument only.
-
-# s io p o dtv
-# det s io p o dtv
-# s det io p o dtv
-# s io p det o dtv
-# det s det io p o dtv
-# det s io p det o dtv
-# s det io p det o dtv
-# det s det io p det o dtv
-
-# ## Ditransitive verbs.  Det on no arguments, each one separately
-# ## each pair, all three. P on s and io arguments only.
-
-# p s p io o dtv
-# p det s p io o dtv
-# p s p det io o dtv
-# p s p io det o dtv
-# p det s p det io o dtv
-# p det s p io det o dtv
-# p s p det io det o dtv
-# p det s p det io det o dtv
-
-# ## Ditransitive verbs.  Det on no arguments, each one separately
-# ## each pair, all three. P on s and o arguments only.
-
-# p s io p o dtv
-# p det s io p o dtv
-# p s det io p o dtv
-# p s io p det o dtv
-# p det s det io p o dtv
-# p det s io p det o dtv
-# p s det io p det o dtv
-# p det s det io p det o dtv
-
-# ## Ditransitive verbs.  Det on no arguments, each one separately
-# ## each pair, all three. P on io and o arguments only.
-
-# s p io p o dtv
-# det s p io p o dtv
-# s p det io p o dtv
-# s p io p det o dtv
-# det s p det io p o dtv
-# det s p io p det o dtv
-# s p det io p det o dtv
-# det s p det io p det o dtv
-
-# ## Ditransitive verbs.  Det on no arguments, each one separately
-# ## each pair, all three. P on all three arguments.
-
-# p s p io p o dtv
-# p det s p io p o dtv
-# p s p det io p o dtv
-# p s p io p det o dtv
-# p det s p det io p o dtv
-# p det s p io p det o dtv
-# p s p det io p det o dtv
-# p det s p det io p det o dtv
-
-# ## All of the above, with aux added at the end.
-# ## aux is semantically empty, so no new semantics here.
-
-# s iv aux
-# det s iv aux
-# s o tv aux
-# det s det o tv aux
-# det s o tv aux
-# s det o tv aux
-# p s iv aux
-# p s o tv aux
-# p s p o tv aux
-# s p o tv aux
-# p det s iv aux
-# p det s o tv aux
-# p det s p o tv aux
-# det s p o tv aux
-# p s det o tv aux
-# p s p det o tv aux
-# s p det o tv aux
-# p det s det o tv aux
-# p det s p det o tv aux
-# det s p o det tv aux
-# s io o dtv aux
-# det s io o dtv aux
-# s det io o dtv aux
-# s io det o dtv aux
-# det s det io o dtv aux
-# det s io det o dtv aux
-# s det io det o dtv aux
-# det s det io det o dtv aux
-# p s io o dtv aux
-# p det s io o dtv aux
-# p s det io o dtv aux
-# p s io det o dtv aux
-# p det s det io o dtv aux
-# p det s io det o dtv aux
-# p s det io det o dtv aux
-# p det s det io det o dtv aux
-# s p io o dtv aux
-# det s p io o dtv aux
-# s det p io o dtv aux
-# s p io det o dtv aux
-# det s p det io o dtv aux
-# det s p io det o dtv aux
-# s p det io det o dtv aux
-# det s p det io det o dtv aux
-# s io p o dtv aux
-# det s io p o dtv aux
-# s det io p o dtv aux
-# s io p det o dtv aux
-# det s det io p o dtv aux
-# det s io p det o dtv aux
-# s det io p det o dtv aux
-# det s det io p det o dtv aux
-# p s p io o dtv aux
-# p det s p io o dtv aux
-# p s p det io o dtv aux
-# p s p io det o dtv aux
-# p det s p det io o dtv aux
-# p det s p io det o dtv aux
-# p s p det io det o dtv aux
-# p det s p det io det o dtv aux
-# p s io p o dtv aux
-# p det s io p o dtv aux
-# p s det io p o dtv aux
-# p s io p det o dtv aux
-# p det s det io p o dtv aux
-# p det s io p det o dtv aux
-# p s det io p det o dtv aux
-# p det s det io p det o dtv aux
-# s p io p o dtv aux
-# det s p io p o dtv aux
-# s p det io p o dtv aux
-# s p io p det o dtv aux
-# det s p det io p o dtv aux
-# det s p io p det o dtv aux
-# s p det io p det o dtv aux
-# det s p det io p det o dtv aux
-# p s p io p o dtv aux
-# p det s p io p o dtv aux
-# p s p det io p o dtv aux
-# p s p io p det o dtv aux
-# p det s p det io p o dtv aux
-# p det s p io p det o dtv aux
-# p s p det io p det o dtv aux
-# p det s p det io p det o dtv aux
-
-# 3. TDL Samples
-
-# For a v-final language, with prepositions, auxiliaries which precede the verb,
-# and det-n order, we should get the following in mylanguage.tdl.  (Actually, this
-# is a more nicely formatted version of what we *do* get, I haven't tested it
-# as tdl yet.)
-
-# head :+ [ AUX bool ] .
-
-# ; comp-head-phrase is restricted from taking prepositions as its head.
-# ; comp-head-phrase is restricted from taking auxiliaries as its head. 
-
-# comp-head-phrase := basic-head-1st-comp-phrase & head-final &
-#    [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo & [ AUX - ]].
-
-# ; head-comp-phrase is only for prepositions and auxiliaries.
-
-# head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
-#    [ SYNSEM.LOCAL.CAT.HEAD +vp [ AUX + ]].
-
-# subj-head-phrase := basic-head-subj-phrase & head-final.
-
-# ; Rules for building NPs.  Note that the Matrix uses SPR for
-# ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
-
-# head-spec-phrase := basic-head-spec-phrase & head-final.
-
-# ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
-# ; introduced to match the semantic effect of bare NPs in your language.
-
-# bare-np-phrase := basic-bare-np-phrase &
-#    [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
-
-# And in rules.tdl, we get:
-
-# comp-head := comp-head-phrase.
-# head-comp := head-comp-phrase.
-# subj-head := subj-head-phrase.
-# head-spec := head-spec-phrase.
-# bare-np := bare-np-phrase.
-
-# The lexical types look like this:
-
-# ;;; Lexical types
-
-# ;;; Nouns
-
-# noun-lex := basic-noun-lex &
-#   basic-one-arg &
-#   [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr &
-#                                    [ LOCAL.CAT.HEAD det ] >,
-#                              COMPS < >,
-#                              SUBJ < >,
-#                              SPEC < > ] ],
-#     ARG-ST < #spr > ] .
-
-# obl-spr-noun-lex := noun-lex &
-#   [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ] .
-
-# ;;; Verbs
-
-# verb-lex := basic-verb-lex &
-#   [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
-#                                SPEC < >,
-#                                SUBJ < #subj > ] ],
-#                    CONT.HOOK.XARG #xarg ],
-#     ARG-ST < #subj &
-#              [ LOCAL [ CAT.VAL [ SPR < >,
-#                                  COMPS < > ],
-#                        CONT.HOOK.INDEX #xarg ] ], ... > ] .
-
-# intransitive-verb-lex := verb-lex &
-#   intransitive-lex-item &
-#   [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
-#     ARG-ST < [ LOCAL.CAT.HEAD adp ] > ] .
-
-# transitive-verb-lex := verb-lex &
-#   transitive-lex-item &
-#   [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
-#     ARG-ST < [ LOCAL.CAT.HEAD adp ], #comps &
-#                                      [ LOCAL.CAT [ VAL [ SPR < >,
-#                                                          COMPS < > ],
-#                                                    HEAD adp ] ] > ] .
-
-# ;;; Case-marking adpositions
-# ;;; Case marking adpositions are constrained not to
-# ;;; be modifiers.
-
-# case-marking-adp-lex := basic-one-arg &
-#   raise-sem-lex-item &
-#   [ SYNSEM.LOCAL.CAT [ HEAD adp &
-#                             [ MOD < > ],
-#                        VAL [ SPR < >,
-#                              SUBJ < >,
-#                              COMPS < #comps >,
-#                              SPEC < > ] ],
-#     ARG-ST < #comps &
-#              [ LOCAL.CAT [ HEAD noun,
-#                            VAL.SPR < > ] ] > ] .
-
-
-# ;;; Determiners
-# ;;; SPEC is non-empty, and already specified by basic-determiner-lex.
-
-# determiner-lex := basic-determiner-lex &
-#   basic-zero-arg &
-#   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
-#                            COMPS < >,
-#                            SUBJ < > ] ] .
-
-
-
-# 4. Description of cases handled
-
-# For the major constituent orders, this module handles: all fixed
-# orders of S,O, and V, V-final, V-initial and "free".  It allows for
-# strict det-n and strict n-det, as well as strict P-NP and strict
-# NP-P.  In addition, it allows auxiliaries to appear strictly left,
-# strictly right or either to the left or to the right of the
-# constituent they combine with.  The lexicon module allows for
-# auxiliaries which combine with V (argument composition), VP
-# (raising) or S (??), and contribute their own preds or not.
-# The lexicon module also allows for each verb to select for NP or
-# PP arguments in each position (subject/object), and for nouns
-# to have obligatory, optional, or no determiners.
-
-# It also creates a bare np phrase for every language, because
-# a) all nouns need quantifiers and b) I suspect that all languages
-# allow bare NPs in at least some cases.
-
-# The free word order case does some interesting work with ditransitives
-# in order to illustrate all 24 possible orders.  This involves allowing
-# the second complement to be realized by the first.
-
-# 5. Known unhandled cases
-
-# The module currently does not support word order which varies
-# according to clause type (e.g., matrix v. subordinate), V2 order,
-# free order of determiners or adpositions with respect to nouns.  It
-# also doesn't handle "splattered NP"-type free word order where the
-# major constituents are not cohesive.
-
-# There is no specialization of the bare-np phrase (to e.g., pronouns
-# only, etc).
-
-# The present lexicon module does not elicit any ditransitive verbs,
-# and this word order module does not elicit any information about the
-# relative ordering of complements when there is more than one, aside
-# from allowing free order of direct and indirect objects in the free
-# word order case.  The basic-head-1st-comp-phrase
-# v. basic-head-2nd-comp-phrase distinction provided in matrix.tdl is
-# a start in this direction, however (and indeed is used by the free
-# word order module).
-
-# In addition to adpositions and auxiliaries, there are other types of
-# words which will eventually want to use the head-comp (and maybe
-# head-subj or head-spec) phrases.  Doing so will undoubtedly require
-# some additional modifications to the (already quite complex)
-# functions determine_consistent_order() and specialize_word_order().
-# These include complementizers, question particles, degree specifiers,
-# and complement-taking substantives.
-
-# 6. Description of tdl
-
-# The general strategy is to take the basic head-complement,
-# head-subject and head-specifier phrases provided by matrix.tdl, and
-# cross-classify them with the types that determine linear precedence
-# (head-initial and head-final).  In addition, to allow only the
-# correct orders (in VSO, VOS, SOV, OSV) and to eliminate spurious
-# ambiguity (in SVO and OVS), head-subject rules are constrained to be
-# COMPS < > or head-complement rules are constrained to be SUBJ < >.
-
-# Some trickiness comes in when the orders for adpositions and/or
-# auxiliaries aren't consistent with the order of V and O, either
-# because they are more constrained (e.g., free order of V,O,S, but
-# prepositions only) or constrained to be opposite (an SOV language
-# with prepositions).  In this case, we have both head-comp and
-# comp-head rules, but one or both constrains its HEAD value (and
-# therefore what type of head daughter it can have).  These
-# constraints are either on the type of the HEAD value (making use of
-# the disjunctive head types provided in head-types.tdl) or on the AUX
-# value.  To simplify things, AUX is declared as a feature of head, so
-# that a rule that says [AUX -] is e.g., compatible with [HEAD adp].
-
-# The tdl for the lexical types is pretty straightforward, in the
-# case of nouns and verbs.  They inherit from the relevant supertypes
-# in matrix.tdl, link ARG-ST elements to VAL elements, and constrain
-# other VAL lists to be empty.  They also give the HEAD value for
-# each argument.  Nouns might further provide a value for OPT on the
-# specifier.  Verbs identify the XARG with the first ARG-ST element's
-# INDEX.  The determiners just inherit from basic-zero-arg and make
-# empty VAL lists (maybe that should be on basic-zero-arg anyway?).
-# The case-marking adpositions inherit from basic-one-arg and raise-sem-lex-item.
-# They link their sole argument, an NP, to a COMPS list. Further, they
-# are MOD < >.
-
-# The trickiest lexical types are the auxiliaries.  They are cross-classified
-# along three dimensions: V, VP or S complement, pred or no pred, and
-# (for V or VP complement) NP v. PP subject.
-
-# 7. Description of customization (python)
-
-# I have attempted to keep each tdl statement (ascription of a particular
-# constraint to a particular type) stated only once in this script,
-# even if it gets used in multiple cases.  Those cases are handled with
-# if statements which test either the input values directly (e.g.,
-# the value chosen for word order) or derived properties of those input
-# values (whether or not the order of adpositions and verbs with respect
-# to their complements is 'consistent').
-
-# customize_word_order() calls the following subroutines:
-
-#  customize_major_constituent_order(), which emits types and
-#  instances for head-subject and head-complement rules, without worrying
-#  about adp or aux.  In order to make the tdl statements even more compact
-#  while preserving a the head-comp v. comp-head naming convention,
-#  this subroutine stores part of the appropriate type and rule names
-#  in the variables hs (for head-subject) and hc (for head-complement).
-#  Since this information is also useful for the other subroutines,
-#  customize_major_constituent_order() returns it as a dictionary.
-
-#  customize_np_order() emits the head-spec (or spec-head) rule
-#  and a bare-np phrase.
-
-#  determine_consistent_order() takes the word order (wo) and head-
-#  complement order (hc) and determines whether the relative order
-#  of aux and v and/or p and np requires special treatment given the
-#  order of v and o.  It returns a dictionary storing the information
-#  for aux and adp.
-
-#  specialize_word_order() takes the head-complement order (hc) and
-#  the dictionary returned by determine_consistent_order() and emits
-#  additional tdl for types and instances as required.
-
-# Further documentation is provided in comments within the subroutines.
-
-# 8. Required changes to other modules
-
-# None --- this module is likely to change as more get added though!
-
-# ERB 2006-09-14
-# First pass at translating from old perl script.
-
 def customize_word_order():
 
   wo = ch.get('word-order')
+
+  mylang.set_section('phrases')
 
 # Add type definitions.
 
@@ -1551,9 +1076,6 @@ def customize_major_constituent_order(wo):
 # Thus, the head-subj rules that are defined here inherit from
 # decl-head-subj-phrase (imp-head-subj-phrase is also available).
 
-  comment = ';;; Phrasal types'
-  mylang.add_literal(comment)
-
 # ASF 2008-11-03 v2 analysis requires MC feature is not passed up to mother in
 # head - comp and not from mod to mother, putting it back for other wo options
 
@@ -1562,10 +1084,12 @@ def customize_major_constituent_order(wo):
                ';it applies to all wo implementations, except for v2')
     mylang.add('basic-head-comp-phrase :+\
                 [ SYNSEM.LOCAL.CAT.MC #mc,\
-                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
+               section='addenda')
     mylang.add('basic-head-mod-phrase-simple :+\
                 [ SYNSEM.LOCAL.CAT.MC #mc, \
-                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
+               section='addenda')
   
 
 # Head-comp order
@@ -1659,17 +1183,18 @@ def customize_major_constituent_order(wo):
                '(OV order).  Using a separate feature for tracking\n' +
                'argument attachment (as opposed to modifier\n' +
                'attachment).  We might be able to collapse these one\n' +
-               'day, but that\'s not obvious.')
+               'day, but that\'s not obvious.',
+               section='addenda')
     
 # ASF 2008-11-18, if free wo lgge has aux and aux precedes verb, 
 # the enforced attachment must apply in the other direction.
 
     if has_auxiliaries_p() and  ch.get('aux-comp-order') == 'before':
-      mylang.add('head-initial-head-nexus := head-initial & \
-                [ SYNSEM.ATTACH rmod,\
-                  HEAD-DTR.SYNSEM.ATTACH notmod-or-rmod ].')
-      mylang.add('head-final-head-nexus := head-final &\
-                [ SYNSEM.ATTACH lmod ].')
+      mylang.add('head-final-head-nexus := head-final & \
+                [ SYNSEM.ATTACH lmod,\
+                  HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
+      mylang.add('head-initial-head-nexus := head-initial &\
+                [ SYNSEM.ATTACH rmod ].')
     else: 
       mylang.add('head-initial-head-nexus := head-initial & \
                 [ SYNSEM.ATTACH lmod,\
@@ -1684,7 +1209,8 @@ def customize_major_constituent_order(wo):
                'We\'ll need to add identification of ATTACH between\n\
 mother and head-daughter for all other kinds of phrases\n\
 if we do this.  Just for illustration, I\'m putting it\n\
-in for head-adjunct phrases here:')
+in for head-adjunct phrases here:',
+               section='addenda')
 
 
 # ASF (2008-11-03) Another big special case: v2
@@ -1953,11 +1479,14 @@ def specialize_word_order(hc,orders):
 
   if vcluster:
     mylang.add('lex-or-phrase-synsem :+ [ VERB-CL luk ].',
-                'Introducing VERB-CL keeps track whether main-verb is present in cluster')
+               'Introducing VERB-CL keeps track whether main-verb is present in cluster',
+               section='addenda')
     mylang.add('lex-rule :+ [ SYNSEM.VERB-CL #vc, \
-                              DTR.SYNSEM.VERB-CL #vc ].')
+                              DTR.SYNSEM.VERB-CL #vc ].',
+               section='addenda')
     mylang.add('basic-head-comp-phrase :+ [ SYNSEM.VERB-CL #vc, \
-                       NON-HEAD-DTR.SYNSEM.VERB-CL #vc ].')
+                       NON-HEAD-DTR.SYNSEM.VERB-CL #vc ].',
+               section='addenda')
   # ERB 2006-09-15 First add head-comp or comp-head if they aren't
   # already there.  I don't think we have to worry about constraining
   # SUBJ or COMPS on these additional rules because they'll only be for
@@ -2037,7 +1566,7 @@ def specialize_word_order(hc,orders):
   # ERB 2006-09-15 AUX if we're going to mention it, so the tdl compiles.
 
   if aux != 'easy':
-    mylang.add('head :+ [AUX bool].')
+    mylang.add('head :+ [AUX bool].', section='addenda')
 
   # ERB 2006-10-05 Collect positive statements about head-comp/comp-head
   # We only need to do this is if the word order is not free, and we only
@@ -2280,112 +1809,6 @@ def specialize_word_order(hc,orders):
 #   Create the type definitions associated with the user's choices
 #   about sentential negation.
 
-# ERB 2006-10-05 DOCUMENTATION
-
-# 1. Statement of domain
-
-# This module handles the expression of sentential negation.  It
-# provides two general strategy types (inflection v. adverb), several
-# variations on each type, and what I believe to be an exhaustive listing
-# of the possible ways of combining the two strategies.
-
-# 2. Seed strings/requirements of POS lexicon
-
-# In addition to the lexical entries given in the word order module,
-# this module requires:
-
-# neg (negative adverb)
-# -neg (negative suffix)
-# neg- (negative prefix)
-
-# Note: at some point, the permutation machinery will need to do
-# interesting things with affix order.  For now, there's not really
-# enough affixes to worry about it.
-
-# These seed strings are designed to work with languages that require
-# dets and Ps as well as those that do not.  They are written assuming
-# sov order, and use a transitive frame as the base to make the testing
-# a little more interesting (e.g., when you have aux involved).  For
-# the aux case, I'm assuming an auxiliary that follows the verb, and takes
-# a VP complement (subject raising).
-
-## These seed strings should each have one of two semantic representations,
-## the only difference being the presence v. absence of det.  So,
-## these two seed strings, parsed using a grammar that has negative
-## adverbs as independent modifiers to the left o V, should give the
-## two MRSs that we need:  (Once again, I'm assuming semantically empty aux.)
-
-# s o neg tv
-# det s det o neg tv
-
-## Negative adverb --- the module allows for attachment at V, VP, and S,
-## and to the left, right, or either.  Since we'll get all of these
-## positions (and more!) by doing the permutation then, I'm just doing
-## one set with a negative adverb, using the left of V placement:
-
-# s o neg tv
-# det s det o neg tv
-# p s p o neg tv
-# p det s p det o neg tv
-# det s det o neg tv aux
-# p det s p det o tv neg aux
-# s o tv neg aux
-# p s p o tv neg aux
-
-# ## Prefix, on main verbs and aux:
-
-# s o neg-tv
-# det s det o neg-tv
-# p s p o neg-tv
-# p det s p det o neg-tv
-# s o tv neg-aux
-# det s det o tv neg-aux
-# p s p o tv neg-aux
-# p det s p det o tv neg-aux
-
-# ## Suffix, on main verbs and aux:
-
-# s o tv-neg
-# det s det o tv-neg
-# p s p o tv-neg
-# p det s p det o tv-neg
-# s o tv aux-neg
-# det s det o tv aux-neg
-# p s p o tv aux-neg
-# p det s p det o tv aux-neg
-
-# ## Adverb plus prefix, on main verbs and aux:
-
-# s o neg neg-tv
-# det s det o neg neg-tv
-# p s p o neg neg-tv
-# p det s p det o neg neg-tv
-# s o tv neg neg-aux
-# det s det o tv neg neg-aux
-# p s p o tv neg neg-aux
-# p det s p det o tv neg neg-aux
-
-# ## Adverb plus suffix, on main verbs and aux:
-
-# s o neg tv-neg
-# det s det o neg tv-neg
-# p s p o neg tv-neg
-# p det s p det o neg tv-neg
-# s o tv neg aux-neg
-# det s det o tv neg aux-neg
-# p s p o tv neg aux-neg
-# p det s p det o tv neg aux-neg
-
-
-
-# Unhandled case:  Main verbs take inflection + adverb, auxiliaries only
-# inflection (or vice versa).  Negation involves two markers, one on
-# either side of the constituent.  Negation involves two markers, one
-# on either side of the constituent.
-
-# ERB 2006-09-16 First pass at replicating functionality from
-# perl script.
-
 def customize_sentential_negation():
 
   # ERB 2006-09-16 Calculate a bunch of derived properties based on the
@@ -2398,25 +1821,14 @@ def customize_sentential_negation():
   # doesn't do the interaction between the two, but it probably won't 
   # break anything to leave it in.
 
+  # ERB 2009-07-01 It was adding defunct lex rules in at least some
+  # cases, so taking it out for now.  This much still seems to be
+  # required:
+
   advAlone = ''
   multineg = ch.get('multi-neg')
   if ch.get('adv-neg') == 'on' or multineg == 'comp':
     advAlone = 'always'
-  if multineg == 'both-opt' or multineg == 'adv-obl':
-    advAlone = 'sometimes'
-  if multineg == 'both-obl' or multineg == 'infl-obl':
-    advAlone = 'never'
-
-  # ERB 2006-09-16 TODO: The perl script had an else on the above if
-  # statment which generated a "probable script error" if we fell into
-  # it.  It's probably good idea to put that in here, too.
-
-  if ch.get('adv-neg') == 'on' and ch.get('neg-adv') == 'sel-adv':
-    create_neg_add_lex_rule(advAlone)
-    create_neg_adv_lex_item(advAlone)
-
-  if ch.get('infl-neg') == 'on' and multineg != 'both-obl' and multineg != 'adv-obl':
-    create_neg_infl_lex_rule()
 
   # ERB 2009-01-23 Migrating negation to modern customization system.
   # This intermediate version only does independent adverbs, and so
@@ -2424,161 +1836,12 @@ def customize_sentential_negation():
   # the test below.
 
   if ch.get('adv-neg') == 'on': # and ch.get('neg-adv') == 'ind-adv':
-    if advAlone == 'never':
-      # Override user input: multi-neg as bothobl or inflobl means
-      # we go with the selected adverb analysis.
-      create_neg_add_lex_rule(advAlone)
-
     create_neg_adv_lex_item(advAlone)
 
-# ERB 2006-09-21 neg-add-lex rule, for negation strategies that involve
-# selected adverbs.
-
-def create_neg_add_lex_rule(advAlone):
-
-  # ERB 2006-09-17 The lexical rule conditions both need these
-  # variables, so declare them here.
-
-  pre = ''
-  suf = ''
-  orth = ''
-  rule = ''
-
-  # This first bit is shared by all the grammar types where we want
-  # the neg-add-lex-rule.
-
-  # ERB 2006-09-21 The value of COMPS on the mother is prettier
-  # with the . notation rather than FIRST/REST, but for now tdl.py
-  # isn't handling that case.
-  #                                 COMPS < [ LOCAL [ CONT [ HOOK [ INDEX #negind,\
-  #                                                                  LTOP #negltop ],\
-  #                                                          HCONS <! [ LARG #larg ] !> #]],\
-  #                                                   LKEYS.KEYREL.PRED \"_neg_r_rel\" ] . #comps > ],\
-
-  mylang.add('''neg-add-lex-rule := local-change-only-lex-rule &
-                       same-ctxt-lex-rule &
-                       same-agr-lex-rule &
-                       same-head-lex-rule &
-                       same-hc-light-lex-rule &
-                       same-posthead-lex-rule &
-     [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ #subj,
-                                  SPR #spr,
-                                  SPEC #spec ,
-                                  COMPS [ FIRST [ LOCAL.CONT [ HOOK [ INDEX #negind,
-                                                                      LTOP #negltop ],
-                                                               HCONS <! [ LARG #larg ] !> ],
-                                                  LKEYS.KEYREL.PRED "_neg_r_rel" ],
-                                          REST #comps ]],
-                        CONT.HOOK [ INDEX #negind,
-                                      LTOP #negltop,
-                                      XARG #xarg ]],
-        DTR lex-item &  [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ #subj,
-                                                     SPR #spr,
-                                                     SPEC #spec,
-                                                     COMPS #comps ],
-                                               HEAD verb ],
-                                         CONT.HOOK [ LTOP #larg,
-                                                     XARG #xarg ]]]].''',
-                                               '''This lexical rule adds a selected negative\n
-                                               adverb to the beginning of the COMPS list''')
-
-  #Decide what to do with AUX value.
-
-  if ch.get('neg-sel-adv') == 'aux':
-    mylang.add('neg-add-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
-               'This rule applies only to auxiliaries.')
-
-  if ch.get('neg-sel-adv') == 'main' and has_auxiliaries_p():
-    mylang.add('neg-add-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].'
-               'This rule applies only to main verbs.')
-
-    #Make subtypes and instances as appropriate, depending on advAlone condition.
-
-  if advAlone == 'always':
-    mylang.add('neg-add-lex-rule := constant-lex-rule.'
-               'Thie type is instantiated in lrules.tdl.')
-
-    lrules.add('neg-add-lr := neg-add-lex-rule.')
-
-
-    # TODO: I really just want to add a comment to this type in this case.  Will
-    # this syntax do it?  If not, is there some other syntax in tdl.py that will?
-
-  if advAlone == 'sometimes':
-    mylang.comment('neg-add-lex-rule',
-               'This type has subtypes instantiated by instances in both\n\
-               irules.tdl and lrules.tdl.')
-    mylang.add('infl-neg-add-lex-rule := neg-add-lex-rule & inflecting-lex-rule.')
-    mylang.add('const-neg-add-lex-rule := neg-add-lex-rule & constant-lex-rule.')
-
-    lrules.add('neg-add-lr := const-neg-add-lex-rule.')
-
-    add_irule('neg-add-ir','infl-neg-add-lex-rule',ch.get('neg-aff'),ch.get('neg-aff-orth'))
-
-  if advAlone == 'never':
-    mylang.add('neg-add-lex-rule := inflecting-lex-rule.'
-               'This type is instantiated in irules.tdl.')
-
-    add_irule('neg-add-ir','neg-add-lex-rule',ch.get('neg-aff'),ch.get('neg-aff-orth'))
-
-# ERB 2006-09-21 Create negative inflection lexical rule
-#Inflection without selected adverb
-#This one adds the '_neg_r_rel, and as such is only used
-#when inflection appears alone (infl strategy only, both
-#strategies with multi-neg = comp, bothopt, inflobl).
-
-#Spell _neg_r_rel with leading _ even though it is introduced
-#by the lexical rule so that "the cat didn't sleep" and "the
-#cat did not sleep" have the same representation.
-
-#Copying up LKEYS here because I use the KEYREL.PRED to select
-#the neg adv in the neg-add-lex-rule.  We don't want the output
-#of this rule to be a possible first complement to a neg-add aux.
-#If we find another way to select the neg adv, something will
-#probably need to be changed here.
-
-#ERB 2007-02-26 Fixing a bug here: The rule's C-CONT.HOOK.INDEX
-#should be identified with the DTR's INDEX, not with the ARG0
-#of the _neg_r_rel.
-
-def create_neg_infl_lex_rule():
-
-  mylang.add('neg-infl-lex-rule := cont-change-only-lex-rule &\
-	                     inflecting-lex-rule &\
-	   [ C-CONT [ HOOK [ XARG #xarg,\
-	                     LTOP #ltop,\
-	                     INDEX #ind ],\
-	              RELS <! event-relation &\
-	                      [ PRED "_neg_r_rel",\
-	                        LBL #ltop,\
-	                        ARG1 #harg ] !>,\
-	              HCONS <! qeq &\
-	                       [ HARG #harg,\
-	                         LARG #larg ] !> ],\
-	     SYNSEM.LKEYS #lkeys,\
-	     DTR lex-item & \
-	         [ SYNSEM [ LKEYS #lkeys,\
-	                    LOCAL [ CONT.HOOK [ XARG #xarg,\
-                                                INDEX #ind,\
-	                                        LTOP #larg ],\
-	                          CAT.HEAD verb]]]].',
-             'This lexical rule adds the neg_r_rel to the verb\'s\n\
-	RELS list.  It is instantiated by a spelling-changing\n\
-	rule as specified in irules.tdl.')
-
-  if ch.get('neg-infl-type') == 'aux':
-    mylang.add('neg-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
-               'This rule applies only to auxiliaries.')
-
-  if ch.get('neg-infl-type') == 'main' and has_auxiliaries_p():
-    mylang.add('neg-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
-               'This rule applies only to main verbs.')
-
-  add_irule('neg-infl-lr','neg-infl-lex-rule',ch.get('neg-aff'),ch.get('neg-aff-orth'))
-
-# ERB 2006-09-22 Create lexical types and lexical entries for
 
 def create_neg_adv_lex_item(advAlone):
+
+  mylang.set_section('otherlex')
 
   mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
                  [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
@@ -2592,7 +1855,8 @@ def create_neg_adv_lex_item(advAlone):
   # the adverb to be a modifier.
 
   if advAlone == 'never':
-    mylang.comment('neg-adv-lex','''Constrain the MOD value of this adverb to keep\n
+    mylang.add_comment('neg-adv-lex',
+    '''Constrain the MOD value of this adverb to keep\n
     it from modifying the kind of verbs which can select it,\n
     To keep spurious parses down, as a starting point, we have\n
     assumed that it only modifies verbs (e.g., non-finite verbs).''')
@@ -2644,246 +1908,13 @@ def create_neg_adv_lex_item(advAlone):
                'out extraneous parses, constrain the value of MOD on\n' +
                'various subtypes of head.  This may need to be loosened later.\n' +
                'This constraint says that only adverbs, adjectives,\n' +
-               'and adpositions can be modifiers.')
+               'and adpositions can be modifiers.',
+               section='addenda')
 
 ######################################################################
 # Coordination
 #   Create the type definitions associated with the user's choices
 #   about coordination.
-
-# sfd 2006-09-24 DOCUMENTATION
-#
-# 1. Statement of domain
-#
-# This module handles coordination of various phrase types (currently
-# N, NP, VP, and S).  It relies on choices in the Coordination section
-# of the questionnaire.
-#
-# 2. Seed strings/requirements of POS lexicon
-#
-# The phenomena covered by this module can be illustrated using the following
-# lexical entries:
-#
-# det (determiner)
-# s1 (subject noun)
-# s2 (subject noun)
-# s3 (subject noun)
-# iv1 (intransitive verb)
-# iv2 (intransitive verb)
-# iv3 (intransitive verb)
-# co (conjunction)
-# -co or co- (affix versions of the conjunction)
-#
-# Seed strings, not all of which will have valid permutations in all languages.
-#
-# These seed strings are written assuming sov order, det-n order, and
-# mandatory determiners.  Each section below will show the coordination
-# of one phrase type in with several different coordination strategies,
-# namely:
-#   monosyndeton word before
-#   monosyndeton word after
-#   monosyndeton affix before (for N only)
-#   monosyndeton affix after  (for N only)
-#   polysyndeton word before
-#   polysyndeton word after
-#   polysyndeton affix before (for N only)
-#   polysyndeton affix after  (for N only)
-#   omnisyndeton word before
-#   omnisyndeton word after
-#   omnisyndeton affix before (for N only)
-#   omnisyndeton affix after  (for N only)
-#   asyndeton
-#
-## Coordination of nouns (each group of sentences should have the
-## same semantic representation, though with different grammars)
-#
-# det s1 s2 co s3 iv1
-# det s1 s2 s3 co iv1
-# det s1 s2 co-s3 iv1
-# det s1 s2 s3-co iv1
-#
-# det s1 co s2 co s3 iv1
-# det s1 s2 co s3 co iv1
-# det s1 co-s2 co-s3 iv1
-# det s1 s2-co s3-co iv1
-#
-# det co s1 co s2 co s3 iv1
-# det s1 co s2 co s3 co iv1
-# det co-s1 co-s2 co-s3 iv1
-# det s1-co s2-co s3-co iv1
-#
-# det s1 s2 s3 iv1
-#
-## Coordination of noun phrases (each group of sentences should have the
-## same semantic representation, though with different grammars)
-#
-# det s1 det s2 co det s3 iv1
-# det s1 det s2 det s3 co iv1
-#
-# det s1 co det s2 co det s3 iv1
-# det s1 det s2 co det s3 co iv1
-#
-# co det s1 co det s2 co det s3 iv1
-# det s1 co det s2 co det s3 co iv1
-#
-# det s1 det s2 det s3 iv1
-#
-## Coordination of verb phrases (each group of sentences should have the
-## same semantic representation, though with different grammars)
-#
-# det s1 iv1 iv2 co iv3
-# det s1 iv1 iv2 iv3 co
-#
-# det s1 iv1 co iv2 co iv3
-# det s1 iv1 iv2 co iv3 co
-#
-# det s1 co iv1 co iv2 co iv3
-# det s1 iv1 co iv2 co iv3 co
-#
-# det s1 iv1 iv2 iv3
-#
-## Coordination of sentences
-#
-# det s1 iv1 det s2 iv2 co det s3 iv3
-# det s1 iv1 det s2 iv2 det s3 iv3 co
-#
-# det s1 iv1 co det s2 iv2 co det s3 iv3
-# det s1 iv1 det s2 iv2 co det s3 iv3 co
-#
-# co det s1 iv1 co det s2 iv2 co det s3 iv3
-# det s1 iv1 co det s2 iv2 co det s3 iv3 co
-#
-# det s1 iv1 det s2 iv2 det s3 iv3
-#
-# 3. TDL Samples
-#
-# for an language with a single monosyndeton word-before strategy, we should
-# get the following TDL.
-#
-## mylanguage.tdl:
-#
-# ;;; Coordination
-#
-# n1-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# n1-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# n1-bottom-coord-rule := conj-first-bottom-coord-rule & n-bottom-coord-phrase &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-#
-# np1-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# np1-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# np1-bottom-coord-rule := conj-first-bottom-coord-rule & np-bottom-coord-phrase &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-#
-# vp1-top-coord-rule := basic-vp-top-coord-rule & monopoly-top-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# vp1-mid-coord-rule := basic-vp-mid-coord-rule & monopoly-mid-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# vp1-bottom-coord-rule := conj-first-bottom-coord-rule & vp-bottom-coord-phrase &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-#
-# s1-top-coord-rule := basic-s-top-coord-rule & monopoly-top-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# s1-mid-coord-rule := basic-s-mid-coord-rule & monopoly-mid-coord-rule &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-# s1-bottom-coord-rule := conj-first-bottom-coord-rule & s-bottom-coord-phrase &
-#   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
-#
-## lexicon.tdl:
-#
-# and_1 := conj-lex &
-#   [ STEM < "and" >,
-#     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
-#     CFORM "1" ].
-#
-# 4. Description of cases handled
-#
-# For the four phrase types N, NP, VP, and S, this module handles every
-# combination of the following three dimensions, with a few exceptions
-# noted below:
-#
-# Marking pattern: monosyndeton, polysyndeton, omnisyndeton, asyndeton
-# Type of mark: word or affix (with some spelling)
-# Position of mark: before or after coordinand
-#
-# Exceptions: when the pattern is asyndeton, type and position of mark,
-# as well as its spelling, must not be specified since they are
-# meaningless.  Also, an affix mark can currently only be specified
-# for lexical phrase types (i.e. just N).
-#
-# 5. Known unhandled cases
-#
-# There are a few coordination strategies that this module cannot encode:
-#
-# Classical Tibetan and Amharic(Haspelmath 2000):
-#   In strategies usually marked A-co B-co C, all but the *first* co
-#   can be optionally omitted, giving A-co B C (and so on for N>3).
-# Inupiaq (ref?):
-#   There is a strategy in this language that is mandatorily bisyndetic
-#   when there are two coordinands, but *mandatorily* monosyndetic for
-#   3 or more coordinands.  That is, we get A-lu B-lu for two, but
-#   A B C-lu for 3 or more.  A-lu B-lu C-lu and A B-lu C-lu are not
-#   allowed.
-# Indonesian (ref?):
-#   A strategy that uses different conjunctions based on position:
-#     A B serta C
-#     A dan B serta C
-#   * A serta B dan C
-#   * A serta B serta C
-#
-# In addition to these, there are some coordination strategies that can
-# be implemented using the Matrix rules, but which cannot be described
-# with the controls in the web questionnaire.  For example, Hebrew has
-# a strategy (ref?) that, like quite a few other strategies including
-# Latin -que (ref?), marks the first word of a coordinated phrase.  Such
-# a strategy could be implemented by adding a new binary feature, say
-# COORDMARKED, that is added by a morphological marking rule and identified
-# between all phrases and their first daughters.  Another odd strategy
-# is found in Kannada (ref?), where -uu is added to *every word* in a
-# coordinated phrase.  The implementation of this would be similar to the
-# first-word marking mentioned above, except that the new COORDMARKED
-# feature would be identified between phrases and *all* of their daughters.
-#
-# 6. Description of tdl
-#
-# For every phrase type that has a coordination strategy, there will be
-# a set of rules in mylanguage.tdl created with the same COORD-STRAT value.
-# These rules derive from the coordination rules in matrix.tdl (currently
-# near tbe bottom of the file), and specify the type of phrase being
-# coordinated.  They will have names that begin with the part of speech
-# (n, np, vp, s) and the number of the strategy.  For details about the
-# implementation, see the comments in matrix.tdl or Drellishak & Bender
-# 2005.
-#
-# 7. Description of customization (python)
-#
-# The entry point for this code is customize_coordination().  It loops
-# through every coordination strategy (currently only 1 and 2).  For each,
-# it looks at the user's choices and, from them, constructs a series of
-# parameters containing the prefixes and suffixes of the rules that
-# will be output (which also determines the prefixes and suffixes of the
-# matrix.tdl rules they will derive form.
-#
-# These are the parameters:
-#   num: the number of the strategy
-#   pos: the part of speech
-#   top: the prefix of the top rule
-#   mid: the prefix of the mid rule (empty for poly- and asyndeton)
-#   bot: the prefix of the bottom rule
-#   left: the prefix of the left rule (only for omnisyndeton)
-#   pre: the spelling of the prefix coordination mark (possibly empty)
-#   suf: the spelling of the suffix coordination mark (possibly empty)
-#
-# These parameters are passed to define_coord_strat(), a utility function
-# that outputs the actual rules.
-#
-# 8. Required changes to other modules
-#
-# None so far.
-
 
 ######################################################################
 # define_coord_strat: a utility function, defines a strategy
@@ -2971,10 +2002,12 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
     rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
 
 
-######################################################################
-# customize_coordination(): the main coordination customization routine
-
 def customize_coordination():
+  """
+  The main coordination customization routine
+  """
+  mylang.set_section('coord')
+
   i = 0
   ch.iter_begin('cs')
   while ch.iter_valid():
@@ -3049,66 +2082,6 @@ def customize_coordination():
 #   Create the type definitions associated with the user's choices
 #   about matrix yes/no questions.
 
-# DOCUMENTATION
-
-# 2. Seed strings, requirements of POS lexicon:
-
-# The only addition to the POS lexicon is qpart, the question particle:
-# Also -ques|ques- the affix
-
-# qpart
-# -ques
-# ques-
-
-# The seed strings are written assuming an SVO language with no
-# adpositions (in order to illustrate inversion).  Again all the
-# seed strings have the same semantics, modulo determiners.  For
-# the purposes of harvesting the semantics, I recommend these two
-# strings, parsed with an SOV grammar which expresses yes no questions
-# with a sentence final question particle:
-
-# s o tv qpart
-# det s det o tv qpart
-
-# Now the SVO seed strings:
-
-# s tv o qpart
-# tv s o
-# aux s tv o
-
-# det s tv det o qpart
-# tv det s det o
-# aux det s tv det o
-
-# s tv-ques o
-# s ques-tv o
-# s aux-ques tv o
-# s ques-aux tv o
-
-# det s tv-ques det o
-# det s ques-tv det o
-# det s aux-ques tv det o
-# det s ques-aux tv det o
-
-# Since this module actually involves changes to word order, the
-# seed strings/permutation interaction is actually different.  I
-# think it will come down to being careful with the filters...
-
-# Note also that the semantic contrast between questions and non-questions
-# is that questions are marked as [ MESG ques ] while non-questions are
-# [ MESG prop-or-ques ].  The type prop-or-ques subsumes ques, but
-# in [incr tsdb()], we'll be looking at exact match semantics, not
-# unification or other measures of compatibility.
-
-# 8. Changes to other modules:
-
-# Moving to the complementizer analysis of question particles impacted
-# the word order module.  In particular, we now have to worry about
-# the order of question particles with respect to heads when we do the
-# head-comp and comp-head rules, just like we have to worry about the
-# adpositions.  I also had to touch the root definition, to allow for
-# CPs as roots.
-
 def customize_yesno_questions():
 
   qinvverb = ch.get('q-inv-verb')
@@ -3118,11 +2091,12 @@ def customize_yesno_questions():
   if ch.get('q-inv'):
     comment = \
       'For the analysis of inverted yes-no questions, we add the feature INV.'
-    mylang.add('verb :+ [ INV bool ].', comment)
+    mylang.add('verb :+ [ INV bool ].', comment, section='addenda')
 
     comment = \
       'All verbs start off as not inverted.'
-    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].', comment)
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].',
+               comment, section='verblex')
 
 
     comment = \
@@ -3154,7 +2128,7 @@ def customize_yesno_questions():
                                      SPR #spr,
                                      SPEC #spec ],
                      LKEYS #lkeys ]].'''
-    mylang.add(typedef, comment)
+    mylang.add(typedef, comment, section='lexrules')
 
     lrules.add('inv-lr := subj-v-inv-lrule.')
 
@@ -3162,7 +2136,7 @@ def customize_yesno_questions():
     # corrects to MC + and adds SF ques.
 
     comment = \
-           'This rule takes [MC na] inverted phrases and licneses' + \
+           'This rule takes [MC na] inverted phrases and licenses' + \
            'them as main clauses with question semantics.\n'
 
     typedef = '''
@@ -3175,7 +2149,7 @@ def customize_yesno_questions():
                                        [SUBJ < >,
                                        COMPS < >]],
       C-CONT.HOOK.INDEX.SF ques ].'''
-    mylang.add(typedef, comment)
+    mylang.add(typedef, comment, section='phrases')
 
     rules.add('int := int-cl.')
 
@@ -3199,33 +2173,126 @@ def customize_yesno_questions():
                                           VAL [ SUBJ < >,
                                                 COMPS < > ]]] > ]
                                                 .'''
-    mylang.add(typedef,comment)
+    mylang.add(typedef, comment, section='otherlex')
 
     comment = 'Subtype for question particles. Constrains SF to ques.'
     typedef = '''
       qpart-lex-item := complementizer-lex-item &
          [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
-    mylang.add(typedef,comment)
+    mylang.add(typedef, comment, section='otherlex')
 
-  if ch.get('q-infl'):
+# ERB 2009-07-01 To remove:
+#   if ch.get('q-infl'):
 
-    mylang.add('ques-infl-lex-rule := add-only-no-ccont-rule & inflecting-lex-rule &\
-    [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques,\
-    DTR lex-item & [ SYNSEM.LOCAL.CAT.HEAD verb ]].',
-               'Constrains SF to ques. Instantiated by a verbal affix.')
+#     mylang.add('ques-infl-lex-rule := add-only-no-ccont-rule & inflecting-lex-rule &\
+#     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques,\
+#     DTR lex-item & [ SYNSEM.LOCAL.CAT.HEAD verb ]].',
+#                'Constrains SF to ques. Instantiated by a verbal affix.')
 
-    if ch.get('q-infl-type') == 'aux':
-      mylang.add('ques-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
-                 'This rule applies only to auxiliaries.')
+#     if ch.get('q-infl-type') == 'aux':
+#       mylang.add('ques-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+#                  'This rule applies only to auxiliaries.')
 
-    if ch.get('q-infl-type') == 'main' and has_auxiliaries_p():
-      mylang.add('ques-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
-                 'This rule applies only to main verbs.')
-
-
-    add_irule('ques-infl-lr','ques-infl-lex-rule',ch.get('ques-aff'),ch.get('ques-aff-orth'))
+#     if ch.get('q-infl-type') == 'main' and has_auxiliaries_p():
+#       mylang.add('ques-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
+#                  'This rule applies only to main verbs.')
 
 
+#     add_irule('ques-infl-lr','ques-infl-lex-rule',ch.get('ques-aff'),ch.get('ques-aff-orth'))
+
+
+######################################################################
+# customize_arg_op()
+#   Create phrase-structure and lexical rules associated with user's
+#   choices on argument optionality page.
+
+def customize_arg_op():
+  """ Create the lexical types, lexical, rules and phrase structure
+      rules to allow argument dropping"""
+
+  mylang.set_section('verblex')
+
+  #Figure out the constraints on subject dropping and write the 
+  #appropriate types to mylang.tdl or rules.tdl
+
+  if ch.get('subj-drop') == 'subj-drop-all' and not (ch.get('subj-con') == 'subj-con-some'):
+    rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.') 
+  if ch.get('subj-drop') == 'subj-drop-lex' and not (ch.get('subj-con') == 'subj-con-some'):
+    rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.')
+    mylang.add('no-subj-drop-verb-lex := verb-lex &\
+                         [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].')
+    mylang.add('subj-drop-verb-lex := verb-lex.')
+  
+
+  #Figure out the constraints on object dropping and write the 
+  #appropriate types to mylang.tdl or rules.tdl
+  if ch.get('obj-drop')=='obj-drop-all':
+    rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
+
+  if ch.get('obj-drop') == 'obj-drop-lex':
+    rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
+    mylang.add('no-obj-drop-verb-lex := transitive-verb-lex &\
+                        [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].')
+    mylang.add('obj-drop-verb-lex := transitive-verb-lex.')
+
+  if ch.get('subj-drop') == 'subj-drop-lex' and ch.get('obj-drop') == 'obj-drop-lex':
+    mylang.add('subj-drop-only-verb-lex := subj-drop-verb-lex & no-obj-drop-verb-lex.')
+    mylang.add('obj-drop-only-verb-lex := obj-drop-verb-lex & no-subj-drop-verb-lex.')
+    mylang.add('subj-obj-drop-verb-lex := subj-drop-verb-lex & obj-drop-verb-lex.')
+    mylang.add('no-drop-verb-lex := no-subj-drop-verb-lex & no-obj-drop-verb-lex.')
+
+  mylang.set_section('phrases')
+
+  #Create phrase-structure rules for each context
+  ch.iter_begin('context')
+  i=1
+  while ch.iter_valid():
+    name = 'context' + str(i)
+    ptype = name + '-decl-head-opt-subj-phrase'
+    customize_feature_values(ptype, 'con')
+    typedef = ptype + ':= decl-head-opt-subj-phrase.'
+    mylang.add(typedef)
+    rules.add(name + '-decl-head-opt-subj := '+ name + '-decl-head-opt-subj-phrase.')
+    i = i+1
+    ch.iter_next()
+  ch.iter_end()
+
+  #Trying to get co-occurrence of marker dropping to work
+
+  if (ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and (ch.get('subj-mark-drop')== 'subj-mark-drop-opt'or ch.get('subj-mark-drop')=='subj-mark-drop-req')):
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('obj-drop')=='obj-drop-all' and ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-req') or ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-req'))):
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-opt' :
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req' and ch.get('obj-mark-drop') == 'obj-mark-drop-not' :
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-not' :
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('obj-mark-drop')== 'obj-mark-drop-opt' and ch.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('subj-mark-drop')== 'subj-mark-drop-opt' and ch.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and ch.get('subj-mark-drop') == 'subj-mark-drop-opt' :
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req' and ch.get('subj-mark-drop') == 'subj-mark-drop-not' :
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and ch.get('subj-mark-drop') == 'subj-mark-drop-not' :
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
+
+#def customize_subj_phrase(phrase)
+  #Trying to get the subject/object marker co-occurrence to work out
+  #if (ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and (ch.get('subj-mark-drop')== 'subj-mark-drop-opt'or ch.get('subj-mark-drop')=='subj-mark-drop-req')):
+   # mylang.add(phrase + ':= [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
 
 ######################################################################
 # customize_lexicon()
@@ -3247,12 +2314,6 @@ def customize_nouns():
   ch.iter_end()
 
   singlentype = (seenCount == 1)
-
-  # Add the lexical types to mylang
-  mylang.add_literal(';;; Lexical types')
-
-  # Lexical types for nouns
-  mylang.add_literal(';;; Nouns')
 
   # Playing fast and loose with the meaning of OPT on SPR.  Using
   # OPT - to mean obligatory (as usual), OPT + to mean impossible (that's
@@ -3301,7 +2362,7 @@ def customize_nouns():
 
   if ch.get('case-marking') != 'none':
     if not ch.has_adp_case():
-      mylang.add('noun :+ [ CASE case ].')
+      mylang.add('noun :+ [ CASE case ].', section='addenda')
 
   # Add the lexical entries
   lexicon.add_literal(';;; Nouns')
@@ -3416,6 +2477,13 @@ def customize_verb_case():
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
           mylang.add(typedef)
 
+        # constrain CASE-MARKING of the agent/subject, if appropriate
+        if a_case and ch.has_mixed_case() and not ch.has_optadp_case(a_case):
+          typedef = \
+            t_type + ' := \
+            [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
+          mylang.add(typedef)
+
         # constrain the head of the patient/object
         typedef = \
           t_type + ' := \
@@ -3427,6 +2495,13 @@ def customize_verb_case():
           typedef = \
             t_type + ' := \
             [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
+          mylang.add(typedef)
+
+        # constrain CASE-MARKING of the patient/object, if appropriate
+        if o_case and ch.has_mixed_case() and not ch.has_optadp_case(o_case):
+          typedef = \
+            t_type + ' := \
+            [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
           mylang.add(typedef)
       else:     # intransitive
         if c[0] == 'intrans':
@@ -3455,6 +2530,13 @@ def customize_verb_case():
           typedef = \
             i_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + s_case + ' ].'
+          mylang.add(typedef)
+
+        # constrain CASE-MARKING of the subject, if appropriate
+        if s_case and ch.has_mixed_case() and not ch.has_optadp_case(s_case):
+          typedef = \
+            i_type + ' := \
+            [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
           mylang.add(typedef)
 
 
@@ -3497,7 +2579,7 @@ def init_form_hierarchy():
 
 def customize_form():
   if 'form' in hierarchies:
-    mylang.add('head :+ [FORM form].')
+    mylang.add('head :+ [FORM form].', section='addenda')
     hierarchies['form'].save(mylang)
 
 
@@ -3535,8 +2617,6 @@ def customize_verbs():
   # is another module/parameter (like, the external argument
   # might not be the first one?
 
-  mylang.add_literal(';;; Verbs')
-
   mainorverbtype = main_or_verb() 
 # The variable mainorverbtype is a type name for lexical/main (non-aux) verbs.
 # Note that the use of 'main' instead of 'lexical' is strictly for 
@@ -3546,7 +2626,7 @@ def customize_verbs():
 # If there are no auxiliaries then 'verb-lex' covers all verbs
   
   if has_auxiliaries_p():
-    mylang.add('head :+ [ AUX bool ].')
+    mylang.add('head :+ [ AUX bool ].', section='addenda')
     #mainorverbtype = 'main-verb-lex'
      
 # we need to know whether the auxiliaries form a vcluster
@@ -3627,6 +2707,7 @@ def customize_verbs():
   while ch.iter_valid():
     name = get_name()
     val = ch.get('valence')
+    
 
     i = val.find(',')
     dir_inv = ''
@@ -3646,7 +2727,7 @@ def customize_verbs():
     else:
       s_case = canon_to_abbr(val, cases)
       tivity = s_case + '-intrans'
-
+    
     stype = dir_inv + tivity + 'itive-verb-lex'
     vtype = name + '-verb-lex'
 
@@ -3720,7 +2801,6 @@ def get_auxtypename(sem, supertype):
 def customize_auxiliaries():
 
   if has_auxiliaries_p():
-    mylang.add_literal(';;; Auxiliaries')
     lexicon.add_literal(';;; Auxiliaries')
     comp = ch.get('aux-comp')
     wo = ch.get('word-order')
@@ -3975,10 +3055,19 @@ def customize_misc_lex():
 
 def customize_lexicon():
 
+  mylang.set_section('nounlex')
   customize_nouns()
+
+  mylang.set_section('otherlex')
   customize_case_adpositions()
+
+  mylang.set_section('verblex')
   customize_verbs()
+
+  mylang.set_section('auxlex')
   customize_auxiliaries()
+
+  mylang.set_section('otherlex')
   customize_determiners()
   customize_misc_lex()
 
@@ -4109,6 +3198,14 @@ def alltypes(type_list, root_list):
       break
   return all
 
+def sec_from_lex(lextype):
+  if 'noun' in lextype:
+    return 'nounlex'
+  elif 'verb' in lextype:
+    return 'verblex'
+  else:
+    return 'otherlex'
+
 def customize_inflection():
   # Build a rule hierarchy for inflectional affixes.
 
@@ -4163,11 +3260,13 @@ def customize_inflection():
             direc_geom = f[2]
 
         rule_type = n + '-dir-inv-lex-rule'
-        input_type = ch.iter_prefix()[:-1] + '-verb-lex'
+        input_type = n + '-verb-lex'
+        mylang.set_section('dirinv')
+        mylang.add_literal(';;; Direct-inverse lexical rules')
         mylang.add(
           rule_type + ' := ' + super_type + ' & ' + \
           '[ DTR ' + input_type + ' ].')
-        mylang.add(input_type + ' := [ INFLECTED - ].')
+        mylang.add(input_type + ' := [ INFLECTED - ].', section='verblex')
 
         super_type = rule_type
 
@@ -4241,6 +3340,8 @@ def customize_inflection():
   reqd = []
   tracker = False
 
+  mylang.set_section('lexrules')
+
   # Big main loop to iterate over all the slots
   for slotprefix in ('noun', 'verb', 'det','aux'):
     ch.iter_begin(slotprefix + '-slot')
@@ -4301,7 +3402,7 @@ def customize_inflection():
             # basetypes to inherit from the intermediate rule as well.
             if not non_opt:
               for bt in basetype:
-                mylang.add(bt+' := '+inp+'.')
+                mylang.add(bt+' := '+inp+'.', section=sec_from_lex(bt))
           # If the single input is non-optional, make it the input value.
           else:
             inp = get_name(i_type) + '-lex-rule'
@@ -4314,7 +3415,7 @@ def customize_inflection():
         # inherit from the intermediate rule.
         if not non_opt:
           for bt in basetype:
-            mylang.add(bt+' := '+inp+'.')
+            mylang.add(bt+' := '+inp+'.', section=sec_from_lex(bt))
 
       # If this rule forces another rule to follow it, then we need
       # to define word-to-lexeme rule for this grammar.
@@ -4336,10 +3437,32 @@ def customize_inflection():
       subrules = 0
       morph_orth = ''
 
+
+      # ERB 2009-07-01 Decide if we're talking about a rule that
+      # is only adding information. FIXME: This is a band-aid to
+      # get negation to work properly and needs to be refactored.
+
+      addonlyltow = (not neginflrule(features))
+
       # Iterate over the morphemes and their features to see if any
       # element of the paradigm should be a constant-lex-rule, to
       # count up the number of subrules, and to see if any of the
       # morphemes mark case.
+      # SS 2009-06-07 added check to see if a const rule which changes the COMPS of the mother to OPT -
+      # is needed.  The code assumes that a given slot will have the same co-occurrence restrictions 
+      # for all morphemes. i.e. if one morpheme is not permitted to appear with an overt argument 
+      # but is required with a dropped argument, all the other morphemes in this slot will have the 
+      # same restrictions.  This is necessary because the const rule that 
+      # generated will change the value of the COMPS of the mother OPT - for all items which are not 
+      # marked by one of morphemes in this slot.
+      # SS 2009-06-07 Now adding capability for when the marker is not permitted with a dropped 
+      # argument and is required (or optional )overt argument.  This is done by increasing the subrules 
+      # count just like above.  The subrules created are different. 
+
+      opt_head_obj = False
+      opt_head_subj = False
+      drp_head_obj = False
+      drp_head_subj = False
       seen_case = False
       ch.iter_begin('morph')
       while ch.iter_valid():
@@ -4347,11 +3470,28 @@ def customize_inflection():
         morph_orth = ch.get('orth')
         if morph_orth == '':
           const = True
-
+        if ch.get_full('obj-mark-drop')== 'obj-mark-drop-opt' and ch.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+          drp_head_obj = True
+          const = True
+        if ch.get_full('subj-mark-drop')== 'subj-mark-drop-opt' and ch.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+          drp_head_subj = True
+          const = True
         ch.iter_begin('feat')
         while ch.iter_valid():
           if ch.get('name') == 'case':
             seen_case = True
+          if ch.get('name') == 'overt-arg':
+            if ch.get('head') == 'obj':
+              opt_head_obj = True
+            elif ch.get('head') == 'subj':
+              opt_head_subj = True
+            const = True
+          if ch.get('name') == 'dropped-arg':
+            if ch.get('head') == 'obj':
+              drp_head_obj = True
+            elif ch.get('head') == 'subj':
+              drp_head_subj = True
+            const = True
           ch.iter_next()
         ch.iter_end()
         
@@ -4366,6 +3506,11 @@ def customize_inflection():
             synth_cases += [ c[0] ]
 
       subrules += len(synth_cases)
+      
+      if (opt_head_obj) or (opt_head_subj):
+        subrules += 1
+      if (drp_head_obj) or (drp_head_subj):
+        subrules += 1
 
       # Need to specify whether each rule is ltol, ltow, or wtol AND
       # whether the rule is constant or inflecting. Trying to put as much
@@ -4385,7 +3530,19 @@ def customize_inflection():
           [DTR ' + inp + '].')
         if basetype:
           for bt in basetype:
-            mylang.add(bt+ " := [INFLECTED -].")
+            mylang.add(bt+ ' := [INFLECTED -].', section=sec_from_lex(bt))
+        #ERB 2009-07-01 Add in add-only-no-ccont-rule if needed, 
+        #but cont-change-only-rule for negation.
+        #Adding this here because it used to be part of lexeme-to-word-rule
+        #and I've changed matrix.tdl.  FIXME: This is needs to be refactored.
+        #While refactoring: note that we should use matrix-provided
+        #subtypes where available, I think, like infl-cont-change-only-lex-rule.
+        if neginflrule(features):
+          mylang.add(name+'-lex-rule := cont-change-only-lex-rule & \
+             [DTR ' + inp + '].')
+        else:
+          mylang.add(name+'-lex-rule := add-only-no-ccont-rule & \
+             [DTR ' + inp + '].')
 
       elif wtol:
         if const:
@@ -4484,7 +3641,35 @@ def customize_inflection():
 
               abbr = canon_to_abbr(c, cases)
               mylang.add(ltype + ' := [ SYNSEM.' + geom + ' ' + abbr + ' ].')
-          
+              mylang.add(ltype + ' := [ SYNSEM.' + geom + '-MARKED - ].')          
+          if not ch.iter_valid() and (opt_head_obj or opt_head_subj):
+            ltype = name + '-no-drop-lex-rule'
+            if ltow:
+              mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
+            elif wtol:
+              mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
+            else:
+              mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
+            lrules.add(name + '-no-drop-lex := ' + name + '-no-drop-lex-rule.')
+            if (opt_head_obj):
+             mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+            if (opt_head_subj):
+              mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+
+          if not ch.iter_valid() and (drp_head_obj or drp_head_subj):
+            ltype = name + '-drop-lex-rule'
+            if ltow:
+              mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
+            elif wtol:
+              mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
+            else:
+              mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
+            lrules.add(name + '-drop-lex := ' + name + '-drop-lex-rule.')
+            if (drp_head_obj):
+             mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
+            if (drp_head_subj):
+              mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
+            
         ch.iter_end()
       else:
         if const:
@@ -4534,7 +3719,7 @@ def req(basetype, reqs, reqd, tracker, reqtype):
         # to add the feature TRACK
         if not tracker:
           mylang.add('track := avm.')
-          mylang.add('word-or-lexrule :+ [TRACK track].')
+          mylang.add('word-or-lexrule :+ [TRACK track].', section='addenda')
           tracker = True
 
       # Keep track of which rules have been constrained
@@ -4543,7 +3728,7 @@ def req(basetype, reqs, reqd, tracker, reqtype):
       reqs[stype].append(other)
 
       # Add a feature to track corresponding to this rule.
-      mylang.add('track :+ [' + name + ' bool].')
+      mylang.add('track := [' + name + ' bool].')
 
       # Set the root type(s) as having the track feature corresponding
       # to this rule as + or -
@@ -4649,14 +3834,16 @@ def neginflrule(features):
         
   return result
 
+
 ######################################################################
-# customize_test_sentences(matrix_path)
+# customize_test_sentences(grammar_path)
 #   Create the script file entries for the user's test sentences.
 
-def customize_test_sentences(matrix_path):
+def customize_test_sentences(grammar_path):
   try:
     b = open('matrix-core/basic_script', 'r')
-    s = open(matrix_path + 'lkb/script', 'w')
+    s = open(grammar_path + 'lkb/script', 'w')
+    ts = open(grammar_path + 'test_sentences', 'w')
     lines = b.readlines()
     b.close()
     for l in lines:
@@ -4665,13 +3852,41 @@ def customize_test_sentences(matrix_path):
         myl = ch.get('language').lower() + '.tdl'
         s.write('   (lkb-pathname (parent-directory) "' + myl + '")\n')
       elif l == ';;; Modules: Default sentences':
-        s1 = ch.get('sentence1')
-        s2 = ch.get('sentence2')
         s.write('(if (eq (length *last-parses*) 1)\n')
-        s.write('   (setf *last-parses* \'("' + s1 + '" "' + s2 + '")))\n')
+        s.write('   (setf *last-parses* \'(')
+        ch.iter_begin('sentence')
+        if not ch.iter_valid():
+          s.write('""')
+        while ch.iter_valid():
+          s.write('"' + ch.get('orth') + '" ')
+          ts.write(ch.get('orth') + '\n')
+          ch.iter_next()
+        ch.iter_end()
+        s.write(')))\n')
       else:
         s.write(l + '\n')
     s.close()
+    ts.close()
+  except:
+    pass
+
+######################################################################
+# customize_pettdl()
+#
+
+def customize_pettdl(grammar_path):
+  try:
+    p_in = open('matrix-core/pet.tdl', 'r')
+    lines = p_in.readlines()
+    p_in.close()
+    myl = ch.get('language').lower()
+    p_out = open(grammar_path + myl + '-pet.tdl', 'w')
+    for l in lines:
+      l = l.strip()
+      p_out.write(l + '\n')
+      if l == ':include "matrix".':
+        p_out.write(':include "' + myl + '".\n')
+    p_out.close()
   except:
     pass
 
@@ -4746,14 +3961,13 @@ def make_tgz(dir):
   t.add(dir)
   t.close()
 
-  if os.name == 'nt':
-    g = gzip.open(archive + '.gz', 'wb')
-    f = open(archive, 'rb')
-    g.write(f.read())
-    f.close()
-    g.close()
-  else:
-    os.system('gzip ' + archive)
+  g = gzip.open(archive + '.gz', 'wb')
+  f = open(archive, 'rb')
+  g.write(f.read())
+  f.close()
+  g.close()
+
+  os.remove(archive)
 
 
 def add_zip_files(z, dir):
@@ -4783,22 +3997,40 @@ def customize_matrix(path, arch_type):
   global ch
   ch = ChoicesFile(choices_file)
 
-  matrix_path = path + '/matrix/'
+  language = ch.get('language')
+  isocode = ch.get('iso-code')
+  if isocode:
+    grammar_dir = isocode.lower()
+  else:
+    grammar_dir = language.lower()
+
+  grammar_path = path + '/' + grammar_dir + '/'
 
   # Copy from matrix-core
-  if os.path.exists(matrix_path):
-    shutil.rmtree(matrix_path)
-  shutil.copytree('matrix-core', matrix_path)
-  shutil.copy(choices_file, matrix_path) # include a copy of choices
+  if os.path.exists(grammar_path):
+    shutil.rmtree(grammar_path)
+  shutil.copytree('matrix-core', grammar_path)
+  shutil.copy(choices_file, grammar_path) # include a copy of choices
 
   # Create TDL object for each output file
   global mylang, rules, irules, lrules, lexicon, roots
-  mylang =  tdl.TDLfile(matrix_path + ch.get('language').lower() + '.tdl')
-  rules =   tdl.TDLfile(matrix_path + 'rules.tdl')
-  irules =  tdl.TDLfile(matrix_path + 'irules.tdl')
-  lrules =  tdl.TDLfile(matrix_path + 'lrules.tdl')
-  lexicon = tdl.TDLfile(matrix_path + 'lexicon.tdl', False)
-  roots =   tdl.TDLfile(matrix_path + 'roots.tdl')
+  mylang =  tdl.TDLfile(grammar_path + language.lower() + '.tdl')
+  mylang.define_sections([['addenda', 'Matrix Type Addenda', True, False],
+                          ['features', 'Features', True, False],
+                          ['dirinv', 'Direct-Inverse', True, False],
+                          ['lextypes', 'Lexical Types', True, True],
+                          ['nounlex', 'Nouns', False, False],
+                          ['verblex', 'Verbs', False, False],
+                          ['auxlex', 'Auxiliaries', False, False],
+                          ['otherlex', 'Others', False, False],
+                          ['lexrules', 'Lexical Rules', True, False],
+                          ['phrases', 'Phrasal Types', True, False],
+                          ['coord', 'Coordination', True, False]])
+  rules =   tdl.TDLfile(grammar_path + 'rules.tdl')
+  irules =  tdl.TDLfile(grammar_path + 'irules.tdl')
+  lrules =  tdl.TDLfile(grammar_path + 'lrules.tdl')
+  lexicon = tdl.TDLfile(grammar_path + 'lexicon.tdl', False)
+  roots =   tdl.TDLfile(grammar_path + 'roots.tdl')
 
   # date/time
   try:
@@ -4813,16 +4045,19 @@ def customize_matrix(path, arch_type):
   lisp_dt = current_dt.strftime('%Y-%m-%d_%H:%M:%S_UTC')
 
   # Put the current date/time in my_language.tdl...
-  mylang.add_literal(';;; Grammar of ' + ch.get('language') + '\n' +
-                     ';;; created at:\n' +
-                     ';;;     ' + tdl_dt + '\n' +
-                     ';;; based on Matrix customization system version of:\n' +
-                     ';;;     ' + matrix_dt)
+  mylang.add_literal(
+    ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n' +
+    ';;; Grammar of ' + ch.get('language') + '\n' +
+    ';;; created at:\n' +
+    ';;;     ' + tdl_dt + '\n' +
+    ';;; based on Matrix customization system version of:\n' +
+    ';;;     ' + matrix_dt + '\n' +
+    ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;')
 
   # BUT, put the date/time of the Matrix version in Version.lsp (along
   # with the name of the language.
   global version_lsp
-  version_lsp = tdl.TDLfile(matrix_path + 'Version.lsp')
+  version_lsp = tdl.TDLfile(grammar_path + 'Version.lsp')
 
   version_lsp.add_literal('(in-package :common-lisp-user)\n\n' +
                           '(defparameter *grammar-version* \"' +
@@ -4858,7 +4093,9 @@ def customize_matrix(path, arch_type):
   customize_sentential_negation()
   customize_coordination()
   customize_yesno_questions()
-  customize_test_sentences(matrix_path)
+  customize_arg_op()
+  customize_test_sentences(grammar_path)
+  customize_pettdl(grammar_path)
   customize_roots()
 
   # Save the output files
@@ -4874,10 +4111,13 @@ def customize_matrix(path, arch_type):
   old_dir = os.getcwd()
   os.chdir(path)
   if arch_type == 'tgz':
-    make_tgz('matrix')
+    make_tgz(grammar_dir)
   else:
-    make_zip('matrix')
+    make_zip(grammar_dir)
   os.chdir(old_dir)
+
+  return grammar_dir
+
 
 ###############################################################
 # Allow customize_matrix() to be called directly from the

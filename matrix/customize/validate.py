@@ -82,6 +82,9 @@ def validate_case():
   if cm in ['focus']:
     validate_one_case(cm + '-focus')
 
+  if cm == 'none' and ch.get('case1_name'):
+    add_err('case1_name', 'You may not specify additional cases if your language has no case marking.')
+
   if ch.get('scale1_feat1_name') and not ch.get('scale-equal'):
     add_err('scale-equal', 'If you define a direct-inverse scale, you must say what direction the verb is when the agent and patient have equal rank.')
 
@@ -226,7 +229,7 @@ def validate_word_order():
     add_err('v-cluster','If your auxiliary takes a vp-complement, we assume it does not form verbal clusters.')
 
   if (((wo == 'vso' and co == 'after') or (wo == 'osv' and co == 'before')) and ac == 'vp'):
-    add_err('aux-comp-order','This auxiliary-complement order is not compatible with your general word order and auxiliary complement type vp.')
+    add_err('aux-comp','The general word order and aux-comp order are not compatible with vp complements.')
 
   if wo == 'v2' and ch.get('v-cluster') == 'yes':
     add_err('v-cluster','Sorry, but verbal clusters have not been implemented yet for v2 languages. Please answer "no" to this question.') 
@@ -894,6 +897,23 @@ def validate_features():
       add_err(var, 'You have selected an invalid feature value.')
 
 
+def validate_arg_opt():
+  """Check to see if the user completed the necessary portions of the arg
+   opt page"""
+
+  if ch.get('subj-drop') and not ch.get('subj-mark-drop'):
+    add_err('subj-mark-drop', 'You must select whether a subject marker is required, optional or not permitted with subject dropping.')
+
+  if ch.get('subj-drop') and not ch.get('subj-mark-no-drop'):
+    add_err('subj-mark-no-drop', 'You must select whether a subject marker is required, optional or not permitted with an overt subject.')
+
+  if ch.get('obj-drop') and not ch.get('obj-mark-drop'):
+    add_err('obj-mark-drop', 'You must select whether an object marker is required, optional or not permitted with object dropping.')
+
+  if ch.get('obj-drop') and not ch.get('obj-mark-no-drop'):
+    add_err('obj-mark-no-drop', 'You must select whether a object marker is required, optional or not permitted with an overt object.')
+  
+
 ######################################################################
 # validate_choices(choices_file)
 #   Validate the choices file found in choices_file.  Return
@@ -923,6 +943,7 @@ def validate_choices(choices_file, extra = False):
 
   validate_types()
   validate_features()
+  validate_arg_opt()
 
   if extra:
     validate_extra_constraints()
