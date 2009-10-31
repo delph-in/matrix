@@ -77,7 +77,7 @@ Label "<div style=\"padding-left: 30px\">"
   Radio aux-comp "Aux {i} complement" "<b>Complements:</b> The complements of auxiliaries are:<br>" ""
   . s "S" "" "saturated sentences<br>"
   . vp "VP" "" "VPs, raising the subject<br>"
-  . v "V" "" "Vs, raising all of its arguments (argument composition)<br><br>" 
+  . v "V" "" "Vs, raising all of its arguments (argument composition)<br><br>"
 
 Label "(If you work with a language where the complement type (V, VP,
 or S) varies depending on the auxiliary please let us know.)<br><br>"
@@ -95,7 +95,7 @@ Label "<div style=\"padding-left: 30px\">"
 
   Radio v-cluster "verb cluster" "Do the auxiliaries form a cluster?<br>" ""
   . yes "Yes" "" "yes<br>"
-  . no "No" "" "no<br><br>" 
+  . no "No" "" "no<br><br>"
 
 Label "NOTE: If the verbal cluster question is answered by \"no\" for
 a free word order language (with V auxiliary complement), the
@@ -162,7 +162,7 @@ Label "<div style=\"padding-left: 16px\">"
 
 Check dim-number "Number feature dimension for noun types" "" "Generate noun types automatically based on all of the number values defined on this page."
 
-Label "</div>" 
+Label "</div>"
 
 Section person "Person"
 
@@ -235,7 +235,7 @@ Label "<div style=\"padding-left: 16px\">"
 
 Check dim-person "Person feature dimension for noun types" "" "Generate noun types automatically based on all of the person or pernum values defined on this page."
 
-Label "</div>" 
+Label "</div>"
 
 Section gender "Gender"
 
@@ -287,7 +287,7 @@ Label "<div style=\"padding-left: 16px\">"
 
 Check dim-gender "Gender feature dimension for noun types" "" "Generate noun types automatically based on all of the gender values defined on this page."
 
-Label "</div>" 
+Label "</div>"
 
 Label "<h4>References</h4>"
 Label "<font size=\"2\">"
@@ -431,7 +431,7 @@ Label "<div style=\"padding-left: 16px\">"
 
 Check dim-case "Case feature dimension for noun types" "" "Generate noun types automatically based on all of the case values defined on this page."
 
-Label "</div>" 
+Label "</div>"
 
 Label "<h4>References</h4>"
 Label "<font size=\"2\">"
@@ -559,7 +559,7 @@ Label "<div style=\"padding-left: 35px\">"
 Label "<br>Build your hierarchy from the top down starting with
 subtypes of the supertype: tense.</p>"
 
-BeginIter tense{i} "a tense type" 
+BeginIter tense{i} "a tense type"
 
   Text name "tense {i} name" "Tense name: " "" 20
   BeginIter supertype{j} "a Supertype" 1
@@ -608,7 +608,7 @@ aspect, as appropriate for your language. If your language does not
 have viewpoint aspect (also commonly referred to as grammatical
 aspect) as a grammatical category, leave this section blank."
 
-BeginIter aspect{i} "an aspect type" 
+BeginIter aspect{i} "an aspect type"
 
   Text name "aspect {i} name" "Aspect name: " "" 20
   BeginIter supertype{j} "a Supertype" 1
@@ -644,7 +644,7 @@ class=\"feat\">situation</span>, reflecting inherent or
 morphologically marked situation aspect. If this is not appropriate
 for your language, leave this section blank."
 
-BeginIter situation{i} "a situation type" 
+BeginIter situation{i} "a situation type"
 
   Text name "situation {i} name" "Situation name: " "" 20
   BeginIter supertype{j} "a Supertype" 1
@@ -711,7 +711,7 @@ Label "<p>If you would like to have verb types automatically generated based on 
 MultiSelect dim-verb "Feature dimensions for verb type generation" "<p>Select feature dimension(s) for auto-generating verb types: " ""
 fillnames verb
 
-Label "</div>" 
+Label "</div>"
 
 Label "<h4>References</h4>"
 Label "<font size=\"2\">"
@@ -780,7 +780,7 @@ uses for sentential negation (as distinct from constituent
 negation). (You may leave this section blank, in which case your
 grammar will not include any information about negation.)</p>"
 
-Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <span class=\"feat\">negation</span> with possible value <tt>plus</tt> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">negation</span> <tt>plus</tt>] will produce lexical rules that add the semantics of negation.</p>" 
+Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <span class=\"feat\">negation</span> with possible value <tt>plus</tt> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">negation</span> <tt>plus</tt>] will produce lexical rules that add the semantics of negation.</p>"
 
 Check adv-neg "Adverbial negation" "<p>" "An adverb which is an independent modifier of:<br>"
 
@@ -808,7 +808,7 @@ Label "<div style=\"padding-left: 16px\">"
 
 Check dim-negation "Negation feature dimension for verb types" "" "Generate verb types automatically based on the negative values defined on this page."
 
-Label "</div>" 
+Label "</div>"
 
 Section coordination "Coordination"
 
@@ -976,7 +976,7 @@ BeginIter context{i} "a Context"
     . higher "Higher-ranked" "the higher-ranked NP"
     . lower "Lower-ranked" "the lower-ranked NP"
 
-  EndIter feat    
+  EndIter feat
 
 EndIter context
 
@@ -1093,7 +1093,7 @@ BeginIter verb{i} "a Verb Type"
   Label "<div style=\"padding-left: 16px\">"
 
   Text name "Verb type {i} name" "Type name: " "" 30
- 
+
   MultiSelect supertype "Verb type {i} supertypes(s)" "Supertype(s): " "<br>"
   filltypes verb
 
@@ -1125,9 +1125,9 @@ Label "<h3>Auxiliary Verb Types</h3>"
 
 Label auxlabel "Add auxiliary types:<br>"
 
-Label "<p>Note that auxiliaries may contribute a independent predicate, e.g., English modal <i>can</i>. These auxiliaries should inherit from withpred-aux-lex. If you define a type that contributes a predicate, you may also specify semantic feature values on the auxiliary, if desired. Alternatively, auxiliaries may contribute no predicate of their own, e.g., English auxiliary <i>be</i>, and should inherit from nopred-aux-lex.</p>" 
+Label "<p>Note that auxiliaries may contribute a independent predicate, e.g., English modal <i>can</i>. These auxiliaries should inherit from withpred-aux-lex. If you define a type that contributes a predicate, you may also specify semantic feature values on the auxiliary, if desired. Alternatively, auxiliaries may contribute no predicate of their own, e.g., English auxiliary <i>be</i>, and should inherit from nopred-aux-lex.</p>"
 
-BeginIter aux{i} "an Auxiliary Type" 
+BeginIter aux{i} "an Auxiliary Type"
 
   Label "<b>Auxiliary type {i}</b>:"
 
@@ -1178,7 +1178,7 @@ EndIter aux
 
 Separator
 
-Label "<h3>Determiner Types</h3>" 
+Label "<h3>Determiner Types</h3>"
 
 Label "<p>Add determiner types:</p>"
 
@@ -1210,22 +1210,22 @@ EndIter det
 Section lexicon "Lexicon"
 
 
-Label "<p>On this page you will define <span class=\"dfn\">lexical items</span> for the types 
-defined on the Lexical Types page.  For most lexical items you must provide both the spelling 
-of the stem and a <span class=\"dfn\">predicate</span> (or <span class=\"dfn\">relation</span>) 
-that identifies the stem's semantic contribution (e.g. <tt>_cat_n_rel</tt> for the noun relation 
+Label "<p>On this page you will define <span class=\"dfn\">lexical items</span> for the types
+defined on the Lexical Types page.  For most lexical items you must provide both the spelling
+of the stem and a <span class=\"dfn\">predicate</span> (or <span class=\"dfn\">relation</span>)
+that identifies the stem's semantic contribution (e.g. <tt>_cat_n_rel</tt> for the noun relation
 contributed by <i>cat</i> or <tt>_sleep_v_rel</tt> for the verb relation contributed by <i>sleep</i>).
 If you completed the Argument
 Optionality page, be sure to specify whether each verb type allows
 subject and or object dropping by selecting the correct value for the
 <span class=\"feat\">opt</span> feature.</p>"
 
-Label "<p>In addition to lexical types, you can define inflectional morphology for nouns, verbs, 
-and determiners.  To do so, first define one or more inflectional <span class=\"dfn\">slots</span>, 
-which determine the order in which morphemes appear, then define one or more <span class=\"dfn\">morphemes</span> 
-that can appear in each slot, along with the <span class=\"dfn\">features</span> specified by each 
-morpheme.  To determine the order of slots, you must define one or more <span class=\"dfn\">inputs</span> 
-for each.  For morphemes that attach directly to stems, the input will be a lexical type; 
+Label "<p>In addition to lexical types, you can define inflectional morphology for nouns, verbs,
+and determiners.  To do so, first define one or more inflectional <span class=\"dfn\">slots</span>,
+which determine the order in which morphemes appear, then define one or more <span class=\"dfn\">morphemes</span>
+that can appear in each slot, along with the <span class=\"dfn\">features</span> specified by each
+morpheme.  To determine the order of slots, you must define one or more <span class=\"dfn\">inputs</span>
+for each.  For morphemes that attach directly to stems, the input will be a lexical type;
 for morphemes that attach to already-inflected stems, the input will be another slot.</p>"
 
 Separator
@@ -1323,9 +1323,9 @@ EndIter verb
 
 Separator
 
-Label "<h3>Auxiliary Stems</h3>"        
+Label "<h3>Auxiliary Stems</h3>"
 
-BeginIter aux{i} "an Auxiliary type" 
+BeginIter aux{i} "an Auxiliary type"
   Select type "Auxiliary type {i}" "Auxiliary type: " ""
   filltypes aux
 
@@ -1411,7 +1411,7 @@ Separator
 
 Label "<h3>Determiner Stems</h3>"
 
-BeginIter det{i} "a Determiner type" 
+BeginIter det{i} "a Determiner type"
   Select type "Determiner type {i}" "Determiner type: " ""
   filltypes det
 

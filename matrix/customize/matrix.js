@@ -583,7 +583,7 @@ function fill_types(select_name, type_cat, prefix)
       if (e[i].name.search(pattern) != -1) {
 	  var val = e[i].name.replace(/_[^_]*$/, '');
 
-	  if (val != selfname) {
+	  if (val && (val != selfname)) {
 	      var desc = val;
 	      var f = document.getElementsByName(val + '_name');
 
@@ -600,7 +600,7 @@ function fill_types(select_name, type_cat, prefix)
   }
   
   // Collect options from the types() array in choices
-  // except for the current (self) type
+  // except for the current (self) type - FIX not working?
   // Note that this assumes a strict naming convention for 
   // lexical types within the customization and no hyphens
   // in the user defined names.

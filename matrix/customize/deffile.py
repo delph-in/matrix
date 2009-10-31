@@ -594,11 +594,6 @@ class MatrixDefFile:
               fill_arg1 = word[1]
             if len(word) > 2:
               fill_arg2 = word[2] 
-          elif fill_type == 'filltypes':
-            
-            html += html_select(errors, vn, multi,
-                                'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\')') + '\n'
-
 
             if fill_type == 'fillregex':
               if fill_arg2:

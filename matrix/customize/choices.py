@@ -1088,7 +1088,7 @@ class ChoicesFile:
   #   Note that the feature geometry is empty if the feature requires
   #   more complex treatment that just FEAT=VAL (e.g. negation).  The
   #   list of values is separated by semicolons, and each item in the
-  #   list is a pair of the form 'name|friendly name'.
+  #   values list is a pair of the form 'name|friendly name'.
 #test - added another item to the list = category (noun or verb)
   def features(self):
     features = []
@@ -1208,38 +1208,38 @@ class ChoicesFile:
 
     # Questions
     if self.get_full('q-infl'):
-      features += [ ['question', 'plus|plus', '' ] ]
+      features += [ ['question', 'plus|plus', '', 'verb' ] ]
 
     # Argument Optionality
     if self.get_full('subj-drop') or self.get_full('obj-drop'):
-      features +=[['OPT', 'plus|plus;minus|minus', '']]
+      features +=[['OPT', 'plus|plus;minus|minus', '', '']]
     
     # Overt Argument
     if  self.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and self.get_full('obj-mark-drop') == 'obj-mark-drop-req':
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
+      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '', '']]
     elif self.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-not' and self.get_full('obj-mark-drop') == 'obj-mark-drop-req':
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
+      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '', '']]
     elif self.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-not' and self.get_full('subj-mark-drop') == 'subj-mark-drop-req':
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
+      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '', '']]
     elif self.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-not' and self.get_full('obj-mark-drop') == 'obj-mark-drop-opt' :
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
+      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '', '']]
     elif self.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-not' and self.get_full('subj-mark-drop') == 'subj-mark-drop-opt' :
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
+      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '', '']]
     elif  self.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and self.get_full('subj-mark-drop') == 'subj-mark-drop-req':
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
+      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '', '']]
 
     # Dropped Argument
     if self.get_full('obj-mark-drop')== 'obj-mark-drop-not' and self.get_full('obj-mark-no-drop')== 'obj-mark-no-drop-req':
-      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
+      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','', '']]
 
     elif self.get_full('obj-mark-drop')== 'obj-mark-drop-not' and self.get_full('obj-mark-no-drop')== 'obj-mark-no-drop-opt':
-      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
+      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','', '']]
 
     elif self.get_full('subj-mark-drop')== 'subj-mark-drop-not' and self.get_full('subj-mark-no-drop')== 'subj-mark-no-drop-req':
-      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
+      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','', '']]
 
     elif self.get_full('subj-mark-drop')== 'subj-mark-drop-not' and self.get_full('subj-mark-no-drop')== 'subj-mark-no-drop-opt':
-      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
+      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','', '']]
 
     # Other features
     state = self.iter_state()
@@ -1269,8 +1269,8 @@ class ChoicesFile:
         geom = 'LOCAL.CONT.HOOK.INDEX.PNG.' + feat.upper()
 
       if values:
-        features += [ [feat, values, geom] ]
-#test - this needs special attention but is ignored now      
+        features += [ [feat, values, geom, ''] ]
+#test - the cat value needs special attention but is ignored now      
       self.iter_next()
     self.iter_end()
 
