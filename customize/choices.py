@@ -20,6 +20,23 @@ class ChoicesFileParseError(Exception):
     return repr(self.msg)
 
 ######################################################################
+# ChoiceCategory is a parent-class for ChoiceDict and ChoiceList.
+# Any meta-information about choices should be encoded in
+# ChoiceCategory, and ChoiceDict and ChoiceList should most likely
+# just be empty classes inheriting from ChoiceCategory and their
+# namesake datatype.
+
+class ChoiceCategory:
+    def __init__(self, full_key=None):
+        self.full_key = full_key
+
+class ChoiceDict(ChoiceCategory, dict):
+    pass
+
+class ChoiceList(ChoiceCategory, list):
+    pass
+
+######################################################################
 # ChoicesFile is a class that wraps the choices file, a list of
 # variables and values, and provides methods for loading, accessing,
 # and saving them.
@@ -32,7 +49,7 @@ class ChoicesFile:
     self.iter_stack = []
     self.cached_values = {}
     self.cached_iter_values = None
-    self.choices = {}
+    self.choices = ChoiceDict()
 
     if choices_file is not None:
       try:
@@ -57,7 +74,7 @@ class ChoicesFile:
     Get the data structure for each choice in the choices file, then
     merge them all together into one data structure.
     """
-    choices = {}
+    choices = ChoiceDict()
     for line in [l.strip() for l in choice_lines if l.strip() != '']:
       try:
         (key, value) = line.split('=',1)
@@ -84,25 +101,24 @@ class ChoicesFile:
   ############################################################################
   ### Choices file access functions
 
-  def get(self, key):
+  def get(self, key, default=None):
+    # integers have an offset of -1 for list indices
+    keys = [safe_int(k, offset=-1) for k in self.split_variable_key(key)]
     d = self.choices
-    a = self.split_variable_key(key)
-    for var in [[a[i], a[i+1]] for i in range(0,len(a)-1,2)] + [[a[-1]]]:
-      if len(var) == 2:
-        if var[0] in d and int(var[1]) - 1 < len(d[var[0]]):
-          d = d[var[0]][int(var[1]) - 1]
-        else:
-          return []
-      else:
-        return d.get(var[0], [])
+    try:
+      for k in keys:
+        d = d[k]
+    except KeyError:
+      return default or []
+    return d
 
   # A __getitem__ method so that ChoicesFile can be used with brackets,
   # e.g., ch['language'].
   def __getitem__(self, key):
-    keys = self.split_variable_key(key)
     return self.get(key)
 
-  def __set_variable(self, choices, keys, value, allow_overwrite=True):
+  def __set_variable(self, choices, keys, value,
+                     allow_overwrite=True, key_prefix=None):
     """
     Set the value parameter in the dict/list data structure choices,
     with the location defined by keys.
@@ -120,18 +136,22 @@ class ChoicesFile:
       # If no error was thrown, we're dealing with a list index.
       # Create the list if it doesn't already exist
       if not choices:
-        choices = []
-      if len(choices) < var:
-        choices += [{} for i in range(var - len(choices))]
+        choices = ChoiceList(full_key=key_prefix)
+      count = len(choices)
+      if count < var:
+        choices += [ChoiceDict(full_key=key_prefix + str(count+i+1))
+                    for i in range(var - count)]
       choices[var - 1] = self.__set_variable(choices[var - 1],
                                              keys,
                                              value,
                                              allow_overwrite)
     except ValueError:
+      new_key_prefix = '_'.join([k for k in [key_prefix, var] if k])
       choices[var] = self.__set_variable(choices.get(var, None),
                                          keys,
                                          value,
-                                         allow_overwrite)
+                                         allow_overwrite,
+                                         new_key_prefix)
     return choices
 
   def __setitem__(self, key, value):
@@ -146,7 +166,7 @@ class ChoicesFile:
         d = d[k]
     # replace, rather than deleting, list items to maintain list size
     if type(keys[-1]) == int:
-        d[keys[-1]] = {}
+        d[keys[-1]] = ChoiceDict()
     else:
         del d[keys[-1]]
 
@@ -154,6 +174,9 @@ class ChoicesFile:
     if self.get(key):
       return True
     return False
+
+  def __iter__(self):
+    return self.choices.__iter__()
 
   ############################################################################
   ### Up-revisioning handler
@@ -1098,17 +1121,14 @@ class ChoicesFile:
   def current_version(self):
     return 18
 
-
   def convert_value(self, key, old, new):
     if key in self and self[key] == old:
       self[key] = new
-
 
   def convert_key(self, old, new):
     if old in self:
       self[new] = self[old]
       del self[old]
-  
 
   def convert_0_to_1(self):
     self.convert_key('wordorder', 'word-order')

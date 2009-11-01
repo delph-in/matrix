@@ -6,6 +6,7 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         c = customize.choices.ChoicesFile() # no file loaded
         c.choices = c.parse_choices(simple_choices_file)
         self.assertEqual(c.get('NO_SUCH'), [])
+        self.assertEqual(c.get(''), c.choices)
         self.assertEqual(c.get('language'), 'Simple')
         self.assertEqual(c.get('iso-code'), 'smp')
         self.assertEqual(c.get('verb1_name'), 'testverb')
@@ -36,13 +37,10 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         self.assertEqual(c.choices, {})
         c['abc1_def'] = 1
         c['abc2_def'] = 2
-        self.assertEqual(c.choices, {'abc':[{'def':1},{'def':2}]})
-        del c['abc2_def']
-        self.assertEqual(c.choices, {'abc':[{'def':1},{}]})
-        del c['abc2']
-        self.assertEqual(c.choices, {'abc':[{'def':1},{}]})
-        c['abc2_def'] = 2
         c['abc2_ghi'] = 3
+        self.assertEqual(c.choices, {'abc':[{'def':1},{'def':2,'ghi':3}]})
+        del c['abc2_def']
+        self.assertEqual(c.choices, {'abc':[{'def':1},{'ghi':3}]})
         del c['abc2']
         self.assertEqual(c.choices, {'abc':[{'def':1},{}]})
         c['abc2_def'] = 2
@@ -82,6 +80,16 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
                          {'abc': [{'def':'DEF1'}, {'def':'DEF2'}]})
         self.assertRaises(customize.choices.ChoicesFileParseError,
                           c.parse_choices, ['abc2_def=DEF2', 'abc2_def=DEF1'])
+
+    def test_full_key(self):
+        c = customize.choices.ChoicesFile()
+        self.assertEqual(c.choices.full_key, None)
+        c['abc1_def'] = 3
+        c['abc2_def'] = 2
+        self.assertEqual(c['abc'].full_key, 'abc')
+        for i, key in enumerate(c['abc']):
+            print key.full_key
+            self.assertEqual(key.full_key, 'abc' + str(i+1))
 
 class TestChoicesDerivedValueFunctions(unittest.TestCase):
     def setUp(self):
