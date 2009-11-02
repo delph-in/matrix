@@ -33,19 +33,6 @@ roots = None
 ######################################################################
 # Utility functions
 
-# Given a choices variable identifying something that can have a
-# name, return that name if it exists, otherwise return the variable.
-# If label is None, then use the current iter_prefix with the trailing
-# underscore shaved off.
-def get_name(label=None):
-  if not label:
-    label = ch.iter_prefix()[:-1]
-  name = ch.get_full(label + '_name')
-  if not name:
-    name = label
-  return name
-
-
 # ERB 2006-09-16 There are properties which are derived from the
 # choices file as a whole which various modules will want to know about.
 # The first example I have is the presence of auxiliaries.  Both the
@@ -169,7 +156,7 @@ class Hierarchy:
   # this information for later.
   def __calc_leaves(self):
     self.__calc_subtypes()
-    
+
     self.leaves = set()
     for st in self.subtypes:
       if len(self.subtypes[st]) == 0:
@@ -181,7 +168,7 @@ class Hierarchy:
   def __calc_coverage(self):
     self.__calc_leaves()
     self.__calc_supertypes()
-    
+
     self.coverage = {}
     for l in self.leaves:
       working = [ l ]
@@ -216,7 +203,7 @@ class Hierarchy:
 
     type_list = list(type_set)
     if len(type_list) == 1:
-      return type_list[0]    
+      return type_list[0]
 
     if type(type_set) == 'list':
       type_set = set(type_set)
@@ -246,7 +233,7 @@ class Hierarchy:
         if k != l and cov[k] == cov[l]:
           bad_hierarchy = True
           break
-        
+
     supers = []
     subs = []
     if bad_hierarchy:
@@ -321,7 +308,7 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
     tdlfile = mylang
 
   pos_geom_prefix = ''
-  
+
   if pos == 'det':
     pos_geom_prefix = 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.'
   elif pos == 'con':
@@ -414,7 +401,7 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
 
     elif (n == 'negation' and v[0] == 'plus'):
       # ERB 2009-01-22 This is where we deal with the
-      # negative affixes.  
+      # negative affixes.
       tdlfile.add(type_name + ':= \
                      [ C-CONT [ HOOK [ XARG #xarg,\
 	                     LTOP #ltop,\
@@ -445,7 +432,7 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
                   merge=True)
 
     ## Specifiying OPT- on each user defined type instead of creating a supertype because
-    #It the supertype would need to inherit from transitive-verb-lex and the code already puts 
+    #It the supertype would need to inherit from transitive-verb-lex and the code already puts
     #transitive-verb-lex as a supertype of user-defined typ thus causing an inheritance issue.
     #elif(n=='OPT' and v[0] == 'plus'):
       # SS 2009-05-26 argument optionality is added to user defined types here
@@ -459,16 +446,16 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
         tdlfile.add(type_name + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
       if h == 'obj':
         tdlfile.add(type_name + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
-    
+
     elif (n=='overt-arg' and h == 'obj' and v[0] == 'not-permitted'):
       tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
-    
+
     elif(n=='overt-arg' and h == 'subj') and v[0] == 'not-permitted':
       tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
 
     elif (n=='dropped-arg' and h == 'obj' and v[0] == 'not-permitted'):
       tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
-    
+
     elif(n=='dropped-arg' and h == 'subj' and v[0] == 'not-permitted'):
       tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
 
@@ -821,7 +808,7 @@ def customize_other_features():
 
 ######################################################################
 # customize_tense()
-# Create tense feature value hierarchies per the user's choices 
+# Create tense feature value hierarchies per the user's choices
 
 def init_tense_hierarchy():
   hier = Hierarchy('tense')
@@ -831,7 +818,7 @@ def init_tense_hierarchy():
     if tdefn == 'choose':
       ppflist = []
       for ten in ('nonfuture', 'nonpast', 'past', 'present', 'future' ):
-        
+
         if ch.get(ten):
           if ten not in ppflist:
             hier.add(ten, 'tense')
@@ -839,12 +826,12 @@ def init_tense_hierarchy():
           for subtype in ch.get(ten + '-subtype'):
             st = subtype.get('name')
             hier.add(st, ten)
-          
+
           if ten == 'nonfuture':
             for moreten in ('past', 'present'):
               if ch.get(moreten):
                 hier.add(moreten, ten)
-                ppflist.append(moreten)       
+                ppflist.append(moreten)
 
           if ten == 'nonpast':
             for moreten in ('present', 'future'):
@@ -893,7 +880,7 @@ def customize_aspect():
 
 # customize_situation()
 # Create situation aspect feature value definitions per the user's choices
- 
+
 def init_situation_hierarchy():
   hier = Hierarchy('situation')
 
@@ -983,7 +970,7 @@ def customize_major_constituent_order(wo):
 # head - comp and not from mod to mother, putting it back for other wo options
 
   if not wo == 'v2':
-    mylang.add_literal(';Constraint on MC used to be part of matrix.tdl\n;' + 
+    mylang.add_literal(';Constraint on MC used to be part of matrix.tdl\n;' +
                ';it applies to all wo implementations, except for v2')
     mylang.add('basic-head-comp-phrase :+\
                 [ SYNSEM.LOCAL.CAT.MC #mc,\
@@ -993,7 +980,7 @@ def customize_major_constituent_order(wo):
                 [ SYNSEM.LOCAL.CAT.MC #mc, \
                   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
                section='addenda')
-  
+
 
 # Head-comp order
 
@@ -1021,13 +1008,13 @@ def customize_major_constituent_order(wo):
     mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
 
 # Subjects attach before complements
-# ASF 2008-11-20 in order to allow for aux with vp-comp for VSO and OSV 
-# languages, the standard analysis needs to be adapted to a LIGHT + 
+# ASF 2008-11-20 in order to allow for aux with vp-comp for VSO and OSV
+# languages, the standard analysis needs to be adapted to a LIGHT +
 # constraint on the hs-rule.
 
   auxcomp = ch.get('aux-comp')
   if wo == 'vso' or wo == 'osv':
-    if has_auxiliaries_p() and auxcomp == 'vp':  
+    if has_auxiliaries_p() and auxcomp == 'vp':
       mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
     else:
       mylang.add(hc + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
@@ -1088,8 +1075,8 @@ def customize_major_constituent_order(wo):
                'attachment).  We might be able to collapse these one\n' +
                'day, but that\'s not obvious.',
                section='addenda')
-    
-# ASF 2008-11-18, if free wo lgge has aux and aux precedes verb, 
+
+# ASF 2008-11-18, if free wo lgge has aux and aux precedes verb,
 # the enforced attachment must apply in the other direction.
 
     if has_auxiliaries_p() and  ch.get('aux-comp-order') == 'before':
@@ -1098,7 +1085,7 @@ def customize_major_constituent_order(wo):
                   HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
       mylang.add('head-initial-head-nexus := head-initial &\
                 [ SYNSEM.ATTACH rmod ].')
-    else: 
+    else:
       mylang.add('head-initial-head-nexus := head-initial & \
                 [ SYNSEM.ATTACH lmod,\
                   HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
@@ -1129,13 +1116,13 @@ in for head-adjunct phrases here:',
 # phenomena (such as clause final verbal cluster and vp-fronting) are
 # implemented
 #
-  
+
   if wo == 'v2':
     mylang.add('verbal-head-nexus := headed-phrase & \
                 [ SYNSEM.LOCAL.CAT.HEAD verb ].')
     mylang.add('head-initial-head-nexus := head-initial & \
                 [ SYNSEM.LOCAL.CAT.MC na & #mc, \
-                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].') 
+                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
     mylang.add('head-final-head-nexus := head-final & \
                 [ SYNSEM.LOCAL.CAT.MC bool, \
                   HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
@@ -1230,13 +1217,13 @@ def determine_consistent_order(wo,hc):
       adp = 'ov-prep'
     elif hc == 'head-comp' and adporder == 'after':
       adp = 'vo-post'
-  
+
   # Now what about auxiliaries?
   # ASF 2008-12-07 for non-harmonic order and v (not vp) comps,
   # we need a different procedure (see if auxcomp...)
-   
+
   if has_auxiliaries_p():
-    auxcomp = ch.get('aux-comp')  
+    auxcomp = ch.get('aux-comp')
     if wo == 'free':
       if ch.get('aux-comp-order') == 'before':
         aux = 'free-auxv'
@@ -1244,7 +1231,7 @@ def determine_consistent_order(wo,hc):
         aux = 'free-vaux'
     elif hc == 'comp-head' and ch.get('aux-comp-order') == 'before':
       if auxcomp == 'v':
-        aux = 'auxv-rule'  
+        aux = 'auxv-rule'
       else:
         aux = 'ov-auxv'
     elif hc == 'head-comp' and ch.get('aux-comp-order') == 'after':
@@ -1252,7 +1239,7 @@ def determine_consistent_order(wo,hc):
         aux = 'vaux-rule'
       else:
         aux = 'vo-vaux'
-     
+
   # ERB 2006-10-05 And what about the order of question particles wrt
   # to other kinds of head-comp?  I'm assuming for now that question particles
   # and other complementizers will behave the same way.  Are there languages
@@ -1271,7 +1258,7 @@ def determine_consistent_order(wo,hc):
 
    # return what we learned
 
-  return {'adp': adp, 'aux': aux, 'qpart_order': qpart_order}
+  return {'adp': adp, 'aux': aux, 'qpart_order': qpart_order} #TODO: verify key
 
 
 # find out whether verbal clusters
@@ -1280,17 +1267,17 @@ def determine_vcluster(auxcomp, auxorder, wo):
 
   vcluster = False
 
-  if auxcomp == 'vp':    
+  if auxcomp == 'vp':
     if (wo == 'v-initial' and auxorder == 'before') or (wo == 'v-final' and auxorder == 'after'):
       vcluster = True
   elif auxcomp == 'v':
     if ch.get('v-cluster') == 'yes' or wo == 'v-initial' or wo == 'v-final':
       vcluster = True
     if wo == 'sov' or wo == 'ovs' or wo == 'osv':
-      if auxorder == 'before':        
-        vcluster = True  
+      if auxorder == 'before':
+        vcluster = True
       elif wo == 'sov' or wo == 'ovs':
-        vcluster = False 
+        vcluster = False
     if wo == 'vos' or wo == 'svo' or wo == 'vso':
       if auxorder == 'after':
         vcluster = True
@@ -1367,15 +1354,15 @@ def specialize_word_order(hc,orders):
 
   adp = orders['adp']
   aux = orders['aux']
-  qpart_order = orders['qpart_order']
+  qpart_order = orders['qpart_order'] #TODO: verify _-delimited key
   auxcomp = ch.get('aux-comp')
   wo = ch.get('word-order')
   auxorder = ch.get('aux-comp-order')
   vcluster = determine_vcluster(auxcomp, auxorder, wo)
-     
+
   # ASF 2008-12-07 If verbal cluster is present, introduce relevant feature
   # and pass-up in lex-rule.
-  # Also add relevant constraint to basic-head-comp-phrase 
+  # Also add relevant constraint to basic-head-comp-phrase
 
   if vcluster:
     mylang.add('lex-or-phrase-synsem :+ [ VERB-CL luk ].',
@@ -1398,13 +1385,13 @@ def specialize_word_order(hc,orders):
   if hc == 'head-comp' and (adp == 'vo-post' or aux == 'vo-vaux' or qpart_order == 'vo-sq'):
     mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final.')
 
-  # ASF 2008-11-18, special auxiliary rule that allows for auxiliaries 
+  # ASF 2008-11-18, special auxiliary rule that allows for auxiliaries
   # to combine with v's when aux-comp order is not harmonic
   # the vcluster + constraint is added to head-comp-phrase, since this
   # aux-rule is always combined with the verbal cluster analysis.
 
   if aux == 'auxv-rule':
-    mylang.add('''aux-comp-phrase := basic-marker-comp-phrase & marker-initial-phrase & 
+    mylang.add('''aux-comp-phrase := basic-marker-comp-phrase & marker-initial-phrase &
                                    [ SYNSEM [ LOCAL.CAT.HEAD.FORM #vform,
                                               VERB-CL #vc ],
                                      MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX +,
@@ -1421,20 +1408,20 @@ def specialize_word_order(hc,orders):
                                      NON-MARKER-DTR.SYNSEM [ LOCAL.CAT.HEAD verb,
                                                              VERB-CL #vc ] ].''')
     mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
-   
+
   # add necessary restrictions to assure verb clusters
   # and special auxiliary rules for vso/osv and free word order.
 
   if vcluster:
     if wo == 'vso' or wo == 'free' or wo == 'v-initial':
-      mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].') 
+      mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
     if wo == 'osv' or wo == 'free' or wo == 'v-final':
       mylang.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
-    if (aux == 'vini-vc' and aux == 'vo-auxv' ) or wo == 'free': 
-      mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].') 
+    if (aux == 'vini-vc' and aux == 'vo-auxv' ) or wo == 'free':
+      mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
     if (aux == 'vfin-vc' and aux == 'ov-vaux') or wo == 'free':
       mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
-    if wo == 'free' or wo == 'vso' or wo == 'osv':      
+    if wo == 'free' or wo == 'vso' or wo == 'osv':
       if auxorder == 'before' and aux != 'ov-auxv':
         mylang.add('aux-comp-phrase := basic-head-1st-comp-phrase & head-initial & \
                     [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ], \
@@ -1444,11 +1431,11 @@ def specialize_word_order(hc,orders):
         mylang.add('comp-aux-phrase := basic-head-1st-comp-phrase & head-final & \
                     [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ], \
                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
-        aux = 'caux'  
+        aux = 'caux'
       if wo == 'free':
         mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
-        mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.VERB-CL + ].') 
-    
+        mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
+
   # Add rules to rules.tdl when necessary
 
   if aux == 'ov-auxv' or adp == 'ov-prep' or qpart_order == 'ov-qs':
@@ -1472,12 +1459,12 @@ def specialize_word_order(hc,orders):
   # We only need to do this is if the word order is not free, and we only
   # need to do it for one of head-comp or comp-head, depending on the order
   # of o and v.
-  
+
 
   head_comp_is = []
   comp_head_is = []
 
-  # VO order 
+  # VO order
   if aux == 'vo-vaux':
      comp_head_is.append('aux')
   if adp == 'vo-post':
@@ -1485,7 +1472,7 @@ def specialize_word_order(hc,orders):
   if qpart_order == 'vo-sq':
     comp_head_is.append('comp')
 
-  # OV order 
+  # OV order
 
   if aux == 'ov-auxv':
     head_comp_is.append('aux')
@@ -1545,17 +1532,17 @@ def specialize_word_order(hc,orders):
     if head == 'aux':
       mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ] ].',
                'head-comp-phrase requires auxiliary heads.')
-      if wo == 'v-final' and auxcomp == 'vp': 
+      if wo == 'v-final' and auxcomp == 'vp':
         mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] > ].')
     else:
       mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
-               'head-comp-phrase requires things that are [ HEAD ' + head + ' ].') 
+               'head-comp-phrase requires things that are [ HEAD ' + head + ' ].')
 
   if len(comp_head_is) == 1:
     head = comp_head_is[0]
     if head == 'aux':
       mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ] ].',
-               'comp-head-phrase requires auxiliary heads.')      
+               'comp-head-phrase requires auxiliary heads.')
       if wo == 'v-initial' and auxcomp == 'vp':
         mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] > ].')
     else:
@@ -1571,13 +1558,13 @@ def specialize_word_order(hc,orders):
   # +nvjrcdmo.
   # +nvjrpdmo.
 
-  
+
   if len(head_comp_is) > 1:
     head = '+'
     auxresthc = False
     if head_comp_is.count('aux'):
       head += 'v'
-      auxresthc = True 
+      auxresthc = True
     if head_comp_is.count('adp'):
       head += 'p'
     if head_comp_is.count('comp'):
@@ -1718,7 +1705,7 @@ def customize_sentential_negation():
   # and how they combine.
 
   # ERB 2009-01-23 This is all moot right now since the interim system
-  # doesn't do the interaction between the two, but it probably won't 
+  # doesn't do the interaction between the two, but it probably won't
   # break anything to leave it in.
 
   # ERB 2009-07-01 It was adding defunct lex rules in at least some
@@ -2105,19 +2092,19 @@ def customize_arg_op():
 
   mylang.set_section('verblex')
 
-  #Figure out the constraints on subject dropping and write the 
+  #Figure out the constraints on subject dropping and write the
   #appropriate types to mylang.tdl or rules.tdl
 
   if ch.get('subj-drop') == 'subj-drop-all' and not (ch.get('subj-con') == 'subj-con-some'):
-    rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.') 
+    rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.')
   if ch.get('subj-drop') == 'subj-drop-lex' and not (ch.get('subj-con') == 'subj-con-some'):
     rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.')
     mylang.add('no-subj-drop-verb-lex := verb-lex &\
                          [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].')
     mylang.add('subj-drop-verb-lex := verb-lex.')
-  
 
-  #Figure out the constraints on object dropping and write the 
+
+  #Figure out the constraints on object dropping and write the
   #appropriate types to mylang.tdl or rules.tdl
   if ch.get('obj-drop')=='obj-drop-all':
     rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
@@ -2252,7 +2239,7 @@ def customize_nouns():
   lexicon.add_literal(';;; Nouns')
 
   for noun in ch.get('noun'):
-    name = get_name()
+    name = name.get('name')
     det = noun.get('det')
 
     if singlentype or det == 'opt':
@@ -2419,12 +2406,12 @@ def customize_verb_case():
 
 ###############################################################
 # customize_form()
- 
+
 def init_form_hierarchy():
   """
   Create the FORM hierarchies associated with the user's choices
   about verb forms
-  Adds FORM finite and nonfinte values if there are auxiliaries 
+  Adds FORM finite and nonfinte values if there are auxiliaries
   or if user specified
   """
   hier = Hierarchy('form')
@@ -2461,9 +2448,9 @@ def customize_form():
 def customize_verbs():
   negmod = ch.get('neg-mod')
   negadv = ch.get('neg-adv')
-  wo = ch.get('word-order')  
+  wo = ch.get('word-order')
   auxcomp = ch.get('aux-comp')
-  
+
   # Do we need to constrain HC-LIGHT on verbs, to distinguish V from VP?
   hclight = (negadv == 'ind-adv' and negmod == 'v')
   hclightallverbs = False
@@ -2478,7 +2465,7 @@ def customize_verbs():
         hclightallverbs = True
     if auxcomp == 'vp' and wo == 'req-hcl-vp':
       hclightallverbs = True
-  
+
   if wo == 'req-hcl-vp':
     wo = ch.get('word-order')
 
@@ -2489,21 +2476,21 @@ def customize_verbs():
   # is another module/parameter (like, the external argument
   # might not be the first one?
 
-  mainorverbtype = main_or_verb() 
+  mainorverbtype = main_or_verb()
 # The variable mainorverbtype is a type name for lexical/main (non-aux) verbs.
-# Note that the use of 'main' instead of 'lexical' is strictly for 
-# coding clarity 
+# Note that the use of 'main' instead of 'lexical' is strictly for
+# coding clarity
 # If there are auxiliaries, non-aux verbs are 'main-verb-lex', and 'verb-lex'
 # includes both aux and lexical/main verbs.
 # If there are no auxiliaries then 'verb-lex' covers all verbs
-  
+
   if has_auxiliaries_p():
     mylang.add('head :+ [ AUX bool ].', section='addenda')
     #mainorverbtype = 'main-verb-lex'
-     
+
 # we need to know whether the auxiliaries form a vcluster
 
-    auxorder = ch.get('aux-comp-order')    
+    auxorder = ch.get('aux-comp-order')
     vcluster = determine_vcluster(auxcomp, auxorder, wo)
 
     typedef = \
@@ -2535,9 +2522,9 @@ def customize_verbs():
                                       COMPS < > ], \
                             CONT.HOOK.INDEX #xarg ] ], ... > ].'
   mylang.add(typedef)
-  
+
   if hclightallverbs:
-    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].')  
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].')
   elif hclight:
     comment = \
       ';;; If there are aspects of the syntax which pick out\n' + \
@@ -2576,7 +2563,7 @@ def customize_verbs():
   # Now create the lexical entries for all the defined verb types
   cases = ch.cases()
   for verb in ch.get('verb'):
-    name = get_name()
+    name = verb.get('name')
     val = verb.get('valence')
 
     i = val.find(',')
@@ -2597,7 +2584,7 @@ def customize_verbs():
     else:
       s_case = canon_to_abbr(val, cases)
       tivity = s_case + '-intrans'
-    
+
     stype = dir_inv + tivity + 'itive-verb-lex'
     vtype = name + '-verb-lex'
 
@@ -2614,22 +2601,19 @@ def customize_verbs():
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
-
-# ??? sfd: I got this far
-
 #######################################################
 def customize_users_auxtype(userstype, supertype):
   """
-  A utility that declares the userstype as subtype of supertype and 
+  A utility that declares the userstype as subtype of supertype and
   calls the functions that specify feature values on the type.
   Called by customize_auxiliaries.
   userstype = userstypename in customize_auxiliaries
   supertype = userstypename in customize_auxiliaries
   """
- 
+
   customize_feature_values(userstype, 'aux')
   customize_feature_values(userstype, 'auxcomplement')
-  mylang.add(userstype + ' := ' + supertype + '.') 
+  mylang.add(userstype + ' := ' + supertype + '.')
 
 
 def add_subj_tdl(type, subj, subjcase):
@@ -2647,7 +2631,7 @@ def add_subj_tdl(type, subj, subjcase):
     if subj == 'np-comp-case':
       mylang.add(type + ' := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE #case  ], \
                                         [ LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE #case ] > ] > ].')
-    elif subj == 'np-aux-case': 
+    elif subj == 'np-aux-case':
       mylang.add(type + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + subjcase + ' ].')
 
 def get_auxtypename(sem, supertype):
@@ -2670,20 +2654,19 @@ def customize_auxiliaries():
     wo = ch.get('word-order')
     vc = ch.get('v-cluster')
 
-    ch.iter_begin('aux')
-    while ch.iter_valid():
-      name = ch.get('name')
-      userstypename = name + '-aux-lex'      
-      sem = ch.get('sem')
-      subj = ch.get('subj')
-      subjc = ch.get('subj_case') 
+    for aux in ch['aux']:
+      name = aux['name']
+      userstypename = name + '-aux-lex'
+      sem = aux['sem']
+      subj = aux['subj']
+      subjc = aux['subj_case'] #TODO: verify _-delimited key
       cases = ch.cases()
-      subjcase = canon_to_abbr(subjc, cases)      
+      subjcase = canon_to_abbr(subjc, cases)
 
     # Lexical type for auxiliaries.
-    # ASF 2008-11-25 added constraints SS.LOC.CONT.HOOK.XARG #xarg and 
-    # ARG-ST.FIRST.LOCAL.CONT.HOOK.INDEX #xarg for subj-raise-aux and 
-    # arg-comp-aux, to insure the subject is passed up when several auxs are 
+    # ASF 2008-11-25 added constraints SS.LOC.CONT.HOOK.XARG #xarg and
+    # ARG-ST.FIRST.LOCAL.CONT.HOOK.INDEX #xarg for subj-raise-aux and
+    # arg-comp-aux, to insure the subject is passed up when several auxs are
     # present in sentence. Implemented here, because it required least changes
     # it may be cleaner to have this in general verb-lex, as well as the first
     # ARG is #subj constraint (but not possible for aux with s-comp)
@@ -2706,7 +2689,7 @@ def customize_auxiliaries():
                               [ LOCAL.CAT [ VAL [ SUBJ < [ ] >, \
                                                   COMPS < > ], \
                                             HEAD verb ]] > ].'
-        mylang.add(typedef)        
+        mylang.add(typedef)
         add_subj_tdl(supertype, subj, subjcase)
 
         if sem == 'add-pred':
@@ -2726,18 +2709,18 @@ def customize_auxiliaries():
           typedef = auxtypename + ' := ' + supertype + ' & raise-sem-lex-item & \
                       [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
-        
+
         customize_users_auxtype(userstypename, auxtypename)
 
       elif comp == 'v':
         supertype = 'arg-comp-aux'
-        auxtypename = get_auxtypename(sem, supertype) 
+        auxtypename = get_auxtypename(sem, supertype)
         comment = \
           '; Somewhat surprisingly, this inherits from basic-two-arg, so\n' + \
           '; that the non-local features are amalgamated from subj, the\n' + \
           '; lexical verb complement, but not the other complements, if any.'
         mylang.add_literal(comment)
-        
+
         typedef = supertype + ' := aux-lex & basic-two-arg & \
              [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #subj  >, \
                                       COMPS < #comps . #vcomps >, \
@@ -2754,15 +2737,15 @@ def customize_auxiliaries():
                                             COMPS #vcomps ], \
                                       HEAD verb ], \
                                 CONT.HOOK.XARG #xarg ]] > ].'
-        mylang.add(typedef)      
+        mylang.add(typedef)
         add_subj_tdl(supertype, subj, subjcase)
 
 # ASF 2008-12-07 For now we restrict free word order with v-comp to
 # either verbal clusters or one auxiliary max
-      
+
         if wo == 'free' and vc == 'no':
           mylang.add(supertype + ' := [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].')
-         
+
         if sem == 'add-pred':
           comment = \
             '; Not inheriting from basic-verb-lex, so need to put in\n' + \
@@ -2832,29 +2815,21 @@ def customize_auxiliaries():
           typedef = auxtypename + ' := ' + supertype + ' & raise-sem-lex-item & \
                [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
-          
+
         customize_users_auxtype(userstypename, auxtypename)
-      
+
       # add stems to lexicon
-      ch.iter_begin('stem')
-      while ch.iter_valid():
-        orth = ch.get('orth')
+      for stem in aux['stem']:
+        orth = stem.get('orth')
         typedef = TDLencode(orth) + ' := ' + userstypename + ' & \
                        [ STEM < "' + orth + '" > ].'
         lexicon.add(typedef)
 
         if sem == 'add-pred':
-          pred = ch.get('pred')
+          pred = stem.get('pred')
           typedef = TDLencode(orth) + \
                     ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
           lexicon.add(typedef, merge=True)
-
-        ch.iter_next()
-      ch.iter_end()
-
-      ch.iter_next()
-    ch.iter_end()
-
 
 def customize_determiners():
 
@@ -2873,12 +2848,11 @@ def customize_determiners():
     mylang.add(typedef)
 
   # Determiners
-  if ch.get('det1_orth'):
+  if 'det' in ch:
     lexicon.add_literal(';;; Determiners')
 
-  ch.iter_begin('det')
-  while ch.iter_valid():
-    name = get_name()
+  for det in ch['det']:
+    name = det['name']
 
     stype = 'determiner-lex'
     dtype = name + '-determiner-lex'
@@ -2887,22 +2861,14 @@ def customize_determiners():
 
     customize_feature_values(dtype, 'det')
 
-    ch.iter_begin('stem')
-    while ch.iter_valid():
-      orth = ch.get('orth')
-      pred = ch.get('pred')
+    for stem in det['stem']:
+      orth = stem.get('orth')
+      pred = stem.get('pred')
       typedef = \
         TDLencode(orth) + ' := ' + dtype + ' & \
                     [ STEM < "' + orth + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
-
-      ch.iter_next()
-    ch.iter_end()
-
-    ch.iter_next()
-  ch.iter_end()
-
 
 def customize_misc_lex():
 
@@ -2949,108 +2915,59 @@ def is_ltow(name, namelist = []):
   if '_' in name:
     name = name.replace('_', '')
 
-  state = ch.iter_state()
-  ch.iter_reset()
-
   for slotprefix in ('noun', 'verb', 'det', 'aux'):
-    ch.iter_begin(slotprefix + '-slot')
-    while ch.iter_valid():
-      n = ch.iter_prefix()
-      opt = ch.get('opt')
-      ch.iter_begin('input')
-      while ch.iter_valid():
-        if name in ch.get('type'):
+    for slot in ch[n]:
+      opt = slot.get('opt')
+      for inp in slot['input']:
+        if name in inp.get('type'):
           if name in namelist:
-            ch.iter_set_state(state)
             return False
           if opt:
-            ch.iter_set_state(state)
             namelist.append(name)
-            return is_ltow(n, namelist)
+            return is_ltow(slotprefix.full_key, namelist)
           else:
-            ch.iter_set_state(state)
             return False
-        ch.iter_next()
-      ch.iter_end()
-      ch.iter_next()
-    ch.iter_end()
 
-  ch.iter_set_state(state)
   return True
 
-
 def back_to_word(name):
-  state = ch.iter_state()
-  ch.iter_reset()
-
   for slotprefix in ('noun', 'verb', 'det', 'aux'):
-    ch.iter_begin(slotprefix + '-slot')
-    while ch.iter_valid():
-      ch.iter_begin('constraint')
-      while ch.iter_valid():
-        if ch.get('type') == 'forces' and ch.get('other-slot') == name:
-          ch.iter_set_state(state)
+    for slot in ch[slotprefix + '-slot']:
+      for const in slot['constraint']:
+        if const.get('type') == 'forces' and const.get('other-slot') == name:
           return True
-        ch.iter_next()
-      ch.iter_end()
-      ch.iter_next()
-    ch.iter_end()
 
-  ch.iter_set_state(state)
   return False
 
-
 def find_basetype(slot, root_dict, root_list=[]):
-  state = ch.iter_state()
-  ch.iter_reset()
-
-  ch.iter_begin(slot)
-  ch.iter_begin('input')
-  while ch.iter_valid():
-    inputtype = ch.get('type')
-    if inputtype in root_dict and inputtype not in root_list:
-      root_list.append(inputtype)
-    else:
-      root_list = find_basetype(inputtype, root_dict, root_list)
-    ch.iter_next()
-  ch.iter_end()
-  ch.iter_end()
-
-  ch.iter_set_state(state)
+  for slot in ch['slot']:
+    for inp in slot['input']:
+      inputtype = inp.get('type')
+      if inputtype in root_dict and inputtype not in root_list:
+        root_list.append(inputtype)
+      else:
+        root_list = find_basetype(inputtype, root_dict, root_list)
   return root_list
 
 def intermediate_rule(slot, root_dict, inp=None, depth=0, opt=False):
   if not inp:
-    inp = ch.get_full(slot + '_name') + '-rule-dtr'
+    inp = slot.get('name') + '-rule-dtr'
     mylang.add(inp + ' := avm.')
- 
-  if depth and not ch.get_full(slot + '_opt'):
+
+  if depth and not slot.get('opt', None):
     nonopt = True
     return nonopt, inp
 
-  ch.iter_begin('input')
-  while ch.iter_valid():
-    i = ch.get('type')
-    if i not in root_dict:
-      mylang.add(get_name(i) + '-lex-rule := ' + inp + '.')
-      if ch.get_full(i + '_opt'):
-        state1 = ch.iter_state()
-        ch.iter_reset()
-        ch.iter_begin(i)
-        ch.iter_begin('input')
-        while ch.iter_valid():
-          rec = ch.get('type')
+  for slot_input in slot['input']:
+    i = slot_input.get('type')
+    if i not in root_dict: # if the type is another slot...
+      mylang.add(ch[i].get('name') + '-lex-rule := ' + inp + '.')
+      if ch.get(i + '_opt'):
+        for lextype in ch[i + '_input']:
+          rec = lextype.get('type')
           if rec not in root_dict:
-            mylang.add(get_name(rec) + '-lex-rule := ' + inp + '.')
-            state2 = ch.iter_state()
-            ch.iter_reset()
-            ch.iter_begin(rec)
-            opt, inp = intermediate_rule(rec, root_dict, inp, depth+1, opt)
-            ch.iter_set_state(state2)
-          ch.iter_next()
-        ch.iter_set_state(state1)
-    ch.iter_next()
-  ch.iter_end()
+            mylang.add(ch[rec].get('name') + '-lex-rule := ' + inp + '.')
+            opt, inp = intermediate_rule(ch[rec], root_dict, inp, depth+1, opt)
 
   return opt, inp
 
@@ -3080,28 +2997,26 @@ def customize_inflection():
   customize_direct_inverse()
 
   # root_dict is a dictionary mapping the choices file encodings
-  # to the actual rule names.   
+  # to the actual rule names.
   root_dict = {'noun':'noun-lex',
                'verb':'verb-lex',
                'iverb':'intransitive-verb-lex',
                'tverb':'transitive-verb-lex',
                'mverb':'main-verb-lex',
                'det':'determiner-lex',
-	       'aux':'aux-lex'}
+               'aux':'aux-lex'}
 
   # KAO 2008-7-18 Faking the hierarchy for now by assuming that
-  # all the verbs/auxiliaries will inherit from 
+  # all the verbs/auxiliaries will inherit from
   verb_types = ['iverb', 'tverb', 'aux']
   main_verb_types = ['iverb', 'tverb',]
 
 # root_dict = {}
   for lexprefix in ('noun', 'verb', 'det', 'aux'):
-    ch.iter_begin(lexprefix)
-    while ch.iter_valid():
-      p = ch.iter_prefix()[:-1]
-      n = get_name(p)
-      if p in root_dict:
-        ch.iter_next()
+    for index, lex in enumerate(ch[lexprefix]):
+      p = lexprefix + str(index)
+      n = lex['name']
+      if p in root_dict: # What does this do and when would it execute?
         continue
       l = lexprefix
       if l == 'det':
@@ -3111,8 +3026,8 @@ def customize_inflection():
       # should use its mandatory rules as input rather than the
       # lexical type.  Create those rules here and put their supertype
       # in the root_dict.
-      if lexprefix == 'verb' and ch.get('valence')[-6:] == 'dirinv':
-        ltow = is_ltow(ch.iter_prefix()[:-1])
+      if lexprefix == 'verb' and lex.get('valence').endswith('dirinv'):
+        ltow = is_ltow(p)
         if ltow:
           super_type = 'const-ltow-rule'
         else:
@@ -3152,12 +3067,12 @@ def customize_inflection():
 
           size = direct_inverse_scale_len()
           i = 1
-          equal = ch.get_full('scale-equal')
+          equal = ch.get('scale-equal')
 
           while i <= size:
             if i == size and not (equal == 'direct' and direc == 'dir'):
               break
-            
+
             rule_type = direc_type + '-' + str(i)
 
             if equal == 'direct' and direc == 'dir':
@@ -3193,10 +3108,6 @@ def customize_inflection():
       else:
         root_dict[p] = n + '-' + l + '-lex'
 
-      ch.iter_next()
-    ch.iter_end()
-
-
   # reqs1, reqs2, reqd, and tracker are all used to keep track
   # of non-consecutive dependencies between paradigms.
   reqs1 = {}
@@ -3208,11 +3119,11 @@ def customize_inflection():
 
   # Big main loop to iterate over all the slots
   for slotprefix in ('noun', 'verb', 'det','aux'):
-    ch.iter_begin(slotprefix + '-slot')
-    while ch.iter_valid():
-      order = ch.get('order')
-      opt = ch.get('opt')
-      name = get_name()
+    key = slotprefix + '-slot'
+    for slot in ch[key]:
+      order = slot.get('order')
+      opt = slot.get('opt')
+      name = slot.get('name')
 
       if order == 'before':
         aff = 'prefix'
@@ -3221,7 +3132,7 @@ def customize_inflection():
       basetype = []  # list of roots this affix can attach to
 
       # populate the basetype list with the appropriate values
-      root_list = find_basetype(ch.iter_prefix().rstrip('_'), root_dict, [])
+      root_list = find_basetype(slot.full_key, root_dict, [])
       if has_auxiliaries_p():
         if alltypes(verb_types, root_list):
           root_list.append('verb')
@@ -3240,13 +3151,9 @@ def customize_inflection():
 
       # find the number of input values so we know if it has 1 or more
       inputs = 0
-      ch.iter_begin('input')
-      while ch.iter_valid():
+      for inp in slot['input']:
         inputs += 1
-        i_type = ch.get('type')
-        ch.iter_next()
-      ch.iter_end()
-
+        i_type = inp.get('type')
 
       # Single Input
       if inputs == 1:
@@ -3258,9 +3165,8 @@ def customize_inflection():
           # If the single input is optional, build an intermediate
           # rule for it and its input values, and set inp to the
           # intermediate rule type
-          if ch.get_full(i_type+'_opt'):
-            non_opt, inp = intermediate_rule(ch.iter_prefix().rstrip('_'),
-                                             root_dict)
+          if ch.get(i_type+'_opt'):
+            non_opt, inp = intermediate_rule(slot, root_dict)
             # non_opt tracks if there is a non-optional rule that occurs
             # between this rule and the basetype. If not, we need all the
             # basetypes to inherit from the intermediate rule as well.
@@ -3269,12 +3175,11 @@ def customize_inflection():
                 mylang.add(bt+' := '+inp+'.', section=sec_from_lex(bt))
           # If the single input is non-optional, make it the input value.
           else:
-            inp = get_name(i_type) + '-lex-rule'
+            inp = i_type['name'] + '-lex-rule'
       # Multiple inputs
       else:
         # Build an intermediate rule
-        non_opt, inp = intermediate_rule(ch.iter_prefix().rstrip('_'),
-                                         root_dict)
+        non_opt, inp = intermediate_rule(slot, root_dict)
         # If no intervening non-optional rules, have the basetype(s)
         # inherit from the intermediate rule.
         if not non_opt:
@@ -3284,19 +3189,18 @@ def customize_inflection():
       # If this rule forces another rule to follow it, then we need
       # to define word-to-lexeme rule for this grammar.
       wtol = False
-      ch.iter_begin('constraint')
-      while ch.iter_valid():
-        if ch.get('type') == 'forces':
+      for constraint in slot['constraint']:
+        if constraint.get('type') == 'forces':
           wtol = True
-        ch.iter_next()
-      ch.iter_end()
 
       if wtol:
         mylang.add('word-to-lexeme-rule := lex-rule &\
                       [INFLECTED -, DTR.INFLECTED +].')
 
-      ltow = (not opt and is_ltow(ch.iter_prefix().rstrip('_'), [])) # lexeme-to-word rule?
-      wtoltow = back_to_word(ch.iter_prefix().rstrip('_')) # satisfy a previous word-to-lexeme rule?
+      # lexeme-to-word rule?
+      ltow = (not opt and is_ltow(slot.full_key, []))
+      # satisfy a previous word-to-lexeme rule?
+      wtoltow = back_to_word(slot.full_key)
       const = False
       subrules = 0
       morph_orth = ''
@@ -3306,61 +3210,56 @@ def customize_inflection():
       # is only adding information. FIXME: This is a band-aid to
       # get negation to work properly and needs to be refactored.
 
-      addonlyltow = (not neginflrule(features))
+      addonlyltow = (not neginflrule(slot, features))
 
       # Iterate over the morphemes and their features to see if any
       # element of the paradigm should be a constant-lex-rule, to
       # count up the number of subrules, and to see if any of the
       # morphemes mark case.
       # SS 2009-06-07 added check to see if a const rule which changes the COMPS of the mother to OPT -
-      # is needed.  The code assumes that a given slot will have the same co-occurrence restrictions 
-      # for all morphemes. i.e. if one morpheme is not permitted to appear with an overt argument 
-      # but is required with a dropped argument, all the other morphemes in this slot will have the 
-      # same restrictions.  This is necessary because the const rule that 
-      # generated will change the value of the COMPS of the mother OPT - for all items which are not 
+      # is needed.  The code assumes that a given slot will have the same co-occurrence restrictions
+      # for all morphemes. i.e. if one morpheme is not permitted to appear with an overt argument
+      # but is required with a dropped argument, all the other morphemes in this slot will have the
+      # same restrictions.  This is necessary because the const rule that
+      # generated will change the value of the COMPS of the mother OPT - for all items which are not
       # marked by one of morphemes in this slot.
-      # SS 2009-06-07 Now adding capability for when the marker is not permitted with a dropped 
-      # argument and is required (or optional )overt argument.  This is done by increasing the subrules 
-      # count just like above.  The subrules created are different. 
+      # SS 2009-06-07 Now adding capability for when the marker is not permitted with a dropped
+      # argument and is required (or optional )overt argument.  This is done by increasing the subrules
+      # count just like above.  The subrules created are different.
 
       opt_head_obj = False
       opt_head_subj = False
       drp_head_obj = False
       drp_head_subj = False
       seen_case = False
-      ch.iter_begin('morph')
-      while ch.iter_valid():
+      for morph in slot['morph']:
         subrules += 1
-        morph_orth = ch.get('orth')
+        morph_orth = morph.get('orth')
         if morph_orth == '':
           const = True
-        if ch.get_full('obj-mark-drop')== 'obj-mark-drop-opt' and ch.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+        if ch.get('obj-mark-drop') == 'obj-mark-drop-opt' and \
+           ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
           drp_head_obj = True
           const = True
-        if ch.get_full('subj-mark-drop')== 'subj-mark-drop-opt' and ch.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+        if ch.get('subj-mark-drop') == 'subj-mark-drop-opt' and \
+           ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
           drp_head_subj = True
           const = True
-        ch.iter_begin('feat')
-        while ch.iter_valid():
-          if ch.get('name') == 'case':
+        for feat in morph['feat']:
+          if feat.get('name') == 'case':
             seen_case = True
-          if ch.get('name') == 'overt-arg':
-            if ch.get('head') == 'obj':
+          if feat.get('name') == 'overt-arg':
+            if feat.get('head') == 'obj':
               opt_head_obj = True
-            elif ch.get('head') == 'subj':
+            elif feat.get('head') == 'subj':
               opt_head_subj = True
             const = True
-          if ch.get('name') == 'dropped-arg':
-            if ch.get('head') == 'obj':
+          if feat.get('name') == 'dropped-arg':
+            if feat.get('head') == 'obj':
               drp_head_obj = True
-            elif ch.get('head') == 'subj':
+            elif feat.get('head') == 'subj':
               drp_head_subj = True
             const = True
-          ch.iter_next()
-        ch.iter_end()
-        
-        ch.iter_next()
-      ch.iter_end()
 
       synth_cases = []
       if seen_case and ch.has_mixed_case():
@@ -3370,7 +3269,7 @@ def customize_inflection():
             synth_cases += [ c[0] ]
 
       subrules += len(synth_cases)
-      
+
       if (opt_head_obj) or (opt_head_subj):
         subrules += 1
       if (drp_head_obj) or (drp_head_subj):
@@ -3395,13 +3294,13 @@ def customize_inflection():
         if basetype:
           for bt in basetype:
             mylang.add(bt+ ' := [INFLECTED -].', section=sec_from_lex(bt))
-        #ERB 2009-07-01 Add in add-only-no-ccont-rule if needed, 
+        #ERB 2009-07-01 Add in add-only-no-ccont-rule if needed,
         #but cont-change-only-rule for negation.
         #Adding this here because it used to be part of lexeme-to-word-rule
         #and I've changed matrix.tdl.  FIXME: This is needs to be refactored.
         #While refactoring: note that we should use matrix-provided
         #subtypes where available, I think, like infl-cont-change-only-lex-rule.
-        if neginflrule(features):
+        if neginflrule(slot, features):
           mylang.add(name+'-lex-rule := cont-change-only-lex-rule & \
              [DTR ' + inp + '].')
         else:
@@ -3430,7 +3329,7 @@ def customize_inflection():
             mylang.add(name+'-lex-rule := const-add-only-no-ccont-ltol-rule & \
             [DTR ' + inp + '].')
         else:
-          if neginflrule(features):
+          if neginflrule(slot, features):
             mylang.add(name+'-lex-rule := infl-cont-change-only-ltol-rule & \
              [DTR ' + inp + '].')
           else:
@@ -3439,23 +3338,15 @@ def customize_inflection():
 
       # Specify for subtypes, if any
       if subrules > 0:
-        morphcount = 0
-        ch.iter_begin('morph')
-        while ch.iter_valid():
-          morphcount += 1
-          morphname = ch.get('name')
-          if not morphname:
-            if name:
-              morphname = name + '-morph' + str(morphcount)
-            else:
-              morphname = get_name()
+        for morphcount, morph in enumerate(slot['morph']):
+          morphname = morph.get('name') or name + '-morph' + str(morphcount)
 
           # The lexical type and the super-type names
           ltype = morphname + '-lex-rule'
           stype = name + '-lex-rule'
 
           # Create appropriate sub-rule for the morpheme
-          if ch.get('orth') == '':
+          if morph.get('orth') == '':
             if ltow:
               mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
             elif wtol:
@@ -3476,65 +3367,65 @@ def customize_inflection():
             add_irule(morphname + '-' + aff,
                       ltype,
                       aff,
-                      ch.get('orth'))
+                      morph.get('orth'))
 
           # Apply the features to the lexical rule
           customize_feature_values(ltype, slotprefix, features, cases)
 
-          ch.iter_next()
+        # Synthesize any necessary const case-marking rules
+        if synth_cases:
+          geom = ''
+          for f in features:
+            if f[0] == 'case':
+              geom = f[2]
 
-          # Before we finish, synthesize any necessary const
-          # case-marking rules
-          if not ch.iter_valid() and synth_cases:
-            geom = ''
-            for f in features:
-              if f[0] == 'case':
-                geom = f[2]
-
-            # create a rule for each case that needs it
-            for c in synth_cases:
-              morphname = name + '-synth-' + c
-              ltype = morphname + '-lex-rule'
-              if ltow:
-                mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
-              elif wtol:
-                mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
-              else:
-                mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
-              lrules.add(morphname + '-lex := ' + ltype + '.')
-
-              abbr = canon_to_abbr(c, cases)
-              mylang.add(ltype + ' := [ SYNSEM.' + geom + ' ' + abbr + ' ].')
-              mylang.add(ltype + ' := [ SYNSEM.' + geom + '-MARKED - ].')          
-          if not ch.iter_valid() and (opt_head_obj or opt_head_subj):
-            ltype = name + '-no-drop-lex-rule'
+          # create a rule for each case that needs it
+          for c in synth_cases:
+            morphname = name + '-synth-' + c
+            ltype = morphname + '-lex-rule'
             if ltow:
               mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
             elif wtol:
               mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
             else:
               mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
-            lrules.add(name + '-no-drop-lex := ' + name + '-no-drop-lex-rule.')
-            if (opt_head_obj):
-             mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
-            if (opt_head_subj):
-              mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+            lrules.add(morphname + '-lex := ' + ltype + '.')
 
-          if not ch.iter_valid() and (drp_head_obj or drp_head_subj):
-            ltype = name + '-drop-lex-rule'
-            if ltow:
-              mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
-            elif wtol:
-              mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
-            else:
-              mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
-            lrules.add(name + '-drop-lex := ' + name + '-drop-lex-rule.')
-            if (drp_head_obj):
-             mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
-            if (drp_head_subj):
-              mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
-            
-        ch.iter_end()
+            abbr = canon_to_abbr(c, cases)
+            mylang.add(ltype + ' := [ SYNSEM.' + geom + ' ' + abbr + ' ].')
+            mylang.add(ltype + ' := [ SYNSEM.' + geom + '-MARKED - ].')
+        if opt_head_obj or opt_head_subj:
+          ltype = name + '-no-drop-lex-rule'
+          if ltow:
+            mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
+          elif wtol:
+            mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
+          else:
+            mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
+          lrules.add(name + '-no-drop-lex := ' + name + '-no-drop-lex-rule.')
+          if (opt_head_obj):
+            mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].',
+                       merge = True)
+          if (opt_head_subj):
+            mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].',
+                       merge = True)
+
+        if drp_head_obj or drp_head_subj:
+          ltype = name + '-drop-lex-rule'
+          if ltow:
+            mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
+          elif wtol:
+            mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
+          else:
+            mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
+          lrules.add(name + '-drop-lex := ' + name + '-drop-lex-rule.')
+          if (drp_head_obj):
+            mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].',
+                       merge = True)
+          if (drp_head_subj):
+            mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].',
+                       merge = True)
+
       else:
         if const:
           lrules.add(name + '-lex := ' + name + '-lex-rule.')
@@ -3545,14 +3436,8 @@ def customize_inflection():
                     morph_orth)
 
       # Keep track of non-consecutive requirements
-      reqs1, reqd = req(basetype, reqs1, reqd, tracker, 'req')
+      reqs1, reqd = req(stype, basetype, reqs1, reqd, tracker, 'req')
       reqs2, reqd = req(basetype, reqs2, reqd, tracker, 'disreq')
-
-      # Done with this slot, go on to the next one
-      ch.iter_next()
-
-    # Done with slots
-    ch.iter_end()
 
   # For rules that have requirements, we need to copy up all the other
   # TRACK information
@@ -3564,14 +3449,13 @@ def customize_inflection():
     copy_all_tracks(reqd)
 
 
-def req(basetype, reqs, reqd, tracker, reqtype):
-  stype = ch.iter_prefix().rstrip('_') # slot type; assumes req() has been called from a 'slot' context.
+def req(slot, basetype, reqs, reqd, tracker, reqtype):
+  stype = slot.full_key # slot type
   name = "T-"+get_name(stype)
 
   seen_reqtype = False
-  ch.iter_begin('constraint')
-  while ch.iter_valid():
-    if ch.get('type') == reqtype:
+  for constraint in ch['constraint']:
+    if constraint.get('type') == reqtype:
       if not seen_reqtype:
         seen_reqtype = True
 
@@ -3587,7 +3471,7 @@ def req(basetype, reqs, reqd, tracker, reqtype):
           tracker = True
 
       # Keep track of which rules have been constrained
-      other = ch.get('other-slot')
+      other = constraint.get('other-slot')
       reqd.append(other)
       reqs[stype].append(other)
 
@@ -3604,39 +3488,28 @@ def req(basetype, reqs, reqd, tracker, reqtype):
       for bt in basetype:
         mylang.add(bt + ':= [TRACK.' + name + ' ' + val + ' ].')
 
-    ch.iter_next()
-  ch.iter_end()
-
   return reqs, reqd
 
 def add_single_tracks(reqs, reqd, reqtype):
   # Begin iterating over slots
   for slotprefix in ('noun', 'verb', 'det', 'aux'):
-    ch.iter_begin(slotprefix + '-slot')
-    while ch.iter_valid():
-      slot = ch.iter_prefix().rstrip('_')
-      name = get_name(slot)
+    for slot in ch[slotprefix + '-slot']:
+      name = get_name(slot.full_key)
       tname = "T-"+name
       # We only need to do this for rules with TRACK constraints.
-      if slot not in reqs:
-        ch.iter_next()
+      if slot.full_key not in reqs:
         continue
       # Start a second slot loop
-      state = ch.iter_state()
-      ch.iter_reset()
       for slotprefix2 in ('noun', 'verb', 'det', 'aux'):
-        ch.iter_begin(slotprefix2 + '-slot')
-        while ch.iter_valid():
-          s2 = ch.iter_prefix().rstrip('_')
+        for slot2 in ch[slotprefix2 + '-slot']:
           # Skip this slot if it's the same as the one in the outer loop.
-          if s2 == slot:
-            ch.iter_next()
+          if slot2.full_key == slot.full_key:
             continue
-          name2 = get_name(s2)
+          name2 = get_name(slot2.full_key)
           # If the inner-loop rule sets or fulfills a constraint on the
           # outer-loop rule constrain the TRACK values of each rule as
           # appropriate.
-          if s2 in reqs[slot]:
+          if slot2.full_key in reqs[slot.full_key]:
             if reqtype == 'req':
               mylang.add(name+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
               mylang.add(name2+'-lex-rule := [TRACK.'+tname+' +, DTR.TRACK.'+tname+' -].')
@@ -3647,55 +3520,39 @@ def add_single_tracks(reqs, reqd, reqtype):
           # rule, but has TRACK constraints for other rules, we need to
           # copy up the TRACK feature corresponding to the outer-loop
           # rule.
-          elif s2 in reqs or s2 in reqd:
+          elif s2.full_key in reqs or s2.full_key in reqd:
             mylang.add(name2+'-lex-rule := [TRACK.'+tname+' #track, DTR.TRACK.'+tname+' #track].')
-          ch.iter_next()
-        ch.iter_end()
-      ch.iter_set_state(state)
-      ch.iter_next()
-    ch.iter_end()
 
 def copy_all_tracks(reqd):
   # If a grammar makes use of the TRACK feature, inflectional rules
   # that don't have anything to say about the contents of TRACK need
   # to copy the whole TRACK feature up unchanged.
   for slotprefix in ('noun', 'verb', 'det', 'aux'):
-    ch.iter_begin(slotprefix + '-slot')
-    while ch.iter_valid():
-      slot = ch.iter_prefix().rstrip('_')
-      name = get_name(slot)
-      if slot not in reqd:
+    for slot in ch[slotprefix + '-slot']:
+      name = slot.get('name')
+      if slot.full_key not in reqd:
         mylang.add(name + '-lex-rule := [TRACK #track, \
         DTR.TRACK #track].')
-      ch.iter_next()
-    ch.iter_end()
 
-
-def neginflrule(features):
+def neginflrule(slot, features):
   # ERB 2009-01-23
   # Subroutine for determining if the rule at hand is the type
   # that needs to add negative semantics (negative inflection lex rule)
   # FIXME: For now assuming that negation will always be in a slot
-  # by itself, so that if one morpheme in a slot needs to be a 
+  # by itself, so that if one morpheme in a slot needs to be a
   # cont-change-only-lex-rule, they all do.  This is wrong, but fixing
   # it properly requires refactoring the morphotactic code, I'm afraid.
   # Where this is currently being called, it seems to be inside another
   # iter_begin(), and so the prefix is already set appropriately.
   # Check whether this is so when using this function in new contexts.
   result = False
-  ch.iter_begin('morph')
-  while ch.iter_valid():
-    ch.iter_begin('feat')
-    while ch.iter_valid():
-      name = ch.get('name')
-      value = ch.get('value')
+  for morph in slot['morph']:
+    for feat in morph['feat']:
+      name = feat.get('name')
+      value = feat.get('value')
       if (name == 'negation' and value == 'plus'):
         result = True
-      ch.iter_next()
-    ch.iter_end()
-    ch.iter_next()
-  ch.iter_end()
-        
+
   return result
 
 
@@ -3718,14 +3575,11 @@ def customize_test_sentences(grammar_path):
       elif l == ';;; Modules: Default sentences':
         s.write('(if (eq (length *last-parses*) 1)\n')
         s.write('   (setf *last-parses* \'(')
-        ch.iter_begin('sentence')
-        if not ch.iter_valid():
+        if 'sentence' not in ch:
           s.write('""')
-        while ch.iter_valid():
-          s.write('"' + ch.get('orth') + '" ')
-          ts.write(ch.get('orth') + '\n')
-          ch.iter_next()
-        ch.iter_end()
+        for sentence in ch['sentence']:
+          s.write('"' + sentence.get('orth') + '" ')
+          ts.write(sentence.get('orth') + '\n')
         s.write(')))\n')
       else:
         s.write(l + '\n')
