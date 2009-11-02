@@ -88,7 +88,6 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         c['abc2_def'] = 2
         self.assertEqual(c['abc'].full_key, 'abc')
         for i, key in enumerate(c['abc']):
-            print key.full_key
             self.assertEqual(key.full_key, 'abc' + str(i+1))
 
 class TestChoicesDerivedValueFunctions(unittest.TestCase):
