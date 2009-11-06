@@ -708,8 +708,12 @@ Label "<div style=\"padding-left: 16px\">"
 
 Label "<p>If you would like to have verb types automatically generated based on all of the values of any features on this page, select those features below."
 
-MultiSelect dim-verb "Feature dimensions for verb type generation" "<p>Select feature dimension(s) for auto-generating verb types: " ""
-fillnames verb
+MultiSelect dim-ta "Feature dimensions for verb type generation" "<p>Select feature dimension(s) for auto-generating verb types: " ""
+fillregex
+. tense "Tense" "tense"
+. aspect "Aspect" "aspect"
+. situation "Situation" "situation"
+. form "Form" "form"
 
 Label "</div>"
 
@@ -1030,17 +1034,6 @@ Label "</font>"
 Section lex-types "Lexical Types"
 
 Label "<p>On this page <span class=\"dfn\">lexical types</span> may be defined."
-Label "<p>In addition to lexical types, you can define inflectional
-morphology for nouns, verbs, and determiners.  To do so, first define
-one or more inflectional <span class=\"dfn\">slots</span>, which
-determine the order in which morphemes appear, then define one or more
-<span class=\"dfn\">morphemes</span> that can appear in each slot,
-along with the <span class=\"dfn\">features</span> specified by each
-morpheme.  To determine the order of slots, you must define one or
-more <span class=\"dfn\">inputs</span> for each.  For morphemes that
-attach directly to stems, the input will be a lexical type; for
-morphemes that attach to already-inflected stems, the input will be
-another slot.</p>"
 
 Separator
 

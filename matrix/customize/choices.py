@@ -1037,11 +1037,12 @@ class ChoicesFile:
       elif self.get('dim-'+ f[0]) == 'on':
         dim += [[f[0], f[3]]]  #feature name (dimension) and category name from features() 
 
-    #look for category-based dimension names in choices and add features chosen on questionnaire to array
-    for c in ['noun', 'verb', 'aux', 'det']:
-      dimlist = self.get('dim-' + c).split(', ') #split multilist get feature values chosen per category
-      for l in dimlist:
-        dim += [[l, c]]
+    #look for category-based dimension names in choices and add features chosen on 
+    #questionnaire to array
+#    for c in ['noun', 'verb', 'aux', 'det']:
+ #     dimlist = self.get('dim-' + c).split(', ') #split multilist get feature values chosen per category
+#      for l in dimlist:
+ #       dim += [[l, c]]
       
     for d in dim: 
       for f in features:
@@ -1053,11 +1054,11 @@ class ChoicesFile:
           dimvalues += [[valuesplit[0], d[1]]] #add to array feature name (dimension) and category
 
     #create lexical type names based on features chosen
-    #note: there are now two sources of category names - choices file names and features array category
+    #note: there are now two sources of category names - choices file names and 
+    #features array category
     #need to fix? throw an error if they are not the same??
     for dv in dimvalues:
       cat_name = dv[1]
-      #TEST remove hyphens here
       lextype_name = dv[0].replace('-','') + '-' + cat_name + '-lex'
       print lextype_name
       types += [ [lextype_name, cat_name] ] 
@@ -1069,14 +1070,13 @@ class ChoicesFile:
     for c in ['noun', 'verb', 'aux', 'det']:
       self.iter_begin(c)
       while self.iter_valid():
-        #TEST remove hyphens here
         lextype_name = self.get('name').replace('-', '') + '-' + c + '-lex'
         types += [ [lextype_name, c] ]
         self.iter_next()
       self.iter_end()
-
+    
     self.iter_set_state(state)
-  
+    print types
     return types
  
  

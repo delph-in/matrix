@@ -344,7 +344,7 @@ function set_select_value(select, value, text)
 // form fields on the page whose NAME matches the pattern.  If the
 // nameOnly flag is true, make the OPTION's VALUE attribute equal to
 // its contents.
-function fill_regex(name, pattern, nameOnly, prefix)
+function fill_regex(name, pattern, nameOnly)
 {
   var select = document.getElementsByName(name)[0];
   var old_val = select.value;  // store the previously selected option
@@ -354,10 +354,9 @@ function fill_regex(name, pattern, nameOnly, prefix)
   }
 
   remove_temp_options(select);
-
-  var selfname = prefix.replace(/_[a-z0-9_]*$/,'');
+    
   pattern = '^' + pattern + '$';
-
+  
   // Pass through the form fields in the page, looking for ones whose
   // name attribute matches the pattern.  When one is found, use its
   // contents to create an option.
@@ -370,26 +369,25 @@ function fill_regex(name, pattern, nameOnly, prefix)
     if (e[i].name.search(pattern) != -1) {
       var val = e[i].name.replace(/_[^_]*$/, '');
       
-      if (val != selfname) {
-	  var desc = val;
-	  var f = document.getElementsByName(val + '_name');
+      var desc = val;
+      var f = document.getElementsByName(val + '_name');
 
-	  if (f && f[0] && f[0].value) {
-	      if (nameOnly) {
-		  val = desc = f[0].value;
-	      } 
-	      else {
-		  desc = f[0].value + ' (' + desc + ')';
-	      }
-	  }
-
-	  var len = values.length;
-	  values[len] = val;
-	  texts[len] = desc;
+      if (f && f[0] && f[0].value) {
+        if (nameOnly) {
+	  val = desc = f[0].value;
+	} 
+	else {
+	  desc = f[0].value + ' (' + desc + ')';
+	}
       }
+ 
+      var len = values.length;
+      values[len] = val;
+      texts[len] = desc;
+     
     }
   }
-
+   
   insert_temp_options(select, values, texts);
 
   set_select_value(select, old_val, old_text);
@@ -400,8 +398,6 @@ function fill_regex(name, pattern, nameOnly, prefix)
 // Fill a SELECT tag with OPTIONs created from the array features[],
 // where every OPTION is a feature name. 
 // The cat(egory) argument allows you to restrict the features by category
-//old way: The 'exclude' argument allows 
-// you to exclude various features from the list of options.
 function fill_feature_names(select_name, cat)
 {
   var select = document.getElementsByName(select_name)[0];
@@ -547,11 +543,11 @@ function fill_numbers(select_name)
   set_select_value(select, old_val, old_text);
   force_layout(select.parentNode);
 }
-
+  
 // fill_types()
 // Fill a SELECT tag with OPTIONs created from the array types[],
 // where every OPTION is a type name.
-function fill_types(select_name, type_cat, prefix)
+function fill_types(select_name, type_cat)
 {
   var select = document.getElementsByName(select_name)[0];
   var old_val = select.value;  // store the previously selected option
@@ -564,7 +560,7 @@ function fill_types(select_name, type_cat, prefix)
 
   var values = new Array();
   var texts = new Array();
-  var selfname = prefix.replace(/_[a-z0-9_]*$/,'');
+ 
   var lex_ext = '-' + type_cat + '-lex';
 
   //collect options from the type fields on the questionnaire
@@ -583,13 +579,13 @@ function fill_types(select_name, type_cat, prefix)
       if (e[i].name.search(pattern) != -1) {
 	  var val = e[i].name.replace(/_[^_]*$/, '');
 
-	  if (val && (val != selfname)) {
+	  if (val) {
 	      var desc = val;
 	      var f = document.getElementsByName(val + '_name');
 
 	      if (f && f[0] && f[0].value) {
 		  val = f[0].value;
-		  val = val + lex_ext;
+		  val = val + lex_ext; 
 		  desc = val;
 	      }
 	      var len = values.length;
@@ -600,16 +596,14 @@ function fill_types(select_name, type_cat, prefix)
   }
   
   // Collect options from the types() array in choices
-  // except for the current (self) type - FIX not working?
   // Note that this assumes a strict naming convention for 
   // lexical types within the customization and no hyphens
   // in the user defined names.
   for (var i = 0; i < types.length; i++) {
     var t = types[i].split(':');
 
-    if (t[1] == type_cat) {
-	var lextype_self = selfname + lex_ext; 
-	if (values.indexOf(t[0]) == -1 && texts.indexOf(lextype_self) == -1) {
+    if (t[1] == type_cat) { 
+	if (values.indexOf(t[0]) == -1) {
 	    values.push(t[0]);
 	    texts.push(t[0]);
 	}
