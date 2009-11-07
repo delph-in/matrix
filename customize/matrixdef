@@ -1190,6 +1190,13 @@ BeginIter aux{i} "an Auxiliary Type"
      MultiSelect value "Aux {i} feature {j} value" "Value: " ""
      fillvalues aux{i}_feat{j}_name
 
+     Select head "Aux {i} feature {j} head" "Specified on: " ""
+     . verb "The verb" "the verb"
+     . subj "The subject" "the subject NP"
+     . obj  "The object"  "the object NP"
+     . higher "Higher-ranked"  "the higher-ranked NP"
+     . lower "Lower-ranked" "the lower-ranked NP"
+
   EndIter feat
   Label "</div>"
 
