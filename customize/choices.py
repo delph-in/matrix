@@ -58,13 +58,11 @@ class ChoicesFile:
           f = open(choices_file, 'r')
         f.seek(0)
         self.choices = self.parse_choices(f.readlines())
+        self.uprev()
         if type(choices_file) == str:
           f.close()
       except IOError:
         pass # TODO: we should really be logging these
-
-    if choices_file: # don't uprev if we're creating an empty ChoicesFile
-      self.uprev()
 
   ############################################################################
   ### Choices file parsing functions
@@ -88,6 +86,7 @@ class ChoicesFile:
         pass # TODO: log this!
       except ChoicesFileParseError:
         raise ChoicesFileParseError('Variable is multiply defined: %s' % key)
+
     return choices
 
   var_delim_re = re.compile(r'(\d+)?(?:_|$)')
@@ -99,7 +98,7 @@ class ChoicesFile:
     return [k for k in self.var_delim_re.split(key) if k]
 
   ############################################################################
-  ### Choices file access functions
+  ### Choices access functions
 
   def get(self, key, default=None):
     # integers have an offset of -1 for list indices
@@ -157,18 +156,33 @@ class ChoicesFile:
   def __setitem__(self, key, value):
     self.__set_variable(self.choices, self.split_variable_key(key), value)
 
-  def __delitem__(self, key):
+  def __delete(self, choices, keys, prune):
+    """
+    Delete a choice from the data structure. If prune is True, remove
+    empty dictionaries and list items (changing list size).
+    """
+    if len(keys) == 0:
+      return
+    elif len(keys) == 1:
+      if not prune and type(keys[0]) == int:
+        # if not pruning, replace list items to maintain list size
+        choices[keys[0]] = ChoiceDict()
+      else:
+        del choices[keys[0]]
+    else:
+      # recursively delete the next subitem...
+      self.__delete(choices[keys[0]], keys[1:], prune)
+      # ... and prune if the resulting branch is empty and we're pruning
+      if prune and len(choices[keys[0]]) == 0:
+        del choices[keys[0]]
+
+  def delete(self, key, prune=False):
     # integers have an offset of -1 for list indices
     keys = [safe_int(k, offset=-1) for k in self.split_variable_key(key)]
-    # iteratively find data struct to delete from
-    d = self.choices
-    for k in keys[:-1]:
-        d = d[k]
-    # replace, rather than deleting, list items to maintain list size
-    if type(keys[-1]) == int:
-        d[keys[-1]] = ChoiceDict()
-    else:
-        del d[keys[-1]]
+    self.__delete(self.choices, keys, prune)
+
+  def __delitem__(self, key):
+    self.delete(key, prune=False)
 
   def __contains__(self, key):
     if self.get(key):
@@ -178,14 +192,14 @@ class ChoicesFile:
   def __iter__(self):
     return self.choices.__iter__()
 
+  def __len__(self):
+    return len(self.choices)
+
   ############################################################################
   ### Up-revisioning handler
 
   def uprev(self):
-      if 'version' in self.choices:
-        version = int(self.get('version'))
-      else:
-        version = 0
+      version = self.get('version', 0)
       if version < 1:
         self.convert_0_to_1()
       if version < 2:
@@ -236,264 +250,6 @@ class ChoicesFile:
     self.cached_values = {}
     self.cached_iter_values = None
 
-
-  ######################################################################
-  # Choices values and iterators:
-  #
-  # The ChoicesFile data is stored in a flat dictionary, but the names
-  # of the values in that dictionary form a hierarchical structure.
-  # Names consist of strings of alphabetic (plus dash) strings,
-  # optionally separated into segments by a trailing number and an
-  # underscore.  For example, noun2_morph would be the morph value of
-  # the second of a series of nouns, while noun2_morph3_orth would be
-  # the orth value of the third morph value of the second noun.
-  #
-  # The programmer deals with iterators using the iter_begin,
-  # iter_next, and iter_end methods.  iter_begin starts the iteration,
-  # pushing a value name on the stack.  iter_next moves to the next
-  # integer value.  iter_end pops a value off the stack.
-  #
-  # Example code:
-  #
-  #   choices.iter_begin('noun')       # iterate through all nouns
-  #   while choices.iter_valid():
-  #     type = choices.get('type')
-  #     choices.iter_begin('morph')    # sub-iterate through all morphs
-  #     while choices.iter_valid():
-  #       orth = choices.get('orth')
-  #       order = choices.get('order')
-  #       choices.iter_next()          # advance the morph iteration
-  #     choices.iter_end()             # end the morph iteration
-  #     choices.iter_next()            # advance the noun iteration
-  #   choices.iter_end()               # end the noun iteration
-
-#  def iter_begin(self, key):
-#    var = 1
-#    # If key contains a number at the end (i.e. 'noun5'), initialize
-#    # the iteration at that number rather than the default of 1.
-#    s = re.search('[0-9]+$', key)
-#    if s:
-#      offset = s.span()[0]
-#      var = int(key[offset:])
-#      key = key[0:offset]
-#
-#    self.iter_stack.append([key, var, True])
-#
-#    # if the beginning of the iterator isn't valid, try bumping up to
-#    # the next valid value
-#    valid = self.__iter_is_valid()
-#    if not valid:
-#      self.iter_next()
-#      # if there was no next valid value, start at the requested
-#      # position (since the caller may be writing rather than reading)
-#      if not self.iter_valid():
-#        self.iter_stack[-1][0] = key
-#        self.iter_stack[-1][1] = var
-#        self.iter_stack[-1][2] = False
-#
-#
-#  # Are there any choices with a name prefixed by the current
-#  # iterator?  Useful as the condition in loops.
-#  def iter_valid(self):
-#    if len(self.iter_stack) > 0:
-#      return self.iter_stack[-1][2]
-#    else:
-#      return False
-#
-#
-#  def iter_next(self):
-#    next = self.__iter_next_valid()
-#    if next != -1:
-#      self.iter_stack[-1][1] = next
-#      self.iter_stack[-1][2] = True
-#    else:
-#      self.iter_stack[-1][1] += 1
-#      self.iter_stack[-1][2] = False
-#
-#
-#  def iter_end(self):
-#    self.iter_stack.pop()
-#
-#
-#  def iter_prefix(self):
-#    prefix = ''
-#    for i in self.iter_stack:
-#      prefix += i[0] + str(i[1]) + '_'
-#    return prefix
-#
-#
-#  def iter_num(self):
-#    return self.iter_stack[-1][1]
-#
-#
-#  def iter_max(self,key):
-#    count = 0
-#    self.iter_begin(key)
-#    while self.iter_valid():
-#      count += 1
-#      self.iter_next()
-#    self.iter_end()
-#    return count
-#
-#
-#  def __iter_calc_valid(self):
-#    """
-#    Pass through the keys for the current choices and pre-calculate
-#    the valid numerical ranges for each iterator.  Store the values
-#    found in cached_iter_values.
-#    """
-#    self.cached_iter_values = {}
-#    pat = re.compile('([0-9]+)_')
-#    for k in self.keys():
-#      offset = 0
-#      klen = len(k)
-#      while offset < klen:
-#        match = pat.search(k[offset:])
-#        if match:
-#          num = int(match.group(1))
-#          name = k[:offset + match.start(1)]
-#
-#          # in this loop, store values as sets to avoid duplicates
-#          if self.cached_iter_values.has_key(name):
-#            self.cached_iter_values[name].add(num)
-#          else:
-#            newval = set()
-#            newval.add(num)
-#            self.cached_iter_values[name] = newval
-#
-#          offset += match.end()
-#        else:
-#          break
-#
-#    # now convert sets to sorted lists so its easy to find the max
-#    for k in self.cached_iter_values.keys():
-#      self.cached_iter_values[k] = sorted(list(self.cached_iter_values[k]))
-#
-#
-#  def __iter_name_and_num(self):
-#    """
-#    Return the name and number of the current iteration state.
-#    """
-#    if not self.cached_iter_values:
-#      self.__iter_calc_valid()
-#
-#    num = self.iter_stack[-1][1]
-#
-#    prefix = self.iter_prefix()
-#    match = re.search('[0-9]+_$', prefix)
-#    name = prefix[:match.start()]
-#
-#    return (name, num)
-#
-#
-#  def __iter_is_valid(self):
-#    """
-#    Return true if the iterator on top of the stack is valid -- that
-#    is, if there are exist any values in the choices dictionary for
-#    which the current iterator is a prefix.
-#    """
-#    if not self.cached_iter_values:
-#      self.__iter_calc_valid()
-#
-#    (name, num) = self.__iter_name_and_num()
-#
-#    return self.cached_iter_values.has_key(name) and \
-#           num in self.cached_iter_values[name]
-#
-#
-#  def __iter_next_valid(self):
-#    """
-#    Return the next valid numerical value for the current iterator.
-#    If there is no valid value greater than the current value, return
-#    -1.
-#    """
-#    if not self.cached_iter_values:
-#      self.__iter_calc_valid()
-#
-#    (name, num) = self.__iter_name_and_num()
-#
-#    if self.cached_iter_values.has_key(name):
-#      nums = self.cached_iter_values[name]
-#      if num in nums:
-#        i = nums.index(num) + 1
-#        if i < len(nums):
-#          return nums[i]
-#      else:
-#        return nums[0]
-#
-#    return -1
-#
-#
-#  ######################################################################
-#  # Methods for saving and restoring the iterator state (the stack)
-#
-#  def iter_state(self):
-#    return self.iter_stack
-#
-#
-#  def iter_set_state(self,state):
-#    self.iter_stack = state
-#
-#
-#  def iter_reset(self):
-#    self.iter_stack = []
-#
-#
-#  ######################################################################
-#  # Methods for accessing full-name values.  These methods are
-#  # insensitive to the current iterator state, and take the full name
-#  # of a dictionary entry (e.g. noun2_morph) rather than
-#
-#  # Return the value of 'key', if any.  If not, return the empty string.
-#  def get_full(self, key):
-#    if self.is_set_full(key):
-#      return self.choices[key]
-#    else:
-#      return ''
-#
-#
-#  # Set the value of 'key' to 'value'
-#  def set_full(self, key, value):
-#    self.choices[key] = value
-#    self.clear_cached_values()
-#
-#
-#  # Remove 'key' and its value from the list of choices
-#  def delete_full(self, key):
-#    if self.is_set_full(key):
-#      del self.choices[key]
-#      self.clear_cached_values()
-#
-#
-#  # Return True iff there if 'key' is currently set
-#  def is_set_full(self, key):
-#    return key in self.choices
-#
-#  ######################################################################
-#  # Methods for accessing values.  These methods are sensitive to the
-#  # current iterator state, prepending the current iter_prefix to the
-#  # passed keys.
-#
-#  # Return the value of 'key', if any.  If not, return the empty string.
-#  #def get(self, key):
-#  #  return self.get_full(self.iter_prefix() + key)
-#
-#
-#  # Set the value of 'key' to 'value'
-#  def set(self, key, value):
-#    self.set_full(self.iter_prefix() + key, value)
-#
-#
-#  # Remove 'key' and its value from the list of choices
-#  def delete(self, key):
-#    self.delete_full(self.iter_prefix() + key)
-#
-#
-#  # Return True iff there if 'key' is currently set
-#  def is_set(self, key):
-#    return self.is_set_full(self.iter_prefix() + key)
-#
-#
   ######################################################################
   # Methods for accessing "derived" values -- that is, groups of values
   # that are implied by the list of choices, but not directly stored
@@ -1125,10 +881,13 @@ class ChoicesFile:
     if key in self and self[key] == old:
       self[key] = new
 
-  def convert_key(self, old, new):
+  def convert_key(self, old, new, key_prefix=''):
+    if key_prefix:
+      old = '_'.join([key_prefix, old])
+      new = '_'.join([key_prefix, new])
     if old in self:
       self[new] = self[old]
-      del self[old]
+      self.delete(old, prune=True)
 
   def convert_0_to_1(self):
     self.convert_key('wordorder', 'word-order')
@@ -1273,13 +1032,13 @@ class ChoicesFile:
     # The old 'ques' radio button has been converted into a series of
     # checkboxes, of which 'inv' has been renamed 'q-inv' and 'int'
     # has been removed.
-    if self.is_set('ques'):
+    if 'ques' in self:
       ques = self.get('ques')
       self.delete('ques')
       if ques == 'inv':
         ques = 'q-inv'
       if ques != 'int':
-        self.set(ques, 'on')
+        self[ques] = 'on'
 
   def convert_2_to_3(self):
     # Added a fuller implementation of case marking on core arguments,
@@ -1302,56 +1061,56 @@ class ChoicesFile:
       Aorder = self.get('obj-adp-order')
 
     if Sorth == '' and Aorth == '' and Oorth == '':
-      if len(self.keys()):  # don't add this if the choices file is empty
-        self.set('case-marking', 'none')
+      if len(self):  # don't add this if the choices file is empty
+        self['case-marking'] = 'none'
     elif Sorth == Aorth and Sorth != Oorth:
-      self.set('case-marking', 'nom-acc')
-      self.set('nom-case-label', 'nominative')
-      self.set('acc-case-label', 'accusative')
+      self['case-marking'] = 'nom-acc'
+      self['nom-case-label'] = 'nominative'
+      self['acc-case-label'] = 'accusative'
       if Aorth:
-        self.set('nom-case-pat', 'np')
-        self.set('nom-case-order', Aorder)
+        self['nom-case-pat'] = 'np'
+        self['nom-case-order'] = Aorder
       else:
-        self.set('nom-case-pat', 'none')
+        self['nom-case-pat'] = 'none'
       if Oorth:
-        self.set('acc-case-pat', 'np')
-        self.set('acc-case-order', Oorder)
+        self['acc-case-pat'] = 'np'
+        self['acc-case-order'] = Oorder
       else:
-        self.set('acc-case-pat', 'none')
+        self['acc-case-pat'] = 'none'
     elif Sorth != Aorth and Sorth == Oorth:
-      self.set('case-marking', 'erg-asb')
-      self.set('erg-case-label', 'ergative')
-      self.set('abs-case-label', 'absolutive')
+      self['case-marking'] = 'erg-asb'
+      self['erg-case-label'] = 'ergative'
+      self['abs-case-label'] = 'absolutive'
       if Aorth:
-        self.set('erg-case-pat', 'np')
-        self.set('erg-case-order', Aorder)
+        self['erg-case-pat'] = 'np'
+        self['erg-case-order'] = Aorder
       else:
-        self.set('erg-case-pat', 'none')
+        self['erg-case-pat'] = 'none'
       if Oorth:
-        self.set('abs-case-pat', 'np')
-        self.set('abs-case-order', Oorder)
+        self['abs-case-pat'] = 'np'
+        self['abs-case-order'] = Oorder
       else:
-        self.set('abs-case-pat', 'none')
+        self['abs-case-pat'] = 'none'
     else:
-      self.set('case-marking', 'tripartite')
-      self.set('s-case-label', 'subjective')
-      self.set('a-case-label', 'agentive')
-      self.set('o-case-label', 'objective')
+      self['case-marking'] = 'tripartite'
+      self['s-case-label'] = 'subjective'
+      self['a-case-label'] = 'agentive'
+      self['o-case-label'] = 'objective'
       if Sorth:
-        self.set('s-case-pat', 'np')
-        self.set('s-case-order', Sorder)
+        self['s-case-pat'] = 'np'
+        self['s-case-order'] = Sorder
       else:
-        self.set('s-case-pat', 'none')
+        self['s-case-pat'] = 'none'
       if Aorth:
-        self.set('a-case-pat', 'np')
-        self.set('a-case-order', Aorder)
+        self['a-case-pat'] = 'np'
+        self['a-case-order'] = Aorder
       else:
-        self.set('a-case-pat', 'none')
+        self['a-case-pat'] = 'none'
       if Oorth:
-        self.set('o-case-pat', 'np')
-        self.set('o-case-order', Oorder)
+        self['o-case-pat'] = 'np'
+        self['o-case-order'] = Oorder
       else:
-        self.set('o-case-pat', 'none')
+        self['o-case-pat'] = 'none'
 
     self.delete('iverb-subj')
     self.delete('tverb-subj')
@@ -1372,13 +1131,13 @@ class ChoicesFile:
     self.convert_key('iverb-pred', 'verb1_pred')
     self.convert_key('iverb-non-finite', 'verb1_non-finite')
     if self.get('verb1_orth'):
-      self.set('verb1_valence', 'intrans')
+      self['verb1_valence'] = 'intrans'
 
     self.convert_key('tverb', 'verb2_orth')
     self.convert_key('tverb-pred', 'verb2_pred')
     self.convert_key('tverb-non-finite', 'verb2_non-finite')
     if self.get('verb2_orth'):
-      self.set('verb2_valence', 'trans')
+      self['verb2_valence'] = 'trans'
 
     self.convert_key('det1', 'det1_orth')
     self.convert_key('det1pred', 'det1_pred')
@@ -1430,14 +1189,14 @@ class ChoicesFile:
         ns_pre = 'noun-slot' + str(cur_ns)
         nm_pre = ns_pre + '_morph' + str(cur_nm)
 
-        self.set(ns_pre + '_input1_type', cur_ni)
-        self.set(ns_pre + '_name', 'case')
-        self.set(ns_pre + '_order', order)
+        self[ns_pre + '_input1_type'] = cur_ni
+        self[ns_pre + '_name'] = 'case'
+        self[ns_pre + '_order'] = order
 
-        self.set(nm_pre + '_name', label)
-        self.set(nm_pre + '_orth', orth)
-        self.set(nm_pre + '_feat1_name', 'case')
-        self.set(nm_pre + '_feat1_value', label)
+        self[nm_pre + '_name'] = label
+        self[nm_pre + '_orth'] = orth
+        self[nm_pre + '_feat1_name'] = 'case'
+        self[nm_pre + '_feat1_value'] = label
         cur_nm += 1
 
       # create det slot and morph
@@ -1450,23 +1209,23 @@ class ChoicesFile:
         ds_pre = 'det-slot' + str(cur_ds)
         dm_pre = ds_pre + '_morph' + str(cur_dm)
 
-        self.set(ds_pre + '_input1_type', cur_di)
-        self.set(ds_pre + '_name', 'case')
-        self.set(ds_pre + '_order', order)
+        self[ds_pre + '_input1_type'] = cur_di
+        self[ds_pre + '_name'] = 'case'
+        self[ds_pre + '_order'] = order
 
-        self.set(dm_pre + '_name', label)
-        self.set(dm_pre + '_orth', orth)
-        self.set(dm_pre + '_feat1_name', 'case')
-        self.set(dm_pre + '_feat1_value', label)
+        self[dm_pre + '_name'] = label
+        self[dm_pre + '_orth'] = orth
+        self[dm_pre + '_feat1_name'] = 'case'
+        self[dm_pre + '_feat1_value'] = label
         cur_dm += 1
 
       # create adposition
       if pat == 'np':
         adp_pre = 'adp' + str(cur_adp)
-        self.set(adp_pre + '_orth', orth)
-        self.set(adp_pre + '_order', order)
-        self.set(adp_pre + '_feat1_name', 'case')
-        self.set(adp_pre + '_feat1_value', label)
+        self[adp_pre + '_orth'] = orth
+        self[adp_pre + '_order'] = order
+        self[adp_pre + '_feat1_name'] = 'case'
+        self[adp_pre + '_feat1_value'] = label
 
     self.convert_key('nom-case-label', 'nom-acc-nom-case-name')
     self.convert_key('acc-case-label', 'nom-acc-acc-case-name')
@@ -1483,30 +1242,26 @@ class ChoicesFile:
       self.delete(p + '-case-order')
       self.delete(p + '-case-orth')
 
-    self.iter_begin('verb')
-    while self.iter_valid():
-      v = self.get('valence')
+    for verb in self['verb']:
+      v = verb.get('valence')
       if v == 'intrans':
         if cm == 'none':
           pass
         elif cm == 'nom-acc':
-          self.set('valence', 'nom')
+          self['valence'] = 'nom'
         elif cm == 'erg-abs':
-          self.set('valence', 'abs')
+          self['valence'] = 'abs'
         elif cm == 'tripartite':
-          self.set('valence', 's')
+          self['valence'] = 's'
       elif v == 'trans':
         if cm == 'none':
           pass
         elif cm == 'nom-acc':
-          self.set('valence', 'nom-acc')
+          self['valence'] = 'nom-acc'
         elif cm == 'erg-abs':
-          self.set('valence', 'erg-abs')
+          self['valence'] = 'erg-abs'
         elif cm == 'tripartite':
-          self.set('valence', 'a-o')
-
-      self.iter_next()
-    self.iter_end()
+          self['valence'] = 'a-o'
 
   def convert_5_to_6(self):
     self.convert_key('aux-order', 'aux-comp-order')
@@ -1517,59 +1272,38 @@ class ChoicesFile:
     self.convert_key('aux-pred', 'aux1_pred')
     self.convert_key('aux-subj', 'aux1_subj')
     if self.get('aux1_orth'):
-      self.set('has-aux','yes')
-    elif len(self.keys()):  # don't add this if the choices file is empty
-      self.set('has-aux','no')
+      self['has-aux'] = 'yes'
+    elif len(self):  # don't add this if the choices file is empty
+      self['has-aux'] = 'no'
 
-    self.iter_begin('verb')
-    while self.iter_valid():
-      self.delete('non-finite')
-      self.iter_next()
-    self.iter_end()
+    for verb in self['verb']:
+      self.delete('_'.join([verb.full_key, 'non-finite']))
 
   def convert_6_to_7(self):
     # Lexical types now have multiple stems
     for lextype in ['noun', 'verb', 'det']:
-      self.iter_begin(lextype)
-      while self.iter_valid():
-        self.convert_key('orth', 'stem1_orth')
-        self.convert_key('pred', 'stem1_pred')
+      for lt in self[lextype]:
+        self.convert_key('orth', 'stem1_orth', key_prefix=lt.full_key)
+        self.convert_key('pred', 'stem1_pred', key_prefix=lt.full_key)
 
-        self.iter_next()
-      self.iter_end()
-
-    if not self.get('person') and len(self.keys()):
-      self.set('person', 'none')
+    if not self.get('person') and len(self):
+      self['person'] = 'none'
 
   def convert_7_to_8(self):
     # Other features no longer use the magic word 'root', they instead
     # use the name of the feature.
-    self.iter_begin('feature')
-    while self.iter_valid():
-      fname = self.get('name')
-      
-      self.iter_begin('value')
-      while self.iter_valid():
-        self.iter_begin('supertype')
-        while self.iter_valid():
-          self.convert_value('name', 'root', fname)
-
-          self.iter_next()
-        self.iter_end()
-
-        self.iter_next()
-      self.iter_end()
-
-      self.iter_next()
-    self.iter_end()
+    for feature in self['feature']:
+      fname = feature['name']
+      for value in feature['value']:
+        for st in value['supertype']:
+          self.convert_value('name', 'root', fname, key_prefix=st.full_key)
 
   def convert_8_to_9(self):
     # finite and nonfinite feature value name changes
     # in aux complement form values
     for lextype in ['aux','det','verb','noun']:
       if lextype == 'aux':
-        self.iter_begin(lextype)
-        while self.iter_valid():
+        for lt in self[lextype]:
           self.convert_value('compform','fin','finite')
           self.convert_value('compform', 'nf', 'nonfinite')
           self.iter_next()
@@ -1642,7 +1376,7 @@ class ChoicesFile:
    
     if self.get('has-aux') == 'yes':
       auxval = self.get('aux1_comp')
-      self.set('aux-comp',auxval)
+      self['aux-comp'] = auxval
       i = 0
       while self.iter_valid():
         i += 1
@@ -1691,7 +1425,7 @@ class ChoicesFile:
     fp = self.get('first-person')
     subtypes = []
     if fp == 'incl-excl':
-      self.set('incl-excl-number', number)
+      self['incl-excl-number'] = number
     elif fp == 'min-incl':
       subtypes = ['min', 'incl']
     elif fp == 'aug-incl':
@@ -1700,11 +1434,11 @@ class ChoicesFile:
       subtypes = ['min', 'incl', 'aug']
 
     if len(subtypes) and len(number):
-      self.set('first-person', 'other')
+      self['first-person'] = 'other'
       self.iter_begin('person-subtype')
       for st in subtypes:
-        self.set('name', st)
-        self.set('number', number)
+        self['name'] = st
+        self['number'] = number
         self.iter_next()
       self.iter_end()
 
@@ -1732,8 +1466,8 @@ class ChoicesFile:
 
         self.iter_begin('constraint')
         for c in constraints:
-          self.set('type', c[0])
-          self.set('other-slot', c[1])
+          self['type'] = c[0]
+          self['other-slot'] = c[1]
           self.iter_next()
         self.iter_end()
 
@@ -1761,13 +1495,13 @@ class ChoicesFile:
       self.iter_begin('feature')
       while self.iter_valid():
         self.iter_next()
-      self.set('name','mark')
-      self.set('type','head')
+      self['name'] = 'mark'
+      self['type'] = 'head'
       self.iter_begin('value')
       for mv in mvalues:
-        self.set('name', mv)
+        self['name'] = mv
         self.iter_begin('supertype')
-        self.set('name','mark')
+        self['name'] = 'mark'
         self.iter_end()
         self.iter_next()
       self.iter_end()
@@ -1786,8 +1520,8 @@ class ChoicesFile:
       while self.iter_valid():
         self.convert_key('compvalue', 'value')
         self.iter_next()
-      self.set('name', 'form')
-      self.set('value', complementform)
+      self['name'] = 'form'
+      self['value'] = complementform
       self.iter_end()
 
       self.iter_next()
@@ -1807,20 +1541,20 @@ class ChoicesFile:
       n = self.iter_max('verb-slot') + 1
       pref = 'verb-slot' + str(n)
       if self.get('ques-aff') == 'suffix':
-        self.set(pref + '_order', 'after')
+        self[pref + '_order'] = 'after'
       if self.get('ques-aff') == 'prefix':
-        self.set(pref + '_order', 'before')
+        self[pref + '_order'] = 'before'
       if self.get('q-infl-type') == 'main':
-        self.set(pref + '_input1_type', 'iverb')
-        self.set(pref + '_input2_type', 'tverb')
+        self[pref + '_input1_type'] = 'iverb'
+        self[pref + '_input2_type'] = 'tverb'
       if self.get('q-infl-type') == 'aux':
-        self.set(pref + '_input1_type', 'aux')
+        self[pref + '_input1_type'] = 'aux'
       if self.get('q-infl-type') == 'aux-main':
-        self.set(pref + '_input1_type', 'verb')
+        self[pref + '_input1_type'] = 'verb'
       if self.is_set('ques-aff-orth'):
-        self.set(pref + '_morph1_orth', self.get('ques-aff-orth'))
-      self.set(pref + '_name', 'q-infl')
-      self.set(pref + '_morph1_feat1_name', 'question')
-      self.set(pref + '_morph1_feat1_value', 'plus')
-      self.set(pref + '_opt', 'on')
+        self[pref + '_morph1_orth'] = self.get('ques-aff-orth')
+      self[pref + '_name'] = 'q-infl'
+      self[pref + '_morph1_feat1_name'] = 'question'
+      self[pref + '_morph1_feat1_value'] = 'plus'
+      self[pref + '_opt'] = 'on'
 

@@ -51,6 +51,30 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         del c['abc']
         self.assertEqual(c.choices, {})
 
+    def test_delete(self):
+        c = customize.choices.ChoicesFile() # no file loaded
+        c['abc1_def'] = 5
+        self.assertEqual(c.choices, {'abc':[{'def':5}]})
+        c.delete('abc1_def', prune=False)
+        self.assertEqual(c.choices, {'abc':[{}]})
+        c['abc1_def'] = 5
+        c.delete('abc1_def', prune=True)
+        self.assertEqual(c.choices, {})
+        c['abc1_def'] = 5
+        c['abc2_def'] = 6
+        c.delete('abc1_def', prune=True)
+        self.assertEqual(c.choices, {'abc':[{'def':6}]})
+        c['abc1_def'] = 5
+        c['abc1_ghi'] = 6
+        c['abc2_ghi'] = 7
+        c.delete('abc1', prune=False)
+        self.assertEqual(c.choices, {'abc':[{},{'ghi':7}]})
+        c['abc1_def'] = 5
+        c['abc1_ghi'] = 6
+        c['abc2_ghi'] = 7
+        c.delete('abc1', prune=True)
+        self.assertEqual(c.choices, {'abc':[{'ghi':7}]})
+
     def test_split_variable_key(self):
         c = customize.choices.ChoicesFile() # no file loaded
         self.assertEqual(c.split_variable_key(''), [])
