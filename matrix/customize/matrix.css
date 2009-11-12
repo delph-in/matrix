@@ -15,7 +15,7 @@ html { overflow: scroll }
 .dfn { font-weight: bold }
 
 .delbutton {
-  color: red;
+  color: #009966;
   float: left;
   padding: 0px 0px 0px 0px;
   width: 1.5em;

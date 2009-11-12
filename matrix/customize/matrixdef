@@ -525,27 +525,35 @@ Label "<div style=\"padding-left: 35px\">"
 Label "<br>Which of the following are tense hierarchy elements in your
 language?<br><br>"
 
-Check past "Past" "" "<b>past</b><br>"
+Check past "Past" "" "<b>past</b>"
   BeginIter past-subtype{i} "a subtype"
     Text name "Past subtype {i} name" "Subtype: " "" 20
   EndIter past-subtype
 
-Check present "Present" "" "<b>present</b><br>"
+Label "<br><br>"
+
+Check present "Present" "" "<b>present</b>"
   BeginIter present-subtype{i} "a subtype"
     Text name "Present subtype {i} name" "Subtype: " "" 20
   EndIter present-subtype
 
-Check future "Future" "" "<b>future</b><br>"
+Label "<br><br>"
+
+Check future "Future" "" "<b>future</b>"
   BeginIter future-subtype{i} "a subtype"
     Text name "Future subtype {i} name" "Subtype: " "" 20
   EndIter future-subtype
 
-Check nonpast "Non-Past" "" "<b>nonpast</b> &nbsp;&nbsp;&nbsp;&nbsp; <font size=-1>(note: If present and/or future are also selected they are assumed to be subtypes of nonpast.)<br></font>"
+Label "<br><br>"
+
+Check nonpast "Non-Past" "" "<b>nonpast</b> &nbsp;&nbsp;&nbsp;&nbsp; <font size=-1>(note: If present and/or future are also selected they are assumed to be subtypes of nonpast.)</font>"
   BeginIter nonpast-subtype{i} "a subtype"
     Text name "Non-Past subtype {i} name" "Subtype: " "" 20
   EndIter nonpast-subtype
 
-Check nonfuture "Non-Future" "" "<b>nonfuture</b> &nbsp;&nbsp;&nbsp;&nbsp; <font size=-1>(note: If present and/or past are also selected they are assumed to be subtypes of nonfuture.)<br></font>"
+Label "<br><br>"
+
+Check nonfuture "Non-Future" "" "<b>nonfuture</b> &nbsp;&nbsp;&nbsp;&nbsp; <font size=-1>(note: If present and/or past are also selected they are assumed to be subtypes of nonfuture.)</font>"
   BeginIter nonfuture-subtype{i} "a subtype"
     Text name "Non-Future subtype {i} name" "Subtype: " "" 20
   EndIter nonfuture-subtype
@@ -693,6 +701,8 @@ Label "<b>nonfinite</b>:"
     Text name "Nonfinite subtype {i} name" "nonfinite subtype name: " "" 20
   EndIter nf-subform
 
+Label "<br><br>"
+
 Label "<b>finite</b>:"
   BeginIter fin-subform{i} "a subtype"
     Text name "Finite subtype {i} name" "finite subtype name: " "" 20
@@ -706,9 +716,16 @@ Separator
 Label "<h3>Type Generation</h3>"
 Label "<div style=\"padding-left: 16px\">"
 
-Label "<p>If you would like to have verb types automatically generated based on all of the values of any features on this page, select those features below."
+Label "<p>If you would like to have verb types automatically generated based on the values of any features on this page, select those features below."
 
-MultiSelect dim-ta "Feature dimensions for verb type generation" "<p>Select feature dimension(s) for auto-generating verb types: " ""
+MultiSelect dim-ta-verb "Feature dimensions for main verb type generation" "<p>Select feature dimension(s) for auto-generating main verb types: " ""
+fillregex
+. tense "Tense" "tense"
+. aspect "Aspect" "aspect"
+. situation "Situation" "situation"
+. form "Form" "form"
+
+MultiSelect dim-ta-aux "Feature dimensions for auxiliary verb type generation" "<p>Select feature dimension(s) for auto-generating auxiliary verb types: " ""
 fillregex
 . tense "Tense" "tense"
 . aspect "Aspect" "aspect"
@@ -1095,7 +1112,7 @@ BeginIter verb{i} "a Verb Type"
   BeginIter feat{j} "a Feature"
 
     Select name "Verb {i} feature {j} name" "Name: " " "
-    fillnames verb
+    fillnames
 
     MultiSelect value "Verb {i} feature {j} value" "Value: " ""
     fillvalues verb{i}_feat{j}_name
@@ -1255,11 +1272,8 @@ BeginIter noun-slot{i} "a Slot"
   BeginIter input{j} "an Input" 1
 
     Select type "Noun slot {i} input {j} type" "Input: " ""
-    fillregex (noun|verb|det)(-slot)?[0-9]+_name
+    fillregex noun-slot[0-9]+_name
     . noun "Any noun" "any noun"
-    . verb "Any verb" "any verb"
-    . iverb "Any intransitive verb" "any intransitive verb"
-    . tverb "Any transitive verb" "any transitive verb"
 
   EndIter input
 
@@ -1348,8 +1362,7 @@ BeginIter verb-slot{i} "a Slot"
   BeginIter input{j} "an Input" 1
 
     Select type "Verb slot {i} input {j} type" "Input: " ""
-    fillregex (noun|verb|aux|det)(-slot)?[0-9]+_name
-    . noun "Any noun" "any noun"
+    fillregex (verb|aux)(-slot)[0-9]+_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
@@ -1434,11 +1447,7 @@ BeginIter det-slot{i} "a Slot"
   BeginIter input{j} "an Input" 1
 
     Select type "Determiner slot {i} input {j} type" "Input: " ""
-    fillregex (noun|verb|det)(-slot)?[0-9]+_name
-    . noun "Any noun" "any noun"
-    . verb "Any verb" "any verb"
-    . iverb "Any intransitive verb" "any intransitive verb"
-    . tverb "Any transitive verb" "any transitive verb"
+    fillregex det-slot[0-9]+_name
 
   EndIter input
 

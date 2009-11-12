@@ -566,11 +566,6 @@ class MatrixDefFile:
       elif word[0] in ['Select', 'MultiSelect']:
         multi = (word[0] == 'MultiSelect')
         (vn, fn, bf, af) = word[1:] #variablename, friendlyname, beforestuff, afterstuff
-
-        #vnamesplit = vn.rsplit('-')
-        #if vnamesplit[0] == 'dim':
-        #  vn = vnamesplit[1]
-        #  print vn
   
         vn = prefix + vn
 

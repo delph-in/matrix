@@ -339,27 +339,13 @@ function set_select_value(select, value, text)
   select.value = value;
 }
 
-// fill_regex()
-// Fill a SELECT tag with OPTIONs created from the values of any
-// form fields on the page whose NAME matches the pattern.  If the
-// nameOnly flag is true, make the OPTION's VALUE attribute equal to
-// its contents.
-function fill_regex(name, pattern, nameOnly)
-{
-  var select = document.getElementsByName(name)[0];
-  var old_val = select.value;  // store the previously selected option
-  var old_text = old_val;
-  if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].innerHTML;
-  }
 
-  remove_temp_options(select);
-    
-  pattern = '^' + pattern + '$';
-  
-  // Pass through the form fields in the page, looking for ones whose
-  // name attribute matches the pattern.  When one is found, use its
-  // contents to create an option.
+//regex_collect
+// Pass through the form fields in the page, looking for ones whose
+// name attribute matches the pattern.  When one is found, use its
+// contents to create an option.
+function regex_collect(name, pattern, nameOnly){
+
   var values = new Array();
   var texts = new Array();
 
@@ -367,26 +353,50 @@ function fill_regex(name, pattern, nameOnly)
   for (var i = 0; i < e.length; i++) {
 
     if (e[i].name.search(pattern) != -1) {
-      var val = e[i].name.replace(/_[^_]*$/, '');
+      var vn = e[i].name.replace(/_[^_]*$/, '');
       
-      var desc = val;
-      var f = document.getElementsByName(val + '_name');
+      var fn = vn;
+      var f = document.getElementsByName(vn + '_name');
 
       if (f && f[0] && f[0].value) {
         if (nameOnly) {
-	  val = desc = f[0].value;
+	  vn = fn = f[0].value;
 	} 
 	else {
-	  desc = f[0].value + ' (' + desc + ')';
+	  fn = f[0].value + ' (' + fn + ')';
 	}
       }
  
       var len = values.length;
-      values[len] = val;
-      texts[len] = desc;
+      values[len] = vn;
+      texts[len] = fn;
      
     }
   }
+  return [values, texts];
+}
+
+// fill_regex()
+// Fill a SELECT tag with OPTIONs created from the values of any
+// form fields on the page whose NAME matches the pattern.  If the
+// nameOnly flag is true, make the OPTION's VALUE attribute equal to
+// its contents.
+function fill_regex(select_name, pattern, nameOnly)
+{
+  var select = document.getElementsByName(select_name)[0];
+  var old_val = select.value;  // store the previously selected option
+  var old_text = old_val;
+  if (select.selectedIndex != -1) {
+    old_text = select.options[select.selectedIndex].innerHTML;
+  }
+
+  remove_temp_options(select);
+
+  pattern = '^' + pattern + '$';
+
+  var values_texts = regex_collect(select_name, pattern, nameOnly);
+  var values = values_texts[0];
+  var texts = values_texts[1];
    
   insert_temp_options(select, values, texts);
 
@@ -547,7 +557,7 @@ function fill_numbers(select_name)
 // fill_types()
 // Fill a SELECT tag with OPTIONs created from the array types[],
 // where every OPTION is a type name.
-function fill_types(select_name, type_cat)
+function fill_types(select_name, type_cat, nameOnly)
 {
   var select = document.getElementsByName(select_name)[0];
   var old_val = select.value;  // store the previously selected option
@@ -557,57 +567,30 @@ function fill_types(select_name, type_cat)
   }
 
   remove_temp_options(select);
-
-  var values = new Array();
-  var texts = new Array();
  
   var lex_ext = '-' + type_cat + '-lex';
 
   //collect options from the type fields on the questionnaire
   var pattern = '^'  + '(' + type_cat + ')' + '[0-9]+_name' + '$';
 
-  // Pass through the form fields in the page, looking for ones whose
-  // name attribute matches the pattern.  When one is found, use its
-  // contents to create an option.
-  // Note that this assumes a strict naming convention for 
-  // lexical types within the customization and no hyphens
-  // in the user defined names.
+  var values_texts = regex_collect(select_name, pattern, nameOnly);
+  var values = values_texts[0] + lex_ext;
+  var texts = values_texts[1]+ lex_ext;
 
-  var e = document.forms[0].elements;
-  for (var i = 0; i < e.length; i++) {
 
-      if (e[i].name.search(pattern) != -1) {
-	  var val = e[i].name.replace(/_[^_]*$/, '');
-
-	  if (val) {
-	      var desc = val;
-	      var f = document.getElementsByName(val + '_name');
-
-	      if (f && f[0] && f[0].value) {
-		  val = f[0].value;
-		  val = val + lex_ext; 
-		  desc = val;
-	      }
-	      var len = values.length;
-	      values[len] = val;
-	      texts[len] = desc;
-	  }
-      }
-  }
-  
   // Collect options from the types() array in choices
   // Note that this assumes a strict naming convention for 
   // lexical types within the customization and no hyphens
   // in the user defined names.
   for (var i = 0; i < types.length; i++) {
-    var t = types[i].split(':');
-
-    if (t[1] == type_cat) { 
-	if (values.indexOf(t[0]) == -1) {
-	    values.push(t[0]);
-	    texts.push(t[0]);
-	}
-    }
+      var t = types[i].split(':');
+      //FIX 11/11 - not working, results are a single letter
+      if (t[1] == type_cat) { 
+	  if (texts.indexOf(t[0]) == -1) {
+	      values.length = t[0];
+	      texts.length = t[0];
+	  }
+      }
   }
 
   insert_temp_options(select, values, texts);

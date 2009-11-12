@@ -1019,7 +1019,7 @@ class ChoicesFile:
     Also note: There are four sources of types: 
     1) explicitly defined in initial types array below
     2) defined based on selection to generate types for a specific feature (e.g., gender)
-    3) defined based on selection to generate types for a group of features (based on category, e.g., tense and aspect)
+    3) defined based on selection to generate types for a specific group of features (e.g., tense and aspect)
     4) user defined types
     """
     types = [['noun-lex', 'noun'], ['verb-lex', 'verb'], ['det-lex', 'det'], ['intransitive-verb-lex', 'verb'], ['transitive-verb-lex', 'verb']]
@@ -1037,26 +1037,24 @@ class ChoicesFile:
       elif self.get('dim-'+ f[0]) == 'on':
         dim += [[f[0], f[3]]]  #feature name (dimension) and category name from features() 
 
-    #look for category-based dimension names in choices and add features chosen on 
-    #questionnaire to array
-#    for c in ['noun', 'verb', 'aux', 'det']:
- #     dimlist = self.get('dim-' + c).split(', ') #split multilist get feature values chosen per category
-#      for l in dimlist:
- #       dim += [[l, c]]
-      
+    #collect up list of feature dimensions from tense and aspect page
+    for vora in ['verb', 'aux']:
+      tafeatures = self.get('dim-ta-' + vora)
+      if tafeatures:
+        dimlist = tafeatures.split(', ') #split multilist, get tense and aspect features chosen
+        for l in dimlist:
+          dim += [[l, vora]] #feature name (dimension) and category name from features()
+
+    #gather all of the values of the features specified as dimensions
     for d in dim: 
       for f in features:
         valwithfn = []
         if f[0]== d[0]:  
           valwithfn += f[1].split(';') #split out the values (result: valuename|frendlyname)
         for w in valwithfn:
-          valuesplit = w.split('|') #split apart the two name versions
-          dimvalues += [[valuesplit[0], d[1]]] #add to array feature name (dimension) and category
+          dimvalues += [[w.split('|')[0], d[1]]] #add to array feature value and category
 
     #create lexical type names based on features chosen
-    #note: there are now two sources of category names - choices file names and 
-    #features array category
-    #need to fix? throw an error if they are not the same??
     for dv in dimvalues:
       cat_name = dv[1]
       lextype_name = dv[0].replace('-','') + '-' + cat_name + '-lex'
@@ -1070,8 +1068,10 @@ class ChoicesFile:
     for c in ['noun', 'verb', 'aux', 'det']:
       self.iter_begin(c)
       while self.iter_valid():
-        lextype_name = self.get('name').replace('-', '') + '-' + c + '-lex'
-        types += [ [lextype_name, c] ]
+        basetype = self.get('name')
+        if basetype:
+          lextype_name = basetype.replace('-', '') + '-' + c + '-lex'
+          types += [ [lextype_name, c] ]
         self.iter_next()
       self.iter_end()
     
