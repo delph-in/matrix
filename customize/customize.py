@@ -13,8 +13,8 @@ import zipfile
 import sys
 import re
 
-from choices import ChoicesFile
-from utils import TDLencode
+from customize.choices import ChoicesFile
+from customize.utils import TDLencode
 
 ######################################################################
 # globals
@@ -32,6 +32,9 @@ roots = None
 
 ######################################################################
 # Utility functions
+
+def get_name(item):
+    return item.get('name', None) or item.full_key
 
 # ERB 2006-09-16 There are properties which are derived from the
 # choices file as a whole which various modules will want to know about.
@@ -321,7 +324,7 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
   else:
     iter_feat = 'feat'
 
-  for feat in ch_dict.get(feat, []):
+  for feat in ch_dict.get(iter_feat,[]):
     n = feat.get('name')
     v = feat.get('value').split(', ')
 
@@ -2239,7 +2242,7 @@ def customize_nouns():
   lexicon.add_literal(';;; Nouns')
 
   for noun in ch.get('noun'):
-    name = name.get('name')
+    name = get_name(noun)
     det = noun.get('det')
 
     if singlentype or det == 'opt':
@@ -2563,7 +2566,7 @@ def customize_verbs():
   # Now create the lexical entries for all the defined verb types
   cases = ch.cases()
   for verb in ch.get('verb'):
-    name = verb.get('name')
+    name = get_name(verb)
     val = verb.get('valence')
 
     i = val.find(',')
@@ -2611,8 +2614,8 @@ def customize_users_auxtype(userstype, supertype):
   supertype = userstypename in customize_auxiliaries
   """
 
-  customize_feature_values(userstype, 'aux')
-  customize_feature_values(userstype, 'auxcomplement')
+  customize_feature_values(ch[userstype], userstype, 'aux')
+  customize_feature_values(ch[userstype], userstype, 'auxcomplement')
   mylang.add(userstype + ' := ' + supertype + '.')
 
 
@@ -2852,14 +2855,14 @@ def customize_determiners():
     lexicon.add_literal(';;; Determiners')
 
   for det in ch['det']:
-    name = det['name']
+    name = get_name(det)
 
     stype = 'determiner-lex'
     dtype = name + '-determiner-lex'
 
     mylang.add(dtype + ' := ' + stype + '.')
 
-    customize_feature_values(dtype, 'det')
+    customize_feature_values(det, dtype, 'det')
 
     for stem in det['stem']:
       orth = stem.get('orth')
@@ -2916,7 +2919,7 @@ def is_ltow(name, namelist = []):
     name = name.replace('_', '')
 
   for slotprefix in ('noun', 'verb', 'det', 'aux'):
-    for slot in ch[n]:
+    for slot in ch[slotprefix + '-slot']:
       opt = slot.get('opt')
       for inp in slot['input']:
         if name in inp.get('type'):
@@ -2933,7 +2936,7 @@ def is_ltow(name, namelist = []):
 def back_to_word(name):
   for slotprefix in ('noun', 'verb', 'det', 'aux'):
     for slot in ch[slotprefix + '-slot']:
-      for const in slot['constraint']:
+      for const in slot.get('constraint',[]):
         if const.get('type') == 'forces' and const.get('other-slot') == name:
           return True
 
@@ -2961,12 +2964,12 @@ def intermediate_rule(slot, root_dict, inp=None, depth=0, opt=False):
   for slot_input in slot['input']:
     i = slot_input.get('type')
     if i not in root_dict: # if the type is another slot...
-      mylang.add(ch[i].get('name') + '-lex-rule := ' + inp + '.')
+      mylang.add(get_name(ch[i]) + '-lex-rule := ' + inp + '.')
       if ch.get(i + '_opt'):
         for lextype in ch[i + '_input']:
           rec = lextype.get('type')
           if rec not in root_dict:
-            mylang.add(ch[rec].get('name') + '-lex-rule := ' + inp + '.')
+            mylang.add(get_name(ch[rec]) + '-lex-rule := ' + inp + '.')
             opt, inp = intermediate_rule(ch[rec], root_dict, inp, depth+1, opt)
 
   return opt, inp
@@ -3015,7 +3018,7 @@ def customize_inflection():
   for lexprefix in ('noun', 'verb', 'det', 'aux'):
     for index, lex in enumerate(ch[lexprefix]):
       p = lexprefix + str(index)
-      n = lex['name']
+      n = get_name(lex)
       if p in root_dict: # What does this do and when would it execute?
         continue
       l = lexprefix
@@ -3123,7 +3126,7 @@ def customize_inflection():
     for slot in ch[key]:
       order = slot.get('order')
       opt = slot.get('opt')
-      name = slot.get('name')
+      name = get_name(slot)
 
       if order == 'before':
         aff = 'prefix'
@@ -3175,7 +3178,7 @@ def customize_inflection():
                 mylang.add(bt+' := '+inp+'.', section=sec_from_lex(bt))
           # If the single input is non-optional, make it the input value.
           else:
-            inp = i_type['name'] + '-lex-rule'
+            inp = get_name(i_type) + '-lex-rule'
       # Multiple inputs
       else:
         # Build an intermediate rule
@@ -3189,7 +3192,7 @@ def customize_inflection():
       # If this rule forces another rule to follow it, then we need
       # to define word-to-lexeme rule for this grammar.
       wtol = False
-      for constraint in slot['constraint']:
+      for constraint in slot.get('constraint',[]):
         if constraint.get('type') == 'forces':
           wtol = True
 
@@ -3339,14 +3342,14 @@ def customize_inflection():
       # Specify for subtypes, if any
       if subrules > 0:
         for morphcount, morph in enumerate(slot['morph']):
-          morphname = morph.get('name') or name + '-morph' + str(morphcount)
+          morphname = get_name(morph) or name + '-morph' + str(morphcount)
 
           # The lexical type and the super-type names
           ltype = morphname + '-lex-rule'
           stype = name + '-lex-rule'
 
           # Create appropriate sub-rule for the morpheme
-          if morph.get('orth') == '':
+          if morph.get('orth','') == '':
             if ltow:
               mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
             elif wtol:
@@ -3370,7 +3373,7 @@ def customize_inflection():
                       morph.get('orth'))
 
           # Apply the features to the lexical rule
-          customize_feature_values(ltype, slotprefix, features, cases)
+          customize_feature_values(morph, slotprefix, features, cases)
 
         # Synthesize any necessary const case-marking rules
         if synth_cases:
@@ -3436,8 +3439,8 @@ def customize_inflection():
                     morph_orth)
 
       # Keep track of non-consecutive requirements
-      reqs1, reqd = req(stype, basetype, reqs1, reqd, tracker, 'req')
-      reqs2, reqd = req(basetype, reqs2, reqd, tracker, 'disreq')
+      reqs1, reqd = req(slot, basetype, reqs1, reqd, tracker, 'req')
+      reqs2, reqd = req(slot, basetype, reqs2, reqd, tracker, 'disreq')
 
   # For rules that have requirements, we need to copy up all the other
   # TRACK information
@@ -3451,7 +3454,7 @@ def customize_inflection():
 
 def req(slot, basetype, reqs, reqd, tracker, reqtype):
   stype = slot.full_key # slot type
-  name = "T-"+get_name(stype)
+  name = "T-" + get_name(ch[stype])
 
   seen_reqtype = False
   for constraint in ch['constraint']:
@@ -3494,7 +3497,7 @@ def add_single_tracks(reqs, reqd, reqtype):
   # Begin iterating over slots
   for slotprefix in ('noun', 'verb', 'det', 'aux'):
     for slot in ch[slotprefix + '-slot']:
-      name = get_name(slot.full_key)
+      name = get_name(ch[slot.full_key])
       tname = "T-"+name
       # We only need to do this for rules with TRACK constraints.
       if slot.full_key not in reqs:
@@ -3505,7 +3508,7 @@ def add_single_tracks(reqs, reqd, reqtype):
           # Skip this slot if it's the same as the one in the outer loop.
           if slot2.full_key == slot.full_key:
             continue
-          name2 = get_name(slot2.full_key)
+          name2 = get_name(ch[slot2.full_key])
           # If the inner-loop rule sets or fulfills a constraint on the
           # outer-loop rule constrain the TRACK values of each rule as
           # appropriate.
@@ -3529,7 +3532,7 @@ def copy_all_tracks(reqd):
   # to copy the whole TRACK feature up unchanged.
   for slotprefix in ('noun', 'verb', 'det', 'aux'):
     for slot in ch[slotprefix + '-slot']:
-      name = slot.get('name')
+      name = get_name(slot)
       if slot.full_key not in reqd:
         mylang.add(name + '-lex-rule := [TRACK #track, \
         DTR.TRACK #track].')
@@ -3640,7 +3643,7 @@ def customize_roots():
                         COORD - ] ].'
   roots.add(typedef, comment)
 
-  if has_auxiliaries_p() or ch.is_set_full('noaux-fin-nf'):
+  if has_auxiliaries_p() or 'noaux-fin-nf' in ch:
     roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
 
   # ERB 2006-10-05 I predict a bug here:  If we a language with auxiliaries

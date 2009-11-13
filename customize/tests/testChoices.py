@@ -74,6 +74,11 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         c['abc2_ghi'] = 7
         c.delete('abc1', prune=True)
         self.assertEqual(c.choices, {'abc':[{'ghi':7}]})
+        c['abc1_def'] = 5
+        c['abc1_ghi'] = 6
+        c['abc2_ghi'] = 7
+        c.delete('abc', prune=True)
+        self.assertEqual(c.choices, {})
 
     def test_split_variable_key(self):
         c = customize.choices.ChoicesFile() # no file loaded
@@ -108,11 +113,39 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
     def test_full_key(self):
         c = customize.choices.ChoicesFile()
         self.assertEqual(c.choices.full_key, None)
-        c['abc1_def'] = 3
+        c['abc1_def'] = 1
         c['abc2_def'] = 2
         self.assertEqual(c['abc'].full_key, 'abc')
         for i, key in enumerate(c['abc']):
             self.assertEqual(key.full_key, 'abc' + str(i+1))
+
+    def test_reset_full_keys(self):
+        c = customize.choices.ChoicesFile()
+        c['abc1_def'] = 1
+        c['abc2_def'] = 2
+        self.assertEqual(c['abc1'].full_key, 'abc1')
+        self.assertEqual(c['abc1_def'], 1)
+        self.assertEqual(c['abc2'].full_key, 'abc2')
+        self.assertEqual(c['abc2_def'], 2)
+        c.delete('abc1', prune=True)
+        self.assertEqual(c['abc1'].full_key, 'abc1')
+        self.assertEqual(c['abc1_def'], 2)
+        c['abc1_def'] = 1
+        c['abc2_def'] = 2
+        c['abc3_def'] = 3
+        c['abc4_def'] = 4
+        c.delete('abc2', prune=True)
+        self.assertEqual(c['abc1_def'], 1)
+        self.assertEqual(c['abc2_def'], 3)
+        self.assertEqual(c['abc3_def'], 4)
+        c['abc1_def'] = 1
+        c['abc2_def'] = 2
+        c['abc2_ghi1_klm'] = 3
+        c['abc2_ghi2_klm'] = 4
+        c.delete('abc1', prune=True)
+        self.assertEqual(c['abc1_def'], 2)
+        self.assertEqual(c['abc1_ghi1_klm'], 3)
+        self.assertEqual(c['abc1_ghi2_klm'], 4)
 
 class TestChoicesDerivedValueFunctions(unittest.TestCase):
     def setUp(self):

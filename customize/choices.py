@@ -180,6 +180,9 @@ class ChoicesFile:
     # integers have an offset of -1 for list indices
     keys = [safe_int(k, offset=-1) for k in self.split_variable_key(key)]
     self.__delete(self.choices, keys, prune)
+    # full_key values will be corrupted if we pruned, so re-evaluate
+    if prune:
+      [self.__reset_full_keys(k) for k in self]
 
   def __delitem__(self, key):
     self.delete(key, prune=False)
@@ -194,6 +197,24 @@ class ChoicesFile:
 
   def __len__(self):
     return len(self.choices)
+
+  def __reset_full_keys(self, key):
+    """
+    Starting at the given key, reset the full_key values of all
+    choices contained by that key.
+    """
+    # make sure the current key exists (e.g. was not pruned)
+    if key not in self:
+      return
+    for i, c in enumerate(self[key]):
+      c_type = type(c)
+      if type(c) is ChoiceDict:
+        c.full_key = key + str(i + 1)
+      elif type(c) is ChoiceList:
+        c.full_key = key + str(c)
+      else:
+        continue
+      self.__reset_full_keys(c.full_key)
 
   ############################################################################
   ### Up-revisioning handler
@@ -1296,33 +1317,21 @@ class ChoicesFile:
       fname = feature['name']
       for value in feature['value']:
         for st in value['supertype']:
-          self.convert_value('name', 'root', fname, key_prefix=st.full_key)
+          self.convert_value(st.full_key + '_name', 'root', fname)
 
   def convert_8_to_9(self):
     # finite and nonfinite feature value name changes
     # in aux complement form values
+    for lt in self['aux']:
+      self.convert_value('compform','fin','finite')
+      self.convert_value('compform', 'nf', 'nonfinite')
+    # in slot feature values
     for lextype in ['aux','det','verb','noun']:
-      if lextype == 'aux':
-        for lt in self[lextype]:
-          self.convert_value('compform','fin','finite')
-          self.convert_value('compform', 'nf', 'nonfinite')
-          self.iter_next()
-        self.iter_end()
-      # in slot feature values
-      self.iter_begin(lextype + '-slot')
-      while self.iter_valid():
-        self.iter_begin('morph')
-        while self.iter_valid():
-          self.iter_begin('feat')
-          while self.iter_valid():
-            self.convert_value('value','fin','finite')
-            self.convert_value('value','nf','nonfinite')
-            self.iter_next()
-          self.iter_end()
-          self.iter_next()
-        self.iter_end()
-        self.iter_next()
-      self.iter_end()  
+      for slot in self[lextype + '-slot']:
+        for morph in slot['morph']:
+          for feat in morph['feat']:
+            self.convert_value(feat.full_key + '_value','fin','finite')
+            self.convert_value(feat.full_key + '_value','nf','nonfinite')
 
   def convert_9_to_10(self):
     """
@@ -1337,34 +1346,23 @@ class ChoicesFile:
     self.convert_key('non-past', 'nonpast')
     self.convert_key('non-future', 'nonfuture') 
 
-    i = 0
-    self.iter_begin('aux')
-    while self.iter_valid():
-      i += 1
-      v = self.get('nonfincompform')
-      k = 'nf-subform' + str(i) + '_name'
-      self.convert_value('compform', 'nonfinite', v)
+    for i, aux in enumerate(self['aux']):
+      v = aux['nonfincompform']
+      k = 'nf-subform' + str(i+1) + '_name'
+      self.convert_value(aux.full_key + '_compform', 'nonfinite', v)
 
-      if self.is_set('nonfincompform'):
-        self.set_full(k,v)
+      if 'nonfincompform' in self:
+        self[k] = v
       self.delete('nonfincompform')
 
-      self.iter_next()
-    self.iter_end()
-  
   def convert_10_to_11(self):
     """
     Previous versions allowed only one stem per auxiliary type.
     This conversion changes auxiliary orth and pred values to stem1 orth and pred.
     """
-    self.iter_begin('aux')
-
-    while self.iter_valid():
-      self.convert_key('orth', 'stem1_orth')
-      self.convert_key('pred', 'stem1_pred')
-
-      self.iter_next()
-    self.iter_end()
+    for aux in self['aux']:
+      self.convert_key('orth', 'stem1_orth', key_prefix=aux.full_key)
+      self.convert_key('pred', 'stem1_pred', key_prefix=aux.full_key)
 
   def convert_11_to_12(self):
     """
@@ -1373,35 +1371,24 @@ class ChoicesFile:
     this is no answered by one question for all auxiliaries.
     This conversion gives aux-comp the value of the first aux's comp, and deletes all type specific aux-comp values.
     """
-   
+
     if self.get('has-aux') == 'yes':
       auxval = self.get('aux1_comp')
       self['aux-comp'] = auxval
-      i = 0
-      while self.iter_valid():
-        i += 1
-        self.delete('aux' + i + '_comp')
+      for aux in self['aux']:
+          self.delete(aux.full_key + '_comp')
 
   def convert_12_to_13(self):
-    """ 
+    """
     ERB: stupidly used "+" as a feature value.  Updating this
     to "plus".  Feature name was "negation".
     """
     for lextype in ['aux','det','verb','noun']:
-      self.iter_begin(lextype + '-slot')
-      while self.iter_valid():
-        self.iter_begin('morph')
-        while self.iter_valid():
-          self.iter_begin('feat')
-          while self.iter_valid():
-            if self.get('name') == 'negation':
-              self.convert_value('value','+','plus')
-            self.iter_next()
-          self.iter_end()
-          self.iter_next()
-        self.iter_end()
-        self.iter_next()
-      self.iter_end()  
+      for lt in self[lextype + '-slot']:
+        for morph in lt['morph']:
+          for feat in morph['feat']:
+            if feat['name'] == 'negation':
+              self.convert_value(feat.full_key + 'value','+','plus')
 
   def convert_13_to_14(self):
     """
@@ -1409,18 +1396,9 @@ class ChoicesFile:
     for defining subtypes under 1p-non-sg into the choices for defining
     your own subtypes.
     """
-    numbers = []
-    self.iter_begin('number')
-    while self.iter_valid():
-      numbers += [ self.get('name') ]
-      self.iter_next()
-    self.iter_end()
+    numbers = [num['name'] for num in self['numbers']]
 
-    number = ''
-    for n in numbers[1:]:
-      if len(number):
-        number += ', '
-      number += n
+    number = ', '.join(numbers[1:])
 
     fp = self.get('first-person')
     subtypes = []
@@ -1435,12 +1413,10 @@ class ChoicesFile:
 
     if len(subtypes) and len(number):
       self['first-person'] = 'other'
-      self.iter_begin('person-subtype')
-      for st in subtypes:
-        self['name'] = st
-        self['number'] = number
-        self.iter_next()
-      self.iter_end()
+      for person_subtype in self['person-subtype']:
+        for st in subtypes:
+          person_subtype['name'] = st
+          person_subtype['number'] = number
 
   def convert_14_to_15(self):
     """
@@ -1452,27 +1428,18 @@ class ChoicesFile:
     """
 
     for slotprefix in ('noun', 'verb', 'det', 'aux'):
-      self.iter_begin(slotprefix + '-slot')
-      while self.iter_valid():
+      for slot in self[slotprefix + '-slot']:
         constraints = []
 
         for contype in ('forces', 'req', 'disreq'):
-          self.iter_begin(contype)
-          while self.iter_valid():
-            constraints += [ [ contype, self.get('type') ] ]
-            self.delete('type')
-            self.iter_next()
-          self.iter_end()
+          for ct in slot[contype]:
+            constraints += [ [ contype, ct.get('type') ] ]
+            self.delete(ct.full_key + '_type')
 
-        self.iter_begin('constraint')
-        for c in constraints:
-          self['type'] = c[0]
-          self['other-slot'] = c[1]
-          self.iter_next()
-        self.iter_end()
-
-        self.iter_next()
-      self.iter_end()
+        for constraint in slot['constraint']:
+          for c in constraints:
+            constraint['type'] = c[0]
+            constraint['other-slot'] = c[1]
 
   def convert_15_to_16(self):
     """
@@ -1484,28 +1451,17 @@ class ChoicesFile:
     --markY_name=mY -> featureX_valueY_name=mY
     --featureX_valueY_supertype_name=mark
     """
-    mvalues = []
-    self.iter_begin('mark')
-    while self.iter_valid():
-      mvalues.append(self.get('name'))
-      self.iter_next()
-    self.iter_end()
+    mvalues = [mark['name'] for mark in self['mark']]
 
     if len(mvalues) != 0:
-      self.iter_begin('feature')
-      while self.iter_valid():
-        self.iter_next()
-      self['name'] = 'mark'
-      self['type'] = 'head'
-      self.iter_begin('value')
-      for mv in mvalues:
-        self['name'] = mv
-        self.iter_begin('supertype')
-        self['name'] = 'mark'
-        self.iter_end()
-        self.iter_next()
-      self.iter_end()
-      self.iter_end()
+      feature = self['feature'][-1]
+      feature['name'] = 'mark'
+      feature['type'] = 'head'
+
+      for value in feature['value']:
+        for mv in mvalues:
+          value['name'] = mv
+          value['supertype']['name'] = 'mark'
 
   def convert_16_to_17(self):
     """
@@ -1513,24 +1469,17 @@ class ChoicesFile:
     --replaces 'compvalue' with 'value'
     --replaces compform=Y with compfeatureX_name=form, compfeature_value=Y
     """
-    self.iter_begin('aux')
-    while self.iter_valid():
-      complementform = self.get('compform')
-      self.iter_begin('compfeature')
-      while self.iter_valid():
-        self.convert_key('compvalue', 'value')
-        self.iter_next()
-      self['name'] = 'form'
-      self['value'] = complementform
-      self.iter_end()
-
-      self.iter_next()
-    self.iter_end()
+    for aux in self['aux']:
+      complementform = aux.get('compform')
+      for cf in aux['compfeature']:
+        self.convert_key('compvalue', 'value', key_prefix=cf.full_key)
+      aux['compfeature'][-1]['name'] = 'form'
+      aux['compfeature'][-1]['value'] = complementform
 
   def convert_17_to_18(self):
     """
     Retrofitted yesno questions library to integrate question affixes
-    with morphotactic infrastructure.  'aux-main' possibility for 
+    with morphotactic infrastructure.  'aux-main' possibility for
     q-infl-type said in the prose 'any finite verb', but I don't think
     we had actually implemented this.  This translation does not
     put [FORM fin] on the q-infl rule, since this rule will end up
@@ -1538,7 +1487,7 @@ class ChoicesFile:
     what was going on in the old system.
     """
     if self.get('q-infl') == 'on':
-      n = self.iter_max('verb-slot') + 1
+      n = len(self['verb-slot']) + 1
       pref = 'verb-slot' + str(n)
       if self.get('ques-aff') == 'suffix':
         self[pref + '_order'] = 'after'

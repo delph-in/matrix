@@ -3,7 +3,7 @@
 ######################################################################
 # imports
 
-from choices import ChoicesFile
+from customize.choices import ChoicesFile
 
 ######################################################################
 # globals

@@ -1,4 +1,5 @@
+#!/usr/bin/python
 import sys
-import customize
+import customize.customize
 
-customize.customize_matrix(sys.argv[1], 'tgz')
+customize.customize.customize_matrix(sys.argv[1], 'tgz')
