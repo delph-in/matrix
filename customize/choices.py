@@ -327,7 +327,7 @@ class ChoicesFile:
     for adp in self.get('adp'):
       opt = adp['opt']
       for feat in adp['feat']:
-        result = result or (self.has_case(feat, case) and \
+        result |= result or (self.has_case(feat, case) and \
                             (opt or not check_opt))
 
     return result
@@ -681,8 +681,8 @@ class ChoicesFile:
     genders = []
 
     for g in self.get('gender'):
-      name = g['name']
-      stype = ';'.join([s['name'] for s in g.get('supertype',[])]) or 'number'
+      name = g.get('name',[])
+      stype = ';'.join([s['name'] for s in g.get('supertype',[])]) or 'gender'
       genders += [[name, stype]]
 
     return genders

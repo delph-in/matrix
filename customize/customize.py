@@ -325,8 +325,8 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
     iter_feat = 'feat'
 
   for feat in ch_dict.get(iter_feat,[]):
-    n = feat.get('name')
-    v = feat.get('value').split(', ')
+    n = feat.get('name','')
+    v = feat.get('value','').split(', ')
 
     if n == 'case':
       v = [canon_to_abbr(c, cases) for c in v]
@@ -335,7 +335,7 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
 
     # The 'head' choice only appears on verb slots, and allows the user
     # to specify features on the subject and object as well
-    h = feat.get('head')
+    h = feat.get('head','')
     if h == 'subj':
       geom_prefix += 'LOCAL.CAT.VAL.SUBJ.FIRST.'
     elif h == 'obj':
@@ -560,15 +560,15 @@ def customize_case_adpositions():
     # Lexical entries
     lexicon.add_literal(';;; Case-marking adpositions')
 
-    for adp in ch.get('adp'):
-      orth = adp.get('orth')
+    for adp in ch.get('adp',[]):
+      orth = adp.get('orth','')
 
       # figure out the abbreviation for the case this adp marks
       cn = ''
       abbr = ''
       for feat in adp.get('feat', []):
-        if feat.get('name') == 'case':
-          cn = feat.get('value')
+        if feat.get('name','') == 'case':
+          cn = feat.get('value','')
           break
 
       abbr = name_to_abbr(cn, cases)
@@ -588,11 +588,11 @@ def customize_case():
 
 # Return the number of items in the direct-inverse scale
 def direct_inverse_scale_len():
-  return len(ch.get('scale'))
+  return len(ch.get('scale',''))
 
 
 def customize_direct_inverse():
-  if not ch.get('scale1_feat1_name'):
+  if 'scale1_feat1_name' not in ch:
     return
 
   mylang.add('verb :+ [ DIRECTION direction ].', section='addenda')
@@ -610,9 +610,9 @@ def customize_direct_inverse():
 
   # Figure out which features are involved in the hierarchy
   names = []  # feature names
-  for scale in ch.get('scale'):
+  for scale in ch.get('scale',[]):
     for feat in scale.get('feat', []):
-      names.append(feat.get('name'))
+      names.append(feat.get('name',''))
 
   # Now pass through the scale, creating the direct-inverse hierarchy
   # pairwise
@@ -628,7 +628,7 @@ def customize_direct_inverse():
 
     # get the features on the first scale entry in this range
     for feat in ch.get('scale')[i].get('feat', []):
-      name = feat.get('name')
+      name = feat.get('name','')
       if name not in values:
         values[name] = set()
       values[name].add(feat.get('value'))
@@ -659,10 +659,10 @@ def customize_direct_inverse():
     # rest of the scale
     values = {}
     for feat in ch.get('scale')[i+1:].get('feat', []):
-      name = feat.get('name')
+      name = feat.get('name','')
       if name not in values:
         values[name] = set()
-      values[name].add(feat.get('value'))
+      values[name].add(feat.get('value',''))
 
     # create the right type in the pair
     type = 'dir-inv-non-' + str(i+1)
@@ -770,17 +770,17 @@ def customize_gender():
 #   about other features.
 
 def init_other_hierarchies():
-  for feature in ch.get('feature'):
-    feat = feature.get('name')
-    type = feature.get('type')
+  for feature in ch.get('feature',[]):
+    feat = feature.get('name','')
+    type = feature.get('type','')
 
     hier = Hierarchy(feat, type)
 
     for value in feature.get('value', []):
-      val = ch.get('name')
+      val = value.get('name')
 
       for supertype in value.get('supertype', []):
-        stype = ch.get('name')
+        stype = supertype.get('name')
         hier.add(val, stype)
 
     if not hier.is_empty():
@@ -822,33 +822,33 @@ def init_tense_hierarchy():
       ppflist = []
       for ten in ('nonfuture', 'nonpast', 'past', 'present', 'future' ):
 
-        if ch.get(ten):
+        if ten in ch:
           if ten not in ppflist:
             hier.add(ten, 'tense')
 
-          for subtype in ch.get(ten + '-subtype'):
-            st = subtype.get('name')
+          for subtype in ch.get(ten + '-subtype',[]):
+            st = subtype.get('name','')
             hier.add(st, ten)
 
           if ten == 'nonfuture':
             for moreten in ('past', 'present'):
-              if ch.get(moreten):
+              if moreten in ch:
                 hier.add(moreten, ten)
                 ppflist.append(moreten)
 
           if ten == 'nonpast':
             for moreten in ('present', 'future'):
-              if ch.get(moreten):
+              if moreten in ch:
                 hier.add(moreten, ten)
                 ppflist.append(moreten)
 
     elif tdefn == 'build':
 
-      for tense in ch.get('tense'):
-        name = ch.get('name')
+      for tense in ch.get('tense',[]):
+        name = tense.get('name')
 
-        for supertype in tense.get('supertype'):
-          supername = ch.get('name')
+        for supertype in tense.get('supertype',[]):
+          supername = supertype.get('name')
           hier.add(name, supername)
 
   if not hier.is_empty():
@@ -867,10 +867,10 @@ def customize_tense():
 def init_aspect_hierarchy():
   hier = Hierarchy('aspect')
 
-  for aspect in ch.get('aspect'):
-    name = ch.get('name')
+  for aspect in ch.get('aspect',[]):
+    name = aspect.get('name')
     for supertype in aspect.get('supertype', []):
-      supername = ch.get('name')
+      supername = supertype.get('name')
       hier.add(name, supername)
 
   if not hier.is_empty():
@@ -887,10 +887,10 @@ def customize_aspect():
 def init_situation_hierarchy():
   hier = Hierarchy('situation')
 
-  for situation in ch.get('situation'):
-    name = ch.get('name')
-    for supertype in situation.get('supertype'):
-      supername = ch.get('name')
+  for situation in ch.get('situation',[]):
+    name = situation.get('name')
+    for supertype in situation.get('supertype',[]):
+      supername = supername.get('name')
       hier.add(name, supername)
 
   if not hier.is_empty():
@@ -1205,7 +1205,7 @@ def determine_consistent_order(wo,hc):
   # find subject postpositions and object prepositions).
 
   adporder = ''
-  for adp in ch.get('adp'):
+  for adp in ch.get('adp',[]):
     adporder = adp.get('order')
 
   # ERB 2006-10-05 Fixing bug in free word order case.
@@ -2181,7 +2181,7 @@ def customize_nouns():
   seen = {'obl':False, 'opt':False, 'imp':False}
   seenCount = 0
 
-  for noun in ch.get('noun'):
+  for noun in ch.get('noun',[]):
     det = noun.get('det')
     if not seen[det]:
       seen[det] = True
@@ -2241,7 +2241,7 @@ def customize_nouns():
   # Add the lexical entries
   lexicon.add_literal(';;; Nouns')
 
-  for noun in ch.get('noun'):
+  for noun in ch.get('noun',[]):
     name = get_name(noun)
     det = noun.get('det')
 
@@ -2419,20 +2419,20 @@ def init_form_hierarchy():
   """
   hier = Hierarchy('form')
 
-  if has_auxiliaries_p() or ch.get('noaux-fin-nf'):
+  if has_auxiliaries_p() or 'noaux-fin-nf' in ch:
 
     hier.add('nonfinite', 'form')
     hier.add('finite', 'form')
 
     for p in ('nf', 'fin'):
 
-      for subform in ch.get(p + '-subform'):
+      for subform in ch.get(p + '-subform',[]):
         if p == 'nf':
           sup = 'nonfinite'
         elif p == 'fin':
           sup = 'finite'
 
-        sub = subform.get('name')
+        sub = subform.get('name','')
         hier.add(sub, sup)
 
   if not hier.is_empty():
@@ -2565,7 +2565,7 @@ def customize_verbs():
 
   # Now create the lexical entries for all the defined verb types
   cases = ch.cases()
-  for verb in ch.get('verb'):
+  for verb in ch.get('verb',[]):
     name = get_name(verb)
     val = verb.get('valence')
 
@@ -2605,7 +2605,7 @@ def customize_verbs():
       lexicon.add(typedef)
 
 #######################################################
-def customize_users_auxtype(userstype, supertype):
+def customize_users_auxtype(aux, userstype, supertype):
   """
   A utility that declares the userstype as subtype of supertype and
   calls the functions that specify feature values on the type.
@@ -2614,8 +2614,8 @@ def customize_users_auxtype(userstype, supertype):
   supertype = userstypename in customize_auxiliaries
   """
 
-  customize_feature_values(ch[userstype], userstype, 'aux')
-  customize_feature_values(ch[userstype], userstype, 'auxcomplement')
+  customize_feature_values(aux, userstype, 'aux')
+  customize_feature_values(aux, userstype, 'auxcomplement')
   mylang.add(userstype + ' := ' + supertype + '.')
 
 
@@ -2657,12 +2657,12 @@ def customize_auxiliaries():
     wo = ch.get('word-order')
     vc = ch.get('v-cluster')
 
-    for aux in ch['aux']:
-      name = aux['name']
+    for aux in ch.get('aux',[]):
+      name = aux.get('name','')
       userstypename = name + '-aux-lex'
-      sem = aux['sem']
-      subj = aux['subj']
-      subjc = aux['subj_case'] #TODO: verify _-delimited key
+      sem = aux.get('sem','')
+      subj = aux.get('subj','')
+      subjc = aux.get('subj_case','') #TODO: verify _-delimited key
       cases = ch.cases()
       subjcase = canon_to_abbr(subjc, cases)
 
@@ -2713,7 +2713,7 @@ def customize_auxiliaries():
                       [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
 
-        customize_users_auxtype(userstypename, auxtypename)
+        customize_users_auxtype(aux, userstypename, auxtypename)
 
       elif comp == 'v':
         supertype = 'arg-comp-aux'
@@ -2776,7 +2776,7 @@ def customize_auxiliaries():
                [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
 
-        customize_users_auxtype(userstypename, auxtypename)
+        customize_users_auxtype(aux, userstypename, auxtypename)
 
       elif comp == 's':
         supertype = 's-comp-aux'
@@ -2815,14 +2815,15 @@ def customize_auxiliaries():
             '; on generation.'
           mylang.add_literal(comment)
 
-          typedef = auxtypename + ' := ' + supertype + ' & raise-sem-lex-item & \
+          typedef = auxtypename + ' := ' + supertype + \
+               ' & raise-sem-lex-item & \
                [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
 
-        customize_users_auxtype(userstypename, auxtypename)
+        customize_users_auxtype(aux, userstypename, auxtypename)
 
       # add stems to lexicon
-      for stem in aux['stem']:
+      for stem in aux.get('stem',[]):
         orth = stem.get('orth')
         typedef = TDLencode(orth) + ' := ' + userstypename + ' & \
                        [ STEM < "' + orth + '" > ].'
@@ -2854,7 +2855,7 @@ def customize_determiners():
   if 'det' in ch:
     lexicon.add_literal(';;; Determiners')
 
-  for det in ch['det']:
+  for det in ch.get('det',[]):
     name = get_name(det)
 
     stype = 'determiner-lex'
@@ -2864,7 +2865,7 @@ def customize_determiners():
 
     customize_feature_values(det, dtype, 'det')
 
-    for stem in det['stem']:
+    for stem in det.get('stem',[]):
       orth = stem.get('orth')
       pred = stem.get('pred')
       typedef = \
@@ -2921,7 +2922,7 @@ def is_ltow(name, namelist = []):
   for slotprefix in ('noun', 'verb', 'det', 'aux'):
     for slot in ch[slotprefix + '-slot']:
       opt = slot.get('opt')
-      for inp in slot['input']:
+      for inp in slot.get('input',[]):
         if name in inp.get('type'):
           if name in namelist:
             return False
@@ -2936,20 +2937,21 @@ def is_ltow(name, namelist = []):
 def back_to_word(name):
   for slotprefix in ('noun', 'verb', 'det', 'aux'):
     for slot in ch[slotprefix + '-slot']:
-      for const in slot.get('constraint',[]):
-        if const.get('type') == 'forces' and const.get('other-slot') == name:
+      for constraint in slot.get('constraint',[]):
+        if constraint.get('type') == 'forces' and \
+           constraint.get('other-slot') == name:
           return True
 
   return False
 
 def find_basetype(slot, root_dict, root_list=[]):
-  for slot in ch['slot']:
-    for inp in slot['input']:
-      inputtype = inp.get('type')
-      if inputtype in root_dict and inputtype not in root_list:
+  for inp in slot.get('input',[]):
+    inputtype = inp.get('type')
+    if inputtype in root_dict:
+      if inputtype not in root_list:
         root_list.append(inputtype)
-      else:
-        root_list = find_basetype(inputtype, root_dict, root_list)
+    else:
+      root_list = find_basetype(ch[inputtype], root_dict, root_list)
   return root_list
 
 def intermediate_rule(slot, root_dict, inp=None, depth=0, opt=False):
@@ -2961,7 +2963,7 @@ def intermediate_rule(slot, root_dict, inp=None, depth=0, opt=False):
     nonopt = True
     return nonopt, inp
 
-  for slot_input in slot['input']:
+  for slot_input in slot.get('input',[]):
     i = slot_input.get('type')
     if i not in root_dict: # if the type is another slot...
       mylang.add(get_name(ch[i]) + '-lex-rule := ' + inp + '.')
@@ -3016,8 +3018,8 @@ def customize_inflection():
 
 # root_dict = {}
   for lexprefix in ('noun', 'verb', 'det', 'aux'):
-    for index, lex in enumerate(ch[lexprefix]):
-      p = lexprefix + str(index)
+    for lex in ch[lexprefix]:
+      p = lex.full_key
       n = get_name(lex)
       if p in root_dict: # What does this do and when would it execute?
         continue
@@ -3122,8 +3124,7 @@ def customize_inflection():
 
   # Big main loop to iterate over all the slots
   for slotprefix in ('noun', 'verb', 'det','aux'):
-    key = slotprefix + '-slot'
-    for slot in ch[key]:
+    for slot in ch.get(slotprefix + '-slot',[]):
       order = slot.get('order')
       opt = slot.get('opt')
       name = get_name(slot)
@@ -3135,7 +3136,7 @@ def customize_inflection():
       basetype = []  # list of roots this affix can attach to
 
       # populate the basetype list with the appropriate values
-      root_list = find_basetype(slot.full_key, root_dict, [])
+      root_list = find_basetype(slot, root_dict, [])
       if has_auxiliaries_p():
         if alltypes(verb_types, root_list):
           root_list.append('verb')
@@ -3154,7 +3155,7 @@ def customize_inflection():
 
       # find the number of input values so we know if it has 1 or more
       inputs = 0
-      for inp in slot['input']:
+      for inp in slot.get('input',[]):
         inputs += 1
         i_type = inp.get('type')
 
@@ -3178,7 +3179,7 @@ def customize_inflection():
                 mylang.add(bt+' := '+inp+'.', section=sec_from_lex(bt))
           # If the single input is non-optional, make it the input value.
           else:
-            inp = get_name(i_type) + '-lex-rule'
+            inp = get_name(ch[i_type]) + '-lex-rule'
       # Multiple inputs
       else:
         # Build an intermediate rule
@@ -3235,9 +3236,9 @@ def customize_inflection():
       drp_head_obj = False
       drp_head_subj = False
       seen_case = False
-      for morph in slot['morph']:
+      for morph in slot.get('morph',[]):
         subrules += 1
-        morph_orth = morph.get('orth')
+        morph_orth = morph.get('orth','')
         if morph_orth == '':
           const = True
         if ch.get('obj-mark-drop') == 'obj-mark-drop-opt' and \
@@ -3248,7 +3249,7 @@ def customize_inflection():
            ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
           drp_head_subj = True
           const = True
-        for feat in morph['feat']:
+        for feat in morph.get('feat',[]):
           if feat.get('name') == 'case':
             seen_case = True
           if feat.get('name') == 'overt-arg':
@@ -3370,10 +3371,10 @@ def customize_inflection():
             add_irule(morphname + '-' + aff,
                       ltype,
                       aff,
-                      morph.get('orth'))
+                      morph.get('orth',''))
 
           # Apply the features to the lexical rule
-          customize_feature_values(morph, slotprefix, features, cases)
+          customize_feature_values(morph, ltype, slotprefix, features, cases)
 
         # Synthesize any necessary const case-marking rules
         if synth_cases:
@@ -3457,8 +3458,8 @@ def req(slot, basetype, reqs, reqd, tracker, reqtype):
   name = "T-" + get_name(ch[stype])
 
   seen_reqtype = False
-  for constraint in ch['constraint']:
-    if constraint.get('type') == reqtype:
+  for constraint in slot.get('constraint',[]):
+    if constraint.get('type','') == reqtype:
       if not seen_reqtype:
         seen_reqtype = True
 
@@ -3474,7 +3475,7 @@ def req(slot, basetype, reqs, reqd, tracker, reqtype):
           tracker = True
 
       # Keep track of which rules have been constrained
-      other = constraint.get('other-slot')
+      other = constraint.get('other-slot','')
       reqd.append(other)
       reqs[stype].append(other)
 
@@ -3497,7 +3498,7 @@ def add_single_tracks(reqs, reqd, reqtype):
   # Begin iterating over slots
   for slotprefix in ('noun', 'verb', 'det', 'aux'):
     for slot in ch[slotprefix + '-slot']:
-      name = get_name(ch[slot.full_key])
+      name = get_name(slot)
       tname = "T-"+name
       # We only need to do this for rules with TRACK constraints.
       if slot.full_key not in reqs:
@@ -3523,7 +3524,7 @@ def add_single_tracks(reqs, reqd, reqtype):
           # rule, but has TRACK constraints for other rules, we need to
           # copy up the TRACK feature corresponding to the outer-loop
           # rule.
-          elif s2.full_key in reqs or s2.full_key in reqd:
+          elif slot2.full_key in reqs or slot2.full_key in reqd:
             mylang.add(name2+'-lex-rule := [TRACK.'+tname+' #track, DTR.TRACK.'+tname+' #track].')
 
 def copy_all_tracks(reqd):
@@ -3549,10 +3550,10 @@ def neginflrule(slot, features):
   # iter_begin(), and so the prefix is already set appropriately.
   # Check whether this is so when using this function in new contexts.
   result = False
-  for morph in slot['morph']:
-    for feat in morph['feat']:
-      name = feat.get('name')
-      value = feat.get('value')
+  for morph in slot.get('morph',[]):
+    for feat in morph.get('feat',[]):
+      name = feat.get('name','')
+      value = feat.get('value','')
       if (name == 'negation' and value == 'plus'):
         result = True
 
@@ -3580,9 +3581,9 @@ def customize_test_sentences(grammar_path):
         s.write('   (setf *last-parses* \'(')
         if 'sentence' not in ch:
           s.write('""')
-        for sentence in ch['sentence']:
-          s.write('"' + sentence.get('orth') + '" ')
-          ts.write(sentence.get('orth') + '\n')
+        for sentence in ch.get('sentence',[]):
+          s.write('"' + sentence.get('orth','') + '" ')
+          ts.write(sentence.get('orth','') + '\n')
         s.write(')))\n')
       else:
         s.write(l + '\n')
