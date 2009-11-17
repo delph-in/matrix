@@ -1475,11 +1475,12 @@ class ChoicesFile:
     """
     for aux in self['aux']:
       complementform = aux.get('compform')
-      if aux.get('compfeature'):
-        for cf in aux['compfeature']:
-          self.convert_key('compvalue', 'value', key_prefix=cf.full_key)
-        aux['compfeature'][-1]['name'] = 'form'
-        aux['compfeature'][-1]['value'] = complementform
+      for cf in aux.get('compfeature',[]):
+        self.convert_key('compvalue', 'value', key_prefix=cf.full_key)
+      index = str(len(self[aux.full_key + '_compfeature']) + 1)
+      self[aux.full_key + '_compfeature' + index + '_name'] = 'form'
+      self[aux.full_key + '_compfeature' + index + '_value'] = complementform
+      self.delete(aux.full_key + '_compform', prune=True)
 
   def convert_17_to_18(self):
     """
