@@ -3350,8 +3350,12 @@ def customize_inflection():
       # Specify for subtypes, if any
       if subrules > 0:
         for morphcount, morph in enumerate(slot['morph']):
-          morphname = get_name(morph) or name + '-morph' + str(morphcount)
-          morphname = morphname.replace('_', '-')
+          morphname = morph.get('name')
+          if not morphname:
+            if name:
+              morphname = name + '-morph' + str(morphcount+1)
+            else:
+              morphname = get_name(morph)
 
           # The lexical type and the super-type names
           ltype = morphname + '-lex-rule'

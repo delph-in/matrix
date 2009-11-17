@@ -78,6 +78,8 @@ class ChoicesFile:
         (key, value) = line.split('=',1)
         if key == 'section':
             continue
+        if key[0:-1] == 'sentence': # sfd BAD BAD BAD
+          key += '_orth'            # sfd BAD BAD BAD
         choices = self.__set_variable(choices,
                                       self.split_variable_key(key),
                                       value,
@@ -258,6 +260,8 @@ class ChoicesFile:
       self.convert_16_to_17()
     if version < 18:
       self.convert_17_to_18()
+    if version < 19:
+      self.convert_18_to_19()
     # As we get more versions, add more version-conversion methods, and:
     # if version < N:
     #   self.convert_N-1_to_N
@@ -899,7 +903,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 18
+    return 19
 
   def convert_value(self, key, old, new):
     if key in self and self[key] == old:
@@ -1513,3 +1517,10 @@ class ChoicesFile:
       self[pref + '_morph1_feat1_value'] = 'plus'
       self[pref + '_opt'] = 'on'
 
+  def convert_18_to_19(self):
+    """
+    Convert the old test sentence choices to the new iterator format.
+    """
+    return
+    self.convert_key('sentence1', 'sentence1_orth')
+    self.convert_key('sentence2', 'sentence2_orth')
