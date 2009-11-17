@@ -622,7 +622,7 @@ def customize_direct_inverse():
   mylang.add(supertype + ' := canonical-synsem.')
 
   scale_len = direct_inverse_scale_len()
-  for i in range(scale_len - 2):
+  for i in range(scale_len - 1):
     values = {}  # for each feature, a set of values
 
     # get the features on the first scale entry in this range

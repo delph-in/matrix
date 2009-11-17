@@ -89,7 +89,7 @@ class ChoicesFile:
 
     return choices
 
-  var_delim_re = re.compile(r'(\d+)?(?:_|$)')
+  var_delim_re = re.compile(r'(\d+)(?:_|$)')
   def split_variable_key(self, key):
     """
     Split a compound variable key into a list of its component parts.
@@ -1348,13 +1348,13 @@ class ChoicesFile:
     self.convert_key('non-future', 'nonfuture') 
 
     for i, aux in enumerate(self['aux']):
-      v = aux['nonfincompform']
+      v = aux.get('nonfincompform', '')
       k = 'nf-subform' + str(i+1) + '_name'
       self.convert_value(aux.full_key + '_compform', 'nonfinite', v)
 
       if 'nonfincompform' in self:
         self[k] = v
-      self.delete('nonfincompform')
+        self.delete('nonfincompform')
 
   def convert_10_to_11(self):
     """
@@ -1433,11 +1433,11 @@ class ChoicesFile:
         constraints = []
 
         for contype in ('forces', 'req', 'disreq'):
-          for ct in slot[contype]:
+          for ct in slot.get(contype, []):
             constraints += [ [ contype, ct.get('type') ] ]
             self.delete(ct.full_key + '_type')
 
-        for constraint in slot['constraint']:
+        for constraint in slot.get('constraint', []):
           for c in constraints:
             constraint['type'] = c[0]
             constraint['other-slot'] = c[1]
@@ -1455,14 +1455,15 @@ class ChoicesFile:
     mvalues = [mark['name'] for mark in self['mark']]
 
     if len(mvalues) != 0:
-      feature = self['feature'][-1]
-      feature['name'] = 'mark'
-      feature['type'] = 'head'
-
-      for value in feature['value']:
-        for mv in mvalues:
-          value['name'] = mv
-          value['supertype']['name'] = 'mark'
+      if 'feature' in self:
+        feature = self['feature'][-1]
+        feature['name'] = 'mark'
+        feature['type'] = 'head'
+  
+        for value in feature['value']:
+          for mv in mvalues:
+            value['name'] = mv
+            value['supertype']['name'] = 'mark'
 
   def convert_16_to_17(self):
     """
@@ -1472,10 +1473,11 @@ class ChoicesFile:
     """
     for aux in self['aux']:
       complementform = aux.get('compform')
-      for cf in aux['compfeature']:
-        self.convert_key('compvalue', 'value', key_prefix=cf.full_key)
-      aux['compfeature'][-1]['name'] = 'form'
-      aux['compfeature'][-1]['value'] = complementform
+      if aux.get('compfeature'):
+        for cf in aux['compfeature']:
+          self.convert_key('compvalue', 'value', key_prefix=cf.full_key)
+        aux['compfeature'][-1]['name'] = 'form'
+        aux['compfeature'][-1]['value'] = complementform
 
   def convert_17_to_18(self):
     """
@@ -1501,7 +1503,7 @@ class ChoicesFile:
         self[pref + '_input1_type'] = 'aux'
       if self.get('q-infl-type') == 'aux-main':
         self[pref + '_input1_type'] = 'verb'
-      if self.is_set('ques-aff-orth'):
+      if 'ques-aff-orth' in self:
         self[pref + '_morph1_orth'] = self.get('ques-aff-orth')
       self[pref + '_name'] = 'q-infl'
       self[pref + '_morph1_feat1_name'] = 'question'
