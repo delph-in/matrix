@@ -28,6 +28,9 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         self.assertEqual(c.choices, {'abc':5, 'def':[{}, {'ghi':2}]})
         c['def1_ghi'] = 1
         self.assertEqual(c.choices, {'abc':5, 'def':[{'ghi':1}, {'ghi':2}]})
+        c = customize.choices.ChoicesFile() # no file loaded
+        c['rst_uvw'] = 2
+        self.assertEqual(c.choices, {'rst_uvw': 2})
 
     def test_del(self):
         c = customize.choices.ChoicesFile() # no file loaded
@@ -86,13 +89,13 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         self.assertEqual(c.split_variable_key('abc'),
                          ['abc'])
         self.assertEqual(c.split_variable_key('abc_def'),
-                         ['abc', 'def'])
+                         ['abc_def'])
         self.assertEqual(c.split_variable_key('ab-c_d3ef'),
-                         ['ab-c', 'd3ef'])
+                         ['ab-c_d3ef'])
         self.assertEqual(c.split_variable_key('abc_def1_ghi'),
-                         ['abc', 'def', '1', 'ghi'])
+                         ['abc_def', '1', 'ghi'])
         self.assertEqual(c.split_variable_key('abc_def1'),
-                         ['abc', 'def', '1'])
+                         ['abc_def', '1'])
         self.assertEqual(c.split_variable_key('abc32_def1_ghi'),
                          ['abc', '32', 'def', '1', 'ghi'])
 

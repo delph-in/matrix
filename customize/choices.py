@@ -209,9 +209,9 @@ class ChoicesFile:
       return
     for i, c in enumerate(self[key]):
       c_type = type(c)
-      if type(c) is ChoiceDict:
+      if c_type is ChoiceDict:
         c.full_key = key + str(i + 1)
-      elif type(c) is ChoiceList:
+      elif c_type is ChoiceList:
         c.full_key = key + str(c)
       else:
         continue
@@ -262,6 +262,8 @@ class ChoicesFile:
     # if version < N:
     #   self.convert_N-1_to_N
 
+    # reset the full_keys to be safe
+    [self.__reset_full_keys(key) for key in self]
 
   # Return the keys for the choices dict
   def keys(self):
@@ -1316,8 +1318,8 @@ class ChoicesFile:
     # use the name of the feature.
     for feature in self['feature']:
       fname = feature['name']
-      for value in feature['value']:
-        for st in value['supertype']:
+      for value in feature.get('value',[]):
+        for st in value.get('supertype',[]):
           self.convert_value(st.full_key + '_name', 'root', fname)
 
   def convert_8_to_9(self):
@@ -1329,8 +1331,8 @@ class ChoicesFile:
     # in slot feature values
     for lextype in ['aux','det','verb','noun']:
       for slot in self[lextype + '-slot']:
-        for morph in slot['morph']:
-          for feat in morph['feat']:
+        for morph in slot.get('morph',[]):
+          for feat in morph.get('feat',[]):
             self.convert_value(feat.full_key + '_value','fin','finite')
             self.convert_value(feat.full_key + '_value','nf','nonfinite')
 
@@ -1386,8 +1388,8 @@ class ChoicesFile:
     """
     for lextype in ['aux','det','verb','noun']:
       for lt in self[lextype + '-slot']:
-        for morph in lt['morph']:
-          for feat in morph['feat']:
+        for morph in lt.get('morph',[]):
+          for feat in morph.get('feat',[]):
             if feat['name'] == 'negation':
               self.convert_value(feat.full_key + 'value','+','plus')
 
@@ -1429,7 +1431,7 @@ class ChoicesFile:
     """
 
     for slotprefix in ('noun', 'verb', 'det', 'aux'):
-      for slot in self[slotprefix + '-slot']:
+      for slot in self.get(slotprefix + '-slot',[]):
         constraints = []
 
         for contype in ('forces', 'req', 'disreq'):
