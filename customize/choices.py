@@ -5,7 +5,7 @@
 
 import re
 import sys
-from customize.util.misc import safe_int
+from util.misc import safe_int
 
 ######################################################################
 # globals
@@ -325,9 +325,9 @@ class ChoicesFile:
     result = False
 
     for adp in self.get('adp'):
-      opt = adp['opt']
+      opt = adp.get('opt')
       for feat in adp['feat']:
-        result |= result or (self.has_case(feat, case) and \
+        result = result or (self.has_case(feat, case) and \
                             (opt or not check_opt))
 
     return result

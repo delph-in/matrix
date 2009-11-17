@@ -13,8 +13,8 @@ import zipfile
 import sys
 import re
 
-from customize.choices import ChoicesFile
-from customize.utils import TDLencode
+from choices import ChoicesFile
+from utils import TDLencode
 
 ######################################################################
 # globals
@@ -34,7 +34,7 @@ roots = None
 # Utility functions
 
 def get_name(item):
-    return item.get('name', None) or item.full_key
+  return item.get('name', None) or item.full_key
 
 # ERB 2006-09-16 There are properties which are derived from the
 # choices file as a whole which various modules will want to know about.
@@ -621,9 +621,8 @@ def customize_direct_inverse():
   supertype = 'dir-inv-scale'
   mylang.add(supertype + ' := canonical-synsem.')
 
-
   scale_len = direct_inverse_scale_len()
-  for i in range(0, scale_len - 1):
+  for i in range(scale_len - 2):
     values = {}  # for each feature, a set of values
 
     # get the features on the first scale entry in this range
@@ -658,11 +657,12 @@ def customize_direct_inverse():
 
     # rest of the scale
     values = {}
-    for feat in ch.get('scale')[i+1:].get('feat', []):
-      name = feat.get('name','')
-      if name not in values:
-        values[name] = set()
-      values[name].add(feat.get('value',''))
+    for scale in ch.get('scale')[i+1:]:
+      for feat in scale.get('feat', []):
+        name = feat.get('name','')
+        if name not in values:
+          values[name] = set()
+        values[name].add(feat.get('value',''))
 
     # create the right type in the pair
     type = 'dir-inv-non-' + str(i+1)
@@ -890,7 +890,7 @@ def init_situation_hierarchy():
   for situation in ch.get('situation',[]):
     name = situation.get('name')
     for supertype in situation.get('supertype',[]):
-      supername = supername.get('name')
+      supername = supertype.get('name')
       hier.add(name, supername)
 
   if not hier.is_empty():
@@ -2928,7 +2928,7 @@ def is_ltow(name, namelist = []):
             return False
           if opt:
             namelist.append(name)
-            return is_ltow(slotprefix.full_key, namelist)
+            return is_ltow(slot.full_key, namelist)
           else:
             return False
 
@@ -3220,16 +3220,23 @@ def customize_inflection():
       # element of the paradigm should be a constant-lex-rule, to
       # count up the number of subrules, and to see if any of the
       # morphemes mark case.
-      # SS 2009-06-07 added check to see if a const rule which changes the COMPS of the mother to OPT -
-      # is needed.  The code assumes that a given slot will have the same co-occurrence restrictions
-      # for all morphemes. i.e. if one morpheme is not permitted to appear with an overt argument
-      # but is required with a dropped argument, all the other morphemes in this slot will have the
-      # same restrictions.  This is necessary because the const rule that
-      # generated will change the value of the COMPS of the mother OPT - for all items which are not
-      # marked by one of morphemes in this slot.
-      # SS 2009-06-07 Now adding capability for when the marker is not permitted with a dropped
-      # argument and is required (or optional )overt argument.  This is done by increasing the subrules
-      # count just like above.  The subrules created are different.
+      #
+      # SS 2009-06-07 added check to see if a const rule which changes
+      # the COMPS of the mother to OPT - is needed.  The code assumes
+      # that a given slot will have the same co-occurrence
+      # restrictions for all morphemes. i.e. if one morpheme is not
+      # permitted to appear with an overt argument but is required
+      # with a dropped argument, all the other morphemes in this slot
+      # will have the same restrictions.  This is necessary because
+      # the const rule that generated will change the value of the
+      # COMPS of the mother OPT - for all items which are not marked
+      # by one of morphemes in this slot.
+      #
+      # SS 2009-06-07 Now adding capability for when the marker is not
+      # permitted with a dropped argument and is required (or
+      # optional) overt argument.  This is done by increasing the
+      # subrules count just like above.  The subrules created are
+      # different.
 
       opt_head_obj = False
       opt_head_subj = False
