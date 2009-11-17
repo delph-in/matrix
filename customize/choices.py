@@ -143,7 +143,8 @@ class ChoicesFile:
       choices[var - 1] = self.__set_variable(choices[var - 1],
                                              keys,
                                              value,
-                                             allow_overwrite)
+                                             allow_overwrite,
+                                             key_prefix + str(var))
     except ValueError:
       new_key_prefix = '_'.join([k for k in [key_prefix, var] if k])
       choices[var] = self.__set_variable(choices.get(var, None),
@@ -220,46 +221,46 @@ class ChoicesFile:
   ### Up-revisioning handler
 
   def uprev(self):
-      version = self.get('version', 0)
-      if version < 1:
-        self.convert_0_to_1()
-      if version < 2:
-        self.convert_1_to_2()
-      if version < 3:
-        self.convert_2_to_3()
-      if version < 4:
-        self.convert_3_to_4()
-      if version < 5:
-        self.convert_4_to_5()
-      if version < 6:
-        self.convert_5_to_6()
-      if version < 7:
-        self.convert_6_to_7()
-      if version < 8:
-        self.convert_7_to_8()
-      if version < 9:
-        self.convert_8_to_9()
-      if version < 10:
-        self.convert_9_to_10()
-      if version < 11:
-        self.convert_10_to_11()
-      if version < 12:
-        self.convert_11_to_12()
-      if version < 13:
-        self.convert_12_to_13()
-      if version < 14:
-        self.convert_13_to_14()
-      if version < 15:
-        self.convert_14_to_15()
-      if version < 16:
-        self.convert_15_to_16()
-      if version < 17:
-        self.convert_16_to_17()
-      if version < 18:
-        self.convert_17_to_18()
-      # As we get more versions, add more version-conversion methods, and:
-      # if version < N:
-      #   self.convert_N-1_to_N
+    version = int(self.get('version', '0'))
+    if version < 1:
+      self.convert_0_to_1()
+    if version < 2:
+      self.convert_1_to_2()
+    if version < 3:
+      self.convert_2_to_3()
+    if version < 4:
+      self.convert_3_to_4()
+    if version < 5:
+      self.convert_4_to_5()
+    if version < 6:
+      self.convert_5_to_6()
+    if version < 7:
+      self.convert_6_to_7()
+    if version < 8:
+      self.convert_7_to_8()
+    if version < 9:
+      self.convert_8_to_9()
+    if version < 10:
+      self.convert_9_to_10()
+    if version < 11:
+      self.convert_10_to_11()
+    if version < 12:
+      self.convert_11_to_12()
+    if version < 13:
+      self.convert_12_to_13()
+    if version < 14:
+      self.convert_13_to_14()
+    if version < 15:
+      self.convert_14_to_15()
+    if version < 16:
+      self.convert_15_to_16()
+    if version < 17:
+      self.convert_16_to_17()
+    if version < 18:
+      self.convert_17_to_18()
+    # As we get more versions, add more version-conversion methods, and:
+    # if version < N:
+    #   self.convert_N-1_to_N
 
 
   # Return the keys for the choices dict

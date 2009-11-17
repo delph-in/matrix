@@ -3351,6 +3351,7 @@ def customize_inflection():
       if subrules > 0:
         for morphcount, morph in enumerate(slot['morph']):
           morphname = get_name(morph) or name + '-morph' + str(morphcount)
+          morphname = morphname.replace('_', '-')
 
           # The lexical type and the super-type names
           ltype = morphname + '-lex-rule'
