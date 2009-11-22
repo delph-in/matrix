@@ -394,9 +394,9 @@ function fill_regex(select_name, pattern, nameOnly)
 
   pattern = '^' + pattern + '$';
 
-  var values_texts = regex_collect(select_name, pattern, nameOnly);
-  var values = values_texts[0];
-  var texts = values_texts[1];
+  var vn_fn = regex_collect(select_name, pattern, nameOnly);
+  var values = vn_fn[0];
+  var texts = vn_fn[1];
    
   insert_temp_options(select, values, texts);
 
@@ -573,10 +573,15 @@ function fill_types(select_name, type_cat, nameOnly)
   //collect options from the type fields on the questionnaire
   var pattern = '^'  + '(' + type_cat + ')' + '[0-9]+_name' + '$';
 
-  var values_texts = regex_collect(select_name, pattern, nameOnly);
-  var values = values_texts[0] + lex_ext;
-  var texts = values_texts[1]+ lex_ext;
-
+  //FIX not working - output is "undefined" twice or last one on page twice
+  //something is wrong with write to or write from array??
+  var vn_fn = regex_collect(select_name, pattern, nameOnly);
+  values = new Array;
+  texts = new Array;
+  for (var i = 0; i < vn_fn.length; i++) {
+      values[i] = vn_fn[i][0] + lex_ext;
+      texts[i] = vn_fn[i][1]+ lex_ext;
+  }
 
   // Collect options from the types() array in choices
   // Note that this assumes a strict naming convention for 
@@ -584,11 +589,11 @@ function fill_types(select_name, type_cat, nameOnly)
   // in the user defined names.
   for (var i = 0; i < types.length; i++) {
       var t = types[i].split(':');
-      //FIX 11/11 - not working, results are a single letter
+
       if (t[1] == type_cat) { 
-	  if (texts.indexOf(t[0]) == -1) {
-	      values.length = t[0];
-	      texts.length = t[0];
+	  if (texts.indexOf(t[0]) == -1) { //if type is not in the select list already
+	      values[values.length] = t[0];
+	      texts[texts.length] = t[0];
 	  }
       }
   }
