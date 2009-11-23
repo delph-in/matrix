@@ -773,12 +773,10 @@ def init_other_hierarchies():
   for feature in ch.get('feature',[]):
     feat = feature.get('name','')
     type = feature.get('type','')
-
     hier = Hierarchy(feat, type)
 
     for value in feature.get('value', []):
       val = value.get('name')
-
       for supertype in value.get('supertype', []):
         stype = supertype.get('name')
         hier.add(val, stype)
@@ -792,7 +790,6 @@ def customize_other_features():
     h = hierarchies[name]
     feat = h.name
     type = h.type
-
     # if this hierarchy isn't handled elsewhere, handle it here
     if feat not in ['case', 'person', 'number', 'pernum', 'gender',
                     'form', 'tense', 'aspect', 'situation']:
@@ -2432,7 +2429,7 @@ def init_form_hierarchy():
         elif p == 'fin':
           sup = 'finite'
 
-        sub = subform.get('name','')
+        sub = subform.get('name')
         hier.add(sub, sup)
 
   if not hier.is_empty():
@@ -2812,7 +2809,7 @@ def customize_auxiliaries():
   #   here and elsewhere in the loop
           comment = \
             '; Better say [ AUX - ] on complement here, or we\'ll spin' + \
-            '; on generation.'
+            ' on generation.'
           mylang.add_literal(comment)
 
           typedef = auxtypename + ' := ' + supertype + \

@@ -196,6 +196,8 @@ class ChoicesFile:
         del choices[keys[0]]
 
   def delete(self, key, prune=False):
+    if key not in self:
+        return
     # integers have an offset of -1 for list indices
     keys = [safe_int(k, offset=-1) for k in self.split_variable_key(key)]
     self.__delete(self.choices, keys, prune)
@@ -288,6 +290,8 @@ class ChoicesFile:
     """
     Convert choices file lines before they are parsed.
     """
+    if self.version < 4:
+      (key, value) = self.preparse_convert_3_to_4(key, value)
     if self.version < 19:
       (key, value) = self.preparse_convert_18_to_19(key, value)
     # If future versions require a choices file line to be converted
@@ -731,7 +735,7 @@ class ChoicesFile:
   def forms(self):
     forms = []
 
-    if self.get('has-aux') == 'yes' or self.get('noaux-fin-nf') == 'no':
+    if self.get('has-aux') == 'yes' or self.get('noaux-fin-nf') == 'on':
       forms += [ ['finite'], ['nonfinite'] ]
       for p in ['nf', 'fin']:
         for p_sf in self.get(p + '-subform'):
@@ -1176,29 +1180,38 @@ class ChoicesFile:
     self.delete('obj-adp-orth')
     self.delete('obj-adp-order')
 
+  def preparse_convert_3_to_4(self, key, value):
+    if key in ('noun1', 'noun2'):
+      key += '_orth'
+    elif key.startswith('iverb'):
+      # for iverb-pred or iverb-non-finite
+      key = key.replace('iverb-','verb1_', 1)
+      # this happens only if previous did nothing (i.e. key = "iverb")
+      key = key.replace('iverb', 'verb1_orth', 1)
+    elif key.startswith('tverb'):
+      key = key.replace('tverb-', 'verb2_', 1)
+      key = key.replace('tverb', 'verb2_orth', 1)
+    elif key == 'det1':
+      key = 'det1_orth'
+    elif key == 'det1pred':
+      key = 'det1_pred'
+    elif key == 'det2':
+      key = 'det2_orth'
+    elif key == 'det2pred':
+      key = 'det2_pred'
+
+    return (key, value)
+
   def convert_3_to_4(self):
     # Added a fuller implementation of case marking on core arguments,
     # so convert the old case-marking adposition stuff to the new
-    # choices
-    self.convert_key('noun1', 'noun1_orth')
-    self.convert_key('noun2', 'noun2_orth')
-
-    self.convert_key('iverb', 'verb1_orth')
-    self.convert_key('iverb-pred', 'verb1_pred')
-    self.convert_key('iverb-non-finite', 'verb1_non-finite')
+    # choices. Converting keys like noun1=cat is in
+    # preparse_convert_3_to_4
     if self.get('verb1_orth'):
       self['verb1_valence'] = 'intrans'
 
-    self.convert_key('tverb', 'verb2_orth')
-    self.convert_key('tverb-pred', 'verb2_pred')
-    self.convert_key('tverb-non-finite', 'verb2_non-finite')
     if self.get('verb2_orth'):
       self['verb2_valence'] = 'trans'
-
-    self.convert_key('det1', 'det1_orth')
-    self.convert_key('det1pred', 'det1_pred')
-    self.convert_key('det2', 'det2_orth')
-    self.convert_key('det2pred', 'det2_pred')
 
   def convert_4_to_5(self):
     # An even fuller implementation of case marking, with some of the
@@ -1357,9 +1370,9 @@ class ChoicesFile:
   def convert_8_to_9(self):
     # finite and nonfinite feature value name changes
     # in aux complement form values
-    for lt in self['aux']:
-      self.convert_value('compform','fin','finite')
-      self.convert_value('compform', 'nf', 'nonfinite')
+    for aux in self['aux']:
+      self.convert_value(aux.full_key + '_compform','fin','finite')
+      self.convert_value(aux.full_key + '_compform', 'nf', 'nonfinite')
     # in slot feature values
     for lextype in ['aux','det','verb','noun']:
       for slot in self[lextype + '-slot']:
@@ -1386,9 +1399,9 @@ class ChoicesFile:
       k = 'nf-subform' + str(i+1) + '_name'
       self.convert_value(aux.full_key + '_compform', 'nonfinite', v)
 
-      if 'nonfincompform' in self:
+      if 'nonfincompform' in aux:
         self[k] = v
-        self.delete('nonfincompform')
+        self.delete(aux.full_key + '_nonfincompform', prune=True)
 
   def convert_10_to_11(self):
     """
@@ -1423,7 +1436,7 @@ class ChoicesFile:
         for morph in lt.get('morph',[]):
           for feat in morph.get('feat',[]):
             if feat['name'] == 'negation':
-              self.convert_value(feat.full_key + 'value','+','plus')
+              self.convert_value(feat.full_key + '_value','+','plus')
 
   def convert_13_to_14(self):
     """
@@ -1488,16 +1501,18 @@ class ChoicesFile:
     """
     mvalues = [mark['name'] for mark in self['mark']]
 
-    if len(mvalues) != 0:
-      if 'feature' in self:
-        feature = self['feature'][-1]
-        feature['name'] = 'mark'
-        feature['type'] = 'head'
-  
-        for value in feature['value']:
-          for mv in mvalues:
-            value['name'] = mv
-            value['supertype']['name'] = 'mark'
+    if len(mvalues) == 0:
+      return
+    next_feat_index = len(self.get('feature',[])) + 1
+    feat_key = 'feature%d' % (next_feat_index)
+
+    self[feat_key + '_name'] = 'mark'
+    self[feat_key + '_type'] = 'head'
+
+    for i, mv in enumerate(mvalues):
+      val_key = '_value%d' % (i+1)
+      self[feat_key + val_key + '_name'] = mv
+      self[feat_key + val_key + '_supertype1_name'] = 'mark'
 
   def convert_16_to_17(self):
     """
@@ -1509,9 +1524,10 @@ class ChoicesFile:
       complementform = aux.get('compform')
       for cf in aux.get('compfeature',[]):
         self.convert_key('compvalue', 'value', key_prefix=cf.full_key)
-      index = str(len(self[aux.full_key + '_compfeature']) + 1)
-      self[aux.full_key + '_compfeature' + index + '_name'] = 'form'
-      self[aux.full_key + '_compfeature' + index + '_value'] = complementform
+      index = str(len(aux.get('compfeature', [])) + 1)
+      new_key = aux.full_key + '_compfeature' + index
+      self[new_key + '_name'] = 'form'
+      self[new_key + '_value'] = complementform
       self.delete(aux.full_key + '_compform', prune=True)
 
   def convert_17_to_18(self):
