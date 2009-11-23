@@ -3467,7 +3467,7 @@ def customize_inflection():
 
 def req(slot, basetype, reqs, reqd, tracker, reqtype):
   stype = slot.full_key # slot type
-  name = "T-" + get_name(ch[stype])
+  name = "T-" + get_name(slot)
 
   seen_reqtype = False
   for constraint in slot.get('constraint',[]):

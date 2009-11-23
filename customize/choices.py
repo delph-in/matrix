@@ -27,14 +27,14 @@ class ChoicesFileParseError(Exception):
 # namesake datatype.
 
 class ChoiceCategory:
-    def __init__(self, full_key=None):
+  def __init__(self, full_key=None):
         self.full_key = full_key
 
 class ChoiceDict(ChoiceCategory, dict):
-    pass
+  pass
 
 class ChoiceList(ChoiceCategory, list):
-    pass
+  pass
 
 ######################################################################
 # ChoicesFile is a class that wraps the choices file, a list of
@@ -57,8 +57,10 @@ class ChoicesFile:
         if type(choices_file) == str:
           f = open(choices_file, 'r')
         f.seek(0)
-        self.choices = self.parse_choices(f.readlines())
-        self.uprev()
+        lines = f.readlines()
+        self.version = self.get_version(lines)
+        self.choices = self.parse_choices(lines)
+        self.postparse_uprev()
         if type(choices_file) == str:
           f.close()
       except IOError:
@@ -66,6 +68,17 @@ class ChoicesFile:
 
   ############################################################################
   ### Choices file parsing functions
+
+  def get_version(self, choice_lines):
+    """
+    Return the version number from the choices file, or 0 if there was none.
+    """
+    version = 0
+    for line in [l.strip() for l in choice_lines if l.strip() != '']:
+      (key, value) = line.split('=',1)
+      if key == 'version':
+         version = int(value)
+    return version
 
   def parse_choices(self, choice_lines):
     """
@@ -76,10 +89,11 @@ class ChoicesFile:
     for line in [l.strip() for l in choice_lines if l.strip() != '']:
       try:
         (key, value) = line.split('=',1)
-        if key == 'section':
+        if key in ('section', 'version'):
             continue
-        if key[0:-1] == 'sentence': # sfd BAD BAD BAD
-          key += '_orth'            # sfd BAD BAD BAD
+        # some key-values cannot be parsed by the current system, so
+        # we need to handle these first
+        (key, value) = self.preparse_uprev(key, value)
         choices = self.__set_variable(choices,
                                       self.split_variable_key(key),
                                       value,
@@ -91,6 +105,8 @@ class ChoicesFile:
 
     return choices
 
+  # use the following re if keys like abc_def should be split:
+  #var_delim_re = re.compile(r'(\d+)?(?:_|$)')
   var_delim_re = re.compile(r'(\d+)(?:_|$)')
   def split_variable_key(self, key):
     """
@@ -143,7 +159,7 @@ class ChoicesFile:
         choices += [ChoiceDict(full_key=key_prefix + str(count+i+1))
                     for i in range(var - count)]
       choices[var - 1] = self.__set_variable(choices[var - 1],
-                                             keys,
+                                           keys,
                                              value,
                                              allow_overwrite,
                                              key_prefix + str(var))
@@ -222,52 +238,64 @@ class ChoicesFile:
   ############################################################################
   ### Up-revisioning handler
 
-  def uprev(self):
-    version = int(self.get('version', '0'))
-    if version < 1:
+  def postparse_uprev(self):
+    if self.version < 1:
       self.convert_0_to_1()
-    if version < 2:
+    if self.version < 2:
       self.convert_1_to_2()
-    if version < 3:
+    if self.version < 3:
       self.convert_2_to_3()
-    if version < 4:
+    if self.version < 4:
       self.convert_3_to_4()
-    if version < 5:
+    if self.version < 5:
       self.convert_4_to_5()
-    if version < 6:
+    if self.version < 6:
       self.convert_5_to_6()
-    if version < 7:
+    if self.version < 7:
       self.convert_6_to_7()
-    if version < 8:
+    if self.version < 8:
       self.convert_7_to_8()
-    if version < 9:
+    if self.version < 9:
       self.convert_8_to_9()
-    if version < 10:
+    if self.version < 10:
       self.convert_9_to_10()
-    if version < 11:
+    if self.version < 11:
       self.convert_10_to_11()
-    if version < 12:
+    if self.version < 12:
       self.convert_11_to_12()
-    if version < 13:
+    if self.version < 13:
       self.convert_12_to_13()
-    if version < 14:
+    if self.version < 14:
       self.convert_13_to_14()
-    if version < 15:
+    if self.version < 15:
       self.convert_14_to_15()
-    if version < 16:
+    if self.version < 16:
       self.convert_15_to_16()
-    if version < 17:
+    if self.version < 17:
       self.convert_16_to_17()
-    if version < 18:
+    if self.version < 18:
       self.convert_17_to_18()
-    if version < 19:
+    if self.version < 19:
       self.convert_18_to_19()
     # As we get more versions, add more version-conversion methods, and:
-    # if version < N:
+    # if self.version < N:
     #   self.convert_N-1_to_N
 
     # reset the full_keys to be safe
     [self.__reset_full_keys(key) for key in self]
+
+  def preparse_uprev(self, key, value):
+    """
+    Convert choices file lines before they are parsed.
+    """
+    if self.version < 19:
+      (key, value) = self.preparse_convert_18_to_19(key, value)
+    # If future versions require a choices file line to be converted
+    # before it is parsed, but the appropriate method here:
+    # if self.version < N
+    #   self.preparse_convert_N-1_to_N(key, value)
+
+    return (key, value)
 
   # Return the keys for the choices dict
   def keys(self):
@@ -1441,12 +1469,12 @@ class ChoicesFile:
         for contype in ('forces', 'req', 'disreq'):
           for ct in slot.get(contype, []):
             constraints += [ [ contype, ct.get('type') ] ]
-            self.delete(ct.full_key + '_type')
+            self.delete(ct.full_key + '_type', prune=True)
 
-        for constraint in slot.get('constraint', []):
-          for c in constraints:
-            constraint['type'] = c[0]
-            constraint['other-slot'] = c[1]
+        for i, c in enumerate(constraints):
+          constraint_key = slot.full_key + '_constraint%d' % (i+1)
+          self[constraint_key + '_type'] = c[0]
+          self[constraint_key + '_other-slot'] = c[1]
 
   def convert_15_to_16(self):
     """
@@ -1517,10 +1545,17 @@ class ChoicesFile:
       self[pref + '_morph1_feat1_value'] = 'plus'
       self[pref + '_opt'] = 'on'
 
-  def convert_18_to_19(self):
+  def preparse_convert_18_to_19(self, key, value):
     """
     Convert the old test sentence choices to the new iterator format.
     """
-    return
-    self.convert_key('sentence1', 'sentence1_orth')
-    self.convert_key('sentence2', 'sentence2_orth')
+    if key.startswith('sentence'):
+      key += '_orth'
+    return (key, value)
+
+  def convert_18_to_19(self):
+    """
+    Do nothing here. All conversion for version 19 is in the method
+    preparse_convert_18_to_19(). This stub is here for record keeping.
+    """
+    pass # version 19 only requires preparse conversion
