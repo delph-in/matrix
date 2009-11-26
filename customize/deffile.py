@@ -532,7 +532,7 @@ class MatrixDefFile:
       elif word[0] == 'Check':
         (vn, fn, bf, af) = word[1:]
         vn = prefix + vn
-        checked = choices.is_set_full(vn)
+        checked = choices.get(vn)
         html += html_input(errors, 'checkbox', vn, '', checked,
                            bf, af) + '\n'
       elif word[0] == 'Radio':
@@ -544,7 +544,7 @@ class MatrixDefFile:
           word = tokenize_def(replace_vars(lines[i], vars))
           (rval, rfrn, rbef, raft) = word[1:]
           checked = False
-          if choices.is_set_full(vn) and choices.get_full(vn) == rval:
+          if choices.get(vn) == rval:
             checked = True
           html += html_input(errors, 'radio', vn, rval, checked,
                              rbef, raft) + '\n'
@@ -610,15 +610,15 @@ class MatrixDefFile:
 
           html += html_option(errors, '', False, '') + '\n'
 
-          if choices.is_set_full(vn):
-            sval = choices.get_full(vn)
+          if choices.get(vn):
+            sval = choices.get(vn)
             shtml = ''
             # If we're filling in a SELECT that shows friendly names,
             # we have to look it up.
             if fill_type in ['fillvalues']:
               for sv in sval.split(', '):
                 for f in choices.features():
-                  if f[0] == choices.get_full(fill_arg1):
+                  if f[0] == choices.get(fill_arg1):
                     for v in f[1].split(';'):
                       n = v.split('|')
                       if n[0] == sv:
@@ -644,7 +644,7 @@ class MatrixDefFile:
           word = tokenize_def(replace_vars(lines[i], vars))
           (sval, sfrn, shtml) = word[1:]
           selected = False
-          if choices.is_set_full(vn) and choices.get_full(vn) == sval:
+          if choices.get(vn) == sval:
             selected = True
           html += html_option(errors, sval, selected, shtml) + '\n'
           i += 1
@@ -654,7 +654,7 @@ class MatrixDefFile:
       elif word[0] == 'Text':
         (vn, fn, bf, af, sz) = word[1:]
         vn = prefix + vn
-        value = choices.get_full(vn)
+        value = choices.get(vn)
         html += html_input(errors, 'text', vn, value, False,
                            bf, af, sz) + '\n'
       elif word[0] == 'BeginIter':
@@ -826,7 +826,8 @@ class MatrixDefFile:
   # values from choices into the file handle f.  The section in lines
   # need not correspond to a whole named section (e.g. "Language"), but
   # can be any part of the file not containing a section line.
-  def save_choices_section(self, lines, f, choices, iter_level = 0):
+  def save_choices_section(self, lines, f, choices,
+                           iter_level = 0, prefix = ''):
     already_saved = {}  # don't save a variable more than once
     i = 0
     while i < len(lines):
@@ -834,12 +835,12 @@ class MatrixDefFile:
       if len(word) == 0:
         pass
       elif word[0] in ['Check', 'Text', 'Radio', 'Select', 'MultiSelect']:
-        a = choices.iter_prefix() + word[1]
+        a = prefix + word[1]
         if not already_saved.has_key(a):
           already_saved[a] = True
           v = ''
-          if choices.is_set_full(a):
-            v = choices.get_full(a)
+          if choices.get(a):
+            v = choices.get(a)
           if a and v:
             for j in range(iter_level):
               f.write('  ')
@@ -858,11 +859,11 @@ class MatrixDefFile:
           i += 1
         end = i
 
-        choices.iter_begin(iter_name)
-        while choices.iter_valid():
-          self.save_choices_section(lines[beg:end], f, choices, iter_level + 1)
-          choices.iter_next()
-        choices.iter_end()
+        for num, var in enumerate(choices.get(iter_name)):
+          self.save_choices_section(lines[beg:end], f, choices,
+                                    iter_level = iter_level + 1,
+                                    prefix =
+                                      prefix + iter_name + str(num+1) + '_')
 
       i += 1
 
@@ -879,7 +880,7 @@ class MatrixDefFile:
     new_choices = ChoicesFile('')
     for k in form_data.keys():
       if k:
-        new_choices.set(k, form_data[k].value)
+        new_choices[k] = form_data[k].value
 
     # Read the current choices file (if any) into old_choices
     old_choices = ChoicesFile(choices_file)

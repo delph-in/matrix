@@ -789,7 +789,7 @@ class ChoicesFile:
     """
     return [(self.choices[t]['name'], t)
             for t in ('noun', 'verb', 'aux', 'det')
-            if t in self.choices]
+            if t in self.choices and 'name' in self.choices[t]]
 
   def __get_features(self, feat_list, i1, i2, label, tdl):
     """
@@ -909,7 +909,7 @@ class ChoicesFile:
       feat_type = feature['type']
 
       values = ';'.join([val['name'] + '|' + val['name']
-                         for val in feature['value']])
+                         for val in feature.get('value', [])])
 
       geom = ''
       if feat_type == 'head':
