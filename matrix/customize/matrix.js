@@ -340,7 +340,7 @@ function set_select_value(select, value, text)
 }
 
 
-//regex_collect
+//regex_collect()
 // Pass through the form fields in the page, looking for ones whose
 // name attribute matches the pattern.  When one is found, use its
 // contents to create an option.
@@ -567,7 +567,7 @@ function collect_types(select_name, type_cat, nameOnly)
 
   var vn_fn = regex_collect(select_name, pattern, nameOnly);
 
-  texts = new Array;
+  var texts = new Array;
   for (var i = 0; i < vn_fn[1].length; i++) {
       texts[i] = vn_fn[1][i]+ lex_ext;
   }
@@ -602,7 +602,8 @@ function fill_types(select_name, type_cat, nameOnly)
 
   remove_temp_options(select);
 
-  texts = values = new Array;
+  var texts = new Array;
+  var values = new Array;
   texts = collect_types(select_name, type_cat, nameOnly);
   values = texts;
 
@@ -612,6 +613,39 @@ function fill_types(select_name, type_cat, nameOnly)
   force_layout(select.parentNode);
 }
 
+//fill_inputs()
+//Fill a SELECT tag with OPTIONs where every option is either a lexical type or 
+//a slot defined on the questionnaire. This is used to create options for inflectional
+//input values.
+function fill_inputs(name, pattern)
+{
+  var select = document.getElementsByName(select_name)[0];
+  var old_val = select.value;  // store the previously selected option
+  var old_text = old_val;
+  if (select.selectedIndex != -1) {
+    old_text = select.options[select.selectedIndex].innerHTML;
+  }
+
+  remove_temp_options(select);
+
+  var texts = new Array;
+  var values = new Array;
+  var texttypes = new Array;
+  var textslots = new Array;
+
+  var type_cat = noun;
+ 
+  texttypes = collect_types(name, type_cat, nameOnly);
+  textslots = collect_regex(name, pattern, nameOnly);
+  texts = texttypes.concat(textslots);
+
+  values = texts;
+
+  insert_temp_options(select, values, texts);
+
+  set_select_value(select, old_val, old_text);
+  force_layout(select.parentNode);
+}
 
 //////////////////////////////////////////////////////////////////////
 // Multi-SELECT functions
