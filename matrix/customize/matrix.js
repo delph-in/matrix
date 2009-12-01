@@ -370,10 +370,11 @@ function regex_collect(name, pattern, nameOnly){
       var len = values.length;
       values[len] = vn;
       texts[len] = fn;
-     
+
     }
   }
-  return [values, texts];
+
+  return [values,texts];
 }
 
 // fill_regex()
@@ -573,14 +574,12 @@ function fill_types(select_name, type_cat, nameOnly)
   //collect options from the type fields on the questionnaire
   var pattern = '^'  + '(' + type_cat + ')' + '[0-9]+_name' + '$';
 
-  //FIX not working - output is "undefined" twice or last one on page twice
-  //something is wrong with write to or write from array??
   var vn_fn = regex_collect(select_name, pattern, nameOnly);
   values = new Array;
   texts = new Array;
-  for (var i = 0; i < vn_fn.length; i++) {
-      values[i] = vn_fn[i][0] + lex_ext;
-      texts[i] = vn_fn[i][1]+ lex_ext;
+  for (var i = 0; i < vn_fn[1].length; i++) {
+      values[i] = vn_fn[0][i] + lex_ext;
+      texts[i] = vn_fn[1][i]+ lex_ext;
   }
 
   // Collect options from the types() array in choices
@@ -597,7 +596,7 @@ function fill_types(select_name, type_cat, nameOnly)
 	  }
       }
   }
-
+  
   insert_temp_options(select, values, texts);
 
   set_select_value(select, old_val, old_text);
