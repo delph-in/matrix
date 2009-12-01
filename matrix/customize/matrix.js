@@ -555,30 +555,20 @@ function fill_numbers(select_name)
   force_layout(select.parentNode);
 }
   
-// fill_types()
-// Fill a SELECT tag with OPTIONs created from the array types[],
-// where every OPTION is a type name.
-function fill_types(select_name, type_cat, nameOnly)
-{
-  var select = document.getElementsByName(select_name)[0];
-  var old_val = select.value;  // store the previously selected option
-  var old_text = old_val;
-  if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].innerHTML;
-  }
 
-  remove_temp_options(select);
- 
+//types_collect()
+//Collect up types from array types[] and page on questionnaire.
+function collect_types(select_name, pattern, nameOnly)
+{
   var lex_ext = '-' + type_cat + '-lex';
 
   //collect options from the type fields on the questionnaire
   var pattern = '^'  + '(' + type_cat + ')' + '[0-9]+_name' + '$';
 
   var vn_fn = regex_collect(select_name, pattern, nameOnly);
-  values = new Array;
+
   texts = new Array;
   for (var i = 0; i < vn_fn[1].length; i++) {
-      values[i] = vn_fn[0][i] + lex_ext;
       texts[i] = vn_fn[1][i]+ lex_ext;
   }
 
@@ -591,12 +581,31 @@ function fill_types(select_name, type_cat, nameOnly)
 
       if (t[1] == type_cat) { 
 	  if (texts.indexOf(t[0]) == -1) { //if type is not in the select list already
-	      values[values.length] = t[0];
-	      texts[texts.length] = t[0];
+	      texts[texts.length] = t[0]; //put type at the end of the list
 	  }
       }
   }
-  
+  return [texts];
+}
+
+ 
+// fill_types()
+// Fill a SELECT tag with OPTIONs where every OPTION is a type name.
+function fill_types(select_name, type_cat, nameOnly)
+{
+  var select = document.getElementsByName(select_name)[0];
+  var old_val = select.value;  // store the previously selected option
+  var old_text = old_val;
+  if (select.selectedIndex != -1) {
+    old_text = select.options[select.selectedIndex].innerHTML;
+  }
+
+  remove_temp_options(select);
+
+  texts = values = new Array;
+  texts = collect_types(select_name, pattern, nameOnly);
+  values = texts;
+
   insert_temp_options(select, values, texts);
 
   set_select_value(select, old_val, old_text);
