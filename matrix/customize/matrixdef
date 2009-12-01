@@ -1272,7 +1272,7 @@ BeginIter noun-slot{i} "a Slot"
   BeginIter input{j} "an Input" 1
 
     Select type "Noun slot {i} input {j} type" "Input: " ""
-    filltypes noun-slot[0-9]+_name
+    fillinputs noun-slot[0-9]+_name
     . noun "Any noun" "any noun"
 
   EndIter input
@@ -1362,7 +1362,7 @@ BeginIter verb-slot{i} "a Slot"
   BeginIter input{j} "an Input" 1
 
     Select type "Verb slot {i} input {j} type" "Input: " ""
-    filltypes (verb|aux)(-slot)[0-9]+_name
+    fillinputs (verb|aux)(-slot)[0-9]+_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
@@ -1447,7 +1447,7 @@ BeginIter det-slot{i} "a Slot"
   BeginIter input{j} "an Input" 1
 
     Select type "Determiner slot {i} input {j} type" "Input: " ""
-    filltypes det-slot[0-9]+_name
+    fillinputs det-slot[0-9]+_name
 
   EndIter input
 

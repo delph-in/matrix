@@ -613,7 +613,9 @@ class MatrixDefFile:
               fillstring += 'fill_numbers(\'' + vn + '\')'
             elif fill_type == 'filltypes':
               fillstring += 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\', true, \'' + prefix + '\')'
-              
+            elif fill_type == 'fillinputs':
+              fillstring += 'fill_inputs(\'' + vn + '\', \'' + fill_arg1 + '\', true, \'' + prefix + '\')'
+            
             html += html_select(errors, vn, multi, fillstring) + '\n' 
             html += html_option(errors, '', False, '') + '\n'
 

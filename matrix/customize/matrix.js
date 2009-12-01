@@ -558,7 +558,7 @@ function fill_numbers(select_name)
 
 //types_collect()
 //Collect up types from array types[] and page on questionnaire.
-function collect_types(select_name, type_cat, nameOnly)
+function types_collect(select_name, type_cat, nameOnly)
 {
   var lex_ext = '-' + type_cat + '-lex';
 
@@ -604,7 +604,7 @@ function fill_types(select_name, type_cat, nameOnly)
 
   var texts = new Array;
   var values = new Array;
-  texts = collect_types(select_name, type_cat, nameOnly);
+  texts = types_collect(select_name, type_cat, nameOnly);
   values = texts;
 
   insert_temp_options(select, values, texts);
@@ -617,7 +617,7 @@ function fill_types(select_name, type_cat, nameOnly)
 //Fill a SELECT tag with OPTIONs where every option is either a lexical type or 
 //a slot defined on the questionnaire. This is used to create options for inflectional
 //input values.
-function fill_inputs(name, pattern)
+function fill_inputs(select_name, pattern, nameOnly)
 {
   var select = document.getElementsByName(select_name)[0];
   var old_val = select.value;  // store the previously selected option
@@ -632,12 +632,24 @@ function fill_inputs(name, pattern)
   var values = new Array;
   var texttypes = new Array;
   var textslots = new Array;
+  var type_cat = '';
 
-  var type_cat = noun;
- 
-  texttypes = collect_types(name, type_cat, nameOnly);
-  textslots = collect_regex(name, pattern, nameOnly);
-  texts = texttypes.concat(textslots);
+  var str_pattern = new String(pattern);
+  //trying to FIX here - not working
+  categories = ['noun', 'verb', 'aux', 'det'];
+  for (c in categories) {
+
+      if (str_pattern.match(c) == -1){
+	  type_cat += c;
+      }
+  }
+  // alert(type_cat);
+  // FIX - the type-cat needs to be inferred or added as an additional argument
+  //in addition, fix fill_types so it can take a list of category arguments or so 
+  //it can be called more than once
+  texttypes = types_collect(name, type_cat, nameOnly);
+  textslots = regex_collect(name, pattern, nameOnly);
+  texts = texttypes.concat(textslots[1]);
 
   values = texts;
 
