@@ -558,7 +558,7 @@ function fill_numbers(select_name)
 
 //types_collect()
 //Collect up types from array types[] and page on questionnaire.
-function collect_types(select_name, pattern, nameOnly)
+function collect_types(select_name, type_cat, nameOnly)
 {
   var lex_ext = '-' + type_cat + '-lex';
 
@@ -585,7 +585,7 @@ function collect_types(select_name, pattern, nameOnly)
 	  }
       }
   }
-  return [texts];
+  return texts;
 }
 
  
@@ -603,7 +603,7 @@ function fill_types(select_name, type_cat, nameOnly)
   remove_temp_options(select);
 
   texts = values = new Array;
-  texts = collect_types(select_name, pattern, nameOnly);
+  texts = collect_types(select_name, type_cat, nameOnly);
   values = texts;
 
   insert_temp_options(select, values, texts);
