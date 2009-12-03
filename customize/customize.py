@@ -95,6 +95,13 @@ def add_irule(instance_name,type_name,affix_type,affix_form):
 ######################################################################
 # Hierarchy class
 
+class HierarchyError:
+  def __init__(self, value):
+    self.value = value
+  def __str__(self):
+    return repr(self.value)
+
+
 # Hierarchy:
 # A class for storing, operating on, and saving to TDL a type
 # hierarchy.  The hierarchy is stored as an array, each element of
@@ -106,11 +113,18 @@ class Hierarchy:
     self.name = name
     self.type = type
     self.hierarchy = []
+    self.saved = False
 
     self.supertypes = {}
     self.subtypes = {}
     self.leaves = set()
     self.coverage = {}
+
+
+  def __raise_error(self):
+    raise HierarchyError(
+      'A type hierarchy cannot be modified after it has been saved.  ' +
+      'You probably need to rearrange your code.')
 
 
   def is_empty(self):
@@ -119,6 +133,12 @@ class Hierarchy:
 
   # Add a type to the hierarchy
   def add(self, type, supertype, comment = ''):
+    # If we've already been saved, someone is trying to modify a type
+    # hierarchy after it's been written out.  That's wrong, so throw
+    # an exception.
+    if self.saved:
+      self.__raise_error()
+
     self.hierarchy += [ [ type, supertype, comment ] ]
 
   # Save the hierarchy to the passed TDLfile object.  The resulting
@@ -129,6 +149,8 @@ class Hierarchy:
   # type3 := supertype3  ; comment3
   # ...
   def save(self, tdl_file, define = True):
+    self.saved = True
+
     tdl_file.set_section('features')
 
     tdl_file.add_literal(';;; ' + self.name[0:1].upper() + self.name[1:])
@@ -213,7 +235,6 @@ class Hierarchy:
   # exist.  This method will add such types to the hierarchy as
   # necessary.
   def get_type_covering(self, type_set):
-
     type_list = list(type_set)
     if len(type_list) == 1:
       return type_list[0]    
@@ -234,6 +255,12 @@ class Hierarchy:
     for k in cov:
       if cov[k] == new_set:
         return k
+
+    # If we've already been saved, someone is trying to modify a type
+    # hierarchy after it's been written out.  That's wrong, so throw
+    # an exception.
+    if self.saved:
+      self.__raise_error()
 
     # Need to create a new type in the hierarchy:
     # If there are types in the hierarchy that have the same coverage,
@@ -4075,10 +4102,12 @@ def customize_matrix(path, arch_type):
   init_form_hierarchy()
   init_other_hierarchies()
 
-  # Customize inflection and lexicon first, since they can cause
-  # augmentation of the hierarchies
+  # Now do customization that may cause augmentation of the type
+  # hierarchies (i.e., anything that has multi-select feature
+  # dropdowns)
   customize_inflection()
   customize_lexicon()
+  customize_arg_op()
 
   # Call the other customization functions
   customize_case()
@@ -4093,7 +4122,6 @@ def customize_matrix(path, arch_type):
   customize_sentential_negation()
   customize_coordination()
   customize_yesno_questions()
-  customize_arg_op()
   customize_test_sentences(grammar_path)
   customize_pettdl(grammar_path)
   customize_roots()
