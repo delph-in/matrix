@@ -1058,7 +1058,6 @@ class ChoicesFile:
     for dv in dimvalues:
       cat_name = dv[1]
       lextype_name = dv[0].replace('-','') + '-' + cat_name + '-lex'
-      print lextype_name
       types += [ [lextype_name, cat_name] ] 
   
     #collect up user defined types
@@ -1076,7 +1075,7 @@ class ChoicesFile:
       self.iter_end()
     
     self.iter_set_state(state)
-    print types
+
     return types
  
  

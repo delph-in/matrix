@@ -340,11 +340,11 @@ function set_select_value(select, value, text)
 }
 
 
-//regex_collect()
+//collect_regex()
 // Pass through the form fields in the page, looking for ones whose
 // name attribute matches the pattern.  When one is found, use its
 // contents to create an option.
-function regex_collect(name, pattern, nameOnly){
+function collect_regex(name, pattern, nameOnly){
 
   var values = new Array();
   var texts = new Array();
@@ -395,7 +395,7 @@ function fill_regex(select_name, pattern, nameOnly)
 
   pattern = '^' + pattern + '$';
 
-  var vn_fn = regex_collect(select_name, pattern, nameOnly);
+  var vn_fn = collect_regex(select_name, pattern, nameOnly);
   var values = vn_fn[0];
   var texts = vn_fn[1];
    
@@ -556,16 +556,16 @@ function fill_numbers(select_name)
 }
   
 
-//types_collect()
+//collect_types()
 //Collect up types from array types[] and page on questionnaire.
-function types_collect(select_name, type_cat, nameOnly)
+function collect_types(select_name, type_cat, nameOnly)
 {
   var lex_ext = '-' + type_cat + '-lex';
 
   //collect options from the type fields on the questionnaire
   var pattern = '^'  + '(' + type_cat + ')' + '[0-9]+_name' + '$';
 
-  var vn_fn = regex_collect(select_name, pattern, nameOnly);
+  var vn_fn = collect_regex(select_name, pattern, nameOnly);
 
   var texts = new Array;
   for (var i = 0; i < vn_fn[1].length; i++) {
@@ -604,7 +604,7 @@ function fill_types(select_name, type_cat, nameOnly)
 
   var texts = new Array;
   var values = new Array;
-  texts = types_collect(select_name, type_cat, nameOnly);
+  texts = collect_types(select_name, type_cat, nameOnly);
   values = texts;
 
   insert_temp_options(select, values, texts);
@@ -628,6 +628,7 @@ function fill_inputs(select_name, pattern, nameOnly)
 
   remove_temp_options(select);
 
+  var categories = new Array;
   var texts = new Array;
   var values = new Array;
   var texttypes = new Array;
@@ -635,20 +636,18 @@ function fill_inputs(select_name, pattern, nameOnly)
   var type_cat = '';
 
   var str_pattern = new String(pattern);
-  //trying to FIX here - not working
   categories = ['noun', 'verb', 'aux', 'det'];
-  for (c in categories) {
 
-      if (str_pattern.match(c) == -1){
-	  type_cat += c;
+  for (i in categories) {
+      cat_pattern = new RegExp(categories[i])
+
+      if (str_pattern.match(cat_pattern) != null){
+	  type_cat = categories[i];
+	  texttypes = texttypes.concat(collect_types(name, type_cat, nameOnly));
       }
   }
-  // alert(type_cat);
-  // FIX - the type-cat needs to be inferred or added as an additional argument
-  //in addition, fix fill_types so it can take a list of category arguments or so 
-  //it can be called more than once
-  texttypes = types_collect(name, type_cat, nameOnly);
-  textslots = regex_collect(name, pattern, nameOnly);
+
+  textslots = collect_regex(name, pattern, nameOnly);
   texts = texttypes.concat(textslots[1]);
 
   values = texts;
