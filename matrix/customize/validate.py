@@ -559,6 +559,7 @@ def validate_lextypes():
 ######################################################################
 # validate_lexicon()
 #   Validate the user's choices about the test lexicon.
+#FIX - this needs to be split out into Lexial Types and Lexicon
 
 def validate_lexicon():
 
@@ -938,7 +939,7 @@ def validate_choices(choices_file, extra = False):
   validate_coordination()
   validate_yesno_questions()
   validate_lextypes()
-  validate_lexicon()
+ # validate_lexicon()
   validate_test_sentences()
 
   validate_types()
