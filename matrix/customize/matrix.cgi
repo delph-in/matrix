@@ -28,7 +28,7 @@ from deffile import HTTP_header
 # beginning of main program
 
 # Uncomment this to see the output from print in the HTML page
-print HTTP_header + '\n'
+#print HTTP_header + '\n'
 
 matrixdef = MatrixDefFile('matrixdef')
 
@@ -94,7 +94,7 @@ if form_data.has_key('section'):
 errors = validate_choices(session_path + '/choices')
 
 #uncomment below to print errors in header for debugging (along with print header comment above)
-print errors
+#print errors
 
 # if the 'customize' field is defined, create a customized copy of the matrix
 # based on the current choices file

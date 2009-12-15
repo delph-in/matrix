@@ -636,15 +636,11 @@ lexical aspect, inherent aspect and some uses of the term
 Aktionsart. Situation aspect values may be conveyed by the meaning of
 the verb or through overt morphological marking however situation
 aspect values may depend on qualities of verbal arguments or
-sentential adjuncts (for example). In this case the values are
-compositionally derived."
-
-Label "<p><span style=\"color:red\">Note: The implementation of
-situation aspect is still under development; There is, as yet, no
-implementation of compositionally derived situation aspect. Currently
-the <span class=\"feat\">situation</span> feature may be used to
+sentential adjuncts (for example). Situation aspect values are often compositionally derived from many sentential or even discourse elements. There is currently no analysis of 
+compositionally derived situation aspect available through this questionnaire. 
+The <span class=\"feat\">situation</span> feature may be used to
 represent inherent lexical qualities or those conveyed through overt
-morphological marking. This more accurately reflects uses of the term
+morphological marking. This may more accurately reflect uses of the term
 \"lexical aspect\".</p>"
 
 Label "<p>You may create a hierarchy of values for the feature <span
@@ -822,14 +818,6 @@ return the functionality of allowing different kinds of interaction
 between adverbial and inflectional negation, as well as the
 functionality for negation by selected adverbs.</p>"
 
-Separator
-
-Label "<h3>Type Generation</h3>"
-Label "<div style=\"padding-left: 16px\">"
-
-Check dim-negation "Negation feature dimension for verb types" "" "Generate verb types automatically based on the negative values defined on this page."
-
-Label "</div>"
 
 Section coordination "Coordination"
 
@@ -1135,7 +1123,7 @@ Label "<h3>Auxiliary Verb Types</h3>"
 
 Label auxlabel "Add auxiliary types:<br>"
 
-Label "<p>Note that auxiliaries may contribute a independent predicate, e.g., English modal <i>can</i>. These auxiliaries should inherit from withpred-aux-lex. If you define a type that contributes a predicate, you may also specify semantic feature values on the auxiliary, if desired. Alternatively, auxiliaries may contribute no predicate of their own, e.g., English auxiliary <i>be</i>, and should inherit from nopred-aux-lex.</p>"
+Label "<p>Note that auxiliaries may contribute an independent predicate, e.g., English modal <i>can</i>. These auxiliaries should inherit from <tt>withpred-aux-lex</tt>. If you define a type that contributes a predicate, you may also specify semantic feature values on the auxiliary, if desired. Alternatively, auxiliaries may contribute no predicate of their own, e.g., English auxiliary <i>be</i>, and should inherit from <tt>nopred-aux-lex</tt>.</p>"
 
 BeginIter aux{i} "an Auxiliary Type"
 
@@ -1172,7 +1160,8 @@ BeginIter aux{i} "an Auxiliary Type"
   Radio subj "Aux {i} subject" "" ""
   . adp "Adpositional phrase" "<br>" "adpositional phrase<br><br>"
 
-  Label "Complement Features:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Note: A value for the feature FORM is required.)<br>"
+  Label "Complement Features:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Note: A value for the feature <span
+class=\"feat\">form</span> is required.)<br>"
 
   BeginIter compfeature{j} "a complement feature" 1
 
@@ -1273,7 +1262,6 @@ BeginIter noun-slot{i} "a Slot"
 
     Select type "Noun slot {i} input {j} type" "Input: " ""
     fillinputs noun-slot[0-9]+_name
-    . noun "Any noun" "any noun"
 
   EndIter input
 
@@ -1363,10 +1351,6 @@ BeginIter verb-slot{i} "a Slot"
 
     Select type "Verb slot {i} input {j} type" "Input: " ""
     fillinputs (verb|aux)(-slot)[0-9]+_name
-    . verb "Any verb" "any verb"
-    . iverb "Any intransitive verb" "any intransitive verb"
-    . tverb "Any transitive verb" "any transitive verb"
-    . aux "Any auxiliary verb" "any auxiliary verb"
 
   EndIter input
 
