@@ -72,8 +72,12 @@ then
         $tempdir/saved-choices/.htaccess
 fi
 
-mainfiles="matrix.cgi matrix.css matrix.js matrixdef customize.py deffile.py choices.py tdl.py utils.py validate.py util/*.py"
+mainfiles="matrix.cgi matrix.css matrix.js matrixdef customize.py deffile.py choices.py tdl.py utils.py validate.py"
 cp $mainfiles $tempdir
+
+utilfiles="util/*.py"
+mkdir $tempdir/util
+cp $utilfiles $tempdir/util
 
 cp -R sample-choices $tempdir
 rm -rf $tempdir/sample-choices/CVS $tempdir/sample-choices/.svn
