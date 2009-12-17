@@ -5,95 +5,316 @@
 
 import re
 import sys
+from util.misc import safe_int
 
 ######################################################################
 # globals
 
 ######################################################################
+# Errors
+
+class ChoicesFileParseError(Exception):
+  def __init__(self, msg=''):
+    self.msg = msg
+  def __str__(self):
+    return repr(self.msg)
+
+######################################################################
+# ChoiceCategory is a parent-class for ChoiceDict and ChoiceList.
+# Any meta-information about choices should be encoded in
+# ChoiceCategory, and ChoiceDict and ChoiceList should most likely
+# just be empty classes inheriting from ChoiceCategory and their
+# namesake datatype.
+
+class ChoiceCategory:
+  def __init__(self, full_key=None):
+        self.full_key = full_key
+
+class ChoiceDict(ChoiceCategory, dict):
+  pass
+
+class ChoiceList(ChoiceCategory, list):
+  pass
+
+######################################################################
 # ChoicesFile is a class that wraps the choices file, a list of
-# attributes and values, and provides methods for loading, accessing,
+# variables and values, and provides methods for loading, accessing,
 # and saving them.
 
 class ChoicesFile:
+
   # initialize by passing either a file name or ???file handle
-  def __init__(self, choices_file):
-    self.file_name = choices_file
+  def __init__(self, choices_file=None):
+
     self.iter_stack = []
     self.cached_values = {}
     self.cached_iter_values = None
-    self.choices = {}
-    try:
-      if type(choices_file) == str:
-        f = open(choices_file, 'r')
-      else:
+    self.choices = ChoiceDict()
+
+    if choices_file is not None:
+      try:
         f = choices_file
+        if type(choices_file) == str:
+          f = open(choices_file, 'r')
         f.seek(0)
+        lines = f.readlines()
+        self.load_choices([l.strip() for l in lines if l.strip() != ''])
+        if type(choices_file) == str:
+          f.close()
+      except IOError:
+        pass # TODO: we should really be logging these
 
-      lines = f.readlines()
+  ############################################################################
+  ### Choices file parsing functions
 
-      if type(choices_file) == str:
-        f.close()
+  def load_choices(self, choice_lines):
+    # attempt to get version first, since preparse_uprev() needs it
+    self.version = self.get_version(choice_lines)
+    # some key-values cannot be parsed by the current system, so
+    # we need to handle these first
+    choice_lines = self.preparse_uprev(choice_lines)
+    self.choices = self.parse_choices(choice_lines)
+    self.postparse_uprev()
 
-      for l in lines:
-        l = l.strip()
-        if l:
-          (key, value) = l.split('=', 1)
-          if sys.stdout.isatty() and self.is_set(key) and key != 'section':
-            print 'WARNING: choices file defines multiple values for ' + key
-          self.set(key, value)
-    except:
-      pass
+  def get_version(self, choice_lines):
+    """
+    Return the version number from the choices file, or 0 if there was none.
+    """
+    version = 0
+    for line in [l.strip() for l in choice_lines if l.strip() != '']:
+      (key, value) = line.split('=',1)
+      if key == 'version':
+         version = int(value)
+    return version
 
-    if choices_file:  # don't up-rev if we're creating an empty ChoicesFile
-      if self.is_set('version'):
-        version = int(self.get('version'))
+  def parse_choices(self, choice_lines):
+    """
+    Get the data structure for each choice in the choices file, then
+    merge them all together into one data structure.
+    """
+    choices = ChoiceDict()
+    for line in [l.strip() for l in choice_lines if l.strip() != '']:
+      try:
+        (key, value) = line.split('=',1)
+        if key in ('section', 'version'):
+            continue
+        choices = self.__set_variable(choices,
+                                      self.split_variable_key(key),
+                                      value,
+                                      allow_overwrite=False)
+      except ValueError:
+        pass # TODO: log this!
+      except ChoicesFileParseError:
+        raise ChoicesFileParseError('Variable is multiply defined: %s' % key)
+
+    return choices
+
+  # use the following re if keys like abc_def should be split:
+  #var_delim_re = re.compile(r'(\d+)?(?:_|$)')
+  var_delim_re = re.compile(r'(\d+)(?:_|$)')
+  def split_variable_key(self, key):
+    """
+    Split a compound variable key into a list of its component parts.
+    """
+    if key == '': return []
+    return [k for k in self.var_delim_re.split(key) if k]
+
+  ############################################################################
+  ### Choices access functions
+
+  def get(self, key, default=None):
+    # integers have an offset of -1 for list indices
+    keys = [safe_int(k, offset=-1) for k in self.split_variable_key(key)]
+    d = self.choices
+    try:
+      for k in keys:
+        d = d[k]
+    except KeyError:
+      return default or []
+    return d
+
+  # A __getitem__ method so that ChoicesFile can be used with brackets,
+  # e.g., ch['language'].
+  def __getitem__(self, key):
+    return self.get(key)
+
+  def __set_variable(self, choices, keys, value,
+                     allow_overwrite=True, key_prefix=None):
+    """
+    Set the value parameter in the dict/list data structure choices,
+    with the location defined by keys.
+    """
+    # if there are no more keys, we need to set the value by returning it
+    if len(keys) == 0:
+      if choices and not allow_overwrite:
+        raise ChoicesFileParseError(
+                'Variable is multiply defined.')
+      return value
+    # Now we should be dealing with either a list or dict
+    var = keys.pop(0)
+    try:
+      var = int(var)
+      # If no error was thrown, we're dealing with a list index.
+      # Create the list if it doesn't already exist
+      if not choices:
+        choices = ChoiceList(full_key=key_prefix)
+      count = len(choices)
+      if count < var:
+        choices += [ChoiceDict(full_key=key_prefix + str(count+i+1))
+                    for i in range(var - count)]
+      choices[var - 1] = self.__set_variable(choices[var - 1],
+                                           keys,
+                                             value,
+                                             allow_overwrite,
+                                             key_prefix + str(var))
+    except ValueError:
+      new_key_prefix = '_'.join([k for k in [key_prefix, var] if k])
+      choices[var] = self.__set_variable(choices.get(var, None),
+                                         keys,
+                                         value,
+                                         allow_overwrite,
+                                         new_key_prefix)
+    return choices
+
+  def __setitem__(self, key, value):
+    self.__set_variable(self.choices, self.split_variable_key(key), value)
+
+  def __delete(self, choices, keys, prune):
+    """
+    Delete a choice from the data structure. If prune is True, remove
+    empty dictionaries and list items (changing list size).
+    """
+    if len(keys) == 0:
+      return
+    elif len(keys) == 1:
+      if not prune and type(keys[0]) == int:
+        # if not pruning, replace list items to maintain list size
+        choices[keys[0]] = ChoiceDict()
       else:
-        version = 0
-      if version < 1:
-        self.convert_0_to_1()
-      if version < 2:
-        self.convert_1_to_2()
-      if version < 3:
-        self.convert_2_to_3()
-      if version < 4:
-        self.convert_3_to_4()
-      if version < 5:
-        self.convert_4_to_5()
-      if version < 6:
-        self.convert_5_to_6()
-      if version < 7:
-        self.convert_6_to_7()
-      if version < 8:
-        self.convert_7_to_8()
-      if version < 9:
-        self.convert_8_to_9()
-      if version < 10:
-        self.convert_9_to_10()
-      if version < 11:
-        self.convert_10_to_11()
-      if version < 12:
-        self.convert_11_to_12()
-      if version < 13:
-        self.convert_12_to_13()
-      if version < 14:
-        self.convert_13_to_14()
-      if version < 15:
-        self.convert_14_to_15()
-      if version < 16:
-        self.convert_15_to_16()
-      if version < 17:
-        self.convert_16_to_17()
-      if version < 18:
-        self.convert_17_to_18()
-      # As we get more versions, add more version-conversion methods, and:
-      # if version < N:
-      #   self.convert_N-1_to_N
+        del choices[keys[0]]
+    else:
+      # recursively delete the next subitem...
+      self.__delete(choices[keys[0]], keys[1:], prune)
+      # ... and prune if the resulting branch is empty and we're pruning
+      if prune and len(choices[keys[0]]) == 0:
+        del choices[keys[0]]
 
-    # Remove pseudo-choices that don't actually represent the answer to
-    # any question in the questionnaire.
-    self.delete('version')
-    self.delete('section')
+  def delete(self, key, prune=False):
+    if key not in self:
+        return
+    # integers have an offset of -1 for list indices
+    keys = [safe_int(k, offset=-1) for k in self.split_variable_key(key)]
+    self.__delete(self.choices, keys, prune)
+    # full_key values will be corrupted if we pruned, so re-evaluate
+    if prune:
+      [self.__reset_full_keys(k) for k in self]
 
+  def __delitem__(self, key):
+    self.delete(key, prune=False)
+
+  def __contains__(self, key):
+    if self.get(key):
+      return True
+    return False
+
+  def __iter__(self):
+    return self.choices.__iter__()
+
+  def __len__(self):
+    return len(self.choices)
+
+  def __reset_full_keys(self, key):
+    """
+    Starting at the given key, reset the full_key values of all
+    choices contained by that key.
+    """
+    # make sure the current key exists (e.g. was not pruned)
+    if key not in self:
+      return
+    for i, c in enumerate(self[key]):
+      c_type = type(c)
+      if c_type is ChoiceDict:
+        c.full_key = key + str(i + 1)
+      elif c_type is ChoiceList:
+        c.full_key = key + str(c)
+      else:
+        continue
+      self.__reset_full_keys(c.full_key)
+
+  ############################################################################
+  ### Up-revisioning handler
+
+  def preparse_uprev(self, choice_lines):
+    """
+    Convert choices file lines before they are parsed.
+    """
+    new_lines = []
+    for line in choice_lines:
+      try:
+        (key, value) = line.split('=',1)
+        if key in ('section', 'version'):
+            continue
+        if self.version < 4:
+          (key, value) = self.preparse_convert_3_to_4(key, value)
+        if self.version < 19:
+          (key, value) = self.preparse_convert_18_to_19(key, value)
+        # If future versions require a choices file line to be converted
+        # before it is parsed, but the appropriate method here:
+        # if self.version < N
+        #   self.preparse_convert_N-1_to_N(key, value)
+        new_lines += ['='.join([key, value])]
+      except ValueError:
+        pass # TODO: log this!
+      except ChoicesFileParseError:
+        raise ChoicesFileParseError('Variable is multiply defined: %s' % key)
+
+    return new_lines
+
+  def postparse_uprev(self):
+    if self.version < 1:
+      self.convert_0_to_1()
+    if self.version < 2:
+      self.convert_1_to_2()
+    if self.version < 3:
+      self.convert_2_to_3()
+    if self.version < 4:
+      self.convert_3_to_4()
+    if self.version < 5:
+      self.convert_4_to_5()
+    if self.version < 6:
+      self.convert_5_to_6()
+    if self.version < 7:
+      self.convert_6_to_7()
+    if self.version < 8:
+      self.convert_7_to_8()
+    if self.version < 9:
+      self.convert_8_to_9()
+    if self.version < 10:
+      self.convert_9_to_10()
+    if self.version < 11:
+      self.convert_10_to_11()
+    if self.version < 12:
+      self.convert_11_to_12()
+    if self.version < 13:
+      self.convert_12_to_13()
+    if self.version < 14:
+      self.convert_13_to_14()
+    if self.version < 15:
+      self.convert_14_to_15()
+    if self.version < 16:
+      self.convert_15_to_16()
+    if self.version < 17:
+      self.convert_16_to_17()
+    if self.version < 18:
+      self.convert_17_to_18()
+    if self.version < 19:
+      self.convert_18_to_19()
+    # As we get more versions, add more version-conversion methods, and:
+    # if self.version < N:
+    #   self.convert_N-1_to_N
+
+    # reset the full_keys to be safe
+    [self.__reset_full_keys(key) for key in self]
 
   # Return the keys for the choices dict
   def keys(self):
@@ -104,270 +325,18 @@ class ChoicesFile:
     self.cached_values = {}
     self.cached_iter_values = None
 
-
-  ######################################################################
-  # Choices values and iterators:
-  #
-  # The ChoicesFile data is stored in a flat dictionary, but the names
-  # of the values in that dictionary form a hierarchical structure.
-  # Names consist of strings of alphabetic (plus dash) strings,
-  # optionally separated into segments by a trailing number and an
-  # underscore.  For example, noun2_morph would be the morph value of
-  # the second of a series of nouns, while noun2_morph3_orth would be
-  # the orth value of the third morph value of the second noun.
-  #
-  # The programmer deals with iterators using the iter_begin,
-  # iter_next, and iter_end methods.  iter_begin starts the iteration,
-  # pushing a value name on the stack.  iter_next moves to the next
-  # integer value.  iter_end pops a value off the stack.
-  #
-  # Example code:
-  #
-  #   choices.iter_begin('noun')       # iterate through all nouns
-  #   while choices.iter_valid():
-  #     type = choices.get('type')
-  #     choices.iter_begin('morph')    # sub-iterate through all morphs
-  #     while choices.iter_valid():
-  #       orth = choices.get('orth')
-  #       order = choices.get('order')
-  #       choices.iter_next()          # advance the morph iteration
-  #     choices.iter_end()             # end the morph iteration
-  #     choices.iter_next()            # advance the noun iteration
-  #   choices.iter_end()               # end the noun iteration
-  
-  def iter_begin(self, key):
-    var = 1
-    # If key contains a number at the end (i.e. 'noun5'), initialize
-    # the iteration at that number rather than the default of 1.
-    s = re.search('[0-9]+$', key)
-    if s:
-      offset = s.span()[0]
-      var = int(key[offset:])
-      key = key[0:offset]
-      
-    self.iter_stack.append([key, var, True])
-
-    # if the beginning of the iterator isn't valid, try bumping up to
-    # the next valid value
-    valid = self.__iter_is_valid()
-    if not valid:
-      self.iter_next()
-      # if there was no next valid value, start at the requested
-      # position (since the caller may be writing rather than reading)
-      if not self.iter_valid():
-        self.iter_stack[-1][0] = key
-        self.iter_stack[-1][1] = var
-        self.iter_stack[-1][2] = False
-
-
-  # Are there any choices with a name prefixed by the current
-  # iterator?  Useful as the condition in loops.
-  def iter_valid(self):
-    if len(self.iter_stack) > 0:
-      return self.iter_stack[-1][2]
-    else:
-      return False
-
-
-  def iter_next(self):
-    next = self.__iter_next_valid()
-    if next != -1:
-      self.iter_stack[-1][1] = next
-      self.iter_stack[-1][2] = True
-    else:
-      self.iter_stack[-1][1] += 1
-      self.iter_stack[-1][2] = False
-
-
-  def iter_end(self):
-    self.iter_stack.pop()
-
-
-  def iter_prefix(self):
-    prefix = ''
-    for i in self.iter_stack:
-      prefix += i[0] + str(i[1]) + '_'
-    return prefix
-
-
-  def iter_num(self):
-    return self.iter_stack[-1][1]
-
-
-  def iter_max(self,key):
-    count = 0
-    self.iter_begin(key)
-    while self.iter_valid():
-      count += 1
-      self.iter_next()
-    self.iter_end()
-    return count
-
-
-  def __iter_calc_valid(self):
-    """
-    Pass through the keys for the current choices and pre-calculate
-    the valid numerical ranges for each iterator.  Store the values
-    found in cached_iter_values.
-    """
-    self.cached_iter_values = {}
-    pat = re.compile('([0-9]+)_')
-    for k in self.keys():
-      offset = 0
-      klen = len(k)
-      while offset < klen:
-        match = pat.search(k[offset:])
-        if match:
-          num = int(match.group(1))
-          name = k[:offset + match.start(1)]
-
-          # in this loop, store values as sets to avoid duplicates
-          if self.cached_iter_values.has_key(name):
-            self.cached_iter_values[name].add(num)
-          else:
-            newval = set()
-            newval.add(num)
-            self.cached_iter_values[name] = newval
-            
-          offset += match.end()
-        else:
-          break
-
-    # now convert sets to sorted lists so its easy to find the max
-    for k in self.cached_iter_values.keys():
-      self.cached_iter_values[k] = sorted(list(self.cached_iter_values[k]))
-
-
-  def __iter_name_and_num(self):
-    """
-    Return the name and number of the current iteration state.
-    """
-    if not self.cached_iter_values:
-      self.__iter_calc_valid()
-
-    num = self.iter_stack[-1][1]
-
-    prefix = self.iter_prefix()
-    match = re.search('[0-9]+_$', prefix)
-    name = prefix[:match.start()]
-
-    return (name, num)
-
-
-  def __iter_is_valid(self):
-    """
-    Return true if the iterator on top of the stack is valid -- that
-    is, if there are exist any values in the choices dictionary for
-    which the current iterator is a prefix.
-    """
-    if not self.cached_iter_values:
-      self.__iter_calc_valid()
-
-    (name, num) = self.__iter_name_and_num()
-
-    return self.cached_iter_values.has_key(name) and \
-           num in self.cached_iter_values[name]
-
-
-  def __iter_next_valid(self):
-    """
-    Return the next valid numerical value for the current iterator.
-    If there is no valid value greater than the current value, return
-    -1.
-    """
-    if not self.cached_iter_values:
-      self.__iter_calc_valid()
-
-    (name, num) = self.__iter_name_and_num()
-
-    if self.cached_iter_values.has_key(name):
-      nums = self.cached_iter_values[name]
-      if num in nums:
-        i = nums.index(num) + 1
-        if i < len(nums):
-          return nums[i]
-      else:
-        return nums[0]
-
-    return -1
-
-
-  ######################################################################
-  # Methods for saving and restoring the iterator state (the stack)
-
-  def iter_state(self):
-    return self.iter_stack
-
-
-  def iter_set_state(self,state):
-    self.iter_stack = state
-
-
-  def iter_reset(self):
-    self.iter_stack = []
-
-
-  ######################################################################
-  # Methods for accessing full-name values.  These methods are
-  # insensitive to the current iterator state, and take the full name
-  # of a dictionary entry (e.g. noun2_morph) rather than
-
-  # Return the value of 'key', if any.  If not, return the empty string.
-  def get_full(self, key):
-    if self.is_set_full(key):
-      return self.choices[key]
-    else:
-      return ''
-
-
-  # Set the value of 'key' to 'value'
-  def set_full(self, key, value):
-    self.choices[key] = value
-    self.clear_cached_values()
-
-
-  # Remove 'key' and its value from the list of choices
-  def delete_full(self, key):
-    if self.is_set_full(key):
-      del self.choices[key]
-      self.clear_cached_values()
-
-
-  # Return True iff there if 'key' is currently set
-  def is_set_full(self, key):
-    return key in self.choices
-
-  ######################################################################
-  # Methods for accessing values.  These methods are sensitive to the
-  # current iterator state, prepending the current iter_prefix to the
-  # passed keys.
-
-  # Return the value of 'key', if any.  If not, return the empty string.
-  def get(self, key):
-    return self.get_full(self.iter_prefix() + key)
-
-
-  # Set the value of 'key' to 'value'
-  def set(self, key, value):
-    self.set_full(self.iter_prefix() + key, value)
-
-
-  # Remove 'key' and its value from the list of choices
-  def delete(self, key):
-    self.delete_full(self.iter_prefix() + key)
-
-
-  # Return True iff there if 'key' is currently set
-  def is_set(self, key):
-    return self.is_set_full(self.iter_prefix() + key)
-
-
   ######################################################################
   # Methods for accessing "derived" values -- that is, groups of values
   # that are implied by the list of choices, but not directly stored
   # in it.  For example, it is convenient to be able to get a list of
   # all features defined in the languages, even though they're not
   # all stored in a single place.
+
+  def has_case(self, feat, case):
+    """
+    Return true if the feature has matching case or if case is empty.
+    """
+    return feat['name'] == 'case' and (feat['value'] == case or case == '')
 
   def has_noun_case(self, case = ''):
     """
@@ -382,41 +351,17 @@ class ChoicesFile:
 
     result = False
 
-    state = self.iter_state()
-    self.iter_reset()
-
     # check lexical types
-    self.iter_begin('noun')
-    while self.iter_valid():
-      self.iter_begin('feat')
-      while self.iter_valid():
-        if self.get('name') == 'case' and \
-           (self.get('value') == case or not case):
-          result = True
-        self.iter_next()
-      self.iter_end()
-      self.iter_next()
-    self.iter_end()
+    for noun in self.get('noun'):
+      for feat in noun.get('feat',[]):
+        result = result or self.has_case(feat, case)
 
     # check morphemes
     for slotprefix in ('noun', 'verb', 'det'):
-      self.iter_begin(slotprefix + '-slot')
-      while self.iter_valid():
-        self.iter_begin('morph')
-        while self.iter_valid():
-          self.iter_begin('feat')
-          while self.iter_valid():
-            if self.get('name') == 'case' and \
-               (self.get('value') == case or not case):
-              result = True
-            self.iter_next()
-          self.iter_end()
-          self.iter_next()
-        self.iter_end()
-        self.iter_next()
-      self.iter_end()
-
-    self.iter_set_state(state)
+      for slot in self.get(slotprefix + '-slot'):
+        for morph in slot.get('morph',[]):
+          for feat in morph.get('feat',[]):
+            result = result or self.has_case(feat, case)
 
     self.cached_values[k] = result
 
@@ -433,24 +378,11 @@ class ChoicesFile:
 
     result = False
 
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('adp')
-    while self.iter_valid():
-      opt = self.get('opt')
-      self.iter_begin('feat')
-      while self.iter_valid():
-        if self.get('name') == 'case' and \
-           (self.get('value') == case or not case) and \
-           (opt or not check_opt):
-          result = True
-        self.iter_next()
-      self.iter_end()
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
+    for adp in self.get('adp'):
+      opt = adp.get('opt')
+      for feat in adp['feat']:
+        result = result or (self.has_case(feat, case) and \
+                            (opt or not check_opt))
 
     return result
 
@@ -502,17 +434,7 @@ class ChoicesFile:
     """
     Returns True iff the target language has a direct-inverse scale.
     """
-    result = False
-
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('scale')
-    result = self.iter_valid()
-
-    self.iter_set_state(state)
-
-    return result
+    return 'scale' in self.choices
 
 
   def has_SCARGS(self):
@@ -523,38 +445,14 @@ class ChoicesFile:
     """
     result = False
 
-    state = self.iter_state()
-    self.iter_reset()
+    for verb in self.get('verb'):
+      for feat in verb.get('feat', []):
+        result = result or feat['head'] in ('higher', 'lower')
 
-    # verb lexical items
-    self.iter_begin('verb')
-    while self.iter_valid():
-      self.iter_begin('feat')
-      while self.iter_valid():
-        if self.get('head') in ['higher', 'lower']:
-          result = True
-        self.iter_next()
-      self.iter_end()
-      self.iter_next()
-    self.iter_end()
-
-    # verb morphs
-    self.iter_begin('verb-slot')
-    while self.iter_valid():
-      self.iter_begin('morph')
-      while self.iter_valid():
-        self.iter_begin('feat')
-        while self.iter_valid():
-          if self.get('head') in ['higher', 'lower']:
-            result = True
-          self.iter_next()
-        self.iter_end()
-        self.iter_next()
-      self.iter_end()
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
+    for verb_slot in self.get('verb-slot'):
+      for morph in verb_slot.get('morph',[]):
+        for feat in morph.get('feat',[]):
+          result = result or feat['head'] in ('higher', 'lower')
 
     return result
 
@@ -566,34 +464,34 @@ class ChoicesFile:
   #     [canonical name, friendly name, abbreviation]
   def cases(self):
     # first, make two lists: the canonical and user-provided case names
-    cm = self.get_full('case-marking')
+    cm = self.get('case-marking')
     canon = []
     user = []
     if cm == 'nom-acc':
       canon.append('nom')
-      user.append(self.get_full(cm + '-nom-case-name'))
+      user.append(self.choices[cm + '-nom-case-name'])
       canon.append('acc')
-      user.append(self.get_full(cm + '-acc-case-name'))
+      user.append(self.choices[cm + '-acc-case-name'])
     elif cm == 'erg-abs':
       canon.append('erg')
-      user.append(self.get_full(cm + '-erg-case-name'))
+      user.append(self.choices[cm + '-erg-case-name'])
       canon.append('abs')
-      user.append(self.get_full(cm + '-abs-case-name'))
+      user.append(self.choices[cm + '-abs-case-name'])
     elif cm == 'tripartite':
       canon.append('s')
-      user.append(self.get_full(cm + '-s-case-name'))
+      user.append(self.choices[cm + '-s-case-name'])
       canon.append('a')
-      user.append(self.get_full(cm + '-a-case-name'))
+      user.append(self.choices[cm + '-a-case-name'])
       canon.append('o')
-      user.append(self.get_full(cm + '-o-case-name'))
+      user.append(self.choices[cm + '-o-case-name'])
     elif cm in ['split-s']:
       canon.append('a')
-      user.append(self.get_full(cm + '-a-case-name'))
+      user.append(self.choices[cm + '-a-case-name'])
       canon.append('o')
-      user.append(self.get_full(cm + '-o-case-name'))
+      user.append(self.choices[cm + '-o-case-name'])
     elif cm in ['fluid-s']:
-      a_name = self.get_full(cm + '-a-case-name')
-      o_name = self.get_full(cm + '-o-case-name')
+      a_name = self.choices[cm + '-a-case-name']
+      o_name = self.choices[cm + '-o-case-name']
       canon.append('a+o')
       user.append('fluid')
       canon.append('a')
@@ -602,34 +500,25 @@ class ChoicesFile:
       user.append(o_name)
     elif cm in ['split-n', 'split-v']:
       canon.append('nom')
-      user.append(self.get_full(cm + '-nom-case-name'))
+      user.append(self.choices[cm + '-nom-case-name'])
       canon.append('acc')
-      user.append(self.get_full(cm + '-acc-case-name'))
+      user.append(self.choices[cm + '-acc-case-name'])
       canon.append('erg')
-      user.append(self.get_full(cm + '-erg-case-name'))
+      user.append(self.choices[cm + '-erg-case-name'])
       canon.append('abs')
-      user.append(self.get_full(cm + '-abs-case-name'))
+      user.append(self.choices[cm + '-abs-case-name'])
     elif cm in ['focus']:
       canon.append('focus')
-      user.append(self.get_full(cm + '-focus-case-name'))
+      user.append(self.choices[cm + '-focus-case-name'])
       canon.append('a')
-      user.append(self.get_full(cm + '-a-case-name'))
+      user.append(self.choices[cm + '-a-case-name'])
       canon.append('o')
-      user.append(self.get_full(cm + '-o-case-name'))
+      user.append(self.choices[cm + '-o-case-name'])
 
     # fill in any additional cases the user has specified
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('case')
-    while self.iter_valid():
-      name = self.get('name')
-      canon.append(name)
-      user.append(name)
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
+    for case in self.get('case'):
+      canon.append(case['name'])
+      user.append(case['name'])
 
     # if possible without causing collisions, shorten the case names to
     # three-letter abbreviations; otherwise, just use the names as the
@@ -664,7 +553,7 @@ class ChoicesFile:
   #   fourth argument is true if the verb follows a direct-inverse
   #   marking pattern.
   def patterns(self):
-    cm = self.get_full('case-marking')
+    cm = self.get('case-marking')
     cases = self.cases()
 
     patterns = []
@@ -723,7 +612,7 @@ class ChoicesFile:
           patterns[i][1] = 'transitive (%s-%s)' % (w[0], w[1])
 
     # Finally, extend the patterns to include direct-inverse, as needed
-    if self.get('scale1_feat1_name'):
+    if self.has_dirinv():
       for i in range(0, len(patterns)):
         if patterns[i][0] == 'trans' or patterns[i][0].find('-') != -1:
           patterns += [ [ patterns[i][0] + ',dirinv',
@@ -741,31 +630,10 @@ class ChoicesFile:
   def numbers(self):
     numbers = []
 
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('number')
-    while self.iter_valid():
-      name = self.get('name')
-
-      stype = ''
-      self.iter_begin('supertype')
-      while self.iter_valid():
-        if stype:
-          stype += ';'
-        stype += self.get('name')
-        self.iter_next()
-      self.iter_end()
-
-      if not stype:
-        stype = 'number'
-
+    for n in self.get('number'):
+      name = n['name']
+      stype = ';'.join([s['name'] for s in n.get('supertype',[])]) or 'number'
       numbers += [[name, stype]]
-      
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
 
     return numbers
 
@@ -778,7 +646,7 @@ class ChoicesFile:
   def persons(self):
     persons = []
 
-    person = self.get_full('person')
+    person = self.get('person')
     if person == '1-2-3':
       persons += [['1st', 'person']]
       persons += [['2nd', 'person']]
@@ -811,11 +679,8 @@ class ChoicesFile:
   def pernums(self):
     pernums = []
 
-    state = self.iter_state()
-    self.iter_reset()
-
     fp = self.get('first-person')
-    if fp not in ['', 'none']:
+    if fp and fp != 'none':
       num_leaves = []
       num_supers = []
       for n in self.numbers():
@@ -852,16 +717,11 @@ class ChoicesFile:
                   pernums += [[pn + '_incl', pn]]
                   pernums += [[pn + '_excl', pn]]
             elif fp == 'other':
-              self.iter_begin('person-subtype')
-              while self.iter_valid():
-                name = self.get('name')
-                for num in self.get('number').split(', '):
+              for p_st in self.get('person-subtype'):
+                name = p_st['name']
+                for num in p_st['number'].split(', '):
                   if num == n:
                     pernums += [[pn + '_' + name, pn]]
-                self.iter_next()
-              self.iter_end()
-
-    self.iter_set_state(state)
 
     return pernums
 
@@ -874,31 +734,10 @@ class ChoicesFile:
   def genders(self):
     genders = []
 
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('gender')
-    while self.iter_valid():
-      name = self.get('name')
-
-      stype = ''
-      self.iter_begin('supertype')
-      while self.iter_valid():
-        if stype:
-          stype += ';'
-        stype += self.get('name')
-        self.iter_next()
-      self.iter_end()
-
-      if not stype:
-        stype = 'gender'
-
+    for g in self.get('gender'):
+      name = g.get('name',[])
+      stype = ';'.join([s['name'] for s in g.get('supertype',[])]) or 'gender'
       genders += [[name, stype]]
-      
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
 
     return genders
 
@@ -911,21 +750,11 @@ class ChoicesFile:
   def forms(self):
     forms = []
 
-    state = self.iter_state()
-    self.iter_reset()
-    
-    if self.get('has-aux') == 'yes' or  self.get('noaux-fin-nf') == 'on':
+    if self.get('has-aux') == 'yes' or self.get('noaux-fin-nf') == 'on':
       forms += [ ['finite'], ['nonfinite'] ]
-
-      for p in ['nf', 'fin']: 
-        self.iter_begin(p + '-subform')
-        while self.iter_valid():
-          forms += [ [self.get('name')] ]
-
-          self.iter_next()
-        self.iter_end()
-
-    self.iter_set_state(state)
+      for p in ['nf', 'fin']:
+        for p_sf in self.get(p + '-subform'):
+          forms += [[p_sf['name']]]
 
     return forms
 
@@ -937,31 +766,17 @@ class ChoicesFile:
   def tenses(self):
     tenses = []
 
-    state = self.iter_state()
-    self.iter_reset()
+    tdefn = self.get('tense-definition')
 
-    tdefn = self.get_full('tense-definition')
-    
     if tdefn == 'choose':
-
       for ten in ('past', 'present', 'future', 'nonpast', 'nonfuture'):
-
-        if self.is_set(ten):
-          tenses += [ [ten] ]
-          self.iter_begin(ten + '-subtype')
-          while self.iter_valid():
-            tenses += [ [self.get('name')] ]
-            self.iter_next()
-          self.iter_end()
-
+        if ten in self.choices:
+          tenses += [[ten]]
+          for t_st in self.get(ten + '-subtype'):
+            tenses += [ [t_st['name']] ]
     elif tdefn == 'build':
-      self.iter_begin('tense')
-      while self.iter_valid():
-        tenses += [ [self.get('name')] ]
-        self.iter_next()
-      self.iter_end()
-
-    self.iter_set_state(state)
+      for ten in self.get('tense'):
+        tenses += [ [ten['name']] ]
 
     return tenses
 
@@ -971,20 +786,7 @@ class ChoicesFile:
   #   This list consists of tuples:
   #     [aspect name]
   def aspects(self):
-    aspects = []
-
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('aspect')
-    while self.iter_valid():
-      aspects += [ [self.get('name')] ]
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
-
-    return aspects
+    return [aspect['name'] for aspect in self.get('aspect')]
 
   # situations()
   #   Create and return a list containing information about the values
@@ -992,44 +794,27 @@ class ChoicesFile:
   #   This list consists of tuples:
   #     [situation name]
   def situations(self):
-    situations = []
-
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('situation')
-    while self.iter_valid():
-      situations += [ [self.get('name')] ]
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
-
-    return situations
-
+    return [situation['name'] for situation in self.get('situation')]
 
   def types(self):
     """
-    Create and return a list containing type names. FIX - these are based on the 
-    choices file. Need to include required types and inferred types as well.
-    This list consists of tuples:
-    [type name]
+    Create and return a list containing type names. FIX - these are
+    based on the choices file. Need to include required types and
+    inferred types as well. This list consists of tuples: [(type, name)]
     """
-    types = []
+    return [(self.choices[t]['name'], t)
+            for t in ('noun', 'verb', 'aux', 'det')
+            if t in self.choices and 'name' in self.choices[t]]
 
-    state = self.iter_state()
-    self.iter_reset()
-
-    for t in ['noun', 'verb', 'aux', 'det']:
-      self.iter_begin(t)
-      while self.iter_valid():
-        types += [ [self.get('name'), t] ]
-        self.iter_next()
-      self.iter_end()
-
-    self.iter_set_state(state)
-    return types
-  
+  def __get_features(self, feat_list, i1, i2, label, tdl):
+    """
+    If there are values available for the given feature, construct a
+    list of the feature label, values, and tdl code for that feature.
+    """
+    values = ';'.join([x[i1] + '|' + x[i2] for x in feat_list])
+    if values:
+      return [ [label, values, tdl] ]
+    return []
 
   # features()
   #   Create and return a list containing information about the
@@ -1044,188 +829,114 @@ class ChoicesFile:
     features = []
 
     # Case
-    values = ''
-    for c in self.cases():
-      if values:
-        values += ';'
-      values += c[0] + '|' + c[1]
-
-    if values:
-      features += [ ['case', values, 'LOCAL.CAT.HEAD.CASE'] ]
-
+    features += self.__get_features(self.cases(), 0, 1, 'case',
+                                    'LOCAL.CAT.HEAD.CASE')
     # Number, Person, and Pernum
     pernums = self.pernums()
     if pernums:
-      values = ''
-      for pn in pernums:
-        if values:
-          values += ';'
-        values += pn[0] + '|' + pn[0]
-
-      if values:
-        features += [ ['pernum', values, 'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM'] ]
+      features += self.__get_features(pernums, 0, 0, 'pernum',
+                                      'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM')
     else:
-      values = ''
-      for n in self.numbers():
-        if values:
-          values += ';'
-        values += n[0] + '|' + n[0]
-
-      if values:
-        features += [ ['number', values, 'LOCAL.CONT.HOOK.INDEX.PNG.NUM'] ]
-
-      values = ''
-      for p in self.persons():
-        if values:
-          values += ';'
-        values += p[0] + '|' + p[0]
-
-      if values:
-        features += [ ['person', values, 'LOCAL.CONT.HOOK.INDEX.PNG.PER'] ]
+      features += self.__get_features(self.numbers(), 0, 0, 'number',
+                                      'LOCAL.CONT.HOOK.INDEX.PNG.NUM')
+      features += self.__get_features(self.persons(), 0, 0, 'person',
+                                      'LOCAL.CONT.HOOK.INDEX.PNG.PER')
 
     # Gender
-    values = ''
-    for g in self.genders():
-      if values:
-        values += ';'
-      values += g[0] + '|' + g[0]
-
-    if values:
-      features += [ ['gender', values, 'LOCAL.CONT.HOOK.INDEX.PNG.GEND'] ]
+    features += self.__get_features(self.genders(), 0, 0, 'gender',
+                                    'LOCAL.CONT.HOOK.INDEX.PNG.GEND')
 
     # Case patterns
-    values = ''
-    for p in self.patterns():
-      if values:
-        values += ';'
-      if p[2]:
-        values += p[0] + '|' + p[1]
+    features += self.__get_features(self.patterns(), 0, 1,
+                                    'argument structure', '')
 
-    if values:
-      features += [ ['argument structure', values, ''] ]
-    
     # Form
-    values = ''
-    for f in self.forms():
-      if values:
-        values += ';'
-      values += f[0] + '|' + f[0]
-
-    if values:
-      features += [ ['form', values, 'LOCAL.CAT.HEAD.FORM'] ]
+    features += self.__get_features(self.forms(), 0, 0, 'form',
+                                    'LOCAL.CAT.HEAD.FORM')
 
     # Tense
-    values = ''
-    for t in self.tenses():
-      if values:
-        values += ';'
-      values += t[0] + '|' + t[0]
-    
-    if values:
-      features += [ ['tense', values, 'LOCAL.CONT.HOOK.INDEX.E.TENSE'] ]
+    features += self.__get_features(self.tenses(), 0, 0, 'tense',
+                                    'LOCAL.CONT.HOOK.INDEX.E.TENSE')
 
     # Viewpoint Aspect
-    values = ''
-    for a in self.aspects():
-      if values:
-        values += ';'
-      values += a[0] + '|' + a[0]
-    
-    if values:
-      features += [ ['aspect', values, 'LOCAL.CONT.HOOK.INDEX.E.ASPECT'] ]
+    features += self.__get_features(self.aspects(), 0, 0, 'aspect',
+                                    'LOCAL.CONT.HOOK.INDEX.E.ASPECT')
 
     #Situation Aspect
-    values = ''
-    for s in self.situations():
-      if values:
-        values += ';'
-      values += s[0] + '|' + s[0]
-    
-    if values:
-      features += [ ['situation', values, 'LOCAL.CONT.HOOK.INDEX.E.SITUATION'] ]
+    features += self.__get_features(self.situations(), 0, 0, 'situation',
+                                    'LOCAL.CONT.HOOK.INDEX.E.SITUATION')
 
     # Direction
-    if self.get_full('scale1_feat1_name'):
+    if self.has_dirinv():
       features += [ ['direction',
                      'dir|direct;inv|inverse',
                      'LOCAL.CAT.HEAD.DIRECTION'] ]
 
     # Negaton
-    if self.get_full('infl-neg'):
+    if 'infl-neg' in self.choices:
       features += [ ['negation', 'plus|plus', '' ] ]
 
     # Questions
-    if self.get_full('q-infl'):
+    if 'q-infl' in self.choices:
       features += [ ['question', 'plus|plus', '' ] ]
 
     # Argument Optionality
-    if self.get_full('subj-drop') or self.get_full('obj-drop'):
+    if 'subj-drop' in self.choices or 'obj-drop' in self.choices:
       features +=[['OPT', 'plus|plus;minus|minus', '']]
-    
+
+    perm_notperm_string = 'permitted|permitted;not-permitted|not-permitted'
     # Overt Argument
-    if  self.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and self.get_full('obj-mark-drop') == 'obj-mark-drop-req':
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
-    elif self.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-not' and self.get_full('obj-mark-drop') == 'obj-mark-drop-req':
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
-    elif self.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-not' and self.get_full('subj-mark-drop') == 'subj-mark-drop-req':
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
-    elif self.get_full('obj-mark-no-drop') == 'obj-mark-no-drop-not' and self.get_full('obj-mark-drop') == 'obj-mark-drop-opt' :
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
-    elif self.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-not' and self.get_full('subj-mark-drop') == 'subj-mark-drop-opt' :
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
-    elif  self.get_full('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and self.get_full('subj-mark-drop') == 'subj-mark-drop-req':
-      features += [['overt-arg', 'permitted|permitted;not-permitted|not-permitted', '']]
+    if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
+       self.get('obj-mark-drop') == 'obj-mark-drop-req':
+      features += [['overt-arg', perm_notperm_string, '']]
+    elif self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
+         self.get('obj-mark-drop') == 'obj-mark-drop-req':
+      features += [['overt-arg', perm_notperm_string, '']]
+    elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and \
+         self.get('subj-mark-drop') == 'subj-mark-drop-req':
+      features += [['overt-arg', perm_notperm_string, '']]
+    elif self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
+         self.get('obj-mark-drop') == 'obj-mark-drop-opt' :
+      features += [['overt-arg', perm_notperm_string, '']]
+    elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and \
+         self.get('subj-mark-drop') == 'subj-mark-drop-opt' :
+      features += [['overt-arg', perm_notperm_string, '']]
+    elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and \
+         self.get('subj-mark-drop') == 'subj-mark-drop-req':
+      features += [['overt-arg', perm_notperm_string, '']]
 
     # Dropped Argument
-    if self.get_full('obj-mark-drop')== 'obj-mark-drop-not' and self.get_full('obj-mark-no-drop')== 'obj-mark-no-drop-req':
-      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
+    if self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
+       self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+      features += [['dropped-arg', perm_notperm_string,'']]
+    elif self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
+         self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt':
+      features += [['dropped-arg', perm_notperm_string,'']]
+    elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
+         self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+      features += [['dropped-arg', perm_notperm_string,'']]
+    elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
+         self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt':
+      features += [['dropped-arg', perm_notperm_string,'']]
 
-    elif self.get_full('obj-mark-drop')== 'obj-mark-drop-not' and self.get_full('obj-mark-no-drop')== 'obj-mark-no-drop-opt':
-      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
+    for feature in self.get('feature'):
+      feat_name = feature['name']
+      feat_type = feature['type']
 
-    elif self.get_full('subj-mark-drop')== 'subj-mark-drop-not' and self.get_full('subj-mark-no-drop')== 'subj-mark-no-drop-req':
-      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
-
-    elif self.get_full('subj-mark-drop')== 'subj-mark-drop-not' and self.get_full('subj-mark-no-drop')== 'subj-mark-no-drop-opt':
-      features += [['dropped-arg', 'permitted|permitted;not-permitted|not-permitted','']]
-
-    # Other features
-    state = self.iter_state()
-    self.iter_reset()
-
-    self.iter_begin('feature')
-    while self.iter_valid():
-      feat = self.get('name')
-      type = self.get('type')
-      values = ''
-
-      self.iter_begin('value')
-      while self.iter_valid():
-        val = self.get('name')
-
-        if values:
-          values += ';'
-        values += val + '|' + val
-        
-        self.iter_next()
-      self.iter_end()
+      values = ';'.join([val['name'] + '|' + val['name']
+                         for val in feature.get('value', [])])
 
       geom = ''
-      if type == 'head':
-        geom = 'LOCAL.CAT.HEAD.' + feat.upper()
+      if feat_type == 'head':
+        geom = 'LOCAL.CAT.HEAD.' + feat_name.upper()
       else:
-        geom = 'LOCAL.CONT.HOOK.INDEX.PNG.' + feat.upper()
+        geom = 'LOCAL.CONT.HOOK.INDEX.PNG.' + feat_name.upper()
 
       if values:
-        features += [ [feat, values, geom] ]
-      
-      self.iter_next()
-    self.iter_end()
-
-    self.iter_set_state(state)
+        features += [ [feat_name, values, geom] ]
 
     return features
-    
+
 
   ######################################################################
   # Conversion methods: each of these functions assumes the choices
@@ -1239,19 +950,19 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 18
-
+    return 19
 
   def convert_value(self, key, old, new):
-    if self.is_set(key) and self.get(key) == old:
-      self.set(key, new)
+    if key in self and self[key] == old:
+      self[key] = new
 
-
-  def convert_key(self, old, new):
-    if self.is_set(old):
-      self.set(new, self.get(old))
-      self.delete(old)
-  
+  def convert_key(self, old, new, key_prefix=''):
+    if key_prefix:
+      old = '_'.join([key_prefix, old])
+      new = '_'.join([key_prefix, new])
+    if old in self:
+      self[new] = self[old]
+      self.delete(old, prune=True)
 
   def convert_0_to_1(self):
     self.convert_key('wordorder', 'word-order')
@@ -1396,13 +1107,13 @@ class ChoicesFile:
     # The old 'ques' radio button has been converted into a series of
     # checkboxes, of which 'inv' has been renamed 'q-inv' and 'int'
     # has been removed.
-    if self.is_set('ques'):
+    if 'ques' in self:
       ques = self.get('ques')
       self.delete('ques')
       if ques == 'inv':
         ques = 'q-inv'
       if ques != 'int':
-        self.set(ques, 'on')
+        self[ques] = 'on'
 
   def convert_2_to_3(self):
     # Added a fuller implementation of case marking on core arguments,
@@ -1425,56 +1136,56 @@ class ChoicesFile:
       Aorder = self.get('obj-adp-order')
 
     if Sorth == '' and Aorth == '' and Oorth == '':
-      if len(self.keys()):  # don't add this if the choices file is empty
-        self.set('case-marking', 'none')
+      if len(self):  # don't add this if the choices file is empty
+        self['case-marking'] = 'none'
     elif Sorth == Aorth and Sorth != Oorth:
-      self.set('case-marking', 'nom-acc')
-      self.set('nom-case-label', 'nominative')
-      self.set('acc-case-label', 'accusative')
+      self['case-marking'] = 'nom-acc'
+      self['nom-case-label'] = 'nominative'
+      self['acc-case-label'] = 'accusative'
       if Aorth:
-        self.set('nom-case-pat', 'np')
-        self.set('nom-case-order', Aorder)
+        self['nom-case-pat'] = 'np'
+        self['nom-case-order'] = Aorder
       else:
-        self.set('nom-case-pat', 'none')
+        self['nom-case-pat'] = 'none'
       if Oorth:
-        self.set('acc-case-pat', 'np')
-        self.set('acc-case-order', Oorder)
+        self['acc-case-pat'] = 'np'
+        self['acc-case-order'] = Oorder
       else:
-        self.set('acc-case-pat', 'none')
+        self['acc-case-pat'] = 'none'
     elif Sorth != Aorth and Sorth == Oorth:
-      self.set('case-marking', 'erg-asb')
-      self.set('erg-case-label', 'ergative')
-      self.set('abs-case-label', 'absolutive')
+      self['case-marking'] = 'erg-asb'
+      self['erg-case-label'] = 'ergative'
+      self['abs-case-label'] = 'absolutive'
       if Aorth:
-        self.set('erg-case-pat', 'np')
-        self.set('erg-case-order', Aorder)
+        self['erg-case-pat'] = 'np'
+        self['erg-case-order'] = Aorder
       else:
-        self.set('erg-case-pat', 'none')
+        self['erg-case-pat'] = 'none'
       if Oorth:
-        self.set('abs-case-pat', 'np')
-        self.set('abs-case-order', Oorder)
+        self['abs-case-pat'] = 'np'
+        self['abs-case-order'] = Oorder
       else:
-        self.set('abs-case-pat', 'none')
+        self['abs-case-pat'] = 'none'
     else:
-      self.set('case-marking', 'tripartite')
-      self.set('s-case-label', 'subjective')
-      self.set('a-case-label', 'agentive')
-      self.set('o-case-label', 'objective')
+      self['case-marking'] = 'tripartite'
+      self['s-case-label'] = 'subjective'
+      self['a-case-label'] = 'agentive'
+      self['o-case-label'] = 'objective'
       if Sorth:
-        self.set('s-case-pat', 'np')
-        self.set('s-case-order', Sorder)
+        self['s-case-pat'] = 'np'
+        self['s-case-order'] = Sorder
       else:
-        self.set('s-case-pat', 'none')
+        self['s-case-pat'] = 'none'
       if Aorth:
-        self.set('a-case-pat', 'np')
-        self.set('a-case-order', Aorder)
+        self['a-case-pat'] = 'np'
+        self['a-case-order'] = Aorder
       else:
-        self.set('a-case-pat', 'none')
+        self['a-case-pat'] = 'none'
       if Oorth:
-        self.set('o-case-pat', 'np')
-        self.set('o-case-order', Oorder)
+        self['o-case-pat'] = 'np'
+        self['o-case-order'] = Oorder
       else:
-        self.set('o-case-pat', 'none')
+        self['o-case-pat'] = 'none'
 
     self.delete('iverb-subj')
     self.delete('tverb-subj')
@@ -1484,29 +1195,38 @@ class ChoicesFile:
     self.delete('obj-adp-orth')
     self.delete('obj-adp-order')
 
+  def preparse_convert_3_to_4(self, key, value):
+    if key in ('noun1', 'noun2'):
+      key += '_orth'
+    elif key.startswith('iverb'):
+      # for iverb-pred or iverb-non-finite
+      key = key.replace('iverb-','verb1_', 1)
+      # this happens only if previous did nothing (i.e. key = "iverb")
+      key = key.replace('iverb', 'verb1_orth', 1)
+    elif key.startswith('tverb'):
+      key = key.replace('tverb-', 'verb2_', 1)
+      key = key.replace('tverb', 'verb2_orth', 1)
+    elif key == 'det1':
+      key = 'det1_orth'
+    elif key == 'det1pred':
+      key = 'det1_pred'
+    elif key == 'det2':
+      key = 'det2_orth'
+    elif key == 'det2pred':
+      key = 'det2_pred'
+
+    return (key, value)
+
   def convert_3_to_4(self):
     # Added a fuller implementation of case marking on core arguments,
     # so convert the old case-marking adposition stuff to the new
-    # choices
-    self.convert_key('noun1', 'noun1_orth')
-    self.convert_key('noun2', 'noun2_orth')
-
-    self.convert_key('iverb', 'verb1_orth')
-    self.convert_key('iverb-pred', 'verb1_pred')
-    self.convert_key('iverb-non-finite', 'verb1_non-finite')
+    # choices. Converting keys like noun1=cat is in
+    # preparse_convert_3_to_4
     if self.get('verb1_orth'):
-      self.set('verb1_valence', 'intrans')
+      self['verb1_valence'] = 'intrans'
 
-    self.convert_key('tverb', 'verb2_orth')
-    self.convert_key('tverb-pred', 'verb2_pred')
-    self.convert_key('tverb-non-finite', 'verb2_non-finite')
     if self.get('verb2_orth'):
-      self.set('verb2_valence', 'trans')
-
-    self.convert_key('det1', 'det1_orth')
-    self.convert_key('det1pred', 'det1_pred')
-    self.convert_key('det2', 'det2_orth')
-    self.convert_key('det2pred', 'det2_pred')
+      self['verb2_valence'] = 'trans'
 
   def convert_4_to_5(self):
     # An even fuller implementation of case marking, with some of the
@@ -1553,14 +1273,14 @@ class ChoicesFile:
         ns_pre = 'noun-slot' + str(cur_ns)
         nm_pre = ns_pre + '_morph' + str(cur_nm)
 
-        self.set(ns_pre + '_input1_type', cur_ni)
-        self.set(ns_pre + '_name', 'case')
-        self.set(ns_pre + '_order', order)
+        self[ns_pre + '_input1_type'] = cur_ni
+        self[ns_pre + '_name'] = 'case'
+        self[ns_pre + '_order'] = order
 
-        self.set(nm_pre + '_name', label)
-        self.set(nm_pre + '_orth', orth)
-        self.set(nm_pre + '_feat1_name', 'case')
-        self.set(nm_pre + '_feat1_value', label)
+        self[nm_pre + '_name'] = label
+        self[nm_pre + '_orth'] = orth
+        self[nm_pre + '_feat1_name'] = 'case'
+        self[nm_pre + '_feat1_value'] = label
         cur_nm += 1
 
       # create det slot and morph
@@ -1573,23 +1293,23 @@ class ChoicesFile:
         ds_pre = 'det-slot' + str(cur_ds)
         dm_pre = ds_pre + '_morph' + str(cur_dm)
 
-        self.set(ds_pre + '_input1_type', cur_di)
-        self.set(ds_pre + '_name', 'case')
-        self.set(ds_pre + '_order', order)
+        self[ds_pre + '_input1_type'] = cur_di
+        self[ds_pre + '_name'] = 'case'
+        self[ds_pre + '_order'] = order
 
-        self.set(dm_pre + '_name', label)
-        self.set(dm_pre + '_orth', orth)
-        self.set(dm_pre + '_feat1_name', 'case')
-        self.set(dm_pre + '_feat1_value', label)
+        self[dm_pre + '_name'] = label
+        self[dm_pre + '_orth'] = orth
+        self[dm_pre + '_feat1_name'] = 'case'
+        self[dm_pre + '_feat1_value'] = label
         cur_dm += 1
 
       # create adposition
       if pat == 'np':
         adp_pre = 'adp' + str(cur_adp)
-        self.set(adp_pre + '_orth', orth)
-        self.set(adp_pre + '_order', order)
-        self.set(adp_pre + '_feat1_name', 'case')
-        self.set(adp_pre + '_feat1_value', label)
+        self[adp_pre + '_orth'] = orth
+        self[adp_pre + '_order'] = order
+        self[adp_pre + '_feat1_name'] = 'case'
+        self[adp_pre + '_feat1_value'] = label
 
     self.convert_key('nom-case-label', 'nom-acc-nom-case-name')
     self.convert_key('acc-case-label', 'nom-acc-acc-case-name')
@@ -1606,30 +1326,26 @@ class ChoicesFile:
       self.delete(p + '-case-order')
       self.delete(p + '-case-orth')
 
-    self.iter_begin('verb')
-    while self.iter_valid():
-      v = self.get('valence')
+    for verb in self['verb']:
+      v = verb.get('valence')
       if v == 'intrans':
         if cm == 'none':
           pass
         elif cm == 'nom-acc':
-          self.set('valence', 'nom')
+          self['valence'] = 'nom'
         elif cm == 'erg-abs':
-          self.set('valence', 'abs')
+          self['valence'] = 'abs'
         elif cm == 'tripartite':
-          self.set('valence', 's')
+          self['valence'] = 's'
       elif v == 'trans':
         if cm == 'none':
           pass
         elif cm == 'nom-acc':
-          self.set('valence', 'nom-acc')
+          self['valence'] = 'nom-acc'
         elif cm == 'erg-abs':
-          self.set('valence', 'erg-abs')
+          self['valence'] = 'erg-abs'
         elif cm == 'tripartite':
-          self.set('valence', 'a-o')
-
-      self.iter_next()
-    self.iter_end()
+          self['valence'] = 'a-o'
 
   def convert_5_to_6(self):
     self.convert_key('aux-order', 'aux-comp-order')
@@ -1640,78 +1356,45 @@ class ChoicesFile:
     self.convert_key('aux-pred', 'aux1_pred')
     self.convert_key('aux-subj', 'aux1_subj')
     if self.get('aux1_orth'):
-      self.set('has-aux','yes')
-    elif len(self.keys()):  # don't add this if the choices file is empty
-      self.set('has-aux','no')
+      self['has-aux'] = 'yes'
+    elif len(self):  # don't add this if the choices file is empty
+      self['has-aux'] = 'no'
 
-    self.iter_begin('verb')
-    while self.iter_valid():
-      self.delete('non-finite')
-      self.iter_next()
-    self.iter_end()
+    for verb in self['verb']:
+      self.delete('_'.join([verb.full_key, 'non-finite']))
 
   def convert_6_to_7(self):
     # Lexical types now have multiple stems
     for lextype in ['noun', 'verb', 'det']:
-      self.iter_begin(lextype)
-      while self.iter_valid():
-        self.convert_key('orth', 'stem1_orth')
-        self.convert_key('pred', 'stem1_pred')
+      for lt in self[lextype]:
+        self.convert_key('orth', 'stem1_orth', key_prefix=lt.full_key)
+        self.convert_key('pred', 'stem1_pred', key_prefix=lt.full_key)
 
-        self.iter_next()
-      self.iter_end()
-
-    if not self.get('person') and len(self.keys()):
-      self.set('person', 'none')
+    if not self.get('person') and len(self):
+      self['person'] = 'none'
 
   def convert_7_to_8(self):
     # Other features no longer use the magic word 'root', they instead
     # use the name of the feature.
-    self.iter_begin('feature')
-    while self.iter_valid():
-      fname = self.get('name')
-      
-      self.iter_begin('value')
-      while self.iter_valid():
-        self.iter_begin('supertype')
-        while self.iter_valid():
-          self.convert_value('name', 'root', fname)
-
-          self.iter_next()
-        self.iter_end()
-
-        self.iter_next()
-      self.iter_end()
-
-      self.iter_next()
-    self.iter_end()
+    for feature in self['feature']:
+      fname = feature['name']
+      for value in feature.get('value',[]):
+        for st in value.get('supertype',[]):
+          self.convert_value(st.full_key + '_name', 'root', fname)
 
   def convert_8_to_9(self):
     # finite and nonfinite feature value name changes
     # in aux complement form values
+    for aux in self['aux']:
+      self.convert_value(aux.full_key + '_compform','fin','finite')
+      self.convert_value(aux.full_key + '_compform', 'nf', 'nonfinite')
+    # in slot feature values
     for lextype in ['aux','det','verb','noun']:
-      if lextype == 'aux':
-        self.iter_begin(lextype)
-        while self.iter_valid():
-          self.convert_value('compform','fin','finite')
-          self.convert_value('compform', 'nf', 'nonfinite')
-          self.iter_next()
-        self.iter_end()
-      # in slot feature values
-      self.iter_begin(lextype + '-slot')
-      while self.iter_valid():
-        self.iter_begin('morph')
-        while self.iter_valid():
-          self.iter_begin('feat')
-          while self.iter_valid():
-            self.convert_value('value','fin','finite')
-            self.convert_value('value','nf','nonfinite')
-            self.iter_next()
-          self.iter_end()
-          self.iter_next()
-        self.iter_end()
-        self.iter_next()
-      self.iter_end()  
+      for slot in self[lextype + '-slot']:
+        for morph in slot.get('morph',[]):
+          for feat in morph.get('feat',[]):
+            self.convert_value(feat.full_key + '_value','fin','finite')
+            self.convert_value(feat.full_key + '_value','nf','nonfinite')
 
   def convert_9_to_10(self):
     """
@@ -1726,34 +1409,23 @@ class ChoicesFile:
     self.convert_key('non-past', 'nonpast')
     self.convert_key('non-future', 'nonfuture') 
 
-    i = 0
-    self.iter_begin('aux')
-    while self.iter_valid():
-      i += 1
-      v = self.get('nonfincompform')
-      k = 'nf-subform' + str(i) + '_name'
-      self.convert_value('compform', 'nonfinite', v)
+    for i, aux in enumerate(self['aux']):
+      v = aux.get('nonfincompform', '')
+      k = 'nf-subform' + str(i+1) + '_name'
+      self.convert_value(aux.full_key + '_compform', 'nonfinite', v)
 
-      if self.is_set('nonfincompform'):
-        self.set_full(k,v)
-      self.delete('nonfincompform')
+      if 'nonfincompform' in aux:
+        self[k] = v
+        self.delete(aux.full_key + '_nonfincompform', prune=True)
 
-      self.iter_next()
-    self.iter_end()
-  
   def convert_10_to_11(self):
     """
     Previous versions allowed only one stem per auxiliary type.
     This conversion changes auxiliary orth and pred values to stem1 orth and pred.
     """
-    self.iter_begin('aux')
-
-    while self.iter_valid():
-      self.convert_key('orth', 'stem1_orth')
-      self.convert_key('pred', 'stem1_pred')
-
-      self.iter_next()
-    self.iter_end()
+    for aux in self['aux']:
+      self.convert_key('orth', 'stem1_orth', key_prefix=aux.full_key)
+      self.convert_key('pred', 'stem1_pred', key_prefix=aux.full_key)
 
   def convert_11_to_12(self):
     """
@@ -1762,35 +1434,24 @@ class ChoicesFile:
     this is no answered by one question for all auxiliaries.
     This conversion gives aux-comp the value of the first aux's comp, and deletes all type specific aux-comp values.
     """
-   
+
     if self.get('has-aux') == 'yes':
       auxval = self.get('aux1_comp')
-      self.set('aux-comp',auxval)
-      i = 0
-      while self.iter_valid():
-        i += 1
-        self.delete('aux' + i + '_comp')
+      self['aux-comp'] = auxval
+      for aux in self['aux']:
+          self.delete(aux.full_key + '_comp')
 
   def convert_12_to_13(self):
-    """ 
+    """
     ERB: stupidly used "+" as a feature value.  Updating this
     to "plus".  Feature name was "negation".
     """
     for lextype in ['aux','det','verb','noun']:
-      self.iter_begin(lextype + '-slot')
-      while self.iter_valid():
-        self.iter_begin('morph')
-        while self.iter_valid():
-          self.iter_begin('feat')
-          while self.iter_valid():
-            if self.get('name') == 'negation':
-              self.convert_value('value','+','plus')
-            self.iter_next()
-          self.iter_end()
-          self.iter_next()
-        self.iter_end()
-        self.iter_next()
-      self.iter_end()  
+      for lt in self[lextype + '-slot']:
+        for morph in lt.get('morph',[]):
+          for feat in morph.get('feat',[]):
+            if feat['name'] == 'negation':
+              self.convert_value(feat.full_key + '_value','+','plus')
 
   def convert_13_to_14(self):
     """
@@ -1798,23 +1459,14 @@ class ChoicesFile:
     for defining subtypes under 1p-non-sg into the choices for defining
     your own subtypes.
     """
-    numbers = []
-    self.iter_begin('number')
-    while self.iter_valid():
-      numbers += [ self.get('name') ]
-      self.iter_next()
-    self.iter_end()
+    numbers = [num['name'] for num in self['numbers']]
 
-    number = ''
-    for n in numbers[1:]:
-      if len(number):
-        number += ', '
-      number += n
+    number = ', '.join(numbers[1:])
 
     fp = self.get('first-person')
     subtypes = []
     if fp == 'incl-excl':
-      self.set('incl-excl-number', number)
+      self['incl-excl-number'] = number
     elif fp == 'min-incl':
       subtypes = ['min', 'incl']
     elif fp == 'aug-incl':
@@ -1823,13 +1475,11 @@ class ChoicesFile:
       subtypes = ['min', 'incl', 'aug']
 
     if len(subtypes) and len(number):
-      self.set('first-person', 'other')
-      self.iter_begin('person-subtype')
-      for st in subtypes:
-        self.set('name', st)
-        self.set('number', number)
-        self.iter_next()
-      self.iter_end()
+      self['first-person'] = 'other'
+      for person_subtype in self['person-subtype']:
+        for st in subtypes:
+          person_subtype['name'] = st
+          person_subtype['number'] = number
 
   def convert_14_to_15(self):
     """
@@ -1841,27 +1491,18 @@ class ChoicesFile:
     """
 
     for slotprefix in ('noun', 'verb', 'det', 'aux'):
-      self.iter_begin(slotprefix + '-slot')
-      while self.iter_valid():
+      for slot in self.get(slotprefix + '-slot',[]):
         constraints = []
 
         for contype in ('forces', 'req', 'disreq'):
-          self.iter_begin(contype)
-          while self.iter_valid():
-            constraints += [ [ contype, self.get('type') ] ]
-            self.delete('type')
-            self.iter_next()
-          self.iter_end()
+          for ct in slot.get(contype, []):
+            constraints += [ [ contype, ct.get('type') ] ]
+            self.delete(ct.full_key + '_type', prune=True)
 
-        self.iter_begin('constraint')
-        for c in constraints:
-          self.set('type', c[0])
-          self.set('other-slot', c[1])
-          self.iter_next()
-        self.iter_end()
-
-        self.iter_next()
-      self.iter_end()
+        for i, c in enumerate(constraints):
+          constraint_key = slot.full_key + '_constraint%d' % (i+1)
+          self[constraint_key + '_type'] = c[0]
+          self[constraint_key + '_other-slot'] = c[1]
 
   def convert_15_to_16(self):
     """
@@ -1873,28 +1514,20 @@ class ChoicesFile:
     --markY_name=mY -> featureX_valueY_name=mY
     --featureX_valueY_supertype_name=mark
     """
-    mvalues = []
-    self.iter_begin('mark')
-    while self.iter_valid():
-      mvalues.append(self.get('name'))
-      self.iter_next()
-    self.iter_end()
+    mvalues = [mark['name'] for mark in self['mark']]
 
-    if len(mvalues) != 0:
-      self.iter_begin('feature')
-      while self.iter_valid():
-        self.iter_next()
-      self.set('name','mark')
-      self.set('type','head')
-      self.iter_begin('value')
-      for mv in mvalues:
-        self.set('name', mv)
-        self.iter_begin('supertype')
-        self.set('name','mark')
-        self.iter_end()
-        self.iter_next()
-      self.iter_end()
-      self.iter_end()
+    if len(mvalues) == 0:
+      return
+    next_feat_index = len(self.get('feature',[])) + 1
+    feat_key = 'feature%d' % (next_feat_index)
+
+    self[feat_key + '_name'] = 'mark'
+    self[feat_key + '_type'] = 'head'
+
+    for i, mv in enumerate(mvalues):
+      val_key = '_value%d' % (i+1)
+      self[feat_key + val_key + '_name'] = mv
+      self[feat_key + val_key + '_supertype1_name'] = 'mark'
 
   def convert_16_to_17(self):
     """
@@ -1902,24 +1535,20 @@ class ChoicesFile:
     --replaces 'compvalue' with 'value'
     --replaces compform=Y with compfeatureX_name=form, compfeature_value=Y
     """
-    self.iter_begin('aux')
-    while self.iter_valid():
-      complementform = self.get('compform')
-      self.iter_begin('compfeature')
-      while self.iter_valid():
-        self.convert_key('compvalue', 'value')
-        self.iter_next()
-      self.set('name', 'form')
-      self.set('value', complementform)
-      self.iter_end()
-
-      self.iter_next()
-    self.iter_end()
+    for aux in self['aux']:
+      complementform = aux.get('compform')
+      for cf in aux.get('compfeature',[]):
+        self.convert_key('compvalue', 'value', key_prefix=cf.full_key)
+      index = str(len(aux.get('compfeature', [])) + 1)
+      new_key = aux.full_key + '_compfeature' + index
+      self[new_key + '_name'] = 'form'
+      self[new_key + '_value'] = complementform
+      self.delete(aux.full_key + '_compform', prune=True)
 
   def convert_17_to_18(self):
     """
     Retrofitted yesno questions library to integrate question affixes
-    with morphotactic infrastructure.  'aux-main' possibility for 
+    with morphotactic infrastructure.  'aux-main' possibility for
     q-infl-type said in the prose 'any finite verb', but I don't think
     we had actually implemented this.  This translation does not
     put [FORM fin] on the q-infl rule, since this rule will end up
@@ -1927,23 +1556,37 @@ class ChoicesFile:
     what was going on in the old system.
     """
     if self.get('q-infl') == 'on':
-      n = self.iter_max('verb-slot') + 1
+      n = len(self['verb-slot']) + 1
       pref = 'verb-slot' + str(n)
       if self.get('ques-aff') == 'suffix':
-        self.set(pref + '_order', 'after')
+        self[pref + '_order'] = 'after'
       if self.get('ques-aff') == 'prefix':
-        self.set(pref + '_order', 'before')
+        self[pref + '_order'] = 'before'
       if self.get('q-infl-type') == 'main':
-        self.set(pref + '_input1_type', 'iverb')
-        self.set(pref + '_input2_type', 'tverb')
+        self[pref + '_input1_type'] = 'iverb'
+        self[pref + '_input2_type'] = 'tverb'
       if self.get('q-infl-type') == 'aux':
-        self.set(pref + '_input1_type', 'aux')
+        self[pref + '_input1_type'] = 'aux'
       if self.get('q-infl-type') == 'aux-main':
-        self.set(pref + '_input1_type', 'verb')
-      if self.is_set('ques-aff-orth'):
-        self.set(pref + '_morph1_orth', self.get('ques-aff-orth'))
-      self.set(pref + '_name', 'q-infl')
-      self.set(pref + '_morph1_feat1_name', 'question')
-      self.set(pref + '_morph1_feat1_value', 'plus')
-      self.set(pref + '_opt', 'on')
+        self[pref + '_input1_type'] = 'verb'
+      if 'ques-aff-orth' in self:
+        self[pref + '_morph1_orth'] = self.get('ques-aff-orth')
+      self[pref + '_name'] = 'q-infl'
+      self[pref + '_morph1_feat1_name'] = 'question'
+      self[pref + '_morph1_feat1_value'] = 'plus'
+      self[pref + '_opt'] = 'on'
 
+  def preparse_convert_18_to_19(self, key, value):
+    """
+    Convert the old test sentence choices to the new iterator format.
+    """
+    if key.startswith('sentence'):
+      key += '_orth'
+    return (key, value)
+
+  def convert_18_to_19(self):
+    """
+    Do nothing here. All conversion for version 19 is in the method
+    preparse_convert_18_to_19(). This stub is here for record keeping.
+    """
+    pass # version 19 only requires preparse conversion

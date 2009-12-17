@@ -72,7 +72,7 @@ then
         $tempdir/saved-choices/.htaccess
 fi
 
-mainfiles="matrix.cgi matrix.css matrix.js matrixdef customize.py deffile.py choices.py tdl.py utils.py validate.py"
+mainfiles="matrix.cgi matrix.css matrix.js matrixdef customize.py deffile.py choices.py tdl.py utils.py validate.py util/*.py"
 cp $mainfiles $tempdir
 
 cp -R sample-choices $tempdir
@@ -86,13 +86,14 @@ then
     mkdir $tempdir/matrix-core/lkb
     mkdir $tempdir/matrix-core/pet
 
-    matrixfiles=`echo ../*.* ../README ../modules/basic_script | sed 's/..\/my_language.tdl//g' | sed 's/..\/Version.lsp//g' | sed 's/..\/CVS//g' | sed 's/..\/[^ ]*~//g'`
+    matrixfiles=`echo ../matrix-core/*.* ../matrix-core/README ../modules/basic_script | sed 's/[^ ]*my_language.tdl//g' | sed 's/[^ ]*Version.lsp//g' | sed 's/[^ ]*CVS//g' | sed 's/[^ ]*~//g'`
+
     cp $matrixfiles $tempdir/matrix-core
 
-    lkbfiles=`echo ../lkb/* | sed 's/..\/lkb\/CVS//g'`
+    lkbfiles=`echo ../matrix-core/lkb/* | sed 's/..\/lkb\/CVS//g'`
     cp $lkbfiles $tempdir/matrix-core/lkb
 
-    petfiles=`echo ../pet/* | sed 's/..\/pet\/CVS//g'`
+    petfiles=`echo ../matrix-core/pet/* | sed 's/..\/pet\/CVS//g'`
     cp $petfiles $tempdir/matrix-core/pet
 fi
 
@@ -110,10 +111,10 @@ fi
 
 if [ "$copymatrix" ]
 then
-    $cpcmd $tempdir/matrix-core $cptarg
+    $cpcmd $tempdir/matrix-core "$cptarg"
 else
     shopt -s dotglob
-    $cpcmd $tempdir/* $cptarg
+    $cpcmd $tempdir/* "$cptarg"
     shopt -u dotglob
 fi
 

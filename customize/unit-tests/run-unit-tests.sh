@@ -78,7 +78,7 @@ popd >/dev/null
 for lgname in $lgnames
 do 
 
-    printf "%-70s" "$lgname..."
+    printf "%-70s " "$lgname..."
 
 # Set skeleton, grammar, gold-standard for comparison, and
 # target directory.
@@ -158,7 +158,7 @@ do
 	   
 	
 	if [ -s $log ]; then
-	    echo "DIFFS! See log file"
+	    echo "DIFFS!"
 	else
 	    echo "Success!"
 	fi

@@ -512,6 +512,7 @@ class MatrixDefFile:
     print '</div>'
     print HTML_postbody
 
+
   # Turn a list of lines containing matrix definitions into a string
   # containing HTML.
   def defs_to_html(self, lines, choices, errors, prefix, vars):
@@ -532,7 +533,7 @@ class MatrixDefFile:
       elif word[0] == 'Check':
         (vn, fn, bf, af) = word[1:]
         vn = prefix + vn
-        checked = choices.is_set_full(vn)
+        checked = choices.get(vn)
         html += html_input(errors, 'checkbox', vn, '', checked,
                            bf, af) + '\n'
       elif word[0] == 'Radio':
@@ -544,7 +545,7 @@ class MatrixDefFile:
           word = tokenize_def(replace_vars(lines[i], vars))
           (rval, rfrn, rbef, raft) = word[1:]
           checked = False
-          if choices.is_set_full(vn) and choices.get_full(vn) == rval:
+          if choices.get(vn) == rval:
             checked = True
           html += html_input(errors, 'radio', vn, rval, checked,
                              rbef, raft) + '\n'
@@ -574,31 +575,32 @@ class MatrixDefFile:
           if fill_type == 'fillregex':
             if fill_arg2:
               html += html_select(errors, vn, multi,
-                                  'fill_regex(\'' + vn + \
+                                  'fill_regex(\'' + vn +
                                   '\', \'' + fill_arg1 + '\', true)') + '\n'
             else:
               html += html_select(errors, vn, multi,
-                                  'fill_regex(\'' + vn + \
+                                  'fill_regex(\'' + vn +
                                   '\', \'' + fill_arg1 + '\')') + '\n'
           elif fill_type == 'fillnames':
             html += html_select(errors, vn, multi,
-                                'fill_feature_names(\'' + vn + '\')') + '\n'
+                                'fill_feature_names(\'' + vn +
+                                  '\')') + '\n'
           elif fill_type == 'fillvalues':
             if fill_arg2:
               html += html_select(errors, vn, multi,
-                                  'fill_feature_values(\'' + vn + \
+                                  'fill_feature_values(\'' + vn +
                                   '\', \'' + fill_arg1 + '\', true)') + '\n'
             else:
               html += html_select(errors, vn, multi,
-                                  'fill_feature_values(\'' + vn + \
+                                  'fill_feature_values(\'' + vn +
                                   '\', \'' + fill_arg1 + '\')') + '\n'
           elif fill_type == 'fillverbpat':
             html += html_select(errors, vn, multi,
-                                'fill_case_patterns(\'' + vn + \
+                                'fill_case_patterns(\'' + vn +
                                 '\', false)') + '\n'
           elif fill_type == 'fillmorphpat':
             html += html_select(errors, vn, multi,
-                                'fill_case_patterns(\'' + vn + \
+                                'fill_case_patterns(\'' + vn +
                                 '\', true)') + '\n'
           elif fill_type == 'fillnumbers':
             html += html_select(errors, vn, multi,
@@ -606,19 +608,20 @@ class MatrixDefFile:
           elif fill_type == 'filltypes':
             
             html += html_select(errors, vn, multi,
-                                'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\')') + '\n'
+                                'fill_types(\'' + vn + '\',\'' +
+                                fill_arg1 + '\')') + '\n'
 
           html += html_option(errors, '', False, '') + '\n'
 
-          if choices.is_set_full(vn):
-            sval = choices.get_full(vn)
+          if choices.get(vn):
+            sval = choices.get(vn)
             shtml = ''
             # If we're filling in a SELECT that shows friendly names,
             # we have to look it up.
             if fill_type in ['fillvalues']:
               for sv in sval.split(', '):
                 for f in choices.features():
-                  if f[0] == choices.get_full(fill_arg1):
+                  if f[0] == choices.get(fill_arg1):
                     for v in f[1].split(';'):
                       n = v.split('|')
                       if n[0] == sv:
@@ -644,7 +647,7 @@ class MatrixDefFile:
           word = tokenize_def(replace_vars(lines[i], vars))
           (sval, sfrn, shtml) = word[1:]
           selected = False
-          if choices.is_set_full(vn) and choices.get_full(vn) == sval:
+          if choices.get(vn) == sval:
             selected = True
           html += html_option(errors, sval, selected, shtml) + '\n'
           i += 1
@@ -654,7 +657,7 @@ class MatrixDefFile:
       elif word[0] == 'Text':
         (vn, fn, bf, af, sz) = word[1:]
         vn = prefix + vn
-        value = choices.get_full(vn)
+        value = choices.get(vn)
         html += html_input(errors, 'text', vn, value, False,
                            bf, af, sz) + '\n'
       elif word[0] == 'BeginIter':
@@ -665,6 +668,8 @@ class MatrixDefFile:
         if len(word) > 3:
           iter_min = int(word[3])
         i += 1
+
+        # collect the lines that are between BeginIter and EndIter
         beg = i
         while True:
           word = tokenize_def(lines[i])
@@ -675,35 +680,43 @@ class MatrixDefFile:
           i += 1
         end = i
 
+        # write out the (invisible) template for the iterator
+        # (this will be copied by JavaScript on the client side when
+        # the user clicks the "Add" button)
         html += '<div class="iterator" style="display: none" id="' + \
                 prefix + iter_name + '_TEMPLATE">\n'
         html += html_delbutton(prefix + iter_name + '{' + iter_var + '}')
         html += '<div class="iterframe">'
-        html += self.defs_to_html(lines[beg:end], choices, errors,
+        html += self.defs_to_html(lines[beg:end],
+                                  choices, errors,
                                   prefix + iter_orig + '_', vars)
         html += '</div>\n'
         html += '</div>\n\n'
 
-        choices.iter_begin(iter_name)
-        cur = 1
-        while choices.iter_valid() or cur <= iter_min:
-          num = str(choices.iter_num())
-          pre = prefix + iter_name + num + '_'
-          vars[iter_var] = num
+        # write out as many copies of the iterator as called for by
+        # the current choices file OR iter_min copies, whichever is
+        # greater
+        c = 0
+        chlist = choices.get(prefix + iter_name)
+        while (chlist and c < len(chlist)) or c < iter_min:
+          new_prefix = prefix + iter_name + str(c+1) + '_'
+          vars[iter_var] = str(c+1)
 
-          # pre[:-1] trims the trailing '_'
-          html += '<div class="iterator" id="' + pre[:-1] + '">\n'
-          html += html_delbutton(pre[:-1])
+          # new_prefix[:-1] trims the trailing '_'
+          html += '<div class="iterator" id="' + new_prefix[:-1] + '">\n'
+          html += html_delbutton(new_prefix[:-1])
           html += '<div class="iterframe">'
-          html += self.defs_to_html(lines[beg:end], choices, errors, pre, vars)
+          html += self.defs_to_html(lines[beg:end],
+                                    choices, errors,
+                                    new_prefix, vars)
           html += '</div>\n'
           html += '</div>\n'
 
-          choices.iter_next()
           del vars[iter_var]
-          cur += 1
-        choices.iter_end()
+          c += 1
 
+        # write out the "anchor" marking the end of the iterator and
+        # the "Add" button
         html += '<div class="anchor" id="' + \
                 prefix + iter_name + '_ANCHOR"></div>\n'
         html += '<p><input type="button" name="" ' + \
@@ -770,7 +783,8 @@ class MatrixDefFile:
       print html_input(errors, 'hidden', 'section', section,
                        False, '', '\n')
       print self.defs_to_html(lines[section_begin:section_end],
-                              choices, errors, '', {})
+                              choices, errors,
+                              '', {})
 
     print html_input(errors, 'submit', '', 'Submit', False, '<p>', '')
     print html_input(errors, 'button', '', 'Clear', False, '', '</p>', '',
@@ -826,7 +840,8 @@ class MatrixDefFile:
   # values from choices into the file handle f.  The section in lines
   # need not correspond to a whole named section (e.g. "Language"), but
   # can be any part of the file not containing a section line.
-  def save_choices_section(self, lines, f, choices, iter_level = 0):
+  def save_choices_section(self, lines, f, choices,
+                           iter_level = 0, prefix = ''):
     already_saved = {}  # don't save a variable more than once
     i = 0
     while i < len(lines):
@@ -834,18 +849,17 @@ class MatrixDefFile:
       if len(word) == 0:
         pass
       elif word[0] in ['Check', 'Text', 'Radio', 'Select', 'MultiSelect']:
-        a = choices.iter_prefix() + word[1]
-        if not already_saved.has_key(a):
-          already_saved[a] = True
-          v = ''
-          if choices.is_set_full(a):
-            v = choices.get_full(a)
-          if a and v:
+        vn = word[1]
+        if prefix + vn not in already_saved:
+          already_saved[prefix + vn] = True
+          val = ''
+          if choices.get(prefix + vn):
+            val = choices.get(prefix + vn)
+          if vn and val:
             for j in range(iter_level):
               f.write('  ')
-            f.write(a + '=' + v + '\n')
+            f.write(prefix + vn + '=' + val + '\n')
       elif word[0] == 'BeginIter':
-        iter_orig = word[1]
         (iter_name, iter_var) = word[1].replace('}', '').split('{', 1)
         i += 1
         beg = i
@@ -858,11 +872,11 @@ class MatrixDefFile:
           i += 1
         end = i
 
-        choices.iter_begin(iter_name)
-        while choices.iter_valid():
-          self.save_choices_section(lines[beg:end], f, choices, iter_level + 1)
-          choices.iter_next()
-        choices.iter_end()
+        for num, var in enumerate(choices.get(prefix + iter_name)):
+          self.save_choices_section(lines[beg:end], f, choices,
+                                    iter_level = iter_level + 1,
+                                    prefix =
+                                      prefix + iter_name + str(num+1) + '_')
 
       i += 1
 
@@ -879,7 +893,7 @@ class MatrixDefFile:
     new_choices = ChoicesFile('')
     for k in form_data.keys():
       if k:
-        new_choices.set(k, form_data[k].value)
+        new_choices[k] = form_data[k].value
 
     # Read the current choices file (if any) into old_choices
     old_choices = ChoicesFile(choices_file)
