@@ -148,7 +148,7 @@ BeginIter number{i} "a Number"
   BeginIter supertype{j} "a Supertype"
 
     Select name "Number {i} supertype {j} name" "Supertype: " ""
-    fillregex number[0-9]+_name 1
+    fillregex number[0-9]+_name number{i}_name 1
     . number "Number" "number"
 
   EndIter supertype
@@ -273,7 +273,7 @@ BeginIter gender{i} "a Gender"
   BeginIter supertype{j} "a Supertype"
 
     Select name "Gender {i} supertype {j} name" "Supertype: " ""
-    fillregex gender[0-9]+_name 1
+    fillregex gender[0-9]+_name gender{i}_name 1
     . gender "Gender" "gender"
 
   EndIter supertype
@@ -573,7 +573,7 @@ BeginIter tense{i} "a tense type"
   BeginIter supertype{j} "a Supertype" 1
 
     Select name "Tense {i} supertype {j} name" "Supertype: " ""
-    fillregex tense[0-9]+_name 1
+    fillregex tense[0-9]+_name tense{i}_name 1
     . tense "Tense" "tense"
 
   EndIter supertype
@@ -622,7 +622,7 @@ BeginIter aspect{i} "an aspect type"
   BeginIter supertype{j} "a Supertype" 1
 
     Select name "Aspect {i} supertype {j} name" "Supertype: " ""
-    fillregex aspect[0-9]+_name 1
+    fillregex aspect[0-9]+_name aspect{i}_name 1
     . aspect "Aspect" "aspect"
 
   EndIter supertype
@@ -654,7 +654,7 @@ BeginIter situation{i} "a situation type"
   BeginIter supertype{j} "a Supertype" 1
 
     Select name "Situation {i} supertype {j} name" "Supertype: " ""
-    fillregex situation[0-9]+_name 1
+    fillregex situation[0-9]+_name situation{i}_name 1
     . situation "Situation" "situation"
 
   EndIter supertype
@@ -1054,8 +1054,8 @@ BeginIter noun{i} "a Noun Type" 1
 
   Text name "Noun {i} name" "Type name: " "" 30
 
-  MultiSelect supertype "Verb type {i} supertypes(s)" "Supertype(s): " "<br>"
-  filltypes noun
+  MultiSelect supertype "Noun type {i} supertypes(s)" "Supertype(s): " "<br>"
+  filltypes noun noun{i}_name
 
   Label "Features:"
 
@@ -1093,7 +1093,7 @@ BeginIter verb{i} "a Verb Type"
   Text name "Verb type {i} name" "Type name: " "" 30
 
   MultiSelect supertype "Verb type {i} supertypes(s)" "Supertype(s): " "<br>"
-  filltypes verb
+  filltypes verb verb{i}_name
 
   Label "Features:"
 
@@ -1134,7 +1134,7 @@ BeginIter aux{i} "an Auxiliary Type"
   Text name "Aux {i} type name" "Type name: " "" 30
 
   MultiSelect supertype "Auxiliary type {i} supertypes(s)" "Supertype(s): " "<br>"
-  filltypes aux
+  filltypes aux aux{i}_name
 
   Label "<div style=\"padding-left: 25px\">"
 
@@ -1190,7 +1190,7 @@ BeginIter det{i} "a Determiner"
   Text name "Determiner {i} name" "Type name: " "" 30
 
   MultiSelect supertype "Determiner type {i} supertypes(s)" "Supertype(s): " "<br>"
-  filltypes det
+  filltypes det det{i}_name
 
   Label "Features:"
 
@@ -1233,7 +1233,7 @@ Label "<h3>Noun Stems</h3>"
 
 BeginIter noun{i} "a Noun type" 1
   Select type "Noun type {i}" "Noun type: " ""
-  filltypes noun
+  filltypes noun noun{i}_name
 
   BeginIter stem{j} "a Stem" 1
 
@@ -1261,7 +1261,7 @@ BeginIter noun-slot{i} "a Slot"
   BeginIter input{j} "an Input" 1
 
     Select type "Noun slot {i} input {j} type" "Input: " ""
-    fillinputs noun-slot[0-9]+_name
+    fillinputs noun-slot[0-9]+_name noun-slot{i}_name
 
   EndIter input
 
@@ -1294,7 +1294,7 @@ BeginIter noun-slot{i} "a Slot"
     . disreq "Cannot co-occur" "If this slot appears, the other slot MUST NOT appear"
 
     Select other-slot "Noun slot {i} constraint {j} other slot" "other slot: " ""
-    fillregex (noun|verb|det)(-slot)[0-9]+_name
+    fillregex (noun|verb|det)(-slot)[0-9]+_name noun-slot{i}_name
 
   EndIter constraint
 EndIter noun-slot
@@ -1305,7 +1305,7 @@ Label "<h3>Verb Stems</h3>"
 
 BeginIter verb{i} "a Verb Type" 1
   Select type "Verb type {i}" "Verb type: " ""
-  filltypes verb
+  filltypes verb verb{i}_name
 
   BeginIter stem{j} "a Stem" 1
 
@@ -1322,7 +1322,7 @@ Label "<h3>Auxiliary Stems</h3>"
 
 BeginIter aux{i} "an Auxiliary type"
   Select type "Auxiliary type {i}" "Auxiliary type: " ""
-  filltypes aux
+  filltypes aux aux{i}_name
 
   BeginIter stem{j} "a Stem" 1
 
@@ -1350,7 +1350,7 @@ BeginIter verb-slot{i} "a Slot"
   BeginIter input{j} "an Input" 1
 
     Select type "Verb slot {i} input {j} type" "Input: " ""
-    fillinputs (verb|aux)(-slot)[0-9]+_name
+    fillinputs (verb|aux)(-slot)[0-9]+_name verb-slot{i}_name
 
   EndIter input
 
@@ -1391,7 +1391,7 @@ BeginIter verb-slot{i} "a Slot"
     . disreq "Cannot co-occur" "If this slot appears, the other slot MUST NOT appear"
 
     Select other-slot "Verb slot {i} constraint {j} other slot" "other slot: " ""
-    fillregex (noun|verb|det)(-slot)[0-9]+_name
+    fillregex (noun|verb|det)(-slot)[0-9]+_name verb-slot{i}_name
 
   EndIter constraint
 
@@ -1403,7 +1403,7 @@ Label "<h3>Determiner Stems</h3>"
 
 BeginIter det{i} "a Determiner type"
   Select type "Determiner type {i}" "Determiner type: " ""
-  filltypes det
+  filltypes det det{i}_name
 
   BeginIter stem{j} "a Stem" 1
 
@@ -1431,7 +1431,7 @@ BeginIter det-slot{i} "a Slot"
   BeginIter input{j} "an Input" 1
 
     Select type "Determiner slot {i} input {j} type" "Input: " ""
-    fillinputs det-slot[0-9]+_name
+    fillinputs det-slot[0-9]+_name det-slot{i}_name
 
   EndIter input
 
@@ -1465,7 +1465,7 @@ BeginIter det-slot{i} "a Slot"
     . disreq "Cannot co-occur" "If this slot appears, the other slot MUST NOT appear"
 
     Select other-slot "Determiner slot {i} constraint {j} other slot" "other slot: " ""
-    fillregex (noun|verb|det)(-slot)[0-9]+_name
+    fillregex (noun|verb|det)(-slot)[0-9]+_name det-slot{i}_name
 
   EndIter constraint
 

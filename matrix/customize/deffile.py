@@ -578,22 +578,31 @@ class MatrixDefFile:
         fill_type = ''
         fill_arg1 = '' 
         fill_arg2 = ''
+        fill_arg3 = ''
         fillstring = ''
 
         if lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
           fill_type = word[0]
-
+#FIX not working
           if fill_type[0:4] == 'fill':
             if len(word) > 1:
               fill_arg1 = word[1]
             if len(word) > 2:
               fill_arg2 = word[2] 
+            if len(word) > 3:
+              fill_arg3 = word[3]
 
+            #FIX below - need to change if statements to allow for either 1 argument, 2, or 3. 
+            #Can get arg 1 only, arg1 + arg3, arg1 + agr2, or agr1 +agr2 + agr3, I think - double check  
             if fill_type == 'fillregex':
-              if fill_arg2:
+              if fill_agr2 and fill_arg3:
+                fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true, \'' + prefix + '\')'
+              elif fill_arg2 and not fill_arg3:
+                fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\', \'' + prefix + '\')'
+              elif fill_arg3 and not fill_arg2:
                 fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', true, \'' + prefix + '\')'
-              else:
+              elif not fill_arg2 and not fill_arg3:
                 fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + prefix + '\')'
             elif fill_type == 'fillnames':
               if fill_arg1:
@@ -612,9 +621,9 @@ class MatrixDefFile:
             elif fill_type == 'fillnumbers':
               fillstring += 'fill_numbers(\'' + vn + '\')'
             elif fill_type == 'filltypes':
-              fillstring += 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\', true, \'' + prefix + '\')'
+              fillstring += 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true, \'' + prefix + '\')'
             elif fill_type == 'fillinputs':
-              fillstring += 'fill_inputs(\'' + vn + '\', \'' + fill_arg1 + '\', true, \'' + prefix + '\')'
+              fillstring += 'fill_inputs(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true, \'' + prefix + '\')'
             
             html += html_select(errors, vn, multi, fillstring) + '\n' 
             html += html_option(errors, '', False, '') + '\n'

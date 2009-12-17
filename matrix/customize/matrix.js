@@ -344,33 +344,33 @@ function set_select_value(select, value, text)
 // Pass through the form fields in the page, looking for ones whose
 // name attribute matches the pattern.  When one is found, use its
 // contents to create an option.
-function collect_regex(name, pattern, nameOnly){
+function collect_regex(name, pattern, self, nameOnly){
 
   var values = new Array();
   var texts = new Array();
-
+  //FIX - THE ignore self piece is not working here. 
   var e = document.forms[0].elements;
   for (var i = 0; i < e.length; i++) {
 
-    if (e[i].name.search(pattern) != -1) {
+      if (e[i].name.search(pattern) != -1) {
       var vn = e[i].name.replace(/_[^_]*$/, '');
       
       var fn = vn;
       var f = document.getElementsByName(vn + '_name');
 
-      if (f && f[0] && f[0].value) {
-        if (nameOnly) {
-	  vn = fn = f[0].value;
-	} 
-	else {
-	  fn = f[0].value + ' (' + fn + ')';
-	}
+      if (f[0] != self) {     
+	  if (f && f[0] && f[0].value) {
+	      if (nameOnly) {
+		  vn = fn = f[0].value;
+	      } 
+	      else {
+		  fn = f[0].value + ' (' + fn + ')';
+	      }
+	  }
+	  var len = values.length;
+	  values[len] = vn;
+	  texts[len] = fn;
       }
- 
-      var len = values.length;
-      values[len] = vn;
-      texts[len] = fn;
-
     }
   }
 
@@ -379,10 +379,12 @@ function collect_regex(name, pattern, nameOnly){
 
 // fill_regex()
 // Fill a SELECT tag with OPTIONs created from the values of any
-// form fields on the page whose NAME matches the pattern.  If the
-// nameOnly flag is true, make the OPTION's VALUE attribute equal to
+// form fields on the page whose NAME matches the first pattern while 
+// excluding names that match the second. This section pattern argument
+// indicates the item being defined (self) and should not be included as a choice.
+// If the nameOnly flag is true, make the OPTION's VALUE attribute equal to
 // its contents.
-function fill_regex(select_name, pattern, nameOnly)
+function fill_regex(select_name, pattern, self, nameOnly)
 {
   var select = document.getElementsByName(select_name)[0];
   var old_val = select.value;  // store the previously selected option
@@ -395,7 +397,7 @@ function fill_regex(select_name, pattern, nameOnly)
 
   pattern = '^' + pattern + '$';
 
-  var vn_fn = collect_regex(select_name, pattern, nameOnly);
+  var vn_fn = collect_regex(select_name, pattern, self, nameOnly);
   var values = vn_fn[0];
   var texts = vn_fn[1];
    
