@@ -3576,10 +3576,10 @@ def neginflrule(slot, features):
 def customize_test_sentences(grammar_path):
   try:
     b = open(grammar_path + 'lkb/script', 'r')
-    s = open(grammar_path + 'lkb/script', 'w')
-    ts = open(grammar_path + 'test_sentences', 'w')
     lines = b.readlines()
     b.close()
+    s = open(grammar_path + 'lkb/script', 'w')
+    ts = open(grammar_path + 'test_sentences', 'w')
     for l in lines:
       l = l.strip()
       if l == ';;; Modules: Default sentences':
@@ -3601,10 +3601,10 @@ def customize_test_sentences(grammar_path):
 def customize_script(grammar_path):
   try:
     b = open(grammar_path + 'lkb/script', 'r')
-    s = open(grammar_path + 'lkb/script', 'w')
-    ts = open(grammar_path + 'test_sentences', 'w')
     lines = b.readlines()
     b.close()
+    s = open(grammar_path + 'lkb/script', 'w')
+    ts = open(grammar_path + 'test_sentences', 'w')
     for l in lines:
       l = l.strip()
       if l == ';;; Modules: LOAD my_language.tdl':
