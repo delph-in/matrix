@@ -3604,7 +3604,6 @@ def customize_script(grammar_path):
     lines = b.readlines()
     b.close()
     s = open(grammar_path + 'lkb/script', 'w')
-    ts = open(grammar_path + 'test_sentences', 'w')
     for l in lines:
       l = l.strip()
       if l == ';;; Modules: LOAD my_language.tdl':
@@ -3613,7 +3612,6 @@ def customize_script(grammar_path):
       else:
         s.write(l + '\n')
     s.close()
-    ts.close()
   except:
     pass
 
