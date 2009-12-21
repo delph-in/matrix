@@ -242,34 +242,26 @@ def validate_word_order(ch, err):
             'If your language has auxiliaries, you must specify ' +
             'whether they take s, vp, or v complements.')
 
+# Added check on whether question on more than one auxiliary is answered.
+  
+  if ((ch.get('has-aux') == 'yes') and (not ch.get('multiple-aux'))):
+    add_err(err,
+            'multiple-aux',
+            'If your language has auxiliaries, you must specify ' +
+            'whether a clause may contain more than one of them.')
+
   wo = ch.get('word-order')
   co = ch.get('aux-comp-order')
   ac = ch.get('aux-comp')
 
-  if ac == 'v' and (wo == 'free' or (wo == 'vso' and co == 'before') or (wo == 'osv' and co == 'after')):
-    if (not ch.get('v-cluster')):    
-      add_err(err,
-              'v-cluster',
-              'With this general word order and auxiliary v-comp order, ' +
-              'you need to specify whether your language forms ' +
-              'vc-clusters or not.')
-  if ac == 'vp' and ch.get('v-cluster') == 'yes':
-    add_err(err,
-            'v-cluster',
-            'If your auxiliary takes a vp-complement, we assume ' +
-            'it does not form verbal clusters.')
+# ASF 2009-12-21 Question on verbal clusters no longer exists, removed all
+# related checks.
 
   if (((wo == 'vso' and co == 'after') or (wo == 'osv' and co == 'before')) and ac == 'vp'):
     add_err(err,
             'aux-comp',
             'The general word order and aux-comp order ' +
             'are not compatible with vp complements.')
-
-  if wo == 'v2' and ch.get('v-cluster') == 'yes':
-    add_err(err,
-            'v-cluster',
-            'Sorry, but verbal clusters have not been implemented yet ' +
-            'for v2 languages. Please answer "no" to this question.') 
 
 ######################################################################
 # validate_sentential_negation(ch, err)

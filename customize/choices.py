@@ -309,6 +309,8 @@ class ChoicesFile:
       self.convert_17_to_18()
     if self.version < 19:
       self.convert_18_to_19()
+    if self.version < 20:
+      self.convert_19_to_20()
     # As we get more versions, add more version-conversion methods, and:
     # if self.version < N:
     #   self.convert_N-1_to_N
@@ -950,7 +952,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 19
+    return 20
 
   def convert_value(self, key, old, new):
     if key in self and self[key] == old:
@@ -1590,3 +1592,23 @@ class ChoicesFile:
     preparse_convert_18_to_19(). This stub is here for record keeping.
     """
     pass # version 19 only requires preparse conversion
+
+  def convert_19_to_20(self):
+    """
+    Removed question on verbal clusters from the word order library. They are
+    now formed when free word order has v-comp and more than one auxiliary per
+    clause, and always for VSO, OSV when having v-comp, other conditions remain
+    as before. For other word orders the verbal cluster question is ignored.
+    """
+    if self.get('has-aux') == 'yes':
+      wo = self.get('word-order')
+      if self.get('aux-comp') == 'v':
+        if wo == 'free':
+          self.convert_key('v-cluster','multiple-aux')
+        elif wo == 'vso' or wo == 'osv':
+          if self.get('v-cluster') == 'no':
+            self.convert_value('aux-comp','v','vp')
+    else:
+      pass
+#if v-comp if free word order if v-cluster more than one aux, if no cluster 1max
+    # if svo,ovs do nothing, else v-comp is vp-comp

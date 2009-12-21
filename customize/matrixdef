@@ -83,31 +83,12 @@ Label "<div style=\"padding-left: 30px\">"
 Label "(If you work with a language where the complement type (V, VP,
 or S) varies depending on the auxiliary please let us know.)<br><br>"
 
-Label "<div style=\"padding-left: 30px\">"
-
-  Label "If auxiliaries take a V complement and your language has VSO,
-  OSV, or free word order, please answer the question below. In this
-  case, the word order of the grammar will depend on whether verbs
-  appear in a verbal cluster or not. In a verbal cluster, verbs are
-  immediately adjacent to each other with no other arguments
-  intervening. For instance, in a VSO language a preceding auxiliary
-  forming a verbal cluster would result in the order AuxVSO. If no
-  verbal cluster is formed, the order will be AuxSVO.<br><br>"
-
-  Radio v-cluster "verb cluster" "Do the auxiliaries form a cluster?<br>" ""
+  Radio multiple-aux "multiple auxiliaries" "Can there be more than one auxiliary in a clause?<br>" ""
   . yes "Yes" "" "yes<br>"
   . no "No" "" "no<br><br>" 
 
-Label "NOTE: If the verbal cluster question is answered by \"no\" for
-a free word order language (with V auxiliary complement), the
-resulting grammar will allow only one auxiliary per clause.  When the
-auxiliary-complement order is non-harmonic (i.e. does not correspond
-to the general head-complement order), we assume your language has
-verbal clusters. Furthermore, we assume that V-initial and V-final
-languages form verbal clusters. If any of these assumptions does not
-apply to the language you work with, please let us know."
+Label "NOTE: If your language has free word order and allows more than one auxiliary per clause, we assume that the verbal group forms a cluster (i.e. that all verbal forms are adjacent to each other). If your language reveals different behavior, please let us know."
 
-  Label "</div>"
 
 Label "<p><span style=\"color:red\">NOTE: As Modules for V2 order are
 still under development, relative order of auxiliaries and their

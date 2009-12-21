@@ -1271,18 +1271,20 @@ def determine_vcluster(auxcomp, auxorder, wo):
     if (wo == 'v-initial' and auxorder == 'before') or (wo == 'v-final' and auxorder == 'after'):
       vcluster = True
   elif auxcomp == 'v':
-    if ch.get('v-cluster') == 'yes' or wo == 'v-initial' or wo == 'v-final':
+    if wo == 'v-initial' or wo == 'v-final' or wo == 'osv' or wo == 'vso':
       vcluster = True
-    if wo == 'sov' or wo == 'ovs' or wo == 'osv':
+    if wo == 'sov' or wo == 'ovs':
       if auxorder == 'before':
         vcluster = True
-      elif wo == 'sov' or wo == 'ovs':
+      elif wo == 'sov' or wo == 'ovs': #brauche ich das? Ausprobieren!
         vcluster = False
-    if wo == 'vos' or wo == 'svo' or wo == 'vso':
+    if wo == 'vos' or wo == 'svo':
       if auxorder == 'after':
         vcluster = True
       elif wo == 'vos' or wo == 'svo':
         vcluster = False
+    if wo == 'free' and ch.get('multiple-aux') == 'yes':
+      vcluster = True
   if not has_auxiliaries_p():
     vcluster = False
   return vcluster
@@ -1358,21 +1360,25 @@ def specialize_word_order(hc,orders):
   auxcomp = ch.get('aux-comp')
   wo = ch.get('word-order')
   auxorder = ch.get('aux-comp-order')
-  vcluster = determine_vcluster(auxcomp, auxorder, wo)
+
+  if has_auxiliaries_p():
+    vcluster = determine_vcluster(auxcomp, auxorder, wo)
+  else:
+    vcluster = False
 
   # ASF 2008-12-07 If verbal cluster is present, introduce relevant feature
   # and pass-up in lex-rule.
   # Also add relevant constraint to basic-head-comp-phrase
 
   if vcluster:
-    mylang.add('lex-or-phrase-synsem :+ [ VERB-CL luk ].',
-               'Introducing VERB-CL keeps track whether main-verb is present in cluster',
+    mylang.add('lex-or-phrase-synsem :+ [ VC luk ].',
+               'Introducing VC keeps track whether main-verb is present in cluster',
                section='addenda')
-    mylang.add('lex-rule :+ [ SYNSEM.VERB-CL #vc, \
-                              DTR.SYNSEM.VERB-CL #vc ].',
+    mylang.add('lex-rule :+ [ SYNSEM.VC #vc, \
+                              DTR.SYNSEM.VC #vc ].',
                section='addenda')
-    mylang.add('basic-head-comp-phrase :+ [ SYNSEM.VERB-CL #vc, \
-                       NON-HEAD-DTR.SYNSEM.VERB-CL #vc ].',
+    mylang.add('basic-head-comp-phrase :+ [ SYNSEM.VC #vc, \
+                       NON-HEAD-DTR.SYNSEM.VC #vc ].',
                section='addenda')
   # ERB 2006-09-15 First add head-comp or comp-head if they aren't
   # already there.  I don't think we have to worry about constraining
@@ -1393,34 +1399,34 @@ def specialize_word_order(hc,orders):
   if aux == 'auxv-rule':
     mylang.add('''aux-comp-phrase := basic-marker-comp-phrase & marker-initial-phrase &
                                    [ SYNSEM [ LOCAL.CAT.HEAD.FORM #vform,
-                                              VERB-CL #vc ],
+                                              VC #vc ],
                                      MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX +,
                                                                                FORM #vform ],
                                      NON-MARKER-DTR.SYNSEM [ LOCAL.CAT.HEAD verb,
-                                                             VERB-CL #vc ] ].''')
-    mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
+                                                             VC #vc ] ].''')
+    mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
   if aux == 'vaux-rule':
     mylang.add('''comp-aux-phrase := basic-marker-comp-phrase & marker-final-phrase &
                                    [ SYNSEM [ LOCAL.CAT.HEAD.FORM #vform,
-                                              VERB-CL #vc ],
+                                              VC #vc ],
                                      MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX +,
                                                                                FORM #vform ],
                                      NON-MARKER-DTR.SYNSEM [ LOCAL.CAT.HEAD verb,
-                                                             VERB-CL #vc ] ].''')
-    mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
+                                                             VC #vc ] ].''')
+    mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
 
   # add necessary restrictions to assure verb clusters
   # and special auxiliary rules for vso/osv and free word order.
 
   if vcluster:
     if wo == 'vso' or wo == 'free' or wo == 'v-initial':
-      mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
+      mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
     if wo == 'osv' or wo == 'free' or wo == 'v-final':
-      mylang.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
+      mylang.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
     if (aux == 'vini-vc' and aux == 'vo-auxv' ) or wo == 'free':
-      mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
+      mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
     if (aux == 'vfin-vc' and aux == 'ov-vaux') or wo == 'free':
-      mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
+      mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
     if wo == 'free' or wo == 'vso' or wo == 'osv':
       if auxorder == 'before' and aux != 'ov-auxv':
         mylang.add('aux-comp-phrase := basic-head-1st-comp-phrase & head-initial & \
@@ -1433,8 +1439,8 @@ def specialize_word_order(hc,orders):
                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
         aux = 'caux'
       if wo == 'free':
-        mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
-        mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
+        mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.VC + ].')
+        mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.VC + ].')
 
   # Add rules to rules.tdl when necessary
 
@@ -2450,21 +2456,23 @@ def customize_verbs():
   negadv = ch.get('neg-adv')
   wo = ch.get('word-order')
   auxcomp = ch.get('aux-comp')
-
+  auxorder = ch.get('aux-comp-order')
   # Do we need to constrain HC-LIGHT on verbs, to distinguish V from VP?
   hclight = (negadv == 'ind-adv' and negmod == 'v')
   hclightallverbs = False
 
-  vc = ch.get('v-cluster')
   if has_auxiliaries_p():
+    vc = determine_vcluster(auxcomp, auxorder, wo)
     if wo == 'vso' or wo == 'osv':
       wo = 'req-hcl-vp'
     if auxcomp == 'v' and hclight != True:
       hclight = True
-      if wo != 'free' or vc == 'yes':
+      if wo != 'free' or vc == True:
         hclightallverbs = True
     if auxcomp == 'vp' and wo == 'req-hcl-vp':
       hclightallverbs = True
+  else:
+    vc = False
 
   if wo == 'req-hcl-vp':
     wo = ch.get('word-order')
@@ -2490,6 +2498,8 @@ def customize_verbs():
 
 # we need to know whether the auxiliaries form a vcluster
 
+    auxcomp = ch.get('aux-comp')
+    wo = ch.get('word-order')
     auxorder = ch.get('aux-comp-order')
     vcluster = determine_vcluster(auxcomp, auxorder, wo)
 
@@ -2506,10 +2516,11 @@ def customize_verbs():
                 [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
     mylang.add(typedef)
     if vcluster:
-      mylang.add('main-verb-lex := [ SYNSEM.VERB-CL + ].')
-      mylang.add('aux-lex := [ SYNSEM.VERB-CL - ].')
+      mylang.add('main-verb-lex := [ SYNSEM.VC + ].')
+      mylang.add('aux-lex := [ SYNSEM.VC - ].')
   else:
     #mainorverbtype = 'verb-lex'
+    vcluster = False
     mylang.add('verb-lex := basic-verb-lex.')
 
   typedef = mainorverbtype + ' :=  \
@@ -2650,9 +2661,10 @@ def customize_auxiliaries():
 
   if has_auxiliaries_p():
     lexicon.add_literal(';;; Auxiliaries')
-    comp = ch.get('aux-comp')
+    auxcomp = ch.get('aux-comp')
     wo = ch.get('word-order')
-    vc = ch.get('v-cluster')
+    auxorder = ch.get('aux-comp-order')
+    vc = determine_vcluster(auxcomp, auxorder, wo)#ch.get('v-cluster') 
 
     for aux in ch.get('aux',[]):
       name = aux.get('name','')
@@ -2671,7 +2683,7 @@ def customize_auxiliaries():
     # it may be cleaner to have this in general verb-lex, as well as the first
     # ARG is #subj constraint (but not possible for aux with s-comp)
 
-      if comp == 'vp':
+      if auxcomp == 'vp':
         supertype = 'subj-raise-aux'
         auxtypename = get_auxtypename(sem, supertype)
 
@@ -2692,6 +2704,11 @@ def customize_auxiliaries():
         mylang.add(typedef)
         add_subj_tdl(supertype, subj, subjcase)
 
+# ASF 2009-12-21 Changing conditions, we now have a question on whether
+# there can be more than on auxiliary per clause, this holds for all complements
+
+        if ch.get('multiple-aux') == 'no':
+          mylang.add(supertype + ' := [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].')
         if sem == 'add-pred':
           typedef = auxtypename + ' := ' + supertype + ' & norm-sem-lex-item & \
                                         trans-first-arg-raising-lex-item-1 .'
@@ -2712,7 +2729,7 @@ def customize_auxiliaries():
 
         customize_users_auxtype(aux, userstypename, auxtypename)
 
-      elif comp == 'v':
+      elif auxcomp == 'v':
         supertype = 'arg-comp-aux'
         auxtypename = get_auxtypename(sem, supertype)
         comment = \
@@ -2742,8 +2759,10 @@ def customize_auxiliaries():
 
 # ASF 2008-12-07 For now we restrict free word order with v-comp to
 # either verbal clusters or one auxiliary max
+# ASF 2009-12-21 Changing conditions, we now have a question on whether
+# there can be more than on auxiliary per clause, this holds for all complements
 
-        if wo == 'free' and vc == 'no':
+        if ch.get('multiple-aux') == 'no':
           mylang.add(supertype + ' := [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].')
 
         if sem == 'add-pred':
@@ -2775,7 +2794,7 @@ def customize_auxiliaries():
 
         customize_users_auxtype(aux, userstypename, auxtypename)
 
-      elif comp == 's':
+      elif auxcomp == 's':
         supertype = 's-comp-aux'
         auxtypename = get_auxtypename(sem, supertype)
 
@@ -2789,6 +2808,12 @@ def customize_auxiliaries():
                                             COMPS < > ], \
                                       HEAD verb ]] > ].'
         mylang.add(typedef)
+
+# ASF 2009-12-21 Changing conditions, we now have a question on whether
+# there can be more than on auxiliary per clause, this holds for all complements
+
+        if ch.get('multiple-aux') == 'no':
+          mylang.add(supertype + ' := [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].')
 
         if sem == 'add-pred':
           mylang.add_literal('; S comp aux, with pred')
