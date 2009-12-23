@@ -16,6 +16,8 @@ import re
 from choices import ChoicesFile
 from utils import TDLencode
 
+from lib import Hierarchy
+
 ######################################################################
 # globals
 
@@ -80,219 +82,6 @@ def add_irule(instance_name,type_name,affix_type,affix_form):
   rule += type_name + '.\n'
 
   irules.add_literal(rule)
-
-
-######################################################################
-# Hierarchy class
-
-# Hierarchy:
-# A class for storing, operating on, and saving to TDL a type
-# hierarchy.  The hierarchy is stored as an array, each element of
-# which is itself an array of three strings: a type, a supertype, and
-# a comment.
-class Hierarchy:
-  # Initialize
-  def __init__(self, name, type = ''):
-    self.name = name
-    self.type = type
-    self.hierarchy = []
-
-    self.supertypes = {}
-    self.subtypes = {}
-    self.leaves = set()
-    self.coverage = {}
-
-
-  def is_empty(self):
-    return len(self.hierarchy) == 0
-
-
-  # Add a type to the hierarchy
-  def add(self, type, supertype, comment = ''):
-    self.hierarchy += [ [ type, supertype, comment ] ]
-
-  # Save the hierarchy to the passed TDLfile object.  The resulting
-  # TDL will look like this:
-  #
-  # type1 := supertype1  ; comment1
-  # type2 := supertype2  ; comment2
-  # type3 := supertype3  ; comment3
-  # ...
-  def save(self, tdl_file, define = True):
-    tdl_file.set_section('features')
-
-    tdl_file.add_literal(';;; ' + self.name[0:1].upper() + self.name[1:])
-
-    if define:
-      tdl_file.add(self.name + ' := *top*.', '', True)
-
-    for h in self.hierarchy:
-      tdl_file.add(h[0] + ' := ' + h[1] + '.', h[2], True)
-
-  # For each type in the hierarchy, calculate which types it is
-  # the immediate supertype of, and save this information for later.
-  def __calc_supertypes(self):
-    self.supertypes = {}
-    for h in self.hierarchy:
-      if not h[0] in self.supertypes:
-        self.supertypes[h[0]] = set()
-      if not h[1] in self.supertypes:
-        self.supertypes[h[1]] = set()
-
-      self.supertypes[h[0]].add(h[1])
-
-
-  # For each type in the hierarchy, calculate which types it is
-  # the immediate subtype of, and save this information for later.
-  def __calc_subtypes(self):
-    self.subtypes = {}
-    for h in self.hierarchy:
-      if not h[0] in self.subtypes:
-        self.subtypes[h[0]] = set()
-      if not h[1] in self.subtypes:
-        self.subtypes[h[1]] = set()
-
-      self.subtypes[h[1]].add(h[0])
-
-
-  # Calculate the leaf types (i.e. types with no subtypes) and save
-  # this information for later.
-  def __calc_leaves(self):
-    self.__calc_subtypes()
-
-    self.leaves = set()
-    for st in self.subtypes:
-      if len(self.subtypes[st]) == 0:
-        self.leaves.add(st)
-
-
-  # For each type in the hierarchy, calculate which leaf types it
-  # covers, and save this information for later.
-  def __calc_coverage(self):
-    self.__calc_leaves()
-    self.__calc_supertypes()
-
-    self.coverage = {}
-    for l in self.leaves:
-      working = [ l ]
-      while working:
-        w = working[0]
-        del working[0]
-        if w != '*top*':
-          if not w in self.coverage:
-            self.coverage[w] = set()
-          self.coverage[w].add(l)
-          for st in self.supertypes[w]:
-            working += [ st ]
-
-
-  # Search the hierarchy for a type and return its comment, if any
-  def get_comment(self, type):
-    for h in self.hierarchy:
-      if h[0] == type:
-        return h[2]
-
-    return ''
-
-
-  # Search the hierarchy for a type covering all the types in type_set
-  # and return it.  Type hierarchies as described in the questionnaire
-  # may be insufficient for some purposes.  For example, implementing
-  # the scale hierarchy of a direct-inverse language may require the
-  # existence of a grouping of leaf types that requires that does not
-  # exist.  This method will add such types to the hierarchy as
-  # necessary.
-  def get_type_covering(self, type_set):
-
-    type_list = list(type_set)
-    if len(type_list) == 1:
-      return type_list[0]
-
-    if type(type_set) == 'list':
-      type_set = set(type_set)
-
-    self.__calc_coverage()
-    cov = self.coverage
-
-    # type_set may contain non-leaves, so construct a new all-leaf set
-    new_set = set()
-    for e in type_set:
-      for l in cov[e]:
-        new_set.add(l)
-
-    # check for an existing type covering the right set of leaves
-    for k in cov:
-      if cov[k] == new_set:
-        return k
-
-    # Need to create a new type in the hierarchy:
-    # If there are types in the hierarchy that have the same coverage,
-    # then the approach where we distinguish nodes by their coverage
-    # won't work.  In that case, simply create a new supertype under
-    # the root.
-    bad_hierarchy = False
-    for k in cov:
-      for l in cov:
-        if k != l and cov[k] == cov[l]:
-          bad_hierarchy = True
-          break
-
-    supers = []
-    subs = []
-    if bad_hierarchy:
-      supers = [self.name]
-      subs = type_set
-    else:
-      # Find types in the hierarchy that are supersets and subsets of
-      for k in cov:
-        if cov[k].issuperset(new_set):
-          supers += [ k ]
-        elif cov[k].issubset(new_set):
-          subs += [ k ]
-
-      # prune supers and subs
-      toremove = set()
-      for i in range(len(supers) - 1, -1, -1):
-        for j in range(len(supers) -1, -1, -1):
-          if i != j and cov[supers[i]].issuperset(cov[supers[j]]):
-            toremove.add(i)
-      remove_array = [e for e in toremove]
-      remove_array.sort(reverse=True)
-      for i in remove_array:
-        del(supers[i])
-
-      toremove = set()
-      for i in range(len(subs) - 1, -1, -1):
-        for j in range(len(subs) -1, -1, -1):
-          if i != j and cov[subs[i]].issubset(cov[subs[j]]):
-            toremove.add(i)
-      remove_array = [e for e in toremove]
-      remove_array.sort(reverse=True)
-      for i in remove_array:
-        del(subs[i])
-
-    # figure out the name of the new type
-    new_type = ''
-    for h in self.hierarchy:
-      covh = cov[h[0]]
-      if len(covh.intersection(new_set)) == 0 and \
-         len(covh.union(new_set)) == len(self.leaves):
-        new_type = 'non-' + h[0]
-        break
-    if not new_type:
-      new_type = '+'.join(subs)
-
-    # now insert the new type between supers and subs, making sure to
-    # remove any direct inheritance of the subs by the supers
-    for i in range(len(self.hierarchy) - 1, -1, -1):
-      if self.hierarchy[i][0] in subs and self.hierarchy[i][1] in supers:
-        del(self.hierarchy[i])
-    for s in supers:
-      self.hierarchy += [ [new_type, s, ''] ]
-    for s in subs:
-      self.hierarchy += [ [s, new_type, ''] ]
-
-    return new_type
 
 
 ######################################################################
@@ -1271,18 +1060,20 @@ def determine_vcluster(auxcomp, auxorder, wo):
     if (wo == 'v-initial' and auxorder == 'before') or (wo == 'v-final' and auxorder == 'after'):
       vcluster = True
   elif auxcomp == 'v':
-    if ch.get('v-cluster') == 'yes' or wo == 'v-initial' or wo == 'v-final':
+    if wo == 'v-initial' or wo == 'v-final' or wo == 'osv' or wo == 'vso':
       vcluster = True
-    if wo == 'sov' or wo == 'ovs' or wo == 'osv':
+    if wo == 'sov' or wo == 'ovs':
       if auxorder == 'before':
         vcluster = True
-      elif wo == 'sov' or wo == 'ovs':
+      elif wo == 'sov' or wo == 'ovs': #brauche ich das? Ausprobieren!
         vcluster = False
-    if wo == 'vos' or wo == 'svo' or wo == 'vso':
+    if wo == 'vos' or wo == 'svo':
       if auxorder == 'after':
         vcluster = True
       elif wo == 'vos' or wo == 'svo':
         vcluster = False
+    if wo == 'free' and ch.get('multiple-aux') == 'yes':
+      vcluster = True
   if not has_auxiliaries_p():
     vcluster = False
   return vcluster
@@ -1358,21 +1149,25 @@ def specialize_word_order(hc,orders):
   auxcomp = ch.get('aux-comp')
   wo = ch.get('word-order')
   auxorder = ch.get('aux-comp-order')
-  vcluster = determine_vcluster(auxcomp, auxorder, wo)
+
+  if has_auxiliaries_p():
+    vcluster = determine_vcluster(auxcomp, auxorder, wo)
+  else:
+    vcluster = False
 
   # ASF 2008-12-07 If verbal cluster is present, introduce relevant feature
   # and pass-up in lex-rule.
   # Also add relevant constraint to basic-head-comp-phrase
 
   if vcluster:
-    mylang.add('lex-or-phrase-synsem :+ [ VERB-CL luk ].',
-               'Introducing VERB-CL keeps track whether main-verb is present in cluster',
+    mylang.add('lex-or-phrase-synsem :+ [ VC luk ].',
+               'Introducing VC keeps track whether main-verb is present in cluster',
                section='addenda')
-    mylang.add('lex-rule :+ [ SYNSEM.VERB-CL #vc, \
-                              DTR.SYNSEM.VERB-CL #vc ].',
+    mylang.add('lex-rule :+ [ SYNSEM.VC #vc, \
+                              DTR.SYNSEM.VC #vc ].',
                section='addenda')
-    mylang.add('basic-head-comp-phrase :+ [ SYNSEM.VERB-CL #vc, \
-                       NON-HEAD-DTR.SYNSEM.VERB-CL #vc ].',
+    mylang.add('basic-head-comp-phrase :+ [ SYNSEM.VC #vc, \
+                       NON-HEAD-DTR.SYNSEM.VC #vc ].',
                section='addenda')
   # ERB 2006-09-15 First add head-comp or comp-head if they aren't
   # already there.  I don't think we have to worry about constraining
@@ -1393,34 +1188,34 @@ def specialize_word_order(hc,orders):
   if aux == 'auxv-rule':
     mylang.add('''aux-comp-phrase := basic-marker-comp-phrase & marker-initial-phrase &
                                    [ SYNSEM [ LOCAL.CAT.HEAD.FORM #vform,
-                                              VERB-CL #vc ],
+                                              VC #vc ],
                                      MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX +,
                                                                                FORM #vform ],
                                      NON-MARKER-DTR.SYNSEM [ LOCAL.CAT.HEAD verb,
-                                                             VERB-CL #vc ] ].''')
-    mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
+                                                             VC #vc ] ].''')
+    mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
   if aux == 'vaux-rule':
     mylang.add('''comp-aux-phrase := basic-marker-comp-phrase & marker-final-phrase &
                                    [ SYNSEM [ LOCAL.CAT.HEAD.FORM #vform,
-                                              VERB-CL #vc ],
+                                              VC #vc ],
                                      MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX +,
                                                                                FORM #vform ],
                                      NON-MARKER-DTR.SYNSEM [ LOCAL.CAT.HEAD verb,
-                                                             VERB-CL #vc ] ].''')
-    mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
+                                                             VC #vc ] ].''')
+    mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
 
   # add necessary restrictions to assure verb clusters
   # and special auxiliary rules for vso/osv and free word order.
 
   if vcluster:
     if wo == 'vso' or wo == 'free' or wo == 'v-initial':
-      mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
+      mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
     if wo == 'osv' or wo == 'free' or wo == 'v-final':
-      mylang.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
+      mylang.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
     if (aux == 'vini-vc' and aux == 'vo-auxv' ) or wo == 'free':
-      mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
+      mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
     if (aux == 'vfin-vc' and aux == 'ov-vaux') or wo == 'free':
-      mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
+      mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
     if wo == 'free' or wo == 'vso' or wo == 'osv':
       if auxorder == 'before' and aux != 'ov-auxv':
         mylang.add('aux-comp-phrase := basic-head-1st-comp-phrase & head-initial & \
@@ -1433,8 +1228,8 @@ def specialize_word_order(hc,orders):
                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
         aux = 'caux'
       if wo == 'free':
-        mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
-        mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.VERB-CL + ].')
+        mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.VC + ].')
+        mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.VC + ].')
 
   # Add rules to rules.tdl when necessary
 
@@ -2450,21 +2245,23 @@ def customize_verbs():
   negadv = ch.get('neg-adv')
   wo = ch.get('word-order')
   auxcomp = ch.get('aux-comp')
-
+  auxorder = ch.get('aux-comp-order')
   # Do we need to constrain HC-LIGHT on verbs, to distinguish V from VP?
   hclight = (negadv == 'ind-adv' and negmod == 'v')
   hclightallverbs = False
 
-  vc = ch.get('v-cluster')
   if has_auxiliaries_p():
+    vc = determine_vcluster(auxcomp, auxorder, wo)
     if wo == 'vso' or wo == 'osv':
       wo = 'req-hcl-vp'
     if auxcomp == 'v' and hclight != True:
       hclight = True
-      if wo != 'free' or vc == 'yes':
+      if wo != 'free' or vc == True:
         hclightallverbs = True
     if auxcomp == 'vp' and wo == 'req-hcl-vp':
       hclightallverbs = True
+  else:
+    vc = False
 
   if wo == 'req-hcl-vp':
     wo = ch.get('word-order')
@@ -2490,6 +2287,8 @@ def customize_verbs():
 
 # we need to know whether the auxiliaries form a vcluster
 
+    auxcomp = ch.get('aux-comp')
+    wo = ch.get('word-order')
     auxorder = ch.get('aux-comp-order')
     vcluster = determine_vcluster(auxcomp, auxorder, wo)
 
@@ -2506,10 +2305,11 @@ def customize_verbs():
                 [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
     mylang.add(typedef)
     if vcluster:
-      mylang.add('main-verb-lex := [ SYNSEM.VERB-CL + ].')
-      mylang.add('aux-lex := [ SYNSEM.VERB-CL - ].')
+      mylang.add('main-verb-lex := [ SYNSEM.VC + ].')
+      mylang.add('aux-lex := [ SYNSEM.VC - ].')
   else:
     #mainorverbtype = 'verb-lex'
+    vcluster = False
     mylang.add('verb-lex := basic-verb-lex.')
 
   typedef = mainorverbtype + ' :=  \
@@ -2650,9 +2450,10 @@ def customize_auxiliaries():
 
   if has_auxiliaries_p():
     lexicon.add_literal(';;; Auxiliaries')
-    comp = ch.get('aux-comp')
+    auxcomp = ch.get('aux-comp')
     wo = ch.get('word-order')
-    vc = ch.get('v-cluster')
+    auxorder = ch.get('aux-comp-order')
+    vc = determine_vcluster(auxcomp, auxorder, wo)#ch.get('v-cluster') 
 
     for aux in ch.get('aux',[]):
       name = aux.get('name','')
@@ -2671,7 +2472,7 @@ def customize_auxiliaries():
     # it may be cleaner to have this in general verb-lex, as well as the first
     # ARG is #subj constraint (but not possible for aux with s-comp)
 
-      if comp == 'vp':
+      if auxcomp == 'vp':
         supertype = 'subj-raise-aux'
         auxtypename = get_auxtypename(sem, supertype)
 
@@ -2692,6 +2493,11 @@ def customize_auxiliaries():
         mylang.add(typedef)
         add_subj_tdl(supertype, subj, subjcase)
 
+# ASF 2009-12-21 Changing conditions, we now have a question on whether
+# there can be more than on auxiliary per clause, this holds for all complements
+
+        if ch.get('multiple-aux') == 'no':
+          mylang.add(supertype + ' := [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].')
         if sem == 'add-pred':
           typedef = auxtypename + ' := ' + supertype + ' & norm-sem-lex-item & \
                                         trans-first-arg-raising-lex-item-1 .'
@@ -2712,7 +2518,7 @@ def customize_auxiliaries():
 
         customize_users_auxtype(aux, userstypename, auxtypename)
 
-      elif comp == 'v':
+      elif auxcomp == 'v':
         supertype = 'arg-comp-aux'
         auxtypename = get_auxtypename(sem, supertype)
         comment = \
@@ -2742,8 +2548,10 @@ def customize_auxiliaries():
 
 # ASF 2008-12-07 For now we restrict free word order with v-comp to
 # either verbal clusters or one auxiliary max
+# ASF 2009-12-21 Changing conditions, we now have a question on whether
+# there can be more than on auxiliary per clause, this holds for all complements
 
-        if wo == 'free' and vc == 'no':
+        if ch.get('multiple-aux') == 'no':
           mylang.add(supertype + ' := [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].')
 
         if sem == 'add-pred':
@@ -2775,7 +2583,7 @@ def customize_auxiliaries():
 
         customize_users_auxtype(aux, userstypename, auxtypename)
 
-      elif comp == 's':
+      elif auxcomp == 's':
         supertype = 's-comp-aux'
         auxtypename = get_auxtypename(sem, supertype)
 
@@ -2789,6 +2597,12 @@ def customize_auxiliaries():
                                             COMPS < > ], \
                                       HEAD verb ]] > ].'
         mylang.add(typedef)
+
+# ASF 2009-12-21 Changing conditions, we now have a question on whether
+# there can be more than on auxiliary per clause, this holds for all complements
+
+        if ch.get('multiple-aux') == 'no':
+          mylang.add(supertype + ' := [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].')
 
         if sem == 'add-pred':
           mylang.add_literal('; S comp aux, with pred')
@@ -2907,7 +2721,7 @@ def customize_lexicon():
 # customize_inflection(matrix_path)
 #   Create lexical rules based on the current choices
 
-def is_ltow(name, namelist = []):
+def is_ltow(name, namelist=None):
   # The simple way to find lexeme-to-word rules is by finding
   # the last non-optional rule. This function recursively searches
   # rules that can follow this one to find non-optional rules.
@@ -2916,32 +2730,33 @@ def is_ltow(name, namelist = []):
   if '_' in name:
     name = name.replace('_', '')
 
-  for slotprefix in ('noun', 'verb', 'det', 'aux'):
-    for slot in ch[slotprefix + '-slot']:
-      opt = slot.get('opt')
-      for inp in slot.get('input',[]):
-        if name in inp.get('type'):
-          if name in namelist:
-            return False
-          if opt:
-            namelist.append(name)
-            return is_ltow(slot.full_key, namelist)
-          else:
-            return False
+  namelist = namelist or []
+
+  for slot in ch.get_slots(['noun', 'verb', 'det', 'aux']):
+    opt = slot.get('opt')
+    for inp in slot.get('input',[]):
+      if name == inp.get('type'):
+        if name in namelist:
+          return False
+        if opt:
+          namelist.append(name)
+          return is_ltow(slot.full_key, namelist)
+        else:
+          return False
 
   return True
 
 def back_to_word(name):
-  for slotprefix in ('noun', 'verb', 'det', 'aux'):
-    for slot in ch[slotprefix + '-slot']:
-      for constraint in slot.get('constraint',[]):
-        if constraint.get('type') == 'forces' and \
-           constraint.get('other-slot') == name:
-          return True
+  for slot in ch.get_slots(['noun', 'verb', 'det', 'aux']):
+    for constraint in slot.get('constraint',[]):
+      if constraint.get('type') == 'forces' and \
+         constraint.get('other-slot') == name:
+        return True
 
   return False
 
-def find_basetype(slot, root_dict, root_list=[]):
+def find_basetype(slot, root_dict, root_list=None):
+  root_list = root_list or []
   for inp in slot.get('input',[]):
     inputtype = inp.get('type')
     if inputtype in root_dict:
@@ -3013,7 +2828,8 @@ def customize_inflection():
   verb_types = ['iverb', 'tverb', 'aux']
   main_verb_types = ['iverb', 'tverb',]
 
-# root_dict = {}
+  # Direct-Inverse stuff
+  # root_dict = {}
   for lexprefix in ('noun', 'verb', 'det', 'aux'):
     for lex in ch[lexprefix]:
       p = lex.full_key
@@ -3120,8 +2936,8 @@ def customize_inflection():
   mylang.set_section('lexrules')
 
   # Big main loop to iterate over all the slots
-  for slotprefix in ('noun', 'verb', 'det','aux'):
-    for slot in ch.get(slotprefix + '-slot',[]):
+  for slotprefix in ['noun', 'verb', 'det', 'aux']:
+    for slot in ch.get_slots([slotprefix]):
       order = slot.get('order')
       opt = slot.get('opt')
       name = get_name(slot)
@@ -3193,13 +3009,12 @@ def customize_inflection():
       for constraint in slot.get('constraint',[]):
         if constraint.get('type') == 'forces':
           wtol = True
-
       if wtol:
         mylang.add('word-to-lexeme-rule := lex-rule &\
                       [INFLECTED -, DTR.INFLECTED +].')
 
       # lexeme-to-word rule?
-      ltow = (not opt and is_ltow(slot.full_key, []))
+      ltow = (not opt and is_ltow(slot.full_key))
       # satisfy a previous word-to-lexeme rule?
       wtoltow = back_to_word(slot.full_key)
       const = False
@@ -3360,6 +3175,7 @@ def customize_inflection():
 
           # Create appropriate sub-rule for the morpheme
           if morph.get('orth','') == '':
+            #FIXME ltow not being set correctly
             if ltow:
               mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
             elif wtol:
@@ -3505,47 +3321,44 @@ def req(slot, basetype, reqs, reqd, tracker, reqtype):
 
 def add_single_tracks(reqs, reqd, reqtype):
   # Begin iterating over slots
-  for slotprefix in ('noun', 'verb', 'det', 'aux'):
-    for slot in ch[slotprefix + '-slot']:
-      name = get_name(slot)
-      tname = "T-"+name
-      # We only need to do this for rules with TRACK constraints.
-      if slot.full_key not in reqs:
+  for slot in ch.get_slots(['noun', 'verb', 'det', 'aux']):
+    name = get_name(slot)
+    tname = "T-"+name
+    # We only need to do this for rules with TRACK constraints.
+    if slot.full_key not in reqs:
+      continue
+    # Start a second slot loop
+    for slot2 in ch.get_slots(['noun', 'verb', 'det', 'aux']):
+      # Skip this slot if it's the same as the one in the outer loop.
+      if slot2.full_key == slot.full_key:
         continue
-      # Start a second slot loop
-      for slotprefix2 in ('noun', 'verb', 'det', 'aux'):
-        for slot2 in ch[slotprefix2 + '-slot']:
-          # Skip this slot if it's the same as the one in the outer loop.
-          if slot2.full_key == slot.full_key:
-            continue
-          name2 = get_name(ch[slot2.full_key])
-          # If the inner-loop rule sets or fulfills a constraint on the
-          # outer-loop rule constrain the TRACK values of each rule as
-          # appropriate.
-          if slot2.full_key in reqs[slot.full_key]:
-            if reqtype == 'req':
-              mylang.add(name+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
-              mylang.add(name2+'-lex-rule := [TRACK.'+tname+' +, DTR.TRACK.'+tname+' -].')
-            elif reqtype == 'disreq':
-              mylang.add(name+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
-              mylang.add(name2+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
-          # If this rule doesn't have anything to say about the outer-loop
-          # rule, but has TRACK constraints for other rules, we need to
-          # copy up the TRACK feature corresponding to the outer-loop
-          # rule.
-          elif slot2.full_key in reqs or slot2.full_key in reqd:
-            mylang.add(name2+'-lex-rule := [TRACK.'+tname+' #track, DTR.TRACK.'+tname+' #track].')
+      name2 = get_name(ch[slot2.full_key])
+      # If the inner-loop rule sets or fulfills a constraint on the
+      # outer-loop rule constrain the TRACK values of each rule as
+      # appropriate.
+      if slot2.full_key in reqs[slot.full_key]:
+        if reqtype == 'req':
+          mylang.add(name+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
+          mylang.add(name2+'-lex-rule := [TRACK.'+tname+' +, DTR.TRACK.'+tname+' -].')
+        elif reqtype == 'disreq':
+          mylang.add(name+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
+          mylang.add(name2+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
+      # If this rule doesn't have anything to say about the outer-loop
+      # rule, but has TRACK constraints for other rules, we need to
+      # copy up the TRACK feature corresponding to the outer-loop
+      # rule.
+      elif slot2.full_key in reqs or slot2.full_key in reqd:
+        mylang.add(name2+'-lex-rule := [TRACK.'+tname+' #track, DTR.TRACK.'+tname+' #track].')
 
 def copy_all_tracks(reqd):
   # If a grammar makes use of the TRACK feature, inflectional rules
   # that don't have anything to say about the contents of TRACK need
   # to copy the whole TRACK feature up unchanged.
-  for slotprefix in ('noun', 'verb', 'det', 'aux'):
-    for slot in ch[slotprefix + '-slot']:
-      name = get_name(slot)
-      if slot.full_key not in reqd:
-        mylang.add(name + '-lex-rule := [TRACK #track, \
-        DTR.TRACK #track].')
+  for slot in ch.get_slots(['noun', 'verb', 'det', 'aux']):
+    name = get_name(slot)
+    if slot.full_key not in reqd:
+      mylang.add(name + '-lex-rule := [TRACK #track, \
+      DTR.TRACK #track].')
 
 def neginflrule(slot, features):
   # ERB 2009-01-23
