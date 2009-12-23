@@ -2932,7 +2932,7 @@ def customize_lexicon():
 # customize_inflection(matrix_path)
 #   Create lexical rules based on the current choices
 
-def is_ltow(name, namelist = []):
+def is_ltow(name, namelist=None):
   # The simple way to find lexeme-to-word rules is by finding
   # the last non-optional rule. This function recursively searches
   # rules that can follow this one to find non-optional rules.
@@ -2941,11 +2941,13 @@ def is_ltow(name, namelist = []):
   if '_' in name:
     name = name.replace('_', '')
 
+  namelist = namelist or []
+
   for slotprefix in ('noun', 'verb', 'det', 'aux'):
     for slot in ch[slotprefix + '-slot']:
       opt = slot.get('opt')
       for inp in slot.get('input',[]):
-        if name in inp.get('type'):
+        if name == inp.get('type'):
           if name in namelist:
             return False
           if opt:
@@ -2966,7 +2968,8 @@ def back_to_word(name):
 
   return False
 
-def find_basetype(slot, root_dict, root_list=[]):
+def find_basetype(slot, root_dict, root_list=None):
+  root_list = root_list or []
   for inp in slot.get('input',[]):
     inputtype = inp.get('type')
     if inputtype in root_dict:
