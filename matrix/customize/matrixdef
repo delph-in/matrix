@@ -1055,7 +1055,7 @@ BeginIter noun{i} "a Noun Type" 1
   Text name "Noun {i} name" "Type name: " "" 30
 
   MultiSelect supertype "Noun type {i} supertypes(s)" "Supertype(s): " "<br>"
-  filltypes noun noun{i}_name
+  filltypes noun noun{i}_name 1
 
   Label "Features:"
 
@@ -1093,7 +1093,7 @@ BeginIter verb{i} "a Verb Type"
   Text name "Verb type {i} name" "Type name: " "" 30
 
   MultiSelect supertype "Verb type {i} supertypes(s)" "Supertype(s): " "<br>"
-  filltypes verb verb{i}_name
+  filltypes verb verb{i}_name 1
 
   Label "Features:"
 
@@ -1134,7 +1134,7 @@ BeginIter aux{i} "an Auxiliary Type"
   Text name "Aux {i} type name" "Type name: " "" 30
 
   MultiSelect supertype "Auxiliary type {i} supertypes(s)" "Supertype(s): " "<br>"
-  filltypes aux aux{i}_name
+  filltypes aux aux{i}_name 1
 
   Label "<div style=\"padding-left: 25px\">"
 
@@ -1190,7 +1190,7 @@ BeginIter det{i} "a Determiner"
   Text name "Determiner {i} name" "Type name: " "" 30
 
   MultiSelect supertype "Determiner type {i} supertypes(s)" "Supertype(s): " "<br>"
-  filltypes det det{i}_name
+  filltypes det det{i}_name 1
 
   Label "Features:"
 
@@ -1233,7 +1233,7 @@ Label "<h3>Noun Stems</h3>"
 
 BeginIter noun{i} "a Noun type" 1
   Select type "Noun type {i}" "Noun type: " ""
-  filltypes noun noun{i}_name
+  filltypes noun noun{i}_name 1
 
   BeginIter stem{j} "a Stem" 1
 
@@ -1261,7 +1261,7 @@ BeginIter noun-slot{i} "a Slot"
   BeginIter input{j} "an Input" 1
 
     Select type "Noun slot {i} input {j} type" "Input: " ""
-    fillinputs noun-slot[0-9]+_name noun-slot{i}_name
+    fillinputs noun-slot[0-9]+_name noun-slot{i}_name 1
 
   EndIter input
 
@@ -1294,7 +1294,7 @@ BeginIter noun-slot{i} "a Slot"
     . disreq "Cannot co-occur" "If this slot appears, the other slot MUST NOT appear"
 
     Select other-slot "Noun slot {i} constraint {j} other slot" "other slot: " ""
-    fillregex (noun|verb|det)(-slot)[0-9]+_name noun-slot{i}_name
+    fillregex (noun|verb|det)(-slot)[0-9]+_name noun-slot{i}_name 1
 
   EndIter constraint
 EndIter noun-slot
@@ -1305,7 +1305,7 @@ Label "<h3>Verb Stems</h3>"
 
 BeginIter verb{i} "a Verb Type" 1
   Select type "Verb type {i}" "Verb type: " ""
-  filltypes verb verb{i}_name
+  filltypes verb verb{i}_name 1
 
   BeginIter stem{j} "a Stem" 1
 
@@ -1322,7 +1322,7 @@ Label "<h3>Auxiliary Stems</h3>"
 
 BeginIter aux{i} "an Auxiliary type"
   Select type "Auxiliary type {i}" "Auxiliary type: " ""
-  filltypes aux aux{i}_name
+  filltypes aux aux{i}_name 1
 
   BeginIter stem{j} "a Stem" 1
 
@@ -1350,7 +1350,7 @@ BeginIter verb-slot{i} "a Slot"
   BeginIter input{j} "an Input" 1
 
     Select type "Verb slot {i} input {j} type" "Input: " ""
-    fillinputs (verb|aux)(-slot)[0-9]+_name verb-slot{i}_name
+    fillinputs (verb|aux)(-slot)[0-9]+_name verb-slot{i}_name 1
 
   EndIter input
 
@@ -1391,7 +1391,7 @@ BeginIter verb-slot{i} "a Slot"
     . disreq "Cannot co-occur" "If this slot appears, the other slot MUST NOT appear"
 
     Select other-slot "Verb slot {i} constraint {j} other slot" "other slot: " ""
-    fillregex (noun|verb|det)(-slot)[0-9]+_name verb-slot{i}_name
+    fillregex (noun|verb|det)(-slot)[0-9]+_name verb-slot{i}_name 1
 
   EndIter constraint
 
@@ -1403,7 +1403,7 @@ Label "<h3>Determiner Stems</h3>"
 
 BeginIter det{i} "a Determiner type"
   Select type "Determiner type {i}" "Determiner type: " ""
-  filltypes det det{i}_name
+  filltypes det det{i}_name 1
 
   BeginIter stem{j} "a Stem" 1
 
@@ -1431,7 +1431,7 @@ BeginIter det-slot{i} "a Slot"
   BeginIter input{j} "an Input" 1
 
     Select type "Determiner slot {i} input {j} type" "Input: " ""
-    fillinputs det-slot[0-9]+_name det-slot{i}_name
+    fillinputs det-slot[0-9]+_name det-slot{i}_name 1
 
   EndIter input
 
@@ -1465,7 +1465,7 @@ BeginIter det-slot{i} "a Slot"
     . disreq "Cannot co-occur" "If this slot appears, the other slot MUST NOT appear"
 
     Select other-slot "Determiner slot {i} constraint {j} other slot" "other slot: " ""
-    fillregex (noun|verb|det)(-slot)[0-9]+_name det-slot{i}_name
+    fillregex (noun|verb|det)(-slot)[0-9]+_name det-slot{i}_name 1
 
   EndIter constraint
 

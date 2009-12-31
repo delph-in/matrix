@@ -580,7 +580,7 @@ class MatrixDefFile:
         fill_arg2 = ''
         fill_arg3 = ''
         fillstring = ''
-
+        print fill_arg2
         if lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
           fill_type = word[0]
@@ -593,17 +593,17 @@ class MatrixDefFile:
             if len(word) > 3:
               fill_arg3 = word[3]
 
-            #FIX below - need to change if statements to allow for either 1 argument, 2, or 3. 
-            #Can get arg 1 only, arg1 + arg3, arg1 + agr2, or agr1 +agr2 + agr3, I think - double check  
             if fill_type == 'fillregex':
-              if fill_agr2 and fill_arg3:
-                fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true, \'' + prefix + '\')'
-              elif fill_arg2 and not fill_arg3:
-                fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\', \'' + prefix + '\')'
-              elif fill_arg3 and not fill_arg2:
-                fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', true, \'' + prefix + '\')'
-              elif not fill_arg2 and not fill_arg3:
-                fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + prefix + '\')'
+              if fill_arg1: 
+                if fill_arg2: 
+                  if fill_arg2 == '1': #fill with 1 and 2 is true
+                    fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
+                  else: #fill with 1 and 2 is fill_arg2
+                    fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\')'
+                  if fill_arg3: #fill with 1,2 and 3 is true
+                    fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true)'
+                else: #fill with only arg_1
+                  fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\')'
             elif fill_type == 'fillnames':
               if fill_arg1:
                 fillstring += 'fill_feature_names(\'' + vn + '\', \'' + fill_arg1 + '\')'
@@ -621,9 +621,9 @@ class MatrixDefFile:
             elif fill_type == 'fillnumbers':
               fillstring += 'fill_numbers(\'' + vn + '\')'
             elif fill_type == 'filltypes':
-              fillstring += 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true, \'' + prefix + '\')'
+              fillstring += 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true)'
             elif fill_type == 'fillinputs':
-              fillstring += 'fill_inputs(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true, \'' + prefix + '\')'
+              fillstring += 'fill_inputs(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true)'
             
             html += html_select(errors, vn, multi, fillstring) + '\n' 
             html += html_option(errors, '', False, '') + '\n'

@@ -346,32 +346,34 @@ function set_select_value(select, value, text)
 // contents to create an option.
 function collect_regex(name, pattern, self, nameOnly){
 
+  pattern = '^' + pattern + '$';
   var values = new Array();
   var texts = new Array();
-  //FIX - THE ignore self piece is not working here. 
   var e = document.forms[0].elements;
+
+  //FIX - THE ignore self piece is not working here. 
   for (var i = 0; i < e.length; i++) {
 
       if (e[i].name.search(pattern) != -1) {
-      var vn = e[i].name.replace(/_[^_]*$/, '');
-      
-      var fn = vn;
-      var f = document.getElementsByName(vn + '_name');
+	 var vn = e[i].name.replace(/_[^_]*$/, '');
+	 var fn = vn;
+	 var f = document.getElementsByName(vn + '_name');
 
-      if (f[0] != self) {     
-	  if (f && f[0] && f[0].value) {
-	      if (nameOnly) {
-		  vn = fn = f[0].value;
-	      } 
-	      else {
-		  fn = f[0].value + ' (' + fn + ')';
-	      }
-	  }
-	  var len = values.length;
-	  values[len] = vn;
-	  texts[len] = fn;
+	 if (f && f[0] && f[0].value) {
+	     if (f[0].value != self) {
+		 if (nameOnly) {
+		     vn = fn = f[0].value;
+		 } 
+		 else {
+		     fn = f[0].value + ' (' + fn + ')';
+		 }
+	     }
+	 }
+
+	 var len = values.length;
+	 values[len] = vn;
+	 texts[len] = fn; 
       }
-    }
   }
 
   return [values,texts];
@@ -394,8 +396,6 @@ function fill_regex(select_name, pattern, self, nameOnly)
   }
 
   remove_temp_options(select);
-
-  pattern = '^' + pattern + '$';
 
   var vn_fn = collect_regex(select_name, pattern, self, nameOnly);
   var values = vn_fn[0];
@@ -560,16 +560,15 @@ function fill_numbers(select_name)
 
 //collect_types()
 //Collect up types from array types[] and page on questionnaire.
-function collect_types(select_name, type_cat, nameOnly)
+function collect_types(select_name, type_cat, self, nameOnly)
 {
   var lex_ext = '-' + type_cat + '-lex';
 
   //collect options from the type fields on the questionnaire
   var pattern = '^'  + '(' + type_cat + ')' + '[0-9]+_name' + '$';
-
-  var vn_fn = collect_regex(select_name, pattern, nameOnly);
-
+  var vn_fn = collect_regex(select_name, pattern, self, nameOnly);
   var texts = new Array;
+
   for (var i = 0; i < vn_fn[1].length; i++) {
       texts[i] = vn_fn[1][i]+ lex_ext;
   }
@@ -593,7 +592,7 @@ function collect_types(select_name, type_cat, nameOnly)
  
 // fill_types()
 // Fill a SELECT tag with OPTIONs where every OPTION is a type name.
-function fill_types(select_name, type_cat, nameOnly)
+function fill_types(select_name, type_cat, self, nameOnly)
 {
   var select = document.getElementsByName(select_name)[0];
   var old_val = select.value;  // store the previously selected option
@@ -606,7 +605,7 @@ function fill_types(select_name, type_cat, nameOnly)
 
   var texts = new Array;
   var values = new Array;
-  texts = collect_types(select_name, type_cat, nameOnly);
+  texts = collect_types(select_name, type_cat, self, nameOnly);
   values = texts;
 
   insert_temp_options(select, values, texts);
@@ -619,7 +618,7 @@ function fill_types(select_name, type_cat, nameOnly)
 //Fill a SELECT tag with OPTIONs where every option is either a lexical type or 
 //a slot defined on the questionnaire. This is used to create options for inflectional
 //input values.
-function fill_inputs(select_name, pattern, nameOnly)
+function fill_inputs(select_name, pattern, self, nameOnly)
 {
   var select = document.getElementsByName(select_name)[0];
   var old_val = select.value;  // store the previously selected option
@@ -645,11 +644,11 @@ function fill_inputs(select_name, pattern, nameOnly)
 
       if (str_pattern.match(cat_pattern) != null){
 	  type_cat = categories[i];
-	  texttypes = texttypes.concat(collect_types(name, type_cat, nameOnly));
+	      texttypes = texttypes.concat(collect_types(name, type_cat, self, nameOnly));
       }
   }
 
-  textslots = collect_regex(name, pattern, nameOnly);
+  textslots = collect_regex(name, pattern, self, nameOnly);
   texts = texttypes.concat(textslots[1]);
 
   values = texts;
