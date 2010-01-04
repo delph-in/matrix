@@ -596,13 +596,13 @@ class MatrixDefFile:
             if fill_type == 'fillregex':
               if fill_arg1: 
                 if fill_arg2: 
-                  if fill_arg2 == '1': #fill with 1 and 2 is true
+                  if fill_arg2 == '1': 
                     fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
-                  else: #fill with 1 and 2 is fill_arg2
+                  else: 
                     fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\')'
-                  if fill_arg3: #fill with 1,2 and 3 is true
+                  if fill_arg3: 
                     fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true)'
-                else: #fill with only arg_1
+                else: 
                   fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\')'
             elif fill_type == 'fillnames':
               if fill_arg1:

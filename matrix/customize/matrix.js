@@ -344,7 +344,8 @@ function set_select_value(select, value, text)
 // Pass through the form fields in the page, looking for ones whose
 // name attribute matches the pattern.  When one is found, use its
 // contents to create an option.
-function collect_regex(name, pattern, self, nameOnly){
+// Note: fn (friendly name) is a more descriptive name or a user defined name.
+function collect_regex(select_name, pattern, self, nameOnly){
 
   pattern = '^' + pattern + '$';
   var values = new Array();
@@ -353,29 +354,32 @@ function collect_regex(name, pattern, self, nameOnly){
 
   //FIX - THE ignore self piece is not working here. 
   for (var i = 0; i < e.length; i++) {
-
+      
       if (e[i].name.search(pattern) != -1) {
-	 var vn = e[i].name.replace(/_[^_]*$/, '');
-	 var fn = vn;
-	 var f = document.getElementsByName(vn + '_name');
+	  var vn = e[i].name.replace(/_[^_]*$/, '');
+	  var fn = vn;
+	  var f = document.getElementsByName(vn + '_name');
+	  
+	  if (f && f[0] && f[0].value) {
+	      if (nameOnly) {
+		  vn = fn = f[0].value;
+	      } 
+	      else {
+		  fn = f[0].value + ' (' + fn + ')';
+	      }
+	      
+	  }
 
-	 if (f && f[0] && f[0].value) {
-	     if (f[0].value != self) {
-		 if (nameOnly) {
-		     vn = fn = f[0].value;
-		 } 
-		 else {
-		     fn = f[0].value + ' (' + fn + ')';
-		 }
-	     }
-	 }
+	  var len = values.length;
 
-	 var len = values.length;
-	 values[len] = vn;
-	 texts[len] = fn; 
+	  if (f[0] != self) {
+	      values[len] = vn;
+	      texts[len] = fn; 
+	  }
       }
+      
   }
-
+  
   return [values,texts];
 }
 
@@ -394,7 +398,6 @@ function fill_regex(select_name, pattern, self, nameOnly)
   if (select.selectedIndex != -1) {
     old_text = select.options[select.selectedIndex].innerHTML;
   }
-
   remove_temp_options(select);
 
   var vn_fn = collect_regex(select_name, pattern, self, nameOnly);
@@ -402,7 +405,6 @@ function fill_regex(select_name, pattern, self, nameOnly)
   var texts = vn_fn[1];
    
   insert_temp_options(select, values, texts);
-
   set_select_value(select, old_val, old_text);
   force_layout(select.parentNode);
 }
