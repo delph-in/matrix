@@ -1054,10 +1054,13 @@ class ChoicesFile:
         for w in valwithfn:
           dimvalues += [[w.split('|')[0], d[1]]] #add to array feature value and category
 
+#FIX - need to make this insensitive to hyphens - in process
+
     #create lexical type names based on features chosen
     for dv in dimvalues:
       cat_name = dv[1]
-      lextype_name = dv[0].replace('-','') + '-' + cat_name + '-lex'
+   #   lextype_name = dv[0].replace('-','') + '-' + cat_name + '-lex'
+      lextype_name = dv[0] + '-' + cat_name + '-lex'
       types += [ [lextype_name, cat_name] ] 
   
     #collect up user defined types
@@ -1069,7 +1072,8 @@ class ChoicesFile:
       while self.iter_valid():
         basetype = self.get('name')
         if basetype:
-          lextype_name = basetype.replace('-', '') + '-' + c + '-lex'
+          #lextype_name = basetype.replace('-', '') + '-' + c + '-lex'
+          lextype_name = basetype + '-' + c + '-lex'
           types += [ [lextype_name, c] ]
         self.iter_next()
       self.iter_end()

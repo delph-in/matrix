@@ -1100,7 +1100,7 @@ BeginIter verb{i} "a Verb Type"
   BeginIter feat{j} "a Feature"
 
     Select name "Verb {i} feature {j} name" "Name: " " "
-    fillnames
+    fillnames verb
 
     MultiSelect value "Verb {i} feature {j} value" "Value: " ""
     fillvalues verb{i}_feat{j}_name
@@ -1141,7 +1141,7 @@ BeginIter aux{i} "an Auxiliary Type"
   BeginIter feat{j} "an auxiliary feature"
 
      Select name "Aux {i} feature {j} name" "Name: " ""
-     fillnames
+     fillnames verb
 
      MultiSelect value "Aux {i} feature {j} value" "Value: " ""
      fillvalues aux{i}_feat{j}_name
@@ -1166,7 +1166,7 @@ class=\"feat\">form</span> is required.)<br>"
   BeginIter compfeature{j} "a complement feature" 1
 
     Select name "Aux {i} complement feature {j} name" "Name: " ""
-    fillnames
+    fillnames verb
 
     MultiSelect value "Aux {i} complement feature {j} value" "Value: " ""
     fillvalues aux{i}_compfeature{j}_name

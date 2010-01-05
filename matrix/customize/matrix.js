@@ -344,6 +344,7 @@ function set_select_value(select, value, text)
 // Pass through the form fields in the page, looking for ones whose
 // name attribute matches the pattern.  When one is found, use its
 // contents to create an option.
+// Note: This is called by fill_regex, collect_types and fill_inputs 
 // Note: fn (friendly name) is a more descriptive name or a user defined name.
 function collect_regex(pattern, self, nameOnly){
 
@@ -352,7 +353,6 @@ function collect_regex(pattern, self, nameOnly){
   var texts = new Array();
   var e = document.forms[0].elements;
 
-  //FIX - THE ignore self piece is not working here. 
   for (var i = 0; i < e.length; i++) {
       
       if (e[i].name.search(pattern) != -1 && e[i].name.search(self) == -1) {
@@ -386,23 +386,24 @@ function collect_regex(pattern, self, nameOnly){
 // indicates the item being defined (self) and should not be included as a choice.
 // If the nameOnly flag is true, make the OPTION's VALUE attribute equal to
 // its contents.
-function fill_regex(select_name, pattern, self, nameOnly)
-{
-  var select = document.getElementsByName(select_name)[0];
-  var old_val = select.value;  // store the previously selected option
-  var old_text = old_val;
-  if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].innerHTML;
-  }
-  remove_temp_options(select);
+function fill_regex(select_name, pattern, self, nameOnly){
+    
+    var select = document.getElementsByName(select_name)[0];
+    var old_val = select.value;  // store the previously selected option
+    var old_text = old_val;
 
-  var vn_fn = collect_regex(pattern, self, nameOnly);
-  var values = vn_fn[0];
-  var texts = vn_fn[1];
-   
-  insert_temp_options(select, values, texts);
-  set_select_value(select, old_val, old_text);
-  force_layout(select.parentNode);
+    if (select.selectedIndex != -1) {
+	old_text = select.options[select.selectedIndex].innerHTML;
+    }
+    remove_temp_options(select);
+    
+    var vn_fn = collect_regex(pattern, self, nameOnly);
+    var values = vn_fn[0];
+    var texts = vn_fn[1];
+    
+    insert_temp_options(select, values, texts);
+    set_select_value(select, old_val, old_text);
+    force_layout(select.parentNode);
 }
 
 // fill_feature_names()
@@ -561,6 +562,7 @@ function fill_numbers(select_name)
 function collect_types(type_cat, self, nameOnly)
 {
   var lex_ext = '-' + type_cat + '-lex';
+  var self_ext = self + lex_ext
 
   //collect options from the type fields on the questionnaire
   var pattern = '^'  + '(' + type_cat + ')' + '[0-9]+_name' + '$';
@@ -575,6 +577,10 @@ function collect_types(type_cat, self, nameOnly)
   // Note that this assumes a strict naming convention for 
   // lexical types within the customization and no hyphens
   // in the user defined names.
+  //FIX - need to make this insensitive to previous hyphens - count from the end?
+  //FIX working on this here - I think that the problem is that the self is a name like slot-one 
+  //and it needs to be compared to a user defined name
+  //maybe - need to get value of self?? or duplicate approach in collect_regex??
   for (var i = 0; i < types.length; i++) {
       var t = types[i].split(':');
 

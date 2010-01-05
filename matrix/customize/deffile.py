@@ -584,7 +584,7 @@ class MatrixDefFile:
         if lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
           fill_type = word[0]
-#FIX not working
+
           if fill_type[0:4] == 'fill':
             if len(word) > 1:
               fill_arg1 = word[1]
