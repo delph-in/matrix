@@ -3715,48 +3715,6 @@ def customize_roots():
   roots.add(typedef, comment)
 
 
-######################################################################
-# Archive helper functions
-#   make_tgz(dir) and make_zip(dir) create an archive called
-#   dir.(tar.gz|zip) that contains the contents of dir
-
-def make_tgz(dir):
-
-  # ERB First get rid of existing file because gzip won't
-  # overwrite existing .tgz meaning you can only customize
-  # grammar once per session.
-
-  if os.path.exists('matrix.tar.gz'):
-    os.remove('matrix.tar.gz')
-
-  archive = dir + '.tar'
-  t = tarfile.open(archive, 'w')
-  t.add(dir)
-  t.close()
-
-  g = gzip.open(archive + '.gz', 'wb')
-  f = open(archive, 'rb')
-  g.write(f.read())
-  f.close()
-  g.close()
-
-  os.remove(archive)
-
-
-def add_zip_files(z, dir):
-  files = os.listdir(dir)
-  for f in files:
-    cur = dir + '/' + f
-    if os.path.isdir(cur):
-      add_zip_files(z, cur)
-    else:
-      z.write(cur, cur)
-
-
-def make_zip(dir):
-  z = zipfile.ZipFile(dir + '.zip', 'w')
-  add_zip_files(z, dir)
-  z.close()
 
 
 ######################################################################
@@ -3880,15 +3838,6 @@ def customize_matrix(path, arch_type):
   lexicon.save()
   roots.save()
   version_lsp.save()
-
-  # Either tar or zip up the results
-  old_dir = os.getcwd()
-  os.chdir(path)
-  if arch_type == 'tgz':
-    make_tgz(grammar_dir)
-  else:
-    make_zip(grammar_dir)
-  os.chdir(old_dir)
 
   return grammar_dir
 

@@ -1,3 +1,4 @@
+
 ### $Id: deffile.py,v 1.16 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
@@ -16,9 +17,14 @@ import sys
 import os
 import glob
 import re
+import tarfile
+import gzip
+import zipfile
+import tdl
+
 from choices import ChoicesFile
 from utils import tokenize_def
-
+import generate
 
 ######################################################################
 # HTML blocks, used to create web pages
@@ -26,7 +32,8 @@ from utils import tokenize_def
 def dummy():
   pass # let emacs know the indentation is 2 spaces
 
-HTTP_header = 'Content-type: text/html'
+
+HTTP_header = 'Content-type: text/html;charset=UTF-8'
 
 HTML_pretitle = '''<html>
 <head>
@@ -156,6 +163,31 @@ Copestake 2002 <a
 href="http://cslipublications.stanford.edu/lkb.html"><i>Implementing
 Typed Feature Structure Grammars</i></a>.
 
+<hr>
+<a href="matrix.cgi">Back to form</a><br>
+<a href="http://www.delph-in.net/matrix/">Back to Matrix main page</a><br>
+<a href="http://www.delph-in.net/lkb">To the LKB page</a>
+'''
+
+HTML_sentencesprebody = '''
+<script type="text/javascript">
+<!--
+function toggle_visibility(ids) {
+  for(i in ids) {
+    var e = document.getElementById(ids[i]);
+    if(e.style.display == 'none')
+      e.style.display = 'block';
+    else
+  e.style.display = 'none';
+  }
+}
+//-->
+</script>
+
+<h3>Generated Sentences</h3>
+'''
+
+HTML_sentencespostbody = '''
 <hr>
 <a href="matrix.cgi">Back to form</a><br>
 <a href="http://www.delph-in.net/matrix/">Back to Matrix main page</a><br>
@@ -299,6 +331,49 @@ def merge_quoted_strings(line):
       i += 1
 
   return line
+
+######################################################################
+# Archive helper functions
+#   make_tgz(dir) and make_zip(dir) create an archive called
+#   dir.(tar.gz|zip) that contains the contents of dir
+
+def make_tgz(dir):
+
+  # ERB First get rid of existing file because gzip won't
+  # overwrite existing .tgz meaning you can only customize
+  # grammar once per session.
+
+  if os.path.exists('matrix.tar.gz'):
+    os.remove('matrix.tar.gz')
+
+  archive = dir + '.tar'
+  t = tarfile.open(archive, 'w')
+  t.add(dir)
+  t.close()
+
+  g = gzip.open(archive + '.gz', 'wb')
+  f = open(archive, 'rb')
+  g.write(f.read())
+  f.close()
+  g.close()
+
+  os.remove(archive)
+
+
+def add_zip_files(z, dir):
+  files = os.listdir(dir)
+  for f in files:
+    cur = dir + '/' + f
+    if os.path.isdir(cur):
+      add_zip_files(z, cur)
+    else:
+      z.write(cur, cur)
+
+
+def make_zip(dir):
+  z = zipfile.ZipFile(dir + '.zip', 'w')
+  add_zip_files(z, dir)
+  z.close()
 
 
 # Replace variables of the form {name} in word using the dict iter_vars
@@ -476,6 +551,8 @@ class MatrixDefFile:
                      ' ', ' .zip<br>')
     print html_input(errors, 'submit', '', 'Create Grammar', False, '', '</p>',
                      '', '', len(errors) > 0)
+
+    print html_input(errors, 'submit', 'sentences', 'Test by Generation', False, '', '</p>','','', len(errors) > 0)
 
     print '<hr>\n'
     print html_input(errors, 'button', '', 'Download Choices File', False,
@@ -804,9 +881,68 @@ class MatrixDefFile:
       arch_file = grammar_dir + '.tar.gz'
     else:
       arch_file = grammar_dir + '.zip'
+    old_dir = os.getcwd()
+    os.chdir(session_path)
+    if arch_type == 'tgz':
+      make_tgz(grammar_dir)
+    else:
+      make_zip(grammar_dir)
+    os.chdir(old_dir)
     print HTML_customprebody % (session_path + '/' + arch_file)
     print HTML_postbody
 
+
+  # Generate and print sample sentences from the customized grammar
+  def sentences_page(self, session_path, grammar_dir):
+    print HTTP_header + '\n'
+    print HTML_pretitle
+    print '<title>Matrix Sample Sentences</title>'
+    print HTML_posttitle
+    grammar_dir_final = os.getcwd() + '/' + session_path + '/' + grammar_dir
+    delphin_dir = os.getcwd() + '/delphin'
+    sentences = generate.get_sentences(grammar_dir_final,delphin_dir)
+    print HTML_sentencesprebody
+    for i in range(len(sentences)):
+      long = False
+      print "<b>" + sentences[i][0][0]+"</b> " + sentences[i][0][2] + ", with predication: " + sentences[i][0][1] +"<br>"
+      if len(sentences[i][1]) > 0 and sentences[i][1][0] == '#EDGE-ERROR#':
+        print 'This grammar combined with this input semantics results in too large of a seach space<br>'
+      else:
+        for j in range(len(sentences[i][1])):
+          if j == 10:
+            print '<div id="%s_extra" style=display:none;>' % (i+1)
+            long = True
+          print str(j+1) + ". " + sentences[i][1][j] + "<br>"
+        if long:
+          print '</div>'
+          print '<div id="%s_dots" style=display:block;>...</div>' % (i+1)
+          print '<input type="button" id="%s_show" value="Show Remainder" onclick=toggle_visibility(["%s_extra","%s_dots","%s_show","%s_hide"]) style=display:block;>' % (i+1,i+1,i+1,i+1,i+1)
+          print '<input type="button" id="%s_hide" value="Hide Remainder" onclick=toggle_visibility(["%s_extra","%s_dots","%s_show","%s_hide"]) style=display:none;>' % (i+1,i+1,i+1,i+1,i+1)
+
+        print '<br>'
+        print HTML_preform
+        print '<input type="hidden" name="verbpred" value="%s">' % sentences[i][0][1]
+        print '<input type="hidden" name="grammar" value="%s">' % grammar_dir
+        print '<input type="submit" name="" value="More sentences with this verb and pattern">'
+        print HTML_postform
+      print '<br>'
+    print HTML_sentencespostbody
+    print HTML_postbody
+
+  # Display page with additional sentences
+  def more_sentences_page(self, session_path, grammar_dir, verbpred):
+    print HTTP_header + '\n'
+    print HTML_pretitle
+    print '<title>More Sentences</title>'
+    print HTML_sentencesprebody
+    grammar_dir_final = os.getcwd() + '/' + session_path + '/' + grammar_dir
+    delphin_dir = os.getcwd() + '/delphin'
+    sentences = generate.get_additional_sentences(grammar_dir_final,delphin_dir,verbpred)
+    for j in range(len(sentences)):
+      print str(j+1) + ". " + sentences[j] + "<br>"
+    print '<br><input type="button" name="" value="Back to sentences" onclick="history.go(-1)">'
+    print HTML_sentencespostbody
+    print HTML_postbody
 
   # Display errors that occurred during customization
   def error_page(self, errors):

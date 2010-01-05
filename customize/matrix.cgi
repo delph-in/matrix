@@ -88,6 +88,10 @@ if form_data.has_key('choices'):
 if form_data.has_key('section'):
   matrixdef.save_choices(form_data, session_path + '/choices')
 
+# If the 'verbpred' field is defined, then the user wishes to generate more sentences with that predication
+if form_data.has_key('verbpred'):
+  matrixdef.more_sentences_page(session_path,form_data['grammar'].value, form_data['verbpred'].value)
+  sys.exit()
 
 # Get a list of error messages, determined by validating the current
 # choices.  If the current choices are valid, the list will be empty.
@@ -129,7 +133,10 @@ if form_data.has_key('customize'):
 
     # Create the customized grammar
     grammar_dir = customize_matrix(session_path, arch_type)
-    matrixdef.custom_page(session_path, grammar_dir, arch_type)
+    if form_data.has_key('sentences'):
+      matrixdef.sentences_page(session_path, grammar_dir)
+    else:
+      matrixdef.custom_page(session_path, grammar_dir, arch_type)
 elif form_data.has_key('subpage'):
   if browser_cookie:
     matrixdef.sub_page(form_data['subpage'].value, cookie, errors)
