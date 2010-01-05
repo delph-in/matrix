@@ -345,7 +345,7 @@ function set_select_value(select, value, text)
 // name attribute matches the pattern.  When one is found, use its
 // contents to create an option.
 // Note: fn (friendly name) is a more descriptive name or a user defined name.
-function collect_regex(select_name, pattern, self, nameOnly){
+function collect_regex(pattern, self, nameOnly){
 
   pattern = '^' + pattern + '$';
   var values = new Array();
@@ -355,7 +355,7 @@ function collect_regex(select_name, pattern, self, nameOnly){
   //FIX - THE ignore self piece is not working here. 
   for (var i = 0; i < e.length; i++) {
       
-      if (e[i].name.search(pattern) != -1) {
+      if (e[i].name.search(pattern) != -1 && e[i].name.search(self) == -1) {
 	  var vn = e[i].name.replace(/_[^_]*$/, '');
 	  var fn = vn;
 	  var f = document.getElementsByName(vn + '_name');
@@ -367,15 +367,11 @@ function collect_regex(select_name, pattern, self, nameOnly){
 	      else {
 		  fn = f[0].value + ' (' + fn + ')';
 	      }
-	      
 	  }
 
 	  var len = values.length;
-
-	  if (f[0] != self) {
-	      values[len] = vn;
-	      texts[len] = fn; 
-	  }
+	  values[len] = vn;
+	  texts[len] = fn; 
       }
       
   }
@@ -400,7 +396,7 @@ function fill_regex(select_name, pattern, self, nameOnly)
   }
   remove_temp_options(select);
 
-  var vn_fn = collect_regex(select_name, pattern, self, nameOnly);
+  var vn_fn = collect_regex(pattern, self, nameOnly);
   var values = vn_fn[0];
   var texts = vn_fn[1];
    
@@ -562,13 +558,13 @@ function fill_numbers(select_name)
 
 //collect_types()
 //Collect up types from array types[] and page on questionnaire.
-function collect_types(select_name, type_cat, self, nameOnly)
+function collect_types(type_cat, self, nameOnly)
 {
   var lex_ext = '-' + type_cat + '-lex';
 
   //collect options from the type fields on the questionnaire
   var pattern = '^'  + '(' + type_cat + ')' + '[0-9]+_name' + '$';
-  var vn_fn = collect_regex(select_name, pattern, self, nameOnly);
+  var vn_fn = collect_regex(pattern, self, nameOnly);
   var texts = new Array;
 
   for (var i = 0; i < vn_fn[1].length; i++) {
@@ -607,7 +603,7 @@ function fill_types(select_name, type_cat, self, nameOnly)
 
   var texts = new Array;
   var values = new Array;
-  texts = collect_types(select_name, type_cat, self, nameOnly);
+  texts = collect_types(type_cat, self, nameOnly);
   values = texts;
 
   insert_temp_options(select, values, texts);
@@ -646,11 +642,11 @@ function fill_inputs(select_name, pattern, self, nameOnly)
 
       if (str_pattern.match(cat_pattern) != null){
 	  type_cat = categories[i];
-	      texttypes = texttypes.concat(collect_types(name, type_cat, self, nameOnly));
+	      texttypes = texttypes.concat(collect_types(type_cat, self, nameOnly));
       }
   }
 
-  textslots = collect_regex(name, pattern, self, nameOnly);
+  textslots = collect_regex(pattern, self, nameOnly);
   texts = texttypes.concat(textslots[1]);
 
   values = texts;

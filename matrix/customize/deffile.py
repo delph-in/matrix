@@ -580,7 +580,7 @@ class MatrixDefFile:
         fill_arg2 = ''
         fill_arg3 = ''
         fillstring = ''
-        print fill_arg2
+
         if lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
           fill_type = word[0]
@@ -597,33 +597,33 @@ class MatrixDefFile:
               if fill_arg1: 
                 if fill_arg2: 
                   if fill_arg2 == '1': 
-                    fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
+                    fillstring = 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
                   else: 
-                    fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\')'
+                    fillstring = 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\')'
                   if fill_arg3: 
-                    fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true)'
+                    fillstring = 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true)'
                 else: 
-                  fillstring += 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\')'
+                  fillstring = 'fill_regex(\'' + vn + '\', \'' + fill_arg1 + '\')'
             elif fill_type == 'fillnames':
               if fill_arg1:
-                fillstring += 'fill_feature_names(\'' + vn + '\', \'' + fill_arg1 + '\')'
+                fillstring = 'fill_feature_names(\'' + vn + '\', \'' + fill_arg1 + '\')'
               else:
-                fillstring += 'fill_feature_names(\'' + vn + '\')'
+                fillstring = 'fill_feature_names(\'' + vn + '\')'
             elif fill_type == 'fillvalues':
               if fill_arg2:
-                fillstring += 'fill_feature_values(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
+                fillstring = 'fill_feature_values(\'' + vn + '\', \'' + fill_arg1 + '\', true)'
               else:
-                fillstring += 'fill_feature_values(\'' + vn + '\', \'' + fill_arg1 + '\')'
+                fillstring = 'fill_feature_values(\'' + vn + '\', \'' + fill_arg1 + '\')'
             elif fill_type == 'fillverbpat':
-              fillstring += 'fill_case_patterns(\'' + vn + '\', false)'
+              fillstring = 'fill_case_patterns(\'' + vn + '\', false)'
             elif fill_type == 'fillmorphpat':
-              fillstring += 'fill_case_patterns(\'' + vn + '\', true)'
+              fillstring = 'fill_case_patterns(\'' + vn + '\', true)'
             elif fill_type == 'fillnumbers':
-              fillstring += 'fill_numbers(\'' + vn + '\')'
+              fillstring = 'fill_numbers(\'' + vn + '\')'
             elif fill_type == 'filltypes':
-              fillstring += 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true)'
+              fillstring = 'fill_types(\'' + vn + '\',\'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true)'
             elif fill_type == 'fillinputs':
-              fillstring += 'fill_inputs(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true)'
+              fillstring = 'fill_inputs(\'' + vn + '\', \'' + fill_arg1 + '\', \'' + fill_arg2 + '\', true)'
             
             html += html_select(errors, vn, multi, fillstring) + '\n' 
             html += html_option(errors, '', False, '') + '\n'
