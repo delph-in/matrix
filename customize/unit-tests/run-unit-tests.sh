@@ -93,9 +93,12 @@ do
 
     ${CUSTOMIZATIONROOT}/unit-tests/call-customize ${CUSTOMIZATIONROOT} ${CUSTOMIZATIONROOT}/unit-tests/choices/$lgname ${CUSTOMIZATIONROOT}/unit-tests/grammars/$lgname
 
-# Have to calculate after the grammar is created so the "*" can find the
-# directory containing it (which is no longer named "matrix")
-    grammar=`echo "$grammardir"/*/lkb/script`
+# Have to calculate after the grammar is created since the directory is
+# no longer always named "matrix")
+    pushd $grammardir >/dev/null
+    subdir=`echo * | sed 's/choices//g' | sed 's/ //g'`
+    popd >/dev/null
+    grammar="$grammardir"/"$subdir"/lkb/script
 
     status=$?
 
