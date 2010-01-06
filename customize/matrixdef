@@ -479,22 +479,22 @@ Check past "Past" "" "<b>past</b><br>"
     Text name "Past subtype {i} name" "Subtype: " "" 20
   EndIter past-subtype
 
-Check present "Present" "" "<b>present</b><br>"
+Check present "Present" "<br><br>" "<b>present</b><br>"
   BeginIter present-subtype{i} "a subtype"
     Text name "Present subtype {i} name" "Subtype: " "" 20
   EndIter present-subtype
 
-Check future "Future" "" "<b>future</b><br>"
+Check future "Future" "<br><br>" "<b>future</b><br>"
   BeginIter future-subtype{i} "a subtype"
     Text name "Future subtype {i} name" "Subtype: " "" 20
   EndIter future-subtype
 
-Check nonpast "Non-Past" "" "<b>nonpast</b> &nbsp;&nbsp;&nbsp;&nbsp; <font size=-1>(note: If present and/or future are also selected they are assumed to be subtypes of nonpast.)<br></font>"
+Check nonpast "Non-Past" "<br><br>" "<b>nonpast</b> &nbsp;&nbsp;&nbsp;&nbsp; <font size=-1>(note: If present and/or future are also selected they are assumed to be subtypes of nonpast.)<br></font>"
   BeginIter nonpast-subtype{i} "a subtype"
     Text name "Non-Past subtype {i} name" "Subtype: " "" 20
   EndIter nonpast-subtype
 
-Check nonfuture "Non-Future" "" "<b>nonfuture</b> &nbsp;&nbsp;&nbsp;&nbsp; <font size=-1>(note: If present and/or past are also selected they are assumed to be subtypes of nonfuture.)<br></font>"
+Check nonfuture "Non-Future" "<br><br>" "<b>nonfuture</b> &nbsp;&nbsp;&nbsp;&nbsp; <font size=-1>(note: If present and/or past are also selected they are assumed to be subtypes of nonfuture.)<br></font>"
   BeginIter nonfuture-subtype{i} "a subtype"
     Text name "Non-Future subtype {i} name" "Subtype: " "" 20
   EndIter nonfuture-subtype
@@ -642,7 +642,7 @@ Label "<b>nonfinite</b>:"
     Text name "Nonfinite subtype {i} name" "nonfinite subtype name: " "" 20
   EndIter nf-subform
 
-Label "<b>finite</b>:"
+Label "<br><br><b>finite</b>:"
   BeginIter fin-subform{i} "a subtype"
     Text name "Finite subtype {i} name" "finite subtype name: " "" 20
   EndIter fin-subform

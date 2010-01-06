@@ -3,21 +3,302 @@
 ######################################################################
 # imports
 
+import re
+
 from choices import ChoicesFile
+from utils import get_name
 
 
 ######################################################################
-# add_err(errors, key, message)
-#   Insert into the dict errors the key with the value message.  If
-#   the key already exists, concatenate the message with the existing
-#   value.
+# utility functions
 
 def add_err(err, key, message):
+  """
+  Insert into the dict errors the key with the value message.  If
+  the key already exists, concatenate the message with the existing
+  value.
+  """
   if err.has_key(key):
     err[key] += ' ' + message
   else:
     err[key] = message
-  
+
+
+######################################################################
+# Namespace validation
+#   A grammar produced by customization consists of several files
+#   in TDL that define a number of types.  Some of the names of
+#   these types are based on the user's choices.  The system
+#   needs to prevent the user from choosing type names that
+#   collide with existing types in the system (either types
+#   in matrix.tdl or head-types.tdl, or types that the customization
+#   system typically uses in grammars).
+
+# type names reserved for the customization system
+cust_types = [
+  'case-marking-adp-lex',
+  'dir-inv-scale',
+  'comp-head-phrase',
+  'head-comp-phrase',
+  'subj-head-phrase',
+  'head-subj-phrase',
+  'head-final-head-nexus',
+  'head-initial-head-nexus',
+  'verbal-head-nexus',
+  'comp-head-phrase-2',
+  'head-comp-phrase-2',
+  'head-spec-phrase',
+  'bare-np-phrase',
+  'comp-aux-phrase',
+  'aux-comp-phrase',
+  'neg-adv-lex',
+  'verb-lex',
+  'subj-v-inv-lrule',
+  'int-cl',
+  'complementizer-lex-item',
+  'qpart-lex-item',
+  'no-subj-drop-verb-lex',
+  'subj-drop-verb-lex',
+  'no-obj-drop-verb-lex',
+  'obj-drop-verb-lex',
+  'subj-drop-only-verb-lex',
+  'obj-drop-only-verb-lex',
+  'subj-obj-drop-verb-lex',
+  'no-drop-verb-lex',
+  'noun-lex',
+  'obl-spr-noun-lex',
+  'no-spr-noun-lex',
+  'main-verb-lex',
+  'aux-lex',
+  'transitive-verb-lex',
+  'intransitive-verb-lex',
+  'subj-raise-aux',
+  'subj-raise-aux-with-pred',
+  'subj-raise-aux-no-pred',
+  'arg-comp-aux',
+  'arg-comp-aux-with-pred',
+  'arg-comp-aux-no-pred',
+  's-comp-aux',
+  's-comp-aux-with-pred',
+  's-comp-aux-no-pred',
+  'determiner-lex',
+  'word-to-lexeme-rule',
+  'track'
+]
+
+# regex patterns for sets of names that are not available for
+# user-defined types
+forbidden_type_patterns = [
+  'dir-inv-[0-9]+',
+  'dir-inv-non-[0-9]+',
+  '[a-z]+[0-9]+-top-coord-rule',
+  '[a-z]+[0-9]+-mid-coord-rule',
+  '[a-z]+[0-9]+-bottom-coord-rule',
+  '[a-z]+[0-9]+-left-coord-rule',
+  'context[0-9]+-decl-head-opt-subj-phrase'
+]
+
+def validate_names(ch, err):
+  # reserved_types contains type names that are not available
+  # for user-defined types
+  reserved_types = {}
+
+  # read matrix types and head types from file
+  f = open('matrix-types', 'r')
+  for t in f.readlines():
+    reserved_types[t.strip()] = True
+  f.close()
+  f = open('head-types', 'r')
+  for t in f.readlines():
+    reserved_types[t.strip()] = True
+  f.close()
+
+  # add the types from cust_types above to reserved_types
+  for ct in cust_types:
+    reserved_types[ct] = True
+
+  # if called for by current choices, add reserved types for:
+  # case, direction, person, number, pernum, gender, tense, aspect,
+  # situation, form, and trans/intrans verb types.
+  if ch.cases():
+    reserved_types['case'] = True
+
+  if ch.get('scale', []):
+    reserved_types['direction'] = True
+    reserved_types['dir'] = True
+    reserved_types['inv'] = True
+
+  if ch.pernums():
+    reserved_types['pernum'] = True
+    persons = [p[0] for p in ch.persons()]
+    numbers = [n[0] for n in ch.numbers()]
+    for pernum in ch.pernums():
+      if pernum[0] not in persons + numbers:
+        reserved_types[pernum[0]] = True
+  else:
+    if ch.persons():
+      reserved_types['person'] = True
+      for person in ch.persons():
+        reserved_types[person[0]] = True
+    if ch.numbers():
+      reserved_types['number'] = True
+
+  if ch.genders():
+    reserved_types['gender'] = True
+
+  if ch.tenses():
+    reserved_types['tense'] = True
+
+  if ch.aspects():
+    reserved_types['aspect'] = True
+
+  if ch.situations():
+    reserved_types['situation'] = True
+
+  if ch.forms():
+    reserved_types['form'] = True
+    reserved_types['finite'] = True
+    reserved_types['nonfinite'] = True
+
+  for pattern in ch.patterns():
+    p = pattern[0].split(',')
+    dir_inv = ''
+    if len(p) > 1:
+      dir_inv = 'dir-inv-'
+    c = p[0].split('-')
+
+    if p[0] == 'intrans':
+      reserved_types[dir_inv + 'intransitive-verb-lex'] = True
+    elif p[0] == 'trans':
+      reserved_types[dir_inv + 'transitive-verb-lex'] = True
+    elif len(c) == 1:
+      reserved_types[dir_inv +
+                     c[0] + '-intransitive-verb-lex'] = True
+    else:
+      reserved_types[dir_inv +
+                     c[0] + '-' + c[1] + '-transitive-verb-lex'] = True
+
+  # fill out the user_types list with pairs:
+  #   [type name, variable name]
+  user_types = []
+
+  for case in ['nom-acc-nom', 'nom-acc-acc',
+               'erg-abs-erg', 'erg-abs-abs',
+               'tripartite-s', 'tripartite-a', 'tripartite-o',
+               'split-s-a', 'split-s-o',
+               'fluid-s-a', 'fluid-s-o',
+               'split-n-nom', 'split-n-acc', 'split-n-erg', 'split-n-abs',
+               'split-v-nom', 'split-v-acc', 'split-v-erg', 'split-v-abs',
+               'focus-focus', 'focus-a', 'focus-o']:
+    vn = case + '-case-name'
+    if vn in ch:
+      user_types += [[ch[vn], vn]]
+
+  for case in ch.get('case', []):
+    user_types += [[case.get('name'), case.full_key + '_name']]
+
+  for number in ch.get('number', []):
+    user_types += [[number.get('name'), number.full_key + '_name']]
+
+  for gender in ch.get('gender', []):
+    user_types += [[gender.get('name'), gender.full_key + '_name']]
+
+  for feature in ch.get('feature', []):
+    user_types += [[feature.get('name'), feature.full_key + '_name']]
+    for value in feature.get('value', []):
+      user_types += [[value.get('name'), value.full_key + '_name']]
+
+  for tense in ['past', 'present', 'future', 'nonpast', 'nonfuture']:
+    if tense in ch:
+      user_types += [[tense, tense]]
+      for st in ch.get(tense + '-subtype', []):
+        user_types += [[st.get('name'), st.full_key + '_name']]
+
+  for tense in ch.get('tense', []):
+    user_types += [[tense.get('name'), tense.full_key + '_name']]
+    
+  for aspect in ch.get('aspect', []):
+    user_types += [[aspect.get('name'), aspect.full_key + '_name']]
+    
+  for situation in ch.get('situation', []):
+    user_types += [[situation.get('name'), situation.full_key + '_name']]
+
+  for sf in ch.get('nf-subform', []):
+    user_types += [[sf.get('name'), sf.full_key + '_name']]
+    
+  for sf in ch.get('fin-subform', []):
+    user_types += [[sf.get('name'), sf.full_key + '_name']]
+    
+  for noun in ch.get('noun', []):
+    user_types += [[get_name(noun) + '-noun-lex',
+                    noun.full_key + '_name']]
+
+  for det in ch.get('det', []):
+    user_types += [[get_name(det) + '-determiner-lex',
+                    det.full_key + '_name']]
+
+  for verb in ch.get('verb', []):
+    user_types += [[get_name(verb) + '-verb-lex',
+                    verb.full_key + '_name']]
+    user_types += [[get_name(verb) + '-dir-inv-lex-rule',
+                    verb.full_key + '_name']]
+    user_types += [[get_name(verb) + '-dir-lex-rule',
+                    verb.full_key + '_name']]
+    user_types += [[get_name(verb) + '-inv-lex-rule',
+                    verb.full_key + '_name']]
+
+  for slotprefix in ['noun', 'verb', 'det', 'aux']:
+    for slot in ch.get(slotprefix + '-slot', []):
+      user_types += [[get_name(slot) + '-lex-rule',
+                      slot.full_key + '_name']]
+      user_types += [[get_name(slot) + '-rule-dtr',
+                      slot.full_key + '_name']]
+      for morph in slot.get('morph', []):
+        user_types += [[get_name(morph) + '-lex-rule',
+                        morph.full_key + '_name']]
+
+  # Whew!  OK, now we have two sets of type names and a set of
+  # patterns:
+  #
+  #   reserved_types: types that user's may not use
+  #   user_types: the types the user is trying to use
+  #   forbidden_type_patterns: user types must not match these
+  #
+  # Pass through the list of user types, checking each one to see if
+  # it's a reserved type or if it matches a forbidden pattern.  Also
+  # sort the list by type name, and check to see if we have any
+  # duplicates.  Mark all errors on the appropriate variables.
+
+  user_types.sort(lambda x, y: cmp(x[0], y[0]))
+
+  last_was_collision = False
+  for i in range(len(user_types)):
+    matrix_error = 'You must choose a different name to avoid ' + \
+                   'duplicating the internal Matrix type name "' + \
+                   user_types[i][0] + '".'
+
+    if user_types[i][0] in reserved_types:
+      add_err(err, user_types[i][1], matrix_error)
+
+    for forb in forbidden_type_patterns:
+      if re.match(forb + '$', user_types[i][0]):
+        add_err(err, user_types[i][1], matrix_error)
+
+    collision_error = \
+      'You must choose a different name to avoid duplicating the ' + \
+      'type name "' + user_types[i][0] + '".'
+
+    if i < len(user_types) - 1 and user_types[i][0] == user_types[i+1][0]:
+      add_err(err, user_types[i][1], collision_error)
+      last_was_collision = True
+    else:
+      if last_was_collision:
+        add_err(err, user_types[i][1], collision_error)
+      last_was_collision = False
+
+
+
+
 ######################################################################
 # validate_general(ch, err)
 #   Validate the user's choices about general information
@@ -914,6 +1195,7 @@ def validate_choices(choices_file, extra = False):
   ch = ChoicesFile(choices_file)
   err = {}
 
+  validate_names(ch, err)
   validate_general(ch, err)
   validate_case(ch, err)
   validate_person(ch, err)

@@ -223,6 +223,9 @@ HTML_postbody = '''</body>
 ######################################################################
 # HTML creation functions
 
+def html_error(error):
+  return error.replace('"', '&quot;')
+
 # Return an HTML <input> tag with the specified attributes and
 # surrounding text
 def html_input(errors, type, name, value, checked, before, after,
@@ -247,7 +250,7 @@ def html_input(errors, type, name, value, checked, before, after,
   asterisk = ''
   if name and errors.has_key(name):
     asterisk = '<span class="error" title="%s">*</span>' % \
-               (errors[name])
+               (html_error(errors[name]))
 
   return '%s%s<input type="%s" name="%s"%s%s%s%s%s>%s' % \
          (before, asterisk, type, name, value, chkd, size, dsabld,
@@ -259,7 +262,7 @@ def html_select(errors, name, multi, onfocus = ''):
   asterisk = ''
   if name and errors.has_key(name):
     asterisk = '<span class="error" title="%s">*</span>' % \
-               (errors[name])
+               (html_error(errors[name]))
 
   multi_attr = ''
   if multi:
@@ -603,7 +606,7 @@ class MatrixDefFile:
       elif word[0] == 'Label':
         if len(word) > 2 and errors.has_key(prefix + word[1]):
           html += '<span class="error" title="%s">*</span>' % \
-                  (errors[prefix + word[1]])
+                  (html_error(errors[prefix + word[1]]))
         html += word[-1] + '\n'
       elif word[0] == 'Separator':
         html += '<hr>'

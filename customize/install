@@ -56,10 +56,12 @@ fi
 tempdir=/tmp/matrix.$$
 mkdir $tempdir
 
+# create datestamp, matrix-types, and head-types files
+date -u > $tempdir/datestamp
+cat ../matrix.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/matrix-types
+cat ../head-types.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/head-types
 
 # copy files to the temp directory
-date -u > $tempdir/datestamp
-
 if [ "$installremote" ]
 then
     # Redirect the root directory to matrix.cgi
@@ -95,7 +97,7 @@ then
     mkdir $tempdir/matrix-core/lkb
     mkdir $tempdir/matrix-core/pet
 
-    matrixfiles=`echo ../matrix-core/*.* ../matrix-core/README ../modules/basic_script | sed 's/[^ ]*my_language.tdl//g' | sed 's/[^ ]*Version.lsp//g' | sed 's/[^ ]*CVS//g' | sed 's/[^ ]*~//g'`
+    matrixfiles=`echo ../matrix-core/*.* ../matrix-core/README | sed 's/[^ ]*my_language.tdl//g' | sed 's/[^ ]*Version.lsp//g' | sed 's/[^ ]*CVS//g' | sed 's/[^ ]*~//g'`
 
     cp $matrixfiles $tempdir/matrix-core
 

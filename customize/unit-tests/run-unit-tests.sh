@@ -45,7 +45,7 @@ fi
 # Paraeters which are the same for all unit test:
 
 skeletons="${CUSTOMIZATIONROOT}/unit-tests/skeletons/"
-tsdbhome="${CUSTOMIZATIONROOT}/unit-tests/home/"
+tsdbhome="${CUSTOMIZATIONROOT}/unit-tests/home"
 logdir="${CUSTOMIZATIONROOT}/unit-tests/logs"
 
 # Get the list of unit tests from the unit-test-index:
@@ -60,6 +60,7 @@ if [ -z $1 ]; then
 	exit
     fi
 
+    echo "Removing old grammars"
     ./cleanup-unit-tests.sh
 else 
     lgnames=$1
@@ -92,6 +93,12 @@ do
 # Invoke customize.py
 
     ${CUSTOMIZATIONROOT}/unit-tests/call-customize ${CUSTOMIZATIONROOT} ${CUSTOMIZATIONROOT}/unit-tests/choices/$lgname ${CUSTOMIZATIONROOT}/unit-tests/grammars/$lgname
+
+# If you're Scott, you need to uncomment these lines to run the tests
+#   rm -rf /tmp/grammar
+#   cp -R $grammardir /tmp/grammar
+#   rm -rf $grammardir
+#   grammardir=/tmp/grammar
 
 # Have to calculate after the grammar is created since the directory is
 # no longer always named "matrix")

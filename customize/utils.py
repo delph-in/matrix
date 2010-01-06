@@ -41,3 +41,7 @@ def TDLencode(string):
       val += c
 
   return val
+
+
+def get_name(item):
+  return item.get('name', None) or item.full_key

@@ -15,6 +15,7 @@ import re
 
 from choices import ChoicesFile
 from utils import TDLencode
+from utils import get_name
 
 ######################################################################
 # globals
@@ -29,12 +30,6 @@ irules = None
 lrules = None
 lexicon = None
 roots = None
-
-######################################################################
-# Utility functions
-
-def get_name(item):
-  return item.get('name', None) or item.full_key
 
 # ERB 2006-09-16 There are properties which are derived from the
 # choices file as a whole which various modules will want to know about.
@@ -2981,7 +2976,7 @@ def find_basetype(slot, root_dict, root_list=None):
 
 def intermediate_rule(slot, root_dict, inp=None, depth=0, opt=False):
   if not inp:
-    inp = slot.get('name') + '-rule-dtr'
+    inp = get_name(slot) + '-rule-dtr'
     mylang.add(inp + ' := avm.')
 
   if depth and not slot.get('opt', None):
