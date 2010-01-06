@@ -896,18 +896,18 @@ class MatrixDefFile:
 
 
   # Generate and print sample sentences from the customized grammar
-  def sentences_page(self, session_path, grammar_dir):
+  def sentences_page(self, session_path, grammar_dir, session):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Matrix Sample Sentences</title>'
     print HTML_posttitle
     grammar_dir_final = os.getcwd() + '/' + session_path + '/' + grammar_dir
     delphin_dir = os.getcwd() + '/delphin'
-    sentences = generate.get_sentences(grammar_dir_final,delphin_dir)
+    sentences = generate.get_sentences(grammar_dir_final,delphin_dir,session)
     print HTML_sentencesprebody
     for i in range(len(sentences)):
       long = False
-      print "<b>" + sentences[i][0][0]+"</b> " + sentences[i][0][2] + ", with predication: " + sentences[i][0][1] +"<br>"
+      print "<b>" + sentences[i][0][0][4:]+"</b> " + sentences[i][0][2] + ", with predication: " + sentences[i][0][1] +"<br>"
       if len(sentences[i][1]) > 0 and sentences[i][1][0] == '#EDGE-ERROR#':
         print 'This grammar combined with this input semantics results in too large of a seach space<br>'
       else:
@@ -933,14 +933,14 @@ class MatrixDefFile:
     print HTML_postbody
 
   # Display page with additional sentences
-  def more_sentences_page(self, session_path, grammar_dir, verbpred):
+  def more_sentences_page(self, session_path, grammar_dir, verbpred, session):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>More Sentences</title>'
     print HTML_sentencesprebody
     grammar_dir_final = os.getcwd() + '/' + session_path + '/' + grammar_dir
     delphin_dir = os.getcwd() + '/delphin'
-    sentences = generate.get_additional_sentences(grammar_dir_final,delphin_dir,verbpred)
+    sentences = generate.get_additional_sentences(grammar_dir_final,delphin_dir,verbpred, session)
     for j in range(len(sentences)):
       print str(j+1) + ". " + sentences[j] + "<br>"
     print '<br><input type="button" name="" value="Back to sentences" onclick="history.go(-1)">'

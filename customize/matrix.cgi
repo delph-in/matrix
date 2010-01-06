@@ -90,7 +90,7 @@ if form_data.has_key('section'):
 
 # If the 'verbpred' field is defined, then the user wishes to generate more sentences with that predication
 if form_data.has_key('verbpred'):
-  matrixdef.more_sentences_page(session_path,form_data['grammar'].value, form_data['verbpred'].value)
+  matrixdef.more_sentences_page(session_path,form_data['grammar'].value, form_data['verbpred'].value, cookie)
   sys.exit()
 
 # Get a list of error messages, determined by validating the current
@@ -134,7 +134,7 @@ if form_data.has_key('customize'):
     # Create the customized grammar
     grammar_dir = customize_matrix(session_path, arch_type)
     if form_data.has_key('sentences'):
-      matrixdef.sentences_page(session_path, grammar_dir)
+      matrixdef.sentences_page(session_path, grammar_dir, cookie)
     else:
       matrixdef.custom_page(session_path, grammar_dir, arch_type)
 elif form_data.has_key('subpage'):

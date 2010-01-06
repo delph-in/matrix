@@ -190,7 +190,7 @@ def process_mrs_file(mrs, outfile, noun1_rel, det1_rel, noun2_rel, det2_rel, ver
   f.close()
 
 # Wrap up all of the components involved in generation, and return the results
-def get_sentences(grammar_dir,delphin_dir):
+def get_sentences(grammar_dir,delphin_dir,session):
   (noun_rels,det_rels,language) = get_n_predications(grammar_dir)
   (itvs,stvs) = get_v_predications(grammar_dir,language)
   if len(noun_rels) < 2:
@@ -200,19 +200,19 @@ def get_sentences(grammar_dir,delphin_dir):
   mrs_files = []
   for verb_rel in itvs:
     i += 1
-    mrs_files.append('Verb ' + str(i))
-    process_mrs_file(MRS_itv,'Verb '+str(i),noun_rels[0],det_rels[0],noun_rels[1],det_rels[1],verb_rel)
+    mrs_files.append(session+'Verb ' + str(i))
+    process_mrs_file(MRS_itv,session+'Verb '+str(i),noun_rels[0],det_rels[0],noun_rels[1],det_rels[1],verb_rel)
   for verb_rel in stvs:
     i += 1
-    mrs_files.append('Verb ' + str(i))
-    process_mrs_file(MRS_stv,'Verb '+str(i),noun_rels[0],det_rels[0],noun_rels[1],det_rels[1],verb_rel)
+    mrs_files.append(session+'Verb ' + str(i))
+    process_mrs_file(MRS_stv,session+'Verb '+str(i),noun_rels[0],det_rels[0],noun_rels[1],det_rels[1],verb_rel)
   sentences = generate_sentences(grammar_dir, mrs_files, [[x,"Intrasitive verb phrase"] for x in itvs]+[[x,"Transitive verb phrase"] for x in stvs], delphin_dir)
   for file in mrs_files:
     os.remove(file)
   return sentences
 
 # Same as get_sentences, but for the additional sentences page
-def get_additional_sentences(grammar_dir,delphin_dir,verb_rel):
+def get_additional_sentences(grammar_dir,delphin_dir,verb_rel,session):
   (noun_rels,det_rels,language) = get_n_predications(grammar_dir)
   (itvs,stvs) = get_v_predications(grammar_dir,language)
   if verb_rel in itvs:
@@ -222,13 +222,13 @@ def get_additional_sentences(grammar_dir,delphin_dir,verb_rel):
   mrs_files = []
   if verb_rel in itvs:
     for i in range(len(noun_rels)):
-      mrs_files.append('noun' + str(i))
-      process_mrs_file(mrs,'noun'+str(i),noun_rels[i],det_rels[i],"","",verb_rel)
+      mrs_files.append(session+'noun' + str(i))
+      process_mrs_file(mrs,session+'noun'+str(i),noun_rels[i],det_rels[i],"","",verb_rel)
   else:
     for i in range(len(noun_rels)):
       for j in range(len(noun_rels)):
-        mrs_files.append('noun' + str(i) + "_" + str(j))
-        process_mrs_file(mrs,'noun'+str(i) + "_" + str(j),noun_rels[i],det_rels[i],noun_rels[j],det_rels[j],verb_rel)
+        mrs_files.append(session+'noun' + str(i) + "_" + str(j))
+        process_mrs_file(mrs,session+'noun'+str(i) + "_" + str(j),noun_rels[i],det_rels[i],noun_rels[j],det_rels[j],verb_rel)
   sentences_with_info = generate_sentences(grammar_dir, mrs_files, [[verb_rel,""]] * len(mrs_files), delphin_dir)
   sentences = []
   for i in range(len(sentences_with_info)):
