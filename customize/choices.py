@@ -28,7 +28,7 @@ class ChoicesFileParseError(Exception):
 
 class ChoiceCategory:
   def __init__(self, full_key=None):
-        self.full_key = full_key
+    self.full_key = full_key
 
 class ChoiceDict(ChoiceCategory, dict):
   pass
