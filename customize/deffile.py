@@ -1011,11 +1011,11 @@ class MatrixDefFile:
           i += 1
         end = i
 
-        for num, var in enumerate(choices.get(prefix + iter_name)):
+        for var in choices.get(prefix + iter_name):
           self.save_choices_section(lines[beg:end], f, choices,
                                     iter_level = iter_level + 1,
                                     prefix =
-                                      prefix + iter_name + str(num+1) + '_')
+                                      prefix + iter_name + var.iter_num() + '_')
 
       i += 1
 

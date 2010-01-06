@@ -1896,7 +1896,9 @@ def customize_coordination():
   """
   mylang.set_section('coord')
 
-  for c, cs in enumerate(ch.get('cs')):
+  for cs in ch.get('cs'):
+    csnum = cs.iter_num()
+
     mark = cs.get('mark')
     pat = cs.get('pat')
     orth = cs.get('orth')
@@ -1909,11 +1911,11 @@ def customize_coordination():
       lexicon.add(TDLencode(orth) + ' := conj-lex &\
                   [ STEM < "' + orth + '" >,\
                     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",\
-                    CFORM "' + str(c+1) + '" ].')
+                    CFORM "' + csnum + '" ].')
       if pat == 'omni':
         lexicon.add(TDLencode(orth) + '_nosem := nosem-conj-lex &\
                       [ STEM < "' + orth + '" >,\
-                        CFORM "' + str(c+1) + '" ].')
+                        CFORM "' + csnum + '" ].')
 
     if pat == 'a':
       top = 'apoly-'
@@ -1955,7 +1957,7 @@ def customize_coordination():
 
     for pos in ('n', 'np', 'vp', 's'):
       if cs.get(pos):
-        define_coord_strat(str(c+1), pos, top, mid, bot, left, pre, suf)
+        define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf)
 
 
 ######################################################################
@@ -2125,8 +2127,8 @@ def customize_arg_op():
   mylang.set_section('phrases')
 
   #Create phrase-structure rules for each context
-  for c, context in enumerate(ch.get('context')):
-    name = 'context' + str(c+1)
+  for context in ch.get('context'):
+    name = 'context' + context.iter_num()
     ptype = name + '-decl-head-opt-subj-phrase'
     customize_feature_values(context, ptype, 'con')
     mylang.add(ptype + ':= decl-head-opt-subj-phrase.')
@@ -3369,11 +3371,11 @@ def customize_inflection():
 
       # Specify for subtypes, if any
       if subrules > 0:
-        for morphcount, morph in enumerate(slot['morph']):
+        for morph in slot['morph']:
           morphname = morph.get('name')
           if not morphname:
             if name:
-              morphname = name + '-morph' + str(morphcount+1)
+              morphname = name + '-morph' + morph.iter_num()
             else:
               morphname = get_name(morph)
 

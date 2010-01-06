@@ -30,6 +30,9 @@ class ChoiceCategory:
   def __init__(self, full_key=None):
     self.full_key = full_key
 
+  def iter_num(self):
+    return re.search('[0-9]+$', self.full_key).group(0)
+
 class ChoiceDict(ChoiceCategory, dict):
   pass
 
@@ -633,7 +636,7 @@ class ChoicesFile:
     numbers = []
 
     for n in self.get('number'):
-      name = n['name']
+      name = n.get('name', '')
       stype = ';'.join([s['name'] for s in n.get('supertype',[])]) or 'number'
       numbers += [[name, stype]]
 
@@ -1411,9 +1414,9 @@ class ChoicesFile:
     self.convert_key('non-past', 'nonpast')
     self.convert_key('non-future', 'nonfuture') 
 
-    for i, aux in enumerate(self['aux']):
+    for aux in self['aux']:
       v = aux.get('nonfincompform', '')
-      k = 'nf-subform' + str(i+1) + '_name'
+      k = 'nf-subform' + aux.iter_num() + '_name'
       self.convert_value(aux.full_key + '_compform', 'nonfinite', v)
 
       if 'nonfincompform' in aux:
