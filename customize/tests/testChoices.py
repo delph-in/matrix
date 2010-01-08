@@ -150,6 +150,31 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         self.assertEqual(c['abc1_ghi1_klm'], 3)
         self.assertEqual(c['abc1_ghi2_klm'], 4)
 
+    # The following functionality is not included. There are difficulties
+    # with resetting values that prevent its feasibility at this time, such
+    # as "what if they named their language 'abc2'?".
+    #
+    #def test_reset_full_keys_and_values(self):
+    #    c = customize.choices.ChoicesFile()
+    #    c['abc1_def'] = 1
+    #    c['abc2_def'] = 2
+    #    c['abc3_def'] = 'abc2'
+    #    self.assertEqual(c['abc3_def'], 'abc2')
+    #    c.delete('abc1', prune=True)
+    #    self.assertEqual(c['abc1_def'], 2)
+    #    self.assertEqual(c['abc2_def'], 'abc1')
+    #    c = customize.choices.ChoicesFile()
+    #    c['abc1_def'] = 1
+    #    c['abc2_def'] = 'abc1' # will be removed
+    #    c['abc3_def'] = 'abc2'
+    #    c['abc4_def'] = 'abc2' # distance more than 1
+    #    c['ghi'] = 'abc2'      # different key
+    #    c.delete('abc1', prune=True)
+    #    self.assertEqual(c['abc1_def'], None)
+    #    self.assertEqual(c['abc2_def'], 'abc1')
+    #    self.assertEqual(c['abc3_def'], 'abc1')
+    #    self.assertEqual(c['ghi'], 'abc1')
+
 class TestChoicesDerivedValueFunctions(unittest.TestCase):
     def setUp(self):
         self.c = customize.choices.ChoicesFile()
@@ -178,8 +203,26 @@ class TestChoicesDerivedValueFunctions(unittest.TestCase):
         pass
     def test_patterns(self):
         pass
+
     def test_numbers(self):
-        pass
+        c = customize.choices.ChoicesFile()
+        # no numbers section
+        c.load_choices(minimal_choices_file)
+        self.assertEqual(c.numbers(), [])
+        # empty numbers section
+        c.load_choices(simple_choices_file)
+        self.assertEqual(c.numbers(), [])
+        # simple number system
+        c.load_choices(mini_english_choices_file)
+        self.assertEqual(c.numbers(), [['sg','number'],['pl','number']])
+        # delete one
+        c.delete('number1')
+        self.assertEqual(c.numbers(), [['pl','number']])
+        # number hierarchy
+        c.load_choices(modified_english_choices_file)
+        self.assertEqual(c.numbers(), [['sg','number'],['pl','number'],
+                                       ['du','sg;pl']])
+
     def test_persons(self):
         pass
     def test_pernums(self):
@@ -267,5 +310,207 @@ section=lexicon
 
 section=test-sentences'''.splitlines()
 
+mini_english_choices_file = '''version=17
+
+section=general
+language=mini English
+archive=no
+
+section=word-order
+word-order=svo
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=arg-opt
+
+section=lexicon
+  noun1_name=common
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=obl
+    noun1_stem1_orth=cat
+    noun1_stem1_pred=_cat_n_rel
+    noun1_stem2_orth=dog
+    noun1_stem2_pred=_dog_n_rel
+  noun2_name=1sg-pronoun
+    noun2_feat1_name=person
+    noun2_feat1_value=1st
+    noun2_feat2_name=number
+    noun2_feat2_value=sg
+  noun2_det=imp
+    noun2_stem1_orth=I
+    noun2_stem1_pred=_pronoun_n_rel
+  noun-slot1_name=num
+  noun-slot1_order=after
+    noun-slot1_input1_type=noun1
+    noun-slot1_morph1_name=singular
+      noun-slot1_morph1_feat1_name=number
+      noun-slot1_morph1_feat1_value=sg
+    noun-slot1_morph2_name=plural
+    noun-slot1_morph2_orth=s
+      noun-slot1_morph2_feat1_name=number
+      noun-slot1_morph2_feat1_value=pl
+  verb1_name=itr
+  verb1_valence=intrans
+    verb1_stem1_orth=sleep
+    verb1_stem1_pred=_sleep_v_rel
+  verb2_name=tr
+  verb2_valence=trans
+    verb2_stem1_orth=chase
+    verb2_stem1_pred=_chase_v_rel
+  verb-slot1_name=pernum
+  verb-slot1_order=after
+    verb-slot1_input1_type=verb
+    verb-slot1_morph1_name=3sg
+    verb-slot1_morph1_orth=s
+      verb-slot1_morph1_feat1_name=person
+      verb-slot1_morph1_feat1_value=3rd
+      verb-slot1_morph1_feat1_head=subj
+      verb-slot1_morph1_feat2_name=number
+      verb-slot1_morph1_feat2_value=sg
+      verb-slot1_morph1_feat2_head=subj
+    verb-slot1_morph2_name=pl
+      verb-slot1_morph2_feat1_name=number
+      verb-slot1_morph2_feat1_value=pl
+      verb-slot1_morph2_feat1_head=subj
+    verb-slot1_morph3_name=non-3rd
+      verb-slot1_morph3_feat1_name=person
+      verb-slot1_morph3_feat1_value=1st, 2nd
+      verb-slot1_morph3_feat1_head=subj
+    det1_stem1_orth=the
+    det1_stem1_pred=_def_q_rel
+
+section=test-sentences
+sentence1=the cat chases the dog
+sentence2=the dogs sleep'''.splitlines()
+
+modified_english_choices_file = '''version=17
+
+section=general
+language=mini English
+archive=no
+
+section=word-order
+word-order=svo
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+  number1_name=sg
+  number2_name=pl
+  number3_name=du
+  number3_supertype1_name=sg
+  number3_supertype2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=arg-opt
+
+section=lexicon
+  noun1_name=common
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=obl
+    noun1_stem1_orth=cat
+    noun1_stem1_pred=_cat_n_rel
+    noun1_stem2_orth=dog
+    noun1_stem2_pred=_dog_n_rel
+  noun2_name=1sg-pronoun
+    noun2_feat1_name=person
+    noun2_feat1_value=1st
+    noun2_feat2_name=number
+    noun2_feat2_value=sg
+  noun2_det=imp
+    noun2_stem1_orth=I
+    noun2_stem1_pred=_pronoun_n_rel
+  noun-slot1_name=num
+  noun-slot1_order=after
+    noun-slot1_input1_type=noun1
+    noun-slot1_morph1_name=singular
+      noun-slot1_morph1_feat1_name=number
+      noun-slot1_morph1_feat1_value=sg
+    noun-slot1_morph2_name=plural
+    noun-slot1_morph2_orth=s
+      noun-slot1_morph2_feat1_name=number
+      noun-slot1_morph2_feat1_value=pl
+  verb1_name=itr
+  verb1_valence=intrans
+    verb1_stem1_orth=sleep
+    verb1_stem1_pred=_sleep_v_rel
+  verb2_name=tr
+  verb2_valence=trans
+    verb2_stem1_orth=chase
+    verb2_stem1_pred=_chase_v_rel
+  verb-slot1_name=pernum
+  verb-slot1_order=after
+    verb-slot1_input1_type=verb
+    verb-slot1_morph1_name=3sg
+    verb-slot1_morph1_orth=s
+      verb-slot1_morph1_feat1_name=person
+      verb-slot1_morph1_feat1_value=3rd
+      verb-slot1_morph1_feat1_head=subj
+      verb-slot1_morph1_feat2_name=number
+      verb-slot1_morph1_feat2_value=sg
+      verb-slot1_morph1_feat2_head=subj
+    verb-slot1_morph2_name=pl
+      verb-slot1_morph2_feat1_name=number
+      verb-slot1_morph2_feat1_value=pl
+      verb-slot1_morph2_feat1_head=subj
+    verb-slot1_morph3_name=non-3rd
+      verb-slot1_morph3_feat1_name=person
+      verb-slot1_morph3_feat1_value=1st, 2nd
+      verb-slot1_morph3_feat1_head=subj
+    det1_stem1_orth=the
+    det1_stem1_pred=_def_q_rel
+
+section=test-sentences
+sentence1=the cat chases the dog
+sentence2=the dogs sleep'''.splitlines()
 if __name__ == '__main__':
     unittest.main()

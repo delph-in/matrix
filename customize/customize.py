@@ -15,6 +15,7 @@ import re
 
 from choices import ChoicesFile
 from utils import TDLencode
+from utils import get_name
 
 from lib import Hierarchy
 
@@ -31,12 +32,6 @@ irules = None
 lrules = None
 lexicon = None
 roots = None
-
-######################################################################
-# Utility functions
-
-def get_name(item):
-  return item.get('name', None) or item.full_key
 
 # ERB 2006-09-16 There are properties which are derived from the
 # choices file as a whole which various modules will want to know about.
@@ -1690,7 +1685,9 @@ def customize_coordination():
   """
   mylang.set_section('coord')
 
-  for c, cs in enumerate(ch.get('cs')):
+  for cs in ch.get('cs'):
+    csnum = cs.iter_num()
+
     mark = cs.get('mark')
     pat = cs.get('pat')
     orth = cs.get('orth')
@@ -1703,11 +1700,11 @@ def customize_coordination():
       lexicon.add(TDLencode(orth) + ' := conj-lex &\
                   [ STEM < "' + orth + '" >,\
                     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",\
-                    CFORM "' + str(c+1) + '" ].')
+                    CFORM "' + csnum + '" ].')
       if pat == 'omni':
         lexicon.add(TDLencode(orth) + '_nosem := nosem-conj-lex &\
                       [ STEM < "' + orth + '" >,\
-                        CFORM "' + str(c+1) + '" ].')
+                        CFORM "' + csnum + '" ].')
 
     if pat == 'a':
       top = 'apoly-'
@@ -1749,7 +1746,7 @@ def customize_coordination():
 
     for pos in ('n', 'np', 'vp', 's'):
       if cs.get(pos):
-        define_coord_strat(str(c+1), pos, top, mid, bot, left, pre, suf)
+        define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf)
 
 
 ######################################################################
@@ -1919,8 +1916,8 @@ def customize_arg_op():
   mylang.set_section('phrases')
 
   #Create phrase-structure rules for each context
-  for c, context in enumerate(ch.get('context')):
-    name = 'context' + str(c+1)
+  for context in ch.get('context'):
+    name = 'context' + context.iter_num()
     ptype = name + '-decl-head-opt-subj-phrase'
     customize_feature_values(context, ptype, 'con')
     mylang.add(ptype + ':= decl-head-opt-subj-phrase.')
@@ -2768,7 +2765,7 @@ def find_basetype(slot, root_dict, root_list=None):
 
 def intermediate_rule(slot, root_dict, inp=None, depth=0, opt=False):
   if not inp:
-    inp = slot.get('name') + '-rule-dtr'
+    inp = get_name(slot) + '-rule-dtr'
     mylang.add(inp + ' := avm.')
 
   if depth and not slot.get('opt', None):
@@ -2789,12 +2786,7 @@ def intermediate_rule(slot, root_dict, inp=None, depth=0, opt=False):
   return opt, inp
 
 def alltypes(type_list, root_list):
-  all = True
-  for t in type_list:
-    if t not in root_list:
-      all = False
-      break
-  return all
+  return all([t in root_list for t in type_list])
 
 def sec_from_lex(lextype):
   if 'noun' in lextype:
@@ -2966,14 +2958,9 @@ def customize_inflection():
           continue
         basetype.append(root_dict[r])
 
-      # find the number of input values so we know if it has 1 or more
-      inputs = 0
-      for inp in slot.get('input',[]):
-        inputs += 1
-        i_type = inp.get('type')
-
       # Single Input
-      if inputs == 1:
+      if len(slot.get('input',[])) == 1:
+        i_type = slot['input'][0].get('type')
         # If the single daughter is a root, set input to the root name
         if i_type in root_dict:
           inp = root_dict[i_type]
@@ -3161,11 +3148,11 @@ def customize_inflection():
 
       # Specify for subtypes, if any
       if subrules > 0:
-        for morphcount, morph in enumerate(slot['morph']):
+        for morph in slot['morph']:
           morphname = morph.get('name')
           if not morphname:
             if name:
-              morphname = name + '-morph' + str(morphcount+1)
+              morphname = name + '-morph' + morph.iter_num()
             else:
               morphname = get_name(morph)
 
@@ -3175,7 +3162,6 @@ def customize_inflection():
 
           # Create appropriate sub-rule for the morpheme
           if morph.get('orth','') == '':
-            #FIXME ltow not being set correctly
             if ltow:
               mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
             elif wtol:
@@ -3500,48 +3486,6 @@ def customize_roots():
   roots.add(typedef, comment)
 
 
-######################################################################
-# Archive helper functions
-#   make_tgz(dir) and make_zip(dir) create an archive called
-#   dir.(tar.gz|zip) that contains the contents of dir
-
-def make_tgz(dir):
-
-  # ERB First get rid of existing file because gzip won't
-  # overwrite existing .tgz meaning you can only customize
-  # grammar once per session.
-
-  if os.path.exists('matrix.tar.gz'):
-    os.remove('matrix.tar.gz')
-
-  archive = dir + '.tar'
-  t = tarfile.open(archive, 'w')
-  t.add(dir)
-  t.close()
-
-  g = gzip.open(archive + '.gz', 'wb')
-  f = open(archive, 'rb')
-  g.write(f.read())
-  f.close()
-  g.close()
-
-  os.remove(archive)
-
-
-def add_zip_files(z, dir):
-  files = os.listdir(dir)
-  for f in files:
-    cur = dir + '/' + f
-    if os.path.isdir(cur):
-      add_zip_files(z, cur)
-    else:
-      z.write(cur, cur)
-
-
-def make_zip(dir):
-  z = zipfile.ZipFile(dir + '.zip', 'w')
-  add_zip_files(z, dir)
-  z.close()
 
 
 ######################################################################
@@ -3665,15 +3609,6 @@ def customize_matrix(path, arch_type):
   lexicon.save()
   roots.save()
   version_lsp.save()
-
-  # Either tar or zip up the results
-  old_dir = os.getcwd()
-  os.chdir(path)
-  if arch_type == 'tgz':
-    make_tgz(grammar_dir)
-  else:
-    make_zip(grammar_dir)
-  os.chdir(old_dir)
 
   return grammar_dir
 

@@ -28,13 +28,21 @@ class ChoicesFileParseError(Exception):
 
 class ChoiceCategory:
   def __init__(self, full_key=None):
-        self.full_key = full_key
+    self.full_key = full_key
+
+  def iter_num(self):
+    return re.search('[0-9]+$', self.full_key).group(0)
 
 class ChoiceDict(ChoiceCategory, dict):
   pass
 
 class ChoiceList(ChoiceCategory, list):
-  pass
+  # custom iterator ignores empty items (e.g. when a
+  # user deletes an item in the middle of a list)
+  def __iter__(self):
+    for item in list.__iter__(self):
+      if len(item) > 0:
+        yield item
 
 ######################################################################
 # ChoicesFile is a class that wraps the choices file, a list of
@@ -316,7 +324,7 @@ class ChoicesFile:
     #   self.convert_N-1_to_N
 
     # reset the full_keys to be safe
-    [self.__reset_full_keys(key) for key in self]
+    #[self.__reset_full_keys(key) for key in self]
 
   # Return the keys for the choices dict
   def keys(self):
@@ -642,7 +650,7 @@ class ChoicesFile:
     numbers = []
 
     for n in self.get('number'):
-      name = n['name']
+      name = n.get('name', '')
       stype = ';'.join([s['name'] for s in n.get('supertype',[])]) or 'number'
       numbers += [[name, stype]]
 
@@ -973,7 +981,8 @@ class ChoicesFile:
       new = '_'.join([key_prefix, new])
     if old in self:
       self[new] = self[old]
-      self.delete(old, prune=True)
+      #self.delete(old, prune=True)
+      self.delete(old)
 
   def convert_0_to_1(self):
     self.convert_key('wordorder', 'word-order')
@@ -1409,25 +1418,27 @@ class ChoicesFile:
 
   def convert_9_to_10(self):
     """
-    Previous versions defined (only) nonfinite compforms for each auxiliary 
-    iff the aux comp was constrained to be nonfinite. 
-    The current version creates a hierarchy of verb forms and then for each 
-    aux constrains the form of the complement.  
-    For each auxiliary, this conversion takes the value of the specified (nonfinite)compform 
-    and assigns it as the value of a member of the nonfinite hierarchy 
-    as well as the value of the auxiliary's compform.
+    Previous versions defined (only) nonfinite compforms for each
+    auxiliary iff the aux comp was constrained to be nonfinite.
+    The current version creates a hierarchy of verb forms and then
+    for each aux constrains the form of the complement. For each
+    auxiliary, this conversion takes the value of the specified
+    (nonfinite) compform and assigns it as the value of a member of
+    the nonfinite hierarchy as well as the value of the auxiliary's
+    compform.
     """
     self.convert_key('non-past', 'nonpast')
-    self.convert_key('non-future', 'nonfuture') 
+    self.convert_key('non-future', 'nonfuture')
 
-    for i, aux in enumerate(self['aux']):
+    for aux in self['aux']:
       v = aux.get('nonfincompform', '')
-      k = 'nf-subform' + str(i+1) + '_name'
+      k = 'nf-subform' + aux.iter_num() + '_name'
       self.convert_value(aux.full_key + '_compform', 'nonfinite', v)
 
       if 'nonfincompform' in aux:
         self[k] = v
-        self.delete(aux.full_key + '_nonfincompform', prune=True)
+        #self.delete(aux.full_key + '_nonfincompform', prune=True)
+        self.delete(aux.full_key + '_nonfincompform')
 
   def convert_10_to_11(self):
     """
@@ -1447,7 +1458,8 @@ class ChoicesFile:
     """
 
     if self.get('has-aux') == 'yes':
-      auxval = self.get('aux1_comp')
+      # just need the first (non-empty) item
+      auxval = [aux.get('comp') for aux in self['aux']][0]
       self['aux-comp'] = auxval
       for aux in self['aux']:
           self.delete(aux.full_key + '_comp')
@@ -1508,7 +1520,8 @@ class ChoicesFile:
         for contype in ('forces', 'req', 'disreq'):
           for ct in slot.get(contype, []):
             constraints += [ [ contype, ct.get('type') ] ]
-            self.delete(ct.full_key + '_type', prune=True)
+            #self.delete(ct.full_key + '_type', prune=True)
+            self.delete(ct.full_key + '_type')
 
         for i, c in enumerate(constraints):
           constraint_key = slot.full_key + '_constraint%d' % (i+1)
@@ -1554,7 +1567,8 @@ class ChoicesFile:
       new_key = aux.full_key + '_compfeature' + index
       self[new_key + '_name'] = 'form'
       self[new_key + '_value'] = complementform
-      self.delete(aux.full_key + '_compform', prune=True)
+      #self.delete(aux.full_key + '_compform', prune=True)
+      self.delete(aux.full_key + '_compform')
 
   def convert_17_to_18(self):
     """

@@ -9,6 +9,7 @@
 #      -r:  install remotely (on homer.u.washington.edu)
 #      -m:  (with -l or -r) also install matrix-core
 #      -c:  don't install, but create a copy of matrix-core locally
+#    -lkb:  also copy the necessary parts of the lkb from given directory
 #
 # Examples:
 #      To install to www.delph-in.net/matrix:
@@ -22,7 +23,7 @@
 
 
 # parse command line
-while [ "$1" = -l -o "$1" = -r -o "$1" = -c -o "$1" = -m ]
+while [ "$1" = -l -o "$1" = -r -o "$1" = -c -o "$1" = -m -o "$1" = -lkb ]
 do
     if [ "$1" = -l ]
     then
@@ -36,6 +37,10 @@ do
     elif [ "$1" = -m ]
     then
         installmatrix=true
+    elif [ "$1" = -lkb ]
+    then
+        shift
+        lkbdir="$1"
     fi
     shift
 done
@@ -51,10 +56,12 @@ fi
 tempdir=/tmp/matrix.$$
 mkdir $tempdir
 
+# create datestamp, matrix-types, and head-types files
+date -u > $tempdir/datestamp
+cat ../matrix.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/matrix-types
+cat ../head-types.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/head-types
 
 # copy files to the temp directory
-date -u > $tempdir/datestamp
-
 if [ "$installremote" ]
 then
     # Redirect the root directory to matrix.cgi
@@ -72,7 +79,7 @@ then
         $tempdir/saved-choices/.htaccess
 fi
 
-mainfiles="matrix.cgi matrix.css matrix.js matrixdef customize.py deffile.py choices.py tdl.py utils.py validate.py"
+mainfiles="matrix.cgi matrix.css matrix.js matrixdef customize.py deffile.py choices.py tdl.py utils.py validate.py generate.py"
 cp $mainfiles $tempdir
 
 utilfiles="util/*.py"
@@ -81,7 +88,7 @@ cp $utilfiles $tempdir/util
 
 cp -R sample-choices $tempdir
 rm -rf $tempdir/sample-choices/CVS $tempdir/sample-choices/.svn
-
+mkdir $tempdir/tmp
 
 # create matrix-core if necessary
 if [ "$installmatrix" -o "$copymatrix" ]
@@ -90,7 +97,7 @@ then
     mkdir $tempdir/matrix-core/lkb
     mkdir $tempdir/matrix-core/pet
 
-    matrixfiles=`echo ../matrix-core/*.* ../matrix-core/README ../modules/basic_script | sed 's/[^ ]*my_language.tdl//g' | sed 's/[^ ]*Version.lsp//g' | sed 's/[^ ]*CVS//g' | sed 's/[^ ]*~//g'`
+    matrixfiles=`echo ../matrix-core/*.* ../matrix-core/README | sed 's/[^ ]*my_language.tdl//g' | sed 's/[^ ]*Version.lsp//g' | sed 's/[^ ]*CVS//g' | sed 's/[^ ]*~//g'`
 
     cp $matrixfiles $tempdir/matrix-core
 
@@ -99,6 +106,19 @@ then
 
     petfiles=`echo ../matrix-core/pet/* | sed 's/..\/pet\/CVS//g'`
     cp $petfiles $tempdir/matrix-core/pet
+fi
+
+
+#If necessary, copy the lkb from the source directory, taking only what is needed
+if [ "$lkbdir" ]
+then
+  mkdir $tempdir/delphin
+  cp -rL $lkbdir/bin $tempdir/delphin
+  lkbfiles=`ls -1 $lkbdir/lkb | sed '/^src$/ d'`
+  echo $lkbfiles
+  pushd $lkbdir/lkb
+  cp -r $lkbfiles $tempdir/delphin
+  popd
 fi
 
 

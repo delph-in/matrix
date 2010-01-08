@@ -3,21 +3,311 @@
 ######################################################################
 # imports
 
+import re
+
 from choices import ChoicesFile
+from utils import get_name
 
 
 ######################################################################
-# add_err(errors, key, message)
-#   Insert into the dict errors the key with the value message.  If
-#   the key already exists, concatenate the message with the existing
-#   value.
+# utility functions
 
 def add_err(err, key, message):
+  """
+  Insert into the dict errors the key with the value message.  If
+  the key already exists, concatenate the message with the existing
+  value.
+  """
   if err.has_key(key):
     err[key] += ' ' + message
   else:
     err[key] = message
-  
+
+
+######################################################################
+# Namespace validation
+#   A grammar produced by customization consists of several files
+#   in TDL that define a number of types.  Some of the names of
+#   these types are based on the user's choices.  The system
+#   needs to prevent the user from choosing type names that
+#   collide with existing types in the system (either types
+#   in matrix.tdl or head-types.tdl, or types that the customization
+#   system typically uses in grammars).
+
+# type names reserved for the customization system
+cust_types = [
+  'case-marking-adp-lex',
+  'dir-inv-scale',
+  'comp-head-phrase',
+  'head-comp-phrase',
+  'subj-head-phrase',
+  'head-subj-phrase',
+  'head-final-head-nexus',
+  'head-initial-head-nexus',
+  'verbal-head-nexus',
+  'comp-head-phrase-2',
+  'head-comp-phrase-2',
+  'head-spec-phrase',
+  'bare-np-phrase',
+  'comp-aux-phrase',
+  'aux-comp-phrase',
+  'neg-adv-lex',
+  'verb-lex',
+  'subj-v-inv-lrule',
+  'int-cl',
+  'complementizer-lex-item',
+  'qpart-lex-item',
+  'no-subj-drop-verb-lex',
+  'subj-drop-verb-lex',
+  'no-obj-drop-verb-lex',
+  'obj-drop-verb-lex',
+  'subj-drop-only-verb-lex',
+  'obj-drop-only-verb-lex',
+  'subj-obj-drop-verb-lex',
+  'no-drop-verb-lex',
+  'noun-lex',
+  'obl-spr-noun-lex',
+  'no-spr-noun-lex',
+  'main-verb-lex',
+  'aux-lex',
+  'transitive-verb-lex',
+  'intransitive-verb-lex',
+  'subj-raise-aux',
+  'subj-raise-aux-with-pred',
+  'subj-raise-aux-no-pred',
+  'arg-comp-aux',
+  'arg-comp-aux-with-pred',
+  'arg-comp-aux-no-pred',
+  's-comp-aux',
+  's-comp-aux-with-pred',
+  's-comp-aux-no-pred',
+  'determiner-lex',
+  'word-to-lexeme-rule',
+  'track'
+]
+
+# regex patterns for sets of names that are not available for
+# user-defined types
+forbidden_type_patterns = [
+  'dir-inv-[0-9]+',
+  'dir-inv-non-[0-9]+',
+  '[a-z]+[0-9]+-top-coord-rule',
+  '[a-z]+[0-9]+-mid-coord-rule',
+  '[a-z]+[0-9]+-bottom-coord-rule',
+  '[a-z]+[0-9]+-left-coord-rule',
+  'context[0-9]+-decl-head-opt-subj-phrase'
+]
+
+def validate_names(ch, err):
+  # reserved_types contains type names that are not available
+  # for user-defined types
+  reserved_types = {}
+
+  # read matrix types and head types from file
+  f = open('matrix-types', 'r')
+  for t in f.readlines():
+    reserved_types[t.strip()] = True
+  f.close()
+  f = open('head-types', 'r')
+  for t in f.readlines():
+    reserved_types[t.strip()] = True
+  f.close()
+
+  # add the types from cust_types above to reserved_types
+  for ct in cust_types:
+    reserved_types[ct] = True
+
+  # if called for by current choices, add reserved types for:
+  # case, direction, person, number, pernum, gender, tense, aspect,
+  # situation, form, and trans/intrans verb types.
+  if ch.cases():
+    reserved_types['case'] = True
+
+  if ch.get('scale', []):
+    reserved_types['direction'] = True
+    reserved_types['dir'] = True
+    reserved_types['inv'] = True
+
+  if ch.pernums():
+    reserved_types['pernum'] = True
+    persons = [p[0] for p in ch.persons()]
+    numbers = [n[0] for n in ch.numbers()]
+    for pernum in ch.pernums():
+      if pernum[0] not in persons + numbers:
+        reserved_types[pernum[0]] = True
+  else:
+    if ch.persons():
+      reserved_types['person'] = True
+      for person in ch.persons():
+        reserved_types[person[0]] = True
+    if ch.numbers():
+      reserved_types['number'] = True
+
+  if ch.genders():
+    reserved_types['gender'] = True
+
+  if ch.tenses():
+    reserved_types['tense'] = True
+
+  if ch.aspects():
+    reserved_types['aspect'] = True
+
+  if ch.situations():
+    reserved_types['situation'] = True
+
+  if ch.forms():
+    reserved_types['form'] = True
+    reserved_types['finite'] = True
+    reserved_types['nonfinite'] = True
+
+  for pattern in ch.patterns():
+    p = pattern[0].split(',')
+    dir_inv = ''
+    if len(p) > 1:
+      dir_inv = 'dir-inv-'
+    c = p[0].split('-')
+
+    if p[0] == 'intrans':
+      reserved_types[dir_inv + 'intransitive-verb-lex'] = True
+    elif p[0] == 'trans':
+      reserved_types[dir_inv + 'transitive-verb-lex'] = True
+    elif len(c) == 1:
+      reserved_types[dir_inv +
+                     c[0] + '-intransitive-verb-lex'] = True
+    else:
+      reserved_types[dir_inv +
+                     c[0] + '-' + c[1] + '-transitive-verb-lex'] = True
+
+  # fill out the user_types list with pairs:
+  #   [type name, variable name]
+  user_types = []
+
+  for case in ['nom-acc-nom', 'nom-acc-acc',
+               'erg-abs-erg', 'erg-abs-abs',
+               'tripartite-s', 'tripartite-a', 'tripartite-o',
+               'split-s-a', 'split-s-o',
+               'fluid-s-a', 'fluid-s-o',
+               'split-n-nom', 'split-n-acc', 'split-n-erg', 'split-n-abs',
+               'split-v-nom', 'split-v-acc', 'split-v-erg', 'split-v-abs',
+               'focus-focus', 'focus-a', 'focus-o']:
+    vn = case + '-case-name'
+    if vn in ch:
+      user_types += [[ch[vn], vn]]
+
+  for case in ch.get('case', []):
+    user_types += [[case.get('name'), case.full_key + '_name']]
+
+  for number in ch.get('number', []):
+    user_types += [[number.get('name'), number.full_key + '_name']]
+
+  for gender in ch.get('gender', []):
+    user_types += [[gender.get('name'), gender.full_key + '_name']]
+
+  for feature in ch.get('feature', []):
+    user_types += [[feature.get('name'), feature.full_key + '_name']]
+    for value in feature.get('value', []):
+      user_types += [[value.get('name'), value.full_key + '_name']]
+
+  for tense in ['past', 'present', 'future', 'nonpast', 'nonfuture']:
+    if tense in ch:
+      user_types += [[tense, tense]]
+      for st in ch.get(tense + '-subtype', []):
+        user_types += [[st.get('name'), st.full_key + '_name']]
+
+  for tense in ch.get('tense', []):
+    user_types += [[tense.get('name'), tense.full_key + '_name']]
+    
+  for aspect in ch.get('aspect', []):
+    user_types += [[aspect.get('name'), aspect.full_key + '_name']]
+    
+  for situation in ch.get('situation', []):
+    user_types += [[situation.get('name'), situation.full_key + '_name']]
+
+  for sf in ch.get('nf-subform', []):
+    user_types += [[sf.get('name'), sf.full_key + '_name']]
+    
+  for sf in ch.get('fin-subform', []):
+    user_types += [[sf.get('name'), sf.full_key + '_name']]
+    
+  for noun in ch.get('noun', []):
+    user_types += [[get_name(noun) + '-noun-lex',
+                    noun.full_key + '_name']]
+
+  for det in ch.get('det', []):
+    user_types += [[get_name(det) + '-determiner-lex',
+                    det.full_key + '_name']]
+
+  for verb in ch.get('verb', []):
+    user_types += [[get_name(verb) + '-verb-lex',
+                    verb.full_key + '_name']]
+    user_types += [[get_name(verb) + '-dir-inv-lex-rule',
+                    verb.full_key + '_name']]
+    user_types += [[get_name(verb) + '-dir-lex-rule',
+                    verb.full_key + '_name']]
+    user_types += [[get_name(verb) + '-inv-lex-rule',
+                    verb.full_key + '_name']]
+
+  for slotprefix in ['noun', 'verb', 'det', 'aux']:
+    for slot in ch.get(slotprefix + '-slot', []):
+      user_types += [[get_name(slot) + '-lex-rule',
+                      slot.full_key + '_name']]
+      user_types += [[get_name(slot) + '-rule-dtr',
+                      slot.full_key + '_name']]
+      for morph in slot.get('morph', []):
+        user_types += [[get_name(morph) + '-lex-rule',
+                        morph.full_key + '_name']]
+
+  # Cull entries in user_types where there's no type name (and assume
+  # these will be caught by other validation).  This could happen, for
+  # for example, if the user adds a value for number and specifies a
+  # supertype but no name.  We don't want to issue a "duplicate type
+  # names" error when '' == ''.
+  for ut in user_types:
+    if not ut[0]:
+      user_types.remove(ut)
+
+  # Whew!  OK, now we have two sets of type names and a set of
+  # patterns:
+  #
+  #   reserved_types: types that user's may not use
+  #   user_types: the types the user is trying to use
+  #   forbidden_type_patterns: user types must not match these
+  #
+  # Pass through the list of user types, checking each one to see if
+  # it's a reserved type or if it matches a forbidden pattern.  Also
+  # sort the list by type name, and check to see if we have any
+  # duplicates.  Mark all errors on the appropriate variables.
+
+  user_types.sort(lambda x, y: cmp(x[0], y[0]))
+
+  last_was_collision = False
+  for i in range(len(user_types)):
+    matrix_error = 'You must choose a different name to avoid ' + \
+                   'duplicating the internal Matrix type name "' + \
+                   user_types[i][0] + '".'
+
+    if user_types[i][0] in reserved_types:
+      add_err(err, user_types[i][1], matrix_error)
+
+    for forb in forbidden_type_patterns:
+      if re.match(forb + '$', user_types[i][0]):
+        add_err(err, user_types[i][1], matrix_error)
+
+    collision_error = \
+      'You must choose a different name to avoid duplicating the ' + \
+      'type name "' + user_types[i][0] + '".'
+
+    if i < len(user_types) - 1 and user_types[i][0] == user_types[i+1][0]:
+      add_err(err, user_types[i][1], collision_error)
+      last_was_collision = True
+    else:
+      if last_was_collision:
+        add_err(err, user_types[i][1], collision_error)
+      last_was_collision = False
+
+
+
+
 ######################################################################
 # validate_general(ch, err)
 #   Validate the user's choices about general information
@@ -128,10 +418,10 @@ def validate_person(ch, err):
 #   Validate the user's choices about number
 
 def validate_number(ch, err):
-  for n, number in enumerate(ch.get('number')):
+  for number in ch.get('number'):
     if 'name' not in number:
       add_err(err,
-              'number' + str(n) + '_name',
+              number.full_key + '_name',
               'You must specify a name for each number you define.')
 
 
@@ -140,10 +430,10 @@ def validate_number(ch, err):
 #   Validate the user's choices about gender
 
 def validate_gender(ch, err):
-  for g, gender in enumerate(ch.get('gender')):
+  for gender in ch.get('gender'):
     if 'name' not in gender:
       add_err(err,
-              'gender' + str(g) + '_name',
+              gender.full_key + '_name',
               'You must specify a name for each gender you define.')
 
 
@@ -152,25 +442,25 @@ def validate_gender(ch, err):
 #   Validate the user's choices about other features
 
 def validate_other_features(ch, err):
-  for f, feature in enumerate(ch.get('feature')):
+  for feature in ch.get('feature'):
     if 'name' not in feature:
       add_err(err,
-              'feature' + str(f+1) + '_name',
+              feature.full_key + '_name',
               'You must specify a name for each feature you define.')
 
     if 'type' not in feature:
       add_err(err,
-              'feature' + str(f+1) + '_type',
+              feature.full_key + '_type',
               'You must specify a type for each feature you define.')
 
-    for v, value in enumerate(feature.get('value', [])):
+    for value in feature.get('value', []):
       if 'name' not in value:
         add_err(err,
-                'feature' + str(f+1) + '_value' + str(v+1) + '_name',
+                value.full_key + '_name',
                 'You must specify a name for each value you define.')
       if 'supertype' not in value or 'name' not in value['supertype'][0]:
         add_err(err,
-                'feature' + str(f+1) + '_value' + str(v+1) + '_supertype1_name',
+                value.full_key + '_supertype1_name',
                 'You must specify a supertype for each value you define.')
 
 
@@ -336,7 +626,9 @@ def validate_sentential_negation(ch, err):
 #   Validate the user's choices about coordination.
 
 def validate_coordination(ch, err):
-  for c, cs in enumerate(ch.get('cs')):
+  for cs in ch.get('cs'):
+    csnum = cs.iter_num()
+
     cs_n =     cs.get('n')
     cs_np =    cs.get('np')
     cs_vp =    cs.get('vp')
@@ -346,50 +638,48 @@ def validate_coordination(ch, err):
     cs_order = cs.get('order')
     cs_orth =  cs.get('orth')
 
-    prefix = 'cs' + str(c+1) + '_'
-
     if not (cs_n or cs_np or cs_vp or cs_s):
-      mess = 'You must specify a phrase type for coordination strategy ' + str(c+1)
-      add_err(err, prefix + 'n', mess)
-      add_err(err, prefix + 'np', mess)
-      add_err(err, prefix + 'vp', mess)
-      add_err(err, prefix + 's', mess)
+      mess = 'You must specify a phrase type for coordination strategy ' + csnum
+      add_err(err, cs.full_key + '_n', mess)
+      add_err(err, cs.full_key + '_np', mess)
+      add_err(err, cs.full_key + '_vp', mess)
+      add_err(err, cs.full_key + '_s', mess)
 
     if cs_pat == 'a':
       if cs_mark:
         mess = 'You must not specify word/affix ' +\
                'for an asyndetic coordination strategy.'
-        add_err(err, prefix + 'mark', mess)
+        add_err(err, cs.full_key + '_mark', mess)
       if cs_order:
         mess = 'You must not specify before/after ' +\
                'for an asyndetic coordination strategy.'
-        add_err(err, prefix + 'order', mess)
+        add_err(err, cs.full_key + '_order', mess)
       if cs_orth:
         mess = 'You must not specify a spelling ' +\
                'for an asyndetic coordination strategy.'
-        add_err(err, prefix + 'orth', mess)
+        add_err(err, cs.full_key + '_orth', mess)
     else:
       if not cs_pat:
         mess = 'You must specify a pattern ' +\
-               'for coordination strategy ' + str(c+1)
-        add_err(err, prefix + 'pat', mess)
+               'for coordination strategy ' + csnum
+        add_err(err, cs.full_key + '_pat', mess)
       if not cs_mark:
         mess = 'You must specify word/affix ' +\
-               'for coordination strategy ' + str(c+1)
-        add_err(err, prefix + 'mark', mess)
+               'for coordination strategy ' + csnum
+        add_err(err, cs.full_key + '_mark', mess)
       if not cs_order:
         mess = 'You must specify before/after ' +\
-               'for coordination strategy ' + str(c+1)
-        add_err(err, prefix + 'order', mess)
+               'for coordination strategy ' + csnum
+        add_err(err, cs.full_key + '_order', mess)
       if not cs_orth:
         mess = 'You must specify a spelling ' +\
-               'for coordination strategy ' + str(c+1)
-        add_err(err, prefix + 'orth', mess)
+               'for coordination strategy ' + csnum
+        add_err(err, cs.full_key + '_orth', mess)
 
     if cs_mark == 'affix' and (cs_np or cs_vp or cs_s):
       mess = 'Marking coordination with an affix is not yet supported ' +\
              'on phrases (NPs, VPs, or sentences)'
-      add_err(err, prefix + 'mark', mess)
+      add_err(err, cs.full_key + '_mark', mess)
 
 
 ######################################################################
@@ -486,39 +776,39 @@ def validate_tanda(ch, err):
            'so you must enter at least one tense subtype.'
     add_err(err, 'tense-definition', mess)
 
-    for t, tense in enumerate(ch.get('tense')):
+    for tense in ch.get('tense'):
       if 'name' not in tense:
         add_err(err,
-                'tense' + str(t+1) + '_name',
+                tense.full_key + '_name',
                 'You must specify a name for each tense subtype you define.')
       if 'supertype' not in tense or 'name' not in tense['supertype'][0]:
         add_err(err,
-                'tense' + str(t+1) + '_supertype1_name',
+                tense.full_key + '_supertype1_name',
                 'You must specify a supertype for each tense subtype you define.')
   
   ## validate aspect
-  for a, aspect in enumerate(ch.get('aspect')):
+  for aspect in ch.get('aspect'):
     if 'name' not in aspect:
       add_err(err,
-              'aspect' + str(a+1) + '_name',
+              aspect.full_key + '_name',
               'You must specify a name for each ' +
               'viewpoint aspect subtype you define.')
     if 'supertype' not in aspect or 'name' not in aspect['supertype'][0]:
       add_err(err,
-              'aspect' + str(a+1) + '_supertype1_name',
+              aspect.full_key + '_supertype1_name',
               'You must specify at least one supertype for each ' +
               'viewpoint aspect subtype you define.')
 
   ## validate situation
-  for s, situation in enumerate(ch.get('situation')):
+  for situation in ch.get('situation'):
     if 'name' not in situation:
       add_err(err,
-              'situation' + str(s+1) + '_name',
+              situation.full_key + '_name',
               'You must specify a name for each ' +
               'situation aspect subtype you define.')
     if 'supertype' not in situation or 'name' not in situation['supertype'][0]:
       add_err(err,
-              'situation' + str(s+1) + '_supertype1_name',
+              situation.full_key + '_supertype1_name',
               'You must specify at least one supertype for each ' +
               'situation aspect subtype you define.')
 
@@ -545,13 +835,13 @@ def validate_lexicon(ch, err):
     mess = 'You must create at least one noun class.'
     add_err(err, 'noun1_stem1_orth', mess)
 
-  for n, noun in enumerate(ch.get('noun')):
+  for noun in ch.get('noun'):
     det = noun.get('det')
 
     # Did they answer the question about determiners?
     if not det:
       mess = 'You must specify whether each noun you define takes a determiner.'
-      add_err(err, 'noun' + str(n+1) + '_det', mess)
+      add_err(err, noun.full_key + '_det', mess)
 
     # If they said the noun takes an obligatory determiner, did they
     # say their language has determiners?
@@ -559,47 +849,47 @@ def validate_lexicon(ch, err):
       mess = 'You defined a noun that obligatorily takes a determiner, ' +\
              'but also said your language does not have determiners.'
       add_err(err, 'has-dets', mess)
-      add_err(err, 'noun' + str(n+1) + '_det', mess)
+      add_err(err, noun.full_key + '_det', mess)
 
-    for s, stem in enumerate(noun.get('stem', [])):
+    for stem in noun.get('stem', []):
       orth = stem.get('orth')
       pred = stem.get('pred')
 
       # Did they give a spelling?
       if not orth:
         mess = 'You must specify a spelling for each noun you define.'
-        add_err(err, 'noun' + str(n+1) + '_stem' + str(s+1) + '_orth', mess)
+        add_err(err, stem.full_key + '_orth', mess)
 
       # Did they give a predicate?
       if not pred:
         mess = 'You must specify a predicate for each noun you define.'
-        add_err(err, 'noun' + str(n+1) + '_stem' + str(s+1) + '_pred', mess)
+        add_err(err, stem.full_key + '_pred', mess)
 
   # Verbs
   seenTrans = False
   seenIntrans = False
-  for v, verb in enumerate(ch.get('verb')):
+  for verb in ch.get('verb'):
     val = verb.get('valence')
 
     if not val:
       mess = 'You must specify the argument structure of each verb you define.'
-      add_err(err, 'verb' + str(v+1) + '_valence', mess)
+      add_err(err, verb.full_key + '_valence', mess)
     elif val[0:5] == 'trans' or '-' in val:
       seenTrans = True
     else:
       seenIntrans = True
 
-    for s, stem in enumerate(verb.get('stem', [])):
+    for stem in verb.get('stem', []):
       orth = stem.get('orth')
       pred = stem.get('pred')
 
       if not orth:
         mess = 'You must specify a spelling for each verb you define.'
-        add_err(err, 'verb' + str(v+1) + '_stem' + str(s+1) + '_orth', mess)
+        add_err(err, stem.full_key + '_orth', mess)
 
       if not pred:
         mess = 'You must specify a predicate for each verb you define.'
-        add_err(err, 'verb' + str(v+1) + '_stem' + str(s+1) + '_pred', mess)
+        add_err(err, stem.full_key + '_pred', mess)
 
   if not (seenTrans and seenIntrans):
     mess = 'You must create intransitive and transitive verb classes.'
@@ -623,124 +913,110 @@ def validate_lexicon(ch, err):
       add_err(err, 'auxlabel', mess)
 
   comp = ch.get('aux-comp')
-  for a, aux in enumerate(ch.get('aux')):
+  for aux in ch.get('aux'):
     sem = aux.get('sem')
     pred = aux.get('pred')
     subj = aux.get('subj')
 
-    prefix = 'aux' + str(a + 1) + '_'
-
     if 'stem' not in aux or 'orth' not in aux['stem'][0]:
       mess = 'You must specify a stem for each auxiliary type defined.'
-      add_err(err, prefix + 'stem1_orth', mess)
+      add_err(err, aux.full_key + '_stem1_orth', mess)
 
     if not sem:
       mess = 'You must specify whether the auxiliary contributes a predicate.'
-      add_err(err, prefix + 'sem', mess)
+      add_err(err, aux.full_key + '_sem', mess)
 
     if sem == 'add-pred':
-      for f, feat in enumerate(aux.get('feat', [])):
+      for feat in aux.get('feat', []):
         if feat.get('name') and not feat.get('value'):
           mess = 'You must specify a value for this feature.'
-          add_err(err, prefix + 'feat' + str(f+1) + '_value', mess)
+          add_err(err, feat.full_key + '_value', mess)
 
     if comp == 'vp' or comp == 'v':
       if not subj:
         mess = 'You must specify the subject type.'
-        add_err(err, prefix + 'subj', mess)
+        add_err(err, aux.full_key + '_subj', mess)
 
     compform = 'no'
-    for c, cf in enumerate(aux.get('compfeature', [])):
+    for cf in aux.get('compfeature', []):
       name = cf.get('name')
       if name == 'form':
         compform = 'yes'
       if name and not cf.get('value'):
         mess = 'You must specify a value for this feature.'
-        add_err(err, prefix + 'compfeature' + str(c+1) + '_value', mess)
+        add_err(err, cf.full_key + '_value', mess)
 
     if not compform == 'yes':
       mess = 'You must specify the form of the verb in the complement, ' +\
              'i.e., the value of the complement feature FORM.'
-      add_err(err, prefix + 'complabel', mess)
+      add_err(err, aux.full_key + '_complabel', mess)
 
 
-    for s, stem in enumerate(aux.get('stem', [])):
+    for stem in aux.get('stem', []):
       if sem == 'add-pred' and not stem.get('pred'):
         mess = 'You have indicated that this type contributes a predicate. ' +\
                'You must specify the predicate name.'
-        add_err(err, prefix + 'stem' + str(s+1) + '_pred', mess)
+        add_err(err, stem.full_key + '_pred', mess)
       if sem != 'add-pred' and stem.get('pred'):
         mess = 'You have specified a predicate but indicated ' +\
                'that this type does not contribute a predicate.'
-        add_err(err, prefix + 'sem', mess)
+        add_err(err, aux.full_key + '_sem', mess)
 
 
   # Determiners
-  for d, det in enumerate(ch.get('det')):
-    for s, stem in enumerate(det.get('stem', [])):
+  for det in ch.get('det'):
+    for stem in det.get('stem', []):
       if not stem.get('orth'):
         mess = 'You must specify a spelling for each determiner you define.'
-        add_err(err, 'det' + str(d+1) + '_stem' + str(s+1) + '_orth', mess)
+        add_err(err, stem.full_key + '_orth', mess)
 
       if not stem.get('pred'):
         mess = 'You must specify a predicate for each determiner you define.'
-        add_err(err, 'det' + str(d+1) + '_stem' + str(s+1) + '_pred', mess)
+        add_err(err, stem.full_key + '_pred', mess)
 
   # Features on all lexical types
   for lextype in ('noun', 'verb', 'aux', 'det', 'adp'):
-    for l, lt in enumerate(ch.get(lextype)):
-      for f, feat in enumerate(lt.get('feat', [])):
-        prefix = lextype + str(l+1) + '_feat' + str(f+1) + '_'
+    for lt in ch.get(lextype):
+      for feat in lt.get('feat', []):
         if not feat.get('name'):
           mess = 'You must choose which feature you are specifying.'
-          add_err(err, prefix + 'name', mess)
+          add_err(err, feat.full_key + '_name', mess)
         if not feat.get('value'):
           mess = 'You must choose a value for each feature you specify.'
-          add_err(err, prefix + 'value', mess)
+          add_err(err, feat.full_key + '_value', mess)
 
         if lextype == 'verb' and not feat.get('head'):
           mess = 'You must choose where the feature is specified.'
-          add_err(err, prefix + 'head', mess)
+          add_err(err, feat.full_key + '_head', mess)
 
         if not ch.has_dirinv() and feat.get('head') in ['higher', 'lower']:
           mess = 'That choice is not available in languages ' +\
                  'without a direct-inverse scale.'
-          add_err(err, prefix + 'head', mess)
+          add_err(err, feat.full_key + '_head', mess)
 
   # Inflectional Slots
   for slotprefix in ('noun', 'verb', 'det'):
-    for s, slot in enumerate(ch.get(slotprefix + '-slot')):
-      prefix = slotprefix + '-slot' + str(s+1) + '_'
-
+    for slot in ch.get(slotprefix + '-slot'):
       if not slot.get('order'):
         mess = 'You must specify an order for every slot you define.'
-        add_err(err, prefix + 'order', mess)
+        add_err(err, slot.full_key + '_order', mess)
 
       if 'input' not in slot or 'type' not in slot['input'][0]:
         mess = 'You must specify at least one input for every slot.'
-        add_err(err, prefix + 'input1_type', mess)
+        add_err(err, slot.full_key + '_input1_type', mess)
 
-      for m, morph in enumerate(slot.get('morph', [])):
-        for f, feat in enumerate(morph.get('feat', [])):
+      for morph in slot.get('morph', []):
+        for feat in morph.get('feat', []):
           if not feat.get('name'):
             mess = 'You must choose which feature you are specifying.'
-            add_err(
-              err,
-              prefix + '_morph' + str(m+1) + '_feat' + str(f+1) + '_name',
-              mess)
+            add_err(err, feat.full_key + '_name', mess)
           if not feat.get('value'):
             mess = 'You must choose a value for each feature you specify.'
-            add_err(
-              err,
-              prefix + '_morph' + str(m+1) + '_feat' + str(f+1) + '_value',
-              mess)
+            add_err(err, feat.full_key + '_value', mess)
 
           if slotprefix == 'verb' and not feat.get('head'):
             mess = 'You must choose where the feature is specified.'
-            add_err(
-              err,
-              prefix + '_morph' + str(m+1) + '_feat' + str(f+1) + '_head',
-              mess)
+            add_err(err, feat.full_key + '_head', mess)
 
 
 ######################################################################
@@ -815,33 +1091,29 @@ def validate_features(ch, err):
   name_list = []
   value_list = []
 
-  for s, scale in enumerate(ch.get('scale')):
-    for f, feat in enumerate(scale.get('feat', [])):
-      prefix = 'scale' + str(s+1) + '_feat' + str(f+1) + '_'
+  for scale in ch.get('scale'):
+    for feat in scale.get('feat', []):
       name_list += \
-        [[ prefix + 'name', feat.get('name') ]]
+        [[ feat.full_key + '_name', feat.get('name') ]]
       value_list += \
-        [[ prefix + 'value', feat.get('name'), feat.get('value') ]]
+        [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
 
   for lexprefix in ('noun', 'verb', 'det', 'aux'):
-    for l, lex in enumerate(ch.get(lexprefix)):
-      for f, feat in enumerate(lex.get('feat', [])):
-        prefix = lexprefix + str(l+1) + '_feat' + str(f+1) + '_'
+    for lex in ch.get(lexprefix):
+      for feat in lex.get('feat', []):
         name_list += \
-          [[ prefix + 'name', feat.get('name') ]]
+          [[ feat.full_key + '_name', feat.get('name') ]]
         value_list += \
-          [[ prefix + 'value', feat.get('name'), feat.get('value') ]]
+          [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
 
   for slotprefix in ('noun', 'verb', 'det', 'aux'):
-    for s, slot in enumerate(ch.get(slotprefix + '-slot')):
-      for m, morph in enumerate(slot.get('morph', [])):
-        for f, feat in enumerate(morph.get('feat', [])):
-          prefix = slotprefix + '-slot' + str(s+1) + \
-                   '_morph' + str(m+1) + '_feat' + str(f+1) + '_'
+    for slot in ch.get(slotprefix + '-slot'):
+      for morph in slot.get('morph', []):
+        for feat in morph.get('feat', []):
           name_list += \
-            [[ prefix + 'name', feat.get('name') ]]
+            [[ feat.full_key + '_name', feat.get('name') ]]
           value_list += \
-            [[ prefix + 'value', feat.get('name'), feat.get('value') ]]
+            [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
 
   # Check the name list to ensure they're all valid features
   features = ch.features()
@@ -858,9 +1130,9 @@ def validate_features(ch, err):
   # Check the value list to ensure they're all valid values
   features = ch.features()
   for item in value_list:
-    var = item[0]    # choices variable name
-    name = item[1]   # feature name
-    value = item[2]  # feature value
+    var = item[0] or ''    # choices variable name
+    name = item[1] or ''   # feature name
+    value = item[2] or ''  # feature value
     for subval in value.split(', '):
       valid = False
       for f in features:
@@ -914,6 +1186,7 @@ def validate_choices(choices_file, extra = False):
   ch = ChoicesFile(choices_file)
   err = {}
 
+  validate_names(ch, err)
   validate_general(ch, err)
   validate_case(ch, err)
   validate_person(ch, err)
