@@ -777,10 +777,14 @@ class MatrixDefFile:
         # the current choices file OR iter_min copies, whichever is
         # greater
         c = 0
-        chlist = choices.get(prefix + iter_name)
+        chlist = [x for x in choices.get(prefix + iter_name) if x]
         while (chlist and c < len(chlist)) or c < iter_min:
-          new_prefix = prefix + iter_name + str(c+1) + '_'
-          vars[iter_var] = str(c+1)
+          if c < len(chlist):
+            iter_num = str(chlist[c].iter_num())
+          else:
+            iter_num = str(c+1)
+          new_prefix = prefix + iter_name + iter_num + '_'
+          vars[iter_var] = iter_num
 
           # new_prefix[:-1] trims the trailing '_'
           html += '<div class="iterator" id="' + new_prefix[:-1] + '">\n'
