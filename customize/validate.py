@@ -1004,7 +1004,7 @@ def validate_lexicon(ch, err):
         mess = 'You must specify an order for every slot you define.'
         add_err(err, slot.full_key + '_order', mess)
 
-      if 'input' not in slot or slot['input'].is_empty():
+      if 'input' not in slot:
         mess = 'You must specify at least one input for every slot.'
         add_err(err, slot.full_key + '_input1_type', mess)
 
