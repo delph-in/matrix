@@ -30,11 +30,13 @@ class ChoiceCategory:
   def __init__(self, full_key=None):
     self.full_key = full_key
 
-  def iter_num(self):
-    return re.search('[0-9]+$', self.full_key).group(0)
-
 class ChoiceDict(ChoiceCategory, dict):
-  pass
+  def iter_num(self):
+    if self.full_key is not None:
+        result = re.search('[0-9]+$', self.full_key)
+        if result is not None:
+            return result.group(0)
+    return None
 
 class ChoiceList(ChoiceCategory, list):
   # custom iterator ignores empty items (e.g. when a
@@ -43,6 +45,14 @@ class ChoiceList(ChoiceCategory, list):
     for item in list.__iter__(self):
       if len(item) > 0:
         yield item
+
+  def is_empty(self):
+    return len([x for x in self]) == 0
+
+  def get_first(self):
+    for item in self:
+        return item
+    return None
 
 ######################################################################
 # ChoicesFile is a class that wraps the choices file, a list of

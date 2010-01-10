@@ -1,6 +1,78 @@
 import unittest
 import customize.choices
 
+class TestChoiceCategoryClasses(unittest.TestCase):
+    def test_choicecategory(self):
+        c = customize.choices.ChoiceCategory()
+        self.assertEqual(c.full_key, None)
+        c = customize.choices.ChoiceCategory(full_key='')
+        self.assertEqual(c.full_key, '')
+        c = customize.choices.ChoiceCategory(full_key='abc')
+        self.assertEqual(c.full_key, 'abc')
+
+    def test_choicedict(self):
+        d = customize.choices.ChoiceDict()
+        self.assertEqual(d.full_key, None)
+        self.assertEqual(len(d), 0)
+        self.assertEqual(d.iter_num(), None)
+        d = customize.choices.ChoiceDict(full_key='')
+        self.assertEqual(d.iter_num(), None)
+        d = customize.choices.ChoiceDict(full_key='abc')
+        self.assertEqual(d.iter_num(), None)
+        d = customize.choices.ChoiceDict(full_key='abc1')
+        self.assertEqual(d.full_key, 'abc1')
+        self.assertEqual(d.iter_num(), '1')
+        self.assertEqual(len(d), 0)
+        d['attr1'] = 'val1'
+        self.assertEqual(len(d), 1)
+        d = customize.choices.ChoiceDict(full_key='abc12')
+        self.assertEqual(d.iter_num(), '12')
+        d = customize.choices.ChoiceDict(full_key='abc1_def')
+        self.assertEqual(d.iter_num(), None)
+        d = customize.choices.ChoiceDict(full_key='abc1_def2')
+        self.assertEqual(d.iter_num(), '2')
+
+    def test_choicelist(self):
+        l = customize.choices.ChoiceList()
+        self.assertEqual(l.full_key, None)
+        self.assertEqual(len(l), 0)
+        self.assertEqual(l.is_empty(), True)
+        self.assertEqual(l.get_first(), None)
+        l = customize.choices.ChoiceList(full_key='abc')
+        self.assertEqual(l.full_key, 'abc')
+        self.assertEqual(len(l), 0)
+        self.assertEqual(l.is_empty(), True)
+        self.assertEqual(l.get_first(), None)
+        l += [customize.choices.ChoiceDict(full_key='abc1')]
+        self.assertEqual(len(l), 1)
+        self.assertEqual(l.is_empty(), True)
+        self.assertEqual(l.get_first(), None)
+        l[0]['attr1'] = 'val1'
+        self.assertEqual(len(l), 1)
+        self.assertEqual(l.is_empty(), False)
+        x = l.get_first()
+        self.assertEqual(x['attr1'], 'val1')
+        l += [customize.choices.ChoiceDict(full_key='abc2')]
+        self.assertEqual(len(l), 2)
+        l[1]['attr1'] = 'val2'
+        self.assertEqual(len(l), 2)
+        x = l.get_first()
+        self.assertEqual(x['attr1'], 'val1')
+        # delete often happens by setting the item to an empty ChoiceDict
+        l[0] = customize.choices.ChoiceDict()
+        self.assertEqual(len(l), 2)
+        x = l.get_first()
+        self.assertEqual(x['attr1'], 'val2')
+        l += [customize.choices.ChoiceDict(full_key='abc3')]
+        l[2]['attr1'] = 'val3'
+        self.assertEqual(len(l), 3)
+        x = l.get_first()
+        self.assertEqual(x['attr1'], 'val2')
+        xs = [item for item in l]
+        self.assertEqual(len(xs), 2)
+        self.assertEqual(xs[0]['attr1'], 'val2')
+        self.assertEqual(xs[1]['attr1'], 'val3')
+
 class TestChoicesFileParsingFunctions(unittest.TestCase):
     def test_get(self):
         c = customize.choices.ChoicesFile() # no file loaded
