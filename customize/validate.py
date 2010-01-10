@@ -372,13 +372,14 @@ def validate_case(ch, err):
   if cm in ['focus']:
     validate_one_case(ch, err, cm + '-focus')
 
-  if cm == 'none' and ch.get('case1_name'):
-    add_err(err,
-            'case1_name',
-            'You may not specify additional cases ' +
-            'if your language has no case marking.')
+  if cm == 'none' and 'case' in ch:
+    for case in ch['case']:
+      add_err(err,
+              case.full_key + '_name',
+              'You may not specify additional cases ' +
+              'if your language has no case marking.')
 
-  if ch.get('scale1_feat1_name') and not ch.get('scale-equal'):
+  if 'scale' in ch and not ch.get('scale-equal'):
     add_err(err,
             'scale-equal',
             'If you define a direct-inverse scale, ' +
@@ -458,7 +459,7 @@ def validate_other_features(ch, err):
         add_err(err,
                 value.full_key + '_name',
                 'You must specify a name for each value you define.')
-      if 'supertype' not in value or 'name' not in value['supertype'][0]:
+      if 'supertype' not in value:
         add_err(err,
                 value.full_key + '_supertype1_name',
                 'You must specify a supertype for each value you define.')
@@ -502,7 +503,7 @@ def validate_word_order(ch, err):
             'You specified an order of nouns and dets, ' +
             'but not whether your language has determiners at all.')
 
-  if ch.get('det1_stem1_orth') and ch.get('has-dets') == 'no':
+  if 'det' in ch and ch.get('has-dets') == 'no':
     add_err(err,
             'has-dets',
             'You specified lexical entries for determiners, ' +
@@ -761,9 +762,10 @@ def validate_tanda(ch, err):
   for t in ten:
     if ch.get(t):
       chosen = True
-    elif ch.get(t + '-subtype1_name'):
+    elif t + '-subtype' in ch:
       mess = 'You cannot add a subtype if the supertype is not selected.'
-      add_err(err, t, mess)
+      for st in ch[t + '-subtype']:
+        add_err(err, st.full_key + '_name', mess)
 
   if ch.get('tense-definition') == 'choose' and not chosen:
     mess = 'You have chosen to select among hierarchy elements. ' +\
@@ -771,21 +773,22 @@ def validate_tanda(ch, err):
     for t in ten:
       add_err(err, t, mess)
 
-  if ch.get('tense-definition') == 'build' and not ch.get('tense1_name'):
-    mess = 'You have chosen to build your own tense hierarchy ' +\
-           'so you must enter at least one tense subtype.'
-    add_err(err, 'tense-definition', mess)
+  if ch.get('tense-definition') == 'build':
+    if 'tense' not in ch:
+      mess = 'You have chosen to build your own tense hierarchy ' +\
+             'so you must enter at least one tense subtype.'
+      add_err(err, 'tense-definition', mess)
 
     for tense in ch.get('tense'):
       if 'name' not in tense:
         add_err(err,
                 tense.full_key + '_name',
                 'You must specify a name for each tense subtype you define.')
-      if 'supertype' not in tense or 'name' not in tense['supertype'][0]:
+      if 'supertype' not in tense:
         add_err(err,
                 tense.full_key + '_supertype1_name',
                 'You must specify a supertype for each tense subtype you define.')
-  
+
   ## validate aspect
   for aspect in ch.get('aspect'):
     if 'name' not in aspect:
@@ -793,7 +796,7 @@ def validate_tanda(ch, err):
               aspect.full_key + '_name',
               'You must specify a name for each ' +
               'viewpoint aspect subtype you define.')
-    if 'supertype' not in aspect or 'name' not in aspect['supertype'][0]:
+    if 'supertype' not in aspect:
       add_err(err,
               aspect.full_key + '_supertype1_name',
               'You must specify at least one supertype for each ' +
@@ -806,7 +809,7 @@ def validate_tanda(ch, err):
               situation.full_key + '_name',
               'You must specify a name for each ' +
               'situation aspect subtype you define.')
-    if 'supertype' not in situation or 'name' not in situation['supertype'][0]:
+    if 'supertype' not in situation:
       add_err(err,
               situation.full_key + '_supertype1_name',
               'You must specify at least one supertype for each ' +
@@ -819,9 +822,9 @@ def validate_tanda(ch, err):
     add_err(err, 'noaux-fin-nf', mess)
   
   if ch.get('has-aux') == 'no' and not (ch.get('noaux-fin-nf') == 'on'):
-    if ch.get('nf-subform1_name'):
-      mess = 'You have indicated that your language has no auxiliaries but ' +\
-             'you have entered subforms of finite or non-finite.'
+    if 'nf-subform' in ch:
+      mess = 'You have indicated that your language has no auxiliaries ' +\
+             'but you have entered subforms of finite or non-finite.'
       add_err(err, 'noaux-fin-nf', mess)
 
 ######################################################################
@@ -831,7 +834,7 @@ def validate_tanda(ch, err):
 def validate_lexicon(ch, err):
 
   # Did they specify enough lexical entries?
-  if not ch.get('noun1_stem1_orth'):
+  if 'noun' not in ch:
     mess = 'You must create at least one noun class.'
     add_err(err, 'noun1_stem1_orth', mess)
 
@@ -899,15 +902,15 @@ def validate_lexicon(ch, err):
 
   # Auxiliaries
 
-  aux1_name = ch.get('aux1_name')
+  aux_defined = 'aux' in ch
   if ch.get('has-aux') != 'yes':
-    if aux1_name:
-      mess = 'You have indicated that your language has no auxiliaries but ' +\
-             'have entered an auxiliary on the Lexicon page.'
+    if aux_defined:
+      mess = 'You have indicated that your language has no auxiliaries ' +\
+             'but have entered an auxiliary on the Lexicon page.'
       add_err(err, 'has-aux', mess)
 
   if ch.get('has-aux') == 'yes':
-    if not aux1_name:
+    if not aux_defined:
       mess = 'You have indicated that your language has auxiliaries. ' +\
              'You must define at least one auxiliary type.'
       add_err(err, 'auxlabel', mess)
@@ -918,7 +921,7 @@ def validate_lexicon(ch, err):
     pred = aux.get('pred')
     subj = aux.get('subj')
 
-    if 'stem' not in aux or 'orth' not in aux['stem'][0]:
+    if 'stem' not in aux:
       mess = 'You must specify a stem for each auxiliary type defined.'
       add_err(err, aux.full_key + '_stem1_orth', mess)
 
@@ -1001,7 +1004,7 @@ def validate_lexicon(ch, err):
         mess = 'You must specify an order for every slot you define.'
         add_err(err, slot.full_key + '_order', mess)
 
-      if 'input' not in slot or 'type' not in slot['input'][0]:
+      if 'input' not in slot or slot['input'].is_empty():
         mess = 'You must specify at least one input for every slot.'
         add_err(err, slot.full_key + '_input1_type', mess)
 

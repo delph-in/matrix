@@ -1205,7 +1205,7 @@ BeginIter aux{i} "an Auxiliary Type"
 
   EndIter compfeature
 
-  Label "Stems:"        
+  Label "<br><br>Stems:"        
 
   BeginIter stem{j} "a Stem" 1
 
@@ -1308,7 +1308,7 @@ BeginIter det{i} "a Determiner"
 
   EndIter stem
 
-  Label "Features:"
+  Label "<br><br>Features:"
 
   BeginIter feat{j} "a Feature"
 

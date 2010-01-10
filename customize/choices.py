@@ -30,11 +30,13 @@ class ChoiceCategory:
   def __init__(self, full_key=None):
     self.full_key = full_key
 
-  def iter_num(self):
-    return re.search('[0-9]+$', self.full_key).group(0)
-
 class ChoiceDict(ChoiceCategory, dict):
-  pass
+  def iter_num(self):
+    if self.full_key is not None:
+        result = re.search('[0-9]+$', self.full_key)
+        if result is not None:
+            return result.group(0)
+    return None
 
 class ChoiceList(ChoiceCategory, list):
   # custom iterator ignores empty items (e.g. when a
@@ -390,7 +392,7 @@ class ChoicesFile:
 
     for adp in self.get('adp'):
       opt = adp.get('opt')
-      for feat in adp['feat']:
+      for feat in adp.get('feat', []):
         result = result or (self.has_case(feat, case) and \
                             (opt or not check_opt))
 

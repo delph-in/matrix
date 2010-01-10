@@ -587,7 +587,7 @@ def direct_inverse_scale_len():
 
 
 def customize_direct_inverse():
-  if 'scale1_feat1_name' not in ch:
+  if 'scale' not in ch:
     return
 
   mylang.add('verb :+ [ DIRECTION direction ].', section='addenda')
