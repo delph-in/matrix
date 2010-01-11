@@ -1119,7 +1119,15 @@ def validate_features(ch, err):
           value_list += \
             [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
 
-  # Check the name list to ensure they're all valid features
+
+  for context in ch.get('context',[]):
+    for feat in context.get('feat',[]):
+      name_list += \
+       [[ feat.full_key + '_name', feat.get('name') ]]
+      value_list += \
+       [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
+  
+# Check the name list to ensure they're all valid features
   features = ch.features()
   for item in name_list:
     var = item[0]   # choices variable name
@@ -1179,6 +1187,12 @@ def validate_arg_opt(ch, err):
             'You must select whether a object marker is ' +
             'required, optional, or not permitted with an overt object.')
   
+  for context in ch.get('context',[]):
+    for feat in context.get('feat',[]):
+      if not feat.get('head'):
+        mess = 'You must choose where the feature is specified.'
+        add_err(err, feat.full_key+'_head',mess)
+
 
 ######################################################################
 # validate_choices(choices_file)
