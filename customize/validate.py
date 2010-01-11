@@ -3,6 +3,7 @@
 ######################################################################
 # imports
 
+import sys
 import re
 
 from choices import ChoicesFile
@@ -1212,3 +1213,29 @@ def validate_choices(choices_file, extra = False):
     validate_extra_constraints(ch, err)
 
   return err
+
+
+###############################################################
+# Allow validate_choices() to be called directly from the
+# command line or shell scripts, and print out the errors
+# that result.
+
+if __name__ == "__main__":
+  errors = validate_choices(sys.argv[1])
+  
+  print sys.argv[1]
+  for k in errors.keys():
+    print '  ' + k + ':'
+  
+    print '   ',
+    column = 4
+    for w in errors[k].split():
+      if column + len(w) > 70:
+        print
+        print '    ' + w,
+        column = len(w) + 5
+      else:
+        print w,
+        column += len(w) + 1
+    print
+  print
