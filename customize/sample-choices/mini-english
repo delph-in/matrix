@@ -2,7 +2,6 @@ version=17
 
 section=general
 language=mini English
-archive=no
 
 section=word-order
 word-order=svo

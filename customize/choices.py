@@ -139,7 +139,7 @@ class ChoicesFile:
     try:
       for k in keys:
         d = d[k]
-    except KeyError:
+    except (KeyError, IndexError):
       return default or []
     return d
 

@@ -95,7 +95,7 @@ if form_data.has_key('verbpred'):
 
 # Get a list of error messages, determined by validating the current
 # choices.  If the current choices are valid, the list will be empty.
-errors = validate_choices(session_path + '/choices')
+vr = validate_choices(session_path + '/choices')
 
 # if the 'customize' field is defined, create a customized copy of the matrix
 # based on the current choices file
@@ -106,10 +106,10 @@ if form_data.has_key('customize'):
   else:
     arch_type = ''
   if arch_type != 'tgz' and arch_type != 'zip':
-    errors['delivery'] = 'You must specify an archive type.'
+    vr.err('delivery', 'You must specify an archive type.')
 
-  if len(errors):
-    matrixdef.error_page(errors)
+  if vr.has_errors():
+    matrixdef.error_page(vr)
   else:
     # If the user said it's OK, archive the choices file
     choices = ChoicesFile(session_path + '/choices')
@@ -139,8 +139,8 @@ if form_data.has_key('customize'):
       matrixdef.custom_page(session_path, grammar_dir, arch_type)
 elif form_data.has_key('subpage'):
   if browser_cookie:
-    matrixdef.sub_page(form_data['subpage'].value, cookie, errors)
+    matrixdef.sub_page(form_data['subpage'].value, cookie, vr)
   else:
     matrixdef.cookie_error_page()
 else:
-  matrixdef.main_page(cookie, errors)
+  matrixdef.main_page(cookie, vr)

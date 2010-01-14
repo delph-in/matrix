@@ -108,10 +108,18 @@ page</a>]
 a required answer or contain an incorrect answer are marked with a red
 asterisk:
 
-<span class="error" title="This asterisk is an exception. It has a tooltip even though it is not associated with an error.">*</span>.
+<span class="error" title="This asterisk is an exception. It has a
+tooltip even though it does not mark an error.">*</span>.
 
-Hovering the mouse cursor over an asterisk will show a tooltip
-describing the error.</p>
+Questions or subpages that contain answers that might be problematic,
+but are not outright incorrect, are marked with a red question mark:
+
+<span class="error" title="This question mark is similarly
+exceptional. It has a tooltip even though it does not mark a
+warning.">?</span>.
+
+Hovering the mouse cursor over a red asterisk or question mark will
+show a tooltip describing the error.</p>
 
 '''
 
@@ -223,12 +231,19 @@ HTML_postbody = '''</body>
 ######################################################################
 # HTML creation functions
 
-def html_error(error):
-  return error.replace('"', '&quot;')
+def html_mark(mark, message):
+  return '<span class="error" title="%s">%s</span>' %\
+           (message.replace('"', '&quot;'), mark)
+
+def html_error_mark(message):
+  return html_mark('*', message)
+
+def html_warning_mark(message):
+  return html_mark('?', message)
 
 # Return an HTML <input> tag with the specified attributes and
 # surrounding text
-def html_input(errors, type, name, value, checked, before, after,
+def html_input(vr, type, name, value, checked, before, after,
                size = '', onclick = '', disabled = False):
   if value:
     value = ' value="' + value + '"'
@@ -247,22 +262,24 @@ def html_input(errors, type, name, value, checked, before, after,
   if disabled:
     dsabld = ' disabled'
 
-  asterisk = ''
-  if name and errors.has_key(name):
-    asterisk = '<span class="error" title="%s">*</span>' % \
-               (html_error(errors[name]))
+  mark = ''
+  if name in vr.errors:
+    mark = html_error_mark(vr.errors[name])
+  elif name in vr.warnings:
+    mark = html_warning_mark(vr.warnings[name])
 
   return '%s%s<input type="%s" name="%s"%s%s%s%s%s>%s' % \
-         (before, asterisk, type, name, value, chkd, size, dsabld,
+         (before, mark, type, name, value, chkd, size, dsabld,
           onclick, after)
 
 
 # Return an HTML <select> tag with the specified name
-def html_select(errors, name, multi, onfocus = ''):
-  asterisk = ''
-  if name and errors.has_key(name):
-    asterisk = '<span class="error" title="%s">*</span>' % \
-               (html_error(errors[name]))
+def html_select(vr, name, multi, onfocus = ''):
+  mark = ''
+  if name in vr.errors:
+    mark = html_error_mark(vr.errors[name])
+  elif name in vr.warnings:
+    mark = html_warning_mark(vr.warnings[name])
 
   multi_attr = ''
   if multi:
@@ -272,12 +289,12 @@ def html_select(errors, name, multi, onfocus = ''):
     onfocus = ' onfocus="' + onfocus + '"'
 
   return '%s<select name="%s"%s%s>' % \
-         (asterisk, name, multi_attr, onfocus)
+         (mark, name, multi_attr, onfocus)
 
 
 # Return an HTML <option> tag with the specified attributes and
 # surrounding text
-def html_option(errors, name, selected, html, temp=False):
+def html_option(vr, name, selected, html, temp=False):
   sld = ''
   if selected:
     sld = ' selected'
@@ -436,7 +453,7 @@ class MatrixDefFile:
   # return the friendly name for a variable, or the variable if none
   # is defined
   def f(self, v):
-    if self.v2f.has_key(v):
+    if v in self.v2f:
       return self.v2f[v]
     else:
       return v
@@ -444,7 +461,7 @@ class MatrixDefFile:
   # return the variablefor a friendly name, or the friendly name if
   # none is defined
   def v(self, f):
-    if self.f2v.has_key(f):
+    if f in self.f2v:
       return self.f2v[f]
     else:
       return f
@@ -452,7 +469,7 @@ class MatrixDefFile:
 
   # Create and print the main matrix page.  The argument is a cookie
   # that determines where to look for the choices file.
-  def main_page(self, cookie, errors):
+  def main_page(self, cookie, vr):
     print HTTP_header
     print 'Set-cookie: session=' + cookie + '\n'
     print HTML_pretitle
@@ -485,7 +502,7 @@ class MatrixDefFile:
     
 
     # pass through the definition file once, augmenting the list of validation
-    # errors with section names so that we can put red asterisks on the links
+    # results with section names so that we can put red asterisks on the links
     # to the assocated sub-pages on the main page.
     prefix = ''
     for l in line:
@@ -500,15 +517,18 @@ class MatrixDefFile:
         prefix += re.sub('\\{.*\\}', '.*', word[1])
       elif word[0] == 'EndIter':
         prefix = re.sub('_?' + word[1] + '[^_]*$', '', prefix)
-      elif not (errors.has_key(cur_sec) or
-                (word[0] == 'Label' and len(word) < 3)):
+      elif not (word[0] == 'Label' and len(word) < 3):
         pat = '^' + prefix
         if prefix:
           pat += '_'
         pat += word[1] + '$'
-        for k in errors.keys():
+        for k in vr.errors.keys():
           if re.search(pat, k):
-            errors[cur_sec] = 'error in section'
+            vr.errors[cur_sec] = 'error in section'
+            break
+        for k in vr.warnings.keys():
+          if re.search(pat, k):
+            vr.warnings[cur_sec] = 'warning in section'
             break
 
     # now pass through again to actually emit the page
@@ -521,8 +541,10 @@ class MatrixDefFile:
               'onclick="toggle_display(\'' + \
               word[1] + '\',\'' + word[1] + 'button\')"' + \
               '>&#9658;</span> '
-        if errors.has_key(word[1]):
-          print '<span class="error" title="This section contains one or more errors.">* </span>'
+        if word[1] in vr.errors:
+          print html_error_mark('This section contains one or more errors.')
+        elif word[1] in vr.warnings:
+          print html_warning_mark('This section contains one or more warnings.')
         print '<a href="matrix.cgi?subpage=' + word[1] + '">' + \
               word[2] + '</a>'
         print '<div class="values" id="' + word[1] + '" style="display:none">'
@@ -547,29 +569,34 @@ class MatrixDefFile:
     zip_checked = False
 
     # the buttons after the subpages
-    print html_input(errors, 'hidden', 'customize', 'customize', False, '', '')
-    print html_input(errors, 'radio', 'delivery', 'tgz', tgz_checked,
+    print html_input(vr, 'hidden', 'customize', 'customize', False, '', '')
+    print html_input(vr, 'radio', 'delivery', 'tgz', tgz_checked,
                      '<p>Archive type: ', ' .tar.gz')
-    print html_input(errors, 'radio', 'delivery', 'zip', zip_checked,
+    print html_input(vr, 'radio', 'delivery', 'zip', zip_checked,
                      ' ', ' .zip<br>')
-    print html_input(errors, 'submit', '', 'Create Grammar', False, '', '</p>',
-                     '', '', len(errors) > 0)
+    print html_input(vr, 'submit', '', 'Create Grammar', False,
+                     '', '</p>', '', '', vr.has_errors())
 
-    print html_input(errors, 'submit', 'sentences', 'Test by Generation', False, '', '</p>','','', len(errors) > 0)
+    print html_input(vr, 'submit', 'sentences', 'Test by Generation', False,
+                     '', '</p>', '', '', vr.has_errors())
 
     print '<hr>\n'
-    print html_input(errors, 'button', '', 'Download Choices File', False,
+
+    # the button for downloading the choices file
+    print html_input(vr, 'button', '', 'Download Choices File', False,
                      '<p>', '</p>', '',
                      'window.location.href=\'' + choices_file + '\'')
     
     print HTML_postform
 
-    # the FORM for uploading choices files
+    # the FORM for uploading a choices file
     print HTML_uploadpreform
-    print html_input(errors, 'submit', '', 'Upload Choices File:', False,
+    print html_input(vr, 'submit', '', 'Upload Choices File:', False,
                      '<p>', '')
-    print html_input(errors, 'file', 'choices', '', False, '', '</p>', '20')
+    print html_input(vr, 'file', 'choices', '', False, '', '</p>', '20')
     print HTML_uploadpostform
+
+    print '<hr>\n'
 
     # the list of sample choices files
     if os.path.exists('sample-choices'):
@@ -577,16 +604,20 @@ class MatrixDefFile:
             '<p>Click a link below to have the questionnaire ' + \
             'filled out automatically.</p>'
       print '<p>'
+
       globlist = glob.glob('sample-choices/*')
-      globlist.sort()
+      linklist = {}
+
       for f in globlist:
         f = f.replace('\\', '/')
         choices = ChoicesFile(f)
-        lang = choices.get('language')
-        if not lang:
-          lang = '[empty questionnaire]'
-        print '<a href="matrix.cgi?choices=' + f + '">' + \
-              lang + '</a><br>\n'
+        lang = choices.get('language') or '(empty questionnaire)'
+        linklist[lang] = f
+
+      for k in sorted(linklist.keys(), lambda x, y: cmp(x.lower(), y.lower())):
+        print '<a href="matrix.cgi?choices=' + linklist[k] + '">' + \
+              k + '</a><br>\n'
+
       print '</p>'
 
     print '</div>'
@@ -595,7 +626,7 @@ class MatrixDefFile:
 
   # Turn a list of lines containing matrix definitions into a string
   # containing HTML.
-  def defs_to_html(self, lines, choices, errors, prefix, vars):
+  def defs_to_html(self, lines, choices, vr, prefix, vars):
     html = ''
     i = 0
     
@@ -604,9 +635,11 @@ class MatrixDefFile:
       if len(word) == 0:
         pass
       elif word[0] == 'Label':
-        if len(word) > 2 and errors.has_key(prefix + word[1]):
-          html += '<span class="error" title="%s">*</span>' % \
-                  (html_error(errors[prefix + word[1]]))
+        if len(word) > 2:
+          if prefix + word[1] in vr.errors:
+            html += html_error_mark(vr.errors[prefix + word[1]])
+          elif prefix + word[1] in vr.warnings:
+            html += html_warning_mark(vr.warnings[prefix + word[1]])
         html += word[-1] + '\n'
       elif word[0] == 'Separator':
         html += '<hr>'
@@ -614,7 +647,7 @@ class MatrixDefFile:
         (vn, fn, bf, af) = word[1:]
         vn = prefix + vn
         checked = choices.get(vn)
-        html += html_input(errors, 'checkbox', vn, '', checked,
+        html += html_input(vr, 'checkbox', vn, '', checked,
                            bf, af) + '\n'
       elif word[0] == 'Radio':
         (vn, fn, bf, af) = word[1:]
@@ -627,7 +660,7 @@ class MatrixDefFile:
           checked = False
           if choices.get(vn) == rval:
             checked = True
-          html += html_input(errors, 'radio', vn, rval, checked,
+          html += html_input(vr, 'radio', vn, rval, checked,
                              rbef, raft) + '\n'
           i += 1
         html += af + '\n'
@@ -654,44 +687,44 @@ class MatrixDefFile:
         if fill_type[0:4] == 'fill':
           if fill_type == 'fillregex':
             if fill_arg2:
-              html += html_select(errors, vn, multi,
+              html += html_select(vr, vn, multi,
                                   'fill_regex(\'' + vn +
                                   '\', \'' + fill_arg1 + '\', true)') + '\n'
             else:
-              html += html_select(errors, vn, multi,
+              html += html_select(vr, vn, multi,
                                   'fill_regex(\'' + vn +
                                   '\', \'' + fill_arg1 + '\')') + '\n'
           elif fill_type == 'fillnames':
-            html += html_select(errors, vn, multi,
+            html += html_select(vr, vn, multi,
                                 'fill_feature_names(\'' + vn +
                                   '\')') + '\n'
           elif fill_type == 'fillvalues':
             if fill_arg2:
-              html += html_select(errors, vn, multi,
+              html += html_select(vr, vn, multi,
                                   'fill_feature_values(\'' + vn +
                                   '\', \'' + fill_arg1 + '\', true)') + '\n'
             else:
-              html += html_select(errors, vn, multi,
+              html += html_select(vr, vn, multi,
                                   'fill_feature_values(\'' + vn +
                                   '\', \'' + fill_arg1 + '\')') + '\n'
           elif fill_type == 'fillverbpat':
-            html += html_select(errors, vn, multi,
+            html += html_select(vr, vn, multi,
                                 'fill_case_patterns(\'' + vn +
                                 '\', false)') + '\n'
           elif fill_type == 'fillmorphpat':
-            html += html_select(errors, vn, multi,
+            html += html_select(vr, vn, multi,
                                 'fill_case_patterns(\'' + vn +
                                 '\', true)') + '\n'
           elif fill_type == 'fillnumbers':
-            html += html_select(errors, vn, multi,
+            html += html_select(vr, vn, multi,
                                 'fill_numbers(\'' + vn + '\')') + '\n'
           elif fill_type == 'filltypes':
             
-            html += html_select(errors, vn, multi,
+            html += html_select(vr, vn, multi,
                                 'fill_types(\'' + vn + '\',\'' +
                                 fill_arg1 + '\')') + '\n'
 
-          html += html_option(errors, '', False, '') + '\n'
+          html += html_option(vr, '', False, '') + '\n'
 
           if choices.get(vn):
             sval = choices.get(vn)
@@ -717,11 +750,11 @@ class MatrixDefFile:
                     shtml += p[1]
             else:
               shtml = sval
-            html += html_option(errors, sval, True, shtml, True) + '\n'
+            html += html_option(vr, sval, True, shtml, True) + '\n'
           i += 1
         else:
-          html += html_select(errors, vn, multi) + '\n'
-          html += html_option(errors, '', False, '') + '\n'
+          html += html_select(vr, vn, multi) + '\n'
+          html += html_option(vr, '', False, '') + '\n'
 
         while lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
@@ -729,7 +762,7 @@ class MatrixDefFile:
           selected = False
           if choices.get(vn) == sval:
             selected = True
-          html += html_option(errors, sval, selected, shtml) + '\n'
+          html += html_option(vr, sval, selected, shtml) + '\n'
           i += 1
 
         html += '</select>'
@@ -738,7 +771,7 @@ class MatrixDefFile:
         (vn, fn, bf, af, sz) = word[1:]
         vn = prefix + vn
         value = choices.get(vn)
-        html += html_input(errors, 'text', vn, value, False,
+        html += html_input(vr, 'text', vn, value, False,
                            bf, af, sz) + '\n'
       elif word[0] == 'BeginIter':
         iter_orig = word[1]
@@ -768,7 +801,7 @@ class MatrixDefFile:
         html += html_delbutton(prefix + iter_name + '{' + iter_var + '}')
         html += '<div class="iterframe">'
         html += self.defs_to_html(lines[beg:end],
-                                  choices, errors,
+                                  choices, vr,
                                   prefix + iter_orig + '_', vars)
         html += '</div>\n'
         html += '</div>\n\n'
@@ -791,7 +824,7 @@ class MatrixDefFile:
           html += html_delbutton(new_prefix[:-1])
           html += '<div class="iterframe">'
           html += self.defs_to_html(lines[beg:end],
-                                    choices, errors,
+                                    choices, vr,
                                     new_prefix, vars)
           html += '</div>\n'
           html += '</div>\n'
@@ -817,7 +850,7 @@ class MatrixDefFile:
   # Create and print the matrix subpage for the specified section
   # based on the arguments, which are the name of the section and
   # a cookie that determines where to look for the choices file
-  def sub_page(self, section, cookie, errors):
+  def sub_page(self, section, cookie, vr):
     print HTTP_header + '\n'
     print HTML_pretitle
 
@@ -864,14 +897,14 @@ class MatrixDefFile:
       print HTML_prebody
       print '<h2>' + section_friendly + '</h2>'
       print HTML_preform
-      print html_input(errors, 'hidden', 'section', section,
+      print html_input(vr, 'hidden', 'section', section,
                        False, '', '\n')
       print self.defs_to_html(lines[section_begin:section_end],
-                              choices, errors,
+                              choices, vr,
                               '', {})
 
-    print html_input(errors, 'submit', '', 'Submit', False, '<p>', '')
-    print html_input(errors, 'button', '', 'Clear', False, '', '</p>', '',
+    print html_input(vr, 'submit', '', 'Submit', False, '<p>', '')
+    print html_input(vr, 'button', '', 'Clear', False, '', '</p>', '',
                      'clear_form()')
 
     print HTML_postform
@@ -951,15 +984,28 @@ class MatrixDefFile:
     print HTML_sentencespostbody
     print HTML_postbody
 
-  # Display errors that occurred during customization
-  def error_page(self, errors):
+  # Display errors and warnings that occurred during customization
+  def error_page(self, vr):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Matrix Customization Errors</title>'
     print HTML_prebody
 
-    for e in errors:
-      print errors[e] + '<br>'
+    if vr.has_errors():
+      print '<h2>Errors</h2>'
+      print '<dl>'
+      for k in vr.errors:
+        print '<dt><b>' + k + ':</b></dt>'
+        print '<dd>' + vr.errors[k] + '</dd>'
+      print '</dl>'
+
+    if vr.has_warnings():
+      print '<h2>Warnings</h2>'
+      print '<dl>'
+      for k in vr.warnings:
+        print '<dt><b>' + k + ':</b></dt>'
+        print '<dd>' + vr.warnings[k] + '</dd>'
+      print '</dl>'
 
     print HTML_postbody
 

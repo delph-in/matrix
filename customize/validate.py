@@ -11,18 +11,40 @@ from utils import get_name
 
 
 ######################################################################
-# utility functions
+# ValidationResult class
 
-def add_err(err, key, message):
-  """
-  Insert into the dict errors the key with the value message.  If
-  the key already exists, concatenate the message with the existing
-  value.
-  """
-  if err.has_key(key):
-    err[key] += ' ' + message
-  else:
-    err[key] = message
+class ValidationResult:
+  def __init__(self):
+    self.errors = {}
+    self.warnings = {}
+
+  def has_errors(self):
+    return len(self.errors) != 0
+
+  def has_warnings(self):
+    return len(self.warnings) != 0
+
+  def err(self, key, message):
+    """
+    Add an error message to key (a choices variable).  If the key
+    already has an error, concatenate the new message with the
+    existing one.
+    """
+    if key in self.errors:
+      self.errors[key] += ' ' + message
+    else:
+      self.errors[key] = message
+
+  def warn(self, key, message):
+    """
+    Add an warning message to key (a choices variable).  If the key
+    already has a warning, concatenate the new message with the
+    existing one.
+    """
+    if key in self.warnings:
+      self.warnings[key] += ' ' + message
+    else:
+      self.warnings[key] = message
 
 
 ######################################################################
@@ -99,7 +121,7 @@ forbidden_type_patterns = [
   'context[0-9]+-decl-head-opt-subj-phrase'
 ]
 
-def validate_names(ch, err):
+def validate_names(ch, vr):
   # reserved_types contains type names that are not available
   # for user-defined types
   reserved_types = {}
@@ -288,36 +310,36 @@ def validate_names(ch, err):
                    user_types[i][0] + '".'
 
     if user_types[i][0] in reserved_types:
-      add_err(err, user_types[i][1], matrix_error)
+      vr.err(user_types[i][1], matrix_error)
 
     for forb in forbidden_type_patterns:
       if re.match(forb + '$', user_types[i][0]):
-        add_err(err, user_types[i][1], matrix_error)
+        vr.err(user_types[i][1], matrix_error)
 
     collision_error = \
       'You must choose a different name to avoid duplicating the ' + \
       'type name "' + user_types[i][0] + '".'
 
     if i < len(user_types) - 1 and user_types[i][0] == user_types[i+1][0]:
-      add_err(err, user_types[i][1], collision_error)
+      vr.err(user_types[i][1], collision_error)
       last_was_collision = True
     else:
       if last_was_collision:
-        add_err(err, user_types[i][1], collision_error)
+        vr.err(user_types[i][1], collision_error)
       last_was_collision = False
 
 
 
 
 ######################################################################
-# validate_general(ch, err)
+# validate_general(ch, vr)
 #   Validate the user's choices about general information
 
-def validate_general(ch, err):
+def validate_general(ch, vr):
   lang = ch.get('language')
   
   if not lang:
-    add_err(err, 'language', 'You must specify the name of your language')
+    vr.err('language', 'You must specify the name of your language')
   else:
     bad_lang = False
     if lang[0] in '.~':
@@ -326,14 +348,11 @@ def validate_general(ch, err):
       if ord(c) < 32 or c in '?*:<>|/\\"^':
         bad_lang = True
     if bad_lang:
-      add_err(err,
-              'language',
-              'The language name contains an illegal character')
+      vr.err('language', 'The language name contains an illegal character')
 
   if not ch.get('archive'):
-    add_err(err,
-            'archive',
-            'You must answer whether you will allow ' +
+    vr.warn('archive',
+            'Please answer whether you will allow ' +
             'your answers to be retained.')
 
 
@@ -344,130 +363,119 @@ def validate_general(ch, err):
 #   pre is the first few characters of the associated choices names
 #  (e.g. 'nom-acc-nom')
 
-def validate_one_case(ch, err, pre):
+def validate_one_case(ch, vr, pre):
   if not ch.get(pre + '-case-name'):
-    add_err(err, pre + '-case-name', 'You must specify a name for every case.')
+    vr.err(pre + '-case-name', 'You must specify a name for every case.')
 
 
 ######################################################################
-# validate_case(ch, err)
+# validate_case(ch, vr)
 #   Validate the user's choices about case
 
-def validate_case(ch, err):
+def validate_case(ch, vr):
   cm = ch.get('case-marking')
 
   if not cm:
-    add_err(err, 'case-marking', 'You must specify if/how case is marked.')
+    vr.err('case-marking', 'You must specify if/how case is marked.')
 
   if cm in ['nom-acc', 'split-n', 'split-v']:
-    validate_one_case(ch, err, cm + '-nom')
-    validate_one_case(ch, err, cm + '-acc')
+    validate_one_case(ch, vr, cm + '-nom')
+    validate_one_case(ch, vr, cm + '-acc')
   if cm in ['erg-abs', 'split-n', 'split-v']:
-    validate_one_case(ch, err, cm + '-erg')
-    validate_one_case(ch, err, cm + '-abs')
+    validate_one_case(ch, vr, cm + '-erg')
+    validate_one_case(ch, vr, cm + '-abs')
   if cm in ['tripartite', 'split-s', 'fluid-s', 'focus']:
-    validate_one_case(ch, err, cm + '-a')
-    validate_one_case(ch, err, cm + '-o')
+    validate_one_case(ch, vr, cm + '-a')
+    validate_one_case(ch, vr, cm + '-o')
   if cm in ['tripartite']:
-    validate_one_case(ch, err, cm + '-s')
+    validate_one_case(ch, vr, cm + '-s')
   if cm in ['focus']:
-    validate_one_case(ch, err, cm + '-focus')
+    validate_one_case(ch, vr, cm + '-focus')
 
   if cm == 'none' and 'case' in ch:
     for case in ch['case']:
-      add_err(err,
-              case.full_key + '_name',
-              'You may not specify additional cases ' +
-              'if your language has no case marking.')
+      vr.err(case.full_key + '_name',
+             'You may not specify additional cases ' +
+             'if your language has no case marking.')
 
   if 'scale' in ch and not ch.get('scale-equal'):
-    add_err(err,
-            'scale-equal',
-            'If you define a direct-inverse scale, ' +
-            'you must say what direction the verb is ' +
-            'when the agent and patient have equal rank.')
+    vr.err('scale-equal',
+           'If you define a direct-inverse scale, ' +
+           'you must say what direction the verb is ' +
+           'when the agent and patient have equal rank.')
 
 
 ######################################################################
-# validate_person(ch, err)
+# validate_person(ch, vr)
 #   Validate the user's choices about person
 
-def validate_person(ch, err):
+def validate_person(ch, vr):
   person = ch.get('person')
   fp = ch.get('first-person')
 
   if not person:
-    add_err(err,
-            'person',
-            'You must specify how many persons your language distinguishes.')
+    vr.err('person',
+           'You must specify how many persons your language distinguishes.')
   else:
     if person in ['none', '2-non-2', '3-non-3']:
       if fp and fp != 'none':
-        add_err(err,
-                'first-person',
-                'If your language does not have the first person, it ' +
-                'cannot distinguish sub-values of the first person.')
+        vr.err('first-person',
+               'If your language does not have the first person, it ' +
+               'cannot distinguish sub-values of the first person.')
     if person in ['1-2-3', '1-2-3-4', '1-non-1']:
       if not fp:
-        add_err(err,
-                'first-person',
-                'If your language has the first person, you must specify ' +
-                'whether it makes finer distinctions within that category.')
+        vr.err('first-person',
+               'If your language has the first person, you must specify ' +
+               'whether it makes finer distinctions within that category.')
 
 
 ######################################################################
-# validate_number(ch, err)
+# validate_number(ch, vr)
 #   Validate the user's choices about number
 
-def validate_number(ch, err):
+def validate_number(ch, vr):
   for number in ch.get('number'):
     if 'name' not in number:
-      add_err(err,
-              number.full_key + '_name',
-              'You must specify a name for each number you define.')
+      vr.err(number.full_key + '_name',
+             'You must specify a name for each number you define.')
 
 
 ######################################################################
-# validate_gender(ch, err)
+# validate_gender(ch, vr)
 #   Validate the user's choices about gender
 
-def validate_gender(ch, err):
+def validate_gender(ch, vr):
   for gender in ch.get('gender'):
     if 'name' not in gender:
-      add_err(err,
-              gender.full_key + '_name',
-              'You must specify a name for each gender you define.')
+      vr.err(gender.full_key + '_name',
+             'You must specify a name for each gender you define.')
 
 
 ######################################################################
-# validate_other_features(ch, err)
+# validate_other_features(ch, vr)
 #   Validate the user's choices about other features
 
-def validate_other_features(ch, err):
+def validate_other_features(ch, vr):
   for feature in ch.get('feature'):
     if 'name' not in feature:
-      add_err(err,
-              feature.full_key + '_name',
-              'You must specify a name for each feature you define.')
+      vr.err(feature.full_key + '_name',
+             'You must specify a name for each feature you define.')
 
     if 'type' not in feature:
-      add_err(err,
-              feature.full_key + '_type',
-              'You must specify a type for each feature you define.')
+      vr.err(feature.full_key + '_type',
+             'You must specify a type for each feature you define.')
 
     for value in feature.get('value', []):
       if 'name' not in value:
-        add_err(err,
-                value.full_key + '_name',
-                'You must specify a name for each value you define.')
+        vr.err(value.full_key + '_name',
+               'You must specify a name for each value you define.')
       if 'supertype' not in value:
-        add_err(err,
-                value.full_key + '_supertype1_name',
-                'You must specify a supertype for each value you define.')
+        vr.err(value.full_key + '_supertype1_name',
+               'You must specify a supertype for each value you define.')
 
 
 ######################################################################
-# validate_word_order(ch, err)
+# validate_word_order(ch, vr)
 #   Validate the user's choices about basic word order.
 
 # There should be some value for word order
@@ -478,69 +486,59 @@ def validate_other_features(ch, err):
 # so that we don't find ourselves worrying about auxiliaries if we
 # don't have any in the lexicon.
 
-def validate_word_order(ch, err):
+def validate_word_order(ch, vr):
   
   # General word order
   if (not ch.get('word-order')):
-    add_err(err,
-            'word-order',
-            'You must specify a choice for the basic word order.')
+    vr.err('word-order',
+           'You must specify a choice for the basic word order.')
 
   # Things to do with determiners
   if (not ch.get('has-dets')):
-    add_err(err,
-            'has-dets',
-            'You must specify whether your language has determiners.')
+    vr.err('has-dets',
+           'You must specify whether your language has determiners.')
   
   if ((ch.get('has-dets') == 'yes') and (not ch.get('noun-det-order'))):
-    add_err(err,
-            'noun-det-order',
-            'If your language has determiners, ' +
-            'you must specify their order with respect to nouns.')
+    vr.err('noun-det-order',
+           'If your language has determiners, ' +
+           'you must specify their order with respect to nouns.')
 
   if (ch.get('noun-det-order') and (not ch.get('has-dets'))):
-    add_err(err,
-            'has-dets',
-            'You specified an order of nouns and dets, ' +
-            'but not whether your language has determiners at all.')
+    vr.err('has-dets',
+           'You specified an order of nouns and dets, ' +
+           'but not whether your language has determiners at all.')
 
   if 'det' in ch and ch.get('has-dets') == 'no':
-    add_err(err,
-            'has-dets',
-            'You specified lexical entries for determiners, ' +
-            'but said your language has none.')
+    vr.err('has-dets',
+           'You specified lexical entries for determiners, ' +
+           'but said your language has none.')
 
   #Things to do with auxiliaries
   if (not ch.get('has-aux')):
-    add_err(err,
-            'has-aux',
-            'You must specify whether your language has auxiliary verbs.')
+    vr.err('has-aux',
+           'You must specify whether your language has auxiliary verbs.')
 
   if ((ch.get('has-aux') == 'yes') and (not ch.get('aux-comp-order'))):
-    add_err(err,
-            'aux-comp-order',
-            'If your language has auxiliaries, you must specify their order ' +
-            'with respect to their complements.')
+    vr.err('aux-comp-order',
+           'If your language has auxiliaries, you must specify their order ' +
+           'with respect to their complements.')
 
   if (ch.get('aux-comp-order') and (not ch.get('has-aux'))):
-    add_err(err,
-            'has-aux',
-            'You specified an order for auxiliaries and their complements, ' +
-            'but not whether your language has auxiliaries at all.')
+    vr.err('has-aux',
+           'You specified an order for auxiliaries and their complements, ' +
+           'but not whether your language has auxiliaries at all.')
 
   if ((ch.get('has-aux') == 'yes') and (not ch.get('aux-comp'))):
-    add_err(err,
-            'aux-comp',
-            'If your language has auxiliaries, you must specify ' +
-            'whether they take s, vp, or v complements.')
+    vr.err('aux-comp',
+           'If your language has auxiliaries, you must specify ' +
+           'whether they take s, vp, or v complements.')
 
 # Added check on whether question on more than one auxiliary is answered.
   
   if ((ch.get('has-aux') == 'yes') and (not ch.get('multiple-aux'))):
-    add_err(err,
-            'multiple-aux',
-            'If your language has auxiliaries, you must specify ' +
-            'whether a clause may contain more than one of them.')
+    vr.err('multiple-aux',
+           'If your language has auxiliaries, you must specify ' +
+           'whether a clause may contain more than one of them.')
 
   wo = ch.get('word-order')
   co = ch.get('aux-comp-order')
@@ -550,16 +548,15 @@ def validate_word_order(ch, err):
 # related checks.
 
   if (((wo == 'vso' and co == 'after') or (wo == 'osv' and co == 'before')) and ac == 'vp'):
-    add_err(err,
-            'aux-comp',
-            'The general word order and aux-comp order ' +
-            'are not compatible with vp complements.')
+    vr.err('aux-comp',
+           'The general word order and aux-comp order ' +
+           'are not compatible with vp complements.')
 
 ######################################################################
-# validate_sentential_negation(ch, err)
+# validate_sentential_negation(ch, vr)
 #   Validate the user's choices about sentential negation.
 
-def validate_sentential_negation(ch, err):
+def validate_sentential_negation(ch, vr):
   
   neginfltype = ch.get('neg-infl-type')
   negseladv = ch.get('neg-sel-adv')
@@ -575,37 +572,37 @@ def validate_sentential_negation(ch, err):
 #   if (ch.get('infl-neg') == 'on'):
 #     if (not ch.get('neg-infl-type')):
 #       mess = 'If sentential negation is expressed through affixation, you must specify what the affix attaches to.'
-#       add_err(err, 'neg-infl-type', mess)
+#       vr.err('neg-infl-type', mess)
 #     if (not ch.get('neg-aff')):
 #       mess = 'If sentential negation is expressed through affixation, you must specify whether its a prefix or a suffix'
-#       add_err(err, 'neg-aff', mess)
+#       vr.err('neg-aff', mess)
 #     if (not ch.get('neg-aff-orth')):
 #       mess = 'If sentential negation is expressed through affixation, you must specify the form of the affix'
-#       add_err(err, 'neg-aff-orth', mess)
+#       vr.err('neg-aff-orth', mess)
 #     # If aux is selected then has-aux = 'yes' must be chosen in word order section
 #     if ((neginfltype == 'aux' or neginfltype == 'aux-main') and ch.get('has-aux') != 'yes'):
 #         mess = 'You have not indicated on the word order page that your language has auxiliaries.'
-#         add_err(err, 'neg-infl-type', mess)
+#         vr.err('neg-infl-type', mess)
 
   # If adverb is indicated, must lexical entry, what it modifies, and
   # ind/selected modifier
   if (ch.get('adv-neg') == 'on'):
 #    if (not ch.get('neg-adv')):
 #      mess = 'If sentential negation is expressed through an adverb, you must specify whether the adverb is a selected complement or an independent modifier.'
-#      add_err(err, 'neg-adv', mess)
+#      vr.err('neg-adv', mess)
 #    if (ch.get('neg-adv') == 'ind-adv'):
     if (not ch.get('neg-mod')):
       mess = 'If sentential negaton is expressed through an adverb, ' +\
              'you must specify what type of constituent the adverb modifies.'
-      add_err(err, 'neg-mod', mess)
+      vr.err('neg-mod', mess)
     if (not ch.get('neg-order')):
       mess = 'If sentential negaton is expressed through an adverb, ' +\
              'you must specify what side of its host the adverb attaches to.'
-      add_err(err, 'neg-order', mess)
+      vr.err('neg-order', mess)
     if (not ch.get('neg-adv-orth')):
       mess = 'If sentential negation is expressed through an adverb, ' +\
              'you must specify the form of the adverb.'
-      add_err(err, 'neg-adv-orth', mess)
+      vr.err('neg-adv-orth', mess)
 
    # If aux is selected then has-aux = 'yes' must be chosen in word
    # order section
@@ -613,7 +610,7 @@ def validate_sentential_negation(ch, err):
         ch.get('has-aux') != 'yes'):
         mess = 'You have not indicated on the word order page ' +\
                'that your language has auxiliaries.'
-        add_err(err, 'neg-sel-adv', mess)
+        vr.err('neg-sel-adv', mess)
 
    # ERB 2009-01-23 Currently not possible to say how they combine.
 
@@ -621,13 +618,13 @@ def validate_sentential_negation(ch, err):
 #   if ((ch.get('infl-neg') == 'on') and (ch.get('adv-neg') == 'on')):
 #     if (not ch.get('multi-neg')):
 #       mess = 'If you have selected both affix and adverb realizations of sentential negation, you must specify how they interact.'
-#       add_err(err, 'multi-neg', mess)
+#       vr.err('multi-neg', mess)
 
 ######################################################################
-# validate_coordination(ch, err)
+# validate_coordination(ch, vr)
 #   Validate the user's choices about coordination.
 
-def validate_coordination(ch, err):
+def validate_coordination(ch, vr):
   for cs in ch.get('cs'):
     csnum = cs.iter_num()
 
@@ -642,53 +639,53 @@ def validate_coordination(ch, err):
 
     if not (cs_n or cs_np or cs_vp or cs_s):
       mess = 'You must specify a phrase type for coordination strategy ' + csnum
-      add_err(err, cs.full_key + '_n', mess)
-      add_err(err, cs.full_key + '_np', mess)
-      add_err(err, cs.full_key + '_vp', mess)
-      add_err(err, cs.full_key + '_s', mess)
+      vr.err(cs.full_key + '_n', mess)
+      vr.err(cs.full_key + '_np', mess)
+      vr.err(cs.full_key + '_vp', mess)
+      vr.err(cs.full_key + '_s', mess)
 
     if cs_pat == 'a':
       if cs_mark:
         mess = 'You must not specify word/affix ' +\
                'for an asyndetic coordination strategy.'
-        add_err(err, cs.full_key + '_mark', mess)
+        vr.err(cs.full_key + '_mark', mess)
       if cs_order:
         mess = 'You must not specify before/after ' +\
                'for an asyndetic coordination strategy.'
-        add_err(err, cs.full_key + '_order', mess)
+        vr.err(cs.full_key + '_order', mess)
       if cs_orth:
         mess = 'You must not specify a spelling ' +\
                'for an asyndetic coordination strategy.'
-        add_err(err, cs.full_key + '_orth', mess)
+        vr.err(cs.full_key + '_orth', mess)
     else:
       if not cs_pat:
         mess = 'You must specify a pattern ' +\
                'for coordination strategy ' + csnum
-        add_err(err, cs.full_key + '_pat', mess)
+        vr.err(cs.full_key + '_pat', mess)
       if not cs_mark:
         mess = 'You must specify word/affix ' +\
                'for coordination strategy ' + csnum
-        add_err(err, cs.full_key + '_mark', mess)
+        vr.err(cs.full_key + '_mark', mess)
       if not cs_order:
         mess = 'You must specify before/after ' +\
                'for coordination strategy ' + csnum
-        add_err(err, cs.full_key + '_order', mess)
+        vr.err(cs.full_key + '_order', mess)
       if not cs_orth:
         mess = 'You must specify a spelling ' +\
                'for coordination strategy ' + csnum
-        add_err(err, cs.full_key + '_orth', mess)
+        vr.err(cs.full_key + '_orth', mess)
 
     if cs_mark == 'affix' and (cs_np or cs_vp or cs_s):
       mess = 'Marking coordination with an affix is not yet supported ' +\
              'on phrases (NPs, VPs, or sentences)'
-      add_err(err, cs.full_key + '_mark', mess)
+      vr.err(cs.full_key + '_mark', mess)
 
 
 ######################################################################
-# validate_yesno_questions(ch, err)
+# validate_yesno_questions(ch, vr)
 #   Validate the user's choices about matrix yes/no questions.
 
-def validate_yesno_questions(ch, err):
+def validate_yesno_questions(ch, vr):
   qinvverb = ch.get('q-inv-verb')
   qpartorder = ch.get('q-part-order')
   qpartorth = ch.get('q-part-orth')
@@ -699,22 +696,22 @@ def validate_yesno_questions(ch, err):
       mess = 'If you chose the question particle strategy ' +\
              'for yes-no questions, you must specify ' +\
              'where the question particle appears.'
-      add_err(err, 'q-part-order', mss)
+      vr.err('q-part-order', mss)
     if not qpartorth:
       mess = 'If you chose the question particle strategy ' +\
              'for yes-no questions, you must specify ' +\
              'the form of the question particle.'
-      add_err(err, 'q-part-orth', mess)
+      vr.err('q-part-orth', mess)
 
   if ch.get('q-inv'):
     #    if qinvverb != 'aux' and qinvverb != 'main' and qinvverb != 'main-aux':
     #      mess = 'There is something wrong with the verb type (main/aux) for inverted questions.  Please contact developers.'
-    #      add_err(err, 'q-inv-verb', mess)
+    #      vr.err('q-inv-verb', mess)
     if not qinvverb:
       mess = 'If you chose subject-verb inversion strategy ' +\
              'for yes-no questions, you must specify ' +\
              'which types of verbs invert.'
-      add_err(err, 'q-inv-verb', mess)
+      vr.err('q-inv-verb', mess)
     if ch.get('word-order') == 'v-final' or \
        ch.get('word-order') == 'v-initial' or \
        ch.get('word-order') == 'free':
@@ -722,37 +719,37 @@ def validate_yesno_questions(ch, err):
              'is not supported for V-final, V-initial, or ' +\
              'free word order languages.  If you believe you have ' +\
              'a counterexample to this, please contact us.'
-      add_err(err, 'q-inv', mess)
+      vr.err('q-inv', mess)
     if ((qinvverb == 'aux' or qinvverb == 'aux-main') and
         ch.get('has-aux') != 'yes'):
       mess = 'You have not indicated on the word order page ' +\
              'that your language has auxiliaries.'
-      add_err(err, 'q-inv-verb', mess)
+      vr.err('q-inv-verb', mess)
 
   if ch.get('q-infl'):
     if (not ch.get('q-infl-type')):
       mess = 'If matrix yes-no questions are expressed through affixation, ' +\
              'you must specify what the affix attaches to.'
-      add_err(err, 'q-infl-type', mess)
+      vr.err('q-infl-type', mess)
     if (not ch.get('ques-aff')):
       mess = 'If matrix yes-no questions are expressed through affixation, ' +\
              'you must specify whether it\'s a prefix or a suffix'
-      add_err(err, 'ques-aff', mess)
+      vr.err('ques-aff', mess)
     if (not ch.get('ques-aff-orth')):
       mess = 'If matrix yes-no questions are expressed through affixation, ' +\
              'you must specify the form of the affix'
-      add_err(err, 'ques-aff-orth', mess)
+      vr.err('ques-aff-orth', mess)
     if ((qinfltype == 'aux' or qinfltype == 'aux-main') and
         ch.get('has-aux') != 'yes'):
       mess = 'You have not indicated on the word order page ' +\
              'that your language has auxiliaries.'
-      add_err(err, 'q-infl-type', mess)
+      vr.err('q-infl-type', mess)
 
-# validate_tanda(ch, err)
+# validate_tanda(ch, vr)
 #   Validate the user's choices about tense, aspect (viewpoint and
 #   situation) and form features
 
-def validate_tanda(ch, err):
+def validate_tanda(ch, vr):
   '''
   Validate the user's choices about tense, aspect (viewpoint and situation) and form features
   '''
@@ -766,94 +763,89 @@ def validate_tanda(ch, err):
     elif t + '-subtype' in ch:
       mess = 'You cannot add a subtype if the supertype is not selected.'
       for st in ch[t + '-subtype']:
-        add_err(err, st.full_key + '_name', mess)
+        vr.err(st.full_key + '_name', mess)
 
   if ch.get('tense-definition') == 'choose' and not chosen:
     mess = 'You have chosen to select among hierarchy elements. ' +\
            'You need to select at least one tense element.'
     for t in ten:
-      add_err(err, t, mess)
+      vr.err(t, mess)
 
   if ch.get('tense-definition') == 'build':
     if 'tense' not in ch:
       mess = 'You have chosen to build your own tense hierarchy ' +\
              'so you must enter at least one tense subtype.'
-      add_err(err, 'tense-definition', mess)
+      vr.err('tense-definition', mess)
 
     for tense in ch.get('tense'):
       if 'name' not in tense:
-        add_err(err,
-                tense.full_key + '_name',
-                'You must specify a name for each tense subtype you define.')
+        vr.err(tense.full_key + '_name',
+               'You must specify a name for each tense subtype you define.')
       if 'supertype' not in tense:
-        add_err(err,
-                tense.full_key + '_supertype1_name',
-                'You must specify a supertype for each tense subtype you define.')
+        vr.err(tense.full_key + '_supertype1_name',
+               'You must specify a supertype for each tense subtype you define.')
 
   ## validate aspect
   for aspect in ch.get('aspect'):
     if 'name' not in aspect:
-      add_err(err,
-              aspect.full_key + '_name',
-              'You must specify a name for each ' +
-              'viewpoint aspect subtype you define.')
+      vr.err(aspect.full_key + '_name',
+             'You must specify a name for each ' +
+             'viewpoint aspect subtype you define.')
     if 'supertype' not in aspect:
-      add_err(err,
-              aspect.full_key + '_supertype1_name',
-              'You must specify at least one supertype for each ' +
-              'viewpoint aspect subtype you define.')
+      vr.err(aspect.full_key + '_supertype1_name',
+             'You must specify at least one supertype for each ' +
+             'viewpoint aspect subtype you define.')
 
   ## validate situation
   for situation in ch.get('situation'):
     if 'name' not in situation:
-      add_err(err,
-              situation.full_key + '_name',
-              'You must specify a name for each ' +
-              'situation aspect subtype you define.')
+      vr.err(situation.full_key + '_name',
+             'You must specify a name for each ' +
+             'situation aspect subtype you define.')
     if 'supertype' not in situation:
-      add_err(err,
-              situation.full_key + '_supertype1_name',
-              'You must specify at least one supertype for each ' +
-              'situation aspect subtype you define.')
+      vr.err(situation.full_key + '_supertype1_name',
+             'You must specify at least one supertype for each ' +
+             'situation aspect subtype you define.')
 
   ## validate form
   if ch.get('has-aux') == 'yes' and ch.get('noaux-fin-nf') == 'on':
     mess = 'You have indicated on the word order page that ' +\
            'your language has auxiliaries.'
-    add_err(err, 'noaux-fin-nf', mess)
+    vr.err('noaux-fin-nf', mess)
   
   if ch.get('has-aux') == 'no' and not (ch.get('noaux-fin-nf') == 'on'):
     if 'nf-subform' in ch:
       mess = 'You have indicated that your language has no auxiliaries ' +\
              'but you have entered subforms of finite or non-finite.'
-      add_err(err, 'noaux-fin-nf', mess)
+      vr.err('noaux-fin-nf', mess)
 
 ######################################################################
-# validate_lexicon(ch, err)
+# validate_lexicon(ch, vr)
 #   Validate the user's choices about the test lexicon.
 
-def validate_lexicon(ch, err):
+def validate_lexicon(ch, vr):
 
   # Did they specify enough lexical entries?
   if 'noun' not in ch:
-    mess = 'You must create at least one noun class.'
-    add_err(err, 'noun1_stem1_orth', mess)
+    mess = 'You should create at least one noun class.'
+    vr.warn('noun1_stem1_orth', mess)
 
+  # Nouns
   for noun in ch.get('noun'):
     det = noun.get('det')
 
     # Did they answer the question about determiners?
     if not det:
       mess = 'You must specify whether each noun you define takes a determiner.'
-      add_err(err, noun.full_key + '_det', mess)
+      vr.err(noun.full_key + '_det', mess)
 
     # If they said the noun takes an obligatory determiner, did they
     # say their language has determiners?
     if det == 'obl' and ch.get('has-dets') == 'no':
       mess = 'You defined a noun that obligatorily takes a determiner, ' +\
              'but also said your language does not have determiners.'
-      add_err(err, 'has-dets', mess)
-      add_err(err, noun.full_key + '_det', mess)
+      vr.err('has-dets', mess)
+      vr.err(noun.full_key + '_det', mess)
 
     for stem in noun.get('stem', []):
       orth = stem.get('orth')
@@ -862,12 +854,12 @@ def validate_lexicon(ch, err):
       # Did they give a spelling?
       if not orth:
         mess = 'You must specify a spelling for each noun you define.'
-        add_err(err, stem.full_key + '_orth', mess)
+        vr.err(stem.full_key + '_orth', mess)
 
       # Did they give a predicate?
       if not pred:
         mess = 'You must specify a predicate for each noun you define.'
-        add_err(err, stem.full_key + '_pred', mess)
+        vr.err(stem.full_key + '_pred', mess)
 
   # Verbs
   seenTrans = False
@@ -877,7 +869,7 @@ def validate_lexicon(ch, err):
 
     if not val:
       mess = 'You must specify the argument structure of each verb you define.'
-      add_err(err, verb.full_key + '_valence', mess)
+      vr.err(verb.full_key + '_valence', mess)
     elif val[0:5] == 'trans' or '-' in val:
       seenTrans = True
     else:
@@ -889,32 +881,30 @@ def validate_lexicon(ch, err):
 
       if not orth:
         mess = 'You must specify a spelling for each verb you define.'
-        add_err(err, stem.full_key + '_orth', mess)
+        vr.err(stem.full_key + '_orth', mess)
 
       if not pred:
         mess = 'You must specify a predicate for each verb you define.'
-        add_err(err, stem.full_key + '_pred', mess)
+        vr.err(stem.full_key + '_pred', mess)
 
   if not (seenTrans and seenIntrans):
-    mess = 'You must create intransitive and transitive verb classes.'
-    add_err(err, 'verb1_valence', mess)
-    add_err(err, 'verb2_valence', mess)
-
+    mess = 'You should create intransitive and transitive verb classes.'
+    vr.warn('verb1_valence', mess)
+    vr.warn('verb2_valence', mess)
 
   # Auxiliaries
-
   aux_defined = 'aux' in ch
   if ch.get('has-aux') != 'yes':
     if aux_defined:
       mess = 'You have indicated that your language has no auxiliaries ' +\
              'but have entered an auxiliary on the Lexicon page.'
-      add_err(err, 'has-aux', mess)
+      vr.err('has-aux', mess)
 
   if ch.get('has-aux') == 'yes':
     if not aux_defined:
       mess = 'You have indicated that your language has auxiliaries. ' +\
              'You must define at least one auxiliary type.'
-      add_err(err, 'auxlabel', mess)
+      vr.err('auxlabel', mess)
 
   comp = ch.get('aux-comp')
   for aux in ch.get('aux'):
@@ -924,22 +914,22 @@ def validate_lexicon(ch, err):
 
     if 'stem' not in aux:
       mess = 'You must specify a stem for each auxiliary type defined.'
-      add_err(err, aux.full_key + '_stem1_orth', mess)
+      vr.err(aux.full_key + '_stem1_orth', mess)
 
     if not sem:
       mess = 'You must specify whether the auxiliary contributes a predicate.'
-      add_err(err, aux.full_key + '_sem', mess)
+      vr.err(aux.full_key + '_sem', mess)
 
     if sem == 'add-pred':
       for feat in aux.get('feat', []):
         if feat.get('name') and not feat.get('value'):
           mess = 'You must specify a value for this feature.'
-          add_err(err, feat.full_key + '_value', mess)
+          vr.err(feat.full_key + '_value', mess)
 
     if comp == 'vp' or comp == 'v':
       if not subj:
         mess = 'You must specify the subject type.'
-        add_err(err, aux.full_key + '_subj', mess)
+        vr.err(aux.full_key + '_subj', mess)
 
     compform = 'no'
     for cf in aux.get('compfeature', []):
@@ -948,35 +938,40 @@ def validate_lexicon(ch, err):
         compform = 'yes'
       if name and not cf.get('value'):
         mess = 'You must specify a value for this feature.'
-        add_err(err, cf.full_key + '_value', mess)
+        vr.err(cf.full_key + '_value', mess)
 
     if not compform == 'yes':
       mess = 'You must specify the form of the verb in the complement, ' +\
              'i.e., the value of the complement feature FORM.'
-      add_err(err, aux.full_key + '_complabel', mess)
+      vr.err(aux.full_key + '_complabel', mess)
 
 
     for stem in aux.get('stem', []):
       if sem == 'add-pred' and not stem.get('pred'):
         mess = 'You have indicated that this type contributes a predicate. ' +\
                'You must specify the predicate name.'
-        add_err(err, stem.full_key + '_pred', mess)
+        vr.err(stem.full_key + '_pred', mess)
       if sem != 'add-pred' and stem.get('pred'):
         mess = 'You have specified a predicate but indicated ' +\
                'that this type does not contribute a predicate.'
-        add_err(err, aux.full_key + '_sem', mess)
-
+        vr.err(aux.full_key + '_sem', mess)
 
   # Determiners
   for det in ch.get('det'):
     for stem in det.get('stem', []):
       if not stem.get('orth'):
         mess = 'You must specify a spelling for each determiner you define.'
-        add_err(err, stem.full_key + '_orth', mess)
+        vr.err(stem.full_key + '_orth', mess)
 
       if not stem.get('pred'):
         mess = 'You must specify a predicate for each determiner you define.'
-        add_err(err, stem.full_key + '_pred', mess)
+        vr.err(stem.full_key + '_pred', mess)
+
+  # Adpositions
+  for adp in ch.get('adp'):
+    if 'feat' not in adp:
+      mess = 'You should specify a value for at least one feature (e.g., CASE).'
+      vr.warn(adp.full_key + '_feat1_name', mess)
 
   # Features on all lexical types
   for lextype in ('noun', 'verb', 'aux', 'det', 'adp'):
@@ -984,50 +979,64 @@ def validate_lexicon(ch, err):
       for feat in lt.get('feat', []):
         if not feat.get('name'):
           mess = 'You must choose which feature you are specifying.'
-          add_err(err, feat.full_key + '_name', mess)
+          vr.err(feat.full_key + '_name', mess)
         if not feat.get('value'):
           mess = 'You must choose a value for each feature you specify.'
-          add_err(err, feat.full_key + '_value', mess)
+          vr.err(feat.full_key + '_value', mess)
+
+        if feat['name'] == 'argument structure':
+          mess = 'The pseudo-feature "argument structure" is only ' +\
+                 'appropriate for inflectional morphemes.  For verbs, ' +\
+                 'please use the special argument structure drop-down; ' +\
+                 'other lexical types do not yet support argument structure.'
+          vr.err(feat.full_key + '_name', mess)
 
         if lextype == 'verb' and not feat.get('head'):
           mess = 'You must choose where the feature is specified.'
-          add_err(err, feat.full_key + '_head', mess)
+          vr.err(feat.full_key + '_head', mess)
 
         if not ch.has_dirinv() and feat.get('head') in ['higher', 'lower']:
           mess = 'That choice is not available in languages ' +\
                  'without a direct-inverse scale.'
-          add_err(err, feat.full_key + '_head', mess)
+          vr.err(feat.full_key + '_head', mess)
 
   # Inflectional Slots
   for slotprefix in ('noun', 'verb', 'det'):
     for slot in ch.get(slotprefix + '-slot'):
       if not slot.get('order'):
         mess = 'You must specify an order for every slot you define.'
-        add_err(err, slot.full_key + '_order', mess)
+        vr.err(slot.full_key + '_order', mess)
 
       if 'input' not in slot:
         mess = 'You must specify at least one input for every slot.'
-        add_err(err, slot.full_key + '_input1_type', mess)
+        vr.err(slot.full_key + '_input1_type', mess)
+      else:
+        for inp in slot.get('input', []):
+          t = inp.get('type')
+          if t not in ch and t not in ['noun', 'verb', 'iverb', 'tverb']:
+            mess = 'Every lexical type or slot that serves as the input ' +\
+                   'of a slot must be defined somewhere in the questionnaire.'
+            vr.err(inp.full_key + '_type', mess)
 
       for morph in slot.get('morph', []):
         for feat in morph.get('feat', []):
           if not feat.get('name'):
             mess = 'You must choose which feature you are specifying.'
-            add_err(err, feat.full_key + '_name', mess)
+            vr.err(feat.full_key + '_name', mess)
           if not feat.get('value'):
             mess = 'You must choose a value for each feature you specify.'
-            add_err(err, feat.full_key + '_value', mess)
+            vr.err(feat.full_key + '_value', mess)
 
           if slotprefix == 'verb' and not feat.get('head'):
             mess = 'You must choose where the feature is specified.'
-            add_err(err, feat.full_key + '_head', mess)
+            vr.err(feat.full_key + '_head', mess)
 
 
 ######################################################################
-# validate_test_sentences(ch, err)
+# validate_test_sentences(ch, vr)
 #   Validate the user's choices about test sentences.
 
-def validate_test_sentences(ch, err):
+def validate_test_sentences(ch, vr):
   pass
 
 ######################################################################
@@ -1035,27 +1044,27 @@ def validate_test_sentences(ch, err):
 #   Some extra constraints we want to put on the random grammars
 #   for the regression/other testing
 
-def validate_extra_constraints(ch, err):
+def validate_extra_constraints(ch, vr):
 
   if ch.get('aux-sem') == 'pred':
     mess = 'Only semantically empty auxiliaries in test grammars.'
-    add_err(err, 'aux-sem', mess)
+    vr.err('aux-sem', mess)
   if ch.get('has-dets') == 'yes' and not ch.get('det1_stem1_orth'):
     mess = 'To get uniform semantics, we always want det1 specified.'
-    add_err(err, 'det1_stem1_orth', mess)
+    vr.err('det1_stem1_orth', mess)
   if ch.get('cs1_n') != 'on' and ch.get('cs2_n') != 'on':
     mess = 'The test grammars must have some way to coordinate nouns.'
-    add_err(err, 'cs1_n', mess)
+    vr.err('cs1_n', mess)
 #  if ch.get('multi-neg') != '':
 #    if ch.get('infl-neg') != 'on' or ch.get('adv-neg') != 'on':
 #      mess = 'Giving a value for multi-neg means you have selected both neg. strategies.'
-#      add_err(err, 'multi-neg', mess)
+#      vr.err('multi-neg', mess)
 #   if ch.get('infl-neg') == '':
 #     if ch.get('neg-infl-type') != '' or \
 #        ch.get('neg-aff') != '' or \
 #        ch.get('neg-aff-orth') != '' :
 #       mess = 'You have not selected inflectional negation.'
-#       add_err(err, 'infl-neg', mess)
+#       vr.err('infl-neg', mess)
 #   if ch.get('adv-neg') == '':
 #     if ch.get('neg-adv') != '' or \
 #        ch.get('neg-mod') != '' or \
@@ -1063,13 +1072,13 @@ def validate_extra_constraints(ch, err):
 #        ch.get('neg-adv') != '' or \
 #        ch.get('neg-sel-adv') != '' :
 #       mess = 'You have not selected adverbial negation.'
-#       add_err(err, 'adv-neg', mess)
+#       vr.err('adv-neg', mess)
 
 
 ######################################################################
 # Validation of TDL type names
 
-def validate_types(ch, err):
+def validate_types(ch, vr):
   """
   Consider every choice that results in the definition of a type in
   the output TDL, and make sure that (a) the types are legal and (b)
@@ -1081,7 +1090,7 @@ def validate_types(ch, err):
 ######################################################################
 # Validation of features and feature values
 
-def validate_features(ch, err):
+def validate_features(ch, vr):
   """
   Consider every choice that results in the definition of a feature or
   a feature value.  Make sure that the features are actually defined
@@ -1137,7 +1146,7 @@ def validate_features(ch, err):
       if f[0] == name:
         valid = True
     if not valid:
-      add_err(err, var, 'You have selected an invalid feature name.')
+      vr.err(var, 'You have selected an invalid feature name.')
 
   # Check the value list to ensure they're all valid values
   features = ch.features()
@@ -1156,36 +1165,32 @@ def validate_features(ch, err):
       if not valid:
         break
     if not valid:
-      add_err(err, var, 'You have selected an invalid feature value.')
+      vr.err(var, 'You have selected an invalid feature value.')
 
 
-def validate_arg_opt(ch, err):
+def validate_arg_opt(ch, vr):
   """Check to see if the user completed the necessary portions of the arg
    opt page"""
 
   if ch.get('subj-drop') and not ch.get('subj-mark-drop'):
-    add_err(err,
-            'subj-mark-drop',
-            'You must select whether a subject marker is ' +
-            'required, optional, or not permitted with subject dropping.')
+    vr.err('subj-mark-drop',
+           'You must select whether a subject marker is ' +
+           'required, optional, or not permitted with subject dropping.')
 
   if ch.get('subj-drop') and not ch.get('subj-mark-no-drop'):
-    add_err(err,
-            'subj-mark-no-drop',
-            'You must select whether a subject marker is ' +
-            'required, optional, or not permitted with an overt subject.')
+    vr.err('subj-mark-no-drop',
+           'You must select whether a subject marker is ' +
+           'required, optional, or not permitted with an overt subject.')
 
   if ch.get('obj-drop') and not ch.get('obj-mark-drop'):
-    add_err(err,
-            'obj-mark-drop',
-            'You must select whether an object marker is ' +
-            'required, optional, or not permitted with object dropping.')
+    vr.err('obj-mark-drop',
+           'You must select whether an object marker is ' +
+           'required, optional, or not permitted with object dropping.')
 
   if ch.get('obj-drop') and not ch.get('obj-mark-no-drop'):
-    add_err(err,
-            'obj-mark-no-drop',
-            'You must select whether a object marker is ' +
-            'required, optional, or not permitted with an overt object.')
+    vr.err('obj-mark-no-drop',
+           'You must select whether a object marker is ' +
+           'required, optional, or not permitted with an overt object.')
   
   for context in ch.get('context',[]):
     for feat in context.get('feat',[]):
@@ -1202,31 +1207,31 @@ def validate_arg_opt(ch, err):
 
 def validate_choices(choices_file, extra = False):
   ch = ChoicesFile(choices_file)
-  err = {}
+  vr = ValidationResult()
 
-  validate_names(ch, err)
-  validate_general(ch, err)
-  validate_case(ch, err)
-  validate_person(ch, err)
-  validate_number(ch, err)
-  validate_gender(ch, err)
-  validate_other_features(ch, err)
-  validate_word_order(ch, err)
-  validate_tanda(ch, err)
-  validate_sentential_negation(ch, err)
-  validate_coordination(ch, err)
-  validate_yesno_questions(ch, err)
-  validate_lexicon(ch, err)
-  validate_test_sentences(ch, err)
+  validate_names(ch, vr)
+  validate_general(ch, vr)
+  validate_case(ch, vr)
+  validate_person(ch, vr)
+  validate_number(ch, vr)
+  validate_gender(ch, vr)
+  validate_other_features(ch, vr)
+  validate_word_order(ch, vr)
+  validate_tanda(ch, vr)
+  validate_sentential_negation(ch, vr)
+  validate_coordination(ch, vr)
+  validate_yesno_questions(ch, vr)
+  validate_lexicon(ch, vr)
+  validate_test_sentences(ch, vr)
 
-  validate_types(ch, err)
-  validate_features(ch, err)
-  validate_arg_opt(ch, err)
+  validate_types(ch, vr)
+  validate_features(ch, vr)
+  validate_arg_opt(ch, vr)
 
   if extra:
-    validate_extra_constraints(ch, err)
+    validate_extra_constraints(ch, vr)
 
-  return err
+  return vr
 
 
 ###############################################################
@@ -1235,15 +1240,15 @@ def validate_choices(choices_file, extra = False):
 # that result.
 
 if __name__ == "__main__":
-  errors = validate_choices(sys.argv[1])
+  vr = validate_choices(sys.argv[1])
   
   print sys.argv[1]
-  for k in errors.keys():
+  for k in vr.errors.keys():
     print '  ' + k + ':'
   
     print '   ',
     column = 4
-    for w in errors[k].split():
+    for w in vr.errors[k].split():
       if column + len(w) > 70:
         print
         print '    ' + w,

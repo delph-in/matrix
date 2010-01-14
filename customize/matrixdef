@@ -1399,7 +1399,7 @@ BeginIter adp{i} "an Adposition"
   . after "After" "after"
   . before "Before" "before"
 
-  BeginIter feat{j} "a Feature"
+  BeginIter feat{j} "a Feature" 1
 
     Select name "Adposition {i} feature {j} name" "Name: " " "
     fillnames
