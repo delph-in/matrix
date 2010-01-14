@@ -856,8 +856,8 @@ Radio subj-drop "Subject Drop" "<p>Subject dropping can occur </p>" ""
 . subj-drop-lex "Subj Drop Some" "" "only with certain verbs"
 
 Label "<p>NOTE: When completing the lexicon page, for each verb type
-which allows subject dropping, select the feature <span
-class=\"feat\">OPT</span> + and marked on the subject.</p>"
+which does not allow subject dropping, select the feature <span
+class=\"feat\">OPT</span> - and marked on the subject.</p>"
 
 Radio subj-mark-drop "Subj Mark Drop" "<p>When a subject is dropped, a subject marker on the verb is</p>" ""
 . subj-mark-drop-req "Subj Mark Req" "" "required<br>"
@@ -920,9 +920,8 @@ Radio obj-drop "Object Drop" "<p>Object dropping is </p>" ""
 . obj-drop-all "Obj Drop Always" "" "always allowed<br>"
 . obj-drop-lex "Obj Drop Lex" "" "lexically licensed"
 
-Label "<p>NOTE: When completing the lexicon page, for each verb which
-allows subject dropping, select the feature <span
-class=\"feat\">OPT</span> + and marked on the object.</p>"
+Label "<p>NOTE: When completing the lexicon page, for each verb which does not allow object dropping, select the feature <span
+class=\"feat\">OPT</span> - and marked on the object.</p>"
 
 Radio obj-mark-drop "Obj Mark Drop" "<p>When an object is dropped, an object marker on the verb is  </p>" ""
 . obj-mark-drop-req "Obj Mark Req" "" "required<br>"
