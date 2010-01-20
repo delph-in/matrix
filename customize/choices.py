@@ -798,7 +798,7 @@ class ChoicesFile:
   #   This list consists of tuples:
   #     [aspect name]
   def aspects(self):
-    return [aspect['name'] for aspect in self.get('aspect')]
+    return [[aspect['name']] for aspect in self.get('aspect')]
 
   # situations()
   #   Create and return a list containing information about the values
@@ -806,7 +806,7 @@ class ChoicesFile:
   #   This list consists of tuples:
   #     [situation name]
   def situations(self):
-    return [situation['name'] for situation in self.get('situation')]
+    return [[situation['name']] for situation in self.get('situation')]
 
   def types(self):
     """
