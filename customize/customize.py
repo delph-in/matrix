@@ -54,6 +54,9 @@ def main_or_verb():
     return 'verb-lex'
 
 
+def irule_name(type_name):
+  return re.sub('\s+', '_', type_name)
+
 # ERB 2006-09-21 This function assembles an inflectional rule out
 # of the appropriate information and adds it to irules.tdl.
 # Assumes we consistently use either 'prefix' and 'suffix' or 'before'
@@ -62,7 +65,7 @@ def main_or_verb():
 
 def add_irule(instance_name,type_name,affix_type,affix_form):
 
-  rule = instance_name + ' :=\n'
+  rule = irule_name(instance_name) + ' :=\n'
   if affix_type == 'prefix' or affix_type == 'before':
     rule += '%prefix (* ' + affix_form + ')\n'
   elif affix_type == 'suffix' or affix_type == 'after':
@@ -72,7 +75,7 @@ def add_irule(instance_name,type_name,affix_type,affix_form):
 #  else:
 #    error 'probable script bug'
 
-  rule += type_name + '.\n'
+  rule += irule_name(type_name) + '.\n'
 
   irules.add_literal(rule)
 
