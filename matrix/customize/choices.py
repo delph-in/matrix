@@ -1017,7 +1017,7 @@ class ChoicesFile:
     lexical types within the customization and no hyphens 
     in the user defined names.FIX
     Also note: There are four sources of types: 
-    1) explicitly defined in initial types array below
+    1) explicitly defined in initial types array below (including types based on pernum and case patterns)
     2) defined based on selection to generate types for a specific feature (e.g., gender)
     3) defined based on selection to generate types for a specific group of features (e.g., tense and aspect)
     4) user defined types

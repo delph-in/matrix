@@ -558,11 +558,11 @@ function fill_numbers(select_name)
   
 
 //collect_types()
-//Collect up types from array types[] and page on questionnaire.
+//Collect up types from array types[] and from page on questionnaire.
+//This is called by fill_types() and fill_inputs()
 function collect_types(type_cat, self, nameOnly)
 {
   var lex_ext = '-' + type_cat + '-lex';
-  var self_ext = self + lex_ext
 
   //collect options from the type fields on the questionnaire
   var pattern = '^'  + '(' + type_cat + ')' + '[0-9]+_name' + '$';
@@ -574,17 +574,26 @@ function collect_types(type_cat, self, nameOnly)
   }
 
   // Collect options from the types() array in choices
-  // Note that this assumes a strict naming convention for 
-  // lexical types within the customization and no hyphens
-  // in the user defined names.
-  //FIX - need to make this insensitive to previous hyphens - count from the end?
-  //FIX working on this here - I think that the problem is that the self is a name like slot-one 
-  //and it needs to be compared to a user defined name
-  //maybe - need to get value of self?? or duplicate approach in collect_regex??
-  for (var i = 0; i < types.length; i++) {
-      var t = types[i].split(':');
+  //FIX self reappears from types[] if user defined name. OK if none.
+  // This makes sense since "self" is just that - the system defined name.
+  var e = document.forms[0].elements;
+  var self_value = '';
+  var user_self_value = '';
 
-      if (t[1] == type_cat) { 
+  //look through the elements - if the element matches self then get the user defined value for self
+  //FIX - this does not appear to be working - it appears to be returning the system defined name.
+  for (var i = 0; i < e.length; i++) {
+ 
+      if (e[i].name.search(self) != -1) {
+	  self_value = e[i].name.replace("_name", lex_ext)
+  	  user_self_value = document.getElementsByName(e[i].name)[0].value + lex_ext;
+      }
+  }
+
+  for (var i = 0; i < types.length; i++) {
+      var t = types[i].split(':'); 
+	  
+      if (t[1] == type_cat && t[0] != self_value && t[0] != user_self_value) {
 	  if (texts.indexOf(t[0]) == -1) { //if type is not in the select list already
 	      texts[texts.length] = t[0]; //put type at the end of the list
 	  }
