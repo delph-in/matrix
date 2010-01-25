@@ -211,7 +211,8 @@ HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '">'
 HTML_postform = '</form>'
 
 HTML_uploadpreform = '''
-<form action="matrix.cgi" method="post" enctype="multipart/form-data">
+<form action="matrix.cgi" method="post" enctype="multipart/form-data"
+ name="choices_form">
 '''
 
 HTML_uploadpostform = '</form>'
@@ -574,8 +575,8 @@ class MatrixDefFile:
                      '<p>Archive type: ', ' .tar.gz')
     print html_input(vr, 'radio', 'delivery', 'zip', zip_checked,
                      ' ', ' .zip<br>')
-    print html_input(vr, 'submit', '', 'Create Grammar', False,
-                     '', '</p>', '', '', vr.has_errors())
+    print html_input(vr, 'submit', 'create_grammar_submit', 'Create Grammar',
+                     False, '', '</p>', '', '', vr.has_errors())
 
     print html_input(vr, 'submit', 'sentences', 'Test by Generation', False,
                      '', '</p>', '', '', vr.has_errors())
