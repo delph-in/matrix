@@ -1017,14 +1017,16 @@ class ChoicesFile:
     lexical types within the customization and no hyphens 
     in the user defined names.FIX
     Also note: There are four sources of types: 
-    1) explicitly defined in initial types array below (including types based on pernum and case patterns)
-    2) defined based on selection to generate types for a specific feature (e.g., gender)
-    3) defined based on selection to generate types for a specific group of features (e.g., tense and aspect)
+    1) explicitly defined in initial types array below
+    2) defined based on selection to generate types for a specific feature (e.g., gender) 
+       (including types based on pernum and case patterns)
+    FIX - removed 3) defined based on selection to generate types for a specific group of features (e.g., tense and aspect)
     4) user defined types
+    5) FIX - need to add verb types based on valence patterns
     """
-    types = [['noun-lex', 'noun'], ['verb-lex', 'verb'], ['det-lex', 'det'], ['intransitive-verb-lex', 'verb'], ['transitive-verb-lex', 'verb']]
+    types = [['noun', 'noun'], ['verb', 'verb'], ['det', 'det']]
     if self.get('has-aux') == 'yes':
-      types += [ ['aux-lex', 'aux'], ['withpred-aux-lex', 'aux'], ['nopred-aux-lex', 'aux'], ['main-verb-lex', 'verb']]
+      types += [ ['aux verb', 'aux'], ['withpred aux', 'aux'], ['nopred aux', 'aux'], ['main verb', 'verb']]
 
     #look for feature-based dimension names in choices and create array of those features
     features = self.features()  
@@ -1037,30 +1039,29 @@ class ChoicesFile:
       elif self.get('dim-'+ f[0]) == 'on':
         dim += [[f[0], f[3]]]  #feature name (dimension) and category name from features() 
 
-    #collect up list of feature dimensions from tense and aspect page
-    for vora in ['verb', 'aux']:
-      tafeatures = self.get('dim-ta-' + vora)
-      if tafeatures:
-        dimlist = tafeatures.split(', ') #split multilist, get tense and aspect features chosen
-        for l in dimlist:
-          dim += [[l, vora]] #feature name (dimension) and category name from features()
-
-    #gather all of the values of the features specified as dimensions
+    #gather all of the values of the features specified as dimensions - use friendly name if available
     for d in dim: 
       for f in features:
-        valwithfn = []
+        splitnames = []
+
         if f[0]== d[0]:  
-          valwithfn += f[1].split(';') #split out the values (result: valuename|frendlyname)
-        for w in valwithfn:
-          dimvalues += [[w.split('|')[0], d[1]]] #add to array feature value and category
+          splitnames += f[1].split(';') #split out the values (result: valuename|frendlyname, valuename|friendlyname)
+          
+          valandfn = []
+          for n in splitnames:
+            valandfn = n.split('|') 
 
-#FIX - need to make this insensitive to hyphens - in process
+            if valandfn[1]:
+              fname = valandfn[1] #fn if defined
+            else:
+              fname = valandfn[0] #value
+  
+            dimvalues += [[fname, d[1]]] #add to array feature name and category
 
-    #create lexical type names based on features chosen
+    #create lexical type descriptions based on features chosen name (or name category)
     for dv in dimvalues:
       cat_name = dv[1]
-   #   lextype_name = dv[0].replace('-','') + '-' + cat_name + '-lex'
-      lextype_name = dv[0] + '-' + cat_name + '-lex'
+      lextype_name = dv[0] + ' ' + cat_name
       types += [ [lextype_name, cat_name] ] 
   
     #collect up user defined types
@@ -1071,9 +1072,9 @@ class ChoicesFile:
       self.iter_begin(c)
       while self.iter_valid():
         basetype = self.get('name')
+
         if basetype:
-          #lextype_name = basetype.replace('-', '') + '-' + c + '-lex'
-          lextype_name = basetype + '-' + c + '-lex'
+          lextype_name = basetype + ' ' + c
           types += [ [lextype_name, c] ]
         self.iter_next()
       self.iter_end()
@@ -1092,7 +1093,7 @@ class ChoicesFile:
   #   more complex treatment that just FEAT=VAL (e.g. negation).  The
   #   list of values is separated by semicolons, and each item in the
   #   values list is a pair of the form 'name|friendly name'.
-#test - added another item to the list = category (noun or verb)
+#test - FIX below - added another item to the list = category (noun or verb)
   def features(self):
     features = []
 
@@ -1155,7 +1156,8 @@ class ChoicesFile:
         values += p[0] + '|' + p[1]
 
     if values:
-      features += [ ['argument structure', values, '', 'noun'] ]
+      features += [ ['argument structure', values, '', 'verb'] ]
+#FIX -- cat value needs more work here
     
     # Form
     values = ''
@@ -1166,7 +1168,7 @@ class ChoicesFile:
 
     if values:
       features += [ ['form', values, 'LOCAL.CAT.HEAD.FORM', 'verb'] ]
-#test: form might need to be 'both'
+#FIX: form cat might need to be 'both'
 
     # Tense
     values = ''
@@ -1207,7 +1209,7 @@ class ChoicesFile:
     # Negation
     if self.get_full('infl-neg'):
       features += [ ['negation', 'plus|plus', '', 'verb'] ]
-#test - note this reflects no constituent negation
+#FIX - note this reflects no constituent negation
 
     # Questions
     if self.get_full('q-infl'):
@@ -1273,7 +1275,7 @@ class ChoicesFile:
 
       if values:
         features += [ [feat, values, geom, ''] ]
-#test - the cat value needs special attention but is ignored now      
+#FIX - the cat value needs special attention but is ignored now      
       self.iter_next()
     self.iter_end()
 

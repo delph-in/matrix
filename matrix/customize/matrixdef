@@ -581,6 +581,17 @@ BeginIter tense{i} "a tense type"
 EndIter tense
 Label "</div>"
 
+Separator
+
+Label "<h4>Type Generation</h4>"
+Label "<div style=\"padding-left: 16px\">"
+
+Check dim-tense "Tense feature dimension for verb types" "" "Generate verb types automatically based on all of the tense values defined on this page."
+
+Label "</div>"
+
+Separator
+
 Label "<h4><span class=\"feat\">aspect</span></h4>"
 
 Label "<p>According to Kibort (2008), \"The term 'aspect' designates
@@ -629,6 +640,17 @@ BeginIter aspect{i} "an aspect type"
 
 EndIter aspect
 
+Separator
+
+Label "<h4>Type Generation</h4>"
+Label "<div style=\"padding-left: 16px\">"
+
+Check dim-aspect "Aspect feature dimension for verb types" "" "Generate verb types automatically based on all of the viewpoint aspect values defined on this page."
+
+Label "</div>"
+
+Separator
+
 Label "<p><b>Situation Aspect</b>"
 
 Label "<p>The term \"situation aspect\" overlaps with, or subsumes,
@@ -660,6 +682,15 @@ BeginIter situation{i} "a situation type"
   EndIter supertype
 
 EndIter situation
+
+Label "</div>"
+
+Separator
+
+Label "<h4>Type Generation</h4>"
+Label "<div style=\"padding-left: 16px\">"
+
+Check dim-situation "Situation feature dimension for verb types" "" "Generate verb types automatically based on all of the situation aspect values defined on this page."
 
 Label "</div>"
 Label "</div>"
@@ -705,30 +736,18 @@ Label "<b>finite</b>:"
   EndIter fin-subform
 
 Label "</div>"
-Label "</div>"
 
 Separator
 
-Label "<h3>Type Generation</h3>"
+Label "<h4>Type Generation</h4>"
 Label "<div style=\"padding-left: 16px\">"
 
-Label "<p>If you would like to have verb types automatically generated based on the values of any features on this page, select those features below."
-
-MultiSelect dim-ta-verb "Feature dimensions for main verb type generation" "<p>Select feature dimension(s) for auto-generating main verb types: " ""
-fillregex
-. tense "Tense" "tense"
-. aspect "Aspect" "aspect"
-. situation "Situation" "situation"
-. form "Form" "form"
-
-MultiSelect dim-ta-aux "Feature dimensions for auxiliary verb type generation" "<p>Select feature dimension(s) for auto-generating auxiliary verb types: " ""
-fillregex
-. tense "Tense" "tense"
-. aspect "Aspect" "aspect"
-. situation "Situation" "situation"
-. form "Form" "form"
+Check dim-form "Form feature dimension for verb types" "" "Generate verb types automatically based on all of the form values defined on this page."
 
 Label "</div>"
+Label "</div>"
+
+Separator
 
 Label "<h4>References</h4>"
 Label "<font size=\"2\">"
