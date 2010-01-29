@@ -696,7 +696,7 @@ def validate_yesno_questions(ch, vr):
       mess = 'If you chose the question particle strategy ' +\
              'for yes-no questions, you must specify ' +\
              'where the question particle appears.'
-      vr.err('q-part-order', mss)
+      vr.err('q-part-order', mess)
     if not qpartorth:
       mess = 'If you chose the question particle strategy ' +\
              'for yes-no questions, you must specify ' +\
@@ -727,23 +727,40 @@ def validate_yesno_questions(ch, vr):
       vr.err('q-inv-verb', mess)
 
   if ch.get('q-infl'):
-    if (not ch.get('q-infl-type')):
+    # need to search inflectional rules for one that specifies 'question'
+    ques_aff = any([feat.get('name','') == 'question'
+                    for slotprefix in ('noun', 'verb', 'det', 'aux')
+                    for slot in ch[slotprefix + '-slot']
+                    for morph in slot.get('morph',[])
+                    for feat in morph.get('feat',[])])
+    if not ques_aff:
       mess = 'If matrix yes-no questions are expressed through affixation, ' +\
-             'you must specify what the affix attaches to.'
-      vr.err('q-infl-type', mess)
-    if (not ch.get('ques-aff')):
-      mess = 'If matrix yes-no questions are expressed through affixation, ' +\
-             'you must specify whether it\'s a prefix or a suffix'
-      vr.err('ques-aff', mess)
-    if (not ch.get('ques-aff-orth')):
-      mess = 'If matrix yes-no questions are expressed through affixation, ' +\
-             'you must specify the form of the affix'
-      vr.err('ques-aff-orth', mess)
-    if ((qinfltype == 'aux' or qinfltype == 'aux-main') and
-        ch.get('has-aux') != 'yes'):
-      mess = 'You have not indicated on the word order page ' +\
-             'that your language has auxiliaries.'
-      vr.err('q-infl-type', mess)
+             'you must specify an affix with the "question" feature in the ' +\
+             'lexicon page.'
+      vr.err('q-infl', mess)
+
+   # the above change was implemented as a first-pass to allow a student to
+   # complete their grammar, but it should be revised (or reviewed) to make
+   # sure it is a correct solution. When it has been revised, please delete
+   # the following lines of commented code.
+   #
+   # if (not ch.get('q-infl-type')):
+   #   mess = 'If matrix yes-no questions are expressed through affixation, ' +\
+   #          'you must specify what the affix attaches to.'
+   #   vr.err('q-infl-type', mess)
+   # if (not ch.get('ques-aff')):
+   #   mess = 'If matrix yes-no questions are expressed through affixation, ' +\
+   #          'you must specify whether it\'s a prefix or a suffix'
+   #   vr.err('ques-aff', mess)
+   # if (not ch.get('ques-aff-orth')):
+   #   mess = 'If matrix yes-no questions are expressed through affixation, ' +\
+   #          'you must specify the form of the affix'
+   #   vr.err('ques-aff-orth', mess)
+   # if ((qinfltype == 'aux' or qinfltype == 'aux-main') and
+   #     ch.get('has-aux') != 'yes'):
+   #   mess = 'You have not indicated on the word order page ' +\
+   #          'that your language has auxiliaries.'
+   #   vr.err('q-infl-type', mess)
 
 # validate_tanda(ch, vr)
 #   Validate the user's choices about tense, aspect (viewpoint and
