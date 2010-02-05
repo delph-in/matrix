@@ -2096,8 +2096,12 @@ def customize_arg_op():
   """ Create the lexical types, lexical, rules and phrase structure
       rules to allow argument dropping"""
 
-  mylang.set_section('verblex')
+  if 'scale' in ch and (ch.get('subj-drop')or ch.get('obj-drop')):
+     mylang.add('dir-inv-scale := unexpressed-reg')
 
+  mylang.set_section('verblex')
+  ##Adding potential fix for integrating argument optionality and direct-inverse
+  
   #Figure out the constraints on subject dropping and write the
   #appropriate types to mylang.tdl or rules.tdl
 
@@ -3262,7 +3266,7 @@ def customize_inflection():
       # optional) overt argument.  This is done by increasing the
       # subrules count just like above.  The subrules created are
       # different.
-
+      need_no_drop_rule = False
       opt_head_obj = False
       opt_head_subj = False
       drp_head_obj = False
@@ -3273,13 +3277,41 @@ def customize_inflection():
         morph_orth = morph.get('orth','')
         if morph_orth == '':
           const = True
+        if ch.get('obj-mark-drop') == 'obj-mark-drop-not' and \
+           ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+          need_no_drop_rule = True
+          const = True
+        if ch.get('subj-mark-drop') == 'subj-mark-drop-not' and \
+           ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+          need_no_drop_rule = True
+          const = True
+        if ch.get('obj-mark-drop') == 'obj-mark-drop-req' and \
+           ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not':
+          need_no_drop_rule = True
+          const = True
+        if ch.get('subj-mark-drop') == 'subj-mark-drop-req' and \
+           ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not':
+          need_no_drop_rule = True
+          const = True
         if ch.get('obj-mark-drop') == 'obj-mark-drop-opt' and \
            ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
-          drp_head_obj = True
+          need_no_drop_rule = True
+          drp_head_obj =True
           const = True
         if ch.get('subj-mark-drop') == 'subj-mark-drop-opt' and \
            ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+          need_no_drop_rule = True
           drp_head_subj = True
+          const = True
+        if ch.get('obj-mark-drop') == 'obj-mark-drop-req' and \
+           ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt':
+          need_no_drop_rule = True
+          opt_head_obj = True
+          const = True
+        if ch.get('subj-mark-drop') == 'subj-mark-drop-req' and \
+           ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt':
+          need_no_drop_rule = True
+          opt_head_subj = True
           const = True
         for feat in morph.get('feat',[]):
           if feat.get('name') == 'case':
@@ -3289,13 +3321,13 @@ def customize_inflection():
               opt_head_obj = True
             elif feat.get('head') == 'subj':
               opt_head_subj = True
-            const = True
+            #const = True
           if feat.get('name') == 'dropped-arg':
             if feat.get('head') == 'obj':
               drp_head_obj = True
             elif feat.get('head') == 'subj':
               drp_head_subj = True
-            const = True
+            #const = True
 
       synth_cases = []
       if seen_case and ch.has_mixed_case():
@@ -3305,11 +3337,11 @@ def customize_inflection():
             synth_cases += [ c[0] ]
 
       subrules += len(synth_cases)
-
-      if (opt_head_obj) or (opt_head_subj):
-        subrules += 1
-      if (drp_head_obj) or (drp_head_subj):
-        subrules += 1
+      if need_no_drop_rule:
+        if (opt_head_obj) or (opt_head_subj):
+          subrules += 1
+        if (drp_head_obj) or (drp_head_subj):
+          subrules += 1
 
       # Need to specify whether each rule is ltol, ltow, or wtol AND
       # whether the rule is constant or inflecting. Trying to put as much
@@ -3435,7 +3467,7 @@ def customize_inflection():
             abbr = canon_to_abbr(c, cases)
             mylang.add(ltype + ' := [ SYNSEM.' + geom + ' ' + abbr + ' ].')
             mylang.add(ltype + ' := [ SYNSEM.' + geom + '-MARKED - ].')
-        if opt_head_obj or opt_head_subj:
+        if need_no_drop_rule and (opt_head_obj or opt_head_subj):
           ltype = name + '-no-drop-lex-rule'
           if ltow:
             mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
@@ -3451,7 +3483,7 @@ def customize_inflection():
             mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].',
                        merge = True)
 
-        if drp_head_obj or drp_head_subj:
+        if need_no_drop_rule and (drp_head_obj or drp_head_subj):
           ltype = name + '-drop-lex-rule'
           if ltow:
             mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
