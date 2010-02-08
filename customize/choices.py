@@ -329,12 +329,11 @@ class ChoicesFile:
       self.convert_18_to_19()
     if self.version < 20:
       self.convert_19_to_20()
+    if self.version < 21:
+      self.convert_20_to_21()
     # As we get more versions, add more version-conversion methods, and:
     # if self.version < N:
     #   self.convert_N-1_to_N
-
-    # reset the full_keys to be safe
-    #[self.__reset_full_keys(key) for key in self]
 
   # Return the keys for the choices dict
   def keys(self):
@@ -979,7 +978,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 20
+    return 21
 
   def convert_value(self, key, old, new):
     if key in self and self[key] == old:
@@ -1645,3 +1644,17 @@ class ChoicesFile:
       pass
 #if v-comp if free word order if v-cluster more than one aux, if no cluster 1max
     # if svo,ovs do nothing, else v-comp is vp-comp
+
+  def convert_20_to_21(self):
+    """
+    Inflectional rules no longer have three constraint types (req,
+    forces, disreq), but two (require, forbid). This system will
+    determine if requires applies to a previous or following slot.
+    """
+    for slotprefix in ('noun', 'verb', 'det', 'aux'):
+      for slot in self.get(slotprefix + '-slot'):
+        for const in slot.get('constraint',[]):
+          if const['type'] in ('forces', 'req'):
+            self.convert_value(const.full_key + '_type', 'forces', 'require')
+          elif const['type'] == 'disreq':
+            self.convert_value(const.full_key + '_type', 'disreq', 'forbid')

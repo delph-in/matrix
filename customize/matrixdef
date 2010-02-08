@@ -1075,9 +1075,8 @@ BeginIter noun-slot{i} "a Slot"
   BeginIter constraint{j} "a Constraint"
 
     Select type "Noun slot {i} constraint {j} type" "Constraint: " ", "
-    . req "Requires closer" "If this slot appears, the other slot MUST ALSO appear CLOSER TO THE STEM"
-    . forces "Requires further" "If this slot appears, the other slot MUST ALSO appear FURTHER FROM THE STEM"
-    . disreq "Cannot co-occur" "If this slot appears, the other slot MUST NOT appear"
+    . req "Requires" "Require"
+    . forbid "Cannot co-occur" "Forbid"
 
     Select other-slot "Noun slot {i} constraint {j} other slot" "other slot: " ""
     fillregex (noun|verb|det)(-slot)[0-9]+_name
@@ -1277,9 +1276,8 @@ BeginIter verb-slot{i} "a Slot"
   BeginIter constraint{j} "a Constraint"
 
     Select type "Verb slot {i} constraint {j} type" "Constraint: " ", "
-    . req "Requires closer" "If this slot appears, the other slot MUST ALSO appear CLOSER TO THE STEM"
-    . forces "Requires further" "If this slot appears, the other slot MUST ALSO appear FURTHER FROM THE STEM"
-    . disreq "Cannot co-occur" "If this slot appears, the other slot MUST NOT appear"
+    . req "Requires" "Require"
+    . forbid "Cannot co-occur" "Forbid"
 
     Select other-slot "Verb slot {i} constraint {j} other slot" "other slot: " ""
     fillregex (noun|verb|det)(-slot)[0-9]+_name
@@ -1374,9 +1372,8 @@ BeginIter det-slot{i} "a Slot"
   BeginIter constraint{j} "a Constraint"
 
     Select type "Determiner slot {i} constraint {j} type" "Constraint: " ", "
-    . req "Requires closer" "If this slot appears, the other slot MUST ALSO appear CLOSER TO THE STEM"
-    . forces "Requires further" "If this slot appears, the other slot MUST ALSO appear FURTHER FROM THE STEM"
-    . disreq "Cannot co-occur" "If this slot appears, the other slot MUST NOT appear"
+    . req "Requires" "Require"
+    . forbid "Cannot co-occur" "Forbid"
 
     Select other-slot "Determiner slot {i} constraint {j} other slot" "other slot: " ""
     fillregex (noun|verb|det)(-slot)[0-9]+_name

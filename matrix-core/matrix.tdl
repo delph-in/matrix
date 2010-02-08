@@ -39,7 +39,7 @@ basic-sign := sign-min &
 sign := basic-sign &
   [ SYNSEM synsem,
     ARGS list,
-    INFLECTED bool ].
+    INFLECTED inflected ].
 
 ; C-CONT encodes the semantic contribution of the rule (phrasal
 ; or lexical).
@@ -87,7 +87,7 @@ phrase := phrase-or-lexrule.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 non-affix-bearing := word-or-lexrule &
-  [ INFLECTED +,
+  [ INFLECTED infl-satisfied,
     SYNSEM.LKEYS.KEYREL.WLINK cons ].
 
 ; Rule
@@ -838,10 +838,14 @@ lex-rule := phrase-or-lexrule & word-or-lexrule &
 ; four cross-classified glb subtypes:
 
 ; Note that the lexeme/word distinction is represented via a feature
-; [INFLECTED bool] rather than as a type.  We find this more convenient,
-; as it allows certain words to be [INFLECTED +] from the start without
+; [INFLECTED inflected] rather than as a type.  We find this more convenient,
+; as it allows certain words to be [INFLECTED infl-satisfied] from the start without
 ; having to twist the hierarchy too much (especially if one makes use
 ; of defaults).
+
+inflected := avm.
+infl-initial := avm.
+infl-satisfied := avm.
 
 ; Lexeme-to-word rules are hypothesized to monotonically add synsem
 ; information.
@@ -856,9 +860,10 @@ lex-rule := phrase-or-lexrule & word-or-lexrule &
 ; now and make lexeme-to-word-rule only affect the INFLECTED value,
 ; as it should.
 
-lexeme-to-word-rule := lex-rule &
-  [ INFLECTED +,
-    DTR [ INFLECTED - ]].
+; MWG 2010.01.30 No longer necessary
+;lexeme-to-word-rule := lex-rule &
+;  [ INFLECTED infl-satisfied,
+;    DTR [ INFLECTED - ]].
 
 ; Lexeme-to-lexeme rules can make more radical changes to the SYNSEM value.
 ; (ERB 2004-02-11) This used to inherit from "lexeme" but now there is no
@@ -869,9 +874,10 @@ lexeme-to-word-rule := lex-rule &
 ; (ERB 2007-02-12) Removing identity of MC here because this to can be
 ; changed by ltol rules.  Creating a new type same-mc-lex-rule, etc.
 
-lexeme-to-lexeme-rule := lex-rule & 
-  [ INFLECTED #infl,
-    DTR.INFLECTED #infl ].
+; MWG 2010.01.30 No longer necessary
+;lexeme-to-lexeme-rule := lex-rule & 
+;  [ INFLECTED #infl,
+;    DTR.INFLECTED #infl ].
 
 ; ERB 2005-04-13 Add a few subtypes that copy up most other information,
 ; so that folks don't have to keep doing this. 
@@ -1054,34 +1060,35 @@ constant-lex-rule := lex-rule &
 ; Cross-classified types packaing spelling change status and
 ; feature copying.
 
-const-ltol-rule := lexeme-to-lexeme-rule & constant-lex-rule & nocoord.
-infl-ltol-rule := lexeme-to-lexeme-rule & inflecting-lex-rule & nocoord.
-const-ltow-rule := lexeme-to-word-rule & constant-lex-rule & nocoord.
-infl-ltow-rule := lexeme-to-word-rule & inflecting-lex-rule & nocoord.
-
-infl-non-local-change-only-ltol-rule := non-local-change-only-lex-rule &
-					infl-ltol-rule.
-
-infl-local-change-only-ltol-rule := local-change-only-lex-rule &
-				    infl-ltol-rule.
-
-infl-cont-change-only-ltol-rule := cont-change-only-lex-rule &
-				   infl-ltol-rule.
-
-infl-ctxt-change-only-ltol-rule := ctxt-change-only-lex-rule &
-				   infl-ltol-rule.
-
-infl-agr-change-only-ltol-rule := agr-change-only-lex-rule &
-				  infl-ltol-rule.
-
-infl-cat-change-only-ltol-rule := cat-change-only-lex-rule &
-				  infl-ltol-rule.
-
-infl-head-change-only-ltol-rule := head-change-only-lex-rule &
- 				   infl-ltol-rule.
-
-infl-val-change-only-ltol-rule := val-change-only-lex-rule &
-				  infl-ltol-rule.
+; MWG 2010.01.30 No longer necessary
+;const-ltol-rule := lexeme-to-lexeme-rule & constant-lex-rule & nocoord.
+;infl-ltol-rule := lexeme-to-lexeme-rule & inflecting-lex-rule & nocoord.
+;const-ltow-rule := lexeme-to-word-rule & constant-lex-rule & nocoord.
+;infl-ltow-rule := lexeme-to-word-rule & inflecting-lex-rule & nocoord.
+;
+;infl-non-local-change-only-ltol-rule := non-local-change-only-lex-rule &
+;					infl-ltol-rule.
+;
+;infl-local-change-only-ltol-rule := local-change-only-lex-rule &
+;				    infl-ltol-rule.
+;
+;infl-cont-change-only-ltol-rule := cont-change-only-lex-rule &
+;				   infl-ltol-rule.
+;
+;infl-ctxt-change-only-ltol-rule := ctxt-change-only-lex-rule &
+;				   infl-ltol-rule.
+;
+;infl-agr-change-only-ltol-rule := agr-change-only-lex-rule &
+;				  infl-ltol-rule.
+;
+;infl-cat-change-only-ltol-rule := cat-change-only-lex-rule &
+;				  infl-ltol-rule.
+;
+;infl-head-change-only-ltol-rule := head-change-only-lex-rule &
+; 				   infl-ltol-rule.
+;
+;infl-val-change-only-ltol-rule := val-change-only-lex-rule &
+;				  infl-ltol-rule.
 
 ; ERB 2005-04-26 Take care with the following two rules.  While
 ; they likely won't be circular for parsing (since the surface form
@@ -1090,46 +1097,46 @@ infl-val-change-only-ltol-rule := val-change-only-lex-rule &
 ; incompatible, I recommend constraining the type of the DTR to
 ; something incompatible with the type of the rule.
 
-infl-add-only-ltol-rule := add-only-rule &
-			   infl-ltol-rule.
-
-infl-add-only-no-ccont-ltol-rule := add-only-no-ccont-rule &
-				    infl-ltol-rule.
-
-const-non-local-change-only-ltol-rule := non-local-change-only-lex-rule &
-					 const-ltol-rule.
-
-const-local-change-only-ltol-rule := local-change-only-lex-rule &
-				     const-ltol-rule.
-
-const-cont-change-only-ltol-rule := cont-change-only-lex-rule &
-				    const-ltol-rule.
-
-const-ctxt-change-only-ltol-rule := ctxt-change-only-lex-rule &
-				    const-ltol-rule.
-
-const-agr-change-only-ltol-rule := agr-change-only-lex-rule &
-				   const-ltol-rule.
-
-const-cat-change-only-ltol-rule := cat-change-only-lex-rule &
-				   const-ltol-rule.			       
-
-const-head-change-only-ltol-rule := head-change-only-lex-rule &
-				    const-ltol-rule.
-
-const-val-change-only-ltol-rule := val-change-only-lex-rule &
-				   const-ltol-rule.
-
-; ERB 2005-04-14 Take care when using the following two types
-; not to create circular rules.  They may still be useful (the
-; latter is employed in the Slave grammar), but you'll need to
-; make sure that the DTR type is incompatible with the rule type.
-
-const-add-only-ltol-rule := add-only-rule &
-			    const-ltol-rule.			   
-
-const-add-only-no-ccont-ltol-rule := add-only-no-ccont-rule &
-				     const-ltol-rule.
+;infl-add-only-ltol-rule := add-only-rule &
+;			   infl-ltol-rule.
+;
+;infl-add-only-no-ccont-ltol-rule := add-only-no-ccont-rule &
+;				    infl-ltol-rule.
+;
+;const-non-local-change-only-ltol-rule := non-local-change-only-lex-rule &
+;					 const-ltol-rule.
+;
+;const-local-change-only-ltol-rule := local-change-only-lex-rule &
+;				     const-ltol-rule.
+;
+;const-cont-change-only-ltol-rule := cont-change-only-lex-rule &
+;				    const-ltol-rule.
+;
+;const-ctxt-change-only-ltol-rule := ctxt-change-only-lex-rule &
+;				    const-ltol-rule.
+;
+;const-agr-change-only-ltol-rule := agr-change-only-lex-rule &
+;				   const-ltol-rule.
+;
+;const-cat-change-only-ltol-rule := cat-change-only-lex-rule &
+;				   const-ltol-rule.			       
+;
+;const-head-change-only-ltol-rule := head-change-only-lex-rule &
+;				    const-ltol-rule.
+;
+;const-val-change-only-ltol-rule := val-change-only-lex-rule &
+;				   const-ltol-rule.
+;
+;; ERB 2005-04-14 Take care when using the following two types
+;; not to create circular rules.  They may still be useful (the
+;; latter is employed in the Slave grammar), but you'll need to
+;; make sure that the DTR type is incompatible with the rule type.
+;
+;const-add-only-ltol-rule := add-only-rule &
+;			    const-ltol-rule.			   
+;
+;const-add-only-no-ccont-ltol-rule := add-only-no-ccont-rule &
+;				     const-ltol-rule.
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1238,8 +1245,8 @@ basic-unary-phrase := phrase &
 						  LAST #scmiddle ] ] ] ] > ].
 
 unary-phrase := basic-unary-phrase &
-  [ INFLECTED +,
-    ARGS < [ INFLECTED + ] > ].
+  [ INFLECTED infl-satisfied,
+    ARGS < [ INFLECTED infl-satisfied ] > ].
 
 basic-binary-phrase := phrase &
   [ SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
@@ -1262,9 +1269,9 @@ basic-binary-phrase := phrase &
 						  LAST #scmiddle2 ] ] ] ] > ].
 
 binary-phrase := basic-binary-phrase &
-  [ INFLECTED +,
-    ARGS < [ INFLECTED + ],
-           [ INFLECTED + ] > ].
+  [ INFLECTED infl-satisfied,
+    ARGS < [ INFLECTED infl-satisfied ],
+           [ INFLECTED infl-satisfied ] > ].
 
 basic-binary-headed-phrase := headed-phrase & basic-binary-phrase &
   [ NON-HEAD-DTR sign & [ SYNSEM.LOCAL.COORD - ] ].
@@ -1304,12 +1311,12 @@ basic-ternary-phrase := phrase &
 						  LAST #scmiddle3 ] ] ] ]> ].
 
 ternary-phrase := basic-ternary-phrase &
-  [ INFLECTED +,
-    ARGS < [ INFLECTED +, 
+  [ INFLECTED infl-satisfied,
+    ARGS < [ INFLECTED infl-satisfied, 
 	     SYNSEM.LOCAL.COORD - ],
-           [ INFLECTED +, 
+           [ INFLECTED infl-satisfied, 
 	     SYNSEM.LOCAL.COORD - ],
-           [ INFLECTED +, 
+           [ INFLECTED infl-satisfied, 
 	     SYNSEM.LOCAL.COORD - ] > ].
 
 
@@ -1605,14 +1612,14 @@ imp-head-subj-phrase := basic-head-subj-phrase & imperative-clause.
 
 basic-head-spec-phrase := head-valence-phrase & phrasal &
 			  binary-headed-phrase &
-  [ INFLECTED +,
+  [ INFLECTED infl-satisfied,
     SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
                                COMPS #spcomps,
                                SPR #spr,
                                SPEC #spec ],
                          POSTHEAD #ph ],
              MODIFIED #modif ],
-    HEAD-DTR [ INFLECTED +,
+    HEAD-DTR [ INFLECTED infl-satisfied,
                SYNSEM [ LOCAL [ CAT [ HEAD #head,
                                       VAL [ SUBJ #subj,
                                             COMPS olist & #comps,
@@ -1707,7 +1714,7 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
                          MC #mc,
                          POSTHEAD #ph ],
              MODIFIED #mod ],
-    HEAD-DTR [ INFLECTED #infl & +,
+    HEAD-DTR [ INFLECTED #infl & infl-satisfied,
              SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ #subj,
 					  COMPS < unexpressed &
 						  [ OPT +,
@@ -1756,7 +1763,7 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 		MODIFIED #mod ],
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ],
-    HEAD-DTR [ INFLECTED #infl & +,
+    HEAD-DTR [ INFLECTED #infl & infl-satisfied,
 		SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < unexpressed-reg &
 						    [ OPT +,
 						      LOCAL.CONT.HOOK.INDEX.COG-ST in-foc ] >,
@@ -2172,10 +2179,10 @@ raise-sem-lex-item := no-hcons-lex-item &
 ; inflected v. uninflected
 
 uninflected-lexeme := lex-item &
-  [ INFLECTED - ].
+  [ INFLECTED inflected ].
 
 fully-inflected-lexeme := lex-item &
-  [ INFLECTED + ].
+  [ INFLECTED infl-satisfied ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Non-local features: Values and amalgamation
@@ -2924,8 +2931,8 @@ infl-bottom-coord-rule := same-local-lex-rule &
 			  same-modified-lex-rule &
 			  same-light-lex-rule &
                           inflecting-lex-rule &
-  [ INFLECTED +,
-    DTR.INFLECTED -,
+  [ INFLECTED infl-satisfied,
+    DTR.INFLECTED inflected,
     SYNSEM.LOCAL [ COORD +,
                    COORD-REL #crel ],
     C-CONT [ RELS <! #crel !>,
@@ -3077,8 +3084,8 @@ infl-left-coord-rule := omni-left-coord-rule &
                         same-local-lex-rule &
                         same-non-local-lex-rule &
                         inflecting-lex-rule &
-  [ INFLECTED +,
-    DTR.INFLECTED -,
+  [ INFLECTED infl-satisfied,
+    DTR.INFLECTED inflected,
     SYNSEM.LOCAL [ COORD -,
                    COORD-REL #crel ],
     C-CONT [ RELS <! #crel !>,

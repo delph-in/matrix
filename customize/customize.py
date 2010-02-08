@@ -2748,6 +2748,7 @@ def back_to_word(name):
     for constraint in slot.get('constraint',[]):
       if constraint.get('type') == 'forces' and \
          constraint.get('other-slot') == name:
+        #TODO: consider a chain: A forces B and B forces C.
         return True
 
   return False
@@ -2994,7 +2995,7 @@ def customize_inflection():
       # to define word-to-lexeme rule for this grammar.
       wtol = False
       for constraint in slot.get('constraint',[]):
-        if constraint.get('type') == 'forces':
+        if constraint.get('type') == 'forces' and is_already_word(slot):
           wtol = True
       if wtol:
         mylang.add('word-to-lexeme-rule := lex-rule &\
