@@ -3296,28 +3296,28 @@ def customize_inflection():
         if ch.get('obj-mark-drop') == 'obj-mark-drop-opt' and \
            ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
           need_no_drop_rule = True
-          drp_head_obj =True
+          #drp_head_obj =True
           const = True
         if ch.get('subj-mark-drop') == 'subj-mark-drop-opt' and \
            ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
           need_no_drop_rule = True
-          drp_head_subj = True
+          #drp_head_subj = True
           const = True
         if ch.get('obj-mark-drop') == 'obj-mark-drop-req' and \
            ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt':
           need_no_drop_rule = True
-          opt_head_obj = True
+          #opt_head_obj = True
           const = True
         if ch.get('subj-mark-drop') == 'subj-mark-drop-req' and \
            ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt':
           need_no_drop_rule = True
-          opt_head_subj = True
+          #opt_head_subj = True
           const = True
         for feat in morph.get('feat',[]):
           if feat.get('name') == 'case':
             seen_case = True
           if feat.get('name') == 'overt-arg':
-            if feat.get('head') == 'obj':
+            if feat.get('head') == 'obj' :
               opt_head_obj = True
             elif feat.get('head') == 'subj':
               opt_head_subj = True
@@ -3842,7 +3842,7 @@ def customize_matrix(path, arch_type):
   # augmentation of the hierarchies
   customize_inflection()
   customize_lexicon()
-
+  customize_arg_op()
   # Call the other customization functions
   customize_case()
   customize_person_and_number()
@@ -3856,7 +3856,7 @@ def customize_matrix(path, arch_type):
   customize_sentential_negation()
   customize_coordination()
   customize_yesno_questions()
-  customize_arg_op()
+  #customize_arg_op()
   customize_test_sentences(grammar_path)
   customize_script(grammar_path)
   customize_pettdl(grammar_path)

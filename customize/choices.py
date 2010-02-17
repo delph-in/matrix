@@ -898,10 +898,10 @@ class ChoicesFile:
 
     perm_notperm_string = 'permitted|permitted;not-permitted|not-permitted'
     # Overt Argument
-    if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
-       self.get('obj-mark-drop') == 'obj-mark-drop-req':
-      features += [['overt-arg', perm_notperm_string, '']]
-    elif self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
+    #if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
+    #   self.get('obj-mark-drop') == 'obj-mark-drop-req':
+     # features += [['overt-arg', perm_notperm_string, '']]
+    if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
          self.get('obj-mark-drop') == 'obj-mark-drop-req':
       features += [['overt-arg', perm_notperm_string, '']]
     elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and \
@@ -918,7 +918,13 @@ class ChoicesFile:
       features += [['overt-arg', perm_notperm_string, '']]
 
     # Dropped Argument
-    if self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
+    if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
+       self.get('obj-mark-drop') == 'obj-mark-drop-req':
+      features += [['dropped-arg', perm_notperm_string, '']]
+    elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and \
+         self.get('subj-mark-drop') == 'subj-mark-drop-req':
+      features += [['dropped-arg', perm_notperm_string, '']]
+    elif self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
        self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
       features += [['dropped-arg', perm_notperm_string,'']]
     elif self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
