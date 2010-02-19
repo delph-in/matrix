@@ -31,6 +31,12 @@ class ChoiceCategory:
     self.full_key = full_key
 
 class ChoiceDict(ChoiceCategory, dict):
+  def __getitem__(self, key):
+    try:
+      return dict.__getitem__(self, key)
+    except KeyError:
+      return ''
+
   def iter_num(self):
     if self.full_key is not None:
         result = re.search('[0-9]+$', self.full_key)
@@ -39,6 +45,12 @@ class ChoiceDict(ChoiceCategory, dict):
     return None
 
 class ChoiceList(ChoiceCategory, list):
+  def __getitem__(self, key):
+    try:
+      return list.__getitem__(self, key)
+    except IndexError:
+      return []
+
   # custom iterator ignores empty items (e.g. when a
   # user deletes an item in the middle of a list)
   def __iter__(self):
@@ -643,7 +655,7 @@ class ChoicesFile:
     numbers = []
 
     for n in self.get('number'):
-      name = n.get('name', '')
+      name = n['name']
       stype = ';'.join([s['name'] for s in n.get('supertype',[])]) or 'number'
       numbers += [[name, stype]]
 
@@ -747,7 +759,7 @@ class ChoicesFile:
     genders = []
 
     for g in self.get('gender'):
-      name = g.get('name',[])
+      name = g['name']
       stype = ';'.join([s['name'] for s in g.get('supertype',[])]) or 'gender'
       genders += [[name, stype]]
 
@@ -1430,7 +1442,7 @@ class ChoicesFile:
     self.convert_key('non-future', 'nonfuture')
 
     for aux in self['aux']:
-      v = aux.get('nonfincompform', '')
+      v = aux['nonfincompform']
       k = 'nf-subform' + aux.iter_num() + '_name'
       self.convert_value(aux.full_key + '_compform', 'nonfinite', v)
 

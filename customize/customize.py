@@ -1865,7 +1865,8 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
     # first the rule in mylang
     rule = pn + '-left-coord-rule :=\
            ' + bot + 'left-coord-rule &\
-           ' + pos + '-bottom-coord-phrase.'
+           ' + pos + '-bottom-coord-phrase &\
+           [ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].'
     mylang.add(rule)
 
     if pre or suf:

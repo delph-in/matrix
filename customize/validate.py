@@ -127,14 +127,17 @@ def validate_names(ch, vr):
   reserved_types = {}
 
   # read matrix types and head types from file
-  f = open('matrix-types', 'r')
-  for t in f.readlines():
-    reserved_types[t.strip()] = True
-  f.close()
-  f = open('head-types', 'r')
-  for t in f.readlines():
-    reserved_types[t.strip()] = True
-  f.close()
+  try:
+    f = open('matrix-types', 'r')
+    for t in f.readlines():
+      reserved_types[t.strip()] = True
+    f.close()
+    f = open('head-types', 'r')
+    for t in f.readlines():
+      reserved_types[t.strip()] = True
+    f.close()
+  except IOError:
+    pass
 
   # add the types from cust_types above to reserved_types
   for ct in cust_types:
@@ -285,9 +288,12 @@ def validate_names(ch, vr):
   # for example, if the user adds a value for number and specifies a
   # supertype but no name.  We don't want to issue a "duplicate type
   # names" error when '' == ''.
-  for ut in user_types:
-    if not ut[0]:
-      user_types.remove(ut)
+  user_types = [x for x in user_types if x[0]]
+
+  # Force all the user_types into lower case (obeying the appropriate
+  # Unicode character semantics), because TDL is case-insensitive.
+  user_types = [[unicode(x[0], 'utf-8').lower().encode('utf-8'), x[1]]
+                for x in user_types]
 
   # Whew!  OK, now we have two sets of type names and a set of
   # patterns:
@@ -767,9 +773,9 @@ def validate_yesno_questions(ch, vr):
 #   situation) and form features
 
 def validate_tanda(ch, vr):
-  '''
+  """
   Validate the user's choices about tense, aspect (viewpoint and situation) and form features
-  '''
+  """
   
   ## validate tense
   chosen = False
@@ -1213,17 +1219,14 @@ def validate_arg_opt(ch, vr):
     for feat in context.get('feat',[]):
       if not feat.get('head'):
         mess = 'You must choose where the feature is specified.'
-        add_err(err, feat.full_key+'_head',mess)
+        vr.err(feat.full_key+'_head',mess)
 
 
-######################################################################
-# validate_choices(choices_file)
-#   Validate the choices file found in choices_file.  Return
-#   a dictionary whose keys are choices file variables that are
-#   incorrect and whose values are messages describing the errors.
-
-def validate_choices(choices_file, extra = False):
-  ch = ChoicesFile(choices_file)
+def validate(ch, extra = False):
+  """
+  Validate the ChoicesFile ch.  Return a ValidationResult that
+  contains any errors and warnings.
+  """
   vr = ValidationResult()
 
   validate_names(ch, vr)
@@ -1249,6 +1252,15 @@ def validate_choices(choices_file, extra = False):
     validate_extra_constraints(ch, vr)
 
   return vr
+  
+
+def validate_choices(choices_file, extra = False):
+  """
+  Validate the choices file found in choices_file.  Return a
+  ValidationResult that contains any errors and warnings.
+  """
+  ch = ChoicesFile(choices_file)
+  return validate(ch, extra)
 
 
 ###############################################################
