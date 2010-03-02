@@ -33,7 +33,7 @@ Text affiliation "Affiliation" "<tr><td valign=\"top\">Your affiliation: <td>" "
 
 Text motivation "Motivation" "<tr><td valign=\"top\">Your reason for using this system: <td>" "<br>(e.g. descriptive linguistic research, for a class)</tr></table>" 80
 
-Text comment "Comments" "<tr><td valign=\"top\">Any comments on the implementation of the grammar: <td>" "<br>(e.g. Choice of analyses, sources of information, etc.)</tr></table>" 80
+Text comment "Comments" "<tr><td valign=\"top\">Comments on your implementation of the grammar: <td>" "<br>(e.g. Choice of analyses, sources of information, etc.)</tr></table>" 80
 
 Section word-order "Word Order"
 

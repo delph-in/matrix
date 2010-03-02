@@ -3817,7 +3817,7 @@ def customize_matrix(path, arch_type):
     ';;;     ' + tdl_dt + '\n' +
     ';;; based on Matrix customization system version of:\n' +
     ';;;     ' + matrix_dt + '\n' +
-    ';;;\n' + format_comment_block(ch.get('comment')) +
+    ';;;\n' + format_comment_block(ch.get('comment')) + '\n' +
     ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;')
 
   # BUT, put the date/time of the Matrix version in Version.lsp (along
