@@ -16,6 +16,7 @@ import re
 from choices import ChoicesFile
 from utils import TDLencode
 from utils import get_name
+from utils import format_comment_block
 
 ######################################################################
 # globals
@@ -3816,6 +3817,7 @@ def customize_matrix(path, arch_type):
     ';;;     ' + tdl_dt + '\n' +
     ';;; based on Matrix customization system version of:\n' +
     ';;;     ' + matrix_dt + '\n' +
+    ';;;\n' + format_comment_block(ch.get('comment')) +
     ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;')
 
   # BUT, put the date/time of the Matrix version in Version.lsp (along

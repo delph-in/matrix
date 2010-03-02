@@ -45,3 +45,16 @@ def TDLencode(string):
 
 def get_name(item):
   return item.get('name', None) or item.full_key
+
+def format_comment_block(comment_string, max_chars=70, prefix=';;;'):
+  lines = []
+  comment_lines = comment_string.splitlines()
+  for s in comment_lines:
+    lines += [prefix]
+    toks = s.split()
+    for tok in toks:
+        if len(lines[-1]) + len(tok) > max_chars:
+            lines += [prefix + ' ' + tok]
+        else:
+            lines[-1] += ' ' + tok
+  return '\n'.join(lines)
