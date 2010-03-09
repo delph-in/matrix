@@ -6,54 +6,6 @@
 import re
 import os
 
-# MRS templates that will be filled in before generation
-MRS_itv = '''
-[ LTOP: h1
-INDEX: e2 [ e SF: PROP-OR-QUES SORT: SEMSORT ]
-RELS: <
-  [ "#DET1#"
-  LBL: h3
-  ARG0: x4 [ x SORT: SEMSORT COG-ST: COG-ST SPECI: BOOL ]
-  RSTR: h5
-  BODY: h6 ]
-  [ "#NOUN1#"
-  LBL: h7
-  ARG0: x4 ]
-  [ "#VERB#"
-  LBL: h1
-  ARG0: e2
-  ARG1: x4 ] >
-HCONS: < h5 qeq h7 > ]
-'''
-
-MRS_stv = '''
-[ LTOP: h1
-INDEX: e2 [ e SF: PROP-OR-QUES SORT: SEMSORT ]
-RELS: <
-  [ "#DET1#"
-  LBL: h3
-  ARG0: x4 [ x SORT: SEMSORT SPECI: BOOL COG-ST: COG-ST  ]
-  RSTR: h5
-  BODY: h6 ]
-  [ "#NOUN1#"
-  LBL: h7
-  ARG0: x4 ]
-  [ "#VERB#"
-  LBL: h1
-  ARG0: e2
-  ARG1: x4
-  ARG2: x8 [ x SORT: SEMSORT COG-ST: COG-ST SPECI: BOOL ] ]
-  [ "#DET2#"
-  LBL: h9
-  ARG0: x8
-  RSTR: h10
-  BODY: h11 ]
-  [ "#NOUN2#"
-  LBL: h12
-  ARG0: x8 ] >
-HCONS: < h5 qeq h7 h10 qeq h12 > ] 
-'''
-
 #Generate sentences from mrs files
 def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir):
   lkb_input = open('lkb_input','w')
@@ -76,7 +28,7 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir):
     if m:
       i = int(m.group(1)) - 3
       if i >= 0 and line.find("EOF") == -1:
-        sentences.append([[mrs_files[i]+":",verb_preds[i][0],verb_preds[i][1]],[]])
+        sentences.append([[mrs_files[i]+":",verb_preds[i][0],verb_preds[i][1],verb_preds[i][2]],[]])
     if line.find('*maximum-number-of-edges*') > -1:
       sentences[index][1].append('#EDGE-ERROR#')
       index += 1
@@ -185,6 +137,78 @@ def get_v_predications(grammar_dir,lang):
   lexicon.close()
   return (itv_rels,stv_rels)
 
+#Class for storing templates with methods to facilitate predicate and feature replacement
+class Template:
+  def __init__(self, file=None):
+    if file:
+      pred_re = re.compile(r'#(.*?)#')
+      feat_re = re.compile(r'@(.*?)@')
+      label_re = re.compile(r'^label=(.*)')
+      self.preds = set([])
+      self.feats = set([])
+      self.string = ""
+      self.label = ""
+      self.name = file
+      f = open("templates/"+file,'r')
+      for line in f:
+        m = label_re.match(line)
+        if m:
+          self.label = m.group(1)
+        elif line.lstrip().find(";") != 0:
+          self.string += line
+          (m1,m2) = pred_re.search(line),feat_re.search(line)
+          if m1:
+            self.preds.add(m1.group(1))
+          if m2:
+            self.feats.add(m2.group(1))
+      f.close()
+           
+  def replace_pred(self,flag,pred):
+    self.string = self.string.replace('#'+flag+'#',pred)
+    self.preds.remove(flag)
+    return self
+
+  def replace_feat(self,flag,feat):
+    self.string = self.string.replace('@'+flag+'@',feat)
+    self.feats.remove(flag)
+    return self
+    
+  def copy(self):
+    t = Template()
+    t.preds = self.preds.copy()
+    t.feats = self.feats.copy()
+    t.string = self.string
+    t.label = self.label
+    t.name = self.name
+    return t
+
+    
+# Extract templates from the grammar
+def get_templates(grammar_dir):
+  choices = open(grammar_dir+'/choices','r')
+  choices_present = False
+  in_options = False
+  template_files = []
+  templates = []
+  section_re = re.compile(r'section=(.*)')
+  choice_re = re.compile(r'(.*)=on')
+  for line in choices:
+    m1 = section_re.match(line)
+    m2 = choice_re.match(line)
+    if m1:
+      if m1.group(1)=="gen-options":
+        in_options = True
+      else:
+        in_options = False
+    if m2:
+      template_files.append(m2.group(1))
+      choices_present = True
+  if not choices_present:
+    template_files = ['itv','stv']
+  for f in template_files:
+    templates.append(Template(f))
+  return templates    
+
 # Output an mrs file from a template, replacing the appropriate predications
 def process_mrs_file(mrs, outfile, noun1_rel, det1_rel, noun2_rel, det2_rel, verb_rel):
   output = mrs.replace("#NOUN1#",noun1_rel).replace("#NOUN2#",noun2_rel).replace("#VERB#",verb_rel).replace("#DET1#",det1_rel).replace("#DET2#",det2_rel)
@@ -193,50 +217,98 @@ def process_mrs_file(mrs, outfile, noun1_rel, det1_rel, noun2_rel, det2_rel, ver
   f.write(output)
   f.close()
 
+#  for verb_rel in itvs:
+#    i += 1
+#    mrs_files.append(session+'Pattern ' + str(i))
+#    process_mrs_file(MRS_itv,session+'Pattern '+str(i),noun_rels_dets[0][0],det_rels[noun_rels_dets[0][1]][0],noun_rels_dets[1][0],det_rels[noun_rels_dets[1][1]][0],verb_rel)
+#  for verb_rel in stvs:
+#    i += 1
+#    mrs_files.append(session+'Pattern ' + str(i))
+#    process_mrs_file(MRS_stv,session+'Pattern '+str(i),noun_rels_dets[0][0],det_rels[noun_rels_dets[0][1]][0],noun_rels_dets[1][0],det_rels[noun_rels_dets[1][1]][0],verb_rel)
+
+
 # Wrap up all of the components involved in generation, and return the results
 def get_sentences(grammar_dir,delphin_dir,session):
   (noun_rels_dets,det_rels,language) = get_n_predications(grammar_dir)
   (itvs,stvs) = get_v_predications(grammar_dir,language)
-  if len(noun_rels_dets) < 2:
-    noun_rels_dets.append(noun_rels[0])
-    det_rels.append(det_rels[0])
+  templates = get_templates(grammar_dir)
   i = 0
   mrs_files = []
-  for verb_rel in itvs:
+  info_list = []
+  itr_verb_re,tr_verb_re,noun_re,det_re = re.compile(r'ITR-VERB([0-9]*)'),re.compile(r'TR-VERB([0-9]*)'),re.compile(r'NOUN([0-9]*)'),re.compile(r'DET([0-9]*)')
+  for template in templates:
+    verb_rels = {}
     i += 1
-    mrs_files.append(session+'Verb ' + str(i))
-    process_mrs_file(MRS_itv,session+'Verb '+str(i),noun_rels_dets[0][0],det_rels[noun_rels_dets[0][1]][0],noun_rels_dets[1][0],det_rels[noun_rels_dets[1][1]][0],verb_rel)
-  for verb_rel in stvs:
-    i += 1
-    mrs_files.append(session+'Verb ' + str(i))
-    process_mrs_file(MRS_stv,session+'Verb '+str(i),noun_rels_dets[0][0],det_rels[noun_rels_dets[0][1]][0],noun_rels_dets[1][0],det_rels[noun_rels_dets[1][1]][0],verb_rel)
-  sentences = generate_sentences(grammar_dir, mrs_files, [[x,"Intrasitive verb phrase"] for x in itvs]+[[x,"Transitive verb phrase"] for x in stvs], delphin_dir)
+    for feat in template.feats.copy():
+      template.replace_feat(feat,"")
+    for pred in template.preds.copy():
+      m1,m2,m3,m4 = itr_verb_re.match(pred),tr_verb_re.match(pred),noun_re.match(pred),det_re.match(pred)
+      if m1:
+        template.replace_pred(pred,itvs[int(m1.group(1)) % len(itvs)])
+        verb_rels[pred] = itvs[int(m1.group(1)) % len(itvs)]
+      elif m2:
+        template.replace_pred(pred,stvs[int(m2.group(1)) % len(stvs)])
+        verb_rels[pred] = stvs[int(m2.group(1)) % len(stvs)]
+      elif m3:
+        template.replace_pred(pred,noun_rels_dets[int(m3.group(1)) % len(noun_rels_dets)][0])
+      elif m4:
+        template.replace_pred(pred,det_rels[noun_rels_dets[int(m4.group(1)) % len(noun_rels_dets)][1]][0])
+    output = session+'Output '+str(i)
+    mrs_files.append(output)
+    f = open(output,'w')
+    f.write(template.string)
+    f.close()
+    info_list.append([verb_rels,template.label,template.name])
+  sentences = generate_sentences(grammar_dir, mrs_files, info_list, delphin_dir)
   for file in mrs_files:
     os.remove(file)
   return sentences
 
+
 # Same as get_sentences, but for the additional sentences page
-def get_additional_sentences(grammar_dir,delphin_dir,verb_rel,session):
+def get_additional_sentences(grammar_dir,delphin_dir,verb_rels,template_file,session):
   (noun_rels_dets,det_rels,language) = get_n_predications(grammar_dir)
-  (itvs,stvs) = get_v_predications(grammar_dir,language)
-  if verb_rel in itvs:
-    mrs = MRS_itv
-  else:
-    mrs = MRS_stv
+  itr_verb_re,tr_verb_re,noun_re,det_re = re.compile(r'ITR-VERB([0-9]*)'),re.compile(r'TR-VERB([0-9]*)'),re.compile(r'NOUN([0-9]*)'),re.compile(r'DET([0-9]*)')
+#  (itvs,stvs) = get_v_predications(grammar_dir,language)
+  exec("verb_rels = "+verb_rels)
   mrs_files = []
-  if verb_rel in itvs:
-    for i in range(len(noun_rels_dets)):
-      for det_rel in det_rels[noun_rels_dets[i][1]]:
-        mrs_files.append(session+'noun' + str(i) + det_rel)
-        process_mrs_file(mrs,session+'noun'+str(i) + det_rel,noun_rels_dets[i][0],det_rel,"","",verb_rel)
-  else:
-    for i in range(len(noun_rels_dets)):
-      for j in range(len(noun_rels_dets)):
-        for det_rel1 in det_rels[noun_rels_dets[i][1]]:
-          for det_rel2 in det_rels[noun_rels_dets[j][1]]:
-            mrs_files.append(session+'noun' + str(i) + det_rel1 + "_" + str(j) + det_rel2)
-            process_mrs_file(mrs,session+'noun' + str(i) + det_rel1 + "_" + str(j) + det_rel2,noun_rels_dets[i][0],det_rel1,noun_rels_dets[j][0],det_rel2,verb_rel)
-  sentences_with_info = generate_sentences(grammar_dir, mrs_files, [[verb_rel,""]] * len(mrs_files), delphin_dir)
+  t = Template(template_file)
+  templates = [t]
+  #  if verb_rel in itvs:
+  #    for i in range(len(noun_rels_dets)):
+  #      for det_rel in det_rels[noun_rels_dets[i][1]]:
+  #        mrs_files.append(session+'noun' + str(i) + det_rel)
+  #        process_mrs_file(mrs,session+'noun'+str(i) + det_rel,noun_rels_dets[i][0],det_rel,"","",verb_rel)
+  #  else:
+  #    for i in range(len(noun_rels_dets)):
+  #      for j in range(len(noun_rels_dets)):
+  #        for det_rel1 in det_rels[noun_rels_dets[i][1]]:
+  #          for det_rel2 in det_rels[noun_rels_dets[j][1]]:
+  #            mrs_files.append(session+'noun' + str(i) + det_rel1 + "_" + str(j) + det_rel2)
+  #            process_mrs_file(mrs,session+'noun' + str(i) + det_rel1 + "_" + str(j) + det_rel2,noun_rels_dets[i][0],det_rel1,noun_rels_dets[j][0],det_rel2,verb_rel)
+  for feat in t.feats.copy():
+    t.replace_feat(feat,"")
+  for pred in t.preds:
+    m1,m2,m3,m4 = itr_verb_re.match(pred),tr_verb_re.match(pred),noun_re.match(pred),det_re.match(pred)
+    if m1:
+      for temp in templates:
+        temp.replace_pred(pred,verb_rels[pred])
+    elif m2:
+      for temp in templates:
+        temp.replace_pred(pred,verb_rels[pred])
+    elif m3:
+      templates = [temp.copy().replace_pred(pred,noun[0]) for temp in templates for noun in noun_rels_dets]
+    elif m4:
+      templates = [temp.copy().replace_pred(pred,det) for temp in templates for det in det_rels['opt']]
+  i = 0
+  for temp in templates:
+    i += 1
+    output = session+'pattern'+str(i)
+    mrs_files.append(output)
+    f = open(output,'w')
+    f.write(temp.string)
+    f.close()
+  sentences_with_info = generate_sentences(grammar_dir, mrs_files, [[verb_rels,"",""]] * len(mrs_files), delphin_dir)
   sentences = []
   for i in range(len(sentences_with_info)):
     sentences.extend(sentences_with_info[i][1])

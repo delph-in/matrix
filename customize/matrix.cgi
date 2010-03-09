@@ -90,7 +90,7 @@ if form_data.has_key('section'):
 
 # If the 'verbpred' field is defined, then the user wishes to generate more sentences with that predication
 if form_data.has_key('verbpred'):
-  matrixdef.more_sentences_page(session_path,form_data['grammar'].value, form_data['verbpred'].value, cookie)
+  matrixdef.more_sentences_page(session_path,form_data['grammar'].value, form_data['verbpred'].value, form_data['template'].value, cookie)
   sys.exit()
 
 # Get a list of error messages, determined by validating the current

@@ -945,7 +945,7 @@ class MatrixDefFile:
     print HTML_sentencesprebody
     for i in range(len(sentences)):
       long = False
-      print "<b>" + sentences[i][0][0][4:]+"</b> " + sentences[i][0][2] + ", with predication: " + sentences[i][0][1] +"<br>"
+      print "<b>" + sentences[i][0][0][4:]+"</b> " + sentences[i][0][2] + ", with predication: " + ", ".join(sentences[i][0][1].values()) +"<br>"
       if len(sentences[i][1]) > 0 and sentences[i][1][0] == '#EDGE-ERROR#':
         print 'This grammar combined with this input semantics results in too large of a seach space<br>'
       else:
@@ -963,6 +963,7 @@ class MatrixDefFile:
         print '<br>'
         print HTML_preform
         print '<input type="hidden" name="verbpred" value="%s">' % sentences[i][0][1]
+        print '<input type="hidden" name="template" value="%s">' % sentences[i][0][3]
         print '<input type="hidden" name="grammar" value="%s">' % grammar_dir
         print '<input type="submit" name="" value="More sentences with this verb and pattern">'
         print HTML_postform
@@ -971,14 +972,14 @@ class MatrixDefFile:
     print HTML_postbody
 
   # Display page with additional sentences
-  def more_sentences_page(self, session_path, grammar_dir, verbpred, session):
+  def more_sentences_page(self, session_path, grammar_dir, verbpred, template_file, session):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>More Sentences</title>'
     print HTML_sentencesprebody
     grammar_dir_final = os.getcwd() + '/' + session_path + '/' + grammar_dir
     delphin_dir = os.getcwd() + '/delphin'
-    sentences = generate.get_additional_sentences(grammar_dir_final,delphin_dir,verbpred, session)
+    sentences = generate.get_additional_sentences(grammar_dir_final,delphin_dir,verbpred, template_file,session)
     for j in range(len(sentences)):
       print str(j+1) + ". " + sentences[j] + "<br>"
     print '<br><input type="button" name="" value="Back to sentences" onclick="history.go(-1)">'
