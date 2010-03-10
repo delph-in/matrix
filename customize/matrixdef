@@ -1437,4 +1437,39 @@ Label "<p>Select which templates you would like to use in generation.  If nothin
 
 Check itv "Intransitive" "" "Simple intransive verb phrase<br>"
 
+Label "Features:"
+
+BeginIter itv-feat{j} "a Feature"
+
+    Select name "Feature {j} name" "Name: " " "
+    fillnames
+
+    Select value "Feature {j} value" "Value: " ""
+    fillvalues itv-feat{j}_name
+
+    Select location "Feature {j} location" "Specified on: " ""
+    . NOUN1 "Subject" "the subject NP"
+    . ITR-VERB1 "Verb" "the verb"
+
+EndIter itv-feat
+
+Separator  
+
 Check stv "Transitive" "" "Simple transive verb phrase<br>"
+
+Label "Features:"
+
+BeginIter stv-feat{j} "a Feature"
+
+    Select name "Feature {j} name" "Name: " " "
+    fillnames
+
+    Select value "Feature {j} value" "Value: " ""
+    fillvalues stv-feat{j}_name
+
+    Select location "Feature {j} location" "Specified on: " ""
+    . NOUN1 "Subject" "the subject NP"
+    . TR-VERB1 "Verb" "the verb"
+    . NOUN2 "Object" "the object NP"
+
+EndIter stv-feat

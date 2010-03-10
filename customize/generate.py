@@ -13,6 +13,7 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir):
   lkb_input.write('(setf *maximum-number-of-edges* 10000)')
   for file in mrs_files:
     lkb_input.write('(null (print (generate-from-mrs (mrs::read-mrs-from-file "%s"))))' % (file))
+    #lkb_input.write('(print-gen-chart)')
   lkb_input.flush()
   output = os.popen('cat lkb_input | %s | sed -n "/^LKB/,/EOF$/p"' % (delphin_dir + '/bin/lkb'))
   lkb_input.close()
@@ -24,6 +25,7 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir):
   lkb_re = re.compile(r'LKB\(([0-9]+)\)')
   for line in output:
     #print line+"<br>"
+    #continue
     m = lkb_re.match(line)
     if m:
       i = int(m.group(1)) - 3
@@ -182,6 +184,53 @@ class Template:
     t.name = self.name
     return t
 
+  def replace_features_from_grammar(self,repl_feats):
+    if self.name in repl_feats:
+      repl_feats = repl_feats[self.name]
+      for replacement in repl_feats.values():
+        self.replace_feat(replacement[0],var(replacement[1])+": "+replacement[2]+" @"+replacement[0]+"@")
+        self.feats.add(replacement[0])
+    for feat in self.feats.copy():
+      self.replace_feat(feat,"")
+
+def var(string):
+  if string == "number":
+    string = "num"
+  elif string == "person":
+    string = "per"
+  if string.lower() in [ "sf","cog-st","speci","sort" ]:
+    pass
+  elif string.lower() in ["situation","tense","aspect" ]:
+    string = "e." + string
+  else:
+    string = "png." + string
+  return string
+
+def get_replacement_features_from_grammar(grammar_dir):
+  choices = open(grammar_dir+'/choices','r')
+  in_options = False
+  section_re = re.compile(r'section=(.*)')
+  choice_re = re.compile(r'(.+)-feat([0-9]+)_(.+)=(.*)')
+  temp_re = re.compile(r'(.*)=on')
+  result = {}
+  pos = {"name":1,"value":2,"location":0}
+  for line in choices:
+    m1 = section_re.match(line)
+    if m1:
+      if m1.group(1) == 'gen-options':
+        in_options = True
+      else:
+        in_options = False
+    elif in_options:
+      m2,m3 = choice_re.match(line),temp_re.match(line)
+      if m3:
+        result[m3.group(1)] = {}
+      elif m2 and m2.group(1).strip() in result.keys():
+        name = m2.group(1).strip()
+        if m2.group(2) not in result[name]:
+          result[name][m2.group(2)] = ["","",""]
+        result[name][m2.group(2)][pos[m2.group(3)]] = result[name][m2.group(2)][pos[m2.group(3)]] = m2.group(4)
+  return result
     
 # Extract templates from the grammar
 def get_templates(grammar_dir):
@@ -200,7 +249,7 @@ def get_templates(grammar_dir):
         in_options = True
       else:
         in_options = False
-    if m2:
+    elif in_options and m2:
       template_files.append(m2.group(1))
       choices_present = True
   if not choices_present:
@@ -236,11 +285,11 @@ def get_sentences(grammar_dir,delphin_dir,session):
   mrs_files = []
   info_list = []
   itr_verb_re,tr_verb_re,noun_re,det_re = re.compile(r'ITR-VERB([0-9]*)'),re.compile(r'TR-VERB([0-9]*)'),re.compile(r'NOUN([0-9]*)'),re.compile(r'DET([0-9]*)')
+  repl_feats = get_replacement_features_from_grammar(grammar_dir)
   for template in templates:
     verb_rels = {}
     i += 1
-    for feat in template.feats.copy():
-      template.replace_feat(feat,"")
+    template.replace_features_from_grammar(repl_feats)
     for pred in template.preds.copy():
       m1,m2,m3,m4 = itr_verb_re.match(pred),tr_verb_re.match(pred),noun_re.match(pred),det_re.match(pred)
       if m1:
@@ -286,8 +335,8 @@ def get_additional_sentences(grammar_dir,delphin_dir,verb_rels,template_file,ses
   #          for det_rel2 in det_rels[noun_rels_dets[j][1]]:
   #            mrs_files.append(session+'noun' + str(i) + det_rel1 + "_" + str(j) + det_rel2)
   #            process_mrs_file(mrs,session+'noun' + str(i) + det_rel1 + "_" + str(j) + det_rel2,noun_rels_dets[i][0],det_rel1,noun_rels_dets[j][0],det_rel2,verb_rel)
-  for feat in t.feats.copy():
-    t.replace_feat(feat,"")
+  repl_feats = get_replacement_features_from_grammar(grammar_dir)
+  t.replace_features_from_grammar(repl_feats)
   for pred in t.preds:
     m1,m2,m3,m4 = itr_verb_re.match(pred),tr_verb_re.match(pred),noun_re.match(pred),det_re.match(pred)
     if m1:
@@ -307,6 +356,8 @@ def get_additional_sentences(grammar_dir,delphin_dir,verb_rels,template_file,ses
     mrs_files.append(output)
     f = open(output,'w')
     f.write(temp.string)
+    #print temp.string
+    #print "<br>"
     f.close()
   sentences_with_info = generate_sentences(grammar_dir, mrs_files, [[verb_rels,"",""]] * len(mrs_files), delphin_dir)
   sentences = []
