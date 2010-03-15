@@ -48,10 +48,10 @@ def get_name(item):
 
 def format_comment_block(comment_string, max_chars=70, prefix=';;;'):
   lines = []
-  comment_lines = comment_string.splitlines()
+  comment_lines = comment_string.split('\\n')
   for s in comment_lines:
     lines += [prefix]
-    toks = s.split()
+    toks = s.split(' ')
     for tok in toks:
         if len(lines[-1]) + len(tok) > max_chars:
             lines += [prefix + ' ' + tok]

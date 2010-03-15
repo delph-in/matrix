@@ -246,15 +246,15 @@ def html_warning_mark(message):
 # surrounding text
 def html_input(vr, type, name, value, checked, before, after,
                size = '', onclick = '', disabled = False):
-  if value:
-    value = ' value="' + value + '"'
-
   chkd = ''
   if checked:
     chkd = ' checked'
 
   if size:
-    size = ' size="' + size + '"'
+    if 'x' in size:
+      size = ' cols="%s" rows="%s"' % tuple(size.split('x'))
+    else:
+      size = ' size="' + size + '"'
 
   if onclick:
     onclick = ' onclick="' + onclick + '"'
@@ -269,7 +269,12 @@ def html_input(vr, type, name, value, checked, before, after,
   elif name in vr.warnings:
     mark = html_warning_mark(vr.warnings[name])
 
-  return '%s%s<input type="%s" name="%s"%s%s%s%s%s>%s' % \
+  if type == 'textarea':
+    value = value.replace('\\n','\n')
+    return '%s%s<TextArea name="%s"%s>%s</TextArea>%s' % \
+         (before, mark, name, size, value, after)
+  else:
+    return '%s%s<input type="%s" name="%s" value="%s"%s%s%s%s>%s' % \
          (before, mark, type, name, value, chkd, size, dsabld,
           onclick, after)
 
@@ -447,7 +452,8 @@ class MatrixDefFile:
           ty = w[0]
           vn = w[1]
           fn = w[2]
-          if ty in ['Text', 'Check', 'Radio', 'Select', 'MultiSelect', '.']:
+          if ty in ['Text', 'TextArea', 'Check', 'Radio',
+                    'Select', 'MultiSelect', '.']:
             self.v2f[vn] = fn
             self.f2v[fn] = vn
 
@@ -630,7 +636,7 @@ class MatrixDefFile:
   def defs_to_html(self, lines, choices, vr, prefix, vars):
     html = ''
     i = 0
-    
+
     while i < len(lines):
       word = tokenize_def(replace_vars(lines[i], vars))
       if len(word) == 0:
@@ -768,11 +774,11 @@ class MatrixDefFile:
 
         html += '</select>'
         html += af + '\n'
-      elif word[0] == 'Text':
+      elif word[0] in ('Text', 'TextArea'):
         (vn, fn, bf, af, sz) = word[1:]
         vn = prefix + vn
         value = choices.get(vn)
-        html += html_input(vr, 'text', vn, value, False,
+        html += html_input(vr, word[0].lower(), vn, value, False,
                            bf, af, sz) + '\n'
       elif word[0] == 'BeginIter':
         iter_orig = word[1]
@@ -1038,13 +1044,16 @@ class MatrixDefFile:
       word = tokenize_def(lines[i])
       if len(word) == 0:
         pass
-      elif word[0] in ['Check', 'Text', 'Radio', 'Select', 'MultiSelect']:
+      elif word[0] in ['Check', 'Text', 'TextArea',
+                       'Radio', 'Select', 'MultiSelect']:
         vn = word[1]
         if prefix + vn not in already_saved:
           already_saved[prefix + vn] = True
           val = ''
           if choices.get(prefix + vn):
             val = choices.get(prefix + vn)
+            if word[0] == 'TextArea':
+                val = '\\n'.join(val.splitlines())
           if vn and val:
             for j in range(iter_level):
               f.write('  ')
