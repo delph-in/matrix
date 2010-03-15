@@ -995,6 +995,18 @@ def validate_lexicon(ch, vr):
     if 'feat' not in adp:
       mess = 'You should specify a value for at least one feature (e.g., CASE).'
       vr.warn(adp.full_key + '_feat1_name', mess)
+ 
+  # For verbs and verbal inflection, we need to prevent that index features are 
+  # assigned to verbs: making set of features that should not be assigned to 
+  # verbs
+
+  index_feat = ['person', 'number','gender']
+  for feature in ch.get('feature'):
+    if 'name' in feature:
+      if feature.get('type') == 'index':
+        index_feat.append(feature.get('name'))
+
+
 
   # Features on all lexical types
   for lextype in ('noun', 'verb', 'aux', 'det', 'adp'):
@@ -1014,9 +1026,13 @@ def validate_lexicon(ch, vr):
                  'other lexical types do not yet support argument structure.'
           vr.err(feat.full_key + '_name', mess)
 
-        if lextype == 'verb' and not feat.get('head'):
-          mess = 'You must choose where the feature is specified.'
-          vr.err(feat.full_key + '_head', mess)
+        if lextype == 'verb' or lextype == 'aux':
+          if not feat.get('head'):
+            mess = 'You must choose where the feature is specified.'
+            vr.err(feat.full_key + '_head', mess)
+          elif feat.get('head') == 'verb' and index_feat.count(feat.get('name')) > 0:
+            mess = 'This feature is associated with nouns, please select one of the NP-options.'
+            vr.err(feat.full_key + '_head', mess)
 
         if not ch.has_dirinv() and feat.get('head') in ['higher', 'lower']:
           mess = 'That choice is not available in languages ' +\
@@ -1050,9 +1066,13 @@ def validate_lexicon(ch, vr):
             mess = 'You must choose a value for each feature you specify.'
             vr.err(feat.full_key + '_value', mess)
 
-          if slotprefix == 'verb' and not feat.get('head'):
-            mess = 'You must choose where the feature is specified.'
-            vr.err(feat.full_key + '_head', mess)
+          if slotprefix == 'verb':
+            if not feat.get('head'):
+              mess = 'You must choose where the feature is specified.'
+              vr.err(feat.full_key + '_head', mess)
+            elif feat.get('head') == 'verb' and index_feat.count(feat.get('name')) > 0:
+              mess = 'This feature is associated with nouns, please select one of the NP-options.'
+              vr.err(feat.full_key + '_head', mess)
 
 
 ######################################################################
