@@ -5,19 +5,40 @@
 
 import re
 import os
+import shutil
+
+#(tsdb:tsdb :cpu :temp :file t :count 1 :error :exit :wait 1200)
+#(setf target
+#  (format
+#    nil "~a~a"
+#    (tsdb::suggest-test-run-directory "target" :absolute nil)
+#    "_foo"))
+
+
+
+tsdb = '''
+(setf (system:getenv "DISPLAY") nil)
+(tsdb::tsdb :home "/dw22/d50/dpmills/home")
+(setf *tsdb-skeleton-directory* "/dw22/d50/dpmills/skeletons")
+(tsdb::tsdb :skeletons "/dw22/d50/dpmills/skeletons")
+(tsdb:tsdb :create "target" :skeleton "skeleton")
+(tsdb::tsdb-do-process "target" :type :translate :overwrite t :gold "profile")
+'''
 
 #Generate sentences from mrs files
 def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir):
   lkb_input = open('lkb_input','w')
+  #lkb_input.write('(load \"%s/lkb/src/general/defsystem.lisp\")(load \"%s/lkb/src/general/loadup.lisp\")(load-system \"tsdb\")' % (delphin_dir,delphin_dir))
   lkb_input.write('(read-script-file-aux "%s/lkb/script")' % (grammar))
   lkb_input.write('(setf *maximum-number-of-edges* 10000)')
+  #lkb_input.write(tsdb)
   for file in mrs_files:
     lkb_input.write('(null (print (generate-from-mrs (mrs::read-mrs-from-file "%s"))))' % (file))
-    #lkb_input.write('(print-gen-chart)')
   lkb_input.flush()
   output = os.popen('cat lkb_input | %s | sed -n "/^LKB/,/EOF$/p"' % (delphin_dir + '/bin/lkb'))
   lkb_input.close()
   os.remove('lkb_input')
+  shutil.rmtree('/dw22/d50/dpmills/home/target')
   sentences = []
   index = 0
   string = ""
@@ -198,6 +219,8 @@ def var(string):
     string = "num"
   elif string == "person":
     string = "per"
+  elif string == "gender":
+    string = "gend"
   if string.lower() in [ "sf","cog-st","speci","sort" ]:
     pass
   elif string.lower() in ["situation","tense","aspect" ]:

@@ -1,0 +1,28 @@
+Language: English
+Language code: eng
+Author: Daniel Mills
+Date: Jan 13, 2010
+Source a: ...
+
+#----Word Order----#
+
+#1
+Source: author
+Vetted: t
+Judgment: g
+Phenomena: {}
+The dog sleeps
+The dog sleep-s
+The dog sleep-3p
+'The dog sleeps'
+
+#2
+Source: author
+Vetted: t
+Judgment: g
+Phenomena: {}
+The cat chases the dog
+The cat chase-s the dog
+The cat chase-3p the dog
+'The ca chases the dog'
+

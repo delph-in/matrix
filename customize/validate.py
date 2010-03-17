@@ -1221,6 +1221,10 @@ def validate_arg_opt(ch, vr):
         mess = 'You must choose where the feature is specified.'
         vr.err(feat.full_key+'_head',mess)
 
+def validate_gen_opt(ch,rv):
+  """Check that the options that the user specified for generation are valid"""
+  pass
+  
 
 def validate(ch, extra = False):
   """
@@ -1247,7 +1251,8 @@ def validate(ch, extra = False):
   validate_types(ch, vr)
   validate_features(ch, vr)
   validate_arg_opt(ch, vr)
-
+  validate_gen_opt(ch, vr)
+  
   if extra:
     validate_extra_constraints(ch, vr)
 
