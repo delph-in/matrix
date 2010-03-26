@@ -94,10 +94,12 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir):
   return sentences
 
 def remove_duplicates(list):
-  new_list = []
-  while(list != []):
-    new_list.append(list[0])
-    list = filter((lambda x:x[0] != list[0][0]),list)
+  new_list = {}
+  for k in list.iterkeys():
+    insert = True
+    for v in new_list.itervalues():
+      if v[0] == list[k][0]: insert = False
+    if insert: new_list[k] = list[k]
   return new_list
 
 # Extract predications from the grammar
@@ -105,28 +107,32 @@ def get_n_predications(grammar_dir):
   lexicon = open(grammar_dir+'/lexicon.tdl','r')
   choices = open(grammar_dir+'/choices','r')
   lang = None
-  pred_re = re.compile(r'noun([0-9]+)_stem1_pred')
+  pred_re = re.compile(r'noun([0-9]+)_stem[0-9]+_pred')
   det_re = re.compile(r'noun([0-9]+)_det')
-  noun_rels_dets = []
+  det_rel_re = re.compile(r'det[0-9]+_stem[0-9]+_pred')
+  noun_rels_dets = {}
   for line in choices:
     pline = line.lstrip().split('=')
     m1 = pred_re.match(pline[0])
     m2 = det_re.match(pline[0])
+    m3 = det_rel_re.match(pline[0])
     if pline[0] == 'language':
       lang = grammar_dir+'/'+pline[1].lower().rstrip()+'.tdl'
     if m1:
-      if int(m1.group(1)) <= len(noun_rels_dets):
-        noun_rels_dets[int(m1.group(1))-1][0] = pline[1].rstrip()
+      if m1.group(1) in noun_rels_dets:
+        noun_rels_dets[m1.group(1)][0] = pline[1].rstrip()
       else:
-        noun_rels_dets.append([pline[1].rstrip(),None])        
+        noun_rels_dets[m1.group(1)] = [pline[1].rstrip(),None]        
     if m2:
-      if int(m2.group(1)) <= len(noun_rels_dets):
-        noun_rels_dets[int(m2.group(1))-1][1] = pline[1].rstrip()
+      if m2.group(1) in noun_rels_dets:
+        noun_rels_dets[m2.group(1)][1] = pline[1].rstrip()
       else:
-        noun_rels_dets.append([None,pline[1].rstrip()])
-    if pline[0] == 'det1_stem1_pred':
+        noun_rels_dets[m2.group(1)]  = [None,pline[1].rstrip()]
+    if m3:
       det_rel = pline[1].rstrip()
-  noun_rels_dets = remove_duplicates(noun_rels_dets)
+  map_noun_rels_dets = remove_duplicates(noun_rels_dets)
+  noun_rels_dets = []
+  for v in map_noun_rels_dets.itervalues(): noun_rels_dets.append(v)
   noun_rels = []
   det_rels = []
   for pair in noun_rels_dets:
