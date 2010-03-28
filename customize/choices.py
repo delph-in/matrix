@@ -1648,13 +1648,17 @@ class ChoicesFile:
   def convert_20_to_21(self):
     """
     Inflectional rules no longer have three constraint types (req,
-    forces, disreq), but two (require, forbid). This system will
-    determine if requires applies to a previous or following slot.
+    forces, disreq), but two (require, forbid). Customization will
+    later determine if 'requires' applies to a previous or following
+    slot. Also added: 'require' can take a disjunctive set (require A
+    or B), but since this is marked on ..._other-slot with a
+    comma-separated list, we don't need to do anything here. And also,
+    constraints can be marked on morphemes, but nothing needs to be
+    done for that, either.
     """
     for slotprefix in ('noun', 'verb', 'det', 'aux'):
       for slot in self.get(slotprefix + '-slot'):
         for const in slot.get('constraint',[]):
-          if const['type'] in ('forces', 'req'):
-            self.convert_value(const.full_key + '_type', 'forces', 'require')
-          elif const['type'] == 'disreq':
-            self.convert_value(const.full_key + '_type', 'disreq', 'forbid')
+          self.convert_value(const.full_key + '_type', 'forces', 'require')
+          self.convert_value(const.full_key + '_type', 'req', 'require')
+          self.convert_value(const.full_key + '_type', 'disreq', 'forbid')

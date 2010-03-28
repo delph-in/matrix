@@ -844,8 +844,8 @@ lex-rule := phrase-or-lexrule & word-or-lexrule &
 ; of defaults).
 
 inflected := avm.
-infl-initial := avm.
-infl-satisfied := avm.
+infl-initial := inflected.
+infl-satisfied := inflected.
 
 ; Lexeme-to-word rules are hypothesized to monotonically add synsem
 ; information.
