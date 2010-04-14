@@ -274,7 +274,9 @@ def html_input(vr, type, name, value, checked, before, after,
     return '%s%s<TextArea name="%s"%s>%s</TextArea>%s' % \
          (before, mark, name, size, value, after)
   else:
-    return '%s%s<input type="%s" name="%s" value="%s"%s%s%s%s>%s' % \
+    if value:
+      value = ' value="' + value + '"'
+    return '%s%s<input type="%s" name="%s" %s%s%s%s%s>%s' % \
          (before, mark, type, name, value, chkd, size, dsabld,
           onclick, after)
 

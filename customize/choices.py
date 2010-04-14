@@ -68,9 +68,7 @@ class ChoicesFile:
   # initialize by passing either a file name or ???file handle
   def __init__(self, choices_file=None):
 
-    self.iter_stack = []
     self.cached_values = {}
-    self.cached_iter_values = None
     self.choices = ChoiceDict()
 
     if choices_file is not None:
@@ -104,9 +102,9 @@ class ChoicesFile:
     """
     version = 0
     for line in [l.strip() for l in choice_lines if l.strip() != '']:
-      (key, value) = line.split('=',1)
-      if key == 'version':
-         version = int(value)
+      if line.startswith('version'):
+        version = int(line.split('=',1)[1])
+        break
     return version
 
   def parse_choices(self, choice_lines):
@@ -126,9 +124,10 @@ class ChoicesFile:
                                       allow_overwrite=False)
       except ValueError:
         pass # TODO: log this!
+      except AttributeError:
+        pass # TODO: log this!
       except ChoicesFileParseError:
-        raise ChoicesFileParseError('Variable is multiply defined: %s' % key)
-
+        pass # TODO: log this!
     return choices
 
   # use the following re if keys like abc_def should be split:
@@ -184,11 +183,14 @@ class ChoicesFile:
       if count < var:
         choices += [ChoiceDict(full_key=key_prefix + str(count+i+1))
                     for i in range(var - count)]
-      choices[var - 1] = self.__set_variable(choices[var - 1],
-                                           keys,
-                                             value,
-                                             allow_overwrite,
-                                             key_prefix + str(var))
+      val = self.__set_variable(choices[var - 1],
+                                keys,
+                                value,
+                                allow_overwrite,
+                                key_prefix + str(var))
+      if type(val) is not ChoiceDict:
+        raise ChoicesFileParseError('Invalid value for iterated choice.')
+      choices[var - 1] = val
     except ValueError:
       new_key_prefix = '_'.join([k for k in [key_prefix, var] if k])
       choices[var] = self.__set_variable(choices.get(var, None),
@@ -268,7 +270,8 @@ class ChoicesFile:
 
   def preparse_uprev(self, choice_lines):
     """
-    Convert choices file lines before they are parsed.
+    Convert choices file lines before they are parsed. A choice can be
+    removed by setting the key to None in the conversion method.
     """
     new_lines = []
     for line in choice_lines:
@@ -284,7 +287,8 @@ class ChoicesFile:
         # before it is parsed, but the appropriate method here:
         # if self.version < N
         #   self.preparse_convert_N-1_to_N(key, value)
-        new_lines += ['='.join([key, value])]
+        if key is not None:
+          new_lines += ['='.join([key, value])]
       except ValueError:
         pass # TODO: log this!
       except ChoicesFileParseError:
@@ -347,7 +351,6 @@ class ChoicesFile:
 
   def clear_cached_values(self):
     self.cached_values = {}
-    self.cached_iter_values = None
 
   ######################################################################
   # Methods for accessing "derived" values -- that is, groups of values
@@ -1544,7 +1547,7 @@ class ChoicesFile:
     Removes the feature MARK. Converts MARK feature to featureX_name (Other Features)
     where X places it at the end of the list of other features:
     --mark -> featureX_name=mark
-    --featureX_type=head 
+    --featureX_type=head
     All MARK values are converted to featureX values:
     --markY_name=mY -> featureX_valueY_name=mY
     --featureX_valueY_supertype_name=mark
