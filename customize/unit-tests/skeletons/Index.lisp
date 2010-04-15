@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the unit tests started.  SOV word order, no frills."))
  ;;; new-unit-test-here
+((:path . "eng-qpart-inf") (:content . "eng-qpart-inf: Testing interaction of non-finite form and question particle.  Question particle should now only attach to finite sentences."))
 ((:path . "arg-opt-lex-comps-drop-np-wth-drop-np-wthout") (:content . "arg-opt-lex-comps-drop-np-wth-drop-np-wthout: slexically based complement dropping.  marker is not permitted for dropped or overt objects"))
 ((:path . "arg-opt-lex-subj-drop-marker-req-wth-drop-opt-wthout") (:content . "arg-opt-lex-subj-drop-marker-req-wth-drop-opt-wthout: lexically based subject dropping. marker is required for a dropped subject and optinal for a overt subject"))
 ((:path . "arg-opt-lex-subj-drop-marker-req-wth-drop-np-wthout") (:content . "arg-opt-lex-subj-drop-marker-req-wth-drop-np-wthout: lexically based subject dropping. mmareker is required with a dropped subject and not permitted with an overt subject"))
