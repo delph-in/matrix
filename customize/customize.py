@@ -2011,10 +2011,11 @@ def customize_yesno_questions():
                                      SPEC #spec ],
                              MC na ],
                  LKEYS #lkeys ],
-        DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ < #subj >,
-                                     COMPS #comps,
-                                     SPR #spr,
-                                     SPEC #spec ],
+        DTR.SYNSEM [ LOCAL.CAT [ HEAD verb,
+                                 VAL [ SUBJ < #subj >,
+                                       COMPS #comps,
+                                       SPR #spr,
+                                       SPEC #spec ]],
                      LKEYS #lkeys ]].'''
     mylang.add(typedef, comment, section='lexrules')
 
