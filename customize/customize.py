@@ -2069,6 +2069,19 @@ def customize_yesno_questions():
          [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
     mylang.add(typedef, comment, section='otherlex')
 
+    # ERB 2010-04-15 If we have a finite/non-finite distinction in the
+    # language, the qpart should insist on attaching to finite clauses
+    # only.  An alternative would be to have it raise the FORM value, but
+    # I don't see any evidence for that just now. Using presence of 'form'
+    # in hierarchies to detect this situation. This could break if someone
+    # named their own feature "form", but the name-space validation should
+    # catch that.  This works because customize_form() is called before
+    # customize_yesno_questions. This is an example of cross-library
+    # interaction.
+
+    if 'form' in hierarchies:
+      mylang.add('qpart-lex-item := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].')
+
 # ERB 2009-07-01 To remove:
 #   if ch.get('q-infl'):
 
