@@ -1991,20 +1991,16 @@ def customize_yesno_questions():
       'Rule for inverted subject verb order in questions.\n' + \
       'The incompatible SUBJ values on SYNSEM and DTR are\n' + \
       'what keeps this one from spinning.'
-    if qinvverb == 'aux':
-      aux = ', AUX +'
-    elif qinvverb == 'main':
-      aux = ', AUX -'
-    elif qinvverb == 'main-aux':
-      aux = ''
+
       # ERB 2006-10-05 Adding in semantics here.  This rule constrains MESG to ques.
       # ERB 2007-01-21 Removing semantics here: Need to allow inversion to not express questions.  Instead, the result of this is MC na, and there is a separate non-branching rule which introduces question semantics.  Following the ERG in this.
+      # ERB 2010-04-15 Adding [AUX +] on DTR, too.
     typedef = '''
     subj-v-inv-lrule := cat-change-only-lex-rule &
 			same-hc-light-lex-rule &
 			same-posthead-lex-rule &
                         constant-lex-rule &
-      [ SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV +''' + aux + ''' ],
+      [ SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV + ],
                              VAL [ COMPS < #subj . #comps >,
                                      SUBJ < >,
                                      SPR #spr,
@@ -2020,6 +2016,50 @@ def customize_yesno_questions():
     mylang.add(typedef, comment, section='lexrules')
 
     lrules.add('inv-lr := subj-v-inv-lrule.')
+
+    # ERB 2010-04-15 Cleaning up treatent of constraints on AUX, 
+    # which were still very old-school. Need to both constrain DTR
+    # and copy the value up.  Only checking qinvverb if we know
+    # we have auxiliaries.
+
+    if has_auxiliaries_p():
+      mylang.add('''
+                 subj-v-inv-lrule :=
+                    [ SYNSEM.LOCAL.CAT.HEAD.FORM #form,
+                      DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].''')
+
+      if qinvverb == 'aux':
+        mylang.add('subj-v-inv-lrule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
+
+      if qinvverb == 'main':
+        mylang.add('subj-v-inv-lrule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
+
+
+
+    # ERB 2010-04-15 If object drop is enabled (i.e., if the 
+    # head-opt-comp rule is instantiated) then we need to prevent
+    # the inverted subject from being dropped.  This is true even if
+    # subject drop is generally allowed, since subj-verb inversion
+    # is not apparent if the subject is dropped.  Assuming for now
+    # that this rule would not be used to model inflection that requires
+    # subj-v inversion but allows subject drop.
+
+    if ch.get('obj-drop'):
+      mylang.add('subj-v-inv-lrule := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT - ].')
+
+
+    # ERB 2010-04-15 If we have a finite/non-finite disctintion,
+    # the FORM value needs to be copied up.  FIXME: More generally,
+    # any verby head features should be copied by this rule.
+    # See notes on FORM and qpart below.
+
+    if 'form' in hierarchies:
+      mylang.add('''
+                 subj-v-inv-lrule :=
+                    [ SYNSEM.LOCAL.CAT.HEAD.FORM #form,
+                      DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].''')
+
+
 
     # ERB 2007-01-21 Then we need the non-branching construction which
     # corrects to MC + and adds SF ques.
@@ -2082,6 +2122,7 @@ def customize_yesno_questions():
 
     if 'form' in hierarchies:
       mylang.add('qpart-lex-item := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].')
+
 
 # ERB 2009-07-01 To remove:
 #   if ch.get('q-infl'):
