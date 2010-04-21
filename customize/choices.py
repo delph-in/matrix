@@ -1656,7 +1656,7 @@ class ChoicesFile:
     constraints can be marked on morphemes, but nothing needs to be
     done for that, either.
     """
-    for slotprefix in ('noun', 'verb', 'det', 'aux'):
+    for slotprefix in ('noun', 'verb', 'det', 'aux', 'adj'):
       for slot in self.get(slotprefix + '-slot'):
         for const in slot.get('constraint',[]):
           self.convert_value(const.full_key + '_type', 'forces', 'require')
