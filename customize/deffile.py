@@ -264,10 +264,11 @@ def html_input(vr, type, name, value, checked, before, after,
     dsabld = ' disabled'
 
   mark = ''
-  if name in vr.errors:
-    mark = html_error_mark(vr.errors[name])
-  elif name in vr.warnings:
-    mark = html_warning_mark(vr.warnings[name])
+  if vr:
+    if name in vr.errors:
+      mark = html_error_mark(vr.errors[name])
+    elif name in vr.warnings:
+      mark = html_warning_mark(vr.warnings[name])
 
   if type == 'textarea':
     value = value.replace('\\n','\n')
@@ -508,7 +509,6 @@ class MatrixDefFile:
     f = open(self.def_file, 'r')
     line = merge_quoted_strings(f.readlines())
     f.close()
-    
 
     # pass through the definition file once, augmenting the list of validation
     # results with section names so that we can put red asterisks on the links
@@ -560,13 +560,19 @@ class MatrixDefFile:
         cur_sec = ''
         printed_something = False
         for c in choice:
-          c = c.strip()
-          if c:
-            (a, v) = c.split('=', 1)
-            if a == 'section':
-              cur_sec = v.strip()
-            elif cur_sec == word[1]:
-              print self.f(a) + ' = ' + self.f(v) + '<br>'
+          try:
+            c = c.strip()
+            if c:
+              (a, v) = c.split('=', 1)
+              if a == 'section':
+                cur_sec = v.strip()
+              elif cur_sec == word[1]:
+                print self.f(a) + ' = ' + self.f(v) + '<br>'
+                printed_something = True
+          except ValueError:
+            if cur_sec == word[1]:
+              print '(<i>Bad line in choices file: </i>"<tt>' +\
+                      c + '</tt>")<br>'
               printed_something = True
         if not printed_something:
           print '&nbsp;'
@@ -1134,3 +1140,22 @@ class MatrixDefFile:
       self.save_choices_section(lines[cur_sec_begin:i], f, choices)
 
     f.close()
+
+  def choices_error_page(self, choices_file):
+    print HTTP_header + '\n'
+    print HTML_pretitle
+    print '<title>Invalid Choices File</title>'
+    print HTML_prebody
+
+    print '<div style="position:absolute; top:15%; width:60%">\n' + \
+          '<p style="color:red; text-align:center; font-size:12pt">' + \
+          'The provided choices file is invalid. If you have edited the ' +\
+          'file by hand, please review the changes you made to make sure ' +\
+          'they follow the choices file file format. You may download ' +\
+          'the choices file to try and fix any errors.</p>\n'
+
+    print html_input(None, 'button', '', 'Download Choices File', False,
+                    '<p style="text-align:center">', '</p>', '',
+                     'window.location.href=\'' + choices_file + '\'')
+
+    print HTML_postbody

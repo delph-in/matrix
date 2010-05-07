@@ -116,10 +116,10 @@ class ChoicesFile:
     for line in [l.strip() for l in choice_lines if l.strip() != '']:
       try:
         (key, value) = line.split('=',1)
-        if key in ('section', 'version'):
+        if key.strip() in ('section', 'version'):
             continue
         choices = self.__set_variable(choices,
-                                      self.split_variable_key(key),
+                                      self.split_variable_key(key.strip()),
                                       value,
                                       allow_overwrite=False)
       except ValueError:
