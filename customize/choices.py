@@ -49,7 +49,7 @@ class ChoiceList(ChoiceCategory, list):
     try:
       return list.__getitem__(self, key)
     except IndexError:
-      return []
+      return {}
 
   # custom iterator ignores empty items (e.g. when a
   # user deletes an item in the middle of a list)
@@ -150,8 +150,10 @@ class ChoicesFile:
     try:
       for k in keys:
         d = d[k]
-    except (KeyError, IndexError):
-      return default or []
+    except KeyError:
+      return default or ''
+    except IndexError:
+      return default or {}
     return d
 
   # A __getitem__ method so that ChoicesFile can be used with brackets,
