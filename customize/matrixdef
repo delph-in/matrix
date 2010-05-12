@@ -882,6 +882,15 @@ dropped and required or optional when an overt subject is present,
 select <span class=\"feat\">drp-arg</span> not permitted and marked on
 the subject.</p>"
 
+Label "<p> For each morpheme that is optional when a subject is
+dropped and required when an overt subject is present, select 
+<span class=\"feat\">dropped-arg</span>  permitted and marked 
+on the subject.</p>"
+
+Label "<p>For each morpheme that is required when a subject is dropped and 
+optional when an overt subject is present, select 
+<span class=\"feat\">overt-arg</span> permitted and marked on the subject.</p>"
+
 Radio subj-con  "Subject Context" "<p>Subject dropping occurs in </p>" ""
 . subj-con-always "Subj Context All" "" "all contexts<br>"
 . subj-con-some "Subj Context Some" "" "some contexts"
@@ -945,6 +954,16 @@ Label "<p> For each morpheme that is not permitted when an object is
 dropped and required or optional when an overt object is present,
 select <span class=\"feat\">drp-arg</span> not permitted and marked on
 the object.</p>"
+
+Label "<p> For each morpheme that is optional when an object is
+dropped and required when an overt object is present, select
+<span class=\"feat\">dropped-arg</span>  permitted and marked
+on the object.</p>"
+
+Label "<p>For each morpheme that is required when an object is dropped and
+optional when an overt object is present, select
+<span class=\"feat\">overt-arg</span> permitted and marked on the object.</p>"
+
 
 Label "<h4>References</h4>"
 Label "<font size=\"2\">"

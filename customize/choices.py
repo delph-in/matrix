@@ -915,10 +915,10 @@ class ChoicesFile:
 
     perm_notperm_string = 'permitted|permitted;not-permitted|not-permitted'
     # Overt Argument
-    #if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
-    #   self.get('obj-mark-drop') == 'obj-mark-drop-req':
-     # features += [['overt-arg', perm_notperm_string, '']]
-    if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
+    if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
+         self.get('obj-mark-drop') == 'obj-mark-drop-req':
+      features += [['overt-arg', perm_notperm_string, '']]
+    elif self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
          self.get('obj-mark-drop') == 'obj-mark-drop-req':
       features += [['overt-arg', perm_notperm_string, '']]
     elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and \
@@ -935,24 +935,32 @@ class ChoicesFile:
       features += [['overt-arg', perm_notperm_string, '']]
 
     # Dropped Argument
-    if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
-       self.get('obj-mark-drop') == 'obj-mark-drop-req':
-      features += [['dropped-arg', perm_notperm_string, '']]
-    elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and \
-         self.get('subj-mark-drop') == 'subj-mark-drop-req':
-      features += [['dropped-arg', perm_notperm_string, '']]
-    elif self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
-       self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+    #if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
+    #   self.get('obj-mark-drop') == 'obj-mark-drop-req':
+    #  features += [['dropped-arg', perm_notperm_string, '']]
+    #if self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and \
+    #     self.get('subj-mark-drop') == 'subj-mark-drop-req':
+    #  features += [['dropped-arg', perm_notperm_string, '']]
+    if self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
+         self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
       features += [['dropped-arg', perm_notperm_string,'']]
     elif self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
          self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt':
       features += [['dropped-arg', perm_notperm_string,'']]
+    elif self.get('obj-mark-drop') == 'obj-mark-drop-opt' and \
+         self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+      features += [['dropped-arg', perm_notperm_string, '']]
     elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
          self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
       features += [['dropped-arg', perm_notperm_string,'']]
     elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
          self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt':
       features += [['dropped-arg', perm_notperm_string,'']]
+    elif self.get('subj-mark-drop') == 'subj-mark-drop-opt' and \
+         self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+      features += [['dropped-arg', perm_notperm_string,'']]
+   
+ #elif self.get('subj-mark-drop') == 'subj-mark-drop-opt') and self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req': features += [['dropped-arg', perm_notperm_string, '']]
 
     for feature in self.get('feature'):
       feat_name = feature['name']
@@ -981,7 +989,7 @@ class ChoicesFile:
   # to 5, call convert_2_to_3, convert_3_to_4, and convert_4_to_5, in
   # that order.
   #
-  # The methods should consist of a sequence of calls to
+  # The mehods should consist of a sequence of calls to
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
