@@ -19,7 +19,7 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
                 {'name':'testverb2', 'valence':'trans',
                     'stem':[{'orth':'test','pred':'test_v_2_rel'}]})
         self.assertEqual(c.get('verb3'), {})
-        self.assertEqual(c.get('verb3_NOSUCH'), [])
+        self.assertEqual(c.get('verb3_NOSUCH'), '')
 
     def test_set(self):
         c = customize.choices.ChoicesFile() # no file loaded

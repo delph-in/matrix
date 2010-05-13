@@ -598,10 +598,8 @@ class MatrixDefFile:
     print '<hr>\n'
 
     # the button for downloading the choices file
-    print html_input(vr, 'button', '', 'Download Choices File', False,
-                     '<p>', '</p>', '',
-                     'window.location.href=\'' + choices_file + '\'')
-    
+    print '<p><a href="' + choices_file + '">View Choices File</a> ',
+    print '(right-click to download)</p>'
     print HTML_postform
 
     # the FORM for uploading a choices file

@@ -5,7 +5,7 @@
 
 import re
 import sys
-from util.misc import safe_int
+from util.misc import safe_int, get_valid_lines
 
 ######################################################################
 # globals
@@ -77,8 +77,8 @@ class ChoicesFile:
         if type(choices_file) == str:
           f = open(choices_file, 'r')
         f.seek(0)
-        lines = f.readlines()
-        self.load_choices([l.strip() for l in lines if l.strip() != ''])
+        lines = get_valid_lines(f.readlines())
+        self.load_choices(lines)
         if type(choices_file) == str:
           f.close()
       except IOError:
