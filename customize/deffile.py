@@ -1111,6 +1111,7 @@ class MatrixDefFile:
     # Now pass through the def file, writing out either the old choices
     # for each section or, for the section we're saving, the new choices
     f = open(choices_file, 'w')
+    f.write('\n') # blank line in case an editor inserts a BOM
     f.write('version=' + str(old_choices.current_version()) + '\n\n')
 
     cur_sec = ''
