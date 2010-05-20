@@ -6,6 +6,7 @@
 import sys
 import re
 
+import tdl
 from choices import ChoicesFile
 from utils import get_name
 
@@ -298,7 +299,7 @@ def validate_names(ch, vr):
   # Whew!  OK, now we have two sets of type names and a set of
   # patterns:
   #
-  #   reserved_types: types that user's may not use
+  #   reserved_types: types that users may not use
   #   user_types: the types the user is trying to use
   #   forbidden_type_patterns: user types must not match these
   #
@@ -334,8 +335,11 @@ def validate_names(ch, vr):
         vr.err(user_types[i][1], collision_error)
       last_was_collision = False
 
-
-
+    invalids = [t for t in user_types[i][0] if not tdl.isid(t)]
+    if len(invalids) > 0:
+      vr.err(user_types[i][1],
+             '"' + user_types[i][0] + '" contains invalid characters: ' +\
+             ''.join(invalids))
 
 ######################################################################
 # validate_general(ch, vr)

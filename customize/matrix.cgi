@@ -136,7 +136,12 @@ if form_data.has_key('customize'):
                   'saved-choices/choices.' + str(serial))
 
     # Create the customized grammar
-    grammar_dir = customize_matrix(session_path, arch_type)
+    try:
+      grammar_dir = customize_matrix(session_path, arch_type)
+    except:
+      matrixdef.customize_error_page(session_path + '/choices')
+      sys.exit()
+
     if form_data.has_key('sentences'):
       matrixdef.sentences_page(session_path, grammar_dir, cookie)
     else:

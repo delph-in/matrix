@@ -1153,8 +1153,24 @@ class MatrixDefFile:
           'they follow the choices file file format. You may download ' +\
           'the choices file to try and fix any errors.</p>\n'
 
-    print html_input(None, 'button', '', 'Download Choices File', False,
-                    '<p style="text-align:center">', '</p>', '',
-                     'window.location.href=\'' + choices_file + '\'')
+    print '<p style="text-align:center"><a href="' + choices_file + '">' +\
+          'View Choices File</a> (right-click to download)</p>'
+    print HTML_postbody
 
+  def customize_error_page(self, choices_file):
+    print HTTP_header + '\n'
+    print HTML_pretitle
+    print '<title>Problem Customizing Grammar</title>'
+    print HTML_prebody
+
+    print '<div style="position:absolute; top:15%; width:60%">\n' + \
+          '<p style="color:red; text-align:center; font-size:12pt">' + \
+          'The Grammar Matrix Customization System was unable to create ' +\
+          'a grammar with the provided choices file. You may go back in ' +\
+          'your browser to try and fix the problem, or if you think ' +\
+          'there is a bug in the system you may email the choices file ' +\
+          'to the developers</p>\n'
+
+    print '<p style="text-align:center"><a href="' + choices_file + '">' +\
+          'View Choices File</a> (right-click to download)</p>'
     print HTML_postbody
