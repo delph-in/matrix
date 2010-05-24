@@ -832,69 +832,22 @@ lex-rule := phrase-or-lexrule & word-or-lexrule &
     ALTS #alts,
     ARGS < #dtr > ].
 
-; Lexical rules vary on two dimensions: whether they are lexeme-to-lexeme
-; or lexeme-to-word and whether or not they involve spelling changes.
-; Accordingly, we define four subtypes of lex-rule, which have
-; four cross-classified glb subtypes:
-
-; Note that the lexeme/word distinction is represented via a feature
-; [INFLECTED inflected] rather than as a type.  We find this more convenient,
-; as it allows certain words to be [INFLECTED infl-satisfied] from the start without
-; having to twist the hierarchy too much (especially if one makes use
-; of defaults).
+; To model the morphotactics, we introduce a complex type on which we
+; set or check flags. The flags (luk features) change value based on
+; whether a set of lexical rules have occurred, need to occur, or are
+; forbidden from occurring. The actual features inside inflected will
+; be defined in the language-specific grammar files.
 
 inflected := avm.
 infl-initial := inflected.
 infl-satisfied := inflected.
 
-; Lexeme-to-word rules are hypothesized to monotonically add synsem
-; information.
-
 ; ERB 2005-04-14 But it's a bad idea to copy the whole synsem
 ; value, since that means identifying RELS and HCONS lists, breaking
 ; the diff-list append.
 
-; ERB 2009-07-01 We've known for a long time now that it's simply
-; not true that the switch from lexeme to word should always happen
-; in an add-only-no-ccont-lex-rule.  I'm going to remove that constraint
-; now and make lexeme-to-word-rule only affect the INFLECTED value,
-; as it should.
-
-; MWG 2010.01.30 No longer necessary
-;lexeme-to-word-rule := lex-rule &
-;  [ INFLECTED infl-satisfied,
-;    DTR [ INFLECTED - ]].
-
-; Lexeme-to-lexeme rules can make more radical changes to the SYNSEM value.
-; (ERB 2004-02-11) This used to inherit from "lexeme" but now there is no
-; such type.  What was its purpose? (ERB 2007-02-13) Perhaps it was used
-; to encode the lexeme/word distinction, now handled by the feature
-; INFLECTED.
-
-; (ERB 2007-02-12) Removing identity of MC here because this to can be
-; changed by ltol rules.  Creating a new type same-mc-lex-rule, etc.
-
-; MWG 2010.01.30 No longer necessary
-;lexeme-to-lexeme-rule := lex-rule & 
-;  [ INFLECTED #infl,
-;    DTR.INFLECTED #infl ].
-
 ; ERB 2005-04-13 Add a few subtypes that copy up most other information,
 ; so that folks don't have to keep doing this. 
-
-; ERB 2005-04-14 If we copy the whole LOCAL value,
-; we're copying RELS and HCONS, which means we can't
-; add any sem through C-CONT. Thus what is 'logically'
-; same-local is really a bunch of smaller identities.
-
-;same-local-lex-rule := lexeme-to-lexeme-rule &
-;  [ SYNSEM.LOCAL #local,
-;    DTR.SYNSEM.LOCAL #local ].
-
-; ERB 2005-04-14 Don't want any of these inheriting
-; from lexeme-to-lexeme because they're supertypes
-; to lexeme-to-word.  This part of the hierarchy probably
-; needs to be cleaned up a bit.
 
 same-local-lex-rule := same-cat-lex-rule & 
 		       same-cont-lex-rule &
@@ -1044,6 +997,9 @@ add-only-rule := same-local-lex-rule &
 add-only-no-ccont-rule := add-only-rule &
 			  no-ccont-lex-rule.
 
+; Lexical rules vary on one dimensions: whether they involve spelling changes.
+; Accordingly, we define two subtypes of lex-rule.
+
 ; Spelling changing rules.  The LKB identifies these rules based
 ; on the NEEDS-AFFIX value. 
 
@@ -1060,35 +1016,32 @@ constant-lex-rule := lex-rule &
 ; Cross-classified types packaing spelling change status and
 ; feature copying.
 
-; MWG 2010.01.30 No longer necessary
-;const-ltol-rule := lexeme-to-lexeme-rule & constant-lex-rule & nocoord.
-;infl-ltol-rule := lexeme-to-lexeme-rule & inflecting-lex-rule & nocoord.
-;const-ltow-rule := lexeme-to-word-rule & constant-lex-rule & nocoord.
-;infl-ltow-rule := lexeme-to-word-rule & inflecting-lex-rule & nocoord.
-;
-;infl-non-local-change-only-ltol-rule := non-local-change-only-lex-rule &
-;					infl-ltol-rule.
-;
-;infl-local-change-only-ltol-rule := local-change-only-lex-rule &
-;				    infl-ltol-rule.
-;
-;infl-cont-change-only-ltol-rule := cont-change-only-lex-rule &
-;				   infl-ltol-rule.
-;
-;infl-ctxt-change-only-ltol-rule := ctxt-change-only-lex-rule &
-;				   infl-ltol-rule.
-;
-;infl-agr-change-only-ltol-rule := agr-change-only-lex-rule &
-;				  infl-ltol-rule.
-;
-;infl-cat-change-only-ltol-rule := cat-change-only-lex-rule &
-;				  infl-ltol-rule.
-;
-;infl-head-change-only-ltol-rule := head-change-only-lex-rule &
-; 				   infl-ltol-rule.
-;
-;infl-val-change-only-ltol-rule := val-change-only-lex-rule &
-;				  infl-ltol-rule.
+infl-lex-rule := inflecting-lex-rule & nocoord.
+const-lex-rule := constant-lex-rule & nocoord.
+
+infl-non-local-change-only-lex-rule := non-local-change-only-lex-rule &
+					infl-lex-rule.
+
+infl-local-change-only-lex-rule := local-change-only-lex-rule &
+				    infl-lex-rule.
+
+infl-cont-change-only-lex-rule := cont-change-only-lex-rule &
+				   infl-lex-rule.
+
+infl-ctxt-change-only-lex-rule := ctxt-change-only-lex-rule &
+				   infl-lex-rule.
+
+infl-agr-change-only-lex-rule := agr-change-only-lex-rule &
+				  infl-lex-rule.
+
+infl-cat-change-only-lex-rule := cat-change-only-lex-rule &
+				  infl-lex-rule.
+
+infl-head-change-only-lex-rule := head-change-only-lex-rule &
+ 				   infl-lex-rule.
+
+infl-val-change-only-lex-rule := val-change-only-lex-rule &
+				  infl-lex-rule.
 
 ; ERB 2005-04-26 Take care with the following two rules.  While
 ; they likely won't be circular for parsing (since the surface form
@@ -1097,46 +1050,46 @@ constant-lex-rule := lex-rule &
 ; incompatible, I recommend constraining the type of the DTR to
 ; something incompatible with the type of the rule.
 
-;infl-add-only-ltol-rule := add-only-rule &
-;			   infl-ltol-rule.
-;
-;infl-add-only-no-ccont-ltol-rule := add-only-no-ccont-rule &
-;				    infl-ltol-rule.
-;
-;const-non-local-change-only-ltol-rule := non-local-change-only-lex-rule &
-;					 const-ltol-rule.
-;
-;const-local-change-only-ltol-rule := local-change-only-lex-rule &
-;				     const-ltol-rule.
-;
-;const-cont-change-only-ltol-rule := cont-change-only-lex-rule &
-;				    const-ltol-rule.
-;
-;const-ctxt-change-only-ltol-rule := ctxt-change-only-lex-rule &
-;				    const-ltol-rule.
-;
-;const-agr-change-only-ltol-rule := agr-change-only-lex-rule &
-;				   const-ltol-rule.
-;
-;const-cat-change-only-ltol-rule := cat-change-only-lex-rule &
-;				   const-ltol-rule.			       
-;
-;const-head-change-only-ltol-rule := head-change-only-lex-rule &
-;				    const-ltol-rule.
-;
-;const-val-change-only-ltol-rule := val-change-only-lex-rule &
-;				   const-ltol-rule.
-;
-;; ERB 2005-04-14 Take care when using the following two types
-;; not to create circular rules.  They may still be useful (the
-;; latter is employed in the Slave grammar), but you'll need to
-;; make sure that the DTR type is incompatible with the rule type.
-;
-;const-add-only-ltol-rule := add-only-rule &
-;			    const-ltol-rule.			   
-;
-;const-add-only-no-ccont-ltol-rule := add-only-no-ccont-rule &
-;				     const-ltol-rule.
+infl-add-only-lex-rule := add-only-rule &
+			   infl-lex-rule.
+
+infl-add-only-no-ccont-lex-rule := add-only-no-ccont-rule &
+				    infl-lex-rule.
+
+const-non-local-change-only-lex-rule := non-local-change-only-lex-rule &
+					 const-lex-rule.
+
+const-local-change-only-lex-rule := local-change-only-lex-rule &
+				     const-lex-rule.
+
+const-cont-change-only-lex-rule := cont-change-only-lex-rule &
+				    const-lex-rule.
+
+const-ctxt-change-only-lex-rule := ctxt-change-only-lex-rule &
+				    const-lex-rule.
+
+const-agr-change-only-lex-rule := agr-change-only-lex-rule &
+				   const-lex-rule.
+
+const-cat-change-only-lex-rule := cat-change-only-lex-rule &
+				   const-lex-rule.			       
+
+const-head-change-only-lex-rule := head-change-only-lex-rule &
+				    const-lex-rule.
+
+const-val-change-only-lex-rule := val-change-only-lex-rule &
+				   const-lex-rule.
+
+; ERB 2005-04-14 Take care when using the following two types
+; not to create circular rules.  They may still be useful (the
+; latter is employed in the Slave grammar), but you'll need to
+; make sure that the DTR type is incompatible with the rule type.
+
+const-add-only-lex-rule := add-only-rule &
+			    const-lex-rule.			   
+
+const-add-only-no-ccont-lex-rule := add-only-no-ccont-rule &
+				     const-lex-rule.
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

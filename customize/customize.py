@@ -19,6 +19,8 @@ from utils import get_name
 
 from lib import Hierarchy
 
+from linglib import morphotactics
+
 ######################################################################
 # globals
 
@@ -3580,8 +3582,8 @@ def customize_matrix(path, arch_type):
 
   # Customize inflection and lexicon first, since they can cause
   # augmentation of the hierarchies
-  customize_inflection()
   customize_lexicon()
+  morphotactics.customize_inflection(ch, mylang, irules, lrules)
 
   # Call the other customization functions
   customize_case()
