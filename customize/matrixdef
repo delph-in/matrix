@@ -33,6 +33,7 @@ Text affiliation "Affiliation" "<tr><td valign=\"top\">Your affiliation: <td>" "
 
 Text motivation "Motivation" "<tr><td valign=\"top\">Your reason for using this system: <td>" "<br>(e.g. descriptive linguistic research, for a class)</tr></table>" 80
 
+TextArea comment "Comments" "<tr><td valign=\"top\">Comments on your implementation of the grammar: <td>" "<br>(e.g. Choice of analyses, sources of information, etc.)</tr></table>" 80x6
 
 Section word-order "Word Order"
 
@@ -817,6 +818,7 @@ Radio q-inv-verb "Inverted verb in questions" "" ""
 . main-aux "Main and auxiliary" "" "any verb<br>"
 
 
+
 Section arg-opt "Argument Optionality"
 
 Label "<p> Languages place different restrictions on argument
@@ -856,8 +858,8 @@ Radio subj-drop "Subject Drop" "<p>Subject dropping can occur </p>" ""
 . subj-drop-lex "Subj Drop Some" "" "only with certain verbs"
 
 Label "<p>NOTE: When completing the lexicon page, for each verb type
-which allows subject dropping, select the feature <span
-class=\"feat\">OPT</span> + and marked on the subject.</p>"
+which does not allow subject dropping, select the feature <span
+class=\"feat\">OPT</span> - and marked on the subject.</p>"
 
 Radio subj-mark-drop "Subj Mark Drop" "<p>When a subject is dropped, a subject marker on the verb is</p>" ""
 . subj-mark-drop-req "Subj Mark Req" "" "required<br>"
@@ -879,6 +881,15 @@ Label "<p> For each morpheme that is not permitted when a subject is
 dropped and required or optional when an overt subject is present,
 select <span class=\"feat\">drp-arg</span> not permitted and marked on
 the subject.</p>"
+
+Label "<p> For each morpheme that is optional when a subject is
+dropped and required when an overt subject is present, select 
+<span class=\"feat\">dropped-arg</span>  permitted and marked 
+on the subject.</p>"
+
+Label "<p>For each morpheme that is required when a subject is dropped and 
+optional when an overt subject is present, select 
+<span class=\"feat\">overt-arg</span> permitted and marked on the subject.</p>"
 
 Radio subj-con  "Subject Context" "<p>Subject dropping occurs in </p>" ""
 . subj-con-always "Subj Context All" "" "all contexts<br>"
@@ -920,9 +931,8 @@ Radio obj-drop "Object Drop" "<p>Object dropping is </p>" ""
 . obj-drop-all "Obj Drop Always" "" "always allowed<br>"
 . obj-drop-lex "Obj Drop Lex" "" "lexically licensed"
 
-Label "<p>NOTE: When completing the lexicon page, for each verb which
-allows subject dropping, select the feature <span
-class=\"feat\">OPT</span> + and marked on the object.</p>"
+Label "<p>NOTE: When completing the lexicon page, for each verb which does not allow object dropping, select the feature <span
+class=\"feat\">OPT</span> - and marked on the object.</p>"
 
 Radio obj-mark-drop "Obj Mark Drop" "<p>When an object is dropped, an object marker on the verb is  </p>" ""
 . obj-mark-drop-req "Obj Mark Req" "" "required<br>"
@@ -944,6 +954,16 @@ Label "<p> For each morpheme that is not permitted when an object is
 dropped and required or optional when an overt object is present,
 select <span class=\"feat\">drp-arg</span> not permitted and marked on
 the object.</p>"
+
+Label "<p> For each morpheme that is optional when an object is
+dropped and required when an overt object is present, select
+<span class=\"feat\">dropped-arg</span>  permitted and marked
+on the object.</p>"
+
+Label "<p>For each morpheme that is required when an object is dropped and
+optional when an overt object is present, select
+<span class=\"feat\">overt-arg</span> permitted and marked on the object.</p>"
+
 
 Label "<h4>References</h4>"
 Label "<font size=\"2\">"
@@ -1075,8 +1095,9 @@ BeginIter noun-slot{i} "a Slot"
   BeginIter constraint{j} "a Constraint"
 
     Select type "Noun slot {i} constraint {j} type" "Constraint: " ", "
-    . req "Requires" "Require"
-    . forbid "Cannot co-occur" "Forbid"
+    . req "Requires closer" "Requires (earlier)"
+    . forces "Requires further" "Forces (later)"
+    . disreq "Cannot co-occur" "Forbids (earlier or later)"
 
     Select other-slot "Noun slot {i} constraint {j} other slot" "other slot: " ""
     fillregex (noun|verb|det)(-slot)[0-9]+_name
@@ -1204,7 +1225,7 @@ BeginIter aux{i} "an Auxiliary Type"
 
   EndIter compfeature
 
-  Label "Stems:"        
+  Label "<br><br>Stems:"        
 
   BeginIter stem{j} "a Stem" 1
 
@@ -1276,8 +1297,9 @@ BeginIter verb-slot{i} "a Slot"
   BeginIter constraint{j} "a Constraint"
 
     Select type "Verb slot {i} constraint {j} type" "Constraint: " ", "
-    . req "Requires" "Require"
-    . forbid "Cannot co-occur" "Forbid"
+    . req "Requires closer" "Requires (earlier)"
+    . forces "Requires further" "Forces (later)"
+    . disreq "Cannot co-occur" "Forbids (earlier or later)"
 
     Select other-slot "Verb slot {i} constraint {j} other slot" "other slot: " ""
     fillregex (noun|verb|det)(-slot)[0-9]+_name
@@ -1306,7 +1328,7 @@ BeginIter det{i} "a Determiner"
 
   EndIter stem
 
-  Label "Features:"
+  Label "<br><br>Features:"
 
   BeginIter feat{j} "a Feature"
 
@@ -1372,8 +1394,9 @@ BeginIter det-slot{i} "a Slot"
   BeginIter constraint{j} "a Constraint"
 
     Select type "Determiner slot {i} constraint {j} type" "Constraint: " ", "
-    . req "Requires" "Require"
-    . forbid "Cannot co-occur" "Forbid"
+    . req "Requires closer" "Requires (earlier)"
+    . forces "Requires further" "Forces (later)"
+    . disreq "Cannot co-occur" "Forbids (earlier or later)"
 
     Select other-slot "Determiner slot {i} constraint {j} other slot" "other slot: " ""
     fillregex (noun|verb|det)(-slot)[0-9]+_name
@@ -1396,7 +1419,7 @@ BeginIter adp{i} "an Adposition"
   . after "After" "after"
   . before "Before" "before"
 
-  BeginIter feat{j} "a Feature"
+  BeginIter feat{j} "a Feature" 1
 
     Select name "Adposition {i} feature {j} name" "Name: " " "
     fillnames

@@ -45,11 +45,11 @@
     ;;; Load grammar into the LKB
 
     (let* ((lg-name (get-language-name choices))
-	   (script (format nil "~a~a~a~a"
+	   (script (format nil "~a~a~a~a~a~a"
 			   *customization-root*
 			   "unit-tests/grammars/"
-			   lg-name
-			   "/matrix/lkb/script")))
+			   lg-name "/" lg-name
+			   "/lkb/script")))
       (read-script-file-aux script))
   
     ;;; Check that [incr tsdb()] is running, and if not
@@ -165,11 +165,11 @@
   ;;; Load grammar into the LKB
 
     (let* ((lg-name (get-language-name choices-path))
-	   (script (format nil "~a~a~a~a"
+	   (script (format nil "~a~a~a~a~a~a"
 			   *customization-root*
 			   "unit-tests/grammars/"
-			   lg-name
-			   "/matrix/lkb/script")))
+			   lg-name "/" lg-name
+			   "/lkb/script")))
       (read-script-file-aux script)))
   
   ;;; Check that [incr tsdb()] is running, and if not

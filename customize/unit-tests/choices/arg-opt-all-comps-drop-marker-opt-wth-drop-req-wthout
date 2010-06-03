@@ -78,5 +78,7 @@ section=lexicon
       verb-slot1_morph1_feat3_name=gender
       verb-slot1_morph1_feat3_value=fem
       verb-slot1_morph1_feat3_head=obj
-
+      verb-slot1_morph1_feat4_name=dropped-arg
+      verb-slot1_morph1_feat4_value=permitted
+      verb-slot1_morph1_feat4_head=obj
 section=test-sentences

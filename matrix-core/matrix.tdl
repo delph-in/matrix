@@ -995,7 +995,7 @@ add-only-rule := same-local-lex-rule &
 	         same-non-local-lex-rule.
 
 add-only-no-ccont-rule := add-only-rule &
-			  no-ccont-lex-rule.
+  no-ccont-lex-rule.
 
 ; Lexical rules vary on one dimensions: whether they involve spelling changes.
 ; Accordingly, we define two subtypes of lex-rule.
@@ -1020,28 +1020,28 @@ infl-lex-rule := inflecting-lex-rule & nocoord.
 const-lex-rule := constant-lex-rule & nocoord.
 
 infl-non-local-change-only-lex-rule := non-local-change-only-lex-rule &
-					infl-lex-rule.
+  infl-lex-rule.
 
 infl-local-change-only-lex-rule := local-change-only-lex-rule &
-				    infl-lex-rule.
+  infl-lex-rule.
 
 infl-cont-change-only-lex-rule := cont-change-only-lex-rule &
-				   infl-lex-rule.
+  infl-lex-rule.
 
 infl-ctxt-change-only-lex-rule := ctxt-change-only-lex-rule &
-				   infl-lex-rule.
+  infl-lex-rule.
 
 infl-agr-change-only-lex-rule := agr-change-only-lex-rule &
-				  infl-lex-rule.
+  infl-lex-rule.
 
 infl-cat-change-only-lex-rule := cat-change-only-lex-rule &
-				  infl-lex-rule.
+  infl-lex-rule.
 
 infl-head-change-only-lex-rule := head-change-only-lex-rule &
- 				   infl-lex-rule.
+  infl-lex-rule.
 
 infl-val-change-only-lex-rule := val-change-only-lex-rule &
-				  infl-lex-rule.
+  infl-lex-rule.
 
 ; ERB 2005-04-26 Take care with the following two rules.  While
 ; they likely won't be circular for parsing (since the surface form
@@ -1051,34 +1051,34 @@ infl-val-change-only-lex-rule := val-change-only-lex-rule &
 ; something incompatible with the type of the rule.
 
 infl-add-only-lex-rule := add-only-rule &
-			   infl-lex-rule.
+  infl-lex-rule.
 
 infl-add-only-no-ccont-lex-rule := add-only-no-ccont-rule &
-				    infl-lex-rule.
+  infl-lex-rule.
 
 const-non-local-change-only-lex-rule := non-local-change-only-lex-rule &
-					 const-lex-rule.
+  const-lex-rule.
 
 const-local-change-only-lex-rule := local-change-only-lex-rule &
-				     const-lex-rule.
+  const-lex-rule.
 
 const-cont-change-only-lex-rule := cont-change-only-lex-rule &
-				    const-lex-rule.
+  const-lex-rule.
 
 const-ctxt-change-only-lex-rule := ctxt-change-only-lex-rule &
-				    const-lex-rule.
+  const-lex-rule.
 
 const-agr-change-only-lex-rule := agr-change-only-lex-rule &
-				   const-lex-rule.
+  const-lex-rule.
 
 const-cat-change-only-lex-rule := cat-change-only-lex-rule &
-				   const-lex-rule.			       
+  const-lex-rule.			       
 
 const-head-change-only-lex-rule := head-change-only-lex-rule &
-				    const-lex-rule.
+  const-lex-rule.
 
 const-val-change-only-lex-rule := val-change-only-lex-rule &
-				   const-lex-rule.
+  const-lex-rule.
 
 ; ERB 2005-04-14 Take care when using the following two types
 ; not to create circular rules.  They may still be useful (the
@@ -1086,10 +1086,10 @@ const-val-change-only-lex-rule := val-change-only-lex-rule &
 ; make sure that the DTR type is incompatible with the rule type.
 
 const-add-only-lex-rule := add-only-rule &
-			    const-lex-rule.			   
+  const-lex-rule.			   
 
 const-add-only-no-ccont-lex-rule := add-only-no-ccont-rule &
-				     const-lex-rule.
+  const-lex-rule.
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

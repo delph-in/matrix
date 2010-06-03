@@ -16,6 +16,7 @@ import re
 from choices import ChoicesFile
 from utils import TDLencode
 from utils import get_name
+from utils import format_comment_block
 
 from lib import Hierarchy
 
@@ -58,6 +59,9 @@ def main_or_verb():
     return 'verb-lex'
 
 
+def irule_name(type_name):
+  return re.sub('\s+', '_', type_name)
+
 # ERB 2006-09-21 This function assembles an inflectional rule out
 # of the appropriate information and adds it to irules.tdl.
 # Assumes we consistently use either 'prefix' and 'suffix' or 'before'
@@ -66,7 +70,7 @@ def main_or_verb():
 
 def add_irule(instance_name,type_name,affix_type,affix_form):
 
-  rule = instance_name + ' :=\n'
+  rule = irule_name(instance_name) + ' :=\n'
   if affix_type == 'prefix' or affix_type == 'before':
     rule += '%prefix (* ' + affix_form + ')\n'
   elif affix_type == 'suffix' or affix_type == 'after':
@@ -76,7 +80,7 @@ def add_irule(instance_name,type_name,affix_type,affix_form):
 #  else:
 #    error 'probable script bug'
 
-  rule += type_name + '.\n'
+  rule += irule_name(type_name) + '.\n'
 
   irules.add_literal(rule)
 
@@ -378,7 +382,7 @@ def direct_inverse_scale_len():
 
 
 def customize_direct_inverse():
-  if 'scale1_feat1_name' not in ch:
+  if 'scale' not in ch:
     return
 
   mylang.add('verb :+ [ DIRECTION direction ].', section='addenda')
@@ -1653,7 +1657,8 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
     # first the rule in mylang
     rule = pn + '-left-coord-rule :=\
            ' + bot + 'left-coord-rule &\
-           ' + pos + '-bottom-coord-phrase.'
+           ' + pos + '-bottom-coord-phrase &\
+           [ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].'
     mylang.add(rule)
 
     if pre or suf:
@@ -1777,34 +1782,75 @@ def customize_yesno_questions():
       'Rule for inverted subject verb order in questions.\n' + \
       'The incompatible SUBJ values on SYNSEM and DTR are\n' + \
       'what keeps this one from spinning.'
-    if qinvverb == 'aux':
-      aux = ', AUX +'
-    elif qinvverb == 'main':
-      aux = ', AUX -'
-    elif qinvverb == 'main-aux':
-      aux = ''
+
       # ERB 2006-10-05 Adding in semantics here.  This rule constrains MESG to ques.
       # ERB 2007-01-21 Removing semantics here: Need to allow inversion to not express questions.  Instead, the result of this is MC na, and there is a separate non-branching rule which introduces question semantics.  Following the ERG in this.
+      # ERB 2010-04-15 Adding [AUX +] on DTR, too.
     typedef = '''
     subj-v-inv-lrule := cat-change-only-lex-rule &
 			same-hc-light-lex-rule &
 			same-posthead-lex-rule &
                         constant-lex-rule &
-      [ SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV +''' + aux + ''' ],
+      [ SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV + ],
                              VAL [ COMPS < #subj . #comps >,
                                      SUBJ < >,
                                      SPR #spr,
                                      SPEC #spec ],
                              MC na ],
                  LKEYS #lkeys ],
-        DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ < #subj >,
-                                     COMPS #comps,
-                                     SPR #spr,
-                                     SPEC #spec ],
+        DTR.SYNSEM [ LOCAL.CAT [ HEAD verb,
+                                 VAL [ SUBJ < #subj >,
+                                       COMPS #comps,
+                                       SPR #spr,
+                                       SPEC #spec ]],
                      LKEYS #lkeys ]].'''
     mylang.add(typedef, comment, section='lexrules')
 
     lrules.add('inv-lr := subj-v-inv-lrule.')
+
+    # ERB 2010-04-15 Cleaning up treatent of constraints on AUX, 
+    # which were still very old-school. Need to both constrain DTR
+    # and copy the value up.  Only checking qinvverb if we know
+    # we have auxiliaries.
+
+    if has_auxiliaries_p():
+      mylang.add('''
+                 subj-v-inv-lrule :=
+                    [ SYNSEM.LOCAL.CAT.HEAD.FORM #form,
+                      DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].''')
+
+      if qinvverb == 'aux':
+        mylang.add('subj-v-inv-lrule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
+
+      if qinvverb == 'main':
+        mylang.add('subj-v-inv-lrule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
+
+
+
+    # ERB 2010-04-15 If object drop is enabled (i.e., if the 
+    # head-opt-comp rule is instantiated) then we need to prevent
+    # the inverted subject from being dropped.  This is true even if
+    # subject drop is generally allowed, since subj-verb inversion
+    # is not apparent if the subject is dropped.  Assuming for now
+    # that this rule would not be used to model inflection that requires
+    # subj-v inversion but allows subject drop.
+
+    if ch.get('obj-drop'):
+      mylang.add('subj-v-inv-lrule := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT - ].')
+
+
+    # ERB 2010-04-15 If we have a finite/non-finite disctintion,
+    # the FORM value needs to be copied up.  FIXME: More generally,
+    # any verby head features should be copied by this rule.
+    # See notes on FORM and qpart below.
+
+    if 'form' in hierarchies:
+      mylang.add('''
+                 subj-v-inv-lrule :=
+                    [ SYNSEM.LOCAL.CAT.HEAD.FORM #form,
+                      DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].''')
+
+
 
     # ERB 2007-01-21 Then we need the non-branching construction which
     # corrects to MC + and adds SF ques.
@@ -1855,6 +1901,20 @@ def customize_yesno_questions():
          [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
     mylang.add(typedef, comment, section='otherlex')
 
+    # ERB 2010-04-15 If we have a finite/non-finite distinction in the
+    # language, the qpart should insist on attaching to finite clauses
+    # only.  An alternative would be to have it raise the FORM value, but
+    # I don't see any evidence for that just now. Using presence of 'form'
+    # in hierarchies to detect this situation. This could break if someone
+    # named their own feature "form", but the name-space validation should
+    # catch that.  This works because customize_form() is called before
+    # customize_yesno_questions. This is an example of cross-library
+    # interaction.
+
+    if 'form' in hierarchies:
+      mylang.add('qpart-lex-item := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].')
+
+
 # ERB 2009-07-01 To remove:
 #   if ch.get('q-infl'):
 
@@ -1884,8 +1944,12 @@ def customize_arg_op():
   """ Create the lexical types, lexical, rules and phrase structure
       rules to allow argument dropping"""
 
-  mylang.set_section('verblex')
+  if 'scale' in ch and (ch.get('subj-drop')or ch.get('obj-drop')):
+     mylang.add('dir-inv-scale := unexpressed-reg')
 
+  mylang.set_section('verblex')
+  ##Adding potential fix for integrating argument optionality and direct-inverse
+  
   #Figure out the constraints on subject dropping and write the
   #appropriate types to mylang.tdl or rules.tdl
 
@@ -1930,7 +1994,7 @@ def customize_arg_op():
   if (ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and (ch.get('subj-mark-drop')== 'subj-mark-drop-opt'or ch.get('subj-mark-drop')=='subj-mark-drop-req')):
     mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
 
-  if ch.get('obj-drop')=='obj-drop-all' and ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-req') or ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-req'))):
+  if ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-req') or ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-req'))):
     mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
 
   if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-opt' :
@@ -3039,7 +3103,7 @@ def customize_inflection():
       # optional) overt argument.  This is done by increasing the
       # subrules count just like above.  The subrules created are
       # different.
-
+      need_no_drop_rule = False
       opt_head_obj = False
       opt_head_subj = False
       drp_head_obj = False
@@ -3050,29 +3114,57 @@ def customize_inflection():
         morph_orth = morph.get('orth','')
         if morph_orth == '':
           const = True
+        if ch.get('obj-mark-drop') == 'obj-mark-drop-not' and \
+           ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+          need_no_drop_rule = True
+          const = True
+        if ch.get('subj-mark-drop') == 'subj-mark-drop-not' and \
+           ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+          need_no_drop_rule = True
+          const = True
+        if ch.get('obj-mark-drop') == 'obj-mark-drop-req' and \
+           ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not':
+          need_no_drop_rule = True
+          const = True
+        if ch.get('subj-mark-drop') == 'subj-mark-drop-req' and \
+           ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not':
+          need_no_drop_rule = True
+          const = True
         if ch.get('obj-mark-drop') == 'obj-mark-drop-opt' and \
            ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
-          drp_head_obj = True
+          need_no_drop_rule = True
+          #drp_head_obj =True
           const = True
         if ch.get('subj-mark-drop') == 'subj-mark-drop-opt' and \
            ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
-          drp_head_subj = True
+          need_no_drop_rule = True
+          #drp_head_subj = True
+          const = True
+        if ch.get('obj-mark-drop') == 'obj-mark-drop-req' and \
+           ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt':
+          need_no_drop_rule = True
+          #opt_head_obj = True
+          const = True
+        if ch.get('subj-mark-drop') == 'subj-mark-drop-req' and \
+           ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt':
+          need_no_drop_rule = True
+          #opt_head_subj = True
           const = True
         for feat in morph.get('feat',[]):
           if feat.get('name') == 'case':
             seen_case = True
           if feat.get('name') == 'overt-arg':
-            if feat.get('head') == 'obj':
+            if feat.get('head') == 'obj' :
               opt_head_obj = True
             elif feat.get('head') == 'subj':
               opt_head_subj = True
-            const = True
+            #const = True
           if feat.get('name') == 'dropped-arg':
             if feat.get('head') == 'obj':
               drp_head_obj = True
             elif feat.get('head') == 'subj':
               drp_head_subj = True
-            const = True
+            #const = True
 
       synth_cases = []
       if seen_case and ch.has_mixed_case():
@@ -3082,11 +3174,11 @@ def customize_inflection():
             synth_cases += [ c[0] ]
 
       subrules += len(synth_cases)
-
-      if (opt_head_obj) or (opt_head_subj):
-        subrules += 1
-      if (drp_head_obj) or (drp_head_subj):
-        subrules += 1
+      if need_no_drop_rule:
+        if (opt_head_obj) or (opt_head_subj):
+          subrules += 1
+        if (drp_head_obj) or (drp_head_subj):
+          subrules += 1
 
       # Need to specify whether each rule is ltol, ltow, or wtol AND
       # whether the rule is constant or inflecting. Trying to put as much
@@ -3212,7 +3304,7 @@ def customize_inflection():
             abbr = canon_to_abbr(c, cases)
             mylang.add(ltype + ' := [ SYNSEM.' + geom + ' ' + abbr + ' ].')
             mylang.add(ltype + ' := [ SYNSEM.' + geom + '-MARKED - ].')
-        if opt_head_obj or opt_head_subj:
+        if need_no_drop_rule and (opt_head_obj or opt_head_subj):
           ltype = name + '-no-drop-lex-rule'
           if ltow:
             mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
@@ -3228,7 +3320,7 @@ def customize_inflection():
             mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].',
                        merge = True)
 
-        if drp_head_obj or drp_head_subj:
+        if need_no_drop_rule and (drp_head_obj or drp_head_subj):
           ltype = name + '-drop-lex-rule'
           if ltow:
             mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
@@ -3557,6 +3649,7 @@ def customize_matrix(path, arch_type):
     ';;;     ' + tdl_dt + '\n' +
     ';;; based on Matrix customization system version of:\n' +
     ';;;     ' + matrix_dt + '\n' +
+    ';;;\n' + format_comment_block(ch.get('comment')) + '\n' +
     ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;')
 
   # BUT, put the date/time of the Matrix version in Version.lsp (along
@@ -3583,7 +3676,11 @@ def customize_matrix(path, arch_type):
   # Customize inflection and lexicon first, since they can cause
   # augmentation of the hierarchies
   customize_lexicon()
-  morphotactics.customize_inflection(ch, mylang, irules, lrules)
+  customize_arg_op()
+  # for now, we customize inflection and feature values separately
+  to_cfv = morphotactics.customize_inflection(ch, mylang, irules, lrules)
+  for (slot_key, type_id, slot_kind) in to_cfv:
+    customize_feature_values(ch[slot_key], type_id, slot_kind)
 
   # Call the other customization functions
   customize_case()
@@ -3598,7 +3695,7 @@ def customize_matrix(path, arch_type):
   customize_sentential_negation()
   customize_coordination()
   customize_yesno_questions()
-  customize_arg_op()
+  #customize_arg_op()
   customize_test_sentences(grammar_path)
   customize_script(grammar_path)
   customize_pettdl(grammar_path)

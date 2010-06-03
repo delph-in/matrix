@@ -5,7 +5,7 @@
 
 import re
 import sys
-from util.misc import safe_int
+from util.misc import safe_int, get_valid_lines
 
 ######################################################################
 # globals
@@ -31,6 +31,12 @@ class ChoiceCategory:
     self.full_key = full_key
 
 class ChoiceDict(ChoiceCategory, dict):
+  def __getitem__(self, key):
+    try:
+      return dict.__getitem__(self, key)
+    except KeyError:
+      return ''
+
   def iter_num(self):
     if self.full_key is not None:
         result = re.search('[0-9]+$', self.full_key)
@@ -39,6 +45,12 @@ class ChoiceDict(ChoiceCategory, dict):
     return None
 
 class ChoiceList(ChoiceCategory, list):
+  def __getitem__(self, key):
+    try:
+      return list.__getitem__(self, key)
+    except IndexError:
+      return {}
+
   # custom iterator ignores empty items (e.g. when a
   # user deletes an item in the middle of a list)
   def __iter__(self):
@@ -64,9 +76,7 @@ class ChoicesFile:
   # initialize by passing either a file name or ???file handle
   def __init__(self, choices_file=None):
 
-    self.iter_stack = []
     self.cached_values = {}
-    self.cached_iter_values = None
     self.choices = ChoiceDict()
 
     if choices_file is not None:
@@ -75,8 +85,8 @@ class ChoicesFile:
         if type(choices_file) == str:
           f = open(choices_file, 'r')
         f.seek(0)
-        lines = f.readlines()
-        self.load_choices([l.strip() for l in lines if l.strip() != ''])
+        lines = get_valid_lines(f.readlines())
+        self.load_choices(lines)
         if type(choices_file) == str:
           f.close()
       except IOError:
@@ -100,9 +110,9 @@ class ChoicesFile:
     """
     version = 0
     for line in [l.strip() for l in choice_lines if l.strip() != '']:
-      (key, value) = line.split('=',1)
-      if key == 'version':
-         version = int(value)
+      if line.startswith('version'):
+        version = int(line.split('=',1)[1])
+        break
     return version
 
   def parse_choices(self, choice_lines):
@@ -114,17 +124,18 @@ class ChoicesFile:
     for line in [l.strip() for l in choice_lines if l.strip() != '']:
       try:
         (key, value) = line.split('=',1)
-        if key in ('section', 'version'):
+        if key.strip() in ('section', 'version'):
             continue
         choices = self.__set_variable(choices,
-                                      self.split_variable_key(key),
+                                      self.split_variable_key(key.strip()),
                                       value,
                                       allow_overwrite=False)
       except ValueError:
         pass # TODO: log this!
+      except AttributeError:
+        pass # TODO: log this!
       except ChoicesFileParseError:
-        raise ChoicesFileParseError('Variable is multiply defined: %s' % key)
-
+        pass # TODO: log this!
     return choices
 
   # use the following re if keys like abc_def should be split:
@@ -148,7 +159,9 @@ class ChoicesFile:
       for k in keys:
         d = d[k]
     except KeyError:
-      return default or []
+      return default or ''
+    except IndexError:
+      return default or {}
     return d
 
   # A __getitem__ method so that ChoicesFile can be used with brackets,
@@ -180,11 +193,14 @@ class ChoicesFile:
       if count < var:
         choices += [ChoiceDict(full_key=key_prefix + str(count+i+1))
                     for i in range(var - count)]
-      choices[var - 1] = self.__set_variable(choices[var - 1],
-                                           keys,
-                                             value,
-                                             allow_overwrite,
-                                             key_prefix + str(var))
+      val = self.__set_variable(choices[var - 1],
+                                keys,
+                                value,
+                                allow_overwrite,
+                                key_prefix + str(var))
+      if type(val) is not ChoiceDict:
+        raise ChoicesFileParseError('Invalid value for iterated choice.')
+      choices[var - 1] = val
     except ValueError:
       new_key_prefix = '_'.join([k for k in [key_prefix, var] if k])
       choices[var] = self.__set_variable(choices.get(var, None),
@@ -264,7 +280,8 @@ class ChoicesFile:
 
   def preparse_uprev(self, choice_lines):
     """
-    Convert choices file lines before they are parsed.
+    Convert choices file lines before they are parsed. A choice can be
+    removed by setting the key to None in the conversion method.
     """
     new_lines = []
     for line in choice_lines:
@@ -280,7 +297,8 @@ class ChoicesFile:
         # before it is parsed, but the appropriate method here:
         # if self.version < N
         #   self.preparse_convert_N-1_to_N(key, value)
-        new_lines += ['='.join([key, value])]
+        if key is not None:
+          new_lines += ['='.join([key, value])]
       except ValueError:
         pass # TODO: log this!
       except ChoicesFileParseError:
@@ -342,7 +360,6 @@ class ChoicesFile:
 
   def clear_cached_values(self):
     self.cached_values = {}
-    self.cached_iter_values = None
 
   ######################################################################
   # Methods for accessing "derived" values -- that is, groups of values
@@ -399,7 +416,7 @@ class ChoicesFile:
 
     for adp in self.get('adp'):
       opt = adp.get('opt')
-      for feat in adp['feat']:
+      for feat in adp.get('feat', []):
         result = result or (self.has_case(feat, case) and \
                             (opt or not check_opt))
 
@@ -659,7 +676,7 @@ class ChoicesFile:
     numbers = []
 
     for n in self.get('number'):
-      name = n.get('name', '')
+      name = n['name']
       stype = ';'.join([s['name'] for s in n.get('supertype',[])]) or 'number'
       numbers += [[name, stype]]
 
@@ -763,7 +780,7 @@ class ChoicesFile:
     genders = []
 
     for g in self.get('gender'):
-      name = g.get('name',[])
+      name = g['name']
       stype = ';'.join([s['name'] for s in g.get('supertype',[])]) or 'gender'
       genders += [[name, stype]]
 
@@ -814,7 +831,7 @@ class ChoicesFile:
   #   This list consists of tuples:
   #     [aspect name]
   def aspects(self):
-    return [aspect['name'] for aspect in self.get('aspect')]
+    return [[aspect['name']] for aspect in self.get('aspect')]
 
   # situations()
   #   Create and return a list containing information about the values
@@ -822,7 +839,7 @@ class ChoicesFile:
   #   This list consists of tuples:
   #     [situation name]
   def situations(self):
-    return [situation['name'] for situation in self.get('situation')]
+    return [[situation['name']] for situation in self.get('situation')]
 
   def types(self):
     """
@@ -915,7 +932,7 @@ class ChoicesFile:
     perm_notperm_string = 'permitted|permitted;not-permitted|not-permitted'
     # Overt Argument
     if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
-       self.get('obj-mark-drop') == 'obj-mark-drop-req':
+         self.get('obj-mark-drop') == 'obj-mark-drop-req':
       features += [['overt-arg', perm_notperm_string, '']]
     elif self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
          self.get('obj-mark-drop') == 'obj-mark-drop-req':
@@ -934,18 +951,32 @@ class ChoicesFile:
       features += [['overt-arg', perm_notperm_string, '']]
 
     # Dropped Argument
+    #if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
+    #   self.get('obj-mark-drop') == 'obj-mark-drop-req':
+    #  features += [['dropped-arg', perm_notperm_string, '']]
+    #if self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and \
+    #     self.get('subj-mark-drop') == 'subj-mark-drop-req':
+    #  features += [['dropped-arg', perm_notperm_string, '']]
     if self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
-       self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+         self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
       features += [['dropped-arg', perm_notperm_string,'']]
     elif self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
          self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt':
       features += [['dropped-arg', perm_notperm_string,'']]
+    elif self.get('obj-mark-drop') == 'obj-mark-drop-opt' and \
+         self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+      features += [['dropped-arg', perm_notperm_string, '']]
     elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
          self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
       features += [['dropped-arg', perm_notperm_string,'']]
     elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
          self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt':
       features += [['dropped-arg', perm_notperm_string,'']]
+    elif self.get('subj-mark-drop') == 'subj-mark-drop-opt' and \
+         self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+      features += [['dropped-arg', perm_notperm_string,'']]
+   
+ #elif self.get('subj-mark-drop') == 'subj-mark-drop-opt') and self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req': features += [['dropped-arg', perm_notperm_string, '']]
 
     for feature in self.get('feature'):
       feat_name = feature['name']
@@ -974,7 +1005,7 @@ class ChoicesFile:
   # to 5, call convert_2_to_3, convert_3_to_4, and convert_4_to_5, in
   # that order.
   #
-  # The methods should consist of a sequence of calls to
+  # The mehods should consist of a sequence of calls to
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
@@ -1440,7 +1471,7 @@ class ChoicesFile:
     self.convert_key('non-future', 'nonfuture')
 
     for aux in self['aux']:
-      v = aux.get('nonfincompform', '')
+      v = aux['nonfincompform']
       k = 'nf-subform' + aux.iter_num() + '_name'
       self.convert_value(aux.full_key + '_compform', 'nonfinite', v)
 
@@ -1542,7 +1573,7 @@ class ChoicesFile:
     Removes the feature MARK. Converts MARK feature to featureX_name (Other Features)
     where X places it at the end of the list of other features:
     --mark -> featureX_name=mark
-    --featureX_type=head 
+    --featureX_type=head
     All MARK values are converted to featureX values:
     --markY_name=mY -> featureX_valueY_name=mY
     --featureX_valueY_supertype_name=mark

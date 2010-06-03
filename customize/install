@@ -58,8 +58,8 @@ mkdir $tempdir
 
 # create datestamp, matrix-types, and head-types files
 date -u > $tempdir/datestamp
-cat ../matrix.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/matrix-types
-cat ../head-types.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/head-types
+cat ../matrix-core/matrix.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/matrix-types
+cat ../matrix-core/head-types.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/head-types
 
 # copy files to the temp directory
 if [ "$installremote" ]

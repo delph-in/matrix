@@ -77,7 +77,7 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
     def test_get(self):
         c = customize.choices.ChoicesFile() # no file loaded
         c.load_choices(simple_choices_file)
-        self.assertEqual(c.get('NO_SUCH'), [])
+        self.assertEqual(c.get('NO_SUCH'), '')
         self.assertEqual(c.get(''), c.choices)
         self.assertEqual(c.get('language'), 'Simple')
         self.assertEqual(c.get('iso-code'), 'smp')
@@ -90,6 +90,8 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         self.assertEqual(c.get('verb2'),
                 {'name':'testverb2', 'valence':'trans',
                     'stem':[{'orth':'test','pred':'test_v_2_rel'}]})
+        self.assertEqual(c.get('verb3'), {})
+        self.assertEqual(c.get('verb3_NOSUCH'), '')
 
     def test_set(self):
         c = customize.choices.ChoicesFile() # no file loaded

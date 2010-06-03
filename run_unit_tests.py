@@ -17,8 +17,18 @@ except:
 
 print_line()
 
+print 'Validate tests:'
+try:
+  unittest.main(customize.tests.testValidate)
+except:
+  pass
+
+print_line()
+
 print 'Linglib/Morphotactics tests:'
 try:
   unittest.main(customize.linglib.tests.testMorphotactics)
 except:
   pass
+
+print_line()
