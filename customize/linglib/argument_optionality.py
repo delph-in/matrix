@@ -1,4 +1,4 @@
-from ..linglib import morphotactics
+from linglib import morphotactics
 
       # SS 2009-06-07 added check to see if a const rule which changes
       # the COMPS of the mother to OPT - is needed.  The code assumes
@@ -42,7 +42,7 @@ def customize_arg_op(choices, mylang):
       # dropped-arg morphs should be the index of the last morph + 2
       if dropped:
         key = slot.full_key + '_morph' + str(last_morph_index + 2)
-        name = morphotactics.get_slot_name(slot.full_key, choices) + '-no-drop'
+        name = morphotactics.get_slot_name(slot.full_key, choices) + '-drop'
         choices[key + '_name'] = name
         choices[key + '_feat1_name'] = 'OPT'
         choices[key + '_feat1_value'] = 'plus'

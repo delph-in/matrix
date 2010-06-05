@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from ..linglib.lexicon import lextype_map
+from linglib.lexicon import lextype_map
 
 all_slot_types = ['noun', 'verb', 'det', 'aux']
 
