@@ -1,6 +1,6 @@
 import unittest
-import customize.choices
-from customize.linglib import morphotactics
+import choices
+from linglib import morphotactics
 
 class TestMorphotactics(unittest.TestCase):
   def test_is_slot(self):
@@ -189,44 +189,44 @@ class TestMorphotactics(unittest.TestCase):
     # name only
     self.assertRaises(TypeError, morphotactics.Morpheme, 'name')
     # minimal
-    m = morphotactics.Morpheme('name','supertype')
+    m = morphotactics.Morpheme('name','slot_key','supertype')
     self.assertEqual(m.name, 'name')
-    self.assertEqual(m.rule_types, set(['supertype']))
+    self.assertEqual(m.supertype, 'supertype')
+    self.assertEqual(m.parents, set())
     self.assertEqual(m.orthography, '')
     self.assertEqual(m.features, {})
     # orth
-    m = morphotactics.Morpheme('name','supertype','orth')
+    m = morphotactics.Morpheme('name','slot_key','supertype','orth')
     self.assertEqual(m.orthography, 'orth')
 
   def test_create_morpheme(self):
     cm = morphotactics.create_morpheme
-    rn = morphotactics.rule_name
     Slot = morphotactics.Slot
     # no-orth noun
     ch = customize.choices.ChoicesFile()
     ch.load_choices(lextypes + simple_no_orth)
     s = Slot(ch['noun-slot1_name'],'noun-slot1')
-    m = cm(ch['noun-slot1_morph1'], rn(s), ch)
+    m = cm(ch['noun-slot1_morph1'], s.slot_key, ch)
     self.assertEqual(m.name, 'singular')
-    self.assertEqual(m.rule_types, set(['num-lex-rule','const-lex-rule']))
+    self.assertEqual(m.parents, set(['num-lex-rule','const-lex-rule']))
     self.assertEqual(m.orthography, '')
     self.assertEqual(m.features, {'number':{'value':'sg','head':None}})
     # orth noun
     ch = customize.choices.ChoicesFile()
     ch.load_choices(lextypes + simple_with_orth)
     s = Slot(ch['noun-slot1_name'],'noun-slot1')
-    m = cm(ch['noun-slot1_morph1'], rn(s), ch)
+    m = cm(ch['noun-slot1_morph1'], s.slot_key, ch)
     self.assertEqual(m.name, 'singular')
-    self.assertEqual(m.rule_types, set(['num-lex-rule','infl-lex-rule']))
+    self.assertEqual(m.parents, set(['num-lex-rule','infl-lex-rule']))
     self.assertEqual(m.orthography, 'g')
     self.assertEqual(m.features, {'number':{'value':'sg','head':None}})
     # verb
     ch = customize.choices.ChoicesFile()
     ch.load_choices(lextypes + multiple_basetypes)
     s = Slot(ch['verb-slot1_name'],'verb-slot1')
-    m = cm(ch['verb-slot1_morph1'], rn(s), ch)
+    m = cm(ch['verb-slot1_morph1'], s.slot_key, ch)
     self.assertEqual(m.name, '3sg')
-    self.assertEqual(m.rule_types, set(['person-lex-rule','infl-lex-rule']))
+    self.assertEqual(m.parents, set(['person-lex-rule','infl-lex-rule']))
     self.assertEqual(m.orthography, 's')
     self.assertEqual(m.features, {'person':{'value':'3','head':'subj'},
                                   'number':{'value':'sg','head':'subj'}})
@@ -251,7 +251,7 @@ class TestMorphotactics(unittest.TestCase):
     self.assertEqual(lrs['noun-slot1'].morphs[0].name, 'singular')
     self.assertEqual(lrs['noun-slot1'].morphs[0].features,
                      {'number':{'value':'sg','head':None}})
-    self.assertEqual(lrs['noun1'].name, 'testnoun')
+    self.assertEqual(lrs['noun1'].name, 'testnoun-noun')
     self.assertEqual(lrs['noun1'].slot_key, 'noun1')
     # multiple basetypes
 

@@ -62,8 +62,13 @@ class ChoiceList(ChoiceCategory, list):
     return len([x for x in self]) == 0
 
   def get_first(self):
-    for item in self:
-        return item
+    if len(self) > 0:
+      return self[0]
+    return None
+
+  def get_last(self):
+    if len(self) > 0:
+      return self[-1]
     return None
 
 ######################################################################

@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from customize.linglib.lexicon import lextype_map
+from ..linglib.lexicon import lextype_map
 
 all_slot_types = ['noun', 'verb', 'det', 'aux']
 
@@ -214,7 +214,8 @@ def create_morpheme(morph, supertype, choices):
   """
   Interpret a morpheme from the Choices file into a Morpheme object.
   """
-  m = Morpheme(morph['name'], morph.full_key, supertype, morph.get('orth',''))
+  name = morph.get('name', morph.full_key)
+  m = Morpheme(name, morph.full_key, supertype, morph.get('orth',''))
   for feature in morph.get('feat',[]):
     m.features[feature['name']] = {'value':feature['value'],
                                    'head':feature.get('head',None)}

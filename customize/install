@@ -82,6 +82,14 @@ fi
 mainfiles="matrix.cgi matrix.css matrix.js matrixdef customize.py deffile.py choices.py tdl.py utils.py validate.py generate.py"
 cp $mainfiles $tempdir
 
+libfiles="lib/*.py"
+mkdir $tempdir/lib
+cp $libfiles $tempdir/lib
+
+linglibfiles="linglib/*.py"
+mkdir $tempdir/linglib
+cp $linglibfiles $tempdir/linglib
+
 utilfiles="util/*.py"
 mkdir $tempdir/util
 cp $utilfiles $tempdir/util

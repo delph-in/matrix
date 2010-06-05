@@ -21,6 +21,7 @@ from utils import format_comment_block
 from lib import Hierarchy
 
 from linglib import morphotactics
+from linglib import argument_optionality
 
 ######################################################################
 # globals
@@ -3087,98 +3088,15 @@ def customize_inflection():
       # count up the number of subrules, and to see if any of the
       # morphemes mark case.
       #
-      # SS 2009-06-07 added check to see if a const rule which changes
-      # the COMPS of the mother to OPT - is needed.  The code assumes
-      # that a given slot will have the same co-occurrence
-      # restrictions for all morphemes. i.e. if one morpheme is not
-      # permitted to appear with an overt argument but is required
-      # with a dropped argument, all the other morphemes in this slot
-      # will have the same restrictions.  This is necessary because
-      # the const rule that generated will change the value of the
-      # COMPS of the mother OPT - for all items which are not marked
-      # by one of morphemes in this slot.
-      #
-      # SS 2009-06-07 Now adding capability for when the marker is not
-      # permitted with a dropped argument and is required (or
-      # optional) overt argument.  This is done by increasing the
-      # subrules count just like above.  The subrules created are
-      # different.
-      need_no_drop_rule = False
-      opt_head_obj = False
-      opt_head_subj = False
-      drp_head_obj = False
-      drp_head_subj = False
-      seen_case = False
-      for morph in slot.get('morph',[]):
-        subrules += 1
-        morph_orth = morph.get('orth','')
-        if morph_orth == '':
-          const = True
-        if ch.get('obj-mark-drop') == 'obj-mark-drop-not' and \
-           ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
-          need_no_drop_rule = True
-          const = True
-        if ch.get('subj-mark-drop') == 'subj-mark-drop-not' and \
-           ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
-          need_no_drop_rule = True
-          const = True
-        if ch.get('obj-mark-drop') == 'obj-mark-drop-req' and \
-           ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not':
-          need_no_drop_rule = True
-          const = True
-        if ch.get('subj-mark-drop') == 'subj-mark-drop-req' and \
-           ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not':
-          need_no_drop_rule = True
-          const = True
-        if ch.get('obj-mark-drop') == 'obj-mark-drop-opt' and \
-           ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
-          need_no_drop_rule = True
-          #drp_head_obj =True
-          const = True
-        if ch.get('subj-mark-drop') == 'subj-mark-drop-opt' and \
-           ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
-          need_no_drop_rule = True
-          #drp_head_subj = True
-          const = True
-        if ch.get('obj-mark-drop') == 'obj-mark-drop-req' and \
-           ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt':
-          need_no_drop_rule = True
-          #opt_head_obj = True
-          const = True
-        if ch.get('subj-mark-drop') == 'subj-mark-drop-req' and \
-           ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt':
-          need_no_drop_rule = True
-          #opt_head_subj = True
-          const = True
-        for feat in morph.get('feat',[]):
-          if feat.get('name') == 'case':
-            seen_case = True
-          if feat.get('name') == 'overt-arg':
-            if feat.get('head') == 'obj' :
-              opt_head_obj = True
-            elif feat.get('head') == 'subj':
-              opt_head_subj = True
-            #const = True
-          if feat.get('name') == 'dropped-arg':
-            if feat.get('head') == 'obj':
-              drp_head_obj = True
-            elif feat.get('head') == 'subj':
-              drp_head_subj = True
-            #const = True
 
       synth_cases = []
-      if seen_case and ch.has_mixed_case():
+      if 'case' in [f['name'] for m in slot.get('morph',[])
+                              for f in m.get('feat',[])] and \
+         ch.has_mixed_case():
         for c in cases:
           if ch.has_adp_case(c[0]):
             const = True
             synth_cases += [ c[0] ]
-
-      subrules += len(synth_cases)
-      if need_no_drop_rule:
-        if (opt_head_obj) or (opt_head_subj):
-          subrules += 1
-        if (drp_head_obj) or (drp_head_subj):
-          subrules += 1
 
       # Need to specify whether each rule is ltol, ltow, or wtol AND
       # whether the rule is constant or inflecting. Trying to put as much
@@ -3304,38 +3222,6 @@ def customize_inflection():
             abbr = canon_to_abbr(c, cases)
             mylang.add(ltype + ' := [ SYNSEM.' + geom + ' ' + abbr + ' ].')
             mylang.add(ltype + ' := [ SYNSEM.' + geom + '-MARKED - ].')
-        if need_no_drop_rule and (opt_head_obj or opt_head_subj):
-          ltype = name + '-no-drop-lex-rule'
-          if ltow:
-            mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
-          elif wtol:
-            mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
-          else:
-            mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
-          lrules.add(name + '-no-drop-lex := ' + name + '-no-drop-lex-rule.')
-          if (opt_head_obj):
-            mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].',
-                       merge = True)
-          if (opt_head_subj):
-            mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].',
-                       merge = True)
-
-        if need_no_drop_rule and (drp_head_obj or drp_head_subj):
-          ltype = name + '-drop-lex-rule'
-          if ltow:
-            mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
-          elif wtol:
-            mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
-          else:
-            mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
-          lrules.add(name + '-drop-lex := ' + name + '-drop-lex-rule.')
-          if (drp_head_obj):
-            mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].',
-                       merge = True)
-          if (drp_head_subj):
-            mylang.add(ltype + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].',
-                       merge = True)
-
       else:
         if const:
           lrules.add(name + '-lex := ' + name + '-lex-rule.')
@@ -3677,6 +3563,7 @@ def customize_matrix(path, arch_type):
   # augmentation of the hierarchies
   customize_lexicon()
   customize_arg_op()
+  argument_optionality.customize_arg_op(ch, mylang)
   # for now, we customize inflection and feature values separately
   to_cfv = morphotactics.customize_inflection(ch, mylang, irules, lrules)
   for (slot_key, type_id, slot_kind) in to_cfv:
