@@ -25,6 +25,8 @@ tsdb = '''
 (tsdb::tsdb-do-process "target" :type :translate :overwrite t :gold "profile")
 '''
 
+
+
 #Generate sentences from mrs files
 def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir):
   lkb_input = open('lkb_input','w')
@@ -38,7 +40,7 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir):
   output = os.popen('cat lkb_input | %s | sed -n "/^LKB/,/EOF$/p"' % (delphin_dir + '/bin/lkb'))
   lkb_input.close()
   os.remove('lkb_input')
-  shutil.rmtree('/dw22/d50/dpmills/home/target')
+  #shutil.rmtree('/dw22/d50/dpmills/home/target')
   sentences = []
   index = 0
   string = ""
@@ -324,7 +326,10 @@ def get_sentences(grammar_dir,delphin_dir,session):
       elif m3:
         template.replace_pred(pred,noun_rels_dets[int(m3.group(1)) % len(noun_rels_dets)][0])
       elif m4:
-        template.replace_pred(pred,det_rels[noun_rels_dets[int(m4.group(1)) % len(noun_rels_dets)][1]][0])
+        det_list = det_rels[noun_rels_dets[int(m4.group(1)) % len(noun_rels_dets)][1]]
+        if len(det_list) == 0:
+          det_list.append("")
+        template.replace_pred(pred,det_list[0])
     output = session+'Output '+str(i)
     mrs_files.append(output)
     f = open(output,'w')
