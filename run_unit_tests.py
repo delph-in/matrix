@@ -2,8 +2,8 @@
 
 import unittest
 
-import customize.tests.testChoices
-import customize.tests.testValidate
+import gmcs.tests.testChoices
+import gmcs.tests.testValidate
 
 def print_line():
   print 75 * '='
@@ -12,7 +12,7 @@ print_line()
 
 print 'Choices tests:'
 try:
-  unittest.main(customize.tests.testChoices)
+  unittest.main(gmcs.tests.testChoices)
 except:
   pass
 
@@ -20,7 +20,15 @@ print_line()
 
 print 'Validate tests:'
 try:
-  unittest.main(customize.tests.testValidate)
+  unittest.main(gmcs.tests.testValidate)
+except:
+  pass
+
+print_line()
+
+print 'Linglib/Morphotactics tests:'
+try:
+  unittest.main(gmcs.linglib.tests.testMorphotactics)
 except:
   pass
 
