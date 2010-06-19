@@ -71,11 +71,11 @@ else
 fi
 
 
-# Create fresh copy of matrix-core
-
+## Create fresh copy of matrix-core
+#
 rm -rf ${CUSTOMIZATIONROOT}/matrix-core
-pushd ${CUSTOMIZATIONROOT} >/dev/null
-./install -c matrix-core >/dev/null
+pushd ${CUSTOMIZATIONROOT}/.. >/dev/null
+./install -c ${CUSTOMIZATIONROOT}/matrix-core >/dev/null
 popd >/dev/null
 
 # Now do essentially the same things as one-regression-test for each one:
