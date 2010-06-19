@@ -1433,7 +1433,7 @@ and the features you which to specify on those templates</p>"
 
 Separator
 
-Label "<p>Select which templates you would like to use in generation.  If nothing is selected, the simple transitive and intransitive templates will be used</p>"
+Label "<p>Select which templates you would like to use in generation.  If nothing is selected, the simple transitive and intransitive templates will be used, with no features specified</p>"
 
 Check itv "Intransitive" "" "Simple intransive verb phrase<br>"
 

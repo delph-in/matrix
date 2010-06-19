@@ -25,10 +25,28 @@ tsdb = '''
 (tsdb::tsdb-do-process "target" :type :translate :overwrite t :gold "profile")
 '''
 
-
+display_gen_results_fn = '''
+(defun TbG-gen-results nil
+  (format t "~&new-pattern")
+  (if *gen-record*
+      (loop for edge in *gen-record*
+	  do
+	    (format t "~&start-entry")
+	    (pprint (edge-string edge))
+            (format t "~&parse")
+	    (pprint (parse-tree-structure edge))
+            (format t "~&mrs")
+            (mrs::output-mrs1 (mrs::extract-mrs edge) 'mrs::indexed t)
+	    (format t "~&end-entry")
+	  finally
+	    (force-output)
+	    (terpri))
+    (format t "~&No strings generated")))
+'''
 
 #Generate sentences from mrs files
-def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir):
+#DEPRECATED
+def old_generate_sentences(grammar, mrs_files, verb_preds, delphin_dir):
   lkb_input = open('lkb_input','w')
   #lkb_input.write('(load \"%s/lkb/src/general/defsystem.lisp\")(load \"%s/lkb/src/general/loadup.lisp\")(load-system \"tsdb\")' % (delphin_dir,delphin_dir))
   lkb_input.write('(read-script-file-aux "%s/lkb/script")' % (grammar))
@@ -69,6 +87,70 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir):
           sentences[index][1].append(unicode(sent.lstrip('( \n').rstrip(') .\n').replace('"',''), 'utf-8').lower().encode('utf-8'))
         index += 1
   return sentences
+
+def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir):
+  lkb_input = open('lkb_input','w')
+  lkb_input.write('(read-script-file-aux "%s/lkb/script")' % (grammar))
+  lkb_input.write('(setf *maximum-number-of-edges* 10000)')
+  lkb_input.write(display_gen_results_fn)
+  for file in mrs_files:
+    lkb_input.write('(null (generate-from-mrs (mrs::read-mrs-from-file "%s")))' % (file))
+    lkb_input.write('(TbG-gen-results)')
+  lkb_input.flush()
+  output = os.popen('cat lkb_input | %s | sed -n "/^LKB/,/EOF$/p"' % (delphin_dir + '/bin/lkb'))
+  lkb_input.close()
+  os.remove('lkb_input')
+  sentences = []
+  index = -1
+  sentence = ""
+  parse = ""
+  mrs = ""
+  state = ""
+  in_output = False
+  sentence_found = False
+  lkb_re = re.compile(r'LKB\(([0-9]+)\)')
+  for line in output:
+    #print line+"<br>"
+    #continue
+    if line.find("new-pattern") == 0:
+      index += 1
+      sentences.append([[mrs_files[index]+":",verb_preds[index][0],verb_preds[index][1],verb_preds[index][2]],[],[],[]])
+    elif line.find("start-entry") == 0:
+      state = "sentence"
+    elif line.find("parse") == 0:
+      state = "parse"
+    elif line.find("mrs") == 0:
+      state = "mrs"
+    elif line.find("end-entry") == 0:
+      if sentence != "":
+        sentences[index][1].append(sentence)
+        sentences[index][2].append(parse+"<br>")
+        sentences[index][3].append(mrs)
+        sentence = parse = mrs = ""
+      state = ""
+    elif line.find("No strings generated") == 0:
+      sentences[index][1].append('#NO-SENTENCES#')
+      sentences[index][2].append('')
+      sentences[index][3].append('')
+    elif line.find('*maximum-number-of-edges*') > -1:
+      sentences[index][1].append('#EDGE-ERROR#')
+      sentences[index][2].append('')
+    elif state == "sentence":
+      sentence = unicode(line.lstrip('( \n').rstrip(') .\n').replace('"',''), 'utf-8').lower().encode('utf-8')
+    elif state == "parse":
+      parse += "&nbsp&nbsp " + line.strip()
+    elif state == "mrs":
+      mrs += "&nbsp&nbsp " + line.strip().replace("<","&lt ").replace(">","&gt") + "<br>"
+
+  for entry in sentences:
+    entry[2] = [clean_tree(s) for s in entry[2]]
+  #print sentences
+  return sentences
+
+#returns a clean version of a tree outputted by the lkb
+def clean_tree(tree):
+  return re.sub(r'\("([^()]+)"\)',r'(@\1@)',tree).replace('"','').replace('@',"'")
+  
 
 def remove_duplicates(list):
   new_list = []
@@ -330,7 +412,7 @@ def get_sentences(grammar_dir,delphin_dir,session):
         if len(det_list) == 0:
           det_list.append("")
         template.replace_pred(pred,det_list[0])
-    output = session+'Output '+str(i)
+    output = session+'Pattern '+str(i)
     mrs_files.append(output)
     f = open(output,'w')
     f.write(template.string)
@@ -338,7 +420,10 @@ def get_sentences(grammar_dir,delphin_dir,session):
     info_list.append([verb_rels,template.label,template.name])
   sentences = generate_sentences(grammar_dir, mrs_files, info_list, delphin_dir)
   for file in mrs_files:
-    os.remove(file)
+    try:
+      os.remove(file)
+    except OSError:
+      pass
   return sentences
 
 
@@ -389,8 +474,19 @@ def get_additional_sentences(grammar_dir,delphin_dir,verb_rels,template_file,ses
     f.close()
   sentences_with_info = generate_sentences(grammar_dir, mrs_files, [[verb_rels,"",""]] * len(mrs_files), delphin_dir)
   sentences = []
+  trees = []
+  mrss = []
   for i in range(len(sentences_with_info)):
-    sentences.extend(sentences_with_info[i][1])
+    if sentences_with_info[i][1][0] != "#NO-SENTENCES#":
+      sentences.extend(sentences_with_info[i][1])
+      trees.extend(sentences_with_info[i][2])
+      mrss.extend(sentences_with_info[i][3])
+  if len(sentences) == 0:
+    sentences = ["#NO-SENTENCES#"]
+    trees = [""]
   for file in mrs_files:
-    os.remove(file)
-  return sentences
+    try:
+      os.remove(file)
+    except OSError:
+      pass
+  return sentences,trees,mrss
