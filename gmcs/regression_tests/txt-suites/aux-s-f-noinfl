@@ -1,0 +1,8 @@
+nopaux n1 v1a
+*n1 nopaux v1a
+*n1 v1a nopaux
+*nopaux n1 v2a
+paux n1 v1a
+*n1 paux v1a
+*n1 v1a paux
+*paux n1 v2a

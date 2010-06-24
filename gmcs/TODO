@@ -1,0 +1,119 @@
+how TO USE THIS FILE:
+
+  When you add something, put in the date and identify yourself.
+  Prefix each item with feat: (a feature request), bug: (a bug), or
+    misc: (anything else).
+  When you fix something, mark it DONE:
+
+
+[10/4/2006 sfd]
+
+DONE: Improve TDL pretty-printing
+DONE: Make TDLfile handle DOTTED.NAME.FORMAT correctly
+bug:  Fix layout oddities when the main-page dropdown buttons are clicked
+      (by using images?)
+bug:  TDLfile treats ... as an identifier -- I don't think that will merge
+      correctly
+misc: validate.py and customize.py are getting pretty big -- should each
+      module be split into a separate, er, module?
+DONE: Do something nicer with the validation error messages.  The desired
+      goal is marking every form field that needs fixing.  Somehow.
+      [ Added the red-asterisk feature. ]
+DONE: Add pretty-printing for the choices file (the random ones are just
+      jumbled together)
+DONE: Still need validation for all modules [done but ongoing]
+DONE: Clean up the ????? stuff in the customization page, either by
+      rewriting it or inserting them
+
+[10/6/2006 sfd]
+
+DONE: Remove old sessions after some amount of time (days?) [ 24 hours ]
+DONE: Add a Reset button to all forms
+
+[10/9/2006 sfd]
+
+DONE: Add a link/button to download the choices file
+bug:  Move the negative adverb to the sentential negation page?
+DONE: Create reasonable friendly names for everything
+DONE: Variable name harmonization
+
+[10/11/2006 sfd]
+
+bug:  Don't get confused by duplicated #corefs when merging TDL.  Also
+      don't repeat them if they're identical (type names, too).
+DONE: In a TDL conj, sort to keep the type names first
+DONE: When printing the right side of a TDL typedef, indent any type names
+      to the level of the :=, but indent the final [TFS] two spaces
+
+[10/11/2006 sfd]
+
+DONE: Something is wrong with omnisyndeton -- neither lexically- nor
+      morphologically-marked strategies seem to be working.
+
+[10/15/2006 erb]
+
+feat: When adding seed strings, get their actual length and put it in
+      `i-length' so we can manipulate by length in tsdb++
+bug:  randgram.py is currently forcing non-finite forms to be the same
+      as the finite forms.  We should eventually update the seed strings
+      to allow for distinct forms and test this.
+
+[1/21/2007 erb]
+
+DONE: Edit Version.lsp to create a value of *grammar-version* which
+      reflects both the date on customize.py (or perhaps matrix.tdl)
+      and the language name supplied by the user.
+bug:  Consider doing something to check whether matrix-core/matrix.tdl
+      matrix-core/roots.tdl and other contentful files are synched with
+      main matrix repository.  Er, and clean up which files are actually
+      needed in matrix-core (roots.tdl, for example, isn't used).  Consider
+      removing files that are completely produced by customize.py from
+      matrix/ itself.
+
+[6/27/2007 sfd]
+
+bug:  basic-script shouldn't end up in customized grammars
+
+[6/30/2008 sfd]
+
+bug:  As hinted at above, the handling of script files is suspicious.
+      There's a Zulu-specific file checked into matrix/lkb that gets
+      copied up to WEB/matrix-core/lkb by tolive, then ignored.
+      There's also a basic_script in matrix/modules that gets copied
+      to WEB/matrix-core, and that's what the script file in generated
+      grammars is based on.
+DONE: The creation of a matrix-core directory should be split into
+      another script (perhaps 'tocore').  In fact, tolive should be
+      reworked so it does this:
+      1) Make a temp local copy of what's going up to the web
+         directory (including the creation of a matrix-core directory)
+      2) Do a single big copy (local or remote) of those files
+      3) Blow away the temp local copy
+
+[8/28/2008 lap]
+
+feat: change this file so that it is in reverse order (newest entry first)
+DONE: create FORM hierarchy section and remove FORM value definition from 
+aux defintion
+DONE: fixed by adding new FORM section - due to FORM features being 
+assigned in aux definition, questionnaire page must be submitted after 
+aux is defined in order to finish page
+DONE: add verb type or verb feature value as elements of constraint on aux 
+comp
+feat: currently all verb types defined must specify trans or intrans - this 
+means that most verb classes will have to be defined twice. More desirable: 
+define types that can include both trans and intrans (perhaps define two 
+types within the system for each user defined type (unless otherwise 
+specified). Then specify valence per stem (causing stem to be assigned 
+to the appropriate type).Note: This is actually part of a larger problem 
+which is that we have flat verb hierarchies. Change this so that we can 
+"intuit" or assist in the creation of deeper hierarchies.
+DONE: updated validate.py
+bug: in the case where there are no auxiliaries, 'any auxiliary' still 
+appears on the slot input list
+bug: (verb) slot input list is redundant and does not include the verb type 
+hierarchy - it would be better if, for example, main-verb occurred on the 
+list when appropriate
+bug: slot code: conflicts with assignment on INFLECTED -/+ values
+bug: slot code: track feature values can collide with other feature values 
+bug: question code broken (with addition of main-verb hierarchy option)
