@@ -1,6 +1,6 @@
-import customize.linglib.morphotactics
-from customize.linglib.lexicon import lextype_map
-from customize.utils import get_name
+import gmcs.linglib.morphotactics
+from gmcs.linglib.lexicon import lextype_map
+from gmcs.utils import get_name
 
 ########################
 ### HELPER FUNCTIONS ###

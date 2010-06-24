@@ -1,4 +1,4 @@
-from customize.linglib import case
+from gmcs.linglib import case
 
 # lexical_supertypes is a dictionary mapping the choices file
 # encodings to the actual lex-type identifiers.

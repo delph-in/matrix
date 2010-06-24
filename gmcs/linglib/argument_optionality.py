@@ -1,4 +1,4 @@
-from customize.linglib import morphotactics
+from gmcs.linglib import morphotactics
 
       # SS 2009-06-07 added check to see if a const rule which changes
       # the COMPS of the mother to OPT - is needed.  The code assumes

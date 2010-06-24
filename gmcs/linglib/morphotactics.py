@@ -1,7 +1,7 @@
 from collections import defaultdict
 
-from customize.linglib import lexicon
-from customize.utils import get_name
+from gmcs.linglib import lexicon
+from gmcs.utils import get_name
 
 all_slot_types = ['noun', 'verb', 'det', 'aux', 'adj']
 
