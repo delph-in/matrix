@@ -253,7 +253,6 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
     elif(n=='dropped-arg' and h == 'subj' and v[0] == 'not-permitted'):
       tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
 
-
 ######################################################################
 # customize_case()
 #   Create the type definitions associated with the user's choices
@@ -1694,7 +1693,7 @@ def customize_coordination():
   mylang.set_section('coord')
 
   for cs in ch.get('cs'):
-    csnum = cs.iter_num()
+    csnum = str(cs.iter_num())
 
     mark = cs.get('mark')
     pat = cs.get('pat')
@@ -1984,7 +1983,7 @@ def customize_arg_op():
 
   #Create phrase-structure rules for each context
   for context in ch.get('context'):
-    name = 'context' + context.iter_num()
+    name = 'context' + str(context.iter_num())
     ptype = name + '-decl-head-opt-subj-phrase'
     customize_feature_values(context, ptype, 'con')
     mylang.add(ptype + ':= decl-head-opt-subj-phrase.')
@@ -3165,7 +3164,7 @@ def customize_inflection():
           morphname = morph.get('name')
           if not morphname:
             if name:
-              morphname = name + '-morph' + morph.iter_num()
+              morphname = name + '-morph' + str(morph.iter_num())
             else:
               morphname = get_name(morph)
 

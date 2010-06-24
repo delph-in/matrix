@@ -41,7 +41,7 @@ class ChoiceDict(ChoiceCategory, dict):
     if self.full_key is not None:
         result = re.search('[0-9]+$', self.full_key)
         if result is not None:
-            return result.group(0)
+            return int(result.group(0))
     return None
 
 class ChoiceList(ChoiceCategory, list):
@@ -70,6 +70,10 @@ class ChoiceList(ChoiceCategory, list):
     if len(self) > 0:
       return self[-1]
     return None
+
+  def next_iter_num(self):
+    if len(self) == 0: return 1
+    return (self.get_last().iter_num() or 0) + 1
 
 ######################################################################
 # ChoicesFile is a class that wraps the choices file, a list of
@@ -354,6 +358,8 @@ class ChoicesFile:
       self.convert_19_to_20()
     if self.version < 21:
       self.convert_20_to_21()
+    if self.version < 22:
+      self.convert_21_to_22()
     # As we get more versions, add more version-conversion methods, and:
     # if self.version < N:
     #   self.convert_N-1_to_N
@@ -361,7 +367,6 @@ class ChoicesFile:
   # Return the keys for the choices dict
   def keys(self):
     return self.choices.keys()
-
 
   def clear_cached_values(self):
     self.cached_values = {}
@@ -1014,7 +1019,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 21
+    return 22
 
   def convert_value(self, key, old, new):
     if key in self and self[key] == old:
@@ -1397,20 +1402,20 @@ class ChoicesFile:
         if cm == 'none':
           pass
         elif cm == 'nom-acc':
-          self['valence'] = 'nom'
+          verb['valence'] = 'nom'
         elif cm == 'erg-abs':
-          self['valence'] = 'abs'
+          verb['valence'] = 'abs'
         elif cm == 'tripartite':
-          self['valence'] = 's'
+          verb['valence'] = 's'
       elif v == 'trans':
         if cm == 'none':
           pass
         elif cm == 'nom-acc':
-          self['valence'] = 'nom-acc'
+          verb['valence'] = 'nom-acc'
         elif cm == 'erg-abs':
-          self['valence'] = 'erg-abs'
+          verb['valence'] = 'erg-abs'
         elif cm == 'tripartite':
-          self['valence'] = 'a-o'
+          verb['valence'] = 'a-o'
 
   def convert_5_to_6(self):
     self.convert_key('aux-order', 'aux-comp-order')
@@ -1477,7 +1482,7 @@ class ChoicesFile:
 
     for aux in self['aux']:
       v = aux['nonfincompform']
-      k = 'nf-subform' + aux.iter_num() + '_name'
+      k = 'nf-subform' + str(aux.iter_num()) + '_name'
       self.convert_value(aux.full_key + '_compform', 'nonfinite', v)
 
       if 'nonfincompform' in aux:
@@ -1626,7 +1631,7 @@ class ChoicesFile:
     what was going on in the old system.
     """
     if self.get('q-infl') == 'on':
-      n = len(self['verb-slot']) + 1
+      n = self['verb-slot'].next_iter_num() if 'verb-slot' in self else 1
       pref = 'verb-slot' + str(n)
       if self.get('ques-aff') == 'suffix':
         self[pref + '_order'] = 'after'
@@ -1690,7 +1695,9 @@ class ChoicesFile:
     or B), but since this is marked on ..._other-slot with a
     comma-separated list, we don't need to do anything here. And also,
     constraints can be marked on morphemes, but nothing needs to be
-    done for that, either.
+    done for that, either. Further, since constraints can now be
+    marked on lexical types as well, slot optionality is less
+    meaningful than obligatoriness across all possible input types.
     """
     for slotprefix in ('noun', 'verb', 'det', 'aux', 'adj'):
       for slot in self.get(slotprefix + '-slot'):
@@ -1698,3 +1705,30 @@ class ChoicesFile:
           self.convert_value(const.full_key + '_type', 'forces', 'require')
           self.convert_value(const.full_key + '_type', 'req', 'require')
           self.convert_value(const.full_key + '_type', 'disreq', 'forbid')
+        if 'opt' in slot:
+          del slot['opt']
+        else:
+          slot['obligatory'] = 'on'
+
+  def convert_21_to_22(self):
+    """
+    Constraints are no longer generic and specifying a type, but are
+    specific (e.g. require1, forbid1) and only specify the other slot.
+    """
+    for x in ('noun', 'verb', 'det', 'aux', 'adj'):
+      for x_type in ('', '-slot'):
+        for slot in self.get(x + x_type):
+          constraints = {'require': [], 'forbid': []}
+          if 'constraint' not in slot: continue
+          for const in slot.get('constraint',[]):
+            if const['type'] == 'require':
+              constraints['require'] += [const['other-slot']]
+            elif const['type'] == 'forbid':
+              constraints['forbid'] += [const['other-slot']]
+          del slot['constraint']
+          for i, req in enumerate(constraints['require']):
+            key = slot.full_key + '_require' + str(i + 1) + '_other-slot'
+            self[key] = req
+          for i, fbd in enumerate(constraints['forbid']):
+            key = slot.full_key + '_forbid' + str(i + 1) + '_other-slot'
+            self[key] = fbd

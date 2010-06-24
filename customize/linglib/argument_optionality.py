@@ -1,4 +1,4 @@
-from linglib import morphotactics
+from customize.linglib import morphotactics
 
       # SS 2009-06-07 added check to see if a const rule which changes
       # the COMPS of the mother to OPT - is needed.  The code assumes
@@ -21,9 +21,7 @@ def customize_arg_op(choices, mylang):
   '''
   for slot in choices.get_slots(morphotactics.all_slot_types):
     slot_key = slot.full_key
-    last_morph_index = 0
-    if len(slot.get('morph',[])) > 0:
-      last_morph_index = int(slot['morph'].get_last().iter_num())
+    idx = slot['morph'].next_iter_num() if 'morph' in slot else 1
     for morph in slot.get('morph',[]):
       # only create a lexical rule if necessary
       if not (need_no_drop_rule('obj-mark', choices) or \
@@ -31,17 +29,17 @@ def customize_arg_op(choices, mylang):
         continue
       overt = [f for f in morph.get('feat',[]) if f['name']=='overt-arg']
       dropped = [f for f in morph.get('feat',[]) if f['name']=='dropped-arg']
-      # overt-arg morphs should be the index of the last morph + 1
+      # overt-arg morphs should be the index of the next available
       if overt:
-        key = slot.full_key + '_morph' + str(last_morph_index + 1)
+        key = slot.full_key + '_morph' + str(idx)
         name = morphotactics.get_slot_name(slot.full_key, choices) + '-no-drop'
         choices[key + '_name'] = name
         choices[key + '_feat1_name'] = 'OPT'
         choices[key + '_feat1_value'] = 'minus'
         choices[key + '_feat1_head'] = overt[0]['head']
-      # dropped-arg morphs should be the index of the last morph + 2
+      # dropped-arg morphs should be the index of the next available + 1
       if dropped:
-        key = slot.full_key + '_morph' + str(last_morph_index + 2)
+        key = slot.full_key + '_morph' + str(idx + 1)
         name = morphotactics.get_slot_name(slot.full_key, choices) + '-drop'
         choices[key + '_name'] = name
         choices[key + '_feat1_name'] = 'OPT'
