@@ -63,7 +63,7 @@ def is_lexical_rule(s):
   it is a lexical rule type or an intermediate rule, but not a
   lexical type.
   """
-  return s.rule_type in ('lex-rule', 'rule-dtr')
+  return s.rule_type in ('lex-rule-super','lex-rule', 'rule-dtr')
 
 def is_lexical_type(s):
   """
@@ -221,7 +221,7 @@ def create_lexical_rules(choices, preceeds):
   # pull info from choices and create Slot objects
   for slot in choices.get_slots(all_slot_types):
     ensure_lr_exists(lrs, slot.full_key,
-                     get_slot_name(slot.full_key, choices), 'lex-rule')
+                     get_slot_name(slot.full_key, choices), 'lex-rule-super')
     lr = lrs[slot.full_key]
     lr.order = slot['order']
     lr.morphs = [create_morpheme(m, lr.slot_key, choices)
@@ -235,7 +235,7 @@ def ensure_lr_exists(lrs, key, name, rule_type=None):
   it into lrs.
   """
   if rule_type is None:
-    if is_slot(key): rule_type = 'lex-rule'
+    if is_slot(key): rule_type = 'lex-rule-super'
     else: rule_type = 'lex'
   if key not in lrs:
     lrs[key] = Slot(name, slot_key=key, rule_type=rule_type)
@@ -255,7 +255,7 @@ def create_morpheme(morph, supertype, choices):
     m.parents.add('infl-lex-rule')
   feat_vals = [(f['name'], f['value']) for f in morph.get('feat',[])]
   if ('negation', 'plus') in feat_vals:
-    m.parents.add('cont-change-only-rule')
+    m.parents.add('cont-change-only-lex-rule')
   else:
     m.parents.add('add-only-no-ccont-rule')
 
@@ -469,9 +469,9 @@ def write_flags(x, mylang, all_flags):
   # only putting flags on lextypes and lexical rule types (slots) for now
   # and within those two, lextypes can only specify output constraints
   if len(all_flags) == 0: return
-  if x.rule_type in ('lex', 'lex-rule'):
+  if x.rule_type in ('lex', 'lex-rule-super'):
     write_output_flags(x, mylang, all_flags)
-  if x.rule_type == 'lex-rule':
+  if x.rule_type == 'lex-rule-super':
     write_copy_up_flags(x, mylang, all_flags)
     write_input_flags(x, mylang)
 
