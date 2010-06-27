@@ -1347,8 +1347,8 @@ BeginIter verb-slot{i} "a Slot"
     MultiSelect other-slot "Verb slot {i} requires" "<p>Verb slot {i} requires one of the following slots: " "</p>"
     fillregex (verb|aux)(-slot)?[0-9]+_name
     . verb "Any verb" "any verb"
-    . iverb "Any intransitive verb" "any intrasitive verb"
-    . tverb "Any transitive verb" "any intransitive verb"
+    . iverb "Any intransitive verb" "any intransitive verb"
+    . tverb "Any transitive verb" "any transitive verb"
     . aux "Any auxiliary verb" "any auxiliary verb" 
 
   EndIter require
@@ -1358,8 +1358,8 @@ BeginIter verb-slot{i} "a Slot"
     Select other-slot "Verb slot {i} forbids" "<p>Verb slot {i} forbids the following slot: " "</p>"
     fillregex (verb|aux)(-slot)?[0-9]+_name
     . verb "Any verb" "any verb"
-    . iverb "Any intransitive verb" "any intrasitive verb"
-    . tverb "Any transitive verb" "any intransitive verb"
+    . iverb "Any intransitive verb" "any intransitive verb"
+    . tverb "Any transitive verb" "any transitive verb"
     . aux "Any auxiliary verb" "any auxiliary verb" 
 
   EndIter forbid

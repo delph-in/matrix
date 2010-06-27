@@ -29,7 +29,7 @@ def expand_lexical_supertype(st, choices):
     return [v.full_key for v in choices['verb']
             if case.interpret_verb_valence(v['valence']) == st]
   else:
-    return [x.full_key for x in choices[st]]
+    return [x.full_key for x in choices.get(st,[])]
 
 def used_lexical_supertypes(choices):
   '''

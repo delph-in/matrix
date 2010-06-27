@@ -447,7 +447,6 @@ def write_inflected_avms(all_flags, mylang):
   for f in all_flags:
     flag = flag_name(f)
     mylang.add('''inflected :+ [%(flag)s luk].''' % {'flag': flag})
-    mylang.add('''infl-initial :+ [%(flag)s na-or--].''' % {'flag': flag})
     mylang.add('''infl-satisfied :+ [%(flag)s na-or-+].''' % {'flag': flag})
 
 def write_rule_parents(rule, parents, mylang):

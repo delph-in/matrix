@@ -22,6 +22,7 @@ from gmcs.lib import Hierarchy
 
 from gmcs.linglib import morphotactics
 from gmcs.linglib import argument_optionality
+from gmcs.linglib import direct_inverse
 
 ######################################################################
 # globals
@@ -3563,6 +3564,7 @@ def customize_matrix(path, arch_type):
   customize_lexicon()
   customize_arg_op()
   argument_optionality.customize_arg_op(ch, mylang)
+  #direct_inverse.customize_direct_inverse(ch, mylang)
   # for now, we customize inflection and feature values separately
   to_cfv = morphotactics.customize_inflection(ch, mylang, irules, lrules)
   for (slot_key, type_id, slot_kind) in to_cfv:

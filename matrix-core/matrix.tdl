@@ -839,7 +839,6 @@ lex-rule := phrase-or-lexrule & word-or-lexrule &
 ; be defined in the language-specific grammar files.
 
 inflected := avm.
-infl-initial := inflected.
 infl-satisfied := inflected.
 
 ; ERB 2005-04-14 But it's a bad idea to copy the whole synsem
