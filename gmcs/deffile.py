@@ -1081,7 +1081,8 @@ class MatrixDefFile:
           self.save_choices_section(lines[beg:end], f, choices,
                                     iter_level = iter_level + 1,
                                     prefix =
-                                      prefix + iter_name + var.iter_num() + '_')
+                                      prefix + iter_name +\
+                                      str(var.iter_num()) + '_')
 
       i += 1
 

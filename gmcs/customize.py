@@ -384,21 +384,23 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
 
       for argst in v:
         # specify the subj/comps CASE values
-        s_case = a_case = o_case = ''
         c = argst.split('-')
-        if len(c) > 1:
-          a_case = canon_to_abbr(c[0], cases)
-          o_case = canon_to_abbr(c[1], cases)
+        if argst == 'trans' or len(c) > 1:
+          # if no case marking specified AVMS are blank
+          a_case = o_case = ''
+          # otherwise use the geometry and case name
+          if len(c) > 1:
+            a_case = geom + canon_to_abbr(c[0], cases)
+            o_case = geom + canon_to_abbr(c[1], cases)
           tdlfile.add(type_name + \
-                      ' := [ ARG-ST < [ ' + \
-                      geom + ' ' + a_case + ' ], [ ' +
-                      geom + ' ' + o_case + ' ] > ].',
+                      ' := [ ARG-ST < [ ' + a_case + ' ], ' +\
+                                     '[ ' + o_case + ' ] > ].',
                       merge=True)
         else:
-          s_case = canon_to_abbr(c[0], cases)
+          c = c[0]
+          s_case = (geom + canon_to_abbr(c, cases)) if c != 'intrans' else ''
           tdlfile.add(type_name + \
-                      ' := [ ARG-ST.FIRST. ' + \
-                      geom + ' ' + s_case + ' ].',
+                      ' := [ ARG-ST < [ ' + s_case + ' ] > ].',
                       merge=True)
 
     elif (n == 'negation' and v[0] == 'plus'):
