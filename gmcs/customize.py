@@ -180,7 +180,7 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
         # specify the subj/comps CASE values
         c = argst.split('-')
         if case.interpret_verb_valence(argst) == 'tverb':
-           # if no case marking specified AVMS are blank
+          # if no case marking specified AVMS are blank
           a_case = o_case = ''
           # otherwise use the geometry and case name
           if len(c) > 1:
