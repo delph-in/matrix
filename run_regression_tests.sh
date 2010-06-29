@@ -71,8 +71,8 @@ else
 fi
 
 
-## Create fresh copy of matrix-core
-#
+# Create fresh copy of matrix-core
+
 rm -rf ${CUSTOMIZATIONROOT}/matrix-core
 pushd ${CUSTOMIZATIONROOT}/.. >/dev/null
 ./install -c ${CUSTOMIZATIONROOT}/matrix-core >/dev/null

@@ -1041,6 +1041,22 @@ BeginIter noun{i} "a Noun Type" 1
 
   EndIter stem
 
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect other-slot "Noun {i} requires" "<p>Noun {i} requires one of the following slots: " "</p>"
+    fillregex (noun-slot)[0-9]+_name
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select other-slot "Noun {i} forbids" "<p>Noun {i} forbids the following slot: " "</p>"
+    fillregex (noun-slot)[0-9]+_name
+
+  EndIter forbid
+
   Label "</div>"
 
 EndIter noun
@@ -1053,20 +1069,17 @@ BeginIter noun-slot{i} "a Slot"
 
   Text name "Noun slot {i} name" "<b>Noun slot {i}</b>:<br>Slot name: " " " 20
 
-  Check opt "Noun slot {i} optional" ", which is " " optional"
+  Check obligatory "Noun slot {i} obligatory" " and " " obligatorily "
 
-  Select order "Noun slot {i} order" " and appears " " the following inputs:<br>"
+  Select order "Noun slot {i} order" " appears " " the following inputs:<br>"
   . after "After" "after"
   . before "Before" "before"
 
   BeginIter input{j} "an Input" 1
 
     Select type "Noun slot {i} input {j} type" "Input: " ""
-    fillregex (noun|verb|det)(-slot)?[0-9]+_name
+    fillregex (noun)(-slot)?[0-9]+_name
     . noun "Any noun" "any noun"
-    . verb "Any verb" "any verb"
-    . iverb "Any intransitive verb" "any intransitive verb"
-    . tverb "Any transitive verb" "any transitive verb"
 
   EndIter input
 
@@ -1090,19 +1103,23 @@ BeginIter noun-slot{i} "a Slot"
 
   EndIter morph
 
-  Label "<p>Constraints on other slots:</p>"
+  Label "<p>Morphotactic Constraints:</p>"
 
-  BeginIter constraint{j} "a Constraint"
+  BeginIter require{j} "a Require constraint"
 
-    Select type "Noun slot {i} constraint {j} type" "Constraint: " ", "
-    . req "Requires closer" "Requires (earlier)"
-    . forces "Requires further" "Forces (later)"
-    . disreq "Cannot co-occur" "Forbids (earlier or later)"
+    MultiSelect other-slot "Noun slot {i} requires" "<p>Noun slot {i} requires one of the following slots: " "</p>"
+    fillregex (noun)(-slot)?[0-9]+_name
+    . noun "Any noun" "any noun"
 
-    Select other-slot "Noun slot {i} constraint {j} other slot" "other slot: " ""
-    fillregex (noun|verb|det)(-slot)[0-9]+_name
+  EndIter require
 
-  EndIter constraint
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select other-slot "Noun slot {i} forbids" "<p>Noun slot {i} forbids the following slot: " "</p>"
+    fillregex (noun)(-slot)?[0-9]+_name
+    . noun "Any noun" "any noun"
+
+  EndIter forbid
 
 EndIter noun-slot
 
@@ -1148,6 +1165,22 @@ BeginIter verb{i} "a Verb Type" 2
     Text pred "Verb {i} stem {j} predicate" " Predicate: " "" 30
 
   EndIter stem
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect other-slot "Verb {i} requires" "<p>Verb {i} requires one of the following slots: " "</p>"
+    fillregex (verb|aux)-slot[0-9]+_name
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select other-slot "Verb {i} forbids" "<p>Verb {i} forbids the following slot: " "</p>"
+    fillregex (verb|aux)-slot[0-9]+_name
+
+  EndIter forbid
 
   Label "</div>"
 
@@ -1235,6 +1268,22 @@ BeginIter aux{i} "an Auxiliary Type"
 
   EndIter stem
 
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect other-slot "Aux {i} requires" "<p>Aux {i} requires one of the following slots: " "</p>"
+    fillregex (verb|aux)-slot[0-9]+_name
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select other-slot "Aux {i} forbids" "<p>Aux {i} forbids the following slot: " "</p>"
+    fillregex (verb|aux)-slot[0-9]+_name
+
+  EndIter forbid
+
   Label "</div>"
 
 EndIter aux
@@ -1247,17 +1296,16 @@ BeginIter verb-slot{i} "a Slot"
 
   Text name "Verb slot {i} name" "<b>Verb slot {i}</b>:<br>Slot name: " " " 20
 
-  Check opt "Verb slot {i} optional" ", which is " " optional"
+  Check obligatory "Verb slot {i} obligatory" " and " " obligatorily "
 
-  Select order "Verb slot {i} order" " and appears " " the following inputs:<br>"
+  Select order "Verb slot {i} order" " appears " " the following inputs:<br>"
   . after "After" "after"
   . before "Before" "before"
 
   BeginIter input{j} "an Input" 1
 
     Select type "Verb slot {i} input {j} type" "Input: " ""
-    fillregex (noun|verb|aux|det)(-slot)?[0-9]+_name
-    . noun "Any noun" "any noun"
+    fillregex (verb|aux)(-slot)?[0-9]+_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
@@ -1292,19 +1340,29 @@ BeginIter verb-slot{i} "a Slot"
 
   EndIter morph
 
-  Label "<p>Constraints on other slots:</p>"
+  Label "<p>Morphotactic Constraints:</p>"
 
-  BeginIter constraint{j} "a Constraint"
+  BeginIter require{j} "a Require constraint"
 
-    Select type "Verb slot {i} constraint {j} type" "Constraint: " ", "
-    . req "Requires closer" "Requires (earlier)"
-    . forces "Requires further" "Forces (later)"
-    . disreq "Cannot co-occur" "Forbids (earlier or later)"
+    MultiSelect other-slot "Verb slot {i} requires" "<p>Verb slot {i} requires one of the following slots: " "</p>"
+    fillregex (verb|aux)(-slot)?[0-9]+_name
+    . verb "Any verb" "any verb"
+    . iverb "Any intransitive verb" "any intransitive verb"
+    . tverb "Any transitive verb" "any transitive verb"
+    . aux "Any auxiliary verb" "any auxiliary verb" 
 
-    Select other-slot "Verb slot {i} constraint {j} other slot" "other slot: " ""
-    fillregex (noun|verb|det)(-slot)[0-9]+_name
+  EndIter require
 
-  EndIter constraint
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select other-slot "Verb slot {i} forbids" "<p>Verb slot {i} forbids the following slot: " "</p>"
+    fillregex (verb|aux)(-slot)?[0-9]+_name
+    . verb "Any verb" "any verb"
+    . iverb "Any intransitive verb" "any intransitive verb"
+    . tverb "Any transitive verb" "any transitive verb"
+    . aux "Any auxiliary verb" "any auxiliary verb" 
+
+  EndIter forbid
 
 EndIter verb-slot
 
@@ -1340,6 +1398,22 @@ BeginIter det{i} "a Determiner"
 
   EndIter feat
 
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect other-slot "Determiner {i} requires" "<p>Determiner {i} requires one of the following slots: " "</p>"
+    fillregex (det)-slot[0-9]+_name
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select other-slot "Determiner {i} forbids" "<p>Determiner {i} forbids the following slot: " "</p>"
+    fillregex (det)-slot[0-9]+_name
+
+  EndIter forbid
+
   Label "</div>"
 
 EndIter det
@@ -1352,20 +1426,16 @@ BeginIter det-slot{i} "a Slot"
 
   Text name "Determiner slot {i} name" "<b>Determiner slot {i}</b>:<br>Slot name: " " " 20
 
-  Check opt "Determiner slot {i} optional" ", which is " " optional"
+  Check obligatory "Noun slot {i} obligatory" " and " " obligatorily "
 
-  Select order "Determiner slot {i} order" " and appears " " the following inputs:<br>"
+  Select order "Determiner slot {i} order" " appears " " the following inputs:<br>"
   . after "After" "after"
   . before "Before" "before"
 
   BeginIter input{j} "an Input" 1
 
     Select type "Determiner slot {i} input {j} type" "Input: " ""
-    fillregex (noun|verb|det)(-slot)?[0-9]+_name
-    . noun "Any noun" "any noun"
-    . verb "Any verb" "any verb"
-    . iverb "Any intransitive verb" "any intransitive verb"
-    . tverb "Any transitive verb" "any transitive verb"
+    fillregex (det)(-slot)?[0-9]+_name
 
   EndIter input
 
@@ -1389,19 +1459,21 @@ BeginIter det-slot{i} "a Slot"
 
   EndIter morph
 
-  Label "<p>Constraints on other slots:</p>"
+  Label "<p>Morphotactic Constraints:</p>"
 
-  BeginIter constraint{j} "a Constraint"
+  BeginIter require{j} "a Require constraint"
 
-    Select type "Determiner slot {i} constraint {j} type" "Constraint: " ", "
-    . req "Requires closer" "Requires (earlier)"
-    . forces "Requires further" "Forces (later)"
-    . disreq "Cannot co-occur" "Forbids (earlier or later)"
+    MultiSelect other-slot "Determiner slot {i} requires" "<p>Determiner slot {i} requires one of the following slots: " "</p>"
+    fillregex (det)(-slot)?[0-9]+_name
 
-    Select other-slot "Determiner slot {i} constraint {j} other slot" "other slot: " ""
-    fillregex (noun|verb|det)(-slot)[0-9]+_name
+  EndIter require
 
-  EndIter constraint
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select other-slot "Determiner slot {i} forbids" "<p>Determiner slot {i} forbids the following slot: " "</p>"
+    fillregex (det)(-slot)?[0-9]+_name
+
+  EndIter forbid
 
 EndIter det-slot
 

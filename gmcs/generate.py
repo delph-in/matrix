@@ -110,7 +110,6 @@ def get_n_predications(grammar_dir):
   pred_re = re.compile(r'noun([0-9]+)_stem[0-9]+_pred')
   det_re = re.compile(r'noun([0-9]+)_det')
   det_rel_re = re.compile(r'det[0-9]+_stem[0-9]+_pred')
-  det_rel = None;
   noun_rels_dets = {}
   for line in choices:
     pline = line.lstrip().split('=')
@@ -138,7 +137,7 @@ def get_n_predications(grammar_dir):
   det_rels = []
   for pair in noun_rels_dets:
     noun_rels.append(pair[0])   
-    if pair[1] == 'obl' and not det_rel == None:
+    if pair[1] == 'obl':
       det_rels.append(det_rel)
     else:
       det_rels.append('exist_q_rel')
