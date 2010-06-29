@@ -184,17 +184,18 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
           a_case = o_case = ''
           # otherwise use the geometry and case name
           if len(c) > 1:
-            a_case = geom + canon_to_abbr(c[0], cases)
-            o_case = geom + canon_to_abbr(c[1], cases)
+            a_case = geom + ' ' + canon_to_abbr(c[0], cases)
+            o_case = geom + ' ' + canon_to_abbr(c[1], cases)
           tdlfile.add(type_name + \
-                      ' := [ ARG-ST < [ ' + a_case + ' ], ' +\
-                                     '[ ' + o_case + ' ] > ].',
+                      ' := [ ARG-ST < [ ' + a_case + '], ' +\
+                                     '[ ' + o_case + '] > ].',
                       merge=True)
         else:
           c = c[0]
-          s_case = (geom + canon_to_abbr(c, cases)) if c != 'intrans' else ''
+          if c == 'intrans': s_case = ''
+          else: s_case = geom + ' ' + canon_to_abbr(c, cases)
           tdlfile.add(type_name + \
-                      ' := [ ARG-ST < [ ' + s_case + ' ] > ].',
+                      ' := [ ARG-ST < [ ' + s_case + '] > ].',
                       merge=True)
 
     elif (n == 'negation' and v[0] == 'plus'):
