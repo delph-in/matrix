@@ -120,9 +120,9 @@ def get_n_predications(grammar_dir):
   lexicon = open(grammar_dir+'/lexicon.tdl','r')
   choices = open(grammar_dir+'/choices','r')
   lang = None
-  pred_re = re.compile(r'noun([0-9]+)_stem1_pred')
+  pred_re = re.compile(r'noun([0-9]+)_stem[0-9]_pred')
   det_re = re.compile(r'noun([0-9]+)_det')
-  det2_re = re.compile(r'det[0-9]+_stem1_pred')
+  det2_re = re.compile(r'det[0-9]+_stem[0-9]_pred')
   noun_rels_dets = []
   det_list = set([])
   for line in choices:
