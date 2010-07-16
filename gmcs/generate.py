@@ -90,12 +90,17 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir,session):
     elif line.find('*maximum-number-of-edges*') > -1:
       sentences[index][1].append('#EDGE-ERROR#')
       sentences[index][2].append('')
+      sentences[index][3].append('')
+    elif line.find('Stack overflow') > -1:
+      sentences[index][1].append('#EDGE-ERROR#')
+      sentences[index][2].append('')
+      sentences[index][3].append('')
     elif state == "sentence":
       sentence = unicode(line.lstrip('( \n').rstrip(') .\n').replace('"',''), 'utf-8').lower().encode('utf-8')
     elif state == "parse":
-      parse += "&nbsp&nbsp " + line.strip()
+      parse += "&nbsp&nbsp&nbsp&nbsp " + line.strip()
     elif state == "mrs":
-      mrs += "&nbsp&nbsp " + line.strip().replace("<","&lt ").replace(">","&gt") + "<br>"
+      mrs += "&nbsp&nbsp&nbsp&nbsp " + line.strip().replace("<","&lt ").replace(">","&gt") + "<br>"
   output.close()
   os.remove('lkb_output'+session)
   for entry in sentences:

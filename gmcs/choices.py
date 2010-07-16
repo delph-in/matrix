@@ -504,13 +504,13 @@ class ChoicesFile:
 
 
   # slots()
-  def get_slots(self, prefixes):
+  def get_lexical_rule_types(self, prefixes):
     """
-    Return the slots for every prefix supplied.
+    Return the lexical rule types for every prefix supplied.
     """
     for prefix in prefixes:
-      for slot in self[prefix + '-slot']:
-        yield slot
+      for lrt in self[prefix + '-slot']:
+        yield lrt
 
   # cases()
   #   Create and return a list containing information about the cases
@@ -920,12 +920,6 @@ class ChoicesFile:
     #Situation Aspect
     features += self.__get_features(self.situations(), 0, 0, 'situation',
                                     'LOCAL.CONT.HOOK.INDEX.E.SITUATION')
-
-    # Direction
-    if self.has_dirinv():
-      features += [ ['direction',
-                     'dir|direct;inv|inverse',
-                     'LOCAL.CAT.HEAD.DIRECTION'] ]
 
     # Negaton
     if 'infl-neg' in self.choices:

@@ -1527,7 +1527,7 @@ Separator
 
 Label "<p>Select which templates you would like to use in generation.  If nothing is selected, the simple transitive and intransitive templates will be used, with no features specified</p>"
 
-Check itv "Intransitive" "" "Simple intransive verb phrase<br>"
+Check itv "Intransitive" "" "Simple intransitive verb phrase<br>"
 
 Label "Features:"
 
@@ -1547,7 +1547,7 @@ EndIter itv-feat
 
 Separator  
 
-Check stv "Transitive" "" "Simple transive verb phrase<br>"
+Check stv "Transitive" "" "Simple transitive verb phrase<br>"
 
 Label "Features:"
 

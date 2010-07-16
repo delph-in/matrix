@@ -975,8 +975,8 @@ class MatrixDefFile:
             long = True
           print '<div onclick=toggle_visibility(["%s_%s_parsemrs"])>%s. %s</div>' % (i+1,j+1,j+1,sentences[i][1][j])
           print '<div id="%s_%s_parsemrs" style=display:none;>' % (i+1,j+1)
-          print 'Parse tree:<br>' + sentences[i][2][j]
-          print 'MRS:<br>' + sentences[i][3][j]
+          print '&nbsp&nbsp Parse tree:<br>' + sentences[i][2][j]
+          print '&nbsp&nbsp MRS:<br>' + sentences[i][3][j]
           print '</div>'
         if long:
           print '</div>'
@@ -1014,8 +1014,8 @@ class MatrixDefFile:
           #print str(j+1) + '. <span title="' + trees[j] + '">' + sentences[j] + "</span><br>"
           print '<div onclick=toggle_visibility(["%s_parsemrs"])>%s. %s</div>' % (j+1,j+1,sentences[j])
           print '<div id="%s_parsemrs" style=display:none;>' % (j+1)
-          print 'Parse tree:<br>' + trees[j]
-          print 'MRS:<br>' + mrss[j]
+          print '&nbsp&nbsp Parse tree:<br>' + trees[j]
+          print '&nbsp&nbsp MRS:<br>' + mrss[j]
           print '</div>'
     print '<br><input type="button" name="" value="Back to sentences" onclick="history.go(-1)">'
     print HTML_sentencespostbody

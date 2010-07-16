@@ -19,7 +19,7 @@ from gmcs.linglib import morphotactics
 def customize_arg_op(choices, mylang):
   '''
   '''
-  for slot in choices.get_slots(morphotactics.all_slot_types):
+  for slot in choices.get_lexical_rule_types(morphotactics.all_lr_types):
     slot_key = slot.full_key
     idx = slot['morph'].next_iter_num() if 'morph' in slot else 1
     for morph in slot.get('morph',[]):
@@ -32,7 +32,7 @@ def customize_arg_op(choices, mylang):
       # overt-arg morphs should be the index of the next available
       if overt:
         key = slot.full_key + '_morph' + str(idx)
-        name = morphotactics.get_slot_name(slot.full_key, choices) + '-no-drop'
+        name = morphotactics.get_lr_name(slot.full_key, choices) + '-no-drop'
         choices[key + '_name'] = name
         choices[key + '_feat1_name'] = 'OPT'
         choices[key + '_feat1_value'] = 'minus'
@@ -40,7 +40,7 @@ def customize_arg_op(choices, mylang):
       # dropped-arg morphs should be the index of the next available + 1
       if dropped:
         key = slot.full_key + '_morph' + str(idx + 1)
-        name = morphotactics.get_slot_name(slot.full_key, choices) + '-drop'
+        name = morphotactics.get_lr_name(slot.full_key, choices) + '-drop'
         choices[key + '_name'] = name
         choices[key + '_feat1_name'] = 'OPT'
         choices[key + '_feat1_value'] = 'plus'

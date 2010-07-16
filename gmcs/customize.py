@@ -258,6 +258,18 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
     elif(n=='dropped-arg' and h == 'subj' and v[0] == 'not-permitted'):
       tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
 
+    elif n == 'direction':
+      if v[0] == 'dir':
+        tdlfile.add(type_name + ' := dir-lex-rule.')
+      else:
+        tdlfile.add(type_name + ' := inv-lex-rule.')
+    elif n == 'dirinv-type':
+      d = v[0]
+      if h == 'subj':
+        tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ < '+d+' > ].')
+      elif h == 'obj':
+        tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS < '+d+' > ].')
+
 ######################################################################
 # customize_case()
 #   Create the type definitions associated with the user's choices
@@ -3568,7 +3580,7 @@ def customize_matrix(path, arch_type):
   customize_lexicon()
   customize_arg_op()
   argument_optionality.customize_arg_op(ch, mylang)
-  #direct_inverse.customize_direct_inverse(ch, mylang)
+  direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
   # for now, we customize inflection and feature values separately
   to_cfv = morphotactics.customize_inflection(ch, mylang, irules, lrules)
   for (slot_key, type_id, slot_kind) in to_cfv:
