@@ -921,6 +921,12 @@ class ChoicesFile:
     features += self.__get_features(self.situations(), 0, 0, 'situation',
                                     'LOCAL.CONT.HOOK.INDEX.E.SITUATION')
 
+    # Direction
+    if self.has_dirinv():
+      features += [ ['direction',
+                     'dir|direct;inv|inverse',
+                     'LOCAL.CAT.HEAD.DIRECTION'] ]
+
     # Negaton
     if 'infl-neg' in self.choices:
       features += [ ['negation', 'plus|plus', '' ] ]
