@@ -319,7 +319,7 @@ def interpret_constraints(lrs, choices):
       if all([o in lr.preceeding or o.key in lexicon.lexical_supertypes
               for o in others]):
         lr.constraints['req-bkwd'].update(others)
-      elif all([lr.key in o.preceeding for o in others]):
+      elif all([lr in o.preceeding for o in others]):
         lr.constraints['req-fwd'].update(others)
       # we're not covering the case where others appear before
       # and after the current slot.
@@ -327,11 +327,11 @@ def interpret_constraints(lrs, choices):
       # should be covered in a validation test
     for fbd in choices[lr.key].get('forbid',[]):
       other = lrs[fbd['other-slot']]
-      # only forbid forwards. convert backwards forbids to forwards
+      # only forbid backwards. convert forwards forbids to backwards
       if other in lr.preceeding:
-        other.constraints['forbid'].add(lr)
-      elif lr.key in other.preceeding:
         lr.constraints['forbid'].add(other)
+      elif lr in other.preceeding:
+        other.constraints['forbid'].add(lr)
 
 def convert_obligatoriness_to_req(lrs, choices):
   """
@@ -396,7 +396,7 @@ def create_flags(lrs):
   # tuple is ((SELF.MOTHER, SELF.DTR), (OTHER.MOTHER, OTHER.DTR))
   reqfwd  = (('-', None), ('+', None))
   reqbkwd = ((None, '+'), ('+', None))
-  forbid  = (('+', None), (None, 'na'))
+  forbid  = ((None, 'na'), ('+', None))
   for lr_key in lrs:
     lr = lrs[lr_key]
     assign_flags(lr, lrs, reqfwd, minimal_flag_set(lr, 'req-fwd'))
