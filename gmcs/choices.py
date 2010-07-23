@@ -871,6 +871,13 @@ class ChoicesFile:
       return [ [label, values, tdl] ]
     return []
 
+  def index_features(self):
+    """
+    Return the list of features that are marked on INDEX.
+    """
+    return ['person','number','gender'] \
+           + [f['name'] for f in self['feature'] if f['type'] == 'index']
+
   # features()
   #   Create and return a list containing information about the
   #   features in the language described by the current choices.  This
