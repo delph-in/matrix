@@ -700,7 +700,7 @@ class MatrixDefFile:
 
         if fill_type[0:4] == 'fill':
           if fill_type == 'fillregex':
-            if fill_arg2:
+            if fill_arg2.lower() in ('true', '1'):
               html += html_select(vr, vn, multi,
                                   'fill_regex(\'' + vn +
                                   '\', \'' + fill_arg1 + '\', true)') + '\n'
@@ -770,7 +770,7 @@ class MatrixDefFile:
           html += html_select(vr, vn, multi) + '\n'
           html += html_option(vr, '', False, '') + '\n'
 
-        while lines[i] != '\n':
+        while lines[i].strip() != '':
           word = tokenize_def(replace_vars(lines[i], vars))
           (sval, sfrn, shtml) = word[1:]
           selected = False

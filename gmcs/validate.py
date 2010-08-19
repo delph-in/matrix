@@ -638,7 +638,7 @@ def validate_sentential_negation(ch, vr):
 
 def validate_coordination(ch, vr):
   for cs in ch.get('cs'):
-    csnum = cs.iter_num()
+    csnum = str(cs.iter_num())
 
     cs_n =     cs.get('n')
     cs_np =    cs.get('np')

@@ -33,7 +33,10 @@ class LexicalRuleType(ConstraintBearingType):
     self.order = None       # string
     self.morphs = []        # list of Morphemes
     self.input_span = None  # set of LexicalRuleTypes
-    self.preceding = None  # set of LexicalRuleTypes
+    self.preceding = None   # set of LexicalRuleTypes
+
+  def __repr__(self):
+    return 'LexicalRuleType(' + self.identifier() + ')'
 
 class Morpheme(ConstraintBearingType):
   """
@@ -128,19 +131,35 @@ def create_preceding_dict(input_span, choices):
   this is a superset of inputs, including expanded lexical supertypes
   and generalized lexical types.
   """
-  # create copy of input_span dict, then augment
-  preceding_dict = dict([i for i in input_span.items()])
-  for key in preceding_dict:
+  preceding_dict = {}
+  for key in input_span:
+    # need to create a new set for preceding_dict, otherwise updates
+    # to preceding_dict's items will be reflected in input_span
+    preceding_dict[key] = set([i for i in input_span[key]])
     new_set = set()
-    for lt in preceding_dict[key]:
-      for x in lexicon.expand_lexical_supertype(lt, choices):
+    for lrt in preceding_dict[key]:
+      # if the LRT is a lexical rule supertype, add its expansions
+      for x in lexicon.expand_lexical_supertype(lrt, choices):
         new_set.add(x)
-      for x in lexicon.get_lexical_supertypes(lt, choices):
+      # otherwise add the lexical rule supertype
+      for x in lexicon.get_lexical_supertypes(lrt, choices):
         new_set.add(x)
-    preceding_dict[key] = new_set
+    preceding_dict[key].update(new_set)
   return preceding_dict
 
-def filter_redundant_lrts(ltypes, choices):
+def add_lr_supertypes(ltypes, choices, subsumes=all):
+  """
+  If a set of lexical rule types spans the breadth of a supertype
+  (either completely with subsumes=all, or at least one with
+  subsumes=any), add that supertype to the list as well.
+  """
+  expansions = lexicon.get_lexical_supertype_expansions(choices)
+  for st in sorted(expansions, key=lambda x: len(expansions[x]), reverse=True):
+    if len(expansions[st]) > 0 and \
+       subsumes([lt in ltypes for lt in expansions[st]]):
+      ltypes.add(st)
+
+def remove_subsumed_lrts(ltypes, choices, subsumes=all):
   """
   Given a set of slots, only return the subset that is not subsumed
   by some other slot. For instance, if the list is [verb, verb1,
@@ -150,17 +169,19 @@ def filter_redundant_lrts(ltypes, choices):
   transitive verb and verb2 was the only intransitive verb, the result
   would be [verb, noun1].
   """
-  slots = set()
-  expansions = dict([(st, lexicon.expand_lexical_supertype(st, choices))
-                      for st in lexicon.lexical_supertypes])
+  lrt_set = set()
+  expansions = lexicon.get_lexical_supertype_expansions(choices)
   # go through each expansion by the number of items expanded
-  for e in sorted(expansions, key=lambda x: len(expansions[x]), reverse=True):
-    if len(expansions[e]) > 0 and all([lt in ltypes for lt in expansions[e]]):
-      slots.add(e)
-      for lt in expansions[e]: ltypes.remove(lt)
+  for st in sorted(expansions, key=lambda x: len(expansions[x]), reverse=True):
+    if st in ltypes and len(expansions[st]) > 0 and \
+       subsumes([lt in ltypes for lt in expansions[st]]):
+      lrt_set.add(st)
+      for lt in expansions[st]:
+        if lt in ltypes:
+          ltypes.remove(lt)
   # add the remaining specific lexical types not included in a supertype
-  slots.update(ltypes)
-  return slots
+  lrt_set.update(ltypes)
+  return lrt_set
 
 def all_inputs(lr_key, lrs, choices):
   """
@@ -169,9 +190,11 @@ def all_inputs(lr_key, lrs, choices):
   If it does, the slot can't be an input. For example, if we have
   A->B->C->D and B requires C, then all_inputs for D is [A,C].
   """
-  return [i for i in filter_redundant_lrts(lrs[lr_key].input_span, choices)
-          if not any([j in lrs[lr_key].input_span and i in j.input_span
-                      for j in lrs[i.key].constraints['req-fwd']])]
+  lrts = [l for l in lrs[lr_key].input_span
+          if not any([j in lrs[lr_key].input_span and l in j.input_span
+                      for j in l.constraints['req-fwd']])]
+  return [lrs[i] for i in remove_subsumed_lrts([l.key for l in lrts],
+                                                choices)]
 
 def basetypes(lr, choices):
   """
@@ -180,9 +203,9 @@ def basetypes(lr, choices):
   set of lexical types completely covers the span of a lexical
   supertype (as in lexicon.lexical_supertypes), only return the supertype.
   """
-  covered_lex_types = [b for b in lr.input_span
+  covered_lex_types = [b.key for b in lr.input_span
                        if not is_lexical_rule_type(b.key) and b.key in choices]
-  return filter_redundant_lrts(covered_lex_types, choices)
+  return remove_subsumed_lrts(covered_lex_types, choices)
 
 def sequential(lr1, lr2):
   """
@@ -340,8 +363,8 @@ def convert_obligatoriness_to_req(lrs, choices):
   """
   for lrt in choices.get_lexical_rule_types(all_lr_types):
     if lrt.get('obligatory','') == 'on':
-      for bt in basetypes(lrs[lrt.full_key], choices):
-        lrs[bt.key].constraints['req-fwd'].add(lrs[lrt.full_key])
+      for bt_key in basetypes(lrs[lrt.full_key], choices):
+        lrs[bt_key].constraints['req-fwd'].add(lrs[lrt.full_key])
 
 ### INPUTS ###
 
@@ -350,7 +373,9 @@ def handle_inputs(lrs, choices):
   for inp in inp_dict:
     # if there are than one input, we need an intermediate rule
     if len(inp) > 1:
-      input_lrt = create_intermediate_rule(inp_dict[inp], inp, lrs)
+      inp_keys = [i.key for i in inp]
+      int_sts = remove_subsumed_lrts(inp_keys, choices)
+      input_lrt = create_intermediate_rule(inp_dict[inp], int_sts, lrs)
     else:
       input_lrt = lrs[inp[0].key]
     for lr in inp_dict[inp]:
@@ -373,11 +398,11 @@ def create_input_dict(lrs, choices):
 
 def create_intermediate_rule(target_rules, inputs, lrs):
   intermediate = disjunctive_typename(target_rules)
-  new_key = tuple([i.key for i in inputs])
+  new_key = tuple(sorted(inputs))
   ensure_lr_exists(lrs, new_key, intermediate, 'rule-dtr')
   lrs[new_key].parents.add('avm')
   for i in inputs:
-    lrs[i.key].parents.add(lrs[new_key].identifier())
+    lrs[i].parents.add(lrs[new_key].identifier())
   return lrs[new_key]
 
 def percolate_parents(lr):
@@ -574,7 +599,7 @@ def write_i_or_l_rule(m, order, irules, lrules):
 def validate(choices, vr):
   index_feats = choices.index_features()
   cycle_validation(choices, vr)
-  lrs = create_lexical_rules(choices)
+  #lrs = create_lexical_rules(choices)
   for lrt in choices.get_lexical_rule_types(all_lr_types):
     basic_lrt_validation(choices, lrt, vr)
     cooccurrence_validation(lrt, choices, vr)

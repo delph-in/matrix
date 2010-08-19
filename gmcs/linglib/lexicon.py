@@ -12,16 +12,17 @@ lexical_supertypes = {'noun':'noun-lex',
                       'adj':'adjective-lex'}
 
 def expand_lexical_supertype(st_key, choices):
-  '''
+  """
   Given a generic lexical supertype, like those defined in
   lexical_supertypes, return a list of all defined lexical types that
   fit in that pattern. For example, 'tverb' may return verbs with
   valence marked as nom-acc.
-  '''
+  """
   i_t = ['iverb','tverb']
   m = ['mverb']
   if st_key not in lexical_supertypes: return []
-  if st_key == 'mverb' or (st_key == 'verb' and choices['has-aux'] == 'no'):
+  if (st_key == 'mverb' and choices['has-aux'] == 'yes') or \
+     (st_key == 'verb' and choices['has-aux'] == 'no'):
     return [v.full_key for v in choices['verb']] + i_t
   elif st_key == 'verb' and choices['has-aux'] == 'yes':
     return [v.full_key for v in choices['verb'] + choices['aux']] + i_t + m
@@ -31,11 +32,19 @@ def expand_lexical_supertype(st_key, choices):
   else:
     return [x.full_key for x in choices.get(st_key,[])]
 
+def get_lexical_supertype_expansions(choices):
+  """
+  Return a dictionary mapping each supertype to its possible
+  expansions as lexical types defined in the choices file.
+  """
+  return dict([(st, expand_lexical_supertype(st, choices))
+               for st in lexical_supertypes])
+
 def used_lexical_supertypes(choices):
-  '''
+  """
   Return a list of lexical supertypes (as defined in
   lexical_supertypes) that will actually be used in the grammar.
-  '''
+  """
   used = set()
   for x in ['noun','aux','adj','det']:
     if x in choices:
@@ -49,11 +58,11 @@ def used_lexical_supertypes(choices):
   return used
 
 def get_lexical_supertypes(lrt_key, choices):
-  '''
+  """
   Return the list of appropriate lexical types for the given rule
   type. There may be more than one for verbs ([tverb, mverb, verb]) or
   auxiliaries ([aux, verb]).
-  '''
+  """
   lexical_category = lrt_key.rstrip('0123456789')
   # first check if we are already dealing with a generic type
   if lexical_category == lrt_key:

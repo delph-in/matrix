@@ -62,13 +62,15 @@ class ChoiceList(ChoiceCategory, list):
     return len([x for x in self]) == 0
 
   def get_first(self):
-    if len(self) > 0:
-      return self[0]
+    for d in self:
+      if len(d) > 0:
+        return d
     return None
 
   def get_last(self):
-    if len(self) > 0:
-      return self[-1]
+    for d in reversed(self):
+      if len(d) > 0:
+        return d
     return None
 
   def next_iter_num(self):
@@ -1739,3 +1741,11 @@ class ChoicesFile:
           for i, fbd in enumerate(constraints['forbid']):
             key = slot.full_key + '_forbid' + str(i + 1) + '_other-slot'
             self[key] = fbd
+
+  def convert_22_to_23(self):
+    """
+    Lexical rules are no longer divided into Slots and Morphs, but
+    Position Classes, Lexical Rule Types, and Lexical Rule Instances,
+    and LRTs can inherit from other LRTs.
+    """
+    pass

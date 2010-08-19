@@ -25,16 +25,16 @@ class TestChoiceCategoryClasses(unittest.TestCase):
         self.assertEqual(d.iter_num(), None)
         d = ChoiceDict(full_key='abc1')
         self.assertEqual(d.full_key, 'abc1')
-        self.assertEqual(d.iter_num(), '1')
+        self.assertEqual(d.iter_num(), 1)
         self.assertEqual(len(d), 0)
         d['attr1'] = 'val1'
         self.assertEqual(len(d), 1)
         d = ChoiceDict(full_key='abc12')
-        self.assertEqual(d.iter_num(), '12')
+        self.assertEqual(d.iter_num(), 12)
         d = ChoiceDict(full_key='abc1_def')
         self.assertEqual(d.iter_num(), None)
         d = ChoiceDict(full_key='abc1_def2')
-        self.assertEqual(d.iter_num(), '2')
+        self.assertEqual(d.iter_num(), 2)
 
     def test_choicelist(self):
         l = ChoiceList()
