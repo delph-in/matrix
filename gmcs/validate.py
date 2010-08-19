@@ -10,6 +10,8 @@ from gmcs import tdl
 from gmcs.choices import ChoicesFile
 from gmcs.utils import get_name
 
+from gmcs.linglib import morphotactics
+
 
 ######################################################################
 # ValidationResult class
@@ -636,7 +638,7 @@ def validate_sentential_negation(ch, vr):
 
 def validate_coordination(ch, vr):
   for cs in ch.get('cs'):
-    csnum = cs.iter_num()
+    csnum = str(cs.iter_num())
 
     cs_n =     cs.get('n')
     cs_np =    cs.get('np')
@@ -1043,40 +1045,41 @@ def validate_lexicon(ch, vr):
                  'without a direct-inverse scale.'
           vr.err(feat.full_key + '_head', mess)
 
+  morphotactics.validate(ch, vr)
   # Inflectional Slots
-  for slotprefix in ('noun', 'verb', 'det'):
-    for slot in ch.get(slotprefix + '-slot'):
-      if not slot.get('order'):
-        mess = 'You must specify an order for every slot you define.'
-        vr.err(slot.full_key + '_order', mess)
+  #for slotprefix in ('noun', 'verb', 'det'):
+  #  for slot in ch.get(slotprefix + '-slot'):
+  #    if not slot.get('order'):
+  #      mess = 'You must specify an order for every slot you define.'
+  #      vr.err(slot.full_key + '_order', mess)
 
-      if 'input' not in slot:
-        mess = 'You must specify at least one input for every slot.'
-        vr.err(slot.full_key + '_input1_type', mess)
-      else:
-        for inp in slot.get('input', []):
-          t = inp.get('type')
-          if t not in ch and t not in ['noun', 'verb', 'iverb', 'tverb']:
-            mess = 'Every lexical type or slot that serves as the input ' +\
-                   'of a slot must be defined somewhere in the questionnaire.'
-            vr.err(inp.full_key + '_type', mess)
+  #    if 'input' not in slot:
+  #      mess = 'You must specify at least one input for every slot.'
+  #      vr.err(slot.full_key + '_input1_type', mess)
+  #    else:
+  #      for inp in slot.get('input', []):
+  #        t = inp.get('type')
+  #        if t not in ch and t not in ['noun', 'verb', 'iverb', 'tverb']:
+  #          mess = 'Every lexical type or slot that serves as the input ' +\
+  #                 'of a slot must be defined somewhere in the questionnaire.'
+  #          vr.err(inp.full_key + '_type', mess)
 
-      for morph in slot.get('morph', []):
-        for feat in morph.get('feat', []):
-          if not feat.get('name'):
-            mess = 'You must choose which feature you are specifying.'
-            vr.err(feat.full_key + '_name', mess)
-          if not feat.get('value'):
-            mess = 'You must choose a value for each feature you specify.'
-            vr.err(feat.full_key + '_value', mess)
+  #    for morph in slot.get('morph', []):
+  #      for feat in morph.get('feat', []):
+  #        if not feat.get('name'):
+  #          mess = 'You must choose which feature you are specifying.'
+  #          vr.err(feat.full_key + '_name', mess)
+  #        if not feat.get('value'):
+  #          mess = 'You must choose a value for each feature you specify.'
+  #          vr.err(feat.full_key + '_value', mess)
 
-          if slotprefix == 'verb':
-            if not feat.get('head'):
-              mess = 'You must choose where the feature is specified.'
-              vr.err(feat.full_key + '_head', mess)
-            elif feat.get('head') == 'verb' and index_feat.count(feat.get('name')) > 0:
-              mess = 'This feature is associated with nouns, please select one of the NP-options.'
-              vr.err(feat.full_key + '_head', mess)
+  #        if slotprefix == 'verb':
+  #          if not feat.get('head'):
+  #            mess = 'You must choose where the feature is specified.'
+  #            vr.err(feat.full_key + '_head', mess)
+  #          elif feat.get('head') == 'verb' and index_feat.count(feat.get('name')) > 0:
+  #            mess = 'This feature is associated with nouns, please select one of the NP-options.'
+  #            vr.err(feat.full_key + '_head', mess)
 
 
 ######################################################################

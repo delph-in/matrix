@@ -1,5 +1,4 @@
 #!/bin/bash
-
 ### $Id: install,v 1.1 2008-09-09 08:37:52 sfd Exp $
 
 # install:  A script to create the working version of the Matrix
@@ -52,14 +51,15 @@ then
 fi
 
 
+
 # create temporary staging directory
 tempdir=/tmp/matrix.$$
 mkdir $tempdir
 
 # create datestamp, matrix-types, and head-types files
 date -u > $tempdir/datestamp
-cat ${CUSTOMIZATIONROOT}/matrix-core/matrix.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/matrix-types
-cat ${CUSTOMIZATIONROOT}/matrix-core/head-types.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/head-types
+cat ${CUSTOMIZATIONROOT}/../matrix-core/matrix.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/matrix-types
+cat ${CUSTOMIZATIONROOT}/../matrix-core/head-types.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/head-types
 
 # copy files to the temp directory
 if [ "$installremote" ]
@@ -85,6 +85,12 @@ cp ${CUSTOMIZATIONROOT}/{matrix.cgi,matrix.css,matrix.js,matrixdef} $tempdir
 # gmcs files
 mkdir $tempdir/gmcs
 cp ${CUSTOMIZATIONROOT}/{__init__.py,customize.py,deffile.py,choices.py,tdl.py,utils.py,validate.py,generate.py} $tempdir/gmcs/
+
+# TbG template files
+mkdir $tempdir/gmcs/templates
+#mkdir $tempdir/templates
+cp ${CUSTOMIZATIONROOT}/templates/* $tempdir/gmcs/templates
+#cp ${CUSTOMIZATIONROOT}/templates/* $tempdir/templates
 
 # lib files
 mkdir $tempdir/gmcs/lib
@@ -143,6 +149,7 @@ elif [ "$installremote" ]
 then
     cpcmd="scp -r"
     cptarg="uwcl@homer.u.washington.edu:public_html/$1"
+
 fi
 
 if [ "$copymatrix" ]

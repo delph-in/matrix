@@ -1,1 +1,0 @@
-from hierarchy import Hierarchy

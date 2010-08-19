@@ -91,7 +91,7 @@ system should cite <a
 href="http://faculty.washington.edu/ebender/papers/gee03.pdf">Bender,
 Flickinger and Oepen 2002</a> <a
 href="http://faculty.washington.edu/ebender/bibtex/BenFliOep02.bib.txt">[.bib]</a>
-and <a href="http://faculty.washington.edu/ebender/papers/modules05.pdf">Bender and Flickinger 2005</a> <a href="http://faculty.washington.edu/ebender/bibtex/BenFli05.bib.txt">[.bib]</a>.
+and <a href="http://aclweb.org/anthology-new/P/P10/P10-4001.pdf">Bender et al 2010</a> <a href="http://aclweb.org/anthology-new/P/P10/P10-4001.bib">[.bib]</a>.
 
 <p>Filling out this form will produce a starter grammar for a natural
 language, consisting of a language-independent core and customized
@@ -193,6 +193,7 @@ function toggle_visibility(ids) {
 </script>
 
 <h3>Generated Sentences</h3>
+Click on a sentence to view its parse tree and the mrs associated to that parse.  Capitalized lexical entries indicate that the lexical entry has undergone a spelling-changing lexical rule<br><br>
 '''
 
 HTML_sentencespostbody = '''
@@ -699,7 +700,7 @@ class MatrixDefFile:
 
         if fill_type[0:4] == 'fill':
           if fill_type == 'fillregex':
-            if fill_arg2:
+            if fill_arg2.lower() in ('true', '1'):
               html += html_select(vr, vn, multi,
                                   'fill_regex(\'' + vn +
                                   '\', \'' + fill_arg1 + '\', true)') + '\n'
@@ -769,7 +770,7 @@ class MatrixDefFile:
           html += html_select(vr, vn, multi) + '\n'
           html += html_option(vr, '', False, '') + '\n'
 
-        while lines[i] != '\n':
+        while lines[i].strip() != '':
           word = tokenize_def(replace_vars(lines[i], vars))
           (sval, sfrn, shtml) = word[1:]
           selected = False
@@ -944,7 +945,6 @@ class MatrixDefFile:
     print HTML_customprebody % (session_path + '/' + arch_file)
     print HTML_postbody
 
-
   # Generate and print sample sentences from the customized grammar
   def sentences_page(self, session_path, grammar_dir, session):
     print HTTP_header + '\n'
@@ -957,15 +957,27 @@ class MatrixDefFile:
     print HTML_sentencesprebody
     for i in range(len(sentences)):
       long = False
-      print "<b>" + sentences[i][0][0][4:]+"</b> " + sentences[i][0][2] + ", with predication: " + sentences[i][0][1] +"<br>"
+      print "<b>" + sentences[i][0][0][4:]+"</b> " + sentences[i][0][2] + ", with predication: " + ", ".join(sentences[i][0][1].values()) +"<br>"
       if len(sentences[i][1]) > 0 and sentences[i][1][0] == '#EDGE-ERROR#':
         print 'This grammar combined with this input semantics results in too large of a seach space<br>'
+      elif len(sentences[i][1]) > 0 and sentences[i][1][0] == '#NO-SENTENCES#':
+        print 'This combination of verb, pattern, and feature specification did not result in any generated sentences with the nouns that the system chose.<br>'
+        print HTML_preform
+        print '<input type="hidden" name="verbpred" value="%s">' % sentences[i][0][1]
+        print '<input type="hidden" name="template" value="%s">' % sentences[i][0][3]
+        print '<input type="hidden" name="grammar" value="%s">' % grammar_dir
+        print '<input type="submit" name="" value="Try this verb and pattern with all possible nouns">'
+        print HTML_postform
       else:
         for j in range(len(sentences[i][1])):
           if j == 10:
             print '<div id="%s_extra" style=display:none;>' % (i+1)
             long = True
-          print str(j+1) + ". " + sentences[i][1][j] + "<br>"
+          print '<div onclick=toggle_visibility(["%s_%s_parsemrs"])>%s. %s</div>' % (i+1,j+1,j+1,sentences[i][1][j])
+          print '<div id="%s_%s_parsemrs" style=display:none;>' % (i+1,j+1)
+          print '&nbsp&nbsp Parse tree:<br>' + sentences[i][2][j]
+          print '&nbsp&nbsp MRS:<br>' + sentences[i][3][j]
+          print '</div>'
         if long:
           print '</div>'
           print '<div id="%s_dots" style=display:block;>...</div>' % (i+1)
@@ -975,6 +987,7 @@ class MatrixDefFile:
         print '<br>'
         print HTML_preform
         print '<input type="hidden" name="verbpred" value="%s">' % sentences[i][0][1]
+        print '<input type="hidden" name="template" value="%s">' % sentences[i][0][3]
         print '<input type="hidden" name="grammar" value="%s">' % grammar_dir
         print '<input type="submit" name="" value="More sentences with this verb and pattern">'
         print HTML_postform
@@ -983,16 +996,27 @@ class MatrixDefFile:
     print HTML_postbody
 
   # Display page with additional sentences
-  def more_sentences_page(self, session_path, grammar_dir, verbpred, session):
+  def more_sentences_page(self, session_path, grammar_dir, verbpred, template_file, session):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>More Sentences</title>'
     print HTML_sentencesprebody
     grammar_dir_final = os.getcwd() + '/' + session_path + '/' + grammar_dir
     delphin_dir = os.getcwd() + '/delphin'
-    sentences = generate.get_additional_sentences(grammar_dir_final,delphin_dir,verbpred, session)
-    for j in range(len(sentences)):
-      print str(j+1) + ". " + sentences[j] + "<br>"
+    sentences,trees,mrss = generate.get_additional_sentences(grammar_dir_final,delphin_dir,verbpred, template_file,session)
+    if len(sentences) > 0:
+      if sentences[0] == "#EDGE-ERROR#":
+        print 'This grammar combined with this input semantics results in too large of a seach space<br>'
+      if sentences[0] == "#NO-SENTENCES#":
+        print 'This combination of verb, pattern, and feature specification did not result in any generated sentences.<br>'
+      else:
+        for j in range(len(sentences)):
+          #print str(j+1) + '. <span title="' + trees[j] + '">' + sentences[j] + "</span><br>"
+          print '<div onclick=toggle_visibility(["%s_parsemrs"])>%s. %s</div>' % (j+1,j+1,sentences[j])
+          print '<div id="%s_parsemrs" style=display:none;>' % (j+1)
+          print '&nbsp&nbsp Parse tree:<br>' + trees[j]
+          print '&nbsp&nbsp MRS:<br>' + mrss[j]
+          print '</div>'
     print '<br><input type="button" name="" value="Back to sentences" onclick="history.go(-1)">'
     print HTML_sentencespostbody
     print HTML_postbody
