@@ -1046,14 +1046,14 @@ BeginIter noun{i} "a Noun Type" 1
   BeginIter require{j} "a Require constraint"
 
     MultiSelect other "Noun {i} Requires" "<p>Noun {i} requires one of the following: " "</p>"
-    fillregex (noun)(-pc([0-9]+-lrt)?)?[0-9]+_name
+    fillregex noun-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
     Select other "Noun {i} Forbids" "<p>Noun {i} forbids the following slot: " "</p>"
-    fillregex (noun)(-pc([0-9]+-lrt)?)?[0-9]+_name
+    fillregex noun-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
 
@@ -1067,16 +1067,16 @@ Label "<h3>Noun Inflection</h3>"
 
 BeginIter noun-pc{i} "a Position Class"
 
-  Text name "Noun Position Class {i} Name" "<b>Noun Position Class {i}</b>:<br/>Position class Name: " " " 20
+  Text name "Noun Position Class {i} Name" "<b>Noun Position Class {i}</b>:<br/>Position Class Name: " " " 20
 
   Check obligatory "Noun Position Class {i} Obligatory" "<br/>Obligatorily occurs:" ""
 
   Select order "Noun Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
-  . prefix "Prefix" "Prefix"
-  . suffix "Suffix" "Suffix"
+  . prefix "Prefix" "prefix"
+  . suffix "Suffix" "suffix"
 
   MultiSelect input "Noun Position Class {i} Input" "<br/>Possible inputs:" ""
-  fillregex (noun)(-pc([0-9]+-lrt)?)?[0-9]+_name
+  fillregex (noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
   . noun "Any noun" "any noun"
 
   Label "<p>Morphotactic Constraints:</p>"
@@ -1084,7 +1084,7 @@ BeginIter noun-pc{i} "a Position Class"
   BeginIter require{j} "a Require constraint"
 
     MultiSelect other "Noun Position Class {i} Requires" "<p>Noun Position Class {i} requires one of the following: " "</p>"
-    fillregex (noun)(-pc([0-9]+-lrt)?)?[0-9]+_name
+    fillregex (noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . noun "Any noun" "any noun"
 
   EndIter require
@@ -1092,7 +1092,7 @@ BeginIter noun-pc{i} "a Position Class"
   BeginIter forbid{j} "a Forbid constraint"
 
     Select other "Noun Position Class {i} Forbids" "<p>Noun Position Class {i} forbids the following: " "</p>"
-    fillregex (noun)(-pc([0-9]+-lrt)?)?[0-9]+_name
+    fillregex (noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . noun "Any noun" "any noun"
 
   EndIter forbid
@@ -1123,7 +1123,7 @@ BeginIter noun-pc{i} "a Position Class"
     BeginIter require{k} "a Require constraint"
 
       MultiSelect other "Noun Position Class {i} Lexical Rule Type {j} Requires" "<p>Lexical Rule Type {j} requires one of the following: " "</p>"
-      fillregex (noun)(-pc([0-9]+-lrt)?)?[0-9]+_name
+      fillregex (noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . noun "Any noun" "any noun"
 
     EndIter require
@@ -1131,7 +1131,7 @@ BeginIter noun-pc{i} "a Position Class"
     BeginIter forbid{k} "a Forbid constraint"
 
       Select other "Noun Position Class {i} Lexical Rule Type {j} forbids" "<p>Lexical Rule Type {j} forbids the following: " "</p>"
-      fillregex (noun)(-pc([0-9]+-lrt)?)?[0-9]+_name
+      fillregex (noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . noun "Any noun" "any noun"
 
     EndIter forbid
@@ -1140,7 +1140,7 @@ BeginIter noun-pc{i} "a Position Class"
 
     BeginIter lri{k} "a Lexical Rule Instance"
 
-      Text orth "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling: " "" 20
+      Text orth "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "Instance {k} Spelling: " "" 20
 
     EndIter lri
 
@@ -1196,14 +1196,14 @@ BeginIter verb{i} "a Verb Type" 2
   BeginIter require{j} "a Require constraint"
 
     MultiSelect other-slot "Verb {i} requires" "<p>Verb {i} requires one of the following slots: " "</p>"
-    fillregex (verb|aux)-slot[0-9]+_name
+    fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
     Select other-slot "Verb {i} forbids" "<p>Verb {i} forbids the following slot: " "</p>"
-    fillregex (verb|aux)-slot[0-9]+_name
+    fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
 
@@ -1298,14 +1298,14 @@ BeginIter aux{i} "an Auxiliary Type"
   BeginIter require{j} "a Require constraint"
 
     MultiSelect other-slot "Aux {i} requires" "<p>Aux {i} requires one of the following slots: " "</p>"
-    fillregex (verb|aux)-slot[0-9]+_name
+    fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
     Select other-slot "Aux {i} forbids" "<p>Aux {i} forbids the following slot: " "</p>"
-    fillregex (verb|aux)-slot[0-9]+_name
+    fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
 
@@ -1319,16 +1319,16 @@ Label "<h3>Verb Inflection</h3>"
 
 BeginIter verb-pc{i} "a Position Class"
 
-  Text name "Verb Position Class {i} Name" "<b>Verb Position Class {i}</b>:<br/>Position class Name: " " " 20
+  Text name "Verb Position Class {i} Name" "<b>Verb Position Class {i}</b>:<br/>Position Class Name: " " " 20
 
   Check obligatory "Verb Position Class {i} Obligatory" "<br/>Obligatorily occurs:" ""
 
   Select order "Verb Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
-  . prefix "Prefix" "Prefix"
-  . suffix "Suffix" "Suffix"
+  . prefix "Prefix" "prefix"
+  . suffix "Suffix" "suffix"
 
   MultiSelect input "Verb Position Class {i} Input" "<br/>Possible inputs:" ""
-  fillregex (verb|aux)(-pc([0-9]+-lrt)?)?[0-9]+_name
+  fillregex (verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
   . verb "Any verb" "any verb"
   . iverb "Any intransitive verb" "any intransitive verb"
   . tverb "Any transitive verb" "any transitive verb"
@@ -1339,7 +1339,7 @@ BeginIter verb-pc{i} "a Position Class"
   BeginIter require{j} "a Require constraint"
 
     MultiSelect other "Noun Position Class {i} Requires" "<p>Noun Position Class {i} requires one of the following: " "</p>"
-    fillregex (verb|aux)(-pc([0-9]+-lrt)?)?[0-9]+_name
+    fillregex (verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
@@ -1350,7 +1350,7 @@ BeginIter verb-pc{i} "a Position Class"
   BeginIter forbid{j} "a Forbid constraint"
 
     Select other "Noun Position Class {i} Forbids" "<p>Noun Position Class {i} forbids the following: " "</p>"
-    fillregex (verb|aux)(-pc([0-9]+-lrt)?)?[0-9]+_name
+    fillregex (verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
@@ -1362,7 +1362,7 @@ BeginIter verb-pc{i} "a Position Class"
 
   BeginIter lrt{j} "a Lexical Rule Type"
 
-    Text name "Verb Position Class {i} Lexical Rule Type {j} Name" "<b>Verb Position Class {i} Lexical Rule Type {j}</b>:<br/>Name: " "" 20
+    Text name "Verb Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
 
     MultiSelect supertype "Verb Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
     fillregex verb-pc{i}(_lrt[0-9]+)?_name
@@ -1390,8 +1390,8 @@ BeginIter verb-pc{i} "a Position Class"
 
     BeginIter require{k} "a Require constraint"
 
-      MultiSelect other "Verb Position Class {i} Lexical Rule Type {j} Requires" "<p>Verb Position Class {i} Lexical Rule Type {j} requires one of the following: " "</p>"
-      fillregex (verb|aux)(-pc([0-9]+-lrt)?)?[0-9]+_name
+      MultiSelect other "Verb Position Class {i} Lexical Rule Type {j} Requires" "<p>Lexical Rule Type {j} requires one of the following: " "</p>"
+      fillregex (verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . verb "Any verb" "any verb"
       . iverb "Any intransitive verb" "any intransitive verb"
       . tverb "Any transitive verb" "any transitive verb"
@@ -1401,8 +1401,8 @@ BeginIter verb-pc{i} "a Position Class"
 
     BeginIter forbid{k} "a Forbid constraint"
 
-      Select other "Verb Position Class {i} Lexical Rule Type {j} forbids" "<p>Verb Position Class {i} Lexical Rule Type {j} forbids the following: " "</p>"
-      fillregex (verb|aux)(-pc([0-9]+-lrt)?)?[0-9]+_name
+      Select other "Verb Position Class {i} Lexical Rule Type {j} forbids" "<p>Lexical Rule Type {j} forbids the following: " "</p>"
+      fillregex (verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . verb "Any verb" "any verb"
       . iverb "Any intransitive verb" "any intransitive verb"
       . tverb "Any transitive verb" "any transitive verb"
@@ -1414,7 +1414,7 @@ BeginIter verb-pc{i} "a Position Class"
 
     BeginIter lri{k} "a Lexical Rule Instance"
 
-      Text orth "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling: " "" 20
+      Text orth "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "Instance {k} Spelling: " "" 20
 
     EndIter lri
 
@@ -1459,14 +1459,14 @@ BeginIter det{i} "a Determiner"
   BeginIter require{j} "a Require constraint"
 
     MultiSelect other-slot "Determiner {i} requires" "<p>Determiner {i} requires one of the following slots: " "</p>"
-    fillregex (det)-slot[0-9]+_name
+    fillregex det-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
     Select other-slot "Determiner {i} forbids" "<p>Determiner {i} forbids the following slot: " "</p>"
-    fillregex (det)-slot[0-9]+_name
+    fillregex det-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
 
@@ -1478,60 +1478,88 @@ Separator
 
 Label "<h3>Determiner Inflection</h3>"
 
-BeginIter det-slot{i} "a Slot"
+BeginIter det-pc{i} "a Position Class"
 
-  Text name "Determiner slot {i} name" "<b>Determiner slot {i}</b>:<br>Slot name: " " " 20
+  Text name "Determiner Position Class {i} Name" "<b>Determiner Position Class {i}</b>:<br/>Position Class Name: " " " 20
 
-  Check obligatory "Noun slot {i} obligatory" " and " " obligatorily "
+  Check obligatory "Determiner Position Class {i} Obligatory" "<br/>Obligatorily occurs:" ""
 
-  Select order "Determiner slot {i} order" " appears " " the following inputs:<br>"
-  . after "After" "after"
-  . before "Before" "before"
+  Select order "Determiner Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
+  . prefix "Prefix" "prefix"
+  . suffix "Suffix" "suffix"
 
-  BeginIter input{j} "an Input" 1
-
-    Select type "Determiner slot {i} input {j} type" "Input: " ""
-    fillregex (det)(-slot)?[0-9]+_name
-
-  EndIter input
-
-  Label "<p>Morpheme(s) that appear in this slot:</p>"
-
-  BeginIter morph{j} "a Morpheme"
-
-    Text name "Determiner slot {i} morpheme {j} name" "<b>Morpheme {j}</b>: Name: " ", " 20
-
-    Text orth "Determiner slot {i} morpheme {j} spelling" "spelling: " ", with the following features:<br>" 20
-
-    BeginIter feat{k} "a Feature"
-
-      Select name "Determiner slot {i} morpheme {j} feature {k} name" "Name: " " "
-      fillnames
-
-      MultiSelect value "Determiner slot {i} morpheme {j} feature {k} value" "Value: " ""
-      fillvalues det-slot{i}_morph{j}_feat{k}_name
-
-    EndIter feat
-
-  EndIter morph
+  MultiSelect input "Determiner Position Class {i} Input" "<br/>Possible inputs:" ""
+  fillregex (det)(-pc([0-9]+_lrt)?)?[0-9]+_name
+  . det "Any determiner" "any determiner"
 
   Label "<p>Morphotactic Constraints:</p>"
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect other-slot "Determiner slot {i} requires" "<p>Determiner slot {i} requires one of the following slots: " "</p>"
-    fillregex (det)(-slot)?[0-9]+_name
+    MultiSelect other "Determiner Position Class {i} Requires" "<p>Determiner Position Class {i} requires one of the following: " "</p>"
+    fillregex (det)(-pc([0-9]+_lrt)?)?[0-9]+_name
+    . det "Any determiner" "any determiner"
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    Select other-slot "Determiner slot {i} forbids" "<p>Determiner slot {i} forbids the following slot: " "</p>"
-    fillregex (det)(-slot)?[0-9]+_name
+    Select other "Determiner Position Class {i} Forbids" "<p>Determiner Position Class {i} forbids the following: " "</p>"
+    fillregex (det)(-pc([0-9]+_lrt)?)?[0-9]+_name
+    . det "Any determiner" "any determiner"
 
   EndIter forbid
 
-EndIter det-slot
+  Label "<p>Lexical Rule Types that appear in this Position Class:</p>"
+
+  BeginIter lrt{j} "a Lexical Rule Type"
+
+    Text name "Determiner Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
+
+    MultiSelect supertype "Determiner Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
+    fillregex det-pc{i}(_lrt[0-9]+)?_name
+
+    Label "<p>Features:</p>"
+
+    BeginIter feat{k} "a Feature"
+
+      Select name "Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
+      fillnames
+
+      MultiSelect value "Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
+      fillvalues det-pc{i}_lrt{j}_feat{k}_name
+
+    EndIter feat
+
+    Label "<p>Morphotactic Constraints:</p>"
+
+    BeginIter require{k} "a Require constraint"
+
+      MultiSelect other "Determiner Position Class {i} Lexical Rule Type {j} Requires" "<p>Lexical Rule Type {j} requires one of the following: " "</p>"
+      fillregex (det)(-pc([0-9]+_lrt)?)?[0-9]+_name
+      . det "Any determiner" "any determiner"
+
+    EndIter require
+
+    BeginIter forbid{k} "a Forbid constraint"
+
+      Select other "Determiner Position Class {i} Lexical Rule Type {j} forbids" "<p>Lexical Rule Type {j} forbids the following: " "</p>"
+      fillregex (det)(-pc([0-9]+_lrt)?)?[0-9]+_name
+      . det "Any determiner" "any determiner"
+
+    EndIter forbid
+
+    Label "<p>Lexical Rule Instances:</p>"
+
+    BeginIter lri{k} "a Lexical Rule Instance"
+
+      Text orth "Determiner Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "Instance {k} Spelling: " "" 20
+
+    EndIter lri
+
+  EndIter lrt
+
+EndIter det-pc
 
 Separator
 
