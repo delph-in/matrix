@@ -304,6 +304,8 @@ class ChoicesFile:
           (key, value) = self.preparse_convert_3_to_4(key, value)
         if self.version < 19:
           (key, value) = self.preparse_convert_18_to_19(key, value)
+        if self.version < 23:
+          (key, value) = self.preparse_convert_22_to_23(key, value)
         # If future versions require a choices file line to be converted
         # before it is parsed, but the appropriate method here:
         # if self.version < N
@@ -362,6 +364,8 @@ class ChoicesFile:
       self.convert_20_to_21()
     if self.version < 22:
       self.convert_21_to_22()
+    if self.version < 23:
+      self.convert_22_to_23()
     # As we get more versions, add more version-conversion methods, and:
     # if self.version < N:
     #   self.convert_N-1_to_N
@@ -1742,10 +1746,42 @@ class ChoicesFile:
             key = slot.full_key + '_forbid' + str(i + 1) + '_other-slot'
             self[key] = fbd
 
+  def preparse_convert_22_to_23(self, key, value):
+    """
+    Lexical rules are no longer divided into Slots and Morphs, but
+    Position Classes, Lexical Rule Types, and Lexical Rule Instances,
+    and LRTs can inherit from other LRTs. Most of converting slots
+    just includes switching '-slot' to '-pc', so it is done here.
+    Further conversion occurs in convert_22_to_23().
+    """
+    # make sure we only change lexical choices
+    if not ('-slot' in key or '_require' in key or '_forbid' in key):
+      return (key, value)
+    if ('_type' in key or '_other-slot' in key) and '-slot' in value:
+      value = value.replace('-slot','-pc',1)
+    if '_other-slot' in key:
+      key = key.replace('_other-slot','_other')
+    if '_morph' in key:
+      key = key.replace('_morph','_lrt')
+      key = key.replace('_orth', '_lri1_orth')
+    if '-slot' in key:
+      key = key.replace('-slot','-pc',1)
+    if '_order' in key:
+      value = value.replace('before','prefix').replace('after','suffix')
+    return (key, value)
+
   def convert_22_to_23(self):
     """
     Lexical rules are no longer divided into Slots and Morphs, but
     Position Classes, Lexical Rule Types, and Lexical Rule Instances,
-    and LRTs can inherit from other LRTs.
+    and LRTs can inherit from other LRTs. Some conversion already
+    occurred in preparse_convert_22_to_23().
     """
-    pass
+    from gmcs.linglib import morphotactics
+    for pc_type in morphotactics.all_lr_types:
+      for pc in self.get(pc_type + '-pc', []):
+        all_inps = ', '.join([inp['type'] for inp in pc['input']])
+        del self[pc.full_key + '_input']
+        self[pc.full_key + '_input'] = all_inps
+        for lrt in pc['lrt']:
+          lrt['supertype'] = pc.full_key
