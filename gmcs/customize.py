@@ -18,7 +18,7 @@ from gmcs.utils import TDLencode
 from gmcs.utils import get_name
 from gmcs.utils import format_comment_block
 
-from gmcs.lib import Hierarchy
+from gmcs.lib import TDLHierarchy
 
 from gmcs.linglib import morphotactics
 from gmcs.linglib import argument_optionality
@@ -279,7 +279,7 @@ def init_case_hierarchy():
   cm = ch.get('case-marking')
   cases = ch.cases()
 
-  hier = Hierarchy('case')
+  hier = TDLHierarchy('case')
 
   # For most case patterns, just make a flat hierarchy.  For fluid-s,
   # split-n and split-v, however, a more articulated hierarchy is required.
@@ -403,7 +403,7 @@ def customize_direct_inverse():
     return
 
   mylang.add('verb :+ [ DIRECTION direction ].', section='addenda')
-  hier = Hierarchy('direction')
+  hier = TDLHierarchy('direction')
   hier.add('dir', 'direction')
   hier.add('inv', 'direction')
   hier.save(mylang)
@@ -503,7 +503,7 @@ def customize_direct_inverse():
 #   about person and number.
 
 def init_person_hierarchy():
-  hier = Hierarchy('person')
+  hier = TDLHierarchy('person')
 
   for p in ch.persons():
     for st in p[1].split(';'):
@@ -514,7 +514,7 @@ def init_person_hierarchy():
 
 
 def init_number_hierarchy():
-  hier = Hierarchy('number')
+  hier = TDLHierarchy('number')
 
   for n in ch.numbers():
     for st in n[1].split(';'):
@@ -525,7 +525,7 @@ def init_number_hierarchy():
 
 
 def init_pernum_hierarchy():
-  hier = Hierarchy('pernum')
+  hier = TDLHierarchy('pernum')
 
   for pn in ch.pernums():
     for st in pn[1].split(';'):
@@ -555,7 +555,7 @@ def customize_person_and_number():
 #   about gender.
 
 def init_gender_hierarchy():
-  hier = Hierarchy('gender')
+  hier = TDLHierarchy('gender')
 
   for g in ch.genders():
     for st in g[1].split(';'):
@@ -580,7 +580,7 @@ def init_other_hierarchies():
   for feature in ch.get('feature',[]):
     feat = feature.get('name','')
     type = feature.get('type','')
-    hier = Hierarchy(feat, type)
+    hier = TDLHierarchy(feat, type)
 
     for value in feature.get('value', []):
       val = value.get('name')
@@ -618,7 +618,7 @@ def customize_other_features():
 # Create tense feature value hierarchies per the user's choices
 
 def init_tense_hierarchy():
-  hier = Hierarchy('tense')
+  hier = TDLHierarchy('tense')
 
   tdefn = ch.get('tense-definition')
   if tdefn:
@@ -669,7 +669,7 @@ def customize_tense():
 # Create viewpoint aspect feature value definitions per the user's choices
 
 def init_aspect_hierarchy():
-  hier = Hierarchy('aspect')
+  hier = TDLHierarchy('aspect')
 
   for aspect in ch.get('aspect',[]):
     name = aspect.get('name')
@@ -689,7 +689,7 @@ def customize_aspect():
 # Create situation aspect feature value definitions per the user's choices
 
 def init_situation_hierarchy():
-  hier = Hierarchy('situation')
+  hier = TDLHierarchy('situation')
 
   for situation in ch.get('situation',[]):
     name = situation.get('name')
@@ -2289,7 +2289,7 @@ def init_form_hierarchy():
   Adds FORM finite and nonfinte values if there are auxiliaries
   or if user specified
   """
-  hier = Hierarchy('form')
+  hier = TDLHierarchy('form')
 
   if has_auxiliaries_p() or 'noaux-fin-nf' in ch:
 

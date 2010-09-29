@@ -1,7 +1,7 @@
 import gmcs.linglib.morphotactics
 from gmcs.linglib.lexicon import lexical_supertypes
 from gmcs.utils import get_name
-from gmcs.lib import Hierarchy
+from gmcs.lib import TDLHierarchy
 
 dirinv_geom = 'LOCAL.CAT.HEAD.DIRECTION'
 
@@ -86,7 +86,7 @@ def customize_direct_inverse(choices, mylang, hierarchies):
 
 def write_dir_inv_types(choices, mylang, hierarchies):
   mylang.add('verb :+ [ DIRECTION direction ].', section='addenda')
-  hier = Hierarchy('direction')
+  hier = TDLHierarchy('direction')
   hier.add('dir', 'direction')
   hier.add('inv', 'direction')
   hier.save(mylang)

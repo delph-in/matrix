@@ -1075,7 +1075,7 @@ BeginIter noun-pc{i} "a Position Class"
   . prefix "Prefix" "prefix"
   . suffix "Suffix" "suffix"
 
-  MultiSelect input "Noun Position Class {i} Input" "<br/>Possible inputs:" ""
+  MultiSelect inputs "Noun Position Class {i} Input" "<br/>Possible inputs:" ""
   fillregex (noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
   . noun "Any noun" "any noun"
 
@@ -1103,7 +1103,7 @@ BeginIter noun-pc{i} "a Position Class"
 
     Text name "Noun Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
 
-    MultiSelect supertype "Noun Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
+    MultiSelect supertypes "Noun Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
     fillregex noun-pc{i}(_lrt[0-9]+)?_name
 
     Label "<p>Features:</p>"
@@ -1327,7 +1327,7 @@ BeginIter verb-pc{i} "a Position Class"
   . prefix "Prefix" "prefix"
   . suffix "Suffix" "suffix"
 
-  MultiSelect input "Verb Position Class {i} Input" "<br/>Possible inputs:" ""
+  MultiSelect inputs "Verb Position Class {i} Input" "<br/>Possible inputs:" ""
   fillregex (verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
   . verb "Any verb" "any verb"
   . iverb "Any intransitive verb" "any intransitive verb"
@@ -1364,7 +1364,7 @@ BeginIter verb-pc{i} "a Position Class"
 
     Text name "Verb Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
 
-    MultiSelect supertype "Verb Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
+    MultiSelect supertypes "Verb Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
     fillregex verb-pc{i}(_lrt[0-9]+)?_name
 
     Label "<p>Features:</p>"
@@ -1488,7 +1488,7 @@ BeginIter det-pc{i} "a Position Class"
   . prefix "Prefix" "prefix"
   . suffix "Suffix" "suffix"
 
-  MultiSelect input "Determiner Position Class {i} Input" "<br/>Possible inputs:" ""
+  MultiSelect inputs "Determiner Position Class {i} Input" "<br/>Possible inputs:" ""
   fillregex (det)(-pc([0-9]+_lrt)?)?[0-9]+_name
   . det "Any determiner" "any determiner"
 
@@ -1516,7 +1516,7 @@ BeginIter det-pc{i} "a Position Class"
 
     Text name "Determiner Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
 
-    MultiSelect supertype "Determiner Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
+    MultiSelect supertypes "Determiner Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
     fillregex det-pc{i}(_lrt[0-9]+)?_name
 
     Label "<p>Features:</p>"

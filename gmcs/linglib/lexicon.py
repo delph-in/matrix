@@ -1,8 +1,12 @@
 from gmcs.linglib import case
+from gmcs.linglib.morphotactics import MorphotacticNode, PositionClass
+from gmcs.utils import get_name
+
+LEXICAL_CATEGORIES = ['noun', 'verb', 'det', 'adj']
 
 # lexical_supertypes is a dictionary mapping the choices file
 # encodings to the actual lex-type identifiers.
-lexical_supertypes = {'noun':'noun-lex',
+LEXICAL_SUPERTYPES = {'noun':'noun-lex',
                       'verb':'verb-lex',
                       'iverb':'intransitive-verb-lex',
                       'tverb':'transitive-verb-lex',
@@ -10,6 +14,43 @@ lexical_supertypes = {'noun':'noun-lex',
                       'det':'determiner-lex',
                       'aux':'aux-lex',
                       'adj':'adjective-lex'}
+
+class LexicalType(MorphotacticNode):
+  def __init__(self, key, name, parents):
+    MorphotacticNode.__init__(self, key, name=name, parents=parents)
+
+def lexical_type_hierarchy(choices, lexical_supertype):
+  if lexical_supertype not in LEXICAL_CATEGORIES:
+    return None
+  lth = PositionClass(key=lexical_supertype,
+                      name=get_lt_name(lexical_supertype, choices))
+  if lexical_supertype == 'verb':
+    if choices['has-aux'] == 'yes':
+      lth.add_node(LexicalType('aux', get_lt_name('aux', choices),
+                               set(['verb'])))
+      lth.add_node(LexicalType('mverb', get_lt_name('mverb', choices),
+                               set(['verb'])))
+    lth.add_node(LexicalType('iverb', get_lt_name('iverb', choices),
+                             set([get_lexical_supertype('iverb', choices)])))
+    lth.add_node(LexicalType('tverb', get_lt_name('tverb', choices),
+                             set([get_lexical_supertype('tverb', choices)])))
+  for lt in choices[lexical_supertype]:
+    lth.add_node(LexicalType(lt.full_key, get_lt_name(choices[noun_key]),
+                             set([get_lexical_supertype(lt.full_key, choices)])))
+  return lth
+
+def get_lexical_supertype(lt_key, choices):
+  lexical_category = lt_key.rstrip('0123456789')
+  if lexical_category in ('iverb','tverb') and choices['has-aux'] == 'yes':
+    return 'mverb'
+  elif lexical_category in ('aux','mverb','iverb','tverb'):
+    return 'verb'
+  elif lexical_category == 'verb':
+    return case.interpret_verb_valence(choices[lt_key]['valence'])
+  elif lexical_category in ('noun', 'det', 'aux'):
+    return lexical_category
+  return None
+
 
 def expand_lexical_supertype(st_key, choices):
   """
@@ -20,7 +61,7 @@ def expand_lexical_supertype(st_key, choices):
   """
   i_t = ['iverb','tverb']
   m = ['mverb']
-  if st_key not in lexical_supertypes: return []
+  if st_key not in LEXICAL_SUPERTYPES: return []
   if (st_key == 'mverb' and choices['has-aux'] == 'yes') or \
      (st_key == 'verb' and choices['has-aux'] == 'no'):
     return [v.full_key for v in choices['verb']] + i_t
@@ -38,7 +79,7 @@ def get_lexical_supertype_expansions(choices):
   expansions as lexical types defined in the choices file.
   """
   return dict([(st, expand_lexical_supertype(st, choices))
-               for st in lexical_supertypes])
+               for st in LEXICAL_SUPERTYPES])
 
 def used_lexical_supertypes(choices):
   """
@@ -80,3 +121,13 @@ def get_lexical_supertypes(lrt_key, choices):
   elif lexical_category in ('noun', 'det', 'aux'):
     return [lexical_category]
   return []
+
+def get_lt_name(key, choices):
+  if key in lexicon.lexical_supertypes:
+    # lexical supertype-- pull out of lexical_supertypes, remove '-lex'
+    return lexicon.lexical_supertypes[key].rsplit('-lex',1)[0]
+  else:
+    # defined lextype, name may or may not be defined
+    name = get_name(choices[key])
+    lex_st = lexicon.lexical_supertypes[key.strip('1234567890')]
+    return '-'.join([name, lex_st.rsplit('-lex',1)[0]])

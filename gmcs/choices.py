@@ -378,6 +378,13 @@ class ChoicesFile:
     self.cached_values = {}
 
   ######################################################################
+  # Helper functions for interacting with choices
+
+  def split_multiselect_value(self, key):
+    """ Return a list of MultiSelect values delimited by ', '. """
+    return ', '.split(self[key])
+
+  ######################################################################
   # Methods for accessing "derived" values -- that is, groups of values
   # that are implied by the list of choices, but not directly stored
   # in it.  For example, it is convenient to be able to get a list of
@@ -508,15 +515,6 @@ class ChoicesFile:
 
     return result
 
-
-  # slots()
-  def get_lexical_rule_types(self, prefixes):
-    """
-    Return the lexical rule types for every prefix supplied.
-    """
-    for prefix in prefixes:
-      for lrt in self[prefix + '-slot']:
-        yield lrt
 
   # cases()
   #   Create and return a list containing information about the cases
@@ -1782,6 +1780,6 @@ class ChoicesFile:
       for pc in self.get(pc_type + '-pc', []):
         all_inps = ', '.join([inp['type'] for inp in pc['input']])
         del self[pc.full_key + '_input']
-        self[pc.full_key + '_input'] = all_inps
+        self[pc.full_key + '_inputs'] = all_inps
         for lrt in pc['lrt']:
-          lrt['supertype'] = pc.full_key
+          lrt['supertypes'] = pc.full_key
