@@ -1,0 +1,87 @@
+version=18
+
+section=general
+language=mini-affixes
+archive=no
+
+section=word-order
+word-order=sov
+has-dets=yes
+noun-det-order=det-noun
+has-aux=yes
+aux-comp-order=before
+aux-comp=vp
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect
+
+section=other-features
+
+section=sentential-negation
+infl-neg=on
+
+section=coordination
+
+section=matrix-yes-no
+q-part=on
+q-part-order=after
+q-part-orth=qpart
+
+section=arg-opt
+
+section=lexicon
+  noun1_det=opt
+    noun1_stem1_orth=n1
+    noun1_stem1_pred=_n1_n_rel
+  noun2_det=opt
+    noun2_stem1_orth=n2
+    noun2_stem1_pred=_n2_n_rel
+  verb1_valence=intrans
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+  aux1_name=aux
+  aux1_sem=no-pred
+  aux1_subj=np
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=nonfinite
+    aux1_stem1_orth=aux
+  verb-slot1_opt=on
+  verb-slot1_order=after
+    verb-slot1_input1_type=verb
+    verb-slot1_morph1_name=neg
+    verb-slot1_morph1_orth=-neg
+      verb-slot1_morph1_feat1_name=negation
+      verb-slot1_morph1_feat1_value=plus
+      verb-slot1_morph1_feat1_head=verb
+  verb-slot2_order=after
+    verb-slot2_input1_type=verb
+    verb-slot2_input2_type=verb-slot1
+    verb-slot2_morph1_name=fin
+      verb-slot2_morph1_feat1_name=form
+      verb-slot2_morph1_feat1_value=finite
+      verb-slot2_morph1_feat1_head=verb
+    verb-slot2_morph2_name=inf
+    verb-slot2_morph2_orth=-nf
+      verb-slot2_morph2_feat1_name=form
+      verb-slot2_morph2_feat1_value=nonfinite
+      verb-slot2_morph2_feat1_head=verb
+    det1_stem1_orth=det
+    det1_stem1_pred=_det_q_rel
+
+section=test-sentences
+sentence1=n1 n2 neg tv
+sentence2=det n1 iv qpart

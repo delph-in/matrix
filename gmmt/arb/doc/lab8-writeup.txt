@@ -1,0 +1,214 @@
+Ryan Georgi
+Ling 567
+
+Lab 8 Writeup:
+
+----======== PRELIMINARIES =======----
+
+For this lab, (because of the "I Can Eat Glass Project"), a translation
+of "I can eat glass, it doesn't hurt me" was rather easy to find.
+Using:
+
+http://www.geocities.com/nodotus/hbglass.html
+
+I was able to find the following translation for Egyptian Arabic:
+
+Ana momken aakol el-ezaz, we dah ma beyewgaaneash 
+
+Seeing as how this appears to be a phonetic spelling rather than
+transcription, I was able to figure out the probable MSA analogue
+of the above:
+
+?ana  ?-imkin          ?-akal  ?al-kizaz-a,   wala     da:  (y)-yuga-ni:
+I     1SG-be-possible  1SG-eat the-glass-ACC, and-not  this  3MSG-hurt-me(OBJ)
+
+Here's the closest my grammar comes to laying out modals:
+
+yimkin             yi?ra      lkita:ba      da:
+3msg-be-possible   3msg-read  the-book-ACC   this
+'It's possible for him to read this book' (= possibility)
+
+yi?dar             yi?ra      lkita:ba      da:
+3msg-can           3msg-read  the-book-ACC  this
+'He can read this book' (= ability/capacity)
+
+(p. 230)
+
+Taking into account the info provided by my grammar (and given that I've
+been building on its info) the preferred parse I'm going to use for
+"I can eat glass. It doesn't hurt me. Is:"
+
+?-i?dar  ?-akal    ?al-kizaz
+1SG-can  1SG-eat   the-glass
+'I can eat glass'
+
+la:   y-yuga-ni:
+not   3MSG(it)-hurts-me
+'It doesn't hurt me.'
+
+--------======== NEGATION ===========---------------
+
+As covered in previous labs, negation in my langauge is mainly handled
+by the negative particle /la:/ preceding the VP. Though largely handled
+by the matrix in the form of a neg-adv-lex (simple adverb that selects
+its modifier as HEAD verb and marks itself as POSTEAD -).
+
+Due partially to the negative particle, my grammar was overgenerating
+considerably, as it was attaching to nearly everything HEAD verb, so I
+wanted to constrain it to fewer phrases. Unfortunately, the best information
+I can get from my grammar about whether la: attaches to S or VP is shown
+in the top example that uses 'wala', where la: is cliticized to the 
+coordinating 'wa.' Still, the position it is in could still be treated
+either as attachingto the S or VP. Since I simply needed to pare the
+overgeneration down, and my grammar provided no ungrammatical examples in
+this area, I added the constraint to neg-adv-lex that its modifier's VAL.SUBJ
+must be nonempty, which forces /la:/ to attach to VPs, rather than S's and
+helps reduce the previously huge number of generated strings.
+
+There are other ways to do negation in Arabic; some are included in my
+test suite. Specifically, there is what appears to be a negative form
+of the copula, /lays-/, such as in the following:
+
+lays-tu		jundi:y-an
+not-1SG		soldier-ACC
+'I am not a soldier'
+
+(p. 240)
+
+As I haven't gotten to the positive copula yet, I haven't treated this
+version of negation.
+
+Lastly, the other largely used form of negation appears to be one used
+in the given dialectal "It doesn't hurt me" at the top, /ma:/. ma: is
+a particle used with the "subjunctive" verb form (as usual, not quite the
+standard indo-european usage here) to indicate some form of unfinished
+or hypothetical aspect. Since this statement seems to more closely fall
+into this category, this is, strictly speaking, probably the preferred
+treatment.
+
+Unfortunately, this verb form (like most in Arabic) is not formed by
+affixation, but rather an entire change of the vowel pattern of the verb.
+
+Since I'm (a) not sure how to differentiate this hypothetical negative
+in the semantics and (b) not quite ready to create a new lexical entry
+for every one of the verbs to fit this paradigm, I'm going to just stick
+with using la:, at least for this lab.
+
+-----========== MODALS ==============------------
+
+Contrary to what I'd previously thought about Arabic, it appears that
+modals do exist, and are in fact quite regular, as seen in the
+preliminaries section. To recap; arabic modals are auxiliary verbs that
+show subject agreement with their argument verb. Thus, it was relatively
+straightforward for me to create a modal-verb-lex inheriting from
+verb-lex and trans-first-arg-raising-lex-item. To make sure it got
+the right comps (as I was having difficulty with this), I made sure
+all verb types other than the modal-verb-lex were AUX -, and modal
+verb lex was AUX +. Furthermore, it specified the second item on its comps
+list be HEAD verb, AUX -, and have COMPS null (so it will take a VP rather
+than an unattached V).
+
+Lastly, I thought this would've been handled already, but I was getting
+very many spurious parses until I explicitly identified the COMPS element
+of modal-verb-lex with the second arg-st element. This ensured that
+the modal was only taking the VP as a complement, and not attaching
+in any number of other ways.
+
+Something I left intentionally ambiguous; my grammar only barely covers
+modals, and from its coverage, I've surmised that the modal and main verb
+must agree in, well, agreement; but it's not clear what happens when there
+is an explicit subject. For instance:
+
+y-i?dar   ?al-rajul-u  y-i?ra     ?al-kita:b-a    da:
+3MSG-can  the-man-NOM  3MSG-read  the-book-ACC    this
+'The man can read this book'
+
+...would seem to follow from everything I know about the grammar at this point.
+What's not clear is the grammaticality of the following:
+
+y-i?dar   y-i?ra       ?al-rajul-u   ?al-kita:b-a   da:
+3MSG-can  3MSG-read    the-man-NOM   the-book-ACC   this
+? 'The man can read this book'
+
+This version obeys all the rules for word order in the main verb, and
+subjects get dropped all the time in Arabic; I will try to check with
+a native speaker, but my grammar provides no insight into this, so I'm
+leaving my grammar to produce both alternatives for now.
+
+(To show understanding:) Were I to limit the grammar, I might consider
+using the 'opt' feature to the head-opt phrases indicating their
+subjects' "embededness" and constrain the second ARG-ST member of the modal 
+to this head feature, guaranteeing the verbal complement would be 'missing'
+its subject.
+
+
+---==== WRAP-UP ======--------
+
+"I can eat glass":
+ -- ?-i?dar ?-akal  ?al-kizaz-a
+    1SG-can 1SG-eat the-glass-ACC
+
+ parses with the preferred parse, and generates only grammatical strings.
+(?kizaz-a-n in this case isn't the same meaning of ability to eat glass
+generically, but rather it would be some as yet undetermined (but somehow
+more specific!) glass)
+
+"It doesn't hurt me":
+ -- la:  y-yuga-ni:
+   NOT  3MSG-hurt-me(OBJ)
+
+...again parses fine and generates back the string. It also includes
+a la: y-yuga-ni:, ("?? Does it not hurt me?"), which I am unsure of
+the grammaticality. (Note above that "it" is 3MSG, as there is no "neuter"
+in Arabic and due to the prodrop, there's no explicit expression of the
+pronoun.
+
+--------
+OVERALL COVERAGE
+
+Coverage remains good (42.6), and due to the changes listed below (in "Other fixes"),
+there is far less overgeneration, and the parses I am getting are largely
+legitimately ambiguous (e.g. /t-/ is both the 2SG and 3FSG prefix), and limited
+to generally only 2 or 3.
+
+--------
+OTHER FIXES
+
+In addition to the work for this lab, I fixed quite a number of things
+that were broken in Lab 7, such as changing my imperative rule to 
+const-ltow-rule and adding INFLECTED - to verb-lex
+(thanks for the email, I'd figured these out just the night before!)
+
+Another fix; since I was using [ FORM imp ] for imperatives, and the modal-verb
+type was going to take VP as an argument, I made sure that any subject-inflected
+verb was [ FORM fin ] by adding that constraint to subj-agreement-lex-rule.
+
+More bugfixes in my "finiteness" lex rules. The definite markers were previously
+inheriting from infl-ltow-rule for some debugging I had done and not fixed,
+instead of fnt_lex_rule, which constrains the input to the type cased_rule, the
+output of the case inflection, ensuring that such inflection is mandatory.
+
+I also realized that when I had written my obj_incorp_lex_rule, I'd written
+it as infl-val-change-only-ltol-rule, and not fully constrained the VAL features.
+As a result, it seemed that I was actually getting the SUBJ of some verbs
+wiped out when this rule applied, resulting in all sorts of incorrect parses.
+
+(Finally, I also added the clausal-second-arg-trans-lex-item to my 
+embedding-verb-lex and no-hcons-lex-item to my noun-lex, fixing some 
+of the issues I'd left broken in lab 7.)
+
+
+--------======== STILL NOT WORKING =======----------
+
+As I've probably made many references to, I still have
+never had a chance to implement a form of the copula, which is 
+all over my test suite, and one of my other forms of negation, as mentioned
+above.
+
+Another unresolved issue is that I have a large number of proper nouns
+in my test suite; another simple fix, but one I just haven't had a chance
+to cover in previous labs.
+
+Finally, one thing I think might be interesting to cover that I use in
+a few of my testing examples is the genitive case for posessives and
+"construct" phrases.

@@ -1,0 +1,23 @@
+pLab 6 Grading Rubric
+
+
+Thanks for describing how you handled the extra parses
+with modifiers!
+
+It looks to me like -u marks not imperative, but irrealis,
+and that irrealis is used in the imperative construction along
+with other constructions.  Semantically, according to Ginzburg
+and Sag, I think you'd find command_m_rels going with the
+imperative use and outcome_m_rels going with at least some
+of the other uses of the irrealis.  Accordingly, you probably
+don't want to use imperative-clause with embedded clauses
+with irrealis form verbs (as you'll get command_m_rel from it).
+
+
+SENTENCE is probably redundant to MSG, but I think you'll
+continue to want something analogous to IMPER and QUES
+(but perhaps you can get away with a single feature FORM
+that takes values such as irrealis, interrog, etc.).
+This would canonically be a HEAD feature, though you might
+find it more convenient to make it a CAT feature.
+

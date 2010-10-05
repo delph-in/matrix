@@ -1,0 +1,981 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+; Farsi
+; Bill McNeill
+
+; Matrix parts of speech may head a matrix clause.
+matrix := head.
+
+; Matrix parts of speech may not head a matrix clause.
+non-matrix := head.
+
+; ERB 2007-08-20 Head-following and head-preceding complements:
+; It would be cleaner to use the disjunctive types in head-types.tdl,
+; but there are too many extra types here already...
+
+head-following := head.
+head-preceding := head.
+
+tam-head := head & [ TAM tam ].
+
+noun :+ non-matrix & head-preceding &
+ [ CASE case,
+   DEFINITE bool ]. ; BUGBUG Diacritic feature
+
+verb :+ matrix & tam-head & head-following &
+ [ HEAD_FINAL bool,
+   NEG_PREFIX bool ]. ; BUGBUG Diacritic feature
+
+det :+ non-matrix.
+
+preposition := non-matrix & head-preceding.
+
+particle := head-following.
+
+polar_question_particle := particle & matrix & tam-head.
+
+complementizer := particle.
+
+; Basic quantifier relationships that distinguish pronouns from everything else.
+quantifier_rel := predsort.
+pronoun_q_rel := quantifier_rel. ; Pronouns
+reg_quant_rel := quantifier_rel. ; Everything else
+
+; ; Demonstrative types
+; non_indef_q_rel := reg_quant_rel.          ; Both definite and demonstrative
+; demonstrative_q_rel := non_indef_q_rel.
+; non+demonstrative_q_rel := reg_quant_rel.
+; proximal+dem_q_rel := demonstrative_q_rel. ; close to speaker
+; distal+dem_q_rel := demonstrative_q_rel.   ; away from speaker
+; remote+dem_q_rel := distal+dem_q_rel.      ; away from speaker and hearer
+; hearer+dem_q_rel := distal+dem_q_rel.      ; near hearer
+
+
+;;; Relations for demonstratives
+
+demonstrative_a_rel := predsort.
+proximal+dem_a_rel := demonstrative_a_rel. ;; close to speaker.
+distal+dem_a_rel := demonstrative_a_rel. ;; away from speaker.
+remote+dem_a_rel := distal+dem_a_rel. ;;away from speaker and hearer
+hearer+dem_a_rel := distal+dem_a_rel. ;;near hearer
+
+
+;def_q_rel := non_indef_q_rel & non+demonstrative_q_rel.      ; definite
+;indef_q_rel := non+demonstrative_q_rel.    ; indefinite
+
+
+; Case types
+case := *top*.
+acc := case.
+non-acc := case.
+
+; Tense types
+past_tense := tense.
+present_tense := tense.
+future_tense := tense.
+
+; Aspect types
+complete := aspect.
+progressive := aspect.
+
+; Mood types
+non-imperative := mood.
+non-subjunctive := mood.
+indicative := non-imperative & non-subjunctive.
+imperative := non-subjunctive.
+subjunctive := non-imperative.
+
+; Agreement types
+png :+
+[ PER person,
+  NUM number,
+  GEND gender ].
+
+gender := *top*.
+neut := gender.
+non-neut := gender.
+fem := non-neut.
+masc := non-neut.
+
+person := *top*.
+first := person.
+second := person.
+third := person.
+
+; Number types
+number := *top*.
+sg := number.
+non-sg := number.
+dual := non-sg.
+pl := non-sg.
+
+
+; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
+[ INFLECTED -,
+  SYNSEM.LOCAL [ CAT [ EZAFE -,
+		       HEAD noun &
+                            [ MOD < >,
+                              DEFINITE - ],
+                       VAL  [ SPR <#spr & [ LOCAL.CAT.HEAD det ]>,
+			      COMPS <>,
+			      SUBJ <>,
+			      SPEC <>]]],
+  ARG-ST <#spr> ].
+
+
+;;; ERB 2007-08-20 But of course the pronouns don't go through the
+;;; number lex rules, so they need to be def-rule-dtr, just like
+;;; noun-num-lex-rule.
+
+pronoun-lex := noun-lex & def-rule-dtr &
+	       [ SYNSEM [ LOCAL [ CAT.VAL.SPR < [ OPT +,
+						  LOCAL.CONT.RELS < ! [ PRED "exist_q_rel" ] ! > ] >,
+                   CONT.HOOK.INDEX.COG-ST activ-or-more ],
+           LKEYS.KEYREL.PRED "_pronoun_n_rel" ],
+  INFLECTED - ].
+
+
+;;; ERB 2007-08-19  Adding plural forms (per corrections to
+;;; MMT sentences from Nick Pendar).
+
+;;; ERB 2007-08-20 These ones are the innermost for nouns, feed
+;;; def/indef.
+
+;;; ERB 2007-08-20 But of course the pronouns don't go through the
+;;; number lex rules, so they need to be def-rule-dtr, just like
+;;; noun-num-lex-rule.  Furthermore, make DTR of noun-num-lex-rule
+;;; common-noun-lex to keep pronouns out.
+
+
+def-rule-dtr := word-or-lexrule.
+
+noun-num-lex-rule := def-rule-dtr & lex-rule &
+  [ DTR common-noun-lex ].
+
+sg-noun-lex-rule := const-add-only-no-ccont-ltol-rule & noun-num-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ].
+
+pl-noun-lex-rule := infl-add-only-no-ccont-ltol-rule & noun-num-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM non-sg ].
+
+
+; ERB 2007-07-02 Probably no need to go digging in the SPR's RELS anymore.
+
+common-noun-lex := noun-lex &
+[ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG [ PER third ] ],
+  INFLECTED - ].
+
+; BUGBUG Need to implement proper nouns.  Currently, I'm treating them as common nounds.
+
+; ERB 2007-08-20 Make COMP_AUX a head feature, so it can go up to NP.
+
+compound-noun-lex := common-noun-lex.
+;[ COMP_AUX *top* ].
+
++nv :+ [ COMP_AUX string ].
+
+;;; ERB 2007-08-19 These should really be given a proper
+;;; complex predicate analysis, where the noun contributes to
+;;; the argument structure.
+
+kardan-noun-lex := compound-noun-lex &
+[ SYNSEM.LOCAL.CAT [ VAL.SPR < [ OPT + ] >,
+		     HEAD.COMP_AUX "kardan_1" ]].
+
+kardan2-noun-lex := compound-noun-lex &
+[ SYNSEM.LOCAL.CAT [ VAL.SPR < [ OPT + ] >,
+		     HEAD.COMP_AUX "kardan_2" ]].
+
+;demonstrative-lex := basic-determiner-lex &
+;[ SYNSEM.LOCAL [ CAT [ HEAD det & [ MOD < > ],
+;		       VAL [ SUBJ <>,
+;			     COMPS <>,
+;			     SPR <>]],
+;		 CONT.HOOK.INDEX.COG-ST activ+fam ]].
+
+;;; ERB 2007-07-02 Copied from English
+
+;;; ERB 2007-08-20 For analysis of ezafe, make sure that the
+;;; topmost N' is [ EZAFE - ].
+
+demon-det-lex := norm-hook-lex-item & basic-zero-arg &
+   [ SYNSEM [ LOCAL [ CAT [ HEAD det & [ MOD <> ],
+			    VAL [ SPEC.FIRST.LOCAL [ CAT.EZAFE -,
+						     CONT.HOOK [ INDEX #ind & 
+								     [COG-ST activ+fam],
+							       LTOP #larg ]],
+				  SPR < >,
+				  SUBJ < >,
+				  COMPS < > ]],
+		      CONT [ HCONS < ! qeq & 
+				     [ HARG #harg,
+				       LARG #larg ] ! >, 
+			     RELS <![ PRED "exist_q_rel"], 
+				   #lkey & arg1-relation & 
+				   [LBL #larg,
+				    ARG1 #ind] ! >] ] ,
+	      LKEYS [ KEYREL quant-relation &
+			     [ ARG0 #ind,
+			       RSTR #harg ], ALTKEYREL #lkey]]].
+
+
+
+noun-phrase-cat := cat &
+[ HEAD noun,
+  VAL.SPR <> ].
+
+acc-noun-phrase-cat := noun-phrase-cat & 
+[ HEAD.CASE acc ].
+
+non-acc-noun-phrase-cat := noun-phrase-cat & 
+[ HEAD.CASE non-acc ].
+
+
+; Verbs
+; ERB 2007-07-03 This had [ MC - ], for reasons I cannot divine.
+
+verb-lex := basic-verb-lex &
+[ SYNSEM.LOCAL [ CAT [HEAD verb & [ MOD < >,
+                                    NEG_PREFIX -,
+				    TAM #tam &
+					[ASPECT complete,
+					 MOOD indicative] ],
+		      VAL [ SUBJ <#subj  & synsem & [ LOCAL.CAT non-acc-noun-phrase-cat ] >,
+			    SPR <>,
+			    SPEC <> ] ],
+		 CONT.HOOK.INDEX.E #tam ],
+  INFLECTED -,
+  ARG-ST <#subj,...> ].
+
+intransitive-verb-lex : = verb-lex & intransitive-lex-item &
+[ SYNSEM.LOCAL.CAT.VAL.COMPS <>,
+  ARG-ST <[]> ].
+
+past-verb-lex := verb-lex &
+[ SYNSEM.LOCAL.CAT.HEAD.TAM.TENSE past_tense ].
+
+present-verb-lex := verb-lex &
+[ SYNSEM.LOCAL.CAT.HEAD.TAM.TENSE present_tense ].
+
+past-intransitive-verb-lex := past-verb-lex & intransitive-verb-lex.
+
+present-intransitive-verb-lex := present-verb-lex & intransitive-verb-lex.
+
+transitive-verb-lex : = verb-lex & transitive-lex-item &
+[ SYNSEM.LOCAL [ CAT [ HEAD.HEAD_FINAL +,
+		       VAL.COMPS < #comps &
+                                   [ OPT-CS type-id,
+                                     LOCAL.CAT acc-noun-phrase-cat ] > ] ],
+  ARG-ST <[], #comps> ].
+
+past-transitive-verb-lex := past-verb-lex & transitive-verb-lex.
+
+present-transitive-verb-lex := present-verb-lex & transitive-verb-lex.
+
+; Verbs like dandan that take a nominal and a prepositional arugment.
+ditransitive-verb-lex : = verb-lex & ditransitive-lex-item &
+[ SYNSEM.LOCAL [ CAT [ HEAD.HEAD_FINAL +,
+		       VAL.COMPS <#indirect_object & [ LOCAL.CAT preposition-phrase-cat ],
+				  #direct_object & [ LOCAL.CAT acc-noun-phrase-cat ] > ] ],
+  ARG-ST <[], #indirect_object, #direct_object> ].
+
+past-ditransitive-verb-lex := past-verb-lex & ditransitive-verb-lex.
+
+present-ditransitive-verb-lex := present-verb-lex & ditransitive-verb-lex.
+
+
+; Verbs like budan, kardan, etc. that combine with non-verbal elements to form compound verbs.
+; ERB 2007-07-02 Guessing that these don't combine with nouns marked
+; for indefiniteness.  Giving [ COG-ST uniq-or-more ] to cut down on
+; realizations in MT.
+
+; EBB 2007-08-20 This needs to be replaced with a real analysis of
+; complex predicates.  For now adding clausal comp type to get MMT sentences
+; working.  Previously, there was only one compound verb.  Now I'll
+; need two (homophonous) verbs ... one for 'fekr' (thought) and the
+; other for 'pursuit' and 'harm'.  Using COMP_AUX to match to the right
+; aux for now.
+
+compound-verb-lex := verb-lex &
+[ SYNSEM.LOCAL [ CAT [ HEAD [ COMP_AUX #ca,
+			      HEAD_FINAL + ],
+		       VAL [ COMPS < #comp1 &
+				     [ LOCAL [ CONT.HOOK.INDEX.COG-ST uniq-or-more,
+					       CAT non-acc-noun-phrase-cat &
+						   [ HEAD.COMP_AUX #ca ]]],
+				     ...> ] ] ],
+  ARG-ST < [], #comp1, ... > ].
+
+intransitive-compound-verb-lex := transitive-lex-item & compound-verb-lex.
+
+transitive-compound-verb-lex := ditransitive-lex-item & compound-verb-lex &
+[ SYNSEM.LOCAL.CAT.VAL.COMPS < [],
+			       #comp2 &
+			       [ LOCAL.CAT acc-noun-phrase-cat ] >,
+  ARG-ST < [], [], #comp2 > ].
+
+clausal-comp-compound-verb-lex := clausal-third-arg-ditrans-lex-item & compound-verb-lex &
+[ SYNSEM.LOCAL.CAT.VAL.COMPS < [], #comps2 &
+			       [ LOCAL.CAT  [ HEAD particle,
+					      VAL [ SUBJ <>,
+						    COMPS <> ] ] ] >,
+  ARG-ST < [], [], #comps2 > ].
+
+past-intransitive-compound-verb-lex := past-verb-lex & intransitive-compound-verb-lex.
+
+past-transitive-compound-verb-lex := past-verb-lex & transitive-compound-verb-lex.
+
+present-intransitive-compound-verb-lex := present-verb-lex & intransitive-compound-verb-lex.
+
+present-transitive-compound-verb-lex := present-verb-lex & transitive-compound-verb-lex.
+
+present-clausal-comp-compound-verb-lex := present-verb-lex & clausal-comp-compound-verb-lex.
+
+past-clausal-comp-compound-verb-lex := past-verb-lex & clausal-comp-compound-verb-lex.
+
+
+; Verbs like tavanestan that combine with verbal objects.
+; The verbal object must be in the subjunctive and agree with the auxiliary in person and number.
+auxiliary-verb-lex := verb-lex & trans-first-arg-raising-lex-item-1 & 
+[ SYNSEM.LOCAL [ CAT [ HEAD.HEAD_FINAL -,
+		       VAL [ SUBJ < #subj >, 
+			     COMPS < #comps &
+				     [ LOCAL.CAT [ HEAD.TAM.MOOD subjunctive,
+						   VAL.SUBJ < #subj > ] ] > ] ] ],
+  ARG-ST < [], #comps> ].
+
+; Verbs like danestan that take clauses as complements.
+clausal-comp-verb-lex := verb-lex & clausal-second-arg-trans-lex-item & 
+[ SYNSEM.LOCAL [ CAT [ HEAD.HEAD_FINAL -,
+		       VAL.COMPS < #comps & [ LOCAL.CAT [ HEAD particle,
+							  VAL [ SUBJ < >,
+								COMPS < > ] ] ] > ] ],
+  ARG-ST < [], #comps > ].
+
+past-clausal-comp-verb-lex := past-verb-lex & clausal-comp-verb-lex.
+
+present-clausal-comp-verb-lex := present-verb-lex & clausal-comp-verb-lex.
+
+; Prepositions
+preposition-lex := no-hcons-lex-item &
+[ SYNSEM.LOCAL [ CAT [ HEAD preposition & [ MOD < > ],
+		       VAL.SPR <>,
+		       VAL.SUBJ <>,
+		       VAL.COMPS < #comps & [ LOCAL [ CONT.HOOK #hook,
+						      CAT non-acc-noun-phrase-cat ] ] > ],
+		 CONT [ HOOK #hook,
+			RELS <!!> ] ],
+  ARG-ST < #comps > ].
+
+preposition-phrase-cat := cat & 
+[ HEAD preposition,
+  VAL.COMPS <> ].
+
+
+; Particles
+
+;;; ERB 2007-08-20 Data from Nick Pendar includes sequence
+;;; of complementizer followed by question particle.  So,
+;;; allowing complementizers to take [ HEAD matrix ] complements,
+;;; but polar-question-particles only [ HEAD verb ].
+
+clausal-particle := raise-sem-lex-item & basic-one-arg &
+[ SYNSEM.LOCAL.CAT [ HEAD.MOD < >,
+		     VAL [ COMPS < [ LOCAL.CAT [ HEAD matrix &
+						      [ TAM.MOOD indicative ],
+                                                 VAL [ SUBJ < >,
+                                                       COMPS < > ] ] ] >,
+                           SPR < >,
+                           SUBJ < > ] ] ].
+
+polar-question-particle-lex := clausal-particle & 
+[ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,
+		 CAT [ HEAD polar_question_particle,
+		       VAL.COMPS.FIRST.LOCAL.CAT.HEAD verb ]]].
+
+
+;complementizer-lex := clausal-particle & 
+;[ SYNSEM.LOCAL.CAT.HEAD complementizer ].
+
+;complementizer-lex := clausal-particle & 
+;[ SYNSEM.LOCAL [ CAT [ HEAD complementizer,
+;		       VAL.COMPS < [ LOCAL.CONT [ MSG #msg,
+;						  HOOK.LTOP #ltop ] ] > ],
+;		 CONT [ MSG #msg,
+;			HOOK.LTOP #ltop,
+;			RELS <! !>,
+;			HCONS <! !> ] ] ].
+
+complementizer-lex := clausal-particle & 
+[ SYNSEM.LOCAL [ CAT [ HEAD complementizer,
+		       VAL.COMPS < [ LOCAL.CONT [ HOOK.INDEX #ind,
+						  HOOK.LTOP #ltop ] ] > ],
+		 CONT [ HOOK.INDEX #ind,
+			HOOK.LTOP #ltop ] ] ].
+
+;complementizer-lex := clausal-particle & 
+;[ SYNSEM.LOCAL [ CAT [ HEAD complementizer,
+;		       VAL.COMPS < #comps & [ LOCAL.CONT [ MSG.PRED proposition_m_rel,
+;							   HOOK.INDEX #ind ] ] > ],
+;		 CONT.HOOK.INDEX #ind,
+;		 ARG-S < #comps > ]
+;].
+
+; Phrase structure rules
+
+head-subj-phrase := decl-head-subj-phrase & head-final &
+[ SYNSEM.LOCAL.CAT [ HEAD.TAM.MOOD non-imperative,
+		     MC +,
+                     VAL.COMPS <> ],
+  HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].
+
+head-opt-subj-phrase := decl-head-opt-subj-phrase &
+[ SYNSEM.LOCAL.CAT [ HEAD.TAM.MOOD non-imperative,
+		     MC + ] ].
+
+imperative-head-opt-subj-phrase := imp-head-opt-subj-phrase &
+[ SYNSEM.LOCAL.CAT.HEAD.TAM.MOOD imperative,
+  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ
+    < [ LOCAL.CONT.HOOK.INDEX.PNG.PER second ] > ].
+
+;; ERB 2007-08-20 I think the generalization isn't that certain
+;; heads are always initial or final, but that verbal/clausal
+;; complements follow heads.  So, trying that way, while still
+;; not removing the feature HEAD_FINAL from elsewhere in the grammar.
+
+;head-initial-comp-phrase := basic-head-1st-comp-phrase & head-initial &
+;[ SYNSEM.LOCAL.CAT.HEAD.HEAD_FINAL - ].
+
+;head-final-comp-phrase := basic-head-1st-comp-phrase & head-final &
+;[ SYNSEM.LOCAL.CAT.HEAD.HEAD_FINAL + ].
+
+head-initial-comp-phrase := basic-head-1st-comp-phrase & head-initial &
+[ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD head-following ].
+
+head-final-comp-phrase := basic-head-1st-comp-phrase & head-final &
+[ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD head-preceding ].
+
+head-opt-comp-phrase := basic-head-opt-comp-phrase &
+[ SYNSEM.LOCAL.CAT.HEAD verb,
+  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD noun ] > ].
+
+preposition-comp-phrase := basic-head-1st-comp-phrase & head-initial &
+[ SYNSEM.LOCAL.CAT.HEAD preposition ].
+
+head-spec-phrase := basic-head-spec-phrase & head-final &
+[ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].
+
+; See comments for basic-comp-phrase in matrix.tdl.
+polar-question-comp-phrase := basic-head-1st-comp-phrase & head-initial &
+[ SYNSEM.LOCAL.CAT.HEAD polar_question_particle ].
+
+complement-comp-phrase := basic-head-1st-comp-phrase & head-initial &
+[ SYNSEM.LOCAL.CAT.HEAD complementizer ].
+
+; Non-branching covert DET phrase since determiners are always optional.
+covert-det-phrase := head-only &
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
+			   SUBJ < >,
+			   COMPS < >,
+			   SPEC < > ],
+    HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,
+				  VAL [ SPR < [ LOCAL.CAT.HEAD det ] >,
+					SUBJ < >,
+					COMPS < > ] ],
+			    CONT.HOOK [ INDEX #index,
+					LTOP #larg ] ],
+    C-CONT [ RELS < ! quant-relation & 
+		   [ LBL #ltop,
+		     ARG0 #index,
+		     RSTR #harg ] ! >,
+	     HCONS < ! qeq & 
+		    [ HARG #harg,
+		      LARG #larg ] ! >,
+	     HOOK [ INDEX #index,
+		    LTOP #ltop ] ] ].
+
+
+;;; ERB 2007-08-20 For analysis of ezafe, make sure that we're
+;;; [ EZAFE - ] at the top of the N', meaning the rightmost element
+;;; must not bear the ezafe mark.
+
+;;; ERB 2007-08-20 There's probably no need to go digging in the
+;;; RELS list anymore, but leave it for now.
+
+only-covert-det-phrase := covert-det-phrase &
+[ HEAD-DTR.SYNSEM.LOCAL.CAT [ EZAFE -,
+			      VAL.SPR < [ LOCAL.CONT.RELS < ! [ PRED "exist_q_rel" ] ! > ] > ],
+  C-CONT.RELS < ! [ PRED "exist_q_rel" ] ! > ].
+
+pronoun-covert-det-phrase := covert-det-phrase &
+[ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CONT.RELS < ! [ PRED "exist_q_rel" ] ! > ] >,
+  C-CONT.RELS < ! [ PRED "exist_q_rel" ] ! > ].
+; BUGBUG Why not C-CONT.RELS < ! quant-relation & [ PRED pronoun_q_rel ] ! >
+
+; The +/- definite distinction is handled by different covert determiners.
+; +Definite nouns have no inflection and may take demonstrative determiners
+; -Definite nouns have inflection and may not take demonstrative determiners
+covert-det-indef-phrase := covert-det-phrase &
+[ HEAD-DTR.SYNSEM.LOCAL
+    [ CAT.VAL.SPR < [ LOCAL.CONT.RELS <! quant-relation & [PRED "exist_q_rel"] !> ] >,
+      CONT.HOOK.INDEX.COG-ST type-id ],
+  C-CONT.RELS <! quant-relation & [PRED "exist_q_rel"] !> ].
+
+covert-det-def-phrase := covert-det-phrase &
+[ HEAD-DTR.SYNSEM.LOCAL
+    [ CAT.VAL.SPR < [ LOCAL.CONT.RELS <! quant-relation & [PRED "exist_q_rel"] !> ] >,
+      CONT.HOOK.INDEX.COG-ST activ+fam ],
+  C-CONT.RELS <! quant-relation & [PRED "exist_q_rel"] !> ].
+
+
+
+; Lexical rules
+
+; ERB 2007-07-02
+; This was requiring SPR < [LOCAL.CONT.RELS <! [PRED "exist_q_rel"] !> ] >,
+; but it's not clear why (probably some relic of having multiple 
+; bare-np phrases, now gone).
+
+;;; ERB 2007-08-20 Now pushing everything through def or indef and
+;;; then some case rule or other.
+
+;;; ERB 2007-08-20 But of course the pronouns don't go through the
+;;; number lex rules, so they need to be def-rule-dtr, just like
+;;; noun-num-lex-rule.
+
+definiteness_lex_rule := lex-rule &
+[ DTR def-rule-dtr ].
+
+indef_n_lex_rule := infl-add-only-no-ccont-ltol-rule & definiteness_lex_rule &
+[ SYNSEM.LOCAL
+    [ CONT.HOOK.INDEX.COG-ST type-id ],
+  DTR.SYNSEM.LOCAL.CAT.HEAD.DEFINITE -].
+
+; def_n_lex_rule changes SYNSEM.LOCAL.CAT.HEAD.DEFINITE from - to +.  Since this is an ltol rule we have
+; to copy up the daughter SYNSEM ourselves and make the appropriate change.
+
+; ERB 2007-07-02  This one is saying "uniq-or-more" for the COG-ST of
+; the mother and "uniq+fam+act" for the COG-ST of the daughter.  It should
+; only say one or the other. It's currently saying effectively "uniq+fam+act"
+; Add that to the fact that we're pushing the pronouns through this lex
+; rule and they say "activ-or-more" and you end up with the pronouns having
+; a COG-ST value of "activated".  In the long run, we might want to
+; create a separate rule for the pronouns.  For now, I'm going to remove
+; the "uniq+fam+act" constraint here.
+
+; ERB 2007-07-02 Also, not longer any reason to go digging in the
+; SPR's RELS list.
+
+; ERB 2007-07-03 Instead of constraining the COG-ST inside SPR, doing it
+; directly on CONT.HOOK.INDEX.
+
+; ERB 2007-08-19 But this is clashing with the analysis of -ra as a definite
+; marker.  The indefinite form should be incomptaibile with -ra, but the
+; definite form should be able to appear without it, without a "definite"
+; interpretation.  Remove [ DEFINITE + ] and COG-ST information here.
+
+def_n_lex_rule := const-ltol-rule & definiteness_lex_rule &
+[ INFLECTED -,
+  SYNSEM [ OPT #opt,
+	   LOCAL [ CAT [ EZAFE #ez,
+			 HEAD [ MOD #mod,
+				KEYS #keys,
+				CASE #case ],
+			 VAL #val,
+			 MC #mc,
+			 POSTHEAD #posthead ],
+		   CONT #cont,
+		    AGR #agr,
+		   CTXT #ctxt ],
+	   NON-LOCAL #non-local,
+	   LIGHT #lex,
+	   MODIFIED #modified,
+	   LKEYS #lkeys ] ,
+  DTR [ SYNSEM [ OPT #opt,
+	       LOCAL [ CAT [ EZAFE #ez,
+			     HEAD noun &
+				  [MOD #mod,
+				   KEYS #keys,
+				   CASE #case,
+				   DEFINITE - ],
+			     VAL #val,
+			     MC #mc,
+			     POSTHEAD #posthead ],
+		       CONT #cont,
+		       AGR #agr,
+		       CTXT #ctxt ],
+	       NON-LOCAL #non-local,
+	       LIGHT #lex,
+	       MODIFIED #modified,
+	       LKEYS #lkeys ] ] ].
+
+;;; ERB 2007-08-19 Add lex rule for zero-marked accusatives,
+;;; and add COG-ST information.
+
+;;; ERB 2007-08-20 Make sure that these insist on def or indef
+;;; lex rules as daughters.
+
+case_lex_rule := lex-rule & 
+[ DTR definiteness_lex_rule ].
+
+acc_lex_rule := infl-ltow-rule & case_lex_rule &
+[ SYNSEM.LOCAL [ CONT.HOOK.INDEX.COG-ST uniq-or-more,
+		 CAT.HEAD [ CASE acc, 
+			    DEFINITE + ] ] ].
+
+zero_acc_lex_rule := const-ltow-rule & case_lex_rule &
+[ SYNSEM.LOCAL [ CONT.HOOK.INDEX.COG-ST type-id,
+		 CAT.HEAD [ CASE acc,
+			    DEFINITE - ] ] ].
+
+non_acc_lex_rule := const-ltow-rule & case_lex_rule &
+[ SYNSEM.LOCAL.CAT.HEAD [ CASE non-acc,
+			  DEFINITE + ] ].
+
+
+; Verb prefixes
+
+; Farsi verb prefixes mark tense, mood, and negation.  The
+; verb_prefix_rule copies up the entire DTR SYNSEM except
+; LOCAL.CAT.HEAD.TAM.  Derivied rules change TAM and ensure that
+; prefixes combine correctly.
+basic_verb_prefix_rule := lex-rule &
+[ SYNSEM [ OPT #opt,
+	   LOCAL [ CAT [ HEAD [ MOD #mod,
+				KEYS #keys,
+				HEAD_FINAL #head_final,
+				NEG_PREFIX - ],
+			 VAL #val,
+			 MC #mc,
+			 HC-LIGHT #hc-light,
+			 POSTHEAD #posthead ],
+		   CONT #cont,
+		   AGR #agr ],
+	   NON-LOCAL #non-local,
+	   MODIFIED #modified ],
+  DTR [ SYNSEM [ OPT #opt,
+		 LOCAL [ CAT [ HEAD [ MOD #mod,
+				      KEYS #keys,
+				      HEAD_FINAL #head_final,
+				      NEG_PREFIX - ],
+			       VAL #val,
+			       MC #mc,
+			       HC-LIGHT #hc-light,
+			       POSTHEAD #posthead ],
+			 CONT #cont,
+			 AGR #agr ],
+		 NON-LOCAL #non-local,
+		 MODIFIED #modified ] ]
+].
+
+verb_prefix_rule := basic_verb_prefix_rule & infl-ltol-rule &
+[ DTR.INFLECTED + ].
+
+
+; The progressive_lex_rule changes TAM.ASPECT to progressive.  It only
+; applies to complete, indicative, non-negated verbs.
+progressive_lex_rule := verb_prefix_rule & 
+[ SYNSEM.LOCAL.CAT.HEAD.TAM [ TENSE #tense,
+			      ASPECT progressive,
+			      MOOD indicative ],
+  DTR.SYNSEM.LOCAL.CAT.HEAD.TAM [ TENSE #tense,
+				  ASPECT complete,
+				  MOOD indicative ] ].
+
+
+; The imperative_lex_rule changes TAM.MOOD to imperative.  It only
+; applies to bare present-tense verb stems
+imperative_lex_rule := basic_verb_prefix_rule & infl-ltol-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.TAM [ TENSE #tense,
+			      MOOD imperative ],
+  DTR present-verb-lex &
+    [ SYNSEM.LOCAL.CAT.HEAD.TAM [ TENSE #tense ] ] ].
+
+imperative_verb_rule := const-ltow-rule &
+[ SYNSEM.LOCAL.CAT.HEAD verb & [ TAM.MOOD imperative ] ].
+ 
+
+; The subjunctive_lex_rule changes TAM.MOOD to subjunctive.  It only
+; applies to complete, indicative, non-negated verbs.
+subjunctive_lex_rule := verb_prefix_rule &
+[ SYNSEM.LOCAL.CAT.HEAD.TAM [ TENSE #tense,
+			      ASPECT complete,
+			      MOOD subjunctive ],
+  DTR.SYNSEM.LOCAL.CAT.HEAD.TAM [ TENSE #tense,
+				  ASPECT complete,
+				  MOOD indicative ] ].
+ 
+
+; The negation-lex-rule adds negation semantics and sets the
+; SYNSEM.LOCAL.CAT.HEAD.NEG_PREFIX diacritic flag to +.  Since this
+; rule does more than just change TAM, it does not derive from
+; verb_prefix_rule.
+adv-relation := arg1-ev-relation.
+negation-lex-rule := infl-ltol-rule &
+[ SYNSEM [ LOCAL [ CAT [ HEAD [ MOD #mod,
+				KEYS #keys,
+				TAM #tam,
+				HEAD_FINAL #head_final,
+				NEG_PREFIX + ],
+			 VAL #val,
+			 MC #mc,
+			 HC-LIGHT #hc-light,
+			 POSTHEAD #posthead ],
+		   AGR #agr ],
+	   NON-LOCAL #non-loc ],
+  C-CONT [ HOOK [ INDEX #ind,    
+		  LTOP #ltop,
+		  XARG #xarg ],
+	   RELS < ! adv-relation &
+		  [ PRED '_neg_r_rel,
+		    LBL #ltop,
+		    ARG1 #harg ] ! > ,
+	   HCONS < ! qeq &
+		   [ HARG #harg,
+		     LARG #larg ] !> ],
+  DTR [ INFLECTED + ,
+	SYNSEM [LOCAL [ CAT [ HEAD [ MOD #mod,
+				     KEYS #keys,
+				     TAM #tam,
+				     HEAD_FINAL #head_final,
+				     NEG_PREFIX - ],
+			      VAL #val,
+			      MC #mc,
+			      HC-LIGHT #hc-light,
+			      POSTHEAD #posthead ],
+			CONT [ HOOK [ INDEX #ind,
+				      XARG #xarg,
+				      LTOP #larg ] ],
+			AGR #agr ],
+		NON-LOCAL #non-loc ] ] ].
+
+
+; Verb suffixes
+
+1sg_lex_rule := infl-ltow-rule & 
+[ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+							    NUM sg ] ]>,
+  DTR.SYNSEM.LOCAL.CAT.HEAD verb
+].
+
+2sg_lex_rule := infl-ltow-rule & 
+[ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+							    NUM sg ] ]>,
+  DTR.SYNSEM.LOCAL.CAT.HEAD verb
+].
+
+3sg_present_lex_rule := infl-ltow-rule & 
+[ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+							    NUM sg ] ]>,
+  DTR.SYNSEM.LOCAL.CAT.HEAD.TAM.TENSE present_tense
+].
+
+3sg_past_lex_rule := const-ltow-rule & 
+[ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+							    NUM sg ] ]>,
+  DTR.SYNSEM.LOCAL.CAT.HEAD.TAM.TENSE past_tense
+].
+
+1pl_lex_rule := infl-ltow-rule & 
+[ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+							    NUM pl ] ]>,
+  DTR.SYNSEM.LOCAL.CAT.HEAD verb
+].
+
+2pl_lex_rule := infl-ltow-rule & 
+[ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+							    NUM pl ] ]>,
+  DTR.SYNSEM.LOCAL.CAT.HEAD verb
+].
+
+3pl_lex_rule := infl-ltow-rule & 
+[ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+							    NUM pl ] ]>,
+  DTR.SYNSEM.LOCAL.CAT.HEAD verb
+].
+
+;;; Coordination Strategy 1
+
+;;; ERB 2007-08-20 Guessing that the rightmost thing on each
+;;; conjunct has to be [ EZAFE - ].
+
+n-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    LCOORD-DTR.SYNSEM.LOCAL.CAT [ EZAFE -,
+				  HEAD.CASE #case ],
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
+
+n-bottom-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT [ EZAFE -,
+				   HEAD.CASE #case ] ].
+
+n1-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+n1-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+n1-bottom-coord-rule := conj-first-bottom-coord-rule & n-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+;;; Coordination Strategy 1
+
+np-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
+
+np-bottom-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
+
+np1-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+np1-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+np1-bottom-coord-rule := conj-first-bottom-coord-rule & np-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+;;; Coordination Strategy 1
+
+;;; ERB 2007-08-20 I sort of doubt we'll be able to keep this
+;;; identity of TAM across conjuncts...
+
+vp-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.TAM #tam,
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.TAM #tam,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.TAM #tam ].
+
+vp-bottom-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.TAM #tam,
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.TAM #tam ].
+
+vp1-top-coord-rule := basic-vp-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+vp1-mid-coord-rule := basic-vp-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+vp1-bottom-coord-rule := conj-first-bottom-coord-rule & vp-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+;;; Coordination Strategy 1
+
+s-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.TAM #tam,
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.TAM #tam,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.TAM #tam ].
+
+s-bottom-coord-phrase :+
+  [ SYNSEM.LOCAL.CAT.HEAD.TAM #tam,
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.TAM #tam ].
+
+s1-top-coord-rule := basic-s-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+s1-mid-coord-rule := basic-s-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+s1-bottom-coord-rule := conj-first-bottom-coord-rule & s-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+;;; Coordination Strategy 2
+
+n2-top-coord-rule := basic-n-top-coord-rule & apoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "2" ] .
+
+n2-bottom-coord-rule := unary-bottom-coord-rule & n-bottom-coord-phrase &
+  [ SYNSEM.LOCAL [ COORD-STRAT "2",
+                   COORD-REL.PRED "_and_coord_rel" ] ] .
+
+;;; Coordination Strategy 2
+
+np2-top-coord-rule := basic-np-top-coord-rule & apoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "2" ] .
+
+np2-bottom-coord-rule := unary-bottom-coord-rule & np-bottom-coord-phrase &
+  [ SYNSEM.LOCAL [ COORD-STRAT "2",
+                   COORD-REL.PRED "_and_coord_rel" ] ] .
+
+;;; Coordination Strategy 2
+
+vp2-top-coord-rule := basic-vp-top-coord-rule & apoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "2" ] .
+
+vp2-bottom-coord-rule := unary-bottom-coord-rule & vp-bottom-coord-phrase &
+  [ SYNSEM.LOCAL [ COORD-STRAT "2",
+                   COORD-REL.PRED "_and_coord_rel" ] ] .
+
+;;; Coordination Strategy 2
+
+s2-top-coord-rule := basic-s-top-coord-rule & apoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "2" ] .
+
+s2-bottom-coord-rule := unary-bottom-coord-rule & s-bottom-coord-phrase &
+  [ SYNSEM.LOCAL [ COORD-STRAT "2",
+                   COORD-REL.PRED "_and_coord_rel" ] ] .
+
+;;; Adverbs
+
+adverb-lex := basic-int-adverb-lex &
+  [ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD verb,
+                                                VAL [ SUBJ < [ ] >,
+                                                      COMPS < > ] ] ] >,
+                       VAL [ SPR < >,
+                             COMPS < >,
+                             SUBJ < > ] ] ].
+
+adj-head-int-phrase :+
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].
+
+;;; Adjectives
+
+adjective-lex := basic-int-mod-adj-lex &
+  [ SYNSEM.LOCAL.CAT [ EZAFE -,
+		       HEAD.MOD < [ LOCAL.CAT [ HEAD noun,
+                                                VAL.SPR < [ ] > ] ] >,
+                       VAL [ SPR < >,
+                             COMPS < >,
+                             SUBJ < > ] ] ].
+
+;;; ERB 2007-08-20 First pass at ezafe marking.  Going on the 
+;;; generalization that a noun and all but its final posthead modifier
+;;; have ezafe marking.  Furthermore assuming that all posthead
+;;; things are attached with the head-adj-int-phrase.  This is
+;;; clearly an oversimplification.
+
+cat :+ [ EZAFE bool ].
+
+head-adj-int-phrase :+
+  [ SYNSEM.LOCAL.CAT.EZAFE #ez,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.EZAFE +,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.EZAFE #ez ].
+
+;;; ERB 2007-08-20 I've added a feature to CAT, so I  should really
+;;; tweak the lex rule definitions, though this grammar isn't consistently
+;;; using the Matrix types for lex rules.
+
+same-ezafe-lex-rule := lex-rule &
+  [ SYNSEM.LOCAL.CAT.EZAFE #ez,
+    DTR.SYNSEM.LOCAL.CAT.EZAFE #ez ].
+
+head-change-only-lex-rule :+ same-ezafe-lex-rule.
+mc-change-only-lex-rule :+ same-ezafe-lex-rule.
+val-change-only-lex-rule :+ same-ezafe-lex-rule.
+
+ezafe-change-only-lex-rule := cat-change-only-lex-rule &
+			      same-head-lex-rule &
+			      same-hc-light-lex-rule &
+			      same-posthead-lex-rule &
+			      same-val-lex-rule &
+			      same-mc-lex-rule.
+
+ezafe-lex-rule := ezafe-change-only-lex-rule & infl-ltol-rule &
+ [ INFLECTED +,
+   SYNSEM.LOCAL.CAT.EZAFE +,
+   DTR [ SYNSEM.LOCAL.CAT [ HEAD +nj,
+			    EZAFE - ] ] ].

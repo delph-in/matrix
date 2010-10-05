@@ -1,0 +1,52 @@
+-------------------------------------------------------
+Comments
+
+What did you say for the basic word order?
+
+ I chose that Malayalam has a separate question particle, -oo, which is
+ sentence final.  There are cases where the suffix is added to verbs
+ which are not sentence final, so the rules may need to be revised for
+ other cases.
+
+Does -oo always appear on the verb?  It seems that we need a new
+option in that library then "yes-no questions marked by inflection
+on the verb".
+
+	There doesn't seem to be any limits on the cases allowed for
+ subject and object nouns.  (Of course with flexible word order, those
+ rules will be difficult.) Perhaps some rules could be written to
+ prevent both nouns from being ACC, or requiring al least one NOM noun
+ in a sentence?  It seems that all sentences which have a noun have at
+ least one noun in nominative form with the exception of sentences with
+ modals, in which case the subject is in dative form.
+
+I think we cleared this up in class, but just in case:  You need
+to distinguish between grammatical function and syntactic position.
+The grammatical function in Malayalam is linked to nominative case,
+no matter which position the noun is in.
+
+	 Coordination is not working very well and could be improved.
+ The rules are working to add the coordinating suffix to nouns and not
+ to verbs, thank goodness.  However, the rules currently overgenerate
+ because there doesn't seem to be a requirement that both nouns have a
+ coordinating suffix. The rules allow only one noun to have the
+ suffix. 
+
+I'd like to test this out to see what's going on.  Can you insert an
+example in your next write up?  In general, when you report things like
+this, please paste in examples from your test suite that illustrate the
+problem so that I can investigate.  Thanks!
+
+ Of course I have a more complicated case in which there are
+ multiple sets of coordinating subject/object pairs with a single verb
+ which applies to all the pairs.  A saw B and C saw D is written as: A
+ B-um C D-um saw.
+
+I think this is actually non-constituent coordination, which is
+tricky in general and which I don't expect to get to.  It's interesting
+to me that it turns up in your reference materials alongside the other
+coordiation information. Perhaps it's a particularly common construction
+in Malayalam?
+
+
+

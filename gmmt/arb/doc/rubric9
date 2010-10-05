@@ -1,0 +1,38 @@
+-----------------------------------------------------------------
+Comments:
+
+ -- Replaced Matrix, removed comps <> constraint from HEAD-DTR on
+ basic-head-subj phrase
+
+ -- Added 
+
+Added what?
+
+ HOW IT'S HANDLED:
+
+ I changed the head-subj-phrase to inherit from head-final rather than
+ head-initial. This made SVO word order the default, and kept the constraints
+ for verb-noun agreement I had made on my subj-agreement-lex-rule types. 
+
+ For VSO word order to be handled, I made a new set of lexical rules that
+ inherit from defl-subj-agreement-lex-rule, a infl-val-change-only rule that
+ moves constrains the verb's SUBJ to be null and identifies the elements of the
+ ARG-ST with the COMPS.
+
+ The subtypes of this rule all inflect with the singular form, but only constrain
+ the GEND and PER of the first COMPS element.
+
+Nice.
+
+ (since this is a ltol-rule, I also added a const-ltow-rule that takes only this
+ type of rule as input)
+
+Ah, this is because the ltow type disallows changes to ARG-ST, right?
+
+ number := *top*.
+ sg := number.
+ du := number.   
+ pl := number.
+
+This was supposed to have non-sg as a supertype of du and pl, for
+compatibility with other languages.

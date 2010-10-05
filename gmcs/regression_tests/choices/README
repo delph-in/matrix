@@ -1,0 +1,4 @@
+This directory contains the choices files used in the regression tests.  You
+should not move choices files here by hand,.  However, when choices
+files are moved here by add-regression-test() (invoked in the lisp buffer
+with the lkb running), you will need to cvs add them.

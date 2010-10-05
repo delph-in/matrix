@@ -1,0 +1,575 @@
+ekki := neg-adv-lex &
+  [ STEM < "ekki" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ] .
+
+og_1 := conj-lex &
+  [ STEM < "og" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
+    CFORM "1" ] .
+
+;;; Nouns
+
+;;; ERB 2007-05-11  This one has a stem change for
+;;; nom plural, which is the piece that I need.  So
+;;; I'm putting it in as that stem instead.
+
+;;; ERB 2007-05-14 Made corresponding change to test suite.
+
+;kott := m-cl3-noun-lex &
+;  [ STEM < "kott" >,
+;    SYNSEM.LKEYS.KEYREL.PRED "_cat_n_rel" ] .
+
+kett := m-cl3-noun-lex &
+  [ STEM < "kett" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_cat_n_rel" ] .
+
+
+hund := m-cl1-noun-lex &
+  [ STEM < "hund" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_dog_n_rel" ] .
+
+;; ERB 2007-05-11
+
+bil := m-cl1-noun-lex &
+  [ STEM < "bíl" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_car_n_rel" ] .
+
+
+laeknir := m-cl1-noun-lex &
+  [ STEM < "laeknir" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_doctor_n_rel" ] .
+
+eld := m-cl1-noun-lex &
+  [ STEM < "eld" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_fire_n_rel" ] .
+
+hest := m-cl1-noun-lex &
+  [ STEM < "hest" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_horse_n_rel" ] .
+
+deng := m-cl2-noun-lex &
+  [ STEM < "deng" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_boy_n_rel" ] .
+
+madur := m-cl4-noun-lex &
+  [ STEM < "madur" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_man_n_rel",
+	     LOCAL [ CAT.HEAD.CASE nom,
+		     CONT.HOOK.INDEX.PNG.NUM sg ] ]].
+
+mann := m-cl4-noun-lex &
+  [ STEM < "mann" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_man_n_rel",
+	     LOCAL [ CAT.HEAD.CASE acc,
+		     CONT.HOOK.INDEX.PNG.NUM sg ] ]].
+
+manni := m-cl4-noun-lex &
+  [ STEM < "manni" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_man_n_rel",
+	     LOCAL [ CAT.HEAD.CASE dat,
+		     CONT.HOOK.INDEX.PNG.NUM sg ] ]].
+
+mat := m-cl3-noun-lex &
+  [ STEM < "mat" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_food_n_rel" ] .
+
+kona := f-cl1-noun-lex &
+  [ STEM < "kona" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_woman_n_rel" ] .
+
+kula := f-cl1-noun-lex &
+  [ STEM < "kula" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_ball_n_rel" ] .
+
+stulka := f-cl1-noun-lex &
+  [ STEM < "stulka" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_girl_n_rel" ] .
+
+modir := f-cl3-noun-lex &
+  [ STEM < "modir" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_mother_n_rel" ] .
+
+bok := f-cl3-noun-lex &
+  [ STEM < "bok" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_book_n_rel" ] .
+    
+gler := neut-noun-lex &
+  [ STEM < "gler" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_glass_n_rel" ].
+
+barn := neut-noun-lex &
+  [ STEM < "barn" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_child_n_rel" ].
+
+gras := neut-noun-lex &
+  [ STEM < "gras" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_grass_n_rel" ].
+
+te := neut-noun-lex &
+  [ STEM < "te" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_tea_n_rel" ].
+
+;;; Pronouns
+
+;;; ERB 2007-05-14 Fixed spelling here, and made corresponding change
+;;; to test suite.  Added the rest of the pronoun paradigm, except
+;;; the second person polite pronouns.
+
+eg := pronoun-lex &
+  [ STEM < "ég" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+    			   CONT.HOOK.INDEX.PNG [ PER first,
+					     			     NUM sg ] ] ].
+
+					     			     
+mig := pronoun-lex &
+  [ STEM < "mig" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
+		   CONT.HOOK.INDEX.PNG [ PER first,
+					 NUM sg ] ] ].					     			     
+
+mer := pronoun-lex &
+  [ STEM < "mér" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE dat,
+    			   CONT.HOOK.INDEX.PNG [ PER first,
+					     			     NUM sg ] ] ].					     			     
+
+min := pronoun-lex &
+  [ STEM < "mín" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+    			   CONT.HOOK.INDEX.PNG [ PER first,
+					     			     NUM sg ] ] ].					     			     
+
+					     			   
+vid := pronoun-lex &
+  [ STEM < "við" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+    			   CONT.HOOK.INDEX.PNG [ PER first,
+					     			     NUM non-sg ] ] ].	
+
+okkur := pronoun-lex &
+  [ STEM < "okkur" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE notnom,
+    			   CONT.HOOK.INDEX.PNG [ PER first,
+					     			     NUM non-sg ] ] ].						     			     
+					     			     					     			   
+tu := pronoun-lex &
+  [ STEM < "þú" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+    			   CONT.HOOK.INDEX.PNG [ PER second,
+					     			     NUM sg ] ] ].				     	
+
+tig := pronoun-lex &
+  [ STEM < "þig" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
+		   CONT.HOOK.INDEX.PNG [ PER second,
+					 NUM sg ] ] ].	
+
+ter := pronoun-lex &
+  [ STEM < "þér" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE dat,
+		   CONT.HOOK.INDEX.PNG [ PER second,
+					 NUM sg ] ] ].	
+
+
+tin := pronoun-lex &
+  [ STEM < "þín" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+		   CONT.HOOK.INDEX.PNG [ PER second,
+					 NUM sg ] ] ].	
+
+
+			     			     
+tid := pronoun-lex &
+  [ STEM < "þið" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+		   CONT.HOOK.INDEX.PNG [ PER second,
+					 NUM non-sg ] ] ].
+
+ykkur := pronoun-lex &
+  [ STEM < "ykkur" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc+dat,
+		   CONT.HOOK.INDEX.PNG [ PER second,
+					 NUM non-sg ] ] ]. 
+
+
+ykkar := pronoun-lex &
+  [ STEM < "ykkar" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+		   CONT.HOOK.INDEX.PNG [ PER second,
+					 NUM non-sg ] ] ]. 
+
+
+hann := pronoun-lex &
+  [ STEM < "hann" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom+acc,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg,
+					 GEND masc ] ] ].
+
+honum := pronoun-lex &
+  [ STEM < "honum" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE dat,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg,
+					 GEND masc ] ] ].
+
+hans := pronoun-lex &
+  [ STEM < "hans" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg,
+					 GEND masc ] ] ].
+
+
+teir := pronoun-lex &
+  [ STEM < "Þeir" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM non-sg, 
+					 GEND masc ] ] ].
+
+ta := pronoun-lex &
+  [ STEM < "þá" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM non-sg, 
+					 GEND masc ] ] ].
+
+;; ERB 2007-05-14 No gender contrast in 3rd person dat/gen.
+
+teim := pronoun-lex &
+  [ STEM < "þeim" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE dat,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM non-sg ] ] ].
+
+
+teirra := pronoun-lex &
+  [ STEM < "þeirra" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM non-sg ] ] ].
+
+
+
+hun := pronoun-lex &
+  [ STEM < "hún" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg, 
+					 GEND fem ] ] ].
+	
+hana := pronoun-lex &
+  [ STEM < "hana" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg, 
+					 GEND fem ] ] ].	
+
+
+henni := pronoun-lex &
+  [ STEM < "henni" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE dat,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg, 
+					 GEND fem ] ] ].	
+
+hennar := pronoun-lex &
+  [ STEM < "hennar" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg, 
+					 GEND fem ] ] ].	
+
+
+taer := pronoun-lex &
+  [ STEM < "þær" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom+acc,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM non-sg, 
+					 GEND fem ] ] ].
+
+tad := pronoun-lex &
+  [ STEM < "það" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom+acc,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg, 
+					 GEND neut ] ] ].
+
+
+tvi := pronoun-lex &
+  [ STEM < "því" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE dat,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg, 
+					 GEND neut ] ] ].
+
+tess := pronoun-lex &
+  [ STEM < "þess" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM sg, 
+					 GEND neut ] ] ].
+
+
+tau := pronoun-lex &
+  [ STEM < "þau" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom+acc,
+		   CONT.HOOK.INDEX.PNG [ PER third,
+					 NUM non-sg, 
+					 GEND neut ] ] ].	
+			     			   		   
+;;; Verbs
+
+hoppa := intransitive-verb-lex &
+  [ STEM < "hoppa" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_jump_v_rel" ] .
+
+mjalma := intransitive-verb-lex &
+  [ STEM < "mjalma" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_meow_v_rel" ] .
+
+koma := intransitive-verb-lex &
+  [ STEM < "koma" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_come_v_rel" ] .
+
+falla := intransitive-verb-lex &
+  [ STEM < "falla" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_fall_v_rel" ] .
+
+sitja := intransitive-verb-lex &
+  [ STEM < "sitja" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sit_v_rel" ] .
+
+sofa := intransitive-verb-lex &
+  [ STEM < "sofa" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sleep_v_rel" ] .
+
+leika := intransitive-verb-lex &
+  [ STEM < "leika" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_play_v_rel" ] .
+
+hlaupa := intransitive-verb-lex &
+  [ STEM < "hlaupa" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_run_v_rel" ] .
+
+vinna := intransitive-verb-lex &
+  [ STEM < "vinna" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_work_v_rel" ] .
+
+elska := transitive-verb-lex &
+  [ STEM < "elska" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_love_v_rel" ] .
+
+borda := opt-trans-verb-lex &
+  [ STEM < "borða" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ] .
+
+eta := opt-trans-verb-lex &
+  [ STEM < "éta" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ] .
+
+heyra := prop-verb-lex &
+  [ STEM < "heyra" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_hear_v_rel" ].
+
+; ERB 2007-05-15  Gunnar used "held" instead.
+
+;hyggja := prop-verb-lex &
+;  [ STEM < "hyggja" >,
+;    SYNSEM.LKEYS.KEYREL.PRED "_think_v_rel" ].
+
+held := prop-verb-lex &
+[ STEM < "held" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_think_v_rel" ].
+
+; ERB 2007-05-15 This one looks irregular.  
+; Conjugation will be wrong wrong wrong.
+
+vita := prop-verb-lex &
+[ STEM < "vita" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_know_v_rel" ].
+
+; ERB 2007-05-15 Again, the morphology is
+; going to be terrible.
+
+spyr := ques-verb-lex &
+[ STEM < "spyr" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_ask_v_rel" ].
+
+get := aux-verb-lex &
+  [ STEM < "get" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_can_v_rel" ].
+
+meida := transitive-verb-lex &
+  [ STEM < "meiða" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_hurt_v_rel" ].
+
+gefa := ditrans-verb-lex &
+  [ STEM < "gefa" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_give_v_rel" ].
+
+hitta := transitive-verb-lex &
+  [ STEM < "hitta" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_hit_v_rel" ].
+
+kalla := transitive-verb-lex &
+  [ STEM < "kalla" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_call_v_rel" ].
+
+kaupa := transitive-verb-lex &
+  [ STEM < "kaupa" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_buy_v_rel" ].
+
+skilja := transitive-verb-lex &
+  [ STEM < "skilja" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ].
+
+;; ERB 2007-05-11  Single object is acc according to dictionary.
+
+elta := transitive-verb-lex &
+  [ STEM < "elta" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_chase_v_rel" ].
+
+
+skilja2 := prop-verb-lex &
+  [ STEM < "skilja" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ].
+
+vilja := transitive-verb-lex &
+  [ STEM < "vilja" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_want_v_rel" ].
+
+taka := transitive-verb-lex &
+  [ STEM < "taka" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_take_v_rel" ].
+
+;;; Modifiers
+
+rik := adjective-lex &
+  [ STEM < "rik" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_rich_a_rel" ].
+
+smar := adjective-lex &
+  [ STEM < "smar" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_small_a_rel" ].
+
+stor := adjective-lex &
+  [ STEM < "stor" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_big_a_rel" ].
+
+heimsk := adjective-lex &
+  [ STEM < "heimsk" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_stupid_a_rel" ].
+
+gul := adjective-lex &
+  [ STEM < "gul" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_yellow_a_rel" ].
+
+fagur := adjective-lex &
+  [ STEM < "fagur" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_beautiful_a_rel" ].
+
+lang := adjective-lex &
+  [ STEM < "lang" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_long_a_rel" ].
+
+fersk := adjective-lex &
+  [ STEM < "fersk" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_new_a_rel" ].
+
+gamall := adjective-lex &
+  [ STEM < "gamall" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_old_a_rel" ].
+
+lag := adjective-lex &
+  [ STEM < "lag" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_short_a_rel" ].
+
+helst := adverb-lex &
+  [ STEM < "helst" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_gladly_r_rel" ].
+
+hratt := adverb-lex &
+  [ STEM < "hratt" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_quickly_r_rel" ].
+
+;;; ERB 2007-05-11 For GMMT:
+
+svang := adjective-lex &
+  [ STEM < "svang" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_hungry_a_rel" ].
+
+;;; Determiners
+
+;;; ERB 2007-05-14 Adding paradigm for definite determiners.
+
+;hinn := determiner-lex &
+;  [ STEM < "hinn" >,
+;    SYNSEM.LKEYS.KEYREL.PRED "_def_q_rel" ] .
+
+sg-m-nom+acc-det : = sg-m-nom+acc-det-lex &
+   [ STEM < "hinn" > ].
+
+sg-m-dat-det := sg-m-dat-det-lex &
+  [ STEM < "hinum" > ].
+
+sg-m+n-gen := sg-m+n-gen-det-lex &
+  [ STEM < "hins" > ].
+
+sg-f-nom-det := sg-f-nom-det-lex &
+  [ STEM < "hin" > ]. 
+
+sg-f-acc-det := sg-f-acc-det-lex &
+  [ STEM < "hina" > ]. 
+
+sg-f-dat-det := sg-f-dat-det-lex &
+  [ STEM < "hinni" > ]. 
+
+sg-f-gen-det := sg-f-gen-det-lex &
+  [ STEM < "hinnar" > ]. 
+
+sg-n-nom+acc-det := sg-n-nom+acc-det-lex &
+  [ STEM < "hið" > ]. 
+
+sg-n-dat-det := sg-n-dat-det-lex &
+  [ STEM < "hinu" > ]. 
+
+pl-m-nom-det := pl-m-nom-det-lex &
+  [ STEM < "hinir" > ]. 
+
+pl-m-acc-det := pl-m-acc-det-lex &
+  [ STEM < "hina" > ]. 
+
+pl-f-nom+acc-det := pl-f-nom+acc-det-lex &
+  [ STEM < "hinar" > ]. 
+
+pl-n-nom+acc-det := pl-n-nom+acc-det-lex &
+  [ STEM < "hin" > ]. 
+
+pl-dat-det := pl-dat-det-lex &
+  [ STEM < "hinum" > ]. 
+
+pl-gen-det := pl-gen-det-lex &
+  [ STEM < "hinna" > ]. 
+
+
+ad := prop-comp-lex-item &
+  [ STEM < "að" > ].
+
+;;; ERB 2007-05-15
+
+hvort := ques-comp-lex-item &
+  [ STEM < "hvort" > ].
+
+;;; ERB 2007-05-11
+;;; I know this one goes with masc plural nominative.  Don't know
+;;; what happens in other parts of the paradigm.
+
+
+tessir := demonstrative-determiner-lex &
+  [ STEM < "Þessir" >,
+    SYNSEM [ LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM non-sg,
+								  GEND masc ],
+	     LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ]].
