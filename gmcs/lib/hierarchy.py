@@ -1,21 +1,35 @@
 
-class HierarchyNode:
+class HierarchyNode(object):
   def __init__(self, key, parents=None, children=None):
     self.key = key
     self.relations = {}
-    self.relations['parent'] = parents or set()
-    self.relations['child'] = children or set()
+    self.relations['parent'] = parents or {}
+    self.relations['child'] = children or {}
+    self.hierarchy = None
 
-  def relatives(self, relationship):
-    return self.relations.get(relationship, set())
+  def relate(self, other, relation):
+    self.relations[relation][other.key] = other
+
+  def relatives(self, relation):
+    return self.relations.get(relation, {})
 
   def parents(self):
     return self.relations['parent']
 
+  def ancestors(self):
+    if self.hierarchy == None:
+      return None
+    return self.hierarchy.get_ancestors(node=self)
+
   def children(self):
     return self.relations['child']
 
-class Hierarchy:
+  def descendants(self):
+    if self.hierarchy == None:
+      return None
+    return self.hierarchy.get_descendants(node=self)
+
+class Hierarchy(object):
   def __init__(self):
     self.nodes = {}
     self.__cache = {}
@@ -23,33 +37,43 @@ class Hierarchy:
   def add_node(self, node):
     if node.key in self.nodes:
       return None
+    # register it with and add it to the hierarchy
+    node.hierarchy = self
     self.nodes[node.key] = node
-    for parent in node.parents():
-      self.nodes[parent].children().add(node.key)
-    for child in node.children:
-      self.nodes[child].parents().add(node.key)
+    # add corollary relationships
+    for parent in node.parents().values():
+      parent.children()[node.key] = node
+    for child in node.children().values():
+      child.parents()[node.key] = node
+    # adding nodes invalidates the cache
     self.__cache = {}
     return node
 
-  def get_lineage(self, key=None, node=None, relationship=None):
+  def relate_parent_child(self, parent, child):
+    parent.relate(child, 'child')
+    child.relate(parent, 'parent')
+
+  def get_lineage(self, key=None, node=None, relation=None):
     if key is not None and node is None:
       node = self.nodes[key]
-    return self.find_lineage(node, relationship)
+    return self.find_lineage(node, relation)
 
-  def find_lineage(self, node, relationship):
-    if relationship in self.__cache.setdefault(node.key,{}):
-      return self.__cache[node.key][relationship]
-    relatives = node.relatives(relationship)
-    self.__cache[node.key][relationship] = \
-      relatives.union(x for r in relatives
-                        for x in self.find_lineage(r, relationship))
-    return self.__cache[node.key][relationship]
+  def find_lineage(self, node, relation):
+    if relation in self.__cache.get(node.key,{}):
+      return self.__cache[node.key][relation]
+    self.__cache.setdefault(node.key, {})
+    lineage = node.relatives(relation)
+    lineage.update(
+      dict(i for n in lineage.values()
+             for i in self.find_lineage(n, relation).items()))
+    self.__cache[node.key][relation] = lineage
+    return lineage
 
   def get_ancestors(self, key=None, node=None):
-    return self.find_lineage(key, node, 'parent')
+    return self.get_lineage(key, node, 'parent')
 
   def get_descendants(self, key=None, node=None):
-    return self.find_lineage(key, node, 'child')
+    return self.get_lineage(key, node, 'child')
 
 ########################
 ### HELPER FUNCTIONS ###

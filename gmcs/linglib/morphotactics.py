@@ -1,16 +1,20 @@
 from collections import defaultdict
 
 from gmcs.linglib import lexicon
+from gmcs.linglib.lexbase import MorphotacticNode, PositionClass
+from gmcs.linglib.lexbase import LexicalRuleType, LexicalType
+from gmcs.linglib.lexbase import LexicalRuleInstance
+from gmcs.linglib.lexbase import ALL_LEX_TYPES
+from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
+from gmcs.linglib.lexbase import LEXICAL_SUPERTYPES
+from gmcs.lib import Hierarchy
 from gmcs.utils import get_name
-from gmcs.lib import Hierarchy, HierarchyNode
 
 ### Contents
-# 1. Constants
-# 2. Module Variables
-# 3. Classes
-# 4. Helper functions
-# 5. Main logic functions
-# 6. Output functions
+# 1. Module Variables
+# 2. Helper functions
+# 3. Main logic functions
+# 4. Output functions
 
 ## NOTES ON ABBREVIATIONS
 # pc : position class
@@ -21,132 +25,17 @@ from gmcs.lib import Hierarchy, HierarchyNode
 # lst : lexical supertype (e.g. noun, verb, iverb, etc.)
 # mn : morphotactic node (a pc, lrt, lt, or lst)
 
-################################
-### CONSTANTS (in principle) ###
-################################
-
-ALL_LEX_TYPES = ['noun', 'verb', 'det', 'aux', 'adj']
-
 ########################
 ### MODULE VARIABLES ###
 ########################
 
-_all_mns = {}
+_mns = {}
 _pcs = {}
 _all_types = {}
-
-###############
-### CLASSES ###
-###############
-
-class MorphotacticNode(HierarchyNode):
-  def __init__(self, key, name=None, pc=None, parents=None, supertypes=None):
-    HierarchyNode.__init__(self, key, parents=parents)
-    self.name = name or ''
-    self.pc = pc
-    self.constraints = {'req-fwd':set(), 'req-bkwd':set(), 'forbid':set()}
-    self.disjunctive_sets = set()
-    self.flags = {'in':{},'out':{}}
-    self.supertypes = supertypes or set()
-    self.identifier_suffix = ''
-    #self.input_lrt = None
-
-  def relatives(self, relationship):
-    # 'input' is a fake relation. It's just the parents of the position
-    # class (useful when the morphotactic node is an LRT)
-    if relationship == 'input':
-      return self.pc.parents()
-    else:
-      return HierarchyNode.relatives(self, relationship)
-
-  def identifier(self):
-    return '-'.join([self.name, self.rule_type])
-
-  def input_span(self):
-    return PositionClass.input_span(self.pc, self.key)
-
-class PositionClass(MorphotacticNode, Hierarchy):
-  """
-  A simple class for managing the properties of position classes.
-  """
-  def __init__(self, key, name, parents=None, order=None):
-    MorphotacticNode.__init__(self, key, name, parents=parents)
-    self.order = order      # string
-    self.pc = self
-    self.identifier_suffix = 'lex-rule-super'
-
-  def __repr__(self):
-    return 'PositionClass(' + self.identifier() + ')'
-
-  def add_node(self, node):
-    node.pc = self
-    Hierarchy.add_node(self, node)
-
-  def input_span(self):
-    return Hierarchy.get_lineage(key=self.key, 'input')
-
-  def percolate_supertypes(self):
-    # roots are those nodes without parents
-    roots = [n for n in self.nodes.values() if len(n.parents) == 0]
-    root_sts = [r.percolate_supertypes() for r in roots]
-    common_sts = set.intersection(*root_sts)
-    # update the supertype sets
-    self.supertypes.update(common_sts)
-    for r in roots:
-      r.supertypes.difference_update(common_sts)
-
-class LexicalRuleType(MorphotacticNode):
-  """
-  A simple class for managing the properties of lexical rule types.
-  """
-  def __init__(self, key, name, pc=None, parents=None, supertypes=None):
-    MorphotacticNode.__init__(self, key, name, pc, parents, supertypes)
-    self.supertypes = supertypes or set()
-    self.features = {}
-    self.lris = {}
-    self.identifier_suffix = 'lex-rule'
-
-  def inputs(self):
-    return self.pc.inputs
-
-  def percolate_supertypes(self):
-    # Only supertypes existing in all LRIs and subtypes can be percolated
-    lri_sts = [lri.supertypes for lri in self.lris.values()]
-    # Remember to do this recursively
-    lrt_sts = [self.pc.nodes[c].percolate_supertypes()
-               for c in self.children()]
-    # func(*[list]) is the Pythonic way of making a list into function
-    # parameters. so func(*[1,2]) => func(1, 2)
-    common_sts = set.intersection(*(lri_sts + lrt_sts))
-    # now update the supertype sets
-    self.supertypes.update(common_sts)
-    for lri in self.lris.values():
-      lri.supertypes.difference_update(common_sts)
-    for c in self.children():
-      self.pc.nodes[c].supertypes.difference_update(common_sts)
-    # for the recursive part, remember to return the updated set of supertypes
-    return self.supertypes
-
-class LexicalRuleInstance:
-  def __init__(self, orthography, lrt, supertypes):
-    self.orthography = orthography
-    self.lrt = lrt
-    self.supertypes = supertypes
 
 ########################
 ### HELPER FUNCTIONS ###
 ########################
-
-def extended_input_span(mn):
-  i_s = mn.input_span()
-  return i_s.union(set(x for i in i_s
-                         for x in _all_mns[i].pc.get_descendants(key=i)))
-
-def generalized_input_span(mn):
-  i_s = mn.input_span()
-  extended = extended_input_span(mn)
-  return extended.union(set(x for i in i_s
-                              for x in _all_mns[i].get_ancestors(key=i)))
 
 def all_position_classes(choices):
   """ Yield each position class defined in the choices file. """
@@ -177,72 +66,6 @@ def disjunctive_typename(lexical_rule_types):
 
 def flag_name(flag):
   return flag.upper() + '-FLAG'
-
-#def create_input_span_dict():
-#  """ Return a dictionary that maps each PC to its input span. """
-#  input_spans = {}
-#  for pc_key in all_position_classes(choices):
-#    pc = _pcs[pc_key]
-#    i_s = input_span(pc, input_spans)
-#    pc.input_span['attested'] = i_s
-#    pc.input_span['expanded'] = i_s.union(subtypes(i_s))
-#    pc.input_span['generalized'] = i_s.union(supertypes(subtypes(i_s)))
-#  return input_span_dict
-#
-#def input_span(pc, spans):
-#  """
-#  Return the input span for a given position class. Second parameter
-#  is used for dynamic programming so we don't redundantly calculate
-#  input spans for some position classes.
-#  """
-#  if pc.key in spans:
-#    return spans[pc.key]
-#  spans[pc] = pc.inputs.union(i_s for i in pc.inputs
-#                                  for i_s in input_span(_pcs[i], spans))
-#  return spans[pc.key]
-#
-#def subtypes(types):
-#  return set(st for t in types for st in _all_types[t].subtypes)
-#
-#def supertypes(types):
-#  return set(st for t in types for st in _all_types[t].supertypes)
-
-#def __add_input_to_span(choices, pc, input_span):
-#  """
-#  Given a choices object, a pc, and a input_span dictionary, add all
-#  attested inputs to the input_span dictionary.
-#  """
-#  if pc.full_key in input_span:
-#    return
-#  for inp_key in choices.split_multiselect_value(pc.full_key + '_input'):
-#    input_span[pc.full_key].add(inp_key)
-#    # find all preceding for that input, then add those as well
-#    if is_lexical_rule_type(inp_key):
-#      __add_input_to_span(choices, choices[inp_key], input_span)
-#      input_span[pc.full_key].update(input_span[inp_key])
-
-#def create_preceding_dict(input_span, choices):
-#  """
-#  Return a dictionary of all LRTs preceding a given LRT. The key is
-#  the given LRT, and the values are sets of preceding LRTs. Note that
-#  this is a superset of inputs, including expanded lexical supertypes
-#  and generalized lexical types.
-#  """
-#  preceding_dict = {}
-#  for key in input_span:
-#    # need to create a new set for preceding_dict, otherwise updates
-#    # to preceding_dict's items will be reflected in input_span
-#    preceding_dict[key] = set([i for i in input_span[key]])
-#    new_set = set()
-#    for lrt in preceding_dict[key]:
-#      # if the LRT is a lexical rule supertype, add its expansions
-#      for x in lexicon.expand_lexical_supertype(lrt, choices):
-#        new_set.add(x)
-#      # otherwise add the lexical rule supertype
-#      for x in lexicon.get_lexical_supertypes(lrt, choices):
-#        new_set.add(x)
-#    preceding_dict[key].update(new_set)
-#  return preceding_dict
 
 def add_lr_supertypes(ltypes, choices, subsumes=all):
   """
@@ -280,6 +103,31 @@ def remove_subsumed_lrts(ltypes, choices, subsumes=all):
   lrt_set.update(ltypes)
   return lrt_set
 
+def sequential(mn1, mn2):
+  """
+  Return True if the one of the MNs appears on the other's input and
+  if they do not share the same PC (or are not the same PC).
+  """
+  return (mn1 in mn2.generalized_input_span() \
+          or mn2 in mn1.generalized_input_span()) \
+         and mn1.pc.key != mn2.pc.key
+
+def ordered_constraints(mn, constraint_type):
+  """
+  Return a list of constrained LRTs such that they are ordered
+  according to their input order, or, if nonsequential, their keys.
+  """
+  ordered = []
+  for c in mn.constraints.get(constraint_type, []):
+    loc = len(ordered)
+    for i, o in enumerate(ordered):
+      if c in _mns[o].generalized_input_span() \
+         or (not o in _mns[c].generalized_input_span() and c.key < o.key):
+        loc = i
+        break
+    ordered.insert(loc, c)
+  return ordered
+
 def all_inputs(lr_key, lrs, choices):
   """
   Return all possible inputs for the given lr such that if the slot
@@ -290,43 +138,8 @@ def all_inputs(lr_key, lrs, choices):
   lrts = [l for l in lrs[lr_key].input_span
           if not any([j in lrs[lr_key].input_span and l in j.input_span
                       for j in l.constraints['req-fwd']])]
-  return [lrs[i] for i in remove_subsumed_lrts([l.key for l in lrts],
-                                                choices)]
-
-def basetypes(lr, choices):
-  """
-  Return the subset of ltypes that represent the smallest set of
-  basetypes (that is, lexical types and supertypes; not slots). If a
-  set of lexical types completely covers the span of a lexical
-  supertype (as in lexicon.lexical_supertypes), only return the supertype.
-  """
-  covered_lex_types = [b.key for b in lr.input_span
-                       if not is_lexical_rule_type(b.key) and b.key in choices]
-  return remove_subsumed_lrts(covered_lex_types, choices)
-
-def sequential(pc1, pc2):
-  """
-  Return True if the one of the LRTs appears on the other's input and
-  if the two LRTs are different (i.e. not the same one).
-  """
-  return (lr1 in lr2.input_span or lr2 in lr1.input_span) \
-         and lr1.key != lr2.key
-
-def ordered_constraints(lr, constraint_type):
-  """
-  Return a list of constrained LRTs such that they are ordered
-  according to their input order.
-  """
-  ordered = []
-  for c in lr.constraints.get(constraint_type, []):
-    loc = len(ordered)
-    for i, o in enumerate(ordered):
-      if c in o.input_span \
-         or (not sequential(lr, o) and c.key < o.key):
-        loc = i
-        break
-    ordered.insert(loc, c)
-  return ordered
+  return set(lrs[i] for i in remove_subsumed_lrts([l.key for l in lrts],
+                                                  choices))
 
 def valid_input(mn, pc):
   """
@@ -335,7 +148,8 @@ def valid_input(mn, pc):
   path from a lexical rule instance to the position class.
   """
   return any(input_path_exists(lri, pc)
-             for lri in mn.descendants if type(lri) is LexicalRuleInstance)
+             for lri in mn.descendants().values()
+             if type(lri) is LexicalRuleInstance)
 
 def input_path_exists(lri, pc):
   """
@@ -344,9 +158,9 @@ def input_path_exists(lri, pc):
   morphotactic node after lri's position class and before pc.
   """
   lrt = lri.lrt
-  lri_ancestors = set([lrt, lrt.pc]).union(lrt.pc.get_ancestors(lrt))
+  lri_ancestors = set([lrt, lrt.pc]).union(lrt.ancestors().values())
   blocking_mns = [mn for mn in lri_ancestors
-                  if any(c in pc.input_span['generalized']
+                  if any(_mns[c].precedes(pc)
                          for c in mn.constraints['req-fwd'])]
   return len(blocking_mns) == 0
 
@@ -381,9 +195,9 @@ def customize_lexical_rules(choices):
   #  4. determine and create flags based on constraints
   pch = position_class_hierarchy(choices)
   #create_lexical_rule_types(choices)
-  interpret_constraints(pch, choices)
-  convert_obligatoriness_to_req(lrs, choices)
-  handle_inputs(lrs, choices)
+  interpret_constraints(choices)
+  convert_obligatoriness_to_req(choices)
+  handle_inputs(pch, choices)
   create_flags(lrs)
   return lrs
 
@@ -397,164 +211,157 @@ def position_class_hierarchy(choices):
   pch = Hierarchy()
 
   # Create PositionClasses for lexical types so they can take flags
-  for lex_cat in lexicon.LEXICAL_CATEGORIES:
+  for lex_cat in LEXICAL_CATEGORIES:
     lth = lexicon.lexical_type_hierarchy(choices, lex_cat)
-    _all_mns[lth.key] = lth
-    _all_mns.update(lth.nodes)
+    _mns[lth.key] = lth
+    _mns.update(lth.nodes)
     pch.add_node(lth)
 
+  # We can't set parents until we have created all MN objects.
+  pc_inputs = {}
   # Now create the actual position classes
   for pc in all_position_classes(choices):
-    cur_pc = pch.add_node(PositionClass(pc.full_key, get_name(pc)),
-                                        parents=pc['input'].split(', '),
+    pc_inputs[pc.full_key] = set(pc['inputs'].split(', '))
+    cur_pc = pch.add_node(PositionClass(pc.full_key, get_name(pc),
                                         order=pc['order']))
-    _all_mns[cur_pc.key] = cur_pc
+    _mns[cur_pc.key] = cur_pc
     # Fill the lexical rule types with the information we know
+    lrt_parents = {}
     for lrt in pc['lrt']:
+      lrt_parents[lrt.full_key] = set(lrt['supertypes'].split(', '))
       cur_pc.add_node(create_lexical_rule_type(lrt))
-    # Try to push common supertypes up to reduce redundancy in TDL
+    for child in lrt_parents:
+      for parent in lrt_parents[child]:
+        cur_pc.relate_parent_child(_mns[parent], _mns[child])
+    # With knowledge of the hierarchy, determine the appropriate
+    # supertypes, then try to push common supertypes up to reduce
+    # redundancy in TDL
+    set_lexical_rule_supertypes(cur_pc)
     cur_pc.percolate_supertypes()
-
+  # now assign pc inputs
+  for pc in pc_inputs:
+    for inp in pc_inputs[pc]:
+      _mns[pc].relate(_mns[inp], 'parent')
   return pch
 
 def create_lexical_rule_type(lrt):
-  new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt),
-                            parents=lrt['supertypes'].split(', '))
+  new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
   for feat in lrt['feat']:
     new_lrt.features[feat['name']] = {'value': feat['value'],
                                       'head': feat.get('head', None)}
-
-    feat_vals = [(f['name'], f['value']) for f in morph.get('feat',[])]
-    if ('negation', 'plus') in feat_vals:
-      m.parents.add('cont-change-only-lex-rule')
-    else:
-      m.parents.add('add-only-no-ccont-rule')
-
   for lri in lrt['lri']:
     const_or_infl = 'const' if lri.get('orth','') == '' else 'infl'
     new_lri = LexicalRuleInstance(lri.get('orth',''), new_lrt,
                                   [const_or_infl + '-lex-rule'])
-    new_lrt.lris[new_lri.key] = new_lri
-  _all_mns[new_lrt.key] = new_lrt
+    new_lrt.lris[lri.full_key] = new_lri
+  _mns[new_lrt.key] = new_lrt
   return new_lrt
 
-#def ensure_lr_exists(lrs, key, name, rule_type=None):
-#  """
-#  If the given key does not exist in lrs, create a new LexicalRuleType
-#  and insert it into lrs.
-#  """
-#  if rule_type is None:
-#    if is_lexical_rule_type(key): rule_type = 'lex-rule-super'
-#    else: rule_type = 'lex'
-#  if key not in lrs:
-#    lrs[key] = LexicalRuleType(name, key=key, rule_type=rule_type)
-
-#def create_morpheme(morph, supertype, choices):
-#  """
-#  Interpret a morpheme from the Choices file into a Morpheme object.
-#  """
-#  name = get_name(morph)
-#  m = Morpheme(name, morph.full_key, supertype, morph.get('orth',''))
-#  for feature in morph.get('feat',[]):
-#    m.features[feature['name']] = {'value':feature['value'],
-#                                   'head':feature.get('head',None)}
-#  if morph.get('orth','') == '':
-#    m.parents.add('const-lex-rule')
-#  else:
-#    m.parents.add('infl-lex-rule')
-#  feat_vals = [(f['name'], f['value']) for f in morph.get('feat',[])]
-#  if ('negation', 'plus') in feat_vals:
-#    m.parents.add('cont-change-only-lex-rule')
-#  else:
-#    m.parents.add('add-only-no-ccont-rule')
-#
-#  # add morpheme constraints here
-#  return m
+def set_lexical_rule_supertypes(pc):
+  # since we will later percolate up common supertypes, for now
+  # just put them on all nodes with LRIs (mainly leaf nodes)
+  nodes = [n for n in pc.nodes.values() if len(n.lris) > 0]
+  for lrt in nodes:
+    # NOTE: there is currently no check to ensure that
+    # cont-change-only-lex-rule and add-only-no-ccont-rule won't
+    # appear on the same LRT.
+    if ('negation', 'plus') in lrt.features.items():
+      lrt.supertypes.add('cont-change-only-lex-rule')
+    else:
+      lrt.supertypes.add('add-only-no-ccont-rule')
 
 ### CONSTRAINTS ###
 
-def interpret_constraints(lrs, choices):
-  for lr in lrs.values():
-    # don't bother if the lr is not defined in choices
-    if lr.key not in choices or \
-       not isinstance(choices[lr.key], dict): continue
-    for req in choices[lr.key].get('require', []):
-      others = tuple([lrs[o] for o in req['other-slot'].split(', ')])
-      lr.disjunctive_sets.add(others)
-      if all([o in lr.preceding or o.key in lexicon.lexical_supertypes
-              for o in others]):
-        lr.constraints['req-bkwd'].update(others)
-      elif all([lr in o.preceding for o in others]):
-        lr.constraints['req-fwd'].update(others)
+###
+### NOTE TO SELF:
+  ## CONSTRAINTS ARE A SET
+  ## CONSIDER MAKING A DICT (WORKING IN input_path_exists)
+  ## CONSIDER MAKING ALL SETS DICTS
+
+
+
+def interpret_constraints(choices):
+  for mn in _mns.values():
+    # don't bother if the morphotactic node is not defined in choices
+    if mn.key not in choices or \
+       not isinstance(choices[mn.key], dict): continue
+    for req in choices[mn.key].get('require', []):
+      others = dict([(o, _mns[o]) for o in req['others'].split(', ')])
+      mn.disjunctive_flag_sets.add(others)
+      if all(o.precedes(mn) for o in others):
+        mn.constraints['req-bkwd'].update(others)
+      elif all(mn.precedes(o) for o in others):
+        mn.constraints['req-fwd'].update(others)
       # we're not covering the case where others appear before
       # and after the current slot.
       # the case where it is neither followed by or follows other
       # should be covered in a validation test
-    for fbd in choices[lr.key].get('forbid',[]):
-      other = lrs[fbd['other-slot']]
+    for fbd in choices[mn.key].get('forbid',[]):
+      other = {fbd['others']:_mns[fbd['others']]}
       # only forbid backwards. convert forwards forbids to backwards
-      if other in lr.preceding:
-        lr.constraints['forbid'].add(other)
-      elif lr in other.preceding:
-        other.constraints['forbid'].add(lr)
+      if other.precedes(mn):
+        mn.constraints['forbid'].add(other)
+      elif mn.precedes(other):
+        other.constraints['forbid'].add(mn)
 
-def convert_obligatoriness_to_req(lrs, choices):
+def convert_obligatoriness_to_req(choices):
   """
-  For all slots marked as obligatory, add a "require" constraint for
-  that slot on each of the slot's root inputs.
+  For all PCs marked as obligatory, add a "require" constraint for
+  that PC on each of its basetypes.
   """
-  for lrt in choices.get_lexical_rule_types(all_lr_types):
-    if lrt.get('obligatory','') == 'on':
-      for bt_key in basetypes(lrs[lrt.full_key], choices):
-        lrs[bt_key].constraints['req-fwd'].add(lrs[lrt.full_key])
+  for pc in all_position_classes(choices):
+    if pc.get('obligatory','') == 'on':
+      basetypes = [i for i in pc.input_span().values() if len(i.inputs()) == 0]
+      for bt in basetypes:
+        bt.constraints['req-fwd'].add(pc.full_key)
 
 ### INPUTS ###
 
-def handle_inputs(lrs, choices):
-  inp_dict = create_input_dict(lrs, choices)
-  for inp in inp_dict:
-    # if there are than one input, we need an intermediate rule
-    if len(inp) > 1:
-      inp_keys = [i.key for i in inp]
-      int_sts = remove_subsumed_lrts(inp_keys, choices)
-      input_lrt = create_intermediate_rule(inp_dict[inp], int_sts, lrs)
-    else:
-      input_lrt = lrs[inp[0].key]
-    for lr in inp_dict[inp]:
-      lr.input_lrt = input_lrt
+#def handle_inputs(pch, choices):
+#  inp_dict = create_input_dict(lrs, choices)
+#  for inp in inp_dict:
+#    # if there are than one input, we need an intermediate rule
+#    if len(inp) > 1:
+#      inp_keys = [i.key for i in inp]
+#      int_sts = remove_subsumed_lrts(inp_keys, choices)
+#      input_lrt = create_intermediate_rule(inp_dict[inp], int_sts, lrs)
+#    else:
+#      input_lrt = lrs[inp[0].key]
+#    for lr in inp_dict[inp]:
+#      lr.input_lrt = input_lrt
 
-def create_input_dict(lrs, choices):
-  """
-  Return a dictionary with a tuple of rules (forming a set of inputs
-  attested for at least one lexical rule type) as the key and a set
-  of the lexical rule types with that set of inputs as the value.
-  That is, input_dict[(inputs,)] = set([types with those inputs])
-  """
-  inps = defaultdict(set)
-  for lr in lrs.values():
-    # only lexical rule types have inputs
-    if is_lexical_rule_type(lr.key):
-      all_inp = tuple(sorted(all_inputs(lr.key, lrs, choices)))
-      inps[all_inp].add(lr)
-  return inps
+#def create_input_dict(lrs, choices):
+#  """
+#  Return a dictionary with a tuple of rules (forming a set of inputs
+#  attested for at least one lexical rule type) as the key and a set
+#  of the lexical rule types with that set of inputs as the value.
+#  That is, input_dict[(inputs,)] = set([types with those inputs])
+#  """
+#  inps = defaultdict(set)
+#  for lr in lrs.values():
+#    # only lexical rule types have inputs
+#    if is_lexical_rule_type(lr.key):
+#      all_inp = tuple(sorted(all_inputs(lr.key, lrs, choices)))
+#      inps[all_inp].add(lr)
+#  return inps
 
-def create_intermediate_rule(target_rules, inputs, lrs):
-  intermediate = disjunctive_typename(target_rules)
-  new_key = tuple(sorted(inputs))
-  ensure_lr_exists(lrs, new_key, intermediate, 'rule-dtr')
-  lrs[new_key].parents.add('avm')
-  for i in inputs:
-    lrs[i].parents.add(lrs[new_key].identifier())
-  return lrs[new_key]
-
-def percolate_parents(lr):
-  if len(lr.morphs) == 0: return
-  rts = [rt for rt in lr.morphs[0].parents]
-  for rt in rts:
-    if all([rt in m.parents for m in lr.morphs]):
-      lr.parents.add(rt)
-      for m in lr.morphs:
-        m.parents.remove(rt)
+#def create_intermediate_rule(target_rules, inputs, lrs):
+#  intermediate = disjunctive_typename(target_rules)
+#  new_key = tuple(sorted(inputs))
+#  ensure_lr_exists(lrs, new_key, intermediate, 'rule-dtr')
+#  lrs[new_key].parents.add('avm')
+#  for i in inputs:
+#    lrs[i].parents.add(lrs[new_key].identifier())
+#  return lrs[new_key]
+#
+#def percolate_parents(lr):
+#  if len(lr.morphs) == 0: return
+#  rts = [rt for rt in lr.morphs[0].parents]
+#  for rt in rts:
+#    if all([rt in m.parents for m in lr.morphs]):
+#      lr.parents.add(rt)
+#      for m in lr.morphs:
+#        m.parents.remove(rt)
 
 ### FLAGS ###
 
@@ -581,19 +388,19 @@ def assign_flags(lr, lrs, values, flag_groups):
       if values[1][1]: other.flags['in'][flag_name] = values[1][1]
       if values[1][0]: other.flags['out'][flag_name] = values[1][0]
 
-def minimal_flag_set(lr, constraint_type):
+def minimal_flag_set(mn, constraint_type):
   """
   For a given lexical rule, use its set of constraints to find the
   minimal set of flags necessary to model the constraints.
   """
   all_flag_groups = []
-  cs = ordered_constraints(lr, constraint_type)
+  cs = ordered_constraints(mn, constraint_type)
   accounted_for = dict([(c, False) for c in cs])
   for c in cs:
     flag_group = set()
     if accounted_for[c]: continue
     # first add disjunctive sets
-    for ds in lr.disjunctive_sets:
+    for ds in mn.disjunctive_flag_sets:
       if c in ds:
         flag_group.update(ds)
         for x in ds:
@@ -617,12 +424,9 @@ def minimal_flag_set(lr, constraint_type):
 
 def get_all_flags(lrs):
   flags = set()
-  for lr in lrs.values():
-    flags.update(set(lr.flags['out'].keys()))
-    flags.update(set(lr.flags['in'].keys()))
-    for m in lr.morphs:
-      flags.update(set(m.flags['out'].keys()))
-      flags.update(set(m.flags['in'].keys()))
+  for mn in _mns.values():
+    flags.update(set(mn.flags['out'].keys()))
+    flags.update(set(mn.flags['in'].keys()))
   return flags
 
 ######################
@@ -742,7 +546,7 @@ def validate(choices, vr):
   index_feats = choices.index_features()
   cycle_validation(choices, vr)
   #lrs = create_lexical_rules(choices)
-  for lrt in choices.get_lexical_rule_types(all_lr_types):
+  for lrt in choices.get_lexical_rule_types(ALL_LEX_TYPES):
     basic_lrt_validation(choices, lrt, vr)
     cooccurrence_validation(lrt, choices, vr)
     for lr in lrt.get('morph', []):

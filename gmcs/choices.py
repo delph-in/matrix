@@ -1758,7 +1758,7 @@ class ChoicesFile:
     if ('_type' in key or '_other-slot' in key) and '-slot' in value:
       value = value.replace('-slot','-pc',1)
     if '_other-slot' in key:
-      key = key.replace('_other-slot','_other')
+      key = key.replace('_other-slot','_others')
     if '_morph' in key:
       key = key.replace('_morph','_lrt')
       key = key.replace('_orth', '_lri1_orth')
@@ -1775,8 +1775,8 @@ class ChoicesFile:
     and LRTs can inherit from other LRTs. Some conversion already
     occurred in preparse_convert_22_to_23().
     """
-    from gmcs.linglib import morphotactics
-    for pc_type in morphotactics.all_lr_types:
+    from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
+    for pc_type in LEXICAL_CATEGORIES:
       for pc in self.get(pc_type + '-pc', []):
         all_inps = ', '.join([inp['type'] for inp in pc['input']])
         del self[pc.full_key + '_input']
