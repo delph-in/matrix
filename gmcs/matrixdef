@@ -7,7 +7,7 @@ Label "<h3>Language</h3>"
 Text language "Language name" "<p>Name of your language: " "<br>" 50
 Text iso-code "ISO code" "<a href=\"http://www.sil.org/iso639-3/codes.asp\">ISO code</a> for your language: " " (optional) </p>" 6
 
-Label "<h3>Archiving</h3>"
+Label "<h3>Archiving and Version Control</h3>"
 
 Label "<p>The developers of the Grammar Matrix project would like to
 retain your answers to this questionnaire in an archive.  We hope
@@ -34,6 +34,15 @@ Text affiliation "Affiliation" "<tr><td valign=\"top\">Your affiliation: <td>" "
 Text motivation "Motivation" "<tr><td valign=\"top\">Your reason for using this system: <td>" "<br>(e.g. descriptive linguistic research, for a class)</tr></table>" 80
 
 TextArea comment "Comments" "<tr><td valign=\"top\">Comments on your implementation of the grammar: <td>" "<br>(e.g. Choice of analyses, sources of information, etc.)</tr></table>" 80x6
+
+Label "<p>We recommend that you use version control for your grammar development, and aim to facilitate that in two ways.  First, you can choose to have your grammar's code initialized into a Git or Mercurial repository.  Please see <a href=\"http://wiki.delph-in.net/moin/VersionControlForGrammarDevelopment\">this wiki page</a> for information on how to use these systems. The wiki also includes information on how to use Subversion (svn) or Bazaar (bzr) with your grammar.</p>"
+
+Radio vcs "Version Control System" "<p>Version Control System.<br>" ""
+. none "None" "" " None<br>"
+. hg "Mercurial (hg)" "" " Mercurial (hg)<br>"
+. git "Git" "" " Git<br>"
+
+Label "<p>You may also wish to have your repository hosted through an open source hosting service (e.g., Google Code or GitHub).  This provides off-site back-up and facilitates sharing your grammar and collaborating with others.  The wiki (linked above) includes information on how to set that up.  Note that Google Code can host Mercurial or Subversion repositories, and GitHub hosts Git repositories. If you do host your grammar on one of these sites, please let us know that you have, by emailing matrix-dev -at- uw.edu.</p>"
 
 Section word-order "Word Order"
 

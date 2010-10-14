@@ -12,6 +12,7 @@ import gzip
 import zipfile
 import sys
 import re
+from subprocess import call
 
 from gmcs.choices import ChoicesFile
 from gmcs.utils import TDLencode
@@ -3483,7 +3484,36 @@ def customize_roots():
   roots.add(typedef, comment)
 
 
+######################################################################
+# Version Control
+#   Use shell commands to setup Mercurial or Bazaar, if the user
+#   has specified that they want one or the other.
 
+def setup_vcs(ch, grammar_path):
+  if 'vcs' in ch:
+    from subprocess import call
+    IGNORE = open(os.devnull,'w')
+    cwd = os.getcwd()
+    os.chdir(grammar_path)
+    if ch['vcs'] == 'git':
+      call(['git', 'init'], stdout=IGNORE, stderr=IGNORE)
+      call(['git', 'add', '.'], stdout=IGNORE, stderr=IGNORE)
+      call(['git', 'commit',
+            '--author="Grammar Matrix <matrix-dev@u.washington.edu>"',
+            '-m "Initial commit."'], stdout=IGNORE, stderr=IGNORE)
+    elif ch['vcs'] == 'hg':
+      call(['hg', 'init'], stdout=IGNORE, stderr=IGNORE)
+      call(['hg', 'add'], stdout=IGNORE, stderr=IGNORE)
+      call(['hg', 'commit',
+            '-u Grammar Matrix <matrix-dev@u.washington.edu>',
+            '-m "Initial commit."'], stdout=IGNORE, stderr=IGNORE)
+    #elif ch['vcs'] == 'bzr':
+    #  call(['bzr', 'init', grammar_path])
+    #  call(['bzr', 'add', grammar_path])
+    #  call(['bzr', 'commit', '-m "Initial commit."'],
+    #       stdout=IGNORE, stderr=IGNORE)
+    os.chdir(cwd)
+    IGNORE.close()
 
 ######################################################################
 # customize_matrix(path)
@@ -3508,7 +3538,14 @@ def customize_matrix(path, arch_type):
   # Copy from matrix-core
   if os.path.exists(grammar_path):
     shutil.rmtree(grammar_path)
+  # Use the following command when python2.6 is available
+  #shutil.copytree('matrix-core', grammar_path,
+  #                ignore=shutil.ignore_patterns('.svn'))
   shutil.copytree('matrix-core', grammar_path)
+  # Since we cannot use shutil.ignore_patterns until 2.6, remove .svn dirs
+  shutil.rmtree(grammar_path + '/.svn', ignore_errors=True)
+  shutil.rmtree(grammar_path + '/lkb/.svn', ignore_errors=True)
+  shutil.rmtree(grammar_path + '/pet/.svn', ignore_errors=True)
   shutil.copy(choices_file, grammar_path) # include a copy of choices
 
   # Create TDL object for each output file
@@ -3613,6 +3650,9 @@ def customize_matrix(path, arch_type):
   lexicon.save()
   roots.save()
   version_lsp.save()
+
+  # Setup version control, if any
+  setup_vcs(ch, grammar_path)
 
   return grammar_dir
 
