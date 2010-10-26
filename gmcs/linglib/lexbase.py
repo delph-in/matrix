@@ -30,8 +30,8 @@ class MorphotacticNode(HierarchyNode):
     HierarchyNode.__init__(self, key, parents=parents)
     self.name = name or ''
     self.pc = pc
-    self.constraints = {'req-fwd':set(), 'req-bkwd':set(), 'forbid':set()}
-    self.disjunctive_flag_sets = set()
+    self.constraints = {'req-fwd':{}, 'req-bkwd':{}, 'forbid':{}}
+    self.disjunctive_flag_sets = {}
     self.flags = {'in':{},'out':{}}
     self.supertypes = supertypes or set()
     self.identifier_suffix = ''
@@ -59,19 +59,7 @@ class MorphotacticNode(HierarchyNode):
     Return True if self occurs before other. This is True if self's
     position class is among the position classes of other's input span.
     """
-    return self.pc in [o.pc for o in other.input_span()]
-
-  #def extended_input_span(self):
-  #  e_i_s = self.input_span()
-  #  e_i_s.update(dict(x for i in e_i_s
-  #                      for x in self.descendants().items()))
-  #  return e_i_s
-
-  #def generalized_input_span(self):
-  #  g_i_s = self.extended_input_span()
-  #  g_i_s.update(dict(x for i in self.input_span()
-  #                      for x in self.ancestors().items()))
-  #  return g_i_s
+    return self.pc in [o.pc for o in other.input_span().values()]
 
 class PositionClass(MorphotacticNode):
   """
@@ -95,12 +83,15 @@ class PositionClass(MorphotacticNode):
   def relate_parent_child(self, parent, child):
     return self.l_hierarchy.relate_parent_child(parent, child)
 
+  def roots(self):
+    return [n for n in self.nodes.values() if len(n.parents()) == 0]
+
   def input_span(self):
     return self.hierarchy.get_lineage(key=self.key, relation='input')
 
   def percolate_supertypes(self):
     # roots are those nodes without parents
-    roots = [n for n in self.nodes.values() if len(n.parents()) == 0]
+    roots = self.roots()
     root_sts = [r.percolate_supertypes() for r in roots]
     if len(root_sts) == 0:
       return
@@ -109,11 +100,18 @@ class PositionClass(MorphotacticNode):
     self.supertypes.update(common_sts)
     for r in roots:
       r.supertypes.difference_update(common_sts)
+    # if, after all that, the PC has no supertypes, make it generic
+    if len(self.supertypes) == 0 \
+       and self.identifier_suffix == 'lex-rule-super':
+      self.supertypes.add('lex-rule')
 
 class LexicalType(MorphotacticNode):
   def __init__(self, key, name, parents=None):
     MorphotacticNode.__init__(self, key, name=name, parents=parents)
     self.identifier_suffix = 'lex'
+
+  def __repr__(self):
+    return 'LexicalType(' + self.key + ')'
 
 class LexicalRuleType(MorphotacticNode):
   """
@@ -123,32 +121,37 @@ class LexicalRuleType(MorphotacticNode):
     MorphotacticNode.__init__(self, key, name, pc, parents, supertypes)
     self.supertypes = supertypes or set()
     self.features = {}
-    self.lris = {}
+    self.lris = []
     self.identifier_suffix = 'lex-rule'
+
+  def __repr__(self):
+    return 'LexicalRuleType(' + self.key + ')'
 
   def inputs(self):
     return self.pc.inputs
 
   def percolate_supertypes(self):
-    # Only supertypes existing in all LRIs and subtypes can be percolated
-    lri_sts = [lri.supertypes for lri in self.lris.values()]
+    # base condition: we're on a leaf type
+    if len(self.children()) == 0:
+      return self.supertypes
     # Remember to do this recursively
     lrt_sts = [c.percolate_supertypes() for c in self.children().values()]
     # func(*[list]) is the Pythonic way of making a list into function
     # parameters. so func(*[1,2]) => func(1, 2)
-    common_sts = set.intersection(*(lri_sts + lrt_sts))
+    common_sts = set.intersection(*lrt_sts)
     # now update the supertype sets
     self.supertypes.update(common_sts)
-    for lri in self.lris.values():
-      lri.supertypes.difference_update(common_sts)
     for c in self.children().values():
       c.supertypes.difference_update(common_sts)
     # for the recursive part, remember to return the updated set of supertypes
     return self.supertypes
 
-class LexicalRuleInstance(object):
-  def __init__(self, orthography, lrt, supertypes):
-    self.orthography = orthography
-    self.lrt = lrt
-    self.supertypes = supertypes
-
+  def all_supertypes(self):
+    """
+    Return the LRT's supertypes and parents or, if there are no
+    parents, the LRT's PC.
+    """
+    parents = [lrt.identifier() for lrt in self.parents().values()]
+    if len(parents) == 0:
+      parents = [self.pc.identifier()]
+    return set(parents).union(self.supertypes)

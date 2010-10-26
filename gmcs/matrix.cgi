@@ -95,11 +95,11 @@ if form_data.has_key('verbpred'):
 
 # Get a list of error messages, determined by validating the current
 # choices.  If the current choices are valid, the list will be empty.
-try:
-  vr = validate_choices(session_path + '/choices')
-except:
-  matrixdef.choices_error_page(session_path + '/choices')
-  sys.exit()
+#try:
+vr = validate_choices(session_path + '/choices')
+#except:
+#  matrixdef.choices_error_page(session_path + '/choices')
+#  sys.exit()
 
 # if the 'customize' field is defined, create a customized copy of the matrix
 # based on the current choices file

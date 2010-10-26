@@ -416,10 +416,10 @@ class ChoicesFile:
         result = result or self.has_case(feat, case)
 
     # check morphemes
-    for slotprefix in ('noun', 'verb', 'det'):
-      for slot in self.get(slotprefix + '-slot'):
-        for morph in slot.get('morph',[]):
-          for feat in morph.get('feat',[]):
+    for pcprefix in ('noun', 'verb', 'det', 'adj'):
+      for pc in self.get(pcprefix + '-pc'):
+        for lrt in pc.get('lrt',[]):
+          for feat in lrt.get('feat',[]):
             result = result or self.has_case(feat, case)
 
     self.cached_values[k] = result
@@ -508,9 +508,9 @@ class ChoicesFile:
       for feat in verb.get('feat', []):
         result = result or feat['head'] in ('higher', 'lower')
 
-    for verb_slot in self.get('verb-slot'):
-      for morph in verb_slot.get('morph',[]):
-        for feat in morph.get('feat',[]):
+    for verb_pc in self.get('verb-pc'):
+      for lrt in verb_pc.get('lrt',[]):
+        for feat in lrt.get('feat',[]):
           result = result or feat['head'] in ('higher', 'lower')
 
     return result
@@ -1773,7 +1773,9 @@ class ChoicesFile:
     Lexical rules are no longer divided into Slots and Morphs, but
     Position Classes, Lexical Rule Types, and Lexical Rule Instances,
     and LRTs can inherit from other LRTs. Some conversion already
-    occurred in preparse_convert_22_to_23().
+    occurred in preparse_convert_22_to_23(). Also, LRTs without LRIs
+    should be given a blank one (since now it is possible for LRTs
+    to exist that cannot themselves be realized).
     """
     from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
     for pc_type in LEXICAL_CATEGORIES:
@@ -1782,4 +1784,5 @@ class ChoicesFile:
         del self[pc.full_key + '_input']
         self[pc.full_key + '_inputs'] = all_inps
         for lrt in pc['lrt']:
-          lrt['supertypes'] = pc.full_key
+          if 'lri' not in lrt:
+            self[lrt.full_key + '_lri1_orth'] = ''

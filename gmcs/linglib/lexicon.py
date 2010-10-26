@@ -5,10 +5,6 @@ from gmcs.linglib.lexbase import ALL_LEX_TYPES
 from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
 from gmcs.linglib.lexbase import LEXICAL_SUPERTYPES
 
-######################
-### Access Methods ###
-######################
-
 def lexical_type_hierarchy(choices, lexical_supertype):
   if lexical_supertype not in LEXICAL_CATEGORIES:
     return None
@@ -20,9 +16,9 @@ def lexical_type_hierarchy(choices, lexical_supertype):
   if lexical_supertype == 'verb':
     if choices['has-aux'] == 'yes':
       lth.add_node(LexicalType('aux', get_lt_name('aux', choices),
-                               parents={'verb':st_node}))
+                               parents={'verb':lth.nodes['verb']}))
       lth.add_node(LexicalType('mverb', get_lt_name('mverb', choices),
-                               parents={'verb':st_node}))
+                               parents={'verb':lth.nodes['verb']}))
     st = get_lexical_supertype('iverb', choices)
     lth.add_node(LexicalType('iverb', get_lt_name('iverb', choices),
                              parents={st:lth.nodes[st]}))

@@ -62,12 +62,11 @@ class Hierarchy(object):
     if relation in self.__cache.get(node.key,{}):
       return self.__cache[node.key][relation]
     self.__cache.setdefault(node.key, {})
-    lineage = node.relatives(relation)
-    lineage.update(
-      dict(i for n in lineage.values()
+    self.__cache[node.key][relation] = node.relatives(relation)
+    self.__cache[node.key][relation].update(
+      dict(i for n in self.__cache[node.key][relation].values()
              for i in self.find_lineage(n, relation).items()))
-    self.__cache[node.key][relation] = lineage
-    return lineage
+    return self.__cache[node.key][relation]
 
   def get_ancestors(self, key=None, node=None):
     return self.get_lineage(key, node, 'parent')
