@@ -1030,7 +1030,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 22
+    return 23
 
   def convert_value(self, key, old, new):
     if key in self and self[key] == old:

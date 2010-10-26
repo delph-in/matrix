@@ -1,4 +1,5 @@
 from collections import defaultdict
+from sets import Set as set
 
 from gmcs.linglib import lexicon
 from gmcs.linglib.lexbase import (MorphotacticNode, PositionClass,
@@ -440,7 +441,7 @@ def write_flags(mylang, mn):
 def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
   copied_flags = set()
   if len(to_copy) == 0: return copied_flags
-  common_flags = set.intersection(*to_copy.values())
+  common_flags = reduce(set.intersection, to_copy.values())
   for mn_key in to_copy:
     mn = _mns[mn_key]
     # if all flags are common, none are copied here, and if the
@@ -524,9 +525,10 @@ def basic_pc_validation(choices, pc, vr):
             'not blank, otherwise it will be merged with its position class.')
 
 def lrt_validation(lrt, vr, index_feats):
-  if 'supertypes' not in lrt:
-    vr.err(lrt.full_key + '_supertypes',
-           'You must select a supertype for every lexical rule type.')
+  # No supertype means it's a root type within a PC class (no longer an error)
+  #if 'supertypes' not in lrt:
+  #  vr.err(lrt.full_key + '_supertypes',
+  #         'You must select a supertype for every lexical rule type.')
   # any features on an LR need a name and value (and head for verbs)
   for feat in lrt.get('feat', []):
     if 'name' not in feat:

@@ -1,3 +1,4 @@
+from sets import Set as set
 from gmcs.lib import Hierarchy, HierarchyNode
 
 # Base class for lexical types (lexicon.py) and lexical rules (morphotatics.py)
@@ -95,7 +96,7 @@ class PositionClass(MorphotacticNode):
     root_sts = [r.percolate_supertypes() for r in roots]
     if len(root_sts) == 0:
       return
-    common_sts = set.intersection(*root_sts)
+    common_sts = reduce(set.intersection, root_sts)
     # update the supertype sets
     self.supertypes.update(common_sts)
     for r in roots:
@@ -138,7 +139,7 @@ class LexicalRuleType(MorphotacticNode):
     lrt_sts = [c.percolate_supertypes() for c in self.children().values()]
     # func(*[list]) is the Pythonic way of making a list into function
     # parameters. so func(*[1,2]) => func(1, 2)
-    common_sts = set.intersection(*lrt_sts)
+    common_sts = reduce(set.intersection, lrt_sts)
     # now update the supertype sets
     self.supertypes.update(common_sts)
     for c in self.children().values():
