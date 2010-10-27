@@ -1,0 +1,8 @@
+n1 tverb1-obj-3fs
+n2 tverb2-obj-3fs
+n1 tverb1 n2
+n1 tverb2 n2
+n1 tverb1
+n1 tverb2
+*n1 tverb1-obj-3fs n2
+*n1 tverb2-obj-3fs n2

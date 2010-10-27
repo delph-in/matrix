@@ -1,0 +1,340 @@
+----
+jig:
+----
+
+Redundancy involving NON-FEMININE
+NON-FEMININE: NEUTER is redundant - it is an ancestor of VEGETABLE 
+
+Repairs:
+
+Changed definition of gender hierarchy to relatively
+flat, with fem and non-fem, the latter having subtypes
+masc, neut, and veg.
+
+Moved animacy out of gender and made it an "other feature"
+with possible values "anim/inam".  
+
+Changed number to sg/non-sg, with du and pl under non-sg.
+Some elements specify non-sg, others du, nothing outside
+of pronouns direclty says sg, nothing directly says pl.
+
+Initial coverage:  
+Coverage: 11/56 36.7%
+Overgeneration: 0
+Error: 39/56
+
+Problem:
+
+case slot can't take number slot as its input.  Tried fixing this by
+adding possible input for noun-slot2 and ran into ?bug with
+-lex-rule-dtr being inherited by noun-lex and the subtypes of
+noun-lex.
+
+Tried removing this:
+  noun-slot1_opt=on
+
+Still having the same error, so trying putting this one back
+in and then having noun-slot2 only take noun-slot1 as input.
+
+  noun-slot1_opt=on
+
+
+also: not getting any parses of verbs without object markers
+because subject marker slot isn't available as input for
+tense marker.  (Or maybe because object marker isn't optional?)
+Try making the tense marker take the subject marker as an
+additional possible input, and run into same -lex-rule-dtr
+bug.
+
+Not sure why this is working now, but here's the current
+state of affairs:
+
+    verb-slot3_input1_type=verb-slot2
+    verb-slot3_input2_type=verb-slot1
+
+It doesn't make sense to make the object marker optional,
+because it only applies to tverbs as input.
+
+Current competence:
+Coverage: 14/30 46.7%
+Overgeneration: 3/26 11.5%
+Error: 14/56
+
+Next issue:
+
+Missing lexical entry for ngiji/see.  Added like this:
+
+    verb1_stem2_orth=ngiji
+    verb1_stem2_pred=_see_v_rel
+
+
+But that's still not enough. Tried making obj marker (which
+apparently comes after the subject marker in these examples)
+take subject marker rules as input, but that runs into problems
+with the tense lex rules which don't want obj marker input.
+... because of this:
+
+    verb-slot3_input1_type=verb-slot2
+    verb-slot3_input1_type=verb-slot1
+
+changed to:
+
+    verb-slot3_input1_type=verb-slot2
+    verb-slot3_input2_type=verb-slot1
+
+That fixed three errors, all on ungrammatical examples.  In fact,
+all remaining errors are on ungrammatical examples, and the changes
+noted above also increased ambiguity.  So maybe they are actually
+regressions. *** Check this ***
+
+Next issue:
+
+-rni (and probably other case markers) weren't taking
+pronouns as input.  Tried fixing like this:
+
+    noun-slot2_input2_type=noun4
+    noun-slot2_input3_type=noun5
+    noun-slot2_input4_type=noun6
+    noun-slot2_input5_type=noun7
+    noun-slot2_input6_type=noun8
+    noun-slot2_input7_type=noun9
+    noun-slot2_input8_type=noun10
+    noun-slot2_input9_type=noun11
+
+Competence:
+
+Coverage: 25/30 83.3%
+Overgeneration: 6/26 23.1%
+Error: 10/56
+
+
+Next issue:
+
+Overgeneration of 1/2 subject agreement markers with
+3rd person subjects.  The problem here is that the
+common nouns weren't specified as third person in the
+choices file.  Fixed like this (for each of noun1-3):
+
+    noun1_feat2_name=pernum
+    noun1_feat2_value=3rd
+
+Resulting comptence figures:
+
+Coverage: 25/30 = 83.3%
+Overgeneration: 4/26 = 15.4%
+Error: 10/56
+
+Next issue:
+
+There is spurious ambiguity in the current jig grammar because the
+tense lexical rules can take the verb as a daughter directly.  This
+looks like a customization bug (from the choices file, I don't think
+this should happen).  In addition, however, the object markers are
+effectively optional, and I don't think this is intended. The problem
+is that the order, when both are present/overt is
+subject-object-tense.  Since intransitives don't need object markers,
+the tense rules have to be able to attach directly to subject markers
+in the case of intransitive verbs.  BUT: With transitive verbs, the
+object markers are presumably required.  (At least, I'm guessing so.
+The ambiguity is arising because the third person objects are marked
+with zeros...)
+
+One solution is to make two sets of subject markers, one for
+transitives and one for intransitives.  Then the tense marker rules
+could attach to object markers or intranstive subject markers.  What I
+do in the Wambaya grammar (not possible through the customization
+system) is to put an zero-marked "intransitive" marker in the object
+marker slot, requiring an empty COMPS list.
+
+A complication, though, is some ungrammatical examples illustrating
+incompatibility of 1st and 2nd person subject markers with certain
+object markers.  I can't tell from the notes if this is because those
+combinations of subjects and objects are just ineffable, or if "I see
+you" would be expressed some other way.  If they are just ineffable,
+it would be simple enough to say that the object markers also put some
+constraints on the subjects of the verbs they attach to.  Another
+solution is to make separate slots for the 1sg and 2nd subject markers
+and have the object markers disallow them as input.
+
+7/14/09: use "requires" and/or "other features" to let the object
+marking rules select for the transitive verbs.  *** Interesting
+interaction *** not yet considered in the customization system:
+lexical rules that care about valence.  cf Wambaya TAM is sensitive to
+png on subject & presence/absence of object.
+
+7/29/09: "requires" didn't work because you can't select verb
+stem classes in that way (it seems), but "other features" seems to
+have worked.  I don't know why I didn't check in that version of the choices
+file, but I'm doing so now.
+
+8/05/2009 EVALUATION:
+First run: repoduced reported results in scorecard.
+Repair: typo in 'choices' (or data): word meaning 'wind' spelled differently.
+Grammar covers one more sentence.
+
+MRS parsed examples:
+MRSs look correct, there are two points I am not sure about:
+- Plural entities are DUAL + PLURAL
+- "sun" and "wind" are underspecified for number (but could be solved in choices if necessary)
+
+Analysis per phenomenon:
+subject-verb agreement:
+works, correct instances are parsed, incorrect strings are not parsed because of agreement mismatch.
+question-particle position:
+Correct, interaction between particles only being able to head head-comp, not comp-head, only taking verbal complements, and only verbs that have empty COMPS list. Last observation was tested by additional example (q-word in second position)
+object markers:
+Don't parse, because -ju cannot take a second-agreement-marker as daughter. Grammatical example does not parse, ungrammatical examples do not parse for the wrong reasons. Seems to require another repair.
+Light verbs:
+Do not work, don't know why yet.
+Coordination:
+Does not work, because light verbs do not work. I'm not sure whether light verbs are obligatory in coordinated structures, this is not tested for.
+Word Order:
+Free word order works.
+
+8/6/2009 ASF
+Looking into parse errors: 
+- problem with object markers: tense-markers cannot take arguments with a morpheme in this slot. Tried reintroducing option:
+
+    verb-slot3_input2_type=verb-slot2
+
+It is not clear from the notes when and why this was removed. Grammatical example 40 is parsed now, so are ungrammatical examples with forbidden agreement combinations. As far as I can tell, this has not been looked into in detail yet (no attempt to exclude them through choices). Despite increased overgeneration, this seems an improvement since the ungrammatical examples were excluded for the wrong reasons before.
+The other-features choices as explained above do not work, I'm not sure whether they worked before, and there is something missing in 'choices' or whether it only seemed to work, because the tense-marker could not take the second verb-slot.Maybe another solution where markers of different groups fall into different slots would work? E.g. slot for intransitive verbs and one for transitive verbs?
+Similar idea might work to make sure that interaction between subj- and obj- markers work correctly.
+
+Repair: verb-slot3_input1_type-verb-slot2
+
+slot 3 should only take slot2, rather than either slot1 or 2. This removed spurious ambiguity, and all examples are still parsed. Only interaction 2nd and 1st person is still overgenerating.
+
+LIGHT-VERBS: REPAIR1
+Examples with light-verb were not parsing because nonfinite forms where considered 'non-inflected'. Added a morphological rule that creates nonfinite verbs. Possibly, other rules should make verbs 'finite' now (though this data test does not contain ungrammatical examples that are parsed because of this additional rule). 
+
+LIGHT-VERBS: REPAIR2
+Examples with light-verbs were still not parsing, because of case missmatch of subject. There are two possibilities: either auxiliary requires ergative case, in that case 'choices' should be adapted to aux-case, or there is a typo in the test-suite, and case should be "nom". Assumming test-suite was correct, I adapted choices.
+
+8/9/2009 SS answers to questions from Antske
+
+- example 23: is it ungrammatical because of the missing ya- or the missing -nri, or both?
+It is ungrammatical because of the missing ya-
+
+- example 29 and 22 are identical, which one should be different?
+
+22 should have been different and not had the ergative suffix.  Intransitive verbs take nominative/absolutive subjects (basically the unmarked form).  Test suite changed to reflect this along with some more explanation in the comment .
+
+- is example 30 supposed to be grammatical or ungrammatical, the description says ungrammatical, the judgment grammatical, could it be a copy-paste error: it is identical to example 21?
+It should be ungrammatical (but isn't in the way it was written) the ergative marker "-rni" should have been deleted.  Test suite changed
+
+- In 33 the verb is not recognized, should ngunya-ya-yu be ngunya-nya-yu?
+The verb shouldn't be recognized here because the 3s marker "ya" should only appear if the coverbal root does not appear.  "Light verbs" such as "ju" either have a coverbal root that attaches to them or a lexical main verb that is separate from them.  If the coverbal root is not present, then the 3s marker cannot appear. If it is absent the 3s marker must appear.  Here it shouldn't appear, so I would expect the verb not to be recongnized.
+
+
+- What are 48 and 50 supposed to look like: they contain suffixes that are not attached to anything, is this what they are testing?
+In a way, it is supposed to be testing the ordering of the affixes.  Making sure that a suffix cannot appear as a prefix.  There was spacing error in 50 that fixed.
+
+- Is example 49 testing the ordering of suffixes on the verb, or something else?
+Yes this was testing the ordering of the affixes
+
+- Is example 28 grammatical or ungrammatical? The description and judgment differ.
+I think my understanding of the language changed and I changed the grammaticality judgement, but didn't change the comment.  So, the grammaticaly judgement is correct and the description is incorrect. 
+
+I found the discussion of number and agreement to be confusing because I wanted "disagreement" to exist if number existed.  But after reading through the pages a few more times I finally decided that true syntactic disagreement doesn't exist for number.  Plural trumps singular and dual trumps plural as far the semantic representation goes, but the string is not ungrammatical when the pronoun and subject/object marker do not agree in number.
+
+I changed the explanation in the test suite.
+
+- example 29 and 22 more observations: What is the case in these examples supposed to be? The choices file and some descriptions (as well as gloss in example 29) suggest the subject should have nominative case: in the examples it bears an ergative, which case is correct? If example 22 is correct, 23 most likely is not (it has different case, but according to the description it is not testing for case).
+
+The grammatical example (22) should have nominative/absolutive case for the subject and the ungrammatical one (29) should be ergative
+
+- suffix "-mind" appears as "-mindi" in example 40 and 41, should this be "-mind" as well?
+Yes.  The vowel can appear in different forms depeneding (I think) on the environment, but I meant to so the voweless form as the citation form for our purposes.
+
+Some minor points (that I could adapt, but wasn't sure whether I should touch the test-suite)
+
+- example 42,43,44 have the same glosses
+*I changed the gloss for 43 and altered 44.  It was supposed to be demonstrating that first person subject and object markers could not combine.  The second person subject marker had incorrectly b*een copied from the previous example and left.
+
+- example 17-19 have 1st person translation, instead of 2nd (what would be expected from glosses).
+Yes. Changed
+
+Choices file choices-jingulu changed so that the aux "ju" accepts subjects based on its complement and added under choices-jingulu-safiyyah.
+
+Coverage: 90%
+Overgeneration 15.4%
+
+The majority of the overgeneration is due to object marker that should not co-occur coming together.  There was one overgeneration that when looked at futher is actually a grammatical example.
+
+#Ex 26 demonstrates ungrammatical verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case.  Here the required subject marker is not present
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+marlukayilarni ngunjaiju karalu
+marluka-bila-rni ngunja-ju karalu
+old.man-dual-erg burn-do ground
+The two old men are burning the ground. 
+
+The 3s marker is not supposed to appear and since number disagreement is not really ungrammatical, this should be labeled as grammatical.  The test suite was changed to reflect this.
+
+Coverage: 90.3
+Overgeneration 12.%
+
+08/12 ASF
+
+Since there seems to be no number agreement (see notes Safiyyah above), I removed 'dual' and 'plural' from the choices file and changed the values into 2nd. Example 28 is now parsed, no spurious ambiguity or overgeneration introduced.
+
+It may possibly be more correct to remove the numbers from all agreement morphemes, but I'll leave that decision to Safiyyah.
+
+Retested introducing more than one slot to account for incompatibility of certain subject and object agreement markers. It is a trade-off between removing over-generation and introducing spurious ambiguity.
+
+<<<<<<< .mine
+I'm adding choices-jig-additional-slots, as an option where the additional slots are there (overgeneration 0%, spurious ambiguity for all examples that have a 3rd person subject or object).
+
+Description (possibly draft for the paper) of problems in morphology:
+
+In Jingulu, verbs bear both subject and object agreement markers, which generally co-occur, though some combinations are incompatible.
+The first singular subject marker may not co-occur with first or second object markers, and second person subject morphemes may not be followed by second person either.
+In principle, the matrix customization system can account for this, when separate slots are defined for subject and object markers in first and second person. Third person object morphemes may follow any subject-morpheme slot, the first person object may follow all but first singular subject, whereas the second person object only follows morphemes from the slot containing first person dual and plural and third person subjects.
+Introducing these additional slots makes the right predictions on relevant examples in our date set (hence the 100% coverage and 0% overgeneration), but it also leads to spurious ambiguity for those examples where zero markers are present.This error occurs, because when a morpheme can take more than one input slot, the customization system automatically makes these slots optional. In other words, the customization system does not allow the option that at least one of the possible outputs must occur. This bug might be the result of unclarities around the notion of 'slots'. The name suggests that it refers to the positions in which morphemes may occur, but in fact, the 'slots' represent more than that: all morphemic interactions are defined for the entire slots. In order to account for the interaction between specific subject and object markers in Jingulu, we needed to define separate slots for morphemes that occur in the same position. Since these same position morphemes cannot go occur, it is a sensible reaction for the system to make them optional rather than obligatory. What is missing is, as mentioned above, the option that in these cases at least one of the slots must be present. The implementation would be straigt-forward: all that is needed is to create a supertype of the possible slots, and force the selecting morpheme to combine with this supertype. A better solution would, however, be to allow for morphemic groups within the slots. The slots could be used to define the position of specific morphemes, and interactions between morphemes on the level of morphemic sub-groups. This would result in more straight-forward representation of the facts of the language, as well as more straight-forward implementation of interactions between morphemes. A similar phenomenon (tense markers selecting for different agreement markers) has been implemented in the sample Turkish grammar described in Fokkens, Poulson and Bender 2009.
+
+
+I'm adding choices-jig-additional-slots, as an option where the additional slots are there (overgeneration 0%, spurious ambiguity for all examples that have a 3rd person subject or object).
+
+8/9/2009 Safiyyah's response to Antske's questions
+
+Jingulu
+- in the second part of sentence 51: should the subject bear an ergative marker, or should it be nominative, like 22?
+It should be like 22.  I changed the test suite.
+
+- 30 is ungrammatical, right? In jingulu.txt it is still marked 'g', so we are counting it as a false negative.
+Yes. It should be ungrammatical.  I changed the test suite.
+
+08/20 ASF
+
+Sum up for jingulu: using the "additional slots"-option, since it has the most complete description of the phenomena in its choices.
+
+Coverage: 100%, Treebank coverage: 100%
+Overgeneration: 0%, Correctness Ungrammatical examples: 100%
+Spurious Ambiguity: 14 examples, each with 3 parses.
+Total number of examples: 54
+Grammatical: 30 - 1 (16 and 14 are identical) = 29
+Ungrammatical: 26 - 1 (11 and 38 are identical) = 25
+
+Phenomenon based analysis:
+
+Word Order      (#1-#9):        +
+Y/N questions   (#7-#9):        +
+Negation        (#10):          +
+Agreement-subj  (#11-#21):      +
+Agreement-obj                   +
+Aux/Light verbs (#22-#23):      +
+Morphology (#39-#44,#49-#50):   +/-  
+Tense/Aspect    (#45-#48):      +
+S-Coordination    (#51-#52):    +
+Case            (#53-#56):      + 
+Pers/Nr/Gen                     +
+Determiners                     n.a.
+N-coord                         n.a.
+V-coord                         n.a.
+
+ 
+
+Morphology is responsible for the spurious ambiguity.

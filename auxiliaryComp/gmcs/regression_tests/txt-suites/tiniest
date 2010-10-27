@@ -1,0 +1,9 @@
+dog slept
+cat slept
+dog cat chased
+cat dog chased
+*slept dog
+*slept cat
+*dog chased cat
+*cat chased dog
+*chased dog cat

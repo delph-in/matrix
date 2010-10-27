@@ -1,0 +1,126 @@
+version=20
+
+section=general
+language=eng-qpart-inf
+archive=no
+comment=Grammar made for debugging ticket #617.
+
+section=word-order
+word-order=svo
+has-dets=yes
+noun-det-order=det-noun
+has-aux=yes
+aux-comp-order=before
+aux-comp=vp
+multiple-aux=no
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+q-part=on
+q-part-order=after
+q-part-orth=Q
+
+section=arg-opt
+
+section=lexicon
+  noun1_name=common
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=obl
+    noun1_stem1_orth=cat
+    noun1_stem1_pred=_cat_n_rel
+    noun1_stem2_orth=dog
+    noun1_stem2_pred=_dog_n_rel
+  noun2_name=1sg-pronoun
+    noun2_feat1_name=person
+    noun2_feat1_value=1st
+    noun2_feat2_name=number
+    noun2_feat2_value=sg
+  noun2_det=imp
+    noun2_stem1_orth=I
+    noun2_stem1_pred=_pronoun_n_rel
+  noun-slot1_name=num
+  noun-slot1_order=after
+    noun-slot1_input1_type=noun1
+    noun-slot1_morph1_name=singular
+      noun-slot1_morph1_feat1_name=number
+      noun-slot1_morph1_feat1_value=sg
+    noun-slot1_morph2_name=plural
+    noun-slot1_morph2_orth=s
+      noun-slot1_morph2_feat1_name=number
+      noun-slot1_morph2_feat1_value=pl
+  verb1_name=itr
+  verb1_valence=intrans
+    verb1_stem1_orth=sleep
+    verb1_stem1_pred=_sleep_v_rel
+  verb2_name=tr
+  verb2_valence=trans
+    verb2_stem1_orth=chase
+    verb2_stem1_pred=_chase_v_rel
+  aux1_name=do
+  aux1_sem=no-pred
+  aux1_subj=np
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=nonfinite
+    aux1_stem1_orth=do
+  verb-slot1_name=pernum
+  verb-slot1_order=after
+    verb-slot1_input1_type=verb
+    verb-slot1_morph1_name=3sg
+    verb-slot1_morph1_orth=s
+      verb-slot1_morph1_feat1_name=person
+      verb-slot1_morph1_feat1_value=3rd
+      verb-slot1_morph1_feat1_head=subj
+      verb-slot1_morph1_feat2_name=number
+      verb-slot1_morph1_feat2_value=sg
+      verb-slot1_morph1_feat2_head=subj
+      verb-slot1_morph1_feat3_name=form
+      verb-slot1_morph1_feat3_value=finite
+      verb-slot1_morph1_feat3_head=verb
+    verb-slot1_morph2_name=pl
+      verb-slot1_morph2_feat1_name=number
+      verb-slot1_morph2_feat1_value=pl
+      verb-slot1_morph2_feat1_head=subj
+      verb-slot1_morph2_feat2_name=form
+      verb-slot1_morph2_feat2_value=finite
+      verb-slot1_morph2_feat2_head=verb
+    verb-slot1_morph3_name=non-3rd
+      verb-slot1_morph3_feat1_name=person
+      verb-slot1_morph3_feat1_value=1st, 2nd
+      verb-slot1_morph3_feat1_head=subj
+      verb-slot1_morph3_feat2_name=form
+      verb-slot1_morph3_feat2_value=finite
+      verb-slot1_morph3_feat2_head=verb
+    verb-slot1_morph4_name=inf
+    verb-slot1_morph4_orth=-inf
+      verb-slot1_morph4_feat1_name=form
+      verb-slot1_morph4_feat1_value=nonfinite
+      verb-slot1_morph4_feat1_head=verb
+    det1_stem1_orth=the
+    det1_stem1_pred=_def_q_rel
+
+section=test-sentences
+  sentence1_orth=the cat chases the dog
+  sentence2_orth=the dogs sleep

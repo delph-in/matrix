@@ -1,0 +1,12 @@
+n1-ABS iv
+n1-ERG tv n2-ABS
+*n1 iv
+*n1-ERG iv
+*n1 tv n2
+*n1-ABS tv n2
+*n1-ERG tv n2
+*n1 tv n2-ABS
+*n1-ABS tv n2-ABS
+*n1 tv n2-ERG
+*n1-ABS tv n2-ERG
+*n1-ERG tv n2-ERG
