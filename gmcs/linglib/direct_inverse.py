@@ -58,6 +58,8 @@ def customize_direct_inverse(choices, mylang, hierarchies):
         pc_key = 'verb-pc' + str(idx)
         choices[pc_key + '_name'] = n + '-dir-inv'
         choices[pc_key + '_inputs'] = lex.full_key
+        # We also need to reassign PCs that specify lex as an input.
+        reassign_inputs(choices, lex.full_key, pc_key)
         # The order doesn't really matter for lrules, so just put something
         choices[pc_key + '_order'] = 'suffix'
         # make the lexical type require the pc
@@ -205,3 +207,11 @@ def write_dir_inv_rule_supertypes(choices, mylang):
                    [ SC-ARGS < #1, #2 >, \
                      SYNSEM.LOCAL.CAT.VAL [ SUBJ < #2 >, \
                                             COMPS < #1 > ] ].')
+
+def reassign_inputs(choices, inp_key, pc_key):
+  for lexprefix in ALL_LEX_TYPES:
+    for pc in choices[lexprefix + '-pc']:
+      if pc.full_key == pc_key: continue
+      if inp_key in pc['inputs'].split(', '):
+        choices[pc.full_key + '_inputs'] = \
+          pc['inputs'].replace(inp_key, pc_key)

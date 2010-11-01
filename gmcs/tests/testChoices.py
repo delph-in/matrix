@@ -228,6 +228,13 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         self.assertEqual(c['abc1_def'], 2)
         self.assertEqual(c['abc1_ghi1_klm'], 3)
         self.assertEqual(c['abc1_ghi2_klm'], 4)
+        self.assertEqual(c['abc1_ghi1'].full_key, 'abc1_ghi1')
+        # also test when reassigning structures
+        c = ChoicesFile()
+        c['abc1_def1_ghi'] = 1
+        c['cba'] = c['abc']
+        self.assertEqual(c['cba1_def'].full_key, 'cba1_def')
+        self.assertEqual(c['cba1_def1_ghi'], 1)
 
     # The following functionality is not included. There are difficulties
     # with resetting values that prevent its feasibility at this time, such
@@ -591,5 +598,6 @@ section=lexicon
 section=test-sentences
 sentence1=the cat chases the dog
 sentence2=the dogs sleep'''.splitlines()
+
 if __name__ == '__main__':
     unittest.main()

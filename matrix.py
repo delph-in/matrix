@@ -122,30 +122,25 @@ def run_unit_tests():
   import unittest
   import gmcs.tests.testChoices
   import gmcs.tests.testValidate
+  import gmcs.linglib.tests.testMorphotactics
 
   def print_line():
     print 75 * '='
 
+  loader = unittest.defaultTestLoader
+  runner = unittest.TextTestRunner(verbosity=2)
+
   print_line()
   print 'Choices tests:'
-  try:
-    unittest.main(gmcs.tests.testChoices)
-  except:
-    pass
+  runner.run(loader.loadTestsFromModule(gmcs.tests.testChoices))
 
   print_line()
   print 'Validate tests:'
-  try:
-    unittest.main(gmcs.tests.testValidate)
-  except:
-    pass
+  runner.run(loader.loadTestsFromModule(gmcs.tests.testValidate))
 
-  print_line()
-  print 'Linglib/Morphotactics tests:'
-  try:
-    unittest.main(gmcs.linglib.tests.testMorphotactics)
-  except:
-    pass
+  #print_line()
+  #print 'Linglib/Morphotactics tests:'
+  #runner.run(loader.loadTestsFromModule(gmcs.linglib.tests.testMorphotactics))
 
   print_line()
 

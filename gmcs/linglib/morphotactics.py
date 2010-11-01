@@ -78,9 +78,11 @@ def valid_input(mn, pc):
   given position class. This is the case if there exists an unblocked
   path from a lexical rule instance to the position class.
   """
+  realizable_nodes = mn.nodes.values() if isinstance(mn, PositionClass) \
+                     else [mn] + mn.descendants().values()
   return any(input_path_exists(lrt, pc)
-             for lrt in mn.descendants().values()
-             if len(lrt.lris) > 0 or isinstance(lrt, LexicalType))
+             for lrt in realizable_nodes
+             if isinstance(lrt, LexicalType) or len(lrt.lris) > 0)
 
 def input_path_exists(lrt, pc):
   """
@@ -98,8 +100,10 @@ def input_path_exists(lrt, pc):
 def get_input_map(pch):
   inp_map = defaultdict(list)
   for pc in pch.nodes.values():
-    #TODO: filter impossible inputs here
-    i_s = tuple(sorted(pc.input_span().values(), key=lambda x: x.key))
+    # filter impossible inputs here
+    valid_inps = [inp for inp in pc.input_span().values()
+                  if valid_input(inp, pc)]
+    i_s = tuple(sorted(valid_inps, key=lambda x: x.key))
     if len(i_s) > 0:
       inp_map[i_s] += [pc]
   return inp_map
@@ -456,7 +460,8 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
       for flag in mn_copy_flags:
         mylang.add('''%(id)s := [ INFLECTED.%(flag)s #%(tag)s,
                                   DTR.INFLECTED.%(flag)s #%(tag)s ].''' %\
-                   {'id': mn.identifier(), 'flag': flag, 'tag': flag.lower()})
+                   {'id': mn.identifier(), 'flag': flag_name(flag),
+                    'tag': flag.lower()})
     copied_flags.update(mn_copy_flags)
   return copied_flags
 
