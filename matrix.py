@@ -24,12 +24,19 @@ def main():
       printhelp()
   try:
     if args[0] in ('c', 'customize'):
-      import gmcs.customize
-      gmcs.customize.customize_matrix(args[1], 'tgz')
+      dest = args[2] if len(args) > 2 else None
+      customize_grammar(args[1], destination=dest)
+
+    elif args[0] in ('cf', 'customize-and-flop'):
+      dest = args[2] if len(args) > 2 else None
+      customize_grammar(args[1], destination=dest, flop=True)
 
     elif args[0] in ('v', 'validate'):
+      choices_file = os.path.join(args[1], 'choices')
+      if not os.path.exists(choices_file):
+        sys.exit("Error: Choices file not found at " + choices_file)
       import gmcs.validate
-      v = gmcs.validate.validate_choices(args[1] + '/choices')
+      v = gmcs.validate.validate_choices(choices_file)
       for x in v.errors:
         print x
         print '  ', v.errors[x]
@@ -40,14 +47,22 @@ def main():
     elif args[0] in ('r', 'rtest', 'regression-test'):
       cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
                          'regression_tests/run_regression_tests.sh')
-      os.execve(cmd, [cmd] + args[1:], os.environ)
+      #Using subprocess makes it difficult to kill the process
+      # (e.g. with Ctrl-C), so we need to handle KeyboardInterrupts
+      # (or alternatively use a os.exec* function)
+      try:
+        p = subprocess.Popen([cmd] + args[1:], env=os.environ)
+        p.wait()
+      except KeyboardInterrupt:
+        print "\nProcess interrupted. Aborting regression tests.\n"
+        import signal
+        os.kill(p.pid, signal.SIGKILL)
 
     elif args[0] in ('a', 'rtest-add', 'regression-test-add'):
       choices = args[1]
       txtsuite = args[2]
       import gmcs.regression_tests.add_regression_test
       gmcs.regression_tests.add_regression_test.add(choices, txtsuite)
-
 
     elif args[0] in ('i', 'install'):
       cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
@@ -57,7 +72,7 @@ def main():
         print "Error: For installation to the live site, please use:"
         print "  matrix.py vivify"
         sys.exit(2)
-      os.execve(cmd, [cmd, '-r', '-m', location], os.environ)
+      subprocess.call([cmd, '-r', '-m', location], env=os.environ)
 
     elif args[0] == 'vivify':
       # pass the force flag in case the user wants to avoid checks
@@ -83,7 +98,12 @@ OPTIONS:
     --help (-h)                    : Print this help message.
 
 COMMANDS:
-    customize (c) PATH             : Customize the choices file at PATH.
+    customize (c) PATH [DEST]      : Customize the choices file at PATH,
+                                     with the output going to DEST (if
+                                     specified) or PATH.
+    customize-and-flop (cf) PATH [DEST]
+                                   : Customize the choices file at PATH,
+                                     then flop the resulting grammar.
     validate (v) PATH              : Validate the choices file at PATH.
     rtest (r) [TEST]               : Run regression TEST (runs all tests
                                      TEST is not specified).
@@ -113,39 +133,60 @@ def verify_force():
   print "   You have selected to skip safety checks. Please only do this in"
   print "   rare circumstances when a change is minor and urgently needed. Do"
   print "   not use this option out of impatience or laziness!"
-  if raw_input("   Do you want to continue? (y/n): ").lower() in ('y','yes'):
+  if utils.verify():
     return True
   print "   Aborted."
   sys.exit(1)
 
+def customize_grammar(directory, destination=None, flop=False):
+  """
+  Customize a grammar for the choices file at directory, and if flop
+  is True, run flop on the resulting lang-pet.tdl file in the grammar
+  directory.
+  """
+  # run this check before customizing
+  if flop and 'LOGONROOT' not in os.environ:
+    sys.exit('Error: Cannot flop grammar if LOGONROOT is not set.')
+  # customize if choices file found
+  import gmcs.customize
+  choices_file = os.path.join(directory, 'choices')
+  if not os.path.exists(choices_file):
+    sys.exit("Error: No choices file found at " + directory)
+  grammar_dir = gmcs.customize.customize_matrix(directory, 'tgz', destination)
+  # Now a grammar has been created, so we can flop it
+  if flop:
+    import gmcs.choices
+    lang = gmcs.choices.get_choice('language', choices_file)
+    pet_file = lang.lower() + '-pet.tdl'
+    if not os.path.exists(os.path.join(grammar_dir, pet_file)):
+      sys.exit("Error: " + pet_file + " not found.")
+    cmd = os.path.join(os.environ['LOGONROOT'], 'bin/flop')
+    subprocess.call([cmd, pet_file], cwd=grammar_dir, env=os.environ)
+
+
 def run_unit_tests():
   import unittest
-  import gmcs.tests.testChoices
-  import gmcs.tests.testValidate
 
   def print_line():
     print 75 * '='
 
+  loader = unittest.defaultTestLoader
+  runner = unittest.TextTestRunner(verbosity=1)
+
   print_line()
   print 'Choices tests:'
-  try:
-    unittest.main(gmcs.tests.testChoices)
-  except:
-    pass
+  import gmcs.tests.testChoices
+  runner.run(loader.loadTestsFromModule(gmcs.tests.testChoices))
 
   print_line()
   print 'Validate tests:'
-  try:
-    unittest.main(gmcs.tests.testValidate)
-  except:
-    pass
+  import gmcs.tests.testValidate
+  runner.run(loader.loadTestsFromModule(gmcs.tests.testValidate))
 
-  print_line()
-  print 'Linglib/Morphotactics tests:'
-  try:
-    unittest.main(gmcs.linglib.tests.testMorphotactics)
-  except:
-    pass
+  #print_line()
+  #print 'Linglib/Morphotactics tests:'
+  #import gmcs.linglib.tests.testMorphotactics
+  #runner.run(loader.loadTestsFromModule(gmcs.linglib.tests.testMorphotactics))
 
   print_line()
 
@@ -155,7 +196,7 @@ def vivify(force):
   #     since the last vivification.
   #  2. There are no remaining modifications not checked into SVN.
   cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
-  os.execve(cmd, [cmd, '-r', '-m', 'matrix/customize'], os.environ)
+  subprocess.call([cmd, '-r', '-m', 'matrix/customize'], env=os.environ)
 
 if __name__ == '__main__':
   main()

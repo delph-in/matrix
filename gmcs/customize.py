@@ -19,7 +19,7 @@ from gmcs.utils import TDLencode
 from gmcs.utils import get_name
 from gmcs.utils import format_comment_block
 
-from gmcs.lib import Hierarchy
+from gmcs.lib import TDLHierarchy
 
 from gmcs.linglib import morphotactics
 from gmcs.linglib import argument_optionality
@@ -127,7 +127,7 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
 
     geom_prefix = pos_geom_prefix
 
-    # The 'head' choice only appears on verb slots, and allows the user
+    # The 'head' choice only appears on verb pcs, and allows the user
     # to specify features on the subject and object as well
     h = feat.get('head','')
     if h == 'subj':
@@ -280,7 +280,7 @@ def init_case_hierarchy():
   cm = ch.get('case-marking')
   cases = ch.cases()
 
-  hier = Hierarchy('case')
+  hier = TDLHierarchy('case')
 
   # For most case patterns, just make a flat hierarchy.  For fluid-s,
   # split-n and split-v, however, a more articulated hierarchy is required.
@@ -393,110 +393,7 @@ def customize_case_adpositions():
 def customize_case():
   customize_case_type()
 
-
-# Return the number of items in the direct-inverse scale
-def direct_inverse_scale_len():
-  return len(ch.get('scale',''))
-
-
-def customize_direct_inverse():
-  if 'scale' not in ch:
-    return
-
-  mylang.add('verb :+ [ DIRECTION direction ].', section='addenda')
-  hier = Hierarchy('direction')
-  hier.add('dir', 'direction')
-  hier.add('inv', 'direction')
-  hier.save(mylang)
-
-  if ch.has_SCARGS():
-    mylang.add('word-or-lexrule :+ [ SC-ARGS list ].', section='addenda')
-    mylang.add('lex-rule :+ [ SC-ARGS #1, DTR.SC-ARGS #1 ].', section='addenda')
-
-  cases = ch.cases()
-  features = ch.features()
-
-  # Figure out which features are involved in the hierarchy
-  names = []  # feature names
-  for scale in ch.get('scale',[]):
-    for feat in scale.get('feat', []):
-      names.append(feat.get('name',''))
-
-  # Now pass through the scale, creating the direct-inverse hierarchy
-  # pairwise
-  mylang.set_section('dirinv')
-  mylang.add_literal(';;; Direct-inverse scale')
-  supertype = 'dir-inv-scale'
-  mylang.add(supertype + ' := canonical-synsem.')
-
-  scale_len = direct_inverse_scale_len()
-  for i in range(scale_len - 1):
-    values = {}  # for each feature, a set of values
-
-    # get the features on the first scale entry in this range
-    for feat in ch.get('scale')[i].get('feat', []):
-      name = feat.get('name','')
-      if name not in values:
-        values[name] = set()
-      values[name].add(feat.get('value'))
-
-    # create the left type in the pair
-    type = 'dir-inv-' + str(i+1)
-
-    mylang.add(type + ' := ' + supertype + '.')
-
-    for n in values:
-      vset = values[n]
-
-      if n == 'case':
-        new_vset = set()
-        for v in vset:
-          new_vset.add(canon_to_abbr(v, cases))
-        vset = new_vset
-
-      geom = ''
-      for f in features:
-        if f[0] == n:
-          geom = f[2]
-
-      value = hierarchies[n].get_type_covering(vset)
-      if value != n:  # don't bother if it doesn't constrain anything
-        mylang.add(type + ' := [ ' + geom + ' ' + value + ' ].')
-
-    # rest of the scale
-    values = {}
-    for scale in ch.get('scale')[i+1:]:
-      for feat in scale.get('feat', []):
-        name = feat.get('name','')
-        if name not in values:
-          values[name] = set()
-        values[name].add(feat.get('value',''))
-
-    # create the right type in the pair
-    type = 'dir-inv-non-' + str(i+1)
-
-    mylang.add(type + ' := ' + supertype + '.')
-
-    for n in values:
-      vset = values[n]
-
-      if n == 'case':
-        new_vset = set()
-        for v in vset:
-          new_vset.add(canon_to_abbr(v, cases))
-        vset = new_vset
-
-      geom = ''
-      for f in features:
-        if f[0] == n:
-          geom = f[2]
-
-      value = hierarchies[n].get_type_covering(vset)
-      if value != n:  # don't bother if it doesn't constrain anything
-        mylang.add(type + ' := [ ' + geom + ' ' + value + ' ].')
-
-    supertype = type
-
+# Note: direct inverse code is now in gmcs/linglib/direct_inverse.py
 
 ######################################################################
 # customize_person_and_number()
@@ -504,7 +401,7 @@ def customize_direct_inverse():
 #   about person and number.
 
 def init_person_hierarchy():
-  hier = Hierarchy('person')
+  hier = TDLHierarchy('person')
 
   for p in ch.persons():
     for st in p[1].split(';'):
@@ -515,7 +412,7 @@ def init_person_hierarchy():
 
 
 def init_number_hierarchy():
-  hier = Hierarchy('number')
+  hier = TDLHierarchy('number')
 
   for n in ch.numbers():
     for st in n[1].split(';'):
@@ -526,7 +423,7 @@ def init_number_hierarchy():
 
 
 def init_pernum_hierarchy():
-  hier = Hierarchy('pernum')
+  hier = TDLHierarchy('pernum')
 
   for pn in ch.pernums():
     for st in pn[1].split(';'):
@@ -556,7 +453,7 @@ def customize_person_and_number():
 #   about gender.
 
 def init_gender_hierarchy():
-  hier = Hierarchy('gender')
+  hier = TDLHierarchy('gender')
 
   for g in ch.genders():
     for st in g[1].split(';'):
@@ -581,7 +478,7 @@ def init_other_hierarchies():
   for feature in ch.get('feature',[]):
     feat = feature.get('name','')
     type = feature.get('type','')
-    hier = Hierarchy(feat, type)
+    hier = TDLHierarchy(feat, type)
 
     for value in feature.get('value', []):
       val = value.get('name')
@@ -619,7 +516,7 @@ def customize_other_features():
 # Create tense feature value hierarchies per the user's choices
 
 def init_tense_hierarchy():
-  hier = Hierarchy('tense')
+  hier = TDLHierarchy('tense')
 
   tdefn = ch.get('tense-definition')
   if tdefn:
@@ -670,7 +567,7 @@ def customize_tense():
 # Create viewpoint aspect feature value definitions per the user's choices
 
 def init_aspect_hierarchy():
-  hier = Hierarchy('aspect')
+  hier = TDLHierarchy('aspect')
 
   for aspect in ch.get('aspect',[]):
     name = aspect.get('name')
@@ -690,7 +587,7 @@ def customize_aspect():
 # Create situation aspect feature value definitions per the user's choices
 
 def init_situation_hierarchy():
-  hier = Hierarchy('situation')
+  hier = TDLHierarchy('situation')
 
   for situation in ch.get('situation',[]):
     name = situation.get('name')
@@ -2290,7 +2187,7 @@ def init_form_hierarchy():
   Adds FORM finite and nonfinte values if there are auxiliaries
   or if user specified
   """
-  hier = Hierarchy('form')
+  hier = TDLHierarchy('form')
 
   if has_auxiliaries_p() or 'noaux-fin-nf' in ch:
 
@@ -2797,586 +2694,17 @@ def customize_lexicon():
   customize_determiners()
   customize_misc_lex()
 
-
-######################################################################
-# customize_inflection(matrix_path)
-#   Create lexical rules based on the current choices
-
-def is_ltow(name, namelist=None):
-  # The simple way to find lexeme-to-word rules is by finding
-  # the last non-optional rule. This function recursively searches
-  # rules that can follow this one to find non-optional rules.
-  # This needs to be fixed: if the rules are circular, this function
-  # will recurse infintely.
-  if '_' in name:
-    name = name.replace('_', '')
-
-  namelist = namelist or []
-
-  for slot in ch.get_slots(['noun', 'verb', 'det', 'aux']):
-    opt = slot.get('opt')
-    for inp in slot.get('input',[]):
-      if name == inp.get('type'):
-        if name in namelist:
-          return False
-        if opt:
-          namelist.append(name)
-          return is_ltow(slot.full_key, namelist)
-        else:
-          return False
-
-  return True
-
-def back_to_word(name):
-  for slot in ch.get_slots(['noun', 'verb', 'det', 'aux']):
-    for constraint in slot.get('constraint',[]):
-      if constraint.get('type') == 'forces' and \
-         constraint.get('other-slot') == name:
-        #TODO: consider a chain: A forces B and B forces C.
-        return True
-
-  return False
-
-def find_basetype(slot, root_dict, root_list=None):
-  root_list = root_list or []
-  for inp in slot.get('input',[]):
-    inputtype = inp.get('type')
-    if inputtype in root_dict:
-      if inputtype not in root_list:
-        root_list.append(inputtype)
-    else:
-      root_list = find_basetype(ch[inputtype], root_dict, root_list)
-  return root_list
-
-def intermediate_rule(slot, root_dict, inp=None, depth=0, opt=False):
-  if not inp:
-    inp = get_name(slot) + '-rule-dtr'
-    mylang.add(inp + ' := avm.')
-
-  if depth and not slot.get('opt', None):
-    nonopt = True
-    return nonopt, inp
-
-  for slot_input in slot.get('input',[]):
-    i = slot_input.get('type')
-    if i not in root_dict: # if the type is another slot...
-      mylang.add(get_name(ch[i]) + '-lex-rule := ' + inp + '.')
-      if ch.get(i + '_opt'):
-        for lextype in ch[i + '_input']:
-          rec = lextype.get('type')
-          if rec not in root_dict:
-            mylang.add(get_name(ch[rec]) + '-lex-rule := ' + inp + '.')
-            opt, inp = intermediate_rule(ch[rec], root_dict, inp, depth+1, opt)
-
-  return opt, inp
-
-def alltypes(type_list, root_list):
-  return all([t in root_list for t in type_list])
-
-def sec_from_lex(lextype):
-  if 'noun' in lextype:
-    return 'nounlex'
-  elif 'verb' in lextype:
-    return 'verblex'
-  else:
-    return 'otherlex'
-
-def customize_inflection():
-  # Build a rule hierarchy for inflectional affixes.
-
-  features = ch.features()
-  cases = ch.cases()
-
-  # Create the scale governing direct-inverse marking.
-  customize_direct_inverse()
-
-  # root_dict is a dictionary mapping the choices file encodings
-  # to the actual rule names.
-  root_dict = {'noun':'noun-lex',
-               'verb':'verb-lex',
-               'iverb':'intransitive-verb-lex',
-               'tverb':'transitive-verb-lex',
-               'mverb':'main-verb-lex',
-               'det':'determiner-lex',
-               'aux':'aux-lex'}
-
-  # KAO 2008-7-18 Faking the hierarchy for now by assuming that
-  # all the verbs/auxiliaries will inherit from
-  verb_types = ['iverb', 'tverb', 'aux']
-  main_verb_types = ['iverb', 'tverb',]
-
-  # Direct-Inverse stuff
-  # root_dict = {}
-  for lexprefix in ('noun', 'verb', 'det', 'aux'):
-    for lex in ch[lexprefix]:
-      p = lex.full_key
-      n = get_name(lex)
-      if p in root_dict: # What does this do and when would it execute?
-        continue
-      l = lexprefix
-      if l == 'det':
-        l = 'determiner'
-
-      # If the lexical type is a direct-inverse verb, later rules
-      # should use its mandatory rules as input rather than the
-      # lexical type.  Create those rules here and put their supertype
-      # in the root_dict.
-      if lexprefix == 'verb' and lex.get('valence').endswith('dirinv'):
-        ltow = is_ltow(p)
-        if ltow:
-          super_type = 'const-ltow-rule'
-        else:
-          super_type = 'const-ltol-rule & add-only-no-ccont-rule'
-
-        direc_geom = ''
-        for f in features:
-          if f[0] == 'direction':
-            direc_geom = f[2]
-
-        rule_type = n + '-dir-inv-lex-rule'
-        input_type = n + '-verb-lex'
-        mylang.set_section('dirinv')
-        mylang.add_literal(';;; Direct-inverse lexical rules')
-        mylang.add(
-          rule_type + ' := ' + super_type + ' & ' + \
-          '[ DTR ' + input_type + ' ].')
-        mylang.add(input_type + ' := [ INFLECTED - ].', section='verblex')
-
-        super_type = rule_type
-
-        for direc in ['dir', 'inv']:
-          direc_type = n + '-' + direc + '-lex-rule'
-          mylang.add(direc_type + ' := ' + super_type + ' &' + \
-                     '[ SYNSEM.' + direc_geom + ' ' + direc + ' ].')
-          if ch.has_SCARGS():
-            if direc == 'dir':
-              mylang.add(direc_type + ' := \
-                           [ SC-ARGS < #1, #2 >, \
-                             SYNSEM.LOCAL.CAT.VAL [ SUBJ < #1 >, \
-                                                    COMPS < #2 > ] ].')
-            else:
-              mylang.add(direc_type + ' := \
-                           [ SC-ARGS < #1, #2 >, \
-                             SYNSEM.LOCAL.CAT.VAL [ SUBJ < #2 >, \
-                                                    COMPS < #1 > ] ].')
-
-          size = direct_inverse_scale_len()
-          i = 1
-          equal = ch.get('scale-equal')
-
-          while i <= size:
-            if i == size and not (equal == 'direct' and direc == 'dir'):
-              break
-
-            rule_type = direc_type + '-' + str(i)
-
-            if equal == 'direct' and direc == 'dir':
-              if i == 1:
-                hi_type = 'dir-inv-1'
-                lo_type = 'dir-inv-scale'
-              elif i == size:
-                hi_type = lo_type = 'dir-inv-non-' + str(i-1)
-              else:
-                hi_type = 'dir-inv-' + str(i)
-                lo_type = 'dir-inv-non-' + str(i-1)
-            else:
-              hi_type = 'dir-inv-' + str(i)
-              lo_type = 'dir-inv-non-' + str(i)
-
-            if direc == 'dir':
-              subj_type = hi_type
-              comps_type = lo_type
-            else:
-              subj_type = lo_type
-              comps_type = hi_type
-
-            mylang.add(
-              rule_type + ' := ' + direc_type + ' &' + \
-              '[ SYNSEM.LOCAL.CAT.VAL [ SUBJ < ' + subj_type + ' >,' + \
-              '                         COMPS < ' + comps_type + ' > ] ].')
-            lrules.add(
-              n + '-' + direc + '-' + str(i+1) + ' := ' + rule_type + '.')
-
-            i += 1
-
-        root_dict[p] = n + '-dir-inv-lex-rule'
-      else:
-        root_dict[p] = n + '-' + l + '-lex'
-
-  # reqs1, reqs2, reqd, and tracker are all used to keep track
-  # of non-consecutive dependencies between paradigms.
-  reqs1 = {}
-  reqs2 = {}
-  reqd = []
-  tracker = False
-
-  mylang.set_section('lexrules')
-
-  # Big main loop to iterate over all the slots
-  for slotprefix in ['noun', 'verb', 'det', 'aux']:
-    for slot in ch.get_slots([slotprefix]):
-      order = slot.get('order')
-      opt = slot.get('opt')
-      name = get_name(slot)
-
-      if order == 'before':
-        aff = 'prefix'
-      else:
-        aff = 'suffix'
-      basetype = []  # list of roots this affix can attach to
-
-      # populate the basetype list with the appropriate values
-      root_list = find_basetype(slot, root_dict, [])
-      if has_auxiliaries_p():
-        if alltypes(verb_types, root_list):
-          root_list.append('verb')
-        if alltypes(main_verb_types, root_list):
-          root_list.append('mverb')
-      else:
-        if alltypes(main_verb_types, root_list):
-          root_list.append('verb')
-
-      for r in root_list:
-        if 'verb' in root_list and r in verb_types:
-          continue
-        elif 'mverb' in root_list and r in main_verb_types:
-          continue
-        basetype.append(root_dict[r])
-
-      # Single Input
-      if len(slot.get('input',[])) == 1:
-        i_type = slot['input'][0].get('type')
-        # If the single daughter is a root, set input to the root name
-        if i_type in root_dict:
-          inp = root_dict[i_type]
-          basetype.append(root_dict[i_type])
-        else:
-          # If the single input is optional, build an intermediate
-          # rule for it and its input values, and set inp to the
-          # intermediate rule type
-          if ch.get(i_type+'_opt'):
-            non_opt, inp = intermediate_rule(slot, root_dict)
-            # non_opt tracks if there is a non-optional rule that occurs
-            # between this rule and the basetype. If not, we need all the
-            # basetypes to inherit from the intermediate rule as well.
-            if not non_opt:
-              for bt in basetype:
-                mylang.add(bt+' := '+inp+'.', section=sec_from_lex(bt))
-          # If the single input is non-optional, make it the input value.
-          else:
-            inp = get_name(ch[i_type]) + '-lex-rule'
-      # Multiple inputs
-      else:
-        # Build an intermediate rule
-        non_opt, inp = intermediate_rule(slot, root_dict)
-        # If no intervening non-optional rules, have the basetype(s)
-        # inherit from the intermediate rule.
-        if not non_opt:
-          for bt in basetype:
-            mylang.add(bt+' := '+inp+'.', section=sec_from_lex(bt))
-
-      # If this rule forces another rule to follow it, then we need
-      # to define word-to-lexeme rule for this grammar.
-      wtol = False
-      for constraint in slot.get('constraint',[]):
-        if constraint.get('type') == 'forces' and is_already_word(slot):
-          wtol = True
-      if wtol:
-        mylang.add('word-to-lexeme-rule := lex-rule &\
-                      [INFLECTED -, DTR.INFLECTED +].')
-
-      # lexeme-to-word rule?
-      ltow = (not opt and is_ltow(slot.full_key))
-      # satisfy a previous word-to-lexeme rule?
-      wtoltow = back_to_word(slot.full_key)
-      const = False
-      subrules = 0
-      morph_orth = ''
-
-
-      # ERB 2009-07-01 Decide if we're talking about a rule that
-      # is only adding information. FIXME: This is a band-aid to
-      # get negation to work properly and needs to be refactored.
-
-      addonlyltow = (not neginflrule(slot, features))
-
-      # Iterate over the morphemes and their features to see if any
-      # element of the paradigm should be a constant-lex-rule, to
-      # count up the number of subrules, and to see if any of the
-      # morphemes mark case.
-      #
-
-      synth_cases = []
-      if 'case' in [f['name'] for m in slot.get('morph',[])
-                              for f in m.get('feat',[])] and \
-         ch.has_mixed_case():
-        for c in cases:
-          if ch.has_adp_case(c[0]):
-            const = True
-            synth_cases += [ c[0] ]
-
-      # Need to specify whether each rule is ltol, ltow, or wtol AND
-      # whether the rule is constant or inflecting. Trying to put as much
-      # information in the supertype as possible.
-
-      # Specify information for supertype
-      if ltow or wtoltow:
-        if const:
-          if subrules > 0:
-            mylang.add(name+'-lex-rule := lexeme-to-word-rule & \
-            [DTR ' + inp + '].')
-          else:
-            mylang.add(name+'-lex-rule := const-ltow-rule & \
-            [DTR ' + inp + '].')
-        else:
-          mylang.add(name+'-lex-rule := infl-ltow-rule & \
-          [DTR ' + inp + '].')
-        if basetype:
-          for bt in basetype:
-            mylang.add(bt+ ' := [INFLECTED -].', section=sec_from_lex(bt))
-        #ERB 2009-07-01 Add in add-only-no-ccont-rule if needed,
-        #but cont-change-only-rule for negation.
-        #Adding this here because it used to be part of lexeme-to-word-rule
-        #and I've changed matrix.tdl.  FIXME: This is needs to be refactored.
-        #While refactoring: note that we should use matrix-provided
-        #subtypes where available, I think, like infl-cont-change-only-lex-rule.
-        if neginflrule(slot, features):
-          mylang.add(name+'-lex-rule := cont-change-only-lex-rule & \
-             [DTR ' + inp + '].')
-        else:
-          mylang.add(name+'-lex-rule := add-only-no-ccont-rule & \
-             [DTR ' + inp + '].')
-
-      elif wtol:
-        if const:
-          if subrules > 0:
-            mylang.add(name+'-lex-rule := word-to-lexeme-rule &\
-            [DTR ' + inp + '].')
-          else:
-            mylang.add(name+'-lex-rule := word-to-lexeme-rule & constant-lex-rule &\
-            [DTR ' + inp + '].')
-        else:
-          mylang.add(name+'-lex-rule := word-to-lexeme-rule & inflecting-lex-rule &\
-          [DTR ' + inp + '].')
-
-      else:
-        if const:
-          if subrules > 0:
-            mylang.add(name+'-lex-rule := lexeme-to-lexeme-rule & \
-                                          add-only-no-ccont-rule & \
-            [DTR ' + inp + '].')
-          else:
-            mylang.add(name+'-lex-rule := const-add-only-no-ccont-ltol-rule & \
-            [DTR ' + inp + '].')
-        else:
-          if neginflrule(slot, features):
-            mylang.add(name+'-lex-rule := infl-cont-change-only-ltol-rule & \
-             [DTR ' + inp + '].')
-          else:
-            mylang.add(name+'-lex-rule := infl-add-only-no-ccont-ltol-rule & \
-             [DTR ' + inp + '].')
-
-      # Specify for subtypes, if any
-      if subrules > 0:
-        for morph in slot['morph']:
-          morphname = morph.get('name')
-          if not morphname:
-            if name:
-              morphname = name + '-morph' + str(morph.iter_num())
-            else:
-              morphname = get_name(morph)
-
-          # The lexical type and the super-type names
-          ltype = morphname + '-lex-rule'
-          stype = name + '-lex-rule'
-
-          # Create appropriate sub-rule for the morpheme
-          if morph.get('orth','') == '':
-            if ltow:
-              mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
-            elif wtol:
-              mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
-            else:
-              mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
-            lrules.add(morphname + '-lex := ' + ltype + '.')
-          else:
-            if const:
-              if ltow:
-                mylang.add(ltype + ' := infl-ltow-rule & ' + stype + '.')
-              elif wtol:
-                mylang.add(ltype + ' := inflecting-lex-rule & ' + stype + '.')
-              else:
-                mylang.add(ltype + ' := infl-ltol-rule & ' + stype + '.')
-            elif morphname != name:
-              mylang.add(ltype + ' := ' + stype + '.')
-            add_irule(morphname + '-' + aff,
-                      ltype,
-                      aff,
-                      morph.get('orth',''))
-
-          # Apply the features to the lexical rule
-          customize_feature_values(morph, ltype, slotprefix, features, cases)
-
-        # Synthesize any necessary const case-marking rules
-        if synth_cases:
-          geom = ''
-          for f in features:
-            if f[0] == 'case':
-              geom = f[2]
-
-          # create a rule for each case that needs it
-          for c in synth_cases:
-            morphname = name + '-synth-' + c
-            ltype = morphname + '-lex-rule'
-            if ltow:
-              mylang.add(ltype + ' := const-ltow-rule & ' + stype + '.')
-            elif wtol:
-              mylang.add(ltype + ' := constant-lex-rule & ' + stype + '.')
-            else:
-              mylang.add(ltype + ' := const-ltol-rule & ' + stype + '.')
-            lrules.add(morphname + '-lex := ' + ltype + '.')
-
-            abbr = canon_to_abbr(c, cases)
-            mylang.add(ltype + ' := [ SYNSEM.' + geom + ' ' + abbr + ' ].')
-            mylang.add(ltype + ' := [ SYNSEM.' + geom + '-MARKED - ].')
-      else:
-        if const:
-          lrules.add(name + '-lex := ' + name + '-lex-rule.')
-        else:
-          add_irule(name + '-' + aff,
-                    name + '-lex-rule',
-                    aff,
-                    morph_orth)
-
-      # Keep track of non-consecutive requirements
-      reqs1, reqd = req(slot, basetype, reqs1, reqd, tracker, 'req')
-      reqs2, reqd = req(slot, basetype, reqs2, reqd, tracker, 'disreq')
-
-  # For rules that have requirements, we need to copy up all the other
-  # TRACK information
-  add_single_tracks(reqs1, reqd, 'req')
-  add_single_tracks(reqs2, reqd, 'disreq')
-
-  # For all other rules, copy up the whole TRACK feature
-  if reqd:
-    copy_all_tracks(reqd)
-
-
-def req(slot, basetype, reqs, reqd, tracker, reqtype):
-  stype = slot.full_key # slot type
-  name = "T-" + get_name(slot)
-
-  seen_reqtype = False
-  for constraint in slot.get('constraint',[]):
-    if constraint.get('type','') == reqtype:
-      if not seen_reqtype:
-        seen_reqtype = True
-
-        # Keep track of rules having non-consecutive co-occurence constraints
-        reqs[stype] = []
-        reqd.append(stype)
-
-        # If this is the first rule that has a TRACK requirement, we need
-        # to add the feature TRACK
-        if not tracker:
-          mylang.add('track := avm.')
-          mylang.add('word-or-lexrule :+ [TRACK track].', section='addenda')
-          tracker = True
-
-      # Keep track of which rules have been constrained
-      other = constraint.get('other-slot','')
-      reqd.append(other)
-      reqs[stype].append(other)
-
-      # Add a feature to track corresponding to this rule.
-      mylang.add('track := [' + name + ' bool].')
-
-      # Set the root type(s) as having the track feature corresponding
-      # to this rule as + or -
-      if reqtype == 'req':
-        val = '-'
-      elif reqtype == 'disreq':
-        val = '+'
-
-      for bt in basetype:
-        mylang.add(bt + ':= [TRACK.' + name + ' ' + val + ' ].')
-
-  return reqs, reqd
-
-def add_single_tracks(reqs, reqd, reqtype):
-  # Begin iterating over slots
-  for slot in ch.get_slots(['noun', 'verb', 'det', 'aux']):
-    name = get_name(slot)
-    tname = "T-"+name
-    # We only need to do this for rules with TRACK constraints.
-    if slot.full_key not in reqs:
-      continue
-    # Start a second slot loop
-    for slot2 in ch.get_slots(['noun', 'verb', 'det', 'aux']):
-      # Skip this slot if it's the same as the one in the outer loop.
-      if slot2.full_key == slot.full_key:
-        continue
-      name2 = get_name(ch[slot2.full_key])
-      # If the inner-loop rule sets or fulfills a constraint on the
-      # outer-loop rule constrain the TRACK values of each rule as
-      # appropriate.
-      if slot2.full_key in reqs[slot.full_key]:
-        if reqtype == 'req':
-          mylang.add(name+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
-          mylang.add(name2+'-lex-rule := [TRACK.'+tname+' +, DTR.TRACK.'+tname+' -].')
-        elif reqtype == 'disreq':
-          mylang.add(name+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
-          mylang.add(name2+'-lex-rule := [TRACK.'+tname+' -, DTR.TRACK.'+tname+' +].')
-      # If this rule doesn't have anything to say about the outer-loop
-      # rule, but has TRACK constraints for other rules, we need to
-      # copy up the TRACK feature corresponding to the outer-loop
-      # rule.
-      elif slot2.full_key in reqs or slot2.full_key in reqd:
-        mylang.add(name2+'-lex-rule := [TRACK.'+tname+' #track, DTR.TRACK.'+tname+' #track].')
-
-def copy_all_tracks(reqd):
-  # If a grammar makes use of the TRACK feature, inflectional rules
-  # that don't have anything to say about the contents of TRACK need
-  # to copy the whole TRACK feature up unchanged.
-  for slot in ch.get_slots(['noun', 'verb', 'det', 'aux']):
-    name = get_name(slot)
-    if slot.full_key not in reqd:
-      mylang.add(name + '-lex-rule := [TRACK #track, \
-      DTR.TRACK #track].')
-
-def neginflrule(slot, features):
-  # ERB 2009-01-23
-  # Subroutine for determining if the rule at hand is the type
-  # that needs to add negative semantics (negative inflection lex rule)
-  # FIXME: For now assuming that negation will always be in a slot
-  # by itself, so that if one morpheme in a slot needs to be a
-  # cont-change-only-lex-rule, they all do.  This is wrong, but fixing
-  # it properly requires refactoring the morphotactic code, I'm afraid.
-  # Where this is currently being called, it seems to be inside another
-  # iter_begin(), and so the prefix is already set appropriately.
-  # Check whether this is so when using this function in new contexts.
-  result = False
-  for morph in slot.get('morph',[]):
-    for feat in morph.get('feat',[]):
-      name = feat.get('name','')
-      value = feat.get('value','')
-      if (name == 'negation' and value == 'plus'):
-        result = True
-
-  return result
-
-
 ######################################################################
 # customize_test_sentences(grammar_path)
 #   Create the script file entries for the user's test sentences.
 
 def customize_test_sentences(grammar_path):
   try:
-    b = open(grammar_path + 'lkb/script', 'r')
+    b = open(os.path.join(grammar_path, 'lkb/script'), 'r')
     lines = b.readlines()
     b.close()
-    s = open(grammar_path + 'lkb/script', 'w')
-    ts = open(grammar_path + 'test_sentences', 'w')
+    s = open(os.path.join(grammar_path, 'lkb/script'), 'w')
+    ts = open(os.path.join(grammar_path, 'test_sentences'), 'w')
     for l in lines:
       l = l.strip()
       if l == ';;; Modules: Default sentences':
@@ -3397,10 +2725,10 @@ def customize_test_sentences(grammar_path):
 
 def customize_script(grammar_path):
   try:
-    b = open(grammar_path + 'lkb/script', 'r')
+    b = open(os.path.join(grammar_path, 'lkb/script'), 'r')
     lines = b.readlines()
     b.close()
-    s = open(grammar_path + 'lkb/script', 'w')
+    s = open(os.path.join(grammar_path, 'lkb/script'), 'w')
     for l in lines:
       l = l.strip()
       if l == ';;; Modules: LOAD my_language.tdl':
@@ -3422,7 +2750,7 @@ def customize_pettdl(grammar_path):
     lines = p_in.readlines()
     p_in.close()
     myl = ch.get('language').lower()
-    p_out = open(grammar_path + myl + '-pet.tdl', 'w')
+    p_out = open(os.path.join(grammar_path, myl + '-pet.tdl'), 'w')
     for l in lines:
       l = l.strip()
       p_out.write(l + '\n')
@@ -3521,8 +2849,8 @@ def setup_vcs(ch, grammar_path):
 #   the choices file in the directory 'path'.  This function
 #   assumes that validation of the choices has already occurred.
 
-def customize_matrix(path, arch_type):
-  choices_file = path + '/choices'
+def customize_matrix(path, arch_type, destination=None):
+  choices_file = os.path.join(path, 'choices')
   global ch
   ch = ChoicesFile(choices_file)
 
@@ -3533,7 +2861,9 @@ def customize_matrix(path, arch_type):
   else:
     grammar_dir = language.lower()
 
-  grammar_path = path + '/' + grammar_dir + '/'
+  # if no destination dir is specified, just use path
+  destination = destination or path
+  grammar_path = os.path.join(destination, grammar_dir)
 
   # Copy from matrix-core
   if os.path.exists(grammar_path):
@@ -3543,14 +2873,14 @@ def customize_matrix(path, arch_type):
   #                ignore=shutil.ignore_patterns('.svn'))
   shutil.copytree('matrix-core', grammar_path)
   # Since we cannot use shutil.ignore_patterns until 2.6, remove .svn dirs
-  shutil.rmtree(grammar_path + '/.svn', ignore_errors=True)
-  shutil.rmtree(grammar_path + '/lkb/.svn', ignore_errors=True)
-  shutil.rmtree(grammar_path + '/pet/.svn', ignore_errors=True)
+  shutil.rmtree(os.path.join(grammar_path, '.svn'), ignore_errors=True)
+  shutil.rmtree(os.path.join(grammar_path, 'lkb/.svn'), ignore_errors=True)
+  shutil.rmtree(os.path.join(grammar_path, 'pet/.svn'), ignore_errors=True)
   shutil.copy(choices_file, grammar_path) # include a copy of choices
 
   # Create TDL object for each output file
   global mylang, rules, irules, lrules, lexicon, roots
-  mylang =  tdl.TDLfile(grammar_path + language.lower() + '.tdl')
+  mylang =  tdl.TDLfile(os.path.join(grammar_path, language.lower() + '.tdl'))
   mylang.define_sections([['addenda', 'Matrix Type Addenda', True, False],
                           ['features', 'Features', True, False],
                           ['dirinv', 'Direct-Inverse', True, False],
@@ -3562,11 +2892,11 @@ def customize_matrix(path, arch_type):
                           ['lexrules', 'Lexical Rules', True, False],
                           ['phrases', 'Phrasal Types', True, False],
                           ['coord', 'Coordination', True, False]])
-  rules =   tdl.TDLfile(grammar_path + 'rules.tdl')
-  irules =  tdl.TDLfile(grammar_path + 'irules.tdl')
-  lrules =  tdl.TDLfile(grammar_path + 'lrules.tdl')
-  lexicon = tdl.TDLfile(grammar_path + 'lexicon.tdl', False)
-  roots =   tdl.TDLfile(grammar_path + 'roots.tdl')
+  rules =   tdl.TDLfile(os.path.join(grammar_path, 'rules.tdl'))
+  irules =  tdl.TDLfile(os.path.join(grammar_path, 'irules.tdl'))
+  lrules =  tdl.TDLfile(os.path.join(grammar_path, 'lrules.tdl'))
+  lexicon = tdl.TDLfile(os.path.join(grammar_path, 'lexicon.tdl'), False)
+  roots =   tdl.TDLfile(os.path.join(grammar_path, 'roots.tdl'))
 
   # date/time
   try:
@@ -3594,7 +2924,7 @@ def customize_matrix(path, arch_type):
   # BUT, put the date/time of the Matrix version in Version.lsp (along
   # with the name of the language.
   global version_lsp
-  version_lsp = tdl.TDLfile(grammar_path + 'Version.lsp')
+  version_lsp = tdl.TDLfile(os.path.join(grammar_path, 'Version.lsp'))
 
   version_lsp.add_literal('(in-package :common-lisp-user)\n\n' +
                           '(defparameter *grammar-version* \"' +
@@ -3620,8 +2950,8 @@ def customize_matrix(path, arch_type):
   direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
   # for now, we customize inflection and feature values separately
   to_cfv = morphotactics.customize_inflection(ch, mylang, irules, lrules)
-  for (slot_key, type_id, slot_kind) in to_cfv:
-    customize_feature_values(ch[slot_key], type_id, slot_kind)
+  for (pc_key, type_id, pos) in to_cfv:
+    customize_feature_values(ch[pc_key], type_id, pos)
 
   # Call the other customization functions
   customize_case()
@@ -3654,7 +2984,7 @@ def customize_matrix(path, arch_type):
   # Setup version control, if any
   setup_vcs(ch, grammar_path)
 
-  return grammar_dir
+  return grammar_path
 
 
 ###############################################################

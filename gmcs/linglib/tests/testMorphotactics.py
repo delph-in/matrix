@@ -1,6 +1,6 @@
 import unittest
-import choices
-from linglib import morphotactics
+from gmcs import choices
+from gmcs.linglib import morphotactics
 
 class TestMorphotactics(unittest.TestCase):
   def test_is_slot(self):

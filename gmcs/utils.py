@@ -58,3 +58,6 @@ def format_comment_block(comment_string, max_chars=70, prefix=';;;'):
         else:
             lines[-1] += ' ' + tok
   return '\n'.join(lines)
+
+def verify():
+  return raw_input("  Do you want to continue? (y/n): ").lower() in ('y','yes')
