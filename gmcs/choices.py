@@ -80,6 +80,28 @@ class ChoiceList(ChoiceCategory, list):
     return (self.get_last().iter_num() or 0) + 1
 
 ######################################################################
+# Helper functions
+
+def get_choice(choice, choices):
+  """
+  Return the value of a choice from choice lines or a choices file.
+  The choice must be fully specified choice (not a sub-structure).
+  Returns None if the choice does not result in a value.
+  """
+  choice_lines = choices
+  if type(choices) is str:
+    choice_lines = open(choices).readlines()
+  elif type(choices) is file:
+    choice_lines = choices.readlines()
+
+  for line in [l.strip() for l in choice_lines if '=' in l]:
+    key, val = line.split('=')
+    if key == choice:
+      return val
+  return None
+
+
+######################################################################
 # ChoicesFile is a class that wraps the choices file, a list of
 # variables and values, and provides methods for loading, accessing,
 # and saving them.
@@ -117,23 +139,12 @@ class ChoicesFile:
     and postparse on the object, we must do them separately.
     """
     # attempt to get version first, since preparse_uprev() needs it
-    self.version = self.get_version(choice_lines)
+    self.version = int(get_choice('version', choice_lines)) or 0
     # some key-values cannot be parsed by the current system, so
     # we need to handle these first
     choice_lines = self.preparse_uprev(choice_lines)
     self.choices = self.parse_choices(choice_lines)
     self.postparse_uprev()
-
-  def get_version(self, choice_lines):
-    """
-    Return the version number from the choices file, or 0 if there was none.
-    """
-    version = 0
-    for line in [l.strip() for l in choice_lines if l.strip() != '']:
-      if line.startswith('version'):
-        version = int(line.split('=',1)[1])
-        break
-    return version
 
   def parse_choices(self, choice_lines):
     """
@@ -321,9 +332,6 @@ class ChoicesFile:
   ############################################################################
   ### Up-revisioning handler
 
-  def uprev(self, choice_lines):
-    pass
-
   def preparse_uprev(self, choice_lines):
     """
     Convert choices file lines before they are parsed. A choice can be
@@ -414,13 +422,6 @@ class ChoicesFile:
 
   def clear_cached_values(self):
     self.cached_values = {}
-
-  ######################################################################
-  # Helper functions for interacting with choices
-
-  def split_multiselect_value(self, key):
-    """ Return a list of MultiSelect values delimited by ', '. """
-    return ', '.split(self[key])
 
   ######################################################################
   # Methods for accessing "derived" values -- that is, groups of values

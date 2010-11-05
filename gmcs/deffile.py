@@ -393,7 +393,7 @@ def make_tgz(dir):
 def add_zip_files(z, dir):
   files = os.listdir(dir)
   for f in files:
-    cur = dir + '/' + f
+    cur = os.path.join(dir, f)
     if os.path.isdir(cur):
       add_zip_files(z, cur)
     else:
@@ -935,14 +935,11 @@ class MatrixDefFile:
       arch_file = grammar_dir + '.tar.gz'
     else:
       arch_file = grammar_dir + '.zip'
-    old_dir = os.getcwd()
-    os.chdir(session_path)
     if arch_type == 'tgz':
       make_tgz(grammar_dir)
     else:
       make_zip(grammar_dir)
-    os.chdir(old_dir)
-    print HTML_customprebody % (session_path + '/' + arch_file)
+    print HTML_customprebody % (arch_file)
     print HTML_postbody
 
   # Generate and print sample sentences from the customized grammar
@@ -951,9 +948,8 @@ class MatrixDefFile:
     print HTML_pretitle
     print '<title>Matrix Sample Sentences</title>'
     print HTML_posttitle
-    grammar_dir_final = os.getcwd() + '/' + session_path + '/' + grammar_dir
-    delphin_dir = os.getcwd() + '/delphin'
-    sentences = generate.get_sentences(grammar_dir_final,delphin_dir,session)
+    delphin_dir = os.path.join(os.getcwd(), 'delphin')
+    sentences = generate.get_sentences(grammar_dir, delphin_dir, session)
     print HTML_sentencesprebody
     for i in range(len(sentences)):
       long = False
@@ -1001,9 +997,12 @@ class MatrixDefFile:
     print HTML_pretitle
     print '<title>More Sentences</title>'
     print HTML_sentencesprebody
-    grammar_dir_final = os.getcwd() + '/' + session_path + '/' + grammar_dir
-    delphin_dir = os.getcwd() + '/delphin'
-    sentences,trees,mrss = generate.get_additional_sentences(grammar_dir_final,delphin_dir,verbpred, template_file,session)
+    delphin_dir = os.path.join(os.getcwd(), 'delphin')
+    sentences,trees,mrss = generate.get_additional_sentences(grammar_dir,
+                                                             delphin_dir,
+                                                             verbpred,
+                                                             template_file,
+                                                             session)
     if len(sentences) > 0:
       if sentences[0] == "#EDGE-ERROR#":
         print 'This grammar combined with this input semantics results in too large of a seach space<br>'

@@ -2700,11 +2700,11 @@ def customize_lexicon():
 
 def customize_test_sentences(grammar_path):
   try:
-    b = open(grammar_path + 'lkb/script', 'r')
+    b = open(os.path.join(grammar_path, 'lkb/script'), 'r')
     lines = b.readlines()
     b.close()
-    s = open(grammar_path + 'lkb/script', 'w')
-    ts = open(grammar_path + 'test_sentences', 'w')
+    s = open(os.path.join(grammar_path, 'lkb/script'), 'w')
+    ts = open(os.path.join(grammar_path, 'test_sentences'), 'w')
     for l in lines:
       l = l.strip()
       if l == ';;; Modules: Default sentences':
@@ -2725,10 +2725,10 @@ def customize_test_sentences(grammar_path):
 
 def customize_script(grammar_path):
   try:
-    b = open(grammar_path + 'lkb/script', 'r')
+    b = open(os.path.join(grammar_path, 'lkb/script'), 'r')
     lines = b.readlines()
     b.close()
-    s = open(grammar_path + 'lkb/script', 'w')
+    s = open(os.path.join(grammar_path, 'lkb/script'), 'w')
     for l in lines:
       l = l.strip()
       if l == ';;; Modules: LOAD my_language.tdl':
@@ -2750,7 +2750,7 @@ def customize_pettdl(grammar_path):
     lines = p_in.readlines()
     p_in.close()
     myl = ch.get('language').lower()
-    p_out = open(grammar_path + myl + '-pet.tdl', 'w')
+    p_out = open(os.path.join(grammar_path, myl + '-pet.tdl'), 'w')
     for l in lines:
       l = l.strip()
       p_out.write(l + '\n')
@@ -2849,8 +2849,8 @@ def setup_vcs(ch, grammar_path):
 #   the choices file in the directory 'path'.  This function
 #   assumes that validation of the choices has already occurred.
 
-def customize_matrix(path, arch_type):
-  choices_file = path + '/choices'
+def customize_matrix(path, arch_type, destination=None):
+  choices_file = os.path.join(path, 'choices')
   global ch
   ch = ChoicesFile(choices_file)
 
@@ -2861,7 +2861,9 @@ def customize_matrix(path, arch_type):
   else:
     grammar_dir = language.lower()
 
-  grammar_path = path + '/' + grammar_dir + '/'
+  # if no destination dir is specified, just use path
+  destination = destination or path
+  grammar_path = os.path.join(destination, grammar_dir)
 
   # Copy from matrix-core
   if os.path.exists(grammar_path):
@@ -2871,14 +2873,14 @@ def customize_matrix(path, arch_type):
   #                ignore=shutil.ignore_patterns('.svn'))
   shutil.copytree('matrix-core', grammar_path)
   # Since we cannot use shutil.ignore_patterns until 2.6, remove .svn dirs
-  shutil.rmtree(grammar_path + '/.svn', ignore_errors=True)
-  shutil.rmtree(grammar_path + '/lkb/.svn', ignore_errors=True)
-  shutil.rmtree(grammar_path + '/pet/.svn', ignore_errors=True)
+  shutil.rmtree(os.path.join(grammar_path, '/.svn'), ignore_errors=True)
+  shutil.rmtree(os.path.join(grammar_path, '/lkb/.svn'), ignore_errors=True)
+  shutil.rmtree(os.path.join(grammar_path, '/pet/.svn'), ignore_errors=True)
   shutil.copy(choices_file, grammar_path) # include a copy of choices
 
   # Create TDL object for each output file
   global mylang, rules, irules, lrules, lexicon, roots
-  mylang =  tdl.TDLfile(grammar_path + language.lower() + '.tdl')
+  mylang =  tdl.TDLfile(os.path.join(grammar_path, language.lower() + '.tdl'))
   mylang.define_sections([['addenda', 'Matrix Type Addenda', True, False],
                           ['features', 'Features', True, False],
                           ['dirinv', 'Direct-Inverse', True, False],
@@ -2890,11 +2892,11 @@ def customize_matrix(path, arch_type):
                           ['lexrules', 'Lexical Rules', True, False],
                           ['phrases', 'Phrasal Types', True, False],
                           ['coord', 'Coordination', True, False]])
-  rules =   tdl.TDLfile(grammar_path + 'rules.tdl')
-  irules =  tdl.TDLfile(grammar_path + 'irules.tdl')
-  lrules =  tdl.TDLfile(grammar_path + 'lrules.tdl')
-  lexicon = tdl.TDLfile(grammar_path + 'lexicon.tdl', False)
-  roots =   tdl.TDLfile(grammar_path + 'roots.tdl')
+  rules =   tdl.TDLfile(os.path.join(grammar_path, 'rules.tdl'))
+  irules =  tdl.TDLfile(os.path.join(grammar_path, 'irules.tdl'))
+  lrules =  tdl.TDLfile(os.path.join(grammar_path, 'lrules.tdl'))
+  lexicon = tdl.TDLfile(os.path.join(grammar_path, 'lexicon.tdl'), False)
+  roots =   tdl.TDLfile(os.path.join(grammar_path, 'roots.tdl'))
 
   # date/time
   try:
@@ -2922,7 +2924,7 @@ def customize_matrix(path, arch_type):
   # BUT, put the date/time of the Matrix version in Version.lsp (along
   # with the name of the language.
   global version_lsp
-  version_lsp = tdl.TDLfile(grammar_path + 'Version.lsp')
+  version_lsp = tdl.TDLfile(os.path.join(grammar_path, 'Version.lsp'))
 
   version_lsp.add_literal('(in-package :common-lisp-user)\n\n' +
                           '(defparameter *grammar-version* \"' +
@@ -2982,7 +2984,7 @@ def customize_matrix(path, arch_type):
   # Setup version control, if any
   setup_vcs(ch, grammar_path)
 
-  return grammar_dir
+  return grammar_path
 
 
 ###############################################################
