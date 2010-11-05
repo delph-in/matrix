@@ -5,6 +5,7 @@
 
 import sys
 import re
+import os
 
 from gmcs import tdl
 from gmcs.choices import ChoicesFile
@@ -136,7 +137,7 @@ def validate_names(ch, vr):
     for t in f.readlines():
       reserved_types[t.strip()] = True
     f.close()
-    filename = os.path.join(os.environ['CUSTOMIZATIONROOT'],
+    filename = os.path.join(os.environ.get('CUSTOMIZATIONROOT', ''),
                             'matrix-core/head-types')
     f = open(filename, 'r')
     for t in f.readlines():

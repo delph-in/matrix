@@ -139,7 +139,7 @@ class ChoicesFile:
     and postparse on the object, we must do them separately.
     """
     # attempt to get version first, since preparse_uprev() needs it
-    self.version = int(get_choice('version', choice_lines)) or 0
+    self.version = int(get_choice('version', choice_lines) or 0)
     # some key-values cannot be parsed by the current system, so
     # we need to handle these first
     choice_lines = self.preparse_uprev(choice_lines)
