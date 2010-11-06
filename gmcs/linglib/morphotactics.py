@@ -510,9 +510,8 @@ def basic_pc_validation(choices, pc, vr):
             'define inputs during hand-development of the grammar.')
   else:
     # All inputs must be defined
-    for inp in pc.get('inputs','').split(', '):
-      if inp not in choices \
-         and inp not in ALL_LEX_TYPES:
+    if any(inp not in choices and inp not in LEXICAL_SUPERTYPES
+           for inp in pc.get('inputs','').split(', ')):
         vr.err(pc.full_key + '_inputs',
                'Every lexical type, lexical rule type, or position class ' +\
                'that serves as the input to a position class must be ' +\
@@ -524,10 +523,13 @@ def basic_pc_validation(choices, pc, vr):
             'defined by hand.')
   elif len(pc.get('lrt', [])) == 1:
     lrt = pc['lrt'].get_first()
-    vr.warn(lrt.full_key + '_name', 'If a position class has only one ' +\
-            'defined lexical rule type, the lexical rule type will be ' +\
-            'customized as a separate rule in the grammar if its name is ' +\
-            'not blank, otherwise it will be merged with its position class.')
+    if lrt.get('name', '') == '':
+      # if the lrt has no name, it will be merged with its position class.
+      # make sure it has no constraints
+      for c in lrt.get('require', []) + lrt.get('forbid', []):
+        vr.err(c.full_key + '_others', 'Solitary lexical rule types with ' +\
+               'no name will be merged with their position class, and ' +\
+               'therefore cannot themselves take constraints.')
 
 def lrt_validation(lrt, vr, index_feats):
   # No supertype means it's a root type within a PC class (no longer an error)
