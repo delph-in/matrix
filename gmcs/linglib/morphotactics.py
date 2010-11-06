@@ -180,11 +180,11 @@ def position_class_hierarchy(choices):
       for parent in lrt_parents[child]:
         cur_pc.relate_parent_child(_mns[parent], _mns[child])
     # if there is one unnamed LRT in a PC, merge the LRT with the PC
-    if len(cur_pc.nodes) == 1 \
-       and (cur_pc.nodes.values()[0].name == '' or cur_pc.name == ''):
-      pc.identifier_suffix = 'lex-rule'
-      pc.nodes.values()[0].name = pc.name
-      pc.nodes.values()[0].parents = None
+    if len(cur_pc.nodes) == 1:
+      lrt = cur_pc.nodes.values()[0]
+      if lrt.name == lrt.key or cur_pc.name == cur_pc.name == cur_pc.key:
+        cur_pc.identifier_suffix = 'lex-rule'
+        lrt.name = cur_pc.name
     # With knowledge of the hierarchy, determine the appropriate
     # supertypes, then try to push common supertypes up to reduce
     # redundancy in TDL
@@ -348,7 +348,9 @@ def write_rules(pch, mylang, irules, lrules):
     write_pc_flags(mylang, pc, all_flags)
     for lrt in pc.nodes.values():
       write_i_or_l_rules(irules, lrules, lrt, pc.order)
-      write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
+      # merged LRT/PCs have the same identifier, so don't write supertypes here
+      if lrt.identifier() != pc.identifier():
+        write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
   # because we need to change sections, do lexical PCs last
   for pc in pch.nodes.values():
     if pc.identifier_suffix != 'lex-super': continue
