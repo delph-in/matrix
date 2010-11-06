@@ -927,19 +927,25 @@ class MatrixDefFile:
 
   # Create and print the "download your matrix here" page for the
   # customized matrix in the directory specified by session_path
-  def custom_page(self, session_path, grammar_dir, arch_type):
+  def custom_page(self, session_path, grammar_path, arch_type):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Matrix Customized</title>'
+    # we don't want the contents of the archive to be something like
+    # sessions/7149/..., so we remove session_path from grammar_path
+    grammar_dir = grammar_path.replace(session_path, '').lstrip('/')
     if arch_type == 'tgz':
       arch_file = grammar_dir + '.tar.gz'
     else:
       arch_file = grammar_dir + '.zip'
+    cwd = os.getcwd()
+    os.chdir(session_path)
     if arch_type == 'tgz':
       make_tgz(grammar_dir)
     else:
       make_zip(grammar_dir)
-    print HTML_customprebody % (arch_file)
+    os.chdir(cwd)
+    print HTML_customprebody % (os.path.join(session_path, arch_file))
     print HTML_postbody
 
   # Generate and print sample sentences from the customized grammar
