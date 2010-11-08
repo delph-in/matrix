@@ -1,0 +1,11 @@
+dem-gen-omtr := monotonic_omtr &
+ [ INPUT.RELS <! [ PRED distal+dem_a_rel,
+                   LBL #h,
+                   ARG1 #x ] !>,
+   OUTPUT.RELS <! [ PRED distal+dem_a_rel,
+                    LBL #h,
+                    ARG1 #x ],
+                  [ PRED dem-rule-pred,
+                    ARG0 #x ] !>,
+   FILTER.RELS <! [ PRED dem-rule-pred,
+                    ARG0 #x ] !> ].

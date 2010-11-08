@@ -1,0 +1,172 @@
+ToDo: Find some way to thin in place
+
+Results file first field is i-id, last field is MRS (precedes final @).
+Second file field is unique result identifier
+
+Plan:
+
+Create mini testsuite with just one item:
+
+s o v
+
+Parse with sov grammar
+
+Add an item 
+
+o s v
+
+Edit result file to put same MRS on it
+
+Create new test suite with both strings (by taking the item and
+relations files from the munged profile).
+
+s o v
+o s v
+
+Parse with v-final grammar
+
+Compare with intersection = mrs and hope to find that they got the same
+MRS for both trees.
+
+... don't know what to do about ambiguous sentences until I understand
+how to thin in place, or read the tree file to knock out items from
+result.
+
+**************
+
+Okay, that didn't quite work because i-id and parse-id are not the same,
+of course.  We also need to handle the parse file.  For now, assume that
+we can put i-id and parse-id in a one-to-one relationship, and that we
+don't care about the rest of the information stored in the parse file.
+But of course we do care about the `readings' field, since that records
+how many readings are found.  This information is implicit in result, but
+tsdb++ might look for it in the parse file.
+
+NB: the beginning of the parse file is
+
+parse-id@run-id@i-id
+
+Run id can be the same for all items in the file.  If we're making parse-id
+and i-id be one-to-one, have them be the same in each of these lines.
+
+*************
+
+Okay, that seems to have worked.  Of course, the v-final language
+got two parses for each string, but see below.
+
+*************
+
+If this works, then we would plan to use this methodology to:
+
+apply semantics extracted from harvester seed strings to all
+seed strings that share that semantics.
+
+apply semantics from seed strings to their permutations
+
+Then the plan would be to write the filters as scripts that 
+modify the item file (in particular i-wf) for each string-mrs pair
+given a grammar specification.  Expect the filters to be somewhat
+seed-string specific.
+
+Then what about many-many mappings between strings and MRSs?
+
+We'll have:
+
+string - wf
+string - gold standard MRS
+
+Maybe the answer is to do one more processing step on the constructed
+tsdb profiles (that is, ones that have had the filters applied so
+that they are ready to test particular language types).  In this
+step, we'll consider only strings marked as well-formed (i-wf == 1)
+and collect all gold standard MRSs for them into one `spot', that
+is, in result, all of those MRSs will have the same parse-id and
+sequential result-id, even if they came originally from different seed
+strings.  
+
+Consider the case of the seed string 's o tv'.  One of its permutations
+is 'o s tv'.  In a v-final language, we want 'o s tv' to have the MRS harvested
+for 's o tv', as well as the MRS harvested for 'o s tv' (where the noun 'o' is
+the subject of 'tv').  So, we'll have tv(s,o) stored as a possible MRS
+for 'o s tv', and mark this as well-formed for the v-final language and
+ill-formed for the sov language.  In munging the tsdb profile, we 
+want to end up with only one gold standard reading for 'o s tv' in 
+an sov language and in a v-final language.
+
+Note also that we'll probably want to make the result file lt-specific
+profiles look like the i-wf == 0 examples didn't parse in the gold
+standard.  That'll make the comparison easier.
+
+
+
+Information from the file Relations, which defines the fields for
+tsdb++:
+
+result:
+  parse-id :integer :key                # parse for this result
+  result-id :integer                    # unique result identifier
+  time :integer                         # time to find this result (msec)
+  r-ctasks :integer                     # parser contemplated tasks
+  r-ftasks :integer                     # parser filtered tasks
+  r-etasks :integer                     # parser executed tasks
+  r-stasks :integer                     # parser succeeding tasks
+  size :integer                         # size of feature structure
+  r-aedges :integer                     # active items for this result
+  r-pedges :integer                     # passive items in this result
+  derivation :string                    # derivation tree for this reading
+  surface :string                       # surface string (e.g. realization)
+  tree :string                          # phrase structure tree (CSLI labels)
+  mrs :string                           # mrs for this reading
+  flags :string                         # arbitrary annotation (e.g. BLEU)
+
+item:
+  i-id :integer :key
+  i-origin :string
+  i-register :string
+  i-format :string
+  i-difficulty :integer
+  i-category :string
+  i-input :string
+  i-wf :integer
+  i-length :integer
+  i-comment :string
+  i-author :string
+  i-date :date
+
+parse:
+  parse-id :integer :key                # unique parse identifier
+  run-id :integer :key                  # test run for this parse
+  i-id :integer :key                    # item parsed
+  readings :integer                     # number of readings obtained
+  first :integer                        # time to find first reading (msec)
+  total :integer                        # total time for parsing (msec)
+  tcpu :integer                         # total (cpu) processing time (msec)
+  tgc :integer                          # gc time used (msec)
+  treal :integer                        # overall real time (msec)
+  words :integer                        # lexical entries retrieved
+  l-stasks :integer                     # successful lexical rule applications
+  p-ctasks :integer                     # parser contemplated tasks (LKB)
+  p-ftasks :integer                     # parser filtered tasks
+  p-etasks :integer                     # parser executed tasks
+  p-stasks :integer                     # parser succeeding tasks
+  aedges :integer                       # active items in chart (PAGE)
+  pedges :integer                       # passive items in chart
+  raedges :integer                      # active items contributing to result
+  rpedges :integer                      # passive items contributing to result
+  unifications :integer                 # number of (node) unifications
+  copies :integer                       # number of (node) copy operations
+  conses :integer                       # cons() cells allocated
+  symbols :integer                      # symbols allocated
+  others :integer                       # bytes of memory allocated
+  gcs :integer                          # number of garbage collections
+  i-load :integer                       # initial load (start of parse)
+  a-load :integer                       # average load
+  date :date                            # date and time of parse
+  error :string                         # error string (if applicable |:-)
+  comment :string                       # application-specific comment
+
+
+One line from a results file
+
+1@0@20@-1@-1@-1@-1@160@-1@-1@(43 subj-head 0.0 0 6 (41 bare-np 0.0 0 5 (40 n1-top-coord 0.0 0 5 (13 s 0.0 0 1 ("S" 0 1)) (39 n1-bottom-coord 0.0 1 5 (15 conj_1 0.0 1 2 ("CONJ" 1 2)) (35 n1-top-coord 0.0 2 5 (16 s 0.0 2 3 ("S" 2 3)) (32 n1-bottom-coord 0.0 3 5 (23 conj_1 0.0 3 4 ("CONJ" 3 4)) (24 s 0.0 4 5 ("S" 4 5))))))) (42 iv 0.0 5 6 ("IV" 5 6)))@@@[ LTOP: h1 INDEX: e2 [ e SORT: SEMSORT MESG: PROP-OR-QUES E.TENSE: TENSE E.ASPECT: ASPECT E.MOOD: MOOD ] RELS: < [ "_s_n_rel" LBL: h3 ARG0: x4 [ x SORT: SEMSORT PNG: PNG DEF: BOOL ] ] [ "_and_coord_rel" LBL: h5 C-ARG: x6 [ x SORT: SEMSORT DEF: BOOL PNG: PNG ] L-HNDL: h8 L-INDEX: x4 R-HNDL: h9 R-INDEX: u7 [ u SORT: SEMSORT ] ] [ "_s_n_rel" LBL: h10 ARG0: x11 [ x SORT: SEMSORT PNG: PNG DEF: BOOL ] ] [ "_and_coord_rel" LBL: h12 C-ARG: u7 L-HNDL: h14 L-INDEX: x11 R-HNDL: h15 R-INDEX: x13 [ x SORT: SEMSORT PNG: PNG DEF: BOOL ] ] [ "_s_n_rel" LBL: h16 ARG0: x13 ] [ "unspec_q_rel" LBL: h17 ARG0: x6 RSTR: h18 BODY: h19 ] [ "_iv_v_rel" LBL: h1 ARG0: e2 ARG1: x6 ] > HCONS: < h18 qeq h5 > ]@
+

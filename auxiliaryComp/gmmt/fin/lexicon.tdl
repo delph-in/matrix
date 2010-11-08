@@ -1,0 +1,380 @@
+;; -*- Mode: TDL; Package: LKB -*-
+
+;; lexicon.tdl
+;; Created 04-06-2004
+;; Ryan G. Mattson (ryangm@u.washington.edu)
+
+;;;
+;;; we need at least one dummy entry here, otherwise the LKB fails to load
+;;;
+;;;foo := basic-noun-lex &
+;;;  [ STEM < "foo" > ].
+
+;;; MISC
+
+;; RGM 5-25-05 Added 'ja' conjunction for lab8
+
+ja := conj-lex &
+[ STEM < "ja" >,
+  SYNSEM.LKEYS.KEYREL.PRED '_and_coord_rel ].
+
+;mitA := complementizer-lex-item &
+;[ STEM < "mitA" > ].
+
+;; RGM 5-6-04 Added complementizer
+
+ettA := decl-comp-lex &
+[ STEM < "ettA" > ].
+
+jos := int-comp-lex &
+[ STEM < "jos" > ].
+
+;;; END MISC
+
+
+
+;;; RGM 4-15-05 Common nouns inherit from nom-noun-lex or elat-noun-lex
+;;; (currently), and those types inherit from common-noun-lex, per lab
+;;; 3 instructions. Also added agreement information in case, num and per.
+
+;;; START NOUNS
+
+kirja := common-noun-lex &
+[ STEM < "kirja" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_book_n_rel ]].
+
+koira := common-noun-lex &
+[ STEM < "koira" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_dog_n_rel ]].
+
+kissa := common-noun-lex &
+[ STEM < "kissa" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_cat_n_rel ]].
+
+auto := common-noun-lex &
+[ STEM < "auto" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_car_n_rel ] ].
+
+talo := common-noun-lex &
+[ STEM < "talo" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_house_n_rel ]].
+
+Aiti := common-noun-lex &
+[ STEM < "Aiti" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_mother_n_rel ]].
+
+vesi := common-noun-lex &
+[ STEM < "vesi" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_water_n_rel ]].
+
+leipA := common-noun-lex &
+[ STEM < "leipA" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_bread_n_rel ]].
+
+lasi := common-noun-lex &
+[ STEM < "lasi" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_glass_n_rel,
+	   LOCAL.CAT.HEAD.CASE nom ]].
+
+opiskelija := common-noun-lex &
+[ STEM < "opiskelija" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_student_n_rel,
+	   LOCAL [ CONT.HOOK.INDEX.PNG [ PER third ],
+		   CAT.HEAD.CASE nom ] ] ].
+
+tomaatti := common-noun-lex &
+[ STEM < "tomaatti" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_tomato_n_rel,
+	   LOCAL [ CONT.HOOK.INDEX.PNG [ PER third ],
+		   CAT.HEAD.CASE nom ] ] ].
+
+mies := common-noun-lex &
+[ STEM < "mies" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_man_n_rel,
+	   LOCAL [ CONT.HOOK.INDEX.PNG [ PER third ],
+		   CAT.HEAD.CASE nom ] ] ].
+
+apina := common-noun-lex &
+[ STEM < "apina" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_monkey_n_rel,
+	   LOCAL [ CONT.HOOK.INDEX.PNG [ PER third ] ] ] ].
+
+;;; END NOUNS
+
+;; RGM 4-16-05 Modified verbs to be uninflected and agree in
+;; per and num, as well as specify appropriate agreement cases
+;; for objects and subjects where applicable in lexicon
+
+;;; START VERBS
+
+; sfd
+kysyA := clausal-verb-lex &
+[ STEM < "kysyA" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_ask_v_rel,
+	   LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CAT.HEAD.CASE nom ] >,
+			   COMPS < #comps > ] ],
+  ARG-ST < #subj, #comps > ].
+
+; sfd
+metsAstAA := nom-acc-tr-verb-lex &
+[ STEM < "metsAstAA" >,
+  SYNSEM.LKEYS.KEYREL.PRED '_chase_v_rel ].
+
+; sfd
+ajatella := clausal-verb-lex &
+[ STEM < "ajatella" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_think_v_rel,
+	   LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CAT.HEAD.CASE nom ] >,
+			   COMPS < #comps > ] ],
+  ARG-ST < #subj, #comps > ].
+
+
+sattua := tr-verb-lex &
+[ STEM < "sattua" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_hurt_v_rel,
+	   LOCAL.CAT.VAL [ SUBJ < #subj >,
+			   COMPS < #comps & [ LOCAL.CAT.HEAD.CASE part ] >]],
+  ARG-ST < #subj, #comps >].
+
+voida := subj-raising-verb-lex &
+[ STEM < "voida" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_can_v_rel,
+	   LOCAL.CAT.VAL [ SUBJ < #subj >,
+			   COMPS < #comps >]],
+  ARG-ST < #subj, #comps > ].
+
+syOdA := tr-verb-lex &
+[ STEM < "syOdA" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_eat_v_rel,
+	   LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CAT.HEAD.CASE nom ] >,
+			   COMPS < #comps & [ LOCAL.CAT.HEAD.CASE part ] > ] ],
+  ARG-ST < #subj, #comps > ].
+
+tietAA1 := clausal-verb-lex &
+[ STEM < "tietAA" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_know_v_rel,
+	   LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CAT.HEAD.CASE nom ] >,
+			   COMPS < #comps > ] ],
+  ARG-ST < #subj, #comps > ].
+
+tietAA2 := tr-verb-lex &
+[ STEM < "tietAA" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_know_v_rel,
+	   LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CAT.HEAD.CASE nom ] >,
+			   COMPS < #comps > ] ],
+  ARG-ST < #subj, #comps > ].
+
+nukkua := itr-verb-lex &
+[ STEM < "nukkua" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_sleep_v_rel ] ].
+
+; changed STEM to test XFST interface
+
+kAvellA := itr-verb-lex &
+[ STEM < "kAvellA" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_walk_v_rel ] ].
+
+tykAtA := tr-verb-lex &
+[ STEM < "tykAtA" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_like_v_rel,
+	   LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CAT.HEAD.CASE nom ] >,
+			   COMPS < #comps & [ LOCAL.CAT.HEAD.CASE elat ] > ] ],
+  ARG-ST < #subj, #comps > ].
+
+pelAtA := nom-acc-tr-verb-lex &
+[ STEM < "pelAtA" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_fear_v_rel ] ].
+
+antaa := dtr-verb-lex &
+[ STEM < "antaa" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_give_v_rel,
+	   LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CAT.HEAD.CASE nom ] >,
+			   COMPS < #arg1 & [ LOCAL.CAT.HEAD.CASE acc ],
+				   #arg2 & [ LOCAL.CAT.HEAD.CASE allat ] > ] ],
+  ARG-ST < #subj, #arg1, #arg2 > ].
+
+nAyttAA1 := opt-comp-dtr-verb-lex &
+[ STEM < "nAyttAA" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_show_v_rel,
+	   LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CAT.HEAD.CASE nom ] >,
+			   COMPS < #arg1 & [ LOCAL.CAT.HEAD.CASE acc ],
+				   #arg2 & [ LOCAL.CAT.HEAD.CASE allat ] > ] ],
+  ARG-ST < #subj, #arg1, #arg2 > ].
+
+nAyttAA2 := tr-verb-lex &
+[ STEM < "nAyttAA" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_look_like_v_rel,
+	   LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CAT.HEAD.CASE nom ] >,
+			   COMPS < #comps & [ LOCAL.CAT.HEAD.CASE ablat ] > ] ],
+  ARG-ST < #subj, #comps > ].
+
+sanoa := clausal-verb-lex &
+[ STEM < "sanoa" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_say_v_rel,
+	   LOCAL.CAT.VAL [ SUBJ < #subj & [ LOCAL.CAT.HEAD.CASE nom ] >,
+			   COMPS < #comps > ] ],
+  ARG-ST < #subj, #comps > ].
+
+; sfd
+kuolla := itr-verb-lex &
+[ STEM < "kuolla" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_die_v_rel ] ].
+
+;;; END VERBS
+
+;;; START DETS
+
+; proximal
+tAmA := demonstrative-det-lex &
+[ STEM < "tAmA" >,
+  SYNSEM.LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ].
+
+; distal
+tuo := demonstrative-det-lex &
+[ STEM < "tuo" >,
+  SYNSEM.LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ].
+
+;;; END DETS
+
+;; RGM 4-15-05 Added personal pronouns per lab 3
+
+;;; PERSONAL PRONOUNS
+
+minA := pronoun-lex &
+	[ STEM < "minA" >,
+	  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+					     NUM sg ] ].
+
+sinA := pronoun-lex &
+	[ STEM < "sinA" >,
+	  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+					     NUM sg ] ].
+
+hAn := pronoun-lex &
+       [ STEM < "hAn" >,
+	 SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+					    NUM sg ] ].
+
+me := pronoun-lex &
+      [ STEM < "me" >,
+	SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+					   NUM pl ] ].
+
+te := pronoun-lex &
+      [ STEM < "te" >,
+	SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+					   NUM pl ] ].
+
+he := pronoun-lex &
+      [ STEM < "he" >,
+	SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+					   NUM pl ] ].
+
+;;; END PERSONAL PRONOUNS
+
+;;; OTHER PRONOUNS
+
+se := pronoun-lex &
+[ STEM < "se" >,
+  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+				     NUM sg ]].
+
+;;; END OTHER PRONOUNS
+
+;; RGM 4-28-05 Added first adjectives and adverbs
+
+;;; BEGIN ADJECTIVES
+
+; sfd
+nAlkAinen := adj-lex &
+[ STEM < "nAlkAinen" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_hungry_a_rel ] ].
+
+iso := adj-lex &
+[ STEM < "iso" > ].
+
+punainen := adj-lex &
+[ STEM < "punaise" > ].
+
+hyvA := adj-lex &
+[ STEM < "hyvA" > ].
+
+helppo := adj-lex &
+[ STEM < "helppo" > ].
+
+iloinen := adj-lex &
+[ STEM < "iloinen" > ].
+
+keltainen := adj-lex &
+[ STEM < "keltainen" > ].
+
+;;; END ADJECTIVES
+
+;;; BEGIN ADVERBS
+
+tAnAAn := adv-lex &
+[ STEM < "tAnAAn" > ].
+
+;always
+aina := adv-lex &
+[ STEM < "aina" > ].
+
+; quickly (fast)
+nopeasti := adv-lex &
+[ STEM < "nopeasti" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_quickly_r_rel ] ].
+
+; slowly
+hiitasti := adv-lex &
+[ STEM < "hiitasti" > ].
+
+; negative scopal adverbs
+en := scopal-adv-lex &
+[ STEM < "en" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_neg_r_rel,
+	   LOCAL.CAT.HEAD.MOD
+           < [ LOCAL.CAT.VAL.SUBJ
+               < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+                                               NUM sg ] ] > ] > ] ].
+
+et := scopal-adv-lex &
+[ STEM < "et" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_neg_r_rel,
+	   LOCAL.CAT.HEAD.MOD
+           < [ LOCAL.CAT.VAL.SUBJ
+               < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+                                               NUM sg ] ] > ] > ] ].
+
+ei := scopal-adv-lex &
+[ STEM < "ei" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_neg_r_rel,
+	   LOCAL.CAT.HEAD.MOD
+           < [ LOCAL.CAT.VAL.SUBJ
+               < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+                                               NUM sg ] ] > ] > ] ].
+
+emme := scopal-adv-lex &
+[ STEM < "emme" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_neg_r_rel,
+	   LOCAL.CAT.HEAD.MOD
+           < [ LOCAL.CAT.VAL.SUBJ
+               < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+                                               NUM pl ] ] > ] > ] ].
+
+ette := scopal-adv-lex &
+[ STEM < "ette" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_neg_r_rel,
+	   LOCAL.CAT.HEAD.MOD
+           < [ LOCAL.CAT.VAL.SUBJ
+               < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+                                               NUM pl ] ] > ] > ] ].
+
+eivAt := scopal-adv-lex &
+[ STEM < "eivAt" >,
+  SYNSEM [ LKEYS.KEYREL.PRED '_neg_r_rel,
+	   LOCAL.CAT.HEAD.MOD
+           < [ LOCAL.CAT.VAL.SUBJ
+               < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+                                               NUM pl ] ] > ] > ] ].
+
+;;; END ADVERBS

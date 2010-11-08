@@ -1,0 +1,17 @@
+; To find out which filters are saying 0 to everything they apply to.
+
+select filter_name, sum(rsf_value) from res_sfltr, filter where filter_id = rsf_sfltr_id group by rsf_sfltr_id into outfile "/tmp/zero_results2";
+
+; To find out which filters are saying 1 to everythig they apply to:
+
+select filter_name, count(rsf_value), sum(rsf_value) from res_sfltr, filter where filter_id = rsf_sfltr_id group by filter_name into outfile  "/tmp/foo";
+
+
+; To see which items a particular filter is rejecting:
+
+select i_input, rsf_value from item, parse, result, res_sfltr where i_id = p_i_id and p_parse_id = r_parse_id and r_result_id = rsf_res_id and rsf_value = 1 and rsf_sfltr_id = 104;
+
+; To find out what procedures are in the DB:
+
+call show_procedures();
+

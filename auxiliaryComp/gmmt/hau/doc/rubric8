@@ -1,0 +1,165 @@
+---------------------------------------------------
+Comments
+
+ Setential negation in Hausa is done by adding both a sentence-initial
+ particle "bàa" and a sentence final particle "ba". Examples of this
+ strategy are the sentences "bàa tàa-zoo ba" (NEG 3f.COMP came NEG, "It
+ is not the case that she came") and "bàa yaaròo ya-kaamàa `bàraawòo
+ ba" (NEG boy 3m.PRET catch thief NEG, "It is not the case that the boy
+ caught a thief").  Verbal negation is a similar strategy, but the
+ particles change form based on the tense and the neg particles only
+ surround the VP, not including any attached adverbs.
+
+Is there a difference in meaning between the VP level attachment of
+negative particles and the S-level attachment?
+
+ I implemented "can" by following the strategy of treating it like an
+ auxiliary verb.  I made an aux-verb type inheriting from verb-lex and
+ trans-first-arg-raising-lex-item-1.  I constrained the auxiliary to be
+ TENSE subjunct, to allow it only to attach PAC prefixes in the
+ subjunctive tense.  To get the infinitive verb form (no PAC prefix)
+ following the auxiliary, I wrote an infinitive verb lex rule
+ (null-PAC-verb-lex-rule) to constrain verbs to have a null PAC.  I
+ made it FORM inf, and added MC - so that it couldn't participate as
+ the main verb in regular sentences.
+
+You probably don't want to use the feature TENSE for that.  If it
+really is a semantic distinction, it should go in the value of MOOD.
+If it's purely syntactic, you should create a HEAD feature FORM which
+encodes the information you need.
+
+ I implemented "can" by following the strategy of treating it like an
+ auxiliary verb.  I made an aux-verb type inheriting from verb-lex and
+ trans-first-arg-raising-lex-item-1.  I constrained the auxiliary to be
+ TENSE subjunct, to allow it only to attach PAC prefixes in the
+ subjunctive tense.  To get the infinitive verb form (no PAC prefix)
+ following the auxiliary, I wrote an infinitive verb lex rule
+ (null-PAC-verb-lex-rule) to constrain verbs to have a null PAC.  I
+ made it FORM inf, and added MC - so that it couldn't participate as
+ the main verb in regular sentences.
+
+Rather than MC in this case, I'd suggest constraining the FORM of
+the root condition to something incompatible with inf (e.g., a supertype
+that subsumes imp and fin, say).
+
+You're getting two parses for "ìn-iyà cî gìlâs", I think because
+the indefinite rule isn't required.  Constraining common-noun-lex to be
+[INFLECTED -] should have the effect of requiring it.
+
+Your semantics for "ìn-iyà cî gìlâs" is also slightly broken: the ARG1
+of _can_v_rel should qeq the LBL of _eat_v_rel.  By linking the COMPS
+element of your auxiliary to the second ARG-ST element, you will fix
+this.  (The matrix-provided supertype links from ARG-ST to semantics.)
+This also explains some of your over-generation. With this link broken,
+the person/number information for the subject isn't making it into
+the semantics.
+
+ I can get sentences with "can" to parse, but it overgenerates wildly
+ (I get an *edge limit exhausted* warning).  Earlier, I was getting a
+ long list of parses, and I noticed that I was generating sentences
+ with a PAC in every possible person. I also noticed that my
+ sentence-final negative marker is being stuck on the front of the
+ auxiliary-verb sentence (see *"ba ìn-iyà cî gìlâs", NEG I can eat
+ glass).  
+
+This is because your auxiliary verb isn't constraining the HEAD value
+of its subject.  Have it say [HEAD noun] in the subject, the negative
+element won't show up there any more.
+
+ And lastly, because my imperative rule is broken, it allows
+ "iyà" to appear with a null PAC.
+
+As part of your "spring cleaning", you should clean up the tdl in
+your hausa.tdl file, both in terms of formatting and in terms of
+repeated constraints.  For example, the following: 
+
+1sg-subjunct-verb-lex-rule := infl-ltow-rule  &
+	[SYNSEM.LOCAL [CAT[ HEAD.FORM base,VAL.SUBJ < [LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+	NUM sg ] ]>],
+	CONT.HOOk.INDEX.E [TENSE subjunct]],
+	DTR.SYNSEM.LOCAL.CAT.HEAD verb].
+
+Is much easier to read like this:
+
+1sg-subjunct-verb-lex-rule := infl-ltow-rule  &
+   [ SYNSEM.LOCAL [ CAT [ HEAD.FORM base,
+                          VAL.SUBJ < [LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+                                                                  NUM sg ] ]>],
+	            CONT.HOOK.INDEX.E.TENSE subjunct ],
+     DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
+
+More importantly, constraints that are shared among a class of
+lexical rules (e.g., [HEAD verb] on the daughter, [FORM base] and
+[TENSE (MOOD) subjunct] on the mother in the rule above) should be
+stated on a supertype, rather than repeated over and over.
+
+Your semantics for the negated sentences is broken.  _neg_r_rel
+and _hurt_v_rel shouldn't have the same LBL value, nor the same
+INDEX value.  That's actually a bug in the matrix (ternary-head-middle-phrase
+shouldn't inherit from head-compositional, and I've fixed that
+in the matrix patch for Lab 9).  Still, you should have noticed
+and posted to EPost to find out why the mismatch between what you
+were getting and the MRS given for comparison in the lab instructions.
+
+
+  And lastly, because my imperative rule is broken, it allows
+ "iyà" to appear with a null PAC.
+
+
+It's not clear to me that this is broken ... if you don't want "iyà"
+to go through the imperative rule, though, you can put a constraint
+on the lexical entry (say on its FORM value) so that it can only
+go through lexical rules with the appropriate FORM.
+
+ The biggest problme with my grammar is that it's overgenerating. Since
+ sentences in Hausa can be either interrogative or declarative
+ (depending on intonation), the SF is prop-or-ques.  This allows the
+ generation of sentences with question markers before or after.  I
+ couldn't find any examples of negative questions in my reference
+ grammar, so I have no idea whether it is grammatical to add a question
+ marker to a negated sentence.  Also, since pronouns with a
+ definiteness suffix are grammatical (though, I think they aren't
+ common), this suffix also appears in generation.  When I parse "It
+ can't hurt me" and then generate, I get both definiteness markers
+ attaching to "me", since 1-person-singular is unspecified for gender.
+ As I noted before, the sentence-final negative marker
+ (R-neg-sentence-part) seems to mysteriously show up in generation.
+
+Most of these don't sound like overgeneration to me --- they
+sound like legitimate other strings to generate, given the same
+input semantics. (The bug with R-neg-sentence-part I addressed
+above.)
+
+I wasn't getting your grammar to generate at all until I put
+in some of the fixes suggested above to cut down on the generated
+strings.  (Part of the reason you exhaust the edge limit so easily
+is that you have lots of semantically empty elements: qparts, complementizers,
+and now ba/baa ... make sure you don't have any superfluous ones of
+these.)  Since your question particles and question complementizers
+are homophonous with each other, perhaps it's possible to get by
+with a single lexical entry for each?  (Then one of the head-comp rules
+would need to say MC + to show that when it's on that end it has
+to be the main clause...)
+
+ My imperative rule is accepting any verb and leaving it without a PAC
+ prefix.  This makes ungrammatical sentences parse, such as
+ "zoo"("come", infinitive). Other features that I haven't gotten
+ working yet. These are case-marking adposition (indirect object marker
+ "wa"), null complementizers, and some semantic cases involving
+ complementizers (I think you pointed one case out in your notes you
+ sent along with my lab 7 grade).
+
+What is the morphological effect of the imperative supposed to be?
+You have it listed as a constant rule, and instantiated in lrules.tdl.
+That suggests that it's not adding any suffixes.  If it is expecting
+to take a particular inflected form as input, it should make its
+daughter be of that form.  Note that most of your lex rules are ltow,
+though, so I'm guessing that this rule would need to be ltol (i.e.,
+wtow).
+
+At any rate, your first priority for spring cleaning is to implement
+the suggestions above.  This should lead to your semantics being corrected
+and your generation being more in line. Please, please, please use the
+10-minute rule and post to EPost frequently, so I can help.
+
+

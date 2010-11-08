@@ -1,0 +1,88 @@
+;;; Hey, emacs(1), this is -*- Mode: TDL; Coding: iso-8859-1; -*- got it?
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; first transfer phase, NorGram-specific accomodation: these rules primarly
+;;; patch up `deficiencies' in NorGram MRSs, e.g. ditch selected relations.
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+q_sel_ditch_nf := elision_mtr &
+[ INPUT [ RELS < [ PRED "~_sel_rel$", RSTR #h0 & h ] >,
+          HCONS < qeq & [ HARG #h0 ] > ],
+  FLAGS.EQUAL < #h0 > ].
+
+sel_ditch_nf := elision_mtr &
+[ INPUT.RELS < [ PRED "~_sel_rel$" ] > ].
+
+;;;
+;;; a few predicate normalizations, provided by jan tore, moved here from NoEn.
+;;;
+bein_n_nf := monotonic_mtr &
+[ INPUT.RELS < [ PRED "_bein_n_rel" ] >,
+  OUTPUT.RELS < +copy+ & [ PRED "_ben_n_rel" ] > ].
+
+hol_n_nf := monotonic_mtr &
+[ INPUT.RELS < [ PRED "_hol_n_rel" ] >,
+  OUTPUT.RELS < +copy+ & [ PRED "_hull_n_rel" ] > ].
+
+små_a_nf := monotonic_mtr &
+[ INPUT.RELS < [ PRED "_små_a_rel" ] >,
+  OUTPUT.RELS < +copy+ & [ PRED "_liten_a_rel" ] > ].
+
+urd_n_nf := monotonic_mtr &
+[ INPUT.RELS < [ PRED "_urd_n_rel" ] >,
+  OUTPUT.RELS < +copy+ & [ PRED "_ur_n_rel" ] > ].
+
+;;;
+;;; _fix_me_
+;;; for `riksvei 55' or `hefte 4', the NorGram MRS provides a couple of extra 
+;;; EPs (`_nummer_n' plus a `compound' in addition to the `title_id'), that i
+;;; find hard to interpret.                                     (18-dec-06; oe)
+;;;
+card+title+nummer+compound_nf := monotonic_mtr &
+[ CONTEXT.RELS < [ PRED "card_rel", LBL #h0, ARG0 #x0 & x ] >,
+  INPUT [ RELS < [ PRED "title_id_rel", LBL #h0,
+                   ARG0 #e0, ARG1 #x1, ARG2 #x0 ],
+                 [ PRED "compound_rel", LBL #h0, ARG1 #x0, ARG2 #x2 ],
+                 [ PRED "udef_q_rel", ARG0 #x1, RSTR #h1 ],
+                 [ PRED "_nummer_n_rel", LBL #h2, ARG0 #x1 ] >,
+          HCONS < qeq & [ HARG #h1, LARG #h2 ] > ],
+  OUTPUT.RELS < [ PRED "title_id_rel", LBL #h0,
+                  ARG0 #e0, ARG1 #x2, ARG2 #x0 ] >,
+  FLAGS.EQUAL < #x0 > ].
+
+;;;
+;;; _fix_me_
+;;; if only to reduce search space, suppress analyses where a number is treated
+;;; as a full noun phrase and decorated with an additional `_nummer_n' titel.
+;;; this way, we suppress the candidate translation `He came in number 1984.'
+;;; for the input `Han kom i 1984'.  i admit i remain a tad sceptical of the
+;;; extra trimming with `_nummer_n', even if putting search space aside.  right
+;;; now at least (i.e. with minimal parse selection), we seem to be getting all
+;;; unwanted top-five outputs for, e.g. `I 1914 sto derfor et anneks klart.'
+;;;                                                             (21-dec-06; oe)
+;;; --- really, this should be using the `warn' facility instead, such that the
+;;; caller (parse-item()) could then down-rank outputs with a warning, but yet
+;;; pass everything on downstream.                              (22-dec-06; oe)
+;;;
+card+title+nummer_block_nf := monotonic_mtr &
+[ CONTEXT.RELS < [ PRED "card_rel", LBL #h0, ARG0 #x0 & x ] >,
+  INPUT [ RELS < [ PRED "title_id_rel", LBL #h0,
+                   ARG0 #e0, ARG1 #x1, ARG2 #x0 ],
+                 [ PRED "udef_q_rel", ARG0 #x1, RSTR #h1 ],
+                 [ PRED "_nummer_n_rel", LBL #h2, ARG0 #x1 ] >,
+          HCONS < qeq & [ HARG #h1, LARG #h2 ] > ],
+  OUTPUT.RELS < [ PRED "title_id_rel", LBL #h0,
+                  ARG0 #e0, ARG1 #x2, ARG2 #x0 ] >,
+  FLAGS [ EQUAL < #x0 >,
+          BLOCK "card + title_id + _nummer_n" ] ].
+
+intransitive_v_psp_nf := monotonic_mtr &
+[ CONTEXT.RELS < [ PRED "~_n_rel", LBL #h0, ARG0 #x0 ] >,
+  INPUT [ RELS < [ PRED "prpstn_m_rel", LBL #h0, ARG0 #e0, MARG #h2 ],
+                 [ PRED "~_v_", LBL #h1,
+                   ARG0 #e0 & [ TENSE untensed, PROG -, PSVTYPE active ],
+                   ARG1 #x0 ] >,
+          HCONS < qeq & [ HARG #h2, LARG #h1 ] > ],
+  FLAGS.BLOCK "passive participle of intransitive verb" ].

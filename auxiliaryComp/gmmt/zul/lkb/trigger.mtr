@@ -1,0 +1,17 @@
+ukuthi-trigger-rule := generator-rule &
+ [ CONTEXT.RELS <! [ ARG2 handle &#h ] !>,
+   FLAGS [ EQUAL < #h >,
+	   TRIGGER "ukuthi" ]].
+
+; Trying to see what happens if we only put this
+; in when there is an actual question (not prop-or-ques)
+
+;na-trigger-rule := generator-rule &
+; [ CONTEXT.RELS <! [ ARG0.SF ques & #s ] !>,
+;   FLAGS [ EQUAL < #s >,
+;	   TRIGGER "na" ]].
+
+na-trigger-rule := generator-rule &
+  [ CONTEXT.HOOK.INDEX.SF ques,
+    FLAGS [ TRIGGER "na" ]].
+

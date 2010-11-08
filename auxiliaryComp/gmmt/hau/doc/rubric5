@@ -1,0 +1,65 @@
+------------------------------------------------------
+Comments
+
+ I figured out very late that Hausa uses a case-marking adposition 'wÃ'
+ for common nouns acting as indirect objects.  I tried to add it, but I
+ ran out of time.  I don't think it should be too hard, but it did
+ complain when I added a CASE feature in two places (to type noun and
+ type adp).  Would making a supertype, and adding it as a parent of
+ these two solve that problem?
+
+Yes, but you don't need to make the supertype, it already exists:
++np, defined in head-types.tdl.
+
+ The other place where I was trying to get pronouns to display case was
+ with ditransitive verbs.  I wanted to create a ditransitve verb type,
+ but I couldn't figure out how to get constraints on the third element
+ of a verb's ARG-ST list.  I could constrain the second element to be
+ indirect object case, but I couldn't find a way to specify that the
+ second complement should be independent case (only for ditransitive
+ verbs - transitive verbs take one complement in direct object case).
+
+You should be able to define a type ditransitive-verb-lex which inherits
+from verb-lex and ditransitive-lex-item.  It will have three things on
+its ARG-ST, and you can constain the CASE value on each of them.
+
+ While I got case to work in pronoun objects, the grammar as it stands
+ now doesn't constrain the case of pronouns inside coordinated phrases.
+ Is there a way to get at the CASE information inside the daughters of
+ a coordination rule?  Or to say something like the CASE of the
+ coordinated phrase is the unification of the CASE of its daughter
+ phrases?  I had three sentences with a coordinated pronoun as the
+ subject, and all three parsed.  However, two of them had the wrong
+ case (indirect object and direct object), so they shouldn't have
+ parsed.
+
+Yes, you'll need to add to all of the noun coordination rules (or NP, if
+that's what you have) that the CASE value of the mother and all of the
+daughters is the same.
+
+The grammar that you submitted wouldn't load into the LKB because for
+some reason (looks like an editing error), you had taken a chunk out
+of matrix.tdl.  I replaced matrix.tdl with the backup file created by
+emacs when you did that (matrix.tdl~) and it worked.
+
+It seems you specified N coordination to the customization script.  This
+means that your parse for "boy and I" has the bare-np rule applying only
+once at the top.  This seems odd to me, but it's a little hard to imagine
+what Hausa data might decide the issue.  Perhaps some modification facts:
+Can "little boy and I" have a reading where "little" is predicated of the "I"
+as well?  Can you get "boy and I little", or just "boy little and I"?
+
+(All of this stuff about coordination is just icing, in some sense, not
+directly required, but I think it's cool to get it right if we can.
+If you decide to do NP coordination instead of N coordination, probably
+the best thing is to upload your choices file to the customization script,
+change that, and see what comes out.  You can incorporate the new rules 
+into your grammar.  It's possible that Hausa has both NP and N coordination,
+but that the pronouns aren't allowed in N coordination.)
+
+karàncee := dobj-transitive-verb-lex &
+  [ STEM < "kar~àncee" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_readall_v_rel" ] .
+
+What does the PRED value above mean?  Remember, for the MT to
+work, we want to keep the preds the same across languages.

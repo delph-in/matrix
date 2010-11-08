@@ -1,0 +1,85 @@
+CLEANUP
+
+For clean up tasks, I did the fixes you suggested with my Lab 8 grade. I removed the redundancy from my verb lex rules, by moving the constraints on person and tense to supertype rules. I made a FORM feature "inflec" to be a supertype of imp and fin and then made the root condition FORM inflec to keep infinitives from showing up as main clause verbs in generation.  I also tried to clean up the TDL so that it was more readable.  
+
+
+
+To get the imperatives to parse correctly (and not allow other verbs
+to go through the imperative rule) I did away with the imperative
+rule, and made the imperatives INFLECTED +.  I made all the other
+verbs INFLECTED - in the lexicon. This got rid of a lot of other
+problems in my grammar which were caused by overapplying the
+imperative rule. Now sentences like "kàawoo ruwaa!" (Bring water!)
+will parse, and other sentences won't generate sentences without PAC
+inflection (like infinitives).
+
+
+I normalized all my CASE values, so they would be more understandable
+(i.e. acc rather than dobj).  I got case-marking adpositions to work
+by changing the ditransitive-verb-lex to take a HEAD +np as its first
+complement.  I also made all common-nouns CASE nom+acc.  That way, the
+only things appearing as indirect objects are nouns preceded by a
+case-marker, or dative pronouns.  An example of a case-marker would be
+"yaaròo yaa-sàyaa wà maalàminsù littaafìi", (the boy bought the
+teacher a book, where "wà" is marking teacher "maalàminsù" as the
+indirect object).
+
+The definiteness-suffix/no-suffix rules were broken, because first person pronouns are underspecified for gender.  Both masc/fem rules were applying, and this was causing extra generated sentences.  I'm not actually sure which ending (m/f/pl) would apply to first person pronouns (if any).  To avoid applying the rules to these pronouns, I constrained the definiteness    I also added INFLECTED - to all my nouns and pronouns, to force them to go through either the definite or indefinite lexical rules.  (see "I can eat glass", "naa-iyà cî gìlâs".  The generation doesn't include definiteness suffixes).
+
+I misread what my reference grammar said, and I thought that auxiliaries required subjunctive inflection.  It turns out they can take any inflection, so I took off the constraint requiring subjunctive.
+
+I changed my head-opt-subject-phrase (which only functions with the
+sentence-final question marker) so that it would only take a main
+clause verb, or in other words a non-head-dtr with an inflected verb
+(not infinitive).  I added constraints on my head-opt-subj-phrase so
+it would only work with a verb with FORM fin.  I also fixed the
+coordination of NPs so that the case of the coodinated phrase is the
+same as both its daughters.  Now the CASE nom pronoun "I and the boy
+went to the market" (nii dà yaaròo mun-jee kàasuwaa) will parse, but
+the CASE dat won't (minì dà yaaròo mun-jee kàasuwaa).
+
+
+Finally, I fixed the overgeneration in many of my ditransitive sentences.  I added a constraint to my head-comps-phrase that required it's daughter to have SPR <>.  This got rid of my remaining extra parses by forcing all NPs to go through the bare-np-phrase rule.  Most of the overgeneration was caused by the bare-np-rule being applied allowed complex structures like coordinated subjects with indirect objects to generate. (see "shii dà d`àalìbai sun-fad`àa matà ta" , "He and the students told it to her.", as well as "mùtûm yaa-gayàa manà cêwaa yaa-sàyaa mootàa", "He told us that he bought a car")
+
+TRANSFER RULES
+
+I was not able to get translation working. I'm not quite sure what's wrong, but the gender and PRO filter rules aren't stripping those features.
+
+Besides adding PRO to the features stripped away, I added the optional pronoun insertion rule to translate between Hausa and languages without subject pro-drop.
+TEST SUITES
+Lab 8 -
+- Coverage: 69%
+- Overgeneration 12.8%
+
+Lab 9 -
+- Coverage: 66.7%
+- Overgeneration 6.4%
+
+The decrease in coverage is due to removing subjunctive from my grammar.  I had subjunctive examples contrasting with imperatives, so these no longer parsed.
+
+
+EXAMPLE sentences
+
+I can eat glass.  It doesn't hurt me.
+ "naa-iyà cî gìlâs"
+ "bàa yaa-cùutaa ni ba"
+
+1. sunàa-fàafaràa kàr~ee
+"They are chasing the dog"
+
+2. bàa yaarinyàa taa-fàad`ì ba
+"It is not the case that the girl fell"
+
+3."shii dà d`àalìbii sun-d`agàa"
+"he and the student left"
+
+4."yaaròo zâi-baa wà likità littaafìi gòobe"
+"The boy will give the teacher a book tomorrow"
+
+5."mùtûm yaa-gayàa manà cêwaa yaa-sàyaa mootàa saabuwaa."
+"The man told us that he bought a new car."
+
+6. "taa-iyà ganii gidaa"
+"She can see the house"
+
+

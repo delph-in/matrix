@@ -1,0 +1,10 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
+;;;  Phrase structure rule instances.
+
+;;;  Rules for SVO word order.
+
+head-comp := head-comp-phrase.
+subj-head := subj-head-phrase.
+
+

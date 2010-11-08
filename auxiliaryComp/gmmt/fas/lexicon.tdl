@@ -1,0 +1,613 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+; Sources
+;
+; Arthur N. Wollaston, An English-Persian Dictionary, 1978, Cosmo Publications, New Delhi
+;
+; Ann Lambton, Persian Vocabulary, Cambridge Univesity Press, 1979
+;
+; John Mace, Presian Grammar for Reference and Revision, RoutledgeCurzon, New York, 2003
+;
+; Wheeler M. Thackston, An Introduction to Persian, IBEX Publishers, Bethesda, Maryland, 1993
+;
+; http://iranianlanguages.com
+
+; BUGBUG Need to split all verbs into separate past and present stems.
+
+; Pronouns
+
+; English gloss: I
+; [Thackston 1993]
+; BUGBUG man+ra = mara (irregular)
+man := pronoun-lex &
+[ STEM < "man" >,
+  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+				     NUM sg ] ].
+
+; English gloss: you
+; Familiar
+; [Thackston 1993]
+to := pronoun-lex &
+[ STEM < "to" >,
+  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+				     NUM sg ] ].
+
+; English gloss: he/she
+; Animate
+; [Thackston 1993]
+u := pronoun-lex &
+[ STEM < "u" >,
+  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+				     NUM sg ] ].
+
+; English gloss: he/she/it
+; Animate or inanimate
+; [Thackston 1993]
+an_pronoun := pronoun-lex &
+[ STEM < "an" >,
+  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+				     NUM sg ] ].
+
+; English gloss: we
+; [Thackston 1993]
+ma := pronoun-lex &
+[ STEM < "ma" >,
+  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+				     NUM non-sg ] ].
+
+; English gloss: you
+; Polite
+; [Thackston 1993]
+shoma := pronoun-lex &
+[ STEM < "shoma" >,
+  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+				     NUM non-sg ] ].
+
+; English gloss: they
+; [Thackston 1993]
+; Usually for animate only (see Thackston pg. 19)
+ishan := pronoun-lex &
+[ STEM < "ishan" >,
+  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+				     NUM non-sg ] ].
+
+; English gloss: they
+; [Thackston 1993]
+anha := pronoun-lex &
+[ STEM < "anha" >,
+  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER third,
+				     NUM non-sg ] ].
+
+; Nouns
+
+; English gloss: apple
+; [Lambton 1979]
+sib := common-noun-lex & [ STEM < "sib" >, 
+			   SYNSEM.LKEYS.KEYREL.PRED '_apple_n_rel ].
+
+; English gloss: book
+; [Lambton 1979]
+ketab := common-noun-lex & [ STEM < "ketab" >, 
+			     SYNSEM.LKEYS.KEYREL.PRED '_book_n_rel ].
+
+; English gloss: boy
+; [Lambton 1979]
+pesar := common-noun-lex & [ STEM < "pesar" >, 
+			     SYNSEM.LKEYS.KEYREL.PRED '_boy_n_rel ].
+
+; English gloss: bread
+; [Lambton 1979]
+nan := common-noun-lex & [ STEM < "nan" >, 
+			   SYNSEM.LKEYS.KEYREL.PRED '_bread_n_rel ].
+
+; English gloss: car
+; [Thackston 1993]
+mashin := common-noun-lex & [ STEM < "mashin" >, 
+			      SYNSEM.LKEYS.KEYREL.PRED '_car_n_rel ].
+
+; English gloss: cat
+; [Lambton 1979]
+gorbe := common-noun-lex & [ STEM < "gorbe" >, 
+			     SYNSEM.LKEYS.KEYREL.PRED '_cat_n_rel ].
+
+; English gloss: child
+; [Lambton 1979]
+bachche := common-noun-lex & [ STEM < "bachche" >, 
+			       SYNSEM.LKEYS.KEYREL.PRED '_child_n_rel ].
+
+; English gloss: coffee
+; [Lambton 1979]
+qahve := common-noun-lex & [ STEM < "qahve" >, 
+			     SYNSEM.LKEYS.KEYREL.PRED '_coffee_n_rel ].
+
+; English gloss: cow
+; [Lambton 1979]
+gav := common-noun-lex & [ STEM < "gav" >, 
+			   SYNSEM.LKEYS.KEYREL.PRED '_cow_n_rel ].
+
+; English gloss: dog
+; [Lambton 1979]
+sag := common-noun-lex & [ STEM < "sag" >, 
+			   SYNSEM.LKEYS.KEYREL.PRED '_dog_n_rel ].
+
+; English gloss: food
+; [Lambton 1979]
+qaza := common-noun-lex & [ STEM < "qaza" >, 
+			    SYNSEM.LKEYS.KEYREL.PRED '_food_n_rel ].
+
+; English gloss: girl
+; [Lambton 1979]
+doxtar := common-noun-lex & [ STEM < "doxtar" >, 
+			      SYNSEM.LKEYS.KEYREL.PRED '_girl_n_rel ].
+
+; English gloss: frog
+; [Lambton 1979]
+qorbaqe := common-noun-lex & [ STEM < "qorbaqe" >, 
+			       SYNSEM.LKEYS.KEYREL.PRED '_frog_n_rel ].
+
+; English gloss: glass
+; [Lambton 1979]
+shishe := common-noun-lex & [ STEM < "shishe" >, 
+			      SYNSEM.LKEYS.KEYREL.PRED '_glass_n_rel ].
+
+; English gloss: harm
+; kardan + "to hurt"
+dard := kardan-noun-lex & [ STEM < "dard" >, 
+			    SYNSEM.LKEYS.KEYREL.PRED '_hurt_n_rel ].
+
+; ERB 2007-08-19 Nick Pendar supplied narahat as the nominal in
+; "It doens't hurt me".  For convenience, I'm keeping dard around,
+; and glossing it as 'hurt', while making narahat 'harm'.
+
+narahat := kardan-noun-lex &
+ [ STEM < "narahat" >,
+   SYNSEM.LKEYS.KEYREL.PRED "_harm_n_rel" ].
+
+; ERB 2007-08-20 Hacked clausal comp complex predicate
+
+fekr := kardan2-noun-lex &
+ [ STEM < "fekr" >,
+   SYNSEM.LKEYS.KEYREL.PRED "_thought_n_rel" ].
+
+; sfd
+; English gloss: pursuit
+; kardan + "to pursue"
+dombal := kardan-noun-lex & [ STEM < "dombal" >, 
+			      SYNSEM.LKEYS.KEYREL.PRED '_pursuit_n_rel ].
+
+; English gloss: horse
+; [Lambton 1979]
+asb := common-noun-lex & [ STEM < "asb" >, 
+			   SYNSEM.LKEYS.KEYREL.PRED '_horse_n_rel ].
+
+; English gloss: man
+; [Lambton 1979]
+mard := common-noun-lex & [ STEM < "mard" >, 
+			    SYNSEM.LKEYS.KEYREL.PRED '_man_n_rel ].
+
+; English gloss: money
+; [Lambton 1979]
+pul := common-noun-lex & [ STEM < "pul" >, 
+			   SYNSEM.LKEYS.KEYREL.PRED '_money_n_rel ].
+
+; English gloss: pencil
+; [Lambton 1979]
+medad := common-noun-lex & [ STEM < "medad" >,
+			     SYNSEM.LKEYS.KEYREL.PRED '_pencil_n_rel ].
+
+; English gloss: person
+; [Lambton 1979]
+shaxs := common-noun-lex & [ STEM < "shaxs" >, 
+			     SYNSEM.LKEYS.KEYREL.PRED '_person_n_rel ].
+
+; English gloss: woman
+; [Lambton 1979]
+zan := common-noun-lex & [ STEM < "zan" >, 
+			   SYNSEM.LKEYS.KEYREL.PRED '_woman_n_rel ].
+
+; English gloss: sheep
+; [Lambton 1979]
+guspand := common-noun-lex & [ STEM < "guspand" >, 
+			       SYNSEM.LKEYS.KEYREL.PRED '_sheep_n_rel ].
+
+; English gloss: Shirin, proper name (feminine)
+; [Thackston 1993]
+Shirin := common-noun-lex & [ STEM < "Shirin" >,
+			      SYNSEM.LKEYS.KEYREL.PRED '_Shirin_n_rel ].
+
+; English gloss: sneeze
+; [iranianlanguages.com]
+; kardan + "to sneeze"
+atse := common-noun-lex & [ STEM <"atse">,
+			    SYNSEM.LKEYS.KEYREL.PRED '_sneeze_v_rel ].
+
+
+; English gloss: milk
+; [Lambton 1979]
+shir := common-noun-lex & [ STEM < "shir" >, 
+			    SYNSEM.LKEYS.KEYREL.PRED '_milk_n_rel ].
+
+; English gloss: spoon
+; [Lambton 1979]
+qashoq := common-noun-lex & [ STEM < "qashoq" >, 
+			      SYNSEM.LKEYS.KEYREL.PRED '_spoon_n_rel ].
+
+; English gloss: tea
+; [Lambton 1979]
+chay := common-noun-lex & [ STEM < "chay" >, 
+			    SYNSEM.LKEYS.KEYREL.PRED '_tea_n_rel ].
+
+; English gloss: televison
+; [Lambton 1979]
+televiziyon := common-noun-lex & [ STEM < "televiziyon" >, 
+				   SYNSEM.LKEYS.KEYREL.PRED '_television_n_rel ].
+
+; English gloss: tree
+; [Lambton 1979]
+deraxt := common-noun-lex & [ STEM < "deraxt" >, 
+			      SYNSEM.LKEYS.KEYREL.PRED '_tree_n_rel ].
+
+
+; Compound Auxiliary Verbs
+
+; English gloss: make
+; Infinitive kardan
+; [Lambton 1979]
+kard := past-transitive-compound-verb-lex &
+  [ STEM <"kard">,
+    SYNSEM [ LOCAL.CAT.HEAD [ COMP_AUX "kardan_1",
+			      TAM.TENSE past_tense ],
+             LKEYS.KEYREL.PRED '_make_v_rel ] ].
+
+kon := present-transitive-compound-verb-lex &
+  [ STEM <"kon">,
+    SYNSEM [ LOCAL.CAT.HEAD [ COMP_AUX "kardan_1",
+			      TAM.TENSE present_tense ],
+             LKEYS.KEYREL.PRED '_make_v_rel ] ].
+
+; ERB 2007-08-20 Hacked complex predicates.
+
+kard2 := past-clausal-comp-compound-verb-lex &
+  [ STEM <"kard">,
+    SYNSEM [ LOCAL.CAT.HEAD [ COMP_AUX "kardan_2",
+			      TAM.TENSE past_tense ],
+             LKEYS.KEYREL.PRED '_make_v_rel ] ].
+
+kon2 := present-clausal-comp-compound-verb-lex &
+  [ STEM <"kon">,
+    SYNSEM [ LOCAL.CAT.HEAD [ COMP_AUX "kardan_2",
+			      TAM.TENSE present_tense ],
+             LKEYS.KEYREL.PRED '_make_v_rel ] ].
+
+; Intransitive Verbs
+
+; English gloss: come
+; Infinitive amadam
+; [Lambton 1979]
+amad := past-intransitive-verb-lex & [ STEM <"amad">,
+				       SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+						LKEYS.KEYREL.PRED '_come_v_rel ] ].
+
+a := present-intransitive-verb-lex & [ STEM <"a">,
+				       SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
+						LKEYS.KEYREL.PRED '_come_v_rel ] ].
+
+
+; English gloss: die
+; Infinitive mordan
+; [Lambton 1979]
+mord := past-intransitive-verb-lex & [ STEM <"mord">,
+				       SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+						LKEYS.KEYREL.PRED '_die_v_rel ] ].
+
+mir := present-intransitive-verb-lex & [ STEM <"mir">,
+					 SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
+						  LKEYS.KEYREL.PRED '_die_v_rel ] ].
+
+
+; English gloss: fall
+; Infinitive oftadan
+; [iranianlanguages.com]
+oftadan := past-intransitive-verb-lex & [ STEM <"oftad">,
+					  SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+						   LKEYS.KEYREL.PRED '_fall_v_rel ] ].
+
+; English gloss: go
+; Infinitive raftan
+; [Lambton 1979]
+raft := past-intransitive-verb-lex & [ STEM <"raft">,
+				       SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+						LKEYS.KEYREL.PRED '_go_v_rel ] ].
+
+rav := present-intransitive-verb-lex & [ STEM <"rav">,
+					 SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
+						  LKEYS.KEYREL.PRED '_go_v_rel ] ].
+
+; English gloss: live
+; Infinitive zistan
+; [Lambton 1979]
+zist := past-intransitive-verb-lex & [ STEM <"zist">,
+				       SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+						LKEYS.KEYREL.PRED '_live_v_rel ] ].
+
+; English gloss: play
+; Infinitive: navaxtan
+; [iranianlanguages.com]
+navaxt := past-intransitive-verb-lex & [ STEM <"navaxt">,
+					 SYNSEM [LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+						 LKEYS.KEYREL.PRED '_play_v_rel ] ].
+
+; English gloss: sleep
+; ERB 2007-07-03 For MMT: Drop the information that this is the past
+; tense stem, and let it work both ways.
+
+; Infinitive: xabidan
+; [Lambton 1979]
+
+xabid := intransitive-verb-lex & [ STEM <"xab">,
+				   SYNSEM [ LKEYS.KEYREL.PRED '_sleep_v_rel ] ].
+
+
+; English gloss: wake up
+; [iranianlanguages.com]
+;bidar_sodan := intransitive-verb-lex & [ STEM <"bidar_sodan">,
+;					 SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+;						  LKEYS.KEYREL.PRED '_wake+up_v_rel ] ].
+
+; English gloss: walk
+; BUGBUG Composite verb
+; "to go on foot", rah=foot, raftan=to go
+; [Lambton 1979]
+;rah_raftan:= intransitive-verb-lex & [ STEM <"rah_raftan">,
+;				       SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+;						LKEYS.KEYREL.PRED '_walk_v_rel ] ].
+
+; Auxiliary verbs
+
+; English gloss: to be able
+; [Lambton 1979]
+; Infinitive tavanestan
+tavan := auxiliary-verb-lex & [ STEM <"tavan">,
+				SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
+					 LKEYS.KEYREL.PRED '_can_v_rel ]].
+
+tavanest := auxiliary-verb-lex & [ STEM <"tavanest">,
+				   SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+					    LKEYS.KEYREL.PRED '_can_v_rel ]].
+
+
+; Transitive Verbs
+
+; English gloss: ask
+; Infinitive porsidan
+; [Mace 2003]
+porsid := past-clausal-comp-verb-lex & [ STEM <"porsid">,
+					 SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+						  LKEYS.KEYREL.PRED '_ask_v_rel ] ].
+
+pors := present-clausal-comp-verb-lex & [ STEM <"pors">,
+					  SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
+						   LKEYS.KEYREL.PRED '_ask_v_rel ] ].
+
+
+; English gloss: buy
+; Infinitive xaridan
+; [Lambton 1979]
+xarid := past-transitive-verb-lex & [ STEM <"xarid">,
+				      SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+					       LKEYS.KEYREL.PRED '_buy_v_rel ] ].
+
+xar := present-transitive-verb-lex & [ STEM <"xar">,
+				       SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
+						LKEYS.KEYREL.PRED '_buy_v_rel ] ].
+
+; English gloss: eat
+; Infinitive xordan
+; [Lambton 1979]
+
+; ERB 2007-08-19 Nick Pendar gives the stem as 'xor' and says
+; that it can't be used intransitively.
+
+; BUGBUG Is this the correct present stem?
+xord_eat := past-transitive-verb-lex & 
+  [ STEM <"xord">,
+    SYNSEM [ LOCAL.CAT [ VAL.COMPS.FIRST.OPT -,
+			 HEAD.TAM.TENSE past_tense ],
+	     LKEYS.KEYREL.PRED '_eat_v_rel ] ].
+
+
+xor_eat := present-transitive-verb-lex & 
+ [ STEM <"xor">,
+   SYNSEM [ LOCAL.CAT [ VAL.COMPS.FIRST.OPT -,
+			HEAD.TAM.TENSE present_tense ],
+	    LKEYS.KEYREL.PRED '_eat_v_rel ] ].
+
+
+; English gloss: drink
+; [Lambton 1979]
+;xordan_drink := transitive-verb-lex & [ STEM <"xordan">,
+;					SYNSEM.LKEYS.KEYREL.PRED '_drink_v_rel ].
+
+; English gloss: know
+; Infinitive danestan
+; BUGBUG Past stem is irregular
+; [Mace 2003]
+dunest := past-clausal-comp-verb-lex & [ STEM <"dunest">,
+					 SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+						  LKEYS.KEYREL.PRED '_know_v_rel ] ].
+
+dan := present-clausal-comp-verb-lex & [ STEM <"dan">,
+					 SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
+						  LKEYS.KEYREL.PRED '_know_v_rel ] ].
+
+
+; sfd
+; English gloss: think
+; Infinitive andishidan
+andishid := present-clausal-comp-verb-lex & [ STEM <"andishid">,
+			 SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
+				  LKEYS.KEYREL.PRED '_think_v_rel ] ].
+
+
+; English gloss: love
+; BUGBUG Composite verb
+; have (v)=dashtan, love (n) = mahabbat
+; [Lambton 1979]
+;mahabbat_dashtan := past-transitive-verb-lex & [ STEM <"mahabbat_dashtan">,
+;						 SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+;							  LKEYS.KEYREL.PRED '_love_v_rel ] ].
+
+; English gloss: paint
+; Infinitive kasidan
+; BUGBUG Missing present tense
+; [iranianlanguages.com]
+kasid := transitive-verb-lex & [ STEM <"kasid">,
+				 SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+					  LKEYS.KEYREL.PRED '_paint_v_rel ] ].
+
+; English gloss: read
+; Infinitive xandan
+; BUGBUG Missing present tense
+; [Lambton 1979]
+xand := past-transitive-verb-lex & [ STEM <"xand">,
+				     SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+					      LKEYS.KEYREL.PRED '_read_v_rel ] ].
+
+; English gloss: say
+; Infinitive goftan
+; [Mace 2003]
+goft := past-clausal-comp-verb-lex & [ STEM <"goft">,
+				       SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+						LKEYS.KEYREL.PRED '_say_v_rel ] ].
+
+gu := present-clausal-comp-verb-lex & [ STEM <"gu">,
+					SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
+						 LKEYS.KEYREL.PRED '_say_v_rel ] ].
+
+; English gloss: see
+; Infinitive didan
+; [Mace 2003]
+did := past-transitive-verb-lex & [ STEM <"did">,
+				    SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+					     LKEYS.KEYREL.PRED '_see_v_rel ] ].
+
+bin := present-transitive-verb-lex & [ STEM <"bin">,
+				       SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
+						LKEYS.KEYREL.PRED '_see_v_rel ] ].
+
+; English gloss: want
+; Infinitive xastan
+; [Mace 2003]
+xast := past-transitive-verb-lex & [ STEM <"xast">,
+				     SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+					      LKEYS.KEYREL.PRED '_want_v_rel ] ].
+
+xah := present-transitive-verb-lex & [ STEM <"xah">,
+				       SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
+						LKEYS.KEYREL.PRED '_want_v_rel ] ].
+
+; English gloss: wash
+; Infinitive shostan
+; [Lambton 1979]
+shost := transitive-verb-lex & [ STEM <"shost">,
+				 SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+					  LKEYS.KEYREL.PRED '_wash_v_rel ] ].
+
+; English gloss: watch
+; Infinitive nigristan
+; [Wollaston 1978]
+nigrist := transitive-verb-lex & [ STEM <"nigrist">,
+				   SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+					    LKEYS.KEYREL.PRED '_watch_v_rel ] ].
+
+
+; Ditransitive Verbs
+
+; English gloss: give
+; Infinitive dadan
+; [Thackston 1993]
+dad := past-ditransitive-verb-lex & [ STEM <"dad">,
+				      SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE past_tense,
+					       LKEYS.KEYREL.PRED '_give_v_rel ] ].
+
+deh := present-ditransitive-verb-lex & [ STEM <"deh">,
+					 SYNSEM [ LOCAL.CAT.HEAD.TAM.TENSE present_tense,
+						  LKEYS.KEYREL.PRED '_give_v_rel ] ].
+
+; Demonstratives
+
+; English gloss: this
+; [Thackston 1993]
+in := demon-det-lex &  [ STEM <"in">,
+			     SYNSEM.LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ].
+
+; English gloss: that
+; [Thackston 1993]
+;
+; BUGBUG This should be "an" according to my transcription, but a
+; parsed sentence with an "an" in it does not generate strings from the
+; semantics.  Call this "anBUGBUG" as a workaround.
+
+anBUGBUG := demon-det-lex &  [ STEM <"an">,
+				   SYNSEM.LKEYS.ALTKEYREL.PRED distal+dem_a_rel ].
+
+
+; Prepositions
+
+; ERB 2007-07-03 Commenting these out: Bill didn't associate any
+; semantics with them, so they are just slowing the generator down
+; (and do not actually appear in any of our test sentences.)
+
+; English gloss: in
+;dar := preposition-lex & [ STEM <"dar"> ].
+
+; English gloss: to
+;be := preposition-lex & [ STEM <"be"> ].
+
+; English gloss: with, despite
+;ba := preposition-lex & [ STEM <"ba"> ].
+
+; English gloss: as far as, until
+;ta := preposition-lex & [ STEM <"ta"> ].
+
+; English gloss: from, by, through, since, than
+;az := preposition-lex & [ STEM <"az"> ].
+
+; English gloss: on
+;bar := preposition-lex & [ STEM <"bar"> ].
+
+; English gloss: without
+;bi := preposition-lex & [ STEM <"bi"> ].
+
+; English gloss: except
+;joz := preposition-lex & [ STEM <"joz"> ].
+
+; English gloss: like
+;cun := preposition-lex & [ STEM <"cun"> ].
+
+
+; Particles
+
+; The polar question particle precedes a declarative sentence to turn
+; it into a question.
+aya := polar-question-particle-lex & [ STEM <"aya"> ].
+
+; Relative complementizer
+ke := complementizer-lex & [ STEM <"ke"> ].
+
+; Coordination
+va_1 := conj-lex &
+  [ STEM < "va" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
+    CFORM "1" ] .
+
+; Adverbs
+
+tond := adverb-lex &
+  [ STEM <"tond">,
+    SYNSEM.LKEYS.KEYREL.PRED "_quickly_r_rel" ].
+
+; Adjectives
+
+gorosne := adjective-lex &
+  [ STEM <"gorosne">,
+    SYNSEM.LKEYS.KEYREL.PRED "_hungry_a_rel" ].

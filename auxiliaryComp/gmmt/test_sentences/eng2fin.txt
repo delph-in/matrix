@@ -1,0 +1,51 @@
+Dogs sleep.
+koira+Pl+Nom nukkua+3p+Pl
+
+Dogs chase cars.
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+I chase you.
+minA+Sg+Nom metsAstAA+1p+Sg sinA+Sg+Acc
+
+These dogs sleep.
+tuo+Pl+Nom koira+Pl+Nom nukkua+3p+Pl
+
+Dogs eat.
+koira+Pl+Nom syOdA+3p+Pl
+
+I can eat glass.
+minA+Sg+Nom voida+1p+Sg syOdA+Inf lasi+Sg+Part
+
+It doesnt hurt me.
+hAn+Sg+Nom ei sattua+3p+Sg minA+Sg+Part
+
+The dogs chase cars.
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+I think that you know that dogs chase cars.
+minA+Sg+Nom ajatella+1p+Sg ettA sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+I ask whether you know that dogs chase cars.
+minA+Sg+Nom kysyA+1p+Sg jos sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+Cats and dogs chase cars.
+kissa+Pl+Nom ja koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+Dogs chase cars and cats chase dogs.
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc ja kissa+Pl+Nom metsAstAA+3p+Pl koira+Pl+Acc
+
+Cats chase dogs and sleep.
+kissa+Pl+Nom metsAstAA+3p+Pl koira+Pl+Acc ja nukkua+3p+Pl
+
+Do cats chase dogs?
+metsAstAA+3p+Pl+Ques kissa+Pl+Nom koira+Pl+Acc
+
+Chase the dog.
+metsAstAA koira+Sg+Acc
+
+Hungry dogs eat.
+nAlkAinen+Pl+Nom koira+Pl+Nom syOdA+3p+Pl
+
+Hungry dogs eat quickly.
+nAlkAinen+Pl+Nom koira+Pl+Nom syOdA+3p+Pl nopeasti
+

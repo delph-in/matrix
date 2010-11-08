@@ -1,0 +1,14 @@
+
+null-PAC-verb := null-PAC-verb-lex-rule.
+
+;no-linker-rule := no-linker-adj-lex-rule .
+
+;no-iobj-case := non-iobj-case-marking-lex-rule.
+
+indef-lex := indef-lex-rule.
+;f-indef-lex := f-indef-lex-rule.
+;m-indef-lex := m-indef-lex-rule.
+;p-indef-lex := p-indef-lex-rule.
+;n-indef-lex := n-indef-lex-rule.
+
+

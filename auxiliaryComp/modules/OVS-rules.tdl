@@ -1,0 +1,10 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
+;;;  Phrase structure rule instances
+
+;;;  Rules for OVS word order.
+
+comp-head := comp-head-phrase.
+head-subj := head-subj-phrase.
+
+

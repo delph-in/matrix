@@ -1,0 +1,51 @@
+kàr~nai sunàa-kwaana
+koira+Pl+Nom nukkua+3p+Pl
+
+kàr~nai sunàa-fàafaràa mootàa
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+sunàa-fàafaràa su
+minA+Sg+Nom metsAstAA+1p+Sg sinA+Sg+Acc
+
+wad`ànnân kàr~nai sunàa-kwaana
+tuo+Pl+Nom koira+Pl+Nom nukkua+3p+Pl
+
+kàr~nai sunàa-ci
+koira+Pl+Nom syOdA+3p+Pl
+
+naa-iyà ci gìlâs
+minA+Sg+Nom voida+1p+Sg syOdA+Inf lasi+Sg+Part
+
+bàa yaa-cùutaa ni ba
+hAn+Sg+Nom ei sattua+3p+Sg minA+Sg+Part
+
+kàr~nai-`n sunàa-fàafaràa mootàa
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+inàa-taunàa cêwaa kinàa-san cêwaa kàr~nai sunàa-fàafaràa mootàa
+minA+Sg+Nom ajatella+1p+Sg ettA sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+inàa-tàmbayàa koo kinàa-san cêwaa kàr~nai sunàa-fàafaràa mootàa
+minA+Sg+Nom kysyA+1p+Sg jos sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+kyânwuna dà kàr~nai sunàa-fàafaràa mootàa
+kissa+Pl+Nom ja koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+
+kàr~nai sunàa-fàafaràa mootàa kyânwuna sunàa-fàafaràa kàr~nai
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc ja kissa+Pl+Nom metsAstAA+3p+Pl koira+Pl+Acc
+
+kyânwuna sunàa-fàafaràa kàr~nai sunàa-kwaana
+kissa+Pl+Nom metsAstAA+3p+Pl koira+Pl+Acc ja nukkua+3p+Pl
+
+koo kyânwuna sunàa-fàafaràa kàr~nai
+metsAstAA+3p+Pl+Ques kissa+Pl+Nom koira+Pl+Acc
+
+fàafaraa kàr~e-`n
+metsAstAA koira+Sg+Acc
+
+kàr~nai mààsu-yunwàà sunàa-ci
+nAlkAinen+Pl+Nom koira+Pl+Nom syOdA+3p+Pl
+
+kàr~nai mààsu-yunwàà sunàa-ci zumbur
+nAlkAinen+Pl+Nom koira+Pl+Nom syOdA+3p+Pl nopeasti
+

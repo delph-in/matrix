@@ -1,0 +1,8 @@
+;;;  Types for OSV word order.
+
+comp-head-phrase := basic-head-1st-comp-phrase & head-final &
+   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].
+subj-head-phrase := basic-head-subj-phrase & head-final.
+
+
+

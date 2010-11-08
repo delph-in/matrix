@@ -1,0 +1,52 @@
+#!/bin/bash
+
+if [ "$1" = "nocomp" ]; then
+	echo "No previous file for comparison."
+else if [ -e "alt/$1" ]; then
+	echo "Comparing with $1" 
+else
+	echo "Usage: all_lgs_test nocomp | comparison file"
+	exit 1
+fi
+fi
+
+#DATE=2007-08-21
+DATE=`date "+%Y-%m-%d"`
+
+if [ -e "$LOGONROOT/uw/mmt/alt/${DATE}" ]; then
+    echo "alt/${DATE} exists.  Please move it out of the way."
+    exit 1
+fi
+
+languages="eng epo fas fin hau heb hye isl ita zul";
+for src in $languages; do
+   	for tgt in $languages; do
+    
+		if [ "${tgt}" != "${src}" ]; then
+		    $LOGONROOT/batch --binary --from $src --to $tgt --ascii $LOGONROOT/uw/mmt/test_sentences/${src}2${tgt}.txt
+		fi
+
+   	done
+done
+
+
+mkdir $LOGONROOT/uw/mmt/alt/${DATE}
+cd $LOGONROOT/uw/mmt/alt/
+mv ~/*.fan ./${DATE}/
+
+echo "Results for ${DATE}" > summary.${DATE}
+
+for file in $( ls $DATE ); do
+	`echo $file >> summary.${DATE}`
+	`grep "|<" $DATE/$file | grep "= 0" | wc >> summary.${DATE}`
+done
+
+cd $LOGONROOT/uw/mmt/
+python formatresults.py alt/summary.${DATE} alt/$1
+mv table.tex alt/table.$DATE.tex
+cd $LOGONROOT/uw/mmt/alt
+pdflatex table.$DATE.tex
+
+
+
+	
