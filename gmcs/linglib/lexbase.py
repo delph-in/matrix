@@ -36,6 +36,9 @@ class MorphotacticNode(HierarchyNode):
     self.flags = {'in':{},'out':{}}
     self.supertypes = supertypes or set()
     self.identifier_suffix = ''
+    # tdl order is used for sorting the rules as the occur in the tdl
+    # PCs are integers (1, 2, 3), LRTs are floats (1.1, 2,1, 2.2, etc)
+    self.tdl_order = 0
     #self.input_lrt = None
 
   def relatives(self, relation):
@@ -89,6 +92,15 @@ class PositionClass(MorphotacticNode):
 
   def input_span(self):
     return self.hierarchy.get_lineage(key=self.key, relation='input')
+
+  def valid_inputs(self):
+    all_inps = self.input_span().values()
+    # there are two conditions preventing an ancestor from being an input:
+    # 1. A node, or all its ancestors, req-fwd an intervening node
+    # 2. This pc, or all its followers, req-bkwd an intervening node
+
+    # implement these later.. try to be efficient
+    return all_inps
 
   def percolate_supertypes(self):
     # roots are those nodes without parents

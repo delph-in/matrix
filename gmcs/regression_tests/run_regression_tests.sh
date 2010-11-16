@@ -20,10 +20,6 @@ if [ -z "${CUSTOMIZATIONROOT}" ]; then
   exit 1
 fi
 
-# prepare directories
-mkdir -p ${CUSTOMIZATIONROOT}/regression_tests/grammars
-mkdir -p ${CUSTOMIZATIONROOT}/regression_tests/logs
-
 # Check if there are any grammars in the way, and if so, exit.
 
 #
@@ -49,8 +45,8 @@ fi
 # Paraeters which are the same for all regression test:
 
 skeletons="${CUSTOMIZATIONROOT}/regression_tests/skeletons/"
-tsdbhome="${CUSTOMIZATIONROOT}/regression_tests/home"
-logdir="${CUSTOMIZATIONROOT}/regression_tests/logs"
+tsdbhome="${CUSTOMIZATIONROOT}/regression_tests/home/"
+logdir="${CUSTOMIZATIONROOT}/regression_tests/logs/"
 
 # Get the list of regression tests from the regression-test-index:
 # or from command-line input.
@@ -60,8 +56,8 @@ if [ -z $1 ]; then
     lgnames=`python ${CUSTOMIZATIONROOT}/regression_tests/regressiontestindex.py --lg-names`
 
     if [ $? != 0 ]; then
-	echo "run-regression-tests: Problem with regression-test-index, cannot run regression tests."
-	exit
+    echo "run-regression-tests: Problem with regression-test-index, cannot run regression tests."
+    exit
     fi
 
     echo "Removing old grammars"
@@ -89,14 +85,22 @@ do
 # target directory.
 
     skeleton="${CUSTOMIZATIONROOT}/regression_tests/skeletons/$lgname"
-    gold="${CUSTOMIZATIONROOT}/regression_tests/gold/$lgname"
+    gold="gold/$lgname"
     grammardir="${CUSTOMIZATIONROOT}/regression_tests/grammars/$lgname"
-    target="${CUSTOMIZATIONROOT}/regression_tests/current/$lgname"
+    target="current/$lgname"
     log="$logdir/$lgname.$date"
+
+    # if the grammar or log already exist, remove them
+    if [ -f $log ]; then
+      rm $log
+    fi
+    if [ -d $grammardir ]; then
+      rm -rf $grammardir
+    fi
 
 # Invoke customize.py
 
-    ${CUSTOMIZATIONROOT}/regression_tests/call-customize ${CUSTOMIZATIONROOT} ${CUSTOMIZATIONROOT}/regression_tests/choices/$lgname ${CUSTOMIZATIONROOT}/regression_tests/grammars/$lgname
+${CUSTOMIZATIONROOT}/../matrix.py cf ${CUSTOMIZATIONROOT}/regression_tests/choices/$lgname ${CUSTOMIZATIONROOT}/regression_tests/grammars/$lgname
 
 # If you're Scott, you need to uncomment these lines to run the tests
 #   rm -rf /tmp/grammar
@@ -112,15 +116,15 @@ do
     status=$?
 
     if [ $status = 17 ]; then
-	echo "run-regression-tests: call-customize failed for $lgname... continuining with other regression tests."
-	echo "call-customize failed because old grammar was in the way." >> $log
+    echo "run-regression-tests: call-customize failed for $lgname... continuining with other regression tests."
+    echo "call-customize failed because old grammar was in the way." >> $log
     elif [ $status = 18 ]; then
-	echo "run-regression-tests: call-customize failed for $lgname... continuining with other regression tests."
-	echo "no choices file at path regression_tests/choices/$lgname." >> $log
+    echo "run-regression-tests: call-customize failed for $lgname... continuining with other regression tests."
+    echo "no choices file at path regression_tests/choices/$lgname." >> $log
     elif [ $status != 0 ]; then
 
-	    echo "run-regression-tests: customization failed for $lgname... continuing with other regression tests."; 
-	    echo "Customization failed; no grammar created." >> $log
+        echo "run-regression-tests: customization failed for $lgname... continuing with other regression tests."; 
+        echo "Customization failed; no grammar created." >> $log
 
     else
 
@@ -129,51 +133,63 @@ do
 # I don't see how the following can possibly do anything,
 # since nothing has yet invoked [incr tsdb()] or lisp.
 # But let's give it a try anyway...
+    grm_file=`ls $subdir/*-pet.grm`
+    {
+        options=":error :exit :wait 300"
 
-	{
-	    options=":error :exit :wait 300"
+        echo "(setf (system:getenv \"DISPLAY\") nil)"
 
-	    echo "(setf (system:getenv \"DISPLAY\") nil)"
+        echo "(setf tsdb::*process-suppress-duplicates* nil)"
+        echo "(setf tsdb::*process-raw-print-trace-p* t)"
 
-	    echo "(setf tsdb::*process-suppress-duplicates* nil)"
-	    echo "(setf tsdb::*process-raw-print-trace-p* t)"
+        echo "(setf tsdb::*tsdb-home* \"$tsdbhome\")"
+        echo "(tsdb:tsdb :skeletons \"$skeletons\")"
 
-	    echo "(setf tsdb::*tsdb-home* \"$tsdbhome\")"
-	    echo "(tsdb:tsdb :skeletons \"$skeletons\")"
+        #echo "(setf *tsdb-cache-connections-p* t)"
+        #echo "(setf *pvm-encoding* :utf-8)"
 
-	    echo "(lkb::read-script-file-aux \"$grammar\")"
+        #echo "(setf *pvm-cpus* (list (make-cpu"
+        #echo "  :host (short-site-name)"
+        #echo "  :spawn \"${LOGONROOT}/bin/cheap\""
+        #echo "  :options (list \"-tsdb\" \"-packing\" \"-mrs\" \"$grm_file\")"
+        #echo "  :class :$lgname :name \"$lgname\""
+        #echo "  :grammar \"$lgname (current)\""
+        #echo "  :encoding :utf-8"
+        #echo "  :task '(:parse) :wait 300 :quantum 180)))"
+        echo "(lkb::read-script-file-aux \"$grammar\")"
 
-	    echo "(setf target \"$target\")"
-	    echo "(tsdb:tsdb :create target :skeleton \"$lgname\")"
-	
-	    echo "(tsdb:tsdb :process target)"
+        echo "(setf target \"$target\")"
+        echo "(tsdb:tsdb :create target :skeleton \"$lgname\")"
 
-	    echo "(tsdb::compare-in-detail \"$target\" \"$gold\" :format :ascii :compare '(:readings :mrs) :append \"$log\")"
+        #echo "(tsdb:tsdb :cpu :$lgname :task :parse :file t)"
+        echo "(tsdb:tsdb :process target)"
 
-	} | ${LOGONROOT}/bin/logon \
-	    -I base -locale no_NO.UTF-8 -qq 2> ${TSDBLOG} > ${TSDBLOG}
+        echo "(tsdb::compare-in-detail \"$target\" \"$gold\" :format :ascii :compare '(:readings :mrs) :append \"$log\")"
+
+    } | ${LOGONROOT}/bin/logon \
+        -I base -locale no_NO.UTF-8 -qq 2> ${TSDBLOG} > ${TSDBLOG}
 # ${source} ${cat} 
 # FIXME: There is probably a more appropriate set of options to
 # send to logon, but it seems to work fine as is for now. 
 
-	rm -rf $grammardir
+    rm -rf $grammardir
 
 # When the grammar fails to load, [incr tsdb()] is not creating
 # the directory.  So use existence of $tsdbhome/$target to check
 # for grammar load problems.
 
-	if [ -e $tsdbhome/$target ]; then
-	    rm -rf "$tsdbhome/$target"
-	else
-	    echo "Probable tdl error; grammar failed to load." >> $log
-	fi
-	   
-	
-	if [ -s $log ]; then
-	    echo "DIFFS!"
-	else
-	    echo "Success!"
-	fi
+    if [ -e $tsdbhome/$target ]; then
+        rm -rf "$tsdbhome/$target"
+    else
+        echo "Probable tdl error; grammar failed to load." >> $log
+    fi
+       
+    
+    if [ -s $log ]; then
+        echo "DIFFS!"
+    else
+        echo "Success!"
+    fi
     fi
 done
 
@@ -199,13 +215,13 @@ do
     log="$logdir/$lgname.$date"
     echo -ne "$lgname" >> $masterlog
     if [ -s $log ]; then
-	echo -ne ": " >> $masterlog
-	python ${CUSTOMIZATIONROOT}/regression_tests/regressiontestindex.py --comment $lgname | cat >> $masterlog
-	echo "" >> $masterlog
-	cat $log >> $masterlog
-	echo "" >> $masterlog
+    echo -ne ": " >> $masterlog
+    python ${CUSTOMIZATIONROOT}/regression_tests/regressiontestindex.py --comment $lgname | cat >> $masterlog
+    echo "" >> $masterlog
+    cat $log >> $masterlog
+    echo "" >> $masterlog
     else
-	echo "... Success!" >> $masterlog
+    echo "... Success!" >> $masterlog
     fi
     rm -f $log
 done

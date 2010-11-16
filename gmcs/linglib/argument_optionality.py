@@ -25,30 +25,42 @@ def customize_arg_op(choices, mylang):
     pc_key = pc.full_key
     idx = pc['lrt'].next_iter_num() if 'lrt' in pc else 1
     for lrt in pc.get('lrt',[]):
-      # only create a lexical rule if necessary
-      if not (need_no_drop_rule('obj-mark', choices) or \
-              need_no_drop_rule('subj-mark', choices)):
-        continue
       overt = [f for f in lrt.get('feat',[]) if f['name']=='overt-arg']
       dropped = [f for f in lrt.get('feat',[]) if f['name']=='dropped-arg']
+      need_lex_rule = need_no_drop_rule('obj-mark', choices) or \
+                      need_no_drop_rule('subj-mark', choices)
       # overt-arg morphs should be the index of the next available
       if overt:
-        key = pc.full_key + '_lrt' + str(idx)
-        #choices[key + '_supertypes'] = pc.full_key
-        name = get_name(pc) + '-no-drop'
-        choices[key + '_name'] = name
-        choices[key + '_feat1_name'] = 'OPT'
-        choices[key + '_feat1_value'] = 'minus'
-        choices[key + '_feat1_head'] = overt[0]['head']
+        feat = overt[0]
+        # convert overt-arg features to OPT
+        if feat['value'] == 'not-permitted':
+          feat['name'] = 'OPT'
+          feat['value'] = 'plus'
+        # only create a lexical rule if necessary
+        if need_lex_rule:
+          key = pc.full_key + '_lrt' + str(idx)
+          name = get_name(pc) + '-no-drop'
+          choices[key + '_name'] = name
+          choices[key + '_feat1_name'] = 'OPT'
+          choices[key + '_feat1_value'] = 'minus'
+          choices[key + '_feat1_head'] = feat['head']
+          choices[key + '_lri1_orth'] = ''
       # dropped-arg morphs should be the index of the next available + 1
       if dropped:
-        key = pc.full_key + '_lrt' + str(idx + 1)
-        #choices[key + '_supertypes'] = pc.full_key
-        name = get_name(pc) + '-drop'
-        choices[key + '_name'] = name
-        choices[key + '_feat1_name'] = 'OPT'
-        choices[key + '_feat1_value'] = 'plus'
-        choices[key + '_feat1_head'] = dropped[0]['head']
+        feat = dropped[0]
+        # convert dropped-arg features to OPT
+        if feat['value'] == 'not-permitted':
+          feat['name'] = 'OPT'
+          feat['value'] = 'minus'
+        # only create a lexical rule if necessary
+        if need_lex_rule:
+          key = pc.full_key + '_lrt' + str(idx + 1)
+          name = get_name(pc) + '-drop'
+          choices[key + '_name'] = name
+          choices[key + '_feat1_name'] = 'OPT'
+          choices[key + '_feat1_value'] = 'plus'
+          choices[key + '_feat1_head'] = feat['head']
+          choices[key + '_lri1_orth'] = ''
 
 def need_no_drop_rule(obj_subj, choices):
   '''

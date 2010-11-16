@@ -47,8 +47,8 @@ def intermediate_typename(pcs):
 def disjunctive_typename(mns):
   return '-or-'.join(sorted([mn.name for mn in mns]))
 
-def flag_name(flag):
-  return flag.upper() + '-FLAG'
+def flag_name(flag_tuple):
+  return disjunctive_typename(flag_tuple).upper() + '-FLAG'
 
 def sequential(mn1, mn2):
   """
@@ -72,38 +72,10 @@ def ordered_constraints(mn, constraint_type):
     ordered.insert(loc, c)
   return ordered
 
-def valid_input(mn, pc):
-  """
-  Return True if the given morphotactic node can be an input for the
-  given position class. This is the case if there exists an unblocked
-  path from a lexical rule instance to the position class.
-  """
-  realizable_nodes = mn.nodes.values() if isinstance(mn, PositionClass) \
-                     else [mn] + mn.descendants().values()
-  return any(input_path_exists(lrt, pc)
-             for lrt in realizable_nodes
-             if isinstance(lrt, LexicalType) or len(lrt.lris) > 0)
-
-def input_path_exists(lrt, pc):
-  """
-  Return True if the input path is valid from lrt to pc. A path is
-  valid (i.e. not blocked) if no ancestor of lrt requires a
-  morphotactic node after lrt's position class and before pc.
-  """
-  ancestors = set([lrt, lrt.pc]).union(lrt.ancestors().values())
-  blocking_mns = [mn for mn in ancestors
-                  if len(mn.constraints['req-fwd']) > 0 \
-                  and any(_mns[c].precedes(pc)
-                          for c in mn.constraints['req-fwd'])]
-  return len(blocking_mns) == 0
-
 def get_input_map(pch):
   inp_map = defaultdict(list)
   for pc in pch.nodes.values():
-    # filter impossible inputs here
-    valid_inps = [inp for inp in pc.input_span().values()
-                  if valid_input(inp, pc)]
-    i_s = tuple(sorted(valid_inps, key=lambda x: x.key))
+    i_s = tuple(sorted(pc.valid_inputs(), key=lambda x: x.tdl_order))
     if len(i_s) > 0:
       inp_map[i_s] += [pc]
   return inp_map
@@ -118,12 +90,12 @@ def customize_inflection(choices, mylang, irules, lrules):
   and types necessary to model the inflectional system into the irules,
   lrules, and primary grammar files.
   """
-  pch = customize_lexical_rules(choices)
+  pch = customize_lexical_rules(choices, mylang)
   # write_rules currently returns a list of items needing feature
   # customization. Hopefully we can find a better solution
   return write_rules(pch, mylang, irules, lrules)
 
-def customize_lexical_rules(choices):
+def customize_lexical_rules(choices, mylang):
   """
   Interpret the PCs in a Choices file into a set of lexical rules.
   """
@@ -137,7 +109,7 @@ def customize_lexical_rules(choices):
   #  3. find the unique input for each PC (and create intermediate rules)
   #      (all_inputs() depends on forward-looking require constraints)
   #  4. determine and create flags based on constraints
-  pch = position_class_hierarchy(choices)
+  pch = position_class_hierarchy(choices, mylang)
   #create_lexical_rule_types(choices)
   interpret_constraints(choices)
   convert_obligatoriness_to_req(choices)
@@ -146,7 +118,7 @@ def customize_lexical_rules(choices):
 
 ### POSITION CLASSES AND LEXICAL RULE TYPES ###
 
-def position_class_hierarchy(choices):
+def position_class_hierarchy(choices, mylang):
   """
   Create and return the data structures to hold the information
   regarding position classes and lexical types.
@@ -164,27 +136,35 @@ def position_class_hierarchy(choices):
   # We can't set parents until we have created all MN objects.
   pc_inputs = {}
   # Now create the actual position classes
-  for pc in all_position_classes(choices):
+  for i, pc in enumerate(all_position_classes(choices)):
     if len(pc.get('inputs', '')) > 0:
-      pc_inputs[pc.full_key] = set(pc['inputs'].split(', '))
+      pc_inputs[pc.full_key] = set(pc.get('inputs').split(', '))
     cur_pc = pch.add_node(PositionClass(pc.full_key, get_name(pc),
-                                        order=pc['order']))
+                                        order=pc.get('order')))
+    cur_pc.tdl_order = i
     _mns[cur_pc.key] = cur_pc
+    # If there's only one LRT, and the PC or the LRT are unnamed, merge them
+    if len(pc.get('lrt')) == 1:
+      lrt = pc['lrt'].get_first()
+      if '' in (pc.get('name',''), lrt.get('name','')):
+        name = pc.get('name') or lrt.get('name') or pc.full_key
+        lrt['name'] = cur_pc.name = name
+        cur_pc.identifier_suffix = 'lex-rule'
     # Fill the lexical rule types with the information we know
     lrt_parents = {}
-    for lrt in pc['lrt']:
+    for j, lrt in enumerate(pc.get('lrt')):
       if 'supertypes' in lrt:
-        lrt_parents[lrt.full_key] = set(lrt['supertypes'].split(', '))
-      cur_pc.add_node(create_lexical_rule_type(lrt))
+        lrt_parents[lrt.full_key] = set(lrt.get('supertypes').split(', '))
+      # default name uses name of PC with _lrtX
+      if 'name' not in lrt:
+        lrt['name'] = cur_pc.name + lrt.full_key.replace(cur_pc.key, '', 1)
+      cur_lrt = create_lexical_rule_type(lrt)
+      # the ordering should only mess up if there are 100+ lrts
+      cur_lrt.tdl_order = i + (0.01 * j)
+      cur_pc.add_node(cur_lrt)
     for child in lrt_parents:
       for parent in lrt_parents[child]:
         cur_pc.relate_parent_child(_mns[parent], _mns[child])
-    # if there is one unnamed LRT in a PC, merge the LRT with the PC
-    if len(cur_pc.nodes) == 1:
-      lrt = cur_pc.nodes.values()[0]
-      if lrt.name == lrt.key or cur_pc.name == cur_pc.name == cur_pc.key:
-        cur_pc.identifier_suffix = 'lex-rule'
-        lrt.name = cur_pc.name
     # With knowledge of the hierarchy, determine the appropriate
     # supertypes, then try to push common supertypes up to reduce
     # redundancy in TDL
@@ -198,10 +178,10 @@ def position_class_hierarchy(choices):
 
 def create_lexical_rule_type(lrt):
   new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
-  for feat in lrt['feat']:
+  for feat in lrt.get('feat'):
     new_lrt.features[feat['name']] = {'value': feat['value'],
-                                      'head': feat.get('head', None)}
-  new_lrt.lris = [lri.get('orth','') for lri in lrt['lri']]
+                                      'head': feat.get('head')}
+  new_lrt.lris = [lri.get('orth','') for lri in lrt.get('lri',[])]
   # if there exists a non-empty lri, give it an infl supertype
   if len(new_lrt.lris) > 0:
     if any([len(lri) > 0 for lri in new_lrt.lris]):
@@ -277,18 +257,18 @@ def create_flags():
 
 def assign_flags(mn, flag_values, flag_groups):
   for flag_group in flag_groups:
-    flag_name = disjunctive_typename(flag_group.values())
+    flag_tuple = tuple(sorted(flag_group.values(), key=lambda x: x.tdl_order))
     # first apply the value to the LR making the constraint
     if flag_values[0][1] is not None:
-      mn.flags['in'][flag_name] = flag_values[0][1]
+      mn.flags['in'][flag_tuple] = flag_values[0][1]
     if flag_values[0][0] is not None:
-      mn.flags['out'][flag_name] = flag_values[0][0]
+      mn.flags['out'][flag_tuple] = flag_values[0][0]
     # now apply the flag values to all objects of the flag
     for other in flag_group.values():
       if flag_values[1][1] is not None:
-        other.flags['in'][flag_name] = flag_values[1][1]
+        other.flags['in'][flag_tuple] = flag_values[1][1]
       if flag_values[1][0] is not None:
-        other.flags['out'][flag_name] = flag_values[1][0]
+        other.flags['out'][flag_tuple] = flag_values[1][0]
 
 def minimal_flag_set(mn, constraint_type):
   """
@@ -325,11 +305,10 @@ def minimal_flag_set(mn, constraint_type):
       all_flag_groups += [flag_group]
   return all_flag_groups
 
-def get_all_flags():
+def get_all_flags(out_or_in):
   flags = set()
   for mn in _mns.values():
-    flags.update(set(mn.flags['out'].keys()))
-    flags.update(set(mn.flags['in'].keys()))
+    flags.update(set(mn.flags[out_or_in].keys()))
   return flags
 
 ######################
@@ -337,37 +316,45 @@ def get_all_flags():
 ######################
 
 def write_rules(pch, mylang, irules, lrules):
-  all_flags = get_all_flags()
+  all_flags = get_all_flags('out').union(get_all_flags('in'))
   write_inflected_avms(mylang, all_flags)
   mylang.set_section('lexrules')
-  write_daughter_types(mylang, pch)
-  for pc in pch.nodes.values():
-    # don't do anything for lex-type PCs
-    if pc.identifier_suffix == 'lex-super': continue
+  for pc in sorted(pch.nodes.values(), key=lambda x: x.tdl_order):
+    # set the appropriate section
+    mylang.set_section(get_section_from_pc(pc))
+    # if it's a lexical type, just write flags and move on
+    if pc.identifier_suffix == 'lex-super':
+      write_pc_flags(mylang, pc, all_flags)
+      continue
+    # only lexical rules from this point
     write_supertypes(mylang, pc.identifier(), pc.supertypes)
     write_pc_flags(mylang, pc, all_flags)
-    for lrt in pc.nodes.values():
+    for lrt in sorted(pc.nodes.values(), key=lambda x: x.tdl_order):
       write_i_or_l_rules(irules, lrules, lrt, pc.order)
       # merged LRT/PCs have the same identifier, so don't write supertypes here
       if lrt.identifier() != pc.identifier():
         write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
-  # because we need to change sections, do lexical PCs last
-  for pc in pch.nodes.values():
-    if pc.identifier_suffix != 'lex-super': continue
-    mylang.set_section(sec_from_lex(pc.key))
-    write_pc_flags(mylang, pc, all_flags)
+  write_daughter_types(mylang, pch)
   # features need to be written later
   return [(mn.key, mn.identifier(), mn.key.split('-')[0])
           for mn in _mns.values()
           if isinstance(mn, LexicalRuleType) and len(mn.features) > 0]
 
-def sec_from_lex(lextype):
-  if 'noun' in lextype:
-    return 'nounlex'
-  elif 'verb' in lextype:
-    return 'verblex'
+def get_section_from_pc(pc):
+  if pc.identifier_suffix == 'lex-super':
+    # get section for lexical type
+    if 'noun' in pc.key:
+      return 'nounlex'
+    elif 'verb' in pc.key:
+      return 'verblex'
+    else:
+      return 'otherlex'
   else:
-    return 'otherlex'
+    # get section for lexical rule
+    if '-dir-inv' in pc.name:
+      return 'dirinv'
+    else:
+      return 'lexrules'
 
 def write_supertypes(mylang, identifier, supertypes=None):
   if supertypes is not None:
@@ -412,17 +399,23 @@ def write_pc_flags(mylang, pc, all_flags):
   if len(all_flags) == 0: return
   write_flags(mylang, pc)
   to_copy = {}
+  out_flags = set(pc.flags['out'].keys())
   for mn in pc.roots():
-    to_copy[mn.key] = write_mn_flags(mylang, mn,
-                                     set(pc.flags['out'].keys()),
-                                     all_flags)
+    to_copy[mn.key] = write_mn_flags(mylang, mn, out_flags, all_flags)
   # first write copy-ups for the root nodes
   copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
   # then, if any remain, copy up on the pc (if a lexrule)
   if pc.identifier_suffix != 'lex-super':
-    to_copy = {pc.key: all_flags.difference(set(pc.flags['out'].keys()))}
+    to_copy = {pc.key: all_flags.difference(out_flags)}
     to_copy[pc.key].difference_update(copied_flags)
     write_copy_up_flags(mylang, to_copy, all_flags, force_write=True)
+  else:
+    # for lex-types, write initial flag values for all other flags
+    initial_flags = set([f for f in get_all_flags('in').difference(out_flags)
+                         if all(pc.precedes(mn) for mn in f)])
+    for root in pc.roots():
+      write_initial_flags(mylang, root,
+                          initial_flags.difference(root.flags['out'].keys()))
 
 def write_mn_flags(mylang, mn, output_flags, all_flags):
   write_flags(mylang, mn)
@@ -463,9 +456,15 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
         mylang.add('''%(id)s := [ INFLECTED.%(flag)s #%(tag)s,
                                   DTR.INFLECTED.%(flag)s #%(tag)s ].''' %\
                    {'id': mn.identifier(), 'flag': flag_name(flag),
-                    'tag': flag.lower()})
+                    'tag': disjunctive_typename(flag).lower()})
     copied_flags.update(mn_copy_flags)
   return copied_flags
+
+def write_initial_flags(mylang, mn, initial_flags):
+  for flag in initial_flags:
+    mylang.add('''%(id)s := [ INFLECTED.%(flag)s na-or--].''' %\
+               {'id': mn.identifier(), 'flag': flag_name(flag),
+                'tag': disjunctive_typename(flag).lower()})
 
 def write_i_or_l_rules(irules, lrules, lrt, order):
   if len(lrt.lris) == 0: return

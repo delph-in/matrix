@@ -30,13 +30,23 @@ class ChoiceCategory:
   def __init__(self, full_key=None):
     self.full_key = full_key
 
+  def get(self, key, default=None):
+    # integers have an offset of -1 for list indices
+    keys = [safe_int(k, offset=-1) for k in split_variable_key(key)]
+    d = self
+    try:
+      for k in keys:
+        d = d[k]
+    except KeyError:
+      return default or ''
+    except IndexError:
+      return default or ChoiceDict()
+    return d
+
 class ChoiceDict(ChoiceCategory, dict):
 
   def __getitem__(self, key):
-    try:
-      return dict.__getitem__(self, key)
-    except KeyError:
-      return ''
+    return dict.__getitem__(self, key)
 
   def iter_num(self):
     if self.full_key is not None:
@@ -48,10 +58,7 @@ class ChoiceDict(ChoiceCategory, dict):
 class ChoiceList(ChoiceCategory, list):
 
   def __getitem__(self, key):
-    try:
-      return list.__getitem__(self, key)
-    except IndexError:
-      return {}
+    return list.__getitem__(self, key)
 
   # custom iterator ignores empty items (e.g. when a
   # user deletes an item in the middle of a list)
@@ -99,6 +106,19 @@ def get_choice(choice, choices):
     if key == choice:
       return val
   return None
+
+# use the following re if keys like abc_def should be split:
+#var_delim_re = re.compile(r'(\d+)?(?:_|$)')
+# use the following re if final digits should be split
+var_delim_re = re.compile(r'(\d+)(?:_|$)')
+# use the following re if we only split when a digit precedes _
+#var_delim_re = re.compile(r'(\d+)(?:_)')
+def split_variable_key(key):
+  """
+  Split a compound variable key into a list of its component parts.
+  """
+  if key == '': return []
+  return [k for k in var_delim_re.split(key) if k]
 
 
 ######################################################################
@@ -158,7 +178,7 @@ class ChoicesFile:
         if key.strip() in ('section', 'version'):
             continue
         choices = self.__set_variable(choices,
-                                      self.split_variable_key(key.strip()),
+                                      split_variable_key(key.strip()),
                                       value,
                                       allow_overwrite=False)
       except ValueError:
@@ -169,34 +189,11 @@ class ChoicesFile:
         pass # TODO: log this!
     return choices
 
-  # use the following re if keys like abc_def should be split:
-  #var_delim_re = re.compile(r'(\d+)?(?:_|$)')
-  # use the following re if final digits should be split
-  var_delim_re = re.compile(r'(\d+)(?:_|$)')
-  # use the following re if we only split when a digit precedes _
-  #var_delim_re = re.compile(r'(\d+)(?:_)')
-  def split_variable_key(self, key):
-    """
-    Split a compound variable key into a list of its component parts.
-    """
-    if key == '': return []
-    return [k for k in self.var_delim_re.split(key) if k]
-
   ############################################################################
   ### Choices access functions
 
   def get(self, key, default=None):
-    # integers have an offset of -1 for list indices
-    keys = [safe_int(k, offset=-1) for k in self.split_variable_key(key)]
-    d = self.choices
-    try:
-      for k in keys:
-        d = d[k]
-    except KeyError:
-      return default or ''
-    except IndexError:
-      return default or ChoiceDict()
-    return d
+    return self.choices.get(key, default)
 
   # A __getitem__ method so that ChoicesFile can be used with brackets,
   # e.g., ch['language'].
@@ -245,7 +242,7 @@ class ChoicesFile:
     return choices
 
   def __setitem__(self, key, value):
-    self.__set_variable(self.choices, self.split_variable_key(key), value)
+    self.__set_variable(self.choices, split_variable_key(key), value)
     self.__reset_full_keys(key)
 
   def __delete(self, choices, keys, prune):
@@ -272,7 +269,7 @@ class ChoicesFile:
     if key not in self:
         return
     # integers have an offset of -1 for list indices
-    keys = [safe_int(k, offset=-1) for k in self.split_variable_key(key)]
+    keys = [safe_int(k, offset=-1) for k in split_variable_key(key)]
     self.__delete(self.choices, keys, prune)
     # full_key values will be corrupted if we pruned, so re-evaluate
     if prune:
@@ -326,7 +323,7 @@ class ChoicesFile:
         self.__reset_full_keys(key + '_' + k)
     elif isinstance(c, ChoiceList):
       for d in c:
-        idx = self.split_variable_key(d.full_key)[-1]
+        idx = split_variable_key(d.full_key)[-1]
         self.__reset_full_keys(key + str(idx))
 
   ############################################################################
@@ -502,10 +499,7 @@ class ChoicesFile:
     passed-in case if it's non-empty).
     """
 
-    has_noun = self.has_noun_case(case)
-    has_adp = self.has_adp_case(case)
-
-    return has_noun and has_adp
+    return self.has_noun_case(case) and self.has_adp_case(case)
 
 
   # case_head()
@@ -972,10 +966,10 @@ class ChoicesFile:
                                     'LOCAL.CONT.HOOK.INDEX.E.SITUATION')
 
     # Direction
-    if self.has_dirinv():
-      features += [ ['direction',
-                     'dir|direct;inv|inverse',
-                     'LOCAL.CAT.HEAD.DIRECTION'] ]
+    #if self.has_dirinv():
+    #  features += [ ['direction',
+    #                 'dir|direct;inv|inverse',
+    #                 'LOCAL.CAT.HEAD.DIRECTION'] ]
 
     # Negaton
     if 'infl-neg' in self.choices:
@@ -1608,8 +1602,8 @@ class ChoicesFile:
         for contype in ('forces', 'req', 'disreq'):
           for ct in slot.get(contype, []):
             constraints += [ [ contype, ct.get('type') ] ]
-            #self.delete(ct.full_key + '_type', prune=True)
-            self.delete(ct.full_key + '_type')
+          if contype in slot:
+            del slot[contype]
 
         for i, c in enumerate(constraints):
           constraint_key = slot.full_key + '_constraint%d' % (i+1)
@@ -1787,8 +1781,8 @@ class ChoicesFile:
         convert_constraint(lex_type, 'forbid')
       for slot in self[lex_cat + '-slot']:
         # constraints
-        convert_constraint(lex_type, 'require')
-        convert_constraint(lex_type, 'forbid')
+        convert_constraint(slot, 'require')
+        convert_constraint(slot, 'forbid')
         # normalize order values
         self.convert_value(slot.full_key + '_order', 'before', 'prefix')
         self.convert_value(slot.full_key + '_order', 'after', 'suffix')

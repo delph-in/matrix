@@ -95,6 +95,11 @@ def add_irule(instance_name,type_name,affix_type,affix_form):
 #   iterator and specify the feature/value pairs found to the
 #   passed-in type.
 
+def process_cfv_list(to_cfv, tdlfile=None):
+  for (ch_key, type_id, pos) in to_cfv:
+    customize_feature_values(ch[ch_key], type_id, pos,
+                             tdlfile=tdlfile or mylang)
+
 def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None, tdlfile=None):
 
   if not features:
@@ -123,7 +128,7 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
     v = feat.get('value','').split(', ')
 
     if n == 'case':
-      v = [canon_to_abbr(c, cases) for c in v]
+      v = [case.canon_to_abbr(c, cases) for c in v]
 
     geom_prefix = pos_geom_prefix
 
@@ -159,8 +164,9 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
                     ' := [ ' + geom + ' ' + value + ' ].',
                     merge=True)
         if n == 'case' and ch.has_mixed_case():
+          val = '-' if '-synth-' + value in type_name else '+'
           tdlfile.add(type_name +
-                      ' := [ ' + geom + '-MARKED + ].',
+                      ' := [ ' + geom + '-MARKED ' + val + ' ].',
                       merge=True)
       else:
         for value in v:
@@ -185,16 +191,16 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
           a_case = o_case = ''
           # otherwise use the geometry and case name
           if len(c) > 1:
-            a_case = geom + ' ' + canon_to_abbr(c[0], cases)
-            o_case = geom + ' ' + canon_to_abbr(c[1], cases)
+            a_case = geom + ' ' + case.canon_to_abbr(c[0], cases)
+            o_case = geom + ' ' + case.canon_to_abbr(c[1], cases)
           tdlfile.add(type_name + \
                       ' := [ ARG-ST < [ ' + a_case + '], ' +\
                                      '[ ' + o_case + '] > ].',
                       merge=True)
         else:
           c = c[0]
-          if c == 'intrans': s_case = ''
-          else: s_case = geom + ' ' + canon_to_abbr(c, cases)
+          s_case = '' if c == 'intrans' \
+                      else (geom + ' ' + case.canon_to_abbr(c, cases))
           tdlfile.add(type_name + \
                       ' := [ ARG-ST < [ ' + s_case + '] > ].',
                       merge=True)
@@ -241,23 +247,12 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
       #if h == 'obj':
       #  tdlfile.add(type_name + ':= obj-drop-verb-lex.', merge = True)
 
-    elif(n=='OPT' and v[0] == 'minus'):
-      if h == 'subj':
-        tdlfile.add(type_name + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
-      if h == 'obj':
-        tdlfile.add(type_name + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
-
-    elif (n=='overt-arg' and h == 'obj' and v[0] == 'not-permitted'):
-      tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
-
-    elif(n=='overt-arg' and h == 'subj') and v[0] == 'not-permitted':
-      tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
-
-    elif (n=='dropped-arg' and h == 'obj' and v[0] == 'not-permitted'):
-      tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
-
-    elif(n=='dropped-arg' and h == 'subj' and v[0] == 'not-permitted'):
-      tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+    elif n == 'OPT':
+      bool_val = {'plus': '+', 'minus': '-'}[v[0].lower()]
+      val_geom = {'subj': 'SUBJ', 'obj': 'COMPS'}[h.lower()]
+      tdlfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.OPT %(bv)s].' \
+                  % {'id': type_name, 'vg': val_geom, 'bv': bool_val},
+                  merge=True)
 
     elif n == 'direction':
       if v[0] == 'dir':
@@ -271,127 +266,7 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
       elif h == 'obj':
         tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS < '+d+' > ].')
 
-######################################################################
-# customize_case()
-#   Create the type definitions associated with the user's choices
-#   about case.
-
-def init_case_hierarchy():
-  cm = ch.get('case-marking')
-  cases = ch.cases()
-
-  hier = TDLHierarchy('case')
-
-  # For most case patterns, just make a flat hierarchy.  For fluid-s,
-  # split-n and split-v, however, a more articulated hierarchy is required.
-  if cm in ['nom-acc', 'erg-abs', 'tripartite', 'split-s', 'focus']:
-    for c in cases:
-      hier.add(c[2], 'case', c[1])
-  elif cm in ['fluid-s']:
-    abbr = canon_to_abbr('a+o', cases)
-    for c in cases:
-      if c[0] in ['a', 'o']:
-        hier.add(c[2], abbr, c[1])
-      else:
-        hier.add(c[2], 'case', c[1])
-  elif cm in ['split-n', 'split-v']:
-    nom_a = canon_to_abbr('nom', cases)
-    acc_a = canon_to_abbr('acc', cases)
-    erg_a = canon_to_abbr('erg', cases)
-    abs_a = canon_to_abbr('abs', cases)
-    if cm == 'split-v':
-      for c in cases:
-        hier.add(c[2], 'case', c[1])
-    else:  # 'split-n':
-      hier.add('a', 'case', 'transitive agent')
-      hier.add('s', 'case', 'intransitive subject')
-      hier.add('o', 'case', 'transitive patient')
-      for c in cases:
-        if c[2] == erg_a:
-          hier.add(c[2], 'a', c[1])
-        elif c[2] == nom_a:
-          hier.add(c[2], 'a', c[1])
-          hier.add(c[2], 's', c[1])
-        elif c[2] == abs_a:
-          hier.add(c[2], 's', c[1])
-          hier.add(c[2], 'o', c[1])
-        elif c[2] == acc_a:
-          hier.add(c[2], 'o', c[1])
-        else:
-          hier.add(c[2], 'case', c[1])
-
-  if not hier.is_empty():
-    hierarchies[hier.name] = hier
-
-
-# customize_case_type()
-#   Create a type for case
-
-def customize_case_type():
-  if 'case' in hierarchies:
-    hierarchies['case'].save(mylang)
-
-
-# customize_case_adpositions()
-#   Create the appropriate types for case-marking adpositions
-
-def customize_case_adpositions():
-  cases = ch.cases()
-  features = ch.features()
-
-  if ch.has_adp_case():
-    comment = \
-      ';;; Case-marking adpositions\n' + \
-      ';;; Case marking adpositions are constrained not to\n' + \
-      ';;; be modifiers.'
-    mylang.add_literal(comment)
-
-    mylang.add('+np :+ [ CASE case ].', section='addenda')
-
-    typedef = \
-      'case-marking-adp-lex := basic-one-arg & raise-sem-lex-item & \
-          [ SYNSEM.LOCAL.CAT [ HEAD adp & [ CASE #case, MOD < > ], \
-                               VAL [ SPR < >, \
-                                     SUBJ < >, \
-                                     COMPS < #comps >, \
-                                     SPEC < > ]], \
-            ARG-ST < #comps & [ LOCAL.CAT [ HEAD noun & [ CASE #case ], \
-                                            VAL.SPR < > ]] > ].'
-    mylang.add(typedef)
-
-    if ch.has_mixed_case():
-      mylang.add('+np :+ [ CASE-MARKED bool ].', section='addenda')
-      mylang.add(
-        'case-marking-adp-lex := \
-         [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].')
-
-    # Lexical entries
-    lexicon.add_literal(';;; Case-marking adpositions')
-
-    for adp in ch.get('adp',[]):
-      orth = adp.get('orth','')
-
-      # figure out the abbreviation for the case this adp marks
-      cn = ''
-      abbr = ''
-      for feat in adp.get('feat', []):
-        if feat.get('name','') == 'case':
-          cn = feat.get('value','')
-          break
-
-      abbr = name_to_abbr(cn, cases)
-
-      adp_type = TDLencode(abbr + '-marker')
-      typedef = \
-        adp_type + ' := case-marking-adp-lex & \
-                        [ STEM < "' + orth + '" > ].'
-      lexicon.add(typedef)
-
-      customize_feature_values(adp, adp_type, 'adp', tdlfile=lexicon)
-
-
-def customize_case():
-  customize_case_type()
+# Note: customize case code is now in gmcs/linglib/case.py
 
 # Note: direct inverse code is now in gmcs/linglib/direct_inverse.py
 
@@ -2037,27 +1912,6 @@ def customize_nouns():
       lexicon.add(typedef)
 
 
-# Given the canonical (i.e. choices variable) name of a case, return
-# its abbreviation from the list of cases, which should be created by
-# calling ChoicesFile.cases().  If there is no abbreviation, return
-# the name.
-def canon_to_abbr(name, cases):
-  for c in cases:
-    if c[0] == name:
-      return c[2]
-  return name
-
-
-# Given the name of a case, return its abbreviation from the list of
-# cases, which should be created by calling ChoicesFile.cases().  If
-# there is no abbreviation, return the name.
-def name_to_abbr(name, cases):
-  for c in cases:
-    if c[1] == name:
-      return c[2]
-  return name
-
-
 def customize_verb_case():
   cm = ch.get('case-marking')
   cases = ch.cases()
@@ -2088,8 +1942,8 @@ def customize_verb_case():
           a_head = ch.case_head()
           o_head = ch.case_head()
         else:
-          a_case = canon_to_abbr(c[0], cases)
-          o_case = canon_to_abbr(c[1], cases)
+          a_case = case.canon_to_abbr(c[0], cases)
+          o_case = case.canon_to_abbr(c[1], cases)
           a_head = ch.case_head(c[0])
           o_head = ch.case_head(c[1])
 
@@ -2145,7 +1999,7 @@ def customize_verb_case():
           s_case = ''
           s_head = ch.case_head()
         else:
-          s_case = canon_to_abbr(c[0], cases)
+          s_case = case.canon_to_abbr(c[0], cases)
           s_head = ch.case_head(c[0])
 
         if s_case:
@@ -2356,11 +2210,11 @@ def customize_verbs():
       tivity = 'intrans'
     elif val.find('-') != -1:
       c = val.split('-')
-      a_case = canon_to_abbr(c[0], cases)
-      o_case = canon_to_abbr(c[1], cases)
+      a_case = case.canon_to_abbr(c[0], cases)
+      o_case = case.canon_to_abbr(c[1], cases)
       tivity = a_case + '-' + o_case + '-trans'
     else:
-      s_case = canon_to_abbr(val, cases)
+      s_case = case.canon_to_abbr(val, cases)
       tivity = s_case + '-intrans'
 
     stype = dir_inv + tivity + 'itive-verb-lex'
@@ -2440,7 +2294,7 @@ def customize_auxiliaries():
       subj = aux.get('subj','')
       subjc = aux.get('subj_case','') #TODO: verify _-delimited key
       cases = ch.cases()
-      subjcase = canon_to_abbr(subjc, cases)
+      subjcase = case.canon_to_abbr(subjc, cases)
 
     # Lexical type for auxiliaries.
     # ASF 2008-11-25 added constraints SS.LOC.CONT.HOOK.XARG #xarg and
@@ -2682,7 +2536,8 @@ def customize_lexicon():
   customize_nouns()
 
   mylang.set_section('otherlex')
-  customize_case_adpositions()
+  to_cfv = case.customize_case_adpositions(mylang, lexicon, ch)
+  process_cfv_list(to_cfv, tdlfile=lexicon)
 
   mylang.set_section('verblex')
   customize_verbs()
@@ -2757,6 +2612,12 @@ def customize_pettdl(grammar_path):
       if l == ':include "matrix".':
         p_out.write(':include "' + myl + '".\n')
     p_out.close()
+    set_out = open(os.path.join(grammar_path, 'pet/' + myl + '-pet.set'), 'w')
+    set_out.write(';;;; settings for CHEAP -*- Mode: TDL; Coding: utf-8 -*-\n')
+    set_out.write('include "global".\n')
+    set_out.write('include "flop".\n')
+    set_out.write('include "pet".\n')
+    set_out.close()
   except:
     pass
 
@@ -2850,20 +2711,18 @@ def setup_vcs(ch, grammar_path):
 #   assumes that validation of the choices has already occurred.
 
 def customize_matrix(path, arch_type, destination=None):
-  choices_file = os.path.join(path, 'choices')
+  if os.path.isdir(path):
+    path = os.path.join(path, 'choices')
+  # if no destination dir is specified, just use the choices file's dir
+  destination = destination or os.path.dirname(path)
+
   global ch
-  ch = ChoicesFile(choices_file)
+  ch = ChoicesFile(path)
 
-  language = ch.get('language')
-  isocode = ch.get('iso-code')
-  if isocode:
-    grammar_dir = isocode.lower()
-  else:
-    grammar_dir = language.lower()
+  language = ch['language']
 
-  # if no destination dir is specified, just use path
-  destination = destination or path
-  grammar_path = os.path.join(destination, grammar_dir)
+  grammar_path = get_grammar_path(ch.get('iso-code', language).lower(),
+                                  language.lower(), destination)
 
   # Copy from matrix-core
   if os.path.exists(grammar_path):
@@ -2876,7 +2735,8 @@ def customize_matrix(path, arch_type, destination=None):
   shutil.rmtree(os.path.join(grammar_path, '.svn'), ignore_errors=True)
   shutil.rmtree(os.path.join(grammar_path, 'lkb/.svn'), ignore_errors=True)
   shutil.rmtree(os.path.join(grammar_path, 'pet/.svn'), ignore_errors=True)
-  shutil.copy(choices_file, grammar_path) # include a copy of choices
+  # include a copy of choices (named 'choices' to avoid collisions)
+  shutil.copy(path, os.path.join(grammar_path, 'choices'))
 
   # Create TDL object for each output file
   global mylang, rules, irules, lrules, lexicon, roots
@@ -2931,7 +2791,7 @@ def customize_matrix(path, arch_type, destination=None):
                           ch.get('language') + ' (' + lisp_dt + ')\")')
 
   # Initialize various type hierarchies
-  init_case_hierarchy()
+  case.init_case_hierarchy(ch, hierarchies)
   init_person_hierarchy()
   init_number_hierarchy()
   init_pernum_hierarchy()
@@ -2944,17 +2804,16 @@ def customize_matrix(path, arch_type, destination=None):
 
   # Customize inflection and lexicon first, since they can cause
   # augmentation of the hierarchies
-  customize_lexicon()
-  customize_arg_op()
-  argument_optionality.customize_arg_op(ch, mylang)
-  direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
   # for now, we customize inflection and feature values separately
+  direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
+  customize_lexicon()
+  argument_optionality.customize_arg_op(ch, mylang)
   to_cfv = morphotactics.customize_inflection(ch, mylang, irules, lrules)
-  for (pc_key, type_id, pos) in to_cfv:
-    customize_feature_values(ch[pc_key], type_id, pos)
+  process_cfv_list(to_cfv)
+  customize_arg_op()
+  case.customize_case(mylang, ch, hierarchies)
 
   # Call the other customization functions
-  customize_case()
   customize_person_and_number()
   customize_gender()
   customize_form()
@@ -2966,7 +2825,6 @@ def customize_matrix(path, arch_type, destination=None):
   customize_sentential_negation()
   customize_coordination()
   customize_yesno_questions()
-  #customize_arg_op()
   customize_test_sentences(grammar_path)
   customize_script(grammar_path)
   customize_pettdl(grammar_path)
@@ -2986,6 +2844,19 @@ def customize_matrix(path, arch_type, destination=None):
 
   return grammar_path
 
+
+def get_grammar_path(isocode, language, destination):
+  '''
+  Using the language or iso-code, get a unique pathname
+  for the grammar directory.
+  '''
+  # three possibilities for dir names. If all are taken, raise an exception
+  for dir_name in [isocode, language, isocode + '_grammar']:
+    grammar_path = os.path.join(destination, dir_name)
+    # if grammar_path already exists as a file, it is likely the choices file
+    if not (os.path.exists(grammar_path) and os.path.isfile(grammar_path)):
+      return grammar_path
+  raise Exception("Grammar directory not available.")
 
 ###############################################################
 # Allow customize_matrix() to be called directly from the

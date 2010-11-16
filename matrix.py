@@ -32,7 +32,9 @@ def main():
       customize_grammar(args[1], destination=dest, flop=True)
 
     elif args[0] in ('v', 'validate'):
-      choices_file = os.path.join(args[1], 'choices')
+      choices_file = args[1]
+      if os.path.isdir(choices_file):
+        choices_file = os.path.join(choices_file, 'choices')
       if not os.path.exists(choices_file):
         sys.exit("Error: Choices file not found at " + choices_file)
       import gmcs.validate
@@ -100,7 +102,8 @@ OPTIONS:
 COMMANDS:
     customize (c) PATH [DEST]      : Customize the choices file at PATH,
                                      with the output going to DEST (if
-                                     specified) or PATH.
+                                     specified) or PATH. PATH is either a
+                                     directory or a choices file.
     customize-and-flop (cf) PATH [DEST]
                                    : Customize the choices file at PATH,
                                      then flop the resulting grammar.
@@ -138,7 +141,7 @@ def verify_force():
   print "   Aborted."
   sys.exit(1)
 
-def customize_grammar(directory, destination=None, flop=False):
+def customize_grammar(path, destination=None, flop=False):
   """
   Customize a grammar for the choices file at directory, and if flop
   is True, run flop on the resulting lang-pet.tdl file in the grammar
@@ -149,19 +152,21 @@ def customize_grammar(directory, destination=None, flop=False):
     sys.exit('Error: Cannot flop grammar if LOGONROOT is not set.')
   # customize if choices file found
   import gmcs.customize
-  choices_file = os.path.join(directory, 'choices')
-  if not os.path.exists(choices_file):
-    sys.exit("Error: No choices file found at " + directory)
-  grammar_dir = gmcs.customize.customize_matrix(directory, 'tgz', destination)
+  if os.path.isdir(path):
+    path = os.path.join(path, 'choices')
+  if not os.path.exists(path):
+    sys.exit("Error: No choices file found at " + path)
+  grammar_dir = gmcs.customize.customize_matrix(path, 'tgz', destination)
   # Now a grammar has been created, so we can flop it
   if flop:
     import gmcs.choices
-    lang = gmcs.choices.get_choice('language', choices_file)
+    lang = gmcs.choices.get_choice('language', path)
     pet_file = lang.lower() + '-pet.tdl'
     if not os.path.exists(os.path.join(grammar_dir, pet_file)):
       sys.exit("Error: " + pet_file + " not found.")
     cmd = os.path.join(os.environ['LOGONROOT'], 'bin/flop')
-    subprocess.call([cmd, pet_file], cwd=grammar_dir, env=os.environ)
+    devnull = open('/dev/null', 'w')
+    subprocess.call([cmd, pet_file], cwd=grammar_dir, env=os.environ, stderr=devnull)
 
 
 def run_unit_tests():
