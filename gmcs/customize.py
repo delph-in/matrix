@@ -2802,16 +2802,16 @@ def customize_matrix(path, arch_type, destination=None):
   init_form_hierarchy()
   init_other_hierarchies()
 
-  # Customize inflection and lexicon first, since they can cause
-  # augmentation of the hierarchies
-  # for now, we customize inflection and feature values separately
+  # direct-inverse, case, and argument optionality all directly
+  # affect the inflectional hierarchy, so inflection should be done
+  # last in this group.
+  case.customize_case(mylang, ch, hierarchies)
   direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
-  customize_lexicon()
+  customize_arg_op()
   argument_optionality.customize_arg_op(ch, mylang)
+  customize_lexicon()
   to_cfv = morphotactics.customize_inflection(ch, mylang, irules, lrules)
   process_cfv_list(to_cfv)
-  customize_arg_op()
-  case.customize_case(mylang, ch, hierarchies)
 
   # Call the other customization functions
   customize_person_and_number()

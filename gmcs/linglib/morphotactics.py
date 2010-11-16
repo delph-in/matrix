@@ -90,12 +90,12 @@ def customize_inflection(choices, mylang, irules, lrules):
   and types necessary to model the inflectional system into the irules,
   lrules, and primary grammar files.
   """
-  pch = customize_lexical_rules(choices, mylang)
+  pch = customize_lexical_rules(choices)
   # write_rules currently returns a list of items needing feature
   # customization. Hopefully we can find a better solution
   return write_rules(pch, mylang, irules, lrules)
 
-def customize_lexical_rules(choices, mylang):
+def customize_lexical_rules(choices):
   """
   Interpret the PCs in a Choices file into a set of lexical rules.
   """
@@ -109,7 +109,7 @@ def customize_lexical_rules(choices, mylang):
   #  3. find the unique input for each PC (and create intermediate rules)
   #      (all_inputs() depends on forward-looking require constraints)
   #  4. determine and create flags based on constraints
-  pch = position_class_hierarchy(choices, mylang)
+  pch = position_class_hierarchy(choices)
   #create_lexical_rule_types(choices)
   interpret_constraints(choices)
   convert_obligatoriness_to_req(choices)
@@ -118,7 +118,7 @@ def customize_lexical_rules(choices, mylang):
 
 ### POSITION CLASSES AND LEXICAL RULE TYPES ###
 
-def position_class_hierarchy(choices, mylang):
+def position_class_hierarchy(choices):
   """
   Create and return the data structures to hold the information
   regarding position classes and lexical types.
