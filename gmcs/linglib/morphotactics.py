@@ -84,12 +84,17 @@ def get_input_map(pch):
 ### MAIN LOGIC METHODS ###
 ##########################
 
-def customize_inflection(choices, mylang, irules, lrules):
+def customize_inflection(choices, add_methods, mylang, irules, lrules):
   """
   Process the information in the given choices file and add the rules
   and types necessary to model the inflectional system into the irules,
   lrules, and primary grammar files.
   """
+  # first call other libraries' add_lexrules methods to see if they
+  # have anything to add to the choices file before we begin
+  for method in add_methods:
+    method(choices)
+  # now create the hierarchy
   pch = customize_lexical_rules(choices)
   # write_rules currently returns a list of items needing feature
   # customization. Hopefully we can find a better solution

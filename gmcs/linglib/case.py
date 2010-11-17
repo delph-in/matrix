@@ -142,11 +142,30 @@ def customize_case_adpositions(mylang, lexicon, ch):
   return to_cfv
 
 def customize_case(mylang, ch, hierarchies):
+  # first we need to peek in things like lex-rules for when something
+  # has mixed case, and replace with the appropriate type covering
+  from gmcs.linglib.lexbase import ALL_LEX_TYPES
+  cases = ch.cases()
+  for x in ALL_LEX_TYPES:
+    for lex_type in ch[x]:
+      convert_mixed_case(lex_type, hierarchies, cases)
+    for pc in ch[x + '-pc']:
+      convert_mixed_case(pc, hierarchies, cases)
+      for lrt in pc['lrt']:
+        convert_mixed_case(lrt, hierarchies, cases)
+  # now output the case hierarchies
   customize_case_type(mylang, hierarchies)
-  if ch.has_mixed_case():
-    add_lexrules_for_mixed_case(ch)
 
-def add_lexrules_for_mixed_case(ch):
+def convert_mixed_case(item, hierarchies, cases):
+  for feat in item.get('feat',[]):
+    if feat['name'] == 'case' and ',' in feat['value']:
+      v = [canon_to_abbr(c, cases) for c in feat['value'].split(', ')]
+      feat['value'] = hierarchies['case'].get_type_covering(v)
+
+def add_lexrules(ch):
+  # only need to add rules for mixed_case
+  if not ch.has_mixed_case():
+    return
   for pc in ch['noun-pc']:
     if 'case' in [feat['name'] for lrt in pc['lrt'] for feat in lrt['feat']]:
       for c in ch.cases():

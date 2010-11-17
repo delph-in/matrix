@@ -18,7 +18,7 @@ from gmcs.utils import get_name
 # subrules count just like above.  The subrules created are
 # different.
 
-def customize_arg_op(choices, mylang):
+def add_lexrules(choices):
   '''
   '''
   for pc in morphotactics.all_position_classes(choices):

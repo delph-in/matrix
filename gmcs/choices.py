@@ -1513,13 +1513,12 @@ class ChoicesFile:
     self.convert_key('non-future', 'nonfuture')
 
     for aux in self['aux']:
-      v = aux['nonfincompform']
+      v = aux.get('nonfincompform', '')
       k = 'nf-subform' + str(aux.iter_num()) + '_name'
       self.convert_value(aux.full_key + '_compform', 'nonfinite', v)
 
       if 'nonfincompform' in aux:
         self[k] = v
-        #self.delete(aux.full_key + '_nonfincompform', prune=True)
         self.delete(aux.full_key + '_nonfincompform')
 
   def convert_10_to_11(self):
