@@ -480,7 +480,10 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
     elif order.lower() in ('suffix', 'after'):
       order = 'suffix'
     # if there's only one LRI don't give the rule a number
-    num = [''] if len(lrt.lris) == 1 else range(1, len(lrt.lris) + 1)
+    if len(lrt.lris) == 1:
+      num = ['']
+    else:
+      num = range(1, len(lrt.lris) + 1)
     for i, lri in enumerate(lrt.lris):
       rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
                       r'%' + order + ' (* ' + lri + ')',
