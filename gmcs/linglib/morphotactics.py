@@ -1,4 +1,3 @@
-from collections import defaultdict
 from sets import Set as set
 
 from gmcs.linglib import lexicon
@@ -9,6 +8,9 @@ from gmcs.linglib.lexbase import (MorphotacticNode, PositionClass,
                                   LEXICAL_SUPERTYPES)
 from gmcs.lib import Hierarchy
 from gmcs.utils import get_name
+# not until python 2.5
+#from collections import defaultdict
+from gmcs.lib import defaultdict
 
 ### Contents
 # 1. Module Variables
