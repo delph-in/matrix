@@ -13,22 +13,25 @@ def lexical_type_hierarchy(choices, lexical_supertype):
                       identifier_suffix='lex-super')
   lth.add_node(LexicalType(lexical_supertype,
                            get_lt_name(lexical_supertype, choices)))
+  lts_to_add = [lexical_supertype]
   if lexical_supertype == 'verb':
     if choices['has-aux'] == 'yes':
       lth.add_node(LexicalType('aux', get_lt_name('aux', choices),
                                parents={'verb':lth.nodes['verb']}))
       lth.add_node(LexicalType('mverb', get_lt_name('mverb', choices),
                                parents={'verb':lth.nodes['verb']}))
+      lts_to_add += ['aux']
     st = get_lexical_supertype('iverb', choices)
     lth.add_node(LexicalType('iverb', get_lt_name('iverb', choices),
                              parents={st:lth.nodes[st]}))
     st = get_lexical_supertype('tverb', choices)
     lth.add_node(LexicalType('tverb', get_lt_name('tverb', choices),
                              parents={st:lth.nodes[st]}))
-  for lt in choices[lexical_supertype]:
-    st = get_lexical_supertype(lt.full_key, choices)
-    lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
-                             parents={st:lth.nodes[st]}))
+  for lst in lts_to_add:
+    for lt in choices[lst]:
+      st = get_lexical_supertype(lt.full_key, choices)
+      lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
+                               parents={st:lth.nodes[st]}))
   return lth
 
 def get_lexical_supertype(lt_key, choices):
