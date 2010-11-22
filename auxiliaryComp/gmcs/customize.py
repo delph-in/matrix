@@ -95,11 +95,6 @@ def add_irule(instance_name,type_name,affix_type,affix_form):
 #   iterator and specify the feature/value pairs found to the
 #   passed-in type.
 
-def process_cfv_list(to_cfv, tdlfile=None):
-  for (ch_key, type_id, pos) in to_cfv:
-    customize_feature_values(ch[ch_key], type_id, pos,
-                             tdlfile=tdlfile or mylang)
-
 def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None, tdlfile=None):
 
   if not features:
@@ -128,7 +123,7 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
     v = feat.get('value','').split(', ')
 
     if n == 'case':
-      v = [case.canon_to_abbr(c, cases) for c in v]
+      v = [canon_to_abbr(c, cases) for c in v]
 
     geom_prefix = pos_geom_prefix
 
@@ -164,12 +159,8 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
                     ' := [ ' + geom + ' ' + value + ' ].',
                     merge=True)
         if n == 'case' and ch.has_mixed_case():
-          if '-synth-' + value in type_name:
-            val = '-'
-          else:
-            val = '+'
           tdlfile.add(type_name +
-                      ' := [ ' + geom + '-MARKED ' + val + ' ].',
+                      ' := [ ' + geom + '-MARKED + ].',
                       merge=True)
       else:
         for value in v:
@@ -194,18 +185,16 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
           a_case = o_case = ''
           # otherwise use the geometry and case name
           if len(c) > 1:
-            a_case = geom + ' ' + case.canon_to_abbr(c[0], cases)
-            o_case = geom + ' ' + case.canon_to_abbr(c[1], cases)
+            a_case = geom + ' ' + canon_to_abbr(c[0], cases)
+            o_case = geom + ' ' + canon_to_abbr(c[1], cases)
           tdlfile.add(type_name + \
                       ' := [ ARG-ST < [ ' + a_case + '], ' +\
                                      '[ ' + o_case + '] > ].',
                       merge=True)
         else:
           c = c[0]
-          if c == 'intrans':
-            s_case = ''
-          else:
-            s_case = (geom + ' ' + case.canon_to_abbr(c, cases))
+          if c == 'intrans': s_case = ''
+          else: s_case = geom + ' ' + canon_to_abbr(c, cases)
           tdlfile.add(type_name + \
                       ' := [ ARG-ST < [ ' + s_case + '] > ].',
                       merge=True)
@@ -252,12 +241,23 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
       #if h == 'obj':
       #  tdlfile.add(type_name + ':= obj-drop-verb-lex.', merge = True)
 
-    elif n == 'OPT':
-      bool_val = {'plus': '+', 'minus': '-'}[v[0].lower()]
-      val_geom = {'subj': 'SUBJ', 'obj': 'COMPS'}[h.lower()]
-      tdlfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.OPT %(bv)s].' \
-                  % {'id': type_name, 'vg': val_geom, 'bv': bool_val},
-                  merge=True)
+    elif(n=='OPT' and v[0] == 'minus'):
+      if h == 'subj':
+        tdlfile.add(type_name + ':= [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
+      if h == 'obj':
+        tdlfile.add(type_name + ':= [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+
+    elif (n=='overt-arg' and h == 'obj' and v[0] == 'not-permitted'):
+      tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT +].', merge = True)
+
+    elif(n=='overt-arg' and h == 'subj') and v[0] == 'not-permitted':
+      tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
+
+    elif (n=='dropped-arg' and h == 'obj' and v[0] == 'not-permitted'):
+      tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True)
+
+    elif(n=='dropped-arg' and h == 'subj' and v[0] == 'not-permitted'):
+      tdlfile.add( type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True)
 
     elif n == 'direction':
       if v[0] == 'dir':
@@ -271,7 +271,127 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
       elif h == 'obj':
         tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS < '+d+' > ].')
 
-# Note: customize case code is now in gmcs/linglib/case.py
+######################################################################
+# customize_case()
+#   Create the type definitions associated with the user's choices
+#   about case.
+
+def init_case_hierarchy():
+  cm = ch.get('case-marking')
+  cases = ch.cases()
+
+  hier = TDLHierarchy('case')
+
+  # For most case patterns, just make a flat hierarchy.  For fluid-s,
+  # split-n and split-v, however, a more articulated hierarchy is required.
+  if cm in ['nom-acc', 'erg-abs', 'tripartite', 'split-s', 'focus']:
+    for c in cases:
+      hier.add(c[2], 'case', c[1])
+  elif cm in ['fluid-s']:
+    abbr = canon_to_abbr('a+o', cases)
+    for c in cases:
+      if c[0] in ['a', 'o']:
+        hier.add(c[2], abbr, c[1])
+      else:
+        hier.add(c[2], 'case', c[1])
+  elif cm in ['split-n', 'split-v']:
+    nom_a = canon_to_abbr('nom', cases)
+    acc_a = canon_to_abbr('acc', cases)
+    erg_a = canon_to_abbr('erg', cases)
+    abs_a = canon_to_abbr('abs', cases)
+    if cm == 'split-v':
+      for c in cases:
+        hier.add(c[2], 'case', c[1])
+    else:  # 'split-n':
+      hier.add('a', 'case', 'transitive agent')
+      hier.add('s', 'case', 'intransitive subject')
+      hier.add('o', 'case', 'transitive patient')
+      for c in cases:
+        if c[2] == erg_a:
+          hier.add(c[2], 'a', c[1])
+        elif c[2] == nom_a:
+          hier.add(c[2], 'a', c[1])
+          hier.add(c[2], 's', c[1])
+        elif c[2] == abs_a:
+          hier.add(c[2], 's', c[1])
+          hier.add(c[2], 'o', c[1])
+        elif c[2] == acc_a:
+          hier.add(c[2], 'o', c[1])
+        else:
+          hier.add(c[2], 'case', c[1])
+
+  if not hier.is_empty():
+    hierarchies[hier.name] = hier
+
+
+# customize_case_type()
+#   Create a type for case
+
+def customize_case_type():
+  if 'case' in hierarchies:
+    hierarchies['case'].save(mylang)
+
+
+# customize_case_adpositions()
+#   Create the appropriate types for case-marking adpositions
+
+def customize_case_adpositions():
+  cases = ch.cases()
+  features = ch.features()
+
+  if ch.has_adp_case():
+    comment = \
+      ';;; Case-marking adpositions\n' + \
+      ';;; Case marking adpositions are constrained not to\n' + \
+      ';;; be modifiers.'
+    mylang.add_literal(comment)
+
+    mylang.add('+np :+ [ CASE case ].', section='addenda')
+
+    typedef = \
+      'case-marking-adp-lex := basic-one-arg & raise-sem-lex-item & \
+          [ SYNSEM.LOCAL.CAT [ HEAD adp & [ CASE #case, MOD < > ], \
+                               VAL [ SPR < >, \
+                                     SUBJ < >, \
+                                     COMPS < #comps >, \
+                                     SPEC < > ]], \
+            ARG-ST < #comps & [ LOCAL.CAT [ HEAD noun & [ CASE #case ], \
+                                            VAL.SPR < > ]] > ].'
+    mylang.add(typedef)
+
+    if ch.has_mixed_case():
+      mylang.add('+np :+ [ CASE-MARKED bool ].', section='addenda')
+      mylang.add(
+        'case-marking-adp-lex := \
+         [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].')
+
+    # Lexical entries
+    lexicon.add_literal(';;; Case-marking adpositions')
+
+    for adp in ch.get('adp',[]):
+      orth = adp.get('orth','')
+
+      # figure out the abbreviation for the case this adp marks
+      cn = ''
+      abbr = ''
+      for feat in adp.get('feat', []):
+        if feat.get('name','') == 'case':
+          cn = feat.get('value','')
+          break
+
+      abbr = name_to_abbr(cn, cases)
+
+      adp_type = TDLencode(abbr + '-marker')
+      typedef = \
+        adp_type + ' := case-marking-adp-lex & \
+                        [ STEM < "' + orth + '" > ].'
+      lexicon.add(typedef)
+
+      customize_feature_values(adp, adp_type, 'adp', tdlfile=lexicon)
+
+
+def customize_case():
+  customize_case_type()
 
 # Note: direct inverse code is now in gmcs/linglib/direct_inverse.py
 
@@ -702,36 +822,117 @@ in for head-adjunct phrases here:',
 # implemented
 #
 
+###For cluster implementation: find out whether has cluster
+###if cluster: change implementation
+  
+  if ch.get('multiple-aux') == 'yes':
+    vcluster = True
+  else:
+    vcluster = False
   if wo == 'v2':
     mylang.add('verbal-head-nexus := headed-phrase & \
                 [ SYNSEM.LOCAL.CAT.HEAD verb ].')
     mylang.add('head-initial-head-nexus := head-initial & \
-                [ SYNSEM.LOCAL.CAT.MC na & #mc, \
+                [ SYNSEM.LOCAL.CAT.MC #mc, \
                   HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+    if vcluster:
+      mylang.add('head-initial-head-nexus := nonverbal-comp-phrase & \
+                  [ HEAD-DTR.SYNSEM.LOCAL.CAT [ MC +, \
+                                                SECOND + ] ].')
+    else:
+      mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.MC na ].')
+
     mylang.add('head-final-head-nexus := head-final & \
-                [ SYNSEM.LOCAL.CAT.MC bool, \
-                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
+    if vlcuster:
+      mylang.add('head-final-head-nexus :=  [ SYNSEM.LOCAL.CAT.MC bool ].')
+    else:
+      mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT [ MC +, \
+                                                                SECOND #scd ],\
+                                             HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd, \
+                                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
+            
 
 #rules shared among free and v2
+###for v2: only add head-comp-2 and comp-head-2 if not verb cluster
 
   if wo == 'free' or wo == 'v2':
     mylang.add('head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
     mylang.add('subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
     mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.')
     mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.')
-    mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
-    mylang.add('comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.')
+    if wo == 'free' or not vcluster:
+      mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
+      mylang.add('comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.')
+    elif wo == 'v2' and vcluster:
+      mylang.add('head-subj-vc-phrase := decl-head-subj-phrase & head-final-invc & nonverbal-comp-phrase.')
+      if ch.get('vc-placement') == 'pre':
+        mylang.add('general-head-comp-vc-phrase := basic-head-1st-comp-phrase & head-initial-invc.')
+        mylang.add('head-comp-vc-phrase := general-head-comp-vc-phrase & nonverbal-comp-phrase.')
+        mylang.add('head-comp-2-vc-phrase := basic-head-2nd-comp-phrase & head-initial-invc & nonverbal-comp-phrase.')
+        if ch.get('aux-comp-order') == 'before':
+          mylang.add('aux-comp-vc-phrase := general-head-comp-vc-phrase & \
+                         [ HEAD-DTR.SYNSEM.LIGHT +, \
+                           NONHEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
+                                                          MC - ] ].') 
+      else:
+        mylang.add('general-comp-head-vc-phrase:= basic-head-1st-comp-phrase & head-final-invc.')
+        mylang.add('comp-head-vc-phrase := general-comp-head-vc-phrase & nonverbal-comp-phrase.')
+        mylang.add('comp-2-head-vc-phrase := basic-head-2nd-comp-phrase & head-final-invc & nonverbal-comp-phrase.')
+        if ch.get('aux-comp-order') == 'after':   
+          mylang.add('comp-aux-vc-phrase := general-head-comp-vc-phrase & \
+                       [ HEAD-DTR.SYNSEM.LIGHT +, \
+                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
+                                                         MC - ] ].')
+        elif ch.get('aux-comp-order') == 'both':
+          mylang.add('comp-aux-phrase-vc := gen-comp-head-phrase-vc & \
+                         [ SYNSEM.LOCAL.CAT [ SECOND na, \
+		                              POSTHEAD #phd ], \
+                           HEAD-DTR.SYNSEM [ LOCAL.CAT [ POSTHEAD +, \
+				                         VC +, \
+				                         SECOND + ] ], \
+                           NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
+				                           VC +, \
+				                           POSTHEAD #phd ]].')
+          mylang.add('aux-comp-phrase-vc := basic-head-1st-comp-phrase & head-initial-invc & \
+                         [ SYNSEM.LOCAL.CAT [ POSTHEAD #phd, \
+		                              SECOND + ], \
+                           HEAD-DTR.SYNSEM [ LOCAL.CAT [ POSTHEAD -, \
+				                         VC +, \
+				                         SECOND na ] ], \
+                           NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
+				                           MC -, \
+				                           POSTHEAD #phd ]].')
+          
 
+
+#####CHANGE move auxiliary related stuff to aux-word-order!
 
 # Add rule definitions for major constituent order.
+###comp-head-2 and head-comp-2 for v2 only when not verb-cluster
 
   if wo == 'free' or wo == 'v2':
     rules.add('head-comp := head-comp-phrase.')
     rules.add('head-subj := head-subj-phrase.')
     rules.add('comp-head := comp-head-phrase.')
     rules.add('subj-head := subj-head-phrase.')
-    rules.add('head-comp-2 := head-comp-phrase-2.')
-    rules.add('comp-head-2 := comp-head-phrase-2.')
+    if wo == 'free' or not vcluster:
+      rules.add('head-comp-2 := head-comp-phrase-2.')
+      rules.add('comp-head-2 := comp-head-phrase-2.')
+    elif wo == 'v2' and vcluster:
+      rules.add('head-subj-vc := head-subj-vc-phrase.')
+      if ch.get('vc-placement') == 'pre':
+        rules.add('head-comp-vc := head-comp-vc-phrase.')
+        rules.add('head-comp-2-vc := head-comp-2-vc-phrase.')
+        if ch.get('aux-comp-order') == 'before':
+          rules.add('aux-comp-vc := aux-comp-vc-phrase.')
+      else:
+        rules.add('comp-head-vc := comp-head-vc-phrase.')
+        rules.add('comp-2-head-vc := comp-2-head-vc-phrase.')
+        if ch.get('aux-comp-order') == 'after' or ch.get('aux-comp-order') == 'both':
+          rules.add('comp-aux-vc := comp-aux-vc-phrase.')
+        if ch.get('aux-comp-order') == 'before' or ch.get('aux-comp-order') == 'both':
+          rules.add('aux-comp-vc := aux-comp-vc-phrase.') 
   # Assume at this point that there's a good value of wo.
   # Rule names are stored in hs and hc, since they're the same as type names
   # without the -phrase suffix.
@@ -740,6 +941,12 @@ in for head-adjunct phrases here:',
     rules.add(hs + ' :=  ' + hs + '-phrase.')
 
   return {'hs': hs, 'hc': hc}
+
+# Starting here: special rules for Germanic auxiliary structures
+
+
+
+
 
 # ERB 2006-09-15 Subroutine for handling NP rules.
 
@@ -954,17 +1161,69 @@ def specialize_word_order(hc,orders):
   # ASF 2008-12-07 If verbal cluster is present, introduce relevant feature
   # and pass-up in lex-rule.
   # Also add relevant constraint to basic-head-comp-phrase
+  ### 2010-11-08 for v2 verbal cluster: changing VC to bool
 
   if vcluster:
-    mylang.add('lex-or-phrase-synsem :+ [ VC luk ].',
+    if ch.get('part-vp-front') == 'yes':
+      partvpf = True
+    else:
+      partvpf = False
+    mylang.add('cat :+ [ VC bool ].',
                'Introducing VC keeps track whether main-verb is present in cluster',
                section='addenda')
-    mylang.add('lex-rule :+ [ SYNSEM.VC #vc, \
-                              DTR.SYNSEM.VC #vc ].',
+    mylang.add('lex-rule :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
+                              DTR.SYNSEM.LOCAL.CAT.VC #vc ].',
                section='addenda')
-    mylang.add('basic-head-comp-phrase :+ [ SYNSEM.VC #vc, \
-                       NON-HEAD-DTR.SYNSEM.VC #vc ].',
+    mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
+                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].',
                section='addenda')
+    if wo == 'v2':
+      auxorder = ch.get('aux-comp-order')
+      if auxorder == 'before' or auxorder == 'both' or ch.get('vc-placement') == 'pre':
+        initialaux = True
+      else:
+        initialaux = False
+      mylang.add('lex-or-phrase-synsem :+ [ SECOND luk ].')
+      mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.VC - ].')
+      mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
+      mylang.add('basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
+                                            HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
+      mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
+                                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
+      mylang.add('basic-head-subj-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
+                                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
+      mylang.add('aux-2nd-comp-phrase := basic-head-1st-comp-phrase & head-initial & \
+                  [ SYNSEM.LOCAL.CAT [ MC #mc & na, \
+		                       SECOND - ], \
+                    HEAD-DTR.SYNSEM.LOCAL.CAT[ MC #mc, \
+			                       SECOND + ], \
+                    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb, \
+		                     		    MC - ]].') 
+      mylang.add('nonverbal-comp-phrase := basic-binary-headed-phrase & \
+                   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +njrpcdmo ].')
+      mylang.add('gen-comp-aux-2nd-phrase := head-final & basic-head-1st-comp-phrase &  \
+                   [ SYNSEM.LOCAL.CAT [ MC +, \
+		                        SECOND #scd ], \
+                     HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na, \
+			                         SECOND #scd ], \
+                     NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
+			                             HEAD verb, \
+				                     VAL.SUBJ < [ ] >]].')
+      if not partvpf:
+        mylang.add('gen-comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
+      mylang.add('comp-aux-2nd-phrase := gen-comp-aux-2nd-phrase & \
+                  [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
+      mylang.add('split-cl-comp-aux-2nd-phrase := gen-comp-aux-2nd-phrase & \
+                   [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND -, \
+                     NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
+      mylang.add('head-final-invc := head-final & \
+                  [ SYNSEM.LOCAL.CAT.MC #mc & -, \
+                    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+      if initialaux:
+        mylang.add('head-initial-invc := head-initial & \
+                  [ SYNSEM.LOCAL.CAT.MC #mc & -, \
+                    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+  ###ASF add head-initial if necessary (test above)
   # ERB 2006-09-15 First add head-comp or comp-head if they aren't
   # already there.  I don't think we have to worry about constraining
   # SUBJ or COMPS on these additional rules because they'll only be for
@@ -983,35 +1242,35 @@ def specialize_word_order(hc,orders):
 
   if aux == 'auxv-rule':
     mylang.add('''aux-comp-phrase := basic-marker-comp-phrase & marker-initial-phrase &
-                                   [ SYNSEM [ LOCAL.CAT.HEAD.FORM #vform,
-                                              VC #vc ],
+                                   [ SYNSEM [ LOCAL.CAT [ HEAD.FORM #vform,
+                                                          VC #vc ] ],
                                      MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX +,
                                                                                FORM #vform ],
-                                     NON-MARKER-DTR.SYNSEM [ LOCAL.CAT.HEAD verb,
+                                     NON-MARKER-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
                                                              VC #vc ] ].''')
-    mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
+    mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
   if aux == 'vaux-rule':
     mylang.add('''comp-aux-phrase := basic-marker-comp-phrase & marker-final-phrase &
-                                   [ SYNSEM [ LOCAL.CAT.HEAD.FORM #vform,
+                                   [ SYNSEM.LOCAL.CAT [ HEAD.FORM #vform,
                                               VC #vc ],
                                      MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX +,
                                                                                FORM #vform ],
-                                     NON-MARKER-DTR.SYNSEM [ LOCAL.CAT.HEAD verb,
+                                     NON-MARKER-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
                                                              VC #vc ] ].''')
-    mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
+    mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
 
   # add necessary restrictions to assure verb clusters
   # and special auxiliary rules for vso/osv and free word order.
 
   if vcluster:
     if wo == 'vso' or wo == 'free' or wo == 'v-initial':
-      mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
+      mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
     if wo == 'osv' or wo == 'free' or wo == 'v-final':
-      mylang.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
+      mylang.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
     if (aux == 'vini-vc' and aux == 'vo-auxv' ) or wo == 'free':
-      mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
+      mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
     if (aux == 'vfin-vc' and aux == 'ov-vaux') or wo == 'free':
-      mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.VC + ].')
+      mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
     if wo == 'free' or wo == 'vso' or wo == 'osv':
       if auxorder == 'before' and aux != 'ov-auxv':
         mylang.add('aux-comp-phrase := basic-head-1st-comp-phrase & head-initial & \
@@ -1024,8 +1283,8 @@ def specialize_word_order(hc,orders):
                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
         aux = 'caux'
       if wo == 'free':
-        mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.VC + ].')
-        mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.VC + ].')
+        mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+        mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
 
   # Add rules to rules.tdl when necessary
 
@@ -1917,6 +2176,27 @@ def customize_nouns():
       lexicon.add(typedef)
 
 
+# Given the canonical (i.e. choices variable) name of a case, return
+# its abbreviation from the list of cases, which should be created by
+# calling ChoicesFile.cases().  If there is no abbreviation, return
+# the name.
+def canon_to_abbr(name, cases):
+  for c in cases:
+    if c[0] == name:
+      return c[2]
+  return name
+
+
+# Given the name of a case, return its abbreviation from the list of
+# cases, which should be created by calling ChoicesFile.cases().  If
+# there is no abbreviation, return the name.
+def name_to_abbr(name, cases):
+  for c in cases:
+    if c[1] == name:
+      return c[2]
+  return name
+
+
 def customize_verb_case():
   cm = ch.get('case-marking')
   cases = ch.cases()
@@ -1947,8 +2227,8 @@ def customize_verb_case():
           a_head = ch.case_head()
           o_head = ch.case_head()
         else:
-          a_case = case.canon_to_abbr(c[0], cases)
-          o_case = case.canon_to_abbr(c[1], cases)
+          a_case = canon_to_abbr(c[0], cases)
+          o_case = canon_to_abbr(c[1], cases)
           a_head = ch.case_head(c[0])
           o_head = ch.case_head(c[1])
 
@@ -2004,7 +2284,7 @@ def customize_verb_case():
           s_case = ''
           s_head = ch.case_head()
         else:
-          s_case = case.canon_to_abbr(c[0], cases)
+          s_case = canon_to_abbr(c[0], cases)
           s_head = ch.case_head(c[0])
 
         if s_case:
@@ -2142,8 +2422,8 @@ def customize_verbs():
                 [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
     mylang.add(typedef)
     if vcluster:
-      mylang.add('main-verb-lex := [ SYNSEM.VC + ].')
-      mylang.add('aux-lex := [ SYNSEM.VC - ].')
+      mylang.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
+      mylang.add('aux-lex := [ SYNSEM.LOCAL.CAT.VC - ].')
   else:
     #mainorverbtype = 'verb-lex'
     vcluster = False
@@ -2215,11 +2495,11 @@ def customize_verbs():
       tivity = 'intrans'
     elif val.find('-') != -1:
       c = val.split('-')
-      a_case = case.canon_to_abbr(c[0], cases)
-      o_case = case.canon_to_abbr(c[1], cases)
+      a_case = canon_to_abbr(c[0], cases)
+      o_case = canon_to_abbr(c[1], cases)
       tivity = a_case + '-' + o_case + '-trans'
     else:
-      s_case = case.canon_to_abbr(val, cases)
+      s_case = canon_to_abbr(val, cases)
       tivity = s_case + '-intrans'
 
     stype = dir_inv + tivity + 'itive-verb-lex'
@@ -2299,7 +2579,7 @@ def customize_auxiliaries():
       subj = aux.get('subj','')
       subjc = aux.get('subj_case','') #TODO: verify _-delimited key
       cases = ch.cases()
-      subjcase = case.canon_to_abbr(subjc, cases)
+      subjcase = canon_to_abbr(subjc, cases)
 
     # Lexical type for auxiliaries.
     # ASF 2008-11-25 added constraints SS.LOC.CONT.HOOK.XARG #xarg and
@@ -2364,22 +2644,41 @@ def customize_auxiliaries():
           '; lexical verb complement, but not the other complements, if any.'
         mylang.add_literal(comment)
 
-        typedef = supertype + ' := aux-lex & basic-two-arg & \
-             [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #subj  >, \
-                                      COMPS < #comps . #vcomps >, \
-                                      SPR < >, \
-                                      SPEC < > ], \
-                              CONT.HOOK.XARG #xarg ], \
-               ARG-ST < #subj & \
-                        [ LOCAL [ CAT [ VAL [ SPR < >, \
-                                              COMPS < > ]], \
-                                  CONT.HOOK.INDEX #xarg ]], \
-                      #comps & \
-                      [ LIGHT +, \
-                        LOCAL [ CAT [ VAL [ SUBJ < [ ] >, \
-                                            COMPS #vcomps ], \
-                                      HEAD verb ], \
-                                CONT.HOOK.XARG #xarg ]] > ].'
+# ASF 2010-11-12 removing LIGHT + from comps to account for verbal clusters
+# is added if not vc
+        if vc: 
+          typedef = supertype + ' := aux-lex & basic-two-arg & \
+               [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #subj  >, \
+                                        COMPS < #comps . #vcomps >, \
+                                        SPR < >, \
+                                        SPEC < > ], \
+                                CONT.HOOK.XARG #xarg ], \
+                 ARG-ST < #subj & \
+                          [ LOCAL [ CAT [ VAL [ SPR < >, \
+                                                COMPS < > ]], \
+                                    CONT.HOOK.INDEX #xarg ]], \
+                        #comps & \
+                        [ LOCAL [ CAT [ VAL [ SUBJ < [ ] >, \
+                                              COMPS #vcomps ], \
+                                        HEAD verb ], \
+                                  CONT.HOOK.XARG #xarg ]] > ].'
+        else:
+          typedef = supertype + ' := aux-lex & basic-two-arg & \
+               [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #subj  >, \
+                                        COMPS < #comps . #vcomps >, \
+                                        SPR < >, \
+                                        SPEC < > ], \
+                                CONT.HOOK.XARG #xarg ], \
+                 ARG-ST < #subj & \
+                          [ LOCAL [ CAT [ VAL [ SPR < >, \
+                                                COMPS < > ]], \
+                                    CONT.HOOK.INDEX #xarg ]], \
+                        #comps & \
+                        [ LIGHT +, \
+                          LOCAL [ CAT [ VAL [ SUBJ < [ ] >, \
+                                              COMPS #vcomps ], \
+                                        HEAD verb ], \
+                                  CONT.HOOK.XARG #xarg ]] > ].'
         mylang.add(typedef)
         add_subj_tdl(supertype, subj, subjcase)
 
@@ -2541,8 +2840,7 @@ def customize_lexicon():
   customize_nouns()
 
   mylang.set_section('otherlex')
-  to_cfv = case.customize_case_adpositions(mylang, lexicon, ch)
-  process_cfv_list(to_cfv, tdlfile=lexicon)
+  customize_case_adpositions()
 
   mylang.set_section('verblex')
   customize_verbs()
@@ -2617,12 +2915,6 @@ def customize_pettdl(grammar_path):
       if l == ':include "matrix".':
         p_out.write(':include "' + myl + '".\n')
     p_out.close()
-    set_out = open(os.path.join(grammar_path, 'pet/' + myl + '-pet.set'), 'w')
-    set_out.write(';;;; settings for CHEAP -*- Mode: TDL; Coding: utf-8 -*-\n')
-    set_out.write('include "global".\n')
-    set_out.write('include "flop".\n')
-    set_out.write('include "pet".\n')
-    set_out.close()
   except:
     pass
 
@@ -2716,18 +3008,20 @@ def setup_vcs(ch, grammar_path):
 #   assumes that validation of the choices has already occurred.
 
 def customize_matrix(path, arch_type, destination=None):
-  if os.path.isdir(path):
-    path = os.path.join(path, 'choices')
-  # if no destination dir is specified, just use the choices file's dir
-  destination = destination or os.path.dirname(path)
-
+  choices_file = os.path.join(path, 'choices')
   global ch
-  ch = ChoicesFile(path)
+  ch = ChoicesFile(choices_file)
 
-  language = ch['language']
+  language = ch.get('language')
+  isocode = ch.get('iso-code')
+  if isocode:
+    grammar_dir = isocode.lower()
+  else:
+    grammar_dir = language.lower()
 
-  grammar_path = get_grammar_path(ch.get('iso-code', language).lower(),
-                                  language.lower(), destination)
+  # if no destination dir is specified, just use path
+  destination = destination or path
+  grammar_path = os.path.join(destination, grammar_dir)
 
   # Copy from matrix-core
   if os.path.exists(grammar_path):
@@ -2740,8 +3034,7 @@ def customize_matrix(path, arch_type, destination=None):
   shutil.rmtree(os.path.join(grammar_path, '.svn'), ignore_errors=True)
   shutil.rmtree(os.path.join(grammar_path, 'lkb/.svn'), ignore_errors=True)
   shutil.rmtree(os.path.join(grammar_path, 'pet/.svn'), ignore_errors=True)
-  # include a copy of choices (named 'choices' to avoid collisions)
-  shutil.copy(path, os.path.join(grammar_path, 'choices'))
+  shutil.copy(choices_file, grammar_path) # include a copy of choices
 
   # Create TDL object for each output file
   global mylang, rules, irules, lrules, lexicon, roots
@@ -2796,7 +3089,7 @@ def customize_matrix(path, arch_type, destination=None):
                           ch.get('language') + ' (' + lisp_dt + ')\")')
 
   # Initialize various type hierarchies
-  case.init_case_hierarchy(ch, hierarchies)
+  init_case_hierarchy()
   init_person_hierarchy()
   init_number_hierarchy()
   init_pernum_hierarchy()
@@ -2807,25 +3100,19 @@ def customize_matrix(path, arch_type, destination=None):
   init_form_hierarchy()
   init_other_hierarchies()
 
-  # The following might modify hierarchies in some way, so it's best
-  # to customize those components and only have them contribute their
-  # information to lexical rules when we customize inflection.
+  # Customize inflection and lexicon first, since they can cause
+  # augmentation of the hierarchies
   customize_lexicon()
   customize_arg_op()
+  argument_optionality.customize_arg_op(ch, mylang)
   direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
-  case.customize_case(mylang, ch, hierarchies)
-  #argument_optionality.customize_arg_op(ch, mylang)
-  # after all structures have been customized, customize inflection,
-  # but provide the methods the components above have for their own
-  # contributions to the lexical rules
-  add_lexrules_methods = [case.add_lexrules,
-                          argument_optionality.add_lexrules,
-                          direct_inverse.add_lexrules]
-  to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
-                                              mylang, irules, lrules)
-  process_cfv_list(to_cfv)
+  # for now, we customize inflection and feature values separately
+  to_cfv = morphotactics.customize_inflection(ch, mylang, irules, lrules)
+  for (pc_key, type_id, pos) in to_cfv:
+    customize_feature_values(ch[pc_key], type_id, pos)
 
   # Call the other customization functions
+  customize_case()
   customize_person_and_number()
   customize_gender()
   customize_form()
@@ -2837,6 +3124,7 @@ def customize_matrix(path, arch_type, destination=None):
   customize_sentential_negation()
   customize_coordination()
   customize_yesno_questions()
+  #customize_arg_op()
   customize_test_sentences(grammar_path)
   customize_script(grammar_path)
   customize_pettdl(grammar_path)
@@ -2856,19 +3144,6 @@ def customize_matrix(path, arch_type, destination=None):
 
   return grammar_path
 
-
-def get_grammar_path(isocode, language, destination):
-  '''
-  Using the language or iso-code, get a unique pathname
-  for the grammar directory.
-  '''
-  # three possibilities for dir names. If all are taken, raise an exception
-  for dir_name in [isocode, language, isocode + '_grammar']:
-    grammar_path = os.path.join(destination, dir_name)
-    # if grammar_path already exists as a file, it is likely the choices file
-    if not (os.path.exists(grammar_path) and os.path.isfile(grammar_path)):
-      return grammar_path
-  raise Exception("Grammar directory not available.")
 
 ###############################################################
 # Allow customize_matrix() to be called directly from the
