@@ -1,0 +1,62 @@
+n1-NOM iv
+n2-ABS iv
+n1-NOM tv n1-ACC
+n1-NOM tv n2-ABS
+n2-ERG tv n1-ACC
+n2-ERG tv n2-ABS
+*n1 iv
+*n1-ACC iv
+*n1-ERG iv
+*n1-ABS iv
+*n2 iv
+*n2-NOM iv
+*n2-ACC iv
+*n2-ERG iv
+*n1 tv n2
+*n1-NOM tv n2
+*n1-ACC tv n2
+*n1-ERG tv n2
+*n1-ABS tv n2
+*n1 tv n2-NOM
+*n1-NOM tv n2-NOM
+*n1-ACC tv n2-NOM
+*n1-ERG tv n2-NOM
+*n1-ABS tv n2-NOM
+*n1 tv n2-ACC
+*n1-NOM tv n2-ACC
+*n1-ACC tv n2-ACC
+*n1-ERG tv n2-ACC
+*n1-ABS tv n2-ACC
+*n1 tv n2-ERG
+*n1-NOM tv n2-ERG
+*n1-ACC tv n2-ERG
+*n1-ERG tv n2-ERG
+*n1-ABS tv n2-ERG
+*n1 tv n2-ABS
+*n1-ACC tv n2-ABS
+*n1-ERG tv n2-ABS
+*n1-ABS tv n2-ABS
+*n2 tv n1
+*n2-NOM tv n1
+*n2-ACC tv n1
+*n2-ERG tv n1
+*n2-ABS tv n1
+*n2 tv n1-NOM
+*n2-NOM tv n1-NOM
+*n2-ACC tv n1-NOM
+*n2-ERG tv n1-NOM
+*n2-ABS tv n1-NOM
+*n2 tv n1-ACC
+*n2-NOM tv n1-ACC
+*n2-ACC tv n1-ACC
+*n2-ABS tv n1-ACC
+*n2 tv n1-ERG
+*n2-NOM tv n1-ERG
+*n2-ACC tv n1-ERG
+*n2-ERG tv n1-ERG
+*n2-ABS tv n1-ERG
+*n2 tv n1-ABS
+*n2-NOM tv n1-ABS
+*n2-ACC tv n1-ABS
+*n2-ERG tv n1-ABS
+*n2-ABS tv n1-ABS

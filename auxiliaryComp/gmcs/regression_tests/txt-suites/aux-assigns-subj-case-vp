@@ -1,0 +1,19 @@
+walk-3rd woman-nom.
+see-3rd man-acc woman-nom.
+aux-3rd walk-inf woman-dat.
+aux-3rd see-inf man-acc woman-dat.
+aux-3rd aux-inf see-inf man-acc woman-dat.
+*aux-3rd walk-inf woman-nom.
+*aux-3rd see-inf man-acc woman-nom.
+*aux-3rd aux-inf see-inf man-acc woman-nom.
+*walk-3rd woman-acc.
+*see-3rd woman-nom man-acc.
+*see-3rd woman-acc man-acc.
+*see-3rd woman-nom man-nom.
+*aux-3rd walk-inf woman-acc.
+*aux-3rd see-inf woman-nom man-nom.
+*aux-3rd see-inf woman-nom man-acc.
+*aux-3rd see-inf woman-acc man-acc.
+*aux-3rd aux-inf see-inf woman-nom man-nom.
+*aux-3rd aux-inf see-inf woman-acc man-acc.
+

@@ -1,0 +1,133 @@
+class1-intitial-vowel-prefix-prefix :=
+%prefix (* o-mu-)
+class1-intitial-vowel-prefix-lex-rule.
+
+
+class2-initial-vowel-prefix-prefix :=
+%prefix (* a-ba-)
+class2-initial-vowel-prefix-lex-rule.
+
+
+class5-initial-vowel-prefix-prefix :=
+%prefix (* e-ri-)
+class5-initial-vowel-prefix-lex-rule.
+
+
+class9-initial-vowel-prefix-prefix :=
+%prefix (* e-n-)
+class9-initial-vowel-prefix-lex-rule.
+
+
+present-continuous-prefix :=
+%prefix (* ni-)
+present-continuous-lex-rule.
+
+
+remote-past-marker-prefix :=
+%prefix (* ka-)
+remote-past-marker-lex-rule.
+
+
+yesterday-past-marker-suffix :=
+%suffix (* -ire)
+yesterday-past-marker-lex-rule.
+
+
+modified-verb-form-marker-suffix :=
+%suffix (* -ire)
+modified-verb-form-marker-lex-rule.
+
+
+class9-obj-marker-prefix :=
+%prefix (* gi-)
+class9-obj-marker-lex-rule.
+
+
+class1-1s-obj-marker-prefix :=
+%prefix (* n-)
+class1-1s-obj-marker-lex-rule.
+
+
+class1-2s-obj-marker-prefix :=
+%prefix (* ku-)
+class1-2s-obj-marker-lex-rule.
+
+
+class1-3s-obj-marker-prefix :=
+%prefix (* mu-)
+class1-3s-obj-marker-lex-rule.
+
+
+class2-1pl-obj-marker-prefix :=
+%prefix (* tu-)
+class2-1pl-obj-marker-lex-rule.
+
+
+class2-2-3pl-obj-marker-prefix :=
+%prefix (* ba-)
+class2-2-3pl-obj-marker-lex-rule.
+
+
+class5-obj-marker-prefix :=
+%prefix (* ri-)
+class5-obj-marker-lex-rule.
+
+
+class1-3s-subj-marker-prefix :=
+%prefix (* a-)
+class1-3s-subj-marker-lex-rule.
+
+
+class1-1s-subj-marker-prefix :=
+%prefix (* n-)
+class1-1s-subj-marker-lex-rule.
+
+
+class1-2s-subj-marker-prefix :=
+%prefix (* o-)
+class1-2s-subj-marker-lex-rule.
+
+
+class2-1pl-subj-marker-prefix :=
+%prefix (* tu-)
+class2-1pl-subj-marker-lex-rule.
+
+
+class2-2pl-subj-marker-prefix :=
+%prefix (* mu-)
+class2-2pl-subj-marker-lex-rule.
+
+
+class2-3pl-subj-marker-prefix :=
+%prefix (* ba-)
+class2-3pl-subj-marker-lex-rule.
+
+
+class5-subj-marker-prefix :=
+%prefix (* ri-)
+class5-subj-marker-lex-rule.
+
+
+class9-subj-marker-prefix :=
+%prefix (* e-)
+class9-subj-marker-lex-rule.
+
+
+negation-prefix :=
+%prefix (* ti-)
+negation-lex-rule.
+
+
+neg-pres-cont-prefix :=
+%prefix (* riku-)
+neg-pres-cont-lex-rule.
+
+
+neg-past-prefix :=
+%prefix (* ra-)
+neg-past-lex-rule.
+
+
+n1-bottom :=
+  %prefix (* na-)
+  n1-bottom-coord-rule.

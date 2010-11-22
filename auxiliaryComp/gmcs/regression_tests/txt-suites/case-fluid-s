@@ -1,0 +1,17 @@
+n1-O iv-o
+n1-A iv-a
+n1-O iv
+n1-A iv
+n1-A tv n2-O
+*n1 iv-o
+*n1-A iv-o
+*n1 iv-a
+*n1-O iv-a
+*n1 tv n2
+*n1-A tv n2
+*n1-O tv n2
+*n1 tv n2-A
+*n1-A tv n2-A
+*n1-O tv n2-A
+*n1 tv n2-O
+*n1-O tv n2-O

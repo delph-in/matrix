@@ -1,0 +1,9 @@
+q n1 iv
+q n1 tv n2
+*n1 q iv
+*n1 iv q
+*n1 q tv n2
+*n1 tv q n2
+*n1 tv n2 q
+n1 iv
+n1 tv n2

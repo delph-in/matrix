@@ -1,0 +1,67 @@
+;;; Nouns
+
+aipaci := noun1-noun-lex &
+  [ STEM < "aipaci" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_boy_n_rel" ].
+
+puusi := noun1-noun-lex &
+  [ STEM < "puusi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_cat_n_rel" ].
+
+mamI_1 := third-person-dual-noun-lex &
+  [ STEM < "mamI" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+nII := first-person-sing-noun-lex &
+  [ STEM < "nII" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+Imi := second-person-sing-noun-lex &
+  [ STEM < "Imi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+ina := third-person-singular-here-noun-lex &
+  [ STEM < "ina" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+maNa := third-person-singular-visible-noun-lex &
+  [ STEM < "maNa" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+uNa := third-person-singular-invisible-noun-lex &
+  [ STEM < "uNa" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+icI := third-person-inanimate-here-noun-lex &
+  [ STEM < "icI" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+mamI_2 := third-person-plural-visible-noun-lex &
+  [ STEM < "mamI" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+wii := noun10-noun-lex &
+  [ STEM < "wii" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_knife_n_rel" ].
+
+;;; Verbs
+
+puni := verb1-verb-lex &
+  [ STEM < "puni" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ].
+
+nukwi := non-momentus-verb-lex &
+  [ STEM < "nukwi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_run_v_rel" ].
+
+tIraqi7i := momentus-verb-lex &
+  [ STEM < "tIraqi7i" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_dash_off_v_rel" ].
+
+wI7i := mom-changeable-verb-lex &
+  [ STEM < "wI7i" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_fall_v_rel" ].
+
+maga := non-mom-tran-verb-lex &
+  [ STEM < "maga" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_give_v_rel" ].
