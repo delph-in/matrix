@@ -299,6 +299,8 @@ class TDLelem_conj(TDLelem):
         last_was_feat = (isinstance(ch, TDLelem_feat));
     for ch in self.child[1:]:
       cur_is_feat = (isinstance(ch, TDLelem_feat));
+      # don't print empty AVMs ([]) unless it's the only thing
+      if cur_is_feat and len(ch.child) == 0: continue
       if cur_is_feat or last_was_feat:
         TDLwrite(' &\n')
         for i in range(old_i):
@@ -400,9 +402,10 @@ class TDLelem_feat(TDLelem):
     if self.is_cons():
       self.write_cons()
     else:
-      TDLwrite('[ ')
-      old_i = TDLget_indent()
+      TDLwrite('[')
+      old_i = TDLget_indent() + 1
       for ch in self.child[0:1]:
+        TDLwrite(' ')
         ch.write()
       for ch in self.child[1:]:
         TDLwrite(',\n')
@@ -876,7 +879,6 @@ class TDLfile:
     TDLset_file(sys.stdout)
     for t in self.typedefs:
       t.write()
-    print '\n'
 
 
   def add(self, tdl_type,

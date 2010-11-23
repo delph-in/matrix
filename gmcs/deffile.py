@@ -393,7 +393,7 @@ def make_tgz(dir):
 def add_zip_files(z, dir):
   files = os.listdir(dir)
   for f in files:
-    cur = dir + '/' + f
+    cur = os.path.join(dir, f)
     if os.path.isdir(cur):
       add_zip_files(z, cur)
     else:
@@ -927,22 +927,25 @@ class MatrixDefFile:
 
   # Create and print the "download your matrix here" page for the
   # customized matrix in the directory specified by session_path
-  def custom_page(self, session_path, grammar_dir, arch_type):
+  def custom_page(self, session_path, grammar_path, arch_type):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Matrix Customized</title>'
+    # we don't want the contents of the archive to be something like
+    # sessions/7149/..., so we remove session_path from grammar_path
+    grammar_dir = grammar_path.replace(session_path, '').lstrip('/')
     if arch_type == 'tgz':
       arch_file = grammar_dir + '.tar.gz'
     else:
       arch_file = grammar_dir + '.zip'
-    old_dir = os.getcwd()
+    cwd = os.getcwd()
     os.chdir(session_path)
     if arch_type == 'tgz':
       make_tgz(grammar_dir)
     else:
       make_zip(grammar_dir)
-    os.chdir(old_dir)
-    print HTML_customprebody % (session_path + '/' + arch_file)
+    os.chdir(cwd)
+    print HTML_customprebody % (os.path.join(session_path, arch_file))
     print HTML_postbody
 
   # Generate and print sample sentences from the customized grammar
@@ -951,9 +954,8 @@ class MatrixDefFile:
     print HTML_pretitle
     print '<title>Matrix Sample Sentences</title>'
     print HTML_posttitle
-    grammar_dir_final = os.getcwd() + '/' + session_path + '/' + grammar_dir
-    delphin_dir = os.getcwd() + '/delphin'
-    sentences = generate.get_sentences(grammar_dir_final,delphin_dir,session)
+    delphin_dir = os.path.join(os.getcwd(), 'delphin')
+    sentences = generate.get_sentences(grammar_dir, delphin_dir, session)
     print HTML_sentencesprebody
     for i in range(len(sentences)):
       long = False
@@ -1001,9 +1003,12 @@ class MatrixDefFile:
     print HTML_pretitle
     print '<title>More Sentences</title>'
     print HTML_sentencesprebody
-    grammar_dir_final = os.getcwd() + '/' + session_path + '/' + grammar_dir
-    delphin_dir = os.getcwd() + '/delphin'
-    sentences,trees,mrss = generate.get_additional_sentences(grammar_dir_final,delphin_dir,verbpred, template_file,session)
+    delphin_dir = os.path.join(os.getcwd(), 'delphin')
+    sentences,trees,mrss = generate.get_additional_sentences(grammar_dir,
+                                                             delphin_dir,
+                                                             verbpred,
+                                                             template_file,
+                                                             session)
     if len(sentences) > 0:
       if sentences[0] == "#EDGE-ERROR#":
         print 'This grammar combined with this input semantics results in too large of a seach space<br>'

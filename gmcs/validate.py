@@ -5,6 +5,7 @@
 
 import sys
 import re
+import os
 
 from gmcs import tdl
 from gmcs.choices import ChoicesFile
@@ -131,11 +132,14 @@ def validate_names(ch, vr):
 
   # read matrix types and head types from file
   try:
-    f = open('matrix-types', 'r')
+    filename = 'matrix-types'
+    f = open(filename, 'r')
     for t in f.readlines():
       reserved_types[t.strip()] = True
     f.close()
-    f = open('head-types', 'r')
+    filename = os.path.join(os.environ.get('CUSTOMIZATIONROOT', ''),
+                            'matrix-core/head-types')
+    f = open(filename, 'r')
     for t in f.readlines():
       reserved_types[t.strip()] = True
     f.close()
@@ -1217,7 +1221,6 @@ def validate_features(ch, vr):
     if not valid:
       vr.err(var, 'You have selected an invalid feature value.')
 
-
 def validate_arg_opt(ch, vr):
   """Check to see if the user completed the necessary portions of the arg
    opt page"""
@@ -1279,7 +1282,6 @@ def validate(ch, extra = False):
     validate_extra_constraints(ch, vr)
 
   return vr
-  
 
 def validate_choices(choices_file, extra = False):
   """

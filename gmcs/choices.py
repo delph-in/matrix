@@ -30,12 +30,23 @@ class ChoiceCategory:
   def __init__(self, full_key=None):
     self.full_key = full_key
 
-class ChoiceDict(ChoiceCategory, dict):
-  def __getitem__(self, key):
+  def get(self, key, default=None):
+    # integers have an offset of -1 for list indices
+    keys = [safe_int(k, offset=-1) for k in split_variable_key(key)]
+    d = self
     try:
-      return dict.__getitem__(self, key)
+      for k in keys:
+        d = d[k]
     except KeyError:
-      return ''
+      return default or ''
+    except IndexError:
+      return default or ChoiceDict()
+    return d
+
+class ChoiceDict(ChoiceCategory, dict):
+
+  def __getitem__(self, key):
+    return dict.__getitem__(self, key)
 
   def iter_num(self):
     if self.full_key is not None:
@@ -45,11 +56,9 @@ class ChoiceDict(ChoiceCategory, dict):
     return None
 
 class ChoiceList(ChoiceCategory, list):
+
   def __getitem__(self, key):
-    try:
-      return list.__getitem__(self, key)
-    except IndexError:
-      return {}
+    return list.__getitem__(self, key)
 
   # custom iterator ignores empty items (e.g. when a
   # user deletes an item in the middle of a list)
@@ -76,6 +85,41 @@ class ChoiceList(ChoiceCategory, list):
   def next_iter_num(self):
     if len(self) == 0: return 1
     return (self.get_last().iter_num() or 0) + 1
+
+######################################################################
+# Helper functions
+
+def get_choice(choice, choices):
+  """
+  Return the value of a choice from choice lines or a choices file.
+  The choice must be fully specified choice (not a sub-structure).
+  Returns None if the choice does not result in a value.
+  """
+  choice_lines = choices
+  if type(choices) is str:
+    choice_lines = open(choices).readlines()
+  elif type(choices) is file:
+    choice_lines = choices.readlines()
+
+  for line in [l.strip() for l in choice_lines if '=' in l]:
+    key, val = line.split('=')
+    if key == choice:
+      return val
+  return None
+
+# use the following re if keys like abc_def should be split:
+#var_delim_re = re.compile(r'(\d+)?(?:_|$)')
+# use the following re if final digits should be split
+var_delim_re = re.compile(r'(\d+)(?:_|$)')
+# use the following re if we only split when a digit precedes _
+#var_delim_re = re.compile(r'(\d+)(?:_)')
+def split_variable_key(key):
+  """
+  Split a compound variable key into a list of its component parts.
+  """
+  if key == '': return []
+  return [k for k in var_delim_re.split(key) if k]
+
 
 ######################################################################
 # ChoicesFile is a class that wraps the choices file, a list of
@@ -107,24 +151,20 @@ class ChoicesFile:
   ### Choices file parsing functions
 
   def load_choices(self, choice_lines):
+    """
+    Load a ChoicesFile object from a list of strings (i.e. "choices").
+    Old versions are "uprev"ed in two ways: preparse_uprev and
+    postparse_uprev, which convert the choices from one version to
+    another. Because preparse must work on the choices file lines,
+    and postparse on the object, we must do them separately.
+    """
     # attempt to get version first, since preparse_uprev() needs it
-    self.version = self.get_version(choice_lines)
+    self.version = int(get_choice('version', choice_lines) or 0)
     # some key-values cannot be parsed by the current system, so
     # we need to handle these first
     choice_lines = self.preparse_uprev(choice_lines)
     self.choices = self.parse_choices(choice_lines)
     self.postparse_uprev()
-
-  def get_version(self, choice_lines):
-    """
-    Return the version number from the choices file, or 0 if there was none.
-    """
-    version = 0
-    for line in [l.strip() for l in choice_lines if l.strip() != '']:
-      if line.startswith('version'):
-        version = int(line.split('=',1)[1])
-        break
-    return version
 
   def parse_choices(self, choice_lines):
     """
@@ -138,7 +178,7 @@ class ChoicesFile:
         if key.strip() in ('section', 'version'):
             continue
         choices = self.__set_variable(choices,
-                                      self.split_variable_key(key.strip()),
+                                      split_variable_key(key.strip()),
                                       value,
                                       allow_overwrite=False)
       except ValueError:
@@ -149,31 +189,11 @@ class ChoicesFile:
         pass # TODO: log this!
     return choices
 
-  # use the following re if keys like abc_def should be split:
-  #var_delim_re = re.compile(r'(\d+)?(?:_|$)')
-  var_delim_re = re.compile(r'(\d+)(?:_|$)')
-  def split_variable_key(self, key):
-    """
-    Split a compound variable key into a list of its component parts.
-    """
-    if key == '': return []
-    return [k for k in self.var_delim_re.split(key) if k]
-
   ############################################################################
   ### Choices access functions
 
   def get(self, key, default=None):
-    # integers have an offset of -1 for list indices
-    keys = [safe_int(k, offset=-1) for k in self.split_variable_key(key)]
-    d = self.choices
-    try:
-      for k in keys:
-        d = d[k]
-    except KeyError:
-      return default or ''
-    except IndexError:
-      return default or {}
-    return d
+    return self.choices.get(key, default)
 
   # A __getitem__ method so that ChoicesFile can be used with brackets,
   # e.g., ch['language'].
@@ -222,7 +242,8 @@ class ChoicesFile:
     return choices
 
   def __setitem__(self, key, value):
-    self.__set_variable(self.choices, self.split_variable_key(key), value)
+    self.__set_variable(self.choices, split_variable_key(key), value)
+    self.__reset_full_keys(key)
 
   def __delete(self, choices, keys, prune):
     """
@@ -248,11 +269,13 @@ class ChoicesFile:
     if key not in self:
         return
     # integers have an offset of -1 for list indices
-    keys = [safe_int(k, offset=-1) for k in self.split_variable_key(key)]
+    keys = [safe_int(k, offset=-1) for k in split_variable_key(key)]
     self.__delete(self.choices, keys, prune)
     # full_key values will be corrupted if we pruned, so re-evaluate
     if prune:
-      [self.__reset_full_keys(k) for k in self]
+      for k in self:
+        self.__renumber_full_keys(k)
+        self.__reset_full_keys(k)
 
   def __delitem__(self, key):
     self.delete(key, prune=False)
@@ -268,10 +291,10 @@ class ChoicesFile:
   def __len__(self):
     return len(self.choices)
 
-  def __reset_full_keys(self, key):
+  def __renumber_full_keys(self, key):
     """
-    Starting at the given key, reset the full_key values of all
-    choices contained by that key.
+    Starting at the given key, reset the list numbers in the full_key
+    values of all choices contained by that key.
     """
     # make sure the current key exists (e.g. was not pruned)
     if key not in self:
@@ -284,7 +307,24 @@ class ChoicesFile:
         c.full_key = key + str(c)
       else:
         continue
-      self.__reset_full_keys(c.full_key)
+      self.__renumber_full_keys(c.full_key)
+
+  def __reset_full_keys(self, key):
+    """
+    Starting at the given key, reset the full_key values of all
+    choices contained by that key.
+    """
+    if key not in self or not isinstance(self[key], ChoiceCategory):
+      return
+    c = self[key]
+    c.full_key = key
+    if isinstance(c, ChoiceDict):
+      for k in dict.keys(c):
+        self.__reset_full_keys(key + '_' + k)
+    elif isinstance(c, ChoiceList):
+      for d in c:
+        idx = split_variable_key(d.full_key)[-1]
+        self.__reset_full_keys(key + str(idx))
 
   ############################################################################
   ### Up-revisioning handler
@@ -292,22 +332,23 @@ class ChoicesFile:
   def preparse_uprev(self, choice_lines):
     """
     Convert choices file lines before they are parsed. A choice can be
-    removed by setting the key to None in the conversion method.
+    removed by setting the key to None in the conversion method. This
+    should only be done to ensure old choices files can be loaded (e.g.
+    changing noun1 to noun1_orth), and any actual conversion should be
+    done in postparse upreving.
     """
     new_lines = []
     for line in choice_lines:
       try:
         (key, value) = line.split('=',1)
         if key in ('section', 'version'):
-            continue
-        if self.version < 4:
-          (key, value) = self.preparse_convert_3_to_4(key, value)
-        if self.version < 19:
-          (key, value) = self.preparse_convert_18_to_19(key, value)
-        # If future versions require a choices file line to be converted
-        # before it is parsed, but the appropriate method here:
-        # if self.version < N
-        #   self.preparse_convert_N-1_to_N(key, value)
+          continue
+        # 3 to 4
+        elif key in ('noun1', 'noun2', 'det1', 'det2'):
+          key += '_orth'
+        # 18 to 19
+        elif key.startswith('sentence'):
+          key += '_orth'
         if key is not None:
           new_lines += ['='.join([key, value])]
       except ValueError:
@@ -362,9 +403,15 @@ class ChoicesFile:
       self.convert_20_to_21()
     if self.version < 22:
       self.convert_21_to_22()
+    if self.version < 23:
+      self.convert_22_to_23()
     # As we get more versions, add more version-conversion methods, and:
     # if self.version < N:
     #   self.convert_N-1_to_N
+
+    # now reset the full keys in case something was changed
+    for top_level_key in self:
+      self.__reset_full_keys(top_level_key)
 
   # Return the keys for the choices dict
   def keys(self):
@@ -405,10 +452,10 @@ class ChoicesFile:
         result = result or self.has_case(feat, case)
 
     # check morphemes
-    for slotprefix in ('noun', 'verb', 'det'):
-      for slot in self.get(slotprefix + '-slot'):
-        for morph in slot.get('morph',[]):
-          for feat in morph.get('feat',[]):
+    for pcprefix in ('noun', 'verb', 'det', 'adj'):
+      for pc in self.get(pcprefix + '-pc'):
+        for lrt in pc.get('lrt',[]):
+          for feat in lrt.get('feat',[]):
             result = result or self.has_case(feat, case)
 
     self.cached_values[k] = result
@@ -452,10 +499,7 @@ class ChoicesFile:
     passed-in case if it's non-empty).
     """
 
-    has_noun = self.has_noun_case(case)
-    has_adp = self.has_adp_case(case)
-
-    return has_noun and has_adp
+    return self.has_noun_case(case) and self.has_adp_case(case)
 
 
   # case_head()
@@ -497,22 +541,13 @@ class ChoicesFile:
       for feat in verb.get('feat', []):
         result = result or feat['head'] in ('higher', 'lower')
 
-    for verb_slot in self.get('verb-slot'):
-      for morph in verb_slot.get('morph',[]):
-        for feat in morph.get('feat',[]):
+    for verb_pc in self.get('verb-pc'):
+      for lrt in verb_pc.get('lrt',[]):
+        for feat in lrt.get('feat',[]):
           result = result or feat['head'] in ('higher', 'lower')
 
     return result
 
-
-  # slots()
-  def get_lexical_rule_types(self, prefixes):
-    """
-    Return the lexical rule types for every prefix supplied.
-    """
-    for prefix in prefixes:
-      for lrt in self[prefix + '-slot']:
-        yield lrt
 
   # cases()
   #   Create and return a list containing information about the cases
@@ -931,10 +966,10 @@ class ChoicesFile:
                                     'LOCAL.CONT.HOOK.INDEX.E.SITUATION')
 
     # Direction
-    if self.has_dirinv():
-      features += [ ['direction',
-                     'dir|direct;inv|inverse',
-                     'LOCAL.CAT.HEAD.DIRECTION'] ]
+    #if self.has_dirinv():
+    #  features += [ ['direction',
+    #                 'dir|direct;inv|inverse',
+    #                 'LOCAL.CAT.HEAD.DIRECTION'] ]
 
     # Negaton
     if 'infl-neg' in self.choices:
@@ -994,7 +1029,7 @@ class ChoicesFile:
     elif self.get('subj-mark-drop') == 'subj-mark-drop-opt' and \
          self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
       features += [['dropped-arg', perm_notperm_string,'']]
-   
+
  #elif self.get('subj-mark-drop') == 'subj-mark-drop-opt') and self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req': features += [['dropped-arg', perm_notperm_string, '']]
 
     for feature in self.get('feature'):
@@ -1028,11 +1063,14 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 22
+    return 23
 
-  def convert_value(self, key, old, new):
-    if key in self and self[key] == old:
-      self[key] = new
+  def convert_value(self, key, old, new, partial=False):
+    if key in self:
+      if not partial and self[key] == old:
+        self[key] = new
+      elif partial:
+        self[key] = self[key].replace(old, new)
 
   def convert_key(self, old, new, key_prefix=''):
     if key_prefix:
@@ -1274,38 +1312,23 @@ class ChoicesFile:
     self.delete('obj-adp-orth')
     self.delete('obj-adp-order')
 
-  def preparse_convert_3_to_4(self, key, value):
-    if key in ('noun1', 'noun2'):
-      key += '_orth'
-    elif key.startswith('iverb'):
-      # for iverb-pred or iverb-non-finite
-      key = key.replace('iverb-','verb1_', 1)
-      # this happens only if previous did nothing (i.e. key = "iverb")
-      key = key.replace('iverb', 'verb1_orth', 1)
-    elif key.startswith('tverb'):
-      key = key.replace('tverb-', 'verb2_', 1)
-      key = key.replace('tverb', 'verb2_orth', 1)
-    elif key == 'det1':
-      key = 'det1_orth'
-    elif key == 'det1pred':
-      key = 'det1_pred'
-    elif key == 'det2':
-      key = 'det2_orth'
-    elif key == 'det2pred':
-      key = 'det2_pred'
-
-    return (key, value)
-
   def convert_3_to_4(self):
     # Added a fuller implementation of case marking on core arguments,
     # so convert the old case-marking adposition stuff to the new
-    # choices. Converting keys like noun1=cat is in
-    # preparse_convert_3_to_4
+    # choices. Also, convert nouns, verbs, dets to the iterator keys.
+    # Things like converting noun1=cat happen in preparse_uprev.
+    self.convert_key('iverb', 'verb1_orth')
+    self.convert_key('iverb-pred', 'verb1_pred')
+    self.convert_key('iverb-non-finite', 'verb1_non-finite')
     if self.get('verb1_orth'):
       self['verb1_valence'] = 'intrans'
-
+    self.convert_key('tverb', 'verb2_orth')
+    self.convert_key('tverb-pred', 'verb2_pred')
+    self.convert_key('tverb-non-finite', 'verb2_non-finite')
     if self.get('verb2_orth'):
       self['verb2_valence'] = 'trans'
+    self.convert_key('det1pred', 'det1_pred')
+    self.convert_key('det2pred', 'det2_pred')
 
   def convert_4_to_5(self):
     # An even fuller implementation of case marking, with some of the
@@ -1490,13 +1513,12 @@ class ChoicesFile:
     self.convert_key('non-future', 'nonfuture')
 
     for aux in self['aux']:
-      v = aux['nonfincompform']
+      v = aux.get('nonfincompform', '')
       k = 'nf-subform' + str(aux.iter_num()) + '_name'
       self.convert_value(aux.full_key + '_compform', 'nonfinite', v)
 
       if 'nonfincompform' in aux:
         self[k] = v
-        #self.delete(aux.full_key + '_nonfincompform', prune=True)
         self.delete(aux.full_key + '_nonfincompform')
 
   def convert_10_to_11(self):
@@ -1579,8 +1601,8 @@ class ChoicesFile:
         for contype in ('forces', 'req', 'disreq'):
           for ct in slot.get(contype, []):
             constraints += [ [ contype, ct.get('type') ] ]
-            #self.delete(ct.full_key + '_type', prune=True)
-            self.delete(ct.full_key + '_type')
+          if contype in slot:
+            del slot[contype]
 
         for i, c in enumerate(constraints):
           constraint_key = slot.full_key + '_constraint%d' % (i+1)
@@ -1640,7 +1662,10 @@ class ChoicesFile:
     what was going on in the old system.
     """
     if self.get('q-infl') == 'on':
-      n = self['verb-slot'].next_iter_num() if 'verb-slot' in self else 1
+      if 'verb-slot' in self:
+        n = self['verb-slot'].next_iter_num()
+      else:
+        n = 1
       pref = 'verb-slot' + str(n)
       if self.get('ques-aff') == 'suffix':
         self[pref + '_order'] = 'after'
@@ -1660,18 +1685,10 @@ class ChoicesFile:
       self[pref + '_morph1_feat1_value'] = 'plus'
       self[pref + '_opt'] = 'on'
 
-  def preparse_convert_18_to_19(self, key, value):
-    """
-    Convert the old test sentence choices to the new iterator format.
-    """
-    if key.startswith('sentence'):
-      key += '_orth'
-    return (key, value)
-
   def convert_18_to_19(self):
     """
     Do nothing here. All conversion for version 19 is in the method
-    preparse_convert_18_to_19(). This stub is here for record keeping.
+    preparse_uprev. This stub is here for record keeping.
     """
     pass # version 19 only requires preparse conversion
 
@@ -1746,6 +1763,41 @@ class ChoicesFile:
     """
     Lexical rules are no longer divided into Slots and Morphs, but
     Position Classes, Lexical Rule Types, and Lexical Rule Instances,
-    and LRTs can inherit from other LRTs.
+    and LRTs can inherit from other LRTs. Also, LRTs without LRIs
+    should be given a blank one (since now it is possible for LRTs
+    to exist that cannot themselves be realized).
     """
-    pass
+    def convert_constraint(lex, constraint):
+      """
+      Nested function to help with converting constraints.
+      """
+      for c in lex.get(constraint,[]):
+        self.convert_value(c.full_key + '_other-slot',
+                           '-slot', '-pc', partial=True)
+        self.convert_key('other-slot', 'others', key_prefix=c.full_key)
+
+    from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
+    for lex_cat in LEXICAL_CATEGORIES:
+      for lex_type in self[lex_cat]:
+        convert_constraint(lex_type, 'require')
+        convert_constraint(lex_type, 'forbid')
+      for slot in self[lex_cat + '-slot']:
+        # constraints
+        convert_constraint(slot, 'require')
+        convert_constraint(slot, 'forbid')
+        # normalize order values
+        self.convert_value(slot.full_key + '_order', 'before', 'prefix')
+        self.convert_value(slot.full_key + '_order', 'after', 'suffix')
+        # inputs
+        all_inps = ', '.join([inp['type'] for inp in slot['input']])
+        del self[slot.full_key + '_input']
+        self[slot.full_key + '_inputs'] = all_inps.replace('-slot', '-pc')
+        # morphs and orths
+        for morph in slot['morph']:
+          if 'orth' in morph:
+            self.convert_key('orth', 'lri1_orth', key_prefix=morph.full_key)
+          else:
+            self[morph.full_key + '_lri1_orth'] = ''
+        self.convert_key(slot.full_key + '_morph', slot.full_key + '_lrt')
+      # finally, change -slot keys to -pc
+      self.convert_key(lex_cat + '-slot', lex_cat + '-pc')
