@@ -2406,9 +2406,13 @@ def add_subj_tdl(type, subj, subjcase):
   type = supertype variable in customize_auxiliaries()
   subj = subj variable in customize_auxiliaries()
   """
+  if ch.get('word-order') == 'v2' and ch.get('multiple-aux') == 'yes':
+    vcluster = True
+  else:
+    vcluster = False
   if subj == 'adp':
     mylang.add(type + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD adp ].')
-  else:
+  elif not vcluster:
     mylang.add(type + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].')
     if subj == 'np-comp-case':
       mylang.add(type + ' := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE #case  ], \
@@ -2515,17 +2519,14 @@ def customize_auxiliaries():
 # is added if not vc
         if vc: 
           typedef = supertype + ' := aux-lex & basic-two-arg & \
-               [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #subj  >, \
+               [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ #subj, \
                                         COMPS < #comps . #vcomps >, \
                                         SPR < >, \
                                         SPEC < > ], \
                                 CONT.HOOK.XARG #xarg ], \
-                 ARG-ST < #subj & \
-                          [ LOCAL [ CAT [ VAL [ SPR < >, \
-                                                COMPS < > ]], \
-                                    CONT.HOOK.INDEX #xarg ]], \
+                 ARG-ST < [ ], \
                         #comps & \
-                        [ LOCAL [ CAT [ VAL [ SUBJ < [ ] >, \
+                        [ LOCAL [ CAT [ VAL [ SUBJ #subj, \
                                               COMPS #vcomps ], \
                                         HEAD verb ], \
                                   CONT.HOOK.XARG #xarg ]] > ].'
