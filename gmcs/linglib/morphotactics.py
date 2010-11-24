@@ -1,3 +1,4 @@
+from collections import defaultdict
 from sets import Set as set
 
 from gmcs.linglib import lexicon
@@ -8,9 +9,6 @@ from gmcs.linglib.lexbase import (MorphotacticNode, PositionClass,
                                   LEXICAL_SUPERTYPES)
 from gmcs.lib import Hierarchy
 from gmcs.utils import get_name
-# not until python 2.5
-#from collections import defaultdict
-from gmcs.lib import defaultdict
 
 ### Contents
 # 1. Module Variables
@@ -482,10 +480,7 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
     elif order.lower() in ('suffix', 'after'):
       order = 'suffix'
     # if there's only one LRI don't give the rule a number
-    if len(lrt.lris) == 1:
-      num = ['']
-    else:
-      num = range(1, len(lrt.lris) + 1)
+    num = [''] if len(lrt.lris) == 1 else range(1, len(lrt.lris) + 1)
     for i, lri in enumerate(lrt.lris):
       rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
                       r'%' + order + ' (* ' + lri + ')',

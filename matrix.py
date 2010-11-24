@@ -24,17 +24,11 @@ def main():
       printhelp()
   try:
     if args[0] in ('c', 'customize'):
-      if len(args) > 2:
-        dest = args[2]
-      else:
-        dest = None
+      dest = args[2] if len(args) > 2 else None
       customize_grammar(args[1], destination=dest)
 
     elif args[0] in ('cf', 'customize-and-flop'):
-      if len(args) > 2:
-        dest = args[2]
-      else:
-        dest = None
+      dest = args[2] if len(args) > 2 else None
       customize_grammar(args[1], destination=dest, flop=True)
 
     elif args[0] in ('v', 'validate'):

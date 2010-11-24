@@ -164,10 +164,7 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
                     ' := [ ' + geom + ' ' + value + ' ].',
                     merge=True)
         if n == 'case' and ch.has_mixed_case():
-          if '-synth-' + value in type_name:
-            val = '-'
-          else:
-            val = '+'
+          val = '-' if '-synth-' + value in type_name else '+'
           tdlfile.add(type_name +
                       ' := [ ' + geom + '-MARKED ' + val + ' ].',
                       merge=True)
@@ -202,10 +199,8 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
                       merge=True)
         else:
           c = c[0]
-          if c == 'intrans':
-            s_case = ''
-          else:
-            s_case = (geom + ' ' + case.canon_to_abbr(c, cases))
+          s_case = '' if c == 'intrans' \
+                      else (geom + ' ' + case.canon_to_abbr(c, cases))
           tdlfile.add(type_name + \
                       ' := [ ARG-ST < [ ' + s_case + '] > ].',
                       merge=True)

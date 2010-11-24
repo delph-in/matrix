@@ -1662,10 +1662,7 @@ class ChoicesFile:
     what was going on in the old system.
     """
     if self.get('q-infl') == 'on':
-      if 'verb-slot' in self:
-        n = self['verb-slot'].next_iter_num()
-      else:
-        n = 1
+      n = self['verb-slot'].next_iter_num() if 'verb-slot' in self else 1
       pref = 'verb-slot' + str(n)
       if self.get('ques-aff') == 'suffix':
         self[pref + '_order'] = 'after'

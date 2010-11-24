@@ -12,8 +12,8 @@ dirinv_geom = 'LOCAL.CAT.HEAD.DIRECTION'
 def get_subj_comps_types(j, scale_size, direc, equal):
   hi_type = lo_type = 'dir-inv-'
   if equal == 'direct' and direc == 'dir':
-    lo_type += {1:'scale'}.get(j, 'non-' + str(j-1))
-    hi_type += {scale_size:'non-' + str(j-1)}.get(j, str(j))
+    lo_type += ('scale' if j==1 else ('non-' + str(j-1)))
+    hi_type += (('non-' + str(j-1)) if j==scale_size else str(j))
   else:
     hi_type += str(j)
     lo_type += 'non-' + str(j)
