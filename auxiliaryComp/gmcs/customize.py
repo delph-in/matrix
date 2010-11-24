@@ -757,7 +757,7 @@ in for head-adjunct phrases here:',
         if ch.get('aux-comp-order') == 'before':
           mylang.add('aux-comp-vc-phrase := general-head-comp-vc-phrase & \
                          [ HEAD-DTR.SYNSEM.LIGHT +, \
-                           NONHEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
+                           NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
                                                           MC - ] ].') 
       else:
         mylang.add('general-comp-head-vc-phrase:= basic-head-1st-comp-phrase & head-final-invc.')
