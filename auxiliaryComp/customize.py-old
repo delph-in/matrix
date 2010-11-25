@@ -707,6 +707,8 @@ in for head-adjunct phrases here:',
 
 ###ADD: check whether has auxiliaries (also consider revising general v2 impl)
   
+###FIX ME: all v2 with verbal cluster now get MC na-or-- for finite verb...
+
   if ch.get('multiple-aux') == 'yes':
     vcluster = True
   else:
@@ -721,13 +723,14 @@ in for head-adjunct phrases here:',
       mylang.add('head-initial-head-nexus := nonverbal-comp-phrase & \
                   [ HEAD-DTR.SYNSEM.LOCAL.CAT [ MC +, \
                                                 SECOND + ] ].')
+      mylang.add('finite-lex-rule :+ [ SYNSEM.LOCAL.CAT.MC na-or-- ].')
     else:
       mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.MC na ].')
 
     mylang.add('head-final-head-nexus := head-final & \
                 [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
     if vcluster:
-      mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT [ MC +, \
+      mylang.add('head-final-head-nexus := nonverbal-comp-phrase & [ SYNSEM.LOCAL.CAT [ MC +, \
                                                                 SECOND #scd ],\
                                              HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd, \
                                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
@@ -764,12 +767,12 @@ in for head-adjunct phrases here:',
         mylang.add('comp-head-vc-phrase := general-comp-head-vc-phrase & nonverbal-comp-phrase.')
         mylang.add('comp-2-head-vc-phrase := basic-head-2nd-comp-phrase & head-final-invc & nonverbal-comp-phrase.')
         if ch.get('aux-comp-order') == 'after':   
-          mylang.add('comp-aux-vc-phrase := general-head-comp-vc-phrase & \
+          mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
                        [ HEAD-DTR.SYNSEM.LIGHT +, \
                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
                                                          MC - ] ].')
         elif ch.get('aux-comp-order') == 'both':
-          mylang.add('comp-aux-phrase-vc := gen-comp-head-phrase-vc & \
+          mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
                          [ SYNSEM.LOCAL.CAT [ SECOND na, \
 		                              POSTHEAD #phd ], \
                            HEAD-DTR.SYNSEM [ LOCAL.CAT [ POSTHEAD +, \
@@ -778,7 +781,7 @@ in for head-adjunct phrases here:',
                            NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
 				                           VC +, \
 				                           POSTHEAD #phd ]].')
-          mylang.add('aux-comp-phrase-vc := basic-head-1st-comp-phrase & head-initial-invc & \
+          mylang.add('aux-comp-vc-phrase := basic-head-1st-comp-phrase & head-initial-invc & \
                          [ SYNSEM.LOCAL.CAT [ POSTHEAD #phd, \
 		                              SECOND + ], \
                            HEAD-DTR.SYNSEM [ LOCAL.CAT [ POSTHEAD -, \

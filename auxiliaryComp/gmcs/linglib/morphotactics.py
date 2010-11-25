@@ -97,12 +97,12 @@ def customize_inflection(choices, add_methods, mylang, irules, lrules):
   for method in add_methods:
     method(choices)
   # now create the hierarchy
-  pch = customize_lexical_rules(choices)
+  pch = customize_lexical_rules(choices, mylang)
   # write_rules currently returns a list of items needing feature
   # customization. Hopefully we can find a better solution
   return write_rules(pch, mylang, irules, lrules)
 
-def customize_lexical_rules(choices):
+def customize_lexical_rules(choices, mylang):
   """
   Interpret the PCs in a Choices file into a set of lexical rules.
   """
@@ -116,7 +116,7 @@ def customize_lexical_rules(choices):
   #  3. find the unique input for each PC (and create intermediate rules)
   #      (all_inputs() depends on forward-looking require constraints)
   #  4. determine and create flags based on constraints
-  pch = position_class_hierarchy(choices)
+  pch = position_class_hierarchy(choices, mylang)
   #create_lexical_rule_types(choices)
   interpret_constraints(choices)
   convert_obligatoriness_to_req(choices)
@@ -125,7 +125,7 @@ def customize_lexical_rules(choices):
 
 ### POSITION CLASSES AND LEXICAL RULE TYPES ###
 
-def position_class_hierarchy(choices):
+def position_class_hierarchy(choices, mylang):
   """
   Create and return the data structures to hold the information
   regarding position classes and lexical types.
@@ -165,7 +165,7 @@ def position_class_hierarchy(choices):
       # default name uses name of PC with _lrtX
       if 'name' not in lrt:
         lrt['name'] = cur_pc.name + lrt.full_key.replace(cur_pc.key, '', 1)
-      cur_lrt = create_lexical_rule_type(lrt)
+      cur_lrt = create_lexical_rule_type(lrt, mylang)
       # the ordering should only mess up if there are 100+ lrts
       cur_lrt.tdl_order = i + (0.01 * j)
       cur_pc.add_node(cur_lrt)
@@ -183,12 +183,19 @@ def position_class_hierarchy(choices):
       _mns[pc].relate(_mns[inp], 'parent')
   return pch
 
-def create_lexical_rule_type(lrt):
+def create_lexical_rule_type(lrt, mylang):
   new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
   for feat in lrt.get('feat'):
-    new_lrt.features[feat['name']] = {'value': feat['value'],
+    if not feat['name'] == 'worest': 
+      new_lrt.features[feat['name']] = {'value': feat['value'],
                                       'head': feat.get('head')}
-  new_lrt.lris = [lri.get('orth','') for lri in lrt.get('lri',[])]
+    else:
+      worest = feat['value']
+      if worest == 'before':
+        mylang.add(get_name(lrt) + '''-lex-rule := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].''')
+      elif worest == 'after':
+        mylang.add(get_name(lrt) + '''-lex-rule := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].''')
+    new_lrt.lris = [lri.get('orth','') for lri in lrt.get('lri',[])]
   # if there exists a non-empty lri, give it an infl supertype
   if len(new_lrt.lris) > 0:
     if any([len(lri) > 0 for lri in new_lrt.lris]):
@@ -236,7 +243,7 @@ def interpret_constraints(choices):
         mn.constraints['forbid'][other.key] = other
       elif mn.precedes(other):
         other.constraints['forbid'][mn.key] = mn
-
+   
 def convert_obligatoriness_to_req(choices):
   """
   For all PCs marked as obligatory, add a "require" constraint for
@@ -501,14 +508,14 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
 ### VALIDATION ###
 ##################
 
-def validate(choices, vr):
+def validate(choices, vr, mylang):
   index_feats = choices.index_features()
   for pc in all_position_classes(choices):
     basic_pc_validation(choices, pc, vr)
     cooccurrence_validation(pc, choices, vr)
     for lrt in pc.get('lrt', []):
       lrt_validation(lrt, vr, index_feats)
-  cycle_validation(choices, vr)
+  cycle_validation(choices, vr, mylang)
 
 def basic_pc_validation(choices, pc, vr):
   # Lexical rule types need order and inputs specified
@@ -564,8 +571,8 @@ def lrt_validation(lrt, vr, index_feats):
                'This feature is associated with nouns, ' +\
                'please select one of the NP-options.')
 
-def cycle_validation(choices, vr):
-  pch = position_class_hierarchy(choices)
+def cycle_validation(choices, vr, mylang):
+  pch = position_class_hierarchy(choices, mylang)
   for pc in pch.nodes.values():
     cyclic_inps = set([i.key for i in pc.input_span().values()
                        if pc.precedes(i) and i.precedes(pc)])

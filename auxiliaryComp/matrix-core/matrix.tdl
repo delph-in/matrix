@@ -1610,13 +1610,11 @@ basic-head-comp-phrase := head-valence-phrase & head-compositional &
   [ SYNSEM phr-synsem-min &
 	   [ LOCAL.CAT [ VAL [ SUBJ #subj,
 			       SPR #spr ],
-			 POSTHEAD #ph,
 			 HC-LIGHT #light ],
              LIGHT #light ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
                                         SPR #spr ],
-				  HC-LIGHT #light,
-                                  POSTHEAD #ph ]], 
+				  HC-LIGHT #light ]], 
     NON-HEAD-DTR.SYNSEM canonical-synsem,
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ] ].
