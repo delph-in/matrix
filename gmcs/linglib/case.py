@@ -175,6 +175,7 @@ def add_lexrules(ch):
           ch[lrt_key + '_name'] = get_name(pc) + '-synth-' + c[0]
           ch[lrt_key + '_feat1_name'] = 'case'
           ch[lrt_key + '_feat1_value'] = c[0]
+          ch[lrt_key + '_lri1_inflecting'] = 'no'
           ch[lrt_key + '_lri1_orth'] = ''
 
 def interpret_verb_valence(valence):

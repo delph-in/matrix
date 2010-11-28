@@ -44,6 +44,7 @@ def add_lexrules(choices):
           choices[key + '_feat1_name'] = 'OPT'
           choices[key + '_feat1_value'] = 'minus'
           choices[key + '_feat1_head'] = feat['head']
+          choices[key + '_lri1_inflecting'] = 'no'
           choices[key + '_lri1_orth'] = ''
       # dropped-arg morphs should be the index of the next available + 1
       if dropped:
@@ -60,6 +61,7 @@ def add_lexrules(choices):
           choices[key + '_feat1_name'] = 'OPT'
           choices[key + '_feat1_value'] = 'plus'
           choices[key + '_feat1_head'] = feat['head']
+          choices[key + '_lri1_inflecting'] = 'no'
           choices[key + '_lri1_orth'] = ''
 
 def need_no_drop_rule(obj_subj, choices):

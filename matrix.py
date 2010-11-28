@@ -83,7 +83,7 @@ def main():
     else:
       usage()
 
-  except IndexError:
+  except AttributeError: # indexerror
     usage()
 
 
@@ -183,10 +183,10 @@ def run_unit_tests():
   import gmcs.tests.testChoices
   runner.run(loader.loadTestsFromModule(gmcs.tests.testChoices))
 
-  print_line()
-  print 'Validate tests:'
-  import gmcs.tests.testValidate
-  runner.run(loader.loadTestsFromModule(gmcs.tests.testValidate))
+  #print_line()
+  #print 'Validate tests:'
+  #import gmcs.tests.testValidate
+  #runner.run(loader.loadTestsFromModule(gmcs.tests.testValidate))
 
   #print_line()
   #print 'Linglib/Morphotactics tests:'
