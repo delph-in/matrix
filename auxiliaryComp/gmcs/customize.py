@@ -787,34 +787,47 @@ in for head-adjunct phrases here:',
         if ch.get('aux-comp-order') == 'after':   
           if ch.get('vc-analysis') == 'basic':
             mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
-                         [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ]') 
+                         [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].') 
           elif ch.get('vc-analysis') == 'aux-rule':
             mylang.add('comp-aux-vc-phrase := basic-aux-verb-rule & head-final & \
                          [ SYNSEM [ LOCAL.CAT [ MC -, \
                                                 VC + ], \
                                     LIGHT - ] ].')
           mylang.add('comp-aux-vc-phrase := [ HEAD-DTR.SYNSEM.LIGHT +, \
-                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
+                                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
 
 #non-head vc + supertype general-comp-head-vc-phrase
         elif ch.get('aux-comp-order') == 'both':
-          mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
-                         [ SYNSEM.LOCAL.CAT [ SECOND na, \
-		                              POSTHEAD #phd ], \
-                           HEAD-DTR.SYNSEM [ LOCAL.CAT [ POSTHEAD +, \
-				                         VC +, \
-				                         SECOND + ] ], \
+          if ch.get('vc-analysis') == 'basic':
+            mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
+                         [ SYNSEM.LOCAL.CAT.SECOND na,\
+                           HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
+                                                       SECOND + ], \
+                           NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+            mylang.add('aux-comp-vc-phrase := basic-head-1st-comp-phrase & head-initial-invc & \
+                         [ SYNSEM.LOCAL.CAT.SECOND +,\
+                           HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND na, \
+                           NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+          elif ch.get('vc-analysis') == 'aux-rule':
+            mylang.add('comp-aux-vc-phrase := basic-aux-verb-rule & head-final & \
+                                         [ SYNSEM.LOCAL.CAT [ MC -, \
+                                                              VC +, \
+                                                              NOMINAL #nl ], \
+                                           HEAD-DTR.SYNSEM.LOCAL.CAT.VC na, \
+                                           NON-HEAD-DTR.SYNSEM.LOCAL.CAT.NOMINAL #nl ].')
+            mylang.add('aux-comp-vc-phrase := basic-aux-verb-rule & head-initial & \
+                                        [ SYNSEM.LOCAL.CAT [ MC -, \
+                                                             VC na ], \
+                                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VC na-or-+, \
+                                                                          NOMINAL - ] ].')
+          mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT [ POSTHEAD #phd ], \
+                                              HEAD-DTR.SYNSEM.LOCAL.CAT.POSTHEAD +, \
+                                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
+                                                                              POSTHEAD #phd ] ].')
+          mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.POSTHEAD #phd, \
+                           HEAD-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD -, \
+				                       VC + ], \
                            NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
-				                           VC +, \
-				                           POSTHEAD #phd ]].')
-          mylang.add('aux-comp-vc-phrase := basic-head-1st-comp-phrase & head-initial-invc & \
-                         [ SYNSEM.LOCAL.CAT [ POSTHEAD #phd, \
-		                              SECOND + ], \
-                           HEAD-DTR.SYNSEM [ LOCAL.CAT [ POSTHEAD -, \
-				                         VC +, \
-				                         SECOND na ] ], \
-                           NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
-				                           MC -, \
 				                           POSTHEAD #phd ]].')
           
 
@@ -1079,6 +1092,8 @@ def specialize_word_order(hc,orders):
       partvpf = False
     if ch.get('vc-analysis') == 'aux-rule':
       vcval = 'luk'
+      if ch.get('aux-comp-order') == 'both':
+        mylang.add('cat :+ [ NOMINAL bool ].')
     else:
       vcval = 'bool'
     mylang.add('cat :+ [ VC ' + vcval + ' ].',
@@ -1169,6 +1184,8 @@ def specialize_word_order(hc,orders):
         if ch.get('vc-placement') == 'pre':
           mylang.add('head-initial-invc := [ SYNSEM.LOCAL.CAT.VC -, \
                                            HEAD-DTR.SYNSEM.LOCAL.CAT.VC na-or-- ].') 
+        if ch.get('aux-comp-order') == 'both':
+          mylang.add('head-final-invc := [ SYNSEM.LOCAL.CAT.NOMINAL + ].')
         ###special aux-structure comp-aux
 
       mylang.add('head-final-invc := head-final & \
