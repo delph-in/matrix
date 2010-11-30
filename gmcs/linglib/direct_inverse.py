@@ -12,8 +12,8 @@ dirinv_geom = 'LOCAL.CAT.HEAD.DIRECTION'
 def get_subj_comps_types(j, scale_size, direc, equal):
   hi_type = lo_type = 'dir-inv-'
   if equal == 'direct' and direc == 'dir':
-    lo_type += {1:'scale'}.get(j, 'non-' + str(j-1))
-    hi_type += {scale_size:'non-' + str(j-1)}.get(j, str(j))
+    lo_type += ('scale' if j==1 else ('non-' + str(j-1)))
+    hi_type += (('non-' + str(j-1)) if j==scale_size else str(j))
   else:
     hi_type += str(j)
     lo_type += 'non-' + str(j)
@@ -62,7 +62,7 @@ def write_dir_inv_types(choices, mylang, hierarchies):
 
   scale_len = len(choices.get('scale',''))
 
-  for i in range(scale_len - 1):
+  for i in range(1, scale_len):
     values = {}  # for each feature, a set of values
 
     # get the features on the first scale entry in this range
@@ -73,7 +73,7 @@ def write_dir_inv_types(choices, mylang, hierarchies):
       values[name].add(feat.get('value'))
 
     # create the left type in the pair
-    type = 'dir-inv-' + str(i+1)
+    type = 'dir-inv-' + str(i)
 
     mylang.add(type + ' := ' + supertype + '.')
 
@@ -97,7 +97,7 @@ def write_dir_inv_types(choices, mylang, hierarchies):
 
     # rest of the scale
     values = {}
-    for scale in choices.get('scale')[i+1:]:
+    for scale in choices.get('scale')[i:]:
       for feat in scale.get('feat', []):
         name = feat.get('name','')
         if name not in values:
@@ -105,7 +105,7 @@ def write_dir_inv_types(choices, mylang, hierarchies):
         values[name].add(feat.get('value',''))
 
     # create the right type in the pair
-    type = 'dir-inv-non-' + str(i+1)
+    type = 'dir-inv-non-' + str(i)
 
     mylang.add(type + ' := ' + supertype + '.')
 
@@ -205,13 +205,14 @@ def add_lexrules(choices):
                                                          direc, equal)
             choices[lrt_key + '_name'] = '-'.join([n, direc, str(j)])
             choices[lrt_key + '_supertypes'] = direc_lrt_key
+            choices[lrt_key + '_feat1_name'] = 'dirinv-type'
+            choices[lrt_key + '_feat1_head'] = 'subj'
+            choices[lrt_key + '_feat1_value'] = subj_type
             choices[lrt_key + '_feat2_name'] = 'dirinv-type'
-            choices[lrt_key + '_feat2_head'] = 'subj'
-            choices[lrt_key + '_feat2_value'] = subj_type
-            choices[lrt_key + '_feat3_name'] = 'dirinv-type'
-            choices[lrt_key + '_feat3_head'] = 'obj'
-            choices[lrt_key + '_feat3_value'] = comps_type
+            choices[lrt_key + '_feat2_head'] = 'obj'
+            choices[lrt_key + '_feat2_value'] = comps_type
             # add an empty lexical rule instance
+            choices[lrt_key + '_lri1_inflecting'] = 'no'
             choices[lrt_key + '_lri1_orth'] = ''
 
 def reassign_inputs(choices, inp_key, pc_key):

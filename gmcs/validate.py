@@ -972,10 +972,6 @@ def validate_lexicon(ch, vr):
       if name and not cf.get('value'):
         mess = 'You must specify a value for this feature.'
         vr.err(cf.full_key + '_value', mess)
-    #jdc 27nov2010
-      if name == 'negation':
-        mess = 'This feature causes problems on verbal roots if inflectional negation is selected.' 
-        vr.err(cf.full_key + '_value', mess)
 
     if not compform == 'yes':
       mess = 'You must specify the form of the verb in the complement, ' +\

@@ -1149,7 +1149,11 @@ BeginIter noun-pc{i} "a Position Class"
 
     BeginIter lri{k} "a Lexical Rule Instance"
 
-      Text orth "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "Instance {k} Spelling: " "" 20
+      Radio inflecting "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
+      . no "No" "" "No affix"
+      . yes "Yes" "" "Affix"
+
+      Text orth "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "spelled" "" 20
 
     EndIter lri
 
@@ -1423,7 +1427,11 @@ BeginIter verb-pc{i} "a Position Class"
 
     BeginIter lri{k} "a Lexical Rule Instance"
 
-      Text orth "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "Instance {k} Spelling: " "" 20
+      Radio inflecting "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
+      . no "No" "" "No affix"
+      . yes "Yes" "" "Affix"
+
+      Text orth "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "spelled" "" 20
 
     EndIter lri
 
@@ -1562,7 +1570,11 @@ BeginIter det-pc{i} "a Position Class"
 
     BeginIter lri{k} "a Lexical Rule Instance"
 
-      Text orth "Determiner Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "Instance {k} Spelling: " "" 20
+      Radio inflecting "Determiner Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
+      . no "No" "" "No affix"
+      . yes "Yes" "" "Affix"
+
+      Text orth "Determiner Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "spelled" "" 20
 
     EndIter lri
 

@@ -1,3 +1,4 @@
+from collections import defaultdict
 from sets import Set as set
 
 from gmcs.linglib import lexicon
@@ -8,9 +9,6 @@ from gmcs.linglib.lexbase import (MorphotacticNode, PositionClass,
                                   LEXICAL_SUPERTYPES)
 from gmcs.lib import Hierarchy
 from gmcs.utils import get_name
-# not until python 2.5
-#from collections import defaultdict
-from gmcs.lib import defaultdict
 
 ### Contents
 # 1. Module Variables
@@ -188,7 +186,8 @@ def create_lexical_rule_type(lrt):
   for feat in lrt.get('feat'):
     new_lrt.features[feat['name']] = {'value': feat['value'],
                                       'head': feat.get('head')}
-  new_lrt.lris = [lri.get('orth','') for lri in lrt.get('lri',[])]
+  new_lrt.lris = [lri['orth'] if lri['inflecting'] == 'yes' else ''
+                  for lri in lrt.get('lri',[])]
   # if there exists a non-empty lri, give it an infl supertype
   if len(new_lrt.lris) > 0:
     if any([len(lri) > 0 for lri in new_lrt.lris]):
@@ -482,10 +481,7 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
     elif order.lower() in ('suffix', 'after'):
       order = 'suffix'
     # if there's only one LRI don't give the rule a number
-    if len(lrt.lris) == 1:
-      num = ['']
-    else:
-      num = range(1, len(lrt.lris) + 1)
+    num = [''] if len(lrt.lris) == 1 else range(1, len(lrt.lris) + 1)
     for i, lri in enumerate(lrt.lris):
       rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
                       r'%' + order + ' (* ' + lri + ')',
@@ -563,6 +559,15 @@ def lrt_validation(lrt, vr, index_feats):
         vr.err(feat.full_key + '_head',
                'This feature is associated with nouns, ' +\
                'please select one of the NP-options.')
+  for lri in lrt.get('lri', []):
+    if lri['inflecting'] == 'yes' and not lri.get('orth', ''):
+      vr.err(lri.full_key + '_orth',
+             "If an instance's spelling is not selected as None, " +\
+             "it cannot be blank.")
+    elif lri['inflecting'] == 'no' and len(lri.get('orth', '')) > 0:
+      vr.warn(lri.full_key + '_orth',
+              "If an instance's spelling is selected as None, " +\
+              "any defined spelling will not be used.")
 
 def cycle_validation(choices, vr):
   pch = position_class_hierarchy(choices)

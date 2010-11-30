@@ -23,10 +23,7 @@ def add_lexrules(choices):
   '''
   for pc in morphotactics.all_position_classes(choices):
     pc_key = pc.full_key
-    if 'lrt' in pc:
-      idx = pc['lrt'].next_iter_num()
-    else:
-      idx = 1
+    idx = pc['lrt'].next_iter_num() if 'lrt' in pc else 1
     for lrt in pc.get('lrt',[]):
       overt = [f for f in lrt.get('feat',[]) if f['name']=='overt-arg']
       dropped = [f for f in lrt.get('feat',[]) if f['name']=='dropped-arg']
@@ -47,6 +44,7 @@ def add_lexrules(choices):
           choices[key + '_feat1_name'] = 'OPT'
           choices[key + '_feat1_value'] = 'minus'
           choices[key + '_feat1_head'] = feat['head']
+          choices[key + '_lri1_inflecting'] = 'no'
           choices[key + '_lri1_orth'] = ''
       # dropped-arg morphs should be the index of the next available + 1
       if dropped:
@@ -63,6 +61,7 @@ def add_lexrules(choices):
           choices[key + '_feat1_name'] = 'OPT'
           choices[key + '_feat1_value'] = 'plus'
           choices[key + '_feat1_head'] = feat['head']
+          choices[key + '_lri1_inflecting'] = 'no'
           choices[key + '_lri1_orth'] = ''
 
 def need_no_drop_rule(obj_subj, choices):

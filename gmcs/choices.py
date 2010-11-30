@@ -31,8 +31,7 @@ class ChoiceCategory:
     self.full_key = full_key
 
   def get(self, key, default=None):
-    # integers have an offset of -1 for list indices
-    keys = [safe_int(k, offset=-1) for k in split_variable_key(key)]
+    keys = [safe_int(k) for k in split_variable_key(key)]
     d = self
     try:
       for k in keys:
@@ -46,7 +45,32 @@ class ChoiceCategory:
 class ChoiceDict(ChoiceCategory, dict):
 
   def __getitem__(self, key):
-    return dict.__getitem__(self, key)
+    cur, remaining = get_next_key(key)
+    retval = dict.__getitem__(self, key)
+    if remaining:
+      retval = retval[remaining]
+    return retval
+
+  def __setitem__(self, key, value):
+    cur_key, remaining_keys = get_next_key(key)
+    # keys will be empty if we are setting the value
+    if not remaining_keys:
+      dict.__setitem__(self, cur_key, value)
+    # otherwise we need to descend to the next list
+    else:
+      if cur_key not in self:
+        new_key = cur_key if not self.full_key \
+                          else '_'.join([self.full_key, cur_key])
+        new_list = ChoiceList(full_key=new_key)
+        dict.__setitem__(self, cur_key, new_list)
+      self[cur_key][remaining_keys] = value
+
+  def __delitem__(self, key):
+    cur, remaining = get_next_key(key)
+    if remaining:
+      del self[cur][remaining]
+    elif cur in self:
+      dict.__delitem__(self, cur)
 
   def iter_num(self):
     if self.full_key is not None:
@@ -58,7 +82,33 @@ class ChoiceDict(ChoiceCategory, dict):
 class ChoiceList(ChoiceCategory, list):
 
   def __getitem__(self, key):
-    return list.__getitem__(self, key)
+    index, remaining = get_next_key(key)
+    # subtract 1 for 1-based indices
+    retval = list.__getitem__(self, index - 1)
+    if remaining:
+      retval = retval[remaining]
+    return retval
+
+  def __setitem__(self, key, value):
+    index, remaining_keys = get_next_key(key)
+    # create the dicts, if needed, then descend into the one at index
+    if len(self) < index:
+      # we overrode the len function, but in this case we want the original
+      for i in range(list.__len__(self), index):
+        self.append(ChoiceDict(full_key=self.full_key + str(i + 1)))
+    if not remaining_keys:
+      list.__setitem__(self, index - 1, value)
+    else:
+      self[index][remaining_keys] = value
+
+  def __delitem__(self, key):
+    cur, remaining = get_next_key(key)
+    if remaining:
+      del self[cur][remaining]
+    # delete only if the user specified this list
+    elif cur in self:
+      # but don't actually delete list items, since that breaks indexing
+      self[cur] = ChoiceDict()
 
   # custom iterator ignores empty items (e.g. when a
   # user deletes an item in the middle of a list)
@@ -66,6 +116,9 @@ class ChoiceList(ChoiceCategory, list):
     for item in list.__iter__(self):
       if len(item) > 0:
         yield item
+
+  def __len__(self):
+    return sum(1 for x in self if len(x) > 0)
 
   def is_empty(self):
     return len([x for x in self]) == 0
@@ -120,6 +173,24 @@ def split_variable_key(key):
   if key == '': return []
   return [k for k in var_delim_re.split(key) if k]
 
+def get_next_key(complex_key):
+  """
+  Split a key grouping it by non-numbers and numbers.
+  """
+  # if the key is just a number, just return the number
+  if isinstance(complex_key, int):
+    return complex_key, ''
+  # given a blank key, return None
+  if not complex_key:
+    return None, None
+  subkeys = var_delim_re.split(complex_key, maxsplit=1)
+  # re.split above will return 1 value if no split, so make it 3
+  if len(subkeys) == 1:
+    subkeys += ['', '']
+  # the remaining keys will be the latter two subkeys if the first is used
+  next_key = subkeys[0] or subkeys[1]
+  rest = complex_key.replace(next_key,'',1).lstrip('_')
+  return safe_int(next_key), rest
 
 ######################################################################
 # ChoicesFile is a class that wraps the choices file, a list of
@@ -177,10 +248,7 @@ class ChoicesFile:
         (key, value) = line.split('=',1)
         if key.strip() in ('section', 'version'):
             continue
-        choices = self.__set_variable(choices,
-                                      split_variable_key(key.strip()),
-                                      value,
-                                      allow_overwrite=False)
+        choices[key.strip()] = value
       except ValueError:
         pass # TODO: log this!
       except AttributeError:
@@ -200,77 +268,12 @@ class ChoicesFile:
   def __getitem__(self, key):
     return self.get(key)
 
-  def __set_variable(self, choices, keys, value,
-                     allow_overwrite=True, key_prefix=None):
-    """
-    Set the value parameter in the dict/list data structure choices,
-    with the location defined by keys.
-    """
-    # if there are no more keys, we need to set the value by returning it
-    if len(keys) == 0:
-      if choices and not allow_overwrite:
-        raise ChoicesFileParseError(
-                'Variable is multiply defined.')
-      return value
-    # Now we should be dealing with either a list or dict
-    var = keys.pop(0)
-    try:
-      var = int(var)
-      # If no error was thrown, we're dealing with a list index.
-      # Create the list if it doesn't already exist
-      if not choices:
-        choices = ChoiceList(full_key=key_prefix)
-      count = len(choices)
-      if count < var:
-        choices += [ChoiceDict(full_key=key_prefix + str(count+i+1))
-                    for i in range(var - count)]
-      val = self.__set_variable(choices[var - 1],
-                                keys,
-                                value,
-                                allow_overwrite,
-                                key_prefix + str(var))
-      if type(val) is not ChoiceDict:
-        raise ChoicesFileParseError('Invalid value for iterated choice.')
-      choices[var - 1] = val
-    except ValueError:
-      new_key_prefix = '_'.join([k for k in [key_prefix, var] if k])
-      choices[var] = self.__set_variable(choices.get(var, None),
-                                         keys,
-                                         value,
-                                         allow_overwrite,
-                                         new_key_prefix)
-    return choices
-
   def __setitem__(self, key, value):
-    self.__set_variable(self.choices, split_variable_key(key), value)
+    self.choices[key] = value
     self.__reset_full_keys(key)
 
-  def __delete(self, choices, keys, prune):
-    """
-    Delete a choice from the data structure. If prune is True, remove
-    empty dictionaries and list items (changing list size).
-    """
-    if len(keys) == 0:
-      return
-    elif len(keys) == 1:
-      if not prune and type(keys[0]) == int:
-        # if not pruning, replace list items to maintain list size
-        choices[keys[0]] = ChoiceDict()
-      else:
-        del choices[keys[0]]
-    else:
-      # recursively delete the next subitem...
-      self.__delete(choices[keys[0]], keys[1:], prune)
-      # ... and prune if the resulting branch is empty and we're pruning
-      if prune and len(choices[keys[0]]) == 0:
-        del choices[keys[0]]
-
   def delete(self, key, prune=False):
-    if key not in self:
-        return
-    # integers have an offset of -1 for list indices
-    keys = [safe_int(k, offset=-1) for k in split_variable_key(key)]
-    self.__delete(self.choices, keys, prune)
+    del self[key]
     # full_key values will be corrupted if we pruned, so re-evaluate
     if prune:
       for k in self:
@@ -278,7 +281,7 @@ class ChoicesFile:
         self.__reset_full_keys(k)
 
   def __delitem__(self, key):
-    self.delete(key, prune=False)
+    del self.choices[key]
 
   def __contains__(self, key):
     if self.get(key):
@@ -302,7 +305,7 @@ class ChoicesFile:
     for i, c in enumerate(self[key]):
       c_type = type(c)
       if c_type is ChoiceDict:
-        c.full_key = key + str(i + 1)
+        c.full_key = key + str(i)
       elif c_type is ChoiceList:
         c.full_key = key + str(c)
       else:
@@ -1662,10 +1665,7 @@ class ChoicesFile:
     what was going on in the old system.
     """
     if self.get('q-infl') == 'on':
-      if 'verb-slot' in self:
-        n = self['verb-slot'].next_iter_num()
-      else:
-        n = 1
+      n = self['verb-slot'].next_iter_num() if 'verb-slot' in self else 1
       pref = 'verb-slot' + str(n)
       if self.get('ques-aff') == 'suffix':
         self[pref + '_order'] = 'after'
@@ -1795,9 +1795,11 @@ class ChoicesFile:
         # morphs and orths
         for morph in slot['morph']:
           if 'orth' in morph:
+            morph['lri1_inflecting'] = 'yes'
             self.convert_key('orth', 'lri1_orth', key_prefix=morph.full_key)
           else:
-            self[morph.full_key + '_lri1_orth'] = ''
+            morph['lri1_inflecting'] = 'no'
+            morph['lri1_orth'] = ''
         self.convert_key(slot.full_key + '_morph', slot.full_key + '_lrt')
       # finally, change -slot keys to -pc
       self.convert_key(lex_cat + '-slot', lex_cat + '-pc')
