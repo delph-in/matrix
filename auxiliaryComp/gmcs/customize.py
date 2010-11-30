@@ -1141,12 +1141,12 @@ def specialize_word_order(hc,orders):
         mylang.add('comp-aux-2nd-phrase := basic-aux-verb-rule & head-final & \
                                      [ SYNSEM.LOCAL.CAT [ MC +, \
 		                                          POSTHEAD #phd, \
-		                                          VAL.SUBJ < [] > ], \
+		                                          VAL.SUBJ < [] >  ], \
                                        HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na, \
 				                                   POSTHEAD #phd ], \
                                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
         if ch.get('part-vp-front') == 'no':
-          mylang.add('comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.COMPS < > ].')    
+          mylang.add('comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')    
         mylang.add('aux-2nd-comp-phrase := basic-aux-verb-rule & head-initial & \
                              [ SYNSEM [ LOCAL.CAT [ POSTHEAD +, \
 			                            MC #mc & na, \
