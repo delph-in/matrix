@@ -785,10 +785,18 @@ in for head-adjunct phrases here:',
         mylang.add('comp-head-vc-phrase := general-comp-head-vc-phrase & nonverbal-comp-phrase.')
         mylang.add('comp-2-head-vc-phrase := basic-head-2nd-comp-phrase & head-final-invc & nonverbal-comp-phrase.')
         if ch.get('aux-comp-order') == 'after':   
-          mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
-                       [ HEAD-DTR.SYNSEM.LIGHT +, \
-                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
-                                                         MC - ] ].')
+          if ch.get('vc-analysis') == 'basic':
+            mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
+                         [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ]') 
+          elif ch.get('vc-analysis') == 'aux-rule':
+            mylang.add('comp-aux-vc-phrase := basic-aux-verb-rule & head-final & \
+                         [ SYNSEM [ LOCAL.CAT [ MC -, \
+                                                VC + ], \
+                                    LIGHT - ] ].')
+          mylang.add('comp-aux-vc-phrase := [ HEAD-DTR.SYNSEM.LIGHT +, \
+                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
+
+#non-head vc + supertype general-comp-head-vc-phrase
         elif ch.get('aux-comp-order') == 'both':
           mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
                          [ SYNSEM.LOCAL.CAT [ SECOND na, \
