@@ -1535,8 +1535,7 @@ basic-head-filler-phrase := basic-filler-phrase & headed-phrase.
 basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
 			  head-compositional &
   [ SYNSEM phr-synsem & 
-	   [ LOCAL.CAT [ POSTHEAD +,
-			 VAL [ SUBJ < >,
+	   [ LOCAL.CAT [ VAL [ SUBJ < >,
 			       COMPS #comps,
 			       SPR #spr ] ] ],
     C-CONT [ RELS <! !>,
