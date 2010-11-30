@@ -22,73 +22,112 @@ def main():
       force = True
     elif o in ('-h', '--help'):
       printhelp()
-  try:
-    if args[0] in ('c', 'customize'):
-      dest = args[2] if len(args) > 2 else None
-      customize_grammar(args[1], destination=dest)
 
-    elif args[0] in ('cf', 'customize-and-flop'):
-      dest = args[2] if len(args) > 2 else None
-      customize_grammar(args[1], destination=dest, flop=True)
+  validate_args(args)
 
-    elif args[0] in ('v', 'validate'):
-      choices_file = args[1]
-      if os.path.isdir(choices_file):
-        choices_file = os.path.join(choices_file, 'choices')
-      if not os.path.exists(choices_file):
-        sys.exit("Error: Choices file not found at " + choices_file)
-      import gmcs.validate
-      v = gmcs.validate.validate_choices(choices_file)
-      for x in v.errors:
-        print x
-        print '  ', v.errors[x]
+  if args[0] in ('c', 'customize'):
+    dest = args[2] if len(args) > 2 else None
+    customize_grammar(args[1], destination=dest)
 
-    elif args[0] in ('u', 'utest', 'unit-test'):
-      run_unit_tests()
+  elif args[0] in ('cf', 'customize-and-flop'):
+    dest = args[2] if len(args) > 2 else None
+    customize_grammar(args[1], destination=dest, flop=True)
 
-    elif args[0] in ('r', 'rtest', 'regression-test'):
-      cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
-                         'regression_tests/run_regression_tests.sh')
-      #Using subprocess makes it difficult to kill the process
-      # (e.g. with Ctrl-C), so we need to handle KeyboardInterrupts
-      # (or alternatively use a os.exec* function)
-      try:
-        p = subprocess.Popen([cmd] + args[1:], env=os.environ)
-        p.wait()
-      except KeyboardInterrupt:
-        print "\nProcess interrupted. Aborting regression tests.\n"
-        import signal
-        os.kill(p.pid, signal.SIGKILL)
+  elif args[0] in ('v', 'validate'):
+    choices_file = args[1]
+    if os.path.isdir(choices_file):
+      choices_file = os.path.join(choices_file, 'choices')
+    if not os.path.exists(choices_file):
+      sys.exit("Error: Choices file not found at " + choices_file)
+    import gmcs.validate
+    v = gmcs.validate.validate_choices(choices_file)
+    for x in v.errors:
+      print x
+      print '  ', v.errors[x]
 
-    elif args[0] in ('a', 'rtest-add', 'regression-test-add'):
-      choices = args[1]
-      txtsuite = args[2]
-      import gmcs.regression_tests.add_regression_test
-      gmcs.regression_tests.add_regression_test.add(choices, txtsuite)
+  elif args[0] in ('u', 'utest', 'unit-test'):
+    run_unit_tests()
 
-    elif args[0] in ('i', 'install'):
-      cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
-      location = args[1]
-      # Installations to the live site require validations, so abort.
-      if location.strip('/') == 'matrix/customize':
-        print "Error: For installation to the live site, please use:"
-        print "  matrix.py vivify"
-        sys.exit(2)
-      subprocess.call([cmd, '-r', '-m', location], env=os.environ)
+  elif args[0] in ('r', 'rtest', 'regression-test'):
+    cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
+                       'regression_tests/run_regression_tests.sh')
+    #Using subprocess makes it difficult to kill the process
+    # (e.g. with Ctrl-C), so we need to handle KeyboardInterrupts
+    # (or alternatively use a os.exec* function)
+    try:
+      p = subprocess.Popen([cmd] + args[1:], env=os.environ)
+      p.wait()
+    except KeyboardInterrupt:
+      print "\nProcess interrupted. Aborting regression tests.\n"
+      import signal
+      os.kill(p.pid, signal.SIGKILL)
 
-    elif args[0] == 'vivify':
-      # pass the force flag in case the user wants to avoid checks
-      vivify(force)
+  elif args[0] in ('a', 'rtest-add', 'regression-test-add'):
+    choices = args[1]
+    txtsuite = args[2]
+    import gmcs.regression_tests.add_regression_test
+    gmcs.regression_tests.add_regression_test.add(choices, txtsuite)
 
-    else:
-      usage()
+  elif args[0] in ('i', 'install'):
+    cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
+    location = args[1]
+    # Installations to the live site require validations, so abort.
+    if location.strip('/') == 'matrix/customize':
+      print "Error: For installation to the live site, please use:"
+      print "  matrix.py vivify"
+      sys.exit(2)
+    subprocess.call([cmd, '-r', '-m', location], env=os.environ)
 
-  except AttributeError: # indexerror
+  elif args[0] == 'vivify':
+    # pass the force flag in case the user wants to avoid checks
+    vivify(force)
+
+  else:
     usage()
 
+def validate_args(args):
+  """
+  Run some quick tests to make sure we have the right number of arguments.
+  """
+  if len(args) == 0: usage()
+  elif args[0] in ('c', 'customize'):
+    if len(args) < 2: usage('customize')
+  elif args[0] in ('cf', 'customize-and-flop'):
+    if len(args) < 2: usage('customize-and-flop')
+  elif args[0] in ('v', 'validate'):
+    if len(args) < 2: usage('validate')
+  elif args[0] in ('u', 'utest', 'unit-test'):
+    pass # no other arguments needed
+  elif args[0] in ('r', 'rtest', 'regression-test'):
+    pass # other arguments are optional
+  elif args[0] in ('a', 'rtest-add', 'regression-test-add'):
+    if len(args) < 3: usage('regression-test-add')
+  elif args[0] in ('i', 'install'):
+    if len(args) < 2: usage('install')
+  elif args[0] == 'vivify':
+    pass # no other arguments needed
 
-def usage():
-  print "Usage: matrix.py [OPTION] COMMAND [ARGS...]"
+def usage(command=None):
+  if not command:
+    print "Usage: matrix.py [OPTION] COMMAND [ARGS...]"
+  elif command in ('customize', 'customize-and-flop'):
+    print "Usage: matrix.py [OPTION] " + command + " PATH [DEST]"
+    print "       Where PATH is the path to a choices file or a directory"
+    print "       containing a choices file, and the optional argument DEST"
+    print "       points to the output directory."
+  elif command == 'validate':
+    print "Usage: matrix.py [OPTION] validate PATH"
+    print "       Where PATH is the path to a choices file or a directory"
+    print "       containing a choices file."
+  elif command == 'regression-test-add':
+    print "Usage: matrix.py [OPTION] regression-test-add CHOICES TXTSUITE"
+    print "       Where CHOICES is the path to a choices file and TXTSUITE"
+    print "       is the path to a text file containing test sentences."
+  elif command == 'install':
+    print "Usage: matrix.py [OPTION] install PATH"
+    print "       Where PATH is the path where the Matrix Customization"
+    print "       System should be installed."
+
   print "Try `matrix.py --help' for more information."
   sys.exit(2)
 
@@ -183,10 +222,10 @@ def run_unit_tests():
   import gmcs.tests.testChoices
   runner.run(loader.loadTestsFromModule(gmcs.tests.testChoices))
 
-  #print_line()
-  #print 'Validate tests:'
-  #import gmcs.tests.testValidate
-  #runner.run(loader.loadTestsFromModule(gmcs.tests.testValidate))
+  print_line()
+  print 'Validate tests:'
+  import gmcs.tests.testValidate
+  runner.run(loader.loadTestsFromModule(gmcs.tests.testValidate))
 
   #print_line()
   #print 'Linglib/Morphotactics tests:'
