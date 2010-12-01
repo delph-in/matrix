@@ -3,17 +3,17 @@
 ##################
 
 def validate(ch, vr):
-  if ch.get('infl-neg', default=False):  
+  if ch.get('infl-neg', default=False):
     for aux in ch.get('aux', []):
-      for cf in aux.get('compfeature', []):  
-        if cf.get('name') == 'negation':    
-          mess = 'If inflectional negation is selected ' +\
-                 'then [negation +] should only be found on bound morphemes.'
-          vr.err(cf.full_key, mess)
+      for cf in aux.get('compfeature', []):
+        if cf.get('name') == 'negation':
+          mess = 'When inflectional negation is selected ' +\
+                 '[negation +] should only be found on bound morphemes.'
+          vr.err(cf.full_key + '_name', mess)
   validate_sentential_negation(ch, vr)
 
 def validate_sentential_negation(ch, vr):
-  
+
   neginfltype = ch.get('neg-infl-type')
   negseladv = ch.get('neg-sel-adv')
 
