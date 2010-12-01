@@ -140,26 +140,20 @@ fi
 
 
 # copy the files to the appropriate target
-if [ "$installlocal" -o "$copymatrix" ]
+if [ "$installlocal" ]
 then
-    cpcmd="cp -p -v -r"
-    cptarg="$1"
+    cp -p -v -r $tempdir/* $1
+elif [ "$copymatrix" ]
+then
+    cp -p -v -r $tempdir/matrix-core $1
 elif [ "$installremote" ]
 then
-    cpcmd="scp -r"
-    cptarg="uwcl@homer.u.washington.edu:public_html/$1"
-
+    #shopt -s dotglob
+    pushd $tempdir
+    tar cj * | ssh uwcl@homer.u.washington.edu "tar xjv -C public_html/$1"
+    popd
+    #shopt -u dotglob
 fi
-
-if [ "$copymatrix" ]
-then
-    $cpcmd $tempdir/matrix-core "$cptarg"
-else
-    shopt -s dotglob
-    $cpcmd $tempdir/* "$cptarg"
-    shopt -u dotglob
-fi
-
 
 # clean up
 rm -rf $tempdir
