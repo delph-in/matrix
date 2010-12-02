@@ -829,7 +829,11 @@ in for head-adjunct phrases here:',
 				                       VC + ], \
                            NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
 				                           POSTHEAD #phd ]].')
-          
+          if ch.get('edge-related-res') == 'yes':
+            mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.EDGE #ed & na-or--, \
+                                                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #ed ].')
+            mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.EDGE #ed & bool , \
+                                                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #ed ].')
 
 # Add rule definitions for major constituent order.
 ###small changes required for v2 with verbal cluster
@@ -1112,6 +1116,8 @@ def specialize_word_order(hc,orders):
     mylang.add('lex-rule :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
                               DTR.SYNSEM.LOCAL.CAT.VC #vc ].',
                section='addenda')
+    if ch.get('edge-related-res') == 'yes':
+      mylang.add('cat :+ [ EDGE luk ].')
  #   if ch.get('vc-analysis') == 'basic':
  #     mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
  #                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].',

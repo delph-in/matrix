@@ -186,15 +186,19 @@ def position_class_hierarchy(choices, mylang):
 def create_lexical_rule_type(lrt, mylang):
   new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
   for feat in lrt.get('feat'):
-    if not feat['name'] == 'worest': 
+    if not feat['name'] == 'worest' and not feat['name'] == 'edgerest': 
       new_lrt.features[feat['name']] = {'value': feat['value'],
                                       'head': feat.get('head')}
-    else:
+    elif feat['name'] == 'worest':
       worest = feat['value']
       if worest == 'before':
         mylang.add(get_name(lrt) + '''-lex-rule := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].''')
       elif worest == 'after':
         mylang.add(get_name(lrt) + '''-lex-rule := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].''')
+    else:
+      edge = feat['value']
+      if edge == 'obligatory':
+        mylang.add(get_name(lrt) + '''-lex-rule := [ SYNSEM.LOCAL.CAT.EDGE na-or-+ ].''')
     new_lrt.lris = [lri.get('orth','') for lri in lrt.get('lri',[])]
   # if there exists a non-empty lri, give it an infl supertype
   if len(new_lrt.lris) > 0:
