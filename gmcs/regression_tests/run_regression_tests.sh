@@ -20,6 +20,23 @@ if [ -z "${CUSTOMIZATIONROOT}" ]; then
   exit 1
 fi
 
+# set the appropriate Python version
+python_cmd='python'
+if ! echo $( $python_cmd -V 2>&1 ) | grep -q "Python 2\.[5,6,7]"; then
+  echo "Default Python version incompatible. Attempting to find another..." >&2
+  if which python2.5 >/dev/null; then
+    python_cmd='python2.5'
+  elif which python2.6 >/dev/null; then
+    python_cmd='python2.6'
+  elif which python2.7 >/dev/null; then
+    python_cmd='python2.7'
+  else
+    echo "No compatible Python version found. Exiting."
+    exit 1
+  fi
+  echo "  Found $( $python_cmd -V 2>&1 ). Continuing." >&2
+fi
+
 # Check if there are any grammars in the way, and if so, exit.
 
 #
@@ -53,7 +70,7 @@ logdir="${CUSTOMIZATIONROOT}/regression_tests/logs/"
 
 if [ -z $1 ]; then
 
-    lgnames=`python ${CUSTOMIZATIONROOT}/regression_tests/regressiontestindex.py --lg-names`
+    lgnames=`$python_cmd ${CUSTOMIZATIONROOT}/regression_tests/regressiontestindex.py --lg-names`
 
     if [ $? != 0 ]; then
     echo "run-regression-tests: Problem with regression-test-index, cannot run regression tests."
@@ -100,7 +117,7 @@ do
 
 # Invoke customize.py
 
-${CUSTOMIZATIONROOT}/../matrix.py cf ${CUSTOMIZATIONROOT}/regression_tests/choices/$lgname ${CUSTOMIZATIONROOT}/regression_tests/grammars/$lgname
+$python_cmd ${CUSTOMIZATIONROOT}/../matrix.py cf ${CUSTOMIZATIONROOT}/regression_tests/choices/$lgname ${CUSTOMIZATIONROOT}/regression_tests/grammars/$lgname
 
 # If you're Scott, you need to uncomment these lines to run the tests
 #   rm -rf /tmp/grammar
@@ -218,7 +235,7 @@ do
     echo -ne "$lgname" >> $masterlog
     if [ -s $log ]; then
     echo -ne ": " >> $masterlog
-    python ${CUSTOMIZATIONROOT}/regression_tests/regressiontestindex.py --comment $lgname | cat >> $masterlog
+    $python_cmd ${CUSTOMIZATIONROOT}/regression_tests/regressiontestindex.py --comment $lgname | cat >> $masterlog
     echo "" >> $masterlog
     cat $log >> $masterlog
     echo "" >> $masterlog

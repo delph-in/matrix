@@ -4,6 +4,13 @@ import os
 import getopt
 import subprocess
 
+# NOTE TO DEVELOPERS
+# Because we are unsure of the Python version being used (and some systems
+# we rely on use 2.4), this module should check the version and fail
+# gracefully if it's less than our 'officially supported' version. In order
+# to fail gracefully, this script must not have any syntax from later Python
+# versions (otherwise it will throw a SyntaxError before it does anything).
+
 def main():
   # The force flag is used to skip checks in some commands
   force = False
@@ -26,11 +33,15 @@ def main():
   validate_args(args)
 
   if args[0] in ('c', 'customize'):
-    dest = args[2] if len(args) > 2 else None
+    dest = None
+    if len(args) > 2:
+      dest = args[2] 
     customize_grammar(args[1], destination=dest)
 
   elif args[0] in ('cf', 'customize-and-flop'):
-    dest = args[2] if len(args) > 2 else None
+    dest = None
+    if len(args) > 2:
+      dest = args[2] 
     customize_grammar(args[1], destination=dest, flop=True)
 
   elif args[0] in ('v', 'validate'):

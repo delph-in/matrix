@@ -1,4 +1,3 @@
-from sets import Set as set
 from gmcs.lib import Hierarchy, HierarchyNode
 
 # Base class for lexical types (lexicon.py) and lexical rules (morphotatics.py)

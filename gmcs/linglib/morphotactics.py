@@ -1,5 +1,4 @@
 from collections import defaultdict
-from sets import Set as set
 
 from gmcs.linglib import lexicon
 from gmcs.linglib.lexbase import (MorphotacticNode, PositionClass,
