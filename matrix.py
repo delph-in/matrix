@@ -10,13 +10,13 @@ def main():
 
   try:
     opts, args = getopt.getopt(sys.argv[1:], 'C:Fh',
-                               ['cr=', 'customizationroot=',
-                                'CUSTOMIZATIONROOT=','force', 'help'])
+                               ['customizationroot=', 'CUSTOMIZATIONROOT=',
+                                'force', 'help'])
   except getopt.GetoptError, err:
     print str(err)
     usage()
   for o, a in opts:
-    if o in ('-C', '--cr', '--customizationroot', '--CUSTOMIZATIONROOT'):
+    if o in ('-C', '--customizationroot', '--CUSTOMIZATIONROOT'):
       os.environ['CUSTOMIZATIONROOT'] = os.path.abspath(a)
     elif o in ('-F', '--force'):
       force = True
@@ -45,10 +45,10 @@ def main():
       print x
       print '  ', v.errors[x]
 
-  elif args[0] in ('u', 'utest', 'unit-test'):
+  elif args[0] in ('u', 'unit-test'):
     run_unit_tests()
 
-  elif args[0] in ('r', 'rtest', 'regression-test'):
+  elif args[0] in ('r', 'regression-test'):
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
                        'regression_tests/run_regression_tests.sh')
     #Using subprocess makes it difficult to kill the process
@@ -62,7 +62,7 @@ def main():
       import signal
       os.kill(p.pid, signal.SIGKILL)
 
-  elif args[0] in ('a', 'rtest-add', 'regression-test-add'):
+  elif args[0] in ('ra', 'regression-test-add'):
     choices = args[1]
     txtsuite = args[2]
     import gmcs.regression_tests.add_regression_test
@@ -85,6 +85,17 @@ def main():
   else:
     usage()
 
+def validate_python_version():
+  """
+  Make sure the user is running Python 2.5 or greater.
+  """
+  if sys.version_info[0] != 2 or sys.version_info[1] < 5:
+    version = '.'.join(str(x) for x in sys.version_info[0:2])
+    print "Operation aborted: incompatible Python version."
+    print "  You are running Python " + version + ", but the Grammar Matrix"
+    print "  Customization System requires Python 2.5, 2.6, or 2.7."
+    sys.exit(2)
+
 def validate_args(args):
   """
   Run some quick tests to make sure we have the right number of arguments.
@@ -96,11 +107,11 @@ def validate_args(args):
     if len(args) < 2: usage('customize-and-flop')
   elif args[0] in ('v', 'validate'):
     if len(args) < 2: usage('validate')
-  elif args[0] in ('u', 'utest', 'unit-test'):
+  elif args[0] in ('u', 'unit-test'):
     pass # no other arguments needed
-  elif args[0] in ('r', 'rtest', 'regression-test'):
+  elif args[0] in ('r', 'regression-test'):
     pass # other arguments are optional
-  elif args[0] in ('a', 'rtest-add', 'regression-test-add'):
+  elif args[0] in ('ra', 'regression-test-add'):
     if len(args) < 3: usage('regression-test-add')
   elif args[0] in ('i', 'install'):
     if len(args) < 2: usage('install')
@@ -147,11 +158,15 @@ COMMANDS:
                                    : Customize the choices file at PATH,
                                      then flop the resulting grammar.
     validate (v) PATH              : Validate the choices file at PATH.
-    rtest (r) [TEST]               : Run regression TEST (runs all tests
+    regression-test (r) [TEST]     : Run regression TEST (runs all tests if
                                      TEST is not specified).
-    rtest-add (a) CHOICES TXTSUITE : Add CHOICES and TXTSUITE as a new
+    regression-test-add (ra) CHOICES TXTSUITE
+                                   : Add CHOICES and TXTSUITE as a new
                                      regression test.
-    utest (u)                      : Run all unit tests.
+    regression-test-update (ru) TEST
+                                   : Update the gold standard of TEST to use
+                                     the results of the current system.
+    unit-test (u)                  : Run all unit tests.
     install (i) PATH               : Install a custom instance of the Grammar
                                      Matrix Customization System at the PATH
                                      specified on the default server.
@@ -162,9 +177,10 @@ COMMANDS:
 
 EXAMPLES:
     matrix.py customize ../choices/Finnish
+    matrix.py cf ../choices/Finnish
     matrix.py v ../choices/Finnish
-    matrix.py --cr ./gmcs r
-    matrix.py rtest-add Cree_choices Cree_test_suite
+    matrix.py -C gmcs/ r
+    matrix.py ra Cree_choices Cree_test_suite
     matrix.py install my_matrix
     matrix.py vivify
 
@@ -243,4 +259,5 @@ def vivify(force):
   subprocess.call([cmd, '-r', '-m', 'matrix/customize'], env=os.environ)
 
 if __name__ == '__main__':
+  validate_python_version()
   main()
