@@ -1808,6 +1808,56 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
       rule += '  ' + pn + '-left-coord-rule.'
       irules.add_literal(rule)
 
+  ###
+  ### Adding constraints for Germanic branch
+  ### MC + FORM need to be shared among s-coordinands, as does VFRONT if present
+  ###
+  if pos == 's' and ch.get('has-aux') == 'yes':
+    mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
+                                  LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
+                                  RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].')
+    if mid:   
+      mylang.add(pn + '-mid-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
+                                  LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
+                                  RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].')
+    mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
+                                 NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].')
+    wo = ch.get('word-order')
+    if wo == 'v2' or wo == 'free':
+      mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.MC #mc, \
+                                    LCOORD-DTR.SYNSEM.LOCAL.CAT.MC #mc, \
+                                    RCOORD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+      if mid:   
+        mylang.add(pn + '-mid-coord-rule := [ SYNSEM.LOCAL.CAT.MC #mc, \
+                                    LCOORD-DTR.SYNSEM.LOCAL.CAT.MC #mc, \
+                                    RCOORD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+      mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.MC #mc, \
+                                   NONCONJ-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+      if ch.get('vc-analysis') == 'aux-rule' and ch.get('split-cluster') == 'yes':
+        mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                                   LCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                                   RCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
+        if mid:   
+          mylang.add(pn + '-mid-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                                     LCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                                     RCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
+        mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                                     NONCONJ-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
+  ### For n/n-coordination case needs to be passed up 
+  ### Number should be plural: more tricky...waiting for sample grammar
+  if pos == 'n' or pos == 'np':
+    if not ch.get('case-marking') == 'none':  
+      mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
+                                 LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
+                                 RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
+      if mid:   
+        mylang.add(pn + '-mid-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
+                                  LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
+                                  RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
+      mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
+                                 NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
+     
+
   # Now define the rule instances into rules.tdl.  As above, the mid
   # or left rule may not be necessary.
 
