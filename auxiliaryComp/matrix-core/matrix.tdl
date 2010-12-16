@@ -1635,6 +1635,13 @@ basic-head-2nd-comp-phrase := basic-head-comp-phrase &
     NON-HEAD-DTR.SYNSEM #synsem ].
 
 
+basic-head-3rd-comp-phrase := basic-head-comp-phrase &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS <  #firstcomp . #secondcomp > ,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS [ FIRST #firstcomp,
+					  REST < #secondcomp . #synsem  > ],
+    NON-HEAD-DTR.SYNSEM #synsem ].
+
+
 
 ; Skip an optional complement as long as there is still another obligatory
 ; complement on the list.  Two subtypes allow for one or two optional

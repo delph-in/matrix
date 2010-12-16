@@ -11,10 +11,13 @@ from gmcs.utils import get_name
 # its abbreviation from the list of cases, which should be created by
 # calling ChoicesFile.cases().  If there is no abbreviation, return
 # the name.
+
+# not abbreviating case names (careful changes in choices will be necessary)
+
 def canon_to_abbr(name, cases):
   for c in cases:
     if c[0] == name:
-      return c[2]
+      return c[1]
   return name
 
 # Given the name of a case, return its abbreviation from the list of
@@ -23,12 +26,13 @@ def canon_to_abbr(name, cases):
 def name_to_abbr(name, cases):
   for c in cases:
     if c[1] == name:
-      return c[2]
+      return c[1]
   return name
 
 def init_case_hierarchy(ch, hierarchies):
   cm = ch.get('case-marking')
   cases = ch.cases()
+  subcases = ch.subcases()
 
   hier = TDLHierarchy('case')
 
@@ -37,6 +41,8 @@ def init_case_hierarchy(ch, hierarchies):
   if cm in ['nom-acc', 'erg-abs', 'tripartite', 'split-s', 'focus']:
     for c in cases:
       hier.add(c[2], 'case', c[1])
+    for s in subcases:
+      hier.add(s[0], s[1], s[0])
   elif cm in ['fluid-s']:
     abbr = canon_to_abbr('a+o', cases)
     for c in cases:

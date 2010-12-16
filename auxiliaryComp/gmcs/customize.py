@@ -755,12 +755,19 @@ in for head-adjunct phrases here:',
     mylang.add('head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
     mylang.add('subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
     mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.')
+    if ch.get('argument-order') == 'fixed':
+      mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
+    else:
+      mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
+      
     mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.')
+    mylang.add('comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.')
     if wo == 'free' or not vcluster:
       mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
-      mylang.add('comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.')
     elif wo == 'v2' and vcluster:
       mylang.add('subj-head-vc-phrase := decl-head-subj-phrase & head-final-invc & nonverbal-comp-phrase.')
+      if ch.get('argument-order') == 'fixed':
+        mylang.add('subj-head-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
       if ch.get('vc-placement') == 'pre':
         mylang.add('general-head-comp-vc-phrase := basic-head-1st-comp-phrase & head-initial-invc.')
         mylang.add('head-comp-vc-phrase := general-head-comp-vc-phrase & nonverbal-comp-phrase.')
@@ -784,6 +791,13 @@ in for head-adjunct phrases here:',
         mylang.add('general-comp-head-vc-phrase:= basic-head-1st-comp-phrase & head-final-invc.')
         mylang.add('comp-head-vc-phrase := general-comp-head-vc-phrase & nonverbal-comp-phrase.')
         mylang.add('comp-2-head-vc-phrase := basic-head-2nd-comp-phrase & head-final-invc & nonverbal-comp-phrase.')
+        if ch.get('argument-order') == 'fixed':
+          mylang.add('comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT [ ARG-ORDER -, \
+                        ALLOWED-PART #ap & bool ], \
+                        HEAD-DTR.SYNSEM.LOCAL.CAT [ ARG-ORDER +, \
+                                                    ALLOWED-PART #ap ] ].')
+          mylang.add('comp-2-head-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
+HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao & + ].')
         if ch.get('aux-comp-order') == 'after':   
           if ch.get('vc-analysis') == 'basic':
             mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
@@ -808,6 +822,12 @@ in for head-adjunct phrases here:',
                          [ SYNSEM.LOCAL.CAT.SECOND +,\
                            HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND na, \
                            NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+            if ch.get('argument-order') == 'fixed':
+              mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.ALLOWED-PART #ap, \
+                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART #ap ].')
+
+              mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.ALLOWED-PART #ap, \
+                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART #ap ].')
           elif ch.get('vc-analysis') == 'aux-rule':
             mylang.add('comp-aux-vc-phrase := basic-aux-verb-rule & head-final & \
                                          [ SYNSEM.LOCAL.CAT [ MC -, \
@@ -843,10 +863,13 @@ in for head-adjunct phrases here:',
     rules.add('head-subj := head-subj-phrase.')
     rules.add('comp-head := comp-head-phrase.')
     rules.add('subj-head := subj-head-phrase.')
+    rules.add('comp-head-2 := comp-head-phrase-2.')
     if wo == 'free' or not vcluster:
       rules.add('head-comp-2 := head-comp-phrase-2.')
-      rules.add('comp-head-2 := comp-head-phrase-2.')
     elif wo == 'v2' and vcluster:
+      rules.add('comp-2-head-vc := comp-2-head-vc-phrase.')
+      if not ch.get('argument-order') == 'fixed':
+        rules.add('head-comp-2 := head-comp-phrase-2.')
       if ch.get('vc-analysis') == 'aux-rule':
         auxRule = True
       else:
@@ -1104,12 +1127,52 @@ def specialize_word_order(hc,orders):
     if ch.get('vc-analysis') == 'aux-rule':
       vcval = 'luk'
       if ch.get('aux-comp-order') == 'both' or ch.get('split-cluster') == 'yes':
-        mylang.add('cat :+ [ NOMINAL bool ].')
+        mylang.add('cat :+ [ NOMINAL bool ].', 'NOMINAL prevents nominal forms from occurring in the verbal cluster', section='addenda')
       if ch.get('split-cluster') == 'yes':
-        mylang.add('cat :+ [ VFRONT bool ].')
+        mylang.add('cat :+ [ VFRONT bool ].', 'VFRONT checks whether the vorfeld contains a partial verbal cluster', section='addenda')
         mylang.add('head :+ [ DTR-FORM form ].')
     else:
       vcval = 'bool'
+      if ch.get('split-cluster') == 'yes':
+        if ch.get('split-analysis') == 'lex-rule':
+          mylang.add('cat :+ [ VFRONT luk ].', 'VFRONT checks whether ditransitive verb has undergone needed modification to occur in the Vorfeld', section='addenda')
+          mylang.add('infl-lex-rule :+ [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                                       DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
+          mylang.add('change-arg-order-rule := const-val-change-only-lex-rule & \
+ [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ #subj, \
+			    COMPS < #comp2, #comp1 >,\
+			    SPR #spr,\
+			    SPEC #spec ],\
+		      VFRONT +,\
+		      VC #vc,\
+		      SECOND #sd ], \
+   DTR.SYNSEM.LOCAL.CAT [ VAL [ SUBJ #subj,\
+				COMPS < #comp1, #comp2 >,\
+				SPR #spr,\
+				SPEC #spec ],\
+			  VFRONT -,\
+			  HEAD [ FORM nonfinite,\
+				 AUX - ],\
+			  VC #vc,\
+			  SECOND #sd   ] ].')
+          lrules.add('change-arg-order := change-arg-order-rule.')
+          if ch.get('argument-order') == 'fixed':
+            mylang.add('change-arg-order-rule := \
+                        [ SYNSEM.LOCAL.CAT [ ARG-ORDER #ao, \
+                                             ALLOWED-PART #ap ], \
+                          DTR.SYNSEM.LOCAL.CAT [ ARG-ORDER #ao, \
+                                                 ALLOWED-PART #ap ]].')
+
+            if ch.get('edge-related-res') == 'yes':
+              mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.EDGE #ed, \
+                                          DTR.SYNSEM.LOCAL.CAT.EDGE #ed ].')
+        elif ch.get('split-analysis') == '3head-comp':
+          mylang.add('comp-head-3-vc-phrase := basic-head-3rd-comp-phrase & \
+                         nonverbal-comp-phrase & head-final-invc.')
+          rules.add('comp-head-3-vc := comp-head-3-vc-phrase.')
+
+#ditransitive stuff is over
+
     mylang.add('cat :+ [ VC ' + vcval + ' ].',
                'Introducing VC keeps track whether main-verb is present in cluster',
                section='addenda')
@@ -1117,7 +1180,13 @@ def specialize_word_order(hc,orders):
                               DTR.SYNSEM.LOCAL.CAT.VC #vc ].',
                section='addenda')
     if ch.get('edge-related-res') == 'yes':
-      mylang.add('cat :+ [ EDGE luk ].')
+      mylang.add('cat :+ [ EDGE luk ].', 'EDGE is used to prevent participles from occurring in the middle of the cluster', section='addenda')
+    if ch.get('argument-order') == 'fixed':
+      mylang.add('cat :+ [ ARG-ORDER bool, \
+                           ALLOWED-PART luk ].', 'ARG-ORD keeps track of ordering of arguments. ALLOWED-PART makes sure no disallowed partial VP-phrases occur in the Vorfeld.', section='addenda')
+      mylang.add('lex-rule :+ [ SYNSEM.LOCAL.CAT.ALLOWED-PART #ap, \
+                                DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART #ap ].',
+                 section='addenda')
  #   if ch.get('vc-analysis') == 'basic':
  #     mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
  #                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].',
@@ -1131,16 +1200,39 @@ def specialize_word_order(hc,orders):
       if ch.get('vc-analysis') == 'basic':
         mylang.add('cat :+ [ SECOND luk ].')
       mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.VC - ].')
+      if ch.get('argument-order') == 'fixed':
+        mylang.add('ditransitive-verb-lex := [ SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-- ].')
       if ch.get('vc-analysis') == 'basic':
         mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
         mylang.add('basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
                                               HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
         mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
                                                 NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
-        mylang.add('basic-head-subj-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
-                                                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
+        mylang.add('basic-head-subj-phrase :+ \
+                        [ SYNSEM [ LOCAL.CAT [ VC #vc, \
+                                               HC-LIGHT #light ], \
+                                   LIGHT #light ], \
+                          HEAD-DTR.SYNSEM.LOCAL.CAT.HC-LIGHT #light, \
+                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
+        if ch.get('split-cluster') == 'yes' and ch.get('split-analysis') == 'lex-rule':
+          headdtrval = '[ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                          HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf'
+          nhddtrval = '[ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf'
 
-      if ch.get('vc-analysis') == 'basic':
+          mylang.add('head-initial-head-nexus := ' + headdtrval + ' ].')
+          mylang.add('comp-head-vc-phrase := ' + headdtrval + ' & na-or-- ].')
+          mylang.add('comp-2-head-vc-phrase:= [ HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT - ].')
+          mylang.add('comp-aux-vc-phrase := ' + nhddtrval + ' ].')
+          mylang.add('basic-head-subj-phrase :+ '+ headdtrval + ' ].')
+          mylang.add('aux-2nd-comp-phrase := ' + nhddtrval + ' ].')
+          mylang.add('comp-aux-2nd-phrase := ' + nhddtrval + ' ].')
+          mylang.add('split-cl-comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.VFRONT -, \
+                                                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
+          if ch.get('aux-order') == 'both':
+            mylang.add('aux-comp-vc-phrase := ' + nhddtrval + ' ].')
+            mylang.add('head-initial-invc := ' + headdtrval + ' ].')
+            mylang.add('ditransitive-verb-lex := [ SYNSEM.LOCAL.CAT.VFRONT - ].')
         mylang.add('aux-2nd-comp-phrase := basic-head-1st-comp-phrase & head-initial & \
                     [ SYNSEM.LOCAL.CAT [ MC #mc & na, \
 		                         SECOND - ], \
@@ -1160,6 +1252,8 @@ def specialize_word_order(hc,orders):
           mylang.add('gen-comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
         mylang.add('comp-aux-2nd-phrase := gen-comp-aux-2nd-phrase & \
                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
+        if ch.get('argument-order') == 'fixed':
+          mylang.add('comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
         if ch.get('split-cluster') == 'yes':
           mylang.add('split-cl-comp-aux-2nd-phrase := gen-comp-aux-2nd-phrase & \
                        [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND -, \
@@ -1181,6 +1275,9 @@ def specialize_word_order(hc,orders):
 			                  CONT.HOOK #hook ], \
                   NON-HEAD-DTR.SYNSEM #comp & [ LOCAL.CAT [ HEAD verb, \
 					                    VAL #val ] ] ].')
+        if ch.get('argument-order') == 'fixed':
+          mylang.add('basic-aux-verb-rule := [ SYNSEM.LOCAL.CAT.ALLOWED-PART #ap, \
+NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART #ap ].')
         if split:
           mylang.add('gen-verb-aux-2nd-rule := head-final & \
                          [ SYNSEM.LOCAL.CAT [ VAL.SUBJ < [] >, \
@@ -1197,6 +1294,8 @@ def specialize_word_order(hc,orders):
           mylang.add('comp-aux-2nd-phrase := gen-verb-aux-2nd-rule & basic-aux-verb-rule & [ SYNSEM.LOCAL.CAT.VFRONT - ].')
           mylang.add('noncomp-aux-2nd-phrase := gen-verb-aux-2nd-rule & special-basic-aux-verb-rule & [ SYNSEM.LOCAL.CAT.VFRONT +, \
                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
+          if ch.get('argument-order') == 'fixed':
+            mylang.add('noncomp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
           mylang.add('special-insert-aux-phrase := headed-phrase & \
   [ SYNSEM.LOCAL [ CONT [ HOOK #hook, \
 			  RELS [ LIST #first,\
@@ -1252,6 +1351,9 @@ INSERT-DTR #secarg & [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ AUX + ],\
                                          HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na, \
 			       	                                     POSTHEAD #phd ], \
                                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
+          
+        if ch.get('argument-order') == 'fixed':
+            mylang.add('comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
         if ch.get('part-vp-front') == 'no':
           mylang.add('comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')    
         if ch.get('split-cluster') == 'yes':
@@ -1811,7 +1913,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
   ###
   ### Adding constraints for Germanic branch
   ### MC + FORM need to be shared among s-coordinands, as does VFRONT if present
-  ###
+  ### Future: Trying to share cat instead seems reasonable enough
   if pos == 's' and ch.get('has-aux') == 'yes':
     mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
                                   LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
@@ -1833,15 +1935,16 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf):
                                     RCOORD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
       mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.MC #mc, \
                                    NONCONJ-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
-      if ch.get('vc-analysis') == 'aux-rule' and ch.get('split-cluster') == 'yes':
-        mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+      if ch.get('split-cluster') == 'yes':
+        if ch.get('vc-analysis') == 'aux-rule' or ch.get('split-analysis') == 'lex-rule':
+          mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                                    LCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf, \
                                    RCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
-        if mid:   
-          mylang.add(pn + '-mid-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+          if mid:   
+            mylang.add(pn + '-mid-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                                      LCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf, \
                                      RCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
-        mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+          mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                                      NONCONJ-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
   ### For n/n-coordination case needs to be passed up 
   ### Number should be plural: more tricky...waiting for sample grammar
@@ -2308,7 +2411,10 @@ def customize_nouns():
 def customize_verb_case():
   cm = ch.get('case-marking')
   cases = ch.cases()
-
+  subcases = ch.subcases()
+  for i in range(0, len(subcases)):
+    sc = subcases[i]
+    cases.append([sc[0], sc[0], sc[0]])
   # Pass through the list of case-marking patterns.  If a pattern is a
   # lexical pattern (i.e. the third item in the list is False), then
   # create and contrain the appropriate lexical type.  This type is a
@@ -2326,75 +2432,126 @@ def customize_verb_case():
     if len(p) > 1 and p[1] == 'dirinv':
       dir_inv = 'dir-inv-'
 
-    if not rule_pattern:
-      c = p[0].split('-')  # split 'agentcase-patientcase'
-      if p[0] == 'trans' or len(c) > 1:  # transitive
-        if p[0] == 'trans':
-          a_case = ''
-          o_case = ''
-          a_head = ch.case_head()
-          o_head = ch.case_head()
-        else:
+    for verb in ch.get('verb',[]):
+      val = verb.get('valence')
+      i = val.find(',')
+      if val.find('-') != -1:
+        c = val.split('-')
+        if len(c) == 2:
           a_case = case.canon_to_abbr(c[0], cases)
           o_case = case.canon_to_abbr(c[1], cases)
-          a_head = ch.case_head(c[0])
-          o_head = ch.case_head(c[1])
+          a_head = 'noun'
+          o_head = 'noun'
 
-        if a_case and o_case:
-          t_type = dir_inv + a_case + '-' + o_case + '-transitive-verb-lex'
-        else:
-          t_type = dir_inv + 'transitive-verb-lex'
+          if a_case and o_case:
+            t_type = dir_inv + a_case + '-' + o_case + '-transitive-verb-lex'
+          else:
+            t_type = dir_inv + 'transitive-verb-lex'
 
-        if t_type != 'transitive-verb-lex':
-          mylang.add(t_type + ' := transitive-verb-lex.')
+          if t_type != 'transitive-verb-lex':
+            mylang.add(t_type + ' := transitive-verb-lex.')
 
         # constrain the head of the agent/subject
-        typedef = \
-          t_type + ' := \
-          [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
-        mylang.add(typedef)
+          typedef = \
+             t_type + ' := \
+             [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
+          mylang.add(typedef)
 
         # constrain the case of the agent/subject
-        if a_case:
-          typedef = \
-            t_type + ' := \
-            [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
-          mylang.add(typedef)
+          if a_case:
+            typedef = \
+              t_type + ' := \
+               [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
+            mylang.add(typedef)
 
         # constrain CASE-MARKING of the agent/subject, if appropriate
-        if a_case and ch.has_mixed_case() and not ch.has_optadp_case(a_case):
-          typedef = \
-            t_type + ' := \
-            [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
-          mylang.add(typedef)
+          if a_case and ch.has_mixed_case() and not ch.has_optadp_case(a_case):
+            typedef = \
+              t_type + ' := \
+               [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
+            mylang.add(typedef)
 
         # constrain the head of the patient/object
-        typedef = \
-          t_type + ' := \
-          [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
-        mylang.add(typedef)
+          typedef = \
+            t_type + ' := \
+              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
+          mylang.add(typedef)
 
         # constrain the case of the patient/object
-        if o_case:
-          typedef = \
-            t_type + ' := \
-            [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
-          mylang.add(typedef)
+          if o_case:
+            typedef = \
+              t_type + ' := \
+                [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
+            mylang.add(typedef)
 
         # constrain CASE-MARKING of the patient/object, if appropriate
-        if o_case and ch.has_mixed_case() and not ch.has_optadp_case(o_case):
+          if o_case and ch.has_mixed_case() and not ch.has_optadp_case(o_case):
+            typedef = \
+                t_type + ' := \
+                [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
+            mylang.add(typedef)  
+        elif len(c) == 3:
+          a_case = case.canon_to_abbr(c[0], cases)
+          b_case = case.canon_to_abbr(c[1], cases)
+          o_case = case.canon_to_abbr(c[2], cases)
+          a_head = 'noun'
+          b_head = 'noun'
+          o_head = 'noun'
+          if a_case and b_case and o_case:
+            t_type = dir_inv + a_case + '-' + b_case + '-' + o_case + '-ditransitive-verb-lex'
+          else:
+            t_type = dir_inv + 'ditransitive-verb-lex'
+
+          if t_type != 'ditransitive-verb-lex':
+            mylang.add(t_type + ' := ditransitive-verb-lex.')
+
+       # constrain the head of the agent/subject
+          typedef = \
+             t_type + ' := \
+             [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
+          mylang.add(typedef)
+
+        # constrain the case of the agent/subject
+          if a_case:
+            typedef = \
+              t_type + ' := \
+               [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
+            mylang.add(typedef)
+
+        # constrain the head of the beneficiary
           typedef = \
             t_type + ' := \
-            [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
+              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + b_head + ' ], [ ] > ].'
           mylang.add(typedef)
-      else:     # intransitive
-        if c[0] == 'intrans':
-          s_case = ''
-          s_head = ch.case_head()
-        else:
-          s_case = case.canon_to_abbr(c[0], cases)
-          s_head = ch.case_head(c[0])
 
+        # constrain the case of the patient/object
+          if b_case:
+            typedef = \
+              t_type + ' := \
+                [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + b_case + ' ], [ ] > ].'
+            mylang.add(typedef)
+
+        # constrain the head of the patient/object
+          typedef = \
+            t_type + ' := \
+              [ ARG-ST < [ ], [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
+          mylang.add(typedef)
+
+        # constrain the case of the patient/object
+          if o_case:
+            typedef = \
+              t_type + ' := \
+                [ ARG-ST < [ ], [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
+            mylang.add(typedef)
+      #intransitive
+      else:
+        s_case = case.canon_to_abbr(val, cases)
+        if val == 'intrans':
+          s_case = ''
+          s_head = 'noun'
+        else:
+          s_case = case.canon_to_abbr(val, cases)
+          s_head = 'noun'
         if s_case:
           i_type = dir_inv + s_case + '-intransitive-verb-lex'
         else:
@@ -2406,21 +2563,21 @@ def customize_verb_case():
         # constrain the head of the subject
         typedef = \
           i_type + ' := \
-          [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + s_head + ' ].'
+            [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + s_head + ' ].'
         mylang.add(typedef)
 
         # constrain the case of the subject
         if s_case:
           typedef = \
             i_type + ' := \
-            [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + s_case + ' ].'
+              [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + s_case + ' ].'
           mylang.add(typedef)
 
         # constrain CASE-MARKING of the subject, if appropriate
         if s_case and ch.has_mixed_case() and not ch.has_optadp_case(s_case):
           typedef = \
-            i_type + ' := \
-            [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
+           i_type + ' := \
+              [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
           mylang.add(typedef)
 
 
@@ -2580,13 +2737,29 @@ def customize_verbs():
                                       COMPS < > ] ] ] > ].'
   mylang.add(typedef)
 
+  # ditransitive verb lexical type
+  typedef = \
+    'ditransitive-verb-lex := ' + mainorverbtype + ' & ditransitive-lex-item & \
+       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp1, #comp2 >, \
+         ARG-ST < [ ], \
+                  #comp1 & \
+                  [ LOCAL.CAT [ VAL [ SPR < >, \
+                                      COMPS < > ] ] ],\
+                  #comp2 & \
+                  [ LOCAL.CAT [ VAL [ SPR < >, \
+                                      COMPS < > ] ] ] > ].'
+  mylang.add(typedef)
   customize_verb_case()
 
   # Lexical entries
   lexicon.add_literal(';;; Verbs')
 
   # Now create the lexical entries for all the defined verb types
-  cases = ch.cases()
+  cases = ch.cases()  
+  subcases = ch.subcases()
+  for i in range(0, len(subcases)):
+    sc = subcases[i]
+    cases.append([sc[0], sc[0], sc[0]])
   for verb in ch.get('verb',[]):
     name = get_name(verb)
     val = verb.get('valence')
@@ -2603,9 +2776,15 @@ def customize_verbs():
       tivity = 'intrans'
     elif val.find('-') != -1:
       c = val.split('-')
-      a_case = case.canon_to_abbr(c[0], cases)
-      o_case = case.canon_to_abbr(c[1], cases)
-      tivity = a_case + '-' + o_case + '-trans'
+      if len(c) == 2:
+        a_case = case.canon_to_abbr(c[0], cases)
+        o_case = case.canon_to_abbr(c[1], cases)
+        tivity = a_case + '-' + o_case + '-trans'
+      elif len(c) == 3:
+        a_case = case.canon_to_abbr(c[0], cases)
+        b_case = case.canon_to_abbr(c[1], cases)
+        o_case = case.canon_to_abbr(c[2], cases)
+        tivity = a_case + '-' + b_case + '-' + o_case + '-ditrans'
     else:
       s_case = case.canon_to_abbr(val, cases)
       tivity = s_case + '-intrans'
@@ -2692,7 +2871,12 @@ def customize_auxiliaries():
       sem = aux.get('sem','')
       subj = aux.get('subj','')
       subjc = aux.get('subj_case','') #TODO: verify _-delimited key
-      cases = ch.cases()
+      cases = ch.cases()     
+      subcases = ch.subcases()
+      for i in range(0, len(subcases)):
+        sc = subcases[i]
+        cases.append([sc[0], sc[0], sc[0]])
+
       subjcase = case.canon_to_abbr(subjc, cases)
 
     # Lexical type for auxiliaries.
@@ -2780,7 +2964,7 @@ def customize_auxiliaries():
                                             COMPS < #comp >, \
                                             SPR < >, \
                                             SPEC < > ], \
-                   ARG-STR < #comp & [ LOCAL.CAT.HEAD verb ] > ].'
+                   ARG-ST < #comp & [ LOCAL.CAT.HEAD verb ] > ].'
             supertype = 'one-comp-aux'
         else:
           typedef = supertype + ' := aux-lex & basic-two-arg & \
@@ -3084,8 +3268,9 @@ def customize_roots():
   if has_auxiliaries_p() or 'noaux-fin-nf' in ch:
     roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
     if ch.get('word-order') == 'v2' and ch.get('multiple-aux') == 'yes':
-      if ch.get('vc-analysis') == 'aux-rule' and ch.get('split-cluster') == 'yes':
-        roots.add('root := [ SYNSEM.LOCAL.CAT.VFRONT - ].')
+      if ch.get('split-cluster') == 'yes':
+        if ch.get('vc-analysis') == 'aux-rule' or ch.get('split-analysis') == 'lex-rule':
+          roots.add('root := [ SYNSEM.LOCAL.CAT.VFRONT - ].')
 
   # ERB 2006-10-05 I predict a bug here:  If we a language with auxiliaries
   # and question particles, we're going to need to make sure that FORM is

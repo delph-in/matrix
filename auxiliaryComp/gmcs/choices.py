@@ -621,11 +621,20 @@ class ChoicesFile:
 
     cases = []
     for i in range(0, len(canon)):
-      cases.append([canon[i], user[i], abbrev[i]])
+      cases.append([canon[i], user[i], user[i]])
 
     return cases
 
-
+  def subcases(self):
+    subcases = []
+    names = []
+    superc = []
+    for subcase in self.get('subcase'):
+      names.append(subcase['name'])
+      superc.append(subcase['supercase'])
+    for i in range(0, len(names)):
+      subcases.append([names[i], superc[i]])
+    return subcases
   # patterns()
   #   Create and return a list containing information about the
   #   case-marking patterns implied by the current case choices.
