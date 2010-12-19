@@ -1,4 +1,5 @@
 import gmcs.linglib.morphotactics
+from gmcs.linglib import case
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
 from gmcs.utils import get_name
 from gmcs.lib import TDLHierarchy
@@ -44,7 +45,7 @@ def write_dir_inv_types(choices, mylang, hierarchies):
     mylang.add('word-or-lexrule :+ [ SC-ARGS list ].', section='addenda')
     mylang.add('lex-rule :+ [ SC-ARGS #1, DTR.SC-ARGS #1 ].', section='addenda')
 
-  cases = choices.cases()
+  cases = case.case_names(choices)
   features = choices.features()
 
   # Figure out which features are involved in the hierarchy

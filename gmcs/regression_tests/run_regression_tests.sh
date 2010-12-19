@@ -103,6 +103,7 @@ do
 
     skeleton="${CUSTOMIZATIONROOT}/regression_tests/skeletons/$lgname"
     gold="gold/$lgname"
+    choicesfile="${CUSTOMIZATIONROOT}/regression_tests/choices/$lgname"
     grammardir="${CUSTOMIZATIONROOT}/regression_tests/grammars/$lgname"
     target="current/$lgname"
     log="$logdir/$lgname.$date"
@@ -115,42 +116,42 @@ do
       rm -rf $grammardir
     fi
 
-# Invoke customize.py
+    # Invoke customize.py
 
-$python_cmd ${CUSTOMIZATIONROOT}/../matrix.py cf ${CUSTOMIZATIONROOT}/regression_tests/choices/$lgname ${CUSTOMIZATIONROOT}/regression_tests/grammars/$lgname
+    $python_cmd ${CUSTOMIZATIONROOT}/../matrix.py cf $choicesfile $grammardir
+    status=$?
+    if [ $status != 0 ]; then
+      echo "FAIL!"
+    else
 
-# If you're Scott, you need to uncomment these lines to run the tests
-#   rm -rf /tmp/grammar
-#   cp -R $grammardir /tmp/grammar
-#   rm -rf $grammardir
-#   grammardir=/tmp/grammar
-
-# Have to calculate after the grammar is created since the directory is
-# no longer always named "matrix")
     subdir=`ls -d $grammardir/*/`
     grammar=$subdir/lkb/script
+    grm_file=`ls $subdir/*-pet.grm`
+    #mkdir -p $tsdbhome/$target
+    #cut -d@ -f7 $skeleton/item | cheap -mrs -tsdbdump $tsdbhome/$target $grm_file 2>${TSDBLOG} >${TSDBLOG}
+    # cheap makes a bad item file, so just copy over the original one
+    #cp $skeleton/item $tsdbhome/$target/item
 
-    status=$?
+    #if [ $status = 17 ]; then
+    #echo "run-regression-tests: call-customize failed for $lgname... continuining with other regression tests."
+    #echo "call-customize failed because old grammar was in the way." >> $log
+    #elif [ $status = 18 ]; then
+    #echo "run-regression-tests: call-customize failed for $lgname... continuining with other regression tests."
+    #echo "no choices file at path regression_tests/choices/$lgname." >> $log
+    #elif [ $status != 0 ]; then
 
-    if [ $status = 17 ]; then
-    echo "run-regression-tests: call-customize failed for $lgname... continuining with other regression tests."
-    echo "call-customize failed because old grammar was in the way." >> $log
-    elif [ $status = 18 ]; then
-    echo "run-regression-tests: call-customize failed for $lgname... continuining with other regression tests."
-    echo "no choices file at path regression_tests/choices/$lgname." >> $log
-    elif [ $status != 0 ]; then
+    #    echo "run-regression-tests: customization failed for $lgname... continuing with other regression tests."; 
+    #    echo "Customization failed; no grammar created." >> $log
 
-        echo "run-regression-tests: customization failed for $lgname... continuing with other regression tests."; 
-        echo "Customization failed; no grammar created." >> $log
-
-    else
+    #else
 
 # Set up a bunch of lisp commands then pipe them to logon/[incr tsdb()]
 
 # I don't see how the following can possibly do anything,
 # since nothing has yet invoked [incr tsdb()] or lisp.
 # But let's give it a try anyway...
-    grm_file=`ls $subdir/*-pet.grm`
+  # Have to calculate after the grammar is created since the directory is
+  #no longer always named "matrix")
     {
         options=":error :exit :wait 300"
 

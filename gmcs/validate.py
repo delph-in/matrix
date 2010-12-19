@@ -11,8 +11,9 @@ from gmcs import tdl
 from gmcs.choices import ChoicesFile
 from gmcs.utils import get_name
 
-from gmcs.linglib import morphotactics
-from gmcs.linglib import negation
+import gmcs.linglib.case
+import gmcs.linglib.morphotactics
+import gmcs.linglib.negation
 
 
 ######################################################################
@@ -154,7 +155,7 @@ def validate_names(ch, vr):
   # if called for by current choices, add reserved types for:
   # case, direction, person, number, pernum, gender, tense, aspect,
   # situation, form, and trans/intrans verb types.
-  if ch.cases():
+  if ch.get('case-marking', None) is not None:
     reserved_types['case'] = True
 
   if ch.get('scale', []):
@@ -177,7 +178,7 @@ def validate_names(ch, vr):
     if ch.numbers():
       reserved_types['number'] = True
 
-  if ch.genders():
+  if 'gender' in ch:
     reserved_types['gender'] = True
 
   if ch.tenses():
@@ -250,19 +251,19 @@ def validate_names(ch, vr):
 
   for tense in ch.get('tense', []):
     user_types += [[tense.get('name'), tense.full_key + '_name']]
-    
+
   for aspect in ch.get('aspect', []):
     user_types += [[aspect.get('name'), aspect.full_key + '_name']]
-    
+
   for situation in ch.get('situation', []):
     user_types += [[situation.get('name'), situation.full_key + '_name']]
 
   for sf in ch.get('nf-subform', []):
     user_types += [[sf.get('name'), sf.full_key + '_name']]
-    
+
   for sf in ch.get('fin-subform', []):
     user_types += [[sf.get('name'), sf.full_key + '_name']]
-    
+
   for noun in ch.get('noun', []):
     user_types += [[get_name(noun) + '-noun-lex',
                     noun.full_key + '_name']]
@@ -354,7 +355,7 @@ def validate_names(ch, vr):
 
 def validate_general(ch, vr):
   lang = ch.get('language')
-  
+
   if not lang:
     vr.err('language', 'You must specify the name of your language')
   else:
@@ -371,56 +372,6 @@ def validate_general(ch, vr):
     vr.warn('archive',
             'Please answer whether you will allow ' +
             'your answers to be retained.')
-
-
-
-######################################################################
-# validate_one_case(pre)
-#   A helper function to validate the user's choices about one case.
-#   pre is the first few characters of the associated choices names
-#  (e.g. 'nom-acc-nom')
-
-def validate_one_case(ch, vr, pre):
-  if not ch.get(pre + '-case-name'):
-    vr.err(pre + '-case-name', 'You must specify a name for every case.')
-
-
-######################################################################
-# validate_case(ch, vr)
-#   Validate the user's choices about case
-
-def validate_case(ch, vr):
-  cm = ch.get('case-marking')
-
-  if not cm:
-    vr.err('case-marking', 'You must specify if/how case is marked.')
-
-  if cm in ['nom-acc', 'split-n', 'split-v']:
-    validate_one_case(ch, vr, cm + '-nom')
-    validate_one_case(ch, vr, cm + '-acc')
-  if cm in ['erg-abs', 'split-n', 'split-v']:
-    validate_one_case(ch, vr, cm + '-erg')
-    validate_one_case(ch, vr, cm + '-abs')
-  if cm in ['tripartite', 'split-s', 'fluid-s', 'focus']:
-    validate_one_case(ch, vr, cm + '-a')
-    validate_one_case(ch, vr, cm + '-o')
-  if cm in ['tripartite']:
-    validate_one_case(ch, vr, cm + '-s')
-  if cm in ['focus']:
-    validate_one_case(ch, vr, cm + '-focus')
-
-  if cm == 'none' and 'case' in ch:
-    for case in ch['case']:
-      vr.err(case.full_key + '_name',
-             'You may not specify additional cases ' +
-             'if your language has no case marking.')
-
-  if 'scale' in ch and not ch.get('scale-equal'):
-    vr.err('scale-equal',
-           'If you define a direct-inverse scale, ' +
-           'you must say what direction the verb is ' +
-           'when the agent and patient have equal rank.')
-
 
 ######################################################################
 # validate_person(ch, vr)
@@ -504,7 +455,6 @@ def validate_other_features(ch, vr):
 # don't have any in the lexicon.
 
 def validate_word_order(ch, vr):
-  
   # General word order
   if (not ch.get('word-order')):
     vr.err('word-order',
@@ -514,7 +464,7 @@ def validate_word_order(ch, vr):
   if (not ch.get('has-dets')):
     vr.err('has-dets',
            'You must specify whether your language has determiners.')
-  
+
   if ((ch.get('has-dets') == 'yes') and (not ch.get('noun-det-order'))):
     vr.err('noun-det-order',
            'If your language has determiners, ' +
@@ -551,7 +501,7 @@ def validate_word_order(ch, vr):
            'whether they take s, vp, or v complements.')
 
 # Added check on whether question on more than one auxiliary is answered.
-  
+
   if ((ch.get('has-aux') == 'yes') and (not ch.get('multiple-aux'))):
     vr.err('multiple-aux',
            'If your language has auxiliaries, you must specify ' +
@@ -569,11 +519,6 @@ def validate_word_order(ch, vr):
            'The general word order and aux-comp order ' +
            'are not compatible with vp complements.')
 
-######################################################################
-# validate_sentential_negation(ch, vr)
-#   Validate the user's choices about sentential negation.
-
-  negation.validate(ch, vr)
 ######################################################################
 # validate_coordination(ch, vr)
 #   Validate the user's choices about coordination.
@@ -724,10 +669,10 @@ def validate_tanda(ch, vr):
   """
   Validate the user's choices about tense, aspect (viewpoint and situation) and form features
   """
-  
+
   ## validate tense
   chosen = False
-  ten = ('past', 'present', 'future', 'nonpast', 'nonfuture') 
+  ten = ('past', 'present', 'future', 'nonpast', 'nonfuture')
   for t in ten:
     if ch.get(t):
       chosen = True
@@ -783,7 +728,7 @@ def validate_tanda(ch, vr):
     mess = 'You have indicated on the word order page that ' +\
            'your language has auxiliaries.'
     vr.err('noaux-fin-nf', mess)
-  
+
   if ch.get('has-aux') == 'no' and not (ch.get('noaux-fin-nf') == 'on'):
     if 'nf-subform' in ch:
       mess = 'You have indicated that your language has no auxiliaries ' +\
@@ -943,7 +888,7 @@ def validate_lexicon(ch, vr):
     if 'feat' not in adp:
       mess = 'You should specify a value for at least one feature (e.g., CASE).'
       vr.warn(adp.full_key + '_feat1_name', mess)
- 
+
   # For verbs and verbal inflection, we need to prevent that index features are 
   # assigned to verbs: making set of features that should not be assigned to 
   # verbs
@@ -967,7 +912,7 @@ def validate_lexicon(ch, vr):
           mess = 'You must choose a value for each feature you specify.'
           vr.err(feat.full_key + '_value', mess)
 
-        if feat['name'] == 'argument structure':
+        if feat.get('name') == 'argument structure':
           mess = 'The pseudo-feature "argument structure" is only ' +\
                  'appropriate for inflectional morphemes.  For verbs, ' +\
                  'please use the special argument structure drop-down; ' +\
@@ -986,43 +931,6 @@ def validate_lexicon(ch, vr):
           mess = 'That choice is not available in languages ' +\
                  'without a direct-inverse scale.'
           vr.err(feat.full_key + '_head', mess)
-
-  morphotactics.validate(ch, vr)
-  # Inflectional Slots
-  #for slotprefix in ('noun', 'verb', 'det'):
-  #  for slot in ch.get(slotprefix + '-slot'):
-  #    if not slot.get('order'):
-  #      mess = 'You must specify an order for every slot you define.'
-  #      vr.err(slot.full_key + '_order', mess)
-
-  #    if 'input' not in slot:
-  #      mess = 'You must specify at least one input for every slot.'
-  #      vr.err(slot.full_key + '_input1_type', mess)
-  #    else:
-  #      for inp in slot.get('input', []):
-  #        t = inp.get('type')
-  #        if t not in ch and t not in ['noun', 'verb', 'iverb', 'tverb']:
-  #          mess = 'Every lexical type or slot that serves as the input ' +\
-  #                 'of a slot must be defined somewhere in the questionnaire.'
-  #          vr.err(inp.full_key + '_type', mess)
-
-  #    for morph in slot.get('morph', []):
-  #      for feat in morph.get('feat', []):
-  #        if not feat.get('name'):
-  #          mess = 'You must choose which feature you are specifying.'
-  #          vr.err(feat.full_key + '_name', mess)
-  #        if not feat.get('value'):
-  #          mess = 'You must choose a value for each feature you specify.'
-  #          vr.err(feat.full_key + '_value', mess)
-
-  #        if slotprefix == 'verb':
-  #          if not feat.get('head'):
-  #            mess = 'You must choose where the feature is specified.'
-  #            vr.err(feat.full_key + '_head', mess)
-  #          elif feat.get('head') == 'verb' and index_feat.count(feat.get('name')) > 0:
-  #            mess = 'This feature is associated with nouns, please select one of the NP-options.'
-  #            vr.err(feat.full_key + '_head', mess)
-
 
 ######################################################################
 # validate_test_sentences(ch, vr)
@@ -1127,8 +1035,8 @@ def validate_features(ch, vr):
        [[ feat.full_key + '_name', feat.get('name') ]]
       value_list += \
        [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
-  
-# Check the name list to ensure they're all valid features
+
+  # Check the name list to ensure they're all valid features
   features = ch.features()
   for item in name_list:
     var = item[0]   # choices variable name
@@ -1182,7 +1090,7 @@ def validate_arg_opt(ch, vr):
     vr.err('obj-mark-no-drop',
            'You must select whether a object marker is ' +
            'required, optional, or not permitted with an overt object.')
-  
+
   for context in ch.get('context',[]):
     for feat in context.get('feat',[]):
       if not feat.get('head'):
@@ -1199,17 +1107,18 @@ def validate(ch, extra = False):
 
   validate_names(ch, vr)
   validate_general(ch, vr)
-  validate_case(ch, vr)
+  gmcs.linglib.case.validate(ch, vr)
   validate_person(ch, vr)
   validate_number(ch, vr)
   validate_gender(ch, vr)
   validate_other_features(ch, vr)
   validate_word_order(ch, vr)
   validate_tanda(ch, vr)
-  #validate_sentential_negation(ch, vr)
+  gmcs.linglib.negation.validate(ch, vr)
   validate_coordination(ch, vr)
   validate_yesno_questions(ch, vr)
   validate_lexicon(ch, vr)
+  gmcs.linglib.morphotactics.validate(ch, vr)
   validate_test_sentences(ch, vr)
 
   validate_types(ch, vr)
@@ -1237,11 +1146,11 @@ def validate_choices(choices_file, extra = False):
 
 if __name__ == "__main__":
   vr = validate_choices(sys.argv[1])
-  
+
   print sys.argv[1]
   for k in vr.errors.keys():
     print '  ' + k + ':'
-  
+
     print '   ',
     column = 4
     for w in vr.errors[k].split():

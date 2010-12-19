@@ -74,7 +74,7 @@ class TestValidate(unittest.TestCase):
         c = ChoicesFile()
         c[name] = 'head-comp-phrase'
         self.assertError(c, name)
-      
+
       # next try colliding pairs of names
       for v2 in [x for x in variables if x[0] != v1[0]]:
         if v1[1] == v2[1]: # won't collide with different suffixes
@@ -330,7 +330,7 @@ class TestValidate(unittest.TestCase):
     c = ChoicesFile()
     c['tense-definition'] = 'choose'
     self.assertErrors(c, tenses)
-    
+
     # build-your-own hierarchy
     c = ChoicesFile()
     c['tense-definition'] = 'build'
@@ -438,21 +438,22 @@ class TestValidate(unittest.TestCase):
         c[lt + '1_feat1_head'] = head
         self.assertError(c, lt + '1_feat1_head')
 
-    ## Inflectional Slots
-    for slotprefix in ['noun', 'verb', 'det']:
-      c = ChoicesFile()
-      c[slotprefix + '-slot1_dummy'] = 'dummy'
-      self.assertErrors(c, [slotprefix + '-slot1_order',
-                            slotprefix + '-slot1_input1_type'])
+    # perhaps this should be refactored for morphotactics
+    ### Inflectional Slots
+    #for slotprefix in ['noun', 'verb', 'det']:
+    #  c = ChoicesFile()
+    #  c[slotprefix + '-slot1_dummy'] = 'dummy'
+    #  self.assertErrors(c, [slotprefix + '-slot1_order',
+    #                        slotprefix + '-slot1_input1_type'])
 
-      c[slotprefix + '-slot1_input1_type'] = 'dummy'
-      self.assertError(c, slotprefix + '-slot1_input1_type')
+    #  c[slotprefix + '-slot1_input1_type'] = 'dummy'
+    #  self.assertError(c, slotprefix + '-slot1_input1_type')
 
-      c[slotprefix + '-slot1_morph1_feat1_dummy'] = 'dummy'
-      self.assertErrors(c, [slotprefix + '-slot1_morph1_feat1_name',
-                            slotprefix + '-slot1_morph1_feat1_value'])
-      if slotprefix == 'verb':
-        self.assertError(c, slotprefix + '-slot1_morph1_feat1_head')
+    #  c[slotprefix + '-slot1_morph1_feat1_dummy'] = 'dummy'
+    #  self.assertErrors(c, [slotprefix + '-slot1_morph1_feat1_name',
+    #                        slotprefix + '-slot1_morph1_feat1_value'])
+    #  if slotprefix == 'verb':
+    #    self.assertError(c, slotprefix + '-slot1_morph1_feat1_head')
 
 
   def test_features(self):

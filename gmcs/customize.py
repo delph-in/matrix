@@ -105,7 +105,7 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
   if not features:
     features = ch.features()
   if not cases:
-    cases = ch.cases()
+    cases = case.case_names(ch)
   if not tdlfile:
     tdlfile = mylang
 
@@ -1914,7 +1914,7 @@ def customize_nouns():
 
 def customize_verb_case():
   cm = ch.get('case-marking')
-  cases = ch.cases()
+  cases = case.case_names(ch)
 
   # Pass through the list of case-marking patterns.  If a pattern is a
   # lexical pattern (i.e. the third item in the list is False), then
@@ -2193,7 +2193,7 @@ def customize_verbs():
   lexicon.add_literal(';;; Verbs')
 
   # Now create the lexical entries for all the defined verb types
-  cases = ch.cases()
+  cases = case.case_names(ch)
   for verb in ch.get('verb',[]):
     name = get_name(verb)
     val = verb.get('valence')
@@ -2293,7 +2293,7 @@ def customize_auxiliaries():
       sem = aux.get('sem','')
       subj = aux.get('subj','')
       subjc = aux.get('subj_case','') #TODO: verify _-delimited key
-      cases = ch.cases()
+      cases = case.case_names(ch)
       subjcase = case.canon_to_abbr(subjc, cases)
 
     # Lexical type for auxiliaries.

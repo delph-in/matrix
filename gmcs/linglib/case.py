@@ -7,10 +7,81 @@ from gmcs.utils import get_name
 #   Create the type definitions associated with the user's choices
 #   about case.
 
+# case_names()
+#   Create and return a list containing information about the cases
+#   in the language described by the current choices.  This list consists
+#   of tuples with three values:
+#     [canonical name, friendly name, abbreviation]
+def case_names(ch):
+  # first, make two lists: the canonical and user-provided case names
+  cm = ch.get('case-marking')
+  canon = []
+  user = []
+  if cm == 'nom-acc':
+    canon.append('nom')
+    user.append(ch[cm + '-nom-case-name'])
+    canon.append('acc')
+    user.append(ch[cm + '-acc-case-name'])
+  elif cm == 'erg-abs':
+    canon.append('erg')
+    user.append(ch[cm + '-erg-case-name'])
+    canon.append('abs')
+    user.append(ch[cm + '-abs-case-name'])
+  elif cm == 'tripartite':
+    canon.append('s')
+    user.append(ch[cm + '-s-case-name'])
+    canon.append('a')
+    user.append(ch[cm + '-a-case-name'])
+    canon.append('o')
+    user.append(ch[cm + '-o-case-name'])
+  elif cm in ['split-s']:
+    canon.append('a')
+    user.append(ch[cm + '-a-case-name'])
+    canon.append('o')
+    user.append(ch[cm + '-o-case-name'])
+  elif cm in ['fluid-s']:
+    a_name = ch[cm + '-a-case-name']
+    o_name = ch[cm + '-o-case-name']
+    canon.append('a+o')
+    user.append('fluid')
+    canon.append('a')
+    user.append(a_name)
+    canon.append('o')
+    user.append(o_name)
+  elif cm in ['split-n', 'split-v']:
+    canon.append('nom')
+    user.append(ch[cm + '-nom-case-name'])
+    canon.append('acc')
+    user.append(ch[cm + '-acc-case-name'])
+    canon.append('erg')
+    user.append(ch[cm + '-erg-case-name'])
+    canon.append('abs')
+    user.append(ch[cm + '-abs-case-name'])
+  elif cm in ['focus']:
+    canon.append('focus')
+    user.append(ch[cm + '-focus-case-name'])
+    canon.append('a')
+    user.append(ch[cm + '-a-case-name'])
+    canon.append('o')
+    user.append(ch[cm + '-o-case-name'])
+
+  # fill in any additional cases the user has specified
+  for case in ch.get('case'):
+    canon.append(case['name'])
+    user.append(case['name'])
+
+  # if possible without causing collisions, shorten the case names to
+  # three-letter abbreviations; otherwise, just use the names as the
+  # abbreviations
+  abbrev = [ l[0:3] for l in user ]
+  if len(set(abbrev)) != len(abbrev):
+    abbrev = user
+
+  return zip(canon, user, abbrev)
+
 # Given the canonical (i.e. choices variable) name of a case, return
 # its abbreviation from the list of cases, which should be created by
-# calling ChoicesFile.cases().  If there is no abbreviation, return
-# the name.
+# calling case_names().  If there is no abbreviation, return the name.
 def canon_to_abbr(name, cases):
   for c in cases:
     if c[0] == name:
@@ -18,8 +89,8 @@ def canon_to_abbr(name, cases):
   return name
 
 # Given the name of a case, return its abbreviation from the list of
-# cases, which should be created by calling ChoicesFile.cases().  If
-# there is no abbreviation, return the name.
+# cases, which should be created by calling case_names().  If there
+# is no abbreviation, return the name.
 def name_to_abbr(name, cases):
   for c in cases:
     if c[1] == name:
@@ -28,7 +99,7 @@ def name_to_abbr(name, cases):
 
 def init_case_hierarchy(ch, hierarchies):
   cm = ch.get('case-marking')
-  cases = ch.cases()
+  cases = case_names(ch)
 
   hier = TDLHierarchy('case')
 
@@ -85,7 +156,7 @@ def customize_case_type(mylang, hierarchies):
 #   Create the appropriate types for case-marking adpositions
 
 def customize_case_adpositions(mylang, lexicon, ch):
-  cases = ch.cases()
+  cases = case_names(ch)
   features = ch.features()
   to_cfv = []
 
@@ -145,7 +216,7 @@ def customize_case(mylang, ch, hierarchies):
   # first we need to peek in things like lex-rules for when something
   # has mixed case, and replace with the appropriate type covering
   from gmcs.linglib.lexbase import ALL_LEX_TYPES
-  cases = ch.cases()
+  cases = case_names(ch)
   for x in ALL_LEX_TYPES:
     for lex_type in ch[x]:
       convert_mixed_case(lex_type, hierarchies, cases)
@@ -168,7 +239,7 @@ def add_lexrules(ch):
     return
   for pc in ch['noun-pc']:
     if 'case' in [feat['name'] for lrt in pc['lrt'] for feat in lrt['feat']]:
-      for c in ch.cases():
+      for c in case_names(ch):
         if ch.has_adp_case(c[0]):
           idx = ch[pc.full_key + '_lrt'].next_iter_num()
           lrt_key = pc.full_key + '_lrt' + str(idx)
@@ -187,3 +258,49 @@ def interpret_verb_valence(valence):
     return 'tverb'
   else:
     return 'iverb'
+
+##################
+### VALIDATION ###
+##################
+
+def validate(choices, vr):
+  cm = choices.get('case-marking')
+
+  if not cm:
+    vr.err('case-marking', 'You must specify if/how case is marked.')
+
+  if cm in ('nom-acc', 'split-n', 'split-v'):
+    validate_one_case(choices, vr, cm + '-nom')
+    validate_one_case(choices, vr, cm + '-acc')
+  if cm in ('erg-abs', 'split-n', 'split-v'):
+    validate_one_case(choices, vr, cm + '-erg')
+    validate_one_case(choices, vr, cm + '-abs')
+  if cm in ('tripartite', 'split-s', 'fluid-s', 'focus'):
+    validate_one_case(choices, vr, cm + '-a')
+    validate_one_case(choices, vr, cm + '-o')
+  if cm in ('tripartite'):
+    validate_one_case(choices, vr, cm + '-s')
+  if cm in ('focus'):
+    validate_one_case(choices, vr, cm + '-focus')
+
+  if cm == 'none' and 'case' in choices:
+    for case in choices['case']:
+      vr.err(case.full_key + '_name',
+             'You may not specify additional cases ' +
+             'if your language has no case marking.')
+
+  if 'scale' in choices and not choices.get('scale-equal'):
+    vr.err('scale-equal',
+           'If you define a direct-inverse scale, ' +
+           'you must say what direction the verb is ' +
+           'when the agent and patient have equal rank.')
+
+######################################################################
+# validate_one_case(pre)
+#   A helper function to validate the user's choices about one case.
+#   pre is the first few characters of the associated choices names
+#  (e.g. 'nom-acc-nom')
+
+def validate_one_case(ch, vr, pre):
+  if not ch.get(pre + '-case-name'):
+    vr.err(pre + '-case-name', 'You must specify a name for every case.')
