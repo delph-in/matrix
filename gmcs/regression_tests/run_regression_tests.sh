@@ -10,6 +10,10 @@
 unset DISPLAY
 unset LUI
 
+###
+### INITIALIZATION CHECKS
+###
+
 if [ -z "${LOGONROOT}" ]; then
   echo "run-regression-tests: unable to determine \$LOGONROOT directory; exit."
   exit 1
@@ -37,92 +41,107 @@ if ! echo $( $python_cmd -V 2>&1 ) | grep -q "Python 2\.[5,6,7]"; then
   echo "  Found $( $python_cmd -V 2>&1 ). Continuing." >&2
 fi
 
-# Check if there are any grammars in the way, and if so, exit.
+###
+### COMMON VARIABLES AND SETTINGS
+###
 
 #
 # include a shared set of shell functions and global parameters, including the
 # architecture identifier .LOGONOS.
 #
 . ${LOGONROOT}/etc/library.bash
-
 date=$(date "+%Y-%m-%d")
 datetime=$(date)
 count=1
 limit=1000
 best=1000
 
+# Parameters which are the same for all regression test:
+rtestdir="${CUSTOMIZATIONROOT}/regression_tests/"
+skeletons="$rtestdir/skeletons/"
+choices="$rtestdir/choices/"
+grammars="$rtestdir/grammars"
+tsdbhome="$rtestdir/home/"
+logs="$rtestdir/logs/"
+
+### LOG FILES
+
 # Main log file to look at tsdb output.
-
-TSDBLOG="${CUSTOMIZATIONROOT}/regression_tests/logs/tsdb.${date}.log"
-
+TSDBLOG="$logs/tsdb.${date}.log"
 if [ -e ${TSDBLOG} ]; then
     rm ${TSDBLOG}
 fi
 
-# Paraeters which are the same for all regression test:
+# Create one log file with results from all tests, appending on 
+# comments.
+# 2008-08-22: By request not overwriting the log file
+# but appending instead, with time stamps.
+masterlog="$logs/regression-tests.$date"
+echo "============ $datetime ============" >> $masterlog
 
-skeletons="${CUSTOMIZATIONROOT}/regression_tests/skeletons/"
-tsdbhome="${CUSTOMIZATIONROOT}/regression_tests/home/"
-logdir="${CUSTOMIZATIONROOT}/regression_tests/logs/"
+###
+### TEST PREPARATION
+###
 
 # Get the list of regression tests from the regression-test-index:
 # or from command-line input.
-
 if [ -z $1 ]; then
-
     lgnames=`$python_cmd ${CUSTOMIZATIONROOT}/regression_tests/regressiontestindex.py --lg-names`
-
     if [ $? != 0 ]; then
     echo "run-regression-tests: Problem with regression-test-index, cannot run regression tests."
-    exit
+    exit 1
     fi
-
-    echo "Removing old grammars"
-    ${CUSTOMIZATIONROOT}/regression_tests/cleanup-regression-tests.sh
 else 
     lgnames=$1
 fi
 
+# Clear any existing regression test files that can cause conflicts
+for lgname in $lgnames
+do
+    rm -rf $grammars/$lgname
+    rm -f $logs/$lgname.$date
+    rm -rf $tdsbhome/current/$lgname
+done
 
 # Create fresh copy of matrix-core
-
 rm -rf ${CUSTOMIZATIONROOT}/matrix-core
 pushd ${CUSTOMIZATIONROOT}/.. >/dev/null
 ./install -c ${CUSTOMIZATIONROOT}/matrix-core >/dev/null
 popd >/dev/null
 
+###
+### TSDB GOLD STANDARD COMPARISONS
+###
+
 # Now do essentially the same things as one-regression-test for each one:
 
 for lgname in $lgnames
 do 
-
     printf "%-70s " "$lgname..."
 
-# Set skeleton, grammar, gold-standard for comparison, and
-# target directory.
-
-    skeleton="${CUSTOMIZATIONROOT}/regression_tests/skeletons/$lgname"
+    # Set skeleton, grammar, gold-standard for comparison, and
+    # target directory.
+    skeleton="$skeletons/$lgname"
     gold="gold/$lgname"
-    choicesfile="${CUSTOMIZATIONROOT}/regression_tests/choices/$lgname"
-    grammardir="${CUSTOMIZATIONROOT}/regression_tests/grammars/$lgname"
+    choicesfile="$choices/$lgname"
+    grammardir="$grammars/$lgname"
     target="current/$lgname"
-    log="$logdir/$lgname.$date"
+    log="$logs/$lgname.$date"
 
-    # if the grammar or log already exist, remove them
-    if [ -f $log ]; then
-      rm $log
+    # Validate
+    $python_cmd ${CUSTOMIZATIONROOT}/../matrix.py v $choicesfile >> $log
+    if [ $? != 0 ]; then
+      echo "INVALID!"
+      echo "$lgname choices file did not pass validation." >> $log
+      continue
     fi
-    if [ -d $grammardir ]; then
-      rm -rf $grammardir
-    fi
-
-    # Invoke customize.py
-
-    $python_cmd ${CUSTOMIZATIONROOT}/../matrix.py cf $choicesfile $grammardir
-    status=$?
-    if [ $status != 0 ]; then
+    # Customize
+    $python_cmd ${CUSTOMIZATIONROOT}/../matrix.py cf $choicesfile $grammardir >> $log
+    if [ $? != 0 ]; then
       echo "FAIL!"
-    else
+      echo "There was an error during the customization of the grammar." >> $log
+      continue
+    fi
 
     subdir=`ls -d $grammardir/*/`
     grammar=$subdir/lkb/script
@@ -145,13 +164,13 @@ do
 
     #else
 
-# Set up a bunch of lisp commands then pipe them to logon/[incr tsdb()]
-
-# I don't see how the following can possibly do anything,
-# since nothing has yet invoked [incr tsdb()] or lisp.
-# But let's give it a try anyway...
-  # Have to calculate after the grammar is created since the directory is
-  #no longer always named "matrix")
+    # Set up a bunch of lisp commands then pipe them to logon/[incr tsdb()]
+    
+    # I don't see how the following can possibly do anything,
+    # since nothing has yet invoked [incr tsdb()] or lisp.
+    # But let's give it a try anyway...
+      # Have to calculate after the grammar is created since the directory is
+      #no longer always named "matrix")
     {
         options=":error :exit :wait 300"
 
@@ -192,58 +211,39 @@ do
 # FIXME: There is probably a more appropriate set of options to
 # send to logon, but it seems to work fine as is for now. 
 
-    rm -rf $grammardir
+    #rm -rf $grammardir
 
 # When the grammar fails to load, [incr tsdb()] is not creating
 # the directory.  So use existence of $tsdbhome/$target to check
 # for grammar load problems.
 
-    if [ -e $tsdbhome/$target ]; then
-        rm -rf "$tsdbhome/$target"
-    else
+    if [ ! -e $tsdbhome/$target ]; then
         echo "Probable tdl error; grammar failed to load." >> $log
     fi
-       
-    
+
     if [ -s $log ]; then
         echo "DIFFS!"
     else
         echo "Success!"
-    fi
     fi
 done
 
 # Check through tsdb log file for any errors, and report
 # whether the results can be considered valid.
 
-# Create one log file with results from all tests, appending on 
-# comments.
-
-# 2008-08-22: By request not overwriting the log file
-# but appending instead, with time stamps.
-
-masterlog="$logdir/regression-tests.$date"
-
-#if [ -e $masterlog ]; then
-#    rm $masterlog
-#fi
-
-echo "============ $datetime ============" >> $masterlog
-
 for lgname in $lgnames
 do
-    log="$logdir/$lgname.$date"
+    log="$logs/$lgname.$date"
     echo -ne "$lgname" >> $masterlog
     if [ -s $log ]; then
-    echo -ne ": " >> $masterlog
-    $python_cmd ${CUSTOMIZATIONROOT}/regression_tests/regressiontestindex.py --comment $lgname | cat >> $masterlog
-    echo "" >> $masterlog
-    cat $log >> $masterlog
-    echo "" >> $masterlog
+        echo -ne ": " >> $masterlog
+        $python_cmd ${CUSTOMIZATIONROOT}/regression_tests/regressiontestindex.py --comment $lgname | cat >> $masterlog
+        echo "" >> $masterlog
+        cat $log >> $masterlog
+        echo "" >> $masterlog
     else
-    echo "... Success!" >> $masterlog
+        echo "... Success!" >> $masterlog
     fi
-    rm -f $log
 done
 
 # Notify user of results:

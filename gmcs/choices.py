@@ -219,7 +219,7 @@ def get_next_key(complex_key):
 
 class ChoicesFile:
 
-  # initialize by passing either a file name or ???file handle
+  # initialize by passing either a file name or file handle
   def __init__(self, choices_file=None):
 
     self.cached_values = {}

@@ -78,6 +78,8 @@ def main():
     for x in v.errors:
       print x
       print '  ', v.errors[x]
+    # If there are errors, exit with a return code of 1, otherwise 0
+    sys.exit(len(v.errors) > 0)
 
   elif args[0] in ('u', 'unit-test'):
     run_unit_tests()
@@ -101,6 +103,20 @@ def main():
     txtsuite = args[2]
     import gmcs.regression_tests.add_regression_test
     gmcs.regression_tests.add_regression_test.add(choices, txtsuite)
+
+  elif args[0] in ('regression-test-update', 'ru'):
+    from gmcs import utils
+    test = args[1]
+    cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
+                       'regression_tests/update-gold-standard.sh')
+    print "Updating regression test gold standards assumes you have manually"
+    print "compared results with TSDB and have determined the current set is"
+    print "better than the gold standard. Only continue if you have done this!"
+    if utils.verify():
+      subprocess.call([cmd, test], env=os.environ)
+    else:
+      print "Aborted."
+    sys.exit(1)
 
   elif args[0] in ('i', 'install'):
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
@@ -147,6 +163,8 @@ def validate_args(args):
     pass # other arguments are optional
   elif args[0] in ('ra', 'regression-test-add'):
     if len(args) < 3: usage(command='regression-test-add')
+  elif args[0] in ('regression-test-update', 'ru'):
+    if len(args) < 2: usage(command='regression-test-update')
   elif args[0] in ('i', 'install'):
     if len(args) < 2: usage(command='install')
   elif args[0] == 'vivify':
