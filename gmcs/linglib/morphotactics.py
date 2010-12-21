@@ -378,7 +378,7 @@ def write_daughter_types(mylang, pch):
     # if there are multiple inputs, create an intermediate rule
     if len(inp_set) > 1:
       dtr_name = intermediate_typename(pcs)
-      mylang.add(dtr_name + ' := avm.')
+      mylang.add(dtr_name + ' := word-or-lexrule.')
       # each input should inherit from the intermediate type
       for inp in inp_set:
         mylang.add(inp.identifier() + ' := ' + dtr_name + '.')
