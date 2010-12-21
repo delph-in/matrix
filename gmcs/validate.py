@@ -500,16 +500,17 @@ def validate_word_order(ch, vr):
            'If your language has auxiliaries, you must specify ' +
            'whether they take s, vp, or v complements.')
 
-# Added check on whether question on more than one auxiliary is answered.
-
-  if ((ch.get('has-aux') == 'yes') and (not ch.get('multiple-aux'))):
-    vr.err('multiple-aux',
-           'If your language has auxiliaries, you must specify ' +
-           'whether a clause may contain more than one of them.')
-
   wo = ch.get('word-order')
   co = ch.get('aux-comp-order')
   ac = ch.get('aux-comp')
+
+  # Added check on whether question on more than one auxiliary is answered.
+  # mwg: Antske says this check should only happen if wo is free
+  if (wo == 'free' and (ch.get('has-aux') == 'yes') \
+      and (not ch.get('multiple-aux'))):
+    vr.err('multiple-aux',
+           'If your language has free word order and auxiliaries, you must ' +
+           'specify whether a clause may contain more than one of them.')
 
 # ASF 2009-12-21 Question on verbal clusters no longer exists, removed all
 # related checks.

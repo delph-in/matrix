@@ -357,7 +357,7 @@ class ChoicesFile:
     Convert choices file lines before they are parsed. A choice can be
     removed by setting the key to None in the conversion method. This
     should only be done to ensure old choices files can be loaded (e.g.
-    changing noun1 to noun1_orth), and any actual conversion should be
+    changing noun1 to noun1_value), and any actual conversion should be
     done in postparse upreving.
     """
     new_lines = []
@@ -366,12 +366,11 @@ class ChoicesFile:
         (key, value) = line.split('=',1)
         if key in ('section', 'version'):
           continue
-        # 3 to 4
-        elif key in ('noun1', 'noun2', 'det1', 'det2'):
-          key += '_orth'
-        # 18 to 19
-        elif key.startswith('sentence'):
-          key += '_orth'
+        # currently the only problem is lines ending with numerals.
+        # add a generic key ("value") after these to make them loadable.
+        if key[-1].isdigit():
+          key += '_value'
+        # add back to the lines
         if key is not None:
           new_lines += ['='.join([key, value])]
       except ValueError:
@@ -1260,7 +1259,6 @@ class ChoicesFile:
     # Added a fuller implementation of case marking on core arguments,
     # so convert the old case-marking adposition stuff to the new
     # choices. Also, convert nouns, verbs, dets to the iterator keys.
-    # Things like converting noun1=cat happen in preparse_uprev.
     self.convert_key('iverb', 'verb1_orth')
     self.convert_key('iverb-pred', 'verb1_pred')
     self.convert_key('iverb-non-finite', 'verb1_non-finite')
@@ -1273,6 +1271,9 @@ class ChoicesFile:
       self['verb2_valence'] = 'trans'
     self.convert_key('det1pred', 'det1_pred')
     self.convert_key('det2pred', 'det2_pred')
+    # the following were converted in preparse_uprev
+    for key in ('noun1', 'noun2', 'det1', 'det2'):
+      self.convert_key(key + '_value', key + '_orth')
 
   def convert_4_to_5(self):
     # An even fuller implementation of case marking, with some of the
@@ -1629,10 +1630,11 @@ class ChoicesFile:
 
   def convert_18_to_19(self):
     """
-    Do nothing here. All conversion for version 19 is in the method
-    preparse_uprev. This stub is here for record keeping.
+    sentence1, sentence2, etc. were converted in preparse_uprev to be
+    sentence1_value, etc. Change those to a more appropriate key.
     """
-    pass # version 19 only requires preparse conversion
+    for sent in self.get('sentence', []):
+      self.convert_key(sent.full_key + '_value', sent.full_key + '_orth')
 
   def convert_19_to_20(self):
     """
