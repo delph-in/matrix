@@ -282,15 +282,15 @@ def validate_names(ch, vr):
     user_types += [[get_name(verb) + '-inv-lex-rule',
                     verb.full_key + '_name']]
 
-  for slotprefix in ['noun', 'verb', 'det', 'aux']:
-    for slot in ch.get(slotprefix + '-slot', []):
-      user_types += [[get_name(slot) + '-lex-rule',
-                      slot.full_key + '_name']]
-      user_types += [[get_name(slot) + '-rule-dtr',
-                      slot.full_key + '_name']]
-      for morph in slot.get('morph', []):
-        user_types += [[get_name(morph) + '-lex-rule',
-                        morph.full_key + '_name']]
+  for pcprefix in ['noun', 'verb', 'det', 'aux']:
+    for pc in ch.get(pcprefix + '-pc', []):
+      user_types += [[get_name(pc) + '-lex-rule',
+                      pc.full_key + '_name']]
+      user_types += [[get_name(pc) + '-rule-dtr',
+                      pc.full_key + '_name']]
+      for lrt in pc.get('lrt', []):
+        user_types += [[get_name(lrt) + '-lex-rule',
+                        lrt.full_key + '_name']]
 
   # Cull entries in user_types where there's no type name (and assume
   # these will be caught by other validation).  This could happen, for
@@ -628,10 +628,10 @@ def validate_yesno_questions(ch, vr):
   if ch.get('q-infl'):
     # need to search inflectional rules for one that specifies 'question'
     ques_aff = any([feat.get('name','') == 'question'
-                    for slotprefix in ('noun', 'verb', 'det', 'aux')
-                    for slot in ch[slotprefix + '-slot']
-                    for morph in slot.get('morph',[])
-                    for feat in morph.get('feat',[])])
+                    for pcprefix in ('noun', 'verb', 'det', 'aux')
+                    for pc in ch[pcprefix + '-pc']
+                    for lrt in pc.get('lrt',[])
+                    for feat in lrt.get('feat',[])])
     if not ques_aff:
       mess = 'If matrix yes-no questions are expressed through affixation, ' +\
              'you must specify an affix with the "question" feature in the ' +\
@@ -1019,10 +1019,10 @@ def validate_features(ch, vr):
         value_list += \
           [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
 
-  for slotprefix in ('noun', 'verb', 'det', 'aux'):
-    for slot in ch.get(slotprefix + '-slot'):
-      for morph in slot.get('morph', []):
-        for feat in morph.get('feat', []):
+  for pcprefix in ('noun', 'verb', 'det', 'aux'):
+    for pc in ch.get(pcprefix + '-pc'):
+      for lrt in pc.get('lrt', []):
+        for feat in lrt.get('feat', []):
           name_list += \
             [[ feat.full_key + '_name', feat.get('name') ]]
           value_list += \

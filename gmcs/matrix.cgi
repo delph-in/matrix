@@ -67,6 +67,8 @@ for s in sessions:
 session_path = 'sessions/' + cookie
 if cookie and not os.path.exists(session_path):
   os.mkdir(session_path)
+  # create a blank choices file
+  open(os.path.join(session_path, 'choices'), 'w').close()
 
 # if the 'choices' field is defined, we have either the contents of an
 # uploaded choices file or the name of a sample choices file (which

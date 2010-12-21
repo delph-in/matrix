@@ -912,10 +912,8 @@ class ChoicesFile:
                                     'LOCAL.CONT.HOOK.INDEX.E.SITUATION')
 
     # Direction
-    #if self.has_dirinv():
-    #  features += [ ['direction',
-    #                 'dir|direct;inv|inverse',
-    #                 'LOCAL.CAT.HEAD.DIRECTION'] ]
+    if self.has_dirinv():
+      features += [ ['direction', 'dir|direct;inv|inverse', ''] ]
 
     # Negaton
     if 'infl-neg' in self.choices:
@@ -1626,6 +1624,7 @@ class ChoicesFile:
       self[pref + '_name'] = 'q-infl'
       self[pref + '_morph1_feat1_name'] = 'question'
       self[pref + '_morph1_feat1_value'] = 'plus'
+      self[pref + '_morph1_feat1_head'] = 'verb'
       self[pref + '_opt'] = 'on'
 
   def convert_18_to_19(self):
