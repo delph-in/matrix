@@ -174,6 +174,9 @@ def position_class_hierarchy(choices):
     # redundancy in TDL
     set_lexical_rule_supertypes(cur_pc)
     cur_pc.percolate_supertypes()
+    # in the case a lex-rule PC has no supertypes, give it a generic one
+    if len(cur_pc.supertypes) == 0:
+      cur_pc.supertypes.add('lex-rule')
   # now assign pc inputs
   for pc in pc_inputs:
     for inp in pc_inputs[pc]:
@@ -362,7 +365,7 @@ def get_section_from_pc(pc):
       return 'lexrules'
 
 def write_supertypes(mylang, identifier, supertypes=None):
-  if supertypes is not None:
+  if supertypes is not None and len(supertypes) > 0:
     mylang.add('''%(id)s := %(sts)s.''' %\
                {'id': identifier, 'sts': ' & '.join(sorted(supertypes))})
 
