@@ -29,13 +29,15 @@ def main():
   # Cheap fails to parse if there are no morphological rules. This
   # hack adds a blank rule (can cause spinning on generation!)
   cheaphack = False
+  # show_warnings, if True, allows printing of warnings from validation
+  show_warnings = False
 
   # Extract the options and arguments, act on the options, and validate
   # the commands.
   try:
-    opts, args = getopt.getopt(sys.argv[1:], 'C:Fh',
+    opts, args = getopt.getopt(sys.argv[1:], 'C:Fhw',
                                ['customizationroot=', 'CUSTOMIZATIONROOT=',
-                                'force', 'help', 'cheap-hack'])
+                                'force', 'help', 'warning', 'cheap-hack'])
   except getopt.GetoptError, err:
     print str(err)
     usage()
@@ -44,13 +46,15 @@ def main():
       os.environ['CUSTOMIZATIONROOT'] = os.path.abspath(a)
     elif o in ('-F', '--force'):
       force = True
-    elif o == '--cheap-hack':
-      cheaphack = True
     elif o in ('-h', '--help'):
       cmd = 'all'
       if len(args) > 0:
         cmd = args[0]
       usage(command=cmd, exitcode=0)
+    elif o in ('-w', '--warning'):
+      show_warnings = True
+    elif o == '--cheap-hack':
+      cheaphack = True
 
   validate_args(args)
 
@@ -78,6 +82,10 @@ def main():
     for x in v.errors:
       print x
       print '  ', v.errors[x]
+    if show_warnings:
+      for x in v.warnings:
+        print x
+        print '  ', v.warnings[x]
     # If there are errors, exit with a return code of 1, otherwise 0
     sys.exit(len(v.errors) > 0)
 
@@ -197,6 +205,8 @@ def usage(command=None, exitcode=2):
       p("--cheap-hack")
       p("            Add a blank morphological rule to irules.tdl (if it is")
       p("            empty) to workaround a bug in Cheap.")
+      p("--warning (-w)")
+      p("            Print warnings when running validate.")
       p("--help (-h) [COMMAND]")
       p("            Print a usage message about COMMAND (if specified) or")
       p("            else all commands and examples.")
