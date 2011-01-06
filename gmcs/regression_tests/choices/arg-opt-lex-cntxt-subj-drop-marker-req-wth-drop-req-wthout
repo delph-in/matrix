@@ -47,6 +47,7 @@ subj-mark-no-drop=subj-mark-no-drop-req
 subj-con=subj-con-some
     context1_feat1_name=tense
     context1_feat1_value=past
+    context1_feat1_head=verb
 
 section=lexicon
   noun1_det=imp
