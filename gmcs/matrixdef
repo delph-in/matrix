@@ -1263,7 +1263,7 @@ BeginIter aux{i} "an Auxiliary Type"
      fillvalues aux{i}_feat{j}_name
 
      Select head "Aux {i} feature {j} head" "Specified on: " ""
-     . verb "The verb" "the verb"
+     . verb "The auxiliary" "the auxiliary"
      . subj "The subject" "the subject NP"
      . obj  "The object"  "the object NP"
      . higher "Higher-ranked"  "the higher-ranked NP"

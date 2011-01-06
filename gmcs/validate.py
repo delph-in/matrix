@@ -920,7 +920,7 @@ def validate_lexicon(ch, vr):
                  'other lexical types do not yet support argument structure.'
           vr.err(feat.full_key + '_name', mess)
 
-        if lextype == 'verb' or lextype == 'aux':
+        if lextype == 'verb': # or lextype == 'aux': lap: 1/5/11 removed aux to get rid of overzealous validation
           if not feat.get('head'):
             mess = 'You must choose where the feature is specified.'
             vr.err(feat.full_key + '_head', mess)
