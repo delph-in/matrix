@@ -165,10 +165,14 @@
   ;;; Load grammar into the LKB
 
     (let* ((lg-name (get-language-name choices-path))
+	   (iso (get-iso-code choices-path))
+	   (dir-name (if iso
+			 iso
+		       (string-downcase lg-name)))
 	   (script (format nil "~a~a~a~a~a~a"
 			   *customization-root*
 			   "regression_tests/grammars/"
-			   lg-name "/" lg-name
+			   lg-name "/" dir-name
 			   "/lkb/script")))
       (read-script-file-aux script)))
   
@@ -291,6 +295,22 @@
     (if lg-name
 	lg-name
       (error "Invalid choices file: No language name given."))))
+
+(defun get-iso-code (choices)
+
+  ;;; Extract iso code from choices file if there is one,
+  ;;; since that will be used for the directory in that case.
+  ;;; Assume it's stored in a line that says iso-code=iso
+  
+  (let ((iso nil))
+    (with-open-file (stream choices)
+      (loop for line = (read-line stream nil)
+	  until (eq line nil)
+	  do (if (and (> (length line) 9)
+		      (equal (subseq line 0 9) "iso-code="))
+		 (setf iso (subseq line 9)))))
+    iso))
+
 
 ;;; Function for cleaning up files when you're done with dealing
 ;;; with a regression-test interactively.  This will leave behind whatever
