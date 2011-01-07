@@ -216,6 +216,7 @@
    ;;; Give instructions on how to open window showing results
   
   (format t "To look at these interactively, do the following in the [incr tsdb()] podium:~%")
+  (format t "Options | Database Root: set to matrix/gmcs/regression_tests/home/~%")
   (format t "Update | All tsdb(1) status~%")
   (format t "Right click on gold/~a~%" lg-name)
   (format t "Left click on current/~a~%" lg-name)
