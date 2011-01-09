@@ -35,20 +35,24 @@
     ;;; Create grammar and store in regression_tests/grammars
 
     (let* ((lg-name (get-language-name choices))
-	   (cmd (format nil "~a~a ~a ~a ~a~a~a" 
-			*customization-root* "regression_tests/call-customize"
-			*customization-root* 
-			choices *customization-root* "regression_tests/grammars/"
-			lg-name)))
+	   (cmd (format nil "~a~a ~a ~a ~a ~a ~a~a~a" 
+			*customization-root* "../matrix.py"
+            "-C" *customization-root*
+            "cf" choices
+            *customization-root* "regression_tests/grammars/" lg-name)))
       (excl:run-shell-command cmd))
   
     ;;; Load grammar into the LKB
 
     (let* ((lg-name (get-language-name choices))
+	   (iso (get-iso-code choices))
+	   (dir-name (if iso
+			 iso
+		       (string-downcase lg-name)))
 	   (script (format nil "~a~a~a~a~a~a"
 			   *customization-root*
 			   "regression_tests/grammars/"
-			   lg-name "/" lg-name
+			   lg-name "/" dir-name
 			   "/lkb/script")))
       (read-script-file-aux script))
   
@@ -326,12 +330,10 @@
   ;;; Remove grammar
   
     (excl:run-shell-command (format nil "rm -r ~a/grammars/~a" path lg-name))
-  
-  ;;; Remove log files (.tex, .aux, .dvi)
-    
-    (excl:run-shell-command (format nil "rm ~a/logs/~a.tex" path lg-name))
-    (excl:run-shell-command (format nil "rm ~a/logs/~a.aux" path lg-name))
-    (excl:run-shell-command (format nil "rm ~a/logs/~a.dvi" path lg-name))
+
+  ;;; Remove logs
+
+    (excl:run-shell-command (format nil "rm ~a/logs/~a*" path lg-name))
     
   ;;; Remove profile ... or not: these often can't be removed, and
   ;;; get over-written by [incr tsdb()] anyway.

@@ -237,7 +237,10 @@ def usage(command=None, exitcode=2):
   if command in ('regression-test-add', 'ra', 'all'):
     p("regression-test-add (ra) CHOICES TXTSUITE")
     p("            Add CHOICES (a choices file) and TXTSUITE (a text file")
-    p("            containing test sentences) as a new regression test.")
+    p("            containing test sentences) as a new regression test. Both")
+    p("            CHOICES and TXTSUITE are filenames, not paths, and the")
+    p("            respective files should exist in the scratch directory")
+    p("            (gmcs/regression_tests/scratch/).")
     something_printed = True
   if command in ('regression-test-update', 'ru', 'all'):
     p("regression-test-update (ru) TEST")

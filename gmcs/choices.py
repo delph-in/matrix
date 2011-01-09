@@ -93,6 +93,14 @@ class ChoiceDict(ChoiceCategory, dict):
             return int(result.group(0))
     return None
 
+  def __str__(self):
+    return '\n'.join(
+      '='.join(['_'.join([self.full_key, key]) if self.full_key else key,
+                self[key]]) \
+       if not isinstance(self[key], ChoiceList) \
+       else str(self[key])
+       for key in self)
+
 class ChoiceList(ChoiceCategory, list):
 
   def __getitem__(self, key):
@@ -158,6 +166,9 @@ class ChoiceList(ChoiceCategory, list):
   def next_iter_num(self):
     if len(self) == 0: return 1
     return (self.get_last().iter_num() or 0) + 1
+
+  def __str__(self):
+    return '\n'.join(str(item) for item in self)
 
 ######################################################################
 # Helper functions
@@ -237,6 +248,9 @@ class ChoicesFile:
           f.close()
       except IOError:
         pass # TODO: we should really be logging these
+
+  def __str__(self):
+    return str(self.choices)
 
   ############################################################################
   ### Choices file parsing functions
