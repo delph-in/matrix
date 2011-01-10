@@ -49,7 +49,6 @@
 ((:path . "qpart-yes-no") (:content . "qpart-yes-no: Questions marked via sentence-initial question particle."))
 ((:path . "infl-neg-sole-suffix") (:content . "infl-neg-sole-suffix: Negation as the only suffix, optional"))
 ((:path . "infl-neg-nonfinal-suffix") (:content . "infl-neg-nonfinal-suffix: Inflectional negation as optional non-final suffix, optionality with check box"))
-((:path . "infl-neg-nonfinal-multipath") (:content . "infl-neg-nonfinal-multipath: Inflectional negation as optional non-final suffix, with optionality modeled through multiple inputs on next slot."))
 ((:path . "infl-neg-final-opt-suffix") (:content . "infl-neg-final-opt-suffix: Negative affix as optional suffix at end of suffix string"))
 ((:path . "Sahaptin-short") (:content . "Sahaptin-short: Sahaptin, shorter version (sfd dissertation)"))
 ((:path . "Sahaptin") (:content . "Sahaptin: Sahaptin (sfd dissertation)"))

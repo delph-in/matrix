@@ -100,7 +100,6 @@ Tagalog=Tagalog (sfd dissertation)
 case-mixed2=mixed adpositional and morphological marking (2)
 Sahaptin-short=Sahaptin, shorter version (sfd dissertation)
 infl-neg-final-opt-suffix=Negative affix as optional suffix at end of suffix string
-infl-neg-nonfinal-multipath=Inflectional negation as optional non-final suffix, with optionality modeled through multiple inputs on next slot.
 infl-neg-nonfinal-suffix=Inflectional negation as optional non-final suffix, optionality with check box
 infl-neg-sole-suffix=Negation as the only suffix, optional
 qpart-yes-no=Questions marked via sentence-initial question particle.
