@@ -56,6 +56,10 @@ def main():
     elif o == '--cheap-hack':
       cheaphack = True
 
+  # if CUSTOMIZATIONROOT is not set externally or through an option, try
+  # to find an appropriate default directory
+  ensure_customization_root_set()
+  # make sure the argument have the correct number of parameters
   validate_args(args)
 
   if args[0] in ('c', 'customize'):
@@ -152,6 +156,22 @@ def validate_python_version():
     print "Operation aborted: incompatible Python version."
     print "  You are running Python " + version + ", but the Grammar Matrix"
     print "  Customization System requires Python 2.5, 2.6, or 2.7."
+    sys.exit(2)
+
+def ensure_customization_root_set():
+  """
+  Set CUSTOMIZATIONROOT if the appropriate files are found in the
+  current working directory.
+  """
+  if 'CUSTOMIZATIONROOT' in os.environ:
+    return
+  cwd = os.getcwd()
+  if os.path.exists(os.path.join(cwd, 'customize.py')):
+    os.environ['CUSTOMIZATIONROOT'] = cwd
+  elif os.path.exists(os.path.join(cwd, 'gmcs/customize.py')):
+    os.environ['CUSTOMIZATIONROOT'] = os.path.join(cwd, 'gmcs')
+  else:
+    print "CUSTOMIZATIONROOT cannot be set."
     sys.exit(2)
 
 def validate_args(args):
