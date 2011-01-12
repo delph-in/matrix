@@ -1195,14 +1195,27 @@ BeginIter verb{i} "a Verb Type" 2
   Select valence "Verb {i} arguments" "<p>Argument structure: " "</p>"
   fillverbpat
 
+  Select bipartitepc "Verb {i} bipartite stems position class" "If this verb class includes bipartite stems, select the position class for the affix portion of the stems: " "</p>"
+  fillregex verb-pc[0-9]+_name
+
   Label "Stems:"
-  BeginIter stem{j} "a Stem" 1
+  BeginIter stem{j} "a simple Stem" 1
 
     Text orth "Verb {i} stem {j} spelling" "Spelling: " "" 30
 
     Text pred "Verb {i} stem {j} predicate" " Predicate: " "" 30
 
   EndIter stem
+
+  BeginIter bistem{j} "a bipartite Stem" 
+
+    Text orth "Verb {i} bipartite stem {j} spelling" "Root spelling: " "" 30
+
+    Text aff "Verb {i} bipartite stem {j} affix" "Affix spelling: " "" 30
+
+    Text pred "Verb {i} bipartite stem {j} predicate" " Predicate: " "" 30
+
+  EndIter bistem
 
   Label "<p>Morphotactic Constraints:</p>"
 
