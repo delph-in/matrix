@@ -35,10 +35,10 @@
     ;;; Create grammar and store in regression_tests/grammars
 
     (let* ((lg-name (get-language-name choices))
-	   (cmd (format nil "~a~a ~a ~a ~a ~a ~a~a~a" 
-			*customization-root* "../matrix.py"
-            "-C" *customization-root*
-            "cf" choices
+	   (cmd (format nil "~a~a ~a ~a ~a~a~a" 
+			*customization-root* "regression_tests/call-customize"
+            *customization-root*
+            choices
             *customization-root* "regression_tests/grammars/" lg-name)))
       (excl:run-shell-command cmd))
   
