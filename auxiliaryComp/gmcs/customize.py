@@ -553,56 +553,56 @@ def customize_major_constituent_order(wo):
 
 # ASF 2008-11-03 v2 analysis requires MC feature is not passed up to mother in
 # head - comp and not from mod to mother, putting it back for other wo options
-
-  if not wo == 'v2':
-    mylang.add_literal(';Constraint on MC used to be part of matrix.tdl\n;' +
-               ';it applies to all wo implementations, except for v2')
-    mylang.add('basic-head-comp-phrase :+\
-                [ SYNSEM.LOCAL.CAT.MC #mc,\
-                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
-               section='addenda')
-    mylang.add('basic-head-mod-phrase-simple :+\
-                [ SYNSEM.LOCAL.CAT.MC #mc, \
-                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
-               section='addenda')
+# Germanic specific: all languages are v2
+#  if not wo == 'v2':
+#    mylang.add_literal(';Constraint on MC used to be part of matrix.tdl\n;' +
+#               ';it applies to all wo implementations, except for v2')
+#    mylang.add('basic-head-comp-phrase :+\
+#                [ SYNSEM.LOCAL.CAT.MC #mc,\
+#                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
+#               section='addenda')
+#    mylang.add('basic-head-mod-phrase-simple :+\
+#                [ SYNSEM.LOCAL.CAT.MC #mc, \
+#                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
+#               section='addenda')
 
 
 # Head-comp order
 
-  if wo == 'sov' or wo == 'osv' or wo == 'ovs' or wo == 'v-final':
-    hc = 'comp-head'
-    mylang.add(hc + '-phrase := basic-head-1st-comp-phrase & head-final.')
+#  if wo == 'sov' or wo == 'osv' or wo == 'ovs' or wo == 'v-final':
+#    hc = 'comp-head'
+#    mylang.add(hc + '-phrase := basic-head-1st-comp-phrase & head-final.')
 
-  if wo == 'svo' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
-    hc = 'head-comp'
-    mylang.add(hc + '-phrase := basic-head-1st-comp-phrase & head-initial.')
+#  if wo == 'svo' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
+#    hc = 'head-comp'
+#    mylang.add(hc + '-phrase := basic-head-1st-comp-phrase & head-initial.')
 
 # Head-subj order
 
-  if wo == 'osv' or wo == 'sov' or wo == 'svo' or wo == 'v-final':
-    hs = 'subj-head'
-    mylang.add(hs + '-phrase := decl-head-subj-phrase & head-final.')
+#  if wo == 'osv' or wo == 'sov' or wo == 'svo' or wo == 'v-final':
+#    hs = 'subj-head'
+#    mylang.add(hs + '-phrase := decl-head-subj-phrase & head-final.')
 
-  if wo == 'ovs' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
-    hs = 'head-subj'
-    mylang.add(hs + '-phrase := decl-head-subj-phrase & head-initial.')
+#  if wo == 'ovs' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
+#    hs = 'head-subj'
+#    mylang.add(hs + '-phrase := decl-head-subj-phrase & head-initial.')
 
 # Complements attach before subjects
 
-  if wo == 'ovs' or wo == 'vos' or wo == 'sov' or wo == 'svo':
-    mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
+#  if wo == 'ovs' or wo == 'vos' or wo == 'sov' or wo == 'svo':
+#    mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
 
 # Subjects attach before complements
 # ASF 2008-11-20 in order to allow for aux with vp-comp for VSO and OSV
 # languages, the standard analysis needs to be adapted to a LIGHT +
 # constraint on the hs-rule.
 
-  auxcomp = ch.get('aux-comp')
-  if wo == 'vso' or wo == 'osv':
-    if has_auxiliaries_p() and auxcomp == 'vp':
-      mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
-    else:
-      mylang.add(hc + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
+#  auxcomp = ch.get('aux-comp')
+#  if wo == 'vso' or wo == 'osv':
+#    if has_auxiliaries_p() and auxcomp == 'vp':
+#      mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
+#    else:
+#      mylang.add(hc + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
 
 # ERB 2006-09-14 Free word order is a big fat special case:
 
@@ -639,55 +639,55 @@ def customize_major_constituent_order(wo):
 # since we're adding to something defined in matrix.tdl.
 
 
-  if wo == 'free':
-    mylang.add('synsem :+ [ ATTACH xmod ].',
-               'We can\'t just use the V-final and V-initial word\n' +
-               'order modules together to get a good free word order\n' +
-               'module. The root of the problem seems to be that we\n' +
-               'need the subject to be able to attach inside the\n' +
-               'object(s) for VSO and OSV, but at the same time, we\n' +
-               'don\'t want complete flexibility on order of attachment\n' +
-               'when the verb is in the middle -- that would give\n' +
-               'spurious ambiguity.  This solution adopts the xmod\n' +
-               'hierarchy to enforce right-first attachment.  That is,\n' +
-               'all arguments appears to the right of the verb must\n' +
-               'attach before all arguments appearing to the left.  The\n' +
-               'linguistic prediction of this analysis is that free\n' +
-               'word order languages do not have a consistent VP\n' +
-               'consituent, even when the verb and object are adjacent\n' +
-               '(OV order).  Using a separate feature for tracking\n' +
-               'argument attachment (as opposed to modifier\n' +
-               'attachment).  We might be able to collapse these one\n' +
-               'day, but that\'s not obvious.',
-               section='addenda')
+#  if wo == 'free':
+#    mylang.add('synsem :+ [ ATTACH xmod ].',
+#               'We can\'t just use the V-final and V-initial word\n' +
+#               'order modules together to get a good free word order\n' +
+#               'module. The root of the problem seems to be that we\n' +
+#               'need the subject to be able to attach inside the\n' +
+#               'object(s) for VSO and OSV, but at the same time, we\n' +
+#               'don\'t want complete flexibility on order of attachment\n' +
+#               'when the verb is in the middle -- that would give\n' +
+#               'spurious ambiguity.  This solution adopts the xmod\n' +
+#               'hierarchy to enforce right-first attachment.  That is,\n' +
+#               'all arguments appears to the right of the verb must\n' +
+#               'attach before all arguments appearing to the left.  The\n' +
+#               'linguistic prediction of this analysis is that free\n' +
+#               'word order languages do not have a consistent VP\n' +
+#              'consituent, even when the verb and object are adjacent\n' +
+#               '(OV order).  Using a separate feature for tracking\n' +
+#               'argument attachment (as opposed to modifier\n' +
+#               'attachment).  We might be able to collapse these one\n' +
+#               'day, but that\'s not obvious.',
+#               section='addenda')
 
 # ASF 2008-11-18, if free wo lgge has aux and aux precedes verb,
 # the enforced attachment must apply in the other direction.
 
-    if has_auxiliaries_p() and  ch.get('aux-comp-order') == 'before':
-      mylang.add('head-final-head-nexus := head-final & \
-                [ SYNSEM.ATTACH lmod,\
-                  HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
-      mylang.add('head-initial-head-nexus := head-initial &\
-                [ SYNSEM.ATTACH rmod ].')
-    else:
-      mylang.add('head-initial-head-nexus := head-initial & \
-                [ SYNSEM.ATTACH lmod,\
-                  HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
+#    if has_auxiliaries_p() and  ch.get('aux-comp-order') == 'before':
+#      mylang.add('head-final-head-nexus := head-final & \
+#                [ SYNSEM.ATTACH lmod,\
+#                  HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
+#      mylang.add('head-initial-head-nexus := head-initial &\
+#                [ SYNSEM.ATTACH rmod ].')
+#    else:
+#      mylang.add('head-initial-head-nexus := head-initial & \
+#                [ SYNSEM.ATTACH lmod,\
+#                 HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
+#
+#      mylang.add('head-final-head-nexus := head-final &\
+#                [ SYNSEM.ATTACH rmod ].')
 
-      mylang.add('head-final-head-nexus := head-final &\
-                [ SYNSEM.ATTACH rmod ].')
-
-    mylang.add('head-mod-phrase :+\
-                [ SYNSEM.ATTACH #attach,\
-                  HEAD-DTR.SYNSEM.ATTACH #attach ].',
-               'We\'ll need to add identification of ATTACH between\n\
-mother and head-daughter for all other kinds of phrases\n\
-if we do this.  Just for illustration, I\'m putting it\n\
-in for head-adjunct phrases here:',
-               section='addenda')
-
-
+#    mylang.add('head-mod-phrase :+\
+#                [ SYNSEM.ATTACH #attach,\
+#                  HEAD-DTR.SYNSEM.ATTACH #attach ].',
+#               'We\'ll need to add identification of ATTACH between\n\
+#mother and head-daughter for all other kinds of phrases\n\
+#if we do this.  Just for illustration, I\'m putting it\n\
+#in for head-adjunct phrases here:',
+#               section='addenda')
+#
+#
 # ASF (2008-11-03) Another big special case: v2
 #
 # This implementation does Autronesian-type v2, but without discontinuous nps.
@@ -709,41 +709,52 @@ in for head-adjunct phrases here:',
   
 ###FIX ME: all v2 with verbal cluster now get MC na-or-- for finite verb...
 
-  if ch.get('multiple-aux') == 'yes':
-    vcluster = True
-  else:
-    vcluster = False
-  if wo == 'v2':
-    mylang.add('verbal-head-nexus := headed-phrase & \
+#  if ch.get('multiple-aux') == 'yes':
+#  vcluster = True
+#  else:
+#    vcluster = False
+#  if wo == 'v2':
+  mylang.add('verbal-head-nexus := headed-phrase & \
                 [ SYNSEM.LOCAL.CAT.HEAD verb ].')
-    mylang.add('head-initial-head-nexus := head-initial & \
+  mylang.add('head-initial-head-nexus := head-initial & \
                 [ SYNSEM.LOCAL.CAT.MC #mc, \
                   HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
-    if vcluster:
-      mylang.add('head-initial-head-nexus := nonverbal-comp-phrase & \
+#    if vcluster:
+  mylang.add('head-initial-head-nexus := nonverbal-comp-phrase & \
                   [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC + ].')
-      mylang.add('finite-lex-rule := [ SYNSEM.LOCAL.CAT.MC na-or-- ].')
-      if ch.get('vc-analysis') == 'basic':
-        mylang.add('head-initial-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
-      elif ch.get('vc-analysis') == 'aux-rule':
-        mylang.add('head-initial-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.POSTHEAD - ].')
-    else:
-      mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.MC na ].')
+  mylang.add('finite-lex-rule := [ SYNSEM.LOCAL.CAT.MC na-or-- ].')
 
-    mylang.add('head-final-head-nexus := head-final & \
+####ALTERNATIVE ANALYSES
+
+  if ch.get('vc-analysis') == 'basic':
+    mylang.add('head-initial-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
+  elif ch.get('vc-analysis') == 'aux-rule':
+    mylang.add('head-initial-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+
+
+#    else:
+#      mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.MC na ].')
+
+###CHECK condition for this one
+
+  mylang.add('head-final-head-nexus := head-final & \
                 [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
-    if vcluster:
-      mylang.add('head-final-head-nexus := nonverbal-comp-phrase & \
+#    if vcluster:
+  mylang.add('head-final-head-nexus := nonverbal-comp-phrase & \
                                             [ SYNSEM.LOCAL.CAT.MC +,\
                                               NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
-      if ch.get('vc-analysis') == 'basic':
-        mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
-                                               HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
-      else:
-        mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.POSTHEAD #phd, \
-                                               HEAD-DTR.SYNSEM.LOCAL.CAT.POSTHEAD #phd ].')
-    else:
-      mylang.add('head-final-head-nexus :=  [ SYNSEM.LOCAL.CAT.MC bool ].')
+
+####ALTERNATIVE ANALYSES
+
+  if ch.get('vc-analysis') == 'basic':
+    mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
+                                           HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
+  else:
+    mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.POSTHEAD #phd, \
+                                           HEAD-DTR.SYNSEM.LOCAL.CAT.POSTHEAD #phd ].')
+
+#    else: (not v-cluster
+#      mylang.add('head-final-head-nexus :=  [ SYNSEM.LOCAL.CAT.MC bool ].')
      
             
 #rules shared among free and v2
@@ -751,155 +762,205 @@ in for head-adjunct phrases here:',
 ###other rules come in place
 
 
-  if wo == 'free' or wo == 'v2':
-    mylang.add('head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
-    mylang.add('subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
-    mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.')
-    if ch.get('argument-order') == 'fixed':
-      mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
-    else:
-      mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
+#  if wo == 'free' or wo == 'v2':
+  mylang.add('head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
+  mylang.add('subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
+  mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.')
+
+###PROPERTY DIFFERING BETWEEN GERMANIC LANGUAGES
+
+  if ch.get('argument-order') == 'fixed':
+    mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
+  else:
+    mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
       
-    mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.')
-    mylang.add('comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.')
-    if wo == 'free' or not vcluster:
-      mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
-    elif wo == 'v2' and vcluster:
-      mylang.add('subj-head-vc-phrase := decl-head-subj-phrase & head-final-invc & nonverbal-comp-phrase.')
-      if ch.get('argument-order') == 'fixed':
-        mylang.add('subj-head-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
-      if ch.get('vc-placement') == 'pre':
-        mylang.add('general-head-comp-vc-phrase := basic-head-1st-comp-phrase & head-initial-invc.')
-        mylang.add('head-comp-vc-phrase := general-head-comp-vc-phrase & nonverbal-comp-phrase.')
-        mylang.add('head-comp-2-vc-phrase := basic-head-2nd-comp-phrase & head-initial-invc & nonverbal-comp-phrase.')
-        if ch.get('aux-comp-order') == 'before':
-          currenttype = 'aux-comp-vc-phrase'
-          if ch.get('vc-analysis') == 'basic':
-            currentsupertype = 'general-head-comp-vc-phrase'
-            mylang.add(currenttype + ' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
-          elif ch.get('vc-analysis') == 'aux-rule':
-            currentsupertype = 'basic-aux-verb-rule'
-            mylang.add(currenttype + ' := head-initial & \
+  mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.')
+  mylang.add('comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.')
+
+#    if wo == 'free' or not vcluster:
+#      mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
+#    elif wo == 'v2' and vcluster:
+  mylang.add('subj-head-vc-phrase := decl-head-subj-phrase & head-final-invc & nonverbal-comp-phrase.')
+
+# Language specific property:
+
+  if ch.get('argument-order') == 'fixed':
+    mylang.add('subj-head-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
+
+# Language specific property:
+  if ch.get('vc-placement') == 'pre':
+    mylang.add('general-head-comp-vc-phrase := basic-head-1st-comp-phrase & head-initial-invc.')
+    mylang.add('head-comp-vc-phrase := general-head-comp-vc-phrase & nonverbal-comp-phrase.')
+    mylang.add('head-comp-2-vc-phrase := basic-head-2nd-comp-phrase & head-initial-invc & nonverbal-comp-phrase.')
+# Language specific property:
+    if ch.get('aux-comp-order') == 'before':
+      currenttype = 'aux-comp-vc-phrase'
+
+# Alternative analyses
+      if ch.get('vc-analysis') == 'basic':
+        currentsupertype = 'general-head-comp-vc-phrase'
+        mylang.add(currenttype + ' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+      elif ch.get('vc-analysis') == 'aux-rule':
+        currentsupertype = 'basic-aux-verb-rule'
+        mylang.add(currenttype + ' := head-initial & \
                             [ SYNSEM [ LOCAL.CAT [ MC -, \
                                                    VC na ], \
                                        LIGHT - ], \
                               NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC na-or-+ ].')
-          mylang.add(currenttype + ' := ' + currentsupertype + ' & \
+        mylang.add(currenttype + ' := ' + currentsupertype + ' & \
                            [ HEAD-DTR.SYNSEM.LIGHT +, \
                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].') 
-      else:
-        mylang.add('general-comp-head-vc-phrase:= basic-head-1st-comp-phrase & head-final-invc.')
-        mylang.add('comp-head-vc-phrase := general-comp-head-vc-phrase & nonverbal-comp-phrase.')
-        mylang.add('comp-2-head-vc-phrase := basic-head-2nd-comp-phrase & head-final-invc & nonverbal-comp-phrase.')
-        if ch.get('argument-order') == 'fixed':
-          mylang.add('comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT [ ARG-ORDER -, \
+# vc-placement = post
+  else:
+    mylang.add('general-comp-head-vc-phrase:= basic-head-1st-comp-phrase & head-final-invc.')
+    mylang.add('comp-head-vc-phrase := general-comp-head-vc-phrase & nonverbal-comp-phrase.')
+    mylang.add('comp-2-head-vc-phrase := basic-head-2nd-comp-phrase & head-final-invc & nonverbal-comp-phrase.')
+
+# Language specific property
+    if ch.get('argument-order') == 'fixed':
+      mylang.add('comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT [ ARG-ORDER -, \
                         ALLOWED-PART #ap & bool ], \
                         HEAD-DTR.SYNSEM.LOCAL.CAT [ ARG-ORDER +, \
                                                     ALLOWED-PART #ap ] ].')
-          mylang.add('comp-2-head-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao & + ].')
-        if ch.get('aux-comp-order') == 'after':   
-          if ch.get('vc-analysis') == 'basic':
-            mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
+      mylang.add('comp-2-head-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
+                              HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao & + ].')
+# Language specific property
+
+    if ch.get('aux-comp-order') == 'after':   
+
+# Alternative analysis
+      if ch.get('vc-analysis') == 'basic':
+        mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
                          [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].') 
-          elif ch.get('vc-analysis') == 'aux-rule':
-            mylang.add('comp-aux-vc-phrase := basic-aux-verb-rule & head-final & \
+      elif ch.get('vc-analysis') == 'aux-rule':
+        mylang.add('comp-aux-vc-phrase := basic-aux-verb-rule & head-final & \
                          [ SYNSEM [ LOCAL.CAT [ MC -, \
                                                 VC + ], \
                                     LIGHT - ] ].')
-          mylang.add('comp-aux-vc-phrase := [ HEAD-DTR.SYNSEM.LIGHT +, \
+# Both analyses
+      mylang.add('comp-aux-vc-phrase := [ HEAD-DTR.SYNSEM.LIGHT +, \
                                               NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
 
-#non-head vc + supertype general-comp-head-vc-phrase
-        elif ch.get('aux-comp-order') == 'both':
-          if ch.get('vc-analysis') == 'basic':
-            mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
+
+# Language specific property
+    elif ch.get('aux-comp-order') == 'both':
+
+# Alternative analysis 1
+      if ch.get('vc-analysis') == 'basic':
+        mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
                          [ SYNSEM.LOCAL.CAT.SECOND na,\
                            HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
                                                        SECOND + ], \
                            NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
-            mylang.add('aux-comp-vc-phrase := basic-head-1st-comp-phrase & head-initial-invc & \
+        mylang.add('aux-comp-vc-phrase := basic-head-1st-comp-phrase & head-initial-invc & \
                          [ SYNSEM.LOCAL.CAT.SECOND +,\
                            HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND na, \
                            NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
-            if ch.get('argument-order') == 'fixed':
-              mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.ALLOWED-PART #ap, \
+
+# Language specific property
+
+        if ch.get('argument-order') == 'fixed':
+          mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.ALLOWED-PART #ap, \
                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART #ap ].')
 
-              mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.ALLOWED-PART #ap, \
+          mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.ALLOWED-PART #ap, \
                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART #ap ].')
-          elif ch.get('vc-analysis') == 'aux-rule':
-            mylang.add('comp-aux-vc-phrase := basic-aux-verb-rule & head-final & \
-                                         [ SYNSEM.LOCAL.CAT [ MC -, \
-                                                              VC +, \
-                                                              NOMINAL #nl ], \
-                                           HEAD-DTR.SYNSEM.LOCAL.CAT.VC na, \
-                                           NON-HEAD-DTR.SYNSEM.LOCAL.CAT.NOMINAL #nl ].')
-            mylang.add('aux-comp-vc-phrase := basic-aux-verb-rule & head-initial & \
-                                        [ SYNSEM.LOCAL.CAT [ MC -, \
-                                                             VC na ], \
-                                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VC na-or-+, \
-                                                                          NOMINAL - ] ].')
-          mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT [ POSTHEAD #phd ], \
+
+# Alternative analysis 2
+      
+      elif ch.get('vc-analysis') == 'aux-rule':
+        mylang.add('comp-aux-vc-phrase := basic-aux-verb-rule & head-final & \
+                                     [ SYNSEM.LOCAL.CAT [ MC -, \
+                                                          VC +, \
+                                                          NOMINAL #nl ], \
+                                       HEAD-DTR.SYNSEM.LOCAL.CAT.VC na, \
+                                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT.NOMINAL #nl ].')
+        mylang.add('aux-comp-vc-phrase := basic-aux-verb-rule & head-initial & \
+                                    [ SYNSEM.LOCAL.CAT [ MC -, \
+                                                         VC na ], \
+                                      NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VC na-or-+, \
+                                                                      NOMINAL - ] ].')
+
+# Both analyses
+      mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT [ POSTHEAD #phd ], \
                                               HEAD-DTR.SYNSEM.LOCAL.CAT.POSTHEAD +, \
                                               NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
                                                                               POSTHEAD #phd ] ].')
-          mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.POSTHEAD #phd, \
+      mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.POSTHEAD #phd, \
                            HEAD-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD -, \
 				                       VC + ], \
                            NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
 				                           POSTHEAD #phd ]].')
-          if ch.get('edge-related-res') == 'yes':
-            mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.EDGE #ed & na-or--, \
-                                                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #ed ].')
-            mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.EDGE #ed & bool , \
-                                                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #ed ].')
+# Language specific property
+
+      if ch.get('edge-related-res') == 'yes':
+        mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.EDGE #ed & na-or--, \
+                                            NON-HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #ed ].')
+        mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.EDGE #ed & bool , \
+                                            NON-HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #ed ].')
 
 # Add rule definitions for major constituent order.
 ###small changes required for v2 with verbal cluster
 
-  if wo == 'free' or wo == 'v2':
-    rules.add('head-comp := head-comp-phrase.')
-    rules.add('head-subj := head-subj-phrase.')
-    rules.add('comp-head := comp-head-phrase.')
-    rules.add('subj-head := subj-head-phrase.')
-    rules.add('comp-head-2 := comp-head-phrase-2.')
-    if wo == 'free' or not vcluster:
-      rules.add('head-comp-2 := head-comp-phrase-2.')
-    elif wo == 'v2' and vcluster:
+#  if wo == 'free' or wo == 'v2':
+  rules.add('head-comp := head-comp-phrase.')
+  rules.add('head-subj := head-subj-phrase.')
+  rules.add('comp-head := comp-head-phrase.')
+  rules.add('subj-head := subj-head-phrase.')
+  rules.add('comp-head-2 := comp-head-phrase-2.')
+#    if wo == 'free' or not vcluster:
+#      rules.add('head-comp-2 := head-comp-phrase-2.')
+#    elif wo == 'v2' and vcluster:
+  rules.add('comp-2-head-vc := comp-2-head-vc-phrase.')
+
+# Language specific property
+  if ch.get('argument-order') != 'fixed':
+    rules.add('head-comp-2 := head-comp-phrase-2.')
+
+# Set alternative analysis variable
+  if ch.get('vc-analysis') == 'aux-rule':
+    auxRule = True
+  else:
+    auxRule = False
+
+  rules.add('subj-head-vc := subj-head-vc-phrase.')
+  rules.add('aux-2nd-comp := aux-2nd-comp-phrase.')
+  rules.add('comp-aux-2nd := comp-aux-2nd-phrase.')
+
+# Analysis + language specific property
+  if auxRule and ch.get('split-cluster') == 'yes':
+    rules.add('noncomp-aux-2nd := noncomp-aux-2nd-phrase.')  
+    rules.add('insert-auxiliary := special-insert-aux-phrase.')
+
+# Language specific property
+  if ch.get('vc-placement') == 'pre':
+    rules.add('head-comp-vc := head-comp-vc-phrase.')
+# Alternative analysis
+    if not auxRule:
+      rules.add('head-comp-2-vc := head-comp-2-vc-phrase.')
+# Language specific
+    if ch.get('aux-comp-order') == 'before':
+      rules.add('aux-comp-vc := aux-comp-vc-phrase.')
+
+# vc-placement = 'post'
+  else:
+    rules.add('comp-head-vc := comp-head-vc-phrase.')
+# Alternative analysis
+    if not auxRule:
       rules.add('comp-2-head-vc := comp-2-head-vc-phrase.')
-      if not ch.get('argument-order') == 'fixed':
-        rules.add('head-comp-2 := head-comp-phrase-2.')
-      if ch.get('vc-analysis') == 'aux-rule':
-        auxRule = True
-      else:
-        auxRule = False
-      rules.add('subj-head-vc := subj-head-vc-phrase.')
-      rules.add('aux-2nd-comp := aux-2nd-comp-phrase.')
-      rules.add('comp-aux-2nd := comp-aux-2nd-phrase.')
-      if auxRule and ch.get('split-cluster') == 'yes':
-        rules.add('noncomp-aux-2nd := noncomp-aux-2nd-phrase.')  
-        rules.add('insert-auxiliary := special-insert-aux-phrase.')
-      if ch.get('vc-placement') == 'pre':
-        rules.add('head-comp-vc := head-comp-vc-phrase.')
-        if not auxRule:
-          rules.add('head-comp-2-vc := head-comp-2-vc-phrase.')
-        if ch.get('aux-comp-order') == 'before':
-          rules.add('aux-comp-vc := aux-comp-vc-phrase.')
-      else:
-        rules.add('comp-head-vc := comp-head-vc-phrase.')
-        if not auxRule:
-          rules.add('comp-2-head-vc := comp-2-head-vc-phrase.')
-        if ch.get('aux-comp-order') == 'after' or ch.get('aux-comp-order') == 'both':
-          rules.add('comp-aux-vc := comp-aux-vc-phrase.')
-        if ch.get('aux-comp-order') == 'before' or ch.get('aux-comp-order') == 'both':
-          rules.add('aux-comp-vc := aux-comp-vc-phrase.') 
+# Language specific property
+    if ch.get('aux-comp-order') == 'after' or ch.get('aux-comp-order') == 'both':
+      rules.add('comp-aux-vc := comp-aux-vc-phrase.')
+# Language specific property
+    if ch.get('aux-comp-order') == 'before' or ch.get('aux-comp-order') == 'both':
+      rules.add('aux-comp-vc := aux-comp-vc-phrase.') 
+
   # Assume at this point that there's a good value of wo.
   # Rule names are stored in hs and hc, since they're the same as type names
   # without the -phrase suffix.
-  else:
-    rules.add(hc + ' :=  ' + hc + '-phrase.')
-    rules.add(hs + ' :=  ' + hs + '-phrase.')
+#  else:
+#    rules.add(hc + ' :=  ' + hc + '-phrase.')
+#    rules.add(hs + ' :=  ' + hs + '-phrase.')
 
   return {'hs': hs, 'hc': hc}
 
@@ -1229,7 +1290,7 @@ def specialize_word_order(hc,orders):
           mylang.add('comp-aux-2nd-phrase := ' + nhddtrval + ' ].')
           mylang.add('split-cl-comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.VFRONT -, \
                                                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
-          if ch.get('aux-order') == 'both':
+          if ch.get('aux-comp-order') == 'both':
             mylang.add('aux-comp-vc-phrase := ' + nhddtrval + ' ].')
             mylang.add('head-initial-invc := ' + headdtrval + ' ].')
             mylang.add('ditransitive-verb-lex := [ SYNSEM.LOCAL.CAT.VFRONT - ].')
