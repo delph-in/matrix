@@ -1,0 +1,62 @@
+;;; Module for free word order, i.e., all possible
+;;; orders of head, subj, comps (thinking initially
+;;; about V, S, and O).  Use this with free-order-rules.tdl,
+;;; which is partially redunant to V-initial-rules.tdl
+;;; and V-final-rules.tdl.  The difference is that those
+;;; currently don't have the head-2nd-comp rules.
+
+;;; Just using the V-final and V-initial modules
+;;; together is unsatisfactory, since that system gives
+;;; multiple parses for V-medial sentences.  On
+;;; the other hand, the SVO and OVS modules together
+;;; will generate SOV and VOS words, but not VSO and OSV.
+;;; Any other combinations would (I believe) lead to
+;;; respecifications of types (head-subj-phrase, etc)
+;;; rather than multiple parallel types.
+
+;;; The root of the problem seems to be that we need
+;;; the subject to be able to attach inside the object(s)
+;;; for VSO and OSV, but at the same time, we don't want
+;;; complete flexibility on order of attachment when
+;;; the verb is in the middle -- that would give spurious
+;;; ambiguity.
+
+;;; This solution adopts the xmod hierarchy to enforce right-first
+;;; attachment.  That is, all arguments appears to the right
+;;; of the verb must attach before all arguments appearing to
+;;; the left.  The linguistic prediction of this analysis
+;;; is that free word order languages do not have a consistent
+;;; VP consituent, even when the verb and object are adjacent
+;;; (OV order).
+
+;;; Using a separate feature for tracking argument attachment
+;;; (as opposed to modifier attachment).   We might be able to
+;;; collapse these one day, but that's not obvious.
+
+synsem :+
+ [ ATTACH xmod ].
+
+head-initial-head-nexus := head-initial & 
+ [ SYNSEM.ATTACH lmod,
+   HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].
+
+head-final-head-nexus := head-final &
+ [ SYNSEM.ATTACH rmod ].
+
+
+;;; We'll need to add identification of ATTACH between
+;;; mother and head-daughter for all other kinds of phrases
+;;; if we do this.  Just for illustration, I'm putting it in
+;;; for head-adjunct phrases here:
+
+head-mod-phrase :+
+  [ SYNSEM.ATTACH #attach,
+    HEAD-DTR.SYNSEM.ATTACH #attach ].
+
+head-subj-phrase := basic-head-subj-phrase & head-initial-head-nexus. 
+subj-head-phrase := basic-head-subj-phrase & head-final-head-nexus. 
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus. 
+comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus. 
+head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus. 
+comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus. 
+

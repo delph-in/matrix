@@ -1,0 +1,51 @@
+koira+Pl+Nom nukkua+3p+Pl
+klb-im ien-im
+
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+klb-im rdp-im axri mkwnit-wt
+
+minA+Sg+Nom metsAstAA+1p+Sg sinA+Sg+Acc
+ani rdp axrik
+
+tuo+Pl+Nom koira+Pl+Nom nukkua+3p+Pl
+h-klb-im h-alh ien-im
+
+koira+Pl+Nom syOdA+3p+Pl
+klb-im akl-im
+
+minA+Sg+Nom voida+1p+Sg syOdA+Inf lasi+Sg+Part
+ani ikl akl-INF zkwkit
+
+hAn+Sg+Nom ei sattua+3p+Sg minA+Sg+Part
+zh la nzq li
+
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+h-klb-im rdp-im axri mkwnit-wt
+
+minA+Sg+Nom ajatella+1p+Sg ettA sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+ani xeb e ath idy e h-klb-im rdp-im axri mkwnit-wt
+
+minA+Sg+Nom kysyA+1p+Sg jos sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+ani eal am ath idy e h-klb-im rdp-im axri mkwnit-wt
+
+kissa+Pl+Nom ja koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+klb-im w xtwl-im rdp-im axri mkwnit-wt
+
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc ja kissa+Pl+Nom metsAstAA+3p+Pl koira+Pl+Acc
+klb-im rdp-im axri mkwnit-wt w xtwl-im rdp-im axri klb-im
+
+kissa+Pl+Nom metsAstAA+3p+Pl koira+Pl+Acc ja nukkua+3p+Pl
+xtwl-im rdp-im axri klb-im w ien-im
+
+metsAstAA+3p+Pl+Ques kissa+Pl+Nom koira+Pl+Acc
+h-am xtwl-im rdp-im axri klb-im
+
+metsAstAA koira+Sg+Acc
+rdp-IMP axri h-klb
+
+nAlkAinen+Pl+Nom koira+Pl+Nom syOdA+3p+Pl
+klb-im ryb-im akl-im
+
+nAlkAinen+Pl+Nom koira+Pl+Nom syOdA+3p+Pl nopeasti
+klb-im ryb-im akl-im mhr
+

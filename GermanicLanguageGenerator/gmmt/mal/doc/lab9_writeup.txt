@@ -1,0 +1,92 @@
+=============================================
+* Describe the grammar clean-up tasks you undertook. What was broken, and how did you fix it? Provide examples from your test suite which I can use to verify the improved performance.
+
+I. Remove Polite Imperative
+-------------------------------------------------------------
+Although I created 2 forms of imperative, the different forms only caused overgeneration.  (Generation would create both the base imperative and the polite imperative.)
+I deleted the cases for the polite imperative.
+
+(unfortunately, this parses in Lab 8, but not in Lab 9 where I have constrained my verbs more to prevent overgeneration)
+ningangala varu
+you-PL come-IMP
+
+kutatai ammaye villacu parses, but used to generate the polite imperative form, suffixed with -ka.
+Now only the appropriate forms (not imperative are generated.)
+
+
+II. Correct the Case of Verb Objects
+-------------------------------------------------------------
+The verb's object agreement was not completely correct.
+For Malayalam, the verb's object is marked as accusative if the object is sentient.  Otherwise, the object is in accusative case.
+
+To fix this I added some more details to my gender feature.
+Instead of human := gender, I have anim:= gender and human := anim.  (This allows me to set the correct case for animals and humans.) The lexical entries were updated to reflect these new GEND values.
+
+Then I changed my noun inflection rules so that:
+	neuter nouns are always inflected for the 
+		supertype case nom+acc
+	anim+ nouns can inflect for case nom or acc.
+	
+The transitive verb rules were modified to require a case acc noun.  Since the neuter nouns are case nom+acc, they can be objects.  The ANIM+ nouns can only be in the object position in the accusative case.
+
+kutatai ammaye villacu used to generate both nominative and accusative object forms, but now has been corrected to only generate accusative object forms.
+
+III. Overgeneration with Verb Forms
+-------------------------------------------------------------
+The various verb inflections were not constrained, so I had considerable overgeneration.
+In order to fix this, I added 2 constraints
+1. Use INFLECTED: I declared INFLECTED - in all of my verb lexical entries.  Then the inflection rules were specified to require a daughter with INFLECTED -.
+This was added to the question inflection, imperative inflection, and auxiliary verb inflection.
+    The inflection rules of embedded verb, and negative inflection don't have the requirement of INFLECTED - since their inflections are added after other inflections on the verb.
+
+2. Use the MC feature:I added restrictions on the MC feature to my verb rules.
+The question verb, and auxiliary verb are MC -.
+The nominal forms, which are embedded have MC na.
+(I'm still not really sure what the MC value is doing.  I have quite a variety of different settings which seem to work, but I'm not sure why.)
+
+Again kutatai ammaye villacu used to create a huge number of generated sentences, but now only creates a few reasonable verb forms.
+
+Another sentence that was a problem enikkx kannadi tinnukaam (I can eat glass) which I couldn't generate before.  Now I get 2 generated sentences: one that's SOV and one OSV.
+
+
+=============================================
+* Include the coverage and overgeneration numbers per tsdb++ for your lab 8 and lab 9 grammars.
+
+Selecting Lab8 as the gold standard, and Lab9 as the new
+Compare competence
+
+                    in      out   | in      out
+i-length [5-10]     28.6    13.8    28.6    0.0
+i-length [0-5]      64.9    19.4    40.5    13.9
+total               59.1    16.9    38.6    7.7
+
+The best change this week was to vastly reduce the overgeneration from 16.9 to 7.7.
+Some of the good generation was lost along the way - I know that my imperative sentences suffered, and I haven't completely got the rules set back to allow for their conversion from lexeme to word.
+
+=============================================
+* Describe the transfer rules you added in order to get MRS outputs from your grammar to match the input requirements of the other grammar. If you were not able to get this working, describe as best you can what the problem is.
+
+None seemed to be required.
+
+=============================================
+* Provide a few (5 or so) interesting examples for the MT demo, in the format your grammar expects, illustrating a range of phenomena. If you got translation working, be sure that these examples include ones that work (so I can test them out!). 
+
+kutatai puuccakkx paal kotautatau 
+child   cat-DAT   milk gave-PAST 
+the child gave the cat milk 
+
+avan coorax unanaunnu   -> coorax can be changed to kari (curry, but has a PRED of "food")
+he   rice   eat-PRES       or pazhaam (technically ripe banana, but has a PRED of "fruit")
+he is eating rice
+
+pattikkx irikkukaam
+dog-DAT  sit-can
+The dog can sit
+
+pattikkx irikkukaillaam -> I don't think this is the right order of suffixes, but this is 
+dog-DAT  sit-NEG-can       what currently parses.
+The dog can't sit
+
+njaaan oru pustakam vaangangai 
+I      a   book     buy-PAST 
+I bought a book 

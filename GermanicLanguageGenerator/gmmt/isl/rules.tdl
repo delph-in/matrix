@@ -1,0 +1,66 @@
+head-comp := head-comp-phrase .
+
+head-opt-comp := head-opt-comp-phrase.
+
+subj-head := subj-head-phrase .
+
+head-spec := head-spec-phrase .
+
+; ERB 2007-05-11 Need two different bare-np phrases to get
+; the distribution of definite and indefinite inflection right.
+
+;bare-np := bare-np-phrase .
+
+bare-np-def := def-bare-np-phrase.
+bare-np-indef := indef-bare-np-phrase.
+
+comp-head := comp-head-phrase .
+
+; Rule instances for head-modifier structures. Corresponding types
+; are defined in matrix.tdl.  The matrix customization script did
+; not need to add any further constraints, so no corresponding tyes
+; appear in icelandic.tdl
+
+head-adj-int := head-adj-int-phrase .
+
+adj-head-int := adj-head-int-phrase .
+
+head-adj-scop := head-adj-scop-phrase .
+
+adj-head-scop := adj-head-scop-phrase .
+
+;np1-top-coord := np1-top-coord-rule .
+
+;np1-mid-coord := np1-mid-coord-rule .
+
+np1-mid-1st-left-coord := np1-mid-1st-left-coord-rule.
+np1-mid-1st-right-coord := np1-mid-1st-right-coord-rule.
+np1-mid-2nd-3rd-coord := np1-mid-2nd-3rd-coord-rule.
+np1-mid-3rd-2nd-coord:= np1-mid-3rd-2nd-coord-rule.
+np1-mid-3rd-3rd-coord := np1-mid-3rd-3rd-coord-rule.
+
+np1-top-1st-left-coord := np1-top-1st-left-coord-rule.
+np1-top-1st-right-coord := np1-top-1st-right-coord-rule.
+np1-top-2nd-3rd-coord := np1-top-2nd-3rd-coord-rule.
+np1-top-3rd-2nd-coord := np1-top-3rd-2nd-coord-rule.
+np1-top-3rd-3rd-coord := np1-top-3rd-3rd-coord-rule.
+
+np1-bottom-coord := np1-bottom-coord-rule .
+
+s1-top-coord := s1-top-coord-rule .
+
+s1-mid-coord := s1-mid-coord-rule .
+
+s1-bottom-coord := s1-bottom-coord-rule .
+
+vp1-top-coord := vp1-top-coord-rule .
+
+vp1-mid-coord := vp1-mid-coord-rule .
+
+vp1-bottom-coord := vp1-bottom-coord-rule .
+
+
+int := int-cl .
+
+imp-head-opt := imp-head-opt-phrase.
+

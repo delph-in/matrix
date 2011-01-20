@@ -1,0 +1,63 @@
+acc-suffix :=
+%suffix (* -a)
+acc-lex-rule.
+
+
+past-suffix :=
+%suffix (* -vII)
+past-lex-rule.
+
+
+mom-present-suffix :=
+%suffix (* -jI)
+mom-present-lex-rule.
+
+
+non-singular-suffix :=
+%suffix (* -7Imi)
+non-singular-lex-rule.
+
+
+plural-suffix :=
+%suffix (* -7ami)
+plural-lex-rule.
+
+
+pl-obj-suffix :=
+%suffix (* -tu)
+pl-obj-lex-rule.
+
+
+result-suffix :=
+%suffix (* -kai)
+result-lex-rule.
+
+
+perfective-marker-suffix :=
+%suffix (* -ma7aku)
+perfective-marker-lex-rule.
+
+
+mom-suffix-marker-suffix :=
+%suffix (* -ku)
+mom-suffix-marker-lex-rule.
+
+
+neg-suffix-suffix :=
+%suffix (* -wa7i)
+neg-suffix-lex-rule.
+
+
+plural-subj-agreement-marker-suffix :=
+%suffix (* -ka)
+plural-subj-agreement-marker-lex-rule.
+
+
+obj-marker-after-subj-agreement-marker-suffix :=
+%suffix (* -tu)
+obj-marker-after-subj-agreement-marker-lex-rule.
+
+
+n2-bottom :=
+  %suffix (* -gaja)
+  n2-bottom-coord-rule.

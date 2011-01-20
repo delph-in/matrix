@@ -1,0 +1,192 @@
+%(letter-set (!c aeiouàèìòùâû))
+;;verb inflection
+;; completive verb rules
+1sg-complet-verb := 
+%prefix (* naa-) 
+1sg-complet-verb-lex-rule .
+
+2m-complet-verb :=
+%prefix (* kaa-) 
+2m-complet-verb-lex-rule .
+
+2f-complet-verb :=
+%prefix (* kin-)
+2f-complet-verb-lex-rule .
+
+3m-complet-verb :=
+%prefix (* yaa-)
+3m-complet-verb-lex-rule . 
+
+3f-complet-verb :=
+%prefix (* taa-)
+3f-complet-verb-lex-rule .
+
+1p-complet-verb :=
+%prefix (* mun-)
+1p-complet-verb-lex-rule .
+
+2p-complet-verb :=
+%prefix (* kun-)
+2p-complet-verb-lex-rule .
+
+3p-complet-verb :=
+%prefix (* sun-)
+3p-complet-verb-lex-rule .
+
+;; continuous verb rules
+1sg-contin-verb :=
+%prefix (* inàa-)
+1sg-contin-verb-lex-rule.
+
+2m-contin-verb :=
+%prefix (* kanàa-)
+2m-contin-verb-lex-rule.
+
+2f-contin-verb :=
+%prefix (* kinàa-)
+2f-contin-verb-lex-rule.
+
+3m-contin-verb :=
+%prefix (* yanàa-)
+3m-contin-verb-lex-rule.
+
+3f-contin-verb :=
+%prefix (* tanàa-)
+3f-contin-verb-lex-rule.
+
+1p-contin-verb :=
+%prefix (* munàa-)
+1p-contin-verb-lex-rule.
+
+2p-contin-verb :=
+%prefix (* kunàa-)
+2p-contin-verb-lex-rule.
+
+3p-contin-verb :=
+%prefix (* sunàa-)
+3p-contin-verb-lex-rule.
+
+;;future verb rules zàa
+1sg-future-verb :=
+%prefix (* zân-)
+1sg-future-verb-lex-rule.
+
+2m-future-verb :=
+%prefix (* zàa-kà-)
+2m-future-verb-lex-rule.
+
+2f-future-verb :=
+%prefix (* zàa-kì-)
+2f-future-verb-lex-rule.
+
+3m-future-verb :=
+%prefix (* zâi-)
+3m-future-verb-lex-rule.
+
+3f-future-verb :=
+%prefix (* zàa-tà-)
+3f-future-verb-lex-rule.
+
+1p-future-verb :=
+%prefix (* zàa-mù-)
+1p-future-verb-lex-rule.
+
+2p-future-verb :=
+%prefix (* zàa-kù-)
+2p-future-verb-lex-rule.
+
+3p-future-verb :=
+%prefix (* zàa-sù-)
+3p-future-verb-lex-rule.
+
+;; rules for subjunctive
+;;1sg-subjunct-verb :=
+;;%prefix (* ìn-)
+;;1sg-subjunct-verb-lex-rule .
+
+;;2m-subjunct-verb :=
+;;%prefix (* kà-)
+;;2m-subjunct-verb-lex-rule.
+
+;;2f-subjunct-verb :=
+;;%prefix (* kì-)
+;;2f-subjunct-verb-lex-rule.
+
+;;3m-subjunct-verb :=
+;;%prefix (* yà-)
+;;3m-subjunct-verb-lex-rule.
+
+;;3f-subjunct-verb :=
+;;%prefix (* tà-)
+;;3f-subjunct-verb-lex-rule.
+
+;;1p-subjunct-verb :=
+;;%prefix (* mù-)
+;;1p-subjunct-verb-lex-rule.
+
+;;2p-subjunct-verb :=
+;;%prefix (* kù-)
+;;2p-subjunct-verb-lex-rule.
+
+;;3p-subjunct-verb :=
+;;%prefix (* sù-)
+;;3p-subjunct-verb-lex-rule.
+
+
+;; rules for pret
+;;1sg-pret-verb := 
+;;%prefix (* na-) 
+;;1sg-pret-verb-lex-rule .
+
+;;2m-pret-verb :=
+;;%prefix (* ka-) 
+;;2m-pret-verb-lex-rule .
+
+;;2f-pret-verb :=
+;;%prefix (* kikà-)
+;;2f-pret-verb-lex-rule .
+
+;;3m-pret-verb :=
+;;%prefix (* ya-)
+;;3m-pret-verb-lex-rule . 
+
+;;3f-pret-verb :=
+;;%prefix (* ta-)
+;;3f-pret-verb-lex-rule .
+
+;;1p-pret-verb :=
+;;%prefix (* mukà-)
+;;1p-pret-verb-lex-rule .
+;;
+;;2p-pret-verb :=
+;;%prefix (* kukà-)
+;;2p-pret-verb-lex-rule .
+
+;;3p-pret-verb :=
+;;%prefix (* sukà-)
+;;3p-pret-verb-lex-rule .
+
+f-definiteness :=
+%suffix (!c !c-`r~) (!c!c !c-`r~)
+f-definiteness-lex-rule.
+
+m-definiteness :=
+%suffix (!c !c-`n) (!c!c !c-`n)
+m-definiteness-lex-rule.
+
+p-definiteness := 
+%suffix (!c !c-`n) (!c!c !c-`n)
+p-definiteness-lex-rule.
+
+f-adj := 
+%suffix (!c!c !c-r~) (!c !c-r~)
+f-adj-lex-rule.
+
+m-adj := 
+%suffix (!c!c !c-n) (!c !c-n)
+m-adj-lex-rule.
+
+p-adj := 
+%suffix (!c!c !c-n) (!c !c-n)
+p-adj-lex-rule.
+

@@ -1,0 +1,134 @@
+Ryan Georgi
+Ling 567
+
+Lab 3 Writeup
+
+Now that I've had a bit more time to become acquainted with my language, I'd like to make a few corrections and revisions to some of the understanding I gave in the previous lab.
+
+NOTES:
+======================
+
+As I have discovered, the morphology of Arabic verbs is quite intricate. The roots of most words are made up by three consonants, and various different nouns and verbs are derived by the vowel patterns that come between these consonants. For instance, the consonants KTB are found in KiTa:B (desk) and ?aKTuB (write).
+
+Verb behavior is particularly interesting; there are two main declensions that generally split into those with an incomplete aspect and those with a notion of some completed, perfective aspect.
+
+The former are verbs that prefix their person and number and which are often erroneously labeled as the "imperfect" form, though they are used for a variety of moods and aspects. The latter group only suffixes its person/number inflection, and is generally more tied to meanings of a perfective aspect.
+
+Since we will not be addressing tense in this course, I will try to regularize the verb forms to the prefixing version, which usually means present-tense. This involves some morphological manipulation, however, so I will try to be clear where I have regularized an example from a source text, so extra attention might be given to these when vetting them in the future.
+
+
+
+NEGATION:
+----------------------
+
+In contrast to much of verb behavior in arabic, negation is handled not through morphology, but rather through a variety of particles. In Modern Standard Arabic, these particles are:
+
+lam, lan, ma:, and la. There is also a word, laysa, that is morphologically (and syntactically) a verb but is quirky in its conjugation. Its use is limited to negating (otherwise) verbless sentences, or the adjectival attribute of something. Though ma: is a particle, its distribution is actually 
+
+la:
+	The most commonly used particle, la can be used immediately preceding the indicative and subjunctive verb forms to form the negative.
+	
+	e.g. la:		yadrib-u				l-walad
+			 not		3MSG-hit-INDIC	the-boy
+			 'he doesn't it / isn't hitting the boy'
+			 
+	More generally, 'la' is also the analog to English "no" when used to anwer a yes/no question.
+	
+	'la' is also used for the analog to the English substantive,
+	
+	la:	?ila:h-u		?illa:		illa:h-u
+	not	god-ACC			except		the-god-NOM
+	'There is no god but God'
+
+lam, lan:
+	Are used in complementary distribution immediately preceding indicative and subjunctive verb forms, respectively.
+	
+COORDINATION:
+-----------------------
+
+Coordination in Arabic, like negation, is handled by a series of particles. There are quite a few of these, and they have different connective meanings. The most common, however, is /wa/, which expresses a meaning close to the English "and", both sequential and simultaneous (circumstantial) meanings. /wa/ is used for every coordinated clause, and even starts clauses in a connected narrative. It is not uncommon for every paragraph after the first in news articles to begin with /wa/.
+
+In addition, /wa/ can be used to coordinate nouns within a matrix clause. When this is done, agreement on the verb is shown not with dual inflection, as might be expected, but rather with number/gender that matches that of the first conjunct.
+
+Finally, if the subjects of the coordinated phrases are coreferential, /wa/ may be left out entirely.
+
+MATRIX YES/NO QUESTIONS:
+------------------------
+
+Oddly, I wasn't able to find a section solely on questions in my grammar, and there was no entry in the index for yes/no, or even simply "questions," so I've tried to piece together what I could from this online resource:
+http://en.wikibooks.org/wiki/Arabic/YesNoQuestions
+
+It appears that matrix yes-no questions are accomplished by the addition of a particle at the beginning of the matrix clause. There are two forms of this particle:
+
+/a/
+  -- For present-tense, single event
+  	e.g. a t-atbakh?
+  				Are you cooking?
+  				
+ /hal/
+ -- For future or habitual, or X=Y, X!=Y meanings
+ 		e.g. hal t-atbakh?
+ 				Do/Will you cook?
+ 		and also....
+ 				hal	al-walad-u	sagheer-un?
+ 				'Is the boy small?'
+ 				
+ 		
+IMPERATIVES:
+------------------------
+
+I've had difficulty pinning this down, but it seems imperatives in Arabic involve two different moods. There exists a 'bare' imperative that is formed upon dropping the verbal prefix and final vowel of the verb, such as in:
+
+	t-af?alu 	'you are doing'
+	if?al 		'do!'
+	
+There is another form called the jussive, however, that is used in negative imperatives, and in other ways that I find only oblique references to, such as an apparant "permissive" construction with a preposition 'li'
+
+	li		t-aktub
+	pcpl	2SG-write
+	'let him/her write'	
+	
+MODALS:
+----------------------------
+
+Again, my grammar is somewhat unclear on how modals are formed, so I turned to online resources and am basing this section off of a fairly good treatment of modals found here:
+http://www.uqu.edu.sa/majalat/humanities/vol14/f9.htm
+
+It appears that Arabic primarily forms modals from auxiliary verbs, but it is also possible to use adverbs, adjectives, or other lexical categories. Even in the verbal elements, some display subject-verb agreement, others have no marking.
+
+Some positive aspects, however; modals do not occur in non-finite clauses, and they can all be negated by some particle.
+
+Regardless of the form of the modal element, the subordinated verb within a modal is formed using the subjunctive, 
+
+CASE:
+----------------------------
+
+I really didn't address this in the first lab, because I wasn't precisely sure how the Arabic case system broke down. There is a rather concise breakdown found online at:
+http://en.wikipedia.org/wiki/Arabic_grammar
+
+
+- Nominative
+	All subjects and objects in 'verbless' sentences.
+	
+- Accusative
+	All objects, even when the object of the explicit 'to be', 'y-akuunu'
+	
+- Genitive
+	Any nouns that modify other nouns, and objects of prepositions.
+	
+The genitive case is essentially a 'catchall' -- what is traditionally the dative in other systems, (indirect object) is expressed in arabic by the prefix /li/ + <object>-GENITIVE	
+
+CASE & AGREEMENT:
+---------------------------------
+
+In finding a good transitive example, I also found a good example showcasing the VSO/SVO asymmetry that I referenced in my lab 1 writeup.
+
+To recap, when the order of elements is SVO, the verb and subject agree in both number and gender, but when the order is VSO, the agreement is only in gender; the number of the verb is always singular.
+
+
+WHAT I DIDN'T COVER:
+-----------------------
+
+* Embedded Clauses
+
+I was unable to find any specific examples for embedded declarative or interrogative clauses, though there were some offhand references to them in my grammar. The references seemed to indicate that such embedded clauses would be treated similarly to modals, but there was not enough information for me to build examples

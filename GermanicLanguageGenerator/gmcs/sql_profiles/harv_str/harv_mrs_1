@@ -1,0 +1,18 @@
+wo1@n1 iv
+wo2@det n1 iv
+wo3@n1 n2 tv
+wo4@det n1 det n2 tv
+wo5@det n1 n2 tv
+wo6@n1 det n2 tv
+wo7@n2 n1 tv
+wo8@det n2 det n1 tv
+wo9@det n2 n1 tv
+wo10@n2 det n1 tv
+neg1@n1 n2 neg tv
+neg2@det n1 det n2 neg tv
+neg3@n2 n1 neg tv
+neg4@det n2 det n1 neg tv
+ques1@n1 n2 tv qpart
+ques2@det n1 det n2 tv qpart
+ques3@n2 n1 tv qpart
+ques4@det n2 det n1 tv qpart

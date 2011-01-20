@@ -1,0 +1,302 @@
+Ryan Georgi
+Ling 567
+
+Lab 9 Writeup:
+
+* NOTE: I'm afraid I've been running into a bunch of translation problems trying
+to get this to work, and it's fast approaching midnight. I've tried to note the
+interesting things I was able to get to transfer, as well as hopefully some
+info that should help debugging.
+
+----====== GRAMMAR CLEAN-UP =====-----
+
+--Replaced Matrix, removed comps <> constraint from HEAD-DTR on
+basic-head-subj phrase
+
+-- Added 
+
+FIXING BARE AFFIXES:
+
+-- I noticed for some reason I'd forgot to put %suffix instead of %prefix
+for some of my circumfix affixes. (Copy and paste problem).
+
+-- Changed the DTR type on all second-applying circumfix rules to not just
+be the parent circumfix_rule type, but rather the type of only the previously
+applying rule.
+
+-- Refined the input/output constraints on the pronoun incorporation rules.
+I had previously only constrained them to apply to a type uninfl_verb (slightly
+different from INFLECTED +, as I wanted to distinguish between object incorporation
+and verb/noun agreement). To reduce spurious chart edges, I instead made two subtypes
+of uninfl_verb (so as to not break the ordering of other rules), can_incorp and
+dont_incorp. I constrained the object incorporation rule to only take can_incorp, and
+added dont_incorp as a supertype to some verb-lex items such as modal_verb_lex and
+intransitive-verb-lex.
+
+This didn't completely fix my problem with reaching too many chart edges, but it did
+greatly reduce it.
+
+
+---======= DEFLECTED AGREEMENT ======-------
+
+To recap, deflected agreement behaves the following way in Arabic:
+
+Inflection is changed only on the verbs.
+
+In SVO word order, nouns and all verbs agree in both person/gender and number.
+
+In VSO word order, agreement is for person/gender, but number agreement *on the verb* is always singular, regardless of the number on the noun. This appears to be the case for all verbs.
+
+Examples:
+
+(SVO - Full agreement)
+
+?al-?awlad-u y-i?ra-u: ?al-dars-a
+the-boys-NOM 3MPL-read-3MPL the-lesson-ACC
+'the boys read the lesson'
+
+VSO (Partial Agreement)
+y-i?ra ?al-?awlad-u ?al-dars-a
+3MSG-read the-boys-NOM the-lesson-ACC
+'the boys read the lesson'
+
+* SVO (Partial agreement)
+?al-?awlad-u y-i?ra: ?al-dars-a
+the-boys-NOM 3MSG-read the-lesson-ACC
+'* the boys read the lesson'
+
+* VSO (Full Agreement)
+y-i?ra-u: ?al-?awlad-u ?al-dars-a
+3MPL-read-3MPL the-boys-NOM the-lesson-ACC
+'* the boys read the lesson'
+
+--------
+HOW IT'S HANDLED:
+
+I changed the head-subj-phrase to inherit from head-final rather than
+head-initial. This made SVO word order the default, and kept the constraints
+for verb-noun agreement I had made on my subj-agreement-lex-rule types.
+
+For VSO word order to be handled, I made a new set of lexical rules that
+inherit from defl-subj-agreement-lex-rule, a infl-val-change-only rule that
+moves constrains the verb's SUBJ to be null and identifies the elements of the
+ARG-ST with the COMPS.
+
+The subtypes of this rule all inflect with the singular form, but only constrain
+the GEND and PER of the first COMPS element.
+
+(since this is a ltol-rule, I also added a const-ltow-rule that takes only this
+type of rule as input)
+
+
+================== SOME INTERESTING EXAMPLES FOR MT =============
+
+Embedded pronouns:-----------------
+
+t-atay-ni: ?al-mara-u ?al-taam-a
+"The woman gave me food"
+
+Embedded Clause with pro-drop:-----------------
+
+y-aftikir-na ?anna rajul-u-n t-ishtara ?al-taam-a
+"They (fem) think that the a man buys the food"
+
+Deflected agreement:---------------
+
+ ?al-?awlad-u  y-i?ra-u:      ?al-dars-a (SVO + FULL)
+ y-i?ra        ?al-?awlad-u   ?al-dars-a (VSO + PARTIAL)
+
+
+* y-i?ra-u:       ?al-?awlad-u   ?al-dars-a (VSO + FULL)
+* ?al-?awlad-u  y-i?ra:      ?al-dars-a (SVO + PARTIAL)
+
+"The children read the lesson"
+
+Imperative + Demonstrative:-----------
+
+ i?ra ?al-kita:b-a da:
+ "read this book!"
+
+================== TRANSLATION RESULTS =========================
+
+I only got a few examples working, but I'll try to show what I got!
+
+"The woman hit the food" (whatever that means)
+t-adribu ?al-mara-u ?al-taam-a
+
+yields:
+
+hitta-ar kona mat
+hitta-ar kona mat-inn
+hitta-ar kona-in mat
+hitta-ar kona-in mat-inn
+kona hitta-ar mat
+kona hitta-ar mat-innmadur hyggja-ar ad kona kaupa-ar mat
+kona-in hitta-ar mat
+kona-in hitta-ar mat-inn
+
+But, as I've noted in ePost, though 'food' and 'cat' have exactly the same distribution in icelandic, I wasn't able to get "The woman hit the cat" to parse (I get an invalid pred error; though I even cut and pasted the pred from Katie's lexicon into my entry for cat).
+
+Also, I haven't been able to find a reason why this isn't working, but I get 0 MRSes for trying to get "The woman hit the small food"
+
+(t-adribu ?al-mara-u ?al-taam-a ?al-sagheer-a)
+
+I've looked at both MRSes, they are at the very bottom.
+
+
+
+------------ "The woman gave <X> food"
+
+First, I tried my incorporated pronoun:
+
+t-atay-ni: ?al-mara-u ?al-taam-a
+
+(Where "_give_v_rel" has the following:
+
+ARG0: e2
+ARG1: x5 [...PNG.PER: THIRD ... PNG.NUM: sg] (x5 is mapped to woman through a qeq)
+ARG2: x3 [...PNG.PER: FIRST ... PNG.NUM: sg] (x3 does not appear elsewhere... I think that's right)
+ARG3: x4 [...PNG.PER: THIRD ... PNG.NUM: sg] (x4 is mapped to food through a qeq)
+
+...this got translated to Katie's system as
+
+kona gefa-ar mat-i
+kona gefa-ar mat-i-num
+kona-in gefa-ar mat-i
+kona-in gefa-ar mat-i-num
+
+...which she unfortunately tells me is simply "The woman gives food"
+
+I tried an explicit direct object instead: ("The woman gives the man food")
+
+t-atay ?al-mara-u ?al-rajul-a ?al-taam-a
+
+..which yielded:
+
+kona gefa-ar mann mat-i
+kona gefa-ar mann mat-i-num
+kona-in gefa-ar mann mat-i
+kona-in gefa-ar mann mat-i-num
+
+..which katie said were correct translations, yay!
+
+------- IMPERATIVES
+
+adribu rajul-a-n ("hit a man!")
+
+-->
+
+hitta mann
+hitta-id mann
+hitta-um mann
+
+..which katie again says are correct.
+
+----------- DEMONSTRATIVES
+
+I tried doing: adribu ?al-rajul-a da: ("hit that man!")
+
+But got the error on katie's side: "invalid predicates: |predsort|"
+
+..I have the pronoun transfer rules as posted in the appropraite places (triple checked), so I'm not sure I know what to do about this.
+
+---------- EMBEDDED CLAUSES:
+
+y-aftikir-na ?anna ?al-mara-u t-ishtara ?al-taam-a
+"They (fem) think that the woman buys the food"
+
+and also
+
+y-aftikir ?al-rajul-u...
+"The man thinks that..."
+
+...I got zero results, and from what I can tell, it looks like somehow the qeq for the ARG2 to "think" is winding up qeq'ed to a label not in the MRS; I'm not sure what this means.
+
+======= WRAP-UP ========================================
+
+For this lab, not only did I get the deflected agreement working, I also managed to get rid of the bare endings so that even the "y-aftikir ?al-rajul-u ?anna ?al-mara-u t-ishtara ?al-taam-a" above generates in very little time.
+
+As I mentioned in class, I'd mistakenly written much of my test suite without thinking about deflected agreement. I went back and tried to find places where I'd put false positive or negatives, but I may have missed a few. Thankfully it seems I stuck to mostly singular subjects, so although I imagine this isn't the best coverage I can get, it's still better than it has been, and with very little overgeneration!
+
+
+My coverage is now at 49.2%, up from 42% in lab8.
+
+My overgeneration analysis from tsdb is looking very good at 6.6% down from around 7.9% , though, again, this may be falsely high.
+
+
+
+
+
+
+APPENDIX:
+=================================================
+
+;;;
+;;; Transfer Output --- ARABIC
+;;;
+
+ [ LTOP: h1
+   INDEX: e2 [ e SORT: SEMSORT E.TENSE: TENSE E.ASPECT: ASPECT E.MOOD: MOOD SF: IFORCE ]
+   RELS: <
+          [ "_hit_v_rel"
+            LBL: h1
+            ARG0: e2
+            ARG1: x4 [ x SORT: SEMSORT COG-ST.SPECI: BOOL PNG.PER: THIRD PNG.GEND: FEM PNG.NUM: SG ]
+            ARG2: x3 [ x SORT: SEMSORT PNG.PER: THIRD PNG.NUM: SG PNG.GEND: MASC COG-ST.SPECI: BOOL ] ]
+          [ "_woman_n_rel"
+            LBL: h5
+            ARG0: x4 ]
+          [ "_exist_q_rel"
+            LBL: h6
+            ARG0: x4
+            RSTR: h7
+            BODY: h8 ]
+          [ "_food_n_rel"
+            LBL: h9
+            ARG0: x3 ]
+          [ "_exist_q_rel"
+            LBL: h10
+            ARG0: x3
+            RSTR: h11
+            BODY: h12 ]
+          [ "_small_a_rel"
+            LBL: h10
+            ARG0: e13 [ e E.TENSE: TENSE E.ASPECT: ASPECT E.MOOD: MOOD SF: IFORCE SORT: SEMSORT ]
+            ARG1: x3 ] >
+   HCONS: < h7 qeq h5 h11 qeq h9 > ]
+
+
+;;;
+;;; Transfer Output --- ICELANDIC
+;;;
+
+ [ LTOP: h1
+   INDEX: e2 [ e SF: PROP-OR-QUES E.TENSE: TENSE E.ASPECT: ASPECT E.MOOD: MOOD SORT: SEMSORT ]
+   RELS: <
+          [ "_woman_n_rel"
+            LBL: h3
+            ARG0: x4 [ x SORT: SEMSORT PNG.PER: THIRD PNG.NUM: SG PNG.GEND: FEM COG-ST.SPECI: BOOL ] ]
+          [ "_exist_q_rel"
+            LBL: h5
+            ARG0: x4
+            RSTR: h6
+            BODY: h7 ]
+          [ "_hit_v_rel"
+            LBL: h1
+            ARG0: e2
+            ARG1: x4
+            ARG2: x8 [ x SORT: SEMSORT PNG.PER: THIRD PNG.NUM: SG PNG.GEND: MASC COG-ST.SPECI: BOOL ] ]
+          [ "_small_a_rel"
+            LBL: h9
+            ARG0: e10 [ e E.TENSE: TENSE E.ASPECT: ASPECT E.MOOD: MOOD SF: IFORCE SORT: SEMSORT ]
+            ARG1: x8 ]
+          [ "_food_n_rel"
+            LBL: h9
+            ARG0: x8 ]
+          [ "_exist_q_rel"
+            LBL: h11
+            ARG0: x8
+            RSTR: h12
+            BODY: h13 ] >
+   HCONS: < h6 qeq h3 h12 qeq h9 > ]
+

@@ -1,0 +1,134 @@
+Ryan Mattson
+Ling 567
+5/27/05
+Lab 8 writeup
+
+Coordination in Finnish (testsuite: lab8.items)
+
+Finnish has very similar coordination to English--what Scott has termed
+monopolysyndeton. An example of the monosyndeton structure is:
+
+1) opiskelija  syO       lasi-a,    tomaatti-a  ja  auto-a
+   student+Nom eat+3p+Sg glass+Part tomato+Part and car+Part
+   The student eats glass, tomatoes, and cars
+
+The polysyndeton structure of Finnish coordination looks like:
+
+2) opiskelija  syO       lasi-a     ja  tomaatti-a  ja  auto-a
+   student+Nom eat+3p+Sg glass+Part and tomato+Part and car+Part
+   The student eats glass and tomatoes and cars
+
+While polysyndeton structure tends to make one sound overly-exuberant
+in English, it is perfectly acceptable in Finnish and will tend to be
+used to separate coordinated phrases that are larger because of
+multiple adjectives, etc.:
+
+3) opiskelija  syO       iso-a    punainen-ta tomaatti-a  ja  pien-ta    sininen-ta 
+   auto-a   ja  lasi-a
+   student+Nom eat+3p+Sg big+Part red+Part    tomato+Part and small+Part blue+Part 
+   car+Part and glass+Part
+   The student eats big red tomatoes and small blue cars and glass
+
+VP coordination acts in the same way:
+
+4a) minA  kAvele-n   ja  nuku-n      ja  tanssi-n
+    i+Nom walk+1p+Sg and sleep+1p+Sg and dance+1p+Sg
+    I walk and sleep and dance
+
+4b) minA  kAvele-n,  nuku-n      ja  tanssi-n
+    i+Nom walk+1p+Sg sleep+1p+Sg and dance+1p+Sg
+    I walk, sleep and dance
+
+As does AdjP coordiation:
+
+5a) syO-vAt-kO       opiskelija-t    hyvA-A    ja  iso-a    ja  punainen-ta tomaatti-a?
+    eat+3p+Pl+Ques   student+Pl+Nom  good+Part and big+Part and red+Part    tomato+Part
+    Do students eat good and big and red tomatoes?
+
+5b) syO-vAt-kO     opiskelija-t    hyvA-A,   iso-a    ja  punainen-ta tomaati-a?
+    eat+3p+Pl+Ques student+Pl+Nom good+Part big+Part and red+Part    tomato+Part
+    Do students eat good big and red tomatoes?
+
+Further:
+
+6) syO-vAt-ko     opiskelijat    iso-a    auto-a   ja  tomaatti-a?
+   eat+3p+Sg+Ques student+Pl+Nom big+Part car+Part and tomato+Part
+   Do students eat big cars and tomatoes?
+
+Example (6) should give two parses:
+
+7a) syOvAtko opiskelijat [isoa autoa] ja  [tomaattia]
+                         [big cars]   and [tomatoes]
+
+7b) syOvAtko opiskelijat [isoa [autoa ja  tomaattia]]
+                         [big  [cars  and tomatoes]]
+
+Implementing Coordination, and Current Coverage
+
+Implementing coordination was straightforward given the rules that Scott
+included in coord.tdl. Because Finnish operates like English, I chose
+the monopolysyndeton rules. The following rules are instantiations of
+Scott's coordination framework for the NP-based coordination.
+
+np-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule &
+[ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+  NBR-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+  BR-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
+
+np-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule.
+
+np-bottom-coord-rule := binary-bottom-coord-rule &
+[ SYNSEM.LOCAL.CAT.HEAD noun,
+  ARGS.REST.FIRST.SYNSEM.LOCAL.CAT.HEAD noun ].
+
+The top rule requires the daughters to identify their (matching) case
+(which, for the current implementation of the grammar, is usually
+nominative) with the case of the node licensed by the top rule.
+
+Subject NP coordination doesn't say anything about the PER matching,
+however, and the strategy to fix this involves creating rules for
+each of the PER combinations possible, such as:
+
+second-non-first-coord := per-coord &
+[ SYNSEM.LOCAL.COORD-REL [ C-ARG.PNG.PER second,
+			   L-INDEX.PNG.PER second,
+			   R-INDEX.PNG.PER non-first ]].
+
+A current problem with this is that C-ARG.PNG.PER feature doesn't
+seem to be identified with SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER
+where the VP is constraining the PNG.PER value at. This results
+in a large number of parses, as each rule is being allowed to
+parse a coordinated subject phrase.
+
+There is a problem in the semantics of NP coordination, however.
+When NP objects are coordinated, only one relation gets mentioned
+in the Indexed MRS report. Take the following sentence for example:
+
+8) minA  syO-n     lasi-a     ja  tomaatti-a
+   i+Nom eat+1p+Sg glass+Part and tomato+Part
+   I eat glass and tomatoes
+
+The Indexed MRS ends up looking like:
+
+9) <h1, e2:SEMSORT:TENSE:ASPECT:MOOD,
+    {h3:pronoun_n(x4:SEMSORT:BOOL:FIRST:SG),
+     h5:pronoun_q(x4, h6, h7),
+     h8:_eat_v(e2, x4, x9:SEMSORT:PERSON:NUMBER:BOOL),
+     h10:_glass_n(x11:SEMSORT:PERSON:NUMBER:BOOL)},
+    {h6 qeq h3}>
+
+A similar thing is happening in coordinating VPs. The following
+sentence illustrates:
+
+10) minA  syO-n     lasi-a     ja  kAvele-n
+    i+Nom eat+1p+Sg glass+Part and walk+1p+Sg
+    I eat glass and walk
+
+The Indexed MRS for (10) looks the same as (9).
+
+Update: This problem was fixed when I ran through some lexical
+rules and constrained their C-CONT [ RELS, HCONS ] to be <! !>.
+The proper Indexed MRS representations appear to be showing
+up now.
+
+One problem that still happens

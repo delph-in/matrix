@@ -1,0 +1,51 @@
+shuner ke-khnanan
+Dogs sleep.
+
+shuner inkhnasharzher ke-halatsen
+Dogs chase cars.
+
+es khez ke-halatsem
+I chase you.
+
+ays shuner e ke-khnanan
+These dogs sleep.
+
+shuner k-uten
+Dogs eat.
+
+es apaki krnam utel
+I can eat glass.
+
+an intsi chhi vnaser
+It doesnt hurt me.
+
+shuner e inkhnasharzher ke-halatsen
+The dogs chase cars.
+
+es kartsem or dun gitnas or shuner inkhnasharzher ke-halatsen
+I think that you know that dogs chase cars.
+
+es xntrem the dun gitnas or shuner inkhnasharzher ke-halatsen
+I ask whether you know that dogs chase cars.
+
+katuer ev shuner inkhnasharzher ke-halatsen
+Cats and dogs chase cars.
+
+shuner inkhnasharzher ke-halatsen ev katuer shuner ke-halatsen
+Dogs chase cars and cats chase dogs.
+
+katuer shuner ke-halatsen ev ke-khnanan
+Cats chase dogs and sleep.
+
+katuer shuner ke-halatsen
+Do cats chase dogs?
+
+shuner e halatse
+Chase the dog.
+
+amuti shuner k-uten
+Hungry dogs eat.
+
+amuti shuner aragsren k-uten
+Hungry dogs eat quickly.
+

@@ -1,0 +1,229 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
+and_1 := conj-lex &
+  [ STEM < "and" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
+    CFORM "1" ] .
+
+;;; Pronouns
+
+I := pronoun-lex &
+  [ STEM < "I" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+                   CONT.HOOK.INDEX.PNG.PERNUM 1sg ] ].
+
+me := pronoun-lex &
+  [ STEM < "me" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
+                   CONT.HOOK.INDEX.PNG.PERNUM 1sg ] ].
+
+you := pronoun-lex &
+  [ STEM < "you" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2nd ].
+
+he := pronoun-lex &
+  [ STEM < "he" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+                   CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
+                                         GEND masc ] ] ].
+
+him := pronoun-lex &
+  [ STEM < "him" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
+                   CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
+                                         GEND masc ] ] ].
+
+she := pronoun-lex &
+  [ STEM < "she" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+                   CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
+                                         GEND fem ] ] ].
+
+her := pronoun-lex &
+  [ STEM < "her" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
+                   CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
+                                         GEND fem ] ] ].
+
+it := pronoun-lex &
+  [ STEM < "it" >,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
+                                       GEND neut ] ].
+
+we := pronoun-lex &
+  [ STEM < "we" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+                   CONT.HOOK.INDEX.PNG.PERNUM 1pl ] ].
+
+us := pronoun-lex &
+  [ STEM < "us" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
+                   CONT.HOOK.INDEX.PNG.PERNUM 1pl ] ].
+
+they := pronoun-lex &
+  [ STEM < "they" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+                   CONT.HOOK.INDEX.PNG.PERNUM 3pl ] ].
+
+them := pronoun-lex &
+  [ STEM < "them" >,
+    SYNSEM.LOCAL [ CAT.HEAD.CASE acc,
+                   CONT.HOOK.INDEX.PNG.PERNUM 3pl ] ].
+
+;;; Nouns
+
+cat := common-noun-lex &
+  [ STEM < "cat" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_cat_n_rel" ] .
+
+dog := common-noun-lex &
+  [ STEM < "dog" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_dog_n_rel" ] .
+
+glass := common-noun-lex &
+  [ STEM < "glass" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_glass_n_rel" ] .
+
+car := common-noun-lex &
+  [ STEM < "car" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_car_n_rel" ] .
+
+;;; Verbs
+
+sleep := finite-intrans-verb-lex &
+  [ STEM < "sleep" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sleep_v_rel" ] .
+
+sleep2 := non-finite-intrans-verb-lex &
+  [ STEM < "sleep" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sleep_v_rel" ] .
+
+see := finite-trans-verb-lex &
+  [ STEM < "see" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ] .
+
+see2 := non-finite-trans-verb-lex &
+  [ STEM < "see" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ] .
+
+chase := finite-trans-verb-lex &
+  [ STEM < "chase" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_chase_v_rel" ] .
+
+chase2 := non-finite-trans-verb-lex &
+  [ STEM < "chase" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_chase_v_rel" ] .
+
+eat := finite-opt-trans-verb-lex &
+  [ STEM < "eat" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ] .
+
+eat2 := non-finite-trans-verb-lex &
+  [ STEM < "eat" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ] .
+
+hurt := finite-opt-trans-verb-lex &
+  [ STEM < "hurt" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_hurt_v_rel" ] .
+
+hurt2 := non-finite-trans-verb-lex &
+  [ STEM < "hurt" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_hurt_v_rel" ] .
+
+think := finite-decl-clausal-verb-lex &
+  [ STEM < "think" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_think_v_rel" ] .
+
+think2 := non-finite-decl-clausal-verb-lex &
+  [ STEM < "think" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_think_v_rel" ] .
+
+know := finite-clausal-verb-lex &
+  [ STEM < "know" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_know_v_rel" ] .
+
+know2 := non-finite-clausal-verb-lex &
+  [ STEM < "know" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_know_v_rel" ] .
+
+ask := finite-int-clausal-verb-lex &
+  [ STEM < "ask" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_ask_v_rel" ] .
+
+ask2 := non-finite-int-clausal-verb-lex &
+  [ STEM < "ask" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_ask_v_rel" ] .
+
+;;; Auxiliaries
+
+do := do-aux &
+  [ STEM < "do" >,
+    SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM non3sg ] >].
+
+does := do-aux &
+  [ STEM < "does" >,
+    SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3sg ] > ].
+
+can := can-aux &
+  [ STEM < "can" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_can_v_rel" ] .
+
+;;; Complementizers
+
+that_comp := decl-comp-lex &
+  [ STEM < "that" > ].
+
+whether := int-comp-lex &
+  [ STEM < "whether" > ].
+
+;;; Determiners
+
+the := def-det-lex &
+  [ STEM < "the" >,
+    SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ] .
+
+a := indef-det-lex &
+  [ STEM < "a" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "exist_q_rel",
+             LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM sg ] > ] ] .
+
+this := demon-det-lex &
+  [ STEM < "this" >,
+    SYNSEM [ LKEYS.ALTKEYREL.PRED proximal+dem_a_rel,
+             LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM sg ] > ] ] .
+
+these := demon-det-lex &
+  [ STEM < "these" >,
+    SYNSEM [ LKEYS.ALTKEYREL.PRED proximal+dem_a_rel,
+             LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM pl ] > ] ] .
+
+that := demon-det-lex &
+  [ STEM < "that" >,
+    SYNSEM [ LKEYS.ALTKEYREL.PRED distal+dem_a_rel,
+             LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM sg ] > ] ] .
+
+those := demon-det-lex &
+  [ STEM < "those" >,
+    SYNSEM [ LKEYS.ALTKEYREL.PRED distal+dem_a_rel,
+             LOCAL.CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM pl ] > ] ] .
+
+not := neg-adv-lex &
+  [ STEM < "not" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ] .
+
+; FIX What's this?  Why would we have a word spelled "sel-adv"?
+;sel-adv := neg-adv-lex &
+;  [ STEM < "sel-adv" >,
+;    SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ] .
+
+;;; Adverbs
+
+quickly := adverb-lex &
+  [ STEM < "quickly" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_quickly_r_rel" ] .
+
+;;; Adjectives
+
+hungry := adjective-lex &
+  [ STEM < "hungry" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_hungry_a_rel" ] .

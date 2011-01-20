@@ -1,0 +1,99 @@
+-------------------------------------------------------
+Comments
+
+ avan vannoo parses fine
+ The inflection for the other 2 isn't working.
+ The inflecting rules are not being applied to these cases, although I can
+ create the verb, and inflect it for tense.
+
+You're problem is right here:
+
+ ; Inflection for question marker -oo or -ee suffix
+ quest-verb-rule := infl-add-only-ltol-rule &
+                   [DTR verb-lex, INFLECTED +] &
+                   [SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques] .
+
+This rule requires something that is verb-lex as its daughter,
+precluding the application of any lexical rules in between.
+Since it's a word-to-word rule, it should work just to say 
+[INFLECTED +] and [HEAD verb] on the daughter.
+
+ 1. Implemented a lexical rule to add the nominal form to the verb in the
+ embedded clause.  (I ended up with 3, since I wasn't sure how to write a case
+ that included all the verb types while excluding other types.)
+
+The trick is to create a supertype to the three verb rules that
+you want, and then have that supertype be the value on the DTR
+of the nominalizer rule.
+
+    daraivar kaar etauttatx     kutataikala kanatau
+    driver   car  take-PAST-NOM child-PL    see-PAST
+    The children saw the driver take the car
+
+Something's broken in the semantics for this one:  The MRS only
+has the predicates from the embedded clause, which suggests
+that something has an underconstrained RELS value.  In fact, it
+must be these guys.  They should be no-ccont.
+
+; Inflection for NOML marker, to indicate an embedded clause
+nomnl1-verb-rule := infl-add-only-ltol-rule &
+                   [DTR past-verb-rule] .
+
+nomnl2-verb-rule := infl-add-only-ltol-rule &
+                   [DTR pres-verb-rule] .
+
+nomnl3-verb-rule := infl-add-only-ltol-rule &
+                   [DTR futr-verb-rule] .
+
+Furthermore, these aren't adding any constraints, so you're
+going to get overgeneration.  For example, the verbs with -atx can
+head matrix clauses in your grammar right now, which I suspect
+you don't want.
+
+
+ 2. I created a lexical type for the imperative which contrains the 
+ ; Imperative verbs
+ ; constrain the head daughter to be form imp
+ imp-verb-lex := imp-head-opt-subj-phrase & 
+    [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM imp ].
+
+In the naming conventions "lex" is the suffix for lexical types,
+so it is odd here on the type for a phrase structure rule.
+
+ 3. I wrote inflection rules for the 2 types of imperatives.  One is not
+   inflected, and the other is.
+
+ ; Lexical rule to mark the verb as an imperative form
+ imp-verb-rule := infl-add-only-ltol-rule &
+                   [ SYNSEM.LOCAL.CAT.HEAD.FORM imp,
+                     INFLECTED - ] &
+                   [ DTR verb-lex, INFLECTED -].
+
+ imp-pol-verb-rule := infl-add-only-ltol-rule &
+                   [ SYNSEM.LOCAL.CAT.HEAD.FORM imp-pol ] & 
+                   [ DTR verb-lex, INFLECTED +].
+
+
+I think you've confused the feature INFLECTED with the type
+inflecting-lex-rule.  The former indicates whether the word has gone
+through enough lexical rules to be fully-formed.  ([INFLECTED -]
+corresponds to 'lexeme' and [INFLECTED +] corresponds to 'word').  The
+latter indicates whether the rule involves any spelling change.
+Assuming no further affixes attach after the -ka/-0 indicating
+imperatives, they should both be lexeme-to-word rules, but
+imp-verb-rule should be a constant-lex-rule while imp-pol-verb-rule
+should be an inflecting lex rule.  If that's not clear, please
+ask for clarification :-)
+
+In addition, there are two further problems with your imperatives:
+
+1. They don't constrain the SF, and so are not having any semantic
+effect.
+2. They don't constrain the subject to be second person (this
+is why you're getting them all over the place).
+
+It should be straightforward to have the imp-verb-rules constrain the
+C-CONT.HOOK.INDEX.SF to imp and the
+SUBJ...LOCAL.CONT.HOOK.INDEX.PNG.PER to second. You could even define
+a supertype to the two rules which includes this information.
+

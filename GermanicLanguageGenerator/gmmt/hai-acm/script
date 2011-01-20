@@ -1,0 +1,39 @@
+;;; Hey, emacs(1), this is -*- Mode: Common-Lisp; Package: LKB; -*- got it?
+
+;;;
+;;; first, load a number of LKB-specific settings; typically no need to look
+;;; too closely here
+;;;
+(lkb-load-lisp (this-directory) "globals.lsp")
+(lkb-load-lisp (this-directory) "user-fns.lsp")
+
+;;;
+;;; next load the common transfer type hierarchy (the Transfer MatriX) ...
+;;;
+(read-tdl-type-files-aux
+  (list 
+   (lkb-pathname (this-directory) "mrs.tdl")
+   (lkb-pathname (this-directory) "mtr.tdl")
+   ;;
+   ;; ... plus additional MRS and MTR type definitions for this language pair
+   ;;
+   (lkb-pathname (parent-directory) "mrs.tdl")
+   (lkb-pathname (parent-directory) "mtr.tdl")
+   (lkb-pathname (parent-directory) "acm.tdl")
+   ))
+
+;;;
+;;; a few more LKB-specific settings, this time for MRS post-processing and the
+;;; transfer component.
+;;;
+(lkb-load-lisp (this-directory) "mrsglobals.lsp" t)
+(lkb-load-lisp (this-directory) "mt.lsp")
+
+;;;
+;;; finally, a single set of transfer rules, (almost) empty initially
+;;;
+(mt:read-transfer-rules 
+ (list
+  (lkb-pathname (this-directory) "hai-acm.mtr"))
+ "Accomodation for Haida"
+ :in :in :out :out :filter nil)

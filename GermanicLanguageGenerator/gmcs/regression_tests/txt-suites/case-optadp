@@ -1,0 +1,14 @@
+n1 iv
+NOM n1 iv
+*ACC n1 iv
+*NOM ACC n1 iv
+*NOM NOM n1 iv
+n1 tv n2
+*n1 tv NOM n2
+n1 tv ACC n2
+NOM n1 tv n2
+*NOM n1 tv NOM n2
+NOM n1 tv ACC n2
+*ACC n1 tv n2
+*ACC n1 tv NOM n2
+*ACC n1 tv ACC n2
