@@ -837,7 +837,16 @@ class ChoicesFile:
   #   This list consists of tuples:
   #     [aspect name]
   def aspects(self):
-    return [[aspect['name']] for aspect in self.get('aspect')]
+    aspects = []
+
+    for asp in self.get('aspect'):
+      aspects += [[asp['name']]]
+
+    if len(aspects) == 0 and ('perimper' in self.choices):
+      for asp in ('perfective', 'imperfective'):
+        aspects += [[asp]]
+
+    return aspects
 
   # situations()
   #   Create and return a list containing information about the values
@@ -846,6 +855,23 @@ class ChoicesFile:
   #     [situation name]
   def situations(self):
     return [[situation['name']] for situation in self.get('situation')]
+
+  # moods()
+  #   Create and return a list containing information about the values 
+  #   of the MOOD feature implied by the current choices.
+  #   This list consists of tuples:
+  #      [mood name]
+  def moods(self):
+    moods = []
+    
+    for md in self.get('mood'):
+      moods += [[md['name']]]
+
+    if len(moods) == 0 and ('subjind' in self.choices):
+      for md in ('subjunctive', 'indicative'):
+        moods += [[md]]
+
+    return moods
 
   def types(self):
     """
@@ -923,7 +949,9 @@ class ChoicesFile:
     #Situation Aspect
     features += self.__get_features(self.situations(), 0, 0, 'situation',
                                     'LOCAL.CONT.HOOK.INDEX.E.SITUATION')
-
+    #Mood
+    features += self.__get_features(self.moods(), 0, 0, 'mood',
+                                    'LOCAL.CONT.HOOK.INDEX.E.MOOD')
     # Direction
     if self.has_dirinv():
       features += [ ['direction', 'dir|direct;inv|inverse', ''] ]

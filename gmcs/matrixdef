@@ -447,12 +447,11 @@ Select scale-equal "Direction when equal" "<p>When the agent and patient have th
 . other "Some other form" "some other form"
 
 
-Section tense-aspect "Tense and Aspect"
+Section tense-aspect-mood "Tense, Aspect and Mood"
 
-Label "<p>You may define three semantic features directly related to
-tense and aspect on this page as well as a syntactic feature related
-to verb forms. If additional features are needed for defining tense
-and aspect in your language,e.g., for defining arbitrary or
+Label "<p>You may define semantic features directly related to
+tense, aspect and mood on this page as well as a syntactic feature related
+to verb forms. If additional features are needed for defining tense, aspect or mood  in your language,e.g., for defining arbitrary or
 quasi-semantic verb classes, you may define them on the Other Features
 page.</p>"
 
@@ -561,11 +560,11 @@ Label "<p><b>Viewpoint Aspect</b>"
 
 Label "<p>Viewpoint aspect is also commonly referred to as grammatical
 aspect.  The most common viewpoint opposition is
-perfective/imperfective. You may create a hierarchy of values for the
-feature <span class=\"feat\">aspect</span>, reflecting viewpoint
-aspect, as appropriate for your language. If your language does not
-have viewpoint aspect (also commonly referred to as grammatical
-aspect) as a grammatical category, leave this section blank."
+perfective/imperfective.You may create a hierarchy consisting of only this opposition or you may create a hierarchy of your own, as appropriate for your langauge. If your language does not have viewpoint aspect (also commonly referred to as grammatical aspect) as a grammatical category, leave this section blank.<br><br>"
+
+Check perimper "Perfective/Imperfective" "" "Create a hierarchy consisting of just the values <b>perfective</b> and <b>imperfective</b> as subtypes of aspect."
+
+Label "<p>Build your own hierarchy of values for the feature <span class=\"feat\">aspect</span>. Note: this is an alternative to choosing the binary opposition above -- if hierarchy elements are defined below the choice above is overridden."
 
 BeginIter aspect{i} "an aspect type" 
 
@@ -619,6 +618,32 @@ EndIter situation
 Label "</div>"
 Label "</div>"
 
+Label "<div style=\"padding-left: 16px\">"
+Label "<h4><span class=\"feat\">mood</span></h4>"
+
+Label "According to Palmer (1986), the term 'mood' is generally used to refer to modality reflected in verbal inflection. The broader category modality is a somewhat vague grammatical category that is quite language specific. However, modality may be roughly described as relating to the opinions or attitudes of the speaker. Modality may include mood (e.g., subjunctive), modal systems and notions of hearsay or evidentiality. While we call this feature <span class=\"feat\">mood</span> it may be used to define values of the broader category of modality, if desired."
+
+Label "You may define values for the feature <span class=\"feat\">mood</span> below. You may select a simple set of values for the feature, reflecting a subjunctive/indicative contrast, or you may define a hierarchy of values for the feature as appropriate for your language. If you would like, you may leave this section blank.<br><br>"
+
+Check subjind "Subjunctive/Indicative" "" "Create a hierarchy consisting of just the values <b>subjunctive</b> and <b>indicative</b> as subtypes of mood."
+
+Label "<p>Build your own hierarchy of values for the feature <span class=\"feat\">mood</span>. Note: this is an alternative to choosing the binary opposition above -- if hierarchy elements are defined below the choice above is overridden."
+
+BeginIter mood{i} "a mood type"
+
+  Text name "mood {i} name" "Mood name: " "" 20
+  BeginIter supertype{j} "a Supertype" 1
+
+     Select name "Mood {i} supertype {j} name" "Supertype: " ""
+     fillregex mood[0-9]+_name 1
+     . mood "Mood" "mood"
+
+  EndIter supertype
+
+EndIter mood
+
+Label "</div>"
+
 Separator
 
 Label "<h3>Syntactic Feature</h3>"
@@ -670,6 +695,7 @@ Label "<p>Comrie, Bernard. 1985. Tense. Cambridge: CUP."
 Label "<p>Kibort, Anna. \"Aspect.\" Grammatical Features. 7 January
 2008. <a
 href=\"http://www.features.surrey.ac.uk/features/aspect.html\">http://www.features.surrey.ac.uk/features/aspect.html</a>."
+Label "<p>Palmer, Frank R. 1986. Mood and Modality. Cambridge: CUP." 
 Label "<p>Smith, Carlota. 1997. The Parameter of Aspect. (Second
 Edition). Dordrecht: Kluwer Academic Publishers. (Revised version of
 Smith, Carlota. 1991. The Parameter of Aspect. Dordrecht: Kluwer
