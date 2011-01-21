@@ -21,6 +21,7 @@ from gmcs.utils import get_name
 # lrt : lexical rule type
 # lri : lexical rule instance
 # lt : lexical type (e.g. noun1, verb1, etc.)
+# le: lexical entry (i.e., stem on a lexical type)
 # lst : lexical supertype (generic lts, like noun, verb, iverb, etc.)
 # mn : morphotactic node (a pc, lrt, lt, or lst)
 

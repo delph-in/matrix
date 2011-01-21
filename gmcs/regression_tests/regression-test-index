@@ -127,3 +127,5 @@ arg-opt-lex-subj-drop-marker-req-wth-drop-opt-wthout=lexically licensed subject 
 arg-opt-lex-comps-drop-np-wth-drop-np-wthout=lexically licensed object dropping.  marker is not permitted for dropped or overt objects
 eng-qpart-inf=Testing interaction of non-finite form and question particle.  Question particle should now only attach to finite sentences.
 subj-v-inv-obj-drop=Testing interaction of subj-v inversion and object drop, as well as interaction of subj-v intersion and FORM and AUX features.
+asp-mood-contrast-options=tests options to add simple imper/perf and subj/ind hierarchies
+mood-buildhierarchy=testing the build your own mood hierarchy

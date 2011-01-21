@@ -32,6 +32,25 @@ def lexical_type_hierarchy(choices, lexical_supertype):
       st = get_lexical_supertype(lt.full_key, choices)
       lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
                                parents={st:lth.nodes[st]}))
+      # If we're dealing with a verb
+      if lexical_supertype == 'verb':
+        bpstems = get_bipartite_stems(lt.full_key, choices)
+      # if it has bipartite stems
+        if bpstems:
+          for stem in bpstems:
+      # add nodes for each bipartite stem (mod LexicalType to encode that these are entries)
+            # EMB: Worry that stem.orth is not necessarily a unique identifier.
+            # FIXME: Need to handle case where it isn't unique, at least within a lt.
+            # Be sure to include this case in regression test.
+            lth.add_note(LexicalType(stem.orth,stem.orth,get_lt_name(lt.full_key, choices)))
+
+
+
+      # Also: function in lexicon that adds to choices
+      # worry about printing out constraints on lex entries
+      # worry about not printing lex entries as types/rules (since they're now in lth)
+
+      # print choices --- debugging tool to see current state of choices.
   return lth
 
 def get_lexical_supertype(lt_key, choices):
@@ -126,3 +145,15 @@ def get_lt_name(key, choices):
     name = get_name(choices[key])
     lex_st = LEXICAL_SUPERTYPES[key.strip('1234567890')]
     return '-'.join([name, lex_st.rsplit('-lex',1)[0]])
+
+def get_bipartite_stems(ltkey, choices):
+  """
+  When passed a lexical type identifier (ltkey) and a choices object, 
+  return a list containing the iterator prefixes of any bipartite
+  stems defined for that lexical type.  If there are none, return
+  the empty list.
+  """
+  
+  stems = ch.get(ltkey,
+
+  return stems

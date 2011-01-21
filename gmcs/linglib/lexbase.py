@@ -26,7 +26,7 @@ LEXICAL_SUPERTYPES = {'noun':'noun-lex',
 ###############
 
 class MorphotacticNode(HierarchyNode):
-  def __init__(self, key, name=None, pc=None, parents=None, supertypes=None):
+  def __init__(self, key, name=None, pc=None, parents=None, supertypes=None, instance=False):
     HierarchyNode.__init__(self, key, parents=parents)
     self.name = name or ''
     self.pc = pc
@@ -39,6 +39,8 @@ class MorphotacticNode(HierarchyNode):
     # PCs are integers (1, 2, 3), LRTs are floats (1.1, 2,1, 2.2, etc)
     self.tdl_order = 0
     #self.input_lrt = None
+    # Track for each mn whether it is an instance (lex entry, lex rule) or type.
+    self.instance = instance
 
   def relatives(self, relation):
     # 'input' is a fake relation. It's just the parents of the position
@@ -118,8 +120,8 @@ class PositionClass(MorphotacticNode):
       self.supertypes.add('lex-rule')
 
 class LexicalType(MorphotacticNode):
-  def __init__(self, key, name, parents=None):
-    MorphotacticNode.__init__(self, key, name=name, parents=parents)
+  def __init__(self, key, name, parents=None, entry=False):
+    MorphotacticNode.__init__(self, key, name=name, parents=parents, instance=entry)
     self.identifier_suffix = 'lex'
 
   def __repr__(self):
