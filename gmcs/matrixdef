@@ -1364,7 +1364,7 @@ BeginIter verb-pc{i} "a Position Class"
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect others "Noun Position Class {i} Requires" "<p>Noun Position Class {i} requires one of the following: " "</p>"
+    MultiSelect others "Verb Position Class {i} Requires" "<p>Verb Position Class {i} requires one of the following: " "</p>"
     fillregex (verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
@@ -1375,7 +1375,7 @@ BeginIter verb-pc{i} "a Position Class"
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    Select others "Noun Position Class {i} Forbids" "<p>Noun Position Class {i} forbids the following: " "</p>"
+    Select others "Verb Position Class {i} Forbids" "<p>Verb Position Class {i} forbids the following: " "</p>"
     fillregex (verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
