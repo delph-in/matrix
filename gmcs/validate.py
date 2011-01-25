@@ -783,8 +783,8 @@ def validate_lexicon(ch, vr):
   seenIntrans = False
   for verb in ch.get('verb'):
     val = verb.get('valence')
-    bipartitepc = verb.get('bipartitepc')
     bistems = verb.get('bistem', [])
+    bipartitepc = verb.get('bipartitepc')
 
     if not val:
       mess = 'You must specify the argument structure of each verb you define.'
@@ -794,7 +794,7 @@ def validate_lexicon(ch, vr):
     else:
       seenIntrans = True
 
-    if bistems != [] and not bipartitepc:
+    if bistems and not bipartitepc:
       mess = 'If you add bipartite stems to a class, you must specify a position class for the affix part of the stems.'
       vr.err(verb.full_key + '_bipartitepc', mess)
 

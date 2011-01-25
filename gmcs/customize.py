@@ -2072,6 +2072,82 @@ def customize_form():
 ##########################################################
 # customize_verbs()
 
+def customize_bipartite_stems():
+  """
+  Users specify bipartite stems as roots + affixes in bipartite
+  stem specifications plus position class for affix in lexical type.
+  Take this information and add choices that create the lexical
+  rules as well as the constraints that make sure that the two
+  parts appear together.
+  """
+  # Create unique identifier for each stem+affix pair
+  # Dictionary links "stem+aff" strings with integers
+  # counting how many such there are.  Second pass through
+  # could update ids to have -1 suffix only if -2 is there.
+  ids = {}
+
+
+  # For each verb type
+  for verb in ch.get('verb'):
+    # Check whether there are bipartite stems
+    bistems = verb.get('bistem')
+    if bistems:
+      # Find position class for affixes
+      pcname = verb.get('bipartitepc')
+      pc = None
+      for vpc in ch.get('verb-pc'):
+        if vpc.full_key == pcname:
+          pc = vpc
+
+      # Make dictionary with affixes as keys and lists
+      # of stems as values.  This will let us find out if
+      # any verbs share same affix
+      avpairs = {}
+      for stem in bistems:
+        aff = stem.get('aff')
+        orth = stem.get('orth')
+
+        # Find uniq identifier and update ids dictionary
+        id = orth + '+' + aff
+        if id in ids.keys():
+          ids[id] += 1
+          id = id + '_' + str(ids[id]) 
+        else:
+          ids[id] = 1
+        # Record in choices
+        ch[stem.full_key + '_uniqid'] = id
+
+        # Update affix-stem dictionary
+        if aff in avpairs.keys():
+          avpairs[aff].append(stem.full_key)
+        else:
+          avpairs[aff] = [stem.full_key]
+
+      # Get stem list again because I want access to the
+      # info I've added since first initializing stems
+      bistems = verb.get('bistem')
+
+      for aff in avpairs.keys():
+        # Get iter number for lrts:
+        if pc['lrt']:
+          iternum = str(pc['lrt'].next_iter_num())
+        else:
+          iternum = '1'
+
+        # Create lexical rules types and instances for each affix
+        next_lrt_str = pc.full_key + '_lrt' + iternum
+        ch[next_lrt_str + '_require1_others'] = ', '.join(avpairs[aff])
+        ch[next_lrt_str + '_lri1_orth'] = aff
+        ch[next_lrt_str + '_lri1_inflecting'] = 'yes'
+          
+        # Add requires constrains on stems
+        for stemid in avpairs[aff]:
+          for stem in bistems:
+            if stem.get('uniqid') == stemid:
+              ch[stem.full_key + '_require1_others'] = next_lrt_str
+
+
+
 def customize_verbs():
   negmod = ch.get('neg-mod')
   negadv = ch.get('neg-adv')
@@ -2188,6 +2264,10 @@ def customize_verbs():
   mylang.add(typedef)
 
   customize_verb_case()
+
+  # Add constraints to choices to create lex rules for bipartite stems
+  customize_bipartite_stems()
+  print ch
 
   # Lexical entries
   lexicon.add_literal(';;; Verbs')

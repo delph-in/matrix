@@ -29,7 +29,6 @@ def lexical_type_hierarchy(choices, lexical_supertype):
                              parents={st:lth.nodes[st]}))
   for lst in lts_to_add:
     for lt in choices[lst]:
-      print lt.full_key
       st = get_lexical_supertype(lt.full_key, choices)
       lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
                                parents={st:lth.nodes[st]}))
@@ -38,19 +37,17 @@ def lexical_type_hierarchy(choices, lexical_supertype):
         bistems = choices[lt.full_key]['bistem']
       # if it has bipartite stems
         if bistems:
+          # add nodes for each bipartite stem (mod LexicalType to encode that these are entries)
           for stem in bistems:
-      # add nodes for each bipartite stem (mod LexicalType to encode that these are entries)
-            # EMB: Worry that stem.orth is not necessarily a unique identifier.
-            # FIXME: Need to handle case where it isn't unique, at least within a lt.
-            # Be sure to include this case in regression test.
-            lth.add_node(LexicalType(stem['orth'],stem['orth'],parents={get_lt_name(lt.full_key, choices)},entry=True))
+            # FIXME: lt:lth.nodes[lt] gives an error, but I think that's closer to 
+            # what I want.
+            lth.add_node(LexicalType(stem.full_key, stem['uniqid'], 
+                                     parents={lt.full_key:lth.nodes[lt.full_key]}, entry=True))
 
 
-      # Also: function in lexicon that adds to choices
       # worry about printing out constraints on lex entries
       # worry about not printing lex entries as types/rules (since they're now in lth)
 
-      # print choices --- debugging tool to see current state of choices.
   return lth
 
 def get_lexical_supertype(lt_key, choices):
