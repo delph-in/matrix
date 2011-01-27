@@ -1,0 +1,565 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Grammar of basic-dutch-settings
+;;; created at:
+;;;     Tue Jan 25 14:55:21 UTC 2011
+;;; based on Matrix customization system version of:
+;;;     Tue Jan 25 15:55:21 CET 2011
+;;;
+;;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Matrix Type Addenda
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+noun :+ [ CASE case ].
+
+head :+ [ AUX bool,
+    FORM form,
+    DTR-FORM form ].
+
+inflected :+ [ AUX2-AUX-OR-AUX3-AUX-FLAG luk,
+    AUX1-AUX-OR-AUX3-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG luk,
+    CASE-MARKER-FLAG luk,
+    AUX1-AUX-OR-AUX2-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG luk,
+    AUX3-AUX-FLAG luk,
+    VERB-INFLECTION-FLAG luk ].
+
+infl-satisfied :+ [ AUX2-AUX-OR-AUX3-AUX-FLAG na-or-+,
+    AUX1-AUX-OR-AUX3-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG na-or-+,
+    CASE-MARKER-FLAG na-or-+,
+    AUX1-AUX-OR-AUX2-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG na-or-+,
+    AUX3-AUX-FLAG na-or-+,
+    VERB-INFLECTION-FLAG na-or-+ ].
+
+; NOMINAL prevents nominal forms from occurring in the verbal cluster
+; 
+; VFRONT checks whether the vorfeld contains a partial verbal cluster
+; 
+; Introducing VC keeps track whether main-verb is present in cluster
+; 
+; EDGE is used to prevent participles from occurring in the middle of the cluster
+; 
+; ARG-ORD keeps track of ordering of arguments. ALLOWED-PART makes sure no disallowed partial VP-phrases occur in the Vorfeld.
+
+cat :+ [ NOMINAL bool,
+    VFRONT bool,
+    VC luk,
+    EDGE luk,
+    ARG-ORDER bool,
+    ALLOWED-PART luk ].
+
+lex-rule :+ [ SYNSEM.LOCAL.CAT [ VC #vc,
+                       ALLOWED-PART #ap ],
+    DTR.SYNSEM.LOCAL.CAT [ VC #vc,
+                           ALLOWED-PART #ap ] ].
+
+;;;;;;;;;;;;;;
+;;; Features
+;;;;;;;;;;;;;;
+
+;;; Case
+
+case := *top*.
+nominative := case.  ; nominative
+dat-accusative := case.  ; dat-accusative
+accusative := dat-accusative.  ; accusative
+dative := dat-accusative.  ; dative
+
+participleness-lex-rule := verb-inflection-lex-rule-super &
+  [ DTR.INFLECTED.AUX2-AUX-OR-AUX3-AUX-FLAG na,
+    SYNSEM.LOCAL.CAT [ EDGE na-or-+,
+                       HEAD.FORM participle ] ].
+
+partinfinitive-lex-rule := verb-inflection-lex-rule-super &
+  [ DTR.INFLECTED.AUX1-AUX-OR-AUX2-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG na,
+    SYNSEM.LOCAL.CAT [ POSTHEAD -,
+                       HEAD.FORM nonfinite ] ].
+
+restrictivepart-lex-rule := verb-inflection-lex-rule-super &
+  [ DTR.INFLECTED.AUX1-AUX-OR-AUX3-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG na,
+    SYNSEM.LOCAL.CAT [ POSTHEAD +,
+                       HEAD.FORM participle ] ].
+
+;;; Form
+
+form := *top*.
+nonfinite := form.
+finite := form.
+participle := nonfinite.
+infinitive := nonfinite.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Types
+;;;;;;;;;;;;;;;;;;;
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
+  [ ARG-ST < #spr >,
+    INFLECTED.CASE-MARKER-FLAG -,
+    SYNSEM.LOCAL.CAT [ VAL [ COMPS < >,
+                             SUBJ < >,
+                             SPEC < >,
+                             SPR < #spr &
+                                   [ LOCAL.CAT.HEAD det,
+                                     OPT + ] > ],
+                       VC - ] ].
+
+com-noun-lex := noun-lex.
+
+;;; Verbs
+
+verb-lex := lex-item &
+  [ SYNSEM.LOCAL.CAT [ HEAD verb,
+                       HC-LIGHT - ],
+    INFLECTED.VERB-INFLECTION-FLAG - ].
+
+main-verb-lex := verb-lex & basic-verb-lex &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.AUX -,
+                         VAL [ SPR < >,
+                               SPEC < >,
+                               SUBJ < #subj > ] ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT.VAL [ SPR < >,
+                                     COMPS < > ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+
+aux-lex := verb-lex &
+  [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].
+
+intransitive-verb-lex := main-verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun,
+    INFLECTED [ AUX1-AUX-OR-AUX3-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG +,
+                AUX1-AUX-OR-AUX2-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG + ] ].
+
+transitive-verb-lex := main-verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] >,
+    INFLECTED [ AUX1-AUX-OR-AUX3-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG +,
+                AUX1-AUX-OR-AUX2-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG + ] ].
+
+ditransitive-verb-lex := main-verb-lex & ditransitive-lex-item &
+  [ ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comp1 &
+             [ LOCAL.CAT [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ],
+             #comp2 &
+             [ LOCAL.CAT [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] >,
+    INFLECTED [ AUX1-AUX-OR-AUX3-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG +,
+                AUX1-AUX-OR-AUX2-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG + ],
+    SYNSEM.LOCAL.CAT [ VAL.COMPS < #comp1,
+                                   #comp2 >,
+                       ALLOWED-PART na-or-- ] ].
+
+nominative-intransitive-verb-lex := intransitive-verb-lex &
+  [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun &
+                                [ CASE nominative ] ].
+
+nominative-accusative-transitive-verb-lex := transitive-verb-lex &
+  [ ARG-ST < [ LOCAL.CAT.HEAD noun &
+                              [ CASE nominative ] ],
+             [ LOCAL.CAT.HEAD noun &
+                              [ CASE accusative ] ] > ].
+
+nominative-dative-accusative-ditransitive-verb-lex := ditransitive-verb-lex &
+  [ ARG-ST < [ LOCAL.CAT.HEAD noun &
+                              [ CASE nominative ] ],
+             [ LOCAL.CAT.HEAD noun &
+                              [ CASE dative ] ],
+             [ LOCAL.CAT.HEAD noun &
+                              [ CASE accusative ] ] > ].
+
+intrans-verb-lex := nominative-intransitive-verb-lex.
+
+trans-verb-lex := nominative-accusative-transitive-verb-lex.
+
+ditrans-verb-lex := nominative-dative-accusative-ditransitive-verb-lex.
+
+;;; Auxiliaries
+
+; Somewhat surprisingly, this inherits from basic-two-arg, so
+; that the non-local features are amalgamated from subj, the
+; lexical verb complement, but not the other complements, if any.
+
+one-comp-aux := aux-lex & basic-one-arg &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
+                           COMPS < #comp >,
+                           SPR < >,
+                           SPEC < > ],
+    ARG-ST < #comp &
+             [ LOCAL.CAT.HEAD verb ] > ].
+
+; Not inheriting from basic-verb-lex, so need to put in
+; event-relation by hand here.
+
+arg-comp-aux-with-pred := one-comp-aux & hcons-lex-item &
+  [ SYNSEM [ LOCAL.CONT.HCONS <! qeq &
+                                 [ HARG #harg,
+                                   LARG #larg ] !>,
+             LKEYS.KEYREL event-relation &
+                          [ ARG1 #harg ] ],
+    ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ] > ].
+
+basic-aux-aux-lex := arg-comp-aux-with-pred &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM infinitive,
+    INFLECTED [ AUX1-AUX-OR-AUX3-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG +,
+                AUX1-AUX-OR-AUX2-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG + ] ].
+
+; Somewhat surprisingly, this inherits from basic-two-arg, so
+; that the non-local features are amalgamated from subj, the
+; lexical verb complement, but not the other complements, if any.
+
+; Not inheriting from basic-verb-lex, so need to put in
+; event-relation by hand here.
+
+aux1-aux-lex := arg-comp-aux-with-pred &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM participle,
+    INFLECTED [ AUX1-AUX-OR-AUX3-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG +,
+                AUX1-AUX-OR-AUX2-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG + ] ].
+
+; Somewhat surprisingly, this inherits from basic-two-arg, so
+; that the non-local features are amalgamated from subj, the
+; lexical verb complement, but not the other complements, if any.
+
+; Not inheriting from basic-verb-lex, so need to put in
+; event-relation by hand here.
+
+aux2-aux-lex := arg-comp-aux-with-pred &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM participle,
+    INFLECTED [ AUX1-AUX-OR-AUX2-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG +,
+                AUX2-AUX-OR-AUX3-AUX-FLAG + ] ].
+
+; Somewhat surprisingly, this inherits from basic-two-arg, so
+; that the non-local features are amalgamated from subj, the
+; lexical verb complement, but not the other complements, if any.
+
+; Not inheriting from basic-verb-lex, so need to put in
+; event-relation by hand here.
+
+aux3-aux-lex := arg-comp-aux-with-pred &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM infinitive,
+    INFLECTED [ AUX1-AUX-OR-AUX3-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG +,
+                AUX3-AUX-FLAG +,
+                AUX2-AUX-OR-AUX3-AUX-FLAG + ] ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Rules
+;;;;;;;;;;;;;;;;;;;
+
+case-marker-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
+  [ INFLECTED [ CASE-MARKER-FLAG +,
+                AUX1-AUX-OR-AUX3-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG #aux1-aux-or-aux3-aux-or-basic-aux-aux-or-ditransitive-verb-or-intransitive-verb-or-transitive-verb,
+                AUX3-AUX-FLAG #aux3-aux,
+                VERB-INFLECTION-FLAG #verb-inflection,
+                AUX2-AUX-OR-AUX3-AUX-FLAG #aux2-aux-or-aux3-aux,
+                AUX1-AUX-OR-AUX2-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG #aux1-aux-or-aux2-aux-or-basic-aux-aux-or-ditransitive-verb-or-intransitive-verb-or-transitive-verb ],
+    DTR noun-lex &
+        [ INFLECTED [ AUX1-AUX-OR-AUX3-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG #aux1-aux-or-aux3-aux-or-basic-aux-aux-or-ditransitive-verb-or-intransitive-verb-or-transitive-verb,
+                      AUX3-AUX-FLAG #aux3-aux,
+                      VERB-INFLECTION-FLAG #verb-inflection,
+                      AUX2-AUX-OR-AUX3-AUX-FLAG #aux2-aux-or-aux3-aux,
+                      AUX1-AUX-OR-AUX2-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG #aux1-aux-or-aux2-aux-or-basic-aux-aux-or-ditransitive-verb-or-intransitive-verb-or-transitive-verb ] ] ].
+
+nominative-lex-rule := case-marker-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE nominative ].
+
+accusative-lex-rule := case-marker-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE accusative ].
+
+dative-lex-rule := case-marker-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE dative ].
+
+verb-inflection-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
+  [ INFLECTED [ VERB-INFLECTION-FLAG +,
+                AUX1-AUX-OR-AUX3-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG #aux1-aux-or-aux3-aux-or-basic-aux-aux-or-ditransitive-verb-or-intransitive-verb-or-transitive-verb,
+                AUX3-AUX-FLAG #aux3-aux,
+                AUX2-AUX-OR-AUX3-AUX-FLAG #aux2-aux-or-aux3-aux,
+                AUX1-AUX-OR-AUX2-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG #aux1-aux-or-aux2-aux-or-basic-aux-aux-or-ditransitive-verb-or-intransitive-verb-or-transitive-verb,
+                CASE-MARKER-FLAG #case-marker ],
+    DTR verb-lex &
+        [ INFLECTED [ AUX1-AUX-OR-AUX3-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG #aux1-aux-or-aux3-aux-or-basic-aux-aux-or-ditransitive-verb-or-intransitive-verb-or-transitive-verb,
+                      AUX3-AUX-FLAG #aux3-aux,
+                      AUX2-AUX-OR-AUX3-AUX-FLAG #aux2-aux-or-aux3-aux,
+                      AUX1-AUX-OR-AUX2-AUX-OR-BASIC-AUX-AUX-OR-DITRANSITIVE-VERB-OR-INTRANSITIVE-VERB-OR-TRANSITIVE-VERB-FLAG #aux1-aux-or-aux2-aux-or-basic-aux-aux-or-ditransitive-verb-or-intransitive-verb-or-transitive-verb,
+                      CASE-MARKER-FLAG #case-marker ] ] ].
+
+infinitiveness-lex-rule := verb-inflection-lex-rule-super &
+  [ DTR.INFLECTED.AUX3-AUX-FLAG na,
+    SYNSEM.LOCAL.CAT.HEAD.FORM infinitive ].
+
+finite-lex-rule := verb-inflection-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT [ HEAD.FORM finite,
+                       MC na-or-- ] ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Phrasal Types
+;;;;;;;;;;;;;;;;;;;
+
+verbal-head-nexus := headed-phrase &
+  [ SYNSEM.LOCAL.CAT.HEAD verb ].
+
+head-initial-head-nexus := head-initial & nonverbal-comp-phrase &
+  [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ MC #mc & +,
+                                POSTHEAD - ] ].
+
+head-final-head-nexus := head-final & nonverbal-comp-phrase &
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC -,
+    SYNSEM.LOCAL.CAT [ MC +,
+                       POSTHEAD #phd ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na,
+                                POSTHEAD #phd ] ].
+
+head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.
+
+subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].
+
+comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.
+
+comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.
+
+subj-head-vc-phrase := decl-head-subj-phrase & head-final-invc & nonverbal-comp-phrase &
+  [ SYNSEM.LOCAL.CAT.ARG-ORDER - ].
+
+general-comp-head-vc-phrase := basic-head-1st-comp-phrase & head-final-invc.
+
+comp-head-vc-phrase := general-comp-head-vc-phrase & nonverbal-comp-phrase &
+  [ SYNSEM.LOCAL.CAT [ ARG-ORDER -,
+                       ALLOWED-PART #ap & bool ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ ARG-ORDER +,
+                                ALLOWED-PART #ap ] ].
+
+comp-2-head-vc-phrase := basic-head-2nd-comp-phrase & head-final-invc & nonverbal-comp-phrase &
+  [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao & + ].
+
+comp-aux-vc-phrase := basic-aux-verb-rule & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VC na,
+                                POSTHEAD + ],
+    SYNSEM.LOCAL.CAT [ MC -,
+                       VC +,
+                       NOMINAL #nl,
+                       POSTHEAD #phd,
+                       EDGE #ed & na-or-- ],
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ NOMINAL #nl,
+                                    MC -,
+                                    POSTHEAD #phd,
+                                    EDGE #ed ] ].
+
+aux-comp-vc-phrase := basic-aux-verb-rule & head-initial &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD -,
+                                VC + ],
+    SYNSEM.LOCAL.CAT [ MC -,
+                       VC na,
+                       POSTHEAD #phd,
+                       EDGE #ed & bool ],
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VC na-or-+,
+                                    NOMINAL -,
+                                    MC -,
+                                    POSTHEAD #phd,
+                                    EDGE #ed ] ].
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
+
+basic-aux-verb-rule := head-compositional & basic-binary-headed-phrase & head-valence-phrase &
+  [ C-CONT [ RELS <!  !>,
+             HCONS <!  !>,
+             HOOK #hook ],
+    HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD verb &
+                                       [ AUX + ],
+                                  VAL.COMPS < #comp > ],
+                            CONT.HOOK #hook ],
+    SYNSEM.LOCAL [ CONT.HOOK #hook,
+                   CAT [ VAL #val,
+                         ALLOWED-PART #ap ] ],
+    NON-HEAD-DTR.SYNSEM #comp &
+                        [ LOCAL.CAT [ HEAD verb,
+                                      VAL #val,
+                                      ALLOWED-PART #ap ] ] ].
+
+gen-verb-aux-2nd-rule := head-final &
+  [ SYNSEM.LOCAL.CAT [ VAL.SUBJ < [ ] >,
+                       MC +,
+                       POSTHEAD #phd,
+                       HEAD [ DTR-FORM #dform,
+                              FORM finite ] ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na,
+                                POSTHEAD #phd ],
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -,
+                                    HEAD.FORM #dform ] ].
+
+comp-aux-2nd-phrase := gen-verb-aux-2nd-rule & basic-aux-verb-rule &
+  [ SYNSEM.LOCAL.CAT.VFRONT -,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].
+
+noncomp-aux-2nd-phrase := gen-verb-aux-2nd-rule & special-basic-aux-verb-rule &
+  [ SYNSEM.LOCAL.CAT.VFRONT +,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.AUX -,
+                                    ALLOWED-PART na-or-+ ] ].
+
+special-insert-aux-phrase := headed-phrase &
+  [ SYNSEM.LOCAL [ CONT [ HOOK #hook,
+                          RELS [ LIST #first,
+                                 LAST #last ],
+                          HCONS [ LIST < [ HARG #harg1,
+                                           LARG #larg1 ] . #scfirst >,
+                                  LAST #sclast ] ],
+                   CAT [ VAL #val,
+                         MC #mc,
+                         VFRONT - ] ],
+    HEAD-DTR #firstarg & head-initial &
+             [ SYNSEM.LOCAL [ CAT [ HEAD verb &
+                                         [ AUX +,
+                                           DTR-FORM #dform ],
+                                    VAL #val &
+                                        [ SUBJ < >,
+                                          COMPS < > ],
+                                    MC #mc,
+                                    VFRONT + ],
+                              CONT [ HOOK #hook,
+                                     HCONS.LIST.FIRST [ HARG #harg1,
+                                                        LARG #larg2 ] ] ] ],
+    INSERT-DTR #secarg &
+               [ SYNSEM.LOCAL [ CAT [ HEAD verb &
+                                           [ AUX + ],
+                                      VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM #dform ],
+                                CONT [ HOOK.LTOP #larg1,
+                                       HCONS.LIST.FIRST.LARG #larg2 ] ],
+                 INFLECTED infl-satisfied ],
+    C-CONT [ RELS [ LIST #middle2,
+                    LAST #last ],
+             HCONS [ LIST #scmiddle2,
+                     LAST #sclast ] ],
+    ARGS < #firstarg &
+           [ SYNSEM.LOCAL local &
+                          [ CONT [ RELS [ LIST #first,
+                                          LAST #middle1 ],
+                                   HCONS [ LIST < [ ] . #scfirst >,
+                                           LAST #scmiddle1 ] ] ] ],
+           #secarg &
+           [ SYNSEM.LOCAL local &
+                          [ CONT [ RELS [ LIST #middle1,
+                                          LAST #middle2 ],
+                                   HCONS [ LIST #scmiddle1,
+                                           LAST #scmiddle2 ] ] ] ] > ].
+
+decl-head-subj-phrase :+ [ SYNSEM.LOCAL.CAT.VFRONT #vf,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].
+
+basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.VFRONT #vf,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].
+
+basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.VFRONT #vf,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].
+
+special-basic-aux-verb-rule := head-compositional & basic-binary-headed-phrase & head-valence-phrase &
+  [ SYNSEM.LOCAL [ CAT.VAL #val,
+                   CONT.HOOK #hook ],
+    C-CONT [ RELS <!  !>,
+             HCONS <!  !>,
+             HOOK #hook ],
+    HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD verb &
+                                       [ AUX + ],
+                                  VAL.COMPS.FIRST.LOCAL.CONT #cont ],
+                            CONT.HOOK #hook ],
+    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD verb,
+                                      VAL #val ],
+                                CONT #cont ] ].
+
+aux-2nd-comp-phrase := basic-aux-verb-rule & head-initial &
+  [ SYNSEM [ LOCAL.CAT [ POSTHEAD +,
+                         MC #mc & na,
+                         HEAD.FORM finite ],
+             LIGHT - ],
+    HEAD-DTR.SYNSEM [ LIGHT +,
+                      LOCAL.CAT.MC #mc ],
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].
+
+head-final-invc := head-final &
+  [ SYNSEM.LOCAL.CAT [ VC -,
+                       NOMINAL +,
+                       MC #mc & - ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ VC na-or--,
+                                MC #mc ] ].
+
+head-initial-invc := head-initial &
+  [ SYNSEM.LOCAL.CAT.MC #mc & -,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+nonverbal-comp-phrase := basic-binary-headed-phrase &
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +njrpcdmo ].
+
+;;;;;;;;;;;;;;;;;;
+;;; Coordination
+;;;;;;;;;;;;;;;;;;
+
+;;; Coordination Strategy 1
+
+np1-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL [ COORD-STRAT "1",
+                   CAT.HEAD.CASE #case ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
+
+np1-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL [ COORD-STRAT "1",
+                   CAT.HEAD.CASE #case ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
+
+np1-bottom-coord-rule := conj-first-bottom-coord-rule & np-bottom-coord-phrase &
+  [ SYNSEM.LOCAL [ COORD-STRAT "1",
+                   CAT.HEAD.CASE #case ],
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].
+
+;;; Coordination Strategy 1
+
+s1-top-coord-rule := basic-s-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL [ COORD-STRAT "1",
+                   CAT [ HEAD.FORM #form,
+                         MC #mc,
+                         VFRONT #vf ] ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.FORM #form,
+                                  MC #mc,
+                                  VFRONT #vf ],
+    RCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.FORM #form,
+                                  MC #mc,
+                                  VFRONT #vf ] ].
+
+s1-mid-coord-rule := basic-s-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL [ COORD-STRAT "1",
+                   CAT [ HEAD.FORM #form,
+                         MC #mc,
+                         VFRONT #vf ] ],
+    LCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.FORM #form,
+                                  MC #mc,
+                                  VFRONT #vf ],
+    RCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.FORM #form,
+                                  MC #mc,
+                                  VFRONT #vf ] ].
+
+s1-bottom-coord-rule := conj-first-bottom-coord-rule & s-bottom-coord-phrase &
+  [ SYNSEM.LOCAL [ COORD-STRAT "1",
+                   CAT [ HEAD.FORM #form,
+                         MC #mc,
+                         VFRONT #vf ] ],
+    NONCONJ-DTR.SYNSEM.LOCAL.CAT [ HEAD.FORM #form,
+                                   MC #mc,
+                                   VFRONT #vf ] ].

@@ -1,0 +1,7 @@
+a-suffix :=
+%suffix (* -A)
+a-lex-rule.
+
+o-suffix :=
+%suffix (* -O)
+o-lex-rule.

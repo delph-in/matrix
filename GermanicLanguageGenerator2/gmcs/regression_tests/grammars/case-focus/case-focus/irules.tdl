@@ -1,0 +1,23 @@
+focus-suffix :=
+%suffix (* -FOC)
+focus-lex-rule.
+
+agent-suffix :=
+%suffix (* -A)
+agent-lex-rule.
+
+patient-suffix :=
+%suffix (* -O)
+patient-lex-rule.
+
+subjectfocus-suffix :=
+%suffix (* -SFOC)
+subjectfocus-lex-rule.
+
+agentfocus-suffix :=
+%suffix (* -AFOC)
+agentfocus-lex-rule.
+
+patientfocus-suffix :=
+%suffix (* -PFOC)
+patientfocus-lex-rule.

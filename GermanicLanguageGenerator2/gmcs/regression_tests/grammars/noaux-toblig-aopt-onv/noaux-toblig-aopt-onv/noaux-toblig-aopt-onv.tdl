@@ -1,0 +1,136 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Grammar of noaux-toblig-aopt-onv
+;;; created at:
+;;;     Tue Jan 25 12:41:30 UTC 2011
+;;; based on Matrix customization system version of:
+;;;     unknown time
+;;;
+;;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Matrix Type Addenda
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+inflected :+ [ TSLOT-FLAG luk ].
+
+infl-satisfied :+ [ TSLOT-FLAG na-or-+ ].
+
+basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+;;;;;;;;;;;;;;
+;;; Features
+;;;;;;;;;;;;;;
+
+;;; Tense
+
+present := tense.
+past := tense.
+
+;;; Aspect
+
+imperfective := aspect.
+perfective := aspect.
+progressive := imperfective.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Types
+;;;;;;;;;;;;;;;;;;;
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det ] >,
+                           COMPS < >,
+                           SUBJ < >,
+                           SPEC < > ],
+    ARG-ST < #spr > ].
+
+noun1-noun-lex := noun-lex.
+
+;;; Verbs
+
+verb-lex := basic-verb-lex & tslot-rule-dtr &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+                             SPEC < >,
+                             SUBJ < #subj > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT.VAL [ SPR < >,
+                                     COMPS < > ],
+                           CONT.HOOK.INDEX #xarg ] ],
+    INFLECTED.TSLOT-FLAG - ].
+
+intransitive-verb-lex := verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].
+
+transitive-verb-lex := verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] > ].
+
+ditransitive-verb-lex := verb-lex & ditransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp1,
+                                 #comp2 >,
+    ARG-ST < [ ],
+             #comp1 &
+             [ LOCAL.CAT.VAL [ SPR < >,
+                               COMPS < > ] ],
+             #comp2 &
+             [ LOCAL.CAT.VAL [ SPR < >,
+                               COMPS < > ] ] > ].
+
+verb1-verb-lex := intransitive-verb-lex.
+
+verb2-verb-lex := transitive-verb-lex.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Rules
+;;;;;;;;;;;;;;;;;;;
+
+tslot-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
+  [ INFLECTED.TSLOT-FLAG +,
+    DTR tslot-rule-dtr ].
+
+presentmorph-lex-rule := tslot-lex-rule-super &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE present ].
+
+pastmorph-lex-rule := tslot-lex-rule-super &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE past ].
+
+aslot-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule & tslot-rule-dtr &
+  [ INFLECTED #infl,
+    DTR verb-lex &
+        [ INFLECTED #infl ] ].
+
+perfmorph-lex-rule := aslot-lex-rule-super &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.ASPECT perfective ].
+
+tslot-rule-dtr := word-or-lexrule.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Phrasal Types
+;;;;;;;;;;;;;;;;;;;
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].

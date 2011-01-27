@@ -1,0 +1,193 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Grammar of subj-aux-inv-q
+;;; created at:
+;;;     Tue Jan 25 12:41:34 UTC 2011
+;;; based on Matrix customization system version of:
+;;;     unknown time
+;;;
+;;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Matrix Type Addenda
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+head :+ [ AUX bool,
+    FORM form ].
+
+basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+; For the analysis of inverted yes-no questions, we add the feature INV.
+
+verb :+ [ INV bool ].
+
+;;;;;;;;;;;;;;
+;;; Features
+;;;;;;;;;;;;;;
+
+;;; Form
+
+form := *top*.
+nonfinite := form.
+finite := form.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Types
+;;;;;;;;;;;;;;;;;;;
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
+  [ ARG-ST < #spr >,
+    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
+                           SUBJ < >,
+                           SPEC < >,
+                           SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det,
+                                   OPT + ] > ] ].
+
+noun1-noun-lex := noun-lex.
+
+noun2-noun-lex := noun-lex.
+
+;;; Verbs
+
+; All verbs start off as not inverted.
+
+verb-lex := lex-item &
+  [ SYNSEM.LOCAL.CAT.HEAD verb &
+                          [ INV - ] ].
+
+main-verb-lex := verb-lex & basic-verb-lex &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.AUX -,
+                         VAL [ SPR < >,
+                               SPEC < >,
+                               SUBJ < #subj > ] ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT.VAL [ SPR < >,
+                                     COMPS < > ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+
+aux-lex := verb-lex &
+  [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].
+
+intransitive-verb-lex := main-verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].
+
+transitive-verb-lex := main-verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] > ].
+
+ditransitive-verb-lex := main-verb-lex & ditransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp1,
+                                 #comp2 >,
+    ARG-ST < [ ],
+             #comp1 &
+             [ LOCAL.CAT.VAL [ SPR < >,
+                               COMPS < > ] ],
+             #comp2 &
+             [ LOCAL.CAT.VAL [ SPR < >,
+                               COMPS < > ] ] > ].
+
+verb1-verb-lex := intransitive-verb-lex.
+
+verb2-verb-lex := transitive-verb-lex.
+
+;;; Auxiliaries
+
+subj-raise-aux := aux-lex & trans-first-arg-raising-lex-item &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #subj >,
+                             COMPS < #comps >,
+                             SPR < >,
+                             SPEC < > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST < #subj &
+             [ LOCAL [ CONT.HOOK.INDEX #xarg,
+                       CAT [ VAL [ SPR < >,
+                                   COMPS < > ],
+                             HEAD noun ] ] ],
+             #comps &
+             [ LOCAL.CAT [ VAL [ SUBJ < [ ] >,
+                                 COMPS < > ],
+                           HEAD verb ] ] > ].
+
+; To keep the semantically empty ones from spinning on
+; generation, require complement to be [AUX -].  The
+; FORM feature might be enough in the starter grammars,
+; but I don't want to rely on this.  Then again, [ AUX - ]
+; might not be true.  Be sure to put in a comment.
+
+subj-raise-aux-no-pred := subj-raise-aux & raise-sem-lex-item &
+  [ ARG-ST < [ ],
+             [ LOCAL.CAT.HEAD.AUX - ] > ].
+
+aux-aux-lex := subj-raise-aux-no-pred &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Rules
+;;;;;;;;;;;;;;;;;;;
+
+; Rule for inverted subject verb order in questions.
+; The incompatible SUBJ values on SYNSEM and DTR are
+; what keeps this one from spinning.
+
+subj-v-inv-lrule := cat-change-only-lex-rule & same-hc-light-lex-rule & same-posthead-lex-rule & constant-lex-rule &
+  [ SYNSEM [ LKEYS #lkeys,
+             LOCAL.CAT [ VAL [ COMPS < #subj . #comps >,
+                               SUBJ < >,
+                               SPR #spr,
+                               SPEC #spec ],
+                         MC na,
+                         HEAD verb &
+                              [ INV +,
+                                FORM #form ] ] ],
+    DTR.SYNSEM [ LKEYS #lkeys,
+                 LOCAL.CAT [ VAL [ SUBJ < #subj >,
+                                   COMPS #comps,
+                                   SPR #spr,
+                                   SPEC #spec ],
+                             HEAD verb &
+                                  [ AUX +,
+                                    FORM #form ] ] ] ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Phrasal Types
+;;;;;;;;;;;;;;;;;;;
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
+
+; This rule takes [MC na] inverted phrases and licensesthem as main clauses with question semantics.
+; 
+
+int-cl := interrogative-clause & head-only &
+  [ SYNSEM.LOCAL.CAT [ HEAD.INV +,
+                       VAL #val,
+                       MC + ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na,
+                                VAL #val &
+                                    [ SUBJ < >,
+                                      COMPS < > ] ],
+    C-CONT.HOOK.INDEX.SF ques ].

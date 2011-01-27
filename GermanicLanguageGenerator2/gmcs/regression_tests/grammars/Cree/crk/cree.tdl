@@ -1,0 +1,305 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Grammar of Cree
+;;; created at:
+;;;     Tue Jan 25 12:40:50 UTC 2011
+;;; based on Matrix customization system version of:
+;;;     unknown time
+;;;
+;;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Matrix Type Addenda
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+verb :+ [ DIRECTION direction ].
+
+word-or-lexrule :+ [ SC-ARGS list ].
+
+lex-rule :+ [ SC-ARGS #1,
+    DTR.SC-ARGS #1 ].
+
+inflected :+ [ PREFIX-FLAG luk,
+    TRANSITIVE-ANIMATE-DIR-INV-FLAG luk,
+    SUFFIX-FLAG luk ].
+
+infl-satisfied :+ [ PREFIX-FLAG na-or-+,
+    TRANSITIVE-ANIMATE-DIR-INV-FLAG na-or-+,
+    SUFFIX-FLAG na-or-+ ].
+
+png :+ [ PER person ].
+
+head :+ [ PROXIMITY proximity ].
+
+basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+;;;;;;;;;;;;;;
+;;; Features
+;;;;;;;;;;;;;;
+
+;;; Direction
+
+direction := *top*.
+dir := direction.
+inv := direction.
+
+;;; Person
+
+person := *top*.
+non-2nd := person.
+3rd := non-2nd.
+1st := non-2nd & non-3rd.
+non-3rd := person.
+2nd := non-3rd.
+
+;;; Proximity
+
+proximity := *top*.
+proximate := proximity.
+obviative := proximity.
+
+;;;;;;;;;;;;;;;;;;;;
+;;; Direct-Inverse
+;;;;;;;;;;;;;;;;;;;;
+
+;;; Direct-inverse scale
+
+dir-inv-scale := canonical-synsem.
+
+dir-inv-1 := dir-inv-scale &
+  [ LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd ].
+
+dir-inv-non-1 := dir-inv-scale &
+  [ LOCAL.CONT.HOOK.INDEX.PNG.PER non-2nd ].
+
+dir-inv-2 := dir-inv-non-1 &
+  [ LOCAL.CONT.HOOK.INDEX.PNG.PER 1st ].
+
+dir-inv-non-2 := dir-inv-non-1 &
+  [ LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].
+
+dir-inv-3 := dir-inv-non-2 &
+  [ LOCAL [ CONT.HOOK.INDEX.PNG.PER 3rd,
+            CAT.HEAD.PROXIMITY proximate ] ].
+
+dir-inv-non-3 := dir-inv-non-2 &
+  [ LOCAL [ CONT.HOOK.INDEX.PNG.PER 3rd,
+            CAT.HEAD.PROXIMITY obviative ] ].
+
+;;; Direct-inverse lexical rules
+
+dir-lex-rule := add-only-no-ccont-rule &
+  [ SC-ARGS < #1,
+              #2 >,
+    SYNSEM.LOCAL.CAT [ HEAD.DIRECTION dir,
+                       VAL [ SUBJ < #1 >,
+                             COMPS < #2 > ] ] ].
+
+inv-lex-rule := add-only-no-ccont-rule &
+  [ SC-ARGS < #1,
+              #2 >,
+    SYNSEM.LOCAL.CAT [ HEAD.DIRECTION inv,
+                       VAL [ SUBJ < #2 >,
+                             COMPS < #1 > ] ] ].
+
+transitive-animate-dir-inv-lex-rule-super := add-only-no-ccont-rule & const-lex-rule & prefix-rule-dtr & suffix-rule-dtr &
+  [ INFLECTED [ TRANSITIVE-ANIMATE-DIR-INV-FLAG +,
+                PREFIX-FLAG #prefix,
+                SUFFIX-FLAG #suffix ],
+    DTR transitive-animate-verb-lex &
+        [ INFLECTED [ PREFIX-FLAG #prefix,
+                      SUFFIX-FLAG #suffix ] ] ].
+
+transitive-animate-dir-lex-rule := transitive-animate-dir-inv-lex-rule-super & dir-lex-rule.
+
+transitive-animate-dir-1-lex-rule := transitive-animate-dir-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < dir-inv-1 >,
+                           COMPS < dir-inv-non-1 > ] ].
+
+transitive-animate-dir-2-lex-rule := transitive-animate-dir-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < dir-inv-2 >,
+                           COMPS < dir-inv-non-2 > ] ].
+
+transitive-animate-dir-3-lex-rule := transitive-animate-dir-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < dir-inv-3 >,
+                           COMPS < dir-inv-non-3 > ] ].
+
+transitive-animate-inv-lex-rule := transitive-animate-dir-inv-lex-rule-super & inv-lex-rule.
+
+transitive-animate-inv-1-lex-rule := transitive-animate-inv-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < dir-inv-non-1 >,
+                           COMPS < dir-inv-1 > ] ].
+
+transitive-animate-inv-2-lex-rule := transitive-animate-inv-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < dir-inv-non-2 >,
+                           COMPS < dir-inv-2 > ] ].
+
+transitive-animate-inv-3-lex-rule := transitive-animate-inv-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < dir-inv-non-3 >,
+                           COMPS < dir-inv-3 > ] ].
+
+prefix-rule-dtr := word-or-lexrule.
+
+suffix-rule-dtr := word-or-lexrule.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Types
+;;;;;;;;;;;;;;;;;;;
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
+  [ ARG-ST < #spr >,
+    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
+                           SUBJ < >,
+                           SPEC < >,
+                           SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det,
+                                   OPT + ] > ] ].
+
+noun1-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st ].
+
+noun2-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd ].
+
+noun3-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.PER 3rd,
+                   CAT.HEAD.PROXIMITY proximate ] ].
+
+noun4-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.PER 3rd,
+                   CAT.HEAD.PROXIMITY obviative ] ].
+
+;;; Verbs
+
+verb-lex := basic-verb-lex &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+                             SPEC < >,
+                             SUBJ < #subj > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT.VAL [ SPR < >,
+                                     COMPS < > ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+
+intransitive-verb-lex := verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].
+
+transitive-verb-lex := verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] > ].
+
+ditransitive-verb-lex := verb-lex & ditransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp1,
+                                 #comp2 >,
+    ARG-ST < [ ],
+             #comp1 &
+             [ LOCAL.CAT.VAL [ SPR < >,
+                               COMPS < > ] ],
+             #comp2 &
+             [ LOCAL.CAT.VAL [ SPR < >,
+                               COMPS < > ] ] > ].
+
+dir-inv-transitive-verb-lex := transitive-verb-lex &
+  [ ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             [ LOCAL.CAT.HEAD noun ] > ].
+
+dummy-verb-lex := intransitive-verb-lex.
+
+transitive-animate-verb-lex := dir-inv-transitive-verb-lex & prefix-rule-dtr & suffix-rule-dtr &
+  [ INFLECTED [ TRANSITIVE-ANIMATE-DIR-INV-FLAG -,
+                PREFIX-FLAG -,
+                SUFFIX-FLAG - ] ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Rules
+;;;;;;;;;;;;;;;;;;;
+
+prefix-lex-rule-super := add-only-no-ccont-rule & suffix-rule-dtr &
+  [ INFLECTED [ PREFIX-FLAG +,
+                TRANSITIVE-ANIMATE-DIR-INV-FLAG #transitive-animate-dir-inv,
+                SUFFIX-FLAG #suffix ],
+    DTR prefix-rule-dtr &
+        [ INFLECTED [ TRANSITIVE-ANIMATE-DIR-INV-FLAG #transitive-animate-dir-inv,
+                      SUFFIX-FLAG #suffix ] ] ].
+
+prefix_lrt1-lex-rule := infl-lex-rule & prefix-lex-rule-super &
+  [ SC-ARGS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd ].
+
+prefix_lrt2-lex-rule := infl-lex-rule & prefix-lex-rule-super &
+  [ SC-ARGS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st ].
+
+prefix_lrt3-lex-rule := const-lex-rule & prefix-lex-rule-super &
+  [ SC-ARGS < [ LOCAL [ CONT.HOOK.INDEX.PNG.PER 3rd,
+                        CAT.HEAD.PROXIMITY proximate ] ] . [ FIRST.LOCAL [ CONT.HOOK.INDEX.PNG.PER 3rd,
+                                                                           CAT.HEAD.PROXIMITY obviative ] ] > ].
+
+suffix-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
+  [ INFLECTED [ SUFFIX-FLAG +,
+                PREFIX-FLAG #prefix,
+                TRANSITIVE-ANIMATE-DIR-INV-FLAG #transitive-animate-dir-inv ],
+    DTR suffix-rule-dtr &
+        [ INFLECTED [ PREFIX-FLAG #prefix,
+                      TRANSITIVE-ANIMATE-DIR-INV-FLAG #transitive-animate-dir-inv ] ] ].
+
+suffix_lrt1-lex-rule := suffix-lex-rule-super & dir-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st ].
+
+suffix_lrt2-lex-rule := suffix-lex-rule-super & dir-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL [ CONT.HOOK.INDEX.PNG.PER 3rd,
+                                             CAT.HEAD.PROXIMITY proximate ] ].
+
+suffix_lrt3-lex-rule := suffix-lex-rule-super & dir-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL [ CONT.HOOK.INDEX.PNG.PER 3rd,
+                                            CAT.HEAD.PROXIMITY proximate ] ].
+
+suffix_lrt4-lex-rule := suffix-lex-rule-super & dir-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER non-3rd,
+                           COMPS.FIRST.LOCAL [ CONT.HOOK.INDEX.PNG.PER 3rd,
+                                               CAT.HEAD.PROXIMITY obviative ] ] ].
+
+suffix_lrt5-lex-rule := suffix-lex-rule-super & inv-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL [ CONT.HOOK.INDEX.PNG.PER 3rd,
+                                              CAT.HEAD.PROXIMITY obviative ],
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER non-3rd ] ].
+
+suffix_lrt6-lex-rule := suffix-lex-rule-super & inv-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL [ CONT.HOOK.INDEX.PNG.PER 3rd,
+                                            CAT.HEAD.PROXIMITY proximate ] ].
+
+suffix_lrt7-lex-rule := suffix-lex-rule-super & inv-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL [ CONT.HOOK.INDEX.PNG.PER 3rd,
+                                              CAT.HEAD.PROXIMITY obviative ],
+                           COMPS.FIRST.LOCAL [ CONT.HOOK.INDEX.PNG.PER 3rd,
+                                               CAT.HEAD.PROXIMITY proximate ] ] ].
+
+suffix_lrt8-lex-rule := suffix-lex-rule-super & inv-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Phrasal Types
+;;;;;;;;;;;;;;;;;;;
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].
+
+head-subj-phrase := decl-head-subj-phrase & head-initial.
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].

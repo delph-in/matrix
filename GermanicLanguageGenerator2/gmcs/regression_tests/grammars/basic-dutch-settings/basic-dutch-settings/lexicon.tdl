@@ -1,0 +1,54 @@
+;;; Nouns
+
+n1 := com-noun-lex &
+  [ STEM < "n1" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_n1_n_rel" ].
+
+n2 := com-noun-lex &
+  [ STEM < "n2" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_n2_n_rel" ].
+
+n3 := com-noun-lex &
+  [ STEM < "n3" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_n3_n_rel" ].
+
+;;; Verbs
+
+iv := intrans-verb-lex &
+  [ STEM < "iv" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_iv_v_rel" ].
+
+tv := trans-verb-lex &
+  [ STEM < "tv" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_tv_v_rel" ].
+
+dv := ditrans-verb-lex &
+  [ STEM < "dv" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_dv_v_rel" ].
+
+;;; Auxiliaries
+
+aux := basic-aux-aux-lex &
+  [ STEM < "aux" >,
+    SYNSEM.LKEYS.KEYREL.PRED "aux" ].
+
+aux1 := aux1-aux-lex &
+  [ STEM < "aux1" >,
+    SYNSEM.LKEYS.KEYREL.PRED "aux1" ].
+
+aux5 := aux1-aux-lex &
+  [ STEM < "aux5" >,
+    SYNSEM.LKEYS.KEYREL.PRED "aux5" ].
+
+aux2 := aux2-aux-lex &
+  [ STEM < "aux2" >,
+    SYNSEM.LKEYS.KEYREL.PRED "aux2" ].
+
+aux3 := aux3-aux-lex &
+  [ STEM < "aux3" >,
+    SYNSEM.LKEYS.KEYREL.PRED "aux3" ].
+
+coord := conj-lex &
+  [ STEM < "coord" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
+    CFORM "1" ].

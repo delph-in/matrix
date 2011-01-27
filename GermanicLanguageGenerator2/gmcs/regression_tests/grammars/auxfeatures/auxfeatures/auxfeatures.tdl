@@ -1,0 +1,219 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Grammar of auxfeatures
+;;; created at:
+;;;     Tue Jan 25 12:40:58 UTC 2011
+;;; based on Matrix customization system version of:
+;;;     unknown time
+;;;
+;;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Matrix Type Addenda
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+head :+ [ AUX bool,
+    FORM form ].
+
+inflected :+ [ FORM-FLAG luk,
+    ASPECT-FLAG luk,
+    TENSE-FLAG luk ].
+
+infl-satisfied :+ [ FORM-FLAG na-or-+,
+    ASPECT-FLAG na-or-+,
+    TENSE-FLAG na-or-+ ].
+
+basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+;;;;;;;;;;;;;;
+;;; Features
+;;;;;;;;;;;;;;
+
+;;; Form
+
+form := *top*.
+nonfinite := form.
+finite := form.
+nf1 := nonfinite.
+nf2 := nonfinite.
+
+;;; Tense
+
+ten1 := tense.
+ten2 := tense.
+
+;;; Aspect
+
+asp1 := aspect.
+asp2 := aspect.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Types
+;;;;;;;;;;;;;;;;;;;
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
+  [ ARG-ST < #spr >,
+    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
+                           SUBJ < >,
+                           SPEC < >,
+                           SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det,
+                                   OPT + ] > ] ].
+
+noun1-noun-lex := noun-lex.
+
+noun2-noun-lex := noun-lex.
+
+;;; Verbs
+
+verb-lex := lex-item &
+  [ SYNSEM.LOCAL.CAT.HEAD verb ].
+
+main-verb-lex := verb-lex & basic-verb-lex &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.AUX -,
+                         VAL [ SPR < >,
+                               SPEC < >,
+                               SUBJ < #subj > ] ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT.VAL [ SPR < >,
+                                     COMPS < > ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+
+aux-lex := verb-lex & tense-rule-dtr &
+  [ SYNSEM.LOCAL.CAT.HEAD.AUX +,
+    INFLECTED [ ASPECT-FLAG -,
+                TENSE-FLAG - ] ].
+
+intransitive-verb-lex := main-verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun,
+    INFLECTED.FORM-FLAG - ].
+
+transitive-verb-lex := main-verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] > ].
+
+ditransitive-verb-lex := main-verb-lex & ditransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp1,
+                                 #comp2 >,
+    ARG-ST < [ ],
+             #comp1 &
+             [ LOCAL.CAT.VAL [ SPR < >,
+                               COMPS < > ] ],
+             #comp2 &
+             [ LOCAL.CAT.VAL [ SPR < >,
+                               COMPS < > ] ] > ].
+
+verb1-verb-lex := intransitive-verb-lex.
+
+verb2-verb-lex := transitive-verb-lex.
+
+;;; Auxiliaries
+
+subj-raise-aux := aux-lex & trans-first-arg-raising-lex-item &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #subj >,
+                             COMPS < #comps >,
+                             SPR < >,
+                             SPEC < > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST < #subj &
+             [ LOCAL [ CONT.HOOK.INDEX #xarg,
+                       CAT [ VAL [ SPR < >,
+                                   COMPS < > ],
+                             HEAD noun ] ] ],
+             #comps &
+             [ LOCAL.CAT [ VAL [ SUBJ < [ ] >,
+                                 COMPS < > ],
+                           HEAD verb ] ] > ].
+
+subj-raise-aux-with-pred := subj-raise-aux & norm-sem-lex-item & trans-first-arg-raising-lex-item-1.
+
+auxiliary1-aux-lex := subj-raise-aux-with-pred &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E [ TENSE ten1,
+                                       ASPECT asp1 ],
+                   CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM nf1 ] ].
+
+auxiliary2-aux-lex := subj-raise-aux-with-pred &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E [ TENSE ten2,
+                                       ASPECT asp2 ],
+                   CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM nf2 ] ].
+
+auxiliary3-aux-lex := subj-raise-aux-with-pred &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM nonfinite ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Rules
+;;;;;;;;;;;;;;;;;;;
+
+aspect-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule & tense-rule-dtr &
+  [ INFLECTED [ ASPECT-FLAG +,
+                FORM-FLAG #form,
+                TENSE-FLAG #tense ],
+    DTR aux-lex &
+        [ INFLECTED [ FORM-FLAG #form,
+                      TENSE-FLAG #tense ] ] ].
+
+aone-lex-rule := aspect-lex-rule-super &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.ASPECT asp1 ].
+
+atwo-lex-rule := aspect-lex-rule-super &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.ASPECT asp2 ].
+
+tense-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
+  [ INFLECTED [ TENSE-FLAG +,
+                FORM-FLAG #form,
+                ASPECT-FLAG #aspect ],
+    DTR tense-rule-dtr &
+        [ INFLECTED [ FORM-FLAG #form,
+                      ASPECT-FLAG #aspect ] ] ].
+
+tone-lex-rule := tense-lex-rule-super &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE ten1 ].
+
+ttwo-lex-rule := tense-lex-rule-super &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE ten2 ].
+
+form-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
+  [ INFLECTED [ FORM-FLAG +,
+                ASPECT-FLAG #aspect,
+                TENSE-FLAG #tense ],
+    DTR intransitive-verb-lex &
+        [ INFLECTED [ ASPECT-FLAG #aspect,
+                      TENSE-FLAG #tense ] ] ].
+
+fone-lex-rule := form-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM nf1 ].
+
+ftwo-lex-rule := form-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM nf2 ].
+
+tense-rule-dtr := word-or-lexrule.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Phrasal Types
+;;;;;;;;;;;;;;;;;;;
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].

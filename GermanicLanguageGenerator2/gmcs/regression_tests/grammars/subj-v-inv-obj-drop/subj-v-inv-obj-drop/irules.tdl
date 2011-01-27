@@ -1,0 +1,11 @@
+plural-suffix :=
+%suffix (* s)
+plural-lex-rule.
+
+3sg-suffix :=
+%suffix (* s)
+3sg-lex-rule.
+
+inf-suffix :=
+%suffix (* -inf)
+inf-lex-rule.

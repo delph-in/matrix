@@ -1,0 +1,4 @@
+;;;; settings for CHEAP -*- Mode: TDL; Coding: utf-8 -*-
+include "global".
+include "flop".
+include "pet".

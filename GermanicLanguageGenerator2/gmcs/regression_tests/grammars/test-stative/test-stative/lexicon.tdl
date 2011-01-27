@@ -1,0 +1,28 @@
+;;; Nouns
+
+n1 := noun1-noun-lex &
+  [ STEM < "n1" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_n1_n_rel" ].
+
+n2 := noun2-noun-lex &
+  [ STEM < "n2" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_n2_n_rel" ].
+
+;;; Verbs
+
+eat := nonstative-tv-verb-lex &
+  [ STEM < "eat" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ].
+
+iv := intrans_verb-verb-lex &
+  [ STEM < "iv" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_iv_v_rel" ].
+
+believ := stativeverb-tv-verb-lex &
+  [ STEM < "believ" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_believe_v_rel" ].
+
+;;; Auxiliaries
+
+is := progressive-be-aux-lex &
+  [ STEM < "is" > ].

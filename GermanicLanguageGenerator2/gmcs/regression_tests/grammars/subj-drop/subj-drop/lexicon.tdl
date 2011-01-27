@@ -1,0 +1,27 @@
+;;; Nouns
+
+n1 := noun1-noun-lex &
+  [ STEM < "n1" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_n1_n_rel" ].
+
+n2 := noun2-noun-lex &
+  [ STEM < "n2" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_n2_n_rel" ].
+
+;;; Verbs
+
+iverb1 := verb-type1-verb-lex &
+  [ STEM < "iverb1" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_iv_v_rel" ].
+
+tverb1 := verb-type2-verb-lex &
+  [ STEM < "tverb1" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_tv_v_rel" ].
+
+iverb2 := verb-type3-verb-lex &
+  [ STEM < "iverb2" >,
+    SYNSEM.LKEYS.KEYREL.PRED "iv2_v_rel" ].
+
+tverb2 := verb-type4-verb-lex &
+  [ STEM < "tverb2" >,
+    SYNSEM.LKEYS.KEYREL.PRED "tv2_v_rel" ].

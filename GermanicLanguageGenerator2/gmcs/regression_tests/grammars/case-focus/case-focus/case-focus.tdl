@@ -1,0 +1,173 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Grammar of case-focus
+;;; created at:
+;;;     Tue Jan 25 12:41:03 UTC 2011
+;;; based on Matrix customization system version of:
+;;;     unknown time
+;;;
+;;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Matrix Type Addenda
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+noun :+ [ CASE case ].
+
+inflected :+ [ TFOCUS-FLAG luk,
+    CASE-FLAG luk,
+    IFOCUS-FLAG luk ].
+
+infl-satisfied :+ [ TFOCUS-FLAG na-or-+,
+    CASE-FLAG na-or-+,
+    IFOCUS-FLAG na-or-+ ].
+
+basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+;;;;;;;;;;;;;;
+;;; Features
+;;;;;;;;;;;;;;
+
+;;; Case
+
+case := *top*.
+foc := case.  ; foc
+a := case.  ; a
+o := case.  ; o
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Types
+;;;;;;;;;;;;;;;;;;;
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
+  [ ARG-ST < #spr >,
+    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
+                           SUBJ < >,
+                           SPEC < >,
+                           SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det,
+                                   OPT + ] > ],
+    INFLECTED.CASE-FLAG - ].
+
+noun1-noun-lex := noun-lex.
+
+noun2-noun-lex := noun-lex.
+
+;;; Verbs
+
+verb-lex := basic-verb-lex &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+                             SPEC < >,
+                             SUBJ < #subj > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT.VAL [ SPR < >,
+                                     COMPS < > ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+
+intransitive-verb-lex := verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun,
+    INFLECTED.IFOCUS-FLAG - ].
+
+transitive-verb-lex := verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] >,
+    INFLECTED.TFOCUS-FLAG - ].
+
+ditransitive-verb-lex := verb-lex & ditransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp1,
+                                 #comp2 >,
+    ARG-ST < [ ],
+             #comp1 &
+             [ LOCAL.CAT.VAL [ SPR < >,
+                               COMPS < > ] ],
+             #comp2 &
+             [ LOCAL.CAT.VAL [ SPR < >,
+                               COMPS < > ] ] > ].
+
+verb1-verb-lex := intransitive-verb-lex.
+
+verb2-verb-lex := transitive-verb-lex.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Rules
+;;;;;;;;;;;;;;;;;;;
+
+case-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
+  [ INFLECTED [ CASE-FLAG +,
+                TFOCUS-FLAG #tfocus,
+                IFOCUS-FLAG #ifocus ],
+    DTR noun-lex &
+        [ INFLECTED [ TFOCUS-FLAG #tfocus,
+                      IFOCUS-FLAG #ifocus ] ] ].
+
+focus-lex-rule := case-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE focus ].
+
+agent-lex-rule := case-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE a ].
+
+patient-lex-rule := case-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE o ].
+
+ifocus-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
+  [ INFLECTED [ IFOCUS-FLAG +,
+                CASE-FLAG #case,
+                TFOCUS-FLAG #tfocus ],
+    DTR intransitive-verb-lex &
+        [ INFLECTED [ CASE-FLAG #case,
+                      TFOCUS-FLAG #tfocus ] ] ].
+
+subjectfocus-lex-rule := ifocus-lex-rule-super &
+  [ DTR.ARG-ST #arg-st,
+    ARG-ST #arg-st &
+           < [ LOCAL.CAT.HEAD.CASE focus ] > ].
+
+tfocus-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
+  [ INFLECTED [ TFOCUS-FLAG +,
+                CASE-FLAG #case,
+                IFOCUS-FLAG #ifocus ],
+    DTR transitive-verb-lex &
+        [ INFLECTED [ CASE-FLAG #case,
+                      IFOCUS-FLAG #ifocus ] ] ].
+
+agentfocus-lex-rule := tfocus-lex-rule-super &
+  [ DTR.ARG-ST #arg-st,
+    ARG-ST #arg-st &
+           < [ LOCAL.CAT.HEAD.CASE focus ],
+             [ LOCAL.CAT.HEAD.CASE o ] > ].
+
+patientfocus-lex-rule := tfocus-lex-rule-super &
+  [ DTR.ARG-ST #arg-st,
+    ARG-ST #arg-st &
+           < [ LOCAL.CAT.HEAD.CASE a ],
+             [ LOCAL.CAT.HEAD.CASE focus ] > ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Phrasal Types
+;;;;;;;;;;;;;;;;;;;
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].

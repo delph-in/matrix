@@ -1,0 +1,11 @@
+negmorph-suffix :=
+%suffix (* neg)
+negmorph-lex-rule.
+
+3sg-suffix :=
+%suffix (* 3sg)
+3sg-lex-rule.
+
+1pl-suffix :=
+%suffix (* 1pl)
+1pl-lex-rule.

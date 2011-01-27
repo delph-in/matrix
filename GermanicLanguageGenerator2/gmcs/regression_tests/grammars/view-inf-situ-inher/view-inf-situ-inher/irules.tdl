@@ -1,0 +1,7 @@
+imperfective-suffix :=
+%suffix (* imp)
+imperfective-lex-rule.
+
+perfective-suffix :=
+%suffix (* perf)
+perfective-lex-rule.

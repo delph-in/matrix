@@ -1,0 +1,29 @@
+;;; Nouns
+
+n1 := noun1-noun-lex &
+  [ STEM < "n1" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_n1_n_rel" ].
+
+n2 := noun2-noun-lex &
+  [ STEM < "n2" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_n2_n_rel" ].
+
+;;; Case-marking adpositions
+
+nom-marker := case-marking-adp-lex &
+  [ STEM < "NOM" >,
+    SYNSEM.LOCAL.CAT.HEAD.CASE nom ].
+
+acc-marker := case-marking-adp-lex &
+  [ STEM < "ACC" >,
+    SYNSEM.LOCAL.CAT.HEAD.CASE acc ].
+
+;;; Verbs
+
+iv := verb1-verb-lex &
+  [ STEM < "iv" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_iv_v_rel" ].
+
+tv := verb2-verb-lex &
+  [ STEM < "tv" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_tv_v_rel" ].

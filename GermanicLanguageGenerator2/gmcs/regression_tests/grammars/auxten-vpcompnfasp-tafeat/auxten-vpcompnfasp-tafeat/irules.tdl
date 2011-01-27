@@ -1,0 +1,15 @@
+presentmorph-suffix :=
+%suffix (* t1pres)
+presentmorph-lex-rule.
+
+pastmorph-suffix :=
+%suffix (* t2past)
+pastmorph-lex-rule.
+
+progmorph-suffix :=
+%suffix (* a1prog)
+progmorph-lex-rule.
+
+perfmorph-suffix :=
+%suffix (* a2perf)
+perfmorph-lex-rule.

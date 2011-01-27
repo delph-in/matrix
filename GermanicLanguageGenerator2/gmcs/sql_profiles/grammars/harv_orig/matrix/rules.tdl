@@ -1,0 +1,20 @@
+comp-head := comp-head-phrase.
+
+subj-head := subj-head-phrase.
+
+head-spec := head-spec-phrase.
+
+bare-np := bare-np-phrase.
+
+; Rule instances for head-modifier structures. Corresponding types
+; are defined in matrix.tdl.  The matrix customization script did
+; not need to add any further constraints, so no corresponding tyes
+; appear in harv2.tdl
+
+head-adj-int := head-adj-int-phrase.
+
+adj-head-int := adj-head-int-phrase.
+
+head-adj-scop := head-adj-scop-phrase.
+
+adj-head-scop := adj-head-scop-phrase.

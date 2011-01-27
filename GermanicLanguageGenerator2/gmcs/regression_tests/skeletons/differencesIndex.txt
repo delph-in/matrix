@@ -1,0 +1,18 @@
+53a54,55
+> ((:path . "Sahaptin") (:content . "Sahaptin: Sahaptin (sfd dissertation)"))
+> ((:path . "case-mixed2") (:content . "case-mixed2: mixed adpositional and morphological marking (2)"))
+54a57,60
+> ((:path . "Hindi") (:content . "Hindi: Hindi (sfd dissertation)"))
+> ((:path . "German") (:content . "German: German (sfd dissertation)"))
+> ((:path . "Fore") (:content . "Fore: Fore (sfd dissertation)"))
+> ((:path . "Dyirbal") (:content . "Dyirbal: Dyirbal (sfd dissertation)"))
+85a92,96
+> ((:path . "case-mixed-optadp") (:content . "case-mixed-optadp: case with mixed optional adpositional and morphological marking"))
+> ((:path . "case-mixed") (:content . "case-mixed: case, mixed adpositional and morphological marking"))
+> ((:path . "Finnish") (:content . "Finnish: Finnish test for morphotactics"))
+> ((:path . "Slave") (:content . "Slave: Slave test for morphotactics"))
+> ((:path . "Zulu") (:content . "Zulu: Zulu test for morphotactics"))
+92,94d102
+< ((:path . "vos-aux-after-vp") (:content . "vos-aux-after-vp: testing word order for vos languages in which the auxiliary follows its vp complement"))
+< ((:path . "vos-aux-before-vp") (:content . "vos-aux-before-vp: testing word order for vos languages with auxiliaries preceding their vp complement"))
+< ((:path . "vos-vp-aux-case-rais") (:content . "vos-vp-aux-case-rais: testing case constraints imposed by the auxiliary: here it raises the case value from its vcomp's subject"))

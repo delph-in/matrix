@@ -1,0 +1,15 @@
+finiteone-suffix :=
+%suffix (* f1)
+finiteone-lex-rule.
+
+finitetwo-suffix :=
+%suffix (* f2)
+finitetwo-lex-rule.
+
+nonfiniteone-suffix :=
+%suffix (* nf1)
+nonfiniteone-lex-rule.
+
+nonfinitetwo-suffix :=
+%suffix (* nf2)
+nonfinitetwo-lex-rule.

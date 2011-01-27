@@ -1,0 +1,22 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+;;;
+;;;  Module for optional determiners, rules file.
+;;;  Used in combination with optional determiners types file.
+;;;
+;;;  This is just a quickly hacked version so that I can
+;;;  have NPs with which to test the various major word order
+;;;  modules.  Later, we'll want to parameterize this for
+;;;  a) how it interacts with (in)definiteness (cf Borthen & 
+;;;  Haugereid) and b) how it interacts with noun classes --
+;;;  singular/plural, common/proper, etc.
+;;;
+;;;  In this version, no types file is needed, since the
+;;;  there are no constraints being added.
+
+bare-np := basic-bare-np-phrase & 
+  [ SYNSEM.LOCAL.CAT.HEAD noun ].
+
+
+
+
+

@@ -1,0 +1,19 @@
+;;; Nouns
+
+cat := noun1-noun-lex &
+  [ STEM < "cat" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_cat_n_rel" ].
+
+dog := noun2-noun-lex &
+  [ STEM < "dog" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_dog_n_rel" ].
+
+;;; Verbs
+
+slept := verb1-verb-lex &
+  [ STEM < "slept" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sleep_v_rel" ].
+
+chased := verb2-verb-lex &
+  [ STEM < "chased" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_chase_v_rel" ].

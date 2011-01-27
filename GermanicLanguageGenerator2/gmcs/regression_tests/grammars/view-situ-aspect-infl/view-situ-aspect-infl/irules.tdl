@@ -1,0 +1,15 @@
+imperfective-suffix :=
+%suffix (* imp)
+imperfective-lex-rule.
+
+perfective-suffix :=
+%suffix (* perf)
+perfective-lex-rule.
+
+situationone-suffix :=
+%suffix (* situ1)
+situationone-lex-rule.
+
+situationtwo-suffix :=
+%suffix (* situ2)
+situationtwo-lex-rule.

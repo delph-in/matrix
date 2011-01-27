@@ -1,0 +1,3 @@
+neg-suffix :=
+%suffix (* neg)
+neg-lex-rule.

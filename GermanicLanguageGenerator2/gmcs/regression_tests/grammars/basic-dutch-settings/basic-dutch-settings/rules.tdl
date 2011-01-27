@@ -1,0 +1,41 @@
+head-comp := head-comp-phrase.
+
+head-subj := head-subj-phrase.
+
+comp-head := comp-head-phrase.
+
+subj-head := subj-head-phrase.
+
+comp-head-2 := comp-head-phrase-2.
+
+comp-2-head-vc := comp-2-head-vc-phrase.
+
+subj-head-vc := subj-head-vc-phrase.
+
+aux-2nd-comp := aux-2nd-comp-phrase.
+
+comp-aux-2nd := comp-aux-2nd-phrase.
+
+noncomp-aux-2nd := noncomp-aux-2nd-phrase.
+
+insert-auxiliary := special-insert-aux-phrase.
+
+comp-head-vc := comp-head-vc-phrase.
+
+comp-aux-vc := comp-aux-vc-phrase.
+
+aux-comp-vc := aux-comp-vc-phrase.
+
+bare-np := bare-np-phrase.
+
+np1-top-coord := np1-top-coord-rule.
+
+np1-mid-coord := np1-mid-coord-rule.
+
+np1-bottom-coord := np1-bottom-coord-rule.
+
+s1-top-coord := s1-top-coord-rule.
+
+s1-mid-coord := s1-mid-coord-rule.
+
+s1-bottom-coord := s1-bottom-coord-rule.

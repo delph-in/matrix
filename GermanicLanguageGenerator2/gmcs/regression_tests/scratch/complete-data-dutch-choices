@@ -1,0 +1,186 @@
+
+version=23
+
+section=general
+language=basic-dutch-settings
+archive=no
+
+section=word-order
+word-order=v2
+argument-order=fixed
+has-dets=no
+has-aux=yes
+aux-comp-order=both
+aux-order-cond=morph
+aux-comp=v
+multiple-aux=yes
+part-vp-front=yes
+vc-placement=post
+edge-related-res=yes
+split-cluster=yes
+vc-analysis=aux-rule
+
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+ditrans-case-marking=nom-dat-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=dat-accusative
+  subcase1_name=accusative
+  subcase1_supercase=dat-accusative
+  subcase2_name=dative
+  subcase2_supercase=dat-accusative
+
+section=direct-inverse
+
+section=tense-aspect
+  nf-subform1_name=participle
+  nf-subform2_name=infinitive
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+  cs1_np=on
+  cs1_s=on
+  cs1_pat=mono
+  cs1_mark=word
+  cs1_orth=coord
+  cs1_order=before
+
+section=matrix-yes-no
+
+section=arg-opt
+
+section=lexicon
+  noun1_name=com
+  noun1_det=imp
+    noun1_stem1_orth=n1
+    noun1_stem1_pred=_n1_n_rel
+    noun1_stem2_orth=n2
+    noun1_stem2_pred=_n2_n_rel
+    noun1_stem3_orth=n3
+    noun1_stem3_pred=_n3_n_rel
+  noun-pc1_name=case-marker
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun
+    noun-pc1_lrt1_name=nominative
+      noun-pc1_lrt1_feat1_name=case
+      noun-pc1_lrt1_feat1_value=nominative
+      noun-pc1_lrt1_lri1_orth=-nom
+    noun-pc1_lrt2_name=accusative
+      noun-pc1_lrt2_feat1_name=case
+      noun-pc1_lrt2_feat1_value=accusative
+      noun-pc1_lrt2_lri1_orth=-acc
+    noun-pc1_lrt3_name=dative
+      noun-pc1_lrt3_feat1_name=case
+      noun-pc1_lrt3_feat1_value=dative
+      noun-pc1_lrt3_lri1_orth=-dat
+  verb1_name=intrans
+  verb1_valence=nominative
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_name=trans
+  verb2_valence=nominative-accusative
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+  verb3_name=ditrans
+  verb3_valence=nominative-dative-accusative
+    verb3_stem1_orth=dv
+    verb3_stem1_pred=_dv_v_rel
+  aux1_name=basic-aux
+  aux1_sem=add-pred
+  aux1_subj=np-comp-case
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=infinitive
+    aux1_stem1_orth=aux
+    aux1_stem1_pred=aux
+  aux2_name=aux1
+  aux2_sem=add-pred
+  aux2_subj=np-comp-case
+    aux2_compfeature1_name=form
+    aux2_compfeature1_value=participle
+    aux2_stem1_orth=aux1
+    aux2_stem1_pred=aux1
+    aux2_stem2_orth=aux5
+    aux2_stem2_pred=aux5
+  aux3_name=aux2
+  aux3_sem=add-pred
+  aux3_subj=np-comp-case
+    aux3_compfeature1_name=form
+    aux3_compfeature1_value=participle
+    aux3_stem1_orth=aux2
+    aux3_stem1_pred=aux2
+  aux4_name=aux3
+  aux4_sem=add-pred
+  aux4_subj=np-comp-case
+    aux4_compfeature1_name=form
+    aux4_compfeature1_value=infinitive
+    aux4_stem1_orth=aux3
+    aux4_stem1_pred=aux3
+  verb-pc1_name=verb-inflection
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=finite
+      verb-pc1_lrt1_feat1_name=form
+      verb-pc1_lrt1_feat1_value=finite
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_orth=-fin
+    verb-pc1_lrt2_name=infinitiveness
+      verb-pc1_lrt2_feat1_name=form
+      verb-pc1_lrt2_feat1_value=infinitive
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_forbid1_others=aux4
+      verb-pc1_lrt2_lri1_orth=-inf
+    verb-pc1_lrt3_name=participleness
+      verb-pc1_lrt3_feat1_name=form
+      verb-pc1_lrt3_feat1_value=participle
+      verb-pc1_lrt3_feat1_head=verb
+      verb-pc1_lrt3_feat2_name=edgerest
+      verb-pc1_lrt3_feat2_value=obligatory
+      verb-pc1_lrt3_feat2_head=verb
+      verb-pc1_lrt3_forbid1_others=aux4
+      verb-pc1_lrt3_forbid2_others=aux3
+      verb-pc1_lrt3_lri1_orth=-ptc    
+    verb-pc1_lrt4_name=partinfinitive
+      verb-pc1_lrt4_feat1_name=form
+      verb-pc1_lrt4_feat1_value=nonfinite
+      verb-pc1_lrt4_feat1_head=verb
+      verb-pc1_lrt4_feat2_name=worest
+      verb-pc1_lrt4_feat2_value=before
+      verb-pc1_lrt4_feat2_head=verb
+      verb-pc1_lrt4_forbid1_others=iverb
+      verb-pc1_lrt4_forbid2_others=tverb
+      verb-pc1_lrt4_forbid3_others=dverb
+      verb-pc1_lrt4_forbid4_others=aux1
+      verb-pc1_lrt4_forbid5_others=aux2
+      verb-pc1_lrt4_forbid6_others=aux3
+      verb-pc1_lrt4_lri1_orth=-inf   
+    verb-pc1_lrt5_name=restrictivepart
+      verb-pc1_lrt5_feat1_name=form
+      verb-pc1_lrt5_feat1_value=participle
+      verb-pc1_lrt5_feat1_head=verb
+      verb-pc1_lrt5_feat2_name=worest
+      verb-pc1_lrt5_feat2_value=after
+      verb-pc1_lrt5_feat2_head=verb
+      verb-pc1_lrt5_forbid1_others=iverb
+      verb-pc1_lrt5_forbid2_others=tverb
+      verb-pc1_lrt5_forbid3_others=dverb
+      verb-pc1_lrt5_forbid4_others=aux1
+      verb-pc1_lrt5_forbid5_others=aux2
+      verb-pc1_lrt5_forbid6_others=aux4
+      verb-pc1_lrt5_lri1_orth=-ptc     
+
+section=test-sentences
+
+section=gen-options

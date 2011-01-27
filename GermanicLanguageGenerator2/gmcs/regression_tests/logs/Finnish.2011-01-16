@@ -1,0 +1,18 @@
+[1] |opiskelija pidA-3SG omena-ELAT| |1| {-1} {2} <0|0|2>
+[3] |opiskelija pidA-ELAT omena-3SG| |0| {-1} {0} <0|0|0>
+[4] |opiskelija pidA-3SG omena-PL-ELAT| |1| {-1} {2} <0|0|2>
+[9] |opiskelija pidA-3SG omena-PL-ELAT-POSS1SG| |1| {-1} {2} <0|0|2>
+[12] |opiskelija pidA-3SG omena-ELAT-POSS1SG| |1| {-1} {2} <0|0|2>
+[15] |opiskelija pidA-3SG omena-ELAT-POSS1SG| |1| {-1} {2} <0|0|2>
+[16] |opiskelija pidA-3SG omena-PL-ELAT-POSS1SG-kin| |1| {-1} {2} <0|0|2>
+[17] |opiskelija kAvele-3SG| |1| {-1} {2} <0|0|2>
+[18] |NP kAvele-1SG| |1| {-1} {2} <0|0|2>
+[19] |NP kAvele-PAST-1SG| |1| {-1} {1} <0|0|1>
+[21] |NP kAvele-PAST| |0| {-1} {0} <0|0|0>
+[22] |NP kAvele-COND-1SG| |1| {-1} {1} <0|0|1>
+[24] |NP kAvele-COND| |0| {-1} {0} <0|0|0>
+[27] |NP kAvele-PASS-INDEF| |1| {-1} {2} <0|0|2>
+[28] |NP kAvele-PASS-PAST-INDEF| |1| {-1} {1} <0|0|1>
+[29] |NP kavele-PASS-COND-INDEF| |1| {-1} {1} <0|0|1>
+[30] |NP kavele-PASS-COND-INDEF-kin| |1| {-1} {1} <0|0|1>
+== 17

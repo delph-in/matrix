@@ -1,0 +1,7 @@
+fone-suffix :=
+%suffix (* f1)
+fone-lex-rule.
+
+ftwo-suffix :=
+%suffix (* f2)
+ftwo-lex-rule.

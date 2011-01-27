@@ -1,0 +1,15 @@
+;;; Nouns
+
+n1 := noun1-noun-lex &
+  [ STEM < "n1" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_n1_n_rel" ].
+
+;;; Verbs
+
+v1intrans := verb1-verb-lex &
+  [ STEM < "v1intrans" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_v1intrans_v_rel" ].
+
+v2trans := verb2-verb-lex &
+  [ STEM < "v2trans" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_v2trans_v_rel" ].
