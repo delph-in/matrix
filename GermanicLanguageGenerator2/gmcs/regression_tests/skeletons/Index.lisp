@@ -22,6 +22,9 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "dutch-auxrule-compl") (:content . "dutch-auxrule-compl: artificial dutch grammarwith auxrule complete"))
+((:path . "mood-buildhierarchy") (:content . "mood-buildhierarchy: testing the build your own mood hierarchy"))
+((:path . "asp-mood-contrast-options") (:content . "asp-mood-contrast-options: tests options to add simple imper/perf and subj/ind hierarchies"))
 ((:path . "subj-v-inv-obj-drop") (:content . "subj-v-inv-obj-drop: Testing interaction of subj-v inversion and object drop, as well as interaction of subj-v intersion and FORM and AUX features."))
 ((:path . "eng-qpart-inf") (:content . "eng-qpart-inf: Testing interaction of non-finite form and question particle.  Question particle should now only attach to finite sentences."))
 ((:path . "infl-q-nonfinal-suffix") (:content . "infl-q-nonfinal-suffix: Question affix as non-final in suffix string."))

@@ -8,10 +8,9 @@ class RegressionTestIndex:
   def __init__(self, index_file):
     self.file_name = index_file
     self.tests = {}
-
     f = open(index_file,'r')
     lines = f.readlines()
-
+  
     for l in lines:
         l = l.strip()
         if l:
