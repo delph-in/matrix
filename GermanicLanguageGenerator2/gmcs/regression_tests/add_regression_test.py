@@ -17,22 +17,21 @@ from gmcs.regression_tests.regressiontestindex import RegressionTestIndex
 from gmcs.choices import ChoicesFile
 
 def add(choices_file, txt_suite):
-#  cust_root = os.environ.get("CUSTOMIZATIONROOT") for now set manually
-  cust_root = "/home/antske/delphin/matrix/branches/antske/GermanicLggeGenerator/gmcs"
+  cust_root = os.environ.get("CUSTOMIZATIONROOT")
+
   # Check whether arguments correspond to existing files
 
   rt_root = cust_root + "/regression_tests/"
-  choices_file = os.path.join([rt_root, 'scratch', choices_file])
-  txt_suite = os.path.join([rt_root, 'scratch', txt_suite])
-  ch_file = choices_file[0] + "/" + choices_file[1] + "/" + choices_file[2]
-  t_suite = txt_suite[0] + "/" + txt_suite[1] + "/" + choices_file[2]
+  choices_file = os.path.join(rt_root, 'scratch', choices_file)
+  txt_suite = os.path.join(rt_root, 'scratch', txt_suite)
+
   if not os.path.exists(cust_root):
       raise ValueError, "Invalid path name for customization root."
 
-  if not os.path.exists(ch_file):
+  if not os.path.exists(choices_file):
       raise ValueError, "Invalid path name for choices file."
 
-  if not os.path.exists(t_suite):
+  if not os.path.exists(txt_suite):
       raise ValueError, "Invalid path name for txt-suite file."
 
   if not os.path.exists(rt_root + "regression-test-index"):
@@ -40,7 +39,7 @@ def add(choices_file, txt_suite):
 
   # Get the language name
 
-  ch = ChoicesFile(ch_file)
+  ch = ChoicesFile(choices_file)
   lg_name = ch.get('language')
 
   # Load up the current regression test index
@@ -84,8 +83,8 @@ def add(choices_file, txt_suite):
 
   # Copy choices file, txt-suite and profile to the appropriate places.
 
-  shutil.copy(ch_file, rt_root + "choices/" + lg_name)
-  shutil.copy(t_suite, rt_root + "txt-suites/" + lg_name)
+  shutil.copy(choices_file, rt_root + "choices/" + lg_name)
+  shutil.copy(txt_suite, rt_root + "txt-suites/" + lg_name)
   shutil.copytree(rt_root + "home/current/" + lg_name, rt_root + "home/gold/" + lg_name)
 
   # Create skeleton
