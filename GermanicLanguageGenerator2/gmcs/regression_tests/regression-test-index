@@ -44,4 +44,4 @@ infl-q-aux-verb=Questions as inflection on aux verbs.
 infl-q-final-opt-suffix=Question inflection as optional suffix after one other suffix
 infl-q-nonfinal-suffix=Question affix as non-final in suffix string.
 eng-qpart-inf=Testing interaction of non-finite form and question particle.  Question particle should now only attach to finite sentences.
-subj-v-inv-obj-drop=Testing interaction of subj-v inversion and object drop, as well as interaction of subj-v intersion and FORM and AUX features.basic-dutch-settings=first test a including partial vp using aux-rule for Dutch
+subj-v-inv-obj-drop=Testing interaction of subj-v inversion and object drop, as well as interaction of subj-v intersion and FORM and AUX features.
