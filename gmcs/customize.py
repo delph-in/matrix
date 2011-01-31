@@ -2267,7 +2267,6 @@ def customize_verbs():
 
   # Add constraints to choices to create lex rules for bipartite stems
   customize_bipartite_stems()
-  print ch
 
   # Lexical entries
   lexicon.add_literal(';;; Verbs')
@@ -2312,6 +2311,17 @@ def customize_verbs():
                     [ STEM < "' + orth + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
+
+    for stem in verb.get('bistem', []):
+      orth = stem.get('orth')
+      pred = stem.get('pred')
+      uniqid = stem.get('uniqid') #choice added by customize_bistems()
+      typedef = \
+        TDLencode(uniqid) + ' := ' + vtype + ' & \
+                    [ STEM < "' + orth + '" >, \
+                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+      lexicon.add(typedef)
+
 
 #######################################################
 def customize_users_auxtype(aux, userstype, supertype):
@@ -2899,7 +2909,7 @@ def customize_matrix(path, arch_type, destination=None):
                           argument_optionality.add_lexrules,
                           direct_inverse.add_lexrules]
   to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
-                                              mylang, irules, lrules)
+                                              mylang, irules, lrules, lexicon)
   process_cfv_list(to_cfv)
 
   # Call the other customization functions

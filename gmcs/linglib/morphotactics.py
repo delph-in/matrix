@@ -84,7 +84,7 @@ def get_input_map(pch):
 ### MAIN LOGIC METHODS ###
 ##########################
 
-def customize_inflection(choices, add_methods, mylang, irules, lrules):
+def customize_inflection(choices, add_methods, mylang, irules, lrules, lextdl):
   """
   Process the information in the given choices file and add the rules
   and types necessary to model the inflectional system into the irules,
@@ -98,7 +98,7 @@ def customize_inflection(choices, add_methods, mylang, irules, lrules):
   pch = customize_lexical_rules(choices)
   # write_rules currently returns a list of items needing feature
   # customization. Hopefully we can find a better solution
-  return write_rules(pch, mylang, irules, lrules)
+  return write_rules(pch, mylang, irules, lrules, lextdl)
 
 def customize_lexical_rules(choices):
   """
@@ -324,7 +324,7 @@ def get_all_flags(out_or_in):
 ### OUTPUT METHODS ###
 ######################
 
-def write_rules(pch, mylang, irules, lrules):
+def write_rules(pch, mylang, irules, lrules, lextdl):
   all_flags = get_all_flags('out').union(get_all_flags('in'))
   write_inflected_avms(mylang, all_flags)
   mylang.set_section('lexrules')
@@ -333,11 +333,11 @@ def write_rules(pch, mylang, irules, lrules):
     mylang.set_section(get_section_from_pc(pc))
     # if it's a lexical type, just write flags and move on
     if pc.identifier_suffix == 'lex-super':
-      write_pc_flags(mylang, pc, all_flags)
+      write_pc_flags(mylang, lextdl, pc, all_flags)
       continue
     # only lexical rules from this point
     write_supertypes(mylang, pc.identifier(), pc.supertypes)
-    write_pc_flags(mylang, pc, all_flags)
+    write_pc_flags(mylang, lextdl, pc, all_flags)
     for lrt in sorted(pc.nodes.values(), key=lambda x: x.tdl_order):
       write_i_or_l_rules(irules, lrules, lrt, pc.order)
       # merged LRT/PCs have the same identifier, so don't write supertypes here
@@ -399,7 +399,7 @@ def write_inflected_avms(mylang, all_flags):
     mylang.add('''inflected :+ [%(flag)s luk].''' % {'flag': flag})
     mylang.add('''infl-satisfied :+ [%(flag)s na-or-+].''' % {'flag': flag})
 
-def write_pc_flags(mylang, pc, all_flags):
+def write_pc_flags(mylang, lextdl, pc, all_flags):
   """
   Go down the PC hierarchy and write input and output flags. If no
   output flags have been written, copy up all flags. Otherwise, copy
@@ -410,7 +410,7 @@ def write_pc_flags(mylang, pc, all_flags):
   to_copy = {}
   out_flags = set(pc.flags['out'].keys())
   for mn in pc.roots():
-    to_copy[mn.key] = write_mn_flags(mylang, mn, out_flags, all_flags)
+    to_copy[mn.key] = write_mn_flags(mylang, lextdl, mn, out_flags, all_flags)
   # first write copy-ups for the root nodes
   copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
   # then, if any remain, copy up on the pc (if a lexrule)
@@ -426,23 +426,26 @@ def write_pc_flags(mylang, pc, all_flags):
       write_initial_flags(mylang, root,
                           initial_flags.difference(root.flags['out'].keys()))
 
-def write_mn_flags(mylang, mn, output_flags, all_flags):
-  write_flags(mylang, mn)
+def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags):
+  if mn.instance:
+    write_flags(lextdl, mn)
+  else:
+    write_flags(mylang, mn)
   to_copy = {}
   for sub_mn in mn.children().values():
-    to_copy[sub_mn.key] = write_mn_flags(mylang, sub_mn,
+    to_copy[sub_mn.key] = write_mn_flags(mylang, lextdl, sub_mn,
                             output_flags.union(set(mn.flags['out'].keys())),
                             all_flags)
   copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
   return all_flags.difference(output_flags).difference(copied_flags)
 
-def write_flags(mylang, mn):
+def write_flags(tdlfile, mn):
   for flag in mn.flags['in']:
-    mylang.add('''%(id)s := [ DTR.INFLECTED.%(flag)s %(val)s ].''' %\
+    tdlfile.add('''%(id)s := [ DTR.INFLECTED.%(flag)s %(val)s ].''' %\
                {'id': mn.identifier(), 'flag': flag_name(flag),
                 'val': mn.flags['in'][flag]})
   for flag in mn.flags['out']:
-    mylang.add('''%(id)s := [ INFLECTED.%(flag)s %(val)s ].''' %\
+    tdlfile.add('''%(id)s := [ INFLECTED.%(flag)s %(val)s ].''' %\
                {'id': mn.identifier(), 'flag': flag_name(flag),
                 'val': mn.flags['out'][flag]})
 
@@ -470,6 +473,12 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
   return copied_flags
 
 def write_initial_flags(mylang, mn, initial_flags):
+  """
+  Write initial flags for lexical types and lexical entries.
+  As of 2011/1/31 only bipartite stems give rise to lex entries
+  with flags.
+
+  """
   for flag in initial_flags:
     mylang.add('''%(id)s := [ INFLECTED.%(flag)s na-or--].''' %\
                {'id': mn.identifier(), 'flag': flag_name(flag),
