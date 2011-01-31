@@ -471,7 +471,6 @@ def write_lex_entry_with_flags(lextdl, mn, choices):
   with the same identifier but rather disambiguates identifiers,
   this function writes all the info about each bistem all in one go.
   """
-  # Look up with bistem we're dealing with, from uniqid
   uniqid = mn.name
   bistem_prefix = get_stem_prefix_from_uniqid(uniqid, choices)
   bistem = choices.get(bistem_prefix)
@@ -483,11 +482,8 @@ def write_lex_entry_with_flags(lextdl, mn, choices):
                     [ STEM < "' + orth + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"'
   for flag in mn.flags['out']:
-    print flag_name(flag)
-    print mn.flags['out'][flag]
     typedef = typedef + ''', INFLECTED.%(flag)s %(val)s ''' %\
         {'flag': flag_name(flag), 'val':mn.flags['out'][flag]}
-    print typedef
   typedef = typedef + ' ].'
   lextdl.add(typedef)
 
