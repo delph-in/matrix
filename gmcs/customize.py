@@ -2312,15 +2312,6 @@ def customize_verbs():
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
-    for stem in verb.get('bistem', []):
-      orth = stem.get('orth')
-      pred = stem.get('pred')
-      uniqid = stem.get('uniqid') #choice added by customize_bistems()
-      typedef = \
-        TDLencode(uniqid) + ' := ' + vtype + ' & \
-                    [ STEM < "' + orth + '" >, \
-                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-      lexicon.add(typedef)
 
 
 #######################################################

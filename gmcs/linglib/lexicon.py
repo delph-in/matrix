@@ -43,8 +43,6 @@ def lexical_type_hierarchy(choices, lexical_supertype):
             # what I want.
             lth.add_node(LexicalType(stem.full_key, stem['uniqid'], 
                                      parents={lt.full_key:lth.nodes[lt.full_key]}, entry=True))
-    print lth
-
 
       # worry about printing out constraints on lex entries
       # worry about not printing lex entries as types/rules (since they're now in lth)

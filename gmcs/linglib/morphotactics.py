@@ -8,6 +8,8 @@ from gmcs.linglib.lexbase import (MorphotacticNode, PositionClass,
                                   LEXICAL_SUPERTYPES)
 from gmcs.lib import Hierarchy
 from gmcs.utils import get_name
+from gmcs.utils import TDLencode
+
 
 ### Contents
 # 1. Module Variables
@@ -80,6 +82,28 @@ def get_input_map(pch):
       inp_map[i_s] += [pc]
   return inp_map
 
+def get_stem_prefix_from_uniqid(uniqid, choices):
+  """
+  Helper function to look up stem prefix in choices file
+  based on uniqid value. Predicated on fact that customize_bistems
+  is putting in unique values to pick out each bistem.
+  """
+  #FIXME: Need to add some error checking here.
+  for verb in choices.get('verb'):
+    for bistem in verb.get('bistem'):
+      if bistem.get('uniqid') == uniqid:
+        return bistem.full_key
+       
+def get_vtype(bistem, choices):
+  """
+  Helper function to look up verb type in choices file
+  for a particular bistem.
+  """
+  verb_prefix = bistem.split('_')[0]
+  verb = choices.get(verb_prefix)
+  return get_name(verb) + '-verb-lex'
+
+
 ##########################
 ### MAIN LOGIC METHODS ###
 ##########################
@@ -98,7 +122,7 @@ def customize_inflection(choices, add_methods, mylang, irules, lrules, lextdl):
   pch = customize_lexical_rules(choices)
   # write_rules currently returns a list of items needing feature
   # customization. Hopefully we can find a better solution
-  return write_rules(pch, mylang, irules, lrules, lextdl)
+  return write_rules(pch, mylang, irules, lrules, lextdl, choices)
 
 def customize_lexical_rules(choices):
   """
@@ -324,7 +348,7 @@ def get_all_flags(out_or_in):
 ### OUTPUT METHODS ###
 ######################
 
-def write_rules(pch, mylang, irules, lrules, lextdl):
+def write_rules(pch, mylang, irules, lrules, lextdl, choices):
   all_flags = get_all_flags('out').union(get_all_flags('in'))
   write_inflected_avms(mylang, all_flags)
   mylang.set_section('lexrules')
@@ -333,11 +357,11 @@ def write_rules(pch, mylang, irules, lrules, lextdl):
     mylang.set_section(get_section_from_pc(pc))
     # if it's a lexical type, just write flags and move on
     if pc.identifier_suffix == 'lex-super':
-      write_pc_flags(mylang, lextdl, pc, all_flags)
+      write_pc_flags(mylang, lextdl, pc, all_flags, choices)
       continue
     # only lexical rules from this point
     write_supertypes(mylang, pc.identifier(), pc.supertypes)
-    write_pc_flags(mylang, lextdl, pc, all_flags)
+    write_pc_flags(mylang, lextdl, pc, all_flags, choices)
     for lrt in sorted(pc.nodes.values(), key=lambda x: x.tdl_order):
       write_i_or_l_rules(irules, lrules, lrt, pc.order)
       # merged LRT/PCs have the same identifier, so don't write supertypes here
@@ -399,7 +423,7 @@ def write_inflected_avms(mylang, all_flags):
     mylang.add('''inflected :+ [%(flag)s luk].''' % {'flag': flag})
     mylang.add('''infl-satisfied :+ [%(flag)s na-or-+].''' % {'flag': flag})
 
-def write_pc_flags(mylang, lextdl, pc, all_flags):
+def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
   """
   Go down the PC hierarchy and write input and output flags. If no
   output flags have been written, copy up all flags. Otherwise, copy
@@ -410,7 +434,7 @@ def write_pc_flags(mylang, lextdl, pc, all_flags):
   to_copy = {}
   out_flags = set(pc.flags['out'].keys())
   for mn in pc.roots():
-    to_copy[mn.key] = write_mn_flags(mylang, lextdl, mn, out_flags, all_flags)
+    to_copy[mn.key] = write_mn_flags(mylang, lextdl, mn, out_flags, all_flags, choices)
   # first write copy-ups for the root nodes
   copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
   # then, if any remain, copy up on the pc (if a lexrule)
@@ -426,18 +450,46 @@ def write_pc_flags(mylang, lextdl, pc, all_flags):
       write_initial_flags(mylang, root,
                           initial_flags.difference(root.flags['out'].keys()))
 
-def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags):
+def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
   if mn.instance:
-    write_flags(lextdl, mn)
+    # for lex-entries, we also need to write the stem and pred information
+    # since lexicon is a TDL with merge_by_default set to False.
+    write_lex_entry_with_flags(lextdl, mn, choices)
   else:
     write_flags(mylang, mn)
   to_copy = {}
   for sub_mn in mn.children().values():
     to_copy[sub_mn.key] = write_mn_flags(mylang, lextdl, sub_mn,
                             output_flags.union(set(mn.flags['out'].keys())),
-                            all_flags)
+                            all_flags, choices)
   copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
   return all_flags.difference(output_flags).difference(copied_flags)
+
+def write_lex_entry_with_flags(lextdl, mn, choices):
+  """
+  Because the lexicon TDLfile doesn't merge tdl statements
+  with the same identifier but rather disambiguates identifiers,
+  this function writes all the info about each bistem all in one go.
+  """
+  # Look up with bistem we're dealing with, from uniqid
+  uniqid = mn.name
+  bistem_prefix = get_stem_prefix_from_uniqid(uniqid, choices)
+  bistem = choices.get(bistem_prefix)
+  vtype = get_vtype(bistem_prefix, choices)
+  orth = bistem.get('orth')
+  pred = bistem.get('pred')
+  typedef = \
+      TDLencode(uniqid) + ' := ' + vtype + ' & \
+                    [ STEM < "' + orth + '" >, \
+                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"'
+  for flag in mn.flags['out']:
+    print flag_name(flag)
+    print mn.flags['out'][flag]
+    typedef = typedef + ''', INFLECTED.%(flag)s %(val)s ''' %\
+        {'flag': flag_name(flag), 'val':mn.flags['out'][flag]}
+    print typedef
+  typedef = typedef + ' ].'
+  lextdl.add(typedef)
 
 def write_flags(tdlfile, mn):
   for flag in mn.flags['in']:
