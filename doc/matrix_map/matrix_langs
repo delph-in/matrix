@@ -51,6 +51,7 @@ Pali	pli	Indo-Aryan	Frowein	2010
 Pashto, Southern	pst	IE	Kauhl/Scott	2010
 Polish	pol	IE	Unsworth	2004
 Portuguese	por	IE	Walsh	2004
+Portuguese	por	IE 	LxGram	2005
 Romanian	ron	IE	Cohen	2006
 Russian	rus	IE	Dormer	2004
 Russian	rus	IE	Gracheva/Suskic	2010
@@ -71,7 +72,7 @@ W.Sisaala	ssl	Niger-Congo	Moran	2006
 Welsh	cym	IE, Celtic	Mead	2008
 Zulu	zul	Niger-Congo	O'Hara	2007
 Mandarin	cmn	Sino-Tibetan	Hillard/Flickinger	2009
-Bulgarian	bul	IE	Student/Flickinger	2010
+Bulgarian	bul	IE	Osenova/Flickinger	2010
 Maltese	mlt	Afro-Asiatic	Saleem/Bender	2010
 Wambaya	wmb	Australian	Bender	2007
 Hindi	hin	IE	Sharma	2007
@@ -89,3 +90,4 @@ West Greenlandic	kal	Eskimo-Aleut	Unknown	2009
 Arabic	arb	Afro-Asiatic	Saleem	2010
 Finnish	fin	Uralic	Saleem	2010
 Tamil	tam	Dravidian	Saleem	2010
+Georgian	kat		Borisova	2010
