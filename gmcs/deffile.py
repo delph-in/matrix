@@ -834,6 +834,10 @@ class MatrixDefFile:
           vars[iter_var] = iter_num
 
           # new_prefix[:-1] trims the trailing '_'
+          html += '<span id="' + new_prefix[:-1] + 'button" ' + \
+                  'onclick="toggle_display(\'' + \
+                  new_prefix[:-1] + '\',\'' + new_prefix[:-1] + 'button\')"' + \
+                  '>&#9658;</span> '
           html += '<div class="iterator" id="' + new_prefix[:-1] + '">\n'
           html += html_delbutton(new_prefix[:-1])
           html += '<div class="iterframe">'
