@@ -1,7 +1,0 @@
-nfmorph-suffix :=
-%suffix (* nf)
-nfmorph-lex-rule.
-
-finmorph-suffix :=
-%suffix (* fin)
-finmorph-lex-rule.
