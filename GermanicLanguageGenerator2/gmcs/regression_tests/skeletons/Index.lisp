@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "german-artificial-basic-compl") (:content . "german-artificial-basic-compl: acl submitted version basic analysis for german complete set"))
 ((:path . "dutch-auxrule-compl") (:content . "dutch-auxrule-compl: artificial dutch grammarwith auxrule complete"))
 ((:path . "mood-buildhierarchy") (:content . "mood-buildhierarchy: testing the build your own mood hierarchy"))
 ((:path . "asp-mood-contrast-options") (:content . "asp-mood-contrast-options: tests options to add simple imper/perf and subj/ind hierarchies"))

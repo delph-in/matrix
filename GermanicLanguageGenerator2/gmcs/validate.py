@@ -8,6 +8,7 @@ import re
 import os
 
 from gmcs import tdl
+from gmcs import customize
 from gmcs.choices import ChoicesFile
 from gmcs.utils import get_name
 
@@ -1119,7 +1120,16 @@ def validate(ch, extra = False):
   validate_coordination(ch, vr)
   validate_yesno_questions(ch, vr)
   validate_lexicon(ch, vr)
-  mylang = ch.get('language')
+### starting with temporary stuff
+  destination = None
+  path = 'regression_tests/grammars/'
+  destination = destination or os.path.dirname(path)
+  language = ch['language']
+
+  grammar_path = customize.get_grammar_path(ch.get('iso-code', language).lower(),
+                                  language.lower(), destination)
+  mylang =  tdl.TDLfile(os.path.join(grammar_path, language.lower() + '.tdl'))
+### end temporary stuff (until no mylang needed for morphotactics)
   gmcs.linglib.morphotactics.validate(ch, vr, mylang)
   validate_test_sentences(ch, vr)
 
