@@ -1,7 +1,0 @@
-nonfinite-suffix :=
-%suffix (* nf)
-nonfinite-lex-rule.
-
-finite-suffix :=
-%suffix (* fin)
-finite-lex-rule.

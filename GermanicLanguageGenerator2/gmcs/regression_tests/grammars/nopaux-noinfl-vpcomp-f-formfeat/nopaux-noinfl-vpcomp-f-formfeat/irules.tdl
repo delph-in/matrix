@@ -1,7 +1,0 @@
-finiteone-suffix :=
-%suffix (* f1)
-finiteone-lex-rule.
-
-finitetwo-suffix :=
-%suffix (* f2)
-finitetwo-lex-rule.
