@@ -1234,14 +1234,14 @@ BeginIter verb{i} "a Verb Type" 2
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect other-slot "Verb {i} requires" "<p>Verb {i} requires one of the following slots: " "</p>"
+    MultiSelect others "Verb {i} requires" "<p>Verb {i} requires one of the following slots: " "</p>"
     fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    Select other-slot "Verb {i} forbids" "<p>Verb {i} forbids the following slot: " "</p>"
+    Select others "Verb {i} forbids" "<p>Verb {i} forbids the following slot: " "</p>"
     fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
@@ -1336,14 +1336,14 @@ BeginIter aux{i} "an Auxiliary Type"
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect other-slot "Aux {i} requires" "<p>Aux {i} requires one of the following slots: " "</p>"
+    MultiSelect others "Aux {i} requires" "<p>Aux {i} requires one of the following slots: " "</p>"
     fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    Select other-slot "Aux {i} forbids" "<p>Aux {i} forbids the following slot: " "</p>"
+    Select others "Aux {i} forbids" "<p>Aux {i} forbids the following slot: " "</p>"
     fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
@@ -1501,14 +1501,14 @@ BeginIter det{i} "a Determiner"
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect other-slot "Determiner {i} requires" "<p>Determiner {i} requires one of the following slots: " "</p>"
+    MultiSelect others "Determiner {i} requires" "<p>Determiner {i} requires one of the following slots: " "</p>"
     fillregex det-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    Select other-slot "Determiner {i} forbids" "<p>Determiner {i} forbids the following slot: " "</p>"
+    MultiSelect others "Determiner {i} requires" "<p>Determiner {i} requires one of the following slots: " "</p>"
     fillregex det-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
