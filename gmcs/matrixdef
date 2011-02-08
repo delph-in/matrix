@@ -1011,7 +1011,7 @@ attach directly to stems, the input will be a lexical type; for
 morphemes that attach to already-inflected stems, the input will be
 another slot.</p>"
 
-Label "<a id=\"toggle_all_lex_button\" onclick=\"toggle_all_display_lex(1)\">&#9658; all</a>"
+Label "<a id=\"toggle_all_lex_button\" onclick=\"toggle_all_display_lex(0)\">&#9660; all sections</a>"
 
 Separator
 
