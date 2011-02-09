@@ -836,8 +836,11 @@ class MatrixDefFile:
           # new_prefix[:-1] trims the trailing '_'
 
           # the show/hide button gets placed before each iterator
-          # as long as it's not a stem or feature iterator
-          if new_prefix[:-1].find('feat')==-1 and new_prefix[:-1].find('stem')==-1:
+          # as long as it's not a stem/feature/forbid/require iterator
+          if new_prefix[:-1].find('feat')==-1 and \
+                  new_prefix[:-1].find('stem')==-1 and \
+                  new_prefix[:-1].find('require')==-1 and \
+                  new_prefix[:-1].find('forbid')==-1:
             html += '<a id="' + new_prefix[:-1] + 'button" ' + \
                     'onclick="toggle_display_lex(\'' + \
                     new_prefix[:-1] + '\',\'' + new_prefix[:-1] + 'button\')"' + \
