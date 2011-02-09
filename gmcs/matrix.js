@@ -140,8 +140,11 @@ function toggle_all_display_lex(on)
   {
     iter = iters[x];
     if(iter.id.search('TEMPLATE')==-1 && + //don't mess with display of TEMPLATES
-       iter.id.search('feat') == -1 && + //feature values are iters that shouldn't show/hide
-       iter.id.search('stem') == -1){ //stem values are also iters that needn't show/hide
+       iter.id.search('feat') == -1 && + //feat/stem/forbid/requires/lri iterators
+       iter.id.search('stem') == -1 && + //needn't show/hide
+       iter.id.search('forbid') == -1 && + 
+       iter.id.search('requires') == -1 && +
+       iter.id.search('lri') == -1){ 
       button = document.getElementById(iter.id+'button');
       if(on==1){
         if(iter.style.display == 'block' || iter.style.display == '')
@@ -295,16 +298,17 @@ function do_clone_region(id, iter_var, bAnim)
   n.style.display = '';
 
   //if the new iter is a stem or feature iterator, 
-  //or a morphotactics forbid or require iterator,
+  //or a morphotactics forbid or require or lri iterator,
   //don't add a show/hide button
   if(n.id.search('stem') == -1 && +
      n.id.search('feat') == -1 && +
      n.id.search('require') == -1 && +
-     n.id.search('forbid') == -1)
+     n.id.search('forbid') == -1 && +
+     n.id.search('lri') == -1 )
   {//otherwise go in here and add the button
     var b = document.createElement("a");
     b.id = n.id+'button';
-    b.innerHTML = '&#9660; '+n.id;
+    b.innerHTML = '&#9660; '+n.id + '<br />';
     b.setAttribute('onclick', "toggle_display_lex('"+n.id+"', '"+n.id+"button')");
     a.parentNode.insertBefore(b, a);
   }
