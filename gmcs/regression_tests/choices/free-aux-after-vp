@@ -9,6 +9,7 @@ word-order=free
 has-dets=no
 has-aux=yes
 aux-comp-order=after
+multiple-aux=yes
 
 section=number
 

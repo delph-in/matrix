@@ -22,6 +22,8 @@ def add(choices_file, txt_suite):
   # Check whether arguments correspond to existing files
 
   rt_root = cust_root + "/regression_tests/"
+  choices_file = os.path.join(rt_root, 'scratch', choices_file)
+  txt_suite = os.path.join(rt_root, 'scratch', txt_suite)
 
   if not os.path.exists(cust_root):
       raise ValueError, "Invalid path name for customization root."

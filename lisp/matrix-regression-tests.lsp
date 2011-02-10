@@ -37,18 +37,22 @@
     (let* ((lg-name (get-language-name choices))
 	   (cmd (format nil "~a~a ~a ~a ~a~a~a" 
 			*customization-root* "regression_tests/call-customize"
-			*customization-root* 
-			choices *customization-root* "regression_tests/grammars/"
-			lg-name)))
+            *customization-root*
+            choices
+            *customization-root* "regression_tests/grammars/" lg-name)))
       (excl:run-shell-command cmd))
   
     ;;; Load grammar into the LKB
 
     (let* ((lg-name (get-language-name choices))
+	   (iso (get-iso-code choices))
+	   (dir-name (if iso
+			 iso
+		       (string-downcase lg-name)))
 	   (script (format nil "~a~a~a~a~a~a"
 			   *customization-root*
 			   "regression_tests/grammars/"
-			   lg-name "/" lg-name
+			   lg-name "/" dir-name
 			   "/lkb/script")))
       (read-script-file-aux script))
   
@@ -165,10 +169,14 @@
   ;;; Load grammar into the LKB
 
     (let* ((lg-name (get-language-name choices-path))
+	   (iso (get-iso-code choices-path))
+	   (dir-name (if iso
+			 iso
+		       (string-downcase lg-name)))
 	   (script (format nil "~a~a~a~a~a~a"
 			   *customization-root*
 			   "regression_tests/grammars/"
-			   lg-name "/" lg-name
+			   lg-name "/" dir-name
 			   "/lkb/script")))
       (read-script-file-aux script)))
   
@@ -216,6 +224,7 @@
    ;;; Give instructions on how to open window showing results
   
   (format t "To look at these interactively, do the following in the [incr tsdb()] podium:~%")
+  (format t "Options | Database Root: set to matrix/gmcs/regression_tests/home/~%")
   (format t "Update | All tsdb(1) status~%")
   (format t "Right click on gold/~a~%" lg-name)
   (format t "Left click on current/~a~%" lg-name)
@@ -291,6 +300,22 @@
 	lg-name
       (error "Invalid choices file: No language name given."))))
 
+(defun get-iso-code (choices)
+
+  ;;; Extract iso code from choices file if there is one,
+  ;;; since that will be used for the directory in that case.
+  ;;; Assume it's stored in a line that says iso-code=iso
+  
+  (let ((iso nil))
+    (with-open-file (stream choices)
+      (loop for line = (read-line stream nil)
+	  until (eq line nil)
+	  do (if (and (> (length line) 9)
+		      (equal (subseq line 0 9) "iso-code="))
+		 (setf iso (subseq line 9)))))
+    iso))
+
+
 ;;; Function for cleaning up files when you're done with dealing
 ;;; with a regression-test interactively.  This will leave behind whatever
 ;;; is in choices/, txt-suites/, skeletons/, and home/gold/, but
@@ -305,12 +330,10 @@
   ;;; Remove grammar
   
     (excl:run-shell-command (format nil "rm -r ~a/grammars/~a" path lg-name))
-  
-  ;;; Remove log files (.tex, .aux, .dvi)
-    
-    (excl:run-shell-command (format nil "rm ~a/logs/~a.tex" path lg-name))
-    (excl:run-shell-command (format nil "rm ~a/logs/~a.aux" path lg-name))
-    (excl:run-shell-command (format nil "rm ~a/logs/~a.dvi" path lg-name))
+
+  ;;; Remove logs
+
+    (excl:run-shell-command (format nil "rm ~a/logs/~a*" path lg-name))
     
   ;;; Remove profile ... or not: these often can't be removed, and
   ;;; get over-written by [incr tsdb()] anyway.

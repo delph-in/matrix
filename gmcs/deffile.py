@@ -861,8 +861,14 @@ class MatrixDefFile:
         # write out the "anchor" marking the end of the iterator and
         # the "Add" button
         html += '<div class="anchor" id="' + \
-                prefix + iter_name + '_ANCHOR"></div>\n'
-        html += '<p><input type="button" name="" ' + \
+                prefix + iter_name + '_ANCHOR"></div>\n<p>'
+        # add any iterator-nonspecific errors here
+        if prefix + iter_name in vr.errors:
+          html += html_error_mark(vr.errors[prefix + iter_name])
+        elif prefix + iter_name in vr.warnings:
+          html += html_warning_mark(vr.warnings[prefix + iter_name])
+        # finally add the button
+        html += '<input type="button" name="" ' + \
                 'value="Add ' + label + '" ' + \
                 'onclick="clone_region(\'' + \
                 prefix + iter_name + '\', \'' + \

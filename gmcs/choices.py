@@ -6,6 +6,7 @@
 import re
 import sys
 from gmcs.util.misc import safe_int, get_valid_lines
+from gmcs.linglib import case
 
 ######################################################################
 # globals
@@ -29,26 +30,39 @@ class ChoicesFileParseError(Exception):
 class ChoiceCategory:
   def __init__(self, full_key=None):
     self.full_key = full_key
+    # When safe_get is true, index operations (e.g. choices['key']) will
+    # return the default value if the key (or index) doesn't exist
+    self.safe_get = True
 
   def get(self, key, default=None):
+    # turn off safe_get so we can catch exceptions
+    self.safe_get = False
     keys = [safe_int(k) for k in split_variable_key(key)]
     d = self
     try:
       for k in keys:
         d = d[k]
     except KeyError:
-      return default or ''
+      d = default or ''
     except IndexError:
-      return default or ChoiceDict()
+      d = default or ChoiceDict()
+    # reset safe_get
+    self.safe_get = True
     return d
 
 class ChoiceDict(ChoiceCategory, dict):
 
   def __getitem__(self, key):
     cur, remaining = get_next_key(key)
-    retval = dict.__getitem__(self, key)
-    if remaining:
-      retval = retval[remaining]
+    try:
+      retval = dict.__getitem__(self, key)
+      if remaining:
+        retval = retval[remaining]
+    except KeyError, e:
+      if self.safe_get:
+        retval = ''
+      else:
+        raise e
     return retval
 
   def __setitem__(self, key, value):
@@ -79,14 +93,28 @@ class ChoiceDict(ChoiceCategory, dict):
             return int(result.group(0))
     return None
 
+  def __str__(self):
+    return '\n'.join(
+      '='.join(['_'.join([self.full_key, key]) if self.full_key else key,
+                self[key]]) \
+       if not isinstance(self[key], ChoiceList) \
+       else str(self[key])
+       for key in self)
+
 class ChoiceList(ChoiceCategory, list):
 
   def __getitem__(self, key):
     index, remaining = get_next_key(key)
-    # subtract 1 for 1-based indices
-    retval = list.__getitem__(self, index - 1)
-    if remaining:
-      retval = retval[remaining]
+    try:
+      # subtract 1 for 1-based indices
+      retval = list.__getitem__(self, index - 1)
+      if remaining:
+        retval = retval[remaining]
+    except IndexError, e:
+      if self.safe_get:
+        retval = ChoiceDict()
+      else:
+        raise e
     return retval
 
   def __setitem__(self, key, value):
@@ -106,7 +134,7 @@ class ChoiceList(ChoiceCategory, list):
     if remaining:
       del self[cur][remaining]
     # delete only if the user specified this list
-    elif cur in self:
+    elif cur <= list.__len__(self):
       # but don't actually delete list items, since that breaks indexing
       self[cur] = ChoiceDict()
 
@@ -138,6 +166,9 @@ class ChoiceList(ChoiceCategory, list):
   def next_iter_num(self):
     if len(self) == 0: return 1
     return (self.get_last().iter_num() or 0) + 1
+
+  def __str__(self):
+    return '\n'.join(str(item) for item in self)
 
 ######################################################################
 # Helper functions
@@ -199,7 +230,7 @@ def get_next_key(complex_key):
 
 class ChoicesFile:
 
-  # initialize by passing either a file name or ???file handle
+  # initialize by passing either a file name or file handle
   def __init__(self, choices_file=None):
 
     self.cached_values = {}
@@ -217,6 +248,9 @@ class ChoicesFile:
           f.close()
       except IOError:
         pass # TODO: we should really be logging these
+
+  def __str__(self):
+    return str(self.choices)
 
   ############################################################################
   ### Choices file parsing functions
@@ -337,7 +371,7 @@ class ChoicesFile:
     Convert choices file lines before they are parsed. A choice can be
     removed by setting the key to None in the conversion method. This
     should only be done to ensure old choices files can be loaded (e.g.
-    changing noun1 to noun1_orth), and any actual conversion should be
+    changing noun1 to noun1_value), and any actual conversion should be
     done in postparse upreving.
     """
     new_lines = []
@@ -346,12 +380,11 @@ class ChoicesFile:
         (key, value) = line.split('=',1)
         if key in ('section', 'version'):
           continue
-        # 3 to 4
-        elif key in ('noun1', 'noun2', 'det1', 'det2'):
-          key += '_orth'
-        # 18 to 19
-        elif key.startswith('sentence'):
-          key += '_orth'
+        # currently the only problem is lines ending with numerals.
+        # add a generic key ("value") after these to make them loadable.
+        if key[-1].isdigit():
+          key += '_value'
+        # add back to the lines
         if key is not None:
           new_lines += ['='.join([key, value])]
       except ValueError:
@@ -552,83 +585,6 @@ class ChoicesFile:
     return result
 
 
-  # cases()
-  #   Create and return a list containing information about the cases
-  #   in the language described by the current choices.  This list consists
-  #   of tuples with three values:
-  #     [canonical name, friendly name, abbreviation]
-  def cases(self):
-    # first, make two lists: the canonical and user-provided case names
-    cm = self.get('case-marking')
-    canon = []
-    user = []
-    if cm == 'nom-acc':
-      canon.append('nom')
-      user.append(self.choices[cm + '-nom-case-name'])
-      canon.append('acc')
-      user.append(self.choices[cm + '-acc-case-name'])
-    elif cm == 'erg-abs':
-      canon.append('erg')
-      user.append(self.choices[cm + '-erg-case-name'])
-      canon.append('abs')
-      user.append(self.choices[cm + '-abs-case-name'])
-    elif cm == 'tripartite':
-      canon.append('s')
-      user.append(self.choices[cm + '-s-case-name'])
-      canon.append('a')
-      user.append(self.choices[cm + '-a-case-name'])
-      canon.append('o')
-      user.append(self.choices[cm + '-o-case-name'])
-    elif cm in ['split-s']:
-      canon.append('a')
-      user.append(self.choices[cm + '-a-case-name'])
-      canon.append('o')
-      user.append(self.choices[cm + '-o-case-name'])
-    elif cm in ['fluid-s']:
-      a_name = self.choices[cm + '-a-case-name']
-      o_name = self.choices[cm + '-o-case-name']
-      canon.append('a+o')
-      user.append('fluid')
-      canon.append('a')
-      user.append(a_name)
-      canon.append('o')
-      user.append(o_name)
-    elif cm in ['split-n', 'split-v']:
-      canon.append('nom')
-      user.append(self.choices[cm + '-nom-case-name'])
-      canon.append('acc')
-      user.append(self.choices[cm + '-acc-case-name'])
-      canon.append('erg')
-      user.append(self.choices[cm + '-erg-case-name'])
-      canon.append('abs')
-      user.append(self.choices[cm + '-abs-case-name'])
-    elif cm in ['focus']:
-      canon.append('focus')
-      user.append(self.choices[cm + '-focus-case-name'])
-      canon.append('a')
-      user.append(self.choices[cm + '-a-case-name'])
-      canon.append('o')
-      user.append(self.choices[cm + '-o-case-name'])
-
-    # fill in any additional cases the user has specified
-    for case in self.get('case'):
-      canon.append(case['name'])
-      user.append(case['name'])
-
-    # if possible without causing collisions, shorten the case names to
-    # three-letter abbreviations; otherwise, just use the names as the
-    # abbreviations
-    abbrev = [ l[0:3] for l in user ]
-    if len(set(abbrev)) != len(abbrev):
-      abbrev = user
-
-    cases = []
-    for i in range(0, len(canon)):
-      cases.append([canon[i], user[i], abbrev[i]])
-
-    return cases
-
-
   # patterns()
   #   Create and return a list containing information about the
   #   case-marking patterns implied by the current case choices.
@@ -649,7 +605,7 @@ class ChoicesFile:
   #   marking pattern.
   def patterns(self):
     cm = self.get('case-marking')
-    cases = self.cases()
+    cases = case.case_names(self)
 
     patterns = []
 
@@ -881,7 +837,16 @@ class ChoicesFile:
   #   This list consists of tuples:
   #     [aspect name]
   def aspects(self):
-    return [[aspect['name']] for aspect in self.get('aspect')]
+    aspects = []
+
+    for asp in self.get('aspect'):
+      aspects += [[asp['name']]]
+
+    if len(aspects) == 0 and ('perimper' in self.choices):
+      for asp in ('perfective', 'imperfective'):
+        aspects += [[asp]]
+
+    return aspects
 
   # situations()
   #   Create and return a list containing information about the values
@@ -890,6 +855,23 @@ class ChoicesFile:
   #     [situation name]
   def situations(self):
     return [[situation['name']] for situation in self.get('situation')]
+
+  # moods()
+  #   Create and return a list containing information about the values 
+  #   of the MOOD feature implied by the current choices.
+  #   This list consists of tuples:
+  #      [mood name]
+  def moods(self):
+    moods = []
+    
+    for md in self.get('mood'):
+      moods += [[md['name']]]
+
+    if len(moods) == 0 and ('subjind' in self.choices):
+      for md in ('subjunctive', 'indicative'):
+        moods += [[md]]
+
+    return moods
 
   def types(self):
     """
@@ -931,7 +913,7 @@ class ChoicesFile:
     features = []
 
     # Case
-    features += self.__get_features(self.cases(), 0, 1, 'case',
+    features += self.__get_features(case.case_names(self), 0, 1, 'case',
                                     'LOCAL.CAT.HEAD.CASE')
     # Number, Person, and Pernum
     pernums = self.pernums()
@@ -967,12 +949,12 @@ class ChoicesFile:
     #Situation Aspect
     features += self.__get_features(self.situations(), 0, 0, 'situation',
                                     'LOCAL.CONT.HOOK.INDEX.E.SITUATION')
-
+    #Mood
+    features += self.__get_features(self.moods(), 0, 0, 'mood',
+                                    'LOCAL.CONT.HOOK.INDEX.E.MOOD')
     # Direction
-    #if self.has_dirinv():
-    #  features += [ ['direction',
-    #                 'dir|direct;inv|inverse',
-    #                 'LOCAL.CAT.HEAD.DIRECTION'] ]
+    if self.has_dirinv():
+      features += [ ['direction', 'dir|direct;inv|inverse', ''] ]
 
     # Negaton
     if 'infl-neg' in self.choices:
@@ -1319,7 +1301,6 @@ class ChoicesFile:
     # Added a fuller implementation of case marking on core arguments,
     # so convert the old case-marking adposition stuff to the new
     # choices. Also, convert nouns, verbs, dets to the iterator keys.
-    # Things like converting noun1=cat happen in preparse_uprev.
     self.convert_key('iverb', 'verb1_orth')
     self.convert_key('iverb-pred', 'verb1_pred')
     self.convert_key('iverb-non-finite', 'verb1_non-finite')
@@ -1332,6 +1313,9 @@ class ChoicesFile:
       self['verb2_valence'] = 'trans'
     self.convert_key('det1pred', 'det1_pred')
     self.convert_key('det2pred', 'det2_pred')
+    # the following were converted in preparse_uprev
+    for key in ('noun1', 'noun2', 'det1', 'det2'):
+      self.convert_key(key + '_value', key + '_orth')
 
   def convert_4_to_5(self):
     # An even fuller implementation of case marking, with some of the
@@ -1683,14 +1667,16 @@ class ChoicesFile:
       self[pref + '_name'] = 'q-infl'
       self[pref + '_morph1_feat1_name'] = 'question'
       self[pref + '_morph1_feat1_value'] = 'plus'
+      self[pref + '_morph1_feat1_head'] = 'verb'
       self[pref + '_opt'] = 'on'
 
   def convert_18_to_19(self):
     """
-    Do nothing here. All conversion for version 19 is in the method
-    preparse_uprev. This stub is here for record keeping.
+    sentence1, sentence2, etc. were converted in preparse_uprev to be
+    sentence1_value, etc. Change those to a more appropriate key.
     """
-    pass # version 19 only requires preparse conversion
+    for sent in self.get('sentence', []):
+      self.convert_key(sent.full_key + '_value', sent.full_key + '_orth')
 
   def convert_19_to_20(self):
     """

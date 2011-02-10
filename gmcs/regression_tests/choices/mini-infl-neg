@@ -56,6 +56,7 @@ verb-slot1_morph1_name=neg
 verb-slot1_morph1_orth=neg
 verb-slot1_morph1_feat1_name=negation
 verb-slot1_morph1_feat1_value=+
+verb-slot1_morph1_feat1_head=verb
 
 
 section=test-sentences

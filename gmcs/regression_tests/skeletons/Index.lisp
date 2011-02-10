@@ -22,6 +22,8 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "mood-buildhierarchy") (:content . "mood-buildhierarchy: testing the build your own mood hierarchy"))
+((:path . "asp-mood-contrast-options") (:content . "asp-mood-contrast-options: tests options to add simple imper/perf and subj/ind hierarchies"))
 ((:path . "subj-v-inv-obj-drop") (:content . "subj-v-inv-obj-drop: Testing interaction of subj-v inversion and object drop, as well as interaction of subj-v intersion and FORM and AUX features."))
 ((:path . "eng-qpart-inf") (:content . "eng-qpart-inf: Testing interaction of non-finite form and question particle.  Question particle should now only attach to finite sentences."))
 ((:path . "arg-opt-lex-comps-drop-np-wth-drop-np-wthout") (:content . "arg-opt-lex-comps-drop-np-wth-drop-np-wthout: slexically based complement dropping.  marker is not permitted for dropped or overt objects"))
@@ -49,7 +51,6 @@
 ((:path . "qpart-yes-no") (:content . "qpart-yes-no: Questions marked via sentence-initial question particle."))
 ((:path . "infl-neg-sole-suffix") (:content . "infl-neg-sole-suffix: Negation as the only suffix, optional"))
 ((:path . "infl-neg-nonfinal-suffix") (:content . "infl-neg-nonfinal-suffix: Inflectional negation as optional non-final suffix, optionality with check box"))
-((:path . "infl-neg-nonfinal-multipath") (:content . "infl-neg-nonfinal-multipath: Inflectional negation as optional non-final suffix, with optionality modeled through multiple inputs on next slot."))
 ((:path . "infl-neg-final-opt-suffix") (:content . "infl-neg-final-opt-suffix: Negative affix as optional suffix at end of suffix string"))
 ((:path . "Sahaptin-short") (:content . "Sahaptin-short: Sahaptin, shorter version (sfd dissertation)"))
 ((:path . "Sahaptin") (:content . "Sahaptin: Sahaptin (sfd dissertation)"))

@@ -4,34 +4,76 @@ import os
 import getopt
 import subprocess
 
+### matrix.py
+### A general-purpose script for running Matrix code.
+### The intention of this script is to define options, commands, and
+### arguments for running Matrix code, validates the user's input, and
+### offers helpful messages for improper input, missing files, etc. It
+### should not have a general try-except wrapper unless it re-raises
+### the errors (otherwise they will be hidden from the user). Further,
+### if possible it should check to make sure the developer is following
+### best-practices for Matrix development (e.g. running regression tests
+### and checking in code before vivifying, etc.).
+
+# NOTE TO DEVELOPERS
+# Because we are unsure of the Python version being used (and some systems
+# we rely on use 2.4), this module should check the version and fail
+# gracefully if it's less than our 'officially supported' version (currently
+# this is 2.5). In order to fail gracefully, this script must not have any
+# syntax from later Python versions (otherwise it will throw a SyntaxError
+# before it does anything).
+
 def main():
   # The force flag is used to skip checks in some commands
   force = False
+  # Cheap fails to parse if there are no morphological rules. This
+  # hack adds a blank rule (can cause spinning on generation!)
+  cheaphack = False
+  # show_warnings, if True, allows printing of warnings from validation
+  show_warnings = False
 
+  # Extract the options and arguments, act on the options, and validate
+  # the commands.
   try:
-    opts, args = getopt.getopt(sys.argv[1:], 'C:Fh',
-                               ['cr=', 'customizationroot=',
-                                'CUSTOMIZATIONROOT=','force', 'help'])
+    opts, args = getopt.getopt(sys.argv[1:], 'C:Fhw',
+                               ['customizationroot=', 'CUSTOMIZATIONROOT=',
+                                'force', 'help', 'warning', 'cheap-hack'])
   except getopt.GetoptError, err:
     print str(err)
     usage()
   for o, a in opts:
-    if o in ('-C', '--cr', '--customizationroot', '--CUSTOMIZATIONROOT'):
+    if o in ('-C', '--customizationroot', '--CUSTOMIZATIONROOT'):
       os.environ['CUSTOMIZATIONROOT'] = os.path.abspath(a)
     elif o in ('-F', '--force'):
       force = True
     elif o in ('-h', '--help'):
-      printhelp()
+      cmd = 'all'
+      if len(args) > 0:
+        cmd = args[0]
+      usage(command=cmd, exitcode=0)
+    elif o in ('-w', '--warning'):
+      show_warnings = True
+    elif o == '--cheap-hack':
+      cheaphack = True
 
+  # if CUSTOMIZATIONROOT is not set externally or through an option, try
+  # to find an appropriate default directory
+  ensure_customization_root_set()
+  # make sure the argument have the correct number of parameters
   validate_args(args)
 
   if args[0] in ('c', 'customize'):
-    dest = args[2] if len(args) > 2 else None
-    customize_grammar(args[1], destination=dest)
+    dest = None
+    if len(args) > 2:
+      dest = args[2]
+    customize_grammar(args[1], destination=dest, cheaphack=cheaphack)
 
   elif args[0] in ('cf', 'customize-and-flop'):
-    dest = args[2] if len(args) > 2 else None
-    customize_grammar(args[1], destination=dest, flop=True)
+    dest = None
+    if len(args) > 2:
+      dest = args[2]
+    customize_grammar(args[1], destination=dest,
+                      flop=True, cheaphack=cheaphack)
 
   elif args[0] in ('v', 'validate'):
     choices_file = args[1]
@@ -44,11 +86,17 @@ def main():
     for x in v.errors:
       print x
       print '  ', v.errors[x]
+    if show_warnings:
+      for x in v.warnings:
+        print x
+        print '  ', v.warnings[x]
+    # If there are errors, exit with a return code of 1, otherwise 0
+    sys.exit(len(v.errors) > 0)
 
-  elif args[0] in ('u', 'utest', 'unit-test'):
+  elif args[0] in ('u', 'unit-test'):
     run_unit_tests()
 
-  elif args[0] in ('r', 'rtest', 'regression-test'):
+  elif args[0] in ('r', 'regression-test'):
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
                        'regression_tests/run_regression_tests.sh')
     #Using subprocess makes it difficult to kill the process
@@ -62,11 +110,25 @@ def main():
       import signal
       os.kill(p.pid, signal.SIGKILL)
 
-  elif args[0] in ('a', 'rtest-add', 'regression-test-add'):
+  elif args[0] in ('ra', 'regression-test-add'):
     choices = args[1]
     txtsuite = args[2]
     import gmcs.regression_tests.add_regression_test
     gmcs.regression_tests.add_regression_test.add(choices, txtsuite)
+
+  elif args[0] in ('regression-test-update', 'ru'):
+    from gmcs import utils
+    test = args[1]
+    cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
+                       'regression_tests/update-gold-standard.sh')
+    print "Updating regression test gold standards assumes you have manually"
+    print "compared results with TSDB and have determined the current set is"
+    print "better than the gold standard. Only continue if you have done this!"
+    if utils.verify():
+      subprocess.call([cmd, test], env=os.environ)
+    else:
+      print "Aborted."
+    sys.exit(1)
 
   elif args[0] in ('i', 'install'):
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
@@ -85,91 +147,158 @@ def main():
   else:
     usage()
 
+def validate_python_version():
+  """
+  Make sure the user is running Python 2.5 or greater.
+  """
+  if sys.version_info[0] != 2 or sys.version_info[1] < 5:
+    version = '.'.join(str(x) for x in sys.version_info[0:2])
+    print "Operation aborted: incompatible Python version."
+    print "  You are running Python " + version + ", but the Grammar Matrix"
+    print "  Customization System requires Python 2.5, 2.6, or 2.7."
+    sys.exit(2)
+
+def ensure_customization_root_set():
+  """
+  Set CUSTOMIZATIONROOT if the appropriate files are found in the
+  current working directory.
+  """
+  if 'CUSTOMIZATIONROOT' in os.environ:
+    return
+  cwd = os.getcwd()
+  if os.path.exists(os.path.join(cwd, 'customize.py')):
+    os.environ['CUSTOMIZATIONROOT'] = cwd
+  elif os.path.exists(os.path.join(cwd, 'gmcs/customize.py')):
+    os.environ['CUSTOMIZATIONROOT'] = os.path.join(cwd, 'gmcs')
+  else:
+    print "CUSTOMIZATIONROOT cannot be set."
+    sys.exit(2)
+
 def validate_args(args):
   """
   Run some quick tests to make sure we have the right number of arguments.
   """
   if len(args) == 0: usage()
   elif args[0] in ('c', 'customize'):
-    if len(args) < 2: usage('customize')
+    if len(args) < 2: usage(command='customize')
   elif args[0] in ('cf', 'customize-and-flop'):
-    if len(args) < 2: usage('customize-and-flop')
+    if len(args) < 2: usage(command='customize-and-flop')
   elif args[0] in ('v', 'validate'):
-    if len(args) < 2: usage('validate')
-  elif args[0] in ('u', 'utest', 'unit-test'):
+    if len(args) < 2: usage(command='validate')
+  elif args[0] in ('u', 'unit-test'):
     pass # no other arguments needed
-  elif args[0] in ('r', 'rtest', 'regression-test'):
+  elif args[0] in ('r', 'regression-test'):
     pass # other arguments are optional
-  elif args[0] in ('a', 'rtest-add', 'regression-test-add'):
-    if len(args) < 3: usage('regression-test-add')
+  elif args[0] in ('ra', 'regression-test-add'):
+    if len(args) < 3: usage(command='regression-test-add')
+  elif args[0] in ('regression-test-update', 'ru'):
+    if len(args) < 2: usage(command='regression-test-update')
   elif args[0] in ('i', 'install'):
-    if len(args) < 2: usage('install')
+    if len(args) < 2: usage(command='install')
   elif args[0] == 'vivify':
     pass # no other arguments needed
 
-def usage(command=None):
-  if not command:
-    print "Usage: matrix.py [OPTION] COMMAND [ARGS...]"
-  elif command in ('customize', 'customize-and-flop'):
-    print "Usage: matrix.py [OPTION] " + command + " PATH [DEST]"
-    print "       Where PATH is the path to a choices file or a directory"
-    print "       containing a choices file, and the optional argument DEST"
-    print "       points to the output directory."
-  elif command == 'validate':
-    print "Usage: matrix.py [OPTION] validate PATH"
-    print "       Where PATH is the path to a choices file or a directory"
-    print "       containing a choices file."
-  elif command == 'regression-test-add':
-    print "Usage: matrix.py [OPTION] regression-test-add CHOICES TXTSUITE"
-    print "       Where CHOICES is the path to a choices file and TXTSUITE"
-    print "       is the path to a text file containing test sentences."
-  elif command == 'install':
-    print "Usage: matrix.py [OPTION] install PATH"
-    print "       Where PATH is the path where the Matrix Customization"
-    print "       System should be installed."
+def usage(command=None, exitcode=2):
+  """
+  Print an appropriate usage message and exit.
+  """
+  indent = 0
+  # if the user asks for help for an invalid command, nothing will be printed,
+  # so we catch this with a flag.
+  something_printed = False
+  def p(msg, nobreak=False):
+    """ Print the message with necessary indentation and linebreaks. """
+    if nobreak:
+      print " " * indent + msg,
+    else:
+      print " " * indent + msg
 
-  print "Try `matrix.py --help' for more information."
-  sys.exit(2)
-
-def printhelp():
-  print """Usage: matrix.py [OPTION] COMMAND [ARGS...]
-
-OPTIONS:
-    --cr (-C) PATH                 : Set CUSTOMIZATIONROOT to PATH.
-    --help (-h)                    : Print this help message.
-
-COMMANDS:
-    customize (c) PATH [DEST]      : Customize the choices file at PATH,
-                                     with the output going to DEST (if
-                                     specified) or PATH. PATH is either a
-                                     directory or a choices file.
-    customize-and-flop (cf) PATH [DEST]
-                                   : Customize the choices file at PATH,
-                                     then flop the resulting grammar.
-    validate (v) PATH              : Validate the choices file at PATH.
-    rtest (r) [TEST]               : Run regression TEST (runs all tests
-                                     TEST is not specified).
-    rtest-add (a) CHOICES TXTSUITE : Add CHOICES and TXTSUITE as a new
-                                     regression test.
-    utest (u)                      : Run all unit tests.
-    install (i) PATH               : Install a custom instance of the Grammar
-                                     Matrix Customization System at the PATH
-                                     specified on the default server.
-    vivify                         : Install a new version of the Grammar
-                                     Matrix Customization System to the live
-                                     site after verifying the code has been
-                                     tested and committed to SVN.
-
-EXAMPLES:
-    matrix.py customize ../choices/Finnish
-    matrix.py v ../choices/Finnish
-    matrix.py --cr ./gmcs r
-    matrix.py rtest-add Cree_choices Cree_test_suite
-    matrix.py install my_matrix
-    matrix.py vivify
-
-"""
-  sys.exit()
+  p("Usage: matrix.py [OPTION]", nobreak=True)
+  if not command or command=='all':
+    p("COMMAND [ARGS...]\n")
+    something_printed = True
+    if command == 'all':
+      p("OPTIONS:")
+      indent = 4
+      p("--customizationroot (-C) PATH")
+      p("            Set CUSTOMIZATIONROOT to PATH.")
+      p("--cheap-hack")
+      p("            Add a blank morphological rule to irules.tdl (if it is")
+      p("            empty) to workaround a bug in Cheap.")
+      p("--warning (-w)")
+      p("            Print warnings when running validate.")
+      p("--help (-h) [COMMAND]")
+      p("            Print a usage message about COMMAND (if specified) or")
+      p("            else all commands and examples.")
+      p("")
+      indent = 0
+      p("COMMANDS:")
+      indent = 4
+  if command in ('customize', 'c', 'all'):
+    p("customize (c) PATH [DEST]")
+    p("            Customize the grammar at PATH, with the output written to")
+    p("            DEST or the directory at PATH. PATH points to a choices")
+    p("            file or a directory that contains a choices file.")
+    something_printed = True
+  if command in ('customize-and-flop', 'cf', 'all'):
+    p("customize-and-flop (cf) PATH [DEST]")
+    p("            Customize and flop the grammar at PATH, with the output")
+    p("            written to DEST or the directory at PATH. PATH points to a")
+    p("            choices file or a directory that contains a choices file.")
+    something_printed = True
+  if command in ('validate', 'v', 'all'):
+    p("validate (v) PATH")
+    p("            Validate the choices file at PATH.")
+    something_printed = True
+  if command in ('regression-test', 'r', 'all'):
+    p("regression-test (r) [TEST]")
+    p("            Run regression test TEST (if specified) or else all tests.")
+    something_printed = True
+  if command in ('regression-test-add', 'ra', 'all'):
+    p("regression-test-add (ra) CHOICES TXTSUITE")
+    p("            Add CHOICES (a choices file) and TXTSUITE (a text file")
+    p("            containing test sentences) as a new regression test. Both")
+    p("            CHOICES and TXTSUITE are filenames, not paths, and the")
+    p("            respective files should exist in the scratch directory")
+    p("            (gmcs/regression_tests/scratch/).")
+    something_printed = True
+  if command in ('regression-test-update', 'ru', 'all'):
+    p("regression-test-update (ru) TEST")
+    p("            Update the gold standard of TEST to use the results of the")
+    p("            current system.")
+    something_printed = True
+  if command in ('unit-test', 'u', 'all'):
+    p("unit-test (u)")
+    p("            Run all unit tests.")
+    something_printed = True
+  if command in ('install', 'i', 'all'):
+    p("install (i) PATH")
+    p("            Install a custom instance of the Grammar Matrix")
+    p("            Customization System and Questionnaire at the PATH")
+    p("            specified on the default server (Homer).")
+    something_printed = True
+  if command in ('vivify', 'v', 'all'):
+    p("vivify (v)")
+    p("            Install a new version of the Grammar Matrix Customization")
+    p("            System and Questionnaire to the live site after verifying")
+    p("            the code has been tested and committed to SVN.")
+    something_printed = True
+  indent = 0
+  # Just print the generic usage message if an invalid command was provided
+  if not something_printed:
+    p("COMMAND [ARGS...]\n")
+  if command != 'all':
+    p("Try `matrix.py --help' for more information.")
+  else:
+    p("\nEXAMPLES:")
+    p("  matrix.py customize ../choices/Finnish")
+    p("  matrix.py cf ../choices/Finnish")
+    p("  matrix.py v ../choices/Finnish")
+    p("  matrix.py -C gmcs/ r")
+    p("  matrix.py ra Cree_choices Cree_test_suite")
+    p("  matrix.py install my_matrix")
+    p("  matrix.py vivify")
+  sys.exit(exitcode)
 
 def verify_force():
   print "   You have selected to skip safety checks. Please only do this in"
@@ -180,7 +309,7 @@ def verify_force():
   print "   Aborted."
   sys.exit(1)
 
-def customize_grammar(path, destination=None, flop=False):
+def customize_grammar(path, destination=None, flop=False, cheaphack=False):
   """
   Customize a grammar for the choices file at directory, and if flop
   is True, run flop on the resulting lang-pet.tdl file in the grammar
@@ -196,6 +325,15 @@ def customize_grammar(path, destination=None, flop=False):
   if not os.path.exists(path):
     sys.exit("Error: No choices file found at " + path)
   grammar_dir = gmcs.customize.customize_matrix(path, 'tgz', destination)
+  # To work around a bug in cheap, we can add a blank morphological rule
+  if cheaphack:
+    irules_path = os.path.join(grammar_dir, 'irules.tdl')
+    if os.path.getsize(irules_path) == 0:
+      irules = open(irules_path, 'w')
+      print >>irules, 'CHEAP-HACK-RULE :='
+      print >>irules, '%suffix (ZZZ_ ZZZ)'
+      print >>irules, 'lex-rule.'
+      irules.close()
   # Now a grammar has been created, so we can flop it
   if flop:
     import gmcs.choices
@@ -205,7 +343,8 @@ def customize_grammar(path, destination=None, flop=False):
       sys.exit("Error: " + pet_file + " not found.")
     cmd = os.path.join(os.environ['LOGONROOT'], 'bin/flop')
     devnull = open('/dev/null', 'w')
-    subprocess.call([cmd, pet_file], cwd=grammar_dir, env=os.environ, stderr=devnull)
+    subprocess.call([cmd, pet_file], cwd=grammar_dir,
+                    env=os.environ, stderr=devnull)
 
 
 def run_unit_tests():
@@ -243,4 +382,5 @@ def vivify(force):
   subprocess.call([cmd, '-r', '-m', 'matrix/customize'], env=os.environ)
 
 if __name__ == '__main__':
+  validate_python_version()
   main()

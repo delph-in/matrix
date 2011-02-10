@@ -105,7 +105,7 @@ def customize_feature_values(ch_dict, type_name, pos, features=None, cases=None,
   if not features:
     features = ch.features()
   if not cases:
-    cases = ch.cases()
+    cases = case.case_names(ch)
   if not tdlfile:
     tdlfile = mylang
 
@@ -372,7 +372,7 @@ def customize_other_features():
     type = h.type
     # if this hierarchy isn't handled elsewhere, handle it here
     if feat not in ['case', 'person', 'number', 'pernum', 'gender',
-                    'form', 'tense', 'aspect', 'situation']:
+                    'form', 'tense', 'aspect', 'situation', 'mood']:
       if type == 'head':
         mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].',
                    section='addenda')
@@ -452,7 +452,12 @@ def init_aspect_hierarchy():
 
   if not hier.is_empty():
     hierarchies[hier.name] = hier
-
+  elif ch.get('perimper'):
+    for asp in ('perfective', 'imperfective'):
+      name = asp
+      supername = 'aspect'
+      hier.add(name, supername)
+      hierarchies[hier.name] = hier
 
 def customize_aspect():
   if 'aspect' in hierarchies:
@@ -473,13 +478,38 @@ def init_situation_hierarchy():
   if not hier.is_empty():
     hierarchies[hier.name] = hier
 
-
 def customize_situation():
   if 'situation' in hierarchies:
     mylang.set_section('features')
     mylang.add('situation := sort.')
     mylang.add('tam :+ [SITUATION situation].', section='addenda')
     hierarchies['situation'].save(mylang, False)
+
+######################################################################
+# customize_mood()
+# Create mood feature value definitions per the user's choices
+
+def init_mood_hierarchy():
+  hier = TDLHierarchy('mood')
+
+  for mood in ch.get('mood',[]):
+    name = mood.get('name')
+    for supertype in mood.get('supertype',[]):
+      supername = supertype.get('name')
+      hier.add(name, supername)
+
+  if not hier.is_empty():
+    hierarchies[hier.name] = hier
+  elif ch.get('subjind'):
+    for md in ('subjunctive', 'indicative'):
+      name = md
+      supername = 'mood'
+      hier.add(name, supername)
+      hierarchies[hier.name] = hier
+
+def customize_mood():
+  if 'mood' in hierarchies:
+    hierarchies['mood'].save(mylang, False)
 
 ######################################################################
 # customize_word_order()
@@ -1914,7 +1944,7 @@ def customize_nouns():
 
 def customize_verb_case():
   cm = ch.get('case-marking')
-  cases = ch.cases()
+  cases = case.case_names(ch)
 
   # Pass through the list of case-marking patterns.  If a pattern is a
   # lexical pattern (i.e. the third item in the list is False), then
@@ -2193,7 +2223,7 @@ def customize_verbs():
   lexicon.add_literal(';;; Verbs')
 
   # Now create the lexical entries for all the defined verb types
-  cases = ch.cases()
+  cases = case.case_names(ch)
   for verb in ch.get('verb',[]):
     name = get_name(verb)
     val = verb.get('valence')
@@ -2293,7 +2323,7 @@ def customize_auxiliaries():
       sem = aux.get('sem','')
       subj = aux.get('subj','')
       subjc = aux.get('subj_case','') #TODO: verify _-delimited key
-      cases = ch.cases()
+      cases = case.case_names(ch)
       subjcase = case.canon_to_abbr(subjc, cases)
 
     # Lexical type for auxiliaries.
@@ -2727,10 +2757,12 @@ def customize_matrix(path, arch_type, destination=None):
   # Copy from matrix-core
   if os.path.exists(grammar_path):
     shutil.rmtree(grammar_path)
+  core_path = os.path.join(os.environ.get('CUSTOMIZATIONROOT',''),
+                           'matrix-core')
   # Use the following command when python2.6 is available
   #shutil.copytree('matrix-core', grammar_path,
   #                ignore=shutil.ignore_patterns('.svn'))
-  shutil.copytree('matrix-core', grammar_path)
+  shutil.copytree(core_path, grammar_path)
   # Since we cannot use shutil.ignore_patterns until 2.6, remove .svn dirs
   shutil.rmtree(os.path.join(grammar_path, '.svn'), ignore_errors=True)
   shutil.rmtree(os.path.join(grammar_path, 'lkb/.svn'), ignore_errors=True)
@@ -2799,6 +2831,7 @@ def customize_matrix(path, arch_type, destination=None):
   init_tense_hierarchy()
   init_aspect_hierarchy()
   init_situation_hierarchy()
+  init_mood_hierarchy()
   init_form_hierarchy()
   init_other_hierarchies()
 
@@ -2827,6 +2860,7 @@ def customize_matrix(path, arch_type, destination=None):
   customize_tense()
   customize_aspect()
   customize_situation()
+  customize_mood()
   customize_other_features()
   customize_word_order()
   customize_sentential_negation()

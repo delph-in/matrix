@@ -5,7 +5,24 @@
 #Third is path to where the grammar should be stored,
 #which should take the form .../gmcs/regression_tests/grammars/language-name.
 
-cd $1
+cd $1/..
+
+# set the appropriate Python version
+python_cmd='python'
+if ! echo $( $python_cmd -V 2>&1 ) | grep -q "Python 2\.[5,6,7]"; then
+  echo "Default Python version incompatible. Attempting to find another..." >&2
+  if which python2.5 >/dev/null; then
+    python_cmd='python2.5'
+  elif which python2.6 >/dev/null; then
+    python_cmd='python2.6'
+  elif which python2.7 >/dev/null; then
+    python_cmd='python2.7'
+  else
+    echo "No compatible Python version found. Exiting."
+    exit 1
+  fi
+  echo "  Found $( $python_cmd -V 2>&1 ). Continuing." >&2
+fi
 
 if [ -e datestamp ]
 then
@@ -22,7 +39,7 @@ elif [ ! -e $2 ]; then
 else
     mkdir -p $3
     cp $2 $3/choices
-    python ${CUSTOMIZATIONROOT}/../matrix.py c $3
+    $python_cmd $1/../matrix.py c $3
     return=$?
 fi
 
