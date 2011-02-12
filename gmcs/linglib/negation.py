@@ -10,22 +10,6 @@ def validate(ch, vr):
           mess = 'When inflectional negation is selected ' +\
                  '[negation +] should only be found on bound morphemes.'
           vr.err(cf.full_key + '_name', mess)
-      for f in aux.get('feat', []):
-        if f.get('name') == 'negation':
-          mess = 'When inflectional negation is selected ' +\
-                 '[negation +] should only be found on bound morphemes.'
-          vr.err(f.full_key + '_name', mess)
-    for verb in ch.get('verb', []):
-      for cf in verb.get('compfeature', []):
-        if cf.get('name') == 'negation':
-          mess = 'When inflectional negation is selected ' +\
-                 '[negation +] should only be found on bound morphemes.'
-          vr.err(cf.full_key + '_name', mess)
-      for f in verb.get('feat', []):
-        if f.get('name') == 'negation':
-          mess = 'When inflectional negation is selected ' +\
-                 '[negation +] should only be found on bound morphemes.'
-          vr.err(f.full_key + '_name', mess)
   validate_sentential_negation(ch, vr)
 
 def validate_sentential_negation(ch, vr):

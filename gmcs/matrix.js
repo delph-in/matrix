@@ -107,56 +107,6 @@ function clear_form()
   }
 }
 
-// toggle_display_lex()
-// Handle a click on a section show/hide button on the Lexicon Page
-function toggle_display_lex(element_id, button_id)
-{
-  p = document.getElementById(element_id);
-  b = document.getElementById(button_id);
-  if (p.style.display == 'none') {
-    p.style.display = 'block';
-    b.innerHTML = '&#9660; '+element_id + '<br />';
-  } else {
-    p.style.display = 'none';
-    b.innerHTML = '&#9658; '+element_id + '<br />';
-  }
-}
-
-// toggle_all_display_lex()
-// Handle a click on the show/hide all button on the lexicon page
-function toggle_all_display_lex(on)
-{
-  iters = document.getElementsByClassName('iterator');
-  all_button = document.getElementById('toggle_all_lex_button');
-  if (on==1)
-  {
-    all_button.attributes.onclick.nodeValue = 'toggle_all_display_lex(0)';
-    all_button.innerHTML = '&#9658; all sections';
-  } else {
-    all_button.attributes.onclick.nodeValue = 'toggle_all_display_lex(1)';
-    all_button.innerHTML = '&#9660; all sections';
-  }
-  for (var x=0; x<iters.length; x++)
-  {
-    iter = iters[x];
-    if(iter.id.search('TEMPLATE')==-1 && + //don't mess with display of TEMPLATES
-       iter.id.search('feat') == -1 && + //feat/stem/forbid/requires/lri iterators
-       iter.id.search('stem') == -1 && + //needn't show/hide
-       iter.id.search('forbid') == -1 && + 
-       iter.id.search('requires') == -1 && +
-       iter.id.search('lri') == -1){ 
-      button = document.getElementById(iter.id+'button');
-      if(on==1){
-        if(iter.style.display == 'block' || iter.style.display == '')
-          toggle_display_lex(iter.id, button.id);
-      }else {
-        if(iter.style.display == 'none' || iter.style.display == '')
-          toggle_display_lex(iter.id, button.id);
-      }
-    }
-  }
-}
-
 // focus_all_fields()
 // Pass through the document once, giving the focus to every form
 // field.  This allows all the auto-resizing items a chance to
@@ -271,7 +221,6 @@ function prev_div(n, name)
 // the copy into the page.
 function do_clone_region(id, iter_var, bAnim)
 {
-
   var d = document.getElementById(id + '_TEMPLATE');
   var a = document.getElementById(id + '_ANCHOR');
   var p = prev_div(a, id);
@@ -296,22 +245,6 @@ function do_clone_region(id, iter_var, bAnim)
 
   n.id = id + cur;
   n.style.display = '';
-
-  //if the new iter is a stem or feature iterator, 
-  //or a morphotactics forbid or require or lri iterator,
-  //don't add a show/hide button
-  if(n.id.search('stem') == -1 && +
-     n.id.search('feat') == -1 && +
-     n.id.search('require') == -1 && +
-     n.id.search('forbid') == -1 && +
-     n.id.search('lri') == -1 )
-  {//otherwise go in here and add the button
-    var b = document.createElement("a");
-    b.id = n.id+'button';
-    b.innerHTML = '&#9660; '+n.id + '<br />';
-    b.setAttribute('onclick', "toggle_display_lex('"+n.id+"', '"+n.id+"button')");
-    a.parentNode.insertBefore(b, a);
-  }
 
   a.parentNode.insertBefore(n, a);
 
@@ -352,15 +285,10 @@ function remove_region(id)
 
 // remove_element()
 // Remove the element with id
-// and remove any associated show/hide button
 function remove_element(id)
 {
   var e = document.getElementById(id);
   e.parentNode.removeChild(e);
-  var b = document.getElementById(id+'button')
-  if (b != null){
-      b.parentNode.removeChild(b);
-  }    
 }
 
 //////////////////////////////////////////////////////////////////////
