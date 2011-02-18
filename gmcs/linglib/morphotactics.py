@@ -430,17 +430,9 @@ def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
   up the flags that don't occur as output flags.
   """
   if len(all_flags) == 0: return
+  write_flags(mylang, pc)
   to_copy = {}
   out_flags = set(pc.flags['out'].keys())
-  # for lex-types, write initial flag values 
-  # for lex entries, add initial flag values to flags
-  if pc.identifier_suffix == 'lex-super':
-    initial_flags = set([f for f in get_all_flags('in').difference(out_flags)
-                         if all(pc.precedes(mn) for mn in f)])
-    for root in pc.roots():
-      write_initial_flags(mylang, root,
-                        initial_flags.difference(root.flags['out'].keys()))
-  write_flags(mylang, pc)
   for mn in pc.roots():
     to_copy[mn.key] = write_mn_flags(mylang, lextdl, mn, out_flags, all_flags, choices)
   # first write copy-ups for the root nodes
@@ -450,7 +442,13 @@ def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
     to_copy = {pc.key: all_flags.difference(out_flags)}
     to_copy[pc.key].difference_update(copied_flags)
     write_copy_up_flags(mylang, to_copy, all_flags, force_write=True)
-
+  else:
+    # for lex-types, write initial flag values for all other flags
+    initial_flags = set([f for f in get_all_flags('in').difference(out_flags)
+                         if all(pc.precedes(mn) for mn in f)])
+    for root in pc.roots():
+      write_initial_flags(mylang, root,
+                          initial_flags.difference(root.flags['out'].keys()))
 
 def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
   if mn.instance:
