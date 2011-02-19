@@ -240,10 +240,16 @@ def set_lexical_rule_supertypes(pc):
 ### CONSTRAINTS ###
 
 def interpret_constraints(choices):
+#  print choices
   for mn in _mns.values():
     # don't bother if the morphotactic node is not defined in choices
     if mn.key not in choices \
        or not isinstance(choices[mn.key], dict): continue
+#     if mn.identifier_suffix == 'lex' or mn.instance:
+#       print mn.identifier()
+#       print mn.key
+#       print choices[mn.key].get('require', [])
+
     for req in choices[mn.key].get('require', []):
       others = dict([(o, _mns[o]) for o in req['others'].split(', ')])
       mn.disjunctive_flag_sets[tuple(sorted(others.keys()))] = others

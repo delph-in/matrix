@@ -2141,10 +2141,12 @@ def customize_bipartite_stems():
         ch[next_lrt_str + '_lri1_inflecting'] = 'yes'
           
         # Add requires constrains on stems
-#         for stemid in avpairs[aff]:
-#           for stem in bistems:
-#             if stem.get('uniqid') == stemid:
-#               ch[stem.full_key + '_require1_others'] = next_lrt_str
+        for stemid in avpairs[aff]:
+#          for stem in bistems:
+#            print stemid
+#            print stem.full_key
+#            if stem.full_key == stemid:
+          ch[stemid + '_require1_others'] = next_lrt_str
 
 
 
