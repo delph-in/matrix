@@ -14,6 +14,7 @@ from gmcs.utils import get_name
 import gmcs.linglib.case
 import gmcs.linglib.morphotactics
 import gmcs.linglib.negation
+from gmcs.linglib import negation
 
 
 ######################################################################
