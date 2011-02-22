@@ -560,7 +560,7 @@ Label "<p><b>Viewpoint Aspect</b>"
 
 Label "<p>Viewpoint aspect is also commonly referred to as grammatical
 aspect.  The most common viewpoint opposition is
-perfective/imperfective.You may create a hierarchy consisting of only this opposition or you may create a hierarchy of your own, as appropriate for your langauge. If your language does not have viewpoint aspect (also commonly referred to as grammatical aspect) as a grammatical category, leave this section blank.<br><br>"
+perfective/imperfective.You may create a hierarchy consisting of only this opposition or you may create a hierarchy of your own, as appropriate for your language. If your language does not have viewpoint aspect (also commonly referred to as grammatical aspect) as a grammatical category, leave this section blank.<br><br>"
 
 Check perimper "Perfective/Imperfective" "" "Create a hierarchy consisting of just the values <b>perfective</b> and <b>imperfective</b> as subtypes of aspect."
 
@@ -1257,7 +1257,7 @@ Separator
 Label "<h3>"
 Label auxlabel "Auxiliary Verb Types</h3>"
 
-  Label "<p>Auxiliaries may contribute a independent predicate, e.g.,
+  Label "<p>Auxiliaries may contribute an independent predicate, e.g.,
   English modal <i>can</i>. If you define a type that contributes a
   predicate, you may also specify semantic feature values on the
   auxiliary, if desired. Alternatively, auxiliaries may contribute no
