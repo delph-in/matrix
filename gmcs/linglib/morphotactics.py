@@ -91,7 +91,7 @@ def get_stem_prefix_from_uniqid(uniqid, choices):
   #FIXME: Need to add some error checking here.
   for verb in choices.get('verb'):
     for bistem in verb.get('bistem'):
-      if bistem.get('uniqid') == uniqid:
+      if bistem.get('name') == uniqid:
         return bistem.full_key
        
 def get_vtype(bistem, choices):
@@ -464,6 +464,8 @@ def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
   else:
     write_flags(mylang, mn)
   to_copy = {}
+  # EMB 2/23/11 It seems like we're not actually hitting the "roots"
+  # with the to_copy treatment here.  Whyever not?
   for sub_mn in mn.children().values():
     to_copy[sub_mn.key] = write_mn_flags(mylang, lextdl, sub_mn,
                             output_flags.union(set(mn.flags['out'].keys())),

@@ -39,9 +39,7 @@ def lexical_type_hierarchy(choices, lexical_supertype):
         if bistems:
           # add nodes for each bipartite stem (mod LexicalType to encode that these are entries)
           for stem in bistems:
-            # FIXME: lt:lth.nodes[lt] gives an error, but I think that's closer to 
-            # what I want.
-            lth.add_node(LexicalType(stem.full_key, stem['uniqid'], 
+            lth.add_node(LexicalType(stem.full_key, stem['name'], 
                                      parents={lt.full_key:lth.nodes[lt.full_key]}, entry=True))
 
       # worry about printing out constraints on lex entries

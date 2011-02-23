@@ -2115,7 +2115,7 @@ def customize_bipartite_stems():
         else:
           ids[id] = 1
         # Record in choices
-        ch[stem.full_key + '_uniqid'] = id
+        ch[stem.full_key + '_name'] = id
 
         # Update affix-stem dictionary
         if aff in avpairs.keys():
