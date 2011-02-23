@@ -1,0 +1,23 @@
+1. store uniqid in name, and get rid of extra calls to uniqid
+   -- Storing in name works, but I think I still need to look up
+   bistems via uniqid/name until I can print them with the rest of
+   the lexicon file.
+2. see if that fixes any identified bugs
+   -- not so far.
+2'. other debugging
+3. name hallucinated lex rules (making sure the name values are unique)
+4. name all lex entries (making sure names are unique in that space) and then make lexicon tdlfile merge by default
+   	-- printing of lexicon should follow both customize_lexicon and customiz_lexrules
+5. if that works, remove code for the non-merge case
+
+Identified bugs:
+1. Whole INFLECTED value is copied up on the bps affix rule type.
+2. Dtr types are overapplied, such that intermediate lex rule can be skipped.  Might be mutual requires but, might be same as ticket #601.
+3. Not getting na-or-- type initial values.
+
+
+
+
+
+
+
