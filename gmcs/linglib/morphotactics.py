@@ -41,12 +41,23 @@ def all_position_classes(choices):
       yield pc
 
 def intermediate_typename(pcs):
+  """
+  Return the typename to be used for the intermediate rule type for
+  the given set of position classes.
+  """
   return disjunctive_typename(pcs) + '-rule-dtr'
 
 def disjunctive_typename(mns):
+  """
+  Return a string that uses '-or-' as a delimiter to concatenate the
+  names of all morphotactic nodes in mns.
+  """
   return '-or-'.join(sorted([mn.name for mn in mns]))
 
 def flag_name(flag_tuple):
+  """
+  Return the flag name for rule types in flag_tuple.
+  """
   return disjunctive_typename(flag_tuple).upper() + '-FLAG'
 
 def sequential(mn1, mn2):
@@ -72,6 +83,11 @@ def ordered_constraints(mn, constraint_type):
   return ordered
 
 def get_input_map(pch):
+  """
+  For the given position class hierarchy, return a map with the sets
+  of all valid input rules/types as the keys and lists of position
+  classes taking those inputs as the values.
+  """
   inp_map = defaultdict(list)
   for pc in pch.nodes.values():
     i_s = tuple(sorted(pc.valid_inputs(), key=lambda x: x.tdl_order))
@@ -116,7 +132,6 @@ def customize_lexical_rules(choices):
   pch = position_class_hierarchy(choices)
   #create_lexical_rule_types(choices)
   interpret_constraints(choices)
-  convert_obligatoriness_to_req(choices)
   create_flags()
   return pch
 
@@ -215,6 +230,7 @@ def set_lexical_rule_supertypes(pc):
 ### CONSTRAINTS ###
 
 def interpret_constraints(choices):
+  convert_obligatoriness_to_req(choices)
   for mn in _mns.values():
     # don't bother if the morphotactic node is not defined in choices
     if mn.key not in choices \
@@ -349,6 +365,9 @@ def write_rules(pch, mylang, irules, lrules):
           if isinstance(mn, LexicalRuleType) and len(mn.features) > 0]
 
 def get_section_from_pc(pc):
+  """
+  Given a PC, return the section in which its rules should be written.
+  """
   if pc.identifier_suffix == 'lex-super':
     # get section for lexical type
     if 'noun' in pc.key:
@@ -414,8 +433,7 @@ def write_pc_flags(mylang, pc, all_flags):
   copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
   # then, if any remain, copy up on the pc (if a lexrule)
   if pc.identifier_suffix != 'lex-super':
-    to_copy = {pc.key: all_flags.difference(out_flags)}
-    to_copy[pc.key].difference_update(copied_flags)
+    to_copy = {pc.key: all_flags.difference(out_flags.union(copied_flags))}
     write_copy_up_flags(mylang, to_copy, all_flags, force_write=True)
   else:
     # for lex-types, write initial flag values for all other flags
@@ -428,12 +446,12 @@ def write_pc_flags(mylang, pc, all_flags):
 def write_mn_flags(mylang, mn, output_flags, all_flags):
   write_flags(mylang, mn)
   to_copy = {}
+  cur_output_flags = output_flags.union(set(mn.flags['out'].keys()))
   for sub_mn in mn.children().values():
     to_copy[sub_mn.key] = write_mn_flags(mylang, sub_mn,
-                            output_flags.union(set(mn.flags['out'].keys())),
-                            all_flags)
+                                         cur_output_flags, all_flags)
   copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
-  return all_flags.difference(output_flags).difference(copied_flags)
+  return all_flags.difference(cur_output_flags).difference(copied_flags)
 
 def write_flags(mylang, mn):
   for flag in mn.flags['in']:
