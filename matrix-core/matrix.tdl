@@ -73,6 +73,9 @@ no-alts := alts-min.
 word := word-or-lexrule & nocoord.
 
 lex-item := word-or-lexrule & nocoord.
+;  Can't add infl-initial to lex-item until some unification errors with
+;  coorditation rules are resolved.
+;  [ INFLECTED infl-initial ].
 
 ;; Not all phrases have SYNSEM phr-synsem, since we need to allow the
 ;; head-comp rules to build signs which are still [ SYNSEM lex-synsem
@@ -840,6 +843,7 @@ lex-rule := phrase-or-lexrule & word-or-lexrule &
 
 inflected := avm.
 infl-satisfied := inflected.
+infl-initial := inflected.
 
 ; ERB 2005-04-14 But it's a bad idea to copy the whole synsem
 ; value, since that means identifying RELS and HCONS lists, breaking
@@ -2130,11 +2134,11 @@ raise-sem-lex-item := no-hcons-lex-item &
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; inflected v. uninflected
 
-uninflected-lexeme := lex-item &
-  [ INFLECTED inflected ].
-
-fully-inflected-lexeme := lex-item &
-  [ INFLECTED infl-satisfied ].
+;uninflected-lexeme := lex-item &
+;  [ INFLECTED inflected ].
+;
+;fully-inflected-lexeme := lex-item &
+;  [ INFLECTED infl-satisfied ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Non-local features: Values and amalgamation
@@ -2890,6 +2894,9 @@ infl-bottom-coord-rule := same-local-lex-rule &
     C-CONT [ RELS <! #crel !>,
              HCONS <! !> ]].
 
+; MWG 2011-02-26: if we put [ INFLECTED infl-initial ] on lex-item, then
+;    conj-lex has a unification error with binary-phrase. Also applies below
+;    to some other coord rules.
 binary-bottom-coord-rule := bottom-coord-phrase & binary-phrase &
   [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
                          VAL #val ],

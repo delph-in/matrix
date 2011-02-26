@@ -416,6 +416,9 @@ def write_inflected_avms(mylang, all_flags):
     flag = flag_name(f)
     mylang.add('''inflected :+ [%(flag)s luk].''' % {'flag': flag})
     mylang.add('''infl-satisfied :+ [%(flag)s na-or-+].''' % {'flag': flag})
+    # Can't do infl-initial until some unification errors are resolved in
+    # matrix.tdl, so for now just stick them on lex types.
+    #mylang.add('''infl-initial :+ [%(flag)s na-or--].''' % {'flag': flag})
 
 def write_pc_flags(mylang, pc, all_flags):
   """
@@ -425,14 +428,15 @@ def write_pc_flags(mylang, pc, all_flags):
   """
   if len(all_flags) == 0: return
   write_flags(mylang, pc)
-  to_copy = {}
   out_flags = set(pc.flags['out'].keys())
+  to_copy = {}
   for mn in pc.roots():
     to_copy[mn.key] = write_mn_flags(mylang, mn, out_flags, all_flags)
-  # first write copy-ups for the root nodes
-  copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
-  # then, if any remain, copy up on the pc (if a lexrule)
+  # for lex-rule PCs (not lexical types), write copy-up flags
   if pc.identifier_suffix != 'lex-super':
+    # first write copy-ups for the root nodes
+    copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
+    # then, if any remain, copy up on the pc (if a lexrule)
     to_copy = {pc.key: all_flags.difference(out_flags.union(copied_flags))}
     write_copy_up_flags(mylang, to_copy, all_flags, force_write=True)
   else:
@@ -469,6 +473,7 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
   common_flags = reduce(set.intersection, to_copy.values())
   for mn_key in to_copy:
     mn = _mns[mn_key]
+    if mn.identifier_suffix in ('lex-super', 'lex'): continue
     # if all flags are common, none are copied here, and if the
     # difference contains all flags, just copy up the whole AVM.
     mn_copy_flags = to_copy[mn_key]
