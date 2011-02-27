@@ -130,7 +130,6 @@ def customize_lexical_rules(choices):
   #      (all_inputs() depends on forward-looking require constraints)
   #  4. determine and create flags based on constraints
   pch = position_class_hierarchy(choices)
-  #create_lexical_rule_types(choices)
   interpret_constraints(choices)
   create_flags()
   return pch
@@ -416,9 +415,7 @@ def write_inflected_avms(mylang, all_flags):
     flag = flag_name(f)
     mylang.add('''inflected :+ [%(flag)s luk].''' % {'flag': flag})
     mylang.add('''infl-satisfied :+ [%(flag)s na-or-+].''' % {'flag': flag})
-    # Can't do infl-initial until some unification errors are resolved in
-    # matrix.tdl, so for now just stick them on lex types.
-    #mylang.add('''infl-initial :+ [%(flag)s na-or--].''' % {'flag': flag})
+    mylang.add('''infl-initial :+ [%(flag)s na-or--].''' % {'flag': flag})
 
 def write_pc_flags(mylang, pc, all_flags):
   """
@@ -439,13 +436,6 @@ def write_pc_flags(mylang, pc, all_flags):
     # then, if any remain, copy up on the pc (if a lexrule)
     to_copy = {pc.key: all_flags.difference(out_flags.union(copied_flags))}
     write_copy_up_flags(mylang, to_copy, all_flags, force_write=True)
-  else:
-    # for lex-types, write initial flag values for all other flags
-    initial_flags = set([f for f in get_all_flags('in').difference(out_flags)
-                         if all(pc.precedes(mn) for mn in f)])
-    for root in pc.roots():
-      write_initial_flags(mylang, root,
-                          initial_flags.difference(root.flags['out'].keys()))
 
 def write_mn_flags(mylang, mn, output_flags, all_flags):
   write_flags(mylang, mn)
@@ -490,12 +480,6 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
                     'tag': disjunctive_typename(flag).lower()})
     copied_flags.update(mn_copy_flags)
   return copied_flags
-
-def write_initial_flags(mylang, mn, initial_flags):
-  for flag in initial_flags:
-    mylang.add('''%(id)s := [ INFLECTED.%(flag)s na-or--].''' %\
-               {'id': mn.identifier(), 'flag': flag_name(flag),
-                'tag': disjunctive_typename(flag).lower()})
 
 def write_i_or_l_rules(irules, lrules, lrt, order):
   if len(lrt.lris) == 0: return
