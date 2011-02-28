@@ -1027,15 +1027,15 @@ subject and or object dropping by selecting the correct value for the
 
 Label "<p>In addition to lexical types, you can define inflectional
 morphology for nouns, verbs, and determiners.  To do so, first define
-one or more inflectional <span class=\"dfn\">slots</span>, which
-determine the order in which morphemes appear, then define one or more
-<span class=\"dfn\">morphemes</span> that can appear in each slot,
-along with the <span class=\"dfn\">features</span> specified by each
-morpheme.  To determine the order of slots, you must define one or
-more <span class=\"dfn\">inputs</span> for each.  For morphemes that
-attach directly to stems, the input will be a lexical type; for
-morphemes that attach to already-inflected stems, the input will be
-another slot.</p>"
+one or more inflectional <span class=\"dfn\">position classes</span>,
+which determine the order in which morphemes appear, then define one or
+more <span class=\"dfn\">morphemes</span> that can appear in each
+position class, along with the <span class=\"dfn\">features</span>
+specified by each morpheme.  To determine the order of position classes,
+you must define one or more <span class=\"dfn\">inputs</span> for each.
+For morphemes that attach directly to stems, the input will be a lexical
+type; for morphemes that attach to already-inflected stems, the input
+will be another position class.</p>"
 
 Label "<a id=\"toggle_all_lex_button\" onclick=\"toggle_all_display_lex(1)\">&#9660; all sections</a>"
 
@@ -1089,7 +1089,7 @@ BeginIter noun{i} "a Noun Type" 1
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    Select others "Noun {i} Forbids" "<p>Noun {i} forbids the following slot: " "</p>"
+    Select others "Noun {i} Forbids" "<p>Noun {i} forbids the following position class: " "</p>"
     fillregex noun-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
@@ -1236,14 +1236,14 @@ BeginIter verb{i} "a Verb Type" 2
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect others "Verb {i} requires" "<p>Verb {i} requires one of the following slots: " "</p>"
+    MultiSelect others "Verb {i} requires" "<p>Verb {i} requires one of the following position classes: " "</p>"
     fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    Select others "Verb {i} forbids" "<p>Verb {i} forbids the following slot: " "</p>"
+    Select others "Verb {i} forbids" "<p>Verb {i} forbids the following position class: " "</p>"
     fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
@@ -1338,14 +1338,14 @@ BeginIter aux{i} "an Auxiliary Type"
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect others "Aux {i} requires" "<p>Aux {i} requires one of the following slots: " "</p>"
+    MultiSelect others "Aux {i} requires" "<p>Aux {i} requires one of the following position classes: " "</p>"
     fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    Select others "Aux {i} forbids" "<p>Aux {i} forbids the following slot: " "</p>"
+    Select others "Aux {i} forbids" "<p>Aux {i} forbids the following position class: " "</p>"
     fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
@@ -1503,14 +1503,14 @@ BeginIter det{i} "a Determiner"
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect others "Determiner {i} requires" "<p>Determiner {i} requires one of the following slots: " "</p>"
+    MultiSelect others "Determiner {i} requires" "<p>Determiner {i} requires one of the following position classes: " "</p>"
     fillregex det-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    MultiSelect others "Determiner {i} requires" "<p>Determiner {i} requires one of the following slots: " "</p>"
+    MultiSelect others "Determiner {i} requires" "<p>Determiner {i} requires one of the following position classes: " "</p>"
     fillregex det-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
