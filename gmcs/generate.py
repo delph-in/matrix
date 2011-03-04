@@ -261,7 +261,7 @@ def var(string):
     string = "gend"
   if string.lower() in [ "sf","cog-st","speci","sort" ]:
     pass
-  elif string.lower() in ["situation","tense","aspect" ]:
+  elif string.lower() in ["mood","situation","tense","aspect" ]:
     string = "e." + string
   else:
     string = "png." + string

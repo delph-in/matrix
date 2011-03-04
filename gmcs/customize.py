@@ -372,7 +372,7 @@ def customize_other_features():
     type = h.type
     # if this hierarchy isn't handled elsewhere, handle it here
     if feat not in ['case', 'person', 'number', 'pernum', 'gender',
-                    'form', 'tense', 'aspect', 'situation']:
+                    'form', 'tense', 'aspect', 'situation', 'mood']:
       if type == 'head':
         mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].',
                    section='addenda')
@@ -452,7 +452,12 @@ def init_aspect_hierarchy():
 
   if not hier.is_empty():
     hierarchies[hier.name] = hier
-
+  elif ch.get('perimper'):
+    for asp in ('perfective', 'imperfective'):
+      name = asp
+      supername = 'aspect'
+      hier.add(name, supername)
+      hierarchies[hier.name] = hier
 
 def customize_aspect():
   if 'aspect' in hierarchies:
@@ -473,13 +478,38 @@ def init_situation_hierarchy():
   if not hier.is_empty():
     hierarchies[hier.name] = hier
 
-
 def customize_situation():
   if 'situation' in hierarchies:
     mylang.set_section('features')
     mylang.add('situation := sort.')
     mylang.add('tam :+ [SITUATION situation].', section='addenda')
     hierarchies['situation'].save(mylang, False)
+
+######################################################################
+# customize_mood()
+# Create mood feature value definitions per the user's choices
+
+def init_mood_hierarchy():
+  hier = TDLHierarchy('mood')
+
+  for mood in ch.get('mood',[]):
+    name = mood.get('name')
+    for supertype in mood.get('supertype',[]):
+      supername = supertype.get('name')
+      hier.add(name, supername)
+
+  if not hier.is_empty():
+    hierarchies[hier.name] = hier
+  elif ch.get('subjind'):
+    for md in ('subjunctive', 'indicative'):
+      name = md
+      supername = 'mood'
+      hier.add(name, supername)
+      hierarchies[hier.name] = hier
+
+def customize_mood():
+  if 'mood' in hierarchies:
+    hierarchies['mood'].save(mylang, False)
 
 ######################################################################
 # customize_word_order()
@@ -2884,6 +2914,7 @@ def customize_matrix(path, arch_type, destination=None):
   init_tense_hierarchy()
   init_aspect_hierarchy()
   init_situation_hierarchy()
+  init_mood_hierarchy()
   init_form_hierarchy()
   init_other_hierarchies()
 
@@ -2912,6 +2943,7 @@ def customize_matrix(path, arch_type, destination=None):
   customize_tense()
   customize_aspect()
   customize_situation()
+  customize_mood()
   customize_other_features()
   customize_word_order()
   customize_sentential_negation()

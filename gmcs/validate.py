@@ -14,6 +14,7 @@ from gmcs.utils import get_name
 import gmcs.linglib.case
 import gmcs.linglib.morphotactics
 import gmcs.linglib.negation
+from gmcs.linglib import negation
 
 
 ######################################################################
@@ -154,7 +155,7 @@ def validate_names(ch, vr):
 
   # if called for by current choices, add reserved types for:
   # case, direction, person, number, pernum, gender, tense, aspect,
-  # situation, form, and trans/intrans verb types.
+  # situation, mood, form, and trans/intrans verb types.
   if ch.get('case-marking', None) is not None:
     reserved_types['case'] = True
 
@@ -189,6 +190,9 @@ def validate_names(ch, vr):
 
   if ch.situations():
     reserved_types['situation'] = True
+
+  if ch.moods():
+    reserved_types['mood'] = True
 
   if ch.forms():
     reserved_types['form'] = True
@@ -257,6 +261,9 @@ def validate_names(ch, vr):
 
   for situation in ch.get('situation', []):
     user_types += [[situation.get('name'), situation.full_key + '_name']]
+
+  for mood in ch.get('mood', []):
+    user_types += [[mood.get('name'), mood.full_key + '_name']]
 
   for sf in ch.get('nf-subform', []):
     user_types += [[sf.get('name'), sf.full_key + '_name']]
@@ -668,7 +675,7 @@ def validate_yesno_questions(ch, vr):
 
 def validate_tanda(ch, vr):
   """
-  Validate the user's choices about tense, aspect (viewpoint and situation) and form features
+  Validate the user's choices about tense, aspect (viewpoint and situation), mood and form features
   """
 
   ## validate tense
@@ -723,6 +730,17 @@ def validate_tanda(ch, vr):
       vr.err(situation.full_key + '_supertype1_name',
              'You must specify at least one supertype for each ' +
              'situation aspect subtype you define.')
+
+  ## validate mood
+  for mood in ch.get('mood'):
+    if 'name' not in mood:
+      vr.err(mood.full_key + '_name',
+             'You must specify a name for each ' +
+             'mood subtype you define.')
+    if 'supertype' not in mood:
+      vr.err(mood.full_key + '_supertype1_name',
+             'You must specify at least one supertype for each ' +
+             'mood subtype you define.')
 
   ## validate form
   if ch.get('has-aux') == 'yes' and ch.get('noaux-fin-nf') == 'on':
@@ -944,6 +962,7 @@ def validate_lexicon(ch, vr):
           vr.err(feat.full_key + '_name', mess)
 
         if lextype == 'verb': # or lextype == 'aux': lap: 1/5/11 removed aux to get rid of overzealous validation
+
           if not feat.get('head'):
             mess = 'You must choose where the feature is specified.'
             vr.err(feat.full_key + '_head', mess)

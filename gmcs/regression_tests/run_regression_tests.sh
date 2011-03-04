@@ -100,7 +100,7 @@ for lgname in $lgnames
 do
     rm -rf $grammars/$lgname
     rm -f $logs/$lgname.$date
-    rm -rf $tdsbhome/current/$lgname
+    rm -rf $tsdbhome/current/$lgname
 done
 
 # Create fresh copy of matrix-core
@@ -176,15 +176,6 @@ do
 
         echo "(setf (system:getenv \"DISPLAY\") nil)"
 
-        echo "(setf tsdb::*process-suppress-duplicates* nil)"
-        echo "(setf tsdb::*process-raw-print-trace-p* t)"
-
-        echo "(setf tsdb::*tsdb-home* \"$tsdbhome\")"
-        echo "(tsdb:tsdb :skeletons \"$skeletons\")"
-
-        echo "(setf target \"$target\")"
-        echo "(tsdb:tsdb :create target :skeleton \"$lgname\")"
-
         # Use the following for PET parsing
         #echo "(setf *tsdb-cache-connections-p* t)"
         #echo "(setf *pvm-encoding* :utf-8)"
@@ -200,6 +191,15 @@ do
 
         # Use the following for LKB parsing
         echo "(lkb::read-script-file-aux \"$grammar\")"
+
+        echo "(setf tsdb::*process-suppress-duplicates* nil)"
+        echo "(setf tsdb::*process-raw-print-trace-p* t)"
+
+        echo "(setf tsdb::*tsdb-home* \"$tsdbhome\")"
+        echo "(tsdb:tsdb :skeletons \"$skeletons\")"
+
+        echo "(setf target \"$target\")"
+        echo "(tsdb:tsdb :create target :skeleton \"$lgname\")"
 
         echo "(tsdb:tsdb :process target)"
 
@@ -218,10 +218,9 @@ do
 # for grammar load problems.
 
     if [ ! -e $tsdbhome/$target ]; then
+        echo "ERROR!"
         echo "Probable tdl error; grammar failed to load." >> $log
-    fi
-
-    if [ -s $log ]; then
+    elif [ -s $log ]; then
         echo "DIFFS!"
     else
         echo "Success!"

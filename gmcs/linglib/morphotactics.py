@@ -44,12 +44,23 @@ def all_position_classes(choices):
       yield pc
 
 def intermediate_typename(pcs):
+  """
+  Return the typename to be used for the intermediate rule type for
+  the given set of position classes.
+  """
   return disjunctive_typename(pcs) + '-rule-dtr'
 
 def disjunctive_typename(mns):
+  """
+  Return a string that uses '-or-' as a delimiter to concatenate the
+  names of all morphotactic nodes in mns.
+  """
   return '-or-'.join(sorted([mn.name for mn in mns]))
 
 def flag_name(flag_tuple):
+  """
+  Return the flag name for rule types in flag_tuple.
+  """
   return disjunctive_typename(flag_tuple).upper() + '-FLAG'
 
 def sequential(mn1, mn2):
@@ -75,6 +86,11 @@ def ordered_constraints(mn, constraint_type):
   return ordered
 
 def get_input_map(pch):
+  """
+  For the given position class hierarchy, return a map with the sets
+  of all valid input rules/types as the keys and lists of position
+  classes taking those inputs as the values.
+  """
   inp_map = defaultdict(list)
   for pc in pch.nodes.values():
     i_s = tuple(sorted(pc.valid_inputs(), key=lambda x: x.tdl_order))
@@ -139,9 +155,7 @@ def customize_lexical_rules(choices):
   #      (all_inputs() depends on forward-looking require constraints)
   #  4. determine and create flags based on constraints
   pch = position_class_hierarchy(choices)
-  #create_lexical_rule_types(choices)
   interpret_constraints(choices)
-  convert_obligatoriness_to_req(choices)
   create_flags()
   return pch
 
@@ -240,7 +254,7 @@ def set_lexical_rule_supertypes(pc):
 ### CONSTRAINTS ###
 
 def interpret_constraints(choices):
-#  print choices
+  convert_obligatoriness_to_req(choices)
   for mn in _mns.values():
     # don't bother if the morphotactic node is not defined in choices
     if mn.key not in choices \
@@ -380,6 +394,9 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
           if isinstance(mn, LexicalRuleType) and len(mn.features) > 0]
 
 def get_section_from_pc(pc):
+  """
+  Given a PC, return the section in which its rules should be written.
+  """
   if pc.identifier_suffix == 'lex-super':
     # get section for lexical type
     if 'noun' in pc.key:
@@ -428,6 +445,7 @@ def write_inflected_avms(mylang, all_flags):
     flag = flag_name(f)
     mylang.add('''inflected :+ [%(flag)s luk].''' % {'flag': flag})
     mylang.add('''infl-satisfied :+ [%(flag)s na-or-+].''' % {'flag': flag})
+    mylang.add('''infl-initial :+ [%(flag)s na-or--].''' % {'flag': flag})
 
 def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
   """
@@ -437,24 +455,17 @@ def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
   """
   if len(all_flags) == 0: return
   write_flags(mylang, pc)
-  to_copy = {}
   out_flags = set(pc.flags['out'].keys())
+  to_copy = {}
   for mn in pc.roots():
     to_copy[mn.key] = write_mn_flags(mylang, lextdl, mn, out_flags, all_flags, choices)
-  # first write copy-ups for the root nodes
-  copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
-  # then, if any remain, copy up on the pc (if a lexrule)
+  # for lex-rule PCs (not lexical types), write copy-up flags
   if pc.identifier_suffix != 'lex-super':
-    to_copy = {pc.key: all_flags.difference(out_flags)}
-    to_copy[pc.key].difference_update(copied_flags)
+    # first write copy-ups for the root nodes
+    copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
+    # then, if any remain, copy up on the pc (if a lexrule)
+    to_copy = {pc.key: all_flags.difference(out_flags.union(copied_flags))}
     write_copy_up_flags(mylang, to_copy, all_flags, force_write=True)
-  else:
-    # for lex-types, write initial flag values for all other flags
-    initial_flags = set([f for f in get_all_flags('in').difference(out_flags)
-                         if all(pc.precedes(mn) for mn in f)])
-    for root in pc.roots():
-      write_initial_flags(mylang, root,
-                          initial_flags.difference(root.flags['out'].keys()))
 
 def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
   if mn.instance:
@@ -464,14 +475,12 @@ def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
   else:
     write_flags(mylang, mn)
   to_copy = {}
-  # EMB 2/23/11 It seems like we're not actually hitting the "roots"
-  # with the to_copy treatment here.  Whyever not?
+  cur_output_flags = output_flags.union(set(mn.flags['out'].keys()))
   for sub_mn in mn.children().values():
     to_copy[sub_mn.key] = write_mn_flags(mylang, lextdl, sub_mn,
-                            output_flags.union(set(mn.flags['out'].keys())),
-                            all_flags, choices)
+                                         cur_output_flags, all_flags)
   copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
-  return all_flags.difference(output_flags).difference(copied_flags)
+  return all_flags.difference(cur_output_flags).difference(copied_flags)
 
 def write_lex_entry_with_flags(lextdl, mn, choices):
   """
@@ -511,6 +520,7 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
   common_flags = reduce(set.intersection, to_copy.values())
   for mn_key in to_copy:
     mn = _mns[mn_key]
+    if mn.identifier_suffix in ('lex-super', 'lex'): continue
     # if all flags are common, none are copied here, and if the
     # difference contains all flags, just copy up the whole AVM.
     mn_copy_flags = to_copy[mn_key]
@@ -538,6 +548,7 @@ def write_initial_flags(mylang, mn, initial_flags):
     mylang.add('''%(id)s := [ INFLECTED.%(flag)s na-or--].''' %\
                {'id': mn.identifier(), 'flag': flag_name(flag),
                 'tag': disjunctive_typename(flag).lower()})
+
 
 def write_i_or_l_rules(irules, lrules, lrt, order):
   if len(lrt.lris) == 0: return
