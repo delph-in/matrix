@@ -143,7 +143,7 @@ function toggle_all_display_lex(on)
        iter.id.search('feat') == -1 && + //feat/stem/forbid/requires/lri iterators
        iter.id.search('stem') == -1 && + //needn't show/hide
        iter.id.search('forbid') == -1 && + 
-       iter.id.search('requires') == -1 && +
+       iter.id.search('require') == -1 && +
        iter.id.search('lri') == -1){ 
       button = document.getElementById(iter.id+'button');
       if(on==1){
