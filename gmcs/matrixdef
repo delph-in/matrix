@@ -1638,27 +1638,32 @@ EndIter adp
 
 Section toolbox-import "Import Toolbox Lexicon"
 
-Label "<p>Use this page to import lexical entries from a Toolbox
-lexicon file to your choices file.  You may import from multiple
-Toolbox files (by selecting multiple files on this page), but every
-time you do an import, all previously imported lexical entries will be
-dropped.  If your Toolbox files use the same set of tags, you may add
-them all to the same Toolbox Import Configuration.  If they use
-different tags (for lexical entry ids, stems, and glosses), you will
-need to define separate Toolbox Import Configurations.</p><p>For each
-Toolbox Import Configuration, you will need to specify the file or
-files you are importing from, the tags used in those files for entry
-ids, stems, and glosses.  Within each Toolbox Import Configuration you
-can specify one or more Import Classes, which map Toolbox tag/value
-pairs to lexical classes defined on the Lexicon page.  The Toolbox
-Import Configurations become part of your choices file when you click
-the Submit or Import Lexicon buttons.</p><p> Once you have imported a
+Label "<p><a href=\"http://www.sil.org/computing/toolbox\">Toolbox</a>
+is a tool provided by SIL and used by many field linguists. This page
+allows you to automatically create lexical entries for your Grammar
+Matrix grammar on the basis of lexical entries in a Toolbox lexicon.
+This page allows you to guide the import process by defining one
+or more configurations (called Toolbox Import Configurations).
+You may import from multiple Toolbox files (by
+selecting multiple files on this page), but every time you do an
+import, all previously imported lexical entries will be dropped.  If
+your Toolbox files use the same set of tags, you may add them all to
+the same Toolbox Import Configuration.  If they use different tags
+(for lexical entry ids, stems, and glosses), you will need to define
+separate Toolbox Import Configurations.</p><p>For each Toolbox Import
+Configuration, you will need to specify the file or files you are
+importing from, the tags used in those files for entry ids, stems, and
+glosses.  Within each Toolbox Import Configuration you can specify one
+or more Import Classes, which map Toolbox tag/value pairs to lexical
+classes defined on the Lexicon page.  The Toolbox Import
+Configurations become part of your choices file when you click the
+Submit or Import Lexicon buttons.</p><p> Once you have imported a
 lexicon, you can check the entries that were imported for each class.
 If you find errors, you can edit the Import Classes and
-re-import.</p><p>In order to import information from a Toolbox
-lexicon to your choices file, the Toolbox files must be transferred
-to our servers.  We will NOT store these files permanently.  They
-will be deleted within 24 hours.</p>"
+re-import.</p><p>In order to import information from a Toolbox lexicon
+to your choices file, the Toolbox files must be transferred to our
+servers.  We will NOT store these files permanently.  They will be
+deleted within 24 hours.</p>"
 
 BeginIter toolboximportconfig{i} "a Toolbox Import Configuration" 1
 
