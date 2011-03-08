@@ -1,0 +1,93 @@
+; File for spelling preserving lexical rules, i.e., instances
+; of (subtypes of) infl-ltol-rule and infl-ltow-rule.
+
+; Every rule in this file should have a %suffix line.  Those
+; that don't belong in lrules.tdl.
+
+%(letter-set (!v aeiou))
+%(letter-set (!c bcdfghjklmnpqrstvwxyz))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; case on common nouns
+
+gen_sg_noun :=
+  %suffix (* i)
+  gen_sg_noun-lex-rule.
+
+dat_sg_noun :=
+  %suffix (* i)
+  dat_sg_noun-lex-rule.
+
+abl_sg_noun :=
+  %suffix (* e)
+  abl_sg_noun-lex-rule.
+
+ins_sg_noun :=
+  %suffix (* ov)
+  ins_sg_noun-lex-rule.
+
+nom_non-sg_noun :=
+  %suffix (* er)
+  nom_non-sg_noun-lex-rule.
+
+acc_non-sg_noun :=
+  %suffix (* er)
+  acc_non-sg_noun-lex-rule.
+
+gen_non-sg_noun :=
+  %suffix (* eru)
+  gen_non-sg_noun-lex-rule.
+
+dat_non-sg_noun :=
+  %suffix (* eru)
+  dat_non-sg_noun-lex-rule.
+
+abl_non-sg_noun :=
+  %suffix (* ere)
+  abl_non-sg_noun-lex-rule.
+
+ins_non-sg_noun :=
+  %suffix (* erov)
+  ins_non-sg_noun-lex-rule.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; person/number on verbs
+
+1sg_verb :=
+  %suffix (e em) (i im) (a am)
+  1sg_verb-lex-rule.
+
+2sg_verb :=
+  %suffix (e es) (i is) (a as)
+  2sg_verb-lex-rule.
+
+3sg_verb :=
+  %suffix (i i) (e e) (a ay) (chhe chhi)
+  3sg_verb-lex-rule.
+
+1non-sg_verb :=
+  %suffix (e enkh) (i inkh) (a ankh)
+  1non-sg_verb-lex-rule.
+
+2non-sg_verb :=
+  %suffix (e ekh) (i ikh) (a akh)
+  2non-sg_verb-lex-rule.
+
+3non-sg_verb :=
+  %suffix (e en) (i in) (a an)
+  3non-sg_verb-lex-rule.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; verb forms
+
+indic_verb :=
+  %prefix (!c ke-!c) (!v k-!v) (krna krna) (chhe chhe)
+  indic_verb-lex-rule.
+
+inf_verb :=
+  %suffix (* l)
+  inf_verb-lex-rule.
+
+neg_verb :=
+  %suffix (* r)
+  neg_verb-lex-rule.

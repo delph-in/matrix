@@ -1,0 +1,67 @@
+Lab 8 Grading Rubric
+
+-------------------------------------------------------------
+Comments:
+
+ To test it, I created a new transitive verb whose complement is head
+ adp and whose complements are fulfilled.  This prepositional phrase
+ takes the same spot as a noun phrase on regular transitive verbs.  I
+ choose the irregular verb 'essere' to test this.
+
+ Questi libri sono per te.  (These books are for you)
+
+I doubt you want to say there's a special 'essere' that takes
+a PP[per] complement.  That looks more like a predicative use of
+the PP after the copula.  Furthermore, the semantics is broken:
+the pronoun's relations aren't showing up and the pronoun isn't
+getting linked to the verb's relation.  You need your preposition
+lexical type to inherit from raise-sem-lex-item and then the
+semantics will be fixed :-)
+
+The semantics for this:
+
+ I amici danno un libro ad una ragazza.
+ The friends give a book to a girl.
+
+are similarly broken, but should also be fixed by the change
+mentioned above.
+
+ Since I had created the two types, adding this argument optionality
+ didn't increase coverage, but actually decreased it.  I had originally
+ analyzed the noun/verb inversion rule to only apply to verbs with no
+ arguments, and so I created it as a lexical rule.  However, verbs with
+ a null argument keep their argument until after it passes the
+ head-opt-comp-phrase, disallowing the inversion rule from taking
+ effect.  It worked fine with both the transitive and intransitive
+ interpretation, but didn't reflect what was happening in the grammar.
+ Sentences like 'Mangi-o io' (eat I) don't parse, and sentences like
+ 'Mangi-a Maria' (Eat Maria) only parse with the interpretation that
+ something is eating Maria, rather than Maria is eating.  I have not
+ taken the time to fix this yet.
+
+I have an idea of how to do this, if I have the right generalization:
+
+  *V Obj Subj
+  V Subj  (inherently intransitive V or transitive V with DNI/INI)
+  obj-V Subj (transitive V with object prefix)
+
+This suggests that the inversion rule should be a phrase structure
+rule that requires LIGHT + on its daughter (and then you'll need to
+make verbs HC-LIGHT -).  That should make sure it can only apply
+as part of a 'spindle'.  Alternatively (and this might be the better plan),
+the rule can make the mother's COMPS list be a list of unexpressed
+synsems. As we discussed today, build a type ulist (and ucons and unull)
+parallel to olist, but without the [OPT +] constraint.
+
+You probably want the accusative and dative pronoun rules to make
+the corresponding arguments DEF +.
+
+ The adjective could also be used with a copula.  In this case it must
+ agree with the gender of the subject of the copula.  To do this, I
+ created a verb copula that took an adjective as its complement and
+ stipulated that the PNG value of the subject and the PNG value of the
+ noun that the adjective is modifying be the same.
+
+PNG isn't enough --- you'd like the whole index to be identified
+so that in the MRS the adjective relation ends up predicated of
+the subject.

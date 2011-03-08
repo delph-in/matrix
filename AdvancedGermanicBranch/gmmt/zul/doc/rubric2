@@ -1,0 +1,56 @@
+-----------------------------------------------------------------
+
+Comments:
+
+
+ One challenge that I had was in deciding how to
+ analyze the verb roots.  One of my grammars and the dictionary I have
+ both analyze the roots as including the final 'a' (e.g. -bona,
+ 'see'). Under this analysis, the future tense of 'see' would be:
+
+This is the famous "final vowel".  I'm not yet sure what the
+right answer is here, but it is common to across the Bantu languages.
+It might be interesting to see what Dan Jinguji decided to do for
+his Swahili grammar, which I have sent you.
+
+ My grammars have proven to be unhelpful in finding examples.  The
+ grammar's examples are not in future tense, or only use first or
+ second person arguments, or are full of adverbials or other extraneous
+ information that I am not ready to include in my grammar.  Most of my
+ sample sentences are modeled after samples provided in the text, but
+ none are taken word-for-word.  The site isiZulu.net has a message
+ board that appears to be frequented by native speakers of Zulu; I
+ think I will try asking there for grammaticality judgments.
+
+You might also see if the Rosetta Project has a discussion
+"room" yet for Zulu.
+
+ I have not found any mention of ditransitive verbs, so I don't know if
+ there aren't any or if they just weren't covered in my grammars.
+ Until I find out, I am not including any ditransitive test data,
+ because I can't make grammaticality judgments.
+
+Most Bantu languages have interesting valence-changing morphological
+alternations (applicatives, etc) which should lead to sentences
+with 3 or more arguments.  I would recommend this as something to
+look into instead of case.
+
+ I did not include examples where the subject concord is the same for
+ two classes.  For example, the subject concord for both class 1 and
+ class 3 is u-.  Since I don't have a means of differentiating them
+ yet, it seemed silly to list the u- prefix twice.
+
+Presumably the classes are still differentiated in other ways?
+(Adjective concord, object concord?)  You might be able to construct
+examples such as:
+
+C1-noun C1-that u-verb
+C3-noun C3-that u-verb
+
+The only problem with "1SG.SC" is that the period is meaningful
+in the Leipzig glossing rules, and it's not that the morpheme glossed
+this way is a portmanteau of 1sg and some subject concord class.  I
+think that just 1SG might be a better plan.
+
+It sounds like your demonstratives are probably more like adjectives
+than "determiners".  Can other adjectives appear "outside" of them?

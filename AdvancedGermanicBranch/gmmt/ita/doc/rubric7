@@ -1,0 +1,31 @@
+Lab 7 Grading Rubric
+
+	I'd like to see two message relations here: question_m_rel
+	embedding a proposition_m_rel.
+
+	qeq is broken.
+
+The grammar you turned in wouldn't load, because of this:
+
+msg-cord-rule := coord-phrase &
+  [ LCOORD-DTR.SYNSEM.LOCAL.CONT #msg & [MSG message],
+    RCOORD-DTR.SYNSEM.LOCAL.CONT #msg]. 
+
+I think what you meant was this:
+
+msg-cord-rule := coord-phrase &
+  [ LCOORD-DTR.SYNSEM.LOCAL.CONT.MSG #msg & message,
+    RCOORD-DTR.SYNSEM.LOCAL.CONT.MSG #msg]. 
+
+In addition, your head-opt-subj rule had broken semantics.
+It needs:
+
+head-opt-subj-phrase := basic-head-opt-subj-phrase &
+ [ C-CONT [ RELS <! !>,
+	    HCONS <! !> ]].
+
+In addition, the head-opt-subj-phrase should pass up the
+HOOK inforamtion from the head daughter.  Making it inherit
+from head-compositional will do the trick.  Otherwise, some
+of your qeqs get broken.
+

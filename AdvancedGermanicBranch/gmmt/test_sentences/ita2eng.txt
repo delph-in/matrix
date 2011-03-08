@@ -1,0 +1,51 @@
+Cani dorm-ono
+Dogs sleep.
+
+Cani insegu-ono macchine
+Dogs chase cars.
+
+Ti-insegu-o
+I chase you.
+
+Questi cani dorm-ono
+These dogs sleep.
+
+Cani mangi-ano
+Dogs eat.
+
+Posso mangi-are il vetro
+I can eat glass.
+
+Non mi-f-a male
+It doesnt hurt me.
+
+I cani insegu-ono macchine
+The dogs chase cars.
+
+Pens-o che sai che cani insegu-ono macchine
+I think that you know that dogs chase cars.
+
+Domand-o se sai che cani insegu-ono macchine
+I ask whether you know that dogs chase cars.
+
+Cani e gatti insegu-ono macchine
+Cats and dogs chase cars.
+
+Cani insegu-ono macchine e gatti insegu-ono cani
+Dogs chase cars and cats chase dogs.
+
+Gatti insegu-ono cani e dorm-ono
+Cats chase dogs and sleep.
+
+Gatti insegu-ono cani
+Do cats chase dogs?
+
+insegu-i il cane
+Chase the dog.
+
+Cani affamat-i mangi-ano
+Hungry dogs eat.
+
+Cani affamat-i mangi-ano velocemente
+Hungry dogs eat quickly.
+

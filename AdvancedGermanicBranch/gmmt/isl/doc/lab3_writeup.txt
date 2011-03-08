@@ -1,0 +1,258 @@
+Katie Sickles
+LING 567
+Lab2
+
+Icelandic, Íslenska
+Language Code: isl
+
+Pronouns:
+	
+	Pronouns in Icelandic vary by person, number, gender, case
+and familiarity. I have a chart below representing the pronouns
+of the language. I have given all the cases for 1st person, and
+used just the nominative case for the other persons.
+	
+	1st Person:
+	
+		Singular	Familiar Pl.	Polite Pl.
+	
+nom.	ég			við				vér
+acc.	mig			okkur			oss
+dat.	mér			okkur			oss
+gen. 	mín			okkar			vor
+
+	2nd Person:
+	
+nom.	þú			þið				þér
+
+	3rd Person (nominative only):
+	
+		Singular	Plural
+		
+masc.	hann		þeir
+fem.	hún			þær
+neut.	það			þau		
+
+	These pronouns have to match the verbs in agreement 
+with the number and person. Such as the example below:
+
+	Ég hoppa
+	I  jump.1sg
+	
+	*Við hoppa
+	 We   jump.1sg
+	 
+Determiners:
+
+	Icelandic does not have a indefinite article, only the
+definite one. There are two different kinds of the definite
+article: a free one, and a suffixed one.
+
+	Free:		hinn gódi maður
+				the good man
+		
+	Suffixed:	gódi maður-inn
+				the good man
+			
+	The free aricle can only appear if there is an adjective in
+the sentence. If there is no adjective present, the suffixed
+version has to be used:
+
+	Maðurinn elskar mig
+	the man loves me
+	
+	*Hinn maður elskar mig
+	the man loves me
+	
+	The articles also have agreement with case, gender and 
+number. This is true of both free and suffixed articles. The chart 
+below illustrates some of the different suffixed articles:
+
+		Gender	Singular	Plural
+	
+nom.	masc.	hestur-inn	hestar-nir
+acc.	masc.	hest-inn	hesta-na
+dat.	masc.	hesti-num	hestu-num
+nom.	fem.	kinn-in		kinnar-nar
+acc.	fem.	kinn-ina	kinnar-nar
+dat.	fem.	kinn-inni	kinnu-num
+
+	If there is a common noun without a determiner, it has the
+same interpretation as the indefinite article of "a" from English.
+
+Case:
+
+	Icelandic has four cases: nominative, accusative, dative, and
+genitive. The nominative case is generally used for the subject of
+a sentence as in English and accusative is used as the object of
+transitive verbs. There are also some verbs that require the subject
+to be accusative as well. Here are some examples:
+
+	Ég elska manninn
+	I.NOM like the man.ACC
+	
+	*Ég líka maðurinn
+	I.NOM like the man.NOM
+	
+	Mig dreymdi draum
+	I.ACC dreamt a dream.ACC
+	
+	The dative case is most often used in indirect objects,
+but there are verbs that have the direct object as dative. Genitive
+case is mostly used in possesives, but is also used in measurement.
+	The cases in Icelandic have these distributions and must remain
+in the proper distribution to form grammatical sentences.
+
+Agreement:
+
+	There is very strong agreement in Icelandic. So far it has been
+used in almost all of the categories above. Gender, number, and person
+have to agree for determiners and their nouns. Number and person have 
+to agree for verbs and their pronouns or nouns.
+
+	Maðurinn elskar mig
+	the man loves me
+
+	*Maðurin elskar mig
+	the.FEM man.MASC loves me
+	
+Adjectives:
+
+	Unlike English, the adjectives in Icelandic have case and number.
+These also have to follow agreement with their nouns. They also appear
+right before the noun they are modifying. The chart shows some of the
+strong forms of the adjective "fagur"-beautiful, fair.
+
+		Singular	
+		
+		Masc.	Fem.	Neut.
+nom.	fagur	fögur	fagurt
+acc.	fagran	fagra	fagurt
+
+		Plural
+		
+		Masc.	Fem.	Neut.
+nom.	fagrir	fagrar	fögur
+acc.	fagra	fagrar	fögur
+
+These strong forms are used mostly with indeterminate nouns. However, there
+are also weak forms that are used with definite article. For example:
+
+	rauðer hunder
+	a red dog
+	
+	rauði hunderinn
+	the red dog	
+	
+	*hinn rauðer hunder
+	the red.STONG dog
+	
+Coordination:
+
+	The coordinating conjuction, "and", in Icelandic is used much in the same 
+way as the English "and". The word "og" is inserted between to sentences or NPs
+to connect them:
+
+	hunder og köttur
+	dog and cat
+	
+	Kötturinn elskar hundinn og hunderinn elskar köttinn
+	The cat loves the dog and the dog loves the cat
+	
+Word Order:
+
+	Icelandic is a SVO language. The verb will almost always be the second idea
+of the sentence. The exception to this is in yes/no question (which will be
+discussed later). If the sentence contains an auxiliary verb, this verb is placed
+before the main verb.
+
+	Konan elskar hann
+	The woman loves him
+	
+	Konan hann elskar
+	*The woman him loves
+	
+	Konan getur hoppa
+	The woman can jump
+	
+Negation:
+
+	To negate the sentence in Icelandic, the verb is negatated with a negative
+adverb "ekki". This adverb is added after the auxiliary verb if an auxiliary is
+present. If not, it is put after the main verb unless the object is a pronoun in
+which case, the adverb is added after the pronoun object.
+
+	Ég get ekki hoppa
+	I can't jump
+	
+	Ég hoppa ekki
+	I don't jump
+	
+	Ég elska hann ekki
+	I don't love him
+	
+Yes/no Questions:
+
+	To ask a yes/no question in Icelandic, the word order is changed. The new 
+order is VSO for these types of questions. All other contrainsts, such as case
+agreement must still be followed to create a grammatical sentence.
+
+	Borðar þú matinn?
+	Eat you food?
+	Do you eat food?
+	
+	*þú borðar matinn?
+	you eat food?
+	
+Imperatives:
+	
+	There is a special imperative tense in Icelandic that is used in command
+sentences. In its usage, unlike English, the pronoun is often not dropped of
+(ie "come you!"). Below is the imperative conjugation for "jump"
+
+	þú	hoppa
+	við	hoppum
+	þið	hoppið
+	
+	Hoppa!
+	Jump
+	
+	Hoppa þú!
+	Jump (you)!
+	
+	When negation is used, it is possible to use the infinival form instead of
+the imperative.
+
+	Ekki að hoppar!
+	Don't jump!
+	
+Modals:
+
+	The modals are auxiliry verbs in Icelandic. The are placed befor the main
+verb in standard sentence order. In a matrix yes/no question, they are placed
+at the beginning of the sentence, followed by the subject. Below is the
+conjugation of "can":
+
+	ég	get
+	þú	getur
+	hann	getur
+	við	getum
+	þið	getið
+	þeir	geta
+
+	Hann getur hoppa
+	He can jump
+	
+	Getur hann hoppa?
+	Can he jump?
+	
+Final Note: In this write-up, I am still in the process of learning the grammar
+	of Icelandic. There many times when writing this and the testsuite I thought
+	a sentence was grammatical and later found out it was not. I am pretty sure
+	that what I have represented now has the correct grammatical judgements, but
+	as I am not a native speaker, I have yet to do more research to guarantee
+	that the judgements are correct.
+
+	
+
+	

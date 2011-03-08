@@ -1,0 +1,82 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+;;;
+;;; Basic lexical types, just enough to test word
+;;; order modules for now.  Will need to build this
+;;; out as a set of alternative modules.
+
+; For my own sanity in testing the free word order
+; module, implement a tiny bit of case.  Case values
+; declared directly on noun lexical entries, for now.
+
+case := *top*.
+nom := case.
+acc := case.
+dat := case.
+
+; Constrain nouns to be MOD < > now that I'm putting in the head-mod
+; rules -- otherwise lots of icky parses.  In general, I think we'll
+; want to put in things like this as a default for any entry that isn't
+; explicitly given an interesting MOD value.  Likewise on the valence
+; features?  Something to consider as we expand the modules idea.
+
+noun :+ [ CASE case,
+	  MOD < > ].
+
+noun-lex := basic-noun-lex & basic-one-arg &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >,
+			     COMPS < >,
+			     SUBJ < >,
+			     SPEC < > ]],
+    ARG-ST < #spr > ].
+
+transitive-verb-lex := basic-verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
+			     COMPS < #comps >,
+			     SUBJ < #subj >,
+			     SPEC < > ]]],
+    ARG-ST < #subj &
+	     [ LOCAL.CAT [ HEAD.CASE nom,
+			   VAL.SPR < > ]], 
+	     #comps &
+	     [ LOCAL.CAT [ HEAD.CASE acc,
+			   VAL.SPR < > ]] > ].
+
+verb :+ [ MOD <> ].
+
+intransitive-verb-lex := basic-verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+			     COMPS < >,
+			     SUBJ < #subj >,
+			     SPEC < > ]],
+    ARG-ST < #subj &
+	     [ LOCAL.CAT [ HEAD.CASE nom,
+			   VAL.SPR < > ]] > ].
+
+ditransitive-verb-lex := basic-verb-lex & ditransitive-lex-item &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+			     COMPS < #comps1, #comps2 >,
+			     SUBJ < #subj >,
+			     SPEC < > ]],
+    ARG-ST < #subj &
+	     [ LOCAL.CAT [ HEAD.CASE nom,
+			   VAL.SPR < > ]], 
+	     #comps1 &
+	     [ LOCAL.CAT [ HEAD.CASE acc,
+			   VAL.SPR < > ]],
+	     #comps2 &
+	     [ LOCAL.CAT [ HEAD.CASE dat,
+			   VAL.SPR < > ]] > ].
+
+aux-verb-lex := basic-verb-lex & trans-first-arg-raising-lex-item &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.MOD < >,
+                         VAL [ SPR < >,
+                               COMPS < #comps . #vcomps >,
+                               SUBJ < #subj >,
+                               SPEC < > ] ] ],
+    ARG-ST < #subj &
+	     [ LOCAL.CAT [ HEAD.CASE nom,
+			   VAL.SPR < > ]], 
+	     #comps &
+	     [ LOCAL.CAT [ HEAD verb,
+                           VAL.COMPS #vcomps] ]> ].
+

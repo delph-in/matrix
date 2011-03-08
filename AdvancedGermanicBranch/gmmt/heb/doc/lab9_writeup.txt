@@ -1,0 +1,424 @@
+Lab9 Writeup
+
+Can:
+----
+One of the ways to express in Hebrew the modal "can" is through a rasing verb that takes an infinitival complement. I am labeling it a verb rather than an auxiliary since it seems to behave as other verbs that take infinitival complements do (e.g. want). 
+
+#1000
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  modals
+ani ikwl lakl zkwkit
+ani ikl:PAAL.PRES akl:PAAL.INF zkwkit
+pron:NOM.1SG can:PAAL.PRES.SG.M eat:PAAL.INF glass:SG.F
+'I can eat glass.'
+
+#1001
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  modals
+ani rwch lakl zkwkit
+ani rci:PAAL.PRES akl:PAAL.INF zkwkit
+pron:NOM.1SG want:PAAL.PRES.SG.M eat:PAAL.INF glass:SG.F
+'I want to eat glass.'
+
+It is a somewhat irregular verb in that it is missing third person masculine singular past tense form. To form the past tense for the third person masculine singular past tense form, the third person masculine singular past tense form of the verb (aux) "be" is used and it is followed by the present tense third person masculine singular of "can" (#1004). However, many Hebrew speakers supply this missing form (#1005), but this is substandard. This is irrelevant to the grammar at this point but I thought I'd mention it since it might be relevant to its eventual labeling as a verb or aux or whatever, as I guess aux verbs tend to be irregular. Though at this point I do not see any reason to label it as anything other than a verb. The only true aux in Hebrew I think is the verb "be".
+
+#1002
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  modals
+hia iklh lakl zkwkit
+hia ikl:PAAL.PAST-h akl:PAAL.INF zkwkit
+pron:NOM.1SG.F can:PAAL.PAST-3SG.F eat:PAAL.INF glass:SG.F
+'She could eat glass.'
+
+#1003
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  modals
+hwa ikwl lakl zkwkit
+hwa ikl:PAAL.PRES akl:PAAL.INF zkwkit
+pron:NOM.1SG.M can:PAAL.PRES.SG.M eat:PAAL.INF glass:SG.F
+'He can eat glass.'
+
+#1004
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  modals
+hwa hih ikwl lakl zkwkit
+hwa hih:PAAL.PAST.3SG.M ikl:PAAL.PRES akl:PAAL.INF zkwkit
+pron:NOM.1SG.M be:PAAL.PAST.3SG.M can:PAAL.PRES.SG.M eat:PAAL.INF glass:SG.F
+'He could eat glass.'
+
+#1005
+Source: author
+Vetted: t
+Judgment: u
+Phenomena:  modals
+hwa ikl lakl zkwkit
+hwa ikl:PAAL.PRES akl:PAAL.INF zkwkit
+pron:NOM.1SG.M can:PAAL.PRES.3SG.M eat:PAAL.INF glass:SG.F
+'He could eat glass.'
+
+The canonical position of the verb "can" is immediately before the infinitive verb, but other ordering is possible given the right context.
+
+#1006
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  modals
+ikwl ani lakl zkwkit
+ikl:PAAL.PRES ani akl:PAAL.INF zkwkit
+can:PAAL.PRES.SG.M pron:NOM.1SG eat:PAAL.INF glass:SG.F
+'I can eat glass.'
+
+#1007
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  modals
+ikwl lakl zkwkit ani, wla hwa
+ikl:PAAL.PRES akl:PAAL.INF zkwkit ani w la hwa
+can:PAAL.PRES.SG.M eat:PAAL.INF glass:SG.F pron:NOM.1SG and neg1 pron:NOM.3SG.M
+'It is I who can eat glass, and not he.'
+
+#1008
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  modals
+ani lakl zkwkit ikwl, abl la rwch
+ani akl:PAAL.INF zkwkit ikl:PAAL.PRES abl la rci:PAAL.PRES
+pron:NOM.1SG eat:PAAL.INF glass:SG.F can:PAAL.PRES.SG.M but neg1 want:PAAL.PRES.SG.M
+'I can eat glass but I don't want to.'
+
+The Hebrew verb "ikl.PAAL" is ambiguous similarly to English in that it can either express ability or permission.
+
+#1009
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  modals
+ani ikwl lakl zkwkit, ki ie li einiim xzqwt
+ani ikl:PAAL.PRES akl:PAAL.INF zkwkit ki ie li en-im xzq-wt
+pron:NOM.1SG can:PAAL.PRES.SG.M eat:PAAL.INF glass:SG.F because there:is pron:DAT.1SG tooth:F-PL strong-PL.F
+'I can eat glass, because I have strong teeth.'
+
+#1010
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  modals
+ani ikwl lakl zkwkit, ki ama eli mreh li.
+ani ikl:PAAL.PRES akl:PAAL.INF zkwkit ki ama eli rei:HIFIL.PRES-h li
+pron:NOM.1SG can:PAAL.PRES.SG.M eat:PAAL.INF glass:SG.F because mother:SG.F pron:POSS.1SG permit:HIFIL.PRES-SG.F pron:DAT.1SG
+'I can eat glass, because my mother permits me (to do so).'
+
+I implemented the modal "can" beased on the "can as an auxiliary verb" instructions for lab9.
+
+raising-verb-with-infinitive-complement := verb-lex & trans-first-arg-raising-lex-item &
+[ SYNSEM.LOCAL.CAT.P-OR-Q -,
+  SYNSEM.LOCAL [ CAT [ HEAD verb & [FORM fin ],		       
+		       VAL [ SUBJ < #subj & synsem & 
+				    [ LOCAL.CAT [ HEAD noun &
+						       [ CASE nom ],
+						  VAL.SPR < > ]] >,	
+			     COMPS < #comps &
+				     [ LOCAL [ CAT [ HEAD verb & [ FORM inf ],
+						   VAL.SUBJ < #subj >,
+						   VAL.SPR < >,
+						   VAL.SPEC < >,
+						   VAL.COMPS < > ],
+					       CONT.HOOK.LTOP #keyrel ]] >]]],
+  SYNSEM.LKEYS.KEYREL.ARG1 #keyrel,
+  ARG-ST < #subj, #comps > ].
+
+Initially, when I added the keyrel constraint to my raising-verb-with-infinitive-complement, as suggested in the revised instruction for lab9, I did get the right semantics. But I also got three more parses that weren't there before the keyrel constraint was added. That was because I added the [CONT.HOOK.LTOP #keyrel] constraint in the wrong place and the LKB was looking for two comps for "can" rather than one, and since the second comp was uncosntrained as to case the subject "I" was quite happy to fill that slot and the sentence was being parsed with the pro-drop subject rule (two different ways, via HC and via CH), and the object "glass" was quite happy to fill that slot with the sentence being parsed with an indefinite null object for "eat". I fixed that and got one parse with the right semantics.
+
+<h1,e2:SEMSORT:TENSE:ASPECT:MOOD,
+{h3:pronoun_n(x4:SEMSORT:+:FIRST:SG:MASC),
+h5:pronoun_q(x4,h6,h7),
+h8:_can_v(e2,h9),
+h9:_eat_v(e11:SEMSORT:TENSE:ASPECT:MOOD,x4,x10:SEMSORT:THIRD:SG:FEM:-),
+h12:_glass_n_rel(x10),
+h13:reg_quant(x10,h14,h15),
+h1:prop-or-ques_m(h16)}
+{h6 qeq h3,
+h14 qeq h12,
+h16 qeq h8} >
+
+Negation:
+---------
+Hebrew has several negators. The one that is relevant to "It won't hurt me" is an adverb modifier that modifies the first tensed verb that appears in the sentence. It attaches to the left of the V.
+
+#1011
+Source: author
+Vetted: t
+Judgment: g
+Phenomena: negation
+la hlk-ti
+la hlk:PAAL.PAST-ti
+neg1 go:PAAL.PAST-1SG
+'I didn't go.'
+
+#1012
+Source: author
+Vetted: t
+Judgment: u
+Phenomena: negation
+hlk-ti la
+hlk:PAAL.PAST-ti la
+go:PAAL.PAST-1SG neg1
+'I didn't go.'
+
+#1013
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  modals
+ani la ikwl lakl zkwkit
+ani la ikl:PAAL.PRES akl:PAAL.INF zkwkit
+pron:NOM.1SG neg1 can:PAAL.PRES.SG.M eat:PAAL.INF glass:SG.F
+'I can't eat glass.'
+
+#1014 - grammatical but not sentential negation
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  modals
+ani ikwl la lakl zkwkit
+ani ikl:PAAL.PRES la akl:PAAL.INF zkwkit
+pron:NOM.1SG can:PAAL.PRES.SG.M neg1 eat:PAAL.INF glass:SG.F
+'I can (choose to) not eat glass.'
+
+#1015
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  modals
+lakl zkwkit ani la ikwl
+akl:PAAL.INF zkwkit ani la ikl:PAAL.PRES
+eat:PAAL.INF glass:SG.F pron:NOM.1SG neg1 can:PAAL.PRES.SG.M
+'I can't eat glass.'
+
+#1016
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  modals
+hwa la hih ikwl lakl zkwkit
+hwa la hih:PAAL.PAST.3SG.M ikl:PAAL.PRES akl:PAAL.INF zkwkit
+pron:NOM.1SG.M neg1 be:PAAL.PAST.3SG.M can:PAAL.PRES.SG.M eat:PAAL.INF glass:SG.F
+'He couldn't eat glass.'
+
+#1017
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  modals
+hwa la ikwl hia lakl zkwkit
+hwa la ikl:PAAL.PRES hih:PAAL.PAST.3SG.M akl:PAAL.INF zkwkit
+pron:NOM.1SG.M neg1 can:PAAL.PRES.SG.M  be:PAAL.PAST.3SG.M eat:PAAL.INF glass:SG.F
+'He couldn't eat glass.'
+
+;;The fact that this seems ungrammatical (rather than grammatical but with a non-sentential negation interpretation) is something to look at wrt word order - food for thought for later
+#1018
+Source: author
+Vetted: t
+Judgment: u
+Phenomena:  modals
+hwa hia la ikwl lakl zkwkit
+hwa hih:PAAL.PAST.3SG.M la ikl:PAAL.PRES akl:PAAL.INF zkwkit
+pron:NOM.1SG.M be:PAAL.PAST.3SG.M neg1 can:PAAL.PRES.SG.M eat:PAAL.INF glass:SG.F
+'He couldn't eat glass.'
+
+To be able to handle these sentences I would have to add the auxiliary "be" which I will not do for this week's assignment. So the constraint that "negation has to follow the FIRST tensed verb" cannot be implemented for now. Negation was implemented by the LKB based on the customization script I filled out. The only changes I made to the original lexical type definition was adding the constraint that the verb modified must have [FORM fin].
+
+neg-adv-lex := basic-scopal-adverb-lex &
+   [ SYNSEM.LOCAL.CAT [ POSTHEAD -,
+			VAL [ SPR < >,
+                              COMPS < >,
+                              SUBJ < > ],
+                        HEAD.MOD < [ LOCAL.CAT [ HEAD verb & [ FORM fin ] ],
+                                 LIGHT + ] > ]].
+
+
+"It doesn't hurt me." is ambiguous between the reading "The glass doesn't hurt me." and "Eating the glass doesn't hurt me." In Hebrew these two sentences are expressed differently. In the former case, the pronoun agrees with "glass" and as such it must be feminine and singular as the Hebrew word for glass, "zkwkit" is feminine.
+
+#1019
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  negation
+hia la mziqh li
+hia la nzq:HIFIL.PRES-h li
+pron:NOM.1SG.F neg1 hurt:HIFIL.PRES-SG.F pron:DAT.1SG
+'It doesn't hurt me.'
+
+In the latter case, the pronoun to be used is not a personal pronoun but a demonstrative pronoun (which makes the Hebrew construction akin to "this doesn't hurt me").
+
+#1020
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  negation
+zh la mziqh li
+zh la nzq:HIFIL.PRES li
+pron:SG.M neg1 hurt:HIFIL.PRES-SG pron:DAT.1SG
+'It doesn't hurt me.'
+
+The demonstrative pronoun "zh" is always used in its masculine singular form when used to refer to event or state (a previous sentence) rather than an individual (NP in a previous sentence).I think that "zh" needs two lexical entries, one as the demonstrative pronoun "this one" that is listed along with its feminine and plural variants and one as the pronoun "it" when used to refer to a previous sentence. Only in the latter sense when in the accusative it must it be preceded by the accusative marker "at" without the "h" preceding it.
+
+#1021
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  pronouns
+ani awhb at zh
+ani ahb:PAAL.PRES at zh
+pron:NOM.1SG ahb:PAAL.PRES.SG.M ACC pron:SG.M
+'I like (doing) it.'
+
+#1022
+Source: author
+Vetted: t
+Judgment: u
+Phenomena:  ronouns
+ani awhb zh
+ani ahb:PAAL.PRES zh
+pron:NOM.1SG ahb:PAAL.PRES.SG.M pron:SG.M
+'I like (doing) it.'
+
+#1023
+Source: author
+Vetted: t
+Judgment: g
+Phenomena:  pronouns
+ani awhb at hzh
+ani ahb:PAAL.PRES at h-zh
+pron:NOM.1SG ahb:PAAL.PRES.SG.M ACC the-pron:SG.M
+'I like this one.'
+
+But because "zh" requires the accusative marker without "h" it doesn't behave as either a personal pronoun (the accusative marker is incorporated in the accusative pronoun) nor as a common noun (which requires the "h" to attach to it if preceded by the accusative marker). So it is labeled a pronoun, which means that it is DEF+ and that it doesn't go through the indef rule, and it also means that it won't go through the rule that attached "h" as only common nouns go through that rule. It can be the complement of the accusative marker because it is nominative and DEF+, which are the only constraints on the complement of the accusative marker. And come to think of it what is preventing nominative personal pronouns from being the complement of the accusative marker? Nothing, actually. This problem has somehow slipped through the radar until now. I guess I didn't have any relevant examples in the test suite. So this needs to be fixed. I adjusted the noun types for that:
+
+noun :+ [ PROPER_PRONOUN_COMMON ppc ].
+ppc := *top*.
+proper_or_pronoun := ppc.
+pronoun := proper_or_pronoun.
+proper := proper_or_pronoun.
+personal_pronoun := pronoun.
+common_or_it := ppc.
+common := common_or_it.
+it_pronoun := common_or_it & pronoun.
+
+zh_pronoun := pronoun-lex &
+        [ STEM < "zh" >,
+	  SYNSEM.LOCAL.CAT.HEAD.PROPER_PRONOUN_COMMON it_pronoun,
+          SYNSEM.LOCAL [CAT.HEAD.CASE nom,
+			CONT.HOOK.INDEX.PNG [ GEND masc,
+					      PER third,
+					      NUM sg ] ] ].
+
+The case marker type definition has been adjusted as follows:
+
+case-marker-p-lex := basic-one-arg & raise-sem-lex-item &
+   [ SYNSEM.LOCAL.CAT [ HEAD adp & [ MOD < > ],
+                        VAL [ SPR < >,
+                              SUBJ < >,
+                              COMPS < #comps >,
+                              SPEC < > ]],
+     ARG-ST < #comps & [ LOCAL.CAT [ HEAD noun &  [ CASE nom ] & 
+					  [ PROPER_PRONOUN_COMMON common_or_it ], 
+				     VAL.SPR < > ] ] > ].
+
+The indexed MRS for "It doesn't hurt me" is as follows: 
+
+< h1,e2:SEMSORT:TENSE:ASPECT:MOOD,
+{h3:pronoun_n(x4:SEMSORT:THIRD:SG:MASC:+),
+h5:pronoun_q(x4,h6,h7),
+h8:_neg_r(e2,h9),
+h10:_hurt_v(e12:SEMSORT:TENSE:ASPECT:MOOD,x4,x11:SEMSORT:FIRST:SG:GENDER:+),
+h13:pronoun_n(x11),
+h14:pronoun_q(x11,h15,h16),
+h1:prop-or-ques_m(h17)},
+{h6 qeq h3,
+h9 qeq h10,
+h15 qeq h13,
+h17 qeq h8} >
+
+This looks correct. However, I was getting two parses for this sentence, both of them leading to the same semantics. One resulted from the adj-head-scop-phrase rule applying before the head-comp rule which unifies "eat" with "glass" (i.e. modifying the verb) and the other with the adj-head-scop-phrase rule applying after the head-comp rule (i.e. modifying the VP). Since I want the negation adverb to modify the verb and not the VP, I added the following constraint:
+
+adj-head-scop-phrase :+ [ HEAD-DTR lex-rule ].
+
+This correctly eliminated the extra parse. However, it created or exposed other problems. Some sentences involving a transitive verb with indefinite null instantiation stopped parsing. For example, the sentence "He/It (hwa) is not eating" stopped parsing. The constraint that the adj-head-scop-phrase rule follow a lex-rule is too stringent. Here is the revision:
+
+adj-head-follows := avm.
+basic-head-opt-comp-phrase :+ adj-head-follows.
+lexeme-to-lexeme-rule :+ adj-head-follows.
+
+adj-head-scop-phrase :+ [ HEAD-DTR adj-head-follows ].
+
+TSDB: coverage 43.8, overgeneration: 3.6
+I looked at the sentences that were still not parsing and decided to add a bunch of words to the lexicon and lexical rules to form the future tense. This increased the coverage to 45.8 but also increased the overgeneration to 4.5. 
+
+
+
+-------------------------------
+One unresolved issue:
+
+1. Adverbs - I am getting three parses for:
+
+hia la ikl:PAAL.PRES-h qra:PAAL.INF mhr
+pron:NOM.3SG.F neg1 can:PAAL.PRES-SG.F read:PAAL.INF fast
+'She can't read fast.'
+
+This is because in the current grammar the adverb "mhr" can modify "read" or "can't read" or "She can't read". Something needs to be done about this as in cases such as this, there should only be one parse. But how to block the other two parses without blocking other possible word orders?
+
+#1801 
+Source: author
+Vetted: t
+Judgment: g
+Phenomena: adverbs
+hia qrah mhr at cl hsprim w hxwbrwt halh
+hia qra:PAAL.PAST-h mhr at cl h-spr-im w h-xwbrt-wt h-alh
+pron:NOM.3SG.F read:PAAL.PAST-3SG.F fast ACC all the-book:M.NON-SG w the-pamphlet:F.NON-SG the-these
+'She read all those books and pamphlets fast.'
+
+#1802
+Source: author
+Vetted: t
+Judgment: g
+Phenomena: adverbs
+hia qrah at cl hsprim w hxwbrwt halh mhr
+hia qra:PAAL.PAST-h at cl h-spr-im w h-xwbrt-wt h-alh mhr
+pron:NOM.3SG.F read:PAAL.PAST-3SG.F ACC all the-book:M.NON-SG w the-pamphlet:F.NON-SG the-these fast
+'She read all those books and pamphlets fast.'
+
+#1803
+Source: author
+Vetted: t
+Judgment: g
+Phenomena: adverbs
+mhr hia qrah at cl hsprim w hxwbrwt halh
+mhr hia qra:PAAL.PAST-h at cl h-spr-im w h-xwbrt-wt h-alh
+fast pron:NOM.3SG.F read:PAAL.PAST-3SG.F ACC all the-book:M.NON-SG w the-pamphlet:F.NON-SG the-these
+'She read all those books and pamphlets fast.'
+
+#1804
+Source: author
+Vetted: t
+Judgment: g
+Phenomena: adverbs
+hia mhr qrah at cl hsprim w hxwbrwt halh
+hia mhr qra:PAAL.PAST-h at cl h-spr-im w h-xwbrt-wt h-alh
+pron:NOM.3SG.F fast read:PAAL.PAST-3SG.F ACC all the-book:M.NON-SG w the-pamphlet:F.NON-SG the-these
+'She read all those books and pamphlets fast.'
+
+
+

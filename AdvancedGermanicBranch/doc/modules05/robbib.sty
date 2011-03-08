@@ -1,0 +1,146 @@
+% robbib.sty (February 2, 1996) - Based on lsalike.sty 
+% Use with robbib.bst to get CSLI-like bibliographies and LSA-like citations
+% in the text.
+%----------------------------------------------------------------------
+% Latex `lsalike' bibliography style (06-Jan-94 version 1.0alpha),
+% This file implements citations for the ``lsalike'' bibliography style.
+% It derives originally from `named', modified by a lot of people
+% including someone at AAAI and Michael Braverman.
+% This current version was rewritten by Dan Jurafsky, and
+% is intended to roughly follow the LSA (Linguistic Society of America)
+% style sheet.
+
+% The ``lsalike'' bibliography style (lsalike.bst) creates citations 
+% with labels like
+%	 \citeauthoryear{author-info}{year}
+% these labels are processed by the following commands:
+%
+%	\namecite[pageno]{key}
+%		which produces citations with the author followed by the
+%		year enclosed in parenthesis, e.g. Hemingway (1925).
+%		Optional page number produces e.g. Hemingway (1925:135)
+%	\cite[pageno]{key}
+%		which produces citations with both author and year,
+%		enclosed in parenthesis.
+%		e.g. "(Barth 1968)"
+%		Optional page number produces e.g. (Hemingway 1925:135)
+%	\quotecite{key}
+%		which produces citations with the author followed by
+%		's and then the year enclosed in parenthesis.
+%		e.g. "Chomsky's (1957) proposal met with little..."
+%	\citeboth{key}
+%		which produces citations with the author followed by the
+%		name, no parenthesis.
+%		e.g. "Barth 1968"
+%	\citeauthor{key}
+%		which produces the author information only
+%		e.g. "Barth"
+%	\citeyear{key}
+%		which produces the year information only
+%		e.g. "1947"
+
+\newlength{\bibhang}
+\setlength{\bibhang}{2em}
+% can do this to shorten bibliography
+%\setlength{\bibhang}{1em}
+
+\typeout{Rob's Bibliography and Citation Style -- released 02 Feb 1996}
+
+\@ifundefined{chapter}{\def\thebibliography#1{\section*{References\@mkboth
+  {REFERENCES}{REFERENCES}}\list
+  {\relax}{\setlength{\labelsep}{0em}
+	\setlength{\itemindent}{-\bibhang}
+	\setlength{\leftmargin}{\bibhang}}
+    \def\newblock{\hskip .11em plus .33em minus .07em}
+    \sloppy\clubpenalty4000\widowpenalty4000
+    \sfcode`\.=1000\relax}}%
+{\def\thebibliography#1{\chapter*{Bibliography\@mkboth
+  {BIBLIOGRAPHY}{BIBLIOGRAPHY}}\list
+  {\relax}{\setlength{\labelsep}{0em}
+% next 2 lines can be inserted to shorten bibliography 
+%   	\itemsep 4pt plus 1pt minus 0.5pt
+%        \baselineskip 12pt plus 1pt minus 0.5pt
+	\setlength{\itemindent}{-\bibhang}
+	\setlength{\leftmargin}{\bibhang}}
+    \def\newblock{\hskip .11em plus .33em minus .07em}
+    \sloppy\clubpenalty4000\widowpenalty4000
+    \sfcode`\.=1000\relax}}
+
+\let\@internalcite\cite
+
+\def\xcite{\def\@citeseppen{-1000}%
+ \def\@cite##1##2{(\nobreak\hskip 0in{##1\if@tempswa , ##2\fi})}%
+ \def\citeauthoryear##1##2{\frenchspacing##1 ##2}\@internalcite}
+
+\def\xpagecite[#1]#2{\def\@citeseppen{-1000}%
+ \def\@cite##1##2{(\nobreak\hskip 0in{##1\if@tempswa , ##2\fi})}%
+ \def\citeauthoryear##1##2{\frenchspacing##1 ##2:#1}\@internalcite{#2}}
+
+\def\cite{\@ifnextchar [{\xpagecite}{\xcite}}
+
+\def\xnamecite{\def\@citeseppen{1000}%
+ \def\@cite##1##2{{##1\if@tempswa , ##2\fi}}%
+ \def\citeauthoryear##1##2{\frenchspacing##1 (##2)}\@internalcite}
+
+\def\quotecite{\def\@citeseppen{1000}%
+ \def\@cite##1##2{{##1\if@tempswa , ##2\fi}}%
+ \def\citeauthoryear##1##2{\frenchspacing##1's (##2)}\@internalcite}
+
+\def\citeboth{\def\@citeseppen{1000}%
+ \def\@cite##1##2{{##1\if@tempswa , ##2\fi}}%
+ \def\citeauthoryear##1##2{\frenchspacing##1 ##2}\@internalcite}
+
+% \def\item{\@ifnextchar [{\@item}{\@noitemargtrue \@item[\@itemlabel]}}
+\def\namecite{\@ifnextchar [{\pagecite}{\xnamecite}}
+
+\def\pagecite[#1]#2{\def\@citeseppen{1000}%
+ \def\@cite##1##2{{##1\if@tempswa , ##2\fi}}%
+ \def\citeauthoryear##1##2{\frenchspacing##1 (##2:#1)}\@internalcite{#2}}
+
+\def\citeauthor#1{\def\@cite##1##2{{##1\if@tempswa , ##2\fi}}%
+ \def\citeauthoryear##1##2{\frenchspacing##1}\@citedata{#1}}
+
+\def\citeyear#1{\def\@cite##1##2{{##1\if@tempswa , ##2\fi}}%
+ \def\citeauthoryear##1##2{##2}\@citedata{#1}}
+
+\def\@citedata#1{\@tempswafalse%
+ \if@filesw\immediate\write\@auxout{\string\citation{#1}}\fi
+  \def\@citea{}\@cite{\@for\@citeb:=#1\do
+    {\@citea\def\@citea{,\penalty\@citeseppen\ }\@ifundefined
+       {b@\@citeb}{{\bf ?}\@warning
+       {Citation `\@citeb' on page \thepage \space undefined}}%
+{\csname b@\@citeb\endcsname}}}{}}
+
+% don't box citations, separate with , and a space
+% also, make the penalty between citations negative: a good place to break
+\def\@citex[#1]#2{\if@filesw\immediate\write\@auxout{\string\citation{#2}}\fi
+  \def\@citea{}\@cite{\@for\@citeb:=#2\do
+    {\@citea\def\@citea{,\penalty\@citeseppen\ }\@ifundefined
+       {b@\@citeb}{{\bf ?}\@warning
+       {Citation `\@citeb' on page \thepage \space undefined}}%
+{\csname b@\@citeb\endcsname}}}{#1}}
+
+% raise the brackets in bibliography labels
+\def\@biblabel#1{}
+
+% lsalike currently uses the ampersand (&) instead of the
+% word "and" in author lists, and it also replaces names by dashes in one
+% more situation than the journal Language.
+% Both these can be returned to standard Language style by switching the comments on
+% the appropriate functions for \lsadashifynew  and \lsaand below.  
+% (The non-standard situation occurs for ordered examples like:
+%
+% Robin, Christopher and Winnie Pooh
+% Robin, Christopher and Eeyore
+%
+% The style will currently dashify the second Christopher Robin -
+% this is not standard.
+
+\def\lsadashify#1{---\hspace*{-2pt}---}
+
+\def\lsadashifynew#1{---\hspace*{-2pt}---}
+%\def\lsadashifynew#1{#1}
+
+%\def\lsaand{\& }
+\def\lsaand{and }
+

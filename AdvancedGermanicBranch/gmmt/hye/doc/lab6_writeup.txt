@@ -1,0 +1,81 @@
+In Armenian, there is no marking of questions except for intonation.
+Interestingly, this is shown in the writing system with a question
+intonation diacritic that goes above the stressed vowel in the
+question word -- however, that would break the LKB's morphology (and
+how), so I didn't try to include it.  The result is that all
+grammatical sentences will now parse twice: once as a statement and
+once as a question.
+
+In embedded clauses, the facts in my limited references are murkier,
+and I'm honestly not confident that what I've implemented actually
+reflects the real language.  However, as best I can tell, here are the
+facts.  Embedded clauses come after the verb, and they're marked with
+one of two complementizers: "the" (that's an aspirated [t]) or "or".
+If "or" is used, the embedded clause must be a statement, not a
+question; if "the" is used, it may be either.  The embedded clause may
+be in the subjunctive for some verbs -- this marks uncertainty or
+doubt.  The subjunctive in Armenian is marked by the absence of the
+usual "ke" particle, which I implemented by adding mood to my
+ke-marking rule, and then splitting that rule into an inflecting
+indicative rule and a non-inflecting subjunctive rule.  Matrix clauses
+can also be in the subjunctive and I have previously-ungrammatical
+examples without the particle in my test.all file, but matrix
+subjunctives are not necessary for the assignment, so I restricted
+matrix clauses to be indicative in roots.tdl to make the coverage stay
+the same.
+
+See test.items for glossed examples (recalling that determiners come
+after nouns, and the ke- particle is present in the indicative mood).
+
+There is a cross classification here: the verb "gitnar" (to know)
+takes clauses introduced by either "the" or "or", but which must be in
+the indicative.  The verb "xntrer" (to ask) only takes clauses that
+are introduced by "the", but they can be either indicative or
+subjunctive.  To handle this, I made a type clausal-verb-lex that has
+all the information in common to both verbs.  The subtype
+nom-clausal-verb-lex requires a nominative subject -- I forgot to do
+that at first, and all my sentence were parsing twice for each noun in
+the nominative or accusative, since they're identical for nouns.  The
+subtype nom-indic-clausal-verb-lex requires an indicative clause
+(verbs like "gitnar"), and the subtype nom-interrog-clausal-verb-lex
+takes only interrogative clauses (verbs like "xntrer").
+
+For the complementizers, I defined comp-lex, which takes one argument,
+a clause with [ FORM fin ], but which doesn't specify a question or a
+statement.  The complementizer "the" is a bare comp-lex.  I created a
+subtype called decl-comp-lex that requires the clause to be a
+proposition; the complementizer "or" is one of these.
+
+I added labels for C and CP so my trees would look reasonable.  Also,
+since I was getting dual parses of most clauses, I split the sentence
+label into two labels: the S label appears if a sentence is a
+propsition; on all other sentences (questions), the S? label appears.
+
+This handled the syntax, and also the semantics for matrix clauses,
+but when I parsed sentences with embedded clauses, none of the
+semantics was visible from the embedded clause.  I looked at
+that-comp-lex and whether-comp-lex in the lab's English example.
+Since the Armenian complementizers (especially "the") have to be more
+flexible about the kind of clause they take, I used that-comp-lex as a
+model, merging it into my comp-lex.  With some fiddling, this got the
+semantics working for embedded clauses.
+
+However, I was still seeing overgeneration in several different
+places.  In particular, I was seeing overgeneration like I'd seen in
+previous labs, where the verb form was either correct (person-number
+inflected) or else in one of the two incorrect non-finite forms
+(infinitive and negative participle).  The fix for this was the same
+as in that lab: make sure the various head-subj and head-comp rules
+require a fully-inflected (KE-MARKED and PN-MARKED) verb, and that the
+head-subj rules require a [ FORM fin ] verb.
+
+I also noticed that I expected two parses of every sentence, but I was
+only seeing one for optional-subject sentences (or three parses in a
+few cases where I expected four).  This was because I had a head-subj
+rule to make interrogative sentences, but no corresponding
+interrogative head-opt-subj rule.  By analogy with the old optional
+subject rule, I added interrogative-head-opt-subj-phrase to fix the
+syntax, and it works.  However, the semantics for both regular and
+interrogative optional subject sentences aren't right.  After about
+and hour of poking at it, I've decided I don't understand, so it
+remains broken.

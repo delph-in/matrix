@@ -1,0 +1,99 @@
+%(letter-set (!x aeioubcdfghjklmnpqrstvwxyz))
+%(letter-set (!v aeiou))
+%(letter-set (!c bcdfghjklmnpqrstvwxyz))
+%(letter-set (!l l))
+%(letter-set (!a a))
+%(letter-set (!i i))
+%(letter-set (!t t))
+%(letter-set (!n n))
+
+pl-noun :=  
+%suffix (* kala)
+pl-noun-lex-rule.
+
+anim-acc-noun :=
+%suffix (* e) (!v !vye)
+anim-acc-noun-lex-rule.
+
+dat-noun :=
+%suffix (* kkx)
+dat-noun-lex-rule.
+
+adj-sg-masc := 
+%suffix (* van)
+adj-masc-sg-lex-rule.
+
+adj-sg-fem := 
+%suffix (* vala)
+adj-fem-sg-lex-rule.
+
+adj-pl-hum := 
+%suffix (* var)
+adj-hum-pl-lex-rule.
+
+adj-sg-neut := 
+%suffix (* tx)
+adj-neut-sg-lex-rule.
+
+past-verb :=
+%suffix (* i) (!v!v !v!vyi) (!na!ta !na!tau) (!ca!ca !ca!cau) (!c!c !c!cu)
+past-verb-rule.
+
+pres-verb :=
+%suffix (* unnu)
+pres-verb-rule.
+
+futr-verb :=
+%suffix (* um) (!v !vm) (!v!v !v!vkaam)
+futr-verb-rule.
+
+neg1-infl-lr :=
+%suffix (* alla)
+neg-infl-lex-rule.
+
+neg2-infl-lr :=
+%suffix (* illa)
+neg-infl-lex-rule.
+
+
+n1-bottom :=
+  %suffix (* um)
+  n1-bottom-coord-rule.
+
+n1-left :=
+  %suffix (* um)
+  n1-left-coord-rule.
+
+
+quest-verb :=
+%suffix (* oo) (!ca !coo) (!ce !coo) (!ci !coo) (!co !coo) (!cu !coo) (!i!l!la !i!l!lee) (!a!l!la !a!l!lee)
+quest-verb-rule.
+
+; ERB 2007-05-12 There's no need for these three to be distinct.
+
+; nomnl1-verb :=
+; %suffix (* atx) (!c!cu !c!catx)
+; nomnl1-verb-rule.
+
+; nomnl2-verb :=
+; %suffix (* atx) (!c!cu !c!catx)
+; nomnl2-verb-rule.
+
+; nomnl3-verb :=
+; %suffix (* atx) (!c!cu !c!catx)
+; nomnl3-verb-rule.
+
+
+nomnl-verb :=
+%suffix (* atx) (!c!cu !c!catx)
+nomnl-verb-rule.
+
+; not including imp-pol since it contributes to overgeneration.
+; there's a regular imperative form which is enough for now.
+;imp-pol-verb := 
+;%suffix (* ka)
+;imp-pol-verb-rule.
+
+aux-infl-verb :=
+%suffix (* aam) (!xa !xaam)
+infl-add-ccont-ltow-rule.

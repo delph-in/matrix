@@ -1,0 +1,5 @@
+verb :+
+[ AUX bool ].
+
+subj-aux-inv-lrule := subj-v-inv-lrule &
+  [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].

@@ -1,0 +1,14 @@
+comp-head := comp-head-phrase .
+
+subj-head := subj-head-phrase .
+
+head-spec := head-spec-phrase .
+
+bare-np := bare-np-phrase .
+
+np1-top-coord := np1-top-coord-rule .
+
+np1-mid-coord := np1-mid-coord-rule .
+
+np1-bottom-coord := np1-bottom-coord-rule .
+

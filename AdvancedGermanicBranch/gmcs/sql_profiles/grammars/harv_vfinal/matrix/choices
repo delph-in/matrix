@@ -1,0 +1,62 @@
+version=18
+
+section=general
+language=Harv2
+archive=no
+
+section=word-order
+word-order=v-final
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect
+
+section=other-features
+
+section=sentential-negation
+adv-neg=on
+neg-mod=v
+neg-order=before
+neg-adv-orth=neg
+
+section=coordination
+
+section=matrix-yes-no
+q-part=on
+q-part-order=after
+q-part-orth=qpart
+
+section=arg-opt
+
+section=lexicon
+  noun1_det=opt
+    noun1_stem1_orth=n1
+    noun1_stem1_pred=_n1_n_rel
+  noun2_det=opt
+    noun2_stem1_orth=n2
+    noun2_stem1_pred=_n2_n_rel
+  verb1_valence=intrans
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+    det1_stem1_orth=det
+    det1_stem1_pred=_det_q_rel
+
+section=test-sentences
+sentence1=n1 n2 neg tv
+sentence2=det n1 iv qpart

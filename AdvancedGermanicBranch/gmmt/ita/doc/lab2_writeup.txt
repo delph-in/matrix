@@ -1,0 +1,30 @@
+General
+Italian almost always drops the subject pronoun.  It is only used to clarify or give emphasis.  Italian also usually expresses things in the perfective tense, which I did not want to have in my example sentences.  I also wanted to keep the sentences as simple as possible and be consistent with the counter-examples, so I made up all of my examples.  I am pretty sure my sentences are right.  They aren¡¦t complicated and it follows everything my intuition and the book says.  Most of them are variations and simplifications of what I found in the book and on the web.  I am still planning on getting them vetted by a native speaker.  I just haven¡¦t had the time to do that yet.
+
+Italian does not change the word order for questions.  Questions are more likely to depart from the traditional SVO word order in order to give emphasis to a certain part of the question, but declarative statements can also have a non-SVO word order.  The only real difference is that there is a distinctive intonation change.  I guess I will work on adjectives instead.
+
+Pronouns
+Italian has a much more complex system of pronouns than Spanish or Portuguese.  Brazilian Portuguese, which is the romance dialect I know the best, has a very sloppy pronoun usage.  I had carried this sloppiness over to Italian, which meant I had to relearn the pronouns.  
+
+Italian likes to conjoin words together.  This played a major role in the pronouns, in that they could be joined with other pronouns, with verbs beginning with a vowel or the silent h, or at the end of infinitives.  Per my discussion with you, I decided to not list all the possible interactions with pronouns and verbs and only show a couple examples in the argument optionality portion.  This saved a lot of headache, but still left me to deal with the interaction between other pronouns.  Most dative pronouns changed when followed by an accusative pronoun.  Besides that, the dative ¡§gli¡¨ combined with ¡§lo¡¨, ¡§la¡¨, ¡§li¡¨, and ¡§le¡¨ each to form different pronouns.
+
+Besides nomative, dative and accusative, Italian also makes a distinction for the prepositional usages of the pronoun.  For example, the sentence ¡§You give the book to me.¡¨  Could be translated ¡§Da il libro a me¡¨ or ¡§Mi da il libro.¡¨  The first translation uses the prepositional form because it is in the phrase ¡§to me¡¨, while the second translation uses the dative form.
+
+Another cause for confusion was the overlap in the usage of the pronouns.  For example, ¡§le¡¨ could be the dative singular feminine or the plural accusative feminine.  ¡§Te¡¨ could be the prepositional form or the dative form before an accusative.  ¡§Vi¡¨ could be accusative or dative.  My sources say ¡§loro¡¨ is both dative and prepositional, but I almost always heard it in the prepositional form.  I think Italians avoid using it as a dative.  This is one of my questions I have for my native speaker.
+
+There were also some pronouns that I did not implement, mostly because they are just archaic repetitions of the other pronouns.  These pronouns are egli, esso, essi, ella, essa, and esse.  I never used these and finding information on the different cases was difficult.
+
+Case
+Case only applies to pronouns.  That being said, I think the case system of the pronouns was difficult.  I am not familiar with non-Indo-European languages, but I hear other case systems are even more complicated.  Most of my difficulties with case I explained in the pronoun section.
+
+Argument Optionality
+The subject pronouns can always be dropped, and usually are.  Some accusative pronouns can go as a prefix to some verbs, and these usually do.  Infinitive verbs can take arguments as suffixes, and usually do.  If both arguments of a ditransitive verb are pronouns and not in prepositional phrases, they usually go as suffixes to the infinitive verb.  I think they are both on the verb or neither.  I searched the web and couldn¡¦t find a counter-example.  I have to check this with a native speaker.  
+
+Agreement
+The determiner, noun, adjective and verb all have to agree in number.  The verb and noun have to agree in person.  The noun, adjective and determiner have to agree in gender.  Some nouns are the same for masculine and feminine, or single and plural.  In this case, you still need to make sure the other features agree.  For example, ¡§pilota¡¨ can be male or female, and ¡§film¡¨ can be singular or plural.  To save space, I reused the positive examples from the first and second person pronouns.
+
+Negation
+Nessuno means ¡§no one.¡¨  To say ¡§You know no one¡¨ you would say ¡§Nessuno conosci.¡¨  Since word order is more free in Italian, ¡§nessuno¡¨ could come after the verb.  However, there must be at least one negative word before the verb.  So if ¡§nessuno¡¨ were put after the verb, you must put a word like ¡§non¡¨ in front of the verb.  I had never thought of it this way.  I had originally thought of it as being a double negative, but this explains why there is always a negative before the verb even with the more free word order.
+
+Modals
+I like the Italian ¡§can¡¨ much better than the English ¡§can¡¨.  That probably doesn¡¦t belong in a linguistics paper, but hey, it¡¦s late and I am a native English speaker, so I feel like I can say it.  ¡§Can¡¨ acts like any other verb that takes an infinitival verb as its complement.  You can conjugate it anyway you like, unlike English where you have to change ¡§can¡¨ to ¡§to be able to¡¨ in the future tense.  The only thing is that it must agree with the subject and it must come directly before a verb in the infinitival form.

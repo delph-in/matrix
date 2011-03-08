@@ -1,0 +1,61 @@
+
+Kelly O'Hara
+Ling 567
+Lab 6 Writeup
+11 February, 2007
+
+1) I added COG-ST values to pronouns and demonstratives as described in the homework instructions.  There is not much evidence in any of my sources regarding pronouns or dembonstratives, so I simply used the suggested values. Doing research for Part 2 I found a very helpful book chapter entitled "Double Object Constructions in Zulu", by John R. Taylor. In it, he quotes Clement Doke (who wrote several early books about Zulu) as saying that object concords are "the hearest approach to the significance of the English definite article in Zulu". There is not much evidence in this book in support of that claim, but I decided to them at their word.  Therefore the yes-obj-concord-lex-rule constrains the COG-ST values to those suggested for definite articles: uniq+fam+act and [SPECI +].
+
+2) As we have discussed in class, Zulu has demonstrative adjectives and demonstrative pronouns. There is a 3-way distinction based on proximity to the speaker, namely close to the speaker, close to the hearer, and far from both. Each noun class has its own series of demonstratives in the 3 positions. The demonstrative adjectives and demonstrative pronouns are homophonous with the corresponding noun class and position, but I treated them as separate words.  Because of the sheer volume of demonstratives, only C1 and C9 are represented in the test suite.  
+
+For the dem. pronouns, I simply followed the instructions given in the assignment.  I then created three subclasses of the dem. pronoun class, one for each position.  Individual lexemes then inherit from the appropriate class.  
+
+A simliar scheme is set up for dem. adjectives, with some differences.  As described below, the closest thing Zulu has to English adjectives are a class called qualificatives, which have 3 distinct subtypes -- none of which are demonstratives. The biggest difference between the two is that adjectives can only be postnominal, while demonstratives can appear on either side of the noun.  I therefore created a superclass for qualificatives and demonstrative adjectives that basically says "these words modify nouns".  After that I followed the directions as described, and then created the three subclasses by position.  
+
+
+3) Argument optionality in Zulu gets pretty complicated. All declarative verbs must agree with their subjects.  The subject is therefore optional.  The verb may optionally agree with its complement; if it does, the object is optional. If not, the object is mandatory. Some basic examples:
+
+_Object concord and object_
+umu-ntwana u-zo-yi-shay-a in-yoka
+C1-child SC1-FUT(IMM)-OC9-hit-FV C9-snake
+'The child will hit the snake'
+
+_OC but no object_
+Umntwana uzoyishaya 
+umu-ntwana u-zo-yi-shay-a
+C1-child SC1-FUT(IMM)-OC9-shay-FV
+'The child will hit it'
+
+_No overt arguments_
+u-zo-yi-shay-a
+SC1-FUT(IMM)-OC9-hit-FV
+'He/She will hit it
+
+
+ With ditransitive verbs it gets even more complex.  There is only allowed to be one object marker on the verb. In the basic form of ditransitive verbs, both objects are present, and the indirect object is both closer to the verb and it agrees with the object concord (if applicable).  However, the indirect object is optional, in which case the object concord can agree with the direct object. This is all hard to model because with ditransitives pretty much any ordering of the arguments is acceptible in some contexts, but with slightly different semantics (e.g. topicalization). It was especially hard to make good test sentences because pretty much everything is grammatical somehow. Most of my effort in this assignment went into finding out about ditransitives, because the books I had did not cover them in the detail I needed. Unfortunately, once I finally knew what was going on, I didn't have much time to get them working in the actual grammar.
+
+4) I did not make any new types in particular to get object optionality working. Eventually I will need to make a new type for ditransitives because one of their arguments is optional.  It looks like it might be a hairy mess, though, to get the object concord to agree with the second thing on the comps list.  
+
+5) I made a careful series of test sentences, varying the presence and absence of the the concords and overt arguments.  I feel like I did a thorough job of covering the possibilities, and indeed that was how I discovered there is something wrong with my grammar. As we discussed on epost, my grammar no longer parses transitive verbs that don't have an object concord.  I have no idea what the problem is, and I am hoping you can take a look at it. Maybe I'll come in at office hours and we can look over it together. I would like to get this fixed, but I'm baffled as to what the problem could be.
+
+6) There is a class of words called qualificatives in Zulu, which includes adjectives, relatives, and enumeratives.  Adjectives and enumeratives are very small and apparently closed classes, while relatives have a mechanism for building new modifiers out of verbs in addition to a small set of dedicated roots. Each of these subclasses has their own set of concords.  Qualificatives agree with the noun the modify.  They can be used nominally, e.g. 'umu-fana omu-de' means 'the tall boy' and 'omu-de' by itself means 'the tall one'.  Qualificatives follow the noun the modify. If they appear to the right of the noun, it can only be interpreted in the nominal sense.  Poulos & Bosch gloss 'omu-de umu-fana' as 'tall one, boy that is'. Because of this, I was reluctant to put negative items involving word order into my test suite. Eventually I would ideally put the adjectives in as nominals, like I did with the demonstratives.
+
+In the meantime, because there are so few adjective roots (16, I believe), I went ahead and put them all in my lexicon. Not all of them are represented in my test suite. There are also some constraints on the nouns they can modify. For example, it would make sense if the numbers 2 through 5 selected heads that were plural, but it is not necessarily the case and I have no evidence either way.
+
+None of the books I'm working with talk much about adverbs. I found some temporal expressions that appear to attach at the sentence level. I found exactly one example that gave an adverb that modifed the verb:
+
+U-Sipho u-fund-a kakhulu
+C1a-Sipho(man's name) C1a-study-FV especially/very much
+'Sipho is studying hard'
+
+The morpheme-by-morpheme gloss is my own; the original sentence and translation are from Poulos & Bosch. This example was given in an illustration of a different phenomenon, with no discussion of the adverb itself.  However, I know that adverbs can definitely appear to the right of the thing they modify, and do not show agreement.
+
+7) For adjectives, I created the parent class for demonstratives and qualificatives as described above.  There is a qualificative subclass that is [POSTHEAD +].  Adjectives, relatives, and enumeratives are subclasses of qualificatives. At that point I did not need to constrain the type further.  However, I did need to build a set of lexical rules to get the correct agreement information (specifically to agree with the PER.NCL value of the one item on the MOD list).  These rules constrain the head to be [PER third], as adjectives (unlike relatives and enumeratives) cannot take first or second person heads.
+
+For adverbs, I copied in the description of adverb given in the lab instructions, and pt kakhulu (as described above) into my lexicon. However when I tried parsing, it wouldn't parse. I couldn't figure out why, and became even more discouraged than I was already.  However, I tried parsing one just now so that I could describe the error, and it parsed just fine.  I don't know what was causing the problem before or what fixed it, but now it works. Unfortunately, I did not have a chance to look into further constraining where the adverb can attach.  My suspicion is that some attach at the VP level and some at the S level.  This would need to be constrained at the level of the lexicon, most likely by creating subtypes.
+
+8) For adjectives, my test suite mostly contains positive examples of a few adjectives agreeing with nouns of various classes.  As the rules were just modified versions of my other agreement rules, I didn't feel it was necessary to put in negative agreement examples. I did put in one where I attempted to modify a first-person pronoun, and one with the adjective in front of the noun. These all currently parse as expected.
+
+For adverbs, there are no examples in my test suite right now. I had been testing it before by simply putting short sentences into the LKB parser. Because I have so few data, I will need to do some more research before I can build a proper test suite.
+
+I am unhappy that I got so little done this week.  I spent most of the time trying to find out about ditransitive verbs. The information I had was vague and confusing, and I had trouble finding anything concrete. I didn't find the book about double object constructions until midday on Sunday. This was a depressing assignment.

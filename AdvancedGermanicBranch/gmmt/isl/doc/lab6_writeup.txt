@@ -1,0 +1,70 @@
+Katie Sickles
+LING 567
+Lab 6
+
+	For this lab, the bulk of the work went into creating the
+determiners. The determiners in Icelandic are mostly inflections
+rather than separate words. I created the determiner suffix
+heirarchy so that I could add the discourse status for the lab.
+	I had to change around my noun declension heirarcy a little
+to make them compatable with the determiner inflections. Mainly,
+I needed to add a type specific for just gender and number
+without class information or const/infl information. I also made
+the noun declensions lexeme-to-lexeme inflections to add the 
+determiner suffix. This created problems since, the nouns can
+appear with out the determiner suffix.
+	I solved this by adding a rule that made these lexemes any
+num+case lexeme to word. This rule also added the discourse
+information of [ COG-ST type-id ] since when a noun appears
+without the determiner suffix it gets an indefinite interpretation.
+	The determiner suffixes all give the definite interpretation,
+so the top of the determiner inflection heirarchy adds the
+[ COG-ST uniq+fam+act ] discourse status. I'm not sure if this
+is correct or not, since the information of the inflections is
+added to the nouns. There is also a problem now with the semantics.
+No generation is happening, and when I look at the MRS, only the
+first word is appearing. Somehow the semantics are being lost in
+the lexical rules and I haven't yet figured out why. However, the
+determiners are now being parsed correctly.
+	For example, the sentences:
+	
+	Kotturinn elskar hundinn
+	cat-masc-nom-noun.masc-nom-def love-3sg dog-masc-acc-noun.masc-acc-def
+	
+	Kottur elskar hund
+	cat-masc-nom-noun.masc-nom-indef love-3sg dog-masc-acc-noun.masc-acc-indef
+	
+These are both parsed correctly and in viewing the chart nodes, 
+all the lexical rules are applied correctly. Just somehow, the 
+semantics are lost in the rules.
+	For the argument optionality, I'm not exactly sure how it
+works in Icelandic. As far as I can tell, I think it has the
+object drop for certain verbs, similar to English, because I
+know it doesn't fit the other options. However, I was unable to
+find a concrete example of this. So I wrote a rule for this, but
+was unable to get the LKB to load the grammar correctly for this.
+The rule is in the icelandic.tdl file, but commented out so that
+the grammar loads.
+	For adjectives, I had to add another set of lexical rules.
+The adjectives have to agree with the nouns they modify in case,
+number and gender. This was added to the lexical rules by putting
+constraints on the MOD valuse for each rule. There is also a
+distinction in Icelandic between weak declension and strong
+declension of adjectives. This is a hard distincition to implement
+so I have just added in the weak declension for the moment, which
+will get more coverage for my test suite.
+	The adverbs are easier, since they are just fixed words. I
+added in teh adverb-lex with no problems. However, when I added
+an adverb to the lexicon, the grammar wouldn't load. I'm not sure
+why this is happening, so I just commented out the adverb in the
+lexicon. The negative adverb is working as expected though.
+	Also, I still am undecided on how to handle the cl4 masc nouns.
+The nom declension of _man_n_rel is "maður", while the accusative
+is "mann". At first I was tempted to just represent the nom as
+"mann-ur". This works for _man_r_rel, but other cl4 nouns don't
+work this way. It seems like it might be good for this class to
+have fixed cases in the lexicon.
+
+note: I have the baseline tsdb in the tar file, but when I tried
+to run it on the new grammar, I was only able to come up with
+a null test suite, so I have not included that in the submission.

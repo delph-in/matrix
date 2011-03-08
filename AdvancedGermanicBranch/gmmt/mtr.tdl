@@ -1,0 +1,46 @@
+;;; Hey, emacs(1), this is -*- Mode: TDL; Coding: iso-8859-1; -*- got it?
+
+monotonic_mtr := mrs_transfer_rule &
+[ CONTEXT [ LTOP #h, INDEX #i ],
+  INPUT [ LTOP #h, INDEX #i ],
+  OUTPUT [ LTOP #h, INDEX #i ] ].
+  
+monotonic_omtr := monotonic_mtr & optional_mtr.
+
+optional_mtr := mrs_transfer_rule &
+[ FLAGS.OPTIONAL + ].
+
+quantifier_mtr := monotonic_mtr &
+[ INPUT.RELS < [ LBL #h1, ARG0 #x1, RSTR #h2, BODY #h3 ] >,
+  OUTPUT.RELS < [ LBL #h1, ARG0 #x1, RSTR #h2, BODY #h3 ] > ].
+
+quantifier_omtr := quantifier_mtr & optional_mtr.
+
+noun_mtr := monotonic_mtr &
+[ INPUT.RELS < [ LBL #h1, ARG0 #x1 ] >,
+  OUTPUT.RELS < [ LBL #h1, ARG0 #x1 ] > ].
+
+noun_omtr := noun_mtr & optional_mtr.
+
+;;;
+;;; _fix_me_
+;;; quite possibly there is no need for the relational vs. non-relational
+;;; distinction for nouns and adjectives (see below).  we could just always
+;;; co-index an ARG1 (ARG2 for adjectives), since this will only take effect
+;;; when the input actually supplies that role.  however, we probably still
+;;; want to classify relational nouns somewhere, possibly in the SEM-I, since
+;;; that could be required information for, e.g. compounds.    (17-apr-04; oe)
+;;;
+relational_noun_mtr := noun_mtr &
+[ INPUT.RELS < [ ARG1 #x1 ] >,
+  OUTPUT.RELS < [ ARG1 #x1 ] > ].
+
+relational_noun_omtr := relational_noun_mtr & optional_mtr.
+
+;;;
+;;; some input relations are just redundant, e.g. selected-for prepositions.
+;;;
+elision_mtr := monotonic_mtr &
+[ INPUT.RELS < relation > ].
+
+elision_omtr := elision_mtr & optional_mtr.

@@ -1,0 +1,112 @@
+accusative-case-marker-suffix :=
+%suffix (* -e)
+accusative-case-marker-lex-rule.
+
+
+sociative-case-marker-suffix :=
+%suffix (* -ooTE)
+sociative-case-marker-lex-rule.
+
+
+dative-case-marker-suffix :=
+%suffix (* -kke)
+dative-case-marker-lex-rule.
+
+
+inanimate-dative-case-marker-suffix :=
+%suffix (* -kke)
+inanimate-dative-case-marker-lex-rule.
+
+
+inanimate-sociative-case-marker-suffix :=
+%suffix (* -ooTE)
+inanimate-sociative-case-marker-lex-rule.
+
+
+plural-marker-suffix :=
+%suffix (* -maar)
+plural-marker-lex-rule.
+
+
+forma-past-tense-marker-suffix :=
+%suffix (* -ccu)
+forma-past-tense-marker-lex-rule.
+
+
+forma-present-tense-marker-suffix :=
+%suffix (* -unnu)
+forma-present-tense-marker-lex-rule.
+
+
+formb-past-tense-marker-suffix :=
+%suffix (* -tu)
+formb-past-tense-marker-lex-rule.
+
+
+formb-present-tense-marker-suffix :=
+%suffix (* -unnu)
+formb-present-tense-marker-lex-rule.
+
+
+infinitive-marker-suffix :=
+%suffix (* -uka)
+infinitive-marker-lex-rule.
+
+
+negative-infl-marker-suffix :=
+%suffix (* -illa)
+negative-infl-marker-lex-rule.
+
+
+past-present-neg-marker-suffix :=
+%suffix (* -illa)
+past-present-neg-marker-lex-rule.
+
+
+imperfective-marker-suffix :=
+%suffix (* -uNTE)
+imperfective-marker-lex-rule.
+
+
+imperfective-aspect-marker-suffix :=
+%suffix (* -aaNE)
+imperfective-aspect-marker-lex-rule.
+
+
+question-marker-suffix :=
+%suffix (* -oo)
+question-marker-lex-rule.
+
+
+formc-past-tense-suffix :=
+%suffix (* -NNu)
+formc-past-tense-lex-rule.
+
+
+future-aspect-marker-suffix :=
+%suffix (* -aakum)
+future-aspect-marker-lex-rule.
+
+
+past-aspect-marker-suffix :=
+%suffix (* -irunnu)
+past-aspect-marker-lex-rule.
+
+
+fake-present-suffix :=
+%suffix (* -unnu)
+fake-present-lex-rule.
+
+
+habitual-aspect-marker-affix-suffix :=
+%suffix (* -aaRE-uNTE)
+habitual-aspect-marker-affix-lex-rule.
+
+
+n1-bottom :=
+  %suffix (* -um)
+  n1-bottom-coord-rule.
+
+n1-left :=
+  %suffix (* -um)
+  n1-left-coord-rule.

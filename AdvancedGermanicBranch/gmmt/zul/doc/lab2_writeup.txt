@@ -1,0 +1,167 @@
+Preliminary comments
+
+Zulu has 14 noun classes.  Every noun class has a prefix that attaches
+to nouns of that class. One noun stem can take different
+prefixes. Some of the classes are singular/plural pairs, e.g. class 4
+nouns are plurals of corresponding class 3 nouns. However some prefix
+changes are more derivational. So, 'umu-ntu' means 'person, 'aba-ntu'
+means 'people', and 'ubu-ntu' means 'humaneness'.  Verbs are required
+to agree with the noun class of their subject, by means of prefixes
+called subject concords.  There are also optional object concords.
+These noun classes appear across Bantu languages, and a standardized
+numbering system (Class 1, Class 2, etc.) has been created to identify
+corresponding classes. I have labeled the noun class prefixes as C#
+where # is the class number, e.g. C1, C2.  Subject concords on verbs
+are SC#, Object concords are OC#.  First and second person subject
+concords are specified with the person and number information first
+(e.g. 1SG.SC). It is not to late to change this notation if there is a
+better strategy.  NB: Because the numbering system is common across
+all Bantu languages, the Zulu class numbers are not completely linear.
+Zulu does not have classes 12 and 13, and 16 only appears in some
+fossilized locative terms.
+
+My examples are all in a future tense that specifically refers to the
+immediate future.  Most of the other tenses either had variation
+attached to whether the verb was followed by an object or adverb, or
+had some phonological variation that I decided not to deal with if I
+didn't have to.  One challenge that I had was in deciding how to
+analyze the verb roots.  One of my grammars and the dictionary I have
+both analyze the roots as including the final 'a' (e.g. -bona,
+'see'). Under this analysis, the future tense of 'see' would be:
+
+SC-zo-bona
+
+where SC is the Subject Concord. The problem is verb forms where the
+final 'a' changes.  The grammar mentioned above says that in those
+cases the final 'a' is dropped with .  The dictionary lists the other
+forms under separate entries. The other grammar analyzes the root as
+being without the final 'a', analyzing the future tense of see as:
+
+SC-zo-bon-a
+
+This takes care of verb forms where the ending is different. However,
+this grammar does not say what that final -a might represent; it calls
+it simply "the suffix" (where -zo- is the future tense marker). It
+also seems like a complex analysis for a simple grammar like the one
+I'm building, especially considering I'm using an a-ending verb form.
+I think the second analysis is both more extensible and more
+linguistically satisfying, so I decided to use it and label the final
+-a as though it were part of a circumfix with the tense marker.  I am
+not convinced this was the right decision, but it's the one that
+appears in these examples.
+
+The standard orthography for Zulu does not include notation for tone,
+and so I have not included it.
+
+My grammars have proven to be unhelpful in finding examples.  The
+grammar's examples are not in future tense, or only use first or
+second person arguments, or are full of adverbials or other extraneous
+information that I am not ready to include in my grammar.  Most of my
+sample sentences are modeled after samples provided in the text, but
+none are taken word-for-word.  The site isiZulu.net has a message
+board that appears to be frequented by native speakers of Zulu; I
+think I will try asking there for grammaticality judgments.
+
+
+Basic Word Order
+
+Zulu is an SVO language.  While there are many circumstances where it
+is possible to omit arguments, as far as I can tell they cannot appear
+in any other order. One of my ungrammatical examples is OVS, which
+could in theory be mistaken for SVO, because there is no case
+marking. The example is actually ungrammatical, but only because the
+subject concord on the verb does not match the noun class of the first
+argument.  I have therefore marked it as ungrammatical and listed the
+phenomena as both word order and agreement.
+
+I have not found any mention of ditransitive verbs, so I don't know if
+there aren't any or if they just weren't covered in my grammars.
+Until I find out, I am not including any ditransitive test data,
+because I can't make grammaticality judgments.
+
+Pronouns
+
+Zulu has pronouns, but my grammars give the impression that they are
+not used much. One of my grammars did not mention them at all; the
+other never used them outside of the section titled "Pronouns".
+Instead, the subject and object concords on the verb are used to
+convey information about the arguments.  Still, because there are
+pronouns and they may be useful for agreement information later on, I
+have included some pronoun examples.  I have made test sentences for 4
+non-third person pronouns: 1sg, 1pl, 2sg, 2pl.  There is no case
+distinction. I only used (what I think are) grammatical sentences.  I
+did not include any third-person pronouns, as every noun class has its
+own pronoun, and that seemed excessive and unnecessary for this stage
+of the project.
+
+The Rest of the NP
+
+Zulu does not have mandatory determiners, but it does have some
+optional demonstratives that I thought would fit here.  Demonstratives
+have a 3-way deixis split: close to the speaker, close to the
+addressee, and far from both. One of the grammars describes these as
+Position 1, Position 2, and Position 3; I have used this notation in
+my morpheme-by-morpheme glosses.  The demonstrative can appear either
+before or after the noun (or alone as a pronoun, but I have not
+included examples reflecting this). Demonstratives must agree with the
+noun class of the word they modify, which for 14 noun classes means
+there are 42 demonstratives.  To test all of them, both before and
+after the noun, would be 84 sentences just to get the grammatical
+examples.  Instead, I give the 6 grammatical constructions for a class
+1 noun, followed by after-the-noun examples demonstrating the
+agreement requirement using a class 9 noun and the class 1 noun from
+before.  I think my strategy will be to make an agreement rule, and
+then add more demonstratives as I add nouns from more classes.
+
+Argument Optionality
+
+Of the four patterns discussed in the assignment instructions, Zulu
+best matches the Pronomial Affixes category. I mentioned before that
+Zulu verbs have mandatory subject concords and optional object
+concords that each agree with the noun class of the argument they
+correspond to.  As long as the concord is present, it is fine to leave
+the argument unexpressed.  Indeed, this appears to be the primary way
+of marking first- and second-person arguments (as opposed to using
+pronouns). The subject concord is mandatory whether the argument
+appears or not.  The object concord is optional if the argument is
+expressed (i.e. it can co-occur with an overt object, or on its own)
+but is mandatory if the argument is not expressed.  It is possible for
+a verb to appear with no overt arguments at all.
+
+Agreement
+
+I have already mentioned the subject and object concords on the verbs,
+which are what I covered in this section. I previously touched on
+demonstratives, and while those should be expanded, I just focused on
+verbs here.
+
+I did not include examples where the subject concord is the same for
+two classes.  For example, the subject concord for both class 1 and
+class 3 is u-.  Since I don't have a means of differentiating them
+yet, it seemed silly to list the u- prefix twice.
+
+Verbs only need to agree with noun class.  The subject concord and
+object concord(if present) each need to agree with their respective
+arguments.  Mixing e.g. every subject concord with every noun class
+seems excessive, so I have chosen a less-complicated approach.  The
+assignment instructions said that I needed a noun of every type and a
+verb of every type, so I decided to hold either the argument class or
+the concord class constant while varying the other. I used an
+intransitive verb to make test sentences that show one noun class
+subject with every subject concord, and every noun class with one
+subject concord.  I then did the same for the objects, using a
+transitive verb.  I threw in some first- and second- person examples
+for good measure.  It was a lot of work, but it will help encourage me
+to actually get all the noun classes working.
+
+The Remaining Features
+
+Zulu nouns don't show any case marking.  There are differences between
+subject and object concords, however, so I was thinking of making some
+examples to specifically highlight those differences instead.  It
+could be that i've covered it sufficiently in the examples I have,
+though.
+
+All the other features I should be able to cover, although neither of
+the grammar books I have talk about imbedded clauses or matrix yes-no
+questions.  I will need to do some more legwork to get data for those.

@@ -1,0 +1,90 @@
+Ryan Mattson
+May 8, 2005
+LING567
+Lab 5 writeup
+
+Finnish matrix declarative clauses are in the typical SVO word order that is
+often seen in Finnish. A couple of examples:
+
+1a) kissat nukkuvat
+    cat-pl sleep-3p-pl
+    cats sleep
+
+ b) minA syon      tomaattia
+    i	 eat-1p-sg tomato-part
+    i eat tomatoes
+
+These sentences are parsable with the current version of the grammar.
+
+Matrix interrogatives, on the otherhand, change the word order (typically) and
+add a particle to the end of the question word that marks the sentence as
+a question:
+
+2a) nukkuvatko       kissat?
+    sleep-3p-pl-ques cat-pl
+    do cats sleep?
+
+ b) syOtkO         minA tomaattia?
+    eat-1p-sg-ques i    tomato-part
+    I eat tomatoes? (I am eating tomatoes?)
+
+The order here changes to VSO and the "ko/kO" question particle (possibly a
+clitic?) is being added to the verb in order to mark the sentence as a
+question. This construction is currently not working in the matrix, however,
+but will probably be added soon (according to recent message board discussion).
+
+Embedded declaratives look very similar to matrix declaratives:
+
+3a) opiskelija  sanoo     ettA minA nAytAn     apinalta
+    student-nom say-3p-sg comp i    look-1p-sg monkey-ablat
+    the student says that i look like a monkey
+
+The object here is the complementizer phrase 'that i look like a monkey.'
+
+Embedded interrogatives change the word order of the embedded clause, as might
+be expected based on the matrix interrogative syntax:
+
+4a) opiskelija  tietAA     mitA      minA syOn
+    student-nom know-3p-sg what-part i    eat-1p-sg
+    the student knows what i eat
+
+The wh-word 'mitA' (the partitive form of what) is in the front of the
+embedded clause (which exists without a complementizer, and I believe it is
+ungrammatical to put a complementizer in), creating (in the embedded clause)
+an apparent OSV word order.
+
+The current coverage of the grammar is on the matrix declaratives (as noted
+above) and the embedded declaratives.
+
+The embedded declarative coverage, however, is currently overgenerating with
+respect to the attachment of the S node of the embedded phrase (connecting
+to 'ettA', the complementizer) and the attachment of the entire embedded
+declarative as the object of the verb. This overgeneration stems from the 
+head-complement rule not being able to choose between the S-nodes with or
+without clausal semantics.
+
+I attempted to limit the head complement rule to choose nodes with clausal
+semantics by using the same type that was specified in the roots.tdl file
+(which limited possible roots to only those with clausal semantics), but
+I was given a unification error when attempting to reload my grammar if
+I specified this type as the type of the complementizers complement and the
+non-head-dtr of the head-complement rule. I'm unsure where to go from here.
+
+The semantic information of the clause embedding verbs constrains the CONT.MSG
+of the complement to be of type 'message.'
+
+REAL-TIME UPDATE: I realized I hadn't constrained that CONT.MSG feature to
+type 'message' and when I did I eliminated two of the overgenerated structures
+in the embedded declaratives.
+
+From what I can tell with my still-growing understanding of MRS representations,
+correct semantic representations are being given to matrix declarative clauses,
+but the overgeneration of the embedded declaratives may be causing spurious semantic
+representations to be assigned to those--but these will disappear once I resolve
+the overgeneration.
+
+I'm unsure, however, of whether or not I covered all of my semantic bases. Looking at the
+indexed MRS representations, I see ones that seem to make sense, however I'm wary of how
+much I dealt with the semantics in this assignment. (Given that 2/5 of the writeup
+questions ask about semantics, I'm not confident I put 2/5 of my energy into semantics
+in this assignment.)

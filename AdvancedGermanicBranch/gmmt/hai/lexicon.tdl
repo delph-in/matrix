@@ -1,0 +1,275 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
+;;; Nouns
+
+gyuudan := common-noun-lex &
+   [ STEM < "gyuudan" >,
+     SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [PER third, NUM sg ],
+			  LKEYS.KEYREL.PRED '_horse_n_rel ] ].
+
+jaa := common-noun-lex &
+   [ STEM < "jaa" >,
+     SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [PER third, NUM sg ],
+			  LKEYS.KEYREL.PRED '_wife_n_rel ] ].
+
+skaan := common-noun-lex &
+   [ STEM < "skaan" >,
+     SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [PER third, NUM sg ],
+			  LKEYS.KEYREL.PRED '_aunt_n_rel ] ].
+
+glass := common-noun-lex &
+   [ STEM < "glass" >,
+     SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [PER third, NUM sg ],
+			  LKEYS.KEYREL.PRED '_glass_n_rel ] ].
+			  
+xagw := common-noun-lex &
+   [ STEM < "xagw" >,
+     SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [PER third, NUM sg ],
+			  LKEYS.KEYREL.PRED '_halibut_n_rel ] ].
+
+iihlangaas := common-noun-lex &
+   [ STEM < "iihlangaas" >,
+     SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [PER third, NUM sg ],
+			  LKEYS.KEYREL.PRED '_man_n_rel ] ].
+squlaay := common-noun-lex &
+   [ STEM < "squlaay" >,
+     SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [PER third, NUM sg ],
+			  LKEYS.KEYREL.PRED '_porpoise_n_rel ] ].
+
+Bill := proper-noun-lex & 
+   [ STEM < "Bill" >,
+     SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [PER third, NUM sg ],
+			  LKEYS.KEYREL.PRED '_Bill_n_rel ] ].
+
+Mary := proper-noun-lex & 
+   [ STEM < "Mary" >,
+     SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [PER third, NUM sg ],
+			  LKEYS.KEYREL.PRED '_Mary_n_rel ] ].
+
+; sfd
+
+car := common-noun-lex &
+   [ STEM < "car" >,
+     SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [PER third, NUM sg ],
+			  LKEYS.KEYREL.PRED '_car_n_rel ] ].
+
+xa := common-noun-lex &
+   [ STEM < "xa" >,
+     SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [PER third, NUM sg ],
+			  LKEYS.KEYREL.PRED '_dog_n_rel ] ].
+
+duus := common-noun-lex &
+   [ STEM < "duus" >,
+     SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [PER third, NUM sg ],
+			  LKEYS.KEYREL.PRED '_cat_n_rel ] ].
+			 			 
+			 
+;;; Pronouns
+
+;;;agentive case pronouns
+hlA:= pronoun-lex &
+   [ STEM < "hl" >,
+     SYNSEM.LOCAL [ CAT.HEAD.CASE agent,
+		    CONT.HOOK.INDEX.PNG [PER first, NUM sg ]]].
+
+dangA:= pronoun-lex &
+   [ STEM < "dang" >,
+     SYNSEM.LOCAL [ CAT.HEAD.CASE agent,
+		    CONT.HOOK.INDEX.PNG [PER second, NUM sg ]]].
+
+halA:= pronoun-lex &
+   [ STEM < "hal" >,
+     SYNSEM.LOCAL [ CAT.HEAD.CASE agent,
+		    CONT.HOOK.INDEX.PNG [PER third, NUM sg ]]].
+
+talangA:= pronoun-lex &
+   [ STEM < "talang" >,
+     SYNSEM.LOCAL [ CAT.HEAD.CASE agent,
+		    CONT.HOOK.INDEX.PNG [PER first, NUM pl ]]].
+
+dalangA:= pronoun-lex &
+   [ STEM < "dalang" >,
+     SYNSEM.LOCAL [ CAT.HEAD.CASE agent,
+		    CONT.HOOK.INDEX.PNG [PER second, NUM pl ]]].
+
+tlA:= pronoun-lex &
+   [ STEM < "tl" >,
+     SYNSEM.LOCAL [ CAT.HEAD.CASE agent,
+		    CONT.HOOK.INDEX.PNG [PER third, NUM pl ]]].
+
+;;;objective case pronouns
+diiO:= pronoun-lex &
+   [ STEM < "dii" >,
+     SYNSEM.LOCAL [ CAT.HEAD.CASE obj,
+		    CONT.HOOK.INDEX.PNG [PER first, NUM sg ]]].
+
+dangO:= pronoun-lex &
+   [ STEM < "dang" >,
+     SYNSEM.LOCAL [ CAT.HEAD.CASE obj,
+		    CONT.HOOK.INDEX.PNG [PER second, NUM sg ]]].
+
+halO:= pronoun-lex &
+   [ STEM < "hal" >,
+     SYNSEM.LOCAL [ CAT.HEAD.CASE obj,
+		    CONT.HOOK.INDEX.PNG [PER third, NUM sg ]]].
+
+7iitlO:= pronoun-lex &
+   [ STEM < "7iitl" >,
+     SYNSEM.LOCAL [ CAT.HEAD.CASE obj,
+		    CONT.HOOK.INDEX.PNG [PER first, NUM pl ]]].
+
+dalangO:= pronoun-lex &
+   [ STEM < "dalang" >,
+     SYNSEM.LOCAL [ CAT.HEAD.CASE obj,
+		    CONT.HOOK.INDEX.PNG [PER second, NUM pl ]]].
+
+tlO:= pronoun-lex &
+   [ STEM < "tl" >,
+     SYNSEM.LOCAL [ CAT.HEAD.CASE obj,
+		    CONT.HOOK.INDEX.PNG [PER third, NUM pl ]]].
+
+;;; adjectives (non-predicative)
+kiaa:= adjective-lex &
+   [ STEM < "kiaa" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_light_adj_rel" ].
+
+gungaa:= adjective-lex &
+   [ STEM < "gungaa" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_rotten_adj_rel" ].
+     
+sagatagaa:= adjective-lex &
+   [ STEM < "sagatagaa" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_worm+eaten_adj_rel" ].
+
+
+;;; Verbs
+
+sdasgiid := required-trans-verb-lex &
+   [ STEM < "sdasgiid" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_kick_v_rel",
+     INFLECTED - ].
+
+qing := clause-embedding-verb-lex &
+   [ STEM < "qing" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel",
+     INFLECTED - ].
+
+qwiid := obj-intransitive-verb-lex &
+   [ STEM < "qwiid" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_be+hungry_v_rel",
+     INFLECTED - ].
+
+xwii := obj-intransitive-verb-lex &
+   [ STEM < "xwii" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_be+cold_v_rel",
+     INFLECTED - ].
+
+tada := obj-intransitive-verb-lex &
+   [ STEM < "tada" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_be+cold_v_rel",
+     INFLECTED - ].
+
+hlgahl := obj-intransitive-verb-lex &
+   [ STEM < "hlgahl" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_be+black_v_rel",
+     INFLECTED - ].
+
+rada := obj-intransitive-verb-lex &
+   [ STEM < "rada" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_be+white_v_rel",
+     INFLECTED - ].
+
+kajuu := agent-intransitive-verb-lex &
+   [ STEM < "kajuu" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_sing_v_rel",
+     INFLECTED - ].
+
+sryahla := agent-intransitive-verb-lex &
+   [ STEM < "sryahla" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_cry_v_rel",
+     INFLECTED - ].
+     
+gudang := opt-trans-verb-lex &
+   [ STEM < "gudang" >,
+	 SYNSEM.LKEYS.KEYREL.PRED "_understand_v_rel",
+	 INFLECTED - ].
+	 
+sti := required-trans-verb-lex &
+   [ STEM < "sti" >,
+	 SYNSEM.LKEYS.KEYREL.PRED "_hurt_v_rel",
+	 INFLECTED - ].
+
+taa := required-trans-verb-lex &
+   [ STEM < "taa" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel",
+     INFLECTED - ].
+     	 
+skasdla := ditransitive-verb-lex &
+   [ STEM < "skasdla" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_hand_v_rel",
+     INFLECTED - ].
+
+dah := ditransitive-verb-lex &
+   [ STEM < "dah" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_buy_v_rel",
+     INFLECTED - ].
+
+hlangaa := aux-verb-lex &
+   [ STEM < "hlangaa" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_can_v_rel",
+     INFLECTED - ].
+
+kuuga := agent-intransitive-verb-lex &
+   [ STEM < "kuuga" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_come+in_v_rel",
+     INFLECTED - ].
+
+; sfd
+kyaanang := clause-embedding-verb-lex &
+   [ STEM < "kyaanang" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_ask_v_rel",
+     INFLECTED - ].
+
+unsat := clause-embedding-verb-lex &
+   [ STEM < "unsat" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_know_v_rel",
+     INFLECTED - ].
+
+gutgung := clause-embedding-verb-lex &
+   [ STEM < "gutgung" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_think_v_rel",
+     INFLECTED - ].
+
+kaajuu := required-trans-verb-lex &
+   [ STEM < "kaajuu" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_chase_v_rel",
+     INFLECTED - ].
+     	 
+kadaa := agent-intransitive-verb-lex &
+   [ STEM < "kadaa" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_sing_v_rel",
+     INFLECTED - ].
+
+
+;;; adverbs
+7adaahl := adverb-lex &
+   [ STEM < "7adaahl" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_yesterday_adv_rel" ] .
+
+; sfd
+hawidaan := adverb-lex &
+   [ STEM < "hawidaan" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_fast_adv_rel" ] .
+     
+
+;;; Other
+
+gam := neg-adv-lex &
+   [ STEM < "gam" >, 
+     SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ].
+
+gyaan_1 := conj-lex &
+  [ STEM < "gyaan" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
+    CFORM "1" ].
+
