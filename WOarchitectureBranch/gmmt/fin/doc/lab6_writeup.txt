@@ -1,0 +1,181 @@
+Ryan Mattson
+5-15-05
+LING 567
+Lab 6 Write Up
+
+Interrogatives and Imperatives in Finnish
+
+Matrix interrogative clauses in Finnish are typically created by
+inverting the verb and the subject and inflecting the verb with
+a -ko/-kO (where the capital o represents the fronted o, usually
+marked with an umlaut; this vowel fronting occurs based on vowel
+harmony) suffix, which is probably a clitic.
+
+A typical matrix declarative looks like
+
+1) Me     pelkAAmme   tomaattit
+   we-nom fear-1p-pl tomato-acc
+   we fear tomatoes
+
+The interrogative corollary to this would be the following
+
+2) PelkAAmmeko      me     tomaattit?
+   fear-1p-pl-ques we-nom tomato-acc
+   Do we fear tomatoes? / We fear tomatoes?
+
+An intransitive verb works in the same way, like the following
+
+3a) MinA  kAvelen
+    I-nom walk-1p-sg
+    I am walking
+
+ b) kAvelenko       minA?
+    walk-1p-sg-ques I-nom
+    Am I walking?
+
+ c) *minA kAvelenko
+
+And the ditransitive verbs follow in suit:
+
+4a) hAn        antaa      tomaattit  miehelle
+    he/she-nom give-3p-sg tomato-acc man-allat
+    He/she gives tomatoes to the man
+
+ b) antaako         hAn        tomaattit  miehelle?
+    give-3p-sg-ques he/she-nom tomato-acc man-allat
+    Is he/she giving tomatoes to the man?
+
+Matrix imperatives are simply the uninflected root of the verb,
+that is to say, the form without the minA or sinA ending. A
+typical phrase heard in Finnish is in the imperative (though it
+uses the copula, and I've not yet implemented this particular
+verb into my grammar):
+
+5) ole    hyvAA (cannot be parsed)
+   be-imp good-part
+   be good!
+
+An example of an intransitive imperative:
+
+6) kAvele
+   walk-imp
+   walk!
+
+Transitive verbs keep the same complements:
+
+7) pelkAA    tomaattit
+   fear-imp tomato-acc
+   fear tomatoes!
+
+8) sano ettA minA nAytAn apinalta
+   say-imp comp i-nom look-1p-sg monkey-ablat
+   say that i look like a monkey!
+
+And ditransitives work as expected:
+
+9) anna tuot tomaattit miehelle
+   give-imp that-pl tomato-pl man-allat
+   give those tomatoes to the man
+
+
+Current coverage of imperatives
+
+The intransitive 'kAvele' (walk!) currently works as expected,
+however transitive and ditransitive verbs are parsing, but not
+with correct structures.
+
+I implemented imperatives by reinflecting the 2p-Sg form of the
+verb (for instance, 'kAvelet' walk-2p-Sg) to remove the 't'
+ending using the imp_verb-lex-rule, then the verb must go through
+the imperative-head-opt-subj-phrase grammar rule so that it doesn't
+need a subj, and finally it goes through the finnish-imperative-
+clause grammar rule to get the semantics.
+
+Parsing 'kAvele' provides 3 parses, but two would be removed if the
+root condition lex-root was removed, thus giving the correct parse
+with the root node being finnish-imperative. The only concern is that
+the root node is being labeled 'V' (above an 'S') which leads me to
+believe some information may be being in the finnish-imperative
+rule.
+
+The transitive and ditransitive seem to be connecting their
+complements via head-adj-int, which projects to finnish-
+declarative, as opposed to finnish-imperative. I think I need
+to constrain head-adj-int to not allow head-dtr's with
+[IMPERATIVE +], as well as modify my head-comp rule to correctly
+grab the complements appropriate to transitive and ditransitive
+verbs.
+
+Current coverage of interrogatives
+
+Matrix interrogatives are working well, though not perfectly. Certain
+constructions are overgenerating (though this again seems to be due
+to an underconstrained head-adj-int rule, as well as redundant
+inflectional rules that differ in their case marking).
+
+A working transitive:
+
+10) pelkAAnko       minA  tomaattit
+    fear-1p-sg-ques i-nom tomato-acc
+    i fear tomatoes?
+
+A working intransitive:
+
+11) kAveleeko       hAn
+    walk-3p-sg-ques he/she-nom
+    he/she is walking?
+
+A working (though overgenerating, through adj-head-int and head-adj-int)
+ditransitive:
+
+12) annanko minA tomaattit miehelle
+    give-1p-sg-ques i-nom tomatoes man-allat
+    i am giving tomatoes to the man?
+
+The semantics of the matrix interrogatives closely match the example,
+though they don't exactly match. The obvious differences are in the
+order of the predications, given that Finnish inverts the subject
+and the verb in questions. The only other obvious difference in
+the semantic representation is that where there is an indefinite
+predication in the English representation, my grammar has a
+predsort. A representation for 'kAveleeko hAn' (is he/she walking?)
+follows (lacking the predsort, but with a pronoun predication instead):
+
+<h1, e2:SEMSORT:TENSE:ASPECT:MOOD,
+{h3:_walk_v(e2, x4:SEMSORT:THIRD:SG:BOOL),
+ h5:pronoun_n(x4),
+ h6:pronoun_q(x4, h7, h8),
+ h1:question_m(h9),
+ h9:proposition_m(h10)},
+{h7 qeq h5,
+ h10 qeq h3}>
+
+For embedded interrogative clauses, I treated the wh-like words,
+such as the current word I have implemented, 'mitA' (what-like, and
+partitive), as complementizers, as they show up in the same places,
+for instance in the following sentence:
+
+13) minA  tiedAn     mitA    sinA    syOt
+    i-nom know-1p-sg wh-comp you-nom eat-2p-sg
+    I know what you eat
+
+(meta-discussion: it just occurred to me that mitA may not be the
+type of embedded interrogative marker that is desired for this lab,
+however the syntactic construction would be treated the same for
+the appropriate marker which would create the sentence:
+
+    'I know whether you eat'
+
+mitA seems like it would be better handled by long-distance
+dependency machinary. For the sake of sanity, I'm going to pretend
+until tomorrow, 5-17, when I can ask my Finnish professor about
+a corellate to 'whether' in Finnish, that mitA is the same.)
+
+The semantics I was trying to implement with a non-branching rule
+that almost directly mirrors the finnish-interrogative-clause. I
+called this one a cp-interrogative-clause, but it doesn't seem to be
+working. The current difference in the rule is that the HEAD-DTR's
+HEAD must be of type comp. This can be fixed by changing cp-inter-
+rogative-clause's HEAD-DTR's MSG to be of type message instead
+of no-msg, but this creates a circular lexical rule, so I've left it
+as type no-msg in order to parse sentences effectively.

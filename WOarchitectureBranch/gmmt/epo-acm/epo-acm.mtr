@@ -1,0 +1,7 @@
+;;; Hey, emacs(1), this is -*- Mode: TDL; Coding: utf-8; -*- got it?
+
+make-harm := make-harm-mtr.
+make-pursuit := make-pursuit-mtr.
+
+eat-food := eat-food-mtr.
+make-thought := make-thought-mtr.

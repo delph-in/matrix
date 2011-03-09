@@ -1,0 +1,13 @@
+n1 tverb1 n2
+n1 tverb2 n2
+n1 tverb1 
+*n2 tverb2
+*tverb1 n2
+*tverb2 n2
+*n1 iverb1 n2
+*n2 iverb1 n1
+*n1 iverb2 n2
+*iverb1 n1
+*iverb2 n2
+*tverb2
+*tverb1

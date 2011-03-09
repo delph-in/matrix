@@ -1,0 +1,362 @@
+Lab6 Writeup
+
+Before starting on this week's assignment, I worked on ordering the demonstratives and the adjectives with respect to each other. I used the MODORDER feature you suggested for Mandarin, except that I ignored possessives for the time being (they are prepositional phrases and, unlike in Mandarin, they have to come after the demonstrative; I just reread my e-post on this and see that I misreported it there in that I said that the demonstrative follows the possessive; the opposite is true). The main problem I had with making it work was getting the MODORDER values to be passed up through the entire chain of rules. I worked on this before I started mucking around with the lexical rules, so the process for the NP "spr-im ip-im alh" (these pretty books) at the time was as follows: 
+
+NP: 
+sprim ipim alh
+spr-im ip-im alh
+book:PL.M pretty:PL.M these:PL
+"these pretty books"
+
+lexical entries:
+
+spr-im := common-noun-lex &
+   [ STEM < "spr-im" >,
+      SYNSEM [LOCAL.CONT.HOOK.INDEX.PNG [ NUM non-sg,
+					 GEND masc ],
+	      LKEYS.KEYREL.PRED "_book_n_rel" ] ].
+
+ip-im := non-demonstrative-adj-lex &
+   [ STEM < "ip-im" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_pretty_adj_rel",
+     SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM non-sg, 
+							       GEND masc ] ] > ].
+alh := demonstrative-adj-lex &
+   [ STEM < "alh" >,
+     SYNSEM.LKEYS.KEYREL.PRED "_this_adj_rel",
+     SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM non-sg ] ] > ]. 
+
+
+The adjective types are defined as follows:
+
+non-demonstrative-adj-lex := adjective-lex &
+[ SYNSEM [ LOCAL [ CAT [ HEAD [ MOD < [  MODORDER adj-modorder ] > ]]]],
+  SYNSEM [ MODORDER adj-modorder ] ].
+	   
+demonstrative-adj-lex := adjective-lex &
+[ SYNSEM [ LOCAL [ CAT [ HEAD [ MOD < [  MODORDER adj-modorder ] > ]]]],
+  SYNSEM [ MODORDER dem-modorder ] ].
+
+The first set of rules that applied to these three lexemes (including the noun) was the set of definiteness marking ltow rules (in this case DEF -). Here is the ltow rule that marks the adjective (whether regular or demonstrative) as indefinite:
+
+indef-adj-rule := const-ltow-rule &
+ [ SYNSEM [ MODORDER #modorder_of_adj ], 
+   DTR.SYNSEM [ MODORDER #modorder_of_adj ], 
+   SYNSEM.LOCAL.CAT.HEAD.MOD < [ MODORDER #modorder_of_nom ] >,
+   DTR.SYNSEM.LOCAL.CAT.HEAD adj & 
+				    [ MOD < [ MODORDER #modorder_of_nom,
+					      LOCAL.CONT.HOOK.INDEX.DEF - ] > ] ].
+
+So after each of the two adjectives has gone through the indef-adj-rule, their MODORDER values are as orginally assigned (adj-modorder for the MOD, adj-modorder for the regular adj and dem-modorder for the dem) as they are being passed up to the mother node of the indef-adj-rule.
+
+The next rule that applies is the one that combines the noun "spr-im" with the adjective "ip-im". 
+hebrew-head-adj-int-phrase := head-adj-int-phrase &
+[ SYNSEM.MODORDER #modorder,
+  NON-HEAD-DTR.SYNSEM [ LOCAL [ CAT [ HEAD [ MOD < [  MODORDER #modorder2 ] > ]]]],
+  HEAD-DTR.SYNSEM.MODORDER #modorder2,
+  NON-HEAD-DTR.SYNSEM.MODORDER #modorder ].
+
+This rule applies twice, once to create "sprim ipim" and a second time to create "sprim ipim alh". On the first pass, the value of the non-head-daughter "ipim"'s MODORDER is adj-modorder and the head-duaghter "sprim"'s MODORDER is modorder. The non-head-daughter "ipim"'s MODORDER value, adj-modorder, is copied to the mother, "sprim ipim" and the MOD's MODORDER value, adj-modorder, is unified with the head-daughter "sprim"'s MODORDER, which changes from modorder to adj-modorder. So once this rule has applied, the noun-phrase "sprim ipim"'s MODORDER value is adj-modorder so it can be modified further by any adjective. On the second pass the the value of the non-head-daughter "alh"'s MODORDER is dem-modorder and the head-duaghter "sprim ipim"'s MODORDER is adj-modorder. The non-head-daughter "alh"'s MODORDER value, dem-modorder, is copied to the mother, "sprim ipim alh" and the MOD's MODORDER value, adj-modorder, is unified with the head-daughter "sprim ipim"'s MODORDER, which is adj-modorder. So once this rule has applied, the noun-phrase "sprim ipim alh"'s MODORDER value is addem-modorder, so it can no longer unify with any adjectives because they all require the head-daughter to be MODORDER adj-modorder and this head-daughter, "sprim ipim alh"'s MODORDER is dem-modorder.
+
+It took me a while to figure out that these MODORDER values had to be copied up by every rule in the chain.
+
+However, now that I have changed the lexical rules, the treatment of adjectives is a bit different too. See the discussion on the lexical rules below.
+
+Embedded Declaratives:
+
+In Hebrew embedded clauses are obligatorily introduced by a complementizer. In the case of declarative embedded clauses, that complementizer is "e" (pronounced "she") and it is very similar to the English "that". The Hebrew complementizer is a clitic that attaches to the first element of the embedded clause, but I am assuming for the time being that the preprocessor is able to simply detach it from that first word of the clause (a reasonable assumption).
+
+Examples:
+
+1. ani iwdy ehia qwrat spr
+ani idy:PAAL.PRES e hia qra:PAAL.PRES-t spr
+pron:NOM.1SG know:PAAL.PRES.SG.M that pron:NOM.3SG.F read:PAAL.PRES:SG.F book:SG.M
+'I know that she reads a book.'
+
+2.  * ani iwdy hia qwrat spr
+ani idy:PAAL.PRES hia qra:PAAL.PRES-t spr
+pron:NOM.1SG know:PAAL.PRES.SG.M pron:NOM.3SG.F read:PAAL.PRES:SG.F book:SG.M
+'I know she reads a book.'
+
+It is possible that the word order within the embedded clause is bit
+less free than that within the main clause but for now I will assume
+that the word order is "grammatically" free and that the differences
+should be handled by some discourse level module. By the way, are word
+order differences related to the length of a constituent, such as the
+order of heavy constructions in English considered a grammatical or
+discourse level issue? In all the of examples below, the embedded
+clause when appearing as a main clause (without the complementizer,
+that is) are OK to about the same degree as when they are embedded and
+out of ocntext some of them sound just as odd (though never as odd as
+the English "I know that reads books she" or "I know that reads she
+books." do).
+
+3.  ani iwdy eqwrat hia spr
+ani idy:PAAL.PRES e qra:PAAL.PRES-t hia spr 
+pron:NOM.1SG know:PAAL.PRES.SG.M that read:PAAL.PRES:SG.F pron:NOM.3SG.F book:SG.M
+'I know that she reads a book.'
+
+4.  ani iwdy espr hia qwrat
+ani idy:PAAL.PRES e spr hia qra:PAAL.PRES-t
+pron:NOM.1SG know:PAAL.PRES.SG.M that book:SG.M pron:NOM.3SG.F read:PAAL.PRES:SG.F 
+'I know that she reads a book.'
+
+5. ani iwdy eqwrat spr hia
+ani idy:PAAL.PRES e qra:PAAL.PRES-t spr hia 
+pron:NOM.1SG know:PAAL.PRES.SG.M that read:PAAL.PRES:SG.F book:SG.M pron:NOM.3SG.F
+'I know that she reads a book.'
+
+6.  ani iwdy espr qwrat hia
+ani idy:PAAL.PRES e spr qra:PAAL.PRES-t hia 
+pron:NOM.1SG know:PAAL.PRES.SG.M that book:SG.M read:PAAL.PRES:SG.F pron:NOM.3SG.F
+'I know that she reads a book.'
+
+7. ani iwdy ehia spr qwrat
+ani idy:PAAL.PRES e hia spr qra:PAAL.PRES-t
+pron:NOM.1SG know:PAAL.PRES.SG.M that pron:NOM.3SG.F book:SG.M read:PAAL.PRES:SG.F
+'I know that she reads a book.'
+
+Complementizer type definition:
+
+complementizer-lex-item := no-hcons-lex-item & basic-one-arg &
+[ SYNSEM.LOCAL.CAT.VAL  [ SPR < >,
+			  SUBJ < >,
+			  COMPS < #comps &
+				  [ LOCAL.CAT.HEAD verb,
+				    LOCAL.CONT.MSG #msg,
+				    LOCAL.CONT.MSG message,
+				    LOCAL.CONT.HOOK #hook ] >,
+				 
+			  SPEC < > ],
+  SYNSEM.LOCAL.CONT.RELS < ! ! >,
+  SYNSEM.LOCAL.CONT.HOOK #hook,
+  SYNSEM.LOCAL.CONT.MSG #msg,
+  SYNSEM.LOCAL.CAT.HEAD comp,
+  ARG-ST < #comps  > ]. 
+
+One issue I had here was in figuring out how to constrain the comp's COMPS so that only those with a message are accepted? I thought that the constraint on the comp of [ LOCAL.CONT.MSG.PRED proposition_m_rel ] would be sufficient but it wasn't. Thus I changed the constraint to be LOCAL.CONT.MSG message, which I guess should have been the obvious choice to begin with and it seems to work, though why  [ LOCAL.CONT.MSG.PRED proposition_m_rel ] is not enough I still have to figure out. The other issue was constraining the complementizer to be of type "comp". Again, this should have seemed obvious (SYNSEM.LOCAL.CAT.HEAD comp) but I because the lab6 instructions seemed very minute but they did not explicitly mention changing the mother's CAT, I hesitated (and posted to e-post).
+
+The grammar handles the syntax of the embedded declaratives correctly. Sentences 1 and 3 through 7 are parsed. There is only one parse per sentence. Getting rid of extra parses involved changing the root.tdl file so that only sentences with a message could be accepted. Sentences without a complementizer(2) or with more than one complementizer (8) are not parsed. The former works because the verb "know" requires a complement headed by a complementizer and not headed by a verb (COMPS <...LOCAL.CAT.HEAD comp...>). The latter works because the complementizer "e" requires a complement that is headed by a verb and not another complementizer (COMPS <...LOCAL.CAT.HEAD verb...>). Sentences with the complementizer in any position other at the head of the embedded clause are not parsed (9). This follows from the way the grammar is set up with the embedding verb requiring a complementizer headed complement and the complementizer requiring a complement headed by a verb. There is no way to get the "e" in the middle of the 
+ sentece. How about at the end? Since Hebrew allows COMPS-HEAD and HEAD-COMPS the following ungrammatical sentence is not automatically ruled out. This required some extra steps.
+This ws done by changing the original line:
+comp-head-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD +nvjrcdmo ].
+to exclude complementizers. In fact, only v should be able to be preceded by its comps 9and maybe adverbs but I haven't looked at those).
+comp-head-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD verb ].
+The embedded clause may precede the main clause (11). This is by the way, something I neglected to fix in lab5 so I was overgenerating without having tested for those specific cases (when the head follows the entire complement rather than being in the middle of it).
+
+8. * ani iwdy eehia spr qwrat
+ani idy:PAAL.PRES e e hia spr qra:PAAL.PRES-t
+pron:NOM.1SG know:PAAL.PRES.SG.M that that pron:NOM.3SG.F book:SG.M read:PAAL.PRES:SG.F
+'I know that that she reads a book.'
+
+9. * ani iwdy hia e spr qwrat
+ani idy:PAAL.PRES hia spr e qra:PAAL.PRES-t
+pron:NOM.1SG know:PAAL.PRES.SG.M pron:NOM.3SG.F that book:SG.M read:PAAL.PRES:SG.F
+'I know she that reads a book.'
+
+10. * ani iwdy hia qwrat spr e
+ani idy:PAAL.PRES hia qra:PAAL.PRES-t spr e
+pron:NOM.1SG know:PAAL.PRES.SG.M pron:NOM.3SG.F read:PAAL.PRES:SG.F book:SG.M that
+'I know she that reads a book.'
+
+11. e hiw qra:PAAL.PRES-t spr ani iwdy
+e hia qra:PAAL.PRES-t spr ani idy:PAAL.PRES
+that pron:NOM.3SG.F read:PAAL.PRES:SG.F book:SG.M pron:NOM.1SG know:PAAL.PRES.SG.M
+'That she reads a book I know.'
+
+The embeddeed dclaratives are identical to main declaratives so all the phenomena such as agreement, case, and everything else the grammar is handling so far, work as it does in main clauses. This is achieved by requiring that the main-clause be headed by a verb and have a message and the same is required of the complement of the complementizer and requiring that the non-COMPS VAL features be empty. Nothing special needed to be done beyond that because we are still in a universe in which we do not distinguish different types of clauses. This will change as we add non-declaratives.
+
+The grammar allows recursion since the rules are in effect  S -> C, C -> comp S. Nothing special needed to be done to get this effect other than what has been described so far.
+
+Example:
+
+12. ani iwdy ehia iwdyt eat qwrat spr
+ani idy:PAAL.PRES e hia idy:PAAL.PRES-t e at qra:PAAL.PRES-t spr
+pron:NOM.1SG know:PAAL.PRES.SG.M that pron:NOM.3SG.F know:PAAL.PRES.SG.F that pron:NOM.2SG.F read:PAAL.PRES:SG.F book:SG.M
+'I know that she knows that you read a book.'
+
+Semantics:
+ I added some lexical entries (cat, dog, sleep) so that my examples are easy to compare with what is in the instructions. When I tested:
+
+13. xtwlim iwdyim eklbim ienim
+xtwl-im idy:PAAL.PRES-im e klb-im ien:PAAL.PRES-im
+cat:PL.M know:PAAL.PRES.PL.M that dog:PL.M sleep:PAAL.PRES-im
+'Cats know that dogs sleep.'
+
+I discovered to my chagrin that my semantics wasn't working for plural nouns at all, something I hadn't noticed before because I guess I was looking at the semantics of singular subject sentences only. This undoubtedly had something to do with my messing around with the lexical rules. The problem turned out to be in what type my number inflecting for nouns rules were inheriting form. They were inheriting from infl-add-only-ltol-rule and as a result the RELS were not being copied properly. I changed the supertype of the number inflecting rules to infl-add-only-no-ccont-ltol-rule and that fixed the problem. The reason this was not an issue for the singular nouns was that they do not undergo an inflecting rule but a constant rule, and the number rule applying to them had the supertype const-head-change-only-ltol-rule, which for some reason did not cause any problems. I haven't fully figured out why there is a contrast. In any case at this point the semantics looks almost as it should. The one thing that is still not working properly for plural or singular nouns regardless of whether the clause is embedded or not, which I haven't noticed earlier, is definiteness. It seems that the definiteness information is not making it into the semantics. But the feature structure for the declarative clause does reflect [DEF +] or [DEF -] in the MRS, so I cannot account its absence from the MRS.
+
+< h1, e2:SEMSORT:TENSE:ASPECT:MOOD,
+{ h3:_cat_n(x4:SEMSORT:THIRD:NON-SG:MASC),
+  h5:reg_quant(x4,h6,h7),
+  h8:_know_v(e2,x4,h9),
+  h10:_dog_n(x11:SEMSORT:THIRD:NON-SG:MASC),
+  h12:reg_quant(x11,h13,h14),
+  h15:_sleep_v(e16:SEMSORT:TENSE:ASPECT:MOOD,x11),
+  h9:proposition_m(h17),
+  h1:proposition_m(h18)},
+{h6 qeq h3,
+ h13 qeq h10,
+ h17 qeq h15,
+ h18 qeq h8  }>
+
+Otherwise, the MRS looks pretty much as it should. Another potential issue aside from the definiteness issue is the fact that the order of the arguments within h5 and H12 is reversed compared to what is shown in the instructions.I don't know what that means. 
+
+Since the changes needed to handle embedded declaratives were straightforward (at least compared to previous assignments), I decided to work on the lexicon as well. That was because I hadn't discovered the semantic problems until starting the writeup and looking at the semantics more carefully. So I cannot tell whether the problem was there before I started mucking wround with the lexical rules or not. 
+
+The lexicon changes involve the addition of tense, person, number, and gender inflection on verbs and number on nouns.  Earlier, each noun in the lexicon was marked for gender and number. For example, these were the entries for the noun "spr" (book).
+
+spr := common-noun-lex &
+   [ STEM < "spr" >,
+     SYNSEM [LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg,
+					 GEND masc ],
+	     LKEYS.KEYREL.PRED "_book_n_rel" ] ].
+
+spr-im := common-noun-lex &
+   [ STEM < "spr-im" >,
+      SYNSEM [LOCAL.CONT.HOOK.INDEX.PNG [ NUM non-sg,
+					 GEND masc ],
+	      LKEYS.KEYREL.PRED "_book_n_rel" ] ].
+
+In the new lexicon, there is only one entry for "spr":
+
+spr := common-noun-lex &
+   [ STEM < "spr" >,
+     SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND masc ],
+     SYNSEM.LOCAL.CAT.HEAD.NOUN-NON-SG-SUFFIX-TYPE im-suffix,
+     SYNSEM.LKEYS.KEYREL.PRED "_book_n_rel" ] .
+
+The gender is inherent to each noun. The "derivational" relation between "ild" (boy) and "ildh" (girl) is ignored and the two are considered separate words, each with its own gender value. In Hebrew most plural nouns are marked with one of the two suffixes, "-wt" or "-im". The former is normally associated with feminine forms and the latter with masculine ones. While this relation seems to be fairly regular when these suffuxes are attached to adjectives and verbs, it seems almost random when it comes to nouns, other than nouns that have two gender forms, such as:
+
+xtwl:SG.M - cat (male)
+xtwl-h:SG.F - cat (female)
+xtwl-im:NON-SG.M - cats (male)
+xtwl-wt:NON-SG.F - catts (female)
+
+So in the lexicon, each noun entry indicates whether the noun combines with the "im" or the "wt" plural suffix. Some additional regularization may be achieved for the 2 gender nouns, but for now they are entered twice in the lexcion, once for each gender.
+
+In hebrew.tdl there are several rules that deal with nouns.
+First each noun must go through a rule that assigns it number. The plural nouns get the suffix that is indicated in their lexical entries and the singular ones get no suffix. In both rules types, the resulting FS is marked for number. These rules, especially the const-ltol one, went through many versions. I kept either getting error messages or massively overgenerating. I don't remember all the iterations anymore but here is an explanation of the various lines in the rules.
+
+The inflecting rules look as follows:
+
+noun-non-sg-wt-suffix-rule := infl-add-only-no-ccont-ltol-rule &
+[ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [NUM non-sg],
+  SYNSEM.LOCAL.CAT.HEAD.PROPER_PRONOUN_COMMON common,
+  SYNSEM.LOCAL.CAT.HEAD noun,
+  SYNSEM.LOCAL.CAT.HEAD.NOUN-NON-SG-SUFFIX-TYPE wt-suffix,
+  DTR.INFLECTED - ].
+
+1. SYNSEM.LOCAL.CAT.HEAD.PROPER_PRONOUN_COMMON common, ;;;to prevent it from applying to pronouns and proper nouns
+2. SYNSEM.LOCAL.CAT.HEAD noun, ;;;to prevent from applying to ther parts of speech
+3.  SYNSEM.LOCAL.CAT.HEAD.NOUN-NON-SG-SUFFIX-TYPE wt-suffix, ;;;for the right rule to apply to the right noun, depending on the type of plural suffix it gets
+4. DTR.INFLECTED - ;;;to get this rule to apply BEFORE the ltow rules
+
+The non-inflecting rule looks as follows:
+
+noun-sg-no-suffix-rule := const-head-change-only-ltol-rule &
+[ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [NUM sg],
+  SYNSEM.LOCAL.CAT.HEAD.NOUN-NON-SG-SUFFIX-TYPE no-suffix,
+  SYNSEM.INFLECTED-FOR-NUMBER +,
+  SYNSEM.LOCAL.CAT.HEAD.PROPER_PRONOUN_COMMON common,
+  SYNSEM.LOCAL.CAT.HEAD noun,
+  DTR.SYNSEM.INFLECTED-FOR-NUMBER -,
+  DTR.SYNSEM.LOCAL.CAT.HEAD.PROPER_PRONOUN_COMMON common,
+  DTR.SYNSEM.LOCAL.CAT.HEAD noun,
+  DTR.INFLECTED - ].
+
+1. SYNSEM.LOCAL.CAT.HEAD.NOUN-NON-SG-SUFFIX-TYPE no-suffix, ;;;to prevent this rule from applying AFTER one of the plural inflecting rules and to prevent the other rules from applying after this rule
+2. SYNSEM.INFLECTED-FOR-NUMBER +, ;;;to force the ltow rule to apply AFTER this rule - should be changed to whatever you suggested on e-post instead
+3. SYNSEM.LOCAL.CAT.HEAD.PROPER_PRONOUN_COMMON common, ;;;to retain the the information that it is common
+4. SYNSEM.LOCAL.CAT.HEAD noun, ;;;to retain the the information that it is common
+5. DTR.SYNSEM.INFLECTED-FOR-NUMBER -, ;;;same as 2
+  DTR.SYNSEM.LOCAL.CAT.HEAD.PROPER_PRONOUN_COMMON common, ;;;to prevent it from applying to pronouns and proper nouns 
+  DTR.SYNSEM.LOCAL.CAT.HEAD noun, ;;to prevent it from applying to other pos
+  DTR.INFLECTED - ;;;to get this rule to apply BEFORE the ltow rules
+ 
+Once these suffix rules apply, the nouns go through a rule that marks them for definiteness.
+The rules for common nouns are as follows:
+
+def-h-noun-rule := infl-ltow-rule &
+ [ SYNSEM.LOCAL.CONT.HOOK.INDEX.DEF + ,
+   SYNSEM.LOCAL.CAT.HEAD.PROPER_PRONOUN_COMMON common,
+   SYNSEM.LOCAL.CAT.HEAD.CASE nom,
+   DTR.SYNSEM.LOCAL.CAT.HEAD noun,
+   DTR.SYNSEM.INFLECTED-FOR-NUMBER + ].
+
+indef-noun-rule := const-ltow-rule &
+ [ SYNSEM.LOCAL.CONT.HOOK.INDEX.DEF - ,
+   DTR.SYNSEM.LOCAL.CAT.HEAD noun,
+   DTR.SYNSEM.INFLECTED-FOR-NUMBER + ].
+
+These have been changed since lab5 due to the addition of the ltol rules described above. The change is the introduction of the constraint:  [DTR.SYNSEM.INFLECTED-FOR-NUMBER +] to ensure that these rules do not apply BEFORE the ltol rules. Again, this should be changed to reflect the suggestion you made on e-post.
+
+Now these nouns may play in the syntax.
+
+Lexical changes for verbs:
+
+Originally each verb form had its own entry. So that a verb like "hlk:PAAL" (go) would have to have 13 entreis for all the person, gender, and number possibilities for the past and present tenses (to handle the future, imperative, and the infinitive another 18 additional forms would be needed). Here are three:
+
+hwlk := intransitive-verb-lex &
+   [ STEM < "hlk:PAAL.PRES" >,
+     INFLECTED -,
+     SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ GEND masc,
+							       NUM sg ]] >,
+     SYNSEM.LKEYS.KEYREL.PRED "_go_v_rel" ].
+
+hwlk-t := intransitive-verb-lex &
+   [ STEM < "hlk:PAAL.PRES" >,
+     INFLECTED -,
+     SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ GEND fem,
+							       NUM sg ]] >,
+     SYNSEM.LKEYS.KEYREL.PRED "_go_v_rel" ].
+
+hlk-nw := intransitive-verb-lex &
+   [ STEM < "hlk:PAAL.PAST" >,
+     INFLECTED -,
+     SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER first,		
+							       GEND masc,
+							       NUM non-sg ]] >,
+     SYNSEM.LKEYS.KEYREL.PRED "_go_v_rel" ].
+
+The new lexicon contains one entry per verb representing these 13 past and present entries.
+
+hlk := intransitive-verb-lex &
+   [ STEM < "hlk:PAAL" >,
+     INFLECTED -,
+     SYNSEM.LOCAL.CAT.HEAD.VERB-PRESENT-TENSE-SG-F-SUFFIX-TYPE t-suffix,
+     SYNSEM.LKEYS.KEYREL.PRED "_go_v_rel" ].
+
+Note that the binyan is listed as part of the stem (but the tense and png inflection is gone). It is assumed for the time being, that the binyan is determined by the preprocessor.
+
+The other 18 forms are not handled, except on an individual as needed basis. For example, for the imperative examples, the verb is entered in the lexicon in it surface form and no inflection or number assignment rules apply to it. 
+
+lk := intransitive-verb-lex &
+   [ STEM < "hlk:PAAL.IMP" >,
+     SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+							       GEND masc,
+							       NUM sg ]] >,
+     SYNSEM.LKEYS.KEYREL.PRED "_go_v_rel" ].
+
+
+Note that this entry does nothing for now, because the grammar is not handling imperatives yet.
+The verb entries marked [INFLECTED -] undergo one of 14 ltow rules (14 rather than 13 because the present tense feminine suffix may be either "-t" or "-h"; the lexical entry of the verb is marked depending on which suffix the verb takes).
+
+So subject verb agreement in lab5 was handled on the lexicon.tdl level. Now it is handled by the lexical rules.
+
+Analysis of TSDB coverage:
+
+The baseline over this test suite is 3.2%. Lab5 resulted in 19.7%. Lab6 resulted in 23.3%. I had expected greater gains.
+Here some reasons the improvement was so small:
+
+1. Various sentences that were parsed earlier are not parsing with the new lexicon because the forms involved are irregular and not covered by the rules the way they are written now.
+For example, any sentence containing the plural "h-ild-wt" (girls) is not parsing because the lexicon.tdl stem for this noun is "ildh", and the plural the lexical rules create is "ildh-wt", which is incorrect. In nouns ending with "h", the final "h" is elided before the suffix "wt", so that the plural of "ildh" is "ild-wt". So the lexcial rules need to be adjusted accordingly.
+
+2. I forgot to fix the adjective definiteness marking rules so that they apply only after the inflectional ones have. I simply need to do the same thing for adjevtives that I did for nouns. However, it is 10:30PM on Sunday and I'd rather not start making violent changes in the grammar until tomorrow because I'm bound to break something else unintentionally. So right now, some sentences with adjectives get two parses instead of one because there is an extra parse which results from the application of the definiteness rule before the inflectional rules have applied. This path needs to be eliminated. Another sad consequence of this omission on my part is the fact that adjectives may go into the syntax unmarked for png, which results in the acceptance of NPs in which the head noun does not agree with the adjective that modifies it. I will fix this tomorrow. And yet another consequence of my mucking with the lexical rules is which I cannot account for right now is the fact that the NPs of the form (noun adj* dem) are no longer accepted by the grammar, so the modorder stuff I sweated over is not being put to good use. 
+
+I will fix this but I wanted to send this out as is so that my homework is in on time. 
+
+
+
+
+
+

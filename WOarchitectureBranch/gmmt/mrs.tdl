@@ -1,0 +1,252 @@
+;;; Hey, emacs(1), this is -*- Mode: TDL; Coding: iso-8859-1; -*- got it?
+
+;;;
+;;; first shot of minimal type hierarchy for transfer rules in LOGON; derived
+;;; from LinGO Grammar Matrix, but greatly stripped down.       (7-oct-03; oe)
+;;;
+
+mrs := top &
+[ LTOP h,
+  INDEX u,
+  RELS list,
+  HCONS list ].
+
+psoa := mrs &
+[ INDEX e ].
+
+nom-obj := mrs &
+[ INDEX x ].
+
+qeq := top &
+[ HARG h,
+  LARG h ].        
+
+
+;;;
+;;; minimal hierarchy of variable types, using the new (R)MRS naming scheme.
+;;;
+
+;;;
+;;; introduce two transfer-only `scratch' slots in variables: one that will be
+;;; purged after each successful rule application, one that will stick until we
+;;; leave transfer.  additionally, provide DITCH property to mark variables we
+;;; want to loose in the final output (e.g. to ditch the ARG0 from conjunctions
+;;; while the ERG used to have C-ARG instead).
+;;;
+u := top & [ SKOLEM string, SCRATCH scratch, MARK scratch, DITCH bool ].
+i := u.
+p := u.
+h := p.
+
+e := i & 
+[ TENSE tense, MOOD mood, 
+  PERF luk, PROG luk,
+  SF sf ].
+
+x := i & p & 
+[ PERS person, NUM number, COG-ST cog-st ].
+
+;;;
+;;; to check for `arity' in MTRs, maybe we need an `anti-'variable type
+;;;
+a := u.
+
+tense := top.
+tensed := tense.
+past := tensed.
+non-past := tensed.
+pres := non-past.
+fut := non-past.
+untensed := tense.
+
+mood := top.
+indicative := mood.
+subjunctive := mood.
+no_mood := mood.
+
+sf := top.
+prop-or-ques := sf.
+prop := prop-or-ques.
+ques := prop-or-ques.
+comm := sf.
+
+cog-st := top.
+activ-or-less := cog-st.
+uniq-or-more := cog-st.
+uniq+fam+act := activ-or-less & uniq-or-more.
+fam-or-less := activ-or-less.
+fam-or-more := uniq-or-more.
+activ+fam := uniq+fam+act & fam-or-more.
+uniq+fam := uniq+fam+act & fam-or-less.
+uniq-or-less := fam-or-less.
+activ-or-more := fam-or-more.
+type-id := uniq-or-less.
+uniq-id := uniq-or-less & uniq+fam.
+familiar := uniq+fam & activ+fam.
+activated := activ+fam & activ-or-more.
+in-foc := activ-or-more.
+
+
+luk := top.
+bool := luk.
+na := luk.
++ := bool.
+- := bool.
+
+person := top.
+1 := person.
+2 := person.
+3 := person.
+no_person := person.
+
+number := top.
+sg := number.
+non-sg := number.
+dual := non-sg.
+pl := non-sg.
+no_number := number.
+
+gender := top.
+m-or-f := gender.
+m := m-or-f.
+f := m-or-f.
+n := gender.
+no_gender := gender.
+
+;;;
+;;; the scratch slot in variables: used during transfer to control application
+;;; of rules, e.g. the rules that introduce selected preposition EPs in the ERG
+;;; accomodation phase which would otherwise be cyclic, i.e. the rule would
+;;; fire on its own output (since it does not consume anything).
+;;;
+scratch := top.
+test := scratch.
+complete := scratch.
+one := scratch.
+two := scratch.
+three := scratch.
+four := scratch.
+five := scratch.
+six := scratch.
+
+e_tensed := e [ TENSE tensed ].
+e_untensed := e & [ TENSE untensed ].
+
+
+;;;
+;;; relations are classified according to the types of arguments they take.
+;;; all relations have a handle.  In addition, quantifier relations have a
+;;; bound variable and a restriction, nominal relations have an instance, and
+;;; event relations have an event.  furthermore, nominal relations and event
+;;; relations can have additional roles, depending on their meaning.
+;;;
+
+relation := top &
+[ LBL h,
+  PRED predsort ].
+
+arg0-relation := relation &
+[ ARG0 u ].
+
+arg1-relation := relation &
+[ ARG1 u ].
+
+arg01-relation := arg0-relation & arg1-relation.
+
+arg2-relation := relation &
+[ ARG2 u ].
+
+arg012-relation := arg01-relation & arg2-relation.
+
+arg3-relation := relation &
+[ ARG3 u ].
+
+arg0123-relation := arg012-relation & arg3-relation.
+
+arg4-relation := relation &
+[ ARG4 u ].
+
+arg01234-relation := arg0123-relation & arg4-relation.
+
+
+event-relation := arg0-relation &
+[ ARG0 e ].
+
+noun-relation := arg0-relation &
+[ ARG0 x ].
+
+relational-noun-relation := noun-relation & arg1-relation &
+[ ARG1 x ].
+
+named-relation := arg0-relation &
+[ CARG top ].
+
+named-arg01-relation := named-relation & arg01-relation.
+
+named-arg012-relation := named-relation & arg012-relation.
+
+subord-or-conj-relation := arg0-relation &
+[ L-HNDL u,
+  R-HNDL u ].
+
+conjunction-relation := subord-or-conj-relation &
+[ L-INDEX i,
+  R-INDEX i ].
+
+quant-relation := arg0-relation &
+[ ARG0 x,
+  RSTR h,
+  BODY h ].
+
+unknown-relation := arg0-relation &
+[ ARG u ].
+
+;;;
+;;; some basic types
+;;;
+
+list := top.
+
+cons := list &
+[ FIRST top,
+  REST list ].
+
+null := list.
+
+string := predsort.
+
+flags := top &
+[ OPTIONAL luk,
+  PERMUTE luk,
+  EQUAL list,
+  SUBSUME list,
+  WARN string,
+  BLOCK string,
+  AUTHOR string,
+  DATE string,
+  SOURCE string,
+  RANK string, 
+  COUNT string ].
+
+mrs_transfer_rule :=  top &
+[ FILTER mrs,
+  CONTEXT mrs,
+  INPUT mrs,
+  OUTPUT mrs,
+  FLAGS flags ].
+
+;;;
+;;; the top-level entry point for (grammar-specific) predicate hierarchies
+;;;
+predsort := top.
+
+
+;;;
+;;; a few `special-purpose' types, transfer operators in a sense
+;;;
+
++upcase+ := string.
++downcase+ := string.
+
+operator := top.
++copy+ := operator.

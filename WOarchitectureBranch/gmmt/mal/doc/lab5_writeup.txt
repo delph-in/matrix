@@ -1,0 +1,125 @@
+Malayalam has case, but not agreement.
+I chose to work on Case, lexical rules for number and case, lexical rules for 
+verb tense, and started to work on adjectives. 
+
+
+CASE
+=======================================================================
+Malayalam uses case to indicate the roles of the nouns in the sentence.
+There are 7 cases: Nominative, Accusative, Dative, Sociative, Locative, 
+	Instrumental and Genative.
+My test cases primarily use Nominative, Accusative and Dative cases.
+The case is indicated by adding a suffix to the noun.  Nominative case adds
+nothing.
+	NOM: -
+	ACC: -(y)e
+	DAT: -kke / -(n)x
+The case system for pronouns is the same as for nouns.  There are the same
+number of cases.  The generation of the lexical entries for the different 
+cases can be quite irregular for the pronouns.
+
+These bound suffixes are used for several different markers, and the order in
+which they apply to nouns is: stem (+ derivational suffix) (+plural) + case.
+None of my test cases use derivational forms of the nouns, so my lexical rules
+only handle number and case.  The stem itself may have an associated gender.
+
+I modified malayalam.tdl to subdivide noun-lex (derived from basic-noun-lex)
+into common-noun-lex and pronoun-lex. The lexical entries for pronoun-lex are 
+fully specified since the rules to generate them are irregular in some cases. 
+The lexical rules to generate case are then written to modify only common-nouns.
+
+The lexical type for common-noun specifies that they are third person, so the 
+entries for the common nouns are written to specify their GEND value, and I 
+added an INFLECTION - to facilitate tracking of inflection by the rules.
+
+The lexical rule for number is applied first, since that is the first suffix 
+applied to the stem. (described below)  The noun-case-lex-rule written to add 
+the case information takes as input the output from that rule.  There are sub 
+rules to add the various suffixes.  The nominative rule is a constant-lex-rule 
+since it adds no suffix.  The accusative and dative rules are inflecting.  
+The accusative rule actually has 2 possible suffixes: -ye is added if the word 
+ends in a vowel, otherwise -e is added.  For the dative case, 
+all of my test cases using dative form use pronouns, so I have a simplified 
+form of the dative inflection rule which adds the most common form: kkx to 
+the stem.
+
+
+
+NUMBER
+=======================================================================
+The lexical rule to inflect nouns for number are written to apply only to
+common nouns, since the pronouns are already fully specified.  There are 2 
+possible number values: singular and plural.  The suffix which seems to be
+most common for plural nouns is -kala.
+
+The plural suffix is added to the noun stem first, so the lexical rule is 
+written to accept only common nouns with INFLECTION -.  It's a lexeme-to-lexeme 
+rule since the output will be subjected to a case inflection.
+
+Singular nouns have no changes, so the singular noun rule only adds the 
+information in the INDEX.PNG feature that NUM is singular.  Plural nouns
+are inflected to add the -kala suffix, and the INDEX.PNG feature is set to NUM 
+non-singular.  
+
+TENSE
+=======================================================================
+Malayalam verbs are inflected for tense by adding a suffix to the verb stem.
+The suffixes are:
+	Past	-i / -u
+	Present -unnu
+	Future  - um
+
+My test cases only include examples of transitive verbs, so I wrote the lexical 
+rule as trans-verb-tense-lex-rule :=
+	lexeme-to-word-rule &
+	[DTR transitive-verb-lex].
+	
+Then I added 3 inflection rules:
+	past-trans-verb-rule, which adds a -u suffix when the word ends in a double 
+							consonant, otherwise adds an -i
+	pres-trans-verb-rule, which adds a -unnu suffix
+	futr-trans-verb-rule, which adds a -um suffix
+	
+
+ADJECTIVES
+=======================================================================
+Adjectives may be inflected to match the number and gender of the noun they modify.
+The adjective 'good' in my test cases is marked by a suffixes in the following manner:
+
+	+ HUMAN		SINGULAR	MASC	-van
+							FEM		- vala
+				
+				PLURAL				- var
+
+	- HUMAN		SINGULAR			- tx
+				PLURAL				- va
+
+I copied the English adjective example, but do not have it working yet.
+In Malayalam, the adjective follows the noun.
+
+
+GENERATION
+=======================================================================
+Generation produced many, many sentences!
+I get sentences with both word orders for subject and object, which is expected.
+I also get all of the verb tenses.
+The one area which doesn't look right is the -oo suffix used in matrix questions.
+It should be added as a suffix to the last word in the sentence, but instead it's
+being added as a separate word.  I'll need to fix the rule for that.
+
+
+QUESTIONS
+=======================================================================
+There are some words which are already inflected, since they have irregular forms.
+How do I write rules with multiple inflections, which case take these as input
+partway through the inflection?
+Or do I just write a fully inflected form for them?
+The example I have is snake, for which the plural form seems to be irregular.
+After the plural form however, I could let it inflect for case following the 
+normal rules.  
+
+There are some sentences where both the subject and object are in nominative case.
+I'm not sure what the rules are which determine which case should be used.
+The lexical rules are currently written so that verbs take a nominative and accusative
+noun, but this will have to be revised to make it much more open.
+How can I control overgeneration in this case?  What are some strategies?

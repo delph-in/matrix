@@ -1,0 +1,49 @@
+------------------------------------------------------
+Comments
+
+ There are some words which are already inflected, since they have
+ irregular forms.  How do I write rules with multiple inflections,
+ which case take these as input partway through the inflection?  Or do
+ I just write a fully inflected form for them?  The example I have is
+ snake, for which the plural form seems to be irregular.  After the
+ plural form however, I could let it inflect for case following the
+ normal rules.
+
+You can't, with the LKB morphophonology rules.  But, you shouldn't
+really try.  You should assume that some preprocessor is handling the
+phonological irregularities, and handing you regularized forms.
+
+ There are some sentences where both the subject and object are in
+ nominative case.  I'm not sure what the rules are which determine
+ which case should be used.  The lexical rules are currently written so
+ that verbs take a nominative and accusative noun, but this will have
+ to be revised to make it much more open.  How can I control
+ overgeneration in this case?  What are some strategies?
+
+I'm not sure what you mean by lexical "rules" here --- it's the
+lexical types (for verbs) that are controlling the cases required of
+their arguments.  As to how to handle double nominative sentences, it
+depends on what the generalizations are.  Are there particular verbs
+that take this pattern?  If so, you're talking about a lexical type.
+Is it a construction with a specific meaning?  If so, you're probably
+talking about a lexical rule (which applies to verbs and changes the
+case required of the object) or a phrase structure rule.
+
+noun-number-lex-rule := add-only-no-ccont-ltol-rule & 
+    [ DTR common-noun-lex,
+      INFLECTED - ].
+
+I think it would be cleaner to put [ INFLECTED - ] on common-noun-lex.
+Otherwise, I suspect the completely uninflected nouns are being allowed
+as daughters...  And they're not, but that's only because you're putting
+[ INFLECTED - ] directly on the lexical entries.
+
+ My test cases only include examples of transitive verbs, so I wrote
+ the lexical rule as
+ trans-verb-tense-lex-rule :=
+	lexeme-to-word-rule &
+	[DTR transitive-verb-lex].
+
+I'd be surprised if intransitive verbs (and ditransitives, etc) each
+had different tense inflections.  Why not just use verb-lex for the DTR?
+

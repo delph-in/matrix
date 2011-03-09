@@ -1,0 +1,23 @@
+; A sample start symbol: Accept fully-saturated verbal
+; projections only; if a grammar makes use of the head-subject and
+; head-complement types as provided by the Matrix, this should be a
+; good starting point.  Note that it is legal to have multiple start
+; symbols, but they all need to be listed as the value of
+; `*start-symbol' (see `lkb/user-fns.lsp').
+
+; ERB 2007-05-12 Add [FORM fin] to keep -atx verbs out of main clauses.
+; This means that FORM of coordinated clauses should be from right edge...
+
+root := phrase &
+  [ SYNSEM.LOCAL [ COORD -,
+                   CAT [ VAL [ SUBJ < >,
+                               COMPS < > ],
+                         MC +,
+                         HEAD +vc &
+			     [ FORM fin ] ] ] ] .
+
+; This start symbol allows you to parse single words as stand-alone
+; utterances.  This can be useful for grammar debugging purposes.
+
+lex-root := word-or-lexrule .
+

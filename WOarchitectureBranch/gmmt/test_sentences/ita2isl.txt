@@ -1,0 +1,51 @@
+Cani dorm-ono
+Hund-ar sofa.
+
+Cani insegu-ono macchine
+Hund-ar elta bíl-a.
+
+Ti-insegu-o
+Þeir elta þá.
+
+Questi cani dorm-ono
+Þessir hund-ar sofa.
+
+Cani mangi-ano
+Hund-ar éta.
+
+Posso mangi-are il vetro
+Ég get borða-ð gler.
+
+Non mi-f-a male
+það meiða-ar mig ekki.
+
+I cani insegu-ono macchine
+Hund-ar-nir elta bíl-a.
+
+Pens-o che sai che cani insegu-ono macchine
+Ég held að þú vita-ar að hund-ar elta bíl-a.
+
+Domand-o se sai che cani insegu-ono macchine
+Ég spyr hvort þú vita-ar að hund-ar elta bíl-a.
+
+Cani e gatti insegu-ono macchine
+Kett-ir og hund-ar elta bíl-a.
+
+Cani insegu-ono macchine e gatti insegu-ono cani
+Hund-ar elta bíl-a og kett-ir elta hund-a.
+
+Gatti insegu-ono cani e dorm-ono
+Kett-ir elta hund-a og sofa.
+
+Gatti insegu-ono cani
+elta kett-ir hund-a?
+
+insegu-i il cane
+Elta hund-inn!
+
+Cani affamat-i mangi-ano
+Svang-ir hund-ar éta.
+
+Cani affamat-i mangi-ano velocemente
+Svang-ir hund-ar éta hratt.
+

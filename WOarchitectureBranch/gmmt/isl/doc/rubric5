@@ -1,0 +1,26 @@
+------------------------------------------------------
+Comments
+
+The grammar you turn in prints four warnings in the LKB top
+window about lexical entries being redefined.  Please look
+into this.
+
+From irules.tdl:
+ m-cl1to3-acc-noun := m-clto3-sg-acc-lex-rule.
+
+Lexical rules which do not add overt affixes belong in
+lrules.tdl.
+
+
+	Icelandic has a complex noun declension system. There are different
+ inflections for each case and number for each gender. There are four
+ classes with different inflection in each gender as well as a strong
+ and a weak declension. This could be represented as an ALTS feature.
+ However, for the sake of clarity, I have chosen to break down noun
+ types instead. I figured that this would be easier to debug and 
+ understand conceptually.
+
+This sounds reasonable to me.  If you were to use ALTS, you'd end up
+making the subtypes anyway, so that you didn't need to keep repeating
+the ALTS information.  The alternative is to have it taken care of
+by the morphophonological analyzer.

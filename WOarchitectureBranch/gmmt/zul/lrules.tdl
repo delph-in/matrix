@@ -1,0 +1,9 @@
+no-obj-concord := no-obj-concord-lex-rule.
+no-obj-concord-ini := no-obj-concord-lex-rule2.
+
+; ERB 2007-05-15 Creating -ya- present tense rule, wondering
+; where this one was used...
+pres-tense-lex2 := pres-tense-lex-rule2.
+sg-imp-verb-lex := sg-imp-verb-lex-rule.
+;pos-imp-lex := pos-imp-lex-rule.
+;neg-imp-lex := neg-imp-lex-rule.

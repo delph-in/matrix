@@ -1,0 +1,28 @@
+Replace logon/uw/mmt with a soft link to matrix/gmmt
+Create an input file with test sentences in matrix/gmmt, called <src-lg>.txt
+(be sure to put blank lines between each item).
+
+In the logon/ directory, replacing <src-lg> and <tgt-lg> as appropriate:
+
+./batch --from <src-lg> --to <tgt-lg> --ascii ./uw/mmt/test_sentences/<src-lg>.txt
+
+Point your tsdb Database Root at 
+
+logon/lingo/lkb/src/tsdb/home/<src-lg>
+
+to see the profile created.
+
+There will also be a .fan file and a .fan.log file in your home
+directory.  .fan.log has the stuff that printed out on stdout (and
+perhaps a bit more).  .fan has the results.  You can take a quick
+look by doing:
+
+ $LOGONROOT/summarize -o 10 <.fan file>
+
+If you want to add a language-specific accommodation transfer grammar:
+
+create <lg>-acm in matrix/gmmt on the model of isl-acm or hau-acm
+
+edit logon/mmt/setup.lisp (i.e., matrix/gmmt/setup.lisp) to use
+that one when translating from :any to :<lg>
+

@@ -1,0 +1,36 @@
+Questionnaire for user:
+
+1. Does your language do sententential negation with an adverb, 
+with inflection on the main verb, neither, both (one at a time),
+or both together?
+
+  inflection -> 2.
+  adverb -> 4.
+  both one at a time -> 2 then 4.
+  neither -> sorry, can't help you today.
+  both together -> sorry, can't help you today. 
+
+	(Though I have some thoughts here: see two-part-neg-notes)
+
+2. Is the negative marker a prefix or a suffix?
+
+3. How are you spelling the negative marker in the abstract-morpheme
+representation (= output of morphological analysis, suggested form
+is NEG)?
+
+  -> posit negation lexical rule with appropriate prefix or
+  suffix, from infl-neg module.  Assume for now that sentences
+  are always headed by verbs, so that inflectional sentential
+  negation is verbal inflection.
+
+4. Does the adverb attach to V, VP or S?  (Assume for now that
+the answer will be only one, and not multiple -- otherwise, avoiding
+spurious parses will become hairy.)
+
+5. Does the adverb attach to the left or the right of the head
+it is modifying, or both?
+
+  -> Use these answers to posit a lexical entry which inherits
+  from basic-scop-adv-lex, and is specified to have the right
+  MOD, POSTHEAD, and KEY values.  Assume for now that these
+  adverbs don't take complements or specifiers.

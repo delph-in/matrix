@@ -1,0 +1,139 @@
+Orthography: Instead of using unicode characters, I’m borrowing the
+system used by an online Hausa-English dictionary, as it was designed
+for a database which could only use extended ASCII letters (and
+didn’t rely on unicode).  Here is a list of notations:
+
+a,e,i,o,u  = short vowel
+aa, ee, ii, oo, uu = long (double) vowel
+high tone is unmarked
+à, è, ì, ò, ù  = low tone
+â, ê, î, ô, û  = falling tone
+ùu = long vowel with low tone
+r = coronal r
+r. = retroflex r
+‘b = bilabial implosive		
+‘d = aveolar implosive
+k’ = velar ejective
+‘y = glottalized y
+
+BASIC WORD ORDER
+
+Hausa has a basic SVO order.  The subject (if present) always comes
+before the verb. The object appears after the verb, but can be fronted
+if it is the focus of the sentence or if it is topicalized.  Any
+element (NP, adv, PP or verb in verbal noun form) can be moved in
+front of the sentence in order to make it the focus.  Focus is marked
+by the stabilizer nee/cee/nee (m/f/pl).  Also, topicalizing a NP may
+cause it to be moved to a sentence-initial position.  This is
+different from focus, since it is not as integral to the sentence.  If
+both occur in a sentence, the focus comes after the topic.  Indirect
+objects occur directly after the verb and before other VP arguments
+(including direct objects).
+
+Hausa has non-verbal sentence structures which aren’t covered by
+the SVO pattern.  These sentences use prepositions, a stabilizer, or
+an existential ‘there is/are’ word to indicate state.  Also,
+
+I don’t think Hausa contains auxiliaries.  Tense, aspect and mood
+are represented in a pre-verbal complex that the reference grammar
+refers to as the PAC (person-aspect complex).  It is made up of a
+person pronoun connected to a tense/aspect/mood marker.  The author
+notes that it corresponds to INFL.  I’m having trouble deciding
+what to call the PAC.  Does this count as a particle? An inflectional
+marker?  Since the PAC must precede the verb, I added ungrammatical
+test cases where it is in different positions.
+
+Hausa has non-verbal sentence structures which aren’t covered by
+the SVO pattern.  Some of these sentences contain only the PAC.  Other
+sentences don't include the PAC and use prepositions, the stabilizer,
+or an existential ‘there is/are’ word to indicate a state of
+being.  Do I need to consider these patterns right now? I included a
+couple test cases of the order 'Subj + Predicate + stabilizer' and
+		
+Just considering sentences with a recognizable subject, object and
+verb, I believe that Hausa disallows VSO and VOS word orders.
+Likewise, SOV and OSV constructions are ungrammatical.  I'm assuming
+that two unmarked NPs next to each other is not a .  The OSV sentence
+would be grammatical if the first NP was followed by the stabilizer
+nee/cee/nee (m/f/pl), since it would be interpreted as an object which
+has been made the focus of the sentence.  I haven’t found anything
+which directly marks the subject and the object, so I believe they can
+switch places (given they are the same gender/person/number).  This
+means OVS constructions can be grammatical, if confusing (like
+‘gidaa yaa ginà mùtûm’, ‘the house built the
+man’).  In this example, house and man are both masculine singular,
+so there isn’t a problem with gender and number agreement.
+
+PRONOUNS
+
+Pronouns in Hausa vary by person, number and gender (only in singular
+2nd and 3rd person).  They appear in 8 different forms (though some
+forms are limited in how they conjugate).  These pronoun forms are:
+independent, strong object, weak object, indirect object, free
+possessive, bound genitive, reflexive and reciprocal.  The free
+possessive is a standalone word, while bound genitives are usually
+attached to the end of a word.
+
+Pronouns, for the most part, can occur in the same positions as NPs
+and take the same possessive and determiner suffixes.  When a simple
+pronoun (unmodified by a possessive, adjective, or conjunction) is in
+the subject position, it is always deleted since the same inflectional
+information is encoded into the preverbal PAC.  Pronouns are allowed
+to be subjects when the sentence has no verb.  This happens in
+equational sentences like ‘ nii maalàmii nèe’, ‘I am a
+teacher’ which uses the stabilizer nèe.
+
+THE REST OF THE NP
+
+The NP in Hausa only requires a noun as its head.  Determiners are
+optional.  The definite article ‘the’ consists of a suffix
+(usually -n, with a low tone placed on the preceding vowel) which is
+attached to the head noun.  The definite article in Hausa roughly
+corresponds to ‘the’ in English, except it means ‘a noun
+previously referred to, or a noun that can be identified through
+context.’ This means that the first time the noun is referred to,
+it does not have the definite article.
+
+Determiners can occur before or after the head of a NP.
+Demonstratives like that/those/this precede the noun.  A noun can have
+determiners preceding and following it, i.e. ‘wancàn
+gidâ-n’, that house-the, ‘that very house.’
+
+ARGUMENT OPTIONALITY
+
+Hausa is a subject pro-drop language.  Since the PAC preceding the
+verb captures all of the subject’s inflectional and tense
+information, the subject NP can be omitted.  As mentioned before, a
+simple personal pronoun (with no modifiers) must be dropped if it is
+the subject.  Objects can’t be dropped, as they are not in
+agreement with the verb.  I'm not sure about forming ungrammatical
+test cases for dropped objects, because a lot of the verbs seem to
+have identical transitive and intransitive forms.  I found an example
+that listed one verb 'tàimàkee' 'help' as being transitive and
+the related 'taimàkaa' 'help' as being intransitive, so I tried to
+use that one in my test case.  I'm not so sure about what is happening
+with other verb forms, as 'taa maidàa' 'she.COMP returned (it)' has
+the same form as 'taa maidàa zoobèe' 'she.COMP returned the
+ring'.
+
+NEGATION
+
+Sentences are negated as a whole in Hausa by surrounding the sentence
+with the construct bàa . . .ba.  The first word goes at the start
+of the sentence and the second at the end of it.  This negates the
+entire truth value of the sentence, not just part of it or the
+predicate.  Parts of the sentence can also be negated by surrounding
+them with bàa . . .ba.  In equational sentences ending with a
+stabilizer (like ‘I am a teacher’,nii maalàmii nèe’),
+the stabilizer stays at the end of the sentence (ba precedes it).  I
+found it difficult to construct ungrammatical examples for sentential
+negation, since putting the negative markers in a different place just
+negates a different part of the sentence.
+	
+
+Comments and Questions:
+Since the pronouns change form for object, subject and genitive positions, does that mean that Hausa has a case system?  I know in English the case system doesn’t change the form of nouns, but it does change pronouns in accusative case.
+
+If this doesn’t constitute a case system, then the section on case would be irrelevant for Hausa.
+
+I’m very confused about how verbs are formed in Hausa.  There are 8 verb grades, and I don’t have a clear understanding of what they indicate.  The grade tells something about the semantics of the verb, but it also seems to be just a convenient way of grouping together similar verb forms (or ending vowels).  I think I need to read the section on verbs again, but do you know any resources that might help?  

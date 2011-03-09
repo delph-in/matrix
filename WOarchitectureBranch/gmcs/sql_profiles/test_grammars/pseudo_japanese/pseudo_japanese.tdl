@@ -1,0 +1,146 @@
+comp-head-phrase := basic-head-1st-comp-phrase & head-final .
+
+subj-head-phrase := decl-head-subj-phrase & head-final .
+
+; Rules for bulding NPs.  Note that the Matrix uses SPR for
+;                the specifier of nouns and SUBJ for the subject (specifier) of verbs.
+
+head-spec-phrase := basic-head-spec-phrase & head-final .
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+;              introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "unspec_q_rel" ] !> ] .
+
+; This lexical rule adds the neg_r_rel to the verb's
+; 	RELS list.  It is instantiated by a spelling-changing
+; 	rule as specified in irules.tdl.
+
+neg-infl-lex-rule := cont-change-only-lex-rule & inflecting-lex-rule &
+  [ C-CONT [ HOOK [ XARG #xarg,
+                    LTOP #ltop,
+                    INDEX #ind ],
+             RELS <! event-relation &
+                     [ PRED "_neg_r_rel",
+                       LBL #ltop,
+                       ARG1 #harg ] !>,
+             HCONS <! qeq &
+                      [ HARG #harg,
+                        LARG #larg ] !> ],
+    SYNSEM.LKEYS #lkeys,
+    DTR lex-item &
+        [ SYNSEM [ LKEYS #lkeys,
+                   LOCAL [ CONT.HOOK [ XARG #xarg,
+                                       INDEX #ind,
+                                       LTOP #larg ],
+                           CAT.HEAD verb ] ] ] ] .
+
+;;; Coordination Strategy 1
+
+np1-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+np1-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+np1-bottom-coord-rule := conj-first-bottom-coord-rule & np-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+; We treat question particles as complementizers.
+; Here is the lexical type for complementizers.
+
+complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
+  [ SYNSEM.LOCAL.CAT [ HEAD comp &
+                            [ MOD < > ],
+                       VAL [ SPR < >,
+                             SUBJ < >,
+                             COMPS < #comp > ] ],
+    ARG-ST < #comp &
+             [ LOCAL.CAT [ HEAD verb,
+                           VAL [ SUBJ < >,
+                                 COMPS < > ] ] ] > ] .
+
+; Subtype for question particles. Constrains SF to ques.
+
+qpart-lex-item := complementizer-lex-item &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ] .
+
+;;; Lexical types
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det ] >,
+                           COMPS < >,
+                           SUBJ < >,
+                           SPEC < > ],
+    ARG-ST < #spr > ] .
+
+;;; Verbs
+
+head :+ [ AUX bool,
+    FORM form ] .
+
+form := avm .
+
+fin := form .
+
+inf := form .
+
+verb-lex := basic-verb-lex &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+                             SPEC < >,
+                             SUBJ < #subj > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST < #subj &
+             [ LOCAL [ CAT.VAL [ SPR < >,
+                                 COMPS < > ],
+                       CONT.HOOK.INDEX #xarg ] ], ... > ] .
+
+intransitive-verb-lex := verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST < [ LOCAL.CAT.HEAD adp &
+                              [ FORM p-nom ] ] > ] .
+
+transitive-verb-lex := verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD adp &
+                              [ FORM p-nom ] ], #comps &
+                                                [ LOCAL.CAT [ VAL [ SPR < >,
+                                                                    COMPS < > ],
+                                                              HEAD adp &
+                                                                   [ FORM p-acc ] ] ] > ] .
+
+;;; Case-marking adpositions
+;;; Case marking adpositions are constrained not to
+;;; be modifiers.
+
+case-marker-p-lex := basic-one-arg & raise-sem-lex-item &
+  [ SYNSEM.LOCAL.CAT [ HEAD adp &
+                            [ MOD < > ],
+                       VAL [ SPR < >,
+                             SUBJ < >,
+                             COMPS < #comps >,
+                             SPEC < > ] ],
+    ARG-ST < #comps &
+             [ LOCAL.CAT [ HEAD noun,
+                           VAL.SPR < > ] ] > ] .
+
+; FORM value for subject marking adpositions.
+
+p-nom := form .
+
+; FORM value for object marking adpositions.
+
+p-acc := form .
+
+;;; Determiners
+;;; SPEC is non-empty, and already specified by basic-determiner-lex.
+
+determiner-lex := basic-determiner-lex & basic-zero-arg &
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
+                           COMPS < >,
+                           SUBJ < > ] ] .
+
