@@ -2469,7 +2469,6 @@ def customize_verb_case():
           t_type + ' := \
           [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
         mylang.add(typedef)
-
         # constrain the case of the agent/subject
         if a_case:
           typedef = \
@@ -3051,9 +3050,12 @@ def customize_auxiliaries():
             '; tell that you had an argument composition auxiliary if it\n' + \
             '; wasn\'t appearing adjacent to the verb.'
           mylang.add_literal(comment)
-
-          typedef = auxtypename + ' := ' + supertype + '  & raise-sem-lex-item & \
+          if ch.get('vc-analysis') == 'basic': 
+            typedef = auxtypename + ' := ' + supertype + '  & raise-sem-lex-item & \
                [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
+          elif ch.get('vc-analysis') == 'aux-rule':
+            typedef = auxtypename + ' := ' + supertype + '  & raise-sem-lex-item & \
+               [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ] > ].'
           mylang.add(typedef)
 
         customize_users_auxtype(aux, userstypename, auxtypename)

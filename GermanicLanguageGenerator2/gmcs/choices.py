@@ -987,6 +987,7 @@ class ChoicesFile:
          self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
       features += [['dropped-arg', perm_notperm_string,'']]
 
+
  #elif self.get('subj-mark-drop') == 'subj-mark-drop-opt') and self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req': features += [['dropped-arg', perm_notperm_string, '']]
 
     for feature in self.get('feature'):

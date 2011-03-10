@@ -189,16 +189,26 @@ def create_lexical_rule_type(lrt, mylang):
     if not feat['name'] == 'worest' and not feat['name'] == 'edgerest': 
       new_lrt.features[feat['name']] = {'value': feat['value'],
                                       'head': feat.get('head')}
+# Attempt to remove 'worest'
     elif feat['name'] == 'worest':
+      feat['name'] = 'POSTHEAD'
       worest = feat['value']
       if worest == 'before':
-        mylang.add(get_name(lrt) + '''-lex-rule := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].''')
+        feat['value'] = '-'
+#        mylang.add(get_name(lrt) + '''-lex-rule := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].''')
       elif worest == 'after':
-        mylang.add(get_name(lrt) + '''-lex-rule := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].''')
+        feat['value'] = '+'
+#        mylang.add(get_name(lrt) + '''-lex-rule := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].''')
+
+      new_lrt.features[feat['name']] = {'value': feat['value'],
+                                      'head': feat.get('head')}
     else:
       edge = feat['value']
+      feat['name']
       if edge == 'obligatory':
-        mylang.add(get_name(lrt) + '''-lex-rule := [ SYNSEM.LOCAL.CAT.EDGE na-or-+ ].''')
+        feat['value'] = 'na-or-+'
+#        mylang.add(get_name(lrt) + '''-lex-rule := [ SYNSEM.LOCAL.CAT.EDGE na-or-+ ].''')
+
     new_lrt.lris = [lri.get('orth','') for lri in lrt.get('lri',[])]
   # if there exists a non-empty lri, give it an infl supertype
   if len(new_lrt.lris) > 0:
