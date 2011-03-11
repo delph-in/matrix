@@ -1,9 +1,3 @@
-from gmcs.utils import TDLencode
-from gmcs.lib import TDLHierarchy
-from gmcs.utils import get_name
-
-
-
 
 ######################################################################
 # customize_word_order()
