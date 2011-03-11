@@ -1,8 +1,0 @@
-This directory is used for storing gold-standard profiles created by
-[incr tsdb()] in the process of regression tests.  Nothing should be
-copied into this directory by hand.  Rather, it is populated by
-add-regression-test() (lisp) and update-gold-standard.  After invoking
-these commands, you will need to "cvs add" the resulting profiles or
-"cvs commit" (in the case of update-gold-standard).
-
-

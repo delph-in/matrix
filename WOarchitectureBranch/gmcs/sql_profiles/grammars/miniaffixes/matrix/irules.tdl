@@ -1,9 +1,0 @@
-neg-suffix :=
-%suffix (* -neg)
-neg-lex-rule.
-
-
-inf-suffix :=
-%suffix (* -nf)
-inf-lex-rule.
-
