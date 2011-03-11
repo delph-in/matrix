@@ -259,6 +259,130 @@ def interpret_verb_valence(valence):
   else:
     return 'iverb'
 
+
+
+def customize_verb_case(mylang, ch):
+  cm = ch.get('case-marking')
+  cases = case_names(ch)
+
+  # Pass through the list of case-marking patterns.  If a pattern is a
+  # lexical pattern (i.e. the third item in the list is False), then
+  # create and contrain the appropriate lexical type.  This type is a
+  # subtype of either transitive-verb-lex or intransitive-verb-lex.
+  #
+  # Note: I specify ARG-ST.FIRST... below instead of ARG-ST < [], ...>
+  # because TDLFile has trouble with merges and open-ended lists.
+  # Which should get fixed...  - sfd
+
+  for p in ch.patterns():
+    rule_pattern = p[2]
+
+    p = p[0].split(',')  # split off ',dirinv', if present
+    dir_inv = ''
+    if len(p) > 1 and p[1] == 'dirinv':
+      dir_inv = 'dir-inv-'
+
+    if not rule_pattern:
+      c = p[0].split('-')  # split 'agentcase-patientcase'
+      if p[0] == 'trans' or len(c) > 1:  # transitive
+        if p[0] == 'trans':
+          a_case = ''
+          o_case = ''
+          a_head = ch.case_head()
+          o_head = ch.case_head()
+        else:
+          a_case = canon_to_abbr(c[0], cases)
+          o_case = canon_to_abbr(c[1], cases)
+          a_head = ch.case_head(c[0])
+          o_head = ch.case_head(c[1])
+
+        if a_case and o_case:
+          t_type = dir_inv + a_case + '-' + o_case + '-transitive-verb-lex'
+        else:
+          t_type = dir_inv + 'transitive-verb-lex'
+
+        if t_type != 'transitive-verb-lex':
+          mylang.add(t_type + ' := transitive-verb-lex.')
+
+        # constrain the head of the agent/subject
+        typedef = \
+          t_type + ' := \
+          [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
+        mylang.add(typedef)
+
+        # constrain the case of the agent/subject
+        if a_case:
+          typedef = \
+            t_type + ' := \
+            [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
+          mylang.add(typedef)
+
+        # constrain CASE-MARKING of the agent/subject, if appropriate
+        if a_case and ch.has_mixed_case() and not ch.has_optadp_case(a_case):
+          typedef = \
+            t_type + ' := \
+            [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
+          mylang.add(typedef)
+
+        # constrain the head of the patient/object
+        typedef = \
+          t_type + ' := \
+          [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
+        mylang.add(typedef)
+
+        # constrain the case of the patient/object
+        if o_case:
+          typedef = \
+            t_type + ' := \
+            [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
+          mylang.add(typedef)
+
+        # constrain CASE-MARKING of the patient/object, if appropriate
+        if o_case and ch.has_mixed_case() and not ch.has_optadp_case(o_case):
+          typedef = \
+            t_type + ' := \
+            [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
+          mylang.add(typedef)
+      else:     # intransitive
+        if c[0] == 'intrans':
+          s_case = ''
+          s_head = ch.case_head()
+        else:
+          s_case = canon_to_abbr(c[0], cases)
+          s_head = ch.case_head(c[0])
+
+        if s_case:
+          i_type = dir_inv + s_case + '-intransitive-verb-lex'
+        else:
+          i_type = dir_inv + 'intransitive-verb-lex'
+
+        if i_type != 'intransitive-verb-lex':
+          mylang.add(i_type + ' := intransitive-verb-lex.')
+
+        # constrain the head of the subject
+        typedef = \
+          i_type + ' := \
+          [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + s_head + ' ].'
+        mylang.add(typedef)
+
+        # constrain the case of the subject
+        if s_case:
+          typedef = \
+            i_type + ' := \
+            [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + s_case + ' ].'
+          mylang.add(typedef)
+
+        # constrain CASE-MARKING of the subject, if appropriate
+        if s_case and ch.has_mixed_case() and not ch.has_optadp_case(s_case):
+          typedef = \
+            i_type + ' := \
+            [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
+          mylang.add(typedef)
+
+
+
+
+
 ##################
 ### VALIDATION ###
 ##################
@@ -304,3 +428,4 @@ def validate(choices, vr):
 def validate_one_case(ch, vr, pre):
   if not ch.get(pre + '-case-name'):
     vr.err(pre + '-case-name', 'You must specify a name for every case.')
+

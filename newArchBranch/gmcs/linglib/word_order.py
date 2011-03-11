@@ -1,4 +1,7 @@
 
+from gmcs.linglib.parameters import determine_vcluster
+from gmcs.linglib.parameters import has_auxiliaries_p
+
 ######################################################################
 # customize_word_order()
 #   Create the type definitions associated with the user's choices
@@ -774,36 +777,4 @@ def determine_consistent_order(wo,hc,ch):
    # return what we learned
 
   return {'adp': adp, 'aux': aux, 'qpart_order': qpart_order} #TODO: verify key
-
-
-def has_auxiliaries_p(ch):
-
-  return ch.get('has-aux') == 'yes'
-
-
-def determine_vcluster(auxcomp, auxorder, wo,ch):
-
-  vcluster = False
-
-  if auxcomp == 'vp':
-    if (wo == 'v-initial' and auxorder == 'before') or (wo == 'v-final' and auxorder == 'after'):
-      vcluster = True
-  elif auxcomp == 'v':
-    if wo == 'v-initial' or wo == 'v-final' or wo == 'osv' or wo == 'vso':
-      vcluster = True
-    if wo == 'sov' or wo == 'ovs':
-      if auxorder == 'before':
-        vcluster = True
-      elif wo == 'sov' or wo == 'ovs':
-        vcluster = False
-    if wo == 'vos' or wo == 'svo':
-      if auxorder == 'after':
-        vcluster = True
-      elif wo == 'vos' or wo == 'svo':
-        vcluster = False
-    if wo == 'free' and ch.get('multiple-aux') == 'yes':
-      vcluster = True
-  if not has_auxiliaries_p(ch):
-    vcluster = False
-  return vcluster
 
