@@ -1,0 +1,95 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
+;;; These label definitions are used by the LKB to put
+;;; labels on the nodes of the trees it displays.  They
+;;; are solely for the convenience of the grammar developer
+;;; and do not carry theoretical significance.  Accordingly,
+;;; though they are provided as part of the Matrix distribution,
+;;; users should customize them without hesitation.
+
+;;; NB: This is one tdl file in which order matters.
+;;; The LKB will choose the first label it encounters (in the
+;;; order below) which is consistent with the node it is
+;;; labeling.  If two labels are consistent with each other,
+;;; the more specific one must appear first in this list, or
+;;; it will never get used.
+
+n-label := label & 
+	   [ SYNSEM.LOCAL.CAT [ HEAD noun,
+				VAL.SPR < [ ] > ],
+	     LABEL-NAME "N" ].
+
+np-label := label & 
+	    [ SYNSEM.LOCAL.CAT [ HEAD noun,
+				 VAL.SPR < > ],
+	      LABEL-NAME "NP" ].
+
+v-label := label & 
+	   [ SYNSEM.LOCAL.CAT [ HEAD verb,
+				VAL.COMPS < [ ], ... > ],
+	     LABEL-NAME "V" ].
+
+vp-label := label & 
+	    [ SYNSEM.LOCAL.CAT [ HEAD verb,
+				 VAL [ COMPS < >,
+				       SUBJ < [ ] > ]],
+	      LABEL-NAME "VP" ].
+
+s-label := label &
+	   [ SYNSEM.LOCAL.CAT [ HEAD verb,
+				VAL [ COMPS < >,
+				      SUBJ < > ] ],
+	     LABEL-NAME "S"].
+
+p-label := label & 
+	   [ SYNSEM.LOCAL.CAT [ HEAD adp,
+				VAL.COMPS < [ ], ... > ],
+	     LABEL-NAME "P" ].
+
+pp-label := label & 
+	    [ SYNSEM.LOCAL.CAT [ HEAD adp,
+				 VAL.COMPS < > ],
+	      LABEL-NAME "PP" ].
+
+c-label := label &
+	   [ SYNSEM.LOCAL.CAT [ HEAD comp,
+				VAL.COMPS < [ ], ... > ],
+	     LABEL-NAME "C" ].
+
+cp-label := label &
+	    [ SYNSEM.LOCAL.CAT [ HEAD comp,
+				 VAL.COMPS < > ],
+	      LABEL-NAME "CP"].
+
+det-label := label &
+	     [ SYNSEM.LOCAL.CAT.HEAD det,
+	       LABEL-NAME "D"].
+
+adv-label := label & 
+	     [ SYNSEM.LOCAL.CAT.HEAD adv,
+	       LABEL-NAME "ADV" ].
+
+adj-label := label & 
+	   [ SYNSEM.LOCAL.CAT.HEAD adj,
+	     LABEL-NAME "ADJ" ].
+
+conj-label := label & 
+	      [ SYNSEM.LOCAL.CAT.HEAD conj,
+		LABEL-NAME "CONJ" ].
+
+num-label := label & 
+	     [ SYNSEM.LOCAL.CAT [ HEAD num,
+				  VAL.COMPS < [ ], ... > ],
+	       LABEL-NAME "NUM" ].
+
+numbar-label := label &
+	     [ SYNSEM.LOCAL.CAT [ HEAD num,
+				  VAL [ COMPS < >,
+					SPR < [ ] > ]],
+	       LABEL-NAME "NUM-BAR" ].
+
+nump-label := label &
+	     [ SYNSEM.LOCAL.CAT [ HEAD num,
+				  VAL [ COMPS < >,
+					SPR < > ]],
+	       LABEL-NAME "NUMP" ].

@@ -1,0 +1,51 @@
+koira+Pl+Nom nukkua+3p+Pl
+Hund-ar sofa.
+
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+Hund-ar elta bíl-a.
+
+minA+Sg+Nom metsAstAA+1p+Sg sinA+Sg+Acc
+Þeir elta þá.
+
+tuo+Pl+Nom koira+Pl+Nom nukkua+3p+Pl
+Þessir hund-ar sofa.
+
+koira+Pl+Nom syOdA+3p+Pl
+Hund-ar éta.
+
+minA+Sg+Nom voida+1p+Sg syOdA+Inf lasi+Sg+Part
+Ég get borða-ð gler.
+
+hAn+Sg+Nom ei sattua+3p+Sg minA+Sg+Part
+það meiða-ar mig ekki.
+
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+Hund-ar-nir elta bíl-a.
+
+minA+Sg+Nom ajatella+1p+Sg ettA sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+Ég held að þú vita-ar að hund-ar elta bíl-a.
+
+minA+Sg+Nom kysyA+1p+Sg jos sinA+Sg+Nom tietAA+2p+Sg ettA koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+Ég spyr hvort þú vita-ar að hund-ar elta bíl-a.
+
+kissa+Pl+Nom ja koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc
+Kett-ir og hund-ar elta bíl-a.
+
+koira+Pl+Nom metsAstAA+3p+Pl auto+Pl+Acc ja kissa+Pl+Nom metsAstAA+3p+Pl koira+Pl+Acc
+Hund-ar elta bíl-a og kett-ir elta hund-a.
+
+kissa+Pl+Nom metsAstAA+3p+Pl koira+Pl+Acc ja nukkua+3p+Pl
+Kett-ir elta hund-a og sofa.
+
+metsAstAA+3p+Pl+Ques kissa+Pl+Nom koira+Pl+Acc
+elta kett-ir hund-a?
+
+metsAstAA koira+Sg+Acc
+Elta hund-inn!
+
+nAlkAinen+Pl+Nom koira+Pl+Nom syOdA+3p+Pl
+Svang-ir hund-ar éta.
+
+nAlkAinen+Pl+Nom koira+Pl+Nom syOdA+3p+Pl nopeasti
+Svang-ir hund-ar éta hratt.
+

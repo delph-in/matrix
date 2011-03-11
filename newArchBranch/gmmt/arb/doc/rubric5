@@ -1,0 +1,75 @@
+------------------------------------------------------
+Comments
+
+number := *top*.
+sg := number.
+du := number.   
+pl := number.
+
+
+The directions specified a hierarchy which groups du and pl
+together as non-sg.  This is very useful in translation when we
+go between languages with a du and those without.  It would
+also be useful in Arabic, as I assume that the so-called 1pl form
+actually covers dual cases as well (that is, it can be used to
+refer to two people, including the speaker).  In that case,
+you would want its NUM value to be non-sg, not pl.
+
+You've got some extra ambiguity coming in because your adjectives
+can attach to NPs as well as N's --- attachment at NP will
+give broken semantics, so take advantage of the MOD..SPR feature
+to make them attach only at N'.
+
+ First, I started simply by adding case to the verb-lex entries.
+ Since the basic word orders are SVO and VSO, as I posted
+ in the forums, I should be able to place case on the
+ ARG-ST without worrying (too much) about reordering at
+ this point.
+
+I hope you will get the dependency between word order and verb
+inflection (was it?) working, though.
+
+
+ yins.arifu  lwaladu
+ y-ins.arifu ?al-walad-u
+ 3MSG-leaves the-boy-NOM
+ "The boy leaves"
+
+Thank you for including these.
+
+  ** (...looks like I'm not immune to the violent tendencies
+      of grammar-writing linguists...)
+
+The violence verbs tend to be so nicely transitive.  "Kiss" is
+often a good substitute, though, or "see".
+
++nj :+ [ CASE case,
+          FNT finiteness ] .
+
+I hope that in Lab 6 you are replacing FNT with COG-ST.  For
+adjectives, you'll want to have the lexical rules constrain the
+COG-ST value of the thing inside their MOD.  (And you can do the
+same thing for CASE, rather than give the adjectives a CASE value
+of their own.)
+
+Btw, "finiteness" is a term that's applied to verbs for the
+distinction between "finite" and "infinitival".  "definiteness"
+is what you meant, I think.
+
+** Also, with regards to my rules, I currently have the case
+   ending being applied as the innermost rule, and as a
+   infl-add-only-no-ccont-ltol-rule. In order to get it to
+   apply case/finiteness to adjectives, I created a supertype
+   +nj_lex that both common-noun-lex and adjective-lex
+   inherit from. I use this supertype to constraint the
+   DTR of these case rules so they don't spin in generation.
+
+That seems to work well enough.  
+
+   I have the definiteness prefix/suffixes being applied
+   as an infl-ltow-rule to make sure they are the last rules
+   that apply. This is probably not the preferred way to
+   do it, but I had to do some triage to get everything
+   working.
+
+No, this sounds right to me.

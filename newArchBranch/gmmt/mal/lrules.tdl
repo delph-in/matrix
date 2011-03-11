@@ -1,0 +1,10 @@
+
+sg-noun := sg-noun-lex-rule.
+
+neut-noun := neut-noun-lex-rule.
+
+anim-nom-noun := anim-nom-noun-lex-rule.
+
+; nom-noun := nom-noun-lex-rule.
+
+imp-verb := imp-verb-rule.

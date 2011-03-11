@@ -1,0 +1,60 @@
+version=17
+
+section=general
+language=subj-aux-inv-q
+archive=no
+
+section=word-order
+word-order=svo
+has-dets=no
+has-aux=yes
+aux-comp-order=before
+aux-comp=vp
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+q-inv=on
+q-inv-verb=aux
+
+section=arg-opt
+
+section=lexicon
+  noun1_det=imp
+    noun1_stem1_orth=n1
+    noun1_stem1_pred=_n1_n_rel
+  noun2_det=imp
+    noun2_stem1_orth=n2
+    noun2_stem1_pred=_n2_n_rel
+  verb1_valence=intrans
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+  aux1_name=aux
+  aux1_sem=no-pred
+  aux1_subj=np
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=finite
+    aux1_stem1_orth=aux
+
+section=test-sentences

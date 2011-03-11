@@ -1,0 +1,46 @@
+iverb1-subj-3s-fem
+n1 iverb1-subj-3s-fem
+n2 iverb1-subj-3s-fem
+iverb2-subj-3s-fem
+n1 iverb2-subj-3s-fem
+n2 iverb2-subj-3s-fem
+n1 tverb1-subj-3s-fem n2
+n1 tverb2-subj-3s-fem n2
+tverb1-subj-3s-fem n1
+tverb2-subj-3s-fem n1
+tverb1-subj-3s-fem n2
+tverb2-subj-3s-fem n2
+*n1 iverb1-subj-3s-fem n2
+*n2 iverb1-subj-3s-fem n1
+*n1 iverb2-subj-3s-fem n2
+*iverb1-subj-3s-fem n1
+*iverb2-subj-3s-fem n2
+*n1 tverb1-subj-3s-fem
+*n1 tverb2-subj-3s-fem
+*n2 tverb1-subj-3s-fem
+*n2 tverb2-subj-3s-fem
+*tverb1-subj-3s-fem
+*tverb2-subj-3s-fem
+*iverb1
+*n1 iverb1
+*n2 iverb1
+*iverb2
+*n1 iverb2
+*n2 iverb2
+*n1 tverb1 n2
+*n1 tverb2 n2
+*tverb1 n1
+*tverb2 n1
+*tverb1 n2
+*tverb2 n2
+*n1 iverb1 n2
+*n2 iverb1 n1
+*n1 iverb2 n2
+*iverb1 n1
+*iverb2 n2
+*n1 tverb1
+*n1 tverb2
+*n2 tverb1
+*n2 tverb2
+*tverb1
+*tverb2

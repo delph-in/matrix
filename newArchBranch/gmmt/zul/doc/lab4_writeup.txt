@@ -1,0 +1,83 @@
+Kelly  O'Hara
+Ling 567
+HW #4
+28 January, 2007
+
+
+INITIAL SETUP
+---------------------
+
+Word order:  Zulu is an SVO language.  Per our discussion in class, I marked that Zulu does have determiners.  The demonstratives can appear either before or after the noun, but I picked `before the noun' for now.  I will have to fix this later.
+
+Sentential negation: I marked that Zulu is negated by a prefix on the main verb.  This is a bit simplified, because the future marker also changes (and in other tenses the final vowel also changes).  The imperative is negated by means of an auxiliary verb, rather than an adverb.  As far as I can tell, the auxiliary is inherently negative.  I decided to leave the 'adverb' box unchecked, and deal with imperative negation later.
+
+Coordination: Strategy one is nouns are marked in a polysyndeton pattern by an affix spelled na that comes before the coordinand.  As I mentioned in homework 3, I don't know if this extends past two coordinated arguments, but it works for now. 
+Strategy two is VPs marked in a polysyndeton pattern by an affix spelled e that comes after the coordinand.  We talked about this in class, and I agree that we can probably treat this as homophonous to the subjunctive, but actually a coordination marker.
+
+Matrix yes/no questions:  In addition to intonation change, Zulu also has a sentence-final particle (`na') that acts as a question marker.
+
+I entered two nouns `umuntwana' (child) and `inyoka' (snake), an intransitive verb `uzodlala' (`play') and a transitive verb `uzobona' (`see').  These initial verbs are in future tense and have the class-1 subject concord, to match `child', and no object concord.  I put in two test sentences `umuntwana uzodlala' (`the child will play') and `umuntwana uzobona inyoka' (`the child will see the snake').
+
+
+FIRST PARSE
+-------------
+I was able to load my grammar and successfully parse the sample sentences I created. I feel like this is largely because I rigged it to work, by pre-selecting the subject and hard-coding its subject concord on the verb. Still, my sample sentences parsed, and with the expected structures.
+
+
+TEST SUITE
+-----------
+After I got the test suite loaded, I did my first test run. Nothing parsed, not even the sample sentences mentioned above.  At this point I discovered that I had consistently misspelled `child'.  It should be `umntwana', rather than `umuntwana'. I wasn't sure where in all the grammar files I would need to look to fix this. I thought maybe I could just change the lexicon file, but that doesn't fix the sentences. My solution was to just generate a new grammar with the correct spellings.  I reran the test suite and this time it successfully parsed 6 sentences. 4 were were valid sentences, and one was overgenerated, and one was parsed because an error I made in my test suite. The overgenerated sentence was `*inyoka uzobona umntwana' (`the snake saw the child'). As I mentioned before, I rigged my initial grammar to parse sentences with `umntwana' as the subject. The subject concords for `inyoka' and `umntwana' are different, but my current grammar has no way of distinguishing this. I still have a long way to go obviously, but it was still fairly satisfying.
+
+Adding grammar was a bit difficult. I started off by just filling in all the nouns that I used in the test suite. However I wasn't sure what approach to take with the verbs. Because I don't have any agreement rules yet, the only way to get more sentences to parse is to put in verbs with the agreement markers hard-coded. But, again I don't have any agreement rules and so my grammar can't tell the bad argument/concord pairings apart from the good ones. This results in massive overgeneration. My solution was to not try to add everything. I added the verb that gets negated in the negation section, and the positive imperative verbs that appear in the imperative section. However, neither of these provided much of a gain.  There was only one grammatical negative sentence to parse, and my grammar still doesn't allow for sentences without subjects, so only one of the imperatives parsed.  To make it worse, that one sentence was also mislabeled as ungrammatical, so my coverage/overgeneration numbers are a bit skewed.
+
+Before adding words
+---------------------
+Coverage: 4
+Overgeneration: 2 (one due to my error)
+
+After adding words
+------------------
+Coverage: 5
+Overgeneration 3 (two due to my error)
+
+So once I get those errors in my test suite fixed, I will be at 7 correct parses and 1 overgenerated parse.  
+
+
+WHAT TO DO NEXT?  
+----------------- 
+
+The number one absolute biggest thing I need to do is get agreement
+working.  I did not try to do anything with it in this assignment,
+because it felt like overkill to hard-code every combination of
+subject and object concords just to take them out later.  It seems
+like a better plan to get that working before I do anything else. I
+think it will be easiest to not worry about the internal morphology of
+the nouns and their class prefixes. I will just create a feature for
+noun class and so label the nouns with their type. The verbal
+agreement markers are crucial, however.  I need to encode all the
+subject and object concords, and create rules that explain how to
+append them to the verbs.  This will also entail encoding the tense
+marker, and rules for its placement, because the subject and object
+concords appear on either side of it.  That is, the verb form with
+both subject and object concords looks like SC-TM-OC-R-a where TM is
+tense marker and R is verb root.  If we can only have strict
+concatenation of morphemes, I'll need to be able to apply them in
+order.
+
+I need agreement working in order to get everything else working.  I know that we are supposed to try not to have test examples that illustrate more than one feature, but the agreement is so pervasive in Zulu that it would be impossible to avoid it.  Once I have that working I'll be able to focus on the other issues, but for now, even if I put a bunch of effort into, say, getting coordination working, the test sentences still wouldn't parse. 
+
+Something that shouldn't be too much work but will get me a long way is simply getting the bugs out of my test suite itself.  I'm not going to get very far if my test sentences are incorrect or mislabeled.  I corrected some of the errors I found as I worked, but didn't reload the corrected test suite.  I assume I just need to rerun the perl script and recopy over the item file.
+
+As for simplifying my test sentences, I may or may do that.  For example, a handful of the test sentences that I took from one of my books include locative expressions.  These are accomplished by modifying the location noun, e.g. :
+isikole `school'
+esikoleni `to school'
+In order to get my test sentences for imbedded clauses and coordination working, I would need to get this working as well.  It seems like it would be easier to come up with some other verb besides `go', that wouldn't require me to handle this construction; on the other hand, there are only a couple of them, so I could just hard-code them rather than worrying about the internal structure.  Not a very satisfying solution, but an option for this limited time frame.  
+
+In general, though, I feel pretty good about my test sentences.  I don't feel like they are overly complex.  While I was constructing it, I was frustrated at the complexity that had to be introduced to cover all the phenomena, but I can't escape that.  Perhaps I will feel differently once I get agreement working and can actually start thinking about what else I need to accomplish.
+
+
+
+
+
+
+

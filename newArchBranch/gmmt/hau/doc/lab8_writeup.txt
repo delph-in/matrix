@@ -1,0 +1,41 @@
+With my rough translation skills, "I can eat glass. It doesn't hurt
+me." becomes "ìn-iyà cî gìlâs. bàa yaa-cùùtaa ni ba" in Hausa
+(lit. 1sg.SUBJUNCT can eat.INF glass. NEG 3m.COMP hurt me.dobj NEG).
+When I looked it up in an online list of "I can eat glass" phrases, I
+found something that I think translates as "I can chew glass and I
+continue to be in health".
+
+Interestingly, in Hausa mass nouns like glass (and air, water, etc.) are singular and have gender. 
+
+Setential negation in Hausa is done by adding both a sentence-initial particle "bàa" and a sentence final particle "ba". Examples of this strategy are the sentences "bàa tàa-zoo ba" (NEG 3f.COMP came NEG, "It is not the case that she came") and "bàa yaaròo ya-kaamàa `bàraawòo ba" (NEG boy 3m.PRET catch thief NEG, "It is not the case that the boy caught a thief").  Verbal negation is a similar strategy, but the particles change form based on the tense and the neg particles only surround the VP, not including any attached adverbs.
+
+Using the ternary rule in the matrix, I made a phrase-rule that required the left negative particle, a sentence (HEAD verb, with SUBJ < >, etc.), and the right negative particle as daughters.  I made a neg-sentence-part-lex type and had the negative particles inherit from that.
+  
+For sentential negation, I'm getting the right strings to parse, with the right meanings, but I'm also getting a lot of overgeneration. I explain more below, but it's mostly interaction with question markers and other optional words that is adding extra generated sentences. 
+
+The equivalent of "can" in Hausa is the aspectual verb "iyà" (to be able to). Aspectual verbs take a PAC marker in the subjunctive case, and they take either an infinitive or a verbal noun as a complement.  I'm not covering verbal nouns, so I stuck to infinitive forms.  Infinitives in Hausa are verb bases with a null PAC.  Multiple verbs can be stacked up following an aspectual verb, but they all must without a PAC (since they take their inflection from the aspectual verb).  An example of "can" is "yaarinyàa tà-iyà dafà miyàa", the girl is able to cook soup (lit. girl 3f.SUBJ is able cook.inf soup"). An example of both negation and "can" would be "bàa tà-iyà dafà miyàa ba" , "It is not the case that the girl can cook soup".
+
+I implemented "can" by following the strategy of treating it like an auxiliary verb.  I made an aux-verb type inheriting from verb-lex and trans-first-arg-raising-lex-item-1.  I constrained the auxiliary to be TENSE subjunct, to allow it only to attach PAC prefixes in the subjunctive tense.  To get the infinitive verb form (no PAC prefix) following the auxiliary, I wrote an infinitive verb lex rule (null-PAC-verb-lex-rule) to constrain verbs to have a null PAC.  I made it FORM inf, and added MC - so that it couldn't participate as the main verb in regular sentences. 
+
+I can get sentences with "can" to parse, but it overgenerates wildly
+(I get an *edge limit exhausted* warning).  Earlier, I was getting a
+long list of parses, and I noticed that I was generating sentences
+with a PAC in every possible person. I also noticed that my
+sentence-final negative marker is being stuck on the front of the
+auxiliary-verb sentence (see *"ba ìn-iyà cî gìlâs", NEG I can eat
+glass).  And lastly, because my imperative rule is broken, it allows
+"iyà" to appear with a null PAC.
+
+
+
+
+
+The biggest problme with my grammar is that it's overgenerating. Since sentences in Hausa can be either interrogative or declarative (depending on intonation), the SF is prop-or-ques.  This allows the generation of sentences with question markers before or after.  I couldn't find any examples of negative questions in my reference grammar, so I have no idea whether it is grammatical to add a question marker to a negated sentence.  Also, since pronouns with a definiteness suffix are grammatical (though, I think they aren't common), this suffix also appears in generation.  When I parse "It can't hurt me" and then generate, I get both definiteness markers attaching to "me", since 1-person-singular is unspecified for gender.  As I noted before, the sentence-final negative marker (R-neg-sentence-part) seems to mysteriously show up in generation.
+
+My imperative rule is accepting any verb and leaving it without a PAC prefix.  This makes ungrammatical sentences parse, such as "zoo"("come", infinitive). Other features that I haven't gotten working yet. These are case-marking adposition (indirect object marker "wa"), null complementizers, and some semantic cases involving complementizers (I think you pointed one case out in your notes you sent along with my lab 7 grade). 
+
+If it's possible, I'd like to get copula (existential) sentences working, as well as "there is . ." sentences.  This might be too complicated.  I'd also like write rules for possessive suffixes.
+
+
+
+
