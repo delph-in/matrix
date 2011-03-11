@@ -478,7 +478,7 @@ def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
   cur_output_flags = output_flags.union(set(mn.flags['out'].keys()))
   for sub_mn in mn.children().values():
     to_copy[sub_mn.key] = write_mn_flags(mylang, lextdl, sub_mn,
-                                         cur_output_flags, all_flags)
+                                         cur_output_flags, all_flags, choices)
   copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
   return all_flags.difference(cur_output_flags).difference(copied_flags)
 
