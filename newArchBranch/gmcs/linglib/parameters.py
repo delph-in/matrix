@@ -22,12 +22,9 @@ def determine_vcluster(auxcomp, auxorder, wo, ch):
         vcluster = False
     if wo == 'free' and ch.get('multiple-aux') == 'yes':
       vcluster = True
-  if not has_auxiliaries_p(ch):
+  if not ch.get('has-aux') == 'yes':
     vcluster = False
   return vcluster
 
 
-def has_auxiliaries_p(ch):
-
-  return ch.get('has-aux') == 'yes'
 

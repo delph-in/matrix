@@ -1,6 +1,5 @@
 
 from gmcs.linglib.parameters import determine_vcluster
-from gmcs.linglib.parameters import has_auxiliaries_p
 
 ######################################################################
 # customize_word_order()
@@ -117,7 +116,7 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 
   auxcomp = ch.get('aux-comp')
   if wo == 'vso' or wo == 'osv':
-    if has_auxiliaries_p(ch) and auxcomp == 'vp':
+    if ch.get('has-aux') == 'yes' and auxcomp == 'vp':
       mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
     else:
       mylang.add(hc + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
@@ -182,7 +181,7 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 # ASF 2008-11-18, if free wo lgge has aux and aux precedes verb,
 # the enforced attachment must apply in the other direction.
 
-    if has_auxiliaries_p(ch) and  ch.get('aux-comp-order') == 'before':
+    if ch.get('has-aux') == 'yes' and  ch.get('aux-comp-order') == 'before':
       mylang.add('head-final-head-nexus := head-final & \
                 [ SYNSEM.ATTACH lmod,\
                   HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
@@ -336,7 +335,7 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
   wo = ch.get('word-order')
   auxorder = ch.get('aux-comp-order')
 
-  if has_auxiliaries_p(ch):
+  if ch.get('has-aux') == 'yes':
     vcluster = determine_vcluster(auxcomp, auxorder, wo, ch)
   else:
     vcluster = False
@@ -740,7 +739,7 @@ def determine_consistent_order(wo,hc,ch):
   # ASF 2008-12-07 for non-harmonic order and v (not vp) comps,
   # we need a different procedure (see if auxcomp...)
 
-  if has_auxiliaries_p(ch):
+  if ch.get('has-aux') == 'yes':
     auxcomp = ch.get('aux-comp')
     if wo == 'free':
       if ch.get('aux-comp-order') == 'before':

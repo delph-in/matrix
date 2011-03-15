@@ -1,7 +1,5 @@
 
 
-from gmcs.linglib.parameters import has_auxiliaries_p
-
 ######################################################################
 # customize_yesno_questions()
 #   Create the type definitions associated with the user's choices
@@ -59,7 +57,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
     # and copy the value up.  Only checking qinvverb if we know
     # we have auxiliaries.
 
-    if has_auxiliaries_p(ch):
+    if ch.get('has-aux') == 'yes':
       mylang.add('''
                  subj-v-inv-lrule :=
                     [ SYNSEM.LOCAL.CAT.HEAD.FORM #form,
@@ -161,23 +159,5 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
       mylang.add('qpart-lex-item := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].')
 
 
-# ERB 2009-07-01 To remove:
-#   if ch.get('q-infl'):
-
-#     mylang.add('ques-infl-lex-rule := add-only-no-ccont-rule & inflecting-lex-rule &\
-#     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques,\
-#     DTR lex-item & [ SYNSEM.LOCAL.CAT.HEAD verb ]].',
-#                'Constrains SF to ques. Instantiated by a verbal affix.')
-
-#     if ch.get('q-infl-type') == 'aux':
-#       mylang.add('ques-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
-#                  'This rule applies only to auxiliaries.')
-
-#     if ch.get('q-infl-type') == 'main' and has_auxiliaries_p():
-#       mylang.add('ques-infl-lex-rule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].',
-#                  'This rule applies only to main verbs.')
-
-
-#     add_irule('ques-infl-lr','ques-infl-lex-rule',ch.get('ques-aff'),ch.get('ques-aff-orth'))
 
 

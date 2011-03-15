@@ -34,7 +34,6 @@ from gmcs.linglib import negation
 from gmcs.linglib import coordination
 from gmcs.linglib import yes_no_questions
 
-from gmcs.linglib.parameters import has_auxiliaries_p
 
 ######################################################################
 # globals
@@ -195,7 +194,7 @@ def customize_roots():
                         COORD - ] ].'
   roots.add(typedef, comment)
 
-  if has_auxiliaries_p(ch) or 'noaux-fin-nf' in ch:
+  if ch.get('has-aux') == 'yes' or 'noaux-fin-nf' in ch:
     roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
 
   # ERB 2006-10-05 I predict a bug here:  If we a language with auxiliaries

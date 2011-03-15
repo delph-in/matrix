@@ -1,6 +1,5 @@
 from gmcs.lib import TDLHierarchy
 
-from gmcs.linglib.parameters import has_auxiliaries_p
 
 ######################################################################
 # customize_tense()
@@ -140,7 +139,7 @@ def init_form_hierarchy(ch, hierarchies):
   """
   hier = TDLHierarchy('form')
 
-  if has_auxiliaries_p(ch) or 'noaux-fin-nf' in ch:
+  if ch.get('has-aux') == 'yes' or 'noaux-fin-nf' in ch:
 
     hier.add('nonfinite', 'form')
     hier.add('finite', 'form')
