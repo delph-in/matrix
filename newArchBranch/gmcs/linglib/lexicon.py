@@ -129,28 +129,3 @@ def get_lt_name(key, choices):
     return '-'.join([name, lex_st.rsplit('-lex',1)[0]])
 
 
-######################################################################
-# customize_lexicon()
-#   Create the type definitions associated with the user's test
-#   lexicon.
-
-
-
-def customize_lexicon(mylang, ch, lexicon, hierarchies):
-
-  mylang.set_section('nounlex')
-  lexical_items.customize_nouns(mylang, ch, lexicon, hierarchies)
-
-  mylang.set_section('otherlex')
-  to_cfv = case.customize_case_adpositions(mylang, lexicon, ch)
-  features.process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=lexicon)
-
-  mylang.set_section('verblex')
-  lexical_items.customize_verbs(mylang, ch, lexicon, hierarchies)
-
-  mylang.set_section('auxlex')
-  lexical_items.customize_auxiliaries(mylang, ch, lexicon, hierarchies)
-
-  mylang.set_section('otherlex')
-  lexical_items.customize_determiners(mylang, ch, lexicon, hierarchies)
-  lexical_items.customize_misc_lex(ch, lexicon)
