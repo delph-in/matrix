@@ -1,0 +1,73 @@
+Kelly O'Hara
+Ling 567
+Lab 9 Writeup
+5 March, 2007
+
+I installed the matrix patch, even though I don't have negation as an adverb.  I did also fix the negation inflection as you instructed in my lab 8 feedback. Your advice was to "make sure that your neg-infl-lex-rule identifies its C-CONT.HOOK.INDEX with the DTR's HOOK.INDEX rather than with the ARG0 in the _neg_r_rel" which was straightforward to implement. Here's a sample sentence for checking the semantics:
+
+in-ja a-i-zo-gijim-a
+C9-dog NEG-SC9-run-FV
+"The dog will not run."
+
+On the subject of negation, I broke down the semantics of "can't", also per the lab 8 feedback. Previously, I had had a parent type, ability-lex-rule, that contained most of the information except the PRED value.  I then had two subtypes, pos-ability-lex-rule and neg-ability-lex-rule, that each introduced their own PRED value, and were each irules with their own inflections. The PRED value for the negative rule was "can't", and you suggested that I split it out into _not_r_rel and _can_v_rel.  Because this makes the RELS and HCONS lists different sizes between the positive and negative rules, I had to make the ability lex rule just have type inheritance information, while all of the syntactic and semantic information was put into the two sub-types. Originally the parent type held the type information for the DTR value, but this eventually changed when I made the final vowel rules, and got split into the subtypes as well.  As for linking things up in the new negative rule, the instructions you provided in the lab 8 feedback were clear and this didn't cause any problems.
+
+ngi-nga-dl-a in-gilazi
+1SG-CAN-eat-FV C9-glass
+"I can eat glass"
+
+ngi-nge-dl-e in-gilazi
+1SG-NEG.CAN-eat-NEG.FV C9-glass
+"I can't eat glass."
+
+See that final vowel change?  I'll discuss that in a minute.
+
+My other form of negation, negative imperatives, was also causing me
+problems with the semantics. My first attempt at fixing it was by a
+lexical rule. I turned imperative-verb-lex-rule and its subtypes into
+lexeme-to-lexeme rules, and then created to lexeme-to-word rules, one
+for positive imperatives, and one for negative imperatives.  The
+positive rule didn't do anything but set the non-auxiliary imperatives
+as INFLECTED +.  The negative rule, over time, contained several
+misguided attempts at fixing the semantics, none of which
+worked. While I was writing this, I realized that I probably didn't
+need those rules anymore, so I took them out, and turned the
+imperative-verb-lex-rules back into lexeme-to-word rules. At any rate,
+it eventually occurred to me that maybe the problem was in the
+auxiliary verb itself. That led me to editing the aux-verb-lex type,
+as I showed you after class, and we eventually corrected to its
+current state.  It is still technically broken, but I didn't have time
+to do the changes for this lab.
+
+I also got the final vowel change working.  For this I created two new lexical rules: default-fv-lex-rule and neg-fv-lex-rule (because the change only applies to negatives). I ignored the FV change in the negative present indicative, because I am ignoring all of the quirks of the present indicative (which are many).  This means that the only thing that utilizes the neg-fv-lex-rule is the negative ability rule (see sample sentence above). So the rule ordering works like this:
+1) verb stem
+2) the object concord, if appropriate
+3) negative ability affix, if appropriate
+4) final vowel
+5) imperative, if appropriate -> ltow, stops here.
+6) positive ability, if appropriate
+7) tense
+8) subject concord -> ltow, stop.
+
+It took me a lot of false starts and staring at zulu.tdl and drawing little diagrams before I figured out that ordering. I had to make some new dtr rules to get things feeding into each other properly, but everything seems to be working just fine, both parsing and generating.
+
+I think that was everything from lab 8 feedback. I also noticed was that simple declarative sentences were generating output that didn't have subject concords on the verbs.  I ignored the lab instructions and didn't write down what the problem was or how I fixed it, but I know that was the first thing I did.  At any rate, it's working now.
+
+I also had the problem with adjectives turning up as "predsort" in my MRSs. As we discussed in class, that had to do with the matrix patch, and was an easy fix.
+
+As for transfering, it's almost 23:00 and I haven't gotten anything to translate. I think that Ryan and I both thought it was problems with our grammars, and so we have been concentrating on getting that fixed first. The problem in fact seems to be that my NCL isn't being filtered properly. I wish I'd thought to ask about whether the NCL should still be showing up in the MRS sooner than I did.  Now it's late and I don't have any interesting example sentences, because nothing parses.
+
+I did add the transfer rule for demonstratives.  After I added it, I noticed that the type was proximal+dem_a_rel. I guessed that this was supposed to be distal+dem_a_rel, seeing as that is the type with subtypes, so I changed it. Can't test it yet, unfortunately.
+
+
+COVERAGE / OVERGENERATION
+Lab: 8
+Total items: 193
+Coverage: 77 items / 88.5%
+Overgeneration: 1 item / 0.9%
+
+Lab :9
+Total items: 193
+Coverage: 78 items / 89.7%
+Overgeneration: 1 item / 0.9%
+
+The overgeneration is caused by the a sentence in the test suite that has no tense marker.  When I wrote the test suite, I marked it as ungrammatical, because everything was future tense, and therefore had an overt tense marker.  Since I added present tense, which is a zero marker, the "ungrammatical" example I created now parses just fine.  Also, my test suite coverage only increased by one between the two labs because I mostly worked on semantics, or getting the final vowel working, which looks the same to my test suite.  I only had one positive example for negative ability, which was the only new thing I got working.

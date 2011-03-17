@@ -1,0 +1,76 @@
+;;; Nouns
+
+uliyija := noun1-noun-lex &
+  [ STEM < "uliyija" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sun_n_rel" ].
+
+karalu := noun2-noun-lex &
+  [ STEM < "karalu" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_ground_n_rel" ].
+
+wunga := noun2-noun-lex &
+  [ STEM < "wunga" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_wind_n_rel" ].
+
+marluka := noun3-noun-lex &
+  [ STEM < "marluka" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_oldman_n_rel" ].
+
+ngaya := 1s-pronoun-noun-lex &
+  [ STEM < "ngaya" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+mindiyili := 1dl-incl-pronoun-noun-lex &
+  [ STEM < "mindiyili" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+nginyiyli := 1dl-excl-pronoun-noun-lex &
+  [ STEM < "nginyiyli" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+ngurrawala := 1pl-incl-pronoun-noun-lex &
+  [ STEM < "ngurrawala" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+ngirrika := 1plu-excl-noun-lex &
+  [ STEM < "ngirrika" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+nyama := 2s-pronoun-noun-lex &
+  [ STEM < "nyama" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+kunyiyli := 2dl-noun-lex &
+  [ STEM < "kunyiyli" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_n_rel" ].
+
+kurrawala := 2pl-pronoun-noun-lex &
+  [ STEM < "kurrawala" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pron_rel" ].
+
+;;; Verbs
+
+ngunja := verb1-verb-lex &
+  [ STEM < "ngunja" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_burn_v_rel" ].
+
+ngiji := verb1-verb-lex &
+  [ STEM < "ngiji" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ].
+
+manyan := verb2-verb-lex &
+  [ STEM < "manyan" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sleep_v_rel" ].
+
+;;; Auxiliaries
+
+ju := light-verb1-aux-lex &
+  [ STEM < "ju" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_do_v_rel" ].
+
+jani := qpart-lex-item &
+  [ STEM < "jani" > ].
+
+angkula := neg-adv-lex &
+  [ STEM < "angkula" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_neg_r_rel" ].

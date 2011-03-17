@@ -1,0 +1,89 @@
+----------------------------------------------
+Comments
+
+When I load your grammar, there are four warnings in the
+LKB top window (about redefined types).  Be sure to watch
+that window for error messages.
+
+	I had to change around my noun declension heirarcy a little
+ to make them compatable with the determiner inflections. Mainly,
+ I needed to add a type specific for just gender and number
+ without class information or const/infl information. I also made
+ the noun declensions lexeme-to-lexeme inflections to add the 
+ determiner suffix. This created problems since, the nouns can
+ appear with out the determiner suffix.
+
+This seems to be another argument for distinguishing morphosyntax
+from morphophonology/morphoorthography. The declension classes don't
+have any import beyond the choice of appropriate suffixes, right?
+In an ideal system, I believe that the lkb wouldn't know anything
+about this, and an external system would take care of selecting
+the right series of suffixes. The lkb would still need to know about
+the case/gender etc. information, of course.
+
+
+	I solved this by adding a rule that made these lexemes any
+ num+case lexeme to word. This rule also added the discourse
+ information of [ COG-ST type-id ] since when a noun appears
+ without the determiner suffix it gets an indefinite interpretation.
+
+This sounds like the best solution to me.
+
+	For the argument optionality, I'm not exactly sure how it
+ works in Icelandic. As far as I can tell, I think it has the
+ object drop for certain verbs, similar to English, because I
+ know it doesn't fit the other options. However, I was unable to
+ find a concrete example of this. So I wrote a rule for this, but
+ was unable to get the LKB to load the grammar correctly for this .
+ The rule is in the icelandic.tdl file, but commented out so that
+ the grammar loads.
+
+The problematic thing wasn't a rule but a lexical type (opt-trans-verb-lex).
+There were two things wrong with it:  A missing comma after [ CASE acc ],
+and the fact that ARG-ST was spelled ARG-S (true for transitive verb
+lex as well --- if you don't fix this, your MRSs for sentences with
+transitive verbs are likely to be broken, since the linking to semantic
+arguments is through the ARG-ST ... but if you have ARG-S instead,
+the COMPS and SUBJ aren't linked to ARG-ST, just ARG-S).  I debugged
+the former problem by noting the first error message in the LKB Top window,
+which gave a position number to go to (goto-char, in emacs).
+
+Once you instantiate the optional complement rule, you'll find that
+it's happily applying to your regular transitive verbs, until you
+say [OPT -] on the complements of those.  It's also worth noting that
+your transitive-verb-lex and opt-trans-verb-lex share a lot of constraints
+which could be moved to a supertype.
+
+
+	For adjectives, I had to add another set of lexical rules.
+ The adjectives have to agree with the nouns they modify in case,
+ number and gender. This was added to the lexical rules by putting
+ constraints on the MOD valuse for each rule. There is also a
+ distinction in Icelandic between weak declension and strong
+ declension of adjectives. This is a hard distincition to implement
+ so I have just added in the weak declension for the moment, which
+ will get more coverage for my test suite.
+
+What is the difference between the two for Icelandic?
+
+ note: I have the baseline tsdb in the tar file, but when I tried
+ to run it on the new grammar, I was only able to come up with
+ a null test suite, so I have not included that in the submission.
+
+That's because you need to update your tsdb/skeletons/Index.lisp file
+in order to tell tsdb++ where to find the skeleton. 
+
+
+ ;helst := adverb-lex &
+ ; [ STEM "helst" >,
+ ;  SYNSEM.LKEYS.KEYREL.PRED "_gladly_r_rel" ].
+
+This is missing the < after STEM.
+
+Where can the adverbs appear? How will you constrain them to show
+up only in the right spots?
+
+Please post questions to EPost (and apply the 10 minute rule!).  As
+you can see, there's quite a delay in my getting to the grading, so
+it's better to ask the questions as they come up (even if it's midnight
+Sunday night), as I'll get to them much sooner on EPost.

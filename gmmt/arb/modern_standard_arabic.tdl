@@ -1,0 +1,532 @@
+;; ------========= IMPERATIVES =========----------
+
+imperative-lex-rule := const-ltow-rule &
+  [ SYNSEM.LOCAL.CAT [ HEAD.FORM imp,
+		       MC +],
+    DTR uninfl_verb ] .
+
+;		       VAL [ SUBJ <>,
+;			     COMPS #comps ]],
+
+
+;; -------======= DEMONSTRATIVES ===========-----------
+
+demonstrative_a_rel := predsort .
+proximal+dem_a_rel := demonstrative_a_rel .
+distal+dem_a_rel := demonstrative_a_rel .
+remote+dem_a_rel := distal+dem_a_rel .
+hearer+dem_a_rel := distal+dem_a_rel .
+
+
+dem_proximal_lex_rule := infl-ltow-rule &
+  [ SYNSEM.LKEYS.KEYREL.PRED proximal+dem_a_rel,
+    DTR demon_adjective].
+
+dem_distal_lex_rule := infl-ltow-rule &
+  [ SYNSEM.LKEYS.KEYREL.PRED distal+dem_a_rel,
+    DTR demon_adjective].
+
+;; ------=== PRONOUN INCORPORATION ======------------
+
+uninfl_verb := avm .
+can_incorp := uninfl_verb .
+dont_incorp := uninfl_verb .
+
+infl_verb := avm .
+
+
+;; I realized I could repeatedly incorporate pronouns in the order
+;; that they appear on the Daughter's COMPS list. Spinning is
+;; automatically blocked because the COMPS list (as I've defined
+;; it on the verb types) can't be infinite, so this rule stops
+;; once the daughter can't unify the empty list (cons) with [REST #rest].
+
+;; LAB 8 -- Added [SUBJ #subj] agreement because it looks like #subj
+;; was getting cleared out before.
+
+
+obj_incorp_lex_rule := infl-val-change-only-ltol-rule & can_incorp &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj,
+			   COMPS #rest,
+			   SPR #spr
+			   ],			   
+    DTR can_incorp & [ SYNSEM.LOCAL.CAT.VAL [ COMPS.REST #rest ,
+					      SPR #spr,
+					      SUBJ #subj
+					       ] ]].
+
+3msg_obj_incorp_lex_rule := obj_incorp_lex_rule &
+  [ DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG
+      [ GEND masc, NUM sg, PER third ]] .
+
+3fsg_obj_incorp_lex_rule := obj_incorp_lex_rule &
+  [ DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG
+      [ GEND fem, NUM sg, PER third ]] .
+
+2msg_obj_incorp_lex_rule := obj_incorp_lex_rule &
+  [ DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG
+      [ GEND masc, NUM sg, PER second ]] .
+
+2fsg_obj_incorp_lex_rule := obj_incorp_lex_rule &
+  [ DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG
+      [ GEND fem, NUM sg, PER second ]] .
+
+1sg_obj_incorp_lex_rule := obj_incorp_lex_rule &
+  [ DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG
+      [ NUM sg, PER first ]] .
+
+
+
+
+;; -------========= SOME AGREEMENT ======-------------
+
+;; DEFLECTED AGREEMENT RULES 
+
+defl-subj-agreement-lex-rule := infl-val-change-only-ltol-rule & infl_verb &
+  [ SYNSEM.LOCAL.CAT [ HEAD.FORM fin,
+		       VAL [ SUBJ < >,
+			     SPR <>,
+			     COMPS [ FIRST #subj,
+				     REST #comps ] ] ],				     
+    DTR uninfl_verb & [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST #subj,
+					       COMPS #comps] ] ].
+
+3m_defl_verb_lex_rule := defl-subj-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
+			   COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG 
+				   [ GEND masc, PER third] ], ... > ] ] .
+
+3f_defl_verb_lex_rule := defl-subj-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
+			   COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG 
+				   [ GEND fem, PER third] ], ... > ] ] .
+
+2m_defl_verb_lex_rule := defl-subj-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
+			   COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG 
+				   [ GEND masc, PER second] ], ... > ] ] .
+
+2f_defl_verb_lex_rule := defl-subj-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
+			   COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG 
+				   [ GEND fem, PER second] ], ... > ] ] .
+
+1_defl_verb_lex_rule := defl-subj-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
+			   COMPS < [ LOCAL.CONT.HOOK.INDEX.PNG 
+				   [ PER first ] ], ... > ] ] .
+
+
+
+inflect_defl_rule := const-ltow-rule &
+  [ DTR defl-subj-agreement-lex-rule ] .
+
+
+;; Lexical rules for agreement on verbs. Add the inflection
+;; along with the PNG distinction.
+
+subj-agreement-lex-rule := infl-ltow-rule & infl_verb &
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM fin,
+    DTR uninfl_verb] .
+
+3msg_verb_lex_rule := subj-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG 
+				   [ GEND masc, NUM sg, PER third] ] > ] .
+
+3fsg_verb_lex_rule := subj-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG 
+                                   [ GEND fem,  NUM sg, PER third] ] > ] .
+
+2msg_verb_lex_rule := subj-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG
+     [ GEND masc,  NUM sg, PER second] ] > ] .
+
+
+1sg_verb_lex_rule := subj-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG 
+                                  [ NUM sg, PER first] ] > ].
+
+1pl_verb_lex_rule := subj-agreement-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG 
+                                  [ NUM pl, PER first] ] > ].
+
+
+
+; --- We need two rules for adding circumfixes; so let's write one that
+;     adds the first part of the circumfix, then the next can only take
+;     input that ran through the first one.
+
+circumfix_rule := infl-add-only-ltol-rule & 
+[ SYNSEM.LOCAL.CAT.HEAD.FORM fin,		  
+ DTR uninfl_verb, INFLECTED -] .
+
+3mpl_verb_lex_rule_1 := circumfix_rule .
+3mpl_verb_lex_rule_2 := infl-ltow-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG 
+                                   [ GEND masc, NUM pl, PER third] ] >,
+    DTR 3mpl_verb_lex_rule_1 ] .
+
+3fpl_verb_lex_rule_1 := circumfix_rule .
+3fpl_verb_lex_rule_2 := infl-ltow-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG 
+                                   [ GEND fem, NUM pl, PER third] ] >,
+    DTR 3fpl_verb_lex_rule_1 ] .
+
+
+2mpl_verb_lex_rule_1 := circumfix_rule .
+2mpl_verb_lex_rule_2 := infl-ltow-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG 
+                                   [ GEND masc, NUM pl, PER second] ] >,
+    DTR 2mpl_verb_lex_rule_1 ] .
+
+2fpl_verb_lex_rule_1 := circumfix_rule .
+2fpl_verb_lex_rule_2 := infl-ltow-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG 
+                                   [ GEND fem, NUM pl, PER second] ] >,
+    DTR 2fpl_verb_lex_rule_1 ] .
+
+
+2fsg_verb_lex_rule_1 := circumfix_rule .
+2fsg_verb_lex_rule_2 := infl-ltow-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX.PNG 
+                                   [ GEND fem, NUM sg, PER second] ] >,
+    DTR 2fsg_verb_lex_rule_1 ] .
+
+
+
+;; -------========= LEXICAL RULES ==========---------
+
+;; Lexical rules that add definiteness and case.
+
+nom_noun_lex_rule := infl-add-only-no-ccont-ltol-rule & cased_rule &
+  [ SYNSEM.LOCAL.CAT.HEAD [ CASE nom],	
+    DTR noun-lex ] .
+
+nom_adj_lex_rule := infl-add-only-no-ccont-ltol-rule & cased_rule &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE nom] >,	
+    DTR adjective-lex ] .
+	 
+acc_noun_lex_rule := infl-add-only-no-ccont-ltol-rule & cased_rule &
+  [ SYNSEM.LOCAL.CAT.HEAD [ CASE acc],
+    DTR noun-lex ] .
+
+acc_adj_lex_rule := infl-add-only-no-ccont-ltol-rule & cased_rule &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.CASE acc] >,	
+    DTR adjective-lex ] .
+
+;; Lexical rules for definite/indefiniteness.
+
+; WOW, this was a lot of work to get working... thanks to Wendy for
+; having the same problem, though!
+
+fnt_lex_rule := infl-ltow-rule & [ DTR cased_rule ] .
+
+def_noun_lex_rule :=  fnt_lex_rule & 
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.COG-ST uniq-or-more ],
+    DTR.SYNSEM.LOCAL.CAT.HEAD noun  ] .
+
+def_adj_lex_rule :=  fnt_lex_rule & 
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [LOCAL [ CONT.HOOK.INDEX.COG-ST uniq-or-more ]]>,
+    DTR.SYNSEM.LOCAL.CAT.HEAD adj  ] .
+
+
+indef_noun_lex_rule := fnt_lex_rule & 
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.COG-ST type-id ],
+    DTR cased_rule &
+      [SYNSEM.LOCAL.CAT.HEAD noun ] ].
+
+indef_adj_lex_rule :=  fnt_lex_rule & 
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [LOCAL [ CONT.HOOK.INDEX.COG-ST type-id ]]>,
+    DTR cased_rule & 
+     [ SYNSEM.LOCAL.CAT.HEAD adj ] ] .
+
+
+
+cased_rule := avm .
+
+
+
+
+;; -------======= BACK TO THE BORING STUFF... phrases ========------------
+
+embedded-phrase := decl-head-subj-phrase & head-final &
+  [ SYNSEM.LOCAL.CAT [ HEAD.FORM fin,
+		       MC -] ,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC -] .
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ] .
+
+
+head-subj-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM fin,
+    SYNSEM.LOCAL.CAT.MC + ] .
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+;              introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ] .
+
+; Type for negative adverbs.
+; LAB 8 - ADDED [ VAL.SUBJ cons] constraint to force VP attachment.
+
+neg-adv-lex := basic-scopal-adverb-lex & 
+  [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
+                             COMPS < >,
+                             SUBJ < >],
+                       HEAD.MOD < [ LOCAL.CAT [ HEAD verb,
+						VAL.SUBJ cons ] ] >,
+                       POSTHEAD - ] ] .
+
+; This grammar includes head-modifier rules.  To keep
+; out extraneous parses, constrain the value of MOD on
+; various subtypes of head.  This may need to be loosened later.
+; This constraint says that only adverbs, adjectives,
+; and adpositions can be modifiers.
+
++nvcdmo :+ [ MOD < > ] .
+
+;;; Coordination Strategy 1
+
+vp1-top-coord-rule := basic-vp-top-coord-rule & omni-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+vp1-mid-coord-rule := basic-vp-mid-coord-rule & omni-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+vp1-bottom-coord-rule := omni-conj-first-bottom-coord-rule & vp-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+vp1-left-coord-rule := omni-conj-first-left-coord-rule & vp-bottom-coord-phrase .
+
+;;; Coordination Strategy 1
+
+s1-top-coord-rule := basic-s-top-coord-rule & omni-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+s1-mid-coord-rule := basic-s-mid-coord-rule & omni-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+s1-bottom-coord-rule := omni-conj-first-bottom-coord-rule & s-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ] .
+
+s1-left-coord-rule := omni-conj-first-left-coord-rule & s-bottom-coord-phrase .
+
+; We treat question particles as complementizers.
+; Here is the lexical type for complementizers.
+
+complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
+  [ SYNSEM.LOCAL [ CAT [ HEAD comp &
+                            [ MOD < > ],
+		       VAL [ SPR < >,
+			     SUBJ < >,
+			     COMPS < #comp > ] ] ],
+    ARG-ST < #comp &
+	     [ LOCAL [ CAT [ HEAD verb,
+			   VAL [ SPR <>,
+				 SUBJ < >,
+				 COMPS < > ] ] ] ] > ] .
+
+embed-comp-lex := complementizer-lex-item &
+  [ SYNSEM.LOCAL.CAT.MC -,		  
+    ARG-ST.FIRST.LOCAL.CAT.MC - ] .
+
+interr-comp-lex := embed-comp-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ] .
+
+declar-comp-lex := embed-comp-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ] .
+
+; Subtype for question particles. Constrains SF to ques.
+
+qpart-lex-item := complementizer-lex-item &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,
+		   CAT [ MC +,
+			 VAL.COMPS.FIRST.LOCAL.CAT.MC + ]]].
+
+;;; Lexical types
+
+;;; ADJECTIVES
+
+
+posthead-adj := adjective-lex &
+   [ SYNSEM.LOCAL.CAT.POSTHEAD + ] .
+
+prehead-adj := adjective-lex &
+   [ SYNSEM.LOCAL.CAT.POSTHEAD - ] .
+
+demon_adjective := adjective-lex & 
+   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL [ CONT.HOOK.INDEX.COG-ST activ-or-more ] ] > ] .
+
+;;; LAB 6- added case
+
+adjective-lex := basic-int-mod-adj-lex &  noun-or-adj-lex &
+   [ SYNSEM [ LOCAL [ CAT [ HEAD [ MOD < [ LOCAL [ CAT [ HEAD noun,
+						       VAL.SPR < > ]]] > ],
+			    VAL [ SPR < >,
+				  SUBJ < >,
+				  COMPS < >,
+				  SPEC < > ] ]]]].
+			   
+
+;; --------- ======== ADVERB ENTRY ==============---------------
+
+adverb-lex := basic-adverb-lex & intersective-mod-lex &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL.CAT.HEAD verb ] >,
+			   VAL [ SPR < >,
+				 SUBJ < >,
+				 COMPS < >,
+				 SPEC < > ],
+			   POSTHEAD + ] ] ] ].
+
+noun-or-adj-lex := avm .
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & noun-or-adj-lex & no-hcons-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det,
+                                   OPT + ] >,
+                           COMPS < >,
+                           SUBJ < >,
+                           SPEC < > ],
+    ARG-ST < #spr > ] .
+
+;; ------======= ADDED COMMON NOUNS & PRONOUNS =======-------
+
+common-noun-lex := noun-lex & 
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG [ PER third]] ,
+    INFLECTED - ].
+
+
+pronoun-lex := noun-lex &
+   [ SYNSEM [ LOCAL.CAT [VAL.SPR < [ OPT + ] >,
+			 HEAD.CASE nom],
+	      LKEYS.KEYREL.PRED "_pronoun_n_rel" ],
+     INFLECTED + ].
+
+
+; add case and definiteness to nouns ...AND Adjectives!
+noun :+ [ CASE case ] .
+
+;; ---=============  VERBS ========---------------
+
+head :+ [ AUX bool,
+    FORM form ] .
+
+form := avm .
+
+fin := form .
+
+
+inf := form .
+
+imp := form .
+
+verb-lex := basic-verb-lex & uninfl_verb &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+			     SPEC < >,
+			     SUBJ < #subj >],
+		   CONT.HOOK.XARG #xarg ],
+    ARG-ST < #subj &
+             [ LOCAL [ CAT [VAL [ SPR < >,
+                                 COMPS < > ],
+			    HEAD noun &
+				[CASE nom] ],
+                       CONT.HOOK.INDEX #xarg ],
+	       OPT-CS activ-or-more ], ... >,
+    INFLECTED - ] .
+
+;; ---- LAB 8: MODAL VERBS
+
+modal-verb-lex := verb-lex & trans-first-arg-raising-lex-item-1 & dont_incorp &
+   [ SYNSEM.LOCAL.CAT [ HEAD [ AUX + ],
+			VAL [ COMPS < #verb > ],
+			MC + ],
+     ARG-ST < [ ], #verb &
+	      [ LOCAL.CAT [ HEAD verb & [ AUX - ],
+			    VAL [ COMPS null ] ] ] > ] .				  
+			
+embedding-verb-lex := verb-lex & clausal-second-arg-trans-lex-item & dont_incorp &
+  [ SYNSEM.LOCAL [ CAT.VAL.COMPS < [LOCAL [ CAT [ HEAD comp,
+						  MC - ],
+					    CONT.HOOK.INDEX.SF #sf ] ] >,
+		   CONT.HOOK.INDEX.SF #sf ]] .
+
+ques-only-embedding-verb-lex := embedding-verb-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ] .
+
+prop-only-embedding-verb-lex := embedding-verb-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ] .
+
+intransitive-verb-lex := verb-lex & intransitive-lex-item & dont_incorp &
+  [ SYNSEM.LOCAL.CAT [ VAL.COMPS < >,
+		       HEAD.AUX - ],
+    ARG-ST < [ LOCAL.CAT.HEAD noun ] > ] .
+
+
+
+ditransitive-verb-lex := verb-lex & ditransitive-lex-item & can_incorp &
+  [ SYNSEM.LOCAL.CAT [ VAL.COMPS < #comps1, #comps2 >,
+		       HEAD.AUX - ],
+    ARG-ST < [ LOCAL.CAT.HEAD noun ], #comps1 &
+	                              [ LOCAL.CAT [ VAL [ SPR < >,
+							  COMPS < > ],
+						    HEAD noun & [CASE acc]] ],
+	                              #comps2 &
+	                              [ LOCAL.CAT [ VAL [ SPR < >,
+							  COMPS < > ],
+						    HEAD noun & [CASE acc]] ] > ] .
+ 
+
+transitive-verb-lex := verb-lex & transitive-lex-item & can_incorp &
+  [ SYNSEM.LOCAL.CAT [ VAL.COMPS < #comps >,
+		       HEAD.AUX - ],
+    ARG-ST < [ LOCAL.CAT.HEAD noun ], #comps &
+                                      [ LOCAL.CAT [ VAL [ SPR < >,
+                                                          COMPS < > ],
+						    HEAD noun & [CASE acc]] ] > ] .
+
+
+;; -------====== NEW STUFF ==========----------
+
+finiteness := *top* .
+
+def := finiteness .
+indef := finiteness .
+
+;; -------======== CASE ========------------
+
+case := *top* .
+
+nom := case .
+gen := case .
+acc := case .
+
+;; -------========= PNG ===========----------
+png :+ [ PER person,
+         NUM number,
+         GEND gender ].
+
+gender := *top*.
+masc := gender.
+fem := gender.
+
+person := *top*.
+first := person.
+second := person.
+third := person.
+
+number := *top*.
+sg := number.
+du := number.   
+pl := number.
+
+
+present := tense.
+future := tense.
+past := tense.
+
+
+

@@ -1,0 +1,14 @@
+;;; Hey, emacs(1), this is -*- Mode: TDL; Coding: utf-8; -*- got it?
+
+; ERB 2007-05-21: Zulu has overt pronouns, so no need for this.
+; Except that I don't see any overt 3rd person pronouns, so 
+; that might be a problem.
+
+pronoun-delete := pronoun-delete-mtr.
+
+make-harm := make-harm-mtr.
+make-pursuit := make-pursuit-mtr.
+
+eat-food := eat-food-mtr.
+make-thought := make-thought-mtr.
+

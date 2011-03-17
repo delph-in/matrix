@@ -1,0 +1,39 @@
+
+
+It absolutely makes more sense to have the lexical entries
+for nouns not specify and case and then have lexical rules
+which derive all the cases from that underlying form (including
+nominative).
+
+You are specifying the case of subjects multiple times (and
+redundantly).  Your verbal inflection rules do it, and so do
+itr-verb-lex, nom-part-tr-verb-lex, and nom-acc-tr-verb-lex.
+You should either do it on the lexical rules or on the 
+lexeme types.  If the latter, the constraint could probably
+be stated just once, on a new supertype called, say, verb-lex.
+
+The lab didn't ask to make sure you can still generate,
+but it's always a good idea.  When I try with your first
+example, I get the "probable circular lexical rule" error.
+I believe we discussed this on EPost.  You should fix it
+before you turn in the next lab.
+
+Your subject-verb agreement could have been tested much
+more thoroughly in your testsuite.  Also, I couldn't find
+the source of your testsuite -- the file that you imported
+the items from.  I was hoping to see something there with
+glosses of the items (now I know what to put in the directions
+for next week/next year :-).
+
+Your pl_noun-lex-rule does not inherit from a specific enough
+supertype.  local-change-only leaves most of the LOCAL
+value of the mother underspecified.  Or rather, I should say
+that given that you're working with such an underspecified supertype,
+you need to make sure to copy up all the information that is
+not either changed or otherwise being copied up.  You can
+simplify this somewhat by having neither sg nor pl be the base
+form, and deriving both (then you're only adding information,
+and you can use the `add-only' lex rule type).
+
+You'll also need to work out the ordering of your lex rules,
+and make the last one be lexeme-to-word.

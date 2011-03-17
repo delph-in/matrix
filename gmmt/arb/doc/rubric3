@@ -1,0 +1,115 @@
+-----------------------------------------------------------------
+
+Comments:
+
+ Though ma: is a particle, its distribution is actually
+
+... actually what?
+
+Is there any meaning difference between la: and lam/lan?  It
+sounds like you have a preverbal adverb strategy for negation.
+
+ In addition, /wa/ can be used to coordinate nouns within a matrix
+ clause. When this is done, agreement on the verb is shown not with
+ dual inflection, as might be expected, but rather with number/gender
+ that matches that of the first conjunct.
+
+Cool :-)  The first conjunct would be the one closest to the verb,
+wouldn't it?  Do you see number/gender agreement anywhere else in 
+the language (e.g., with adjectives), and if so what happens with
+coordinated N's?  What about coordinations involving conjuncts with
+different person values?
+
+ Finally, if the subjects of the coordinated phrases are coreferential,
+ /wa/ may be left out entirely.
+
+This sounds like apposition, not coordination.
+
+ or X=Y, X!=Y meanings
+
+What are X=Y X!=Y meanings?  This seems to be terminology from 
+the online page, but you should try to translate into categories
+we have been using and/or provide a description of what that means.
+(From a quick look at the page, it looks like they're talking about
+sentences with non-verbal predicates.  The = and != metaphor is
+probably influenced by the fact that English uses the copula (forms
+of 'be') in these predicates, even though Arabic does not always do so.)
+
+ There is another form called the jussive, however, that is used in
+ negative imperatives, and in other ways that I find only oblique
+ references to, such as an apparant "permissive" construction with a
+ preposition 'li'
+
+	li		t-aktub
+	pcpl	2SG-write
+	'let him/her write'	
+
+Example with a negative imperative?
+
+ Regardless of the form of the modal element, the subordinated verb
+ within a modal is formed using the subjunctive,
+
+Even when the modality is expressed by an adverb?
+Also, what is the word order with the auxiliaries.  Where do they
+appear with respect to the subordinated verb?
+
+ In finding a good transitive example, I also found a good example
+ showcasing the VSO/SVO asymmetry that I referenced in my lab 1
+ writeup.
+
+ To recap, when the order of elements is SVO, the verb and subject
+ agree in both number and gender, but when the order is VSO, the
+ agreement is only in gender; the number of the verb is always
+ singular.
+
+This is cool.  It would have been helpful to paste the example into
+your write up, so I could see what you are talking about.  Are there
+constraints on when you get SVO versus VSO order?  Do you end up with
+different forms of the verb?  Is the gender agreement handled by the
+same affixes in both cases, or is it a different set of affixes (where
+the number and gender information are expressed in single portmanteau
+forms)?
+
+ I was unable to find any specific examples for embedded declarative or
+ interrogative clauses, though there were some offhand references to
+ them in my grammar. The references seemed to indicate that such
+ embedded clauses would be treated similarly to modals, but there was
+ not enough information for me to build examples
+
+We will be covering this in the class --- I'm pretty sure Arabic has this
+phenomenon.  Have you found a native speaker yet?  You can probably get
+at these by asking for translations of sentences with "think", "know" and
+"ask" with clausal complements.
+
+Btw, have you decided which variety of Arabic you're focusing on? MSA?
+The spoken variety from any particular region?
+
+Consider adding some ungrammatical examples for coordination of NPs
+with extra "wa" markers and/or the "wa" in the wrong place.  (or no
+"wa").
+
+Are overt subjects with imperatives grammatical?
+
+No ungrammatical examples for modals?
+
+You should add some examples for case showing that the transitive verbs
+require NOM ACC, not ACC NOM or ACC GEN or NOM NOM or ACC ACC...
+
+ Source: {b}
+ Vetted: {s}
+ Judgement: {g}
+ Phenomena: {case, agreement}
+ qara?-a		?al-?awlad-u	d-dars-a
+ read-3SG.MASC	the-boys-NOM	the-lesson-ACC
+ 'The boys read the lesson'
+
+If this is grammatical, there's something wrong with your
+glossing conventions, I think.  That is, it seems that -a
+just counts as 3rd person masculine when the subject follows
+the verb.  Even if it's the same affix as the 3SG.MASC form
+in SVO sentences, I think the gloss should reflect what's happening
+in this sentence.
+
+Also, you say this series is illustrating case and agreement,
+but I don't see what it has to do with case.  Maybe word order
+and agreement would be a better combination of phenomena tags.

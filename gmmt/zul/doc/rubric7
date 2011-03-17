@@ -1,0 +1,75 @@
+-------------------------------------------------------
+Comments
+
+ I feel like I wasn't as thorough as I could have been, mostly because
+ I spent a long time catching up with lab 6.  I know I said I would
+ write up those changes here, but I don't have time now. However, I put
+ a lot of effort into it, and am pleased with the results, so I will
+ send you a writeup of those changes separately.
+
+Please do :-)
+
+ In the first sentence, the complementizer `ukuthi' precedes the clause
+ it's attached to. In the second sentence, the question particle `na'
+ follows the clause.  To solve this problem, I created two subtypes of
+ complementizer-lex-item: qpart-lex-item and emb-comp-lex-item. The
+ question particle is the first type, other complementizers are the
+ second.  I then made two subtypes of comp-head-phrase:
+ qpart-head-phrase and embedded-comp-head-phrase, each of which
+ constrain their DTR to be of the corresponding lexical
+ type. qpart-head-phrase is head-final and MC +;
+ embedded-comp-head-phrase is head-initial and MC -. Problem solved!
+
+You could probably get away with just adding the qpart-head-phrase
+and letting your existing head-comp phrase take the complementizer
+daughter.  Clever to use MC to constrain things though.  Your
+qpart-head-phrase could say that the daughter is MC + and HEAD comp,
+and then not need to mention the lexical type directly (generally
+not a good idea).
+
+ All of this is further complicated by the fact that imperatives can
+ appear with an overt subject:
+
+ u-Sipho gijim-a
+ C1a-Sipho run-fv
+ `Sipho, run!'
+
+Are you sure this is a subject, and not a vocative?
+
+ Imperatives agree with the number of their subject, which is marked by
+ a suffix on the verb. To accomplish this I just made two subtypes of
+ imperative-verb-lex-rule, one constrained to be SG and the other
+ constrained to be PL. Notice that these do not have tense markers or
+ any other agreement marking. To get this working, I had to make my
+ imperative rule a lexeme-to-word rule, because the only other
+ lexeme-to-word rule I had was the subject concord rule. This bypasses
+ tense marking and object concords as well.  The problem is that
+ imperatives can in fact take an object concord:
+
+ yi-shay-a in-ja
+ OC9-hit-FV C9-dog
+ `Hit the dog!'
+
+Why not have the imperatives rule apply *after* the object marking
+rule?  That is, they can take the same sort of DTR as the tense rules
+can, but they're ltow, so their 'outputs' can be 'inputs' to the
+tense and subj concord rules?
+
+; embedded clauses are always propositions.
+clause-comp-verb-lex := clausal-second-arg-trans-lex-item & verb-lex &
+			takes-oc &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL [CAT [HEAD comp,
+					       VAL  [ SPR < >,
+						      SUBJ < >,
+						      COMPS < >,
+						      SPEC < > ],
+					       MC - ], 
+					  CONT.HOOK.INDEX.SF prop ] ] > ] .
+
+
+Your semantics for your embedded clauses are slightly broken, because
+this type doesn't relate the COMPS element to anything on the
+ARG-ST.  The linking type (clausal-second-arg-trans-lex-item)
+states the relationship between the semantic roles and the ARG-ST
+positions, but if your subtype doesn't connect to ARG-ST, the chain
+is broken.

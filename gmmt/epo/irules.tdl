@@ -1,0 +1,69 @@
+; File for spelling preserving lexical rules, i.e., instances
+; of (subtypes of) infl-ltol-rule and infl-ltow-rule.
+
+; Every rule in this file should have a %suffix line.  Those
+; that don't belong in lrules.tdl.
+
+overt-noun-lri :=
+	%suffix (* o)
+	overt-noun-lex-rule.
+
+non-sg-noun-lri :=
+	%suffix (* j)
+	non-sg-noun-lex-rule.
+
+acc-noun-lri :=
+	%suffix (* n)
+	acc-noun-lex-rule.
+
+non-sg-det-lri :=
+	%suffix (* j)
+	non-sg-det-lex-rule.
+
+acc-det-lri :=
+	%suffix (* n)
+	acc-det-lex-rule.
+
+overt-adj-lri :=
+	%suffix (* a)
+	overt-adj-lex-rule.
+
+non-sg-adj-lri :=
+	%suffix (* j)
+	non-sg-adj-lex-rule.
+
+acc-adj-lri :=
+	%suffix (* n)
+	acc-adj-lex-rule.
+
+overt-adv-lri :=
+	%suffix (* e)
+	overt-adv-lex-rule.
+
+acc-adv-lri :=
+	%suffix (* n)
+	acc-adv-lex-rule.
+
+inf-verb-lri :=
+	%suffix (* i)
+	inf-verb-lex-rule.
+
+imp-verb-lri :=
+	%suffix (* u)
+	imp-verb-lex-rule.
+
+;cond-verb-lri :=
+;	%suffix (* us)
+;	cond-verb-lex-rule.
+
+past-verb-lri :=
+	%suffix (* is)
+	past-verb-lex-rule.
+
+pres-verb-lri :=
+	%suffix (* as)
+	pres-verb-lex-rule.
+
+fut-verb-lri :=
+	%suffix (* os)
+	fut-verb-lex-rule.

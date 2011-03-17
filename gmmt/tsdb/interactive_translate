@@ -1,0 +1,34 @@
+To do interactive translation with LOGON machinery:
+
+1. Start two emacses
+2. In each emacs, do M-x logon.  That will start lkb and tsdb++
+3. Arrange the windows so you know which is which
+4. In source-side emacs common-lisp buffer:
+
+(mmt-create-clients)
+(tsdb :cpu :<lg> :task :parse :file t)   ;;; <lg> is three-letter lg code
+
+5. In source-side lkb: Load > Grammar "identity"
+6. In target-side lkb, load target language grammar
+7. In target-side lkb, Generate > Start Generator Server
+8. In target-side lkb, Generate > Index
+
+9. In source-side emacs common-lisp buffer:
+
+(mt:parse-interactively "<sentence>")
+
+10. In Parse window that pops up, click "transfer" button.
+11. In Transfer output window(s) that pop up, click "generate" button
+
+-----------------------------------------------------------------------
+If you make adjustments to source-language grammar (incl vpm), 
+then redo:
+
+(tsdb :cpu :<lg> :task :parse :file t)   ;;; <lg> is three-letter lg code
+
+
+-----------------------------------------------------------------------
+
+To make this work, EB first has to add all languages to mmt-langauges,
+and add translate grid to each language
+also update setup.lisp?

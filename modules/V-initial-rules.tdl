@@ -1,0 +1,10 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
+;;; Phrase structure rule instances.
+
+;;;  Rules for V-initial word order.
+
+head-comp := head-comp-phrase.
+head-subj := head-subj-phrase.
+
+

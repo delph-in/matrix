@@ -1,0 +1,20 @@
+; We add the boolean feature INV (inverted), which may well have independent
+; language-specific motivation as in English, and which is also useful in
+; assigning the intended message at the sentence-level node of the tree.
+
+verb :+
+[ INV bool ].
+
+subj-v-inv-lrule := const-ltol-rule &
+  [ DTR [ SYNSEM [ LOCAL [ CAT [ HEAD verb & #head,
+			         VAL [ SUBJ < #subj >,
+                                       COMPS #comps ] ],
+			   CONT #cont ],
+                   NON-LOCAL #nonloc ] ],
+    SYNSEM [ LOCAL [ CAT [ HEAD #head & [ INV +,
+                                          MOD < > ],
+                 	   VAL [ COMPS < #subj . #comps >,
+				 SUBJ < > ] ],
+		     CONT #cont ],
+             NON-LOCAL #nonloc ],
+    C-CONT.RELS <! !> ].
