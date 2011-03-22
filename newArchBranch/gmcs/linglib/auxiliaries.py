@@ -15,21 +15,16 @@ def set_supertypename(auxcomp):
   return supertypename
 
 
-class Auxiliary:
+#class Auxiliary:
 
-####TO DO
-##
-##in define_arg_str_and_valency and create_semantics mylang is only there for
-##the comments: create objects for them
-##
 
-  def __init__(self, aux, ch, mylang, hierarchies):
-    auxcomp = ch.get('aux-comp')
-    set_supertypename(auxcomp)
-    self.arg_val_type = define_arg_str_and_valency(aux, auxcomp, ch, mylang)
-    multiaux = ch.get('multiple-aux')
-    self.auxiliary_type = create_semantics(aux, auxcomp, multiaux, mylang)
-    self.user_aux_type = customize_users_auxtype(aux, ch, mylang, hierarchies) 
+#  def __init__(self, aux, ch, mylang, hierarchies):
+#    auxcomp = ch.get('aux-comp')
+#    set_supertypename(auxcomp)
+#    self.arg_val_type = define_arg_str_and_valency(aux, auxcomp, ch, mylang)
+#    multiaux = ch.get('multiple-aux')
+#    self.auxiliary_type = create_semantics(aux, auxcomp, multiaux, mylang)
+#    self.user_aux_type = customize_users_auxtype(aux, ch, mylang, hierarchies) 
 
       
 
@@ -164,6 +159,14 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies):
     auxtypename = supertypename + '-no-pred'
     typedef = auxtypename + ' := ' + supertypename + ' & raise-sem-lex-item.'
 
+    if auxcomp == 'v':
+          
+      comment = \
+        '; Note that raise-sem-lex-item assumes the first complement is\n' + \
+        '; where the HOOK comes from.  It\'s not clear to me how you\'d\n' + \
+        '; tell that you had an argument composition auxiliary if it\n' + \
+        '; wasn\'t appearing adjacent to the verb.'
+      mylang.add_literal(comment)
 #### Restriction to stop semantically empty auxiliaries from spinning
 #### Check multiple aux: no need to add constraint when already present on 
 #### supertype
@@ -182,14 +185,6 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies):
       else:
         arg_str = '< [ ], [ LOCAL.CAT.HEAD.AUX - ] >'
          
-      if auxcomp == 'v':
-          
-        comment = \
-          '; Note that raise-sem-lex-item assumes the first complement is\n' + \
-          '; where the HOOK comes from.  It\'s not clear to me how you\'d\n' + \
-          '; tell that you had an argument composition auxiliary if it\n' + \
-          '; wasn\'t appearing adjacent to the verb.'
-        mylang.add_literal(comment)
 
       auxres_type = auxtypename + ' := [ ARG-ST ' + arg_str + ' ].'   
       mylang.add(auxres_type)
@@ -243,6 +238,9 @@ def customize_auxiliaries(mylang, ch, lexicon, hierarchies):
     define_arg_str_and_valency(aux, auxcomp, ch, mylang)
     create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies)
     add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon)
+
+
+
 
 
 ####Customize Auxiliaries old
@@ -326,6 +324,7 @@ def customize_auxiliaries(mylang, ch, lexicon, hierarchies):
   #                                      trans-first-arg-raising-lex-item-1 .'
   #      mylang.add(typedef)
 
+####CHECKED
    #   else:
    #     comment = \
    #       '; To keep the semantically empty ones from spinning on\n' + \
@@ -344,6 +343,7 @@ def customize_auxiliaries(mylang, ch, lexicon, hierarchies):
    # elif auxcomp == 'v':
 #      supertype = 'arg-comp-aux'
 #      auxtypename = get_auxtypename(sem, supertype)
+####CHECKED
    #   comment = \
    #     '; Somewhat surprisingly, this inherits from basic-two-arg, so\n' + \
    #     '; that the non-local features are amalgamated from subj, the\n' + \
@@ -376,7 +376,7 @@ def customize_auxiliaries(mylang, ch, lexicon, hierarchies):
 
 #      if ch.get('multiple-aux') == 'no':
 #        mylang.add(supertype + ' := [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].')
-
+###CHECKED
    #   if sem == 'add-pred':
    #     comment = \
    #       '; Not inheriting from basic-verb-lex, so need to put in\n' + \
@@ -393,6 +393,7 @@ def customize_auxiliaries(mylang, ch, lexicon, hierarchies):
 #        mylang.add(typedef)
 
   #    else:
+###CHECKING WRONG PLACE SHOULD NOT BE DEPENDING ON MULTIPLE AUX
   #      comment = \
   #        '; Note that raise-sem-lex-item assumes the first complement is\n' + \
   #        '; where the HOOK comes from.  It\'s not clear to me how you\'d\n' + \
@@ -444,6 +445,7 @@ def customize_auxiliaries(mylang, ch, lexicon, hierarchies):
 
   # LAP 2008-06-11 FIX this: literals may print more than once
   #   here and elsewhere in the loop
+###CHECKED
    #     comment = \
    #         '; Better say [ AUX - ] on complement here, or we\'ll spin' + \
    #         ' on generation.'
