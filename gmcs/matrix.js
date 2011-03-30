@@ -125,6 +125,20 @@ function save_form(section)
     //form.submit();
 }
 
+// submit_main()
+// Submit the form and return to the main page
+function submit_main()
+{
+  var form = document.getElementsByTagName('form')[0];
+  var elms = document.getElementsByTagName('input');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].name == "subpage") {
+      form.removeChild(elms[i]);
+    }
+  }
+  form.submit();
+}
+
 // toggle_display_lex()
 // Handle a click on a section show/hide button on the Lexicon Page
 function toggle_display_lex(element_id, button_id)

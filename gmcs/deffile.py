@@ -945,12 +945,14 @@ class MatrixDefFile:
       print HTML_preform
       print html_input(vr, 'hidden', 'section', section,
                        False, '', '\n')
+      print html_input(vr, 'hidden', 'subpage', section, False, '', '\n')
       print self.defs_to_html(lines[section_begin:section_end],
                               choices, vr,
                               '', {})
 
-    print html_input(vr, 'submit', '', 'Submit', False, '<p>', '')
-    print html_input(vr, 'button', '', 'Save', False, onclick='save_form(\''+section+'\')')
+    print html_input(vr, 'button', '', 'Submit', False, '<p>', '', onclick='submit_main()')
+#    print html_input(vr, 'button', '', 'Save', False, onclick='save_form(\''+section+'\')')
+    print html_input(vr, 'submit', '', 'Save', False)
     print html_input(vr, 'button', '', 'Clear', False, '', '</p>', '',
                      'clear_form()')
 
