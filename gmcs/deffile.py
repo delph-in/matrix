@@ -234,20 +234,24 @@ HTML_postbody = '''</body>
 ######################################################################
 # HTML creation functions
 
-def html_mark(mark, message):
-  return '<span class="error" title="%s">%s</span>' %\
-           (message.replace('"', '&quot;'), mark)
+def html_mark(mark, vm):
+  if vm.href:
+    return '<a href="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
+           (vm.href, vm.message.replace('"', '&quot;'), mark)
+  else:
+    return '<a name="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
+           (vm.name, vm.message.replace('"', '&quot;'), mark)
 
-def html_error_mark(message):
-  return html_mark('*', message)
+def html_error_mark(vm):
+  return html_mark('*', vm)
 
-def html_warning_mark(message):
-  return html_mark('?', message)
+def html_warning_mark(vm):
+  return html_mark('?', vm)
 
 # Return an HTML <input> tag with the specified attributes and
 # surrounding text
-def html_input(vr, type, name, value, checked, before, after,
-               size = '', onclick = '', disabled = False):
+def html_input(vr, type, name, value, checked, before = '', after = '',
+               size = '', onclick = '', disabled = False, onchange = ''):
   chkd = ''
   if checked:
     chkd = ' checked'
@@ -260,6 +264,9 @@ def html_input(vr, type, name, value, checked, before, after,
 
   if onclick:
     onclick = ' onclick="' + onclick + '"'
+
+  if onchange:
+    onchange = ' onchange="' + onchange + '"'
 
   dsabld = ''
   if disabled:
@@ -279,9 +286,9 @@ def html_input(vr, type, name, value, checked, before, after,
   else:
     if value:
       value = ' value="' + value + '"'
-    return '%s%s<input type="%s" name="%s" %s%s%s%s%s>%s' % \
+    return '%s%s<input type="%s" name="%s" %s%s%s%s%s%s>%s' % \
          (before, mark, type, name, value, chkd, size, dsabld,
-          onclick, after)
+          onclick, onchange, after)
 
 
 # Return an HTML <select> tag with the specified name
@@ -535,11 +542,13 @@ class MatrixDefFile:
         pat += word[1] + '$'
         for k in vr.errors.keys():
           if re.search(pat, k):
-            vr.errors[cur_sec] = 'error in section'
+            anchor = "matrix.cgi?subpage="+cur_sec+"#"+k
+            vr.err(cur_sec, "This section contains one or more errors.", anchor, False)
             break
         for k in vr.warnings.keys():
           if re.search(pat, k):
-            vr.warnings[cur_sec] = 'warning in section'
+            anchor = "matrix.cgi?subpage="+cur_sec+"#"+k
+            vr.warn(cur_sec, "This section contains one or more warnings.", anchor, False)
             break
 
     # now pass through again to actually emit the page
@@ -553,9 +562,9 @@ class MatrixDefFile:
               word[1] + '\',\'' + word[1] + 'button\')"' + \
               '>&#9658;</span> '
         if word[1] in vr.errors:
-          print html_error_mark('This section contains one or more errors.')
+          print html_error_mark(vr.errors[word[1]])
         elif word[1] in vr.warnings:
-          print html_warning_mark('This section contains one or more warnings.')
+          print html_warning_mark(vr.warnings[word[1]])
         print '<a href="matrix.cgi?subpage=' + word[1] + '">' + \
               word[2] + '</a>'
         print '<div class="values" id="' + word[1] + '" style="display:none">'
@@ -783,11 +792,15 @@ class MatrixDefFile:
         html += '</select>'
         html += af + '\n'
       elif word[0] in ('Text', 'TextArea'):
-        (vn, fn, bf, af, sz) = word[1:]
+        if len(word) > 6:
+          (vn, fn, bf, af, sz, oc) = word[1:]
+        else:
+          (vn, fn, bf, af, sz) = word[1:]
+          oc = '';
         vn = prefix + vn
         value = choices.get(vn)
         html += html_input(vr, word[0].lower(), vn, value, False,
-                           bf, af, sz) + '\n'
+                           bf, af, sz, onchange=oc) + '\n'
       elif word[0] == 'BeginIter':
         iter_orig = word[1]
         (iter_name, iter_var) = word[1].replace('}', '').split('{', 1)
@@ -937,6 +950,7 @@ class MatrixDefFile:
                               '', {})
 
     print html_input(vr, 'submit', '', 'Submit', False, '<p>', '')
+    print html_input(vr, 'button', '', 'Save', False, onclick='save_form(\''+section+'\')')
     print html_input(vr, 'button', '', 'Clear', False, '', '</p>', '',
                      'clear_form()')
 

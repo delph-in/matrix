@@ -49,6 +49,12 @@ then
     exit 1
 fi
 
+# check that Customization Root is defined
+if [ -z $CUSTOMIZATIONROOT ]
+then
+    echo "Please: export CUSTOMIZATIONROOT=<your gmcs file>"
+    exit 1
+fi
 
 
 # create temporary staging directory
