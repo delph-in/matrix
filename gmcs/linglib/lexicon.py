@@ -1,4 +1,5 @@
 from gmcs.linglib import case
+from gmcs.linglib import lexical_items
 from gmcs.utils import get_name
 from gmcs.linglib.lexbase import LexicalType, PositionClass
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
@@ -126,3 +127,5 @@ def get_lt_name(key, choices):
     name = get_name(choices[key])
     lex_st = LEXICAL_SUPERTYPES[key.strip('1234567890')]
     return '-'.join([name, lex_st.rsplit('-lex',1)[0]])
+
+

@@ -1,4 +1,6 @@
 
+from gmcs.linglib.parameters import determine_vcluster
+
 ######################################################################
 # customize_word_order()
 #   Create the type definitions associated with the user's choices
@@ -114,7 +116,7 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 
   auxcomp = ch.get('aux-comp')
   if wo == 'vso' or wo == 'osv':
-    if has_auxiliaries_p(ch) and auxcomp == 'vp':
+    if ch.get('has-aux') == 'yes' and auxcomp == 'vp':
       mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
     else:
       mylang.add(hc + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
@@ -179,7 +181,7 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 # ASF 2008-11-18, if free wo lgge has aux and aux precedes verb,
 # the enforced attachment must apply in the other direction.
 
-    if has_auxiliaries_p(ch) and  ch.get('aux-comp-order') == 'before':
+    if ch.get('has-aux') == 'yes' and  ch.get('aux-comp-order') == 'before':
       mylang.add('head-final-head-nexus := head-final & \
                 [ SYNSEM.ATTACH lmod,\
                   HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
@@ -333,7 +335,7 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
   wo = ch.get('word-order')
   auxorder = ch.get('aux-comp-order')
 
-  if has_auxiliaries_p(ch):
+  if ch.get('has-aux') == 'yes':
     vcluster = determine_vcluster(auxcomp, auxorder, wo, ch)
   else:
     vcluster = False
@@ -737,7 +739,7 @@ def determine_consistent_order(wo,hc,ch):
   # ASF 2008-12-07 for non-harmonic order and v (not vp) comps,
   # we need a different procedure (see if auxcomp...)
 
-  if has_auxiliaries_p(ch):
+  if ch.get('has-aux') == 'yes':
     auxcomp = ch.get('aux-comp')
     if wo == 'free':
       if ch.get('aux-comp-order') == 'before':
@@ -774,36 +776,4 @@ def determine_consistent_order(wo,hc,ch):
    # return what we learned
 
   return {'adp': adp, 'aux': aux, 'qpart_order': qpart_order} #TODO: verify key
-
-
-def has_auxiliaries_p(ch):
-
-  return ch.get('has-aux') == 'yes'
-
-
-def determine_vcluster(auxcomp, auxorder, wo,ch):
-
-  vcluster = False
-
-  if auxcomp == 'vp':
-    if (wo == 'v-initial' and auxorder == 'before') or (wo == 'v-final' and auxorder == 'after'):
-      vcluster = True
-  elif auxcomp == 'v':
-    if wo == 'v-initial' or wo == 'v-final' or wo == 'osv' or wo == 'vso':
-      vcluster = True
-    if wo == 'sov' or wo == 'ovs':
-      if auxorder == 'before':
-        vcluster = True
-      elif wo == 'sov' or wo == 'ovs':
-        vcluster = False
-    if wo == 'vos' or wo == 'svo':
-      if auxorder == 'after':
-        vcluster = True
-      elif wo == 'vos' or wo == 'svo':
-        vcluster = False
-    if wo == 'free' and ch.get('multiple-aux') == 'yes':
-      vcluster = True
-  if not has_auxiliaries_p(ch):
-    vcluster = False
-  return vcluster
 
