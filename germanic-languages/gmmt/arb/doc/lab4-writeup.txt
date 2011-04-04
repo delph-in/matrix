@@ -1,0 +1,120 @@
+Ryan Georgi
+Ling 567
+
+Lab 4 Writeup
+
+************** PART I: CONFIGURATION *******************
+
+----------============== LANGUAGE ==========----------
+
+Modern_Standard_Arabic
+
+----------============== WORD ORDER ==========----------
+
+<BASIC ORDER>: [*] VSO
+
+Although other orders are acceptable, this appears to be the most frequent and general in meaning.
+
+<DETERMINERS (as independent words)?> [*] no
+
+Arabic marks for definiteness and indefiniteness via affixes. There are also demonstratives and other pronouns that function somewhat like determiners, but I don't think I'm going to count those.
+
+----------============== SENTENTIAL NEGATION ==========----------
+
+As I noted in my lab 3 writeup, there are numerous ways to do sentential negation, but many involve quirky verbs or verbs showing up in the subjunctive (though without subjunctive meaning). To avoid these peculiarities, I'm going to start (for now) with the particle /la:/, which is simply placed to the left of the VP.
+
+My choices:
+
+[*] An adverb:
+[*] ...which is an independent modifier of [*] VP and appears...
+[*] left of the category it modifies.
+
+----------============== COORDINATION ==========----------
+
+I need to find more examples here, because although I found sources that evidenced coordination of VPs and sentences and what appear to NPs, I need to check and see if NPs or bare nouns get coordinated. For now I am selecting NPs but not nouns.
+
+Also, the coordination 'word' is somewhat of a clitic and can combine with negation markers to form a particle /wala:/, but until I get further I think these are morphemes that can be regularized and treated as different 'words'
+
+[*] Coordination Strategy 1:
+in which [*] NPs [*] VPs [*] sentences  ... are marked in a 
+[*] N-polysyndeton pattern
+by a [*] word spelled [ "wa" ] that comes [*] before the coordinand
+
+** NOTE -- I did find the text entry for the word/affix spelling to be a little confusing; it appears like it is only needed for the affix until you try and hit submit.
+
+----------============== MATRIX YES/NO QUESTIONS ==========----------
+
+As I brought up in class, there are actually several question particles Arabic uses which differ in aspect; /hal/ has a durative/habitual meaning, while /a/ has more of a punctual meaning. For now, I'm sticking with /a/ for simplicity.
+
+[*] A separate question particle [*] sentence initial
+Spelling [ a ]
+
+----------============== BASIC LEXICON ==========----------
+
+rajul (_man_n_rel)
+bint  (_girl_n_rel)
+
+insarafa (_leave_v_rel)
+adribu	 (_hit_v_rel)
+
+Negative adverb		  la
+
+----------============== SOME TEST SENTENCES ==========----------
+
+Since there was nowhere in the startup configuration to specify verb inflection or marking on the nouns other than case, I'm simply leaving the verb inflection and noun case marking off.
+
+la adribu bint rajul
+
+insarafa bint wa rajul
+
+
+************** PART II: PARSING *******************
+
+================== STARTING THE LKB =====================
+
+Using the choices given above, I started the LKB and was able to parse
+'adribu bint rajul' (the girl hit the man) and 'la insarafa bint' (the
+girl did not leave). Only the latter overgenerated at this point;
+unsure whether the 'la' was modifying the rest as a whole S or as just
+a VP. Otherwise, the structures were as expected.
+
+================= TSDB COVERAGE =========================
+
+Unfortunately, even after adding vocabulary to my starter grammar, *none* of the sentences from my test suite parse. This is due to a number of issues, primarily that my simplest sentences (which I targeted with my added vocab) unfortunately generally have adjectives in them to show agreement. Many verbs also show inflection that are not covered in the basic, most-common forms I included in the lexicon.tdl file. 
+
+I added a few sentences to my test suite that I was sure would parse, such as:
+
+yins.arifu    rrajulu
+y-ins.arifu   ?al-rajul-u
+3MSG-leaves   DEF-man-NOM
+'the man leaves'
+
+This indeed is parsed by the LKB interface, but when I Process All in tsdb, the Parses count is still shown to be zero. Below, I've shown the words that I added in an attempt to increase coverage.
+
+
+
+Added words:
+
+lkita:b (the book)
+lwalad  (the boy)
+ddarsa (the test)
+ddarra:ja (the bicycle)
+
+yarkud  (he runs)
+tatbakh (you cook)
+yaskunn (he lives)
+yi?ra   (he reads)
+
+----------========= PHENOMENA TO IMPLEMENT ==============-------------------
+
+Judging from this initial run, it seems I will not be able to make practically any headway without first implementing inflectional rules, particularly for verbs. When looking through the vocabulary list given by itsdb, many verbs are shown multiple times with different inflection, yet I only entered one form for each verb in the lexicon.
+
+Something else I hadn't considered, both in the implementation, and the test suite itself, is my use of adjectives. Since adjectives in MSA show agreement with the nouns they modify, I thought I would get a good deal of mileage by using numerous sentences that not only show noun/verb agreement, but show noun-adjective/verb agreement.
+
+Unfortunately, since adjectives weren't implemented in this simple starter grammar, this meant that the vast majority of my examples showing agreement simply didn't get parses.
+
+Consequently, implementing adjectives would give me vastly more coverage, while at the same time, I plan on adding a great deal of very simple sentences that don't make use of adjectives so that verb-noun agreement can be tested on its own. (I tried adding just a few of these sentences for this assignment, but this didn't appear to work with tsdb).
+
+A further problem with my test suite is that I, in using examples directly from sources, used quite a few examples using proper nouns. While using these semi-vetted sources is somewhat necessary for me to get a grip on the language, if I can create examples using more generic NPs, it will simplify my test suite considerably.
+
+Finally, again in quoting from sources, there are quite a few instances where the cited verbs are formed in different tenses that won't have the same affixal patterns that most of those in the test suite do. Again simplifying these to the present, "Pattern 1" verbs used in the rest of the suite (and checked with a native speaker) will allow for me to get a better hook into things.

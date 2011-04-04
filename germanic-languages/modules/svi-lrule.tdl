@@ -1,0 +1,3 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
+svi-lr := subj-v-inv-lrule.

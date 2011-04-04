@@ -1,0 +1,32 @@
+;;; Hey, emacs, this file is -*- Mode: tdl; -*- ... got that?
+
+fake-transfer-rule := monotonic_omtr &
+  [ INPUT.RELS.LIST.FIRST.PRED "_human_n_rel",
+    OUTPUT.RELS.LIST.FIRST.PRED "_man_n_rel" ].
+
+reg+quant-transfer-rule := oquantifier_mtr &
+  [ INPUT.RELS.LIST.FIRST.PRED "reg_quant_rel",
+    OUTPUT.RELS.LIST.FIRST.PRED "def_q_rel" ].
+
+reg+quant-transfer-rule2 := oquantifier_mtr &
+  [ INPUT.RELS.LIST.FIRST.PRED "reg_quant_rel",
+    OUTPUT.RELS.LIST.FIRST.PRED "indef_q_rel" ].
+
+reg+quant-transfer-rule3 := oquantifier_mtr &
+  [ INPUT.RELS.LIST.FIRST.PRED "reg_quant_rel",
+    OUTPUT.RELS.LIST.FIRST.PRED "non+demonstrative_q_rel" ].
+
+;propq-transfer-rule := monotonic_omtr &
+;  [ INPUT.RELS.LIST.FIRST.PRED proposition_m_rel,
+;    OUTPUT.RELS.LIST.FIRST.PRED prop-or-ques_m_rel ].
+
+exist-way-transfer-rule := monotonic_omtr &
+  [ INPUT.RELS <! [ PRED "_can_v_rel",
+		    LBL #ltop,
+		    ARG1 #emd ] !>,
+    OUTPUT.RELS <! [ PRED "_way_n_rel",
+		     ARG0 #way,
+		     ARG1 #emd ],
+		   [ PRED "_exist_v_rel",
+		     ARG1 #way,
+		     LBL #ltop ] !> ].

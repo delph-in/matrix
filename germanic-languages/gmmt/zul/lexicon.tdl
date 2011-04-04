@@ -1,0 +1,552 @@
+;;; Nouns
+
+;;; ERB 2007-05-15  Car is i-moto/izi-moto.  I can't tel
+;;; what the class of the singular form is, but for now, I
+;;; only need it to be plural, which appears to c8.
+
+izimoto := common-noun-lex &
+  [ STEM < "moto" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_car_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c8 ] ] .
+
+ntwana := common-noun-lex &
+  [ STEM < "ntwana" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_child_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c1+c2 ] ] .
+
+dokotela := common-noun-lex &
+  [ STEM < "dokotela" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_doctor_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c1a+c2a ] ] .
+
+lilo := common-noun-lex &
+  [ STEM < "lilo" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_fire_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c3+c4 ] ] .
+
+kati := common-noun-lex &
+  [ STEM < "kati" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_cat_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c5+c6 ] ] .
+
+sebenzi := common-noun-lex &
+  [ STEM < "sebenzi" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_worker_n_rel",
+    LOCAL.CONT.HOOK.INDEX.PNG.NCL c7+c8 ] ] .
+
+yoka := common-noun-lex &
+  [ STEM < "yoka" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_snake_n_rel",
+    LOCAL.CONT.HOOK.INDEX.PNG.NCL c9+c10 ] ] .
+
+fudu := common-noun-lex &
+  [ STEM < "fudu" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_tortoise_n_rel",
+    LOCAL.CONT.HOOK.INDEX.PNG.NCL c11+c10 ] ] .
+
+ani := common-noun-lex &
+  [ STEM < "ani" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_grass_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c14 ] ] .
+
+dla := common-noun-lex &
+  [ STEM < "dla" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_food_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c15 ] ] .
+
+ndle := common-noun-lex &
+  [ STEM < "ndle" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_outside_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c16 ] ] .
+
+nto := common-noun-lex &
+  [ STEM < "nto" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_toy_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c17 ] ] .
+
+ja := common-noun-lex &
+  [ STEM < "ja" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_dog_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c9+c10 ] ] .
+
+mama := common-noun-lex &
+  [ STEM < "mama" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_mother_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c1a+c2a ] ] .
+
+ntu := common-noun-lex &
+  [ STEM < "ntu" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_people_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c1+c2 ] ] .
+
+James := common-noun-lex &
+  [ STEM < "James" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_james_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c1a+c2a ] ] .
+
+Sipho := common-noun-lex &
+  [ STEM < "Sipho" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_sipho_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c1a+c2a ] ] .
+
+shani := common-noun-lex &
+  [ STEM < "shani" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_horse_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c5+c6 ] ] .
+
+fana := common-noun-lex &
+  [ STEM < "fana" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_boy_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c1+c2 ] ] .
+
+tiye := common-noun-lex &
+  [ STEM < "tiye" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_tea_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c5+c6 ] ] .
+
+ali := common-noun-lex &
+ [ STEM < "ali" >,
+   SYNSEM [ LKEYS.KEYREL.PRED "_money_n_rel",
+	    LOCAL.CONT.HOOK.INDEX.PNG.NCL c9+c10 ] ].
+
+gilazi := common-noun-lex &
+ [ STEM < "gilazi" >,
+   SYNSEM [ LKEYS.KEYREL.PRED "_glass_n_rel",
+	    LOCAL.CONT.HOOK.INDEX.PNG.NCL c9+c10 ] ] .
+
+fazi := common-noun-lex &
+  [ STEM < "fazi" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_woman_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c1+c2 ] ] .
+
+tombi := common-noun-lex &
+  [ STEM < "tombi" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_girl_n_rel",
+	     LOCAL.CONT.HOOK.INDEX.PNG.NCL c9+c10 ] ] .
+
+
+;;; Verbs
+
+dlal := intransitive-verb-lex &
+  [ STEM < "dlal" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_play_v_rel" ] .
+
+
+lal := intransitive-verb-lex &
+  [ STEM < "lal" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sleep_v_rel" ] .
+
+fund := intransitive-verb-lex &
+  [ STEM < "fund" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_study_v_rel" ] .
+
+gijim := intransitive-verb-lex &
+  [ STEM < "gijim" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_run_v_rel" ] .
+
+bon := no-ini-trans-verb-lex &
+  [ STEM < "bon" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ] .
+
+shay := no-ini-trans-verb-lex &
+  [ STEM < "shay" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_hit_v_rel" ] .
+
+nik := ditransitive-verb-lex &
+  [ STEM < "nik" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_give_v_rel" ].
+
+sebenz := intransitive-verb-lex &
+  [ STEM < "sebenz" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_work_v_rel" ].
+
+; zibuz is actually buz "ask", with the reflexive marker zi-
+; apparently it is used like "wonder".
+zibuz := ques-comp-verb-lex &
+  [ STEM < "zibuz" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_wonder_v_rel" ] .
+
+cc-bon := clause-comp-verb-lex &
+  [ STEM < "bon" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ] .
+
+limaz := no-ini-trans-verb-lex &
+  [ STEM < "limaz" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_hurt_v_rel" ] .
+
+dl := transitive-verb-lex &
+  [ STEM < "dl" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ] .
+
+musa := aux-verb-lex &
+  [ STEM < "musa" >, 
+    SYNSEM.LKEYS.KEYREL.PRED "_neg_v_rel" ] .
+
+xosh := no-ini-trans-verb-lex &
+  [ STEM < "xosh" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_chase_v_rel" ] .
+
+suk := intransitive-verb-lex &
+  [ STEM < "suk" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_leave_v_rel" ] .
+
+z := intransitive-verb-lex &
+ [ STEM < "z" >,
+   SYNSEM.LKEYS.KEYREL.PRED "_come_v_rel" ] .
+
+w := intransitive-verb-lex &
+ [ STEM < "z" >,
+   SYNSEM.LKEYS.KEYREL.PRED "_fall_v_rel" ] .
+
+eq := intransitive-verb-lex &
+ [ STEM < "eq" >,
+   SYNSEM.LKEYS.KEYREL.PRED "_jump_v_rel" ] .
+
+; az is irregular and s.b. "azi" with no final vowel change.
+az := clause-comp-verb-lex &
+  [ STEM < "az" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_know_v_rel" ] .
+
+buz := ques-comp-verb-lex &
+  [ STEM < "buz" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_ask_v_rel" ] .
+
+cabang := prop-comp-verb-lex &
+  [ STEM < "cabang" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_think_v_rel" ] .
+
+
+
+;;; Pronouns
+
+mina := pronoun-lex &
+	[ STEM < "mina" >,
+	  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+					     NUM sg ]].
+thina := pronoun-lex &
+	[ STEM < "thina" >,
+	  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER first,
+					     NUM non-sg ] ].
+wena := pronoun-lex &
+	[ STEM < "wena" >,
+	  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+					     NUM sg ] ].
+nina := pronoun-lex &
+	[ STEM < "nina" >,
+	  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER second,
+					     NUM non-sg ] ].
+
+
+;;; Demonstrative adjectives
+;;; ERB 2007-05-15 Kelly just had c1 and c9 here, but it seems worthwhile
+;;; to fill out the rest of the paradigm.
+
+;;; ERB 2007-05-16 Replacing homophony with underspecification.  Assuming
+;;; c1a goes with c1 and c2a with c2.
+
+lo-a := proximal-dem-adj-lex &
+[ STEM < "lo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c1+c1a+c3]>].
+
+laba:= proximal-dem-adj-lex &
+[ STEM < "laba" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c2+c2a]>].
+
+;lo-a2:= proximal-dem-adj-lex &
+;[ STEM < "lo" >,
+;  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c3]>].
+
+le-a:= proximal-dem-adj-lex &
+[ STEM < "le" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c4]>].
+
+leli:= proximal-dem-adj-lex &
+[ STEM < "leli" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c5]>].
+
+la-a:= proximal-dem-adj-lex &
+[ STEM < "la" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c6]>].
+
+lesi:= proximal-dem-adj-lex &
+[ STEM < "lesi" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c7]>].
+
+lezi:= proximal-dem-adj-lex &
+[ STEM < "lezi" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c8+c10]>].
+
+le-a2:= proximal-dem-adj-lex &
+[ STEM < "le" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c9]>].
+
+;lezi-2 := proximal-dem-adj-lex &
+;[ STEM < "lezi-2" >,
+;  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c10]>].
+
+lolu:= proximal-dem-adj-lex &
+[ STEM < "lolu" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c11]>].
+
+lobu:= proximal-dem-adj-lex &
+[ STEM < "lobu" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c14]>].
+
+lokhu:= proximal-dem-adj-lex &
+[ STEM < "lokhu" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c15+c16+c17]>].
+
+
+
+
+lowo-a := hearer-dem-adj-lex &
+[ STEM < "lowo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c1+c1a+c3]>].
+
+labo := hearer-dem-adj-lex &
+[ STEM < "labo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c2+c2a]>].
+
+;lowo-a2 := hearer-dem-adj-lex &
+;[ STEM < "lowo" >,
+;  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c3]>].
+
+leyo-a := hearer-dem-adj-lex &
+[ STEM < "leyo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c4]>].
+
+lelo := hearer-dem-adj-lex &
+[ STEM < "lelo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c5]>].
+
+lawo := hearer-dem-adj-lex &
+[ STEM < "lawo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c6]>].
+
+leso := hearer-dem-adj-lex &
+[ STEM < "leso" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c7]>].
+
+lezo := hearer-dem-adj-lex &
+[ STEM < "lezo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c8+c10]>].
+
+leyo-a2 := hearer-dem-adj-lex &
+[ STEM < "leyo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c9]>].
+
+;lezo-2 := hearer-dem-adj-lex &
+;[ STEM < "lezo" >,
+;  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c10]>].
+
+lolo := hearer-dem-adj-lex &
+[ STEM < "lolo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c11]>].
+
+lobo := hearer-dem-adj-lex &
+[ STEM < "lobo" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c14]>].
+
+lokho := hearer-dem-adj-lex &
+[ STEM < "lokho" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c15+c16+c17]>].
+
+lowaya-a := remote-dem-adj-lex &
+[ STEM < "lowaya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c1+c1a+c3]>].
+
+labaya := remote-dem-adj-lex &
+	  [ STEM < "labaya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c2+c2a]>].
+
+;lowaya-a2 := remote-dem-adj-lex &
+;[ STEM < "lowaya" >,
+;  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c3]>].
+
+leya-a := remote-dem-adj-lex &
+[ STEM < "leya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c4]>].
+
+leliya := remote-dem-adj-lex &
+[ STEM < "leliya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c5]>].
+
+lawaya := remote-dem-adj-lex &
+[ STEM < "lawaya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c6]>].
+
+lesiya := remote-dem-adj-lex &
+[ STEM < "lesiya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c7]>].
+
+leziya := remote-dem-adj-lex &
+[ STEM < "leziya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c8]>].
+
+leya-a2 := remote-dem-adj-lex &
+[ STEM < "leya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c9]>].
+
+loluya := remote-dem-adj-lex &
+[ STEM < "loluya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c11]>].
+
+lobuya := remote-dem-adj-lex &
+[ STEM < "lobuya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c14]>].
+
+lokhuya := remote-dem-adj-lex &
+[ STEM < "lokhuya" >,
+  SYNSEM.LOCAL.CAT.HEAD.MOD <[LOCAL.CONT.HOOK.INDEX.PNG.NCL c15+c16+c17 ]>].
+
+
+
+;;; Demonstrative Pronouns
+lo-p := proximal-dem-pro-lex &
+[ STEM < "lo" >,
+  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NCL c1].
+
+lowo-p := hearer-dem-pro-lex &
+[ STEM < "lowo" >,
+  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NCL c1].
+
+lowaya-p := remote-dem-pro-lex &
+[ STEM < "lowaya" >,
+  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NCL c1].
+
+le-p := proximal-dem-pro-lex &
+[ STEM < "le" >,
+  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NCL c9].
+
+leyo-p := hearer-dem-pro-lex &
+[ STEM < "leyo" >,
+  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NCL c9].
+
+leya-p := remote-dem-pro-lex &
+[ STEM < "leya" >,
+  SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NCL c9].
+
+
+;;; Adjectives (This is all the adjectives there are)
+
+bi := adjective-lex &
+[ STEM < "bi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_bad+ugly_a_rel" ].
+
+hle := adjective-lex &
+[ STEM < "hle" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_beautiful_a_rel" ].
+
+de := adjective-lex &
+[ STEM < "de" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_long+high_a_rel" ].
+
+ncane := adjective-lex &
+[ STEM < "ncane" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_small_a_rel" ].
+
+ncinyane := adjective-lex &
+[ STEM < "ncinyane" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_small_a_rel" ].
+
+nci := adjective-lex &
+[ STEM < "nci" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_verysmall_a_rel" ].
+
+khulu := adjective-lex &
+[ STEM < "khulu" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_big_a_rel" ].
+
+sha := adjective-lex &
+[ STEM < "sha" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_new+young_a_rel" ].
+
+dala := adjective-lex &
+[ STEM < "dala" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_old_a_rel" ].
+
+fuphi := adjective-lex &
+[ STEM < "fuphi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_short_a_rel" ].
+
+ningi := adjective-lex &
+[ STEM < "ningi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_much+many_a_rel" ].
+
+ngaki := adjective-lex &
+[ STEM < "ngaki" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_howmuch_a_rel" ].
+
+nye := adjective-lex &
+[ STEM < "nye" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_others+some_a_rel" ].
+
+bili := adjective-lex &
+[ STEM < "bili" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_two_a_rel" ].
+
+thathu := adjective-lex &
+[ STEM < "thathu" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_three_a_rel" ].
+
+ne := adjective-lex &
+[ STEM < "ne" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_four_a_rel" ].
+
+hlanu := adjective-lex &
+[ STEM < "hlanu" >, 
+  SYNSEM.LKEYS.KEYREL.PRED "_five_a_rel" ] .
+
+;;; ERB 2007-05-15 No lexical adjective for hungry. Below
+;;; is actually a relative form formed from the verb
+;;; meaning to be hungry.  To get the right set of prefixes
+;;; I'm going to pretend it's a lexical relative (relative-lex).
+
+lambile-yo := relative-lex &
+[ STEM < "lambile-yo" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_hungry_a_rel" ] .
+
+;;; Adverbs
+;;; NB: most of these adverbs are just adjectives with ka-
+;;; stuck on the front.  
+
+vp-kakhulu := vp-adverb-lex &
+[ STEM < "kakhulu" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_much_r_rel"]. ;`big-ly'
+
+adv-kakhulu := adv-adverb-lex &
+[ STEM < "kakhulu" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_much_r_rel"]. ;`big-ly'
+
+kabi := vp-adverb-lex &
+[ STEM < "kabi" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_badly_r_rel"].
+
+kabili := vp-adverb-lex &
+[ STEM < "kabili" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_twice_r_rel"].
+
+kusasa := s-adverb-lex &
+[ STEM <"kusasa" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_tomorrow_r_rel"].
+
+ngokushesha := vp-adverb-lex &
+  [ STEM < "ngokushesha" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_quickly_r_rel" ] .
+
+; This doesn't make much sense because I have no past tense
+izolo := s-adverb-lex &
+[ STEM < "izolo" >,
+  SYNSEM.LKEYS.KEYREL.PRED "_yesterday_r_rel" ] .
+	 
+;;; Complementizers
+
+na := qpart-lex-item &
+  [ STEM < "na" > ] .
+
+ukuthi := emb-comp-lex-item &
+  [ STEM < "ukuthi" > ] .
+
+;ukuba := emb-comp-lex-item &
+;  [ STEM < "ukuba" > ] .
+

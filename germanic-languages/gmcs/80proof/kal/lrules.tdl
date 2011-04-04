@@ -1,0 +1,13 @@
+singular-absolutive-case-marker-lex := singular-absolutive-case-marker-lex-rule.
+
+absolutive-pronoun-case-lex := absolutive-pronoun-case-lex-rule.
+
+3rd-person-pronoun-absolutive-case-lex := 3rd-person-pronoun-absolutive-case-lex-rule.
+
+past-marker-lex := past-marker-lex-rule.
+
+no-aspect-marker-lex := no-aspect-marker-lex-rule.
+
+intran-no-aspect-lex := intran-no-aspect-lex-rule.
+
+intran-past-lex := intran-past-lex-rule.

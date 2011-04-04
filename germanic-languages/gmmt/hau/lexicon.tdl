@@ -1,0 +1,791 @@
+bàa := L-neg-sentence-part &
+  [ STEM < "bàa" >] .
+
+ba := R-neg-sentence-part &
+  [ STEM < "ba" > ] .
+
+dà_1 := conj-lex &
+  [ STEM < "dà" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
+    CFORM "1" ] .
+
+koo_1 := qpart-lex-item &
+  [ STEM < "koo">].
+
+koo_2 := ques-complementizer-lex-item &
+ [ STEM <"koo"> ].
+
+wà := case-marker-p-lex &
+  [ STEM < "wà" >,
+    SYNSEM.LOCAL[ CAT.HEAD.CASE dat , 
+		  CONT.HOOK.INDEX.PRO -]  ].
+
+cêwaa := prop-complementizer-lex-item &
+  [ STEM < "cêwaa"> ].
+
+
+
+;;; Nouns
+
+yaarinyàa := common-noun-lex &
+  [ STEM < "yaarinyàa" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem,
+				NUM sg ] , 
+	 LKEYS.KEYREL.PRED "_girl_n_rel" ] ] .
+
+miyàa := common-noun-lex &
+  [ STEM < "miyàa" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem,
+				NUM sg ] ,
+	LKEYS.KEYREL.PRED "_soup_n_rel"] ] .
+
+dàalìbai := common-noun-lex &
+  [ STEM < "d`àalìbai" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM non-sg ] ,
+	LKEYS.KEYREL.PRED "_student_n_rel" ]  ] .
+
+dàalìbii := common-noun-lex &
+ [ STEM <"d`àalìbii">,
+   SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg, GEN masc],
+	LKEYS.KEYREL.PRED "_student_n_rel" ] ].
+
+tsoohuwaa := common-noun-lex &
+  [ STEM < "tsoohuwaa" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem,
+				NUM sg ],
+	LKEYS.KEYREL.PRED "_old+woman_n_rel" ] ] .
+
+bàraawòo := common-noun-lex &
+  [ STEM < "`bàraawòo" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc,
+				NUM sg ] ,
+	LKEYS.KEYREL.PRED "_thief_n_rel" ] ] .
+
+gidaa := common-noun-lex &
+  [ STEM < "gidaa" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem,
+				NUM sg ] , 
+	LKEYS.KEYREL.PRED "_house_n_rel" ] ] .
+
+kàasuwaa := common-noun-lex &
+  [ STEM < "kàasuwaa" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem,
+				NUM sg ] ,
+	LKEYS.KEYREL.PRED "_market_n_rel" ] ] .
+
+làabaarìi := common-noun-lex &
+  [ STEM < "làabaar~ìi" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc,
+				NUM sg ], 
+	LKEYS.KEYREL.PRED "_story_n_rel"] ] .
+
+lìssaafìi := common-noun-lex &
+  [ STEM < "lìssaafìi" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc,
+				NUM sg ]  ,
+	LKEYS.KEYREL.PRED "_math_n_rel" ] ] .
+
+maalàminsdàù := common-noun-lex &
+  [ STEM < "maalàminsù" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc,
+				NUM sg ] ,
+	LKEYS.KEYREL.PRED "_teacher_n_rel" ]] .
+
+mootàa := common-noun-lex &
+  [ STEM < "mootàa" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg,
+				GEN fem ] , 
+	LKEYS.KEYREL.PRED "_car_n_rel" ] ] .
+
+mootoocii := common-noun-lex &
+  [ STEM < "mootoocii" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM non-sg,
+				GEN fem ] , 
+	LKEYS.KEYREL.PRED "_car_n_rel" ] ] .
+
+
+mùtûm := common-noun-lex &
+  [ STEM < "mùtûm" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc,
+				NUM sg ] ,
+		 LKEYS.KEYREL.PRED "_man_n_rel" ] ] .
+
+tùuluu := common-noun-lex &
+  [ STEM < "tùuluu" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg,
+				GEN masc ] ,
+		LKEYS.KEYREL.PRED "_waterpot_n_rel" ] ] .
+
+yaaròo := common-noun-lex &
+  [ STEM < "yaaròo" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc,
+				NUM sg ] , 
+		LKEYS.KEYREL.PRED "_boy_n_rel" ] ] .
+
+zoobèe := common-noun-lex &
+  [ STEM < "zoobèe" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc,
+				NUM sg ] , 
+	LKEYS.KEYREL.PRED "_ring_n_rel" ] ] .
+
+ruwaa := common-noun-lex &
+  [ STEM < "ruwaa" >,
+    SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM sg],
+	LKEYS.KEYREL.PRED "_water_n_rel" ]].
+
+ gìlâs := common-noun-lex &
+[ STEM < "gìlâs">,
+  SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM sg],
+	LKEYS.KEYREL.PRED "_glass_n_rel"]].
+
+littaafìi := common-noun-lex &
+[ STEM <"littaafìi">,
+  SYNSEM [LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM sg],
+	LKEYS.KEYREL.PRED "_book_n_rel"]].
+
+kàree := common-noun-lex &
+[ STEM <"kàr~ee">,
+  SYNSEM [LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM sg],
+	LKEYs.KEYREL.PRED "_dog_n_rel"]].
+
+; ERB 2007-05-11 Added plural variant.  Kelsey says that the
+; morphology for plurals is irregular, so she was just full-forming
+; it.
+
+kàrnai := common-noun-lex &
+[ STEM <"kàr~nai">,
+  SYNSEM [LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM non-sg],
+	LKEYs.KEYREL.PRED "_dog_n_rel"]].
+
+
+kyânwaa := common-noun-lex &
+[ STEM <"kyânwaa">,
+  SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem, NUM sg],
+  	LKEYS.KEYREL.PRED "_cat_n_rel"]].
+
+kyânwuna := common-noun-lex &
+[ STEM <"kyânwuna">,
+  SYNSEM [ LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem, NUM non-sg],
+  	LKEYS.KEYREL.PRED "_cat_n_rel"]].
+
+
+dookìi := common-noun-lex &
+[ STEM <"dookìì">,
+  SYNSEM[ LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM sg],
+ 	LKEYS.KEYREL.PRED "_horse_n_rel"]].
+
+cìimaa := common-noun-lex &
+[ STEM <"cììmaa">,
+  SYNSEM[LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem, NUM sg],
+  	LKEYS.KEYREL.PRED "_food_n_rel"]].
+
+innà := common-noun-lex &
+[ STEM <"innà">,
+  SYNSEM[LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem, NUM sg],
+  	LKEYS.KEYREL.PRED "_mother_n_rel"]].
+
+likità := common-noun-lex &
+[ STEM <"likità">,
+  SYNSEM [LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg ],
+ 	LKEYS.KEYREL.PRED "_doctor_n_rel"]].
+
+sagoo := common-noun-lex &
+[ STEM <"sagoo">,
+  SYNSEM[LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg, GEN masc],
+   	LKEYS.KEYREL.PRED "_snake_n_rel"]].
+
+jinjìrii := common-noun-lex &
+[ STEM <"jinjìr~ii">,
+  SYNSEM[LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM sg],
+	LKEYS.KEYREL.PRED "_child_n_rel"]].
+
+mààtaa := common-noun-lex &
+[ STEM <"mààtaa">,
+  SYNSEM[LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem, NUM sg],
+ 	LKEYS.KEYREL.PRED "_woman_n_rel"]].
+
+wutaa := common-noun-lex &
+[ STEM <"wutaa">,
+  SYNSEM[LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem, NUM sg],
+ 	LKEYS.KEYREL.PRED "_fire_n_rel"]].
+
+kùrwaa := common-noun-lex &
+[ STEM <"kùr~waa">,
+  SYNSEM[LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem, NUM sg],
+ 	LKEYS.KEYREL.PRED "_person_n_rel"]].
+
+kudii := common-noun-lex &
+[ STEM <"kud`ii">,
+  SYNSEM[LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM sg],
+ 	LKEYS.KEYREL.PRED "_money_n_rel"]].
+
+shaayìi := common-noun-lex &
+[ STEM <"shaayìi">,
+  SYNSEM[LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM sg],
+ 	LKEYS.KEYREL.PRED "_tea_n_rel"]].
+
+kùnkuruu := common-noun-lex &
+[ STEM <"kùnkur~uu">,
+  SYNSEM[LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM sg],
+ 	LKEYS.KEYREL.PRED "_tortoise_n_rel"]].
+
+cìyaawàa := common-noun-lex &
+[ STEM <"cìyaawàa">,
+  SYNSEM[LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem, NUM sg],
+ 	LKEYS.KEYREL.PRED "_grass_n_rel"]].
+
+leebùrà := common-noun-lex & 
+[ STEM <"leebùrà">,
+  SYNSEM[LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM sg],
+ 	LKEYS.KEYREL.PRED "_worker_n_rel"]]. 
+
+alabèe := common-noun-lex &
+[ STEM <"alabèe">,
+    SYNSEM[LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM sg],
+ 	LKEYS.KEYREL.PRED "_purse_n_rel"]]. 
+
+àbin-wargi := common-noun-lex &
+[ STEM <"àbin-wargi">,
+    SYNSEM[LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc, NUM sg],
+ 	LKEYS.KEYREL.PRED "_toy_n_rel"]]. 
+
+
+
+
+;;;Pronouns
+
+nii := pronoun-lex &
+	[ STEM < "nii" >,
+	SYNSEM [ LOCAL [ CAT.HEAD.CASE nom,
+			CONT.HOOK.INDEX.PNG [ PER first, GEN neut,
+				NUM sg ] ,
+			CAT.HEAD.CASE nom ], 
+	LKEYS.KEYREL.PRED "_pronoun_n_rel" ] ]. 
+
+kai  := pronoun-lex &
+	[ STEM < "kai" >,
+	SYNSEM [ LOCAL [ CONT.HOOK.INDEX.PNG [ PER second,
+				NUM sg,
+				GEN masc ] ,
+			CAT.HEAD.CASE nom ], 
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+kee  := pronoun-lex &
+	[ STEM < "kee" >,
+	SYNSEM [ LOCAL [ CONT.HOOK.INDEX.PNG [ PER second,
+				NUM sg,
+				GEN fem ],
+			CAT.HEAD.CASE nom ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+shii  := pronoun-lex &
+	[ STEM < "shii" >,
+	SYNSEM [ LOCAL [ CONT.HOOK.INDEX.PNG [ PER third,
+				NUM sg,
+				GEN masc ],
+			CAT.HEAD.CASE nom ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+ita  := pronoun-lex &
+	[ STEM < "ita" >,
+	SYNSEM[ LOCAL [ CONT.HOOK.INDEX.PNG [ PER third,
+				GEN fem,
+				NUM sg ],
+			CAT.HEAD.CASE nom ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+muu  := pronoun-lex &
+	[ STEM < "muu" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER first,
+				NUM non-sg ],
+			CAT.HEAD.CASE nom ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+kuu  := pronoun-lex &
+	[ STEM < "kuu" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER second,
+				NUM non-sg ],
+			CAT.HEAD.CASE nom ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+suu   := pronoun-lex &
+	[ STEM < "suu" >,
+	SYNSEM[ LOCAL [ CONT.HOOK.INDEX.PNG [ PER third,
+				NUM non-sg ],
+			CAT.HEAD.CASE nom ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+ni  := pronoun-lex &
+	[ STEM < "ni" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER first, GEN neut,
+				NUM sg ],
+			CAT.HEAD.CASE acc ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+ka  := pronoun-lex &
+	[ STEM < "ka" >,
+	SYNSEM[ LOCAL [ CONT.HOOK.INDEX.PNG [ PER second,
+				NUM sg,
+				GEN masc ],
+			CAT.HEAD.CASE acc ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+ki_pro  := pronoun-lex &
+	[ STEM < "ki" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER second,
+				NUM sg,
+				GEN fem ] ,
+			CAT.HEAD.CASE acc ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+shi  := pronoun-lex &
+	[ STEM < "shi" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER third,
+				NUM sg,
+				GEN masc ] ,
+			CAT.HEAD.CASE acc ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+ta  := pronoun-lex &
+	[ STEM < "ta" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER third,
+				NUM sg,
+				GEN fem ],
+			CAT.HEAD.CASE acc ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+mu  := pronoun-lex &
+	[ STEM < "mu" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER first,
+				NUM non-sg ],
+			CAT.HEAD.CASE acc ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+ku  := pronoun-lex &
+	[ STEM < "ku" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER second,
+				NUM non-sg ],
+			CAT.HEAD.CASE acc ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+su  := pronoun-lex & 
+	[ STEM < "su" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER third,
+				NUM non-sg ],
+			CAT.HEAD.CASE acc ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+ 
+minì  := pronoun-lex &
+	[ STEM < "minì" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER first, GEN neut,
+				NUM sg ],
+			CAT.HEAD.CASE dat ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+ 
+makà  := pronoun-lex &
+	[ STEM < "maka" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER second,
+				NUM sg,
+				GEN masc ], 
+			CAT.HEAD.CASE dat ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+mikì  := pronoun-lex &
+	[ STEM < "mikì" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER second,
+				NUM sg,
+				GEN fem ] ,
+			CAT.HEAD.CASE dat ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+ 
+masà := pronoun-lex &
+	[ STEM < "masà" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER third,
+				NUM sg,
+				GEN masc ] ,
+			CAT.HEAD.CASE dat ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+matà := pronoun-lex &
+	[ STEM < "matà" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER third,
+				NUM sg,
+				GEN fem ] ,
+			CAT.HEAD.CASE dat ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+manà := pronoun-lex &
+	[ STEM < "manà" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER first,
+				NUM non-sg ] ,
+			CAT.HEAD.CASE dat ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+mukù := pronoun-lex &
+	[ STEM < "mukù" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER second,
+				NUM non-sg ] ,
+			    CAT.HEAD.CASE dat ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+musù := pronoun-lex &
+	[ STEM < "musù" >,
+	SYNSEM[LOCAL [ CONT.HOOK.INDEX.PNG [ PER third,
+				NUM non-sg ],
+			CAT.HEAD.CASE dat ],
+	LKEYS.KEYREL.PRED "_pronoun_n_rel"] ].
+
+
+;;; Verbs
+
+zoo := intransitive-verb-lex &  
+  [ STEM < "zoo" >,
+    SYNSEM [LKEYS.KEYREL.PRED "_come_v_rel"], INFLECTED - ] .
+
+dafà := transitive-verb-lex &  
+  [ STEM < "dafà" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_cook_v_rel"  ], INFLECTED -  ] .
+
+tàimàkee := transitive-verb-lex &  
+  [ STEM < "tàimàkee" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_help_v_rel"   ], INFLECTED - ] .
+
+booyè := transitive-verb-lex &   
+  [ STEM < "`booyè" >,
+    SYNSEM [LKEYS.KEYREL.PRED "_hide_v_rel"   ], INFLECTED -  ] .
+
+jee := transitive-verb-lex &  
+  [ STEM < "jee" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_go_v_rel"   ], INFLECTED -  ] .
+
+ròokee := transitive-verb-lex &  
+  [ STEM < "ròokee" >,
+    SYNSEM [LKEYS.KEYREL.PRED "_beg_v_rel"  ], INFLECTED -  ] .
+
+san_1 := transitive-verb-lex &  
+  [ STEM < "san" >,
+    SYNSEM [LKEYS.KEYREL.PRED "_know_v_rel"  ], INFLECTED -  ] .
+
+; ERB 2007-05-16 prop-comp know for GMMT
+
+san_2 := prop-comp-trverb-lex &
+  [ STEM < "san" >,
+    SYNSEM [LKEYS.KEYREL.PRED "_know_v_rel"  ], INFLECTED -  ] .
+
+
+kaamàa := transitive-verb-lex &  
+  [ STEM < "kaamàa" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_catch_v_rel"  ], INFLECTED -  ] .
+
+fadàa := dat-ditrans-verb-lex &  
+  [ STEM < "fad`àa" >,
+    SYNSEM [ LKEYS.KEYREL.PRED "_tell+to_v_rel"   ], INFLECTED -  ] .
+
+ki_verb := intransitive-verb-lex &  
+  [ STEM < "k`i" >,
+    SYNSEM[LKEYS.KEYREL.PRED "_refuse_v_rel"  ], INFLECTED -  ] .
+
+ginà := transitive-verb-lex &  
+  [ STEM < "ginà" >,
+    SYNSEM [LKEYS.KEYREL.PRED "_build_v_rel"  ], INFLECTED -  ] .
+
+kooyàa := dat-ditrans-verb-lex &  
+  [ STEM < "kooyàa" >,
+    SYNSEM[LKEYS.KEYREL.PRED "_teach_v_rel"  ], INFLECTED -  ] .
+
+sàyaa := transitive-verb-lex &  
+  [ STEM < "sàyaa" >,
+    SYNSEM[ LKEYS.KEYREL.PRED "_buy_v_rel"  ], INFLECTED -  ] .
+
+fashèe := intransitive-verb-lex &  
+  [ STEM < "fashèe" >,
+    SYNSEM[LKEYS.KEYREL.PRED "_become+broken_v_rel"], INFLECTED -  ] .
+
+gayàa := prop-comp-dtrverb-lex &  
+[ STEM < "gayàa" >,
+  SYNSEM[LKEYS.KEYREL.PRED "_tell_v_rel"  ], INFLECTED -  ].
+
+taunàa := prop-comp-trverb-lex &
+[ STEM <"taunàa">,
+  SYNSEM[LKEYS.KEYREL.PRED "_think_v_rel" ], INFLECTED -].
+
+tàmbayàa := ques-comp-trverb-lex &  
+ [ STEM <"tàmbayàa">,
+  SYNSEM[LKEYS.KEYREL.PRED "_ask_v_rel"  ], INFLECTED -  ].
+
+kaawoo_1 := transitive-verb-lex &  
+  [STEM <"kaawoo" >,
+  SYNSEM [LKEYS.KEYREL.PRED "_bring_v_rel"   ], INFLECTED - ].
+
+kàawooo_2 := transitive-verb-lex & 
+ [ STEM <"kàawoo">,
+  SYNSEM [ LOCAL.CAT [ MC na,
+		       HEAD.FORM imp ] ,
+	   LKEYS.KEYREL.PRED "_bring_v_rel" ], INFLECTED + ].
+
+ganii := transitive-verb-lex &  
+[ STEM < "ganii" >,
+  SYNSEM[LKEYS.KEYREL.PRED "_see_v_rel"  ], INFLECTED -  ].
+
+iyà := aux-verb-lex &  
+[ STEM <"iyà" >,
+  SYNSEM[LKEYS.KEYREL.PRED "_can_v_rel" ], INFLECTED - ].
+
+ci := opt-comp-transitive-verb-lex &  
+[ STEM <"ci">,
+  SYNSEM[LKEYS.KEYREL.PRED "_eat_v_rel"], INFLECTED - ].
+
+kar~àntàa := transitive-verb-lex &  
+[ STEM <"kar~àntàa">,
+  SYNSEM[LKEYS.KEYREL.PRED "_read_v_rel"], INFLECTED - ].
+
+cùutaa := transitive-verb-lex &  
+[ STEM <"cùutaa">,
+  SYNSEM[LKEYS.KEYREL.PRED "_hurt_v_rel" ], INFLECTED - ].
+
+kiraa := transitive-verb-lex &  
+[ STEM <"kir~aa">,
+  SYNSEM[LKEYS.KEYREL.PRED "_call_v_rel"], INFLECTED - ].
+
+soo1 := transitive-verb-lex &  
+[ STEM <"soo">,
+  SYNSEM[LKEYS.KEYREL.PRED "_want_v_rel"], INFLECTED - ].
+
+soo2 := transitive-verb-lex &  
+[ STEM <"soo">,
+  SYNSEM[LKEYS.KEYREL.PRED "_love_v_rel"], INFLECTED - ].
+
+daukaa := transitive-verb-lex &  
+[ STEM <"d`aukàa">,
+  SYNSEM[LKEYS.KEYREL.PRED "_take_v_rel"  ], INFLECTED - ].
+
+dagaa := intransitive-verb-lex &  
+[ STEM <"d`agàa">,
+  SYNSEM[LKEYS.KEYREL.PRED "_leave_v_rel"  ], INFLECTED - ].
+
+faadi  := intransitive-verb-lex &  
+[ STEM <"fàad`ì">,
+  SYNSEM[LKEYS.KEYREL.PRED "_fall_v_rel"  ], INFLECTED -].
+
+dìra := intransitive-verb-lex &  
+[ STEM <"dìra">,
+  SYNSEM[LKEYS.KEYREL.PRED "_jump_v_rel" ], INFLECTED -].
+
+kwaana := intransitive-verb-lex &   
+[ STEM <"kwaana">,
+  SYNSEM[LKEYS.KEYREL.PRED "_sleep_v_rel" ], INFLECTED -].
+
+gudù := intransitive-verb-lex &  
+[ STEM <"gudù">,
+  SYNSEM[LKEYS.KEYREL.PRED "_run_v_rel" ], INFLECTED -].
+
+baa_verb := dat-ditrans-verb-lex &  
+[ STEM <"baa">,
+  SYNSEM[LKEYS.KEYREL.PRED "_give_v_rel" ], INFLECTED -].
+
+kwallàfaa := transitive-verb-lex &
+[ STEM <"k`wallàfaa">,
+  SYNSEM[LKEYS.KEYREL.PRED "_like_v_rel" ], INFLECTED -].
+
+fàafaràa := transitive-verb-lex &
+[ STEM <"fàafaràa">,
+  SYNSEM [ LKEYS.KEYREL.PRED "_chase_v_rel" ], INFLECTED -].
+
+; ERB 2007-05-11 Adding imperative form here for test sentence.
+; Really should generalize.
+
+fàafaraa := transitive-verb-lex &
+[ STEM <"fàafaraa">,
+  SYNSEM [ LKEYS.KEYREL.PRED "_chase_v_rel",
+	   LOCAL.CAT [ MC na,
+		       HEAD.FORM imp ]],
+  INFLECTED + ].
+
+
+dòokaa := transitive-verb-lex &
+[ STEM <"dòokaa">,
+  SYNSEM [ LKEYS.KEYREL.PRED "_hit_v_rel" ], INFLECTED -].
+
+harbìì := transitive-verb-lex &
+[ STEM <"harbìì">,
+  SYNSEM [ LKEYS.KEYREL.PRED "_shoot_v_rel" ], INFLECTED -].
+
+zaunàa := intransitive-verb-lex &
+[ STEM <"zaunàa">,
+  SYNSEM [ LKEYS.KEYREL.PRED "_sit_v_rel" ], INFLECTED -].
+
+zagèe := intransitive-verb-lex &
+[ STEM <"zagèe">,
+  SYNSEM [LKEYS.KEYREL.PRED "_work_v_rel" ], INFLECTED -].
+
+ràfkanà := intransitive-verb-lex &
+[ STEM <"ràfkanà">,
+  SYNSEM [LKEYS.KEYREL.PRED "_forget_v_rel" ], INFLECTED -].
+
+mântaadà := prop-comp-dtrverb-lex &  
+[ STEM <"mântaa-dà">,
+  SYNSEM [LKEYS.KEYREL.PRED "_forget_v_rel" ], INFLECTED -].
+
+yin-wargii := intransitive-verb-lex &
+[ STEM <"yin-war~gii">,
+  SYNSEM [LKEYS.KEYREL.PRED "_play_v_rel" ], INFLECTED -].
+
+;;; Other
+
+;;;Adjectives
+ faraa := adjective-lex &
+[ STEM < "faraa" >,
+SYNSEM [ LKEYS.KEYREL.PRED "_white_a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem]] >]].
+
+farii := m-adjective-lex &
+[ STEM < "farii" >,
+SYNSEM [ LKEYS.KEYREL.PRED "_white_a_rel",
+	LOCAL.CAT.HEAD.MOD <[ LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc ]]> ]].
+
+kàramii := m-adjective-lex &
+[ STEM < "k`àramii" >,
+SYNSEM [ LKEYS.KEYREL.PRED "_small_a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [ GEN masc ]] >]].
+
+kàramaa := adjective-lex &
+[ STEM < "k`àramaa" >,
+SYNSEM [ LKEYS.KEYREL.PRED "_small_a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [ GEN fem ]] >]].
+
+bàbbaa := adjective-lex &
+[ STEM <"bàbbaa">,
+SYNSEM[ LKEYS.KEYREL.PRED "_big_a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [ NUM sg ]] > ]].
+
+muugùu := adjective-lex &
+[ STEM <"muugùu">,
+SYNSEM[ LKEYS.KEYREL.PRED "_bad_a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [GEN masc ]] > ]].
+
+kyàkkyaawaa := adjective-lex &
+[ STEM <"kyàkkyaawaa">,
+ SYNSEM[LKEYS.KEYREL.PRED "_beautiful_a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg]] > ]].
+
+saaboo := adjective-lex &
+[ STEM <"saaboo">,
+ SYNSEM[LKEYS.KEYREL.PRED "_new_a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg, GEN masc]] > ]].
+
+saabuwaa := adjective-lex &
+[ STEM <"saabuwaa">,
+ SYNSEM[LKEYS.KEYREL.PRED "_new_a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg, GEN fem]] > ]].
+doogoo  := adjective-lex &
+[ STEM <"doogoo">,
+ SYNSEM[LKEYS.KEYREL.PRED "_long_a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg, GEN masc]] > ]].
+
+dooguwa  := adjective-lex &
+[ STEM <"dooguwa">,
+ SYNSEM[LKEYS.KEYREL.PRED "_long_a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg, GEN fem]] > ]].
+guntuu  := adjective-lex &
+[ STEM <"guntuu">,
+ SYNSEM[LKEYS.KEYREL.PRED "__a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg, GEN masc]] > ]].
+
+guntaa  := adjective-lex &
+[ STEM <"guntaa">,
+ SYNSEM[LKEYS.KEYREL.PRED "_short_a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg, GEN fem]] > ]].
+tsoofoo  := adjective-lex &
+[ STEM <"tsoofoo">,
+ SYNSEM[LKEYS.KEYREL.PRED "_old_a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg, GEN masc]] > ]].
+
+tsoofaa  := adjective-lex &
+[ STEM <"tsoofoo">,
+ SYNSEM[LKEYS.KEYREL.PRED "_old_a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg, GEN fem]] > ]].
+dàkiikìi := adjective-lex &
+[ STEM <"dàk`iik`ìi">,
+ SYNSEM[LKEYS.KEYREL.PRED "_stupid_a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg, GEN masc]] > ]].
+
+dàkiikìyaa := adjective-lex &
+[ STEM <"dàk`iik`ìyaa">,
+ SYNSEM[LKEYS.KEYREL.PRED "_stupid_a_rel",
+      LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg, GEN fem]] > ]].
+
+jaa := adjective-lex &
+[ STEM <"jaa">,
+ SYNSEM[LKEYS.KEYREL.PRED "_red_a_rel",
+	LOCAL.CAT.HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg ]] > ]].
+
+;dà-yùnwa := adjective-lex &
+;[ STEM <"dà-yùnwa">,
+; SYNSEM[LKEYS.KEYREL.PRED "_hungry_a_rel",
+;	LOCAL.CAT [ HEAD.MOD < [LOCAL.CONT.HOOK.INDEX.PNG [NUM sg ]] >,
+;	 POSTHEAD +] ]].
+
+;;; ERB 2007-05-15 According to Kelsey, there is no simple adjective
+;;; for "hungry", and these are actually more like "with/having/owner
+;;; of hunger", but pretending they're adjectives for now.
+
+mài-yunwàà := adjective-lex &
+[ STEM < "mài-yunwàà" >,
+  SYNSEM [ LOCAL.CAT [ HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg,
+		       POSTHEAD + ],
+	   LKEYS.KEYREL.PRED "_hungry_a_rel" ]].
+
+mààsu-yunwàà := adjective-lex &
+[ STEM < "mààsu-yunwàà" >,
+  SYNSEM [ LOCAL.CAT [ HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM non-sg,
+		       POSTHEAD + ],
+	   LKEYS.KEYREL.PRED "_hungry_a_rel" ]].
+
+
+
+
+;; adverbs
+jiyà := adverb-lex &
+[ STEM < "jiyà" >,
+SYNSEM [ LKEYS.KEYREL.PRED "_yesterday_r_rel"]].
+
+sòosai := adverb-lex &
+[ STEM < "sòosai" >,
+SYNSEM [ LKEYS.KEYREL.PRED "_perfectly_r_rel"]].
+
+; ERB 2007-05-16 One translation of 'quickly' will do.
+
+zumbur := adverb-lex &
+[ STEM < "zumbur">,
+SYNSEM[LKEYS.KEYREL.PRED "_quickly_r_rel"]].
+
+gòòbe := adverb-lex &
+[ STEM < "gòobe">,
+SYNSEM[LKEYS.KEYREL.PRED "_tomorrow_r_rel"]].
+
+;maza := adverb-lex &
+;[ STEM <"maza">,
+;SYNSEM[LKEYS.KEYREL.PRED "_quickly_r_rel"]].
+
+sau-biyu :=  adverb-lex &
+[ STEM <"sau-biyu">,
+SYNSEM[LKEYS.KEYREL.PRED "_twice_r_rel"]].
+
+
+;;; Determiners
+
+wata := f-demonstrative-lex &
+  [ STEM < "wata" >,
+    SYNSEM [ LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ]].
+
+wani := m-demonstrative-lex &
+  [ STEM < "wani" >,
+    SYNSEM [ LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ]].
+
+; ERB 2007-05-15
+
+wadànnân := mp-demonstrative-lex &
+  [ STEM < "wad`ànnân" >,
+    SYNSEM [ LKEYS.ALTKEYREL.PRED proximal+dem_a_rel ]].
+
+

@@ -1,0 +1,9 @@
+int-comp-trigger-rule := generator-rule &
+ [ CONTEXT.RELS <! [ ARG2 handle & #h ] !>,
+   FLAGS [ EQUAL < #h >,
+	   TRIGGER "interrogative-comp" ]].
+
+decl-comp-trigger-rule := generator-rule &
+ [ CONTEXT.RELS <! [ ARG2 handle & #h ] !>,
+   FLAGS [ EQUAL < #h >,
+	   TRIGGER "declarative-comp" ]].

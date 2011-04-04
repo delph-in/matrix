@@ -1,0 +1,13 @@
+tverb1-subj-3fs n1
+tverb2-subj-3fs n2
+n1 tverb1 n2
+n1 tverb2 n2
+n1 tverb1-subj-3fs n2
+n1 tverb2-subj-3fs n2
+*n1 tverb1
+*n1 tverb2
+*tverb2
+*tverb1
+*tverb1 n2
+*tverb2 n2
+

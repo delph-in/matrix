@@ -1,0 +1,9 @@
+ad-trigger-rule := generator-rule &
+ [ CONTEXT.RELS <! [ ARG2 handle &#h ] !>,
+   FLAGS [ EQUAL < #h >,
+	   TRIGGER "ad" ]].
+
+hvort-trigger-rule := generator-rule &
+ [ CONTEXT.RELS <! [ ARG2 handle &#h ] !>,
+   FLAGS [ EQUAL < #h >,
+	   TRIGGER "hvort" ]].

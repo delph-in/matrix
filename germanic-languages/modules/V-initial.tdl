@@ -1,0 +1,8 @@
+;;;  Types for V-initial word order.
+;;;  Allows both orders of S and O.
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
+head-subj-phrase := basic-head-subj-phrase & head-initial.
+
+
+

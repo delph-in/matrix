@@ -1,0 +1,17 @@
+Lab 8 Grading Rubric
+
+		At least one extra parse for VP coordination ex.
+
+		L-IND and R-IND are unbound in NP coordination.
+		C-ARG does look like it's hooked up to the CONT.HOOK.INDEX,
+		though.  I suspect the overgeneration problem may
+		have been on the verb's side, perhaps?
+		
+		R-HNDL of event coordination unbound.
+
+
+		Generation wasn't working (for independent reasons,
+		but still).
+
+Your write up ends in mid-sentence...
+

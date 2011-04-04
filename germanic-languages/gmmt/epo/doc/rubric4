@@ -1,0 +1,47 @@
+Lab 4 Grading Rubric
+
+
+Notes:
+
+The definition of all-adjective-lex should inherit from
+intersective-mod-lex, rather than stipulating the INDEX/ARG1
+identity on its own.
+
+Your description of object INI makes it sound like objects
+can generally be omitted, in contradiction the previous paragraph.
+Is it lexically governed, or not?
+
+Marking for grammaticality should reflect reality
+as you understand it, and not the current state of your
+grammar.
+
+I'm not sure what this means:
+
+>Another exception is illustrated in the above example where the adverb
+>in "po ok ovojn tage" ('eight eggs a day') is attached to its left.
+
+or this:
+
+>could both mean either 'He spoke believably' or 'He probably
+>spoke'. (And the first of these could also mean 'It's probably he that
+>spoke'.)
+
+('It's probably that he spoke' is not grammatical for me in English.)
+
+
+From your description of the distribution of adverbs, it seems
+that there is some lexical specificity to their distribution.  That
+is, some adverbs can only have the most restricted distribution,
+some float more freely, and some only appear on the opposite side
+of their modifiees from most.  This would not be unusual, nor
+hard to handle (imagine separate lexical types for different
+kinds of adverbs with different MOD and POSTHEAD values.)
+It would also not be surprising, as you suggest, that scopal modifiers
+have different distributions from intersective ones.  
+
+It doesn't look like you are using [incr tsdb()], from what
+you turned in.  Are there specific issues keeping you from using
+it that I could assist with?  You have developed a nice testsuite,
+and I think you would find it very useful to have good visualization
+tools for your coverage of the testsuite.
+

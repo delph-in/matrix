@@ -1,0 +1,509 @@
+%
+% File ijcnlp-05.tex
+% February 2005
+
+\documentclass[11pt]{article}
+\usepackage{ijcnlp-05}
+\usepackage{times}
+\usepackage{latexsym}
+
+\newcommand{\hpsg}{\textsc{hpsg}}
+\newcommand{\lkb}{\textsc{lkb}}
+\newcommand{\lfg}{\textsc{lfg}}
+
+
+
+\title{Rapid Prototyping of Scalable Grammars: Towards Modularity in Extensions to a Language-Independent Core}
+
+\author{Emily M.~Bender\\
+  Department of Linguistics\\
+  University of Washington\\
+  Box 354340\\
+  Seattle WA 98195-4340 USA\\
+  {\tt ebender@u.washington.edu} \And
+  Dan Flickinger \\
+  Center for the Study of Language and Information\\
+  Stanford University\\
+  Stanford CA 94305-2150 USA\\
+  {\tt danf@csli.stanford.edu}}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We present a new way to simplify the construction
+of precise broad-coverage grammars, employing typologically-motivated,
+customizable extensions to a language-independent core
+grammar.  Each `module' represents a salient dimension of
+cross-linguistic variation,
+and
+presents the grammar developer with simple choices that result in
+automatically generated language-specific software.  We
+illustrate the approach for several phenomena
+and explore the interdependence of the modules.
+\end{abstract}
+
+\section{Introduction}
+
+Manual development of precise broad-coverage grammar implementations,
+useful in a range of natural language processing/understanding tasks,
+is a labor-intensive undertaking, requiring many years of work by
+highly trained linguists.  Many recent efforts toward reducing the
+time and level of expertise needed to produce a new grammar have
+focused on adapting an existing grammar of another language
+\cite{Butt-et-al-02,Kim:Dal:Kap:Kin:Mas:Ohk:03,Bat:Kru:Kru:ta}.  Our
+work on the `Grammar Matrix' has pursued an alternative approach,
+identifying a set of language-independent grammar constraints to which
+language-specific constraints can be added~\cite{Ben:Fli:Oe:02}.  This
+approach has the hitherto unexploited potential to benefit from the
+substantial theoretical work on language typology.
+%, which characterizes
+%linguistic phenomena and the varied mechanisms that languages employ
+%to realize them.  
+In this paper, we present a prototype Grammar Matrix
+customization system.  This system draws on phenomenon-specific
+modules encoding dimensions of linguistic variation, presents the
+grammar developer with simple choices for each phenomenon, and then
+automatically generates a working starter-grammar, incorporating both
+the cross-linguistic Matrix core and language-specific constraints.
+The prototype addresses basic word order, sentential
+negation, yes-no questions, and a small range of lexical entries.
+
+\section{The Grammar Matrix}
+
+Wide-coverage grammars representing deep linguistic analysis exist in
+several frameworks, including Head-Driven Phrase Structure Grammar
+(\hpsg), Lexical-Functional Grammar, and Lexicalized Tree Adjoining
+Grammar.  In \hpsg\ \cite{Pol:Sag:94}, the most extensive grammars are
+those of English \cite{Flickinger:00}, German
+\cite{Hinrichs:etal:97,Mue:Kap:00,Crysmannip}, and Japanese
+\cite{Siegel:00,Siegel:Bender:02}.  The Grammar Matrix is an attempt
+to distill the wisdom of existing grammars and document it in a form
+that can be used as the basis for new grammars. The main goals of the
+project are: (i) to develop in detail semantic representations and 
+the syntax-semantics interface, consistent with other work
+in \hpsg; (ii) to represent generalizations across linguistic objects
+and across languages; and (iii) to allow for very quick start-up as
+the Matrix is applied to new languages.
+%, using the inventory of types
+%and the built-in links to the \lkb\ grammar engineering environment
+%\cite{Copestake:02} and the {\sc pet} system \cite{Callmeier:00}.
+
+The original Grammar Matrix consisted of types defining the basic
+feature geometry, types associated with Minimal Recursion Semantics
+(e.g., \cite{Cop:Las:Fli:01}), types for lexical and syntactic rules,
+and configuration files for the \lkb\ grammar development environment
+\cite{Copestake:02} and the {\sc pet} system \cite{Callmeier:00}.
+Subsequent releases have refined the original types and developed a
+lexical hierarchy.  The constraints in this `core' Matrix are intended
+to be language-independent and monotonically extensible in any given
+grammar.  With the typology-based modules presented here, we extend
+the constraint definitions which can be supplied to grammar developers
+to those that capture generalizations holding only for subsets of
+languages.
+
+\section{Typology-based modules}
+
+In general, we find two kinds of typological variation across
+languages.  On the one hand, there are systems (formal or functional)
+which must be represented in every language.  For example, every
+language has some set of permissible word orders (formal) and a means
+of expressing sentential negation (functional).  On the other hand,
+there are linguistic phenomena which appear in only some languages,
+and are not typically conceptualized as alternative realizations of
+some universal function, phenomena such as noun
+incorporation, numeral classifiers, and auxiliary verbs. Each of these
+phenomena are found in recurring varieties that can be subjected to
+typological analysis (see, e.g., \cite{Mithun:84}).  Our approach is
+designed to handle both kinds of typological variation.
+
+As with earlier versions of the Matrix, we aim to support rapid
+prototyping of precision grammars that can scale up to broad-coverage
+(as have the NorSource \cite{Hel:Hau:03} and Modern Greek
+\cite{Kor:Neu:2003} grammars, based on early versions of the
+Matrix). This sets a high bar for the modules themselves, requiring
+them to be good early approximations which may need to be refined but
+not thrown out.  It also requires that the automatically generated
+grammar files maintain a high degree of readability so that they may
+be effectively modified.  In future work, we intend 
+to extend the system to allow the linguist to revise
+decisions in the face of new information or improved linguistic
+analyses.
+
+The core Matrix and modular extensions to it may appear analogous to
+the Principles and Parameters proposed by \newcite{Chomsky81} and
+others.  However, whereas Parameters are meant to be abstract
+`switches' which simultaneously control multiple different, apparently
+unrelated phenomena, the modules in the Matrix each encode the
+constraints necessary to handle one particular phenomenon.
+Nonetheless, this does not make the modules trivial: they need to be
+carefully designed in order to be mutually consistent, ideally across
+all possible combinations.  Our strategy is thus consistent with a
+bottom-up, data-driven investigation of linguistic universals and
+constraints on cross-linguistic variation.  As the number and breadth
+of implemented grammars grows, we expect linguistic predictions to
+emerge and become part of improved modules, particularly with respect
+to interactions among the distinct phenomena covered.  Our approach
+should in time be instrumental in assisting large-scale typological
+investigations (covering hundreds of languages), making use of the
+linguistically precise constraints encoded in these modules to uncover
+deeper and more subtle facts about languages.
+
+\section{Implementations of prototype system}
+\label{imp}
+
+%To explore the issues that will arise in developing
+%mutually consistent modules,
+We have implemented a prototype system with a small set of modules
+targeting basic word order, main-clause yes-no questions, and
+sentential negation.\footnote{\newcite{Dre:Ben:05} present a module
+for coordination which is integrated with those described here.}  The
+corresponding choices and a questionnaire for creating a small lexicon
+are presented to the user through an html form interface. A perl/cgi
+back-end produces a starter grammar from the user input and an
+internal knowledge base.  The resulting grammars can be used
+immediately to parse and generate a fragment of the target language.
+The system can be accessed at
+http://www.delph-in.net/matrix/modules.html.  This section describes
+its linguistic coverage.
+
+\subsection{Word order}
+
+The word order module addresses the so-called basic word order in a
+language: the relative order of subjects, verbs, and verbal
+complements.  Languages vary in their rigidity in this respect, 
+and the question of how to determine the basic word-order of a
+language is notoriously complex.  Nonetheless, we believe that most
+linguists working on linguistic description analyze some orders
+as primary and others as derived.  Thus the word order module is
+meant to capture the relative ordering
+of major constituents in clauses without
+word-order changing phenomena such as topicalization,
+extraposition, subject-verb inversion, etc.
+Modules for such phenomena will need to interact
+appropriately with the basic word-order module.
+
+The Matrix core grammar provides definitions of basic head-complement
+and head-subject schemata which are consistent with our
+implementation of compositional semantics \cite{Fli:Ben:03}, as well
+as definitions of head-initial and head-final phrase types.  
+%These
+%rules are also consistent with the {\hpsg}-style handling of
+%long-distance dependencies implemented in the Matrix.
+%Cut this footnote for space reasons
+%\footnote{We note that the long-distance dependency machinery
+%might be best treated as a module itself rather than part of the core
+%grammar.}  
+The word order module
+creates subtypes joining the head-complement and
+head-subject schemata with the types specifying head/dependent
+order, creates instances of those types as required by
+the \lkb\ parser, and constrains the rules to eliminate spurious ambiguity in the case of
+free word order.  It currently handles SOV, SVO,
+VSO, VOS, OVS, OSV, V-final, V-initial, and free word order.  We leave
+to future work variations such as V2 order, differing word order
+in main v.\ subordinate clauses, 
+and flexible ordering among
+complements in otherwise strict word order languages.  
+
+\subsection{Yes-no questions}
+
+For yes-no questions, we implement four alternatives:
+inversion of the subject and a main or auxiliary verb relative
+to declarative word order and sentence-initial
+or final question particles.
+
+%EB: Comment out the following since we don't really do anything with this
+%%; and (iv) use of intonation alone to indicate a question.
+
+Inversion of the subject and the main verb is implemented with a
+lexical rule which relocates the subject (the value of {\sc subj} in
+the valence specifications) to be the first on the {\sc comps} list,
+and further assigns a positive value for an additional feature {\sc
+inv} (inverted) on verbs.  This feature may well have independent
+syntactic motivation in the language, but is in any case used here so
+the declarative/interrogative distinction can be made in the semantics
+once the clause is constructed.
+Subject-aux inversion is a minor extension of the basic inversion
+type, constraining the lexical rule to only apply to auxiliary
+verbs.  This module handles `support' verbs like {\it do} in English
+in not licensing inversion with main verbs, while
+licensing similar strings with a semantically empty support verb
+(if it is in the lexicon).  
+%There is no mechanism as yet to
+%bar such `support' verbs from neutral declarative sentences.
+The third type of mechanism employs a distinct question particle, here
+treated as a pre- or post-modifying sentence adverb.  The grammar developer is
+prompted for this positional distinction, and for the spelling of the
+particle; the code for the relevant lexical entry is then
+autogenerated, instantiating a question particle type which supplies
+the remaining syntactic and semantic constraints needed.
+
+Future work on this module includes support for `intonation questions',
+where the same string can be associated with either proposition or question
+semantics, as well as the integration of declarative/interrogative punctuation
+contrasts.
+
+\subsection{Sentential negation}
+
+The sentential negation module handles two general negation strategies,
+several variants on each, and allows for both to coexist in a single grammar.
+
+The first strategy is negation via verbal inflection.  For this
+strategy, the grammar developer specifies whether the inflection
+attaches to main verbs, auxiliaries, or either; whether it is a prefix
+or a suffix; and the form of the affix.  We currently only allow for
+strictly concatenative morphology.  In a more fully developed system,
+the syntax-semantics modules here would be interfaced with a separate
+means of specifying morphophonology (cf.\ \cite{Ben:Goo:05}).
+
+The second strategy is negation via a negative adverb, with two
+sub-cases: The negative adverb may be an independent modifier (of V,
+VP, or S and pre- or post-head) or it may be a
+selected complement of the verb (main verbs only, auxiliaries only, or
+both) \cite{Kim00}.  The grammar developer specifies the form of the adverb.
+
+Neither, either or both of these strategies may be selected.
+If neither, the grammar
+produced will not contain an analysis of negation.  If both,
+the grammar developer must specify how the strategies
+interact, from among five choices:
+(i) the two strategies are in complementary distribution, (ii) the two
+strategies can appear independently or together, (iii) both inflection
+and an adverb are required to express sentential negation, (iv) the
+adverb is obligatory, but it may appear with or without the
+inflection, and (v) the inflection is obligatory, but it may appear
+with or without the adverb.
+
+In the generated grammars, independent adverbs are implemented by
+adding appropriate lexical types and lexical entries.  Selected
+adverbs and inflection are handled via lexical rules similar to those
+presented in \cite{Sag:Was:Ben:03}.  For example, in a language where
+sentential negation can be expressed by inflection alone or inflection
+in combination with a (selected) adverb, we generate two lexical
+rules.  One changes the form of the verb and adds the negative
+semantics.  The other changes the form of the verb and adds the
+negative adverb to its complements list.
+
+\subsection{Lexicon}
+
+As \hpsg\ is a strongly lexicalist theory, words
+tend to carry quite a bit of information.  This information is encoded
+in lexical types; lexical entries merely specify
+the type they instantiate, their orthographic form, and their semantic
+predicate.  Many of the constraints required (e.g., for the linking of
+syntactic to semantic arguments) are already provided by the core
+Matrix.  However, there is also cross-linguistic variation.
+
+We ask the grammar developer to specify two nouns and two verbs (one
+transitive and one intransitive), as well as an auxiliary, two
+determiners, two case-marking adpositions, a negative adverb and a
+question particle, if appropriate.  Nouns are specified as to whether
+they require, allow, or disallow determiners.  Verbs are specified as
+to whether each argument is expressed as an NP or a PP, and optionally
+for an additional (non-finite) form.  Auxiliaries are specified as
+to whether they introduce independent predicates or only carry
+tense/aspect; take S, VP or V complements; appear to the left, right
+or either side of their complements; and take NP or PP subjects.
+Case-marking adpositions must be specified as either prepositions or
+postpositions.  Finally, the questionnaire requires orthographic
+forms and predicate names.  Note that the forms are assumed to be
+fully inflected (modulo negation), support
+morphological processes awaiting future work.
+
+We use this information and the knowledge
+base to produce a set of lexical types inheriting from the types
+defined in the core Matrix and specifying appropriate
+language-specific constraints, and a set of lexical entries.
+
+%% \subsection{Summary}
+
+%% This section has briefly described the coverage of our existing
+%% modules and customization interface, which may be accessed at:
+%% http://www.delph-in.net/matrix/modules.html. We now turn to 
+%% what the development of this system has taught us about the
+%% interdependence of modules.
+
+\section{Limits of modularity}
+
+Recent computational work in \hpsg\ has asked whether
+different parts of a single grammar can be abstracted
+into separate, independent modules, either for processing 
+%(parsing, generation) 
+\cite{Kasper:Krieger:96,Theofilidis:etal:97} or grammar
+development \cite{Keselj:01}.  Our work is most similar to Ke{\v{s}}elj's
+though we are pursuing different goals: Ke{\v{s}}elj\nocite{Keselj:01}
+is looking to support a division of labor among multiple
+individuals working on the same grammar and to support variants of a
+single grammar for different domains.  
+%Ke{\v{s}}elj\nocite{Keselj:01} models his modules on object-oriented
+%programming, allowing 
+His modules each have private and public features and types, and he
+illustrates the approach with a small-scale question answering system.
+In contrast, we are approaching
+this issue from the perspective of reuse of grammar code in the
+context of multilingual grammar engineering (a possibility suggested,
+but not developed, by Theofilidis et al).
+
+Our notion of modularity is influenced by the following constraints:
+(i) The questions in the customization interface must be sensible to
+the working linguist; (ii) The resulting starter grammars must be
+highly readable so that they can be extended by the grammar developer
+(typically only one per grammar); and (iii) \hpsg\ practice values capturing linguistic generalizations by having single
+types encode many different constraints and, ideally, single
+constraints contribute to the analysis of many different phenomena.
+% and (iv) The
+%modules themselves must be reasonably easy to maintain, which
+%precludes precompiling solutions for each module as it would be used
+%in the context of relevant choices in other dimensions.
+
+
+Even with the modest linguistic coverage of the existing
+system, we have found many cases of non-trivial interaction between
+the modules: Our phrase structure rules, following \hpsg\ practice,
+capture cross-categorial generalizations: if both verbs and
+adpositions follow their complements, then a single complement-head
+rule serves for both.  However, few languages (if any) are completely
+consistent in their ordering of heads and dependents.  Thus, before
+defining the types and instances for these rules, we must determine
+whether the fragment requires auxiliaries (for negation or yes-no
+questions) or case-marking adpositions, and whether their order with
+respect to their complements is consistent with that of main verbs.  A
+second example is the lexical type for main verbs, whose definition
+depends on whether the language has auxiliaries (requiring a feature
+{\sc aux} distinguishing the two kinds of verbs and a feature {\sc
+form} governing the distribution of finite and non-finite verbs).
+%This situation will only get
+%more complex as we add modules, e.g., for case and agreement. 
+As a third example, the negation and question modules each have
+options requiring auxiliaries, but we must posit the associated types
+and constraints at most once.
+
+Thus we find that, for our purposes, the relevant notion of modularity
+is modularity from the point of view of the linguist who uses the
+system to create a starter grammar.  To support this, we strive to
+make the questions we ask of the linguist be as independent of each
+other as possible, and to make it clear when one particular choice
+(e.g., negation as inflection) requires further information (suffix
+v.\ prefix).  The fact that the questions we present to
+the linguist don't correspond to neatly isolated parts of the
+underlying knowledge base is not a failure of the approach, but
+rather a reflection of the complexity of language.
+% de Saussure's
+%{\it syst\`eme o\`u tout se tient}.  
+The very interconnectedness of
+grammatical phenomena is at the heart of research in theoretical
+syntax.  We intend our system to provide a data-driven
+cross-linguistic exploration of that interconnection.
+
+\section{Validation of prototype system}
+
+
+To verify the mutual consistency of the modules developed so far 
+and to illustrate their applicability to a interesting range of
+languages, we developed abstract test suites for seven languages.
+This convenience sample of languages is not representative, either
+typologically or genetically.  The grammatical and ungrammatical
+examples in each test suite use a small, artificial lexicon, and
+reflect the typological properties of each language along the
+dimensions of basic word order, sentential negation,
+and yes-no questions
+(Table~\ref{testsuitetable}). 
+Table~\ref{testresults} presents the performance
+of each grammar (as generated by our prototype system with appropriate
+input) on its associated test suite.
+
+\begin{table}[ht]
+\begin{center}
+\small
+\begin{tabular}{llll}
+\hline
+Language\footnotemark & Order & Negation & Yes-no Q\footnotemark \\ \hline
+English  & SVO	      & aux-selected adv& aux inv \\
+Hindi    & SOV        & pre-V adv 	& S-init part.\\
+Japanese & V-final    & verbal suffix   & S-final part\\
+Mandarin & SVO	      & pre-V adv	& S-final part,\\
+         &            &                 &  A-not-A \\
+Polish   & free	      & pre-V adv       & S-init part  \\
+Slave    & SOV        & post-V adv	& S-init part \\
+Spanish  & SVO	      & pre-V adv	& main V inv \\ \hline
+\end{tabular}\vspace{-10pt}
+\end{center}
+\caption{Languages used in testing}
+\label{testsuitetable}
+\end{table}
+
+\addtocounter{footnote}{-1}
+\footnotetext{Sources: Hindi: Snell and Weightman, 2000\nocite{Sne:Wei:00},
+Mandarin: Li and Thompson, 1981\nocite{Li*81}, Polish: Adam Przepi\'{o}rkowski, p.c.,
+Slave (Athabaskan): Rice, 1989\nocite{Rice89}}
+\addtocounter{footnote}{1}
+\footnotetext{In addition to intonation questions, if any.}
+
+\begin{table}[ht]
+\begin{center}
+\small
+\begin{tabular}{lrrrr}
+\hline
+Language & Pos. & Coverage & Neg. & Overgen. \\ \hline
+English  & 5	     & 100\%	& 10 & 10\%\\
+Hindi    & 5         & 100\% 	& 10 & 0\% \\
+Japanese & 6         & 100\%    & 10 & 0\% \\
+Mandarin & 4	     &  75\%	&  9 & 0\% \\
+Polish   & 14	     & 100\%    &  8 & 0\% \\
+Slave    & 3         & 100\%	&  6 & 0\% \\
+Spanish  & 5         & 100\%	&  7 & 0\% \\ \hline
+\end{tabular}\vspace{-10pt}
+\end{center}
+\caption{Parsing evaluation results}
+\label{testresults}
+\end{table}
+
+While these test suites are quite modest, we believe they show that
+the prototype system is able to produce good first-pass grammar
+fragments for an interesting variety of languages.  More study is
+needed to develop a means of testing the
+cross-compatibility of all choices on all modules, to evaluate
+the coverage against a typologically justified sample,
+and to gauge the success of this strategy in producing 
+grammars which are comprehensible to beginning grammar developers.
+
+\section{Conclusion and outlook}
+
+We have described a method for extending a language-independent core
+grammar like the Grammar Matrix with modules handling
+cross-linguistically variable but still recurring patterns.  This
+method allows for extremely rapid prototyping of deep precision
+grammars in such a way that the prototypes themselves can serve as the
+basis for sustained development.  We envision at least four potential
+uses for this kind of grammar prototyping: (i) in pedagogical
+contexts, where it would allow grammar engineering students to more
+quickly work on cutting-edge problems, (ii) in language documentation,
+where a documentary linguist in the field might be collaborating
+remotely with a grammar engineer to propose and test hypotheses, (iii)
+in leveraging the results from economically powerful languages to
+reduce the cost of creating resources for minority languages, 
+%(iv) in
+%presenting typological properties in machine-readable format to
+%improve ML algorithms which might need to be tuned differently for
+%different kinds of languages, and 
+and (iv) in supporting typological or
+comparative studies of linguistic phenomena or interactions between
+phenomena across languages.
+
+\section*{Acknowledgments}
+
+We thank Scott Drellishak, Stephan Oepen, Laurie Poulson, and the 2004
+and 2005 multilingual grammar engineering classes at the University of
+Washington for valuable input and NTT Communication Science
+Laboratories for their support through a grant to CSLI (Stanford). All
+remaining errors are our own.
+
+\bibliographystyle{ijc}
+%% TODO: use base name of your .bib file
+\bibliography{modules}     
+
+\end{document}

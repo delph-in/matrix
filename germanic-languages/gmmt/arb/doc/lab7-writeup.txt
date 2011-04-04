@@ -1,0 +1,192 @@
+Ryan Georgi
+Ling 567
+
+Lab 7 Writeup
+
+----===== MATRIX YES/NO QUESTION ====---
+
+Thankfully, from what I've read in both my primary grammar and other sources,
+the question marking in Arabic is quite regular, with simply the particles /a/
+or /hal/ prefixing the matrix clause. (The distinction between the two
+is one of habitual aspect; for simplicity, I'm sticking with the more
+general (non-habitual) particle, /a/).
+
+However, as I will get to later, these complementizers are not acceptable
+in embedded clauses, so I placed the constraint that it be [MC +] and the
+constraint on my embedding-verb-lex that its complement be [MC -], which
+successfully allows my embed-comp-lex (constrained to MC -) but not the
+matrix-clause qpart-lex-item.
+
+Examples:
+
+a     t-ins.arifu   ?al-bint-u
+QUES  3FSG-leaves   the-girl
+'Does the girl leave?'
+
+  ... and
+
+y-istakh   ?al-rajul-u  ?in ?al-bint-u    t-ins.arifu
+3MSG-thinks the-man-NOM  if  the-girl-NOM  3FSG-leaves
+'The man asks if/whether the girl leaves'
+
+... but not
+
+y-aftikir  ?al-rajul-u   a     ?al-bint-u  t-ins.arifu
+3MSG-thinks the-man-NOM  QUES  the-girl-NOM  3FSG-leaves
+'* The man asks if/whether the girl leaves'
+
+.. nor
+
+?in   t-ins.arifu ?al-bint-u
+QUES  3FSG-leave   the-girl-NOM
+'* Did the girl leave?'
+
+The qpart-lex-item also contributes [SF ques] to the matrix clause, which
+shows up correctly in the MRS.
+
+
+----===== EMBEDDED CLAUSES & COMPLEMENTIZERS ====----
+
+It appears that the usual suspects for embedding clauses do much
+the same in Arabic, such as believe, want, say. I'm not sure of the analysis
+for "missing" complementizers in English ("I think -NULL- should..."), but
+I didn't find any examples in my grammar, so I won't worry about optionality.
+
+The complementizers are as follows:
+
+?anna ?an (p. 278) -- 'that' (declaratives)
+
+?in, ?iDa:, or law -- 'if/whether' (interrogatives)
+
+?anna and ?in are followed by S(V)COMP, and ?an by VSCOMP (or VCOMPS)
+
+?iDa:, law, and ?an all have, again, various different aspectual meanings
+that I'm not prepared to cover, so I'll stick with ?anna and ?in.
+
+The multiple forms of the above complementizers correspond with variations
+in word order and different shades of semantics, along the lines of
+what was known and when, as well as the speaker's evaluation of the 
+belief states of the clause being embedded. The most common (and
+generic) usage, however, is ?anna or ?in followed by a S(V)O clause.
+
+To handle these forms, I created two types; interr-comp-lex and
+declar-comp-lex, which constrained their SF to ques/prop, respectively.
+These types both inherited from embed-comp-lex, which adds the constraint
+[MC -], so that these embedding complementizers can't appear in the matrix
+clause.
+
+I also made seperate types for the verbs, depending on whether they take
+interrogatives (ask) or declaratives (think), and gave them a supertype
+embedding-verb-lex which constrains the SF of its COMPS item to be
+the same as its own, as well as [MC -]. This ensured that the if/whether
+and 'that' appeared with the right verbs.
+
+Examples:
+
+y-istakh    ?al-rajul-u  ?in ?al-bint-u   t-ins.arifu
+3MSG-asks  the-MAN-NOM  whether  the-girl-NOM 3FSG-leaves
+' The man asks if/whether the girl leaves'
+
+... and
+
+y-aftikir    ?al-rajul-u  ?anna ?al-bint-u   t-ins.arifu
+3MSG-thinks  the-MAN-NOM  that  the-girl-NOM 3FSG-leaves
+'The man thinks that the girl leaves'
+
+...but not
+
+yistakh     ?arrajulu    ?anna lbintu       tins.arifu
+y-istakh    ?al-rajul-u  ?anna ?al-bint-u   t-ins.arifu
+3MSG-asks  the-MAN-NOM  that  the-girl-NOM 3FSG-leaves
+'* The man asks if/whether the girl leaves'
+
+ ... or ...
+
+yaftikir     ?arrajulu    ?in lbintu       tins.arifu
+y-aftikir    ?al-rajul-u  ?in ?al-bint-u   t-ins.arifu
+3MSG-thinks  the-MAN-NOM  whether  the-girl-NOM 3FSG-leaves
+'* The man thinks that the girl leaves'
+
+In addition to getting agreement for SF, there was also a little
+legwork in getting the word order to change within the embedded clause.
+
+My solution might not be ideal considering the deflected agreement I've
+still to implement, as it currently blocks the alternate SVO word order
+from occurring in the matrix clause.
+
+What I did was to simply create an 'alternate' to the head-subj-phrase
+in my types that, instead of being decl-head-subj-phrase & head-initial
+is ...& head-final . I called this type embedded-phrase and constrained
+it to be [ MC - ] .
+
+Also, to keep the head-subj rule from applying
+and allowing VSO in embedded clauses, I added the constraint to the
+standard head-subj rule that it must be [ MC + ].
+
+Ultimately, this kept a constraint of VSO in the matrix clause, but
+made word order in embedded clauses a mandatory SVO.
+
+Examples:
+
+y-aftikir    ?al-rajul-u  ?anna ?al-bint-u   t-ins.arifu
+3MSG-thinks  the-MAN-NOM  that  the-girl-NOM 3FSG-leaves
+'the man thinks that the girl leaves'
+
+...but not
+
+y-aftikir    ?al-rajul-u  ?anna t-ins.arifu ?al-bint-u
+3MSG-thinks  the-MAN-NOM  that  3FSG-leaves the-girl-NOM
+'*The man thinks that the girl leaves'
+
+
+------======== IMPERATIVES =======------------
+
+Since verbs and verbal nouns are very close in the semitic
+languages, there appear to be a number of ways to form constructions
+with meanings similar to the second-person imperative using forms
+like jussive verbal nouns, but I'm going to stick with the only
+certainly imperative construction given by the book, which, similar
+to English, is a special verb form without the subject.
+
+In Arabic, this special verb form is the zero-marked stem of the
+verb, so I made an imperative-lex-rule lrule of type 
+const-add-only-ltol-rule that added the constraint [ FORM imp ]
+to the verb.
+
+By also adding a subtype imperative-phrase that inherited from
+imp-head-opt-subj-phrase and constrained the HEAD-DTR's FORM to imp,
+this took care of intransitive imperatives.
+
+As I posted in Epost, however, there were issues in getting transitives
+to work. I changed basic-head-opt-subj-phrase not to constrain its
+COMPS list to be empty, and this seemed to fix it. I am now, however,
+getting some strange things in generation when I check my imperatives
+where I get suffixes standing alone before the object. I got imperatives
+working a little late, so I haven't had time to check into this, but
+I think I just need to constrain some irules a bit better.
+
+I also have a problem where these irules don't appear to be applying
+as mandatory, so zero-marked verbs seem to parse just fine everywhere.
+Thus, I haven't been able to ensure that they are correctly staying
+out of embedded clauses. Below are some examples that should be
+a test case, however.
+
+y-istakh    ?al-rajul-u  ?in ?al-bint-u       t-ins.arifu
+3MSG-asks  the-MAN-NOM  whether  the-girl-NOM 3FSG-leaves
+' The man asks if/whether the girl leaves'
+
+... but not
+
+y-istakh    ?al-rajul-u  ?in ?al-bint-u        ins.arifu
+3MSG-asks  the-MAN-NOM  whether  the-girl-NOM  leaves
+'* The man asks if/whether the girl leaves'
+
+---=== WRAP UP =====-------
+
+Though the numbers aren't quite comparable to other labs, since
+I've been adding test data, my grammar now says its coverage is
+31 examples, for an overall coverage of 40%.
+
+I've still some overgeneration problems to solve, and really to
+boost coverage I need to add in the copulas, but this is quite
+an improvement!

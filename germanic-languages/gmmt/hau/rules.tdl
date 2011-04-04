@@ -1,0 +1,47 @@
+head-comp := head-comp-phrase .
+
+subj-head := subj-head-phrase .
+
+head-spec := head-spec-phrase .
+
+;bare-np := bare-np-phrase .
+
+indef-bare-np := indef-bare-np-phrase.
+def+dem-bare-np := def+dem-bare-np-phrase.
+
+; Rule instances for head-modifier structures. Corresponding types
+; are defined in matrix.tdl.  The matrix customization script did
+; not need to add any further constraints, so no corresponding tyes
+; appear in hausa.tdl
+
+head-adj-int := head-adj-int-phrase .
+
+adj-head-int := adj-head-int-phrase .
+
+head-adj-scop := head-adj-scop-phrase .
+
+adj-head-scop := adj-head-scop-phrase .
+
+np1-top-coord := np1-top-coord-rule .
+
+np1-bottom-coord := np1-bottom-coord-rule .
+
+vp1-top-coord := vp1-top-coord-rule .
+
+vp1-bottom-coord := vp1-bottom-coord-rule .
+
+;;subject pro-drop
+opt-subj :=  head-opt-subj-phrase.
+
+;; questionmarkers at end of sentence
+head-final-qmarker := head-final-head-comp-phrase.
+
+;; imperative
+imper-phrase := imperative-phrase.
+
+;;negated sentence
+neg-phrase := negation-phrase.
+
+;; ERB 2007-05-11 Object pro-drop
+
+head-opt-comp := basic-head-opt-comp-phrase.
