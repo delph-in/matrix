@@ -651,9 +651,16 @@ class MatrixDefFile:
   # Turn a list of lines containing matrix definitions into a string
   # containing HTML.
   def defs_to_html(self, lines, choices, vr, prefix, vars):
+
+    http_cookie = os.getenv('HTTP_COOKIE')
+
+    cookie = {}
+    for c in http_cookie.split(';'):
+      (name, value) = c.split('=', 1)
+      cookie[name.strip()] = value
+
     html = ''
     i = 0
-
     while i < len(lines):
       word = tokenize_def(replace_vars(lines[i], vars))
       if len(word) == 0:
@@ -856,11 +863,22 @@ class MatrixDefFile:
                   new_prefix[:-1].find('require')==-1 and \
                   new_prefix[:-1].find('forbid')==-1 and \
                   new_prefix[:-1].find('lri')==-1:
-            html += '<a id="' + new_prefix[:-1] + 'button" ' + \
+
+            if cookie.get(new_prefix[:-1]+'button',"block") == "none":
+                html += '<a id="' + new_prefix[:-1] + 'button" ' + \
+                    'onclick="toggle_display_lex(\'' + \
+                    new_prefix[:-1] + '\',\'' + new_prefix[:-1] + 'button\')"' + \
+                    '>&#9658; '+new_prefix[:-1]+'<br /></a>'
+            else:
+              html += '<a id="' + new_prefix[:-1] + 'button" ' + \
                     'onclick="toggle_display_lex(\'' + \
                     new_prefix[:-1] + '\',\'' + new_prefix[:-1] + 'button\')"' + \
                     '>&#9660; '+new_prefix[:-1]+'</a>'
-          html += '<div class="iterator" id="' + new_prefix[:-1] + '">\n'
+
+          if cookie.get(new_prefix[:-1], "block") == "block":
+            html += '<div class="iterator" id="' + new_prefix[:-1] + '">\n'
+          else:
+            html += '<div class="iterator" style="display: none" id="' + new_prefix[:-1] + '">\n'
           html += html_delbutton(new_prefix[:-1])
           html += '<div class="iterframe">'
           html += self.defs_to_html(lines[beg:end],
@@ -951,7 +969,6 @@ class MatrixDefFile:
                               '', {})
 
     print html_input(vr, 'button', '', 'Submit', False, '<p>', '', onclick='submit_main()')
-#    print html_input(vr, 'button', '', 'Save', False, onclick='save_form(\''+section+'\')')
     print html_input(vr, 'submit', '', 'Save', False)
     print html_input(vr, 'button', '', 'Clear', False, '', '</p>', '',
                      'clear_form()')

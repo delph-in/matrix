@@ -112,17 +112,12 @@ function clear_form()
 function save_form(section)
 {
   var elm = document.getElementsByTagName('form')[0];
-  //elm.action = "matrix.cgi?subpage="+section;
   var inp = document.createElement('input');
   inp.type = "hidden";
   inp.name="subpage";
   inp.value=section;
   elm.appendChild(inp);
   elm.submit();
-      //  var form = elements[];
-    //form.innerHTML="Hello, World.";
-      //form.action = ("matrix.cgi?subpage="+section);
-    //form.submit();
 }
 
 // submit_main()
@@ -148,9 +143,13 @@ function toggle_display_lex(element_id, button_id)
   if (p.style.display == 'none') {
     p.style.display = 'block';
     b.innerHTML = '&#9660; '+element_id + '<br />';
+    document.cookie = element_id+"=block";
+    document.cookie = button_id+"=block";
   } else {
     p.style.display = 'none';
     b.innerHTML = '&#9658; '+element_id + '<br />';
+    document.cookie = element_id+"=none";
+    document.cookie = button_id+"=none";
   }
 }
 
