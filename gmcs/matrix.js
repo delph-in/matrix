@@ -886,19 +886,42 @@ function multi_keypress(e, select_name)
 ////////////////////////////////////////////////////////////
 
 // Fill pred elements with values based on the orth element
-function fill_pred(name,pred)
+function fill_pred(name,pos)
 {
   var elms = document.getElementsByName(name+'_orth');
+  var word = '';
   for (var i = 0; i < elms.length; i++) {
     if (elms[i].type == "text") {
-      var val = elms[i].value;
+      word = elms[i].value;
     }
   }
-  val = "_"+val+pred;
+  var pred = "_"+word+"_"+pos+"_rel";
   elms = document.getElementsByName(name+'_pred');
   for (var i = 0; i < elms.length; i++) {
-    if (elms[i].type == "text" && elms[i].value == '') {
-      elms[i].value = val;
+    if (elms[i].type == "text" && elms[i].value == '' && word != '') {
+      elms[i].value = pred;
+      var text_elms = document.getElementsByTagName('input');
+      var match_inds = [];
+      for (var j = 0; j < text_elms.length; j++) {
+        if (text_elms[j].type == "text" && text_elms[j].value.match(new RegExp("^_"+word+"_"+pos+"_?[0-9]*_rel$",""))){
+          match_inds.push(j);
+        }  
+      }
+      if (match_inds.length > 1){
+        for (var j = 0; j < match_inds.length; j++) {
+          text_elms[match_inds[j]].value = pred.replace("_rel", "_"+(j+1)+"_rel");
+        }
+      }
+    }
+  }
+}
+
+function aux_fill_pred(name, stem, pos)
+{
+  var elms = document.getElementsByName(name+"_sem");
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].value == "add-pred" && elms[i].checked) {
+      fill_pred(name+"_"+stem, pos);
     }
   }
 }

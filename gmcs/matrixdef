@@ -1072,7 +1072,7 @@ BeginIter noun{i} "a Noun Type" 1
 
   BeginIter stem{j} "a Stem" 1
 
-    Text orth "Noun {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('noun{i}_stem{j}', '_n_rel')"
+    Text orth "Noun {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('noun{i}_stem{j}', 'n')"
 
     Text pred "Noun {i} stem {j} predicate" " Predicate: " "" 30
 
@@ -1226,7 +1226,7 @@ BeginIter verb{i} "a Verb Type" 2
   Label "Stems:"
   BeginIter stem{j} "a Stem" 1
 
-    Text orth "Verb {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('verb{i}_stem{j}', '_v_rel')"
+    Text orth "Verb {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('verb{i}_stem{j}', 'v')"
 
     Text pred "Verb {i} stem {j} predicate" " Predicate: " "" 30
 
@@ -1328,7 +1328,7 @@ BeginIter aux{i} "an Auxiliary Type"
 
   BeginIter stem{j} "a Stem" 1
 
-    Text orth "Aux {i} stem {j} spelling" "Spelling: " "" 30
+    Text orth "Aux {i} stem {j} spelling" "Spelling: " "" 30 "aux_fill_pred('aux{i}', 'stem{j}', 'v')"
 
     Text pred "Aux {i} stem {j} predicate" "&nbsp;&nbsp;&nbsp;&nbsp;Predicate (if applicable): " "" 30
 
@@ -1481,7 +1481,7 @@ BeginIter det{i} "a Determiner"
 
   BeginIter stem{j} "a Stem" 1
 
-    Text orth "Determiner {i} spelling" "Spelling: " "" 30
+    Text orth "Determiner {i} spelling" "Spelling: " "" 30 "fill_pred('det{i}_stem{j}', 'a')"
 
     Text pred "Determiner {i} predicate" " Predicate: " "<br>" 30
 
