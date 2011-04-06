@@ -74,8 +74,8 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                 [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
     mylang.add(typedef)
     if vcluster:
-      mylang.add('main-verb-lex := [ SYNSEM.VC + ].')
-      mylang.add('aux-lex := [ SYNSEM.VC - ].')
+      mylang.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
+      mylang.add('aux-lex := [ SYNSEM.LOCAL.CAT.VC - ].')
   else:
     #mainorverbtype = 'verb-lex'
     vcluster = False
