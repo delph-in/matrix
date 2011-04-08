@@ -7,7 +7,7 @@ from gmcs.linglib.parameters import determine_vcluster
 #   about basic word order, including information about adpositions
 #   and auxiliaries.
 
-def customize_word_order(mylang, ch, rules):
+def customize_word_order(mylang, ch, rules, lrules):
 
   wo = ch.get('word-order')
 
@@ -34,7 +34,7 @@ def customize_word_order(mylang, ch, rules):
 #clause type (matrix v. subordinate) and dependent type.
 
   orders = determine_consistent_order(wo,hc,ch)
-  specialize_word_order(hc,orders,mylang,ch,rules)
+  specialize_word_order(hc,orders,mylang,ch,rules, lrules)
 
 
 
@@ -347,7 +347,7 @@ in for head-adjunct phrases here:',
 
 
 
-def specialize_word_order(hc,orders, mylang, ch, rules):
+def specialize_word_order(hc,orders, mylang, ch, rules, lrules):
 
   adp = orders['adp']
   aux = orders['aux']
@@ -839,7 +839,7 @@ def add_basic_phrases_v2_with_cluster(ch, mylang):
   mylang.add('subj-head-vc-phrase := decl-head-subj-phrase & head-final-invc & nonverbal-comp-phrase.') 
 
   create_argument_composition_phrases(ch, mylang)
-  create_arg_plus_verb_phrases(ch, mylang)
+  create_aux_plus_verb_phrases(ch, mylang)
 
 
 
@@ -1056,7 +1056,8 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
     mylang.add('lex-rule :+ [ SYNSEM.LOCAL.CAT.ALLOWED-PART #ap, \
                               DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART #ap ].',
                section='addenda') 
-    mylang.add('ditransitive-verb-lex := [ SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-- ].')
+    if ch.get('ditransitives') == 'yes':
+      mylang.add('ditransitive-verb-lex := [ SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-- ].')
 
 
 
@@ -1183,7 +1184,8 @@ def split_cluster_arg_comp_lex_rule(ch, mylang, lrules):
   if ch.get('aux-comp-order') == 'both':
     mylang.add('aux-comp-vc-phrase := ' + nhddtrval + ' ].')
     mylang.add('head-initial-invc := ' + headdtrval + ' ].')
-    mylang.add('ditransitive-verb-lex := [ SYNSEM.LOCAL.CAT.VFRONT - ].')
+    if ch.get('ditransitives') == 'yes':
+      mylang.add('ditransitive-verb-lex := [ SYNSEM.LOCAL.CAT.VFRONT - ].')
 
 def spec_word_order_phrases_aux_plus_verb(ch, mylang):
  

@@ -374,7 +374,7 @@ def customize_matrix(path, arch_type, destination=None):
  # customize_situation()
  # customize_mood()
   verbal_features.customize_verbal_features(mylang, hierarchies)
-  word_order.customize_word_order(mylang, ch, rules)
+  word_order.customize_word_order(mylang, ch, rules, lrules)
   negation.customize_sentential_negation(mylang, ch, lexicon, rules)
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)

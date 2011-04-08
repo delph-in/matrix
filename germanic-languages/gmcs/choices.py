@@ -1017,6 +1017,20 @@ class ChoicesFile:
 
  #elif self.get('subj-mark-drop') == 'subj-mark-drop-opt') and self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req': features += [['dropped-arg', perm_notperm_string, '']]
 
+####GERMANIC BRANCH
+#
+# 
+#
+    #Word order interaction features
+    if self.get('edge-related-res') == 'yes':
+      features += [ ['edge', 'luk', 'LOCAL.CAT.EDGE' ] ]
+    if self.get('verb-cluster') == 'yes' and self.get('aux-comp-order') == 'both':
+      features += [ ['headfinal', 'luk', 'LOCAL.CAT.HEADFINAL' ] ]
+#
+#
+####END GERMANIC BRANCH
+
+
     for feature in self.get('feature'):
       feat_name = feature['name']
       feat_type = feature['type']

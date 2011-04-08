@@ -177,6 +177,7 @@ def position_class_hierarchy(choices):
       if 'name' not in lrt:
         lrt['name'] = cur_pc.name + lrt.full_key.replace(cur_pc.key, '', 1)
       cur_lrt = create_lexical_rule_type(lrt)
+
       # the ordering should only mess up if there are 100+ lrts
       cur_lrt.tdl_order = i + (0.01 * j)
       cur_pc.add_node(cur_lrt)
@@ -200,6 +201,16 @@ def position_class_hierarchy(choices):
 def create_lexical_rule_type(lrt):
   new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
   for feat in lrt.get('feat'):
+    if feat['name'] == 'worest':
+      feat['name'] = 'headfinal'
+      if feat['value'] == 'before':
+        feat['value'] = '-'
+      else:
+        feat['value'] = '+' 
+    elif feat['name'] == 'edgerest':
+      feat['name'] = 'edge'
+      if feat['value'] == 'obligatory':
+        feat['value'] = 'na-or-+'
     new_lrt.features[feat['name']] = {'value': feat['value'],
                                       'head': feat.get('head')}
   new_lrt.lris = [lri['orth'] if lri['inflecting'] == 'yes' else ''
