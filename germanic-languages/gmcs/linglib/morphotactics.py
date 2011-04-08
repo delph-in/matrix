@@ -292,6 +292,11 @@ def assign_flags(mn, flag_values, flag_groups):
         other.flags['in'][flag_tuple] = flag_values[1][1]
       if flag_values[1][0] is not None:
         other.flags['out'][flag_tuple] = flag_values[1][0]
+    # also set initial flag values for req-bkwd constraints
+    if flag_values[0][1] == '+':
+      basetypes = [i for i in mn.input_span().values() if len(i.inputs()) == 0]
+      for bt in basetypes:
+        set_req_bkwd_initial_flags(bt.pc, flag_tuple)
 
 def minimal_flag_set(mn, constraint_type):
   """
@@ -302,14 +307,13 @@ def minimal_flag_set(mn, constraint_type):
   cs = ordered_constraints(mn, constraint_type)
   accounted_for = dict([(c.key, False) for c in cs])
   for c in cs:
-    flag_group = {}
+    # a flag may have been accounted for by a disjunctive set. If so, skip.
     if accounted_for[c.key]: continue
+    flag_group = {}
     # first add disjunctive sets
     for ds in mn.disjunctive_flag_sets.values():
-      if c in ds:
+      if c.key in ds:
         flag_group.update(ds)
-        for x in ds.keys():
-          accounted_for[x] = True
     # nonseq are all nodes nonsequential with c (but may be with each other)
     nonseq = set([x for x in cs if not sequential(c, x)])
     # group only those items in nonseq that fulfill the following:
@@ -317,15 +321,15 @@ def minimal_flag_set(mn, constraint_type):
     # + are not accounted for themselves or are not followed by anything
     for x in nonseq:
       pre_x = set(x.input_span().values()).intersection(nonseq)
-      if (any([not accounted_for[y.key] for y in pre_x])) \
-         or (accounted_for[x.key] \
-             and any([x.precedes(y) for y in nonseq])):
+      if any([not accounted_for[y.key] for y in pre_x]) \
+         or (accounted_for[x.key] and any([x.precedes(y) for y in nonseq])):
         continue
       flag_group[x.key] = x
-      accounted_for[x.key] = True
-    #flag_group = tuple(sorted(flag_group))
+    # finally, account for flags in new flag group and store it
     if len(flag_group) != 0 and flag_group not in all_flag_groups:
       all_flag_groups += [flag_group]
+      for x in flag_group.values():
+        accounted_for[x.key] = True
   return all_flag_groups
 
 def get_all_flags(out_or_in):
@@ -333,6 +337,54 @@ def get_all_flags(out_or_in):
   for mn in _mns.values():
     flags.update(set(mn.flags[out_or_in].keys()))
   return flags
+
+def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
+  """
+  Set the initial values for require-backward flags. Since these
+  constraints need an initial value of na-or-- in order to work
+  (otherwise + unifies with the default value of luk), we need to
+  place these at the earliest possible spot (lexical types).
+  """
+  # the initial flag values are set on the minimal set of types by
+  # first percolating the value down, then back up the hierarchy
+  for root in lex_pc.roots():
+    percolate_flag_down(root, flag_tuple)
+    percolate_flag_up(root, flag_tuple)
+
+def percolate_flag_down(mn, flag_tuple, value=None):
+  # initial value is either + or na-or--, where + overrides na-or--
+  if flag_tuple in mn.flags['out'] and mn.flags['out'][flag_tuple] == '+':
+    value = '+'
+  elif value is None:
+    value = 'na-or--'
+  # put the flags on the leaf nodes, otherwise clear the current node and
+  # percolate the value down the hierarchy
+  if len(mn.children()) == 0:
+    mn.flags['out'][flag_tuple] = value
+  else:
+    if flag_tuple in mn.flags['out']:
+      del mn.flags['out'][flag_tuple]
+    for c in mn.children().values():
+      percolate_flag_down(c, flag_tuple, value)
+
+def percolate_flag_up(mn, flag_tuple):
+  """
+  If all children of a node have the same flag, move it up to the parent.
+  NOTE: This might currently result in a sub-optimal arrangement if two
+        parents sharing the same children should both have the same flag,
+        since the first one to be processed will remove the flag on the
+        child.
+  """
+  child_values = set()
+  if len(mn.children()) > 0:
+    child_values = [percolate_flag_up(c, flag_tuple)
+                    for c in mn.children().values()]
+    # if all children have the same non-None value
+    if len(set(child_values)) == 1 and child_values[0] is not None:
+      for c in mn.children().values():
+        del c.flags['out'][flag_tuple]
+        mn.flags['out'][flag_tuple] = child_values[0]
+  return mn.flags['out'].get(flag_tuple, None)
 
 ######################
 ### OUTPUT METHODS ###
@@ -415,7 +467,7 @@ def write_inflected_avms(mylang, all_flags):
     flag = flag_name(f)
     mylang.add('''inflected :+ [%(flag)s luk].''' % {'flag': flag})
     mylang.add('''infl-satisfied :+ [%(flag)s na-or-+].''' % {'flag': flag})
-    mylang.add('''infl-initial :+ [%(flag)s na-or--].''' % {'flag': flag})
+    #mylang.add('''infl-initial :+ [%(flag)s na-or--].''' % {'flag': flag})
 
 def write_pc_flags(mylang, pc, all_flags):
   """

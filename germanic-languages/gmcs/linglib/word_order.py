@@ -972,7 +972,7 @@ def general_post_objectival_cluster_phrases(ch, mylang):
                                             HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL +, \
                                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
                                                                             HEADFINAL #hf ] ].')
-    mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.HEADFINAL #phd, \
+    mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.HEADFINAL #hf, \
                            HEAD-DTR.SYNSEM.LOCAL.CAT [ HEADFINAL -, \
 				                       VC + ], \
                            NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
@@ -1087,25 +1087,7 @@ def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
                           HEAD-DTR.SYNSEM.LOCAL.CAT.HC-LIGHT #light, \
                           NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
 
-  if ch.get('split-cluster') == 'yes' and ch.get('split-analysis') == 'lex-rule':
-    headdtrval = '[ SYNSEM.LOCAL.CAT.VFRONT #vf, \
-                          HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf'
-    nhddtrval = '[ SYNSEM.LOCAL.CAT.VFRONT #vf, \
-                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf'
-
-    mylang.add('head-initial-head-nexus := ' + headdtrval + ' ].')
-    mylang.add('comp-head-vc-phrase := ' + headdtrval + ' & na-or-- ].')
-    mylang.add('comp-2-head-vc-phrase:= [ HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT - ].')
-    mylang.add('comp-aux-vc-phrase := ' + nhddtrval + ' ].')
-    mylang.add('basic-head-subj-phrase :+ '+ headdtrval + ' ].')
-    mylang.add('aux-2nd-comp-phrase := ' + nhddtrval + ' ].')
-    mylang.add('comp-aux-2nd-phrase := ' + nhddtrval + ' ].')
-    mylang.add('split-cl-comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.VFRONT -, \
-                                                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
-    if ch.get('aux-comp-order') == 'both':
-      mylang.add('aux-comp-vc-phrase := ' + nhddtrval + ' ].')
-      mylang.add('head-initial-invc := ' + headdtrval + ' ].')
-      mylang.add('ditransitive-verb-lex := [ SYNSEM.LOCAL.CAT.VFRONT - ].')
+    
   mylang.add('aux-2nd-comp-phrase := basic-head-1st-comp-phrase & head-initial & \
                     [ SYNSEM.LOCAL.CAT [ MC #mc & na, \
 		                         SECOND - ], \
@@ -1121,22 +1103,56 @@ def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
 			                               HEAD verb, \
 				                       VAL.SUBJ < [ ] >]].')
-  ch.get('part-vp-front') == 'no':
+  if ch.get('part-vp-front') == 'no':
     mylang.add('gen-comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
   mylang.add('comp-aux-2nd-phrase := gen-comp-aux-2nd-phrase & \
                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
   if ch.get('argument-order') == 'fixed':
     mylang.add('comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
+
   if ch.get('split-cluster') == 'yes':
-    mylang.add('split-cl-comp-aux-2nd-phrase := gen-comp-aux-2nd-phrase & \
+    split_cluster_phrases_argument_composition(ch, mylang, rules, lrules)
+
+
+def split_cluster_phrases_argument_composition(ch, mylang, rules, lrules):
+
+  mylang.add('split-cl-comp-aux-2nd-phrase := gen-comp-aux-2nd-phrase & \
                        [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND -, \
                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
-    rules.add('split-cluster-comp-aux-2nd := split-cl-comp-aux-2nd-phrase.')
-    if ch.get('split-analysis') == 'lex-rule':
-      mylang.add('cat :+ [ VFRONT luk ].', 'VFRONT checks whether ditransitive verb has undergone needed modification to occur in the Vorfeld', section='addenda')
-      mylang.add('infl-lex-rule :+ [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+  rules.add('split-cluster-comp-aux-2nd := split-cl-comp-aux-2nd-phrase.')
+
+
+
+  if ch.get('split-analysis') == 'lex-rule':
+    split_cluster_arg_comp_lex_rule(ch, mylang, lrules)
+
+  elif ch.get('split-analysis') == '3head-comp':
+    mylang.add('comp-head-3-vc-phrase := basic-head-3rd-comp-phrase & \
+                         nonverbal-comp-phrase & head-final-invc.')
+    rules.add('comp-head-3-vc := comp-head-3-vc-phrase.')
+
+
+def split_cluster_arg_comp_lex_rule(ch, mylang, lrules):
+  headdtrval = '[ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                  HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf'
+  nhddtrval = '[ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                 NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf'
+
+  mylang.add('head-initial-head-nexus := ' + headdtrval + ' ].')
+  mylang.add('comp-head-vc-phrase := ' + headdtrval + ' & na-or-- ].')
+  mylang.add('comp-2-head-vc-phrase:= [ HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT - ].')
+  mylang.add('comp-aux-vc-phrase := ' + nhddtrval + ' ].')
+  mylang.add('basic-head-subj-phrase :+ '+ headdtrval + ' ].')
+  mylang.add('aux-2nd-comp-phrase := ' + nhddtrval + ' ].')
+  mylang.add('comp-aux-2nd-phrase := ' + nhddtrval + ' ].')
+  mylang.add('split-cl-comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.VFRONT -, \
+                                                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
+
+
+  mylang.add('cat :+ [ VFRONT luk ].', 'VFRONT checks whether ditransitive verb has undergone needed modification to occur in the Vorfeld', section='addenda')
+  mylang.add('infl-lex-rule :+ [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                                        DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
-      mylang.add('change-arg-order-rule := const-val-change-only-lex-rule & \
+  mylang.add('change-arg-order-rule := const-val-change-only-lex-rule & \
  [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ #subj, \
 			    COMPS < #comp2, #comp1 >,\
 			    SPR #spr,\
@@ -1153,32 +1169,24 @@ def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
 				 AUX - ],\
 			  VC #vc,\
 			  SECOND #sd   ] ].')
-      lrules.add('change-arg-order := change-arg-order-rule.')
-      if ch.get('argument-order') == 'fixed':
-        mylang.add('change-arg-order-rule := \
+  lrules.add('change-arg-order := change-arg-order-rule.')
+  if ch.get('argument-order') == 'fixed':
+    mylang.add('change-arg-order-rule := \
                         [ SYNSEM.LOCAL.CAT [ ARG-ORDER #ao, \
                                              ALLOWED-PART #ap ], \
                           DTR.SYNSEM.LOCAL.CAT [ ARG-ORDER #ao, \
                                                  ALLOWED-PART #ap ]].')
 
-      if ch.get('edge-related-res') == 'yes':
-        mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.EDGE #ed, \
+  if ch.get('edge-related-res') == 'yes':
+    mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.EDGE #ed, \
                                           DTR.SYNSEM.LOCAL.CAT.EDGE #ed ].')
-    elif ch.get('split-analysis') == '3head-comp':
-      mylang.add('comp-head-3-vc-phrase := basic-head-3rd-comp-phrase & \
-                         nonverbal-comp-phrase & head-final-invc.')
-      rules.add('comp-head-3-vc := comp-head-3-vc-phrase.')
+  if ch.get('aux-comp-order') == 'both':
+    mylang.add('aux-comp-vc-phrase := ' + nhddtrval + ' ].')
+    mylang.add('head-initial-invc := ' + headdtrval + ' ].')
+    mylang.add('ditransitive-verb-lex := [ SYNSEM.LOCAL.CAT.VFRONT - ].')
 
-
-
-def spec_word_order_phrases_aux_plus_verb(ch, mylang)
+def spec_word_order_phrases_aux_plus_verb(ch, mylang):
  
-
-  if ch.get('split-cluster') == 'yes':
-    split = True
-  else:
-    split = False
-
   mylang.add('basic-aux-verb-rule := head-compositional & basic-binary-headed-phrase & head-valence-phrase & \
                 [ SYNSEM.LOCAL [ CAT.VAL #val, \
 		                 CONT.HOOK #hook ], \
@@ -1190,103 +1198,10 @@ def spec_word_order_phrases_aux_plus_verb(ch, mylang)
 			                  CONT.HOOK #hook ], \
                   NON-HEAD-DTR.SYNSEM #comp & [ LOCAL.CAT [ HEAD verb, \
 					                    VAL #val ] ] ].')
-  if ch.get('argument-order') == 'fixed':
-    mylang.add('basic-aux-verb-rule := [ SYNSEM.LOCAL.CAT.ALLOWED-PART #ap, \
-NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART #ap ].')
-  if split:
-    mylang.add('gen-verb-aux-2nd-rule := head-final & \
-                         [ SYNSEM.LOCAL.CAT [ VAL.SUBJ < [] >, \
-                                              MC +, \
-                                              POSTHEAD #phd, \
-                                              HEAD [ DTR-FORM #dform \
-                                                     FORM finite ] ], \
-                           HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na, \
-                                                       POSTHEAD #phd ], \
-                           NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
-                                                           HEAD.FORM #dform ] ].')
+       
 
-    if ch.get('part-vp-front') == 'no'
-      mylang.add('gen-verb-aux-2nd-rule := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
-    mylang.add('comp-aux-2nd-phrase := gen-verb-aux-2nd-rule & basic-aux-verb-rule & [ SYNSEM.LOCAL.CAT.VFRONT - ].')
-    mylang.add('noncomp-aux-2nd-phrase := gen-verb-aux-2nd-rule & special-basic-aux-verb-rule & [ SYNSEM.LOCAL.CAT.VFRONT +, \
-                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
-    if ch.get('argument-order') == 'fixed':
-      mylang.add('noncomp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
-    mylang.add('special-insert-aux-phrase := headed-phrase & \
-  [ SYNSEM.LOCAL [ CONT [ HOOK #hook, \
-			  RELS [ LIST #first,\
-				 LAST #last ], \
-			  HCONS [ LIST [ FIRST [ HARG #harg1,\
-						 LARG #larg1 ],\
-					 REST #scfirst ],\
-				  LAST #sclast ] ],\
-		   CAT [ VAL #val,\
-			 MC #mc,\
-			 VFRONT - ] ],\
-    HEAD-DTR #firstarg & head-initial & [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ AUX +,\
-									     DTR-FORM #dform ],\
-							     VAL #val & [ SUBJ < >,\
-									  COMPS < > ],\
-							      MC #mc,\
-							       VFRONT + ],\
-						       CONT [ HOOK #hook,\
-							      HCONS [ LIST.FIRST [ HARG #harg1, \
-   LARG #larg2 ] ] ] ] ] ], \
-INSERT-DTR #secarg & [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ AUX + ],\
-						VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM #dform ],\
-					     CONT [ HOOK.LTOP #larg1,\
-						    HCONS [ LIST.FIRST [ LARG #larg2 ] ] ] ] ],\
-			   INFLECTED infl-satisfied ], \
-    C-CONT [ RELS [ LIST #middle2,\
-		    LAST #last ],\
-	     HCONS [ LIST #scmiddle2,\
-		     LAST #sclast ] ],\
-    ARGS < #firstarg & [ SYNSEM.LOCAL local & [ CONT [ RELS [ LIST #first,\
-							      LAST #middle1 ],\
-						       HCONS [ LIST [ FIRST [ ],\
-								      REST #scfirst ],\
-							       LAST #scmiddle1 ] ] ] ], \
-	   #secarg  & [ SYNSEM.LOCAL local & [ CONT [ RELS [ LIST #middle1,\
-							     LAST #middle2 ],\
-						      HCONS [ LIST #scmiddle1,\
-							      LAST #scmiddle2 ] ] ] ] > ].')
-    mylang.add('decl-head-subj-phrase :+ \
-                      [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
-                        HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
-    mylang.add('basic-head-comp-phrase :+ \
-                      [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
-                        HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
-    mylang.add('basic-head-mod-phrase-simple :+ \
-                      [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
-                        HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
-  else:
-    mylang.add('comp-aux-2nd-phrase := basic-aux-verb-rule & head-final & \
-                                       [ SYNSEM.LOCAL.CAT [ MC +, \
-		                                            POSTHEAD #phd, \
-		                                            VAL.SUBJ < [] >  ], \
-                                         HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na, \
-			       	                                     POSTHEAD #phd ], \
-                                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
-          
-  if ch.get('argument-order') == 'fixed':
-    mylang.add('comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
-  if ch.get('part-vp-front') == 'no':
-    mylang.add('comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')    
-  if ch.get('split-cluster') == 'yes':
-    mylang.add('special-basic-aux-verb-rule :=  head-compositional & basic-binary-headed-phrase & head-valence-phrase & \
-                        [ SYNSEM.LOCAL [ CAT.VAL #val, \
-                                         CONT.HOOK #hook ], \
-                          C-CONT [ RELS <! !>, \
-                                   HCONS <! !>, \
-                                   HOOK #hook ], \
-                          HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD verb & [ AUX + ], \
-                                                        VAL.COMPS.FIRST.LOCAL.CONT #cont ], \
-CONT.HOOK #hook ], \
-                          NON-HEAD-DTR.SYNSEM  [ LOCAL [ CAT [ HEAD verb, \
-                                                               VAL #val ], \
-                                                         CONT #cont ] ] ].')
   mylang.add('aux-2nd-comp-phrase := basic-aux-verb-rule & head-initial & \
-                             [ SYNSEM [ LOCAL.CAT [ POSTHEAD +, \
+                             [ SYNSEM [ LOCAL.CAT [ HEADFINAL +, \
 			                            MC #mc & na, \
 			                            HEAD.FORM finite ], \
 	                                            LIGHT - ], \
@@ -1298,15 +1213,125 @@ CONT.HOOK #hook ], \
                                          HEAD-DTR.SYNSEM.LOCAL.CAT.VC na-or-- ].')
   if ch.get('vc-placement') == 'pre':
     mylang.add('head-initial-invc := [ SYNSEM.LOCAL.CAT.VC -, \
-                                           HEAD-DTR.SYNSEM.LOCAL.CAT.VC na-or-- ].') 
+                                       HEAD-DTR.SYNSEM.LOCAL.CAT.VC na-or-- ].')
+
+  if ch.get('argument-order') == 'fixed':
+    mylang.add('comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
+    mylang.add('basic-aux-verb-rule := [ SYNSEM.LOCAL.CAT.ALLOWED-PART #ap, \
+NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART #ap ].')
+
+  if ch.get('part-vp-front') == 'no':
+    mylang.add('comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].') 
+
   if ch.get('aux-comp-order') == 'both':
     mylang.add('head-final-invc := [ SYNSEM.LOCAL.CAT.NOMINAL + ].')
-        ###special aux-structure comp-aux
-
-
-########### 
-  if ch.get('aux-comp-order') == 'both' or ch.get('split-cluster') == 'yes':
     mylang.add('cat :+ [ NOMINAL bool ].', 'NOMINAL prevents nominal forms from occurring in the verbal cluster', section='addenda')
+
   if ch.get('split-cluster') == 'yes':
-    mylang.add('cat :+ [ VFRONT bool ].', 'VFRONT checks whether the vorfeld contains a partial verbal cluster', section='addenda')
-    mylang.add('head :+ [ DTR-FORM form ].')
+    split_cluster_phrases_aux_plus_verb(ch, mylang)
+  else:
+    mylang.add('comp-aux-2nd-phrase := basic-aux-verb-rule & head-final & \
+                              [ SYNSEM.LOCAL.CAT [ MC +, \
+		                                   HEADFINAL #hf, \
+		                                   VAL.SUBJ < [] >  ], \
+                                HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na, \
+			       	                            HEADFINAL #hf ], \
+                                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
+    
+def split_cluster_phrases_aux_plus_verb(ch, mylang):
+
+
+  mylang.add('cat :+ [ VFRONT bool ].', 'VFRONT checks whether the vorfeld contains a partial verbal cluster', section='addenda')
+  mylang.add('head :+ [ DTR-FORM form ].')
+
+###flexible aux-comp-order always uses NOMINAL with aux+verb analysis
+###only add for fixed aux-comp-order + split cluster
+
+  if ch.get('aux-comp-order') != 'both': 
+    mylang.add('cat :+ [ NOMINAL bool ].', 'NOMINAL prevents nominal forms from occurring in the verbal cluster', section='addenda')
+
+  mylang.add('special-basic-aux-verb-rule :=  head-compositional & \
+                           basic-binary-headed-phrase & head-valence-phrase & \
+           [ SYNSEM.LOCAL [ CAT.VAL #val, \
+                            CONT.HOOK #hook ], \
+             C-CONT [ RELS <! !>, \
+                      HCONS <! !>, \
+                      HOOK #hook ], \
+             HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD verb & [ AUX + ], \
+                                           VAL.COMPS.FIRST.LOCAL.CONT #cont ], \
+                                     CONT.HOOK #hook ], \
+             NON-HEAD-DTR.SYNSEM  [ LOCAL [ CAT [ HEAD verb, \
+                                                  VAL #val ], \
+                                                  CONT #cont ] ] ].')
+
+  mylang.add('gen-verb-aux-2nd-rule := head-final & \
+                       [ SYNSEM.LOCAL.CAT [ VAL.SUBJ < [] >, \
+                                            MC +, \
+                                            HEADFINAL #hf, \
+                                            HEAD [ DTR-FORM #dform \
+                                                   FORM finite ] ], \
+                         HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na, \
+                                                     HEADFINAL #hf ], \
+                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
+                                                         HEAD.FORM #dform ] ].')
+
+  mylang.add('comp-aux-2nd-phrase := gen-verb-aux-2nd-rule & basic-aux-verb-rule & [ SYNSEM.LOCAL.CAT.VFRONT - ].')
+  mylang.add('noncomp-aux-2nd-phrase := gen-verb-aux-2nd-rule & special-basic-aux-verb-rule & [ SYNSEM.LOCAL.CAT.VFRONT +, \
+                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
+  mylang.add('special-insert-aux-phrase := headed-phrase & \
+         [ SYNSEM.LOCAL [ CONT [ HOOK #hook, \
+		                 RELS [ LIST #first,\
+				 LAST #last ], \
+			 HCONS [ LIST [ FIRST [ HARG #harg1,\
+				        	LARG #larg1 ],\
+					REST #scfirst ],\
+				 LAST #sclast ] ],\
+		          CAT [ VAL #val,\
+			        MC #mc,\
+			        VFRONT - ] ],\
+            HEAD-DTR #firstarg & head-initial & \
+              [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ AUX +,\
+						     DTR-FORM #dform ],\
+				       VAL #val & [ SUBJ < >,\
+						    COMPS < > ],\
+				       MC #mc,\
+				       VFRONT + ],\
+				 CONT [ HOOK #hook,\
+				 HCONS [ LIST.FIRST [ HARG #harg1, \
+                                                      LARG #larg2 ] ] ] ] ] ], \
+           INSERT-DTR #secarg & [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ AUX + ],\
+						         VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM #dform ],\
+					            CONT [ HOOK.LTOP #larg1,\
+						    HCONS [ LIST.FIRST [ LARG #larg2 ] ] ] ] ],\
+			                   INFLECTED infl-satisfied ], \
+                                  C-CONT [ RELS [ LIST #middle2,\
+		                                  LAST #last ],\
+	                          HCONS [ LIST #scmiddle2,\
+		                          LAST #sclast ] ],\
+           ARGS < #firstarg & [ SYNSEM.LOCAL local & \
+                                     [ CONT [ RELS [ LIST #first,\
+						     LAST #middle1 ],\
+				       HCONS [ LIST [ FIRST [ ],\
+						      REST #scfirst ],\
+					       LAST #scmiddle1 ] ] ] ], \
+	          #secarg  & [ SYNSEM.LOCAL local & \
+                                     [ CONT [ RELS [ LIST #middle1,\
+						     LAST #middle2 ],\
+				       HCONS [ LIST #scmiddle1,\
+					       LAST #scmiddle2 ] ] ] ] > ].')
+  mylang.add('decl-head-subj-phrase :+ \
+                      [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                        HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
+  mylang.add('basic-head-comp-phrase :+ \
+                      [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                        HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
+  mylang.add('basic-head-mod-phrase-simple :+ \
+                      [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                        HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
+
+
+  if ch.get('part-vp-front') == 'no':
+    mylang.add('gen-verb-aux-2nd-rule := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
+
+  if ch.get('argument-order') == 'fixed':
+    mylang.add('noncomp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')

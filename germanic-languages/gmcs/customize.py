@@ -190,6 +190,10 @@ def customize_roots():
 
   if ch.get('has-aux') == 'yes' or 'noaux-fin-nf' in ch:
     roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
+    if ch.get('verb-cluster') == 'yes' and ('split-cluster') == 'yes':
+      if ch.get('vc-analysis') == 'aux-rule' or ch.get('split-analysis') == 'lex-rule':
+        roots.add('root := [ SYNSEM.LOCAL.CAT.VFRONT - ].')
+
 
   # ERB 2006-10-05 I predict a bug here:  If we a language with auxiliaries
   # and question particles, we're going to need to make sure that FORM is
