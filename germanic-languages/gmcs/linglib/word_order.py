@@ -824,6 +824,11 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
   mylang.add('head-final-head-nexus := nonverbal-comp-phrase & \
                                        [ SYNSEM.LOCAL.CAT.MC +,\
                                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
+  
+####TO REPAIR HEADFINAL SHOULD NOT APPEAR WHEN ORDER IS FIXED
+  if ch.get('argument-order') == 'fixed':
+    mylang.add('cat :+ [ HEADFINAL bool ].', section='addenda')
+
   if ch.get('vc-analysis') == 'basic':
     mylang.add('head-initial-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
     mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
@@ -1079,9 +1084,6 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
 def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
 
   mylang.add('cat :+ [ SECOND luk ].')
-####TO REPAIR HEADFINAL SHOULD NOT APPEAR WHEN ORDER IS FIXED
-
-  mylang.add('cat :+ [ HEADFINAL bool ].', section='addenda')
 
   mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
   mylang.add('basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \

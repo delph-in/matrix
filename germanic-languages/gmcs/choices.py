@@ -613,6 +613,8 @@ class ChoicesFile:
     if cm == 'nom-acc':
       patterns += [ ['nom', '', False] ]
       patterns += [ ['nom-acc', '', False] ]
+      if self.get('ditransitives') == 'yes':
+        patterns += [ ['nom-dat-acc', '', False] ]
     elif cm == 'erg-abs':
       patterns += [ ['abs', '', False] ]
       patterns += [ ['erg-abs', '', False] ]
@@ -644,6 +646,8 @@ class ChoicesFile:
     # Add intransitive and transitive, which are always available.
     patterns += [ ['intrans', '', False] ]
     patterns += [ ['trans', '', False] ]
+    if self.get('ditransitives') == 'yes':
+      patterns += [ ['ditrans', '', False] ]
 
     # Fill in the friendly names based on the canonical names
     for i in range(0, len(patterns)):

@@ -136,6 +136,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                   #comp2 & \
                   [ LOCAL.CAT [ VAL [ SPR < >, \
                                       COMPS < > ] ] ]  > ].'
+    mylang.add(typedef)
 
   case.customize_verb_case(mylang, ch)
 
@@ -160,9 +161,15 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
       tivity = 'intrans'
     elif val.find('-') != -1:
       c = val.split('-')
-      a_case = case.canon_to_abbr(c[0], cases)
-      o_case = case.canon_to_abbr(c[1], cases)
-      tivity = a_case + '-' + o_case + '-trans'
+      if len(c) == 2:
+        a_case = case.canon_to_abbr(c[0], cases)
+        o_case = case.canon_to_abbr(c[1], cases)
+        tivity = a_case + '-' + o_case + '-trans'
+      elif len(c) == 3:
+        a_case = case.canon_to_abbr(c[0], cases)
+        b_case = case.canon_to_abbr(c[1], cases)
+        o_case = case.canon_to_abbr(c[2], cases)
+        tivity = a_case + '-' + b_case + '-' + o_case + '-ditrans'
     else:
       s_case = case.canon_to_abbr(val, cases)
       tivity = s_case + '-intrans'

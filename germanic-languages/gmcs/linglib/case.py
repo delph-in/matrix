@@ -255,8 +255,16 @@ def interpret_verb_valence(valence):
   Return the canonical valence name (e.g. iverb, tverb) given the
   valence for a verb as defined in a choices file.
   '''
-  if valence == 'trans' or '-' in valence:
+  if '-' in valence:
+    v = valence.split('-')
+    if len(v) == 2:
+      return 'tverb'
+    elif len(v) == 3:
+      return 'dverb'
+  elif valence == 'trans':
     return 'tverb'
+  elif valence == 'ditrans':
+    return 'dverb'
   else:
     return 'iverb'
 
@@ -345,10 +353,16 @@ def customize_verb_case(mylang, ch):
             [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
           mylang.add(typedef)
       elif p[0] == 'ditrans' or len(c) == 3:            #ditrans
+        
+        if p[0] == 'ditrans':
+          a_case = ''
+          b_case = ''
+          o_case = ''
+        else:
+          a_case = canon_to_abbr(c[0], cases)
+          b_case = canon_to_abbr(c[1], cases)
+          o_case = canon_to_abbr(c[2], cases)
 
-        a_case = case.canon_to_abbr(c[0], cases)
-        b_case = case.canon_to_abbr(c[1], cases)
-        o_case = case.canon_to_abbr(c[2], cases)
         a_head = 'noun'
         b_head = 'noun'
         o_head = 'noun'
