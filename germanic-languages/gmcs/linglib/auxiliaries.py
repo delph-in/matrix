@@ -193,7 +193,7 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies):
         '; but I don\'t want to rely on this.  Then again, [ AUX - ]\n' + \
         '; might not be true.'
       mylang.add_literal(comment)
-      if auxcomp == 's':
+      if auxcomp == 's' or ch.get('vc-analysis') == 'aux-rule':
         arg_str = '< [ LOCAL.CAT.HEAD.AUX - ] >'
       else:
         arg_str = '< [ ], [ LOCAL.CAT.HEAD.AUX - ] >'
