@@ -73,7 +73,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
       'aux-lex := verb-lex & \
                 [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
     mylang.add(typedef)
-    if vcluster:
+    if vcluster and not ch.get('vc-analysis') == 'basic':
       mylang.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
       mylang.add('aux-lex := [ SYNSEM.LOCAL.CAT.VC - ].')
   else:
@@ -123,6 +123,19 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                   [ LOCAL.CAT [ VAL [ SPR < >, \
                                       COMPS < > ] ] ] > ].'
   mylang.add(typedef)
+
+  # ditransitive verb lexical type
+  if ch.get('ditransitives') == 'yes':
+    typedef = \
+    'ditransitive-verb-lex := ' + mainorverbtype + ' & ditransitive-lex-item & \
+       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp1 . #comp2 >, \
+         ARG-ST < [ ], \
+                  #comp1 & \
+                  [ LOCAL.CAT [ VAL [ SPR < >, \
+                                      COMPS < > ] ] ], \
+                  #comp2 & \
+                  [ LOCAL.CAT [ VAL [ SPR < >, \
+                                      COMPS < > ] ] ]  > ].'
 
   case.customize_verb_case(mylang, ch)
 

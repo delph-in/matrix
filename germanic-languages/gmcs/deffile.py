@@ -1223,6 +1223,11 @@ class MatrixDefFile:
     print '<p style="text-align:center"><a href="' + choices_file + '">' +\
           'View Choices File</a> (right-click to download)</p>'
 
+    print '<p style="text-align:center">In most cases, you can go back ' +\
+          'in your browser and fix the problems, but if not you may ' +\
+          '<a href="matrix.cgi?choices=empty">reload an empty ' +\
+          'questionnaire</a> (this will erase your changes, so be sure to ' +\
+          'save your choices (above) first).'
     if exc:
         exception_html(exc)
     else:
@@ -1248,6 +1253,12 @@ class MatrixDefFile:
 
     print '<p style="text-align:center"><a href="' + choices_file + '">' +\
           'View Choices File</a> (right-click to download)</p>'
+
+    print '<p style="text-align:center">In most cases, you can go back ' +\
+          'in your browser and fix the problems, but if not you may ' +\
+          '<a href="matrix.cgi?choices=empty">reload an empty ' +\
+          'questionnaire</a> (this will erase your changes, so be sure to ' +\
+          'save your choices (above) first).'
     if exc:
         exception_html(exc)
     else:

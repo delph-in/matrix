@@ -838,8 +838,10 @@ def add_basic_phrases_v2_with_cluster(ch, mylang):
 
   mylang.add('subj-head-vc-phrase := decl-head-subj-phrase & head-final-invc & nonverbal-comp-phrase.') 
 
-  create_argument_composition_phrases(ch, mylang)
-  create_aux_plus_verb_phrases(ch, mylang)
+  if ch.get('vc-analysis') == 'basic':
+    create_argument_composition_phrases(ch, mylang)
+  elif ch.get('vc-analysis') == 'aux-rule':
+    create_aux_plus_verb_phrases(ch, mylang)
 
 
 
@@ -1077,6 +1079,10 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
 def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
 
   mylang.add('cat :+ [ SECOND luk ].')
+####TO REPAIR HEADFINAL SHOULD NOT APPEAR WHEN ORDER IS FIXED
+
+  mylang.add('cat :+ [ HEADFINAL bool ].', section='addenda')
+
   mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
   mylang.add('basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
                                         HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
@@ -1201,7 +1207,6 @@ def spec_word_order_phrases_aux_plus_verb(ch, mylang):
                   NON-HEAD-DTR.SYNSEM #comp & [ LOCAL.CAT [ HEAD verb, \
 					                    VAL #val ] ] ].')
        
-
   mylang.add('aux-2nd-comp-phrase := basic-aux-verb-rule & head-initial & \
                              [ SYNSEM [ LOCAL.CAT [ HEADFINAL +, \
 			                            MC #mc & na, \

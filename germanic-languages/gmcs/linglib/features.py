@@ -47,7 +47,11 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # to specify features on the subject and object as well
     h = feat.get('head','')
     if h == 'subj':
-      geom_prefix += 'LOCAL.CAT.VAL.SUBJ.FIRST.'
+      if not ch.get('vc-analysis') == 'aux-rule':
+        geom_prefix += 'LOCAL.CAT.VAL.SUBJ.FIRST.'
+      else:
+        ###MORE COMPLEX THAN ORIGINALLY THOUGHT
+        geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
     elif h == 'obj':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
     elif h == 'higher':
