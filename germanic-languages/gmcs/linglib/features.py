@@ -70,7 +70,10 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     if geom:
       geom = geom_prefix + geom
       if geom_prefix2:
-        geom2 = geom_prefix2 + geom
+        path_parts = geom.split('.')
+        ff_num = len(path_parts) - 1
+        final_feat = path_parts[ff_num]
+        geom2 = geom_prefix2 + 'LOCAL.CONT.HOOK.XARG.PNG.' + final_feat
         type_name_1 = type_name + '-main-verb'
         type_name_2 = type_name + '-aux'
     # If the feature has a geometry, just specify its value;
@@ -91,8 +94,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
           tdlfile.add(type_name_2 +
                       ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
                          merge=True)
-
-        tdlfile.add(type_name +
+        else:
+          tdlfile.add(type_name +
                     ' := [ ' + geom + ' ' + value + ' ].',
                     merge=True)          
         if n == 'case' and ch.has_mixed_case():
