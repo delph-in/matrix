@@ -43,9 +43,9 @@ class ChoiceCategory:
       for k in keys:
         d = d[k]
     except KeyError:
-      d = default or ''
+      d = default if default is not None else ''
     except IndexError:
-      d = default or ChoiceDict()
+      d = default if default is not None else ChoiceDict()
     # reset safe_get
     self.safe_get = True
     return d

@@ -113,7 +113,7 @@ def customize_inflection(choices, add_methods, mylang, irules, lrules):
   pch = customize_lexical_rules(choices)
   # write_rules currently returns a list of items needing feature
   # customization. Hopefully we can find a better solution
-  return write_rules(pch, mylang, irules, lrules)
+  return write_rules(choices, pch, mylang, irules, lrules)
 
 def customize_lexical_rules(choices):
   """
@@ -171,12 +171,17 @@ def position_class_hierarchy(choices):
     # Fill the lexical rule types with the information we know
     lrt_parents = {}
     for j, lrt in enumerate(pc.get('lrt')):
+      for feat in lrt.get('feat',''):
+        if feat.get('head','') == 'subj':
+          name = lrt.get('name','')
+####create new lri that should be added...
+        ####TO FIND
       if 'supertypes' in lrt:
         lrt_parents[lrt.full_key] = set(lrt.get('supertypes').split(', '))
       # default name uses name of PC with _lrtX
       if 'name' not in lrt:
         lrt['name'] = cur_pc.name + lrt.full_key.replace(cur_pc.key, '', 1)
-      cur_lrt = create_lexical_rule_type(lrt)
+      cur_lrt = create_lexical_rule_type(choices, lrt)
 
       # the ordering should only mess up if there are 100+ lrts
       cur_lrt.tdl_order = i + (0.01 * j)
@@ -198,8 +203,9 @@ def position_class_hierarchy(choices):
       _mns[pc].relate(_mns[inp], 'parent')
   return pch
 
-def create_lexical_rule_type(lrt):
+def create_lexical_rule_type(ch, lrt):
   new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
+  subj_feat = False
   for feat in lrt.get('feat'):
     if feat['name'] == 'worest':
       feat['name'] = 'headfinal'
@@ -211,9 +217,20 @@ def create_lexical_rule_type(lrt):
       feat['name'] = 'edge'
       if feat['value'] == 'obligatory':
         feat['value'] = 'na-or-+'
+    if feat.get('head') == 'subj' and ch.get('vc-analysis') == 'aux-rule':
+      subj_feat = True
     new_lrt.features[feat['name']] = {'value': feat['value'],
                                       'head': feat.get('head')}
-  new_lrt.lris = [lri['orth'] if lri['inflecting'] == 'yes' else ''
+  
+
+  if subj_feat:
+    for lri in lrt.get('lri',[]):
+      if lri['inflecting'] == 'yes':
+        new_lrt.lris = [lri['orth'], lri['orth']]
+      else:
+        new_lrt.lris = ['', '']
+  else:
+    new_lrt.lris = [lri['orth'] if lri['inflecting'] == 'yes' else ''
                   for lri in lrt.get('lri',[])]
   # if there exists a non-empty lri, give it an infl supertype
   if len(new_lrt.lris) > 0:
@@ -401,7 +418,7 @@ def percolate_flag_up(mn, flag_tuple):
 ### OUTPUT METHODS ###
 ######################
 
-def write_rules(pch, mylang, irules, lrules):
+def write_rules(ch, pch, mylang, irules, lrules):
   all_flags = get_all_flags('out').union(get_all_flags('in'))
   write_inflected_avms(mylang, all_flags)
   mylang.set_section('lexrules')
@@ -416,7 +433,7 @@ def write_rules(pch, mylang, irules, lrules):
     write_supertypes(mylang, pc.identifier(), pc.supertypes)
     write_pc_flags(mylang, pc, all_flags)
     for lrt in sorted(pc.nodes.values(), key=lambda x: x.tdl_order):
-      write_i_or_l_rules(irules, lrules, lrt, pc.order)
+      write_i_or_l_rules(ch, irules, lrules, lrt, pc.order)
       # merged LRT/PCs have the same identifier, so don't write supertypes here
       if lrt.identifier() != pc.identifier():
         write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
@@ -544,7 +561,7 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
     copied_flags.update(mn_copy_flags)
   return copied_flags
 
-def write_i_or_l_rules(irules, lrules, lrt, order):
+def write_i_or_l_rules(ch, irules, lrules, lrt, order):
   if len(lrt.lris) == 0: return
   if any(len(lri) > 0 for lri in lrt.lris):
     # inflectional rules
@@ -554,11 +571,25 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
       order = 'suffix'
     # if there's only one LRI don't give the rule a number
     num = [''] if len(lrt.lris) == 1 else range(1, len(lrt.lris) + 1)
-    for i, lri in enumerate(lrt.lris):
-      rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
+    if ch.get('vc-analysis') == 'aux-rule' and len(lrt.lris) == 2:
+        lri = lrt.lris[1]
+        rule1 = '\n'.join(['-'.join([lrt.name, 'main-verb-' + order]) + ' :=',
+                      r'%' + order + ' (* ' + lri + ')',
+                      lrt.identifier()]) + '-main-verb.'
+        
+        rule2 = '\n'.join(['-'.join([lrt.name, 'aux-' + order]) + ' :=',
+                      r'%' + order + ' (* ' + lri + ')',
+                      lrt.identifier()]) + '-aux.'
+ 
+        irules.add_literal(rule1)
+        irules.add_literal(rule2)
+
+    else:      
+      for i, lri in enumerate(lrt.lris):
+        rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
                       r'%' + order + ' (* ' + lri + ')',
                       lrt.identifier()]) + '.'
-      irules.add_literal(rule)
+        irules.add_literal(rule)
   else:
     # lexical rules
     for lri in lrt.lris:

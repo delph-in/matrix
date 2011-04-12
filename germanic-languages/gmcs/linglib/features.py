@@ -82,9 +82,16 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
           tdlfile.add(type_name_1 +
                       ' := ' + type_name + ' & ' +
                        ' [ ' + geom + ' ' + value + ' ].')
+          tdlfile.add(type_name_1 +
+                      ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].', 
+                         merge=True)
           tdlfile.add(type_name_2 +
                       ' := ' + type_name + ' & ' +
                        ' [ ' + geom2 + ' ' + value + ' ].')
+          tdlfile.add(type_name_2 +
+                      ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+                         merge=True)
+
         tdlfile.add(type_name +
                     ' := [ ' + geom + ' ' + value + ' ].',
                     merge=True)          
