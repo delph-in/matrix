@@ -175,7 +175,6 @@ def position_class_hierarchy(choices):
         if feat.get('head','') == 'subj':
           name = lrt.get('name','')
 ####create new lri that should be added...
-        ####TO FIND
       if 'supertypes' in lrt:
         lrt_parents[lrt.full_key] = set(lrt.get('supertypes').split(', '))
       # default name uses name of PC with _lrtX

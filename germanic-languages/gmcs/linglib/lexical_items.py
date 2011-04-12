@@ -128,7 +128,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
   if ch.get('ditransitives') == 'yes':
     typedef = \
     'ditransitive-verb-lex := ' + mainorverbtype + ' & ditransitive-lex-item & \
-       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp1 . #comp2 >, \
+       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp1 , #comp2 >, \
          ARG-ST < [ ], \
                   #comp1 & \
                   [ LOCAL.CAT [ VAL [ SPR < >, \
