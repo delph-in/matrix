@@ -171,10 +171,6 @@ def position_class_hierarchy(choices):
     # Fill the lexical rule types with the information we know
     lrt_parents = {}
     for j, lrt in enumerate(pc.get('lrt')):
-      for feat in lrt.get('feat',''):
-        if feat.get('head','') == 'subj':
-          name = lrt.get('name','')
-####create new lri that should be added...
       if 'supertypes' in lrt:
         lrt_parents[lrt.full_key] = set(lrt.get('supertypes').split(', '))
       # default name uses name of PC with _lrtX
@@ -571,17 +567,17 @@ def write_i_or_l_rules(ch, irules, lrules, lrt, order):
     # if there's only one LRI don't give the rule a number
     num = [''] if len(lrt.lris) == 1 else range(1, len(lrt.lris) + 1)
     if ch.get('vc-analysis') == 'aux-rule' and len(lrt.lris) == 2:
-        lri = lrt.lris[1]
-        rule1 = '\n'.join(['-'.join([lrt.name, 'main-verb-' + order]) + ' :=',
+      lri = lrt.lris[1]
+      rule1 = '\n'.join(['-'.join([lrt.name, 'main-verb-' + order]) + ' :=',
                       r'%' + order + ' (* ' + lri + ')',
                       lrt.identifier()]) + '-main-verb.'
         
-        rule2 = '\n'.join(['-'.join([lrt.name, 'aux-' + order]) + ' :=',
+      rule2 = '\n'.join(['-'.join([lrt.name, 'aux-' + order]) + ' :=',
                       r'%' + order + ' (* ' + lri + ')',
                       lrt.identifier()]) + '-aux.'
  
-        irules.add_literal(rule1)
-        irules.add_literal(rule2)
+      irules.add_literal(rule1)
+      irules.add_literal(rule2)
 
     else:      
       for i, lri in enumerate(lrt.lris):

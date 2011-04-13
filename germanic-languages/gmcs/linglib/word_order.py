@@ -825,8 +825,7 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
                                        [ SYNSEM.LOCAL.CAT.MC +,\
                                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
   
-####TO REPAIR HEADFINAL SHOULD NOT APPEAR WHEN ORDER IS FIXED
-  if ch.get('argument-order') == 'fixed':
+  if ch.get('aux-comp-order') == 'both' or ch.get('vc-analysis') == 'aux-rule':
     mylang.add('cat :+ [ HEADFINAL bool ].', section='addenda')
 
   if ch.get('vc-analysis') == 'basic':
