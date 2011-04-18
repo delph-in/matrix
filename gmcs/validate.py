@@ -31,28 +31,37 @@ class ValidationResult:
   def has_warnings(self):
     return len(self.warnings) != 0
 
-  def err(self, key, message):
+  def err(self, key, message, anchor=None, concat=True):
     """
     Add an error message to key (a choices variable).  If the key
     already has an error, concatenate the new message with the
     existing one.
     """
-    if key in self.errors:
-      self.errors[key] += ' ' + message
+    if key in self.errors and concat:
+      self.errors[key].add_message(message)
     else:
-      self.errors[key] = message
+      self.errors[key] = ValidationMessage(key, message, anchor)
 
-  def warn(self, key, message):
+  def warn(self, key, message, anchor=None, concat=True):
     """
     Add an warning message to key (a choices variable).  If the key
     already has a warning, concatenate the new message with the
     existing one.
     """
     if key in self.warnings:
-      self.warnings[key] += ' ' + message
+      self.warnings[key].add_message(message)
     else:
-      self.warnings[key] = message
+      self.warnings[key] = ValidationMessage(key, message, anchor)
 
+#NTS: we only need to define an anchor for the main page versionsx
+class ValidationMessage:
+  def __init__(self, key, text, anchor):
+    self.name = key
+    self.message = text
+    self.href = anchor
+
+  def add_message(self, text):
+    self.message += ' ' + text
 
 ######################################################################
 # Namespace validation

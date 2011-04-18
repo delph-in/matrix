@@ -142,7 +142,7 @@ class LexicalRuleType(MorphotacticNode):
     return 'LexicalRuleType(' + self.key + ')'
 
   def inputs(self):
-    return self.pc.inputs
+    return self.pc.inputs()
 
   def percolate_supertypes(self):
     # base condition: we're on a leaf type

@@ -1072,7 +1072,7 @@ BeginIter noun{i} "a Noun Type" 1
 
   BeginIter stem{j} "a Stem" 1
 
-    Text orth "Noun {i} stem {j} spelling" "Spelling: " "" 30
+    Text orth "Noun {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('noun{i}_stem{j}', '_n_rel')"
 
     Text pred "Noun {i} stem {j} predicate" " Predicate: " "" 30
 
@@ -1229,7 +1229,7 @@ BeginIter verb{i} "a Verb Type" 2
   Label "Stems:"
   BeginIter stem{j} "a simple Stem" 1
 
-    Text orth "Verb {i} stem {j} spelling" "Spelling: " "" 30
+    Text orth "Verb {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('verb{i}_stem{j}', '_v_rel')"
 
     Text pred "Verb {i} stem {j} predicate" " Predicate: " "" 30
 
