@@ -554,8 +554,6 @@ def write_lex_entry_with_flags(lextdl, mn, choices):
     typedef = typedef + ''', INFLECTED.%(flag)s %(val)s ''' %\
         {'flag': flag_name(flag), 'val':mn.flags['out'][flag]}
   typedef = typedef + ' ].'
-  print "uniqid is: " + uniqid
-  print mn
   lextdl.add(typedef)
 
 def write_flags(tdlfile, mn):

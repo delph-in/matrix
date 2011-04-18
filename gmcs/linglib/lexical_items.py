@@ -9,7 +9,7 @@ from gmcs.linglib.parameters import determine_vcluster
 ##########################################################
 # customize_verbs()
 
-def customize_bipartite_stems():
+def customize_bipartite_stems(ch):
   """
   Users specify bipartite stems as roots + affixes in bipartite
   stem specifications plus position class for affix in lexical type.
@@ -205,7 +205,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
   case.customize_verb_case(mylang, ch)
 
   # Add constraints to choices to create lex rules for bipartite stems
-  customize_bipartite_stems()
+  customize_bipartite_stems(ch)
 
   # Lexical entries
   lexicon.add_literal(';;; Verbs')
