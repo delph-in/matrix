@@ -34,8 +34,9 @@ class ValidationResult:
   def err(self, key, message, anchor=None, concat=True):
     """
     Add an error message to key (a choices variable).  If the key
-    already has an error, concatenate the new message with the
-    existing one.
+    already has an error and 'concat' is set to true, concatenate 
+    the new message with the existing one. Otherwise replace the 
+    message. 
     """
     if key in self.errors and concat:
       self.errors[key].add_message(message)
@@ -45,10 +46,11 @@ class ValidationResult:
   def warn(self, key, message, anchor=None, concat=True):
     """
     Add an warning message to key (a choices variable).  If the key
-    already has a warning, concatenate the new message with the
-    existing one.
+    already has an warning and 'concat' is set to true, concatenate 
+    the new message with the existing one. Otherwise replace the 
+    message. 
     """
-    if key in self.warnings:
+    if key in self.warnings and concat:
       self.warnings[key].add_message(message)
     else:
       self.warnings[key] = ValidationMessage(key, message, anchor)

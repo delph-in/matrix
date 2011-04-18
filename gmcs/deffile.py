@@ -543,12 +543,12 @@ class MatrixDefFile:
         for k in vr.errors.keys():
           if re.search(pat, k):
             anchor = "matrix.cgi?subpage="+cur_sec+"#"+k
-            vr.err(cur_sec, "This section contains one or more errors.", anchor, False)
+            vr.err(cur_sec, "This section contains one or more errors. \nClicking this error will link to the error on the subpage.", anchor, False)
             break
         for k in vr.warnings.keys():
           if re.search(pat, k):
             anchor = "matrix.cgi?subpage="+cur_sec+"#"+k
-            vr.warn(cur_sec, "This section contains one or more warnings.", anchor, False)
+            vr.warn(cur_sec, "This section contains one or more warnings. \nClicking this warning will link to the error on the subpage", anchor, False)
             break
 
     # now pass through again to actually emit the page
