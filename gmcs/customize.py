@@ -356,7 +356,7 @@ def customize_matrix(path, arch_type, destination=None):
                           argument_optionality.add_lexrules,
                           direct_inverse.add_lexrules]
   to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
-                                              mylang, irules, lrules)
+                                              mylang, irules, lrules, lexicon)
   features.process_cfv_list(mylang, ch, hierarchies, to_cfv)
 
   # Call the other customization functions

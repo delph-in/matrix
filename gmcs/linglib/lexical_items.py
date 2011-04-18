@@ -26,10 +26,12 @@ def customize_bipartite_stems():
 
   # For each verb type
   for verb in ch.get('verb'):
+
     # Check whether there are bipartite stems
     bistems = verb.get('bistem')
     if bistems:
       # Find position class for affixes
+
       pcname = verb.get('bipartitepc')
       pc = None
       for vpc in ch.get('verb-pc'):
@@ -201,6 +203,9 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
   mylang.add(typedef)
 
   case.customize_verb_case(mylang, ch)
+
+  # Add constraints to choices to create lex rules for bipartite stems
+  customize_bipartite_stems()
 
   # Lexical entries
   lexicon.add_literal(';;; Verbs')
