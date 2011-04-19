@@ -269,7 +269,7 @@ function expand_region(id)
 {
   var n = document.getElementById(id);
 
-  //n.style.overflow = 'hidden';
+  n.style.overflow = 'hidden';
 
   var a = { id: id, property: 'maxHeight', factor: 2, ticks: 10 };
   n.style[a.property] = '1px';
