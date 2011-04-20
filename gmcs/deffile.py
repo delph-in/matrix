@@ -120,7 +120,9 @@ exceptional. It has a tooltip even though it does not mark a
 warning.">?</span>.
 
 Hovering the mouse cursor over a red asterisk or question mark will
-show a tooltip describing the error.</p>
+show a tooltip describing the error. Clicking on a red asterisk or
+question mark that is on the main page will link to the error or warning
+on the appropriate subpage.</p>
 
 '''
 
