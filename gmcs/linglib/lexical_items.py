@@ -83,13 +83,6 @@ def customize_bipartite_stems(ch):
   rules as well as the constraints that make sure that the two
   parts appear together.
   """
-  # Create unique identifier for each stem+affix pair
-  # Dictionary links "stem+aff" strings with integers
-  # counting how many such there are.  Second pass through
-  # could update ids to have -1 suffix only if -2 is there.
-  ids = {}
-
-
   # For each verb type
   for verb in ch.get('verb'):
 
@@ -111,16 +104,6 @@ def customize_bipartite_stems(ch):
       for stem in bistems:
         aff = stem.get('aff')
         orth = stem.get('orth')
-
-        # Find uniq identifier and update ids dictionary
-        id = orth + '+' + aff
-        if id in ids.keys():
-          ids[id] += 1
-          id = id + '_' + str(ids[id]) 
-        else:
-          ids[id] = 1
-        # Record in choices
-        ch[stem.full_key + '_name'] = id
 
         # Update affix-stem dictionary
         if aff in avpairs.keys():
@@ -311,8 +294,9 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     for stem in verb.get('stem', []):
       orth = stem.get('orth')
       pred = stem.get('pred')
+      id = stem.get('name')
       typedef = \
-        TDLencode(orth) + ' := ' + vtype + ' & \
+        TDLencode(id) + ' := ' + vtype + ' & \
                     [ STEM < "' + orth + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
@@ -358,8 +342,9 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
     for stem in det.get('stem',[]):
       orth = stem.get('orth')
       pred = stem.get('pred')
+      id = stem.get('name')
       typedef = \
-        TDLencode(orth) + ' := ' + dtype + ' & \
+        TDLencode(id) + ' := ' + dtype + ' & \
                     [ STEM < "' + orth + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
@@ -461,7 +446,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     for stem in noun.get('stem', []):
       orth = stem.get('orth')
       pred = stem.get('pred')
-      typedef = TDLencode(orth) + ' := ' + ntype + ' & \
+      id = stem.get('name')
+      typedef = TDLencode(id) + ' := ' + ntype + ' & \
                   [ STEM < "' + orth + '" >, \
                     SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
