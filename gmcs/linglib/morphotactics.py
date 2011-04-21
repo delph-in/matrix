@@ -535,26 +535,13 @@ def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
   return all_flags.difference(cur_output_flags).difference(copied_flags)
 
 def write_lex_entry_with_flags(lextdl, mn, choices):
-  """
-  Because the lexicon TDLfile doesn't merge tdl statements
-  with the same identifier but rather disambiguates identifiers,
-  this function writes all the info about each bistem all in one go.
-  """
   uniqid = mn.name
   bistem_prefix = get_stem_prefix_from_uniqid(uniqid, choices)
   bistem = choices.get(bistem_prefix)
-  vtype = get_vtype(bistem_prefix, choices)
-  orth = bistem.get('orth')
-  pred = bistem.get('pred')
-  typedef = \
-      TDLencode(uniqid) + ' := ' + vtype + ' & \
-                    [ STEM < "' + orth + '" >, \
-                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"'
   for flag in mn.flags['out']:
-    typedef = typedef + ''', INFLECTED.%(flag)s %(val)s ''' %\
-        {'flag': flag_name(flag), 'val':mn.flags['out'][flag]}
-  typedef = typedef + ' ].'
-  lextdl.add(typedef)
+    lextdl.add('''%(id)s := [ INFLECTED.%(flag)s %(val)s ].''' %\
+               {'id': uniqid, 'flag': flag_name(flag),
+                'val': mn.flags['out'][flag]})
 
 def write_flags(tdlfile, mn):
   for flag in mn.flags['in']:

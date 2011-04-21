@@ -291,7 +291,10 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
     features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
 
-    for stem in verb.get('stem', []):
+    stems = verb.get('stem', [])
+    stems.extend(verb.get('bistem', []))
+
+    for stem in stems:
       orth = stem.get('orth')
       pred = stem.get('pred')
       id = stem.get('name')
