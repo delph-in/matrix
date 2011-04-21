@@ -750,13 +750,11 @@ class TDLsection:
 # be added to the TDLfile using the add() method.
 
 class TDLfile:
-  def __init__(self, file_name, merge_by_default = True):
+  def __init__(self, file_name):
     self.file_name = file_name  # we'll eventually save to this file
     self.typedefs = []
     self.sections = []
     self.section = ''
-    self.merge_by_default = merge_by_default
-
 
   def define_sections(self, sections):
     """
@@ -800,8 +798,7 @@ class TDLfile:
 
 
   def save(self):
-    if not self.merge_by_default:
-      self.disambiguate_types()
+    self.disambiguate_types()
 
     f = open(self.file_name, 'w')
     TDLset_file(f)
@@ -885,8 +882,7 @@ class TDLfile:
           comment = '', one_line = False, merge = False, section = ''):
     """
     Add a type definition to this file, merging with an existing
-    definition if possible UNLESS the TDLfile is not set to
-    merge_by_default and that's not overriden by the merge argument.
+    definition if possible.
     """
     typedef = TDLparse(tdl_type)
     typedef.set_comment(comment)
@@ -897,12 +893,11 @@ class TDLfile:
       typedef.section = self.section
 
     handled = False
-    if self.merge_by_default or merge:
-      for i in range(len(self.typedefs) - 1, -1, -1):
-        if TDLmergeable(self.typedefs[i], typedef):
-          self.typedefs[i] = TDLmerge(self.typedefs[i], typedef)
-          handled = True
-          break
+    for i in range(len(self.typedefs) - 1, -1, -1):
+      if TDLmergeable(self.typedefs[i], typedef):
+        self.typedefs[i] = TDLmerge(self.typedefs[i], typedef)
+        handled = True
+        break
 
     if not handled:
       self.typedefs.append(typedef)
