@@ -113,6 +113,15 @@ def get_stem_prefix_from_uniqid(uniqid, choices):
     for stem in stems:
       if stem.get('name') == uniqid:
         return stem.full_key
+  #FIXME: Adding auxes here, but it would probably be better
+  #to avoid making mns for auxes in the first place 
+  #(cf lexion.lexical_type_hierarchy)
+  for verb in choices.get('aux'):
+    stems = verb.get('stem')
+    for stem in stems:
+      if stem.get('name') == uniqid:
+        return stem.full_key
+
        
 def get_vtype(stem, choices):
   """
