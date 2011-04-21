@@ -341,6 +341,11 @@ def customize_matrix(path, arch_type, destination=None):
  # init_mood_hierarchy()
  # init_form_hierarchy()
   verbal_features.init_verbal_hierarchies(ch, hierarchies)
+
+  #Create unique ids for each lexical entry 
+  lexical_items.insert_ids(ch)
+  print ch
+
   # The following might modify hierarchies in some way, so it's best
   # to customize those components and only have them contribute their
   # information to lexical rules when we customize inflection.

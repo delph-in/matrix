@@ -3,7 +3,6 @@ version=23
 
 section=general
 language=bipartite-stems
-iso-code=bps
 archive=no
 comment=Testing bipartite stems code.  Choices file is based on mini-English.
 

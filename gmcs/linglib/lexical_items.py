@@ -7,6 +7,72 @@ from gmcs.linglib import auxiliaries
 from gmcs.linglib.parameters import determine_vcluster
 
 ##########################################################
+# insert_ids()
+
+def insert_ids(ch):
+  """
+  Create a unique identifier for each lexical entry based
+  on the stem value but allowing for separate lexical items
+  with the same stem.  Store in the choices file object.
+  """
+  stemids = {}
+  stemidcounters = {}
+  # The following needs to be more robust.  How would we
+  # know to update that postype list when adding say adjectives?
+  # Where else does such a list appear?
+  postypes = ['noun','verb','aux','det','adp']
+
+  for postype in postypes:
+    for pos in ch.get(postype):
+      # For ordinary stems, use the stem orthography itself
+      # as the basis of the identifier.
+      for stem in pos.get('stem'):
+        orth = stem.get('orth')
+        if orth in stemids.keys():
+          stemids[orth] += 1
+        else:
+          stemids[orth] = 1
+      # For bistems, build the identifier out of the orthography
+      # plus the affix, but store these in the same dictionary
+      # to account for possible name-space collisions.
+      for bistem in pos.get('bistem'):
+        aff = bistem.get('aff')
+        orth = bistem.get('orth')
+        id = orth + '+' + aff
+
+        if id in stemids.keys():
+          stemids[id] += 1
+        else:
+          stemids[id] = 1
+
+  # Now that stemids has the full count, go through and add
+  # to the choices file object.
+
+  for postype in postypes:
+    for pos in ch.get(postype):
+      for stem in pos.get('stem'):
+        orth = stem.get('orth')
+        if stemids[orth] == 1:
+          ch[stem.full_key + '_name'] = orth
+        elif orth not in stemidcounters:
+          stemidcounters[orth] = 1
+          ch[stem.full_key + '_name'] = orth + '_1'
+        else:
+          stemidcounters[orth] += 1
+          ch[stem.full_key + '_name'] = orth + '_' + str(stemidcounters[orth])
+      for bistem in pos.get('bistem'):
+        orth = bistem.get('orth') + '+' + bistem.get('aff')
+        if stemids[orth] == 1:
+          ch[bistem.full_key + '_name'] = orth
+        elif orth not in stemidcounters:
+          stemidcounters[orth] = 1
+          ch[bistem.full_key + '_name'] = orth + '_1'
+        else:
+          stemidcounters[orth] += 1
+          ch[bistem.full_key + '_name'] = orth + '_' + str(stemidcounters[orth])
+
+
+##########################################################
 # customize_verbs()
 
 def customize_bipartite_stems(ch):
