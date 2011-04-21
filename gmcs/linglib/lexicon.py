@@ -33,19 +33,17 @@ def lexical_type_hierarchy(choices, lexical_supertype):
       st = get_lexical_supertype(lt.full_key, choices)
       lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
                                parents={st:lth.nodes[st]}))
-      # If we're dealing with a verb
+      # If we're dealing with a verb add nodes for all lexical entries
+      # because bistems can give rise to flags that need to appear on
+      # all verbs.
       if lexical_supertype == 'verb':
         bistems = choices[lt.full_key]['bistem']
-      # if it has bipartite stems
-        if bistems:
-          # add nodes for each bipartite stem (mod LexicalType to encode that these are entries)
-          for stem in bistems:
-            lth.add_node(LexicalType(stem.full_key, stem['name'], 
-                                     parents={lt.full_key:lth.nodes[lt.full_key]}, entry=True))
-
-      # worry about printing out constraints on lex entries
-      # worry about not printing lex entries as types/rules (since they're now in lth)
-
+        stems = choices[lt.full_key]['stem']
+        stems.extend(bistems)
+        for stem in stems:
+          lth.add_node(LexicalType(stem.full_key, stem['name'], 
+                                   parents={lt.full_key:lth.nodes[lt.full_key]}, entry=True))
+          
   return lth
 
 def get_lexical_supertype(lt_key, choices):

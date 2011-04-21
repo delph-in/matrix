@@ -101,21 +101,25 @@ def get_input_map(pch):
 def get_stem_prefix_from_uniqid(uniqid, choices):
   """
   Helper function to look up stem prefix in choices file
-  based on uniqid value. Predicated on fact that customize_bistems
-  is putting in unique values to pick out each bistem.
+  based on uniqid value. This takes advantage of the ids
+  inserted by lexical_items.insert_ids().
   """
   #FIXME: Need to add some error checking here.
   for verb in choices.get('verb'):
-    for bistem in verb.get('bistem'):
-      if bistem.get('name') == uniqid:
-        return bistem.full_key
+    stems = verb.get('stem')
+    bistems = verb.get('bistem')
+    if bistems:
+      stems.extend(bistems)
+    for stem in stems:
+      if stem.get('name') == uniqid:
+        return stem.full_key
        
-def get_vtype(bistem, choices):
+def get_vtype(stem, choices):
   """
   Helper function to look up verb type in choices file
-  for a particular bistem.
+  for a particular stem.
   """
-  verb_prefix = bistem.split('_')[0]
+  verb_prefix = stem.split('_')[0]
   verb = choices.get(verb_prefix)
   return get_name(verb) + '-verb-lex'
 
@@ -536,8 +540,8 @@ def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
 
 def write_lex_entry_with_flags(lextdl, mn, choices):
   uniqid = mn.name
-  bistem_prefix = get_stem_prefix_from_uniqid(uniqid, choices)
-  bistem = choices.get(bistem_prefix)
+  stem_prefix = get_stem_prefix_from_uniqid(uniqid, choices)
+  stem = choices.get(stem_prefix)
   for flag in mn.flags['out']:
     lextdl.add('''%(id)s := [ INFLECTED.%(flag)s %(val)s ].''' %\
                {'id': uniqid, 'flag': flag_name(flag),
@@ -581,7 +585,8 @@ def write_initial_flags(mylang, mn, initial_flags):
   """
   Write initial flags for lexical types and lexical entries.
   As of 2011/1/31 only bipartite stems give rise to lex entries
-  with flags.
+  with flags, but these flags occur on both non-bipartite and
+  bipartite verbs.
   """
   for flag in initial_flags:
     mylang.add('''%(id)s := [ INFLECTED.%(flag)s na-or--].''' %\
