@@ -1,0 +1,144 @@
+
+version=23
+
+section=general
+language=german-argcomp-compl
+archive=no
+
+section=word-order
+word-order=v2
+argument-order=free
+has-dets=no
+has-aux=yes
+aux-comp-order=after
+aux-comp=v
+multiple-aux=yes
+verb-cluster=yes
+part-vp-front=yes
+vc-placement=post
+edge-related-res=no
+split-cluster=yes
+split-analysis=lex-rule
+vc-analysis=basic
+
+section=number
+  number1_name=singular
+  number2_name=plural
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=accusative
+  case1_name=dative
+  case2_name=genitive
+
+section=direct-inverse
+
+section=tense-aspect-mood
+  nf-subform1_name=realnonfinite
+  nf-subform2_name=infinitive
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+  cs1_np=on
+  cs1_s=on
+  cs1_pat=mono
+  cs1_mark=word
+  cs1_orth=coord
+  cs1_order=before
+  cs1_agreement=form,case
+  cs1_npnumber=plural
+
+section=matrix-yes-no
+
+section=arg-opt
+
+section=lexicon
+ditransitives=yes
+  noun1_name=com
+  noun1_det=imp
+    noun1_stem1_orth=n1
+    noun1_stem1_pred=_n1_n_rel
+    noun1_stem2_orth=n2
+    noun1_stem2_pred=_n2_n_rel
+    noun1_stem3_orth=n3
+    noun1_stem3_pred=_n3_n_rel
+  noun-pc1_name=case-marker
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun
+    noun-pc1_lrt1_name=nominative
+      noun-pc1_lrt1_feat1_name=case
+      noun-pc1_lrt1_feat1_value=nom
+      noun-pc1_lrt1_lri1_inflecting=yes
+      noun-pc1_lrt1_lri1_orth=-nom
+    noun-pc1_lrt2_name=accusative
+      noun-pc1_lrt2_feat1_name=case
+      noun-pc1_lrt2_feat1_value=acc
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=-acc
+    noun-pc1_lrt3_name=dative
+      noun-pc1_lrt3_feat1_name=case
+      noun-pc1_lrt3_feat1_value=dative
+      noun-pc1_lrt3_lri1_inflecting=yes
+      noun-pc1_lrt3_lri1_orth=-dat
+  verb1_name=intrans
+  verb1_valence=nom
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_name=trans
+  verb2_valence=nom-acc
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+  verb3_name=ditrans
+  verb3_valence=nom-dat-acc
+    verb3_stem1_orth=dv
+    verb3_stem1_pred=_dv_v_rel
+  aux1_name=basic-aux
+  aux1_sem=add-pred
+  aux1_subj=np-comp-case
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=realnonfinite
+    aux1_stem1_orth=aux1
+    aux1_stem1_pred=aux1
+  aux2_name=aux2
+  aux2_sem=add-pred
+  aux2_subj=np-comp-case
+    aux2_compfeature1_name=form
+    aux2_compfeature1_value=infinitive
+    aux2_stem1_orth=aux2
+    aux2_stem1_pred=aux2
+  verb-pc1_name=verb-inflection
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=finite
+      verb-pc1_lrt1_feat1_name=form
+      verb-pc1_lrt1_feat1_value=finite
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-fin
+    verb-pc1_lrt2_name=nonfinite
+      verb-pc1_lrt2_feat1_name=form
+      verb-pc1_lrt2_feat1_value=realnonfinite
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=-nf
+    verb-pc1_lrt3_name=infinitive
+      verb-pc1_lrt3_feat1_name=form
+      verb-pc1_lrt3_feat1_value=infinitive
+      verb-pc1_lrt3_feat1_head=verb
+      verb-pc1_lrt3_lri1_inflecting=yes
+      verb-pc1_lrt3_lri1_orth=-inf
+
+section=test-sentences
+
+section=gen-options
