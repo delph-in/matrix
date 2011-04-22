@@ -7,7 +7,134 @@ from gmcs.linglib import auxiliaries
 from gmcs.linglib.parameters import determine_vcluster
 
 ##########################################################
+# insert_ids()
+
+def insert_ids(ch):
+  """
+  Create a unique identifier for each lexical entry based
+  on the stem value but allowing for separate lexical items
+  with the same stem.  Store in the choices file object.
+  """
+  stemids = {}
+  stemidcounters = {}
+  # The following needs to be more robust.  How would we
+  # know to update that postype list when adding say adjectives?
+  # Where else does such a list appear?
+  postypes = ['noun','verb','aux','det','adp']
+
+  for postype in postypes:
+    for pos in ch.get(postype):
+      # For ordinary stems, use the stem orthography itself
+      # as the basis of the identifier.
+      for stem in pos.get('stem'):
+        orth = stem.get('orth')
+        if orth in stemids.keys():
+          stemids[orth] += 1
+        else:
+          stemids[orth] = 1
+      # For bistems, build the identifier out of the orthography
+      # plus the affix, but store these in the same dictionary
+      # to account for possible name-space collisions.
+      for bistem in pos.get('bistem'):
+        aff = bistem.get('aff')
+        orth = bistem.get('orth')
+        id = orth + '+' + aff
+
+        if id in stemids.keys():
+          stemids[id] += 1
+        else:
+          stemids[id] = 1
+
+  # Now that stemids has the full count, go through and add
+  # to the choices file object.
+
+  for postype in postypes:
+    for pos in ch.get(postype):
+      for stem in pos.get('stem'):
+        orth = stem.get('orth')
+        if stemids[orth] == 1:
+          ch[stem.full_key + '_name'] = orth
+        elif orth not in stemidcounters:
+          stemidcounters[orth] = 1
+          ch[stem.full_key + '_name'] = orth + '_1'
+        else:
+          stemidcounters[orth] += 1
+          ch[stem.full_key + '_name'] = orth + '_' + str(stemidcounters[orth])
+      for bistem in pos.get('bistem'):
+        orth = bistem.get('orth') + '+' + bistem.get('aff')
+        if stemids[orth] == 1:
+          ch[bistem.full_key + '_name'] = orth
+        elif orth not in stemidcounters:
+          stemidcounters[orth] = 1
+          ch[bistem.full_key + '_name'] = orth + '_1'
+        else:
+          stemidcounters[orth] += 1
+          ch[bistem.full_key + '_name'] = orth + '_' + str(stemidcounters[orth])
+
+
+##########################################################
 # customize_verbs()
+
+def customize_bipartite_stems(ch):
+  """
+  Users specify bipartite stems as roots + affixes in bipartite
+  stem specifications plus position class for affix in lexical type.
+  Take this information and add choices that create the lexical
+  rules as well as the constraints that make sure that the two
+  parts appear together.
+  """
+  # For each verb type
+  for verb in ch.get('verb'):
+
+    # Check whether there are bipartite stems
+    bistems = verb.get('bistem')
+    if bistems:
+      # Find position class for affixes
+
+      pcname = verb.get('bipartitepc')
+      pc = None
+      for vpc in ch.get('verb-pc'):
+        if vpc.full_key == pcname:
+          pc = vpc
+
+      # Make dictionary with affixes as keys and lists
+      # of stems as values.  This will let us find out if
+      # any verbs share same affix
+      avpairs = {}
+      for stem in bistems:
+        aff = stem.get('aff')
+        orth = stem.get('orth')
+
+        # Update affix-stem dictionary
+        if aff in avpairs.keys():
+          avpairs[aff].append(stem.full_key)
+        else:
+          avpairs[aff] = [stem.full_key]
+
+      # Get stem list again because I want access to the
+      # info I've added since first initializing stems
+      bistems = verb.get('bistem')
+
+      for aff in avpairs.keys():
+        # Get iter number for lrts:
+        if pc['lrt']:
+          iternum = str(pc['lrt'].next_iter_num())
+        else:
+          iternum = '1'
+
+        # Create lexical rules types and instances for each affix
+        next_lrt_str = pc.full_key + '_lrt' + iternum
+        ch[next_lrt_str + '_require1_others'] = ', '.join(avpairs[aff])
+        ch[next_lrt_str + '_lri1_orth'] = aff
+        ch[next_lrt_str + '_lri1_inflecting'] = 'yes'
+          
+        # Add requires constrains on stems
+        for stemid in avpairs[aff]:
+#          for stem in bistems:
+#            print stemid
+#            print stem.full_key
+#            if stem.full_key == stemid:
+          ch[stemid + '_require1_others'] = next_lrt_str
 
 def customize_verbs(mylang, ch, lexicon, hierarchies):
   negmod = ch.get('neg-mod')
@@ -126,6 +253,9 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
   case.customize_verb_case(mylang, ch)
 
+  # Add constraints to choices to create lex rules for bipartite stems
+  customize_bipartite_stems(ch)
+
   # Lexical entries
   lexicon.add_literal(';;; Verbs')
 
@@ -161,11 +291,15 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
     features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
 
-    for stem in verb.get('stem', []):
+    stems = verb.get('stem', [])
+    stems.extend(verb.get('bistem', []))
+
+    for stem in stems:
       orth = stem.get('orth')
       pred = stem.get('pred')
+      id = stem.get('name')
       typedef = \
-        TDLencode(orth) + ' := ' + vtype + ' & \
+        TDLencode(id) + ' := ' + vtype + ' & \
                     [ STEM < "' + orth + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
@@ -211,8 +345,9 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
     for stem in det.get('stem',[]):
       orth = stem.get('orth')
       pred = stem.get('pred')
+      id = stem.get('name')
       typedef = \
-        TDLencode(orth) + ' := ' + dtype + ' & \
+        TDLencode(id) + ' := ' + dtype + ' & \
                     [ STEM < "' + orth + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
@@ -314,7 +449,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     for stem in noun.get('stem', []):
       orth = stem.get('orth')
       pred = stem.get('pred')
-      typedef = TDLencode(orth) + ' := ' + ntype + ' & \
+      id = stem.get('name')
+      typedef = TDLencode(id) + ' := ' + ntype + ' & \
                   [ STEM < "' + orth + '" >, \
                     SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)

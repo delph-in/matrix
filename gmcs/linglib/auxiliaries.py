@@ -216,13 +216,14 @@ def get_users_type_name(aux):
 def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon):
   for stem in aux.get('stem',[]):
     orth = stem.get('orth')
-    typedef = TDLencode(orth) + ' := ' + userstypename + ' & \
+    id = stem.get('name')
+    typedef = TDLencode(id) + ' := ' + userstypename + ' & \
                        [ STEM < "' + orth + '" > ].'
     lexicon.add(typedef)
 
     if sem == 'add-pred':
       pred = stem.get('pred')
-      typedef = TDLencode(orth) + \
+      typedef = TDLencode(id) + \
                     ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef, merge=True)
 
@@ -470,3 +471,4 @@ def customize_auxiliaries(mylang, ch, lexicon, hierarchies):
 #        typedef = TDLencode(orth) + \
 #                    ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
 #        lexicon.add(typedef, merge=True)
+

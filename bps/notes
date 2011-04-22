@@ -1,0 +1,5 @@
+bps1 -- grammar customized with pre-2/16 version
+bps2 -- took out statement adding requires constraints to lex rules
+bps3 -- took out statement adding requires constraints to stems
+bps4 -- meant to be equivalent grammar from trunk, explicitly defining affixes and requires constraints.
+bps5 -- as above, but without constraints on stems

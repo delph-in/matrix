@@ -1,0 +1,19 @@
+plural-suffix :=
+%suffix (* s)
+plural-lex-rule.
+
+3sg-suffix :=
+%suffix (* s)
+3sg-lex-rule.
+
+off-suffix :=
+%suffix (* off)
+off-lex-rule.
+
+near-suffix :=
+%suffix (* near)
+near-lex-rule.
+
+self-suffix :=
+%suffix (* self)
+self-lex-rule.
