@@ -135,3 +135,4 @@ morphotactics-lrt-inputs=Tests inputs and constraints using hierarchies (trees a
 morphotactics-impl-expl-disjunction=Models and tests both implicit and explicit non-sequential disjunctions, and an explicit sequential disjunction.
 dutch-auxrule-compl=cabulary aux-rule complete coverage
 bipartite-stems=Basic test cases for bipartite stems, based on mini-English
+dutch-argcomp-compl=ACL version Dutch grammar with argument-composition analysis
