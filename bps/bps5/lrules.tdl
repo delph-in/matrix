@@ -1,5 +1,0 @@
-singular-lex := singular-lex-rule.
-
-pl-lex := pl-lex-rule.
-
-non-3rd-lex := non-3rd-lex-rule.
