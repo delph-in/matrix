@@ -48,7 +48,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     h = feat.get('head','')
     if h == 'subj':
       geom_prefix += 'LOCAL.CAT.VAL.SUBJ.FIRST.'
-      if ch.get('vc-analysis') == 'aux-rule':
+      if ch.get('verb-cluster') == 'yes':
         geom_prefix2 = pos_geom_prefix
         geom_prefix2 += 'LOCAL.CAT.VAL.COMPS.FIRST.'
     elif h == 'obj':

@@ -21,7 +21,7 @@
 
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
- ;;; new-regression-test-here
+((:path . "bipartite-stems") (:content . "bipartite-stems: Basic test cases for bipartite stems, based on mini-English"))
 ((:path . "morphotactics-impl-expl-disjunction") (:content . "morphotactics-impl-expl-disjunction: Models and tests both implicit and explicit non-sequential disjunctions, and an explicit sequential disjunction."))
 ((:path . "morphotactics-lrt-inputs") (:content . "morphotactics-lrt-inputs: Tests inputs and constraints using hierarchies (trees and multiple inheritance) of lexical rule types."))
 ((:path . "morphotactics-req-fbd") (:content . "morphotactics-req-fbd: Tests forwards and backwards require, and (backward) forbid, morphotactic co-occurrence restrictions on an input graph with both conjunction and disjunction."))

@@ -1,0 +1,131 @@
+
+version=23
+
+section=general
+language=bipartite-stems
+archive=no
+comment=Testing bipartite stems code.  Choices file is based on mini-English.
+
+section=word-order
+word-order=svo
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=arg-opt
+
+section=lexicon
+  noun1_name=common
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=obl
+    noun1_stem1_orth=cat
+    noun1_stem1_pred=_cat_n_rel
+    noun1_stem2_orth=dog
+    noun1_stem2_pred=_dog_n_rel
+  noun2_name=1sg-pronoun
+    noun2_feat1_name=person
+    noun2_feat1_value=1st
+    noun2_feat2_name=number
+    noun2_feat2_value=sg
+  noun2_det=imp
+    noun2_stem1_orth=I
+    noun2_stem1_pred=_pronoun_n_rel
+  noun-pc1_name=num
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun1
+    noun-pc1_lrt1_name=singular
+      noun-pc1_lrt1_feat1_name=number
+      noun-pc1_lrt1_feat1_value=sg
+      noun-pc1_lrt1_lri1_inflecting=no
+    noun-pc1_lrt2_name=plural
+      noun-pc1_lrt2_feat1_name=number
+      noun-pc1_lrt2_feat1_value=pl
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=s
+  verb1_name=itr
+  verb1_valence=intrans
+  verb1_bipartitepc=verb-pc2
+    verb1_stem1_orth=sleep
+    verb1_stem1_pred=_sleep_v_rel
+    verb1_stem2_orth=sleep
+    verb1_stem2_pred=_sleep_v2_rel
+    verb1_bistem1_orth=break
+    verb1_bistem1_aff=self
+    verb1_bistem1_pred=_break+self_v_rel
+  verb2_name=tr
+  verb2_valence=trans
+  verb2_bipartitepc=verb-pc2
+    verb2_stem1_orth=chase
+    verb2_stem1_pred=_chase_v_rel
+    verb2_stem2_orth=break
+    verb2_stem2_pred=_break_v_rel
+    verb2_bistem1_orth=chase
+    verb2_bistem1_aff=off
+    verb2_bistem1_pred=_chase+off_v_rel
+    verb2_bistem2_orth=chase
+    verb2_bistem2_aff=near
+    verb2_bistem2_pred=_chase+near_v_rel
+    verb2_bistem3_orth=fend
+    verb2_bistem3_aff=off
+    verb2_bistem3_pred=_fend+off_v_rel
+  verb-pc1_name=pernum
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=3sg
+      verb-pc1_lrt1_feat1_name=person
+      verb-pc1_lrt1_feat1_value=3rd
+      verb-pc1_lrt1_feat1_head=subj
+      verb-pc1_lrt1_feat2_name=number
+      verb-pc1_lrt1_feat2_value=sg
+      verb-pc1_lrt1_feat2_head=subj
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=s
+    verb-pc1_lrt2_name=pl
+      verb-pc1_lrt2_feat1_name=number
+      verb-pc1_lrt2_feat1_value=pl
+      verb-pc1_lrt2_feat1_head=subj
+      verb-pc1_lrt2_lri1_inflecting=no
+    verb-pc1_lrt3_name=non-3rd
+      verb-pc1_lrt3_feat1_name=person
+      verb-pc1_lrt3_feat1_value=1st, 2nd
+      verb-pc1_lrt3_feat1_head=subj
+      verb-pc1_lrt3_lri1_inflecting=no
+  verb-pc2_name=bp-suff
+  verb-pc2_order=suffix
+  verb-pc2_inputs=verb-pc1
+    det1_stem1_orth=the
+    det1_stem1_pred=_def_q_rel
+
+section=test-sentences
+  sentence1_orth=the cat chases the dog
+  sentence2_orth=the dogs sleep
+
+section=gen-options

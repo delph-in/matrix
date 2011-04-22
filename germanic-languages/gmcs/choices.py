@@ -606,7 +606,7 @@ class ChoicesFile:
   def patterns(self):
     cm = self.get('case-marking')
     cases = case.case_names(self)
-
+    
     patterns = []
 
     # Fill in the canonical names based on the case-marking.
@@ -919,6 +919,7 @@ class ChoicesFile:
     # Case
     features += self.__get_features(case.case_names(self), 0, 1, 'case',
                                     'LOCAL.CAT.HEAD.CASE')
+
     # Number, Person, and Pernum
     pernums = self.pernums()
     if pernums:
@@ -1027,9 +1028,10 @@ class ChoicesFile:
 #
     #Word order interaction features
     if self.get('edge-related-res') == 'yes':
-      features += [ ['edge', 'luk', 'LOCAL.CAT.EDGE' ] ]
+      features += [ ['edge', 'na-or-+|na-or--', 'LOCAL.CAT.EDGE' ] ]
     if self.get('verb-cluster') == 'yes' and self.get('aux-comp-order') == 'both':
-      features += [ ['headfinal', 'luk', 'LOCAL.CAT.HEADFINAL' ] ]
+      features += [ ['headfinal', '-|-', 'LOCAL.CAT.HEADFINAL' ] ]
+      features += [ ['headfinal', '+|+', 'LOCAL.CAT.HEADFINAL' ] ]
 #
 #
 ####END GERMANIC BRANCH

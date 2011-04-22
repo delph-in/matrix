@@ -297,7 +297,7 @@ def customize_matrix(path, arch_type, destination=None):
   rules =   tdl.TDLfile(os.path.join(grammar_path, 'rules.tdl'))
   irules =  tdl.TDLfile(os.path.join(grammar_path, 'irules.tdl'))
   lrules =  tdl.TDLfile(os.path.join(grammar_path, 'lrules.tdl'))
-  lexicon = tdl.TDLfile(os.path.join(grammar_path, 'lexicon.tdl'), False)
+  lexicon = tdl.TDLfile(os.path.join(grammar_path, 'lexicon.tdl'))
   roots =   tdl.TDLfile(os.path.join(grammar_path, 'roots.tdl'))
 
   # date/time
@@ -346,6 +346,12 @@ def customize_matrix(path, arch_type, destination=None):
  # init_mood_hierarchy()
  # init_form_hierarchy()
   verbal_features.init_verbal_hierarchies(ch, hierarchies)
+
+  #Create unique ids for each lexical entry; this allows
+  #us to do the same merging on the lexicon TDL file as we
+  #do on the other TDL files.
+  lexical_items.insert_ids(ch)
+
   # The following might modify hierarchies in some way, so it's best
   # to customize those components and only have them contribute their
   # information to lexical rules when we customize inflection.
@@ -361,7 +367,7 @@ def customize_matrix(path, arch_type, destination=None):
                           argument_optionality.add_lexrules,
                           direct_inverse.add_lexrules]
   to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
-                                              mylang, irules, lrules)
+                                              mylang, irules, lrules, lexicon)
   features.process_cfv_list(mylang, ch, hierarchies, to_cfv)
 
   # Call the other customization functions

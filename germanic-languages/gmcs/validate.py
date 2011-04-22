@@ -810,6 +810,8 @@ def validate_lexicon(ch, vr):
   seenIntrans = False
   for verb in ch.get('verb'):
     val = verb.get('valence')
+    bistems = verb.get('bistem', [])
+    bipartitepc = verb.get('bipartitepc')
 
     if not val:
       mess = 'You must specify the argument structure of each verb you define.'
@@ -818,6 +820,10 @@ def validate_lexicon(ch, vr):
       seenTrans = True
     else:
       seenIntrans = True
+
+    if bistems and not bipartitepc:
+      mess = 'If you add bipartite stems to a class, you must specify a position class for the affix part of the stems.'
+      vr.err(verb.full_key + '_bipartitepc', mess)
 
     for stem in verb.get('stem', []):
       orth = stem.get('orth')
@@ -830,6 +836,23 @@ def validate_lexicon(ch, vr):
       if not pred:
         mess = 'You must specify a predicate for each verb you define.'
         vr.err(stem.full_key + '_pred', mess)
+
+    for bistem in bistems:
+      orth = bistem.get('orth')
+      aff = bistem.get('aff')
+      pred = bistem.get('pred')
+
+      if not orth:
+        mess = 'You must specify a spelling for each verb you define.'
+        vr.err(bistem.full_key + '_orth', mess)
+
+      if not aff:
+        mess = 'You must specify a affix for each bipartite verb stem you define.'
+        vr.err(bistem.full_key + '_aff', mess)
+
+      if not pred:
+        mess = 'You must specify a predicate for each verb you define.'
+        vr.err(bistem.full_key + '_pred', mess)
 
   if not (seenTrans and seenIntrans):
     mess = 'You should create intransitive and transitive verb classes.'

@@ -9,7 +9,7 @@ from gmcs.utils import TDLencode
 ######################################################################
 # define_coord_strat: a utility function, defines a strategy
 
-def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, irules):
+def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_number, ch, mylang, rules, irules):
   mylang.add_literal(';;; Coordination Strategy ' + num)
 
   pn = pos + num
@@ -18,6 +18,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, i
   else:
     headtype = 'verb'
 
+  agr = agreement.split(',')
   # First define the rules in mylang.  Every strategy has a
   # top rule and a bottom rule, but only some have a mid rule, so if
   # the mid prefix argument $mid is empty, don't emit a rule.
@@ -82,6 +83,59 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, i
       rule += '  ' + pn + '-left-coord-rule.'
       irules.add_literal(rule)
 
+  if pos == 's':
+   
+    if 'form' in agr:
+
+      mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
+                                  LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
+                                  RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].')
+      if mid:   
+        mylang.add(pn + '-mid-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
+                                  LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
+                                  RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].')
+      mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
+                                 NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].') 
+
+  wo = ch.get('word-order')
+
+  if wo == 'v2' or wo == 'free':
+    mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.MC #mc, \
+                                    LCOORD-DTR.SYNSEM.LOCAL.CAT.MC #mc, \
+                                    RCOORD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+    if mid:   
+      mylang.add(pn + '-mid-coord-rule := [ SYNSEM.LOCAL.CAT.MC #mc, \
+                                    LCOORD-DTR.SYNSEM.LOCAL.CAT.MC #mc, \
+                                    RCOORD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+    mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.MC #mc, \
+                                   NONCONJ-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+    if ch.get('split-cluster') == 'yes':
+      if ch.get('vc-analysis') == 'aux-rule' or ch.get('split-analysis') == 'lex-rule':
+        mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                                   LCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                                   RCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
+        if mid:   
+          mylang.add(pn + '-mid-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                                     LCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                                     RCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
+        mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                                     NONCONJ-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
+
+  if pos == 'n' or pos == 'np':
+    if 'case' in agr:
+      mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
+                                 LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
+                                 RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
+      if mid:   
+        mylang.add(pn + '-mid-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
+                                  LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
+                                  RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
+      mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
+                                 NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
+    if np_number:
+      mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + 
+                                 np_number + ' ].')
+
   # Now define the rule instances into rules.tdl.  As above, the mid
   # or left rule may not be necessary.
 
@@ -106,6 +160,10 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
     pat = cs.get('pat')
     orth = cs.get('orth')
     order = cs.get('order')
+    agreement = ''
+    agreement = cs.get('agreement')
+    np_number = ''
+    np_number = cs.get('npnumber')
 
     pre = ''
     suf = ''
@@ -160,4 +218,4 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
 
     for pos in ('n', 'np', 'vp', 's'):
       if cs.get(pos):
-        define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, mylang, rules, irules)
+        define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, agreement, np_number, ch, mylang, rules, irules)

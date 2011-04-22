@@ -1223,14 +1223,27 @@ BeginIter verb{i} "a Verb Type" 2
   Select valence "Verb {i} arguments" "<p>Argument structure: " "</p>"
   fillverbpat
 
+  Select bipartitepc "Verb {i} bipartite stems position class" "If this verb class includes bipartite stems, select the position class for the affix portion of the stems: " "</p>"
+  fillregex verb-pc[0-9]+_name
+
   Label "Stems:"
-  BeginIter stem{j} "a Stem" 1
+  BeginIter stem{j} "a simple Stem" 1
 
     Text orth "Verb {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('verb{i}_stem{j}', '_v_rel')"
 
     Text pred "Verb {i} stem {j} predicate" " Predicate: " "" 30
 
   EndIter stem
+
+  BeginIter bistem{j} "a bipartite Stem" 
+
+    Text orth "Verb {i} bipartite stem {j} spelling" "Root spelling: " "" 30
+
+    Text aff "Verb {i} bipartite stem {j} affix" "Affix spelling: " "" 30
+
+    Text pred "Verb {i} bipartite stem {j} predicate" " Predicate: " "" 30
+
+  EndIter bistem
 
   Label "<p>Morphotactic Constraints:</p>"
 
@@ -1379,7 +1392,7 @@ BeginIter verb-pc{i} "a Position Class"
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect others "Noun Position Class {i} Requires" "<p>Noun Position Class {i} requires one of the following: " "</p>"
+    MultiSelect others "Verb Position Class {i} Requires" "<p>Verb Position Class {i} requires one of the following: " "</p>"
     fillregex (verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
@@ -1390,7 +1403,7 @@ BeginIter verb-pc{i} "a Position Class"
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    Select others "Noun Position Class {i} Forbids" "<p>Noun Position Class {i} forbids the following: " "</p>"
+    Select others "Verb Position Class {i} Forbids" "<p>Verb Position Class {i} forbids the following: " "</p>"
     fillregex (verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"

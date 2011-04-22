@@ -133,3 +133,5 @@ morphotactics-opt-oblig-single-input=Tests simple morphotactics with position cl
 morphotactics-req-fbd=Tests forwards and backwards require, and (backward) forbid, morphotactic co-occurrence restrictions on an input graph with both conjunction and disjunction.
 morphotactics-lrt-inputs=Tests inputs and constraints using hierarchies (trees and multiple inheritance) of lexical rule types.
 morphotactics-impl-expl-disjunction=Models and tests both implicit and explicit non-sequential disjunctions, and an explicit sequential disjunction.
+dutch-auxrule-compl=cabulary aux-rule complete coverage
+bipartite-stems=Basic test cases for bipartite stems, based on mini-English
