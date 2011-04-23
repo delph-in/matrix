@@ -344,7 +344,8 @@ def customize_matrix(path, arch_type, destination=None):
 
   #Create unique ids for each lexical entry; this allows
   #us to do the same merging on the lexicon TDL file as we
-  #do on the other TDL files.
+  #do on the other TDL files.  NOTE: This needs to be called
+  #before customize_lexicon() and customize_inflection()
   lexical_items.insert_ids(ch)
 
   # The following might modify hierarchies in some way, so it's best
