@@ -98,33 +98,41 @@ or S) varies depending on the auxiliary please let us know.)<br><br>"
   . no "No" "" "no<br><br>" 
 
 Label "NOTE: If your language has free word order and allows more than one auxiliary per clause, we assume that the verbal group forms a cluster (i.e. that all verbal forms are adjacent to each other). If your language reveals different behavior, please let us know."
+ 
 
-  Radio verb-cluster "verbal cluster" "Do the verbs in the v2 language form a cluster?"
+Separator
+ 
+  
+  Radio verb-cluster "verbal cluster" "If the language is V2, do the verbs form a clause final cluster?<br>" ""
+  . yes "Yes" "" "yes<br>"
+  . no "No" "" "no<br><br>"
+ 
+
+  Radio part-vp-front "partial-vp fronting" "Does the language allow partial VP fronting?<br>" ""
   . yes "Yes" "" "yes<br>"
   . no "No" "" "no<br><br>"
 
-  Radio part-vp-front "partial vp fronting" "Does the language exhibit partial VP-fronting?"
+
+  Radio vc-placement "verb cluster placement" "Where is the verbal cluster placed in the language?<br>" ""
+  . pre "Before" "" "before objects<br>"
+  . post "After" "" "after objects<br><br>"
+
+  Radio edge-related-res "edge related restrictions" "Does the language have verbal forms that must or cannot be placed at the edge of a verbal cluster?<br>" ""
   . yes "Yes" "" "yes<br>"
   . no "No" "" "no<br><br>"
 
-  Radio vc-placement "verbal cluster placement" "Where is the verbal cluster placed in the language?"
-  . pre "before" "" "before objects<br>"
-  . post "after" "" "after objects<br><br>"
 
-  Radio edge-related-res "edge related restrictions" "Does the language have verbal forms that must or cannot be placed at the edge of a verbal cluster?"
+  Radio split-cluster "split cluster" "Does the language allow a main verb to be placed in the Vorfeld, while other verbal forms remain in the right bracket?<br>" ""
   . yes "Yes" "" "yes<br>"
   . no "No" "" "no<br><br>"
 
-  Radio split-cluster "Does the language allow fronting of the main-verb while other verbal forms are placed in the right bracket (i.e. the cluster position)"
-  . yes "Yes" "" "yes<br>"
-  . no "No" "" "no<br><br>"
 
-  Radio split-analysis "If your answer on the previous question is yes, which analysis would you like to use for split-clusters?"
-  . lex-rule "lexical rule" "" "lexical rule<br>"
-
-  Radio vc-analysis "Which analysis would you like to use for auxiliaries?"
-  . basic "argument-composition" "" "argument-composition<br>"
-  . aux-rule "aux-verb-const" "" "auxiliary+verb construction"
+  Radio split-analysis "split analysis" "If your answer to the previous question is yes, which analysis would you like to use?<br>" ""
+  . lex-rule "Lexical rule" "" "lexical rule<br><br>"
+ 
+  Radio vc-analysis "verb cluster analysis" "Which analysis would you like to use for auxiliaries?<br>" ""
+  . basic "Argument composition" "" "argument-composition<br>"
+  . aux-rule "Aux-verb construction" "" "auxiliary+verb construction<br><br>"
 
 Label "<p><span style=\"color:red\">NOTE: As Modules for V2 order are
 still under development, relative order of auxiliaries and their
