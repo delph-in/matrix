@@ -43,7 +43,8 @@ def lexical_type_hierarchy(choices, lexical_supertype):
       if lexical_supertype == 'verb':
         bistems = choices[lt.full_key]['bistem']
         stems = choices[lt.full_key]['stem']
-        stems.extend(bistems)
+        if stems:
+          stems.extend(bistems)
         for stem in stems:
           lth.add_node(LexicalType(stem.full_key, stem['name'], 
                                    parents={lt.full_key:lth.nodes[lt.full_key]}, entry=True))
