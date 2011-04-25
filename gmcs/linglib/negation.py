@@ -1,3 +1,114 @@
+from gmcs.utils import TDLencode
+
+######################################################################
+# customize_sentential_negation()
+#   Create the type definitions associated with the user's choices
+#   about sentential negation.
+
+def customize_sentential_negation(mylang, ch, lexicon, rules):
+
+  # ERB 2006-09-16 Calculate a bunch of derived properties based on the
+  # inputs they gave for negation.  The same thing (e.g., negation via
+  # inflection on the main verb) gives a very different output depending
+  # on whether there are other options (negation via selected adverb)
+  # and how they combine.
+
+  # ERB 2009-01-23 This is all moot right now since the interim system
+  # doesn't do the interaction between the two, but it probably won't
+  # break anything to leave it in.
+
+  # ERB 2009-07-01 It was adding defunct lex rules in at least some
+  # cases, so taking it out for now.  This much still seems to be
+  # required:
+
+  advAlone = ''
+  multineg = ch.get('multi-neg')
+  if ch.get('adv-neg') == 'on' or multineg == 'comp':
+    advAlone = 'always'
+
+  # ERB 2009-01-23 Migrating negation to modern customization system.
+  # This intermediate version only does independent adverbs, and so
+  # I'm removing ch.get('neg-adv') == 'ind-adv' as a second part of
+  # the test below.
+
+  if ch.get('adv-neg') == 'on': # and ch.get('neg-adv') == 'ind-adv':
+    create_neg_adv_lex_item(advAlone, mylang, ch, lexicon,rules)
+
+
+def create_neg_adv_lex_item(advAlone, mylang, ch, lexicon, rules):
+
+  mylang.set_section('otherlex')
+
+  mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
+                 [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
+                                            COMPS < >,
+                                            SUBJ < > ],
+                                      HEAD.MOD < [ LOCAL.CAT.HEAD verb ] > ]].''',
+             'Type for negative adverbs.')
+
+  # ERB 2006-10-06 Below was advAlone == 'always', but that seems wrong.
+  # changing it to advAlone == 'never' being the case where we don't want
+  # the adverb to be a modifier.
+
+  if advAlone == 'never':
+    mylang.add_comment('neg-adv-lex',
+    '''Constrain the MOD value of this adverb to keep\n
+    it from modifying the kind of verbs which can select it,\n
+    To keep spurious parses down, as a starting point, we have\n
+    assumed that it only modifies verbs (e.g., non-finite verbs).''')
+
+  if ch.get('neg-order') == 'before':
+    mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+  elif ch.get('neg-order') == 'after':
+    mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
+
+  if ch.get('neg-mod') == 's':
+    mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
+                                                                                   COMPS null ]].''')
+  elif ch.get('neg-mod') == 'vp':
+    mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
+                                                                                   COMPS null ]].''')
+  elif ch.get('neg-mod') == 'v':
+    mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
+    lexical Vs for V-level attachment of negative adverbs.''')
+
+  # ERB 2006-09-22 Validation should really make sure we have a value of
+  # neg-adv-orth before we get here, but just in case, checking first, since
+  # the script gets really unhappy if I try to write to an empty type.
+
+  if(ch.get('neg-adv-orth')):
+    orth = ch.get('neg-adv-orth')
+    lexicon.add(TDLencode(orth) + ' := neg-adv-lex &\
+                [ STEM < \"'+ orth +'\" >,\
+                  SYNSEM.LKEYS.KEYREL.PRED \"_neg_r_rel\" ].')
+
+
+  # ERB 2006-10-06 And of course we need the head-modifier rules, if we're
+  # going to have an independent modifier.  While we're at it, we need to
+  # contrain the MOD value on the rest of the head types to keep them
+  # from going nuts.
+
+  if advAlone != 'never':
+    rules.add('head-adj-int := head-adj-int-phrase.',
+              'Rule instances for head-modifier structures. Corresponding types\n' +
+              'are defined in matrix.tdl.  The matrix customization script did\n' +
+              'not need to add any further constraints, so no corresponding tyes\n' +
+              'appear in ' + ch.get('language').lower() + '.tdl')
+    rules.add('adj-head-int := adj-head-int-phrase.')
+    rules.add('head-adj-scop := head-adj-scop-phrase.')
+    rules.add('adj-head-scop := adj-head-scop-phrase.')
+
+    mylang.add('+nvcdmo :+ [ MOD < > ].',
+               'This grammar includes head-modifier rules.  To keep\n' +
+               'out extraneous parses, constrain the value of MOD on\n' +
+               'various subtypes of head.  This may need to be loosened later.\n' +
+               'This constraint says that only adverbs, adjectives,\n' +
+               'and adpositions can be modifiers.',
+               section='addenda')
+
+
+
 ##################
 ### VALIDATION ###
 ##################

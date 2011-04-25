@@ -15,6 +15,7 @@
 
 import sys
 import os
+import cgitb
 import glob
 import re
 import tarfile
@@ -91,7 +92,8 @@ system should cite <a
 href="http://faculty.washington.edu/ebender/papers/gee03.pdf">Bender,
 Flickinger and Oepen 2002</a> <a
 href="http://faculty.washington.edu/ebender/bibtex/BenFliOep02.bib.txt">[.bib]</a>
-and <a href="http://aclweb.org/anthology-new/P/P10/P10-4001.pdf">Bender et al 2010</a> <a href="http://aclweb.org/anthology-new/P/P10/P10-4001.bib">[.bib]</a>.
+and <a href="http://www.springerlink.com/content/767771152h331808/">Bender et al 2010</a> <a href="http://faculty.washington.edu/ebender/bibtex/BenDreFokPouSal10.bib.txt">[.bib]</a>.  Further publications from the project are available
+on the <a href="http://www.delph-in.net/matrix/index.html#pubs">project website</a>.
 
 <p>Filling out this form will produce a starter grammar for a natural
 language, consisting of a language-independent core and customized
@@ -233,20 +235,24 @@ HTML_postbody = '''</body>
 ######################################################################
 # HTML creation functions
 
-def html_mark(mark, message):
-  return '<span class="error" title="%s">%s</span>' %\
-           (message.replace('"', '&quot;'), mark)
+def html_mark(mark, vm):
+  if vm.href:
+    return '<a href="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
+           (vm.href, vm.message.replace('"', '&quot;'), mark)
+  else:
+    return '<a name="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
+           (vm.name, vm.message.replace('"', '&quot;'), mark)
 
-def html_error_mark(message):
-  return html_mark('*', message)
+def html_error_mark(vm):
+  return html_mark('*', vm)
 
-def html_warning_mark(message):
-  return html_mark('?', message)
+def html_warning_mark(vm):
+  return html_mark('?', vm)
 
 # Return an HTML <input> tag with the specified attributes and
 # surrounding text
-def html_input(vr, type, name, value, checked, before, after,
-               size = '', onclick = '', disabled = False):
+def html_input(vr, type, name, value, checked, before = '', after = '',
+               size = '', onclick = '', disabled = False, onchange = ''):
   chkd = ''
   if checked:
     chkd = ' checked'
@@ -259,6 +265,9 @@ def html_input(vr, type, name, value, checked, before, after,
 
   if onclick:
     onclick = ' onclick="' + onclick + '"'
+
+  if onchange:
+    onchange = ' onchange="' + onchange + '"'
 
   dsabld = ''
   if disabled:
@@ -278,9 +287,9 @@ def html_input(vr, type, name, value, checked, before, after,
   else:
     if value:
       value = ' value="' + value + '"'
-    return '%s%s<input type="%s" name="%s" %s%s%s%s%s>%s' % \
+    return '%s%s<input type="%s" name="%s" %s%s%s%s%s%s>%s' % \
          (before, mark, type, name, value, chkd, size, dsabld,
-          onclick, after)
+          onclick, onchange, after)
 
 
 # Return an HTML <select> tag with the specified name
@@ -534,11 +543,13 @@ class MatrixDefFile:
         pat += word[1] + '$'
         for k in vr.errors.keys():
           if re.search(pat, k):
-            vr.errors[cur_sec] = 'error in section'
+            anchor = "matrix.cgi?subpage="+cur_sec+"#"+k
+            vr.err(cur_sec, "This section contains one or more errors.", anchor, False)
             break
         for k in vr.warnings.keys():
           if re.search(pat, k):
-            vr.warnings[cur_sec] = 'warning in section'
+            anchor = "matrix.cgi?subpage="+cur_sec+"#"+k
+            vr.warn(cur_sec, "This section contains one or more warnings.", anchor, False)
             break
 
     # now pass through again to actually emit the page
@@ -552,9 +563,9 @@ class MatrixDefFile:
               word[1] + '\',\'' + word[1] + 'button\')"' + \
               '>&#9658;</span> '
         if word[1] in vr.errors:
-          print html_error_mark('This section contains one or more errors.')
+          print html_error_mark(vr.errors[word[1]])
         elif word[1] in vr.warnings:
-          print html_warning_mark('This section contains one or more warnings.')
+          print html_warning_mark(vr.warnings[word[1]])
         print '<a href="matrix.cgi?subpage=' + word[1] + '">' + \
               word[2] + '</a>'
         print '<div class="values" id="' + word[1] + '" style="display:none">'
@@ -782,11 +793,15 @@ class MatrixDefFile:
         html += '</select>'
         html += af + '\n'
       elif word[0] in ('Text', 'TextArea'):
-        (vn, fn, bf, af, sz) = word[1:]
+        if len(word) > 6:
+          (vn, fn, bf, af, sz, oc) = word[1:]
+        else:
+          (vn, fn, bf, af, sz) = word[1:]
+          oc = '';
         vn = prefix + vn
         value = choices.get(vn)
         html += html_input(vr, word[0].lower(), vn, value, False,
-                           bf, af, sz) + '\n'
+                           bf, af, sz, onchange=oc) + '\n'
       elif word[0] == 'BeginIter':
         iter_orig = word[1]
         (iter_name, iter_var) = word[1].replace('}', '').split('{', 1)
@@ -936,6 +951,7 @@ class MatrixDefFile:
                               '', {})
 
     print html_input(vr, 'submit', '', 'Submit', False, '<p>', '')
+    print html_input(vr, 'button', '', 'Save', False, onclick='save_form(\''+section+'\')')
     print html_input(vr, 'button', '', 'Clear', False, '', '</p>', '',
                      'clear_form()')
 
@@ -1188,31 +1204,47 @@ class MatrixDefFile:
 
     f.close()
 
-  def choices_error_page(self, choices_file):
+  def choices_error_page(self, choices_file, exc=None):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Invalid Choices File</title>'
+    print HTML_posttitle % ('', '', '', '', '')
     print HTML_prebody
 
     print '<div style="position:absolute; top:15%; width:60%">\n' + \
           '<p style="color:red; text-align:center; font-size:12pt">' + \
           'The provided choices file is invalid. If you have edited the ' +\
           'file by hand, please review the changes you made to make sure ' +\
-          'they follow the choices file file format. You may download ' +\
-          'the choices file to try and fix any errors.</p>\n'
+          'they follow the choices file file format. If you did not make ' +\
+          'any manual changes, please email the choices file to the Matrix ' +\
+          'developers. You may download the choices file to try and fix ' +\
+          'any errors.</p>\n'
 
     print '<p style="text-align:center"><a href="' + choices_file + '">' +\
           'View Choices File</a> (right-click to download)</p>'
+
+    print '<p style="text-align:center">In most cases, you can go back ' +\
+          'in your browser and fix the problems, but if not you may ' +\
+          '<a href="matrix.cgi?choices=empty">reload an empty ' +\
+          'questionnaire</a> (this will erase your changes, so be sure to ' +\
+          'save your choices (above) first).'
+    if exc:
+        exception_html(exc)
+    else:
+        print '<p style="text-align:center">You may also wish to ' +\
+              '<a href="matrix.cgi?debug=true">see the Python error</a> ' +\
+              '(note: it is very technical, and possibly not useful).</p>'
     print HTML_postbody
 
-  def customize_error_page(self, choices_file):
+  def customize_error_page(self, choices_file, exc=None):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Problem Customizing Grammar</title>'
+    print HTML_posttitle % ('', '', '', '', '')
     print HTML_prebody
 
-    print '<div style="position:absolute; top:15%; width:60%">\n' + \
-          '<p style="color:red; text-align:center; font-size:12pt">' + \
+    print '<div style="position:absolute; top:15%; width:60%">\n' +\
+          '<p style="color:red; text-align:center; font-size:12pt">' +\
           'The Grammar Matrix Customization System was unable to create ' +\
           'a grammar with the provided choices file. You may go back in ' +\
           'your browser to try and fix the problem, or if you think ' +\
@@ -1221,4 +1253,22 @@ class MatrixDefFile:
 
     print '<p style="text-align:center"><a href="' + choices_file + '">' +\
           'View Choices File</a> (right-click to download)</p>'
+
+    print '<p style="text-align:center">In most cases, you can go back ' +\
+          'in your browser and fix the problems, but if not you may ' +\
+          '<a href="matrix.cgi?choices=empty">reload an empty ' +\
+          'questionnaire</a> (this will erase your changes, so be sure to ' +\
+          'save your choices (above) first).'
+    if exc:
+        exception_html(exc)
+    else:
+        print '<p style="text-align:center">You may also wish to ' +\
+              '<a href="matrix.cgi?debug=true">see the Python error</a> ' +\
+              '(note: it is very technical, and possibly not useful).</p>'
     print HTML_postbody
+
+def exception_html(exc):
+  # uncomment the following lines to put a show/hide arrow around the error
+  #print "<span id=\"errorbutton\" onclick=\"toggle_display('error','errorbutton')\">&#9658;</span><span>Click the arrow to see the stack trace of the error.</span><div id=\"error\" style=\"display:none\">"
+  cgitb.handler(exc)
+  #print "</div>"

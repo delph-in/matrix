@@ -107,6 +107,24 @@ function clear_form()
   }
 }
 
+// save_form()
+// Save and Vivify the choices on the current subpage
+function save_form(section)
+{
+  var elm = document.getElementsByTagName('form')[0];
+  //elm.action = "matrix.cgi?subpage="+section;
+  var inp = document.createElement('input');
+  inp.type = "hidden";
+  inp.name="subpage";
+  inp.value=section;
+  elm.appendChild(inp);
+  elm.submit();
+      //  var form = elements[];
+    //form.innerHTML="Hello, World.";
+      //form.action = ("matrix.cgi?subpage="+section);
+    //form.submit();
+}
+
 // toggle_display_lex()
 // Handle a click on a section show/hide button on the Lexicon Page
 function toggle_display_lex(element_id, button_id)
@@ -143,7 +161,7 @@ function toggle_all_display_lex(on)
        iter.id.search('feat') == -1 && + //feat/stem/forbid/requires/lri iterators
        iter.id.search('stem') == -1 && + //needn't show/hide
        iter.id.search('forbid') == -1 && + 
-       iter.id.search('requires') == -1 && +
+       iter.id.search('require') == -1 && +
        iter.id.search('lri') == -1){ 
       button = document.getElementById(iter.id+'button');
       if(on==1){
@@ -848,4 +866,26 @@ function multi_keypress(e, select_name)
   }
 
   return true;  // allow further processing
+}
+
+////////////////////////////////////////////////////////////
+// Auto-Text filling Functions
+////////////////////////////////////////////////////////////
+
+// Fill pred elements with values based on the orth element
+function fill_pred(name,pred)
+{
+  var elms = document.getElementsByName(name+'_orth');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].type == "text") {
+      var val = elms[i].value;
+    }
+  }
+  val = "_"+val+pred;
+  elms = document.getElementsByName(name+'_pred');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].type == "text" && elms[i].value == '') {
+      elms[i].value = val;
+    }
+  }
 }
