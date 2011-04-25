@@ -37,10 +37,9 @@ def lexical_type_hierarchy(choices, lexical_supertype):
       # because bistems can give rise to flags that need to appear on
       # all verbs.
       if lexical_supertype == 'verb':
-        bistems = choices[lt.full_key]['bistem']
-        stems = choices[lt.full_key]['stem']
-        if stems:
-          stems.extend(bistems)
+        bistems = choices[lt.full_key]['bistem'] or []
+        stems = choices[lt.full_key]['stem'] or []
+        stems.extend(bistems)
         for stem in stems:
           lth.add_node(LexicalType(stem.full_key, stem['name'], 
                                    parents={lt.full_key:lth.nodes[lt.full_key]}, entry=True))

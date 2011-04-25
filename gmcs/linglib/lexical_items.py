@@ -5,6 +5,7 @@ from gmcs.linglib import case
 from gmcs.linglib import features
 from gmcs.linglib import auxiliaries
 from gmcs.linglib.parameters import determine_vcluster
+from gmcs.linglib.lexbase import ALL_LEX_TYPES
 
 ##########################################################
 # insert_ids()
@@ -17,10 +18,7 @@ def insert_ids(ch):
   """
   stemids = {}
   stemidcounters = {}
-  # The following needs to be more robust.  How would we
-  # know to update that postype list when adding say adjectives?
-  # Where else does such a list appear?
-  postypes = ['noun','verb','aux','det','adp']
+  postypes = ALL_LEX_TYPES
 
   for postype in postypes:
     for pos in ch.get(postype):
