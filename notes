@@ -1,0 +1,22 @@
+Bickel et al have separate toolbox entries for the bipartite-stem
+prefixes, and then link to them via the \bip field.  Don't know how
+general this is.
+
+For now I am entering the toolbox tags with the leading \.  If I
+insist on this, validation should check for it.
+
+Need to work out how to segment file into sequence of entries, since
+\id doesn't come first.
+
+Questionnaire todos:
+--- Make buttons work
+--- Make drop downs for lexical types work.
+--- Need valiation on import lexicon page, including
+errors for not specifying the lexical type.
+
+Output desiderata: should give counts of each import class
+that matched, plus count of unmatched entries in Toolbox lexicon.
+
+Need to validate for case where lexical entries are imported
+into some lexical class and then that class is deleted.
+
