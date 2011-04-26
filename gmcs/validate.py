@@ -41,7 +41,7 @@ class ValidationResult:
     if key in self.errors and concat:
       self.errors[key].add_message(message)
     else:
-      self.errors[key] = ValidationMessage(key, message, anchor)
+      self.errors[key] = ValidationMessage(key+"_error", message, anchor)
 
   def warn(self, key, message, anchor=None, concat=True):
     """
@@ -53,7 +53,7 @@ class ValidationResult:
     if key in self.warnings and concat:
       self.warnings[key].add_message(message)
     else:
-      self.warnings[key] = ValidationMessage(key, message, anchor)
+      self.warnings[key] = ValidationMessage(key+"_warn", message, anchor)
 
 #NTS: we only need to define an anchor for the main page versionsx
 class ValidationMessage:

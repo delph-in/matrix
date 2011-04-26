@@ -139,15 +139,28 @@ function submit_main()
 function toggle_display_lex(element_id, button_id)
 {
   p = document.getElementById(element_id);
+  text_boxes = document.getElementsByName(element_id+'_name');
+  n = "";
+  if (text_boxes.length > 0) {
+    n = text_boxes[0].value;
+  }
   b = document.getElementById(button_id);
   if (p.style.display == 'none') {
     p.style.display = 'block';
-    b.innerHTML = '&#9660; '+element_id + '<br />';
+    if (n == "") {
+      b.innerHTML = '&#9660; '+n+element_id + '<br />';
+    } else {
+      b.innerHTML = '&#9660; '+n+' ('+element_id+')<br />';
+    }
     document.cookie = element_id+"=block";
     document.cookie = button_id+"=block";
   } else {
     p.style.display = 'none';
-    b.innerHTML = '&#9658; '+element_id + '<br />';
+    if (n == "") {
+      b.innerHTML = '&#9658; '+n+element_id + '<br />';
+    } else {
+      b.innerHTML = '&#9658; '+n+' ('+element_id+')<br />';
+    }
     document.cookie = element_id+"=none";
     document.cookie = button_id+"=none";
   }
@@ -185,6 +198,20 @@ function toggle_all_display_lex(on)
           toggle_display_lex(iter.id, button.id);
       }
     }
+  }
+}
+
+// fill_display_name()
+// Used to fill the name of the show/hide label after editing the
+// name text field.
+function fill_display_name(id)
+{
+  var elm = document.getElementById(id+'button');
+  var name = document.getElementsByName(id+'_name')[0].value;
+  if (name != "") {
+    elm.innerHTML = '&#9660; '+name + ' ('+id+')';
+  } else {
+    elm.innerHTML = '&#9660; '+id;
   }
 }
 
