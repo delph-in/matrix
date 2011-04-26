@@ -5,6 +5,7 @@ from gmcs.linglib import case
 from gmcs.linglib import features
 from gmcs.linglib import auxiliaries
 from gmcs.linglib.parameters import determine_vcluster
+from gmcs.linglib.lexbase import ALL_LEX_TYPES
 
 ##########################################################
 # insert_ids()
@@ -17,10 +18,8 @@ def insert_ids(ch):
   """
   stemids = {}
   stemidcounters = {}
-  # The following needs to be more robust.  How would we
-  # know to update that postype list when adding say adjectives?
-  # Where else does such a list appear?
-  postypes = ['noun','verb','aux','det','adp']
+
+  postypes = ALL_LEX_TYPES
 
   for postype in postypes:
     for pos in ch.get(postype):
@@ -372,6 +371,57 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
+def customize_adjectives(mylang, ch, lexicon):
+
+   # Lexical type for adjectives, if the language has any:
+  if ch.get('has-adj') == 'yes':
+    comment = \
+      ';;; Adjectives\n' + \
+      ';;; First attempt: inheriting all from matrix.'
+    mylang.add_literal(comment)
+    mylang.add('scopal-mod-adj-lex := basic-scopal-mod-adj-lex.')
+    mylang.add('int-mod-adj-lex := basic-int-mod-adj-lex.')
+
+ # Determiners
+  if 'adj' in ch:
+    lexicon.add_literal(';;; Adjectives')
+
+  for adj in ch.get('adj',[]):
+    name = get_name(adj)
+
+    stype = '-mod-adj-lex'
+    if adj.get('kind') == 'int':
+      stype = 'int' + stype
+    else:
+      stype = 'scopal' + stype
+    atype = name + '-mod-adj-lex'
+    
+    mylang.add(atype + ' := ' + stype + ' & \
+      [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT [ HEAD noun, \
+                                                  VAL.SPR <[ ]> ] ] > ].')
+
+    arg_str = adj.get('arg-str')
+    val = ''
+    if arg_str == 'none':
+      val = 'VAL [ SUBJ < >, \
+                   COMPS < >, \
+                   SPR < >, \
+                   SPEC < > ]'
+
+    if val:
+      mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.' + val + ' ].')
+
+    for stem in adj.get('stem',[]):
+      orth = stem.get('orth')
+      pred = stem.get('pred')
+      id = stem.get('name')
+      typedef = \
+        TDLencode(id) + ' := ' + atype + ' & \
+                    [ STEM < "' + orth + '" >, \
+                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+      lexicon.add(typedef)
+
+
 def customize_misc_lex(ch, lexicon):
 
   #lexicon.add_literal(';;; Other')
@@ -502,4 +552,5 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies):
 
   mylang.set_section('otherlex')
   customize_determiners(mylang, ch, lexicon, hierarchies)
+  customize_adjectives(mylang, ch, lexicon)
   customize_misc_lex(ch, lexicon)

@@ -41,10 +41,9 @@ def lexical_type_hierarchy(choices, lexical_supertype):
       # because bistems can give rise to flags that need to appear on
       # all verbs.
       if lexical_supertype == 'verb':
-        bistems = choices[lt.full_key]['bistem']
-        stems = choices[lt.full_key]['stem']
-        if stems:
-          stems.extend(bistems)
+        bistems = choices[lt.full_key]['bistem'] or []
+        stems = choices[lt.full_key]['stem'] or []
+        stems.extend(bistems)
         for stem in stems:
           lth.add_node(LexicalType(stem.full_key, stem['name'], 
                                    parents={lt.full_key:lth.nodes[lt.full_key]}, entry=True))
@@ -59,7 +58,7 @@ def get_lexical_supertype(lt_key, choices):
     return 'verb'
   elif lexical_category == 'verb':
     return case.interpret_verb_valence(choices[lt_key]['valence'])
-  elif lexical_category in ('noun', 'det', 'aux'):
+  elif lexical_category in ('noun', 'det', 'aux', 'adj'):
     return lexical_category
   return None
 
@@ -99,7 +98,7 @@ def used_lexical_supertypes(choices):
   lexical_supertypes) that will actually be used in the grammar.
   """
   used = set()
-  for x in ['noun','aux','adj','det']:
+  for x in ['noun','aux','adj','det','adj']:
     if x in choices:
       used.add(x)
   if 'verb' in choices:
@@ -130,7 +129,7 @@ def get_lexical_supertypes(lrt_key, choices):
     return [verb_type] + get_lexical_supertypes(verb_type, choices)
   elif lexical_category == 'aux':
     return ['verb']
-  elif lexical_category in ('noun', 'det', 'aux'):
+  elif lexical_category in ('noun', 'det', 'aux','adj'):
     return [lexical_category]
   return []
 

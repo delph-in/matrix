@@ -89,15 +89,21 @@ def create_neg_adv_lex_item(advAlone, mylang, ch, lexicon, rules):
   # contrain the MOD value on the rest of the head types to keep them
   # from going nuts.
 
+  ###FOR Germanic, until all adverbs are there: only allowing mod preceding
+  ###head (adjective-noun-order
+
   if advAlone != 'never':
-    rules.add('head-adj-int := head-adj-int-phrase.',
+    adjective_order = ch.get('adj-noun-order')
+    if adjective_order != 'adj-noun':
+      rules.add('head-adj-int := head-adj-int-phrase.',
               'Rule instances for head-modifier structures. Corresponding types\n' +
               'are defined in matrix.tdl.  The matrix customization script did\n' +
               'not need to add any further constraints, so no corresponding tyes\n' +
               'appear in ' + ch.get('language').lower() + '.tdl')
-    rules.add('adj-head-int := adj-head-int-phrase.')
-    rules.add('head-adj-scop := head-adj-scop-phrase.')
-    rules.add('adj-head-scop := adj-head-scop-phrase.')
+      rules.add('head-adj-scop := head-adj-scop-phrase.')
+    if adjective_order != "noun-adj":
+      rules.add('adj-head-int := adj-head-int-phrase.')
+      rules.add('adj-head-scop := adj-head-scop-phrase.')
 
     mylang.add('+nvcdmo :+ [ MOD < > ].',
                'This grammar includes head-modifier rules.  To keep\n' +
