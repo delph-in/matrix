@@ -1,0 +1,8 @@
+n1 verb1.
+n1 verb1-PC1.
+n1 verb2-PC2.
+*n1 verb1-PC2.
+*n1 verb2-PC1.
+*n1 verb2.
+*n1 -PC1verb1.
+*n1 -PC2verb2.

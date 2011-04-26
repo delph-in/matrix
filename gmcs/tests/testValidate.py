@@ -58,10 +58,10 @@ class TestValidate(unittest.TestCase):
                  ['det2_', '-determiner-lex'],
                  ['verb1_', '-verb-lex'],
                  ['verb2_', '-verb-lex'],
-                 ['noun-slot1_', '-lex-rule'],
-                 ['noun-slot1_morph1_', '-lex-rule'],
-                 ['noun-slot2_', '-lex-rule'],
-                 ['noun-slot2_morph1_', '-lex-rule']]
+                 ['noun-pc1_', '-lex-rule'],
+                 ['noun-pc1_lrt1_', '-lex-rule'],
+                 ['noun-pc2_', '-lex-rule'],
+                 ['noun-pc2_lrt1_', '-lex-rule']]
 
     # Name for causing collisions, made up of the lower-case letter 'a' in:
     #   Latin, accented Latin, accented Latin, Greek, Cyrillic, Armenian
@@ -238,9 +238,13 @@ class TestValidate(unittest.TestCase):
     c['aux-comp-order'] = 'before'
     self.assertError(c, 'has-aux')
 
-    # aux but no answer for complement or multiple
+    # aux but no answer for complement
     c['has-aux'] = 'yes'
-    self.assertErrors(c, ['aux-comp', 'multiple-aux'])
+    self.assertError(c, 'aux-comp')
+
+    # aux but no answer for multiple aux in free word order
+    c['word-order'] = 'free'
+    self.assertError(c, 'multiple-aux')
 
     ## Word Order
     c = ChoicesFile()
@@ -440,28 +444,27 @@ class TestValidate(unittest.TestCase):
 
     # perhaps this should be refactored for morphotactics
     ### Inflectional Slots
-    #for slotprefix in ['noun', 'verb', 'det']:
+    #for pcprefix in ['noun', 'verb', 'det']:
     #  c = ChoicesFile()
-    #  c[slotprefix + '-slot1_dummy'] = 'dummy'
-    #  self.assertErrors(c, [slotprefix + '-slot1_order',
-    #                        slotprefix + '-slot1_input1_type'])
+    #  c[pcprefix + '-pc1_dummy'] = 'dummy'
+    #  self.assertErrors(c, [pcprefix + '-pc1_order',
+    #                        pcprefix + '-pc1_input1_type'])
 
-    #  c[slotprefix + '-slot1_input1_type'] = 'dummy'
-    #  self.assertError(c, slotprefix + '-slot1_input1_type')
+    #  c[pcprefix + '-pc1_input1_type'] = 'dummy'
+    #  self.assertError(c, pcprefix + '-pc1_input1_type')
 
-    #  c[slotprefix + '-slot1_morph1_feat1_dummy'] = 'dummy'
-    #  self.assertErrors(c, [slotprefix + '-slot1_morph1_feat1_name',
-    #                        slotprefix + '-slot1_morph1_feat1_value'])
-    #  if slotprefix == 'verb':
-    #    self.assertError(c, slotprefix + '-slot1_morph1_feat1_head')
+    #  c[pcprefix + '-pc1_lrt1_feat1_dummy'] = 'dummy'
+    #  self.assertErrors(c, [pcprefix + '-pc1_lrt1_feat1_name',
+    #                        pcprefix + '-pc1_lrt1_feat1_value'])
+    #  if pcprefix == 'verb':
+    #    self.assertError(c, pcprefix + '-pc1_lrt1_feat1_head')
 
 
   def test_features(self):
     # try a bad feature and value everywhere
     for p in ['scale',
               'noun', 'verb', 'det', 'aux',
-              'noun-slot1_morph', 'verb-slot1_morph',
-              'det-slot1_morph', 'aux-slot1_morph',
+              'noun-pc1_lrt', 'verb-pc1_lrt', 'det-pc1_lrt',
               'context']:
       c = ChoicesFile()
       c[p + '1_feat1_name'] = 'dummy'

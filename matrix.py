@@ -85,11 +85,11 @@ def main():
     v = gmcs.validate.validate_choices(choices_file)
     for x in v.errors:
       print x
-      print '  ', v.errors[x]
+      print '  ', v.errors[x].message
     if show_warnings:
       for x in v.warnings:
         print x
-        print '  ', v.warnings[x]
+        print '  ', v.warnings[x].message
     # If there are errors, exit with a return code of 1, otherwise 0
     sys.exit(len(v.errors) > 0)
 

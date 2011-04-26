@@ -1,4 +1,5 @@
 from gmcs.linglib import morphotactics
+from gmcs.linglib import features
 from gmcs.utils import get_name
 
 # SS 2009-06-07 added check to see if a const rule which changes
@@ -17,6 +18,98 @@ from gmcs.utils import get_name
 # optional) overt argument.  This is done by increasing the
 # subrules count just like above.  The subrules created are
 # different.
+
+######################################################################
+# customize_arg_op()
+#   Create phrase-structure and lexical rules associated with user's
+#   choices on argument optionality page.
+
+def customize_arg_op(mylang, ch, rules, hierarchies):
+  """ Create the lexical types, lexical, rules and phrase structure
+      rules to allow argument dropping"""
+
+  if 'scale' in ch and (ch.get('subj-drop')or ch.get('obj-drop')):
+     mylang.add('dir-inv-scale := unexpressed-reg')
+
+  mylang.set_section('verblex')
+  ##Adding potential fix for integrating argument optionality and direct-inverse
+  
+  #Figure out the constraints on subject dropping and write the
+  #appropriate types to mylang.tdl or rules.tdl
+
+  if ch.get('subj-drop') == 'subj-drop-all' and not (ch.get('subj-con') == 'subj-con-some'):
+    rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.')
+  if ch.get('subj-drop') == 'subj-drop-lex' and not (ch.get('subj-con') == 'subj-con-some'):
+    rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.')
+    mylang.add('no-subj-drop-verb-lex := verb-lex &\
+                         [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].')
+    mylang.add('subj-drop-verb-lex := verb-lex.')
+
+
+  #Figure out the constraints on object dropping and write the
+  #appropriate types to mylang.tdl or rules.tdl
+  if ch.get('obj-drop')=='obj-drop-all':
+    rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
+
+  if ch.get('obj-drop') == 'obj-drop-lex':
+    rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
+    mylang.add('no-obj-drop-verb-lex := transitive-verb-lex &\
+                        [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].')
+    mylang.add('obj-drop-verb-lex := transitive-verb-lex.')
+
+  if ch.get('subj-drop') == 'subj-drop-lex' and ch.get('obj-drop') == 'obj-drop-lex':
+    mylang.add('subj-drop-only-verb-lex := subj-drop-verb-lex & no-obj-drop-verb-lex.')
+    mylang.add('obj-drop-only-verb-lex := obj-drop-verb-lex & no-subj-drop-verb-lex.')
+    mylang.add('subj-obj-drop-verb-lex := subj-drop-verb-lex & obj-drop-verb-lex.')
+    mylang.add('no-drop-verb-lex := no-subj-drop-verb-lex & no-obj-drop-verb-lex.')
+
+  mylang.set_section('phrases')
+
+  #Create phrase-structure rules for each context
+  for context in ch.get('context'):
+    name = 'context' + str(context.iter_num())
+    ptype = name + '-decl-head-opt-subj-phrase'
+    features.customize_feature_values(mylang, ch, hierarchies, context, ptype, 'con')
+    mylang.add(ptype + ':= decl-head-opt-subj-phrase.')
+    rules.add(name + '-decl-head-opt-subj := '+ name + '-decl-head-opt-subj-phrase.')
+
+  #Trying to get co-occurrence of marker dropping to work
+
+  if (ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and (ch.get('subj-mark-drop')== 'subj-mark-drop-opt'or ch.get('subj-mark-drop')=='subj-mark-drop-req')):
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-req') or ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-req'))):
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-opt' :
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req' and ch.get('obj-mark-drop') == 'obj-mark-drop-not' :
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-not' :
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('obj-mark-drop')== 'obj-mark-drop-opt' and ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+    mylang.add( 'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('subj-mark-drop')== 'subj-mark-drop-opt' and ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and ch.get('subj-mark-drop') == 'subj-mark-drop-opt' :
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req' and ch.get('subj-mark-drop') == 'subj-mark-drop-not' :
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
+
+  if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and ch.get('subj-mark-drop') == 'subj-mark-drop-not' :
+    mylang.add( 'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge = True, section='addenda')
+
+#def customize_subj_phrase(phrase)
+  #Trying to get the subject/object marker co-occurrence to work out
+  #if (ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and (ch.get('subj-mark-drop')== 'subj-mark-drop-opt'or ch.get('subj-mark-drop')=='subj-mark-drop-req')):
+   # mylang.add(phrase + ':= [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT +].', merge = True)
+
 
 def add_lexrules(choices):
   '''

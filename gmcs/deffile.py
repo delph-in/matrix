@@ -15,6 +15,7 @@
 
 import sys
 import os
+import cgitb
 import glob
 import re
 import tarfile
@@ -972,6 +973,7 @@ class MatrixDefFile:
 
     print html_input(vr, 'button', '', 'Submit', False, '<p>', '', onclick='submit_main()')
     print html_input(vr, 'submit', '', 'Save', False)
+    print html_input(vr, 'button', '', 'Save', False, onclick='save_form(\''+section+'\')')
     print html_input(vr, 'button', '', 'Clear', False, '', '</p>', '',
                      'clear_form()')
 
@@ -1224,31 +1226,47 @@ class MatrixDefFile:
 
     f.close()
 
-  def choices_error_page(self, choices_file):
+  def choices_error_page(self, choices_file, exc=None):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Invalid Choices File</title>'
+    print HTML_posttitle % ('', '', '', '', '')
     print HTML_prebody
 
     print '<div style="position:absolute; top:15%; width:60%">\n' + \
           '<p style="color:red; text-align:center; font-size:12pt">' + \
           'The provided choices file is invalid. If you have edited the ' +\
           'file by hand, please review the changes you made to make sure ' +\
-          'they follow the choices file file format. You may download ' +\
-          'the choices file to try and fix any errors.</p>\n'
+          'they follow the choices file file format. If you did not make ' +\
+          'any manual changes, please email the choices file to the Matrix ' +\
+          'developers. You may download the choices file to try and fix ' +\
+          'any errors.</p>\n'
 
     print '<p style="text-align:center"><a href="' + choices_file + '">' +\
           'View Choices File</a> (right-click to download)</p>'
+
+    print '<p style="text-align:center">In most cases, you can go back ' +\
+          'in your browser and fix the problems, but if not you may ' +\
+          '<a href="matrix.cgi?choices=empty">reload an empty ' +\
+          'questionnaire</a> (this will erase your changes, so be sure to ' +\
+          'save your choices (above) first).'
+    if exc:
+        exception_html(exc)
+    else:
+        print '<p style="text-align:center">You may also wish to ' +\
+              '<a href="matrix.cgi?debug=true">see the Python error</a> ' +\
+              '(note: it is very technical, and possibly not useful).</p>'
     print HTML_postbody
 
-  def customize_error_page(self, choices_file):
+  def customize_error_page(self, choices_file, exc=None):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Problem Customizing Grammar</title>'
+    print HTML_posttitle % ('', '', '', '', '')
     print HTML_prebody
 
-    print '<div style="position:absolute; top:15%; width:60%">\n' + \
-          '<p style="color:red; text-align:center; font-size:12pt">' + \
+    print '<div style="position:absolute; top:15%; width:60%">\n' +\
+          '<p style="color:red; text-align:center; font-size:12pt">' +\
           'The Grammar Matrix Customization System was unable to create ' +\
           'a grammar with the provided choices file. You may go back in ' +\
           'your browser to try and fix the problem, or if you think ' +\
@@ -1257,4 +1275,22 @@ class MatrixDefFile:
 
     print '<p style="text-align:center"><a href="' + choices_file + '">' +\
           'View Choices File</a> (right-click to download)</p>'
+
+    print '<p style="text-align:center">In most cases, you can go back ' +\
+          'in your browser and fix the problems, but if not you may ' +\
+          '<a href="matrix.cgi?choices=empty">reload an empty ' +\
+          'questionnaire</a> (this will erase your changes, so be sure to ' +\
+          'save your choices (above) first).'
+    if exc:
+        exception_html(exc)
+    else:
+        print '<p style="text-align:center">You may also wish to ' +\
+              '<a href="matrix.cgi?debug=true">see the Python error</a> ' +\
+              '(note: it is very technical, and possibly not useful).</p>'
     print HTML_postbody
+
+def exception_html(exc):
+  # uncomment the following lines to put a show/hide arrow around the error
+  #print "<span id=\"errorbutton\" onclick=\"toggle_display('error','errorbutton')\">&#9658;</span><span>Click the arrow to see the stack trace of the error.</span><div id=\"error\" style=\"display:none\">"
+  cgitb.handler(exc)
+  #print "</div>"
