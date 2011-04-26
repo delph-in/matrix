@@ -121,7 +121,9 @@ exceptional. It has a tooltip even though it does not mark a
 warning.">?</span>.
 
 Hovering the mouse cursor over a red asterisk or question mark will
-show a tooltip describing the error.</p>
+show a tooltip describing the error. Clicking on a red asterisk or
+question mark that is on the main page will link to the error or warning
+on the appropriate subpage.</p>
 
 '''
 
@@ -544,12 +546,12 @@ class MatrixDefFile:
         for k in vr.errors.keys():
           if re.search(pat, k):
             anchor = "matrix.cgi?subpage="+cur_sec+"#"+k
-            vr.err(cur_sec, "This section contains one or more errors.", anchor, False)
+            vr.err(cur_sec, "This section contains one or more errors. \nClicking this error will link to the error on the subpage.", anchor+"_error", False)
             break
         for k in vr.warnings.keys():
           if re.search(pat, k):
             anchor = "matrix.cgi?subpage="+cur_sec+"#"+k
-            vr.warn(cur_sec, "This section contains one or more warnings.", anchor, False)
+            vr.warn(cur_sec, "This section contains one or more warnings. \nClicking this warning will link to the warning on the subpage.", anchor+"_warning", False)
             break
 
     # now pass through again to actually emit the page
@@ -652,9 +654,16 @@ class MatrixDefFile:
   # Turn a list of lines containing matrix definitions into a string
   # containing HTML.
   def defs_to_html(self, lines, choices, vr, prefix, vars):
+
+    http_cookie = os.getenv('HTTP_COOKIE')
+
+    cookie = {}
+    for c in http_cookie.split(';'):
+      (name, value) = c.split('=', 1)
+      cookie[name.strip()] = value
+
     html = ''
     i = 0
-
     while i < len(lines):
       word = tokenize_def(replace_vars(lines[i], vars))
       if len(word) == 0:
@@ -797,7 +806,9 @@ class MatrixDefFile:
           (vn, fn, bf, af, sz, oc) = word[1:]
         else:
           (vn, fn, bf, af, sz) = word[1:]
-          oc = '';
+          oc = ''
+        if vn == "name":
+          oc = "fill_display_name('"+prefix[:-1]+"')"
         vn = prefix + vn
         value = choices.get(vn)
         html += html_input(vr, word[0].lower(), vn, value, False,
@@ -841,8 +852,10 @@ class MatrixDefFile:
         c = 0
         chlist = [x for x in choices.get(prefix + iter_name) if x]
         while (chlist and c < len(chlist)) or c < iter_min:
+          show_name = "";
           if c < len(chlist):
             iter_num = str(chlist[c].iter_num())
+            show_name = chlist[c]["name"]
           else:
             iter_num = str(c+1)
           new_prefix = prefix + iter_name + iter_num + '_'
@@ -857,11 +870,24 @@ class MatrixDefFile:
                   new_prefix[:-1].find('require')==-1 and \
                   new_prefix[:-1].find('forbid')==-1 and \
                   new_prefix[:-1].find('lri')==-1:
-            html += '<a id="' + new_prefix[:-1] + 'button" ' + \
+            if show_name:
+              name = show_name+" ("+new_prefix[:-1]+")"
+            else:
+              name = new_prefix[:-1]
+            if cookie.get(new_prefix[:-1]+'button','block') == 'none':
+              html += '<a id="' + new_prefix[:-1] + 'button" ' + \
                     'onclick="toggle_display_lex(\'' + \
                     new_prefix[:-1] + '\',\'' + new_prefix[:-1] + 'button\')"' + \
-                    '>&#9660; '+new_prefix[:-1]+'</a>'
-          html += '<div class="iterator" id="' + new_prefix[:-1] + '">\n'
+                    '>&#9658; '+name+'<br /></a>'
+            else:
+              html += '<a id="' + new_prefix[:-1] + 'button" ' + \
+                    'onclick="toggle_display_lex(\'' + \
+                    new_prefix[:-1] + '\',\'' + new_prefix[:-1] + 'button\')"' + \
+                    '>&#9660; '+name+'</a>'
+          if cookie.get(new_prefix[:-1], 'block') == 'block':
+            html += '<div class="iterator" id="' + new_prefix[:-1] + '">\n'
+          else:
+            html += '<div class="iterator" style="display: none" id="' + new_prefix[:-1] + '">\n'
           html += html_delbutton(new_prefix[:-1])
           html += '<div class="iterframe">'
           html += self.defs_to_html(lines[beg:end],
@@ -946,12 +972,13 @@ class MatrixDefFile:
       print HTML_preform
       print html_input(vr, 'hidden', 'section', section,
                        False, '', '\n')
+      print html_input(vr, 'hidden', 'subpage', section, False, '', '\n')
       print self.defs_to_html(lines[section_begin:section_end],
                               choices, vr,
                               '', {})
 
-    print html_input(vr, 'submit', '', 'Submit', False, '<p>', '')
-    print html_input(vr, 'button', '', 'Save', False, onclick='save_form(\''+section+'\')')
+    print html_input(vr, 'button', '', 'Submit', False, '<p>', '', onclick='submit_main()')
+    print html_input(vr, 'submit', '', 'Save', False)
     print html_input(vr, 'button', '', 'Clear', False, '', '</p>', '',
                      'clear_form()')
 

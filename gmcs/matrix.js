@@ -112,17 +112,26 @@ function clear_form()
 function save_form(section)
 {
   var elm = document.getElementsByTagName('form')[0];
-  //elm.action = "matrix.cgi?subpage="+section;
   var inp = document.createElement('input');
   inp.type = "hidden";
   inp.name="subpage";
   inp.value=section;
   elm.appendChild(inp);
   elm.submit();
-      //  var form = elements[];
-    //form.innerHTML="Hello, World.";
-      //form.action = ("matrix.cgi?subpage="+section);
-    //form.submit();
+}
+
+// submit_main()
+// Submit the form and return to the main page
+function submit_main()
+{
+  var form = document.getElementsByTagName('form')[0];
+  var elms = document.getElementsByTagName('input');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].name == "subpage") {
+      form.removeChild(elms[i]);
+    }
+  }
+  form.submit();
 }
 
 // toggle_display_lex()
@@ -130,13 +139,30 @@ function save_form(section)
 function toggle_display_lex(element_id, button_id)
 {
   p = document.getElementById(element_id);
+  text_boxes = document.getElementsByName(element_id+'_name');
+  n = "";
+  if (text_boxes.length > 0) {
+    n = text_boxes[0].value;
+  }
   b = document.getElementById(button_id);
   if (p.style.display == 'none') {
     p.style.display = 'block';
-    b.innerHTML = '&#9660; '+element_id + '<br />';
+    if (n == "") {
+      b.innerHTML = '&#9660; '+n+element_id + '<br />';
+    } else {
+      b.innerHTML = '&#9660; '+n+' ('+element_id+')<br />';
+    }
+    document.cookie = element_id+"=block";
+    document.cookie = button_id+"=block";
   } else {
     p.style.display = 'none';
-    b.innerHTML = '&#9658; '+element_id + '<br />';
+    if (n == "") {
+      b.innerHTML = '&#9658; '+n+element_id + '<br />';
+    } else {
+      b.innerHTML = '&#9658; '+n+' ('+element_id+')<br />';
+    }
+    document.cookie = element_id+"=none";
+    document.cookie = button_id+"=none";
   }
 }
 
@@ -172,6 +198,20 @@ function toggle_all_display_lex(on)
           toggle_display_lex(iter.id, button.id);
       }
     }
+  }
+}
+
+// fill_display_name()
+// Used to fill the name of the show/hide label after editing the
+// name text field.
+function fill_display_name(id)
+{
+  var elm = document.getElementById(id+'button');
+  var name = document.getElementsByName(id+'_name')[0].value;
+  if (name != "") {
+    elm.innerHTML = '&#9660; '+name + ' ('+id+')';
+  } else {
+    elm.innerHTML = '&#9660; '+id;
   }
 }
 
@@ -256,7 +296,7 @@ function expand_region(id)
 {
   var n = document.getElementById(id);
 
-  //n.style.overflow = 'hidden';
+  n.style.overflow = 'hidden';
 
   var a = { id: id, property: 'maxHeight', factor: 2, ticks: 10 };
   n.style[a.property] = '1px';
@@ -873,19 +913,42 @@ function multi_keypress(e, select_name)
 ////////////////////////////////////////////////////////////
 
 // Fill pred elements with values based on the orth element
-function fill_pred(name,pred)
+function fill_pred(name,pos)
 {
   var elms = document.getElementsByName(name+'_orth');
+  var word = '';
   for (var i = 0; i < elms.length; i++) {
     if (elms[i].type == "text") {
-      var val = elms[i].value;
+      word = elms[i].value;
     }
   }
-  val = "_"+val+pred;
+  var pred = "_"+word+"_"+pos+"_rel";
   elms = document.getElementsByName(name+'_pred');
   for (var i = 0; i < elms.length; i++) {
-    if (elms[i].type == "text" && elms[i].value == '') {
-      elms[i].value = val;
+    if (elms[i].type == "text" && elms[i].value == '' && word != '') {
+      elms[i].value = pred;
+      var text_elms = document.getElementsByTagName('input');
+      var match_inds = [];
+      for (var j = 0; j < text_elms.length; j++) {
+        if (text_elms[j].type == "text" && text_elms[j].value.match(new RegExp("^_"+word+"_"+pos+"_?[0-9]*_rel$",""))){
+          match_inds.push(j);
+        }  
+      }
+      if (match_inds.length > 1){
+        for (var j = 0; j < match_inds.length; j++) {
+          text_elms[match_inds[j]].value = pred.replace("_rel", "_"+(j+1)+"_rel");
+        }
+      }
+    }
+  }
+}
+
+function aux_fill_pred(name, stem, pos)
+{
+  var elms = document.getElementsByName(name+"_sem");
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].value == "add-pred" && elms[i].checked) {
+      fill_pred(name+"_"+stem, pos);
     }
   }
 }
