@@ -382,7 +382,26 @@ def customize_adjectives(mylang, ch, lexicon):
     mylang.add('scopal-mod-adj-lex := basic-scopal-mod-adj-lex.')
     mylang.add('int-mod-adj-lex := basic-int-mod-adj-lex.')
 
- # Determiners
+    if ch.get('strength-marking') == 'double':
+      mylang.add('+njdo :+ [ STRONG bool ].', section='addenda')
+    elif ch.get('strength-marking') == 'triple':
+      mylang.add('+njdo :+ [ STRONG luk ].', section='addenda')
+  
+  ###Agreement properties
+    case_agr = False
+    strength_agr = False
+    for agr in ch.get('adjagr'):
+      if agr.get('feat') == 'case':
+        case_agr = True
+      elif agr.get('feat') == 'strength':
+        strength_agr = True
+
+    if case_agr:
+      mylang.add('+nj :+ [ CASE case].', section='addenda')
+    elif ch.get('case-marking') != 'none':
+        mylang.add('noun :+ [ CASE case ].', section='addenda')
+      
+ # Adjectives
   if 'adj' in ch:
     lexicon.add_literal(';;; Adjectives')
 
@@ -394,7 +413,7 @@ def customize_adjectives(mylang, ch, lexicon):
       stype = 'int' + stype
     else:
       stype = 'scopal' + stype
-    atype = name + '-mod-adj-lex'
+    atype = name + '-adjective-lex'
     
     mylang.add(atype + ' := ' + stype + ' & \
       [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT [ HEAD noun, \
@@ -410,6 +429,14 @@ def customize_adjectives(mylang, ch, lexicon):
 
     if val:
       mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.' + val + ' ].')
+
+    if case_agr:
+      mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.HEAD [ CASE #case, \
+                            MOD < [ LOCAL.CAT.HEAD.CASE #case ] > ] ].')
+
+    if strength_agr:
+      mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.HEAD [ STRONG #strength, \
+                            MOD < [ LOCAL.CAT.HEAD.STRONG #strength ] > ] ].')
 
     for stem in adj.get('stem',[]):
       orth = stem.get('orth')
@@ -492,7 +519,10 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       'as OPT +.  Making the non-head daughter OPT - in this rule\n' +
       'keeps such nouns out.')
 
-  if ch.get('case-marking') != 'none':
+ ###Germanic change: if adjectives have case agreement, their heads
+ ###bear case as well
+
+  if ch.get('case-marking') != 'none' and ch.get('has-adj') != 'yes':
     if not ch.has_adp_case():
       mylang.add('noun :+ [ CASE case ].', section='addenda')
 
