@@ -294,10 +294,10 @@ def usage(command=None, exitcode=2):
     p("  matrix.py customize ../choices/Finnish")
     p("  matrix.py cf ../choices/Finnish")
     p("  matrix.py v ../choices/Finnish")
-    p("  matrix.py -C gmcs/ r")
-    p("  matrix.py ra Cree_choices Cree_test_suite")
-    p("  matrix.py install my_matrix")
-    p("  matrix.py vivify")
+    p("  matrix.py --customizationroot=gmcs/ r")
+    p("  matrix.py -C gmcs/ ra Cree_choices Cree_test_suite")
+    p("  matrix.py -C gmcs/ install my_matrix")
+    p("  matrix.py -C gmcs/ vivify")
   sys.exit(exitcode)
 
 def verify_force():

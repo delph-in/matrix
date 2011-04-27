@@ -1059,7 +1059,10 @@ the stem and a <span class=\"dfn\">predicate</span> (or <span
 class=\"dfn\">relation</span>) that identifies the stem's semantic
 contribution (e.g. <tt>_cat_n_rel</tt> for the noun relation
 contributed by <i>cat</i> or <tt>_sleep_v_rel</tt> for the verb
-relation contributed by <i>sleep</i>).  If you completed the Argument
+relation contributed by <i>sleep</i>).  If the predicate is empty
+upon adding a spelling the page will create a predicate value based
+on the <a href=http://wiki.delph-in.net/moin/RmrsPos>DELPH-IN</a>
+standards. If you completed the Argument
 Optionality page, be sure to specify whether each verb type allows
 subject and or object dropping by selecting the correct value for the
 <span class=\"feat\">opt</span> feature.</p>"
@@ -1112,7 +1115,7 @@ BeginIter noun{i} "a Noun Type" 1
 
   BeginIter stem{j} "a Stem" 1
 
-    Text orth "Noun {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('noun{i}_stem{j}', '_n_rel')"
+    Text orth "Noun {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('noun{i}_stem{j}', 'n')"
 
     Text pred "Noun {i} stem {j} predicate" " Predicate: " "" 30
 
@@ -1269,7 +1272,7 @@ BeginIter verb{i} "a Verb Type" 2
   Label "Stems:"
   BeginIter stem{j} "a simple Stem" 1
 
-    Text orth "Verb {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('verb{i}_stem{j}', '_v_rel')"
+    Text orth "Verb {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('verb{i}_stem{j}', 'v')"
 
     Text pred "Verb {i} stem {j} predicate" " Predicate: " "" 30
 
@@ -1381,7 +1384,7 @@ BeginIter aux{i} "an Auxiliary Type"
 
   BeginIter stem{j} "a Stem" 1
 
-    Text orth "Aux {i} stem {j} spelling" "Spelling: " "" 30
+    Text orth "Aux {i} stem {j} spelling" "Spelling: " "" 30 "aux_fill_pred('aux{i}', 'stem{j}', 'v')"
 
     Text pred "Aux {i} stem {j} predicate" "&nbsp;&nbsp;&nbsp;&nbsp;Predicate (if applicable): " "" 30
 
@@ -1534,7 +1537,7 @@ BeginIter det{i} "a Determiner"
 
   BeginIter stem{j} "a Stem" 1
 
-    Text orth "Determiner {i} spelling" "Spelling: " "" 30
+    Text orth "Determiner {i} spelling" "Spelling: " "" 30 "fill_pred('det{i}_stem{j}', 'q')"
 
     Text pred "Determiner {i} predicate" " Predicate: " "<br>" 30
 
