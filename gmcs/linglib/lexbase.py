@@ -6,9 +6,10 @@ from gmcs.lib import Hierarchy, HierarchyNode
 ### CONSTANTS (in principle) ###
 ################################
 
+# all types of lexical items (on lexicon page)
 ALL_LEX_TYPES = ['noun', 'verb', 'det', 'aux', 'adj']
 
-
+# types used for lexical rules (verb and aux are merged)
 LEXICAL_CATEGORIES = ['noun', 'verb', 'det', 'adj']
 
 # lexical_supertypes is a dictionary mapping the choices file

@@ -41,9 +41,8 @@ def lexical_type_hierarchy(choices, lexical_supertype):
         stems = choices[lt.full_key]['stem'] or []
         stems.extend(bistems)
         for stem in stems:
-          lth.add_node(LexicalType(stem.full_key, stem['name'], 
+          lth.add_node(LexicalType(stem.full_key, stem['name'],
                                    parents={lt.full_key:lth.nodes[lt.full_key]}, entry=True))
-          
   return lth
 
 def get_lexical_supertype(lt_key, choices):
@@ -125,7 +124,7 @@ def get_lexical_supertypes(lrt_key, choices):
     return [verb_type] + get_lexical_supertypes(verb_type, choices)
   elif lexical_category == 'aux':
     return ['verb']
-  elif lexical_category in ('noun', 'det', 'aux'):
+  elif lexical_category in ('noun', 'det', 'adj'):
     return [lexical_category]
   return []
 
