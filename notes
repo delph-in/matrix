@@ -20,3 +20,12 @@ that matched, plus count of unmatched entries in Toolbox lexicon.
 Need to validate for case where lexical entries are imported
 into some lexical class and then that class is deleted.
 
+Need to validate that lexical class chosen specifies
+a bipartite-stem-pc if the imported entries have bipartite-stems.
+When does this validation happen?  Maybe after import lexicon?
+
+How to get the uniq numbering of pred values to cover these
+ones too?  Question for David.
+
+For now we're only doing nouns and verbs through import, so
+only those types should show up in the dropdowns.

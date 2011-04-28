@@ -2,6 +2,7 @@
 # imports
 
 import os
+from gmcs.utils import TDLencode
 from gmcs.choices import ChoicesFile
 
 # ERB 2011-04-25
@@ -24,6 +25,33 @@ from gmcs.choices import ChoicesFile
 # imported to each lexical class and the number of entries
 # that matched no lexical classes.
 
+def make_pred(tbentry,stemtag,glosstag,predchoice,lexclass):
+    '''
+    Construct pred value from toolbox entry according
+    to the predchoice specified.
+    '''
+    # Figure out if we're doing a noun or a verb
+    lex_cat = lexclass.rstrip('0123456789')
+    # FIXME: Do error checking here?
+    if lex_cat == 'verb':
+        rel = '_v_rel'
+    if lex_cat == 'noun':
+        rel = '_n_rel'
+    # Construct stem
+    if predchoice == 'stem':
+        pred = TDLencode(tbentry[stemtag] + rel) 
+    if predchoice == 'gloss':
+        if tbentry(glosstag):
+            pred = TDLencode(tbentry[glosstag] + rel)
+        else:
+            pred = TDLencode(tbentry[stemtag] + rel)
+    if predchoices == 'glossfw':
+        if tbentry(glosstag):
+            pred = TDLencode(tbentry[glosstag].split()[0] + rel)
+        else:
+            pred = TDLencode(tbentry[stemtag] + rel)
+        
+
 def process_tb_entry(tbentry,lexclasses,idtag,stemtag,
                      bistemtag,glosstag,predchoice,choices):
     '''
@@ -38,12 +66,15 @@ def process_tb_entry(tbentry,lexclasses,idtag,stemtag,
                     and tbentry(tagvaluepair.get('tbtag')) == tagvaluepair.get('tbvalue'):
                 match = True
         if match:
-            # Figure out prefix: prefix should be imported_<lexclass>N
-            # that is, create a prefix like imported_verb1, and then
-            # would get things like imported_verb1_stem1_pred.
-            # Figure out if this is a bistem
-            # Figure out what pred would be
-            # Add lexclass, pred, stem and bistem info to choices
+            n = choices['imported-entry'].next_iter_num() \
+                if 'imported-entry' in choices else 1
+            prefix = 'imported-entry' + str(n)
+            pred = make_pred(tbentry,stemtag,glosstag,predchoice)
+            choices[prefix + '_orth'] = tbentry[stemtag]
+            if bistemtag and tbentry[bistemtag]:
+                choices[prefix + '_aff'] = tbentry[bistemtag]
+            choices[prefix + '_pred'] = pred
+            choices[prefix + '_lexclass'] = lexclass
 
 
 def import_toolbox_lexicon(choicesfile):
@@ -90,7 +121,14 @@ def import_toolbox_lexicon(choicesfile):
             if words[0] in tbentry.keys():
                 process_tb_entry(tbentry,lexclasses,idtag,stemtag,bistemtag,glosstag,predchoice,imported_choices)
                 tbentry = {}
-            tbentry(words[0]) = ' '.join(words[1:])
+            tbentry[words[0]] = ' '.join(words[1:])
 
     # Print new choices file by concatenating input choices
     # with output choices, and adding a section= line between
+    
+    print choices
+
+
+if __name__ == "__main__":
+  import_toolbox_lexicon(sys.argv[1])
+
