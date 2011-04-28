@@ -25,13 +25,13 @@ from gmcs.choices import ChoicesFile
 # imported to each lexical class and the number of entries
 # that matched no lexical classes.
 
-def make_pred(tbentry,stemtag,glosstag,predchoice,lexclass):
+def make_pred(tbentry,stemtag,glosstag,predchoice,lextype):
     '''
     Construct pred value from toolbox entry according
     to the predchoice specified.
     '''
     # Figure out if we're doing a noun or a verb
-    lex_cat = lexclass.rstrip('0123456789')
+    lex_cat = lextype.rstrip('0123456789')
     # FIXME: Do error checking here?
     if lex_cat == 'verb':
         rel = '_v_rel'
@@ -41,12 +41,12 @@ def make_pred(tbentry,stemtag,glosstag,predchoice,lexclass):
     if predchoice == 'stem':
         pred = TDLencode(tbentry[stemtag] + rel) 
     if predchoice == 'gloss':
-        if tbentry(glosstag):
+        if tbentry[glosstag]:
             pred = TDLencode(tbentry[glosstag] + rel)
         else:
             pred = TDLencode(tbentry[stemtag] + rel)
-    if predchoices == 'glossfw':
-        if tbentry(glosstag):
+    if predchoice == 'glossfw':
+        if tbentry[glosstag]:
             pred = TDLencode(tbentry[glosstag].split()[0] + rel)
         else:
             pred = TDLencode(tbentry[stemtag] + rel)
@@ -61,21 +61,28 @@ def process_tb_entry(tbentry,lexclasses,idtag,stemtag,
 
     for lexclass in lexclasses:
         match = False
+        lextype = lexclass.get('importlextype')
         for tagvaluepair in lexclass.get('toolboxtag'):
-            if tagvaluepair.get('tbtag') in tbentry.keys \
-                    and tbentry(tagvaluepair.get('tbtag')) == tagvaluepair.get('tbvalue'):
+            if tagvaluepair.get('tbtag') in tbentry.keys() \
+                    and tbentry[tagvaluepair.get('tbtag')] == tagvaluepair.get('tbvalue'):
                 match = True
         if match:
-            n = choices['imported-entry'].next_iter_num() \
-                if 'imported-entry' in choices else 1
+            if choices['imported-entry']:
+                n = choices['imported-entry'].next_iter_num() 
+            else:
+                n = 1
             prefix = 'imported-entry' + str(n)
-            pred = make_pred(tbentry,stemtag,glosstag,predchoice)
-            choices[prefix + '_orth'] = tbentry[stemtag]
-            if bistemtag and tbentry[bistemtag]:
-                choices[prefix + '_aff'] = tbentry[bistemtag]
-            choices[prefix + '_pred'] = pred
-            choices[prefix + '_lexclass'] = lexclass
-
+            pred = make_pred(tbentry,stemtag,glosstag,predchoice,lextype)
+            if stemtag in tbentry.keys():
+                choices[prefix + '_orth'] = tbentry[stemtag]
+                if bistemtag in tbentry.keys():
+                    choices[prefix + '_aff'] = tbentry[bistemtag]
+                choices[prefix + '_pred'] = pred
+                choices[prefix + '_lextype'] = lextype
+            else:
+                # Throw an error or warning here?
+                continue
+ 
 
 def import_toolbox_lexicon(choicesfile):
     '''
@@ -90,10 +97,10 @@ def import_toolbox_lexicon(choicesfile):
     '''
 
     # input choices
-    choices = ChoicesFile(path)
+    choices = ChoicesFile(choicesfile)
     # output choices
     imported_choices = ChoicesFile
-    for config in choices.get('toolboximportconfig'):
+    for config in choices['toolboximportconfig']:
         idtag = config.get('idtag')
         stemtag = config.get('stemtag')
         bistemtag = config.get('bistemtag')
@@ -118,10 +125,11 @@ def import_toolbox_lexicon(choicesfile):
             # again, that means we've hit a new entry, and we
             # should process the previous one then reset tbentry.
             words = line.split()
-            if words[0] in tbentry.keys():
-                process_tb_entry(tbentry,lexclasses,idtag,stemtag,bistemtag,glosstag,predchoice,imported_choices)
-                tbentry = {}
-            tbentry[words[0]] = ' '.join(words[1:])
+            if words:
+                if words[0] in tbentry.keys():
+                    process_tb_entry(tbentry,lexclasses,idtag,stemtag,bistemtag,glosstag,predchoice,choices)
+                    tbentry = {}
+                tbentry[words[0]] = ' '.join(words[1:])
 
     # Print new choices file by concatenating input choices
     # with output choices, and adding a section= line between
@@ -129,6 +137,4 @@ def import_toolbox_lexicon(choicesfile):
     print choices
 
 
-if __name__ == "__main__":
-  import_toolbox_lexicon(sys.argv[1])
 

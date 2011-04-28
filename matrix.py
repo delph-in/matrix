@@ -144,6 +144,10 @@ def main():
     # pass the force flag in case the user wants to avoid checks
     vivify(force)
 
+  elif args[0] == 'import-lex':
+    import gmcs.linglib.toolboximport
+    gmcs.linglib.toolboximport.import_toolbox_lexicon(args[1])
+
   else:
     usage()
 
