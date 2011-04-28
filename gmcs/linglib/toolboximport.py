@@ -32,25 +32,31 @@ def make_pred(tbentry,stemtag,glosstag,predchoice,lextype):
     '''
     # Figure out if we're doing a noun or a verb
     lex_cat = lextype.rstrip('0123456789')
-    # FIXME: Do error checking here?
+    # FIXME: What should I actually be doing with these errors?
     if lex_cat == 'verb':
         rel = '_v_rel'
-    if lex_cat == 'noun':
+    elif lex_cat == 'noun':
         rel = '_n_rel'
+    else:
+        print "Error: lex cat isn't verb or noun."
     # Construct stem
     if predchoice == 'stem':
-        pred = TDLencode(tbentry[stemtag] + rel) 
-    if predchoice == 'gloss':
+        pred = TDLencode('_' + tbentry[stemtag] + rel) 
+    elif predchoice == 'gloss':
         if tbentry[glosstag]:
-            pred = TDLencode(tbentry[glosstag] + rel)
+            pred = TDLencode('_' + tbentry[glosstag] + rel)
         else:
-            pred = TDLencode(tbentry[stemtag] + rel)
-    if predchoice == 'glossfw':
+            pred = TDLencode('_' + tbentry[stemtag] + rel)
+    elif predchoice == 'glossfw':
         if tbentry[glosstag]:
-            pred = TDLencode(tbentry[glosstag].split()[0] + rel)
+            pred = TDLencode('_' + tbentry[glosstag].split()[0] + rel)
         else:
-            pred = TDLencode(tbentry[stemtag] + rel)
-        
+            pred = TDLencode('_' + tbentry[stemtag] + rel)
+    else:
+        print "Error: bad predchoice."
+
+    return pred
+  
 
 def process_tb_entry(tbentry,lexclasses,idtag,stemtag,
                      bistemtag,glosstag,predchoice,choices):
@@ -137,4 +143,38 @@ def import_toolbox_lexicon(choicesfile):
     print choices
 
 
+def integrate_imported_entries(choices):
+    '''
+    Take ChoicesFile object and check for imported-entry
+    choices.  If present, add stem or bistem choices to
+    relevant lexical classes on the basis of imported-entry
+    information.  This function should be called early in
+    the customization process, before anything else that relies
+    on lexicon-related choices.
+    '''
+
+    for imported_entry in choices['imported-entry']:
+        lextype = imported_entry['lextype']
+        orth = imported_entry['orth']
+        pred = imported_entry['pred']
+        aff = imported_entry['aff']
+
+        if aff:
+            prefix = lextype + '_bistem'
+        else:
+            prefix = lextype + '_stem'
+
+        if choices[prefix]:
+            n = choices[prefix].next_iter_num()
+        else: 
+            n = 1
+
+        prefix = prefix + str(n)
+        choices[prefix + '_orth'] = orth
+        choices[prefix + '_pred'] = pred
+        if aff:
+            choices[prefix + '_aff'] = aff
+
+        
+    choices.delete('imported-entry')
 

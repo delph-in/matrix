@@ -148,6 +148,13 @@ def main():
     import gmcs.linglib.toolboximport
     gmcs.linglib.toolboximport.import_toolbox_lexicon(args[1])
 
+  elif args[0] == 'integrate-lex':
+    import gmcs.linglib.toolboximport
+    import gmcs.choices
+    ch = gmcs.choices.ChoicesFile(args[1])
+    gmcs.linglib.toolboximport.integrate_imported_entries(ch)
+
+
   else:
     usage()
 

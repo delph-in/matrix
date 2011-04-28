@@ -29,3 +29,25 @@ ones too?  Question for David.
 
 For now we're only doing nouns and verbs through import, so
 only those types should show up in the dropdowns.
+
+Next steps:
+
+/ Write choices file to temporary file (for dev purposes)
+* Write function that integrates imported entries and try
+customizing with them.
+* Fix handling of bistems: right now I'm just getting
+numbers, but in fact we need to go back through the file and
+pull out the spelling of the affix from that number.
+* Write funciton that will actually be called by import
+lexicon button that updates choices file with new info.
+(Including figuring out how to delete the old imported entries
+first.)
+* Write test, in two steps:
+  --- Separate test(s) called by regression test scripts that
+  invokes import_toolbox_lexicon with (stored) choices file
+  and db.
+  --- Output of that is a choices file which is either put
+  into regression_tests/choices and then run as a regular regression
+  test or diffed against regression_tests/choices file stored there.
+* Validation
+* Get David's help on questionnaire stuff
