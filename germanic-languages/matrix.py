@@ -114,7 +114,22 @@ def main():
     choices = args[1]
     txtsuite = args[2]
     import gmcs.regression_tests.add_regression_test
-    gmcs.regression_tests.add_regression_test.add(choices, txtsuite)
+    try:
+      lg = gmcs.regression_tests.add_regression_test.add(choices, txtsuite)
+      print 'Succeeded copying files for %s.' % lg
+      rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
+      subprocess.call(['svn', '-q', 'add'] +\
+                      [os.path.join(rpath, 'home/gold/' + lg),
+                       os.path.join(rpath, 'skeletons/' + lg)])
+      subprocess.call(['svn', '-q', 'add'] +\
+                      [os.path.join(rpath, 'home/gold/' + lg + '/[a-z]*'),
+                       os.path.join(rpath, 'skeletons/' + lg + '/[a-z]*'),
+                       os.path.join(rpath, 'choices/' + lg),
+                       os.path.join(rpath, 'txt-suites/' + lg)])
+      print 'Succeeded adding files to Subversion. Be sure to commit!'
+    except ValueError, er:
+      print "Error adding regression test."
+      print er.message
 
   elif args[0] in ('regression-test-update', 'ru'):
     from gmcs import utils
@@ -171,7 +186,7 @@ def ensure_customization_root_set():
   elif os.path.exists(os.path.join(cwd, 'gmcs/customize.py')):
     os.environ['CUSTOMIZATIONROOT'] = os.path.join(cwd, 'gmcs')
   else:
-    print "CUSTOMIZATIONROOT cannot be set."
+    print "CUSTOMIZATIONROOT is not set and cannot be found."
     sys.exit(2)
 
 def validate_args(args):
