@@ -122,7 +122,6 @@ def get_stem_prefix_from_uniqid(uniqid, choices):
       if stem.get('name') == uniqid:
         return stem.full_key
 
-       
 def get_vtype(stem, choices):
   """
   Helper function to look up verb type in choices file
