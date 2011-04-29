@@ -140,6 +140,7 @@ function toggle_display_lex(element_id, button_id)
 {
   p = document.getElementById(element_id);
   text_boxes = document.getElementsByName(element_id+'_name');
+  errs = document.getElementById(element_id+"_errors");
   n = "";
   if (text_boxes.length > 0) {
     n = text_boxes[0].value;
@@ -147,6 +148,7 @@ function toggle_display_lex(element_id, button_id)
   b = document.getElementById(button_id);
   if (p.style.display == 'none') {
     p.style.display = 'block';
+    errs.style.display = 'none';
     if (n == "") {
       b.innerHTML = '&#9660; '+n+element_id + '<br />';
     } else {
@@ -156,6 +158,7 @@ function toggle_display_lex(element_id, button_id)
     document.cookie = button_id+"=block";
   } else {
     p.style.display = 'none';
+    errs.style.display = '';
     if (n == "") {
       b.innerHTML = '&#9658; '+n+element_id + '<br />';
     } else {
@@ -411,14 +414,19 @@ function remove_region(id)
 // remove_element()
 // Remove the element with id
 // and remove any associated show/hide button
+// and remove any show/hide errors
 function remove_element(id)
 {
   var e = document.getElementById(id);
   e.parentNode.removeChild(e);
-  var b = document.getElementById(id+'button')
+  var b = document.getElementById(id+'button');
+  var err = document.getElementById(id+'_errors');
   if (b != null){
       b.parentNode.removeChild(b);
-  }    
+  }
+  if (err != null){
+      err.parentNode.removeChild(err);
+  }
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -949,6 +957,28 @@ function aux_fill_pred(name, stem, pos)
   for (var i = 0; i < elms.length; i++) {
     if (elms[i].value == "add-pred" && elms[i].checked) {
       fill_pred(name+"_"+stem, pos);
+    }
+  }
+}
+
+function fill_hidden_errors()
+{
+  var elms = document.getElementsByTagName("div");
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].className == "iterator") {
+      fill_errors(elms[i].id);
+    }
+  }
+}
+
+function fill_errors(element_id)
+{
+  var p = document.getElementById(element_id);
+  var s = document.getElementById(element_id+'_errors');
+  var anchors = p.getElementsByTagName('a');
+  for (var i = 0; i < anchors.length; i++) {
+    if (anchors[i].name.match( new RegExp("(error|warning)$"))) {
+	s.appendChild(anchors[i].cloneNode(true));
     }
   }
 }

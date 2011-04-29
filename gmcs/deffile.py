@@ -207,7 +207,7 @@ HTML_sentencespostbody = '''
 <a href="http://www.delph-in.net/lkb">To the LKB page</a>
 '''
 
-HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init();">
+HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors()">
 '''
 
 HTML_method = 'post'
@@ -870,20 +870,19 @@ class MatrixDefFile:
                   new_prefix[:-1].find('require')==-1 and \
                   new_prefix[:-1].find('forbid')==-1 and \
                   new_prefix[:-1].find('lri')==-1:
+            html += ''
             if show_name:
               name = show_name+" ("+new_prefix[:-1]+")"
             else:
               name = new_prefix[:-1]
+            html += '<span id="'+new_prefix[:-1]+'_errors" class="error">'+ \
+                '</span>'+'<a id="' + new_prefix[:-1] + 'button" ' + \
+                'onclick="toggle_display_lex(\'' + \
+                new_prefix[:-1] + '\',\'' + new_prefix[:-1] + 'button\')">'
             if cookie.get(new_prefix[:-1]+'button','block') == 'none':
-              html += '<a id="' + new_prefix[:-1] + 'button" ' + \
-                    'onclick="toggle_display_lex(\'' + \
-                    new_prefix[:-1] + '\',\'' + new_prefix[:-1] + 'button\')"' + \
-                    '>&#9658; '+name+'<br /></a>'
+              html += '&#9658; '+name+'<br /></a>'
             else:
-              html += '<a id="' + new_prefix[:-1] + 'button" ' + \
-                    'onclick="toggle_display_lex(\'' + \
-                    new_prefix[:-1] + '\',\'' + new_prefix[:-1] + 'button\')"' + \
-                    '>&#9660; '+name+'</a>'
+              html += '&#9660; '+name+'</a>'
           if cookie.get(new_prefix[:-1], 'block') == 'block':
             html += '<div class="iterator" id="' + new_prefix[:-1] + '">\n'
           else:
