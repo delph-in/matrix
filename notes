@@ -52,3 +52,18 @@ lexicon button that updates choices file with new info.
   test or diffed against regression_tests/choices file stored there.
 * Validation
 * Get David's help on questionnaire stuff
+
+Bookmark:
+
+python matrix.py -C gmcs/ c data/choices2 
+... does not give errors
+
+but
+
+python matrix.py -C gmcs/ c data/choices2-w-imports
+
+has problems in get_type_covering wiht KeyError: '1du_incl'.
+This must have something to do with modifying the choices
+file, but I can't see what yet.
+
+
