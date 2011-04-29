@@ -66,4 +66,7 @@ has problems in get_type_covering wiht KeyError: '1du_incl'.
 This must have something to do with modifying the choices
 file, but I can't see what yet.
 
+The KeyError must be because e is not in the dictionary
+cov.
+
 
