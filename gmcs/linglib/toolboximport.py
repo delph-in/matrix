@@ -2,6 +2,7 @@
 # imports
 
 import os
+import re
 from gmcs.utils import TDLencode
 from gmcs.choices import ChoicesFile
 
@@ -58,12 +59,16 @@ def make_pred(tbentry,stemtag,glosstag,predchoice,lextype):
     return pred
   
 
-def process_tb_entry(tbentry,lexclasses,idtag,stemtag,
-                     bistemtag,glosstag,predchoice,choices):
+def process_tb_entry(tbentry,lexclasses,stemtag,
+                     bistemtag,glosstag,predchoice,choices,affixes):
     '''
     Figure out which lexclass this entry should belong
-    to then add information to the choices file."
+    to then add information to the choices file.
+    Along the way, if there are any bistems, add the value
+    of that field to the list of affixes.
     '''
+    if '\id' not in tbentry.keys():
+        print tbentry
 
     for lexclass in lexclasses:
         match = False
@@ -82,13 +87,48 @@ def process_tb_entry(tbentry,lexclasses,idtag,stemtag,
             if stemtag in tbentry.keys():
                 choices[prefix + '_orth'] = tbentry[stemtag]
                 if bistemtag in tbentry.keys():
+                    print "Found a bistem!"
                     choices[prefix + '_aff'] = tbentry[bistemtag]
+                    affixes.append(tbentry[bistemtag])
                 choices[prefix + '_pred'] = pred
                 choices[prefix + '_lextype'] = lextype
             else:
                 # Throw an error or warning here?
                 continue
+
+    return affixes
  
+
+def get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings):
+    ''' 
+    Given a toolbox entry see if it is an entry for a bistem
+    affix, If so, find the orthography of the affix and store it in
+    the affix_strings dictionary.
+    '''
+    if idtag not in tbentry.keys():
+        print tbentry.keys()
+        print "Error: tbentry without tbid"
+        tbid = 0
+    else:
+        tbid = tbentry[idtag]
+    for affix in affixes:
+        if affix == tbid:
+            affixes = affixes.remove(tbid)
+            affix_strings[tbid] = tbentry[stemtag]
+            break
+    return [affixes, affix_strings]
+
+def insert_affixes(choices,affix_strings):
+    '''
+    Given a dictionary mapping affix ids to affix forms,
+    update the imported-entry choices to replace the orthography
+    of bistem affixes.
+    '''
+    for entry in choices['imported-entry']:
+        affix_id = entry['aff']
+        full_key = entry.full_key
+        if affix_id in affix_strings.keys():
+            entry[full_key + '_aff'] = affix_strings[affix_id]
 
 def import_toolbox_lexicon(choicesfile):
     '''
@@ -112,6 +152,9 @@ def import_toolbox_lexicon(choicesfile):
         glosstag = config.get('glosstag')
         predchoice = config.get('tbpredvalues')
         lexclasses = config.get('importclass')
+        #FIXME: This needs to allow a comma separated list as input, don't see
+        #how to do that just yet.
+        repeattags = config.get('repeattags').split(' ')
         #FIXME: Surely need a path here.  Also, the current
         #questionnaire allows multiple Toolbox files, need
         #to iterate trhough them.
@@ -125,6 +168,8 @@ def import_toolbox_lexicon(choicesfile):
         #any of them, and if so, import.
 
         tbentry = {}
+        # List of values of the bistemtag field.
+        affixes = []
         for line in tblex.readlines():
             # Assume that the Toolbox tags may occur in any order
             # within an entry, but that they never repeat within
@@ -133,10 +178,42 @@ def import_toolbox_lexicon(choicesfile):
             # should process the previous one then reset tbentry.
             words = line.split()
             if words:
-                if words[0] in tbentry.keys():
-                    process_tb_entry(tbentry,lexclasses,idtag,stemtag,bistemtag,glosstag,predchoice,choices)
+                if words[0] in tbentry.keys() and \
+                        words[0] not in repeattags:
+                    affixes = process_tb_entry(tbentry,lexclasses,stemtag,bistemtag,glosstag,predchoice,choices,affixes)
                     tbentry = {}
                 tbentry[words[0]] = ' '.join(words[1:])
+            # FIXME:  Put a break statement here so that we 
+            # don't keep reading the file if we've found all the
+            # affixes (i.e., if affixes == []).
+
+        tblex.close()
+
+    # Go through the list of affixes for bistems.
+    # If any of the bistems is non-numeric, assume that the
+    # value of that field was a lexid, and go get the actual
+    # orthographic material for each bistem.
+
+    affixids = True
+    if affixes:
+        for affix in affixes:
+            if not re.search(r'^[0-9]+$',affix):
+                affixids = False
+
+    if affixids and affixes:
+        tblex = open(config.get('tbfilename'),'r')
+        affix_strings = {}
+        for line in tblex.readlines():
+            words = line.split()
+            if words:
+                if words[0] in tbentry.keys() and \
+                        words[0] not in repeattags:
+                    [affixes, affix_strings] = get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings)
+                    tbentry = {}
+                tbentry[words[0]] = ' '.join(words[1:])
+        insert_affixes(choices,affix_strings)
+        
+    
 
     # Print new choices file by concatenating input choices
     # with output choices.  FIXME: What about section=?

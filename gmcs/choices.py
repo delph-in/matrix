@@ -444,6 +444,7 @@ class ChoicesFile:
     # As we get more versions, add more version-conversion methods, and:
     # if self.version < N:
     #   self.convert_N-1_to_N
+    # Also update current_version method to reflect current N.
 
     # now reset the full keys in case something was changed
     for top_level_key in self:
