@@ -105,7 +105,6 @@ def import_toolbox_lexicon(choicesfile):
     # input choices
     choices = ChoicesFile(choicesfile)
     # output choices
-    imported_choices = ChoicesFile
     for config in choices['toolboximportconfig']:
         idtag = config.get('idtag')
         stemtag = config.get('stemtag')
@@ -140,12 +139,9 @@ def import_toolbox_lexicon(choicesfile):
                 tbentry[words[0]] = ' '.join(words[1:])
 
     # Print new choices file by concatenating input choices
-    # with output choices, and adding a section= line between
-    
-    #print choices['verb-pc2_lrt2_feat1_value']
-    #print choices['verb-pc2_name']
+    # with output choices.  FIXME: What about section=?
+    choices['version'] = str(choices.current_version())
     print choices
-
 
 def integrate_imported_entries(choices):
     '''
@@ -185,6 +181,5 @@ def integrate_imported_entries(choices):
     # might walk away with one of these output choices files
     # and then come back some time later).  Also, the printed version
     # should probably include the section = lines, right?
-    choices['version'] = str(9999)
     choices.delete('imported-entry')
 
