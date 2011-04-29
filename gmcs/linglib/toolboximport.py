@@ -116,6 +116,8 @@ def import_toolbox_lexicon(choicesfile):
         #FIXME: Surely need a path here.  Also, the current
         #questionnaire allows multiple Toolbox files, need
         #to iterate trhough them.
+        if not config.get('tbfilename'):
+            continue
         tblex = open(config.get('tbfilename'),'r')
 
         #Go through lexicon file only once, as it could

@@ -33,15 +33,16 @@ only those types should show up in the dropdowns.
 Next steps:
 
 / Write choices file to temporary file (for dev purposes)
-* Write function that integrates imported entries and try
+/ Write function that integrates imported entries and try
 customizing with them.
+* Debug customization with integrated lex entries
+(data/choice2-w-imports)
 * Fix handling of bistems: right now I'm just getting
 numbers, but in fact we need to go back through the file and
 pull out the spelling of the affix from that number.
 * Write funciton that will actually be called by import
 lexicon button that updates choices file with new info.
-(Including figuring out how to delete the old imported entries
-first.)
+(Including deleting the old imported entries first.)
 * Write test, in two steps:
   --- Separate test(s) called by regression test scripts that
   invokes import_toolbox_lexicon with (stored) choices file
