@@ -142,6 +142,8 @@ def import_toolbox_lexicon(choicesfile):
     # Print new choices file by concatenating input choices
     # with output choices, and adding a section= line between
     
+    #print choices['verb-pc2_lrt2_feat1_value']
+    #print choices['verb-pc2_name']
     print choices
 
 
@@ -177,6 +179,12 @@ def integrate_imported_entries(choices):
         if aff:
             choices[prefix + '_aff'] = aff
 
-        
+    # FIXME: This is just a hack to keep things working now.
+    # What I really want to do is print out a version number
+    # that matches whatever the last uprev was (since someone
+    # might walk away with one of these output choices files
+    # and then come back some time later).  Also, the printed version
+    # should probably include the section = lines, right?
+    choices['version'] = str(9999)
     choices.delete('imported-entry')
 
