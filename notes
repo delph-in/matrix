@@ -35,7 +35,7 @@ Next steps:
 / Write choices file to temporary file (for dev purposes)
 / Write function that integrates imported entries and try
 customizing with them.
-* Debug customization with integrated lex entries
+/ Debug customization with integrated lex entries
 (data/choice2-w-imports)
 * Fix handling of bistems: right now I'm just getting
 numbers, but in fact we need to go back through the file and
@@ -52,7 +52,7 @@ lexicon button that updates choices file with new info.
   test or diffed against regression_tests/choices file stored there.
 * Validation
 * Get David's help on questionnaire stuff
-
+* Fix version number in output choices files. 
 * Double check that saving and then uploading a choices
 file that has imported lex entries doesn't result in the
 imported entry choices being dropped by the questionnaire.
