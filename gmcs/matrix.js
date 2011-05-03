@@ -976,9 +976,15 @@ function fill_errors(element_id)
   var p = document.getElementById(element_id);
   var s = document.getElementById(element_id+'_errors');
   var anchors = p.getElementsByTagName('a');
+  //p.innerHTML = "jmon";
   for (var i = 0; i < anchors.length; i++) {
-    if (anchors[i].name.match( new RegExp("(error|warning)$"))) {
-	s.appendChild(anchors[i].cloneNode(true));
-    }
+      anchors[i].innerHTML = "JW";
+      //p.innerHTML = "kmon";
+      //s.appendChild(anchors[i].cloneNode(true));
+      if (anchors[i].name.match( new RegExp("_error|_warning"))) {
+        anchors[i].innerHTML = "HW";
+        \s.appendChild(anchors[i].cloneNode(true));
+      }
   }
+  //p.innerHTML = "qmon";
 }
