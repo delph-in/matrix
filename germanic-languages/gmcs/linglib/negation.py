@@ -1,4 +1,5 @@
 from gmcs.utils import TDLencode
+from gmcs.linglib import word_order
 
 ######################################################################
 # customize_sentential_negation()
@@ -94,16 +95,26 @@ def create_neg_adv_lex_item(advAlone, mylang, ch, lexicon, rules):
 
   if advAlone != 'never':
     adjective_order = ch.get('adj-noun-order')
-    if adjective_order != 'adj-noun':
+    if ch.get('word-order') == 'v2' and ch.get('verb-cluster') == 'yes':
+       if not ch.get('has-adv') == 'yes':
+         word_order.create_germanic_adverbial_phrases(ch, mylang, rules)
+    else:
       rules.add('head-adj-int := head-adj-int-phrase.',
               'Rule instances for head-modifier structures. Corresponding types\n' +
               'are defined in matrix.tdl.  The matrix customization script did\n' +
               'not need to add any further constraints, so no corresponding tyes\n' +
               'appear in ' + ch.get('language').lower() + '.tdl')
       rules.add('head-adj-scop := head-adj-scop-phrase.')
-    if adjective_order != "noun-adj":
       rules.add('adj-head-int := adj-head-int-phrase.')
       rules.add('adj-head-scop := adj-head-scop-phrase.')
+
+      if adjective_order == 'adj-noun':
+        mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].');
+        mylang.add('head-adj-scop-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].');
+      if adjective_order == "noun-adj":
+        mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].');
+        mylang.add('adj-head-scop-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].');
+
 
     mylang.add('+nvcdmo :+ [ MOD < > ].',
                'This grammar includes head-modifier rules.  To keep\n' +

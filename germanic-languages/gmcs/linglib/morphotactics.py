@@ -198,10 +198,10 @@ def position_class_hierarchy(choices):
                                         order=pc.get('order')))
     cur_pc.tdl_order = i
     _mns[cur_pc.key] = cur_pc
-    # If there's only one LRT, and the PC or the LRT are unnamed, merge them
-    if len(pc.get('lrt')) == 1:
+    # If only one root LRT, and the PC or the LRT are unnamed, merge them
+    if len([l for l in pc['lrt'] if l.get('supertypes', None) == None]) == 1:
       lrt = pc['lrt'].get_first()
-      if '' in (pc.get('name',''), lrt.get('name','')):
+      if pc.get('name','') == '' or lrt.get('name','') == '':
         name = pc.get('name') or lrt.get('name') or pc.full_key
         lrt['name'] = cur_pc.name = name
         cur_pc.identifier_suffix = 'lex-rule'
@@ -274,17 +274,12 @@ def create_lexical_rule_type(ch, lrt):
   return new_lrt
 
 def set_lexical_rule_supertypes(pc):
-  # since we will later percolate up common supertypes, for now
-  # just put them on all nodes with LRIs (mainly leaf nodes)
-  nodes = [n for n in pc.nodes.values() if len(n.lris) > 0]
-  for lrt in nodes:
-    # NOTE: there is currently no check to ensure that
-    # cont-change-only-lex-rule and add-only-no-ccont-rule won't
-    # appear on the same LRT.
+  # Later, if a node inherits no lex-rule supertype, it will be assigned
+  # the default value of 'add-only-no-ccont-rule'
+  for lrt in pc.nodes.values():
     if ('value', 'plus') in lrt.features.get('negation',{}).items():
       lrt.supertypes.add('cont-change-only-lex-rule')
-    else:
-      lrt.supertypes.add('add-only-no-ccont-rule')
+    # add other special cases here
 
 ### CONSTRAINTS ###
 
@@ -546,7 +541,8 @@ def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
   out_flags = set(pc.flags['out'].keys())
   to_copy = {}
   for mn in pc.roots():
-     to_copy[mn.key] = write_mn_flags(mylang, lextdl, mn, out_flags, all_flags, choices)
+     to_copy[mn.key] = write_mn_flags(mylang, lextdl, mn, out_flags, all_flags,
+                                      choices)
   # for lex-rule PCs (not lexical types), write copy-up flags
 
   if pc.identifier_suffix != 'lex-super':

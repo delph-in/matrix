@@ -185,7 +185,7 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies):
 #### supertype
 
 
-    if not ch.get('multiple-aux') == 'no':   
+    if not ch.get('multiple-aux') == 'no' and not ch.get('verb-cluster') == 'yes':   
       comment = \
         '; To keep the semantically empty ones from spinning on\n' + \
         '; generation, require complement to be [AUX -].  The\n' + \

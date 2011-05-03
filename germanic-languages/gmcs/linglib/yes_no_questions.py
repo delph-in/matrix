@@ -30,9 +30,24 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
       # ERB 2006-10-05 Adding in semantics here.  This rule constrains MESG to ques.
       # ERB 2007-01-21 Removing semantics here: Need to allow inversion to not express questions.  Instead, the result of this is MC na, and there is a separate non-branching rule which introduces question semantics.  Following the ERG in this.
       # ERB 2010-04-15 Adding [AUX +] on DTR, too.
-    typedef = '''
-    subj-v-inv-lrule := cat-change-only-lex-rule &
-			same-hc-light-lex-rule &
+    if ch.get('verb-cluster') == 'yes':
+      typedef = '''
+      subj-v-inv-lrule := cat-change-only-lex-rule &
+	    		same-hc-light-lex-rule &
+			same-posthead-lex-rule &
+                        constant-lex-rule &
+      [ SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV +,
+                                           FORM finite ],
+                             VAL #val,
+                             MC na ],
+                 LKEYS #lkeys ],
+        DTR.SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV - ],
+                                 VAL #val ],
+                     LKEYS #lkeys ]].'''
+    else:
+      typedef = '''
+      subj-v-inv-lrule := cat-change-only-lex-rule &
+	    		same-hc-light-lex-rule &
 			same-posthead-lex-rule &
                         constant-lex-rule &
       [ SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV + ],
@@ -109,11 +124,16 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
                          VAL #val,
                          MC + ],
       HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na,
-                                  VAL #val &
-                                       [SUBJ < >,
-                                       COMPS < >]],
+                                  VAL #val ],
       C-CONT.HOOK.INDEX.SF ques ].'''
     mylang.add(typedef, comment, section='phrases')
+
+    if not ch.get('verb-cluster') == 'yes':
+      mylang.add('int-cl := [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,\
+                                                     COMPS < > ] ].')
+    else:
+      comment = 'See aux-1st-comp for reasons for using MODIFIED'
+      mylang.add('int-cl := [ SYNSEM.MODIFIED notmod-or-lmod ].')
 
     rules.add('int := int-cl.')
 

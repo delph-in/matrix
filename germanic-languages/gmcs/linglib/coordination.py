@@ -15,6 +15,8 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
   pn = pos + num
   if pos == 'n' or pos == 'np':
     headtype = 'noun'
+  elif pos == 'adj':
+    headtype = 'adj'
   else:
     headtype = 'verb'
 
@@ -121,7 +123,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
         mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                                      NONCONJ-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
 
-  if pos == 'n' or pos == 'np':
+  if pos == 'n' or pos == 'np' or pos == 'adj':
     if 'case' in agr:
       mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
                                  LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
@@ -132,10 +134,19 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
                                   RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
       mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
                                  NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
-    if np_number:
+    if np_number and pos != 'adj':
       mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + 
                                  np_number + ' ].')
-
+    elif pos == 'adj':
+      mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png, \
+                                 LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png, \
+                                 RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
+      if mid:   
+        mylang.add(pn + '-mid-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png, \
+                                  LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png, \
+                                  RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
+      mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png, \
+                                 NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
   # Now define the rule instances into rules.tdl.  As above, the mid
   # or left rule may not be necessary.
 
@@ -216,6 +227,6 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
           if left:
             left += 'conj-last-'
 
-    for pos in ('n', 'np', 'vp', 's'):
+    for pos in ('n', 'np', 'vp', 's', 'adj'):
       if cs.get(pos):
         define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, agreement, np_number, ch, mylang, rules, irules)
