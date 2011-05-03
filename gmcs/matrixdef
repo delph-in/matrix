@@ -1240,7 +1240,7 @@ BeginIter verb{i} "a Verb Type" 2
 
   BeginIter bistem{j} "a bipartite Stem" 
 
-    Text orth "Verb {i} bipartite stem {j} spelling" "Root spelling: " "" 30
+    Text orth "Verb {i} bipartite stem {j} spelling" "Root spelling: " "" 30 "fill_pred('verb{i}_bistem{j}', 'v')"
 
     Text aff "Verb {i} bipartite stem {j} affix" "Affix spelling: " "" 30
 
