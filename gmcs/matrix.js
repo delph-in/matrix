@@ -961,30 +961,36 @@ function aux_fill_pred(name, stem, pos)
   }
 }
 
+// fill_hidden_errors()
+// This moves errors which are not displayed to the outside of
+// show/hide button. It should be called onload and no where else.
 function fill_hidden_errors()
 {
+  var hash = window.location.hash;
   var elms = document.getElementsByTagName("div");
   for (var i = 0; i < elms.length; i++) {
     if (elms[i].className == "iterator") {
       fill_errors(elms[i].id);
     }
   }
+  if (hash != "") {
+    window.location.hash = hash;
+  }
 }
 
+// fill_errors(id)
+// Moves the errors for a interator div to the associated error 
+// span outside of the show hide (if such a span exists.
+// This should only be called by the fill_hidden_errors function.
 function fill_errors(element_id)
 {
-  var p = document.getElementById(element_id);
+  
   var s = document.getElementById(element_id+'_errors');
+  var p = document.getElementById(element_id);
   var anchors = p.getElementsByTagName('a');
-  //p.innerHTML = "jmon";
   for (var i = 0; i < anchors.length; i++) {
-      anchors[i].innerHTML = "JW";
-      //p.innerHTML = "kmon";
-      //s.appendChild(anchors[i].cloneNode(true));
-      if (anchors[i].name.match( new RegExp("_error|_warning"))) {
-        anchors[i].innerHTML = "HW";
-        \s.appendChild(anchors[i].cloneNode(true));
-      }
+    if (s != null && anchors[i].name.match( new RegExp("_error$|_warning$"))) {
+      s.appendChild(anchors[i].cloneNode(true));
+    }
   }
-  //p.innerHTML = "qmon";
 }

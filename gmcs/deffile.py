@@ -875,10 +875,13 @@ class MatrixDefFile:
               name = show_name+" ("+new_prefix[:-1]+")"
             else:
               name = new_prefix[:-1]
-            html += '<span id="'+new_prefix[:-1]+'_errors" class="error">'+ \
-                '</span>'+'<a id="' + new_prefix[:-1] + 'button" ' + \
+            html += '<span id="'+new_prefix[:-1]+'_errors" class="error" '
+            if cookie.get(new_prefix[:-1]+'button','block') != 'none':
+              html += 'style="display: none"'
+            html += '></span>'+'<a id="' + new_prefix[:-1] + 'button" ' + \
                 'onclick="toggle_display_lex(\'' + \
                 new_prefix[:-1] + '\',\'' + new_prefix[:-1] + 'button\')">'
+
             if cookie.get(new_prefix[:-1]+'button','block') == 'none':
               html += '&#9658; '+name+'<br /></a>'
             else:
