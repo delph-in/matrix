@@ -41,6 +41,8 @@ customizing with them.
 numbers, but in fact we need to go back through the file and
 pull out the spelling of the affix from that number.
 
+=> Current bug: So far only one affix is getting
+onto affix_strings.
 
 * Give an error if the entry referred to by an affix
 isn't actually in the Toolbox file.
@@ -51,14 +53,7 @@ get used, I think.  Might be good to output a list of
 imported bipartite stems so this can be hand-edited.
 
 
-==> Working on this one, but hit two bugs:
-1. Not yet actually modifying the choices file when
-I have an affix to update.  (note that the sample section
-of the toolbox db file didn't include any bistems that
-met the import classes, so I edited one.)
-2. Some toolbox tags are not unique within an entry.  Maybe
-I should assume the entry id tag is?  But that doesn't necessarily come
-first...
+
 
 * Write funciton that will actually be called by import
 lexicon button that updates choices file with new info.

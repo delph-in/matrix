@@ -111,8 +111,7 @@ def get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings):
         tbid = tbentry[idtag]
     for affix in affixes:
         if affix == tbid:
-            print "Found an affix!"
-            affixes = affixes.remove(tbid)
+            affixes.remove(tbid)
             affix_strings[tbid] = tbentry[stemtag]
             break
     return [affixes, affix_strings]
@@ -202,7 +201,7 @@ def import_toolbox_lexicon(choicesfile):
         tblex = open(config.get('tbfilename'),'r')
         affix_strings = {}
         for line in tblex.readlines():
-            words = line.split()
+            words = line.rstrip().split()
             if words:
                 if words[0] == starttag and affixes:
                     [affixes, affix_strings] = get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings)
@@ -218,7 +217,7 @@ def import_toolbox_lexicon(choicesfile):
     # Print new choices file by concatenating input choices
     # with output choices.  FIXME: What about section=?
     choices['version'] = str(choices.current_version())
-    # print choices
+    print choices
     print 'Toolbox entries processed: ' + str(tbentries)
     print 'Total entries imported: ' + str(choices['imported-entry'].next_iter_num() - 1)
 
