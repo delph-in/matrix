@@ -41,6 +41,16 @@ customizing with them.
 numbers, but in fact we need to go back through the file and
 pull out the spelling of the affix from that number.
 
+
+* Give an error if the entry referred to by an affix
+isn't actually in the Toolbox file.
+* Bipartite stems are entered completely symmetrically
+in the Chintang file.  For now, just going to get both
+orders out of it and then see which lex entries actually
+get used, I think.  Might be good to output a list of
+imported bipartite stems so this can be hand-edited.
+
+
 ==> Working on this one, but hit two bugs:
 1. Not yet actually modifying the choices file when
 I have an affix to update.  (note that the sample section
@@ -72,6 +82,10 @@ Two ways to solve this:
     --- Have user specify which tags can be repeated so that these
     are ignored.  
 Going with the second for now.  Need to update questionnaire
-either way.
+either way. 
+... Second didn't scale well, so trying the first.  Might also
+see if Toolbox has configuration files.
+* Update questionnaire to match the fields I am now looking for.
+
 
 
