@@ -111,6 +111,7 @@ def get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings):
         tbid = tbentry[idtag]
     for affix in affixes:
         if affix == tbid:
+            print "Found an affix!"
             affixes = affixes.remove(tbid)
             affix_strings[tbid] = tbentry[stemtag]
             break
