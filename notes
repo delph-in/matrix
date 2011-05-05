@@ -37,13 +37,9 @@ Next steps:
 customizing with them.
 / Debug customization with integrated lex entries
 (data/choice2-w-imports)
-* Fix handling of bistems: right now I'm just getting
+/ Fix handling of bistems: right now I'm just getting
 numbers, but in fact we need to go back through the file and
 pull out the spelling of the affix from that number.
-
-=> Current bug: So far only one affix is getting
-onto affix_strings.
-
 * Give an error if the entry referred to by an affix
 isn't actually in the Toolbox file.
 * Bipartite stems are entered completely symmetrically
@@ -71,7 +67,7 @@ lexicon button that updates choices file with new info.
 * Double check that saving and then uploading a choices
 file that has imported lex entries doesn't result in the
 imported entry choices being dropped by the questionnaire.
-* It looks like some tb tags can appear multiple times in an entry.
+/ It looks like some tb tags can appear multiple times in an entry.
 Two ways to solve this:
     --- Have user specify a reliable first tag in every entry
     --- Have user specify which tags can be repeated so that these

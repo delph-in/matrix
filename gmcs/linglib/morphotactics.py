@@ -534,6 +534,7 @@ def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
     write_copy_up_flags(mylang, to_copy, all_flags, force_write=True)
 
 def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
+  print mn
   if mn.instance:
     # for lex-entries, we also need to write the stem and pred information
     # since lexicon is a TDL with merge_by_default set to False.

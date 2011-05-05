@@ -85,7 +85,6 @@ def process_tb_entry(tbentry,lexclasses,stemtag,
             if stemtag in tbentry.keys():
                 choices[prefix + '_orth'] = tbentry[stemtag]
                 if bistemtag in tbentry.keys():
-                    print "Found a bistem!"
                     choices[prefix + '_aff'] = tbentry[bistemtag]
                     affixes.append(tbentry[bistemtag])
                 choices[prefix + '_pred'] = pred
@@ -104,8 +103,8 @@ def get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings):
     the affix_strings dictionary.
     '''
     if idtag not in tbentry.keys():
-        print tbentry.keys()
-        print "Error: tbentry without tbid"
+        print tbentry
+        #print "Error: tbentry without tbid"
         tbid = 0
     else:
         tbid = tbentry[idtag]
@@ -122,7 +121,6 @@ def insert_affixes(choices,affix_strings):
     update the imported-entry choices to replace the orthography
     of bistem affixes.
     '''
-    print affix_strings
     for entry in choices['imported-entry']:
         affix_id = entry['aff']
         full_key = entry.full_key
