@@ -1,7 +1,0 @@
-customize.py:
-- Constrain verb types to require [CASE-MARKED +] in languages with mixed
-  case marking.  This prevents bare NPs marked by the synth rules from
-  sneaking in as verbal arguments.
---This line, and those below, will be ignored--
-
-M    customize/customize.py

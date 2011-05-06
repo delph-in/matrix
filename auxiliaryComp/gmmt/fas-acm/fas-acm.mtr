@@ -1,7 +1,0 @@
-;;; Hey, emacs(1), this is -*- Mode: TDL; Coding: utf-8; -*- got it?
-
-chase := chase-mtr.
-hurt := hurt-mtr.
-eat-ini := eat-ini-mtr.
-think := think-mtr.
-eat-ini := eat-ini-mtr.

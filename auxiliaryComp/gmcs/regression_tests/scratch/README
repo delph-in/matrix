@@ -1,6 +1,0 @@
-This directory is meant as a sandbox for use in the process of
-creating regression-tests.  It is a good place to store your choices
-and txt-suite files that you pass to create-regression-test() (invoked
-in the lisp buffer with the lkb running).  Nothing in this directory
-should be under cvs control, other than this README file.
-
