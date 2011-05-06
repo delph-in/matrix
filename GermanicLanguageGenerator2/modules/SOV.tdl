@@ -1,7 +1,0 @@
-;;;  Types for SOV word order.
-
-comp-head-phrase := basic-head-1st-comp-phrase & head-final.
-subj-head-phrase := basic-head-subj-phrase & head-final &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
-
-

@@ -1,3 +1,0 @@
-;;; -*- Mode: TDL; Package: LKB -*-
-
-sai-lr := subj-aux-inv-lrule.

@@ -1,9 +1,0 @@
-1@unknown@formal@none@1@S@dog slept@1@2@@ebender@10-7-2008
-2@unknown@formal@none@1@S@cat slept@1@2@@ebender@10-7-2008
-3@unknown@formal@none@1@S@dog cat chased@1@3@@ebender@10-7-2008
-4@unknown@formal@none@1@S@cat dog chased@1@3@@ebender@10-7-2008
-5@unknown@formal@none@1@@slept dog@0@2@@ebender@10-7-2008
-6@unknown@formal@none@1@@slept cat@0@2@@ebender@10-7-2008
-7@unknown@formal@none@1@@dog chased cat@0@3@@ebender@10-7-2008
-8@unknown@formal@none@1@@cat chased dog@0@3@@ebender@10-7-2008
-9@unknown@formal@none@1@@chased dog cat@0@3@@ebender@10-7-2008
