@@ -1,6 +1,0 @@
-; File for spelling preserving lexical rules, i.e., instances
-; of (subtypes of) infl-ltol-rule and infl-ltow-rule.
-
-; Every rule in this file should have a %suffix line.  Those
-; that don't belong in lrules.tdl.
-
