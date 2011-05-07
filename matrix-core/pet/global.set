@@ -1,3 +1,4 @@
+;;; -*- Mode: TDL; -*-
 
 ; NOTE: The following special-name-* types are duplicated in flop.set,
 ;       so they have been commented out here to avoid Cheap warnings.
