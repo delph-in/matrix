@@ -840,10 +840,41 @@ def determine_consistent_order(wo,hc,ch):
 #
 #
 
+
+def add_specialized_complementizer_comp_phrase(ch, mylang):
+  if ch.get('clz-comp-order') == 'clz-comp':
+    mylang.add('complementizer-comp-phrase := basic-head-1st-comp-phrase & \
+                    head-initial & \
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD comp ].')
+  elif ch.get('clz-comp-order') == 'comp-clz':
+    mylang.add('comp-complementizer-phrase := basic-head-1st-comp-phrase & \
+                    head-final & \
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD comp ].')
+  if ch.get('clz-optionality'):
+    mylang.add('create-informal-vcomp-phrase := unary-phrase &\
+   [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
+	         	     CAT [ HEAD verb & [ FORM finite ],\
+				   VAL #val & [ SUBJ < >,\
+					        COMPS < >,\
+					        SPR < >,\
+					        SPEC < > ],\
+				   MC + ] ] ] >,\
+     C-CONT.HOOK #hook,\
+     SYNSEM.LOCAL.CAT [ HEAD comp,\
+	         	VAL #val,\
+		        MC - ] ].')
+
 def add_nexus_constraints_v2_with_cluster(ch, mylang):
 
 ###ADDING CONSTRAINTS ON BASIC RULES CREATING SECOND POSITION
 ###NOTE THAT FEATURES FOR BASIC AND AUX-RULE ARE PARALLEL FOR THIS ONE
+  to_rest = ''
+  if ch.get('adp-order'): 
+    head_rest = '+nvjrcdmo'
+    if ch.get('adp-order') == 'adp-comp':
+      to_rest = 'final'
+    elif ch.get('adp-order') == 'comp-adp':
+      to_rest = 'initial'
 
   mylang.add('head-initial-head-nexus := nonverbal-comp-phrase & \
                   [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC + ].')
@@ -851,7 +882,8 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
   mylang.add('head-final-head-nexus := nonverbal-comp-phrase & \
                                        [ SYNSEM.LOCAL.CAT.MC +,\
                                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
-  
+  if ch.get('has-compl') == 'yes':
+    add_specialized_complementizer_comp_phrase(ch, mylang)
   if ch.get('q-inv'):
     mylang.add('head-final-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV - ].')
   if ch.get('aux-comp-order') == 'both' or ch.get('vc-analysis') == 'aux-rule':
@@ -866,6 +898,11 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
     mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.HEADFINAL #hf, \
                                            HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL #hf ].')
 
+  if to_rest == 'final':
+    mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.HEAD ' + head_rest + ' ].')
+  elif to_rest == 'initial':
+    mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.HEAD ' + head_rest + ' ].')
+    
 
 def add_basic_phrases_v2_with_cluster(ch, mylang):
 
@@ -1042,6 +1079,8 @@ def add_v2_with_cluster_rules(ch, rules):
   if ch.get('split-cluster') == 'yes':
     add_split_cluster_rules(rules, auxRule)
 
+  if ch.get('has-compl') == 'yes':
+    add_complementizer_rules(ch, rules)
 
 def add_preobjectival_verbcluster_rules(rules, auxRule):
 
@@ -1067,6 +1106,13 @@ def add_split_cluster_rules(rules, auxRule):
     rules.add('noncomp-aux-2nd := noncomp-aux-2nd-phrase.')  
     rules.add('insert-auxiliary := special-insert-aux-phrase.')
 
+def add_complementizer_rules(ch, rules): 
+  if ch.get('clz-comp-order') == 'clz-comp':
+    rules.add('complementizer-comp := complementizer-comp-phrase.')
+  else:
+    rules.add('comp-complementizer := comp-complementizer-phrase.')
+  if ch.get('clz-optionality'):
+    rules.add('informal-vcomp := create-informal-vcomp-phrase.')
 
 def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
  
@@ -1397,21 +1443,21 @@ def create_germanic_adverbial_phrases(ch, mylang, rules):
 ###need to separate adverbial from adjectival phrases, due to different
 ###wo interactions
  
-  mylang.add('adverb-head-phrase := basic-head-mod-phrase-simple & \
-                  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].')
+  mylang.add('adjunct-head-phrase := basic-head-mod-phrase-simple & \
+                  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +rp ].')
  
 ###if no auxiliary, direct attachment v2
 
-  mylang.add('head-2nd-adj-phrase := head-initial-head-nexus & adverb-head-phrase.')
+  mylang.add('head-2nd-adj-phrase := head-initial-head-nexus & adjunct-head-phrase.')
   if ch.get('q-inv') and ch.get('vc-analysis') == 'aux-rule':
     mylang.add('head-2nd-adj-phrase := [ HEAD-DTR.SYNSEM.MODIFIED hasmod ].')
 
   mylang.add('head-2nd-adj-int-phrase := head-adj-int-phrase & head-2nd-adj-phrase.')
   mylang.add('head-2nd-adj-scop-phrase := head-adj-scop-phrase & head-2nd-adj-phrase.')
  
-  mylang.add('adj-head-2nd-int-phrase := adj-head-int-phrase & head-final-head-nexus & adverb-head-phrase.')
+  mylang.add('adj-head-2nd-int-phrase := adj-head-int-phrase & head-final-head-nexus & adjunct-head-phrase.')
  
-  mylang.add('adj-head-2nd-scop-phrase := adj-head-scop-phrase & head-final-head-nexus & adverb-head-phrase.')
+  mylang.add('adj-head-2nd-scop-phrase := adj-head-scop-phrase & head-final-head-nexus & adjunct-head-phrase.')
 
   rules.add('adj-head-2nd-int := adj-head-2nd-int-phrase.')
   rules.add('adj-head-2nd-scop := adj-head-2nd-scop-phrase.')
@@ -1421,7 +1467,7 @@ def create_germanic_adverbial_phrases(ch, mylang, rules):
 
 ### TO DO: FIND OUT ABOUT DANISH
   if ch.get('vc-placement') == 'post':
-    mylang.add('adj-head-int-vc-phrase := adj-head-int-phrase & head-final-invc & adverb-head-phrase.')
-    mylang.add('adj-head-scop-vc-phrase := adj-head-scop-phrase & head-final-invc & adverb-head-phrase.')    
+    mylang.add('adj-head-int-vc-phrase := adj-head-int-phrase & head-final-invc & adjunct-head-phrase.')
+    mylang.add('adj-head-scop-vc-phrase := adj-head-scop-phrase & head-final-invc & adjunct-head-phrase.')    
     rules.add('adj-head-int-vc := adj-head-int-vc-phrase.')
     rules.add('adj-head-scop-vc := adj-head-scop-vc-phrase.')

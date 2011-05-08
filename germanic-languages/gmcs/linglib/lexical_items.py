@@ -264,6 +264,22 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                                       COMPS < > ] ] ]  > ].'
     mylang.add(typedef)
 
+  # clausal complement verb
+  if ch.get('emb-clause-2nd-verb') == 'yes':
+    typedef = \
+    's-comp-2nd-arg-verb-lex := ' + mainorverbtype + \
+                                 '& clausal-second-arg-trans-lex-item & \
+    [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >, \
+      ARG-ST < [ ], \
+                #comps & \
+               [ LOCAL [ CAT [ VAL [ SUBJ < >, \
+				     COMPS < >, \
+				     SPR < >, \
+				     SPEC < > ], \
+			       HEAD comp ], \
+			 CONT.HOOK.INDEX.SF prop-or-ques ] ] > ].'
+    mylang.add(typedef)
+
   case.customize_verb_case(mylang, ch)
 
   # Add constraints to choices to create lex rules for bipartite stems
@@ -291,9 +307,14 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     elif val.find('-') != -1:
       c = val.split('-')
       if len(c) == 2:
-        a_case = case.canon_to_abbr(c[0], cases)
-        o_case = case.canon_to_abbr(c[1], cases)
-        tivity = a_case + '-' + o_case + '-trans'
+        if c[1] != 'scomp':
+          a_case = case.canon_to_abbr(c[0], cases)
+          o_case = case.canon_to_abbr(c[1], cases)
+          tivity = a_case + '-' + o_case + '-trans'
+        else:
+          a_case = case.canon_to_abbr(c[0], cases)
+          tivity = a_case + '-scomp-trans'
+
       elif len(c) == 3:
         a_case = case.canon_to_abbr(c[0], cases)
         b_case = case.canon_to_abbr(c[1], cases)
@@ -305,8 +326,15 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
     stype = dir_inv + tivity + 'itive-verb-lex'
     vtype = name + '-verb-lex'
-
+    
     mylang.add(vtype + ' := ' + stype + '.')
+###
+# scomp-spec
+    sf = verb.get('compl-sf')
+    if sf:
+      mylang.add(vtype + ' := \
+          [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.SF ' \
+           + sf + ' ].')
 
     features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
 
@@ -449,6 +477,148 @@ def customize_adjectives(mylang, ch, lexicon):
       lexicon.add(typedef)
 
 
+def customize_adverbs(mylang, ch, lexicon):
+
+   # Lexical type for adverbs, if the language has any:
+  if ch.get('has-adv') == 'yes':
+    comment = \
+      ';;; Adverbs\n' + \
+      ';;; First attempt: inheriting all from matrix.'
+    mylang.add_literal(comment)
+    mylang.add('scopal-adverb-lex := basic-scopal-adverb-lex.')
+    mylang.add('int-adverb-lex := basic-int-adverb-lex.')
+      
+ # Adverbs
+  if 'adv' in ch:
+    lexicon.add_literal(';;; Adverbs')
+
+  for adv in ch.get('adv',[]):
+    name = get_name(adv)
+
+    stype = '-adverb-lex'
+    if adv.get('kind') == 'int':
+      stype = 'int' + stype
+    else:
+      stype = 'scopal' + stype
+    atype = name + '-adverb-lex'
+    
+    mylang.add(atype + ' := ' + stype + ' & \
+      [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD verb ] > ].')
+
+    arg_str = adv.get('arg-str')
+    val = ''
+    if arg_str == 'none':
+      val = 'VAL [ SUBJ < >, \
+                   COMPS < >, \
+                   SPR < >, \
+                   SPEC < > ]'
+
+    if val:
+      mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.' + val + ' ].')
+
+    for stem in adv.get('stem',[]):
+      orth = stem.get('orth')
+      pred = stem.get('pred')
+      id = stem.get('name')
+      typedef = \
+        TDLencode(id) + ' := ' + atype + ' & \
+                    [ STEM < "' + orth + '" >, \
+                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+      lexicon.add(typedef)
+
+def customize_complementizers(ch, mylang, lexicon):
+  if ch.get('has-compl') == 'yes':
+  ###create section in lexicon
+    lexicon.add_literal(';;; Complementizers')
+  ###add general supertype:
+    mylang.add('complementizer-lex-item := raise-sem-lex-item & \
+             basic-one-arg & \
+       [ SYNSEM.LOCAL.CAT [ HEAD comp, \
+		      VAL [ SUBJ < >, \
+			    COMPS < #comp & \
+                               [ LOCAL.CAT [ MC -, \
+					     HEAD verb & [ FORM finite ]]] >,\
+			    SPR < >, \
+			    SPEC < > ] ], \
+          ARG-ST < #comp > ].')
+    for compl in ch.get('compl',[]):
+      sf = compl.get('sf')
+      type = compl.get('name')
+      mylang.add(type + ' := complementizer-lex-item & \
+         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ' + sf + ' ].')
+      
+      for stem in compl.get('stem'):
+        orth = stem.get('orth')
+        typedef = \
+            TDLencode(orth) + ' := ' + type + ' & \
+                   [ STEM < "' + orth + '" > ].'
+        lexicon.add(typedef)
+
+def customize_adpositions(ch, mylang, lexicon):
+  cases = case.case_names(ch)
+  if ch.get('has-adp'):
+    s_name = create_adposition_supertypes(ch, mylang)
+
+    for adp in ch.get('adp',[]):
+      name = adp.get('name') + '-adp-lex-item'
+      mod = adp.get('mod')
+      #add basic frame
+      mylang.add(name + ' := ' + mod + '-' + s_name + '.')
+      order = adp.get('order')
+      if order == 'post':
+        mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
+      elif order == 'pre':
+        mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+
+      for feat in adp.get('feat',[]):
+        if feat.get('name') == 'case':
+          constr = 'LOCAL.CAT.HEAD.CASE '
+          value = case.canon_to_abbr(feat.get('value'), cases)
+          value += ' ] >'
+        if feat.get('head') == 'comp':
+          path = 'SYNSEM.LOCAL.CAT.VAL.COMPS < [ '
+          
+        type = name + ' := [ ' + path + constr + value + ' ].'
+        mylang.add(type)
+      for stem in adp.get('stem',[]):
+        orth = stem.get('orth')
+        pred = stem.get('pred')
+        id = stem.get('name')
+        typedef = \
+            TDLencode(id) + ' := ' + name + ' & \
+                   [ STEM < "' + orth + '" >, \
+                     SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+        lexicon.add(typedef)
+
+
+
+def create_adposition_supertypes(ch, mylang):
+  s_name = 'int-adp-lex-item'
+  comp = '[ LOCAL.CAT [ HEAD noun, \
+                        VAL [ SPR < >, \
+                              COMPS < >, \
+                              SUBJ < >,\
+                              SPEC < > ] ] ] '
+  mylang.add(s_name + ' := basic-int-mod-adposition-lex & \
+                [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
+                                         COMPS < ' + comp + ' > \
+                                         SPR < >, \
+                                         SPEC < > ] ].')
+  
+
+  for mod in ch.get('supadp_mod',[]):
+      head = mod.get('head')
+      type = head + '-' + s_name
+    
+      mylang.add(type + ' := ' + s_name + ' & \
+                  [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD '+ head +' ].') 
+
+      for feat in mod.get('feat',[]):
+        if feat.get('name') == 'light':
+          constr = 'LIGHT ' + feat.get('value')
+        mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.' + constr + ' ].')
+  return s_name
+
 def customize_misc_lex(ch, lexicon):
 
   #lexicon.add_literal(';;; Other')
@@ -460,6 +630,7 @@ def customize_misc_lex(ch, lexicon):
       TDLencode(orth) + ' := qpart-lex-item & \
                    [ STEM < "' + orth + '" > ].'
     lexicon.add(typedef)
+
 
 def customize_nouns(mylang, ch, lexicon, hierarchies):
   # Figure out which kinds of determiner-marking are in the language
@@ -583,4 +754,7 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies):
   mylang.set_section('otherlex')
   customize_determiners(mylang, ch, lexicon, hierarchies)
   customize_adjectives(mylang, ch, lexicon)
+  customize_adverbs(mylang, ch, lexicon)
+  customize_adpositions(ch, mylang, lexicon)
+  customize_complementizers(ch, mylang, lexicon)
   customize_misc_lex(ch, lexicon)

@@ -1,3 +1,5 @@
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: LKB; Coding: utf-8 -*-
+
 ;;;
 ;;; First, load a number of LKB-specific settings; typically no need to look
 ;;; too closely here
@@ -76,7 +78,7 @@
 ;;; generation; also, we always compute the generation index (while we have
 ;;; small lexica) in the hope that the generator will be used frequently.
 ;;;
-(lkb-load-lisp (this-directory) "mrsglobals.lisp" t)
+(lkb-load-lisp (this-directory) "mrsglobals.lsp" t)
 
 
 ;;;

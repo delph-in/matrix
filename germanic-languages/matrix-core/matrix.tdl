@@ -2677,7 +2677,7 @@ basic-adjective-lex := single-rel-lex-item &
 ; inherit from this one, predicatives from norm-hook-lex-item.
 ; Need to worry about the relationship between the two.
 
-basic-mod-adj-lex := basic-adjective-lex & raise-index-mod-lex-item.
+basic-mod-adj-lex := basic-adjective-lex & norm-sem-lex-item.
 basic-scopal-mod-adj-lex := basic-mod-adj-lex & scopal-mod-lex.
 basic-int-mod-adj-lex := basic-mod-adj-lex & intersective-mod-lex.
 basic-nomod-adj-lex := basic-adjective-lex & no-mod-lex & norm-hook-lex-item.
@@ -3124,11 +3124,11 @@ np-bottom-coord-phrase := bottom-coord-phrase &
 ; Event Coordination rules (for verbs and adjectives)
 
 event-coord-phrase := coord-phrase &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX [ E #tam ],
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E #tam,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #lhndl,
     RCOORD-DTR.SYNSEM.LOCAL [ COORD-REL [ L-HNDL #lhndl,
                                           R-HNDL #rhndl,
-                                          R-INDEX.E #tam ],
+					  R-INDEX.E #tam ],
                               CONT.HOOK.LTOP #rhndl ]].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

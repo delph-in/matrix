@@ -111,6 +111,17 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
                                     RCOORD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
     mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.MC #mc, \
                                    NONCONJ-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+    if ch.get('q-inv')== 'on': 
+      if pos == 'v' or pos == 'vp' or pos == 's':
+        mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.INV #inv, \
+                                    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv, \
+                                    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv ].')
+        if mid:   
+          mylang.add(pn + '-mid-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.INV #inv, \
+                                    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv, \
+                                    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv ].')
+        mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.INV #inv, \
+                                   NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv ].')
     if ch.get('split-cluster') == 'yes':
       if ch.get('vc-analysis') == 'aux-rule' or ch.get('split-analysis') == 'lex-rule':
         mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \

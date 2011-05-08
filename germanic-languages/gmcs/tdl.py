@@ -803,6 +803,10 @@ class TDLfile:
     f = open(self.file_name, 'w')
     TDLset_file(f)
 
+    # We probably only need this for lexicon.tdl, but to be safe let's
+    # put it on all TDL files
+    TDLwrite(';;; -*- Mode: TDL; Coding: utf-8 -*-\n')
+
     # make sure there's an "empty" section so that typedefs not
     # assigned to a section still get written out
     sections = self.sections

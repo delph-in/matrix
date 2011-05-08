@@ -508,12 +508,12 @@ class ChoicesFile:
     """
 
     result = False
-
-    for adp in self.get('adp'):
-      opt = adp.get('opt')
-      for feat in adp.get('feat', []):
-        result = result or (self.has_case(feat, case) and \
-                            (opt or not check_opt))
+    if not self.get('has-adp') == 'yes': 
+      for adp in self.get('adp'):
+        opt = adp.get('opt')
+        for feat in adp.get('feat', []):
+          result = result or (self.has_case(feat, case) and \
+                              (opt or not check_opt))
 
     return result
 
@@ -615,6 +615,8 @@ class ChoicesFile:
       patterns += [ ['nom-acc', '', False] ]
       if self.get('ditransitives') == 'yes':
         patterns += [ ['nom-dat-acc', '', False] ]
+      if self.get('emb-clause-2nd-verb') == 'yes':
+        patterns += [ ['nom-scomp', '', False ] ]
     elif cm == 'erg-abs':
       patterns += [ ['abs', '', False] ]
       patterns += [ ['erg-abs', '', False] ]
