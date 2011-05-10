@@ -305,6 +305,8 @@ def aux_plus_verb_germanic_aux_arg_str(supertypename):
                    ARG-ST < #comp & [ LOCAL.CAT.HEAD verb ] > ].'
   return typedef
 
+
+  
  # for aux in ch.get('aux',[]):
  #   name = aux.get('name','')
  #   userstypename = name + '-aux-lex'

@@ -280,6 +280,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 			 CONT.HOOK.INDEX.SF prop-or-ques ] ] > ].'
     mylang.add(typedef)
 
+
   case.customize_verb_case(mylang, ch)
 
   # Add constraints to choices to create lex rules for bipartite stems
@@ -359,6 +360,99 @@ def main_or_verb(ch):
     return 'verb-lex'
 
 
+def customize_copula(mylang, ch, lexicon, hierarchies):
+  #add copula supertype
+  #copula
+  if ch.get('has-cop') == 'yes':
+    mylang.add('+njrp :+ [ PRD bool ].')
+
+#TO DO: more stable mechanism to identify possible heads
+    heads = ch.get('cop_pred')
+    v = ''
+    for h in heads:
+      v += h.get('value')+ '-'
+
+    values = v.split('-')
+
+    head = ''
+    if len(values) > 2:
+      head = '+'
+      if 'adj' in values:
+        head += 'j'
+      if 'adp' in values:
+        head += 'p'
+    else:
+      head = values[0]
+
+    if ch.get('cop_loc'):
+      type_name = 'general-copula-verb-lex'
+      mylang.add('copula-verb-lex := ' + type_name + ' & trans-first-arg-raising-lex-item-2.')
+      mylang.add('loc-copula-verb-lex := ' + type_name + \
+                    ' & trans-first-arg-raising-lex-item & norm-sem-lex-item & \
+  [ SYNSEM [ LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL [ CAT.HEAD adp, \
+						 CONT.HOOK [ INDEX #ind, \
+							     XARG #xarg ] ], \
+		     CONT.HOOK [ INDEX #ind ] ], \
+	     LKEYS.KEYREL.ARG1 #xarg ] ].')
+    else:
+      type_name = 'copula-verb-lex'
+      mylang.add('copula-verb-lex := trans-first-arg-raising-lex-item-2.')
+      
+
+    mylang.add(type_name + ' := verb-lex & \
+             [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #subj >, \
+                                        COMPS < #comps >, \
+                                        SPR < >, \
+                                        SPEC < > ], \
+                              CONT.HOOK.XARG #xarg ], \
+               ARG-ST < #subj & \
+                        [ LOCAL [ CONT.HOOK.INDEX #xarg, \
+                                  CAT [ VAL [ SPR < >, \
+                                              COMPS < > ],\
+                                        HEAD noun ] ] ], \
+                        #comps & \
+                        [ LOCAL.CAT [ VAL [ COMPS < > ], \
+                                      HEAD ' + head + ' & [ PRD + ] ] ] > ].')
+    
+
+    if ch.get('has-aux') == 'yes':
+      mylang.add(type_name + ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
+
+  for cop in ch.get('cop',[]):
+    name = cop.get('name','')
+    userstypename = name + '-copula-lex'
+    subj = cop.get('subj','')
+    subjc = cop.get('subj_case','') #TODO: verify _-delimited key
+    cases = case.case_names(ch)
+    subjcase = case.canon_to_abbr(subjc, cases)
+
+
+    if not cop.get('loc') == 'on':
+      mylang.add(userstypename + ' := copula-verb-lex.')
+    else:
+      mylang.add(userstypename + ' := loc-copula-verb-lex.')
+    if subjcase:
+      mylang.add(userstypename + ' := \
+                       [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + subjcase + ' ].')
+
+
+    features.customize_feature_values(mylang, ch, hierarchies, cop, userstypename, 'cop')
+    add_copula_to_lexicon(userstypename, cop, lexicon)
+
+def add_copula_to_lexicon(userstypename, cop, lexicon):
+  for stem in cop.get('stem',[]):
+    orth = stem.get('orth')
+    id = stem.get('name')
+    typedef = TDLencode(id) + ' := ' + userstypename + ' & \
+                       [ STEM < "' + orth + '" > ].'
+    lexicon.add(typedef)
+  
+    if cop.get('loc') == 'on':
+      pred = stem.get('pred')
+      typedef = TDLencode(id) + \
+                    ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+      lexicon.add(typedef, merge=True)
+
 def customize_determiners(mylang, ch, lexicon, hierarchies):
 
   # Lexical type for determiners, if the language has any:
@@ -408,7 +502,9 @@ def customize_adjectives(mylang, ch, lexicon):
       ';;; First attempt: inheriting all from matrix.'
     mylang.add_literal(comment)
     mylang.add('scopal-mod-adj-lex := basic-scopal-mod-adj-lex.')
-    mylang.add('int-mod-adj-lex := basic-int-mod-adj-lex.')
+    mylang.add('int-mod-adj-lex := basic-int-mod-adj-lex & \
+                [ SYNSEM [ LOCAL.CONT.HOOK.XARG #arg1, \
+                           LKEYS.KEYREL.ARG1 #arg1 ] ].')
 
     if ch.get('strength-marking') == 'double':
       mylang.add('+njdo :+ [ STRONG bool ].', section='addenda')
@@ -561,14 +657,21 @@ def customize_adpositions(ch, mylang, lexicon):
 
     for adp in ch.get('adp',[]):
       name = adp.get('name') + '-adp-lex-item'
-      mod = adp.get('mod')
+      kind = adp.get('kind')
+      if kind == 'mod':
+        mod = adp.get('mod')
       #add basic frame
-      mylang.add(name + ' := ' + mod + '-' + s_name + '.')
-      order = adp.get('order')
-      if order == 'post':
-        mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
-      elif order == 'pre':
-        mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+        mylang.add(name + ' := ' + mod + '-' + s_name + '.')
+        order = adp.get('order')
+        if order == 'post':
+          mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
+        elif order == 'pre':
+          mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+        if ch.get('has-cop') == 'yes':
+          mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].')
+      elif kind == 'prd':
+        mylang.add(name + ' := prd-' + s_name + '& \
+          [ SYNSEM.LOCAL.CAT.HEAD.PRD + ].' )
 
       for feat in adp.get('feat',[]):
         if feat.get('name') == 'case':
@@ -604,19 +707,31 @@ def create_adposition_supertypes(ch, mylang):
                                          COMPS < ' + comp + ' > \
                                          SPR < >, \
                                          SPEC < > ] ].')
-  
 
-  for mod in ch.get('supadp_mod',[]):
-      head = mod.get('head')
-      type = head + '-' + s_name
+###adds ARG2, co-indexed with comp  
+  mylang.add(s_name + ' := [ SYNSEM [ LKEYS.KEYREL.ARG2 #arg2, \
+                  LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #arg2 ] ].')
+
+  for spadp in ch.get('sup_adp',[]):
+
+    if spadp.get('kind') == 'mod':
+      for mod in spadp.get('mod',[]):
+        head = mod.get('head')
+        type = head + '-' + s_name
     
-      mylang.add(type + ' := ' + s_name + ' & \
-                  [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD '+ head +' ].') 
+        mylang.add(type + ' := ' + s_name + ' & \
+               [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD '+ head +' ].') 
 
-      for feat in mod.get('feat',[]):
-        if feat.get('name') == 'light':
-          constr = 'LIGHT ' + feat.get('value')
-        mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.' + constr + ' ].')
+        for feat in mod.get('feat',[]):
+          if feat.get('name') == 'light':
+            constr = 'LIGHT ' + feat.get('value')
+          mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.' + constr + ' ].')
+    elif spadp.get('kind') == 'prd':
+      type = 'prd-' + s_name
+      mylang.add(type + ' := ' + s_name + ' & \
+               [ SYNSEM [ LOCAL.CONT.HOOK.XARG #arg1, \
+                          LKEYS.KEYREL.ARG1 #arg1 ] ].')
+
   return s_name
 
 def customize_misc_lex(ch, lexicon):
@@ -750,6 +865,8 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies):
   if ch.get('has-aux') == 'yes':
     mylang.set_section('auxlex')
     auxiliaries.customize_auxiliaries(mylang, ch, lexicon, hierarchies)
+  if ch.get('has-cop') == 'yes':
+    customize_copula(mylang, ch, lexicon, hierarchies)
 
   mylang.set_section('otherlex')
   customize_determiners(mylang, ch, lexicon, hierarchies)

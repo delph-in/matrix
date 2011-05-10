@@ -22,6 +22,10 @@ def lexical_type_hierarchy(choices, lexical_supertype):
       lth.add_node(LexicalType('mverb', get_lt_name('mverb', choices),
                                parents={'verb':lth.nodes['verb']}))
       lts_to_add += ['aux']
+    if choices['has-cop'] == 'yes':
+      lth.add_node(LexicalType('cop', get_lt_name('cop', choices),
+                               parents={'verb':lth.nodes['verb']}))
+      lts_to_add += ['cop']
     st = get_lexical_supertype('iverb', choices)
     lth.add_node(LexicalType('iverb', get_lt_name('iverb', choices),
                              parents={st:lth.nodes[st]}))
@@ -58,7 +62,7 @@ def get_lexical_supertype(lt_key, choices):
   lexical_category = lt_key.rstrip('0123456789')
   if lexical_category in ('iverb','tverb','dverb','sc2verb') and choices['has-aux'] == 'yes':
     return 'mverb'
-  elif lexical_category in ('aux','mverb','iverb','tverb','dverb','sc2verb'):
+  elif lexical_category in ('aux','mverb','iverb','tverb','dverb','sc2verb','cop'):
     return 'verb'
   elif lexical_category == 'verb':
     return case.interpret_verb_valence(choices[lt_key]['valence'])
@@ -74,7 +78,7 @@ def expand_lexical_supertype(st_key, choices):
   fit in that pattern. For example, 'tverb' may return verbs with
   valence marked as nom-acc.
   """
-  i_t = ['iverb','tverb','dverb','sc2verb']
+  i_t = ['iverb','tverb','dverb','sc2verb','cop']
   m = ['mverb']
   if st_key not in LEXICAL_SUPERTYPES: return []
   if (st_key == 'mverb' and choices['has-aux'] == 'yes') or \
@@ -102,7 +106,7 @@ def used_lexical_supertypes(choices):
   lexical_supertypes) that will actually be used in the grammar.
   """
   used = set()
-  for x in ['noun','aux','adj','det','adv','comp','adp']:
+  for x in ['noun','aux','adj','det','adv','comp','adp','cop']:
     if x in choices:
       used.add(x)
   if 'verb' in choices:
@@ -131,7 +135,7 @@ def get_lexical_supertypes(lrt_key, choices):
   elif lexical_category == 'verb':
     verb_type = case.interpret_verb_valence(choices[lrt_key]['valence'])
     return [verb_type] + get_lexical_supertypes(verb_type, choices)
-  elif lexical_category == 'aux':
+  elif lexical_category in ('aux','cop'):
     return ['verb']
   elif lexical_category in ('noun', 'det', 'adj','adv','comp','adp'):
     return [lexical_category]

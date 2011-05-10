@@ -726,7 +726,8 @@ def customize_np_word_order(mylang, ch, rules):
 ###
 ### 
 # Turning this off due to interactions with negation
-
+  if ch.get('has-cop') == 'yes':
+    mylang.add('basic-head-mod-phrase-simple :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.PRD - ].')
   if ch.get('has-adj') == 'yes':
     mylang.add('adjective-head-phrase := basic-head-mod-phrase-simple & \
                   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adj ].')
@@ -841,15 +842,48 @@ def determine_consistent_order(wo,hc,ch):
 #
 
 
-def add_specialized_complementizer_comp_phrase(ch, mylang):
-  if ch.get('clz-comp-order') == 'clz-comp':
-    mylang.add('complementizer-comp-phrase := basic-head-1st-comp-phrase & \
+def customize_head_comp_non_main_phrase(ch, mylang):
+  if ch.get('has-compl') == 'yes': 
+    c_ord = ''
+    if ch.get('clz-comp-order') == 'clz-comp':
+      c_ord = 'initial'
+    elif ch.get('clz-comp-order') == 'comp-clz':
+      c_ord = 'final'
+
+  if ch.get('adp-order'): 
+    adp_order = ''  
+    if ch.get('adp-order') == 'adp-comp':
+      adp_order = 'initial'
+    elif ch.get('adp-order') == 'comp-adp':
+      adp_order = 'final'  
+
+  fhead = ''
+  ihead = ''
+  if adp_order == c_ord:
+    head = '+pc' 
+    if adp_order == 'final':
+      fhead = head
+    elif adp_order == 'initial':
+      ihead = head
+  else:
+    if adp_order == 'final':
+      fhead = 'adp'    
+      ihead = 'comp'
+    else:
+      fhead = 'comp'
+      ihead = 'adp'
+  
+  if ihead:
+    mylang.add('head-comp-sub-phrase := basic-head-1st-comp-phrase & \
                     head-initial & \
-                [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD comp ].')
-  elif ch.get('clz-comp-order') == 'comp-clz':
-    mylang.add('comp-complementizer-phrase := basic-head-1st-comp-phrase & \
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + ihead +  ' ].')
+  if fhead: 
+    mylang.add('comp-head-sub-phrase := basic-head-1st-comp-phrase & \
                     head-final & \
-                [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD comp ].')
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + fhead + ' ].')  
+
+
+
   if ch.get('clz-optionality'):
     mylang.add('create-informal-vcomp-phrase := unary-phrase &\
    [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
@@ -862,19 +896,20 @@ def add_specialized_complementizer_comp_phrase(ch, mylang):
      C-CONT.HOOK #hook,\
      SYNSEM.LOCAL.CAT [ HEAD comp,\
 	         	VAL #val,\
-		        MC - ] ].')
+		        MC - ] ].')    
 
 def add_nexus_constraints_v2_with_cluster(ch, mylang):
 
 ###ADDING CONSTRAINTS ON BASIC RULES CREATING SECOND POSITION
 ###NOTE THAT FEATURES FOR BASIC AND AUX-RULE ARE PARALLEL FOR THIS ONE
-  to_rest = ''
+  
+  head_rest = ''
   if ch.get('adp-order'): 
     head_rest = '+nvjrcdmo'
-    if ch.get('adp-order') == 'adp-comp':
-      to_rest = 'final'
-    elif ch.get('adp-order') == 'comp-adp':
-      to_rest = 'initial'
+    if ch.get('clz-order'):
+      head_rest = '+nvjrdmo'
+  elif ch.get('clz-order'):
+    head_rest = '+nvjrpdmo'
 
   mylang.add('head-initial-head-nexus := nonverbal-comp-phrase & \
                   [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC + ].')
@@ -882,8 +917,7 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
   mylang.add('head-final-head-nexus := nonverbal-comp-phrase & \
                                        [ SYNSEM.LOCAL.CAT.MC +,\
                                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
-  if ch.get('has-compl') == 'yes':
-    add_specialized_complementizer_comp_phrase(ch, mylang)
+
   if ch.get('q-inv'):
     mylang.add('head-final-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV - ].')
   if ch.get('aux-comp-order') == 'both' or ch.get('vc-analysis') == 'aux-rule':
@@ -898,11 +932,15 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
     mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.HEADFINAL #hf, \
                                            HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL #hf ].')
 
-  if to_rest == 'final':
+####we need to use special rules for adp-comp, for same reason as compl-comp
+###introducing separate rules for sub-parts of sentence and main-clausal 
+###structure (needed if not using head-filler for v2-ness
+
+  if head_rest:
     mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.HEAD ' + head_rest + ' ].')
-  elif to_rest == 'initial':
     mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.HEAD ' + head_rest + ' ].')
     
+  customize_head_comp_non_main_phrase(ch, mylang)
 
 def add_basic_phrases_v2_with_cluster(ch, mylang):
 
@@ -1079,8 +1117,8 @@ def add_v2_with_cluster_rules(ch, rules):
   if ch.get('split-cluster') == 'yes':
     add_split_cluster_rules(rules, auxRule)
 
-  if ch.get('has-compl') == 'yes':
-    add_complementizer_rules(ch, rules)
+  if ch.get('has-compl') == 'yes' or ch.get('has-adp') == 'yes':
+    add_subclausal_rules(ch, rules)
 
 def add_preobjectival_verbcluster_rules(rules, auxRule):
 
@@ -1106,11 +1144,13 @@ def add_split_cluster_rules(rules, auxRule):
     rules.add('noncomp-aux-2nd := noncomp-aux-2nd-phrase.')  
     rules.add('insert-auxiliary := special-insert-aux-phrase.')
 
-def add_complementizer_rules(ch, rules): 
-  if ch.get('clz-comp-order') == 'clz-comp':
-    rules.add('complementizer-comp := complementizer-comp-phrase.')
-  else:
-    rules.add('comp-complementizer := comp-complementizer-phrase.')
+def add_subclausal_rules(ch, rules): 
+  c_ord = ch.get('clz-comp-order')
+  adp_ord = ch.get('adp-order')
+  if c_ord == 'clz-comp' or adp_ord == 'adp-comp':
+    rules.add('head-sub-comp := head-comp-sub-phrase.')
+  if c_ord == 'comp-clz' or adp_ord == 'comp-adp':
+    rules.add('comp-head-sub := comp-head-sub-phrase.')
   if ch.get('clz-optionality'):
     rules.add('informal-vcomp := create-informal-vcomp-phrase.')
 
