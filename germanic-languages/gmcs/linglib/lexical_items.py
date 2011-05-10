@@ -633,7 +633,8 @@ def customize_complementizers(ch, mylang, lexicon):
 		      VAL [ SUBJ < >, \
 			    COMPS < #comp & \
                                [ LOCAL.CAT [ MC -, \
-					     HEAD verb & [ FORM finite ]]] >,\
+					     HEAD verb & [ FORM finite, \
+                                                           INV - ]]] >,\
 			    SPR < >, \
 			    SPEC < > ] ], \
           ARG-ST < #comp > ].')

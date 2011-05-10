@@ -17,6 +17,9 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
     headtype = 'noun'
   elif pos == 'adj':
     headtype = 'adj'
+  elif pos == 'adp':
+    headtype = 'adp'
+    add_adposition_rules(mylang)
   else:
     headtype = 'verb'
 
@@ -169,6 +172,30 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
     rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
 
 
+
+def add_adposition_rules(mylang):
+
+  ###adp-rules must share their head because of PRD value
+  mylang.add('adp-coord-phrase := event-coord-phrase & \
+  [ SYNSEM.LOCAL.CAT.HEAD #head & adp, \
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD #head, \
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD #head ].')
+
+  mylang.add('basic-adp-top-coord-rule := adp-coord-phrase & \
+               [ C-CONT [ RELS <! !>, \
+	                  HCONS <! !> ]].')
+
+  mylang.add('basic-adp-mid-coord-rule := adp-coord-phrase & \
+               [ SYNSEM.LOCAL.COORD-REL #crel, \
+                 C-CONT [ RELS <! #crel !>, \
+	                  HCONS <! !> ] ].')
+
+  mylang.add('adp-bottom-coord-phrase := bottom-coord-phrase & \
+               [ SYNSEM.LOCAL.CAT.HEAD #head & adp, \
+                 NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD #head ].')
+
+
+
 def customize_coordination(mylang, ch, lexicon, rules, irules):
   """
   The main coordination customization routine
@@ -238,6 +265,6 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
           if left:
             left += 'conj-last-'
 
-    for pos in ('n', 'np', 'vp', 's', 'adj'):
+    for pos in ('n', 'np', 'vp', 's', 'adj','adp'):
       if cs.get(pos):
         define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, agreement, np_number, ch, mylang, rules, irules)
