@@ -510,8 +510,7 @@ function fill_regex(name, pattern, nameOnly)
       if (f && f[0] && f[0].value) {
         if (nameOnly) {
           val = desc = f[0].value;
-        } 
-	else {
+        } else {
           desc = f[0].value + ' (' + desc + ')';
         }
       }
@@ -531,8 +530,7 @@ function fill_regex(name, pattern, nameOnly)
 // fill_feature_names()
 // Fill a SELECT tag with OPTIONs created from the array features[],
 // where every OPTION is a feature name.
-// The cat(egory) argument allows you to restrict the features by category
-function fill_feature_names(select_name, cat)
+function fill_feature_names(select_name)
 {
   var select = document.getElementsByName(select_name)[0];
   var old_val = select.value;  // store the previously selected option
@@ -548,19 +546,10 @@ function fill_feature_names(select_name, cat)
     
     var o = document.createElement('option');
     o.className = 'temp';
+    o.value = f[0];
+    o.innerHTML = f[0];
 
-    var inlist = 'yes';
-    if (typeof(cat) != "undefined"){
-      if (f[2] != cat && f[2] != 'both' && cat != 'both') {
-        inlist = 'no';
-      }
-    }
-
-    if (inlist == 'yes'){
-      o.value = f[0];
-      o.innerHTML = f[0];
-      select.appendChild(o);
-    }
+    select.appendChild(o);
   }
 
   set_select_value(select, old_val, old_text);

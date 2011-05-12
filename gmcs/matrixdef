@@ -140,7 +140,7 @@ BeginIter number{i} "a Number"
   BeginIter supertype{j} "a Supertype"
 
     Select name "Number {i} supertype {j} name" "Supertype: " ""
-    fillregex p=number[0-9]+_name n=1
+    fillregex number[0-9]+_name 1
     . number "Number" "number"
 
   EndIter supertype
@@ -188,7 +188,6 @@ Radio first-person "First person" "<p>What subtypes does your language distingui
 
 MultiSelect incl-excl-number "Inclusive/exclusive number" " in the: " "<br>"
 fillnumbers
-
 
 Radio first-person "First person" "" ""
 . other "Other" "" " other:</p>"
@@ -250,7 +249,7 @@ BeginIter gender{i} "a Gender"
   BeginIter supertype{j} "a Supertype"
 
     Select name "Gender {i} supertype {j} name" "Supertype: " ""
-    fillregex p=gender[0-9]+_name n=1
+    fillregex gender[0-9]+_name 1
     . gender "Gender" "gender"
 
   EndIter supertype
@@ -434,10 +433,10 @@ BeginIter scale{i} "a Scale Entry"
   BeginIter feat{j} "a Feature" 1
 
     Select name "Scale entry {i} feature {j} name" "Name: " " "
-    fillnames c=verb
+    fillnames
 
     Select value "Scale entry {i} feature {j} value" "Value: " ""
-    fillvalues p=scale{i}_feat{j}_name
+    fillvalues scale{i}_feat{j}_name
 
   EndIter feat
 
@@ -524,7 +523,7 @@ BeginIter tense{i} "a tense type"
   BeginIter supertype{j} "a Supertype" 1
 
     Select name "Tense {i} supertype {j} name" "Supertype: " ""
-    fillregex p=tense[0-9]+_name n=1
+    fillregex tense[0-9]+_name 1
     . tense "Tense" "tense"
 
   EndIter supertype
@@ -573,7 +572,7 @@ BeginIter aspect{i} "an aspect type"
   BeginIter supertype{j} "a Supertype" 1
 
     Select name "Aspect {i} supertype {j} name" "Supertype: " ""
-    fillregex p=aspect[0-9]+_name n=1
+    fillregex aspect[0-9]+_name 1
     . aspect "Aspect" "aspect"
 
   EndIter supertype
@@ -609,7 +608,7 @@ BeginIter situation{i} "a situation type"
   BeginIter supertype{j} "a Supertype" 1
 
     Select name "Situation {i} supertype {j} name" "Supertype: " ""
-    fillregex p=situation[0-9]+_name n=1
+    fillregex situation[0-9]+_name 1
     . situation "Situation" "situation"
 
   EndIter supertype
@@ -636,7 +635,7 @@ BeginIter mood{i} "a mood type"
   BeginIter supertype{j} "a Supertype" 1
 
      Select name "Mood {i} supertype {j} name" "Supertype: " ""
-     fillregex p=mood[0-9]+_name n=1
+     fillregex mood[0-9]+_name 1
      . mood "Mood" "mood"
 
   EndIter supertype
@@ -738,7 +737,7 @@ BeginIter feature{i} "a Feature"
     BeginIter supertype{k} "a Supertype" 1
 
       Select name "Feature {i} Value {j} supertype {k} name" "Supertype: " ""
-      fillregex p=(feature{i}_name|feature{i}_value[0-9]+_name) n=1
+      fillregex (feature{i}_name|feature{i}_value[0-9]+_name) 1
 
     EndIter supertype
 
@@ -940,10 +939,10 @@ BeginIter context{i} "a Context"
   BeginIter feat{j} "a Feature"
 
     Select name "Context {i} feature {j} name" "Name: " " "
-    fillnames c=both
+    fillnames
 
     MultiSelect value "Context {i} feature {j} value" "Value: " ""
-    fillvalues p=context{i}_feat{j}_name
+    fillvalues context{i}_feat{j}_name
 
     Select head "Context {i} feature {j} head" "Specified on: " ""
     . verb "The verb" "the verb"
@@ -1060,10 +1059,10 @@ BeginIter noun{i} "a Noun Type" 1
   BeginIter feat{j} "a Feature"
 
     Select name "Noun {i} feature {j} name" "Name: " " "
-    fillnames c=noun
+    fillnames
 
     MultiSelect value "Noun {i} feature {j} value" "Value: " ""
-    fillvalues p=noun{i}_feat{j}_name
+    fillvalues noun{i}_feat{j}_name
 
   EndIter feat
 
@@ -1087,14 +1086,14 @@ BeginIter noun{i} "a Noun Type" 1
   BeginIter require{j} "a Require constraint"
 
     MultiSelect others "Noun {i} Requires" "<p>Noun {i} requires one of the following: " "</p>"
-    fillregex p=noun-pc[0-9]+(_lrt[0-9]+)?_name
+    fillregex noun-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
     Select others "Noun {i} Forbids" "<p>Noun {i} forbids the following position class: " "</p>"
-    fillregex p=noun-pc[0-9]+(_lrt[0-9]+)?_name
+    fillregex noun-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
 
@@ -1117,7 +1116,7 @@ BeginIter noun-pc{i} "a Position Class"
   . suffix "Suffix" "suffix"
 
   MultiSelect inputs "Noun Position Class {i} Input" "<br/>Possible inputs:" ""
-  fillregex p=(noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
+  fillregex (noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
   . noun "Any noun" "any noun"
 
   Label "<p>Morphotactic Constraints:</p>"
@@ -1125,7 +1124,7 @@ BeginIter noun-pc{i} "a Position Class"
   BeginIter require{j} "a Require constraint"
 
     MultiSelect others "Noun Position Class {i} Requires" "<p>Noun Position Class {i} requires one of the following: " "</p>"
-    fillregex p=(noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
+    fillregex (noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . noun "Any noun" "any noun"
 
   EndIter require
@@ -1133,7 +1132,7 @@ BeginIter noun-pc{i} "a Position Class"
   BeginIter forbid{j} "a Forbid constraint"
 
     Select others "Noun Position Class {i} Forbids" "<p>Noun Position Class {i} forbids the following: " "</p>"
-    fillregex p=(noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
+    fillregex (noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . noun "Any noun" "any noun"
 
   EndIter forbid
@@ -1145,17 +1144,17 @@ BeginIter noun-pc{i} "a Position Class"
     Text name "Noun Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
 
     MultiSelect supertypes "Noun Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
-    fillregex p=noun-pc{i}_lrt[0-9]+_name
+    fillregex noun-pc{i}_lrt[0-9]+_name
 
     Label "<p>Features:</p>"
 
     BeginIter feat{k} "a Feature"
 
       Select name "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
-      fillnames c=noun
+      fillnames
 
       MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
-      fillvalues p=noun-pc{i}_lrt{j}_feat{k}_name
+      fillvalues noun-pc{i}_lrt{j}_feat{k}_name
 
     EndIter feat
 
@@ -1164,7 +1163,7 @@ BeginIter noun-pc{i} "a Position Class"
     BeginIter require{k} "a Require constraint"
 
       MultiSelect others "Noun Position Class {i} Lexical Rule Type {j} Requires" "<p>Lexical Rule Type {j} requires one of the following: " "</p>"
-      fillregex p=(noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
+      fillregex (noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . noun "Any noun" "any noun"
 
     EndIter require
@@ -1172,7 +1171,7 @@ BeginIter noun-pc{i} "a Position Class"
     BeginIter forbid{k} "a Forbid constraint"
 
       Select others "Noun Position Class {i} Lexical Rule Type {j} forbids" "<p>Lexical Rule Type {j} forbids the following: " "</p>"
-      fillregex p=(noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
+      fillregex (noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . noun "Any noun" "any noun"
 
     EndIter forbid
@@ -1210,10 +1209,10 @@ BeginIter verb{i} "a Verb Type" 2
   BeginIter feat{j} "a Feature"
 
     Select name "Verb {i} feature {j} name" "Name: " " "
-    fillnames c=both
+    fillnames
 
     MultiSelect value "Verb {i} feature {j} value" "Value: " ""
-    fillvalues p=verb{i}_feat{j}_name
+    fillvalues verb{i}_feat{j}_name
 
     Select head "Verb {i} feature {j} head" "Specified on: " ""
     . verb "The verb" "the verb"
@@ -1254,14 +1253,14 @@ BeginIter verb{i} "a Verb Type" 2
   BeginIter require{j} "a Require constraint"
 
     MultiSelect others "Verb {i} requires" "<p>Verb {i} requires one of the following position classes: " "</p>"
-    fillregex p=(verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
+    fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
     Select others "Verb {i} forbids" "<p>Verb {i} forbids the following position class: " "</p>"
-    fillregex p=(verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
+    fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
 
@@ -1302,10 +1301,10 @@ BeginIter aux{i} "an Auxiliary Type"
   BeginIter feat{j} "an auxiliary feature"
 
      Select name "Aux {i} feature {j} name" "Name: " ""
-     fillnames c=verb
+     fillnames
 
      MultiSelect value "Aux {i} feature {j} value" "Value: " ""
-     fillvalues p=aux{i}_feat{j}_name
+     fillvalues aux{i}_feat{j}_name
 
      Select head "Aux {i} feature {j} head" "Specified on: " ""
      . verb "The auxiliary" "the auxiliary"
@@ -1323,7 +1322,7 @@ BeginIter aux{i} "an Auxiliary Type"
   . np-aux-case "NP aux case" "" "noun phrase, receiving the following case from its auxiliary: "
 
   Select subj_case "Aux {i} subject-case" "" ""
-  fillvalues p=case l=1
+  fillvalues case 1
 
   Radio subj "Aux {i} subject" "" ""
   . adp "Adpositional phrase" "<br>" "adpositional phrase<br><br>"
@@ -1334,10 +1333,10 @@ BeginIter aux{i} "an Auxiliary Type"
   BeginIter compfeature{j} "a complement feature" 1
 
     Select name "Aux {i} complement feature {j} name" "Name: " ""
-    fillnames c=verb
+    fillnames
 
     MultiSelect value "Aux {i} complement feature {j} value" "Value: " ""
-    fillvalues p=aux{i}_compfeature{j}_name
+    fillvalues aux{i}_compfeature{j}_name
 
   EndIter compfeature
 
@@ -1356,14 +1355,14 @@ BeginIter aux{i} "an Auxiliary Type"
   BeginIter require{j} "a Require constraint"
 
     MultiSelect others "Aux {i} requires" "<p>Aux {i} requires one of the following position classes: " "</p>"
-    fillregex p=(verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
+    fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
     Select others "Aux {i} forbids" "<p>Aux {i} forbids the following position class: " "</p>"
-    fillregex p=(verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
+    fillregex (verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
 
@@ -1386,7 +1385,7 @@ BeginIter verb-pc{i} "a Position Class"
   . suffix "Suffix" "suffix"
 
   MultiSelect inputs "Verb Position Class {i} Input" "<br/>Possible inputs:" ""
-  fillregex p=(verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
+  fillregex (verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
   . verb "Any verb" "any verb"
   . iverb "Any intransitive verb" "any intransitive verb"
   . tverb "Any transitive verb" "any transitive verb"
@@ -1397,7 +1396,7 @@ BeginIter verb-pc{i} "a Position Class"
   BeginIter require{j} "a Require constraint"
 
     MultiSelect others "Verb Position Class {i} Requires" "<p>Verb Position Class {i} requires one of the following: " "</p>"
-    fillregex p=(verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
+    fillregex (verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
@@ -1408,7 +1407,7 @@ BeginIter verb-pc{i} "a Position Class"
   BeginIter forbid{j} "a Forbid constraint"
 
     Select others "Verb Position Class {i} Forbids" "<p>Verb Position Class {i} forbids the following: " "</p>"
-    fillregex p=(verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
+    fillregex (verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
@@ -1423,17 +1422,17 @@ BeginIter verb-pc{i} "a Position Class"
     Text name "Verb Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
 
     MultiSelect supertypes "Verb Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
-    fillregex p=verb-pc{i}_lrt[0-9]+_name
+    fillregex verb-pc{i}_lrt[0-9]+_name
 
     Label "<p>Features:</p>"
 
     BeginIter feat{k} "a Feature"
 
       Select name "Verb Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
-      fillnames c=both
+      fillnames
 
       MultiSelect value "Verb Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
-      fillvalues p=verb-pc{i}_lrt{j}_feat{k}_name
+      fillvalues verb-pc{i}_lrt{j}_feat{k}_name
 
       Select head "Verb Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " ""
       . verb "The verb" "the verb"
@@ -1449,7 +1448,7 @@ BeginIter verb-pc{i} "a Position Class"
     BeginIter require{k} "a Require constraint"
 
       MultiSelect others "Verb Position Class {i} Lexical Rule Type {j} Requires" "<p>Lexical Rule Type {j} requires one of the following: " "</p>"
-      fillregex p=(verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
+      fillregex (verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . verb "Any verb" "any verb"
       . iverb "Any intransitive verb" "any intransitive verb"
       . tverb "Any transitive verb" "any transitive verb"
@@ -1460,7 +1459,7 @@ BeginIter verb-pc{i} "a Position Class"
     BeginIter forbid{k} "a Forbid constraint"
 
       Select others "Verb Position Class {i} Lexical Rule Type {j} forbids" "<p>Lexical Rule Type {j} forbids the following: " "</p>"
-      fillregex p=(verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
+      fillregex (verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . verb "Any verb" "any verb"
       . iverb "Any intransitive verb" "any intransitive verb"
       . tverb "Any transitive verb" "any transitive verb"
@@ -1509,10 +1508,10 @@ BeginIter det{i} "a Determiner"
   BeginIter feat{j} "a Feature"
 
     Select name "Determiner {i} feature {j} name" "Name: " " "
-    fillnames c=noun
+    fillnames
 
     MultiSelect value "Determiner {i} feature {j} value" "Value: " ""
-    fillvalues p=det{i}_feat{j}_name
+    fillvalues det{i}_feat{j}_name
 
   EndIter feat
 
@@ -1521,14 +1520,14 @@ BeginIter det{i} "a Determiner"
   BeginIter require{j} "a Require constraint"
 
     MultiSelect others "Determiner {i} requires" "<p>Determiner {i} requires one of the following position classes: " "</p>"
-    fillregex p=det-pc[0-9]+(_lrt[0-9]+)?_name
+    fillregex det-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
     MultiSelect others "Determiner {i} requires" "<p>Determiner {i} requires one of the following position classes: " "</p>"
-    fillregex p=det-pc[0-9]+(_lrt[0-9]+)?_name
+    fillregex det-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
 
@@ -1551,7 +1550,7 @@ BeginIter det-pc{i} "a Position Class"
   . suffix "Suffix" "suffix"
 
   MultiSelect inputs "Determiner Position Class {i} Input" "<br/>Possible inputs:" ""
-  fillregex p=(det)(-pc([0-9]+_lrt)?)?[0-9]+_name
+  fillregex (det)(-pc([0-9]+_lrt)?)?[0-9]+_name
   . det "Any determiner" "any determiner"
 
   Label "<p>Morphotactic Constraints:</p>"
@@ -1559,7 +1558,7 @@ BeginIter det-pc{i} "a Position Class"
   BeginIter require{j} "a Require constraint"
 
     MultiSelect others "Determiner Position Class {i} Requires" "<p>Determiner Position Class {i} requires one of the following: " "</p>"
-    fillregex p=(det)(-pc([0-9]+_lrt)?)?[0-9]+_name
+    fillregex (det)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . det "Any determiner" "any determiner"
 
   EndIter require
@@ -1567,7 +1566,7 @@ BeginIter det-pc{i} "a Position Class"
   BeginIter forbid{j} "a Forbid constraint"
 
     Select others "Determiner Position Class {i} Forbids" "<p>Determiner Position Class {i} forbids the following: " "</p>"
-    fillregex p=(det)(-pc([0-9]+_lrt)?)?[0-9]+_name
+    fillregex (det)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . det "Any determiner" "any determiner"
 
   EndIter forbid
@@ -1579,17 +1578,17 @@ BeginIter det-pc{i} "a Position Class"
     Text name "Determiner Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
 
     MultiSelect supertypes "Determiner Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
-    fillregex p=det-pc{i}_lrt[0-9]+_name
+    fillregex det-pc{i}_lrt[0-9]+_name
 
     Label "<p>Features:</p>"
 
     BeginIter feat{k} "a Feature"
 
       Select name "Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
-      fillnames c=noun
+      fillnames
 
       MultiSelect value "Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
-      fillvalues p=det-pc{i}_lrt{j}_feat{k}_name
+      fillvalues det-pc{i}_lrt{j}_feat{k}_name
 
     EndIter feat
 
@@ -1598,7 +1597,7 @@ BeginIter det-pc{i} "a Position Class"
     BeginIter require{k} "a Require constraint"
 
       MultiSelect others "Determiner Position Class {i} Lexical Rule Type {j} Requires" "<p>Lexical Rule Type {j} requires one of the following: " "</p>"
-      fillregex p=(det)(-pc([0-9]+_lrt)?)?[0-9]+_name
+      fillregex (det)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . det "Any determiner" "any determiner"
 
     EndIter require
@@ -1606,7 +1605,7 @@ BeginIter det-pc{i} "a Position Class"
     BeginIter forbid{k} "a Forbid constraint"
 
       Select others "Determiner Position Class {i} Lexical Rule Type {j} forbids" "<p>Lexical Rule Type {j} forbids the following: " "</p>"
-      fillregex p=(det)(-pc([0-9]+_lrt)?)?[0-9]+_name
+      fillregex (det)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . det "Any determiner" "any determiner"
 
     EndIter forbid
@@ -1644,10 +1643,10 @@ BeginIter adp{i} "an Adposition"
   BeginIter feat{j} "a Feature" 1
 
     Select name "Adposition {i} feature {j} name" "Name: " " "
-    fillnames c=noun
+    fillnames
 
     MultiSelect value "Adposition {i} feature {j} value" "Value: " ""
-    fillvalues p=adp{i}_feat{j}_name
+    fillvalues adp{i}_feat{j}_name
 
   EndIter feat
 
@@ -1683,10 +1682,10 @@ Label "Features:"
 BeginIter itv-feat{j} "a Feature"
 
     Select name "Feature {j} name" "Name: " " "
-    fillnames c=verb
+    fillnames
 
     Select value "Feature {j} value" "Value: " ""
-    fillvalues p=itv-feat{j}_name
+    fillvalues itv-feat{j}_name
 
     Select location "Feature {j} location" "Specified on: " ""
     . NOUN1 "Subject" "the subject NP"
@@ -1703,10 +1702,10 @@ Label "Features:"
 BeginIter stv-feat{j} "a Feature"
 
     Select name "Feature {j} name" "Name: " " "
-    fillnames c=verb
+    fillnames
 
     Select value "Feature {j} value" "Value: " ""
-    fillvalues p=stv-feat{j}_name
+    fillvalues stv-feat{j}_name
 
     Select location "Feature {j} location" "Specified on: " ""
     . NOUN1 "Subject" "the subject NP"
