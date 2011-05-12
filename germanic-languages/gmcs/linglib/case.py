@@ -339,21 +339,26 @@ def customize_verb_case(mylang, ch):
           b_res = c[1]                        
         
         if a_case:
-          t_type = a_case + b_res + 'subj-contr-transitive-verb-lex'
-          b_res += 'finitive'
+          t_type = a_case + '-' + b_res + '-subj-contr-transitive-verb-lex'
+          b_res += 'initive'
         else:
           t_type = 'subj-contr-transitive-verb-lex'                      
         mylang.add(t_type + ' := subj-contr-transitive-verb-lex.')
 
         # constrain the head of the agent/subject
-        typedef = \
-          t_type + ' := \
-          [ ARG-ST < [ LOCAL.CAT.HEAD ' + a_head + ' ], \
-                     [ LOCAL.CAT.HEAD verb  & [ ' + b_res + ' ] ] > ].'
+        if ch.get('vc-analysis') != 'aux-rule':
+          typedef = \
+            t_type + ' := \
+            [ ARG-ST < [ LOCAL.CAT.HEAD ' + a_head + ' ], \
+                       [ LOCAL.CAT.HEAD verb  & [ FORM ' + b_res + ' ] ] > ].'
+        else:
+          typedef = \
+            t_type + ' := \
+            [ ARG-ST < [ LOCAL.CAT.HEAD verb & [ FORM ' + b_res + ' ] ] > ].'
         mylang.add(typedef)
 
         # constrain the case of the agent/subject
-        if a_case:
+        if a_case and not ch.get('vc-analysis') == 'aux-rule':
           typedef = \
             t_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'

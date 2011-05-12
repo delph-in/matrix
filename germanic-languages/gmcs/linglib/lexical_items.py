@@ -280,17 +280,28 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 			 CONT.HOOK.INDEX.SF prop-or-ques ] ] > ].'
     mylang.add(typedef)
 
+
+
+
+
+
   if ch.get('subj-control-verb') == 'yes':
     typedef = \
-    'subj-contr-transitive-verb-lex := ' + mainorverbtype + ' & trans-first-arg-control-lex-item & \
-    [ SYNSEM.LOCAL.CAT.VAL [ COMPS < #comp > ], \
-      ARG-ST < [ LOCAL.CAT.HEAD noun ], \
-	       #comp & [ LOCAL.CAT [ HEAD verb ], \
-                                     VAL [ SUBJ < [ ] >, \
-				           SPR < >, \
-				           COMPS < >, \
-				           SPEC < > ] ] ] > ].'
+    'subj-contr-transitive-verb-lex := basic-verb-lex.' 
     mylang.add(typedef)
+    if ch.get('vc-analysis') == 'basic':
+      mylang.add('subj-contr-transitive-verb-lex := arg-comp-aux & \
+       trans-first-arg-control-lex-item.')
+    elif ch.get('vc-analysis') == 'aux-rule':
+      mylang.add('auxrule-first-arg-control-lex-item := basic-one-arg & \
+       [ ARG-ST <  [ LOCAL [ CONT.HOOK [ XARG #ind, \
+	                 		 LTOP #larg ] ] ] >, \
+         SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg, \
+	          			      LARG #larg ] !>, \
+	          LKEYS.KEYREL [ ARG1 #ind, \
+		                 ARG2 #harg ] ] ].')
+      mylang.add('subj-contr-transitive-verb-lex := \
+                    auxrule-first-arg-control-lex-item & one-comp-aux.')
 
   case.customize_verb_case(mylang, ch)
 

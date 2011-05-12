@@ -618,7 +618,7 @@ class ChoicesFile:
       if self.get('emb-clause-2nd-verb') == 'yes':
         patterns += [ ['nom-scomp', '', False ] ]
       if self.get('subj-control-verb') == 'yes':
-        patterns += [ ['nom-fin', '', False ] ]
+        patterns += [ ['nom-inf', '', False ] ]
     elif cm == 'erg-abs':
       patterns += [ ['abs', '', False] ]
       patterns += [ ['erg-abs', '', False] ]

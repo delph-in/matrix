@@ -844,7 +844,7 @@ def determine_consistent_order(wo,hc,ch):
 
 def customize_head_comp_non_main_phrase(ch, mylang):
   c_ord = ''
-  if ch.get('has-compl') == 'yes' and ch.get('vc-analysis') == 'auxrule': 
+  if ch.get('has-compl') == 'yes' and ch.get('vc-analysis') == 'aux-rule': 
     if ch.get('clz-comp-order') == 'clz-comp':
       c_ord = 'initial'
     elif ch.get('clz-comp-order') == 'comp-clz':
