@@ -134,6 +134,9 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
     else:
       comment = 'See aux-1st-comp for reasons for using MODIFIED'
       mylang.add('int-cl := [ SYNSEM.MODIFIED notmod-or-lmod ].')
+      if ch.get('vc-analysis') == 'basic':
+        mylang.add('int-cl := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
+                                HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
 
     rules.add('int := int-cl.')
 

@@ -280,6 +280,17 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 			 CONT.HOOK.INDEX.SF prop-or-ques ] ] > ].'
     mylang.add(typedef)
 
+  if ch.get('subj-control-verb') == 'yes':
+    typedef = \
+    'subj-contr-transitive-verb-lex := ' + mainorverbtype + ' & trans-first-arg-control-lex-item & \
+    [ SYNSEM.LOCAL.CAT.VAL [ COMPS < #comp > ], \
+      ARG-ST < [ LOCAL.CAT.HEAD noun ], \
+	       #comp & [ LOCAL.CAT [ HEAD verb ], \
+                                     VAL [ SUBJ < [ ] >, \
+				           SPR < >, \
+				           COMPS < >, \
+				           SPEC < > ] ] ] > ].'
+    mylang.add(typedef)
 
   case.customize_verb_case(mylang, ch)
 
@@ -308,13 +319,19 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     elif val.find('-') != -1:
       c = val.split('-')
       if len(c) == 2:
-        if c[1] != 'scomp':
+        if c[1] == 'scomp':
+          a_case = case.canon_to_abbr(c[0], cases)
+          tivity = a_case + '-' + c[1] + '-trans'
+        elif c[1] == 'inf':
+          a_case = case.canon_to_abbr(c[0], cases)
+          tivity = a_case + '-' + c[1]
+          if verb.get('control') == 'subj':
+            tivity += '-subj-contr'
+          tivity += '-trans'
+        else:
           a_case = case.canon_to_abbr(c[0], cases)
           o_case = case.canon_to_abbr(c[1], cases)
           tivity = a_case + '-' + o_case + '-trans'
-        else:
-          a_case = case.canon_to_abbr(c[0], cases)
-          tivity = a_case + '-scomp-trans'
 
       elif len(c) == 3:
         a_case = case.canon_to_abbr(c[0], cases)
@@ -672,7 +689,8 @@ def customize_adpositions(ch, mylang, lexicon):
           mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].')
       elif kind == 'prd':
         mylang.add(name + ' := prd-' + s_name + '& \
-          [ SYNSEM.LOCAL.CAT.HEAD.PRD + ].' )
+          [ SYNSEM.LOCAL.CAT [ HEAD.PRD +, \
+                               VC - ] ].' )
 
       for feat in adp.get('feat',[]):
         if feat.get('name') == 'case':

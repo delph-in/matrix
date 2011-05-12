@@ -843,8 +843,8 @@ def determine_consistent_order(wo,hc,ch):
 
 
 def customize_head_comp_non_main_phrase(ch, mylang):
-  if ch.get('has-compl') == 'yes': 
-    c_ord = ''
+  c_ord = ''
+  if ch.get('has-compl') == 'yes' and ch.get('vc-analysis') == 'auxrule': 
     if ch.get('clz-comp-order') == 'clz-comp':
       c_ord = 'initial'
     elif ch.get('clz-comp-order') == 'comp-clz':
@@ -868,10 +868,12 @@ def customize_head_comp_non_main_phrase(ch, mylang):
   else:
     if adp_order == 'final':
       fhead = 'adp'    
-      ihead = 'comp'
+      if c_ord == 'initial':
+        ihead = 'comp'
     else:
-      fhead = 'comp'
       ihead = 'adp'
+      if c_ord == 'final':
+        fhead = 'comp'
   
   if ihead:
     mylang.add('head-comp-sub-phrase := basic-head-1st-comp-phrase & \
@@ -975,6 +977,11 @@ def add_basic_phrases_v2_with_cluster(ch, mylang):
 ####DISCLAIMER: NOT ALL LOGICAL COMBINATIONS ARE COVERED BY CODE FOR NOW
 
 def create_argument_composition_phrases(ch, mylang):
+
+  if ch.get('has-dets') == 'yes':
+    if ch.get('noun-det-order') == 'det-noun':
+      mylang.add('head-spec-phrase := [ SYNSEM.LOCAL.CAT.VC #vc, \
+                     HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
 
   if ch.get('vc-placement') == 'pre':
 
@@ -1096,7 +1103,7 @@ def add_v2_with_cluster_rules(ch, rules):
   rules.add('subj-head-vc := subj-head-vc-phrase.')
   rules.add('aux-2nd-comp := aux-2nd-comp-phrase.')
   rules.add('comp-aux-2nd := comp-aux-2nd-phrase.')
-  if ch.get('q-inv'):
+  if ch.get('q-inv') and ch.get('vc-analysis') == 'aux-rule':
     rules.add('aux-1st-comp := aux-1st-comp-phrase.')
 
 
@@ -1234,6 +1241,8 @@ def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
   if ch.get('argument-order') == 'fixed':
     mylang.add('comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
+  if ch.get('q-inv'):
+    mylang.add('gen-comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
 
   if ch.get('split-cluster') == 'yes':
     split_cluster_phrases_argument_composition(ch, mylang, rules, lrules)
@@ -1332,6 +1341,7 @@ def spec_word_order_phrases_aux_plus_verb(ch, mylang):
     mylang.add('aux-1st-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV +, \
                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
 				                           COMPS < > ] ].')
+      
     mylang.add('comp-aux-2nd-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV - ].')
 
     comment = \
@@ -1417,6 +1427,8 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
                                                          HEAD.FORM #dform ] ].')
 
+  if ch.get('q-inv'):
+    mylang.add('gen-verb-aux-2nd-rule := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
   mylang.add('comp-aux-2nd-phrase := gen-verb-aux-2nd-rule & basic-aux-verb-rule & [ SYNSEM.LOCAL.CAT.VFRONT - ].')
   mylang.add('noncomp-aux-2nd-phrase := gen-verb-aux-2nd-rule & special-basic-aux-verb-rule & [ SYNSEM.LOCAL.CAT.VFRONT +, \
                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
@@ -1470,7 +1482,9 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
   mylang.add('basic-head-mod-phrase-simple :+ \
                       [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                         HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
-
+  if ch.get('has-cop') == 'yes':
+    mylang.add('basic-head-mod-phrase-simple :+ \
+                      [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.PRD - ].')
 
   if ch.get('part-vp-front') == 'no':
     mylang.add('gen-verb-aux-2nd-rule := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')

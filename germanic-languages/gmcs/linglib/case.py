@@ -259,10 +259,12 @@ def interpret_verb_valence(valence):
   if '-' in valence:
     v = valence.split('-')
     if len(v) == 2:
-      if v[1] != 'scomp':
-        return 'tverb'
-      else:
+      if v[1] == 'scomp':
         return 'sc2verb'
+      elif v[1] == 'inf':
+        return 'scontrverb'
+      else:
+        return 'tverb'
     elif len(v) == 3:
       return 'dverb'
   elif valence == 'trans':
@@ -271,6 +273,8 @@ def interpret_verb_valence(valence):
     return 'dverb'
   elif valence == 'scomp':
     return 'sc2verb'
+  elif valence == 'scontr':
+    return 'scontrverb'
   else:
     return 'iverb'
 
@@ -324,7 +328,38 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
           mylang.add(typedef)
+####subj control verbs: TODO make better interface and restrictions
+      elif p[0] == 'scontr' or (len(c) == 2 and c[1] == 'inf'):
+        if p[0] == 'scontr':
+          a_case = ''
+          a_head = ch.case_head()
+        else:
+          a_case = canon_to_abbr(c[0], cases)
+          a_head = ch.case_head(c[0])
+          b_res = c[1]                        
         
+        if a_case:
+          t_type = a_case + b_res + 'subj-contr-transitive-verb-lex'
+          b_res += 'finitive'
+        else:
+          t_type = 'subj-contr-transitive-verb-lex'                      
+        mylang.add(t_type + ' := subj-contr-transitive-verb-lex.')
+
+        # constrain the head of the agent/subject
+        typedef = \
+          t_type + ' := \
+          [ ARG-ST < [ LOCAL.CAT.HEAD ' + a_head + ' ], \
+                     [ LOCAL.CAT.HEAD verb  & [ ' + b_res + ' ] ] > ].'
+        mylang.add(typedef)
+
+        # constrain the case of the agent/subject
+        if a_case:
+          typedef = \
+            t_type + ' := \
+            [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
+          mylang.add(typedef)
+
+ 
       elif p[0] == 'trans' or len(c) == 2:  # transitive
         if p[0] == 'trans':
           a_case = ''

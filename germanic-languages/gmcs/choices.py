@@ -617,6 +617,8 @@ class ChoicesFile:
         patterns += [ ['nom-dat-acc', '', False] ]
       if self.get('emb-clause-2nd-verb') == 'yes':
         patterns += [ ['nom-scomp', '', False ] ]
+      if self.get('subj-control-verb') == 'yes':
+        patterns += [ ['nom-fin', '', False ] ]
     elif cm == 'erg-abs':
       patterns += [ ['abs', '', False] ]
       patterns += [ ['erg-abs', '', False] ]
@@ -1048,7 +1050,12 @@ class ChoicesFile:
           features += [ ['strong', 'na-or--|na-or--', 'LOCAL.CAT.HEAD.STRONG'] ]
           features += [ ['strong', 'na-or-+|na-or-+', 'LOCAL.CAT.HEAD.STRONG'] ]
           features += [ ['strong', 'na|na', 'LOCAL.CAT.HEAD.STRONG'] ]
-
+    if self.get('has-cop') == 'yes':
+      features += [ ['prd', 'bool|bool', 'LOCAL.CAT.HEAD.PRD' ] ] 
+      features += [ ['prd', '-|-', 'LOCAL.CAT.HEAD.PRD' ] ] 
+      features += [ ['prd', '+|+', 'LOCAL.CAT.HEAD.PRD' ] ] 
+      features += [ ['vc', '-|-', 'LOCAL.CAT.VC' ] ] 
+    
 #
 #
 ####END GERMANIC BRANCH

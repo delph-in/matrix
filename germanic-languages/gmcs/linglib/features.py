@@ -37,7 +37,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
   for feat in ch_dict.get(iter_feat,[]):
     n = feat.get('name','')
     v = feat.get('value','').split(', ')
-
     if n == 'case':
       v = [case.canon_to_abbr(c, cases) for c in v]
 
