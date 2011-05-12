@@ -434,6 +434,16 @@ def js_array(list):
   val = val[:-2]  # trim off the last ,\n
   return val
 
+# From a list of triples of strings [string1, string2, ...], return
+# a string containing a JavaScript-formatted list of strings of the
+# form 'string1:string2:string3'. This is used to convey features, 
+# values and category (category of feature).
+def js_array3(list):
+  val = ''
+  for l in list:
+    val += '\'' + l[0] + ':' + l[1] + ':' + l[3] + '\',\n'
+  val = val[:-2]  # trim off the last ,\n
+  return val
 
 ######################################################################
 # MatrixDefFile class
@@ -487,7 +497,6 @@ class MatrixDefFile:
       return self.f2v[f]
     else:
       return f
-
 
   # Create and print the main matrix page.  The argument is a cookie
   # that determines where to look for the choices file.
@@ -708,56 +717,47 @@ class MatrixDefFile:
         # look ahead and see if we have an auto-filled drop-down
         i += 1
         fill_type = ''
-        fill_arg1 = ''
-        fill_arg2 = ''
+        pattern_arg = ''
         if lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
           fill_type = word[0]
-          if len(word) > 1:
-            fill_arg1 = word[1]
-          if len(word) > 2:
-            fill_arg2 = word[2]
 
-        if fill_type[0:4] == 'fill':
-          if fill_type == 'fillregex':
-            if fill_arg2.lower() in ('true', '1'):
-              html += html_select(vr, vn, multi,
-                                  'fill_regex(\'' + vn +
-                                  '\', \'' + fill_arg1 + '\', true)') + '\n'
-            else:
-              html += html_select(vr, vn, multi,
-                                  'fill_regex(\'' + vn +
-                                  '\', \'' + fill_arg1 + '\')') + '\n'
-          elif fill_type == 'fillnames':
-            html += html_select(vr, vn, multi,
-                                'fill_feature_names(\'' + vn +
-                                  '\')') + '\n'
-          elif fill_type == 'fillvalues':
-            if fill_arg2:
-              html += html_select(vr, vn, multi,
-                                  'fill_feature_values(\'' + vn +
-                                  '\', \'' + fill_arg1 + '\', true)') + '\n'
-            else:
-              html += html_select(vr, vn, multi,
-                                  'fill_feature_values(\'' + vn +
-                                  '\', \'' + fill_arg1 + '\')') + '\n'
-          elif fill_type == 'fillverbpat':
-            html += html_select(vr, vn, multi,
-                                'fill_case_patterns(\'' + vn +
-                                '\', false)') + '\n'
-          elif fill_type == 'fillmorphpat':
-            html += html_select(vr, vn, multi,
-                                'fill_case_patterns(\'' + vn +
-                                '\', true)') + '\n'
-          elif fill_type == 'fillnumbers':
-            html += html_select(vr, vn, multi,
-                                'fill_numbers(\'' + vn + '\')') + '\n'
-          elif fill_type == 'filltypes':
+#break out the arguments into key=value pairs for each filltype
+#the argments are labeled like this in matrixdef:
+#p=(pattern), l(literal_feature)=1 ,n(nameOnly)=1, c=(cat)
+#note: cat values are noun, verb or both
+        
+        if fill_type[0:4] == 'fill': #e.g.word: [fill..., p=..., ..., true]
+          a = {}
+          for j in range(1,len(word)):
+            argument = word[j].split('=') #e.g.argument[j]: [p, pattern]  
+            a[argument[0]]= argument[1] #dict of key-value pairs a={p: pattern; c: category; ...} 
             
-            html += html_select(vr, vn, multi,
-                                'fill_types(\'' + vn + '\',\'' +
-                                fill_arg1 + '\')') + '\n'
+#creates an ordered list of arguments from the fill line arguments in matrixdef
+#appropriately surrounded with quote marks for inclusion in fill type personalized string
+#note: arguments may only be applicable to some filltypes 
 
+          argstrings = []
+          argstring = ''
+          if 'p' in a:
+            argstrings += ['\'' + a['p'] + '\''] # ' + a['p'] + '
+            pattern_arg = a['p'] #for fillvalues argument
+          if 'c' in a:
+            argstrings += ['\'' + a['c'] + '\''] #' + a['c'] + '
+          if 'n' in a or 'l' in a:
+            argstrings += ['true']  
+          argstring = ','.join(argstrings)
+
+          fillstrings = {'fillregex': 'fill_regex(\'' + vn +'\',' + argstring + ')',
+                         'fillnames': 'fill_feature_names(\'' + vn + '\',' + argstring + ')',
+                         'fillvalues':'fill_feature_values(\'' + vn + '\', ' + argstring + ')',
+                         'fillverbpat':'fill_case_patterns(\'' + vn + '\', false)',
+                         'fillmorphpat':'fill_case_patterns(\'' + vn + '\', true)',
+                         'fillnumbers':'fill_numbers(\'' + vn + '\')',
+                         'filltypes':'fill_types(\'' + vn + '\',' + argstring + ')'}
+
+
+          html += html_select(vr, vn, multi, fillstrings[fill_type]) + '\n'
           html += html_option(vr, '', False, '') + '\n'
 
           if choices.get(vn):
@@ -768,7 +768,7 @@ class MatrixDefFile:
             if fill_type in ['fillvalues']:
               for sv in sval.split(', '):
                 for f in choices.features():
-                  if f[0] == choices.get(fill_arg1):
+                  if f[0] == choices.get(pattern_arg):
                     for v in f[1].split(';'):
                       n = v.split('|')
                       if n[0] == sv:
@@ -801,6 +801,7 @@ class MatrixDefFile:
 
         html += '</select>'
         html += af + '\n'
+
       elif word[0] in ('Text', 'TextArea'):
         if len(word) > 6:
           (vn, fn, bf, af, sz, oc) = word[1:]
@@ -963,7 +964,7 @@ class MatrixDefFile:
 
       print '<title>' + section_friendly + '</title>'
       print HTML_posttitle % \
-            (js_array(choices.features()),
+            (js_array3(choices.features()),
              js_array([c for c in choices.patterns() if not c[2]]),
              js_array([c for c in choices.patterns() if c[2]]),
              js_array([n for n in choices.numbers()]),
