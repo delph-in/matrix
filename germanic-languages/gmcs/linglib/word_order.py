@@ -850,8 +850,8 @@ def customize_head_comp_non_main_phrase(ch, mylang):
     elif ch.get('clz-comp-order') == 'comp-clz':
       c_ord = 'final'
 
+  adp_order = ''  
   if ch.get('adp-order'): 
-    adp_order = ''  
     if ch.get('adp-order') == 'adp-comp':
       adp_order = 'initial'
     elif ch.get('adp-order') == 'comp-adp':
