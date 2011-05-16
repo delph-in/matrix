@@ -731,18 +731,13 @@ class MatrixDefFile:
         
         if fill_type[0:4] == 'fill': #e.g.word= [fill..., p=..., ..., true]
           a = {}
-#          print 'word'
-#          print word
           argument = []
   
           for j in range(1, len(word)):
             argument = word[j].split('=') #e.g.argument[j]= [p, pattern]
-#            print 'argument'
-#            print argument
+
             if argument[0]:
               a[argument[0]] = argument[1] #dict of key-value pairs a={p: pattern; c: category; ...} 
-#            print 'a'
-#            print a
 
 #creates an ordered list of arguments from the fill line arguments in matrixdef
 #appropriately surrounded with quote marks for inclusion in fill type personalized string

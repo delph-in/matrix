@@ -505,7 +505,7 @@ function fill_regex(name, pattern, nameOnly)
     if (e[i].name.search(pattern) != -1) {
       var val = e[i].name.replace(/_[^_]*$/, '');
 
-      var desc = val
+      var desc = val;
       var f = document.getElementsByName(val + '_name');
       if (f && f[0] && f[0].value) {
         if (nameOnly) {
