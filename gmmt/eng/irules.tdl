@@ -1,0 +1,16 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+
+%(letter-set (!s abcedfghijklmnopqrtuvwxyz))
+%(letter-set (!n abcedfghijklmopqrstuvwxyz))
+
+neg-infl-lr :=
+%suffix (n nt) (!n !nnt)
+neg-infl-lex-rule.
+
+pl-noun :=
+%suffix (!s !ss) (s ses)
+pl-noun-lex-rule.
+
+3sg-verb :=
+%suffix (!s !ss) (s ses)
+3sg-verb-lex-rule.

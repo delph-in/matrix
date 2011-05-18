@@ -1,0 +1,575 @@
+Language: Jingulu
+Language cod?: jig
+Author: Safiyyah Saleem
+Date: May 15 2009
+Source a: A grammar of jingulu: An Aboriginal language of the Northern Territory
+
+
+#Ex 1 demonstrates SVO word order
+Source: a:77
+Vetted: s
+Judgment: g
+Phenomena: word order
+uliyijanga ngunjaju karalu
+uliyija-nga ngunja-ju karalu
+sun-erg burn-do ground
+The sun is burning the ground. 
+
+#Ex 2 demonstrates SOV word order
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+uliyijanga  karalu ngunjaju
+uliyija-nga karalu ngunja-ju 
+sun-erg  ground burn-do
+The sun is burning the ground. 
+
+#Ex 3 demonstrates OVS word order
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+karalu ngunjaju uliyijanga
+karalu ngunja-ju uliyija-nga
+ground burn-do sun-erg 
+The sun is burning the ground. 
+
+#Ex 4 demonstrates VSO word order
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+ngunjaju uliyijanga karalu 
+ngunja-ju uliyija-nga karalu 
+burn-do sun-erg  ground 
+The sun is burning the ground. 
+
+#Ex 5 demonstrates OSV word order
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+karalu  uliyijanga ngunjaju
+karalu uliyija-nga ngunja-ju 
+ground  sun-erg  burn-do
+The sun is burning the ground. 
+
+#Ex 6 demonstrates VOS word order
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+ngunjaju karalu  uliyijanga
+ngunja-ju karalu uliyija-nga 
+burn-do ground sun-erg  
+The sun is burning the ground. 
+
+#Ex 7 demonstrates a yes no question.  Yes/no questions are formed by adding the question word  "jani" to the beginning of the sentence.  (a:99)
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: q
+jani uliyijanga ngunjaju karalu
+jani uliyija-nga ngunja-ju karalu
+ques sun-erg burn-do ground
+The sun is burning the ground. 
+
+#Ex 8 demonstrates a yes no question.  Yes/no questions are formed by adding the question word  "jani" to the beginning of the sentence.  Here it incorrectly comes at the end of the sentence. (a:99)
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: q
+uliyijanga ngunjaju karalu jani
+uliyija-nga ngunja-ju karalu jani
+sun-erg burn-do ground ques
+The sun is burning the ground. 
+
+#Ex 9 demonstrates a yes no question.  Yes/no questions are formed by adding the question word  "jani" to the beginning of the sentence.  Here it incorrectly comes in the middle of the sentence. (a:99)
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: q
+uliyijanga ngunjaju jani karalu
+uliyija-nga ngunja-ju jani karalu
+sun-erg burn-do ques ground
+The sun is burning the ground. 
+
+#Ex 10 demonstrates sentential negation.  It is formed by adding "angkula" (usually clause-initialy). (101)
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: neg
+angkula uliyijanga ngunjaju karalu
+angkula uliyija-nga ngunja-ju karalu
+neg sun-erg burn-do ground
+The sun is not burning the ground. 
+
+#Ex 11 demonstrates verb subject agreement for transitive verbs. 189 for inanimate instrumental case for subject of transitive
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+ngayarni ngunjaju karalu
+ngaya-rni ngunja-nga-ju karalu
+I-erg burn-1s-do ground
+I am burning the ground. 
+
+#Ex 12 demonstrates verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+mindiyilirni ngunjamindiju karalu
+mindiyili-rni ngunja-mind-ju karalu
+we.dual.incl-erg burn-we.dual.incl-do ground
+We are burning the ground. 
+
+#Ex 13 demonstrates verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+nginyiylirni  ngunjanginyuju karalu
+nginyiyli-rni ngunja-nginy-ju karalu
+we.dual.excl-erg burn-we.dual.excl-do ground
+We are burning the ground. 
+
+#Ex 14 demonstrates verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+ngurrawalarni ngunjangurraju karalu
+ngurrawala-rni ngunja-ngurr-ju karalu
+1pl.incl-erg burn-1pl.incl-do ground
+We are burning the ground. 
+
+#Ex 15 demonstrates verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+ngirrikarni ngunjangirriju karalu
+ngirrika-rni ngunja-ngirr-ju karalu
+1pl.excl-erg burn-1pl.excl-do ground
+We are burning the ground. 
+
+#EMB removed: Identical to #14
+#Ex 16 demonstrates verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. 
+#Source: author
+#Vetted: f
+#Judgment: g
+#Phenomena: agr
+#ngurrawalarni ngunjangurraju karalu
+#ngurrawala-rni ngunja-ngurr-ju karalu
+#1pl.incl-erg burn-1pl.incl-do ground
+#We are burning the ground. 
+
+#Ex 17 demonstrates verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+nyama-rni ngunjanyaju karalu
+nyama-rni ngunja-nya-ju karalu
+2s.-erg burn-2s-do ground
+You (singular) are burning the ground. 
+
+#Ex 18 demonstrates verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+kunyiyilirni ngunjakunyiju karalu
+kunyiyli-rni ngunja-kunyi-ju karalu
+2.dual.-erg burn-2.dual-do ground
+You (two) are burning the ground. 
+
+#Ex 19 demonstrates verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+kunyiyilirni ngunjakurriju karalu
+kurrawala-rni ngunja-kurri-ju karalu
+2.pl.-erg burn-2.pl-do ground
+You (two or more) are burning the ground. 
+
+#Ex 20 demonstrates verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+marlukayilarni ngunjawunyiju karalu
+marluka-bila-rni ngunja-wunyi-ju karalu
+old.man-dual-erg burn-3dl-do ground
+The two old men are burning the ground. 
+
+
+#Ex 21 demonstrates verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+marlukayilarni ngunjawurriju karalu
+marluka-bala-rni ngunja-wurri-ju karalu
+old.man-plural-erg burn-3dl-do ground
+The old men are burning the ground. 
+
+#Ex 22 demonstrates an intransitive verb that is formed using a "light verb."  If the coverbal root is not present, then the 3s marker appears. (Adapted from 169) This had been mistakenly constructed with the ergative marker present on an intransitive.  Intransitive subjects are absolutive (a:177).  There is focus marker that is homophonous with the ergative marker "-rni" which can appear with an intranstive subject (a:193-194)
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+marluka manyan yaju
+marluka  manyan ya-ju
+old.man.abs sleep 3s-do
+The old man is sleeping 
+
+#Ex 23 demonstrates an ungrammatical intransitive verb that is formed using a "light verb."  If the coverbal root is not present, then the 3s marker appears.   Here it is incorrectly missing
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+marluka manyan ju
+marluka manyan ju
+old.man.nom sleep do
+The old man is sleeping 
+
+
+#Ex 24 demonstrates ungrammatical verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+marlukayilarni ngunjakurriju karalu
+marluka-bala-rni ngunja-kurri-ju karalu
+old.man-plural-erg burn-2pl-do ground
+The old men are burning the ground. 
+
+#Ex 25 demonstrates ungrammatical verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. Here a third person subject is combined with a first person subject marker.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+marlukayilarni ngunjangaju karalu
+marluka-bila-rni ngunja-nga-ju karalu
+old.man-dual-erg burn-1s-do ground
+The two old men are burning the ground. 
+
+#Ex 26 demonstrates ungrammatical verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case.  Here the required subject marker is not present.  Originally I though this was ungrammatical, but upon further reflection since number disagreement is not truly ungrammatical, this could be analyzed as the 3s marker being here since it is a zero marker.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+marlukayilarni ngunjaiju karalu
+marluka-bila-rni ngunja-ju karalu
+old.man-dual-erg burn-do ground
+The two old men are burning the ground. 
+
+#Ex 27 demonstrates verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. It is grammatical for dl and plural subjects/objects to take singular agreement markers.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+kunyiyilirni ngunjanyaju karalu
+kurrawala-rni ngunja-nya-ju karalu
+2.pl.-erg burn-2.s-do ground
+We are burning the ground. 
+
+#Ex 28 demonstrates verb subject agreement for transitive verbs.  Animate subjects of transitive verbs are in the ergative case. It is grammatical for dl and plural subjects/objects to take singular agreement markers.  Number disagreement is syntactically permissible. Semantically the "dual" trumps plural and plural trumps singular.  So here, the interpretation would default to the plural.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+ngurrawalarni ngunjakurriju karalu
+nyama-rni ngunja-kurri-ju karalu
+2s.-erg burn-2pl-do ground
+You(plural) are burning the ground. 
+
+
+#Ex 29 demonstrates an ungrammatical intransitive verb that is formed using a "light verb."  If the coverbal root is not present, then the 3s marker appears.   The subject of an intransitive is nominative/absolutive. Here the ergative is incorrectly attached.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+marlukarni manyan yaju
+marluka-rni manyan ya-ju
+old.man.nom sleep do
+The old man is sleeping 
+
+#Ex 30 demonstrates ungrammatical case  Animate subjects of transitive verbs are in the ergative case. Here the ergative suffix "-rni" is missing.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+marlukayila ngunjawurriju karalu
+marluka-bala ngunja-wurri-ju karalu
+old.man-plural burn-3dl-do ground
+The old men are burning the ground. 
+
+#Ex 31 demonstrates ungrammatical verb subject agreement for transitive verbs. Here the person of the subject and verb marker disagree.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+kunyiyilirni ngunjamindju karalu
+kunyiyli-rni ngunja-mind-ju karalu
+2.dual.-erg burn-1.dual.incl-do ground
+We are burning the ground. 
+
+#Ex 32 demonstrates verb subject agreement for transitive verbs.  Here the person of the subject and verb marker disagree.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+kunyiyilirni ngunjakunyiju karalu
+kunyiyli-rni ngunja-wurri-ju karalu
+2.dual.-erg burn-3pl-do ground
+We are burning the ground. 
+
+#Ex 33 demonstrates ungrammatical verb subject agreement for transitive verbs.  Here the person of the subject and verb marker disagree.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+ngurrawalarni ngunjanyaju karalu
+ngurrawala-rni ngunja-nya-ju karalu
+1pl.incl-erg burn-2s-do ground
+We are burning the ground. 
+
+#Ex 34 demonstrates verb subject agreement for transitive verbs. Here the person of the subject and verb marker disagree. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+ngurrawalarni ngunjawunyiju karalu
+ngurrawala-rni ngunja-wunyi-ju karalu
+1pl.incl-erg burn-3dl.incl-do ground
+We are burning the ground. 
+
+#Ex 35 demonstrates ungrammatical verb subject agreement for transitive verbs.  Here the person of the subject and verb marker disagree. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+ngirrikarni ngunjangirriju karalu
+ngirrika-rni ngunja-nya-ju karalu
+1pl.excl-erg burn-2s-do ground
+We are burning the ground. 
+
+#Ex 36 demonstrates ungrammatical verb subject agreement for transitive verbs.  Here the person of the subject and verb marker disagree. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+mindiyilirni ngunjakurriju karalu
+mindiyili-rni ngunja-kurri-ju karalu
+we.dual.incl-erg burn-2pl-do ground
+We are burning the ground. 
+
+#Ex 37 demonstrates ungrammatical verb subject agreement for transitive verbs.  Here the person of the subject and verb marker disagree.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+ngayarni ngunjawunyiju karalu
+ngaya-rni ngunja-wunyi-ju karalu
+I-erg burn-1s-do ground
+I am burning the ground. 
+
+#EMB removed -- identical to #11
+#Ex 38 demonstrates verb subject agreement for transitive verbs.  189 for inanimate instrumental case for subject of transitive
+#Source: author
+#Vetted: f
+#Judgment: g
+#Phenomena: agr
+#ngayarni ngunjaju karalu
+#ngaya-rni ngunja-nga-ju karalu
+#I-erg burn-1s-do ground
+#I am burning the ground. 
+
+#Ex 39 demonstrates ungrammatical use of object agreement markers.  Some logical combinations not possible. First person singular combined either first person or second person is not allowed
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+ngayarni ngunjaju nyama
+ngaya-rni ngiji-nga-nyu-ju nyama
+I-erg see-1s-2-do 2s
+I see you
+
+#Ex 40 demonstrates object agreement markers. 
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+ngayarni ngunjaju nyama
+mindiyili-rni ngiji-mind-nyu-ju nyama
+1dl.incl see-1dl-2-do 2s.nom
+We see you
+
+#Ex 41 demonstrates ungrammatical object agreement markers. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+ngayarni ngunjaju nyama
+mindiyili-rni ngiji-nyu-mind-ju nyama
+1dl.incl see-1dl-2-do 2s.nom
+We see you
+
+#Ex 42 demonstrates object agreement markers. Second person and Second person are not allowed to combine
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+ngayarni ngunjanyanyuju nyama
+nyama-rni ngiji-nya-nyu-ju nyama
+2s see-2s.subj-2.obj-do 2s.nom
+You see you
+
+#Ex 43 demonstrates object agreement markers. Here two object agreement marker incorrectly occur together.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+ngayarni ngunjanyunyuju nyama
+nyama-rni ngiji-nyu-nyu-ju nyama
+2s see-2s.obj-2s.obj-do 2s.nom
+You see you
+
+#Ex 44 demonstrates object agreement markers. First person and first person are not allowed to combine
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+ngayarni ngunjaju ngaya
+ngaya-rni ngiji-nga-na-ju ngaya
+1s see-1s.subj-1.obj-do 2s.nom
+I see me
+
+#Ex 45 demonstrates past tense
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+uliyijanga ngunjanu karalu
+uliyija-nga ngunja-nu karalu
+sun-erg burn-do.past ground
+The sun burnt the ground. 
+
+#Ex 46 demonstrates habitual aspect
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+uliyijanga ngunjawardi karalu
+uliyija-nga ngunja-ardi karalu
+sun-erg burn-do.habitual ground
+The sun burns the ground. 
+
+#Ex 47 demonstrates past habitual aspect tense
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+uliyijanga ngunjaku karalu
+uliyija-nga ngunja-ka karalu
+sun-erg burn-do.past.habitual ground
+The sun used to burn the ground. 
+
+#Ex 48 demonstrates ungrammatical use of the past habitual aspect tense.  The "light verb" should come at the end.  Here it preceedes the coverbal
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: word order
+uliyijanga ngunjaku karalu
+uliyija-nga -kangunja karalu
+sun-erg do.past.habitual-burnground
+The sun used to burn the ground. 
+
+#Ex 49 demonstrates ungrammatical verb subject agreement for transitive verbs.  The subject marker should come after the coverbal but before the "light verb".  Here it does not. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+ngirrikarni ngunjajungirri karalu
+ngirrika-rni ngunja-ju-ngirr karalu
+1pl.excl-erg burn-l-do-1pl.exc ground
+We are burning the ground. 
+
+#Ex 50 demonstrates ungrammatical verb subject agreement for transitive verbs.  The subject marker should come after the coverbal but before the "light verb".  Here it does not. 
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+ngirrikarni ngunjajungirri karalu
+ngirrika-rni -ngirrngunja-ju karalu
+1pl.excl-erg 1pl.exc-burn-l-do ground
+We are burning the ground. 
+
+#Ex 51 demonstrates coordination. Juxtaposition is used.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: coord
+uliyijanga ngunjaju karalu
+uliyija-nga ngunja-ju karalu marluka  manyan ya-ju
+sun-erg burn-do ground old.man sleep 3s-do
+The sun is burning the ground and the old man is sleeping
+
+
+#Ex 52 demonstrates ungrammatical coordination. Juxtaposition is used..  The words in each S must stay together.  Here they do not
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: coord
+uliyijanga ngunjaju karalu
+uliyija-nga marluka-rni ngunja-ju karalu  manyan ya-ju
+sun-erg old.man-erg burn-do ground sleep 3s-do
+The sun is burning the ground and the old man is sleeping
+
+
+#Ex 53 demonstrates grammatical instrumental case for inanimate subjects.  I do not know why "sun" was allowed to take ergative case but wind is not.
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+wunbaarndi ngunjaju karalu
+wunba-arndi ngunja-ju karalu
+wind-instr burn-do ground
+The wind is burning the ground. 
+
+#Ex 54 demonstrates ungrammatical ergative case for inanimate subjects.  I do not know why "sun" was allowed to take ergative case but wind is not.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: word order
+wunbaani ngunjaju karalu
+wunba-rni ngunja-ju karalu
+wind-erg burn-do ground
+The wind is burning the ground. 
+
+#Ex 55 demonstrates ungrammatical instrumental case for inanimate subjects.  I do not know why "sun" was allowed to take ergative case but wind is not.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: word order
+wunbanga ngunjaju karalu
+wunba-nga ngunja-ju karalu
+wind-erg.f burn-do ground
+The wind is burning the ground. 
+
+#Ex 56 demonstrates ungrammatical instrumental case for an animate subject
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+ngayaarndi ngunjaju karalu
+ngaya-arndi ngunja-nga-ju karalu
+I-erg burn-1s-do ground
+I am burning the ground. 
+
+

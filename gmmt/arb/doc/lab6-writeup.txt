@@ -1,0 +1,361 @@
+Ryan Georgi
+Ling 567
+
+Lab 6 Writeup
+
+
+-----========= Discourse Status: ==========---------
+
+Pt. I: DEFINITES
+---------------
+
+Getting at discourse status is difficult from what I've learned
+about Arabic so far, but I'll try to understand it by writing it
+down as I go.
+
+To begin with, something that seems to "anchor" what I've read
+so far seems to be that the Demonstratives, which logically should
+be active-or-more, when used adjectivally, must have the head
+NP grammatically definite (this means one of three things;
+either marked with the definite prefix /?al-/, marked with
+a pronomial clitic (suffix) used for possessives, or if the following
+noun is in the genitive (for "construct" phrases).
+
+This would seem to indicate to me that definiteness must be at least
+partially correlated to whatever status is aligned with demonstratives,
+which I will get to later, but seem to be activ-or-more.
+
+Some more info that helps place the definite marker -- As noted by
+the holes text, UniqueID cases are marked in this way.
+
+e.g. ?al-qamar (the moon), ?al-wila:ya:tu l-muttah.ida (the United States)
+(p. 196)
+
+There are other examples where the focus seems to be closer to
+active-or-more:
+
+?al-yawm = Today (lit. "the day")
+?as-sa:'a = at the time (lit. "the hour")
+(p. 196)
+
+Lastly, generic refernce (though we're calling it outside the scope
+of the class) seems to pick out the familiar status, with:
+
+qami:s. mina l-qut.n
+shirt   of   the-cotton
+'A cotton shirt'
+
+Lastly, when used with any time of verbal nouns or nominal adjectives
+the familiar case seems to again be used:
+
+?al-tadxi:n    xat.ar   'ala:  s.-s.ih.h.a
+the-smoking    danger   to     the-health
+'Smoking is dangerous to the health' (p. 198)
+
+Taking all of these cases into account, it
+would seem to me that the /?al-/ prefix denotes a
+uniq-or-more status for the nouns it marks -- a pretty broad scope,
+but one that accounts for all these various uses.
+
+Thankfully, since I had implemented the lexical rules for
+these markings in lab 5, for this lab I simply added the
+COG-ST constraints onto the existing rules.
+
+Pt. II: INDEFINITES
+------------------------
+
+From what little info I was able to surmise about definite marking,
+there is little or no information given on the final /-n/, which I
+have come to learn is often mistakenly thought of to be an indefinite
+marking.
+
+According to wikipedia (http://en.wikipedia.org/wiki/Nunation),
+Nunation is slightly different from an indefinite marker; it more
+precisely marks that the noun is NOT marked for definiteness.
+
+What seems to be confusing about this is that this final /-n/ is not
+usually written in the orthography except for the feminine accusative,
+and is only pronounced non-"pausally", which is a form of pronunciation
+apparantly mostly associated with formal reading aloud.
+
+Pausal rules require the nunation to be pronounced only prepausally,
+(before any sentence-ending punctuation).
+
+It appears that there are several exceptions, but in general, then
+the /-n/ final form is the "default" marking for a noun, and is
+removed when the definite is attached. Any time it is missing in
+the examples I've found is probably due to the above restrictions
+on pronounciation and lack of presence in the original orthography.
+
+As a result, ultimately, also due to the large scope shown by the
+?al prefix, it seems that the -n ending should be constrained to
+the type-id case. I added this to my pre-existing lexical rule for
+indefinites.
+
+
+
+------========== DEMONSTRATIVES ========--------------
+
+                     Proximal                  Distal
+
+Sg.   Masc.          ha:Da:                    Da:(li)ka
+      Fem.           ha:Di(hi)                 tilka
+
+Pl.   Both           ha:?ula:?i                ?u:la:?ika
+
+        M.   Nom.    ha:Da:ni                  Da:nika
+Dual       Acc/Gen   ha:Dayni                  Daynika
+        F.   Nom.    ha:ta:ni                  ta:nika
+           Acc/Gen   ha:tayni                  taynika
+
+...these forms are marked for gender, number, and case, though
+the latter only shows up in the dual forms.
+
+ha:- is the Proximal marker, while -(li)ka marks distals. Since
+the forms are so close, I will be adding the "base" forms in, then
+adding whether they are proximal or distal with a lexical rule. (Making
+the singular feminine an exception.)
+
+It appears that the demonstrative pronouns in Arabic have three
+usages; as adjectives and presentatives (a form of emphasis,
+specifically for present objects), and as subjects of "verbless"
+copulas. This second case appears to be the only way they
+are ever used as a pure pronoun.
+
+bayt-i:       ha:Da:           ha:Da: bayt-i:
+house-my      this      <VS>   this   house-my
+'This house of mine'           'this is my house'
+
+* As an interesting note, when the following noun has been made definite
+  but 
+
+Since I have not implemented the copula phrase yet, and since this is the
+minority case, I will choose to implement the adjectival version discussed
+below.
+
+In all the adjectival cases, demonstratives occur with grammatically definite NPs. 
+In the case of the simple definite, they precede the noun, while in 
+cases of either posessive pronoun affixation or the genitive "construct"
+phrases (see example below), they occur after.
+
+ha:Da:  l-?akl                  ?akl-i:  ha:Da:
+this    the-food       <VS>     food-my  this
+'This food'                     'This food of mine'
+
+I haven't yet gotten to this case, so for now I'm just dealing with the raw
+adjective by giving it its own new form, demon_adjective (scary!) and
+having it constrain the element on its COG-ST to be activ-or-more.
+
+----------========== DITRANSITIVES ==========--------------
+
+I had a terribly hard time trying to find a description of ditransitive
+verbs in Arabic. My grammar has no chapters describing it, and searching
+the web for "ditransitive" in arabic doesn't produce much. Furthermore,
+it appears from what I have gleaned that ditransitives have their second
+argument marked just by word order, and the term "indirect object" appears
+to not be helpful either, since for all other respects, this second
+argument appears just like the first object.
+
+The form appears to be:
+ <SUBJ-PREFFIX> <ROOT> <SUBJ-SUFFIX> <IND-OBJ> <DIR-OBJ>
+
+Where the subject may either be prefixed or suffixed, and the
+both objects may either be incorporated pronouns, or full NPs,
+with the "indirect" object being the first.
+
+** My primary source for examples of this comes from my "Source C"
+   examples; but as they use the past tense, I've commented them out
+   in order to keep tense standard.
+
+
+-------============ ARGUMENT OPTIONALITY ======--------------
+
+I searched for quite some time on this subject, and only encountered
+papers covering that which I already learned; that Arabic has rather
+systematic subject pro-drop and object incorporation as pronouns, but
+I found nothing concerning the possibility for the type of Discourse
+related object drop we're interested in.
+
+As far as I can tell, subject prodrop is allowed with definite
+instantiation, and object prodrop is not allowed; it must be made
+up with pronoun incorporation (where the COG-ST is made explicit
+by the pronoun).
+
+ARGUMENT PATTERNS:
+-------------------
+
+I've found the following patterns, and tried to represent them all in
+my modified test suite.
+
+FOR ALL NOUNS:
+
+1) No missing arguments, verb shows agreement with subject NP (case-marked)
+2) Missing subject NP, verb shows agreement
+
+EXAMPLES:
+
+yatay       rrajulu       lwalada      lkita:ba
+y-atay      ?al-rajul-u   ?al-walad-a  ?al-kita:b-a
+3MSG-give   the-man-NOM   the-boy-ACC  the-book-ACC
+'The man gives the boy the book'
+
+VERSUS:
+
+yatay       lwalada      lkita:ba
+y-atay      ?al-walad-a  ?al-kita:b-a
+3MSG-give   the-boy-ACC  the-book-ACC
+'He gives the boy the book'
+
+...this latter case seems to be constrained to dropping the subject for
+activ-or-more. Furthermore, this seems to happen for all verbs, so I added
+OPT-CS activ-or-more to the verb-lex's SUBJ constraints.
+
+Since the verb ALWAYS shows agreement marking, the top two should be considered
+variants of all the following:
+
+-- Transitive:
+
+3) Explicit object (generally only third person)
+4) Incorporated objected pronoun
+
+EXAMPLE OF 4:
+
+y-adribu-hu       ?al-rajul-u
+3MSG-hit-him      the-man-NOM
+' The man hits him ' (would be 'he hits him' when missing explicit subj)
+
+-- Ditransitive:
+
+5) Explicit (indirect) object, explicit (direct) object
+6) incorporated (indirect) object, explicit (direct) object
+7) incorporated (indirect) object, incorporated (direct) object
+
+?? 8) Explicit (indiret) object, incorporated (direct) object
+
+Example of 5):
+yatay       rrajulu       lwalada      lkita:ba
+y-atay      ?al-rajul-u   ?al-walad-a  ?al-kita:b-a
+3MSG-give   the-man-NOM   the-boy-ACC  the-book-ACC
+
+
+Example of 6):
+yatayhu        rrajulu       lkita:ba
+y-atay-hu      ?al-rajul-u   ?al-kita:b-a
+3MSG-give-him  the-man-NOM   the-book-ACC
+
+
+Example of 7):
+yatayhuhu         rrajulu
+y-atay-hu-hu      ?al-rajul-u
+3MSG-give-him-it  the-man-NOM
+' The man gives him it'
+
+
+... I haven't seen any examples about the grammaticality of an 
+incorporated second argument (direct object) but an EXPLICIT first
+argument (ind. obj) , but I have found in snippets that suggest the
+dialects rely on word order for object understanding, so it seems
+there may not be anything I can do to block this directly, since
+it will look exactly like #6.
+
+UPDATE: I talked to Margalit about Hebrew, and she says in the case
+of double-object verbs in Hebrew, at least, there doesn't seem to
+be a clear distinction about how to do it one way or another, and
+it's largely dependent on semantics (i.e. giving a boy to a book?)
+
+
+(see http://www.ethnologue.com/show_language.asp?code=ary)
+
+
+TESTING:
+----------------------
+
+I added a bunch of instances of pronoun incorporation to my test suite,
+and I think I have most if not all cases covered. I tested:
+
+Broken:
+
+I haven't investigated thoroughly, but it seems when I try incorporating
+both the direct and indirect object
+
+
+------------=========== MODIFICATION =============-----------------
+
+ADJECTIVES:
+-----------
+
+As I didn't implement agreement in the last assignment, there was 
+plenty of work for me to do here. First and foremost, was to get
+rid of the "FNT" head feature I'd introduced in an earlier lab, now
+that this distinction is subsumed by the COG-ST.
+
+I'd already implemented adjectives as posthead modifiers in lab 5,
+so the difficult part was simply getting agreement working.
+
+As I've mentioned, adjectives (with the exception of demonstratives)
+are post-head ( a fact that inspired me to create both posthead-adj
+and prehead-adj types for each of these to inherit from ) and agree
+with their nouns in case, number and definiteness. Since adjectives
+are inflected to match their nouns, I made lexical rules that added
+the appropriate affix for both nouns and adjectives; though for
+adjectives I needed separate rules so that I could add the constraints
+to the MOD feature of element the adjective selects for, since these
+features don't exist in an equivalent place on the adjective itself.
+
+TESTING:
+
+I no longer get parses when the case or definiteness of the adjectives
+do not match, and I believe most or all of the cases in which they do.
+
+** Something I still haven't figured out, however, is when generating I
+get extra parses which seem to take definiteness and case as optional
+on adjectives, but not nouns.
+
+
+ADVERBS:
+----------
+
+Since both verbs and noun are often strongly related in Arabic through
+the consonantal clusters they all derive from, "verbal" nouns are quite
+common, and as such, from what I've determined, most productive adverb
+classes are actually adjectival in nature. Another interesting example is
+where a verbal noun is taken as an object to a verb, and then modified
+adjectivally.
+
+p. 257 in the Clive Holes book:
+
+darabahu      darban              s^adi:dan
+darab-a-hu    darb-a-n            s^adi:d-a-n
+hit-3msg-him  hitting-ACC-INDEF   strong-ACC-INDEF
+'he hit him hard'
+
+This is the absolutive accusative construction, and rather uncommon.
+
+There is a relatively closed class of "pure" adverbs, however, that usually
+signal time and a number of different types of manner. 
+
+No matter what time of adverb, the sources I've read seem to indicate that
+in the vast majority of cases the adverb simply attaches to the right
+(...in Latin orthography... that could get confusing!) of the entire VP,
+such as the example above, or:
+
+y-ins.arifu   ?al-rajul-u      kawam
+3MSG-leave    the-man-NOM      quick(ly)
+'the man leaves quickly'
+
+
+To make things simple until I can get into these verbal nouns more in-depth, 
+I simply added this type "kawam" to my grammar and made it POSTHEAD +.
+
+With the rather simple sentences that I'm still parsing, this seem to be
+all that was needed to get kawam appearing in the right place.
+
+WRAP-UP:
+---------
+I tried to fix a number of examples that were broken in my test suite.
+By introducing agreement as well as a few more lexical entries, I was
+able to seriously reduce overgeneration and increase coverage. 
+
+On the examples I covered last time, I reduced the number of readings
+by half generally, and increased coverage (over the newly added material
+as well, admittedly) to now 26%.

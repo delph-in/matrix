@@ -1,0 +1,1716 @@
+### $Id: matrixdef,v 1.37 2008-09-30 23:50:02 lpoulson Exp $
+
+Section general "General Information"
+
+Label "<h3>Language</h3>"
+
+Text language "Language name" "<p>Name of your language: " "<br>" 50
+Text iso-code "ISO code" "<a href=\"http://www.sil.org/iso639-3/codes.asp\">ISO code</a> for your language: " " (optional) </p>" 6
+
+Label "<h3>Archiving and Version Control</h3>"
+
+Label "<p>The developers of the Grammar Matrix project would like to
+retain your answers to this questionnaire in an archive.  We hope
+that, as the number of linguistic phenomena covered by the
+questionnaire grows, these archived sets of answers can be used as the
+basis for a database that will be useful to linguistic typological
+research.</p>"
+
+Radio archive "Archive" "<p>May we retain your answers to this questionnaire?<br>" ""
+. yes "Yes" "" " yes<br>"
+. no "No" "" " no</p>"
+
+Label "<p>If you answered \"yes\", we ask that you also (optionally)
+provide the information below.  This information will be used to
+distinguish multiple linguists working on the same language, to help
+us improve the Grammar Matrix, and possibly to contact you in the
+future.  We will not share your answers or identifying information
+outside the project, unless required by law.</p>"
+
+Text email "Email address" "<table border=\"0\"><tr><td valign=\"top\">Your email address: <td>" "</tr>" 40
+one-name
+Text affiliation "Affiliation" "<tr><td valign=\"top\">Your affiliation: <td>" "</tr>" 40
+
+Text motivation "Motivation" "<tr><td valign=\"top\">Your reason for using this system: <td>" "<br>(e.g. descriptive linguistic research, for a class)</tr></table>" 80
+
+TextArea comment "Comments" "<tr><td valign=\"top\">Comments on your implementation of the grammar: <td>" "<br>(e.g. Choice of analyses, sources of information, etc.)</tr></table>" 80x6
+
+Label "<p>We recommend that you use version control for your grammar development, and aim to facilitate that in two ways.  First, you can choose to have your grammar's code initialized into a Git or Mercurial repository.  Please see <a href=\"http://wiki.delph-in.net/moin/VersionControlForGrammarDevelopment\">this wiki page</a> for information on how to use these systems. The wiki also includes information on how to use Subversion (svn) or Bazaar (bzr) with your grammar.</p>"
+
+Radio vcs "Version Control System" "<p>Version Control System.<br>" ""
+. none "None" "" " None<br>"
+. hg "Mercurial (hg)" "" " Mercurial (hg)<br>"
+. git "Git" "" " Git<br>"
+
+Label "<p>You may also wish to have your repository hosted through an open source hosting service (e.g., Google Code or GitHub).  This provides off-site back-up and facilitates sharing your grammar and collaborating with others.  The wiki (linked above) includes information on how to set that up.  Note that Google Code can host Mercurial or Subversion repositories, and GitHub hosts Git repositories. If you do host your grammar on one of these sites, please let us know that you have, by emailing matrix-dev -at- uw.edu.</p>"
+
+Section word-order "Word Order"
+
+Radio word-order "Basic word order" "Please indicate which pattern best describes the basic word order of your language in matrix (main) clauses:<br>" ""
+. sov "Subject, Object, Verb" "" "SOV<br>"
+. svo "Subject, Verb, Object" "" "SVO<br>"
+. vso "Verb, Subject, Object" "" "VSO<br>"
+. osv "Object, Subject, Verb" "" "OSV<br>"
+. ovs "Object, Verb, Subject" "" "OVS<br>"
+. vos "Verb, Subject, Object" "" "VOS<br>"
+. v-final "Verb-final" "" "V-final<br>"
+. v-initial "Verb-initial" "" "V-initial<br>"
+. free "Free word order" "" "free (pragmatically determined word order)<br>"
+. v2 "v2 word order" "" "finite verb or auxiliary in second position, else free word order"
+
+Label "<p>Note: Modules for V2 order (finite verb second, non-finite
+verb clause-finally) and differing word order between matrix and
+subordinate clauses are currently under development.</p>"
+
+Separator
+
+Radio has-dets "Has determiners" "Does your language have determiners (as independent words)?" ""
+. yes "Yes" "" "yes"
+. no "No" "" "no<br>"
+
+Radio noun-det-order "Order of determiners and nouns" "If so, what is the order of determiners with respect to nouns?" ""
+. noun-det "Noun-Det" "" "Noun-Det"
+. det-noun "Det-Noun" "" "Det-Noun<br><br>"
+
+Separator
+
+Radio has-aux "Has auxiliaries" "Does your language have auxiliary verbs?" ""
+. yes "Yes" "" "yes"
+. no "No" "" "no<br>"
+
+Label "<p>If so, please specify the following auxiliary properties:</p>"
+Label "<div style=\"padding-left: 30px\">"
+
+  Radio aux-comp-order "Order of auxiliary and complement" "<b>Word Order:</b> Does an auxiliary verb appear before or after its complement?<br>" ""
+  . before "Before" "" "before <br>"
+  . after "After" "" "after <br><br>"
+
+  Radio aux-comp "Aux {i} complement" "<b>Complements:</b> The complements of auxiliaries are:<br>" ""
+  . s "S" "" "saturated sentences<br>"
+  . vp "VP" "" "VPs, raising the subject<br>"
+  . v "V" "" "Vs, raising all of its arguments (argument composition)<br><br>" 
+
+Label "(If you work with a language where the complement type (V, VP,
+or S) varies depending on the auxiliary please let us know.)<br><br>"
+
+  Radio multiple-aux "multiple auxiliaries" "Can there be more than one auxiliary in a clause?<br>" ""
+  . yes "Yes" "" "yes<br>"
+  . no "No" "" "no<br><br>" 
+
+Label "NOTE: If your language has free word order and allows more than one auxiliary per clause, we assume that the verbal group forms a cluster (i.e. that all verbal forms are adjacent to each other). If your language reveals different behavior, please let us know."
+
+
+Label "<p><span style=\"color:red\">NOTE: As Modules for V2 order are
+still under development, relative order of auxiliaries and their
+complements have not been implemented yet.</p>"
+
+Label "</div>"
+
+
+Section number "Number"
+
+Label "<p><span class=\"dfn\">Number</span> is a grammatical category
+that distinguishes between different numbers of real-world entities.
+For example, many languages distinguish a <span
+class=\"dfn\">singular</span> number from a <span
+class=\"dfn\">plural</span>, the former begin associated with one
+entity and the latter with more than one.  Other languages distinguish
+still more number values, including a <span class=\"dfn\">dual</span>
+(two entities) and a <span class=\"dfn\">paucal</span> (a few
+entities).  It is important to distinguish between number, described
+here, and numerals, which cannot currently be described in this
+questionnaire.  The answers you provide on this page will determine
+the values available on the lexicon page for the <span
+class=\"feat\">number</span> feature (or the <span
+class=\"feat\">pernum</span> feature, about which see the Person
+section of the questionnaire for more details).</p>"
+
+Label "<p>Please describe the number hierarchy in your language.  Add
+all the values of number that the language's grammar distinguishes.
+For each you may provide one or more supertypes, using the other
+number values you have defined or the root type <tt>number</tt> (which
+will be assumed if no supertype is provided).  If your language does
+not have number as a grammatical category, leave this section
+blank.</p>"
+
+BeginIter number{i} "a Number"
+
+  Text name "Number {i} name" "Number name: " "" 20
+
+  BeginIter supertype{j} "a Supertype"
+
+    Select name "Number {i} supertype {j} name" "Supertype: " ""
+    fillregex p=number[0-9]+_name n=1
+    . number "Number" "number"
+
+  EndIter supertype
+
+EndIter number
+
+
+Section person "Person"
+
+Label "<p><span class=\"dfn\">Person</span> is a grammatical category
+that distinguishes between different discourse participants.  Natural
+languages generally distinguish up to three discourse participants:
+the speaker (the <span class=\"dfn\">first person</span>), the person
+spoken to (the <span class=\"dfn\">second person</span>), and anyone
+else (the <span class=\"dfn\">third person</span>).  Some languages
+are analyzed as having an additional <span class=\"dfn\">fourth
+person</span> category, whose meaning varies from language to
+language.  The answers you provide on this page will determine what
+values are available later in the questionnaire for the <span
+class=\"feat\">person</span> feature (or the <span
+class=\"feat\">pernum</span> feature; see below).</p>"
+
+Radio person "Person" "<p>Which values of person are distinguished in your language?<br>" ""
+. none "None" "" "none<br>"
+. 1-2-3 "First, second, and third" "" "First, second, and third<br>"
+. 1-2-3-4 "First, second, third, and fourth" "" "First, second, third, and fourth<br>"
+. 1-non-1 "First and non-first" "" "First and non-first<br>"
+. 2-non-2 "Second and non-second" "" "Second and non-second<br>"
+. 3-non-3 "Third and non-third" "" "Third and non-third</p>"
+
+Label "<p>Some languages are best analyzed as having subtypes of the
+first person for some values of the <span class=\"feat\">number</span>
+feature.  For example, <span class=\"dfn\">inclusive/exclusive</span>
+languages make a distinction in the non-singular between the first
+person <span class=\"dfn\">exclusive</span>, which does not include
+the person spoken to, and the first person <span
+class=\"dfn\">inclusive</span>, which does.  In <span
+class=\"dfn\">minimal/augmented</span> languages, three distinctions
+are made: speaker and one person spoken to, speaker and one other
+(third) person, and speaker and more than one other person.</p>"
+
+Radio first-person "First person" "<p>What subtypes does your language distinguish in the first person?<br>" ""
+. none "None" "" " none<br>"
+. incl-excl "Inclusive/exclusive" "" " inclusive and exclusive"
+
+MultiSelect incl-excl-number "Inclusive/exclusive number" " in the: " "<br>"
+fillnumbers
+
+
+Radio first-person "First person" "" ""
+. other "Other" "" " other:</p>"
+
+Label "<div style=\"padding-left: 16px\">"
+
+Label "Please provide names for the subtypes distinguished by your
+language.  The names you provide below will be prefixed with the
+appropriate person and number value; for example, if you enter a
+subtype named \"excl\" of the first person for the number values
+<tt>dual</tt> and <tt>plural</tt>, the system will produce two
+subtypes named <tt>1dual_excl</tt> and <tt>1plural_excl</tt>.)<br>"
+
+BeginIter person-subtype{i} "a Subtype"
+
+  Text name "Subtype {i} name" "Name: " "" 20
+
+  MultiSelect number "Subtype {i} number" " in the first person: " ""
+  fillnumbers
+
+EndIter person-subtype
+
+Label "</div>"
+
+
+Section gender "Gender"
+
+Label "<p>Hockett (1958) defines grammatical <span
+class=\"dfn\">gender</span>s as \"classes of nouns reflected in the
+behavior of associated words.\" Gender is, therefore, a phenomenon
+that appears in patterns of agreement.  Some languages have no
+genders, others divide nouns into two genders (e.g. <span
+class=\"dfn\">masculine</span> and <span
+class=\"dfn\">feminine</span>, <span class=\"dfn\">animate</span> and
+<span class=\"dfn\">inanimate</span>, or <span
+class=\"dfn\">rational</span> and <span
+class=\"dfn\">non-rational</span>), while still others have more.
+Some languages have genders that are subtypes of other genders; for
+example, a language may distinguish between inanimate nouns and
+animate nouns, and within the animate nouns, between masculine and
+feminine.  Any number of genders and the relationship between them can
+be described by creating a type hierarchy, below.  The hierarchy you
+define will determine what values of the <span
+class=\"feat\">gender</span> feature are available later in the
+questionnaire.</p>"
+
+Label "<p>Please describe the gender hierarchy in your language.  Add
+all the values of gender that the language's grammar distinguishes.
+For each you may provide one or more supertypes, using the other
+gender values you have defined or the root type <tt>gender</tt> (which
+will be assumed if no supertype is provided).  If your language does
+not have gender as a grammatical category, leave this section
+blank.</p>"
+
+BeginIter gender{i} "a Gender"
+
+  Text name "Gender {i} name" "Gender name: " "" 20
+
+  BeginIter supertype{j} "a Supertype"
+
+    Select name "Gender {i} supertype {j} name" "Supertype: " ""
+    fillregex p=gender[0-9]+_name n=1
+    . gender "Gender" "gender"
+
+  EndIter supertype
+
+EndIter gender
+
+Label "<h4>References</h4>"
+Label "<font size=\"2\">"
+Label "<p>Hockett, Charles F. 1958. A Course in Modern
+Linguistics. New York: Macmillan.</p>"
+Label "</font>"
+
+
+Section case "Case"
+
+Label "<p>Blake (2001) defines <span class=\"dfn\">case</span> as
+&quot;a system of marking dependent nouns for the type of relationship
+they bear to their heads.&quot; For example, case commonly marks the
+subject or the direct object of a verb. The marking might consist of
+affixation or some other morpholological process that marks words, or
+it might be a adposition that marks whole noun phrases.</p>"
+
+Label "<p>This questionnaire allows you to describe <span
+class=\"dfn\">core case marking</span> in your language; that is, the
+pattern of cases marking the mandatory arguments of transitive and
+intransitive verbs.  Following Dixon (1968), we refer to the
+grammatical relations commonly expressed by case using the following
+abbreviations: A refers to the agent of a transitive verb; O refers to
+the patient (or object) of a transitive verb; and S refers to the lone
+argument (or subject) of intransitive verbs.</p>"
+
+Radio case-marking "Core case marking" "<p>What type of core case marking does your language exhibit?</p>" ""
+. none "None" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>None</b><br>(Verbal argument roles are determined only by word order, by intonation, or pragmatically.)</p>"
+. nom-acc "Nominative-accusative" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Nominative-accusative</b><br>"
+
+Text nom-acc-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
+
+Text nom-acc-acc-case-name "Accusative case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
+
+Radio case-marking "Core case marking" "" ""
+. erg-abs "Ergative-absolutive" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Ergative-absolutive</b><br>"
+
+Text erg-abs-erg-case-name "Ergative case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
+
+Text erg-abs-abs-case-name "Absolutive case name" "S and O take a case named the " " (e.g. absolutive, nominative)<br>" 20
+
+Radio case-marking "Core case marking" "" ""
+. tripartite "Tripartite" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Tripartite</b><br>"
+
+Text tripartite-s-case-name "S case name" "S takes a case named the " " (e.g. nominative, subjective)<br>" 20
+
+Text tripartite-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
+
+Text tripartite-o-case-name "O case name" "O takes a case named the " " (e.g. absolutive, patientive)<br>" 20
+
+Radio case-marking "Core case marking" "" ""
+. split-s "Split-S" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Split-S</b><br>"
+
+Label "(The S argument of some intransitive verbs is marked by the
+same case as the agent of transitives, while for other verbs the S
+argument is marked by the same case as the patient.)<br>"
+
+Text split-s-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
+
+Text split-s-o-case-name "O case name" "O takes a case named the " " (e.g. absolutive, patientive)<br>" 20
+
+Radio case-marking "Core case marking" "" ""
+. fluid-s "Fluid-S" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Fluid-S</b><br>"
+
+Label "(The S argument of some intransitive verbs is marked by the
+same case as the agent of transitives, while for other verbs the S
+argument is marked by the same case as the patient, and for still
+other verbs the S argument can be marked by either case, depending on
+pragmatic factors (e.g. whether the S is perceived as being in control
+of the action.)<br>"
+
+Text fluid-s-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
+
+Text fluid-s-o-case-name "O case name" "O takes a case named the " " (e.g. absolutive, patientive)<br>" 20
+
+Radio case-marking "Core case marking" "" ""
+. split-n "Split N" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Split conditioned on features of the noun phrase arguments</b><br>"
+
+Label "(Some classes of noun phrases (e.g. pronouns) show a
+nominative-accusative pattern, while others (e.g. common nouns) show
+an ergative-absolutive pattern.  You will have an opportunity to
+define these classes on the Lexicon page.)<br>"
+
+Text split-n-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
+
+Text split-n-acc-case-name "Accusative case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
+
+Text split-n-erg-case-name "Ergative case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
+
+Text split-n-abs-case-name "Absolutive case name" "S and O take a case named the " " (e.g. absolutive, nominative)<br>" 20
+
+Radio case-marking "Core case marking" "" ""
+. split-v "Split V" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Split conditioned on features of the verb</b><br>"
+
+Label "(Depending on some feature of the verb (e.g. tense or aspect),
+the core arguments are sometimes marked in a nominative-accusative
+pattern and other times in an ergative-absolutive pattern.  You will
+have an opportunity to define these features on the Lexicon
+page.)<br>"
+
+Text split-v-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
+
+Text split-v-acc-case-name "Accusative case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
+
+Text split-v-erg-case-name "Ergative case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
+
+Text split-v-abs-case-name "Absolutive case name" "S and O take a case named the " " (e.g. absolutive, nominative)<br>" 20
+
+Radio case-marking "Core case marking" "" ""
+. focus "Focus" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Focus-case</b><br>"
+
+Label "(A number of Austronesian languages, including several
+Philippine languages, have a system where A and O are marked by cases.
+An additional case, sometimes called the <span
+class=\"dfn\">focus</span>, is mandatory in every clause and has its
+grammatical role assigned by the morphology of the verb.  You will
+have an opportunity to define this morphology on the Lexicon
+page.)<br>"
+
+Text focus-focus-case-name "Focus case name" "The focus case is named the " "<br>" 20
+
+Text focus-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
+
+Text focus-o-case-name "O case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
+
+Label "<p><b>Additional Cases</b></p><p>If your language has any
+additional cases not covered above that occur in simple intransitive
+or transitive clauses (e.g. if you language has verbs whose O is
+marked by the dative), define those cases here:</p>"
+
+BeginIter case{i} "a Case"
+
+  Text name "Case {i} name" "Name: " "" 20
+
+EndIter case
+
+Label "<h4>References</h4>"
+Label "<font size=\"2\">"
+Label "<p>Blake, Barry J. 2001. Case. Cambridge: Cambridge University
+Press.</p>"
+Label "<p>Dixon, R. M. W. 1968. The Dyirbal Language of North
+Queensland. Ph.D. thesis, University of London.</p>"
+Label "</font>"
+
+
+Section direct-inverse "Direct-inverse"
+
+Label "<p>In some languages, the pattern of marking of verbal
+arguments (or verbs themselves) is sensitive to a grammatical <span
+class=\"dfn\">scale</span> that ranks argument noun phrases according
+to how natural they are in the role of agent; for example, a language
+might rank animate NPs as more natural agents than inanimate NPs.  In
+such languages, transitive sentences in which the agent outranks the
+patient are marked differently from those in which the patient
+outranks the agent.  Such sentences are said to differ in <span
+class=\"dfn\">direction</span>.  Sentences where the agent outranks
+the patient are called <span class=\"dfn\">direct</span>, while
+sentences where the patient outranks the agent are called <span
+class=\"dfn\">inverse</span>.  The difference between direct and
+inverse sentences may be marked by a different verb form, by different
+cases on the argument NPs, or both.  Creating a direct-inverse scale
+here will make available, on the Lexicon page, argument structures for
+verbs that are sensitive to the scale, and also the <span
+class=\"feat\">direction</span> feature for use in verbal
+inflection.</p>"
+
+Label "<p>If your language shows the direct-inverse pattern, please
+describe the features that define the scale below.  The scale entries
+should be entered in order from the highest (most agent-like) to the
+lowest (most patient-like).</p>"
+
+BeginIter scale{i} "a Scale Entry"
+
+  Label "<b>Scale entry {i}</b><br>Features:"
+
+  BeginIter feat{j} "a Feature" 1
+
+    Select name "Scale entry {i} feature {j} name" "Name: " " "
+    fillnames c=verb
+
+    Select value "Scale entry {i} feature {j} value" "Value: " ""
+    fillvalues p=scale{i}_feat{j}_name
+
+  EndIter feat
+
+EndIter scale
+
+Select scale-equal "Direction when equal" "<p>When the agent and patient have the same scale value, the main verb is " "<br>(The other form may be something like a reflexive.  If you select \"some other form\", the resulting grammar will not parse sentences where the agent and patient are equally ranked.  You will need to edit the starter grammar manually to add the other form.)</p>"
+. direct "Direct" "direct"
+. other "Some other form" "some other form"
+
+
+Section tense-aspect-mood "Tense, Aspect and Mood"
+
+Label "<p>You may define semantic features directly related to
+tense, aspect and mood on this page as well as a syntactic feature related
+to verb forms. If additional features are needed for defining tense, aspect or mood  in your language,e.g., for defining arbitrary or
+quasi-semantic verb classes, you may define them on the Other Features
+page.</p>"
+
+Label "<h3>Semantic Features</h3>"
+Label "<div style=\"padding-left: 16px\">"
+
+Label "<h4><span class=\"feat\">tense</span></h4>"
+
+Label "Comrie (1985:9) defines <span class=\"dfn\">tense</span> as
+\"... grammaticalized expression of location in time\". Which
+categories of tense are grammaticalized varies across languages. You
+may create a hierarchy of values for the feature <span
+class=\"feat\">tense</span> as appropriate for your language. If your
+language does not have tense as a grammatical category, leave this
+section blank."
+
+Label "You may define a hierarchy of values for the <span
+class=\"feat\">tense</span> feature in one of two ways:"
+
+Label "<ul><li>Select among the following common hierarchy elements
+and supplement with subtypes as needed, or <li>Build your own
+hierarchy.</ul>"
+
+Radio tense-definition "Tense hierarchy definition style" "" ""
+. choose "Choose" "" "<b>Select among common hierarchy elements</b><br>"
+
+Label "<div style=\"padding-left: 35px\">"
+
+Label "<br>Which of the following are tense hierarchy elements in your
+language?<br><br>"
+
+Check past "Past" "" "<b>past</b><br>"
+  BeginIter past-subtype{i} "a subtype"
+    Text name "Past subtype {i} name" "Subtype: " "" 20
+  EndIter past-subtype
+
+Check present "Present" "<br><br>" "<b>present</b><br>"
+  BeginIter present-subtype{i} "a subtype"
+    Text name "Present subtype {i} name" "Subtype: " "" 20
+  EndIter present-subtype
+
+Check future "Future" "<br><br>" "<b>future</b><br>"
+  BeginIter future-subtype{i} "a subtype"
+    Text name "Future subtype {i} name" "Subtype: " "" 20
+  EndIter future-subtype
+
+Check nonpast "Non-Past" "<br><br>" "<b>nonpast</b> &nbsp;&nbsp;&nbsp;&nbsp; <font size=-1>(note: If present and/or future are also selected they are assumed to be subtypes of nonpast.)<br></font>"
+  BeginIter nonpast-subtype{i} "a subtype"
+    Text name "Non-Past subtype {i} name" "Subtype: " "" 20
+  EndIter nonpast-subtype
+
+Check nonfuture "Non-Future" "<br><br>" "<b>nonfuture</b> &nbsp;&nbsp;&nbsp;&nbsp; <font size=-1>(note: If present and/or past are also selected they are assumed to be subtypes of nonfuture.)<br></font>"
+  BeginIter nonfuture-subtype{i} "a subtype"
+    Text name "Non-Future subtype {i} name" "Subtype: " "" 20
+  EndIter nonfuture-subtype
+
+Label "</div>"
+
+Radio tense-definition "Tense hierarchy definition style" "" ""
+. build "Build" "" "<b>Build your own <span class=\"feat\">tense</span> hierarchy</b><br>"
+
+Label "<div style=\"padding-left: 35px\">"
+Label "<br>Build your hierarchy from the top down starting with
+subtypes of the supertype: tense.</p>"
+
+BeginIter tense{i} "a tense type" 
+
+  Text name "tense {i} name" "Tense name: " "" 20
+  BeginIter supertype{j} "a Supertype" 1
+
+    Select name "Tense {i} supertype {j} name" "Supertype: " ""
+    fillregex p=tense[0-9]+_name n=1
+    . tense "Tense" "tense"
+
+  EndIter supertype
+
+EndIter tense
+Label "</div>"
+
+Label "<h4><span class=\"feat\">aspect</span></h4>"
+
+Label "<p>According to Kibort (2008), \"The term 'aspect' designates
+the perspective taken on the internal temporal organisation of the
+situation, and so 'aspects' distinguish different ways of viewing the
+internal temporal constituency of the same situation (Comrie
+1976:3ff,...; Bybee 2003:157). The 'situation' is meant here as [a]
+general term covering events, processes, states, etc., as expressed by
+the verb phrase or the construction. Unlike tense, which is
+situation-external time, aspect is situation-internal and non-deictic,
+as it is not concerned with relating the time of the situation to any
+other time point.\""
+
+Label "<p>\"Aspectual meaning of a clause can be broken up into two
+independent aspectual components (Smith 1991/1997): Aspectual
+viewpoint [and] Situation type ... .\" Aspectual viewpoint conveys
+\"the temporal perspective from which the situation is presented.\"
+Situation type \"classifies the situation according to its temporal
+properties.\" (Kibort 2008)"
+
+Label "<p>See references below, especially Kibort (2008), for more
+detail."
+
+Label "<div style=\"padding-left: 35px\">"
+
+Label "<p><b>Viewpoint Aspect</b>"
+
+Label "<p>Viewpoint aspect is also commonly referred to as grammatical
+aspect.  The most common viewpoint opposition is
+perfective/imperfective.You may create a hierarchy consisting of only this opposition or you may create a hierarchy of your own, as appropriate for your language. If your language does not have viewpoint aspect (also commonly referred to as grammatical aspect) as a grammatical category, leave this section blank.<br><br>"
+
+Check perimper "Perfective/Imperfective" "" "Create a hierarchy consisting of just the values <b>perfective</b> and <b>imperfective</b> as subtypes of aspect."
+
+Label "<p>Build your own hierarchy of values for the feature <span class=\"feat\">aspect</span>. Note: this is an alternative to choosing the binary opposition above -- if hierarchy elements are defined below the choice above is overridden."
+
+BeginIter aspect{i} "an aspect type" 
+
+  Text name "aspect {i} name" "Aspect name: " "" 20
+  BeginIter supertype{j} "a Supertype" 1
+
+    Select name "Aspect {i} supertype {j} name" "Supertype: " ""
+    fillregex p=aspect[0-9]+_name n=1
+    . aspect "Aspect" "aspect"
+
+  EndIter supertype
+
+EndIter aspect
+
+Label "<p><b>Situation Aspect</b>"
+
+Label "<p>The term \"situation aspect\" overlaps with, or subsumes,
+lexical aspect, inherent aspect and some uses of the term
+Aktionsart. Situation aspect values may be conveyed by the meaning of
+the verb or through overt morphological marking however situation
+aspect values may depend on qualities of verbal arguments or
+sentential adjuncts (for example). In this case the values are
+compositionally derived."
+
+Label "<p><span style=\"color:red\">Note: The implementation of
+situation aspect is still under development; There is, as yet, no
+implementation of compositionally derived situation aspect. Currently
+the <span class=\"feat\">situation</span> feature may be used to
+represent inherent lexical qualities or those conveyed through overt
+morphological marking. This more accurately reflects uses of the term
+\"lexical aspect\".</p>"
+
+Label "<p>You may create a hierarchy of values for the feature <span
+class=\"feat\">situation</span>, reflecting inherent or
+morphologically marked situation aspect. If this is not appropriate
+for your language, leave this section blank."
+
+BeginIter situation{i} "a situation type" 
+
+  Text name "situation {i} name" "Situation name: " "" 20
+  BeginIter supertype{j} "a Supertype" 1
+
+    Select name "Situation {i} supertype {j} name" "Supertype: " ""
+    fillregex p=situation[0-9]+_name n=1
+    . situation "Situation" "situation"
+
+  EndIter supertype
+
+EndIter situation
+
+Label "</div>"
+Label "</div>"
+
+Label "<div style=\"padding-left: 16px\">"
+Label "<h4><span class=\"feat\">mood</span></h4>"
+
+Label "According to Palmer (1986), the term 'mood' is generally used to refer to modality reflected in verbal inflection. The broader category modality is a somewhat vague grammatical category that is quite language specific. However, modality may be roughly described as relating to the opinions or attitudes of the speaker. Modality may include mood (e.g., subjunctive), modal systems and notions of hearsay or evidentiality. While we call this feature <span class=\"feat\">mood</span> it may be used to define values of the broader category of modality, if desired."
+
+Label "You may define values for the feature <span class=\"feat\">mood</span> below. You may select a simple set of values for the feature, reflecting a subjunctive/indicative contrast, or you may define a hierarchy of values for the feature as appropriate for your language. If you would like, you may leave this section blank.<br><br>"
+
+Check subjind "Subjunctive/Indicative" "" "Create a hierarchy consisting of just the values <b>subjunctive</b> and <b>indicative</b> as subtypes of mood."
+
+Label "<p>Build your own hierarchy of values for the feature <span class=\"feat\">mood</span>. Note: this is an alternative to choosing the binary opposition above -- if hierarchy elements are defined below the choice above is overridden."
+
+BeginIter mood{i} "a mood type"
+
+  Text name "mood {i} name" "Mood name: " "" 20
+  BeginIter supertype{j} "a Supertype" 1
+
+     Select name "Mood {i} supertype {j} name" "Supertype: " ""
+     fillregex p=mood[0-9]+_name n=1
+     . mood "Mood" "mood"
+
+  EndIter supertype
+
+EndIter mood
+
+Label "</div>"
+
+Separator
+
+Label "<h3>Syntactic Feature</h3>"
+
+Label "<div style=\"padding-left: 16px\">"
+Label "<h4><span class=\"feat\">form</span></h4>"
+Label "<p>In addition to the semantic features tense and aspect, your
+grammar may utilize a syntactic feature characterizing the form the
+verb takes. The <span class=\"feat\">form</span> feature distinguishes
+finite from non-finite forms and can be used to constrain auxiliary
+complement forms. If not applicable, you may leave this section
+blank.</p>"
+Label "<p>If you have indicated on the word order page that your
+language has auxiliary verbs, your grammar will include
+<tt>finite</tt> and <tt>nonfinite</tt> as values of <span
+class=\"feat\">form</span>. If your language does not have auxiliaries
+you may still include <tt>finite</tt> and <tt>nonfinite</tt> as values
+of <span class=\"feat\">form</span> in your grammar:<br>"
+Check noaux-fin-nf "Finite-nonfinite" "" "My language has no auxiliaries but does make a syntactically relevant finite/non-finite distinction.</p>"
+
+Label "<p>It is often the case that languages have multiple non-finite
+forms, e.g., English: infinitive, past participle, present
+participle. If applicable, you may expand the hierarchy of verb <span
+class=\"feat\">form</span> values in your grammar by providing
+subtypes of <tt>finite</tt> and <tt>nonfinite</tt>:</p>"
+
+Label "<div style=\"padding-left: 35px\">"
+
+Label "<b>nonfinite</b>:"
+  BeginIter nf-subform{i} "a subtype"
+    Text name "Nonfinite subtype {i} name" "nonfinite subtype name: " "" 20
+  EndIter nf-subform
+
+Label "<br><br><b>finite</b>:"
+  BeginIter fin-subform{i} "a subtype"
+    Text name "Finite subtype {i} name" "finite subtype name: " "" 20
+  EndIter fin-subform
+
+Label "</div>"
+Label "</div>"
+
+Label "<h4>References</h4>"
+Label "<font size=\"2\">"
+Label "<p>Bybee, Joan L. 2003. Aspect. In: Frawley, W.J. (ed.)
+International Encyclopedia of Linguistics. Second Edition. Oxford:
+OUP. 157-158."
+Label "<p>Comrie, Bernard. 1976. Aspect. Cambridge: CUP."
+Label "<p>Comrie, Bernard. 1985. Tense. Cambridge: CUP."
+Label "<p>Kibort, Anna. \"Aspect.\" Grammatical Features. 7 January
+2008. <a
+href=\"http://www.features.surrey.ac.uk/features/aspect.html\">http://www.features.surrey.ac.uk/features/aspect.html</a>."
+Label "<p>Palmer, Frank R. 1986. Mood and Modality. Cambridge: CUP." 
+Label "<p>Smith, Carlota. 1997. The Parameter of Aspect. (Second
+Edition). Dordrecht: Kluwer Academic Publishers. (Revised version of
+Smith, Carlota. 1991. The Parameter of Aspect. Dordrecht: Kluwer
+Academic Publishers)."
+Label "</font>"
+
+
+Section other-features "Other Features"
+
+Label "<p>If your language has other features beyond those that can be
+defined elsewhere in this questionnaire, you can define those features
+here.  For example, if your language has merged features (e.g. <span
+class=\"feat\">pernum</span> instead of <span
+class=\"feat\">person</span> and <span class=\"feat\">number</span>,
+<span class=\"feat\">gendnum</span> instead of <span
+class=\"feat\">gender</span> and <span class=\"feat\">number</span>),
+they can be defined below.</p>"
+
+Label "<p>For each feature, you will define a type hierarchy, which
+consists of a root type you will name (e.g. <span
+class=\"feat\">pernum</span>), and then a series of other values of
+the feature, each of which is the subtype of at least one of the other
+values, possibly the root.</p>"
+
+BeginIter feature{i} "a Feature"
+
+  Text name "Feature {i} name" "Feature name: " "<br>" 20
+
+  Radio type "Feature {i} type" "Is this feature:<br>" ""
+  . head "Head" "" " a syntactic feature (which will go under <span class=\"feat\">head</span>)?<br>"
+  . index "Index" "" " a semantic feature (which will go under <span class=\"feat\">index</span>)?<br>"
+
+  Label "Values in the feature hierarchy:"
+
+  BeginIter value{j} "a Value"
+
+   Text name "Feature {i} Value {j} name" "Value name: " "" 20
+
+    BeginIter supertype{k} "a Supertype" 1
+
+      Select name "Feature {i} Value {j} supertype {k} name" "Supertype: " ""
+      fillregex p=(feature{i}_name|feature{i}_value[0-9]+_name) n=1
+
+    EndIter supertype
+
+  EndIter value
+
+EndIter feature
+
+
+Section sentential-negation "Sentential Negation"
+
+Label "<p>Please indicate which strategy or strategies your language
+uses for sentential negation (as distinct from constituent
+negation). (You may leave this section blank, in which case your
+grammar will not include any information about negation.)</p>"
+
+Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <span class=\"feat\">negation</span> with possible value <tt>plus</tt> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">negation</span> <tt>plus</tt>] will produce lexical rules that add the semantics of negation.</p>" 
+
+Check adv-neg "Adverbial negation" "<p>" "An adverb which is an independent modifier of:<br>"
+
+Radio neg-mod "Negative adverb modifies" "" ""
+. s "S" "" "S "
+. vp "VP" "" "VP "
+. v "V" "" "V "
+
+Radio neg-order "Negative adverb order" "and appears " ""
+. before "Before" "" "before "
+. after "After" "" "after "
+. either "Either" "" "on either side of the category it modifies.<br>"
+
+Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p>" 20
+
+Label "<p>Notes: This section is under construction.  We hope to soon
+return the functionality of allowing different kinds of interaction
+between adverbial and inflectional negation, as well as the
+functionality for negation by selected adverbs.</p>"
+
+
+Section coordination "Coordination"
+
+Label "<p>Languages can have multiple strategies for marking
+coordination that differ among the various parts of speech. The Matrix
+supports both lexical and morphological marking of coordination and
+several different marking patterns, including:</p>"
+
+Label "<div style=\"padding-left: 16px\"><p><span
+class=\"dfn\">Monosyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B
+and C&quot; (last coordinand is marked; also allows &quot;A and B and
+C&quot;)<br><span
+class=\"dfn\">Polysyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A
+and B and C&quot; (all coordinands but the first are marked)<br><span
+class=\"dfn\">Omnisyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;and
+A and B and C&quot; (all coordinands are marked)<br><span
+class=\"dfn\">Asyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B
+C&quot; (no marking; also known as <span
+class=\"dfn\">juxtaposition</span>)</div></p>"
+
+Label "<p>You may define any number of coordination strategies below.
+You may also leave this section blank, in which case the starter
+grammar produced will not support coordination.</p>"
+
+BeginIter cs{i} "a Coordination Strategy"
+
+Label "<p>Coordination Strategy {i}:<br>&nbsp;&nbsp;&nbsp;&nbsp;in
+which"
+
+Check n "Coordination Strategy {i} coordinates Ns" "" "nouns "
+Check np "Coordination Strategy {i} coordinates NPs" "" "NPs "
+Check vp "Coordination Strategy {i} coordinates VPs" "" "VPs "
+Check s "Coordination Strategy {i} coordinates Ss" "" "sentences<br>"
+
+Radio pat "Coordination Strategy {i} pattern" "&nbsp;&nbsp;&nbsp;&nbsp;are marked in a " ""
+. mono "Monosyndeton" "" "monosyndeton "
+. poly "Polysyndeton" "" "polysyndeton "
+. omni "Omnisyndeton" "" "omnisyndeton "
+. a "Asyndeton" "" "asyndeton &nbsp; pattern<br>"
+
+Radio mark "Coordination Strategy {i} mark" "&nbsp;&nbsp;&nbsp;&nbsp;by a " ""
+. word "Word" "" "word "
+. affix "Affix" "" "affix "
+
+Text orth "Coordination Strategy {i} spelling" "spelled " "" 10
+
+Radio order "Coordination Strategy {i} order" "that comes " ""
+. before "Before" "" "before "
+. after "After" "" "after the coordinand"
+
+Label "</p>"
+
+EndIter cs
+
+
+Section matrix-yes-no "Matrix Yes/No Questions"
+
+Label "<p>Please indicate which strategy your language uses to form
+matrix yes-no questions.  You may leave this section blank, in which
+case your grammar will not include a question-forming strategy.</p>"
+
+Check q-part "Yes/No question particle" "" "A separate question particle: "
+
+Radio q-part-order "Question particle order" "" ""
+. before "Before" "" "sentence initial "
+. after "After" "" "sentence final<br>"
+
+Text q-part-orth "Question particle spelling" "&nbsp;&nbsp;&nbsp;&nbsp;Spelling of question particle: " "<br>" 40
+
+Check q-infl "Inflection" "<p>" "Verbal inflection: Checking this box enables a features called <span class=\"feat\">question</span> with possible value <tt>plus</tt> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">question</span> <tt>plus</tt>] will produce lexical rules that add the semantics of questions.</p>"
+
+Check q-inv "Subject-verb inversion" "" "Subject-verb inversion: "
+
+Radio q-inv-verb "Inverted verb in questions" "" ""
+. main "Main" "" "main verbs only "
+. aux "Auxiliary" "" "auxiliaries only "
+. main-aux "Main and auxiliary" "" "any verb<br>"
+
+
+
+Section arg-opt "Argument Optionality"
+
+Label "<p> Languages place different restrictions on argument
+optionality.  Some require that subjects (and objects of transitive
+verbs) always be overtly realized as separate words. Others allow
+subjects and/or objects to be dropped for all verbs or only for
+certain verbs or in particular contexts.  For example, English always
+requires overt subjects (<i>I studied</i>) whereas in Arabic the
+corresponding sentence does not require a pronoun (<i>darastu</i>).
+In languages which allow arugment dropping a marker is often attached
+to the verb that contains all of the information that a pronoun
+would--person, number, and gender.  This is not always the case,
+however.  Japanese for instance allows subject dropping but does not
+mark the verb for person, number or gender (Dryer 2008).</p>"
+
+Label "<p>Does your language allow argument optionality?  If so,
+choose the option that best describes your language.  If not, leave
+this page blank.</p>"
+Label "<p> NOTE: The questionnaire is only able to handle subject and
+object marking that occurs on the verb.  It is unable to handle
+clitics which can attach to words other than the verb.</p>"
+
+Label "<h3>Subject Dropping</h3>"
+Label "<p>In some languages subjects can always be dropped and in
+others they can only be dropped for certain verbs or in certain
+contexts.  Tamil generally allows subject dropping but does not allow
+verbs relating to the weather to drop their subjects (Asher 1985).
+Arabic allows subjects to be dropped for all verbs, tenses and persons
+whereas Hebrew does not allow subjects to be dropped in the present
+tense (Vainikka and Levy 1999).  If your language only allows subjects
+to be dropped for certain combinations of verb tenses/aspects and
+persons/number, please choose the feature values for those
+combinations.</p>"
+
+Radio subj-drop "Subject Drop" "<p>Subject dropping can occur </p>" ""
+. subj-drop-all "Subj Drop Always" "" "with any verb<br>"
+. subj-drop-lex "Subj Drop Some" "" "only with certain verbs"
+
+Label "<p>NOTE: When completing the lexicon page, for each verb type
+which does not allow subject dropping, select the feature <span
+class=\"feat\">OPT</span> - and marked on the subject.</p>"
+
+Radio subj-mark-drop "Subj Mark Drop" "<p>When a subject is dropped, a subject marker on the verb is</p>" ""
+. subj-mark-drop-req "Subj Mark Req" "" "required<br>"
+. subj-mark-drop-opt "Subj Mark Opt" "" "optional<br>"
+. subj-mark-drop-not "Subj Mark Not" "" "not permitted"
+
+Radio subj-mark-no-drop "Subj Mark No Drop" "<p>When a subject is overt (not dropped), a subject marker on the verb is</p>" ""
+. subj-mark-no-drop-req "Subj Mark Req" "" "required<br>"
+. subj-mark-no-drop-opt "Subj Mark Opt" "" "optional<br>"
+. subj-mark-no-drop-not "Subj Mark Not" "" "not permitted"
+
+Label "<p>NOTE: When completing the lexicon page, for each morpheme
+that is optional or required when a subject is dropped and not
+permitted when an overt subject is present, select <span
+class=\"feat\">overt-arg</span> not permitted and marked on the
+subject.</p>"
+
+Label "<p> For each morpheme that is not permitted when a subject is
+dropped and required or optional when an overt subject is present,
+select <span class=\"feat\">drp-arg</span> not permitted and marked on
+the subject.</p>"
+
+Label "<p> For each morpheme that is optional when a subject is
+dropped and required when an overt subject is present, select 
+<span class=\"feat\">dropped-arg</span>  permitted and marked 
+on the subject.</p>"
+
+Label "<p>For each morpheme that is required when a subject is dropped and 
+optional when an overt subject is present, select 
+<span class=\"feat\">overt-arg</span> permitted and marked on the subject.</p>"
+
+Radio subj-con  "Subject Context" "<p>Subject dropping occurs in </p>" ""
+. subj-con-always "Subj Context All" "" "all contexts<br>"
+. subj-con-some "Subj Context Some" "" "some contexts"
+
+Label "<p><b>Contexts</b></p>"
+
+BeginIter context{i} "a Context"
+  Label "<b>Context {i}</b><br>"
+  Label "Features:"
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Context {i} feature {j} name" "Name: " " "
+    fillnames c=both
+
+    MultiSelect value "Context {i} feature {j} value" "Value: " ""
+    fillvalues p=context{i}_feat{j}_name
+
+    Select head "Context {i} feature {j} head" "Specified on: " ""
+    . verb "The verb" "the verb"
+    . subj "The subject" "the subject NP"
+    . obj "The object" "the object NP"
+    . higher "Higher-ranked" "the higher-ranked NP"
+    . lower "Lower-ranked" "the lower-ranked NP"
+
+  EndIter feat    
+
+EndIter context
+
+Label "<h3>Object Dropping</h3>"
+Label "<p>Some languages allow all transitive verbs to drop their
+objects. In other languages object dropping is restricted to certain
+verbs.  English is an example of the latter.  In general transitive
+verbs must have an overt object, but there are a few verbs such as eat
+which allow object dropping.</p>"
+
+Radio obj-drop "Object Drop" "<p>Object dropping is </p>" ""
+. obj-drop-all "Obj Drop Always" "" "always allowed<br>"
+. obj-drop-lex "Obj Drop Lex" "" "lexically licensed"
+
+Label "<p>NOTE: When completing the lexicon page, for each verb which does not allow object dropping, select the feature <span
+class=\"feat\">OPT</span> - and marked on the object.</p>"
+
+Radio obj-mark-drop "Obj Mark Drop" "<p>When an object is dropped, an object marker on the verb is  </p>" ""
+. obj-mark-drop-req "Obj Mark Req" "" "required<br>"
+. obj-mark-drop-opt "Obj Mark Opt" "" "optional<br>"
+. obj-mark-drop-not "Obj Mark Not" "" "not permitted<br>"
+
+Radio obj-mark-no-drop "Obj Mark Drop" "<p>When an object is overt (not dropped), an object marker on the verb is</p>" ""
+. obj-mark-no-drop-req "Obj Mark Req" "" "required<br>"
+. obj-mark-no-drop-opt "Obj Mark Opt" "" "optional<br>"
+. obj-mark-no-drop-not "Obj Mark Not" "" "not permitted<br>"
+
+Label "<p>NOTE: When completing the lexicon page, for each morpheme
+that is optional or required when an object is dropped and not
+permitted when an overt object is present, select <span
+class=\"feat\">overt-arg</span> not permitted and marked on the
+object.</p>"
+
+Label "<p> For each morpheme that is not permitted when an object is
+dropped and required or optional when an overt object is present,
+select <span class=\"feat\">drp-arg</span> not permitted and marked on
+the object.</p>"
+
+Label "<p> For each morpheme that is optional when an object is
+dropped and required when an overt object is present, select
+<span class=\"feat\">dropped-arg</span>  permitted and marked
+on the object.</p>"
+
+Label "<p>For each morpheme that is required when an object is dropped and
+optional when an overt object is present, select
+<span class=\"feat\">overt-arg</span> permitted and marked on the object.</p>"
+
+
+Label "<h4>References</h4>"
+Label "<font size=\"2\">"
+Label "<p>Asher, R.E. 1985. Tamil. London:Croom-Helm.</p>"
+Label "<p>Dryer, M. 2008. \"Expression of Pronominal Subjects.\"
+WALS. <a
+href=\"http://wals.info/feature/description/101\">http://wals.info/feature/description/101</a></p>"
+Label "<p> Vainikka, A and Levy, Y. 1999. \"Empty Subjects in Finnish
+and Hebrew.\" Natural Language and Linguistic Theory 17: 614-71.</p>"
+Label "</font>"
+
+Section lexicon "Lexicon"
+
+Label "<p>On this page you will define <span class=\"dfn\">lexical
+types</span> and <span class=\"dfn\">lexical items</span> within those
+types.  For most lexical items you must provide both the spelling of
+the stem and a <span class=\"dfn\">predicate</span> (or <span
+class=\"dfn\">relation</span>) that identifies the stem's semantic
+contribution (e.g. <tt>_cat_n_rel</tt> for the noun relation
+contributed by <i>cat</i> or <tt>_sleep_v_rel</tt> for the verb
+relation contributed by <i>sleep</i>).  If the predicate is empty
+upon adding a spelling the page will create a predicate value based
+on the <a href=http://wiki.delph-in.net/moin/RmrsPos>DELPH-IN</a>
+standards. If you completed the Argument
+Optionality page, be sure to specify whether each verb type allows
+subject and or object dropping by selecting the correct value for the
+<span class=\"feat\">opt</span> feature.</p>"
+
+
+Label "<p>In addition to lexical types, you can define inflectional
+morphology for nouns, verbs, and determiners.  To do so, first define
+one or more inflectional <span class=\"dfn\">position classes</span>,
+which determine the order in which morphemes appear, then define one or
+more <span class=\"dfn\">morphemes</span> that can appear in each
+position class, along with the <span class=\"dfn\">features</span>
+specified by each morpheme.  To determine the order of position classes,
+you must define one or more <span class=\"dfn\">inputs</span> for each.
+For morphemes that attach directly to stems, the input will be a lexical
+type; for morphemes that attach to already-inflected stems, the input
+will be another position class.</p>"
+
+Label "<a id=\"toggle_all_lex_button\" onclick=\"toggle_all_display_lex(1)\">&#9660; all sections</a>"
+
+Separator
+
+Label "<h3>Noun Types</h3>"
+
+BeginIter noun{i} "a Noun Type" 1
+
+  Label "<b>Noun type {i}</b>:"
+
+  Label "<div style=\"padding-left: 16px\">"
+
+  Text name "Noun {i} name" "Type name: " "<br><br>" 20
+
+  Label "Features:"
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Noun {i} feature {j} name" "Name: " " "
+    fillnames c=noun
+
+    MultiSelect value "Noun {i} feature {j} value" "Value: " ""
+    fillvalues p=noun{i}_feat{j}_name
+
+  EndIter feat
+
+  Radio det "Noun {i} determiner" "<p>For nouns of this type, a determiner is " "</p>"
+  . obl "Obligatory" "" "obligatory "
+  . opt "Optional" "" "optional "
+  . imp "Impossible" "" "impossible "
+
+  Label "Stems:"
+
+  BeginIter stem{j} "a Stem" 1
+
+    Text orth "Noun {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('noun{i}_stem{j}', 'n')"
+
+    Text pred "Noun {i} stem {j} predicate" " Predicate: " "" 30
+
+  EndIter stem
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Noun {i} Requires" "<p>Noun {i} requires one of the following: " "</p>"
+    fillregex p=noun-pc[0-9]+(_lrt[0-9]+)?_name
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Noun {i} Forbids" "<p>Noun {i} forbids the following position class: " "</p>"
+    fillregex p=noun-pc[0-9]+(_lrt[0-9]+)?_name
+
+  EndIter forbid
+
+  Label "</div>"
+
+EndIter noun
+
+Separator
+
+Label "<h3>Noun Inflection</h3>"
+
+BeginIter noun-pc{i} "a Position Class"
+
+  Text name "Noun Position Class {i} Name" "<b>Noun Position Class {i}</b>:<br/>Position Class Name: " " " 20
+
+  Check obligatory "Noun Position Class {i} Obligatory" "<br/>Obligatorily occurs:" ""
+
+  Select order "Noun Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
+  . prefix "Prefix" "prefix"
+  . suffix "Suffix" "suffix"
+
+  MultiSelect inputs "Noun Position Class {i} Input" "<br/>Possible inputs:" ""
+  fillregex p=(noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
+  . noun "Any noun" "any noun"
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Noun Position Class {i} Requires" "<p>Noun Position Class {i} requires one of the following: " "</p>"
+    fillregex p=(noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
+    . noun "Any noun" "any noun"
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Noun Position Class {i} Forbids" "<p>Noun Position Class {i} forbids the following: " "</p>"
+    fillregex p=(noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
+    . noun "Any noun" "any noun"
+
+  EndIter forbid
+
+  Label "<p>Lexical Rule Types that appear in this Position Class:</p>"
+
+  BeginIter lrt{j} "a Lexical Rule Type"
+
+    Text name "Noun Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
+
+    MultiSelect supertypes "Noun Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
+    fillregex p=noun-pc{i}_lrt[0-9]+_name
+
+    Label "<p>Features:</p>"
+
+    BeginIter feat{k} "a Feature"
+
+      Select name "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
+      fillnames c=noun
+
+      MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
+      fillvalues p=noun-pc{i}_lrt{j}_feat{k}_name
+
+    EndIter feat
+
+    Label "<p>Morphotactic Constraints:</p>"
+
+    BeginIter require{k} "a Require constraint"
+
+      MultiSelect others "Noun Position Class {i} Lexical Rule Type {j} Requires" "<p>Lexical Rule Type {j} requires one of the following: " "</p>"
+      fillregex p=(noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
+      . noun "Any noun" "any noun"
+
+    EndIter require
+
+    BeginIter forbid{k} "a Forbid constraint"
+
+      Select others "Noun Position Class {i} Lexical Rule Type {j} forbids" "<p>Lexical Rule Type {j} forbids the following: " "</p>"
+      fillregex p=(noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
+      . noun "Any noun" "any noun"
+
+    EndIter forbid
+
+    Label "<p>Lexical Rule Instances:</p>"
+
+    BeginIter lri{k} "a Lexical Rule Instance"
+
+      Radio inflecting "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
+      . no "No" "" "No affix"
+      . yes "Yes" "" "Affix"
+
+      Text orth "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "spelled" "" 20
+
+    EndIter lri
+
+  EndIter lrt
+
+EndIter noun-pc
+
+Separator
+
+Label "<h3>Verb Types</h3>"
+
+BeginIter verb{i} "a Verb Type" 2
+
+  Label "<b>Verb type {i}</b>:"
+
+  Label "<div style=\"padding-left: 16px\">"
+
+  Text name "Verb {i} name" "Type name: " "<br><br>" 20
+
+  Label "Features:"
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Verb {i} feature {j} name" "Name: " " "
+    fillnames c=both
+
+    MultiSelect value "Verb {i} feature {j} value" "Value: " ""
+    fillvalues p=verb{i}_feat{j}_name
+
+    Select head "Verb {i} feature {j} head" "Specified on: " ""
+    . verb "The verb" "the verb"
+    . subj "The subject" "the subject NP"
+    . obj "The object" "the object NP"
+    . higher "Higher-ranked" "the higher-ranked NP"
+    . lower "Higher-ranked" "the lower-ranked NP"
+
+  EndIter feat
+
+  Select valence "Verb {i} arguments" "<p>Argument structure: " "</p>"
+  fillverbpat
+
+  Select bipartitepc "Verb {i} bipartite stems position class" "If this verb class includes bipartite stems, select the position class for the affix portion of the stems: " "</p>"
+  fillregex p=verb-pc[0-9]+_name
+
+  Label "Stems:"
+  BeginIter stem{j} "a simple Stem" 1
+
+    Text orth "Verb {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('verb{i}_stem{j}', 'v')"
+
+    Text pred "Verb {i} stem {j} predicate" " Predicate: " "" 30
+
+  EndIter stem
+
+  BeginIter bistem{j} "a bipartite Stem" 
+
+    Text orth "Verb {i} bipartite stem {j} spelling" "Root spelling: " "" 30 "fill_pred('verb{i}_bistem{j}', 'v')"
+
+    Text aff "Verb {i} bipartite stem {j} affix" "Affix spelling: " "" 30
+
+    Text pred "Verb {i} bipartite stem {j} predicate" " Predicate: " "" 30
+
+  EndIter bistem
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Verb {i} requires" "<p>Verb {i} requires one of the following position classes: " "</p>"
+    fillregex p=(verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Verb {i} forbids" "<p>Verb {i} forbids the following position class: " "</p>"
+    fillregex p=(verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
+
+  EndIter forbid
+
+  Label "</div>"
+
+EndIter verb
+
+Separator
+
+Label "<h3>"
+Label auxlabel "Auxiliary Verb Types</h3>"
+
+  Label "<p>Auxiliaries may contribute an independent predicate, e.g.,
+  English modal <i>can</i>. If you define a type that contributes a
+  predicate, you may also specify semantic feature values on the
+  auxiliary, if desired. Alternatively, auxiliaries may contribute no
+  predicate of their own, e.g., English auxiliary <i>be</i>. In this
+  case, they do not directly contribute semantic values; instead, they
+  may contribute indirectly by placing constraints on their
+  complements.  Note that auxiliary features defined here place no
+  constraints on the semantic values of the complement; constraints on
+  the complement should be defined as complement features.</p>"
+
+BeginIter aux{i} "an Auxiliary Type" 
+
+  Label "<b>Auxiliary type {i}</b>:"
+
+  Label "<div style=\"padding-left: 16px\">"
+
+  Text name "Aux {i} type name" "Type name: " "<br>" 30
+
+  Radio sem "Aux {i} semantics" "<br>This auxiliary type contributes:<br>" ""
+  . no-pred "No predicate" "" "No predicate.<br>"
+  . add-pred "Predicate" "" "An independent predicate."
+
+  Label "<div style=\"padding-left: 25px\">"
+
+  BeginIter feat{j} "an auxiliary feature"
+
+     Select name "Aux {i} feature {j} name" "Name: " ""
+     fillnames c=verb
+
+     MultiSelect value "Aux {i} feature {j} value" "Value: " ""
+     fillvalues p=aux{i}_feat{j}_name
+
+     Select head "Aux {i} feature {j} head" "Specified on: " ""
+     . verb "The auxiliary" "the auxiliary"
+     . subj "The subject" "the subject NP"
+     . obj  "The object"  "the object NP"
+     . higher "Higher-ranked"  "the higher-ranked NP"
+     . lower "Lower-ranked" "the lower-ranked NP"
+
+  EndIter feat
+  Label "</div>"
+
+  Radio subj "Aux {i} subject" "If this auxiliary type takes a VP or V complement, select the subject type:<br>" ""
+  . np "Noun phrase" "" "noun phrase without case restrictions <br>"
+  . np-comp-case "NP comp case" "" "noun phrase bearing the case the verbal complement assigns to its subject <br>"
+  . np-aux-case "NP aux case" "" "noun phrase, receiving the following case from its auxiliary: "
+
+  Select subj_case "Aux {i} subject-case" "" ""
+  fillvalues p=case l=1
+
+  Radio subj "Aux {i} subject" "" ""
+  . adp "Adpositional phrase" "<br>" "adpositional phrase<br><br>"
+
+  Label "Complement Features:&nbsp; &nbsp; &nbsp; &nbsp; (Note: A
+  value for the feature FORM is required.)<br>"
+
+  BeginIter compfeature{j} "a complement feature" 1
+
+    Select name "Aux {i} complement feature {j} name" "Name: " ""
+    fillnames c=verb
+
+    MultiSelect value "Aux {i} complement feature {j} value" "Value: " ""
+    fillvalues p=aux{i}_compfeature{j}_name
+
+  EndIter compfeature
+
+  Label "<br><br>Stems:"        
+
+  BeginIter stem{j} "a Stem" 1
+
+    Text orth "Aux {i} stem {j} spelling" "Spelling: " "" 30 "aux_fill_pred('aux{i}', 'stem{j}', 'v')"
+
+    Text pred "Aux {i} stem {j} predicate" "&nbsp;&nbsp;&nbsp;&nbsp;Predicate (if applicable): " "" 30
+
+  EndIter stem
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Aux {i} requires" "<p>Aux {i} requires one of the following position classes: " "</p>"
+    fillregex p=(verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Aux {i} forbids" "<p>Aux {i} forbids the following position class: " "</p>"
+    fillregex p=(verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
+
+  EndIter forbid
+
+  Label "</div>"
+
+EndIter aux
+
+Separator
+
+Label "<h3>Verb Inflection</h3>"
+
+BeginIter verb-pc{i} "a Position Class"
+
+  Text name "Verb Position Class {i} Name" "<b>Verb Position Class {i}</b>:<br/>Position Class Name: " " " 20
+
+  Check obligatory "Verb Position Class {i} Obligatory" "<br/>Obligatorily occurs:" ""
+
+  Select order "Verb Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
+  . prefix "Prefix" "prefix"
+  . suffix "Suffix" "suffix"
+
+  MultiSelect inputs "Verb Position Class {i} Input" "<br/>Possible inputs:" ""
+  fillregex p=(verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
+  . verb "Any verb" "any verb"
+  . iverb "Any intransitive verb" "any intransitive verb"
+  . tverb "Any transitive verb" "any transitive verb"
+  . aux "Any auxiliary verb" "any auxiliary verb"
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Verb Position Class {i} Requires" "<p>Verb Position Class {i} requires one of the following: " "</p>"
+    fillregex p=(verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
+    . verb "Any verb" "any verb"
+    . iverb "Any intransitive verb" "any intransitive verb"
+    . tverb "Any transitive verb" "any transitive verb"
+    . aux "Any auxiliary verb" "any auxiliary verb"
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Verb Position Class {i} Forbids" "<p>Verb Position Class {i} forbids the following: " "</p>"
+    fillregex p=(verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
+    . verb "Any verb" "any verb"
+    . iverb "Any intransitive verb" "any intransitive verb"
+    . tverb "Any transitive verb" "any transitive verb"
+    . aux "Any auxiliary verb" "any auxiliary verb"
+
+  EndIter forbid
+
+  Label "<p>Lexical Rule Types that appear in this Position Class:</p>"
+
+  BeginIter lrt{j} "a Lexical Rule Type"
+
+    Text name "Verb Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
+
+    MultiSelect supertypes "Verb Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
+    fillregex p=verb-pc{i}_lrt[0-9]+_name
+
+    Label "<p>Features:</p>"
+
+    BeginIter feat{k} "a Feature"
+
+      Select name "Verb Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
+      fillnames c=both
+
+      MultiSelect value "Verb Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
+      fillvalues p=verb-pc{i}_lrt{j}_feat{k}_name
+
+      Select head "Verb Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " ""
+      . verb "The verb" "the verb"
+      . subj "The subject" "the subject NP"
+      . obj "The object" "the object NP"
+      . higher "Higher-ranked" "the higher-ranked NP"
+      . lower "Higher-ranked" "the lower-ranked NP"
+
+    EndIter feat
+
+    Label "<p>Morphotactic Constraints:</p>"
+
+    BeginIter require{k} "a Require constraint"
+
+      MultiSelect others "Verb Position Class {i} Lexical Rule Type {j} Requires" "<p>Lexical Rule Type {j} requires one of the following: " "</p>"
+      fillregex p=(verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
+      . verb "Any verb" "any verb"
+      . iverb "Any intransitive verb" "any intransitive verb"
+      . tverb "Any transitive verb" "any transitive verb"
+      . aux "Any auxiliary verb" "any auxiliary verb"
+
+    EndIter require
+
+    BeginIter forbid{k} "a Forbid constraint"
+
+      Select others "Verb Position Class {i} Lexical Rule Type {j} forbids" "<p>Lexical Rule Type {j} forbids the following: " "</p>"
+      fillregex p=(verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
+      . verb "Any verb" "any verb"
+      . iverb "Any intransitive verb" "any intransitive verb"
+      . tverb "Any transitive verb" "any transitive verb"
+      . aux "Any auxiliary verb" "any auxiliary verb"
+
+    EndIter forbid
+
+    Label "<p>Lexical Rule Instances:</p>"
+
+    BeginIter lri{k} "a Lexical Rule Instance"
+
+      Radio inflecting "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
+      . no "No" "" "No affix"
+      . yes "Yes" "" "Affix"
+
+      Text orth "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "spelled" "" 20
+
+    EndIter lri
+
+  EndIter lrt
+
+EndIter verb-pc
+
+Separator
+
+Label "<h3>Determiners</h3>"
+
+BeginIter det{i} "a Determiner"
+
+  Label "<b>Determiner type {i}</b>:"
+
+  Label "<div style=\"padding-left: 16px\">"
+
+  Text name "Determiner {i} name" "Type name: " "<br>" 20
+
+  BeginIter stem{j} "a Stem" 1
+
+    Text orth "Determiner {i} spelling" "Spelling: " "" 30 "fill_pred('det{i}_stem{j}', 'q')"
+
+    Text pred "Determiner {i} predicate" " Predicate: " "<br>" 30
+
+  EndIter stem
+
+  Label "<br><br>Features:"
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Determiner {i} feature {j} name" "Name: " " "
+    fillnames c=noun
+
+    MultiSelect value "Determiner {i} feature {j} value" "Value: " ""
+    fillvalues p=det{i}_feat{j}_name
+
+  EndIter feat
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Determiner {i} requires" "<p>Determiner {i} requires one of the following position classes: " "</p>"
+    fillregex p=det-pc[0-9]+(_lrt[0-9]+)?_name
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    MultiSelect others "Determiner {i} requires" "<p>Determiner {i} requires one of the following position classes: " "</p>"
+    fillregex p=det-pc[0-9]+(_lrt[0-9]+)?_name
+
+  EndIter forbid
+
+  Label "</div>"
+
+EndIter det
+
+Separator
+
+Label "<h3>Determiner Inflection</h3>"
+
+BeginIter det-pc{i} "a Position Class"
+
+  Text name "Determiner Position Class {i} Name" "<b>Determiner Position Class {i}</b>:<br/>Position Class Name: " " " 20
+
+  Check obligatory "Determiner Position Class {i} Obligatory" "<br/>Obligatorily occurs:" ""
+
+  Select order "Determiner Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
+  . prefix "Prefix" "prefix"
+  . suffix "Suffix" "suffix"
+
+  MultiSelect inputs "Determiner Position Class {i} Input" "<br/>Possible inputs:" ""
+  fillregex p=(det)(-pc([0-9]+_lrt)?)?[0-9]+_name
+  . det "Any determiner" "any determiner"
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Determiner Position Class {i} Requires" "<p>Determiner Position Class {i} requires one of the following: " "</p>"
+    fillregex p=(det)(-pc([0-9]+_lrt)?)?[0-9]+_name
+    . det "Any determiner" "any determiner"
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Determiner Position Class {i} Forbids" "<p>Determiner Position Class {i} forbids the following: " "</p>"
+    fillregex p=(det)(-pc([0-9]+_lrt)?)?[0-9]+_name
+    . det "Any determiner" "any determiner"
+
+  EndIter forbid
+
+  Label "<p>Lexical Rule Types that appear in this Position Class:</p>"
+
+  BeginIter lrt{j} "a Lexical Rule Type"
+
+    Text name "Determiner Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
+
+    MultiSelect supertypes "Determiner Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
+    fillregex p=det-pc{i}_lrt[0-9]+_name
+
+    Label "<p>Features:</p>"
+
+    BeginIter feat{k} "a Feature"
+
+      Select name "Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
+      fillnames c=noun
+
+      MultiSelect value "Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
+      fillvalues p=det-pc{i}_lrt{j}_feat{k}_name
+
+    EndIter feat
+
+    Label "<p>Morphotactic Constraints:</p>"
+
+    BeginIter require{k} "a Require constraint"
+
+      MultiSelect others "Determiner Position Class {i} Lexical Rule Type {j} Requires" "<p>Lexical Rule Type {j} requires one of the following: " "</p>"
+      fillregex p=(det)(-pc([0-9]+_lrt)?)?[0-9]+_name
+      . det "Any determiner" "any determiner"
+
+    EndIter require
+
+    BeginIter forbid{k} "a Forbid constraint"
+
+      Select others "Determiner Position Class {i} Lexical Rule Type {j} forbids" "<p>Lexical Rule Type {j} forbids the following: " "</p>"
+      fillregex p=(det)(-pc([0-9]+_lrt)?)?[0-9]+_name
+      . det "Any determiner" "any determiner"
+
+    EndIter forbid
+
+    Label "<p>Lexical Rule Instances:</p>"
+
+    BeginIter lri{k} "a Lexical Rule Instance"
+
+      Radio inflecting "Determiner Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
+      . no "No" "" "No affix"
+      . yes "Yes" "" "Affix"
+
+      Text orth "Determiner Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "spelled" "" 20
+
+    EndIter lri
+
+  EndIter lrt
+
+EndIter det-pc
+
+Separator
+
+Label "<h3>Case-marking Adpositions</h3>"
+
+BeginIter adp{i} "an Adposition"
+
+  Text orth "Adposition {i} spelling" "Spelling: " "" 20
+
+  Check opt "Adposition {i} optional" ", which is " " optional"
+
+  Select order "Adposition {i} order" " and appears " " a noun phrase<br><br>Features:<br>"
+  . after "After" "after"
+  . before "Before" "before"
+
+  BeginIter feat{j} "a Feature" 1
+
+    Select name "Adposition {i} feature {j} name" "Name: " " "
+    fillnames c=noun
+
+    MultiSelect value "Adposition {i} feature {j} value" "Value: " ""
+    fillvalues p=adp{i}_feat{j}_name
+
+  EndIter feat
+
+EndIter adp
+
+Section test-sentences "Test Sentences"
+
+Label "<p>In this section, you can provide example sentences that will
+appear in the file <tt>test_sentences</tt> in your grammar and as
+defaults in the LKB's parse dialog.  You can mark a sentence as
+ungrammatical by beginning it with an asterisk (*). Please use only
+the vocabulary defined in the Lexicon section.</p>"
+
+BeginIter sentence{i} "a Sentence"
+
+  Text orth "Sentence {i}" "<p><b>Sentence {i}</b>: " "</p>" 100
+
+EndIter sentence
+
+Section gen-options "Test by Generation Options"
+
+Label "<p>In this section, select the templates you wish to generate from,
+and the features you which to specify on those templates</p>"
+
+Separator
+
+Label "<p>Select which templates you would like to use in generation.  If nothing is selected, the simple transitive and intransitive templates will be used, with no features specified</p>"
+
+Check itv "Intransitive" "" "Simple intransitive verb phrase<br>"
+
+Label "Features:"
+
+BeginIter itv-feat{j} "a Feature"
+
+    Select name "Feature {j} name" "Name: " " "
+    fillnames c=verb
+
+    Select value "Feature {j} value" "Value: " ""
+    fillvalues p=itv-feat{j}_name
+
+    Select location "Feature {j} location" "Specified on: " ""
+    . NOUN1 "Subject" "the subject NP"
+    . ITR-VERB1 "Verb" "the verb"
+
+EndIter itv-feat
+
+Separator  
+
+Check stv "Transitive" "" "Simple transitive verb phrase<br>"
+
+Label "Features:"
+
+BeginIter stv-feat{j} "a Feature"
+
+    Select name "Feature {j} name" "Name: " " "
+    fillnames c=verb
+
+    Select value "Feature {j} value" "Value: " ""
+    fillvalues p=stv-feat{j}_name
+
+    Select location "Feature {j} location" "Specified on: " ""
+    . NOUN1 "Subject" "the subject NP"
+    . TR-VERB1 "Verb" "the verb"
+    . NOUN2 "Object" "the object NP"
+
+EndIter stv-feat

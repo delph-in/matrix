@@ -1,0 +1,46 @@
+co_1 := conj-lex &
+  [ STEM < "co" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
+    CFORM "1" ] .
+
+;;; Nouns
+
+n1 := noun-lex &
+  [ STEM < "n1" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_n1_n_rel" ] .
+
+n2 := noun-lex &
+  [ STEM < "n2" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_n2_n_rel" ] .
+
+;;; Verbs
+
+iv := intransitive-verb-lex &
+  [ STEM < "iv" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_iv_v_rel" ] .
+
+tv := transitive-verb-lex &
+  [ STEM < "tv" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_tv_v_rel" ] .
+
+;;; Other
+
+;;; Case-marking adpositions
+
+subj-marker := case-marker-p-lex &
+  [ STEM < "p-nom" >,
+    SYNSEM.LOCAL.CAT.HEAD.FORM p-nom ] .
+
+obj-marker := case-marker-p-lex &
+  [ STEM < "p-acc" >,
+    SYNSEM.LOCAL.CAT.HEAD.FORM p-acc ] .
+
+;;; Determiners
+
+det := determiner-lex &
+  [ STEM < "det" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_det_q_rel" ] .
+
+qpart := qpart-lex-item &
+  [ STEM < "qpart" > ] .
+

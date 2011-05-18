@@ -1,0 +1,478 @@
+;;; Grammar of west greenlandic
+;;; created at:
+;;;     Mon Aug 24 05:01:51 UTC 2009
+;;; based on Matrix customization system version of:
+;;;     unknown time
+
+number-case-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
+  [ DTR noun1-noun-lex ].
+
+noun1-noun-lex := noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].
+
+singular-absolutive-case-marker-lex-rule := const-ltow-rule & number-case-lex-rule &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE abs,
+                   CONT.HOOK.INDEX.PNG.NUM singular ] ].
+
+singular-relative-case-marker-lex-rule := infl-ltow-rule & number-case-lex-rule &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE rel,
+                   CONT.HOOK.INDEX.PNG.NUM singular ] ].
+
+plural-relative-absolutive-case-marker-lex-rule := infl-ltow-rule & number-case-lex-rule &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE non-ins,
+                   CONT.HOOK.INDEX.PNG.NUM plural ] ].
+
+singular-instrumental-case-marker-lex-rule := infl-ltow-rule & number-case-lex-rule &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE ins,
+                   CONT.HOOK.INDEX.PNG.NUM singular ] ].
+
+plural-instrumental-case-marker-lex-rule := infl-ltow-rule & number-case-lex-rule &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE ins,
+                   CONT.HOOK.INDEX.PNG.NUM plural ] ].
+
+first-second-person-pronoun-case-rule-dtr := avm.
+
+2sing-pronoun-noun-lex := first-second-person-pronoun-case-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                       PER 2nd ] ].
+
+1sing-pronoun-noun-lex := first-second-person-pronoun-case-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER 1st,
+                                       NUM singular ] ].
+
+1pl-pronoun-noun-lex := first-second-person-pronoun-case-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                       PER 1st ] ].
+
+2pl-pronoun-noun-lex := first-second-person-pronoun-case-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                       PER 2nd ] ].
+
+first-second-person-pronoun-case-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
+  [ DTR first-second-person-pronoun-case-rule-dtr ].
+
+absolutive-pronoun-case-lex-rule := const-ltow-rule & first-second-person-pronoun-case-lex-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE non-ins ].
+
+third-person-pronoun-case-rule-dtr := avm.
+
+3pl-pronoun-noun-lex := third-person-pronoun-case-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                       PER 3rd ] ].
+
+3s-pronoun-noun-lex := third-person-pronoun-case-rule-dtr & noun-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                       PER 3rd ] ].
+
+third-person-pronoun-case-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
+  [ DTR third-person-pronoun-case-rule-dtr ].
+
+3rd-person-pronoun-relative-case-lex-rule := infl-ltow-rule & third-person-pronoun-case-lex-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE rel ].
+
+3rd-person-pronoun-absolutive-case-lex-rule := const-ltow-rule & third-person-pronoun-case-lex-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE abs ].
+
+transitive-negation-affix-lex-rule := infl-cont-change-only-ltol-rule &
+  [ DTR transitive-tense-marker-lex-rule ].
+
+; This lexical rule adds the neg_r_rel to the verb's
+; 	          RELS list.  It is instantiated by a spelling-changing
+; 	          rule as specified in irules.tdl.
+
+transitive-negation-marker-lex-rule := transitive-negation-affix-lex-rule &
+  [ C-CONT [ HOOK [ XARG #xarg,
+                    LTOP #ltop,
+                    INDEX #ind ],
+             RELS <! event-relation &
+                     [ PRED "_neg_r_rel",
+                       LBL #ltop,
+                       ARG1 #harg ] !>,
+             HCONS <! qeq &
+                      [ HARG #harg,
+                        LARG #larg ] !> ],
+    SYNSEM.LKEYS #lkeys,
+    DTR.SYNSEM [ LKEYS #lkeys,
+                 LOCAL [ CONT.HOOK [ XARG #xarg,
+                                     INDEX #ind,
+                                     LTOP #larg ],
+                         CAT.HEAD verb ] ] ].
+
+intransitive-negation-marker-lex-rule := infl-cont-change-only-ltol-rule & negative-intransitive-rule-dtr &
+  [ DTR intransitive-tense-lex-rule ].
+
+; This lexical rule adds the neg_r_rel to the verb's
+; 	          RELS list.  It is instantiated by a spelling-changing
+; 	          rule as specified in irules.tdl.
+
+negation-marker-suffix-lex-rule := intransitive-negation-marker-lex-rule &
+  [ C-CONT [ HOOK [ XARG #xarg,
+                    LTOP #ltop,
+                    INDEX #ind ],
+             RELS <! event-relation &
+                     [ PRED "_neg_r_rel",
+                       LBL #ltop,
+                       ARG1 #harg ] !>,
+             HCONS <! qeq &
+                      [ HARG #harg,
+                        LARG #larg ] !> ],
+    SYNSEM.LKEYS #lkeys,
+    DTR.SYNSEM [ LKEYS #lkeys,
+                 LOCAL [ CONT.HOOK [ XARG #xarg,
+                                     INDEX #ind,
+                                     LTOP #larg ],
+                         CAT.HEAD verb ] ] ].
+
+negative-intransitive-rule-dtr := avm.
+
+intransitive-tense-lex-rule := negative-intransitive-rule-dtr & lexeme-to-lexeme-rule & add-only-no-ccont-rule &
+  [ DTR intransitive-aspect-lex-rule ].
+
+negative-intransitive-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
+  [ DTR negative-intransitive-rule-dtr ].
+
+intransitive-verb-lex := verb-lex & intransitive-lex-item &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].
+
+3sing-intransitive-negative-mood-subj-marker-lex-rule := negative-intransitive-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                PER 3rd ] ].
+
+transitive-subj-obj-markers-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
+  [ DTR transitive-tense-marker-lex-rule ].
+
+transitive-verb-lex := verb-lex & transitive-lex-item &
+  [ INFLECTED -,
+    SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] > ].
+
+1s-3s-obj-subj-marker-lex-rule := transitive-subj-obj-markers-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                  PER 1st ],
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                   PER 3rd ] ] ].
+
+1s-3p-subj-obj-marker-lex-rule := transitive-subj-obj-markers-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                  PER 1st ],
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                   PER 3rd ] ] ].
+
+1s-2s-subj-obj-marker-lex-rule := transitive-subj-obj-markers-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                  PER 1st ],
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                   PER 2nd ] ] ].
+
+all-2p-subj-obj-marker-lex-rule := transitive-subj-obj-markers-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                 PER 2nd ] ].
+
+2s-3s-subj-obj-marker-lex-rule := transitive-subj-obj-markers-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                  PER 2nd ],
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                   PER 3rd ] ] ].
+
+2s-3p-subj-obj-marker-lex-rule := transitive-subj-obj-markers-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                  PER 2nd ],
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                   PER 3rd ] ] ].
+
+2s-1s-subj-obj-marker-lex-rule := transitive-subj-obj-markers-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                  PER 2nd ],
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                   PER 1st ] ] ].
+
+3s-3s-subj-obj-marker-lex-rule := transitive-subj-obj-markers-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                  PER 3rd ],
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                   PER 3rd ] ] ].
+
+3s-3p-subj-obj-marker-lex-rule := transitive-subj-obj-markers-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                  PER 3rd ],
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                   PER 3rd ] ] ].
+
+2p-3pl-subj-obj-marker-lex-rule := transitive-subj-obj-markers-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                  PER 2nd ],
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                   PER 3rd ] ] ].
+
+3p-3s-subj-obj-marker-lex-rule := transitive-subj-obj-markers-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PER 3rd,
+                                                                  NUM singular ],
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                   PER 3rd ] ] ].
+
+transitive-tense-marker-lex-rule := lexeme-to-lexeme-rule & add-only-no-ccont-rule &
+  [ DTR transitive-indic-ques-mood-lex-rule ].
+
+future-marker-lex-rule := infl-ltol-rule & transitive-tense-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE future ].
+
+past-marker-lex-rule := const-ltol-rule & transitive-tense-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE past ].
+
+transitive-aspect-marker-lex-rule := lexeme-to-word-rule & add-only-no-ccont-rule &
+  [ DTR verb-lex ].
+
+verb-lex := basic-verb-lex &
+  [ INFLECTED -,
+    SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+                             SPEC < >,
+                             SUBJ < #subj > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT.VAL [ SPR < >,
+                                     COMPS < > ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+
+perfective-marker-lex-rule := infl-ltow-rule & transitive-aspect-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.ASPECT perfective ].
+
+habitual-marker-lex-rule := infl-ltow-rule & transitive-aspect-marker-lex-rule.
+
+no-aspect-marker-lex-rule := const-ltow-rule & transitive-aspect-marker-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.ASPECT none ].
+
+negative-indicative-mood-lex-rule := infl-add-only-no-ccont-ltol-rule &
+  [ DTR intransitive-mood-marker-lex-rule ].
+
+negative-marker-lex-rule := negative-indicative-mood-lex-rule.
+
+transitive-indic-ques-mood-lex-rule := infl-add-only-no-ccont-ltol-rule &
+  [ DTR transitive-verb-lex ].
+
+transitive-indic-marker-lex-rule := transitive-indic-ques-mood-lex-rule.
+
+intransitive-aspect-lex-rule := lexeme-to-lexeme-rule & add-only-no-ccont-rule &
+  [ DTR intransitive-verb-lex ].
+
+intran-perfective-lex-rule := infl-ltol-rule & intransitive-aspect-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.ASPECT perfective ].
+
+intran-habitual-lex-rule := infl-ltol-rule & intransitive-aspect-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.ASPECT habitual ].
+
+intran-no-aspect-lex-rule := const-ltol-rule & intransitive-aspect-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.ASPECT none ].
+
+intran-future-lex-rule := infl-ltol-rule & intransitive-tense-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE future ].
+
+intran-past-lex-rule := const-ltol-rule & intransitive-tense-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE past ].
+
+intransitive-mood-marker-lex-rule := infl-ltow-rule & add-only-no-ccont-rule &
+  [ DTR intransitive-tense-lex-rule ].
+
+1sing-intransitive-mood-subj-marker-lex-rule := intransitive-mood-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                PER 1st ] ].
+
+1pl-intransitive-mood-subj-marker-lex-rule := intransitive-mood-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                PER 1st ] ].
+
+2sing-intransitive-indic-mood-subj-marker-lex-rule := intransitive-mood-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                PER 2nd ] ].
+
+2sing-intransitive-interog-mood-subj-marker-lex-rule := intransitive-mood-marker-lex-rule &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,
+                   CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                  PER 2nd ] ] ].
+
+2pl-intransitive-indic-mood-subj-marker-lex-rule := intransitive-mood-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                PER 2nd ] ].
+
+2pl-intransitive-interog-mood-subj-marker-lex-rule := intransitive-mood-marker-lex-rule &
+  [ SYNSEM.LOCAL [ CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                  PER 2nd ],
+                   CONT.HOOK.INDEX.SF ques ] ].
+
+3sing-intransitive-indic-mood-subj-marker-lex-rule := intransitive-mood-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                PER 3rd ] ].
+
+3sing-intransitive-interog-mood-subj-marker-lex-rule := intransitive-mood-marker-lex-rule &
+  [ SYNSEM.LOCAL [ CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PER 3rd,
+                                                                  NUM singular ],
+                   CONT.HOOK.INDEX.SF ques ] ].
+
+3pl-intransitive-indic-mood-subj-marker-lex-rule := intransitive-mood-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                PER 3rd ] ].
+
+3pl-intransitive-interog-mood-subj-marker-lex-rule := intransitive-mood-marker-lex-rule &
+  [ SYNSEM.LOCAL [ CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM plural,
+                                                                  PER 3rd ],
+                   CONT.HOOK.INDEX.SF ques ] ].
+
+3sg-intransitive-indic-mood-subj-marker-lex-rule := intransitive-mood-marker-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
+                                                                PER 3rd ] ].
+
+;;; Lexical types
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item &
+  [ ARG-ST < #spr >,
+    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
+                           SUBJ < >,
+                           SPEC < >,
+                           SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det,
+                                   OPT + ] > ] ].
+
+noun :+ [ CASE case ].
+
+;;; Verbs
+
+abs-intransitive-verb-lex := intransitive-verb-lex &
+  [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun &
+                                [ CASE abs ] ].
+
+rel-abs-transitive-verb-lex := transitive-verb-lex &
+  [ ARG-ST < [ LOCAL.CAT.HEAD noun &
+                              [ CASE rel ] ],
+             [ LOCAL.CAT.HEAD noun &
+                              [ CASE abs ] ] > ].
+
+trans-verb-lex := rel-abs-transitive-verb-lex.
+
+intrans-verb-lex := abs-intransitive-verb-lex.
+
+;;; Case
+
+case := *top*.
+ins := case.  ; instrumental
+non-ins := case.
+abs := non-ins.
+rel := non-ins.
+
+png :+ [ PER person,
+    NUM number ].
+
+;;; Person
+
+person := *top*.
+1st := person.
+2nd := person.
+3rd := person.
+
+;;; Number
+
+number := *top*.
+singular := number.
+plural := number.
+
+;;; Tense
+
+past := tense.
+future := tense.
+
+;;; Aspect
+
+habitual := aspect.
+perfective := aspect.
+none := aspect.
+
+;;; Phrasal types
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+; We can't just use the V-final and V-initial word
+; order modules together to get a good free word order
+; module. The root of the problem seems to be that we
+; need the subject to be able to attach inside the
+; object(s) for VSO and OSV, but at the same time, we
+; don't want complete flexibility on order of attachment
+; when the verb is in the middle -- that would give
+; spurious ambiguity.  This solution adopts the xmod
+; hierarchy to enforce right-first attachment.  That is,
+; all arguments appears to the right of the verb must
+; attach before all arguments appearing to the left.  The
+; linguistic prediction of this analysis is that free
+; word order languages do not have a consistent VP
+; consituent, even when the verb and object are adjacent
+; (OV order).  Using a separate feature for tracking
+; argument attachment (as opposed to modifier
+; attachment).  We might be able to collapse these one
+; day, but that's not obvious.
+
+synsem :+ [ ATTACH xmod ].
+
+head-initial-head-nexus := head-initial &
+  [ SYNSEM.ATTACH lmod,
+    HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].
+
+head-final-head-nexus := head-final &
+  [ SYNSEM.ATTACH rmod ].
+
+; We'll need to add identification of ATTACH between
+; mother and head-daughter for all other kinds of phrases
+; if we do this.  Just for illustration, I'm putting it
+; in for head-adjunct phrases here:
+
+head-mod-phrase :+ [ SYNSEM.ATTACH #attach,
+    HEAD-DTR.SYNSEM.ATTACH #attach ].
+
+head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.
+
+subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.
+
+comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.
+
+head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.
+
+comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
+
+;;; Coordination Strategy 1
+
+n1-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+n1-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+n1-bottom-coord-rule := infl-bottom-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1",
+    SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel",
+    DTR.SYNSEM.LOCAL.CAT.HEAD noun ].

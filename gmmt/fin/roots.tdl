@@ -1,0 +1,24 @@
+;;;
+;;; a sample start symbol: accept fully-saturated verbal projections only; if
+;;; a grammar makes use of the head -- subject and head -- complement types as
+;;; provided by the Matrix, this should be a good starting point.  Note that it
+;;; is legal to have multiple start symbols, but they all need to be listed as
+;;; the value of `*start-symbol' (see `lkb/user-fns.lsp').
+;;;
+;;; The head type verb isn't defined by the matrix.  To use this start
+;;; symbol, define verb and uncomment it.  Alternatively, define some
+;;; other appropriate type and use it place of verb here.
+
+;; RGM 5-4-05 Changed the inhereted type of root from phrase to
+;; basic-non-rel-clause to only parse with clausal semantics.
+
+;; RGM 5-25-05 Constrained root condition to be COORD -, lab8
+
+root := phrase &
+[ SYNSEM.LOCAL [ CAT [ HEAD verb & [ FORM fin ],
+                       MC +,
+		       VAL [ SUBJ < >,
+			     COMPS < > ] ],
+		 COORD - ]].
+
+lex-root := word-or-lexrule.

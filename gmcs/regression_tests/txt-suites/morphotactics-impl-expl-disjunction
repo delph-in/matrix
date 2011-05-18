@@ -1,0 +1,14 @@
+n1 verb1-PC1-PC3.
+n1 verb1-PC2-PC4.
+n1 verb2-PC5.
+n1 verb2-PC6.
+n1 verb2-PC5-PC6.
+*n1 verb1.
+*n1 verb1-PC1.
+*n1 verb1-PC3.
+*n1 verb1-PC2.
+*n1 verb1-PC4.
+*n1 verb1-PC1-PC4.
+*n1 verb1-PC2-PC3.
+*n1 verb2.
+*n1 verb2-PC6-PC5.

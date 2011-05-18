@@ -1,0 +1,63 @@
+Lab 3 grade
+-----------------------------------------------------------------
+
+Comments:
+
+
+ In this case, the prefix "a" represents the 1SG future morpheme. Note
+ that I am not marking the "a" for FUT again, even though the morpheme
+ for 1SG in other tenses is different. I hope that is OK.
+
+I think so.  As long as the future info is there in the gloss somewhere.
+Someone who was particularly working on that morphological dependency
+might put more info into the gloss.
+
+ Hebrew has two genders: masculine and feminine. There are some clues
+ in the orthography to indicate which gender the noun is likely to be,
+ but there are enough exceptions to make the breakdown undesirable in
+ the lexicon. Therefore, I am not following the "ragazz-a & ragazz-o"
+ type notation and am treating each noun as having an inherent gender
+ (a la gateau) . Therefore, the gender is presented as internal to the
+ word and separated by a semicolon (I believe that the semicolon
+ represents the idea that there is some inflection but that it is
+ irrelevant to the example).
+
+That's fine.  The thing about Italian is that the inflectional endings
+for singular and plural are different for m & f.
+
+ Initially, I thought I would represent the PL.M & PL.F information as
+ hypthenated inflection. But that is not a good idea either. While the
+ suffix "wt" is generally the suffix used for PL.F and the suffix "im"
+ is the suffix used for PL.M, this is strictly true only in the case of
+ adjectives. When it comes to nouns there are enough exceptions to make
+ this generalization unprofitable. Therefore, I am treating the gender
+ information as internal to the word even in the case of plural
+ nouns. Each word in the lexicon will have to have information as to
+ its gender and as to the type of plural suffix it combines with.
+
+Sounds good.
+
+Under coordination, consider some ungrammatical examples with
+the coordinator in the wrong place, or lacking a coordinator.
+
+ Unlike in English it is possible in Hebrew to relativize an NP that is
+ a corrdinated structure, and say "The man, that he and his mother are
+ doctors...". See below.
+
+This, together with the GAP/SLASH analysis of long-distance dependencies
+suggests that Hebrew relative clauses with resumptive pronouns
+do not involve an LDD:  One way to handle resumptive pronouns is
+to have them have non-empty SLASH values even though they are
+overt --- then the relative clauses look similar in the gap cases
+v. the resumptive pronoun cases.  This also allows you to require a pronoun
+rather than a full NP in the 'gap' position.  But, that wouldn't seem to work
+here.  What happens in subject relatives with verbal predicates
+and coordinated subjects.  For example, "The man who wrote many books
+and his mother wrote even more"?  (I'm interested because the subject
+relatives ordinarily don't take resumptive pronouns, but the coordination
+might force one.)
+
+The relative marker "e" looks like a clitic --- since it 
+can lean on just about anything.  So, I'd recommend assuming
+that a preprocessor will segment it off.
+

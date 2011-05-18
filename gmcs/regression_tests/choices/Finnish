@@ -1,0 +1,106 @@
+version=14
+
+section=general
+language=Finnish
+iso-code=fin
+archive=no
+
+section=word-order
+word-order=svo
+has-dets=no
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=other-features
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=lexicon
+  noun1_det=imp
+    noun1_stem1_orth=opiskelija
+    noun1_stem1_pred=_student_n_rel
+  noun2_det=imp
+    noun2_stem1_orth=omena
+    noun2_stem1_pred=_apple_n_rel
+    noun2_stem2_orth=NP
+    noun2_stem2_pred=_np_n_rel
+  noun-slot1_name=number
+  noun-slot1_order=after
+    noun-slot1_input1_type=noun
+    noun-slot1_morph1_name=plural
+    noun-slot1_morph1_orth=-PL
+    noun-slot1_morph2_name=singular
+  noun-slot2_name=case
+  noun-slot2_order=after
+    noun-slot2_input1_type=noun-slot1
+    noun-slot2_morph1_name=elative
+    noun-slot2_morph1_orth=-ELAT
+    noun-slot2_morph2_name=nominative
+  noun-slot3_name=possessive
+  noun-slot3_opt=on
+  noun-slot3_order=after
+    noun-slot3_input1_type=noun-slot2
+    noun-slot3_morph1_name=1SG-POSS
+    noun-slot3_morph1_orth=-POSS1SG
+  verb1_valence=intrans
+    verb1_stem1_orth=kAvele
+    verb1_stem1_pred=_walk_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=pidA
+    verb2_stem1_pred=_like_v_rel
+  verb-slot1_name=passive
+  verb-slot1_opt=on
+  verb-slot1_order=after
+    verb-slot1_input1_type=verb
+    verb-slot1_morph1_orth=-PASS
+  verb-slot2_name=tense
+  verb-slot2_opt=on
+  verb-slot2_order=after
+    verb-slot2_input1_type=verb-slot1
+    verb-slot2_morph1_name=past
+    verb-slot2_morph1_orth=-PAST
+    verb-slot2_morph2_name=nonpast
+  verb-slot3_name=mood
+  verb-slot3_opt=on
+  verb-slot3_order=after
+    verb-slot3_input1_type=verb-slot1
+    verb-slot3_morph1_name=conditional
+    verb-slot3_morph1_orth=-COND
+  verb-slot4_name=pernum-agr
+  verb-slot4_order=after
+    verb-slot4_input1_type=verb-slot2
+    verb-slot4_input2_type=verb-slot3
+    verb-slot4_morph1_name=1SG
+    verb-slot4_morph1_orth=-1SG
+    verb-slot4_morph2_name=3SG
+    verb-slot4_morph2_orth=-3SG
+    verb-slot4_morph3_name=indefinite
+    verb-slot4_morph3_orth=-INDEF
+  verb-slot5_name=particle
+  verb-slot5_opt=on
+  verb-slot5_order=after
+    verb-slot5_input1_type=noun-slot3
+    verb-slot5_input2_type=verb-slot4
+    verb-slot5_morph1_name=also
+    verb-slot5_morph1_orth=-kin
+
+section=test-sentences
+sentence1=opiskelija pidA-3SG omena-ELAT
+sentence2=NP kAvele-1SG

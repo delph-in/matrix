@@ -1,0 +1,16 @@
+n1 nopauxf1 v1intransnf1
+n1 nopauxf2 v1intransnf1
+*n1 nopauxf1 v1intransnf2
+*n1 nopauxf2 v1intransnf2
+*n1 nopauxnf1 v1intransnf1
+*n1 nopauxnf2 v1intransnf1
+*n1 nopauxf1 v1intransf1
+*n1 nopauxf1 v1intransf2
+n1 pauxf1 v1intransnf2
+n1 pauxf2 v1intransnf2
+*n1 pauxf1 v1intransnf1
+*n1 pauxf2 v1intransnf1
+*n1 pauxnf1 v1intransnf2
+*n1 pauxnf2 v1intransnf2
+*n1 pauxf1 v1intransf1
+*n1 pauxf1 v1intransf2
