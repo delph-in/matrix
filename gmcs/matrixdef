@@ -1179,7 +1179,7 @@ BeginIter noun-pc{i} "a Position Class" 1
 
     Label "<p>Lexical Rule Instances:</p>"
 
-    BeginIter lri{k} "a Lexical Rule Instance"
+    BeginIter lri{k} "a Lexical Rule Instance" 0 1
 
       Radio inflecting "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
       . no "No" "" "No affix"
