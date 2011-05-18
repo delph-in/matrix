@@ -148,7 +148,9 @@ function toggle_display_lex(element_id, button_id)
   b = document.getElementById(button_id);
   if (p.style.display == 'none') {
     p.style.display = 'block';
-    errs.style.display = 'none';
+    if (errs != null) {
+      errs.style.display = 'none';
+    }
     if (n == "") {
       b.innerHTML = '&#9660; '+n+element_id + '<br />';
     } else {
@@ -158,7 +160,9 @@ function toggle_display_lex(element_id, button_id)
     document.cookie = button_id+"=block";
   } else {
     p.style.display = 'none';
-    errs.style.display = '';
+    if (errs != null) {
+      errs.style.display = '';
+    }
     if (n == "") {
       b.innerHTML = '&#9658; '+n+element_id + '<br />';
     } else {
@@ -186,19 +190,16 @@ function toggle_all_display_lex(on)
   for (var x=0; x<iters.length; x++)
   {
     iter = iters[x];
-    if(iter.id.search('TEMPLATE')==-1 && + //don't mess with display of TEMPLATES
-       iter.id.search('feat') == -1 && + //feat/stem/forbid/requires/lri iterators
-       iter.id.search('stem') == -1 && + //needn't show/hide
-       iter.id.search('forbid') == -1 && + 
-       iter.id.search('require') == -1 && +
-       iter.id.search('lri') == -1){ 
+    if(iter.id.search('TEMPLATE')==-1) { //don't mess with display of TEMPLATES
       button = document.getElementById(iter.id+'button');
-      if(on==1){
-        if(iter.style.display == 'block' || iter.style.display == '')
-          toggle_display_lex(iter.id, button.id);
-      }else {
-        if(iter.style.display == 'none' || iter.style.display == '')
-          toggle_display_lex(iter.id, button.id);
+      if (button != null) {
+	if(on==1){
+	  if(iter.style.display == 'block' || iter.style.display == '')
+	    toggle_display_lex(iter.id, button.id);
+        } else {
+          if(iter.style.display == 'none' || iter.style.display == '')
+            toggle_display_lex(iter.id, button.id);
+	}
       }
     }
   }
@@ -330,7 +331,7 @@ function prev_div(n, name)
 // Worker function that clones the invisible tempate of an iterator,
 // replaces any iterator variables with the proper values, and inserts
 // the copy into the page.
-function do_clone_region(id, iter_var, bAnim)
+function do_clone_region(id, iter_var, bAnim, bShow)
 {
 
   var d = document.getElementById(id + '_TEMPLATE');
@@ -358,15 +359,9 @@ function do_clone_region(id, iter_var, bAnim)
   n.id = id + cur;
   n.style.display = '';
 
-  //if the new iter is a stem or feature iterator, 
-  //or a morphotactics forbid or require or lri iterator,
-  //don't add a show/hide button
-  if(n.id.search('stem') == -1 && +
-     n.id.search('feat') == -1 && +
-     n.id.search('require') == -1 && +
-     n.id.search('forbid') == -1 && +
-     n.id.search('lri') == -1 )
-  {//otherwise go in here and add the button
+  // only add the show/hide button on iterators which ask for
+  // a show/hide button
+  if (bShow){
     var b = document.createElement("a");
     b.id = n.id+'button';
     b.innerHTML = '&#9660; '+n.id + '<br />';
@@ -385,9 +380,9 @@ function do_clone_region(id, iter_var, bAnim)
 
 // clone_region()
 // Clone a region and expand using animation
-function clone_region(id, iter_var)
+function clone_region(id, iter_var, bShow)
 {
-  do_clone_region(id, iter_var, true);
+    do_clone_region(id, iter_var, true, bShow);
 }
 
 // clone_region()

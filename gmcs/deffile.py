@@ -824,9 +824,12 @@ class MatrixDefFile:
         iter_orig = word[1]
         (iter_name, iter_var) = word[1].replace('}', '').split('{', 1)
         label = word[2]
-        iter_min = 0
+        show_hide = 0
         if len(word) > 3:
-          iter_min = int(word[3])
+          show_hide = int(word[3])
+        iter_min = 0
+        if len(word) > 4:
+          iter_min = int(word[4])
         i += 1
 
         # collect the lines that are between BeginIter and EndIter
@@ -872,12 +875,13 @@ class MatrixDefFile:
 
           # the show/hide button gets placed before each iterator
           # as long as it's not a stem/feature/forbid/require/lri iterator
-          if new_prefix[:-1].find('feat')==-1 and \
-                  new_prefix[:-1].find('stem')==-1 and \
-                  new_prefix[:-1].find('require')==-1 and \
-                  new_prefix[:-1].find('forbid')==-1 and \
-                  new_prefix[:-1].find('lri')==-1:
-            html += ''
+          if show_hide:
+#          if new_prefix[:-1].find('feat')==-1 and \
+#                  new_prefix[:-1].find('stem')==-1 and \
+#                  new_prefix[:-1].find('require')==-1 and \
+#                  new_prefix[:-1].find('forbid')==-1 and \
+#                  new_prefix[:-1].find('lri')==-1:
+#            html += ''
             if show_name:
               name = show_name+" ("+new_prefix[:-1]+")"
             else:
@@ -922,8 +926,12 @@ class MatrixDefFile:
                 'value="Add ' + label + '" ' + \
                 'onclick="clone_region(\'' + \
                 prefix + iter_name + '\', \'' + \
-                iter_var + '\')">'
-
+                iter_var + '\','
+        if show_hide:
+          html += 'true)">'
+        else:
+          html += 'false)">'
+        
       i += 1
 
     return html

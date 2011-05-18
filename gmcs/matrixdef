@@ -133,7 +133,7 @@ will be assumed if no supertype is provided).  If your language does
 not have number as a grammatical category, leave this section
 blank.</p>"
 
-BeginIter number{i} "a Number"
+BeginIter number{i} "a Number" 1
 
   Text name "Number {i} name" "Number name: " "" 20
 
@@ -243,7 +243,7 @@ will be assumed if no supertype is provided).  If your language does
 not have gender as a grammatical category, leave this section
 blank.</p>"
 
-BeginIter gender{i} "a Gender"
+BeginIter gender{i} "a Gender" 1
 
   Text name "Gender {i} name" "Gender name: " "" 20
 
@@ -427,11 +427,11 @@ describe the features that define the scale below.  The scale entries
 should be entered in order from the highest (most agent-like) to the
 lowest (most patient-like).</p>"
 
-BeginIter scale{i} "a Scale Entry"
+BeginIter scale{i} "a Scale Entry" 1
 
   Label "<b>Scale entry {i}</b><br>Features:"
 
-  BeginIter feat{j} "a Feature" 1
+  BeginIter feat{j} "a Feature" 0 1
 
     Select name "Scale entry {i} feature {j} name" "Name: " " "
     fillnames c=verb
@@ -518,10 +518,10 @@ Label "<div style=\"padding-left: 35px\">"
 Label "<br>Build your hierarchy from the top down starting with
 subtypes of the supertype: tense.</p>"
 
-BeginIter tense{i} "a tense type" 
+BeginIter tense{i} "a tense type" 1
 
   Text name "tense {i} name" "Tense name: " "" 20
-  BeginIter supertype{j} "a Supertype" 1
+  BeginIter supertype{j} "a Supertype" 0 1
 
     Select name "Tense {i} supertype {j} name" "Supertype: " ""
     fillregex p=tense[0-9]+_name n=1
@@ -567,10 +567,10 @@ Check perimper "Perfective/Imperfective" "" "Create a hierarchy consisting of ju
 
 Label "<p>Build your own hierarchy of values for the feature <span class=\"feat\">aspect</span>. Note: this is an alternative to choosing the binary opposition above -- if hierarchy elements are defined below the choice above is overridden."
 
-BeginIter aspect{i} "an aspect type" 
+BeginIter aspect{i} "an aspect type" 1
 
   Text name "aspect {i} name" "Aspect name: " "" 20
-  BeginIter supertype{j} "a Supertype" 1
+  BeginIter supertype{j} "a Supertype" 0 1
 
     Select name "Aspect {i} supertype {j} name" "Supertype: " ""
     fillregex p=aspect[0-9]+_name n=1
@@ -603,10 +603,10 @@ class=\"feat\">situation</span>, reflecting inherent or
 morphologically marked situation aspect. If this is not appropriate
 for your language, leave this section blank."
 
-BeginIter situation{i} "a situation type" 
+BeginIter situation{i} "a situation type" 1
 
   Text name "situation {i} name" "Situation name: " "" 20
-  BeginIter supertype{j} "a Supertype" 1
+  BeginIter supertype{j} "a Supertype" 0 1
 
     Select name "Situation {i} supertype {j} name" "Supertype: " ""
     fillregex p=situation[0-9]+_name n=1
@@ -630,10 +630,10 @@ Check subjind "Subjunctive/Indicative" "" "Create a hierarchy consisting of just
 
 Label "<p>Build your own hierarchy of values for the feature <span class=\"feat\">mood</span>. Note: this is an alternative to choosing the binary opposition above -- if hierarchy elements are defined below the choice above is overridden."
 
-BeginIter mood{i} "a mood type"
+BeginIter mood{i} "a mood type" 1
 
   Text name "mood {i} name" "Mood name: " "" 20
-  BeginIter supertype{j} "a Supertype" 1
+  BeginIter supertype{j} "a Supertype" 0 1
 
      Select name "Mood {i} supertype {j} name" "Supertype: " ""
      fillregex p=mood[0-9]+_name n=1
@@ -721,7 +721,7 @@ class=\"feat\">pernum</span>), and then a series of other values of
 the feature, each of which is the subtype of at least one of the other
 values, possibly the root.</p>"
 
-BeginIter feature{i} "a Feature"
+BeginIter feature{i} "a Feature" 1
 
   Text name "Feature {i} name" "Feature name: " "<br>" 20
 
@@ -731,11 +731,11 @@ BeginIter feature{i} "a Feature"
 
   Label "Values in the feature hierarchy:"
 
-  BeginIter value{j} "a Value"
+  BeginIter value{j} "a Value" 1
 
    Text name "Feature {i} Value {j} name" "Value name: " "" 20
 
-    BeginIter supertype{k} "a Supertype" 1
+    BeginIter supertype{k} "a Supertype" 0 1
 
       Select name "Feature {i} Value {j} supertype {k} name" "Supertype: " ""
       fillregex p=(feature{i}_name|feature{i}_value[0-9]+_name) n=1
@@ -799,7 +799,7 @@ Label "<p>You may define any number of coordination strategies below.
 You may also leave this section blank, in which case the starter
 grammar produced will not support coordination.</p>"
 
-BeginIter cs{i} "a Coordination Strategy"
+BeginIter cs{i} "a Coordination Strategy" 1
 
 Label "<p>Coordination Strategy {i}:<br>&nbsp;&nbsp;&nbsp;&nbsp;in
 which"
@@ -933,11 +933,11 @@ Radio subj-con  "Subject Context" "<p>Subject dropping occurs in </p>" ""
 
 Label "<p><b>Contexts</b></p>"
 
-BeginIter context{i} "a Context"
+BeginIter context{i} "a Context" 1
   Label "<b>Context {i}</b><br>"
   Label "Features:"
 
-  BeginIter feat{j} "a Feature"
+  BeginIter feat{j} "a Feature" 0 1
 
     Select name "Context {i} feature {j} name" "Name: " " "
     fillnames c=both
@@ -1047,7 +1047,7 @@ Separator
 
 Label "<h3>Noun Types</h3>"
 
-BeginIter noun{i} "a Noun Type" 1
+BeginIter noun{i} "a Noun Type" 1 1
 
   Label "<b>Noun type {i}</b>:"
 
@@ -1074,7 +1074,7 @@ BeginIter noun{i} "a Noun Type" 1
 
   Label "Stems:"
 
-  BeginIter stem{j} "a Stem" 1
+  BeginIter stem{j} "a Stem" 0 1
 
     Text orth "Noun {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('noun{i}_stem{j}', 'n')"
 
@@ -1086,14 +1086,14 @@ BeginIter noun{i} "a Noun Type" 1
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect others "Noun {i} Requires" "<p>Noun {i} requires one of the following: " "</p>"
+    MultiSelect others "Noun {i} Requires" "Noun {i} requires one of the following: " ""
     fillregex p=noun-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    Select others "Noun {i} Forbids" "<p>Noun {i} forbids the following position class: " "</p>"
+    Select others "Noun {i} Forbids" "Noun {i} forbids the following position class: " ""
     fillregex p=noun-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
@@ -1106,7 +1106,7 @@ Separator
 
 Label "<h3>Noun Inflection</h3>"
 
-BeginIter noun-pc{i} "a Position Class"
+BeginIter noun-pc{i} "a Position Class" 1
 
   Text name "Noun Position Class {i} Name" "<b>Noun Position Class {i}</b>:<br/>Position Class Name: " " " 20
 
@@ -1124,7 +1124,7 @@ BeginIter noun-pc{i} "a Position Class"
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect others "Noun Position Class {i} Requires" "<p>Noun Position Class {i} requires one of the following: " "</p>"
+    MultiSelect others "Noun Position Class {i} Requires" "Noun Position Class {i} requires one of the following: " ""
     fillregex p=(noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . noun "Any noun" "any noun"
 
@@ -1132,7 +1132,7 @@ BeginIter noun-pc{i} "a Position Class"
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    Select others "Noun Position Class {i} Forbids" "<p>Noun Position Class {i} forbids the following: " "</p>"
+    Select others "Noun Position Class {i} Forbids" "Noun Position Class {i} forbids the following: " ""
     fillregex p=(noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . noun "Any noun" "any noun"
 
@@ -1140,7 +1140,7 @@ BeginIter noun-pc{i} "a Position Class"
 
   Label "<p>Lexical Rule Types that appear in this Position Class:</p>"
 
-  BeginIter lrt{j} "a Lexical Rule Type"
+  BeginIter lrt{j} "a Lexical Rule Type" 1 1
 
     Text name "Noun Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
 
@@ -1163,7 +1163,7 @@ BeginIter noun-pc{i} "a Position Class"
 
     BeginIter require{k} "a Require constraint"
 
-      MultiSelect others "Noun Position Class {i} Lexical Rule Type {j} Requires" "<p>Lexical Rule Type {j} requires one of the following: " "</p>"
+      MultiSelect others "Noun Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
       fillregex p=(noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . noun "Any noun" "any noun"
 
@@ -1171,7 +1171,7 @@ BeginIter noun-pc{i} "a Position Class"
 
     BeginIter forbid{k} "a Forbid constraint"
 
-      Select others "Noun Position Class {i} Lexical Rule Type {j} forbids" "<p>Lexical Rule Type {j} forbids the following: " "</p>"
+      Select others "Noun Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
       fillregex p=(noun)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . noun "Any noun" "any noun"
 
@@ -1197,7 +1197,7 @@ Separator
 
 Label "<h3>Verb Types</h3>"
 
-BeginIter verb{i} "a Verb Type" 2
+BeginIter verb{i} "a Verb Type" 1 2
 
   Label "<b>Verb type {i}</b>:"
 
@@ -1231,7 +1231,7 @@ BeginIter verb{i} "a Verb Type" 2
   fillregex p=verb-pc[0-9]+_name
 
   Label "Stems:"
-  BeginIter stem{j} "a simple Stem" 1
+  BeginIter stem{j} "a simple Stem" 0 1
 
     Text orth "Verb {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('verb{i}_stem{j}', 'v')"
 
@@ -1253,14 +1253,14 @@ BeginIter verb{i} "a Verb Type" 2
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect others "Verb {i} requires" "<p>Verb {i} requires one of the following position classes: " "</p>"
+    MultiSelect others "Verb {i} requires" "Verb {i} requires one of the following position classes: " ""
     fillregex p=(verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    Select others "Verb {i} forbids" "<p>Verb {i} forbids the following position class: " "</p>"
+    Select others "Verb {i} forbids" "Verb {i} forbids the following position class: " ""
     fillregex p=(verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
@@ -1285,7 +1285,7 @@ Label auxlabel "Auxiliary Verb Types</h3>"
   constraints on the semantic values of the complement; constraints on
   the complement should be defined as complement features.</p>"
 
-BeginIter aux{i} "an Auxiliary Type" 
+BeginIter aux{i} "an Auxiliary Type" 1
 
   Label "<b>Auxiliary type {i}</b>:"
 
@@ -1331,7 +1331,7 @@ BeginIter aux{i} "an Auxiliary Type"
   Label "Complement Features:&nbsp; &nbsp; &nbsp; &nbsp; (Note: A
   value for the feature FORM is required.)<br>"
 
-  BeginIter compfeature{j} "a complement feature" 1
+  BeginIter compfeature{j} "a complement feature" 0 1
 
     Select name "Aux {i} complement feature {j} name" "Name: " ""
     fillnames c=verb
@@ -1343,7 +1343,7 @@ BeginIter aux{i} "an Auxiliary Type"
 
   Label "<br><br>Stems:"        
 
-  BeginIter stem{j} "a Stem" 1
+  BeginIter stem{j} "a Stem" 0 1
 
     Text orth "Aux {i} stem {j} spelling" "Spelling: " "" 30 "aux_fill_pred('aux{i}', 'stem{j}', 'v')"
 
@@ -1355,14 +1355,14 @@ BeginIter aux{i} "an Auxiliary Type"
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect others "Aux {i} requires" "<p>Aux {i} requires one of the following position classes: " "</p>"
+    MultiSelect others "Aux {i} requires" "Aux {i} requires one of the following position classes: " ""
     fillregex p=(verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    Select others "Aux {i} forbids" "<p>Aux {i} forbids the following position class: " "</p>"
+    Select others "Aux {i} forbids" "Aux {i} forbids the following position class: " ""
     fillregex p=(verb|aux)-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
@@ -1375,7 +1375,7 @@ Separator
 
 Label "<h3>Verb Inflection</h3>"
 
-BeginIter verb-pc{i} "a Position Class"
+BeginIter verb-pc{i} "a Position Class" 1
 
   Text name "Verb Position Class {i} Name" "<b>Verb Position Class {i}</b>:<br/>Position Class Name: " " " 20
 
@@ -1396,7 +1396,7 @@ BeginIter verb-pc{i} "a Position Class"
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect others "Verb Position Class {i} Requires" "<p>Verb Position Class {i} requires one of the following: " "</p>"
+    MultiSelect others "Verb Position Class {i} Requires" "Verb Position Class {i} requires one of the following: " ""
     fillregex p=(verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
@@ -1407,7 +1407,7 @@ BeginIter verb-pc{i} "a Position Class"
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    Select others "Verb Position Class {i} Forbids" "<p>Verb Position Class {i} forbids the following: " "</p>"
+    Select others "Verb Position Class {i} Forbids" "Verb Position Class {i} forbids the following: " ""
     fillregex p=(verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
@@ -1418,7 +1418,7 @@ BeginIter verb-pc{i} "a Position Class"
 
   Label "<p>Lexical Rule Types that appear in this Position Class:</p>"
 
-  BeginIter lrt{j} "a Lexical Rule Type"
+  BeginIter lrt{j} "a Lexical Rule Type" 1 1
 
     Text name "Verb Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
 
@@ -1448,7 +1448,7 @@ BeginIter verb-pc{i} "a Position Class"
 
     BeginIter require{k} "a Require constraint"
 
-      MultiSelect others "Verb Position Class {i} Lexical Rule Type {j} Requires" "<p>Lexical Rule Type {j} requires one of the following: " "</p>"
+      MultiSelect others "Verb Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
       fillregex p=(verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . verb "Any verb" "any verb"
       . iverb "Any intransitive verb" "any intransitive verb"
@@ -1459,7 +1459,7 @@ BeginIter verb-pc{i} "a Position Class"
 
     BeginIter forbid{k} "a Forbid constraint"
 
-      Select others "Verb Position Class {i} Lexical Rule Type {j} forbids" "<p>Lexical Rule Type {j} forbids the following: " "</p>"
+      Select others "Verb Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
       fillregex p=(verb|aux)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . verb "Any verb" "any verb"
       . iverb "Any intransitive verb" "any intransitive verb"
@@ -1470,7 +1470,7 @@ BeginIter verb-pc{i} "a Position Class"
 
     Label "<p>Lexical Rule Instances:</p>"
 
-    BeginIter lri{k} "a Lexical Rule Instance"
+    BeginIter lri{k} "a Lexical Rule Instance" 0 1
 
       Radio inflecting "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
       . no "No" "" "No affix"
@@ -1488,7 +1488,7 @@ Separator
 
 Label "<h3>Determiners</h3>"
 
-BeginIter det{i} "a Determiner"
+BeginIter det{i} "a Determiner" 1
 
   Label "<b>Determiner type {i}</b>:"
 
@@ -1496,7 +1496,7 @@ BeginIter det{i} "a Determiner"
 
   Text name "Determiner {i} name" "Type name: " "<br>" 20
 
-  BeginIter stem{j} "a Stem" 1
+  BeginIter stem{j} "a Stem" 0 1
 
     Text orth "Determiner {i} spelling" "Spelling: " "" 30 "fill_pred('det{i}_stem{j}', 'q')"
 
@@ -1520,14 +1520,14 @@ BeginIter det{i} "a Determiner"
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect others "Determiner {i} requires" "<p>Determiner {i} requires one of the following position classes: " "</p>"
+    MultiSelect others "Determiner {i} requires" "Determiner {i} requires one of the following position classes: " ""
     fillregex p=det-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter require
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    MultiSelect others "Determiner {i} requires" "<p>Determiner {i} requires one of the following position classes: " "</p>"
+    MultiSelect others "Determiner {i} requires" "Determiner {i} requires one of the following position classes: " ""
     fillregex p=det-pc[0-9]+(_lrt[0-9]+)?_name
 
   EndIter forbid
@@ -1540,7 +1540,7 @@ Separator
 
 Label "<h3>Determiner Inflection</h3>"
 
-BeginIter det-pc{i} "a Position Class"
+BeginIter det-pc{i} "a Position Class" 1
 
   Text name "Determiner Position Class {i} Name" "<b>Determiner Position Class {i}</b>:<br/>Position Class Name: " " " 20
 
@@ -1558,7 +1558,7 @@ BeginIter det-pc{i} "a Position Class"
 
   BeginIter require{j} "a Require constraint"
 
-    MultiSelect others "Determiner Position Class {i} Requires" "<p>Determiner Position Class {i} requires one of the following: " "</p>"
+    MultiSelect others "Determiner Position Class {i} Requires" "Determiner Position Class {i} requires one of the following: " ""
     fillregex p=(det)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . det "Any determiner" "any determiner"
 
@@ -1566,7 +1566,7 @@ BeginIter det-pc{i} "a Position Class"
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    Select others "Determiner Position Class {i} Forbids" "<p>Determiner Position Class {i} forbids the following: " "</p>"
+    Select others "Determiner Position Class {i} Forbids" "Determiner Position Class {i} forbids the following: " ""
     fillregex p=(det)(-pc([0-9]+_lrt)?)?[0-9]+_name
     . det "Any determiner" "any determiner"
 
@@ -1574,7 +1574,7 @@ BeginIter det-pc{i} "a Position Class"
 
   Label "<p>Lexical Rule Types that appear in this Position Class:</p>"
 
-  BeginIter lrt{j} "a Lexical Rule Type"
+  BeginIter lrt{j} "a Lexical Rule Type" 1 1
 
     Text name "Determiner Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
 
@@ -1597,7 +1597,7 @@ BeginIter det-pc{i} "a Position Class"
 
     BeginIter require{k} "a Require constraint"
 
-      MultiSelect others "Determiner Position Class {i} Lexical Rule Type {j} Requires" "<p>Lexical Rule Type {j} requires one of the following: " "</p>"
+      MultiSelect others "Determiner Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
       fillregex p=(det)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . det "Any determiner" "any determiner"
 
@@ -1605,7 +1605,7 @@ BeginIter det-pc{i} "a Position Class"
 
     BeginIter forbid{k} "a Forbid constraint"
 
-      Select others "Determiner Position Class {i} Lexical Rule Type {j} forbids" "<p>Lexical Rule Type {j} forbids the following: " "</p>"
+      Select others "Determiner Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
       fillregex p=(det)(-pc([0-9]+_lrt)?)?[0-9]+_name
       . det "Any determiner" "any determiner"
 
@@ -1613,7 +1613,7 @@ BeginIter det-pc{i} "a Position Class"
 
     Label "<p>Lexical Rule Instances:</p>"
 
-    BeginIter lri{k} "a Lexical Rule Instance"
+    BeginIter lri{k} "a Lexical Rule Instance" 0 1
 
       Radio inflecting "Determiner Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
       . no "No" "" "No affix"
@@ -1631,7 +1631,7 @@ Separator
 
 Label "<h3>Case-marking Adpositions</h3>"
 
-BeginIter adp{i} "an Adposition"
+BeginIter adp{i} "an Adposition" 1
 
   Text orth "Adposition {i} spelling" "Spelling: " "" 20
 
@@ -1641,7 +1641,7 @@ BeginIter adp{i} "an Adposition"
   . after "After" "after"
   . before "Before" "before"
 
-  BeginIter feat{j} "a Feature" 1
+  BeginIter feat{j} "a Feature" 0 1
 
     Select name "Adposition {i} feature {j} name" "Name: " " "
     fillnames c=noun
@@ -1663,7 +1663,7 @@ the vocabulary defined in the Lexicon section.</p>"
 
 BeginIter sentence{i} "a Sentence"
 
-  Text orth "Sentence {i}" "<p><b>Sentence {i}</b>: " "</p>" 100
+  Text orth "Sentence {i}" "<b>Sentence {i}</b>: " "" 100
 
 EndIter sentence
 
