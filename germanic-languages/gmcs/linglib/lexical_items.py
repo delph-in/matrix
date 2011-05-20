@@ -7,7 +7,7 @@ from gmcs.linglib import auxiliaries
 from gmcs.linglib.parameters import determine_vcluster
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
 
-##########################################################
+
 # insert_ids()
 
 def insert_ids(ch):
@@ -18,7 +18,6 @@ def insert_ids(ch):
   """
   stemids = {}
   stemidcounters = {}
-
   postypes = ALL_LEX_TYPES
 
   for postype in postypes:
@@ -415,6 +414,7 @@ def customize_copula(mylang, ch, lexicon, hierarchies):
     if ch.get('cop_loc'):
       type_name = 'general-copula-verb-lex'
       mylang.add('copula-verb-lex := ' + type_name + ' & trans-first-arg-raising-lex-item-2.')
+      
       mylang.add('loc-copula-verb-lex := ' + type_name + \
                     ' & trans-first-arg-raising-lex-item & norm-sem-lex-item & \
   [ SYNSEM [ LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL [ CAT.HEAD adp, \
@@ -441,8 +441,9 @@ def customize_copula(mylang, ch, lexicon, hierarchies):
                         #comps & \
                         [ LOCAL.CAT [ VAL [ COMPS < > ], \
                                       HEAD ' + head + ' & [ PRD + ] ] ] > ].')
-    
-
+  
+####TEMP HACK ADDING MC-CONSTRAINT TO GENERAL COP
+    mylang.add(type_name + ' := [ SYNSEM.LOCAL.CAT.MC na-or-- ].' )
     if ch.get('has-aux') == 'yes':
       mylang.add(type_name + ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
 

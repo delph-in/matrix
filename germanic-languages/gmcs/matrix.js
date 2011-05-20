@@ -186,19 +186,16 @@ function toggle_all_display_lex(on)
   for (var x=0; x<iters.length; x++)
   {
     iter = iters[x];
-    if(iter.id.search('TEMPLATE')==-1 && + //don't mess with display of TEMPLATES
-       iter.id.search('feat') == -1 && + //feat/stem/forbid/requires/lri iterators
-       iter.id.search('stem') == -1 && + //needn't show/hide
-       iter.id.search('forbid') == -1 && + 
-       iter.id.search('require') == -1 && +
-       iter.id.search('lri') == -1){ 
+    if(iter.id.search('TEMPLATE')==-1) { //don't mess with display of TEMPLATES
       button = document.getElementById(iter.id+'button');
-      if(on==1){
-        if(iter.style.display == 'block' || iter.style.display == '')
-          toggle_display_lex(iter.id, button.id);
-      }else {
-        if(iter.style.display == 'none' || iter.style.display == '')
-          toggle_display_lex(iter.id, button.id);
+      if (button != null) {
+	if(on==1){
+	  if(iter.style.display == 'block' || iter.style.display == '')
+	    toggle_display_lex(iter.id, button.id);
+        } else {
+          if(iter.style.display == 'none' || iter.style.display == '')
+            toggle_display_lex(iter.id, button.id);
+	}
       }
     }
   }
@@ -330,7 +327,7 @@ function prev_div(n, name)
 // Worker function that clones the invisible tempate of an iterator,
 // replaces any iterator variables with the proper values, and inserts
 // the copy into the page.
-function do_clone_region(id, iter_var, bAnim)
+function do_clone_region(id, iter_var, bAnim, bShow)
 {
 
   var d = document.getElementById(id + '_TEMPLATE');
@@ -358,15 +355,9 @@ function do_clone_region(id, iter_var, bAnim)
   n.id = id + cur;
   n.style.display = '';
 
-  //if the new iter is a stem or feature iterator, 
-  //or a morphotactics forbid or require or lri iterator,
-  //don't add a show/hide button
-  if(n.id.search('stem') == -1 && +
-     n.id.search('feat') == -1 && +
-     n.id.search('require') == -1 && +
-     n.id.search('forbid') == -1 && +
-     n.id.search('lri') == -1 )
-  {//otherwise go in here and add the button
+  // only add the show/hide button on iterators which ask for
+  // a show/hide button
+  if (bShow){
     var b = document.createElement("a");
     b.id = n.id+'button';
     b.innerHTML = '&#9660; '+n.id + '<br />';
@@ -385,9 +376,9 @@ function do_clone_region(id, iter_var, bAnim)
 
 // clone_region()
 // Clone a region and expand using animation
-function clone_region(id, iter_var)
+function clone_region(id, iter_var, bShow)
 {
-  do_clone_region(id, iter_var, true);
+    do_clone_region(id, iter_var, true, bShow);
 }
 
 // clone_region()
@@ -505,12 +496,13 @@ function fill_regex(name, pattern, nameOnly)
     if (e[i].name.search(pattern) != -1) {
       var val = e[i].name.replace(/_[^_]*$/, '');
 
-      var desc = val
+      var desc = val;
       var f = document.getElementsByName(val + '_name');
       if (f && f[0] && f[0].value) {
         if (nameOnly) {
           val = desc = f[0].value;
-        } else {
+        } 
+	else {
           desc = f[0].value + ' (' + desc + ')';
         }
       }
@@ -530,7 +522,8 @@ function fill_regex(name, pattern, nameOnly)
 // fill_feature_names()
 // Fill a SELECT tag with OPTIONs created from the array features[],
 // where every OPTION is a feature name.
-function fill_feature_names(select_name)
+// The cat(egory) argument allows you to restrict the features by category
+function fill_feature_names(select_name, cat)
 {
   var select = document.getElementsByName(select_name)[0];
   var old_val = select.value;  // store the previously selected option
@@ -546,10 +539,19 @@ function fill_feature_names(select_name)
     
     var o = document.createElement('option');
     o.className = 'temp';
-    o.value = f[0];
-    o.innerHTML = f[0];
 
-    select.appendChild(o);
+    var inlist = 'yes';
+    if (typeof(cat) != "undefined"){
+      if (f[2] != cat && f[2] != 'both' && cat != 'both') {
+        inlist = 'no';
+      }
+    }
+
+    if (inlist == 'yes'){
+      o.value = f[0];
+      o.innerHTML = f[0];
+      select.appendChild(o);
+    }
   }
 
   set_select_value(select, old_val, old_text);

@@ -501,3 +501,4 @@ def aux_plus_verb_germanic_aux_arg_str(supertypename):
 #        typedef = TDLencode(orth) + \
 #                    ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
 #        lexicon.add(typedef, merge=True)
+

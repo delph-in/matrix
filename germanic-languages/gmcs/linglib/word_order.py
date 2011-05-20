@@ -377,11 +377,13 @@ def specialize_word_order(hc,orders, mylang, ch, rules, lrules):
     mylang.add('lex-rule :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
                               DTR.SYNSEM.LOCAL.CAT.VC #vc ].',
                section='addenda')
-
     if wo == 'v2':
       specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules)
     else:
       mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
+                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].',
+               section='addenda')
+    mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].',
                section='addenda')
   # ERB 2006-09-15 First add head-comp or comp-head if they aren't
@@ -844,7 +846,7 @@ def determine_consistent_order(wo,hc,ch):
 
 def customize_head_comp_non_main_phrase(ch, mylang):
   c_ord = ''
-  if ch.get('has-compl') == 'yes' and ch.get('vc-analysis') == 'aux-rule': 
+  if ch.get('has-compl') == 'yes' and not ch.get('old-analysis') == 'yes': 
     if ch.get('clz-comp-order') == 'clz-comp':
       c_ord = 'initial'
     elif ch.get('clz-comp-order') == 'comp-clz':
@@ -889,6 +891,7 @@ def customize_head_comp_non_main_phrase(ch, mylang):
   if ch.get('clz-optionality'):
     mylang.add('create-informal-vcomp-phrase := unary-phrase &\
    [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
+                             COORD -, \
 	         	     CAT [ HEAD verb & [ FORM finite ],\
 				   VAL #val & [ SUBJ < >,\
 					        COMPS < >,\
@@ -1211,8 +1214,13 @@ def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
   mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
   mylang.add('basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
                                         HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
-  mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
+  if ch.get('old-analysis') == 'yes':
+    mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
                                           NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
+  else:
+    mylang.add('basic-head-comp-share-vc := basic-head-comp-phrase &
+                                 [ SYNSEM.LOCAL.CAT.VC #vc, \
+                                   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
   mylang.add('basic-head-subj-phrase :+ [ SYNSEM [ LOCAL.CAT [ VC #vc, \
                                                                HC-LIGHT #light ], \
                                           LIGHT #light ], \
@@ -1221,12 +1229,18 @@ def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
 
     
   mylang.add('aux-2nd-comp-phrase := basic-head-1st-comp-phrase & head-initial & \
-                    [ SYNSEM.LOCAL.CAT [ MC #mc & na, \
+                    [ SYNSEM.LOCAL.CAT [ MC #mc, \
 		                         SECOND - ], \
                       HEAD-DTR.SYNSEM.LOCAL.CAT[ MC #mc, \
 			                         SECOND + ], \
                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb, \
-		                        	      MC - ]].') 
+		                        	      MC - ]].')
+  if ch.get('old-analysis') == 'yes':
+    mylang.add('aux-2nd-comp-phrase := [ SYNSEM.LOCAL.CAT.MC na ].')
+  else:
+    mylang.add('aux-2nd-comp-phrase := [ SYNSEM.LOCAL.CAT.MC +, \
+                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC bool ].')
+      
   mylang.add('gen-comp-aux-2nd-phrase := head-final & basic-head-1st-comp-phrase &  \
                      [ SYNSEM.LOCAL.CAT [ MC +, \
 		                          SECOND #scd ], \
@@ -1247,7 +1261,18 @@ def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
   if ch.get('split-cluster') == 'yes':
     split_cluster_phrases_argument_composition(ch, mylang, rules, lrules)
 
-
+def argument_composition_revised_additional_constraints(mylang):
+  mylang.add('subj-v-inv-rule := [ SYNSEM.LOCAL.CAT.VFRONT na ].')
+  mylang.add('head-initial-head-nexus := \ 
+          [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC bool ].')
+  mylang.add('head-comp-phrase := basic-head-comp-vc-share.')
+  mylang.add('comp-head-phrase := basic-head-comp-vc-share.')
+  mylang.add('head-comp-phrase-2 := basic-head-comp-vc-share.')
+  mylang.add('comp-head-phrase-2 := basic-head-comp-vc-share.')
+  mylang.add('general-comp-head-vc-phrase := basic-head-comp-vc-share.')
+  mylang.add('comp-2-head-vc-phrase := basic-head-comp-vc-share.')
+  mylang.add('aux-2nd-comp-phrase := basic-head-comp-vc-share.')
+  mylang.add('gen-comp-aux-2nd-phrase := basic-head-comp-vc-share.')
 def split_cluster_phrases_argument_composition(ch, mylang, rules, lrules):
 
   mylang.add('split-cl-comp-aux-2nd-phrase := gen-comp-aux-2nd-phrase & \
@@ -1273,15 +1298,21 @@ def split_cluster_arg_comp_lex_rule(ch, mylang, lrules):
                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf'
 
   mylang.add('head-initial-head-nexus := ' + headdtrval + ' ].')
-  mylang.add('comp-head-vc-phrase := ' + headdtrval + ' & na-or-- ].')
-  mylang.add('comp-2-head-vc-phrase:= [ HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT - ].')
+  if ch.get('old-analysis') == 'yes': 
+    mylang.add('comp-head-vc-phrase := ' + headdtrval + ' & na-or-- ].')
+    mylang.add('comp-2-head-vc-phrase:= [ HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT - ].')
+    mylang.add('comp-aux-2nd-phrase := ' + nhddtrval + ' ].')
+  else:
+    mylang.add('comp-head-vc-phrase := ' + headdtrval + ' ].')
+    mylang.add('comp-2-head-vc-phrase := ' + headdtrval + ' ].')
+    mylang.add('comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT + ].')
+
   mylang.add('comp-aux-vc-phrase := ' + nhddtrval + ' ].')
   mylang.add('basic-head-subj-phrase :+ '+ headdtrval + ' ].')
   mylang.add('aux-2nd-comp-phrase := ' + nhddtrval + ' ].')
-  mylang.add('comp-aux-2nd-phrase := ' + nhddtrval + ' ].')
   mylang.add('split-cl-comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.VFRONT -, \
-                                                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
-
+                                                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
+  mylang.add('basic-head-mod-phrase-simple :+ ' +headdtrval + ' ].')
 
   mylang.add('cat :+ [ VFRONT luk ].', 'VFRONT checks whether ditransitive verb has undergone needed modification to occur in the Vorfeld', section='addenda')
   mylang.add('infl-lex-rule :+ [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
@@ -1291,18 +1322,23 @@ def split_cluster_arg_comp_lex_rule(ch, mylang, lrules):
 			    COMPS < #comp2, #comp1 >,\
 			    SPR #spr,\
 			    SPEC #spec ],\
-		      VFRONT +,\
 		      VC #vc,\
 		      SECOND #sd ], \
    DTR.SYNSEM.LOCAL.CAT [ VAL [ SUBJ #subj,\
 				COMPS < #comp1, #comp2 >,\
 				SPR #spr,\
 				SPEC #spec ],\
-			  VFRONT -,\
-			  HEAD [ FORM nonfinite,\
-				 AUX - ],\
+			  HEAD [ AUX - ],\
 			  VC #vc,\
 			  SECOND #sd   ] ].')
+  if ch.get('old-analysis') == 'yes':
+    mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.VFRONT +, \
+                    DTR.SYNSEM.LOCAL.CAT [ VFRONT -, \
+                                           HEAD.FORM nonfinite ] ].' )
+  else:
+    mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT [ VFRONT -, \
+                                                              SECOND - ], \
+                    DTR.SYNSEM.LOCAL.CAT.VFRONT + ].' )
   lrules.add('change-arg-order := change-arg-order-rule.')
   if ch.get('argument-order') == 'fixed':
     mylang.add('change-arg-order-rule := \
@@ -1396,6 +1432,7 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
   mylang.add('cat :+ [ VFRONT bool ].', 'VFRONT checks whether the vorfeld contains a partial verbal cluster', section='addenda')
   mylang.add('head :+ [ DTR-FORM form ].')
 
+  
 ###flexible aux-comp-order always uses NOMINAL with aux+verb analysis
 ###only add for fixed aux-comp-order + split cluster
 

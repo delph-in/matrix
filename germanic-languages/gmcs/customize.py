@@ -191,7 +191,7 @@ def customize_roots():
     roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
     if ch.get('verb-cluster') == 'yes' and ch.get('split-cluster') == 'yes':
       if ch.get('vc-analysis') == 'aux-rule' or ch.get('split-analysis') == 'lex-rule':
-        roots.add('root := [ SYNSEM.LOCAL.CAT.VFRONT - ].')
+        roots.add('root := [ SYNSEM.LOCAL.CAT.VFRONT na-or-- ].')
 ###REMOVING CONDITION FOR NOW: MAYBE BACK WHEN TRYING BOTH SPLIT ANALYSIS 
 ###APPROACHES
 
