@@ -219,6 +219,8 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
   if hclightallverbs:
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].')
+  if ch.get('verb-cluster') == 'yes':
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
   elif hclight:
     comment = \
       ';;; If there are aspects of the syntax which pick out\n' + \
@@ -279,11 +281,6 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 			 CONT.HOOK.INDEX.SF prop-or-ques ] ] > ].'
     mylang.add(typedef)
 
-
-
-
-
-
   if ch.get('subj-control-verb') == 'yes':
     typedef = \
     'subj-contr-transitive-verb-lex := basic-verb-lex.' 
@@ -302,6 +299,20 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
       mylang.add('subj-contr-transitive-verb-lex := \
                     auxrule-first-arg-control-lex-item & one-comp-aux.')
 
+  if ch.get('obj-raising') == 'yes':
+    typedef = \
+    'obj-raising-verb-lex := ' + mainorverbtype + ' & \
+       distrans-second-arg-raising-lex-item & \
+     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
+ 			      COMPS < #obj , #vcomp . #comps >, \
+			      SPR < >, \
+			      SPEC < > ], \
+       ARG-ST < #subj & [ LOCAL.CAT [ VAL.SPR < > ] ], \
+	        #obj & [ LOCAL.CAT [ VAL.SPR < > ] ], \
+	        #vcomp & [ LOCAL.CAT [ VAL [ SUBJ < [ ] >, \
+					     COMPS #comps ] ] ] > ]. '
+    mylang.add(typedef)
+ 
   case.customize_verb_case(mylang, ch)
 
   # Add constraints to choices to create lex rules for bipartite stems
@@ -344,10 +355,18 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
           tivity = a_case + '-' + o_case + '-trans'
 
       elif len(c) == 3:
-        a_case = case.canon_to_abbr(c[0], cases)
-        b_case = case.canon_to_abbr(c[1], cases)
-        o_case = case.canon_to_abbr(c[2], cases)
-        tivity = a_case + '-' + b_case + '-' + o_case + '-ditrans'
+        if c[2] == 'inf':
+          a_case = case.canon_to_abbr(c[0], cases)
+          o_case = case.canon_to_abbr(c[1], cases)
+          tivity = a_case + '-' + o_case + '-' + c[2]
+          if verb.get('raising') == 'obj':
+            tivity += '-obj-raising'
+          tivity += '-ditrans'
+        else:
+          a_case = case.canon_to_abbr(c[0], cases)
+          b_case = case.canon_to_abbr(c[1], cases)
+          o_case = case.canon_to_abbr(c[2], cases)
+          tivity = a_case + '-' + b_case + '-' + o_case + '-ditrans'
     else:
       s_case = case.canon_to_abbr(val, cases)
       tivity = s_case + '-intrans'
@@ -534,6 +553,10 @@ def customize_adjectives(mylang, ch, lexicon):
     mylang.add('int-mod-adj-lex := basic-int-mod-adj-lex & \
                 [ SYNSEM [ LOCAL.CONT.HOOK.XARG #arg1, \
                            LKEYS.KEYREL.ARG1 #arg1 ] ].')
+    
+    if ch.get('verb-cluster') == 'yes':
+      mylang.add('scopal-mod-adj-lex := no-cluster-lex-item.')
+      mylang.add('int-mod-adj-lex := no-cluster-lex-item.')   
 
     if ch.get('strength-marking') == 'double':
       mylang.add('+njdo :+ [ STRONG bool ].', section='addenda')
@@ -612,7 +635,9 @@ def customize_adverbs(mylang, ch, lexicon):
     mylang.add_literal(comment)
     mylang.add('scopal-adverb-lex := basic-scopal-adverb-lex.')
     mylang.add('int-adverb-lex := basic-int-adverb-lex.')
-      
+    if ch.get('verb-cluster') == 'yes':
+      mylang.add('scopal-adverb-lex := no-cluster-lex-item.')
+      mylang.add('int-adverb-lex := no-cluster-lex-item.')   
  # Adverbs
   if 'adv' in ch:
     lexicon.add_literal(';;; Adverbs')
@@ -743,6 +768,9 @@ def create_adposition_supertypes(ch, mylang):
   mylang.add(s_name + ' := [ SYNSEM [ LKEYS.KEYREL.ARG2 #arg2, \
                   LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #arg2 ] ].')
 
+  if ch.get('verb-cluster') == 'yes':
+    mylang.add('int-adp-lex-item := no-cluster-lex-item.')
+ 
   for spadp in ch.get('sup_adp',[]):
 
     if spadp.get('kind') == 'mod':
@@ -808,6 +836,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                                   SPEC < > ] ], \
          ARG-ST < #spr > ].'
   mylang.add(typedef)
+  if ch.get('verb-cluster') == 'yes':
+    mylang.add('noun-lex := no-cluster-lex-item.')
 
   if singlentype:
     if seen['obl']:

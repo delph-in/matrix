@@ -52,12 +52,6 @@ nom-acc-acc-case-name=accusative
   case1_name=dative
   case2_name=genitive
 
-section=adjectives
-adj-agreement=yes
-  adjagr1_feat=case
-  adjagr2_feat=strength
-strength-marking=triple
-
 section=adpositions
  sup_adp1_kind=mod
  sup_adp1_mod1_head=noun

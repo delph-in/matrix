@@ -266,7 +266,10 @@ def interpret_verb_valence(valence):
       else:
         return 'tverb'
     elif len(v) == 3:
-      return 'dverb'
+      if v[2] == 'inf':
+        return 'oraisverb'
+      else:
+        return 'dverb'
   elif valence == 'trans':
     return 'tverb'
   elif valence == 'ditrans':
@@ -275,6 +278,8 @@ def interpret_verb_valence(valence):
     return 'sc2verb'
   elif valence == 'scontr':
     return 'scontrverb'
+  elif valence == 'orais':
+    return 'oraisverb'
   else:
     return 'iverb'
 
@@ -424,6 +429,55 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
             [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
           mylang.add(typedef)
+      elif p[0] == 'oraisverb' or (len(c) == 3 and c[2] == 'inf'):
+        if p[0] == 'oraisverb':
+          a_case = ''
+          a_head = ch.case_head()
+          o_case = ''
+          o_head = ch.case_head()
+        else:
+          a_case = canon_to_abbr(c[0], cases)
+          a_head = ch.case_head(c[0])
+          o_case = canon_to_abbr(c[1], cases)
+          o_head = ch.case_head(c[1])
+          b_res = c[2]                        
+        
+        if a_case and o_case:
+          t_type = a_case + '-' + o_case + '-' + b_res + '-obj-raising-ditransitive-verb-lex'
+          b_res += 'initive'
+        else:
+          t_type = 'obj-rais-ditrans-verb-lex'                      
+        mylang.add(t_type + ' := obj-raising-verb-lex.')
+
+        # constrain the head of the agent/subject
+        if ch.get('vc-analysis') != 'aux-rule':
+          typedef = \
+            t_type + ' := \
+            [ ARG-ST < [ LOCAL.CAT.HEAD ' + a_head + ' ], \
+                       [ LOCAL.CAT.HEAD ' + o_head + ' ], \
+                       [ LOCAL.CAT.HEAD verb  & [ FORM ' + b_res + ' ] ] > ].'
+        else:
+          typedef = \
+            t_type + ' := \
+            [ ARG-ST < [ LOCAL.CAT.HEAD ' + o_head + ' ], \
+                       [ LOCAL.CAT.HEAD verb  & [ FORM ' + b_res + ' ] ] > ].'
+
+        mylang.add(typedef)
+
+        # constrain the case of the agent/subject
+        if a_case and not ch.get('vc-analysis') == 'aux-rule':
+          typedef = \
+            t_type + ' := \
+            [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
+          mylang.add(typedef)
+        if o_case:
+          typedef = \
+            t_type + ' := \
+              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ], [ ] > ].'
+          mylang.add(typedef)
+
+
+        
       elif p[0] == 'ditrans' or len(c) == 3:            #ditrans
         
         if p[0] == 'ditrans':
