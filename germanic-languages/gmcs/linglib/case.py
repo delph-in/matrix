@@ -450,22 +450,25 @@ def customize_verb_case(mylang, ch):
         mylang.add(t_type + ' := obj-raising-verb-lex.')
 
         # constrain the head of the agent/subject
-        if ch.get('vc-analysis') != 'aux-rule':
-          typedef = \
-            t_type + ' := \
-            [ ARG-ST < [ LOCAL.CAT.HEAD ' + a_head + ' ], \
-                       [ LOCAL.CAT.HEAD ' + o_head + ' ], \
-                       [ LOCAL.CAT.HEAD verb  & [ FORM ' + b_res + ' ] ] > ].'
-        else:
-          typedef = \
-            t_type + ' := \
-            [ ARG-ST < [ LOCAL.CAT.HEAD ' + o_head + ' ], \
-                       [ LOCAL.CAT.HEAD verb  & [ FORM ' + b_res + ' ] ] > ].'
+        
+        typedef = \
+          t_type + ' := \
+          [ ARG-ST < [ LOCAL.CAT.HEAD ' + a_head + ' ], \
+                     [ LOCAL.CAT.HEAD ' + o_head + ' ], \
+                     [ LOCAL.CAT.HEAD verb  & [ FORM ' + b_res + ' ] ] > ].'
+
+      ##no distinction in basic arg-str between auxrule and basic
+      ##subject is not raised, object is restricted enough 
+      # else:
+      #    typedef = \
+      #      t_type + ' := \
+      #      [ ARG-ST < [ LOCAL.CAT.HEAD ' + o_head + ' ], \
+      #                 [ LOCAL.CAT.HEAD verb  & [ FORM ' + b_res + ' ] ] > ].'
 
         mylang.add(typedef)
 
         # constrain the case of the agent/subject
-        if a_case and not ch.get('vc-analysis') == 'aux-rule':
+        if a_case:
           typedef = \
             t_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'

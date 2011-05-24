@@ -125,17 +125,17 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
                                     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv ].')
         mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.INV #inv, \
                                    NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv ].')
-    if ch.get('split-cluster') == 'yes':
-      if ch.get('vc-analysis') == 'aux-rule' or ch.get('split-analysis') == 'lex-rule':
-        mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+    vfront = determine_vfront(ch)
+    if vfront:
+      mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                                    LCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf, \
                                    RCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
-        if mid:   
-          mylang.add(pn + '-mid-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+      if mid:   
+        mylang.add(pn + '-mid-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                                      LCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf, \
                                      RCOORD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
-        mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
-                                     NONCONJ-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
+      mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                                   NONCONJ-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
 
   if pos == 'n' or pos == 'np' or pos == 'adj':
     if 'case' in agr:
@@ -172,6 +172,16 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
     rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
 
 
+def determine_vfront(ch):
+  vfront = False
+  if ch.get('vc-analysis') == 'basic' and not ch.get('old-analysis') == 'yes':
+    vfront = True 
+  elif ch.get('split-cluster') == 'yes':
+    if ch.get('vc-analysis') == 'aux-rule':
+      vfront = True  
+    if ch.get('split-analysis') == 'lex-rule':
+      vfront = True
+  return vfront
 
 def add_adposition_rules(mylang):
 

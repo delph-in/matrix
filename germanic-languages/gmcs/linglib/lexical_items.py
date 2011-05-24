@@ -219,7 +219,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
   if hclightallverbs:
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].')
-  if ch.get('verb-cluster') == 'yes':
+  if ch.get('verb-cluster') == 'yes' and ch.get('vc-analysis') == 'basic':
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
   elif hclight:
     comment = \
@@ -304,15 +304,26 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     'obj-raising-verb-lex := ' + mainorverbtype + ' & \
        distrans-second-arg-raising-lex-item & \
      [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
- 			      COMPS < #obj , #vcomp . #comps >, \
 			      SPR < >, \
 			      SPEC < > ], \
-       ARG-ST < #subj & [ LOCAL.CAT [ VAL.SPR < > ] ], \
-	        #obj & [ LOCAL.CAT [ VAL.SPR < > ] ], \
-	        #vcomp & [ LOCAL.CAT [ VAL [ SUBJ < [ ] >, \
-					     COMPS #comps ] ] ] > ]. '
+       ARG-ST < #subj & [ LOCAL.CAT [ VAL.SPR < > ] ], [ ], [ ] > ].'
+
     mylang.add(typedef)
- 
+
+    if ch.get('vc-analysis') == 'aux-rule':
+      comps_struc = \
+      ' [ SYNSEM.LOCAL.CAT.VAL.COMPS < #obj, #vcomp >, \
+          ARG-ST < [ ], #obj & [ LOCAL.CAT.VAL.SPR < > ], \
+                   #vcomp & [ LOCAL.CAT.VAL.SUBJ < [ ] > ] > ].' 
+    else:
+      comps_struc = \
+      ' [ SYNSEM.LOCAL.CAT.VAL.COMPS < #obj, #vcomp . #comps >, \
+          ARG-ST < [ ], #obj & [ LOCAL.CAT.VAL.SPR < > ], \
+                   #vcomp & [ LOCAL.CAT.VAL [ SUBJ < [ ] >, \
+                                              COMPS #comps ]] > ].' 
+
+    mylang.add('obj-raising-verb-lex := ' + comps_struc)
+
   case.customize_verb_case(mylang, ch)
 
   # Add constraints to choices to create lex rules for bipartite stems
