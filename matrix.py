@@ -114,7 +114,22 @@ def main():
     choices = args[1]
     txtsuite = args[2]
     import gmcs.regression_tests.add_regression_test
-    gmcs.regression_tests.add_regression_test.add(choices, txtsuite)
+    try:
+      lg = gmcs.regression_tests.add_regression_test.add(choices, txtsuite)
+      print 'Succeeded copying files for %s.' % lg
+      rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
+      subprocess.call(['svn', '-q', 'add'] +\
+                      [os.path.join(rpath, 'home/gold/' + lg),
+                       os.path.join(rpath, 'skeletons/' + lg)])
+      subprocess.call(['svn', '-q', 'add'] +\
+                      [os.path.join(rpath, 'home/gold/' + lg + '/[a-z]*'),
+                       os.path.join(rpath, 'skeletons/' + lg + '/[a-z]*'),
+                       os.path.join(rpath, 'choices/' + lg),
+                       os.path.join(rpath, 'txt-suites/' + lg)])
+      print 'Succeeded adding files to Subversion. Be sure to commit!'
+    except ValueError, er:
+      print "Error adding regression test."
+      print er.message
 
   elif args[0] in ('regression-test-update', 'ru'):
     from gmcs import utils
@@ -182,7 +197,7 @@ def ensure_customization_root_set():
   elif os.path.exists(os.path.join(cwd, 'gmcs/customize.py')):
     os.environ['CUSTOMIZATIONROOT'] = os.path.join(cwd, 'gmcs')
   else:
-    print "CUSTOMIZATIONROOT cannot be set."
+    print "CUSTOMIZATIONROOT is not set and cannot be found."
     sys.exit(2)
 
 def validate_args(args):
@@ -305,10 +320,10 @@ def usage(command=None, exitcode=2):
     p("  matrix.py customize ../choices/Finnish")
     p("  matrix.py cf ../choices/Finnish")
     p("  matrix.py v ../choices/Finnish")
-    p("  matrix.py -C gmcs/ r")
-    p("  matrix.py ra Cree_choices Cree_test_suite")
-    p("  matrix.py install my_matrix")
-    p("  matrix.py vivify")
+    p("  matrix.py --customizationroot=gmcs/ r")
+    p("  matrix.py -C gmcs/ ra Cree_choices Cree_test_suite")
+    p("  matrix.py -C gmcs/ install my_matrix")
+    p("  matrix.py -C gmcs/ vivify")
   sys.exit(exitcode)
 
 def verify_force():
@@ -339,11 +354,12 @@ def customize_grammar(path, destination=None, flop=False, cheaphack=False):
   # To work around a bug in cheap, we can add a blank morphological rule
   if cheaphack:
     irules_path = os.path.join(grammar_dir, 'irules.tdl')
-    if os.path.getsize(irules_path) == 0:
-      irules = open(irules_path, 'w')
+    if not os.path.exists(irules_path) or \
+       not any(':=' in line for line in open(irules_path, 'r')):
+      irules = open(irules_path, 'a')
       print >>irules, 'CHEAP-HACK-RULE :='
-      print >>irules, '%suffix (ZZZ_ ZZZ)'
-      print >>irules, 'lex-rule.'
+      print >>irules, '%prefix (xyx zyz)'
+      print >>irules, 'lex-rule & [ NEEDS-AFFIX + ].'
       irules.close()
   # Now a grammar has been created, so we can flop it
   if flop:

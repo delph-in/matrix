@@ -149,7 +149,6 @@ def customize_pettdl(grammar_path):
     p_out.close()
     set_out = open(os.path.join(grammar_path, 'pet/' + myl + '-pet.set'), 'w')
     set_out.write(';;;; settings for CHEAP -*- Mode: TDL; Coding: utf-8 -*-\n')
-    set_out.write('include "global".\n')
     set_out.write('include "flop".\n')
     set_out.write('include "pet".\n')
     set_out.close()

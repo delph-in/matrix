@@ -98,31 +98,6 @@ def get_input_map(pch):
       inp_map[i_s] += [pc]
   return inp_map
 
-def get_stem_prefix_from_uniqid(uniqid, choices):
-  """
-  Helper function to look up stem prefix in choices file
-  based on uniqid value. This takes advantage of the ids
-  inserted by lexical_items.insert_ids().
-  """
-  #FIXME: Need to add some error checking here.
-  for verb in choices.get('verb'):
-    stems = verb.get('stem')
-    bistems = verb.get('bistem')
-    if bistems:
-      stems.extend(bistems)
-    for stem in stems:
-      if stem.get('name') == uniqid:
-        return stem.full_key
-  #FIXME: Adding auxes here, but it would probably be better
-  #to avoid making mns for auxes in the first place 
-  #(cf lexion.lexical_type_hierarchy)
-  for verb in choices.get('aux'):
-    stems = verb.get('stem')
-    for stem in stems:
-      if stem.get('name') == uniqid:
-        return stem.full_key
-
-       
 def get_vtype(stem, choices):
   """
   Helper function to look up verb type in choices file
@@ -199,10 +174,10 @@ def position_class_hierarchy(choices):
                                         order=pc.get('order')))
     cur_pc.tdl_order = i
     _mns[cur_pc.key] = cur_pc
-    # If there's only one LRT, and the PC or the LRT are unnamed, merge them
-    if len(pc.get('lrt')) == 1:
+    # If only one root LRT, and the PC or the LRT are unnamed, merge them
+    if len([l for l in pc['lrt'] if l.get('supertypes', None) == None]) == 1:
       lrt = pc['lrt'].get_first()
-      if '' in (pc.get('name',''), lrt.get('name','')):
+      if pc.get('name','') == '' or lrt.get('name','') == '':
         name = pc.get('name') or lrt.get('name') or pc.full_key
         lrt['name'] = cur_pc.name = name
         cur_pc.identifier_suffix = 'lex-rule'
@@ -252,17 +227,12 @@ def create_lexical_rule_type(lrt):
   return new_lrt
 
 def set_lexical_rule_supertypes(pc):
-  # since we will later percolate up common supertypes, for now
-  # just put them on all nodes with LRIs (mainly leaf nodes)
-  nodes = [n for n in pc.nodes.values() if len(n.lris) > 0]
-  for lrt in nodes:
-    # NOTE: there is currently no check to ensure that
-    # cont-change-only-lex-rule and add-only-no-ccont-rule won't
-    # appear on the same LRT.
+  # Later, if a node inherits no lex-rule supertype, it will be assigned
+  # the default value of 'add-only-no-ccont-rule'
+  for lrt in pc.nodes.values():
     if ('value', 'plus') in lrt.features.get('negation',{}).items():
       lrt.supertypes.add('cont-change-only-lex-rule')
-    else:
-      lrt.supertypes.add('add-only-no-ccont-rule')
+    # add other special cases here
 
 ### CONSTRAINTS ###
 
@@ -272,10 +242,6 @@ def interpret_constraints(choices):
     # don't bother if the morphotactic node is not defined in choices
     if mn.key not in choices \
        or not isinstance(choices[mn.key], dict): continue
-#     if mn.identifier_suffix == 'lex' or mn.instance:
-#       print mn.identifier()
-#       print mn.key
-#       print choices[mn.key].get('require', [])
 
     for req in choices[mn.key].get('require', []):
       others = dict([(o, _mns[o]) for o in req['others'].split(', ')])
@@ -523,7 +489,8 @@ def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
   out_flags = set(pc.flags['out'].keys())
   to_copy = {}
   for mn in pc.roots():
-     to_copy[mn.key] = write_mn_flags(mylang, lextdl, mn, out_flags, all_flags, choices)
+     to_copy[mn.key] = write_mn_flags(mylang, lextdl, mn, out_flags, all_flags,
+                                      choices)
   # for lex-rule PCs (not lexical types), write copy-up flags
 
   if pc.identifier_suffix != 'lex-super':
@@ -536,9 +503,7 @@ def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
 def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
   print mn
   if mn.instance:
-    # for lex-entries, we also need to write the stem and pred information
-    # since lexicon is a TDL with merge_by_default set to False.
-    write_lex_entry_with_flags(lextdl, mn, choices)
+    write_flags(lextdl, mn)
   else:
     write_flags(mylang, mn)
   to_copy = {}
@@ -549,24 +514,20 @@ def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
   copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
   return all_flags.difference(cur_output_flags).difference(copied_flags)
 
-def write_lex_entry_with_flags(lextdl, mn, choices):
-  uniqid = mn.name
-  stem_prefix = get_stem_prefix_from_uniqid(uniqid, choices)
-  stem = choices.get(stem_prefix)
-  for flag in mn.flags['out']:
-    lextdl.add('''%(id)s := [ INFLECTED.%(flag)s %(val)s ].''' %\
-               {'id': uniqid, 'flag': flag_name(flag),
-                'val': mn.flags['out'][flag]})
-
 def write_flags(tdlfile, mn):
-  for flag in mn.flags['in']:
-    tdlfile.add('''%(id)s := [ DTR.INFLECTED.%(flag)s %(val)s ].''' %\
-               {'id': mn.identifier(), 'flag': flag_name(flag),
-                'val': mn.flags['in'][flag]})
-  for flag in mn.flags['out']:
-    tdlfile.add('''%(id)s := [ INFLECTED.%(flag)s %(val)s ].''' %\
-               {'id': mn.identifier(), 'flag': flag_name(flag),
-                'val': mn.flags['out'][flag]})
+  if len(mn.flags['in']) + len(mn.flags['out']) == 0:
+    return
+  flag_strs = []
+  if len(mn.flags['in']) > 0:
+    flag_strs += ['DTR.INFLECTED [ ' +\
+                  ', '.join(flag_name(flag) + ' ' + mn.flags['in'][flag]
+                            for flag in mn.flags['in']) + ' ]']
+  if len(mn.flags['out']) > 0:
+    flag_strs += ['INFLECTED [ ' +\
+                  ', '.join(flag_name(flag) + ' ' + mn.flags['out'][flag]
+                            for flag in mn.flags['out']) + ' ]']
+  tdl_str = mn.identifier() + ' := [ ' + ', '.join(flag_strs) + ' ].'
+  tdlfile.add(tdl_str)
 
 def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
   copied_flags = set()
@@ -574,7 +535,7 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
   common_flags = reduce(set.intersection, to_copy.values())
   for mn_key in to_copy:
     mn = _mns[mn_key]
-    if mn.identifier_suffix in ('lex-super', 'lex'): continue
+    if mn.identifier_suffix in ('lex-super', 'lex', ''): continue
     # if all flags are common, none are copied here, and if the
     # difference contains all flags, just copy up the whole AVM.
     mn_copy_flags = to_copy[mn_key]
@@ -583,26 +544,19 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
     if mn_copy_flags == all_flags:
       mylang.add(mn.identifier() + ''' := [ INFLECTED #infl,
                                             DTR.INFLECTED #infl ].''')
-    else:
-      for flag in mn_copy_flags:
-        mylang.add('''%(id)s := [ INFLECTED.%(flag)s #%(tag)s,
-                                  DTR.INFLECTED.%(flag)s #%(tag)s ].''' %\
-                   {'id': mn.identifier(), 'flag': flag_name(flag),
-                    'tag': disjunctive_typename(flag).lower()})
+    elif len(mn_copy_flags) > 0:
+      flag_tags = [(flag_name(flag), disjunctive_typename(flag).lower())
+                   for flag in mn_copy_flags]
+      tdl_str = mn.identifier() + ' := [ ' +\
+                'INFLECTED [ ' +\
+                ', '.join(['%(flag)s #%(tag)s' % {'flag':ft[0], 'tag':ft[1]}
+                           for ft in flag_tags]) + ' ], ' +\
+                'DTR.INFLECTED [ ' +\
+                ', '.join(['%(flag)s #%(tag)s' % {'flag':ft[0], 'tag':ft[1]}
+                           for ft in flag_tags]) + ' ] ].'
+      mylang.add(tdl_str)
     copied_flags.update(mn_copy_flags)
   return copied_flags
-
-def write_initial_flags(mylang, mn, initial_flags):
-  """
-  Write initial flags for lexical types and lexical entries.
-  As of 2011/1/31 only bipartite stems give rise to lex entries
-  with flags, but these flags occur on both non-bipartite and
-  bipartite verbs.
-  """
-  for flag in initial_flags:
-    mylang.add('''%(id)s := [ INFLECTED.%(flag)s na-or--].''' %\
-               {'id': mn.identifier(), 'flag': flag_name(flag),
-                'tag': disjunctive_typename(flag).lower()})
 
 def write_i_or_l_rules(irules, lrules, lrt, order):
   if len(lrt.lris) == 0: return

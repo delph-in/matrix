@@ -72,8 +72,7 @@ no-alts := alts-min.
 
 word := word-or-lexrule & nocoord.
 
-lex-item := word-or-lexrule & nocoord &
-  [ INFLECTED infl-initial ].
+lex-item := word-or-lexrule & nocoord.
 
 ;; Not all phrases have SYNSEM phr-synsem, since we need to allow the
 ;; head-comp rules to build signs which are still [ SYNSEM lex-synsem
@@ -841,8 +840,6 @@ lex-rule := phrase-or-lexrule & word-or-lexrule &
 
 inflected := avm.
 infl-satisfied := inflected.
-infl-initial := inflected.
-infl-bottom := infl-initial & infl-satisfied. ; just so they unify
 
 ; ERB 2005-04-14 But it's a bad idea to copy the whole synsem
 ; value, since that means identifying RELS and HCONS lists, breaking
@@ -1824,10 +1821,11 @@ basic-bare-np-phrase := head-only &
 			   SUBJ < >,
 			   COMPS < >,
 			   SPEC < > ],
-    HEAD-DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR < [ LOCAL.CAT.HEAD det,
-					      OPT + ] >,
-				      SUBJ < >,
-				      COMPS < > ],
+    HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,
+    			    	  VAL [ SPR < [ LOCAL.CAT.HEAD det,
+					      	OPT + ] >,
+				      	SUBJ < >,
+				      	COMPS < > ] ],
 			    CONT.HOOK [ INDEX #index,
 					LTOP #larg ] ],
     C-CONT [ RELS <! quant-relation &

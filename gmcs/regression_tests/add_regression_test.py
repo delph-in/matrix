@@ -42,6 +42,11 @@ def add(choices_file, txt_suite):
   ch = ChoicesFile(choices_file)
   lg_name = ch.get('language')
 
+  # Make sure illegal characters (for lisp strings) are not in the lg_name.
+  # For now this is just double-quotes "
+  if any(c in ('"',) for c in lg_name):
+      raise ValueError, 'Double-quotes are not allowed in the language name.'
+
   # Load up the current regression test index
 
   index = RegressionTestIndex(rt_root + "regression-test-index")
@@ -74,6 +79,11 @@ def add(choices_file, txt_suite):
   # Prompt user for comment on test.
 
   comment = raw_input("Enter a short comment describing this regression test: ")
+
+  # Make sure illegal characters (for lisp strings) are not in the comment.
+  # For now this is just double-quotes "
+  if any(c in ('"',) for c in comment):
+      raise ValueError, 'Double-quotes are not allowed in the comment.'
 
   # Add line to regression-test-index
 
@@ -110,6 +120,4 @@ def add(choices_file, txt_suite):
           f.write("\"))\n")
   f.close()
 
-  # Reminders about svn
-
-  print "Success!\n Use svn add to add choices/" + lg_name + ", txt-suites/" + lg_name + ",\n skeletons/" + lg_name + ", and home/gold/" + lg_name + ".\n Then do svn commit in regression_tests."
+  return lg_name

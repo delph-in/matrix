@@ -1,3 +1,5 @@
+;;; -*- Mode: TDL; -*-
+
 ;;;
 ;;; grammar-specific settings for PET; run-time part for cheap parser.
 ;;;
