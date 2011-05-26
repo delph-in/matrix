@@ -1682,7 +1682,7 @@ to your choices file, the Toolbox files must be transferred to our
 servers.  We will NOT store these files permanently.  They will be
 deleted within 24 hours.</p>"
 
-BeginIter toolboximportconfig{i} "a Toolbox Import Configuration" 1
+BeginIter toolboximportconfig{i} "a Toolbox Import Configuration" 1 1
 
   Text idtag "id tag" "<p>Toolbox tag for lex entry ids: " "" 10
 
@@ -1697,17 +1697,17 @@ BeginIter toolboximportconfig{i} "a Toolbox Import Configuration" 1
   . gloss "Gloss" "" " the gloss (if available)<br>"
   . glossfw "Gloss first word" "" " the first word of the gloss (if available)"
 
-  BeginIter toolboxfile{j} "a Toolbox File" 1
+  BeginIter toolboxfile{j} "a Toolbox File" 0 1
 
     Text tbfilename "file name" "<p>Toolbox file name: " " [Make button:] Browse" 20
    
   EndIter toolboxfile
 
-  BeginIter importclass{j} "an Import Class" 1
+  BeginIter importclass{j} "an Import Class" 1 1
 
     Text importlextype "lexical type" "<p>Lexical type for imported entries " "" 20
 
-    BeginIter toolboxtag{k} "a Toolbox tag-value pair" 1
+    BeginIter toolboxtag{k} "a Toolbox tag-value pair" 0 1
    
       Text tbtag "toolboxtag" "<p>Toolbox tag (e.g., for part of speech): " "" 10
 
