@@ -1699,8 +1699,8 @@ BeginIter toolboximportconfig{i} "a Toolbox Import Configuration" 1 1
 
   BeginIter toolboxfile{j} "a Toolbox File" 0 1
 
-    Text tbfilename "file name" "<p>Toolbox file name: " " [Make button:] Browse" 20
-   
+    File tbfilename "file name" "Toolbox file {j}: " "" 20
+
   EndIter toolboxfile
 
   BeginIter importclass{j} "an Import Class" 1 1

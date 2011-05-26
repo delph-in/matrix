@@ -820,6 +820,11 @@ class MatrixDefFile:
         value = choices.get(vn)
         html += html_input(vr, word[0].lower(), vn, value, False,
                            bf, af, sz, onchange=oc) + '\n'
+      elif word[0] == 'File':
+        (vn, fn, bf, af, sz) = word[1:]
+        value = choices.get(vn)
+        html += html_input(vr, word[0].lower(), vn, value, False,
+                           bf, af, sz) + '\n'
       elif word[0] == 'BeginIter':
         iter_orig = word[1]
         (iter_name, iter_var) = word[1].replace('}', '').split('{', 1)
