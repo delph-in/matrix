@@ -1684,11 +1684,11 @@ deleted within 24 hours.</p>"
 
 BeginIter toolboximportconfig{i} "a Toolbox Import Configuration" 1 1
 
-  Text idtag "id tag" "<p>Toolbox tag for lex entry ids: " "" 10
+  Text idtag "id tag" "Toolbox tag for lex entry ids: " "" 10
 
   Text glosstag "gloss tag" " Toolbox tag for glosses: " "" 10
 
-  Text stemtag "stem tag" "<p>Toolbox tag for stem: " "" 10
+  Text stemtag "stem tag" "<br /><br />Toolbox tag for stem: " "" 10
 
   Text bistemtag "bistem tag" " (Optional) Toolbox tag for affix portion of bipartite stems: " "" 10
 
@@ -1705,11 +1705,11 @@ BeginIter toolboximportconfig{i} "a Toolbox Import Configuration" 1 1
 
   BeginIter importclass{j} "an Import Class" 1 1
 
-    Text importlextype "lexical type" "<p>Lexical type for imported entries " "" 20
+    Text importlextype "lexical type" "Lexical type for imported entries " "" 20
 
     BeginIter toolboxtag{k} "a Toolbox tag-value pair" 0 1
    
-      Text tbtag "toolboxtag" "<p>Toolbox tag (e.g., for part of speech): " "" 10
+      Text tbtag "toolboxtag" "Toolbox tag (e.g., for part of speech): " "" 10
 
       Text tbvalue "toolboxvalue" " Value for the Toolbox tag: " "" 10
 
@@ -1719,7 +1719,7 @@ BeginIter toolboximportconfig{i} "a Toolbox Import Configuration" 1 1
 
 EndIter toolboximportconfig
 
-Label "<p>[Make button:] Import Toolbox Lexicon"
+Button "Import Toolbox Lexicon" "<br /><br />" "" "import_toolbox_lexicon()"
 
 Section test-sentences "Test Sentences"
 

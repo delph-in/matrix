@@ -989,8 +989,7 @@ function fill_hidden_errors()
 // span outside of the show hide (if such a span exists.
 // This should only be called by the fill_hidden_errors function.
 function fill_errors(element_id)
-{
-  
+{  
   var s = document.getElementById(element_id+'_errors');
   var p = document.getElementById(element_id);
   var anchors = p.getElementsByTagName('a');
@@ -999,4 +998,16 @@ function fill_errors(element_id)
       s.appendChild(anchors[i].cloneNode(true));
     }
   }
+}
+
+//import_toolbox_lexicon
+function import_toolbox_lexicon()
+{
+  var elm = document.getElementsByTagName('form')[0];
+  var inp = document.createElement('input');
+  inp.type = "hidden";
+  inp.name = "import_toolbox";
+  inp.value = "true";
+  elm.appendChild(inp);
+  submit_main();
 }

@@ -13,6 +13,7 @@ import cgi
 import cgitb; cgitb.enable()
 import time
 import glob
+import tempfile
 from random import randint
 from distutils.dir_util import remove_tree
 
@@ -20,6 +21,7 @@ from gmcs.deffile import MatrixDefFile
 from gmcs.customize import customize_matrix
 from gmcs.validate import validate_choices
 from gmcs.choices import ChoicesFile
+from gmcs.linglib.toolboximport import import_toolbox_lexicon
 
 from gmcs.deffile import HTTP_header
 
@@ -92,6 +94,20 @@ if form_data.has_key('choices'):
 # if the 'section' field is defined, we have submitted values to save
 if form_data.has_key('section'):
   matrixdef.save_choices(form_data, os.path.join(session_path, 'choices'))
+
+# if we have recieved toolbox files, then we want to add these lexical items after saving the toolbox configuration (done above).
+if form_data.has_key('import_toolbox'):
+  toolbox_files = [] 
+  for key in form_data.keys():
+    if key[-10:] == 'tbfilename' and form_data[key].value != "":
+      fout = tempfile.NamedTemporaryFile(dir=session_path)
+      fout.write(form_data[key].value)
+      toolbox_files.append(fout)
+      form_data[key].value = fout.name
+  matrixdef.save_choices(form_data, os.path.join(session_path, 'choices'))
+  import_toolbox_lexicon(os.path.join(session_path, 'choices'))
+  for tbfile in toolbox_files:
+    tbfile.close()
 
 # If the 'verbpred' field is defined, then the user wishes to generate more sentences with that predication
 if form_data.has_key('verbpred'):

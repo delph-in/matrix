@@ -211,7 +211,7 @@ HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fil
 '''
 
 HTML_method = 'post'
-HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '">'
+HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '" enctype="multipart/form-data">'
 
 HTML_postform = '</form>'
 
@@ -822,9 +822,14 @@ class MatrixDefFile:
                            bf, af, sz, onchange=oc) + '\n'
       elif word[0] == 'File':
         (vn, fn, bf, af, sz) = word[1:]
+        vn = prefix + vn
         value = choices.get(vn)
         html += html_input(vr, word[0].lower(), vn, value, False,
                            bf, af, sz) + '\n'
+      elif word[0] == 'Button':
+        (vn, bf, af, oc) = word[1:]
+        html += html_input(vr, word[0].lower(), '', vn, False,
+                           bf, af, onclick=oc) + '\n';
       elif word[0] == 'BeginIter':
         iter_orig = word[1]
         (iter_name, iter_var) = word[1].replace('}', '').split('{', 1)
@@ -1163,7 +1168,7 @@ class MatrixDefFile:
       if len(word) == 0:
         pass
       elif word[0] in ['Check', 'Text', 'TextArea',
-                       'Radio', 'Select', 'MultiSelect']:
+                       'Radio', 'Select', 'MultiSelect', 'File']:
         vn = word[1]
         if prefix + vn not in already_saved:
           already_saved[prefix + vn] = True
