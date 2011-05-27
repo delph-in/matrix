@@ -878,10 +878,16 @@ def customize_head_comp_non_main_phrase(ch, mylang):
     mylang.add('head-comp-sub-phrase := basic-head-1st-comp-phrase & \
                     head-initial & \
                 [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + ihead +  ' ].')
+    if ch.get('wh-questions') == 'yes':
+      mylang.add('head-comp-sub-phrase := [ SYNSEM.NON-LOCAL.QUE #que, \
+                   NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].', 'non-head-dtr passes on que value in case adposition has a \'which\' complement.')
   if fhead: 
     mylang.add('comp-head-sub-phrase := basic-head-1st-comp-phrase & \
                     head-final & \
-                [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + fhead + ' ].')  
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + fhead + ' ].') 
+    if ch.get('wh-questions') == 'yes':
+      mylang.add('comp-head-sub-phrase := [ SYNSEM.NON-LOCAL.QUE #que, \
+                    [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].', 'non-head-dtr passes on que value in case adposition has a \'which\' complement.') 
 
 
 

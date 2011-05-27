@@ -185,6 +185,8 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     typedef = \
       'verb-lex := lex-item & \
                  [ SYNSEM.LOCAL.CAT.HEAD verb ].'
+#    if ch.get('wh-questions') == 'yes':
+#      mylang.add('verb-lex := [ SYNSEM.NON-LOCAL.QUE 0-dlist ].')
     mylang.add(typedef)
     typedef = \
       'main-verb-lex := verb-lex & basic-verb-lex & \
