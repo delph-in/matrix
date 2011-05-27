@@ -77,7 +77,7 @@ class ChoiceDict(ChoiceCategory, dict):
                           else '_'.join([self.full_key, cur_key])
         new_list = ChoiceList(full_key=new_key)
         dict.__setitem__(self, cur_key, new_list)
-      self[cur_key][remaining_keys] = value
+      dict.__getitem__(self, cur_key)[remaining_keys] = value
 
   def __delitem__(self, key):
     cur, remaining = get_next_key(key)
@@ -120,14 +120,16 @@ class ChoiceList(ChoiceCategory, list):
   def __setitem__(self, key, value):
     index, remaining_keys = get_next_key(key)
     # create the dicts, if needed, then descend into the one at index
-    if len(self) < index:
-      # we overrode the len function, but in this case we want the original
-      for i in range(list.__len__(self), index):
-        self.append(ChoiceDict(full_key=self.full_key + str(i + 1)))
+    # we overrode the len function, but in this case we want the original
+    for i in range(list.__len__(self), index):
+      self.append(None)
     if not remaining_keys:
       list.__setitem__(self, index - 1, value)
     else:
-      self[index][remaining_keys] = value
+      if self[index] == None:
+        list.__setitem__(self, index - 1, ChoiceDict(full_key=self.full_key +\
+                                                     str(index)))
+      list.__getitem__(self, index - 1)[remaining_keys] = value
 
   def __delitem__(self, key):
     cur, remaining = get_next_key(key)
@@ -136,30 +138,47 @@ class ChoiceList(ChoiceCategory, list):
     # delete only if the user specified this list
     elif cur <= list.__len__(self):
       # but don't actually delete list items, since that breaks indexing
-      self[cur] = ChoiceDict()
+      self[cur] = None
 
   # custom iterator ignores empty items (e.g. when a
   # user deletes an item in the middle of a list)
   def __iter__(self):
+    """
+    Iterate over only the none-empty indices.
+    """
     for item in list.__iter__(self):
-      if len(item) > 0:
+      if item is not None:
         yield item
 
   def __len__(self):
-    return sum(1 for x in self if len(x) > 0)
+    """
+    Return the length of the ChoiceList, which is the number of
+    non-empty indices in the list.
+    """
+    # The custom iterator only returns non-empty items, so just use that.
+    return sum(1 for x in self)
 
   def is_empty(self):
-    return len([x for x in self]) == 0
+    return len(self) == 0
 
   def get_first(self):
-    for d in self:
-      if len(d) > 0:
-        return d
-    return None
+    """
+    Return the first non-None list item.
+    """
+    # The custom iterator will take care of finding non-None items.
+    i = iter(self)
+    try:
+      return i.next()
+    except StopIteration:
+      return None
 
   def get_last(self):
+    """
+    Return the last non-None list item.
+    """
+    # reversed bypasses the custom iterator, so we have to check manually.
     for d in reversed(self):
-      if len(d) > 0:
+      if d is not None:
         return d
     return None
 
@@ -204,6 +223,7 @@ def split_variable_key(key):
   if key == '': return []
   return [k for k in var_delim_re.split(key) if k]
 
+next_key_cache = {}
 def get_next_key(complex_key):
   """
   Split a key grouping it by non-numbers and numbers.
@@ -214,13 +234,18 @@ def get_next_key(complex_key):
   # given a blank key, return None
   if not complex_key:
     return None, None
-  subkeys = var_delim_re.split(complex_key, maxsplit=1)
-  # re.split above will return 1 value if no split, so make it 3
-  if len(subkeys) == 1:
-    subkeys += ['', '']
-  # the remaining keys will be the latter two subkeys if the first is used
-  next_key = subkeys[0] or subkeys[1]
+  try:
+    subkeys = next_key_cache[complex_key]
+  except KeyError:
+    subkeys = var_delim_re.split(complex_key)
+    if subkeys[0] == '':
+      subkeys.pop(0)
+    if subkeys[-1] == '':
+      subkeys.pop()
+  next_key = subkeys[0]
   rest = complex_key.replace(next_key,'',1).lstrip('_')
+  if len(subkeys) > 1:
+    next_key_cache[rest] = subkeys[1:]
   return safe_int(next_key), rest
 
 ######################################################################

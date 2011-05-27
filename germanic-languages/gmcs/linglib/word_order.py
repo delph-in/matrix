@@ -887,7 +887,7 @@ def customize_head_comp_non_main_phrase(ch, mylang):
 
   if ch.get('clz-optionality'):
     mylang.add('create-informal-vcomp-phrase := unary-phrase &\
-   [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
+   [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK #hook & [ INDEX.SF prop ],\
                              COORD -, \
 	         	     CAT [ HEAD verb & [ FORM finite ],\
 				   VAL #val & [ SUBJ < >,\
@@ -896,9 +896,10 @@ def customize_head_comp_non_main_phrase(ch, mylang):
 					        SPEC < > ],\
 				   MC + ] ] ] >,\
      C-CONT.HOOK #hook,\
-     SYNSEM.LOCAL.CAT [ HEAD comp,\
-	         	VAL #val,\
-		        MC - ] ].')    
+     SYNSEM [ LOCAL.CAT [ HEAD comp,\
+	         	  VAL #val,\
+		          MC - ], \
+              NON-LOCAL.QUE 0-dlist ] ].')    
 
 def add_nexus_constraints_v2_with_cluster(ch, mylang):
 
@@ -1210,6 +1211,8 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
   else:
     spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules)
 
+  if ch.get('wh-questions') == 'yes':
+    create_wh_phrases_additions(mylang, rules)
 
  
 def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
@@ -1465,19 +1468,19 @@ def spec_word_order_phrases_aux_plus_verb(ch, mylang):
 
   mv2vcp = \
    'mverb-2nd-vcomp-phrase := aux-comp-non-vc-phrase & \
-      [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD [ INV -, \
- 				           AUX - ], \
+      [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.AUX -, \
                                     VAL.SUBJ #subj ], \
         SYNSEM.LOCAL.CAT.VAL.SUBJ #subj ].'
   mylang.add(mv2vcp)
    
    
-  if ch.get('q-inv'):
-    mytype = 'aux-comp-non-vc-phrase'
-    mylang.add('aux-2nd-comp-phrase := ' + mytype + ' & basic-aux-verb-rule.')
-    mylang.add('aux-2nd-comp-phrase := [ HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD.INV -,\
-                                                                       MC na ], \
+  mytype = 'aux-comp-non-vc-phrase'
+  mylang.add('aux-2nd-comp-phrase := ' + mytype + ' & basic-aux-verb-rule.')
+  mylang.add('aux-2nd-comp-phrase := [ HEAD-DTR.SYNSEM [ LOCAL.CAT.MC na, \
                                                            LIGHT + ] ].')
+  if ch.get('q-inv'):
+    mylang.add('mverb-2nd-vcomp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV - ].')
+    mylang.add('aux-2nd-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV - ].')
     mylang.add('aux-1st-comp-phrase := ' + mytype + ' & basic-aux-verb-rule:.')
     mylang.add('aux-1st-comp-phrase := [ HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD.INV +, \
                                                                        MC na ], \
@@ -1491,9 +1494,7 @@ def spec_word_order_phrases_aux_plus_verb(ch, mylang):
       '*Wird der mann schlafen nicht?, *Hat der mann geschlafen bestimmt.\n' + \
       'Using MODIFIED to prevent this from happening. ' + \
       'Replace with other (especially introduced) feature if necessary.'
-    mylang.add('aux-1st-comp-phrase := [ SYNSEM.MODIFIED notmod-or-rmod ].', comment)
-  else:
-    mytype = 'aux-2nd-comp-phrase'     
+    mylang.add('aux-1st-comp-phrase := [ SYNSEM.MODIFIED notmod-or-rmod ].', comment)     
   mylang.add(mytype + ' := basic-verbal-comp-rule-1 & head-initial & \
                              [ SYNSEM [ LOCAL.CAT [ HEADFINAL +, \
 			                            MC #mc, \
@@ -1669,3 +1670,199 @@ def create_germanic_adverbial_phrases(ch, mylang, rules):
     mylang.add('adj-head-scop-vc-phrase := adj-head-scop-phrase & head-final-invc & adjunct-head-phrase.')    
     rules.add('adj-head-int-vc := adj-head-int-vc-phrase.')
     rules.add('adj-head-scop-vc := adj-head-scop-vc-phrase.')
+
+def create_wh_phrases_additions(mylang, rules):
+  mylang.add('lex-rule :+ [ SYNSEM.NON-LOCAL.QUE #que, \
+                            DTR.SYNSEM.NON-LOCAL.QUE #que ].')
+  alt_subj_head = \
+   'basic-head-wh-subj-phrase := head-valence-phrase & binary-headed-phrase & \
+			  head-compositional & \
+   [ SYNSEM phr-synsem & [ LOCAL.CAT [ POSTHEAD +, \
+			               VAL [ SUBJ < >, \
+			                     COMPS #comps, \
+			                     SPR #spr ] ] ], \
+    C-CONT [  HOOK [ INDEX.SF ques ], \
+             RELS <! !>, \
+	     HCONS <! !> ], \
+    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < #synsem >, \
+				    COMPS #comps, \
+                                    SPR #spr ], \
+    NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem & \
+ 		 [ LOCAL [ CAT [ VAL [ SUBJ olist, \
+				       COMPS olist, \
+				       SPR olist ] ] ], \
+		   NON-LOCAL [ SLASH 0-dlist & [ LIST < > ], \
+			       REL 0-dlist, \
+			       QUE 1-dlist ] ]].'
+
+  mylang.add(alt_subj_head)
+
+  hwmp = \
+  'head-wh-mod-phrase := head-nexus-rel-phrase & \
+  [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj, \
+                             SPR #spr, \
+                             COMPS #comps ], \
+             MODIFIED hasmod ], \
+    HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj, \
+                                      SPR #spr, \
+                                      COMPS #comps ], \
+                      NON-LOCAL [ REL 0-dlist ] ] ].'
+  mylang.add(hwmp)
+
+  bhwmps = \
+    'basic-head-wh-mod-phrase-simple := head-wh-mod-phrase & \
+                       binary-headed-phrase & \
+  [ SYNSEM [ NON-LOCAL [ SLASH [ LIST #first, \
+				 LAST #last ], \
+			 REL 0-dlist, \
+			 QUE 1-dlist ], \
+	     LOCAL.CONT.HOOK.INDEX.SF ques ], \
+    HEAD-DTR.SYNSEM \
+           [ LOCAL [ CAT [ HEAD #head, \
+                           VAL #val, \
+                           POSTHEAD #ph, \
+                           MC #hmc ], \
+                     AGR #agr, \
+                     CONT.HOOK #hdhook ], \
+             NON-LOCAL #nonloc & \
+                   [ SLASH [ LIST #middle, \
+                             LAST #last ] ], \
+	     LIGHT #light, \
+             MODIFIED #modif ], \
+    NON-HEAD-DTR.SYNSEM  \
+           [ LOCAL.CAT [ HEAD [ MOD < [ LOCAL local & \
+                                              [ CAT [ HEAD #head, \
+                                                      VAL #val, \
+                                                      POSTHEAD #ph, \
+                                                      MC #hmc ], \
+                                                AGR #agr, \
+                                                CONT.HOOK #hdhook ], \
+                                        NON-LOCAL #nonloc, \
+					LIGHT #light, \
+                                        MODIFIED #modif ] > ], \
+                         VAL [ COMPS olist, \
+                               SPR olist ] ], \
+             NON-LOCAL [ SLASH [ LIST #first, \
+                                 LAST #middle ], \
+                         QUE 1-dlist ] ], \
+    C-CONT.RELS <! !> ].'
+  mylang.add(bhwmps)
+  
+  hwmps = \
+    'head-wh-mod-phrase-simple := basic-head-wh-mod-phrase-simple & \
+      [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #htop, \
+         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD \
+                           < [ LOCAL.CONT.HOOK.LTOP #htop ] >].'
+  mylang.add(hwmps)
+
+  wahp = \
+   'wh-adj-head-phrase := basic-head-wh-mod-phrase-simple & head-final & \
+    [ SYNSEM [ LOCAL.CAT.POSTHEAD #ph, \
+   	       MODIFIED lmod & [ PERIPH #periph ], \
+               LIGHT #light ], \
+      HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD #ph, \
+                        LIGHT #light ], \
+      NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.COMPS < > ], \
+			    NON-LOCAL [ SLASH 0-dlist, \
+				        REL 0-dlist ], \
+                          MODIFIED.PERIPH #periph ] ].'
+  mylang.add(wahp) 
+
+  hwap = \
+    'head-wh-adj-phrase := basic-head-wh-mod-phrase-simple &  \
+                                        head-initial & phrasal & \
+     [ SYNSEM [ LOCAL.CAT.POSTHEAD +, \
+	        MODIFIED rmod ], \
+       HEAD-DTR.SYNSEM.MODIFIED notmod-or-rmod, \
+       NON-HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD +, \
+			     NON-LOCAL.QUE 1-dlist ] ].'
+  mylang.add(hwap)
+ 
+  iwmp = \
+    'isect-wh-mod-phrase := head-wh-mod-phrase-simple & \
+                              head-compositional & \
+     [ HEAD-DTR.SYNSEM.LOCAL.CONT [ HOOK.LTOP #hand ], \
+       NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD \
+                              < [ LOCAL intersective-mod ] >, \
+				   CONT.HOOK.LTOP #hand ], \
+       C-CONT.HCONS <! !> ].'
+  mylang.add(iwmp)
+  mylang.add('wh-adj-head-int-phrase := wh-adj-head-phrase & \
+                                               isect-wh-mod-phrase & \
+              [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD - ] ].')
+  mylang.add('head-wh-adj-int-phrase := head-wh-adj-phrase & \
+                  isect-wh-mod-phrase.')
+
+
+  mylang.add('head-wh-subj-phrase := basic-head-wh-subj-phrase & head-initial-head-nexus.')
+  mylang.add('wh-subj-head-phrase := basic-head-wh-subj-phrase & head-final-head-nexus.')
+  mylang.add('wh-subj-head-vc-phrase := basic-head-wh-subj-phrase & head-final-invc & nonverbal-comp-phrase.')
+  
+  mylang.add('wh-adjunct-head-phrase := basic-head-wh-mod-phrase-simple & \
+            [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +rp ].')
+
+  mylang.add('wh-adj-head-2nd-int-phrase := wh-adj-head-int-phrase & \
+               head-final-head-nexus & wh-adjunct-head-phrase.')
+
+
+  mylang.add('adj-head-int-vc-phrase := adj-head-int-phrase & \
+              head-final-invc & adjunct-head-phrase.')
+
+
+  mylang.add('wh-adj-head-int-vc-phrase := wh-adj-head-int-phrase & \
+                head-final-invc & wh-adjunct-head-phrase.')
+
+
+  mylang.add('non-wh-head := binary-headed-phrase & \
+              [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-dlist ].')
+  mylang.add('wh-head := binary-headed-phrase & \
+              [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques, \
+                NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE 1-dlist ].')
+  mylang.add('comp-aux-vc-phrase := non-wh-head.')
+  mylang.add('comp-head-vc-phrase := non-wh-head.')
+  mylang.add('wh-comp-head-vc-phrase := general-comp-head-vc-phrase & \
+               nonverbal-comp-phrase & wh-head & \
+              [ SYNSEM.LOCAL [ CAT.VFRONT #vf, \
+                               CONT.HOOK.INDEX.SF ques ], \
+                HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
+  mylang.add('comp-head-phrase := non-wh-head.')
+  mylang.add('head-comp-phrase := non-wh-head.')
+  mylang.add('wh-comp-head-phrase := wh-head & basic-head-1st-comp-phrase & \
+                        head-final-head-nexus & basic-head-comp-share-vc.')
+  mylang.add('head-wh-comp-phrase := wh-head & basic-head-1st-comp-phrase & \
+                          head-initial-head-nexus & basic-head-comp-share-vc.')
+  
+  mylang.add('bare-np-phrase := head-nexus-que-phrase.')
+  wh_sub_type = \
+    'create-wh-ques-vcomp-phrase := unary-phrase & \
+      [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK #hook & [ INDEX.SF ques ], \
+                            COORD -, \
+                            CAT [ HEAD verb & \
+                                       [ FORM finite, \
+					 INV - ], \
+                                  VAL #val & \
+                                      [ SUBJ < >, \
+                                        COMPS < >, \
+                                        SPR < >, \
+                                        SPEC < > ], \
+                                  MC #mc ] ] ] >, \
+      C-CONT.HOOK #hook, \
+      SYNSEM [ LOCAL.CAT [ HEAD comp, \
+                           VAL #val, \
+                           MC #mc & - ], \
+               NON-LOCAL.QUE 0-dlist ] ].'
+  mylang.add(wh_sub_type)
+  add_wh_specific_rules(rules)  
+
+def add_wh_specific_rules(rules):
+  rules.add('wh-subj-head := wh-subj-head-phrase.')
+  rules.add('head-wh-subj := head-wh-subj-phrase.')
+  rules.add('wh-subj-head-vc := wh-subj-head-vc-phrase.')
+  rules.add('wh-comp-head-vc := wh-comp-head-vc-phrase.')
+  rules.add('wh-comp-head := wh-comp-head-phrase.')
+  rules.add('head-wh-comp := head-wh-comp-phrase.')
+  rules.add('wh-ques := create-wh-ques-vcomp-phrase.')
+
+  rules.add('wh-adj-head-2nd-int := wh-adj-head-2nd-int-phrase.')
+  rules.add('head-2nd-wh-adj-int := head-2nd-wh-adj-int-phrase.')
+  rules.add('wh-adj-head-int-vc := wh-adj-head-int-vc-phrase.')

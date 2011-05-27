@@ -343,11 +343,12 @@ def customize_grammar(path, destination=None, flop=False, cheaphack=False):
   # To work around a bug in cheap, we can add a blank morphological rule
   if cheaphack:
     irules_path = os.path.join(grammar_dir, 'irules.tdl')
-    if os.path.getsize(irules_path) == 0:
-      irules = open(irules_path, 'w')
+    if not os.path.exists(irules_path) or \
+       not any(':=' in line for line in open(irules_path, 'r')):
+      irules = open(irules_path, 'a')
       print >>irules, 'CHEAP-HACK-RULE :='
-      print >>irules, '%suffix (ZZZ_ ZZZ)'
-      print >>irules, 'lex-rule.'
+      print >>irules, '%prefix (xyx zyz)'
+      print >>irules, 'lex-rule & [ NEEDS-AFFIX + ].'
       irules.close()
   # Now a grammar has been created, so we can flop it
   if flop:

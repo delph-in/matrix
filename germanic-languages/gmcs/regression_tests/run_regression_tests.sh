@@ -136,7 +136,7 @@ do
       continue
     fi
     # Customize
-    $python_cmd ${CUSTOMIZATIONROOT}/../matrix.py cf $choicesfile $grammardir >> $log
+    $python_cmd ${CUSTOMIZATIONROOT}/../matrix.py --cheap-hack cf $choicesfile $grammardir >> $log
     if [ $? != 0 ]; then
       echo "FAIL!"
       echo "There was an error during the customization of the grammar." >> $log

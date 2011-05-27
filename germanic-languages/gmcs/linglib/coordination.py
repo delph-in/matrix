@@ -148,6 +148,17 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
                                   RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
       mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
                                  NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
+      if ch.get('wh-questions') == 'yes':
+         mylang.add(pn + '-top-coord-rule := [ SYNSEM.NON-LOCAL.QUE #que, \
+                                 LCOORD-DTR.SYNSEM.NON-LOCAL.QUE #que, \
+                                 RCOORD-DTR.SYNSEM.NON-LOCAL.QUE #que ].')
+      if mid:   
+        mylang.add(pn + '-mid-coord-rule := [ SYNSEM.NON-LOCAL.QUE #que, \
+                                  LCOORD-DTR.SYNSEM.NON-LOCAL.QUE #que, \
+                                  RCOORD-DTR.SYNSEM.NON-LOCAL.QUE #que ].')
+      mylang.add(pn + '-bottom-coord-rule := [ SYNSEM.NON-LOCAL.QUE #que, \
+                                 NONCONJ-DTR.SYNSEM.NON-LOCAL.QUE #que ].')
+        
     if np_number and pos != 'adj':
       mylang.add(pn + '-top-coord-rule := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + 
                                  np_number + ' ].')

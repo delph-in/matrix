@@ -72,8 +72,7 @@ no-alts := alts-min.
 
 word := word-or-lexrule & nocoord.
 
-lex-item := word-or-lexrule & nocoord &
-  [ INFLECTED infl-initial ].
+lex-item := word-or-lexrule & nocoord.
 
 ;; Not all phrases have SYNSEM phr-synsem, since we need to allow the
 ;; head-comp rules to build signs which are still [ SYNSEM lex-synsem
@@ -841,8 +840,6 @@ lex-rule := phrase-or-lexrule & word-or-lexrule &
 
 inflected := avm.
 infl-satisfied := inflected.
-infl-initial := inflected.
-infl-bottom := infl-initial & infl-satisfied. ; just so they unify
 
 ; ERB 2005-04-14 But it's a bad idea to copy the whole synsem
 ; value, since that means identifying RELS and HCONS lists, breaking
@@ -1368,8 +1365,15 @@ head-compositional := headed-phrase &
 ; ERB 2007-01-21 COMPS olist is no longer a fair constraint on
 ; clauses, under current analysis.
 
-clause := phrasal &
-  [ SYNSEM.NON-LOCAL.QUE 0-dlist ].
+;;;ASF 2011-05-26
+;;;removing constraint 0-dlist from clause
+;;;should be discussed with other matrix-developers
+;;;problem is getting wh-non-subjects in German when the subject is
+;;;combined with the verb before the wh-word
+;;;temporal solution: possibly hierarchy needs to be adapted
+
+clause := phrasal. ;&
+;  [ SYNSEM.NON-LOCAL.QUE 0-dlist ].
 
 
 ; The following subtypes of clause will need more constraints,
@@ -1412,10 +1416,18 @@ clause := phrasal &
 
 ; ERB 2007-01-21 Er, not head-only any more, though. 
 
+
+;;;ASF 2011-05-26
+;;;removing constraint 0-dlist for basic non-rel-clause
+;;;should be discussed with other matrix-developers
+;;;problem is getting wh-non-subjects in German when the subject is
+;;;combined with the verb before the wh-word
+;;;
+
+
 basic-non-rel-clause := clause & head-compositional &
   [ SYNSEM.NON-LOCAL.REL 0-dlist,
-    HEAD-DTR.SYNSEM.NON-LOCAL [ QUE 0-dlist,
-				REL 0-dlist ],
+    HEAD-DTR.SYNSEM.NON-LOCAL [ REL 0-dlist ],
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ]].
 

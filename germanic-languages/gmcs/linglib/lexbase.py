@@ -65,7 +65,10 @@ class MorphotacticNode(HierarchyNode):
     return self.relatives('input')
 
   def identifier(self):
-    return '-'.join([self.name, self.identifier_suffix])
+    if self.identifier_suffix:
+      return '-'.join([self.name, self.identifier_suffix])
+    else:
+      return self.name
 
   def input_span(self):
     return PositionClass.input_span(self.pc)
@@ -147,7 +150,11 @@ class LexicalType(MorphotacticNode):
   def __init__(self, key, name, parents=None, entry=False):
     MorphotacticNode.__init__(self, key, name=name, parents=parents,
                               instance=entry)
-    self.identifier_suffix = 'lex'
+    # lexical entries don't have identifier suffixes
+    if entry:
+      self.identifier_suffix = ''
+    else:
+      self.identifier_suffix = 'lex'
 
   def __repr__(self):
     return 'LexicalType(' + self.key + ')'

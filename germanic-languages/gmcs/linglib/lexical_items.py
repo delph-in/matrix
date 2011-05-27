@@ -125,13 +125,9 @@ def customize_bipartite_stems(ch):
         ch[next_lrt_str + '_require1_others'] = ', '.join(avpairs[aff])
         ch[next_lrt_str + '_lri1_orth'] = aff
         ch[next_lrt_str + '_lri1_inflecting'] = 'yes'
-          
+
         # Add requires constrains on stems
         for stemid in avpairs[aff]:
-#          for stem in bistems:
-#            print stemid
-#            print stem.full_key
-#            if stem.full_key == stemid:
           ch[stemid + '_require1_others'] = next_lrt_str
 
 def customize_verbs(mylang, ch, lexicon, hierarchies):
@@ -568,7 +564,9 @@ def customize_adjectives(mylang, ch, lexicon):
     if ch.get('verb-cluster') == 'yes':
       mylang.add('scopal-mod-adj-lex := no-cluster-lex-item.')
       mylang.add('int-mod-adj-lex := no-cluster-lex-item.')   
-
+    if ch.get('wh-questions') == 'yes':
+      mylang.add('scopal-mod-adj-lex := [ SYNSEM.NON-LOCAL.QUE 0-dlist ].')
+      mylang.add('int-mod-adj-lex := [ SYNSEM.NON-LOCAL.QUE 0-dlist ].')
     if ch.get('strength-marking') == 'double':
       mylang.add('+njdo :+ [ STRONG bool ].', section='addenda')
     elif ch.get('strength-marking') == 'triple':
@@ -638,17 +636,61 @@ def customize_adjectives(mylang, ch, lexicon):
 
 def customize_adverbs(mylang, ch, lexicon):
 
+#adding general wh-mod type here (could also be used for other mod and is 
+#not in the way if not)
+  if ch.get('wh-questions') == 'yes':
+    if ch.get('verb-cluster') == 'yes':
+      stype = 'no-cluster-lex-item'
+    else:
+      stype = 'lex-item'
+    bwlnsl = \
+       'basic-wh-loc-non-sp-lex := ' + stype + ' & \
+         [ SYNSEM [ LOCAL [ CONT [ HOOK [ LTOP #khand, \
+				          INDEX #index ], \
+                                 RELS <! [ LBL #khand, \
+                                           PRED "_loc_nonsp_rel", \
+				           ARG0 event, \
+				           ARG1 #index, \
+				           ARG2 #ind], \
+                                         #keyrel & \
+                                         [ LBL #nhand, \
+                                           ARG0 #ind], \
+				         [ PRED "_welch_q_rel", \
+				           ARG0 #ind, \
+				           RSTR #rhand  ] !>, \
+		                  HCONS <! qeq &  \
+                                         [ HARG #rhand, \
+				           LARG #nhand ] !> ], \
+		               CAT.HEAD.MOD \
+                                        < [ LOCAL intersective-mod & \
+                                          [ CONT.HOOK.INDEX #index ] ] > ], \
+	        NON-LOCAL.QUE 1-dlist, \
+                LKEYS.KEYREL #keyrel ] ].'
+    mylang.add(bwlnsl)      
    # Lexical type for adverbs, if the language has any:
   if ch.get('has-adv') == 'yes':
     comment = \
       ';;; Adverbs\n' + \
-      ';;; First attempt: inheriting all from matrix.'
+      ';;; First attempt: inheriting all from matrix.' + \
+      ';;; Regular adverbs have an empty QUE'
     mylang.add_literal(comment)
-    mylang.add('scopal-adverb-lex := basic-scopal-adverb-lex.')
-    mylang.add('int-adverb-lex := basic-int-adverb-lex.')
+    mylang.add('scopal-adverb-lex := basic-scopal-adverb-lex & \
+                [ SYNSEM.NON-LOCAL.QUE 0-dlist ].')
+    mylang.add('int-adverb-lex := basic-int-adverb-lex & \
+                [ SYNSEM.NON-LOCAL.QUE 0-dlist ].')
     if ch.get('verb-cluster') == 'yes':
       mylang.add('scopal-adverb-lex := no-cluster-lex-item.')
       mylang.add('int-adverb-lex := no-cluster-lex-item.')   
+
+    if ch.get('wh-questions') == 'yes':
+      wal = \
+        'wh-adverb-lex := basic-wh-loc-non-sp-lex & \
+           [ SYNSEM.LOCAL.CAT [ HEAD adv, \
+                                VAL [ SUBJ < >, \
+			              COMPS < >, \
+			              SPEC < >, \
+			              SPR < > ] ] ].'
+      mylang.add(wal)
  # Adverbs
   if 'adv' in ch:
     lexicon.add_literal(';;; Adverbs')
@@ -659,6 +701,8 @@ def customize_adverbs(mylang, ch, lexicon):
     stype = '-adverb-lex'
     if adv.get('kind') == 'int':
       stype = 'int' + stype
+    elif adv.get('kind') == 'wh':
+      stype = 'wh' + stype
     else:
       stype = 'scopal' + stype
     atype = name + '-adverb-lex'
@@ -673,7 +717,7 @@ def customize_adverbs(mylang, ch, lexicon):
                    COMPS < >, \
                    SPR < >, \
                    SPEC < > ]'
-
+    
     if val:
       mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.' + val + ' ].')
 
@@ -774,11 +818,11 @@ def create_adposition_supertypes(ch, mylang):
                                          COMPS < ' + comp + ' > \
                                          SPR < >, \
                                          SPEC < > ] ].')
-
+ 
 ###adds ARG2, co-indexed with comp  
   mylang.add(s_name + ' := [ SYNSEM [ LKEYS.KEYREL.ARG2 #arg2, \
                   LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #arg2 ] ].')
-
+  mylang.add(s_name + ' := [ SYNSEM.NON-LOCAL.QUE 0-dlist ].')
   if ch.get('verb-cluster') == 'yes':
     mylang.add('int-adp-lex-item := no-cluster-lex-item.')
  
@@ -849,6 +893,30 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   mylang.add(typedef)
   if ch.get('verb-cluster') == 'yes':
     mylang.add('noun-lex := no-cluster-lex-item.')
+  if ch.get('wh-questions') == 'yes':
+    mylang.add('noun-lex := [ SYNSEM.NON-LOCAL.QUE 0-dlist ].')
+    mylang.add('basic-wh-noun-lex := norm-hook-lex-item & \
+                 [ SYNSEM [ LOCAL.CAT.HEAD noun, \
+                            LKEYS.KEYREL noun-relation ] ].')
+    wh_basictype = \
+      'wh-noun-lex := basic-wh-noun-lex & basic-one-arg &  \
+                                      no-cluster-lex-item & \
+             [ SYNSEM [ LOCAL [ CONT [ HOOK.INDEX #index, \
+                                       RELS <! [ LBL #nhand ], \
+                                               #altkeyrel & \
+                                               [ PRED "_welch_q_rel", \
+                                                 ARG0 #index, \
+                                                 RSTR #rhand ] !>, \
+                                       HCONS <! qeq & \
+                                                [ HARG #rhand, \
+                                                  LARG #nhand ] !> ], \
+                                 CAT.VAL [ SUBJ < >, \
+                                           COMPS < >, \
+                                           SPEC < >, \
+                                           SPR < > ] ], \
+                         NON-LOCAL.QUE 1-dlist, \
+                         LKEYS.ALTKEYREL #altkeyrel ] ].'
+    mylang.add(wh_basictype)    
 
   if singlentype:
     if seen['obl']:
@@ -890,9 +958,12 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   for noun in ch.get('noun',[]):
     name = get_name(noun)
     det = noun.get('det')
+    wh = noun.get('wh')
 
     if singlentype or det == 'opt':
       stype = 'noun-lex'
+    elif wh == 'yes':
+      stype = 'wh-noun-lex'
     elif det == 'obl':
       stype = 'obl-spr-noun-lex'
     else:
