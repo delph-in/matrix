@@ -136,7 +136,7 @@ def customize_script(grammar_path):
 
 def customize_pettdl(grammar_path):
   try:
-    p_in = open('matrix-core/pet.tdl', 'r')
+    p_in = open(os.path.join(get_matrix_core_path(), 'pet.tdl'), 'r')
     lines = p_in.readlines()
     p_in.close()
     myl = ch.get('language').lower()
@@ -261,12 +261,10 @@ def customize_matrix(path, arch_type, destination=None):
   # Copy from matrix-core
   if os.path.exists(grammar_path):
     shutil.rmtree(grammar_path)
-  core_path = os.path.join(os.environ.get('CUSTOMIZATIONROOT',''),
-                           'matrix-core')
   # Use the following command when python2.6 is available
   #shutil.copytree('matrix-core', grammar_path,
   #                ignore=shutil.ignore_patterns('.svn'))
-  shutil.copytree(core_path, grammar_path)
+  shutil.copytree(get_matrix_core_path(), grammar_path)
   # Since we cannot use shutil.ignore_patterns until 2.6, remove .svn dirs
   shutil.rmtree(os.path.join(grammar_path, '.svn'), ignore_errors=True)
   shutil.rmtree(os.path.join(grammar_path, 'lkb/.svn'), ignore_errors=True)
@@ -399,6 +397,9 @@ def customize_matrix(path, arch_type, destination=None):
 
   return grammar_path
 
+def get_matrix_core_path():
+  return os.path.join(os.environ.get('CUSTOMIZATIONROOT/..',''),
+                      'matrix-core')
 
 def get_grammar_path(isocode, language, destination):
   '''

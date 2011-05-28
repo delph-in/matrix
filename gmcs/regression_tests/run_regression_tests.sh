@@ -103,12 +103,6 @@ do
     rm -rf $tsdbhome/current/$lgname
 done
 
-# Create fresh copy of matrix-core
-rm -rf ${CUSTOMIZATIONROOT}/matrix-core
-pushd ${CUSTOMIZATIONROOT}/.. >/dev/null
-./install -c ${CUSTOMIZATIONROOT}/matrix-core >/dev/null
-popd >/dev/null
-
 ###
 ### TSDB GOLD STANDARD COMPARISONS
 ###
