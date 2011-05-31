@@ -52,7 +52,8 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir,session):
   lkb_input.close()
   lkb_input = open('lkb_input'+session,'r')
   output = open('lkb_output'+session,'w')
-  subprocess.call([delphin_dir+'/bin/lkb'],stdin=lkb_input,stdout=output)
+  subprocess.call([os.path.join(delphin_dir, 'bin/lkb')],
+                  stdin=lkb_input, stdout=output)
   lkb_input.close()
   os.remove('lkb_input'+session)
   output.close()
@@ -122,8 +123,8 @@ def remove_duplicates(list):
 
 # Extract predications from the grammar
 def get_n_predications(grammar_dir):
-  lexicon = open(grammar_dir+'/lexicon.tdl','r')
-  choices = open(grammar_dir+'/choices','r')
+  lexicon = open(os.path.join(grammar_dir, 'lexicon.tdl'),'r')
+  choices = open(os.path.join(grammar_dir, 'choices'),'r')
   lang = None
   pred_re = re.compile(r'noun([0-9]+)_stem[0-9]_pred')
   det_re = re.compile(r'noun([0-9]+)_det')
@@ -136,12 +137,12 @@ def get_n_predications(grammar_dir):
     m2 = det_re.match(pline[0])
     m3 = det2_re.match(pline[0])
     if pline[0] == 'language':
-      lang = grammar_dir+'/'+pline[1].lower().rstrip()+'.tdl'
+      lang = os.path.join(grammar_dir, pline[1].lower().rstrip()+'.tdl')
     if m1:
       if int(m1.group(1)) <= len(noun_rels_dets):
         noun_rels_dets[int(m1.group(1))-1][0] = pline[1].rstrip()
       else:
-        noun_rels_dets.append([pline[1].rstrip(),None])        
+        noun_rels_dets.append([pline[1].rstrip(),None])
     if m2:
       if int(m2.group(1)) <= len(noun_rels_dets):
         noun_rels_dets[int(m2.group(1))-1][1] = pline[1].rstrip()
@@ -163,7 +164,7 @@ def get_v_predications(grammar_dir,lang):
   used_types = []
   p1 = re.compile(r'(\S*verb-lex)')
   p2 = re.compile(r'PRED \"(\S*)\"')
-  lexicon = open(grammar_dir+'/lexicon.tdl','r')
+  lexicon = open(os.path.join(grammar_dir, 'lexicon.tdl'),'r')
   for line in lexicon:
     m1 = p1.search(line)
     m2 = p2.search(line)
@@ -260,14 +261,14 @@ def var(string):
     string = "gend"
   if string.lower() in [ "sf","cog-st","speci","sort" ]:
     pass
-  elif string.lower() in ["situation","tense","aspect" ]:
+  elif string.lower() in ["mood","situation","tense","aspect" ]:
     string = "e." + string
   else:
     string = "png." + string
   return string
 
 def get_replacement_features_from_grammar(grammar_dir):
-  choices = open(grammar_dir+'/choices','r')
+  choices = open(os.path.join(grammar_dir, 'choices'),'r')
   in_options = False
   section_re = re.compile(r'section=(.*)')
   choice_re = re.compile(r'(.+)-feat([0-9]+)_(.+)=(.*)')
@@ -294,7 +295,7 @@ def get_replacement_features_from_grammar(grammar_dir):
     
 # Extract templates from the grammar
 def get_templates(grammar_dir):
-  choices = open(grammar_dir+'/choices','r')
+  choices = open(os.path.join(grammar_dir, 'choices'),'r')
   choices_present = False
   in_options = False
   template_files = []

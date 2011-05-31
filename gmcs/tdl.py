@@ -24,7 +24,7 @@ def isid(s):
     if not (c.isalnum() or ord(c) > 127 or c in ['-', '+', '_', '*', '%']):
       return False
   return True
-  
+
 def TDLtokenize(s):
   tok = ""
   val = []
@@ -119,7 +119,7 @@ def TDLwrite(s):
 # A TDLelem is a node in a TDL parse tree.  This is an abstract class; the
 # specific classes below derive from it.
 
-class TDLelem:
+class TDLelem(object):
   def add(self, ch):
     self.child.append(ch)
 
@@ -164,7 +164,7 @@ class TDLelem:
 #   %prefix (* foo)
 #   cs1n-bottom-coord-rule.
 
-class TDLelem_literal:
+class TDLelem_literal(object):
   def __init__(self, literal):
     self.child = []
     self.comment = ''
@@ -299,6 +299,8 @@ class TDLelem_conj(TDLelem):
         last_was_feat = (isinstance(ch, TDLelem_feat));
     for ch in self.child[1:]:
       cur_is_feat = (isinstance(ch, TDLelem_feat));
+      # don't print empty AVMs ([]) unless it's the only thing
+      if cur_is_feat and len(ch.child) == 0: continue
       if cur_is_feat or last_was_feat:
         TDLwrite(' &\n')
         for i in range(old_i):
@@ -400,9 +402,10 @@ class TDLelem_feat(TDLelem):
     if self.is_cons():
       self.write_cons()
     else:
-      TDLwrite('[ ')
-      old_i = TDLget_indent()
+      TDLwrite('[')
+      old_i = TDLget_indent() + 1
       for ch in self.child[0:1]:
+        TDLwrite(' ')
         ch.write()
       for ch in self.child[1:]:
         TDLwrite(',\n')
@@ -645,7 +648,7 @@ def TDLparse_typedef():
   elem.add(TDLparse_conj())
   tok.pop(0) # '.'
   return elem
-  
+
 def TDLparse(s):
   global tok
   tok = TDLtokenize(s)
@@ -663,17 +666,19 @@ def TDLparse(s):
 #   dlist: always true
 
 def TDLmergeable(e1, e2):
-  if isinstance(e1, TDLelem_typedef) and isinstance(e2, TDLelem_typedef):
+  if type(e1) != type(e2):
+    return False
+  if isinstance(e1, TDLelem_typedef):
     return e1.type == e2.type and e1.op == e2.op
-  if isinstance(e1, TDLelem_type) and isinstance(e2, TDLelem_type):
+  if isinstance(e1, TDLelem_type):
     return e1.type == e2.type
-  if isinstance(e1, TDLelem_coref) and isinstance(e2, TDLelem_coref):
+  if isinstance(e1, TDLelem_coref):
     return e1.coref == e2.coref
-  if isinstance(e1, TDLelem_av) and isinstance(e2, TDLelem_av):
+  if isinstance(e1, TDLelem_av):
     return e1.attr == e2.attr
-  if (isinstance(e1, TDLelem_conj) and isinstance(e2, TDLelem_conj)) or \
-     (isinstance(e1, TDLelem_feat) and isinstance(e2, TDLelem_feat)) or \
-     (isinstance(e1, TDLelem_dlist) and isinstance(e2, TDLelem_dlist)):
+  if (isinstance(e1, TDLelem_conj) or \
+      isinstance(e1, TDLelem_feat) or \
+      isinstance(e1, TDLelem_dlist)):
     return True
 
 
@@ -734,7 +739,7 @@ def TDLmerge(e1, e2):
 #   major (Boolean; True iff this is a major section
 #   force (Boolean; True iff the comment should appear even if the section
 #          is empty)
-class TDLsection:
+class TDLsection(object):
   name = ''
   comment = ''
   major = True
@@ -746,14 +751,12 @@ class TDLsection:
 # with a file name, to which it will be eventually saved.  Statements can
 # be added to the TDLfile using the add() method.
 
-class TDLfile:
-  def __init__(self, file_name, merge_by_default = True):
+class TDLfile(object):
+  def __init__(self, file_name):
     self.file_name = file_name  # we'll eventually save to this file
     self.typedefs = []
     self.sections = []
     self.section = ''
-    self.merge_by_default = merge_by_default
-
 
   def define_sections(self, sections):
     """
@@ -797,11 +800,14 @@ class TDLfile:
 
 
   def save(self):
-    if not self.merge_by_default:
-      self.disambiguate_types()
+    self.disambiguate_types()
 
     f = open(self.file_name, 'w')
     TDLset_file(f)
+
+    # We probably only need this for lexicon.tdl, but to be safe let's
+    # put it on all TDL files
+    TDLwrite(';;; -*- Mode: TDL; Coding: utf-8 -*-\n')
 
     # make sure there's an "empty" section so that typedefs not
     # assigned to a section still get written out
@@ -876,15 +882,13 @@ class TDLfile:
     TDLset_file(sys.stdout)
     for t in self.typedefs:
       t.write()
-    print '\n'
 
 
   def add(self, tdl_type,
           comment = '', one_line = False, merge = False, section = ''):
     """
     Add a type definition to this file, merging with an existing
-    definition if possible UNLESS the TDLfile is not set to
-    merge_by_default and that's not overriden by the merge argument.
+    definition if possible.
     """
     typedef = TDLparse(tdl_type)
     typedef.set_comment(comment)
@@ -895,12 +899,11 @@ class TDLfile:
       typedef.section = self.section
 
     handled = False
-    if self.merge_by_default or merge:
-      for i in range(len(self.typedefs) - 1, -1, -1):
-        if TDLmergeable(self.typedefs[i], typedef):
-          self.typedefs[i] = TDLmerge(self.typedefs[i], typedef)
-          handled = True
-          break
+    for i in range(len(self.typedefs) - 1, -1, -1):
+      if TDLmergeable(self.typedefs[i], typedef):
+        self.typedefs[i] = TDLmerge(self.typedefs[i], typedef)
+        handled = True
+        break
 
     if not handled:
       self.typedefs.append(typedef)

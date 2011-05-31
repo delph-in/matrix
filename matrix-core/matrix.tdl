@@ -1821,10 +1821,11 @@ basic-bare-np-phrase := head-only &
 			   SUBJ < >,
 			   COMPS < >,
 			   SPEC < > ],
-    HEAD-DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR < [ LOCAL.CAT.HEAD det,
-					      OPT + ] >,
-				      SUBJ < >,
-				      COMPS < > ],
+    HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,
+    			    	  VAL [ SPR < [ LOCAL.CAT.HEAD det,
+					      	OPT + ] >,
+				      	SUBJ < >,
+				      	COMPS < > ] ],
 			    CONT.HOOK [ INDEX #index,
 					LTOP #larg ] ],
     C-CONT [ RELS <! quant-relation &
@@ -2130,11 +2131,11 @@ raise-sem-lex-item := no-hcons-lex-item &
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; inflected v. uninflected
 
-uninflected-lexeme := lex-item &
-  [ INFLECTED inflected ].
-
-fully-inflected-lexeme := lex-item &
-  [ INFLECTED infl-satisfied ].
+;uninflected-lexeme := lex-item &
+;  [ INFLECTED inflected ].
+;
+;fully-inflected-lexeme := lex-item &
+;  [ INFLECTED infl-satisfied ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Non-local features: Values and amalgamation

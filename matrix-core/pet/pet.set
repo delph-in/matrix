@@ -1,3 +1,5 @@
+;;; -*- Mode: TDL; -*-
+
 ;;;
 ;;; grammar-specific settings for PET; run-time part for cheap parser.
 ;;;
@@ -7,7 +9,8 @@ include "global".
 ;;
 ;; encoding used in grammar source files (should be `euc-jp' for Japanese).
 ;;
-encoding := iso-8859-1.
+;encoding := iso-8859-1.
+encoding := utf-8.
 
 ;;
 ;; input preprocessing: disable downcasing and (English-specific) explosion of
@@ -23,7 +26,7 @@ start-symbols := $root.
 ;;
 ;; word-breaking characters in tokenization --- treated as whitespace
 ;;
-punctuation-characters := "?!.:;,()<>{}[]+*-`_\"".
+punctuation-characters := "?!.:;,()<>{}[]+*`_\"-".
 
 ;;
 ;; suppress results of regular morphology rules if irregular form exists

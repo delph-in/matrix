@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/local/bin/python2.5
 
 ### $Id: matrix.cgi,v 1.27 2008-09-09 08:37:52 sfd Exp $
 
@@ -34,6 +34,9 @@ matrixdef = MatrixDefFile('matrixdef')
 
 form_data = cgi.FieldStorage()
 
+# see if we are in debug mode
+debug = 'debug' in form_data and form_data['debug'].value in ('true','True')
+
 # Get the cookie.  If there's not one, make one.
 http_cookie = os.getenv('HTTP_COOKIE')
 browser_cookie = False
@@ -67,6 +70,8 @@ for s in sessions:
 session_path = 'sessions/' + cookie
 if cookie and not os.path.exists(session_path):
   os.mkdir(session_path)
+  # create a blank choices file
+  open(os.path.join(session_path, 'choices'), 'w').close()
 
 # if the 'choices' field is defined, we have either the contents of an
 # uploaded choices file or the name of a sample choices file (which
@@ -80,13 +85,13 @@ if form_data.has_key('choices'):
       f.close()
     else:
       data = choices
-    f = open(session_path + '/choices', 'w')
+    f = open(os.path.join(session_path, 'choices'), 'w')
     f.write(data)
     f.close()
 
 # if the 'section' field is defined, we have submitted values to save
 if form_data.has_key('section'):
-  matrixdef.save_choices(form_data, session_path + '/choices')
+  matrixdef.save_choices(form_data, os.path.join(session_path, 'choices'))
 
 # If the 'verbpred' field is defined, then the user wishes to generate more sentences with that predication
 if form_data.has_key('verbpred'):
@@ -96,9 +101,12 @@ if form_data.has_key('verbpred'):
 # Get a list of error messages, determined by validating the current
 # choices.  If the current choices are valid, the list will be empty.
 try:
-  vr = validate_choices(session_path + '/choices')
+  vr = validate_choices(os.path.join(session_path, 'choices'))
 except:
-  matrixdef.choices_error_page(session_path + '/choices')
+  exc = None
+  if debug:
+    exc = sys.exc_info()
+  matrixdef.choices_error_page(os.path.join(session_path, 'choices'), exc)
   sys.exit()
 
 # if the 'customize' field is defined, create a customized copy of the matrix
@@ -116,7 +124,7 @@ if form_data.has_key('customize'):
     matrixdef.error_page(vr)
   else:
     # If the user said it's OK, archive the choices file
-    choices = ChoicesFile(session_path + '/choices')
+    choices = ChoicesFile(os.path.join(session_path, 'choices'))
     if choices.get('archive') == 'yes':
       # create the saved-choices directory
       if not os.path.exists('saved-choices'):
@@ -132,14 +140,18 @@ if form_data.has_key('customize'):
           num = f[i + 1:]
           if num.isdigit():
             serial = max(serial, int(num) + 1)
-      shutil.copy(session_path + '/choices',
+      shutil.copy(os.path.join(session_path, 'choices'),
                   'saved-choices/choices.' + str(serial))
 
     # Create the customized grammar
     try:
       grammar_dir = customize_matrix(session_path, arch_type)
     except:
-      matrixdef.customize_error_page(session_path + '/choices')
+      exc = None
+      if debug:
+        exc = sys.exc_info()
+      matrixdef.customize_error_page(os.path.join(session_path, 'choices'),
+                                     exc)
       sys.exit()
 
     if form_data.has_key('sentences'):

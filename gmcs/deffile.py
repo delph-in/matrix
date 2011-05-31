@@ -15,6 +15,7 @@
 
 import sys
 import os
+import cgitb
 import glob
 import re
 import tarfile
@@ -91,7 +92,8 @@ system should cite <a
 href="http://faculty.washington.edu/ebender/papers/gee03.pdf">Bender,
 Flickinger and Oepen 2002</a> <a
 href="http://faculty.washington.edu/ebender/bibtex/BenFliOep02.bib.txt">[.bib]</a>
-and <a href="http://aclweb.org/anthology-new/P/P10/P10-4001.pdf">Bender et al 2010</a> <a href="http://aclweb.org/anthology-new/P/P10/P10-4001.bib">[.bib]</a>.
+and <a href="http://www.springerlink.com/content/767771152h331808/">Bender et al 2010</a> <a href="http://faculty.washington.edu/ebender/bibtex/BenDreFokPouSal10.bib.txt">[.bib]</a>.  Further publications from the project are available
+on the <a href="http://www.delph-in.net/matrix/index.html#pubs">project website</a>.
 
 <p>Filling out this form will produce a starter grammar for a natural
 language, consisting of a language-independent core and customized
@@ -119,7 +121,9 @@ exceptional. It has a tooltip even though it does not mark a
 warning.">?</span>.
 
 Hovering the mouse cursor over a red asterisk or question mark will
-show a tooltip describing the error.</p>
+show a tooltip describing the error. Clicking on a red asterisk or
+question mark that is on the main page will link to the error or warning
+on the appropriate subpage.</p>
 
 '''
 
@@ -203,7 +207,7 @@ HTML_sentencespostbody = '''
 <a href="http://www.delph-in.net/lkb">To the LKB page</a>
 '''
 
-HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init();">
+HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors()">
 '''
 
 HTML_method = 'post'
@@ -233,20 +237,24 @@ HTML_postbody = '''</body>
 ######################################################################
 # HTML creation functions
 
-def html_mark(mark, message):
-  return '<span class="error" title="%s">%s</span>' %\
-           (message.replace('"', '&quot;'), mark)
+def html_mark(mark, vm):
+  if vm.href:
+    return '<a href="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
+           (vm.href, vm.message.replace('"', '&quot;'), mark)
+  else:
+    return '<a name="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
+           (vm.name, vm.message.replace('"', '&quot;'), mark)
 
-def html_error_mark(message):
-  return html_mark('*', message)
+def html_error_mark(vm):
+  return html_mark('*', vm)
 
-def html_warning_mark(message):
-  return html_mark('?', message)
+def html_warning_mark(vm):
+  return html_mark('?', vm)
 
 # Return an HTML <input> tag with the specified attributes and
 # surrounding text
-def html_input(vr, type, name, value, checked, before, after,
-               size = '', onclick = '', disabled = False):
+def html_input(vr, type, name, value, checked, before = '', after = '',
+               size = '', onclick = '', disabled = False, onchange = ''):
   chkd = ''
   if checked:
     chkd = ' checked'
@@ -259,6 +267,9 @@ def html_input(vr, type, name, value, checked, before, after,
 
   if onclick:
     onclick = ' onclick="' + onclick + '"'
+
+  if onchange:
+    onchange = ' onchange="' + onchange + '"'
 
   dsabld = ''
   if disabled:
@@ -278,9 +289,9 @@ def html_input(vr, type, name, value, checked, before, after,
   else:
     if value:
       value = ' value="' + value + '"'
-    return '%s%s<input type="%s" name="%s" %s%s%s%s%s>%s' % \
+    return '%s%s<input type="%s" name="%s" %s%s%s%s%s%s>%s' % \
          (before, mark, type, name, value, chkd, size, dsabld,
-          onclick, after)
+          onclick, onchange, after)
 
 
 # Return an HTML <select> tag with the specified name
@@ -393,7 +404,7 @@ def make_tgz(dir):
 def add_zip_files(z, dir):
   files = os.listdir(dir)
   for f in files:
-    cur = dir + '/' + f
+    cur = os.path.join(dir, f)
     if os.path.isdir(cur):
       add_zip_files(z, cur)
     else:
@@ -423,6 +434,16 @@ def js_array(list):
   val = val[:-2]  # trim off the last ,\n
   return val
 
+# From a list of triples of strings [string1, string2, ...], return
+# a string containing a JavaScript-formatted list of strings of the
+# form 'string1:string2:string3'. This is used to convey features, 
+# values and category (category of feature).
+def js_array3(list):
+  val = ''
+  for l in list:
+    val += '\'' + l[0] + ':' + l[1] + ':' + l[3] + '\',\n'
+  val = val[:-2]  # trim off the last ,\n
+  return val
 
 ######################################################################
 # MatrixDefFile class
@@ -476,7 +497,6 @@ class MatrixDefFile:
       return self.f2v[f]
     else:
       return f
-
 
   # Create and print the main matrix page.  The argument is a cookie
   # that determines where to look for the choices file.
@@ -534,11 +554,13 @@ class MatrixDefFile:
         pat += word[1] + '$'
         for k in vr.errors.keys():
           if re.search(pat, k):
-            vr.errors[cur_sec] = 'error in section'
+            anchor = "matrix.cgi?subpage="+cur_sec+"#"+k
+            vr.err(cur_sec, "This section contains one or more errors. \nClicking this error will link to the error on the subpage.", anchor+"_error", False)
             break
         for k in vr.warnings.keys():
           if re.search(pat, k):
-            vr.warnings[cur_sec] = 'warning in section'
+            anchor = "matrix.cgi?subpage="+cur_sec+"#"+k
+            vr.warn(cur_sec, "This section contains one or more warnings. \nClicking this warning will link to the warning on the subpage.", anchor+"_warning", False)
             break
 
     # now pass through again to actually emit the page
@@ -552,9 +574,9 @@ class MatrixDefFile:
               word[1] + '\',\'' + word[1] + 'button\')"' + \
               '>&#9658;</span> '
         if word[1] in vr.errors:
-          print html_error_mark('This section contains one or more errors.')
+          print html_error_mark(vr.errors[word[1]])
         elif word[1] in vr.warnings:
-          print html_warning_mark('This section contains one or more warnings.')
+          print html_warning_mark(vr.warnings[word[1]])
         print '<a href="matrix.cgi?subpage=' + word[1] + '">' + \
               word[2] + '</a>'
         print '<div class="values" id="' + word[1] + '" style="display:none">'
@@ -641,9 +663,16 @@ class MatrixDefFile:
   # Turn a list of lines containing matrix definitions into a string
   # containing HTML.
   def defs_to_html(self, lines, choices, vr, prefix, vars):
+
+    http_cookie = os.getenv('HTTP_COOKIE')
+
+    cookie = {}
+    for c in http_cookie.split(';'):
+      (name, value) = c.split('=', 1)
+      cookie[name.strip()] = value
+
     html = ''
     i = 0
-
     while i < len(lines):
       word = tokenize_def(replace_vars(lines[i], vars))
       if len(word) == 0:
@@ -688,56 +717,53 @@ class MatrixDefFile:
         # look ahead and see if we have an auto-filled drop-down
         i += 1
         fill_type = ''
-        fill_arg1 = ''
-        fill_arg2 = ''
+        pattern_arg = ''
         if lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
           fill_type = word[0]
-          if len(word) > 1:
-            fill_arg1 = word[1]
-          if len(word) > 2:
-            fill_arg2 = word[2]
+#          print 'line'
+#          print lines[i]
 
-        if fill_type[0:4] == 'fill':
-          if fill_type == 'fillregex':
-            if fill_arg2.lower() in ('true', '1'):
-              html += html_select(vr, vn, multi,
-                                  'fill_regex(\'' + vn +
-                                  '\', \'' + fill_arg1 + '\', true)') + '\n'
-            else:
-              html += html_select(vr, vn, multi,
-                                  'fill_regex(\'' + vn +
-                                  '\', \'' + fill_arg1 + '\')') + '\n'
-          elif fill_type == 'fillnames':
-            html += html_select(vr, vn, multi,
-                                'fill_feature_names(\'' + vn +
-                                  '\')') + '\n'
-          elif fill_type == 'fillvalues':
-            if fill_arg2:
-              html += html_select(vr, vn, multi,
-                                  'fill_feature_values(\'' + vn +
-                                  '\', \'' + fill_arg1 + '\', true)') + '\n'
-            else:
-              html += html_select(vr, vn, multi,
-                                  'fill_feature_values(\'' + vn +
-                                  '\', \'' + fill_arg1 + '\')') + '\n'
-          elif fill_type == 'fillverbpat':
-            html += html_select(vr, vn, multi,
-                                'fill_case_patterns(\'' + vn +
-                                '\', false)') + '\n'
-          elif fill_type == 'fillmorphpat':
-            html += html_select(vr, vn, multi,
-                                'fill_case_patterns(\'' + vn +
-                                '\', true)') + '\n'
-          elif fill_type == 'fillnumbers':
-            html += html_select(vr, vn, multi,
-                                'fill_numbers(\'' + vn + '\')') + '\n'
-          elif fill_type == 'filltypes':
-            
-            html += html_select(vr, vn, multi,
-                                'fill_types(\'' + vn + '\',\'' +
-                                fill_arg1 + '\')') + '\n'
+#break out the arguments into key=value pairs for each filltype
+#the argments are labeled like this in matrixdef:
+#p=pattern, l(literal_feature)=1 ,n(nameOnly)=1, c=cat
+#note: possible cat values are "noun", "verb" or "both"
+        
+        if fill_type[0:4] == 'fill': #e.g.word= [fill..., p=..., ..., true]
+          a = {}
+          argument = []
+  
+          for j in range(1, len(word)):
+            argument = word[j].split('=') #e.g.argument[j]= [p, pattern]
 
+            if argument[0]:
+              a[argument[0]] = argument[1] #dict of key-value pairs a={p: pattern; c: category; ...} 
+
+#creates an ordered list of arguments from the fill line arguments in matrixdef
+#appropriately surrounded with quote marks for inclusion in fill type personalized string
+#note: arguments may only be applicable to some filltypes 
+
+          argstrings = []
+          argstring = ''
+          if 'p' in a:
+            argstrings += ['\'' + a['p'] + '\''] # ' + a['p'] + '
+            pattern_arg = a['p'] #for fillvalues argument
+          if 'c' in a:
+            argstrings += ['\'' + a['c'] + '\''] #' + a['c'] + '
+          if 'n' in a or 'l' in a:
+            argstrings += ['true']  
+          argstring = ','.join(argstrings)
+
+          fillstrings = {'fillregex': 'fill_regex(\'' + vn +'\',' + argstring + ')',
+                         'fillnames': 'fill_feature_names(\'' + vn + '\',' + argstring + ')',
+                         'fillvalues':'fill_feature_values(\'' + vn + '\', ' + argstring + ')',
+                         'fillverbpat':'fill_case_patterns(\'' + vn + '\', false)',
+                         'fillmorphpat':'fill_case_patterns(\'' + vn + '\', true)',
+                         'fillnumbers':'fill_numbers(\'' + vn + '\')',
+                         'filltypes':'fill_types(\'' + vn + '\',' + argstring + ')'}
+
+
+          html += html_select(vr, vn, multi, fillstrings[fill_type]) + '\n'
           html += html_option(vr, '', False, '') + '\n'
 
           if choices.get(vn):
@@ -748,7 +774,7 @@ class MatrixDefFile:
             if fill_type in ['fillvalues']:
               for sv in sval.split(', '):
                 for f in choices.features():
-                  if f[0] == choices.get(fill_arg1):
+                  if f[0] == choices.get(pattern_arg):
                     for v in f[1].split(';'):
                       n = v.split('|')
                       if n[0] == sv:
@@ -781,19 +807,29 @@ class MatrixDefFile:
 
         html += '</select>'
         html += af + '\n'
+
       elif word[0] in ('Text', 'TextArea'):
-        (vn, fn, bf, af, sz) = word[1:]
+        if len(word) > 6:
+          (vn, fn, bf, af, sz, oc) = word[1:]
+        else:
+          (vn, fn, bf, af, sz) = word[1:]
+          oc = ''
+        if vn == "name":
+          oc = "fill_display_name('"+prefix[:-1]+"')"
         vn = prefix + vn
         value = choices.get(vn)
         html += html_input(vr, word[0].lower(), vn, value, False,
-                           bf, af, sz) + '\n'
+                           bf, af, sz, onchange=oc) + '\n'
       elif word[0] == 'BeginIter':
         iter_orig = word[1]
         (iter_name, iter_var) = word[1].replace('}', '').split('{', 1)
         label = word[2]
-        iter_min = 0
+        show_hide = 0
         if len(word) > 3:
-          iter_min = int(word[3])
+          show_hide = int(word[3])
+        iter_min = 0
+        if len(word) > 4:
+          iter_min = int(word[4])
         i += 1
 
         # collect the lines that are between BeginIter and EndIter
@@ -826,15 +862,45 @@ class MatrixDefFile:
         c = 0
         chlist = [x for x in choices.get(prefix + iter_name) if x]
         while (chlist and c < len(chlist)) or c < iter_min:
+          show_name = "";
           if c < len(chlist):
             iter_num = str(chlist[c].iter_num())
+            show_name = chlist[c]["name"]
           else:
             iter_num = str(c+1)
           new_prefix = prefix + iter_name + iter_num + '_'
           vars[iter_var] = iter_num
 
           # new_prefix[:-1] trims the trailing '_'
-          html += '<div class="iterator" id="' + new_prefix[:-1] + '">\n'
+
+          # the show/hide button gets placed before each iterator
+          # as long as it's not a stem/feature/forbid/require/lri iterator
+          if show_hide:
+#          if new_prefix[:-1].find('feat')==-1 and \
+#                  new_prefix[:-1].find('stem')==-1 and \
+#                  new_prefix[:-1].find('require')==-1 and \
+#                  new_prefix[:-1].find('forbid')==-1 and \
+#                  new_prefix[:-1].find('lri')==-1:
+#            html += ''
+            if show_name:
+              name = show_name+" ("+new_prefix[:-1]+")"
+            else:
+              name = new_prefix[:-1]
+            html += '<span id="'+new_prefix[:-1]+'_errors" class="error" '
+            if cookie.get(new_prefix[:-1]+'button','block') != 'none':
+              html += 'style="display: none"'
+            html += '></span>'+'<a id="' + new_prefix[:-1] + 'button" ' + \
+                'onclick="toggle_display_lex(\'' + \
+                new_prefix[:-1] + '\',\'' + new_prefix[:-1] + 'button\')">'
+
+            if cookie.get(new_prefix[:-1]+'button','block') == 'none':
+              html += '&#9658; '+name+'<br /></a>'
+            else:
+              html += '&#9660; '+name+'</a>'
+          if cookie.get(new_prefix[:-1], 'block') == 'block':
+            html += '<div class="iterator" id="' + new_prefix[:-1] + '">\n'
+          else:
+            html += '<div class="iterator" style="display: none" id="' + new_prefix[:-1] + '">\n'
           html += html_delbutton(new_prefix[:-1])
           html += '<div class="iterframe">'
           html += self.defs_to_html(lines[beg:end],
@@ -849,13 +915,23 @@ class MatrixDefFile:
         # write out the "anchor" marking the end of the iterator and
         # the "Add" button
         html += '<div class="anchor" id="' + \
-                prefix + iter_name + '_ANCHOR"></div>\n'
-        html += '<p><input type="button" name="" ' + \
+                prefix + iter_name + '_ANCHOR"></div>\n<p>'
+        # add any iterator-nonspecific errors here
+        if prefix + iter_name in vr.errors:
+          html += html_error_mark(vr.errors[prefix + iter_name])
+        elif prefix + iter_name in vr.warnings:
+          html += html_warning_mark(vr.warnings[prefix + iter_name])
+        # finally add the button
+        html += '<input type="button" name="" ' + \
                 'value="Add ' + label + '" ' + \
                 'onclick="clone_region(\'' + \
                 prefix + iter_name + '\', \'' + \
-                iter_var + '\')">'
-
+                iter_var + '\','
+        if show_hide:
+          html += 'true)">'
+        else:
+          html += 'false)">'
+        
       i += 1
 
     return html
@@ -902,7 +978,7 @@ class MatrixDefFile:
 
       print '<title>' + section_friendly + '</title>'
       print HTML_posttitle % \
-            (js_array(choices.features()),
+            (js_array3(choices.features()),
              js_array([c for c in choices.patterns() if not c[2]]),
              js_array([c for c in choices.patterns() if c[2]]),
              js_array([n for n in choices.numbers()]),
@@ -913,11 +989,13 @@ class MatrixDefFile:
       print HTML_preform
       print html_input(vr, 'hidden', 'section', section,
                        False, '', '\n')
+      print html_input(vr, 'hidden', 'subpage', section, False, '', '\n')
       print self.defs_to_html(lines[section_begin:section_end],
                               choices, vr,
                               '', {})
 
-    print html_input(vr, 'submit', '', 'Submit', False, '<p>', '')
+    print html_input(vr, 'button', '', 'Submit', False, '<p>', '', onclick='submit_main()')
+    print html_input(vr, 'submit', '', 'Save', False)
     print html_input(vr, 'button', '', 'Clear', False, '', '</p>', '',
                      'clear_form()')
 
@@ -927,22 +1005,25 @@ class MatrixDefFile:
 
   # Create and print the "download your matrix here" page for the
   # customized matrix in the directory specified by session_path
-  def custom_page(self, session_path, grammar_dir, arch_type):
+  def custom_page(self, session_path, grammar_path, arch_type):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Matrix Customized</title>'
+    # we don't want the contents of the archive to be something like
+    # sessions/7149/..., so we remove session_path from grammar_path
+    grammar_dir = grammar_path.replace(session_path, '').lstrip('/')
     if arch_type == 'tgz':
       arch_file = grammar_dir + '.tar.gz'
     else:
       arch_file = grammar_dir + '.zip'
-    old_dir = os.getcwd()
+    cwd = os.getcwd()
     os.chdir(session_path)
     if arch_type == 'tgz':
       make_tgz(grammar_dir)
     else:
       make_zip(grammar_dir)
-    os.chdir(old_dir)
-    print HTML_customprebody % (session_path + '/' + arch_file)
+    os.chdir(cwd)
+    print HTML_customprebody % (os.path.join(session_path, arch_file))
     print HTML_postbody
 
   # Generate and print sample sentences from the customized grammar
@@ -951,9 +1032,8 @@ class MatrixDefFile:
     print HTML_pretitle
     print '<title>Matrix Sample Sentences</title>'
     print HTML_posttitle
-    grammar_dir_final = os.getcwd() + '/' + session_path + '/' + grammar_dir
-    delphin_dir = os.getcwd() + '/delphin'
-    sentences = generate.get_sentences(grammar_dir_final,delphin_dir,session)
+    delphin_dir = os.path.join(os.getcwd(), 'delphin')
+    sentences = generate.get_sentences(grammar_dir, delphin_dir, session)
     print HTML_sentencesprebody
     for i in range(len(sentences)):
       long = False
@@ -1001,9 +1081,12 @@ class MatrixDefFile:
     print HTML_pretitle
     print '<title>More Sentences</title>'
     print HTML_sentencesprebody
-    grammar_dir_final = os.getcwd() + '/' + session_path + '/' + grammar_dir
-    delphin_dir = os.getcwd() + '/delphin'
-    sentences,trees,mrss = generate.get_additional_sentences(grammar_dir_final,delphin_dir,verbpred, template_file,session)
+    delphin_dir = os.path.join(os.getcwd(), 'delphin')
+    sentences,trees,mrss = generate.get_additional_sentences(grammar_dir,
+                                                             delphin_dir,
+                                                             verbpred,
+                                                             template_file,
+                                                             session)
     if len(sentences) > 0:
       if sentences[0] == "#EDGE-ERROR#":
         print 'This grammar combined with this input semantics results in too large of a seach space<br>'
@@ -1165,31 +1248,47 @@ class MatrixDefFile:
 
     f.close()
 
-  def choices_error_page(self, choices_file):
+  def choices_error_page(self, choices_file, exc=None):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Invalid Choices File</title>'
+    print HTML_posttitle % ('', '', '', '', '')
     print HTML_prebody
 
     print '<div style="position:absolute; top:15%; width:60%">\n' + \
           '<p style="color:red; text-align:center; font-size:12pt">' + \
           'The provided choices file is invalid. If you have edited the ' +\
           'file by hand, please review the changes you made to make sure ' +\
-          'they follow the choices file file format. You may download ' +\
-          'the choices file to try and fix any errors.</p>\n'
+          'they follow the choices file file format. If you did not make ' +\
+          'any manual changes, please email the choices file to the Matrix ' +\
+          'developers. You may download the choices file to try and fix ' +\
+          'any errors.</p>\n'
 
     print '<p style="text-align:center"><a href="' + choices_file + '">' +\
           'View Choices File</a> (right-click to download)</p>'
+
+    print '<p style="text-align:center">In most cases, you can go back ' +\
+          'in your browser and fix the problems, but if not you may ' +\
+          '<a href="matrix.cgi?choices=empty">reload an empty ' +\
+          'questionnaire</a> (this will erase your changes, so be sure to ' +\
+          'save your choices (above) first).'
+    if exc:
+        exception_html(exc)
+    else:
+        print '<p style="text-align:center">You may also wish to ' +\
+              '<a href="matrix.cgi?debug=true">see the Python error</a> ' +\
+              '(note: it is very technical, and possibly not useful).</p>'
     print HTML_postbody
 
-  def customize_error_page(self, choices_file):
+  def customize_error_page(self, choices_file, exc=None):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Problem Customizing Grammar</title>'
+    print HTML_posttitle % ('', '', '', '', '')
     print HTML_prebody
 
-    print '<div style="position:absolute; top:15%; width:60%">\n' + \
-          '<p style="color:red; text-align:center; font-size:12pt">' + \
+    print '<div style="position:absolute; top:15%; width:60%">\n' +\
+          '<p style="color:red; text-align:center; font-size:12pt">' +\
           'The Grammar Matrix Customization System was unable to create ' +\
           'a grammar with the provided choices file. You may go back in ' +\
           'your browser to try and fix the problem, or if you think ' +\
@@ -1198,4 +1297,22 @@ class MatrixDefFile:
 
     print '<p style="text-align:center"><a href="' + choices_file + '">' +\
           'View Choices File</a> (right-click to download)</p>'
+
+    print '<p style="text-align:center">In most cases, you can go back ' +\
+          'in your browser and fix the problems, but if not you may ' +\
+          '<a href="matrix.cgi?choices=empty">reload an empty ' +\
+          'questionnaire</a> (this will erase your changes, so be sure to ' +\
+          'save your choices (above) first).'
+    if exc:
+        exception_html(exc)
+    else:
+        print '<p style="text-align:center">You may also wish to ' +\
+              '<a href="matrix.cgi?debug=true">see the Python error</a> ' +\
+              '(note: it is very technical, and possibly not useful).</p>'
     print HTML_postbody
+
+def exception_html(exc):
+  # uncomment the following lines to put a show/hide arrow around the error
+  #print "<span id=\"errorbutton\" onclick=\"toggle_display('error','errorbutton')\">&#9658;</span><span>Click the arrow to see the stack trace of the error.</span><div id=\"error\" style=\"display:none\">"
+  cgitb.handler(exc)
+  #print "</div>"

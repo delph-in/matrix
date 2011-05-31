@@ -6,6 +6,7 @@
 import re
 import sys
 from gmcs.util.misc import safe_int, get_valid_lines
+from gmcs.linglib import case
 
 ######################################################################
 # globals
@@ -29,13 +30,61 @@ class ChoicesFileParseError(Exception):
 class ChoiceCategory:
   def __init__(self, full_key=None):
     self.full_key = full_key
+    # When safe_get is true, index operations (e.g. choices['key']) will
+    # return the default value if the key (or index) doesn't exist
+    self.safe_get = True
+
+  def get(self, key, default=None):
+    # turn off safe_get so we can catch exceptions
+    self.safe_get = False
+    keys = [safe_int(k) for k in split_variable_key(key)]
+    d = self
+    try:
+      for k in keys:
+        d = d[k]
+    except KeyError:
+      d = default if default is not None else ''
+    except IndexError:
+      d = default if default is not None else ChoiceDict()
+    # reset safe_get
+    self.safe_get = True
+    return d
 
 class ChoiceDict(ChoiceCategory, dict):
+
   def __getitem__(self, key):
+    cur, remaining = get_next_key(key)
     try:
-      return dict.__getitem__(self, key)
-    except KeyError:
-      return ''
+      retval = dict.__getitem__(self, key)
+      if remaining:
+        retval = retval[remaining]
+    except KeyError, e:
+      if self.safe_get:
+        retval = ''
+      else:
+        raise e
+    return retval
+
+  def __setitem__(self, key, value):
+    cur_key, remaining_keys = get_next_key(key)
+    # keys will be empty if we are setting the value
+    if not remaining_keys:
+      dict.__setitem__(self, cur_key, value)
+    # otherwise we need to descend to the next list
+    else:
+      if cur_key not in self:
+        new_key = cur_key if not self.full_key \
+                          else '_'.join([self.full_key, cur_key])
+        new_list = ChoiceList(full_key=new_key)
+        dict.__setitem__(self, cur_key, new_list)
+      dict.__getitem__(self, cur_key)[remaining_keys] = value
+
+  def __delitem__(self, key):
+    cur, remaining = get_next_key(key)
+    if remaining:
+      del self[cur][remaining]
+    elif cur in self:
+      dict.__delitem__(self, cur)
 
   def iter_num(self):
     if self.full_key is not None:
@@ -44,38 +93,160 @@ class ChoiceDict(ChoiceCategory, dict):
             return int(result.group(0))
     return None
 
+  def __str__(self):
+    return '\n'.join(
+      '='.join(['_'.join([self.full_key, key]) if self.full_key else key,
+                self[key]]) \
+       if not isinstance(self[key], ChoiceList) \
+       else str(self[key])
+       for key in self)
+
 class ChoiceList(ChoiceCategory, list):
+
   def __getitem__(self, key):
+    index, remaining = get_next_key(key)
     try:
-      return list.__getitem__(self, key)
-    except IndexError:
-      return {}
+      # subtract 1 for 1-based indices
+      retval = list.__getitem__(self, index - 1)
+      if remaining:
+        retval = retval[remaining]
+    except IndexError, e:
+      if self.safe_get:
+        retval = ChoiceDict()
+      else:
+        raise e
+    return retval
+
+  def __setitem__(self, key, value):
+    index, remaining_keys = get_next_key(key)
+    # create the dicts, if needed, then descend into the one at index
+    # we overrode the len function, but in this case we want the original
+    for i in range(list.__len__(self), index):
+      self.append(None)
+    if not remaining_keys:
+      list.__setitem__(self, index - 1, value)
+    else:
+      if self[index] == None:
+        list.__setitem__(self, index - 1, ChoiceDict(full_key=self.full_key +\
+                                                     str(index)))
+      list.__getitem__(self, index - 1)[remaining_keys] = value
+
+  def __delitem__(self, key):
+    cur, remaining = get_next_key(key)
+    if remaining:
+      del self[cur][remaining]
+    # delete only if the user specified this list
+    elif cur <= list.__len__(self):
+      # but don't actually delete list items, since that breaks indexing
+      self[cur] = None
 
   # custom iterator ignores empty items (e.g. when a
   # user deletes an item in the middle of a list)
   def __iter__(self):
+    """
+    Iterate over only the none-empty indices.
+    """
     for item in list.__iter__(self):
-      if len(item) > 0:
+      if item is not None:
         yield item
 
+  def __len__(self):
+    """
+    Return the length of the ChoiceList, which is the number of
+    non-empty indices in the list.
+    """
+    # The custom iterator only returns non-empty items, so just use that.
+    return sum(1 for x in self)
+
   def is_empty(self):
-    return len([x for x in self]) == 0
+    return len(self) == 0
 
   def get_first(self):
-    for d in self:
-      if len(d) > 0:
-        return d
-    return None
+    """
+    Return the first non-None list item.
+    """
+    # The custom iterator will take care of finding non-None items.
+    i = iter(self)
+    try:
+      return i.next()
+    except StopIteration:
+      return None
 
   def get_last(self):
+    """
+    Return the last non-None list item.
+    """
+    # reversed bypasses the custom iterator, so we have to check manually.
     for d in reversed(self):
-      if len(d) > 0:
+      if d is not None:
         return d
     return None
 
   def next_iter_num(self):
     if len(self) == 0: return 1
     return (self.get_last().iter_num() or 0) + 1
+
+  def __str__(self):
+    return '\n'.join(str(item) for item in self)
+
+######################################################################
+# Helper functions
+
+def get_choice(choice, choices):
+  """
+  Return the value of a choice from choice lines or a choices file.
+  The choice must be fully specified choice (not a sub-structure).
+  Returns None if the choice does not result in a value.
+  """
+  choice_lines = choices
+  if type(choices) is str:
+    choice_lines = open(choices).readlines()
+  elif type(choices) is file:
+    choice_lines = choices.readlines()
+
+  for line in [l.strip() for l in choice_lines if '=' in l]:
+    key, val = line.split('=')
+    if key == choice:
+      return val
+  return None
+
+# use the following re if keys like abc_def should be split:
+#var_delim_re = re.compile(r'(\d+)?(?:_|$)')
+# use the following re if final digits should be split
+var_delim_re = re.compile(r'(\d+)(?:_|$)')
+# use the following re if we only split when a digit precedes _
+#var_delim_re = re.compile(r'(\d+)(?:_)')
+def split_variable_key(key):
+  """
+  Split a compound variable key into a list of its component parts.
+  """
+  if key == '': return []
+  return [k for k in var_delim_re.split(key) if k]
+
+next_key_cache = {}
+def get_next_key(complex_key):
+  """
+  Split a key grouping it by non-numbers and numbers.
+  """
+  # if the key is just a number, just return the number
+  if isinstance(complex_key, int):
+    return complex_key, ''
+  # given a blank key, return None
+  if not complex_key:
+    return None, None
+  try:
+    subkeys = next_key_cache[complex_key]
+  except KeyError:
+    subkeys = var_delim_re.split(complex_key)
+    if subkeys[0] == '':
+      subkeys.pop(0)
+    if subkeys[-1] == '':
+      subkeys.pop()
+  next_key = subkeys[0]
+  rest = complex_key.replace(next_key,'',1).lstrip('_')
+  if len(subkeys) > 1:
+    next_key_cache[rest] = subkeys[1:]
+  return safe_int(next_key), rest
 
 ######################################################################
 # ChoicesFile is a class that wraps the choices file, a list of
@@ -84,7 +255,7 @@ class ChoiceList(ChoiceCategory, list):
 
 class ChoicesFile:
 
-  # initialize by passing either a file name or ???file handle
+  # initialize by passing either a file name or file handle
   def __init__(self, choices_file=None):
 
     self.cached_values = {}
@@ -103,28 +274,27 @@ class ChoicesFile:
       except IOError:
         pass # TODO: we should really be logging these
 
+  def __str__(self):
+    return str(self.choices)
+
   ############################################################################
   ### Choices file parsing functions
 
   def load_choices(self, choice_lines):
+    """
+    Load a ChoicesFile object from a list of strings (i.e. "choices").
+    Old versions are "uprev"ed in two ways: preparse_uprev and
+    postparse_uprev, which convert the choices from one version to
+    another. Because preparse must work on the choices file lines,
+    and postparse on the object, we must do them separately.
+    """
     # attempt to get version first, since preparse_uprev() needs it
-    self.version = self.get_version(choice_lines)
+    self.version = int(get_choice('version', choice_lines) or 0)
     # some key-values cannot be parsed by the current system, so
     # we need to handle these first
     choice_lines = self.preparse_uprev(choice_lines)
     self.choices = self.parse_choices(choice_lines)
     self.postparse_uprev()
-
-  def get_version(self, choice_lines):
-    """
-    Return the version number from the choices file, or 0 if there was none.
-    """
-    version = 0
-    for line in [l.strip() for l in choice_lines if l.strip() != '']:
-      if line.startswith('version'):
-        version = int(line.split('=',1)[1])
-        break
-    return version
 
   def parse_choices(self, choice_lines):
     """
@@ -137,10 +307,7 @@ class ChoicesFile:
         (key, value) = line.split('=',1)
         if key.strip() in ('section', 'version'):
             continue
-        choices = self.__set_variable(choices,
-                                      self.split_variable_key(key.strip()),
-                                      value,
-                                      allow_overwrite=False)
+        choices[key.strip()] = value
       except ValueError:
         pass # TODO: log this!
       except AttributeError:
@@ -149,113 +316,31 @@ class ChoicesFile:
         pass # TODO: log this!
     return choices
 
-  # use the following re if keys like abc_def should be split:
-  #var_delim_re = re.compile(r'(\d+)?(?:_|$)')
-  var_delim_re = re.compile(r'(\d+)(?:_|$)')
-  def split_variable_key(self, key):
-    """
-    Split a compound variable key into a list of its component parts.
-    """
-    if key == '': return []
-    return [k for k in self.var_delim_re.split(key) if k]
-
   ############################################################################
   ### Choices access functions
 
   def get(self, key, default=None):
-    # integers have an offset of -1 for list indices
-    keys = [safe_int(k, offset=-1) for k in self.split_variable_key(key)]
-    d = self.choices
-    try:
-      for k in keys:
-        d = d[k]
-    except KeyError:
-      return default or ''
-    except IndexError:
-      return default or {}
-    return d
+    return self.choices.get(key, default)
 
   # A __getitem__ method so that ChoicesFile can be used with brackets,
   # e.g., ch['language'].
   def __getitem__(self, key):
     return self.get(key)
 
-  def __set_variable(self, choices, keys, value,
-                     allow_overwrite=True, key_prefix=None):
-    """
-    Set the value parameter in the dict/list data structure choices,
-    with the location defined by keys.
-    """
-    # if there are no more keys, we need to set the value by returning it
-    if len(keys) == 0:
-      if choices and not allow_overwrite:
-        raise ChoicesFileParseError(
-                'Variable is multiply defined.')
-      return value
-    # Now we should be dealing with either a list or dict
-    var = keys.pop(0)
-    try:
-      var = int(var)
-      # If no error was thrown, we're dealing with a list index.
-      # Create the list if it doesn't already exist
-      if not choices:
-        choices = ChoiceList(full_key=key_prefix)
-      count = len(choices)
-      if count < var:
-        choices += [ChoiceDict(full_key=key_prefix + str(count+i+1))
-                    for i in range(var - count)]
-      val = self.__set_variable(choices[var - 1],
-                                keys,
-                                value,
-                                allow_overwrite,
-                                key_prefix + str(var))
-      if type(val) is not ChoiceDict:
-        raise ChoicesFileParseError('Invalid value for iterated choice.')
-      choices[var - 1] = val
-    except ValueError:
-      new_key_prefix = '_'.join([k for k in [key_prefix, var] if k])
-      choices[var] = self.__set_variable(choices.get(var, None),
-                                         keys,
-                                         value,
-                                         allow_overwrite,
-                                         new_key_prefix)
-    return choices
-
   def __setitem__(self, key, value):
-    self.__set_variable(self.choices, self.split_variable_key(key), value)
-
-  def __delete(self, choices, keys, prune):
-    """
-    Delete a choice from the data structure. If prune is True, remove
-    empty dictionaries and list items (changing list size).
-    """
-    if len(keys) == 0:
-      return
-    elif len(keys) == 1:
-      if not prune and type(keys[0]) == int:
-        # if not pruning, replace list items to maintain list size
-        choices[keys[0]] = ChoiceDict()
-      else:
-        del choices[keys[0]]
-    else:
-      # recursively delete the next subitem...
-      self.__delete(choices[keys[0]], keys[1:], prune)
-      # ... and prune if the resulting branch is empty and we're pruning
-      if prune and len(choices[keys[0]]) == 0:
-        del choices[keys[0]]
+    self.choices[key] = value
+    self.__reset_full_keys(key)
 
   def delete(self, key, prune=False):
-    if key not in self:
-        return
-    # integers have an offset of -1 for list indices
-    keys = [safe_int(k, offset=-1) for k in self.split_variable_key(key)]
-    self.__delete(self.choices, keys, prune)
+    del self[key]
     # full_key values will be corrupted if we pruned, so re-evaluate
     if prune:
-      [self.__reset_full_keys(k) for k in self]
+      for k in self:
+        self.__renumber_full_keys(k)
+        self.__reset_full_keys(k)
 
   def __delitem__(self, key):
-    self.delete(key, prune=False)
+    del self.choices[key]
 
   def __contains__(self, key):
     if self.get(key):
@@ -268,10 +353,10 @@ class ChoicesFile:
   def __len__(self):
     return len(self.choices)
 
-  def __reset_full_keys(self, key):
+  def __renumber_full_keys(self, key):
     """
-    Starting at the given key, reset the full_key values of all
-    choices contained by that key.
+    Starting at the given key, reset the list numbers in the full_key
+    values of all choices contained by that key.
     """
     # make sure the current key exists (e.g. was not pruned)
     if key not in self:
@@ -279,12 +364,29 @@ class ChoicesFile:
     for i, c in enumerate(self[key]):
       c_type = type(c)
       if c_type is ChoiceDict:
-        c.full_key = key + str(i + 1)
+        c.full_key = key + str(i)
       elif c_type is ChoiceList:
         c.full_key = key + str(c)
       else:
         continue
-      self.__reset_full_keys(c.full_key)
+      self.__renumber_full_keys(c.full_key)
+
+  def __reset_full_keys(self, key):
+    """
+    Starting at the given key, reset the full_key values of all
+    choices contained by that key.
+    """
+    if key not in self or not isinstance(self[key], ChoiceCategory):
+      return
+    c = self[key]
+    c.full_key = key
+    if isinstance(c, ChoiceDict):
+      for k in dict.keys(c):
+        self.__reset_full_keys(key + '_' + k)
+    elif isinstance(c, ChoiceList):
+      for d in c:
+        idx = split_variable_key(d.full_key)[-1]
+        self.__reset_full_keys(key + str(idx))
 
   ############################################################################
   ### Up-revisioning handler
@@ -292,22 +394,22 @@ class ChoicesFile:
   def preparse_uprev(self, choice_lines):
     """
     Convert choices file lines before they are parsed. A choice can be
-    removed by setting the key to None in the conversion method.
+    removed by setting the key to None in the conversion method. This
+    should only be done to ensure old choices files can be loaded (e.g.
+    changing noun1 to noun1_value), and any actual conversion should be
+    done in postparse upreving.
     """
     new_lines = []
     for line in choice_lines:
       try:
         (key, value) = line.split('=',1)
         if key in ('section', 'version'):
-            continue
-        if self.version < 4:
-          (key, value) = self.preparse_convert_3_to_4(key, value)
-        if self.version < 19:
-          (key, value) = self.preparse_convert_18_to_19(key, value)
-        # If future versions require a choices file line to be converted
-        # before it is parsed, but the appropriate method here:
-        # if self.version < N
-        #   self.preparse_convert_N-1_to_N(key, value)
+          continue
+        # currently the only problem is lines ending with numerals.
+        # add a generic key ("value") after these to make them loadable.
+        if key[-1].isdigit():
+          key += '_value'
+        # add back to the lines
         if key is not None:
           new_lines += ['='.join([key, value])]
       except ValueError:
@@ -362,9 +464,15 @@ class ChoicesFile:
       self.convert_20_to_21()
     if self.version < 22:
       self.convert_21_to_22()
+    if self.version < 23:
+      self.convert_22_to_23()
     # As we get more versions, add more version-conversion methods, and:
     # if self.version < N:
     #   self.convert_N-1_to_N
+
+    # now reset the full keys in case something was changed
+    for top_level_key in self:
+      self.__reset_full_keys(top_level_key)
 
   # Return the keys for the choices dict
   def keys(self):
@@ -405,10 +513,10 @@ class ChoicesFile:
         result = result or self.has_case(feat, case)
 
     # check morphemes
-    for slotprefix in ('noun', 'verb', 'det'):
-      for slot in self.get(slotprefix + '-slot'):
-        for morph in slot.get('morph',[]):
-          for feat in morph.get('feat',[]):
+    for pcprefix in ('noun', 'verb', 'det', 'adj'):
+      for pc in self.get(pcprefix + '-pc'):
+        for lrt in pc.get('lrt',[]):
+          for feat in lrt.get('feat',[]):
             result = result or self.has_case(feat, case)
 
     self.cached_values[k] = result
@@ -452,10 +560,7 @@ class ChoicesFile:
     passed-in case if it's non-empty).
     """
 
-    has_noun = self.has_noun_case(case)
-    has_adp = self.has_adp_case(case)
-
-    return has_noun and has_adp
+    return self.has_noun_case(case) and self.has_adp_case(case)
 
 
   # case_head()
@@ -497,98 +602,12 @@ class ChoicesFile:
       for feat in verb.get('feat', []):
         result = result or feat['head'] in ('higher', 'lower')
 
-    for verb_slot in self.get('verb-slot'):
-      for morph in verb_slot.get('morph',[]):
-        for feat in morph.get('feat',[]):
+    for verb_pc in self.get('verb-pc'):
+      for lrt in verb_pc.get('lrt',[]):
+        for feat in lrt.get('feat',[]):
           result = result or feat['head'] in ('higher', 'lower')
 
     return result
-
-
-  # slots()
-  def get_lexical_rule_types(self, prefixes):
-    """
-    Return the lexical rule types for every prefix supplied.
-    """
-    for prefix in prefixes:
-      for lrt in self[prefix + '-slot']:
-        yield lrt
-
-  # cases()
-  #   Create and return a list containing information about the cases
-  #   in the language described by the current choices.  This list consists
-  #   of tuples with three values:
-  #     [canonical name, friendly name, abbreviation]
-  def cases(self):
-    # first, make two lists: the canonical and user-provided case names
-    cm = self.get('case-marking')
-    canon = []
-    user = []
-    if cm == 'nom-acc':
-      canon.append('nom')
-      user.append(self.choices[cm + '-nom-case-name'])
-      canon.append('acc')
-      user.append(self.choices[cm + '-acc-case-name'])
-    elif cm == 'erg-abs':
-      canon.append('erg')
-      user.append(self.choices[cm + '-erg-case-name'])
-      canon.append('abs')
-      user.append(self.choices[cm + '-abs-case-name'])
-    elif cm == 'tripartite':
-      canon.append('s')
-      user.append(self.choices[cm + '-s-case-name'])
-      canon.append('a')
-      user.append(self.choices[cm + '-a-case-name'])
-      canon.append('o')
-      user.append(self.choices[cm + '-o-case-name'])
-    elif cm in ['split-s']:
-      canon.append('a')
-      user.append(self.choices[cm + '-a-case-name'])
-      canon.append('o')
-      user.append(self.choices[cm + '-o-case-name'])
-    elif cm in ['fluid-s']:
-      a_name = self.choices[cm + '-a-case-name']
-      o_name = self.choices[cm + '-o-case-name']
-      canon.append('a+o')
-      user.append('fluid')
-      canon.append('a')
-      user.append(a_name)
-      canon.append('o')
-      user.append(o_name)
-    elif cm in ['split-n', 'split-v']:
-      canon.append('nom')
-      user.append(self.choices[cm + '-nom-case-name'])
-      canon.append('acc')
-      user.append(self.choices[cm + '-acc-case-name'])
-      canon.append('erg')
-      user.append(self.choices[cm + '-erg-case-name'])
-      canon.append('abs')
-      user.append(self.choices[cm + '-abs-case-name'])
-    elif cm in ['focus']:
-      canon.append('focus')
-      user.append(self.choices[cm + '-focus-case-name'])
-      canon.append('a')
-      user.append(self.choices[cm + '-a-case-name'])
-      canon.append('o')
-      user.append(self.choices[cm + '-o-case-name'])
-
-    # fill in any additional cases the user has specified
-    for case in self.get('case'):
-      canon.append(case['name'])
-      user.append(case['name'])
-
-    # if possible without causing collisions, shorten the case names to
-    # three-letter abbreviations; otherwise, just use the names as the
-    # abbreviations
-    abbrev = [ l[0:3] for l in user ]
-    if len(set(abbrev)) != len(abbrev):
-      abbrev = user
-
-    cases = []
-    for i in range(0, len(canon)):
-      cases.append([canon[i], user[i], abbrev[i]])
-
-    return cases
 
 
   # patterns()
@@ -611,7 +630,7 @@ class ChoicesFile:
   #   marking pattern.
   def patterns(self):
     cm = self.get('case-marking')
-    cases = self.cases()
+    cases = case.case_names(self)
 
     patterns = []
 
@@ -843,7 +862,16 @@ class ChoicesFile:
   #   This list consists of tuples:
   #     [aspect name]
   def aspects(self):
-    return [[aspect['name']] for aspect in self.get('aspect')]
+    aspects = []
+
+    for asp in self.get('aspect'):
+      aspects += [[asp['name']]]
+
+    if len(aspects) == 0 and ('perimper' in self.choices):
+      for asp in ('perfective', 'imperfective'):
+        aspects += [[asp]]
+
+    return aspects
 
   # situations()
   #   Create and return a list containing information about the values
@@ -852,6 +880,23 @@ class ChoicesFile:
   #     [situation name]
   def situations(self):
     return [[situation['name']] for situation in self.get('situation')]
+
+  # moods()
+  #   Create and return a list containing information about the values 
+  #   of the MOOD feature implied by the current choices.
+  #   This list consists of tuples:
+  #      [mood name]
+  def moods(self):
+    moods = []
+    
+    for md in self.get('mood'):
+      moods += [[md['name']]]
+
+    if len(moods) == 0 and ('subjind' in self.choices):
+      for md in ('subjunctive', 'indicative'):
+        moods += [[md]]
+
+    return moods
 
   def types(self):
     """
@@ -863,14 +908,14 @@ class ChoicesFile:
             for t in ('noun', 'verb', 'aux', 'det')
             if t in self.choices and 'name' in self.choices[t]]
 
-  def __get_features(self, feat_list, i1, i2, label, tdl):
+  def __get_features(self, feat_list, i1, i2, label, tdl, cat):
     """
     If there are values available for the given feature, construct a
-    list of the feature label, values, and tdl code for that feature.
+    list of the feature label, values, tdl code and category for that feature.
     """
     values = ';'.join([x[i1] + '|' + x[i2] for x in feat_list])
     if values:
-      return [ [label, values, tdl] ]
+      return [ [label, values, tdl, cat] ]
     return []
 
   def index_features(self):
@@ -883,91 +928,93 @@ class ChoicesFile:
   # features()
   #   Create and return a list containing information about the
   #   features in the language described by the current choices.  This
-  #   list consists of tuples with three strings:
-  #       [feature name, list of values, feature geometry]
+  #   list consists of tuples with four strings:
+  #       [feature name, list of values, feature geometry, category]
   #   Note that the feature geometry is empty if the feature requires
-  #   more complex treatment that just FEAT=VAL (e.g. negation).  The
-  #   list of values is separated by semicolons, and each item in the
-  #   list is a pair of the form 'name|friendly name'.
+  #   more complex treatment that just FEAT=VAL (e.g. negation).  
+  #   The list of values is separated by semicolons, and each item in the
+  #   list of values is a pair of the form 'name|friendly name'.
+  #   The category string can have the values 'noun' or 'verb' or 'both' depending 
+  #   whether the features are appropriate for "nouny" or "verby" things.
   def features(self):
     features = []
 
     # Case
-    features += self.__get_features(self.cases(), 0, 1, 'case',
-                                    'LOCAL.CAT.HEAD.CASE')
+    features += self.__get_features(case.case_names(self), 0, 1, 'case',
+                                    'LOCAL.CAT.HEAD.CASE','noun')
     # Number, Person, and Pernum
     pernums = self.pernums()
     if pernums:
       features += self.__get_features(pernums, 0, 0, 'pernum',
-                                      'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM')
+                                      'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM','noun')
     else:
       features += self.__get_features(self.numbers(), 0, 0, 'number',
-                                      'LOCAL.CONT.HOOK.INDEX.PNG.NUM')
+                                      'LOCAL.CONT.HOOK.INDEX.PNG.NUM','noun')
       features += self.__get_features(self.persons(), 0, 0, 'person',
-                                      'LOCAL.CONT.HOOK.INDEX.PNG.PER')
+                                      'LOCAL.CONT.HOOK.INDEX.PNG.PER','noun')
 
     # Gender
     features += self.__get_features(self.genders(), 0, 0, 'gender',
-                                    'LOCAL.CONT.HOOK.INDEX.PNG.GEND')
+                                    'LOCAL.CONT.HOOK.INDEX.PNG.GEND','noun')
 
     # Case patterns
     features += self.__get_features(self.patterns(), 0, 1,
-                                    'argument structure', '')
+                                    'argument structure', '', 'verb')
 
     # Form
     features += self.__get_features(self.forms(), 0, 0, 'form',
-                                    'LOCAL.CAT.HEAD.FORM')
+                                    'LOCAL.CAT.HEAD.FORM', 'verb')
 
     # Tense
     features += self.__get_features(self.tenses(), 0, 0, 'tense',
-                                    'LOCAL.CONT.HOOK.INDEX.E.TENSE')
+                                    'LOCAL.CONT.HOOK.INDEX.E.TENSE', 'verb')
 
     # Viewpoint Aspect
     features += self.__get_features(self.aspects(), 0, 0, 'aspect',
-                                    'LOCAL.CONT.HOOK.INDEX.E.ASPECT')
+                                    'LOCAL.CONT.HOOK.INDEX.E.ASPECT', 'verb')
 
     #Situation Aspect
     features += self.__get_features(self.situations(), 0, 0, 'situation',
-                                    'LOCAL.CONT.HOOK.INDEX.E.SITUATION')
-
+                                    'LOCAL.CONT.HOOK.INDEX.E.SITUATION', 'verb')
+    #Mood
+    features += self.__get_features(self.moods(), 0, 0, 'mood',
+                                    'LOCAL.CONT.HOOK.INDEX.E.MOOD', 'verb')
     # Direction
     if self.has_dirinv():
-      features += [ ['direction',
-                     'dir|direct;inv|inverse',
-                     'LOCAL.CAT.HEAD.DIRECTION'] ]
+      features += [ ['direction', 'dir|direct;inv|inverse', '', 'verb'] ]
 
     # Negaton
     if 'infl-neg' in self.choices:
-      features += [ ['negation', 'plus|plus', '' ] ]
+      features += [ ['negation', 'plus|plus', '', 'verb' ] ]
 
     # Questions
     if 'q-infl' in self.choices:
-      features += [ ['question', 'plus|plus', '' ] ]
+      features += [ ['question', 'plus|plus', '', 'verb' ] ]
 
     # Argument Optionality
     if 'subj-drop' in self.choices or 'obj-drop' in self.choices:
-      features +=[['OPT', 'plus|plus;minus|minus', '']]
+      features +=[['OPT', 'plus|plus;minus|minus', '', 'verb']]
 
     perm_notperm_string = 'permitted|permitted;not-permitted|not-permitted'
     # Overt Argument
     if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
          self.get('obj-mark-drop') == 'obj-mark-drop-req':
-      features += [['overt-arg', perm_notperm_string, '']]
+      features += [['overt-arg', perm_notperm_string, '', '']]
     elif self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
          self.get('obj-mark-drop') == 'obj-mark-drop-req':
-      features += [['overt-arg', perm_notperm_string, '']]
+      features += [['overt-arg', perm_notperm_string, '', '']]
     elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and \
          self.get('subj-mark-drop') == 'subj-mark-drop-req':
-      features += [['overt-arg', perm_notperm_string, '']]
+      features += [['overt-arg', perm_notperm_string, '', '']]
     elif self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
          self.get('obj-mark-drop') == 'obj-mark-drop-opt' :
-      features += [['overt-arg', perm_notperm_string, '']]
+      features += [['overt-arg', perm_notperm_string, '', '']]
     elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and \
          self.get('subj-mark-drop') == 'subj-mark-drop-opt' :
-      features += [['overt-arg', perm_notperm_string, '']]
+      features += [['overt-arg', perm_notperm_string, '', '']]
     elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and \
          self.get('subj-mark-drop') == 'subj-mark-drop-req':
-      features += [['overt-arg', perm_notperm_string, '']]
+      features += [['overt-arg', perm_notperm_string, '', '']]
 
     # Dropped Argument
     #if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
@@ -978,23 +1025,23 @@ class ChoicesFile:
     #  features += [['dropped-arg', perm_notperm_string, '']]
     if self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
          self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
-      features += [['dropped-arg', perm_notperm_string,'']]
+      features += [['dropped-arg', perm_notperm_string,'', '']]
     elif self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
          self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt':
-      features += [['dropped-arg', perm_notperm_string,'']]
+      features += [['dropped-arg', perm_notperm_string,'', '']]
     elif self.get('obj-mark-drop') == 'obj-mark-drop-opt' and \
          self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
-      features += [['dropped-arg', perm_notperm_string, '']]
+      features += [['dropped-arg', perm_notperm_string, '', '']]
     elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
          self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
-      features += [['dropped-arg', perm_notperm_string,'']]
+      features += [['dropped-arg', perm_notperm_string,'', '']]
     elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
          self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt':
-      features += [['dropped-arg', perm_notperm_string,'']]
+      features += [['dropped-arg', perm_notperm_string,'', '']]
     elif self.get('subj-mark-drop') == 'subj-mark-drop-opt' and \
          self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
-      features += [['dropped-arg', perm_notperm_string,'']]
-   
+      features += [['dropped-arg', perm_notperm_string,'', '']]
+
  #elif self.get('subj-mark-drop') == 'subj-mark-drop-opt') and self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req': features += [['dropped-arg', perm_notperm_string, '']]
 
     for feature in self.get('feature'):
@@ -1003,15 +1050,15 @@ class ChoicesFile:
 
       values = ';'.join([val['name'] + '|' + val['name']
                          for val in feature.get('value', [])])
-
       geom = ''
       if feat_type == 'head':
         geom = 'LOCAL.CAT.HEAD.' + feat_name.upper()
+        cat = 'both'
       else:
         geom = 'LOCAL.CONT.HOOK.INDEX.PNG.' + feat_name.upper()
-
+        cat = 'noun'
       if values:
-        features += [ [feat_name, values, geom] ]
+        features += [ [feat_name, values, geom, cat] ]
 
     return features
 
@@ -1028,11 +1075,14 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 22
+    return 23
 
-  def convert_value(self, key, old, new):
-    if key in self and self[key] == old:
-      self[key] = new
+  def convert_value(self, key, old, new, partial=False):
+    if key in self:
+      if not partial and self[key] == old:
+        self[key] = new
+      elif partial:
+        self[key] = self[key].replace(old, new)
 
   def convert_key(self, old, new, key_prefix=''):
     if key_prefix:
@@ -1274,38 +1324,25 @@ class ChoicesFile:
     self.delete('obj-adp-orth')
     self.delete('obj-adp-order')
 
-  def preparse_convert_3_to_4(self, key, value):
-    if key in ('noun1', 'noun2'):
-      key += '_orth'
-    elif key.startswith('iverb'):
-      # for iverb-pred or iverb-non-finite
-      key = key.replace('iverb-','verb1_', 1)
-      # this happens only if previous did nothing (i.e. key = "iverb")
-      key = key.replace('iverb', 'verb1_orth', 1)
-    elif key.startswith('tverb'):
-      key = key.replace('tverb-', 'verb2_', 1)
-      key = key.replace('tverb', 'verb2_orth', 1)
-    elif key == 'det1':
-      key = 'det1_orth'
-    elif key == 'det1pred':
-      key = 'det1_pred'
-    elif key == 'det2':
-      key = 'det2_orth'
-    elif key == 'det2pred':
-      key = 'det2_pred'
-
-    return (key, value)
-
   def convert_3_to_4(self):
     # Added a fuller implementation of case marking on core arguments,
     # so convert the old case-marking adposition stuff to the new
-    # choices. Converting keys like noun1=cat is in
-    # preparse_convert_3_to_4
+    # choices. Also, convert nouns, verbs, dets to the iterator keys.
+    self.convert_key('iverb', 'verb1_orth')
+    self.convert_key('iverb-pred', 'verb1_pred')
+    self.convert_key('iverb-non-finite', 'verb1_non-finite')
     if self.get('verb1_orth'):
       self['verb1_valence'] = 'intrans'
-
+    self.convert_key('tverb', 'verb2_orth')
+    self.convert_key('tverb-pred', 'verb2_pred')
+    self.convert_key('tverb-non-finite', 'verb2_non-finite')
     if self.get('verb2_orth'):
       self['verb2_valence'] = 'trans'
+    self.convert_key('det1pred', 'det1_pred')
+    self.convert_key('det2pred', 'det2_pred')
+    # the following were converted in preparse_uprev
+    for key in ('noun1', 'noun2', 'det1', 'det2'):
+      self.convert_key(key + '_value', key + '_orth')
 
   def convert_4_to_5(self):
     # An even fuller implementation of case marking, with some of the
@@ -1490,13 +1527,12 @@ class ChoicesFile:
     self.convert_key('non-future', 'nonfuture')
 
     for aux in self['aux']:
-      v = aux['nonfincompform']
+      v = aux.get('nonfincompform', '')
       k = 'nf-subform' + str(aux.iter_num()) + '_name'
       self.convert_value(aux.full_key + '_compform', 'nonfinite', v)
 
       if 'nonfincompform' in aux:
         self[k] = v
-        #self.delete(aux.full_key + '_nonfincompform', prune=True)
         self.delete(aux.full_key + '_nonfincompform')
 
   def convert_10_to_11(self):
@@ -1579,8 +1615,8 @@ class ChoicesFile:
         for contype in ('forces', 'req', 'disreq'):
           for ct in slot.get(contype, []):
             constraints += [ [ contype, ct.get('type') ] ]
-            #self.delete(ct.full_key + '_type', prune=True)
-            self.delete(ct.full_key + '_type')
+          if contype in slot:
+            del slot[contype]
 
         for i, c in enumerate(constraints):
           constraint_key = slot.full_key + '_constraint%d' % (i+1)
@@ -1658,22 +1694,16 @@ class ChoicesFile:
       self[pref + '_name'] = 'q-infl'
       self[pref + '_morph1_feat1_name'] = 'question'
       self[pref + '_morph1_feat1_value'] = 'plus'
+      self[pref + '_morph1_feat1_head'] = 'verb'
       self[pref + '_opt'] = 'on'
-
-  def preparse_convert_18_to_19(self, key, value):
-    """
-    Convert the old test sentence choices to the new iterator format.
-    """
-    if key.startswith('sentence'):
-      key += '_orth'
-    return (key, value)
 
   def convert_18_to_19(self):
     """
-    Do nothing here. All conversion for version 19 is in the method
-    preparse_convert_18_to_19(). This stub is here for record keeping.
+    sentence1, sentence2, etc. were converted in preparse_uprev to be
+    sentence1_value, etc. Change those to a more appropriate key.
     """
-    pass # version 19 only requires preparse conversion
+    for sent in self.get('sentence', []):
+      self.convert_key(sent.full_key + '_value', sent.full_key + '_orth')
 
   def convert_19_to_20(self):
     """
@@ -1746,6 +1776,43 @@ class ChoicesFile:
     """
     Lexical rules are no longer divided into Slots and Morphs, but
     Position Classes, Lexical Rule Types, and Lexical Rule Instances,
-    and LRTs can inherit from other LRTs.
+    and LRTs can inherit from other LRTs. Also, LRTs without LRIs
+    should be given a blank one (since now it is possible for LRTs
+    to exist that cannot themselves be realized).
     """
-    pass
+    def convert_constraint(lex, constraint):
+      """
+      Nested function to help with converting constraints.
+      """
+      for c in lex.get(constraint,[]):
+        self.convert_value(c.full_key + '_other-slot',
+                           '-slot', '-pc', partial=True)
+        self.convert_key('other-slot', 'others', key_prefix=c.full_key)
+
+    from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
+    for lex_cat in LEXICAL_CATEGORIES:
+      for lex_type in self[lex_cat]:
+        convert_constraint(lex_type, 'require')
+        convert_constraint(lex_type, 'forbid')
+      for slot in self[lex_cat + '-slot']:
+        # constraints
+        convert_constraint(slot, 'require')
+        convert_constraint(slot, 'forbid')
+        # normalize order values
+        self.convert_value(slot.full_key + '_order', 'before', 'prefix')
+        self.convert_value(slot.full_key + '_order', 'after', 'suffix')
+        # inputs
+        all_inps = ', '.join([inp['type'] for inp in slot['input']])
+        del self[slot.full_key + '_input']
+        self[slot.full_key + '_inputs'] = all_inps.replace('-slot', '-pc')
+        # morphs and orths
+        for morph in slot['morph']:
+          if 'orth' in morph:
+            morph['lri1_inflecting'] = 'yes'
+            self.convert_key('orth', 'lri1_orth', key_prefix=morph.full_key)
+          else:
+            morph['lri1_inflecting'] = 'no'
+            morph['lri1_orth'] = ''
+        self.convert_key(slot.full_key + '_morph', slot.full_key + '_lrt')
+      # finally, change -slot keys to -pc
+      self.convert_key(lex_cat + '-slot', lex_cat + '-pc')

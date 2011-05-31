@@ -171,7 +171,6 @@ extracted-adj-phrase
 fam-or-less
 fam-or-more
 familiar
-fully-inflected-lexeme
 gap
 handle
 hasmod
@@ -369,7 +368,6 @@ unary-bottom-coord-rule
 unary-phrase
 unexpressed
 unexpressed-reg
-uninflected-lexeme
 uniq+fam
 uniq+fam+act
 uniq-id
