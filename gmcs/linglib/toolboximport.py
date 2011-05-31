@@ -156,56 +156,57 @@ def import_toolbox_lexicon(choicesfile):
         #FIXME: Surely need a path here.  Also, the current
         #questionnaire allows multiple Toolbox files, need
         #to iterate trhough them.
-        if not config.get('tbfilename'):
-            continue
-        tblex = open(config.get('tbfilename'),'r')
+        for file in config.get('toolboxfile'):
+            if not file.get('tbfilename'):
+                continue
+            tblex = open(file.get('tbfilename'),'r')
 
-        #Go through lexicon file only once, as it could
-        #be quite large.  For each entry in the lexicon,
-        #iterate through the lexclasses to see if it matches
-        #any of them, and if so, import.
+            #Go through lexicon file only once, as it could
+            #be quite large.  For each entry in the lexicon,
+            #iterate through the lexclasses to see if it matches
+            #any of them, and if so, import.
 
-        tbentry = {}
-        # List of values of the bistemtag field.
-        affixes = []
-        for line in tblex.readlines():
-            # Assume that the Toolbox tags may occur in any order
-            # within an entry, but that they never repeat within
-            # an entry.  In other words, when we see the same tag
-            # again, that means we've hit a new entry, and we
-            # should process the previous one then reset tbentry.
-            words = line.split()
-            if words:
-                if words[0] == starttag:
-                    affixes = process_tb_entry(tbentry,lexclasses,stemtag,bistemtag,glosstag,predchoice,choices,affixes)
-                    tbentry = {}
-                    tbentries += 1
-                tbentry[words[0]] = ' '.join(words[1:])
+            tbentry = {}
+            # List of values of the bistemtag field.
+            affixes = []
+            for line in tblex.readlines():
+                # Assume that the Toolbox tags may occur in any order
+                # within an entry, but that they never repeat within
+                # an entry.  In other words, when we see the same tag
+                # again, that means we've hit a new entry, and we
+                # should process the previous one then reset tbentry.
+                words = line.split()
+                if words:
+                    if words[0] == starttag:
+                        affixes = process_tb_entry(tbentry,lexclasses,stemtag,bistemtag,glosstag,predchoice,choices,affixes)
+                        tbentry = {}
+                        tbentries += 1
+                    tbentry[words[0]] = ' '.join(words[1:])
 
-        tblex.close()
+            tblex.close()
 
-    # Go through the list of affixes for bistems.
-    # If any of the bistems is non-numeric, assume that the
-    # value of that field was a lexid, and go get the actual
-    # orthographic material for each bistem.
+        # Go through the list of affixes for bistems.
+        # If any of the bistems is non-numeric, assume that the
+        # value of that field was a lexid, and go get the actual
+        # orthographic material for each bistem.
 
-    affixids = True
-    if affixes:
-        for affix in affixes:
-            if not re.search(r'^[0-9]+$',affix):
-                affixids = False
+        affixids = True
+        if affixes:
+            for affix in affixes:
+                if not re.search(r'^[0-9]+$',affix):
+                    affixids = False
 
-    if affixids and affixes:
-        tblex = open(config.get('tbfilename'),'r')
-        affix_strings = {}
-        for line in tblex.readlines():
-            words = line.rstrip().split()
-            if words:
-                if words[0] == starttag and affixes:
-                    [affixes, affix_strings] = get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings)
-                    tbentry = {}
-                tbentry[words[0]] = ' '.join(words[1:])
-        insert_affixes(choices,affix_strings)
+        if affixids and affixes:
+            tblex = open(file.get('tbfilename'),'r')
+            affix_strings = {}
+            for line in tblex.readlines():
+                words = line.rstrip().split()
+                if words:
+                    if words[0] == starttag and affixes:
+                        [affixes, affix_strings] = get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings)
+                        tbentry = {}
+                    tbentry[words[0]] = ' '.join(words[1:])
+            insert_affixes(choices,affix_strings)
             # FIXME:  Put a break statement here so that we 
             # don't keep reading the file if we've found all the
             # affixes (i.e., if affixes == []).
@@ -214,10 +215,11 @@ def import_toolbox_lexicon(choicesfile):
 
     # Print new choices file by concatenating input choices
     # with output choices.  FIXME: What about section=?
+    fout = open(choicesfile+"new", 'w')
     choices['version'] = str(choices.current_version())
-    print choices
-    print 'Toolbox entries processed: ' + str(tbentries)
-    print 'Total entries imported: ' + str(choices['imported-entry'].next_iter_num() - 1)
+    fout.write(str(choices))
+#    fout.write('Toolbox entries processed: ' + str(tbentries))
+#    fout.write('Total entries imported: ' + str(choices['imported-entry'].next_iter_num() - 1))
 
 def integrate_imported_entries(choices):
     '''
