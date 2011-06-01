@@ -156,6 +156,10 @@ def import_toolbox_lexicon(choicesfile):
         #FIXME: Surely need a path here.  Also, the current
         #questionnaire allows multiple Toolbox files, need
         #to iterate trhough them.
+        tbentry = {}
+        # List of values of the bistemtag field.
+        affixes = []
+
         for file in config.get('toolboxfile'):
             if not file.get('tbfilename'):
                 continue
@@ -166,9 +170,6 @@ def import_toolbox_lexicon(choicesfile):
             #iterate through the lexclasses to see if it matches
             #any of them, and if so, import.
 
-            tbentry = {}
-            # List of values of the bistemtag field.
-            affixes = []
             for line in tblex.readlines():
                 # Assume that the Toolbox tags may occur in any order
                 # within an entry, but that they never repeat within

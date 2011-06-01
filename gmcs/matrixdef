@@ -1688,9 +1688,17 @@ BeginIter toolboximportconfig{i} "a Toolbox Import Configuration" 1 1
 
   Text glosstag "gloss tag" " Toolbox tag for glosses: " "" 10
 
+  Text starttag "start tag" "<br /><br />Toolbox tag which starts lexical database entries: " "" 10
+
   Text stemtag "stem tag" "<br /><br />Toolbox tag for stem: " "" 10
 
   Text bistemtag "bistem tag" " (Optional) Toolbox tag for affix portion of bipartite stems: " "" 10
+
+  BeginIter repeatattribute{j} " a Toolbox tag which can repeat in a database entry"
+
+    Text tag "repeatable tag" " Repeatable Tag {j}: " "" 10
+
+  EndIter repeatattribute
 
   Radio tbpredvalues "pred values" "<p>Every lexical entry requires a semantic predicate.  For entries imported from Toolbox, we can construct these predicates from the stem, from the gloss (which could be long), or from the first word of the gloss.  If either of the gloss options is chosen but some entries lack glosses, lexical entries will be constructed from the stem for those entries.  Predicates should be constructed from: </br>" ""
   . stem "Stem" "" " the stem value<br>"
