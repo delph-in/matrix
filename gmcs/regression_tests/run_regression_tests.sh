@@ -80,6 +80,28 @@ masterlog="$logs/regression-tests.$date"
 echo "============ $datetime ============" >> $masterlog
 
 ###
+### Tasks
+###
+
+while getopts "vcp" Option
+do
+  case $Option in
+    v ) validate=true;;
+    c ) customize=true;;
+    p ) performance=true;;
+  esac
+done
+# if none were set, do all tasks
+if ! [[ $validate || $customize || $performace ]]
+then
+  validate=true
+  customize=true
+  performance=true
+fi
+# Now move the argument pointer to the first argument
+shift $((OPTIND-1))
+
+###
 ### TEST PREPARATION
 ###
 
@@ -110,7 +132,8 @@ done
 # Now do essentially the same things as one-regression-test for each one:
 
 for lgname in $lgnames
-do 
+do
+    error_msg=""
     printf "%-70s " "$lgname..."
 
     # Set skeleton, grammar, gold-standard for comparison, and
@@ -123,101 +146,91 @@ do
     log="$logs/$lgname.$date"
 
     # Validate
-    $python_cmd ${CUSTOMIZATIONROOT}/../matrix.py v $choicesfile >> $log
-    if [ $? != 0 ]; then
-      echo "INVALID!"
-      echo "$lgname choices file did not pass validation." >> $log
-      continue
-    fi
-    # Customize
-    $python_cmd ${CUSTOMIZATIONROOT}/../matrix.py --cheap-hack cf $choicesfile $grammardir >> $log
-    if [ $? != 0 ]; then
-      echo "FAIL!"
-      echo "There was an error during the customization of the grammar." >> $log
-      continue
+    if [[ $validate ]]; then
+      $python_cmd ${CUSTOMIZATIONROOT}/../matrix.py v $choicesfile >> $log
+      if [ $? != 0 ]; then
+        error_msg="INVALID!"
+        echo "$lgname choices file did not pass validation." >> $log
+        continue
+      fi
     fi
 
-    subdir=`ls -d $grammardir/*/`
-    grammar=$subdir/lkb/script
-    grm_file=`ls $subdir/*-pet.grm`
-    #mkdir -p $tsdbhome/$target
-    #cut -d@ -f7 $skeleton/item | cheap -mrs -tsdbdump $tsdbhome/$target $grm_file 2>${TSDBLOG} >${TSDBLOG}
-    # cheap makes a bad item file, so just copy over the original one
-    #cp $skeleton/item $tsdbhome/$target/item
+    # Customize (Performance needs a grammar, too, though)
+    if [[ $customize || $performace ]]; then
+      $python_cmd ${CUSTOMIZATIONROOT}/../matrix.py --cheap-hack cf $choicesfile $grammardir >> $log
+      if [[ $customize && $? != 0 ]]; then
+        error_msg="FAIL!"
+        echo "There was an error during the customization of the grammar." >> $log
+        continue
+      fi
+    fi
 
-    #if [ $status = 17 ]; then
-    #echo "run-regression-tests: call-customize failed for $lgname... continuining with other regression tests."
-    #echo "call-customize failed because old grammar was in the way." >> $log
-    #elif [ $status = 18 ]; then
-    #echo "run-regression-tests: call-customize failed for $lgname... continuining with other regression tests."
-    #echo "no choices file at path regression_tests/choices/$lgname." >> $log
-    #elif [ $status != 0 ]; then
+    # Parsing Performance
+    if [[ $performance ]]; then
+      subdir=`ls -d $grammardir/*/`
+      grammar=$subdir/lkb/script
+      grm_file=`ls $subdir/*-pet.grm`
+      # Do the following if parsing with PET and without TSDB
+      #mkdir -p $tsdbhome/$target
+      #cut -d@ -f7 $skeleton/item | cheap -mrs -tsdbdump $tsdbhome/$target $grm_file 2>${TSDBLOG} >${TSDBLOG}
+      # cheap makes a bad item file, so just copy over the original one
+      #cp $skeleton/item $tsdbhome/$target/item
 
-    #    echo "run-regression-tests: customization failed for $lgname... continuing with other regression tests."; 
-    #    echo "Customization failed; no grammar created." >> $log
-
-    #else
-
-    # Set up a bunch of lisp commands then pipe them to logon/[incr tsdb()]
-    
-    # I don't see how the following can possibly do anything,
-    # since nothing has yet invoked [incr tsdb()] or lisp.
-    # But let's give it a try anyway...
-      # Have to calculate after the grammar is created since the directory is
-      #no longer always named "matrix")
-    {
-        options=":error :exit :wait 300"
-
-        echo "(setf (system:getenv \"DISPLAY\") nil)"
-
-        # Use the following for PET parsing
-        #echo "(setf *tsdb-cache-connections-p* t)"
-        #echo "(setf *pvm-encoding* :utf-8)"
-        #echo "(setf *pvm-cpus* (list (make-cpu"
-        #echo "  :host (short-site-name)"
-        #echo "  :spawn \"${LOGONROOT}/bin/cheap\""
-        #echo "  :options (list \"-tsdb\" \"-packing\" \"-mrs\" \"$grm_file\")"
-        #echo "  :class :$lgname :name \"$lgname\""
-        #echo "  :grammar \"$lgname (current)\""
-        #echo "  :encoding :utf-8"
-        #echo "  :task '(:parse) :wait 300 :quantum 180)))"
-        #echo "(tsdb:tsdb :cpu :$lgname :task :parse :file t)"
-
-        # Use the following for LKB parsing
-        echo "(lkb::read-script-file-aux \"$grammar\")"
-
-        echo "(setf tsdb::*process-suppress-duplicates* nil)"
-        echo "(setf tsdb::*process-raw-print-trace-p* t)"
-
-        echo "(setf tsdb::*tsdb-home* \"$tsdbhome\")"
-        echo "(tsdb:tsdb :skeletons \"$skeletons\")"
-
-        echo "(setf target \"$target\")"
-        echo "(tsdb:tsdb :create target :skeleton \"$lgname\")"
-
-        echo "(tsdb:tsdb :process target)"
-
-        echo "(tsdb::compare-in-detail \"$target\" \"$gold\" :format :ascii :compare '(:readings :mrs) :append \"$log\")"
-
-    } | ${LOGONROOT}/bin/logon \
-        -I base -locale no_NO.UTF-8 -qq 2> ${TSDBLOG} > ${TSDBLOG}
-# ${source} ${cat} 
-# FIXME: There is probably a more appropriate set of options to
-# send to logon, but it seems to work fine as is for now. 
-
-    #rm -rf $grammardir
+      {
+          options=":error :exit :wait 300"
+  
+          echo "(setf (system:getenv \"DISPLAY\") nil)"
+  
+          # Use the following for PET parsing
+          #echo "(setf *tsdb-cache-connections-p* t)"
+          #echo "(setf *pvm-encoding* :utf-8)"
+          #echo "(setf *pvm-cpus* (list (make-cpu"
+          #echo "  :host (short-site-name)"
+          #echo "  :spawn \"${LOGONROOT}/bin/cheap\""
+          #echo "  :options (list \"-tsdb\" \"-packing\" \"-mrs\" \"$grm_file\")"
+          #echo "  :class :$lgname :name \"$lgname\""
+          #echo "  :grammar \"$lgname (current)\""
+          #echo "  :encoding :utf-8"
+          #echo "  :task '(:parse) :wait 300 :quantum 180)))"
+          #echo "(tsdb:tsdb :cpu :$lgname :task :parse :file t)"
+  
+          # Use the following for LKB parsing
+          echo "(lkb::read-script-file-aux \"$grammar\")"
+  
+          # And the following is necessary for TSDB
+          echo "(setf tsdb::*process-suppress-duplicates* nil)"
+          echo "(setf tsdb::*process-raw-print-trace-p* t)"
+  
+          echo "(setf tsdb::*tsdb-home* \"$tsdbhome\")"
+          echo "(tsdb:tsdb :skeletons \"$skeletons\")"
+  
+          echo "(setf target \"$target\")"
+          echo "(tsdb:tsdb :create target :skeleton \"$lgname\")"
+  
+          echo "(tsdb:tsdb :process target)"
+  
+          echo "(tsdb::compare-in-detail \"$target\" \"$gold\" :format :ascii :compare '(:readings :mrs) :append \"$log\")"
+  
+      } | ${LOGONROOT}/bin/logon \
+          -I base -locale no_NO.UTF-8 -qq 2> ${TSDBLOG} > ${TSDBLOG}
 
 # When the grammar fails to load, [incr tsdb()] is not creating
 # the directory.  So use existence of $tsdbhome/$target to check
 # for grammar load problems.
 
-    if [ ! -e $tsdbhome/$target ]; then
-        echo "ERROR!"
-        echo "Probable tdl error; grammar failed to load." >> $log
-    elif [ -s $log ]; then
-        echo "DIFFS!"
-    else
+      if [ ! -e $tsdbhome/$target ]; then
+          error_msg="ERROR!"
+          echo "Probable tdl error; grammar failed to load." >> $log
+      elif [ -s $log ]; then
+          error_msg="DIFFS!"
+          echo "Diffs were found in the current and gold profiles." >> $log
+      fi
+    fi
+
+    if [ -z $error_msg ]; then
         echo "Success!"
+    else
+        echo $error_msg
     fi
 done
 

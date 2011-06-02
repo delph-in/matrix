@@ -266,8 +266,15 @@ def usage(command=None, exitcode=2):
     p("            Validate the choices file at PATH.")
     something_printed = True
   if command in ('regression-test', 'r', 'all'):
-    p("regression-test (r) [TEST]")
-    p("            Run regression test TEST (if specified) or else all tests.")
+    p("regression-test [-TASK] [TESTS]")
+    p("            Run regression test TASK (or all tasks if unsprecified)")
+    p("            over TEST (or all tests if unspecified). TASKS can be any")
+    p("            of the following and can be combined (e.g. -vc):")
+    p("              [none]       : run all tests")
+    p("              -v : validate and report errors")
+    p("              -c : customize and report errors")
+    p("              -p : customize and parse, report differences with gold")
+    p("            TESTS can be a single test name or a list of names.")
     something_printed = True
   if command in ('regression-test-add', 'ra', 'all'):
     p("regression-test-add (ra) CHOICES TXTSUITE")
@@ -310,6 +317,8 @@ def usage(command=None, exitcode=2):
     p("  matrix.py cf ../choices/Finnish")
     p("  matrix.py v ../choices/Finnish")
     p("  matrix.py --customizationroot=gmcs/ r")
+    p("  matrix.py -C gmcs/ r -v")
+    p("  matrix.py -C gmcs/ r -cp vso-aux-before-vp Fore")
     p("  matrix.py -C gmcs/ ra Cree_choices Cree_test_suite")
     p("  matrix.py -C gmcs/ install my_matrix")
     p("  matrix.py -C gmcs/ vivify")
@@ -361,7 +370,6 @@ def customize_grammar(path, destination=None, flop=False, cheaphack=False):
     devnull = open('/dev/null', 'w')
     subprocess.call([cmd, pet_file], cwd=grammar_dir,
                     env=os.environ, stderr=devnull)
-
 
 def run_unit_tests():
   import unittest
