@@ -156,14 +156,15 @@ def import_toolbox_lexicon(choicesfile):
         #FIXME: Surely need a path here.  Also, the current
         #questionnaire allows multiple Toolbox files, need
         #to iterate trhough them.
-        tbentry = {}
-        # List of values of the bistemtag field.
-        affixes = []
 
-        for file in config.get('toolboxfile'):
-            if not file.get('tbfilename'):
+        for tbfile in config.get('toolboxfile'):
+            if not tbfile.get('tbfilename'):
                 continue
-            tblex = open(file.get('tbfilename'),'r')
+            tblex = open(tbfile.get('tbfilename'),'r')
+            
+            tbentry = {}
+            # List of values of the bistemtag field.
+            affixes = []
 
             #Go through lexicon file only once, as it could
             #be quite large.  For each entry in the lexicon,
@@ -186,33 +187,32 @@ def import_toolbox_lexicon(choicesfile):
 
             tblex.close()
 
-        # Go through the list of affixes for bistems.
-        # If any of the bistems is non-numeric, assume that the
-        # value of that field was a lexid, and go get the actual
-        # orthographic material for each bistem.
+            # Go through the list of affixes for bistems.
+            # If any of the bistems is non-numeric, assume that the
+            # value of that field was a lexid, and go get the actual
+            # orthographic material for each bistem.
 
-        affixids = True
-        if affixes:
-            for affix in affixes:
-                if not re.search(r'^[0-9]+$',affix):
-                    affixids = False
+            affixids = True
+            if affixes:
+                for affix in affixes:
+                    if not re.search(r'^[0-9]+$',affix):
+                        affixids = False
 
-        if affixids and affixes:
-            tblex = open(file.get('tbfilename'),'r')
-            affix_strings = {}
-            for line in tblex.readlines():
-                words = line.rstrip().split()
-                if words:
-                    if words[0] == starttag and affixes:
-                        [affixes, affix_strings] = get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings)
-                        tbentry = {}
-                    tbentry[words[0]] = ' '.join(words[1:])
-            insert_affixes(choices,affix_strings)
-            # FIXME:  Put a break statement here so that we 
-            # don't keep reading the file if we've found all the
-            # affixes (i.e., if affixes == []).
+            if affixids and affixes:
+                tblex = open(tbfile.get('tbfilename'),'r')
+                affix_strings = {}
+                for line in tblex.readlines():
+                    words = line.rstrip().split()
+                    if words:
+                        if words[0] == starttag and affixes:
+                            [affixes, affix_strings] = get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings)
+                            tbentry = {}
+                        tbentry[words[0]] = ' '.join(words[1:])
+                insert_affixes(choices,affix_strings)
+                # FIXME:  Put a break statement here so that we 
+                # don't keep reading the file if we've found all the
+                # affixes (i.e., if affixes == []).
         
-    
 
     # Print new choices file by concatenating input choices
     # with output choices.  FIXME: What about section=?

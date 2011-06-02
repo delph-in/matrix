@@ -1817,3 +1817,29 @@ class ChoicesFile:
         self.convert_key(slot.full_key + '_morph', slot.full_key + '_lrt')
       # finally, change -slot keys to -pc
       self.convert_key(lex_cat + '-slot', lex_cat + '-pc')
+
+########################################################################
+# FormData Class
+# This Class acts like form data which would normally
+# be sent from the server. Used for testing purposes.
+
+class FormData:
+  def __init__(self):
+    self.data = {}
+
+  def __getitem__(self, key):
+    return self.data[key]
+
+  def has_key(self, key):
+    if key in self.data:
+      return True;
+    else:
+      return False;
+
+  def keys(self):
+    return self.data.keys();
+
+class FormInfo:
+  def __init__(self, key, value):
+    self.key = key;
+    self.value = value;
