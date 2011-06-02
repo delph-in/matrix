@@ -66,10 +66,15 @@ logs="$rtestdir/logs/"
 
 ### LOG FILES
 
-# Main log file to look at tsdb output.
+# Log file to look at tsdb output.
 TSDBLOG="$logs/tsdb.${date}.log"
 if [ -e ${TSDBLOG} ]; then
     rm ${TSDBLOG}
+fi
+# We need to concatenate all TSDBLOGs together because they get overwritten
+ALLTSDBLOG="$logs/alltsdb.${date}.log"
+if [ -e ${ALLTSDBLOG} ]; then
+    rm ${ALLTSDBLOG}
 fi
 
 # Create one log file with results from all tests, appending on 
@@ -133,7 +138,6 @@ done
 
 for lgname in $lgnames
 do
-    error_msg=""
     printf "%-70s " "$lgname..."
 
     # Set skeleton, grammar, gold-standard for comparison, and
@@ -145,11 +149,18 @@ do
     target="current/$lgname"
     log="$logs/$lgname.$date"
 
+    # Check for existence of choices file
+    if [ ! -e $choicesfile ]; then
+      echo "ERROR!"
+      echo "$lgname choices file does not exist: $choicesfile" >> $log
+      continue
+    fi
+
     # Validate
     if [[ $validate ]]; then
       $python_cmd ${CUSTOMIZATIONROOT}/../matrix.py v $choicesfile >> $log
       if [ $? != 0 ]; then
-        error_msg="INVALID!"
+        echo "INVALID!"
         echo "$lgname choices file did not pass validation." >> $log
         continue
       fi
@@ -159,7 +170,7 @@ do
     if [[ $customize || $performace ]]; then
       $python_cmd ${CUSTOMIZATIONROOT}/../matrix.py --cheap-hack cf $choicesfile $grammardir >> $log
       if [[ $customize && $? != 0 ]]; then
-        error_msg="FAIL!"
+        echo "FAIL!"
         echo "There was an error during the customization of the grammar." >> $log
         continue
       fi
@@ -167,6 +178,13 @@ do
 
     # Parsing Performance
     if [[ $performance ]]; then
+      # Check for existence of gold profile
+      if [ ! -e $tsdbhome/$gold ]; then
+        echo "ERROR!"
+        echo "Gold profile does not exist: $tsdbhome/$gold" >> $log
+        continue
+      fi
+
       subdir=`ls -d $grammardir/*/`
       grammar=$subdir/lkb/script
       grm_file=`ls $subdir/*-pet.grm`
@@ -213,25 +231,28 @@ do
   
       } | ${LOGONROOT}/bin/logon \
           -I base -locale no_NO.UTF-8 -qq 2> ${TSDBLOG} > ${TSDBLOG}
+      
+    # The $TSDBLOG is overwritten each time, so copy it to $ALLTSDBLOG
+    echo "== BEGIN TSDB LOG for $lgname ==" >> $ALLTSDBLOG
+    cat $TSDBLOG >> $ALLTSDBLOG
 
 # When the grammar fails to load, [incr tsdb()] is not creating
 # the directory.  So use existence of $tsdbhome/$target to check
 # for grammar load problems.
 
       if [ ! -e $tsdbhome/$target ]; then
-          error_msg="ERROR!"
+          echo "ERROR!"
           echo "Probable tdl error; grammar failed to load." >> $log
+          continue
       elif [ -s $log ]; then
-          error_msg="DIFFS!"
+          echo "DIFFS!"
           echo "Diffs were found in the current and gold profiles." >> $log
+          continue
       fi
     fi
 
-    if [ -z $error_msg ]; then
-        echo "Success!"
-    else
-        echo $error_msg
-    fi
+    # if we made it here, it's probably a success
+    echo "Success!"
 done
 
 # Check through tsdb log file for any errors, and report
@@ -253,11 +274,13 @@ do
 done
 
 # Notify user of results:
+if [[ $performance ]]; then
+  echo "Grepping for 'error' in tsdb log:"
+  echo ""
 
-echo "Grepping for 'error' in tsdb log:"
-echo ""
-
-grep -i "error" ${TSDBLOG}
+  # Don't report errors for starred items
+  grep -i "error" ${ALLTSDBLOG} | grep -v "^([0-9]\+) \`\*"
+fi
 
 echo ""
 echo "Results of the regression tests can be seen in"
