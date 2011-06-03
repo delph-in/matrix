@@ -119,13 +119,13 @@ def main():
       print 'Succeeded copying files for %s.' % lg
       rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
       subprocess.call(['svn', '-q', 'add'] +\
-                      [os.path.join(rpath, 'home/gold/' + lg),
-                       os.path.join(rpath, 'skeletons/' + lg)])
+                      [os.path.join(rpath, 'home/gold', lg),
+                       os.path.join(rpath, 'skeletons', lg)])
       subprocess.call(['svn', '-q', 'add'] +\
-                      [os.path.join(rpath, 'home/gold/' + lg + '/[a-z]*'),
-                       os.path.join(rpath, 'skeletons/' + lg + '/[a-z]*'),
-                       os.path.join(rpath, 'choices/' + lg),
-                       os.path.join(rpath, 'txt-suites/' + lg)])
+                      [os.path.join(rpath, 'home/gold', lg, '/[a-z]*'),
+                       os.path.join(rpath, 'skeletons', lg, '/[a-z]*'),
+                       os.path.join(rpath, 'choices', lg),
+                       os.path.join(rpath, 'txt-suites', lg)])
       print 'Succeeded adding files to Subversion. Be sure to commit!'
     except ValueError, er:
       print "Error adding regression test."
@@ -144,6 +144,70 @@ def main():
     else:
       print "Aborted."
     sys.exit(1)
+
+  elif args[0] in ('regression-test-remove', 'rr'):
+    from gmcs import utils
+    test = args[1]
+    rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
+    rti = open(os.path.join(rpath, 'regression-test-index')).readlines()
+    if test not in (l.split('=')[0] for l in rti):
+      print 'Error: cannot find test', test
+      sys.exit(2)
+    print "Removing a regression test removes the choices file, text suite,"
+    print "gold TSDB profiles, skeleton, and entry in regression-test-index."
+    print "Are you sure you want to remove the regression test?"
+    if utils.verify():
+      with open(os.path.join(rpath, 'regression-test-index'), 'w') as rti_file:
+        for l in rti:
+          if l.split('=')[0] != test:
+            print >>rti_file, l
+      subprocess.call(['svn', '-q', '--non-interactive', 'rm'] +\
+                      [os.path.join(rpath, 'home/gold', test),
+                       os.path.join(rpath, 'skeletons', test),
+                       os.path.join(rpath, 'choices', test),
+                       os.path.join(rpath, 'txt-suites', test)])
+      print "Remember you must commit your changes to subversion. Also,"
+      print "there may still be files not in the repository related to this"
+      print "test. Look in the following directories:"
+      print os.path.join(rpath, 'grammars')
+      print os.path.join(rpath, 'home', 'current')
+      print os.path.join(rpath, 'logs')
+    else:
+      print "Aborted."
+    sys.exit(1)
+
+  elif args[0] in ('regression-test-rename', 'rn'):
+    oldname = args[1]
+    newname = args[2]
+    rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
+    rti = open(os.path.join(rpath, 'regression-test-index')).readlines()
+    if oldname not in (l.split('=')[0] for l in rti):
+      print 'Error: cannot find test', oldname
+      sys.exit(2)
+    with open(os.path.join(rpath, 'regression-test-index'), 'w') as rti_file:
+      for l in rti:
+        if l.split('=')[0] == oldname:
+          print >>rti_file, l.replace(oldname, newname, 1)
+        else:
+          print >>rti_file, l
+    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                     os.path.join(rpath, 'home', 'gold', oldname),
+                     os.path.join(rpath, 'home', 'gold', newname)])
+    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                     os.path.join(rpath, 'skeletons', oldname),
+                     os.path.join(rpath, 'skeletons', newname)])
+    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                     os.path.join(rpath, 'choices', oldname),
+                     os.path.join(rpath, 'choices', newname)])
+    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                     os.path.join(rpath, 'txt-suites', oldname),
+                     os.path.join(rpath, 'txt-suites', newname)])
+    print "Remember you must commit your changes to subversion. Also,"
+    print "there may still be files not in the repository related to this"
+    print "test. Look in the following directories:"
+    print os.path.join(rpath, 'grammars')
+    print os.path.join(rpath, 'home', 'current')
+    print os.path.join(rpath, 'logs')
 
   elif args[0] in ('i', 'install'):
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
@@ -208,6 +272,10 @@ def validate_args(args):
     if len(args) < 3: usage(command='regression-test-add')
   elif args[0] in ('regression-test-update', 'ru'):
     if len(args) < 2: usage(command='regression-test-update')
+  elif args[0] in ('regression-test-remove', 'rr'):
+    if len(args) < 2: usage(command='regression-test-remove')
+  elif args[0] in ('regression-test-rename', 'rn'):
+    if len(args) < 3: usage(command='regression-test-rename')
   elif args[0] in ('i', 'install'):
     if len(args) < 2: usage(command='install')
   elif args[0] == 'vivify':
@@ -288,6 +356,17 @@ def usage(command=None, exitcode=2):
     p("regression-test-update (ru) TEST")
     p("            Update the gold standard of TEST to use the results of the")
     p("            current system.")
+    something_printed = True
+  if command in ('regression-test-remove', 'rr', 'all'):
+    p("regression-test-remove (rr) TEST")
+    p("            Remove TEST from the regression test suite. This command")
+    p("            removes all files checked into subversion.")
+    something_printed = True
+  if command in ('regression-test-rename', 'rn', 'all'):
+    p("regression-test-rename (rn) OLDTEST NEWTEST")
+    p("            Rename OLDTEST to NEWTEST. This is performed with a call")
+    p("            to 'svn mv' on the files in the repository. Remember to")
+    p("            commit your changes.")
     something_printed = True
   if command in ('unit-test', 'u', 'all'):
     p("unit-test (u)")
