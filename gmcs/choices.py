@@ -1828,7 +1828,11 @@ class FormData:
     self.data = {}
 
   def __getitem__(self, key):
-    return self.data[key]
+    if key in self.data:
+      return self.data[key]
+    else:
+      self.data[key] = FormInfo(key, None)
+      return self.data[key]
 
   def has_key(self, key):
     if key in self.data:

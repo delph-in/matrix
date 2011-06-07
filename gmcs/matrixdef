@@ -1805,4 +1805,6 @@ BeginIter imported-entry{i} "an imported Entry"
 
     Text pred "Imported-Entry {i} Predicate" "Predicate:" "<br />" 20
 
+    Text aff "Imported-Entry {i} Affix" "Affix:" "<br />" 20
+
 EndIter imported-entry
