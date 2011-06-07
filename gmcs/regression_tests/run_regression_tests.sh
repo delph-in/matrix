@@ -41,6 +41,9 @@ if ! echo $( $python_cmd -V 2>&1 ) | grep -q "Python 2\.[5,6,7]"; then
   echo "  Found $( $python_cmd -V 2>&1 ). Continuing." >&2
 fi
 
+# for convenience
+matrix_cmd="$python_cmd ${CUSTOMIZATIONROOT}/../matrix.py"
+
 ###
 ### COMMON VARIABLES AND SETTINGS
 ###
@@ -158,7 +161,7 @@ do
 
     # Validate
     if [[ $validate ]]; then
-      $python_cmd ${CUSTOMIZATIONROOT}/../matrix.py v $choicesfile >> $log
+      $matrix_cmd v $choicesfile >> $log
       if [ $? != 0 ]; then
         echo "INVALID!"
         echo "$lgname choices file did not pass validation." >> $log
@@ -168,7 +171,7 @@ do
 
     # Customize (Performance needs a grammar, too, though)
     if [[ $customize || $performace ]]; then
-      $python_cmd ${CUSTOMIZATIONROOT}/../matrix.py --cheap-hack cf $choicesfile $grammardir >> $log
+      $matrix_cmd --cheap-hack cf $choicesfile $grammardir >> $log
       if [[ $customize && $? != 0 ]]; then
         echo "FAIL!"
         echo "There was an error during the customization of the grammar." >> $log
@@ -193,6 +196,7 @@ do
       #cut -d@ -f7 $skeleton/item | cheap -mrs -tsdbdump $tsdbhome/$target $grm_file 2>${TSDBLOG} >${TSDBLOG}
       # cheap makes a bad item file, so just copy over the original one
       #cp $skeleton/item $tsdbhome/$target/item
+      #$matrix_cmd a $tsdbhome/$target $tsdbhome/$gold > $log
 
       {
           options=":error :exit :wait 300"

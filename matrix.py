@@ -149,23 +149,31 @@ def main():
     from gmcs import utils
     test = args[1]
     rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
-    rti = open(os.path.join(rpath, 'regression-test-index')).readlines()
-    if test not in (l.split('=')[0] for l in rti):
-      print 'Error: cannot find test', test
-      sys.exit(2)
-    print "Removing a regression test removes the choices file, text suite,"
-    print "gold TSDB profiles, skeleton, and entry in regression-test-index."
-    print "Are you sure you want to remove the regression test?"
+    test_paths = []
+    for test_path in [os.path.join(rpath, 'home', 'gold', test),
+                      os.path.join(rpath, 'skeletons', test),
+                      os.path.join(rpath, 'choices', test),
+                      os.path.join(rpath, 'txt-suites', test)]:
+      if os.path.exists(test_path):
+        test_paths += [test_path]
+    print "The following paths were found relating to the test:\n"
+    for test_path in test_paths:
+      print "  ", test_path
+    print
+    print "Do you want to remove them from subversion? If you choose to remove"
+    print "them, the test entry in regression-test-index will also be removed."
     if utils.verify():
-      with open(os.path.join(rpath, 'regression-test-index'), 'w') as rti_file:
+      # remove the entry from regression-test-index
+      rti_path = os.path.join(rpath, 'regression-test-index')
+      rti = open(rti_path).readlines()
+      with open(rti_path, 'w') as rti_file:
         for l in rti:
           if l.split('=')[0] != test:
-            print >>rti_file, l
-      subprocess.call(['svn', '-q', '--non-interactive', 'rm'] +\
-                      [os.path.join(rpath, 'home/gold', test),
-                       os.path.join(rpath, 'skeletons', test),
-                       os.path.join(rpath, 'choices', test),
-                       os.path.join(rpath, 'txt-suites', test)])
+            print >>rti_file, l.strip()
+      # remove the relevant files from subversion
+      for test_path in test_paths:
+        subprocess.call(['svn', '-q', '--non-interactive', 'rm', test_path])
+      # All done, print a success message and reminder
       print "Remember you must commit your changes to subversion. Also,"
       print "there may still be files not in the repository related to this"
       print "test. Look in the following directories:"
