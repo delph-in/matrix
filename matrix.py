@@ -166,10 +166,11 @@ def main():
       # remove the entry from regression-test-index
       rti_path = os.path.join(rpath, 'regression-test-index')
       rti = open(rti_path).readlines()
-      with open(rti_path, 'w') as rti_file:
-        for l in rti:
-          if l.split('=')[0] != test:
-            print >>rti_file, l.strip()
+      rti_file = open(rti_path, 'w')
+      for l in rti:
+        if l.split('=')[0] != test:
+          print >>rti_file, l.strip()
+      rti_file.close()
       # remove the relevant files from subversion
       for test_path in test_paths:
         subprocess.call(['svn', '-q', '--non-interactive', 'rm', test_path])
@@ -192,12 +193,13 @@ def main():
     if oldname not in (l.split('=')[0] for l in rti):
       print 'Error: cannot find test', oldname
       sys.exit(2)
-    with open(os.path.join(rpath, 'regression-test-index'), 'w') as rti_file:
-      for l in rti:
-        if l.split('=')[0] == oldname:
-          print >>rti_file, l.replace(oldname, newname, 1)
-        else:
-          print >>rti_file, l
+    rti_file = open(os.path.join(rpath, 'regression-test-index'), 'w')
+    for l in rti:
+      if l.split('=')[0] == oldname:
+        print >>rti_file, l.replace(oldname, newname, 1)
+      else:
+        print >>rti_file, l
+    rti_file.close()
     subprocess.call(['svn', '-q', '--non-interactive', 'mv',
                      os.path.join(rpath, 'home', 'gold', oldname),
                      os.path.join(rpath, 'home', 'gold', newname)])
