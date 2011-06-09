@@ -252,10 +252,13 @@ def ensure_customization_root_set():
   Set CUSTOMIZATIONROOT if the appropriate files are found in the
   current working directory.
   """
-  if 'CUSTOMIZATIONROOT' in os.environ:
-    return
   cwd = os.getcwd()
-  if os.path.exists(os.path.join(cwd, 'customize.py')):
+  if 'CUSTOMIZATIONROOT' in os.environ:
+    if not os.path.exists(os.path.join(os.environ['CUSTOMIZATIONROOT'],
+                                       'customize.py')):
+      print "CUSTOMIZATIONROOT is incorrectly set."
+      sys.exit(2)
+  elif os.path.exists(os.path.join(cwd, 'customize.py')):
     os.environ['CUSTOMIZATIONROOT'] = cwd
   elif os.path.exists(os.path.join(cwd, 'gmcs/customize.py')):
     os.environ['CUSTOMIZATIONROOT'] = os.path.join(cwd, 'gmcs')
