@@ -156,8 +156,8 @@ function toggle_display_lex(element_id, button_id)
     } else {
       b.innerHTML = '&#9660; '+n+' ('+element_id+')<br />';
     }
-    document.cookie = element_id+"=block";
-    document.cookie = button_id+"=block";
+    //    document.cookie = element_id+"=block";
+    //    document.cookie = button_id+"=block";
   } else {
     p.style.display = 'none';
     if (errs != null) {
@@ -168,8 +168,8 @@ function toggle_display_lex(element_id, button_id)
     } else {
       b.innerHTML = '&#9658; '+n+' ('+element_id+')<br />';
     }
-    document.cookie = element_id+"=none";
-    document.cookie = button_id+"=none";
+    //    document.cookie = element_id+"=none";
+    //    document.cookie = button_id+"=none";
   }
 }
 
