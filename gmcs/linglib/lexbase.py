@@ -71,17 +71,55 @@ class MorphotacticNode(HierarchyNode):
     """
     return self.pc in [o.pc for o in other.input_span().values()]
 
+  def percolate_down(self, items, validate):
+    """
+    Copy the relevant items on the current node down to all child nodes.
+    If no valid item exists on a leaf node, give it a default item.
+    """
+    if len(self.children()) > 0:
+      # The following assumes incompatible types won't be merged onto
+      # common descendants (this should be validated)
+      for c in self.children().values():
+        items(c).update(items(self))
+        c.percolate_down(items, validate)
+    # if it is a leaf node, make sure it is valid
+    else:
+      validate(self)
+
+  def percolate_up(self, items):
+    # base condition: we're on a leaf type
+    if len(self.children()) == 0:
+      vals = items(self)
+      return set(vals.items()) if type(vals) is dict else set(vals)
+    # Can't do set.intersection(*list) until Python2.6, so using reduce
+    common_items = reduce(set.intersection,
+                          [c.percolate_up(items)
+                           for c in self.children().values()])
+    if common_items:
+      # now update the current node's values
+      items(self).update(common_items)
+      # and remove the common values from descendants
+      for c in self.children().values():
+        if type(items(c)) is set:
+          items(c).difference_update(common_items)
+        elif type(items(c)) is dict:
+          for item in common_items:
+            # recall common_items are dict items, so a (key, value) pair
+            del items(c)[item[0]]
+    return common_items
+
 class PositionClass(MorphotacticNode):
   """
   """
   def __init__(self, key, name, parents=None, order=None,
-               identifier_suffix=None):
+               identifier_suffix=None, lex_rule=True):
     MorphotacticNode.__init__(self, key, name, parents=parents)
     self.l_hierarchy = Hierarchy()
     self.nodes = self.l_hierarchy.nodes # for convenience
     self.order = order
     self.pc = self
     self.identifier_suffix = identifier_suffix or 'lex-rule-super'
+    self.is_lex_rule = lex_rule
 
   def __repr__(self):
     return 'PositionClass(' + self.identifier() + ')'
@@ -113,30 +151,6 @@ class PositionClass(MorphotacticNode):
     # implement these later.. try to be efficient
     return all_inps
 
-  def percolate_supertypes(self):
-    # First percolate supertypes down to leaves. Before percolating them
-    # back up, all must be pushed down, so this loop must be separate
-    # from the next one.
-    for r in self.roots():
-      r.percolate_supertypes_down()
-    # percolate up also starts at the roots, since it's recursive
-    for r in self.roots():
-      r.percolate_supertypes_up()
-    # If there are supertypes common to all roots, then copy it up to
-    # the PC. If not, we probably need to give the PC a generic type.
-    # Also, the backup value for root_sts is to avoid a TypeError caused
-    # by reducing over an empty sequence.
-    root_sts = [r.supertypes for r in self.roots()] or [set()]
-    common_sts = reduce(set.intersection, root_sts)
-    if len(common_sts) > 0:
-      # update the supertype sets
-      self.supertypes.update(common_sts)
-      for r in self.roots():
-        r.supertypes.difference_update(common_sts)
-    elif len(self.supertypes) == 0 \
-         and self.identifier_suffix == 'lex-rule-super':
-      self.supertypes.add('lex-rule')
-
 class LexicalType(MorphotacticNode):
   def __init__(self, key, name, parents=None, entry=False):
     MorphotacticNode.__init__(self, key, name=name, parents=parents,
@@ -166,30 +180,6 @@ class LexicalRuleType(MorphotacticNode):
 
   def inputs(self):
     return self.pc.inputs()
-
-  def percolate_supertypes_down(self):
-    if len(self.children()) > 0:
-      # The following assumes incompatible types won't be merged onto
-      # common descendants (this should be validated)
-      for c in self.children().values():
-        c.supertypes.update(self.supertypes)
-        c.percolate_supertypes_down()
-    # if it is a leaf node and has no valid supertypes, give it the default
-    elif not any([st in ('cont-change-only-lex-rule',
-                         'add-only-no-ccont-rule')
-                  for st in self.supertypes]):
-      self.supertypes.add('add-only-no-ccont-rule')
-
-  def percolate_supertypes_up(self):
-    # base condition: we're on a leaf type
-    if len(self.children()) == 0: return
-    # Can't do set.intersection(*list) until Python2.6, so using reduce
-    common_sts = reduce(set.intersection, [c.supertypes for c in
-                                           self.children().values()])
-    # now update the supertype sets
-    self.supertypes.update(common_sts)
-    for c in self.children().values():
-      c.supertypes.difference_update(common_sts)
 
   def all_supertypes(self):
     """

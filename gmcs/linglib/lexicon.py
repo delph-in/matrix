@@ -11,7 +11,7 @@ def lexical_type_hierarchy(choices, lexical_supertype):
     return None
   lth = PositionClass(key=lexical_supertype + '-pc',
                       name=get_lt_name(lexical_supertype, choices),
-                      identifier_suffix='lex-super')
+                      identifier_suffix='lex-super', lex_rule=False)
   lth.add_node(LexicalType(lexical_supertype,
                            get_lt_name(lexical_supertype, choices)))
   lts_to_add = [lexical_supertype]
