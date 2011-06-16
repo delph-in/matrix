@@ -1808,3 +1808,43 @@ BeginIter imported-entry{i} "an imported Entry"
     Text aff "Imported-Entry {i} Affix" "Affix:" "<br />" 20
 
 EndIter imported-entry
+
+Section UserFeedback "Send feedback to Matrix developers"
+
+Label "<P> The Grammar Matrix core grammar and libraries represent working hypotheses.  In order to improve this resource, we appreciate feedback from users.  If you find that you need to edit matrix.tdl, please upload the edited version here. Similarly, if you find that the customized analyses don't work for your language, you can use this form to let us know."
+
+BeginIter matrix-gripe{i} "a gripe"
+
+Radio type "Type" "I would like to complain about:<br>" ""
+. core "core" "" " matrix.tdl<br>"
+. libraries "libraries" "" " analyses from libraries<br>"
+. both "both" "" " both</p>"
+
+   Text gripe-language "language" "Language I am working on: " "" 20
+
+Radio contact "Contact" "<p>Please indicate your follow-up preferences:<br>" ""
+. email "email" "" " I would love to discuss this over email.<br>"
+. close "close" "" " Just let me know when you've fixed it.<br>"
+. shhh "shhh" "" " Just leave me alone.</p>"
+
+File editedfile "Grammar file" "Please upload your edited matrix.tdl or an archive of your grammar: " "<br>" 20
+
+File datafile "Data file" "(Optional) file with data and/or prose description of the analyses: " "" 20
+
+BeginIter explanation{i} "a bit more detail (optional)"
+
+TextArea comment "Comments" "Further information to help us understand your changes" "" 80x6
+
+EndIter explanation
+
+BeginIter excuse{i} "a ???"
+
+Radio sum "Summary" "" ""
+. LAP "LAP" "" " Surely it's all my fault (Poulson 2011)<br>"
+. SFD "SFD" "" " Your free software sucks (Drellishak 2011)<br>"
+. DM "DM" "" " HPSG: You're doing it wrong (Meurers 2011)<br>"
+
+
+EndIter excuse
+
+EndIter matrix-gripe
