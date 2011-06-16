@@ -349,10 +349,26 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
   for root in lex_pc.roots():
     root.percolate_down(items=lambda x:x.flags['out'],
                         validate=lambda x: validate_flag(x))
+  to_remove = defaultdict(set)
   for root in lex_pc.roots():
-    root.percolate_up(items=lambda x: x.flags['out'])
+   root.percolate_up(items=lambda x: x.flags['out'], redundancies=to_remove)
+  # don't forget to remove redundant items
+  for child in to_remove.keys():
+    for item in to_remove[child]:
+      # recall common_items are dict items, so a (key, value) pair
+      del child.flags['out'][item[0]]
 
 ### SUPERTYPES ###
+
+# add possible supertypes here
+ALL_LEX_RULE_SUPERTYPES = set(['cont-change-only-lex-rule',
+                               'add-only-no-ccont-rule',
+                               'infl-lex-rule',
+                               'const-lex-rule',
+                               'lex-rule'])
+
+LEX_RULE_SUPERTYPES = set(['cont-change-only-lex-rule',
+                           'add-only-no-ccont-rule'])
 
 def set_lexical_rule_supertypes(lrt):
   """
@@ -376,7 +392,7 @@ def calculate_supertypes(pch):
   for pc in pch.nodes.values():
     percolate_supertypes(pc)
     # in the case a lex-rule PC has no supertypes, give it a generic one
-    if len(pc.supertypes) == 0:
+    if not any(st in ALL_LEX_RULE_SUPERTYPES for st in pc.supertypes):
       pc.supertypes.add('lex-rule')
 
 def calculate_daughter_types(pch):
@@ -402,16 +418,19 @@ def percolate_supertypes(pc):
   # from the next one.
   def validate_supertypes(x):
     if pc.is_lex_rule:
-      if not any(st in ['cont-change-only-lex-rule', 'add-only-no-ccont-rule']
-                 for st in x.supertypes):
+      if not any(st in LEX_RULE_SUPERTYPES for st in x.supertypes):
         x.supertypes.add('add-only-no-ccont-rule')
 
   for r in pc.roots():
     r.percolate_down(items=lambda x: x.supertypes,
                      validate=lambda x: validate_supertypes(x))
   # percolate up also starts at the roots, since it's recursive
+  to_remove = defaultdict(set)
   for r in pc.roots():
-    r.percolate_up(items=lambda x: x.supertypes)
+    r.percolate_up(items=lambda x: x.supertypes, redundancies=to_remove)
+  # now we have to remove redundant items
+  for child in to_remove.keys():
+     child.supertypes.difference_update(to_remove[child])
   # since we don't use the pc node of lexical types, only do the
   # following if it is a lex rule
   if not pc.is_lex_rule: return
@@ -645,13 +664,14 @@ def basic_pc_validation(choices, pc, vr):
             'defined by hand.')
   elif len(pc.get('lrt', [])) == 1:
     lrt = pc['lrt'].get_first()
-    if lrt.get('name', '') == '':
+    if lrt.get('name', '') == '' or pc.get('name', '') == '':
       # if the lrt has no name, it will be merged with its position class.
       # make sure it has no constraints
       for c in lrt.get('require', []) + lrt.get('forbid', []):
         vr.err(c.full_key + '_others', 'Solitary lexical rule types with ' +\
                'no name will be merged with their position class, and ' +\
-               'therefore cannot themselves take constraints.')
+               'therefore cannot themselves take constraints. Apply the ' +\
+               'constraints to the position class, instead.')
 
 def lrt_validation(lrt, vr, index_feats):
   # No supertype means it's a root type within a PC class (no longer an error)

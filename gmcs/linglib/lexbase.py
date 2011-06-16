@@ -86,26 +86,21 @@ class MorphotacticNode(HierarchyNode):
     else:
       validate(self)
 
-  def percolate_up(self, items):
+  def percolate_up(self, items, redundancies):
     # base condition: we're on a leaf type
     if len(self.children()) == 0:
       vals = items(self)
       return set(vals.items()) if type(vals) is dict else set(vals)
     # Can't do set.intersection(*list) until Python2.6, so using reduce
     common_items = reduce(set.intersection,
-                          [c.percolate_up(items)
+                          [c.percolate_up(items, redundancies)
                            for c in self.children().values()])
     if common_items:
       # now update the current node's values
       items(self).update(common_items)
-      # and remove the common values from descendants
+      # and schedule the common values from descendants to be removed
       for c in self.children().values():
-        if type(items(c)) is set:
-          items(c).difference_update(common_items)
-        elif type(items(c)) is dict:
-          for item in common_items:
-            # recall common_items are dict items, so a (key, value) pair
-            del items(c)[item[0]]
+        redundancies[c].update(common_items)
     return common_items
 
 class PositionClass(MorphotacticNode):
