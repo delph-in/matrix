@@ -107,18 +107,69 @@ function clear_form()
   }
 }
 
+// save_form()
+// Save and Vivify the choices on the current subpage
+function save_form(section)
+{
+  var elm = document.getElementsByTagName('form')[0];
+  var inp = document.createElement('input');
+  inp.type = "hidden";
+  inp.name="subpage";
+  inp.value=section;
+  elm.appendChild(inp);
+  elm.submit();
+}
+
+// submit_main()
+// Submit the form and return to the main page
+function submit_main()
+{
+  var form = document.getElementsByTagName('form')[0];
+  var elms = document.getElementsByTagName('input');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].name == "subpage") {
+      form.removeChild(elms[i]);
+    }
+  }
+  form.submit();
+}
+
 // toggle_display_lex()
 // Handle a click on a section show/hide button on the Lexicon Page
 function toggle_display_lex(element_id, button_id)
 {
   p = document.getElementById(element_id);
+  text_boxes = document.getElementsByName(element_id+'_name');
+  errs = document.getElementById(element_id+"_errors");
+  n = "";
+  if (text_boxes.length > 0) {
+    n = text_boxes[0].value;
+  }
   b = document.getElementById(button_id);
   if (p.style.display == 'none') {
     p.style.display = 'block';
-    b.innerHTML = '&#9660; '+element_id + '<br />';
+    if (errs != null) {
+      errs.style.display = 'none';
+    }
+    if (n == "") {
+      b.innerHTML = '&#9660; '+n+element_id + '<br />';
+    } else {
+      b.innerHTML = '&#9660; '+n+' ('+element_id+')<br />';
+    }
+    //    document.cookie = element_id+"=block";
+    //    document.cookie = button_id+"=block";
   } else {
     p.style.display = 'none';
-    b.innerHTML = '&#9658; '+element_id + '<br />';
+    if (errs != null) {
+      errs.style.display = '';
+    }
+    if (n == "") {
+      b.innerHTML = '&#9658; '+n+element_id + '<br />';
+    } else {
+      b.innerHTML = '&#9658; '+n+' ('+element_id+')<br />';
+    }
+    //    document.cookie = element_id+"=none";
+    //    document.cookie = button_id+"=none";
   }
 }
 
@@ -139,21 +190,32 @@ function toggle_all_display_lex(on)
   for (var x=0; x<iters.length; x++)
   {
     iter = iters[x];
-    if(iter.id.search('TEMPLATE')==-1 && + //don't mess with display of TEMPLATES
-       iter.id.search('feat') == -1 && + //feat/stem/forbid/requires/lri iterators
-       iter.id.search('stem') == -1 && + //needn't show/hide
-       iter.id.search('forbid') == -1 && + 
-       iter.id.search('require') == -1 && +
-       iter.id.search('lri') == -1){ 
+    if(iter.id.search('TEMPLATE')==-1) { //don't mess with display of TEMPLATES
       button = document.getElementById(iter.id+'button');
-      if(on==1){
-        if(iter.style.display == 'block' || iter.style.display == '')
-          toggle_display_lex(iter.id, button.id);
-      }else {
-        if(iter.style.display == 'none' || iter.style.display == '')
-          toggle_display_lex(iter.id, button.id);
+      if (button != null) {
+	if(on==1){
+	  if(iter.style.display == 'block' || iter.style.display == '')
+	    toggle_display_lex(iter.id, button.id);
+        } else {
+          if(iter.style.display == 'none' || iter.style.display == '')
+            toggle_display_lex(iter.id, button.id);
+	}
       }
     }
+  }
+}
+
+// fill_display_name()
+// Used to fill the name of the show/hide label after editing the
+// name text field.
+function fill_display_name(id)
+{
+  var elm = document.getElementById(id+'button');
+  var name = document.getElementsByName(id+'_name')[0].value;
+  if (name != "") {
+    elm.innerHTML = '&#9660; '+name + ' ('+id+')';
+  } else {
+    elm.innerHTML = '&#9660; '+id;
   }
 }
 
@@ -238,7 +300,7 @@ function expand_region(id)
 {
   var n = document.getElementById(id);
 
-  //n.style.overflow = 'hidden';
+  n.style.overflow = 'hidden';
 
   var a = { id: id, property: 'maxHeight', factor: 2, ticks: 10 };
   n.style[a.property] = '1px';
@@ -269,7 +331,7 @@ function prev_div(n, name)
 // Worker function that clones the invisible tempate of an iterator,
 // replaces any iterator variables with the proper values, and inserts
 // the copy into the page.
-function do_clone_region(id, iter_var, bAnim)
+function do_clone_region(id, iter_var, bAnim, bShow)
 {
 
   var d = document.getElementById(id + '_TEMPLATE');
@@ -297,15 +359,9 @@ function do_clone_region(id, iter_var, bAnim)
   n.id = id + cur;
   n.style.display = '';
 
-  //if the new iter is a stem or feature iterator, 
-  //or a morphotactics forbid or require or lri iterator,
-  //don't add a show/hide button
-  if(n.id.search('stem') == -1 && +
-     n.id.search('feat') == -1 && +
-     n.id.search('require') == -1 && +
-     n.id.search('forbid') == -1 && +
-     n.id.search('lri') == -1 )
-  {//otherwise go in here and add the button
+  // only add the show/hide button on iterators which ask for
+  // a show/hide button
+  if (bShow){
     var b = document.createElement("a");
     b.id = n.id+'button';
     b.innerHTML = '&#9660; '+n.id + '<br />';
@@ -324,9 +380,9 @@ function do_clone_region(id, iter_var, bAnim)
 
 // clone_region()
 // Clone a region and expand using animation
-function clone_region(id, iter_var)
+function clone_region(id, iter_var, bShow)
 {
-  do_clone_region(id, iter_var, true);
+    do_clone_region(id, iter_var, true, bShow);
 }
 
 // clone_region()
@@ -353,14 +409,19 @@ function remove_region(id)
 // remove_element()
 // Remove the element with id
 // and remove any associated show/hide button
+// and remove any show/hide errors
 function remove_element(id)
 {
   var e = document.getElementById(id);
   e.parentNode.removeChild(e);
-  var b = document.getElementById(id+'button')
+  var b = document.getElementById(id+'button');
+  var err = document.getElementById(id+'_errors');
   if (b != null){
       b.parentNode.removeChild(b);
-  }    
+  }
+  if (err != null){
+      err.parentNode.removeChild(err);
+  }
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -439,12 +500,13 @@ function fill_regex(name, pattern, nameOnly)
     if (e[i].name.search(pattern) != -1) {
       var val = e[i].name.replace(/_[^_]*$/, '');
 
-      var desc = val
+      var desc = val;
       var f = document.getElementsByName(val + '_name');
       if (f && f[0] && f[0].value) {
         if (nameOnly) {
           val = desc = f[0].value;
-        } else {
+        } 
+	else {
           desc = f[0].value + ' (' + desc + ')';
         }
       }
@@ -464,7 +526,8 @@ function fill_regex(name, pattern, nameOnly)
 // fill_feature_names()
 // Fill a SELECT tag with OPTIONs created from the array features[],
 // where every OPTION is a feature name.
-function fill_feature_names(select_name)
+// The cat(egory) argument allows you to restrict the features by category
+function fill_feature_names(select_name, cat)
 {
   var select = document.getElementsByName(select_name)[0];
   var old_val = select.value;  // store the previously selected option
@@ -480,10 +543,19 @@ function fill_feature_names(select_name)
     
     var o = document.createElement('option');
     o.className = 'temp';
-    o.value = f[0];
-    o.innerHTML = f[0];
 
-    select.appendChild(o);
+    var inlist = 'yes';
+    if (typeof(cat) != "undefined"){
+      if (f[2] != cat && f[2] != 'both' && cat != 'both') {
+        inlist = 'no';
+      }
+    }
+
+    if (inlist == 'yes'){
+      o.value = f[0];
+      o.innerHTML = f[0];
+      select.appendChild(o);
+    }
   }
 
   set_select_value(select, old_val, old_text);
@@ -848,4 +920,83 @@ function multi_keypress(e, select_name)
   }
 
   return true;  // allow further processing
+}
+
+////////////////////////////////////////////////////////////
+// Auto-Text filling Functions
+////////////////////////////////////////////////////////////
+
+// Fill pred elements with values based on the orth element
+function fill_pred(name,pos)
+{
+  var elms = document.getElementsByName(name+'_orth');
+  var word = '';
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].type == "text") {
+      word = elms[i].value;
+    }
+  }
+  var pred = "_"+word+"_"+pos+"_rel";
+  elms = document.getElementsByName(name+'_pred');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].type == "text" && elms[i].value == '' && word != '') {
+      elms[i].value = pred;
+      var text_elms = document.getElementsByTagName('input');
+      var match_inds = [];
+      for (var j = 0; j < text_elms.length; j++) {
+        if (text_elms[j].type == "text" && text_elms[j].value.match(new RegExp("^_"+word+"_"+pos+"_?[0-9]*_rel$",""))){
+          match_inds.push(j);
+        }  
+      }
+      if (match_inds.length > 1){
+        for (var j = 0; j < match_inds.length; j++) {
+          text_elms[match_inds[j]].value = pred.replace("_rel", "_"+(j+1)+"_rel");
+        }
+      }
+    }
+  }
+}
+
+function aux_fill_pred(name, stem, pos)
+{
+  var elms = document.getElementsByName(name+"_sem");
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].value == "add-pred" && elms[i].checked) {
+      fill_pred(name+"_"+stem, pos);
+    }
+  }
+}
+
+// fill_hidden_errors()
+// This moves errors which are not displayed to the outside of
+// show/hide button. It should be called onload and no where else.
+function fill_hidden_errors()
+{
+  var hash = window.location.hash;
+  var elms = document.getElementsByTagName("div");
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].className == "iterator") {
+      fill_errors(elms[i].id);
+    }
+  }
+  if (hash != "") {
+    window.location.hash = hash;
+  }
+}
+
+// fill_errors(id)
+// Moves the errors for a interator div to the associated error 
+// span outside of the show hide (if such a span exists.
+// This should only be called by the fill_hidden_errors function.
+function fill_errors(element_id)
+{
+  
+  var s = document.getElementById(element_id+'_errors');
+  var p = document.getElementById(element_id);
+  var anchors = p.getElementsByTagName('a');
+  for (var i = 0; i < anchors.length; i++) {
+    if (s != null && anchors[i].name.match( new RegExp("_error$|_warning$"))) {
+      s.appendChild(anchors[i].cloneNode(true));
+    }
+  }
 }

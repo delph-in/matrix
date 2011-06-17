@@ -34,6 +34,9 @@ matrixdef = MatrixDefFile('matrixdef')
 
 form_data = cgi.FieldStorage()
 
+# see if we are in debug mode
+debug = 'debug' in form_data and form_data['debug'].value in ('true','True')
+
 # Get the cookie.  If there's not one, make one.
 http_cookie = os.getenv('HTTP_COOKIE')
 browser_cookie = False
@@ -97,11 +100,14 @@ if form_data.has_key('verbpred'):
 
 # Get a list of error messages, determined by validating the current
 # choices.  If the current choices are valid, the list will be empty.
-#try:
-vr = validate_choices(os.path.join(session_path, 'choices'))
-#except:
-#  matrixdef.choices_error_page(os.path.join(session_path, 'choices'))
-#  sys.exit()
+try:
+  vr = validate_choices(os.path.join(session_path, 'choices'))
+except:
+  exc = None
+  if debug:
+    exc = sys.exc_info()
+  matrixdef.choices_error_page(os.path.join(session_path, 'choices'), exc)
+  sys.exit()
 
 # if the 'customize' field is defined, create a customized copy of the matrix
 # based on the current choices file
@@ -141,7 +147,11 @@ if form_data.has_key('customize'):
     try:
       grammar_dir = customize_matrix(session_path, arch_type)
     except:
-      matrixdef.customize_error_page(os.path.join(session_path, 'choices'))
+      exc = None
+      if debug:
+        exc = sys.exc_info()
+      matrixdef.customize_error_page(os.path.join(session_path, 'choices'),
+                                     exc)
       sys.exit()
 
     if form_data.has_key('sentences'):

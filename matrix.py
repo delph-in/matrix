@@ -85,11 +85,11 @@ def main():
     v = gmcs.validate.validate_choices(choices_file)
     for x in v.errors:
       print x
-      print '  ', v.errors[x]
+      print '  ', v.errors[x].message
     if show_warnings:
       for x in v.warnings:
         print x
-        print '  ', v.warnings[x]
+        print '  ', v.warnings[x].message
     # If there are errors, exit with a return code of 1, otherwise 0
     sys.exit(len(v.errors) > 0)
 
@@ -114,7 +114,22 @@ def main():
     choices = args[1]
     txtsuite = args[2]
     import gmcs.regression_tests.add_regression_test
-    gmcs.regression_tests.add_regression_test.add(choices, txtsuite)
+    try:
+      lg = gmcs.regression_tests.add_regression_test.add(choices, txtsuite)
+      print 'Succeeded copying files for %s.' % lg
+      rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
+      subprocess.call(['svn', '-q', 'add'] +\
+                      [os.path.join(rpath, 'home/gold', lg),
+                       os.path.join(rpath, 'skeletons', lg)])
+      subprocess.call(['svn', '-q', 'add'] +\
+                      [os.path.join(rpath, 'home/gold', lg, '/[a-z]*'),
+                       os.path.join(rpath, 'skeletons', lg, '/[a-z]*'),
+                       os.path.join(rpath, 'choices', lg),
+                       os.path.join(rpath, 'txt-suites', lg)])
+      print 'Succeeded adding files to Subversion. Be sure to commit!'
+    except ValueError, er:
+      print "Error adding regression test."
+      print er.message
 
   elif args[0] in ('regression-test-update', 'ru'):
     from gmcs import utils
@@ -129,6 +144,80 @@ def main():
     else:
       print "Aborted."
     sys.exit(1)
+
+  elif args[0] in ('regression-test-remove', 'rr'):
+    from gmcs import utils
+    test = args[1]
+    rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
+    test_paths = []
+    for test_path in [os.path.join(rpath, 'home', 'gold', test),
+                      os.path.join(rpath, 'skeletons', test),
+                      os.path.join(rpath, 'choices', test),
+                      os.path.join(rpath, 'txt-suites', test)]:
+      if os.path.exists(test_path):
+        test_paths += [test_path]
+    print "The following paths were found relating to the test:\n"
+    for test_path in test_paths:
+      print "  ", test_path
+    print
+    print "Do you want to remove them from subversion? If you choose to remove"
+    print "them, the test entry in regression-test-index will also be removed."
+    if utils.verify():
+      # remove the entry from regression-test-index
+      rti_path = os.path.join(rpath, 'regression-test-index')
+      rti = open(rti_path).readlines()
+      rti_file = open(rti_path, 'w')
+      for l in rti:
+        if l.split('=')[0] != test:
+          print >>rti_file, l.strip()
+      rti_file.close()
+      # remove the relevant files from subversion
+      for test_path in test_paths:
+        subprocess.call(['svn', '-q', '--non-interactive', 'rm', test_path])
+      # All done, print a success message and reminder
+      print "Remember you must commit your changes to subversion. Also,"
+      print "there may still be files not in the repository related to this"
+      print "test. Look in the following directories:"
+      print os.path.join(rpath, 'grammars')
+      print os.path.join(rpath, 'home', 'current')
+      print os.path.join(rpath, 'logs')
+    else:
+      print "Aborted."
+    sys.exit(1)
+
+  elif args[0] in ('regression-test-rename', 'rn'):
+    oldname = args[1]
+    newname = args[2]
+    rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
+    rti = open(os.path.join(rpath, 'regression-test-index')).readlines()
+    if oldname not in (l.split('=')[0] for l in rti):
+      print 'Error: cannot find test', oldname
+      sys.exit(2)
+    rti_file = open(os.path.join(rpath, 'regression-test-index'), 'w')
+    for l in rti:
+      if l.split('=')[0] == oldname:
+        print >>rti_file, l.replace(oldname, newname, 1)
+      else:
+        print >>rti_file, l
+    rti_file.close()
+    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                     os.path.join(rpath, 'home', 'gold', oldname),
+                     os.path.join(rpath, 'home', 'gold', newname)])
+    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                     os.path.join(rpath, 'skeletons', oldname),
+                     os.path.join(rpath, 'skeletons', newname)])
+    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                     os.path.join(rpath, 'choices', oldname),
+                     os.path.join(rpath, 'choices', newname)])
+    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                     os.path.join(rpath, 'txt-suites', oldname),
+                     os.path.join(rpath, 'txt-suites', newname)])
+    print "Remember you must commit your changes to subversion. Also,"
+    print "there may still be files not in the repository related to this"
+    print "test. Look in the following directories:"
+    print os.path.join(rpath, 'grammars')
+    print os.path.join(rpath, 'home', 'current')
+    print os.path.join(rpath, 'logs')
 
   elif args[0] in ('i', 'install'):
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
@@ -163,15 +252,18 @@ def ensure_customization_root_set():
   Set CUSTOMIZATIONROOT if the appropriate files are found in the
   current working directory.
   """
-  if 'CUSTOMIZATIONROOT' in os.environ:
-    return
   cwd = os.getcwd()
-  if os.path.exists(os.path.join(cwd, 'customize.py')):
+  if 'CUSTOMIZATIONROOT' in os.environ:
+    if not os.path.exists(os.path.join(os.environ['CUSTOMIZATIONROOT'],
+                                       'customize.py')):
+      print "CUSTOMIZATIONROOT is incorrectly set."
+      sys.exit(2)
+  elif os.path.exists(os.path.join(cwd, 'customize.py')):
     os.environ['CUSTOMIZATIONROOT'] = cwd
   elif os.path.exists(os.path.join(cwd, 'gmcs/customize.py')):
     os.environ['CUSTOMIZATIONROOT'] = os.path.join(cwd, 'gmcs')
   else:
-    print "CUSTOMIZATIONROOT cannot be set."
+    print "CUSTOMIZATIONROOT is not set and cannot be found."
     sys.exit(2)
 
 def validate_args(args):
@@ -193,6 +285,10 @@ def validate_args(args):
     if len(args) < 3: usage(command='regression-test-add')
   elif args[0] in ('regression-test-update', 'ru'):
     if len(args) < 2: usage(command='regression-test-update')
+  elif args[0] in ('regression-test-remove', 'rr'):
+    if len(args) < 2: usage(command='regression-test-remove')
+  elif args[0] in ('regression-test-rename', 'rn'):
+    if len(args) < 3: usage(command='regression-test-rename')
   elif args[0] in ('i', 'install'):
     if len(args) < 2: usage(command='install')
   elif args[0] == 'vivify':
@@ -251,8 +347,15 @@ def usage(command=None, exitcode=2):
     p("            Validate the choices file at PATH.")
     something_printed = True
   if command in ('regression-test', 'r', 'all'):
-    p("regression-test (r) [TEST]")
-    p("            Run regression test TEST (if specified) or else all tests.")
+    p("regression-test [-TASK] [TESTS]")
+    p("            Run regression test TASK (or all tasks if unsprecified)")
+    p("            over TEST (or all tests if unspecified). TASKS can be any")
+    p("            of the following and can be combined (e.g. -vc):")
+    p("              [none]       : run all tests")
+    p("              -v : validate and report errors")
+    p("              -c : customize and report errors")
+    p("              -p : customize and parse, report differences with gold")
+    p("            TESTS can be a single test name or a list of names.")
     something_printed = True
   if command in ('regression-test-add', 'ra', 'all'):
     p("regression-test-add (ra) CHOICES TXTSUITE")
@@ -266,6 +369,17 @@ def usage(command=None, exitcode=2):
     p("regression-test-update (ru) TEST")
     p("            Update the gold standard of TEST to use the results of the")
     p("            current system.")
+    something_printed = True
+  if command in ('regression-test-remove', 'rr', 'all'):
+    p("regression-test-remove (rr) TEST")
+    p("            Remove TEST from the regression test suite. This command")
+    p("            removes all files checked into subversion.")
+    something_printed = True
+  if command in ('regression-test-rename', 'rn', 'all'):
+    p("regression-test-rename (rn) OLDTEST NEWTEST")
+    p("            Rename OLDTEST to NEWTEST. This is performed with a call")
+    p("            to 'svn mv' on the files in the repository. Remember to")
+    p("            commit your changes.")
     something_printed = True
   if command in ('unit-test', 'u', 'all'):
     p("unit-test (u)")
@@ -294,10 +408,12 @@ def usage(command=None, exitcode=2):
     p("  matrix.py customize ../choices/Finnish")
     p("  matrix.py cf ../choices/Finnish")
     p("  matrix.py v ../choices/Finnish")
-    p("  matrix.py -C gmcs/ r")
-    p("  matrix.py ra Cree_choices Cree_test_suite")
-    p("  matrix.py install my_matrix")
-    p("  matrix.py vivify")
+    p("  matrix.py --customizationroot=gmcs/ r")
+    p("  matrix.py -C gmcs/ r -v")
+    p("  matrix.py -C gmcs/ r -cp vso-aux-before-vp Fore")
+    p("  matrix.py -C gmcs/ ra Cree_choices Cree_test_suite")
+    p("  matrix.py -C gmcs/ install my_matrix")
+    p("  matrix.py -C gmcs/ vivify")
   sys.exit(exitcode)
 
 def verify_force():
@@ -328,11 +444,12 @@ def customize_grammar(path, destination=None, flop=False, cheaphack=False):
   # To work around a bug in cheap, we can add a blank morphological rule
   if cheaphack:
     irules_path = os.path.join(grammar_dir, 'irules.tdl')
-    if os.path.getsize(irules_path) == 0:
-      irules = open(irules_path, 'w')
+    if not os.path.exists(irules_path) or \
+       not any(':=' in line for line in open(irules_path, 'r')):
+      irules = open(irules_path, 'a')
       print >>irules, 'CHEAP-HACK-RULE :='
-      print >>irules, '%suffix (ZZZ_ ZZZ)'
-      print >>irules, 'lex-rule.'
+      print >>irules, '%prefix (xyx zyz)'
+      print >>irules, 'lex-rule & [ NEEDS-AFFIX + ].'
       irules.close()
   # Now a grammar has been created, so we can flop it
   if flop:
@@ -345,7 +462,6 @@ def customize_grammar(path, destination=None, flop=False, cheaphack=False):
     devnull = open('/dev/null', 'w')
     subprocess.call([cmd, pet_file], cwd=grammar_dir,
                     env=os.environ, stderr=devnull)
-
 
 def run_unit_tests():
   import unittest

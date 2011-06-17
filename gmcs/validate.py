@@ -31,28 +31,39 @@ class ValidationResult:
   def has_warnings(self):
     return len(self.warnings) != 0
 
-  def err(self, key, message):
+  def err(self, key, message, anchor=None, concat=True):
     """
     Add an error message to key (a choices variable).  If the key
-    already has an error, concatenate the new message with the
-    existing one.
+    already has an error and 'concat' is set to true, concatenate 
+    the new message with the existing one. Otherwise replace the
+    message.
     """
-    if key in self.errors:
-      self.errors[key] += ' ' + message
+    if key in self.errors and concat:
+      self.errors[key].add_message(message)
     else:
-      self.errors[key] = message
+      self.errors[key] = ValidationMessage(key+"_error", message, anchor)
 
-  def warn(self, key, message):
+  def warn(self, key, message, anchor=None, concat=True):
     """
     Add an warning message to key (a choices variable).  If the key
-    already has a warning, concatenate the new message with the
-    existing one.
+    already has a warning and 'concat' is set to true, concatenate 
+    the new message with the existing one. Otherwise replace the
+    message.
     """
-    if key in self.warnings:
-      self.warnings[key] += ' ' + message
+    if key in self.warnings and concat:
+      self.warnings[key].add_message(message)
     else:
-      self.warnings[key] = message
+      self.warnings[key] = ValidationMessage(key+"_warning", message, anchor)
 
+#NTS: we only need to define an anchor for the main page versionsx
+class ValidationMessage:
+  def __init__(self, key, text, anchor):
+    self.name = key
+    self.message = text
+    self.href = anchor
+
+  def add_message(self, text):
+    self.message += ' ' + text
 
 ######################################################################
 # Namespace validation
@@ -140,7 +151,7 @@ def validate_names(ch, vr):
     for t in f.readlines():
       reserved_types[t.strip()] = True
     f.close()
-    filename = os.path.join(os.environ.get('CUSTOMIZATIONROOT', ''),
+    filename = os.path.join(os.environ.get('CUSTOMIZATIONROOT/..', ''),
                             'matrix-core/head-types')
     f = open(filename, 'r')
     for t in f.readlines():
@@ -806,6 +817,8 @@ def validate_lexicon(ch, vr):
   seenIntrans = False
   for verb in ch.get('verb'):
     val = verb.get('valence')
+    bistems = verb.get('bistem', [])
+    bipartitepc = verb.get('bipartitepc')
 
     if not val:
       mess = 'You must specify the argument structure of each verb you define.'
@@ -814,6 +827,10 @@ def validate_lexicon(ch, vr):
       seenTrans = True
     else:
       seenIntrans = True
+
+    if bistems and not bipartitepc:
+      mess = 'If you add bipartite stems to a class, you must specify a position class for the affix part of the stems.'
+      vr.err(verb.full_key + '_bipartitepc', mess)
 
     for stem in verb.get('stem', []):
       orth = stem.get('orth')
@@ -826,6 +843,23 @@ def validate_lexicon(ch, vr):
       if not pred:
         mess = 'You must specify a predicate for each verb you define.'
         vr.err(stem.full_key + '_pred', mess)
+
+    for bistem in bistems:
+      orth = bistem.get('orth')
+      aff = bistem.get('aff')
+      pred = bistem.get('pred')
+
+      if not orth:
+        mess = 'You must specify a spelling for each verb you define.'
+        vr.err(bistem.full_key + '_orth', mess)
+
+      if not aff:
+        mess = 'You must specify a affix for each bipartite verb stem you define.'
+        vr.err(bistem.full_key + '_aff', mess)
+
+      if not pred:
+        mess = 'You must specify a predicate for each verb you define.'
+        vr.err(bistem.full_key + '_pred', mess)
 
   if not (seenTrans and seenIntrans):
     mess = 'You should create intransitive and transitive verb classes.'

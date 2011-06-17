@@ -49,7 +49,15 @@ then
     exit 1
 fi
 
+# check that Customization Root is defined
+if [ -z $CUSTOMIZATIONROOT ]
+then
+    echo "Please: export CUSTOMIZATIONROOT=<your gmcs file>"
+    exit 1
+fi
 
+# Matrix-core directory
+matrix_core=${CUSTOMIZATIONROOT}/../matrix-core/
 
 # create temporary staging directory
 tempdir=/tmp/matrix.$$
@@ -57,8 +65,8 @@ mkdir $tempdir
 
 # create datestamp, matrix-types, and head-types files
 date -u > $tempdir/datestamp
-cat ${CUSTOMIZATIONROOT}/../matrix-core/matrix.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/matrix-types
-cat ${CUSTOMIZATIONROOT}/../matrix-core/head-types.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/head-types
+cat $matrix_core/matrix.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/matrix-types
+cat $matrix_core/head-types.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/head-types
 
 # copy files to the temp directory
 if [ "$installremote" ]
@@ -103,6 +111,7 @@ cp ${CUSTOMIZATIONROOT}/linglib/*.py $tempdir/gmcs/linglib/
 mkdir $tempdir/gmcs/util
 cp ${CUSTOMIZATIONROOT}/util/*.py $tempdir/gmcs/util/
 
+# sample choices files
 cp -R ${CUSTOMIZATIONROOT}/sample-choices $tempdir/
 rm -rf $tempdir/sample-choices/CVS $tempdir/sample-choices/.svn
 mkdir $tempdir/tmp
@@ -114,14 +123,14 @@ then
     mkdir $tempdir/matrix-core/lkb
     mkdir $tempdir/matrix-core/pet
 
-    matrixfiles=`ls -d ${CUSTOMIZATIONROOT}/../matrix-core/*.* ${CUSTOMIZATIONROOT}/../matrix-core/README | sed 's/[^ ]*my_language.tdl//g' | sed 's/[^ ]*Version.lsp//g' | sed 's/[^ ]*CVS//g' | sed 's/[^ ]*~//g'`
+    matrixfiles=`ls -d $matrix_core/*.* $matrix_core/README | sed 's/[^ ]*my_language.tdl//g' | sed 's/[^ ]*Version.lsp//g' | sed 's/[^ ]*CVS//g' | sed 's/[^ ]*~//g'`
 
     cp $matrixfiles $tempdir/matrix-core
 
-    lkbfiles=`echo ${CUSTOMIZATIONROOT}/../matrix-core/lkb/* | sed 's/..\/lkb\/CVS//g'`
+    lkbfiles=`echo $matrix_core/lkb/* | sed 's/..\/lkb\/CVS//g'`
     cp $lkbfiles $tempdir/matrix-core/lkb
 
-    petfiles=`echo ${CUSTOMIZATIONROOT}/../matrix-core/pet/* | sed 's/..\/pet\/CVS//g'`
+    petfiles=`echo $matrix_core/pet/* | sed 's/..\/pet\/CVS//g'`
     cp $petfiles $tempdir/matrix-core/pet
 fi
 
@@ -150,7 +159,7 @@ elif [ "$installremote" ]
 then
     #shopt -s dotglob
     pushd $tempdir
-    tar cj * | ssh uwcl@homer.u.washington.edu "tar xjv -C public_html/$1"
+    tar cj * | ssh uwcl@homer.u.washington.edu "rm -f public_html/$1/sample-choices/*; tar xjv -C public_html/$1"
     popd
     #shopt -u dotglob
 fi

@@ -5,6 +5,9 @@
 
 (defparameter *active-parsing-p* t)
 
+(grammar-encoding 'utf-8)
+(setf cdb::*cdb-ascii-p* nil)
+
 ;;; Strings
 
 (defparameter *toptype* '*top*)

@@ -6,9 +6,10 @@ from gmcs.lib import Hierarchy, HierarchyNode
 ### CONSTANTS (in principle) ###
 ################################
 
+# all types of lexical items (on lexicon page)
 ALL_LEX_TYPES = ['noun', 'verb', 'det', 'aux', 'adj']
 
-
+# types used for lexical rules (verb and aux are merged)
 LEXICAL_CATEGORIES = ['noun', 'verb', 'det', 'adj']
 
 # lexical_supertypes is a dictionary mapping the choices file
@@ -26,7 +27,8 @@ LEXICAL_SUPERTYPES = {'noun':'noun-lex',
 ###############
 
 class MorphotacticNode(HierarchyNode):
-  def __init__(self, key, name=None, pc=None, parents=None, supertypes=None):
+  def __init__(self, key, name=None, pc=None, parents=None, supertypes=None,
+               instance=False):
     HierarchyNode.__init__(self, key, parents=parents)
     self.name = name or ''
     self.pc = pc
@@ -39,6 +41,8 @@ class MorphotacticNode(HierarchyNode):
     # PCs are integers (1, 2, 3), LRTs are floats (1.1, 2,1, 2.2, etc)
     self.tdl_order = 0
     #self.input_lrt = None
+    # Track for each mn whether it is an instance (lex entry, lex rule) or type.
+    self.instance = instance
 
   def relatives(self, relation):
     # 'input' is a fake relation. It's just the parents of the position
@@ -52,7 +56,10 @@ class MorphotacticNode(HierarchyNode):
     return self.relatives('input')
 
   def identifier(self):
-    return '-'.join([self.name, self.identifier_suffix])
+    if self.identifier_suffix:
+      return '-'.join([self.name, self.identifier_suffix])
+    else:
+      return self.name
 
   def input_span(self):
     return PositionClass.input_span(self.pc)
@@ -64,17 +71,50 @@ class MorphotacticNode(HierarchyNode):
     """
     return self.pc in [o.pc for o in other.input_span().values()]
 
+  def percolate_down(self, items, validate):
+    """
+    Copy the relevant items on the current node down to all child nodes.
+    If no valid item exists on a leaf node, give it a default item.
+    """
+    if len(self.children()) > 0:
+      # The following assumes incompatible types won't be merged onto
+      # common descendants (this should be validated)
+      for c in self.children().values():
+        items(c).update(items(self))
+        c.percolate_down(items, validate)
+    # if it is a leaf node, make sure it is valid
+    else:
+      validate(self)
+
+  def percolate_up(self, items, redundancies):
+    # base condition: we're on a leaf type
+    if len(self.children()) == 0:
+      vals = items(self)
+      return set(vals.items()) if type(vals) is dict else set(vals)
+    # Can't do set.intersection(*list) until Python2.6, so using reduce
+    common_items = reduce(set.intersection,
+                          [c.percolate_up(items, redundancies)
+                           for c in self.children().values()])
+    if common_items:
+      # now update the current node's values
+      items(self).update(common_items)
+      # and schedule the common values from descendants to be removed
+      for c in self.children().values():
+        redundancies[c].update(common_items)
+    return common_items
+
 class PositionClass(MorphotacticNode):
   """
   """
   def __init__(self, key, name, parents=None, order=None,
-               identifier_suffix=None):
+               identifier_suffix=None, lex_rule=True):
     MorphotacticNode.__init__(self, key, name, parents=parents)
     self.l_hierarchy = Hierarchy()
     self.nodes = self.l_hierarchy.nodes # for convenience
     self.order = order
     self.pc = self
     self.identifier_suffix = identifier_suffix or 'lex-rule-super'
+    self.is_lex_rule = lex_rule
 
   def __repr__(self):
     return 'PositionClass(' + self.identifier() + ')'
@@ -87,6 +127,11 @@ class PositionClass(MorphotacticNode):
     return self.l_hierarchy.relate_parent_child(parent, child)
 
   def roots(self):
+    """
+    Return the list of nodes at the top of the lexical rule type
+    hierarchy for this position class. Note that there may be more than
+    one root for any given position class.
+    """
     return [n for n in self.nodes.values() if len(n.parents()) == 0]
 
   def input_span(self):
@@ -101,26 +146,15 @@ class PositionClass(MorphotacticNode):
     # implement these later.. try to be efficient
     return all_inps
 
-  def percolate_supertypes(self):
-    # roots are those nodes without parents
-    roots = self.roots()
-    root_sts = [r.percolate_supertypes() for r in roots]
-    if len(root_sts) == 0:
-      return
-    common_sts = reduce(set.intersection, root_sts)
-    # update the supertype sets
-    self.supertypes.update(common_sts)
-    for r in roots:
-      r.supertypes.difference_update(common_sts)
-    # if, after all that, the PC has no supertypes, make it generic
-    if len(self.supertypes) == 0 \
-       and self.identifier_suffix == 'lex-rule-super':
-      self.supertypes.add('lex-rule')
-
 class LexicalType(MorphotacticNode):
-  def __init__(self, key, name, parents=None):
-    MorphotacticNode.__init__(self, key, name=name, parents=parents)
-    self.identifier_suffix = 'lex'
+  def __init__(self, key, name, parents=None, entry=False):
+    MorphotacticNode.__init__(self, key, name=name, parents=parents,
+                              instance=entry)
+    # lexical entries don't have identifier suffixes
+    if entry:
+      self.identifier_suffix = ''
+    else:
+      self.identifier_suffix = 'lex'
 
   def __repr__(self):
     return 'LexicalType(' + self.key + ')'
@@ -140,23 +174,7 @@ class LexicalRuleType(MorphotacticNode):
     return 'LexicalRuleType(' + self.key + ')'
 
   def inputs(self):
-    return self.pc.inputs
-
-  def percolate_supertypes(self):
-    # base condition: we're on a leaf type
-    if len(self.children()) == 0:
-      return self.supertypes
-    # Remember to do this recursively
-    lrt_sts = [c.percolate_supertypes() for c in self.children().values()]
-    # func(*[list]) is the Pythonic way of making a list into function
-    # parameters. so func(*[1,2]) => func(1, 2)
-    common_sts = reduce(set.intersection, lrt_sts)
-    # now update the supertype sets
-    self.supertypes.update(common_sts)
-    for c in self.children().values():
-      c.supertypes.difference_update(common_sts)
-    # for the recursive part, remember to return the updated set of supertypes
-    return self.supertypes
+    return self.pc.inputs()
 
   def all_supertypes(self):
     """

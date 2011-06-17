@@ -22,6 +22,11 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "bipartite-stems") (:content . "bipartite-stems: Basic test cases for bipartite stems, based on mini-English"))
+((:path . "morphotactics-impl-expl-disjunction") (:content . "morphotactics-impl-expl-disjunction: Models and tests both implicit and explicit non-sequential disjunctions, and an explicit sequential disjunction."))
+((:path . "morphotactics-lrt-inputs") (:content . "morphotactics-lrt-inputs: Tests inputs and constraints using hierarchies (trees and multiple inheritance) of lexical rule types."))
+((:path . "morphotactics-req-fbd") (:content . "morphotactics-req-fbd: Tests forwards and backwards require, and (backward) forbid, morphotactic co-occurrence restrictions on an input graph with both conjunction and disjunction."))
+((:path . "morphotactics-opt-oblig-single-input") (:content . "morphotactics-opt-oblig-single-input: Tests simple morphotactics with position classes having only 1 input. Also tests that obligatory PCs arequired by the lexical types they take as input."))
 ((:path . "mood-buildhierarchy") (:content . "mood-buildhierarchy: testing the build your own mood hierarchy"))
 ((:path . "asp-mood-contrast-options") (:content . "asp-mood-contrast-options: tests options to add simple imper/perf and subj/ind hierarchies"))
 ((:path . "subj-v-inv-obj-drop") (:content . "subj-v-inv-obj-drop: Testing interaction of subj-v inversion and object drop, as well as interaction of subj-v intersion and FORM and AUX features."))

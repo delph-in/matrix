@@ -1,4 +1,5 @@
 from gmcs.linglib import case
+from gmcs.linglib import lexical_items
 from gmcs.utils import get_name
 from gmcs.linglib.lexbase import LexicalType, PositionClass
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
@@ -10,7 +11,7 @@ def lexical_type_hierarchy(choices, lexical_supertype):
     return None
   lth = PositionClass(key=lexical_supertype + '-pc',
                       name=get_lt_name(lexical_supertype, choices),
-                      identifier_suffix='lex-super')
+                      identifier_suffix='lex-super', lex_rule=False)
   lth.add_node(LexicalType(lexical_supertype,
                            get_lt_name(lexical_supertype, choices)))
   lts_to_add = [lexical_supertype]
@@ -32,6 +33,17 @@ def lexical_type_hierarchy(choices, lexical_supertype):
       st = get_lexical_supertype(lt.full_key, choices)
       lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
                                parents={st:lth.nodes[st]}))
+      # If we're dealing with a verb add nodes for all lexical entries
+      # because bistems can give rise to flags that need to appear on
+      # all verbs.
+      if lexical_supertype == 'verb':
+        bistems = choices[lt.full_key]['bistem'] or []
+        stems = choices[lt.full_key]['stem'] or []
+        stems.extend(bistems)
+        for stem in stems:
+          lth.add_node(LexicalType(stem.full_key, stem['name'],
+                                   parents={lt.full_key:lth.nodes[lt.full_key]},
+                                   entry=True))
   return lth
 
 def get_lexical_supertype(lt_key, choices):
@@ -113,7 +125,7 @@ def get_lexical_supertypes(lrt_key, choices):
     return [verb_type] + get_lexical_supertypes(verb_type, choices)
   elif lexical_category == 'aux':
     return ['verb']
-  elif lexical_category in ('noun', 'det', 'aux'):
+  elif lexical_category in ('noun', 'det', 'adj'):
     return [lexical_category]
   return []
 
@@ -126,3 +138,5 @@ def get_lt_name(key, choices):
     name = get_name(choices[key])
     lex_st = LEXICAL_SUPERTYPES[key.strip('1234567890')]
     return '-'.join([name, lex_st.rsplit('-lex',1)[0]])
+
+

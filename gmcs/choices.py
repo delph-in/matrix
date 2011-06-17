@@ -43,9 +43,9 @@ class ChoiceCategory:
       for k in keys:
         d = d[k]
     except KeyError:
-      d = default or ''
+      d = default if default is not None else ''
     except IndexError:
-      d = default or ChoiceDict()
+      d = default if default is not None else ChoiceDict()
     # reset safe_get
     self.safe_get = True
     return d
@@ -77,7 +77,7 @@ class ChoiceDict(ChoiceCategory, dict):
                           else '_'.join([self.full_key, cur_key])
         new_list = ChoiceList(full_key=new_key)
         dict.__setitem__(self, cur_key, new_list)
-      self[cur_key][remaining_keys] = value
+      dict.__getitem__(self, cur_key)[remaining_keys] = value
 
   def __delitem__(self, key):
     cur, remaining = get_next_key(key)
@@ -120,14 +120,16 @@ class ChoiceList(ChoiceCategory, list):
   def __setitem__(self, key, value):
     index, remaining_keys = get_next_key(key)
     # create the dicts, if needed, then descend into the one at index
-    if len(self) < index:
-      # we overrode the len function, but in this case we want the original
-      for i in range(list.__len__(self), index):
-        self.append(ChoiceDict(full_key=self.full_key + str(i + 1)))
+    # we overrode the len function, but in this case we want the original
+    for i in range(list.__len__(self), index):
+      self.append(None)
     if not remaining_keys:
       list.__setitem__(self, index - 1, value)
     else:
-      self[index][remaining_keys] = value
+      if self[index] == None:
+        list.__setitem__(self, index - 1, ChoiceDict(full_key=self.full_key +\
+                                                     str(index)))
+      list.__getitem__(self, index - 1)[remaining_keys] = value
 
   def __delitem__(self, key):
     cur, remaining = get_next_key(key)
@@ -136,30 +138,47 @@ class ChoiceList(ChoiceCategory, list):
     # delete only if the user specified this list
     elif cur <= list.__len__(self):
       # but don't actually delete list items, since that breaks indexing
-      self[cur] = ChoiceDict()
+      self[cur] = None
 
   # custom iterator ignores empty items (e.g. when a
   # user deletes an item in the middle of a list)
   def __iter__(self):
+    """
+    Iterate over only the none-empty indices.
+    """
     for item in list.__iter__(self):
-      if len(item) > 0:
+      if item is not None:
         yield item
 
   def __len__(self):
-    return sum(1 for x in self if len(x) > 0)
+    """
+    Return the length of the ChoiceList, which is the number of
+    non-empty indices in the list.
+    """
+    # The custom iterator only returns non-empty items, so just use that.
+    return sum(1 for x in self)
 
   def is_empty(self):
-    return len([x for x in self]) == 0
+    return len(self) == 0
 
   def get_first(self):
-    for d in self:
-      if len(d) > 0:
-        return d
-    return None
+    """
+    Return the first non-None list item.
+    """
+    # The custom iterator will take care of finding non-None items.
+    i = iter(self)
+    try:
+      return i.next()
+    except StopIteration:
+      return None
 
   def get_last(self):
+    """
+    Return the last non-None list item.
+    """
+    # reversed bypasses the custom iterator, so we have to check manually.
     for d in reversed(self):
-      if len(d) > 0:
+      if d is not None:
         return d
     return None
 
@@ -204,6 +223,7 @@ def split_variable_key(key):
   if key == '': return []
   return [k for k in var_delim_re.split(key) if k]
 
+next_key_cache = {}
 def get_next_key(complex_key):
   """
   Split a key grouping it by non-numbers and numbers.
@@ -214,13 +234,18 @@ def get_next_key(complex_key):
   # given a blank key, return None
   if not complex_key:
     return None, None
-  subkeys = var_delim_re.split(complex_key, maxsplit=1)
-  # re.split above will return 1 value if no split, so make it 3
-  if len(subkeys) == 1:
-    subkeys += ['', '']
-  # the remaining keys will be the latter two subkeys if the first is used
-  next_key = subkeys[0] or subkeys[1]
+  try:
+    subkeys = next_key_cache[complex_key]
+  except KeyError:
+    subkeys = var_delim_re.split(complex_key)
+    if subkeys[0] == '':
+      subkeys.pop(0)
+    if subkeys[-1] == '':
+      subkeys.pop()
+  next_key = subkeys[0]
   rest = complex_key.replace(next_key,'',1).lstrip('_')
+  if len(subkeys) > 1:
+    next_key_cache[rest] = subkeys[1:]
   return safe_int(next_key), rest
 
 ######################################################################
@@ -883,14 +908,14 @@ class ChoicesFile:
             for t in ('noun', 'verb', 'aux', 'det')
             if t in self.choices and 'name' in self.choices[t]]
 
-  def __get_features(self, feat_list, i1, i2, label, tdl):
+  def __get_features(self, feat_list, i1, i2, label, tdl, cat):
     """
     If there are values available for the given feature, construct a
-    list of the feature label, values, and tdl code for that feature.
+    list of the feature label, values, tdl code and category for that feature.
     """
     values = ';'.join([x[i1] + '|' + x[i2] for x in feat_list])
     if values:
-      return [ [label, values, tdl] ]
+      return [ [label, values, tdl, cat] ]
     return []
 
   def index_features(self):
@@ -903,91 +928,93 @@ class ChoicesFile:
   # features()
   #   Create and return a list containing information about the
   #   features in the language described by the current choices.  This
-  #   list consists of tuples with three strings:
-  #       [feature name, list of values, feature geometry]
+  #   list consists of tuples with four strings:
+  #       [feature name, list of values, feature geometry, category]
   #   Note that the feature geometry is empty if the feature requires
-  #   more complex treatment that just FEAT=VAL (e.g. negation).  The
-  #   list of values is separated by semicolons, and each item in the
-  #   list is a pair of the form 'name|friendly name'.
+  #   more complex treatment that just FEAT=VAL (e.g. negation).  
+  #   The list of values is separated by semicolons, and each item in the
+  #   list of values is a pair of the form 'name|friendly name'.
+  #   The category string can have the values 'noun' or 'verb' or 'both' depending 
+  #   whether the features are appropriate for "nouny" or "verby" things.
   def features(self):
     features = []
 
     # Case
     features += self.__get_features(case.case_names(self), 0, 1, 'case',
-                                    'LOCAL.CAT.HEAD.CASE')
+                                    'LOCAL.CAT.HEAD.CASE','noun')
     # Number, Person, and Pernum
     pernums = self.pernums()
     if pernums:
       features += self.__get_features(pernums, 0, 0, 'pernum',
-                                      'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM')
+                                      'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM','noun')
     else:
       features += self.__get_features(self.numbers(), 0, 0, 'number',
-                                      'LOCAL.CONT.HOOK.INDEX.PNG.NUM')
+                                      'LOCAL.CONT.HOOK.INDEX.PNG.NUM','noun')
       features += self.__get_features(self.persons(), 0, 0, 'person',
-                                      'LOCAL.CONT.HOOK.INDEX.PNG.PER')
+                                      'LOCAL.CONT.HOOK.INDEX.PNG.PER','noun')
 
     # Gender
     features += self.__get_features(self.genders(), 0, 0, 'gender',
-                                    'LOCAL.CONT.HOOK.INDEX.PNG.GEND')
+                                    'LOCAL.CONT.HOOK.INDEX.PNG.GEND','noun')
 
     # Case patterns
     features += self.__get_features(self.patterns(), 0, 1,
-                                    'argument structure', '')
+                                    'argument structure', '', 'verb')
 
     # Form
     features += self.__get_features(self.forms(), 0, 0, 'form',
-                                    'LOCAL.CAT.HEAD.FORM')
+                                    'LOCAL.CAT.HEAD.FORM', 'verb')
 
     # Tense
     features += self.__get_features(self.tenses(), 0, 0, 'tense',
-                                    'LOCAL.CONT.HOOK.INDEX.E.TENSE')
+                                    'LOCAL.CONT.HOOK.INDEX.E.TENSE', 'verb')
 
     # Viewpoint Aspect
     features += self.__get_features(self.aspects(), 0, 0, 'aspect',
-                                    'LOCAL.CONT.HOOK.INDEX.E.ASPECT')
+                                    'LOCAL.CONT.HOOK.INDEX.E.ASPECT', 'verb')
 
     #Situation Aspect
     features += self.__get_features(self.situations(), 0, 0, 'situation',
-                                    'LOCAL.CONT.HOOK.INDEX.E.SITUATION')
+                                    'LOCAL.CONT.HOOK.INDEX.E.SITUATION', 'verb')
     #Mood
     features += self.__get_features(self.moods(), 0, 0, 'mood',
-                                    'LOCAL.CONT.HOOK.INDEX.E.MOOD')
+                                    'LOCAL.CONT.HOOK.INDEX.E.MOOD', 'verb')
     # Direction
     if self.has_dirinv():
-      features += [ ['direction', 'dir|direct;inv|inverse', ''] ]
+      features += [ ['direction', 'dir|direct;inv|inverse', '', 'verb'] ]
 
     # Negaton
     if 'infl-neg' in self.choices:
-      features += [ ['negation', 'plus|plus', '' ] ]
+      features += [ ['negation', 'plus|plus', '', 'verb' ] ]
 
     # Questions
     if 'q-infl' in self.choices:
-      features += [ ['question', 'plus|plus', '' ] ]
+      features += [ ['question', 'plus|plus', '', 'verb' ] ]
 
     # Argument Optionality
     if 'subj-drop' in self.choices or 'obj-drop' in self.choices:
-      features +=[['OPT', 'plus|plus;minus|minus', '']]
+      features +=[['OPT', 'plus|plus;minus|minus', '', 'verb']]
 
     perm_notperm_string = 'permitted|permitted;not-permitted|not-permitted'
     # Overt Argument
     if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
          self.get('obj-mark-drop') == 'obj-mark-drop-req':
-      features += [['overt-arg', perm_notperm_string, '']]
+      features += [['overt-arg', perm_notperm_string, '', '']]
     elif self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
          self.get('obj-mark-drop') == 'obj-mark-drop-req':
-      features += [['overt-arg', perm_notperm_string, '']]
+      features += [['overt-arg', perm_notperm_string, '', '']]
     elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and \
          self.get('subj-mark-drop') == 'subj-mark-drop-req':
-      features += [['overt-arg', perm_notperm_string, '']]
+      features += [['overt-arg', perm_notperm_string, '', '']]
     elif self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
          self.get('obj-mark-drop') == 'obj-mark-drop-opt' :
-      features += [['overt-arg', perm_notperm_string, '']]
+      features += [['overt-arg', perm_notperm_string, '', '']]
     elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and \
          self.get('subj-mark-drop') == 'subj-mark-drop-opt' :
-      features += [['overt-arg', perm_notperm_string, '']]
+      features += [['overt-arg', perm_notperm_string, '', '']]
     elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and \
          self.get('subj-mark-drop') == 'subj-mark-drop-req':
-      features += [['overt-arg', perm_notperm_string, '']]
+      features += [['overt-arg', perm_notperm_string, '', '']]
 
     # Dropped Argument
     #if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
@@ -998,22 +1025,22 @@ class ChoicesFile:
     #  features += [['dropped-arg', perm_notperm_string, '']]
     if self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
          self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
-      features += [['dropped-arg', perm_notperm_string,'']]
+      features += [['dropped-arg', perm_notperm_string,'', '']]
     elif self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
          self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt':
-      features += [['dropped-arg', perm_notperm_string,'']]
+      features += [['dropped-arg', perm_notperm_string,'', '']]
     elif self.get('obj-mark-drop') == 'obj-mark-drop-opt' and \
          self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
-      features += [['dropped-arg', perm_notperm_string, '']]
+      features += [['dropped-arg', perm_notperm_string, '', '']]
     elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
          self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
-      features += [['dropped-arg', perm_notperm_string,'']]
+      features += [['dropped-arg', perm_notperm_string,'', '']]
     elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
          self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt':
-      features += [['dropped-arg', perm_notperm_string,'']]
+      features += [['dropped-arg', perm_notperm_string,'', '']]
     elif self.get('subj-mark-drop') == 'subj-mark-drop-opt' and \
          self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
-      features += [['dropped-arg', perm_notperm_string,'']]
+      features += [['dropped-arg', perm_notperm_string,'', '']]
 
  #elif self.get('subj-mark-drop') == 'subj-mark-drop-opt') and self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req': features += [['dropped-arg', perm_notperm_string, '']]
 
@@ -1023,15 +1050,15 @@ class ChoicesFile:
 
       values = ';'.join([val['name'] + '|' + val['name']
                          for val in feature.get('value', [])])
-
       geom = ''
       if feat_type == 'head':
         geom = 'LOCAL.CAT.HEAD.' + feat_name.upper()
+        cat = 'both'
       else:
         geom = 'LOCAL.CONT.HOOK.INDEX.PNG.' + feat_name.upper()
-
+        cat = 'noun'
       if values:
-        features += [ [feat_name, values, geom] ]
+        features += [ [feat_name, values, geom, cat] ]
 
     return features
 
@@ -1550,8 +1577,9 @@ class ChoicesFile:
     for defining subtypes under 1p-non-sg into the choices for defining
     your own subtypes.
     """
-    numbers = [num['name'] for num in self['numbers']]
-
+    numbers = [num['name'] for num in self['number']]
+    # The following assumes the first number is Singular and that there
+    # are more than one number (such as Plural, Dual, etc)
     number = ', '.join(numbers[1:])
 
     fp = self.get('first-person')
