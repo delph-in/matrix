@@ -257,7 +257,7 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
                size = '', onclick = '', disabled = False, onchange = ''):
   chkd = ''
   if checked:
-    chkd = ' checked'
+    chkd = ' checked="checked"'
 
   if size:
     if 'x' in size:
@@ -273,7 +273,7 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
 
   dsabld = ''
   if disabled:
-    dsabld = ' disabled'
+    dsabld = ' disabled="disabled"'
 
   mark = ''
   if vr:
@@ -687,10 +687,18 @@ class MatrixDefFile:
       elif word[0] == 'Separator':
         html += '<hr>'
       elif word[0] == 'Check':
-        (vn, fn, bf, af) = word[1:]
+        oc = ''
+        try:
+          (vn, fn, bf, af, oc) = word[1:]
+        except:
+          (vn, fn, bf, af) = word[1:]
         vn = prefix + vn
         checked = choices.get(vn)
-        html += html_input(vr, 'checkbox', vn, '', checked,
+        if oc:
+          html += html_input(vr, 'checkbox', vn, '', checked,
+                           bf, af, onclick=oc) + '\n'
+        else:
+          html += html_input(vr, 'checkbox', vn, '', checked,
                            bf, af) + '\n'
       elif word[0] == 'Radio':
         (vn, fn, bf, af) = word[1:]
@@ -1245,6 +1253,54 @@ class MatrixDefFile:
           choices = new_choices
         else:
           choices = old_choices
+      i += 1
+    # Make sure to save the last section
+    if cur_sec_begin:
+      self.save_choices_section(lines[cur_sec_begin:i], f, choices)
+
+    f.close()
+
+  def save_choices_and_create_neg_aux(self, form_data, choices_file):
+    # Read the current choices file (if any) into old_choices
+    choices = ChoicesFile(choices_file)
+
+    # merge the form_data into the old choices object
+    for k in form_data.keys():
+      if k:
+        choices[k] = form_data[k].value
+
+
+    choices['aux99_name'] = 'neg-aux'
+    choices['aux99_sem'] = 'Predicate'
+    choices['aux99_stem1_orth'] = form_data['neg-aux-orth'].value
+    # choices['aux99_stem1_pred'] = '_neg_v_rel'
+
+    # print str(choices)
+    # Open the def file and store it in lines[]
+    f = open(self.def_file, 'r')
+    lines = merge_quoted_strings(f.readlines())
+    f.close()
+
+    # Now pass through the def file, writing out either the old choices
+    # for each section or, for the section we're saving, the new choices
+    f = open(choices_file, 'w')
+    f.write('\n') # blank line in case an editor inserts a BOM
+    f.write('version=' + str(choices.current_version()) + '\n\n')
+
+    cur_sec = ''
+    cur_sec_begin = 0
+    i = 0
+    while i < len(lines):
+      word = tokenize_def(lines[i])
+      if len(word) == 0:
+        pass
+      elif word[0] == 'Section':
+        if cur_sec:
+          self.save_choices_section(lines[cur_sec_begin:i], f, choices)
+          f.write('\n')
+        cur_sec = word[1]
+        cur_sec_begin = i + 1
+        f.write('section=' + cur_sec + '\n')
       i += 1
 
     # Make sure to save the last section

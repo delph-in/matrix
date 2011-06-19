@@ -34,11 +34,23 @@ def customize_sentential_negation(mylang, ch, lexicon, rules):
   if ch.get('adv-neg') == 'on': # and ch.get('neg-adv') == 'ind-adv':
     create_neg_adv_lex_item(advAlone, mylang, ch, lexicon,rules)
 
+  if ch.get('neg-aux') == 'on':
+    create_neg_aux_lex_item(mylang, ch, lexicon, rules)
+
+
+def create_neg_aux_lex_item(mylang, ch, lexicon, rules):
+  mylang.set_section('otherlex')
+  mylang.add('''neg-aux-lex := aux-lex.''')
+
+  if(ch.get('neg-aux-orth')):
+    orth = ch.get('neg-aux-orth')
+    lexicon.add(TDLencode(orth) + ' := neg-aux-lex &\
+                [ STEM < \"'+ orth +'\" >, \
+                  SYNSEM.LKEYS.KEYREL.PRED \"_neg_v_rel\" ].')
+
 
 def create_neg_adv_lex_item(advAlone, mylang, ch, lexicon, rules):
-
   mylang.set_section('otherlex')
-
   mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
                  [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
                                             COMPS < >,
@@ -83,14 +95,7 @@ def create_neg_adv_lex_item(advAlone, mylang, ch, lexicon, rules):
                 [ STEM < \"'+ orth +'\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"_neg_r_rel\" ].')
 
-  if(ch.get('neg-aux')):
-    mylang.add('''neg-aux-lex := aux-lex.''')
 
-  if(ch.get('neg-aux-orth')):
-    orth = ch.get('neg-aux-orth')
-    lexicon.add(TDLencode(orth) + ' := neg-aux-lex &\
-                [ STEM < \"'+ orth +'\" >, \
-                  SYNSEM.LKEYS.KEYREL.PRED \"_neg_v_rel\" ].')
 
   # ERB 2006-10-06 And of course we need the head-modifier rules, if we're
   # going to have an independent modifier.  While we're at it, we need to

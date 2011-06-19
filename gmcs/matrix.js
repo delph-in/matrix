@@ -134,6 +134,41 @@ function submit_main()
   form.submit();
 }
 
+// submit_all_main()
+// Submit all forms on page
+function submit_all()
+{
+  var forms = document.getElementsByTagName('form');
+  for (var i = 0; i < forms.length; i++) {
+      forms[i].submit();
+  }
+}
+
+// create_neg-aux()
+// Create a neg-aux lexical item on the lexicon page
+function create_neg_aux()
+{
+    /*
+    var f = document.getElementsByTagName("form")[0];
+    var i = document.createElement("input");
+    i.type = "hidden";
+    i.name = "section";
+    i.value= "lexicon";
+    var j = document.createElement("input");
+    j.type = "hidden";
+    j.name="aux98_name";
+    j.value="neg-aux-lex";
+    // var b = document.createElement("input");
+    // b.type = "submit";
+    // b.value= "Save";
+    // b.onClick="submit_all()"
+    f.appendChild(i);
+    f.appendChild(j);
+    f.appendChild(b);
+    document.body.appendChild(f);
+    */
+}
+
 // toggle_display_lex()
 // Handle a click on a section show/hide button on the Lexicon Page
 function toggle_display_lex(element_id, button_id)
@@ -969,7 +1004,7 @@ function aux_fill_pred(name, stem, pos)
 
 // fill_hidden_errors()
 // This moves errors which are not displayed to the outside of
-// show/hide button. It should be called onload and no where else.
+// show/hide button. It should be called onload and nowhere else.
 function fill_hidden_errors()
 {
   var hash = window.location.hash;
@@ -985,7 +1020,7 @@ function fill_hidden_errors()
 }
 
 // fill_errors(id)
-// Moves the errors for a interator div to the associated error 
+// Moves the errors for a iterator div to the associated error 
 // span outside of the show hide (if such a span exists.
 // This should only be called by the fill_hidden_errors function.
 function fill_errors(element_id)
