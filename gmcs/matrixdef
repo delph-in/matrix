@@ -1809,42 +1809,67 @@ BeginIter imported-entry{i} "an imported Entry"
 
 EndIter imported-entry
 
-Section UserFeedback "Send feedback to Matrix developers"
+Section UserFeedback "Feedback for Matrix Developers"
 
-Label "<P> The Grammar Matrix core grammar and libraries represent working hypotheses.  In order to improve this resource, we appreciate feedback from users.  If you find that you need to edit matrix.tdl, please upload the edited version here. Similarly, if you find that the customized analyses don't work for your language, you can use this form to let us know."
+Label "<P> The Grammrar Matrix core grammar and customization libraries represent working hypotheses.  In order to improve this resource, we appreciate feedback from users.  If you find that you need to edit matrix.tdl, please upload the edited version here. Similarly, if you find that the customized analyses don't work for your language, you can use this form to let us know."
 
 BeginIter matrix-gripe{i} "a gripe"
 
-Radio type "Type" "I would like to complain about:<br>" ""
+Label "<b>Gripe{i}:</b>"
+
+Label "<div style=\"padding-left: 16px\">"
+
+Radio type "Type" "<br>I would like to complain about:<br>" ""
 . core "core" "" " matrix.tdl<br>"
 . libraries "libraries" "" " analyses from libraries<br>"
 . both "both" "" " both</p>"
 
-   Text gripe-language "language" "Language I am working on: " "" 20
+Text gripe-language "language" "Language I am working on: " "<br><br>" 20
 
-Radio contact "Contact" "<p>Please indicate your follow-up preferences:<br>" ""
-. email "email" "" " I would love to discuss this over email.<br>"
-. close "close" "" " Just let me know when you've fixed it.<br>"
-. shhh "shhh" "" " Just leave me alone.</p>"
+Label "Uploads:<br>"
+
+Label "<div style=\"padding-left: 16px\">"
 
 File editedfile "Grammar file" "Please upload your edited matrix.tdl or an archive of your grammar: " "<br>" 20
 
-File datafile "Data file" "(Optional) file with data and/or prose description of the analyses: " "" 20
+File datafile "Data file" "File with data and/or a prose description of your analyses (optional): " "" 20
 
-BeginIter explanation{i} "a bit more detail (optional)"
+Label "</div>"
 
-TextArea comment "Comments" "Further information to help us understand your changes" "" 80x6
+Radio contact "Contact" "<p>Follow-up preferences:<br>" ""
+. email "email" "" " I would love to discuss this over email.<br>"
+. close "close" "" " Just let me know when you've fixed it.<br>"
+. shhh "shhh" "" " Leave me alone.</p>"
+
+Label "If you would like to add something further to help us understand your changes, please comment here:"
+
+BeginIter explanation{i} "a comment"
+
+Label "<div style=\"padding-left: 16px\">"
+ 
+TextArea comment "Comments" "" "" 80x6
+
+Label "</div>"
 
 EndIter explanation
 
-BeginIter excuse{i} "a ???"
+Label "<br><br>In summary: "
+
+BeginIter excuse{i} "a summation"
+
+Label "<div style=\"padding-left: 16px\">"
 
 Radio sum "Summary" "" ""
 . LAP "LAP" "" " Surely it's all my fault (Poulson 2011)<br>"
-. SFD "SFD" "" " Your free software sucks (Drellishak 2011)<br>"
-. DM "DM" "" " HPSG: You're doing it wrong (Meurers 2011)<br>"
+. SFD "SFD" "" " Your free software sucks (Drellishak 2010)<br>"
+. DM "DM" "" " HPSG: You're doing it wrong (Meurers 2006, 2007a, 2007b, 2009, 2011)<br>"
+. EB "EB" "" " I couldn't fix it after 10 minutes, so I'm invoking the 10 minute rule (Bender  2007, 2008, 2009, 2010, 2011, 2012 (in press))<br>"
+. DW "DW" "" " I spent 3 days trying to figure out the intricasies of the system when I should have asked after 10 minutes (Wax 2011)<br>"
 
+Label "</div>"
 
 EndIter excuse
+
+Label "</div>"
 
 EndIter matrix-gripe
