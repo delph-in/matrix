@@ -91,10 +91,7 @@ if form_data.has_key('choices'):
 
 # if the 'section' field is defined, we have submitted values to save
 if form_data.has_key('section'):
-  if form_data.has_key('neg-aux'):
-    matrixdef.save_choices_and_create_neg_aux(form_data, os.path.join(session_path, 'choices'))
-  else:
-    matrixdef.save_choices(form_data, os.path.join(session_path, 'choices'))
+  matrixdef.save_choices(form_data, os.path.join(session_path, 'choices'))
 
 # If the 'verbpred' field is defined, then the user wishes to generate more sentences with that predication
 if form_data.has_key('verbpred'):

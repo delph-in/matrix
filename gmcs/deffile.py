@@ -24,6 +24,8 @@ import zipfile
 import gmcs.tdl
 
 from gmcs.choices import ChoicesFile
+from gmcs.choices import ChoiceDict
+from gmcs.choices import ChoiceList
 from gmcs.utils import tokenize_def
 from gmcs import generate
 
@@ -687,18 +689,10 @@ class MatrixDefFile:
       elif word[0] == 'Separator':
         html += '<hr>'
       elif word[0] == 'Check':
-        oc = ''
-        try:
-          (vn, fn, bf, af, oc) = word[1:]
-        except:
-          (vn, fn, bf, af) = word[1:]
+        (vn, fn, bf, af) = word[1:]
         vn = prefix + vn
         checked = choices.get(vn)
-        if oc:
-          html += html_input(vr, 'checkbox', vn, '', checked,
-                           bf, af, onclick=oc) + '\n'
-        else:
-          html += html_input(vr, 'checkbox', vn, '', checked,
+        html += html_input(vr, 'checkbox', vn, '', checked,
                            bf, af) + '\n'
       elif word[0] == 'Radio':
         (vn, fn, bf, af) = word[1:]
@@ -1222,12 +1216,16 @@ class MatrixDefFile:
         new_choices[k] = form_data[k].value
 
     # Read the current choices file (if any) into old_choices
+    # but if neg-aux=on exists, create side-effect in lexicon.
+
     old_choices = ChoicesFile(choices_file)
+    if section == 'sentential-negation' and 'neg-aux' in form_data.keys():
+      old_choices = self.create_neg_aux_choices(form_data, old_choices)
 
     # Open the def file and store it in line[]
-    f = open(self.def_file, 'r')
-    lines = merge_quoted_strings(f.readlines())
-    f.close()
+    g = open(self.def_file, 'r')
+    lines = merge_quoted_strings(g.readlines())
+    g.close()
 
     # Now pass through the def file, writing out either the old choices
     # for each section or, for the section we're saving, the new choices
@@ -1260,54 +1258,30 @@ class MatrixDefFile:
 
     f.close()
 
-  def save_choices_and_create_neg_aux(self, form_data, choices_file):
-    # Read the current choices file (if any) into old_choices
-    choices = ChoicesFile(choices_file)
+  def create_neg_aux_choices(self, form_data, choices):
+    '''this is a side effect of the existence of neg-aux
+    in the form data, it puts some lines pertaining to a neg-aux
+    lexical item into the choices file object unless they are
+    already there. returns a ChoicesFile instance'''
 
-    # merge the form_data into the old choices object
-    for k in form_data.keys():
-      if k:
-        choices[k] = form_data[k].value
+    # if there's already a neg-aux, don't do anything 
+    for a in choices['aux']:
+      if a['name'] == 'neg-aux':
+        return choices
 
+    # get the next aux number
+    next_n = choices['aux'].next_iter_num() if 'aux' in choices else 1
 
-    choices['aux99_name'] = 'neg-aux'
-    choices['aux99_sem'] = 'Predicate'
-    choices['aux99_stem1_orth'] = form_data['neg-aux-orth'].value
-    # choices['aux99_stem1_pred'] = '_neg_v_rel'
+    # create a new aux with that number
+    choices['aux%d_name' % next_n] = 'neg-aux'
 
-    # print str(choices)
-    # Open the def file and store it in lines[]
-    f = open(self.def_file, 'r')
-    lines = merge_quoted_strings(f.readlines())
-    f.close()
-
-    # Now pass through the def file, writing out either the old choices
-    # for each section or, for the section we're saving, the new choices
-    f = open(choices_file, 'w')
-    f.write('\n') # blank line in case an editor inserts a BOM
-    f.write('version=' + str(choices.current_version()) + '\n\n')
-
-    cur_sec = ''
-    cur_sec_begin = 0
-    i = 0
-    while i < len(lines):
-      word = tokenize_def(lines[i])
-      if len(word) == 0:
-        pass
-      elif word[0] == 'Section':
-        if cur_sec:
-          self.save_choices_section(lines[cur_sec_begin:i], f, choices)
-          f.write('\n')
-        cur_sec = word[1]
-        cur_sec_begin = i + 1
-        f.write('section=' + cur_sec + '\n')
-      i += 1
-
-    # Make sure to save the last section
-    if cur_sec_begin:
-      self.save_choices_section(lines[cur_sec_begin:i], f, choices)
-
-    f.close()
+    # copy that to nli for adding further information
+    nli = choices['aux'].get_last()
+    nli['sem']='add-pred'
+    nli['stem1_pred'] = '_neg_v_rel'
+    nli['stem1_orth'] = form_data['neg-aux-orth'].value \
+            if 'neg-aux-orth' in form_data else ''
+    return choices
 
   def choices_error_page(self, choices_file, exc=None):
     print HTTP_header + '\n'

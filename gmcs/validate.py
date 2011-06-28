@@ -917,7 +917,7 @@ def validate_lexicon(ch, vr):
     if not compform == 'yes':
       mess = 'You must specify the form of the verb in the complement, ' +\
              'i.e., the value of the complement feature FORM.'
-      vr.err(aux.full_key + '_complabel', mess)
+      vr.err(aux.full_key + '_compfeature', mess)
 
 
     for stem in aux.get('stem', []):

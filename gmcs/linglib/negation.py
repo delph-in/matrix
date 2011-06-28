@@ -34,20 +34,6 @@ def customize_sentential_negation(mylang, ch, lexicon, rules):
   if ch.get('adv-neg') == 'on': # and ch.get('neg-adv') == 'ind-adv':
     create_neg_adv_lex_item(advAlone, mylang, ch, lexicon,rules)
 
-  if ch.get('neg-aux') == 'on':
-    create_neg_aux_lex_item(mylang, ch, lexicon, rules)
-
-
-def create_neg_aux_lex_item(mylang, ch, lexicon, rules):
-  mylang.set_section('otherlex')
-  mylang.add('''neg-aux-lex := aux-lex.''')
-
-  if(ch.get('neg-aux-orth')):
-    orth = ch.get('neg-aux-orth')
-    lexicon.add(TDLencode(orth) + ' := neg-aux-lex &\
-                [ STEM < \"'+ orth +'\" >, \
-                  SYNSEM.LKEYS.KEYREL.PRED \"_neg_v_rel\" ].')
-
 
 def create_neg_adv_lex_item(advAlone, mylang, ch, lexicon, rules):
   mylang.set_section('otherlex')

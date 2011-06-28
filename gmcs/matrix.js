@@ -134,40 +134,6 @@ function submit_main()
   form.submit();
 }
 
-// submit_all_main()
-// Submit all forms on page
-function submit_all()
-{
-  var forms = document.getElementsByTagName('form');
-  for (var i = 0; i < forms.length; i++) {
-      forms[i].submit();
-  }
-}
-
-// create_neg-aux()
-// Create a neg-aux lexical item on the lexicon page
-function create_neg_aux()
-{
-    /*
-    var f = document.getElementsByTagName("form")[0];
-    var i = document.createElement("input");
-    i.type = "hidden";
-    i.name = "section";
-    i.value= "lexicon";
-    var j = document.createElement("input");
-    j.type = "hidden";
-    j.name="aux98_name";
-    j.value="neg-aux-lex";
-    // var b = document.createElement("input");
-    // b.type = "submit";
-    // b.value= "Save";
-    // b.onClick="submit_all()"
-    f.appendChild(i);
-    f.appendChild(j);
-    f.appendChild(b);
-    document.body.appendChild(f);
-    */
-}
 
 // toggle_display_lex()
 // Handle a click on a section show/hide button on the Lexicon Page
