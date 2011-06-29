@@ -1,0 +1,69 @@
+## This file contains metadata about this grammar resource to be read by
+## the script that extracts information about the resource for publication
+## on the GrammarCatalogue page and in OLAC repositories.  Variables left
+## as empty strings will lead to empty fields in the grammar catalogue.
+
+## The script supplements the data provided here with information from
+## several grammar files, provided they are located in the expected
+## places.  In particular, all grammars should have the following files
+## in their root directories:
+
+## METADATA (this file)
+## LICENSE
+## canonical.bib
+
+## In addition, information about treebanks and testsuites is drawn
+## from the following paths (which may be soft links):
+
+## tsdb/gold 
+## tsdb/skeletons
+
+
+
+## Grammar maintainers and contributors
+
+export MAINTAINER=""
+export CONTRIBUTORS=""
+
+## Grammar name and website
+
+export GRAMMAR_NAME=""
+export WEBSITE=""
+
+## Required external resources (e.g., morphological analyzers, POS taggers)
+
+export EXTERNAL_RESOURCES=""
+
+## Grammar type:
+##    Resource grammar: Broad coverage, used in one or more
+##    applications 
+##
+##    Treebank trained grammar: Cheetah-style grammar
+##    built out of combination of hand-crafted rules and
+##    treebank-derived grammatical and statistical information
+##
+##    Medium-sized linguistic grammar: Grammar with a growing number
+##    of analyses, not yet (big enough to be) used in applications.
+##
+##    Experimental grammar: Small grammar fragment used for
+##    developing/testing one or a small set of linguistic analyses
+
+
+## Uncomment one:
+#export GRAMMAR_TYPE="Resource grammar"
+#export GRAMMAR_TYPE="Treebank trained grammar"
+#export GRAMMAR_TYPE="Medium-sized lingiustic grammar"
+#export GRAMMAR_TYPE="Experimental grammar"
+
+
+## Language identification
+## Iso-codes can be looked up at http://www.sil.org/iso639-3/codes.asp
+
+export LANGUAGE_NAME=""
+export ISO_CODE=""
+
+## File locations of LKB script file and .grm file read by cheap
+## Paths relative to top of grammar directory
+
+export LKB_SCRIPT_FILE=""
+export CHEAP_GRM_FILE_NAME=""
