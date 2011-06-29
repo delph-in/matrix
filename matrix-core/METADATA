@@ -1,3 +1,5 @@
+## -*- mode:shell-script -*-
+
 ## This file contains metadata about this grammar resource to be read by
 ## the script that extracts information about the resource for publication
 ## on the GrammarCatalogue page and in OLAC repositories.  Variables left
@@ -9,8 +11,8 @@
 ## in their root directories:
 
 ## METADATA (this file)
-## LICENSE
-## canonical.bib
+## LICENSE (first line containing summary e.g., "License: MIT")
+## canonical.bib (canonical citation for this resource)
 
 ## In addition, information about treebanks and testsuites is drawn
 ## from the following paths (which may be soft links):
@@ -22,17 +24,23 @@
 
 ## Grammar maintainers and contributors
 
-export MAINTAINER=""
-export CONTRIBUTORS=""
+MAINTAINER=""
+CONTRIBUTORS=""
+CONTACT_EMAIL=""
 
-## Grammar name and website
+## Grammar name and web presence
 
-export GRAMMAR_NAME=""
-export WEBSITE=""
+GRAMMAR_NAME=""
+SHORT_GRAMMAR_NAME=""
+WEBSITE=""
+DEMO_WEBSITE=""
+DOCUMENTATION_URL=""
 
-## Required external resources (e.g., morphological analyzers, POS taggers)
+## Semi-colon separated list of required external resources 
+## e.g.
+## EXTERNAL_RESOURCES="TnT tagger; SPRouT named-entity tagger"
 
-export EXTERNAL_RESOURCES=""
+EXTERNAL_RESOURCES=""
 
 ## Grammar type:
 ##    Resource grammar: Broad coverage, used in one or more
@@ -50,20 +58,20 @@ export EXTERNAL_RESOURCES=""
 
 
 ## Uncomment one:
-#export GRAMMAR_TYPE="Resource grammar"
-#export GRAMMAR_TYPE="Treebank trained grammar"
-#export GRAMMAR_TYPE="Medium-sized lingiustic grammar"
-#export GRAMMAR_TYPE="Experimental grammar"
+#GRAMMAR_TYPE="Resource grammar"
+#GRAMMAR_TYPE="Treebank trained grammar"
+#GRAMMAR_TYPE="Medium-sized lingiustic grammar"
+#GRAMMAR_TYPE="Experimental grammar"
 
 
 ## Language identification
 ## Iso-codes can be looked up at http://www.sil.org/iso639-3/codes.asp
 
-export LANGUAGE_NAME=""
-export ISO_CODE=""
+LANGUAGE_NAME=""
+ISO_CODE=""
 
 ## File locations of LKB script file and .grm file read by cheap
 ## Paths relative to top of grammar directory
 
-export LKB_SCRIPT_FILE=""
-export CHEAP_GRM_FILE_NAME=""
+LKB_SCRIPT_FILE=""
+CHEAP_GRM_FILE_NAME=""
