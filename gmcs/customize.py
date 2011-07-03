@@ -398,7 +398,7 @@ def customize_matrix(path, arch_type, destination=None):
   return grammar_path
 
 def get_matrix_core_path():
-  return os.path.join(os.environ.get('CUSTOMIZATIONROOT/..',''),
+  return os.path.join(os.environ.get('CUSTOMIZATIONROOT',''), '..',
                       'matrix-core')
 
 def get_grammar_path(isocode, language, destination):
