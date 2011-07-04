@@ -1141,6 +1141,11 @@ class MatrixDefFile:
           '<p style="color:red; text-align:center; font-size:16pt">' + \
           'Cookies must be enabled for this site in your browser in order ' + \
           'to fill out the questionnaire.</p>\n'
+    print '<p style="text-align:center; font-size:16pt">'
+    print 'If cookies are enabled, try reloading an '
+    print '<a href="matrix.cgi?choices=empty">empty questionnaire</a>. '
+    print 'Note that any existing changes will be lost.</p>'
+    print '</div>'
 
     print HTML_postbody
 

@@ -1623,8 +1623,9 @@ class ChoicesFile:
     for defining subtypes under 1p-non-sg into the choices for defining
     your own subtypes.
     """
-    numbers = [num['name'] for num in self['numbers']]
-
+    numbers = [num['name'] for num in self['number']]
+    # The following assumes the first number is Singular and that there
+    # are more than one number (such as Plural, Dual, etc)
     number = ', '.join(numbers[1:])
 
     fp = self.get('first-person')

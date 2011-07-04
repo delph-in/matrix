@@ -56,6 +56,8 @@ then
     exit 1
 fi
 
+# Matrix-core directory
+matrix_core=${CUSTOMIZATIONROOT}/../matrix-core/
 
 # create temporary staging directory
 tempdir=/tmp/matrix.$$
@@ -63,8 +65,8 @@ mkdir $tempdir
 
 # create datestamp, matrix-types, and head-types files
 date -u > $tempdir/datestamp
-cat ${CUSTOMIZATIONROOT}/../matrix-core/matrix.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/matrix-types
-cat ${CUSTOMIZATIONROOT}/../matrix-core/head-types.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/head-types
+cat $matrix_core/matrix.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/matrix-types
+cat $matrix_core/head-types.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/head-types
 
 # copy files to the temp directory
 if [ "$installremote" ]
@@ -121,14 +123,14 @@ then
     mkdir $tempdir/matrix-core/lkb
     mkdir $tempdir/matrix-core/pet
 
-    matrixfiles=`ls -d ${CUSTOMIZATIONROOT}/../matrix-core/*.* ${CUSTOMIZATIONROOT}/../matrix-core/README | sed 's/[^ ]*my_language.tdl//g' | sed 's/[^ ]*Version.lsp//g' | sed 's/[^ ]*CVS//g' | sed 's/[^ ]*~//g'`
+    matrixfiles=`ls -d $matrix_core/*.* $matrix_core/README | sed 's/[^ ]*my_language.tdl//g' | sed 's/[^ ]*Version.lsp//g' | sed 's/[^ ]*CVS//g' | sed 's/[^ ]*~//g'`
 
     cp $matrixfiles $tempdir/matrix-core
 
-    lkbfiles=`echo ${CUSTOMIZATIONROOT}/../matrix-core/lkb/* | sed 's/..\/lkb\/CVS//g'`
+    lkbfiles=`echo $matrix_core/lkb/* | sed 's/..\/lkb\/CVS//g'`
     cp $lkbfiles $tempdir/matrix-core/lkb
 
-    petfiles=`echo ${CUSTOMIZATIONROOT}/../matrix-core/pet/* | sed 's/..\/pet\/CVS//g'`
+    petfiles=`echo $matrix_core/pet/* | sed 's/..\/pet\/CVS//g'`
     cp $petfiles $tempdir/matrix-core/pet
 fi
 
