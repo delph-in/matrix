@@ -36,7 +36,13 @@ SHORT_GRAMMAR_NAME=""
 WEBSITE=""
 DEMO_WEBSITE=""
 DOCUMENTATION_URL=""
+ISSUE_TRACKER=""
 LICENSE=""
+
+## You may optionally specify a release date for the grammar. If unspecified,
+## the grammar catalogue script will attempt to extract a date from the
+## Version.l(i)sp file.
+LATEST_RELEASE=""
 
 ## Citation data
 ## If this is not provided, the text of citation.bib or canonical.bib
