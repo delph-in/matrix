@@ -1209,19 +1209,26 @@ class MatrixDefFile:
     # The section isn't really a form field, but save it for later
     section = form_data['section'].value
 
-    # Read the current choices file (if any) into old_choices
-    # but if neg-aux=on exists, create side-effect in lexicon.
-
-    old_choices = ChoicesFile(choices_file)
-    if section == 'sentential-negation' and 'neg-aux' in form_data.keys():
-      old_choices = self.create_neg_aux_choices(old_choices)
-
-
     # Copy the form_data into a choices object
     new_choices = ChoicesFile('')
     for k in form_data.keys():
       if k:
         new_choices[k] = form_data[k].value
+
+    # Read the current choices file (if any) into old_choices
+    # but if neg-aux=on exists, create side-effect in lexicon.
+    old_choices = ChoicesFile(choices_file)
+    if section == 'sentential-negation' and 'neg-aux' in form_data.keys():
+      # see if we're already storing an index number
+      if 'neg-aux-index' in old_choices.keys():
+        # we have an index for a neg-aux, see if it's still around
+        if not old_choices['aux%s' % old_choices['neg-aux-index']]:
+          # it's not so we make a new neg-aux and store the index
+          old_choices, neg_aux_index = self.create_neg_aux_choices(old_choices)
+          new_choices["neg-aux-index"] = str(neg_aux_index) if neg_aux_index > 0 else str(1)
+      else: #we don't have any neg aux index stored, so make a new one
+        old_choices, neg_aux_index = self.create_neg_aux_choices(old_choices)
+        new_choices["neg-aux-index"] = str(neg_aux_index) if neg_aux_index > 0 else str(1)
 
 
     # Open the def file and store it in line[]
@@ -1267,9 +1274,11 @@ class MatrixDefFile:
     already there. returns a ChoicesFile instance'''
 
     # if there's already a neg-aux, don't do anything 
-    for a in choices['aux']:
-      if a['name'] == 'neg-aux':
-        return choices
+    # this is now checked above, this method doesn't get
+    # called if there's already an extant neg-aux
+    # for i, a in enumerate(choices['aux']):
+    #  if a['name'] == 'neg-aux':
+    #    return choices, i
 
     # get the next aux number
     next_n = choices['aux'].next_iter_num() if 'aux' in choices else 1
@@ -1281,7 +1290,7 @@ class MatrixDefFile:
     nli = choices['aux'].get_last()
     nli['sem']='add-pred'
     nli['stem1_pred'] = '_neg_v_rel'
-    return choices
+    return choices, next_n
 
   def choices_error_page(self, choices_file, exc=None):
     print HTTP_header + '\n'
