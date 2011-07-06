@@ -136,13 +136,20 @@ def validate(ch, vr):
           mess = 'When inflectional negation is selected ' +\
                  '[negation +] should only be found on bound morphemes.'
           vr.err(f.full_key + '_name', mess)
-  validate_sentential_negation(ch, vr)
 
-def validate_sentential_negation(ch, vr):
+    neginfltype = ch.get('neg-infl-type')
+    negseladv = ch.get('neg-sel-adv')
 
-  neginfltype = ch.get('neg-infl-type')
-  negseladv = ch.get('neg-sel-adv')
-
+  if ch.get('neg-aux', default=False):
+    has_neg_aux = False
+    for aux in ch.get('aux', []):
+      if aux.get('name') == 'neg-aux':
+        has_neg_aux = True
+        break
+    if has_neg_aux == False:
+      vr.warn('neg-aux',
+              'You\'ve selected neg-aux but there is no corresponding ' +\
+              'type in the lexicon.')
   # ERB 2009-01-23 Commenting out the following because infl-neg is
   # now handled with customize_inflection.  We should eventually give
   # a warning if infl-neg is selected but no lexical rules actually

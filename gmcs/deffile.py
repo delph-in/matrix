@@ -1209,18 +1209,20 @@ class MatrixDefFile:
     # The section isn't really a form field, but save it for later
     section = form_data['section'].value
 
+    # Read the current choices file (if any) into old_choices
+    # but if neg-aux=on exists, create side-effect in lexicon.
+
+    old_choices = ChoicesFile(choices_file)
+    if section == 'sentential-negation' and 'neg-aux' in form_data.keys():
+      old_choices = self.create_neg_aux_choices(old_choices)
+
+
     # Copy the form_data into a choices object
     new_choices = ChoicesFile('')
     for k in form_data.keys():
       if k:
         new_choices[k] = form_data[k].value
 
-    # Read the current choices file (if any) into old_choices
-    # but if neg-aux=on exists, create side-effect in lexicon.
-
-    old_choices = ChoicesFile(choices_file)
-    if section == 'sentential-negation' and 'neg-aux' in form_data.keys():
-      old_choices = self.create_neg_aux_choices(form_data, old_choices)
 
     # Open the def file and store it in line[]
     g = open(self.def_file, 'r')
@@ -1258,7 +1260,7 @@ class MatrixDefFile:
 
     f.close()
 
-  def create_neg_aux_choices(self, form_data, choices):
+  def create_neg_aux_choices(self, choices):
     '''this is a side effect of the existence of neg-aux
     in the form data, it puts some lines pertaining to a neg-aux
     lexical item into the choices file object unless they are
@@ -1279,8 +1281,6 @@ class MatrixDefFile:
     nli = choices['aux'].get_last()
     nli['sem']='add-pred'
     nli['stem1_pred'] = '_neg_v_rel'
-    nli['stem1_orth'] = form_data['neg-aux-orth'].value \
-            if 'neg-aux-orth' in form_data else ''
     return choices
 
   def choices_error_page(self, choices_file, exc=None):

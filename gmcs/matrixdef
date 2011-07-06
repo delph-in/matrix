@@ -770,9 +770,7 @@ Radio neg-order "Negative adverb order" "and appears " ""
 
 Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p>" 20
 
-Check neg-aux "Negation by auxiliary verb" "<p>" "Negative auxiliary verb: Checking this box creates a neg-aux type which has negative semantics for its complement's event variable an can be further syntactically constrained on the lexicon page."
-
-Text neg-aux-orth "Negative auxiliary spelling" "Please provide the value for ORTH on your neg-aux type: " "</p>" 20
+Check neg-aux "Negation by auxiliary verb" "<p>" "Negative auxiliary verb: Checking this box creates a neg-aux type which contributes a _neg_v_rel that outscopes it's complement's handle.  This lexical type will show up on the lexicon page where you'll need to further specify its syntax.</p>"
 
 Label "<p>Notes: This section is under construction.  We hope to soon
 return the functionality of allowing different kinds of interaction
