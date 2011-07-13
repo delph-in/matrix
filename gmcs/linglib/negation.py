@@ -137,8 +137,8 @@ def validate(ch, vr):
                  '[negation +] should only be found on bound morphemes.'
           vr.err(f.full_key + '_name', mess)
 
-    neginfltype = ch.get('neg-infl-type')
-    negseladv = ch.get('neg-sel-adv')
+  neginfltype = ch.get('neg-infl-type')
+  negseladv = ch.get('neg-sel-adv')
 
   if ch.get('neg-aux', default=False):
     has_neg_aux = False
