@@ -392,14 +392,13 @@ def build_defined_types_hierarchy(path, type_defs):
     file.close()
 
 # only taking path length one (probably too strict...)
+# use this as type identifier
+# then relax: all ends of path can be introduced
+# if necessary: integrate check
 def find_introduced_attribute(path):
-  if not re.match( '\w+\.*' , path):######START HERE: FIX REGULAR EXPRESSION
-  ###NEXT:
-  # 1. relax conditions (unless correct) to any last attribute of path
-  # 2. if necessary: build in check if introduces attribute....
-    print path
-  else:
-    print "there was a dot: " + path
+  ats = path.split('.')
+  if len(ats) <= 1:
+    return path
 
 
 
@@ -421,11 +420,18 @@ def identify_attribute_intro_types(identified, typehierarchy, attrs):
 #to do: check whether type is in hierarchy (should not happen, but security check would be good)
       my_t = typehierarchy[t] 
 #to do, this is clearly too generous, should use a-v pairs instead...
-      my_atts = my_t.attributes
+    #  my_atts = my_t.attributes
+#####START: find out which attributes are not found in "introduced"
+# - identify the relevant types
+# - see how could have been found...
+# - adapt program accordingly
+
+      my_atts = set()
       my_avs = my_t.val_constr
       if len(my_avs) > 0:
         for at in my_avs.iterkeys():
-          find_introduced_attribute(at)
+          int_att = find_introduced_attribute(at)
+          my_atts.add(int_att)
       if len(my_atts) > 0:
         for a in my_atts:
           if a in count_down_attrs:
