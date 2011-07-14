@@ -1214,7 +1214,20 @@ class MatrixDefFile:
         new_choices[k] = form_data[k].value
 
     # Read the current choices file (if any) into old_choices
+    # but if neg-aux=on exists, create side-effect in lexicon.
     old_choices = ChoicesFile(choices_file)
+    if section == 'sentential-negation' and 'neg-aux' in form_data.keys():
+      # see if we're already storing an index number
+      if 'neg-aux-index' in old_choices.keys():
+        # we have an index for a neg-aux, see if it's still around
+        if not old_choices['aux%s' % old_choices['neg-aux-index']]:
+          # it's not so we make a new neg-aux and store the index
+          old_choices, neg_aux_index = self.create_neg_aux_choices(old_choices)
+          new_choices["neg-aux-index"] = str(neg_aux_index) if neg_aux_index > 0 else str(1)
+      else: #we don't have any neg aux index stored, so make a new one
+        old_choices, neg_aux_index = self.create_neg_aux_choices(old_choices)
+        new_choices["neg-aux-index"] = str(neg_aux_index) if neg_aux_index > 0 else str(1)
+
 
     # Open the def file and store it in line[]
     f = open(self.def_file, 'r')
@@ -1252,6 +1265,25 @@ class MatrixDefFile:
       self.save_choices_section(lines[cur_sec_begin:i], f, choices)
 
     f.close()
+
+  def create_neg_aux_choices(self, choices):
+    '''this is a side effect of the existence of neg-aux
+    in the form data, it puts some lines pertaining to a neg-aux
+    lexical item into the choices file object unless they are
+    already there. returns a ChoicesFile instance, and an int
+    which is the index number of the created neg-aux'''
+
+    # get the next aux number
+    next_n = choices['aux'].next_iter_num() if 'aux' in choices else 1
+
+    # create a new aux with that number
+    choices['aux%d_name' % next_n] = 'neg-aux'
+
+    # copy that to nli for adding further information
+    nli = choices['aux'].get_last()
+    nli['sem']='add-pred'
+    nli['stem1_pred'] = '_neg_v_rel'
+    return choices, next_n
 
   def choices_error_page(self, choices_file, exc=None):
     print HTTP_header + '\n'

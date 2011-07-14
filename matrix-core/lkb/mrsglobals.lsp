@@ -11,7 +11,7 @@
 (defparameter *psoa-liszt-path* (list (vsym "RELS") (vsym "LIST"))
   "path to get a liszt from a psoa")
 
-(defparameter *psoa-top-h-path*  `(,(vsym "HOOK") ,(vsym "LTOP"))
+(defparameter *psoa-top-h-path*  `(,(vsym "HOOK") ,(vsym "GTOP"))
   "path to get the top handle from a psoa")
 
 (defparameter *psoa-index-path* 

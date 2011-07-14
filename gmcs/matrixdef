@@ -756,6 +756,7 @@ grammar will not include any information about negation.)</p>"
 
 Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <span class=\"feat\">negation</span> with possible value <tt>plus</tt> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">negation</span> <tt>plus</tt>] will produce lexical rules that add the semantics of negation.</p>" 
 
+
 Check adv-neg "Adverbial negation" "<p>" "An adverb which is an independent modifier of:<br>"
 
 Radio neg-mod "Negative adverb modifies" "" ""
@@ -769,6 +770,10 @@ Radio neg-order "Negative adverb order" "and appears " ""
 . either "Either" "" "on either side of the category it modifies.<br>"
 
 Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p>" 20
+
+Check neg-aux "Negation by auxiliary verb" "<p>" "Negative auxiliary verb: Checking this box creates a neg-aux type which contributes a _neg_v_rel that outscopes it's complement's handle.  This lexical type will show up on the lexicon page where you'll need to further specify its syntax.</p>"
+
+Text neg-aux-index "neg-aux-index" "<span style='display:none'>" "</span>" 0
 
 Label "<p>Notes: This section is under construction.  We hope to soon
 return the functionality of allowing different kinds of interaction
