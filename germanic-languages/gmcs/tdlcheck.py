@@ -15,6 +15,10 @@ from gmcs.tdl import TDLelem_dlist
 from gmcs.tdl import TDLset_file
 
 
+####global for sisters & cousins same generation in hierarchy
+current_generation = []
+
+
 class TDLdefined_type(object):
   def __init__(self, type, op):
     self.comment = ''
@@ -155,7 +159,7 @@ def walk_through_instantiated(requested, identified, defined, atts):
           new_rit.add(nt)
       temp_rit.clear()
     else:
-      if not rit == '*top*':
+      if not rit == "*top*":
         print "Problem: somehow the following type is requested but not defined:"
         print rit
   if len(new_rit) > 0:
@@ -205,7 +209,7 @@ def process_att_val_type(t, p, td):
   td.add_attribute(t.attr)
   p += t.attr
   if len(t.child) == 0:
-    print "this attribute thing has no children"
+    print "this attribute has no children...something is wrong"
   elif len(t.child) == 1 and isinstance(t.child[0], TDLelem_conj):
     t = t.child[0]
     if len(t.child) == 1:
@@ -289,27 +293,6 @@ def interpret_dlist(t, p, td):
   if val:
     td.add_att_val_pair(p, val)
 
-
-def write_dotted_path(c, p):
-  if len(c.child) == 1 and isinstance(c.child[0], TDLelem_conj):
-    c = c.child[0]
-    if len(c.child) == 1 and isinstance(c.child[0], TDLelem_feat):
-      c = c.child[0]
-      if len(c.child) >= 1 and isinstance(c.child[0], TDLelem_av):
-        c = c.child[0]
-        p += c.attr 
-        p += "."
-        produce_attribute_path(c, p)
-        return True
-  return False
-
-def produce_attribute_path(c, p):
-
-  if not write_dotted_path(c, p):
-    if isinstance(c, TDLelem_av):
-      p += c.attr
-      for ch in c.child:
-        produce_attribute_path(ch, p)
 
 def process_elementary_type(t):
 #for loop is safety check: elementary types should not have children
@@ -436,6 +419,7 @@ def process_instantiation_files(path, inst, type_defs):
 #  print "number of attributes identified in defined types "
 #  print len(allattr)
   
+  global current_generation = []
   instantiatedset = identify_inst_types(itypes, typehierarchy, attributes)
   superflset = set()
   for k in typehierarchy.iterkeys():
@@ -443,6 +427,9 @@ def process_instantiation_files(path, inst, type_defs):
       superflset.add(k)
   print "total attributes on instantiated types: "
   print len(attributes)
+
+  ###checking if instantiated types contain attributes that are not introduced
+
   
 ####TO DO: do the attribute introduction check:
 # 1. *top* types: as initiation types (global list)
