@@ -16,7 +16,7 @@ from gmcs.tdl import TDLset_file
 
 
 ####global for sisters & cousins same generation in hierarchy
-current_generation = []
+current_generation = set()
 
 
 class TDLdefined_type(object):
@@ -147,6 +147,8 @@ def walk_through_instantiated(requested, identified, defined, atts):
       for s in defined[rit].supertypes:
         if s in defined:
           defined[s].add_subtype(rit)
+        elif s == '*top*':
+          current_generation.add(rit)
         else:
           print s + ' listed as supertype not found in hierarchy'
         my_types.append(s)
@@ -158,10 +160,9 @@ def walk_through_instantiated(requested, identified, defined, atts):
         if not (nt in identified or nt in requested):
           new_rit.add(nt)
       temp_rit.clear()
-    else:
-      if not rit == "*top*":
-        print "Problem: somehow the following type is requested but not defined:"
-        print rit
+    elif not rit == '*top*':
+      print "Problem: somehow the following type is requested but not defined:"
+      print rit
   if len(new_rit) > 0:
     walk_through_instantiated(new_rit, identified, defined, atts)
 
@@ -389,6 +390,56 @@ def build_defined_types_hierarchy(path, type_defs):
     file = open( path + '/' + f)
     create_type_inventory(file, deftypes)
     file.close()
+
+# only taking path length one (probably too strict...)
+def find_introduced_attribute(path):
+  if not re.match( '\w+\.*' , path):######START HERE: FIX REGULAR EXPRESSION
+  ###NEXT:
+  # 1. relax conditions (unless correct) to any last attribute of path
+  # 2. if necessary: build in check if introduces attribute....
+    print path
+  else:
+    print "there was a dot: " + path
+
+
+
+def identify_attribute_intro_types(identified, typehierarchy, attrs):
+  global current_generation
+  count_down_attrs = attrs
+  new_requests = set()
+  i = 0
+  while True:
+    if len(current_generation) < 1:
+      return False
+    if len(count_down_attrs) == 0:
+      return False
+    if i >= 100:
+      return False
+    i += 1
+    next_generation = set()
+    for t in current_generation:
+#to do: check whether type is in hierarchy (should not happen, but security check would be good)
+      my_t = typehierarchy[t] 
+#to do, this is clearly too generous, should use a-v pairs instead...
+      my_atts = my_t.attributes
+      my_avs = my_t.val_constr
+      if len(my_avs) > 0:
+        for at in my_avs.iterkeys():
+          find_introduced_attribute(at)
+      if len(my_atts) > 0:
+        for a in my_atts:
+          if a in count_down_attrs:
+            if t not in identified and t not in new_requests:
+              new_requests.add(t)
+              print "Adding: " + t + " to requested types"
+            count_down_attrs.remove(a)
+      for st in my_t.subtypes:
+        next_generation.add(st)
+    current_generation.clear()
+    current_generation = next_generation
+    print len(count_down_attrs)
+  ##do while count_down_attrs > 0 and current_generation > 0
+
   
 ####depending on structure: change name of function...
 def process_instantiation_files(path, inst, type_defs):
@@ -419,24 +470,21 @@ def process_instantiation_files(path, inst, type_defs):
 #  print "number of attributes identified in defined types "
 #  print len(allattr)
   
-  global current_generation = []
+  global current_generation
+  current_generation.clear()
   instantiatedset = identify_inst_types(itypes, typehierarchy, attributes)
-  superflset = set()
-  for k in typehierarchy.iterkeys():
-    if not k in instantiatedset:
-      superflset.add(k)
   print "total attributes on instantiated types: "
   print len(attributes)
 
   ###checking if instantiated types contain attributes that are not introduced
-
-  
+  #call function that starts at current_generation, checks for ATTR adds subtypes to new generation
+  identify_attribute_intro_types(instantiatedset, typehierarchy, attributes)
 ####TO DO: do the attribute introduction check:
 # 1. *top* types: as initiation types (global list)
 # 2. for each:
 # - check attribute introduction (presence of non-introduced atts)
 # - if identified :-> pop from asked attributes, add to requested if not already present
-y# - check each subtype
+# - check each subtype
 # - if done for all, place subtypes on instance list
 # do while len(attributes) > 0
 #
@@ -444,16 +492,21 @@ y# - check each subtype
 #  replay came of identifying sub and supertypes
 # 4. repeat if new attributes found...
 
-
+  superflset = set()
+  for k in typehierarchy.iterkeys():
+    if not k in instantiatedset:
+      superflset.add(k)
+  
   print "identified: " 
   print len(superflset)
   print " unused types."
 
-  check = open('2check.txt', 'a')
-  for ins in instantiatedset:
-    check.write(ins + ';')
-    check.write('\n')
-  check.close()
+
+#  check = open('2check.txt', 'a')
+#  for ins in instantiatedset:
+#    check.write(ins + ';')
+#    check.write('\n')
+#  check.close()
 
 
 #  output_file = open( 'output.txt' , 'w')
