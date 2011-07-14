@@ -1271,14 +1271,8 @@ class MatrixDefFile:
     '''this is a side effect of the existence of neg-aux
     in the form data, it puts some lines pertaining to a neg-aux
     lexical item into the choices file object unless they are
-    already there. returns a ChoicesFile instance'''
-
-    # if there's already a neg-aux, don't do anything 
-    # this is now checked above, this method doesn't get
-    # called if there's already an extant neg-aux
-    # for i, a in enumerate(choices['aux']):
-    #  if a['name'] == 'neg-aux':
-    #    return choices, i
+    already there. returns a ChoicesFile instance, and an int
+    which is the index number of the created neg-aux'''
 
     # get the next aux number
     next_n = choices['aux'].next_iter_num() if 'aux' in choices else 1
