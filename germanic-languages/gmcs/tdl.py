@@ -28,7 +28,6 @@ def isid(s):
 def TDLtokenize(s):
   tok = ""
   val = []
-
   while len(s) > 0:
     s = s.strip()
     if isid(s[0]) or s[0] == '#' or s[0] == '\'':
@@ -76,7 +75,7 @@ def TDLtokenize(s):
     else:
       val.append('Unrecognized token "' + s[0] + '"')
       s = ""
-
+  
   return val
 
 
@@ -223,9 +222,12 @@ class TDLelem_typedef(TDLelem):
       TDLwrite('typedef\n')
       
     TDLwrite(self.type + " " + self.op + " ")
+
+########here we have the types and assignment features
     TDLset_indent(2)
     for ch in self.child:
       ch.write()
+      
 
     TDLwrite('.')
     if self.one_line and self.comment:
@@ -263,7 +265,7 @@ class TDLelem_type(TDLelem):
       TDLwrite('type\n')
 
     TDLwrite(self.type)
-
+    #####values and supertypes
 
 ###########################################################################
 # A TDLelem_coref corresponds to a coreference (e.g. #comps)
@@ -729,7 +731,6 @@ def TDLmerge(e1, e2):
     e0.add(copy.copy(e2))
 
   e0.sort()
-
   return e0
 
 ###########################################################################
@@ -891,6 +892,7 @@ class TDLfile(object):
     definition if possible.
     """
     typedef = TDLparse(tdl_type)
+
     typedef.set_comment(comment)
     typedef.set_one_line(one_line)
 

@@ -13,6 +13,8 @@ import zipfile
 import sys
 import re
 from subprocess import call
+####test test test
+from gmcs import tdlcheck
 
 from gmcs.choices import ChoicesFile
 from gmcs.utils import TDLencode
@@ -399,6 +401,9 @@ def customize_matrix(path, arch_type, destination=None):
 
   # Setup version control, if any
   setup_vcs(ch, grammar_path)
+
+  # test tdlcheck
+  tdlcheck.process_script(grammar_path)
 
   return grammar_path
 
