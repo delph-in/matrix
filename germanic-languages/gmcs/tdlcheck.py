@@ -105,18 +105,29 @@ def create_type_dict_from_tdl(file, type_dict, att):
         type_dict[tdl_object.type] = tdl_object      
         collect_attributes(tdl_object, att)
 
-def identify_inst_types(itypes, deftypes, attributes):
+def identify_inst_types(itypes, deftypes, attributes, id_inst_types = set()):
   #set of elementary types requested by instantiated types
   req_inst_types = set()
   #adding 'null': not often specified, but generally required
-  req_inst_types.add('null')
-  req_inst_types.add('label')
+  if len(id_inst_types) == 0:
+    req_inst_types.add('null')
+  #adding label for labels.tdl
+    req_inst_types.add('label')
+  #in update round, itypes need to be added themselves as well..
+  else:
+    for it in itypes:
+      req_inst_types.add(it)
   #set of identified elementary types requested by instantiated
-  id_inst_types = set()
 
   #retrieve all requested elem types from instantiated types
+
   for v in itypes.itervalues():
-    identify_objects(v.child, req_inst_types, attributes)
+    for st in v.supertypes:
+      req_inst_types.add(st)
+    for val in v.values:
+      req_inst_types.add(val)
+    for a in v.attributes:
+      attributes.add(a)
   
   walk_through_instantiated(req_inst_types, id_inst_types, deftypes, attributes)
   
@@ -136,30 +147,29 @@ def walk_through_instantiated(requested, identified, defined, atts):
 
   for rit in requested:
     if rit in defined:
-      identified.add(rit)
+      if not rit in identified:
+        identified.add(rit)
 #attributes in defined type:
-      for a in defined[rit].attributes:
-        atts.add(a)
+        for a in defined[rit].attributes:
+          atts.add(a)
 #create list of defined type's value
-      my_types = defined[rit].values
+        my_types = defined[rit].values
 #for supertypes of defined type: add current type as subtype
 #add to my_types list
-      for s in defined[rit].supertypes:
-        if s in defined:
-          defined[s].add_subtype(rit)
-        elif s == '*top*':
-          current_generation.add(rit)
-        else:
-          print s + ' listed as supertype not found in hierarchy'
-        my_types.append(s)
+        for s in defined[rit].supertypes:
+          if s == '*top*':
+            current_generation.add(rit)
+          elif not s in defined:
+            print s + ' listed as supertype not found in hierarchy'
+          my_types.append(s)
 
-      temp_rit = set(my_types)
+        temp_rit = set(my_types)
          
   #    identify_objects(defined[rit].child, temp_rit, attributes)
-      for nt in temp_rit:
-        if not (nt in identified or nt in requested):
-          new_rit.add(nt)
-      temp_rit.clear()
+        for nt in temp_rit:
+          if not (nt in identified or nt in requested):
+            new_rit.add(nt)
+        temp_rit.clear()
     elif not rit == '*top*':
       print "Problem: somehow the following type is requested but not defined:"
       print rit
@@ -309,6 +319,19 @@ def process_elementary_type(t):
       return t.type
 
 
+def add_subtype_values(thierarchy):
+  for t in thierarchy.itervalues():
+    suptypes = t.supertypes
+    for s in suptypes:
+      if s in thierarchy:
+        my_suptype = thierarchy[s]
+        my_suptype.add_subtype(t.type)
+      elif not s == "*top*":
+        print s 
+        print " is identified as supertype but not defined in the hierarchy" 
+
+
+
 def separate_instantiated_non_instantiated(file, instset, sfset):
   print file.name
   copied = file.name + '-old'
@@ -402,11 +425,17 @@ def find_introduced_attribute(path):
 
 
 
-def identify_attribute_intro_types(identified, typehierarchy, attrs):
+def identify_attribute_intro_types(identified, typehierarchy, attrs, new_requests):
   global current_generation
   count_down_attrs = attrs
-  new_requests = set()
+  new_requests.clear()
   i = 0
+
+###exception for HEAD-DTR introduced by headed-phrase
+  if 'headed-phrase' in identified:
+    if 'HEAD-DTR' in count_down_attrs:
+      count_down_attrs.remove('HEAD-DTR')
+
   while True:
     if len(current_generation) < 1:
       return False
@@ -419,13 +448,6 @@ def identify_attribute_intro_types(identified, typehierarchy, attrs):
     for t in current_generation:
 #to do: check whether type is in hierarchy (should not happen, but security check would be good)
       my_t = typehierarchy[t] 
-#to do, this is clearly too generous, should use a-v pairs instead...
-    #  my_atts = my_t.attributes
-#####START: find out which attributes are not found in "introduced"
-# - identify the relevant types
-# - see how could have been found...
-# - adapt program accordingly
-
       my_atts = set()
       my_avs = my_t.val_constr
       if len(my_avs) > 0:
@@ -436,17 +458,29 @@ def identify_attribute_intro_types(identified, typehierarchy, attrs):
         for a in my_atts:
           if a in count_down_attrs:
             if t not in identified and t not in new_requests:
-              new_requests.add(t)
-              print "Adding: " + t + " to requested types"
+              new_requests[t] = typehierarchy[t]
             count_down_attrs.remove(a)
       for st in my_t.subtypes:
         next_generation.add(st)
     current_generation.clear()
     current_generation = next_generation
-    print len(count_down_attrs)
   ##do while count_down_attrs > 0 and current_generation > 0
-
+ 
+###
   
+def update_req_types_based_on_atts(instantiated_updated, new_reqs, typehierarchy, attributes):
+
+  check_a = len(attributes)
+  while True:
+    if len(new_reqs) < 1:
+      return False
+    instantiated_updated = identify_inst_types(new_reqs, typehierarchy, attributes, instantiated_updated)
+    if len(attributes) > check_a:
+      identify_attribute_intro_types(instantiated_updated, typehierarchy, attributes, new_reqs)
+    else:
+      new_reqs.clear()
+
+
 ####depending on structure: change name of function...
 def process_instantiation_files(path, inst, type_defs):
 
@@ -456,59 +490,53 @@ def process_instantiation_files(path, inst, type_defs):
 #    separate_instantiated_non_instantiated(file, instantiatedset, superflset)
     create_type_inventory(file, typehierarchy)
     file.close()  
-  print len(typehierarchy)
 
   itypes = {}
   attributes = set()
   for f in inst:
     file = open( path + '/' + f )
-    create_type_dict_from_tdl(file, itypes, attributes) 
+    create_type_inventory(file, itypes) 
     file.close
-  print "number of attributes identified in instiated files: "
-  print len(attributes)
-
-#  deftypes = {}
-#  allattr = set()
-#  for tf in type_defs:
-#    file = open( path + '/' + tf )
-#    create_type_dict_from_tdl(file, deftypes, allattr)
-#    file.close()
-#  print "number of attributes identified in defined types "
-#  print len(allattr)
   
   global current_generation
   current_generation.clear()
   instantiatedset = identify_inst_types(itypes, typehierarchy, attributes)
-  print "total attributes on instantiated types: "
-  print len(attributes)
 
+  add_subtype_values(typehierarchy)
   ###checking if instantiated types contain attributes that are not introduced
   #call function that starts at current_generation, checks for ATTR adds subtypes to new generation
-  identify_attribute_intro_types(instantiatedset, typehierarchy, attributes)
-####TO DO: do the attribute introduction check:
-# 1. *top* types: as initiation types (global list)
-# 2. for each:
-# - check attribute introduction (presence of non-introduced atts)
-# - if identified :-> pop from asked attributes, add to requested if not already present
-# - check each subtype
-# - if done for all, place subtypes on instance list
-# do while len(attributes) > 0
-#
-# 3. if new requested > 0:
-#  replay came of identifying sub and supertypes
-# 4. repeat if new attributes found...
+  new_reqs = {}
+  identify_attribute_intro_types(instantiatedset, typehierarchy, attributes, new_reqs)
+  
+  instantiated_updated = instantiatedset
+
+  update_req_types_based_on_atts(instantiated_updated, new_reqs, typehierarchy, attributes)
+
+  
 
   superflset = set()
   for k in typehierarchy.iterkeys():
-    if not k in instantiatedset:
+    if not k in instantiated_updated:
       superflset.add(k)
+
+  for tf in type_defs:
+    file = open ( path + '/' + tf)
+    separate_instantiated_non_instantiated(file, instantiated_updated, superflset)
+    file.close()  
+
+
   
   print "identified: " 
   print len(superflset)
   print " unused types."
+ 
+  typehierarchy.clear()
+  superflset.clear()
+  instantiatedset.clear()
+  attributes.clear()
+  itypes.clear()
 
-
-#  check = open('2check.txt', 'a')
+#  heck = open('2check.txt', 'a')
 #  for ins in instantiatedset:
 #    check.write(ins + ';')
 #    check.write('\n')
@@ -576,3 +604,23 @@ def process_script(path):
   type_defs = identify_type_def_files(script)
   script.close()
   process_instantiation_files(path, inst, type_defs)
+
+
+
+#####NOTES##########
+#
+# 1. Heuristics are used for the attribute introduction problem:
+# problem: some types are not specifically called as values by other types
+# but they are needed to intoduce attributes
+# Current strategy:
+# - top-down walk-through type-hierarchy (per generation)
+# - check path of length one -> assume this introduces an attribute
+# - if attribute is required and not identified :
+#       a) check if type is on instantiated required list
+#       b) if not, add to new requested
+#       c) remove attribute from to be identified list
+# - Exception for HEAD-DTR: introduced by phrase at beginning of path
+#
+# 2. dlist interpretation is not finished: no interpretation of complex values
+# - must do similar things as for av_interpretation, without directly modifying typehierarchy
+# - larger operation: see if code can be shared between av for type and av for dlist...      
