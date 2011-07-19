@@ -1,6 +1,15 @@
 ###checks well-formedness of tdl hierarchy
 # has additional functions
 # 1. only add instantiated types
+
+##
+# to do:
+# 1. add values to all co-indexed paths... (#x & y -> y needs to be added to all other paths as value)
+# function going through tree at the end (similar to adding subtypes...): before subtypes...
+# 2. Go through hierarchy, for each supertype, collect constraints for its subtype
+# -> other way around step 1 would have to be taken again after 2...
+
+
 import re
 import shutil
 
@@ -17,7 +26,7 @@ from gmcs.tdl import TDLset_file
 
 ####global for sisters & cousins same generation in hierarchy
 current_generation = set()
-
+top_subtypes = set()
 
 class TDLdefined_type(object):
   def __init__(self, type, op):
@@ -30,6 +39,8 @@ class TDLdefined_type(object):
     self.attributes = []
     self.val_constr = {}
     self.coind_constr = {}
+    self.compl_val_constr = {}
+    self.compl_coind_constr = {}
     
   def set_comment(self, comment):
     self.comment = comment
@@ -158,7 +169,7 @@ def walk_through_instantiated(requested, identified, defined, atts):
 #add to my_types list
         for s in defined[rit].supertypes:
           if s == '*top*':
-            current_generation.add(rit)
+            top_subtypes.add(rit)
           elif not s in defined:
             print s + ' listed as supertype not found in hierarchy'
           my_types.append(s)
@@ -241,9 +252,10 @@ def interpret_av_emb_child(t, p, td):
     interpret_embedded_feat(t, p, td)
       
   elif isinstance(t, TDLelem_type):
-    my_val = process_elementary_type(t)
-    td.add_value(my_val)
-    td.add_att_val_pair(p, my_val)
+    if not t.type == 'null':
+      my_val = process_elementary_type(t)
+      td.add_value(my_val)
+      td.add_att_val_pair(p, my_val)
   elif isinstance(t, TDLelem_coref):
     if len(t.child) > 0:
       print "Problem: coreference type occurring with children"
@@ -330,6 +342,78 @@ def add_subtype_values(thierarchy):
         print s 
         print " is identified as supertype but not defined in the hierarchy" 
 
+def add_inherited_constraints(thierarchy):
+  global top_subtypes
+  current_types = top_subtypes
+
+  for t in top_subtypes:
+    set_complete_constraints(t, thierarchy)
+
+def is_difflist(t):
+  if re.match('<!*', t):
+    return True
+  else:
+    return False
+
+
+
+def set_complete_constraints(t, thierarchy):
+  my_t = thierarchy[t]
+  for sbt in my_t.subtypes:
+    ct = thierarchy[sbt]
+    if len(ct.compl_val_constr) == 0 and len(ct.compl_coind_constr) == 0:
+      ct.compl_val_constr = dict(ct.val_constr)
+      ct.compl_coind_constr = dict(ct.coind_constr)
+    for vc in my_t.val_constr.iterkeys():
+      if vc in ct.compl_val_constr:
+        n_val = ct.compl_val_constr[vc]
+        o_val = my_t.val_constr[vc]
+        if not o_val == n_val:
+          if not is_difflist(n_val):
+            n_t = thierarchy[n_val]
+            if not is_subtype(o_val, n_t.supertypes, thierarchy):
+              if not o_val == "*top*":
+                o_t = thierarchy[o_val]
+                if is_subtype(n_val, o_t.supertypes, thierarchy):
+                  if vc in ct.val_constr:
+                    print "more specific constraint was found on supertype of: " + ct.type
+                    print n_val
+                    print o_val
+                  else:
+                    ct.compl_val_constr[vc] = o_val
+                else:
+                  print "Check up and new type required for: " + n_val + " and " + o_val
+          else:
+            print "Diff-list issue for: " + sbt + " old value: " + o_val
+      else:
+        ct.compl_val_constr[vc] = my_t.val_constr[vc]
+
+    set_complete_constraints(sbt, thierarchy)
+   # self.val_constr = {}
+   # self.coind_constr = {}
+   # self.compl_val_constr = {}
+   # self.compl_coind_constr = {}
+#should go top down through hierarchy, and add constraints from supertypes 
+#to their subtypes
+
+def is_subtype(t, suptypes, thierarchy):
+  if len(suptypes) > 0:
+    tempcheck = []
+    for st in suptypes:
+      if st == t:
+        return True
+      else:
+        my_st = thierarchy[st]
+        for s in my_st.supertypes:
+          if not s == '*top*' and not s in suptypes:
+            tempcheck.append(s)
+        tempcheck.extend(suptypes)  
+        tempcheck.remove(st)
+        if is_subtype(t, tempcheck, thierarchy):
+          return True      
+  else:
+    return False
+    
 
 
 def separate_instantiated_non_instantiated(file, instset, sfset):
@@ -407,6 +491,73 @@ def create_type_inventory(file, deftypes):
           print "Problem: general typedef has more than one child"
 
 
+
+def temp_function_checking_lists(tdl_object):
+  print tdl_object.type
+  print tdl_object.op
+  print len(tdl_object.child)
+  my_ch = tdl_object.child[0]
+  print my_ch
+  print "first child"
+  print len(my_ch.child)
+  gr_ch1 = my_ch.child[0]
+  print "supertype: " + gr_ch1.type
+  gr_ch2 = my_ch.child[1]
+  grgr_ch1 = gr_ch2.child[0]
+  print grgr_ch1.attr
+  ch1_1 = grgr_ch1.child[0]
+  print len(ch1_1.child)
+  ch1_1_1 = ch1_1.child[0]
+  print len(ch1_1_1.child)
+  ch1_1_1_1 = ch1_1_1.child[0]
+  print len(ch1_1_1_1.child)
+  print ch1_1_1_1.attr
+  ch5 = ch1_1_1_1.child[0]
+  print len(ch5.child)
+  ch6 = ch5.child[0]
+  print len(ch6.child)
+  ch7 = ch6.child[0]
+  print ch7.attr
+  print len(ch7.child)
+  ch8 = ch7.child[0]
+  print len(ch8.child)
+  ch9 = ch8.child[0]
+  print len(ch9.child)
+  ch10a = ch9.child[0]
+  print ch10a.attr
+  ch11a = ch10a.child[0]
+  ch12a = ch11a.child[0]
+  print ch12a.coref
+  ch10b = ch9.child[1]
+  print ch10b.attr
+  ch11b = ch10b.child[0]
+  ch12b = ch11b.child[0]
+  print ch12b.coref
+
+  ch10c = ch9.child[2]
+  print ch10c.attr
+  ch11c = ch10c.child[0]
+  ch12c = ch11c.child[0]
+  print ch12c.coref
+
+  ch1_1_1_2 = ch1_1_1.child[1]
+  print ch1_1_1_2.attr
+  ch11121 = ch1_1_1_2.child[0]
+  ch111211 = ch11121.child[0]
+  print ch111211.type
+
+  grgr_ch2 = gr_ch2.child[1]
+  print grgr_ch2.attr
+  print len(grgr_ch2.child)
+  ch2_1 = grgr_ch2.child[0]
+  ch2_1_1 = ch2_1.child[0]
+  print ch2_1_1.empty_list
+  print len(ch2_1_1.child)
+  for ch in (ch2_1_1.child):
+    print ch 
+
+
+
 def build_defined_types_hierarchy(path, type_defs):
   deftypes = {}
   for f in type_defs:
@@ -426,7 +577,8 @@ def find_introduced_attribute(path):
 
 
 def identify_attribute_intro_types(identified, typehierarchy, attrs, new_requests):
-  global current_generation
+  global top_subtypes
+  current_generation = top_subtypes
   count_down_attrs = attrs
   new_requests.clear()
   i = 0
@@ -441,6 +593,7 @@ def identify_attribute_intro_types(identified, typehierarchy, attrs, new_request
       return False
     if len(count_down_attrs) == 0:
       return False
+    #temporary security if this takes too long (attributes of this kind are typically high up in the hierarchy)
     if i >= 100:
       return False
     i += 1
@@ -498,16 +651,34 @@ def process_instantiation_files(path, inst, type_defs):
     create_type_inventory(file, itypes) 
     file.close
   
-  global current_generation
-  current_generation.clear()
+  global top_subtypes
+  top_subtypes.clear()
   instantiatedset = identify_inst_types(itypes, typehierarchy, attributes)
+  
+ 
 
   add_subtype_values(typehierarchy)
+  add_inherited_constraints(typehierarchy)
+
   ###checking if instantiated types contain attributes that are not introduced
   #call function that starts at current_generation, checks for ATTR adds subtypes to new generation
   new_reqs = {}
   identify_attribute_intro_types(instantiatedset, typehierarchy, attributes, new_reqs)
   
+  
+
+#  transverb = typehierarchy['transitive-verb-lex']
+#  print "identifying constraints on transitive verb-lex"
+#  for k, v in transverb.compl_val_constr.iteritems():
+#    print k + " " + v
+#  for s in transverb.supertypes:
+#    print s
+#    my_s = typehierarchy[s]
+#    for sb in my_s.subtypes:
+#      print sb
+#    for k, v in my_s.compl_val_constr.iteritems():
+#      print k + " " + v
+
   instantiated_updated = instantiatedset
 
   update_req_types_based_on_atts(instantiated_updated, new_reqs, typehierarchy, attributes)
@@ -536,20 +707,6 @@ def process_instantiation_files(path, inst, type_defs):
   attributes.clear()
   itypes.clear()
 
-#  heck = open('2check.txt', 'a')
-#  for ins in instantiatedset:
-#    check.write(ins + ';')
-#    check.write('\n')
-#  check.close()
-
-
-#  output_file = open( 'output.txt' , 'w')
-#  for it in instantiatedset:
-#    output_file.write(it)
-#
-#  output_file.close()
-#    output_file = open( 'test.tdl' , 'w')
-  
 
 
 '''take script file as input and create an array of instantiating tdl files'''
