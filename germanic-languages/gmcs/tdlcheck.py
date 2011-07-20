@@ -76,6 +76,12 @@ class TDLdefined_type(object):
     else:
       self.val_constr.update([[att, v]])
 
+  def add_av_pair_tocl(self, att, v):
+    if att in self.compl_val_constr:
+      new_val = self.compl_val_constr[att] + " & " + v
+      self.compl_val_constr.update([[att, new_val]])
+    else:
+      self.compl_val_constr.update([[att, v]])
   #p is set of paths leading to marked up co-reference
   #coref is symbol used to mark coreference
   def add_coref_constraint(self, coref, p):
@@ -261,7 +267,7 @@ def interpret_av_emb_child(t, p, td):
       print "Problem: coreference type occurring with children"
     else:
       my_path = set([p])
-      td.add_coref_constraint(t, my_path)
+      td.add_coref_constraint(t.coref, my_path)
   elif isinstance(t, TDLelem_dlist):
     interpret_dlist(t, p, td)
   else:
@@ -364,10 +370,10 @@ def set_complete_constraints(t, thierarchy):
     if len(ct.compl_val_constr) == 0 and len(ct.compl_coind_constr) == 0:
       ct.compl_val_constr = dict(ct.val_constr)
       ct.compl_coind_constr = dict(ct.coind_constr)
-    for vc in my_t.val_constr.iterkeys():
+    for vc in my_t.compl_val_constr.iterkeys():
       if vc in ct.compl_val_constr:
         n_val = ct.compl_val_constr[vc]
-        o_val = my_t.val_constr[vc]
+        o_val = my_t.compl_val_constr[vc]
         if not o_val == n_val:
           if not is_difflist(n_val):
             n_t = thierarchy[n_val]
@@ -386,15 +392,11 @@ def set_complete_constraints(t, thierarchy):
           else:
             print "Diff-list issue for: " + sbt + " old value: " + o_val
       else:
-        ct.compl_val_constr[vc] = my_t.val_constr[vc]
+        val = my_t.compl_val_constr[vc]
+        ct.add_av_pair_tocl(vc, val)
+        #ct.compl_val_constr[vc] = my_t.val_constr[vc]
 
     set_complete_constraints(sbt, thierarchy)
-   # self.val_constr = {}
-   # self.coind_constr = {}
-   # self.compl_val_constr = {}
-   # self.compl_coind_constr = {}
-#should go top down through hierarchy, and add constraints from supertypes 
-#to their subtypes
 
 def is_subtype(t, suptypes, thierarchy):
   if len(suptypes) > 0:
@@ -414,6 +416,28 @@ def is_subtype(t, suptypes, thierarchy):
   else:
     return False
     
+
+def add_values_of_coindexed_constr(thierarchy):
+  for t in thierarchy.itervalues():
+    if len(t.compl_val_constr) > 0 and len(t.compl_coind_constr) > 0:
+      coinds = t.compl_coind_constr
+      for c in coinds.itervalues():
+        for p in c:
+          if p in t.compl_val_constr:
+            add_path_value_pairs(p, c, t.compl_val_constr)
+
+
+def add_path_value_pairs(p, c, compl_val_constr):
+  myval = compl_val_constr[p]
+  for ap in c:
+    if not ap == p:
+      if not ap in compl_val_constr:
+        compl_val_constr[ap] = myval
+      else:
+        pres_val = compl_val_constr[ap]
+        if not pres_val == myval:
+         print "Found: " + myval + " " + pres_val
+
 
 
 def separate_instantiated_non_instantiated(file, instset, sfset):
@@ -659,25 +683,22 @@ def process_instantiation_files(path, inst, type_defs):
 
   add_subtype_values(typehierarchy)
   add_inherited_constraints(typehierarchy)
-
+  add_values_of_coindexed_constr(typehierarchy)
   ###checking if instantiated types contain attributes that are not introduced
   #call function that starts at current_generation, checks for ATTR adds subtypes to new generation
   new_reqs = {}
   identify_attribute_intro_types(instantiatedset, typehierarchy, attributes, new_reqs)
   
-  
 
-#  transverb = typehierarchy['transitive-verb-lex']
-#  print "identifying constraints on transitive verb-lex"
-#  for k, v in transverb.compl_val_constr.iteritems():
-#    print k + " " + v
-#  for s in transverb.supertypes:
-#    print s
-#    my_s = typehierarchy[s]
-#    for sb in my_s.subtypes:
-#      print sb
-#    for k, v in my_s.compl_val_constr.iteritems():
-#      print k + " " + v
+  transverb = typehierarchy['transitive-verb-lex']
+  print "identifying constraints on transitive verb-lex"
+  for k, v in transverb.compl_val_constr.iteritems():
+    print k + " " + v
+  print "moving on to constraints: "
+  for k, v in transverb.compl_coind_constr.iteritems():
+    for p in v:
+      print p + " " + k
+
 
   instantiated_updated = instantiatedset
 
