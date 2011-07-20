@@ -27,6 +27,8 @@ from gmcs.tdl import TDLset_file
 ####global for sisters & cousins same generation in hierarchy
 current_generation = set()
 top_subtypes = set()
+atts_and_intro_type = {}
+
 
 class TDLdefined_type(object):
   def __init__(self, type, op):
@@ -174,9 +176,7 @@ def walk_through_instantiated(requested, identified, defined, atts):
 #for supertypes of defined type: add current type as subtype
 #add to my_types list
         for s in defined[rit].supertypes:
-          if s == '*top*':
-            top_subtypes.add(rit)
-          elif not s in defined:
+          if not s in defined and not s == "*top*":
             print s + ' listed as supertype not found in hierarchy'
           my_types.append(s)
 
@@ -200,6 +200,8 @@ def convert_elem_type_to_type_def(elem, typedef):
     if isinstance(ch, TDLelem_type):
       st = process_elementary_type(ch)
       typedef.add_supertype(st)
+      if st == "*top*":
+        top_subtypes.add(typedef.type)
 #call recursive function for all other children
     else:
       interpret_elemtype_children(ch, typedef)
@@ -350,7 +352,6 @@ def add_subtype_values(thierarchy):
 
 def add_inherited_constraints(thierarchy):
   global top_subtypes
-  current_types = top_subtypes
 
   for t in top_subtypes:
     set_complete_constraints(t, thierarchy)
@@ -368,6 +369,8 @@ def set_complete_constraints(t, thierarchy):
   for sbt in my_t.subtypes:
     ct = thierarchy[sbt]
     if len(ct.compl_val_constr) == 0 and len(ct.compl_coind_constr) == 0:
+#call attribute function here (is to be used once...)
+      add_avs_introduced_by_atts(ct, thierarchy)
       ct.compl_val_constr = dict(ct.val_constr)
       ct.compl_coind_constr = dict(ct.coind_constr)
     for vc in my_t.compl_val_constr.iterkeys():
@@ -375,20 +378,19 @@ def set_complete_constraints(t, thierarchy):
         n_val = ct.compl_val_constr[vc]
         o_val = my_t.compl_val_constr[vc]
         if not o_val == n_val:
-          if not is_difflist(n_val):
+          if not is_difflist(n_val) and not o_val == "*top*" and not is_difflist(o_val):
             n_t = thierarchy[n_val]
-            if not is_subtype(o_val, n_t.supertypes, thierarchy):
-              if not o_val == "*top*":
-                o_t = thierarchy[o_val]
-                if is_subtype(n_val, o_t.supertypes, thierarchy):
-                  if vc in ct.val_constr:
-                    print "more specific constraint was found on supertype of: " + ct.type
-                    print n_val
-                    print o_val
-                  else:
-                    ct.compl_val_constr[vc] = o_val
+            old_t = thierarchy[o_val]
+            if not is_subtype(n_t, old_t, thierarchy):
+              if is_subtype(old_t, n_t, thierarchy):
+                if vc in ct.val_constr:
+                  print "more specific constraint was found on supertype of: " + ct.type
+                  print n_val
+                  print o_val
                 else:
-                  print "Check up and new type required for: " + n_val + " and " + o_val
+                  ct.compl_val_constr[vc] = o_val
+              else:
+                print "Check up and new type required for: " + n_val + " and " + o_val
           else:
             print "Diff-list issue for: " + sbt + " old value: " + o_val
       else:
@@ -398,23 +400,169 @@ def set_complete_constraints(t, thierarchy):
 
     set_complete_constraints(sbt, thierarchy)
 
-def is_subtype(t, suptypes, thierarchy):
-  if len(suptypes) > 0:
-    tempcheck = []
-    for st in suptypes:
-      if st == t:
-        return True
-      else:
-        my_st = thierarchy[st]
-        for s in my_st.supertypes:
-          if not s == '*top*' and not s in suptypes:
-            tempcheck.append(s)
-        tempcheck.extend(suptypes)  
-        tempcheck.remove(st)
-        if is_subtype(t, tempcheck, thierarchy):
-          return True      
+
+def add_avs_introduced_by_atts(t, thierarchy):
+  paths = collect_paths(t)
+  for p in paths: 
+    determine_type_based_on_att(p, t, thierarchy)
+
+def collect_paths(t):
+  paths = set()
+  for p in t.val_constr.iterkeys():
+    paths.add(p)
+  for v in t.coind_constr.itervalues():
+    for p in v:
+      paths.add(p)
+  return paths
+
+def determine_type_based_on_att(path, t, thierarchy):
+  global atts_and_intro_type
+  atts = path.split('.')
+  if len(atts) > 1:
+    new_path = ""
+    for i in range(len(atts) - 1):
+      new_path += atts[i]
+      val = atts_and_intro_type[atts[i+1]]
+      if not new_path in t.val_constr:
+        t.add_att_val_pair(new_path, val)
+      elif not val == t.val_constr[new_path]:
+        old_val = t.val_constr[new_path]
+        if not is_difflist(old_val):
+          nv = thierarchy[val]
+          ov = thierarchy[old_val]
+          if is_subtype(nv, ov, thierarchy):
+            t.val_constr[new_path] = val
+          elif not is_subtype(ov, nv, thierarchy):
+            print old_val + " " + val + " are assigned to the same type"
+            print "but do not have a subtype-supertype relation..."
+      new_path += "."
+
+
+def determine_sub_sup_type(t1, t2, th):
+  if is_subtype(t1, t2, th):
+    return [t1, t2]
+  elif is_subtype(t2, t1, th):
+    return [t1, t2]
   else:
-    return False
+    print t1 + " " + t2 + " are assigned to the same type"
+    print "but do not have a subtype-supertype relation..."
+    return []
+ 
+
+def is_subtype(sub, sup, thierarchy):  
+  sts = sub.supertypes
+  if sup.type in sts:
+    return True
+  elif "*top*" in sts:
+    return False    
+  else:
+    for s in sts:
+      new_s = thierarchy[s]
+      if is_subtype(new_s, sup, thierarchy):
+        return True
+
+#    tempcheck = []
+#    if t in suptypes:
+#      return True
+#    else:
+#      for st in suptypes:
+#        my_st = thierarchy[st]
+#        for s in my_st.supertypes:
+#          if not s == '*top*' and not s in suptypes:
+#            tempcheck.append(s)
+#        tempcheck.extend(suptypes)  
+#        tempcheck.remove(st)
+#        i += 1
+#        if is_subtype(t, tempcheck, thierarchy, i):
+#          return True      
+#  else:
+#    return False
+
+
+def identify_attribute_introducing_types(thierarchy):
+  global top_subtypes
+  ati = set()
+  current_gen = set(top_subtypes)
+  old_gen = set()
+  i = 0
+
+  
+  while True:
+    if len(current_gen) < 1:
+      return False
+    if i >= 100:
+      return False
+    i += 1 
+    print i
+    next_gen = set()
+    for t in current_gen:
+      old_gen.add(t)
+      my_t = thierarchy[t]
+      found_atts = set()
+      found_atts = add_attribute_related_constraints(my_t, ati, thierarchy)
+      for st in my_t.subtypes:
+        if not st in old_gen:
+          next_gen.add(st)
+    current_gen.clear()
+    current_gen = next_gen 
+
+def introduce_attributes(t, thierarchy, atts_to_ignore): 
+  found_atts = set() 
+  found_atts = add_attribute_related_constraints(t, atts_to_ignore, thierarchy)
+  for fa in found_atts:
+    atts_to_ignore.add(fa)
+  for st in t.subtypes:
+    my_st = thierarchy[st]
+    introduce_attributes(my_st, thierarchy, atts_to_ignore)
+  for a in found_atts:
+    if a in atts_to_ignore:
+      atts_to_ignore.remove(a)
+
+def add_attribute_related_constraints(t, a_to_ignore, thierarchy):
+  global atts_and_intro_type
+  atts = set()
+  intro_atts = set()
+  for av in t.val_constr.iterkeys():
+    p = find_introduced_attribute(av)
+    atts.add(p)
+  for acs in t.coind_constr.itervalues():
+    for ac in acs:
+      p = find_introduced_attribute(ac)
+      atts.add(p)
+  for p in atts:
+    if not p in atts_and_intro_type:
+      atts_and_intro_type[p] = t.type
+      intro_atts.add(p)
+    else:
+      ided_t_name = atts_and_intro_type[p]
+      ided_t = thierarchy[ided_t_name]
+      if not ided_t.type == t.type:
+        stypes = ided_t.supertypes
+        if is_subtype(ided_t, t, thierarchy):      
+          atts_and_intro_type[p] = t.type
+          intro_atts.add(p)
+  return intro_atts
+
+#def is_subtype(t, suptypes, thierarchy, i):
+#  if i > 10:
+#    return False
+#  elif len(suptypes) > 0:
+#    tempcheck = []
+#    if t in suptypes:
+#      return True
+#    else:
+#      for st in suptypes:
+#        my_st = thierarchy[st]
+#        for s in my_st.supertypes:
+#          if not s == '*top*' and not s in suptypes:
+#            tempcheck.append(s)
+#        tempcheck.extend(suptypes)  
+#        tempcheck.remove(st)
+#        i += 1
+#        if is_subtype(t, tempcheck, thierarchy, i):
+#          return True      
+#  else:
+#    return False
     
 
 def add_values_of_coindexed_constr(thierarchy):
@@ -437,8 +585,6 @@ def add_path_value_pairs(p, c, compl_val_constr):
         pres_val = compl_val_constr[ap]
         if not pres_val == myval:
          print "Found: " + myval + " " + pres_val
-
-
 
 def separate_instantiated_non_instantiated(file, instset, sfset):
   print file.name
@@ -595,10 +741,11 @@ def build_defined_types_hierarchy(path, type_defs):
 # if necessary: integrate check
 def find_introduced_attribute(path):
   ats = path.split('.')
-  if len(ats) <= 1:
+  if len(ats) < 1:
     return path
-
-
+  else:
+    return ats[0]
+    
 
 def identify_attribute_intro_types(identified, typehierarchy, attrs, new_requests):
   global top_subtypes
@@ -608,9 +755,9 @@ def identify_attribute_intro_types(identified, typehierarchy, attrs, new_request
   i = 0
 
 ###exception for HEAD-DTR introduced by headed-phrase
-  if 'headed-phrase' in identified:
-    if 'HEAD-DTR' in count_down_attrs:
-      count_down_attrs.remove('HEAD-DTR')
+#  if 'headed-phrase' in identified:
+#    if 'HEAD-DTR' in count_down_attrs:
+#      count_down_attrs.remove('HEAD-DTR')
 
   while True:
     if len(current_generation) < 1:
@@ -661,35 +808,47 @@ def update_req_types_based_on_atts(instantiated_updated, new_reqs, typehierarchy
 ####depending on structure: change name of function...
 def process_instantiation_files(path, inst, type_defs):
 
+  global top_subtypes
+  top_subtypes.clear()
+  global atts_and_intro_type
+  atts_and_intro_type.clear()
   typehierarchy = {}
   for dtf in type_defs:
     file = open ( path + '/' + dtf)
 #    separate_instantiated_non_instantiated(file, instantiatedset, superflset)
     create_type_inventory(file, typehierarchy)
     file.close()  
-
-  itypes = {}
+  
   attributes = set()
+  itypes = {}
   for f in inst:
     file = open( path + '/' + f )
     create_type_inventory(file, itypes) 
     file.close
-  
-  global top_subtypes
-  top_subtypes.clear()
-  instantiatedset = identify_inst_types(itypes, typehierarchy, attributes)
-  
  
 
   add_subtype_values(typehierarchy)
+  identify_attribute_introducing_types(typehierarchy)
   add_inherited_constraints(typehierarchy)
   add_values_of_coindexed_constr(typehierarchy)
+
+  test = typehierarchy['avm']
+  if len(test.supertypes) > 0:
+    for tst in test.supertypes:
+      print "AVM has: " + tst
+  else:
+    print "Well, that explains..."
   ###checking if instantiated types contain attributes that are not introduced
   #call function that starts at current_generation, checks for ATTR adds subtypes to new generation
+  instantiatedset = identify_inst_types(itypes, typehierarchy, attributes)
   new_reqs = {}
   identify_attribute_intro_types(instantiatedset, typehierarchy, attributes, new_reqs)
   
+  output = open("check_a_intro.txt", 'w')
+  for k, v in atts_and_intro_type.iteritems():
+    output.write(k + " " + v + "\n")
 
+  output.close()
   transverb = typehierarchy['transitive-verb-lex']
   print "identifying constraints on transitive verb-lex"
   for k, v in transverb.compl_val_constr.iteritems():
