@@ -28,7 +28,7 @@ from gmcs.tdl import TDLset_file
 current_generation = set()
 top_subtypes = set()
 atts_and_intro_type = {}
-
+supts_comm_subts = {}
 
 class TDLdefined_type(object):
   def __init__(self, type, op):
@@ -72,17 +72,9 @@ class TDLdefined_type(object):
       self.attributes.append(attr_name)
 
   def add_att_val_pair(self, att, v):
-    if att in self.val_constr:
-      new_val = self.val_constr[att] + " & " + v
-      self.val_constr.update([[att, new_val]])
-    else:
-      self.val_constr.update([[att, v]])
+    self.val_constr.update([[att, v]])
 
   def add_av_pair_tocl(self, att, v):
-    if att in self.compl_val_constr:
-      new_val = self.compl_val_constr[att] + " & " + v
-      self.compl_val_constr.update([[att, new_val]])
-    else:
       self.compl_val_constr.update([[att, v]])
   #p is set of paths leading to marked up co-reference
   #coref is symbol used to mark coreference
@@ -103,26 +95,6 @@ def partOfComment(line, flag):
 
   return flag
 
-
-def create_type_dict_from_tdl(file, type_dict, att):
-  lines = file.readlines()
-  file.close()
-  temp_descr = ''
-  flag = 0
-  for line in lines:
-    flag = partOfComment(line, flag)
-
-    if not ((re.match('\s*;', line)) or (flag == 1)):
-#Ignoring comments, okay at this stage: just processing the types
-      line = re.sub( r';.*', '', line )
-      temp_descr += line
-#search for potential end of description
-      if re.search('\.\s*\n',  line):
-        description = temp_descr
-        temp_descr = ''
-        tdl_object = TDLparse(description)
-        type_dict[tdl_object.type] = tdl_object      
-        collect_attributes(tdl_object, att)
 
 def identify_inst_types(itypes, deftypes, attributes, id_inst_types = set()):
   #set of elementary types requested by instantiated types
@@ -173,6 +145,9 @@ def walk_through_instantiated(requested, identified, defined, atts):
           atts.add(a)
 #create list of defined type's value
         my_types = defined[rit].values
+        for v in defined[rit].compl_val_constr.itervalues():
+          if v not in my_types:
+            my_types.append(v)
 #for supertypes of defined type: add current type as subtype
 #add to my_types list
         for s in defined[rit].supertypes:
@@ -187,24 +162,12 @@ def walk_through_instantiated(requested, identified, defined, atts):
           if not (nt in identified or nt in requested):
             new_rit.add(nt)
         temp_rit.clear()
-    elif not rit == '*top*':
+    elif not rit == '*top*' and not re.match('<!*', rit):
       print "Problem: somehow the following type is requested but not defined:"
       print rit
   if len(new_rit) > 0:
     walk_through_instantiated(new_rit, identified, defined, atts)
 
-'interprets children of TDLelem_typedef and adds them to object of type TDLdefined_type'
-def convert_elem_type_to_type_def(elem, typedef):
-  for ch in elem.child:
-#check for not embedded elementary types: these are supertypes
-    if isinstance(ch, TDLelem_type):
-      st = process_elementary_type(ch)
-      typedef.add_supertype(st)
-      if st == "*top*":
-        top_subtypes.add(typedef.type)
-#call recursive function for all other children
-    else:
-      interpret_elemtype_children(ch, typedef)
 
 def interpret_elemtype_children(elem, typedef):
   if isinstance(elem, TDLelem_av):
@@ -346,7 +309,8 @@ def add_subtype_values(thierarchy):
       if s in thierarchy:
         my_suptype = thierarchy[s]
         my_suptype.add_subtype(t.type)
-      elif not s == "*top*":
+###note: 'null' as a supertype gets converted to None...
+      elif not s == "*top*" and not s == None:
         print s 
         print " is identified as supertype but not defined in the hierarchy" 
 
@@ -365,6 +329,7 @@ def is_difflist(t):
 
 
 def set_complete_constraints(t, thierarchy):
+  global supts_comm_subts
   my_t = thierarchy[t]
   for sbt in my_t.subtypes:
     ct = thierarchy[sbt]
@@ -384,15 +349,19 @@ def set_complete_constraints(t, thierarchy):
             if not is_subtype(n_t, old_t, thierarchy):
               if is_subtype(old_t, n_t, thierarchy):
                 if vc in ct.val_constr:
-                  print "more specific constraint was found on supertype of: " + ct.type
-                  print n_val
-                  print o_val
+                  if vc in ct.values:
+                    print "more specific constraint was found on supertype of: " + ct.type + ":\n"
+                    print n_val + " introduced on lower type than " + o_val + "\n"
                 else:
                   ct.compl_val_constr[vc] = o_val
               else:
-                print "Check up and new type required for: " + n_val + " and " + o_val
-          else:
-            print "Diff-list issue for: " + sbt + " old value: " + o_val
+                jointtype = n_val + o_val
+                if not jointtype in supts_comm_subts:
+                  assign_subt_seem_confl_vals(n_t, old_t, thierarchy)
+                val = supts_comm_subts[jointtype]
+                ct.add_av_pair_tocl(vc, val)
+       #   else:
+       #     print "Diff-list issue for: " + sbt + " old value: " + o_val
       else:
         val = my_t.compl_val_constr[vc]
         ct.add_av_pair_tocl(vc, val)
@@ -400,6 +369,68 @@ def set_complete_constraints(t, thierarchy):
 
     set_complete_constraints(sbt, thierarchy)
 
+
+def assign_subt_seem_confl_vals(t1, t2, thierarchy):
+  search = t1.type + t2.type
+  if not search in supts_comm_subts:
+    comm_sts = find_common_subtype(t1, t2, thierarchy)
+    if len(comm_sts) > 1:
+      found1 = t1.type + t2.type
+      found2 = t2.type + t1.type
+###################to do: must determine somehow which type to take....HACK we know this occurs in infl-left-coord-rule, where it must be the second
+      supts_comm_subts[found1] = comm_sts[1]
+      supts_comm_subts[found2] = comm_sts[1]
+    elif len(comm_sts) ==1:
+      found1 = t1.type + t2.type
+      found2 = t1.type + t2.type
+      supts_comm_subts[found1] = comm_sts[0]
+      supts_comm_subts[found2] = comm_sts[0]
+###########HACK2: now just randomly assigning one of the two types, when nothing
+#found
+    else:
+      supts_comm_subst[found1] = t1.type
+      supts_comm_subst[found2] = t2.type
+
+def find_common_subtype(t1, t2, thierarchy):
+  commontypes = []
+  for sbt in t1.subtypes:
+    st = thierarchy[sbt]
+    if t2.type in st.supertypes:
+      commontypes.append(sbt)
+  if len(commontypes) > 0:
+    return commontypes
+  else:
+    ct1 = search_hierarchy_for_common_st(t1, t2, thierarchy)
+    ct2 = search_hierarchy_for_common_st(t2, t1, thierarchy)
+    same = True
+    for e in ct1:
+      if e in ct2:
+        ct2.remove(e)
+      else:
+        same = False
+    if len(ct2) > 0:
+      same = False
+    if same:
+      return ct1
+    else:
+      print "Method leads to different results depending on order..."
+      return commontypes
+
+
+def search_hierarchy_for_common_st(t1, t2, thierarchy):
+  c_subts = []
+  for sbt in t1.subtypes:
+    st = thierarchy[sbt]
+    if is_subtype(st, t2, thierarchy):
+      c_subts.append(sbt)
+  if len(c_subts) > 0:
+    return c_subts
+  else:
+    for sbt in t1.subtypes:
+      st = thierarchy[sbt]
+      c_subts = search_hierarchy_for_common_st(st, t2, thierarchy)
+    if len(c_subts) > 0:
+      return c_subts
 
 def add_avs_introduced_by_atts(t, thierarchy):
   paths = collect_paths(t)
@@ -432,9 +463,13 @@ def determine_type_based_on_att(path, t, thierarchy):
           ov = thierarchy[old_val]
           if is_subtype(nv, ov, thierarchy):
             t.val_constr[new_path] = val
-          elif not is_subtype(ov, nv, thierarchy):
-            print old_val + " " + val + " are assigned to the same type"
-            print "but do not have a subtype-supertype relation..."
+          elif not is_subtype(ov, nv, thierarchy): 
+            jointtype = val + old_val
+            if not jointtype in supts_comm_subts:
+              assign_subt_seem_confl_vals(nv, ov, thierarchy)
+            val = supts_comm_subts[jointtype]
+            t.val_constr[new_path] = val
+
       new_path += "."
 
 
@@ -461,22 +496,6 @@ def is_subtype(sub, sup, thierarchy):
       if is_subtype(new_s, sup, thierarchy):
         return True
 
-#    tempcheck = []
-#    if t in suptypes:
-#      return True
-#    else:
-#      for st in suptypes:
-#        my_st = thierarchy[st]
-#        for s in my_st.supertypes:
-#          if not s == '*top*' and not s in suptypes:
-#            tempcheck.append(s)
-#        tempcheck.extend(suptypes)  
-#        tempcheck.remove(st)
-#        i += 1
-#        if is_subtype(t, tempcheck, thierarchy, i):
-#          return True      
-#  else:
-#    return False
 
 
 def identify_attribute_introducing_types(thierarchy):
@@ -493,7 +512,6 @@ def identify_attribute_introducing_types(thierarchy):
     if i >= 100:
       return False
     i += 1 
-    print i
     next_gen = set()
     for t in current_gen:
       old_gen.add(t)
@@ -543,27 +561,7 @@ def add_attribute_related_constraints(t, a_to_ignore, thierarchy):
           intro_atts.add(p)
   return intro_atts
 
-#def is_subtype(t, suptypes, thierarchy, i):
-#  if i > 10:
-#    return False
-#  elif len(suptypes) > 0:
-#    tempcheck = []
-#    if t in suptypes:
-#      return True
-#    else:
-#      for st in suptypes:
-#        my_st = thierarchy[st]
-#        for s in my_st.supertypes:
-#          if not s == '*top*' and not s in suptypes:
-#            tempcheck.append(s)
-#        tempcheck.extend(suptypes)  
-#        tempcheck.remove(st)
-#        i += 1
-#        if is_subtype(t, tempcheck, thierarchy, i):
-#          return True      
-#  else:
-#    return False
-    
+
 
 def add_values_of_coindexed_constr(thierarchy):
   for t in thierarchy.itervalues():
@@ -572,10 +570,10 @@ def add_values_of_coindexed_constr(thierarchy):
       for c in coinds.itervalues():
         for p in c:
           if p in t.compl_val_constr:
-            add_path_value_pairs(p, c, t.compl_val_constr)
+            add_path_value_pairs(p, c, t.compl_val_constr, thierarchy)
 
 
-def add_path_value_pairs(p, c, compl_val_constr):
+def add_path_value_pairs(p, c, compl_val_constr, th):
   myval = compl_val_constr[p]
   for ap in c:
     if not ap == p:
@@ -584,7 +582,12 @@ def add_path_value_pairs(p, c, compl_val_constr):
       else:
         pres_val = compl_val_constr[ap]
         if not pres_val == myval:
-         print "Found: " + myval + " " + pres_val
+          pv = th[pres_val]
+          mv = th[myval]
+          if is_subtype(mv, pv, th):
+            compl_val_constr[ap] = myval
+          elif not is_subtype(pv, mv, th):
+            print "To fix: found values assigned by coindeces that are not in a sub-supertype-relation"
 
 def separate_instantiated_non_instantiated(file, instset, sfset):
   print file.name
@@ -631,100 +634,6 @@ def separate_instantiated_non_instantiated(file, instset, sfset):
   output.close()
   dump_output.close()
   check.close()
-
-
-def create_type_inventory(file, deftypes):
-
-  lines = file.readlines()
-  file.close()
-  temp_descr = ''
-  flag = 0
-  for line in lines:
-    flag = partOfComment(line, flag)
-
-    if not ((re.match('\s*;', line)) or (flag == 1)):
-#Ignoring comments, okay at this stage: just processing the types
-      line = re.sub( r';.*', '', line )
-      temp_descr += line
-#search for potential end of description
-      if re.search('\.\s*\n',  line):
-        description = temp_descr
-        temp_descr = ''
-        tdl_object = TDLparse(description)
-        tdldef = TDLdefined_type(tdl_object.type, tdl_object.op)
-        #parse tdl_object to obtain further info on type
-        if len(tdl_object.child) == 1:
-          t = tdl_object.child[0]
-          convert_elem_type_to_type_def(t, tdldef)
-          deftypes[tdldef.type] = tdldef   
-        else:
-          print "Problem: general typedef has more than one child"
-
-
-
-def temp_function_checking_lists(tdl_object):
-  print tdl_object.type
-  print tdl_object.op
-  print len(tdl_object.child)
-  my_ch = tdl_object.child[0]
-  print my_ch
-  print "first child"
-  print len(my_ch.child)
-  gr_ch1 = my_ch.child[0]
-  print "supertype: " + gr_ch1.type
-  gr_ch2 = my_ch.child[1]
-  grgr_ch1 = gr_ch2.child[0]
-  print grgr_ch1.attr
-  ch1_1 = grgr_ch1.child[0]
-  print len(ch1_1.child)
-  ch1_1_1 = ch1_1.child[0]
-  print len(ch1_1_1.child)
-  ch1_1_1_1 = ch1_1_1.child[0]
-  print len(ch1_1_1_1.child)
-  print ch1_1_1_1.attr
-  ch5 = ch1_1_1_1.child[0]
-  print len(ch5.child)
-  ch6 = ch5.child[0]
-  print len(ch6.child)
-  ch7 = ch6.child[0]
-  print ch7.attr
-  print len(ch7.child)
-  ch8 = ch7.child[0]
-  print len(ch8.child)
-  ch9 = ch8.child[0]
-  print len(ch9.child)
-  ch10a = ch9.child[0]
-  print ch10a.attr
-  ch11a = ch10a.child[0]
-  ch12a = ch11a.child[0]
-  print ch12a.coref
-  ch10b = ch9.child[1]
-  print ch10b.attr
-  ch11b = ch10b.child[0]
-  ch12b = ch11b.child[0]
-  print ch12b.coref
-
-  ch10c = ch9.child[2]
-  print ch10c.attr
-  ch11c = ch10c.child[0]
-  ch12c = ch11c.child[0]
-  print ch12c.coref
-
-  ch1_1_1_2 = ch1_1_1.child[1]
-  print ch1_1_1_2.attr
-  ch11121 = ch1_1_1_2.child[0]
-  ch111211 = ch11121.child[0]
-  print ch111211.type
-
-  grgr_ch2 = gr_ch2.child[1]
-  print grgr_ch2.attr
-  print len(grgr_ch2.child)
-  ch2_1 = grgr_ch2.child[0]
-  ch2_1_1 = ch2_1.child[0]
-  print ch2_1_1.empty_list
-  print len(ch2_1_1.child)
-  for ch in (ch2_1_1.child):
-    print ch 
 
 
 
@@ -805,6 +714,43 @@ def update_req_types_based_on_atts(instantiated_updated, new_reqs, typehierarchy
       new_reqs.clear()
 
 
+def remove_redundant_labels(file, iset, alist):
+
+  lines = file.readlines()
+  file.close()
+  output = open(file.name, 'w')
+  temp_descr = ''
+  flag = 0
+  for line in lines:
+    
+    flag = partOfComment(line, flag)
+
+    if not ((re.match('\s*;', line)) or (flag == 1)):
+
+      line = re.sub( r';.*', '', line )
+      temp_descr += line
+#search for potential end of description
+      if re.search('\.\s*\n',  line):
+        description = temp_descr
+        temp_descr = ''
+        tdl_object = TDLparse(description)
+
+        tdldef = TDLdefined_type(tdl_object.type, tdl_object.op)
+        #parse tdl_object to obtain further info on type
+        if len(tdl_object.child) == 1:
+          t = tdl_object.child[0]
+          convert_elem_type_to_type_def(t, tdldef)
+        keep = True
+        for a in tdldef.attributes:
+          if not a in alist:
+            keep = False
+        for v in tdldef.values:
+          if not v in iset:
+            keep = False
+        if keep:
+          output.write(description + '\n')
+  output.close()
+
 ####depending on structure: change name of function...
 def process_instantiation_files(path, inst, type_defs):
 
@@ -818,63 +764,51 @@ def process_instantiation_files(path, inst, type_defs):
 #    separate_instantiated_non_instantiated(file, instantiatedset, superflset)
     create_type_inventory(file, typehierarchy)
     file.close()  
-  
+   
+
   attributes = set()
   itypes = {}
   for f in inst:
     file = open( path + '/' + f )
     create_type_inventory(file, itypes) 
     file.close
- 
+
 
   add_subtype_values(typehierarchy)
   identify_attribute_introducing_types(typehierarchy)
   add_inherited_constraints(typehierarchy)
   add_values_of_coindexed_constr(typehierarchy)
-
-  test = typehierarchy['avm']
-  if len(test.supertypes) > 0:
-    for tst in test.supertypes:
-      print "AVM has: " + tst
-  else:
-    print "Well, that explains..."
+  
   ###checking if instantiated types contain attributes that are not introduced
   #call function that starts at current_generation, checks for ATTR adds subtypes to new generation
   instantiatedset = identify_inst_types(itypes, typehierarchy, attributes)
   new_reqs = {}
-  identify_attribute_intro_types(instantiatedset, typehierarchy, attributes, new_reqs)
-  
+#  identify_attribute_intro_types(instantiatedset, typehierarchy, attributes, new_reqs)
+#  print len(attributes)
+#  print "identify attribute_intro_types"  
+
   output = open("check_a_intro.txt", 'w')
   for k, v in atts_and_intro_type.iteritems():
     output.write(k + " " + v + "\n")
 
   output.close()
-  transverb = typehierarchy['transitive-verb-lex']
-  print "identifying constraints on transitive verb-lex"
-  for k, v in transverb.compl_val_constr.iteritems():
-    print k + " " + v
-  print "moving on to constraints: "
-  for k, v in transverb.compl_coind_constr.iteritems():
-    for p in v:
-      print p + " " + k
-
-
-  instantiated_updated = instantiatedset
-
-  update_req_types_based_on_atts(instantiated_updated, new_reqs, typehierarchy, attributes)
-
-  
+#  transverb = typehierarchy['transitive-verb-lex']
 
   superflset = set()
   for k in typehierarchy.iterkeys():
-    if not k in instantiated_updated:
+    if not k in instantiatedset:
       superflset.add(k)
 
   for tf in type_defs:
     file = open ( path + '/' + tf)
-    separate_instantiated_non_instantiated(file, instantiated_updated, superflset)
+    separate_instantiated_non_instantiated(file, instantiatedset, superflset)
     file.close()  
+    
 
+  script = open(path + "/lkb/script")
+  labelsfile = identify_label_file(script) 
+  file = open (path + '/' + labelsfile)
+  remove_redundant_labels(file, instantiatedset, attributes)
 
   
   print "identified: " 
@@ -888,6 +822,57 @@ def process_instantiation_files(path, inst, type_defs):
   itypes.clear()
 
 
+def process_script(path):
+  script = open( path + '/lkb/script' )   
+  inst = identify_instantiation_files(script)
+  script.close()
+  script = open( path + '/lkb/script' )
+  type_defs = identify_type_def_files(script)
+  script.close()
+  process_instantiation_files(path, inst, type_defs)
+
+
+
+##########################################################
+#
+# Functions that are handling the files
+#
+
+#
+# Retrieving information from files
+#
+
+def create_type_inventory(file, deftypes):
+
+  lines = file.readlines()
+  file.close()
+  temp_descr = ''
+  flag = 0
+  for line in lines:
+    flag = partOfComment(line, flag)
+
+    if not ((re.match('\s*;', line)) or (flag == 1)):
+#Ignoring comments, okay at this stage: just processing the types
+      line = re.sub( r';.*', '', line )
+      temp_descr += line
+#search for potential end of description
+      if re.search('\.\s*\n',  line):
+        description = temp_descr
+        temp_descr = ''
+        tdl_object = TDLparse(description)
+        tdldef = TDLdefined_type(tdl_object.type, tdl_object.op)
+        #parse tdl_object to obtain further info on type
+        if len(tdl_object.child) == 1:
+          t = tdl_object.child[0]
+          convert_elem_type_to_type_def(t, tdldef)
+          deftypes[tdldef.type] = tdldef   
+        else:
+          print "Problem: general typedef has more than one child"
+
+
+#
+# Identifying files based on scripts
+#
 
 '''take script file as input and create an array of instantiating tdl files'''
 def identify_instantiation_files(script):
@@ -933,15 +918,41 @@ def identify_type_def_files(script):
       td = True 
   return defined_types
 
-def process_script(path):
-  script = open( path + '/lkb/script' )   
-  inst = identify_instantiation_files(script)
-  script.close()
-  script = open( path + '/lkb/script' )
-  type_defs = identify_type_def_files(script)
-  script.close()
-  process_instantiation_files(path, inst, type_defs)
 
+def identify_label_file(script):
+  script_lines = script.readlines()
+  for line in script_lines:
+    if re.match('\(read-tdl-parse-node-file-aux', line):
+      parts = re.split('\"', line)
+      if len(parts) > 1:
+        return parts[1]
+  return ""
+
+###########################################################
+#
+# Fuctions that retrieve information from TDLtypedef
+#
+
+
+
+###########################################################
+#
+# Functions that interpret objects from tdl.py
+#
+
+
+'interprets children of TDLelem_typedef and adds them to object of type TDLdefined_type'
+def convert_elem_type_to_type_def(elem, typedef):
+  for ch in elem.child:
+#check for not embedded elementary types: these are supertypes
+    if isinstance(ch, TDLelem_type):
+      st = process_elementary_type(ch)
+      typedef.add_supertype(st)
+      if st == "*top*":
+        top_subtypes.add(typedef.type)
+#call recursive function for all other children
+    else:
+      interpret_elemtype_children(ch, typedef)
 
 
 #####NOTES##########
@@ -961,3 +972,32 @@ def process_script(path):
 # 2. dlist interpretation is not finished: no interpretation of complex values
 # - must do similar things as for av_interpretation, without directly modifying typehierarchy
 # - larger operation: see if code can be shared between av for type and av for dlist...      
+
+
+
+#####################################################################
+#
+# Function that are currently not used
+#
+
+'''Takes input file, identifies type definitions and adds them to a provided dictionary, where the type-name is the key and the TDLelem as defined in tdl.py is its value. 'atts' registers attribute names found in the type definitions'''
+def create_type_dict_from_tdl(file, type_dict, att):
+  lines = file.readlines()
+  file.close()
+  temp_descr = ''
+  flag = 0
+  for line in lines:
+    flag = partOfComment(line, flag)
+
+    if not ((re.match('\s*;', line)) or (flag == 1)):
+#Ignoring comments, okay at this stage: just processing the types
+      line = re.sub( r';.*', '', line )
+      temp_descr += line
+#search for potential end of description
+      if re.search('\.\s*\n',  line):
+        description = temp_descr
+        temp_descr = ''
+        tdl_object = TDLparse(description)
+        type_dict[tdl_object.type] = tdl_object      
+        collect_attributes(tdl_object, att)
+

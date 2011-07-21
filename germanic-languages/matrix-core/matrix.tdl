@@ -1801,8 +1801,7 @@ basic-marker-comp-phrase := basic-binary-marker-phrase &
                       NON-LOCAL [ SLASH #slash,
                                   REL #rel,
                                   QUE #que ] ],
-    NON-MARKER-DTR.SYNSEM canonical-synsem & #synsem  & 
-                                      [ LOCAL.COORD - ],
+    NON-MARKER-DTR.SYNSEM canonical-synsem & #synsem,
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ] ].
 
@@ -2823,8 +2822,7 @@ basic-conj-lex := basic-zero-arg & no-hcons-lex-item &
   [ CFORM string ].
 
 conj-lex := basic-conj-lex & single-rel-lex-item &
-  [ CFORM string,
-    SYNSEM [ LOCAL [ CAT [ HEAD conj & [ MOD null ],
+  [ SYNSEM [ LOCAL [ CAT [ HEAD conj & [ MOD null ],
                            VAL [ SPR < >,
                                  COMPS < >,
                                  SUBJ < > ]],
@@ -2885,7 +2883,7 @@ unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
     C-CONT [ HOOK [ INDEX #rind ],
 	     RELS <! #crel !>,
 	     HCONS <! !> ],
-    NONCONJ-DTR sign & #ncdtr,
+    NONCONJ-DTR #ncdtr,
     ARGS < #ncdtr & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
                                            VAL #val ],
                                      COORD -,
@@ -2917,10 +2915,10 @@ binary-bottom-coord-rule := bottom-coord-phrase & binary-phrase &
 	     HCONS <! !> ],
     CONJ-DTR conj-lex & [ CFORM #cform,
                           SYNSEM.LKEYS.KEYREL #crel ],
-    NONCONJ-DTR sign & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+    NONCONJ-DTR.SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
                                               VAL #val ],
                                         COORD -,
-                                        CONT.HOOK [ INDEX #rind ]]]].
+                                        CONT.HOOK [ INDEX #rind ]]].
 
 conj-first-bottom-coord-rule := binary-bottom-coord-rule &
   [ CONJ-DTR #cdtr,
@@ -2999,10 +2997,10 @@ omni-binary-bottom-coord-rule := bottom-coord-phrase & binary-phrase &
 	     RELS <! !>,
 	     HCONS <! !> ],
     CONJ-DTR nosem-conj-lex & [ CFORM #cform ],
-    NONCONJ-DTR sign & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
-                                              VAL #val ],
-                                        COORD -,
-                                        CONT.HOOK [ INDEX #rind ]]]].
+    NONCONJ-DTR.SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                                     VAL #val ],
+                                     COORD -,
+                                     CONT.HOOK [ INDEX #rind ]]].
 
 omni-conj-first-bottom-coord-rule := omni-binary-bottom-coord-rule &
   [ CONJ-DTR #cdtr,
