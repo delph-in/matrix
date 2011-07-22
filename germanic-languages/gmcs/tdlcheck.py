@@ -205,37 +205,6 @@ def is_difflist(t):
     return False
 
 
-
-def assign_subt_seem_confl_vals(t1, t2, thierarchy):
-  search = t1.type + t2.type
-  if not search in supts_comm_subts:
-    comm_sts = find_common_subtype(t1, t2, thierarchy)
-    if comm_sts == None:
-      print "Some problem occurred working on " + t1.type + " and " + t2.type
-    elif len(comm_sts) > 1:
-      found1 = t1.type + t2.type
-      found2 = t2.type + t1.type
-###################to do: must determine somehow which type to take....HACK we know this occurs in infl-left-coord-rule, where it must be the second
-      val = ""
-      for cst in comm_sts:
-        val += cst + ";"
-      val.strip(';')
-      print "Just created: " + val
-      supts_comm_subts[found1] = comm_sts[1]
-      supts_comm_subts[found2] = comm_sts[1]
-    elif len(comm_sts) ==1:
-      found1 = t1.type + t2.type
-      found2 = t1.type + t2.type
-      supts_comm_subts[found1] = comm_sts[0]
-      supts_comm_subts[found2] = comm_sts[0]
-###########HACK2: now just randomly assigning one of the two types, when nothing
-#found
-    else:
-      found1 = t1.type + t2.type
-      found2 = t1.type + t2.type
-      supts_comm_subts[found1] = t1.type
-      supts_comm_subts[found2] = t1.type
-
 def find_common_subtype(t1, t2, thierarchy):
   commontypes = []
   for sbt in t1.subtypes:
@@ -286,10 +255,6 @@ def search_hierarchy_for_common_st(t1, t2, thierarchy):
       print "WTF?: " + t1.type + " and " + t2.type
       return c_subts
 
-def add_avs_introduced_by_atts(t, thierarchy):
-  paths = collect_paths(t)
-  for p in paths: 
-    determine_type_based_on_att(p, t, thierarchy)
 
 def collect_paths(t):
   paths = set()
@@ -299,36 +264,6 @@ def collect_paths(t):
     for p in v:
       paths.add(p)
   return paths
-
-def determine_type_based_on_att(path, t, thierarchy):
-  global atts_and_intro_type
-  atts = path.split('.')
-  if len(atts) > 1:
-    new_path = ""
-    for i in range(len(atts) - 1):
-      new_path += atts[i]
-      if atts[i+1] in atts_and_intro_type:
-        val = atts_and_intro_type[atts[i+1]]
-        if not new_path in t.val_constr:
-          t.add_att_val_pair(new_path, val)
-        elif not val == t.val_constr[new_path]:
-          old_val = t.val_constr[new_path]
-          if not is_difflist(old_val):
-            nv = thierarchy[val]
-            ov = thierarchy[old_val]
-            if is_subtype(nv, ov, thierarchy):
-              t.val_constr[new_path] = val
-            elif not is_subtype(ov, nv, thierarchy): 
-              jointtype = val + old_val
-              if not jointtype in supts_comm_subts:
-                if val == 'canonical-synsem' or old_val == 'canonical-synsem':
-                  print "ABOUT TO CALL FUNCTION for: " + val + " AND " + old_val + " on " + new_path + " for " + t.type
-                assign_subt_seem_confl_vals(nv, ov, thierarchy)
-              val = supts_comm_subts[jointtype]
-              t.val_constr[new_path] = val
-     # else:
-     #   print atts[i+1] + " not in atts_intro_type when asked..."     
-      new_path += "."
 
 
 def determine_sub_sup_type(t1, t2, th):
@@ -342,34 +277,6 @@ def determine_sub_sup_type(t1, t2, th):
     return []
  
 
-
-
-
-def add_values_of_coindexed_constr(thierarchy):
-  for t in thierarchy.itervalues():
-    if len(t.compl_val_constr) > 0 and len(t.compl_coind_constr) > 0:
-      coinds = t.compl_coind_constr
-      for c in coinds.itervalues():
-        for p in c:
-          if p in t.compl_val_constr:
-            add_path_value_pairs(p, c, t.compl_val_constr, thierarchy)
-
-
-def add_path_value_pairs(p, c, compl_val_constr, th):
-  myval = compl_val_constr[p]
-  for ap in c:
-    if not ap == p:
-      if not ap in compl_val_constr:
-        compl_val_constr[ap] = myval
-      else:
-        pres_val = compl_val_constr[ap]
-        if not pres_val == myval:
-          pv = th[pres_val]
-          mv = th[myval]
-          if is_subtype(mv, pv, th):
-            compl_val_constr[ap] = myval
-          elif not is_subtype(pv, mv, th):
-            print "To fix: found values assigned by coindeces that are not in a sub-supertype-relation"
 
 def separate_instantiated_non_instantiated(file, instset, sfset):
   print file.name
@@ -567,6 +474,9 @@ def process_instantiation_files(path, inst, type_defs):
   print "about to identify which values are instantiated..."
   ###checking if instantiated types contain attributes that are not introduced
   #call function that starts at current_generation, checks for ATTR adds subtypes to new generation
+
+######CLEANING BREAK....
+
   instantiatedset = identify_inst_types(itypes, typehierarchy, attributes)
   new_reqs = {}
   
@@ -718,6 +628,10 @@ def add_inherited_constraints(thierarchy):
   for t in top_subtypes:
     set_complete_constraints(t, thierarchy)
 
+'''Function going top down through hierarchy, adding complete val & coind constraints from supertypes to
+compl_val_constr and compl_coind_constr of all their subtypes'''
+###TODO: less operations are necessary if walk through is done generation-wise rather than recursively going down
+###through all subtypes
 def set_complete_constraints(t, thierarchy):
   global supts_comm_subts
   my_t = thierarchy[t]
@@ -747,23 +661,121 @@ def set_complete_constraints(t, thierarchy):
               else:
                 jointtype = n_val + o_val
                 if not jointtype in supts_comm_subts:
-                  if n_val == 'canonical-synsem' or o_val == 'canonical-synsem':
-                    print "CALLING FOR: " + n_val + " AND " + o_val + " : " + ct.type
                   assign_subt_seem_confl_vals(n_t, old_t, thierarchy)
                 if jointtype in supts_comm_subts:
                   val = supts_comm_subts[jointtype]
                   ct.add_av_pair_tocl(vc, val)
                 else:
                   print "Something happened with " + jointtype
-       #   else:
-       #     print "Diff-list issue for: " + sbt + " old value: " + o_val
       else:
         val = my_t.compl_val_constr[vc]
         ct.add_av_pair_tocl(vc, val)
-        #ct.compl_val_constr[vc] = my_t.val_constr[vc]
 
     set_complete_constraints(sbt, thierarchy)
 
+'''Function that interprets paths in constraints and calls other function
+that adds additional constraints based on the attributes'''
+def add_avs_introduced_by_atts(t, thierarchy):
+  paths = collect_paths(t)
+  for p in paths: 
+    determine_type_based_on_att(p, t, thierarchy)
+
+
+'''Function that establishes for a given path which attribute-value constraints 
+can be derived from its attributes'''
+def determine_type_based_on_att(path, t, thierarchy):
+  global atts_and_intro_type
+  atts = path.split('.')
+  if len(atts) > 1:
+    new_path = ""
+    for i in range(len(atts) - 1):
+      new_path += atts[i]
+      if atts[i+1] in atts_and_intro_type:
+        val = atts_and_intro_type[atts[i+1]]
+        if not new_path in t.val_constr:
+          t.add_att_val_pair(new_path, val)
+        elif not val == t.val_constr[new_path]:
+          old_val = t.val_constr[new_path]
+          if not is_difflist(old_val):
+            nv = thierarchy[val]
+            ov = thierarchy[old_val]
+            if is_subtype(nv, ov, thierarchy):
+              t.val_constr[new_path] = val
+            elif not is_subtype(ov, nv, thierarchy): 
+              jointtype = val + old_val
+              if not jointtype in supts_comm_subts:
+                assign_subt_seem_confl_vals(nv, ov, thierarchy)
+              val = supts_comm_subts[jointtype]
+              t.val_constr[new_path] = val
+      else:
+        print atts[i+1] + " not in atts_intro_type when asked..."     
+      new_path += "."
+
+
+'''Identifies a common subtype if two types are assigned to an attribute
+that are not in a subtype-supertype relation.
+Currently contains two hacks for cases with ambiguous results.'''
+def assign_subt_seem_confl_vals(t1, t2, thierarchy):
+  search = t1.type + t2.type
+  if not search in supts_comm_subts:
+    comm_sts = find_common_subtype(t1, t2, thierarchy)
+    if comm_sts == None:
+      print "Some problem occurred working on " + t1.type + " and " + t2.type
+    elif len(comm_sts) > 1:
+      found1 = t1.type + t2.type
+      found2 = t2.type + t1.type
+###################to do: must determine somehow which type to take....HACK we know this occurs in infl-left-coord-rule, where it must be the second
+###first step: idea: create value of multiple types, separated by ";"
+###when new information appears, this can be used to identify the correct type
+###PB each time a value is used, this must be checked...
+#      val = ""
+#      for cst in comm_sts:
+#        val += cst + ";"
+      supts_comm_subts[found1] = comm_sts[1]
+      supts_comm_subts[found2] = comm_sts[1]
+    elif len(comm_sts) ==1:
+      found1 = t1.type + t2.type
+      found2 = t1.type + t2.type
+      supts_comm_subts[found1] = comm_sts[0]
+      supts_comm_subts[found2] = comm_sts[0]
+###########HACK2: now just randomly assigning one of the two types, when nothing
+#found (should not be a problem in well-defined hierarchy) 
+    else:
+      found1 = t1.type + t2.type
+      found2 = t1.type + t2.type
+      supts_comm_subts[found1] = t1.type
+      supts_comm_subts[found2] = t1.type
+
+
+'''Function that checks whether co-indexed attributes also have a value.
+If so alternative paths are added to compl_val_constr with identified value'''
+def add_values_of_coindexed_constr(thierarchy):
+  for t in thierarchy.itervalues():
+    if len(t.compl_val_constr) > 0 and len(t.compl_coind_constr) > 0:
+      coinds = t.compl_coind_constr
+      for c in coinds.itervalues():
+        for p in c:
+          if p in t.compl_val_constr:
+            add_path_value_pairs(p, c, t.compl_val_constr, thierarchy)
+
+'Adds value to a given path, if not already defined: prints warning if new value
+is not in sub-supertype relation with old-value
+TO DO: call function that finds common subtype instead'
+def add_path_value_pairs(p, c, compl_val_constr, th):
+  myval = compl_val_constr[p]
+  for ap in c:
+    if not ap == p:
+      if not ap in compl_val_constr:
+        compl_val_constr[ap] = myval
+      else:
+        pres_val = compl_val_constr[ap]
+        if not pres_val == myval:
+          pv = th[pres_val]
+          mv = th[myval]
+          if is_subtype(mv, pv, th):
+            compl_val_constr[ap] = myval
+          elif not is_subtype(pv, mv, th):
+            print "To fix: found values assigned by coindeces that are not in a sub-supertype-relation"
 
 
 
@@ -950,7 +962,10 @@ def process_elementary_type(t):
     else:
       print "more work needed here...."
   if not re.match('\"*\"',t.type):
-    return t.type
+    if not t.type == 'null':
+      return t.type
+    else:
+      return '< >'
 
 
 ##########################################################
