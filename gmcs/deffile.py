@@ -1294,7 +1294,7 @@ class MatrixDefFile:
     next_n = choices['aux'].next_iter_num() if 'aux' in choices else 1
 
     # create a new aux with that number
-    choices['aux%d_name' % next_n] = 'neg-aux'
+    choices['aux%d_name' % next_n] = 'neg'
 
     # copy that to nli for adding further information
     nli = choices['aux'].get_last()
