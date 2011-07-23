@@ -134,3 +134,4 @@ morphotactics-lrt-inputs=Tests inputs and constraints using hierarchies (trees a
 morphotactics-impl-expl-disjunction=Models and tests both implicit and explicit non-sequential disjunctions, and an explicit sequential disjunction.
 bipartite-stems=Basic test cases for bipartite stems, based on mini-English
 
+neg-aux-min=scope of negation for negative auxiliary verbs. uses minimal grammar augmented with some choices for auxiliaries
