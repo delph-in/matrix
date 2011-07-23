@@ -103,9 +103,7 @@ if form_data.has_key('verbpred'):
 try:
   vr = validate_choices(os.path.join(session_path, 'choices'))
 except:
-  exc = None
-  if debug:
-    exc = sys.exc_info()
+  exc = sys.exc_info()
   matrixdef.choices_error_page(os.path.join(session_path, 'choices'), exc)
   sys.exit()
 
@@ -147,9 +145,7 @@ if form_data.has_key('customize'):
     try:
       grammar_dir = customize_matrix(session_path, arch_type)
     except:
-      exc = None
-      if debug:
-        exc = sys.exc_info()
+      exc = sys.exc_info()
       matrixdef.customize_error_page(os.path.join(session_path, 'choices'),
                                      exc)
       sys.exit()

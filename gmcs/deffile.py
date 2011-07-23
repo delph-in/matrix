@@ -72,6 +72,22 @@ var types = [
 </head>
 '''
 
+# toggle_visible provided by
+#   http://blog.movalog.com/a/javascript-toggle-visibility/
+
+HTML_toggle_visible_js = '''<script type="text/javascript">
+<!--
+    function toggle_visible(id) {
+       var e = document.getElementById(id);
+       if(e.style.display == 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+    }
+//-->
+</script>
+'''
+
 HTML_mainprebody = '''<body onload="animate()">
 <h1>LinGO Grammar Matrix</h1>
 <h1>Matrix customization and download page</h1>
@@ -1291,6 +1307,7 @@ class MatrixDefFile:
     print HTML_pretitle
     print '<title>Invalid Choices File</title>'
     print HTML_posttitle % ('', '', '', '', '')
+    print HTML_toggle_visible_js
     print HTML_prebody
 
     print '<div style="position:absolute; top:15%; width:60%">\n' + \
@@ -1310,12 +1327,7 @@ class MatrixDefFile:
           '<a href="matrix.cgi?choices=empty">reload an empty ' +\
           'questionnaire</a> (this will erase your changes, so be sure to ' +\
           'save your choices (above) first).'
-    if exc:
-        exception_html(exc)
-    else:
-        print '<p style="text-align:center">You may also wish to ' +\
-              '<a href="matrix.cgi?debug=true">see the Python error</a> ' +\
-              '(note: it is very technical, and possibly not useful).</p>'
+    exception_html(exc)
     print HTML_postbody
 
   def customize_error_page(self, choices_file, exc=None):
@@ -1323,6 +1335,7 @@ class MatrixDefFile:
     print HTML_pretitle
     print '<title>Problem Customizing Grammar</title>'
     print HTML_posttitle % ('', '', '', '', '')
+    print HTML_toggle_visible_js
     print HTML_prebody
 
     print '<div style="position:absolute; top:15%; width:60%">\n' +\
@@ -1341,16 +1354,15 @@ class MatrixDefFile:
           '<a href="matrix.cgi?choices=empty">reload an empty ' +\
           'questionnaire</a> (this will erase your changes, so be sure to ' +\
           'save your choices (above) first).'
-    if exc:
-        exception_html(exc)
-    else:
-        print '<p style="text-align:center">You may also wish to ' +\
-              '<a href="matrix.cgi?debug=true">see the Python error</a> ' +\
-              '(note: it is very technical, and possibly not useful).</p>'
+    exception_html(exc)
     print HTML_postbody
 
 def exception_html(exc):
-  # uncomment the following lines to put a show/hide arrow around the error
-  #print "<span id=\"errorbutton\" onclick=\"toggle_display('error','errorbutton')\">&#9658;</span><span>Click the arrow to see the stack trace of the error.</span><div id=\"error\" style=\"display:none\">"
-  cgitb.handler(exc)
-  #print "</div>"
+  if exc and exc != (None, None, None):
+    print '<p style="text-align:center">You may also wish to ' +\
+          '<a href="#" onclick="toggle_visible(\'error\');">' +\
+            'see the Python error</a> ' +\
+          '(note: it is very technical, and possibly not useful).</p>'
+    print "<div id=\"error\" style=\"display:none\">"
+    cgitb.handler(exc)
+    print "</div>"
