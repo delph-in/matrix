@@ -72,13 +72,15 @@ def process_tb_entry(tbentry,lexclasses,stemtag,
     '''
 
     for lexclass in lexclasses:
-        match = False
+        match = 0
         lextype = lexclass.get('importlextype')
-        for tagvaluepair in lexclass.get('toolboxtag'):
+        tvps = lexclass.get('toolboxtag')
+        for tagvaluepair in tvps:
             if tagvaluepair.get('tbtag') in tbentry.keys() \
                     and tbentry[tagvaluepair.get('tbtag')] == tagvaluepair.get('tbvalue'):
-                match = True
-        if match:
+                match += 1
+
+        if match == len(tvps):
 #            if choices['imported-entry']:
 #                n = choices['imported-entry'].next_iter_num() 
 #            else:
@@ -110,7 +112,7 @@ def get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings):
     the affix_strings dictionary.
     '''
     if idtag not in tbentry.keys():
-        print tbentry
+        #print tbentry
         #print "Error: tbentry without tbid"
         tbid = 0
     else:
@@ -172,7 +174,6 @@ def import_toolbox_lexicon(choicesfile):
             if not tbfile.get('tbfilename'):
                 continue
             tblex = open(tbfile.get('tbfilename'),'r')
-            
             tbentry = {}
             # List of values of the bistemtag field.
             affixes = []
