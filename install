@@ -123,7 +123,7 @@ then
     mkdir $tempdir/matrix-core/lkb
     mkdir $tempdir/matrix-core/pet
 
-    matrixfiles=`ls -d $matrix_core/*.* $matrix_core/README | sed 's/[^ ]*my_language.tdl//g' | sed 's/[^ ]*Version.lsp//g' | sed 's/[^ ]*CVS//g' | sed 's/[^ ]*~//g'`
+    matrixfiles=`ls -d $matrix_core/*.* $matrix_core/LICENSE $matrix_core/README | sed 's/[^ ]*my_language.tdl//g' | sed 's/[^ ]*Version.lsp//g' | sed 's/[^ ]*CVS//g' | sed 's/[^ ]*~//g'`
 
     cp $matrixfiles $tempdir/matrix-core
 

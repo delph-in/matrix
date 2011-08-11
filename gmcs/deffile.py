@@ -102,6 +102,14 @@ to the Turing Center from the Utilika Foundation.  Any opinions,
 findings, and conclusions or recommendations expressed in this
 material are those of the author(s) and do not necessarily
 reflect the views of the National Science Foundation.
+The Grammar Matrix customization system is hosted by the University
+of Washington.
+
+<p>[<a href="http://www.washington.edu/online/terms">University of
+Washington Website Terms and Conditions of Use</a>]<br>
+[<a href="http://www.washington.edu/online/privacy">University of
+Washington Online Privacy Statement</a>]
+
 
 <p>Publications reporting on work based on grammars derived from this
 system should cite <a
