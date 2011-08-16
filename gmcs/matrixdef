@@ -1333,7 +1333,7 @@ BeginIter aux{i} "an Auxiliary Type" 1
   Radio subj "Aux {i} subject" "" ""
   . adp "Adpositional phrase" "<br>" "adpositional phrase<br><br>"
 
-  Label "Complement Features:&nbsp; &nbsp; &nbsp; &nbsp; (Note: A
+  Label complabel "Complement Features:&nbsp; &nbsp; &nbsp; &nbsp; (Note: A
   value for the feature FORM is required.)<br>"
 
   BeginIter compfeature{j} "a complement feature" 0 1

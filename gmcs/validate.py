@@ -912,7 +912,7 @@ def validate_lexicon(ch, vr):
     if not compform == 'yes':
       mess = 'You must specify the form of the verb in the complement, ' +\
              'i.e., the value of the complement feature FORM.'
-      vr.err(aux.full_key + '_compfeature1_name', mess)
+      vr.err(aux.full_key + '_complabel', mess)
 
 
     for stem in aux.get('stem', []):
@@ -924,6 +924,9 @@ def validate_lexicon(ch, vr):
         mess = 'You have specified a predicate but indicated ' +\
                'that this type does not contribute a predicate.'
         vr.err(aux.full_key + '_sem', mess)
+      if not stem.get('orth'):
+        mess = 'You must specify a spelling for each auxiliary you define.'
+        vr.err(stem.full_key + '_orth', mess);
 
   # Determiners
   for det in ch.get('det'):

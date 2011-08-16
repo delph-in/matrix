@@ -884,6 +884,7 @@ class MatrixDefFile:
         # the current choices file OR iter_min copies, whichever is
         # greater
         c = 0
+        iter_num = 0;
         chlist = [x for x in choices.get(prefix + iter_name) if x]
         while (chlist and c < len(chlist)) or c < iter_min:
           show_name = "";
@@ -891,7 +892,7 @@ class MatrixDefFile:
             iter_num = str(chlist[c].iter_num())
             show_name = chlist[c]["name"]
           else:
-            iter_num = str(c+1)
+            iter_num = str(int(iter_num)+1)
           new_prefix = prefix + iter_name + iter_num + '_'
           vars[iter_var] = iter_num
 
