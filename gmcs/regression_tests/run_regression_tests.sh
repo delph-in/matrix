@@ -244,14 +244,23 @@ do
 # the directory.  So use existence of $tsdbhome/$target to check
 # for grammar load problems.
 
-      if [ ! -e $tsdbhome/$target ]; then
-          echo "ERROR!"
-          echo "Probable tdl error; grammar failed to load." >> $log
-          continue
-      elif [ -s $log ]; then
-          echo "DIFFS!"
-          echo "Diffs were found in the current and gold profiles." >> $log
-          continue
+      if [ ! -e $tsdbhome/$target ]
+      then
+        echo "ERROR!"
+        echo "Probable tdl error; grammar failed to load." >> $log
+        continue
+      # newer versions of [incr tsdb()] write that there were 0 diffs, so
+      # the file is no longer empty for success
+      elif [ -n "$(grep -i "error" ${TSDBLOG} | grep -v "^([0-9]\+) \`\*")" ]
+      then
+        echo "ERROR!"
+        echo "TSDB error; check ${TSDBLOG}" >> $log
+        continue
+      elif [ -z "$(grep "compare-in-detail(): 0 differences" $log)" ]
+      then
+        echo "DIFFS!"
+        echo "Diffs were found in the current and gold profiles." >> $log
+        continue
       fi
     fi
 
