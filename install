@@ -6,6 +6,8 @@
 #           single target directory as arguments:
 #      -l:  install locally (on this machine)
 #      -r:  install remotely (on homer.u.washington.edu)
+#      -a:  (with -r) install on a different remote address from homer.u.washington.edu
+#      -u:  (with -r and -a) user name for remote install.
 #      -m:  (with -l or -r) also install matrix-core
 #      -c:  don't install, but create a copy of matrix-core locally
 #    -lkb:  also copy the necessary parts of the lkb from given directory
@@ -21,7 +23,7 @@
 #           ./install -c [parent directory of matrix-core]
 
 # parse command line
-while [ "$1" = -l -o "$1" = -r -o "$1" = -c -o "$1" = -m -o "$1" = -lkb ]
+while [ "$1" = -l -o "$1" = -r -o "$1" = -a -o "$1" = -u -o "$1" = -c -o "$1" = -m -o "$1" = -lkb ]
 do
     if [ "$1" = -l ]
     then
@@ -29,6 +31,14 @@ do
     elif [ "$1" = -r ]
     then
         installremote=true
+    elif [ "$1" = -a ]
+    then
+        shift
+        remote_address="$1"
+    elif [ "$1" = -u ]
+    then
+        shift
+        remote_user="$1"
     elif [ "$1" = -c ]
     then
         copymatrix=true
@@ -67,7 +77,7 @@ cat ${CUSTOMIZATIONROOT}/../matrix-core/matrix.tdl | grep '^[^;].*:=' | sed 's/ 
 cat ${CUSTOMIZATIONROOT}/../matrix-core/head-types.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/head-types
 
 # copy files to the temp directory
-if [ "$installremote" ]
+if [ "$installremote" -a ! "$remote_address" ]
 then
     # Redirect the root directory to matrix.cgi
     echo "Redirect /uwcl/$1/index.html /uwcl/$1/matrix.cgi" >> \
@@ -153,6 +163,12 @@ then
 elif [ "$copymatrix" ]
 then
     cp -p -v -r $tempdir/matrix-core $1
+elif [ "$remote_address" -a "$remote_user" ]
+then
+    pushd $tempdir
+    tar cj * | ssh $remote_user@$remote_address "rm -f $1/sample-choices/*; tar xjv -C $1"
+#-C /home2/www-uakari/html/matrix/test"
+    popd
 elif [ "$installremote" ]
 then
     #shopt -s dotglob

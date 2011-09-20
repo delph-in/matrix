@@ -158,7 +158,8 @@ def main():
   elif args[0] == 'vivify':
     # pass the force flag in case the user wants to avoid checks
     vivify(force)
-
+  elif args[0] == 'web-test':
+    run_web_tests();
   else:
     usage()
 
@@ -395,6 +396,21 @@ def vivify(force):
   #  2. There are no remaining modifications not checked into SVN.
   cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
   subprocess.call([cmd, '-r', '-m', 'matrix/customize'], env=os.environ)
+
+def run_web_tests():
+  ensure_customization_root_set()
+  try:
+    import selenium
+  except (NameError):
+    sys.stderr.write("Seleinum not installed: run \"pip install -U selenium\"\n")
+  cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
+#  user_name = raw_input("Patas user name:")
+#  subprocess.call([cmd, '-r', '-a', 'patas.ling.washington.edu', '-u', user_name, 'home2/www-uakari/html/matrix/test'], env=os.environ);
+  import unittest
+  import gmcs.tests.testWeb
+  loader = unittest.defaultTestLoader
+  runner = unittest.TextTestRunner(verbosity=1)
+  runner.run(loader.loadTestsFromModule(gmcs.tests.testWeb))
 
 if __name__ == '__main__':
   validate_python_version()
