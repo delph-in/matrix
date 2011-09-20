@@ -122,7 +122,7 @@ if [ -z $1 ]; then
     exit 1
     fi
 else 
-    lgnames=$1
+    lgnames=$@
 fi
 
 # Clear any existing regression test files that can cause conflicts

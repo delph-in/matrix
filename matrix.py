@@ -99,11 +99,14 @@ def main():
   elif args[0] in ('r', 'regression-test'):
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
                        'regression_tests/run_regression_tests.sh')
+    lgnames = get_regression_tests(args[1:])
+    if lgnames is None:
+        sys.exit('No regression tests found for %s' % str(args[1:]))
     #Using subprocess makes it difficult to kill the process
     # (e.g. with Ctrl-C), so we need to handle KeyboardInterrupts
     # (or alternatively use a os.exec* function)
     try:
-      p = subprocess.Popen([cmd] + args[1:], env=os.environ)
+      p = subprocess.Popen([cmd] + lgnames, env=os.environ)
       p.wait()
     except KeyboardInterrupt:
       print "\nProcess interrupted. Aborting regression tests.\n"
@@ -218,6 +221,15 @@ def main():
     print os.path.join(rpath, 'grammars')
     print os.path.join(rpath, 'home', 'current')
     print os.path.join(rpath, 'logs')
+
+  elif args[0] in ('regression-test-list', 'rl'):
+    patterns = ['*']
+    if len(args) > 1:
+        patterns = args[1:]
+    tests = get_regression_tests(patterns)
+    if tests is None: return
+    for test in tests:
+        print test
 
   elif args[0] in ('i', 'install'):
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
@@ -488,6 +500,21 @@ def run_unit_tests():
   #runner.run(loader.loadTestsFromModule(gmcs.linglib.tests.testMorphotactics))
 
   print_line()
+
+def get_regression_tests(patterns):
+  import fnmatch
+  rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
+  if isinstance(patterns, basestring):
+      patterns = [patterns]
+  names = []
+  for line in open(os.path.join(rpath, 'regression-test-index')):
+      if line.strip() == '': continue
+      line = line.split('=')[0]
+      if any(fnmatch.fnmatch(line, p) for p in patterns):
+        names += [line]
+  if len(names) == 0 and patterns != []:
+    return None
+  return names
 
 def vivify(force):
   # Before vivifying, make sure the following have occurred:
