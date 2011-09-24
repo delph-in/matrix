@@ -1,7 +1,0 @@
-;;;  Types for OVS word order
-
-comp-head-phrase := basic-head-1st-comp-phrase & head-final.
-head-subj-phrase := basic-head-subj-phrase & head-initial &
-   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
-
-

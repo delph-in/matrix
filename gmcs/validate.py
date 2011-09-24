@@ -929,6 +929,9 @@ def validate_lexicon(ch, vr):
         mess = 'You have specified a predicate but indicated ' +\
                'that this type does not contribute a predicate.'
         vr.err(aux.full_key + '_sem', mess)
+      if not stem.get('orth'):
+        mess = 'You must specify a spelling for each auxiliary you define.'
+        vr.err(stem.full_key + '_orth', mess);
 
   # Determiners
   for det in ch.get('det'):

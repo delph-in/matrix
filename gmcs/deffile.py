@@ -104,6 +104,14 @@ to the Turing Center from the Utilika Foundation.  Any opinions,
 findings, and conclusions or recommendations expressed in this
 material are those of the author(s) and do not necessarily
 reflect the views of the National Science Foundation.
+The Grammar Matrix customization system is hosted by the University
+of Washington.
+
+<p>[<a href="http://www.washington.edu/online/terms">University of
+Washington Website Terms and Conditions of Use</a>]<br>
+[<a href="http://www.washington.edu/online/privacy">University of
+Washington Online Privacy Statement</a>]
+
 
 <p>Publications reporting on work based on grammars derived from this
 system should cite <a
@@ -878,6 +886,7 @@ class MatrixDefFile:
         # the current choices file OR iter_min copies, whichever is
         # greater
         c = 0
+        iter_num = 0;
         chlist = [x for x in choices.get(prefix + iter_name) if x]
         while (chlist and c < len(chlist)) or c < iter_min:
           show_name = "";
@@ -885,7 +894,7 @@ class MatrixDefFile:
             iter_num = str(chlist[c].iter_num())
             show_name = chlist[c]["name"]
           else:
-            iter_num = str(c+1)
+            iter_num = str(int(iter_num)+1)
           new_prefix = prefix + iter_name + iter_num + '_'
           vars[iter_var] = iter_num
 
