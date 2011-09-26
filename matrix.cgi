@@ -30,7 +30,7 @@ from gmcs.deffile import HTTP_header
 # Uncomment this to see the output from print in the HTML page
 #print HTTP_header + '\n'
 
-matrixdef = MatrixDefFile('matrixdef')
+matrixdef = MatrixDefFile('web/matrixdef')
 
 form_data = cgi.FieldStorage()
 
@@ -79,7 +79,7 @@ if cookie and not os.path.exists(session_path):
 if form_data.has_key('choices'):
   choices = form_data['choices'].value
   if choices:
-    if choices[:15] == 'sample-choices/':
+    if choices.startswith('web/sample-choices/'):
       f = open(choices, 'r')
       data = f.read()
       f.close()

@@ -239,7 +239,7 @@ def main():
       print "Error: For installation to the live site, please use:"
       print "  matrix.py vivify"
       sys.exit(2)
-    subprocess.call([cmd, '-r', '-m', location], env=os.environ)
+    subprocess.call([cmd, '-r', location], env=os.environ)
 
   elif args[0] == 'vivify':
     # pass the force flag in case the user wants to avoid checks
@@ -522,7 +522,7 @@ def vivify(force):
   #     since the last vivification.
   #  2. There are no remaining modifications not checked into SVN.
   cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
-  subprocess.call([cmd, '-r', '-m', 'matrix/customize'], env=os.environ)
+  subprocess.call([cmd, '-r', 'matrix/customize'], env=os.environ)
 
 if __name__ == '__main__':
   validate_python_version()

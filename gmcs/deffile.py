@@ -40,7 +40,7 @@ HTML_pretitle = '''<html>
 <head>
 '''
 
-HTML_posttitle = '''<script type="text/javascript" src="matrix.js">
+HTML_posttitle = '''<script type="text/javascript" src="web/matrix.js">
 </script>
 
 <script type="text/javascript">
@@ -66,7 +66,7 @@ var types = [
 ];
 </script>
 
-<link rel="stylesheet" href="matrix.css">
+<link rel="stylesheet" href="web/matrix.css">
 </head>
 '''
 
@@ -659,13 +659,13 @@ class MatrixDefFile:
     print '<hr>\n'
 
     # the list of sample choices files
-    if os.path.exists('sample-choices'):
+    if os.path.exists('web/sample-choices'):
       print '<h3>Sample Grammars:</h3>\n' + \
             '<p>Click a link below to have the questionnaire ' + \
             'filled out automatically.</p>'
       print '<p>'
 
-      globlist = glob.glob('sample-choices/*')
+      globlist = glob.glob('web/sample-choices/*')
       linklist = {}
 
       for f in globlist:
