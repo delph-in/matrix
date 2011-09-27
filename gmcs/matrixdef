@@ -751,36 +751,41 @@ Section sentential-negation "Sentential Negation"
 
 Label "<p>On this page you can select a strategy that your language uses for sentential negation.  In most cases, morpheme classes that you can further modify will be created on the lexicon page.</p>"
 
-Label "<p>Sentential negation constructions can be classified based on the number of overt morphemes required by the construction.  What's the morphosyntactic exponence of the negation construction you'd like to model?"
+Label "<p>Sentential negation constructions can be classified based on the number of overt morphemes required by the construction.  What's the morphosyntactic exponence of the negation construction you'd like to model?<p>"
 
 Radio neg-exp "neg-exp" "" ""
-. 0 "0" "" "zero "
-. 1 "simple" "" "simple "
-. 2 "bipartite" "" "bipartite "
-. 3 "tripartite" "" "tripartite"
-. more "more" "" "more"
+. 0 "0" "" "zero" "set_negexp('0')"
+. 1 "simple" "" "simple" "set_negexp('1')"
+. 2 "bipartite" "" "bipartite" "set_negexp('2')"
+. 3 "tripartite" "" "tripartite" "set_negexp('3')"
+. more "more" "" "more?!" "set_negexp('more')"
 
-Check zero-neg "zero-neg" "<p>" "Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <emph>absence</emph> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p>"
+Label "<div id='zero-neg' class='switch' style='display:none'><p>Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <emph>absence</emph> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p></div>"
 
-Check uni-neg "uni-neg" "<p>" "Negation can be indicated by the presence of a single negative morpheme.  Specify it's syntax below."
+Label "<div id='uni-neg' class='switch' style='display:none'><p> Negation can be indicated by the presence of a single negative morpheme.  Specify it's syntax below.</p></div>"
 
-Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <span class=\"feat\">negation</span> with possible value <tt>plus</tt> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">negation</span> <tt>plus</tt>] will produce lexical rules that add the semantics of negation.</p>" 
+Label "<div id='bi-neg' class='switch' style='display:none'><p> Negation can be indicated by the presence of a two negative morphemes.  You'll have to specify their morphosyntax and their interactions.</p></div>"
 
-Check adv-neg "Adverbial negation" "<p>" "An adverb which is an independent modifier of:<br>"
+Label "<div id='tri-neg' class='switch' style='display:none'><p> Negation by three morphemes has been reported in some languages of Vanuatu like Lewo [???].</p></div>"
 
-Radio neg-mod "Negative adverb modifies" "" ""
+Label "<div id='x-neg' class='switch' style='display:none'><p>We're not aware of natural languages reported to require more than 3 morphemes as an integral part of a negation construction.</p></div>"
+#Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <span class=\"feat\">negation</span> with possible value <tt>plus</tt> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">negation</span> <tt>plus</tt>] will produce lexical rules that add the semantics of negation.</p>" 
+
+#Check adv-neg "Adverbial negation" "<p>" "An adverb which is an independent modifier of:<br>"
+
+#Radio neg-mod "Negative adverb modifies" "" ""
 . s "S" "" "S "
 . vp "VP" "" "VP "
 . v "V" "" "V "
 
-Radio neg-order "Negative adverb order" "and appears " ""
+#Radio neg-order "Negative adverb order" "and appears " ""
 . before "before" "" "before "
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p>" 20
+#Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p>" 20
 
-Check neg-aux "Negation by auxiliary verb" "<p>" "Negative auxiliary verb: Checking this box creates a neg-aux type which contributes a _neg_v_rel that outscopes it's complement's handle.  This lexical type will show up on the lexicon page where you'll need to further specify its syntax.</p>"
+#Check neg-aux "Negation by auxiliary verb" "<p>" "Negative auxiliary verb: Checking this box creates a neg-aux type which contributes a _neg_v_rel that outscopes it's complement's handle.  This lexical type will show up on the lexicon page where you'll need to further specify its syntax.</p>"
 
 Text neg-aux-index "neg-aux-index" "<span style='display:none'>" "</span>" 0
 

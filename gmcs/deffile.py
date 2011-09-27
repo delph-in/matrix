@@ -236,8 +236,10 @@ HTML_sentencespostbody = '''
 HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors()">
 '''
 
+HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();">'''
+
 HTML_method = 'post'
-HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '">'
+HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '" name="choices_form">'
 
 HTML_postform = '</form>'
 
@@ -725,12 +727,15 @@ class MatrixDefFile:
         i += 1
         while lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
-          (rval, rfrn, rbef, raft) = word[1:]
+          if len(word) > 5:
+            (rval, rfrn, rbef, raft, js) = word[1:]
+          else:
+            (rval, rfrn, rbef, raft) = word[1:]
           checked = False
           if choices.get(vn) == rval:
             checked = True
           html += html_input(vr, 'radio', vn, rval, checked,
-                             rbef, raft) + '\n'
+                             rbef, raft, onclick=js) + '\n'
           i += 1
         html += af + '\n'
       elif word[0] in ['Select', 'MultiSelect']:
@@ -1011,7 +1016,12 @@ class MatrixDefFile:
              js_array([n for n in choices.numbers()]),
              js_array([t for t in choices.types()]))
 
-      print HTML_prebody
+      # sent-neg uses a particular HTML_prebody
+      if section == 'sentential-negation':
+        print HTML_prebody_sn
+      else:
+        print HTML_prebody
+
       print '<h2>' + section_friendly + '</h2>'
       print HTML_preform
       print html_input(vr, 'hidden', 'section', section,
