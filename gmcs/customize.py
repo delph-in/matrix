@@ -113,6 +113,31 @@ def customize_test_sentences(grammar_path):
   except:
     pass
 
+def customize_itsdb(grammar_path):
+  from gmcs.lib import itsdb
+  if 'sentence' not in ch: return
+
+  def get_item(s, i):
+    star = s['orth'].startswith('*')
+    return dict([('i-id', str(i+1)),
+                 ('i-origin', 'unknown'),
+                 ('i-register', 'unknown'),
+                 ('i-format', 'none'),
+                 ('i-difficulty', '1'),
+                 ('i-category', 'S' if not star else ''),
+                 ('i-input', s['orth'].lstrip('*')),
+                 ('i-wf', '0' if star else '1'),
+                 ('i-length', str(len(s['orth'].split()))),
+                 ('i-author', 'author-name'),
+                 ('i-date', str(datetime.date.today()))])
+
+  skeletons = os.path.join(grammar_path, 'tsdb', 'skeletons')
+  relations = os.path.join(skeletons, 'Relations')
+  matrix_skeleton = os.path.join(skeletons, 'matrix')
+  items = {'item': (get_item(s, i) for i, s in enumerate(ch['sentence']))}
+  profile = itsdb.TsdbProfile(matrix_skeleton)
+  profile.write_profile(matrix_skeleton, relations, items)
+
 def customize_script(grammar_path):
   try:
     b = open(os.path.join(grammar_path, 'lkb/script'), 'r')
@@ -379,6 +404,7 @@ def customize_matrix(path, arch_type, destination=None):
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
   customize_test_sentences(grammar_path)
+  customize_itsdb(grammar_path)
   customize_script(grammar_path)
   customize_pettdl(grammar_path)
   customize_roots()
