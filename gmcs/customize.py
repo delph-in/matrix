@@ -113,6 +113,31 @@ def customize_test_sentences(grammar_path):
   except:
     pass
 
+def customize_itsdb(grammar_path):
+  from gmcs.lib import itsdb
+  if 'sentence' not in ch: return
+
+  def get_item(s, i):
+    star = s['orth'].startswith('*')
+    return dict([('i-id', str(i+1)),
+                 ('i-origin', 'unknown'),
+                 ('i-register', 'unknown'),
+                 ('i-format', 'none'),
+                 ('i-difficulty', '1'),
+                 ('i-category', 'S' if not star else ''),
+                 ('i-input', s['orth'].lstrip('*')),
+                 ('i-wf', '0' if star else '1'),
+                 ('i-length', str(len(s['orth'].split()))),
+                 ('i-author', 'author-name'),
+                 ('i-date', str(datetime.date.today()))])
+
+  skeletons = os.path.join(grammar_path, 'tsdb', 'skeletons')
+  relations = os.path.join(skeletons, 'Relations')
+  matrix_skeleton = os.path.join(skeletons, 'matrix')
+  items = {'item': (get_item(s, i) for i, s in enumerate(ch['sentence']))}
+  profile = itsdb.TsdbProfile(matrix_skeleton)
+  profile.write_profile(matrix_skeleton, relations, items)
+
 def customize_script(grammar_path):
   try:
     b = open(os.path.join(grammar_path, 'lkb/script'), 'r')
@@ -136,7 +161,7 @@ def customize_script(grammar_path):
 
 def customize_pettdl(grammar_path):
   try:
-    p_in = open('matrix-core/pet.tdl', 'r')
+    p_in = open(os.path.join(get_matrix_core_path(), 'pet.tdl'), 'r')
     lines = p_in.readlines()
     p_in.close()
     myl = ch.get('language').lower()
@@ -261,12 +286,10 @@ def customize_matrix(path, arch_type, destination=None):
   # Copy from matrix-core
   if os.path.exists(grammar_path):
     shutil.rmtree(grammar_path)
-  core_path = os.path.join(os.environ.get('CUSTOMIZATIONROOT',''),
-                           'matrix-core')
   # Use the following command when python2.6 is available
   #shutil.copytree('matrix-core', grammar_path,
   #                ignore=shutil.ignore_patterns('.svn'))
-  shutil.copytree(core_path, grammar_path)
+  shutil.copytree(get_matrix_core_path(), grammar_path)
   # Since we cannot use shutil.ignore_patterns until 2.6, remove .svn dirs
   shutil.rmtree(os.path.join(grammar_path, '.svn'), ignore_errors=True)
   shutil.rmtree(os.path.join(grammar_path, 'lkb/.svn'), ignore_errors=True)
@@ -381,6 +404,7 @@ def customize_matrix(path, arch_type, destination=None):
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
   customize_test_sentences(grammar_path)
+  customize_itsdb(grammar_path)
   customize_script(grammar_path)
   customize_pettdl(grammar_path)
   customize_roots()
@@ -399,6 +423,12 @@ def customize_matrix(path, arch_type, destination=None):
 
   return grammar_path
 
+def get_matrix_core_path():
+  # customizationroot is only set for local use. The installation for
+  # the questionnaire does not use it.
+  cr = os.environ.get('CUSTOMIZATIONROOT','')
+  if cr: cr = os.path.join(cr, '..')
+  return os.path.join(cr, 'matrix-core')
 
 def get_grammar_path(isocode, language, destination):
   '''
@@ -407,6 +437,7 @@ def get_grammar_path(isocode, language, destination):
   '''
   # three possibilities for dir names. If all are taken, raise an exception
   for dir_name in [isocode, language, isocode + '_grammar']:
+    if dir_name == '': continue
     grammar_path = os.path.join(destination, dir_name)
     # if grammar_path already exists as a file, it is likely the choices file
     if not (os.path.exists(grammar_path) and os.path.isfile(grammar_path)):

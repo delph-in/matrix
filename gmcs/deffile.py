@@ -40,7 +40,7 @@ HTML_pretitle = '''<html>
 <head>
 '''
 
-HTML_posttitle = '''<script type="text/javascript" src="matrix.js">
+HTML_posttitle = '''<script type="text/javascript" src="web/matrix.js">
 </script>
 
 <script type="text/javascript">
@@ -66,8 +66,24 @@ var types = [
 ];
 </script>
 
-<link rel="stylesheet" href="matrix.css">
+<link rel="stylesheet" href="web/matrix.css">
 </head>
+'''
+
+# toggle_visible provided by
+#   http://blog.movalog.com/a/javascript-toggle-visibility/
+
+HTML_toggle_visible_js = '''<script type="text/javascript">
+<!--
+    function toggle_visible(id) {
+       var e = document.getElementById(id);
+       if(e.style.display == 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+    }
+//-->
+</script>
 '''
 
 HTML_mainprebody = '''<body onload="animate()">
@@ -86,6 +102,14 @@ to the Turing Center from the Utilika Foundation.  Any opinions,
 findings, and conclusions or recommendations expressed in this
 material are those of the author(s) and do not necessarily
 reflect the views of the National Science Foundation.
+The Grammar Matrix customization system is hosted by the University
+of Washington.
+
+<p>[<a href="http://www.washington.edu/online/terms">University of
+Washington Website Terms and Conditions of Use</a>]<br>
+[<a href="http://www.washington.edu/online/privacy">University of
+Washington Online Privacy Statement</a>]
+
 
 <p>Publications reporting on work based on grammars derived from this
 system should cite <a
@@ -635,13 +659,13 @@ class MatrixDefFile:
     print '<hr>\n'
 
     # the list of sample choices files
-    if os.path.exists('sample-choices'):
+    if os.path.exists('web/sample-choices'):
       print '<h3>Sample Grammars:</h3>\n' + \
             '<p>Click a link below to have the questionnaire ' + \
             'filled out automatically.</p>'
       print '<p>'
 
-      globlist = glob.glob('sample-choices/*')
+      globlist = glob.glob('web/sample-choices/*')
       linklist = {}
 
       for f in globlist:
@@ -860,6 +884,7 @@ class MatrixDefFile:
         # the current choices file OR iter_min copies, whichever is
         # greater
         c = 0
+        iter_num = 0;
         chlist = [x for x in choices.get(prefix + iter_name) if x]
         while (chlist and c < len(chlist)) or c < iter_min:
           show_name = "";
@@ -867,7 +892,7 @@ class MatrixDefFile:
             iter_num = str(chlist[c].iter_num())
             show_name = chlist[c]["name"]
           else:
-            iter_num = str(c+1)
+            iter_num = str(int(iter_num)+1)
           new_prefix = prefix + iter_name + iter_num + '_'
           vars[iter_var] = iter_num
 
@@ -1141,6 +1166,11 @@ class MatrixDefFile:
           '<p style="color:red; text-align:center; font-size:16pt">' + \
           'Cookies must be enabled for this site in your browser in order ' + \
           'to fill out the questionnaire.</p>\n'
+    print '<p style="text-align:center; font-size:16pt">'
+    print 'If cookies are enabled, try reloading an '
+    print '<a href="matrix.cgi?choices=empty">empty questionnaire</a>. '
+    print 'Note that any existing changes will be lost.</p>'
+    print '</div>'
 
     print HTML_postbody
 
@@ -1209,7 +1239,20 @@ class MatrixDefFile:
         new_choices[k] = form_data[k].value
 
     # Read the current choices file (if any) into old_choices
+    # but if neg-aux=on exists, create side-effect in lexicon.
     old_choices = ChoicesFile(choices_file)
+    if section == 'sentential-negation' and 'neg-aux' in form_data.keys():
+      # see if we're already storing an index number
+      if 'neg-aux-index' in old_choices.keys():
+        # we have an index for a neg-aux, see if it's still around
+        if not old_choices['aux%s' % old_choices['neg-aux-index']]:
+          # it's not so we make a new neg-aux and store the index
+          old_choices, neg_aux_index = self.create_neg_aux_choices(old_choices)
+          new_choices["neg-aux-index"] = str(neg_aux_index) if neg_aux_index > 0 else str(1)
+      else: #we don't have any neg aux index stored, so make a new one
+        old_choices, neg_aux_index = self.create_neg_aux_choices(old_choices)
+        new_choices["neg-aux-index"] = str(neg_aux_index) if neg_aux_index > 0 else str(1)
+
 
     # Open the def file and store it in line[]
     f = open(self.def_file, 'r')
@@ -1248,11 +1291,31 @@ class MatrixDefFile:
 
     f.close()
 
+  def create_neg_aux_choices(self, choices):
+    '''this is a side effect of the existence of neg-aux
+    in the form data, it puts some lines pertaining to a neg-aux
+    lexical item into the choices file object unless they are
+    already there. returns a ChoicesFile instance, and an int
+    which is the index number of the created neg-aux'''
+
+    # get the next aux number
+    next_n = choices['aux'].next_iter_num() if 'aux' in choices else 1
+
+    # create a new aux with that number
+    choices['aux%d_name' % next_n] = 'neg-aux'
+
+    # copy that to nli for adding further information
+    nli = choices['aux'].get_last()
+    nli['sem']='add-pred'
+    nli['stem1_pred'] = '_neg_v_rel'
+    return choices, next_n
+
   def choices_error_page(self, choices_file, exc=None):
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Invalid Choices File</title>'
     print HTML_posttitle % ('', '', '', '', '')
+    print HTML_toggle_visible_js
     print HTML_prebody
 
     print '<div style="position:absolute; top:15%; width:60%">\n' + \
@@ -1272,12 +1335,7 @@ class MatrixDefFile:
           '<a href="matrix.cgi?choices=empty">reload an empty ' +\
           'questionnaire</a> (this will erase your changes, so be sure to ' +\
           'save your choices (above) first).'
-    if exc:
-        exception_html(exc)
-    else:
-        print '<p style="text-align:center">You may also wish to ' +\
-              '<a href="matrix.cgi?debug=true">see the Python error</a> ' +\
-              '(note: it is very technical, and possibly not useful).</p>'
+    exception_html(exc)
     print HTML_postbody
 
   def customize_error_page(self, choices_file, exc=None):
@@ -1285,6 +1343,7 @@ class MatrixDefFile:
     print HTML_pretitle
     print '<title>Problem Customizing Grammar</title>'
     print HTML_posttitle % ('', '', '', '', '')
+    print HTML_toggle_visible_js
     print HTML_prebody
 
     print '<div style="position:absolute; top:15%; width:60%">\n' +\
@@ -1303,16 +1362,15 @@ class MatrixDefFile:
           '<a href="matrix.cgi?choices=empty">reload an empty ' +\
           'questionnaire</a> (this will erase your changes, so be sure to ' +\
           'save your choices (above) first).'
-    if exc:
-        exception_html(exc)
-    else:
-        print '<p style="text-align:center">You may also wish to ' +\
-              '<a href="matrix.cgi?debug=true">see the Python error</a> ' +\
-              '(note: it is very technical, and possibly not useful).</p>'
+    exception_html(exc)
     print HTML_postbody
 
 def exception_html(exc):
-  # uncomment the following lines to put a show/hide arrow around the error
-  #print "<span id=\"errorbutton\" onclick=\"toggle_display('error','errorbutton')\">&#9658;</span><span>Click the arrow to see the stack trace of the error.</span><div id=\"error\" style=\"display:none\">"
-  cgitb.handler(exc)
-  #print "</div>"
+  if exc and exc != (None, None, None):
+    print '<p style="text-align:center">You may also wish to ' +\
+          '<a href="#" onclick="toggle_visible(\'error\');">' +\
+            'see the Python error</a> ' +\
+          '(note: it is very technical, and possibly not useful).</p>'
+    print "<div id=\"error\" style=\"display:none\">"
+    cgitb.handler(exc)
+    print "</div>"

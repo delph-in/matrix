@@ -125,13 +125,9 @@ def customize_bipartite_stems(ch):
         ch[next_lrt_str + '_require1_others'] = ', '.join(avpairs[aff])
         ch[next_lrt_str + '_lri1_orth'] = aff
         ch[next_lrt_str + '_lri1_inflecting'] = 'yes'
-          
+
         # Add requires constrains on stems
         for stemid in avpairs[aff]:
-#          for stem in bistems:
-#            print stemid
-#            print stem.full_key
-#            if stem.full_key == stemid:
           ch[stemid + '_require1_others'] = next_lrt_str
 
 def customize_verbs(mylang, ch, lexicon, hierarchies):

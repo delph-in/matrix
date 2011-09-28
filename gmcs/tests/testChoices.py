@@ -50,31 +50,22 @@ class TestChoiceCategoryClasses(unittest.TestCase):
         self.assertEqual(l.is_empty(), True)
         self.assertEqual(l.get_first(), None)
         l += [ChoiceDict(full_key='abc1')]
-        # empty dictionaries don't count as contentful
-        self.assertEqual(len(l), 0)
-        self.assertEqual(l.is_empty(), True)
-        self.assertEqual(l.get_first(), None)
-        l[1]['attr'] = 'val1'
         self.assertEqual(len(l), 1)
         self.assertEqual(l.is_empty(), False)
-        x = l.get_first()
-        self.assertEqual(x['attr'], 'val1')
+        self.assertEqual(l.get_first(), l[1])
+        l[1]['attr'] = 'val1'
+        self.assertEqual(l.get_first()['attr'], 'val1')
         l += [ChoiceDict(full_key='abc2')]
-        self.assertEqual(len(l), 1)
-        l[2]['attr'] = 'val2'
         self.assertEqual(len(l), 2)
-        x = l.get_first()
-        self.assertEqual(x['attr'], 'val1')
-        # delete often happens by setting the item to an empty ChoiceDict
-        l[1] = ChoiceDict()
+        l[2]['attr'] = 'val2'
+        self.assertEqual(l.get_first()['attr'], 'val1')
+        l[1] = None
         self.assertEqual(len(l), 1)
-        x = l.get_first()
-        self.assertEqual(x['attr'], 'val2')
+        self.assertEqual(l.get_first()['attr'], 'val2')
         l += [ChoiceDict(full_key='abc3')]
         l[3]['attr'] = 'val3'
         self.assertEqual(len(l), 2)
-        x = l.get_first()
-        self.assertEqual(x['attr'], 'val2')
+        self.assertEqual(l.get_first()['attr'], 'val2')
         xs = [item for item in l]
         self.assertEqual(len(xs), 2)
         self.assertEqual(xs[0]['attr'], 'val2')
@@ -108,7 +99,7 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         c['abc'] = 5
         self.assertEqual(c.choices, {'abc':5})
         c['def2_ghi'] = 2
-        self.assertEqual(c.choices, {'abc':5, 'def':[{}, {'ghi':2}]})
+        self.assertEqual(c.choices, {'abc':5, 'def':[None, {'ghi':2}]})
         c['def1_ghi'] = 1
         self.assertEqual(c.choices, {'abc':5, 'def':[{'ghi':1}, {'ghi':2}]})
         c = ChoicesFile() # no file loaded
@@ -128,12 +119,12 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         del c['abc2_def']
         self.assertEqual(c.choices, {'abc':[{'def':1},{'ghi':3}]})
         del c['abc2']
-        self.assertEqual(c.choices, {'abc':[{'def':1},{}]})
+        self.assertEqual(c.choices, {'abc':[{'def':1},None]})
         c['abc2_def'] = 2
         c['abc3_def'] = 3
         self.assertEqual(c.choices, {'abc':[{'def':1},{'def':2},{'def':3}]})
         del c['abc2']
-        self.assertEqual(c.choices, {'abc':[{'def':1},{},{'def':3}]})
+        self.assertEqual(c.choices, {'abc':[{'def':1},None,{'def':3}]})
         del c['abc']
         self.assertEqual(c.choices, {})
 
@@ -146,7 +137,7 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         # currently not using pruning
         #c['abc1_def'] = 5
         #c.delete('abc1_def', prune=True)
-        #self.assertEqual(c.choices, {})
+        #self.assertEqual(c.choices, None)
         #c['abc1_def'] = 5
         #c['abc2_def'] = 6
         #c.delete('abc1_def', prune=True)
@@ -155,7 +146,7 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         c['abc1_ghi'] = 6
         c['abc2_ghi'] = 7
         c.delete('abc1', prune=False)
-        self.assertEqual(c.choices, {'abc':[{},{'ghi':7}]})
+        self.assertEqual(c.choices, {'abc':[None,{'ghi':7}]})
         #c['abc1_def'] = 5
         #c['abc1_ghi'] = 6
         #c['abc2_ghi'] = 7
@@ -165,7 +156,7 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         #c['abc1_ghi'] = 6
         #c['abc2_ghi'] = 7
         #c.delete('abc', prune=True)
-        #self.assertEqual(c.choices, {})
+        #self.assertEqual(c.choices, None)
 
     def test_split_variable_key(self):
         self.assertEqual(split_variable_key(''), [])

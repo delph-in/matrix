@@ -24,7 +24,7 @@ def isid(s):
     if not (c.isalnum() or ord(c) > 127 or c in ['-', '+', '_', '*', '%']):
       return False
   return True
-  
+
 def TDLtokenize(s):
   tok = ""
   val = []
@@ -119,7 +119,7 @@ def TDLwrite(s):
 # A TDLelem is a node in a TDL parse tree.  This is an abstract class; the
 # specific classes below derive from it.
 
-class TDLelem:
+class TDLelem(object):
   def add(self, ch):
     self.child.append(ch)
 
@@ -164,7 +164,7 @@ class TDLelem:
 #   %prefix (* foo)
 #   cs1n-bottom-coord-rule.
 
-class TDLelem_literal:
+class TDLelem_literal(object):
   def __init__(self, literal):
     self.child = []
     self.comment = ''
@@ -648,7 +648,7 @@ def TDLparse_typedef():
   elem.add(TDLparse_conj())
   tok.pop(0) # '.'
   return elem
-  
+
 def TDLparse(s):
   global tok
   tok = TDLtokenize(s)
@@ -666,17 +666,19 @@ def TDLparse(s):
 #   dlist: always true
 
 def TDLmergeable(e1, e2):
-  if isinstance(e1, TDLelem_typedef) and isinstance(e2, TDLelem_typedef):
+  if type(e1) != type(e2):
+    return False
+  if isinstance(e1, TDLelem_typedef):
     return e1.type == e2.type and e1.op == e2.op
-  if isinstance(e1, TDLelem_type) and isinstance(e2, TDLelem_type):
+  if isinstance(e1, TDLelem_type):
     return e1.type == e2.type
-  if isinstance(e1, TDLelem_coref) and isinstance(e2, TDLelem_coref):
+  if isinstance(e1, TDLelem_coref):
     return e1.coref == e2.coref
-  if isinstance(e1, TDLelem_av) and isinstance(e2, TDLelem_av):
+  if isinstance(e1, TDLelem_av):
     return e1.attr == e2.attr
-  if (isinstance(e1, TDLelem_conj) and isinstance(e2, TDLelem_conj)) or \
-     (isinstance(e1, TDLelem_feat) and isinstance(e2, TDLelem_feat)) or \
-     (isinstance(e1, TDLelem_dlist) and isinstance(e2, TDLelem_dlist)):
+  if (isinstance(e1, TDLelem_conj) or \
+      isinstance(e1, TDLelem_feat) or \
+      isinstance(e1, TDLelem_dlist)):
     return True
 
 
@@ -737,7 +739,7 @@ def TDLmerge(e1, e2):
 #   major (Boolean; True iff this is a major section
 #   force (Boolean; True iff the comment should appear even if the section
 #          is empty)
-class TDLsection:
+class TDLsection(object):
   name = ''
   comment = ''
   major = True
@@ -749,7 +751,7 @@ class TDLsection:
 # with a file name, to which it will be eventually saved.  Statements can
 # be added to the TDLfile using the add() method.
 
-class TDLfile:
+class TDLfile(object):
   def __init__(self, file_name):
     self.file_name = file_name  # we'll eventually save to this file
     self.typedefs = []

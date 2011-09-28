@@ -1,5 +1,4 @@
 tiniest=very basic grammar to get the regression tests started - SOV word order, no frills
-testingcompforms=small ts - known problems
 case-erg-abs=Case, ergative-absolutive
 case-fluid-s=Case, fluid-S
 case-focus=Case, focus
@@ -135,3 +134,4 @@ morphotactics-lrt-inputs=Tests inputs and constraints using hierarchies (trees a
 morphotactics-impl-expl-disjunction=Models and tests both implicit and explicit non-sequential disjunctions, and an explicit sequential disjunction.
 bipartite-stems=Basic test cases for bipartite stems, based on mini-English
 
+neg-aux-min=scope of negation for negative auxiliary verbs. uses minimal grammar augmented with some choices for auxiliaries
