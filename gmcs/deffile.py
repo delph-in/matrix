@@ -518,7 +518,7 @@ class MatrixDefFile:
     else:
       return v
 
-  # return the variablefor a friendly name, or the friendly name if
+  # return the variable for a friendly name, or the friendly name if
   # none is defined
   def v(self, f):
     if f in self.f2v:
@@ -727,15 +727,19 @@ class MatrixDefFile:
         i += 1
         while lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
+          checked = False
           if len(word) > 5:
             (rval, rfrn, rbef, raft, js) = word[1:]
+            if choices.get(vn) == rval:
+              checked = True
+            html += html_input(vr, 'radio', vn, rval, checked,
+                             rbef, raft, onclick=js) + '\n'
           else:
             (rval, rfrn, rbef, raft) = word[1:]
-          checked = False
-          if choices.get(vn) == rval:
-            checked = True
-          html += html_input(vr, 'radio', vn, rval, checked,
-                             rbef, raft, onclick=js) + '\n'
+            if choices.get(vn) == rval:
+              checked = True
+            html += html_input(vr, 'radio', vn, rval, checked,
+                             rbef, raft) + '\n'
           i += 1
         html += af + '\n'
       elif word[0] in ['Select', 'MultiSelect']:
