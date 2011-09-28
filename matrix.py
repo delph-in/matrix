@@ -1,4 +1,4 @@
-#!/usr/bin/python
+4#!/usr/bin/python
 import sys
 import os
 import getopt
@@ -158,8 +158,15 @@ def main():
   elif args[0] == 'vivify':
     # pass the force flag in case the user wants to avoid checks
     vivify(force)
-  elif args[0] == 'web-test':
+  elif args[0] in ('w', 'web-test'):
     run_web_tests();
+  elif args[0] in ('wa', 'web-test-add'):
+    comment = None
+    if len(args) > 2:
+      comment = args[2]
+    add_web_test(args[1], comment);
+  elif args[0] in ('wr', 'web-test-remove'):
+    remove_web_test(args[1]);
   else:
     usage()
 
@@ -209,6 +216,12 @@ def validate_args(args):
     if len(args) < 3: usage(command='regression-test-add')
   elif args[0] in ('regression-test-update', 'ru'):
     if len(args) < 2: usage(command='regression-test-update')
+  elif args[0] in ('w', 'web-test'):
+    pass #no other arguments needed
+  elif args[0] in ('wa', 'web-test-add'):
+    if len(args) < 2: usage(command='web-test-add')
+  elif args[0] in ('wr', 'web-test-remove'):
+    if len(args) < 2: usage(command='web-test-remove')
   elif args[0] in ('i', 'install'):
     if len(args) < 2: usage(command='install')
   elif args[0] == 'vivify':
@@ -286,6 +299,18 @@ def usage(command=None, exitcode=2):
   if command in ('unit-test', 'u', 'all'):
     p("unit-test (u)")
     p("            Run all unit tests.")
+    something_printed = True
+  if command in ('web-test', 'w', 'all'):
+    p("web-test (w)")
+    p("            Run all web tests.")
+    something_printed = True
+  if command in ('web-test-add', 'wa', 'all'):
+    p("web-test-add (wa) PATH [comment]")
+    p("            Add a new Selenium test with an optional comment.")
+    something_printed = True
+  if command in ('web-test-remove', 'wr', 'all'):
+    p("web-test-remove (wr) TEST")
+    p("            Remove a Selenium test.")
     something_printed = True
   if command in ('install', 'i', 'all'):
     p("install (i) PATH")
@@ -404,13 +429,64 @@ def run_web_tests():
   except (NameError):
     sys.stderr.write("Seleinum not installed: run \"pip install -U selenium\"\n")
   cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
-  user_name = raw_input("Patas user name:")
-  subprocess.call([cmd, '-r', '-a', 'patas.ling.washington.edu', '-u', user_name, 'home2/www-uakari/html/matrix/test'], env=os.environ);
+#  user_name = raw_input("Patas user name:")
+#  subprocess.call([cmd, '-r', '-a', 'patas.ling.washington.edu', '-u', user_name, '/home2/www-uakari/html/matrix/test'], env=os.environ);
+
   import unittest
-  import gmcs.tests.testWeb
+  import gmcs.web_tests.testWeb
   loader = unittest.defaultTestLoader
   runner = unittest.TextTestRunner(verbosity=1)
-  runner.run(loader.loadTestsFromModule(gmcs.tests.testWeb))
+  print 75 * '='
+  print 'Web tests:'
+  runner.run(loader.loadTestsFromModule(gmcs.web_tests.testWeb))
+  print 75 * '='
+
+def add_web_test(filename, comment):
+  import re
+  file_out = open(filename, "r")
+  test_file = open('./gmcs/web_tests/testWeb.py', 'r+')
+  write = False;
+  new_test = []
+  for line in file_out:
+    #print line;
+    if re.match("class", line):
+      write = True
+    elif line == "if __name__ == \"__main__\":\n":
+      write = False
+    if write:
+      new_test.append(line)
+  file_out.close();
+#  print new_test;
+#  for line in test_file:
+#  if line == "if __name__ == \"__main__\":\n":
+  test_file.seek(-47, 2)
+  test_file.write(new_test.pop(0))
+  if comment is not None:
+    test_file.write("    '''"+str(comment)+"'''\n")
+  for new_line in new_test:
+    test_file.write(new_line)
+  test_file.write("if __name__ == \"__main__\":\n")
+  test_file.write("    unittest.main()")
+  test_file.close()
+
+def remove_web_test(testname):
+  import re
+  test_file = open('./gmcs/web_tests/testWeb.py', 'r')
+  new_lines = []
+  keep = True
+  for line in test_file:
+    if re.match("class", line) or line == "if __name__ == \"__main\":\n":
+      if re.match("class "+str(testname), line):
+        keep = False
+      else:
+        keep = True
+    if keep:
+      new_lines.append(line)
+  test_file.close()
+  test_file = open('./gmcs/web_tests/testWeb.py', 'w')
+  for line in new_lines:
+    test_file.write(line)
+  test_file.close()
 
 if __name__ == '__main__':
   validate_python_version()
