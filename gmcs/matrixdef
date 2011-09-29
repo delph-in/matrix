@@ -760,7 +760,13 @@ Radio neg-exp "neg exp" "" ""
 . 3 "3" "" "tripartite" "set_negexp('3')"
 . more "n" "" "more?!" "set_negexp('more')"
 
-Label "<div id='zero-neg' class='switch' style='display:none'><p>Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <emph>absence</emph> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p><p>You can model omissive negation as an inflectional rule which targets a particular position class in your morphotactic system.</div>"
+Label "<div id='zero-neg' class='switch' style='display:none'><p>Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <emph>absence</emph> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p><p>You can model omissive negation as an inflectional rule ('lexical rule type') which targets a particular position class in your morphotactic system."
+
+MultiSelect vpc-neg "Verb Position Class {i} Input" "<br/>You've defined these verbal position classes:" ""
+fillregex p=verb-pc[0-9]+_name
+
+Label "</div>"
+
 
 Label "<div id='uni-neg' class='switch' style='display:none'><p> Negation can be indicated by the presence of a single negative morpheme.  Specify it's syntax below.</p>"
 

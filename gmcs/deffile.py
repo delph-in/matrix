@@ -1040,6 +1040,15 @@ class MatrixDefFile:
     print html_input(vr, 'button', '', 'Clear', False, '', '</p>', '',
                      'clear_form()')
 
+    if section == 'sentential-negation':
+      print '<div class="hiddenlexicond" style="display:none">' 
+      lexdefpath = os.path.join(os.getcwd(), 'gmcs/lexicondef')
+      lexdef = open(lexdefpath, 'r')
+      lexlines = merge_quoted_strings(lexdef.readlines())
+      print self.defs_to_html(lexlines,
+                              choices, vr,
+                              '', {})
+      print '</div>'
     print HTML_postform
     print HTML_postbody
 
