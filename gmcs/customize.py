@@ -84,6 +84,46 @@ roots = None
 #  else:
 #    error 'probable script bug'
 
+
+######################################################################
+# customize_punctuation(grammar_path)
+#   Determine which punctuation characters to ignore in parsing
+
+def customize_punctuation(grammar_path):
+  if not ch.get('punctuation-chars',''): return
+  chars = list(unicode(ch['punctuation-chars'], 'utf8'))
+  # First for LKB's globals.lsp
+  punc_re = re.compile(r'(' + r'|'.join(r'#\\' + re.escape(c) + ' ?'
+                                        for c in chars) + r')')
+  filename = os.path.join(grammar_path, 'lkb', 'globals.lsp')
+  lines = iter(open(filename, 'r').readlines())
+  glbl_lsp = open(filename, 'w')
+  for line in lines:
+    if line.startswith('(defparameter *punctuation-characters*'):
+      # NOTE: because we don't want to parse lisp, we assume here that
+      #       the (defparameter block ends at the next blank line
+      while line.strip() != '':
+          line = punc_re.sub('', line)
+          print >>glbl_lsp, line.rstrip()
+          line = lines.next()
+    print >>glbl_lsp, line.rstrip()
+  glbl_lsp.close()
+  # PET's pet.set is a bit easier
+  line_re = re.compile(r'^punctuation-characters := "(.*)".\s*$')
+  # need to escape 1 possibility for PET
+  chars = [{'"':'\\"'}.get(c, c) for c in chars]
+  punc_re = re.compile(r'(' + r'|'.join(re.escape(c) for c in chars) + r')')
+  filename = os.path.join(grammar_path, 'pet', 'pet.set')
+  lines = iter(open(filename, 'r').readlines())
+  pet_set = open(filename, 'w')
+  for line in lines:
+    line = unicode(line, 'utf8')
+    s = line_re.search(line)
+    if s:
+      line = 'punctuation-characters := "%s".' % punc_re.sub('', s.group(1))
+    print >>pet_set, line.rstrip().encode('utf8')
+  pet_set.close()
+
 ######################################################################
 # customize_test_sentences(grammar_path)
 #   Create the script file entries for the user's test sentences.
@@ -403,6 +443,7 @@ def customize_matrix(path, arch_type, destination=None):
   negation.customize_sentential_negation(mylang, ch, lexicon, rules)
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
+  customize_punctuation(grammar_path)
   customize_test_sentences(grammar_path)
   customize_itsdb(grammar_path)
   customize_script(grammar_path)

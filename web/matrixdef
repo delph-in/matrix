@@ -6,6 +6,8 @@ Label "<h3>Language</h3>"
 
 Text language "Language name" "<p>Name of your language: " "<br>" 50
 Text iso-code "ISO code" "<a href=\"http://www.sil.org/iso639-3/codes.asp\">ISO code</a> for your language: " " (optional) </p>" 6
+Label "<p>Many punctuation characters are ignored by the parser. If there are any you wish to be included in the parse chart (e.g. if you use ? for a glottal stop, or ! for an alveolar click), please type or copy them from the following list. Do not use any commas or spaces to delimit characters.<br>"
+Text punctuation-chars "Punctuation characters" "Punctuation characters to parse:" "<br>!\"&'()*+,−./;&lt;&gt;?@[\]^`{|}~<!--we can't currently do anything about the unicode characters... maybe later 。！？…．　○●◎＊☆★◇◆--><br>" 50
 
 Label "<h3>Archiving and Version Control</h3>"
 

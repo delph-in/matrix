@@ -391,6 +391,10 @@ def validate_general(ch, vr):
             'Please answer whether you will allow ' +
             'your answers to be retained.')
 
+  if ' ' in ch.get('punctuation-chars',''):
+    vr.err('punctuation-chars',
+           'Spaces are not allowed as parsable punctuation.')
+
 ######################################################################
 # validate_person(ch, vr)
 #   Validate the user's choices about person
