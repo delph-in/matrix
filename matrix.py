@@ -557,8 +557,8 @@ def run_web_tests():
   except (NameError):
     sys.stderr.write("Seleinum not installed: run \"pip install -U selenium\"\n")
   cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
-#  user_name = raw_input("Patas user name:")
-#  subprocess.call([cmd, '-r', '-a', 'patas.ling.washington.edu', '-u', user_name, '/home2/www-uakari/html/matrix/test'], env=os.environ);
+  user_name = raw_input("Patas user name:")
+  subprocess.call([cmd, user_name+'@patas.ling.washington.edu:/home2/www-uakari/html/matrix/test'], env=os.environ);
 
   import unittest
   import gmcs.web_tests.testWeb
