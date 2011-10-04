@@ -21,6 +21,8 @@
 
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
+((:path . "neg-aux-min") (:content . "neg-aux-min: scope of negation for negative auxiliary verbs. uses minimal grammar augmented with some choices for auxiliaries"))
+((:path . "neg-aux-min") (:content . "neg-aux-min: scope of negation for negative auxiliary verbs. uses minimal grammar augmented with some choices for auxiliaries"))
 ((:path . "bipartite-stems") (:content . "bipartite-stems: Basic test cases for bipartite stems, based on mini-English"))
 ((:path . "morphotactics-impl-expl-disjunction") (:content . "morphotactics-impl-expl-disjunction: Models and tests both implicit and explicit non-sequential disjunctions, and an explicit sequential disjunction."))
 ((:path . "morphotactics-lrt-inputs") (:content . "morphotactics-lrt-inputs: Tests inputs and constraints using hierarchies (trees and multiple inheritance) of lexical rule types."))
@@ -83,8 +85,8 @@
 ((:path . "arg-opt-all-subj-drop-marker-np-wth-drop-req-wthout") (:content . "arg-opt-all-subj-drop-marker-np-wth-drop-req-wthout: Subject dropping for all verb types. Marker not permitted with dropped subj and req with overt arg."))
 ((:path . "arg-opt-all-subj-drop-marker-np-wth-drop-opt-wthout") (:content . "arg-opt-all-subj-drop-marker-np-wth-drop-opt-wthout: Subject dropping is allowed for all verb types.  A marker is not permitted with a dropped subject and is optional with an overt one.  Object dropping is not allowed."))
 ((:path . "arg-opt-all-comps-drop-marker-opt-wth-drop-req-wthout") (:content . "Object dropping for all verb types.  Marker is optional for dropped objects and required for overt objects."))
-((:path . "arg-opt-all-comps-drop-marker-np-wth-drop-opt-wthout") (:content . "Object dropping is allowed for all verb types a marker is not permitted with dropped arguments and is optional for overt."))
-((:path . "arg-opt-all-comps-drop-marker-np-wth-drop-opt-wthout") (:content . "Object dropping is allowed for all verb types.  A marker is required with overt arguments and not permitted with dropped arguments."))
+((:path . "arg-opt-all-comps-drop-marker-np-wth-drop-opt-wthout") (:content . "Object dropping is allowed for all verb types. A marker is not permitted with dropped arguments and is optional for overt."))
+((:path . "arg-opt-all-comps-drop-marker-np-wth-drop-req-wthout") (:content . "Object dropping is allowed for all verb types.  A marker is required with overt arguments and not permitted with dropped arguments."))
 ((:path . "arg-opt-all-comps-drop-marker-opt-wth-drop-np-wthout") (:content . "Object dropping is allowed for all verb types and a marker is optional if the object is dropped and not permitted if it is overt."))
 ((:path . "arg-opt-all-comps-drop-marker-opt-wth-drop-opt-wthout") (:content . "Object dropping is allowed for verb types and object marking is optional when for dropped and overt objects."))
 ((:path . "arg-opt-all-comps-drop-marker-req-wth-drop-np-wthout") (:content . "Object dropping is allowed for all verbs and an object marker is required when the object is dropped and not permitted with an overt object."))

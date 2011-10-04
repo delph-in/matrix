@@ -83,7 +83,7 @@ ASSOCIATED_RESOURCES=""
 ## Uncomment one:
 #GRAMMAR_TYPE="Resource grammar"
 #GRAMMAR_TYPE="Treebank trained grammar"
-#GRAMMAR_TYPE="Medium-sized lingiustic grammar"
+#GRAMMAR_TYPE="Medium-sized linguistic grammar"
 #GRAMMAR_TYPE="Experimental grammar"
 
 

@@ -391,6 +391,10 @@ def validate_general(ch, vr):
             'Please answer whether you will allow ' +
             'your answers to be retained.')
 
+  if ' ' in ch.get('punctuation-chars',''):
+    vr.err('punctuation-chars',
+           'Spaces are not allowed as parsable punctuation.')
+
 ######################################################################
 # validate_person(ch, vr)
 #   Validate the user's choices about person
@@ -924,6 +928,9 @@ def validate_lexicon(ch, vr):
         mess = 'You have specified a predicate but indicated ' +\
                'that this type does not contribute a predicate.'
         vr.err(aux.full_key + '_sem', mess)
+      if not stem.get('orth'):
+        mess = 'You must specify a spelling for each auxiliary you define.'
+        vr.err(stem.full_key + '_orth', mess);
 
   # Determiners
   for det in ch.get('det'):

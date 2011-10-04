@@ -367,12 +367,14 @@ mrs := mrs-min &
     HCONS diff-list ].
 
 ; HOOK values include
+;    GTOP                  ; Global top handle
 ;    LTOP                  ; Local top handle
 ;    INDEX                 ; The salient nominal instance or event
 ;    XARG                  ; The external (controlled) argument of a phrase
 
 hook := avm &
-  [ LTOP handle,
+  [ GTOP handle,
+    LTOP handle,
     INDEX individual,
     XARG individual ].
 

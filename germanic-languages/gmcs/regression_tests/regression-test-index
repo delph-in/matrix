@@ -137,3 +137,6 @@ bipartite-stems=Basic test cases for bipartite stems, based on mini-English
 dutch-argcomp-compl=ACL version Dutch grammar with argument-composition analysis
 german-argcomp-compl=Dummy vocabulary German test using argument composition
 german-auxrule-compl=Dummy grammar test for German first version using auxrule
+neg-aux-min=scope of negation for negative auxiliary verbs. uses minimal grammar augmented with some choices for auxiliaries
+
+neg-aux-min=scope of negation for negative auxiliary verbs. uses minimal grammar augmented with some choices for auxiliaries
