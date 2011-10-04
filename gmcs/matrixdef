@@ -762,8 +762,9 @@ Radio neg-exp "neg exp" "" ""
 
 Label "<div id='zero-neg' class='switch' style='display:none'><p>Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <emph>absence</emph> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p><p>You can model omissive negation as a phonologically empty inflectional rule ('lexical rule type/instance') which targets a particular position class in your morphotactic system.  "
 
-MultiSelect vpc-0-neg "0 neg vpc" "Choose a position class from the verbal position classes that you've defined (on the lexicon page):" "</p>"
+MultiSelect vpc-0-neg "0 neg vpc" "I can create a phonologically empty negation affix for you here.  Choose a position class from the verbal position classes that you've defined (on the lexicon page):" "  You'll see the result of this choice as a lexical rule instance with no affix and a feature called [NEGATION] with the value \"plus\".  This 'feature' indicates that the customization system should add negative semantics when the grammar is built.</p>"
 fillregex p=verb-pc[0-9]+_name
+. create "Create" "create new pc"
 
 Label "</div>"
 

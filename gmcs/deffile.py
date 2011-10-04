@@ -1041,7 +1041,7 @@ class MatrixDefFile:
                      'clear_form()')
 
     if section == 'sentential-negation':
-      print '<div class="hiddenlexicond" style="display:none">' 
+      print '<div id="hiddenlexicon" style="display:none">' 
       lexdefpath = os.path.join(os.getcwd(), 'gmcs/lexicondef')
       lexdef = open(lexdefpath, 'r')
       lexlines = merge_quoted_strings(lexdef.readlines())
@@ -1278,6 +1278,10 @@ class MatrixDefFile:
         old_choices, neg_aux_index = self.create_neg_aux_choices(old_choices)
         new_choices["neg-aux-index"] = str(neg_aux_index) if neg_aux_index > 0 else str(1)
 
+    # create a zero-neg lri in choices
+    if section == 'sentential-negation' and 'vpc-0-neg' in form_data.keys():
+      old_choices = self.create_infl_neg_choices(old_choices, new_choices['vpc-0-neg'])
+
 
     # Open the def file and store it in line[]
     g = open(self.def_file, 'r')
@@ -1333,6 +1337,29 @@ class MatrixDefFile:
     nli['sem']='add-pred'
     nli['stem1_pred'] = '_neg_v_rel'
     return choices, next_n
+
+  def create_infl_neg_choices(self, choices, vpc):
+    if vpc != 'create':
+      next_n = choices[vpc]['lrt'].next_iter_num() if choices[vpc]['lrt'] else 1
+    # create new lrt in this position class
+      choices[vpc]['lrt%d_name' % next_n] = 'neg'
+      # add some features for negation and empty PHON
+      lrt = choices[vpc]['lrt'].get_last()
+      lrt['feat1_name']= 'negation'
+      lrt['feat1_value'] = 'plus'
+      lrt['feat1_head'] = 'verb'
+      lrt['lri1_inflecting'] = 'no'
+    else:
+      next_n = choices['verb-pc'].next_iter_num() if choices['verb-pc'] else 1
+      choices['verb-pc%d_name' % next_n] = 'negpc'
+      vpc = choices['verb-pc'].get_last()
+      vpc['lrt1_name'] = 'neg'
+      vpc['lrt1_feat1_name']='negation'
+      vpc['lrt1_feat1_value'] = 'plus'
+      vpc['lrt1_feat1_head'] = 'verb'
+      vpc['lrt1_lri1_inflecting'] = 'no'
+
+    return choices
 
   def choices_error_page(self, choices_file, exc=None):
     print HTTP_header + '\n'
