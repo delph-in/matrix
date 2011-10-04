@@ -329,5 +329,158 @@ class PersonErrors(unittest.TestCase):
         self.driver.quit()
         self.assertEqual([], self.verificationErrors)
 
+class CaseErrors(unittest.TestCase):
+    '''Test Errors and Warnings for the Case page.'''
+    def setUp(self):
+        self.driver = webdriver.Firefox()
+        self.driver.implicitly_wait(30)
+        self.base_url = "http://uakari.ling.washington.edu/matrix/test/matrix.cgi"
+        self.verificationErrors = []
+    
+    def test_case_errors(self):
+        driver = self.driver
+        driver.get("http://uakari.ling.washington.edu/matrix/test/matrix.cgi")
+        driver.find_element_by_link_text("Case").click()
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name=\"case-marking_error\"] > span.error[title=\"You must specify if/how case is marked.\"]"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.find_element_by_css_selector("input[name='case-marking'][value='nom-acc']").click()
+        driver.find_element_by_css_selector("input[type='submit']").click()
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name=\"nom-acc-nom-case-name_error\"] > span.error[title=\"You must specify a name for every case.\"]"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name=\"nom-acc-acc-case-name_error\"] > span.error[title=\"You must specify a name for every case.\"]"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.find_element_by_css_selector("input[name='case-marking'][value='none']").click()
+        driver.find_element_by_css_selector("input[type='button'][value='Add a Case']").click()
+        driver.find_element_by_css_selector("input[name='case1_name']").send_keys("Pointless-Case")
+        driver.find_element_by_css_selector("input[type='submit']").click()
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name=\"case1_name_error\"] > span.error[title=\"You may not specify additional cases if your language has no case marking.\"]"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        
+    def is_element_present(self, how, what):
+        try: self.driver.find_element(by=how, value=what)
+        except NoSuchElementException, e: return False
+        return True
+    
+    def tearDown(self):
+        self.driver.quit()
+        self.assertEqual([], self.verificationErrors)
+class DirectInverseErrors(unittest.TestCase):
+    '''Test Errors and Warnings for the Direct-Inverse page.'''
+    def setUp(self):
+        self.driver = webdriver.Firefox()
+        self.driver.implicitly_wait(30)
+        self.base_url = "http://uakari.ling.washington.edu/matrix/test/matrix.cgi"
+        self.verificationErrors = []
+    
+    def test_direct_inverse_errors(self):
+        driver = self.driver
+        driver.get("http://uakari.ling.washington.edu/matrix/test/matrix.cgi")
+        driver.find_element_by_link_text("Direct-inverse").click()
+        driver.find_element_by_css_selector("input[type='button'][value='Add a Scale Entry']").click()
+        driver.find_element_by_css_selector("select[name='scale1_feat1_name']").click()
+        driver.find_element_by_css_selector("select[name='scale1_feat1_name'] > option[value='argument structure']").click()
+        driver.find_element_by_css_selector("input[type='submit']").click();
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name=\"scale1_feat1_value_error\"] > span.error[title=\"You have selected an invalid feature value.\"]"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name=\"scale-equal_error\"] > span.error[title^=\"If you define a direct-inverse scale\"]"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        
+    def is_element_present(self, how, what):
+        try: self.driver.find_element(by=how, value=what)
+        except NoSuchElementException, e: return False
+        return True
+    
+    def tearDown(self):
+        self.driver.quit()
+        self.assertEqual([], self.verificationErrors)
+class TenseAspectMoodErrors(unittest.TestCase):
+    '''Test Errors and Warnings for the Tense/Aspect page.'''
+    def setUp(self):
+        self.driver = webdriver.Firefox()
+        self.driver.implicitly_wait(30)
+        self.base_url = "http://uakari.ling.washington.edu/matrix/test/matrix.cgi"
+        self.verificationErrors = []
+    
+    def test_tense_aspect_mood_errors(self):
+        driver = self.driver
+        driver.get("http://uakari.ling.washington.edu/matrix/test/matrix.cgi")
+        driver.find_element_by_link_text("Tense, Aspect and Mood").click()
+        driver.find_element_by_css_selector("input[name='tense-definition'][value='choose']").click()
+        driver.find_element_by_css_selector("input[type='button'][value='Add a subtype']").click();
+        driver.find_element_by_css_selector("input[name='past-subtype1_name']").send_keys("pointless_tense")
+        driver.find_element_by_css_selector("input[type='submit']").click()
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name=\"past_error\"] > span.error[title=\"You have chosen to select among hierarchy elements. You need to select at least one tense element.\"]"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name=\"past-subtype1_name_error\"] > span.error[title=\"You cannot add a subtype if the supertype is not selected.\"]"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.find_element_by_css_selector("input[name='tense-definition'][value='build']").click()
+        driver.find_element_by_css_selector("input[type='submit']").click()
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name=\"tense-definition_error\"] > span.error[title=\"You have chosen to build your own tense hierarchy so you must enter at least one tense subtype.\"]"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.find_element_by_css_selector("input[type='button'][value='Add a tense type']").click()
+        driver.find_element_by_css_selector("select[name='tense1_supertype1_name']").click()
+        driver.find_element_by_css_selector("option[value='tense1']").click()
+        driver.find_element_by_css_selector("input[type='button'][value='Add a tense type']").click()
+        driver.find_element_by_css_selector("input[name='tense2_name']").send_keys("Pointless-Tense")
+        driver.find_element_by_css_selector("input[type='button'][value='Add an aspect type']").click()
+        driver.find_element_by_css_selector("select[name='aspect1_supertype1_name']").click()
+        driver.find_element_by_css_selector("option[value='aspect1']").click()
+        driver.find_element_by_css_selector("input[type='button'][value='Add an aspect type']").click()
+        driver.find_element_by_css_selector("input[name='aspect2_name']").send_keys("Pointless-Aspect")
+        driver.find_element_by_css_selector("input[type='button'][value='Add a situation type']").click()
+        driver.find_element_by_css_selector("select[name='situation1_supertype1_name']").click()
+        driver.find_element_by_css_selector("option[value='situation1']").click()
+        driver.find_element_by_css_selector("input[type='button'][value='Add a situation type']").click()
+        driver.find_element_by_css_selector("input[name='situation2_name']").send_keys("Pointless-Situation")
+        driver.find_element_by_css_selector("input[type='button'][value='Add a mood type']").click()
+        driver.find_element_by_css_selector("select[name='mood1_supertype1_name']").click()
+        driver.find_element_by_css_selector("option[value='mood1']").click()
+        driver.find_element_by_css_selector("input[type='button'][value='Add a mood type']").click()
+        driver.find_element_by_css_selector("input[name='mood2_name']").send_keys("Pointless-Mood")
+        driver.find_element_by_css_selector("input[type='submit']").click()
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name='tense1_name_error'] > span.error[title='You must specify a name for each tense subtype you define.']"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name='tense2_supertype1_name_error'] > span.error[title='You must specify a supertype for each tense subtype you define.']"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name='aspect1_name_error'] > span.error[title='You must specify a name for each viewpoint aspect subtype you define.']"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name='aspect2_supertype1_name_error'] > span.error[title='You must specify at least one supertype for each viewpoint aspect subtype you define.']"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name='situation1_name_error'] > span.error[title='You must specify a name for each situation aspect subtype you define.']"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name='situation2_supertype1_name_error'] > span.error[title='You must specify at least one supertype for each situation aspect subtype you define.']"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name='mood1_name_error'] > span.error[title='You must specify a name for each mood subtype you define.']"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name='mood2_supertype1_name_error'] > span.error[title='You must specify at least one supertype for each mood subtype you define.']"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.find_element_by_css_selector("input[name='noaux-fin-nf']").click()
+        driver.find_element_by_css_selector("input[type='button'][value='Submit']").click()
+        driver.find_element_by_link_text("Word Order").click()
+        driver.find_element_by_css_selector("input[name='has-aux'][value='yes']").click()
+        driver.find_element_by_css_selector("input[type='button'][value='Submit']").click()
+        driver.find_element_by_link_text("Tense, Aspect and Mood").click()
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name='noaux-fin-nf_error'] > span.error[title='You have indicated on the word order page that your language has auxiliaries.']"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.find_element_by_css_selector("input[name='noaux-fin-nf']").click()
+        driver.find_element_by_css_selector("input[type='button'][value='Add a subtype'][onclick^=\"clone_region('nf-subform'\"]").click()
+        driver.find_element_by_css_selector("input[name='nf-subform1_name']").send_keys("Pointless")
+        driver.find_element_by_css_selector("input[type='button'][value='Submit']").click()
+        driver.find_element_by_link_text("Word Order").click()
+        driver.find_element_by_css_selector("input[name='has-aux'][value='no']").click()
+        driver.find_element_by_css_selector("input[type='button'][value='Submit']").click()
+        driver.find_element_by_link_text("Tense, Aspect and Mood").click()
+        try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name='noaux-fin-nf_error'] > span.error[title='You have indicated that your language has no auxiliaries but you have entered subforms of finite or non-finite.']"))
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        
+    def is_element_present(self, how, what):
+        try: self.driver.find_element(by=how, value=what)
+        except NoSuchElementException, e: return False
+        return True
+    
+    def tearDown(self):
+        self.driver.quit()
+        self.assertEqual([], self.verificationErrors)
+
 if __name__ == "__main__":
     unittest.main()
