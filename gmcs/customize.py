@@ -158,15 +158,14 @@ def customize_itsdb(grammar_path):
   if 'sentence' not in ch: return
 
   def get_item(s, i):
-    star = s['orth'].startswith('*')
     return dict([('i-id', str(i+1)),
                  ('i-origin', 'unknown'),
                  ('i-register', 'unknown'),
                  ('i-format', 'none'),
                  ('i-difficulty', '1'),
-                 ('i-category', 'S' if not star else ''),
-                 ('i-input', s['orth'].lstrip('*')),
-                 ('i-wf', '0' if star else '1'),
+                 ('i-category', 'S' if not s.get('star', False) else ''),
+                 ('i-input', s['orth']),
+                 ('i-wf', '0' if s.get('star', False) else '1'),
                  ('i-length', str(len(s['orth'].split()))),
                  ('i-author', 'author-name'),
                  ('i-date', str(datetime.date.today()))])

@@ -1663,14 +1663,16 @@ EndIter adp
 Section test-sentences "Test Sentences"
 
 Label "<p>In this section, you can provide example sentences that will
-appear in the file <tt>test_sentences</tt> in your grammar and as
-defaults in the LKB's parse dialog.  You can mark a sentence as
-ungrammatical by beginning it with an asterisk (*). Please use only
-the vocabulary defined in the Lexicon section.</p>"
+appear in the file <tt>test_sentences</tt> in your grammar, as defaults
+in the LKB's parse dialog, and in the [incr tsdb()] database skeleton
+in the tsdb/skeletons directory of your grammar. Please use only the
+vocabulary defined in the Lexicon section. If the sentence is
+ungrammatical, please check the \"Starred\" checkbox</p>"
 
 BeginIter sentence{i} "a Sentence"
 
   Text orth "Sentence {i}" "<b>Sentence {i}</b>: " "" 100
+  Check star "Grammatical {i}" "Starred: " ""
 
 EndIter sentence
 
