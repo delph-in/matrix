@@ -1280,7 +1280,9 @@ class MatrixDefFile:
 
     # create a zero-neg lri in choices
     if section == 'sentential-negation' and 'vpc-0-neg' in form_data.keys():
-      old_choices = self.create_infl_neg_choices(old_choices, new_choices['vpc-0-neg'])
+      # infl-neg should be on for zero-neg to work
+      new_choices['infl-neg'] = 'on'
+      old_choices, new_choices = self.create_infl_neg_choices(old_choices, new_choices, new_choices['vpc-0-neg'])
 
 
     # Open the def file and store it in line[]
@@ -1338,28 +1340,29 @@ class MatrixDefFile:
     nli['stem1_pred'] = '_neg_v_rel'
     return choices, next_n
 
-  def create_infl_neg_choices(self, choices, vpc):
+  def create_infl_neg_choices(self, old_choices, new_choices, vpc):
     if vpc != 'create':
-      next_n = choices[vpc]['lrt'].next_iter_num() if choices[vpc]['lrt'] else 1
+      next_n = old_choices[vpc]['lrt'].next_iter_num() if old_choices[vpc]['lrt'] else 1
     # create new lrt in this position class
-      choices[vpc]['lrt%d_name' % next_n] = 'neg'
+      old_choices[vpc]['lrt%d_name' % next_n] = 'neg'
       # add some features for negation and empty PHON
-      lrt = choices[vpc]['lrt'].get_last()
+      lrt = old_choices[vpc]['lrt'].get_last()
       lrt['feat1_name']= 'negation'
       lrt['feat1_value'] = 'plus'
       lrt['feat1_head'] = 'verb'
       lrt['lri1_inflecting'] = 'no'
     else:
-      next_n = choices['verb-pc'].next_iter_num() if choices['verb-pc'] else 1
-      choices['verb-pc%d_name' % next_n] = 'negpc'
-      vpc = choices['verb-pc'].get_last()
+      next_n = old_choices['verb-pc'].next_iter_num() if old_choices['verb-pc'] else 1
+      old_choices['verb-pc%d_name' % next_n] = 'negpc'
+      vpc = old_choices['verb-pc'].get_last()
       vpc['lrt1_name'] = 'neg'
       vpc['lrt1_feat1_name']='negation'
       vpc['lrt1_feat1_value'] = 'plus'
       vpc['lrt1_feat1_head'] = 'verb'
       vpc['lrt1_lri1_inflecting'] = 'no'
-
-    return choices
+      new_choices['vpc-0-neg'] = str(vpc)
+    
+    return old_choices, new_choices
 
   def choices_error_page(self, choices_file, exc=None):
     print HTTP_header + '\n'
