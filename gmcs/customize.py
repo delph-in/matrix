@@ -278,7 +278,6 @@ def customize_roots():
 
 def setup_vcs(ch, grammar_path):
   if 'vcs' in ch:
-    from subprocess import call
     IGNORE = open(os.devnull,'w')
     cwd = os.getcwd()
     os.chdir(grammar_path)
@@ -325,14 +324,16 @@ def customize_matrix(path, arch_type, destination=None):
   # Copy from matrix-core
   if os.path.exists(grammar_path):
     shutil.rmtree(grammar_path)
+
   # Use the following command when python2.6 is available
   #shutil.copytree('matrix-core', grammar_path,
   #                ignore=shutil.ignore_patterns('.svn'))
-  shutil.copytree(get_matrix_core_path(), grammar_path)
-  # Since we cannot use shutil.ignore_patterns until 2.6, remove .svn dirs
-  shutil.rmtree(os.path.join(grammar_path, '.svn'), ignore_errors=True)
-  shutil.rmtree(os.path.join(grammar_path, 'lkb/.svn'), ignore_errors=True)
-  shutil.rmtree(os.path.join(grammar_path, 'pet/.svn'), ignore_errors=True)
+  IGNORE = open(os.devnull, 'w')
+  call(['rsync', '-a', '--exclude=.svn',
+        get_matrix_core_path() + os.path.sep, grammar_path],
+       stdout=IGNORE, stderr=IGNORE)
+  IGNORE.close()
+
   # include a copy of choices (named 'choices' to avoid collisions)
   shutil.copy(path, os.path.join(grammar_path, 'choices'))
 

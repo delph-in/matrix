@@ -536,7 +536,7 @@ class MatrixDefFile:
       datestamp = f.readlines()[0].strip()
       f.close()
     except:
-      pass
+      datestamp = "<date unknown>"
 
     print HTML_mainprebody % (datestamp)
     print '<div class="indented">'
