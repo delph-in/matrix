@@ -321,9 +321,11 @@ def customize_matrix(path, arch_type, destination=None):
   grammar_path = get_grammar_path(ch.get('iso-code', language).lower(),
                                   language.lower(), destination)
 
-  # Copy from matrix-core
+  # delete any existing contents at grammar path
   if os.path.exists(grammar_path):
     shutil.rmtree(grammar_path)
+  # the rsync command won't create the target dirs, so do it now
+  os.makedirs(grammar_path)
 
   # Use the following command when python2.6 is available
   #shutil.copytree('matrix-core', grammar_path,
