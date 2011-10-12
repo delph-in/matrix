@@ -1675,12 +1675,13 @@ or more Import Classes, which map Toolbox tag/value pairs to lexical
 classes defined on the Lexicon page.  The Toolbox Import
 Configurations become part of your choices file when you click the
 Submit or Import Lexicon buttons.</p><p> Once you have imported a
-lexicon, you can check the entries that were imported for each class.
+lexicon, you can check the entries that were imported for each class <a
+href=\"matrix.cgi?subpage=ToolboxLexicon\">here</a>.
 If you find errors, you can edit the Import Classes and
 re-import.</p><p>In order to import information from a Toolbox lexicon
 to your choices file, the Toolbox files must be transferred to our
 servers.  We will NOT store these files permanently.  They will be
-deleted within 24 hours.</p>"
+deleted immediately after being processed.</p>"
 
 BeginIter toolboximportconfig{i} "a Toolbox Import Configuration" 1 1
 
@@ -1791,9 +1792,11 @@ BeginIter stv-feat{j} "a Feature"
 
 EndIter stv-feat
 
-Section ToolboxLexicon "Toolbox Lexicon"
+Section ToolboxLexicon "Toolbox Lexicon" 0
 
-Label "<p> Heyo, this should show the imported lexical items.</p>"
+Label "<p> Imported Toolbox Lexical items are displayed here, if any of these are incorrect 
+we recommend changing your import configurations and reimporting your files instead of
+directly correcing the entries.</p>"
 
 Separator
 

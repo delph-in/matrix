@@ -568,7 +568,7 @@ class MatrixDefFile:
       word = tokenize_def(l)
       if len(word) == 0:
         pass
-      elif word[0] == 'Section':
+      elif word[0] == 'Section' and (len(word) != 4 or word[3] != '0'):
         print '<div class="section"><span id="' + word[1] + 'button" ' + \
               'onclick="toggle_display(\'' + \
               word[1] + '\',\'' + word[1] + 'button\')"' + \
