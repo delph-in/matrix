@@ -222,12 +222,22 @@ in for head-adjunct phrases here:',
   if wo == 'v2':
     mylang.add('verbal-head-nexus := headed-phrase & \
                 [ SYNSEM.LOCAL.CAT.HEAD verb ].')
+# Change introduced by Germanic: [ MC na ] only if no verbal cluster
+# removed [ na ] value from rule below
     mylang.add('head-initial-head-nexus := head-initial & \
-                [ SYNSEM.LOCAL.CAT.MC na & #mc, \
+                [ SYNSEM.LOCAL.CAT.MC #mc, \
                   HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
     mylang.add('head-final-head-nexus := head-final & \
-                [ SYNSEM.LOCAL.CAT.MC bool, \
-                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
+
+#####value "na" on head-initial-head-nexus only for no cluster
+#####value "bool" on head-final-head-nexus only for no cluster
+#####if cluster, specialized rule is called (see word_order_v2_vcluster.py)
+
+    if not ch.get('verb-cluster') == 'yes':
+      mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.MC na ].')
+      mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.MC bool ].')
+   
 
 #rules shared among free and v2
 
@@ -236,8 +246,12 @@ in for head-adjunct phrases here:',
     mylang.add('subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
     mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.')
     mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.')
-    mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
+# Change introduced by Germanic: head-comp-phrase-2 not needed 
+# for all v2 analyses when verbal cluster is formed
+    if not ch.get('verb-cluster') == 'yes':
+      mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
     mylang.add('comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.')
+
 
 
 # Add rule definitions for major constituent order.
@@ -247,8 +261,10 @@ in for head-adjunct phrases here:',
     rules.add('head-subj := head-subj-phrase.')
     rules.add('comp-head := comp-head-phrase.')
     rules.add('subj-head := subj-head-phrase.')
-    rules.add('head-comp-2 := head-comp-phrase-2.')
     rules.add('comp-head-2 := comp-head-phrase-2.')
+# Change introduced by Germanic: see above
+    if wo == 'free'  or (not ch.get('verb-cluster') == 'yes'):
+      rules.add('head-comp-2 := head-comp-phrase-2.')
   # Assume at this point that there's a good value of wo.
   # Rule names are stored in hs and hc, since they're the same as type names
   # without the -phrase suffix.
@@ -351,7 +367,9 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
     mylang.add('lex-rule :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
                               DTR.SYNSEM.LOCAL.CAT.VC #vc ].',
                section='addenda')
-    mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
+###Germanic introduced change:
+    if not wo == 'v2':
+      mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].',
                section='addenda')
   # ERB 2006-09-15 First add head-comp or comp-head if they aren't

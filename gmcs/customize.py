@@ -26,6 +26,7 @@ from gmcs.linglib import argument_optionality
 from gmcs.linglib import direct_inverse
 from gmcs.linglib import case
 from gmcs.linglib import word_order
+from gmcs.linglib import word_order_v2_vcluster
 from gmcs.linglib import features
 from gmcs.linglib import lexical_items
 from gmcs.linglib import agreement_features
@@ -442,6 +443,9 @@ def customize_matrix(path, arch_type, destination=None):
  # customize_mood()
   verbal_features.customize_verbal_features(mylang, hierarchies)
   word_order.customize_word_order(mylang, ch, rules)
+###call specialized Germanic word order rules:
+  if ch.get('word-order') == 'v2' and ch.get('verb-cluster') == 'yes':
+    word_order_v2_vcluster.v2_and_verbal_clusters(ch, mylang, lrules, rules)
   negation.customize_sentential_negation(mylang, ch, lexicon, rules)
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
