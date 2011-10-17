@@ -42,12 +42,19 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       v = [case.canon_to_abbr(c, cases) for c in v]
 
     geom_prefix = pos_geom_prefix
+    # Germanic: Auxrule analysis requires a different prefix
+    # No subj list to put feature on...geom_prefix2 used for this purpose
+    geom_prefix2 = ''
 
     # The 'head' choice only appears on verb pcs, and allows the user
     # to specify features on the subject and object as well
     h = feat.get('head','')
     if h == 'subj':
       geom_prefix += 'LOCAL.CAT.VAL.SUBJ.FIRST.'
+    # setting necessary value in case of 'aux-rule' analysis to geom_prefix2
+      if ch.get('vc-analysis') == 'aux-rule':
+        geom_prefix2 = pos_geom_prefix
+        geom_prefix2 += 'LOCAL.CAT.VAL.COMPS.FIRST.'
     elif h == 'obj':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
     elif h == 'higher':
@@ -63,15 +70,38 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       if f[0] == n:
         geom = f[2]
 
+    # geom2 covers aux-rule case
+    geom2 = ''
     if geom:
       geom = geom_prefix + geom
+      if geom_prefix2:
+        path_parts = geom.split('.')
+        ff_num = len(path_parts) - 1
+        final_feat = path_parts[ff_num]
+        geom2 = geom_prefix2 + 'LOCAL.CONT.HOOK.XARG.PNG.' + final_feat
+        type_name_1 = type_name + '-main-verb'
+        type_name_2 = type_name + '-aux'
 
     # If the feature has a geometry, just specify its value;
     # otherwise, handle it specially.
     if geom:
       if n in hierarchies:
         value = hierarchies[n].get_type_covering(v)
-        tdlfile.add(type_name +
+        if geom2:
+          tdlfile.add(type_name_1 +
+                      ' := ' + type_name + ' & ' +
+                       ' [ ' + geom + ' ' + value + ' ].')
+          tdlfile.add(type_name_1 +
+                      ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].', 
+                         merge=True)
+          tdlfile.add(type_name_2 +
+                      ' := ' + type_name + ' & ' +
+                       ' [ ' + geom2 + ' ' + value + ' ].')
+          tdlfile.add(type_name_2 +
+                      ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+                         merge=True)
+        else:  
+          tdlfile.add(type_name +
                     ' := [ ' + geom + ' ' + value + ' ].',
                     merge=True)
         if n == 'case' and ch.has_mixed_case():

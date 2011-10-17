@@ -29,12 +29,21 @@ def set_supertypename(auxcomp):
       
 
 def define_arg_str_and_valency(aux, auxcomp, ch, mylang):
-  supertypename = set_supertypename(auxcomp)
+
+  Germanic = is_germanic(ch)
+
+  if not Germanic:
+    supertypename = set_supertypename(auxcomp)
+  else:    
+    supertypename = set_germanic_supertypename(ch)
   basic_typedef = supertypename + ' := aux-lex & \
                 [ SYNSEM.LOCAL.CAT.VAL [ SPR < >, \
                                          SPEC < > ] ].'
   mylang.add(basic_typedef)
-  if auxcomp == 's':
+
+  if Germanic:
+    comp_spec_typedef = define_germanic_arg_str_and_valency(ch, supertypename)  
+  elif auxcomp == 's':
     comp_spec_typedef = supertypename + ' := basic-one-arg & \
                             [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
                                                      COMPS < #comps > ], \
@@ -128,7 +137,13 @@ def add_subj_tdl(aux, auxcomp, ch, mylang):
     
 
 def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies):
-  supertypename = set_supertypename(auxcomp)
+  Germanic = is_germanic(ch)
+
+  if not Germanic:
+    supertypename = set_supertypename(auxcomp)
+  else:    
+    supertypename = set_germanic_supertypename(ch)
+
   if sem == 'add-pred':
     auxtypename = supertypename + '-with-pred'
     basic_typedef = auxtypename + ' := ' + supertypename + '.' 
@@ -136,7 +151,8 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies):
       typedef = auxtypename + ' := norm-sem-lex-item & \
                                         trans-first-arg-raising-lex-item-1 .'
     else:
-      if auxcomp == 'v':
+###Germanic specific, aux-rule gives only one ARG to auxiliary
+      if auxcomp == 'v' and not ch.get('vc-analysis') == 'aux-rule':
         arg_def = 'ARG-ST < [ ], [ LOCAL.CONT.HOOK.LTOP #larg ] >'
       else:
         arg_def =  'ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ] >'
@@ -180,7 +196,8 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies):
         '; but I don\'t want to rely on this.  Then again, [ AUX - ]\n' + \
         '; might not be true.'
       mylang.add_literal(comment)
-      if auxcomp == 's':
+###Germanic specific: auxrule gives only one argument to auxiliaries
+      if auxcomp == 's' or ch.get('vc-analysis') == 'aux-rule':
         arg_str = '< [ LOCAL.CAT.HEAD.AUX - ] >'
       else:
         arg_str = '< [ ], [ LOCAL.CAT.HEAD.AUX - ] >'
@@ -240,6 +257,60 @@ def customize_auxiliaries(mylang, ch, lexicon, hierarchies):
     create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies)
     add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon)
 
+
+
+#################################################
+#
+# Germanic specific rules
+# 
+
+def is_germanic(ch):
+  if ch.get('word-order') == 'v2' and ch.get('verb-cluster') == 'yes':
+    return True
+  else:
+    return False
+
+def set_germanic_supertypename(ch):
+  if ch.get('vc-analysis') == 'aux-rule':
+    supertypename = 'one-comp-aux'
+  else:
+    supertypename = 'arg-comp-aux'
+
+  return supertypename
+
+def define_germanic_arg_str_and_valency(ch, supertypename):
+  if ch.get('vc-analysis') == 'basic':
+    typedef = basic_analysis_germanic_aux_arg_str(supertypename)
+  else:
+    typedef = aux_plus_verb_germanic_aux_arg_str(supertypename)
+
+  return typedef
+
+def basic_analysis_germanic_aux_arg_str(supertypename):
+
+  typedef = supertypename + ' := aux-lex & basic-two-arg & \
+    [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ #subj, \
+                               COMPS < #comps . #vcomps >, \
+                               SPR < >, \
+                               SPEC < > ], \
+                     CONT.HOOK.XARG #xarg ], \
+      ARG-ST < [ ], \
+                   #comps & \
+                          [ LOCAL [ CAT [ VAL [ SUBJ #subj, \
+                                                COMPS #vcomps ], \
+                                          HEAD verb ], \
+                                    CONT.HOOK.XARG #xarg ]] > ].'
+  return typedef
+
+def aux_plus_verb_germanic_aux_arg_str(supertypename):
+
+  typedef = supertypename + ' := aux-lex & basic-one-arg & \
+                 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
+                                          COMPS < #comp >, \
+                                          SPR < >, \
+                                          SPEC < > ], \
+                   ARG-ST < #comp & [ LOCAL.CAT.HEAD verb ] > ].'
+  return typedef
 
 
 

@@ -254,8 +254,16 @@ def interpret_verb_valence(valence):
   Return the canonical valence name (e.g. iverb, tverb) given the
   valence for a verb as defined in a choices file.
   '''
-  if valence == 'trans' or '-' in valence:
+  if '-' in valence:
+    v = valence.split('-')
+    if len(v) == 2:
+      return 'tverb'
+    elif len(v) == 3:
+      return 'dverb'
+  elif valence == 'trans':
     return 'tverb'
+  elif valence == 'ditrans':
+    return 'dverb'
   else:
     return 'iverb'
 
@@ -284,7 +292,7 @@ def customize_verb_case(mylang, ch):
 
     if not rule_pattern:
       c = p[0].split('-')  # split 'agentcase-patientcase'
-      if p[0] == 'trans' or len(c) > 1:  # transitive
+      if p[0] == 'trans' or len(c) == 2:  # transitive
         if p[0] == 'trans':
           a_case = ''
           o_case = ''
@@ -343,6 +351,69 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
             [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
           mylang.add(typedef)
+
+      elif p[0] == 'ditrans' or len(c) == 3:            #ditrans
+        
+        if p[0] == 'ditrans':
+          a_case = ''
+          b_case = ''
+          o_case = ''
+        else:
+          a_case = canon_to_abbr(c[0], cases)
+          b_case = canon_to_abbr(c[1], cases)
+          o_case = canon_to_abbr(c[2], cases)
+
+        a_head = 'noun'
+        b_head = 'noun'
+        o_head = 'noun'
+        if a_case and b_case and o_case:
+          t_type = dir_inv + a_case + '-' + b_case + '-' + o_case + '-ditransitive-verb-lex'
+        else:
+          t_type = dir_inv + 'ditransitive-verb-lex'
+
+        if t_type != 'ditransitive-verb-lex':
+          mylang.add(t_type + ' := ditransitive-verb-lex.')
+
+       # constrain the head of the agent/subject
+        typedef = \
+            t_type + ' := \
+             [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
+        mylang.add(typedef)
+
+        # constrain the case of the agent/subject
+        if a_case:
+          typedef = \
+             t_type + ' := \
+               [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
+          mylang.add(typedef)
+
+        # constrain the head of the beneficiary
+        typedef = \
+          t_type + ' := \
+              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + b_head + ' ], [ ] > ].'
+        mylang.add(typedef)
+
+        # constrain the case of the patient/object
+        if b_case:
+          typedef = \
+            t_type + ' := \
+              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + b_case + ' ], [ ] > ].'
+          mylang.add(typedef)
+
+        # constrain the head of the patient/object
+        typedef = \
+            t_type + ' := \
+              [ ARG-ST < [ ], [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
+        mylang.add(typedef)
+
+        # constrain the case of the patient/object
+        if o_case:
+          typedef = \
+            t_type + ' := \
+                [ ARG-ST < [ ], [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
+          mylang.add(typedef)
+
+
       else:     # intransitive
         if c[0] == 'intrans':
           s_case = ''
