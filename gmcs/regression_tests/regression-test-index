@@ -2,3 +2,4 @@ tiniest=very basic grammar to get the regression tests started - SOV word order,
 dutch-argcomp-compl=ACL coverage test for Dutch using arg-comp analysis
 dutch-auxrule-compl=Dutch regression test using auxrule analysis
 german-argcomp-compl=German test covering ACL2011 data using arg-comp analysis
+german-auxrule-compl=German test suite covering ACL data using auxrule analysis
