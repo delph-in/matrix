@@ -211,10 +211,24 @@ def create_lexical_rule_types(cur_pc, pc):
 
 def create_lexical_rule_type(lrt):
   new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
+  ###GERMANIC Feature placement is different when aux-rule analysis is used
+  subj_feat = False
+
   for feat in lrt.get('feat'):
+    if feat.get('head') == 'subj' and ch.get('vc-analysis') == 'aux-rule':
+      subj_feat = True
     new_lrt.features[feat['name']] = {'value': feat['value'],
                                       'head': feat.get('head')}
-  new_lrt.lris = [lri['orth'] if lri['inflecting'] == 'yes' else ''
+
+
+  if subj_feat:
+    for lri in lrt.get('lri',[]):
+      if lri['inflecting'] == 'yes':
+        new_lrt.lris = [lri['orth'], lri['orth']]
+      else:
+        new_lrt.lris = ['', '']
+  else:
+    new_lrt.lris = [lri['orth'] if lri['inflecting'] == 'yes' else ''
                   for lri in lrt.get('lri',[])]
   # Fill out the obvious supertypes (later we'll finish)
   set_lexical_rule_supertypes(new_lrt)

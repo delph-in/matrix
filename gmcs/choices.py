@@ -660,6 +660,8 @@ class ChoicesFile:
     if cm == 'nom-acc':
       patterns += [ ['nom', '', False] ]
       patterns += [ ['nom-acc', '', False] ]
+      if self.get('ditransitives') == 'yes':
+        patterns += [ ['nom-dat-acc', '', False] ]
     elif cm == 'erg-abs':
       patterns += [ ['abs', '', False] ]
       patterns += [ ['erg-abs', '', False] ]
@@ -691,6 +693,8 @@ class ChoicesFile:
     # Add intransitive and transitive, which are always available.
     patterns += [ ['intrans', '', False] ]
     patterns += [ ['trans', '', False] ]
+    if self.get('ditransitives') == 'yes':
+      patterns += [ ['ditrans', '', False] ]
 
     # Fill in the friendly names based on the canonical names
     for i in range(0, len(patterns)):
@@ -1065,6 +1069,18 @@ class ChoicesFile:
       features += [['dropped-arg', perm_notperm_string,'', '']]
 
  #elif self.get('subj-mark-drop') == 'subj-mark-drop-opt') and self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req': features += [['dropped-arg', perm_notperm_string, '']]
+
+######Germanic adding feature for edge related restrictions
+
+#
+    #Word order interaction features
+    if self.get('edge-related-res') == 'yes':
+      features += [ ['edge', 'na-or-+|na-or--', 'LOCAL.CAT.EDGE' ] ]
+    if self.get('verb-cluster') == 'yes' and self.get('aux-comp-order') == 'both':
+      features += [ ['headfinal', '-|-', 'LOCAL.CAT.HEADFINAL' ] ]
+      features += [ ['headfinal', '+|+', 'LOCAL.CAT.HEADFINAL' ] ]
+
+
 
     for feature in self.get('feature'):
       feat_name = feature['name']

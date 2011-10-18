@@ -22,4 +22,5 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "dutch-argcomp-compl") (:content . "dutch-argcomp-compl: ACL coverage test for Dutch using arg-comp analysis"))
  )
