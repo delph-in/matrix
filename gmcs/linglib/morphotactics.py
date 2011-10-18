@@ -168,7 +168,7 @@ def position_class_hierarchy(choices):
     if pc_lrt_mergeable(pc):
       pc_lrt_merge(cur_pc, pc)
     # Fill the lexical rule types with the information we know
-    create_lexical_rule_types(cur_pc, pc)
+    create_lexical_rule_types(choices, cur_pc, pc)
   # now assign pc inputs
   for pc in pc_inputs:
     for inp in pc_inputs[pc]:
@@ -193,7 +193,7 @@ def pc_lrt_merge(cur_pc, pc):
     lrt['name'] = cur_pc.name = name
     cur_pc.identifier_suffix = 'lex-rule'
 
-def create_lexical_rule_types(cur_pc, pc):
+def create_lexical_rule_types(ch, cur_pc, pc):
   lrt_parents = {}
   for j, lrt in enumerate(pc.get('lrt')):
     if 'supertypes' in lrt:
@@ -201,7 +201,7 @@ def create_lexical_rule_types(cur_pc, pc):
     # default name uses name of PC with _lrtX
     if 'name' not in lrt:
       lrt['name'] = cur_pc.name + lrt.full_key.replace(cur_pc.key, '', 1)
-    cur_lrt = create_lexical_rule_type(lrt)
+    cur_lrt = create_lexical_rule_type(ch, lrt)
     # the ordering should only mess up if there are 100+ lrts
     cur_lrt.tdl_order = cur_pc.tdl_order + (0.01 * j)
     cur_pc.add_node(cur_lrt)
@@ -209,7 +209,7 @@ def create_lexical_rule_types(cur_pc, pc):
     for parent in lrt_parents[child]:
       cur_pc.relate_parent_child(_mns[parent], _mns[child])
 
-def create_lexical_rule_type(lrt):
+def create_lexical_rule_type(ch, lrt):
   new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
   ###GERMANIC Feature placement is different when aux-rule analysis is used
   subj_feat = False
