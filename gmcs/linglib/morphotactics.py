@@ -212,10 +212,11 @@ def create_lexical_rule_types(ch, cur_pc, pc):
 def create_lexical_rule_type(ch, lrt):
   new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
   ###GERMANIC Feature placement is different when aux-rule analysis is used
+  ###early version: also for arg-comp
   subj_feat = False
 
   for feat in lrt.get('feat'):
-    if feat.get('head') == 'subj' and ch.get('vc-analysis') == 'aux-rule':
+    if feat.get('head') == 'subj' and ch.get('verb-cluster') == 'yes' and ch.get('word-order') == 'v2':
       subj_feat = True
     new_lrt.features[feat['name']] = {'value': feat['value'],
                                       'head': feat.get('head')}
@@ -486,7 +487,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
     write_supertypes(mylang, pc.identifier(), pc.supertypes)
     write_pc_flags(mylang, lextdl, pc, all_flags, choices)
     for lrt in sorted(pc.nodes.values(), key=lambda x: x.tdl_order):
-      write_i_or_l_rules(irules, lrules, lrt, pc.order)
+      write_i_or_l_rules(choices, irules, lrules, lrt, pc.order)
       # merged LRT/PCs have the same identifier, so don't write supertypes here
       if lrt.identifier() != pc.identifier():
         write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
@@ -620,7 +621,7 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
     copied_flags.update(mn_copy_flags)
   return copied_flags
 
-def write_i_or_l_rules(irules, lrules, lrt, order):
+def write_i_or_l_rules(ch, irules, lrules, lrt, order):
   if len(lrt.lris) == 0: return
   if any(len(lri) > 0 for lri in lrt.lris):
     # inflectional rules
@@ -630,11 +631,27 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
       order = 'suffix'
     # if there's only one LRI don't give the rule a number
     num = [''] if len(lrt.lris) == 1 else range(1, len(lrt.lris) + 1)
-    for i, lri in enumerate(lrt.lris):
-      rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
+###GERMANIC ADDITION: auxiliaries and main verbs must handle agreement 
+###differently if auxrule is used: auxiliaries do not have a subject of
+###their own.
+    if ch.get('verb-cluster') == 'yes' and len(lrt.lris) == 2 and ch.get('word-order') == 'v2':
+      lri = lrt.lris[1]
+      rule1 = '\n'.join(['-'.join([lrt.name, 'main-verb-' + order]) + ' :=',
+                      r'%' + order + ' (* ' + lri + ')',
+                      lrt.identifier()]) + '-main-verb.'
+        
+      rule2 = '\n'.join(['-'.join([lrt.name, 'aux-' + order]) + ' :=',
+                      r'%' + order + ' (* ' + lri + ')',
+                      lrt.identifier()]) + '-aux.'
+ 
+      irules.add_literal(rule1)
+      irules.add_literal(rule2)
+    else:
+      for i, lri in enumerate(lrt.lris):
+        rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
                       r'%' + order + ' (* ' + lri + ')',
                       lrt.identifier()]) + '.'
-      irules.add_literal(rule)
+        irules.add_literal(rule)
   else:
     # lexical rules
     for lri in lrt.lris:

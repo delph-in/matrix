@@ -52,7 +52,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     if h == 'subj':
       geom_prefix += 'LOCAL.CAT.VAL.SUBJ.FIRST.'
     # setting necessary value in case of 'aux-rule' analysis to geom_prefix2
-      if ch.get('vc-analysis') == 'aux-rule':
+    # also needed for arg-comp when using similar analysis to aux-rule (more
+    # efficient)
+      if ch.get('verb-cluster') == 'yes' and ch.get('word-order') == 'v2':
         geom_prefix2 = pos_geom_prefix
         geom_prefix2 += 'LOCAL.CAT.VAL.COMPS.FIRST.'
     elif h == 'obj':

@@ -8,7 +8,7 @@ from gmcs.utils import TDLencode
 ######################################################################
 # define_coord_strat: a utility function, defines a strategy
 
-def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, irules):
+def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_number, mylang, rules, irules):
   mylang.add_literal(';;; Coordination Strategy ' + num)
 
   pn = pos + num
@@ -17,10 +17,14 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, i
   else:
     headtype = 'verb'
 
+  #this allows users to define agreement features in the choices file
+  agr = agreement.split(',')
+
   # First define the rules in mylang.  Every strategy has a
   # top rule and a bottom rule, but only some have a mid rule, so if
   # the mid prefix argument $mid is empty, don't emit a rule.
   # Similarly, not all strategies have a left rule.
+
 
   mylang.add(pn + '-top-coord-rule :=\
                basic-' + pos + '-top-coord-rule &\
@@ -91,6 +95,21 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, i
   if left:
     rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
 
+  # adding agreement constraints
+  # something better should be done to get the right supertypes to the right
+  # coordination phrases (consider function to split them in groups...)
+  if pos == 'n' or pos == 'np':
+    if 'case' in agr:
+      add_sharing_supertypes(mylang, pn, mid, 'case') 
+
+    if np_number:
+      mylang.add(pn + '-top-coord-rule := \
+               [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + np_number + ' ].')
+  elif pos == 'v' or pos == 'vp' or pos == 's':
+    verb_feat = ['vfront', 'form', 'mc', 'vc']
+    for vf in verb_feat:
+      if vf in agr:      
+        add_sharing_supertypes(mylang, pn, mid, vf) 
 
 def customize_coordination(mylang, ch, lexicon, rules, irules):
   """
@@ -105,6 +124,10 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
     pat = cs.get('pat')
     orth = cs.get('orth')
     order = cs.get('order')
+    agreement = ''
+    agreement = cs.get('agreement')
+    np_number = ''
+    np_number = cs.get('npnumber')
 
     pre = ''
     suf = ''
@@ -157,6 +180,91 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
           if left:
             left += 'conj-last-'
 
+  ####
+  # agreement is only head features for now
+  #
+    agr_path = 'SYNSEM.LOCAL.CAT.HEAD.'
+    agr =  agreement.split(',')
+    for my_agr in agr:
+      add_shared_features(mylang, my_agr, agr_path, mid)
+
+###function create coordinated structures that share syntactic properties
+###use for specific analyses
+    feat = determine_syntactic_features_tobe_shared(ch)
+    create_coord_sharing_cat_features(mylang, feat, mid)
+
+###appending syntactic features to agreement to for next phase
+###both agreement and syntactic features are relevant to determine
+###dependent supertypes
+    for f in feat:
+      agreement += ',' + f
+
     for pos in ('n', 'np', 'vp', 's'):
       if cs.get(pos):
-        define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, mylang, rules, irules)
+        define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, agreement,
+    np_number, mylang, rules, irules)
+
+
+###
+# general function for created phrases that share features
+#
+
+def add_shared_features(mylang, f, path, mid):
+  compl_path =  path + str.upper(f) + ' #' + f
+  mylang.add(f + '-agr-top-coord-rule := top-coord-rule & \
+                  [ ' + compl_path + ', \
+                  LCOORD-DTR.' + compl_path + ', \
+                  RCOORD-DTR.' + compl_path + ' ].' )
+
+  if mid:
+    mylang.add(f + '-agr-mid-coord-rule := mid-coord-rule &\
+               [ ' + compl_path + ', \
+                  LCOORD-DTR.' + compl_path + ', \
+                  RCOORD-DTR.' + compl_path + ' ].')
+
+  mylang.add(f + '-agr-bottom-coord-rule := bottom-coord-phrase &\
+             [ ' + compl_path + ', \
+               NONCONJ-DTR.' + compl_path + ' ].')
+
+def add_sharing_supertypes(mylang, pn, mid, agr):
+  mylang.add(pn + '-top-coord-rule :=  ' + agr + '-agr-top-coord-rule.')
+  if mid:   
+    mylang.add(pn + '-mid-coord-rule := ' + agr + '-agr-mid-coord-rule.')
+  mylang.add(pn + '-bottom-coord-rule := ' + agr + '-agr-bottom-coord-rule.')  
+
+#######
+# GERMANIC
+#
+
+def determine_syntactic_features_tobe_shared(ch):
+  features = []
+  if determine_vfront(ch):
+    features.append('vfront')
+
+  wo = ch.get('word-order')
+  if wo == 'v2' or wo == 'free':
+    features.append('mc')
+ #   if ch.get('verb-cluster') == 'yes': 
+ #     features.append('vc')
+
+  return features
+  
+def determine_vfront(ch):
+  vfront = False
+  if ch.get('split-cluster') == 'yes':
+    if ch.get('vc-analysis') == 'aux-rule':
+      vfront = True  
+    if ch.get('split-analysis') == 'lex-rule':
+      vfront = True
+  return vfront
+
+#####
+# this function shares features across coordination that
+# are related to specific analyses
+
+def create_coord_sharing_cat_features(mylang, feat, mid):
+  path = 'SYNSEM.LOCAL.CAT.'
+  for f in feat:  
+    add_shared_features(mylang, f, path, mid)
+
+
