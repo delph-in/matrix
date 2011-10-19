@@ -99,11 +99,14 @@ def main():
   elif args[0] in ('r', 'regression-test'):
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
                        'regression_tests/run_regression_tests.sh')
+    lgnames = get_regression_tests(args[1:])
+    if lgnames is None:
+        sys.exit('No regression tests found for %s' % str(args[1:]))
     #Using subprocess makes it difficult to kill the process
     # (e.g. with Ctrl-C), so we need to handle KeyboardInterrupts
     # (or alternatively use a os.exec* function)
     try:
-      p = subprocess.Popen([cmd] + args[1:], env=os.environ)
+      p = subprocess.Popen([cmd] + lgnames, env=os.environ)
       p.wait()
     except KeyboardInterrupt:
       print "\nProcess interrupted. Aborting regression tests.\n"
@@ -119,13 +122,13 @@ def main():
       print 'Succeeded copying files for %s.' % lg
       rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
       subprocess.call(['svn', '-q', 'add'] +\
-                      [os.path.join(rpath, 'home/gold/' + lg),
-                       os.path.join(rpath, 'skeletons/' + lg)])
+                      [os.path.join(rpath, 'home/gold', lg),
+                       os.path.join(rpath, 'skeletons', lg)])
       subprocess.call(['svn', '-q', 'add'] +\
-                      [os.path.join(rpath, 'home/gold/' + lg + '/[a-z]*'),
-                       os.path.join(rpath, 'skeletons/' + lg + '/[a-z]*'),
-                       os.path.join(rpath, 'choices/' + lg),
-                       os.path.join(rpath, 'txt-suites/' + lg)])
+                      [os.path.join(rpath, 'home/gold', lg, '/[a-z]*'),
+                       os.path.join(rpath, 'skeletons', lg, '/[a-z]*'),
+                       os.path.join(rpath, 'choices', lg),
+                       os.path.join(rpath, 'txt-suites', lg)])
       print 'Succeeded adding files to Subversion. Be sure to commit!'
     except ValueError, er:
       print "Error adding regression test."
@@ -145,6 +148,89 @@ def main():
       print "Aborted."
     sys.exit(1)
 
+  elif args[0] in ('regression-test-remove', 'rr'):
+    from gmcs import utils
+    test = args[1]
+    rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
+    test_paths = []
+    for test_path in [os.path.join(rpath, 'home', 'gold', test),
+                      os.path.join(rpath, 'skeletons', test),
+                      os.path.join(rpath, 'choices', test),
+                      os.path.join(rpath, 'txt-suites', test)]:
+      if os.path.exists(test_path):
+        test_paths += [test_path]
+    print "The following paths were found relating to the test:\n"
+    for test_path in test_paths:
+      print "  ", test_path
+    print
+    print "Do you want to remove them from subversion? If you choose to remove"
+    print "them, the test entry in regression-test-index will also be removed."
+    if utils.verify():
+      # remove the entry from regression-test-index
+      rti_path = os.path.join(rpath, 'regression-test-index')
+      rti = open(rti_path).readlines()
+      rti_file = open(rti_path, 'w')
+      for l in rti:
+        if l.split('=')[0] != test:
+          print >>rti_file, l.strip()
+      rti_file.close()
+      # remove the relevant files from subversion
+      for test_path in test_paths:
+        subprocess.call(['svn', '-q', '--non-interactive', 'rm', test_path])
+      # All done, print a success message and reminder
+      print "Remember you must commit your changes to subversion. Also,"
+      print "there may still be files not in the repository related to this"
+      print "test. Look in the following directories:"
+      print os.path.join(rpath, 'grammars')
+      print os.path.join(rpath, 'home', 'current')
+      print os.path.join(rpath, 'logs')
+    else:
+      print "Aborted."
+    sys.exit(1)
+
+  elif args[0] in ('regression-test-rename', 'rn'):
+    oldname = args[1]
+    newname = args[2]
+    rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
+    rti = open(os.path.join(rpath, 'regression-test-index')).readlines()
+    if oldname not in (l.split('=')[0] for l in rti):
+      print 'Error: cannot find test', oldname
+      sys.exit(2)
+    rti_file = open(os.path.join(rpath, 'regression-test-index'), 'w')
+    for l in rti:
+      if l.split('=')[0] == oldname:
+        print >>rti_file, l.replace(oldname, newname, 1)
+      else:
+        print >>rti_file, l
+    rti_file.close()
+    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                     os.path.join(rpath, 'home', 'gold', oldname),
+                     os.path.join(rpath, 'home', 'gold', newname)])
+    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                     os.path.join(rpath, 'skeletons', oldname),
+                     os.path.join(rpath, 'skeletons', newname)])
+    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                     os.path.join(rpath, 'choices', oldname),
+                     os.path.join(rpath, 'choices', newname)])
+    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                     os.path.join(rpath, 'txt-suites', oldname),
+                     os.path.join(rpath, 'txt-suites', newname)])
+    print "Remember you must commit your changes to subversion. Also,"
+    print "there may still be files not in the repository related to this"
+    print "test. Look in the following directories:"
+    print os.path.join(rpath, 'grammars')
+    print os.path.join(rpath, 'home', 'current')
+    print os.path.join(rpath, 'logs')
+
+  elif args[0] in ('regression-test-list', 'rl'):
+    patterns = ['*']
+    if len(args) > 1:
+        patterns = args[1:]
+    tests = get_regression_tests(patterns)
+    if tests is None: return
+    for test in tests:
+        print test
+
   elif args[0] in ('i', 'install'):
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
     location = args[1]
@@ -153,12 +239,20 @@ def main():
       print "Error: For installation to the live site, please use:"
       print "  matrix.py vivify"
       sys.exit(2)
-    subprocess.call([cmd, '-r', '-m', location], env=os.environ)
+    subprocess.call([cmd, '-lkb', '-r', location], env=os.environ)
 
   elif args[0] == 'vivify':
     # pass the force flag in case the user wants to avoid checks
     vivify(force)
-
+  elif args[0] in ('w', 'web-test'):
+    run_web_tests();
+  elif args[0] in ('wa', 'web-test-add'):
+    comment = None
+    if len(args) > 2:
+      comment = args[2]
+    add_web_test(args[1], comment);
+  elif args[0] in ('wr', 'web-test-remove'):
+    remove_web_test(args[1]);
   elif args[0] == 'import-lex':
     import gmcs.linglib.toolboximport
     gmcs.linglib.toolboximport.import_toolbox_lexicon(args[1])
@@ -189,10 +283,13 @@ def ensure_customization_root_set():
   Set CUSTOMIZATIONROOT if the appropriate files are found in the
   current working directory.
   """
-  if 'CUSTOMIZATIONROOT' in os.environ:
-    return
   cwd = os.getcwd()
-  if os.path.exists(os.path.join(cwd, 'customize.py')):
+  if 'CUSTOMIZATIONROOT' in os.environ:
+    if not os.path.exists(os.path.join(os.environ['CUSTOMIZATIONROOT'],
+                                       'customize.py')):
+      print "CUSTOMIZATIONROOT is incorrectly set."
+      sys.exit(2)
+  elif os.path.exists(os.path.join(cwd, 'customize.py')):
     os.environ['CUSTOMIZATIONROOT'] = cwd
   elif os.path.exists(os.path.join(cwd, 'gmcs/customize.py')):
     os.environ['CUSTOMIZATIONROOT'] = os.path.join(cwd, 'gmcs')
@@ -219,6 +316,16 @@ def validate_args(args):
     if len(args) < 3: usage(command='regression-test-add')
   elif args[0] in ('regression-test-update', 'ru'):
     if len(args) < 2: usage(command='regression-test-update')
+  elif args[0] in ('regression-test-remove', 'rr'):
+    if len(args) < 2: usage(command='regression-test-remove')
+  elif args[0] in ('regression-test-rename', 'rn'):
+    if len(args) < 3: usage(command='regression-test-rename')
+  elif args[0] in ('w', 'web-test'):
+    pass #no other arguments needed
+  elif args[0] in ('wa', 'web-test-add'):
+    if len(args) < 2: usage(command='web-test-add')
+  elif args[0] in ('wr', 'web-test-remove'):
+    if len(args) < 2: usage(command='web-test-remove')
   elif args[0] in ('i', 'install'):
     if len(args) < 2: usage(command='install')
   elif args[0] == 'vivify':
@@ -277,8 +384,15 @@ def usage(command=None, exitcode=2):
     p("            Validate the choices file at PATH.")
     something_printed = True
   if command in ('regression-test', 'r', 'all'):
-    p("regression-test (r) [TEST]")
-    p("            Run regression test TEST (if specified) or else all tests.")
+    p("regression-test [-TASK] [TESTS]")
+    p("            Run regression test TASK (or all tasks if unsprecified)")
+    p("            over TEST (or all tests if unspecified). TASKS can be any")
+    p("            of the following and can be combined (e.g. -vc):")
+    p("              [none]       : run all tests")
+    p("              -v : validate and report errors")
+    p("              -c : customize and report errors")
+    p("              -p : customize and parse, report differences with gold")
+    p("            TESTS can be a single test name or a list of names.")
     something_printed = True
   if command in ('regression-test-add', 'ra', 'all'):
     p("regression-test-add (ra) CHOICES TXTSUITE")
@@ -293,9 +407,32 @@ def usage(command=None, exitcode=2):
     p("            Update the gold standard of TEST to use the results of the")
     p("            current system.")
     something_printed = True
+  if command in ('regression-test-remove', 'rr', 'all'):
+    p("regression-test-remove (rr) TEST")
+    p("            Remove TEST from the regression test suite. This command")
+    p("            removes all files checked into subversion.")
+    something_printed = True
+  if command in ('regression-test-rename', 'rn', 'all'):
+    p("regression-test-rename (rn) OLDTEST NEWTEST")
+    p("            Rename OLDTEST to NEWTEST. This is performed with a call")
+    p("            to 'svn mv' on the files in the repository. Remember to")
+    p("            commit your changes.")
+    something_printed = True
   if command in ('unit-test', 'u', 'all'):
     p("unit-test (u)")
     p("            Run all unit tests.")
+    something_printed = True
+  if command in ('web-test', 'w', 'all'):
+    p("web-test (w)")
+    p("            Run all web tests.")
+    something_printed = True
+  if command in ('web-test-add', 'wa', 'all'):
+    p("web-test-add (wa) PATH [comment]")
+    p("            Add a new Selenium test with an optional comment.")
+    something_printed = True
+  if command in ('web-test-remove', 'wr', 'all'):
+    p("web-test-remove (wr) TEST")
+    p("            Remove a Selenium test.")
     something_printed = True
   if command in ('install', 'i', 'all'):
     p("install (i) PATH")
@@ -321,6 +458,8 @@ def usage(command=None, exitcode=2):
     p("  matrix.py cf ../choices/Finnish")
     p("  matrix.py v ../choices/Finnish")
     p("  matrix.py --customizationroot=gmcs/ r")
+    p("  matrix.py -C gmcs/ r -v")
+    p("  matrix.py -C gmcs/ r -cp vso-aux-before-vp Fore")
     p("  matrix.py -C gmcs/ ra Cree_choices Cree_test_suite")
     p("  matrix.py -C gmcs/ install my_matrix")
     p("  matrix.py -C gmcs/ vivify")
@@ -373,7 +512,6 @@ def customize_grammar(path, destination=None, flop=False, cheaphack=False):
     subprocess.call([cmd, pet_file], cwd=grammar_dir,
                     env=os.environ, stderr=devnull)
 
-
 def run_unit_tests():
   import unittest
 
@@ -405,13 +543,94 @@ def run_unit_tests():
 
   print_line()
 
+def get_regression_tests(patterns):
+  import fnmatch
+  rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
+  if isinstance(patterns, basestring):
+      patterns = [patterns]
+  names = []
+  for line in open(os.path.join(rpath, 'regression-test-index')):
+      if line.strip() == '': continue
+      line = line.split('=')[0]
+      if any(fnmatch.fnmatch(line, p) for p in patterns):
+        names += [line]
+  if len(names) == 0 and patterns != []:
+    return None
+  return names
+
 def vivify(force):
   # Before vivifying, make sure the following have occurred:
   #  1. Regression tests have been run if any code has been altered
   #     since the last vivification.
   #  2. There are no remaining modifications not checked into SVN.
   cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
-  subprocess.call([cmd, '-r', '-m', 'matrix/customize'], env=os.environ)
+  subprocess.call([cmd, '-lkb', '-r', 'matrix/customize'], env=os.environ)
+
+def run_web_tests():
+  ensure_customization_root_set()
+  try:
+    import selenium
+  except (NameError):
+    sys.stderr.write("Seleinum not installed: run \"pip install -U selenium\"\n")
+  cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
+  user_name = raw_input("Patas user name:")
+  subprocess.call([cmd, user_name+'@patas.ling.washington.edu:/home2/www-uakari/html/matrix/test'], env=os.environ);
+
+  import unittest
+  import gmcs.web_tests.testWeb
+  loader = unittest.defaultTestLoader
+  runner = unittest.TextTestRunner(verbosity=1)
+  print 75 * '='
+  print 'Web tests:'
+  runner.run(loader.loadTestsFromModule(gmcs.web_tests.testWeb))
+  print 75 * '='
+
+def add_web_test(filename, comment):
+  import re
+  file_out = open(filename, "r")
+  test_file = open('./gmcs/web_tests/testWeb.py', 'r+')
+  write = False;
+  new_test = []
+  for line in file_out:
+    #print line;
+    if re.match("class", line):
+      write = True
+    elif line == "if __name__ == \"__main__\":\n":
+      write = False
+    if write:
+      new_test.append(line)
+  file_out.close();
+#  print new_test;
+#  for line in test_file:
+#  if line == "if __name__ == \"__main__\":\n":
+  test_file.seek(-47, 2)
+  test_file.write(new_test.pop(0))
+  if comment is not None:
+    test_file.write("    '''"+str(comment)+"'''\n")
+  for new_line in new_test:
+    test_file.write(new_line)
+  test_file.write("if __name__ == \"__main__\":\n")
+  test_file.write("    unittest.main()")
+  test_file.close()
+
+def remove_web_test(testname):
+  import re
+  test_file = open('./gmcs/web_tests/testWeb.py', 'r')
+  new_lines = []
+  keep = True
+  for line in test_file:
+    if re.match("class", line) or line == "if __name__ == \"__main\":\n":
+      if re.match("class "+str(testname), line):
+        keep = False
+      else:
+        keep = True
+    if keep:
+      new_lines.append(line)
+  test_file.close()
+  test_file = open('./gmcs/web_tests/testWeb.py', 'w')
+  for line in new_lines:
+    test_file.write(line)
+  test_file.close()
 
 if __name__ == '__main__':
   validate_python_version()

@@ -1,7 +1,0 @@
-nominative-case-marker-lex := nominative-case-marker-lex-rule.
-
-nominative-accusative-case-marker-lex := nominative-accusative-case-marker-lex-rule.
-
-singular-marker-lex := singular-marker-lex-rule.
-
-present-aspect-marker-lex := present-aspect-marker-lex-rule.

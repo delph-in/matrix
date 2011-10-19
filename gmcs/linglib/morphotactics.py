@@ -32,6 +32,7 @@ from gmcs.utils import TDLencode
 ########################
 
 _mns = {}
+_dtrs = set()
 
 ########################
 ### HELPER FUNCTIONS ###
@@ -42,13 +43,6 @@ def all_position_classes(choices):
   for lt in ALL_LEX_TYPES:
     for pc in choices[lt + '-pc']:
       yield pc
-
-def intermediate_typename(pcs):
-  """
-  Return the typename to be used for the intermediate rule type for
-  the given set of position classes.
-  """
-  return disjunctive_typename(pcs) + '-rule-dtr'
 
 def disjunctive_typename(mns):
   """
@@ -145,6 +139,7 @@ def customize_lexical_rules(choices):
   pch = position_class_hierarchy(choices)
   interpret_constraints(choices)
   create_flags()
+  calculate_supertypes(pch)
   return pch
 
 ### POSITION CLASSES AND LEXICAL RULE TYPES ###
@@ -157,12 +152,7 @@ def position_class_hierarchy(choices):
   pch = Hierarchy()
 
   # Create PositionClasses for lexical types so they can take flags
-  for lex_cat in LEXICAL_CATEGORIES:
-    if lex_cat not in choices: continue
-    lth = lexicon.lexical_type_hierarchy(choices, lex_cat)
-    _mns[lth.key] = lth
-    _mns.update(lth.nodes)
-    pch.add_node(lth)
+  add_lexical_type_hierarchy(pch, choices)
 
   # We can't set parents until we have created all MN objects.
   pc_inputs = {}
@@ -175,40 +165,49 @@ def position_class_hierarchy(choices):
     cur_pc.tdl_order = i
     _mns[cur_pc.key] = cur_pc
     # If only one root LRT, and the PC or the LRT are unnamed, merge them
-    if len([l for l in pc['lrt'] if l.get('supertypes', None) == None]) == 1:
-      lrt = pc['lrt'].get_first()
-      if pc.get('name','') == '' or lrt.get('name','') == '':
-        name = pc.get('name') or lrt.get('name') or pc.full_key
-        lrt['name'] = cur_pc.name = name
-        cur_pc.identifier_suffix = 'lex-rule'
+    if pc_lrt_mergeable(pc):
+      pc_lrt_merge(cur_pc, pc)
     # Fill the lexical rule types with the information we know
-    lrt_parents = {}
-    for j, lrt in enumerate(pc.get('lrt')):
-      if 'supertypes' in lrt:
-        lrt_parents[lrt.full_key] = set(lrt.get('supertypes').split(', '))
-      # default name uses name of PC with _lrtX
-      if 'name' not in lrt:
-        lrt['name'] = cur_pc.name + lrt.full_key.replace(cur_pc.key, '', 1)
-      cur_lrt = create_lexical_rule_type(lrt)
-      # the ordering should only mess up if there are 100+ lrts
-      cur_lrt.tdl_order = i + (0.01 * j)
-      cur_pc.add_node(cur_lrt)
-    for child in lrt_parents:
-      for parent in lrt_parents[child]:
-        cur_pc.relate_parent_child(_mns[parent], _mns[child])
-    # With knowledge of the hierarchy, determine the appropriate
-    # supertypes, then try to push common supertypes up to reduce
-    # redundancy in TDL
-    set_lexical_rule_supertypes(cur_pc)
-    cur_pc.percolate_supertypes()
-    # in the case a lex-rule PC has no supertypes, give it a generic one
-    if len(cur_pc.supertypes) == 0:
-      cur_pc.supertypes.add('lex-rule')
+    create_lexical_rule_types(cur_pc, pc)
   # now assign pc inputs
   for pc in pc_inputs:
     for inp in pc_inputs[pc]:
       _mns[pc].relate(_mns[inp], 'parent')
   return pch
+
+def add_lexical_type_hierarchy(pch, choices):
+  for lex_cat in LEXICAL_CATEGORIES:
+    if lex_cat not in choices: continue
+    lth = lexicon.lexical_type_hierarchy(choices, lex_cat)
+    _mns[lth.key] = lth
+    _mns.update(lth.nodes)
+    pch.add_node(lth)
+
+def pc_lrt_mergeable(pc):
+  return len([l for l in pc['lrt'] if not l.get('supertypes')]) == 1
+
+def pc_lrt_merge(cur_pc, pc):
+  lrt = pc['lrt'].get_first()
+  if pc.get('name','') == '' or lrt.get('name','') == '':
+    name = pc.get('name') or lrt.get('name') or pc.full_key
+    lrt['name'] = cur_pc.name = name
+    cur_pc.identifier_suffix = 'lex-rule'
+
+def create_lexical_rule_types(cur_pc, pc):
+  lrt_parents = {}
+  for j, lrt in enumerate(pc.get('lrt')):
+    if 'supertypes' in lrt:
+      lrt_parents[lrt.full_key] = set(lrt.get('supertypes').split(', '))
+    # default name uses name of PC with _lrtX
+    if 'name' not in lrt:
+      lrt['name'] = cur_pc.name + lrt.full_key.replace(cur_pc.key, '', 1)
+    cur_lrt = create_lexical_rule_type(lrt)
+    # the ordering should only mess up if there are 100+ lrts
+    cur_lrt.tdl_order = cur_pc.tdl_order + (0.01 * j)
+    cur_pc.add_node(cur_lrt)
+  for child in lrt_parents:
+    for parent in lrt_parents[child]:
+      cur_pc.relate_parent_child(_mns[parent], _mns[child])
 
 def create_lexical_rule_type(lrt):
   new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
@@ -217,22 +216,10 @@ def create_lexical_rule_type(lrt):
                                       'head': feat.get('head')}
   new_lrt.lris = [lri['orth'] if lri['inflecting'] == 'yes' else ''
                   for lri in lrt.get('lri',[])]
-  # if there exists a non-empty lri, give it an infl supertype
-  if len(new_lrt.lris) > 0:
-    if any([len(lri) > 0 for lri in new_lrt.lris]):
-      new_lrt.supertypes.add('infl-lex-rule')
-    else:
-      new_lrt.supertypes.add('const-lex-rule')
+  # Fill out the obvious supertypes (later we'll finish)
+  set_lexical_rule_supertypes(new_lrt)
   _mns[new_lrt.key] = new_lrt
   return new_lrt
-
-def set_lexical_rule_supertypes(pc):
-  # Later, if a node inherits no lex-rule supertype, it will be assigned
-  # the default value of 'add-only-no-ccont-rule'
-  for lrt in pc.nodes.values():
-    if ('value', 'plus') in lrt.features.get('negation',{}).items():
-      lrt.supertypes.add('cont-change-only-lex-rule')
-    # add other special cases here
 
 ### CONSTRAINTS ###
 
@@ -356,44 +343,110 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
   """
   # the initial flag values are set on the minimal set of types by
   # first percolating the value down, then back up the hierarchy
+  def validate_flag(x):
+    if x.flags['out'].get(flag_tuple) != '+':
+      x.flags['out'][flag_tuple] = 'na-or--'
   for root in lex_pc.roots():
-    percolate_flag_down(root, flag_tuple)
-    percolate_flag_up(root, flag_tuple)
+    root.percolate_down(items=lambda x:x.flags['out'],
+                        validate=lambda x: validate_flag(x))
+  to_remove = defaultdict(set)
+  for root in lex_pc.roots():
+   root.percolate_up(items=lambda x: x.flags['out'], redundancies=to_remove)
+  # don't forget to remove redundant items
+  for child in to_remove.keys():
+    for item in to_remove[child]:
+      # recall common_items are dict items, so a (key, value) pair
+      del child.flags['out'][item[0]]
 
-def percolate_flag_down(mn, flag_tuple, value=None):
-  # initial value is either + or na-or--, where + overrides na-or--
-  if flag_tuple in mn.flags['out'] and mn.flags['out'][flag_tuple] == '+':
-    value = '+'
-  elif value is None:
-    value = 'na-or--'
-  # put the flags on the leaf nodes, otherwise clear the current node and
-  # percolate the value down the hierarchy
-  if len(mn.children()) == 0:
-    mn.flags['out'][flag_tuple] = value
-  else:
-    if flag_tuple in mn.flags['out']:
-      del mn.flags['out'][flag_tuple]
-    for c in mn.children().values():
-      percolate_flag_down(c, flag_tuple, value)
+### SUPERTYPES ###
 
-def percolate_flag_up(mn, flag_tuple):
+# add possible supertypes here
+ALL_LEX_RULE_SUPERTYPES = set(['cont-change-only-lex-rule',
+                               'add-only-no-ccont-rule',
+                               'infl-lex-rule',
+                               'const-lex-rule',
+                               'lex-rule'])
+
+LEX_RULE_SUPERTYPES = set(['cont-change-only-lex-rule',
+                           'add-only-no-ccont-rule'])
+
+def set_lexical_rule_supertypes(lrt):
   """
-  If all children of a node have the same flag, move it up to the parent.
-  NOTE: This might currently result in a sub-optimal arrangement if two
-        parents sharing the same children should both have the same flag,
-        since the first one to be processed will remove the flag on the
-        child.
+  Assign initial supertypes to lexical rule types. These can be inferred
+  from the lexical rule instances and feature types.
   """
-  child_values = set()
-  if len(mn.children()) > 0:
-    child_values = [percolate_flag_up(c, flag_tuple)
-                    for c in mn.children().values()]
-    # if all children have the same non-None value
-    if len(set(child_values)) == 1 and child_values[0] is not None:
-      for c in mn.children().values():
-        del c.flags['out'][flag_tuple]
-        mn.flags['out'][flag_tuple] = child_values[0]
-  return mn.flags['out'].get(flag_tuple, None)
+  # if there exists a non-empty lri, give it an infl supertype
+  if len(lrt.lris) > 0:
+    if any([len(lri) > 0 for lri in lrt.lris]):
+      lrt.supertypes.add('infl-lex-rule')
+    else:
+      lrt.supertypes.add('const-lex-rule')
+  # feature-based supertypes
+  if ('value', 'plus') in lrt.features.get('negation',{}).items():
+    lrt.supertypes.add('cont-change-only-lex-rule')
+  # add other special cases here
+  
+def calculate_supertypes(pch):
+  # calculate daughter types first, because we want to percolate them
+  calculate_daughter_types(pch)
+  for pc in pch.nodes.values():
+    percolate_supertypes(pc)
+    # in the case a lex-rule PC has no supertypes, give it a generic one
+    if not any(st in ALL_LEX_RULE_SUPERTYPES for st in pc.supertypes):
+      pc.supertypes.add('lex-rule')
+
+def calculate_daughter_types(pch):
+  inp_map = get_input_map(pch)
+  for inp_set in inp_map:
+    dtr_name = inp_set[0].identifier()
+    pcs = inp_map[inp_set]
+    # if there are multiple inputs, create an intermediate rule
+    if len(inp_set) > 1:
+      dtr_name = disjunctive_typename(pcs) + '-rule-dtr'
+      # each input should inherit from the intermediate type
+      for inp in inp_set:
+        inp.supertypes.add(dtr_name)
+      # Add to the global daughter set so it gets written later
+      _dtrs.add(dtr_name)
+    # set the daughter value
+    for pc in pcs:
+      pc.daughter_type = dtr_name
+
+def percolate_supertypes(pc):
+  # First percolate supertypes down to leaves. Before percolating them
+  # back up, all must be pushed down, so this loop must be separate
+  # from the next one.
+  def validate_supertypes(x):
+    if pc.is_lex_rule:
+      if not any(st in LEX_RULE_SUPERTYPES for st in x.supertypes):
+        x.supertypes.add('add-only-no-ccont-rule')
+
+  for r in pc.roots():
+    r.percolate_down(items=lambda x: x.supertypes,
+                     validate=lambda x: validate_supertypes(x))
+  # percolate up also starts at the roots, since it's recursive
+  to_remove = defaultdict(set)
+  for r in pc.roots():
+    r.percolate_up(items=lambda x: x.supertypes, redundancies=to_remove)
+  # now we have to remove redundant items
+  for child in to_remove.keys():
+     child.supertypes.difference_update(to_remove[child])
+  # since we don't use the pc node of lexical types, only do the
+  # following if it is a lex rule
+  if not pc.is_lex_rule: return
+  # If there are supertypes common to all roots, then copy it up to
+  # the PC. If not, we probably need to give the PC a generic type.
+  # Also, the backup value for root_sts is to avoid a TypeError caused
+  # by reducing over an empty sequence.
+  common_sts = reduce(set.intersection,
+                      [r.supertypes for r in pc.roots()] or [set()])
+  if common_sts:
+    # update the supertype sets
+    pc.supertypes.update(common_sts)
+    for r in pc.roots():
+      r.supertypes.difference_update(common_sts)
+  elif len(pc.supertypes) == 0:
+    pc.supertypes.add('lex-rule')
 
 ######################
 ### OUTPUT METHODS ###
@@ -403,12 +456,17 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
   all_flags = get_all_flags('out').union(get_all_flags('in'))
   write_inflected_avms(mylang, all_flags)
   mylang.set_section('lexrules')
+  # First write any intermediate types (keep them together)
+  write_intermediate_types(mylang)
+  mylang.add_literal(';;; Lexical rule types')
   for pc in sorted(pch.nodes.values(), key=lambda x: x.tdl_order):
     # set the appropriate section
     mylang.set_section(get_section_from_pc(pc))
     # if it's a lexical type, just write flags and move on
-    if pc.identifier_suffix == 'lex-super':
+    if not pc.is_lex_rule:
       write_pc_flags(mylang, lextdl, pc, all_flags, choices)
+      for lt in pc.nodes.values():
+        write_supertypes(mylang, lt.identifier(), lt.supertypes)
       continue
     # only lexical rules from this point
     write_supertypes(mylang, pc.identifier(), pc.supertypes)
@@ -418,17 +476,23 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
       # merged LRT/PCs have the same identifier, so don't write supertypes here
       if lrt.identifier() != pc.identifier():
         write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
-  write_daughter_types(mylang, pch)
+    write_daughter_types(mylang, pc)
   # features need to be written later
   return [(mn.key, mn.identifier(), mn.key.split('-')[0])
           for mn in _mns.values()
           if isinstance(mn, LexicalRuleType) and len(mn.features) > 0]
 
+def write_intermediate_types(mylang):
+  if _dtrs:
+    mylang.add_literal(';;; Intermediate rule types')
+    for dtr in _dtrs:
+      mylang.add('''%(dtr)s := word-or-lexrule.''' % {'dtr': dtr}, one_line=True)
+
 def get_section_from_pc(pc):
   """
   Given a PC, return the section in which its rules should be written.
   """
-  if pc.identifier_suffix == 'lex-super':
+  if not pc.is_lex_rule:
     # get section for lexical type
     if 'noun' in pc.key:
       return 'nounlex'
@@ -448,27 +512,14 @@ def write_supertypes(mylang, identifier, supertypes=None):
     mylang.add('''%(id)s := %(sts)s.''' %\
                {'id': identifier, 'sts': ' & '.join(sorted(supertypes))})
 
-def write_daughter_types(mylang, pch):
+def write_daughter_types(mylang, pc):
   """
   Find the proper value for each position class's DTR, creating
   intermediate rule types when necessary.
   """
-  inp_map = get_input_map(pch)
-  for inp_set in inp_map:
-    pcs = inp_map[inp_set]
-    dtr_name = inp_set[0].identifier()
-    # if there are multiple inputs, create an intermediate rule
-    if len(inp_set) > 1:
-      dtr_name = intermediate_typename(pcs)
-      mylang.add(dtr_name + ' := word-or-lexrule.')
-      # each input should inherit from the intermediate type
-      for inp in inp_set:
-        mylang.add(inp.identifier() + ' := ' + dtr_name + '.')
-    # set the daughter value
-    for pc in pcs:
-      mylang.add('''%(id)s := [ DTR %(dtr)s ].''' %\
-                 {'id':pc.identifier(), 'dtr': dtr_name})
-
+  if pc.is_lex_rule:
+    mylang.add('''%(id)s := [ DTR %(dtr)s ].''' %\
+               {'id':pc.identifier(), 'dtr': pc.daughter_type})
 
 def write_inflected_avms(mylang, all_flags):
   mylang.set_section('addenda')
@@ -476,7 +527,6 @@ def write_inflected_avms(mylang, all_flags):
     flag = flag_name(f)
     mylang.add('''inflected :+ [%(flag)s luk].''' % {'flag': flag})
     mylang.add('''infl-satisfied :+ [%(flag)s na-or-+].''' % {'flag': flag})
-    #mylang.add('''infl-initial :+ [%(flag)s na-or--].''' % {'flag': flag})
 
 def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
   """
@@ -492,8 +542,7 @@ def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
      to_copy[mn.key] = write_mn_flags(mylang, lextdl, mn, out_flags, all_flags,
                                       choices)
   # for lex-rule PCs (not lexical types), write copy-up flags
-
-  if pc.identifier_suffix != 'lex-super':
+  if pc.is_lex_rule:
     # first write copy-ups for the root nodes
     copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
     # then, if any remain, copy up on the pc (if a lexrule)
@@ -616,13 +665,14 @@ def basic_pc_validation(choices, pc, vr):
             'defined by hand.')
   elif len(pc.get('lrt', [])) == 1:
     lrt = pc['lrt'].get_first()
-    if lrt.get('name', '') == '':
+    if lrt.get('name', '') == '' or pc.get('name', '') == '':
       # if the lrt has no name, it will be merged with its position class.
       # make sure it has no constraints
       for c in lrt.get('require', []) + lrt.get('forbid', []):
         vr.err(c.full_key + '_others', 'Solitary lexical rule types with ' +\
                'no name will be merged with their position class, and ' +\
-               'therefore cannot themselves take constraints.')
+               'therefore cannot themselves take constraints. Apply the ' +\
+               'constraints to the position class, instead.')
 
 def lrt_validation(lrt, vr, index_feats):
   # No supertype means it's a root type within a PC class (no longer an error)
@@ -645,15 +695,21 @@ def lrt_validation(lrt, vr, index_feats):
         vr.err(feat.full_key + '_head',
                'This feature is associated with nouns, ' +\
                'please select one of the NP-options.')
+  orths = {}
   for lri in lrt.get('lri', []):
-    if lri['inflecting'] == 'yes' and not lri.get('orth', ''):
+    orth = lri.get('orth', '')
+    if lri['inflecting'] == 'yes' and orth == '':
       vr.err(lri.full_key + '_orth',
              "If an instance's spelling is not selected as None, " +\
              "it cannot be blank.")
-    elif lri['inflecting'] == 'no' and len(lri.get('orth', '')) > 0:
+    elif lri['inflecting'] == 'no' and len(orth) > 0:
       vr.warn(lri.full_key + '_orth',
               "If an instance's spelling is selected as None, " +\
               "any defined spelling will not be used.")
+    if orth in orths:
+      vr.err(lri.full_key + '_orth',
+             "This affix duplicates another, which is not allowed.")
+    orths[orth] = True
 
 def cycle_validation(choices, vr):
   pch = position_class_hierarchy(choices)

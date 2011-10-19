@@ -93,6 +93,17 @@ class ChoiceDict(ChoiceCategory, dict):
             return int(result.group(0))
     return None
 
+  def walk(self):
+    for key in self.keys():
+      if isinstance(self[key], ChoiceCategory):
+        for result in self[key].walk():
+          yield result
+      else:
+        fullkey = key
+        if self.full_key:
+          fullkey = self.full_key + '_' + key
+        yield (fullkey, self[key])
+
   def __str__(self):
     return '\n'.join(
       '='.join(['_'.join([self.full_key, key]) if self.full_key else key,
@@ -149,6 +160,11 @@ class ChoiceList(ChoiceCategory, list):
     for item in list.__iter__(self):
       if item is not None:
         yield item
+
+  def walk(self):
+    for item in self:
+      for result in item.walk():
+        yield result
 
   def __len__(self):
     """
@@ -350,6 +366,10 @@ class ChoicesFile:
   def __iter__(self):
     return self.choices.__iter__()
 
+  def walk(self):
+    for result in self.choices.walk():
+      yield result
+
   def __len__(self):
     return len(self.choices)
 
@@ -466,6 +486,8 @@ class ChoicesFile:
       self.convert_21_to_22()
     if self.version < 23:
       self.convert_22_to_23()
+    if self.version < 24:
+      self.convert_23_to_24()
     # As we get more versions, add more version-conversion methods, and:
     # if self.version < N:
     #   self.convert_N-1_to_N
@@ -1076,7 +1098,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 23
+    return 24
 
   def convert_value(self, key, old, new, partial=False):
     if key in self:
@@ -1578,8 +1600,9 @@ class ChoicesFile:
     for defining subtypes under 1p-non-sg into the choices for defining
     your own subtypes.
     """
-    numbers = [num['name'] for num in self['numbers']]
-
+    numbers = [num['name'] for num in self['number']]
+    # The following assumes the first number is Singular and that there
+    # are more than one number (such as Plural, Dual, etc)
     number = ', '.join(numbers[1:])
 
     fp = self.get('first-person')
@@ -1817,6 +1840,17 @@ class ChoicesFile:
         self.convert_key(slot.full_key + '_morph', slot.full_key + '_lrt')
       # finally, change -slot keys to -pc
       self.convert_key(lex_cat + '-slot', lex_cat + '-pc')
+
+  def convert_23_to_24(self):
+    """
+    This uprev only fixes test sentences marked ungrammatical with a * at
+    the beginning of the string, since * can now be allowed as punctuation
+    (if the user adds it as a parsable punctuation in the general page).
+    """
+    for sentence in self['sentence']:
+      if sentence.get('orth','').startswith('*'):
+        sentence['star'] = 'on'
+        sentence['orth'] = sentence['orth'].lstrip('*')
 
 ########################################################################
 # FormData Class
