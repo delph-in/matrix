@@ -202,7 +202,9 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     #mainorverbtype = 'verb-lex'
     vcluster = False
     mylang.add('verb-lex := basic-verb-lex.')
-
+  
+  mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')
+  
   typedef = mainorverbtype + ' :=  \
        [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >, \
                                   SPEC < >, \
@@ -345,6 +347,9 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
                                    SUBJ < > ]].'
     mylang.add(typedef)
 
+    # also not to be used as modifiers
+    mylang.add('determiner-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')    
+
   # Determiners
   if 'det' in ch:
     lexicon.add_literal(';;; Determiners')
@@ -368,6 +373,86 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
                     [ STEM < "' + orth + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
+
+def customize_adjectives(mylang, ch, lexicon):
+
+   # Lexical type for adjectives, if the language has any:
+  if ch.get('has-adj') == 'yes':
+    comment = \
+      ';;; Adjectives\n' + \
+      ';;; First attempt: inheriting all from matrix.'
+    mylang.add_literal(comment)
+    mylang.add('scopal-mod-adj-lex := basic-scopal-mod-adj-lex.')
+    mylang.add('int-mod-adj-lex := basic-int-mod-adj-lex.')
+
+    if ch.get('strength-marking') == 'double':
+      mylang.add('+njdo :+ [ STRONG bool ].', section='addenda')
+    elif ch.get('strength-marking') == 'triple':
+      mylang.add('+njdo :+ [ STRONG luk ].', section='addenda')
+  
+  ###Agreement properties
+    case_agr = False
+    strength_agr = False
+    for agr in ch.get('adjagr'):
+      if agr.get('feat') == 'case':
+        case_agr = True
+      elif agr.get('feat') == 'strength':
+        strength_agr = True
+
+  #depending on agreement properties, CASE is a feature of nouns or of nouns
+  #and adjectives
+    if case_agr:
+      mylang.add('+nj :+ [ CASE case].', section='addenda')
+    elif ch.get('case-marking') != 'none':
+        mylang.add('noun :+ [ CASE case ].', section='addenda')
+      
+ # Adjectives
+  if 'adj' in ch:
+    lexicon.add_literal(';;; Adjectives')
+
+  for adj in ch.get('adj',[]):
+    name = get_name(adj)
+
+    stype = '-mod-adj-lex'
+    if adj.get('kind') == 'int':
+      stype = 'int' + stype
+    else:
+      stype = 'scopal' + stype
+    atype = name + '-adjective-lex'
+    
+    mylang.add(atype + ' := ' + stype + ' & \
+      [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT [ HEAD noun, \
+                                                  VAL.SPR <[ ]> ] ] > ].')
+
+    arg_str = adj.get('arg-str')
+    val = ''
+    if arg_str == 'none':
+      val = 'VAL [ SUBJ < >, \
+                   COMPS < >, \
+                   SPR < >, \
+                   SPEC < > ]'
+
+    if val:
+      mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.' + val + ' ].')
+
+    if case_agr:
+      mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.HEAD [ CASE #case, \
+                            MOD < [ LOCAL.CAT.HEAD.CASE #case ] > ] ].')
+
+    if strength_agr:
+      mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.HEAD [ STRONG #strength, \
+                            MOD < [ LOCAL.CAT.HEAD.STRONG #strength ] > ] ].')
+
+    for stem in adj.get('stem',[]):
+      orth = stem.get('orth')
+      pred = stem.get('pred')
+      id = stem.get('name')
+      typedef = \
+        TDLencode(id) + ' := ' + atype + ' & \
+                    [ STEM < "' + orth + '" >, \
+                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+      lexicon.add(typedef)
+
 
 def customize_misc_lex(ch, lexicon):
 
@@ -411,6 +496,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                                   SPEC < > ] ], \
          ARG-ST < #spr > ].'
   mylang.add(typedef)
+   
+  # Assuming that most nouns typically do not modify
+  # until compounds have been added
+  mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')
+
 
   if singlentype:
     if seen['obl']:
@@ -439,7 +529,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       'as OPT +.  Making the non-head daughter OPT - in this rule\n' +
       'keeps such nouns out.')
 
-  if ch.get('case-marking') != 'none':
+###Germanic change: if adjectives have case agreement, their heads
+###bear case as well: case bearing head decided in adjective code
+###if turning up...
+
+  if ch.get('case-marking') != 'none' and ch.get('has-adj') != 'yes':
     if not ch.has_adp_case():
       mylang.add('noun :+ [ CASE case ].', section='addenda')
 
@@ -499,4 +593,5 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies):
 
   mylang.set_section('otherlex')
   customize_determiners(mylang, ch, lexicon, hierarchies)
+  customize_adjectives(mylang, ch, lexicon)
   customize_misc_lex(ch, lexicon)

@@ -706,6 +706,20 @@ def customize_np_word_order(mylang, ch, rules):
 
     rules.add('head-spec := head-spec-phrase.')
 
+####
+# Adjectives
+# For now, assuming det-adj-noun interaction arranged in matrix.tdl
+# relevant phrases are defined in matrix.tdl, needn't be included in
+# language specific file
+###
+
+  if ch.get('has-adj') == 'yes':
+    if ch.get('adj-noun-order') != 'adj-noun':
+      rules.add('head-adj-int := head-adj-int-phrase.')
+      rules.add('head-adj-scop := head-adj-scop-phrase.')
+    if ch.get('noun-adj-order') != 'noun-adj':
+      rules.add('adj-head-int := adj-head-int-phrase.')
+      rules.add('adj-head-scop := adj-head-scop-phrase.')
 
     # ERB 2006-09-14 I think that all languages have some form of
     # the Bare NP phrase.  Eventually there will be some choices about

@@ -58,7 +58,7 @@ def get_lexical_supertype(lt_key, choices):
     return 'verb'
   elif lexical_category == 'verb':
     return case.interpret_verb_valence(choices[lt_key]['valence'])
-  elif lexical_category in ('noun', 'det', 'aux'):
+  elif lexical_category in ('noun', 'det', 'aux','adj'):
     return lexical_category
   return None
 

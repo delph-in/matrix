@@ -14,6 +14,8 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
   pn = pos + num
   if pos == 'n' or pos == 'np':
     headtype = 'noun'
+  elif pos == 'adj':
+    headtype = 'adj'
   else:
     headtype = 'verb'
 
@@ -98,13 +100,20 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
   # adding agreement constraints
   # something better should be done to get the right supertypes to the right
   # coordination phrases (consider function to split them in groups...)
-  if pos == 'n' or pos == 'np':
+  if pos == 'n' or pos == 'np' or pos == 'adj':
     if 'case' in agr:
       add_sharing_supertypes(mylang, pn, mid, 'case') 
 
-    if np_number:
+    if np_number and pos != 'adj':
       mylang.add(pn + '-top-coord-rule := \
                [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + np_number + ' ].')
+  #adjectives also need to share png info for agreement with nouns
+    elif pos == 'adj':
+      path = 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.'
+      add_shared_features(mylang, 'png', path, mid)
+      add_sharing_supertypes(mylang, pn, mid, 'png') 
+
+
   elif pos == 'v' or pos == 'vp' or pos == 's':
     verb_feat = ['vfront', 'form', 'mc', 'vc']
     for vf in verb_feat:
@@ -199,7 +208,7 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
     for f in feat:
       agreement += ',' + f
 
-    for pos in ('n', 'np', 'vp', 's'):
+    for pos in ('n', 'np', 'vp', 's', 'adj'):
       if cs.get(pos):
         define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, agreement,
     np_number, mylang, rules, irules)

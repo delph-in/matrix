@@ -1072,7 +1072,6 @@ class ChoicesFile:
 
 ######Germanic adding feature for edge related restrictions
 
-#
     #Word order interaction features
     if self.get('edge-related-res') == 'yes':
       features += [ ['edge', 'na-or-+|na-or--', 'LOCAL.CAT.EDGE' ] ]
@@ -1080,7 +1079,21 @@ class ChoicesFile:
       features += [ ['headfinal', '-|-', 'LOCAL.CAT.HEADFINAL' ] ]
       features += [ ['headfinal', '+|+', 'LOCAL.CAT.HEADFINAL' ] ]
 
+    #Adjective strength measurement
+    adj_strength = ''
+    adj_strength = self.get('strength-marking')
+    if adj_strength:
+      if adj_strength != 'none':
+        features += [ ['strong', 'bool|bool', 'LOCAL.CAT.HEAD.STRONG'] ]
+        features += [ ['strong', '-|-', 'LOCAL.CAT.HEAD.STRONG'] ]
+        features += [ ['strong', '+|+', 'LOCAL.CAT.HEAD.STRONG'] ]
+        if adj_strength == 'triple':
+          features += [ ['strong', 'luk|luk', 'LOCAL.CAT.HEAD.STRONG'] ]
+          features += [ ['strong', 'na-or--|na-or--', 'LOCAL.CAT.HEAD.STRONG'] ]
+          features += [ ['strong', 'na-or-+|na-or-+', 'LOCAL.CAT.HEAD.STRONG'] ]
+          features += [ ['strong', 'na|na', 'LOCAL.CAT.HEAD.STRONG'] ]
 
+####END GERMANIC
 
     for feature in self.get('feature'):
       feat_name = feature['name']
