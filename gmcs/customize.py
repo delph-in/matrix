@@ -293,11 +293,14 @@ def setup_vcs(ch, grammar_path):
       call(['hg', 'commit',
             '-u Grammar Matrix <matrix-dev@u.washington.edu>',
             '-m "Initial commit."'], stdout=IGNORE, stderr=IGNORE)
-    #elif ch['vcs'] == 'bzr':
-    #  call(['bzr', 'init', grammar_path])
-    #  call(['bzr', 'add', grammar_path])
-    #  call(['bzr', 'commit', '-m "Initial commit."'],
-    #       stdout=IGNORE, stderr=IGNORE)
+    elif ch['vcs'] == 'bzr':
+      call(['bzr', 'init'], stdout=IGNORE, stderr=IGNORE)
+      call(['bzr', 'add'], stdout=IGNORE, stderr=IGNORE)
+      call(['bzr', 'whoami', '--branch',
+            'Grammar Matrix Customization System <matrix-dev@uw.edu>'],
+           stdout=IGNORE, stderr=IGNORE)
+      call(['bzr', 'commit', '-m "Initial commit."'],
+           stdout=IGNORE, stderr=IGNORE)
     os.chdir(cwd)
     IGNORE.close()
 

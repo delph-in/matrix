@@ -7,8 +7,9 @@
 #           customization system.
 # DEST:     The destination directory of the install
 # OPTIONS:
-#      -r:  install remotely on homer.u.washington.edu
-#    -lkb:  also copy the necessary parts of the lkb from given directory
+#      -r: install remotely on homer.u.washington.edu
+#    -lkb: prepare the LKB files for TbG (only needs to be done once;
+#          if you want to refresh the files, delete the delphin directory)
 #
 # Examples:
 #      To install to a local directory:
@@ -21,19 +22,45 @@
 #           ./install uwcl@homer.u.washington.edu:~/public_html/my_branch
 #      To install to www.delph-in.net/matrix:
 #           ./install -r matrix/customize
+#      To prepare the LKB files in an install to delph-in.net/matrix
+#           ./install -r -lkb matrix/customize
 
 homer_prefix="uwcl@homer.u.washington.edu:~/public_html/"
+lkb_url="http://lingo.ling.washington.edu/latest/lkb_linux.x86." #32|64.tgz
+delphin_dir="${CUSTOMIZATIONROOT}/../delphin"
+
+# check that Customization Root is defined
+if [ -z $CUSTOMIZATIONROOT ]
+then
+    echo "Please: export CUSTOMIZATIONROOT=<your gmcs file>"
+    exit 1
+fi
 
 # parse command line
-while [ "$1" = -l -o "$1" = -r -o "$1" = -lkb ]
+while [ "$1" = -r -o "$1" = -lkb ]
 do
     if [ "$1" = -r ]
     then
         installonhomer=true
     elif [ "$1" = -lkb ]
     then
-        shift
-        lkbdir="$1"
+        install_lkb=1
+        if [ ! -d "$delphin_dir" ]
+        then
+            if [ -z $LOGONROOT ]
+            then
+                echo "Error: LOGONROOT not set. Exiting."
+                exit 1
+            fi
+            mkdir -p $delphin_dir/bin
+            mkdir -p $delphin_dir/lkb
+            pushd $delphin_dir/lkb
+            echo "\n\nDownloading LKB files. This could take a minute.\n\n"
+            wget -O - "${lkb_url}32.tgz" | tar -xzf -
+            wget -O - "${lkb_url}64.tgz" | tar -xzf -
+            popd
+            cp ${LOGONROOT}/lingo/lkb/etc/lkb $delphin_dir/bin/lkb
+        fi
     fi
     shift
 done
@@ -46,19 +73,12 @@ fi
 
 dest="$1"
 
-# check that Customization Root is defined
-if [ -z $CUSTOMIZATIONROOT ]
-then
-    echo "Please: export CUSTOMIZATIONROOT=<your gmcs file>"
-    exit 1
-fi
-
 # create temporary staging directory
 tempdir=/tmp/matrix.$$
 
 # the following will create the tempdir directory and fill it with
 # with everything in the directories besides what's excluded.
-rsync -a --exclude={CVS/,.svn/,regression_tests/,tests/,sql_profiles/,gmmt/,lisp/,*.pyc,.*,*.tmp~,local_testing,Version.lsp,install,matrix.py,def_check.py,profiles.py,randgram.py,tdltest.py} ${CUSTOMIZATIONROOT}/../ $tempdir
+rsync -a --exclude={CVS/,.svn/,delphin/,regression_tests/,tests/,sql_profiles/,gmmt/,lisp/,*.pyc,.*,*.tmp~,local_testing,Version.lsp,install,matrix.py,def_check.py,profiles.py,randgram.py,tdltest.py} ${CUSTOMIZATIONROOT}/../ $tempdir
 
 # create datestamp, matrix-types, and head-types files
 date -u > $tempdir/datestamp
@@ -85,16 +105,9 @@ then
         $tempdir/saved-choices/.htaccess
 fi
 
-#If necessary, copy the lkb from the source directory, taking only what is needed
-if [ "$lkbdir" ]
+if [ $install_lkb ]
 then
-  mkdir $tempdir/delphin
-  cp -rL $lkbdir/bin $tempdir/delphin
-  lkbfiles=`ls -1 $lkbdir/lkb | sed '/^src$/ d'`
-  echo $lkbfiles
-  pushd $lkbdir/lkb
-  cp -r $lkbfiles $tempdir/delphin
-  popd
+    rsync -a --exclude=.svn/ $delphin_dir $tempdir
 fi
 
 #Finally rsync the tempdir to the destination
