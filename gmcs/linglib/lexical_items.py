@@ -194,7 +194,8 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
       'aux-lex := verb-lex & \
                 [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
     mylang.add(typedef)
-    if vcluster:
+  #Germanic change: uses VC differently
+    if vcluster and not wo == 'v2':
       mylang.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
       mylang.add('aux-lex := [ SYNSEM.LOCAL.CAT.VC - ].')
   else:
@@ -245,6 +246,21 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                                       COMPS < > ] ] ] > ].'
   mylang.add(typedef)
 
+# ditransitive verb lexical type
+  if ch.get('ditransitives') == 'yes':
+    typedef = \
+    'ditransitive-verb-lex := ' + mainorverbtype + ' & ditransitive-lex-item & \
+       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp1 , #comp2 >, \
+         ARG-ST < [ ], \
+                  #comp1 & \
+                  [ LOCAL.CAT [ VAL [ SPR < >, \
+                                      COMPS < > ] ] ], \
+                  #comp2 & \
+                  [ LOCAL.CAT [ VAL [ SPR < >, \
+                                      COMPS < > ] ] ]  > ].'
+    mylang.add(typedef)
+
+
   case.customize_verb_case(mylang, ch)
 
   # Add constraints to choices to create lex rules for bipartite stems
@@ -271,9 +287,16 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
       tivity = 'intrans'
     elif val.find('-') != -1:
       c = val.split('-')
-      a_case = case.canon_to_abbr(c[0], cases)
-      o_case = case.canon_to_abbr(c[1], cases)
-      tivity = a_case + '-' + o_case + '-trans'
+#c can point to transitive or ditransitive
+      if len(c) == 2:
+        a_case = case.canon_to_abbr(c[0], cases)
+        o_case = case.canon_to_abbr(c[1], cases)
+        tivity = a_case + '-' + o_case + '-trans'
+      elif len(c) == 3:
+        a_case = case.canon_to_abbr(c[0], cases)
+        b_case = case.canon_to_abbr(c[1], cases)
+        o_case = case.canon_to_abbr(c[2], cases)
+        tivity = a_case + '-' + b_case + '-' + o_case + '-ditrans'
     else:
       s_case = case.canon_to_abbr(val, cases)
       tivity = s_case + '-intrans'
