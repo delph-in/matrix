@@ -150,7 +150,6 @@ def import_toolbox_lexicon(choicesfile):
 
     # input choices
     choices = ChoicesFile(choicesfile)
-
     # Counters
     tbentries = 0
     form_data_entries = 1;
@@ -173,6 +172,7 @@ def import_toolbox_lexicon(choicesfile):
         for tbfile in config.get('toolboxfile'):
             if not tbfile.get('tbfilename'):
                 continue
+            tb_lines = None
             tblex = open(tbfile.get('tbfilename'),'r')
             tbentry = {}
             # List of values of the bistemtag field.
@@ -230,7 +230,7 @@ def import_toolbox_lexicon(choicesfile):
 
     # Print new choices file by concatenating input choices
     # with output choices.  FIXME: What about section=?
-    matrixdef = MatrixDefFile('matrixdef')
+    matrixdef = MatrixDefFile('gmcs/matrixdef')
     matrixdef.save_choices(form_data, choicesfile)
 #    fout = open(choicesfile+"new", 'w')
 #    choices['version'] = str(choices.current_version())

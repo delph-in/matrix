@@ -393,6 +393,11 @@ def run_unit_tests():
   import gmcs.tests.testValidate
   runner.run(loader.loadTestsFromModule(gmcs.tests.testValidate))
 
+  print_line()
+  print 'Toolbox import tests:'
+  import gmcs.linglib.tests.testToolboxImport
+  runner.run(loader.loadTestsFromModule(gmcs.linglib.tests.testToolboxImport))
+
   #print_line()
   #print 'Linglib/Morphotactics tests:'
   #import gmcs.linglib.tests.testMorphotactics

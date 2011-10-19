@@ -1834,6 +1834,9 @@ class FormData:
       self.data[key] = FormInfo(key, None)
       return self.data[key]
 
+  def __setitem__(self, key, value):
+    self.data[key] = value;
+
   def has_key(self, key):
     if key in self.data:
       return True;
