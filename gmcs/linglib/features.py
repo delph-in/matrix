@@ -48,6 +48,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 
     # The 'head' choice only appears on verb pcs, and allows the user
     # to specify features on the subject and object as well
+    # It can also add mod for adjectives
     h = feat.get('head','')
     if h == 'subj':
       geom_prefix += 'LOCAL.CAT.VAL.SUBJ.FIRST.'
@@ -59,6 +60,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         geom_prefix2 += 'LOCAL.CAT.VAL.COMPS.FIRST.'
     elif h == 'obj':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
+    elif h == 'mod':
+      geom_prefix += 'LOCAL.CAT.HEAD.MOD.FIRST.'
     elif h == 'higher':
       geom_prefix = 'SC-ARGS.FIRST.'
     elif h == 'lower':
