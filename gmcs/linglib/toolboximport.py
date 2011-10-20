@@ -230,7 +230,7 @@ def import_toolbox_lexicon(choicesfile):
 
     # Print new choices file by concatenating input choices
     # with output choices.  FIXME: What about section=?
-    matrixdef = MatrixDefFile('gmcs/matrixdef')
+    matrixdef = MatrixDefFile('web/matrixdef')
     matrixdef.save_choices(form_data, choicesfile)
 #    fout = open(choicesfile+"new", 'w')
 #    choices['version'] = str(choices.current_version())
