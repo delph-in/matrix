@@ -1000,3 +1000,15 @@ function fill_errors(element_id)
     }
   }
 }
+
+//import_toolbox_lexicon
+function import_toolbox_lexicon()
+{
+  var elm = document.getElementsByTagName('form')[0];
+  var inp = document.createElement('input');
+  inp.type = "hidden";
+  inp.name = "import_toolbox";
+  inp.value = "true";
+  elm.appendChild(inp);
+  submit_main();
+}

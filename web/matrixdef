@@ -1660,6 +1660,83 @@ BeginIter adp{i} "an Adposition" 1
 
 EndIter adp
 
+Section toolbox-import "Import Toolbox Lexicon"
+
+Label "<p><a href=\"http://www.sil.org/computing/toolbox\">Toolbox</a>
+is a tool provided by SIL and used by many field linguists. This page
+allows you to automatically create lexical entries for your Grammar
+Matrix grammar on the basis of lexical entries in a Toolbox lexicon.
+This page allows you to guide the import process by defining one
+or more configurations (called Toolbox Import Configurations).
+You may import from multiple Toolbox files (by
+selecting multiple files on this page), but every time you do an
+import, all previously imported lexical entries will be dropped.  If
+your Toolbox files use the same set of tags, you may add them all to
+the same Toolbox Import Configuration.  If they use different tags
+(for lexical entry ids, stems, and glosses), you will need to define
+separate Toolbox Import Configurations.</p><p>For each Toolbox Import
+Configuration, you will need to specify the file or files you are
+importing from, the tags used in those files for entry ids, stems, and
+glosses.  Within each Toolbox Import Configuration you can specify one
+or more Import Classes, which map Toolbox tag/value pairs to lexical
+classes defined on the Lexicon page.  The Toolbox Import
+Configurations become part of your choices file when you click the
+Submit or Import Lexicon buttons.</p><p> Once you have imported a
+lexicon, you can check the entries that were imported for each class <a
+href=\"matrix.cgi?subpage=ToolboxLexicon\">here</a>.
+If you find errors, you can edit the Import Classes and
+re-import.</p><p>In order to import information from a Toolbox lexicon
+to your choices file, the Toolbox files must be transferred to our
+servers.  We will NOT store these files permanently.  They will be
+deleted immediately after being processed.</p>"
+
+BeginIter toolboximportconfig{i} "a Toolbox Import Configuration" 1 1
+
+  Text idtag "id tag" "Toolbox tag for lex entry ids: " "" 10
+
+  Text glosstag "gloss tag" " Toolbox tag for glosses: " "" 10
+
+  Text starttag "start tag" "<br /><br />Toolbox tag which starts lexical database entries: " "" 10
+
+  Text stemtag "stem tag" "<br /><br />Toolbox tag for stem: " "" 10
+
+  Text bistemtag "bistem tag" " (Optional) Toolbox tag for affix portion of bipartite stems: " "" 10
+
+  BeginIter repeat{j} " a Toolbox tag which can repeat in a database entry"
+
+    Text tag "repeatable tag" " Repeatable Tag {j}: " "" 10
+
+  EndIter repeat
+
+  Radio tbpredvalues "pred values" "<p>Every lexical entry requires a semantic predicate.  For entries imported from Toolbox, we can construct these predicates from the stem, from the gloss (which could be long), or from the first word of the gloss.  If either of the gloss options is chosen but some entries lack glosses, lexical entries will be constructed from the stem for those entries.  Predicates should be constructed from: </br>" ""
+  . stem "Stem" "" " the stem value<br>"
+  . gloss "Gloss" "" " the gloss (if available)<br>"
+  . glossfw "Gloss first word" "" " the first word of the gloss (if available)"
+
+  BeginIter toolboxfile{j} "a Toolbox File" 0 1
+
+    File tbfilename "file name" "Toolbox file {j}: " "" 20
+
+  EndIter toolboxfile
+
+  BeginIter importclass{j} "an Import Class" 1 1
+
+    Text importlextype "lexical type" "Lexical type for imported entries " "" 20
+
+    BeginIter toolboxtag{k} "a Toolbox tag-value pair" 0 1
+   
+      Text tbtag "toolboxtag" "Toolbox tag (e.g., for part of speech): " "" 10
+
+      Text tbvalue "toolboxvalue" " Value for the Toolbox tag: " "" 10
+
+    EndIter toolboxtag
+
+  EndIter importclass
+
+EndIter toolboximportconfig
+
+Button "Import Toolbox Lexicon" "<br /><br />" "" "import_toolbox_lexicon()"
+
 Section test-sentences "Test Sentences"
 
 Label "<p>In this section, you can provide example sentences that will
@@ -1723,3 +1800,23 @@ BeginIter stv-feat{j} "a Feature"
     . NOUN2 "Object" "the object NP"
 
 EndIter stv-feat
+
+Section ToolboxLexicon "Toolbox Lexicon" 0
+
+Label "<p> Imported Toolbox Lexical items are displayed here, if any of these are incorrect 
+we recommend changing your import configurations and reimporting your files instead of
+directly correcing the entries.</p>"
+
+Separator
+
+BeginIter imported-entry{i} "an imported Entry"
+
+    Text lextype "Imported-Entry {i} LexType" "Lexical Type:" "<br />" 20
+
+    Text orth "Imported-Entry {i} Orthogrphy" "Spelling:" "<br />" 20
+
+    Text pred "Imported-Entry {i} Predicate" "Predicate:" "<br />" 20
+
+    Text aff "Imported-Entry {i} Affix" "Affix:" "<br />" 20
+
+EndIter imported-entry
