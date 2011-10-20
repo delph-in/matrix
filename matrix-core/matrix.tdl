@@ -1499,7 +1499,10 @@ basic-filler-phrase := binary-phrase & phrasal &
 				  QUE 0-dlist,
 				  REL 0-dlist ] ] ] > ].
 
-basic-head-filler-phrase := basic-filler-phrase & headed-phrase.
+; ASF 2011-10-05 changed supertype 'headed-phrase' to more specific 'head-compostional'
+; in order to make sure matrix.tdl provides the right semantics.
+
+basic-head-filler-phrase := basic-filler-phrase & head-compositional.
 
 ; These phrase types should all inherit from head-final or head-initial,
 ; as appropriate, replacing binary-headed-phrase.
@@ -1864,8 +1867,10 @@ basic-extracted-comp-phrase := basic-extracted-arg-phrase &
 
 ; ERB 2004-08-26 Remove [MC -] on mother; probably specific
 ; to analysis of subject extraction for English.
+; ASF 2011-10-05 Added supertype 'head-compositional' to basic-extracted-subj-phrase
+; in order to make sure matrix.tdl provides the right semantics for extracted subjects.
 
-basic-extracted-subj-phrase := basic-extracted-arg-phrase &
+basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
 			   SPR < >,
 			   COMPS < > ],
@@ -2675,7 +2680,12 @@ basic-adjective-lex := single-rel-lex-item &
 ; inherit from this one, predicatives from norm-hook-lex-item.
 ; Need to worry about the relationship between the two.
 
-basic-mod-adj-lex := basic-adjective-lex & raise-index-mod-lex-item.
+; ASF 2011-10-20 basic-mod-adj-lex should not inherit from
+; raise-index-mod-lex-item: this leads to conflicting index values
+; (event for adj, index for nouns) preventing coordination from working
+; changed to norm-sem-lex-item.
+
+basic-mod-adj-lex := basic-adjective-lex & norm-sem-lex-item.
 basic-scopal-mod-adj-lex := basic-mod-adj-lex & scopal-mod-lex.
 basic-int-mod-adj-lex := basic-mod-adj-lex & intersective-mod-lex.
 basic-nomod-adj-lex := basic-adjective-lex & no-mod-lex & norm-hook-lex-item.
