@@ -124,7 +124,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 	                     LTOP #ltop,\
 	                     INDEX #ind ],\
 	              RELS <! event-relation &\
-	                      [ PRED "_neg_x_rel",\
+	                      [ PRED "neg_rel",\
 	                        LBL #ltop,\
 	                        ARG1 #harg ] !>,\
 	              HCONS <! qeq &\

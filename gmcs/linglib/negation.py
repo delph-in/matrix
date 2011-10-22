@@ -79,7 +79,7 @@ def create_neg_adv_lex_item(advAlone, mylang, ch, lexicon, rules):
     orth = ch.get('neg-adv-orth')
     lexicon.add(TDLencode(orth) + ' := neg-adv-lex &\
                 [ STEM < \"'+ orth +'\" >,\
-                  SYNSEM.LKEYS.KEYREL.PRED \"_neg_r_rel\" ].')
+                  SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
 
 
 
