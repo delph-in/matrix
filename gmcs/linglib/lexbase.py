@@ -7,10 +7,10 @@ from gmcs.lib import Hierarchy, HierarchyNode
 ################################
 
 # all types of lexical items (on lexicon page)
-ALL_LEX_TYPES = ['noun', 'verb', 'det', 'aux', 'adj']
+ALL_LEX_TYPES = ['noun', 'verb', 'det', 'aux', 'adj', 'adv']
 
 # types used for lexical rules (verb and aux are merged)
-LEXICAL_CATEGORIES = ['noun', 'verb', 'det', 'adj']
+LEXICAL_CATEGORIES = ['noun', 'verb', 'det', 'adj', 'adv']
 
 # lexical_supertypes is a dictionary mapping the choices file
 # encodings to the actual lex-type identifiers.
@@ -22,7 +22,8 @@ LEXICAL_SUPERTYPES = {'noun':'noun-lex',
                       'mverb':'main-verb-lex',
                       'det':'determiner-lex',
                       'aux':'aux-lex',
-                      'adj':'adjective-lex'}
+                      'adj':'adjective-lex',
+                      'adv':'adverb-lex'}
 ###############
 ### CLASSES ###
 ###############

@@ -21,7 +21,6 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
 
   #this allows users to define agreement features in the choices file
   agr = agreement.split(',')
-
   # First define the rules in mylang.  Every strategy has a
   # top rule and a bottom rule, but only some have a mid rule, so if
   # the mid prefix argument $mid is empty, don't emit a rule.
@@ -115,7 +114,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
 
 
   elif pos == 'v' or pos == 'vp' or pos == 's':
-    verb_feat = ['vfront', 'form', 'mc', 'vc']
+    verb_feat = ['vfront', 'form', 'mc', 'vc', 'inv']
     for vf in verb_feat:
       if vf in agr:      
         add_sharing_supertypes(mylang, pn, mid, vf) 
@@ -191,7 +190,11 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
 
   ####
   # agreement is only head features for now
-  #
+  # inversion is also a head feature that needs to be shared
+  # adding it where appropriate
+
+    if ch.get('q-inv') == 'on':
+      agreement += ',inv' 
     agr_path = 'SYNSEM.LOCAL.CAT.HEAD.'
     agr =  agreement.split(',')
     for my_agr in agr:
