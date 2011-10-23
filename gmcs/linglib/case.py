@@ -257,13 +257,18 @@ def interpret_verb_valence(valence):
   if '-' in valence:
     v = valence.split('-')
     if len(v) == 2:
-      return 'tverb'
+      if v[1] != 'scomp':
+        return 'tverb'
+      else:
+        return 'sc2verb'
     elif len(v) == 3:
       return 'dverb'
   elif valence == 'trans':
     return 'tverb'
   elif valence == 'ditrans':
     return 'dverb'
+  elif valence == 'scomp':
+    return 'sc2verb'
   else:
     return 'iverb'
 
@@ -292,7 +297,34 @@ def customize_verb_case(mylang, ch):
 
     if not rule_pattern:
       c = p[0].split('-')  # split 'agentcase-patientcase'
-      if p[0] == 'trans' or len(c) == 2:  # transitive
+      if p[0] == 'scomp' or (len(c) == 2 and c[1] == 'scomp'):
+        if p[0] == 'scomp':
+          a_case = ''
+          a_head = ch.case_head()
+        else:
+          a_case = canon_to_abbr(c[0], cases)
+          a_head = ch.case_head(c[0])
+                               
+        if a_case:
+          t_type = a_case + '-scomp-transitive-verb-lex'
+        else:
+          t_type = 'scomp-transitive-verb-lex'                      
+        mylang.add(t_type + ' := s-comp-2nd-arg-verb-lex.')
+
+        # constrain the head of the agent/subject
+        typedef = \
+          t_type + ' := \
+          [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
+        mylang.add(typedef)
+
+        # constrain the case of the agent/subject
+        if a_case:
+          typedef = \
+            t_type + ' := \
+            [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
+          mylang.add(typedef)
+        
+      elif p[0] == 'trans' or len(c) == 2:  # transitive
         if p[0] == 'trans':
           a_case = ''
           o_case = ''

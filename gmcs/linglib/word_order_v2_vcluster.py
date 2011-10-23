@@ -19,6 +19,20 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
 
 ###ADDING CONSTRAINTS ON BASIC RULES CREATING SECOND POSITION
 
+###making sure language properties of having pre- or postpositions are respected
+
+  
+  head_rest = ''
+  if ch.get('adp-order'): 
+    head_rest = '+nvjrcdmo'
+    if ch.get('clz-order'):
+      head_rest = '+nvjrdmo'
+  elif ch.get('clz-order'):
+    head_rest = '+nvjrpdmo'
+
+
+
+
   mylang.add('head-initial-head-nexus := nonverbal-comp-phrase & \
                   [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC + ].')
   mylang.add('finite-lex-rule := [ SYNSEM.LOCAL.CAT.MC na-or-- ].')
@@ -39,12 +53,25 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
     mylang.add('head-initial-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL - ].')
     mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.HEADFINAL #hf, \
                                            HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL #hf ].')
+  
+  
+####we need to use special rules for adp-comp, for same reason as compl-comp
+###introducing separate rules for sub-parts of sentence and main-clausal 
+###structure (needed if not using head-filler for v2-ness
+
+  if head_rest:
+    mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.HEAD ' + head_rest + ' ].')
+    mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.HEAD ' + head_rest + ' ].')
+    
 
 
 def add_basic_phrases_v2_with_cluster(ch, mylang):
 
   mylang.add('subj-head-vc-phrase := decl-head-subj-phrase & head-final-invc & nonverbal-comp-phrase.') 
+ 
+###2011-10-23 in-vc phrases are are per definition verbal
 
+  mylang.add('head-final-invc := [ SYNSEM.LOCAL.CAT.HEAD verb ].')
 
 ###Analysis independent rules
 
@@ -260,6 +287,11 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
 
 def create_argument_composition_phrases(ch, mylang):
 
+  if ch.get('has-dets') == 'yes':
+    if ch.get('noun-det-order') == 'det-noun':
+      mylang.add('head-spec-phrase := [ SYNSEM.LOCAL.CAT.VC #vc, \
+                                        HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
+
   if ch.get('vc-placement') == 'pre':
 
     if ch.get('aux-comp-order') == 'before':
@@ -335,7 +367,8 @@ def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
                     [ SYNSEM.LOCAL.CAT [ MC #mc & na, \
 		                         SECOND - ], \
                       HEAD-DTR.SYNSEM.LOCAL.CAT[ MC #mc, \
-			                         SECOND + ], \
+			                         SECOND +, \
+                                                 HEAD verb & [ AUX + ] ], \
                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb, \
 		                        	      MC - ]].') 
 
@@ -675,25 +708,25 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
     mylang.add('noncomp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
 
 
-def create_germanic_adverbial_phrases(ch, mylang, rules):
-###need to separate adverbial from adjectival phrases, due to different
+def create_germanic_adjunct_phrases(ch, mylang, rules):
+###need to separate adjunctial from adjectival phrases, due to different
 ###wo interactions
  
-  mylang.add('adverb-head-phrase := basic-head-mod-phrase-simple & \
-                  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].')
+  mylang.add('adjunct-head-phrase := basic-head-mod-phrase-simple & \
+                  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +rp ].')
  
 ###if no auxiliary, direct attachment v2
 
-  mylang.add('head-2nd-adj-phrase := head-initial-head-nexus & adverb-head-phrase.')
+  mylang.add('head-2nd-adj-phrase := head-initial-head-nexus & adjunct-head-phrase.')
   if ch.get('q-inv') and ch.get('vc-analysis') == 'aux-rule':
     mylang.add('head-2nd-adj-phrase := [ HEAD-DTR.SYNSEM.MODIFIED hasmod ].')
 
   mylang.add('head-2nd-adj-int-phrase := head-adj-int-phrase & head-2nd-adj-phrase.')
   mylang.add('head-2nd-adj-scop-phrase := head-adj-scop-phrase & head-2nd-adj-phrase.')
  
-  mylang.add('adj-head-2nd-int-phrase := adj-head-int-phrase & head-final-head-nexus & adverb-head-phrase.')
+  mylang.add('adj-head-2nd-int-phrase := adj-head-int-phrase & head-final-head-nexus & adjunct-head-phrase.')
  
-  mylang.add('adj-head-2nd-scop-phrase := adj-head-scop-phrase & head-final-head-nexus & adverb-head-phrase.')
+  mylang.add('adj-head-2nd-scop-phrase := adj-head-scop-phrase & head-final-head-nexus & adjunct-head-phrase.')
 
   rules.add('adj-head-2nd-int := adj-head-2nd-int-phrase.')
   rules.add('adj-head-2nd-scop := adj-head-2nd-scop-phrase.')
@@ -703,7 +736,7 @@ def create_germanic_adverbial_phrases(ch, mylang, rules):
 
 ### TO DO: FIND OUT ABOUT DANISH
   if ch.get('vc-placement') == 'post':
-    mylang.add('adj-head-int-vc-phrase := adj-head-int-phrase & head-final-invc & adverb-head-phrase.')
-    mylang.add('adj-head-scop-vc-phrase := adj-head-scop-phrase & head-final-invc & adverb-head-phrase.')    
+    mylang.add('adj-head-int-vc-phrase := adj-head-int-phrase & head-final-invc & adjunct-head-phrase.')
+    mylang.add('adj-head-scop-vc-phrase := adj-head-scop-phrase & head-final-invc & adjunct-head-phrase.')    
     rules.add('adj-head-int-vc := adj-head-int-vc-phrase.')
     rules.add('adj-head-scop-vc := adj-head-scop-vc-phrase.')

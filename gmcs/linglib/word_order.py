@@ -1,5 +1,5 @@
 from gmcs.linglib.parameters import determine_vcluster
-
+from gmcs.linglib import  word_order_v2_vcluster
 ######################################################################
 # customize_word_order()
 #   Create the type definitions associated with the user's choices
@@ -29,7 +29,7 @@ def customize_word_order(mylang, ch, rules):
 # adverb rules (only Germanic)
   if ch.get('has-adv') == 'yes' and ch.get('verb-cluster') == 'yes':
     if ch.get('adv-order') == 'free':
-      word_order_v2_vcluster.create_germanic-adverbial_phrases(ch, mylang, rules)
+      word_order_v2_vcluster.create_germanic_adjunct_phrases(ch, mylang, rules)
 
 # ERB 2006-09-14 Then add information as necessary to handle adpositions,
 # free auxiliaries, etc.
@@ -86,6 +86,17 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
                 [ SYNSEM.LOCAL.CAT.MC #mc, \
                   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
                section='addenda')
+
+# ASF 2011-10-23 adpositions can occur without their (obligatory) complements
+# for now only in Germanic branch: making satisfaction of subcategorization
+# requirements obligatory for modifiers
+
+  mylang.add('basic-head-mod-phrase-simple :+\
+              [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,\
+                                                    COMPS < >,\
+                                                    SPR < >,\
+                                                    SPEC < > ] ].')
+
 
 
 # Head-comp order
@@ -750,6 +761,17 @@ def customize_np_word_order(mylang, ch, rules):
 
   rules.add('bare-np := bare-np-phrase.')
 
+###
+# addition of complementizers (not clear how general developed for Germanic)
+# 
+# customize_head_comp_non_main_phrase general rule that covers both 
+# complementizers and prepositions.
+# add_subclausal_rules replaces add_complementizer_rules: more general form
+# to cover both compl-comp and prep-comp rules.
+
+  if ch.get('has-compl') == 'yes' or ch.get('has-adp') == 'yes':
+    customize_head_comp_non_main_phrase(ch, mylang)
+    add_subclausal_rules(ch, rules)
 
 # ERB 2006-09-14 Subroutine for figuring out the relationship of major
 # constituent order to adpositions and auxiliaries.  Returns two values:
@@ -827,3 +849,72 @@ def determine_consistent_order(wo,hc,ch):
 
   return {'adp': adp, 'aux': aux, 'qpart_order': qpart_order} #TODO: verify key
 
+###########
+# ASF
+# basic additions for complementizer phrases (assuming specific phrase is
+# needed)
+# 2011-10-23 generalized to include adpositions
+
+def customize_head_comp_non_main_phrase(ch, mylang):
+  if ch.get('has-compl') == 'yes': 
+    c_ord = ''
+    if ch.get('clz-comp-order') == 'clz-comp':
+      c_ord = 'initial'
+    elif ch.get('clz-comp-order') == 'comp-clz':
+      c_ord = 'final'
+
+  if ch.get('adp-order'): 
+    adp_order = ''  
+    if ch.get('adp-order') == 'adp-comp':
+      adp_order = 'initial'
+    elif ch.get('adp-order') == 'comp-adp':
+      adp_order = 'final'  
+
+  fhead = ''
+  ihead = ''
+  if adp_order == c_ord:
+    head = '+pc' 
+    if adp_order == 'final':
+      fhead = head
+    elif adp_order == 'initial':
+      ihead = head
+  else:
+    if adp_order == 'final':
+      fhead = 'adp'    
+      ihead = 'comp'
+    else:
+      fhead = 'comp'
+      ihead = 'adp'
+  
+  if ihead:
+    mylang.add('head-comp-sub-phrase := basic-head-1st-comp-phrase & \
+                    head-initial & \
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + ihead +  ' ].')
+  if fhead: 
+    mylang.add('comp-head-sub-phrase := basic-head-1st-comp-phrase & \
+                    head-final & \
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + fhead + ' ].')  
+
+  if ch.get('clz-optionality'):
+    mylang.add('create-informal-vcomp-phrase := unary-phrase &\
+   [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
+	         	     CAT [ HEAD verb & [ FORM finite ],\
+				   VAL #val & [ SUBJ < >,\
+					        COMPS < >,\
+					        SPR < >,\
+					        SPEC < > ],\
+				   MC + ] ] ] >,\
+     C-CONT.HOOK #hook,\
+     SYNSEM.LOCAL.CAT [ HEAD comp,\
+	         	VAL #val,\
+		        MC - ] ].')
+
+def add_subclausal_rules(ch, rules): 
+  c_ord = ch.get('clz-comp-order')
+  adp_ord = ch.get('adp-order')
+  if c_ord == 'clz-comp' or adp_ord == 'adp-comp':
+    rules.add('head-sub-comp := head-comp-sub-phrase.')
+  if c_ord == 'comp-clz' or adp_ord == 'comp-adp':
+    rules.add('comp-head-sub := comp-head-sub-phrase.')
+  if ch.get('clz-optionality'):
+    rules.add('informal-vcomp := create-informal-vcomp-phrase.')
