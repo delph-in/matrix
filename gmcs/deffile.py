@@ -1265,6 +1265,7 @@ class MatrixDefFile:
 
     # Read the current choices file (if any) into old_choices
     # but if neg-aux=on exists, create side-effect in lexicon.
+    # vpc-0-neg=='create' also triggers lexical mucking.
     old_choices = ChoicesFile(choices_file)
     if section == 'sentential-negation' and 'neg-aux' in form_data.keys():
       # see if we're already storing an index number
@@ -1282,7 +1283,7 @@ class MatrixDefFile:
     if section == 'sentential-negation' and 'vpc-0-neg' in form_data.keys():
       # infl-neg should be on for zero-neg to work
       new_choices['infl-neg'] = 'on'
-      old_choices, new_choices = self.create_infl_neg_choices(old_choices, new_choices, new_choices['vpc-0-neg'])
+      old_choices, new_choices = self.create_infl_neg_choices(old_choices, new_choices)
 
 
     # Open the def file and store it in line[]
@@ -1340,20 +1341,23 @@ class MatrixDefFile:
     nli['stem1_pred'] = '_neg_v_rel'
     return choices, next_n
 
-  def create_infl_neg_choices(self, old_choices, new_choices, vpc):
+  def create_infl_neg_choices(self, old_choices, new_choices):
+    vpc = new_choices['vpc-0-neg']
     lrt = ''
-    if vpc != 'create':
-      next_n = old_choices[vpc]['lrt'].next_iter_num() if old_choices[vpc]['lrt'] else 1
-    # create new lrt in this position class
-      old_choices[vpc]['lrt%d_name' % next_n] = 'neg'
-      # add some features for negation and empty PHON
-      lrt = old_choices[vpc]['lrt'].get_last()
-    else:
+    if vpc == 'create':
       next_n = old_choices['verb-pc'].next_iter_num() if old_choices['verb-pc'] else 1
       old_choices['verb-pc%d_name' % next_n] = 'negpc'
       vpc = old_choices['verb-pc'].get_last()
       vpc['lrt1_name'] = 'neg'
       lrt = old_choices['verb-pc'].get_last()['lrt'].get_last()
+      new_choices['vpc-0-neg'] = 'verb-pc'+str(next_n)
+      
+    else:
+      next_n = old_choices[vpc]['lrt'].next_iter_num() if old_choices[vpc]['lrt'] else 1
+    # create new lrt in this position class
+      old_choices[vpc]['lrt%d_name' % next_n] = 'neg'
+      # add some features for negation and empty PHON
+      lrt = old_choices[vpc]['lrt'].get_last()
     
     lrt['feat1_name']= 'negation'
     lrt['feat1_value'] = 'plus'
