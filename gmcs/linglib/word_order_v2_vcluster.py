@@ -313,11 +313,12 @@ def create_argument_composition_phrases(ch, mylang):
                          [ SYNSEM.LOCAL.CAT.SECOND na,\
                            HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
                                                        SECOND +, \
-                                                       HEAD.AUX + ], \
+                                                       HEAD verb & [ AUX +  ]], \
                            NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
       mylang.add('aux-comp-vc-phrase := basic-head-1st-comp-phrase & head-initial-invc & \
                          [ SYNSEM.LOCAL.CAT.SECOND +,\
-                           HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND na, \
+                           HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb & [ AUX + ], \
+                                                       SECOND na ], \
                            NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
 
       if ch.get('argument-order') == 'fixed':
@@ -402,6 +403,8 @@ def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
 
   if ch.get('argument-order') == 'fixed':
     mylang.add('comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
+  if ch.get('q-inv'):
+    mylang.add('gen-comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
 
 ##additional constraints to account for split clusters, if occuring
 ##(explanation see below)
@@ -645,7 +648,8 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
                                                      HEADFINAL #hf ], \
                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
                                                          HEAD.FORM #dform ] ].')
-
+  if ch.get('q-inv'):
+    mylang.add('gen-verb-aux-2nd-rule := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
   mylang.add('comp-aux-2nd-phrase := gen-verb-aux-2nd-rule & basic-aux-verb-rule & [ SYNSEM.LOCAL.CAT.VFRONT - ].')
   mylang.add('noncomp-aux-2nd-phrase := gen-verb-aux-2nd-rule & special-basic-aux-verb-rule & [ SYNSEM.LOCAL.CAT.VFRONT +, \
                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')

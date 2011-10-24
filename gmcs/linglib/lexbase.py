@@ -7,7 +7,7 @@ from gmcs.lib import Hierarchy, HierarchyNode
 ################################
 
 # all types of lexical items (on lexicon page)
-ALL_LEX_TYPES = ['noun', 'verb', 'det', 'aux', 'adj', 'adv', 'comp', 'adp']
+ALL_LEX_TYPES = ['noun', 'verb', 'det', 'aux', 'adj', 'adv', 'comp', 'adp','cop']
 
 # types used for lexical rules (verb and aux are merged)
 LEXICAL_CATEGORIES = ['noun', 'verb', 'det', 'adj', 'adv', 'comp', 'adp']
@@ -26,7 +26,8 @@ LEXICAL_SUPERTYPES = {'noun':'noun-lex',
                       'adj':'adjective-lex',
                       'adv':'adverb-lex',
                       'comp':'complementizer-lex',
-                      'adp':'adpositional-lex'}
+                      'adp':'adpositional-lex',
+                      'cop':'copula-lex'}
 ###############
 ### CLASSES ###
 ###############

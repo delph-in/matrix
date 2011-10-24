@@ -92,6 +92,13 @@ def get_input_map(pch):
       inp_map[i_s] += [pc]
   return inp_map
 
+  for verb in choices.get('cop'):
+    stems = verb.get('stem')   
+    for stem in stems:
+      if stem.get('name') == uniqid:
+        return stem.full_key
+
+
 def get_vtype(stem, choices):
   """
   Helper function to look up verb type in choices file

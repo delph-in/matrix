@@ -16,6 +16,9 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
     headtype = 'noun'
   elif pos == 'adj':
     headtype = 'adj'
+  elif pos == 'adp':
+    headtype = 'adp'
+    add_adposition_rules(mylang)
   else:
     headtype = 'verb'
 
@@ -108,6 +111,8 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
                [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + np_number + ' ].')
   #adjectives also need to share png info for agreement with nouns
     elif pos == 'adj':
+      if 'prd' in agr:
+        add_sharing_supertypes(mylang, pn, mid, 'prd') 
       path = 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.'
       add_shared_features(mylang, 'png', path, mid)
       add_sharing_supertypes(mylang, pn, mid, 'png') 
@@ -118,6 +123,11 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
     for vf in verb_feat:
       if vf in agr:      
         add_sharing_supertypes(mylang, pn, mid, vf) 
+
+  elif pos == 'adp':
+    if 'prd' in agr:
+      add_sharing_supertypes(mylang, pn, mid, 'prd')
+
 
 def customize_coordination(mylang, ch, lexicon, rules, irules):
   """
@@ -194,7 +204,10 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
   # adding it where appropriate
 
     if ch.get('q-inv') == 'on':
-      agreement += ',inv' 
+      agreement += ',inv'
+    if ch.get('has-adp') or ch.get('has-adj'):
+      if ch.get('has-cop'):
+        agreement +=',prd'  
     agr_path = 'SYNSEM.LOCAL.CAT.HEAD.'
     agr =  agreement.split(',')
     for my_agr in agr:
@@ -211,7 +224,7 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
     for f in feat:
       agreement += ',' + f
 
-    for pos in ('n', 'np', 'vp', 's', 'adj'):
+    for pos in ('n', 'np', 'vp', 's', 'adj','adp'):
       if cs.get(pos):
         define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, agreement,
     np_number, mylang, rules, irules)
@@ -279,4 +292,25 @@ def create_coord_sharing_cat_features(mylang, feat, mid):
   for f in feat:  
     add_shared_features(mylang, f, path, mid)
 
+
+def add_adposition_rules(mylang):
+
+  ###adp-rules must share their head because of PRD value
+  mylang.add('adp-coord-phrase := event-coord-phrase & \
+  [ SYNSEM.LOCAL.CAT.HEAD #head & adp, \
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD #head, \
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD #head ].')
+
+  mylang.add('basic-adp-top-coord-rule := adp-coord-phrase & \
+               [ C-CONT [ RELS <! !>, \
+	                  HCONS <! !> ]].')
+
+  mylang.add('basic-adp-mid-coord-rule := adp-coord-phrase & \
+               [ SYNSEM.LOCAL.COORD-REL #crel, \
+                 C-CONT [ RELS <! #crel !>, \
+	                  HCONS <! !> ] ].')
+
+  mylang.add('adp-bottom-coord-phrase := bottom-coord-phrase & \
+               [ SYNSEM.LOCAL.CAT.HEAD #head & adp, \
+                 NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD #head ].')
 

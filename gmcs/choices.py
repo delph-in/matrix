@@ -1095,8 +1095,18 @@ class ChoicesFile:
           features += [ ['strong', 'na-or--|na-or--', 'LOCAL.CAT.HEAD.STRONG'] ]
           features += [ ['strong', 'na-or-+|na-or-+', 'LOCAL.CAT.HEAD.STRONG'] ]
           features += [ ['strong', 'na|na', 'LOCAL.CAT.HEAD.STRONG'] ]
+    if self.get('has-cop') == 'yes':
+      features += [ ['vc', '-|-', 'LOCAL.CAT.VC' ] ] 
 
 ####END GERMANIC
+###
+# only in Germanic branch, but possibly more general
+
+    if self.get('has-cop') == 'yes':
+      features += [ ['prd', 'bool|bool', 'LOCAL.CAT.HEAD.PRD' ] ] 
+      features += [ ['prd', '-|-', 'LOCAL.CAT.HEAD.PRD' ] ] 
+      features += [ ['prd', '+|+', 'LOCAL.CAT.HEAD.PRD' ] ] 
+
 
     for feature in self.get('feature'):
       feat_name = feature['name']

@@ -733,7 +733,11 @@ def customize_np_word_order(mylang, ch, rules):
 # Germanic reveals interaction with negation (adverb order is free)
 # should be adapted for specific cases (i.e. adjective order differs from
 # adverbs or from negation marker)
+# 2011-10-23 adding constraint to make sure predicative adjectives do not
+# show up as modifiers
 
+  if ch.get('has-cop') == 'yes':
+    mylang.add('basic-head-mod-phrase-simple :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.PRD - ].')
   if ch.get('has-adj') == 'yes':
     # adding adjective specific phrase
     mylang.add('adjective-head-phrase := basic-head-mod-phrase-simple & \
@@ -856,6 +860,9 @@ def determine_consistent_order(wo,hc,ch):
 # 2011-10-23 generalized to include adpositions
 
 def customize_head_comp_non_main_phrase(ch, mylang):
+  c_ord = ''
+# has-compl must also be used for arg-comp (previous working was based on
+# an error)
   if ch.get('has-compl') == 'yes': 
     c_ord = ''
     if ch.get('clz-comp-order') == 'clz-comp':
@@ -880,11 +887,13 @@ def customize_head_comp_non_main_phrase(ch, mylang):
       ihead = head
   else:
     if adp_order == 'final':
-      fhead = 'adp'    
-      ihead = 'comp'
+      fhead = 'adp'     
+      if c_ord == 'initial':
+        ihead = 'comp'
     else:
-      fhead = 'comp'
       ihead = 'adp'
+      if c_ord == 'final':
+        fhead = 'comp'
   
   if ihead:
     mylang.add('head-comp-sub-phrase := basic-head-1st-comp-phrase & \

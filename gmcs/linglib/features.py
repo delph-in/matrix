@@ -55,9 +55,13 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # setting necessary value in case of 'aux-rule' analysis to geom_prefix2
     # also needed for arg-comp when using similar analysis to aux-rule (more
     # efficient)
+    # adapting so that it only applies to agreement features for lexical rules
+    # to prevent undesired interactions with copula
       if ch.get('verb-cluster') == 'yes' and ch.get('word-order') == 'v2':
-        geom_prefix2 = pos_geom_prefix
-        geom_prefix2 += 'LOCAL.CAT.VAL.COMPS.FIRST.'
+        det_type = type_name.split('-')
+        if 'rule' in det_type:
+          geom_prefix2 = pos_geom_prefix
+          geom_prefix2 += 'LOCAL.CAT.VAL.COMPS.FIRST.'
     elif h == 'obj':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
     elif h == 'mod':
