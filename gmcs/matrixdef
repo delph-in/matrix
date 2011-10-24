@@ -760,7 +760,7 @@ Radio neg-exp "neg exp" "" ""
 . 3 "3" "" "tripartite" "set_negexp('3')"
 . more "n" "" "more?!" "set_negexp('more')"
 
-Label "<div id='zero-neg' class='switch' style='display:none'><p>Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <emph>absence</emph> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p><p>You can model omissive negation as a phonologically empty inflectional rule ('lexical rule type/instance') which targets a particular position class in your morphotactic system.  You'll then have tp specify other morphemes that can occur in this position class so that negation is indicated by the lack of phonological material in this position.</p>"
+Label "<div id='zero-neg' class='switch' style='display:none'><p>Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <emph>absence</emph> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p><p>You can model omissive negation as a phonologically empty inflectional rule ('lexical rule type/instance') which targets a particular position class in your morphotactic system.  You'll then have tp specify other morphemes that can occur in this position class so that negation is indicated by the lack of phonological material in this position.</p><hr />"
 
 Select vpc-0-neg "0 neg vpc" "<p>I can create a phonologically empty negation affix for you here.  Choose a position class from the verbal position classes that you've defined (on the lexicon page), or choose \"create\" to create a new pc for use with zero neg:" "  You'll see the result of this choice as a lexical rule instance with no affix and a feature called [NEGATION] with the value \"plus\".  This 'feature' is not a grammatical one---it won't appear in your grammar, it only indicates to the customization system that negative semantics should be added to this morpheme at customize time.</p>"
 fillregex p=verb-pc[0-9]+_name
@@ -769,15 +769,15 @@ fillregex p=verb-pc[0-9]+_name
 Label "</div>"
 
 
-Label "<div id='uni-neg' class='switch' style='display:none'><p> Negation can be indicated by the presence of a single negative morpheme.  Specify it's syntax below.</p>"
+Label "<div id='uni-neg' class='switch' style='display:none'><p> Negation can be indicated by the presence of a single negative morpheme.  Your negative morpheme might be bound (negation by inflection) or it might be free (one of the other choices). Your free negator might be a syntactic head (a verb), or it might be a dependent (a complement or a modifier).  Specify it's syntax below.</p><hr />"
+
+Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <span class=\"feat\">negation</span> with possible value <tt>plus</tt> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">negation</span> <tt>plus</tt>] will produce lexical rules that add the semantics of negation.</p>" 
 
 Check neg-aux "Negation by auxiliary verb" "<p>" "Negative auxiliary verb: Checking this box creates a neg-aux type which contributes a neg_rel that outscopes it's complement's handle.  This lexical type will show up on the lexicon page where you'll need to further specify its syntax.</p>"
 
 Text neg-aux-index "index for neg aux" "<span style='display:none'>" "</span>" 0
 
-Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <span class=\"feat\">negation</span> with possible value <tt>plus</tt> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">negation</span> <tt>plus</tt>] will produce lexical rules that add the semantics of negation.</p>" 
-
-Check adv-neg "Adverbial negation" "<p>" "An adverb which is an independent modifier of:<br>"
+Check adv-neg "Adverbial negation" "<p>" "An adverb which is a modifier of:<br>"
 
 Radio neg-mod "Negative adverb modifies" "" ""
 . s "S" "" "S "
@@ -791,11 +791,11 @@ Radio neg-order "Negative adverb order" "and appears " ""
 
 Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p></div>" 20
 
-Label "<div id='bi-neg' class='switch' style='display:none'><p> Negation can be indicated by the presence of a two negative morphemes.  You'll have to specify their morphosyntax and their interactions.</p></div>"
+Label "<div id='bi-neg' class='switch' style='display:none'><p> Negation can be indicated by the required presence of two negative morphemes.  You'll have to specify their morphosyntax and their interactions.</p><hr /></div>"
 
-Label "<div id='tri-neg' class='switch' style='display:none'><p> Negation by three morphemes has been reported in some languages of Vanuatu like Lewo [???].</p></div>"
+Label "<div id='tri-neg' class='switch' style='display:none'><p> Negation by three morphemes has been reported in some languages of Vanuatu like Lewo [lww].</p></div>"
 
-Label "<div id='x-neg' class='switch' style='display:none'><p>We're not aware of natural languages reported to require more than 3 morphemes as an integral part of a negation construction.</p></div>"
+Label "<div id='x-neg' class='switch' style='display:none'><p>We're not aware of natural languages reported to require more than 3 morphemes as an integral part of a negation construction.  Please send e-mail about this language to the matrix-dev mailing list.</p></div>"
 
 
 
