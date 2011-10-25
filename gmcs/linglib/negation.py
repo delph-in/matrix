@@ -38,6 +38,9 @@ def customize_sentential_negation(mylang, ch, lexicon, rules):
   if ch.get('adv-neg') == 'on': # and ch.get('neg-adv') == 'ind-adv':
     create_neg_adv_lex_item(mylang, ch, lexicon,rules)
 
+  if ch.get('neg-head-feature') == 'on':
+    mylang.add('head :+ [ NEGATED luk ].', section='addenda')
+
 
 def create_neg_adv_lex_item(mylang, ch, lexicon, rules):
   mylang.set_section('otherlex')
