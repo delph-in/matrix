@@ -25,7 +25,6 @@
 #      To prepare the LKB files in an install to delph-in.net/matrix
 #           ./install -r -lkb matrix/customize
 
-homer_prefix="uwcl@homer.u.washington.edu:~/public_html/"
 lkb_url="http://lingo.ling.washington.edu/latest/lkb_linux.x86." #32|64.tgz
 delphin_dir="${CUSTOMIZATIONROOT}/../delphin"
 
@@ -41,7 +40,7 @@ while [ "$1" = -r -o "$1" = -lkb ]
 do
     if [ "$1" = -r ]
     then
-        installonhomer=true
+        dest_prefix="uwcl@homer.u.washington.edu:~/public_html/"
     elif [ "$1" = -lkb ]
     then
         install_lkb=1
@@ -71,7 +70,7 @@ then
     exit 1
 fi
 
-dest="$1"
+dest="${dest_prefix}$1"
 
 # create temporary staging directory
 tempdir=/tmp/matrix.$$
@@ -86,24 +85,18 @@ matrix_core=${CUSTOMIZATIONROOT}/../matrix-core/
 cat $matrix_core/matrix.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/matrix-types
 cat $matrix_core/head-types.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/head-types
 
-# copy files to the temp directory
-if [ "$installonhomer" ]
-then
-    dest="${homer_prefix}${dest}"
-    # Redirect the root directory to matrix.cgi
-    echo "Redirect /uwcl/$1/index.html /uwcl/$1/matrix.cgi" >> \
-        $tempdir/.htaccess
+# Redirect directory index to cgi script (rather than index.html)
+echo "DirectoryIndex matrix.cgi" >> $tempdir/.htaccess
 
-    # Don't allow directory browsing
-    echo "IndexIgnore */*" >> \
-        $tempdir/.htaccess
+# Don't allow directory browsing
+echo "IndexIgnore */*" >> \
+    $tempdir/.htaccess
 
-    # Don't allow access to the saved choices.  (Even with directory
-    # browsing turned off, somebody could guess the filename.)
-    mkdir $tempdir/saved-choices
-    echo "Option -Indexes" >> \
-        $tempdir/saved-choices/.htaccess
-fi
+# Don't allow access to the saved choices.  (Even with directory
+# browsing turned off, somebody could guess the filename.)
+mkdir $tempdir/saved-choices
+echo "Option -Indexes" >> \
+    $tempdir/saved-choices/.htaccess
 
 if [ $install_lkb ]
 then
