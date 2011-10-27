@@ -104,7 +104,7 @@ then
 fi
 
 #Finally rsync the tempdir to the destination
-rsync -vaz $tempdir/ $dest
+rsync -Kvaz $tempdir/ $dest
 # The following command will also delete files at the destination that
 # do not exist in tempdir. Not using for now because an incorrect
 # destination could delete more than expected. This means that files
