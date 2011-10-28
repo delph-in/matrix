@@ -104,7 +104,12 @@ then
 fi
 
 #Finally rsync the tempdir to the destination
-rsync -Kvaz $tempdir/ $dest
+#rsync -K maintain destination symlinks
+#      -v verbose
+#      -z compress before sending
+#      -r recursive
+#      -l copy symlinks as symlinks
+rsync -Kvzrl $tempdir/ $dest
 # The following command will also delete files at the destination that
 # do not exist in tempdir. Not using for now because an incorrect
 # destination could delete more than expected. This means that files
