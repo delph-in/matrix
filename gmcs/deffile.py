@@ -42,7 +42,7 @@ HTML_pretitle = '''<html>
 <head>
 '''
 
-HTML_posttitle = '''<script type="text/javascript" src="web/matrix.js">
+HTML_posttitle = '''<script type="text/javascript" src="matrix.js">
 </script>
 
 <script type="text/javascript">
@@ -68,7 +68,7 @@ var types = [
 ];
 </script>
 
-<link rel="stylesheet" href="web/matrix.css">
+<link rel="stylesheet" href="matrix.css">
 </head>
 '''
 
@@ -540,7 +540,7 @@ class MatrixDefFile:
       datestamp = f.readlines()[0].strip()
       f.close()
     except:
-      datestamp = "<date unknown>"
+      pass
 
     print HTML_mainprebody % (datestamp)
     print '<div class="indented">'
@@ -596,7 +596,7 @@ class MatrixDefFile:
       word = tokenize_def(l)
       if len(word) == 0:
         pass
-      elif word[0] == 'Section' and (len(word) != 4 or word[3] != '0'):
+      elif word[0] == 'Section':
         print '<div class="section"><span id="' + word[1] + 'button" ' + \
               'onclick="toggle_display(\'' + \
               word[1] + '\',\'' + word[1] + 'button\')"' + \
@@ -663,13 +663,13 @@ class MatrixDefFile:
     print '<hr>\n'
 
     # the list of sample choices files
-    if os.path.exists('web/sample-choices'):
+    if os.path.exists('sample-choices'):
       print '<h3>Sample Grammars:</h3>\n' + \
             '<p>Click a link below to have the questionnaire ' + \
             'filled out automatically.</p>'
       print '<p>'
 
-      globlist = glob.glob('web/sample-choices/*')
+      globlist = glob.glob('sample-choices/*')
       linklist = {}
 
       for f in globlist:
@@ -855,16 +855,6 @@ class MatrixDefFile:
         value = choices.get(vn)
         html += html_input(vr, word[0].lower(), vn, value, False,
                            bf, af, sz, onchange=oc) + '\n'
-      elif word[0] == 'File':
-        (vn, fn, bf, af, sz) = word[1:]
-        vn = prefix + vn
-        value = choices.get(vn)
-        html += html_input(vr, word[0].lower(), vn, value, False,
-                           bf, af, sz) + '\n'
-      elif word[0] == 'Button':
-        (vn, bf, af, oc) = word[1:]
-        html += html_input(vr, word[0].lower(), '', vn, False,
-                           bf, af, onclick=oc) + '\n';
       elif word[0] == 'BeginIter':
         iter_orig = word[1]
         (iter_name, iter_var) = word[1].replace('}', '').split('{', 1)
@@ -1235,7 +1225,7 @@ class MatrixDefFile:
       if len(word) == 0:
         pass
       elif word[0] in ['Check', 'Text', 'TextArea',
-                       'Radio', 'Select', 'MultiSelect', 'File']:
+                       'Radio', 'Select', 'MultiSelect']:
         vn = word[1]
         if prefix + vn not in already_saved:
           already_saved[prefix + vn] = True

@@ -26,7 +26,8 @@ start-symbols := $root.
 ;;
 ;; word-breaking characters in tokenization --- treated as whitespace
 ;;
-punctuation-characters := "!\"&'()*+,−./\;<>?@[]^`{|}~。！？…．　○●◎＊☆★◇◆".
+punctuation-characters := "?!.:;,()<>{}[]+*`_\"-".
+
 ;;
 ;; suppress results of regular morphology rules if irregular form exists
 ;;

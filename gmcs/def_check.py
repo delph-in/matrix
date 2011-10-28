@@ -10,8 +10,8 @@
 
 import re
 import sys
-import utils
-tokenize_def = utils.tokenize_def
+import gmcs.utils
+tokenize_def = gmcs.utils.tokenize_def
 
 
 # Read in MatrixDef and create a list of the variables

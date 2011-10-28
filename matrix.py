@@ -31,16 +31,13 @@ def main():
   cheaphack = False
   # show_warnings, if True, allows printing of warnings from validation
   show_warnings = False
-  # for the install command, if install_lkb is True also install the lkb
-  install_lkb = False
 
   # Extract the options and arguments, act on the options, and validate
   # the commands.
   try:
     opts, args = getopt.getopt(sys.argv[1:], 'C:Fhw',
                                ['customizationroot=', 'CUSTOMIZATIONROOT=',
-                                'force', 'help', 'warning',
-                                'cheap-hack', 'lkb'])
+                                'force', 'help', 'warning', 'cheap-hack'])
   except getopt.GetoptError, err:
     print str(err)
     usage()
@@ -58,17 +55,12 @@ def main():
       show_warnings = True
     elif o == '--cheap-hack':
       cheaphack = True
-    elif o == '--lkb':
-      install_lkb = True
 
   # if CUSTOMIZATIONROOT is not set externally or through an option, try
   # to find an appropriate default directory
   ensure_customization_root_set()
   # make sure the argument have the correct number of parameters
   validate_args(args)
-
-  #######################
-  #### CUSTOMIZATION ####
 
   if args[0] in ('c', 'customize'):
     dest = None
@@ -82,9 +74,6 @@ def main():
       dest = args[2]
     customize_grammar(args[1], destination=dest,
                       flop=True, cheaphack=cheaphack)
-
-  #################
-  #### TESTING ####
 
   elif args[0] in ('v', 'validate'):
     choices_file = args[1]
@@ -106,8 +95,6 @@ def main():
 
   elif args[0] in ('u', 'unit-test'):
     run_unit_tests()
-
-  #### REGRESSION TESTS ####
 
   elif args[0] in ('r', 'regression-test'):
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
@@ -244,52 +231,20 @@ def main():
     for test in tests:
         print test
 
-  #### WEB TESTS ####
-
-  elif args[0] in ('w', 'web-test'):
-    run_web_tests();
-
-  elif args[0] in ('wa', 'web-test-add'):
-    comment = None
-    if len(args) > 2:
-      comment = args[2]
-    add_web_test(args[1], comment);
-
-  elif args[0] in ('wr', 'web-test-remove'):
-    remove_web_test(args[1]);
-  elif args[0] == 'import-lex':
-    import gmcs.linglib.toolboximport
-    gmcs.linglib.toolboximport.import_toolbox_lexicon(args[1])
-
-  elif args[0] == 'integrate-lex':
-    import gmcs.linglib.toolboximport
-    import gmcs.choices
-    ch = gmcs.choices.ChoicesFile(args[1])
-    gmcs.linglib.toolboximport.integrate_imported_entries(ch)
-
-  ######################
-  #### INSTALLATION ####
-
-  elif args[0] in ('i', 'install', 'ih', 'install-homer'):
-    # args[1] is the install target location
-    if args[1].strip('/') == 'matrix/customize':
-      # Installations to the live site require validations, so abort.
+  elif args[0] in ('i', 'install'):
+    cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
+    location = args[1]
+    # Installations to the live site require validations, so abort.
+    if location.strip('/') == 'matrix/customize':
       print "Error: For installation to the live site, please use:"
       print "  matrix.py vivify"
       sys.exit(2)
-    cmd = [os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')]
-    if install_lkb:
-      cmd += ['-lkb']
-    if args[0] in ('ih', 'install-homer'):
-      cmd += ['-r']
-    subprocess.call(cmd + [args[1]], env=os.environ)
+    subprocess.call([cmd, '-r', '-m', location], env=os.environ)
 
   elif args[0] == 'vivify':
     # pass the force flag in case the user wants to avoid checks
     vivify(force)
 
-  ###############
-  #### USAGE ####
   else:
     usage()
 
@@ -346,12 +301,6 @@ def validate_args(args):
     if len(args) < 2: usage(command='regression-test-remove')
   elif args[0] in ('regression-test-rename', 'rn'):
     if len(args) < 3: usage(command='regression-test-rename')
-  elif args[0] in ('w', 'web-test'):
-    pass #no other arguments needed
-  elif args[0] in ('wa', 'web-test-add'):
-    if len(args) < 2: usage(command='web-test-add')
-  elif args[0] in ('wr', 'web-test-remove'):
-    if len(args) < 2: usage(command='web-test-remove')
   elif args[0] in ('i', 'install'):
     if len(args) < 2: usage(command='install')
   elif args[0] == 'vivify':
@@ -365,8 +314,6 @@ def usage(command=None, exitcode=2):
   # if the user asks for help for an invalid command, nothing will be printed,
   # so we catch this with a flag.
   something_printed = False
-  # Collect and print examples at the end
-  examples = []
   def p(msg, nobreak=False):
     """ Print the message with necessary indentation and linebreaks. """
     if nobreak:
@@ -386,8 +333,6 @@ def usage(command=None, exitcode=2):
       p("--cheap-hack")
       p("            Add a blank morphological rule to irules.tdl (if it is")
       p("            empty) to workaround a bug in Cheap.")
-      p("--lkb")
-      p("            Install the LKB binaries to a live site.")
       p("--warning (-w)")
       p("            Print warnings when running validate.")
       p("--help (-h) [COMMAND]")
@@ -402,22 +347,16 @@ def usage(command=None, exitcode=2):
     p("            Customize the grammar at PATH, with the output written to")
     p("            DEST or the directory at PATH. PATH points to a choices")
     p("            file or a directory that contains a choices file.")
-    examples += ["  matrix.py customize ../choices/Finnish",
-                 "  matrix.py c ../choices/Finnish"]
     something_printed = True
   if command in ('customize-and-flop', 'cf', 'all'):
     p("customize-and-flop (cf) PATH [DEST]")
     p("            Customize and flop the grammar at PATH, with the output")
     p("            written to DEST or the directory at PATH. PATH points to a")
     p("            choices file or a directory that contains a choices file.")
-    examples += ["  matrix.py customize-and-flop ../choices/Finnish",
-                 "  matrix.py cf ../choices/Finnish"]
     something_printed = True
   if command in ('validate', 'v', 'all'):
     p("validate (v) PATH")
     p("            Validate the choices file at PATH.")
-    examples += ["  matrix.py validate ../choices/Finnish",
-                 "  matrix.py v ../choices/Finnish"]
     something_printed = True
   if command in ('regression-test', 'r', 'all'):
     p("regression-test [-TASK] [TESTS]")
@@ -429,9 +368,6 @@ def usage(command=None, exitcode=2):
     p("              -c : customize and report errors")
     p("              -p : customize and parse, report differences with gold")
     p("            TESTS can be a single test name or a list of names.")
-    examples += ["  matrix.py --customizationroot=gmcs/ regression-test",
-                 "  matrix.py -C gmcs/ r -v",
-                 "  matrix.py -C gmcs/ r -cp vso-aux-before-vp Fore"]
     something_printed = True
   if command in ('regression-test-add', 'ra', 'all'):
     p("regression-test-add (ra) CHOICES TXTSUITE")
@@ -440,76 +376,56 @@ def usage(command=None, exitcode=2):
     p("            CHOICES and TXTSUITE are filenames, not paths, and the")
     p("            respective files should exist in the scratch directory")
     p("            (gmcs/regression_tests/scratch/).")
-    examples += ["  matrix.py -C gmcs/ ra Cree_choices Cree_test_suite"]
     something_printed = True
   if command in ('regression-test-update', 'ru', 'all'):
     p("regression-test-update (ru) TEST")
     p("            Update the gold standard of TEST to use the results of the")
     p("            current system.")
-    examples += ["  matrix.py -C gmcs/ ru Cree"]
     something_printed = True
   if command in ('regression-test-remove', 'rr', 'all'):
     p("regression-test-remove (rr) TEST")
     p("            Remove TEST from the regression test suite. This command")
     p("            removes all files checked into subversion.")
-    examples += ["  matrix.py -C gmcs/ rr tiniest"]
     something_printed = True
   if command in ('regression-test-rename', 'rn', 'all'):
     p("regression-test-rename (rn) OLDTEST NEWTEST")
     p("            Rename OLDTEST to NEWTEST. This is performed with a call")
     p("            to 'svn mv' on the files in the repository. Remember to")
     p("            commit your changes.")
-    examples += ["  matrix.py -C gmcs/ rn sujb-drop subj-drop"]
     something_printed = True
   if command in ('unit-test', 'u', 'all'):
     p("unit-test (u)")
     p("            Run all unit tests.")
     something_printed = True
-  if command in ('web-test', 'w', 'all'):
-    p("web-test (w)")
-    p("            Run all web tests.")
-    something_printed = True
-  if command in ('web-test-add', 'wa', 'all'):
-    p("web-test-add (wa) PATH [comment]")
-    p("            Add a new Selenium test with an optional comment.")
-    something_printed = True
-  if command in ('web-test-remove', 'wr', 'all'):
-    p("web-test-remove (wr) TEST")
-    p("            Remove a Selenium test.")
-    something_printed = True
   if command in ('install', 'i', 'all'):
     p("install (i) PATH")
     p("            Install a custom instance of the Grammar Matrix")
-    p("            Customization System and Questionnaire at PATH (PATH may")
-    p("            be a URL for remote installs).")
-    examples += ["  matrix.py -C gmcs install local/dir",
-                 "  matrix.py -C gmcs/ --lkb i " +\
-                   "uwcl@homer.u.washington.edu:~/public_html/my_matrix"]
-    something_printed = True
-  if command in ('install-homer', 'ih', 'all'):
-    p("install-homer (ih) PATH")
-    p("            Install a custom instance of the Grammar Matrix")
     p("            Customization System and Questionnaire at the PATH")
     p("            specified on the default server (Homer).")
-    examples += ["  matrix.py -C gmcs/ install-homer my_matrix",
-                 "  matrix.py -C gmcs/ --lkb ih my_matrix"]
     something_printed = True
   if command in ('vivify', 'v', 'all'):
     p("vivify (v)")
     p("            Install a new version of the Grammar Matrix Customization")
     p("            System and Questionnaire to the live site after verifying")
     p("            the code has been tested and committed to SVN.")
-    examples += ["  matrix.py -C gmcs/ vivify"]
     something_printed = True
   indent = 0
   # Just print the generic usage message if an invalid command was provided
   if not something_printed:
     p("COMMAND [ARGS...]\n")
-  p("\nEXAMPLES:")
-  for ex in examples:
-    p(ex)
   if command != 'all':
-    p("\nTry `matrix.py --help' for more information.")
+    p("Try `matrix.py --help' for more information.")
+  else:
+    p("\nEXAMPLES:")
+    p("  matrix.py customize ../choices/Finnish")
+    p("  matrix.py cf ../choices/Finnish")
+    p("  matrix.py v ../choices/Finnish")
+    p("  matrix.py --customizationroot=gmcs/ r")
+    p("  matrix.py -C gmcs/ r -v")
+    p("  matrix.py -C gmcs/ r -cp vso-aux-before-vp Fore")
+    p("  matrix.py -C gmcs/ ra Cree_choices Cree_test_suite")
+    p("  matrix.py -C gmcs/ install my_matrix")
+    p("  matrix.py -C gmcs/ vivify")
   sys.exit(exitcode)
 
 def verify_force():
@@ -578,11 +494,6 @@ def run_unit_tests():
   import gmcs.tests.testValidate
   runner.run(loader.loadTestsFromModule(gmcs.tests.testValidate))
 
-  print_line()
-  print 'Toolbox import tests:'
-  import gmcs.linglib.tests.testToolboxImport
-  runner.run(loader.loadTestsFromModule(gmcs.linglib.tests.testToolboxImport))
-
   #print_line()
   #print 'Linglib/Morphotactics tests:'
   #import gmcs.linglib.tests.testMorphotactics
@@ -611,73 +522,7 @@ def vivify(force):
   #     since the last vivification.
   #  2. There are no remaining modifications not checked into SVN.
   cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
-  subprocess.call([cmd, '-lkb', '-r', 'matrix/customize'], env=os.environ)
-
-def run_web_tests():
-  ensure_customization_root_set()
-  try:
-    import selenium
-  except (NameError):
-    sys.stderr.write("Seleinum not installed: run \"pip install -U selenium\"\n")
-  cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
-  user_name = raw_input("Patas user name:")
-  subprocess.call([cmd, user_name+'@patas.ling.washington.edu:/home2/www-uakari/html/matrix/test'], env=os.environ);
-
-  import unittest
-  import gmcs.web_tests.testWeb
-  loader = unittest.defaultTestLoader
-  runner = unittest.TextTestRunner(verbosity=1)
-  print 75 * '='
-  print 'Web tests:'
-  runner.run(loader.loadTestsFromModule(gmcs.web_tests.testWeb))
-  print 75 * '='
-
-def add_web_test(filename, comment):
-  import re
-  file_out = open(filename, "r")
-  test_file = open('./gmcs/web_tests/testWeb.py', 'r+')
-  write = False;
-  new_test = []
-  for line in file_out:
-    #print line;
-    if re.match("class", line):
-      write = True
-    elif line == "if __name__ == \"__main__\":\n":
-      write = False
-    if write:
-      new_test.append(line)
-  file_out.close();
-#  print new_test;
-#  for line in test_file:
-#  if line == "if __name__ == \"__main__\":\n":
-  test_file.seek(-47, 2)
-  test_file.write(new_test.pop(0))
-  if comment is not None:
-    test_file.write("    '''"+str(comment)+"'''\n")
-  for new_line in new_test:
-    test_file.write(new_line)
-  test_file.write("if __name__ == \"__main__\":\n")
-  test_file.write("    unittest.main()")
-  test_file.close()
-
-def remove_web_test(testname):
-  import re
-  test_file = open('./gmcs/web_tests/testWeb.py', 'r')
-  new_lines = []
-  keep = True
-  for line in test_file:
-    if re.match("class", line) or line == "if __name__ == \"__main\":\n":
-      if re.match("class "+str(testname), line):
-        keep = False
-      else:
-        keep = True
-    if keep:
-      new_lines.append(line)
-  test_file.close()
-  test_file = open('./gmcs/web_tests/testWeb.py', 'w')
-  for line in new_lines:
-    test_file.write(line)
-  test_file.close()
+  subprocess.call([cmd, '-r', '-m', 'matrix/customize'], env=os.environ)
 
 if __name__ == '__main__':
   validate_python_version()

@@ -13,7 +13,7 @@ RELS: <
   LBL: h7
   ARG0: x4 ]
   [ "#ITR-VERB1#"
-  LBL: h8
+  LBL: h1
   ARG0: e2
   ARG1: x4 ] >
 HCONS: < h5 qeq h7 > ]

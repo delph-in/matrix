@@ -50,22 +50,6 @@ class ChoiceCategory:
     self.safe_get = True
     return d
 
-  def full_keys(self):
-    full_keys = []
-    if issubclass(self.__class__, ChoiceDict):
-      for key in self:
-        if issubclass(self[key].__class__,ChoiceCategory):
-          full_keys += self[key].full_keys()
-        else:
-          if self.full_key:
-            full_keys += [self.full_key+'_'+key]
-          else:
-            full_keys += [key]
-    elif issubclass(self.__class__, ChoiceList):
-      for item in self:
-        full_keys += item.full_keys()
-    return full_keys
-
 class ChoiceDict(ChoiceCategory, dict):
 
   def __getitem__(self, key):
@@ -108,17 +92,6 @@ class ChoiceDict(ChoiceCategory, dict):
         if result is not None:
             return int(result.group(0))
     return None
-
-  def walk(self):
-    for key in self.keys():
-      if isinstance(self[key], ChoiceCategory):
-        for result in self[key].walk():
-          yield result
-      else:
-        fullkey = key
-        if self.full_key:
-          fullkey = self.full_key + '_' + key
-        yield (fullkey, self[key])
 
   def __str__(self):
     return '\n'.join(
@@ -176,11 +149,6 @@ class ChoiceList(ChoiceCategory, list):
     for item in list.__iter__(self):
       if item is not None:
         yield item
-
-  def walk(self):
-    for item in self:
-      for result in item.walk():
-        yield result
 
   def __len__(self):
     """
@@ -309,22 +277,6 @@ class ChoicesFile:
   def __str__(self):
     return str(self.choices)
 
-  def __eq__(self, object):
-    if not issubclass(object.__class__, ChoicesFile):
-      return False
-    else:
-      if len(self.full_keys()) != len(object.full_keys()):
-        print self.full_keys()
-        print str(len(self.full_keys()))+"/"+str(len(object.full_keys()))
-        return False
-      else:
-        for i in self.full_keys():
-          if object[i] != self[i]:
-            print object[i]
-            print self[i]
-            return False
-    return True
-
   ############################################################################
   ### Choices file parsing functions
 
@@ -398,10 +350,6 @@ class ChoicesFile:
   def __iter__(self):
     return self.choices.__iter__()
 
-  def walk(self):
-    for result in self.choices.walk():
-      yield result
-
   def __len__(self):
     return len(self.choices)
 
@@ -439,12 +387,6 @@ class ChoicesFile:
       for d in c:
         idx = split_variable_key(d.full_key)[-1]
         self.__reset_full_keys(key + str(idx))
-
-  def keys(self):
-    return self.choices.keys()
-
-  def full_keys(self):
-    return self.choices.full_keys()
 
   ############################################################################
   ### Up-revisioning handler
@@ -524,12 +466,9 @@ class ChoicesFile:
       self.convert_21_to_22()
     if self.version < 23:
       self.convert_22_to_23()
-    if self.version < 24:
-      self.convert_23_to_24()
     # As we get more versions, add more version-conversion methods, and:
     # if self.version < N:
     #   self.convert_N-1_to_N
-    # Also update current_version method to reflect current N.
 
     # now reset the full keys in case something was changed
     for top_level_key in self:
@@ -1136,7 +1075,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 24
+    return 23
 
   def convert_value(self, key, old, new, partial=False):
     if key in self:
@@ -1878,47 +1817,3 @@ class ChoicesFile:
         self.convert_key(slot.full_key + '_morph', slot.full_key + '_lrt')
       # finally, change -slot keys to -pc
       self.convert_key(lex_cat + '-slot', lex_cat + '-pc')
-
-  def convert_23_to_24(self):
-    """
-    This uprev only fixes test sentences marked ungrammatical with a * at
-    the beginning of the string, since * can now be allowed as punctuation
-    (if the user adds it as a parsable punctuation in the general page).
-    """
-    for sentence in self['sentence']:
-      if sentence.get('orth','').startswith('*'):
-        sentence['star'] = 'on'
-        sentence['orth'] = sentence['orth'].lstrip('*')
-
-########################################################################
-# FormData Class
-# This Class acts like form data which would normally
-# be sent from the server. Used for testing purposes.
-
-class FormData:
-  def __init__(self):
-    self.data = {}
-
-  def __getitem__(self, key):
-    if key in self.data:
-      return self.data[key]
-    else:
-      self.data[key] = FormInfo(key, None)
-      return self.data[key]
-
-  def __setitem__(self, key, value):
-    self.data[key] = value;
-
-  def has_key(self, key):
-    if key in self.data:
-      return True;
-    else:
-      return False;
-
-  def keys(self):
-    return self.data.keys();
-
-class FormInfo:
-  def __init__(self, key, value):
-    self.key = key;
-    self.value = value;
