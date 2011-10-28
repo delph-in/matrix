@@ -210,7 +210,7 @@ class Template:
       self.string = ""
       self.label = ""
       self.name = file
-      f = open("gmcs/templates/"+file,'r')
+      f = open("web/templates/"+file,'r')
       for line in f:
         m = label_re.match(line)
         if m:

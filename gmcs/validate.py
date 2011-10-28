@@ -1,3 +1,4 @@
+### encoding: utf8
 ### $Id: validate.py,v 1.44 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
@@ -14,7 +15,7 @@ from gmcs.utils import get_name
 import gmcs.linglib.case
 import gmcs.linglib.morphotactics
 import gmcs.linglib.negation
-from gmcs.linglib import negation
+import gmcs.linglib.lexicon
 
 
 ######################################################################
@@ -390,6 +391,26 @@ def validate_general(ch, vr):
     vr.warn('archive',
             'Please answer whether you will allow ' +
             'your answers to be retained.')
+
+  chars = unicode(ch.get('punctuation-chars',''), 'utf8')
+  if chars:
+    if ' ' in chars:
+      vr.err('punctuation-chars',
+             'Spaces are not allowed as parsable punctuation.')
+    if chars.count(',') > 1:
+      vr.warn('punctuation-chars',
+              'No delimiters are necessary for the punctuation string.' +\
+              'If a comma appears in the string, it will become parsable.')
+    # check punctuation chars in all orth fields.
+    non_chars = [re.escape(c)
+                 for c in u'!"&\'()*+,−./\;<>?@[]^`{|}~。！？…．　○●◎＊☆★◇◆'
+                 if c not in chars]
+    char_re = re.compile(r'(' + r'|'.join(non_chars) + r')')
+    for (key, val) in ch.walk():
+      if key.endswith('orth') and char_re.search(unicode(val, 'utf8')):
+        vr.warn(key, 'String contains an unparsable punctuation character.' +\
+                     ' Please see the General subpage.')
+
 
 ######################################################################
 # validate_person(ch, vr)
@@ -771,230 +792,6 @@ def validate_tanda(ch, vr):
       vr.err('noaux-fin-nf', mess)
 
 ######################################################################
-# validate_lexicon(ch, vr)
-#   Validate the user's choices about the test lexicon.
-
-def validate_lexicon(ch, vr):
-
-  # Did they specify enough lexical entries?
-  if 'noun' not in ch:
-    mess = 'You should create at least one noun class.'
-    vr.warn('noun1_stem1_orth', mess)
-
-  # Nouns
-  for noun in ch.get('noun'):
-    det = noun.get('det')
-
-    # Did they answer the question about determiners?
-    if not det:
-      mess = 'You must specify whether each noun you define takes a determiner.'
-      vr.err(noun.full_key + '_det', mess)
-
-    # If they said the noun takes an obligatory determiner, did they
-    # say their language has determiners?
-    if det == 'obl' and ch.get('has-dets') == 'no':
-      mess = 'You defined a noun that obligatorily takes a determiner, ' +\
-             'but also said your language does not have determiners.'
-      vr.err('has-dets', mess)
-      vr.err(noun.full_key + '_det', mess)
-
-    for stem in noun.get('stem', []):
-      orth = stem.get('orth')
-      pred = stem.get('pred')
-
-      # Did they give a spelling?
-      if not orth:
-        mess = 'You must specify a spelling for each noun you define.'
-        vr.err(stem.full_key + '_orth', mess)
-
-      # Did they give a predicate?
-      if not pred:
-        mess = 'You must specify a predicate for each noun you define.'
-        vr.err(stem.full_key + '_pred', mess)
-
-  # Verbs
-  seenTrans = False
-  seenIntrans = False
-  for verb in ch.get('verb'):
-    val = verb.get('valence')
-    bistems = verb.get('bistem', [])
-    bipartitepc = verb.get('bipartitepc')
-
-    if not val:
-      mess = 'You must specify the argument structure of each verb you define.'
-      vr.err(verb.full_key + '_valence', mess)
-    elif val[0:5] == 'trans' or '-' in val:
-      seenTrans = True
-    else:
-      seenIntrans = True
-
-    if bistems and not bipartitepc:
-      mess = 'If you add bipartite stems to a class, you must specify a position class for the affix part of the stems.'
-      vr.err(verb.full_key + '_bipartitepc', mess)
-
-    for stem in verb.get('stem', []):
-      orth = stem.get('orth')
-      pred = stem.get('pred')
-
-      if not orth:
-        mess = 'You must specify a spelling for each verb you define.'
-        vr.err(stem.full_key + '_orth', mess)
-
-      if not pred:
-        mess = 'You must specify a predicate for each verb you define.'
-        vr.err(stem.full_key + '_pred', mess)
-
-    for bistem in bistems:
-      orth = bistem.get('orth')
-      aff = bistem.get('aff')
-      pred = bistem.get('pred')
-
-      if not orth:
-        mess = 'You must specify a spelling for each verb you define.'
-        vr.err(bistem.full_key + '_orth', mess)
-
-      if not aff:
-        mess = 'You must specify a affix for each bipartite verb stem you define.'
-        vr.err(bistem.full_key + '_aff', mess)
-
-      if not pred:
-        mess = 'You must specify a predicate for each verb you define.'
-        vr.err(bistem.full_key + '_pred', mess)
-
-  if not (seenTrans and seenIntrans):
-    mess = 'You should create intransitive and transitive verb classes.'
-    vr.warn('verb1_valence', mess)
-    vr.warn('verb2_valence', mess)
-
-  # Auxiliaries
-  aux_defined = 'aux' in ch
-  if ch.get('has-aux') != 'yes':
-    if aux_defined:
-      mess = 'You have indicated that your language has no auxiliaries ' +\
-             'but have entered an auxiliary on the Lexicon page.'
-      vr.err('has-aux', mess)
-
-  if ch.get('has-aux') == 'yes':
-    if not aux_defined:
-      mess = 'You have indicated that your language has auxiliaries. ' +\
-             'You must define at least one auxiliary type.'
-      vr.err('auxlabel', mess)
-
-  comp = ch.get('aux-comp')
-  for aux in ch.get('aux'):
-    sem = aux.get('sem')
-    pred = aux.get('pred')
-    subj = aux.get('subj')
-
-    if 'stem' not in aux:
-      mess = 'You must specify a stem for each auxiliary type defined.'
-      vr.err(aux.full_key + '_stem1_orth', mess)
-
-    if not sem:
-      mess = 'You must specify whether the auxiliary contributes a predicate.'
-      vr.err(aux.full_key + '_sem', mess)
-
-    if sem == 'add-pred':
-      for feat in aux.get('feat', []):
-        if feat.get('name') and not feat.get('value'):
-          mess = 'You must specify a value for this feature.'
-          vr.err(feat.full_key + '_value', mess)
-
-    if comp == 'vp' or comp == 'v':
-      if not subj:
-        mess = 'You must specify the subject type.'
-        vr.err(aux.full_key + '_subj', mess)
-
-    compform = 'no'
-    for cf in aux.get('compfeature', []):
-      name = cf.get('name')
-      if name == 'form':
-        compform = 'yes'
-      if name and not cf.get('value'):
-        mess = 'You must specify a value for this feature.'
-        vr.err(cf.full_key + '_value', mess)
-
-    if not compform == 'yes':
-      mess = 'You must specify the form of the verb in the complement, ' +\
-             'i.e., the value of the complement feature FORM.'
-      vr.err(aux.full_key + '_compfeature', mess)
-
-
-    for stem in aux.get('stem', []):
-      if sem == 'add-pred' and not stem.get('pred'):
-        mess = 'You have indicated that this type contributes a predicate. ' +\
-               'You must specify the predicate name.'
-        vr.err(stem.full_key + '_pred', mess)
-      if sem != 'add-pred' and stem.get('pred'):
-        mess = 'You have specified a predicate but indicated ' +\
-               'that this type does not contribute a predicate.'
-        vr.err(aux.full_key + '_sem', mess)
-      if not stem.get('orth'):
-        mess = 'You must specify a spelling for each auxiliary you define.'
-        vr.err(stem.full_key + '_orth', mess);
-
-  # Determiners
-  for det in ch.get('det'):
-    for stem in det.get('stem', []):
-      if not stem.get('orth'):
-        mess = 'You must specify a spelling for each determiner you define.'
-        vr.err(stem.full_key + '_orth', mess)
-
-      if not stem.get('pred'):
-        mess = 'You must specify a predicate for each determiner you define.'
-        vr.err(stem.full_key + '_pred', mess)
-
-  # Adpositions
-  for adp in ch.get('adp'):
-    if 'feat' not in adp:
-      mess = 'You should specify a value for at least one feature (e.g., CASE).'
-      vr.warn(adp.full_key + '_feat1_name', mess)
-
-  # For verbs and verbal inflection, we need to prevent that index features are 
-  # assigned to verbs: making set of features that should not be assigned to 
-  # verbs
-
-  index_feat = ['person', 'number','gender']
-  for feature in ch.get('feature'):
-    if 'name' in feature:
-      if feature.get('type') == 'index':
-        index_feat.append(feature.get('name'))
-
-
-
-  # Features on all lexical types
-  for lextype in ('noun', 'verb', 'aux', 'det', 'adp'):
-    for lt in ch.get(lextype):
-      for feat in lt.get('feat', []):
-        if not feat.get('name'):
-          mess = 'You must choose which feature you are specifying.'
-          vr.err(feat.full_key + '_name', mess)
-        if not feat.get('value'):
-          mess = 'You must choose a value for each feature you specify.'
-          vr.err(feat.full_key + '_value', mess)
-
-        if feat.get('name') == 'argument structure':
-          mess = 'The pseudo-feature "argument structure" is only ' +\
-                 'appropriate for inflectional morphemes.  For verbs, ' +\
-                 'please use the special argument structure drop-down; ' +\
-                 'other lexical types do not yet support argument structure.'
-          vr.err(feat.full_key + '_name', mess)
-
-        if lextype == 'verb': # or lextype == 'aux': lap: 1/5/11 removed aux to get rid of overzealous validation
-
-          if not feat.get('head'):
-            mess = 'You must choose where the feature is specified.'
-            vr.err(feat.full_key + '_head', mess)
-          elif feat.get('head') == 'verb' and index_feat.count(feat.get('name')) > 0:
-            mess = 'This feature is associated with nouns, please select one of the NP-options.'
-            vr.err(feat.full_key + '_head', mess)
-
-        if not ch.has_dirinv() and feat.get('head') in ['higher', 'lower']:
-          mess = 'That choice is not available in languages ' +\
-                 'without a direct-inverse scale.'
-          vr.err(feat.full_key + '_head', mess)
-
-######################################################################
 # validate_test_sentences(ch, vr)
 #   Validate the user's choices about test sentences.
 
@@ -1179,7 +976,7 @@ def validate(ch, extra = False):
   #validate_sentential_negation(ch, vr)
   validate_coordination(ch, vr)
   validate_yesno_questions(ch, vr)
-  validate_lexicon(ch, vr)
+  gmcs.linglib.lexicon.validate_lexicon(ch, vr)
   gmcs.linglib.morphotactics.validate(ch, vr)
   validate_test_sentences(ch, vr)
 

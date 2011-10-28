@@ -42,12 +42,15 @@
 ;;;
 ;;; input characters to be ignored (i.e. suppressed) in tokenization
 ;;;
+;;; Note that these might not be the same as in pet/pet.set, which could
+;;; cause parsing results from PET and LKB to differ.
+;;;
 (defparameter *punctuation-characters*
   (append
-   '(#\space #\! #\" #\& #\(
-     #\) #\* #\+ #\, #\. #\/ #\;
-     #\< #\> #\? #\@ #\[ #\\ #\] #\^
-     #\_ #\` #\{ #\| #\} #\~)
+   '(#\space #\! #\" #\& #\' #\( #\)
+     #\* #\+ #\, #\− #\. #\/ #\\ #\;
+     #\< #\> #\? #\@ #\[ #\] #\^ #\`
+     #\{ #\| #\} #\~)
    #+:ics
    '(#\ideographic_full_stop #\fullwidth_question_mark 
      #\horizontal_ellipsis #\fullwidth_full_stop
