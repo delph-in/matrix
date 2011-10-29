@@ -1,0 +1,137 @@
+1@{author}@@@1@{matrixyes/noquestions}@a     t-ins.arifu ?al-bint-u@@@@1@3@'Did the girl leave?'@Ryan Georgi@Jan 15, 2007
+2@{author}@@@1@{matrixyes/noquestions}@?in   t-ins.arifu ?al-bint-u@@@@0@3@'* Did the girl leave?'@Ryan Georgi@Jan 15, 2007
+3@{author}@@@1@{matrixyes/noquestions}@a     ?al-bint-u  t-ins.arifu @@@@0@3@'* Did the girl leave?'@Ryan Georgi@Jan 15, 2007
+4@{author}@@@1@{matrixyes/noquestions}@y-aftikir    ?al-rajul-u  a ?al-bint-u   t-ins.arifu@@@@0@5@'* The man thinks that the girl leaves'@Ryan Georgi@Jan 15, 2007
+5@{author}@@@1@{imperatives}@i?ra	    ?al-kita:b-a       da@@@@1@3@'Read (m) this book!'@Ryan Georgi@Jan 15, 2007
+6@{author}@@@1@{imperatives}@i?ra	    ?al-kita:b-a@@@@1@2@'Read the book!'@Ryan Georgi@Jan 15, 2007
+7@{author}@@@1@{imperatives}@y-i?ra	    ?al-kita:b@@@@0@2@'*Read the book!'@Ryan Georgi@Jan 15, 2007
+8@{author}@@@1@{embeddedclauses}@y-aftikir    ?al-rajul-u  ?anna ?al-bint-u   t-ins.arifu@@@@1@5@'The man thinks that the girl leaves'@Ryan Georgi@Jan 15, 2007
+9@{author}@@@1@{embeddedclauses}@y-istakh    ?al-rajul-u  ?in ?al-bint-u   t-ins.arifu@@@@1@5@' The man asks if/whether the girl leaves'@Ryan Georgi@Jan 15, 2007
+10@{author}@@@1@{embeddedclauses}@y-istakh    ?al-rajul-u  ?anna ?al-bint-u   t-ins.arifu@@@@0@5@'* The man asks if/whether the girl leaves'@Ryan Georgi@Jan 15, 2007
+11@{author}@@@1@{embeddedclauses}@y-aftikir    ?al-rajul-u  ?in ?al-bint-u   t-ins.arifu@@@@0@5@'* The man thinks that the girl leaves'@Ryan Georgi@Jan 15, 2007
+12@{author}@@@1@{embeddedclauses}@y-aftikir    ?al-rajul-u  ?al-bint-u   t-ins.arifu@@@@0@4@'*The man thinks that the girl leaves'@Ryan Georgi@Jan 15, 2007
+13@{author}@@@1@{embeddedclauses}@y-aftikir    ?al-rajul-u  ?anna t-ins.arifu ?al-bint-u@@@@0@5@'*The man thinks that the girl leaves'@Ryan Georgi@Jan 15, 2007
+14@{author}@@@1@{embeddedclauses}@y-adribu    ?al-rajul-u  ?anna ?al-bint-u   t-ins.arifu@@@@0@5@'*The man thinks that the girl leaves'@Ryan Georgi@Jan 15, 2007
+15@{author}@@@1@{embeddedclauses}@y-aftikir    ?al-rajul-u  ?anna ?al-bint-u   t-adribu  ?al-walad-a@@@@1@6@'The man thinks that the girl hits the boy'@Ryan Georgi@Jan 15, 2007
+16@{author}@@@1@{embeddedclauses}@y-aftikir    ?al-rajul-u  ?al-bint-u   t-adribu  ?al-walad-a@@@@0@5@'* The man thinks that the girl hits the boy'@Ryan Georgi@Jan 15, 2007
+17@{author}@@@1@{embeddedclauses}@y-aftikir    ?al-rajul-u  ?anna t-adribu ?al-bint-u    ?al-walad-a@@@@0@6@'* The man thinks that the girl hits the boy'@Ryan Georgi@Jan 15, 2007
+18@{author}@@@1@{demonstratives}@y-ins.arifu  ha:-Da:        ?al-rajul-u@@@@1@3@'This man leaves'@Ryan Georgi@Jan 15, 2007
+19@{author}@@@1@{demonstratives}@y-ins.arifu  ha:-Da:        rajul-u-n@@@@0@3@'* This man leaves'@Ryan Georgi@Jan 15, 2007
+20@{author}@@@1@{demonstratives}@y-ins.arifu  Da:-ka         ?al-rajul-u@@@@1@3@'That man leaves'@Ryan Georgi@Jan 15, 2007
+21@{author}@@@1@{demonstratives}@y-ins.arifu  Da:-ka         rajul-u-n@@@@0@3@'* That man leaves'@Ryan Georgi@Jan 15, 2007
+22@{author}@@@1@{argumentoptionality}@t-atay-ni:       ?al-kita:b-a@@@@1@2@'You give me the book'@Ryan Georgi@Jan 15, 2007
+23@{author}@@@1@{argumentoptionality}@t-atay-ni:-hu@@@@1@1@'You give it to me'@Ryan Georgi@Jan 15, 2007
+24@{author}@@@1@{argumentoptionality}@t-atay-ni:@@@@0@1@'* You give it to me'@Ryan Georgi@Jan 15, 2007
+25@{author}@@@1@{argumentoptionality}@t-atay-ni:-hu     ?al-kita:b-a@@@@0@2@'* You give me the book'@Ryan Georgi@Jan 15, 2007
+26@{author}@@@1@{argumentoptionality}@t-atay-ni:-hu     ?al-kita:b-u@@@@0@2@'* You give me the book'@Ryan Georgi@Jan 15, 2007
+27@{author}@@@1@{argumentoptionality}@t-atay-ni:@@@@0@1@'* You give him to me'@Ryan Georgi@Jan 15, 2007
+28@{author}@@@1@{argumentoptionality}@t-atay    ?al-walad-a  ?al-kita:b-a@@@@1@3@'You give the boy the book' (i.e. to the boy)@Ryan Georgi@Jan 15, 2007
+29@{author}@@@1@{argumentoptionality}@t-atay    ?al-kita:b-a   ?al-walad-a@@@@1@3@'You give the book a boy' (Colorless green ideas...)@Ryan Georgi@Jan 15, 2007
+30@{author}@@@1@{argumentoptionality}@t-atay-hu      ?al-walad-a   ?al-kita:b-a@@@@0@3@'* You give the boy a book'@Ryan Georgi@Jan 15, 2007
+31@{author}@@@1@{argumentoptionality}@t-atay-hu-hu      ?al-walad-a   ?al-kita:b-a@@@@0@3@'* You give the boy a book'@Ryan Georgi@Jan 15, 2007
+32@{author}@@@1@{argumentoptionality}@y-atay      ?al-rajul-u   ?al-walad-a  ?al-kita:b-a@@@@1@4@'The man gives the boy the book'@Ryan Georgi@Jan 15, 2007
+33@{author}@@@1@{argumentoptionality}@y-atay      ?al-rajul-u   ?al-walad-a  @@@@0@3@'* The man gives the boy the book'@Ryan Georgi@Jan 15, 2007
+34@{author}@@@1@{argumentoptionality}@y-atay-hu      ?al-rajul-u   ?al-walad-a  ?al-kita:b-a@@@@0@4@'* The man gives the boy the book'@Ryan Georgi@Jan 15, 2007
+35@{author}@@@1@{argumentoptionality}@y-atay-hu      ?al-rajul-u   ?al-kita:b-a@@@@1@3@'The man gives him the book'@Ryan Georgi@Jan 15, 2007
+36@{author}@@@1@{argumentoptionality}@y-atay-hu-hu      ?al-rajul-u   ?al-kita:b-a@@@@0@3@'* The man gives him the book'@Ryan Georgi@Jan 15, 2007
+37@{author}@@@1@{argumentoptionality}@y-atay-hu-hu      ?al-rajul-u@@@@1@2@' The man gives him it'@Ryan Georgi@Jan 15, 2007
+38@{author}@@@1@{argumentoptionality}@y-atay-hu        ?al-rajul-u@@@@0@2@'* The man gives him it'@Ryan Georgi@Jan 15, 2007
+39@{author}@@@1@{case}@y-ins.arifu    ?al-walad-u@@@@1@2@'The boy leaves'@Ryan Georgi@Jan 15, 2007
+40@{author}@@@1@{case}@y-ins.arifu    ?al-walad-a@@@@0@2@'* The boy leaves'@Ryan Georgi@Jan 15, 2007
+41@{author}@@@1@{case}@y-adribu  ?al-walad-u   ?al-walad-a@@@@1@3@'the boy hits the boy'@Ryan Georgi@Jan 15, 2007
+42@{author}@@@1@{case}@y-adribu   ?al-walad-u   ?al-walad-u@@@@0@3@'*The boy hits the boy'@Ryan Georgi@Jan 15, 2007
+43@{author}@@@1@{case}@y-adribu   ?al-walad-a   ?al-walad-u@@@@0@3@'*the boy hits the boy'@Ryan Georgi@Jan 15, 2007
+44@{author}@@@1@{case}@y-adribu  ?al-walad-a    ?al-walad-a@@@@0@3@'*The boy hits the boy'@Ryan Georgi@Jan 15, 2007
+45@{a:242}@@@1@{negation}@la:	y-adribu	?al-walad@@@@1@3@'he doesn't hit / isn't hitting the boy'@Ryan Georgi@Jan 15, 2007
+46@{author}@@@1@{negation}@y-adribu	la:		?al-walad@@@@0@3@'* he doesn't hit / isn't hitting the boy'@Ryan Georgi@Jan 15, 2007
+47@{author}@@@1@{negation}@y-adribu	?al-walad	la:@@@@0@3@'* he doesn't hit / isn't hitting the boy'@Ryan Georgi@Jan 15, 2007
+48@{author}@@@1@{negation}@?al-walad   y-adribu	la:@@@@0@3@'* he doesn't hit / isn't hitting the boy'@Ryan Georgi@Jan 15, 2007
+49@{author}@@@1@{negation}@?al-walad		la:		y-adribu@@@@0@3@'* he doesn't hit / isn't hitting the boy'@Ryan Georgi@Jan 15, 2007
+50@{a:240}@@@1@{negation}@lays-tu		bi		jundi:y-in@@@@1@3@'I am not a soldier'@Ryan Georgi@Jan 15, 2007
+51@{a:240}@@@1@{negation}@lays-tu		jundi:y-an@@@@1@2@'I am not a soldier'@Ryan Georgi@Jan 15, 2007
+52@{author}@@@1@{negation}@  lays-tu		jundi:y-an@@@@0@3@'* I am not a soldier'@Ryan Georgi@Jan 15, 2007
+53@{author}@@@1@{negation}@  lays-tu	bi		jundi:y-an@@@@0@4@'* I am not a soldier'@Ryan Georgi@Jan 15, 2007
+54@{a:269}@@@1@{coordination}@?insaraf-a  ?al-rajul wa   rakib-a	 sadiqu-hu	d-darra:ja@@@@1@6@'The man left and his friend mounted the bicycle'@Ryan Georgi@Jan 15, 2007
+55@{a:269}@@@1@{coordination}@?insaraf-a  ?al-rajul wa    sadi:qu-hu	 y-arkabu	?al-darra:ja@@@@1@6@'The man left and (while) his friend was riding the bicycle'@Ryan Georgi@Jan 15, 2007
+56@{author}@@@1@{coordination}@wa	?insaraf-a   ?al-rajul  rakib-a	    sadiqu-hu	?al-darra:ja@@@@0@6@'* the man left and his friend mounted the bicycle'@Ryan Georgi@Jan 15, 2007
+57@{author}@@@1@{coordination}@wa	?insaraf-a  ?al-rajul  sadi:qu-hu  y-arkabu	?al-darra:ja@@@@0@6@'* the man left and (while) his friend was riding the bicycle'@Ryan Georgi@Jan 15, 2007
+58@{a:269}@@@1@{coordination}@?insaraf-a	?al-rajul y-arkabu	?al-darra:ja@@@@1@4@'The man left (while) riding the bicycle'@Ryan Georgi@Jan 15, 2007
+59@{author}@@@1@{coordination}@?insaraf-a	?al-rajul	t-arkabu	  ?al-darra:ja@@@@0@4@'* the man left (while) she was riding the bicycle'@Ryan Georgi@Jan 15, 2007
+60@{b}@@@1@{coordination,agreement}@za?-a	      Zayd-un	wa	Hind-un@@@@1@4@'Zayd and Hind came'@Ryan Georgi@Jan 15, 2007
+61@{b}@@@1@{coordination,agreement}@za?-at		Hind-un		wa	Zayd-un@@@@1@4@'Hind and Zayd came'@Ryan Georgi@Jan 15, 2007
+62@{b}@@@1@{coordination,agreement}@za?-a:	   Zayd-un	wa	Hind-un@@@@0@4@'* (both) Hind and Zayd came'@Ryan Georgi@Jan 15, 2007
+63@{b}@@@1@{coordination,agreement}@za?-a         Hind-un	   wa	     Zayd-un@@@@0@4@'* Hind and Zayd Came'@Ryan Georgi@Jan 15, 2007
+64@{b}@@@1@{coordination,agreement}@za?-at	        Zayd-un	   wa	Hind-un@@@@0@4@'* Zayd and Hind came'@Ryan Georgi@Jan 15, 2007
+65@{a:182}@@@1@{coordination}@xaraj-u:     mina    ?al-gurfat-i  wa   nah.nu   na-dxulu@@@@1@6@'They left the room as we were entering it'@Ryan Georgi@Jan 15, 2007
+66@{author}@@@1@{matrixyes/noquestions}@a	 t-atbakh@@@@1@2@'Are you cooking?'@Ryan Georgi@Jan 15, 2007
+67@{author}@@@1@{matrixyes/noquestions}@hal	   t-atbakh@@@@1@2@'Do you cook?'@Ryan Georgi@Jan 15, 2007
+68@{author}@@@1@{matrixyes/noquestions}@t-atbakh	a@@@@0@2@'* are you cooking?'@Ryan Georgi@Jan 15, 2007
+69@{author}@@@1@{matrixyes/noquestions}@t-atbakh	hal@@@@0@2@'* do you cook?'@Ryan Georgi@Jan 15, 2007
+70@{author}@@@1@{matrixyes/noquestions}@?al-walad-u	 ?al-sagheer-u@@@@1@2@'the boy is small'@Ryan Georgi@Jan 15, 2007
+71@{author}@@@1@{matrixyes/noquestions}@a	?al-walad-u	?al-sagheer-u@@@@1@3@'Is the boy small?'@Ryan Georgi@Jan 15, 2007
+72@{author}@@@1@{matrixyes/noquestions}@?al-walad-u	a	?al-sagheer-u@@@@0@3@'*is the boy small?'@Ryan Georgi@Jan 15, 2007
+73@{author}@@@1@{matrixyes/noquestions}@?al-walad-u	?al-sagheer-u  a@@@@0@3@'*is the boy small?'@Ryan Georgi@Jan 15, 2007
+74@{a:230}@@@1@{modals}@y-imkin	           y-i?ra       ?al-kita:b-a   da:@@@@1@4@'It's possible for him to read this book'@Ryan Georgi@Jan 15, 2007
+75@{a:230}@@@1@{modals}@y-igu:z             lu-hu       y-i?ra       ?al-kita:b-a    da:@@@@1@5@'He may read this book'@Ryan Georgi@Jan 15, 2007
+76@{a:230}@@@1@{modals}@y-i?dar     y-i?ra      ?al-kita:b-a    da:@@@@1@4@'He can read this book'@Ryan Georgi@Jan 15, 2007
+77@{author}@@@1@{case}@y-arkud           ?al-rajul-u@@@@1@2@'The man runs'@Ryan Georgi@Jan 15, 2007
+78@{author}@@@1@{case}@y-arkud          ?al-rajul-a@@@@0@2@'* The man runs'@Ryan Georgi@Jan 15, 2007
+79@{author}@@@1@{case}@y-arkud          ?al-rajul-i@@@@0@2@'* The man runs'@Ryan Georgi@Jan 15, 2007
+80@{author}@@@1@{case}@t-arkud      bint-u     ?al-malik-i@@@@1@3@'the daughter of the king runs'@Ryan Georgi@Jan 15, 2007
+81@{author}@@@1@{case}@t-arkud    bint-u    ?al-malik-u@@@@0@3@'* the daughter of the king runs'@Ryan Georgi@Jan 15, 2007
+82@{author}@@@1@{case}@t-arkud   bint-u       ?al-malik-a@@@@0@3@'* the girl runs the king'@Ryan Georgi@Jan 15, 2007
+83@{author}@@@1@{case,agreement}@?al-?awlad-u  y-i?ra-u:      ?al-dars-a@@@@1@3@'the boys read the lesson'@Ryan Georgi@Jan 15, 2007
+84@{author}@@@1@{case,agreement}@y-i?ra        ?al-?awlad-u   ?al-dars-a@@@@1@3@'the boys read the lesson'@Ryan Georgi@Jan 15, 2007
+85@{author}@@@1@{case,agreement}@?al-?awlad-u  y-i?ra:      ?al-dars-a@@@@0@3@'* the boys read the lesson'@Ryan Georgi@Jan 15, 2007
+86@{author}@@@1@{case,agreement}@y-i?ra-u:       ?al-?awlad-u   ?al-dars-a@@@@0@3@'* the boys read the lesson'@Ryan Georgi@Jan 15, 2007
+87@{a:252}@@@1@{wordorder,pro-d,pronouns}@?ana ?inkili:zi:yun@@@@1@2@'I (am) English'@Ryan Georgi@Jan 15, 2007
+88@{author}@@@1@{wordorder,argumentoptionality}@?inkili:zi:yun ?ana@@@@0@2@'* English (am) I'@Ryan Georgi@Jan 15, 2007
+89@{a.252}@@@1@{wordorder,argumentoptionality}@marid.-at@@@@1@1@'She fell ill'@Ryan Georgi@Jan 15, 2007
+90@{a:252}@@@1@{wordorder}@y-askunn	?ax-i:		fi:	ba:ri:s@@@@1@4@'my brother lives in paris'@Ryan Georgi@Jan 15, 2007
+91@{author}@@@1@{wordorder}@y-askunn       fi:   ba:ri:s   ?ax-i:@@@@0@4@'* my brother lives in paris'@Ryan Georgi@Jan 15, 2007
+92@{author}@@@1@{wordorder}@y-askunn       ba:ri:s  fi:  ?ax-i:@@@@0@4@'* my brother lives in paris'@Ryan Georgi@Jan 15, 2007
+93@{author}@@@1@{wordorder}@?ax-i:	    y-askunn		fi:	ba:ri:s@@@@0@4@'* my brother lives in paris'@Ryan Georgi@Jan 15, 2007
+94@{author}@@@1@{wordorder}@?ax-i:	    fi:  ba:ri:s	y-askunn@@@@0@4@'* my brother lives in paris'@Ryan Georgi@Jan 15, 2007
+95@{author}@@@1@{wordorder}@?ax-i	     ba:ri:s   fi:	y-askunn@@@@0@4@'* my brother lives in paris'@Ryan Georgi@Jan 15, 2007
+96@{author}@@@1@{wordorder}@fi:	ba:ri:s   y-askunn        ?ax-i:@@@@0@4@'* my brother lives in paris'@Ryan Georgi@Jan 15, 2007
+97@{author}@@@1@{wordorder}@ba:ri:s  fi:   y-askunn        ?axi-i:@@@@0@4@'* my brother lives in paris'@Ryan Georgi@Jan 15, 2007
+98@{a:252}@@@1@{wordorder,argumentoptionality}@?-askunu    fi:	  landan@@@@1@3@'I live in london'@Ryan Georgi@Jan 15, 2007
+99@{author}@@@1@{wordorder,argumentoptionality}@?-askunu	landan	fi:@@@@0@3@'* I live London in'@Ryan Georgi@Jan 15, 2007
+100@{author}@@@1@{wordorder,argumentoptionality}@fi:	 ?-askunu	landan@@@@0@3@'* in I live London'@Ryan Georgi@Jan 15, 2007
+101@{author}@@@1@{wordorder,argumentoptionality}@fi:  landan	?-askunu@@@@0@3@'* in london I live'@Ryan Georgi@Jan 15, 2007
+102@{a:253}@@@1@{wordorder}@y-adxal      ?al-qa:'-a	  rajul     qas.i:r@@@@1@4@'a short man enters the hall' (VOS, rare)@Ryan Georgi@Jan 15, 2007
+103@{author}@@@1@{wordorder}@y-adxal      rajul qas.i:r   ?al-qa:'-a@@@@1@4@'a short man enters the hall'@Ryan Georgi@Jan 15, 2007
+104@{author}@@@1@{wordorder}@rajul  qas.i:r	  y-adxal      ?al-qa:'-a@@@@1@4@'a short man enters the hall'@Ryan Georgi@Jan 15, 2007
+105@{a:179}@@@1@{wordorder}@?-uzur		landan@@@@1@2@'I visit London'@Ryan Georgi@Jan 15, 2007
+106@{author}@@@1@{wordorder}@landan    ?-uzur@@@@0@2@'* I visit london'@Ryan Georgi@Jan 15, 2007
+107@{a:183}@@@1@{pronouns,agreement}@muh.ammad     huwa     ?al-?usta:D@@@@1@3@'Muhammad is the teacher'@Ryan Georgi@Jan 15, 2007
+108@{a:183}@@@1@{pronouns,agreement}@?al-mudarris-atu  hiya    ?al-mas?u:l-a@@@@1@3@'The teacher(f) is responsible'@Ryan Georgi@Jan 15, 2007
+109@{a:183}@@@1@{pronouns,agreement}@ha:Da:  huwa    ?al-rajul-u@@@@1@3@'This is the man'@Ryan Georgi@Jan 15, 2007
+110@{a:183}@@@1@{pronouns,agreement}@?u:la:?ika   humu   ?al-'umma:l@@@@1@3@'Those are the workers'@Ryan Georgi@Jan 15, 2007
+111@{author}@@@1@{agreement}@y-ins.arifu  ?al-rajul-u@@@@1@2@'the man leaves'@Ryan Georgi@Jan 15, 2007
+112@{author}@@@1@{agreement}@y-askunn	?al-rajul-u@@@@1@2@'the man lives'@Ryan Georgi@Jan 15, 2007
+113@{author}@@@1@{agreement,adjectives}@y-ins.arifu   rajul-u-n	      gabi:y-u-n@@@@1@3@'a stupid man leaves'@Ryan Georgi@Jan 15, 2007
+114@{author}@@@1@{agreement,adjectives}@t-ins.arifu  rajul-u-n	     gabi:y-u-n@@@@0@3@'* a stupid man leaves'@Ryan Georgi@Jan 15, 2007
+115@{author}@@@1@{agreement,adjectives}@y-ins.arifu rajul-u-n      ?al-gabi:y-u@@@@0@3@'* a stupid man leaves'@Ryan Georgi@Jan 15, 2007
+116@{author}@@@1@{agreement,adjectives}@y-ins.arifu-u: 	  rajul-u-n 	 ?al-gabi:y-u@@@@0@3@'* a stupid man leaves'@Ryan Georgi@Jan 15, 2007
+117@{author}@@@1@{agreement,adjectives}@y-ins.arifu  ?al-rajul-u   ?al-gabi:y-u@@@@1@3@'the stupid man leaves'@Ryan Georgi@Jan 15, 2007
+118@{author}@@@1@{agreement,adjectives}@y-ins.arifu   ?al-rajul-u      gabi:y-u-n@@@@0@3@'* the stupid man leaves'@Ryan Georgi@Jan 15, 2007
+119@{author}@@@1@{agreement,adjectives}@t-ins.arifu  ?al-rajul-u   ?al-gabi:y-u@@@@0@3@'* the stupid man leaves'@Ryan Georgi@Jan 15, 2007
+120@{author}@@@1@{agreement,adjectives}@y-ins.arifu-u: 	 rija:l-u-n    gabi:y-u-n@@@@1@3@'some stupid men leave'@Ryan Georgi@Jan 15, 2007
+121@{author}@@@1@{agreement,adjectives}@y-ins.arifu  rija:l-u-n      gabi:y-u-n@@@@0@3@'* some stupid men leave'@Ryan Georgi@Jan 15, 2007
+122@{author}@@@1@{agreement,adjectives}@t-ins.arifu-na   rija:l-u-n      gabi:y-u-n@@@@0@3@'* some stupid men leave'@Ryan Georgi@Jan 15, 2007
+123@{author}@@@1@{agreement,adjectives}@y-ins.arifu-u:      ?al-rija:l-u    ?al-gabi:y-u@@@@1@3@'the stupid men leave'@Ryan Georgi@Jan 15, 2007
+124@{author}@@@1@{agreement,adjectives}@t-ins.arifu 	bint-u-n        gabi:y-at-u-n@@@@1@3@'a stupid girl leaves'@Ryan Georgi@Jan 15, 2007
+125@{author}@@@1@{agreement,adjectives}@y-ins.arifu     bint-u-n       gabi:y-at-u-n@@@@0@3@'* a stupid girl leaves'@Ryan Georgi@Jan 15, 2007
+126@{author}@@@1@{agreement,adjectives}@t-ins.arifu 	bint-u-n        gabi:y-u-n@@@@0@3@'* a stupid girl leaves'@Ryan Georgi@Jan 15, 2007
+127@{author}@@@1@{agreement,adjectives}@t-ins.arifu ?al-bint-u	  ?al-gabi:y-at-u@@@@1@3@'the stupid girl leaves'@Ryan Georgi@Jan 15, 2007
+128@{author}@@@1@{agreement,adjectives}@t-ins.arifu 	?al-bint-u        ?al-gabi:y-u@@@@0@3@'* the stupid girl leaves'@Ryan Georgi@Jan 15, 2007
+129@{author}@@@1@{agreement,adjectives}@t-ins.arifu   ?al-bint-u      gabi:y-at-u-n@@@@0@3@'* the stupid girl leaves'@Ryan Georgi@Jan 15, 2007
+130@{author}@@@1@{agreement,adjectives}@t-ins.arifu-na   ?al-bint-u     ?al-gabi:y-at-u@@@@0@3@'* the stupid girl leaves'@Ryan Georgi@Jan 15, 2007
+131@{author}@@@1@{agreement,adjectives}@t-ins.arifu-na  	  l-bana:t-u    ?al-gabi:y-a:t-u@@@@1@3@'the stupid girls leave'@Ryan Georgi@Jan 15, 2007
+132@{author}@@@1@{agreement,adjectives}@t-ins.arifu    ?al-bana:t-u      ?al-gabi:y-a:t-u@@@@0@3@'* the stupid girls leave'@Ryan Georgi@Jan 15, 2007
+133@{author}@@@1@{agreement,adjectives}@t-ins.arifu-na   ?al-bana:t-u      ?al-gabi:y-u@@@@0@3@'* the stupid girls leave'@Ryan Georgi@Jan 15, 2007
+134@{author}@@@1@{agreement,adjectives}@t-ins.arifu-na   ?al-bana:t-u      gabi:y-a:t-un@@@@0@3@'* the stupid girls leave'@Ryan Georgi@Jan 15, 2007
+135@{author}@@@1@{agreement,adjectives}@t-ins.arifu   bint-u-hu       ?al-gabi:y-at-u@@@@1@3@'his stupid daughter left'      @Ryan Georgi@Jan 15, 2007
+136@{author}@@@1@{agreement,adj,coordination}@?-azirtu   landan       wa     ?-anziltu        fi:   funduqin   fa:xir@@@@1@7@'I (will) visit London and stay in a luxurious hotel'@Ryan Georgi@Jan 15, 2007
+137@{a:180}@@@1@{agreement,adj,coordination}@zur-tu	      landan    wa   'a:mal-u:-ni:	mu'a:malat-a-n      t.ayyib-a@@@@1@6@'I visited London and they treated me well' @Ryan Georgi@Jan 15, 2007

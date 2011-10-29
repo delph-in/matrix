@@ -8,7 +8,7 @@ import os
 from copy import copy
 import re
 
-from utils import read_choices
+from gmcs.utils import read_choices
 
 from random import randint
 
@@ -864,14 +864,14 @@ def filter_lexicon(sent, mrs_id):
 
       # Likewise here, the aux might want a pp subject.
       
-      if re.search('wo[12]$',mrs_id) and not auxsubj:
+      if re.search('wo[12]$',mrs_id) and not auxsubj
         if re.search('p-nom',sent):
           return True
 
     #I think we don't have to worry about picking up a det or a p-nom from the other np,
     #because the general filters should have taken out those cases. ??
 
-    if ch('tverbSubj') == 'pp' and not auxsubj:
+    if ch('tverbSubj') == 'pp' and not auxsubj
       if re.search('wo[3-6]|neg[12]|ques[12]',mrs_id):
         if not re.search(r'p-nom n1|n1 p-nom|p-nom det n1|p-nom n1 det|n1 det p-nom|det n1 p-nom',sent):
           return True
@@ -880,7 +880,7 @@ def filter_lexicon(sent, mrs_id):
         if not re.search(r'p-nom n2|n2 p-nom|p-nom det n2|p-nom n2 det|n2 det p-nom|det n2 p-nom',sent):
           return True
 
-    if ch('tverbSubj') == 'np' and re.search('p-nom',sent) and not auxsubj:
+    if ch('tverbSubj') == 'np' and re.search('p-nom',sent) and not auxsubj
         return True
 
 

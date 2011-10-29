@@ -1,0 +1,59 @@
+1@unknown@formal@none@1@S@opiskelija+Sg+Nom tykAtA+3p+Sg tomaatti+Sg+Elat@@@@1@3@@sfd@11-8-2007
+2@unknown@formal@none@1@S@opiskelija+Pl+Nom tykAtA+3p+Pl tomaatti+Sg+Elat@@@@1@3@@sfd@11-8-2007
+3@unknown@formal@none@1@@opiskelija+Sg+Nom tomaatti+Sg+Elat tykAtA+3p+Sg@@@@0@3@@sfd@11-8-2007
+4@unknown@formal@none@1@@tykAtA+3p+Sg opiskelija+Sg+Nom tomaatti+Sg+Elat@@@@0@3@@sfd@11-8-2007
+5@unknown@formal@none@1@@tykAtA+3p+Sg tomaatti+Sg+Elat opiskelija+Sg+Nom@@@@0@3@@sfd@11-8-2007
+6@unknown@formal@none@1@@tomaatti+Sg+Elat tykAtA+3p+Sg opiskelija+Sg+Nom@@@@0@3@@sfd@11-8-2007
+7@unknown@formal@none@1@S@tuo+Sg+Nom opiskelija+Sg+Nom tykAtA+3p+Sg tAmA+Sg+Elat tomaatti+Sg+Elat@@@@1@5@@sfd@11-8-2007
+8@unknown@formal@none@1@@tAmA+Sg+Nom opiskelija+Sg+Nom tykAtA+3p+Sg tuo+Sg+Elat tomaatti+Sg+Elat@@@@0@5@@sfd@11-8-2007
+9@unknown@formal@none@1@S@minA+Sg+Nom tykAtA+1p+Sg tomaatti+Sg+Elat@@@@1@3@@sfd@11-8-2007
+10@unknown@formal@none@1@S@opiskelija+Sg+Nom kAvellA+3p+Sg@@@@1@2@@sfd@11-8-2007
+11@unknown@formal@none@1@@kAvellA+3p+Sg@@@@0@1@@sfd@11-8-2007
+12@unknown@formal@none@1@S@minA+Sg+Nom kAvellA+1p+Sg@@@@1@2@@sfd@11-8-2007
+13@unknown@formal@none@1@S@kAvellA+1p+Sg@@@@1@1@@sfd@11-8-2007
+14@unknown@formal@none@1@@kAvellA+3p+Sg opiskelija+Sg+Nom@@@@0@2@@sfd@11-8-2007
+15@unknown@formal@none@1@S@tuo+Sg+Nom opiskelija+Sg+Nom kAvellA+3p+Sg@@@@1@3@@sfd@11-8-2007
+16@unknown@formal@none@1@S@tAmA+Sg+Nom opiskelija+Sg+Nom kAvellA+3p+Sg@@@@1@3@@sfd@11-8-2007
+17@unknown@formal@none@1@@opiskelija+Sg+Nom tuo+Sg+Nom kAvellA+3p+Sg@@@@0@3@@sfd@11-8-2007
+18@unknown@formal@none@1@@opiskelija+Sg+Nom tAmA+Sg+Nom kAvellA+3p+Sg@@@@0@3@@sfd@11-8-2007
+19@unknown@formal@none@1@@opiskelija+Sg+Nom kAvellA+3p+Sg tuo+Sg+Nom@@@@0@3@@sfd@11-8-2007
+20@unknown@formal@none@1@@opiskelija+Sg+Nom kAvellA+3p+Sg tAmA+Sg+Nom@@@@0@3@@sfd@11-8-2007
+21@unknown@formal@none@1@@tAmA+Pl+Nom opiskelija+Sg+Nom kAvellA+3p+Sg@@@@0@3@@sfd@11-8-2007
+22@unknown@formal@none@1@@tuo+Pl+Nom opiskelija+Sg+Nom kAvellA+3p+Sg@@@@0@3@@sfd@11-8-2007
+23@unknown@formal@none@1@S@tuo+Sg+Nom opiskelija+Sg+Nom tykAtA+3p+Sg tAmA+Sg+Elat tomaatti+Sg+Elat@@@@1@5@@sfd@11-8-2007
+24@unknown@formal@none@1@@tuo+Sg+Nom opiskelija+Sg+Nom tykAtA+3p+Sg tAmA+Sg+Elat tomaatti+Sg+Elat@@@@0@5@@sfd@11-8-2007
+25@unknown@formal@none@1@S@minA+Sg+Nom tykAtA+1p+Sg iso+Sg+Elat tomaatti+Sg+Elat@@@@1@4@@sfd@11-8-2007
+26@unknown@formal@none@1@S@me+Pl+Nom nAyttAa+1p+Pl tomaatti+Pl+Nom mies+Sg+Allat@@@@1@4@@sfd@11-8-2007
+27@unknown@formal@none@1@S@te+Pl+Nom antaa+2p+Pl mies+Sg+Allat tomaatti+Pl+Nom@@@@1@4@@sfd@11-8-2007
+28@unknown@formal@none@1@S@antaa+1p+Sg iso+Pl+Nom tomaatti+Pl+Nom mies+Sg+Allat@@@@1@4@@sfd@11-8-2007
+29@unknown@formal@none@1@S@hAn+Sg+Nom antaa+3p+Sg tomaatti+Pl+Nom mies+Sg+Allat@@@@1@4@@sfd@11-8-2007
+30@unknown@formal@none@1@S@minA+Sg+Nom antaa+1p+Sg mies+Sg+Allat tomaatti+Pl+Nom@@@@1@4@@sfd@11-8-2007
+31@unknown@formal@none@1@@antaa+3p+Sg tomaatti+Pl+Nom mies+Sg+Allat@@@@0@3@@sfd@11-8-2007
+32@unknown@formal@none@1@S@he+Pl+Nom antaa+3p+Pl mies+Sg+Allat@@@@1@3@@sfd@11-8-2007
+33@unknown@formal@none@1@@he+Pl+Nom antaa+3p+Pl tomaatti+Pl+Nom@@@@0@3@@sfd@11-8-2007
+34@unknown@formal@none@1@S@me+Pl+Nom antaa+1p+Pl tuo+Pl+Nom iso+Pl+Nom tomaatti+Pl+Nom mies+Sg+Allat@@@@1@6@@sfd@11-8-2007
+35@unknown@formal@none@1@S@he+Pl+Nom tykAtA+3p+Pl tAmA+Sg+Elat punaise+Sg+Elat tomaatti+Sg+Elat@@@@1@5@@sfd@11-8-2007
+36@unknown@formal@none@1@S@minA+Sg+Nom syOdA+1p+Sg lasi+Sg+Part ja tomaatti+Sg+Part@@@@1@5@@sfd@11-8-2007
+37@unknown@formal@none@1@S@minA+Sg+Nom syOdA+1p+Sg lasi+Sg+Part tomaatti+Sg+Part ja auto+Sg+Part@@@@1@6@@sfd@11-8-2007
+38@unknown@formal@none@1@S@minA+Sg+Nom syOdA+1p+Sg lasi+Sg+Part ja tomaatti+Sg+Part ja auto+Sg+Part@@@@1@7@@sfd@11-8-2007
+39@unknown@formal@none@1@@minA+Sg+Nom syOdA+1p+Sg lasi+Sg+Part tomaatti+Sg+Part auto+Sg+Part@@@@0@5@@sfd@11-8-2007
+40@unknown@formal@none@1@@minA+Sg+Nom syOdA+1p+Sg lasi+Sg+Part ja tomaatti+Sg+Part auto+Sg+Part@@@@0@6@@sfd@11-8-2007
+41@unknown@formal@none@1@@minA+Sg+Nom ja sinA+Sg+Nom syOdA+1p+Sg lasi+Sg+Part@@@@0@5@@sfd@11-8-2007
+42@unknown@formal@none@1@@minA+Sg+Nom ja hAn+Sg+Nom syOdA+1p+Sg lasi+Sg+Part@@@@0@5@@sfd@11-8-2007
+43@unknown@formal@none@1@@minA+Sg+Nom sinA+Sg+Nom ja hAn+Sg+Nom syOdA+1p+Sg lasi+Sg+Part@@@@0@6@@sfd@11-8-2007
+44@unknown@formal@none@1@S@minA+Sg+Nom ja sinA+Sg+Nom syOdA+1p+Pl lasi+Sg+Part@@@@1@5@@sfd@11-8-2007
+45@unknown@formal@none@1@S@minA+Sg+Nom ja hAn+Sg+Nom syOdA+1p+Pl lasi+Sg+Part@@@@1@5@@sfd@11-8-2007
+46@unknown@formal@none@1@S@sinA+Sg+Nom ja hAn+Sg+Nom syOdA+2p+Pl lasi+Sg+Part@@@@1@5@@sfd@11-8-2007
+47@unknown@formal@none@1@S@minA+Sg+Nom syOdA+1p+Sg lasi+Sg+Part kAvellA+1p+Sg ja nukkua+1p+Sg@@@@1@6@@sfd@11-8-2007
+48@unknown@formal@none@1@S@minA+Sg+Nom syOdA+1p+Sg lasi+Sg+Part ja kAvellA+1p+Sg ja nukkua+1p+Sg@@@@1@7@@sfd@11-8-2007
+49@unknown@formal@none@1@@minA+Sg+Nom syOdA+1p+Sg kAvellA+1p+Sg nukkua+1p+Sg@@@@0@4@@sfd@11-8-2007
+50@unknown@formal@none@1@@minA+Sg+Nom syOdA+1p+Sg ja kAvellA+1p+Sg nukkua+1p+Sg@@@@0@5@@sfd@11-8-2007
+51@unknown@formal@none@1@S@minA+Sg+Nom syOdA+1p+Sg iso+Sg+Part auto+Sg+Part ja tomaatti+Sg+Part@@@@1@6@@sfd@11-8-2007
+52@unknown@formal@none@1@S@minA+Sg+Nom syOdA+1p+Sg iso+Sg+Part punaise+Sg+Part auto+Sg+Part ja tomaatti+Sg+Part@@@@1@7@@sfd@11-8-2007
+53@unknown@formal@none@1@S@kissa+Pl+Nom nukkua+3p+Pl@@@@1@2@@sfd@11-8-2007
+54@unknown@formal@none@1@S@nukkua+3p+Pl+Ques kissa+Pl+Nom@@@@1@2@@sfd@11-8-2007
+55@unknown@formal@none@1@S@opiskelija+Sg+Nom sanoa+3p+Sg ettA minA+Sg+Nom nAyttAa+1p+Sg apina+Sg+Ablat@@@@1@6@@sfd@11-8-2007
+56@unknown@formal@none@1@@nukkua+3p+Pl kissa+Pl+Nom@@@@0@2@@sfd@11-8-2007
+57@unknown@formal@none@1@@kissa+Pl+Nom nukkua+3p+Pl+Ques@@@@0@2@@sfd@11-8-2007
+58@unknown@formal@none@1@@opiskelija+Sg+Nom sanoa+3p+Sg minA+Sg+Nom nAyttAa+1p+Sg apina+Sg+Ablat@@@@0@5@@sfd@11-8-2007
+59@unknown@formal@none@1@@ettA minA+Sg+Nom nAyttAa+1p+Sg apina+Sg+Ablat opiskelija+Sg+Nom sanoa+3p+Sg@@@@0@6@@sfd@11-8-2007

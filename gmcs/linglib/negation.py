@@ -20,11 +20,15 @@ def customize_sentential_negation(mylang, ch, lexicon, rules):
   # ERB 2009-07-01 It was adding defunct lex rules in at least some
   # cases, so taking it out for now.  This much still seems to be
   # required:
+  
+  # JDC 2011-10-23 ... not anymore, multineg is no longer
+  # extant.  Bipartite negation is coming back, but probably under a new
+  # architecture that doesn't use advAlone.
 
-  advAlone = ''
-  multineg = ch.get('multi-neg')
-  if ch.get('adv-neg') == 'on' or multineg == 'comp':
-    advAlone = 'always'
+  #advAlone = ''
+  #multineg = ch.get('multi-neg')
+  #if ch.get('adv-neg') == 'on' or multineg == 'comp':
+  #  advAlone = 'always'
 
   # ERB 2009-01-23 Migrating negation to modern customization system.
   # This intermediate version only does independent adverbs, and so
@@ -32,13 +36,14 @@ def customize_sentential_negation(mylang, ch, lexicon, rules):
   # the test below.
 
   if ch.get('adv-neg') == 'on': # and ch.get('neg-adv') == 'ind-adv':
-    create_neg_adv_lex_item(advAlone, mylang, ch, lexicon,rules)
+    create_neg_adv_lex_item(mylang, ch, lexicon,rules)
+
+  if ch.get('neg-head-feature') == 'on':
+    mylang.add('head :+ [ NEGATED luk ].', section='addenda')
 
 
-def create_neg_adv_lex_item(advAlone, mylang, ch, lexicon, rules):
-
+def create_neg_adv_lex_item(mylang, ch, lexicon, rules):
   mylang.set_section('otherlex')
-
   mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
                  [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
                                             COMPS < >,
@@ -49,9 +54,12 @@ def create_neg_adv_lex_item(advAlone, mylang, ch, lexicon, rules):
   # ERB 2006-10-06 Below was advAlone == 'always', but that seems wrong.
   # changing it to advAlone == 'never' being the case where we don't want
   # the adverb to be a modifier.
+  
+  # JDC 2011-10-23 advAlone is deprecated.  But this comment about constraining
+  # the value of MOD on a neg adv seems useful generally.
 
-  if advAlone == 'never':
-    mylang.add_comment('neg-adv-lex',
+  # if advAlone == 'never':
+  mylang.add_comment('neg-adv-lex',
     '''Constrain the MOD value of this adverb to keep\n
     it from modifying the kind of verbs which can select it,\n
     To keep spurious parses down, as a starting point, we have\n
@@ -81,7 +89,8 @@ def create_neg_adv_lex_item(advAlone, mylang, ch, lexicon, rules):
     orth = ch.get('neg-adv-orth')
     lexicon.add(TDLencode(orth) + ' := neg-adv-lex &\
                 [ STEM < \"'+ orth +'\" >,\
-                  SYNSEM.LKEYS.KEYREL.PRED \"_neg_r_rel\" ].')
+                  SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
+
 
 
   # ERB 2006-10-06 And of course we need the head-modifier rules, if we're
@@ -89,23 +98,23 @@ def create_neg_adv_lex_item(advAlone, mylang, ch, lexicon, rules):
   # contrain the MOD value on the rest of the head types to keep them
   # from going nuts.
 
-  if advAlone != 'never':
-    rules.add('head-adj-int := head-adj-int-phrase.',
-              'Rule instances for head-modifier structures. Corresponding types\n' +
-              'are defined in matrix.tdl.  The matrix customization script did\n' +
-              'not need to add any further constraints, so no corresponding tyes\n' +
-              'appear in ' + ch.get('language').lower() + '.tdl')
-    rules.add('adj-head-int := adj-head-int-phrase.')
-    rules.add('head-adj-scop := head-adj-scop-phrase.')
-    rules.add('adj-head-scop := adj-head-scop-phrase.')
+  #if advAlone != 'never':
+  rules.add('head-adj-int := head-adj-int-phrase.',
+            'Rule instances for head-modifier structures. Corresponding types\n' +
+            'are defined in matrix.tdl.  The matrix customization script did\n' +
+            'not need to add any further constraints, so no corresponding tyes\n' +
+            'appear in ' + ch.get('language').lower() + '.tdl')
+  rules.add('adj-head-int := adj-head-int-phrase.')
+  rules.add('head-adj-scop := head-adj-scop-phrase.')
+  rules.add('adj-head-scop := adj-head-scop-phrase.')
 
-    mylang.add('+nvcdmo :+ [ MOD < > ].',
-               'This grammar includes head-modifier rules.  To keep\n' +
-               'out extraneous parses, constrain the value of MOD on\n' +
-               'various subtypes of head.  This may need to be loosened later.\n' +
-               'This constraint says that only adverbs, adjectives,\n' +
-               'and adpositions can be modifiers.',
-               section='addenda')
+  mylang.add('+nvcdmo :+ [ MOD < > ].',
+             'This grammar includes head-modifier rules.  To keep\n' +
+             'out extraneous parses, constrain the value of MOD on\n' +
+             'various subtypes of head.  This may need to be loosened later.\n' +
+             'This constraint says that only adverbs, adjectives,\n' +
+             'and adpositions can be modifiers.',
+             section='addenda')
 
 
 
@@ -143,14 +152,15 @@ def validate(ch, vr):
 
   if ch.get('neg-aux', default=False):
     has_neg_aux = False
-    for aux in ch.get('aux', []):
-      if aux.get('name') == 'neg-aux':
+    nai = ch.get('neg-aux-index', default=False)
+    if nai:
+      aux = ch.get('aux', [])
+      if aux[nai]:
         has_neg_aux = True
-        break
     if has_neg_aux == False:
       vr.warn('neg-aux',
               'You\'ve selected neg-aux but there is no corresponding ' +\
-              'type in the lexicon.')
+              'type in the lexicon.  Did you delete the automatically created neg-aux type?')
   # ERB 2009-01-23 Commenting out the following because infl-neg is
   # now handled with customize_inflection.  We should eventually give
   # a warning if infl-neg is selected but no lexical rules actually

@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "neg-zero-min") (:content . "neg-zero-min: tests semantics for omissive negation: minimal grammar plus minimal zero neg choices, contrasts no suffix on verb to presence of -suff"))
 ((:path . "neg-aux-min") (:content . "neg-aux-min: scope of negation for negative auxiliary verbs. uses minimal grammar augmented with some choices for auxiliaries"))
 ((:path . "bipartite-stems") (:content . "bipartite-stems: Basic test cases for bipartite stems, based on mini-English"))
 ((:path . "morphotactics-impl-expl-disjunction") (:content . "morphotactics-impl-expl-disjunction: Models and tests both implicit and explicit non-sequential disjunctions, and an explicit sequential disjunction."))
