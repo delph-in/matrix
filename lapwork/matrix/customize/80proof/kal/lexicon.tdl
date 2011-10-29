@@ -1,0 +1,63 @@
+;;; Nouns
+
+inuk := noun1-noun-lex &
+  [ STEM < "inuk" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_person_n_rel" ].
+
+puisi := noun1-noun-lex &
+  [ STEM < "puisi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_seal_n_rel" ].
+
+qimmiq := noun1-noun-lex &
+  [ STEM < "qimmiq" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_dog_n_rel" ].
+
+tulu := noun1-noun-lex &
+  [ STEM < "tulu" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_englishman_n_rel" ].
+
+qallunaa := noun1-noun-lex &
+  [ STEM < "qallunaa" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_dane_n_rel" ].
+
+kalaalli := noun1-noun-lex &
+  [ STEM < "kalaalli" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_greenlander_n_rel" ].
+
+illit := 2sing-pronoun-noun-lex &
+  [ STEM < "illit" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+uanga := 1sing-pronoun-noun-lex &
+  [ STEM < "uanga" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+uagut := 1pl-pronoun-noun-lex &
+  [ STEM < "uagut" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+ilissi := 2pl-pronoun-noun-lex &
+  [ STEM < "ilissi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+una := 3s-pronoun-noun-lex &
+  [ STEM < "una" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+uku := 3pl-pronoun-noun-lex &
+  [ STEM < "uku" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+;;; Verbs
+
+pisar := trans-verb-lex &
+  [ STEM < "pisar" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_catch_v_rel" ].
+
+qilut := intrans-verb-lex &
+  [ STEM < "qilut" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_bark_v_rel" ].
+
+niri := intrans-verb-lex &
+  [ STEM < "niri" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ].

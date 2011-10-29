@@ -1,0 +1,63 @@
+version=17
+
+section=general
+language=lapAllFeaturesTest
+archive=no
+
+section=word-order
+word-order=sov
+has-dets=yes
+noun-det-order=det-noun
+has-aux=yes
+aux-comp-order=before
+aux-comp=vp
+
+section=number
+  number1_name=sg
+    number1_supertype1_name=number
+  number2_name=pl
+    number2_supertype1_name=number
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=accusative
+
+section=direct-inverse
+
+section=tense-aspect
+tense-definition=choose
+past=on
+present=on
+  aspect1_name=perfective
+    aspect1_supertype1_name=aspect
+  aspect2_name=imperfective
+    aspect2_supertype1_name=aspect
+  situation1_name=stative
+    situation1_supertype1_name=situation
+  situation2_name=nonstative
+    situation2_supertype1_name=situation
+  nf-subform1_name=infinitive
+  nf-subform2_name=presparticiple
+  nf-subform3_name=pastparticiple
+
+section=other-features
+
+section=sentential-negation
+infl-neg=on
+
+section=coordination
+
+section=matrix-yes-no
+
+section=lex-types
+
+section=lexicon
+
+section=test-sentences

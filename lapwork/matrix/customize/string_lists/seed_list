@@ -1,0 +1,142 @@
+1@n1 iv
+2@det n1 iv
+3@n1 n2 tv
+4@det n1 det n2 tv
+5@det n1 n2 tv
+6@n1 det n2 tv
+7@n2 n1 tv
+8@det n2 det n1 tv
+9@det n2 n1 tv
+10@n2 det n1 tv
+11@n1 n2 neg tv
+12@det n1 det n2 neg tv
+13@n2 n1 neg tv
+14@det n2 det n1 neg tv
+15@n1 n2 tv qpart
+16@det n1 det n2 tv qpart
+17@n2 n1 tv qpart
+18@det n2 det n1 tv qpart
+19@n1 iv aux
+20@p-nom n1 iv aux
+21@p-nom n1 iv
+22@det n1 iv aux
+23@p-nom det n1 iv aux
+24@p-nom det n1 iv
+25@p-nom n1 n2 tv
+26@n1 p-acc n2 tv
+27@p-nom n1 p-acc n2 tv
+28@p-nom n1 n2 tv aux
+29@n1 p-acc n2 tv aux
+30@p-nom n1 p-acc n2 tv aux
+31@p-nom det n1 det n2 tv
+32@det n1 p-acc det n2 tv
+33@p-nom det n1 p-acc det n2 tv
+34@p-nom det n1 det n2 tv aux
+35@det n1 p-acc det n2 tv aux
+36@p-nom det n1 p-acc det n2 tv aux
+37@p-nom det n1 n2 tv
+38@det n1 p-acc n2 tv
+39@p-nom det n1 p-acc n2 tv
+40@p-nom det n1 n2 tv aux
+41@det n1 p-acc n2 tv aux
+42@p-nom det n1 p-acc n2 tv aux
+43@p-nom n1 det n2 tv
+44@n1 p-acc det n2 tv
+45@p-nom n1 p-acc det n2 tv
+46@p-nom n1 det n2 tv aux
+47@n1 p-acc det n2 tv aux
+48@p-nom n1 p-acc det n2 tv aux
+49@n2 n1 tv aux
+50@det n2 det n1 tv aux
+51@det n2 n1 tv aux
+52@n2 det n1 tv aux
+53@n1 n2 neg tv
+54@p-nom n1 p-acc n2 neg tv
+55@n1 n2 tv neg aux
+56@p-nom n1 p-acc n2 tv neg aux
+57@n1 n2 neg-tv
+58@p-nom n1 p-acc n2 neg-tv
+59@n1 n2 tv neg-aux
+60@p-nom n1 p-acc n2 tv neg-aux
+61@n1 n2 tv-neg
+62@p-nom n1 p-acc n2 tv-neg
+63@n1 n2 tv aux-neg
+64@p-nom n1 p-acc n2 tv aux-neg
+65@n1 n2 neg neg-tv
+66@p-nom n1 p-acc n2 neg neg-tv
+67@n1 n2 tv neg neg-aux
+68@p-nom n1 p-acc n2 tv neg neg-aux
+69@n1 n2 neg tv-neg
+70@p-nom n1 p-acc n2 neg tv-neg
+71@n1 n2 tv neg aux-neg
+72@p-nom n1 p-acc n2 tv neg aux-neg
+73@det n1 det n2 neg tv
+74@p-nom det n1 p-acc det n2 neg tv
+75@det n1 det n2 neg tv aux
+76@p-nom det n1 p-acc det n2 tv neg aux
+77@det n1 det n2 neg-tv
+78@p-nom det n1 p-acc det n2 neg-tv
+79@det n1 det n2 tv neg-aux
+80@p-nom det n1 p-acc det n2 tv neg-aux
+81@det n1 det n2 tv-neg
+82@p-nom det n1 p-acc det n2 tv-neg
+83@det n1 det n2 tv aux-neg
+84@p-nom det n1 p-acc det n2 tv aux-neg
+85@det n1 det n2 neg neg-tv
+86@p-nom det n1 p-acc det n2 neg neg-tv
+87@det n1 det n2 tv neg neg-aux
+88@p-nom det n1 p-acc det n2 tv neg neg-aux
+89@det n1 det n2 neg tv-neg
+90@p-nom det n1 p-acc det n2 neg tv-neg
+91@det n1 det n2 tv neg aux-neg
+92@p-nom det n1 p-acc det n2 tv neg aux-neg
+93@n2 n1 neg tv
+94@n2 n1 tv neg aux
+95@n2 n1 neg-tv
+96@n2 n1 tv neg-aux
+97@n2 n1 tv-neg
+98@n2 n1 tv aux-neg
+99@n2 n1 neg neg-tv
+100@n2 n1 tv neg neg-aux
+101@n2 n1 neg tv-neg
+102@n2 n1 tv neg aux-neg
+103@det n2 det n1 neg tv
+104@det n2 det n1 neg tv aux
+105@det n2 det n1 neg-tv
+106@det n2 det n1 tv neg-aux
+107@det n2 det n1 tv-neg
+108@det n2 det n1 tv aux-neg
+109@det n2 det n1 neg neg-tv
+110@det n2 det n1 tv neg neg-aux
+111@det n2 det n1 neg tv-neg
+112@det n2 det n1 tv neg aux-neg
+113@n1 tv n2 qpart
+114@tv n1 n2 
+115@aux n1 tv n2
+116@p-nom n1 tv n2 qpart
+117@tv p-nom n1 n2 
+118@aux p-nom n1 tv n2
+119@n1 tv p-acc n2 qpart
+120@tv n1 p-acc n2 
+121@aux n1 tv p-acc n2
+122@p-nom n1 tv p-acc n2 qpart
+123@tv p-nom n1 p-acc n2 
+124@aux p-nom n1 tv p-acc n2
+125@det n1 tv det n2 qpart
+126@tv det n1 det n2 
+127@aux det n1 tv det n2
+128@p-nom det n1 tv det n2 qpart
+129@tv p-nom det n1 det n2 
+130@aux p-nom det n1 tv det n2
+131@det n1 tv p-acc det n2 qpart
+132@tv det n1 p-acc det n2 
+133@aux det n1 tv p-acc det n2
+134@p-nom det n1 tv p-acc det n2 qpart
+135@tv p-nom det n1 p-acc det n2 
+136@aux p-nom det n1 tv p-acc det n2
+137@n2 tv n1 qpart
+138@tv n2 n1 
+139@aux n2 tv n1
+140@det n2 tv det n1 qpart
+141@tv det n2 det n1 
+142@aux det n2 tv det n1

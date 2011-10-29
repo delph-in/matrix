@@ -1,0 +1,101 @@
+8/3/2007
+
+Cleaned up known typos in userguide.tex, added comments for things
+that need to be fixed but weren't easy to fix.
+
+Proposed overall structure for expanded monograph version
+of user's guide: 
+
+Working title: Compositional semantics in the wild
+
+Table of contents:
+
+1. Big picture questions.  What are we answering here?
+	- Early design decision in HPSG to look at language as
+	a system of signs/pairing of form and meaning.
+	- No syntactic analysis without semantic analysis/meaning
+	representation.
+	- Working with broad-coverage implemented grammars in
+	this context means we have to apply this commitment to
+	developing meaning representation to all the stuff that
+	occurs in the data we work with.
+	- The Grammar Matrix represents an attempt to do this
+	while being as language independent as possible (facilitate
+	MT, downstream processing in general)
+	- => bottom-up study of similarities/differences between
+	languages at the level of compositional semantics.
+	- Commitment to compositionality => bottom-up study of
+	what aspects of meaning can be represented compositionally.
+	- Mention reversability, monotonic accumulation of information,
+	relationship to generator, usefulness for MT
+2. Brief sketch of MRS to make the next chapter readable
+	- Basically our review of Copestake et al 2001, 2005
+3. How do our MRSs differ from dependency structures
+	- Motivate with description of specific phenomena
+	that Dan will propose; things that we handle and
+	represent that go beyond what you can see in e.g.,
+	f-structure
+	- To the extent that f-structures do overlap with
+	what we are representing, review ParGram work as in
+	a similar spirit.
+	- Implications for evaluation across frameworks
+4. Framework independent MRS design
+	- What the MRSs look like, independent of the type
+	hierarhcy etc of the Matrix
+	- To be extracted from what is already written
+	- Include description of grammaticalized pred names and sort
+	hierarchy
+	- Features (variable properties) v. predications
+5. API: Sem-I, vpm
+6. Construction of MRS within the Matrix
+	- Other half of existing sections 3-6
+	- Types defined in matrix.tdl
+	- How the syntax-semantics interface works
+	- Add in linking types now in matrix.tdl
+	- Add in semantic side of lexical rule types now in matrix.tdl
+7. Specific analyses
+	- Description of MRS testuite items (or selection from)
+	describing what they illustrate and why we represent
+	them as we do.
+	- Previous chapters will mention phenomena in
+	passing or moderate detail, but will point forward
+	to this collection.
+	- MRS testsuite items will primarily be drawn from
+	English, but use examples from other languages where
+	phenomena can't easily be illustrated in English (prodrop, 
+	numeral classifiers, ?)
+	- Also to include: nominalization, serial verb constructions, 
+	causative/inchoative, wa-marked topics in Japanese (?),...
+
+
+General comments:
+
+Focus will be specific representations in MRS/construction thereof as
+developed by LinGO/DELPH-IN (and adopted in the Matrix), but not
+directly MRS-in-Matrix.
+
+Try to de-emphasize ERG a bit.  Use ERG examples where they are
+convenient/motivated, but try to bring in examples from other resource
+grammars as well.
+
+We'll need to redo all the MRSs displayed to show the message-free
+version.
+
+To read:
+
+Ash Asudeh & Dick Crouch
+Gert's emerging volume on semantics and pragmatics in HPSG
+CCG/MRS (John Beavers)
+RASP-RMRS
+Annette's work on dependency grammar & RMRS
+
+Timeline:
+
+Dan to list relevant phenomena to consider in the near term,
+More active work starting in January
+
+Publication goal:
+
+Main idea here is a monograph, but need to consider overlap
+with other projects planned.  Keep an eye out for piece to spin
+off as journal publication, too.

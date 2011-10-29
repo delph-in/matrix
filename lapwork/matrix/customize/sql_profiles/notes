@@ -1,0 +1,61 @@
+ToDo:
+
+/Code for generating groups from s_filters designation
+/Code for populating groups table
+Finish s_filters
+Code for generating sql lt definition (including calculating groups) from 
+	choices file
+
+Add row to lang_type table, so far just ID? (creation date, random or purpose-built)
+
+Go through choices file, and extract all f:v pairs.  (Put into hash with f as key
+and v as value).
+
+Go through groups table:
+	for each group, 
+		extract all members, and group_id
+		if all members are present:
+			add lt_id, group_id row to lt_grp table
+
+
+Then the query for grammatical results will be:
+
+given a lt,
+find all of the groups in the lt
+then all of the filters that use those groups
+then all of the results which pass all of the filters
+
+create temporary tables: item, parse, result
+	
+then python:
+
+	find all results corresponding to single item
+	create one item, parse pair for the set
+	link results to new item,parse pair
+
+	[i.e., keep given results table, but create new item and parse]
+
+add to item, parse, result a selection from ungrammatical (s and u)
+
+finally, export final item, parse, result as '@' delimited in the order
+tsdb++ expects.
+
+-----------------------------------
+Tables: 
+
+lt
+
+lt_id auto-increment
+lt_origin enum(r,p)
+
+lt_grp
+
+lg_id auto-increment
+lg_lt_id <- Key
+lg_grp_id 
+
+
+-------------------------------------
+
+If there's something there, fetchone() returns a tuple with one thing in it.
+If there's nothing there, fetchone() returns nothing (NoneType)

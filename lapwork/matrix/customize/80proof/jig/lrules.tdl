@@ -1,0 +1,5 @@
+nominative-case-marker-lex := nominative-case-marker-lex-rule.
+
+3s-agreement-marker-lex := 3s-agreement-marker-lex-rule.
+
+third-person-object-marker-lex := third-person-object-marker-lex-rule.

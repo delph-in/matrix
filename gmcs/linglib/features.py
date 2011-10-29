@@ -119,17 +119,12 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     elif (n == 'negation' and v[0] == 'plus'):
       # ERB 2009-01-22 This is where we deal with the
       # negative affixes.
-      # If neg-head-feature is on, then we also mark the verb
-      # negated +.
-      if ch.get('neg-head-feature') == 'on':
-        tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].',merge=True)
-
       tdlfile.add(type_name + ':= \
                      [ C-CONT [ HOOK [ XARG #xarg,\
 	                     LTOP #ltop,\
 	                     INDEX #ind ],\
 	              RELS <! event-relation &\
-	                      [ PRED "neg_rel",\
+	                      [ PRED "_neg_r_rel",\
 	                        LBL #ltop,\
 	                        ARG1 #harg ] !>,\
 	              HCONS <! qeq &\
@@ -141,7 +136,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                                                 INDEX #ind,\
 	                                        LTOP #larg ],\
 	                          CAT.HEAD verb]]]].',
-                 'This lexical rule adds the neg_rel to the verb\'s\n\ RELS list.  It is instantiated by a spelling-changing\n\ rule as specified in irules.tdl, or a non-spelling-changing rule\n in lrules.tdl.',
+                 'This lexical rule adds the neg_r_rel to the verb\'s\n\
+	          RELS list.  It is instantiated by a spelling-changing\n\
+	          rule as specified in irules.tdl.',
                   merge=True)
 
 

@@ -33,6 +33,7 @@ from gmcs.linglib import verbal_features
 from gmcs.linglib import negation
 from gmcs.linglib import coordination
 from gmcs.linglib import yes_no_questions
+from gmcs.linglib import toolboximport
 
 
 ######################################################################
@@ -84,6 +85,46 @@ roots = None
 #  else:
 #    error 'probable script bug'
 
+
+######################################################################
+# customize_punctuation(grammar_path)
+#   Determine which punctuation characters to ignore in parsing
+
+def customize_punctuation(grammar_path):
+  if not ch.get('punctuation-chars',''): return
+  chars = list(unicode(ch['punctuation-chars'], 'utf8'))
+  # First for LKB's globals.lsp
+  punc_re = re.compile(r'(' + r'|'.join(r'#\\' + re.escape(c) + ' ?'
+                                        for c in chars) + r')')
+  filename = os.path.join(grammar_path, 'lkb', 'globals.lsp')
+  lines = iter(open(filename, 'r').readlines())
+  glbl_lsp = open(filename, 'w')
+  for line in lines:
+    if line.startswith('(defparameter *punctuation-characters*'):
+      # NOTE: because we don't want to parse lisp, we assume here that
+      #       the (defparameter block ends at the next blank line
+      while line.strip() != '':
+          line = punc_re.sub('', line)
+          print >>glbl_lsp, line.rstrip()
+          line = lines.next()
+    print >>glbl_lsp, line.rstrip()
+  glbl_lsp.close()
+  # PET's pet.set is a bit easier
+  line_re = re.compile(r'^punctuation-characters := "(.*)".\s*$')
+  # need to escape 1 possibility for PET
+  chars = [{'"':'\\"'}.get(c, c) for c in chars]
+  punc_re = re.compile(r'(' + r'|'.join(re.escape(c) for c in chars) + r')')
+  filename = os.path.join(grammar_path, 'pet', 'pet.set')
+  lines = iter(open(filename, 'r').readlines())
+  pet_set = open(filename, 'w')
+  for line in lines:
+    line = unicode(line, 'utf8')
+    s = line_re.search(line)
+    if s:
+      line = 'punctuation-characters := "%s".' % punc_re.sub('', s.group(1))
+    print >>pet_set, line.rstrip().encode('utf8')
+  pet_set.close()
+
 ######################################################################
 # customize_test_sentences(grammar_path)
 #   Create the script file entries for the user's test sentences.
@@ -112,6 +153,30 @@ def customize_test_sentences(grammar_path):
     ts.close()
   except:
     pass
+
+def customize_itsdb(grammar_path):
+  from gmcs.lib import itsdb
+  if 'sentence' not in ch: return
+
+  def get_item(s, i):
+    return dict([('i-id', str(i+1)),
+                 ('i-origin', 'unknown'),
+                 ('i-register', 'unknown'),
+                 ('i-format', 'none'),
+                 ('i-difficulty', '1'),
+                 ('i-category', 'S' if not s.get('star', False) else ''),
+                 ('i-input', s['orth']),
+                 ('i-wf', '0' if s.get('star', False) else '1'),
+                 ('i-length', str(len(s['orth'].split()))),
+                 ('i-author', 'author-name'),
+                 ('i-date', str(datetime.date.today()))])
+
+  skeletons = os.path.join(grammar_path, 'tsdb', 'skeletons')
+  relations = os.path.join(skeletons, 'Relations')
+  matrix_skeleton = os.path.join(skeletons, 'matrix')
+  items = {'item': (get_item(s, i) for i, s in enumerate(ch['sentence']))}
+  profile = itsdb.TsdbProfile(matrix_skeleton)
+  profile.write_profile(matrix_skeleton, relations, items)
 
 def customize_script(grammar_path):
   try:
@@ -214,7 +279,6 @@ def customize_roots():
 
 def setup_vcs(ch, grammar_path):
   if 'vcs' in ch:
-    from subprocess import call
     IGNORE = open(os.devnull,'w')
     cwd = os.getcwd()
     os.chdir(grammar_path)
@@ -230,11 +294,14 @@ def setup_vcs(ch, grammar_path):
       call(['hg', 'commit',
             '-u Grammar Matrix <matrix-dev@u.washington.edu>',
             '-m "Initial commit."'], stdout=IGNORE, stderr=IGNORE)
-    #elif ch['vcs'] == 'bzr':
-    #  call(['bzr', 'init', grammar_path])
-    #  call(['bzr', 'add', grammar_path])
-    #  call(['bzr', 'commit', '-m "Initial commit."'],
-    #       stdout=IGNORE, stderr=IGNORE)
+    elif ch['vcs'] == 'bzr':
+      call(['bzr', 'init'], stdout=IGNORE, stderr=IGNORE)
+      call(['bzr', 'add'], stdout=IGNORE, stderr=IGNORE)
+      call(['bzr', 'whoami', '--branch',
+            'Grammar Matrix Customization System <matrix-dev@uw.edu>'],
+           stdout=IGNORE, stderr=IGNORE)
+      call(['bzr', 'commit', '-m "Initial commit."'],
+           stdout=IGNORE, stderr=IGNORE)
     os.chdir(cwd)
     IGNORE.close()
 
@@ -258,17 +325,21 @@ def customize_matrix(path, arch_type, destination=None):
   grammar_path = get_grammar_path(ch.get('iso-code', language).lower(),
                                   language.lower(), destination)
 
-  # Copy from matrix-core
+  # delete any existing contents at grammar path
   if os.path.exists(grammar_path):
     shutil.rmtree(grammar_path)
+  # the rsync command won't create the target dirs, so do it now
+  os.makedirs(grammar_path)
+
   # Use the following command when python2.6 is available
   #shutil.copytree('matrix-core', grammar_path,
   #                ignore=shutil.ignore_patterns('.svn'))
-  shutil.copytree(get_matrix_core_path(), grammar_path)
-  # Since we cannot use shutil.ignore_patterns until 2.6, remove .svn dirs
-  shutil.rmtree(os.path.join(grammar_path, '.svn'), ignore_errors=True)
-  shutil.rmtree(os.path.join(grammar_path, 'lkb/.svn'), ignore_errors=True)
-  shutil.rmtree(os.path.join(grammar_path, 'pet/.svn'), ignore_errors=True)
+  IGNORE = open(os.devnull, 'w')
+  call(['rsync', '-a', '--exclude=.svn',
+        get_matrix_core_path() + os.path.sep, grammar_path],
+       stdout=IGNORE, stderr=IGNORE)
+  IGNORE.close()
+
   # include a copy of choices (named 'choices' to avoid collisions)
   shutil.copy(path, os.path.join(grammar_path, 'choices'))
 
@@ -339,6 +410,12 @@ def customize_matrix(path, arch_type, destination=None):
  # init_form_hierarchy()
   verbal_features.init_verbal_hierarchies(ch, hierarchies)
 
+  #Integrate choices related to lexical entries imported from
+  #Toolbox lexicon file(s), if any.  NOTE: This needs to be called
+  #before anything else that looks at the lexicon-related choices,
+  #so before lexical_items.insert_ids().
+  toolboximport.integrate_imported_entries(ch)
+
   #Create unique ids for each lexical entry; this allows
   #us to do the same merging on the lexicon TDL file as we
   #do on the other TDL files.  NOTE: This needs to be called
@@ -378,7 +455,9 @@ def customize_matrix(path, arch_type, destination=None):
   negation.customize_sentential_negation(mylang, ch, lexicon, rules)
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
+  customize_punctuation(grammar_path)
   customize_test_sentences(grammar_path)
+  customize_itsdb(grammar_path)
   customize_script(grammar_path)
   customize_pettdl(grammar_path)
   customize_roots()

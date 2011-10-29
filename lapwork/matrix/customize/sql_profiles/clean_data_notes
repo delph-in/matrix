@@ -1,0 +1,24 @@
+delete from item;
+delete from parse;
+delete from result;
+delete from mrs;
+
+load data local infile '/home/ebender/harv/parse' into table parse fields terminated by '@';
+load data local infile '/home/ebender/harv/item' into table item fields terminated by '@';
+load data local infile '/home/ebender/harv/result' into table result fields terminated by '@';
+
+python populate_mrs_table.py
+python add_permutes.py
+
+drop table item, parse, result, mrs;
+call create_item();
+call create_item_inx();
+call create_parse();
+call create_parse_inx();
+call create_result();
+call create_mrs();
+load data local infile '/home/ebender/harv/parse' into table parse fields terminated by '@';
+load data local infile '/home/ebender/harv/item' into table item fields terminated by '@';
+load data local infile '/home/ebender/harv/result' into table result fields terminated by '@';
+
+
