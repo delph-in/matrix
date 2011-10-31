@@ -1,0 +1,16 @@
+1@unknown@formal@none@1@S@n1 iv@@@@1@2@@jcrowgey@31-10-2011
+2@unknown@formal@none@1@S@n1 tv n2@@@@1@3@@jcrowgey@31-10-2011
+3@unknown@formal@none@1@S@n1 neg-iv@@@@1@2@@jcrowgey@31-10-2011
+4@unknown@formal@none@1@S@n1 neg-tv n2@@@@1@3@@jcrowgey@31-10-2011
+5@unknown@formal@none@1@S@n1 otherpref-iv@@@@1@2@@jcrowgey@31-10-2011
+6@unknown@formal@none@1@S@n2 otherpref-tv n2@@@@1@3@@jcrowgey@31-10-2011
+7@unknown@formal@none@1@S@n1 iv-othersuff@@@@1@2@@jcrowgey@31-10-2011
+8@unknown@formal@none@1@S@n1 iv-nonegsuff@@@@1@2@@jcrowgey@31-10-2011
+9@unknown@formal@none@1@S@n1 tv-othersuff n2@@@@1@3@@jcrowgey@31-10-2011
+10@unknown@formal@none@1@S@n1 tv-nonegsuff n2@@@@1@3@@jcrowgey@31-10-2011
+11@unknown@formal@none@1@@n1 neg-iv-nonegsuff@@@@0@2@@jcrowgey@31-10-2011
+12@unknown@formal@none@1@S@n1 neg-iv-othersuff@@@@1@2@@jcrowgey@31-10-2011
+13@unknown@formal@none@1@S@n1 otherpref-iv-othersuff@@@@1@2@@jcrowgey@31-10-2011
+14@unknown@formal@none@1@@n1 neg-tv-nonegsuff n2@@@@0@3@@jcrowgey@31-10-2011
+15@unknown@formal@none@1@S@n1 neg-tv-othersuff n2@@@@1@3@@jcrowgey@31-10-2011
+16@unknown@formal@none@1@S@n1 otherpref-tv-othersuff n2@@@@1@3@@jcrowgey@31-10-2011

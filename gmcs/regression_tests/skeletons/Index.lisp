@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "neg-head-feature") (:content . "neg-head-feature: uses a syntactic head feature to ensure that two affixes are mutually incompatible---intended to model the incompatibility of negation with certain other inflectional morphemes; implemented by having those morphemes specify NEGATED -, while negation obviously, has NEGATION +."))
 ((:path . "neg-zero-min") (:content . "neg-zero-min: checks semantics of negation for a basic zero-neg grammar (a phonologically empty negation suffix)"))
 ((:path . "neg-aux-min") (:content . "neg-aux-min: scope of negation for negative auxiliary verbs. uses minimal grammar augmented with some choices for auxiliaries"))
 ((:path . "bipartite-stems") (:content . "bipartite-stems: Basic test cases for bipartite stems, based on mini-English"))

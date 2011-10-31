@@ -1,0 +1,16 @@
+n1 iv
+n1 tv n2
+n1 neg-iv
+n1 neg-tv n2
+n1 otherpref-iv
+n2 otherpref-tv n2
+n1 iv-othersuff
+n1 iv-nonegsuff
+n1 tv-othersuff n2
+n1 tv-nonegsuff n2
+*n1 neg-iv-nonegsuff
+n1 neg-iv-othersuff
+n1 otherpref-iv-othersuff
+*n1 neg-tv-nonegsuff n2
+n1 neg-tv-othersuff n2
+n1 otherpref-tv-othersuff n2

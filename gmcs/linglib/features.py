@@ -122,7 +122,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       # If neg-head-feature is on, then we also mark the verb
       # negated +.
       if ch.get('neg-head-feature') == 'on':
-        tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].',merge=True)
+        tdlfile.add(type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].',merge=True)
 
       tdlfile.add(type_name + ':= \
                      [ C-CONT [ HOOK [ XARG #xarg,\
@@ -145,6 +145,11 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                   merge=True)
 
 
+    elif (n == 'negation' and v[0] == 'minus'):
+      # JDC 2011-01-11 Users specify negation minus to indicat that a 
+      # lexical type is not compatible with negation
+      if ch.get('neg-head-feature') == 'on':
+        tdlfile.add(type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].',merge=True)
     elif (n == 'question' and v[0] == 'plus'):
       # ERB 2009-07-01 Adding in semantics for question affixes
       tdlfile.add(type_name + ':= \
