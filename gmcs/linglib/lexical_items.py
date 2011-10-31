@@ -278,6 +278,25 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 			 CONT.HOOK.INDEX.SF prop-or-ques ] ] > ].'
     mylang.add(typedef)
 
+  if ch.get('subj-control-verb') == 'yes':
+    typedef = \
+    'subj-contr-transitive-verb-lex := basic-verb-lex.' 
+    mylang.add(typedef)
+    if ch.get('vc-analysis') == 'basic':
+      mylang.add('subj-contr-transitive-verb-lex := arg-comp-aux & \
+       trans-first-arg-control-lex-item.')
+    elif ch.get('vc-analysis') == 'aux-rule':
+      mylang.add('auxrule-first-arg-control-lex-item := basic-one-arg & \
+       [ ARG-ST <  [ LOCAL [ CONT.HOOK [ XARG #ind, \
+	                 		 LTOP #larg ] ] ] >, \
+         SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg, \
+	          			      LARG #larg ] !>, \
+	          LKEYS.KEYREL [ ARG1 #ind, \
+		                 ARG2 #harg ] ] ].')
+      mylang.add('subj-contr-transitive-verb-lex := \
+                    auxrule-first-arg-control-lex-item & one-comp-aux.')
+
+
   case.customize_verb_case(mylang, ch)
 
   # Add constraints to choices to create lex rules for bipartite stems
@@ -306,13 +325,19 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
       c = val.split('-')
 #c can point to transitive or ditransitive
       if len(c) == 2:
-        if c[1] != 'scomp':
+        if c[1] == 'scomp':
+          a_case = case.canon_to_abbr(c[0], cases)
+          tivity = a_case + '-' + c[1] + '-trans'
+        elif c[1] == 'inf':
+          a_case = case.canon_to_abbr(c[0], cases)
+          tivity = a_case + '-' + c[1]
+          if verb.get('control') == 'subj':
+            tivity += '-subj-contr'
+          tivity += '-trans'
+        else:
           a_case = case.canon_to_abbr(c[0], cases)
           o_case = case.canon_to_abbr(c[1], cases)
           tivity = a_case + '-' + o_case + '-trans'
-        else:
-          a_case = case.canon_to_abbr(c[0], cases)
-          tivity = a_case + '-scomp-trans'
       elif len(c) == 3:
         a_case = case.canon_to_abbr(c[0], cases)
         b_case = case.canon_to_abbr(c[1], cases)
