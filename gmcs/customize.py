@@ -34,6 +34,7 @@ from gmcs.linglib import verbal_features
 from gmcs.linglib import negation
 from gmcs.linglib import coordination
 from gmcs.linglib import yes_no_questions
+from gmcs.linglib import toolboximport
 
 
 ######################################################################
@@ -413,6 +414,12 @@ def customize_matrix(path, arch_type, destination=None):
  # init_mood_hierarchy()
  # init_form_hierarchy()
   verbal_features.init_verbal_hierarchies(ch, hierarchies)
+
+  #Integrate choices related to lexical entries imported from
+  #Toolbox lexicon file(s), if any.  NOTE: This needs to be called
+  #before anything else that looks at the lexicon-related choices,
+  #so before lexical_items.insert_ids().
+  toolboximport.integrate_imported_entries(ch)
 
   #Create unique ids for each lexical entry; this allows
   #us to do the same merging on the lexicon TDL file as we
