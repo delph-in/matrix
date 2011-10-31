@@ -822,7 +822,7 @@ Radio neg-order "Negative adverb order" "and appears " ""
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p>" 20
+Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p></div>" 20
 
 Label "<div id='bi-neg' class='switch' style='display:none'><p> Negation can be indicated by the required presence of two negative morphemes.  You'll have to specify their morphosyntax and their interactions.</p></div>"
 
