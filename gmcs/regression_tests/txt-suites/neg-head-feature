@@ -1,0 +1,8 @@
+n1 iv
+n1 tv n2
+n1 neg-iv
+n1 neg-tv n2
+n1 iv-suff
+n1 tv-suff n2
+*n1 neg-iv-suff
+*n1 neg-tv-suff n2
