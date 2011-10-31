@@ -5,3 +5,5 @@ german-argcomp-compl=German test covering ACL2011 data using arg-comp analysis
 german-auxrule-compl=German test suite covering ACL data using auxrule analysis
 ger-subcontr-argcomp=Testing whether subject control works with arg-comp analysis and minor word order variations
 ger-subjcontr-auxrule=Small test for subject control verbs with minor word order variations using auxrule analysis
+acl-basic-ger-argcomp=l of German covering phenomena present for ACL 2011
+German-auxrule=Regression test covering basic data from acl 2011 using auxrule analysis for German
