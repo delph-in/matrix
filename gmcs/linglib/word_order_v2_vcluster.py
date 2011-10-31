@@ -25,7 +25,9 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
   mylang.add('head-final-head-nexus := nonverbal-comp-phrase & \
                                        [ SYNSEM.LOCAL.CAT.MC +,\
                                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
-  
+###[ INV - ] for yes-no questions
+  if ch.get('q-inv'):  
+    mylang.add('head-final-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV - ].')
   if ch.get('aux-comp-order') == 'both' or ch.get('vc-analysis') == 'aux-rule':
     mylang.add('cat :+ [ HEADFINAL bool ].', section='addenda')
 
@@ -98,8 +100,11 @@ def add_v2_with_cluster_rules(ch, rules):
   rules.add('subj-head-vc := subj-head-vc-phrase.')
   rules.add('aux-2nd-comp := aux-2nd-comp-phrase.')
   rules.add('comp-aux-2nd := comp-aux-2nd-phrase.')
-
-
+  # rule for yes-no question inversion
+  # for now only when analysis is aux-rule (apparently not used for 
+  # arg-comp, or old error...)
+  if ch.get('q-inv') and ch.get('vc-analysis') == 'aux-rule':
+    rules.add('aux-1st-comp := aux-1st-comp-phrase.')
 
   if ch.get('argument-order') != 'fixed':
     rules.add('head-comp-2 := head-comp-phrase-2.')
@@ -260,18 +265,23 @@ def create_argument_composition_phrases(ch, mylang):
     if ch.get('aux-comp-order') == 'before':
       currenttype = 'aux-comp-vc-phrase'
       mylang.add(currenttype + ' :=  general-head-comp-vc-phrase & \
-                                 [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+                                 [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC +, \
+                                   HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
 
   else:
+  # adding constraint that head must be [ AUX + ], leading to spurious analyses
+  # without
     if ch.get('aux-comp-order') == 'after':
       mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
-                         [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].') 
+                         [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC +, \
+                           HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].') 
 
     elif ch.get('aux-comp-order') == 'both':
       mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
                          [ SYNSEM.LOCAL.CAT.SECOND na,\
                            HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
-                                                       SECOND + ], \
+                                                       SECOND +, \
+                                                       HEAD.AUX + ], \
                            NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
       mylang.add('aux-comp-vc-phrase := basic-head-1st-comp-phrase & head-initial-invc & \
                          [ SYNSEM.LOCAL.CAT.SECOND +,\
@@ -510,15 +520,32 @@ def spec_word_order_phrases_aux_plus_verb(ch, mylang):
 			                  CONT.HOOK #hook ], \
                   NON-HEAD-DTR.SYNSEM #comp & [ LOCAL.CAT [ HEAD verb, \
 					                    VAL #val ] ] ].')
-       
-  mylang.add('aux-2nd-comp-phrase := basic-aux-verb-rule & head-initial & \
+  if ch.get('q-inv'):
+    mytype = 'aux-comp-non-vc-phrase'
+    mylang.add('aux-2nd-comp-phrase := ' + mytype + '.')
+    mylang.add('aux-2nd-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV - ].')
+    mylang.add('aux-1st-comp-phrase := ' + mytype + '.')
+    mylang.add('aux-1st-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV +, \
+                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
+				                           COMPS < > ] ].')
+    mylang.add('comp-aux-2nd-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV - ].')
+
+    comment = \
+      'The sequence aux-1st-comp-inv-cl-head-adj leads to sentences like\n' + \
+      '*Wird der mann schlafen nicht?, *Hat der mann geschlafen bestimmt.\n' + \
+      'Using MODIFIED to prevent this from happening.' + \
+      'Replace with other (especially introduced) feature if necessary'
+    mylang.add('aux-1st-comp-phrase := [ SYNSEM.MODIFIED notmod-or-rmod ].', comment)
+  else:
+    mytype = 'aux-2nd-comp-phrase'     
+  mylang.add(mytype + ' := basic-aux-verb-rule & head-initial & \
                              [ SYNSEM [ LOCAL.CAT [ HEADFINAL +, \
 			                            MC #mc & na, \
 			                            HEAD.FORM finite ], \
 	                                            LIGHT - ], \
                                HEAD-DTR.SYNSEM [ LIGHT +, \
 		                                 LOCAL.CAT.MC #mc ], \
-                               NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')   
+                               NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')       
         
   mylang.add('head-final-invc := [ SYNSEM.LOCAL.CAT.VC -, \
                                          HEAD-DTR.SYNSEM.LOCAL.CAT.VC na-or-- ].')
@@ -646,3 +673,37 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
 
   if ch.get('argument-order') == 'fixed':
     mylang.add('noncomp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
+
+
+def create_germanic_adverbial_phrases(ch, mylang, rules):
+###need to separate adverbial from adjectival phrases, due to different
+###wo interactions
+ 
+  mylang.add('adverb-head-phrase := basic-head-mod-phrase-simple & \
+                  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].')
+ 
+###if no auxiliary, direct attachment v2
+
+  mylang.add('head-2nd-adj-phrase := head-initial-head-nexus & adverb-head-phrase.')
+  if ch.get('q-inv') and ch.get('vc-analysis') == 'aux-rule':
+    mylang.add('head-2nd-adj-phrase := [ HEAD-DTR.SYNSEM.MODIFIED hasmod ].')
+
+  mylang.add('head-2nd-adj-int-phrase := head-adj-int-phrase & head-2nd-adj-phrase.')
+  mylang.add('head-2nd-adj-scop-phrase := head-adj-scop-phrase & head-2nd-adj-phrase.')
+ 
+  mylang.add('adj-head-2nd-int-phrase := adj-head-int-phrase & head-final-head-nexus & adverb-head-phrase.')
+ 
+  mylang.add('adj-head-2nd-scop-phrase := adj-head-scop-phrase & head-final-head-nexus & adverb-head-phrase.')
+
+  rules.add('adj-head-2nd-int := adj-head-2nd-int-phrase.')
+  rules.add('adj-head-2nd-scop := adj-head-2nd-scop-phrase.')
+  rules.add('head-2nd-adj-int := head-2nd-adj-int-phrase.')
+  rules.add('head-2nd-adj-scop := head-2nd-adj-scop-phrase.')
+
+
+### TO DO: FIND OUT ABOUT DANISH
+  if ch.get('vc-placement') == 'post':
+    mylang.add('adj-head-int-vc-phrase := adj-head-int-phrase & head-final-invc & adverb-head-phrase.')
+    mylang.add('adj-head-scop-vc-phrase := adj-head-scop-phrase & head-final-invc & adverb-head-phrase.')    
+    rules.add('adj-head-int-vc := adj-head-int-vc-phrase.')
+    rules.add('adj-head-scop-vc := adj-head-scop-vc-phrase.')

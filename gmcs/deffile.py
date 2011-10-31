@@ -234,8 +234,10 @@ HTML_sentencespostbody = '''
 HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors()">
 '''
 
+HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();">'''
+
 HTML_method = 'post'
-HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '">'
+HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '" enctype="multipart/form-data">'
 
 HTML_postform = '</form>'
 
@@ -281,7 +283,7 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
                size = '', onclick = '', disabled = False, onchange = ''):
   chkd = ''
   if checked:
-    chkd = ' checked'
+    chkd = ' checked="checked"'
 
   if size:
     if 'x' in size:
@@ -297,7 +299,7 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
 
   dsabld = ''
   if disabled:
-    dsabld = ' disabled'
+    dsabld = ' disabled="disabled"'
 
   mark = ''
   if vr:
@@ -514,7 +516,7 @@ class MatrixDefFile:
     else:
       return v
 
-  # return the variablefor a friendly name, or the friendly name if
+  # return the variable for a friendly name, or the friendly name if
   # none is defined
   def v(self, f):
     if f in self.f2v:
@@ -592,7 +594,7 @@ class MatrixDefFile:
       word = tokenize_def(l)
       if len(word) == 0:
         pass
-      elif word[0] == 'Section':
+      elif word[0] == 'Section' and (len(word) != 4 or word[3] != '0'):
         print '<div class="section"><span id="' + word[1] + 'button" ' + \
               'onclick="toggle_display(\'' + \
               word[1] + '\',\'' + word[1] + 'button\')"' + \
@@ -723,11 +725,18 @@ class MatrixDefFile:
         i += 1
         while lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
-          (rval, rfrn, rbef, raft) = word[1:]
           checked = False
-          if choices.get(vn) == rval:
-            checked = True
-          html += html_input(vr, 'radio', vn, rval, checked,
+          if len(word) > 5:
+            (rval, rfrn, rbef, raft, js) = word[1:]
+            if choices.get(vn) == rval:
+              checked = True
+            html += html_input(vr, 'radio', vn, rval, checked,
+                             rbef, raft, onclick=js) + '\n'
+          else:
+            (rval, rfrn, rbef, raft) = word[1:]
+            if choices.get(vn) == rval:
+              checked = True
+            html += html_input(vr, 'radio', vn, rval, checked,
                              rbef, raft) + '\n'
           i += 1
         html += af + '\n'
@@ -844,6 +853,16 @@ class MatrixDefFile:
         value = choices.get(vn)
         html += html_input(vr, word[0].lower(), vn, value, False,
                            bf, af, sz, onchange=oc) + '\n'
+      elif word[0] == 'File':
+        (vn, fn, bf, af, sz) = word[1:]
+        vn = prefix + vn
+        value = choices.get(vn)
+        html += html_input(vr, word[0].lower(), vn, value, False,
+                           bf, af, sz) + '\n'
+      elif word[0] == 'Button':
+        (vn, bf, af, oc) = word[1:]
+        html += html_input(vr, word[0].lower(), '', vn, False,
+                           bf, af, onclick=oc) + '\n';
       elif word[0] == 'BeginIter':
         iter_orig = word[1]
         (iter_name, iter_var) = word[1].replace('}', '').split('{', 1)
@@ -1010,6 +1029,11 @@ class MatrixDefFile:
              js_array([t for t in choices.types()]))
 
       print HTML_prebody
+      if section == 'sentential-negation':
+        print HTML_prebody_sn
+      else:
+        print HTML_prebody
+
       print '<h2>' + section_friendly + '</h2>'
       print HTML_preform
       print html_input(vr, 'hidden', 'section', section,
@@ -1024,6 +1048,27 @@ class MatrixDefFile:
     print html_input(vr, 'button', '', 'Clear', False, '', '</p>', '',
                      'clear_form()')
 
+    if section == 'sentential-negation':
+      # the sentential negation subpage needs access to certain choices
+      # from the lexicon page: specifically those related to verbal inflection
+
+      # so we do some looking about here to find the section we need
+      # since loading the entire lexicon page is too expensive
+
+      print '<div id="hidden_lex_choices" style="display:none">' 
+      start_vpc = ''
+      stop_vpc  = ''
+      for i in range(0,len(lines)):
+        if(lines[i].startswith("Label \"<h3>Verb Inflection")):
+          start_vpc = i
+      for i in range(start_vpc,len(lines)):
+        if(lines[i].startswith("EndIter verb-pc")):
+          stop_vpc = i
+      vpclines = lines[start_vpc:stop_vpc+1]
+      print self.defs_to_html(vpclines,
+                              choices, vr,
+                              '', {})
+      print '</div>'
     print HTML_postform
     print HTML_postbody
 
@@ -1188,7 +1233,7 @@ class MatrixDefFile:
       if len(word) == 0:
         pass
       elif word[0] in ['Check', 'Text', 'TextArea',
-                       'Radio', 'Select', 'MultiSelect']:
+                       'Radio', 'Select', 'MultiSelect', 'File']:
         vn = word[1]
         if prefix + vn not in already_saved:
           already_saved[prefix + vn] = True
@@ -1253,6 +1298,12 @@ class MatrixDefFile:
         old_choices, neg_aux_index = self.create_neg_aux_choices(old_choices)
         new_choices["neg-aux-index"] = str(neg_aux_index) if neg_aux_index > 0 else str(1)
 
+    # create a zero-neg lri in choices
+    if section == 'sentential-negation' and 'vpc-0-neg' in form_data.keys():
+      # infl-neg should be on for zero-neg to work
+      new_choices['infl-neg'] = 'on'
+      old_choices, new_choices = self.create_infl_neg_choices(old_choices, new_choices)
+
 
     # Open the def file and store it in line[]
     f = open(self.def_file, 'r')
@@ -1284,7 +1335,6 @@ class MatrixDefFile:
         else:
           choices = old_choices
       i += 1
-
     # Make sure to save the last section
     if cur_sec_begin:
       self.save_choices_section(lines[cur_sec_begin:i], f, choices)
@@ -1302,13 +1352,37 @@ class MatrixDefFile:
     next_n = choices['aux'].next_iter_num() if 'aux' in choices else 1
 
     # create a new aux with that number
-    choices['aux%d_name' % next_n] = 'neg-aux'
+    choices['aux%d_name' % next_n] = 'neg'
 
     # copy that to nli for adding further information
     nli = choices['aux'].get_last()
     nli['sem']='add-pred'
-    nli['stem1_pred'] = '_neg_v_rel'
+    nli['stem1_pred'] = 'neg_rel'
     return choices, next_n
+
+  def create_infl_neg_choices(self, old_choices, new_choices):
+    vpc = new_choices['vpc-0-neg']
+    lrt = ''
+    if vpc == 'create':
+      next_n = old_choices['verb-pc'].next_iter_num() if old_choices['verb-pc'] else 1
+      old_choices['verb-pc%d_name' % next_n] = 'negpc'
+      vpc = old_choices['verb-pc'].get_last()
+      vpc['lrt1_name'] = 'neg'
+      lrt = old_choices['verb-pc'].get_last()['lrt'].get_last()
+      new_choices['vpc-0-neg'] = 'verb-pc'+str(next_n)
+      
+    else:
+      next_n = old_choices[vpc]['lrt'].next_iter_num() if old_choices[vpc]['lrt'] else 1
+    # create new lrt in this position class
+      old_choices[vpc]['lrt%d_name' % next_n] = 'neg'
+      # add some features for negation and empty PHON
+      lrt = old_choices[vpc]['lrt'].get_last()
+    
+    lrt['feat1_name']= 'negation'
+    lrt['feat1_value'] = 'plus'
+    lrt['feat1_head'] = 'verb'
+    lrt['lri1_inflecting'] = 'no'
+    return old_choices, new_choices
 
   def choices_error_page(self, choices_file, exc=None):
     print HTTP_header + '\n'

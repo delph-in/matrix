@@ -33,6 +33,7 @@ from gmcs.linglib import verbal_features
 from gmcs.linglib import negation
 from gmcs.linglib import coordination
 from gmcs.linglib import yes_no_questions
+from gmcs.linglib import toolboximport
 
 
 ######################################################################
@@ -230,11 +231,14 @@ def setup_vcs(ch, grammar_path):
       call(['hg', 'commit',
             '-u Grammar Matrix <matrix-dev@u.washington.edu>',
             '-m "Initial commit."'], stdout=IGNORE, stderr=IGNORE)
-    #elif ch['vcs'] == 'bzr':
-    #  call(['bzr', 'init', grammar_path])
-    #  call(['bzr', 'add', grammar_path])
-    #  call(['bzr', 'commit', '-m "Initial commit."'],
-    #       stdout=IGNORE, stderr=IGNORE)
+    elif ch['vcs'] == 'bzr':
+      call(['bzr', 'init'], stdout=IGNORE, stderr=IGNORE)
+      call(['bzr', 'add'], stdout=IGNORE, stderr=IGNORE)
+      call(['bzr', 'whoami', '--branch',
+            'Grammar Matrix Customization System <matrix-dev@uw.edu>'],
+           stdout=IGNORE, stderr=IGNORE)
+      call(['bzr', 'commit', '-m "Initial commit."'],
+           stdout=IGNORE, stderr=IGNORE)
     os.chdir(cwd)
     IGNORE.close()
 
@@ -338,6 +342,12 @@ def customize_matrix(path, arch_type, destination=None):
  # init_mood_hierarchy()
  # init_form_hierarchy()
   verbal_features.init_verbal_hierarchies(ch, hierarchies)
+
+  #Integrate choices related to lexical entries imported from
+  #Toolbox lexicon file(s), if any.  NOTE: This needs to be called
+  #before anything else that looks at the lexicon-related choices,
+  #so before lexical_items.insert_ids().
+  toolboximport.integrate_imported_entries(ch)
 
   #Create unique ids for each lexical entry; this allows
   #us to do the same merging on the lexicon TDL file as we

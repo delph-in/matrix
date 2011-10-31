@@ -48,6 +48,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 
     # The 'head' choice only appears on verb pcs, and allows the user
     # to specify features on the subject and object as well
+    # It can also add mod for adjectives
     h = feat.get('head','')
     if h == 'subj':
       geom_prefix += 'LOCAL.CAT.VAL.SUBJ.FIRST.'
@@ -59,6 +60,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         geom_prefix2 += 'LOCAL.CAT.VAL.COMPS.FIRST.'
     elif h == 'obj':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
+    elif h == 'mod':
+      geom_prefix += 'LOCAL.CAT.HEAD.MOD.FIRST.'
     elif h == 'higher':
       geom_prefix = 'SC-ARGS.FIRST.'
     elif h == 'lower':
@@ -151,12 +154,17 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     elif (n == 'negation' and v[0] == 'plus'):
       # ERB 2009-01-22 This is where we deal with the
       # negative affixes.
+      # If neg-head-feature is on, then we also mark the verb
+      # negated +.
+      if ch.get('neg-head-feature') == 'on':
+        tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].',merge=True)
+
       tdlfile.add(type_name + ':= \
                      [ C-CONT [ HOOK [ XARG #xarg,\
 	                     LTOP #ltop,\
 	                     INDEX #ind ],\
 	              RELS <! event-relation &\
-	                      [ PRED "_neg_r_rel",\
+	                      [ PRED "neg_rel",\
 	                        LBL #ltop,\
 	                        ARG1 #harg ] !>,\
 	              HCONS <! qeq &\
@@ -168,9 +176,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                                                 INDEX #ind,\
 	                                        LTOP #larg ],\
 	                          CAT.HEAD verb]]]].',
-                 'This lexical rule adds the neg_r_rel to the verb\'s\n\
-	          RELS list.  It is instantiated by a spelling-changing\n\
-	          rule as specified in irules.tdl.',
+                 'This lexical rule adds the neg_rel to the verb\'s\n\RELS list.',
                   merge=True)
 
 

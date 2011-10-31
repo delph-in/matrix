@@ -26,6 +26,11 @@ def customize_word_order(mylang, ch, rules):
 
   customize_np_word_order(mylang, ch, rules)
 
+# adverb rules (only Germanic)
+  if ch.get('has-adv') == 'yes' and ch.get('verb-cluster') == 'yes':
+    if ch.get('adv-order') == 'free':
+      word_order_v2_vcluster.create_germanic-adverbial_phrases(ch, mylang, rules)
+
 # ERB 2006-09-14 Then add information as necessary to handle adpositions,
 # free auxiliaries, etc.
 
@@ -706,6 +711,34 @@ def customize_np_word_order(mylang, ch, rules):
 
     rules.add('head-spec := head-spec-phrase.')
 
+####
+# Adjectives
+# For now, assuming det-adj-noun interaction arranged in matrix.tdl
+# relevant phrases are defined in matrix.tdl, needn't be included in
+# language specific file
+###
+
+###
+# Germanic reveals interaction with negation (adverb order is free)
+# should be adapted for specific cases (i.e. adjective order differs from
+# adverbs or from negation marker)
+
+  if ch.get('has-adj') == 'yes':
+    # adding adjective specific phrase
+    mylang.add('adjective-head-phrase := basic-head-mod-phrase-simple & \
+                 [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adj ].')
+    if ch.get('adj-noun-order') != 'adj-noun':
+      mylang.add('head-adjective-int-phrase := head-adj-int-phrase & adjective-head-phrase.')
+
+      mylang.add('head-adjective-scop-phrase := head-adj-scop-phrase & adjective-head-phrase.')
+      rules.add('head-adjective-int := head-adjective-int-phrase.')
+      rules.add('head-adjective-scop := head-adjective-scop-phrase.') 
+    if ch.get('noun-adj-order') != 'noun-adj':
+      mylang.add('adjective-head-int-phrase := adj-head-int-phrase & adjective-head-phrase.')
+
+      mylang.add('adjective-head-scop-phrase := adj-head-scop-phrase & adjective-head-phrase.')
+      rules.add('adjective-head-int := adjective-head-int-phrase.')
+      rules.add('adjective-head-scop := adjective-head-scop-phrase.') 
 
     # ERB 2006-09-14 I think that all languages have some form of
     # the Bare NP phrase.  Eventually there will be some choices about
