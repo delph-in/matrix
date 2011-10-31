@@ -1012,3 +1012,53 @@ function import_toolbox_lexicon()
   elm.appendChild(inp);
   submit_main();
 }
+////////////////////////////////////////////////////////////
+// Special functions for Sentential Negation Subpage 
+////////////////////////////////////////////////////////////
+
+// set_negexp(n)
+//
+function set_negexp(n)
+{
+  var value = n;
+  var divs = document.getElementsByClassName("switch");
+	for(var i=0; i<divs.length;i++){
+    var d = divs[i];
+    d.style.display = 'none';
+	}
+  var d;
+  switch (n){
+    case '0':
+      var d = document.getElementById('zero-neg');
+      break;
+    case '1':
+      var d = document.getElementById('uni-neg');
+      break
+    case '2':
+      var d = document.getElementById('bi-neg');
+      break;
+    case '3':
+      var d = document.getElementById('tri-neg');
+      break;
+    case 'more':
+      var d = document.getElementById('x-neg');
+      break;
+    default:
+      var d = null; 
+  }
+  if (d != null)
+  {
+    d.style.display ='block';
+  }
+}
+
+function display_neg_form()
+{
+  var neg_exp = document.forms["choices_form"]["neg-exp"];
+  for (var i=0; i<neg_exp.length;i++)
+  {
+    if(neg_exp[i].checked){
+      set_negexp(neg_exp[i].value); 
+    }
+  }
+}

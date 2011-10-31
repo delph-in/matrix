@@ -226,7 +226,7 @@
   (format t "To look at these interactively, do the following in the [incr tsdb()] podium:~%")
   (format t "Options | Database Root: set to matrix/gmcs/regression_tests/home/~%")
   (format t "Update | All tsdb(1) status~%")
-  (format t "Right click on gold/~a~%" lg-name)
+  (format t "Middle click on gold/~a~%" lg-name)
   (format t "Left click on current/~a~%" lg-name)
   (format t "Compare | Intersection | mrs~%")
   (format t "Compare | Detail~%")
