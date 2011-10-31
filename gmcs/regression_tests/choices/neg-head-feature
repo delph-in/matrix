@@ -51,12 +51,14 @@ section=lexicon
     verb2_stem1_pred=_tv_v_rel
   verb-pc1_name=neg-pc
   verb-pc1_order=prefix
-  verb-pc1_inputs=verb
+  verb-pc1_inputs=verb, verb-pc2
       verb-pc1_lrt1_feat1_name=negation
       verb-pc1_lrt1_feat1_value=plus
-      verb-pc1_lrt1_feat1_head=subj
+      verb-pc1_lrt1_feat1_head=verb
       verb-pc1_lrt1_lri1_inflecting=yes
       verb-pc1_lrt1_lri1_orth=neg-
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=otherpref-
   verb-pc2_name=no-neg
   verb-pc2_order=suffix
   verb-pc2_inputs=verb
@@ -64,7 +66,9 @@ section=lexicon
       verb-pc2_lrt1_feat1_value=minus
       verb-pc2_lrt1_feat1_head=verb
       verb-pc2_lrt1_lri1_inflecting=yes
-      verb-pc2_lrt1_lri1_orth=-suff
+      verb-pc2_lrt1_lri1_orth=-nonegsuff
+      verb-pc2_lrt2_lri1_inflecting=yes
+      verb-pc2_lrt2_lri1_orth=-othersuff
 
 section=toolbox-import
 
