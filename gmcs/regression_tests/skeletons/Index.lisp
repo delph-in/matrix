@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "neg-infl-sole-suffix") (:content . "neg-infl-sole-suffix: negation as the only suffix, optional"))
 ((:path . "neg-adv-vp-pre") (:content . "neg-adv-vp-pre: negation as independent pre VP modifier"))
 ((:path . "neg-infl-final-opt-suffix") (:content . "neg-infl-final-opt-suffix: Negative affix as optional suffix at end of suffix string"))
 ((:path . "neg-infl-nonfinal-suffix") (:content . "neg-infl-nonfinal-suffix: Inflectional negation as optional non-final suffix, optionality with check box"))
