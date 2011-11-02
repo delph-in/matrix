@@ -870,8 +870,9 @@ def customize_head_comp_non_main_phrase(ch, mylang):
     elif ch.get('clz-comp-order') == 'comp-clz':
       c_ord = 'final'
 
+
+  adp_order = ''  
   if ch.get('adp-order'): 
-    adp_order = ''  
     if ch.get('adp-order') == 'adp-comp':
       adp_order = 'initial'
     elif ch.get('adp-order') == 'comp-adp':
@@ -907,6 +908,7 @@ def customize_head_comp_non_main_phrase(ch, mylang):
   if ch.get('clz-optionality'):
     mylang.add('create-informal-vcomp-phrase := unary-phrase &\
    [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
+                             COORD -, \
 	         	     CAT [ HEAD verb & [ FORM finite ],\
 				   VAL #val & [ SUBJ < >,\
 					        COMPS < >,\

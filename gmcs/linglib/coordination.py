@@ -103,8 +103,11 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
   # something better should be done to get the right supertypes to the right
   # coordination phrases (consider function to split them in groups...)
   if pos == 'n' or pos == 'np' or pos == 'adj':
-    if 'case' in agr:
-      add_sharing_supertypes(mylang, pn, mid, 'case') 
+    noun_feat = ['case','vc']
+    for nf in noun_feat:
+      if nf in agr:
+        add_sharing_supertypes(mylang, pn, mid, nf) 
+    
 
     if np_number and pos != 'adj':
       mylang.add(pn + '-top-coord-rule := \
@@ -119,7 +122,10 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
 
 
   elif pos == 'v' or pos == 'vp' or pos == 's':
-    verb_feat = ['vfront', 'form', 'mc', 'vc', 'inv']
+###removing vc from verbal features, causes problems for coordinating verbal forms
+###TO DO: double check over-generation, if overgenerates: make inherit from left most
+###only for verbs
+    verb_feat = ['vfront', 'form', 'mc', 'inv']
     for vf in verb_feat:
       if vf in agr:      
         add_sharing_supertypes(mylang, pn, mid, vf) 
@@ -269,8 +275,11 @@ def determine_syntactic_features_tobe_shared(ch):
   wo = ch.get('word-order')
   if wo == 'v2' or wo == 'free':
     features.append('mc')
- #   if ch.get('verb-cluster') == 'yes': 
- #     features.append('vc')
+###vc cluster was turned off, but it turns out it is needed for nouns
+###check why was turned off? Possibly excluding wrongly for VP-coordination?
+###fix this
+    if ch.get('verb-cluster') == 'yes': 
+      features.append('vc')
 
   return features
   

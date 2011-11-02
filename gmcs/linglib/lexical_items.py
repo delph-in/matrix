@@ -198,6 +198,11 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     if vcluster and not wo == 'v2':
       mylang.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
       mylang.add('aux-lex := [ SYNSEM.LOCAL.CAT.VC - ].')
+  #Small addition for Germanic
+    if ch.get('verb-cluster') == 'yes' and wo == 'v2':
+      if ch.get('vc-analysis') == 'basic' and not ch.get('old-analysis') == 'yes':
+        mylang.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
+        mylang.add('aux-lex := [ SYNSEM.LOCAL.CAT.VFRONT - ].')
   else:
     #mainorverbtype = 'verb-lex'
     vcluster = False
@@ -297,6 +302,32 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                     auxrule-first-arg-control-lex-item & one-comp-aux.')
 
 
+  if ch.get('obj-raising') == 'yes':
+    typedef = \
+    'obj-raising-verb-lex := ' + mainorverbtype + ' & \
+       distrans-second-arg-raising-lex-item & \
+     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
+			      SPR < >, \
+			      SPEC < > ], \
+       ARG-ST < #subj & [ LOCAL.CAT [ VAL.SPR < > ] ], [ ], [ ] > ].'
+
+    mylang.add(typedef)
+
+    if ch.get('vc-analysis') == 'aux-rule':
+      comps_struc = \
+      ' [ SYNSEM.LOCAL.CAT.VAL.COMPS < #obj, #vcomp >, \
+          ARG-ST < [ ], #obj & [ LOCAL.CAT.VAL.SPR < > ], \
+                   #vcomp & [ LOCAL.CAT.VAL.SUBJ < [ ] > ] > ].' 
+    else:
+      comps_struc = \
+      ' [ SYNSEM.LOCAL.CAT.VAL.COMPS < #obj, #vcomp . #comps >, \
+          ARG-ST < [ ], #obj & [ LOCAL.CAT.VAL.SPR < > ], \
+                   #vcomp & [ LOCAL.CAT.VAL [ SUBJ < [ ] >, \
+                                              COMPS #comps ]] > ].' 
+
+    mylang.add('obj-raising-verb-lex := ' + comps_struc)
+
+
   case.customize_verb_case(mylang, ch)
 
   # Add constraints to choices to create lex rules for bipartite stems
@@ -339,10 +370,18 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
           o_case = case.canon_to_abbr(c[1], cases)
           tivity = a_case + '-' + o_case + '-trans'
       elif len(c) == 3:
-        a_case = case.canon_to_abbr(c[0], cases)
-        b_case = case.canon_to_abbr(c[1], cases)
-        o_case = case.canon_to_abbr(c[2], cases)
-        tivity = a_case + '-' + b_case + '-' + o_case + '-ditrans'
+        if c[2] == 'inf':
+          a_case = case.canon_to_abbr(c[0], cases)
+          o_case = case.canon_to_abbr(c[1], cases)
+          tivity = a_case + '-' + o_case + '-' + c[2]
+          if verb.get('raising') == 'obj':
+            tivity += '-obj-raising'
+          tivity += '-ditrans'
+        else:
+          a_case = case.canon_to_abbr(c[0], cases)
+          b_case = case.canon_to_abbr(c[1], cases)
+          o_case = case.canon_to_abbr(c[2], cases)
+          tivity = a_case + '-' + b_case + '-' + o_case + '-ditrans'
     else:
       s_case = case.canon_to_abbr(val, cases)
       tivity = s_case + '-intrans'
@@ -439,6 +478,9 @@ def customize_copula(mylang, ch, lexicon, hierarchies):
                         [ LOCAL.CAT [ VAL [ COMPS < > ], \
                                       HEAD ' + head + ' & [ PRD + ] ] ] > ].')
     
+####TEMP HACK ADDING MC-CONSTRAINT TO GENERAL COP, GERMANIC SPECIFIC
+    if ch.get('verb-cluster') == 'yes' and ch.get('word-order') == 'v2':
+      mylang.add(type_name + ' := [ SYNSEM.LOCAL.CAT.MC na-or-- ].' )
 
     if ch.get('has-aux') == 'yes':
       mylang.add(type_name + ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
@@ -532,6 +574,11 @@ def customize_adjectives(mylang, ch, lexicon):
     mylang.add('scopal-mod-adj-lex := basic-scopal-mod-adj-lex.')
     mylang.add('int-mod-adj-lex := basic-int-mod-adj-lex.')
 
+    if ch.get('verb-cluster') == 'yes':
+      mylang.add('scopal-mod-adj-lex := no-cluster-lex-item.')
+      mylang.add('int-mod-adj-lex := no-cluster-lex-item.')   
+
+
     if ch.get('strength-marking') == 'double':
       mylang.add('+njdo :+ [ STRONG bool ].', section='addenda')
     elif ch.get('strength-marking') == 'triple':
@@ -612,7 +659,11 @@ def customize_adverbs(mylang, ch, lexicon):
     mylang.add('int-adverb-lex := basic-int-adverb-lex & \
                 [ SYNSEM [ LOCAL.CONT.HOOK.XARG #arg1, \
                            LKEYS.KEYREL.ARG1 #arg1 ] ].')
-      
+
+    if ch.get('verb-cluster') == 'yes':
+      mylang.add('scopal-adverb-lex := no-cluster-lex-item.')
+      mylang.add('int-adverb-lex := no-cluster-lex-item.')   
+
  # Adverbs
   if 'adv' in ch:
     lexicon.add_literal(';;; Adverbs')
@@ -714,6 +765,9 @@ def create_adposition_supertypes(ch, mylang):
 ###adds ARG2, co-indexed with comp  
   mylang.add(s_name + ' := [ SYNSEM [ LKEYS.KEYREL.ARG2 #arg2, \
                   LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #arg2 ] ].')
+
+  if ch.get('verb-cluster') == 'yes':
+    mylang.add('int-adp-lex-item := no-cluster-lex-item.')
 
   for spadp in ch.get('sup_adp',[]):
 
@@ -820,6 +874,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   # until compounds have been added
   mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')
 
+  if ch.get('verb-cluster') == 'yes':
+    mylang.add('noun-lex := no-cluster-lex-item.')
 
   if singlentype:
     if seen['obl']:

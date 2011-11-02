@@ -706,6 +706,8 @@ class ChoicesFile:
         patterns += [ ['nom-scomp', '', False ] ]
       if self.get('subj-control-verb') == 'yes':
         patterns += [ ['nom-inf', '', False ] ]
+      if self.get('obj-raising') == 'yes':
+        patterns += [ ['nom-acc-inf', '', False ] ]
     elif cm == 'erg-abs':
       patterns += [ ['abs', '', False] ]
       patterns += [ ['erg-abs', '', False] ]
