@@ -1,7 +1,7 @@
 version=12
 
 section=general
-language=mini-infl-neg
+language=neg-infl-mini
 archive=no
 
 section=word-order
