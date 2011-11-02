@@ -80,17 +80,18 @@ def add_basic_phrases_v2_with_cluster(ch, mylang):
   else:
     general_post_objectival_cluster_phrases(ch, mylang)
 
+  mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
   if ch.get('argument-order') == 'fixed':
     add_fixed_argument_order_constraints(mylang)
-
+    path = 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD'
+    mylang.add('head-comp-phrase-2 := [ ' + path + ' verb ].')
 ###2011-11-02 Removing condition that head-comp-phrase-2 is only needed
 ###if the argument order is free.
 ###head-comp-phrase-2 also needed for fixed order languages with new 
 ###word order (capturing SUBJ AUX OBJ TV, where OBJ is not first complement
 ###of the auxiliary)
 
-  mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
-
+ 
 ###Additional trick to help efficiency: conj cannot be complement or subjects
   comment = 'Conjunction markers cannot be complement or subject markers. Adding the appropriate restrictions helps against spurious analyses'
   mylang.add('basic-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvjrpcdm ].', comment, section='addenda')
