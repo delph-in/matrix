@@ -1,7 +1,7 @@
 version=17
 
 section=general
-language=infl-neg-final-opt-suffix
+language=neg-infl-final-opt-suffix
 archive=no
 
 section=word-order
