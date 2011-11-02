@@ -824,7 +824,22 @@ Radio neg-order "Negative adverb order" "and appears " ""
 
 Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p></div>" 20
 
-Label "<div id='bi-neg' class='switch' style='display:none'><p> Negation can be indicated by the required presence of two negative morphemes.  You'll have to specify their morphosyntax and their interactions.</p></div>"
+Label "<div id='bi-neg' class='switch' style='display:none'><p> Negation can be indicated by the required presence of two negative morphemes.  You'll have to specify their morphosyntax and their interactions.</p>"
+
+Label "We can label the two morphemes NEG1 and NEG2 and ask about the syntactic properties of each.  Perhaps in your language one of the two negative morphemes seems more associated with the contribution of negative force to the sentence, and the other functions as a resumptive or specifying marker.  Call the primary indicator of negation NEG1 and the secondary one NEG2.<br />"
+
+Radio neg1-type "NEG1 type" "NEG1" "<br />"
+. b "bound" "" "bound"
+. fh "free-H" "" "free, syntactic head"
+. fd "free-dep" "" "free, syntactic dependent"
+
+Radio neg2-type "NEG2 type" "NEG2" ""
+. b "bound" "" "bound"
+. fh "free-H" "" "free, syntactic head" 
+. fd "free-dep" "" "free, syntactic dependent"
+
+Label "</div>"
+
 
 Label "<div id='tri-neg' class='switch' style='display:none'><p> Negation by three morphemes has been reported in some languages of Vanuatu like Lewo [lww].</p></div>"
 

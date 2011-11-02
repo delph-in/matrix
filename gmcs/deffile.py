@@ -237,7 +237,7 @@ HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fil
 HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();">'''
 
 HTML_method = 'post'
-HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '" enctype="multipart/form-data">'
+HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '" enctype="multipart/form-data" name="choices_form">'
 
 HTML_postform = '</form>'
 
@@ -1028,7 +1028,6 @@ class MatrixDefFile:
              js_array([n for n in choices.numbers()]),
              js_array([t for t in choices.types()]))
 
-      print HTML_prebody
       if section == 'sentential-negation':
         print HTML_prebody_sn
       else:
