@@ -160,9 +160,9 @@
   
     (let* ((lg-name (get-language-name choices-path))
 	   (cmd (format nil "~a~a ~a ~a ~a~a~a" 
-			*customization-root* "regression_tests/call-customize"
+			*customization-root* "/regression_tests/call-customize"
 			*customization-root* 
-			choices-path *customization-root* "regression_tests/grammars/"
+			choices-path *customization-root* "/regression_tests/grammars/"
 			lg-name)))
       (excl:run-shell-command cmd))
   
@@ -190,7 +190,7 @@
 
   (let ((home (format nil "~a~a"
 		       *customization-root*
-		       "regression_tests/home/")))
+		       "/regression_tests/home/")))
     (setf tsdb::*tsdb-home* home)
     (tsdb:tsdb :home tsdb::*tsdb-home*))
   
@@ -199,7 +199,7 @@
 
   (let ((skel (format nil "~a~a"
 		      *customization-root*
-		      "regression_tests/skeletons/")))
+		      "/regression_tests/skeletons/")))
     (tsdb:tsdb :skeletons skel))
   
   ;;; Create and process profile
@@ -212,7 +212,7 @@
   
   (let ((gold (format nil "gold/~a" lg-name))
 	(target (format nil "current/~a" lg-name))
-	(log-file (format nil "~aregression_tests/logs/~a" *customization-root* lg-name)))
+	(log-file (format nil "~a/regression_tests/logs/~a" *customization-root* lg-name)))
     (tsdb::compare-in-detail target gold 
 			     :format :ascii 
 			     :compare '(:readings :mrs)
@@ -325,7 +325,7 @@
 
 (defun clean-up-regression-test (lg-name)
   
-  (let ((path (format nil "~aregression_tests" *customization-root*)))
+  (let ((path (format nil "~a/regression_tests" *customization-root*)))
   
   ;;; Remove grammar
   
