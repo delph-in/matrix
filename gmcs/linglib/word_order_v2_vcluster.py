@@ -82,8 +82,14 @@ def add_basic_phrases_v2_with_cluster(ch, mylang):
 
   if ch.get('argument-order') == 'fixed':
     add_fixed_argument_order_constraints(mylang)
-  else:
-    mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
+
+###2011-11-02 Removing condition that head-comp-phrase-2 is only needed
+###if the argument order is free.
+###head-comp-phrase-2 also needed for fixed order languages with new 
+###word order (capturing SUBJ AUX OBJ TV, where OBJ is not first complement
+###of the auxiliary)
+
+  mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
 
 ###Additional trick to help efficiency: conj cannot be complement or subjects
   comment = 'Conjunction markers cannot be complement or subject markers. Adding the appropriate restrictions helps against spurious analyses'
@@ -148,8 +154,9 @@ def add_v2_with_cluster_rules(ch, rules):
   if ch.get('q-inv') and ch.get('vc-analysis') == 'aux-rule':
     rules.add('aux-1st-comp := aux-1st-comp-phrase.')
 
-  if ch.get('argument-order') != 'fixed':
-    rules.add('head-comp-2 := head-comp-phrase-2.')
+###2011-11-02 removing condition of non-fixed arg order (see above)
+# if ch.get('argument-order') != 'fixed':
+  rules.add('head-comp-2 := head-comp-phrase-2.')
 
   if ch.get('vc-analysis') == 'aux-rule':
     auxRule = True
@@ -496,8 +503,9 @@ def argument_composition_revised_additional_constraints(ch, mylang, lrules):
                   HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf'
   nhddtrval = '[ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf'
-
-  mylang.add('head-initial-head-nexus := ' + headdtrval + ' ].')
+  
+  if ch.get('old-analysis') == 'yes':
+    mylang.add('head-initial-head-nexus := ' + headdtrval + ' ].')
 
   mylang.add('comp-head-vc-phrase := ' + headdtrval + ' ].')
   mylang.add('comp-2-head-vc-phrase := ' + headdtrval + ' ].')
