@@ -1,0 +1,60 @@
+version=17
+
+section=general
+language=neg-infl-sole-suffix
+archive=no
+
+section=word-order
+word-order=svo
+has-dets=no
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect
+
+section=other-features
+
+section=sentential-negation
+infl-neg=on
+
+section=coordination
+
+section=matrix-yes-no
+
+section=arg-opt
+
+section=lexicon
+  noun1_det=imp
+    noun1_stem1_orth=n1
+    noun1_stem1_pred=_n1_n_rel
+  noun2_det=imp
+    noun2_stem1_orth=n2
+    noun2_stem1_pred=_n2_n_rel
+  verb1_valence=intrans
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+  verb-slot1_name=negaff
+  verb-slot1_opt=on
+  verb-slot1_order=after
+    verb-slot1_input1_type=verb
+    verb-slot1_morph1_name=negmorph
+    verb-slot1_morph1_orth=neg
+      verb-slot1_morph1_feat1_name=negation
+      verb-slot1_morph1_feat1_value=plus
+      verb-slot1_morph1_feat1_head=verb
+
+section=test-sentences
