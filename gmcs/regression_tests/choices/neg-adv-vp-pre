@@ -1,7 +1,7 @@
 version=12
 
 section=general
-language=pre-vp-adv-neg
+language=neg-adv-vp-pre
 archive=no
 
 section=word-order
