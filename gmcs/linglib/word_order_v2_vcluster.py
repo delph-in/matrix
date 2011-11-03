@@ -414,14 +414,18 @@ def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
 ###if auxiliary takes its verbal complement to its right, it still must pick up
 ###an element to its left to become verb second (SECOND registers this)   
 ###
+###2011-11-03 removed [AUX +] obj-raising verbs are not auxiliaries and use
+###this rule.
+
   mylang.add('aux-2nd-comp-phrase := basic-head-1st-comp-phrase & head-initial & \
                     [ SYNSEM.LOCAL.CAT [ MC #mc, \
 		                         SECOND - ], \
                       HEAD-DTR.SYNSEM.LOCAL.CAT[ MC #mc, \
 			                         SECOND +, \
-                                                 HEAD verb & [ AUX + ] ], \
+                                                 HEAD verb ], \
                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb, \
 		                        	      MC - ]].') 
+
 
   if ch.get('old-analysis') == 'yes':
     mylang.add('aux-2nd-comp-phrase := [ SYNSEM.LOCAL.CAT.MC na ].')
