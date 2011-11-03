@@ -439,7 +439,7 @@ def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
                      [ SYNSEM.LOCAL.CAT [ MC +, \
 		                          SECOND #scd ], \
                        HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na, \
-                                                   HEAD verb & [ AUX + ],\
+                                                   HEAD verb,\
 		             	                   SECOND #scd ], \
                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
 			                               HEAD verb, \
