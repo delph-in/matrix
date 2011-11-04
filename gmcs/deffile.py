@@ -1303,6 +1303,12 @@ class MatrixDefFile:
       new_choices['infl-neg'] = 'on'
       old_choices, new_choices = self.create_infl_neg_choices(old_choices, new_choices)
 
+    # bipartite neg adverbs require adv-neg
+    if section == 'sentential-negation' and \
+      (form_data['neg1-type'].value[0] == 'f' or \
+       form_data['neg2-type'].value[0] == 'f'):
+      new_choices['adv-neg'] = 'on'
+
 
     # Open the def file and store it in line[]
     f = open(self.def_file, 'r')

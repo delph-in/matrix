@@ -6,6 +6,12 @@ from gmcs.utils import TDLencode
 #   about sentential negation.
 
 def customize_sentential_negation(mylang, ch, lexicon, rules):
+  # JDC 2011-11-04 Nowadays this function just handles the syntactic
+  # negation particles (auxes and adverbs) and (coming) interactions
+  # between them also possible interactions with inflection(-al negation)
+  #
+  # inflectional negation is handled in the feature mapping part of the
+  # morphotactic system (features.py).
 
   # ERB 2006-09-16 Calculate a bunch of derived properties based on the
   # inputs they gave for negation.  The same thing (e.g., negation via
@@ -35,22 +41,29 @@ def customize_sentential_negation(mylang, ch, lexicon, rules):
   # I'm removing ch.get('neg-adv') == 'ind-adv' as a second part of
   # the test below.
 
-  if ch.get('adv-neg') == 'on': # and ch.get('neg-adv') == 'ind-adv':
-    create_neg_adv_lex_item(mylang, ch, lexicon,rules)
+  if ch.get('adv-neg') == 'on' and ch.get('neg-exp') == '1':
+    create_neg_adv_lex_item(mylang, ch, lexicon, rules, 1)
 
   if ch.get('neg-head-feature') == 'on':
     mylang.add('head :+ [ NEGATED luk ].', section='addenda')
 
+  if ch.get('neg-exp') == '2':
+    # see if we need to make any neg advs
+    if ch.get('neg1-type')[0] == 'f' or \
+      ch.get('neg2-type')[0] == 'f':
+      create_neg_adv_lex_item(mylang, ch, lexicon, rules, 2)
+      
 
-def create_neg_adv_lex_item(mylang, ch, lexicon, rules):
+
+def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
   mylang.set_section('otherlex')
-
   mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
                  [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
                                             COMPS < >,
                                             SUBJ < > ],
                                       HEAD.MOD < [ LOCAL.CAT.HEAD verb ] > ]].''',
              'Type for negative adverbs.')
+
 
   # ERB 2006-10-06 Below was advAlone == 'always', but that seems wrong.
   # changing it to advAlone == 'never' being the case where we don't want
@@ -62,22 +75,55 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules):
     it from modifying the kind of verbs which can select it,\n
     To keep spurious parses down, as a starting point, we have\n
     assumed that it only modifies verbs (e.g., non-finite verbs).''')
+  if exp == 1:
+    if ch.get('neg-order') == 'before':
+      mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+    elif ch.get('neg-order') == 'after':
+      mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
 
-  if ch.get('neg-order') == 'before':
-    mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
-  elif ch.get('neg-order') == 'after':
-    mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
+    if ch.get('neg-mod') == 's':
+      mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
+                                                                                     COMPS null ]].''')
+    elif ch.get('neg-mod') == 'vp':
+      mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
+                                                                                     COMPS null ]].''')
+    elif ch.get('neg-mod') == 'v':
+      mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+  elif exp == 2:
+    if ch.get('neg1-type')[0] == 'f':
+      mylang.add('neg1-adv-lex := neg-adv-lex.')
+      if ch.get('neg1-order') == 'before':
+        mylang.add('neg1-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+      elif ch.get('neg1-order') == 'after':
+        mylang.add('neg1-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
 
-  if ch.get('neg-mod') == 's':
-    mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
-                                                                                   COMPS null ]].''')
-  elif ch.get('neg-mod') == 'vp':
-    mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
-                                                                                   COMPS null ]].''')
-  elif ch.get('neg-mod') == 'v':
-    mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+      if ch.get('neg-mod') == 's':
+        mylang.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
+                                                                                       COMPS null ]].''')
+      elif ch.get('neg1-mod') == 'vp':
+        mylang.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
+                                                                                       COMPS null ]].''')
+      elif ch.get('neg1-mod') == 'v':
+        mylang.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+    if ch.get('neg2-type')[0] == 'f':
+      mylang.add('neg2-adv-lex := neg-adv-lex.')
+      if ch.get('neg2-order') == 'before':
+        mylang.add('neg2-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+      elif ch.get('neg2-order') == 'after':
+        mylang.add('neg2-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
+
+      if ch.get('neg2-mod') == 's':
+        mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
+                                                                                       COMPS null ]].''')
+      elif ch.get('neg2-mod') == 'vp':
+        mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
+                                                                                       COMPS null ]].''')
+      elif ch.get('neg2-mod') == 'v':
+        mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
     lexical Vs for V-level attachment of negative adverbs.''')
+    
 
   # ERB 2006-09-22 Validation should really make sure we have a value of
   # neg-adv-orth before we get here, but just in case, checking first, since
@@ -86,6 +132,18 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules):
   if(ch.get('neg-adv-orth')):
     orth = ch.get('neg-adv-orth')
     lexicon.add(TDLencode(orth) + ' := neg-adv-lex &\
+                [ STEM < \"'+ orth +'\" >,\
+                  SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
+
+  if(ch.get('neg1-adv-orth')):
+    orth = ch.get('neg1-adv-orth')
+    lexicon.add(TDLencode(orth) + '1 := neg1-adv-lex &\
+                [ STEM < \"'+ orth +'\" >,\
+                  SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
+
+  if(ch.get('neg2-adv-orth')):
+    orth = ch.get('neg2-adv-orth')
+    lexicon.add(TDLencode(orth) + '2 := neg2-adv-lex &\
                 [ STEM < \"'+ orth +'\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
 
@@ -145,7 +203,7 @@ def validate(ch, vr):
           vr.err(f.full_key + '_name', mess)
 
   neginfltype = ch.get('neg-infl-type')
-  negseladv = ch.get('neg-sel-adv')
+#  negseladv = ch.get('neg-sel-adv')
 
   if ch.get('neg-aux', default=False):
     has_neg_aux = False
@@ -181,8 +239,9 @@ def validate(ch, vr):
 #         vr.err('neg-infl-type', mess)
 
   # If adverb is indicated, must lexical entry, what it modifies, and
-  # ind/selected modifier
-  if (ch.get('adv-neg') == 'on'):
+  # ind/selected modifier -- now only applicable under single negation
+  # bipartite negs need to validate this for themeselves
+  if (ch.get('adv-neg') == 'on') and (ch.get('neg-exp') == '1'):
 #    if (not ch.get('neg-adv')):
 #      mess = 'If sentential negation is expressed through an adverb, you must specify whether the adverb is a selected complement or an independent modifier.'
 #      vr.err('neg-adv', mess)
@@ -202,11 +261,11 @@ def validate(ch, vr):
 
    # If aux is selected then has-aux = 'yes' must be chosen in word
    # order section
-    if ((negseladv == 'aux' or negseladv == 'main-aux') and
-        ch.get('has-aux') != 'yes'):
-        mess = 'You have not indicated on the word order page ' +\
-               'that your language has auxiliaries.'
-        vr.err('neg-sel-adv', mess)
+#    if ((negseladv == 'aux' or negseladv == 'main-aux') and
+#        ch.get('has-aux') != 'yes'):
+#       mess = 'You have not indicated on the word order page ' +\
+#             'that your language has auxiliaries.'
+#     vr.err('neg-sel-adv', mess)
 
    # ERB 2009-01-23 Currently not possible to say how they combine.
 
