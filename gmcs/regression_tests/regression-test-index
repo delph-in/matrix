@@ -7,3 +7,5 @@ ger-subcontr-argcomp=Testing whether subject control works with arg-comp analysi
 ger-subjcontr-auxrule=Small test for subject control verbs with minor word order variations using auxrule analysis
 acl-basic-ger-argcomp=l of German covering phenomena present for ACL 2011
 German-auxrule=Regression test covering basic data from acl 2011 using auxrule analysis for German
+ger-raiscontr-argcomp=Short test to see if object raising works
+ger-raiscontr-auxrule=Short test for object raising using auxrule analysis
