@@ -22,6 +22,8 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "ger-argcomp-adjectives") (:content . "ger-argcomp-adjectives: Tests correct behavior of adjectives including agreement with arg-comp analysis"))
+((:path . "ger-auxrule-adjectives") (:content . "ger-auxrule-adjectives: Tests correct behavior of modifying adjectives, including agreement"))
 ((:path . "ger-raiscontr-auxrule") (:content . "ger-raiscontr-auxrule: Short test for object raising using auxrule analysis"))
 ((:path . "ger-raiscontr-argcomp") (:content . "ger-raiscontr-argcomp: Short test to see if object raising works"))
 ((:path . "German-auxrule") (:content . "German-auxrule: Regression test covering basic data from acl 2011 using auxrule analysis for German"))

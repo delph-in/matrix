@@ -574,6 +574,11 @@ def customize_adjectives(mylang, ch, lexicon):
     mylang.add('scopal-mod-adj-lex := basic-scopal-mod-adj-lex.')
     mylang.add('int-mod-adj-lex := basic-int-mod-adj-lex.')
 
+   #2011-11-07 Fixing semantics of adjectives
+    mylang.add('int-mod-adj-lex := [ SYNSEM [ LOCAL.CONT.HOOK.XARG #xarg, \
+                                              LKEYS.KEYREL.ARG1 #xarg ] ].')
+
+
     if ch.get('verb-cluster') == 'yes':
       mylang.add('scopal-mod-adj-lex := no-cluster-lex-item.')
       mylang.add('int-mod-adj-lex := no-cluster-lex-item.')   

@@ -9,3 +9,5 @@ acl-basic-ger-argcomp=l of German covering phenomena present for ACL 2011
 German-auxrule=Regression test covering basic data from acl 2011 using auxrule analysis for German
 ger-raiscontr-argcomp=Short test to see if object raising works
 ger-raiscontr-auxrule=Short test for object raising using auxrule analysis
+ger-auxrule-adjectives=Tests correct behavior of modifying adjectives, including agreement
+ger-argcomp-adjectives=Tests correct behavior of adjectives including agreement with arg-comp analysis
