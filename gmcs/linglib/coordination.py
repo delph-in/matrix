@@ -119,7 +119,10 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
       path = 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.'
       add_shared_features(mylang, 'png', path, mid)
       add_sharing_supertypes(mylang, pn, mid, 'png') 
-
+   #2011-11-07 predicative adjectives need to share their XARG
+      path = 'SYNSEM.LOCAL.CONT.HOOK.'
+      add_shared_features(mylang, 'xarg', path, mid)
+      add_sharing_supertypes(mylang, pn, mid, 'xarg') 
 
   elif pos == 'v' or pos == 'vp' or pos == 's':
 ###removing vc from verbal features, causes problems for coordinating verbal forms

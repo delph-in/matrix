@@ -1,5 +1,5 @@
 version=23
-language=ger-auxrule-adjectives
+language=ger-copula-argcomp
 
 
 section=phenomena
@@ -18,7 +18,8 @@ emb-clause-2nd-verb=yes
 subj-control-verb=yes
 obj-raising=yes
 split-cluster=yes
-vc-analysis=aux-rule
+split-analysis=lex-rule
+vc-analysis=basic
 
 
 section=word-order

@@ -11,3 +11,5 @@ ger-raiscontr-argcomp=Short test to see if object raising works
 ger-raiscontr-auxrule=Short test for object raising using auxrule analysis
 ger-auxrule-adjectives=Tests correct behavior of modifying adjectives, including agreement
 ger-argcomp-adjectives=Tests correct behavior of adjectives including agreement with arg-comp analysis
+ger-copula-auxrule=Testing behavior and semantics of copula verbs with locative prepositional phrases or adjectives as predicates
+ger-copula-argcomp=Testing copula with adjective predicates and PP predicates (locatives) this test uses argcomp analysis
