@@ -1232,6 +1232,13 @@ basic-binary-headed-phrase := headed-phrase & basic-binary-phrase &
 
 binary-headed-phrase := basic-binary-headed-phrase & binary-phrase.
 
+head-non-wh := binary-headed-phrase &
+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-dlist ].
+
+head-wh := binary-headed-phrase &
+ [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques,
+   NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE 1-dlist ].
+
 ; ERB (2007-02-13) Adding these for handling constructions where a marker
 ; shows up simultaneously on both ends of the phrase, such as negation
 ; in Hausa and question marking in ASL.  (For the latter case, what's
@@ -1367,8 +1374,10 @@ head-compositional := headed-phrase &
 ; ERB 2007-01-21 COMPS olist is no longer a fair constraint on
 ; clauses, under current analysis.
 
-clause := phrasal &
-  [ SYNSEM.NON-LOCAL.QUE 0-dlist ].
+; ASF 2011-11-08 removing [ SYNSEM.NON-LOCAL.QUE 0-dlist ] constraint
+; Does not work with wh- in combination with flexible word order
+
+clause := phrasal.
 
 
 ; The following subtypes of clause will need more constraints,
@@ -1410,11 +1419,12 @@ clause := phrasal &
 ; that the C-CONT.RELS and C-CONT.HCONS are empty.
 
 ; ERB 2007-01-21 Er, not head-only any more, though. 
+; ASF 2011-11-08 Removed HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-dlist
+; Doesn't work for wh-words in flexible word order
 
 basic-non-rel-clause := clause & head-compositional &
   [ SYNSEM.NON-LOCAL.REL 0-dlist,
-    HEAD-DTR.SYNSEM.NON-LOCAL [ QUE 0-dlist,
-				REL 0-dlist ],
+    HEAD-DTR.SYNSEM.NON-LOCAL [ REL 0-dlist ],
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ]].
 
@@ -1537,7 +1547,7 @@ basic-head-filler-phrase := basic-filler-phrase & head-compositional.
 ; C-CONT to be  RELS <! !>, now that we're not putting in messages.  (Hey:
 ; that was already the case. Or not, now I don't see it?)
 
-basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
+general-basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
 			  head-compositional &
   [ SYNSEM phr-synsem & 
 	   [ LOCAL.CAT [ POSTHEAD +,
@@ -1554,8 +1564,14 @@ basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
 				       COMPS olist,
 				       SPR olist ] ] ],
 		   NON-LOCAL [ SLASH 0-dlist & [ LIST < > ],
-			       REL 0-dlist,
-			       QUE 0-dlist ] ]].
+			       REL 0-dlist ] ]].
+
+basic-head-subj-phrase := general-basic-head-subj-phrase & head-non-wh.
+;  [ NON-HEAD-DTR.NON-LOCAL.QUE 0-dlist ].
+
+basic-head-wh-subj-phrase := general-basic-head-subj-phrase & head-wh.
+;  [ C-CONT.HOOK.INDEX.SF ques,
+;    NON-HEAD-DTR.NON-LOCAL.QUE 1-dlist ].
 
 decl-head-subj-phrase := basic-head-subj-phrase & declarative-clause.
 imp-head-subj-phrase := basic-head-subj-phrase & imperative-clause.
@@ -1625,6 +1641,9 @@ basic-head-comp-phrase := head-valence-phrase & head-compositional &
     NON-HEAD-DTR.SYNSEM canonical-synsem,
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ] ].
+
+basic-head-nonwh-comp-phrase := basic-head-comp-phrase & head-non-wh.
+basic-head-wh-comp-phrase := basic-head-comp-phrase & head-wh.
 
 ; ERB 2004-12-14 This is what used to be called basic-head-comp-phrase.
 
@@ -1886,7 +1905,7 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
 ; non-empty comps lists.  The head-mod-phrase will pass up
 ; the COMPS requirement, whatever it was.
 
-head-mod-phrase := head-nexus-phrase &
+head-mod-phrase := head-nexus-rel-phrase &
   [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj,
                              SPR #spr,
                              COMPS #comps ],
@@ -1933,7 +1952,7 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
 ; mother and non-head-daughter, token-identity removed
 
 
-basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
+head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
   [ SYNSEM [ NON-LOCAL [ SLASH [ LIST #first,
 				 LAST #last ],
 			 REL 0-dlist ] ],
@@ -1963,15 +1982,16 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                          VAL [ COMPS olist,
                                SPR olist ] ],
              NON-LOCAL [ SLASH [ LIST #first,
-                                 LAST #middle ],
-                         QUE 0-dlist & [ LIST null ] ] ],
+                                 LAST #middle ] ] ],
     C-CONT.RELS <! !> ].
 
-head-mod-phrase-simple := basic-head-mod-phrase-simple &
-  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #htop,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #htop ] >].
+basic-head-mod-phrase-simple := head-mod-phrase-simple & head-nexus-phrase & head-non-wh.
 
-adj-head-phrase := basic-head-mod-phrase-simple & head-final &
+basic-head-wh-mod-phrase-simple := head-mod-phrase-simple & head-wh &
+  [ SYNSEM.NON-LOCAL.QUE 1-dlist ].
+
+
+general-adj-head-phrase := head-mod-phrase-simple & head-final &
   [ SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
 	     MODIFIED lmod & [ PERIPH #periph ],
              LIGHT #light ],
@@ -1982,12 +2002,18 @@ adj-head-phrase := basic-head-mod-phrase-simple & head-final &
 				      REL 0-dlist ],
                           MODIFIED.PERIPH #periph ] ].
 
-head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
+adj-head-phrase := general-adj-head-phrase & basic-head-mod-phrase-simple.
+wh-adj-head-phrase := general-adj-head-phrase & basic-head-wh-mod-phrase-simple.
+
+general-head-adj-phrase := head-mod-phrase-simple & head-initial & phrasal &
   [ SYNSEM [ LOCAL.CAT.POSTHEAD +,
 	     MODIFIED rmod ],
     HEAD-DTR.SYNSEM.MODIFIED notmod-or-rmod,
-    NON-HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD +,
-			  NON-LOCAL.QUE 0-dlist ] ].
+    NON-HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD + ] ].
+
+head-adj-phrase := general-head-adj-phrase & basic-head-mod-phrase-simple.
+head-wh-adj-phrase := general-head-adj-phrase & basic-head-wh-mod-phrase-simple.
+
 
 ; We split head-adj-phrase and adj-head-phrase into two each,
 ; one for intersective modifiers and one for scopal modifiers, in order to
@@ -1995,7 +2021,7 @@ head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
 ; problem" (cf. Kasper '98).  This split is also used in generation, where
 ; we delay construction of intersective modification, but not scopal.
 
-scopal-mod-phrase := head-mod-phrase-simple &
+scopal-mod-phrase := basic-head-mod-phrase-simple &
   [ NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL scopal-mod ] >,
                                 CONT.HOOK #hook ],
     C-CONT [ HOOK #hook,
@@ -2009,11 +2035,14 @@ scopal-mod-phrase := head-mod-phrase-simple &
 ; But, it's probably less necessary, since we'll have fewer non-branching
 ; rules?
 
-isect-mod-phrase := head-mod-phrase-simple & head-compositional &
+general-isect-mod-phrase := head-mod-phrase-simple & head-compositional &
   [ HEAD-DTR.SYNSEM.LOCAL.CONT [ HOOK.LTOP #hand ],
     NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL intersective-mod ] >,
 				CONT.HOOK.LTOP #hand ],
     C-CONT.HCONS <! !> ].
+
+isect-mod-phrase := general-isect-mod-phrase & basic-head-mod-phrase-simple.
+isect-wh-mod-phrase := general-isect-mod-phrase & basic-head-wh-mod-phrase-simple.
 
 adj-head-scop-phrase := adj-head-phrase & scopal-mod-phrase &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.POSTHEAD - ].
@@ -2022,6 +2051,9 @@ head-adj-scop-phrase := head-adj-phrase & scopal-mod-phrase &
 adj-head-int-phrase := adj-head-phrase & isect-mod-phrase &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD - ] ].
 head-adj-int-phrase := head-adj-phrase & isect-mod-phrase.
+wh-adj-head-int-phrase := wh-adj-head-phrase & isect-wh-mod-phrase &
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD - ] ].
+head-wh-adj-int-phrase := head-wh-adj-phrase & isect-wh-mod-phrase.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ;;

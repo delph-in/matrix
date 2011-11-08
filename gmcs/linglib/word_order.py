@@ -650,6 +650,13 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'The head of comp-head-phrase can\'t be: ' + str(comp_head_is_not))
 
+# ASF 2011-11-08 Not directly related to specialize_word_order
+# adding additional phrases for wh-words (should probably be moved...)
+
+
+  if ch.get('wh-questions') == 'yes':
+    create_wh_phrases(ch, mylang, rules)
+
 
 # ERB 2006-10-05 Below is what I had before I had to generalize because
 # of addition of qpart_order.
@@ -896,18 +903,28 @@ def customize_head_comp_non_main_phrase(ch, mylang):
       if c_ord == 'final':
         fhead = 'comp'
   
+  wh = ''
+  if ch.get('wh-questions') == 'yes':
+    wh = 'on'
+    mylang.add('share-que-non-head-phrase := binary-headed-phrase & \
+                  [ SYNSEM.NON-LOCAL.QUE #que, \
+                    NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].')
   if ihead:
     mylang.add('head-comp-sub-phrase := basic-head-1st-comp-phrase & \
                     head-initial & \
                 [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + ihead +  ' ].')
+    if wh:
+      mylang.add('head-comp-sub-phrase := share-que-non-head-phrase.')
   if fhead: 
     mylang.add('comp-head-sub-phrase := basic-head-1st-comp-phrase & \
                     head-final & \
-                [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + fhead + ' ].')  
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + fhead + ' ].') 
+    if wh:
+      mylang.add('comp-head-sub-phrase := share-que-non-head-phrase.') 
 
   if ch.get('clz-optionality'):
     mylang.add('create-informal-vcomp-phrase := unary-phrase &\
-   [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
+   [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK #hook & [ INDEX.SF prop ],\
                              COORD -, \
 	         	     CAT [ HEAD verb & [ FORM finite ],\
 				   VAL #val & [ SUBJ < >,\
@@ -916,9 +933,10 @@ def customize_head_comp_non_main_phrase(ch, mylang):
 					        SPEC < > ],\
 				   MC + ] ] ] >,\
      C-CONT.HOOK #hook,\
-     SYNSEM.LOCAL.CAT [ HEAD comp,\
-	         	VAL #val,\
-		        MC - ] ].')
+     SYNSEM [ LOCAL.CAT [ HEAD comp,\
+	                  VAL #val,\
+		          MC - ], \
+              NON-LOCAL.QUE 0-dlist ] ].')
 
 def add_subclausal_rules(ch, rules): 
   c_ord = ch.get('clz-comp-order')
@@ -929,3 +947,34 @@ def add_subclausal_rules(ch, rules):
     rules.add('comp-head-sub := comp-head-sub-phrase.')
   if ch.get('clz-optionality'):
     rules.add('informal-vcomp := create-informal-vcomp-phrase.')
+
+def create_wh_phrases(ch, mylang, rules):
+  mylang.add('lex-rule :+ [ SYNSEM.NON-LOCAL.QUE #que, \
+                            DTR.SYNSEM.NON-LOCAL.QUE #que ].')
+
+  mylang.add('bare-np-phrase := head-nexus-que-phrase.')
+ 
+  if ch.get('has-compl') == 'yes':
+    wh_sub_type = \
+      'create-wh-ques-vcomp-phrase := unary-phrase & \
+        [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK #hook & [ INDEX.SF ques ], \
+                              COORD -, \
+                              CAT [ HEAD verb & \
+                                       [ FORM finite, \
+					 INV - ], \
+                                    VAL #val & \
+                                      [ SUBJ < >, \
+                                        COMPS < >, \
+                                        SPR < >, \
+                                        SPEC < > ], \
+                                  MC #mc ] ] ] >, \
+      C-CONT.HOOK #hook, \
+      SYNSEM [ LOCAL.CAT [ HEAD comp, \
+                           VAL #val, \
+                           MC #mc & - ], \
+               NON-LOCAL.QUE 0-dlist ] ].'
+    mylang.add(wh_sub_type)
+  
+###word order rules in Germanic specific for now
+  word_order_v2_vcluster.create_wh_wo_phrases(mylang)
+  word_order_v2_vcluster.create_wh_rules(rules)

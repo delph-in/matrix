@@ -102,6 +102,11 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
   # adding agreement constraints
   # something better should be done to get the right supertypes to the right
   # coordination phrases (consider function to split them in groups...)
+
+  # que feature shared for all if wh-is present
+  if 'que' in agr:
+    share_wh_properties(mylang, pn, mid)
+
   if pos == 'n' or pos == 'np' or pos == 'adj':
     noun_feat = ['case','vc']
     for nf in noun_feat:
@@ -216,14 +221,14 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
       agreement += ',inv'
     if ch.get('has-adp') or ch.get('has-adj'):
       if ch.get('has-cop'):
-        agreement +=',prd'  
+        agreement +=',prd'
     agr_path = 'SYNSEM.LOCAL.CAT.HEAD.'
     agr =  agreement.split(',')
     for my_agr in agr:
       add_shared_features(mylang, my_agr, agr_path, mid)
 
 ###function create coordinated structures that share syntactic properties
-###use for specific analyses
+###used for specific analyses
     feat = determine_syntactic_features_tobe_shared(ch)
     create_coord_sharing_cat_features(mylang, feat, mid)
 
@@ -232,7 +237,9 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
 ###dependent supertypes
     for f in feat:
       agreement += ',' + f
-
+    if ch.get('wh-questions') == 'yes':
+      agreement += ',que' 
+ 
     for pos in ('n', 'np', 'vp', 's', 'adj','adp'):
       if cs.get(pos):
         define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, agreement,
@@ -265,6 +272,14 @@ def add_sharing_supertypes(mylang, pn, mid, agr):
   if mid:   
     mylang.add(pn + '-mid-coord-rule := ' + agr + '-agr-mid-coord-rule.')
   mylang.add(pn + '-bottom-coord-rule := ' + agr + '-agr-bottom-coord-rule.')  
+
+
+def share_wh_properties(mylang, pn, mid):
+  path = 'SYNSEM.NON-LOCAL.'
+  f = 'que'
+  add_shared_features(mylang, f, path, mid)
+  add_sharing_supertypes(mylang, pn, mid, f)
+
 
 #######
 # GERMANIC

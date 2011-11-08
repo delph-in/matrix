@@ -309,6 +309,58 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
   else:
     spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules)
 
+##############################
+#
+# Phrases and rules for wh-containing sentences
+#
+
+def create_wh_wo_phrases(mylang):
+
+  mylang.add('head-wh-subj-phrase := basic-head-wh-subj-phrase & head-initial-head-nexus.')
+  mylang.add('wh-subj-head-phrase := basic-head-wh-subj-phrase & head-final-head-nexus.')
+  mylang.add('wh-subj-head-vc-phrase := basic-head-wh-subj-phrase & head-final-invc & nonverbal-comp-phrase.')
+  
+  mylang.add('wh-adjunct-head-phrase := basic-head-wh-mod-phrase-simple & \
+            [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +rp ].')
+
+  mylang.add('wh-adj-head-2nd-int-phrase := wh-adj-head-int-phrase & \
+               head-final-head-nexus & wh-adjunct-head-phrase.')
+
+  mylang.add('adj-head-int-vc-phrase := adj-head-int-phrase & \
+              head-final-invc & adjunct-head-phrase.')
+
+  mylang.add('wh-adj-head-int-vc-phrase := wh-adj-head-int-phrase & \
+                head-final-invc & wh-adjunct-head-phrase.')
+
+  mylang.add('comp-aux-vc-phrase := head-non-wh.')
+  mylang.add('comp-head-vc-phrase := head-non-wh.')
+  mylang.add('wh-comp-head-vc-phrase := general-comp-head-vc-phrase & \
+               nonverbal-comp-phrase & head-wh & \
+              [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
+  mylang.add('comp-head-phrase := head-non-wh.')
+  mylang.add('head-comp-phrase := head-non-wh.')
+  mylang.add('wh-comp-head-phrase := head-wh & basic-head-1st-comp-phrase & \
+                        head-final-head-nexus & basic-head-comp-share-vc.')
+  mylang.add('head-wh-comp-phrase := head-wh & basic-head-1st-comp-phrase & \
+                          head-initial-head-nexus & basic-head-comp-share-vc.')
+
+def create_wh_rules(rules):
+  rules.add('wh-subj-head := wh-subj-head-phrase.')
+  rules.add('head-wh-subj := head-wh-subj-phrase.')
+  rules.add('wh-subj-head-vc := wh-subj-head-vc-phrase.')
+  rules.add('wh-comp-head-vc := wh-comp-head-vc-phrase.')
+  rules.add('wh-comp-head := wh-comp-head-phrase.')
+  rules.add('head-wh-comp := head-wh-comp-phrase.')
+  rules.add('wh-ques := create-wh-ques-vcomp-phrase.')
+  rules.add('wh-adj-head-2nd-int := wh-adj-head-2nd-int-phrase.')
+  rules.add('head-2nd-wh-adj-int := head-2nd-wh-adj-int-phrase.')
+  rules.add('wh-adj-head-int-vc := wh-adj-head-int-vc-phrase.')
+
+
+
+
+
 ##########################################################################
 #                                                                        #
 # ALTERNATIVE ANALYSES                                                   #
@@ -778,7 +830,7 @@ def spec_word_order_phrases_aux_plus_verb(ch, mylang):
 
   mv2vcp = \
    'mverb-2nd-vcomp-phrase := aux-comp-non-vc-phrase & \
-      [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD [ AUX - ], \
+      [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.AUX -, \
                                     VAL.SUBJ #subj ], \
         SYNSEM.LOCAL.CAT.VAL.SUBJ #subj ].'
   mylang.add(mv2vcp) 
@@ -791,7 +843,7 @@ def spec_word_order_phrases_aux_plus_verb(ch, mylang):
 			                            MC #mc, \
 			                            HEAD.FORM finite ], \
 	                                            LIGHT - ], \
-                               HEAD-DTR.SYNSEM [ LOCAL.CAT.MC #mc ], \
+                               HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc, \
                                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
   mylang.add('aux-2nd-comp-phrase := ' + mytype + ' & basic-aux-verb-rule.')
   mylang.add('aux-2nd-comp-phrase := [ HEAD-DTR.SYNSEM [ LOCAL.CAT.MC na, \
@@ -814,14 +866,7 @@ def spec_word_order_phrases_aux_plus_verb(ch, mylang):
       'Using MODIFIED to prevent this from happening. ' + \
       'Replace with other (especially introduced) feature if necessary.'
     mylang.add('aux-1st-comp-phrase := [ SYNSEM.MODIFIED notmod-or-rmod ].', comment)
-
-  mylang.add(mytype + ' := basic-verbal-comp-rule-1 & head-initial & \
-                             [ SYNSEM [ LOCAL.CAT [ HEADFINAL +, \
-			                            MC #mc, \
-			                            HEAD.FORM finite ], \
-	                                            LIGHT - ], \
-                               HEAD-DTR.SYNSEM [ LOCAL.CAT.MC #mc ], \
-                               NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')  
+ 
 
   mylang.add('head-final-invc := [ SYNSEM.LOCAL.CAT.VC -, \
                                          HEAD-DTR.SYNSEM.LOCAL.CAT.VC na-or-- ].')

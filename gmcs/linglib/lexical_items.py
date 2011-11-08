@@ -182,8 +182,13 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     auxorder = ch.get('aux-comp-order')
     vcluster = determine_vcluster(auxcomp, auxorder, wo, ch)
 
+    if ch.get('wh-question') == 'yes':
+      verb_super = 'non-wh-lex-item'
+    else:
+      verb_super = 'lex-item'
+
     typedef = \
-      'verb-lex := lex-item & \
+      'verb-lex := ' + verb_super + ' & \
                  [ SYNSEM.LOCAL.CAT.HEAD verb ].'
     mylang.add(typedef)
     typedef = \
@@ -679,6 +684,8 @@ def customize_adverbs(mylang, ch, lexicon):
     stype = '-adverb-lex'
     if adv.get('kind') == 'int':
       stype = 'int' + stype
+    elif adv.get('kind') == 'wh':
+      stype = 'wh' + stype
     else:
       stype = 'scopal' + stype
     atype = name + '-adverb-lex'
@@ -923,8 +930,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   for noun in ch.get('noun',[]):
     name = get_name(noun)
     det = noun.get('det')
+    wh = noun.get('wh')
 
-    if singlentype or det == 'opt':
+    if wh == 'yes':
+      stype = 'wh-noun-lex'
+    elif singlentype or det == 'opt':
       stype = 'noun-lex'
     elif det == 'obl':
       stype = 'obl-spr-noun-lex'
@@ -947,7 +957,79 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       lexicon.add(typedef)
 
 
+######################################################################
+# create_wh_phrases()
+# Create basic types and supertypes to get wh-words to work
+# Specific subtypes are created in associated libraries
+#
 
+def create_wh_phrases(mylang, ch):
+  wh_pred = ch.get('wh-pred')
+  if ch.get('word-order') == 'v2' and ch.get('verb-cluster') == 'yes':
+    super_type = 'no-cluster-lex-item'
+  else:
+    super_type = 'lex-item'
+  basic_wh_type =  'basic-wh-lex := ' + super_type + ' & \
+     [ SYNSEM [ LOCAL.CONT [ RELS.LIST [ FIRST.LBL #nhand, \
+                                         REST.FIRST [ PRED "_' + wh_pred +  '_q_rel", \
+                                                  RSTR #rhand ] ], \
+                              HCONS <! qeq & [ HARG #rhand, \
+                                               LARG #nhand ] !> ], \
+                 NON-LOCAL.QUE 1-dlist ] ].'
+
+  mylang.add(basic_wh_type)
+  if ch.get('wh-adv') == 'on':
+    bwlnsl = 'basic-wh-loc-non-sp-lex := basic-wh-lex & \
+         [ SYNSEM [ LOCAL [ CONT [ HOOK [ LTOP #khand, \
+				          INDEX #index ], \
+                                   RELS <! #keyrel & [ ARG0 #ind], \
+				         [ ARG0 #ind ], \
+                                         [ LBL #khand, \
+                                           PRED "_loc_nonsp_rel", \
+				           ARG0 event, \
+				           ARG1 #index, \
+				           ARG2 #ind ]  !> ], \
+		               CAT.HEAD.MOD \
+                                        < [ LOCAL intersective-mod & \
+                                          [ CONT.HOOK.INDEX #index ] ] > ], \
+                     LKEYS.KEYREL #keyrel ] ].'
+    mylang.add(bwlnsl)
+    wal = 'wh-adverb-lex := basic-wh-loc-non-sp-lex & \
+           [ SYNSEM.LOCAL.CAT [ HEAD adv, \
+                                VAL [ SUBJ < >, \
+			              COMPS < >, \
+			              SPEC < >, \
+			              SPR < > ] ] ].'
+    mylang.add(wal)
+
+  if ch.get('wh-np') == 'on':
+    bwlsimple = \
+      'basic-wh-simple-sem-lex := basic-one-arg & norm-hook-lex-item & \
+                                   basic-wh-lex & \
+             [ SYNSEM [ LOCAL [ CONT [ HOOK.INDEX #index, \
+                                       RELS <! [ ], \
+                                               #altkeyrel & \
+                                               [ ARG0 #index ] !> ], \
+                                 CAT.VAL [ SUBJ < >, \
+                                           COMPS < >, \
+                                           SPEC < >, \
+                                           SPR < > ] ], \
+                         LKEYS.ALTKEYREL #altkeyrel ] ].'
+    mylang.add(bwlsimple)
+   
+    wh_noun = \
+      'wh-noun-lex := basic-wh-simple-sem-lex & \
+                 [ SYNSEM [ LOCAL.CAT.HEAD noun, \
+                            LKEYS.KEYREL noun-relation ] ].'
+    mylang.add(wh_noun)
+
+  mylang.add('non-wh-lex-item := lex-item & [ SYNSEM.NON-LOCAL.QUE 0-dlist].')
+#  mylang.add('verb-lex := non-wh-lex-item.')
+  mylang.add('noun-lex := non-wh-lex-item.')
+  mylang.add('basic-adjective-lex :+ non-wh-lex-item.')
+  mylang.add('basic-adverb-lex :+ non-wh-lex-item.')
+  mylang.add('basic-adposition-lex :+ non-wh-lex-item.')
+   
 ######################################################################
 # customize_lexicon()
 #   Create the type definitions associated with the user's test
@@ -972,7 +1054,8 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies):
     auxiliaries.customize_auxiliaries(mylang, ch, lexicon, hierarchies)
   if ch.get('has-cop') == 'yes':
     customize_copula(mylang, ch, lexicon, hierarchies)
-    
+  if ch.get('wh-questions') == 'yes':
+    create_wh_phrases(mylang, ch)  
 
   mylang.set_section('otherlex')
   customize_determiners(mylang, ch, lexicon, hierarchies)
