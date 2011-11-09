@@ -13,3 +13,5 @@ ger-auxrule-adjectives=Tests correct behavior of modifying adjectives, including
 ger-argcomp-adjectives=Tests correct behavior of adjectives including agreement with arg-comp analysis
 ger-copula-auxrule=Testing behavior and semantics of copula verbs with locative prepositional phrases or adjectives as predicates
 ger-copula-argcomp=Testing copula with adjective predicates and PP predicates (locatives) this test uses argcomp analysis
+ger-wh-argcomp=Small test verifying semantics of wh-phrases (welche, wer, wem, wen, wo)
+ger-wh-auxrule=Test checking semantics of wh-phrases (wer, wem, wen, wo, welche) using aux-rule

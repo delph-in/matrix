@@ -22,6 +22,8 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "ger-wh-auxrule") (:content . "ger-wh-auxrule: Test checking semantics of wh-phrases (wer, wem, wen, wo, welche) using aux-rule"))
+((:path . "ger-wh-argcomp") (:content . "ger-wh-argcomp: Small test verifying semantics of wh-phrases (welche, wer, wem, wen, wo)"))
 ((:path . "ger-copula-argcomp") (:content . "ger-copula-argcomp: Testing copula with adjective predicates and PP predicates (locatives) this test uses argcomp analysis"))
 ((:path . "ger-copula-auxrule") (:content . "ger-copula-auxrule: Testing behavior and semantics of copula verbs with locative prepositional phrases or adjectives as predicates"))
 ((:path . "ger-argcomp-adjectives") (:content . "ger-argcomp-adjectives: Tests correct behavior of adjectives including agreement with arg-comp analysis"))

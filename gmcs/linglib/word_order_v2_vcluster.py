@@ -344,9 +344,10 @@ def create_wh_wo_phrases(mylang):
   mylang.add('comp-head-phrase := head-non-wh.')
   mylang.add('head-comp-phrase := head-non-wh.')
   mylang.add('wh-comp-head-phrase := head-wh & basic-head-1st-comp-phrase & \
-                        head-final-head-nexus & basic-head-comp-share-vc.')
+                        head-final-head-nexus.')
   mylang.add('head-wh-comp-phrase := head-wh & basic-head-1st-comp-phrase & \
-                          head-initial-head-nexus & basic-head-comp-share-vc.')
+                          head-initial-head-nexus.')
+
 
 ####if 100% correct, should check for presence of determiners
 ###but Germanic languages have them
@@ -512,10 +513,14 @@ def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
   if ch.get('q-inv'):
     mylang.add('gen-comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
 
+  if ch.get('wh-questions') == 'yes':
+    add_wh_additions_for_arg_comp(ch, mylang, rules)
+
+
 ##additional constraints to account for split clusters, if occuring
 ##(explanation see below)
 ##TRYING OUT: MAY NO LONGER BE NEEDED WITH REVISED WORD ORDER ANALYSIS
-##2011-11-04
+##2011-11-04 (worked)
 #  if ch.get('split-cluster') == 'yes':
 #    split_cluster_phrases_argument_composition(ch, mylang, rules, lrules)
 
@@ -539,7 +544,7 @@ def split_cluster_phrases_argument_composition(ch, mylang, rules, lrules):
 
 
 def split_cluster_arg_comp_lex_rule(ch, mylang, lrules):
-#'old-analysis' keep until tested
+
   headdtrval = '[ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                     HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf'
   nhddtrval = '[ SYNSEM.LOCAL.CAT.VFRONT #vf, \
@@ -629,6 +634,19 @@ def add_old_analysis_no_obj_raising_constraints(ch, mylang, rules, lrules):
       split_cluster_phrases_argument_composition(ch, mylang, rules, lrules)
     
 
+def add_wh_additions_for_arg_comp(ch, mylang, rules):
+  if ch.get('old-analysis') != 'yes':
+    mylang.add('wh-comp-head-phrase := basic-head-comp-share-vc.')
+    mylang.add('head-wh-comp-phrase := basic-head-comp-share-vc.')
+  mylang.add('comp-head-phrase-2 := head-non-wh.')
+  mylang.add('wh-comp-head-phrase-2 := basic-head-2nd-comp-phrase & \
+               head-final-head-nexus & basic-head-comp-share-vc & head-wh.')
+  mylang.add('head-comp-phrase-2 := head-non-wh.')
+  mylang.add('head-wh-comp-phrase-2 := basic-head-2nd-comp-phrase & \
+               head-initial-head-nexus & basic-head-comp-share-vc & head-wh.')
+  rules.add('wh-comp-head-2 := wh-comp-head-phrase-2.')
+  rules.add('head-wh-comp-2 := head-wh-comp-phrase-2.')
+
 def add_revised_analysis_incl_obj_raising_constraints(ch, mylang, lrules):
 
   mylang.add('no-cluster-lex-item := lex-item & \
@@ -639,6 +657,7 @@ def add_revised_analysis_incl_obj_raising_constraints(ch, mylang, lrules):
     mylang.add('basic-head-comp-share-vc := basic-head-comp-phrase & \
                                  [ SYNSEM.LOCAL.CAT.VC #vc, \
                                    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
+
     mylang.add('comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
     mylang.add('comp-2-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
 
