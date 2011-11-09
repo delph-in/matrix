@@ -336,11 +336,9 @@ def create_wh_wo_phrases(mylang):
                 head-final-invc & wh-adjunct-head-phrase.')
 
   mylang.add('comp-aux-vc-phrase := head-non-wh.')
-  mylang.add('comp-head-vc-phrase := head-non-wh.')
+  mylang.add('comp-head-vc-phrase := head-non-wh & share-que-non-head-phrase.')
   mylang.add('wh-comp-head-vc-phrase := general-comp-head-vc-phrase & \
-               nonverbal-comp-phrase & head-wh & \
-              [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
-                HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
+               nonverbal-comp-phrase & head-wh.') 
   mylang.add('comp-head-phrase := head-non-wh.')
   mylang.add('head-comp-phrase := head-non-wh.')
   mylang.add('wh-comp-head-phrase := head-wh & basic-head-1st-comp-phrase & \
@@ -356,6 +354,8 @@ def create_wh_wo_phrases(mylang):
          HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc, \
          NON-HEAD-DTR.SYNSEM.OPT - ].')
 
+  mylang.add('bare-np-phrase :=[ HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-dlist ].')
+  
 
 def create_wh_rules(rules):
   rules.add('wh-subj-head := wh-subj-head-phrase.')
@@ -638,6 +638,9 @@ def add_wh_additions_for_arg_comp(ch, mylang, rules):
   if ch.get('old-analysis') != 'yes':
     mylang.add('wh-comp-head-phrase := basic-head-comp-share-vc.')
     mylang.add('head-wh-comp-phrase := basic-head-comp-share-vc.')
+
+  mylang.add('wh-comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
   mylang.add('comp-head-phrase-2 := head-non-wh.')
   mylang.add('wh-comp-head-phrase-2 := basic-head-2nd-comp-phrase & \
                head-final-head-nexus & basic-head-comp-share-vc & head-wh.')
@@ -934,7 +937,7 @@ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART #ap ].')
   if ch.get('split-cluster') == 'yes':
     split_cluster_phrases_aux_plus_verb(ch, mylang)
 
-
+   
 
 
 def split_cluster_phrases_aux_plus_verb(ch, mylang):
@@ -942,6 +945,10 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
 
   mylang.add('cat :+ [ VFRONT bool ].', 'VFRONT checks whether the vorfeld contains a partial verbal cluster', section='addenda')
   mylang.add('head :+ [ DTR-FORM form ].')
+  
+  if ch.get('wh-questions') == 'yes':
+    mylang.add('wh-comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                                   HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
 
 ###flexible aux-comp-order always uses NOMINAL with aux+verb analysis
 ###only add for fixed aux-comp-order + split cluster

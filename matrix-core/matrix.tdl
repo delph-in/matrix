@@ -1635,7 +1635,7 @@ basic-head-wh-spec-phrase := general-basic-head-spec-phrase & head-nexus-rel-phr
 ; daughter removed
 
 
-basic-head-comp-phrase := head-valence-head-nexus & head-compositional &
+basic-head-comp-phrase := head-valence-phrase & head-compositional &
 			  binary-headed-phrase &
   [ SYNSEM phr-synsem-min &
 	   [ LOCAL.CAT [ VAL [ SUBJ #subj,
@@ -1651,7 +1651,7 @@ basic-head-comp-phrase := head-valence-head-nexus & head-compositional &
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ] ].
 
-basic-head-nonwh-comp-phrase := basic-head-comp-phrase & head-non-wh.
+basic-head-nonwh-comp-phrase := basic-head-comp-phrase & head-non-wh & head-valence-head-nexus.
 basic-head-wh-comp-phrase := basic-head-comp-phrase & head-wh.
 
 ; ERB 2004-12-14 This is what used to be called basic-head-comp-phrase.

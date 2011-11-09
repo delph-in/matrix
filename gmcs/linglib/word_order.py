@@ -957,7 +957,7 @@ def create_wh_phrases(ch, mylang, rules):
   if ch.get('has-compl') == 'yes':
     wh_sub_type = \
       'create-wh-ques-vcomp-phrase := unary-phrase & \
-        [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK #hook & [ INDEX.SF ques ], \
+        [ ARGS < [ SYNSEM [ LOCAL [ CONT.HOOK #hook & [ INDEX.SF ques ], \
                               COORD -, \
                               CAT [ HEAD verb & \
                                        [ FORM finite, \
@@ -967,7 +967,8 @@ def create_wh_phrases(ch, mylang, rules):
                                         COMPS < >, \
                                         SPR < >, \
                                         SPEC < > ], \
-                                  MC #mc ] ] ] >, \
+                                    MC #mc ] ], \
+                              NON-LOCAL.QUE 1-dlist ] ] >, \
       C-CONT.HOOK #hook, \
       SYNSEM [ LOCAL.CAT [ HEAD comp, \
                            VAL #val, \

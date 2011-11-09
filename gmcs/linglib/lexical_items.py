@@ -448,6 +448,8 @@ def customize_copula(mylang, ch, lexicon, hierarchies):
       head = '+'
       if 'adj' in values:
         head += 'j'
+      if 'adv' in values:
+        head += 'r'
       if 'adp' in values:
         head += 'p'
     else:
@@ -458,7 +460,7 @@ def customize_copula(mylang, ch, lexicon, hierarchies):
       mylang.add('copula-verb-lex := ' + type_name + ' & trans-first-arg-raising-lex-item-2.')
       mylang.add('loc-copula-verb-lex := ' + type_name + \
                     ' & trans-first-arg-raising-lex-item & norm-sem-lex-item & \
-  [ SYNSEM [ LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL [ CAT.HEAD adp, \
+  [ SYNSEM [ LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL [ CAT.HEAD +rp, \
 						 CONT.HOOK [ INDEX #ind, \
 							     XARG #xarg ] ], \
 		     CONT.HOOK [ INDEX #ind ] ], \
@@ -467,6 +469,9 @@ def customize_copula(mylang, ch, lexicon, hierarchies):
       type_name = 'copula-verb-lex'
       mylang.add('copula-verb-lex := trans-first-arg-raising-lex-item-2.')
       
+    mylang.add('copula-verb-lex := \
+                 [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +jp ].')
+
 
     mylang.add(type_name + ' := verb-lex & \
              [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #subj >, \
