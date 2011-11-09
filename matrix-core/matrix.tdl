@@ -1175,9 +1175,11 @@ head-nexus-phrase := head-nexus-rel-phrase & head-nexus-que-phrase.
 ; the SLASH values of its arguments.  See discussion of head-nexus-phrase for
 ; treatment of REL and QUE.
 
-head-valence-phrase := head-nexus-phrase &
+head-valence-phrase := headed-phrase &
   [ SYNSEM.NON-LOCAL.SLASH #slash,
     HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].
+
+head-valence-head-nexus := head-valence-phrase & head-nexus-phrase.
 
 ; All phrases are either unary or binary.
 
@@ -1547,7 +1549,7 @@ basic-head-filler-phrase := basic-filler-phrase & head-compositional.
 ; C-CONT to be  RELS <! !>, now that we're not putting in messages.  (Hey:
 ; that was already the case. Or not, now I don't see it?)
 
-general-basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
+general-basic-head-subj-phrase := head-valence-head-nexus & binary-headed-phrase &
 			  head-compositional &
   [ SYNSEM phr-synsem & 
 	   [ LOCAL.CAT [ POSTHEAD +,
@@ -1583,7 +1585,7 @@ imp-head-subj-phrase := basic-head-subj-phrase & imperative-clause.
 ; ERB 2007-01-21 Removing non-clause, which doesn't seem to be doing
 ; any work any more.
 
-basic-head-spec-phrase := head-valence-phrase & phrasal &
+general-basic-head-spec-phrase := head-valence-phrase & phrasal &
 			  binary-headed-phrase &
   [ INFLECTED infl-satisfied,
     SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
@@ -1591,7 +1593,8 @@ basic-head-spec-phrase := head-valence-phrase & phrasal &
                                SPR #spr,
                                SPEC #spec ],
                          POSTHEAD #ph ],
-             MODIFIED #modif ],
+             MODIFIED #modif,
+	     NON-LOCAL.QUE #que ],
     HEAD-DTR [ INFLECTED infl-satisfied,
                SYNSEM [ LOCAL [ CAT [ HEAD #head,
                                       VAL [ SUBJ #subj,
@@ -1609,10 +1612,16 @@ basic-head-spec-phrase := head-valence-phrase & phrasal &
                                         MODIFIED #hmodif ] >,
                                COMPS #spcomps ] ],
                    CONT.HOOK #hook ],
-           MODIFIED #modif ],
+           MODIFIED #modif,
+           NON-LOCAL.QUE #que ],
     C-CONT [ HOOK #hook,
              RELS <! !>,
 	     HCONS <! !> ] ].
+
+basic-head-spec-phrase := general-basic-head-spec-phrase & head-valence-head-nexus & head-non-wh.
+
+basic-head-wh-spec-phrase := general-basic-head-spec-phrase & head-nexus-rel-phrase & 
+  [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE 1-dlist ].
 
 ; Value of LIGHT comes from head-daughter's specification in HC-LIGHT.
 
@@ -1626,7 +1635,7 @@ basic-head-spec-phrase := head-valence-phrase & phrasal &
 ; daughter removed
 
 
-basic-head-comp-phrase := head-valence-phrase & head-compositional &
+basic-head-comp-phrase := head-valence-head-nexus & head-compositional &
 			  binary-headed-phrase &
   [ SYNSEM phr-synsem-min &
 	   [ LOCAL.CAT [ VAL [ SUBJ #subj,
@@ -1679,7 +1688,7 @@ basic-head-2nd-comp-phrase := basic-head-comp-phrase &
 ; either (underspecified).  basic-head-opt-comp-phrase copies this
 ; information into the index of the unexpressed argument.
 
-basic-head-opt-comp-phrase := head-valence-phrase & head-only &
+basic-head-opt-comp-phrase := head-valence-head-nexus & head-only &
                               head-compositional &
   [ INFLECTED #infl,
     SYNSEM canonical-synsem &
@@ -1728,7 +1737,7 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
 ; down to decl-head-opt-subj-phrase, since we might *not* want it for
 ; imperatives.
 
-basic-head-opt-subj-phrase := head-valence-phrase & head-only &
+basic-head-opt-subj-phrase := head-valence-head-nexus & head-only &
   [ INFLECTED #infl,
     SYNSEM canonical-synsem &
 	      [ LOCAL.CAT [ VAL [ SUBJ < >,
@@ -1863,7 +1872,7 @@ basic-bare-np-phrase := head-only &
 
 ; Unary rules for extraction
 
-basic-extracted-arg-phrase := head-valence-phrase & head-only &
+basic-extracted-arg-phrase := head-valence-head-nexus & head-only &
   [ SYNSEM.LIGHT - ].
 
 basic-extracted-comp-phrase := basic-extracted-arg-phrase & 
@@ -2727,7 +2736,7 @@ basic-adposition-lex := single-rel-lex-item &
 	     LKEYS.KEYREL event-relation ]].
 
 ; ASF 2011-10-23 changed supertype of basic-mod-adp-lex to norm-sem-lex-item.
-; Previous analysis blocked examples such as 'the man sits on the table'
+; Previous analysis blocked examples such as 'the man is sitting on the table'
 
 basic-mod-adp-lex := basic-adposition-lex & norm-sem-lex-item.
 basic-scopal-mod-adposition-lex := basic-mod-adp-lex & scopal-mod-lex.

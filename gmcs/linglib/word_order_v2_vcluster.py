@@ -326,6 +326,9 @@ def create_wh_wo_phrases(mylang):
   mylang.add('wh-adj-head-2nd-int-phrase := wh-adj-head-int-phrase & \
                head-final-head-nexus & wh-adjunct-head-phrase.')
 
+  mylang.add('head-2nd-wh-adj-int-phrase := head-wh-adj-int-phrase & \
+               head-initial-head-nexus & wh-adjunct-head-phrase.')
+
   mylang.add('adj-head-int-vc-phrase := adj-head-int-phrase & \
               head-final-invc & adjunct-head-phrase.')
 
@@ -345,6 +348,14 @@ def create_wh_wo_phrases(mylang):
   mylang.add('head-wh-comp-phrase := head-wh & basic-head-1st-comp-phrase & \
                           head-initial-head-nexus & basic-head-comp-share-vc.')
 
+####if 100% correct, should check for presence of determiners
+###but Germanic languages have them
+  mylang.add('wh-spec-head-phrase := basic-head-wh-spec-phrase & HEAD-FINAL & \
+       [ SYNSEM.LOCAL.CAT.VC #vc, \
+         HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc, \
+         NON-HEAD-DTR.SYNSEM.OPT - ].')
+
+
 def create_wh_rules(rules):
   rules.add('wh-subj-head := wh-subj-head-phrase.')
   rules.add('head-wh-subj := head-wh-subj-phrase.')
@@ -356,7 +367,7 @@ def create_wh_rules(rules):
   rules.add('wh-adj-head-2nd-int := wh-adj-head-2nd-int-phrase.')
   rules.add('head-2nd-wh-adj-int := head-2nd-wh-adj-int-phrase.')
   rules.add('wh-adj-head-int-vc := wh-adj-head-int-vc-phrase.')
-
+  rules.add('wh-spec-head := wh-spec-head-phrase.')
 
 
 

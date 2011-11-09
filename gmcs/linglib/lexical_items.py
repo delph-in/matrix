@@ -550,8 +550,12 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
 
   for det in ch.get('det',[]):
     name = get_name(det)
-
-    stype = 'determiner-lex'
+    wh = det.get('wh')    
+    
+    if wh == 'yes':
+      stype = 'wh-determiner-lex'
+    else:
+      stype = 'determiner-lex'
     dtype = name + '-determiner-lex'
 
     mylang.add(dtype + ' := ' + stype + '.')
@@ -908,6 +912,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         'no-spr-noun-lex := noun-lex & \
            [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
       mylang.add(typedef)
+      if ch.get('wh-det') == 'on':
+        mylang.add('no-spr-noun-lex := non-wh-lex-item.')
 
   if seen['imp'] and ch.get('has-dets') == 'yes':
     mylang.add(
@@ -1023,13 +1029,21 @@ def create_wh_phrases(mylang, ch):
                             LKEYS.KEYREL noun-relation ] ].'
     mylang.add(wh_noun)
 
+  if ch.get('wh-det') == 'on':
+    wh_det = \
+     'wh-determiner-lex := basic-determiner-lex & basic-zero-arg & \
+       [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < >, \
+                                  COMPS < >, \
+                                  SPR < > ], \
+                  NON-LOCAL.QUE 1-dlist ] ].'
+    mylang.add(wh_det)
+
+
   mylang.add('non-wh-lex-item := lex-item & [ SYNSEM.NON-LOCAL.QUE 0-dlist].')
-#  mylang.add('verb-lex := non-wh-lex-item.')
-  mylang.add('noun-lex := non-wh-lex-item.')
   mylang.add('basic-adjective-lex :+ non-wh-lex-item.')
   mylang.add('basic-adverb-lex :+ non-wh-lex-item.')
   mylang.add('basic-adposition-lex :+ non-wh-lex-item.')
-   
+  mylang.add('determiner-lex := non-wh-lex-item.') 
 ######################################################################
 # customize_lexicon()
 #   Create the type definitions associated with the user's test
