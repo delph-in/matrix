@@ -480,7 +480,7 @@ section=lexicon
   verb5_complementizer=optional
   verb5_compl-sf=ques
     verb5_stem1_orth=frag
-    verb5_stem1_pred_frag_v_rel
+    verb5_stem1_pred=frag_v_rel
   verb6_name=1st_p_sg_sein_id
     verb6_feat1_name=number
     verb6_feat1_value=singular
