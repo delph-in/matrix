@@ -5,7 +5,7 @@ from gmcs.utils import TDLencode
 #   Create the type definitions associated with the user's choices
 #   about sentential negation.
 
-def customize_sentential_negation(mylang, ch, lexicon, rules):
+def customize_sentential_negation(mylang, ch, lexicon, rules, lrules):
   # JDC 2011-11-04 Nowadays this function just handles the syntactic
   # negation particles (auxes and adverbs) and (coming) interactions
   # between them also possible interactions with inflection(-al negation)
@@ -44,6 +44,9 @@ def customize_sentential_negation(mylang, ch, lexicon, rules):
   if ch.get('adv-neg') == 'on' and ch.get('neg-exp') == '1':
     create_neg_adv_lex_item(mylang, ch, lexicon, rules, 1)
 
+  if ch.get('comp-neg') == 'on':
+    create_neg_comp_lex_item(mylang, ch, lexicon, rules, lrules)
+
   if ch.get('neg-head-feature') == 'on':
     mylang.add('head :+ [ NEGATED luk ].', section='addenda')
 
@@ -52,12 +55,66 @@ def customize_sentential_negation(mylang, ch, lexicon, rules):
     if ch.get('neg1-type')[0] == 'f' or \
       ch.get('neg2-type')[0] == 'f':
       create_neg_adv_lex_item(mylang, ch, lexicon, rules, 2)
-      
+
+def create_neg_comp_lex_item(mylang, ch, lexicon, rules, lrules):
+
+  mylang.set_section('otherlex')
+  
+  mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
+                 [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
+                                            COMPS < >,
+                                            SUBJ < > ],
+                                      HEAD [ NEGATED +, 
+                                             MOD < [ LOCAL.CAT.HEAD verb ] > ] ] ].''',
+             '''Type for negative selected comps. 
+                This type uses the MOD list to get scopal semantics.
+                Constrain head-modifier rules to be [NEGATED -] if you don't
+                want this type to act as a modifer.''')
+
+
+  if(ch.get('neg-head-feature')!='on'):
+  # the neg-comp analyses require the neg-head-feature choice
+  # simulate it here if it's not on 
+    mylang.add('head :+ [ NEGATED luk ].', section='addenda')
+  
+  if(ch.get('comp-neg-orth')):
+    orth = ch.get('comp-neg-orth')
+    lexicon.add(TDLencode(orth) + ' := neg-adv-lex &\
+                [ STEM < \"'+ orth +'\" >,\
+                  SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
+
+
+  # we need the lexical rule to add these types to the comps lists
+  # of the verbs that selecte them
+  if ch.get('comp-neg-order') == 'before':
+    mylang.add('''neg-comp-add-lex-rule := const-val-change-only-lex-rule &
+               [ SYNSEM.LOCAL [ CAT.VAL [  SUBJ #subj,
+                                           COMPS < canonical-synsem & 
+                                                 [ LOCAL.CAT.HEAD [ NEGATED +,
+                                MOD < [ LOCAL.CONT.HOOK #hook ] > ] ] 
+                                                   . #comps > ] ],
+                 DTR.SYNSEM.LOCAL [ CAT.VAL [ SUBJ #subj,
+                                              COMPS #comps ],
+                                        CONT.HOOK #hook ] ].
+               ''')
+  elif ch.get('comp-neg-order') == 'after':
+    mylang.add('''neg-comp-add-lex-rule := const-lex-rule &
+               [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps . neg-comp-lex >,
+                 DTR.SYNSEM.LOCAL.CAT.VAL.COMPS #comps ].
+               ''')
+  lrules.add('neg-lex-rule := neg-comp-add-lex-rule.')
+
+  if(ch.get('comp-neg-head')=='aux'):
+    mylang.add('neg-comp-add-lex-rule := [ DTR aux-lex ].')
+  elif(ch.get('comp-neg-head')=='v'):
+    mylang.add('neg-comp-add-lex-rule := [ DTR verb-lex ].')
+  
+
 
 
 def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
   mylang.set_section('otherlex')
-  mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
+  mylang.add('''neg-adv-lex := basic-adverb-lex &
                  [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
                                             COMPS < >,
                                             SUBJ < > ],

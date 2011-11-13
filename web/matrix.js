@@ -1061,12 +1061,27 @@ function set_negmorph(n,o){
   var d;
   switch (o){
     case 'b':
+      if(n=='1'){
+        document.forms["choices_form"]["neg2-type"][0].disabled=false;
+        document.forms["choices_form"]["neg2-type"][1].disabled=false;
+        document.forms["choices_form"]["neg2-type"][2].disabled=false;
+      }
       var d = document.getElementById('neg'+n+'-b');
       break;
     case 'fh':
+      if(n=='1'){
+        document.forms["choices_form"]["neg2-type"][0].disabled=false;
+        document.forms["choices_form"]["neg2-type"][1].disabled=true;
+        document.forms["choices_form"]["neg2-type"][2].disabled=false;
+      }
       var d = document.getElementById('neg'+n+'-fh');
       break
     case 'fd':
+      if(n=='1'){
+        document.forms["choices_form"]["neg2-type"][0].disabled=false;
+        document.forms["choices_form"]["neg2-type"][1].disabled=false;
+        document.forms["choices_form"]["neg2-type"][2].disabled=false;
+      }
       var d = document.getElementById('neg'+n+'-fd');
       break;
     default:

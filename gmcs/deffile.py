@@ -719,7 +719,11 @@ class MatrixDefFile:
         html += html_input(vr, 'checkbox', vn, '', checked,
                            bf, af) + '\n'
       elif word[0] == 'Radio':
-        (vn, fn, bf, af) = word[1:]
+        dis = ''
+        if len(word) > 5:
+          (vn, fn, bf, af, dis) = word[1:]
+        else:
+          (vn, fn, bf, af) = word[1:]
         vn = prefix + vn
         html += bf + '\n'
         i += 1
@@ -730,8 +734,12 @@ class MatrixDefFile:
             (rval, rfrn, rbef, raft, js) = word[1:]
             if choices.get(vn) == rval:
               checked = True
-            html += html_input(vr, 'radio', vn, rval, checked,
-                             rbef, raft, onclick=js) + '\n'
+            if dis:
+              html += html_input(vr, 'radio', vn, rval, checked,
+                               rbef, raft, onclick=js, disabled=True) + '\n'
+            else:
+              html += html_input(vr, 'radio', vn, rval, checked,
+                               rbef, raft, onclick=js) + '\n'
           else:
             (rval, rfrn, rbef, raft) = word[1:]
             if choices.get(vn) == rval:
@@ -1299,15 +1307,16 @@ class MatrixDefFile:
 
     # create a zero-neg lri in choices
     if section == 'sentential-negation' and 'vpc-0-neg' in form_data.keys():
-      # infl-neg should be on for zero-neg to work
-      new_choices['infl-neg'] = 'on'
-      old_choices, new_choices = self.create_infl_neg_choices(old_choices, new_choices)
+      if form_data['vpc-0-neg'].value != "":
+        # infl-neg should be on for zero-neg to work
+        new_choices['infl-neg'] = 'on'
+        old_choices, new_choices = self.create_infl_neg_choices(old_choices, new_choices)
 
     # bipartite neg adverbs require adv-neg
-    if section == 'sentential-negation' and \
-      (form_data['neg1-type'].value[0] == 'f' or \
-       form_data['neg2-type'].value[0] == 'f'):
-      new_choices['adv-neg'] = 'on'
+    if section == 'sentential-negation' and 'neg1-type' in form_data.keys():
+      if form_data['neg1-type'].value[0] == 'f' or \
+       form_data['neg2-type'].value[0] == 'f':
+        new_choices['adv-neg'] = 'on'
 
 
     # Open the def file and store it in line[]

@@ -822,7 +822,23 @@ Radio neg-order "Negative adverb order" "and appears " ""
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p></div>" 20
+Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p>" 20
+
+Check comp-neg "Negation by selected complement" "<p>" "A adverb like particle which is a selected complement.  This option will create a non-inflecting lexical rule that maps plain Vs to Vs which select for negation in addition to their regular COMPS.</p>"
+
+Label "<div style='margin-left:10px'>"
+Radio comp-neg-head "neg selected by" "Is neg selected by" "<br />"
+. aux "aux" "" "a (sub-)class of aux-verbs"
+. v   "v"   "" "any verb"
+
+Radio comp-neg-order "neg ordered" "How is neg ordered with resepct to other COMPS?" "<br />"
+. before "before" "" "before "
+. after "after" "" "after "
+
+Text comp-neg-orth "neg spelling" "What's the ORTH value for neg?" "</p>" 20
+
+
+Label "</div></div>"
 
 Label "<div id='bi-neg' class='neg_exp_switch' style='display:none'><p> Negation can be indicated by the required presence of two negative morphemes.  You'll have to specify their morphosyntax and their interactions.</p>"
 
@@ -842,7 +858,7 @@ Radio neg1-mod "neg1 adv modifies" "NEG1 modifies:" "<br />"
 . vp "VP" "" "VP "
 . v "V" "" "V "
 
-Radio neg1-order "neg1 adverb order" "NEG1 is ordered " ""
+Radio neg1-order "neg1 adverb order" "NEG1 is ordered: " ""
 . before "before" "" "before "
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
@@ -850,7 +866,7 @@ Radio neg1-order "neg1 adverb order" "NEG1 is ordered " ""
 Text neg1-adv-orth "neg1 adverb spelling" "NEG1 is spelled: " "</p></div>" 20
 
 
-Radio neg2-type "NEG2 type" "NEG2" ""
+Radio neg2-type "NEG2 type" "NEG2" "" 1 
 . b "bound" "" "bound" "set_negmorph('2','b')"
 . fh "free-H" "" "free, syntactic head" "set_negmorph('2','fh')"
 . fd "free-dep" "" "free, syntactic dependent" "set_negmorph('2','fd')"
@@ -864,7 +880,7 @@ Radio neg2-mod "neg2 adv modifies" "NEG2 modifies:" "<br />"
 . vp "VP" "" "VP "
 . v "V" "" "V "
 
-Radio neg2-order "neg2 adverb order" "NEG2 is ordered " ""
+Radio neg2-order "neg2 adverb order" "NEG2 is ordered: " ""
 . before "before" "" "before "
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
