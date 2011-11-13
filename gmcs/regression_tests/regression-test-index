@@ -53,7 +53,6 @@ free-one-aux-max-v=tests free word order with no verbal clusters, thus maximum o
 view-inf-situ-inher=inflected viewpoint and inherent situation aspect
 view-situ-aspect-infl=situation and viewpoint aspect as inflection
 test-stative=testing assignment of prog-asp to non-stative-ing comp, ignoring tense/person/number/spelling, only transitive
-pre-vp-adv-neg=Negation as independent pre-VP modifier
 Zulu=Zulu test for morphotactics
 Slave=Slave test for morphotactics
 Finnish=Finnish test for morphotactics
@@ -129,7 +128,6 @@ morphotactics-req-fbd=Tests forwards and backwards require, and (backward) forbi
 morphotactics-lrt-inputs=Tests inputs and constraints using hierarchies (trees and multiple inheritance) of lexical rule types.
 morphotactics-impl-expl-disjunction=Models and tests both implicit and explicit non-sequential disjunctions, and an explicit sequential disjunction.
 bipartite-stems=Basic test cases for bipartite stems, based on mini-English
-
 neg-aux-min=scope of negation for negative auxiliary verbs. uses minimal grammar augmented with some choices for auxiliaries
 neg-zero-min=checks semantics of negation for a basic zero-neg grammar (a phonologically empty negation suffix)
 neg-head-feature=uses a syntactic head feature to ensure that two affixes are mutually incompatible---intended to model the incompatibility of negation with certain other inflectional morphemes; implemented by having those morphemes specify NEGATED -, while negation obviously, has NEGATION +.

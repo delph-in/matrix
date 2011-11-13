@@ -124,8 +124,7 @@ cust_types = [
   's-comp-aux-with-pred',
   's-comp-aux-no-pred',
   'determiner-lex',
-  'word-to-lexeme-rule',
-  'track'
+  'word-to-lexeme-rule'
 ]
 
 # regex patterns for sets of names that are not available for
@@ -148,12 +147,6 @@ def validate_names(ch, vr):
   # read matrix types and head types from file
   try:
     filename = 'matrix-types'
-    f = open(filename, 'r')
-    for t in f.readlines():
-      reserved_types[t.strip()] = True
-    f.close()
-    filename = os.path.join(os.environ.get('CUSTOMIZATIONROOT/..', ''),
-                            'matrix-core/head-types')
     f = open(filename, 'r')
     for t in f.readlines():
       reserved_types[t.strip()] = True

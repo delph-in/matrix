@@ -37,7 +37,7 @@ Text motivation "Motivation" "<tr><td valign=\"top\">Your reason for using this 
 
 TextArea comment "Comments" "<tr><td valign=\"top\">Comments on your implementation of the grammar: <td>" "<br>(e.g. Choice of analyses, sources of information, etc.)</tr></table>" 80x6
 
-Label "<p>We recommend that you use version control for your grammar development, and aim to facilitate that in two ways.  First, you can choose to have your grammar's code initialized into a Git or Mercurial repository.  Please see <a href=\"http://wiki.delph-in.net/moin/VersionControlForGrammarDevelopment\">this wiki page</a> for information on how to use these systems. The wiki also includes information on how to use Subversion (svn) or Bazaar (bzr) with your grammar.</p>"
+Label "<p>We recommend that you use version control for your grammar development, and aim to facilitate that in two ways.  First, you can choose to have your grammar's code initialized into a Git or Mercurial repository.  Please see <a href=\"http://wiki.delph-in.net/moin/VersionControlForGrammarDevelopment\">this wiki page</a> for information on how to use these systems. The wiki also includes information on how to use Subversion (svn) with your grammar.</p>"
 
 Radio vcs "Version Control System" "<p>Version Control System.<br>" ""
 . none "None" "" " None<br>"

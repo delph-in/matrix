@@ -114,7 +114,7 @@ def create_neg_comp_lex_item(mylang, ch, lexicon, rules, lrules):
 
 def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
   mylang.set_section('otherlex')
-  mylang.add('''neg-adv-lex := basic-adverb-lex &
+  mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
                  [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
                                             COMPS < >,
                                             SUBJ < > ],
@@ -211,12 +211,15 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
   # from going nuts.
 
   #if advAlone != 'never':
-  rules.add('head-adj-int := head-adj-int-phrase.',
-            'Rule instances for head-modifier structures. Corresponding types\n' +
-            'are defined in matrix.tdl.  The matrix customization script did\n' +
-            'not need to add any further constraints, so no corresponding tyes\n' +
-            'appear in ' + ch.get('language').lower() + '.tdl')
-  rules.add('adj-head-int := adj-head-int-phrase.')
+
+  # JDC 2011 11-12 Commenting out the addition of the head-adj-int rule for now
+  # negative adverbs shouldn't go through an intersective rule
+  # rules.add('head-adj-int := head-adj-int-phrase.',
+  #         'Rule instances for head-modifier structures. Corresponding types\n' +
+  #          'are defined in matrix.tdl.  The matrix customization script did\n' +
+  #          'not need to add any further constraints, so no corresponding tyes\n' +
+  #          'appear in ' + ch.get('language').lower() + '.tdl')
+  #rules.add('adj-head-int := adj-head-int-phrase.')
   rules.add('head-adj-scop := head-adj-scop-phrase.')
   rules.add('adj-head-scop := adj-head-scop-phrase.')
 

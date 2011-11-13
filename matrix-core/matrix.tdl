@@ -1967,9 +1967,13 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                          QUE 0-dlist & [ LIST null ] ] ],
     C-CONT.RELS <! !> ].
 
-head-mod-phrase-simple := basic-head-mod-phrase-simple &
-  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #htop,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #htop ] >].
+;;;2011-11-07 removing head-mod-prase-simple
+;;;As pointed out by Bart Cramer, this does not add anything to
+;;;basic-head-mod-phrase-simple, where the HOOK is already shared between
+;;;HEAD-DTR and NON-HEAD-DTR
+; head-mod-phrase-simple := basic-head-mod-phrase-simple &
+;  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #htop,
+;    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #htop ] >].
 
 adj-head-phrase := basic-head-mod-phrase-simple & head-final &
   [ SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
@@ -1995,7 +1999,7 @@ head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
 ; problem" (cf. Kasper '98).  This split is also used in generation, where
 ; we delay construction of intersective modification, but not scopal.
 
-scopal-mod-phrase := head-mod-phrase-simple &
+scopal-mod-phrase := basic-head-mod-phrase-simple &
   [ NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL scopal-mod ] >,
                                 CONT.HOOK #hook ],
     C-CONT [ HOOK #hook,
@@ -2009,7 +2013,7 @@ scopal-mod-phrase := head-mod-phrase-simple &
 ; But, it's probably less necessary, since we'll have fewer non-branching
 ; rules?
 
-isect-mod-phrase := head-mod-phrase-simple & head-compositional &
+isect-mod-phrase := basic-head-mod-phrase-simple & head-compositional &
   [ HEAD-DTR.SYNSEM.LOCAL.CONT [ HOOK.LTOP #hand ],
     NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL intersective-mod ] >,
 				CONT.HOOK.LTOP #hand ],

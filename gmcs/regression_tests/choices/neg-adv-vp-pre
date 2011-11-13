@@ -30,6 +30,7 @@ adv-neg=on
 neg-mod=vp
 neg-order=before
 neg-adv-orth=neg
+neg-exp=1
 
 section=coordination
 
