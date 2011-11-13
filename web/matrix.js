@@ -1021,7 +1021,7 @@ function import_toolbox_lexicon()
 function set_negexp(n)
 {
   var value = n;
-  var divs = document.getElementsByClassName("switch");
+  var divs = document.getElementsByClassName("neg_exp_switch");
 	for(var i=0; i<divs.length;i++){
     var d = divs[i];
     d.style.display = 'none';
@@ -1052,6 +1052,47 @@ function set_negexp(n)
   }
 }
 
+function set_negmorph(n,o){
+  var divs = document.getElementsByClassName("neg"+n+"_switch");
+	for(var i=0; i<divs.length;i++){
+    var d = divs[i];
+    d.style.display = 'none';
+	}
+  var d;
+  switch (o){
+    case 'b':
+      if(n=='1'){
+        document.forms["choices_form"]["neg2-type"][0].disabled=false;
+        document.forms["choices_form"]["neg2-type"][1].disabled=false;
+        document.forms["choices_form"]["neg2-type"][2].disabled=false;
+      }
+      var d = document.getElementById('neg'+n+'-b');
+      break;
+    case 'fh':
+      if(n=='1'){
+        document.forms["choices_form"]["neg2-type"][0].disabled=false;
+        document.forms["choices_form"]["neg2-type"][1].disabled=true;
+        document.forms["choices_form"]["neg2-type"][2].disabled=false;
+      }
+      var d = document.getElementById('neg'+n+'-fh');
+      break
+    case 'fd':
+      if(n=='1'){
+        document.forms["choices_form"]["neg2-type"][0].disabled=false;
+        document.forms["choices_form"]["neg2-type"][1].disabled=false;
+        document.forms["choices_form"]["neg2-type"][2].disabled=false;
+      }
+      var d = document.getElementById('neg'+n+'-fd');
+      break;
+    default:
+      var d = null; 
+  }
+  if (d != null)
+  {
+    d.style.display ='block';
+  }
+}
+
 function display_neg_form()
 {
   var neg_exp = document.forms["choices_form"]["neg-exp"];
@@ -1059,6 +1100,15 @@ function display_neg_form()
   {
     if(neg_exp[i].checked){
       set_negexp(neg_exp[i].value); 
+    }
+  }
+  for (var i=1;i<=2;i++){
+    var ntype = document.forms["choices_form"]["neg"+i+"-type"]; 
+    for (var j=0;j<ntype.length;j++){
+      if(ntype[j].checked){
+        var v = ntype[j].defaultValue;
+        set_negmorph(i,v);
+      }
     }
   }
 }

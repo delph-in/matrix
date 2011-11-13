@@ -793,7 +793,7 @@ Check neg-head-feature "enable negated head feature" "<p>" "Enable a HEAD featur
 Label "</div></div><hr />"
 
 
-Label "<div id='zero-neg' class='switch' style='display:none'><p>Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <emph>absence</emph> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p><p>You can model omissive negation as a phonologically empty inflectional rule ('lexical rule type/instance') which targets a particular position class in your morphotactic system.  You'll then have tp specify other morphemes that can occur in this position class so that negation is indicated by the lack of phonological material in this position.</p>"
+Label "<div id='zero-neg' class='neg_exp_switch' style='display:none'><p>Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <emph>absence</emph> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p><p>You can model omissive negation as a phonologically empty inflectional rule ('lexical rule type/instance') which targets a particular position class in your morphotactic system.  You'll then have tp specify other morphemes that can occur in this position class so that negation is indicated by the lack of phonological material in this position.</p>"
 
 Select vpc-0-neg "0 neg vpc" "<p>I can create a phonologically empty negation affix for you here.  Choose a position class from the verbal position classes that you've defined (on the lexicon page), or choose \"create\" to create a new pc for use with zero neg:" "  You'll see the result of this choice as a lexical rule instance with no affix and a feature called [NEGATION] with the value \"plus\".  This 'feature' is not a grammatical one---it won't appear in your grammar, it only indicates to the customization system that negative semantics should be added to this morpheme at customize time.</p>"
 fillregex p=verb-pc[0-9]+_name
@@ -802,7 +802,7 @@ fillregex p=verb-pc[0-9]+_name
 Label "</div>"
 
 
-Label "<div id='uni-neg' class='switch' style='display:none'><p> Negation can be indicated by the presence of a single negative morpheme.  Your negative morpheme might be bound (negation by inflection) or it might be free (one of the other choices). Your free negator might be a syntactic head (a verb), or it might be a dependent (a complement or a modifier).  Specify it's syntax below.</p>"
+Label "<div id='uni-neg' class='neg_exp_switch' style='display:none'><p> Negation can be indicated by the presence of a single negative morpheme.  Your negative morpheme might be bound (negation by inflection) or it might be free (one of the other choices). Your free negator might be a syntactic head (a verb), or it might be a dependent (a complement or a modifier).  Specify it's syntax below.</p>"
 
 Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <span class=\"feat\">negation</span> with possible value <tt>plus</tt> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">negation</span> <tt>plus</tt>] will produce lexical rules that add the semantics of negation.</p>" 
 
@@ -822,28 +822,76 @@ Radio neg-order "Negative adverb order" "and appears " ""
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p></div>" 20
+Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p>" 20
 
-Label "<div id='bi-neg' class='switch' style='display:none'><p> Negation can be indicated by the required presence of two negative morphemes.  You'll have to specify their morphosyntax and their interactions.</p>"
+Check comp-neg "Negation by selected complement" "<p>" "A adverb like particle which is a selected complement.  This option will create a non-inflecting lexical rule that maps plain Vs to Vs which select for negation in addition to their regular COMPS.</p>"
 
-Label "We can label the two morphemes NEG1 and NEG2 and ask about the syntactic properties of each.  Perhaps in your language one of the two negative morphemes seems more associated with the contribution of negative force to the sentence, and the other functions as a resumptive or specifying marker.  Call the primary indicator of negation NEG1 and the secondary one NEG2.<br />"
+Label "<div style='margin-left:10px'>"
+Radio comp-neg-head "neg selected by" "Is neg selected by" "<br />"
+. aux "aux" "" "a (sub-)class of aux-verbs"
+. v   "v"   "" "any verb"
+
+Radio comp-neg-order "neg ordered" "How is neg ordered with resepct to other COMPS?" "<br />"
+. before "before" "" "before "
+. after "after" "" "after "
+
+Text comp-neg-orth "neg spelling" "What's the ORTH value for neg?" "</p>" 20
+
+
+Label "</div></div>"
+
+Label "<div id='bi-neg' class='neg_exp_switch' style='display:none'><p> Negation can be indicated by the required presence of two negative morphemes.  You'll have to specify their morphosyntax and their interactions.</p>"
+
+Label "<p>We can label the two morphemes NEG1 and NEG2 and ask about the syntactic properties of each.  Perhaps in your language one of the two negative morphemes seems more associated with the contribution of negative force to the sentence, and the other functions as a resumptive or specifying marker.  Call the primary indicator of negation NEG1 and the secondary one NEG2.</p>"
 
 Radio neg1-type "NEG1 type" "NEG1" "<br />"
-. b "bound" "" "bound"
-. fh "free-H" "" "free, syntactic head"
-. fd "free-dep" "" "free, syntactic dependent"
+. b "bound" "" "bound" "set_negmorph('1','b')"
+. fh "free-H" "" "free, syntactic head" "set_negmorph('1','fh')"
+. fd "free-dep" "" "free, syntactic dependent" "set_negmorph('1','fd')"
 
-Radio neg2-type "NEG2 type" "NEG2" ""
-. b "bound" "" "bound"
-. fh "free-H" "" "free, syntactic head" 
-. fd "free-dep" "" "free, syntactic dependent"
+Label "<div id='neg1-b' class='neg1_switch' style='display:none'><p> If neg1 is bound, is it bound to a verb?  In this case we'll want to integrate it with the morphotactic system.</p></div>"
+Label "<div id='neg1-fh' class='neg1_switch' style='display:none'><p> If neg1 is a syntactic head, is it an auxiliary verb?</p></div>"
+Label "<div id='neg1-fd' class='neg1_switch' style='display:none'><p> If neg1 is a syntactic dependent, is it like an adverb?  If so, please fill out the following:</p>"
+
+Radio neg1-mod "neg1 adv modifies" "NEG1 modifies:" "<br />"
+. s "S" "" "S "
+. vp "VP" "" "VP "
+. v "V" "" "V "
+
+Radio neg1-order "neg1 adverb order" "NEG1 is ordered: " ""
+. before "before" "" "before "
+. after "after" "" "after "
+. either "either" "" "on either side of the category it modifies.<br>"
+
+Text neg1-adv-orth "neg1 adverb spelling" "NEG1 is spelled: " "</p></div>" 20
+
+
+Radio neg2-type "NEG2 type" "NEG2" "" 1 
+. b "bound" "" "bound" "set_negmorph('2','b')"
+. fh "free-H" "" "free, syntactic head" "set_negmorph('2','fh')"
+. fd "free-dep" "" "free, syntactic dependent" "set_negmorph('2','fd')"
+
+Label "<div id='neg2-b' class='neg2_switch' style='display:none'><p> If neg2 is bound, is it bound to a verb?  In this case we'll want to integrate it with the morphotactic system.</p></div>"
+Label "<div id='neg2-fh' class='neg2_switch' style='display:none'><p> If neg2 is a syntactic head, is it an auxiliary verb?</p></div>"
+Label "<div id='neg2-fd' class='neg2_switch' style='display:none'><p> If neg2 is a syntactic dependent, is it like an adverb? If so, please fill out the following:</p>"
+
+Radio neg2-mod "neg2 adv modifies" "NEG2 modifies:" "<br />"
+. s "S" "" "S "
+. vp "VP" "" "VP "
+. v "V" "" "V "
+
+Radio neg2-order "neg2 adverb order" "NEG2 is ordered: " ""
+. before "before" "" "before "
+. after "after" "" "after "
+. either "either" "" "on either side of the category it modifies.<br>"
+
+Text neg2-adv-orth "neg2 adverb spelling" "NEG2 is spelled: " "</p></div>" 20
 
 Label "</div>"
 
+Label "<div id='tri-neg' class='neg_exp_switch' style='display:none'><p> Negation by three morphemes has been reported in some languages of Vanuatu like Lewo [lww].</p></div>"
 
-Label "<div id='tri-neg' class='switch' style='display:none'><p> Negation by three morphemes has been reported in some languages of Vanuatu like Lewo [lww].</p></div>"
-
-Label "<div id='x-neg' class='switch' style='display:none'><p>We're not aware of natural languages reported to require more than 3 morphemes as an integral part of a negation construction.  Please send e-mail about this language to the matrix-dev mailing list.</p></div>"
+Label "<div id='x-neg' class='neg_exp_switch' style='display:none'><p>We're not aware of natural languages reported to require more than 3 morphemes as an integral part of a negation construction.  Please send e-mail about this language to the matrix-dev mailing list.</p></div>"
 
 
 
