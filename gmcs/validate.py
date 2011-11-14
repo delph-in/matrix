@@ -394,16 +394,17 @@ def validate_general(ch, vr):
       vr.warn('punctuation-chars',
               'No delimiters are necessary for the punctuation string.' +\
               'If a comma appears in the string, it will become parsable.')
-    # check punctuation chars in all orth fields.
-    non_chars = [re.escape(c)
-                 for c in u'!"&\'()*+,−./\;<>?@[]^`{|}~。！？…．　○●◎＊☆★◇◆'
-                 if c not in chars]
-    char_re = re.compile(r'(' + r'|'.join(non_chars) + r')')
-    for (key, val) in ch.walk():
-      if key.endswith('orth') and char_re.search(unicode(val, 'utf8')):
-        vr.warn(key, 'String contains an unparsable punctuation character.' +\
-                     ' Please see the General subpage.')
 
+  # check punctuation chars in all orth fields.
+  non_chars = [re.escape(c)
+               for c in u'!"&\'()*+,−./\;<>?@[]^`{|}~。！？…．　○●◎＊☆★◇◆'
+               if c not in chars]
+  char_re = re.compile(r'(' + r'|'.join(non_chars) + r')')
+  for (key, val) in ch.walk():
+    if key.endswith('orth'):
+      if char_re.search(unicode(val, 'utf8')):
+        vr.warn(key, 'String contains an unparsable punctuation character.' +\
+                   ' Please see the General subpage.')
 
 ######################################################################
 # validate_person(ch, vr)
@@ -1010,3 +1011,4 @@ if __name__ == "__main__":
         column += len(w) + 1
     print
   print
+
