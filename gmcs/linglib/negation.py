@@ -13,29 +13,6 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules):
   # inflectional negation is handled in the feature mapping part of the
   # morphotactic system (features.py).
 
-  # ERB 2006-09-16 Calculate a bunch of derived properties based on the
-  # inputs they gave for negation.  The same thing (e.g., negation via
-  # inflection on the main verb) gives a very different output depending
-  # on whether there are other options (negation via selected adverb)
-  # and how they combine.
-
-  # ERB 2009-01-23 This is all moot right now since the interim system
-  # doesn't do the interaction between the two, but it probably won't
-  # break anything to leave it in.
-
-  # ERB 2009-07-01 It was adding defunct lex rules in at least some
-  # cases, so taking it out for now.  This much still seems to be
-  # required:
-  
-  # JDC 2011-10-23 ... not anymore, multineg is no longer
-  # extant.  Bipartite negation is coming back, but probably under a new
-  # architecture that doesn't use advAlone.
-
-  #advAlone = ''
-  #multineg = ch.get('multi-neg')
-  #if ch.get('adv-neg') == 'on' or multineg == 'comp':
-  #  advAlone = 'always'
-
   # ERB 2009-01-23 Migrating negation to modern customization system.
   # This intermediate version only does independent adverbs, and so
   # I'm removing ch.get('neg-adv') == 'ind-adv' as a second part of
@@ -97,17 +74,28 @@ def create_neg_comp_lex_item(mylang, ch, lexicon, rules, lrules):
                                               COMPS #comps ],
                                         CONT.HOOK #hook ] ].
                ''')
+
   elif ch.get('comp-neg-order') == 'after':
-    mylang.add('''neg-comp-add-lex-rule := const-lex-rule &
-               [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps . neg-comp-lex >,
-                 DTR.SYNSEM.LOCAL.CAT.VAL.COMPS #comps ].
+    mylang.add('''neg-comp-add-lex-rule := const-val-change-only-lex-rule &
+               [ SYNSEM.LOCAL.CAT.VAL [  SUBJ #subj,
+                                         COMPS < #comps . canonical-synsem & 
+                                                         [ LOCAL.CAT.HEAD [ NEGATED +,
+                                                                            MOD < [ LOCAL.CONT.HOOK #hook ] > ] ] > ],
+                 DTR.SYNSEM.LOCAL [ CAT.VAL [ SUBJ #subj,
+                                              COMPS #comps ],
+                                    CONT.HOOK #hook ] ].
                ''')
+
   lrules.add('neg-lex-rule := neg-comp-add-lex-rule.')
 
   if(ch.get('comp-neg-head')=='aux'):
     mylang.add('neg-comp-add-lex-rule := [ DTR aux-lex ].')
   elif(ch.get('comp-neg-head')=='v'):
-    mylang.add('neg-comp-add-lex-rule := [ DTR verb-lex ].')
+    if(ch.get('has-aux')=='yes'):
+      mylang.add('''neg-comp-add-lex-rule := [ DTR verb-lex & 
+                  [ SYNSEM.LOCAL.CAT.HEAD.AUX - ] ].''')
+    else:
+      mylang.add('neg-comp-add-lex-rule := [ DTR verb-lex ].')
   
 
 

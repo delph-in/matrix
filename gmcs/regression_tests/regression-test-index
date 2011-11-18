@@ -137,3 +137,4 @@ neg-adv-vp-pre=negation as independent pre VP modifier
 neg-infl-sole-suffix=negation as the only suffix, optional
 neg-infl-mini=negation as inflection, simple case
 neg-comp-auxattach-precomps=neg adv as selected first comp of an aux type after application of a lexical rule
+neg-comp-vattach-precomps=negative adverb as selected complement of non-auxiliary verb
