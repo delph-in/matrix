@@ -713,11 +713,18 @@ class MatrixDefFile:
       elif word[0] == 'Separator':
         html += '<hr>'
       elif word[0] == 'Check':
-        (vn, fn, bf, af) = word[1:]
-        vn = prefix + vn
-        checked = choices.get(vn)
-        html += html_input(vr, 'checkbox', vn, '', checked,
-                           bf, af) + '\n'
+        if len(word) > 5:
+          (vn, fn, bf, af, js) = word[1:]
+          vn = prefix + vn
+          checked = choices.get(vn)
+          html += html_input(vr, 'checkbox', vn, '', checked,
+                             bf, af, onclick=js) + '\n'
+        else:
+          (vn, fn, bf, af) = word[1:]
+          vn = prefix + vn
+          checked = choices.get(vn)
+          html += html_input(vr, 'checkbox', vn, '', checked,
+                             bf, af) + '\n'
       elif word[0] == 'Radio':
         dis = ''
         if len(word) > 5:

@@ -1053,12 +1053,16 @@ function set_negexp(n)
 }
 
 function set_negmorph(n,o){
+
+  // first we hide everything
   var divs = document.getElementsByClassName("neg"+n+"_switch");
 	for(var i=0; i<divs.length;i++){
     var d = divs[i];
     d.style.display = 'none';
 	}
+
   var d;
+  // o is an option on bipartite negation which
   switch (o){
     case 'b':
       if(n=='1'){
@@ -1095,6 +1099,15 @@ function set_negmorph(n,o){
 
 function display_neg_form()
 {
+  // this function constrols the logical constraints on the form
+  // choices.  it's a little like a pre-validation step.
+  // there are a lot of possible combinations of choices on the
+  // negation page, but most of the combinations won't lead to successful 
+  // grammars.  thus the need to prevent users from goind down 
+  // dead ends we know about. 
+
+  // here we display only the exponence section the user has
+  // asked for
   var neg_exp = document.forms["choices_form"]["neg-exp"];
   for (var i=0; i<neg_exp.length;i++)
   {
@@ -1102,13 +1115,45 @@ function display_neg_form()
       set_negexp(neg_exp[i].value); 
     }
   }
-  for (var i=1;i<=2;i++){
-    var ntype = document.forms["choices_form"]["neg"+i+"-type"]; 
-    for (var j=0;j<ntype.length;j++){
-      if(ntype[j].checked){
-        var v = ntype[j].defaultValue;
-        set_negmorph(i,v);
+
+  // for simple negation, the selected complements analysis has
+  // some dead ends we know about
+  if (neg_exp[1].checked) { 
+    neg_comp();
+  }
+
+  // now we see if there are any choices set for 'negN-type'
+  // these are the neg1 and neg2 choices section on the bipartite
+  // page.
+  if (neg_exp[2].checked) {
+    for (var i=1;i<=2;i++){
+      var ntype = document.forms["choices_form"]["neg"+i+"-type"]; 
+      for (var j=0;j<ntype.length;j++){
+        if(ntype[j].checked){
+          var v = ntype[j].defaultValue;
+          set_negmorph(i,v);
+        }
       }
+    }
+  }
+}
+
+function neg_comp() {
+// some restrictions on neg_comps analysis
+  // for simple negation, the selected complements analysis has
+  // some dead ends we know about
+  var comp_neg = document.forms["choices_form"]["comp-neg"];
+  var neg_exp  = document.forms["choices_form"]["neg-exp"];
+  if (neg_exp[1].checked && comp_neg.checked){
+    var comp_neg_head = document.forms["choices_form"]["comp-neg-head"];
+    var after = document.forms["choices_form"]["comp-neg-order"][1];
+    if(comp_neg_head[1].checked){
+      // if the user selects a verbal head, we can't do the post-comps order
+      after.disabled = true;
+      after.checked = false;
+    } else {
+      // turn it back on otherwise
+      after.disabled = false;
     }
   }
 }
