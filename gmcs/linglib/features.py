@@ -21,6 +21,11 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     tdlfile = mylang
 
   pos_geom_prefix = ''
+ 
+###boolean indicates whether for a lexical item
+###subject restrictions must be added through the first 
+###element on the subject list
+  indirect_subj_mark = False
 
   if pos == 'det':
     pos_geom_prefix = 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.'
@@ -57,11 +62,19 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # efficient)
     # adapting so that it only applies to agreement features for lexical rules
     # to prevent undesired interactions with copula
+    # also needed for auxiliaries in general
       if ch.get('verb-cluster') == 'yes' and ch.get('word-order') == 'v2':
+        if ch.get('vc-analysis') == 'aux-rule':
+          v_val = ch_dict.get('valence')
+          if pos == 'aux' or v_val == 'nom-inf' or v_val == 'nom-acc-inf':
+            indirect_subj_mark = True
         det_type = type_name.split('-')
-        if 'rule' in det_type:
+        if 'rule' in det_type or indirect_subj_mark:
           geom_prefix2 = pos_geom_prefix
-          geom_prefix2 += 'LOCAL.CAT.VAL.COMPS.FIRST.'
+          geom_prefix2 += 'LOCAL.CAT.VAL.COMPS.'
+          if v_val == 'nom-acc-inf':
+            geom_prefix2 += 'REST.'
+          geom_prefix2 += 'FIRST.'
     elif h == 'obj':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
     elif h == 'mod':
@@ -88,8 +101,11 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         ff_num = len(path_parts) - 1
         final_feat = path_parts[ff_num]
         geom2 = geom_prefix2 + 'LOCAL.CONT.HOOK.XARG.PNG.' + final_feat
-        type_name_1 = type_name + '-main-verb'
-        type_name_2 = type_name + '-aux'
+###separated types only if dealing with lexical rules
+###lexical items are already defined as aux or mainverb
+        if 'rule' in det_type:
+          type_name_1 = type_name + '-main-verb'
+          type_name_2 = type_name + '-aux'
 
     # If the feature has a geometry, just specify its value;
     # otherwise, handle it specially.
@@ -97,18 +113,24 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       if n in hierarchies:
         value = hierarchies[n].get_type_covering(v)
         if geom2:
-          tdlfile.add(type_name_1 +
+          if 'rule' in det_type:
+            tdlfile.add(type_name_1 +
                       ' := ' + type_name + ' & ' +
                        ' [ ' + geom + ' ' + value + ' ].')
-          tdlfile.add(type_name_1 +
+            tdlfile.add(type_name_1 +
                       ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].', 
                          merge=True)
-          tdlfile.add(type_name_2 +
+            tdlfile.add(type_name_2 +
                       ' := ' + type_name + ' & ' +
                        ' [ ' + geom2 + ' ' + value + ' ].')
-          tdlfile.add(type_name_2 +
+            tdlfile.add(type_name_2 +
                       ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
                          merge=True)
+####else case, if aux-rule and on lexical item rather than rule
+          else:
+            tdlfile.add(type_name +
+                    ' := [ ' + geom2 + ' ' + value + ' ].',
+                    merge=True)
         else:  
           tdlfile.add(type_name +
                     ' := [ ' + geom + ' ' + value + ' ].',

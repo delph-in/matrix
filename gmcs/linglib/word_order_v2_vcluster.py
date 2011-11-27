@@ -43,7 +43,8 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
 
   mylang.add('head-initial-head-nexus := nonverbal-comp-phrase & \
                   [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC + ].')
-  mylang.add('finite-lex-rule := [ SYNSEM.LOCAL.CAT.MC na-or-- ].')
+  if not ch.get('verb-morph') == 'off':
+    mylang.add('finite-lex-rule := [ SYNSEM.LOCAL.CAT.MC na-or-- ].')
   mylang.add('head-final-head-nexus := nonverbal-comp-phrase & \
                                        [ SYNSEM.LOCAL.CAT.MC +,\
                                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
