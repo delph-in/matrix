@@ -813,10 +813,10 @@ def create_adjective_learning_phrases(ch, mylang, rules):
          [ SYNSEM.LOCAL.CAT.HEAD.STRONG #strength, \
            NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.STRONG #strength ].')
   mylang.add('gend-sharing-adj-head := adjective-head-phrase & \
-         [ SYNSEM.LOCAL.AGR.PNG.GEND #gend, \
+         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND #gend, \
            NON-HEAD-DTR.SYNSEM.LOCAL.AGR.PNG.GEND #gend ].')
   mylang.add('number-sharing-adj-head := adjective-head-phrase & \
-         [ SYNSEM.LOCAL.AGR.PNG.NUM #number, \
+         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM #number, \
            NON-HEAD-DTR.SYNSEM.LOCAL.AGR.PNG.NUM #number ].') 
 
   mylang.add('syn-agr-adj-head-phrase := case-sharing-adj-head & \
