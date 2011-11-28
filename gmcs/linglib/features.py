@@ -22,6 +22,13 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 
   pos_geom_prefix = ''
  
+
+  ll_adj = False
+  if pos == 'adj':
+    if ch.get('2ndll') == 'on':
+      for myll in ch.get('ll'):
+        if myll.get('phen') == 'adj':
+          ll_adj = True
 ###boolean indicates whether for a lexical item
 ###subject restrictions must be added through the first 
 ###element on the subject list
@@ -78,7 +85,10 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     elif h == 'obj':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
     elif h == 'mod':
-      geom_prefix += 'LOCAL.CAT.HEAD.MOD.FIRST.'
+      if not ll_adj:
+        geom_prefix += 'LOCAL.CAT.HEAD.MOD.FIRST.'
+      else:
+        geom_prefix += 'LOCAL.AGR.'
     elif h == 'higher':
       geom_prefix = 'SC-ARGS.FIRST.'
     elif h == 'lower':
@@ -91,8 +101,14 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     for f in features:
       if f[0] == n:
         geom = f[2]
+###modifier features marked on adjective and done through agreement
+###by rules if grammar intended for language learning
+        if h == 'mod' and ll_adj:
+          my_parts = geom.split('.')
+          geom = my_parts[4] + "." + my_parts[5]     
 
-    # geom2 covers aux-rule case
+
+# geom2 covers aux-rule case
     geom2 = ''
     if geom:
       geom = geom_prefix + geom

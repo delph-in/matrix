@@ -612,6 +612,13 @@ def customize_adjectives(mylang, ch, lexicon):
       elif agr.get('feat') == 'strength':
         strength_agr = True
 
+  ####changes if second language learning
+  ####agreement is done by rules not lexical items
+    ll = False
+    if ch.get('2ndll') == 'on':
+      for myll in ch.get('ll'):
+        if myll.get('phen') == 'adj':
+          ll = True
   #depending on agreement properties, CASE is a feature of nouns or of nouns
   #and adjectives
     if case_agr:
@@ -647,12 +654,13 @@ def customize_adjectives(mylang, ch, lexicon):
 
     if val:
       mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.' + val + ' ].')
+ 
 
-    if case_agr:
+    if case_agr and not ll:
       mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.HEAD [ CASE #case, \
                             MOD < [ LOCAL.CAT.HEAD.CASE #case ] > ] ].')
 
-    if strength_agr:
+    if strength_agr and not ll:
       mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.HEAD [ STRONG #strength, \
                             MOD < [ LOCAL.CAT.HEAD.STRONG #strength ] > ] ].')
 

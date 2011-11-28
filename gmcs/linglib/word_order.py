@@ -742,23 +742,34 @@ def customize_np_word_order(mylang, ch, rules):
 # adverbs or from negation marker)
 # 2011-10-23 adding constraint to make sure predicative adjectives do not
 # show up as modifiers
+  ll_adj = False
+  if ch.get('2ndll') == 'on':
+    for myll in ch.get('ll'):
+      if myll.get('phen') == 'adj':
+        ll_adj = True    
 
-  if ch.get('has-cop') == 'yes':
+  if ch.get('has-cop') == 'yes' and not ll_adj:
     mylang.add('basic-head-mod-phrase-simple :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.PRD - ].')
   if ch.get('has-adj') == 'yes':
     # adding adjective specific phrase
+    adj_st = ''
     mylang.add('adjective-head-phrase := basic-head-mod-phrase-simple & \
                  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adj ].')
-    if ch.get('adj-noun-order') != 'adj-noun':
-      mylang.add('head-adjective-int-phrase := head-adj-int-phrase & adjective-head-phrase.')
+    if ll_adj:
+      create_adjective_learning_phrases(ch, mylang, rules)
+      adj_st += 'gram-'
+    adj_st += 'adjective-head-phrase'
 
-      mylang.add('head-adjective-scop-phrase := head-adj-scop-phrase & adjective-head-phrase.')
+    if ch.get('adj-noun-order') != 'adj-noun':
+      mylang.add('head-adjective-int-phrase := head-adj-int-phrase & ' + adj_st + '.')
+
+      mylang.add('head-adjective-scop-phrase := head-adj-scop-phrase & ' + adj_st + '.')
       rules.add('head-adjective-int := head-adjective-int-phrase.')
       rules.add('head-adjective-scop := head-adjective-scop-phrase.') 
     if ch.get('noun-adj-order') != 'noun-adj':
-      mylang.add('adjective-head-int-phrase := adj-head-int-phrase & adjective-head-phrase.')
+      mylang.add('adjective-head-int-phrase := adj-head-int-phrase & ' + adj_st + '.')
 
-      mylang.add('adjective-head-scop-phrase := adj-head-scop-phrase & adjective-head-phrase.')
+      mylang.add('adjective-head-scop-phrase := adj-head-scop-phrase & ' + adj_st + '.')
       rules.add('adjective-head-int := adjective-head-int-phrase.')
       rules.add('adjective-head-scop := adjective-head-scop-phrase.') 
 
@@ -789,7 +800,85 @@ def customize_np_word_order(mylang, ch, rules):
 # for adp and aux.  It takes in the values of wo and hc determined in
 # the course of creating the basic word order rules.
 
+def create_adjective_learning_phrases(ch, mylang, rules):
+######determine agreement features
+#  caseagr = False
+#  strengthagr = False
+#  for agr in ch.get('adjagr'):
+#    if agr.get('feat') == case
+  mylang.add('case-sharing-adj-head := adjective-head-phrase & \
+         [ SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
+           NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
+  mylang.add('strength-sharing-adj-head := adjective-head-phrase & \
+         [ SYNSEM.LOCAL.CAT.HEAD.STRONG #strength, \
+           NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.STRONG #strength ].')
+  mylang.add('gend-sharing-adj-head := adjective-head-phrase & \
+         [ SYNSEM.LOCAL.AGR.PNG.GEND #gend, \
+           NON-HEAD-DTR.SYNSEM.LOCAL.AGR.PNG.GEND #gend ].')
+  mylang.add('number-sharing-adj-head := adjective-head-phrase & \
+         [ SYNSEM.LOCAL.AGR.PNG.NUM #number, \
+           NON-HEAD-DTR.SYNSEM.LOCAL.AGR.PNG.NUM #number ].') 
 
+  mylang.add('syn-agr-adj-head-phrase := case-sharing-adj-head & \
+                                         strength-sharing-adj-head.')
+  mylang.add('sem-agr-adj-head-phrase := gend-sharing-adj-head & \
+                                           number-sharing-adj-head.')
+  
+  mylang.add('all-agr-adjective-head-phrase := syn-agr-adj-head-phrase & \
+                                         sem-agr-adj-head-phrase.')
+####predicative constraint
+  mylang.add('no-prd-adj-head-phrase := adjective-head-phrase & \
+                               [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.PRD - ].')
+####phrase only allowing grammatical combinations
+  mylang.add('gram-adjective-head-phrase := all-agr-adjective-head-phrase & \
+                  no-prd-adj-head-phrase.')
+#####robustness rules
+  mylang.add('wrong-case-adj-head-phrase := strength-sharing-adj-head & \
+                             sem-agr-adj-head-phrase & no-prd-adj-head-phrase.')
+  mylang.add('wrong-strength-adj-head-phrase :=  case-sharing-adj-head & \
+                             sem-agr-adj-head-phrase & no-prd-adj-head-phrase.')
+  mylang.add('wrong-gend-adj-head-phrase :=  number-sharing-adj-head & \
+                             syn-agr-adj-head-phrase & no-prd-adj-head-phrase.')
+  mylang.add('wrong-number-adj-head-phrase :=  gend-sharing-adj-head & \
+                             syn-agr-adj-head-phrase & no-prd-adj-head-phrase.')
+  
+######cross classification with scop and int (only adjective noun for now)
+  mylang.add('wr-case-int-adj-head-phrase := wrong-case-adj-head-phrase & \
+                                                        adj-head-int-phrase.')
+  mylang.add('wr-case-scop-adj-head-phrase := wrong-case-adj-head-phrase & \
+                                                        adj-head-scop-phrase.')
+  mylang.add('wr-strength-int-adj-head-phrase := \
+                        wrong-strength-adj-head-phrase & adj-head-int-phrase.')
+  mylang.add('wr-strength-scop-adj-head-phrase := \
+                      wrong-strength-adj-head-phrase & adj-head-scop-phrase.')
+  mylang.add('wr-gend-int-adj-head-phrase := wrong-gend-adj-head-phrase & \
+                                                        adj-head-int-phrase.')
+  mylang.add('wr-gend-scop-adj-head-phrase := wrong-gend-adj-head-phrase & \
+                                                        adj-head-scop-phrase.')
+  mylang.add('wr-number-int-adj-head-phrase := wrong-number-adj-head-phrase & \
+                                                        adj-head-int-phrase.')
+  mylang.add('wr-number-scop-adj-head-phrase := wrong-number-adj-head-phrase & \
+                                                        adj-head-scop-phrase.')
+
+  mylang.add('missing-infl-int-adj-phrase := adj-head-int-phrase & \
+                                              all-agr-adjective-head-phrase & \
+                               [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.PRD + ].')
+  mylang.add('missing-infl-scop-adj-phrase := adj-head-scop-phrase & \
+                                              all-agr-adjective-head-phrase & \
+                               [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.PRD + ].')
+##########adding robustness rules.
+
+  rules.add('int-adj-head-case-robust := wr-case-int-adj-head-phrase.')
+  rules.add('int-adj-head-strength-robust := wr-strength-int-adj-head-phrase.')
+  rules.add('int-adj-head-gend-robust := wr-gend-int-adj-head-phrase.')
+  rules.add('int-adj-head-number-robust := wr-number-int-adj-head-phrase.')
+  rules.add('scop-adj-head-case-robust := wr-case-scop-adj-head-phrase.')
+  rules.add('scop-adj-head-strength-robust := \
+                                           wr-strength-scop-adj-head-phrase.')
+  rules.add('scop-adj-head-gend-robust := wr-gend-scop-adj-head-phrase.')
+  rules.add('scop-adj-head-number-robust := wr-number-scop-adj-head-phrase.')
+  rules.add('missing-infl-int-adj-robust := missing-infl-int-adj-phrase .')
+  rules.add('missing-infl-scop-adj-robust := missing-infl-scop-adj-phrase .')
 
 def determine_consistent_order(wo,hc,ch):
 
