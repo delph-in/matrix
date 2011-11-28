@@ -70,7 +70,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # adapting so that it only applies to agreement features for lexical rules
     # to prevent undesired interactions with copula
     # also needed for auxiliaries in general
-      if ch.get('verb-cluster') == 'yes' and ch.get('word-order') == 'v2':
+      if ch.get('verb-cluster') == 'yes' and ch.get('word-order') == 'v2': 
+        v_val = ''
         if ch.get('vc-analysis') == 'aux-rule':
           v_val = ch_dict.get('valence')
           if pos == 'aux' or v_val == 'nom-inf' or v_val == 'nom-acc-inf':
