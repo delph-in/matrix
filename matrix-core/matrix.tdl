@@ -2890,14 +2890,8 @@ unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
                                      COORD -,
                                      CONT.HOOK [ INDEX #rind ]]] > ].
 
-;;; ERB 2007-05-16 Note for sfd: There is probably a single type
-;;; you could inherit from here that combines what you need.
-
-infl-bottom-coord-rule := same-local-lex-rule &
-                          same-non-local-lex-rule &
-			  same-modified-lex-rule &
-			  same-light-lex-rule &
-                          inflecting-lex-rule &
+infl-bottom-coord-rule := add-only-rule &
+			  inflecting-lex-rule &
   [ INFLECTED infl-satisfied,
     DTR.INFLECTED inflected,
     SYNSEM.LOCAL [ COORD +,
@@ -3041,20 +3035,12 @@ omni-conj-last-left-coord-rule := omni-binary-left-coord-rule &
     NONCONJ-DTR #ncdtr,
     ARGS < #ncdtr, #cdtr > ].
 
-;;; ERB 2007-05-16 Note for sfd: There is probably a single type
-;;; you could inherit from here that combines what you need.
-
 
 infl-left-coord-rule := omni-left-coord-rule &
-			same-modified-lex-rule &
-			same-light-lex-rule &
-                        same-local-lex-rule &
-                        same-non-local-lex-rule &
-                        inflecting-lex-rule &
+		     	infl-add-only-lex-rule &
   [ INFLECTED infl-satisfied,
     DTR.INFLECTED inflected,
-    SYNSEM.LOCAL [ COORD -,
-                   COORD-REL #crel ],
+    SYNSEM.LOCAL [ COORD-REL #crel ],
     C-CONT [ RELS <! #crel !>,
              HCONS <! !> ]].
 

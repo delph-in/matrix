@@ -16,10 +16,10 @@ retain your answers to this questionnaire in an archive.  We hope
 that, as the number of linguistic phenomena covered by the
 questionnaire grows, these archived sets of answers can be used as the
 basis for a database that will be useful to linguistic typological
-research.</p>"
+research. We welcome answers from users of all experience levels.</p>"
 
 Radio archive "Archive" "<p>May we retain your answers to this questionnaire?<br>" ""
-. yes "Yes" "" " yes<br>"
+. yes "Yes" "" " yes (recommended)<br>"
 . no "No" "" " no</p>"
 
 Label "<p>If you answered \"yes\", we ask that you also (optionally)
