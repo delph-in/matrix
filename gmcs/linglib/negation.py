@@ -307,6 +307,12 @@ def validate(ch, vr):
              'you must specify the form of the adverb.'
       vr.err('neg-adv-orth', mess)
 
+  if ch.get('comp-neg') == 'on':
+    if ch.get('comp-neg-head') == 'aux' and ch.get('has-aux') != 'yes':
+      mess = 'You have not indicated on the word order page ' +\
+             'that your language has auxiliaries.'
+      vr.err('comp-neg-head', mess)
+
    # If aux is selected then has-aux = 'yes' must be chosen in word
    # order section
 #    if ((negseladv == 'aux' or negseladv == 'main-aux') and
