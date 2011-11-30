@@ -2,7 +2,7 @@
 version=24
 
 section=general
-language=neg-comp-vattach-precomps
+language=neg-comp-finattach-precomps
 
 section=word-order
 word-order=svo

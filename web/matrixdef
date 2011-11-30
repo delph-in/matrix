@@ -829,7 +829,7 @@ Check comp-neg "Negation by selected complement" "<p>" "A adverb like particle w
 Label "<div style='margin-left:10px'>"
 Radio comp-neg-head "neg selected by" "Is neg selected by" "<br />"
 . aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
-. v   "v"   "" "any verb" "neg_comp()"
+. v   "v"   "" "any (finite) verb" "neg_comp()"
 
 Radio comp-neg-order "neg ordered" "How is neg ordered with resepct to other COMPS?" "<br />"
 . before "before" "" "before "
