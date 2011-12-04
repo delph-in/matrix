@@ -1,0 +1,19 @@
+Choices files in MorphSynt are related to different development stages.
+The list below provides the svn revision number that was first to cover 
+a specific stage.
+
+0: -r 19578
+1: -r 19589
+2: -r 19613
+3: -r 19613
+4: -r 19626
+
+
+Covered phenomena:
+
+0: phenomena described in Fokkens (2011)
+1: Added adjectives
+2: Added yes-no matrix questions and negation
+3: Added adpositions, adverbs and scomp
+4: Added copula, coordination for adjectives and adpositions
+
