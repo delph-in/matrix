@@ -1,0 +1,12 @@
+n1 aux iv
+n1 aux iv neg
+*n1 aux neg iv
+*n1 neg iv
+*n1 iv neg
+*n1 neg aux iv
+n1 aux tv n2
+*n1 aux n2 tv
+*n1 aux neg n2 tv
+*n1 neg tv n2
+*n1 aux neg tv n2
+n1 aux tv n2 neg 

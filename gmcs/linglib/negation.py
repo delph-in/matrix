@@ -78,25 +78,22 @@ def create_neg_comp_lex_item(mylang, ch, lexicon, rules, lrules):
   elif ch.get('comp-neg-order') == 'after':
     mylang.add('''neg-comp-add-lex-rule := const-val-change-only-lex-rule &
                [ SYNSEM.LOCAL.CAT.VAL [  SUBJ #subj,
-                                         COMPS < #comps . canonical-synsem & 
-                                                         [ LOCAL.CAT.HEAD [ NEGATED +,
-                                                                            MOD < [ LOCAL.CONT.HOOK #hook ] > ] ] > ],
+                                         COMPS < #comps , canonical-synsem & 
+                                             [ LOCAL.CAT.HEAD [ NEGATED +,
+                                             MOD < [ LOCAL.CONT.HOOK #hook ] > ] ] > ],
                  DTR.SYNSEM.LOCAL [ CAT.VAL [ SUBJ #subj,
-                                              COMPS #comps ],
+                                              COMPS.FIRST #comps ],
                                     CONT.HOOK #hook ] ].
                ''')
 
   lrules.add('neg-lex-rule := neg-comp-add-lex-rule.')
 
+  # deal with type of selecting verb: auxiliary verb or any finite verb
   if(ch.get('comp-neg-head')=='aux'):
     mylang.add('neg-comp-add-lex-rule := [ DTR aux-lex ].')
   elif(ch.get('comp-neg-head')=='v'):
-    if(ch.get('has-aux')=='yes'):
-      mylang.add('''neg-comp-add-lex-rule := [ DTR verb-lex & 
-                  [ SYNSEM.LOCAL.CAT.HEAD.AUX - ] ].''')
-    else:
-      mylang.add('neg-comp-add-lex-rule := [ DTR verb-lex ].')
-  
+    mylang.add('''neg-comp-add-lex-rule := [ DTR verb-lex &
+                [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ] ].''')
 
 
 
