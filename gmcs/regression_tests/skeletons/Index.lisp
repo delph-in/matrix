@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "neg-comp-auxattach-postcomps") (:content . "neg-comp-auxattach-postcomps: negative complement adds a second "))
 ((:path . "neg-comp-finattach-precomps") (:content . "neg-comp-finattach-precomps: neg-comp-add-lex-rule adds neg-adv as selected first comp of a finite verb"))
 ((:path . "neg-comp-vattach-precomps") (:content . "neg-comp-vattach-precomps: negative adverb as selected complement of non-auxiliary verb"))
 ((:path . "neg-comp-auxattach-precomps") (:content . "neg-comp-auxattach-precomps: neg adv as selected first comp of an aux type after application of a lexical rule"))

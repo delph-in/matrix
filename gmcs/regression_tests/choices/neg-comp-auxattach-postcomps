@@ -1,0 +1,69 @@
+
+version=24
+
+section=general
+language=neg-comp-auxattach-postcomps
+
+section=word-order
+word-order=svo
+has-dets=no
+has-aux=yes
+aux-comp-order=before
+aux-comp=vp
+multiple-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+
+section=sentential-negation
+neg-exp=1
+comp-neg=on
+comp-neg-head=aux
+comp-neg-order=after
+comp-neg-orth=neg
+
+section=coordination
+
+section=matrix-yes-no
+
+section=arg-opt
+
+section=lexicon
+  noun1_det=imp
+    noun1_stem1_orth=n1
+    noun1_stem1_pred=_n1_n_rel
+  noun2_det=imp
+    noun2_stem1_orth=n2
+    noun2_stem1_pred=_n2_n_rel
+  verb1_valence=intrans
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+  aux1_sem=no-pred
+  aux1_subj=np
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=nonfinite
+    aux1_stem1_orth=aux
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

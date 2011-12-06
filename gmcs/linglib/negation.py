@@ -78,11 +78,11 @@ def create_neg_comp_lex_item(mylang, ch, lexicon, rules, lrules):
   elif ch.get('comp-neg-order') == 'after':
     mylang.add('''neg-comp-add-lex-rule := const-val-change-only-lex-rule &
                [ SYNSEM.LOCAL.CAT.VAL [  SUBJ #subj,
-                                         COMPS < #comps . canonical-synsem & 
-                                                         [ LOCAL.CAT.HEAD [ NEGATED +,
-                                                                            MOD < [ LOCAL.CONT.HOOK #hook ] > ] ] > ],
+                                         COMPS < #comps , canonical-synsem & 
+                                             [ LOCAL.CAT.HEAD [ NEGATED +,
+                                             MOD < [ LOCAL.CONT.HOOK #hook ] > ] ] > ],
                  DTR.SYNSEM.LOCAL [ CAT.VAL [ SUBJ #subj,
-                                              COMPS #comps ],
+                                              COMPS.FIRST #comps ],
                                     CONT.HOOK #hook ] ].
                ''')
 
