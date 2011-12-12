@@ -137,7 +137,11 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
     for vf in verb_feat:
       if vf in agr:      
         add_sharing_supertypes(mylang, pn, mid, vf) 
-
+    if pos == 'v' or pos == 'vp':
+      path = 'SYNSEM.LOCAL.CONT.HOOK.'
+      add_shared_features(mylang, 'xarg', path, mid)
+      add_sharing_supertypes(mylang, pn, mid, 'xarg') 
+   
   elif pos == 'adp':
     if 'prd' in agr:
       add_sharing_supertypes(mylang, pn, mid, 'prd')

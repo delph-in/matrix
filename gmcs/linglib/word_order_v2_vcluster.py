@@ -103,10 +103,13 @@ def add_basic_phrases_v2_with_cluster(ch, mylang):
     mylang.add('head-comp-phrase-2 := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
  
 ###Additional trick to help efficiency: conj cannot be complement or subjects
-  comment = 'Conjunction markers cannot be complement or subject markers. Adding the appropriate restrictions helps against spurious analyses'
-  mylang.add('basic-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvjrpcdm ].', comment, section='addenda')
-  mylang.add('basic-head-comp-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvjrpcdm ].', section='addenda')
-
+  comment = 'Conjunction markers and determiners cannot be complement or subject markers. Adding the appropriate restrictions helps against spurious analyses'
+  mylang.add('basic-head-comp-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvjrpcm ].', section='addenda')
+###See comment
+  comment = 'Germanic languages (except for Icelandic) only have nominative NPs as subject'
+  mylang.add('basic-head-subj-phrase :+ \
+              [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD noun & [ CASE nom ], \
+                                                VAL.SPR < > ] ].', comment, section='addenda')
 
   if ch.get('vc-analysis') == 'basic':
     create_argument_composition_phrases(ch, mylang)
@@ -259,7 +262,10 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
 ##nonverbal-comp-phrase: states that phrase cannot be used to combine
 ##head with verbal complement
   mylang.add('nonverbal-comp-phrase := basic-binary-headed-phrase & \
-                   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +njrpcdmo ].')
+                   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +njrpcm, \
+                                                     VAL [ SPR < >, \
+                                                           SUBJ < >, \
+                                                           COMPS < > ] ] ].')
 
 ##edge related restrictions to account for Dutch:
 ##*hij zal de bal kunnen gekregen hebben.
