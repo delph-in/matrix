@@ -161,7 +161,7 @@ non-canonical := synsem &
 
 expressed-non-canonical := non-canonical & expressed-synsem.
 
-gap := expressed-non-canonical &
+gap := expressed-non-canonical & 
   [ LOCAL #local,
     NON-LOCAL [ REL 0-dlist,
 		QUE 0-dlist,
@@ -1494,13 +1494,12 @@ imperative-clause := basic-non-rel-clause &
 
 basic-filler-phrase := binary-phrase & phrasal &
   [ SYNSEM [ LOCAL [ CAT [ VAL [ COMPS < >,
-                                 SPR < > ],
+                                 SPR < >,
+				 SUBJ < > ],
 			   POSTHEAD + ] ],
 	     NON-LOCAL.SLASH 0-dlist ],
     ARGS < [ SYNSEM [ LOCAL #slash & local &
-			    [ CAT.VAL [ SUBJ olist,
-					COMPS olist,
-					SPR olist ],
+			    [ CAT.VAL [ SPR < > ],
 			      CTXT.ACTIVATED + ],
 		      NON-LOCAL.SLASH 0-dlist ] ],
 	   [ SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
@@ -1548,21 +1547,24 @@ basic-head-filler-phrase := basic-filler-phrase & head-compositional.
 ; declarative (prop-or-ques) or imperative (comm).  Can further constrain
 ; C-CONT to be  RELS <! !>, now that we're not putting in messages.  (Hey:
 ; that was already the case. Or not, now I don't see it?)
-
-general-basic-head-subj-phrase := head-valence-head-nexus & binary-headed-phrase &
-			  head-compositional &
+;;
+;,
+;		      NON-LOCAL.SLASH 1-dlist & [ LIST [ FIRST #local ] ] 
+general-basic-head-subj-phrase := head-nexus-phrase & binary-headed-phrase & head-compositional &
   [ SYNSEM phr-synsem & 
 	   [ LOCAL.CAT [ POSTHEAD +,
 			 VAL [ SUBJ < >,
 			       COMPS #comps,
-			       SPR #spr ] ] ],
+			       SPR #spr ] ],
+	     NON-LOCAL.SLASH #slash ],
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ],
-    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < #synsem >,
-				      COMPS #comps,	
+    HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ < [ LOCAL #local ]  >,
+		 		      COMPS #comps,	
                                       SPR #spr ],
-    NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem &
-		 [ LOCAL [ CAT [ VAL [ SUBJ olist,
+		      NON-LOCAL.SLASH #slash ],
+    NON-HEAD-DTR.SYNSEM  canonical-synsem &
+		 [ LOCAL #local & [ CAT [ VAL [ SUBJ olist,
 				       COMPS olist,
 				       SPR olist ] ] ],
 		   NON-LOCAL [ SLASH 0-dlist & [ LIST < > ],
@@ -1646,7 +1648,7 @@ basic-head-comp-phrase := head-valence-phrase & head-compositional &
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
                                         SPR #spr ],
 				  HC-LIGHT #light,
-                                  POSTHEAD #ph ]], 
+                                  POSTHEAD #ph ] ], 
     NON-HEAD-DTR.SYNSEM canonical-synsem,
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ] ].
@@ -1669,8 +1671,6 @@ basic-head-2nd-comp-phrase := basic-head-comp-phrase &
     HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS [ FIRST #firstcomp,
 					  REST < #synsem . #othercomps > ],
     NON-HEAD-DTR.SYNSEM #synsem ].
-
-
 
 ; Skip an optional complement as long as there is still another obligatory
 ; complement on the list.  Two subtypes allow for one or two optional
@@ -1897,7 +1897,7 @@ basic-extracted-comp-phrase := basic-extracted-arg-phrase &
 ; to analysis of subject extraction for English.
 ; ASF 2011-10-05 Added supertype 'head-compositional' to basic-extracted-subj-phrase
 ; in order to make sure matrix.tdl provides the right semantics for extracted subjects.
-
+; changed COMPS from olist to < >
 basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
 			   SPR < >,
@@ -1906,7 +1906,7 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
 					       [ LOCAL #local & local &
 						       [ CONT.HOOK.INDEX 
                                                                 ref-ind ] ] >,
-        				COMPS olist ],
+        				COMPS < > ],
 				  MC na ],
 		      NON-LOCAL.SLASH.LIST < #local > ] ].
 
@@ -1926,6 +1926,8 @@ head-mod-phrase := head-nexus-rel-phrase &
 
 basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal.
 
+;;;REMOVING SUBJ CONDITION FOR EXTRACTED-ADJ-PHRASE
+;;;NOT UNIVERSAL
 extracted-adj-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ LOCAL.CAT [ POSTHEAD #ph,
                          MC #mc ],
@@ -1944,8 +1946,7 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
 		   [ CAT [ HEAD #head,
-                           VAL #val & [ SUBJ < synsem-min &
-                                               [ NON-LOCAL.SLASH 0-dlist ] > ],
+                           VAL #val & [ SUBJ < > ],
 			   POSTHEAD #ph,
                            MC #mc ],
                      CONT.HOOK #hook,
@@ -1972,9 +1973,8 @@ head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                            MC #hmc ],
                      AGR #agr,
                      CONT.HOOK #hdhook ],
-             NON-LOCAL #nonloc &
-                   [ SLASH [ LIST #middle,
-                             LAST #last ] ],
+             NON-LOCAL [ SLASH #slash & [ LIST #middle,
+                                          LAST #last ] ],
 	     LIGHT #light,
              MODIFIED #modif ],
     NON-HEAD-DTR.SYNSEM 
@@ -1985,7 +1985,7 @@ head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                                       MC #hmc ],
                                                 AGR #agr,
                                                 CONT.HOOK #hdhook ],
-                                        NON-LOCAL #nonloc,
+                                        NON-LOCAL.SLASH #slash,
 					LIGHT #light,
                                         MODIFIED #modif ] > ],
                          VAL [ COMPS olist,
@@ -1996,8 +1996,8 @@ head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
 
 basic-head-mod-phrase-simple := head-mod-phrase-simple & head-nexus-phrase & head-non-wh.
 
-basic-head-wh-mod-phrase-simple := head-mod-phrase-simple & head-wh &
-  [ SYNSEM.NON-LOCAL.QUE 1-dlist ].
+;;;removed SYNSEM.NON-LOCAL.QUE 0-dlist. to do: test consequences
+basic-head-wh-mod-phrase-simple := head-mod-phrase-simple & head-wh.
 
 
 general-adj-head-phrase := head-mod-phrase-simple & head-final &
@@ -2885,15 +2885,21 @@ nosem-conj-lex := basic-conj-lex &
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Coordination phrases and rules
+;
+; ASF coord-phrase should also pass on SLASH
+
 coord-phrase := binary-phrase &
-  [ SYNSEM.LOCAL [ COORD-STRAT #cstrat,
+  [ SYNSEM [ LOCAL [ COORD-STRAT #cstrat,
                    CAT [ HEAD.MOD #mod,
-                         VAL #val ]],
-    LCOORD-DTR #ldtr & sign & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
-                                                     VAL #val ]]],
-    RCOORD-DTR #rdtr & sign & [ SYNSEM.LOCAL [ COORD-STRAT #cstrat,
-                                               CAT [ HEAD.MOD #mod,
-                                                     VAL #val ]]],
+                         VAL #val ] ],
+	     NON-LOCAL.SLASH #slash ],
+    LCOORD-DTR #ldtr & sign & [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD #mod,
+                                                       VAL #val ] ],
+					 NON-LOCAL.SLASH #slash ] ],
+    RCOORD-DTR #rdtr & sign & [ SYNSEM [ LOCAL [ COORD-STRAT #cstrat,
+                                                 CAT [ HEAD.MOD #mod,
+                                                       VAL #val ]],
+					 NON-LOCAL.SLASH #slash ] ],
     ARGS < #ldtr, #rdtr > ].
 
 topormid-coord-phrase := coord-phrase &
@@ -2913,8 +2919,9 @@ mid-coord-rule := topormid-coord-phrase &
                    COORD-REL implicit-coord-rel ]].
 
 bottom-coord-phrase := phrase &
-  [ CONJ-DTR sign,
-    NONCONJ-DTR sign ].
+  [ SYNSEM.NON-LOCAL.SLASH #slash,
+    CONJ-DTR sign,
+    NONCONJ-DTR sign & [ SYNSEM.NON-LOCAL.SLASH #slash ] ].
 
 unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
   [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
