@@ -26,50 +26,35 @@ def v2_and_verbal_clusters(ch, mylang, lrules, rules):
 def add_nexus_constraints_v2_with_cluster(ch, mylang):
 
 ###ADDING CONSTRAINTS ON BASIC RULES CREATING SECOND POSITION
+###creating those rules to let elements follow the verb in second
+###position: for the Vorfeld position, phrases depend on choice of analysis
+###(MC or filler-gap)
 
 ###making sure language properties of having pre- or postpositions are respected
-
-  
-  head_rest = ''
-  if ch.get('adp-order'): 
-    head_rest = '+nvjrcdmo'
-    if ch.get('clz-order'):
-      head_rest = '+nvjrdmo'
-  elif ch.get('clz-order'):
-    head_rest = '+nvjrpdmo'
-
-
-
+###calling head_rest function to see if general head-comp to build clauses
+###should be restricted and, if so, to what
+  head_rest = get_head_restr_for_non_clausal_head_comp(ch)
 
   mylang.add('head-initial-head-nexus := nonverbal-comp-phrase & \
                   [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC + ].')
   if not ch.get('verb-morph') == 'off':
     mylang.add('finite-lex-rule := [ SYNSEM.LOCAL.CAT.MC na-or-- ].')
-  mylang.add('head-final-head-nexus := nonverbal-comp-phrase & \
-                                       [ SYNSEM.LOCAL.CAT.MC +,\
-                                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
+
 ###[ INV - ] for yes-no questions
-  if ch.get('q-inv'):  
-    mylang.add('head-final-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV - ].')
   if ch.get('aux-comp-order') == 'both' or ch.get('vc-analysis') == 'aux-rule':
     mylang.add('cat :+ [ HEADFINAL bool ].', section='addenda')
 
   if ch.get('vc-analysis') == 'basic':
     mylang.add('head-initial-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
-    mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
-                                           HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
+  
   elif ch.get('vc-analysis') == 'aux-rule':
     mylang.add('head-initial-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL - ].')
-    mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.HEADFINAL #hf, \
-                                           HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL #hf ].')
-  
   
 ####we need to use special rules for adp-comp, for same reason as compl-comp
 ###introducing separate rules for sub-parts of sentence and main-clausal 
 ###structure (needed if not using head-filler for v2-ness
 
   if head_rest:
-    mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.HEAD ' + head_rest + ' ].')
     mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.HEAD ' + head_rest + ' ].')
     
 
@@ -115,8 +100,6 @@ def add_basic_phrases_v2_with_cluster(ch, mylang):
     create_argument_composition_phrases(ch, mylang)
   elif ch.get('vc-analysis') == 'aux-rule':
     create_aux_plus_verb_phrases(ch, mylang)
-
-
 
 
 def general_pre_objectival_cluster_phrases(ch, mylang):
@@ -324,14 +307,10 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
 def create_wh_wo_phrases(mylang):
 
   mylang.add('head-wh-subj-phrase := basic-head-wh-subj-phrase & head-initial-head-nexus.')
-  mylang.add('wh-subj-head-phrase := basic-head-wh-subj-phrase & head-final-head-nexus.')
   mylang.add('wh-subj-head-vc-phrase := basic-head-wh-subj-phrase & head-final-invc & nonverbal-comp-phrase.')
   
   mylang.add('wh-adjunct-head-phrase := basic-head-wh-mod-phrase-simple & \
             [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +rp ].')
-
-  mylang.add('wh-adj-head-2nd-int-phrase := wh-adj-head-int-phrase & \
-               head-final-head-nexus & wh-adjunct-head-phrase.')
 
   mylang.add('head-2nd-wh-adj-int-phrase := head-wh-adj-int-phrase & \
                head-initial-head-nexus & wh-adjunct-head-phrase.')
@@ -346,10 +325,7 @@ def create_wh_wo_phrases(mylang):
   mylang.add('comp-head-vc-phrase := head-non-wh & share-que-non-head-phrase.')
   mylang.add('wh-comp-head-vc-phrase := general-comp-head-vc-phrase & \
                nonverbal-comp-phrase & head-wh.') 
-  mylang.add('comp-head-phrase := head-non-wh.')
   mylang.add('head-comp-phrase := head-non-wh.')
-  mylang.add('wh-comp-head-phrase := head-wh & basic-head-1st-comp-phrase & \
-                        head-final-head-nexus.')
   mylang.add('head-wh-comp-phrase := head-wh & basic-head-1st-comp-phrase & \
                           head-initial-head-nexus.')
 
@@ -365,19 +341,14 @@ def create_wh_wo_phrases(mylang):
   
 
 def create_wh_rules(rules):
-  rules.add('wh-subj-head := wh-subj-head-phrase.')
   rules.add('head-wh-subj := head-wh-subj-phrase.')
   rules.add('wh-subj-head-vc := wh-subj-head-vc-phrase.')
   rules.add('wh-comp-head-vc := wh-comp-head-vc-phrase.')
-  rules.add('wh-comp-head := wh-comp-head-phrase.')
   rules.add('head-wh-comp := head-wh-comp-phrase.')
   rules.add('wh-ques := create-wh-ques-vcomp-phrase.')
-  rules.add('wh-adj-head-2nd-int := wh-adj-head-2nd-int-phrase.')
   rules.add('head-2nd-wh-adj-int := head-2nd-wh-adj-int-phrase.')
   rules.add('wh-adj-head-int-vc := wh-adj-head-int-vc-phrase.')
   rules.add('wh-spec-head := wh-spec-head-phrase.')
-
-
 
 
 ##########################################################################
@@ -386,7 +357,22 @@ def create_wh_rules(rules):
 #                                                                        #
 ##########################################################################
 
-#####
+#########################################################################
+#
+# A. vs B. Argument-composition vs auxiliary-rule + construction
+# I. vs II. MC analysis vs Filler-gap
+#
+# Structure: 
+# A. is common features of arg-comp analysis
+# B. auxiliary-rule + construction
+# I. MC-analysis common features
+# II. Filler-gap common features
+# A.I. Properties arg-comp and MC
+# A.II. Properties arg-comp and Filler-gap
+#
+# B.II does not exist at present, so B corresponds to B and B.I.
+
+#####################################################################
 # A. Argument-composition analysis (standard HPSG)
 #  
 
@@ -437,7 +423,7 @@ def create_argument_composition_phrases(ch, mylang):
    
 
 
-################
+################################################################
 # specialized phrases for argument composition plus clusters
 #
 
@@ -480,45 +466,6 @@ def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
                                                  HEAD verb ], \
                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb, \
 		                        	      MC - ]].') 
-
-###Assuming no [subj + verb] in Vorfeld, despite occasional exceptions
-###(NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ <[ ]>)
-  mylang.add('gen-comp-aux-2nd-phrase := head-final &  \
-                     [ SYNSEM.LOCAL.CAT [ MC +, \
-		                          SECOND #scd ], \
-                       HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na, \
-                                                   HEAD verb,\
-		             	                   SECOND #scd ], \
-                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
-			                               HEAD verb, \
-				                       VAL.SUBJ < [ ] >]].')
-###if partial vp fronting is not allowed (it is not in Danish),
-###verbs must be accompanied by all their complements if placed in the
-###Vorfeld
-  if ch.get('part-vp-front') == 'no':
-    mylang.add('gen-comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
-  mylang.add('comp-aux-2nd-phrase := gen-comp-aux-2nd-phrase & \
-                                 basic-head-1st-comp-phrase & \
-                      [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
-  mylang.add('comp-aux-2nd-phrase-2 := gen-comp-aux-2nd-phrase & \
-                                 basic-head-2nd-comp-phrase & \
-                      [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND +, \
-                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX - ] ].')
-###languages that have fixed argument-order (Dutch) cannot have the verb
-###be placed in the vorfeld with an argument that is non-adjacent in
-###canonical position: i.e.
-###ik heb de man het boek gegeven.
-#I have-1st-sg the man the book give-ptc.
-#can be realized as (though pretty marked):
-#a)het boek gegeven heb ik de man. 
-#but absolutely not as:
-#b) de man gegeven heb ik het boek.
-
-  if ch.get('argument-order') == 'fixed':
-    mylang.add('comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
-    mylang.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
-  if ch.get('q-inv'):
-    mylang.add('gen-comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
 
   if ch.get('wh-questions') == 'yes':
     add_wh_additions_for_arg_comp(ch, mylang, rules)
@@ -643,18 +590,13 @@ def add_old_analysis_no_obj_raising_constraints(ch, mylang, rules, lrules):
 
 def add_wh_additions_for_arg_comp(ch, mylang, rules):
   if ch.get('old-analysis') != 'yes':
-    mylang.add('wh-comp-head-phrase := basic-head-comp-share-vc.')
     mylang.add('head-wh-comp-phrase := basic-head-comp-share-vc.')
 
   mylang.add('wh-comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                 HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
-  mylang.add('comp-head-phrase-2 := head-non-wh.')
-  mylang.add('wh-comp-head-phrase-2 := basic-head-2nd-comp-phrase & \
-               head-final-head-nexus & basic-head-comp-share-vc & head-wh.')
   mylang.add('head-comp-phrase-2 := head-non-wh.')
   mylang.add('head-wh-comp-phrase-2 := basic-head-2nd-comp-phrase & \
                head-initial-head-nexus & basic-head-comp-share-vc & head-wh.')
-  rules.add('wh-comp-head-2 := wh-comp-head-phrase-2.')
   rules.add('head-wh-comp-2 := head-wh-comp-phrase-2.')
 
 def add_revised_analysis_incl_obj_raising_constraints(ch, mylang, lrules):
@@ -686,13 +628,10 @@ def argument_composition_revised_additional_constraints(ch, mylang, lrules):
     mylang.add('subj-v-inv-lrule := [ SYNSEM.LOCAL.CAT.VFRONT na ].')
   mylang.add('head-initial-head-nexus := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC bool ].')
   mylang.add('head-comp-phrase := basic-head-comp-share-vc.')
-  mylang.add('comp-head-phrase := basic-head-comp-share-vc.')
   mylang.add('head-comp-phrase-2 := basic-head-comp-share-vc.')
-  mylang.add('comp-head-phrase-2 := basic-head-comp-share-vc.')
   mylang.add('general-comp-head-vc-phrase := basic-head-comp-share-vc.')
   mylang.add('comp-2-head-vc-phrase := basic-head-comp-share-vc.')
   mylang.add('aux-2nd-comp-phrase := basic-head-comp-share-vc.')
-  mylang.add('gen-comp-aux-2nd-phrase := basic-head-comp-share-vc.')
   mylang.add('basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
               NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
   mylang.add('head-final-invc := [ SYNSEM.LOCAL.CAT.VC na-or-+ ].')
@@ -725,9 +664,6 @@ def argument_composition_revised_additional_constraints(ch, mylang, lrules):
 
   mylang.add('comp-head-vc-phrase := ' + headdtrval + ' ].')
   mylang.add('comp-2-head-vc-phrase := ' + headdtrval + ' ].')
-  mylang.add('comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT + ].')
-  vfrontval = 'bool'
-  mylang.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT ' + vfrontval + ' ].')
   mylang.add('comp-aux-vc-phrase := ' + nhddtrval + ' ].')
   mylang.add('basic-head-subj-phrase :+ '+ headdtrval + ' ].')
   mylang.add('aux-2nd-comp-phrase := ' + nhddtrval + ' ].')
@@ -768,7 +704,7 @@ def add_additional_arg_order_constraints(mylang):
                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao ].')
   mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao ].')
-
+##################TODOTODOTODO 
   mylang.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
   mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.ARG-ORDER + ].')
 
@@ -783,8 +719,7 @@ def add_additional_arg_order_constraints(mylang):
   mylang.add('comp-head-phrase-2 := [ SYNSEM.LOCAL.CAT.ARG-ORDER + ].')
 
 
-
-###########
+#######################################################################
 # B) Aux+verb rule analysis, proposed by Dan Flickinger,
 # first described in Bender (2008)
 # 
@@ -827,7 +762,7 @@ def create_aux_plus_verb_phrases(ch, mylang):
 
 
 
-########
+########################################################################
 # specialized rules
 #
 
@@ -945,8 +880,6 @@ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART #ap ].')
     split_cluster_phrases_aux_plus_verb(ch, mylang)
 
    
-
-
 def split_cluster_phrases_aux_plus_verb(ch, mylang):
 
 
@@ -1078,3 +1011,140 @@ def create_germanic_adjunct_phrases(ch, mylang, rules):
     mylang.add('adj-head-scop-vc-phrase := adj-head-scop-phrase & head-final-invc & adjunct-head-phrase.')    
     rules.add('adj-head-int-vc := adj-head-int-vc-phrase.')
     rules.add('adj-head-scop-vc := adj-head-scop-vc-phrase.')
+
+
+
+
+########################################################
+# I) MC analysis (which follows from the original v-2 analysis
+# from the Grammar Matrix
+#
+
+def mc_v2_word_order(ch, mylang):
+
+#
+# head-final phrases with head in second position
+#
+
+###making sure language properties of having pre- or postpositions are respected
+###calling head_rest function to see if general head-comp to build clauses
+###should be restricted and, if so, to what
+  head_rest = get_head_restr_for_non_clausal_head_comp(ch)
+
+  mylang.add('head-final-head-nexus := nonverbal-comp-phrase & \
+                                       [ SYNSEM.LOCAL.CAT.MC +,\
+                                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
+
+  if ch.get('q-inv'):  
+    mylang.add('head-final-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV - ].')
+
+####TO BE MOVED
+  if ch.get('vc-analysis') == 'aux-rule':
+    mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.HEADFINAL #hf, \
+                                           HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL #hf ].')
+  
+  if head_rest:
+    mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.HEAD ' + head_rest + ' ].')
+
+
+def wh_mc_word_order_phrases(mylang):
+
+  mylang.add('wh-subj-head-phrase := basic-head-wh-subj-phrase & head-final-head-nexus.')
+  mylang.add('wh-adj-head-2nd-int-phrase := wh-adj-head-int-phrase & \
+               head-final-head-nexus & wh-adjunct-head-phrase.')
+  mylang.add('comp-head-phrase := head-non-wh.')
+  mylang.add('wh-comp-head-phrase := head-wh & basic-head-1st-comp-phrase & \
+                        head-final-head-nexus.')
+
+
+def wh_mc_word_order_rules(rules):
+  rules.add('wh-subj-head := wh-subj-head-phrase.')
+  rules.add('wh-comp-head := wh-comp-head-phrase.')
+  rules.add('wh-adj-head-2nd-int := wh-adj-head-2nd-int-phrase.')
+
+
+#########################################################################
+#
+# A.I. phrases and rules required to combine MC analysis and arg-comp
+#
+
+def mc_argcomp_word_order_phrases(ch, mylang):
+  mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
+                                           HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
+
+
+###Assuming no [subj + verb] in Vorfeld, despite occasional exceptions
+###(NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ <[ ]>)
+  mylang.add('gen-comp-aux-2nd-phrase := head-final &  \
+                     [ SYNSEM.LOCAL.CAT [ MC +, \
+		                          SECOND #scd ], \
+                       HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na, \
+                                                   HEAD verb,\
+		             	                   SECOND #scd ], \
+                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
+			                               HEAD verb, \
+				                       VAL.SUBJ < [ ] >]].')
+
+###if partial vp fronting is not allowed (it is not in Danish),
+###verbs must be accompanied by all their complements if placed in the
+###Vorfeld
+  if ch.get('part-vp-front') == 'no':
+    mylang.add('gen-comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
+  mylang.add('comp-aux-2nd-phrase := gen-comp-aux-2nd-phrase & \
+                                 basic-head-1st-comp-phrase & \
+                      [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
+  mylang.add('comp-aux-2nd-phrase-2 := gen-comp-aux-2nd-phrase & \
+                                 basic-head-2nd-comp-phrase & \
+                      [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND +, \
+                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX - ] ].')
+
+###languages that have fixed argument-order (Dutch) cannot have the verb
+###be placed in the vorfeld with an argument that is non-adjacent in
+###canonical position: i.e.
+###ik heb de man het boek gegeven.
+#I have-1st-sg the man the book give-ptc.
+#can be realized as (though pretty marked):
+#a)het boek gegeven heb ik de man. 
+#but absolutely not as:
+#b) de man gegeven heb ik het boek.
+
+  if ch.get('argument-order') == 'fixed':
+    mylang.add('comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
+    mylang.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
+  if ch.get('q-inv'):
+    mylang.add('gen-comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
+
+
+def mc_argcomp_revised_wo(mylang):
+  mylang.add('comp-head-phrase := basic-head-comp-share-vc.')
+  mylang.add('comp-head-phrase-2 := basic-head-comp-share-vc.')
+  mylang.add('gen-comp-aux-2nd-phrase := basic-head-comp-share-vc.')
+  mylang.add('comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT + ].')
+  vfrontval = 'bool'
+  mylang.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT ' + vfrontval + ' ].')
+
+def wh_mc_argcomp_word_order(ch, mylang, rules):
+  if ch.get('old-analysis') != 'yes':
+    mylang.add('wh-comp-head-phrase := basic-head-comp-share-vc.')
+
+  mylang.add('comp-head-phrase-2 := head-non-wh.')
+  mylang.add('wh-comp-head-phrase-2 := basic-head-2nd-comp-phrase & \
+               head-final-head-nexus & basic-head-comp-share-vc & head-wh.')
+  rules.add('wh-comp-head-2 := wh-comp-head-phrase-2.')
+
+###########################################################################
+#
+# functions to find a combination of properties
+#
+
+def get_head_restr_for_non_clausal_head_comp(ch):
+  head_rest = ''
+  
+  if ch.get('adp-order'): 
+    head_rest = '+nvjrcdmo'
+    if ch.get('clz-order'):
+      head_rest = '+nvjrdmo'
+  elif ch.get('clz-order'):
+    head_rest = '+nvjrpdmo'  
+
+  return head_rest
