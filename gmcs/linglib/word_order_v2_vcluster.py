@@ -1229,6 +1229,7 @@ def filler_gap_word_order(mylang):
 			                       SECOND #sec ] ].')
 
 def filler_gap_rules(rules):
+  rules.add('aux-2nd-comp-2 := aux-2nd-comp-phrase-2.')
   rules.add('extracted-subj := extracted-subj-phrase.')
   rules.add('extracted-vcomp := extracted-verbal-comp-phrase.')
   rules.add('extracted-comp := extracted-non-verbal-comp-phrase.')
