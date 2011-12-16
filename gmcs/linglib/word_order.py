@@ -242,7 +242,8 @@ in for head-adjunct phrases here:',
     mylang.add('head-initial-head-nexus := head-initial & \
                 [ SYNSEM.LOCAL.CAT.MC #mc, \
                   HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
-    mylang.add('head-final-head-nexus := head-final & \
+    if not ch.get('v2-analysis') == 'filler-gap':
+      mylang.add('head-final-head-nexus := head-final & \
                 [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
 
 #####value "na" on head-initial-head-nexus only for no cluster
@@ -251,21 +252,24 @@ in for head-adjunct phrases here:',
 
     if not ch.get('verb-cluster') == 'yes':
       mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.MC na ].')
-      mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.MC bool ].')
+      if not ch.get('v2-analysis') == 'filler-gap':
+        mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.MC bool ].')
    
 
 #rules shared among free and v2
 
   if wo == 'free' or wo == 'v2':
     mylang.add('head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
-    mylang.add('subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
     mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.')
-    mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.')
+    if not ch.get('v2-analysis') == 'filler-gap':
+      mylang.add('subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
+      mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.')
 # Change introduced by Germanic: head-comp-phrase-2 not needed 
 # for all v2 analyses when verbal cluster is formed
     if not ch.get('verb-cluster') == 'yes':
       mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
-    mylang.add('comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.')
+    if not ch.get('v2-analysis') == 'filler-gap':
+      mylang.add('comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.')
 
 
 
@@ -274,9 +278,10 @@ in for head-adjunct phrases here:',
   if wo == 'free' or wo == 'v2':
     rules.add('head-comp := head-comp-phrase.')
     rules.add('head-subj := head-subj-phrase.')
-    rules.add('comp-head := comp-head-phrase.')
-    rules.add('subj-head := subj-head-phrase.')
-    rules.add('comp-head-2 := comp-head-phrase-2.')
+    if not ch.get('v2-analysis') == 'filler-gap':
+      rules.add('comp-head := comp-head-phrase.')
+      rules.add('subj-head := subj-head-phrase.')
+      rules.add('comp-head-2 := comp-head-phrase-2.')
 # Change introduced by Germanic: see above
     if wo == 'free'  or (not ch.get('verb-cluster') == 'yes'):
       rules.add('head-comp-2 := head-comp-phrase-2.')
@@ -1066,5 +1071,5 @@ def create_wh_phrases(ch, mylang, rules):
     mylang.add(wh_sub_type)
   
 ###word order rules in Germanic specific for now
-  word_order_v2_vcluster.create_wh_wo_phrases(mylang)
+  word_order_v2_vcluster.create_wh_wo_phrases(ch, mylang)
   word_order_v2_vcluster.create_wh_rules(rules)

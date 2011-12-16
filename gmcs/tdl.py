@@ -845,7 +845,7 @@ class TDLfile(object):
             self.write_comment(s.comment, s.major)
             TDLwrite('\n')
             comment_written = True
-
+          
           t.write()
           TDLwrite('\n')
           last_was_one_line = t.one_line
