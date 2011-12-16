@@ -336,7 +336,7 @@ def create_wh_wo_phrases(ch, mylang):
                head-initial-head-nexus & wh-adjunct-head-phrase.')
 
   hf_invc = ''
-  if ch.get('v2-analysis'):
+  if ch.get('v2-analysis') == 'filler-gap':
     hf_invc = 'general-head-final-invc'
   else:
     hf_invc = 'head-final-invc'
@@ -1040,15 +1040,19 @@ def create_germanic_adjunct_phrases(ch, mylang, rules):
 
   mylang.add('head-2nd-adj-int-phrase := head-adj-int-phrase & head-2nd-adj-phrase.')
   mylang.add('head-2nd-adj-scop-phrase := head-adj-scop-phrase & head-2nd-adj-phrase.')
- 
-  mylang.add('adj-head-2nd-int-phrase := adj-head-int-phrase & head-final-head-nexus & adjunct-head-phrase.')
- 
-  mylang.add('adj-head-2nd-scop-phrase := adj-head-scop-phrase & head-final-head-nexus & adjunct-head-phrase.')
 
-  rules.add('adj-head-2nd-int := adj-head-2nd-int-phrase.')
-  rules.add('adj-head-2nd-scop := adj-head-2nd-scop-phrase.')
   rules.add('head-2nd-adj-int := head-2nd-adj-int-phrase.')
   rules.add('head-2nd-adj-scop := head-2nd-adj-scop-phrase.')
+
+ 
+  if not ch.get('v2-analysis') == 'filler-gap':
+    mylang.add('adj-head-2nd-int-phrase := adj-head-int-phrase & head-final-head-nexus & adjunct-head-phrase.')
+ 
+    mylang.add('adj-head-2nd-scop-phrase := adj-head-scop-phrase & head-final-head-nexus & adjunct-head-phrase.')
+
+    rules.add('adj-head-2nd-int := adj-head-2nd-int-phrase.')
+    rules.add('adj-head-2nd-scop := adj-head-2nd-scop-phrase.')
+
 
 
 ### TO DO: FIND OUT ABOUT DANISH
