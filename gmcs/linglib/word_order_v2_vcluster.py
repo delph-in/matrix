@@ -1227,12 +1227,12 @@ def filler_gap_word_order(mylang):
 			                       SECOND #sec ] ].')
 
 def filler_gap_rules(rules):
-  rules.add('extracted-subj := extracted-subj-phrase')
-  rules.add('extracted-vcomp := extracted-verbal-comp-phrase')
-  rules.add('extracted-comp := extracted-non-verbal-comp-phrase')
-  rules.add('extracted-adj := ger-extracted-adj-phrase')
-  rules.add('filler-head := filler-head-phrase')
-  rules.add('wh-filler-head := wh-filler-head-phrase')
+  rules.add('extracted-subj := extracted-subj-phrase.')
+  rules.add('extracted-vcomp := extracted-verbal-comp-phrase.')
+  rules.add('extracted-comp := extracted-non-verbal-comp-phrase.')
+  rules.add('extracted-adj := ger-extracted-adj-phrase.')
+  rules.add('filler-head := filler-head-phrase.')
+  rules.add('wh-filler-head := wh-filler-head-phrase.')
 
 #########################################################################
 #
