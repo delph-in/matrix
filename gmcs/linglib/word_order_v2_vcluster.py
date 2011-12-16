@@ -1069,8 +1069,6 @@ def create_germanic_adjunct_phrases(ch, mylang, rules):
     rules.add('adj-head-scop-vc := adj-head-scop-vc-phrase.')
 
 
-
-
 ########################################################
 # I) MC analysis (which follows from the original v-2 analysis
 # from the Grammar Matrix

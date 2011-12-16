@@ -260,6 +260,8 @@ def customize_roots():
       if ch.get('vc-analysis') == 'aux-rule' or ch.get('split-analysis') == 'lex-rule':
  # adapted setting for new word-order (from left to right)
         roots.add('root := [ SYNSEM.LOCAL.CAT.VFRONT na-or-- ].')
+  if ch.get('v2-analysis') == 'filler-gap':
+    roots.add('root := [ SYNSEM.NON-LOCAL.SLASH <! !> ].') 
 
   # ERB 2006-10-05 I predict a bug here:  If we a language with auxiliaries
   # and question particles, we're going to need to make sure that FORM is
