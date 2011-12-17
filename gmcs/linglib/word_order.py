@@ -1072,4 +1072,4 @@ def create_wh_phrases(ch, mylang, rules):
   
 ###word order rules in Germanic specific for now
   word_order_v2_vcluster.create_wh_wo_phrases(ch, mylang)
-  word_order_v2_vcluster.create_wh_rules(rules)
+  word_order_v2_vcluster.create_wh_rules(ch, rules)

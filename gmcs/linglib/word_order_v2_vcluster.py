@@ -365,12 +365,13 @@ def create_wh_wo_phrases(ch, mylang):
   mylang.add('bare-np-phrase :=[ HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-dlist ].')
   
 
-def create_wh_rules(rules):
+def create_wh_rules(ch, rules):
   rules.add('head-wh-subj := head-wh-subj-phrase.')
   rules.add('wh-subj-head-vc := wh-subj-head-vc-phrase.')
   rules.add('wh-comp-head-vc := wh-comp-head-vc-phrase.')
   rules.add('head-wh-comp := head-wh-comp-phrase.')
-  rules.add('wh-ques := create-wh-ques-vcomp-phrase.')
+  if not ch.get('v2-analysis') == 'filler-gap':
+    rules.add('wh-ques := create-wh-ques-vcomp-phrase.')
   rules.add('head-2nd-wh-adj-int := head-2nd-wh-adj-int-phrase.')
   rules.add('wh-adj-head-int-vc := wh-adj-head-int-vc-phrase.')
   rules.add('wh-spec-head := wh-spec-head-phrase.')
