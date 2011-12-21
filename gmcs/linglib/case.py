@@ -259,7 +259,7 @@ def interpret_verb_valence(valence):
     if len(v) == 2:
       if v[1] == 'scomp':
         return 'sc2verb'
-      elif v[1] == 'inf':
+      elif v[1] == 'inf' or v[1] == 'zuinf':
         return 'scontrverb'
       else:
         return 'tverb'
@@ -303,9 +303,18 @@ def customize_verb_case(mylang, ch):
     dir_inv = ''
     if len(p) > 1 and p[1] == 'dirinv':
       dir_inv = 'dir-inv-'
+    
+    subjcontr = False
+    if p[0] == 'scontr':
+      subjcontr = True
 
     if not rule_pattern:
       c = p[0].split('-')  # split 'agentcase-patientcase'
+
+      if len(c) == 2:
+        if (c[1] == 'inf' or c[1] == 'zuinf'):
+          subjcontr = True
+
       if p[0] == 'scomp' or (len(c) == 2 and c[1] == 'scomp'):
         if p[0] == 'scomp':
           a_case = ''
@@ -334,7 +343,9 @@ def customize_verb_case(mylang, ch):
           mylang.add(typedef)
 
 ####subj control verbs: TODO make better interface and restrictions
-      elif p[0] == 'scontr' or (len(c) == 2 and c[1] == 'inf'):
+  
+      elif subjcontr:
+#p[0] == 'scontr' or (len(c) == 2 and (c[1] == 'inf' or c[1] == 'zuinf')):
         if p[0] == 'scontr':
           a_case = ''
           a_head = ch.case_head()
@@ -345,7 +356,8 @@ def customize_verb_case(mylang, ch):
         
         if a_case:
           t_type = a_case + '-' + b_res + '-subj-contr-transitive-verb-lex'
-          b_res += 'initive'
+          if b_res == 'inf':
+            b_res += 'initive'
         else:
           t_type = 'subj-contr-transitive-verb-lex'                      
         mylang.add(t_type + ' := subj-contr-transitive-verb-lex.')

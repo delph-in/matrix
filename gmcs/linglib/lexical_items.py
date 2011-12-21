@@ -364,7 +364,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
         if c[1] == 'scomp':
           a_case = case.canon_to_abbr(c[0], cases)
           tivity = a_case + '-' + c[1] + '-trans'
-        elif c[1] == 'inf':
+        elif c[1] == 'inf' or c[1] == 'zuinf':
           a_case = case.canon_to_abbr(c[0], cases)
           tivity = a_case + '-' + c[1]
           if verb.get('control') == 'subj':
@@ -1014,7 +1014,7 @@ def create_wh_phrases(mylang, ch):
                      LKEYS.KEYREL #keyrel ] ].'
     mylang.add(bwlnsl)
     wal = 'wh-adverb-lex := basic-wh-loc-non-sp-lex & \
-           [ SYNSEM.LOCAL.CAT [ HEAD adv, \
+           [ SYNSEM.LOCAL.CAT [ HEAD +rp, \
                                 VAL [ SUBJ < >, \
 			              COMPS < >, \
 			              SPEC < >, \
