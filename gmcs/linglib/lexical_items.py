@@ -899,6 +899,18 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
          ARG-ST < #spr > ].'
   mylang.add(typedef)
    
+  # ASF 2011-12-21 (Germanic only) creating supertype for nouns with scomp
+  # non-Germanic should (at least) not have 'no-cluster-lex-item' and probably
+  # not have non-wh-lex-item
+  if ch.get('noun-scomp') == 'yes':
+    typedef = \
+      'clausal-two-arg-lex := basic-noun-lex & no-cluster-lex-item & non-wh-lex-item & basic-two-arg & \
+           [ ARG-ST < [], [ LOCAL.CONT.HOOK.LTOP #larg ] >, \
+             SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg, \
+                                                  LARG #larg ] !>,\
+                      LKEYS.KEYREL [ ARG1 #harg ] ] ]. '
+    mylang.add(typedef)
+
   # Assuming that most nouns typically do not modify
   # until compounds have been added
   mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')
@@ -950,9 +962,34 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     name = get_name(noun)
     det = noun.get('det')
     wh = noun.get('wh')
+    arg_st = ''
+    if noun.get('arg-st'):
+      arg_st = noun.get('arg-st')
+
+
+    ntype = name + '-noun-lex'
 
     if wh == 'yes':
       stype = 'wh-noun-lex'
+    elif arg_st:
+##2011-12-21 just s-comp for now, more to be added
+      stype = 'clausal-two-arg-lex'
+      if det == 'opt':
+        mylang.add(ntype + ':= [ SYNSEM.LOCAL.CAT.VAL.SPR < #spr & \
+                                                             [ OPT + ] >, \
+                               ARG-ST < #spr & [ LOCAL.CAT.HEAD det ], [ ]> ].')
+      if arg_st == 'scomp':
+        mylang.add(ntype + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >, \
+                                   ARG-ST < [ ], \
+                                           #comps & \
+                                   [ LOCAL [ CAT [ VAL [ SUBJ < >, \
+                                                         COMPS < >, \
+                                                         SPR < >, \
+                                                         SPEC < > ], \
+                                                   HEAD comp ], \
+                                           CONT.HOOK.INDEX.SF prop-or-ques ], \
+	                            OPT + ] > ].')
+
     elif singlentype or det == 'opt':
       stype = 'noun-lex'
     elif det == 'obl':
@@ -960,7 +997,6 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     else:
       stype = 'no-spr-noun-lex'
 
-    ntype = name + '-noun-lex'
 
     mylang.add(ntype + ' := ' + stype + '.')
 
