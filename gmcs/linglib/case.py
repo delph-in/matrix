@@ -358,6 +358,9 @@ def customize_verb_case(mylang, ch):
           t_type = a_case + '-' + b_res + '-subj-contr-transitive-verb-lex'
           if b_res == 'inf':
             b_res += 'initive'
+#HACK to get old choices files to work with addition of zuinf
+          elif b_res == 'zuinf':
+            mylang.add('zuinf := nonfinite.')
         else:
           t_type = 'subj-contr-transitive-verb-lex'                      
         mylang.add(t_type + ' := subj-contr-transitive-verb-lex.')
