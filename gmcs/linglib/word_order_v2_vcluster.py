@@ -319,6 +319,10 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
   else:
     spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules)
 
+
+  if ch.get('noun-zuinf-comp') == 'yes':
+    create_noun_zuinf_structure(mylang, rules)
+
 ##############################
 #
 # Phrases and rules for wh-containing sentences
@@ -376,6 +380,17 @@ def create_wh_rules(ch, rules):
   rules.add('wh-adj-head-int-vc := wh-adj-head-int-vc-phrase.')
   rules.add('wh-spec-head := wh-spec-head-phrase.')
 
+
+def create_noun_zuinf_structure(mylang, rules):
+  nom_head_zu_comp = 'noun-head-zu-comp-phrase := basic-head-1st-comp-phrase & \
+                                           head-initial & share-que-non-head-phrase & \
+                        [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD noun, \
+				                      VAL.SPR < [ ] > ], \
+                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb & [ FORM zuinf ], \
+				                          VAL [ COMPS < > ], \
+			                                  MC - ] ].'
+  mylang.add(nom_head_zu_comp)
+  rules.add('noun-head-zu-comp := noun-head-zu-comp-phrase.')
 
 ##########################################################################
 #                                                                        #
@@ -568,7 +583,7 @@ def split_cluster_arg_comp_lex_rule(ch, mylang, lrules):
 				COMPS < #comp1, #comp2 >,\
 				SPR #spr,\
 				SPEC #spec ],\
-			  HEAD [ AUX - ],\
+			  HEAD verb & [ AUX - ],\
 			  VC #vc,\
 			  SECOND #sd   ] ].')
   mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.VFRONT +, \
@@ -690,7 +705,7 @@ def argument_composition_revised_additional_constraints(ch, mylang, lrules):
 				COMPS < #comp1, #comp2 >,\
 				SPR #spr,\
 				SPEC #spec ],\
-			  HEAD [ AUX - ],\
+			  HEAD verb & [ AUX - ],\
 			  VC #vc,\
                           VFRONT +, \
 			  SECOND #sd   ] ].')
@@ -1029,9 +1044,11 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
 def create_germanic_adjunct_phrases(ch, mylang, rules):
 ###need to separate adjunctial from adjectival phrases, due to different
 ###wo interactions
- 
+  head_res = '+rp'
+  if ch.get('mod-noun') == 'yes':
+    head_res = '+nrp'
   mylang.add('adjunct-head-phrase := basic-head-mod-phrase-simple & \
-                  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +rp ].')
+                  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + head_res + ' ].')
  
 ###if no auxiliary, direct attachment v2
 

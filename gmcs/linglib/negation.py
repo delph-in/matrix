@@ -120,20 +120,13 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules):
       mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].');
       mylang.add('adj-head-scop-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adv ].');
 
-
-  mylang.add('+nvcdmo :+ [ MOD < > ].',
-               'This grammar includes head-modifier rules.  To keep\n' +
-               'out extraneous parses, constrain the value of MOD on\n' +
-               'various subtypes of head.  This may need to be loosened later.\n' +
-               'This constraint says that only adverbs, adjectives,\n' +
-               'and adpositions can be modifiers.',
-               section='addenda')
+###removed noun from modless heads: integrating NP-modifiers
 
 ### comment on at meeting: over-generalizing?
 ### shouldn't this be a lexical property? better to create a supertype
 ### that is standard assigned to noun-lex, verb-lex
 
-  mylang.add('+nvcdmo :+ [ MOD < > ].',
+  mylang.add('+vcdmo :+ [ MOD < > ].',
              'This grammar includes head-modifier rules.  To keep\n' +
              'out extraneous parses, constrain the value of MOD on\n' +
              'various subtypes of head.  This may need to be loosened later.\n' +

@@ -891,7 +891,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   # Adding that just in case we add the no-spr-noun-lex type.
 
   typedef = \
-    'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
+    'general-noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
        [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
                                   COMPS < >, \
                                   SUBJ < >, \
@@ -902,7 +902,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   # ASF 2011-12-21 (Germanic only) creating supertype for nouns with scomp
   # non-Germanic should (at least) not have 'no-cluster-lex-item' and probably
   # not have non-wh-lex-item
-  if ch.get('noun-scomp') == 'yes':
+  if ch.get('noun-argst') == 'yes':
     typedef = \
       'clausal-two-arg-lex := basic-noun-lex & no-cluster-lex-item & non-wh-lex-item & basic-two-arg & \
            [ ARG-ST < [], [ LOCAL.CONT.HOOK.LTOP #larg ] >, \
@@ -913,17 +913,20 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
   # Assuming that most nouns typically do not modify
   # until compounds have been added
-  mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')
+  mylang.add('noun-lex := general-noun-lex & [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')
+  
+  if ch.get('mod-noun') == 'yes':
+    mylang.add('mod-noun-lex := general-noun-lex & [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ ] > ].')
 
   if ch.get('verb-cluster') == 'yes':
-    mylang.add('noun-lex := no-cluster-lex-item.')
+    mylang.add('general-noun-lex := no-cluster-lex-item.')
 
   if singlentype:
     if seen['obl']:
-      typedef = 'noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
+      typedef = 'general-noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
       mylang.add(typedef)
     elif seen['imp']:
-      typedef = 'noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
+      typedef = 'general-noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
       mylang.add(typedef)
   else:
     if seen['obl']:
@@ -965,7 +968,9 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     arg_st = ''
     if noun.get('arg-st'):
       arg_st = noun.get('arg-st')
-
+    mod = ''
+    if noun.get('mod'):
+       mod = noun.get('mod')    
 
     ntype = name + '-noun-lex'
 
@@ -973,23 +978,51 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       stype = 'wh-noun-lex'
     elif arg_st:
 ##2011-12-21 just s-comp for now, more to be added
+##2012-12-22 also pps now. Assuming arguments on nouns are all optional
+####TO DO: CREATE LIGHT VERB CONSTRUCTION FOR HABEN + SOME OF THESE NOUNS
       stype = 'clausal-two-arg-lex'
-      if det == 'opt':
-        mylang.add(ntype + ':= [ SYNSEM.LOCAL.CAT.VAL.SPR < #spr & \
-                                                             [ OPT + ] >, \
+      if det == 'opt' or det == 'obl':
+        mylang.add(ntype + ':= [ SYNSEM.LOCAL.CAT.VAL.SPR < #spr >, \
                                ARG-ST < #spr & [ LOCAL.CAT.HEAD det ], [ ]> ].')
-      if arg_st == 'scomp':
-        mylang.add(ntype + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >, \
+###BROKEN: optional determiner doesn't allow any specifier
+        if det == 'opt': 
+          mylang.add(ntype + ':= [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].')
+      mylang.add(ntype + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >, \
                                    ARG-ST < [ ], \
                                            #comps & \
-                                   [ LOCAL [ CAT [ VAL [ SUBJ < >, \
-                                                         COMPS < >, \
+                                   [ LOCAL [ CAT [ VAL [ COMPS < >, \
                                                          SPR < >, \
-                                                         SPEC < > ], \
-                                                   HEAD comp ], \
-                                           CONT.HOOK.INDEX.SF prop-or-ques ], \
+                                                         SPEC < > ] ] ], \
 	                            OPT + ] > ].')
+      if not arg_st == 'zuinf':
+        mylang.add(ntype + ' := [ ARG-ST < [ ], \
+                          [ LOCAL.CAT.VAL.SUBJ < > ] > ].')
+      if 'comp' in arg_st:
+        mylang.add(ntype + ' := [ ARG-ST < [ ], \
+                          [ LOCAL.CAT.HEAD comp ] > ].')
+        if arg_st == 'scomp':
+           mylang.add(ntype + ' := [ ARG-ST < [ ], \
+                          [ LOCAL.CONT.HOOK.INDEX.SF prop-or-ques ] > ].')
+        elif arg_st == 'qcomp': 
+           mylang.add(ntype + ' := [ ARG-ST < [ ], \
+                          [ LOCAL.CONT.HOOK.INDEX.SF ques ] > ].')
+      elif arg_st == 'adp':
+        mylang.add(ntype + ' := [ ARG-ST < [ ], \
+                                [ LOCAL.CAT.HEAD adp & \
+                                   [ MOD < [ LOCAL.CAT.HEAD noun ] > ] ] > ].')
+      elif arg_st == 'zuinf':
+        mylang.add(ntype + ' := [ ARG-ST < [ ], \
+                                           [ LOCAL [ CAT [ HEAD verb & [ FORM zuinf ], \
+                                                           VAL.SUBJ < [ ] > ], \
+                                                     CONT.HOOK.XARG #xarg ] ] >, \
+                                   SYNSEM.LOCAL.CONT.HOOK.XARG #xarg ].')
 
+    elif mod:
+####TO DO: 1. noun can be mod and have arg-st (at least theoretically possible)
+####2. Maybe there are scopal modifier nouns
+      stype = 'mod-noun-lex'
+      mylang.add(ntype + ' := intersective-mod-lex & \
+                      [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD ' + mod + ' ] > ].') 
     elif singlentype or det == 'opt':
       stype = 'noun-lex'
     elif det == 'obl':
