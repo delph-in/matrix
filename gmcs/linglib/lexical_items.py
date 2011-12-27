@@ -686,6 +686,10 @@ def customize_adverbs(mylang, ch, lexicon):
     mylang.add('int-adverb-lex := basic-int-adverb-lex & \
                 [ SYNSEM [ LOCAL.CONT.HOOK.XARG #arg1, \
                            LKEYS.KEYREL.ARG1 #arg1 ] ].')
+    if ch.get('adv-argst') == 'yes':
+      mylang.add('int-mod-with-one-arg-lex := intersective-mod-lex & \
+                    [ SYNSEM.LKEYS.KEYREL.ARG2 #arg2, \
+                      ARGS < [ LOCAL.CONT.HOOK.INDEX #arg2 ] > ].')
 
     if ch.get('verb-cluster') == 'yes':
       mylang.add('scopal-adverb-lex := no-cluster-lex-item.')
@@ -706,9 +710,35 @@ def customize_adverbs(mylang, ch, lexicon):
     else:
       stype = 'scopal' + stype
     atype = name + '-adverb-lex'
-    
+
+###default is adverbs modify verb
+    mod_head = 'verb'
+    mod_val = ''
+    modh = adv.get('mod')    
+    if modh == 'pp':
+      mod_head = 'adp'
+    elif modh == 'det':
+      mod_head = 'det'
+    elif modh == 'ad':    
+      mod_head = '+jr'
+
+    if not mod_head == 'verb':
+      if mod_head == 'det':
+         mod_val = '[ SUBJ < >, \
+                      COMPS < >, \
+                      SPR < >, \
+                      SPEC < [ ] > ]'
+      else:
+        mod_val = '[ SUBJ < >, \
+                     COMPS < >, \
+                     SPR < >, \
+                     SPEC < > ]'
+
     mylang.add(atype + ' := ' + stype + ' & \
-      [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD verb ] > ].')
+      [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD ' + mod_head + ' ] > ].')
+    if mod_val:
+      mylang.add(atype + ' :=  \
+      [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL ' + mod_val + ' ] > ].')
 
     arg_str = adv.get('arg-str')
     val = ''
@@ -717,9 +747,26 @@ def customize_adverbs(mylang, ch, lexicon):
                    COMPS < >, \
                    SPR < >, \
                    SPEC < > ]'
+#####Germanic specific, should be generalized
+    elif arg_str == 'zuinf':
+      val = 'VAL [ SUBJ < >, \
+                   COMPS < [ LOCAL.CAT [ HEAD verb & [ FORM zuinf ], \
+                                         VAL [ SUBJ < [ ] >, \
+                                               COMPS < >, \
+                                               SPR < >, \
+                                               SPEC < > ] ] ] >, \
+                   SPR < >, \
+                   SPEC < > ]'
 
     if val:
       mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.' + val + ' ].')
+####Germanic specific  
+    if arg_str == 'zuinf':
+      mylang.add(atype + ' := int-mod-with-one-arg-lex & \
+        [ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CONT.HOOK.XARG #xarg ] >, \
+                             VAL.COMPS < #comp & \
+                                        [ LOCAL.CONT.HOOK.XARG #xarg ] > ], \
+          ARGS < #comp > ] ].')   
 
     for stem in adv.get('stem',[]):
       orth = stem.get('orth')
@@ -902,14 +949,16 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   # ASF 2011-12-21 (Germanic only) creating supertype for nouns with scomp
   # non-Germanic should (at least) not have 'no-cluster-lex-item' and probably
   # not have non-wh-lex-item
+  # Not needed: these types exist in matrix.tdl
   if ch.get('noun-argst') == 'yes':
-    typedef = \
-      'clausal-two-arg-lex := basic-noun-lex & no-cluster-lex-item & non-wh-lex-item & basic-two-arg & \
-           [ ARG-ST < [], [ LOCAL.CONT.HOOK.LTOP #larg ] >, \
-             SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg, \
-                                                  LARG #larg ] !>,\
-                      LKEYS.KEYREL [ ARG1 #harg ] ] ]. '
-    mylang.add(typedef)
+    typedef1 = \
+      'noun-one-arg-lex := basic-noun-lex & no-cluster-lex-item & \
+                           non-wh-lex-item & spr-plus-one-arg-lex-item.'
+    typedef2 = \
+      'noun-clausal-arg-lex := basic-noun-lex & no-cluster-lex-item & \
+                           non-wh-lex-item & spr-plus-clausal-arg-lex-item.'
+    mylang.add(typedef1)
+    mylang.add(typedef2)
 
   # Assuming that most nouns typically do not modify
   # until compounds have been added
@@ -980,7 +1029,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 ##2011-12-21 just s-comp for now, more to be added
 ##2012-12-22 also pps now. Assuming arguments on nouns are all optional
 ####TO DO: CREATE LIGHT VERB CONSTRUCTION FOR HABEN + SOME OF THESE NOUNS
-      stype = 'clausal-two-arg-lex'
+####TO DO2: FIND OUT ABOUT SEMANTICS, WHY MUST ONE-ARG HAVE REF-IND?
+      if arg_st == 'scomp' or arg_st == 'qcomp':
+        stype = 'noun-clausal-arg-lex'
+      else:
+        stype = 'noun-clausal-arg-lex'
       if det == 'opt' or det == 'obl':
         mylang.add(ntype + ':= [ SYNSEM.LOCAL.CAT.VAL.SPR < #spr >, \
                                ARG-ST < #spr & [ LOCAL.CAT.HEAD det ], [ ]> ].')

@@ -757,26 +757,31 @@ def customize_np_word_order(mylang, ch, rules):
     mylang.add('basic-head-mod-phrase-simple :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.PRD - ].')
   if ch.get('has-adj') == 'yes':
     # adding adjective specific phrase
+    # Germanic, same phrase for adverb modifiers when not modifying verbs
     adj_st = ''
-    mylang.add('adjective-head-phrase := basic-head-mod-phrase-simple & \
-                 [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adj ].')
+    mylang.add('mod-non-verbal-head-phrase := basic-head-mod-phrase-simple & \
+                 [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +jr, \
+                   HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +njrpd, \
+                                               VAL #val ], \
+                   SYNSEM.LOCAL.CAT.VAL #val ].')
+
     if ll_adj:
       create_adjective_learning_phrases(ch, mylang, rules)
       adj_st += 'gram-'
-    adj_st += 'adjective-head-phrase'
+    adj_st += 'mod-non-verbal-head-phrase'
 
     if ch.get('adj-noun-order') != 'adj-noun':
-      mylang.add('head-adjective-int-phrase := head-adj-int-phrase & ' + adj_st + '.')
+      mylang.add('head-nonv-mod-int-phrase := head-adj-int-phrase & ' + adj_st + '.')
 
-      mylang.add('head-adjective-scop-phrase := head-adj-scop-phrase & ' + adj_st + '.')
-      rules.add('head-adjective-int := head-adjective-int-phrase.')
-      rules.add('head-adjective-scop := head-adjective-scop-phrase.') 
+      mylang.add('head-nonv-mod-scop-phrase := head-adj-scop-phrase & ' + adj_st + '.')
+      rules.add('head-nonv-mod-int := head-nonv-mod-int-phrase.')
+      rules.add('head-nonv-mod-scop := head-nonv-mod-scop-phrase.') 
     if ch.get('noun-adj-order') != 'noun-adj':
-      mylang.add('adjective-head-int-phrase := adj-head-int-phrase & ' + adj_st + '.')
+      mylang.add('mod-nonv-head-int-phrase := adj-head-int-phrase & ' + adj_st + '.')
 
-      mylang.add('adjective-head-scop-phrase := adj-head-scop-phrase & ' + adj_st + '.')
-      rules.add('adjective-head-int := adjective-head-int-phrase.')
-      rules.add('adjective-head-scop := adjective-head-scop-phrase.') 
+      mylang.add('mod-nonv-head-scop-phrase := adj-head-scop-phrase & ' + adj_st + '.')
+      rules.add('mod-nonv-head-int := mod-nonv-head-int-phrase.')
+      rules.add('mod-head-scop := mod-nonv-head-scop-phrase.') 
 
     # ERB 2006-09-14 I think that all languages have some form of
     # the Bare NP phrase.  Eventually there will be some choices about

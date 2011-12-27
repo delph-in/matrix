@@ -320,8 +320,8 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
     spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules)
 
 
-  if ch.get('noun-zuinf-comp') == 'yes':
-    create_noun_zuinf_structure(mylang, rules)
+  if ch.get('nonverb-zuinf-comp') == 'yes':
+    create_nonverb_zuinf_structure(mylang, rules)
 
 ##############################
 #
@@ -381,17 +381,19 @@ def create_wh_rules(ch, rules):
   rules.add('wh-spec-head := wh-spec-head-phrase.')
 
 
-def create_noun_zuinf_structure(mylang, rules):
-  nom_head_zu_comp = 'noun-head-zu-comp-phrase := basic-head-1st-comp-phrase & \
-                                           head-initial & share-que-non-head-phrase & \
-                        [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD noun, \
-				                      VAL.SPR < [ ] > ], \
+def create_nonverb_zuinf_structure(mylang, rules):
+  nom_head_zu_comp = 'nonverb-head-zu-comp-phrase := \
+                         basic-head-1st-comp-phrase & head-initial & \
+                                                  share-que-non-head-phrase & \
+                        [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nr, \
                           NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb & [ FORM zuinf ], \
 				                          VAL [ COMPS < > ], \
 			                                  MC - ] ].'
   mylang.add(nom_head_zu_comp)
-  rules.add('noun-head-zu-comp := noun-head-zu-comp-phrase.')
-
+  rules.add('nonverb-head-zu-comp := nonverb-head-zu-comp-phrase.')
+  mylang.add('head-spec-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
+                                                                    COMPS < > ] ].')
+ 
 ##########################################################################
 #                                                                        #
 # ALTERNATIVE ANALYSES                                                   #
@@ -1053,6 +1055,7 @@ def create_germanic_adjunct_phrases(ch, mylang, rules):
 ###if no auxiliary, direct attachment v2
 
   mylang.add('head-2nd-adj-phrase := head-initial-head-nexus & adjunct-head-phrase.')
+####only verbs can be modified by post-modifying adverbs
   if ch.get('q-inv') and ch.get('vc-analysis') == 'aux-rule':
     mylang.add('head-2nd-adj-phrase := [ HEAD-DTR.SYNSEM.MODIFIED hasmod ].')
 
