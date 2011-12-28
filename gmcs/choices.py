@@ -711,6 +711,8 @@ class ChoicesFile:
         patterns += [ ['nom-acc-inf', '', False ] ]
       if self.get('reflexives') == 'yes':
         patterns += [[ 'nom-refl-pp', '', False ]]
+      if self.get('expl-two-arg') == 'yes':
+        patterns += [[ 'expl-acc', '', False ]]
     elif cm == 'erg-abs':
       patterns += [ ['abs', '', False] ]
       patterns += [ ['erg-abs', '', False] ]

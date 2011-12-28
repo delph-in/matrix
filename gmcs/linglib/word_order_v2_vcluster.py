@@ -319,7 +319,8 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
   else:
     spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules)
 
-
+###can be done by head-sub-comp, but leads to odd ambiguities for nouns
+###leaving this for nouns for now
   if ch.get('nonverb-zuinf-comp') == 'yes':
     create_nonverb_zuinf_structure(mylang, rules)
 
@@ -385,7 +386,7 @@ def create_nonverb_zuinf_structure(mylang, rules):
   nom_head_zu_comp = 'nonverb-head-zu-comp-phrase := \
                          basic-head-1st-comp-phrase & head-initial & \
                                                   share-que-non-head-phrase & \
-                        [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nr, \
+                        [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun, \
                           NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb & [ FORM zuinf ], \
 				                          VAL [ COMPS < > ], \
 			                                  MC - ] ].'

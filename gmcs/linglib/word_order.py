@@ -987,20 +987,20 @@ def customize_head_comp_non_main_phrase(ch, mylang):
   fhead = ''
   ihead = ''
   if adp_order == c_ord:
-    head = '+pc' 
+    head = '+rpc' 
     if adp_order == 'final':
       fhead = head
     elif adp_order == 'initial':
       ihead = head
   else:
     if adp_order == 'final':
-      fhead = 'adp'     
+      fhead = '+rp'     
       if c_ord == 'initial':
-        ihead = 'comp'
+        ihead = '+rc'
     else:
-      ihead = 'adp'
+      ihead = '+rp'
       if c_ord == 'final':
-        fhead = 'comp'
+        fhead = '+rc'
   
   wh = ''
   if ch.get('wh-questions') == 'yes':

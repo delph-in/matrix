@@ -385,7 +385,48 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
           mylang.add(typedef)
-        
+
+      elif p[0] == 'expl' or (len(c) == 2 and c[0] == 'expl'):      
+###skipping just 'expl' scenario for now  
+        if len(c) == 2:
+          a_case = canon_to_abbr(c[0], cases)
+          o_case = canon_to_abbr(c[1], cases)
+          a_head = ch.case_head(c[0])
+          o_head = ch.case_head(c[1])
+        if a_case and o_case:
+          t_type = dir_inv + a_case + '-' + o_case + '-transitive-verb-lex'
+        else:
+          t_type = dir_inv + 'transitive-verb-lex'
+        mylang.add(t_type + ' := expl-two-arg-verb-lex & \
+                      [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp >, \
+                        ARG-ST < [ ], #comp & [ ] > ].')
+###a_case value is not expl, but nom for Germanic
+        a_case = 'nom'  
+ # constrain the head of the agent/subject
+        typedef = \
+          t_type + ' := \
+          [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
+        mylang.add(typedef)
+
+        # constrain the case of the agent/subject
+        if a_case:
+          typedef = \
+            t_type + ' := \
+            [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
+          mylang.add(typedef)
+# constrain the head of the patient/object
+        typedef = \
+          t_type + ' := \
+          [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
+        mylang.add(typedef)
+
+        # constrain the case of the patient/object
+        if o_case:
+          typedef = \
+            t_type + ' := \
+            [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
+          mylang.add(typedef)
+
       elif p[0] == 'trans' or len(c) == 2:  # transitive
         if p[0] == 'trans':
           a_case = ''

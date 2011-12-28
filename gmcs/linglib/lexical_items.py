@@ -236,6 +236,18 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                                      [ CONT.HOOK.INDEX #ind ], \
                              SUBJ < [ LOCAL.CONT.HOOK.INDEX #ind ] > ] ].'
     mylang.add(typedef)    
+
+  if ch.get('expl-two-arg') == 'yes':
+    comment = 'Matix only provides explicit arg only or clausal complement. \
+              General type for explicit and referential arg.'
+    typedef = \
+      'expl-two-arg-lex-item := basic-two-arg-no-hcons & \
+              [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX expl-ind ], \
+                         [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ] >, \
+                SYNSEM.LKEYS.KEYREL.ARG1 #ind  ].'
+    mylang.add(typedef, comment)
+    mylang.add('expl-two-arg-verb-lex := expl-two-arg-lex-item & \
+                    ' + mainorverbtype + '.')
   if hclightallverbs:
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].')
   elif hclight:
@@ -773,6 +785,19 @@ def customize_adverbs(mylang, ch, lexicon):
                    SPR < >, \
                    SPEC < > ]'
 
+    elif arg_str == 'scomp':
+      val = 'VAL [ SUBJ < >, \
+                   COMPS < [ LOCAL.CAT [ HEAD verb & [ FORM finite, \
+                                                       INV - ], \
+                                         MC -, \
+                                         VAL [ SUBJ <  >, \
+                                               COMPS < >, \
+                                               SPR < >, \
+                                               SPEC < > ] ] ] >, \
+                   SPR < >, \
+                   SPEC < > ]'
+   
+
     if val:
       mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.' + val + ' ].')
 ####Germanic specific  
@@ -800,12 +825,18 @@ def customize_adpositions(ch, mylang, lexicon):
     s_name = create_adposition_supertypes(ch, mylang)
 
     for adp in ch.get('adp',[]):
+      sname = s_name
+      incl = ''
+      if adp.get('incl') == 'yes':
+        incl = True
+      if incl:
+        sname = 'compl-incl-int-adp-lex-item'
       name = adp.get('name') + '-adp-lex-item'
       kind = adp.get('kind')
       if kind == 'mod':
         mod = adp.get('mod')
       #add basic frame
-        mylang.add(name + ' := ' + mod + '-' + s_name + '.')
+        mylang.add(name + ' := ' + mod + '-' + sname + '.')
         order = adp.get('order')
         if order == 'post':
           mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
@@ -814,7 +845,7 @@ def customize_adpositions(ch, mylang, lexicon):
         if ch.get('has-cop') == 'yes':
           mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].')
       elif kind == 'prd':
-        mylang.add(name + ' := prd-' + s_name + '& \
+        mylang.add(name + ' := prd-' + sname + '& \
           [ SYNSEM.LOCAL.CAT [ HEAD.PRD +, \
                                VC - ] ].' )
 
@@ -857,31 +888,63 @@ def create_adposition_supertypes(ch, mylang):
   mylang.add(s_name + ' := [ SYNSEM [ LKEYS.KEYREL.ARG2 #arg2, \
                   LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #arg2 ] ].')
 
+  create_adp_cross_classification(ch, mylang, s_name)
+###FOR CONTRACTIONS OF PREPOSITION AND PRONOMINAL COMPLEMENT
+###e.g. German "darauf", Dutch "daarop" (on that)
+  if ch.get('comp-incl-adp') == 'yes':
+    comment = 'introducing adpositions that contain their pronominal \
+               complement. They cannot inherit from basic-adp-lex which is a \
+               one-rel-lex-item, because it needs to introduce the semantics \
+               of its complement.'
+    sname2 = 'compl-incl-int-adp-lex-item' 
+    mylang.add(sname2 + ' := norm-hook-lex-item & no-cluster-lex-item & \
+                                                 intersective-mod-lex & \
+                  [ SYNSEM.LOCAL.CAT [ HEAD adp, \
+                                       VAL [ SUBJ < >, \
+                                             SPR < >, \
+                                             SPEC < >, \
+                                             COMPS < > ] ] ].', comment)
+    mylang.add(sname2 + ' := \
+             [ SYNSEM [ LOCAL.CONT.RELS <! [ ARG2 #arg2 ], \
+                                           [ PRED "_pronoun_n_rel", \
+                                             LBL #lbl, \
+                                             ARG0 #arg2 & index ], \
+                                             quant-relation & \
+                                           [ PRED "_exist_q_rel", \
+                                             ARG0 #arg2, \
+                                             RSTR #lbl ] !>, \
+                        NON-LOCAL.QUE 0-dlist, \
+                        LKEYS.KEYREL event-relation ] ].')
+
+    create_adp_cross_classification(ch, mylang, sname2)
+
+  return s_name
+
+
+def create_adp_cross_classification(ch, mylang, sname):
+  
   if ch.get('verb-cluster') == 'yes':
-    mylang.add('int-adp-lex-item := no-cluster-lex-item.')
+    mylang.add(sname + ' := no-cluster-lex-item.')
 
   for spadp in ch.get('sup_adp',[]):
 
     if spadp.get('kind') == 'mod':
       for mod in spadp.get('mod',[]):
         head = mod.get('head')
-        type = head + '-' + s_name
-    
-        mylang.add(type + ' := ' + s_name + ' & \
+        type_n = head + '-' + sname
+      
+        mylang.add(type_n + ' := ' + sname + ' & \
                [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD '+ head +' ].') 
 
         for feat in mod.get('feat',[]):
           if feat.get('name') == 'light':
             constr = 'LIGHT ' + feat.get('value')
-          mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.' + constr + ' ].')
+          mylang.add(type_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.' + constr + ' ].')
     elif spadp.get('kind') == 'prd':
-      type = 'prd-' + s_name
-      mylang.add(type + ' := ' + s_name + ' & \
+      type_n = 'prd-' + sname
+      mylang.add(type_n + ' := ' + sname + ' & \
                [ SYNSEM [ LOCAL.CONT.HOOK.XARG #arg1, \
                           LKEYS.KEYREL.ARG1 #arg1 ] ].')
-
-  return s_name
-
 
 
 def customize_complementizers(ch, mylang, lexicon):
@@ -994,8 +1057,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     mylang.add('noun-lex := opt-refl-noun-lex & non-reflexive-noun-lex.')
     mylang.add('refl-noun-lex := opt-refl-noun-lex & reflexive-noun-lex.')
   
-  if refl:
-    mylang.add('refl-local := local.', comment='Distinguishing reflexive nouns from non-reflexive nouns.', section='features')
+    mylang.add('refl-local := local.', 'Distinguishing reflexive nouns from non-reflexive nouns.', section='features')
     mylang.add('non-refl-local := local.', section='features')
     
     mylang.add('non-reflexive-noun-lex := basic-noun-lex & \
@@ -1003,6 +1065,21 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     mylang.add('reflexive-noun-lex := basic-noun-lex & \
                              [ SYNSEM.LOCAL refl-local ].')
 
+  ###adding type for explitive pronouns
+  if ch.get('explitives') == 'yes':
+    comment = 'Explicits cannot inherit from basic-noun-phrase: \
+               expl-index is not compatible with noun-relation'
+    typedef = 'expl-noun-lex := no-hcons-lex-item & \
+                 [ SYNSEM [ LOCAL [ CONT [ HOOK.INDEX expl-ind, \
+                                           RELS <! !> ], \
+                                    CAT [ HEAD noun & [ CASE nom, \
+                                                        MOD < > ], \
+                                          VAL [ SUBJ < >, \
+                                                COMPS < >, \
+                                                SPR < >, \
+			                        SPEC < > ] ] ], \
+	                    NON-LOCAL.QUE 0-dlist ] ].'
+    mylang.add(typedef, comment)
 
   if ch.get('mod-noun') == 'yes':
     mylang.add('mod-noun-lex := general-noun-lex & [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ ] > ].')
@@ -1062,6 +1139,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     name = get_name(noun)
     det = noun.get('det')
     wh = noun.get('wh')
+    expl = noun.get('expl')
     arg_st = ''
     if noun.get('arg-st'):
       arg_st = noun.get('arg-st')
@@ -1073,7 +1151,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       n_refl = noun.get('refl')  
 
     ntype = name + '-noun-lex'
-
+    
     if wh == 'yes':
       stype = 'wh-noun-lex'
     elif arg_st:
@@ -1139,8 +1217,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     else:
       stype = 'no-spr-noun-lex'
 
-
-    mylang.add(ntype + ' := ' + stype + '.')
+    if not expl:
+      mylang.add(ntype + ' := ' + stype + '.')
 
     features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
 
@@ -1148,9 +1226,13 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       orth = stem.get('orth')
       pred = stem.get('pred')
       id = stem.get('name')
-      typedef = TDLencode(id) + ' := ' + ntype + ' & \
-                  [ STEM < "' + orth + '" >, \
-                    SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+      if not expl == 'yes':
+        typedef = TDLencode(id) + ' := ' + ntype + ' & \
+                    [ STEM < "' + orth + '" >, \
+                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+      else:
+        typedef = TDLencode(id) + ' := expl-noun-lex & \
+                    [ STEM < "' + orth + '" > ].'
       lexicon.add(typedef)
 
 

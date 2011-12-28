@@ -247,11 +247,12 @@ def customize_roots():
 
   typedef = \
     'root := phrase & \
-       [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ < >, \
+       [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < >, \
                                     COMPS < > ], \
-                              MC + ],\
-                        COORD - ] ].'
+                              MC + ] ].'
   roots.add(typedef, comment)
+  if not ch.get('coord-root') == 'on':
+    roots.add('root := [ SYNSEM.LOCAL.COORD - ].')
 
   if ch.get('has-aux') == 'yes' or 'noaux-fin-nf' in ch:
     roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
