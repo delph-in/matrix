@@ -709,6 +709,8 @@ class ChoicesFile:
         patterns += [ ['nom-zuinf', '', False ] ]
       if self.get('obj-raising') == 'yes':
         patterns += [ ['nom-acc-inf', '', False ] ]
+      if self.get('reflexives') == 'yes':
+        patterns += [[ 'nom-refl-pp', '', False ]]
     elif cm == 'erg-abs':
       patterns += [ ['abs', '', False] ]
       patterns += [ ['erg-abs', '', False] ]

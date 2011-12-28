@@ -256,7 +256,9 @@ def interpret_verb_valence(valence):
   '''
   if '-' in valence:
     v = valence.split('-')
-    if len(v) == 2:
+    if 'refl' in v:
+      return 'reflverb'
+    elif len(v) == 2:
       if v[1] == 'scomp':
         return 'sc2verb'
       elif v[1] == 'inf' or v[1] == 'zuinf':
@@ -493,6 +495,66 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
               [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ], [ ] > ].'
           mylang.add(typedef)
+
+      elif p[0] == 'refl' or (len(c) == 3 and c[1] == 'refl'):   #reflexive
+        if p[0] == 'refl':
+          a_case = ''
+          b_case = ''
+          o_case = ''
+        else:
+          a_case = canon_to_abbr(c[0], cases)
+          b_case = canon_to_abbr(c[1], cases)
+          o_case = canon_to_abbr(c[2], cases)
+
+        a_head = 'noun'
+        b_head = 'noun'
+        o_head = 'noun'
+        if o_case == 'pp':
+          o_head = 'adp'
+
+        if a_case and b_case and o_case:
+          t_type = dir_inv + a_case + '-' + b_case + '-' + o_case + '-transitive-verb-lex'
+        else:
+          t_type = dir_inv + 'refl-trans-verb-lex'
+  # constrain the head of the agent/subject
+        typedef = \
+            t_type + ' := \
+             [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
+        mylang.add(typedef)
+
+        # constrain the case of the agent/subject
+        if a_case:
+          typedef = \
+             t_type + ' := \
+               [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
+          mylang.add(typedef)
+
+        # second argument get correct properties from refl-verb-lex
+        mylang.add(t_type + ' := refl-verb-lex.')
+
+        # constrain the head of the patient/object
+        typedef = \
+            t_type + ' := \
+              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
+        mylang.add(typedef)
+
+        # constrain the case of the patient/object
+        if not o_case == 'pp':
+          typedef = \
+            t_type + ' := \
+                [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
+          mylang.add(typedef)
+
+       ####adding some properties to get the semantics right
+        typedef = \
+          t_type + ' := trans-first-arg-raising-lex-item & \
+               [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ ], #comp2 & \
+                                      [ LOCAL.CONT.HOOK.INDEX #arg2 ] >, \
+                          LKEYS.KEYREL [ ARG1 #arg1, \
+                                         ARG2 #arg2 ] ], \
+                 ARG-ST < [ LOCAL.CONT.HOOK.INDEX #arg1 ], \
+                              #comp2 > ].'
+        mylang.add(typedef)
 
       elif p[0] == 'ditrans' or len(c) == 3:            #ditrans
         

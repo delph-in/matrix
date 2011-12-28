@@ -48,6 +48,10 @@ def lexical_type_hierarchy(choices, lexical_supertype):
       st = get_lexical_supertype('oraisverb', choices)
       lth.add_node(LexicalType('oraisverb', get_lt_name('oraisverb', choices),
                                parents={st:lth.nodes[st]}))
+    if choices.get('reflexives') == 'yes':
+      st = get_lexical_supertype('reflverb', choices)
+      lth.add_node(LexicalType('reflverb', get_lt_name('reflverb', choices),
+                               parents={st:lth.nodes[st]}))
   for lst in lts_to_add:
     for lt in choices[lst]:
       st = get_lexical_supertype(lt.full_key, choices)
@@ -68,9 +72,9 @@ def lexical_type_hierarchy(choices, lexical_supertype):
 
 def get_lexical_supertype(lt_key, choices):
   lexical_category = lt_key.rstrip('0123456789')
-  if lexical_category in ('iverb','tverb','dverb','sc2verb','scontrverb','oraisverb') and choices['has-aux'] == 'yes':
+  if lexical_category in ('iverb','tverb','dverb','sc2verb','scontrverb','oraisverb, reflverb') and choices['has-aux'] == 'yes':
     return 'mverb'
-  elif lexical_category in ('aux','mverb','iverb','tverb','dverb','sc2verb','scontrverb','oraisverb','cop'):
+  elif lexical_category in ('aux','mverb','iverb','tverb','dverb','sc2verb','scontrverb','oraisverb','cop','reflverb'):
     return 'verb'
   elif lexical_category == 'verb':
     return case.interpret_verb_valence(choices[lt_key]['valence'])
@@ -86,7 +90,7 @@ def expand_lexical_supertype(st_key, choices):
   fit in that pattern. For example, 'tverb' may return verbs with
   valence marked as nom-acc.
   """
-  i_t = ['iverb','tverb','dverb','sc2verb','scontrverb','oraisverb','cop']
+  i_t = ['iverb','tverb','dverb','sc2verb','scontrverb','oraisverb','cop','reflverb']
   m = ['mverb']
   if st_key not in LEXICAL_SUPERTYPES: return []
   if (st_key == 'mverb' and choices['has-aux'] == 'yes') or \
@@ -94,7 +98,7 @@ def expand_lexical_supertype(st_key, choices):
     return [v.full_key for v in choices['verb']] + i_t
   elif st_key == 'verb' and choices['has-aux'] == 'yes':
     return [v.full_key for v in choices['verb'] + choices['aux']] + i_t + m
-  elif st_key in ('iverb','tverb','dverb','sc2verb','scontrverb','oraisverb'):
+  elif st_key in ('iverb','tverb','dverb','sc2verb','scontrverb','oraisverb','reflverb'):
     return [v.full_key for v in choices['verb']
             if case.interpret_verb_valence(v['valence']) == st_key]
   else:
@@ -134,7 +138,7 @@ def get_lexical_supertypes(lrt_key, choices):
   lexical_category = lrt_key.rstrip('0123456789')
   # first check if we are already dealing with a generic type
   if lexical_category == lrt_key:
-    if lrt_key in ('iverb','tverb','dverb','sc2verb','scontrverb','oraisverb'):
+    if lrt_key in ('iverb','tverb','dverb','sc2verb','scontrverb','oraisverb','reflverb'):
       if choices['has-aux'] == 'yes': return ['mverb','verb']
       else: return ['verb']
     elif lrt_key == 'aux': return ['verb']

@@ -199,6 +199,8 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
       'aux-lex := verb-lex & \
                 [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
     mylang.add(typedef)
+
+
   #Germanic change: uses VC differently
     if vcluster and not wo == 'v2':
       mylang.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
@@ -226,6 +228,14 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                             CONT.HOOK.INDEX #xarg ] ], ... > ].'
   mylang.add(typedef)
 
+###adding type selecting for reflexive pronouns
+  if ch.get('reflexives') == 'yes':
+    typedef = \
+       'refl-verb-lex := ' + mainorverbtype + ' & \
+         [ SYNSEM.LOCAL.CAT.VAL [ COMPS.FIRST.LOCAL refl-local & \
+                                     [ CONT.HOOK.INDEX #ind ], \
+                             SUBJ < [ LOCAL.CONT.HOOK.INDEX #ind ] > ] ].'
+    mylang.add(typedef)    
   if hclightallverbs:
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].')
   elif hclight:
@@ -382,6 +392,11 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
           if verb.get('raising') == 'obj':
             tivity += '-obj-raising'
           tivity += '-ditrans'
+        elif c[1] == 'refl':
+          a_case = case.canon_to_abbr(c[0], cases)
+          o_case = case.canon_to_abbr(c[1], cases)
+          tivity = a_case + '-' + o_case + '-' + c[2]
+          tivity += '-trans'
         else:
           a_case = case.canon_to_abbr(c[0], cases)
           b_case = case.canon_to_abbr(c[1], cases)
@@ -928,6 +943,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
   singlentype = (seenCount == 1)
 
+
+  refl = ''
+  if ch.get('reflexives') == 'yes':
+    refl = True
+
   # Playing fast and loose with the meaning of OPT on SPR.  Using
   # OPT - to mean obligatory (as usual), OPT + to mean impossible (that's
   # weird), and leaving OPT unspecified for truly optional.  Hoping
@@ -951,21 +971,43 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   # not have non-wh-lex-item
   # Not needed: these types exist in matrix.tdl
   if ch.get('noun-argst') == 'yes':
+    if refl:
+       stype1 = 'non-reflexive-noun-lex'
+    else:
+       stype1 = 'basic-noun-lex'
     typedef1 = \
-      'noun-one-arg-lex := basic-noun-lex & no-cluster-lex-item & \
+      'noun-one-arg-lex := ' + stype1 + ' & no-cluster-lex-item & \
                            non-wh-lex-item & spr-plus-one-arg-lex-item.'
     typedef2 = \
-      'noun-clausal-arg-lex := basic-noun-lex & no-cluster-lex-item & \
+      'noun-clausal-arg-lex := ' + stype1 + ' & no-cluster-lex-item & \
                            non-wh-lex-item & spr-plus-clausal-arg-lex-item.'
     mylang.add(typedef1)
-    mylang.add(typedef2)
+    mylang.add(typedef2)  
 
   # Assuming that most nouns typically do not modify
   # until compounds have been added
-  mylang.add('noun-lex := general-noun-lex & [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')
+  if not refl:
+    mylang.add('noun-lex := general-noun-lex & [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')
+  else:
+    mylang.add('opt-refl-noun-lex := general-noun-lex & \
+                                      [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')
+    mylang.add('noun-lex := opt-refl-noun-lex & non-reflexive-noun-lex.')
+    mylang.add('refl-noun-lex := opt-refl-noun-lex & reflexive-noun-lex.')
   
+  if refl:
+    mylang.add('refl-local := local.', comment='Distinguishing reflexive nouns from non-reflexive nouns.', section='features')
+    mylang.add('non-refl-local := local.', section='features')
+    
+    mylang.add('non-reflexive-noun-lex := basic-noun-lex & \
+                         [ SYNSEM.LOCAL non-refl-local ].')
+    mylang.add('reflexive-noun-lex := basic-noun-lex & \
+                             [ SYNSEM.LOCAL refl-local ].')
+
+
   if ch.get('mod-noun') == 'yes':
     mylang.add('mod-noun-lex := general-noun-lex & [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ ] > ].')
+    if refl:
+      mylang.add('mod-noun-lex := non-reflexive-noun-lex.')
 
   if ch.get('verb-cluster') == 'yes':
     mylang.add('general-noun-lex := no-cluster-lex-item.')
@@ -985,9 +1027,15 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       mylang.add(typedef)
 
     if seen['imp']:
-      typedef = \
-        'no-spr-noun-lex := noun-lex & \
-           [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
+      if not refl:
+        typedef = \
+          'no-spr-noun-lex := noun-lex & \
+             [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
+      else:
+        typedef = \
+          'opt-refl-no-spr-noun-lex := opt-refl-noun-lex & \
+             [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
+        mylang.add('no-spr-noun-lex := opt-refl-no-spr-noun-lex & noun-lex.') 
       mylang.add(typedef)
       if ch.get('wh-det') == 'on':
         mylang.add('no-spr-noun-lex := non-wh-lex-item.')
@@ -1019,7 +1067,10 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       arg_st = noun.get('arg-st')
     mod = ''
     if noun.get('mod'):
-       mod = noun.get('mod')    
+      mod = noun.get('mod')    
+    n_refl = ''
+    if noun.get('refl'):
+      n_refl = noun.get('refl')  
 
     ntype = name + '-noun-lex'
 
@@ -1075,7 +1126,12 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 ####2. Maybe there are scopal modifier nouns
       stype = 'mod-noun-lex'
       mylang.add(ntype + ' := intersective-mod-lex & \
-                      [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD ' + mod + ' ] > ].') 
+                      [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD ' + mod + ' ] > ].')
+    elif n_refl:
+      if n_refl == 'obl':
+         stype = 'refl-noun-lex'
+      elif n_refl == 'opt':
+         stype = 'opt-refl-noun-lex'
     elif singlentype or det == 'opt':
       stype = 'noun-lex'
     elif det == 'obl':
