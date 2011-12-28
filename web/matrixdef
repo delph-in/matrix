@@ -1416,11 +1416,15 @@ BeginIter aux{i} "an Auxiliary Type" 1
 
   Text name "Aux {i} type name" "Type name: " "<br>" 30
 
-  Radio sem "Aux {i} semantics" "<br>This auxiliary type contributes:<br>" ""
+  Label "<br>This auxiliary type contributes:" 
+  
+  Label "<div style=\"padding-left: 25px\">"
+
+  Radio sem "Aux {i} semantics" "" ""
   . no-pred "No predicate" "" "No predicate.<br>"
   . add-pred "Predicate" "" "An independent predicate."
 
-  Label "<div style=\"padding-left: 25px\">"
+  Label "<br>Auxiliary features:"
 
   BeginIter feat{j} "an auxiliary feature"
 
