@@ -728,11 +728,12 @@ def customize_adverbs(mylang, ch, lexicon):
 
   for adv in ch.get('adv',[]):
     name = get_name(adv)
-
+    kind = adv.get('kind')
+    arg_str = adv.get('arg-str')
     stype = '-adverb-lex'
-    if adv.get('kind') == 'int':
+    if kind == 'int':
       stype = 'int' + stype
-    elif adv.get('kind') == 'wh':
+    elif kind == 'wh':
       stype = 'wh' + stype
     else:
       stype = 'scopal' + stype
@@ -760,14 +761,17 @@ def customize_adverbs(mylang, ch, lexicon):
                      COMPS < >, \
                      SPR < >, \
                      SPEC < > ]'
-
-    mylang.add(atype + ' := ' + stype + ' & \
-      [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD ' + mod_head + ' ] > ].')
+    if not arg_str == 'scomp':
+      mylang.add(atype + ' := ' + stype + ' & \
+        [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD ' + mod_head + ' ] > ].')
+    else:
+      mylang.add(atype + ' := \
+        [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD ' + mod_head + ' ] > ].')
+    
     if mod_val:
       mylang.add(atype + ' :=  \
       [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL ' + mod_val + ' ] > ].')
 
-    arg_str = adv.get('arg-str')
     val = ''
     if arg_str == 'none':
       val = 'VAL [ SUBJ < >, \
@@ -787,17 +791,33 @@ def customize_adverbs(mylang, ch, lexicon):
 
     elif arg_str == 'scomp':
       val = 'VAL [ SUBJ < >, \
-                   COMPS < [ LOCAL.CAT [ HEAD verb & [ FORM finite, \
-                                                       INV - ], \
-                                         MC -, \
-                                         VAL [ SUBJ <  >, \
-                                               COMPS < >, \
-                                               SPR < >, \
-                                               SPEC < > ] ] ] >, \
+                   COMPS < [ ] >, \
                    SPR < >, \
                    SPEC < > ]'
-   
-
+      if kind == 'scop':
+        mylang.add('clausal-arg-mod-lex-item := basic-one-arg & \
+                    [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ] >, \
+                      SYNSEM [ LOCAL.CONT.HCONS <! [ ], qeq & [ HARG #harg, \
+                                                           LARG #larg ] !>, \
+                               LKEYS.KEYREL [ ARG2 #harg ] ] ].')
+        mylang.add('scopal-mod-with-cl-arg-lex := clausal-arg-mod-lex-item & \
+                [ SYNSEM [ LOCAL [ CAT.HEAD.MOD < [ LOCAL scopal-mod & \
+					    [ CONT.HOOK.LTOP #larg ]] >, \
+		                   CONT [ HCONS <! qeq & \
+				                    [ HARG #harg, \
+				                      LARG #larg ], [ ] !> ] ], \
+     	                    LKEYS.KEYREL.ARG1 #harg ]].')
+      else:
+        mylang.add('clausal-arg-int-mod-lex-item := basic-one-arg & \
+                    [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ] >, \
+                      SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg, \
+                                                           LARG #larg ] !>, \
+                               LKEYS.KEYREL [ ARG2 #harg ] ] ].')
+       
+        mylang.add('int-mod-clausal-arg-lex := clausal-arg-int-mod-lex-item & \
+                     [ SYNSEM [ LOCAL.CAT.HEAD.MOD < [ LOCAL intersective-mod & \
+					             [ CONT.HOOK.INDEX #ind ]] >, \
+                                LKEYS.KEYREL.ARG1 #ind ] ].')
     if val:
       mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.' + val + ' ].')
 ####Germanic specific  
@@ -807,7 +827,17 @@ def customize_adverbs(mylang, ch, lexicon):
                              VAL.COMPS < #comp & \
                                         [ LOCAL.CONT.HOOK.XARG #xarg ] > ], \
           ARGS < #comp > ] ].')   
-
+    elif arg_str == 'scomp':
+      mylang.add(atype + ' := scopal-mod-with-cl-arg-lex & basic-adverb-lex & \
+                  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp >, \
+                    ARG-ST < #comp & \
+                           [ LOCAL.CAT [ HEAD verb & [ FORM finite, \
+                                                       INV - ], \
+                                         MC -, \
+                                         VAL [ SUBJ <  >, \
+                                               COMPS < >, \
+                                               SPR < >, \
+                                               SPEC < > ] ] ]  > ].')
     for stem in adv.get('stem',[]):
       orth = stem.get('orth')
       pred = stem.get('pred')
