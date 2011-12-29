@@ -822,6 +822,49 @@ def customize_np_word_order(mylang, ch, rules):
                  HCONS <! !> ] ].'
     mylang.add(typedef)
     rules.add('genitive-mod := genitive-mod-phrase.')
+
+###########################################################
+# rules for vocatives
+# (partially Germanic specific (case, preceeding complete sentence))
+
+  if ch.get('vocatives') == 'yes':
+    t1 = \
+      'vocative-mod-phrase := scopal-mod-phrase & head-final & \
+          [ NON-HEAD-DTR vocative-np-phrase ].'
+    t2 = \
+      'vocative-np-phrase := unary-phrase & \
+                [SYNSEM [ LOCAL.CAT [ HEAD adv & [ PRD -, \
+                                MOD < [ LOCAL [ CAT [ HEAD verb & \
+                                                      [ FORM finite ], \
+                                                    VAL [ SUBJ < >, \
+                                                          COMPS < > ], \
+						    MC + ], \
+                                                 CONT.HOOK [ LTOP #ltop, \
+                                                       INDEX #index ] ] ] > ], \
+		                      VAL [ SPR < >, \
+			                    COMPS < >, \
+			                    SPEC < > ] ], \
+                          NON-LOCAL #nonloc ], \
+                  ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD noun & [ MOD < >, \
+                                                                CASE nom ], \
+                                                  VAL [ SPR < [ OPT + ] >, \
+                                                        COMPS < >, \
+                                                        SPEC <  > ] ], \
+                                            CONT.HOOK.INDEX #argind ], \
+                                    NON-LOCAL #nonloc, \
+		                    LIGHT + ] ] >, \
+                 C-CONT [ HOOK [ LTOP #ltop, \
+                                 INDEX #index ], \
+                 RELS <! [ LBL #ltop, \
+                           PRED "_addressee_rel", \
+                           ARG1 #argind, \
+                           ARG2 #index ] !>, \
+                 HCONS <! !> ] ].'
+    mylang.add(t1)
+    mylang.add(t2)
+    rules.add('voc-mod := vocative-mod-phrase.')
+    rules.add('voc-np := vocative-np-phrase.')
+
 ###
 # addition of complementizers (not clear how general developed for Germanic)
 # 
