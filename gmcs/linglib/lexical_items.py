@@ -853,8 +853,11 @@ def customize_adpositions(ch, mylang, lexicon):
   cases = case.case_names(ch)
   if ch.get('has-adp'):
     s_name = create_adposition_supertypes(ch, mylang)
-
+    
+    default = ch.get('adp-default')
+    exception = ch.get('adp-default-exception')  
     for adp in ch.get('adp',[]):
+      set_order = False
       sname = s_name
       incl = ''
       if adp.get('incl') == 'yes':
@@ -865,8 +868,22 @@ def customize_adpositions(ch, mylang, lexicon):
       kind = adp.get('kind')
       if kind == 'mod':
         mod = adp.get('mod')
+        if kind in exception and mod in exception:
+          set_order = True
+        if 'incl' in sname:
+          set_order = False
       #add basic frame
+        if set_order:
+          hco = adp.get('hc_order')
+          if hco:
+            name = name.replace('adp',hco)
+            sname = sname.replace('adp',hco)
+          else:
+            name = name.replace('adp',default)
+            sname = sname.replace('adp',default)
+
         mylang.add(name + ' := ' + mod + '-' + sname + '.')
+
         order = adp.get('order')
         if order == 'post':
           mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
@@ -953,6 +970,14 @@ def create_adposition_supertypes(ch, mylang):
 
 def create_adp_cross_classification(ch, mylang, sname):
   
+  if ch.get('adp-order') == 'both':
+    mylang.add('prep-lex-item := basic-adposition-lex & \
+              [ SYNSEM.LOCAL.CAT.HEADFINAL - ].')
+    mylang.add('postp-lex-item := basic-adposition-lex & \
+              [ SYNSEM.LOCAL.CAT.HEADFINAL + ].')
+  default = ch.get('adp-default')
+  exception = ch.get('adp-default-exception')  
+
   if ch.get('verb-cluster') == 'yes':
     mylang.add(sname + ' := no-cluster-lex-item.')
 
@@ -961,22 +986,44 @@ def create_adp_cross_classification(ch, mylang, sname):
     if spadp.get('kind') == 'mod':
       for mod in spadp.get('mod',[]):
         head = mod.get('head')
+        both_orders = False
+        if 'mod' in exception and head in exception:
+          both_orders = True
         type_n = head + '-' + sname
-      
+
         mylang.add(type_n + ' := ' + sname + ' & \
                [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD '+ head +' ].') 
-
+        
         for feat in mod.get('feat',[]):
           if feat.get('name') == 'light':
             constr = 'LIGHT ' + feat.get('value')
           mylang.add(type_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.' + constr + ' ].')
+ 
+        if not 'incl' in type_n:
+          if both_orders:
+            type_npre = type_n.replace('adp', 'prep')
+            type_npost = type_n.replace('adp', 'postp')
+            mylang.add(type_npre + ' := prep-lex-item & ' + type_n + '.')
+            mylang.add(type_npost + ' := postp-lex-item & ' + type_n + '.')
+          else:
+            mylang.add(type_n + ' := ' + default + '-lex-item.')
+
     elif spadp.get('kind') == 'prd':
       type_n = 'prd-' + sname
       mylang.add(type_n + ' := ' + sname + ' & \
                [ SYNSEM [ LOCAL.CONT.HOOK.XARG #arg1, \
                           LKEYS.KEYREL.ARG1 #arg1 ] ].')
+      if not 'incl' in type_n:
+        if 'prd' in exception:
+          type_npre = type_n.replace('adp', 'prep')
+          type_npost = type_n.replace('adp', 'postp')
+          mylang.add(type_npre + ' := prep-lex-item & ' + type_n + '.')
+          mylang.add(type_npost + ' := postp-lex-item & ' + type_n + '.')
+        else:
+          mylang.add(type_n + ' := ' + default + '-lex-item.')
 
 
+       
 def customize_complementizers(ch, mylang, lexicon):
   if ch.get('has-compl') == 'yes':
   ###create section in lexicon
@@ -1162,6 +1209,32 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     if not ch.has_adp_case():
       mylang.add('noun :+ [ CASE case ].', section='addenda')
 
+####German compound nouns: not all nouns can do this: most attach
+####mostly compounds are written as one word
+  if ch.get('compound-nouns') == 'yes':
+    typedef = \
+     'compounding-noun-lex := norm-hook-lex-item & intersective-mod-lex & no-cluster-lex-item & \
+  [ SYNSEM [ LOCAL [ CAT [ HEAD noun & [ MOD < [ LOCAL.CAT.HEAD noun,\
+	                                         LIGHT + ] > ], \
+                           VAL [ SUBJ < >, \
+                                 SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
+                                 SPEC < >, \
+                                 COMPS < > ] ], \
+                     CONT.RELS <! [ ARG0 #arg2, ARG1 #arg1 ], event-relation & \
+                                                  [ PRED "_compound_n_rel", \
+                                                    LBL #lbl, \
+						    ARG1 #arg1, \
+                                        ARG2 #arg2 & index ], quant-relation & \
+                                            [ PRED "_exist_q_rel", \
+                                              ARG0 #arg2, \
+                                              RSTR #lbl ] !> ], \
+             NON-LOCAL.QUE 0-dlist, \
+             LKEYS.KEYREL noun-relation ], \
+   ARG-ST < #spr & [ ] > ].'
+
+    mylang.add(typedef)
+    if refl:
+      mylang.add('compounding-noun-lex := [ SYNSEM.LOCAL non-refl-local ].')
   # Add the lexical entries
   lexicon.add_literal(';;; Nouns')
 
@@ -1170,6 +1243,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     det = noun.get('det')
     wh = noun.get('wh')
     expl = noun.get('expl')
+    compound = noun.get('compound')
     arg_st = ''
     if noun.get('arg-st'):
       arg_st = noun.get('arg-st')
@@ -1240,6 +1314,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
          stype = 'refl-noun-lex'
       elif n_refl == 'opt':
          stype = 'opt-refl-noun-lex'
+    elif compound:
+      stype = 'compounding-noun-lex'
     elif singlentype or det == 'opt':
       stype = 'noun-lex'
     elif det == 'obl':

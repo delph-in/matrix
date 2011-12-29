@@ -760,7 +760,7 @@ def customize_np_word_order(mylang, ch, rules):
     # Germanic, same phrase for adverb modifiers when not modifying verbs
     adj_st = ''
     mylang.add('mod-non-verbal-head-phrase := basic-head-mod-phrase-simple & \
-                 [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +jr, \
+                 [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +njr, \
                    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +njrpd, \
                                                VAL #val ], \
                    SYNSEM.LOCAL.CAT.VAL #val ].')
@@ -790,9 +790,38 @@ def customize_np_word_order(mylang, ch, rules):
   mylang.add('bare-np-phrase := basic-bare-np-phrase &\
   [ C-CONT.RELS <! [ PRED \"exist_q_rel\" ] !> ].',
              'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
-
+  if ch.get('compound-nouns') == 'yes':
+    mylang.add('bare-np-phrase := [ SYNSEM.LIGHT - ].')
   rules.add('bare-np := bare-np-phrase.')
 
+###################################################
+#
+#  Germanic specific! genitive modifiers (can be generalized to other
+#  cases for other languages)
+ 
+  if ch.get('genitive-modifiers') == 'yes':
+    typedef = \
+   ' genitive-mod-phrase := unary-phrase & \
+      [ SYNSEM.LOCAL.CAT [ HEAD noun & [ CASE #case, \
+				         MOD < [ LOCAL intersective-mod & \
+                                                  [ CAT.HEAD noun, \
+						    CONT.HOOK.INDEX #modarg ], \
+					         LIGHT + ] > ], \
+		           VAL #val ], \
+        ARGS < [ SYNSEM.LOCAL [ CAT [ HEAD noun & [ CASE gen & #case, \
+					            MOD < > ], \
+				      VAL #val & [ SPR < > ] ], \
+			        CONT.HOOK.INDEX #argind ] ] >, \
+        C-CONT [ HOOK [ LTOP #ltop, \
+                        INDEX #modarg ], \
+                 RELS <! [ LBL #ltop, \
+                           PRED "_von_v_mod_rel", \
+       		           ARG0 event, \
+                           ARG1 #modarg, \
+                           ARG2 #argind ] !>, \
+                 HCONS <! !> ] ].'
+    mylang.add(typedef)
+    rules.add('genitive-mod := genitive-mod-phrase.')
 ###
 # addition of complementizers (not clear how general developed for Germanic)
 # 
@@ -970,12 +999,10 @@ def customize_head_comp_non_main_phrase(ch, mylang):
 # has-compl must also be used for arg-comp (previous working was based on
 # an error)
   if ch.get('has-compl') == 'yes': 
-    c_ord = ''
     if ch.get('clz-comp-order') == 'clz-comp':
       c_ord = 'initial'
     elif ch.get('clz-comp-order') == 'comp-clz':
       c_ord = 'final'
-
 
   adp_order = ''  
   if ch.get('adp-order'): 
@@ -983,25 +1010,36 @@ def customize_head_comp_non_main_phrase(ch, mylang):
       adp_order = 'initial'
     elif ch.get('adp-order') == 'comp-adp':
       adp_order = 'final'  
-
+    else:
+      adp_order = 'both' 
+  
+  adv_order = ''
+  if ch.get('adv-argst') == 'yes':
+    if ch.get('adv-comp-order') == 'adv-comp':
+      adv_order = 'initial'
+    elif ch.get('adv-comp-order') == 'comp-adv':
+      adv_order = 'final'
+ 
   fhead = ''
   ihead = ''
-  if adp_order == c_ord:
-    head = '+rpc' 
-    if adp_order == 'final':
-      fhead = head
-    elif adp_order == 'initial':
-      ihead = head
-  else:
-    if adp_order == 'final':
-      fhead = '+rp'     
-      if c_ord == 'initial':
-        ihead = '+rc'
-    else:
-      ihead = '+rp'
-      if c_ord == 'final':
-        fhead = '+rc'
-  
+  my_iheads = [ ]
+  my_fheads = [ ] 
+  if not adp_order == 'final':
+    my_iheads.append('adp')
+  if not adp_order == 'initial':
+    my_fheads.append('adp')
+  if not c_ord == 'final':
+    my_iheads.append('comp')     
+  if not c_ord == 'initial':
+    my_iheads.append('comp')
+  if not adv_order == 'final':
+    my_iheads.append('adv')
+  if not adv_order == 'initial':
+    my_fheads.append('adv')
+
+  ihead = determine_head_value(my_iheads)
+  fhead = determine_head_value(my_fheads)
+
   wh = ''
   if ch.get('wh-questions') == 'yes':
     wh = 'on'
@@ -1012,12 +1050,22 @@ def customize_head_comp_non_main_phrase(ch, mylang):
     mylang.add('head-comp-sub-phrase := basic-head-1st-comp-phrase & \
                     head-initial & \
                 [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + ihead +  ' ].')
+###assuming (probably wrong cross-linguistically) that if both orders occur
+###at least one category allows both orders, and feature HEADFINAL
+###was introduced somewhere
+    if fhead:
+      mylang.add('head-comp-sub-phrase := \
+                      [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL - ].')
     if wh:
       mylang.add('head-comp-sub-phrase := share-que-non-head-phrase.')
   if fhead: 
     mylang.add('comp-head-sub-phrase := basic-head-1st-comp-phrase & \
                     head-final & \
-                [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + fhead + ' ].') 
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + fhead + ' ].')
+###see comment above
+    if ihead:
+      mylang.add('comp-head-sub-phrase := \
+                      [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL + ].') 
     if wh:
       mylang.add('comp-head-sub-phrase := share-que-non-head-phrase.') 
 
@@ -1037,13 +1085,30 @@ def customize_head_comp_non_main_phrase(ch, mylang):
 		          MC - ], \
               NON-LOCAL.QUE 0-dlist ] ].')
 
+
+def determine_head_value(my_heads):
+ 
+  head = ''
+  if len(my_heads) == 1:
+    head = my_heads[0]
+  else:
+    head = '+'
+    if 'adv' in my_heads:
+      head += 'r'
+    if 'adp' in my_heads:
+      head += 'p'
+    if 'comp' in my_heads:
+      head += 'c'
+  return head
+
 def add_subclausal_rules(ch, rules): 
   c_ord = ch.get('clz-comp-order')
   adp_ord = ch.get('adp-order')
-  if c_ord == 'clz-comp' or adp_ord == 'adp-comp':
-    rules.add('head-sub-comp := head-comp-sub-phrase.')
-  if c_ord == 'comp-clz' or adp_ord == 'comp-adp':
+###adv-comp order must be added for completeness
+  if c_ord != 'clz-comp' or adp_ord != 'adp-comp':
     rules.add('comp-head-sub := comp-head-sub-phrase.')
+  if c_ord != 'comp-clz' or adp_ord != 'comp-adp':
+    rules.add('head-sub-comp := head-comp-sub-phrase.')
   if ch.get('clz-optionality'):
     rules.add('informal-vcomp := create-informal-vcomp-phrase.')
 
