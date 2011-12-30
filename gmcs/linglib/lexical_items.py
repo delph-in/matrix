@@ -1088,6 +1088,9 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   if ch.get('reflexives') == 'yes':
     refl = True
 
+  compound = ''
+  if ch.get('compound-nouns') == 'yes':
+    compound = True
   # Playing fast and loose with the meaning of OPT on SPR.  Using
   # OPT - to mean obligatory (as usual), OPT + to mean impossible (that's
   # weird), and leaving OPT unspecified for truly optional.  Hoping
@@ -1142,6 +1145,12 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     mylang.add('reflexive-noun-lex := basic-noun-lex & \
                              [ SYNSEM.LOCAL refl-local ].')
 
+  if compound:
+    mylang.add('compound-local := local.')
+    mylang.add('compound-allowing-noun-lex := basic-noun-lex & \
+                 [ SYNSEM.LOCAL compound-local ].')
+    mylang.add('compound-noun-lex := compound-allowing-noun-lex & \
+                   general-noun-lex & [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')
   ###adding type for explitive pronouns
   if ch.get('explitives') == 'yes':
     comment = 'Explicits cannot inherit from basic-noun-phrase: \
@@ -1211,30 +1220,30 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
 ####German compound nouns: not all nouns can do this: most attach
 ####mostly compounds are written as one word
-  if ch.get('compound-nouns') == 'yes':
-    typedef = \
-     'compounding-noun-lex := norm-hook-lex-item & intersective-mod-lex & no-cluster-lex-item & \
-  [ SYNSEM [ LOCAL [ CAT [ HEAD noun & [ MOD < [ LOCAL.CAT.HEAD noun,\
-	                                         LIGHT + ] > ], \
-                           VAL [ SUBJ < >, \
-                                 SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
-                                 SPEC < >, \
-                                 COMPS < > ] ], \
-                     CONT.RELS <! [ ARG0 #arg2, ARG1 #arg1 ], event-relation & \
-                                                  [ PRED "_compound_n_rel", \
-                                                    LBL #lbl, \
-						    ARG1 #arg1, \
-                                        ARG2 #arg2 & index ], quant-relation & \
-                                            [ PRED "_exist_q_rel", \
-                                              ARG0 #arg2, \
-                                              RSTR #lbl ] !> ], \
-             NON-LOCAL.QUE 0-dlist, \
-             LKEYS.KEYREL noun-relation ], \
-   ARG-ST < #spr & [ ] > ].'
-
-    mylang.add(typedef)
-    if refl:
-      mylang.add('compounding-noun-lex := [ SYNSEM.LOCAL non-refl-local ].')
+#  if ch.get('compound-nouns') == 'yes':
+#    typedef = \
+#     'compounding-noun-lex := norm-hook-lex-item & intersective-mod-lex & no-cluster-lex-item & \
+#  [ SYNSEM [ LOCAL [ CAT [ HEAD noun & [ MOD < [ LOCAL.CAT.HEAD noun,\
+#	                                         LIGHT + ] > ], \
+#                           VAL [ SUBJ < >, \
+#                                 SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
+#                                 SPEC < >, \
+#                                 COMPS < > ] ], \
+#                     CONT.RELS <! [ ARG0 #arg2, ARG1 #arg1 ], event-relation & \
+#                                                  [ PRED "_compound_n_rel", \
+#                                                    LBL #lbl, \
+#						    ARG1 #arg1, \
+#                                        ARG2 #arg2 & index ], quant-relation & #\
+#                                            [ PRED "_exist_q_rel", \
+#                                              ARG0 #arg2, \
+#                                               RSTR #lbl ] !> ], \
+#             NON-LOCAL.QUE 0-dlist, \
+#             LKEYS.KEYREL noun-relation ], \
+#   ARG-ST < #spr & [ ] > ].'
+#
+#    mylang.add(typedef)
+#    if refl:
+#      mylang.add('compounding-noun-lex := [ SYNSEM.LOCAL non-refl-local ].')
   # Add the lexical entries
   lexicon.add_literal(';;; Nouns')
 
@@ -1315,7 +1324,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       elif n_refl == 'opt':
          stype = 'opt-refl-noun-lex'
     elif compound:
-      stype = 'compounding-noun-lex'
+      stype = 'compound-noun-lex'
     elif singlentype or det == 'opt':
       stype = 'noun-lex'
     elif det == 'obl':

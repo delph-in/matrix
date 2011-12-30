@@ -277,7 +277,12 @@ def add_shared_features(mylang, f, path, mid):
                NONCONJ-DTR.' + compl_path + ' ].')
 
 def add_sharing_supertypes(mylang, pn, mid, agr):
-  mylang.add(pn + '-top-coord-rule :=  ' + agr + '-agr-top-coord-rule.')
+  vp_except = False
+  if 'vp' in pn and (agr == 'mc' or agr == 'inv'):
+    vp_except = True
+
+  if not vp_except:
+    mylang.add(pn + '-top-coord-rule :=  ' + agr + '-agr-top-coord-rule.')
   if mid:   
     mylang.add(pn + '-mid-coord-rule := ' + agr + '-agr-mid-coord-rule.')
   mylang.add(pn + '-bottom-coord-rule := ' + agr + '-agr-bottom-coord-rule.')  

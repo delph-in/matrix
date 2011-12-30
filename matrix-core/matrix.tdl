@@ -161,7 +161,11 @@ non-canonical := synsem &
 
 expressed-non-canonical := non-canonical & expressed-synsem.
 
-gap := expressed-non-canonical & 
+;;;;Germanic
+;;;;changing expressed-non-canonical to expressed (because of event-or-ref-ind)
+;;;;other solution should be found for this
+
+gap := expressed-synsem & 
   [ LOCAL #local,
     NON-LOCAL [ REL 0-dlist,
 		QUE 0-dlist,
@@ -1570,12 +1574,12 @@ general-basic-head-subj-phrase := head-nexus-phrase & binary-headed-phrase & hea
 		   NON-LOCAL [ SLASH 0-dlist & [ LIST < > ],
 			       REL 0-dlist ] ]].
 
-basic-head-subj-phrase := general-basic-head-subj-phrase & head-non-wh.
-;  [ NON-HEAD-DTR.NON-LOCAL.QUE 0-dlist ].
+basic-head-subj-phrase := general-basic-head-subj-phrase & head-non-wh &
+  [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-dlist ].
 
-basic-head-wh-subj-phrase := general-basic-head-subj-phrase & head-wh.
-;  [ C-CONT.HOOK.INDEX.SF ques,
-;    NON-HEAD-DTR.NON-LOCAL.QUE 1-dlist ].
+basic-head-wh-subj-phrase := general-basic-head-subj-phrase & head-wh &
+  [ C-CONT.HOOK.INDEX.SF ques,
+    NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE 1-dlist ].
 
 decl-head-subj-phrase := basic-head-subj-phrase & declarative-clause.
 imp-head-subj-phrase := basic-head-subj-phrase & imperative-clause.
@@ -1898,14 +1902,15 @@ basic-extracted-comp-phrase := basic-extracted-arg-phrase &
 ; ASF 2011-10-05 Added supertype 'head-compositional' to basic-extracted-subj-phrase
 ; in order to make sure matrix.tdl provides the right semantics for extracted subjects.
 ; changed COMPS from olist to < >
+;;;removing ref-ind for Germanic explitives (but should probably be fixed
+;;;differently)
+
 basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
 			   SPR < >,
 			   COMPS < > ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < gap &
-					       [ LOCAL #local & local &
-						       [ CONT.HOOK.INDEX 
-                                                                ref-ind ] ] >,
+					       [ LOCAL #local & local  ] >,
         				COMPS < > ],
 				  MC na ],
 		      NON-LOCAL.SLASH.LIST < #local > ] ].
@@ -1933,8 +1938,7 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
                          MC #mc ],
 	     NON-LOCAL.SLASH 1-dlist &
 		   <! [ CAT [ POSTHEAD +,
-                              HEAD [ MOD < [ LOCAL intersective-mod &
-                                                   [ CAT [ HEAD #head,
+                              HEAD [ MOD < [ LOCAL [ CAT [ HEAD #head,
                                                            VAL #val,
                                                            POSTHEAD #ph,
                                                            MC #mc ],
@@ -1943,8 +1947,7 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
                               VAL [ SUBJ olist,
                                     COMPS olist,
                                     SPR olist ] ] ] !> ],
-    HEAD-DTR.SYNSEM canonical-synsem &
-	   [ LOCAL local &
+    HEAD-DTR.SYNSEM canonical-synsem & [ LOCAL local &
 		   [ CAT [ HEAD #head,
                            VAL #val & [ SUBJ < > ],
 			   POSTHEAD #ph,
@@ -3265,7 +3268,8 @@ vp-bottom-coord-phrase := bottom-coord-phrase &
 ; S Coordination rules
 
 s-coord-phrase := event-coord-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < >,
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
+    			   COMPS < > ],
     SYNSEM.LOCAL.CAT.HEAD verb,
     LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb,
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].

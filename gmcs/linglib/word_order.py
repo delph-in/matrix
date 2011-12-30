@@ -731,7 +731,7 @@ def customize_np_word_order(mylang, ch, rules):
       mylang.add('head-spec-phrase := head-initial.')
     if ch.get('noun-det-order') == 'det-noun':
       mylang.add('head-spec-phrase := head-final.')
-
+     
     rules.add('head-spec := head-spec-phrase.')
 
 ####
@@ -792,6 +792,29 @@ def customize_np_word_order(mylang, ch, rules):
              'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
   if ch.get('compound-nouns') == 'yes':
     mylang.add('bare-np-phrase := [ SYNSEM.LIGHT - ].')
+    typedef = \
+      'compound-noun-phrase := head-initial & \
+           [ SYNSEM [ NON-LOCAL #non-loc, \
+             LOCAL non-refl-local & \
+                    [ CAT #cat & [ HEAD noun & [ MOD <  > ] ] ] ], \
+             HEAD-DTR.SYNSEM [ NON-LOCAL #non-loc, \
+		               LOCAL compound-local & [ CAT #cat, \
+		                               CONT.HOOK.INDEX #modind ], \
+		               LIGHT + ], \
+             NON-HEAD-DTR.SYNSEM [ LOCAL [ CAT [ HEAD noun, \
+				                 VAL [ COMPS < >, \
+					         SPR < [ OPT + ] > ] ], \
+				           CONT.HOOK [ INDEX #hind, \
+					               LTOP #ltop ] ], \
+			                   LIGHT + ], \
+             C-CONT.RELS.LIST < relation & \
+                                   [ LBL #ltop, \
+                                     PRED "compound_rel", \
+                                     ARG1 #hind, \
+                                     ARG2 #modind ], ... > ].'
+    mylang.add(typedef)
+    rules.add('compound-noun := compound-noun-phrase.')
+
   rules.add('bare-np := bare-np-phrase.')
 
 ###################################################
@@ -807,10 +830,11 @@ def customize_np_word_order(mylang, ch, rules):
                                                   [ CAT.HEAD noun, \
 						    CONT.HOOK.INDEX #modarg ], \
 					         LIGHT + ] > ], \
-		           VAL #val ], \
-        ARGS < [ SYNSEM.LOCAL [ CAT [ HEAD noun & [ CASE gen & #case, \
+		              VAL #val ], \
+        ARGS < head-spec-phrase & [ SYNSEM.LOCAL [ CAT [ HEAD noun & [ CASE gen & #case, \
 					            MOD < > ], \
 				      VAL #val & [ SPR < > ] ], \
+                                COORD -, \
 			        CONT.HOOK.INDEX #argind ] ] >, \
         C-CONT [ HOOK [ LTOP #ltop, \
                         INDEX #modarg ], \
@@ -830,10 +854,12 @@ def customize_np_word_order(mylang, ch, rules):
   if ch.get('vocatives') == 'yes':
     t1 = \
       'vocative-mod-phrase := scopal-mod-phrase & head-final & \
-          [ NON-HEAD-DTR vocative-np-phrase ].'
+          [ NON-HEAD-DTR vocative-np-phrase, \
+            HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-dlist ].'
     t2 = \
       'vocative-np-phrase := unary-phrase & \
-                [SYNSEM [ LOCAL.CAT [ HEAD adv & [ PRD -, \
+                [ SYNSEM [ LOCAL intersective-mod & \
+           [ CAT [ HEAD adv & [ PRD -, \
                                 MOD < [ LOCAL [ CAT [ HEAD verb & \
                                                       [ FORM finite ], \
                                                     VAL [ SUBJ < >, \
@@ -843,14 +869,15 @@ def customize_np_word_order(mylang, ch, rules):
                                                        INDEX #index ] ] ] > ], \
 		                      VAL [ SPR < >, \
 			                    COMPS < >, \
-			                    SPEC < > ] ], \
+			                    SPEC < > ] ] ], \
                           NON-LOCAL #nonloc ], \
                   ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD noun & [ MOD < >, \
                                                                 CASE nom ], \
                                                   VAL [ SPR < [ OPT + ] >, \
                                                         COMPS < >, \
                                                         SPEC <  > ] ], \
-                                            CONT.HOOK.INDEX #argind ], \
+                                            CONT.HOOK.INDEX #argind, \
+                                            COORD - ], \
                                     NON-LOCAL #nonloc, \
 		                    LIGHT + ] ] >, \
                  C-CONT [ HOOK [ LTOP #ltop, \
@@ -1175,12 +1202,14 @@ def create_wh_phrases(ch, mylang, rules):
                                         SPR < >, \
                                         SPEC < > ], \
                                     MC #mc ] ], \
-                              NON-LOCAL.QUE 1-dlist ] ] >, \
+                              NON-LOCAL [ QUE 1-dlist, \
+                                          SLASH #slash ] ] ] >, \
       C-CONT.HOOK #hook, \
       SYNSEM [ LOCAL.CAT [ HEAD comp, \
                            VAL #val, \
                            MC #mc & - ], \
-               NON-LOCAL.QUE 0-dlist ] ].'
+               NON-LOCAL [ QUE 0-dlist, \
+                           SLASH #slash ] ] ].'
     mylang.add(wh_sub_type)
   
 ###word order rules in Germanic specific for now

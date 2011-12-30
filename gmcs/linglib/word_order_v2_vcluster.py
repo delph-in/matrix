@@ -1,5 +1,4 @@
 
-
 ########################################################
 # COMMON COMPONENTS V2+CLUSTERS ACROSS ANALYSES CHOICES
 # GENERAL COMPONENTS
@@ -63,11 +62,13 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
 
 def add_basic_phrases_v2_with_cluster(ch, mylang, rules):
 
-  mylang.add('subj-head-vc-phrase := decl-head-subj-phrase & head-final-invc & nonverbal-comp-phrase.') 
+  mylang.add('subj-head-vc-phrase := decl-head-subj-phrase & head-final-invc & nonverbal-comp-phrase.')
+  if ch.get('wh-questions') == 'yes':
+    mylang.add('subj-head-vc-phrase := [ SYNSEM.NON-LOCAL.QUE 0-dlist ].')
  
 ###2011-10-23 in-vc phrases are are per definition verbal
   hf_invc = ''
-  if ch.get('v2-analysis'):
+  if ch.get('v2-analysis') == 'filler-gap':
     hf_invc = 'general-head-final-invc'
   else:
     hf_invc = 'head-final-invc'
@@ -254,7 +255,7 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
 ##TO CHECK: DANISH
   
   hf_invc = ''
-  if ch.get('v2-analysis'):
+  if ch.get('v2-analysis') == 'filler-gap':
     hf_invc = 'general-head-final-invc'
   else:
     hf_invc = 'head-final-invc'
@@ -375,8 +376,8 @@ def create_wh_rules(ch, rules):
   rules.add('wh-subj-head-vc := wh-subj-head-vc-phrase.')
   rules.add('wh-comp-head-vc := wh-comp-head-vc-phrase.')
   rules.add('head-wh-comp := head-wh-comp-phrase.')
-  if not ch.get('v2-analysis') == 'filler-gap':
-    rules.add('wh-ques := create-wh-ques-vcomp-phrase.')
+ # if not ch.get('v2-analysis') == 'filler-gap':
+  rules.add('wh-ques := create-wh-ques-vcomp-phrase.')
   rules.add('head-2nd-wh-adj-int := head-2nd-wh-adj-int-phrase.')
   rules.add('wh-adj-head-int-vc := wh-adj-head-int-vc-phrase.')
   rules.add('wh-spec-head := wh-spec-head-phrase.')
@@ -1081,7 +1082,7 @@ def create_germanic_adjunct_phrases(ch, mylang, rules):
   if ch.get('vc-placement') == 'post':
 
     hf_invc = ''
-    if ch.get('v2-analysis'):
+    if ch.get('v2-analysis') == 'filler-gap':
       hf_invc = 'general-head-final-invc'
     else:
       hf_invc = 'head-final-invc'
@@ -1175,9 +1176,9 @@ def filler_gap_word_order(mylang):
                  SYNSEM.NON-LOCAL.SLASH 0-dlist ].')
 
   mylang.add('subj-v-inv-lrule := [ SYNSEM [ NON-LOCAL.SLASH #slash, \
-                                             LOCAL.CAT.HEAD.AUX #aux ], \
+                                             LOCAL [ CAT.HEAD.AUX #aux ] ], \
                                     DTR.SYNSEM [ NON-LOCAL.SLASH #slash, \
-                                                 LOCAL.CAT.HEAD.AUX #aux ] ].')
+                                                 LOCAL [ CAT.HEAD.AUX #aux ] ] ].')
   mylang.add('int-cl := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-dlist ].')
   
   comment = ''';;;;;;;;;;;;;extraction phrases \
@@ -1211,8 +1212,8 @@ def filler_gap_word_order(mylang):
                ;;; in German, only verbs allow extraction (except for wh)'''
 
   mylang.add('basic-extracted-arg-phrase :+ \
-                              [ HEAD-DTR.SYNSEM [ MODIFIED notmod, \
-						  LOCAL.CAT.HEAD verb ] ].', comment)
+                [ HEAD-DTR.SYNSEM [ MODIFIED notmod, \
+				    LOCAL.CAT.HEAD verb & [ INV - ] ] ].', comment)
             
   mylang.add('extracted-comp-phrase := basic-extracted-comp-phrase & \
                 [ SYNSEM.LOCAL.CAT [ SECOND #sec, \
@@ -1233,15 +1234,17 @@ def filler_gap_word_order(mylang):
 							 VAL.SUBJ <[ ]>, \
 							 MC - ] ].')
   mylang.add('ger-extracted-adj-phrase := extracted-adj-phrase & \
- [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb & [ FORM finite ], \
+ [ HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD verb & [ FORM finite ], \
 			       VAL [ SUBJ < >, \
 				     COMPS < >, \
 				     SPR < > ], \
 			       SECOND #scd ], \
-   SYNSEM [ NON-LOCAL.SLASH <! [ CAT [ HEAD +rp & [ PRD - ], \
+                      NON-LOCAL.QUE #que ], \
+   SYNSEM [ NON-LOCAL [ SLASH <! [ CAT [ HEAD +nrp & [ PRD - ], \
 				     VAL [ SUBJ < >, \
 					   COMPS < >, \
 					   SPR < > ] ] ]!>, \
+                        QUE #que ], \
 	    LOCAL.CAT.SECOND #scd ] ].')
 
   mylang.add('extracted-subj-phrase := basic-extracted-subj-phrase & \
