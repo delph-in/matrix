@@ -66,7 +66,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
                                        SPEC #spec ]],
                      LKEYS #lkeys ]].'''
     mylang.add(typedef, comment, section='lexrules')
-
+   
 
     lrules.add('inv-lr := subj-v-inv-lrule.')
 
@@ -78,8 +78,10 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
     if ch.get('has-aux') == 'yes':
       mylang.add('''
                  subj-v-inv-lrule :=
-                    [ SYNSEM.LOCAL.CAT.HEAD.FORM #form,
-                      DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].''')
+                    [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
+                                              AUX #aux ],
+                      DTR.SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
+                                                  AUX #aux ] ].''')
 
       if qinvverb == 'aux':
         mylang.add('subj-v-inv-lrule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].')

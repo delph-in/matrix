@@ -278,9 +278,13 @@ def add_shared_features(mylang, f, path, mid):
 
 def add_sharing_supertypes(mylang, pn, mid, agr):
   vp_except = False
-  if 'vp' in pn and (agr == 'mc' or agr == 'inv'):
+  if 'vp' in pn and (agr == 'inv'):
     vp_except = True
-
+    if agr == 'inv':
+      mylang.add('no-pass-inv-top-coord := top-coord-rule & \
+                   [ LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv, \
+                     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv ].')
+      mylang.add(pn + '-top-coord-rule := no-pass-inv-top-coord.')
   if not vp_except:
     mylang.add(pn + '-top-coord-rule :=  ' + agr + '-agr-top-coord-rule.')
   if mid:   

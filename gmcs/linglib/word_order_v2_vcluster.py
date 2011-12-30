@@ -999,6 +999,7 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
 			        VFRONT - ] ],\
             HEAD-DTR #firstarg & head-initial & \
               [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ AUX +,\
+                                                     INV -, \
 						     DTR-FORM #dform ],\
 				       VAL #val & [ SUBJ < >,\
 						    COMPS < > ],\
@@ -1007,7 +1008,8 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
 				 CONT [ HOOK #hook,\
 				 HCONS [ LIST.FIRST [ HARG #harg1, \
                                                       LARG #larg2 ] ] ] ] ] ], \
-           INSERT-DTR #secarg & [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ AUX + ],\
+           INSERT-DTR #secarg & [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ AUX +, \
+                                                                       INV - ],\
 						         VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM #dform ],\
 					            CONT [ HOOK.LTOP #larg1,\
 						    HCONS [ LIST.FIRST [ LARG #larg2 ] ] ] ] ],\
