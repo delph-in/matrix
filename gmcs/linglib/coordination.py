@@ -8,7 +8,7 @@ from gmcs.utils import TDLencode
 ######################################################################
 # define_coord_strat: a utility function, defines a strategy
 
-def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_number, mylang, rules, irules):
+def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_number, mc_inv_sh, mylang, rules, irules):
   mylang.add_literal(';;; Coordination Strategy ' + num)
 
   pn = pos + num
@@ -24,6 +24,9 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
 
   #this allows users to define agreement features in the choices file
   agr = agreement.split(',')
+  if mc_inv_sh == 'red': 
+    agr.append('mc-red') 
+    agr.append('inv-red')   
   # First define the rules in mylang.  Every strategy has a
   # top rule and a bottom rule, but only some have a mid rule, so if
   # the mid prefix argument $mid is empty, don't emit a rule.
@@ -133,7 +136,13 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
 ###removing vc from verbal features, causes problems for coordinating verbal forms
 ###TO DO: double check over-generation, if overgenerates: make inherit from left most
 ###only for verbs
-    verb_feat = ['vfront', 'form', 'mc', 'inv']
+    verb_feat = ['vfront', 'form']
+    if not mc_inv_sh == 'red':
+      verb_feat.append('mc')
+      verb_feat.append('inv')
+    else:
+      verb_feat.append('mc-red')
+      verb_feat.append('inv-red')
     for vf in verb_feat:
       if vf in agr:      
         add_sharing_supertypes(mylang, pn, mid, vf) 
@@ -249,10 +258,24 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
     if ch.get('wh-questions') == 'yes':
       agreement += ',que' 
  
+####
+###object-raising with mc-word-order and arg-composition aux
+###cannot work if MC is shared and INV is passed up
+###creating special case variable (Germanic specific)
+###
+    mc_inv_sh = 'all'
+    if ch.get('v2-analysis') == 'filler-gap':
+      mc_inv_sh = 'all'    
+    elif ch.get('vc-analysis') == 'basic':
+      if ch.get('obj-raising') == 'yes':
+        mc_inv_sh = 'red' 
+        agr.append('mc-red') 
+        agr.append('inv-red')   
+
     for pos in ('n', 'np', 'vp', 's', 'adj','adp'):
       if cs.get(pos):
         define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, agreement,
-    np_number, mylang, rules, irules)
+    np_number, mc_inv_sh, mylang, rules, irules)
 
 
 ###
@@ -278,13 +301,17 @@ def add_shared_features(mylang, f, path, mid):
 
 def add_sharing_supertypes(mylang, pn, mid, agr):
   vp_except = False
-  if 'vp' in pn and (agr == 'inv'):
+  if 'vp' in pn and 'red' in agr:
     vp_except = True
-    if agr == 'inv':
+    if agr == 'inv-red':
       mylang.add('no-pass-inv-top-coord := top-coord-rule & \
-                   [ LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv, \
+                   [ SYNSEM.LOCAL.CAT.HEAD.INV -, \
+                     LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv, \
                      RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv ].')
       mylang.add(pn + '-top-coord-rule := no-pass-inv-top-coord.')
+  if '-' in agr:
+    agr_parts = agr.split('-')
+    agr = agr_parts[0]
   if not vp_except:
     mylang.add(pn + '-top-coord-rule :=  ' + agr + '-agr-top-coord-rule.')
   if mid:   

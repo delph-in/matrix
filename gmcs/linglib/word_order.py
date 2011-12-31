@@ -799,12 +799,14 @@ def customize_np_word_order(mylang, ch, rules):
                     [ CAT #cat & [ HEAD noun & [ MOD <  > ] ] ] ], \
              HEAD-DTR.SYNSEM [ NON-LOCAL #non-loc, \
 		               LOCAL compound-local & [ CAT #cat, \
-		                               CONT.HOOK.INDEX #modind ], \
+		                               CONT.HOOK.INDEX #modind & \
+                                                              [ png #png ] ], \
 		               LIGHT + ], \
              NON-HEAD-DTR.SYNSEM [ LOCAL [ CAT [ HEAD noun, \
 				                 VAL [ COMPS < >, \
 					         SPR < [ OPT + ] > ] ], \
-				           CONT.HOOK [ INDEX #hind, \
+				           CONT.HOOK [ INDEX #hind & \
+                                                              [ PNG #png ], \
 					               LTOP #ltop ] ], \
 			                   LIGHT + ], \
              C-CONT.RELS.LIST < relation & \

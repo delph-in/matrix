@@ -883,7 +883,6 @@ def customize_adpositions(ch, mylang, lexicon):
             sname = sname.replace('adp',default)
 
         mylang.add(name + ' := ' + mod + '-' + sname + '.')
-
         order = adp.get('order')
         if order == 'post':
           mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
@@ -1005,9 +1004,9 @@ def create_adp_cross_classification(ch, mylang, sname):
             type_npost = type_n.replace('adp', 'postp')
             mylang.add(type_npre + ' := prep-lex-item & ' + type_n + '.')
             mylang.add(type_npost + ' := postp-lex-item & ' + type_n + '.')
-          else:
+          elif default:
             mylang.add(type_n + ' := ' + default + '-lex-item.')
-
+ 
     elif spadp.get('kind') == 'prd':
       type_n = 'prd-' + sname
       mylang.add(type_n + ' := ' + sname + ' & \
@@ -1019,7 +1018,7 @@ def create_adp_cross_classification(ch, mylang, sname):
           type_npost = type_n.replace('adp', 'postp')
           mylang.add(type_npre + ' := prep-lex-item & ' + type_n + '.')
           mylang.add(type_npost + ' := postp-lex-item & ' + type_n + '.')
-        else:
+        elif default:
           mylang.add(type_n + ' := ' + default + '-lex-item.')
 
 
@@ -1413,10 +1412,9 @@ def create_wh_phrases(mylang, ch):
    
     wh_noun = \
       'wh-noun-lex := basic-wh-simple-sem-lex & \
-                 [ SYNSEM [ LOCAL.CAT.HEAD noun, \
+                 [ SYNSEM [ LOCAL.CAT.HEAD noun & [ MOD < > ], \
                             LKEYS.KEYREL noun-relation ] ].'
     mylang.add(wh_noun)
-
   if ch.get('wh-det') == 'on':
     wh_det = \
      'wh-determiner-lex := basic-determiner-lex & basic-zero-arg & \

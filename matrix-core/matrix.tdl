@@ -1954,7 +1954,7 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
                            MC #mc ],
                      CONT.HOOK #hook,
                      CTXT #ctxt ],
-             NON-LOCAL.SLASH 0-dlist,
+             NON-LOCAL.SLASH 0-dlist & [ LIST < > ],
 	     MODIFIED notmod ],
     C-CONT [ HOOK #hook,
 	     HCONS <! !> ] ].

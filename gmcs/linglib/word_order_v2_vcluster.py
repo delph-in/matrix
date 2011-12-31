@@ -999,7 +999,6 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
 			        VFRONT - ] ],\
             HEAD-DTR #firstarg & head-initial & \
               [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ AUX +,\
-                                                     INV -, \
 						     DTR-FORM #dform ],\
 				       VAL #val & [ SUBJ < >,\
 						    COMPS < > ],\
@@ -1008,8 +1007,7 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
 				 CONT [ HOOK #hook,\
 				 HCONS [ LIST.FIRST [ HARG #harg1, \
                                                       LARG #larg2 ] ] ] ] ] ], \
-           INSERT-DTR #secarg & [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ AUX +, \
-                                                                       INV - ],\
+           INSERT-DTR #secarg & [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ AUX + ],\
 						         VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM #dform ],\
 					            CONT [ HOOK.LTOP #larg1,\
 						    HCONS [ LIST.FIRST [ LARG #larg2 ] ] ] ] ],\
@@ -1029,6 +1027,11 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
 						     LAST #middle2 ],\
 				       HCONS [ LIST #scmiddle1,\
 					       LAST #scmiddle2 ] ] ] ] > ].')
+  if ch.get('q-inv'):
+    mylang.add('special-insert-aux-phrase := \
+                  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV -, \
+                    INSERT-DTR.SYNSEM.LOCAL.CAT.HEAD.INV - ].')
+
   mylang.add('decl-head-subj-phrase :+ \
                       [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                         HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
@@ -1181,7 +1184,8 @@ def filler_gap_word_order(mylang):
                                              LOCAL [ CAT.HEAD.AUX #aux ] ], \
                                     DTR.SYNSEM [ NON-LOCAL.SLASH #slash, \
                                                  LOCAL [ CAT.HEAD.AUX #aux ] ] ].')
-  mylang.add('int-cl := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-dlist ].')
+  mylang.add('int-cl := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-dlist \
+                                                           & [ LIST < > ] ].')
   
   comment = ''';;;;;;;;;;;;;extraction phrases \
                                               \
