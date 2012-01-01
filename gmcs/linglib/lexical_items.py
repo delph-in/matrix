@@ -742,13 +742,26 @@ def customize_adverbs(mylang, ch, lexicon):
 ###default is adverbs modify verb
     mod_head = 'verb'
     mod_val = ''
-    modh = adv.get('mod')    
-    if modh == 'pp':
+    modh = adv.get('mod')
+    order = adv.get('order')
+###simplification for now: if more than one thing modified, all with
+###same valency at point of modification    
+    if '-' in modh:
+      mod_head = '+'
+      if 'np' in modh:
+        mod_head += 'n'
+      if 's' in modh:
+        mod_head += 'v'
+      if 'pp' in modh:
+        mod_head += 'p'
+    elif modh == 'pp':
       mod_head = 'adp'
     elif modh == 'det':
       mod_head = 'det'
     elif modh == 'ad':    
       mod_head = '+jr'
+    elif modh == 's':    
+      mod_head = 's'
 
     if not mod_head == 'verb':
       if mod_head == 'det':
@@ -761,6 +774,8 @@ def customize_adverbs(mylang, ch, lexicon):
                      COMPS < >, \
                      SPR < >, \
                      SPEC < > ]'
+      if mod_head == 's':
+        mod_head = 'verb'
     if not arg_str == 'scomp':
       mylang.add(atype + ' := ' + stype + ' & \
         [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD ' + mod_head + ' ] > ].')
@@ -771,6 +786,11 @@ def customize_adverbs(mylang, ch, lexicon):
     if mod_val:
       mylang.add(atype + ' :=  \
       [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL ' + mod_val + ' ] > ].')
+
+    if order == 'pre':
+      mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+    elif order == 'post':
+      mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
 
     val = ''
     if arg_str == 'none':
@@ -1119,10 +1139,12 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
        stype1 = 'basic-noun-lex'
     typedef1 = \
       'noun-one-arg-lex := ' + stype1 + ' & no-cluster-lex-item & \
-                           non-wh-lex-item & spr-plus-one-arg-lex-item.'
+                           non-wh-lex-item & spr-plus-one-arg-lex-item & \
+        [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].'
     typedef2 = \
       'noun-clausal-arg-lex := ' + stype1 + ' & no-cluster-lex-item & \
-                           non-wh-lex-item & spr-plus-clausal-arg-lex-item.'
+                           non-wh-lex-item & spr-plus-clausal-arg-lex-item & \
+        [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].'
     mylang.add(typedef1)
     mylang.add(typedef2)  
 
@@ -1279,7 +1301,9 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         mylang.add(ntype + ':= [ SYNSEM.LOCAL.CAT.VAL.SPR < #spr >, \
                                ARG-ST < #spr & [ LOCAL.CAT.HEAD det ], [ ]> ].')
 ###BROKEN: optional determiner doesn't allow any specifier
-        if det == 'opt': 
+###FIXED, misunderstanding on working of 'OPT': should make comment for grammar
+###in customization system
+        if det == 'imp': 
           mylang.add(ntype + ':= [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].')
       mylang.add(ntype + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >, \
                                    ARG-ST < [ ], \
@@ -1294,9 +1318,9 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       if 'comp' in arg_st:
         mylang.add(ntype + ' := [ ARG-ST < [ ], \
                           [ LOCAL.CAT.HEAD comp ] > ].')
-        if arg_st == 'scomp':
+        if arg_st == 'scomp-prop':
            mylang.add(ntype + ' := [ ARG-ST < [ ], \
-                          [ LOCAL.CONT.HOOK.INDEX.SF prop-or-ques ] > ].')
+                          [ LOCAL.CONT.HOOK.INDEX.SF prop ] > ].')
         elif arg_st == 'qcomp': 
            mylang.add(ntype + ' := [ ARG-ST < [ ], \
                           [ LOCAL.CONT.HOOK.INDEX.SF ques ] > ].')

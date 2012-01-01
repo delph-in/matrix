@@ -760,7 +760,7 @@ def customize_np_word_order(mylang, ch, rules):
     # Germanic, same phrase for adverb modifiers when not modifying verbs
     adj_st = ''
     mylang.add('mod-non-verbal-head-phrase := basic-head-mod-phrase-simple & \
-                 [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +njr, \
+                 [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +jr, \
                    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +njrpd, \
                                                VAL #val ], \
                    SYNSEM.LOCAL.CAT.VAL #val ].')
@@ -857,16 +857,18 @@ def customize_np_word_order(mylang, ch, rules):
     t1 = \
       'vocative-mod-phrase := scopal-mod-phrase & head-final & \
           [ NON-HEAD-DTR vocative-np-phrase, \
-            HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-dlist ].'
+            HEAD-DTR.SYNSEM [ NON-LOCAL.SLASH 0-dlist, \
+                              LOCAL.CAT.MC #mc ], \
+            SYNSEM.LOCAL.CAT.MC #mc  ].'
     t2 = \
       'vocative-np-phrase := unary-phrase & \
-                [ SYNSEM [ LOCAL intersective-mod & \
-           [ CAT [ HEAD adv & [ PRD -, \
-                                MOD < [ LOCAL [ CAT [ HEAD verb & \
-                                                      [ FORM finite ], \
-                                                    VAL [ SUBJ < >, \
-                                                          COMPS < > ], \
-						    MC + ], \
+                [ SYNSEM [ LOCAL [ CAT [ HEAD adv & [ PRD -, \
+                                         MOD < [ LOCAL scopal-mod & \
+                                                   [ CAT [ HEAD verb & \
+                                                             [ FORM finite ], \
+                                                           VAL [ SUBJ < >, \
+                                                                 COMPS < > ], \
+						           MC + ], \
                                                  CONT.HOOK [ LTOP #ltop, \
                                                        INDEX #index ] ] ] > ], \
 		                      VAL [ SPR < >, \
@@ -889,6 +891,7 @@ def customize_np_word_order(mylang, ch, rules):
                            ARG1 #argind, \
                            ARG2 #index ] !>, \
                  HCONS <! !> ] ].'
+    mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LIGHT - ].', section='addenda')
     mylang.add(t1)
     mylang.add(t2)
     rules.add('voc-mod := vocative-mod-phrase.')
