@@ -365,7 +365,21 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
   # Now create the lexical entries for all the defined verb types
   cases = case.case_names(ch)
+
+  # Adding possibility to set default for OPT when defined
+
+####allowing for default in object-dropping
+  o_drop_default = ''
+  if ch.get('obj-drop') == 'obj-drop-lex':
+    o_drop_default = ch.get('obj-drop-default')
+
   for verb in ch.get('verb',[]):
+    
+    opt_heads = []
+    for feat in verb.get('feat',[]):
+      if feat.get('name') == 'OPT':
+        opt_heads.append[feat.get('head')]
+
     name = get_name(verb)
     val = verb.get('valence')
 
@@ -423,6 +437,21 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
     mylang.add(vtype + ' := ' + stype + '.')
 
+    if o_drop_default:
+      if val == 'trans' or '-' in val:
+        if not 'obj' in opt_heads:
+          mylang.add(vtype + ' := \
+                     [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT \
+                                           ' + o_drop_default + ' ].')
+        if len(c) == 3 and not 'obj2' in opt_heads:
+          if not c[1] == 'refl':
+            mylang.add(vtype + ' := \
+                     [ ARG-ST < [ ], [ ], \
+                                    [ OPT ' + o_drop_default + ' ] > ].')
+          else:
+            mylang.add(vtype + ' := \
+                     [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ], \
+                                      [ OPT ' + o_drop_default + ' ] > ].')  
 ###
 # scomp-spec
 # does the verb take questions, affirmatives or both as a complement?
@@ -522,6 +551,13 @@ def customize_copula(mylang, ch, lexicon, hierarchies):
     if ch.get('has-aux') == 'yes':
       mylang.add(type_name + ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
 
+
+####allowing for default in object-dropping
+
+  o_drop_default = ''
+  if ch.get('obj-drop') == 'obj-drop-lex':
+    o_drop_default = ch.get('obj-drop-default')
+
   for cop in ch.get('cop',[]):
     name = cop.get('name','')
     userstypename = name + '-copula-lex'
@@ -539,6 +575,12 @@ def customize_copula(mylang, ch, lexicon, hierarchies):
       mylang.add(userstypename + ' := \
                        [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + subjcase + ' ].')
 
+##object drop on copula just doesn't make sense, prohibiting it for noew
+    o_drop_default = ''
+    if ch.get('obj-drop') == 'obj-drop-lex':
+      mylang.add(userstypename + ' := \
+                       [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT - ].')
+    
 
     features.customize_feature_values(mylang, ch, hierarchies, cop, userstypename, 'cop')
     add_copula_to_lexicon(userstypename, cop, lexicon)
@@ -805,13 +847,14 @@ def customize_adverbs(mylang, ch, lexicon):
                                          VAL [ SUBJ < [ ] >, \
                                                COMPS < >, \
                                                SPR < >, \
-                                               SPEC < > ] ] ] >, \
+                                               SPEC < > ] ], \
+                             OPT - ] >, \
                    SPR < >, \
                    SPEC < > ]'
-
+# [ OPT + ] value probably not universally true
     elif arg_str == 'scomp':
       val = 'VAL [ SUBJ < >, \
-                   COMPS < [ ] >, \
+                   COMPS < [ OPT + ] >, \
                    SPR < >, \
                    SPEC < > ]'
       if kind == 'scop':
@@ -938,6 +981,10 @@ def customize_adpositions(ch, mylang, lexicon):
 
 
 def create_adposition_supertypes(ch, mylang):
+###probably not universal
+  if ch.get('obj-drop'):
+    mylang.add('basic-adposition-lex :+ \
+                  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].',section='addenda')
   s_name = 'int-adp-lex-item'
   comp = '[ LOCAL.CAT [ HEAD noun, \
                         VAL [ SPR < >, \
@@ -1059,7 +1106,8 @@ def customize_complementizers(ch, mylang, lexicon):
                                                    SPR < >,\
                                                    SPEC < > ],\
 					     HEAD verb & [ FORM finite, \
-                                                           INV - ]]] >,\
+                                                           INV - ] ], \
+                                 OPT - ] >,\
 			    SPR < >, \
 			    SPEC < > ] ], \
           ARG-ST < #comp > ].')

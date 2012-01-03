@@ -1,5 +1,4 @@
 
-
 ######################################################################
 # customize_yesno_questions()
 #   Create the type definitions associated with the user's choices
@@ -99,7 +98,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
     # that this rule would not be used to model inflection that requires
     # subj-v inversion but allows subject drop.
 
-    if ch.get('obj-drop'):
+    if ch.get('obj-drop') and not ch.get('verb-cluster') == 'yes':
       mylang.add('subj-v-inv-lrule := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT - ].')
 
 

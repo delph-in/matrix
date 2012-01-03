@@ -323,7 +323,10 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
 ###can be done by head-sub-comp, but leads to odd ambiguities for nouns
 ###leaving this for nouns for now
   if ch.get('nonverb-zuinf-comp') == 'yes':
-    create_nonverb_zuinf_structure(mylang, rules)
+    wh = False
+    if ch.get('wh-questions') == 'yes':
+      wh = True
+    create_nonverb_zuinf_structure(mylang, rules, wh)
 
 ##############################
 #
@@ -363,7 +366,7 @@ def create_wh_wo_phrases(ch, mylang):
 
 ####if 100% correct, should check for presence of determiners
 ###but Germanic languages have them
-  mylang.add('wh-spec-head-phrase := basic-head-wh-spec-phrase & HEAD-FINAL & \
+  mylang.add('wh-spec-head-phrase := basic-head-wh-spec-phrase & head-final & \
        [ SYNSEM.LOCAL.CAT.VC #vc, \
          HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc, \
          NON-HEAD-DTR.SYNSEM.OPT - ].')
@@ -383,7 +386,7 @@ def create_wh_rules(ch, rules):
   rules.add('wh-spec-head := wh-spec-head-phrase.')
 
 
-def create_nonverb_zuinf_structure(mylang, rules):
+def create_nonverb_zuinf_structure(mylang, rules, wh):
   nom_head_zu_comp = 'nonverb-head-zu-comp-phrase := \
                          basic-head-1st-comp-phrase & head-initial & \
                                                   share-que-non-head-phrase & \
@@ -396,6 +399,9 @@ def create_nonverb_zuinf_structure(mylang, rules):
   mylang.add('head-spec-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
                                                                     COMPS < > ] ].')
  
+  if wh:
+    mylang.add('wh-spec-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
+                                                                    COMPS < > ] ].')
 ##########################################################################
 #                                                                        #
 # ALTERNATIVE ANALYSES                                                   #

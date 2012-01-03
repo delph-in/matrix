@@ -53,6 +53,19 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
 
   if ch.get('obj-drop') == 'obj-drop-lex':
     rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
+    wo = ch.get('word-order')
+    if wo == 'free' or wo == 'v2':
+##for free word order or v2 word order, leave getting dropped object out
+##until the end
+      mylang.add('basic-head-opt-comp-phrase :+ \
+                     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
+                                              COMPS < >, \
+                                              SPR < >, \
+                                              SPEC < > ] ].', section='addenda')
+      if ch.get('v2-analysis') == 'filler-gap':
+        mylang.add('basic-head-opt-comp-phrase :+ \
+                      [ SYNSEM.NON-LOCAL.SLASH #slash, \
+                        HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].')
     mylang.add('no-obj-drop-verb-lex := transitive-verb-lex &\
                         [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].')
     mylang.add('obj-drop-verb-lex := transitive-verb-lex.')

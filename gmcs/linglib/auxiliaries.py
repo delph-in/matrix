@@ -43,6 +43,11 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang):
 
   if Germanic:
     comp_spec_typedef = define_germanic_arg_str_and_valency(ch, supertypename)  
+    if ch.get('obj-drop'):
+      if ch.get('vc-analysis') == 'basic':
+        mylang.add(supertypename + ' := [ ARG-ST < [ ], [ OPT - ] > ].')
+      elif ch.get('vc-analysis') == 'aux-rule':
+        mylang.add(supertypename + ' := [ ARG-ST < [ OPT - ] > ].')  
   elif auxcomp == 's':
     comp_spec_typedef = supertypename + ' := basic-one-arg & \
                             [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \

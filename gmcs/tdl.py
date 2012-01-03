@@ -293,6 +293,7 @@ class TDLelem_conj(TDLelem):
       TDLwrite('conj\n')
 
     old_i = TDLget_indent()
+  
     for ch in self.child[0:1]:
       if ch:
         ch.write()

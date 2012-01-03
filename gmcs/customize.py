@@ -34,6 +34,7 @@ from gmcs.linglib import verbal_features
 from gmcs.linglib import negation
 from gmcs.linglib import coordination
 from gmcs.linglib import yes_no_questions
+from gmcs.linglib import passivization
 from gmcs.linglib import toolboximport
 
 
@@ -467,6 +468,8 @@ def customize_matrix(path, arch_type, destination=None):
   negation.customize_sentential_negation(mylang, ch, lexicon, rules)
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
+  if ch.get('passivization') == 'yes':
+    passivization.customize_passivization(ch, mylang, lrules, lexicon)
   customize_punctuation(grammar_path)
   customize_test_sentences(grammar_path)
   customize_itsdb(grammar_path)
