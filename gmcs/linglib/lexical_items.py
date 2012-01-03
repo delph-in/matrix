@@ -929,6 +929,7 @@ def customize_adpositions(ch, mylang, lexicon):
         sname = 'compl-incl-int-adp-lex-item'
       name = adp.get('name') + '-adp-lex-item'
       kind = adp.get('kind')
+      form = adp.get('form')
       if kind == 'mod':
         mod = adp.get('mod')
         if kind in exception and mod in exception:
@@ -957,7 +958,7 @@ def customize_adpositions(ch, mylang, lexicon):
         mylang.add(name + ' := prd-' + sname + '& \
           [ SYNSEM.LOCAL.CAT [ HEAD.PRD +, \
                                VC - ] ].' )
-
+     
       for feat in adp.get('feat',[]):
         if feat.get('name') == 'case':
           constr = 'LOCAL.CAT.HEAD.CASE '
@@ -966,8 +967,13 @@ def customize_adpositions(ch, mylang, lexicon):
         if feat.get('head') == 'comp':
           path = 'SYNSEM.LOCAL.CAT.VAL.COMPS < [ '
           
-        type = name + ' := [ ' + path + constr + value + ' ].'
-        mylang.add(type)
+        typedef = name + ' := [ ' + path + constr + value + ' ].'
+        mylang.add(typedef)
+      if form:
+        mylang.add(form + ' := form.',section='features')
+        mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
+       
+
       for stem in adp.get('stem',[]):
         orth = stem.get('orth')
         pred = stem.get('pred')
@@ -1027,9 +1033,10 @@ def create_adposition_supertypes(ch, mylang):
                                              ARG0 #arg2, \
                                              RSTR #lbl ] !>, \
                         NON-LOCAL.QUE 0-dlist, \
-                        LKEYS.KEYREL event-relation ] ].')
+                        LKEYS.KEYREL event-relation ] ].') 
 
     create_adp_cross_classification(ch, mylang, sname2)
+
 
   return s_name
 
@@ -1087,7 +1094,6 @@ def create_adp_cross_classification(ch, mylang, sname):
           mylang.add(type_npost + ' := postp-lex-item & ' + type_n + '.')
         elif default:
           mylang.add(type_n + ' := ' + default + '-lex-item.')
-
 
        
 def customize_complementizers(ch, mylang, lexicon):
