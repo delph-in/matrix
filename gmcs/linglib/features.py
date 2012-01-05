@@ -85,6 +85,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
           geom_prefix2 += 'FIRST.'
     elif h == 'obj':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
+    elif h == 'obj2':
+      geom_prefix += 'LOCAL.CAT.VAL.COMPS.REST.FIRST.'
     elif h == 'mod':
       if not ll_adj:
         geom_prefix += 'LOCAL.CAT.HEAD.MOD.FIRST.'
