@@ -13,7 +13,7 @@
 ;;;
 ;;; Optionally, load a set of irregular morphological patterns
 ;;;
-(load-irregular-spellings (lkb-pathname (parent-directory) "irregs.tab"))
+;(load-irregular-spellings (lkb-pathname (parent-directory) "irregs.tab"))
 
 ;;;
 ;;; Now the core grammar, which will typically be spread out 
