@@ -1,0 +1,129 @@
+
+######################################################################
+# customize_passivization()
+#   Create the type definitions associated with the user's choices
+#   about passivization
+
+# GERMANIC-BASED LIBRARY ONLY!!!!
+# This library contains possibilities to go beyond Germanic languages
+# but is not based on any cross-linguistic research whatsoever!
+
+def customize_passivization(ch, mylang, lrules, lexicon):
+
+  vc = ch.get('vc-analysis')
+  passive = ch.get('pass',[])
+
+#careful: only one passive form allowed at present
+
+  for p in passive:
+    marking = p.get('marking')
+    form = ''
+    if marking == 'aux':
+      form = 'pass-' + p.get('form')
+    elif marking == 'morph':
+      form = p.get('form')
+###
+    if form:
+      mylang.add(form + ' := nonfinite.', section='features')
+
+    
+###only lexical rule for now
+###starting assumption: direct-object becomes subject
+###subject becomes optional first argument on COMPS list
+
+    typedef = \
+    '''
+  passive-lex-rule := same-cont-lex-rule & no-ccont-lex-rule &
+ [ SYNSEM.LOCAL [ CAT [ HEAD verb,
+			VAL [ SUBJ < [ LOCAL.CONT #arg2 ] >,
+			      COMPS < [ LOCAL.CONT #arg1,
+					OPT + ] . #vcomps > ] ] ],
+   DTR.SYNSEM.LOCAL [ CAT [ HEAD verb,
+			    VAL [ SUBJ < [ LOCAL.CONT #arg1 ] >,
+				  COMPS < [ LOCAL.CONT #arg2 ] . #vcomps > ] ] ] ].'''
+    mylang.add(typedef)
+    lrules.add('passive-lr := passive-lex-rule.')
+    lr_n = 'passive-lex-rule'
+    mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
+    if marking == 'aux':
+      mylang.add(lr_n + ' := \
+           [ DTR.SYNSEM.LOCAL.CAT.HEAD.FORM ' + p.get('form') + ' ].')
+    elif marking == 'morph':
+      mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
+                             DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].')
+  
+###should be done properly using feature_code
+
+    arg_res = p.get('arg_res', [])
+    mtr_path = '[ SYNSEM.LOCAL.CAT.VAL.'
+    dtr_path = '[ DTR.SYNSEM.LOCAL.CAT.VAL.'
+    for res in arg_res:
+      level = res.get('level')
+      if level == 'mtr':
+        genpath = mtr_path 
+      else:
+        genpath = dtr_path
+      arg = res.get('arg')
+      genpath += arg.upper() + '.FIRST.LOCAL.CAT.' 
+      feats = res.get('feat', [])
+      for f in feats:
+        path = genpath  
+        val = f.get('val')
+        fname = f.get('name')
+        if val == 'elist':
+          val = '< >'
+        if fname == 'head':
+          path += 'HEAD ' + val
+        elif fname == 'case':
+          path += 'HEAD.CASE ' + val
+        elif fname == 'form':
+          path += 'HEAD.FORM ' + val
+        elif fname == 'mod':
+          path += 'HEAD.MOD ' + val
+#comps can only do empty list for now
+        elif fname == 'comps':
+          path += 'VAL.COMPS ' + val
+             
+        mylang.add(lr_n + ' := ' + path + ' ].')
+
+###passing up features that need to be passed up
+    if ch.get('has-aux') == 'yes':
+      mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX #aux, \
+                             DTR.SYNSEM.LOCAL.CAT.HEAD.AUX #aux ].')
+    if ch.get('q-inv'):
+      mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.INV #inv & -, \
+                             DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv ].')
+    if ch.get('verb-cluster') == 'yes' and ch.get('word-order') == 'v2':
+      if ch.get('vc-analysis') == 'basic':
+        mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.VFRONT #vfront & na-or--, \
+                                 DTR.SYNSEM.LOCAL.CAT.VFRONT #vfront ].')
+
+###If the subject is marked by an adposition after passivization,
+###we need something like a 'case-marking-adposition', but without case
+
+    dsubj_mark = p.get('dem-subj-mark')
+    if 'adp' in dsubj_mark:    
+      typedef = \
+      '''marking-only-adp-lex := basic-one-arg & raise-sem-lex-item &
+             [ SYNSEM.LOCAL.CAT [ HEAD adp &
+                                       [ MOD < > ],
+                                  VAL [ SPR < >,
+                                        SUBJ < >,
+                                        COMPS < #comps >,
+                                        SPEC < > ] ],
+                ARG-ST < #comps &
+                             [ LOCAL.CAT [ HEAD noun,
+                                           VAL.SPR < > ] ] > ].'''
+      mylang.add(typedef)
+      if 'case' in dsubj_mark:
+        m_parts = dsubj_mark.split('-')
+        case = m_parts[1]
+        mylang.add('marking-only-adp-lex := \
+                         [ ARG-ST < [ LOCAL.CAT.HEAD.CASE ' + case + ' ] > ].')
+      sform = p.get('dsubj-form')
+      mylang.add('marking-only-adp-lex := \
+                  [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + sform + ' ].')
+      mylang.add(sform + ' := form.',section='features')
+      lexicon.add(sform + '-passive :=  marking-only-adp-lex & \
+                    [ STEM < "' + sform + '" > ].') 
+      
