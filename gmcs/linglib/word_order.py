@@ -790,6 +790,13 @@ def customize_np_word_order(mylang, ch, rules):
   mylang.add('bare-np-phrase := basic-bare-np-phrase &\
   [ C-CONT.RELS <! [ PRED \"exist_q_rel\" ] !> ].',
              'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
+
+  if ch.get('reflexives') == 'yes':
+    mylang.add('bare-np-phrase := [ SYNSEM.LOCAL non-refl-local, \
+                                    HEAD-DTR.SYNSEM.LOCAL non-refl-local ].')
+    if ch.get('has-dets') == 'yes':
+      mylang.add('head-spec-phrase := [ SYNSEM.LOCAL non-refl-local ].')
+
   if ch.get('compound-nouns') == 'yes':
     mylang.add('bare-np-phrase := [ SYNSEM.LIGHT - ].')
     typedef = \
@@ -883,6 +890,7 @@ def customize_np_word_order(mylang, ch, rules):
                                             CONT.HOOK.INDEX #argind, \
                                             COORD - ], \
                                     NON-LOCAL #nonloc, \
+                                    LKEYS.KEYREL.PRED named_rel, \
 		                    LIGHT + ] ] >, \
                  C-CONT [ HOOK [ LTOP #ltop, \
                                  INDEX #index ], \

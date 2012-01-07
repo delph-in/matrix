@@ -183,7 +183,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     vcluster = determine_vcluster(auxcomp, auxorder, wo, ch)
 
     if ch.get('wh-question') == 'yes':
-      verb_super = 'non-wh-lex-item'
+      verb_super = 'non-wh-or-rel-lex-item'
     else:
       verb_super = 'lex-item'
 
@@ -489,8 +489,11 @@ def customize_copula(mylang, ch, lexicon, hierarchies):
   #add copula supertype
   #copula
   if ch.get('has-cop') == 'yes':
-    mylang.add('+njrp :+ [ PRD bool ].')
-
+    if ch.get('rel-clause') == 'yes':
+      mylang.add('+nvjrp :+ [ PRD bool ].')
+    else:
+      mylang.add('+njrp :+ [ PRD bool ].')
+  
 #TO DO: more stable mechanism to identify possible heads
     heads = ch.get('cop_pred')
     v = ''
@@ -617,7 +620,9 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
 
     # also not to be used as modifiers
     mylang.add('determiner-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')    
-
+    
+    if ch.get('rel-clause') == 'yes':
+      mylang.add('determiner-lex := non-rel-lex-item.')
   # Determiners
   if 'det' in ch:
     lexicon.add_literal(';;; Determiners')
@@ -1164,6 +1169,10 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   compound = ''
   if ch.get('compound-nouns') == 'yes':
     compound = True
+
+  rel_pn = ''
+  if ch.get('rel-clause') == 'yes':
+    rel_pn = True
   # Playing fast and loose with the meaning of OPT on SPR.  Using
   # OPT - to mean obligatory (as usual), OPT + to mean impossible (that's
   # weird), and leaving OPT unspecified for truly optional.  Hoping
@@ -1173,13 +1182,15 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   # head-spec rule has to require [OPT -] on its non-head daughter.
   # Adding that just in case we add the no-spr-noun-lex type.
 
+  if refl:
+    stype1 = 'non-reflexive-noun-lex'
+  else:
+    stype1 = 'basic-noun-lex'
   typedef = \
     'general-noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
-       [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
-                                  COMPS < >, \
+       [ SYNSEM.LOCAL [ CAT.VAL [ COMPS < >, \
                                   SUBJ < >, \
-                                  SPEC < > ] ], \
-         ARG-ST < #spr > ].'
+                                  SPEC < > ] ] ].'
   mylang.add(typedef)
    
   # ASF 2011-12-21 (Germanic only) creating supertype for nouns with scomp
@@ -1187,63 +1198,88 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   # not have non-wh-lex-item
   # Not needed: these types exist in matrix.tdl
   if ch.get('noun-argst') == 'yes':
-    if refl:
-       stype1 = 'non-reflexive-noun-lex'
-    else:
-       stype1 = 'basic-noun-lex'
     typedef1 = \
       'noun-one-arg-lex := ' + stype1 + ' & no-cluster-lex-item & \
-                           non-wh-lex-item & spr-plus-one-arg-lex-item & \
+                         non-wh-or-rel-lex-item & spr-plus-one-arg-lex-item & \
         [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].'
     typedef2 = \
       'noun-clausal-arg-lex := ' + stype1 + ' & no-cluster-lex-item & \
-                           non-wh-lex-item & spr-plus-clausal-arg-lex-item & \
+                      non-wh-or-rel-lex-item & spr-plus-clausal-arg-lex-item & \
         [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].'
     mylang.add(typedef1)
     mylang.add(typedef2)  
 
   # Assuming that most nouns typically do not modify
   # until compounds have been added
-  if not refl:
-    mylang.add('noun-lex := general-noun-lex & [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')
-  else:
-    mylang.add('opt-refl-noun-lex := general-noun-lex & \
-                                      [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')
-    mylang.add('noun-lex := opt-refl-noun-lex & non-reflexive-noun-lex.')
-    mylang.add('refl-noun-lex := opt-refl-noun-lex & reflexive-noun-lex.')
-  
-    mylang.add('refl-local := local.', 'Distinguishing reflexive nouns from non-reflexive nouns.', section='features')
-    mylang.add('non-refl-local := local.', section='features')
-    
-    mylang.add('non-reflexive-noun-lex := basic-noun-lex & \
-                         [ SYNSEM.LOCAL non-refl-local ].')
-    mylang.add('reflexive-noun-lex := basic-noun-lex & \
-                             [ SYNSEM.LOCAL refl-local ].')
+ 
+  mylang.add('noun-lex := general-noun-lex & \
+         [ SYNSEM.LOCAL.CAT [ HEAD.MOD < >, \
+                              VAL.SPR < #spr & [ LOCAL.CAT.HEAD det ] > ], \
+           ARG-ST < #spr > ].')
 
   if compound:
     mylang.add('compound-local := local.')
     mylang.add('compound-allowing-noun-lex := basic-noun-lex & \
                  [ SYNSEM.LOCAL compound-local ].')
     mylang.add('compound-noun-lex := compound-allowing-noun-lex & \
-                   general-noun-lex & [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')
+                 general-noun-lex & \
+               [ SYNSEM.LOCAL.CAT [ HEAD.MOD < >, \
+                                  VAL.SPR < #spr & [ LOCAL.CAT.HEAD det ] > ], \
+                 ARG-ST < #spr > ].')
   ###adding type for explitive pronouns
-  if ch.get('explitives') == 'yes':
-    comment = 'Explicits cannot inherit from basic-noun-phrase: \
-               expl-index is not compatible with noun-relation'
-    typedef = 'expl-noun-lex := no-hcons-lex-item & \
-                 [ SYNSEM [ LOCAL [ CONT [ HOOK.INDEX expl-ind, \
-                                           RELS <! !> ], \
-                                    CAT [ HEAD noun & [ CASE nom, \
-                                                        MOD < > ], \
+  if ch.get('explitives') == 'yes' or rel_pn:
+    comment = '''Explicits, relative pronouns and reflexives cannot inherit from basic-noun-phrase: noun-relation introduces semantics and ARG0.'''
+    typedef = 'non-sem-noun-lex := no-hcons-lex-item & \
+                 [ SYNSEM [ LOCAL [ CONT [ RELS <! !>, \
+                                           HCONS <! !> ], \
+                                    CAT [ HEAD noun & [ MOD < > ], \
                                           VAL [ SUBJ < >, \
                                                 COMPS < >, \
                                                 SPR < >, \
 			                        SPEC < > ] ] ], \
 	                    NON-LOCAL.QUE 0-dlist ] ].'
     mylang.add(typedef, comment)
+    if ch.get('explitives') == 'yes':
+      expltype = \
+           'expl-noun-lex := non-sem-noun-lex & \
+             [ SYNSEM [ LOCAL [ CONT.HOOK.INDEX expl-ind, \
+                                CAT.HEAD.CASE nom ], \
+                        NON-LOCAL.REL 0-dlist ] ].' 
+      mylang.add(expltype)
+    if rel_pn:
+      relprn = \
+      '''rel-pronoun-lex := non-sem-noun-lex &
+           [ SYNSEM [ LOCAL rel-local & [ CAT.HEAD.PRD -,
+		     CONT.HOOK [ LTOP #hand,
+				 INDEX #ind,
+				 XARG #xarg ] ],
+             NON-LOCAL [ REL 1-dlist & [ LIST < [ LTOP #hand,
+						  INDEX #ind,
+						  XARG #xarg ] > ] ] ] ]. '''
+      mylang.add(relprn)
+      mylang.add('rel-local := local.')
+    if refl:
+      refl_prn = \
+       '''reflexive-noun-lex := non-sem-noun-lex &
+            [ SYNSEM.LOCAL refl-local ].'''
+      mylang.add(refl_prn)
+      if ch.get('wh-questions') == 'yes':
+        mylang.add('reflexive-noun-lex := non-wh-or-rel-lex-item.')
 
+      mylang.add('refl-local := local.', 'Distinguishing reflexive nouns from non-reflexive nouns.', section='features')
+      mylang.add('non-refl-local := local.', section='features')   
+      mylang.add('non-reflexive-noun-lex := basic-noun-lex & \
+                              [ SYNSEM.LOCAL non-refl-local ].')
+      mylang.add('noun-lex := non-reflexive-noun-lex.')
+  mylang.add('non-rel-lex-item := lex-item & \
+                                        [ SYNSEM.NON-LOCAL.REL 0-dlist ].')
+  mylang.add('non-wh-or-rel-lex-item := non-rel-lex-item & non-wh-lex-item.')
+  
   if ch.get('mod-noun') == 'yes':
-    mylang.add('mod-noun-lex := general-noun-lex & [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ ] > ].')
+    mylang.add('mod-noun-lex := general-noun-lex & \
+                [ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ ] >, \
+                                  VAL.SPR < #spr & [ LOCAL.CAT.HEAD det ] > ], \
+                  ARG-ST < #spr > ].')
     if refl:
       mylang.add('mod-noun-lex := non-reflexive-noun-lex.')
 
@@ -1252,10 +1288,10 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
   if singlentype:
     if seen['obl']:
-      typedef = 'general-noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
+      typedef = 'noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
       mylang.add(typedef)
     elif seen['imp']:
-      typedef = 'general-noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
+      typedef = 'noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
       mylang.add(typedef)
   else:
     if seen['obl']:
@@ -1265,18 +1301,12 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       mylang.add(typedef)
 
     if seen['imp']:
-      if not refl:
-        typedef = \
+      typedef = \
           'no-spr-noun-lex := noun-lex & \
              [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
-      else:
-        typedef = \
-          'opt-refl-no-spr-noun-lex := opt-refl-noun-lex & \
-             [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
-        mylang.add('no-spr-noun-lex := opt-refl-no-spr-noun-lex & noun-lex.') 
       mylang.add(typedef)
       if ch.get('wh-det') == 'on':
-        mylang.add('no-spr-noun-lex := non-wh-lex-item.')
+        mylang.add('no-spr-noun-lex := non-wh-or-rel-lex-item.')
 
   if seen['imp'] and ch.get('has-dets') == 'yes':
     mylang.add(
@@ -1326,6 +1356,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     name = get_name(noun)
     det = noun.get('det')
     wh = noun.get('wh')
+    rel = noun.get('rel-pn')
     expl = noun.get('expl')
     compound = noun.get('compound')
     arg_st = ''
@@ -1340,8 +1371,12 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
     ntype = name + '-noun-lex'
     
+##TO DO: allow wh-words to be rel pronouns as well
+
     if wh == 'yes':
       stype = 'wh-noun-lex'
+    elif rel == 'yes':
+      stype = 'rel-pronoun-lex'
     elif arg_st:
 ##2011-12-21 just s-comp for now, more to be added
 ##2012-12-22 also pps now. Assuming arguments on nouns are all optional
@@ -1395,11 +1430,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       stype = 'mod-noun-lex'
       mylang.add(ntype + ' := intersective-mod-lex & \
                       [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD ' + mod + ' ] > ].')
-    elif n_refl:
-      if n_refl == 'obl':
-         stype = 'refl-noun-lex'
-      elif n_refl == 'opt':
-         stype = 'opt-refl-noun-lex'
+    elif n_refl == 'obl':
+      stype = 'reflexive-noun-lex'
     elif compound:
       stype = 'compound-noun-lex'
     elif singlentype or det == 'opt':
@@ -1418,13 +1450,16 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       orth = stem.get('orth')
       pred = stem.get('pred')
       id = stem.get('name')
-      if not expl == 'yes':
+      if expl == 'yes':
+        typedef = TDLencode(id) + ' := expl-noun-lex & \
+                    [ STEM < "' + orth + '" > ].'
+      elif rel == 'yes' or n_refl == 'obl':
+        typedef = TDLencode(id) + ' :=  ' + ntype + ' & \
+                    [ STEM < "' + orth + '" > ].'
+      else:
         typedef = TDLencode(id) + ' := ' + ntype + ' & \
                     [ STEM < "' + orth + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-      else:
-        typedef = TDLencode(id) + ' := expl-noun-lex & \
-                    [ STEM < "' + orth + '" > ].'
       lexicon.add(typedef)
 
 
@@ -1487,9 +1522,10 @@ def create_wh_phrases(mylang, ch):
                                            SPR < > ] ], \
                          LKEYS.ALTKEYREL #altkeyrel ] ].'
     mylang.add(bwlsimple)
-   
+ 
+###future work: cross-classification between wh- and rel- words  
     wh_noun = \
-      'wh-noun-lex := basic-wh-simple-sem-lex & \
+      'wh-noun-lex := basic-wh-simple-sem-lex & non-rel-lex-item & \
                  [ SYNSEM [ LOCAL.CAT.HEAD noun & [ MOD < > ], \
                             LKEYS.KEYREL noun-relation ] ].'
     mylang.add(wh_noun)
@@ -1501,13 +1537,15 @@ def create_wh_phrases(mylang, ch):
                                   SPR < > ], \
                   NON-LOCAL.QUE 1-dlist ] ].'
     mylang.add(wh_det)
-
-
+    if ch.get('rel-clause') == 'yes':
+      mylang.add('wh-determiner-lex := non-rel-lex-item.')
   mylang.add('non-wh-lex-item := lex-item & [ SYNSEM.NON-LOCAL.QUE 0-dlist].')
   mylang.add('basic-adjective-lex :+ non-wh-lex-item.')
   mylang.add('basic-adverb-lex :+ non-wh-lex-item.')
   mylang.add('basic-adposition-lex :+ non-wh-lex-item.')
   mylang.add('determiner-lex := non-wh-lex-item.') 
+
+
 ######################################################################
 # customize_lexicon()
 #   Create the type definitions associated with the user's test

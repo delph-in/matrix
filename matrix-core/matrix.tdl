@@ -1784,7 +1784,10 @@ imp-head-opt-subj-phrase := basic-head-opt-subj-phrase & imperative-clause.
 ; structure, but note that the marker-comp construction does not correspond to 
 ; PS-84's head-marker structure (since the complement is not a head)
 
-
+; ASF 2012-01-06 Adding "basic-marker-subj-phrase" to matrix.tdl.
+; As it turns out, relative pronouns are arguments that combine with their
+; head while changing the head's [ MOD ] feature: this cannot work with 
+; general head-argument-phrases where HEAD (and thus its feature MOD) is shared
 
 marker-phrase := binary-phrase &
   [ SYNSEM.LOCAL [ AGR #agr,
@@ -1801,6 +1804,31 @@ marker-phrase := binary-phrase &
 
 basic-binary-marker-phrase := marker-phrase &
  [ NON-MARKER-DTR sign & [ SYNSEM.LOCAL.COORD - ] ].
+
+basic-marker-subj-phrase := basic-binary-marker-phrase &
+  [ SYNSEM phr-synsem & 
+	   [ LOCAL.CAT [ POSTHEAD +,
+			 VAL [ SUBJ < >,
+			       COMPS #comps,
+			       SPR #spr ] ],
+	     NON-LOCAL [ SLASH #slash,
+			 REL #rel,
+			 QUE #que ] ],
+    C-CONT [ RELS <! !>,
+	     HCONS <! !> ],
+    MARKER-DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ < [ LOCAL #local ]  >,
+		 		      COMPS #comps,	
+                                      SPR #spr ],
+		      NON-LOCAL [ SLASH #slash,
+				  REL #rel,
+				  QUE #que ] ],
+    NON-MARKER-DTR.SYNSEM  canonical-synsem &
+		 [ LOCAL #local & [ CAT [ VAL [ SUBJ olist,
+				       COMPS olist,
+				       SPR olist ] ] ],
+		   NON-LOCAL [ SLASH 0-dlist & [ LIST < > ],
+			       QUE 0-dlist ] ] ].
+
 
 basic-marker-comp-phrase := basic-binary-marker-phrase &
   [ SYNSEM phr-synsem-min &

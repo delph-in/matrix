@@ -25,6 +25,9 @@ def v2_and_verbal_clusters(ch, mylang, lrules, rules):
   else:
     add_revised_analysis_incl_obj_raising_constraints(ch, mylang, lrules)
 
+  if ch.get('rel-clause') == 'yes':
+    create_rel_clause_phrases(mylang, rules)
+
 
 def add_nexus_constraints_v2_with_cluster(ch, mylang):
 
@@ -1059,9 +1062,14 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
 def create_germanic_adjunct_phrases(ch, mylang, rules):
 ###need to separate adjunctial from adjectival phrases, due to different
 ###wo interactions
-  head_res = '+rp'
+  head_res = '+'  
   if ch.get('mod-noun') == 'yes':
-    head_res = '+nrp'
+    head_res += 'n'
+  if ch.get('rel-clause') == 'yes':
+      head_res += 'v'
+  head_res += 'r'
+  head_res += 'p'
+
   mylang.add('adjunct-head-phrase := basic-head-mod-phrase-simple & \
                   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + head_res + ' ].')
  
@@ -1103,6 +1111,48 @@ def create_germanic_adjunct_phrases(ch, mylang, rules):
     rules.add('adj-head-scop-vc := adj-head-scop-vc-phrase.')
 
 
+def create_rel_clause_phrases(mylang, rules):
+
+  basic_rel = \
+   '''basic-rel-arg-phrase := basic-binary-marker-phrase &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL intersective-mod & 
+                                   [ CONT.HOOK [ LTOP #hand,
+						 XARG #xarg ] ] ] >,		
+    NON-MARKER-DTR.SYNSEM [ NON-LOCAL [ QUE 0-dlist,
+				      REL 1-dlist ],
+			  LOCAL.CONT.HOOK [ LTOP #hand,
+					    XARG #xarg ] ],
+    MARKER-DTR.SYNSEM.LOCAL.CONT.HOOK [ LTOP #ltop,
+				      INDEX #index ],
+    C-CONT [ HOOK [ LTOP #ltop,
+		    INDEX #index ] ] ].'''
+  
+  mylang.add(basic_rel)
+  rel_ph = \
+   '''rel-arg-phrase := basic-rel-arg-phrase & marker-final-phrase &
+     [ SYNSEM.LOCAL.CAT [ HEAD verb & [ FORM #form & finite,
+   				        AUX #aux,
+			                MOD < [ LOCAL.CONT.HOOK.INDEX #ind ]> ],
+		          VAL [ SUBJ < >,
+			        COMPS < >,
+			        SPR < >,
+			        SPEC < > ],
+		          MC #mc & - ],
+       MARKER-DTR.SYNSEM.LOCAL.CAT [ HEAD verb & [ FORM #form,
+						   AUX #aux ],
+				     MC #mc ],
+       NON-MARKER-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX #ind ].'''
+  mylang.add(rel_ph)
+  mylang.add('rel-comp-phrase := rel-arg-phrase & basic-marker-comp-phrase.')
+  mylang.add('rel-subj-phrase := rel-arg-phrase & basic-marker-subj-phrase.')
+  rules.add('rel-comp := rel-comp-phrase.')
+  rules.add('rel-subj := rel-subj-phrase.')
+  
+  mylang.add('basic-head-comp-phrase :+ \
+                   [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist ].')
+  mylang.add('head-spec-phrase := [ SYNSEM.NON-LOCAL.REL #rel, \
+                  NON-HEAD-DTR.SYNSEM.NON-LOCAL.REL #rel ].')
+
 ########################################################
 # I) MC analysis (which follows from the original v-2 analysis
 # from the Grammar Matrix
@@ -1124,9 +1174,13 @@ def mc_v2_word_order(ch, mylang, rules):
 
 ####head-initial-head-nexus must have HEAD-DTR [ MC + ] for MC analysis,
 #### [ MC na ] for filler-gap  
-  mylang.add('head-initial-head-nexus := nonverbal-comp-phrase & \
-                  [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC + ].')
-
+  mylang.add('head-initial-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC + ].')
+  mylang.add('head-comp-phrase := nonverbal-comp-phrase.')
+  mylang.add('head-comp-phrase-2 := nonverbal-comp-phrase.')
+  if ch.get('wh-questions') == 'yes':
+    mylang.add('head-wh-comp-phrase := nonverbal-comp-phrase.')
+    mylang.add('head-wh-comp-phrase-2 := nonverbal-comp-phrase.')
+  
   if ch.get('q-inv'):  
     mylang.add('head-final-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV - ].')
 

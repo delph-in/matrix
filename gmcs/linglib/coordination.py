@@ -276,6 +276,21 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
       if cs.get(pos):
         define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, agreement,
     np_number, mc_inv_sh, mylang, rules, irules)
+        if pos in ('n','np'):
+          if ch.get('reflexives') == 'yes':
+            add_np_restrictions(mylang, mid, pos, csnum)
+
+
+def add_np_restrictions(mylang, mid, pn, csnum):
+
+  mylang.add(pn + csnum + '-bottom-coord-rule := \
+    [ NONCONJ-DTR.SYNSEM.LOCAL non-refl-local ].')
+  if mid:
+    mylang.add(pn + csnum + '-mid-coord-rule := \
+         [ LCOORD-DTR.SYNSEM.LOCAL non-refl-local ].')
+  mylang.add(pn + csnum + '-top-coord-rule := \
+         [ LCOORD-DTR.SYNSEM.LOCAL non-refl-local ].')
+   
 
 
 ###

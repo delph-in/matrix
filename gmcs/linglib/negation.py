@@ -126,7 +126,7 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules):
 ### shouldn't this be a lexical property? better to create a supertype
 ### that is standard assigned to noun-lex, verb-lex
 
-  mylang.add('+vcdmo :+ [ MOD < > ].',
+  mylang.add('+cdmo :+ [ MOD < > ].',
              'This grammar includes head-modifier rules.  To keep\n' +
              'out extraneous parses, constrain the value of MOD on\n' +
              'various subtypes of head.  This may need to be loosened later.\n' +
