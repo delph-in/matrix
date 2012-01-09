@@ -1241,6 +1241,11 @@ binary-headed-phrase := basic-binary-headed-phrase & binary-phrase.
 head-non-wh := binary-headed-phrase &
  [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-dlist ].
 
+head-non-rel := binary-headed-phrase &
+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist ].
+
+head-non-wh-or-rel := head-non-wh & head-non-rel.
+
 head-wh := binary-headed-phrase &
  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques,
    NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE 1-dlist ].
@@ -1788,6 +1793,8 @@ imp-head-opt-subj-phrase := basic-head-opt-subj-phrase & imperative-clause.
 ; As it turns out, relative pronouns are arguments that combine with their
 ; head while changing the head's [ MOD ] feature: this cannot work with 
 ; general head-argument-phrases where HEAD (and thus its feature MOD) is shared
+; ASF 2012-01-09 Adding 'basic-marker-mod-prhase' to matrix.tdl.
+; As for marker-subj: relative modifiers need this.
 
 marker-phrase := binary-phrase &
   [ SYNSEM.LOCAL [ AGR #agr,
@@ -1854,6 +1861,47 @@ basic-marker-comp-phrase := basic-binary-marker-phrase &
     NON-MARKER-DTR.SYNSEM canonical-synsem & #synsem,
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ] ].
+
+
+;;;Marker-mod-phrase cannot share head with head of element on non-marker's 
+;;;mod-list: could be specified to have empty mod value
+
+marker-mod-phrase-simple := basic-binary-marker-phrase &
+  [ SYNSEM [ NON-LOCAL [ SLASH [ LIST #first,
+				 LAST #last ],
+			 REL #rel,
+			 QUE #que ],
+	     LOCAL.CAT.VAL #val,
+	     MODIFIED hasmod ],
+    MARKER-DTR.SYNSEM 
+           [ LOCAL [ CAT [ VAL #val,
+                           POSTHEAD #ph,
+                           MC #hmc ],
+                     AGR #agr,
+                     CONT.HOOK #hdhook ],
+             NON-LOCAL [ SLASH #slash & [ LIST #middle,
+                                          LAST #last ],
+		        QUE #que,
+			REL #rel ],
+	     LIGHT #light,
+             MODIFIED #modif ],
+    NON-MARKER-DTR.SYNSEM 
+           [ LOCAL.CAT [ HEAD [ MOD < [ LOCAL local & 
+                                              [ CAT [ VAL #val,
+                                                      POSTHEAD #ph,
+                                                      MC #hmc ],
+                                                AGR #agr,
+                                                CONT.HOOK #hdhook ],
+                                        NON-LOCAL.SLASH #slash,
+					LIGHT #light,
+                                        MODIFIED #modif ] > ],
+                         VAL [ COMPS olist,
+                               SPR olist ] ],
+             NON-LOCAL [ SLASH [ LIST #first,
+                                 LAST #middle ],
+		         QUE 0-dlist ] ],
+    C-CONT.RELS <! !> ].
+
 
 
 

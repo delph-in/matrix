@@ -27,7 +27,8 @@ def v2_and_verbal_clusters(ch, mylang, lrules, rules):
 
   if ch.get('rel-clause') == 'yes':
     create_rel_clause_phrases(mylang, rules)
-
+    if not ch.get('wh-questions') == 'yes':
+      mylang.add('bare-np-phrase := head-nexus-phrase.')
 
 def add_nexus_constraints_v2_with_cluster(ch, mylang):
 
@@ -358,11 +359,11 @@ def create_wh_wo_phrases(ch, mylang):
   mylang.add('wh-adj-head-int-vc-phrase := wh-adj-head-int-phrase & \
                 head-final-invc & wh-adjunct-head-phrase.')
 
-  mylang.add('comp-aux-vc-phrase := head-non-wh.')
-  mylang.add('comp-head-vc-phrase := head-non-wh & share-que-non-head-phrase.')
+  mylang.add('comp-aux-vc-phrase := head-non-wh-or-rel.')
+  mylang.add('comp-head-vc-phrase := head-non-wh-or-rel & share-que-non-head-phrase.')
   mylang.add('wh-comp-head-vc-phrase := general-comp-head-vc-phrase & \
                nonverbal-comp-phrase & head-wh.') 
-  mylang.add('head-comp-phrase := head-non-wh.')
+  mylang.add('head-comp-phrase := head-non-wh-or-rel.')
   mylang.add('head-wh-comp-phrase := head-wh & basic-head-1st-comp-phrase & \
                           head-initial-head-nexus.')
 
@@ -658,7 +659,7 @@ def add_wh_additions_for_arg_comp(ch, mylang, rules):
 
   mylang.add('wh-comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                 HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
-  mylang.add('head-comp-phrase-2 := head-non-wh.')
+  mylang.add('head-comp-phrase-2 := head-non-wh-or-rel.')
   mylang.add('head-wh-comp-phrase-2 := basic-head-2nd-comp-phrase & \
                head-initial-head-nexus & basic-head-comp-share-vc & head-wh.')
   rules.add('head-wh-comp-2 := head-wh-comp-phrase-2.')
@@ -1114,12 +1115,14 @@ def create_germanic_adjunct_phrases(ch, mylang, rules):
 def create_rel_clause_phrases(mylang, rules):
 
   basic_rel = \
-   '''basic-rel-arg-phrase := basic-binary-marker-phrase &
+   '''basic-rel-phrase := basic-binary-marker-phrase &
   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL intersective-mod & 
                                    [ CONT.HOOK [ LTOP #hand,
+                                                 INDEX #ind,
 						 XARG #xarg ] ] ] >,		
     NON-MARKER-DTR.SYNSEM [ NON-LOCAL [ QUE 0-dlist,
-				      REL 1-dlist ],
+				        REL 1-dlist & 
+                                               [ LIST < [ INDEX #ind ] > ] ],
 			  LOCAL.CONT.HOOK [ LTOP #hand,
 					    XARG #xarg ] ],
     MARKER-DTR.SYNSEM.LOCAL.CONT.HOOK [ LTOP #ltop,
@@ -1129,10 +1132,9 @@ def create_rel_clause_phrases(mylang, rules):
   
   mylang.add(basic_rel)
   rel_ph = \
-   '''rel-arg-phrase := basic-rel-arg-phrase & marker-final-phrase &
+   '''rel-phrase := basic-rel-phrase & marker-final-phrase &
      [ SYNSEM.LOCAL.CAT [ HEAD verb & [ FORM #form & finite,
-   				        AUX #aux,
-			                MOD < [ LOCAL.CONT.HOOK.INDEX #ind ]> ],
+   				        AUX #aux ],
 		          VAL [ SUBJ < >,
 			        COMPS < >,
 			        SPR < >,
@@ -1140,16 +1142,35 @@ def create_rel_clause_phrases(mylang, rules):
 		          MC #mc & - ],
        MARKER-DTR.SYNSEM.LOCAL.CAT [ HEAD verb & [ FORM #form,
 						   AUX #aux ],
-				     MC #mc ],
-       NON-MARKER-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX #ind ].'''
+				     MC #mc ] ].'''
   mylang.add(rel_ph)
-  mylang.add('rel-comp-phrase := rel-arg-phrase & basic-marker-comp-phrase.')
-  mylang.add('rel-subj-phrase := rel-arg-phrase & basic-marker-subj-phrase.')
+#  mylang.add('rel-arg0-phrase := rel-phrase & \
+#   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX #index ]>, \
+#     NON-MARKER-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX #index ].')
+#  mylang.add('rel-arg2-phrase := rel-phrase & \
+#   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX #index ]>, \
+#     NON-MARKER-DTR.SYNSEM.LOCAL.CONT.RELS.LIST.FIRST.ARG2 #index ].')
+
+  mylang.add('rel-comp-phrase := rel-phrase & basic-marker-comp-phrase.')
+#  mylang.add('rel-arg2-comp-phrase := rel-arg2-phrase & \
+#                                          basic-marker-comp-phrase & \
+#              [ NON-MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD adp ].')
+  mylang.add('rel-subj-phrase := rel-phrase & basic-marker-subj-phrase.')
+  
+  mylang.add('rel-mod-phrase := rel-phrase & marker-mod-phrase-simple & \
+       [ SYNSEM.LOCAL.CAT.HEAD #head, \
+         NON-MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD adp & \
+                                      [ MOD < [ LOCAL.CAT.HEAD #head ] > ] ].')
+
   rules.add('rel-comp := rel-comp-phrase.')
   rules.add('rel-subj := rel-subj-phrase.')
-  
+  rules.add('rel-mod := rel-mod-phrase.')
+####TO DO: ADD REL-RESTRICTION TO HEAD-COMP ETC IF NO WH-QUESTIONS IN THE
+####GRAMMAR
+
   mylang.add('basic-head-comp-phrase :+ \
-                   [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist ].')
+                   [ SYNSEM.NON-LOCAL.REL #rel, \
+                     NON-HEAD-DTR.SYNSEM.NON-LOCAL.REL #rel ].')
   mylang.add('head-spec-phrase := [ SYNSEM.NON-LOCAL.REL #rel, \
                   NON-HEAD-DTR.SYNSEM.NON-LOCAL.REL #rel ].')
 
@@ -1203,7 +1224,7 @@ def wh_mc_word_order_phrases(mylang):
   mylang.add('wh-subj-head-phrase := basic-head-wh-subj-phrase & head-final-head-nexus.')
   mylang.add('wh-adj-head-2nd-int-phrase := wh-adj-head-int-phrase & \
                head-final-head-nexus & wh-adjunct-head-phrase.')
-  mylang.add('comp-head-phrase := head-non-wh.')
+  mylang.add('comp-head-phrase := head-non-wh-or-rel.')
   mylang.add('wh-comp-head-phrase := head-wh & basic-head-1st-comp-phrase & \
                         head-final-head-nexus.')
 
@@ -1400,7 +1421,7 @@ def wh_mc_argcomp_word_order(ch, mylang, rules):
   if ch.get('old-analysis') != 'yes':
     mylang.add('wh-comp-head-phrase := basic-head-comp-share-vc.')
 
-  mylang.add('comp-head-phrase-2 := head-non-wh.')
+  mylang.add('comp-head-phrase-2 := head-non-wh-or-rel.')
   mylang.add('wh-comp-head-phrase-2 := basic-head-2nd-comp-phrase & \
                head-final-head-nexus & basic-head-comp-share-vc & head-wh.')
   rules.add('wh-comp-head-2 := wh-comp-head-phrase-2.')

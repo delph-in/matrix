@@ -96,6 +96,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       geom_prefix = 'SC-ARGS.FIRST.'
     elif h == 'lower':
       geom_prefix = 'SC-ARGS.REST.FIRST.'
+    elif h == 'rel':
+      geom_prefix = 'SYNSEM.NON-LOCAL.REL.LIST.FIRST.'
 
     if pos == 'auxcomplement':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
@@ -106,10 +108,12 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         geom = f[2]
 ###modifier features marked on adjective and done through agreement
 ###by rules if grammar intended for language learning
-        if h == 'mod' and ll_adj:
+        if (h == 'mod' and ll_adj) or h == 'rel': 
           my_parts = geom.split('.')
-          geom = my_parts[4] + "." + my_parts[5]     
-
+          geom = ''
+          if h == 'rel':
+            geom = my_parts[3] + '.'
+          geom += my_parts[4] + "." + my_parts[5]     
 
 # geom2 covers aux-rule case
     geom2 = ''

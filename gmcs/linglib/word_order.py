@@ -840,11 +840,12 @@ def customize_np_word_order(mylang, ch, rules):
 						    CONT.HOOK.INDEX #modarg ], \
 					         LIGHT + ] > ], \
 		              VAL #val ], \
-        ARGS < head-spec-phrase & [ SYNSEM.LOCAL [ CAT [ HEAD noun & [ CASE gen & #case, \
+        ARGS < head-spec-phrase & [ SYNSEM [ LOCAL [ CAT [ HEAD noun & [ CASE gen & #case, \
 					            MOD < > ], \
 				      VAL #val & [ SPR < > ] ], \
                                 COORD -, \
-			        CONT.HOOK.INDEX #argind ] ] >, \
+			        CONT.HOOK.INDEX #argind ], \
+                                        NON-LOCAL.REL 0-dlist ] ] >, \
         C-CONT [ HOOK [ LTOP #ltop, \
                         INDEX #modarg ], \
                  RELS <! [ LBL #ltop, \
@@ -878,15 +879,17 @@ def customize_np_word_order(mylang, ch, rules):
 						           MC + ], \
                                                  CONT.HOOK [ LTOP #ltop, \
                                                        INDEX #index ] ] ] > ], \
-		                      VAL [ SPR < >, \
-			                    COMPS < >, \
-			                    SPEC < > ] ] ], \
+		                      VAL   [ SPR < >, \
+                                              SUBJ < >, \
+			                      COMPS < >, \
+			                      SPEC < > ] ] ], \
                           NON-LOCAL #nonloc ], \
                   ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD noun & [ MOD < >, \
                                                                 CASE nom ], \
                                                   VAL [ SPR < [ OPT + ] >, \
                                                         COMPS < >, \
-                                                        SPEC <  > ] ], \
+                                                        SPEC <  >, \
+                                                        SUBJ < > ] ], \
                                             CONT.HOOK.INDEX #argind, \
                                             COORD - ], \
                                     NON-LOCAL #nonloc, \
@@ -1129,6 +1132,12 @@ def customize_head_comp_non_main_phrase(ch, mylang):
     mylang.add('share-que-non-head-phrase := binary-headed-phrase & \
                   [ SYNSEM.NON-LOCAL.QUE #que, \
                     NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].')
+  rel = ''
+  if ch.get('rel-clause') == 'yes':
+    rel = 'on'
+    mylang.add('share-rel-non-head-phrase := binary-headed-phrase & \
+                  [ SYNSEM.NON-LOCAL.REL #rel, \
+                    NON-HEAD-DTR.SYNSEM.NON-LOCAL.REL #rel ].')
   if ihead:
     mylang.add('head-comp-sub-phrase := basic-head-1st-comp-phrase & \
                     head-initial & \
@@ -1141,6 +1150,8 @@ def customize_head_comp_non_main_phrase(ch, mylang):
                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL - ].')
     if wh:
       mylang.add('head-comp-sub-phrase := share-que-non-head-phrase.')
+    if rel:
+      mylang.add('head-comp-sub-phrase := share-rel-non-head-phrase.')
   if fhead: 
     mylang.add('comp-head-sub-phrase := basic-head-1st-comp-phrase & \
                     head-final & \
@@ -1151,6 +1162,8 @@ def customize_head_comp_non_main_phrase(ch, mylang):
                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL + ].') 
     if wh:
       mylang.add('comp-head-sub-phrase := share-que-non-head-phrase.') 
+    if rel:
+      mylang.add('comp-head-sub-phrase := share-rel-non-head-phrase.') 
 
   if ch.get('clz-optionality'):
     mylang.add('create-informal-vcomp-phrase := unary-phrase &\
@@ -1198,8 +1211,8 @@ def add_subclausal_rules(ch, rules):
 def create_wh_phrases(ch, mylang, rules):
   mylang.add('lex-rule :+ [ SYNSEM.NON-LOCAL.QUE #que, \
                             DTR.SYNSEM.NON-LOCAL.QUE #que ].')
-
-  mylang.add('bare-np-phrase := head-nexus-que-phrase.')
+  
+  mylang.add('bare-np-phrase := head-nexus-phrase.')
  
   if ch.get('has-compl') == 'yes':
     wh_sub_type = \

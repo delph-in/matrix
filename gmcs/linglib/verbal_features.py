@@ -142,7 +142,26 @@ def init_form_hierarchy(ch, hierarchies):
   if ch.get('has-aux') == 'yes' or 'noaux-fin-nf' in ch:
 
     hier.add('nonfinite', 'form')
-    hier.add('finite', 'form')
+###special case if auxiliary selection takes place
+    auxsel = auxiliary_selection(ch)
+    if not auxsel:
+      hier.add('finite', 'form')
+    else:
+      auxs = auxsel[1]
+      st = ''
+      t = ''
+      for aux in auxs:
+        auxf = aux + '-only'
+        hier.add(auxf, 'form')
+        if st:
+          st += ' &'
+        st += auxf
+        if t:
+          t += '-or-'
+        t += aux 
+      hier.add(t, st)
+      hier.add('finite', t)
+      auxs_forms = auxsel[0]
 
     for p in ('nf', 'fin'):
 
@@ -154,10 +173,35 @@ def init_form_hierarchy(ch, hierarchies):
 
         sub = subform.get('name')
         hier.add(sub, sup)
+###additional 
+        if auxsel:
+          if not sub in auxs_forms:
+            hier.add(sub, t)
+          else:
+            for aux in auxs:
+              hier.add(sub+'-'+aux, sub)
+              hier.add(sub+'-'+aux, aux + '-only')
 
   if not hier.is_empty():
     hierarchies[hier.name] = hier
 
+
+def auxiliary_selection(ch):
+  auxsel = []
+  if ch.get('aux-select') == 'yes':
+    asel_form = ch.get('aux-sel-form')
+    my_forms = []
+    if ',' in asel_form:
+      my_forms = asel_form.split(',')
+    else:
+      my_forms.append(asel_form)
+    sel_auxs = ch.get('sel_aux',[])
+    my_auxs = []
+    for aux in sel_auxs:
+      my_auxs.append(aux.get('value'))
+    auxsel.append(my_forms)
+    auxsel.append(my_auxs)
+  return auxsel
 
 def customize_form(mylang, hierarchies):
   if 'form' in hierarchies:

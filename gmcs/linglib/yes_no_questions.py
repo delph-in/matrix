@@ -36,12 +36,14 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
 			same-posthead-lex-rule &
                         constant-lex-rule &
       [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ INV +,
-                                           FORM finite ],
+                                             FORM finite,
+                                             MOD #mod ],
                              VAL #val,
                              MC na ],
                          COORD #coord ],
                  LKEYS #lkeys ],
-        DTR.SYNSEM [ LOCAL [ CAT [ HEAD verb & [ INV - ],
+        DTR.SYNSEM [ LOCAL [ CAT [ HEAD verb & [ INV -,
+                                                 MOD #mod ],
                                    VAL #val ],
                              COORD #coord ],
                      LKEYS #lkeys ]].'''

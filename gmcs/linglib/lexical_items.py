@@ -200,7 +200,14 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                 [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
     mylang.add(typedef)
 
-
+  ###Germanic slightly generalized: using form to allow verbs to select
+  ###for an auxiliary (haben/sein + ptc)
+    if ch.get('aux-select') == 'yes':
+      auxs = ch.get('sel_aux',[])
+      for aux in auxs:
+        auxn = aux.get('value')
+        mylang.add(auxn + '-only-verb-lex := verb-lex & \
+                    [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + auxn + '-only ].')
   #Germanic change: uses VC differently
     if vcluster and not wo == 'v2':
       mylang.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
@@ -382,6 +389,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
     name = get_name(verb)
     val = verb.get('valence')
+    aux_s = verb.get('aux-select')
 
     i = val.find(',')
     dir_inv = ''
@@ -436,6 +444,10 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     vtype = name + '-verb-lex'
 
     mylang.add(vtype + ' := ' + stype + '.')
+
+    if aux_s:
+      mylang.add(vtype + ' := ' + aux_s + '-only-verb-lex.')
+
 
     if o_drop_default:
       if val == 'trans' or '-' in val:
@@ -566,6 +578,7 @@ def customize_copula(mylang, ch, lexicon, hierarchies):
     userstypename = name + '-copula-lex'
     subj = cop.get('subj','')
     subjc = cop.get('subj_case','') #TODO: verify _-delimited key
+    aux_s = cop.get('aux-select')
     cases = case.case_names(ch)
     subjcase = case.canon_to_abbr(subjc, cases)
 
@@ -584,6 +597,8 @@ def customize_copula(mylang, ch, lexicon, hierarchies):
       mylang.add(userstypename + ' := \
                        [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT - ].')
     
+    if aux_s:
+      mylang.add(userstypename + ' := ' + aux_s + '-only-verb-lex.')
 
     features.customize_feature_values(mylang, ch, hierarchies, cop, userstypename, 'cop')
     add_copula_to_lexicon(userstypename, cop, lexicon)
@@ -622,6 +637,7 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
     mylang.add('determiner-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')    
     
     if ch.get('rel-clause') == 'yes':
+      create_rel_determiner(mylang)
       mylang.add('determiner-lex := non-rel-lex-item.')
   # Determiners
   if 'det' in ch:
@@ -630,9 +646,12 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
   for det in ch.get('det',[]):
     name = get_name(det)
     wh = det.get('wh')    
-    
+    rel = det.get('rel')
+
     if wh == 'yes':
       stype = 'wh-determiner-lex'
+    elif rel == 'yes':
+      stype = 'rel-determiner-lex'
     else:
       stype = 'determiner-lex'
     dtype = name + '-determiner-lex'
@@ -650,6 +669,41 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
                     [ STEM < "' + orth + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
+
+
+def create_rel_determiner(mylang):
+  comment = '''relative determiners cannot inherit from basic-determiner-lex, because they have more than one relation. Basic-rel-determiner-lex has an underspecified RELS value (suboptimal structure of hierarchy)'''
+  basic_rel_det = \
+   '''basic-rel-determiner-lex := norm-hook-lex-item &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD det,
+			   VAL.SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #ind,
+							    LTOP #larg ]],
+		     CONT [ HCONS <! qeq &
+				   [ HARG #harg,
+				     LARG #larg ] !> ] ],
+	     LKEYS.KEYREL quant-relation &
+		   [ ARG0 #ind,
+		     RSTR #harg ] ] ].'''
+  mylang.add(basic_rel_det, comment)
+  
+#most definitely German specific, can be generalized by allowing choices
+#to define pred value of rel-determiner-lex
+  rel_det = \
+   '''rel-determiner-lex := basic-rel-determiner-lex & basic-zero-arg & 
+                                                          non-wh-lex-item &
+       [ SYNSEM [ LOCAL [ CAT.VAL [ SUBJ < >,
+                                    COMPS < >,
+                                    SPR < > ],
+		          CONT [ HOOK [ INDEX #index ],
+			         RELS <! [ ], [ LBL #lbl,
+					        PRED "_von_v_mod_rel",
+					        ARG0 event,
+					        ARG1 #index,
+					        ARG2 #relarg ] !> ] ],
+	          NON-LOCAL.REL 1-dlist & [ LIST < [ LTOP #lbl,
+		     				     INDEX #relarg ] > ] ] ].'''
+  mylang.add(rel_det)
+
 
 def customize_adjectives(mylang, ch, lexicon):
 
@@ -1359,6 +1413,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     rel = noun.get('rel-pn')
     expl = noun.get('expl')
     compound = noun.get('compound')
+    pers_n = noun.get('pers-name')
     arg_st = ''
     if noun.get('arg-st'):
       arg_st = noun.get('arg-st')
@@ -1444,6 +1499,9 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     if not expl:
       mylang.add(ntype + ' := ' + stype + '.')
 
+      if pers_n:
+        mylang.add(ntype + ' := [ SYNSEM.LKEYS.KEYREL named-relation ].')
+
     features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
 
     for stem in noun.get('stem', []):
@@ -1456,6 +1514,10 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       elif rel == 'yes' or n_refl == 'obl':
         typedef = TDLencode(id) + ' :=  ' + ntype + ' & \
                     [ STEM < "' + orth + '" > ].'
+      elif pers_n:
+        typedef = TDLencode(id) + ' := ' + ntype + ' & \
+                    [ STEM < "' + orth + '" >, \
+                      SYNSEM.LKEYS.KEYREL.CARG "' + pred + '" ].'
       else:
         typedef = TDLencode(id) + ' := ' + ntype + ' & \
                     [ STEM < "' + orth + '" >, \

@@ -109,6 +109,9 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
   # que feature shared for all if wh-is present
   if 'que' in agr:
     share_wh_properties(mylang, pn, mid)
+  
+  if 'rel' in agr:
+    share_rel_properties(mylang, pn, mid)
 
   if pos == 'n' or pos == 'np' or pos == 'adj':
     noun_feat = ['case','vc']
@@ -257,7 +260,8 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
       agreement += ',' + f
     if ch.get('wh-questions') == 'yes':
       agreement += ',que' 
- 
+    if ch.get('rel-clause') == 'yes':
+      agreement += ',rel'
 ####
 ###object-raising with mc-word-order and arg-composition aux
 ###cannot work if MC is shared and INV is passed up
@@ -341,6 +345,19 @@ def share_wh_properties(mylang, pn, mid):
   add_sharing_supertypes(mylang, pn, mid, f)
 
 
+def share_rel_properties(mylang, pn, mid):
+  path = 'SYNSEM.NON-LOCAL.'
+  f = 'rel'
+  add_shared_features(mylang, f, path, mid)
+  add_sharing_supertypes(mylang, pn, mid, f)
+  mylang.add(f + '-agr-top-coord-rule := \
+                     [ LCOORD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist ].')
+  if mid:
+    mylang.add(f + '-agr-mid-coord-rule := \
+                     [ LCOORD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist ].')
+  mylang.add(f + '-agr-bottom-coord-rule := \
+                     [ NONCONJ-DTR.SYNSEM.NON-LOCAL.REL 0-dlist ].')
+
 #######
 # GERMANIC
 #
@@ -384,9 +401,12 @@ def add_adposition_rules(mylang):
 
   ###adp-rules must share their head because of PRD value
   mylang.add('adp-coord-phrase := event-coord-phrase & \
-  [ SYNSEM.LOCAL.CAT.HEAD #head & adp, \
-    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD #head, \
-    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD #head ].')
+  [ SYNSEM.LOCAL.CAT.HEAD adp & [ MOD #mod, \
+                                  PRD #prd ], \
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD adp & [ MOD #mod, \
+                                             PRD #prd ], \
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD adp & [ MOD #mod, \
+                                             PRD #prd ] ].')
 
   mylang.add('basic-adp-top-coord-rule := adp-coord-phrase & \
                [ C-CONT [ RELS <! !>, \

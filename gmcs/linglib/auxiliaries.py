@@ -226,9 +226,13 @@ def customize_users_auxtype(auxtypename, aux, ch, mylang, hierarchies):
   """
   auxcomp = ch.get('aux-comp')
   userstypename = get_users_type_name(aux)
+  aux_s = aux.get('aux-select')
   features.customize_feature_values(mylang, ch, hierarchies, aux, userstypename, 'aux')
   features.customize_feature_values(mylang, ch, hierarchies, aux, userstypename, 'auxcomplement')
   mylang.add(userstypename + ':= ' + auxtypename + '.')
+  if aux_s:
+    mylang.add(userstypename + ' := ' + aux_s + '-only-verb-lex.')
+
 
 def get_users_type_name(aux):
   name = aux.get('name', '')
@@ -257,7 +261,6 @@ def customize_auxiliaries(mylang, ch, lexicon, hierarchies):
     auxcomp = ch.get('aux-comp')
     userstypename = get_users_type_name(aux)
     sem = aux.get('sem', '')
-
     define_arg_str_and_valency(aux, auxcomp, ch, mylang)
     create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies)
     add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon)
