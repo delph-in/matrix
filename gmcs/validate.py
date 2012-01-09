@@ -513,7 +513,7 @@ def validate_word_order(ch, vr):
            'You specified lexical entries for determiners, ' +
            'but said your language has none.')
 
-  if ch.get('has-dets') and (not 'det' in ch):
+  if (ch.get('has-dets') == 'yes') and (not 'det' in ch):
     vr.err('has-dets',
            'You specified that your language has determiners, ' +
            'you must define them on the lexicon page.')
