@@ -1327,7 +1327,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       mylang.add('noun-lex := non-reflexive-noun-lex.')
   mylang.add('non-rel-lex-item := lex-item & \
                                         [ SYNSEM.NON-LOCAL.REL 0-dlist ].')
-  mylang.add('non-wh-or-rel-lex-item := non-rel-lex-item & non-wh-lex-item.')
+  if ch.get('wh-questions') == 'yes':
+    mylang.add('non-wh-or-rel-lex-item := non-rel-lex-item & non-wh-lex-item.')
   
   if ch.get('mod-noun') == 'yes':
     mylang.add('mod-noun-lex := general-noun-lex & \
