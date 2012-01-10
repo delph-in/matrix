@@ -236,13 +236,17 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
   mylang.add(typedef)
 
 ###adding type selecting for reflexive pronouns
+  refl = False
   if ch.get('reflexives') == 'yes':
+    refl = True
     typedef = \
        'refl-verb-lex := ' + mainorverbtype + ' & \
          [ SYNSEM.LOCAL.CAT.VAL [ COMPS.FIRST.LOCAL refl-local & \
                                      [ CONT.HOOK.INDEX #ind ], \
                              SUBJ < [ LOCAL.CONT.HOOK.INDEX #ind ] > ] ].'
     mylang.add(typedef)    
+    mylang.add('non-refl-verb-lex := ' + mainorverbtype + ' & \
+                 [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL non-refl-local ].')
 
   if ch.get('expl-two-arg') == 'yes':
     comment = 'Matix only provides explicit arg only or clausal complement. \
@@ -255,6 +259,9 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     mylang.add(typedef, comment)
     mylang.add('expl-two-arg-verb-lex := expl-two-arg-lex-item & \
                     ' + mainorverbtype + '.')
+    if refl:
+      mylang.add('expl-two-arg-verb-lex := \
+                  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL non-refl-local ].')
   if hclightallverbs:
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].')
   elif hclight:
@@ -279,18 +286,21 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
   # transitive verb lexical type
   typedef = \
-    'transitive-verb-lex := ' + mainorverbtype + ' & transitive-lex-item & \
+    'transitive-verb-lex := transitive-lex-item & \
        [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >, \
          ARG-ST < [ ], \
                   #comps & \
                   [ LOCAL.CAT [ VAL [ SPR < >, \
                                       COMPS < > ] ] ] > ].'
   mylang.add(typedef)
-
+  if refl:
+    mylang.add('transitive-verb-lex := non-refl-verb-lex.')
+  else:
+    mylang.add('transitive-verb-lex := ' + mainorverbtype + '.')
 # ditransitive verb lexical type
   if ch.get('ditransitives') == 'yes':
     typedef = \
-    'ditransitive-verb-lex := ' + mainorverbtype + ' & ditransitive-lex-item & \
+    'ditransitive-verb-lex := ditransitive-lex-item & \
        [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp1 , #comp2 >, \
          ARG-ST < [ ], \
                   #comp1 & \
@@ -300,7 +310,10 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                   [ LOCAL.CAT [ VAL [ SPR < >, \
                                       COMPS < > ] ] ]  > ].'
     mylang.add(typedef)
-
+    if refl:
+      mylang.add('ditransitive-verb-lex := non-refl-verb-lex.')
+    else:
+      mylang.add('ditransitive-verb-lex := ' + mainorverbtype + '.')
  # clausal complement verb
   if ch.get('emb-clause-2nd-verb') == 'yes':
     typedef = \
@@ -337,16 +350,18 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
 
   if ch.get('obj-raising') == 'yes':
+    if refl:
+      mylang.add('obj-raising-verb-lex := non-refl-verb-lex.')
+    else:
+      mylang.add('obj-raising-verb-lex := ' + mainorverbtype + '.')
     typedef = \
-    'obj-raising-verb-lex := ' + mainorverbtype + ' & \
-       distrans-second-arg-raising-lex-item & \
+    'obj-raising-verb-lex := distrans-second-arg-raising-lex-item & \
      [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
 			      SPR < >, \
 			      SPEC < > ], \
        ARG-ST < #subj & [ LOCAL.CAT [ VAL.SPR < > ] ], [ ], [ ] > ].'
 
     mylang.add(typedef)
-
     if ch.get('vc-analysis') == 'aux-rule':
       comps_struc = \
       ' [ SYNSEM.LOCAL.CAT.VAL.COMPS < #obj, #vcomp >, \
