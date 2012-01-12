@@ -1126,6 +1126,12 @@ def customize_head_comp_non_main_phrase(ch, mylang):
   ihead = determine_head_value(my_iheads)
   fhead = determine_head_value(my_fheads)
 
+  vc_share = ''
+  if ch.get('verb-cluster') == 'yes' and ch.get('word-order') == 'v2':
+    vc_share = \
+      '[ SYNSEM.LOCAL.CAT.VC #vc, \
+         HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].'
+    
   wh = ''
   if ch.get('wh-questions') == 'yes':
     wh = 'on'
@@ -1142,6 +1148,8 @@ def customize_head_comp_non_main_phrase(ch, mylang):
     mylang.add('head-comp-sub-phrase := basic-head-1st-comp-phrase & \
                     head-initial & \
                 [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + ihead +  ' ].')
+    if vc_share:
+      mylang.add('head-comp-sub-phrase := ' + vc_share) 
 ###assuming (probably wrong cross-linguistically) that if both orders occur
 ###at least one category allows both orders, and feature HEADFINAL
 ###was introduced somewhere
@@ -1156,6 +1164,8 @@ def customize_head_comp_non_main_phrase(ch, mylang):
     mylang.add('comp-head-sub-phrase := basic-head-1st-comp-phrase & \
                     head-final & \
                 [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + fhead + ' ].')
+    if vc_share:
+      mylang.add('comp-head-sub-phrase := ' + vc_share) 
 ###see comment above
     if ihead:
       mylang.add('comp-head-sub-phrase := \

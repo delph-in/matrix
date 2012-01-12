@@ -182,8 +182,8 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     auxorder = ch.get('aux-comp-order')
     vcluster = determine_vcluster(auxcomp, auxorder, wo, ch)
 
-    if ch.get('wh-question') == 'yes':
-      verb_super = 'non-wh-or-rel-lex-item'
+    if ch.get('rel-clause') == 'yes':
+      verb_super = 'non-rel-lex-item'
     else:
       verb_super = 'lex-item'
 
@@ -245,8 +245,12 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                                      [ CONT.HOOK.INDEX #ind ], \
                              SUBJ < [ LOCAL.CONT.HOOK.INDEX #ind ] > ] ].'
     mylang.add(typedef)    
+    if ch.get('rel-clause') == 'yes':
+       non_r_loc = 'rel-non-refl-local'
+    else:
+      non_r_loc = 'non-refl-local'
     mylang.add('non-refl-verb-lex := ' + mainorverbtype + ' & \
-                 [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL non-refl-local ].')
+                 [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL ' + non_r_loc + ' ].')
 
   if ch.get('expl-two-arg') == 'yes':
     comment = 'Matix only provides explicit arg only or clausal complement. \
@@ -261,7 +265,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                     ' + mainorverbtype + '.')
     if refl:
       mylang.add('expl-two-arg-verb-lex := \
-                  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL non-refl-local ].')
+                 [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL ' + non_r_loc + ' ].')
   if hclightallverbs:
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].')
   elif hclight:
@@ -1326,7 +1330,10 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 						  INDEX #ind,
 						  XARG #xarg ] > ] ] ] ]. '''
       mylang.add(relprn)
-      mylang.add('rel-local := local.')
+      if refl:
+        mylang.add('rel-local := rel-non-refl-local.',section='features')
+      else:
+        mylang.add('rel-local := local.',section='features')
     if refl:
       refl_prn = \
        '''reflexive-noun-lex := non-sem-noun-lex &
@@ -1336,7 +1343,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         mylang.add('reflexive-noun-lex := non-wh-or-rel-lex-item.')
 
       mylang.add('refl-local := local.', 'Distinguishing reflexive nouns from non-reflexive nouns.', section='features')
-      mylang.add('non-refl-local := local.', section='features')   
+      if ch.get('rel-clause') == 'yes':
+        mylang.add('rel-non-refl-local := local.', section='features')
+        mylang.add('non-refl-local := rel-non-refl-local.') 
+      else:
+        mylang.add('non-refl-local := local.', section='features')   
       mylang.add('non-reflexive-noun-lex := basic-noun-lex & \
                               [ SYNSEM.LOCAL non-refl-local ].')
       mylang.add('noun-lex := non-reflexive-noun-lex.')

@@ -58,16 +58,31 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
 ##for free word order or v2 word order, leave getting dropped object out
 ##until the end
       mylang.add('basic-head-opt-comp-phrase :+ \
-                     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
-                                              COMPS < >, \
-                                              SPR < >, \
-                                              SPEC < > ] ].', section='addenda')
+                     [ SYNSEM [ LOCAL.CAT [ VAL [ SPR < >, \
+                                                  SPEC < > ], \
+                                            MC #mc, \
+                                            VC #vc ], \
+                                NON-LOCAL [ QUE #que, \
+                                            REL #rel ] ], \
+                        HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC #mc, \
+                                                      VC #vc ], \
+                                          NON-LOCAL [ QUE #que, \
+                                                      REL #rel ], \
+                                          MODIFIED notmod ] ].', 
+                    section='addenda')
       if ch.get('v2-analysis') == 'filler-gap':
         mylang.add('basic-head-opt-comp-phrase :+ \
-                      [ SYNSEM.NON-LOCAL.SLASH #slash, \
-                        HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].')
+                      [ SYNSEM [ NON-LOCAL.SLASH #slash, \
+                                 LOCAL.CAT [ HEAD.AUX -, \
+                                             VFRONT #vfront ] ], \
+                        HEAD-DTR.SYNSEM [ NON-LOCAL.SLASH #slash, \
+                                          LOCAL.CAT.VFRONT #vfront ] ].')
+      else:
+        mylang.add('basic-head-opt-comp-phrase :+ \
+                     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
+                                              COMPS < > ] ].') 
     mylang.add('no-obj-drop-verb-lex := transitive-verb-lex &\
-                        [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].')
+                        [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].')
     mylang.add('obj-drop-verb-lex := transitive-verb-lex.')
 
   if ch.get('subj-drop') == 'subj-drop-lex' and ch.get('obj-drop') == 'obj-drop-lex':

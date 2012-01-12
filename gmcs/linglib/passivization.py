@@ -34,13 +34,14 @@ def customize_passivization(ch, mylang, lrules, lexicon):
     typedef = \
     '''
   passive-lex-rule := same-cont-lex-rule & no-ccont-lex-rule &
- [ SYNSEM.LOCAL [ CAT [ HEAD verb,
+ [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ MOD #mod ],
 			VAL [ SUBJ < [ LOCAL.CONT #arg2 ] >,
 			      COMPS < [ LOCAL.CONT #arg1,
 					OPT + ] . #vcomps > ] ] ],
-   DTR.SYNSEM.LOCAL [ CAT [ HEAD verb,
-			    VAL [ SUBJ < [ LOCAL.CONT #arg1 ] >,
-				  COMPS < [ LOCAL.CONT #arg2 ] . #vcomps > ] ] ] ].'''
+            NON-LOCAL #nonloc ],
+   DTR.SYNSEM [ LOCAL [ CAT [ HEAD verb & [ MOD #mod ],
+		  	    VAL [ SUBJ < [ LOCAL.CONT #arg1 ] >,
+				  COMPS < [ LOCAL.CONT #arg2 ] . #vcomps > ] ] ], NON-LOCAL #nonloc ] ].'''
     mylang.add(typedef)
     lrules.add('passive-lr := passive-lex-rule.')
     lr_n = 'passive-lex-rule'
@@ -87,6 +88,7 @@ def customize_passivization(ch, mylang, lrules, lexicon):
         mylang.add(lr_n + ' := ' + path + ' ].')
 
 ###passing up features that need to be passed up
+    vc = False
     if ch.get('has-aux') == 'yes':
       mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX #aux, \
                              DTR.SYNSEM.LOCAL.CAT.HEAD.AUX #aux ].')
@@ -94,10 +96,21 @@ def customize_passivization(ch, mylang, lrules, lexicon):
       mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.INV #inv & -, \
                              DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv ].')
     if ch.get('verb-cluster') == 'yes' and ch.get('word-order') == 'v2':
-      if ch.get('vc-analysis') == 'basic':
-        mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.VFRONT #vfront & na-or--, \
-                                 DTR.SYNSEM.LOCAL.CAT.VFRONT #vfront ].')
-
+      vc = True
+      mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.VC #vc , \
+                                 DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
+      mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.MC #mc, \
+                                 DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+#      if ch.get('vc-analysis') == 'basic':
+#        if ch.get('v2-analysis') == 'mc':
+#          mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.VFRONT #vfront, \
+#                                 DTR.SYNSEM.LOCAL.CAT.VFRONT #vfront ].')
+#          mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.VFRONT na-or-- ].')
+#         
+#        else:
+      mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.VFRONT +, \
+                                 DTR.SYNSEM.LOCAL.CAT.VFRONT na-or-- ].')
+           
 ###If the subject is marked by an adposition after passivization,
 ###we need something like a 'case-marking-adposition', but without case
 
@@ -115,6 +128,8 @@ def customize_passivization(ch, mylang, lrules, lexicon):
                              [ LOCAL.CAT [ HEAD noun,
                                            VAL.SPR < > ] ] > ].'''
       mylang.add(typedef)
+      if vc:
+        mylang.add('marking-only-adp-lex := [ SYNSEM.LOCAL.CAT.VC na-or-- ].')
       if 'case' in dsubj_mark:
         m_parts = dsubj_mark.split('-')
         case = m_parts[1]

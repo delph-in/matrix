@@ -1,4 +1,3 @@
-
 ########################################################
 # COMMON COMPONENTS V2+CLUSTERS ACROSS ANALYSES CHOICES
 # GENERAL COMPONENTS
@@ -78,7 +77,9 @@ def add_basic_phrases_v2_with_cluster(ch, mylang, rules):
     hf_invc = 'head-final-invc'
 
   mylang.add(hf_invc + ' := [ SYNSEM.LOCAL.CAT.HEAD verb ].')
-
+  if ch.get('q-inv'):  
+    mylang.add(hf_invc + ' := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
+ 
 ###Analysis independent rules
 
   if ch.get('vc-placement') == 'pre':
@@ -92,7 +93,7 @@ def add_basic_phrases_v2_with_cluster(ch, mylang, rules):
 ###word order (capturing SUBJ AUX OBJ TV, where OBJ is not first complement
 ###of the auxiliary)
 
-  mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
+  mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus & nonverbal-comp-phrase.')
   if ch.get('argument-order') == 'fixed':
     add_fixed_argument_order_constraints(mylang)
     path = 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD'
@@ -136,7 +137,8 @@ def general_post_objectival_cluster_phrases(ch, mylang):
   if ch.get('aux-comp-order') == 'after': 
     mylang.add('comp-aux-vc-phrase := [ HEAD-DTR.SYNSEM.LIGHT +, \
                                           NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
-
+    if ch.get('q-inv'):
+      mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
   elif ch.get('aux-comp-order') == 'both':
     mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT [ HEADFINAL #hf ], \
                                             HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL +, \
@@ -147,8 +149,12 @@ def general_post_objectival_cluster_phrases(ch, mylang):
 				                       VC + ], \
                            NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
 				                           HEADFINAL #hf ]].')
+    if ch.get('q-inv'):
+      mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
+      mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
     if ch.get('edge-related-res') == 'yes':
-      add_edge_constraint(mylang)
+      dtr = ch.get('edge-dtr')
+      add_edge_constraint(mylang, dtr)
 
 def add_v2_with_cluster_rules(ch, rules):
 
@@ -218,11 +224,15 @@ def add_split_cluster_rules(rules, auxRule):
 ###function that registers whether a specific verb-form is placed
 ###at the edge of the verbal cluster
 
-def add_edge_constraint(mylang):
+def add_edge_constraint(mylang, dtr):
+  if dtr == 'head-dtr':
+    DTR = 'HEAD-DTR'
+  else:
+    DTR = 'NON-HEAD-DTR'
   mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.EDGE #ed & na-or--, \
-                                      NON-HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #ed ].')
-  mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.EDGE #ed & bool , \
-                                      NON-HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #ed ].')
+                                      ' + DTR + '.SYNSEM.LOCAL.CAT.EDGE #ed ].')
+  mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.EDGE #ed & bool, \
+                                      ' + DTR + '.SYNSEM.LOCAL.CAT.EDGE #ed ].')
 
 ###function that adds necessary constraints to make complements that are not
 ###in sentence initial position appear in fixed order
@@ -275,6 +285,12 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
                                                            SUBJ < >, \
                                                            COMPS < > ] ] ].')
 
+  if ch.get('v2-analysis') == 'filler-gap' or ch.get('nvc-restr') == 'on':
+    mylang.add('head-subj-phrase := nonverbal-comp-phrase.')
+    mylang.add('head-wh-subj-phrase := nonverbal-comp-phrase.') 
+    mylang.add('head-wh-comp-phrase-2 := nonverbal-comp-phrase.')
+  mylang.add('head-comp-phrase := nonverbal-comp-phrase.')
+  mylang.add('head-wh-comp-phrase := nonverbal-comp-phrase.')
 ##edge related restrictions to account for Dutch:
 ##*hij zal de bal kunnen gekregen hebben.
 ##hij zal de bal gekregen kunnen hebben.
@@ -339,7 +355,7 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
 
 def create_wh_wo_phrases(ch, mylang):
 
-  mylang.add('head-wh-subj-phrase := basic-head-wh-subj-phrase & head-initial-head-nexus.')
+  mylang.add('head-wh-subj-phrase := basic-head-wh-subj-phrase & head-initial-head-nexus & nonverbal-comp-phrase.')
   mylang.add('wh-subj-head-vc-phrase := basic-head-wh-subj-phrase & head-final-invc & nonverbal-comp-phrase.')
   
   mylang.add('wh-adjunct-head-phrase := basic-head-wh-mod-phrase-simple & \
@@ -364,10 +380,12 @@ def create_wh_wo_phrases(ch, mylang):
   mylang.add('wh-comp-head-vc-phrase := general-comp-head-vc-phrase & \
                nonverbal-comp-phrase & head-wh.') 
   mylang.add('head-comp-phrase := head-non-wh-or-rel.')
+  mylang.add('adjunct-head-phrase := head-non-wh-or-rel.')
   mylang.add('head-wh-comp-phrase := head-wh & basic-head-1st-comp-phrase & \
-                          head-initial-head-nexus.')
+                          head-initial-head-nexus & nonverbal-comp-phrase.')
 
-
+  if ch.get('v2-analysis') == 'mc' and ch.get('vc-analysis') == 'basic':
+    mylang.add('comp-2-head-vc-phrase := head-non-wh-or-rel.')
 ####if 100% correct, should check for presence of determiners
 ###but Germanic languages have them
   mylang.add('wh-spec-head-phrase := basic-head-wh-spec-phrase & head-final & \
@@ -1116,17 +1134,19 @@ def create_rel_clause_phrases(mylang, rules):
 
   basic_rel = \
    '''basic-rel-phrase := basic-binary-marker-phrase &
-  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL intersective-mod & 
+  [ SYNSEM [ LOCAL.CAT.HEAD.MOD < [ LOCAL intersective-mod & 
                                    [ CONT.HOOK [ LTOP #hand,
                                                  INDEX #ind,
-						 XARG #xarg ] ] ] >,		
+						 XARG #xarg ] ] ] >,	
+             NON-LOCAL.SLASH #slash ],	
     NON-MARKER-DTR.SYNSEM [ NON-LOCAL [ QUE 0-dlist,
 				        REL 1-dlist & 
                                                [ LIST < [ INDEX #ind ] > ] ],
 			  LOCAL.CONT.HOOK [ LTOP #hand,
 					    XARG #xarg ] ],
-    MARKER-DTR.SYNSEM.LOCAL.CONT.HOOK [ LTOP #ltop,
-				      INDEX #index ],
+    MARKER-DTR.SYNSEM [ LOCAL.CONT.HOOK [ LTOP #ltop,
+			  	          INDEX #index ],
+                        NON-LOCAL.SLASH #slash ],
     C-CONT [ HOOK [ LTOP #ltop,
 		    INDEX #index ] ] ].'''
   
@@ -1134,15 +1154,16 @@ def create_rel_clause_phrases(mylang, rules):
   rel_ph = \
    '''rel-phrase := basic-rel-phrase & marker-final-phrase &
      [ SYNSEM.LOCAL.CAT [ HEAD verb & [ FORM #form & finite,
-   				        AUX #aux ],
+   				        AUX #aux,
+                                        MOD < [ LOCAL.CAT.VAL.SPR < [ ] > ] > ],
 		          VAL [ SUBJ < >,
 			        COMPS < >,
 			        SPR < >,
 			        SPEC < > ],
 		          MC #mc & - ],
        MARKER-DTR.SYNSEM.LOCAL.CAT [ HEAD verb & [ FORM #form,
-						   AUX #aux ],
-				     MC #mc ] ].'''
+			 			   AUX #aux ],
+				       MC #mc ] ].'''
   mylang.add(rel_ph)
 #  mylang.add('rel-arg0-phrase := rel-phrase & \
 #   [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX #index ]>, \
@@ -1196,7 +1217,6 @@ def mc_v2_word_order(ch, mylang, rules):
 ####head-initial-head-nexus must have HEAD-DTR [ MC + ] for MC analysis,
 #### [ MC na ] for filler-gap  
   mylang.add('head-initial-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC + ].')
-  mylang.add('head-comp-phrase := nonverbal-comp-phrase.')
   mylang.add('head-comp-phrase-2 := nonverbal-comp-phrase.')
   if ch.get('wh-questions') == 'yes':
     mylang.add('head-wh-comp-phrase := nonverbal-comp-phrase.')
@@ -1242,8 +1262,7 @@ def wh_mc_word_order_rules(rules):
 def filler_gap_word_order(mylang):
 ####head-initial-head-nexus must have HEAD-DTR [ MC + ] for MC analysis,
 #### [ MC na ] for filler-gap  
-  mylang.add('head-initial-head-nexus := nonverbal-comp-phrase & \
-                  [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
+  mylang.add('head-initial-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
   mylang.add('general-aux-2nd-comp := [ SYNSEM.LOCAL.CAT.MC na ].')
   mylang.add('aux-2nd-comp-phrase := general-aux-2nd-comp & basic-head-1st-comp-phrase.')
   mylang.add('aux-2nd-comp-phrase-2 := general-aux-2nd-comp & \
