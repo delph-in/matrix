@@ -208,13 +208,13 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
   rules.add('head-adj-scop := head-adj-scop-phrase.')
   rules.add('adj-head-scop := adj-head-scop-phrase.')
 
-  mylang.add('+nvcdmo :+ [ MOD < > ].',
-             'This grammar includes head-modifier rules.  To keep\n' +
-             'out extraneous parses, constrain the value of MOD on\n' +
-             'various subtypes of head.  This may need to be loosened later.\n' +
-             'This constraint says that only adverbs, adjectives,\n' +
-             'and adpositions can be modifiers.',
-             section='addenda')
+#  mylang.add('+nvcdmo :+ [ MOD < > ].',
+#             'This grammar includes head-modifier rules.  To keep\n' +
+#             'out extraneous parses, constrain the value of MOD on\n' +
+#             'various subtypes of head.  This may need to be loosened later.\n'# +
+#             'This constraint says that only adverbs, adjectives,\n' +
+#             'and adpositions can be modifiers.',
+#             section='addenda')
 
 
 

@@ -171,6 +171,9 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 # includes both aux and lexical/main verbs.
 # If there are no auxiliaries then 'verb-lex' covers all verbs
 
+  # Neither mainverbs or auxs should start out as modifiers (for now)
+  # Assigning constraint to verb-lex
+
   if ch.get('has-aux') == 'yes':
     mylang.add('head :+ [ AUX bool ].', section='addenda')
     #mainorverbtype = 'main-verb-lex'
@@ -183,7 +186,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     vcluster = determine_vcluster(auxcomp, auxorder, wo, ch)
 
     typedef = \
-      'verb-lex := lex-item & \
+      'verb-lex := non-mod-lex-item & \
                  [ SYNSEM.LOCAL.CAT.HEAD verb ].'
     mylang.add(typedef)
     typedef = \
@@ -200,7 +203,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
   else:
     #mainorverbtype = 'verb-lex'
     vcluster = False
-    mylang.add('verb-lex := basic-verb-lex.')
+    mylang.add('verb-lex := basic-verb-lex & non-mod-lex-item.')
 
   typedef = mainorverbtype + ' :=  \
        [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >, \
@@ -321,7 +324,8 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
                                    COMPS < >, \
                                    SUBJ < > ]].'
     mylang.add(typedef)
-
+    
+    mylang.add('determiner-lex := non-mod-lex-item.')
   # Determiners
   if 'det' in ch:
     lexicon.add_literal(';;; Determiners')
@@ -388,6 +392,9 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                                   SPEC < > ] ], \
          ARG-ST < #spr > ].'
   mylang.add(typedef)
+
+  # Adding empty MOD on general definitiion for noun-lex
+  mylang.add('noun-lex := non-mod-lex-item.')
 
   if singlentype:
     if seen['obl']:
@@ -459,6 +466,10 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
 
 def customize_lexicon(mylang, ch, lexicon, hierarchies):
+
+  comment = '''Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.'''
+  mylang.add('non-mod-lex-item := lex-item & \
+               [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].',comment)
 
   mylang.set_section('nounlex')
   customize_nouns(mylang, ch, lexicon, hierarchies)
