@@ -22,6 +22,8 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "neg1b-neg2fd") (:content . "neg1b-neg2fd: bipartite negation, neg1 is bound and requires neg2, a posthead VP adverb, neg2 cannot occur without neg1"))
+((:path . "neg1b-neg2fh") (:content . "neg1b-neg2fh: bipartite negation, neg1 is bound and requires neg2, a posthead VP adverb, neg2 cannot occur without neg1"))
 ((:path . "neg-comp-auxattach-postcomps") (:content . "neg-comp-auxattach-postcomps: negative complement adds a second "))
 ((:path . "neg-comp-finattach-precomps") (:content . "neg-comp-finattach-precomps: neg-comp-add-lex-rule adds neg-adv as selected first comp of a finite verb"))
 ((:path . "neg-comp-vattach-precomps") (:content . "neg-comp-vattach-precomps: negative adverb as selected complement of non-auxiliary verb"))

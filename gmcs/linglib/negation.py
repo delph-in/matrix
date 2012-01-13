@@ -32,6 +32,7 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules):
     if ch.get('neg1-type')[0] == 'f' or \
       ch.get('neg2-type')[0] == 'f':
       create_neg_adv_lex_item(mylang, ch, lexicon, rules, 2)
+    
 
 def create_neg_comp_lex_item(mylang, ch, lexicon, rules, lrules):
 
@@ -106,17 +107,12 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
                                       HEAD.MOD < [ LOCAL.CAT.HEAD verb ] > ]].''',
              'Type for negative adverbs.')
 
-
-  # ERB 2006-10-06 Below was advAlone == 'always', but that seems wrong.
-  # changing it to advAlone == 'never' being the case where we don't want
-  # the adverb to be a modifier.
-
-  # if advAlone == 'never':
   mylang.add_comment('neg-adv-lex',
     '''Constrain the MOD value of this adverb to keep\n
     it from modifying the kind of verbs which can select it,\n
     To keep spurious parses down, as a starting point, we have\n
     assumed that it only modifies verbs (e.g., non-finite verbs).''')
+
   if exp == 1:
     if ch.get('neg-order') == 'before':
       mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
@@ -147,21 +143,23 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
                                                                                        COMPS null ]].''')
       elif ch.get('neg1-mod') == 'v':
         mylang.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+
     if ch.get('neg2-type')[0] == 'f':
       mylang.add('neg2-adv-lex := neg-adv-lex.')
+        
       if ch.get('neg2-order') == 'before':
-        mylang.add('neg2-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+        mylang.add('neg2-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].', merge=True)
       elif ch.get('neg2-order') == 'after':
-        mylang.add('neg2-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
+        mylang.add('neg2-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].', merge=True)
 
       if ch.get('neg2-mod') == 's':
         mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
-                                                                                       COMPS null ]].''')
+                                                                                       COMPS null ]].''', merge=True)
       elif ch.get('neg2-mod') == 'vp':
         mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
-                                                                                       COMPS null ]].''')
+                                                                                       COMPS null ]].''', merge=True)
       elif ch.get('neg2-mod') == 'v':
-        mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+        mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''', merge=True)
 
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
     lexical Vs for V-level attachment of negative adverbs.''')
@@ -186,8 +184,7 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
   if(ch.get('neg2-adv-orth')):
     orth = ch.get('neg2-adv-orth')
     lexicon.add(TDLencode(orth) + '2 := neg2-adv-lex &\
-                [ STEM < \"'+ orth +'\" >,\
-                  SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
+                [ STEM < \"'+ orth +'\" > ].')
 
 
   # ERB 2006-10-06 And of course we need the head-modifier rules, if we're
@@ -196,25 +193,55 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
   # from going nuts.
 
   #if advAlone != 'never':
+  #rules.add('head-adj-scop := head-adj-scop-phrase.')
+  #rules.add('adj-head-scop := adj-head-scop-phrase.')
+  if ch.get('neg-exp') == '2' and ch.get('neg1-type')[0] == 'b' and ch.get('neg2-type') == 'fd':
+    # because neg1 is bound and neg2 is and adverb, we'll use the NEG-SATISFIED feature
+    # to engineer the dependency
 
-  # JDC 2011 11-12 Commenting out the addition of the head-adj-int rule for now
-  # negative adverbs shouldn't go through an intersective rule
-  # rules.add('head-adj-int := head-adj-int-phrase.',
-  #         'Rule instances for head-modifier structures. Corresponding types\n' +
-  #          'are defined in matrix.tdl.  The matrix customization script did\n' +
-  #          'not need to add any further constraints, so no corresponding tyes\n' +
-  #          'appear in ' + ch.get('language').lower() + '.tdl')
-  #rules.add('adj-head-int := adj-head-int-phrase.')
-  rules.add('head-adj-scop := head-adj-scop-phrase.')
-  rules.add('adj-head-scop := adj-head-scop-phrase.')
+    mylang.add('''cat :+ [ NEG-SATISFIED luk ].''', section='addenda')
+    mylang.add('''clause :+ [ SYNSEM.LOCAL.CAT.NEG-SATISFIED na-or-+ ].''', section='addenda')
+    mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.NEG-SATISFIED + ].''', merge=True, section='otherlex')
+    mylang.add('''basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns, HEAD-DTR.SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns ].''', section='addenda')
+    mylang.add('''basic-head-subj-phrase :+ [ SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns, HEAD-DTR.SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns ].''', section='addenda')
 
+    # also, if we don't want neg2 to be able to occur alone, we require that the 
+    # verb it modifies is NEGATED +
+    mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.NEGATED + ] > ].''', merge=True, section='otherlex')
+
+    if ch.get('neg2-order')=='after':
+      mylang.add('''neg-head-adj-scop-phrase := head-adj-scop-phrase &
+                            [ SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns,
+                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns ].''')
+      rules.add('head-adj-scop := neg-head-adj-scop-phrase.',
+            'Rule instances for head-modifier structures. Corresponding types\n' +
+             'are defined in matrix.tdl.  This rule copies NEG-SATISFIED up \n' +
+             'from the non-head daughter (the negative adv), other rules \n' +
+             'pass NEG-SATISFIED up the head path\n')
+    else:
+      mylang.add('''neg-adj-head-scop-phrase := adj-head-scop-phrase &
+                            [ SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns,
+                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns ].''')
+      rules.add('adj-head-scop := neg-adj-head-scop-phrase.',
+            'Rule instances for head-modifier structures. Corresponding types\n' +
+             'are defined in matrix.tdl.  This rule copies NEG-SATISFIED up \n' +
+             'from the non-head daughter (the negative adv), other rules \n' +
+             'pass NEG-SATISFIED up the head path\n')
+
+  else:
+    rules.add('adj-head-int := adj-head-scop-phrase.')
+    rules.add('head-adj-int := head-adj-scop-phrase.',
+            'Rule instances for head-modifier structures. Corresponding types\n' +
+             'are defined in matrix.tdl.  The matrix customization script did\n' +
+             'not need to add any further constraints, so no corresponding types\n' +
+             'appear in ' + ch.get('language').lower() + '.tdl')
   mylang.add('+nvcdmo :+ [ MOD < > ].',
-             'This grammar includes head-modifier rules.  To keep\n' +
-             'out extraneous parses, constrain the value of MOD on\n' +
-             'various subtypes of head.  This may need to be loosened later.\n' +
-             'This constraint says that only adverbs, adjectives,\n' +
-             'and adpositions can be modifiers.',
-             section='addenda')
+               'This grammar includes head-modifier rules.  To keep\n' +
+               'out extraneous parses, constrain the value of MOD on\n' +
+               'various subtypes of head.  This may need to be loosened later.\n' +
+               'This constraint says that only adverbs, adjectives,\n' +
+               'and adpositions can be modifiers.',
+               section='addenda')
 
 
 

@@ -139,3 +139,4 @@ neg-infl-mini=negation as inflection, simple case
 neg-comp-auxattach-precomps=neg adv as selected first comp of an aux type after application of a lexical rule
 neg-comp-finattach-precomps=neg-comp-add-lex-rule adds neg-adv as selected first comp of a finite verb
 neg-comp-auxattach-postcomps=negative complement lexical rule adds a second complement (a neg adverb) to the comps list of an auxiliary verb
+neg1b-neg2fd=bipartite negation, neg1 is bound and requires neg2, a posthead VP adverb, neg2 cannot occur without neg1

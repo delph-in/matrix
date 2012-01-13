@@ -849,9 +849,9 @@ Radio neg1-type "NEG1 type" "NEG1" "<br />"
 . fh "free-H" "" "free, syntactic head" "set_negmorph('1','fh')"
 . fd "free-dep" "" "free, syntactic dependent" "set_negmorph('1','fd')"
 
-Label "<div id='neg1-b' class='neg1_switch' style='display:none'><p> If neg1 is bound, is it bound to a verb?  In this case we'll want to integrate it with the morphotactic system.</p></div>"
-Label "<div id='neg1-fh' class='neg1_switch' style='display:none'><p> If neg1 is a syntactic head, is it an auxiliary verb?</p></div>"
-Label "<div id='neg1-fd' class='neg1_switch' style='display:none'><p> If neg1 is a syntactic dependent, is it like an adverb?  If so, please fill out the following:</p>"
+Label "<div id='neg1-b' class='neg1_switch' style='display:none'><p> If NEG1 is bound, we assume it is bound to a verb (please let us know if this is not the case for your language).  In this case we'll want to integrate it with the morphotactic system.</p></div>"
+Label "<div id='neg1-fh' class='neg1_switch' style='display:none'><p> If NEG1 is a syntactic head, is it an auxiliary verb?</p></div>"
+Label "<div id='neg1-fd' class='neg1_switch' style='display:none'><p> If NEG1 is a syntactic dependent, we assume is it like an adverb.  Please fill out the following:</p>"
 
 Radio neg1-mod "neg1 adv modifies" "NEG1 modifies:" "<br />"
 . s "S" "" "S "
@@ -873,7 +873,7 @@ Radio neg2-type "NEG2 type" "NEG2" "" 1
 
 Label "<div id='neg2-b' class='neg2_switch' style='display:none'><p> If neg2 is bound, is it bound to a verb?  In this case we'll want to integrate it with the morphotactic system.</p></div>"
 Label "<div id='neg2-fh' class='neg2_switch' style='display:none'><p> If neg2 is a syntactic head, is it an auxiliary verb?</p></div>"
-Label "<div id='neg2-fd' class='neg2_switch' style='display:none'><p> If neg2 is a syntactic dependent, is it like an adverb? If so, please fill out the following:</p>"
+Label "<div id='neg2-fd' class='neg2_switch' style='display:none'><p> If neg2 is a syntactic dependent, we assume it is like an adverb.  Please fill out the following:</p>"
 
 Radio neg2-mod "neg2 adv modifies" "NEG2 modifies:" "<br />"
 . s "S" "" "S "
