@@ -1047,6 +1047,9 @@ class ChoicesFile:
     # Negaton
     if 'infl-neg' in self.choices:
       features += [ ['negation', 'plus|plus;minus|minus', '', 'verb' ] ]
+    if self.get('neg-exp') == '2' and self.get('neg1-type') == 'b' and self.get('neg2-type') == 'fd':
+      features += [ ['negation', 'plus|plus;minus|minus', '', 'verb' ] ]
+      features += [ ['requires-neg-adv', 'plus|plus', '', 'verb' ] ]
 
     # Questions
     if 'q-infl' in self.choices:

@@ -765,26 +765,26 @@ Radio neg-exp "neg exp" "" ""
 Label "<hr /><a id='anobutton' onclick='toggle_display_lex(\"asymmetric negation options\",\"anobutton\")'>&#9658; asymmetric negation options</a><div id='asymmetric negation options' style='display:none'>"
 
 
-Label "<div id='anhdiv'><a id='anhbutton' onclick='toggle_display_lex(\"asymmetric negation help\", \"anhbutton\")'>&#9658; assymetric negation help</a>
-<div id='asymmetric negation help' style='display:none'><p>Negation is marked with respect to affirmation.  In many languages, there are certain tenses/moods/aspects which are not compatible with negation.  You might model this by enabling a HEAD feature, [NEGATED luk], set this to '+' on negated verbs and have certain constructions and/or lexical types specify an incompatible value.</p>
+Label "<div id='anhdiv'><a id='anhbutton' onclick='toggle_display_lex(\"asymmetric negation help\", \"anhbutton\")'>&#9658; asymmetric negation help</a>
+<div id='asymmetric negation help' style='display:none'><p>Negation is marked with respect to affirmation (Givón 1984).  In many languages, there are certain tenses/moods/aspects which are not compatible with negation.  You might model this by enabling a HEAD feature, [NEGATED luk], set this to '+' on negated verbs and have certain constructions and/or lexical types specify an incompatible value.</p>
 
-<p>Alternatively, you can have negation specify the the values for particular features, and use an agreement mechanism to trigger the presence of any appropriate marking.  For example, in Maung [mph],  irrealis marking is obligatory with negation.  So you might have the negator specify an AGR feature of irrealis, then make sure that the head that it is  attaching to agrees.</p>
+<p>Alternatively, you can have negation specify the values for particular features, and use an agreement mechanism to trigger the presence of any appropriate marking.  For example, in Maung [mph],  irrealis marking is obligatory with negation.  So you might have the negator specify an AGR feature of irrealis, then make sure that the head that it is attaching to agrees.</p>
 
 <pre>
 ŋi-udba
-1sg>3-put
+1sg.3-put
 'I put.'
 
 ŋi-udba-ji
-1SG>3-put-IRR.NPST
+1SG.3-put-IRR.NPST
 'I can put.'
 
 marig ŋi-udba-ji
-NEG 1SG>3-put-IRR.NPST
+NEG 1SG.3-put-IRR.NPST
 'I do not put.', 'I cannot put.'
 
 *marig  ŋi-udba
-NEG 1SG>3-put
+NEG 1SG.3-put
 I do not put.
 </pre>
 
@@ -793,7 +793,7 @@ Check neg-head-feature "enable negated head feature" "<p>" "Enable a HEAD featur
 Label "</div></div><hr />"
 
 
-Label "<div id='zero-neg' class='neg_exp_switch' style='display:none'><p>Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <emph>absence</emph> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p><p>You can model omissive negation as a phonologically empty inflectional rule ('lexical rule type/instance') which targets a particular position class in your morphotactic system.  You'll then have tp specify other morphemes that can occur in this position class so that negation is indicated by the lack of phonological material in this position.</p>"
+Label "<div id='zero-neg' class='neg_exp_switch' style='display:none'><p>Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <emph>absence</emph> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p><p>You can model omissive negation as a phonologically empty inflectional rule ('lexical rule type/instance') which targets a particular position class in your morphotactic system.  You'll then have to specify at least one other morpheme that canuoccur in this position class so that negation is indicated by the lack of phonological material in this position.</p>"
 
 Select vpc-0-neg "0 neg vpc" "<p>I can create a phonologically empty negation affix for you here.  Choose a position class from the verbal position classes that you've defined (on the lexicon page), or choose \"create\" to create a new pc for use with zero neg:" "  You'll see the result of this choice as a lexical rule instance with no affix and a feature called [NEGATION] with the value \"plus\".  This 'feature' is not a grammatical one---it won't appear in your grammar, it only indicates to the customization system that negative semantics should be added to this morpheme at customize time.</p>"
 fillregex p=verb-pc[0-9]+_name
@@ -831,7 +831,7 @@ Radio comp-neg-head "neg selected by" "Is neg selected by" "<br />"
 . aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
 . v   "v"   "" "any (finite) verb" "neg_comp()"
 
-Radio comp-neg-order "neg ordered" "How is neg ordered with resepct to other COMPS?" "<br />"
+Radio comp-neg-order "neg ordered" "How is neg ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
 . before "before" "" "before "
 . after "after" "" "after "
 
@@ -849,9 +849,9 @@ Radio neg1-type "NEG1 type" "NEG1" "<br />"
 . fh "free-H" "" "free, syntactic head" "set_negmorph('1','fh')"
 . fd "free-dep" "" "free, syntactic dependent" "set_negmorph('1','fd')"
 
-Label "<div id='neg1-b' class='neg1_switch' style='display:none'><p> If neg1 is bound, is it bound to a verb?  In this case we'll want to integrate it with the morphotactic system.</p></div>"
-Label "<div id='neg1-fh' class='neg1_switch' style='display:none'><p> If neg1 is a syntactic head, is it an auxiliary verb?</p></div>"
-Label "<div id='neg1-fd' class='neg1_switch' style='display:none'><p> If neg1 is a syntactic dependent, is it like an adverb?  If so, please fill out the following:</p>"
+Label "<div id='neg1-b' class='neg1_switch' style='display:none'><p> If NEG1 is bound, we assume it is bound to a verb (please let us know if this is not the case for your language).  We'll want to integrate it with the morphotactic system. A customization feature, 'negation [+/-]' has been created for your use on the lexicon page.  Specify 'negation plus' on lexical rule instances (lris) that contribute a negative relation.  If your language has morphemes in other position classes which cannot occur when negation is present, specify these as 'negation minus'.</p></div>"
+Label "<div id='neg1-fh' class='neg1_switch' style='display:none'><p> If NEG1 is a syntactic head. We assume it is an auxiliary verb.  More details on interactions with NEG2 coming soon.</p></div>"
+Label "<div id='neg1-fd' class='neg1_switch' style='display:none'><p> If NEG1 is a syntactic dependent, we assume is it like an adverb.  Please fill out the following:</p>"
 
 Radio neg1-mod "neg1 adv modifies" "NEG1 modifies:" "<br />"
 . s "S" "" "S "
@@ -873,7 +873,7 @@ Radio neg2-type "NEG2 type" "NEG2" "" 1
 
 Label "<div id='neg2-b' class='neg2_switch' style='display:none'><p> If neg2 is bound, is it bound to a verb?  In this case we'll want to integrate it with the morphotactic system.</p></div>"
 Label "<div id='neg2-fh' class='neg2_switch' style='display:none'><p> If neg2 is a syntactic head, is it an auxiliary verb?</p></div>"
-Label "<div id='neg2-fd' class='neg2_switch' style='display:none'><p> If neg2 is a syntactic dependent, is it like an adverb? If so, please fill out the following:</p>"
+Label "<div id='neg2-fd' class='neg2_switch' style='display:none'><p> If neg2 is a syntactic dependent, we assume it is like an adverb.  Please fill out the following:</p>"
 
 Radio neg2-mod "neg2 adv modifies" "NEG2 modifies:" "<br />"
 . s "S" "" "S "
@@ -895,8 +895,12 @@ Label "<div id='x-neg' class='neg_exp_switch' style='display:none'><p>We're not 
 
 
 
-Label "<p>Notes: This section is under construction.  Expect problems.  Currently, some menu options (under bipartite negation) are only present as previews of future implementations and as of now provide no functionality.</p>"
+Label "<hr /><p>Notes: This section is under construction.  Expect problems.  Currently, some menu options (under bipartite negation) are only present as previews of future implementations and as of now provide no functionality.</p>"
 
+Label "<h5>References</h5>
+<ol>
+<li>Givón, Talmy. 1984. <em>Syntax: a typological-functional introduction [vol. III].</em>  John Benjamins. Amsterdam, Philidelphia.</li>
+</ol>"
 
 
 Section coordination "Coordination"

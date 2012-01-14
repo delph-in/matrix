@@ -28,29 +28,35 @@ display_gen_results_fn = '''
 '''
 
 def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir,session):
-  # lkb_input = open('lkb_input','w')
-  # lkb_input.write('(read-script-file-aux "%s/lkb/script")' % (grammar))
-  # lkb_input.write('(setf *maximum-number-of-edges* 10000)')
-  # lkb_input.write(display_gen_results_fn)
-  # for file in mrs_files:
-  #   lkb_input.write('(null (generate-from-mrs (mrs::read-mrs-from-file "%s")))' % (file))
-  #   lkb_input.write('(TbG-gen-results)')
-  # lkb_input.flush()
-  # #output = os.popen('cat lkb_input | %s/bin/lkb | sed -n "/^LKB/,/EOF$/p"' % (delphin_dir))
-  # output = os.popen('lkb')
-  # lkb_input.close()
-  # os.remove('lkb_input')
 
+  # open a file called lkb_input+session for writing
+  # this file will contain commands to be sent to the lkb
   lkb_input = open('lkb_input'+session,'w')
+
+  # command to load the grammar's script file
   lkb_input.write('(read-script-file-aux "%s/lkb/script")' % (grammar))
-  lkb_input.write('(setf *maximum-number-of-edges* 10000)')
+  
+  # command to set the max number of edges on parsing and generation
+  lkb_input.write('(setf *maximum-number-of-edges* 20000)')
+
+  # display_gen_results_fn is a string with some lkb functions for printing 
+  # generation results 
   lkb_input.write(display_gen_results_fn)
+
+  # here, for each of our pattern files, we put a command to generate from that
+  # file, and then call the print results function for it
   for file in mrs_files:
     lkb_input.write('(null (generate-from-mrs (mrs::read-mrs-from-file "%s")))' % (file))
     lkb_input.write('(TbG-gen-results)')
+  
+  # okay, close the file for writing
   lkb_input.flush()
   lkb_input.close()
+  
+  # reopen the file in read-only mode 
   lkb_input = open('lkb_input'+session,'r')
+
+  # open another file to catch the output
   output = open('lkb_output'+session,'w')
   subprocess.call([os.path.join(delphin_dir, 'bin/lkb')],
                   stdin=lkb_input, stdout=output)

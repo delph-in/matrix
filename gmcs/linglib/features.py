@@ -121,8 +121,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       # negative affixes.
       # If neg-head-feature is on, then we also mark the verb
       # negated +.
+      # and ensure that verbs start out negated -
       if ch.get('neg-head-feature') == 'on':
-        tdlfile.add(type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].',merge=True)
+        tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].',merge=True)
 
       tdlfile.add(type_name + ':= \
                      [ C-CONT [ HOOK [ XARG #xarg,\
@@ -143,13 +144,16 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 	                          CAT.HEAD verb]]]].',
                  'This lexical rule adds the neg_rel to the verb\'s\n\RELS list.',
                   merge=True)
-
-
+    elif (n == 'requires-neg-adv' and v[0] == 'plus'):
+      # this feature on a bound morpheme means that this morpheme is neg1 and 
+      # introduces a dependency for neg2 as an independent adverb
+      tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.NEG-SATISFIED - ].',merge=True)
     elif (n == 'negation' and v[0] == 'minus'):
-      # JDC 2011-01-11 Users specify negation minus to indicat that a 
+      # JDC 2011-01-11 Users specify negation minus to indicate that a 
       # lexical type is not compatible with negation
       if ch.get('neg-head-feature') == 'on':
         tdlfile.add(type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].',merge=True)
+
     elif (n == 'question' and v[0] == 'plus'):
       # ERB 2009-07-01 Adding in semantics for question affixes
       tdlfile.add(type_name + ':= \

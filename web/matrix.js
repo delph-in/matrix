@@ -1062,34 +1062,128 @@ function set_negmorph(n,o){
 	}
 
   var d;
-  // o is an option on bipartite negation which
-  switch (o){
-    case 'b':
-      if(n=='1'){
+  // n is which morpheme we're specifying (neg1 or neg2)
+  // o is an option on bipartite negation, a morph type { b, fh, fd }
+  // if we're dealing with neg1, we set soem restrictions on neg2 
+  // type depending on what was selected in neg1
+  // if we're dealing with neg2, we may offer some advice depending
+  // on their choice for neg1
+  // we set 'd' to the section we want to dipslay, if it's null
+  // after we loop through, we don't do anything.
+
+  // basically, the user might be changing neg1 or neg2, so we
+  // have to set the messages accordingly for both cases
+  if(n=='1'){
+    switch (o){
+      case 'b':
         document.forms["choices_form"]["neg2-type"][0].disabled=false;
         document.forms["choices_form"]["neg2-type"][1].disabled=false;
         document.forms["choices_form"]["neg2-type"][2].disabled=false;
-      }
-      var d = document.getElementById('neg'+n+'-b');
-      break;
-    case 'fh':
-      if(n=='1'){
+        var d = document.getElementById('neg'+n+'-b');
+        // if neg2 is bound, then we'll put our advice about circumfixes
+        if (document.forms["choices_form"]["neg2-type"][0].checked) {
+          var d2 = document.getElementById("neg2-b");
+          d2.innerHTML = "<p>If both NEG1 and NEG2 are bound to the same root, you can set up the dendency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p>"; 
+        } else if (document.forms["choices_form"]["neg2-type"][1].checked){
+          var d2 = document.getElementById("neg2-fh");
+          d2.innerHTML = "<p>NEG1 is bound and NEG2 is an auxiliary.  <span style=\"font-weight:bold\"><span style=\"color:blue\">This analysis is still under construction.</span></span></p>"; 
+        } else if (document.forms["choices_form"]["neg2-type"][2].checked){
+          var d2 = document.getElementById("neg2-fd");
+          d2.innerHTML = "<p>NEG1 is bound and NEG2 is an adverb.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        }
+        break;
+      case 'fh':
         document.forms["choices_form"]["neg2-type"][0].disabled=false;
         document.forms["choices_form"]["neg2-type"][1].disabled=true;
         document.forms["choices_form"]["neg2-type"][2].disabled=false;
-      }
-      var d = document.getElementById('neg'+n+'-fh');
-      break
-    case 'fd':
-      if(n=='1'){
+        var d = document.getElementById('neg'+n+'-fh');
+        // if neg2 is bound, and we're switching away from neg1 bound,
+        // then we need to remove the special message about circumfixes
+        // we'll put some advice about this construction there instead
+        
+        if (document.forms["choices_form"]["neg2-type"][0].checked){
+          var d2 = document.getElementById("neg2-b");
+          d2.innerHTML = "<p>NEG1 is an auxiliary and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"
+        } else if (document.forms["choices_form"]["neg2-type"][1].checked){
+          var d2 = document.getElementById("neg2-fh");
+          d2.innerHTML = "<p>We don't have any analysis for a negation type with two auxiliary verbs.  Please contact matrix-dev about this language.</p>"; 
+        } else if (document.forms["choices_form"]["neg2-type"][2].checked){
+          var d2 = document.getElementById("neg2-fd");
+          d2.innerHTML = "<p>NEG1 is an auxiliary and NEG2 is an adverb.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        }
+        break;
+      case 'fd':
         document.forms["choices_form"]["neg2-type"][0].disabled=false;
         document.forms["choices_form"]["neg2-type"][1].disabled=false;
         document.forms["choices_form"]["neg2-type"][2].disabled=false;
-      }
-      var d = document.getElementById('neg'+n+'-fd');
-      break;
-    default:
-      var d = null; 
+        var d = document.getElementById('neg'+n+'-fd');
+        // if neg2 is bound, we'll put a special message about the status
+        // of this type
+        if (document.forms["choices_form"]["neg2-type"][0].checked){
+          var d2 = document.getElementById("neg2-b");
+          d2.innerHTML = "<p>NEG1 is an adverb and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"
+        } else if (document.forms["choices_form"]["neg2-type"][1].checked){
+          var d2 = document.getElementById("neg2-fh");
+          d2.innerHTML = "<p>NEG1 is an adverb and NEG2 is an auxiliary.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        } else if (document.forms["choices_form"]["neg2-type"][2].checked){
+          var d2 = document.getElementById("neg2-fd");
+          d2.innerHTML = "<p>NEG1 and NEG2 are adverbs.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        }
+        break;
+      default:
+        var d = null; 
+    }
+  } else if (n=='2') {
+    switch (o) {
+      case 'b':
+        if (document.forms["choices_form"]["neg1-type"][0].checked) {
+          // neg2 is bound, if neg1 is also bound, we tell them to go
+          // make a circumfix on the lexicon page.
+          var d = document.getElementById("neg2-b");
+          d.innerHTML = "<p>If both NEG1 and NEG2 are bound to the same root, you can set up the dependency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p>"; 
+        } else if (document.forms["choices_form"]["neg1-type"][1].checked) {
+          // neg2 is bound, if neg1 is a free head, give a message
+          var d = document.getElementById("neg2-b");
+          d.innerHTML = "<p>NEG1 is a auxiliary and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        } else if (document.forms["choices_form"]["neg1-type"][2].checked) {
+          // neg2 is bound, neg1 is an adverb, give a message 
+          var d = document.getElementById("neg2-b");
+          d.innerHTML = "<p>NEG1 is an adverb and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        }
+        break;
+      case 'fh':
+        if (document.forms["choices_form"]["neg1-type"][0].checked) {
+          // neg2 is an aux, neg1 is bound, give an appropriate message
+          var d = document.getElementById("neg2-fh");
+          d.innerHTML = "<p>NEG1 is bound.  NEG2 is an auxiliary.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        } else if (document.forms["choices_form"]["neg1-type"][1].checked) {
+          // neg2 is an aux, neg1 is also an aux, give a message
+          var d = document.getElementById("neg2-fh");
+          d.innerHTML = "<p>We don't have any analysis for a negation type with two auxiliary verbs.  Please contact matrix-dev about this language.</p>"; 
+        } else if (document.forms["choices_form"]["neg1-type"][2].checked) {
+          // neg2 is an aux, neg1 is an adverb, give a message 
+          var d = document.getElementById("neg2-b");
+          d.innerHTML = "<p>NEG1 is a adverb and NEG2 is an auxiliary.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        }
+        break;
+      case 'fd':
+        if (document.forms["choices_form"]["neg1-type"][0].checked) {
+          // neg2 is an adverb, neg1 is bound, give an appropriate message
+          var d = document.getElementById("neg2-fd");
+          d.innerHTML = '<p>NEG1 is bound.  NEG2 is an adverb.  Select the properties of NEG2 below.  A customization system feature \'requires neg adverb\' has been created for your use on the lexicon page.  Specify NEG1 as \'negation plus\' and \'requires neg adverb plus\'.</p>  NEG2 modifies:  <input type="radio" value="s" name="neg2-mod">  S  <input type="radio" value="vp" name="neg2-mod">  VP  <input type="radio" value="v" name="neg2-mod">  V  <br>  NEG2 is ordered:  <input type="radio" value="before" name="neg2-order">  before  <input type="radio" value="after" name="neg2-order">  after  <input type="radio" value="either" name="neg2-order">  on either side of the category it modifies.  <br>  NEG2 is spelled:  <input type="text" size="20" name="neg2-adv-orth">  <p></p>'; 
+        } else if (document.forms["choices_form"]["neg1-type"][1].checked) {
+          // neg2 is an adverb, neg1 is an aux, give a message
+          var d = document.getElementById("neg2-fd");
+          d.innerHTML = "<p>NEG1 is and auxiliary, NEG2 is an adverb.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        } else if (document.forms["choices_form"]["neg1-type"][2].checked) {
+          // neg2 is an adverb, neg1 is an adverb, give a message 
+          var d = document.getElementById("neg2-fd");
+          d.innerHTML = "<p>NEG1 and NEG2 are both adverbs.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        }
+        break;
+      default:
+        var d = null;
+    }
   }
   if (d != null)
   {
@@ -1103,7 +1197,7 @@ function display_neg_form()
   // choices.  it's a little like a pre-validation step.
   // there are a lot of possible combinations of choices on the
   // negation page, but most of the combinations won't lead to successful 
-  // grammars.  thus the need to prevent users from goind down 
+  // grammars.  thus the need to prevent users from going down 
   // dead ends we know about. 
 
   // here we display only the exponence section the user has
@@ -1148,7 +1242,7 @@ function neg_comp() {
     var comp_neg_head = document.forms["choices_form"]["comp-neg-head"];
     var after = document.forms["choices_form"]["comp-neg-order"][1];
     if(comp_neg_head[1].checked){
-      // if the user selects a verbal head, we can't do the post-comps order
+      // if the user selects any verb as the head, we can't do the post-comps order
       after.disabled = true;
       after.checked = false;
     } else {

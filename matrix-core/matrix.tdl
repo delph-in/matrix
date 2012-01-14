@@ -1967,7 +1967,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                          QUE 0-dlist & [ LIST null ] ] ],
     C-CONT.RELS <! !> ].
 
-;;;2011-11-07 removing head-mod-prase-simple
+;;;2011-11-07 removing head-mod-phrase-simple
 ;;;As pointed out by Bart Cramer, this does not add anything to
 ;;;basic-head-mod-phrase-simple, where the HOOK is already shared between
 ;;;HEAD-DTR and NON-HEAD-DTR
