@@ -38,17 +38,17 @@ class ChoiceCategory:
     # turn off safe_get so we can catch exceptions
     self.safe_get = False
     keys = [safe_int(k) for k in split_variable_key(key)]
-    d = self
     try:
+      x = self
       for k in keys:
-        d = d[k]
+        x = x[k]
     except KeyError:
-      d = default if default is not None else ''
+      x = default if default is not None else ''
     except IndexError:
-      d = default if default is not None else ChoiceDict()
+      x = default if default is not None else ChoiceDict()
     # reset safe_get
     self.safe_get = True
-    return d
+    return x
 
   def full_keys(self):
     full_keys = []
@@ -109,10 +109,12 @@ class ChoiceDict(ChoiceCategory, dict):
             return int(result.group(0))
     return None
 
-  def walk(self):
+  def walk(self, intermediates=False):
+    if intermediates and self.full_key != None:
+      yield (self.full_key, self)
     for key in self.keys():
       if isinstance(self[key], ChoiceCategory):
-        for result in self[key].walk():
+        for result in self[key].walk(intermediates):
           yield result
       else:
         fullkey = key
@@ -177,9 +179,11 @@ class ChoiceList(ChoiceCategory, list):
       if item is not None:
         yield item
 
-  def walk(self):
+  def walk(self, intermediates=False):
+    if intermediates:
+      yield (self.full_key, self)
     for item in self:
-      for result in item.walk():
+      for result in item.walk(intermediates):
         yield result
 
   def __len__(self):
@@ -370,6 +374,11 @@ class ChoicesFile:
   def get(self, key, default=None):
     return self.choices.get(key, default)
 
+  def get_regex(self, pattern):
+    pat = re.compile(pattern)
+    return [(key, val) for (key, val) in self.walk(intermediates=True)
+            if pat.match(key)]
+
   # A __getitem__ method so that ChoicesFile can be used with brackets,
   # e.g., ch['language'].
   def __getitem__(self, key):
@@ -398,8 +407,8 @@ class ChoicesFile:
   def __iter__(self):
     return self.choices.__iter__()
 
-  def walk(self):
-    for result in self.choices.walk():
+  def walk(self, intermediates=False):
+    for result in self.choices.walk(intermediates):
       yield result
 
   def __len__(self):

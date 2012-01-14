@@ -438,19 +438,6 @@ function remove_temp_options(select)
   }
 }
 
-// Fill a SELECT tag with temp OPTIONs defined by the passed-in arrays
-function insert_temp_options(select, values, texts)
-{
-  for (var i = 0; i < values.length; i++) {
-    var o = document.createElement('option');
-    o.className = 'temp';
-    o.value = values[i];
-    o.innerHTML = texts[i];
-
-    select.appendChild(o);
-  }
-}
-
 // Set the value of a SELECT, adding a temporary OPTION if necessary
 function set_select_value(select, value, text)
 {
@@ -472,12 +459,10 @@ function set_select_value(select, value, text)
   select.value = value;
 }
 
-// fill_regex()
-// Fill a SELECT tag with OPTIONs created from the values of any
-// form fields on the page whose NAME matches the pattern.  If the
-// nameOnly flag is true, make the OPTION's VALUE attribute equal to
-// its contents.
-function fill_regex(name, pattern, nameOnly)
+// fill()
+// there is one function to fill a SELECT, and it takes an array of options
+// to insert, and manages the re-selecting of previously selected items
+function fill(name, items)
 {
   var select = document.getElementsByName(name)[0];
   var old_val = select.value;  // store the previously selected option
@@ -485,21 +470,36 @@ function fill_regex(name, pattern, nameOnly)
   if (select.selectedIndex != -1) {
     old_text = select.options[select.selectedIndex].innerHTML;
   }
-
   remove_temp_options(select);
 
+  for (var i = 0; i < items.length; i++) {
+    // Each item should be a (string, value) pair
+    var o = document.createElement('option');
+    o.className = 'temp';
+    o.value = items[i][1];
+    o.innerHTML = items[i][0];
+    select.appendChild(o);
+  }
+  
+  set_select_value(select, old_val, old_text);
+  force_layout(select.parentNode);
+}
+
+// fill_regex() Return the values of any form fields on the page whose NAME
+// matches the pattern.  If the nameOnly flag is true, make the OPTION's VALUE
+// attribute equal to its contents.
+function fill_regex(pattern, nameOnly)
+{
   pattern = '^' + pattern + '$';
+  var items = new Array();
 
   // Pass through the form fields in the page, looking for ones whose
   // name attribute matches the pattern.  When one is found, use its
   // contents to create an option.
-  var values = new Array();
-  var texts = new Array();
   var e = document.forms[0].elements;
   for (var i = 0; i < e.length; i++) {
     if (e[i].name.search(pattern) != -1) {
       var val = e[i].name.replace(/_[^_]*$/, '');
-
       var desc = val;
       var f = document.getElementsByName(val + '_name');
       if (f && f[0] && f[0].value) {
@@ -510,79 +510,37 @@ function fill_regex(name, pattern, nameOnly)
           desc = f[0].value + ' (' + desc + ')';
         }
       }
-
-      var len = values.length;
-      values[len] = val;
-      texts[len] = desc;
+      items.push([desc, val]);
     }
   }
-
-  insert_temp_options(select, values, texts);
-
-  set_select_value(select, old_val, old_text);
-  force_layout(select.parentNode);
+  return items
 }
 
 // fill_feature_names()
-// Fill a SELECT tag with OPTIONs created from the array features[],
-// where every OPTION is a feature name.
+// Return items from the array features[], where every OPTION is a feature name.
 // The cat(egory) argument allows you to restrict the features by category
-function fill_feature_names(select_name, cat)
+function fill_feature_names(cat)
 {
-  var select = document.getElementsByName(select_name)[0];
-  var old_val = select.value;  // store the previously selected option
-  var old_text = old_val;
-  if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].innerHTML;
-  }
-
-  remove_temp_options(select);
-
+  var items = new Array()
   for (var i = 0; i < features.length; i++) {
     var f = features[i].split(':');
     
-    var o = document.createElement('option');
-    o.className = 'temp';
-
-    var inlist = 'yes';
-    if (typeof(cat) != "undefined"){
-      if (f[2] != cat && f[2] != 'both' && cat != 'both') {
-        inlist = 'no';
-      }
-    }
-
-    if (inlist == 'yes'){
-      o.value = f[0];
-      o.innerHTML = f[0];
-      select.appendChild(o);
+    if (typeof(cat) == "undefined" ||
+        f[2] == cat || f[2] == 'both' || cat == 'both') {
+      items.push([f[0], f[0]]);
     }
   }
-
-  set_select_value(select, old_val, old_text);
-  force_layout(select.parentNode);
+  return items
 }
 
 // fill_feature_values()
-// Fill a SELECT tag with OPTIONs created from the array features[],
-// where every OPTION is a feature value for the feature named
-// by the form element named other_name.
-function fill_feature_values(select_name, other_name, literal_feature)
+// Return items from the array features[], where every OPTION is a feature
+// value for the feature named by the form element named other_name.
+function fill_feature_values(other_name, literal_feature)
 {
-  var select = document.getElementsByName(select_name)[0];
-  var old_val = select.value;  // store the previously selected option
-  var old_text = old_val;
-  if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].innerHTML;
-  }
-
-  remove_temp_options(select);
-
-  if (literal_feature == 1) {
-    var other_val = other_name;
-  }  
-  else {
-    var other_val = document.getElementsByName(other_name)[0].value;
-  }
+  var items = new Array()
+  if (literal_feature == 1) { var other_val = other_name; }  
+  else { var other_val = document.getElementsByName(other_name)[0].value; }
 
   for (var i = 0; i < features.length; i++) {
     var v = features[i].split(':');
@@ -592,114 +550,51 @@ function fill_feature_values(select_name, other_name, literal_feature)
 
       for (var j = 0; j < v.length; j++) {
         var n = v[j].split('|');
-        var o = document.createElement('option');
-        o.className = 'temp';
-        o.value = n[0];
-        o.innerHTML = n[1];
-
-        select.appendChild(o);
+        items.push([n[1],n[0]])
       }
     }
   }
-
-  set_select_value(select, old_val, old_text);
-  force_layout(select.parentNode);
+  return items
 }
 
 // fill_case_patterns()
-// Fill a SELECT tag with OPTIONs created from either array
-// morph_case_patterns or verb_case_patterns, as determined by the
-// morph argument.
-function fill_case_patterns(select_name, morph)
+// Return items from either array morph_case_patterns or verb_case_patterns, as
+// determined by the morph argument.
+function fill_case_patterns(morph)
 {
-  var select = document.getElementsByName(select_name)[0];
-  var old_val = select.value;  // store the previously selected option
-  var old_text = old_val;
-  if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].innerHTML;
-  }
-
-  remove_temp_options(select);
-
-  var pats;
-  if (morph) {
-    pats = morph_case_patterns;
-  } else {
-    pats = verb_case_patterns;
-  }
-
+  var items = new Array();
+  var pats = (morph) ? morph_case_patterns : verb_case_patterns;
   for (var i = 0; i < pats.length; i++) {
     var p = pats[i].split(':');
-    
-    var o = document.createElement('option');
-    o.className = 'temp';
-    o.value = p[0];
-    o.innerHTML = p[1];
-
-    select.appendChild(o);
+    items.push([p[1], p[0]]);
   }
-
-  set_select_value(select, old_val, old_text);
-  force_layout(select.parentNode);
+  return items
 }
 
 // fill_numbers()
-// Fill a SELECT tag with OPTIONs created from the array numbers[],
-// where every OPTION is a value of the number feature.
+// Return items from the array numbers[], where every OPTION is a value of the
+// number feature.
 function fill_numbers(select_name)
 {
-  var select = document.getElementsByName(select_name)[0];
-  var old_val = select.value;  // store the previously selected option
-  var old_text = old_val;
-  if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].innerHTML;
-  }
-
-  remove_temp_options(select);
-
+  var items = new Array();
   for (var i = 0; i < numbers.length; i++) {
     var n = numbers[i].split(':');
-    var o = document.createElement('option');
-    o.className = 'temp';
-    o.value = n[0];
-    o.innerHTML = n[0];
-
-    select.appendChild(o);
+    items.push([n[0],n[0]]);
   }
-
-  set_select_value(select, old_val, old_text);
-  force_layout(select.parentNode);
+  return items
 }
 
-// fill_types()
-// Fill a SELECT tag with OPTIONs created from the array types[],
-// where every OPTION is a type name.
-function fill_types(select_name, type_cat)
+// fill_cache()
+// Return items from the given cache.
+function fill_cache(cache_name)
 {
-  var select = document.getElementsByName(select_name)[0];
-  var old_val = select.value;  // store the previously selected option
-  var old_text = old_val;
-  if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].innerHTML;
+  var cache = window[cache_name];
+  var items = new Array();
+  for (var i = 0; i < cache.length; i++) {
+    var x = cache[i].split(':');
+    items.push([(x[0] != '') ? x[0] + ' (' + x[1] + ')' : x[1], x[1]]);
   }
-
-  remove_temp_options(select);
-
-  for (var i = 0; i < types.length; i++) {
-    var t = types[i].split(':');
-    var o = document.createElement('option');
-    o.className = 'temp';
-
-    if (t[1] == type_cat) {
-      o.value = t[0];
-      o.innerHTML = t[0];
-
-      select.appendChild(o);
-    }
-  }
-
-  set_select_value(select, old_val, old_text);
-  force_layout(select.parentNode);
+  return items
 }
 
 //////////////////////////////////////////////////////////////////////
