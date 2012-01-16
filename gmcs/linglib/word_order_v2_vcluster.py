@@ -135,13 +135,15 @@ def general_post_objectival_cluster_phrases(ch, mylang):
   mylang.add('comp-head-vc-phrase := general-comp-head-vc-phrase & nonverbal-comp-phrase.')
   mylang.add('comp-2-head-vc-phrase := basic-head-2nd-comp-phrase & head-final-invc & nonverbal-comp-phrase.')
   if ch.get('aux-comp-order') == 'after': 
-    mylang.add('comp-aux-vc-phrase := [ HEAD-DTR.SYNSEM.LIGHT +, \
-                                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
+    mylang.add('comp-aux-vc-phrase := [ HEAD-DTR.SYNSEM [ LIGHT +, \
+                                                          LOCAL.CAT.MC -], \
+                                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
     if ch.get('q-inv'):
       mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
   elif ch.get('aux-comp-order') == 'both':
     mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT [ HEADFINAL #hf ], \
-                                            HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL +, \
+                                            HEAD-DTR.SYNSEM.LOCAL.CAT [ HEADFINAL +, \
+                                                                        MC - ], \
                                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, \
                                                                             HEADFINAL #hf ] ].')
     mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.HEADFINAL #hf, \

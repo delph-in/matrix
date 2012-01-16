@@ -101,16 +101,41 @@ def customize_passivization(ch, mylang, lrules, lexicon):
                                  DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
       mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.MC #mc, \
                                  DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
-#      if ch.get('vc-analysis') == 'basic':
+    if ch.get('vc-analysis') == 'basic':
 #        if ch.get('v2-analysis') == 'mc':
 #          mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.VFRONT #vfront, \
 #                                 DTR.SYNSEM.LOCAL.CAT.VFRONT #vfront ].')
 #          mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.VFRONT na-or-- ].')
 #         
 #        else:
-      mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.VFRONT +, \
+        mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.VFRONT +, \
                                  DTR.SYNSEM.LOCAL.CAT.VFRONT na-or-- ].')
-           
+    else:
+      typedef = \
+        '''change-arg-order-rule := const-val-change-only-lex-rule &
+  [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ #subj,
+                             COMPS < #comp2,
+                                     #comp1 >,
+                             SPR #spr,
+                             SPEC #spec ],
+                       VC #vc,
+                       VFRONT -,
+                       EDGE #ed ],
+    DTR.SYNSEM.LOCAL.CAT [ VAL [ SUBJ #subj,
+                                 COMPS < #comp1,
+                                         #comp2 >,
+                                 SPR #spr,
+                                 SPEC #spec ],
+                           HEAD verb &
+                                [ FORM participle,
+                                  AUX -,
+				  INV - ],
+                           VC #vc,
+                           VFRONT +,
+                           EDGE #ed ] ].'''
+      mylang.add(typedef)
+      lrules.add('change-arg-order := change-arg-order-rule.')
+      
 ###If the subject is marked by an adposition after passivization,
 ###we need something like a 'case-marking-adposition', but without case
 
