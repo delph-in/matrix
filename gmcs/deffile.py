@@ -789,7 +789,7 @@ class MatrixDefFile:
           i += 1
 
         if fillers:
-          fillcmd = "fill('%s', Array.concat(%s))" % (vn, ','.join(fillers))
+          fillcmd = "fill('%s', [].concat(%s))" % (vn, ','.join(fillers))
           html += html_select(vr, vn, multi, fillcmd) + '\n'
           # Add previously selected item
           if choices.get(vn):
