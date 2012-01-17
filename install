@@ -108,7 +108,9 @@ fi
 #      -z compress before sending
 #      -r recursive
 #      -l copy symlinks as symlinks
-rsync -Kvzrl $tempdir/ $dest
+#      -t timestamps (may cause error messages during copy, but they
+#                     are apparently necessary for web-tests)
+rsync -Kvzrlt $tempdir/ $dest
 # The following command will also delete files at the destination that
 # do not exist in tempdir. Not using for now because an incorrect
 # destination could delete more than expected. This means that files
