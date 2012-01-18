@@ -37,7 +37,7 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir,session):
   lkb_input.write('(read-script-file-aux "%s/lkb/script")' % (grammar))
   
   # command to set the max number of edges on parsing and generation
-  lkb_input.write('(setf *maximum-number-of-edges* 20000)')
+  lkb_input.write('(setf *maximum-number-of-edges* 10000)')
 
   # display_gen_results_fn is a string with some lkb functions for printing 
   # generation results 
@@ -112,7 +112,6 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir,session):
   os.remove('lkb_output'+session)
   for entry in sentences:
     entry[2] = [clean_tree(s) for s in entry[2]]
-  #print sentences
   return sentences
 
 #returns a clean version of a tree outputted by the lkb
@@ -132,10 +131,20 @@ def get_n_predications(grammar_dir):
   lexicon = open(os.path.join(grammar_dir, 'lexicon.tdl'),'r')
   choices = open(os.path.join(grammar_dir, 'choices'),'r')
   lang = None
+
   pred_re = re.compile(r'noun([0-9]+)_stem[0-9]_pred')
+
+  # det_re is searching for whether dets are opt, obl or imp 
   det_re = re.compile(r'noun([0-9]+)_det')
+
+  # det2_re is searching for determiner predications
   det2_re = re.compile(r'det[0-9]+_stem[0-9]_pred')
+
+  # noun_rels_dets is a list of pairs, where the first element is a noun_rel
+  # the second element is whether a determiner is 'obl','opt' or 'imp'
+  # for that noun_rel
   noun_rels_dets = []
+  # det_list is the set of determiner rels found in the choices
   det_list = set([])
   for line in choices:
     pline = line.lstrip().split('=')
@@ -144,7 +153,7 @@ def get_n_predications(grammar_dir):
     m3 = det2_re.match(pline[0])
     if pline[0] == 'language':
       lang = os.path.join(grammar_dir, pline[1].lower().rstrip()+'.tdl')
-    if m1:
+    if m1:  #m1 is results of looking for noun predications
       if int(m1.group(1)) <= len(noun_rels_dets):
         noun_rels_dets[int(m1.group(1))-1][0] = pline[1].rstrip()
       else:
@@ -156,8 +165,17 @@ def get_n_predications(grammar_dir):
         noun_rels_dets.append([None,pline[1].rstrip()])
     if m3:
       det_list.add(pline[1].rstrip())
+  
+  print "noun_rels_dets: <<",noun_rels_dets,">><br />"
   noun_rels_dets = remove_duplicates(noun_rels_dets)
+
+  # okay, here in det_rels, we're building key value pairs where the 
+  # keys are relationship types between nouns and determiners
+  # imp: is mapped to "exist_q_rel"
+  # obl: is mapped to the list of determiner relations found in the choices
+  # opt: is mapped to that list of determiners found in the choices + an exist_q_rel  
   det_rels = {"imp":["exist_q_rel"],"obl":list(det_list),"opt":list(det_list)+["exist_q_rel"]}
+  print "det_rels: <<",det_rels,">><br />"
   lexicon.close()
   choices.close()
   return(noun_rels_dets,det_rels,lang)
@@ -300,6 +318,10 @@ def get_replacement_features_from_grammar(grammar_dir):
   return result
     
 # Extract templates from the grammar
+# more specifically, this subprocess (seems to) be checking
+# to see if the TbG options section is present in the choices
+# file, and if it's not, we just make basic stv and itv 
+# templates and return them
 def get_templates(grammar_dir):
   choices = open(os.path.join(grammar_dir, 'choices'),'r')
   choices_present = False
@@ -369,6 +391,7 @@ def get_sentences(grammar_dir,delphin_dir,session):
         template.replace_pred(pred,noun_rels_dets[int(m3.group(1)) % len(noun_rels_dets)][0])
       elif m4:
         det_list = det_rels[noun_rels_dets[int(m4.group(1)) % len(noun_rels_dets)][1]]
+        
         if len(det_list) == 0:
           det_list.append("")
         template.replace_pred(pred,det_list[0])
@@ -379,6 +402,7 @@ def get_sentences(grammar_dir,delphin_dir,session):
     f.close()
     info_list.append([verb_rels,template.label,template.name])
   sentences = generate_sentences(grammar_dir, mrs_files, info_list, delphin_dir, session)
+
   for file in mrs_files:
     try:
       os.remove(file)
@@ -391,23 +415,10 @@ def get_sentences(grammar_dir,delphin_dir,session):
 def get_additional_sentences(grammar_dir,delphin_dir,verb_rels,template_file,session):
   (noun_rels_dets,det_rels,language) = get_n_predications(grammar_dir)
   itr_verb_re,tr_verb_re,noun_re,det_re = re.compile(r'ITR-VERB([0-9]*)'),re.compile(r'TR-VERB([0-9]*)'),re.compile(r'NOUN([0-9]*)'),re.compile(r'DET([0-9]*)')
-#  (itvs,stvs) = get_v_predications(grammar_dir,language)
   exec("verb_rels = "+verb_rels)
   mrs_files = []
   t = Template(template_file)
   templates = [t]
-  #  if verb_rel in itvs:
-  #    for i in range(len(noun_rels_dets)):
-  #      for det_rel in det_rels[noun_rels_dets[i][1]]:
-  #        mrs_files.append(session+'noun' + str(i) + det_rel)
-  #        process_mrs_file(mrs,session+'noun'+str(i) + det_rel,noun_rels_dets[i][0],det_rel,"","",verb_rel)
-  #  else:
-  #    for i in range(len(noun_rels_dets)):
-  #      for j in range(len(noun_rels_dets)):
-  #        for det_rel1 in det_rels[noun_rels_dets[i][1]]:
-  #          for det_rel2 in det_rels[noun_rels_dets[j][1]]:
-  #            mrs_files.append(session+'noun' + str(i) + det_rel1 + "_" + str(j) + det_rel2)
-  #            process_mrs_file(mrs,session+'noun' + str(i) + det_rel1 + "_" + str(j) + det_rel2,noun_rels_dets[i][0],det_rel1,noun_rels_dets[j][0],det_rel2,verb_rel)
   repl_feats = get_replacement_features_from_grammar(grammar_dir)
   t.replace_features_from_grammar(repl_feats)
   for pred in t.preds:
