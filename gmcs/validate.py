@@ -513,10 +513,12 @@ def validate_word_order(ch, vr):
            'You specified lexical entries for determiners, ' +
            'but said your language has none.')
 
-  if (ch.get('has-dets') == 'yes') and (not 'det' in ch):
-    vr.err('has-dets',
-           'You specified that your language has determiners, ' +
-           'you must define them on the lexicon page.')
+  # matrix-dev group rejected this validation step in Jan 2012
+  # if (ch.get('has-dets') == 'yes') and (not 'det' in ch):
+  #  vr.err('has-dets',
+  #         'You specified that your language has determiners, ' +
+  #         'you must define them on the lexicon page.')
+
 
   #Things to do with auxiliaries
   if (not ch.get('has-aux')):

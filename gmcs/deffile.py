@@ -1012,27 +1012,6 @@ class MatrixDefFile:
     print html_input(vr, 'button', '', 'Clear', False, '', '</p>', '',
                      'clear_form()')
 
-    if section == 'sentential-negation':
-      # the sentential negation subpage needs access to certain choices
-      # from the lexicon page: specifically those related to verbal inflection
-
-      # so we do some looking about here to find the section we need
-      # since loading the entire lexicon page is too expensive
-
-      print '<div id="hidden_lex_choices" style="display:none">' 
-      start_vpc = ''
-      stop_vpc  = ''
-      for i in range(0,len(lines)):
-        if(lines[i].startswith("Label \"<h3>Verb Inflection")):
-          start_vpc = i
-      for i in range(start_vpc,len(lines)):
-        if(lines[i].startswith("EndIter verb-pc")):
-          stop_vpc = i
-      vpclines = lines[start_vpc:stop_vpc+1]
-      print self.defs_to_html(vpclines,
-                              choices, vr,
-                              '', {})
-      print '</div>'
     print HTML_postform
     print HTML_postbody
 
