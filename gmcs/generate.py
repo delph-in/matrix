@@ -166,8 +166,8 @@ def get_n_predications(grammar_dir):
     if m3:
       det_list.add(pline[1].rstrip())
   
-  print "noun_rels_dets: <<",noun_rels_dets,">><br />"
   noun_rels_dets = remove_duplicates(noun_rels_dets)
+  #print "noun_rels_dets: <<",noun_rels_dets,">><br />"
 
   # okay, here in det_rels, we're building key value pairs where the 
   # keys are relationship types between nouns and determiners
@@ -175,7 +175,7 @@ def get_n_predications(grammar_dir):
   # obl: is mapped to the list of determiner relations found in the choices
   # opt: is mapped to that list of determiners found in the choices + an exist_q_rel  
   det_rels = {"imp":["exist_q_rel"],"obl":list(det_list),"opt":list(det_list)+["exist_q_rel"]}
-  print "det_rels: <<",det_rels,">><br />"
+  #print "det_rels: <<",det_rels,">><br />"
   lexicon.close()
   choices.close()
   return(noun_rels_dets,det_rels,lang)
