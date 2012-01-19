@@ -170,7 +170,7 @@ def validate_lexicon(ch, vr):
     # provide any determiners?
     if det == 'obl' and (not 'det' in ch): 
       mess = 'You defined a noun that obligatorily takes a determiner, ' +\
-             'but failed to define any determiners.'
+             'but you haven\'t yet defined any determiners.'
       vr.warn(noun.full_key + '_det', mess)
     for stem in noun.get('stem', []):
       orth = stem.get('orth')

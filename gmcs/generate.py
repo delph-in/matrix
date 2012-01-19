@@ -91,17 +91,27 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir,session):
         sentence = parse = mrs = ""
       state = ""
     elif line.find("No strings generated") == 0:
-      sentences[index][1].append('#NO-SENTENCES#')
-      sentences[index][2].append('')
-      sentences[index][3].append('')
+      try:
+        sentences[index][1].append('#NO-SENTENCES#')
+        sentences[index][2].append('')
+        sentences[index][3].append('')
+      except IndexError:
+        print "#NO-SENTENCES#<br />"
     elif line.find('*maximum-number-of-edges*') > -1:
-      sentences[index][1].append('#EDGE-ERROR#')
-      sentences[index][2].append('')
-      sentences[index][3].append('')
+      try:
+        sentences[index][1].append('#EDGE-ERROR#')
+        sentences[index][2].append('')
+        sentences[index][3].append('')
+      except IndexError:
+        print "#EDGE-ERROR#<br />"
     elif line.find('Stack overflow') > -1:
-      sentences[index][1].append('#EDGE-ERROR#')
-      sentences[index][2].append('')
-      sentences[index][3].append('')
+      try:
+        sentences[index][1].append('#EDGE-ERROR#')
+        sentences[index][2].append('')
+        sentences[index][3].append('')
+      except IndexError:
+        print "#Stack overflow#<br />"
+      
     elif state == "sentence":
       sentence = unicode(line.lstrip('( \n').rstrip(') .\n').replace('"',''), 'utf-8').lower().encode('utf-8')
     elif state == "parse":
@@ -166,8 +176,8 @@ def get_n_predications(grammar_dir):
     if m3:
       det_list.add(pline[1].rstrip())
   
-  print "noun_rels_dets: <<",noun_rels_dets,">><br />"
   noun_rels_dets = remove_duplicates(noun_rels_dets)
+  # print "noun_rels_dets: <<",noun_rels_dets,">><br />"
 
   # okay, here in det_rels, we're building key value pairs where the 
   # keys are relationship types between nouns and determiners
@@ -175,7 +185,7 @@ def get_n_predications(grammar_dir):
   # obl: is mapped to the list of determiner relations found in the choices
   # opt: is mapped to that list of determiners found in the choices + an exist_q_rel  
   det_rels = {"imp":["exist_q_rel"],"obl":list(det_list),"opt":list(det_list)+["exist_q_rel"]}
-  print "det_rels: <<",det_rels,">><br />"
+  # print "det_rels: <<",det_rels,">><br />"
   lexicon.close()
   choices.close()
   return(noun_rels_dets,det_rels,lang)
@@ -350,7 +360,7 @@ def get_templates(grammar_dir):
 # Output an mrs file from a template, replacing the appropriate predications
 def process_mrs_file(mrs, outfile, noun1_rel, det1_rel, noun2_rel, det2_rel, verb_rel):
   output = mrs.replace("#NOUN1#",noun1_rel).replace("#NOUN2#",noun2_rel).replace("#VERB#",verb_rel).replace("#DET1#",det1_rel).replace("#DET2#",det2_rel)
-  #print output+"<br><br>"
+  # print output+"<br><br>"
   f = open(outfile,'w')
   f.write(output)
   f.close()
@@ -390,14 +400,21 @@ def get_sentences(grammar_dir,delphin_dir,session):
       elif m3:
         template.replace_pred(pred,noun_rels_dets[int(m3.group(1)) % len(noun_rels_dets)][0])
       elif m4:
+        #print "det_list = det_rels[noun_rels_dets[int(m4.group(1)) % len(noun_rels_dets)][1]]<br />"
+        #print "m4.group(1): ",m4.group(1),"<br />"
+        #print "int(m4.group(1)): ",int(m4.group(1)),"<br />"
+        #print "len(noun_rels_dets): ",len(noun_rels_dets),"<br />"
+        #print int(m4.group(1)),"%",len(noun_rels_dets),": ",int(m4.group(1)) % len(noun_rels_dets),"<br />"
+        #print "noun_rels_dets[",int(m4.group(1)) % len(noun_rels_dets),"]: ", noun_rels_dets[int(m4.group(1)) % len(noun_rels_dets)],"<br />"
         det_list = det_rels[noun_rels_dets[int(m4.group(1)) % len(noun_rels_dets)][1]]
-        
+        #print"det_list: ",det_list,"<br />"
         if len(det_list) == 0:
           det_list.append("")
         template.replace_pred(pred,det_list[0])
     output = session+'Pattern '+str(i)
     mrs_files.append(output)
     f = open(output,'w')
+    # print "generated template: ",template.string
     f.write(template.string)
     f.close()
     info_list.append([verb_rels,template.label,template.name])
