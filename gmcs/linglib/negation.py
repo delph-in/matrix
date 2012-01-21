@@ -127,6 +127,8 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
                                                                                      COMPS null ]].''')
     elif ch.get('neg-mod') == 'v':
       mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
+    lexical Vs for V-level attachment of negative adverbs.''')
   elif exp == 2:
     if ch.get('neg1-type')[0] == 'f':
       mylang.add('neg1-adv-lex := neg-adv-lex.')

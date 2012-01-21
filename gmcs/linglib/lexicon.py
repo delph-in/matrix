@@ -166,12 +166,14 @@ def validate_lexicon(ch, vr):
              'but also said your language does not have determiners.'
       vr.err('has-dets', mess)
       vr.err(noun.full_key + '_det', mess)
+
     # or if they said the noun takes an obligatory determiner, did they
     # provide any determiners?
     if det == 'obl' and (not 'det' in ch): 
       mess = 'You defined a noun that obligatorily takes a determiner, ' +\
              'but you haven\'t yet defined any determiners.'
       vr.warn(noun.full_key + '_det', mess)
+
     for stem in noun.get('stem', []):
       orth = stem.get('orth')
       pred = stem.get('pred')
