@@ -36,7 +36,7 @@ from gmcs.linglib import coordination
 from gmcs.linglib import yes_no_questions
 from gmcs.linglib import passivization
 from gmcs.linglib import toolboximport
-
+from gmcs.linglib import long_distance_dependencies
 
 ######################################################################
 # globals
@@ -470,6 +470,8 @@ def customize_matrix(path, arch_type, destination=None):
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
   if ch.get('passivization') == 'yes':
     passivization.customize_passivization(ch, mylang, lrules, lexicon)
+  if ch.get('ldd') == 'yes':
+    long_distance_dependencies.customize_long_distance_deps(ch, mylang, rules)
   customize_punctuation(grammar_path)
   customize_test_sentences(grammar_path)
   customize_itsdb(grammar_path)

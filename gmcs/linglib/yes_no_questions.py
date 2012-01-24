@@ -126,11 +126,13 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
 
     typedef = '''
     int-cl := interrogative-clause & head-only &
-    [ SYNSEM.LOCAL.CAT [ HEAD.INV +,
-                         VAL #val,
-                         MC + ],
-      HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na,
-                                  VAL #val ]],
+    [ SYNSEM [ LOCAL.CAT [ HEAD.INV +,
+                           VAL #val,
+                           MC + ],
+               NON-LOCAL #nl ],
+      HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na,
+                                    VAL #val ],
+                        NON-LOCAL #nl ],
       C-CONT.HOOK.INDEX.SF ques ].'''
     mylang.add(typedef, comment, section='phrases')
 

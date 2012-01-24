@@ -646,7 +646,7 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
     mylang.add_literal(comment)
 
     typedef = \
-      'determiner-lex := basic-determiner-lex & basic-zero-arg & \
+      'determiner-lex := basic-determiner-lex & zero-arg-nonslash & \
           [ SYNSEM.LOCAL.CAT.VAL [ SPR < >, \
                                    COMPS < >, \
                                    SUBJ < > ]].'
@@ -708,7 +708,7 @@ def create_rel_determiner(mylang):
 #most definitely German specific, can be generalized by allowing choices
 #to define pred value of rel-determiner-lex
   rel_det = \
-   '''rel-determiner-lex := basic-rel-determiner-lex & basic-zero-arg & 
+   '''rel-determiner-lex := basic-rel-determiner-lex & zero-arg-nonslash & 
                                                           non-wh-lex-item &
        [ SYNSEM [ LOCAL [ CAT.VAL [ SUBJ < >,
                                     COMPS < >,
@@ -932,7 +932,7 @@ def customize_adverbs(mylang, ch, lexicon):
 # [ OPT + ] value probably not universally true
     elif arg_str == 'scomp':
       val = 'VAL [ SUBJ < >, \
-                   COMPS < [ OPT + ] >, \
+                   COMPS < [ OPT - ] >, \
                    SPR < >, \
                    SPEC < > ]'
       if kind == 'scop':
@@ -1191,7 +1191,9 @@ def customize_complementizers(ch, mylang, lexicon):
                                                    SPEC < > ],\
 					     HEAD verb & [ FORM finite, \
                                                            INV - ] ], \
-                                 OPT - ] >,\
+                                 OPT -, \
+                                 NON-LOCAL [ REL 0-dlist & [ LIST < > ], \
+                                             QUE 0-dlist ] ] >,\
 			    SPR < >, \
 			    SPEC < > ] ], \
           ARG-ST < #comp > ].')
@@ -1494,7 +1496,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                           [ LOCAL.CONT.HOOK.INDEX.SF prop ] > ].')
         elif arg_st == 'qcomp': 
            mylang.add(ntype + ' := [ ARG-ST < [ ], \
-                          [ LOCAL.CONT.HOOK.INDEX.SF ques ] > ].')
+                          [ LOCAL.CONT.HOOK.INDEX.SF ques, \
+                            NON-LOCAL.SLASH 0-dlist ] > ].')
       elif arg_st == 'adp':
         mylang.add(ntype + ' := [ ARG-ST < [ ], \
                                 [ LOCAL.CAT.HEAD adp & \
@@ -1620,7 +1623,7 @@ def create_wh_phrases(mylang, ch):
     mylang.add(wh_noun)
   if ch.get('wh-det') == 'on':
     wh_det = \
-     'wh-determiner-lex := basic-determiner-lex & basic-zero-arg & \
+     'wh-determiner-lex := basic-determiner-lex & zero-arg-nonslash & \
        [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < >, \
                                   COMPS < >, \
                                   SPR < > ], \

@@ -33,15 +33,19 @@ def customize_passivization(ch, mylang, lrules, lexicon):
 
     typedef = \
     '''
-  passive-lex-rule := same-cont-lex-rule & no-ccont-lex-rule &
- [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ MOD #mod ],
-			VAL [ SUBJ < [ LOCAL.CONT #arg2 ] >,
+  passive-lex-rule := cat-change-only-lex-rule &
+ [ SYNSEM [ LOCAL.CAT [ HEAD verb & [ MOD #mod ],
+			VAL [ SUBJ < [ LOCAL.CONT #arg2,
+                                       NON-LOCAL #nlo ] >,
 			      COMPS < [ LOCAL.CONT #arg1,
+                                        NON-LOCAL #nls,
 					OPT + ] . #vcomps > ] ] ],
-            NON-LOCAL #nonloc ],
-   DTR.SYNSEM [ LOCAL [ CAT [ HEAD verb & [ MOD #mod ],
-		  	    VAL [ SUBJ < [ LOCAL.CONT #arg1 ] >,
-				  COMPS < [ LOCAL.CONT #arg2 ] . #vcomps > ] ] ], NON-LOCAL #nonloc ] ].'''
+   DTR.SYNSEM.LOCAL [ CAT [ HEAD verb & [ MOD #mod ],
+		  	    VAL [ SUBJ < [ LOCAL.CONT #arg1,
+                                           NON-LOCAL #nls ] >,
+				  COMPS < [ LOCAL.CONT #arg2,
+                                            NON-LOCAL #nlo ] . 
+                                 #vcomps > ] ] ] ].'''
     mylang.add(typedef)
     lrules.add('passive-lr := passive-lex-rule.')
     lr_n = 'passive-lex-rule'

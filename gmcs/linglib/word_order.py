@@ -1176,21 +1176,24 @@ def customize_head_comp_non_main_phrase(ch, mylang):
       mylang.add('comp-head-sub-phrase := share-rel-non-head-phrase.') 
 
   if ch.get('clz-optionality'):
-    mylang.add('create-informal-vcomp-phrase := unary-phrase &\
-   [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK #hook & [ INDEX.SF prop ],\
+    mylang.add('basic-informal-vcomp := unary-phrase &\
+   [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
                              COORD -, \
 	         	     CAT [ HEAD verb & [ FORM finite ],\
 				   VAL #val & [ SUBJ < >,\
 					        COMPS < >,\
 					        SPR < >,\
-					        SPEC < > ],\
-				   MC + ] ] ] >,\
+					        SPEC < > ] ] ] ] >,\
      C-CONT.HOOK #hook,\
      SYNSEM [ LOCAL.CAT [ HEAD comp,\
 	                  VAL #val,\
 		          MC - ], \
               NON-LOCAL.QUE 0-dlist ] ].')
-
+    mylang.add('create-informal-vcomp-phrase := basic-informal-vcomp & \
+                [ ARGS < [ SYNSEM.LOCAL [ CAT.MC +, \
+                                          CONT.HOOK #hook & \
+                                               [ INDEX.SF prop ] ] ] >, \
+                  C-CONT.HOOK #hook ].') 
 
 def determine_head_value(my_heads):
  

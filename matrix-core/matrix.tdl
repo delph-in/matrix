@@ -1559,24 +1559,23 @@ basic-head-filler-phrase := basic-filler-phrase & head-compositional.
 ;;
 ;,
 ;		      NON-LOCAL.SLASH 1-dlist & [ LIST [ FIRST #local ] ] 
-general-basic-head-subj-phrase := head-nexus-phrase & binary-headed-phrase & head-compositional &
+general-basic-head-subj-phrase := head-valence-head-nexus & binary-headed-phrase & head-compositional &
   [ SYNSEM phr-synsem & 
 	   [ LOCAL.CAT [ POSTHEAD +,
 			 VAL [ SUBJ < >,
 			       COMPS #comps,
-			       SPR #spr ] ],
-	     NON-LOCAL.SLASH #slash ],
+			       SPR #spr ] ] ],
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ < [ LOCAL #local ]  >,
+    HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ < [ LOCAL #local,
+                                               NON-LOCAL.SLASH #slash ]  >,
 		 		      COMPS #comps,	
-                                      SPR #spr ],
-		      NON-LOCAL.SLASH #slash ],
+                                      SPR #spr ] ],
     NON-HEAD-DTR.SYNSEM  canonical-synsem &
 		 [ LOCAL #local & [ CAT [ VAL [ SUBJ olist,
 				       COMPS olist,
 				       SPR olist ] ] ],
-		   NON-LOCAL [ SLASH 0-dlist & [ LIST < > ],
+		   NON-LOCAL [ SLASH #slash & 0-dlist,
 			       REL 0-dlist ] ]].
 
 basic-head-subj-phrase := general-basic-head-subj-phrase & head-non-wh &
@@ -1928,14 +1927,15 @@ marker-final-phrase := basic-binary-marker-phrase &
 ; is incompatible with any of the available overt determiners.  This
 ; could conceivably be regulated on the basis of semantics.
 
-basic-bare-np-phrase := head-only &
+basic-bare-np-phrase := head-only & head-valence-phrase &
   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
 			   SUBJ < >,
 			   COMPS < >,
 			   SPEC < > ],
     HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,
     			    	  VAL [ SPR < [ LOCAL.CAT.HEAD det,
-					      	OPT + ] >,
+					      	OPT +,
+						NON-LOCAL.SLASH 0-dlist ] >,
 				      	SUBJ < >,
 				      	COMPS < > ] ],
 			    CONT.HOOK [ INDEX #index,
@@ -1986,10 +1986,10 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
 			   SPR < >,
 			   COMPS < > ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < gap &
-					       [ LOCAL #local & local  ] >,
+					       [ NON-LOCAL.SLASH #slash ] >,
         				COMPS < > ],
 				  MC na ],
-		      NON-LOCAL.SLASH.LIST < #local > ] ].
+		      NON-LOCAL.SLASH #slash ] ].
 
 ; ERB 2004-05-05 Allow modifiers to attach to things with
 ; non-empty comps lists.  The head-mod-phrase will pass up
@@ -2073,7 +2073,7 @@ head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                  LAST #middle ] ] ],
     C-CONT.RELS <! !> ].
 
-basic-head-mod-phrase-simple := head-mod-phrase-simple & head-nexus-phrase & head-non-wh.
+basic-head-mod-phrase-simple := head-mod-phrase-simple & head-valence-head-nexus & head-non-wh.
 
 ;;;removed SYNSEM.NON-LOCAL.QUE 0-dlist. to do: test consequences
 basic-head-wh-mod-phrase-simple := head-mod-phrase-simple & head-wh.
@@ -2280,13 +2280,13 @@ raise-sem-lex-item := no-hcons-lex-item &
 basic-zero-arg := lex-item &
   [ ARG-ST < > ].
 
-zero-arg-nonslash := lex-item &
+zero-arg-nonslash := basic-zero-arg &
   [ SYNSEM.NON-LOCAL.SLASH 0-dlist ].
 
-zero-arg-nonrel := lex-item &
+zero-arg-nonrel := basic-zero-arg &
   [ SYNSEM.NON-LOCAL.REL 0-dlist ].
 
-zero-arg-nonque := lex-item &
+zero-arg-nonque := basic-zero-arg &
   [ SYNSEM.NON-LOCAL.QUE 0-dlist ].
 
 ; Non-argument taking items which introduce no non-local values.

@@ -1,3 +1,6 @@
+
+from gmcs.linglib import long_distance_dependencies
+
 ########################################################
 # COMMON COMPONENTS V2+CLUSTERS ACROSS ANALYSES CHOICES
 # GENERAL COMPONENTS
@@ -115,6 +118,7 @@ def add_basic_phrases_v2_with_cluster(ch, mylang, rules):
     create_aux_plus_verb_phrases(ch, mylang)
 
   if ch.get('v2-analysis') == 'filler-gap':
+    long_distance_dependencies.add_basic_ldd_phrases(ch, mylang, rules)
     filler_gap_word_order(mylang)
     filler_gap_rules(rules)
   else:
@@ -305,8 +309,7 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules):
 ##feature EDGE can register if an item is at the edge of a phrase or not
 
   if ch.get('edge-related-res') == 'yes':
-    mylang.add('cat :+ [ EDGE luk ].', 'EDGE is used to prevent participles from occurring in the middle of the cluster', section='addenda')
-
+    mylang.add('cat :+ [ EDGE luk ].', 'EDGE is used to prevent certain word forms from occurring in the middle of the cluster', section='addenda')
 ##
 ##verb-second languages can have a fixed or (relatively) free order of arguments
 ##that are not in first position.
@@ -1295,43 +1298,42 @@ def filler_gap_word_order(mylang):
                ;;; not allowing inverted head-dtr '''
 
 ###CHANGE: CHECK IF WH- TURNED ON
+#  mylang.add('general-filler-head-phrase := basic-head-filler-phrase & \
+#                                                     head-final & \
+#                [ SYNSEM.LOCAL [ CAT [ MC +, \#
+#		                       VFRONT #vf ], \
+#		                 CONT [ HOOK.INDEX.SF prop-or-ques ] ], \
+#                  HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb & [ FORM finite, \
+# 					                    INV - ], \
+#                                              MC na, \
+#				              VFRONT #vf & -, \
+#				              VAL [ SUBJ < >, \
+#				                    COMPS < >, \
+#				                    SPR < >, \
+#				                    SPEC < > ] ] ].', comment)
+#
+ # mylang.add('filler-head-phrase := general-filler-head-phrase & \
+#                [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-dlist ].')
 
-  mylang.add('general-filler-head-phrase := basic-head-filler-phrase & \
-                                                     head-final & \
-                [ SYNSEM.LOCAL [ CAT [ MC +, \
-		                       VFRONT #vf ], \
-		                 CONT [ HOOK.INDEX.SF prop-or-ques ] ], \
-                  HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb & [ FORM finite, \
- 					                    INV - ], \
-                                              MC na, \
-				              VFRONT #vf & -, \
-				              VAL [ SUBJ < >, \
-				                    COMPS < >, \
-				                    SPR < >, \
-				                    SPEC < > ] ] ].', comment)
+#  mylang.add('wh-filler-head-phrase := general-filler-head-phrase & \
+#                [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques, \
+#                  NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE 1-dlist ].')
+#  comment = ''';;; extracted phrases \
+#               ;;; in German, only verbs allow extraction (except for wh)'''
 
-  mylang.add('filler-head-phrase := general-filler-head-phrase & \
-                [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-dlist ].')
-
-  mylang.add('wh-filler-head-phrase := general-filler-head-phrase & \
-                [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques, \
-                  NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE 1-dlist ].')
-  comment = ''';;; extracted phrases \
-               ;;; in German, only verbs allow extraction (except for wh)'''
-
-  mylang.add('basic-extracted-arg-phrase :+ \
-                [ HEAD-DTR.SYNSEM [ MODIFIED notmod, \
-				    LOCAL.CAT.HEAD verb & [ INV - ] ] ].', comment)
+#  mylang.add('basic-extracted-arg-phrase :+ \
+#                [ HEAD-DTR.SYNSEM [ MODIFIED notmod, \
+#				    LOCAL.CAT.HEAD verb & [ INV - ] ] ].', comment)
             
-  mylang.add('extracted-comp-phrase := basic-extracted-comp-phrase & \
-                [ SYNSEM.LOCAL.CAT [ SECOND #sec, \
-                                     VAL.COMPS < > ], \
-                  HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SUBJ < >, \
-			                      SECOND #sec ] ].')
+#  mylang.add('extracted-comp-phrase := basic-extracted-comp-phrase & \
+#                [ SYNSEM.LOCAL.CAT [ SECOND #sec, \
+#                                     VAL.COMPS < > ], \
+#                  HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SUBJ < >, \
+#			                      SECOND #sec ] ].')
 
-  comment = ''';;;no non-verbal-comp extraction allowed after aux-2nd-comp \
-               ;;;aux-2nd-comp-2 does however allow for this \
-               ;;;Dich sah der Mann schlafen.''' 
+ # comment = ''';;;no non-verbal-comp extraction allowed after aux-2nd-comp \
+ #              ;;;aux-2nd-comp-2 does however allow for this \
+ #              ;;;Dich sah der Mann schlafen.''' 
 
   mylang.add('extracted-non-verbal-comp-phrase := extracted-comp-phrase & \
  [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.COMPS.FIRST.LOCAL.CAT.HEAD +njrpcdmo, \
