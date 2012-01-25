@@ -108,6 +108,8 @@ def add_analysis_specific_constraints(ch, mylang, rules):
     fg = True
     mylang.add('basic-extracted-arg-phrase :+ \
                 [ SYNSEM.LOCAL.CAT.HEAD.INV -].')
+    mylang.add('extracted-subj-phrase := \
+     [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
   elif ch.get('vc-analysis') == 'basic':
     ac = True
     mylang.add('extracted-subj-phrase := \
