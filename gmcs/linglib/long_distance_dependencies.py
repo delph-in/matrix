@@ -12,7 +12,8 @@ def add_basic_ldd_phrases(ch, mylang, rules):
   
   basic_arg = \
    '''basic-extracted-arg-phrase :+ [ HEAD-DTR.SYNSEM [ MODIFIED notmod,
-                      LOCAL.CAT.HEAD verb ] ].'''
+                      LOCAL.CAT.HEAD verb, 
+                      NON-LOCAL.REL 0-dlist & [ LIST < > ] ] ].'''
   mylang.add(basic_arg, section='addenda')
    
   comp_ex = \
@@ -69,7 +70,8 @@ def filler_head_basic(ch, mylang, rules):
                                 VAL [ SUBJ < >,
                                       COMPS < >,
                                       SPR < >,
-                                      SPEC < > ] ] ].'''
+                                      SPEC < > ] ],
+    NON-HEAD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist & [ LIST < > ] ].'''
   mylang.add(typedef)
   if ch.get('v2-analysis') == 'filler-gap':
     mylang.add('general-filler-head-phrase := \
@@ -115,6 +117,8 @@ def add_analysis_specific_constraints(ch, mylang, rules):
           [ HEAD-DTR.SYNSEM.LOCAL.CAT [ MC bool, \
                                         VC na-or-+, \
                                         VFRONT na-or-+ ] ].')
+   # mylang.add('ger-extracted-adj-phrase := \
+   #             [ SYNSEM.LOCAL.CAT.SECOND + ].')
   elif ch.get('vc-analysis') == 'aux-rule':
     ar = True
     mylang.add('basic-extracted-arg-phrase :+ \
@@ -142,7 +146,9 @@ def add_analysis_specific_constraints(ch, mylang, rules):
     mylang.add('extracted-comp-phrase := \
                 [ SYNSEM.LOCAL.CAT.EDGE - ].')
     mylang.add('basic-extracted-arg-phrase :+ \
-                [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
+                [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].') 
+    mylang.add('ger-extracted-adj-phrase := \
+                [ HEAD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist & [ LIST < > ] ].')
     add_ldd_additional_constraints_nonfg(ch, mylang)
     add_ldd_informal_vcomp(ch, mylang, rules)
 
@@ -154,7 +160,8 @@ def mc_ldd_constraints(ch, mylang):
                HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE + ].')
   if ch.get('vc-analysis') == 'basic':
     mylang.add('general-filler-head-phrase := \
-                 [ SYNSEM.LOCAL.CAT.SECOND - ].')
+                 [ SYNSEM.LOCAL.CAT.SECOND -, \
+                   HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
 
 
 def add_ldd_additional_constraints_all(ch, mylang):
@@ -174,7 +181,9 @@ def add_ldd_additional_constraints_nonfg(ch, mylang):
 
   if ch.get('q-inv'):
     mylang.add('int-cl := \
-               [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+               [ SYNSEM.LOCAL.CAT [ POSTHEAD -, \
+                                    EDGE #edge ], \
+                 HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #edge ].')
 
 
 def add_ldd_additional_constraints_aux_r(mylang):
@@ -209,6 +218,8 @@ def add_ldd_informal_vcomp(ch, mylang, rules):
     mylang.add('basic-informal-vcomp := \
        [ SYNSEM.LOCAL.CAT [ MC -, \
                             EDGE + ] ].')
+    mylang.add('create-informal-vcomp-phrase := \
+        [ ARGS < [ SYNSEM.NON-LOCAL.SLASH 0-dlist ] > ].')
     tdef = \
     '''create-ldd-informal-vcomp-phrase := \
   [ ARGS < [ SYNSEM.LOCAL.CONT.HOOK [ INDEX [ INSTLOC #il,

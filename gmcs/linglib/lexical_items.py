@@ -1312,7 +1312,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                                                 COMPS < >, \
                                                 SPR < >, \
 			                        SPEC < > ] ] ], \
-	                    NON-LOCAL.QUE 0-dlist ] ].'
+	                    NON-LOCAL [ QUE 0-dlist, \
+                                        SLASH 0-dlist & [ LIST < > ] ] ] ].'
     mylang.add(typedef, comment)
     if ch.get('explitives') == 'yes':
       expltype = \
@@ -1634,7 +1635,9 @@ def create_wh_phrases(mylang, ch):
   mylang.add('non-wh-lex-item := lex-item & [ SYNSEM.NON-LOCAL.QUE 0-dlist].')
   mylang.add('basic-adjective-lex :+ non-wh-lex-item.')
   mylang.add('basic-adverb-lex :+ non-wh-lex-item.')
-  mylang.add('basic-adposition-lex :+ non-wh-lex-item.')
+  mylang.add('basic-adposition-lex :+ basic-one-arg & \
+             [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp & [ ] >, \
+               ARG-ST < #comp > ].')
   mylang.add('determiner-lex := non-wh-lex-item.') 
 
 

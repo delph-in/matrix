@@ -1157,7 +1157,7 @@ def customize_head_comp_non_main_phrase(ch, mylang):
       mylang.add('head-comp-sub-phrase := \
                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL - ].')
     if wh:
-      mylang.add('head-comp-sub-phrase := share-que-non-head-phrase.')
+      mylang.add('head-comp-sub-phrase := head-valence-head-nexus.')
     if rel:
       mylang.add('head-comp-sub-phrase := share-rel-non-head-phrase.')
   if fhead: 
@@ -1171,21 +1171,19 @@ def customize_head_comp_non_main_phrase(ch, mylang):
       mylang.add('comp-head-sub-phrase := \
                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL + ].') 
     if wh:
-      mylang.add('comp-head-sub-phrase := share-que-non-head-phrase.') 
+      mylang.add('comp-head-sub-phrase := head-valence-head-nexus.') 
     if rel:
       mylang.add('comp-head-sub-phrase := share-rel-non-head-phrase.') 
 
   if ch.get('clz-optionality'):
     mylang.add('basic-informal-vcomp := unary-phrase &\
-   [ ARGS < [ SYNSEM [ LOCAL [ CONT.HOOK #hook,\
-                             COORD -, \
-	         	     CAT [ HEAD verb & [ FORM finite ],\
+   [ ARGS < [ SYNSEM [ LOCAL [ COORD -, \
+	         	       CAT [ HEAD verb & [ FORM finite ],\
 				   VAL #val & [ SUBJ < >,\
 					        COMPS < >,\
 					        SPR < >,\
 					        SPEC < > ] ] ], \
                         NON-LOCAL.SLASH #slash ] ] >,\
-     C-CONT.HOOK #hook,\
      SYNSEM [ LOCAL.CAT [ HEAD comp,\
 	                  VAL #val,\
 		          MC - ], \
