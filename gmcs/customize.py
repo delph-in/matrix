@@ -1,4 +1,5 @@
-### $Id: customize.py,v 1.71 2008-09-30 23:50:02 lpoulson Exp $
+#
+# $Id: customize.py,v 1.71 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -12,6 +13,7 @@ import gzip
 import zipfile
 import sys
 import re
+import codecs
 from subprocess import call
 
 from gmcs.choices import ChoicesFile
@@ -93,22 +95,25 @@ roots = None
 def customize_punctuation(grammar_path):
   if not ch.get('punctuation-chars',''): return
   chars = list(unicode(ch['punctuation-chars'], 'utf8'))
+
   # First for LKB's globals.lsp
-  punc_re = re.compile(r'(' + r'|'.join(r'#\\' + re.escape(c) + ' ?'
-                                        for c in chars) + r')')
-  filename = os.path.join(grammar_path, 'lkb', 'globals.lsp')
-  lines = iter(open(filename, 'r').readlines())
-  glbl_lsp = open(filename, 'w')
+  # Now using REPP for LKB string level processing/tokenization
+  filename = os.path.join(grammar_path, 'lkb', 'vanilla.rpp') 
+  lines = iter(codecs.open(filename, 'r', encoding='utf-8').readlines())
+  van_rpp = codecs.open(filename, 'w', encoding='utf-8')
   for line in lines:
-    if line.startswith('(defparameter *punctuation-characters*'):
-      # NOTE: because we don't want to parse lisp, we assume here that
-      #       the (defparameter block ends at the next blank line
-      while line.strip() != '':
-          line = punc_re.sub('', line)
-          print >>glbl_lsp, line.rstrip()
-          line = lines.next()
-    print >>glbl_lsp, line.rstrip()
-  glbl_lsp.close()
+    if line.startswith(':'):
+    # NOTE: repp syntax says that the line that starts with ':'
+    # defines a list of chars to split on
+      for c in chars:
+        # \ char needs some special treatment
+        if c == '\\':
+          c = '\\\\'
+        line = ":"+line[1:].replace(c,'').rstrip()
+    print >>van_rpp, line.rstrip('\n')
+  van_rpp.close()
+
+  # 
   # PET's pet.set is a bit easier
   line_re = re.compile(r'^punctuation-characters := "(.*)".\s*$')
   # need to escape 1 possibility for PET
