@@ -45,9 +45,13 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang):
     comp_spec_typedef = define_germanic_arg_str_and_valency(ch, supertypename)  
     if ch.get('obj-drop'):
       if ch.get('vc-analysis') == 'basic':
-        mylang.add(supertypename + ' := [ ARG-ST < [ NON-LOCAL.SLASH 0-dlist & \
-                                                               [ LIST < > ] ], \
+        mylang.add(supertypename + ' := [ ARG-ST < [  ], \
                                                    [ OPT - ] > ].')
+        if ch.get('v2-analysis') == 'mc':
+          mylang.add(supertypename + ' := \
+                                  [ ARG-ST < [ NON-LOCAL.SLASH 0-dlist & \
+                                                               [ LIST < > ] ], \
+                                             [ ] > ].')
       elif ch.get('vc-analysis') == 'aux-rule':
         mylang.add(supertypename + ' := [ ARG-ST < [ OPT - ] > ].')  
   elif auxcomp == 's':

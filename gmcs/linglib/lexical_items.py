@@ -1312,9 +1312,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                                                 COMPS < >, \
                                                 SPR < >, \
 			                        SPEC < > ] ] ], \
-	                    NON-LOCAL [ QUE 0-dlist, \
-                                        SLASH 0-dlist & [ LIST < > ] ] ] ].'
+	                    NON-LOCAL.QUE 0-dlist ] ].'
     mylang.add(typedef, comment)
+    if ch.get('v2-analysis') == 'mc':
+      mylang.add('non-sem-noun-lex := [ SYNSEM.NON-LOCAL.SLASH 0-dlist & \
+                                                               [ LIST < > ] ].')
     if ch.get('explitives') == 'yes':
       expltype = \
            'expl-noun-lex := non-sem-noun-lex & \

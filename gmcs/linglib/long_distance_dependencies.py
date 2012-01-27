@@ -157,14 +157,16 @@ def add_analysis_specific_constraints(ch, mylang, rules):
 def mc_ldd_constraints(ch, mylang):
   mylang.add('general-filler-head-phrase := \
              [ SYNSEM.LOCAL.CAT [ HEAD.INV +, \
-                                  MC +, \
-                                  POSTHEAD + ], \
-               HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE + ].')
+                                  MC + ], \
+               HEAD-DTR.SYNSEM.LOCAL.CAT [ EDGE +, \
+                                           POSTHEAD + ] ].')
   if ch.get('vc-analysis') == 'basic':
     mylang.add('general-filler-head-phrase := \
                  [ SYNSEM.LOCAL.CAT.SECOND -, \
                    HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
-
+  else:
+    mylang.add('general-filler-head-phrase := \
+               [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC + ].')
 
 def add_ldd_additional_constraints_all(ch, mylang):
 ####needed for long distance dependencies
@@ -241,6 +243,7 @@ def add_ldd_informal_vcomp(ch, mylang, rules):
     if ch.get('vc-analysis') == 'aux-rule':
       mylang.add('basic-informal-vcomp := \
                  [ ARGS < [ SYNSEM.LOCAL.CAT.MC na-or-+ ] > ].')
+      mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.EDGE - ].')
     else:
       mylang.add('basic-informal-vcomp := \
                  [ SYNSEM.LOCAL.CAT.SECOND +, \
