@@ -93,42 +93,63 @@ roots = None
 #   Determine which punctuation characters to ignore in parsing
 
 def customize_punctuation(grammar_path):
-  if not ch.get('punctuation-chars',''): return
-  chars = list(unicode(ch['punctuation-chars'], 'utf8'))
 
-  # First for LKB's globals.lsp
-  # Now using REPP for LKB string level processing/tokenization
-  filename = os.path.join(grammar_path, 'lkb', 'vanilla.rpp') 
-  lines = iter(codecs.open(filename, 'r', encoding='utf-8').readlines())
-  van_rpp = codecs.open(filename, 'w', encoding='utf-8')
-  for line in lines:
-    if line.startswith(':'):
-    # NOTE: repp syntax says that the line that starts with ':'
-    # defines a list of chars to split on
-      for c in chars:
-        # \ char needs some special treatment
-        if c == '\\':
-          c = '\\\\'
-        line = ":"+line[1:].replace(c,'').rstrip()
-    print >>van_rpp, line.rstrip('\n')
-  van_rpp.close()
+  #this one is causing probs, even in a comment! it's \x2212
+  default_splits_str = ' \\t!"&\'\-()*+,./:;<>?@\[\]^`{|}~\\\\'.encode('utf-8')
 
-  # 
-  # PET's pet.set is a bit easier
-  line_re = re.compile(r'^punctuation-characters := "(.*)".\s*$')
-  # need to escape 1 possibility for PET
-  chars = [{'"':'\\"'}.get(c, c) for c in chars]
-  punc_re = re.compile(r'(' + r'|'.join(re.escape(c) for c in chars) + r')')
-  filename = os.path.join(grammar_path, 'pet', 'pet.set')
-  lines = iter(open(filename, 'r').readlines())
-  pet_set = open(filename, 'w')
-  for line in lines:
-    line = unicode(line, 'utf8')
-    s = line_re.search(line)
-    if s:
-      line = 'punctuation-characters := "%s".' % punc_re.sub('', s.group(1))
-    print >>pet_set, line.rstrip().encode('utf8')
-  pet_set.close()
+  if ch.get('punctuation-chars') == 'keep-all':
+    # in this case, we just split on [ \t], and that's
+    # what vanilla.rpp already does, so we're done
+    return
+  elif ch.get('punctuation-chars') == 'discard-all':
+    # in this case, "all" punctuation (from the default list)
+    # should be split on and dropped 
+    # to do this we have to build a regex for the : line of 
+    # the repp file
+    filename = os.path.join(grammar_path, 'lkb', 'vanilla.rpp') 
+    lines = codecs.open(filename, 'r', encoding='utf-8').readlines()
+    van_rpp = codecs.open(filename, 'w', encoding='utf-8')
+    for line in lines:
+      if line.startswith(':'):
+        line = ":["+default_splits_str+"]".rstrip()
+      print >>van_rpp, line.rstrip('\n')
+    van_rpp.close()       
+  elif ch.get('punctuation-chars') == 'keep-list':
+    # here we split on the default list (like discard-all),
+    # but *minus* whatevers on the keep list
+    chars = list(unicode(ch['punctuation-chars-list'], 'utf8'))
+    filename = os.path.join(grammar_path, 'lkb', 'vanilla.rpp') 
+    lines = iter(codecs.open(filename, 'r', encoding='utf-8').readlines())
+    van_rpp = codecs.open(filename, 'w', encoding='utf-8')
+    for line in lines:
+      if line.startswith(':'):
+      # NOTE: repp syntax says that the line that starts with ':'
+      # defines a list of chars to split on
+        for c in chars:
+          # \ char needs some special treatment
+          # so do the other escaped chars!
+          if c == '\\':
+            c = '\\\\'
+          line = ":"+line[1:].replace(c,'').rstrip()
+      print >>van_rpp, line.rstrip('\n')
+    van_rpp.close()
+
+  
+#  # PET's pet.set is a bit easier
+#  line_re = re.compile(r'^punctuation-characters := "(.*)".\s*$')
+#  # need to escape 1 possibility for PET
+#  chars = [{'"':'\\"'}.get(c, c) for c in chars]
+#  punc_re = re.compile(r'(' + r'|'.join(re.escape(c) for c in chars) + r')')
+#  filename = os.path.join(grammar_path, 'pet', 'pet.set')
+#  lines = iter(open(filename, 'r').readlines())
+#  pet_set = open(filename, 'w')
+#  for line in lines:
+#    line = unicode(line, 'utf8')
+#    s = line_re.search(line)
+#    if s:
+#      line = 'punctuation-characters := "%s".' % punc_re.sub('', s.group(1))
+#    print >>pet_set, line.rstrip().encode('utf8')
+#  pet_set.close()
 
 ######################################################################
 # customize_test_sentences(grammar_path)

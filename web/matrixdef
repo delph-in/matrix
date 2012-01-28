@@ -6,8 +6,14 @@ Label "<h3>Language</h3>"
 
 Text language "Language name" "<p>Name of your language: " "<br>" 50
 Text iso-code "ISO code" "<a href=\"http://www.sil.org/iso639-3/codes.asp\">ISO code</a> for your language: " " (optional) </p>" 6
-Label "<p>Many punctuation characters are ignored by the parser. If there are any you wish to be included in the parse chart (e.g. if you use ? for a glottal stop, or ! for an alveolar click), please type or copy them from the following list. Do not use any commas or spaces to delimit characters.<br>"
-Text punctuation-chars "Punctuation characters" "Punctuation characters to parse:" "<br>!\"&'()*+,−./;&lt;&gt;?@[\]^`{|}~<!--we can't currently do anything about the unicode characters... maybe later 。！？…．　○●◎＊☆★◇◆--><br>" 50
+
+Label "<h3>String-processing</h3><p>Your grammar will include a basic tokenizer file for string-level processing (<span style='font-family:monospace'>vanilla.rpp</span>, see <a href='http://moin.delph-in.net/ReppTop/'>ReppTop</a> documentation).  We have three default options for this file.<br />"
+Radio punctuation-chars "Punctuation characters" "<br />" ""
+. discard-all "discard-all" "" "split on, and then discard all punctuation characters found in this default list: <span style='font-family:monospace'>!&amp;'()*+,.\/:;&lt;&gt;?@[]^`{|}~</span><!--we can't currently do anything about the unicode characters... maybe later 。！？…．　○●◎＊☆★◇◆--><br />"
+. keep-all "keep-all" "" "only split space and tab characters, all other characters can occur in tokens<br />" 
+. keep-list "keep-list" "" "place characters into a list of characters that can occur within tokens (you can copy and paste from the default list above; do not use any commas or spaces to delimit characters)."
+
+Text punctuation-chars-list "Punctuation characters" "&nbsp;&nbsp;Punctuation characters to parse:" "<br />" 50
 
 Label "<h3>Archiving and Version Control</h3>"
 

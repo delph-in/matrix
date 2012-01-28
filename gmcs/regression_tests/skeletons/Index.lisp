@@ -22,6 +22,9 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "char-test-keep-list") (:content . "char-test-keep-list: test of repp preprocessing where user specifies a specific split-list along with default split on whitespace"))
+((:path . "char-test-keep-all") (:content . "char-test-keep-all: test of repp preprocessing where user only wants to split on whitespace"))
+((:path . "char-test-discard-all") (:content . "char-test-discard-all: tests string splitting and discarding on a list of default punctuation chars crammed b/t a noun and ve"))
 ((:path . "neg1b-neg2fd") (:content . "neg1b-neg2fd: bipartite negation, neg1 is bound and requires neg2, a posthead VP adverb, neg2 cannot occur without neg1"))
 ((:path . "neg1b-neg2fh") (:content . "neg1b-neg2fh: bipartite negation, neg1 is bound and requires neg2, a posthead VP adverb, neg2 cannot occur without neg1"))
 ((:path . "neg-comp-auxattach-postcomps") (:content . "neg-comp-auxattach-postcomps: negative complement adds a second "))
