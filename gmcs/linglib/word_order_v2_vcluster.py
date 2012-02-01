@@ -866,7 +866,13 @@ def create_aux_plus_verb_phrases(ch, mylang):
 #
 
 def spec_word_order_phrases_aux_plus_verb(ch, mylang):
-  mylang.add('basic-verbal-comp-rule := head-compositional & basic-binary-headed-phrase & head-valence-phrase & \
+
+  if ch.get('extraposition') == 'yes':
+    stype = 'collect-anchor-phrase'
+  else:
+    stype = 'basic-binary-headed-phrase'
+
+  mylang.add('basic-verbal-comp-rule := head-compositional & ' + stype + ' & head-valence-phrase & \
                 [ SYNSEM.LOCAL [ CAT.VAL [ SPR #spr, \
                                            SPEC #spec ], \
 		                 CONT.HOOK #hook ], \
@@ -1018,7 +1024,7 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
   mylang.add('comp-aux-2nd-phrase := gen-vcomp-verb-2nd-phrase & basic-aux-verb-rule & [ SYNSEM.LOCAL.CAT.VFRONT - ].')
   mylang.add('noncomp-aux-2nd-phrase := gen-vcomp-verb-2nd-phrase & special-basic-aux-verb-rule & [ SYNSEM.LOCAL.CAT.VFRONT +, \
                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
-
+  
   mylang.add('special-insert-aux-phrase := headed-phrase & \
          [ SYNSEM.LOCAL [ CONT [ HOOK #hook, \
 		                 RELS [ LIST #first,\
@@ -1042,6 +1048,7 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang):
                                                       LARG #larg2 ] ] ] ] ] ], \
            INSERT-DTR #secarg & [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ AUX + ],\
 						         VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM #dform ],\
+COORD -, \
 					            CONT [ HOOK.LTOP #larg1,\
 						    HCONS [ LIST.FIRST [ LARG #larg2 ] ] ] ] ],\
 			                   INFLECTED infl-satisfied ], \

@@ -832,8 +832,12 @@ def customize_np_word_order(mylang, ch, rules):
 #  cases for other languages)
  
   if ch.get('genitive-modifiers') == 'yes':
+    stype = ''
+    if ch.get('extraposition') == 'yes':
+      stype += 'share-anchor-'
+    stype += 'unary-phrase'
     typedef = \
-   ' genitive-mod-phrase := unary-phrase & \
+   ' genitive-mod-phrase := ' + stype + ' & \
       [ SYNSEM.LOCAL.CAT [ HEAD noun & [ CASE #case, \
 				         MOD < [ LOCAL intersective-mod & \
                                                   [ CAT.HEAD noun, \
@@ -868,8 +872,14 @@ def customize_np_word_order(mylang, ch, rules):
             HEAD-DTR.SYNSEM [ NON-LOCAL.SLASH 0-dlist, \
                               LOCAL.CAT.MC #mc ], \
             SYNSEM.LOCAL.CAT.MC #mc  ].'
+    
+    stype = ''
+    if ch.get('extraposition') == 'yes':
+      stype += 'share-anchor-'
+    stype += 'unary-phrase'
+
     t2 = \
-      'vocative-np-phrase := unary-phrase & \
+      'vocative-np-phrase := ' + stype + ' & \
                 [ SYNSEM [ LOCAL [ CAT [ HEAD adv & [ PRD -, \
                                          MOD < [ LOCAL scopal-mod & \
                                                    [ CAT [ HEAD verb & \
@@ -1176,7 +1186,13 @@ def customize_head_comp_non_main_phrase(ch, mylang):
       mylang.add('comp-head-sub-phrase := share-rel-non-head-phrase.') 
 
   if ch.get('clz-optionality'):
-    mylang.add('basic-informal-vcomp := unary-phrase &\
+    
+    stype = ''
+    if ch.get('extraposition') == 'yes':
+      stype += 'share-anchor-'
+    stype += 'unary-phrase'
+
+    mylang.add('basic-informal-vcomp := ' + stype + ' &\
    [ ARGS < [ SYNSEM [ LOCAL [ COORD -, \
 	         	       CAT [ HEAD verb & [ FORM finite ],\
 				   VAL #val & [ SUBJ < >,\
@@ -1228,8 +1244,13 @@ def create_wh_phrases(ch, mylang, rules):
   mylang.add('bare-np-phrase := head-nexus-phrase.')
  
   if ch.get('has-compl') == 'yes':
+    
+    stype = ''
+    if ch.get('extraposition') == 'yes':
+      stype += 'share-anchor-'
+    stype += 'unary-phrase'
     wh_sub_type = \
-      'create-wh-ques-vcomp-phrase := unary-phrase & \
+      'create-wh-ques-vcomp-phrase := ' + stype + ' & \
         [ ARGS < [ SYNSEM [ LOCAL [ CONT.HOOK #hook & [ INDEX.SF ques ], \
                               COORD -, \
                               CAT [ HEAD verb & \

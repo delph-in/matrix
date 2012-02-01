@@ -37,6 +37,7 @@ from gmcs.linglib import yes_no_questions
 from gmcs.linglib import passivization
 from gmcs.linglib import toolboximport
 from gmcs.linglib import long_distance_dependencies
+from gmcs.linglib import extraposition
 
 ######################################################################
 # globals
@@ -265,6 +266,8 @@ def customize_roots():
   if ch.get('v2-analysis') == 'filler-gap' or ch.get('ldd'):
     roots.add('root := [ SYNSEM.NON-LOCAL.SLASH <! !> ].') 
 
+  if ch.get('extraposition') == 'yes':
+    roots.add('root := [ SYNSEM.LOCAL.ANCHOR.TO-BIND < > ].')
   # ERB 2006-10-05 I predict a bug here:  If we a language with auxiliaries
   # and question particles, we're going to need to make sure that FORM is
   # compatible with comp.
@@ -472,6 +475,8 @@ def customize_matrix(path, arch_type, destination=None):
     passivization.customize_passivization(ch, mylang, lrules, lexicon)
   if ch.get('ldd') == 'yes':
     long_distance_dependencies.customize_long_distance_deps(ch, mylang, rules)
+  if ch.get('extraposition') == 'yes':
+    extraposition.create_extraposition(ch, mylang, rules)
   customize_punctuation(grammar_path)
   customize_test_sentences(grammar_path)
   customize_itsdb(grammar_path)

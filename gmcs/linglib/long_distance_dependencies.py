@@ -39,7 +39,7 @@ def add_basic_ldd_phrases(ch, mylang, rules):
                                         COMPS < >,
                                         SPR < > ] ],
                       NON-LOCAL.QUE #que ],
-    SYNSEM [ NON-LOCAL [ SLASH <! [ CAT [ HEAD +nrp &
+    SYNSEM.NON-LOCAL [ SLASH <! [ CAT [ HEAD +nrp &
                                                [ PRD - ],
                                           VAL [ SUBJ < >,
                                                 COMPS < >,
@@ -150,7 +150,8 @@ def add_analysis_specific_constraints(ch, mylang, rules):
     mylang.add('basic-extracted-arg-phrase :+ \
                 [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].') 
     mylang.add('ger-extracted-adj-phrase := \
-                [ HEAD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist & [ LIST < > ] ].')
+                [ SYNSEM.LOCAL.CAT.EDGE -, \
+                  HEAD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist & [ LIST < > ] ].')
     add_ldd_additional_constraints_nonfg(ch, mylang)
     add_ldd_informal_vcomp(ch, mylang, rules)
 
