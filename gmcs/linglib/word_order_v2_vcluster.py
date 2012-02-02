@@ -32,6 +32,9 @@ def v2_and_verbal_clusters(ch, mylang, lrules, rules):
     if not ch.get('wh-questions') == 'yes':
       mylang.add('bare-np-phrase := head-nexus-phrase.')
 
+  if ch.get('nachfeld') == 'yes':
+    create_nachfeld_phrases(ch, mylang, rules)
+
 def add_nexus_constraints_v2_with_cluster(ch, mylang):
 
 ###ADDING CONSTRAINTS ON BASIC RULES CREATING SECOND POSITION
@@ -429,6 +432,43 @@ def create_nonverb_zuinf_structure(mylang, rules, wh):
   if wh:
     mylang.add('wh-spec-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
                                                                     COMPS < > ] ].')
+
+
+def create_nachfeld_phrases(ch, mylang, rules):
+  mylang.add('nf-form := form.')
+  mylang.add('verb-lex := [ SYNSEM.LIGHT + ].')
+  forms = ch.get('nf-forms')  
+  my_forms = forms.split(',')
+  for f in my_forms:
+    mylang.add(f + ' := nf-form.', section='features')
+  nf_type = '''nachfeld-phrase := head-initial &
+ [ SYNSEM.LOCAL.CAT [ VC na-or--,
+		      VFRONT #vf,
+		      MC #mc ],
+   HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
+			       VC +,
+			       VFRONT #vf,
+			       MC #mc ],
+   NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD +vpc & [ FORM nf-form ] ],
+			 NON-LOCAL [ SLASH 0-dlist,
+                                     REL 0-dlist,
+				     QUE 0-dlist ],
+			 LIGHT - ] ].''' 
+  mylang.add(nf_type)
+  mylang.add('nachfeld-head-comp-phrase := nachfeld-phrase.') 
+  rules.add('nachfeld-head-comp := nachfeld-head-comp-phrase.')
+  if ch.get('vc-analysis') == 'basic':
+    mylang.add('nachfeld-head-comp-phrase := basic-head-1st-comp-phrase.')
+    mylang.add('nachfeld-phrase := \
+       [ SYNSEM.LOCAL.CAT.SECOND #scd, \
+         HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd, \
+         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
+  else:
+    mylang.add('nachfeld-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
+    mylang.add('nachfeld-head-comp-phrase := basic-verbal-comp-rule-1 & \
+               [ SYNSEM.LOCAL.CAT.VAL #val, \
+                 NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val ].')
+
 ##########################################################################
 #                                                                        #
 # ALTERNATIVE ANALYSES                                                   #

@@ -1048,7 +1048,12 @@ def customize_adpositions(ch, mylang, lexicon):
         typedef = name + ' := [ ' + path + constr + value + ' ].'
         mylang.add(typedef)
       if form:
-        mylang.add(form + ' := form.',section='features')
+        sf = ''
+        if ch.get('nachfeld') == 'yes' and 'pform' in ch.get('nf-forms'):
+          sf += 'nf-'
+        sf += 'form'
+        mylang.add('pform := ' + sf + '.',section='features')
+        mylang.add(form + ' := pform.',section='features')
         mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
        
 
