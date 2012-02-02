@@ -94,8 +94,7 @@ roots = None
 
 def customize_punctuation(grammar_path):
 
-  #this one is causing probs, even in a comment! it's \x2212
-  default_splits_str = ' \\t!"&\'\-()*+,./:;<>?@\[\]^`{|}~\\\\'.encode('utf-8')
+  default_splits_str = ' \\t!"#$%&\'()\*\+,-\./:;<=>?@\[\]\^_`{|}~\\\\'.encode('utf-8')
 
   if ch.get('punctuation-chars') == 'keep-all':
     # in this case, we just split on [ \t], and that's

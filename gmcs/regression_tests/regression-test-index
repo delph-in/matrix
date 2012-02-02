@@ -140,6 +140,6 @@ neg-comp-auxattach-precomps=neg adv as selected first comp of an aux type after 
 neg-comp-finattach-precomps=neg-comp-add-lex-rule adds neg-adv as selected first comp of a finite verb
 neg-comp-auxattach-postcomps=negative complement lexical rule adds a second complement (a neg adverb) to the comps list of an auxiliary verb
 neg1b-neg2fd=bipartite negation, neg1 is bound and requires neg2, a posthead VP adverb, neg2 cannot occur without neg1
-char-test-discard-all=tests string splitting and discarding on a list of default punctuation chars crammed b/t a noun and verb
 char-test-keep-all=test of repp preprocessing where user only wants to split on whitespace
 char-test-keep-list=test of repp preprocessing where user specifies a specific split-list along with default split on whitespace
+char-test-discard-all=test of repp preprocessing where we split on then discard all lower ascii punctuation including space and tab
