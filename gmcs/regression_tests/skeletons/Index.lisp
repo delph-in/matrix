@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "char-test-keep-list") (:content . "char-test-keep-list: test of repp preprocessing where we discard all punc not on a list submitted by user"))
 ((:path . "char-test-discard-all") (:content . "char-test-discard-all: test of repp preprocessing where we split on then discard all lower ascii punctuation including space and tab"))
 ((:path . "char-test-keep-list") (:content . "char-test-keep-list: test of repp preprocessing where user specifies a specific split-list along with default split on whitespace"))
 ((:path . "char-test-keep-all") (:content . "char-test-keep-all: test of repp preprocessing where user only wants to split on whitespace"))

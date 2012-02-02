@@ -9,7 +9,7 @@ Text iso-code "ISO code" "<a href=\"http://www.sil.org/iso639-3/codes.asp\">ISO 
 
 Label "<h3>String-processing</h3><p>Your grammar will include a basic tokenizer file for string-level processing (<span style='font-family:monospace'>vanilla.rpp</span>, see <a href='http://moin.delph-in.net/ReppTop/'>ReppTop</a> documentation).  We have three default options for this file.<br />"
 Radio punctuation-chars "Punctuation characters" "<br />" ""
-. discard-all "discard-all" "" "split on, and then discard all punctuation characters found in this default list: <span style='font-family:monospace'>`!@#$%^&amp;*()-=_+[]\{}&lt;&gt;|;:',.~\</span><!--we can't currently do anything about the unicode characters... maybe later 。！？…．　○●◎＊☆★◇◆--><br />"
+. discard-all "discard-all" "" "split on, and then discard all punctuation characters found in this default list (all lower ascii punctuation): <span style='font-family:monospace'>!\"#$%&'()*+,-./:;<=>?@[]^_`{|}~\</span><!--we can't currently do anything about the unicode characters... maybe later 。！？…．　○●◎＊☆★◇◆--><br />"
 . keep-all "keep-all" "" "only split space and tab characters, all other characters can occur in tokens<br />" 
 . keep-list "keep-list" "" "place characters into a list of characters that can occur within tokens (you can copy and paste from the default list above; do not use any commas or spaces to delimit characters)."
 
