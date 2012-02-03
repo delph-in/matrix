@@ -3,7 +3,7 @@ version=24
 
 section=general
 language=char-test-keep-list
-punctuation-chars=keep-all
+punctuation-chars=keep-list
 punctuation-chars-list=!"#$%&'()*+,-./:;<=>?@[]^_`{|}~\
 
 section=word-order

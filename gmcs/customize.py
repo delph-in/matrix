@@ -102,11 +102,11 @@ def customize_punctuation(grammar_path):
 
   if ch.get('punctuation-chars') == 'keep-all':
     # in this case, we just split on [ \t], and that's
-    # what vanilla.rpp already does, so we're done
+    # what vanilla.rpp already does, so for lkb, we're done
     return
   elif ch.get('punctuation-chars') == 'discard-all':
     # in this case, "all" punctuation (from the default list)
-    # should be split on and dropped 
+    # should be split on and dropped
     # to do this we have to build a regex for the : line of 
     # the repp file
     # 
@@ -151,6 +151,8 @@ def customize_punctuation(grammar_path):
 #  # PET's pet.set is a bit easier
 #  line_re = re.compile(r'^punctuation-characters := "(.*)".\s*$')
 #  # need to escape 1 possibility for PET
+#  if ch.get('punctuation-chars') == 'keep-all':
+#    return
 #  chars = [{'"':'\\"'}.get(c, c) for c in chars]
 #  punc_re = re.compile(r'(' + r'|'.join(re.escape(c) for c in chars) + r')')
 #  filename = os.path.join(grammar_path, 'pet', 'pet.set')

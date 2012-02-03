@@ -1,4 +1,5 @@
 from gmcs.utils import TDLencode
+from gmcs.utils import orth_encode
 
 ######################################################################
 # Coordination
@@ -103,7 +104,7 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
 
     mark = cs.get('mark')
     pat = cs.get('pat')
-    orth = cs.get('orth')
+    orthstr = orth_encode(cs.get('orth').split(' '))
     order = cs.get('order')
 
     pre = ''
@@ -111,12 +112,12 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
 
     if mark == 'word':
       lexicon.add(TDLencode(orth) + ' := conj-lex &\
-                  [ STEM < "' + orth + '" >,\
+                  [ STEM < "' + orthstr + '" >,\
                     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",\
                     CFORM "' + csnum + '" ].')
       if pat == 'omni':
         lexicon.add(TDLencode(orth) + '_nosem := nosem-conj-lex &\
-                      [ STEM < "' + orth + '" >,\
+                      [ STEM < "' + orthstr + '" >,\
                         CFORM "' + csnum + '" ].')
 
     if pat == 'a':
