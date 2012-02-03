@@ -93,6 +93,11 @@ roots = None
 #   Determine which punctuation characters to ignore in parsing
 
 def customize_punctuation(grammar_path):
+   '''sets up repp preprocessing for lkb according to one of 
+      three choices on the questionnaire. 
+   '''
+    # TODO: pet.set output needs to be updated for 
+    # current questionnaire choices and for repp!
 
   default_splits_str = ' \\t!"#$%&\'()\*\+,-\./:;<=>?@\[\]\^_`{|}~\\\\'.encode('utf-8')
 
@@ -105,6 +110,8 @@ def customize_punctuation(grammar_path):
     # should be split on and dropped 
     # to do this we have to build a regex for the : line of 
     # the repp file
+    # 
+
     filename = os.path.join(grammar_path, 'lkb', 'vanilla.rpp') 
     lines = codecs.open(filename, 'r', encoding='utf-8').readlines()
     van_rpp = codecs.open(filename, 'w', encoding='utf-8')
@@ -140,6 +147,8 @@ def customize_punctuation(grammar_path):
     van_rpp.close()
 
   
+#  Need to move pet over to repp
+# 
 #  # PET's pet.set is a bit easier
 #  line_re = re.compile(r'^punctuation-characters := "(.*)".\s*$')
 #  # need to escape 1 possibility for PET
