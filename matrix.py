@@ -3,6 +3,10 @@ import sys
 import os
 import getopt
 import subprocess
+from gmcs.choices import ChoicesFile
+from gmcs.deffile import MatrixDefFile
+
+import cgi
 
 ### matrix.py
 ### A general-purpose script for running Matrix code.

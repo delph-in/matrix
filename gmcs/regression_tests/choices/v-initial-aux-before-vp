@@ -1,7 +1,10 @@
-version=12
+
+version=24
 
 section=general
 language=v-initial-aux-before-vp
+punctuation-chars=keep-list
+punctuation-chars-list=-
 archive=no
 
 section=word-order
@@ -19,8 +22,6 @@ first-person=none
 
 section=gender
 
-section=other-features
-
 section=case
 case-marking=nom-acc
 nom-acc-nom-case-name=nominative
@@ -28,8 +29,10 @@ nom-acc-acc-case-name=accusative
 
 section=direct-inverse
 
-section=tense-aspect
-nf-subform1_name=infinitive
+section=tense-aspect-mood
+  nf-subform1_name=infinitive
+
+section=other-features
 
 section=sentential-negation
 
@@ -37,58 +40,75 @@ section=coordination
 
 section=matrix-yes-no
 
+section=arg-opt
+
 section=lexicon
-noun1_name=common
-noun1_feat1_name=person
-noun1_feat1_value=3rd
-noun1_det=imp
-noun1_stem1_orth=n1
-noun1_stem1_pred=_n1_n_rel
-noun1_stem2_orth=n2
-noun1_stem2_pred=_n2_n_rel
-noun-slot1_name=case
-noun-slot1_order=after
-noun-slot1_input1_type=noun1
-noun-slot1_morph1_name=nom
-noun-slot1_morph1_orth=-nom
-noun-slot1_morph1_feat1_name=case
-noun-slot1_morph1_feat1_value=nom
-noun-slot1_morph2_name=acc
-noun-slot1_morph2_orth=-acc
-noun-slot1_morph2_feat1_name=case
-noun-slot1_morph2_feat1_value=acc
-verb1_name=intrans
-verb1_valence=nom
-verb1_stem1_orth=iverb
-verb1_stem1_pred=_iverb_v_rel
-verb2_name=trans
-verb2_valence=nom-acc
-verb2_stem1_orth=tverb
-verb2_stem1_pred=_tverb_v_rel
-aux1_name=pred
-aux1_sem=add-pred
-aux1_stem1_orth=aux
-aux1_stem1_pred=_aux_v_rel
-aux1_compform=infinitive
-aux1_subj=np-comp-case
-verb-slot1_name=inflection
-verb-slot1_order=after
-verb-slot1_input1_type=verb
-verb-slot1_morph1_name=3rd
-verb-slot1_morph1_orth=-3rd
-verb-slot1_morph1_feat1_name=person
-verb-slot1_morph1_feat1_value=3rd
-verb-slot1_morph1_feat1_head=subj
-verb-slot1_morph1_feat2_name=form
-verb-slot1_morph1_feat2_value=finite
-verb-slot1_morph1_feat2_head=verb
-verb-slot1_morph2_name=infinitive
-verb-slot1_morph2_orth=-inf
-verb-slot1_morph2_feat1_name=form
-verb-slot1_morph2_feat1_value=infinitive
-verb-slot1_morph2_feat1_head=verb
-verb-slot1_morph2_feat2_name=form
-verb-slot1_morph2_feat2_value=nonfinite
-verb-slot1_morph2_feat2_head=verb
+  noun1_name=common
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=imp
+    noun1_stem1_orth=n1
+    noun1_stem1_pred=_n1_n_rel
+    noun1_stem2_orth=n2
+    noun1_stem2_pred=_n2_n_rel
+  verb1_name=intrans
+  verb1_valence=nom
+    verb1_stem1_orth=iverb
+    verb1_stem1_pred=_iverb_v_rel
+  verb2_name=trans
+  verb2_valence=nom-acc
+    verb2_stem1_orth=tverb
+    verb2_stem1_pred=_tverb_v_rel
+  aux1_name=pred
+  aux1_sem=add-pred
+  aux1_subj=np-comp-case
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=infinitive
+    aux1_stem1_orth=aux
+    aux1_stem1_pred=_aux_v_rel
+
+section=morphology
+  noun-pc1_name=case
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun1
+    noun-pc1_lrt1_name=nom
+      noun-pc1_lrt1_feat1_name=case
+      noun-pc1_lrt1_feat1_value=nom
+      noun-pc1_lrt1_lri1_inflecting=yes
+      noun-pc1_lrt1_lri1_orth=-nom
+    noun-pc1_lrt2_name=acc
+      noun-pc1_lrt2_feat1_name=case
+      noun-pc1_lrt2_feat1_value=acc
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=-acc
+  verb-pc1_name=inflection
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=3rd
+      verb-pc1_lrt1_feat1_name=person
+      verb-pc1_lrt1_feat1_value=3rd
+      verb-pc1_lrt1_feat1_head=subj
+      verb-pc1_lrt1_feat2_name=form
+      verb-pc1_lrt1_feat2_value=finite
+      verb-pc1_lrt1_feat2_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-3rd
+    verb-pc1_lrt2_name=infinitive
+      verb-pc1_lrt2_feat1_name=form
+      verb-pc1_lrt2_feat1_value=infinitive
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_feat2_name=form
+      verb-pc1_lrt2_feat2_value=nonfinite
+      verb-pc1_lrt2_feat2_head=verb
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=-inf
+
+section=toolbox-import
 
 section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

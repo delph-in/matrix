@@ -1,8 +1,10 @@
 
-version=23
+version=24
 
 section=general
 language=morphotactics-lrt-inputs
+punctuation-chars=keep-list
+punctuation-chars-list=-
 archive=no
 comment=verb1 is the input to PC1. PC1 has two root-level lexical rule types (PC1-1 and PC1-2), and PC1-2 has two lexical rule type descendants (PC1-2-1 and PC1-2-2). PC1-2 is the input to a second position class, PC2, which is required by PC1-2-2 but not by PC1-2-1, and which requires PC1. PC2 has a lexical rule type hierarchy with two root elements, PC2-1 and PC2-2, the latter of which forbids PC1-2-1 but does not have a lexical rule instance. Lexical rule descendants PC2-1-1 and PC2-1-2 both inherit from PC2-1 and PC2-2, showcasing co-occurrence restrictions with multiple inheritance. Further, PC1-2-2 forbids PC2-1-1. The complex arrangement tests several situations with lexical type hierarchies.
 
@@ -49,6 +51,8 @@ section=lexicon
   verb2_valence=trans
     verb2_stem1_orth=trans_verb
     verb2_stem1_pred=_trans_verb_v_rel
+
+section=morphology
   verb-pc1_name=PC1
   verb-pc1_order=suffix
   verb-pc1_inputs=verb1
@@ -86,6 +90,10 @@ section=lexicon
     verb-pc2_lrt4_name=PC2-2
       verb-pc2_lrt4_forbid1_others=verb-pc1_lrt3
 
+section=toolbox-import
+
 section=test-sentences
 
 section=gen-options
+
+section=ToolboxLexicon
