@@ -126,22 +126,18 @@ def customize_punctuation(grammar_path):
     filename = os.path.join(grammar_path, 'lkb', 'vanilla.rpp') 
     lines = iter(codecs.open(filename, 'r', encoding='utf-8').readlines())
     van_rpp = codecs.open(filename, 'w', encoding='utf-8')
-    print "HTTP:content-type:text/plain\n\n",chars
     for line in lines:
       if line.startswith(':'):
         line = line[2:-2]
-        print "line starts with ':'",line
       # NOTE: repp syntax says that the line that starts with ':'
       # defines a list of chars to split on
         for c in chars:
-          print "processing c:",c
           # \ char needs some special treatment
           # so do the other escaped chars!
           if c == '\\':
             c = '\\\\'
           default_splits_str = default_splits_str.replace(c,'')
         line= ":["+default_splits_str+"]".rstrip()
-      print line
       print >>van_rpp,line.rstrip('\n')
     van_rpp.close()
 

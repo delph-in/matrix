@@ -1,8 +1,10 @@
 
-version=23
+version=24
 
 section=general
 language=morphotactics-opt-oblig-single-input
+punctuation-chars=keep-list
+punctuation-chars-list=-
 archive=no
 comment=Two verb types, verb1 and verb2, are each inputs to morphological position classes (PC1 and PC2, respectively). PC1 is optional, while PC2 is obligatory (that is, verb2 requires PC2).
 
@@ -52,6 +54,8 @@ section=lexicon
   verb3_valence=trans
     verb3_stem1_orth=trans_verb
     verb3_stem1_pred=_trans_verb_v_rel
+
+section=morphology
   verb-pc1_name=PC1
   verb-pc1_order=suffix
   verb-pc1_inputs=verb1
@@ -64,6 +68,10 @@ section=lexicon
       verb-pc2_lrt1_lri1_inflecting=yes
       verb-pc2_lrt1_lri1_orth=-PC2
 
+section=toolbox-import
+
 section=test-sentences
 
 section=gen-options
+
+section=ToolboxLexicon
