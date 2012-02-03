@@ -93,9 +93,8 @@ roots = None
 #   Determine which punctuation characters to ignore in parsing
 
 def customize_punctuation(grammar_path):
-   '''sets up repp preprocessing for lkb according to one of 
-      three choices on the questionnaire. 
-   '''
+  '''sets up repp preprocessing for lkb according to one of 
+     three choices on the questionnaire.  '''
     # TODO: pet.set output needs to be updated for 
     # current questionnaire choices and for repp!
 
