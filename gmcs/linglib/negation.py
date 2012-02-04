@@ -1,4 +1,5 @@
 from gmcs.utils import TDLencode
+from gmcs.utils import orth_encode
 
 ######################################################################
 # customize_sentential_negation()
@@ -57,8 +58,9 @@ def create_neg_comp_lex_item(mylang, ch, lexicon, rules, lrules):
   
   if(ch.get('comp-neg-orth')):
     orth = ch.get('comp-neg-orth')
+    orthstr = orth_encode(orth.split(' '))
     lexicon.add(TDLencode(orth) + ' := neg-adv-lex &\
-                [ STEM < \"'+ orth +'\" >,\
+                [ STEM < \"'+ orthstr +'\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
 
 
@@ -173,20 +175,23 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
 
   if(ch.get('neg-adv-orth')):
     orth = ch.get('neg-adv-orth')
+    orthstr = orth_encode(orth.split(' '))
     lexicon.add(TDLencode(orth) + ' := neg-adv-lex &\
-                [ STEM < \"'+ orth +'\" >,\
+                [ STEM < \"'+ orthstr +'\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
 
   if(ch.get('neg1-adv-orth')):
     orth = ch.get('neg1-adv-orth')
+    orthstr = orth_encode(orth.split(' '))
     lexicon.add(TDLencode(orth) + '1 := neg1-adv-lex &\
-                [ STEM < \"'+ orth +'\" >,\
+                [ STEM < \"'+ orthstr +'\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
 
   if(ch.get('neg2-adv-orth')):
     orth = ch.get('neg2-adv-orth')
+    orthstr = orth_encode(orth.split(' '))
     lexicon.add(TDLencode(orth) + '2 := neg2-adv-lex &\
-                [ STEM < \"'+ orth +'\" > ].')
+                [ STEM < \"'+ orthstr +'\" > ].')
 
 
   # ERB 2006-10-06 And of course we need the head-modifier rules, if we're

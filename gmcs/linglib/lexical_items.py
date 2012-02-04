@@ -1,5 +1,6 @@
 from gmcs.utils import get_name
 from gmcs.utils import TDLencode
+from gmcs.utils import orth_encode
 
 from gmcs.linglib import case
 from gmcs.linglib import features
@@ -292,12 +293,12 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     stems.extend(verb.get('bistem', []))
 
     for stem in stems:
-      orth = stem.get('orth')
+      orthstr = orth_encode(stem.get('orth').split(' '))
       pred = stem.get('pred')
       id = stem.get('name')
       typedef = \
         TDLencode(id) + ' := ' + vtype + ' & \
-                    [ STEM < "' + orth + '" >, \
+                    [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
@@ -341,12 +342,12 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
     features.customize_feature_values(mylang, ch, hierarchies, det, dtype, 'det')
 
     for stem in det.get('stem',[]):
-      orth = stem.get('orth')
+      orthstr = orth_encode(stem.get('orth').split(' '))
       pred = stem.get('pred')
       id = stem.get('name')
       typedef = \
         TDLencode(id) + ' := ' + dtype + ' & \
-                    [ STEM < "' + orth + '" >, \
+                    [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
@@ -357,9 +358,10 @@ def customize_misc_lex(ch, lexicon):
   # Question particle
   if ch.get('q-part'):
     orth = ch.get('q-part-orth')
+    orthstr = orth_encode(orth.split(' '))
     typedef = \
       TDLencode(orth) + ' := qpart-lex-item & \
-                   [ STEM < "' + orth + '" > ].'
+                   [ STEM < "' + orthstr + '" > ].'
     lexicon.add(typedef)
 
 def customize_nouns(mylang, ch, lexicon, hierarchies):
@@ -448,11 +450,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
 
     for stem in noun.get('stem', []):
-      orth = stem.get('orth')
+      orthstr = orth_encode(stem.get('orth').split(' '))
       pred = stem.get('pred')
       id = stem.get('name')
       typedef = TDLencode(id) + ' := ' + ntype + ' & \
-                  [ STEM < "' + orth + '" >, \
+                  [ STEM < "' + orthstr + '" >, \
                     SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
