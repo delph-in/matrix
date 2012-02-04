@@ -357,7 +357,8 @@ def customize_misc_lex(ch, lexicon):
 
   # Question particle
   if ch.get('q-part'):
-    orthstr = orth_encode(ch.get('q-part-orth').split(' '))
+    orth = ch.get('q-part-orth')
+    orthstr = orth_encode(orth.split(' '))
     typedef = \
       TDLencode(orth) + ' := qpart-lex-item & \
                    [ STEM < "' + orthstr + '" > ].'
