@@ -216,7 +216,7 @@ def get_users_type_name(aux):
 
 def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon):
   for stem in aux.get('stem',[]):
-    orthstr = orth_encode(stem.get('orth').split(' '))
+    orth = orth_encode(stem.get('orth'))
     id = stem.get('name')
     typedef = TDLencode(id) + ' := ' + userstypename + ' & \
                        [ STEM < "' + orthstr + '" > ].'
