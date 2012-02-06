@@ -191,7 +191,7 @@ def customize_case_adpositions(mylang, lexicon, ch):
     lexicon.add_literal(';;; Case-marking adpositions')
 
     for adp in ch.get('adp',[]):
-      orthstr = orth_encode(adp.get('orth','').split(' '))
+      orth = orth_encode(adp.get('orth'))
 
       # figure out the abbreviation for the case this adp marks
       cn = ''

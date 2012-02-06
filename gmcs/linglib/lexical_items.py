@@ -293,7 +293,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     stems.extend(verb.get('bistem', []))
 
     for stem in stems:
-      orthstr = orth_encode(stem.get('orth').split(' '))
+      orthstr = orth_encode(stem.get('orth'))
       pred = stem.get('pred')
       id = stem.get('name')
       typedef = \
@@ -342,7 +342,7 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
     features.customize_feature_values(mylang, ch, hierarchies, det, dtype, 'det')
 
     for stem in det.get('stem',[]):
-      orthstr = orth_encode(stem.get('orth').split(' '))
+      orthstr = orth_encode(stem.get('orth'))
       pred = stem.get('pred')
       id = stem.get('name')
       typedef = \
@@ -358,7 +358,7 @@ def customize_misc_lex(ch, lexicon):
   # Question particle
   if ch.get('q-part'):
     orth = ch.get('q-part-orth')
-    orthstr = orth_encode(orth.split(' '))
+    orthstr = orth_encode(orth)
     typedef = \
       TDLencode(orth) + ' := qpart-lex-item & \
                    [ STEM < "' + orthstr + '" > ].'
@@ -450,7 +450,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
 
     for stem in noun.get('stem', []):
-      orthstr = orth_encode(stem.get('orth').split(' '))
+      orthstr = orth_encode(stem.get('orth'))
       pred = stem.get('pred')
       id = stem.get('name')
       typedef = TDLencode(id) + ' := ' + ntype + ' & \

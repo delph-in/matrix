@@ -105,7 +105,7 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
     mark = cs.get('mark')
     pat = cs.get('pat')
     orth = cs.get('orth')
-    orthstr = orth_encode(orth.split(' '))
+    orthstr = orth_encode(orth)
     order = cs.get('order')
 
     pre = ''
