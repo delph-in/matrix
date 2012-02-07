@@ -1537,10 +1537,14 @@ basic-head-filler-phrase := basic-filler-phrase & head-compositional.
 ; C-CONT to be  RELS <! !>, now that we're not putting in messages.  (Hey:
 ; that was already the case. Or not, now I don't see it?)
 
+; JDC 2012-06-02 adding [HC-LIGHT -] to basic-head-* phrases 
+; (with the exception of except head-comps)
+
 basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
 			  head-compositional &
   [ SYNSEM phr-synsem & 
 	   [ LOCAL.CAT [ POSTHEAD +,
+                   HC-LIGHT -,
 			 VAL [ SUBJ < >,
 			       COMPS #comps,
 			       SPR #spr ] ] ],
@@ -1574,7 +1578,8 @@ basic-head-spec-phrase := head-valence-phrase & phrasal &
                                COMPS #spcomps,
                                SPR #spr,
                                SPEC #spec ],
-                         POSTHEAD #ph ],
+                         POSTHEAD #ph,
+                         HC-LIGHT - ],
              MODIFIED #modif ],
     HEAD-DTR [ INFLECTED infl-satisfied,
                SYNSEM [ LOCAL [ CAT [ HEAD #head,
@@ -1941,7 +1946,8 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
            [ LOCAL [ CAT [ HEAD #head,
                            VAL #val,
                            POSTHEAD #ph,
-                           MC #hmc ],
+                           MC #hmc,
+                           HC-LIGHT - ],
                      AGR #agr,
                      CONT.HOOK #hdhook ],
              NON-LOCAL #nonloc &
@@ -1957,8 +1963,8 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                                       MC #hmc ],
                                                 AGR #agr,
                                                 CONT.HOOK #hdhook ],
-                                        NON-LOCAL #nonloc,
-					LIGHT #light,
+                                                NON-LOCAL #nonloc,
+                                                LIGHT #light,
                                         MODIFIED #modif ] > ],
                          VAL [ COMPS olist,
                                SPR olist ] ],

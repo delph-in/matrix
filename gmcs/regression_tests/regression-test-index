@@ -144,3 +144,4 @@ char-test-keep-all=test of repp preprocessing where user only wants to split on 
 char-test-discard-all=test of repp preprocessing where we split on then discard all lower ascii punctuation including space and tab
 char-test-keep-list=test of repp preprocessing where we discard all punc not on a list submitted by user
 multi-wd-lex=tests multi word lexical item output on a noun
+neg-v-attach-freewo=ensures that lexical attachment for neg adverbs still works without problems with free word order
