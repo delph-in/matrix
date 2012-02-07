@@ -1,7 +1,7 @@
 version=6
 
 section=language
-language=(minimal grammar)
+language=minimal-grammar
 
 section=word-order
 word-order=svo
