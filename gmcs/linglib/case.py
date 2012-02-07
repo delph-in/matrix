@@ -206,7 +206,7 @@ def customize_case_adpositions(mylang, lexicon, ch):
       adp_type = TDLencode(abbr + '-marker')
       typedef = \
         adp_type + ' := case-marking-adp-lex & \
-                        [ STEM < "' + orthstr + '" > ].'
+                        [ STEM < "' + orth + '" > ].'
       lexicon.add(typedef)
 
       to_cfv += [(adp.full_key, adp_type, 'adp')]

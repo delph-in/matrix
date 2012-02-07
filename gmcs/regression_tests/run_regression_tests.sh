@@ -204,17 +204,17 @@ do
           echo "(setf (system:getenv \"DISPLAY\") nil)"
   
           # Use the following for PET parsing
-          #echo "(setf *tsdb-cache-connections-p* t)"
-          #echo "(setf *pvm-encoding* :utf-8)"
-          #echo "(setf *pvm-cpus* (list (make-cpu"
-          #echo "  :host (short-site-name)"
-          #echo "  :spawn \"${LOGONROOT}/bin/cheap\""
-          #echo "  :options (list \"-tsdb\" \"-packing\" \"-mrs\" \"$grm_file\")"
-          #echo "  :class :$lgname :name \"$lgname\""
-          #echo "  :grammar \"$lgname (current)\""
-          #echo "  :encoding :utf-8"
-          #echo "  :task '(:parse) :wait 300 :quantum 180)))"
-          #echo "(tsdb:tsdb :cpu :$lgname :task :parse :file t)"
+          # echo "(setf *tsdb-cache-connections-p* t)"
+          # echo "(setf *pvm-encoding* :utf-8)"
+          # echo "(setf *pvm-cpus* (list (make-cpu"
+          # echo "  :host (short-site-name)"
+          # echo "  :spawn \"${LOGONROOT}/bin/cheap\""
+          # echo "  :options (list \"-tsdb\" \"-packing\" \"-mrs\" \"$grm_file\")"
+          # echo "  :class :$lgname :name \"$lgname\""
+          # echo "  :grammar \"$lgname (current)\""
+          # echo "  :encoding :utf-8"
+          # echo "  :task '(:parse) :wait 300 :quantum 180)))"
+          # echo "(tsdb:tsdb :cpu :$lgname :task :parse :file t)"
   
           # Use the following for LKB parsing
           echo "(lkb::read-script-file-aux \"$grammar\")"

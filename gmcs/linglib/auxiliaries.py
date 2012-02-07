@@ -219,7 +219,7 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon):
     orth = orth_encode(stem.get('orth'))
     id = stem.get('name')
     typedef = TDLencode(id) + ' := ' + userstypename + ' & \
-                       [ STEM < "' + orthstr + '" > ].'
+                       [ STEM < "' + orth + '" > ].'
     lexicon.add(typedef)
 
     if sem == 'add-pred':

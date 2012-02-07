@@ -236,8 +236,8 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
              'pass NEG-SATISFIED up the head path\n')
 
   else:
-    rules.add('adj-head-int := adj-head-scop-phrase.')
-    rules.add('head-adj-int := head-adj-scop-phrase.',
+    rules.add('adj-head-scop := adj-head-scop-phrase.')
+    rules.add('head-adj-scop := head-adj-scop-phrase.',
             'Rule instances for head-modifier structures. Corresponding types\n' +
              'are defined in matrix.tdl.  The matrix customization script did\n' +
              'not need to add any further constraints, so no corresponding types\n' +
