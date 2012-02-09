@@ -72,9 +72,11 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
         mylang.add('basic-head-opt-comp-phrase :+ \
                       [ SYNSEM [ NON-LOCAL.SLASH #slash, \
                                  LOCAL.CAT [ HEAD.AUX -, \
+                                             EDGE -, \
                                              VFRONT #vfront ] ], \
                         HEAD-DTR.SYNSEM [ NON-LOCAL.SLASH #slash, \
-                                          LOCAL.CAT.VFRONT #vfront ] ].')
+                                          LOCAL.CAT [ VFRONT #vfront, \
+                                                      EDGE + ] ] ].')
       else:
         mylang.add('basic-head-opt-comp-phrase :+ \
                      [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
