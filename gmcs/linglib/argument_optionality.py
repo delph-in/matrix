@@ -62,12 +62,10 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
                                                   SPEC < > ], \
                                             MC #mc, \
                                             VC #vc ], \
-                                NON-LOCAL [ QUE #que, \
-                                            REL #rel ] ], \
+                                NON-LOCAL #nl ], \
                         HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC #mc, \
                                                       VC #vc ], \
-                                          NON-LOCAL [ QUE #que, \
-                                                      REL #rel ], \
+                                          NON-LOCAL #nl, \
                                           MODIFIED notmod ] ].', 
                     section='addenda')
       if ch.get('v2-analysis') == 'filler-gap':

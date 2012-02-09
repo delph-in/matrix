@@ -139,11 +139,11 @@ def add_anchor_related_suptypes_and_constraints(mylang):
 					  TO-BIND #tb ] ].'''
 
   coord_2 = '''bottom-coord-phrase :+ 
-                   [ CONJ-DTR.SYNSEM.LOCAL.ANCHOR [ ANCHS [ LIST #first,
+                   [ CONJ-DTR.SYNSEM.LOCAL.ANCHOR.ANCHS [ LIST #first,
                                                             LAST #between],
-						    TO-BIND #tb ],
-                    NONCONJ-DTR.SYNSEM.LOCAL.ANCHOR.ANCHS [ LIST #between,
+                    NONCONJ-DTR.SYNSEM.LOCAL.ANCHOR [ ANCHS [ LIST #between,
                                                              LAST #last],
+                                                      TO-BIND < > & #tb ],
                     SYNSEM.LOCAL.ANCHOR [ ANCHS [ LIST #first,
                                                   LAST #last],
 					  TO-BIND #tb ] ].'''

@@ -336,7 +336,8 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
   if ch.get('subj-control-verb') == 'yes':
     typedef = \
-    'subj-contr-transitive-verb-lex := basic-verb-lex.' 
+    'subj-contr-transitive-verb-lex := basic-verb-lex & \
+        [ ARGS < [ OPT - ], [ OPT - ] > ].' 
     mylang.add(typedef)
     if ch.get('vc-analysis') == 'basic':
       mylang.add('subj-contr-transitive-verb-lex := arg-comp-aux & \
@@ -740,6 +741,8 @@ def customize_adjectives(mylang, ch, lexicon):
                                               LKEYS.KEYREL.ARG1 #xarg ] ].')
 
 
+    if ch.get('rel-clause') == 'yes':
+      mylang.add('basic-adjective-lex :+ non-rel-lex-item.',section='addenda')
     if ch.get('verb-cluster') == 'yes':
       mylang.add('scopal-mod-adj-lex := no-cluster-lex-item.')
       mylang.add('int-mod-adj-lex := no-cluster-lex-item.')   
@@ -826,18 +829,21 @@ def customize_adverbs(mylang, ch, lexicon):
    # Lexical type for adverbs, if the language has any:
   if ch.get('has-adv') == 'yes':
     comment = \
-      ';;; Adverbs\n' + \
-      ';;; First attempt: inheriting all from matrix.'
+      ';;; Adverbs\n'
     mylang.add_literal(comment)
     mylang.add('scopal-adverb-lex := basic-scopal-adverb-lex.')
     mylang.add('int-adverb-lex := basic-int-adverb-lex & \
                 [ SYNSEM [ LOCAL.CONT.HOOK.XARG #arg1, \
                            LKEYS.KEYREL.ARG1 #arg1 ] ].')
+    mylang.add('basic-adverb-lex :+ [ SYNSEM.NON-LOCAL.SLASH 0-dlist ].')
     if ch.get('adv-argst') == 'yes':
       mylang.add('int-mod-with-one-arg-lex := intersective-mod-lex & \
                     [ SYNSEM.LKEYS.KEYREL.ARG2 #arg2, \
                       ARGS < [ LOCAL.CONT.HOOK.INDEX #arg2 ] > ].')
 
+
+    if ch.get('rel-clause') == 'yes':
+      mylang.add('basic-adverb-lex :+ non-rel-lex-item.',section='addenda')
     if ch.get('verb-cluster') == 'yes':
       mylang.add('scopal-adverb-lex := no-cluster-lex-item.')
       mylang.add('int-adverb-lex := no-cluster-lex-item.')   
@@ -922,11 +928,13 @@ def customize_adverbs(mylang, ch, lexicon):
     elif arg_str == 'zuinf':
       val = 'VAL [ SUBJ < >, \
                    COMPS < [ LOCAL.CAT [ HEAD verb & [ FORM zuinf ], \
+                                         MC -, \
                                          VAL [ SUBJ < [ ] >, \
                                                COMPS < >, \
                                                SPR < >, \
                                                SPEC < > ] ], \
-                             OPT - ] >, \
+                             OPT -, \
+                             NON-LOCAL.SLASH 0-dlist ] >, \
                    SPR < >, \
                    SPEC < > ]'
 # [ OPT + ] value probably not universally true
@@ -1601,11 +1609,12 @@ def create_wh_phrases(mylang, ch):
                      LKEYS.KEYREL #keyrel ] ].'
     mylang.add(bwlnsl)
     wal = 'wh-adverb-lex := basic-wh-loc-non-sp-lex & \
-           [ SYNSEM.LOCAL.CAT [ HEAD +rp, \
+           [ SYNSEM [ LOCAL.CAT [ HEAD +rp, \
                                 VAL [ SUBJ < >, \
 			              COMPS < >, \
 			              SPEC < >, \
-			              SPR < > ] ] ].'
+			              SPR < > ] ], \
+                      NON-LOCAL.SLASH 0-dlist ] ].'
     mylang.add(wal)
 
   if ch.get('wh-np') == 'on':

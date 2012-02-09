@@ -77,6 +77,10 @@ def filler_head_basic(ch, mylang, rules):
     mylang.add('general-filler-head-phrase := \
                  [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.INV -, \
                                                MC na ] ].')
+    mylang.add('general-filler-head-phrase := \
+                 [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < >, \
+                                          COMPS < > ], \
+                            NON-LOCAL.SLASH 0-dlist ] ].')
     if not ch.get('vcomp-ldd') == 'yes':
       mylang.add('general-filler-head-phrase := \
          [ SYNSEM.LOCAL.CAT.VFRONT - ].')
@@ -128,7 +132,8 @@ def add_analysis_specific_constraints(ch, mylang, rules):
                          LOCAL.CAT.POSTHEAD - ], \
                 HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].')
     mylang.add('extracted-subj-phrase := \
-     [ HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE + ].')
+     [ HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE +, \
+       SYNSEM.LOCAL.CAT.EDGE - ].')
     mylang.add('extracted-comp-phrase := \
      [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.INV -, \
                                    MC na-or--, \
@@ -147,7 +152,9 @@ def add_analysis_specific_constraints(ch, mylang, rules):
                 [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].')
     mylang.add('extracted-comp-phrase := \
                 [ SYNSEM.LOCAL.CAT.EDGE - ].')
-    mylang.add('basic-extracted-arg-phrase :+ \
+    mylang.add('extracted-comp-phrase := \
+                [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
+    mylang.add('extracted-subj-phrase := \
                 [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].') 
     mylang.add('ger-extracted-adj-phrase := \
                 [ SYNSEM.LOCAL.CAT.EDGE -, \
@@ -161,6 +168,7 @@ def mc_ldd_constraints(ch, mylang):
                                   MC + ], \
                HEAD-DTR.SYNSEM.LOCAL.CAT [ EDGE +, \
                                            POSTHEAD + ] ].')
+  mylang.add('basic-head-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH 0-dlist ].')
   if ch.get('vc-analysis') == 'basic':
     mylang.add('general-filler-head-phrase := \
                  [ SYNSEM.LOCAL.CAT.SECOND -, \

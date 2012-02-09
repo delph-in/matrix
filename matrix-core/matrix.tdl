@@ -1501,23 +1501,20 @@ imperative-clause := basic-non-rel-clause &
 ; Thus basic-filler-phrase does not inherit form headed-phrase.
 ; We provide a subtype, basic-head-filler-phrase, below, which does.
 
-basic-filler-phrase := binary-phrase & phrasal &
-  [ SYNSEM [ LOCAL [ CAT [ VAL [ COMPS < >,
-                                 SPR < >,
-				 SUBJ < > ],
-			   POSTHEAD + ] ],
-	     NON-LOCAL.SLASH 0-dlist ],
-    ARGS < [ SYNSEM [ LOCAL #slash & local &
+basic-filler-phrase := binary-headed-phrase &
+  [ SYNSEM.LOCAL.CAT [ VAL.SPR < >,
+		       POSTHEAD + ],
+    NON-HEAD-DTR.SYNSEM [ LOCAL #slash & local &
 			    [ CAT.VAL [ SPR < > ],
 			      CTXT.ACTIVATED + ],
-		      NON-LOCAL.SLASH 0-dlist ] ],
-	   [ SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
+		      NON-LOCAL.SLASH 0-dlist ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
 		      NON-LOCAL [ SLASH 1-dlist &
 					[ LIST [ FIRST #slash,
 						 REST < > & #last ],
 					  LAST #last ],
 				  QUE 0-dlist,
-				  REL 0-dlist ] ] ] > ].
+				  REL 0-dlist ] ] ].
 
 ; ASF 2011-10-05 changed supertype 'headed-phrase' to more specific 'head-compostional'
 ; in order to make sure matrix.tdl provides the right semantics.
@@ -1998,15 +1995,15 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
 
 head-mod-phrase := head-nexus-rel-phrase &
   [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj,
-                             SPR #spr,
-                             COMPS #comps ],
+                             SPR #spr ],
              MODIFIED hasmod ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj,
-                                      SPR #spr,
-                                      COMPS #comps ],
+                                      SPR #spr ],
                       NON-LOCAL [ REL 0-dlist ] ] ].
 
-basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal.
+basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS #comps ].
 
 ;;;REMOVING SUBJ CONDITION FOR EXTRACTED-ADJ-PHRASE
 ;;;NOT UNIVERSAL
@@ -2068,13 +2065,12 @@ head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                         NON-LOCAL.SLASH #slash,
 					LIGHT #light,
                                         MODIFIED #modif ] > ],
-                         VAL [ COMPS olist,
-                               SPR olist ] ],
+                         VAL [ SPR olist ] ],
              NON-LOCAL [ SLASH [ LIST #first,
                                  LAST #middle ] ] ],
     C-CONT.RELS <! !> ].
 
-basic-head-mod-phrase-simple := head-mod-phrase-simple & head-valence-head-nexus & head-non-wh.
+basic-head-mod-phrase-simple := head-mod-phrase-simple & head-nexus-phrase & head-non-wh.
 
 ;;;removed SYNSEM.NON-LOCAL.QUE 0-dlist. to do: test consequences
 basic-head-wh-mod-phrase-simple := head-mod-phrase-simple & head-wh.
@@ -2086,9 +2082,7 @@ general-adj-head-phrase := head-mod-phrase-simple & head-final &
              LIGHT #light ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
                       LIGHT #light ],
-    NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.COMPS < > ],
-			  NON-LOCAL [ SLASH 0-dlist,
-				      REL 0-dlist ],
+    NON-HEAD-DTR.SYNSEM [ NON-LOCAL [  REL 0-dlist ],
                           MODIFIED.PERIPH #periph ] ].
 
 adj-head-phrase := general-adj-head-phrase & basic-head-mod-phrase-simple.
@@ -2949,7 +2943,9 @@ conj-lex := basic-conj-lex & single-rel-lex-item &
                                  SUBJ < > ]],
                      CONT [ HOOK [ LTOP #ltop,
                                    INDEX #index ],
-                            RELS.LIST.FIRST #keyrel ]],
+                            RELS.LIST.FIRST #keyrel ] ],
+	     NON-LOCAL [ QUE 0-dlist,
+			 REL 0-dlist ],
              LKEYS.KEYREL #keyrel & coordination-relation & [ LBL #ltop,
                                                               C-ARG #index ]]].
 

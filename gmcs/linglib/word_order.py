@@ -75,6 +75,12 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 # ASF 2008-11-03 v2 analysis requires MC feature is not passed up to mother in
 # head - comp and not from mod to mother, putting it back for other wo options
 
+  mylang.add('basic-head-mod-phrase-simple :+\
+                [ SYNSEM.LOCAL.CAT.VAL #val, \
+                  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
+                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].',comment='Adding the old standard valence constraints to basic-head-mod-phrase-simple. Pulled out of the matrix, because modifiers can introduce arguments for the entire phrase sometimes, e.g. This is better wine than yours.')
+
+
   if not wo == 'v2':
     mylang.add_literal(';Constraint on MC used to be part of matrix.tdl\n;' +
                ';it applies to all wo implementations, except for v2')
@@ -86,6 +92,7 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
                 [ SYNSEM.LOCAL.CAT.MC #mc, \
                   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
                section='addenda')
+
 
 # ASF 2011-10-23 adpositions can occur without their (obligatory) complements
 # for now only in Germanic branch: making satisfaction of subcategorization
@@ -896,7 +903,8 @@ def customize_np_word_order(mylang, ch, rules):
                           NON-LOCAL #nonloc ], \
                   ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD noun & [ MOD < >, \
                                                                 CASE nom ], \
-                                                  VAL [ SPR < [ OPT + ] >, \
+                                                  VAL [ SPR < [ OPT +, \
+                                                                NON-LOCAL.SLASH 0-dlist ] >, \
                                                         COMPS < >, \
                                                         SPEC <  >, \
                                                         SUBJ < > ] ], \
@@ -1239,10 +1247,14 @@ def add_subclausal_rules(ch, rules):
 
 def create_wh_phrases(ch, mylang, rules):
   mylang.add('lex-rule :+ [ SYNSEM.NON-LOCAL.QUE #que, \
-                            DTR.SYNSEM.NON-LOCAL.QUE #que ].')
+                            DTR.SYNSEM.NON-LOCAL.QUE #que ].',section='addenda')
   
   mylang.add('bare-np-phrase := head-nexus-phrase.')
- 
+  mylang.add('basic-head-wh-mod-phrase-simple :+ \
+              [ SYNSEM.LOCAL.CAT.VAL #val, \
+                HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
+                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', section='addenda') 
+
   if ch.get('has-compl') == 'yes':
     
     stype = ''
@@ -1255,7 +1267,8 @@ def create_wh_phrases(ch, mylang, rules):
                               COORD -, \
                               CAT [ HEAD verb & \
                                        [ FORM finite, \
-					 INV - ], \
+                                         MOD < >, \
+                                         INV - ], \
                                     VAL #val & \
                                       [ SUBJ < >, \
                                         COMPS < >, \
@@ -1263,7 +1276,8 @@ def create_wh_phrases(ch, mylang, rules):
                                         SPEC < > ], \
                                     MC #mc ] ], \
                               NON-LOCAL [ QUE 1-dlist, \
-                                          SLASH #slash ] ] ] >, \
+                                          SLASH #slash, \
+                                          REL 0-dlist & [ LIST < > ] ] ] ] >, \
       C-CONT.HOOK #hook, \
       SYNSEM [ LOCAL.CAT [ HEAD comp, \
                            VAL #val, \

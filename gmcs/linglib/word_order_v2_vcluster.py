@@ -65,8 +65,7 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
 ###structure (needed if not using head-filler for v2-ness
 
   if head_rest:
-    mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.HEAD ' + head_rest + ' ].')
-    
+    mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.HEAD ' + head_rest + ' ].')    
 
 
 def add_basic_phrases_v2_with_cluster(ch, mylang, rules):
@@ -446,7 +445,7 @@ def create_nachfeld_phrases(ch, mylang, rules):
 		      VFRONT #vf,
 		      MC #mc ],
    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
-			       VC +,
+			       VC bool,
 			       VFRONT #vf,
 			       MC #mc ],
    NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD +vpc & [ FORM nf-form ] ],
@@ -455,19 +454,53 @@ def create_nachfeld_phrases(ch, mylang, rules):
 				     QUE 0-dlist ],
 			 LIGHT - ] ].''' 
   mylang.add(nf_type)
-  mylang.add('nachfeld-head-comp-phrase := nachfeld-phrase.') 
-  rules.add('nachfeld-head-comp := nachfeld-head-comp-phrase.')
+  if ch.get('extraposition'):
+    mylang.add('nachfeld-phrase := collect-anchor-phrase.')
+
+  typedef = '''extracted-comp-phrase-nachfeld := 
+         basic-extracted-comp-phrase & share-anchor-unary-phrase & 
+    [ HEAD-DTR.SYNSEM.LOCAL.CAT [ MC #mc & -,
+                                VC na-or-+,
+				HEAD +nvj,
+				EDGE +,
+                                VFRONT #vf & - ],
+      SYNSEM.LOCAL.CAT [ VC na-or--,
+		       VFRONT #vf,
+		       MC #mc,
+                       EDGE - ] ].'''
+
+  mylang.add(typedef)
+  rules.add('extracted-comp-nachfeld := extracted-comp-phrase-nachfeld.')
+  mylang.add('nachfeld-head-filler-phrase := nachfeld-phrase.') 
+  mylang.add('nachfeld-head-filler-phrase := basic-head-filler-phrase & \
+    [ SYNSEM.LOCAL.CAT.VAL #val, \
+      HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val ].')
+  rules.add('nachfeld-head-filler := nachfeld-head-filler-phrase.')
   if ch.get('vc-analysis') == 'basic':
-    mylang.add('nachfeld-head-comp-phrase := basic-head-1st-comp-phrase.')
+   # mylang.add('nachfeld-head-filler-phrase := basic-head-1st-comp-phrase.')
     mylang.add('nachfeld-phrase := \
        [ SYNSEM.LOCAL.CAT.SECOND #scd, \
          HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd, \
          NON-HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
+    mylang.add('extracted-comp-phrase-nachfeld := \
+               [ SYNSEM.LOCAL.CAT.SECOND #scd, \
+                 HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
   else:
     mylang.add('nachfeld-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
-    mylang.add('nachfeld-head-comp-phrase := basic-verbal-comp-rule-1 & \
-               [ SYNSEM.LOCAL.CAT.VAL #val, \
-                 NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val ].')
+    mylang.add('nachfeld-head-filler-phrase := \
+         [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
+    mylang.add('nachfeld-head-verbal-filler-phrase := nachfeld-phrase & \
+                           basic-head-filler-phrase & \
+    [ SYNSEM.LOCAL.CAT [ VAL #val, \
+                         HEAD.AUX + ], \
+      HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < >, \
+      NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL #val, \
+                                      HEAD verb ] ].')
+    rules.add('nf-head-verbal-filler := nachfeld-head-verbal-filler-phrase.')
+  #  mylang.add('nachfeld-head-comp-phrase := basic-verbal-comp-rule-1 & \
+  #             [ SYNSEM.LOCAL.CAT.VAL #val, \
+  #               NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val ].')
+
 
 ##########################################################################
 #                                                                        #
@@ -553,6 +586,9 @@ def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules):
 ###and whether it is allowed to be in second position (for Germanic only 
 ###finite verb forms)
   mylang.add('cat :+ [ SECOND luk ].')
+
+  mylang.add('basic-head-2nd-comp-phrase :+ \
+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvrpcdm ].','As coverage grows (nachfeld, comparatives), the unspecified COMPS list of auxiliaries leads to problems.', section='addenda')
 
 ###verbal items are [ VC + ]
 ###basic phrases need to pass on value of VC feature
@@ -1145,8 +1181,11 @@ def create_germanic_adjunct_phrases(ch, mylang, rules):
                   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + head_res + ' ].')
  
 ###if no auxiliary, direct attachment v2
+###to do: introduce EDGE if not already present
 
-  mylang.add('head-2nd-adj-phrase := head-initial-head-nexus & adjunct-head-phrase.')
+  mylang.add('head-2nd-adj-phrase := head-initial-head-nexus & adjunct-head-phrase & \
+ [ SYNSEM.LOCAL.CAT.EDGE #edge, \
+   HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #edge ].')
 ####only verbs can be modified by post-modifying adverbs
   if ch.get('q-inv') and ch.get('vc-analysis') == 'aux-rule':
     mylang.add('head-2nd-adj-phrase := [ HEAD-DTR.SYNSEM.MODIFIED hasmod ].')

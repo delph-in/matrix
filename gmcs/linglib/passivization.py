@@ -37,12 +37,14 @@ def customize_passivization(ch, mylang, lrules, lexicon):
  [ SYNSEM [ LOCAL.CAT [ HEAD verb & [ MOD #mod ],
 			VAL [ SUBJ < [ LOCAL.CONT #arg2,
                                        NON-LOCAL #nlo ] >,
+                              SPR #spr,
 			      COMPS < [ LOCAL.CONT #arg1,
                                         NON-LOCAL #nls,
 					OPT + ] . #vcomps > ] ] ],
    DTR.SYNSEM.LOCAL [ CAT [ HEAD verb & [ MOD #mod ],
 		  	    VAL [ SUBJ < [ LOCAL.CONT #arg1,
                                            NON-LOCAL #nls ] >,
+                                  SPR #spr,
 				  COMPS < [ LOCAL.CONT #arg2,
                                             NON-LOCAL #nlo ] . 
                                  #vcomps > ] ] ] ].'''
@@ -142,17 +144,19 @@ def customize_passivization(ch, mylang, lrules, lexicon):
       
 ###If the subject is marked by an adposition after passivization,
 ###we need something like a 'case-marking-adposition', but without case
-
+###fix: prep or postp also general form plus derived forms...
     dsubj_mark = p.get('dem-subj-mark')
     if 'adp' in dsubj_mark:    
       typedef = \
       '''marking-only-adp-lex := basic-one-arg & raise-sem-lex-item &
-             [ SYNSEM.LOCAL.CAT [ HEAD adp &
+             [ SYNSEM [ LOCAL.CAT [ HEAD adp &
                                        [ MOD < > ],
-                                  VAL [ SPR < >,
-                                        SUBJ < >,
-                                        COMPS < #comps >,
-                                        SPEC < > ] ],
+                                    VAL [ SPR < >,
+                                          SUBJ < >,
+                                          COMPS < #comps >,
+                                          SPEC < > ],
+                                    HEADFINAL -, ],
+                         NON-LOCAL.SLASH 0-dlist ],
                 ARG-ST < #comps &
                              [ LOCAL.CAT [ HEAD noun,
                                            VAL.SPR < > ] ] > ].'''
