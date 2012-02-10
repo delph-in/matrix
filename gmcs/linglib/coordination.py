@@ -111,13 +111,17 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
     pre = ''
     suf = ''
 
+    tn = TDLencode(orth)
+    if (len(ch.get('cs')) > 1):
+      tn += csnum
+
     if mark == 'word':
-      lexicon.add(TDLencode(orth) + ' := conj-lex &\
+      lexicon.add( tn + ' := conj-lex &\
                   [ STEM < "' + orthstr + '" >,\
                     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",\
                     CFORM "' + csnum + '" ].')
       if pat == 'omni':
-        lexicon.add(TDLencode(orth) + '_nosem := nosem-conj-lex &\
+        lexicon.add( tn + '_nosem := nosem-conj-lex &\
                       [ STEM < "' + orthstr + '" >,\
                         CFORM "' + csnum + '" ].')
 
