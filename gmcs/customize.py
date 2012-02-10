@@ -526,7 +526,7 @@ def get_grammar_path(isocode, language, destination):
   # three possibilities for dir names. If all are taken, raise an exception
   for dir_name in [isocode, language, isocode + '_grammar']:
     if dir_name == '': continue
-    grammar_path = os.path.join(destination, dir_name)
+    grammar_path = os.path.join(destination, dir_name.replace(' ', '_'))
     # if grammar_path already exists as a file, it is likely the choices file
     if not (os.path.exists(grammar_path) and os.path.isfile(grammar_path)):
       return grammar_path
