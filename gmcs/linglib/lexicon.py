@@ -195,7 +195,7 @@ def validate_lexicon(ch, vr):
     val = verb.get('valence')
     bistems = verb.get('bistem', [])
     bipartitepc = verb.get('bipartitepc')
-
+    
     if not val:
       mess = 'You must specify the argument structure of each verb you define.'
       vr.err(verb.full_key + '_valence', mess)

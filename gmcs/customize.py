@@ -110,7 +110,6 @@ def customize_punctuation(grammar_path):
     # to do this we have to build a regex for the : line of 
     # the repp file
     # 
-
     filename = os.path.join(grammar_path, 'lkb', 'vanilla.rpp') 
     lines = codecs.open(filename, 'r', encoding='utf-8').readlines()
     van_rpp = codecs.open(filename, 'w', encoding='utf-8')
