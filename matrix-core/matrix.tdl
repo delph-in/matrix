@@ -1503,12 +1503,13 @@ imperative-clause := basic-non-rel-clause &
 
 basic-filler-phrase := binary-headed-phrase &
   [ SYNSEM.LOCAL.CAT [ VAL.SPR < >,
-		       POSTHEAD + ],
+		       POSTHEAD +,
+		       VAL #val ],
     NON-HEAD-DTR.SYNSEM [ LOCAL #slash & local &
 			    [ CAT.VAL [ SPR < > ],
 			      CTXT.ACTIVATED + ],
 		      NON-LOCAL.SLASH 0-dlist ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL #val,
 		      NON-LOCAL [ SLASH 1-dlist &
 					[ LIST [ FIRST #slash,
 						 REST < > & #last ],

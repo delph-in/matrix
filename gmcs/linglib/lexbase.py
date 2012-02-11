@@ -45,6 +45,7 @@ class MorphotacticNode(HierarchyNode):
     self.disjunctive_flag_sets = {}
     self.flags = {'in':{},'out':{}}
     self.supertypes = supertypes or set()
+    self.comparative = ''
     self.identifier_suffix = ''
     # tdl order is used for sorting the rules as the occur in the tdl
     # PCs are integers (1, 2, 3), LRTs are floats (1.1, 2,1, 2.2, etc)

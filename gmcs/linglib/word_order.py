@@ -74,11 +74,13 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 
 # ASF 2008-11-03 v2 analysis requires MC feature is not passed up to mother in
 # head - comp and not from mod to mother, putting it back for other wo options
-
-  mylang.add('basic-head-mod-phrase-simple :+\
+  if not ch.get('comp-for-np-adj') == 'yes':
+    mylang.add('basic-head-mod-phrase-simple :+\
                 [ SYNSEM.LOCAL.CAT.VAL #val, \
                   HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
                   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].',comment='Adding the old standard valence constraints to basic-head-mod-phrase-simple. Pulled out of the matrix, because modifiers can introduce arguments for the entire phrase sometimes, e.g. This is better wine than yours.')
+  else:
+    word_order_v2_vcluster.create_special_mod_valence_phrases(mylang)
 
 
   if not wo == 'v2':
@@ -100,7 +102,6 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 
   mylang.add('basic-head-mod-phrase-simple :+\
               [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,\
-                                                    COMPS < >,\
                                                     SPR < >,\
                                                     SPEC < > ] ].')
 
@@ -768,10 +769,8 @@ def customize_np_word_order(mylang, ch, rules):
     adj_st = ''
     mylang.add('mod-non-verbal-head-phrase := basic-head-mod-phrase-simple & \
                  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +jr, \
-                   HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +njrpd, \
-                                               VAL #val ], \
-                   SYNSEM.LOCAL.CAT.VAL #val ].')
-
+                   HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +njrpd ].')
+      
     if ll_adj:
       create_adjective_learning_phrases(ch, mylang, rules)
       adj_st += 'gram-'
@@ -789,6 +788,42 @@ def customize_np_word_order(mylang, ch, rules):
       mylang.add('mod-nonv-head-scop-phrase := adj-head-scop-phrase & ' + adj_st + '.')
       rules.add('mod-nonv-head-int := mod-nonv-head-int-phrase.')
       rules.add('mod-head-scop := mod-nonv-head-scop-phrase.') 
+
+   
+    if not ch.get('comp-for-np-adj') == 'yes':
+      mylang.add('mod-non-verbal-head-phrase := \
+                 [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
+                   SYNSEM.LOCAL.CAT.VAL #val ].')
+    else:
+      mylang.add('mod-nonv-head-int-phrase := \
+             [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD adv, \
+                                               VAL.COMPS < > ], \
+               HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
+               SYNSEM.LOCAL.CAT.VAL #val ].')
+      mylang.add('mod-nonv-head-scop-phrase := \
+             [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD adv, \
+                                               VAL.COMPS < > ], \
+               HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
+               SYNSEM.LOCAL.CAT.VAL #val ].')
+      adj_n_phr = '''adjective-noun-phrase := mod-non-verbal-head-phrase &
+           [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD adj,
+				             VAL.COMPS #comps ],
+             HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD noun,
+				         VAL [ SUBJ #subj,
+				               SPR #spr,
+				               SPEC #spec ] ],
+             SYNSEM.LOCAL.CAT.VAL [ COMPS #comps,
+			            SUBJ #subj,
+			            SPR #spr,
+			            SPEC #spec ] ].'''
+      mylang.add(adj_n_phr)     
+      mylang.add('adj-int-noun-phrase := adj-head-int-phrase & \
+                                                     adjective-noun-phrase.') 
+      mylang.add('adj-scop-noun-phrase := adj-head-scop-phrase & \
+                                                     adjective-noun-phrase.') 
+      rules.add('adj-int-noun := adj-int-noun-phrase.')
+      rules.add('adj-scop-noun := adj-scop-noun-phrase.')
+ 
 
     # ERB 2006-09-14 I think that all languages have some form of
     # the Bare NP phrase.  Eventually there will be some choices about
@@ -881,6 +916,8 @@ def customize_np_word_order(mylang, ch, rules):
             SYNSEM.LOCAL.CAT.MC #mc  ].'
     
     stype = ''
+    if ch.get('comp-for-np-adj') == 'yes':
+      mylang.add('vocative-mod-phrase := normal-val-mod.')
     if ch.get('extraposition') == 'yes':
       stype += 'share-anchor-'
     stype += 'unary-phrase'

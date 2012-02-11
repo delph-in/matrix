@@ -11,14 +11,15 @@ def customize_long_distance_deps(ch, mylang, rules):
 def add_basic_ldd_phrases(ch, mylang, rules):
   
   basic_arg = \
-   '''basic-extracted-arg-phrase :+ [ HEAD-DTR.SYNSEM [ MODIFIED notmod,
-                      LOCAL.CAT.HEAD verb, 
+   '''basic-extracted-arg-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD +vj,
+                      HEAD-DTR.SYNSEM [ MODIFIED notmod,
                       NON-LOCAL.REL 0-dlist & [ LIST < > ] ] ].'''
   mylang.add(basic_arg, section='addenda')
    
   comp_ex = \
   '''extracted-comp-phrase := basic-extracted-comp-phrase &
   [ SYNSEM.LOCAL.CAT [ VAL.COMPS < >,
+                       HEAD verb,
                        VC na-or-- ],
     HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].'''
 
@@ -26,7 +27,8 @@ def add_basic_ldd_phrases(ch, mylang, rules):
   
   subj_ex = \
   '''extracted-subj-phrase := basic-extracted-subj-phrase &
-  [ SYNSEM.LOCAL.CAT.MC #mc,
+  [ SYNSEM.LOCAL.CAT [ MC #mc,
+                       HEAD verb ],
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].'''
 
   mylang.add(subj_ex)

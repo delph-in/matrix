@@ -656,6 +656,9 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
     # also not to be used as modifiers
     mylang.add('determiner-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')    
     
+    if ch.get('pronoun_possessive') == 'yes':
+      add_basic_possessive_pron_det(mylang)
+
     if ch.get('rel-clause') == 'yes':
       create_rel_determiner(mylang)
       mylang.add('determiner-lex := non-rel-lex-item.')
@@ -667,11 +670,14 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
     name = get_name(det)
     wh = det.get('wh')    
     rel = det.get('rel')
+    poss = det.get('poss')
 
     if wh == 'yes':
       stype = 'wh-determiner-lex'
     elif rel == 'yes':
       stype = 'rel-determiner-lex'
+    elif poss == 'yes':
+      stype = 'pronominal-poss_det-lex'
     else:
       stype = 'determiner-lex'
     dtype = name + '-determiner-lex'
@@ -690,6 +696,44 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
+
+def add_basic_possessive_pron_det(mylang):
+  typedef_1 = \
+   '''basic-poss-determiner-lex := norm-hook-lex-item &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD det,
+			   VAL [ SPEC < [ LOCAL.CONT.HOOK [ INDEX #ind,
+							      LTOP #larg ] ] >,
+				 SUBJ < >,
+				 COMPS < >,
+				 SPR < > ] ],
+		     CONT [ HCONS <! qeq &
+				   [ HARG #harg,
+				     LARG #larg ], [ ] !>,
+			    RELS <! relation,
+                                      arg12-ev-relation & 
+                                      [ PRED "_poss_rel",
+                                        ARG1 #index ], [ ], [ ] !>,
+			    HOOK.INDEX #index ] ],
+	     LKEYS.KEYREL quant-relation &
+		   [ ARG0 #ind,
+		     RSTR #harg ] ] ].'''
+  mylang.add(typedef_1)
+  typedef_2 = \
+  '''pronominal-poss_det-lex := basic-poss-determiner-lex & 
+  [ SYNSEM [ LOCAL [ CAT.VAL.SPEC < [ LOCAL.CONT.HOOK.LTOP #hand ] >,
+		     CONT [ RELS <! relation,
+                                  [ LBL #hand,
+                                    ARG2 #ind ],
+                                  [ PRED "_pronoun_q_rel",
+                                    RSTR #rhand,
+                                    ARG0 #ind ],
+				  [ LBL #prohand,
+                                    ARG0 #ind ] !>,
+                            HCONS <! qeq, qeq & [ HARG #rhand,
+                                                  LARG #prohand ] !> ] ],
+	     NON-LOCAL [ QUE 0-dlist,
+			 REL 0-dlist ] ] ].'''
+  mylang.add(typedef_2)
 
 def create_rel_determiner(mylang):
   comment = '''relative determiners cannot inherit from basic-determiner-lex, because they have more than one relation. Basic-rel-determiner-lex has an underspecified RELS value (suboptimal structure of hierarchy)'''
@@ -730,12 +774,11 @@ def customize_adjectives(mylang, ch, lexicon):
    # Lexical type for adjectives, if the language has any:
   if ch.get('has-adj') == 'yes':
     comment = \
-      ';;; Adjectives\n' + \
-      ';;; First: inheriting all from matrix.'
+      ';;; Adjectives\n' 
     mylang.add_literal(comment)
     mylang.add('scopal-mod-adj-lex := basic-scopal-mod-adj-lex.')
     mylang.add('int-mod-adj-lex := basic-int-mod-adj-lex.')
-
+    mylang.add('basic-adjective-lex :+ basic-zero-arg.')
    #2011-11-07 Fixing semantics of adjectives
     mylang.add('int-mod-adj-lex := [ SYNSEM [ LOCAL.CONT.HOOK.XARG #xarg, \
                                               LKEYS.KEYREL.ARG1 #xarg ] ].')
@@ -1128,9 +1171,37 @@ def create_adposition_supertypes(ch, mylang):
 
     create_adp_cross_classification(ch, mylang, sname2)
 
+  if need_marking_adposition(ch):
+    m_adp = \
+     '''basic-marking-only-adp-lex := basic-one-arg & 
+          [ ARG-ST < #comps &
+                      [ LOCAL.CAT [ VAL.SPR < >,
+                                    HEAD noun ],
+	                            OPT - ] >,
+            SYNSEM [ LOCAL.CAT [ VAL [ SPR < >,
+                                       SUBJ < >,
+                                       COMPS < #comps >,
+                                       SPEC < > ],
+			         HEADFINAL -,
+                                 HEAD adp &
+                                        [ MOD < > ] ],
+	             NON-LOCAL.SLASH 0-dlist ] ].'''
+    mylang.add(m_adp)
 
   return s_name
 
+def need_marking_adposition(ch):
+  needed = False
+  if ch.get('comparatives') == 'yes' and ch.get('comparative-comp-head') == 'adp':
+      needed = True
+  elif ch.get('passivization') == 'yes':  
+    passive = ch.get('pass',[])
+    for p in passive:
+      dsubj_mark = p.get('dem-subj-mark')
+      if 'adp' in dsubj_mark:
+        needed = True
+
+  return needed  
 
 def create_adp_cross_classification(ch, mylang, sname):
   

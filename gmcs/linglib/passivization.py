@@ -148,30 +148,21 @@ def customize_passivization(ch, mylang, lrules, lexicon):
     dsubj_mark = p.get('dem-subj-mark')
     if 'adp' in dsubj_mark:    
       typedef = \
-      '''marking-only-adp-lex := basic-one-arg & raise-sem-lex-item &
-             [ SYNSEM [ LOCAL.CAT [ HEAD adp &
-                                       [ MOD < > ],
-                                    VAL [ SPR < >,
-                                          SUBJ < >,
-                                          COMPS < #comps >,
-                                          SPEC < > ],
-                                    HEADFINAL -, ],
-                         NON-LOCAL.SLASH 0-dlist ],
-                ARG-ST < #comps &
-                             [ LOCAL.CAT [ HEAD noun,
-                                           VAL.SPR < > ] ] > ].'''
+      '''passive-marking-adp-lex := basic-marking-only-adp-lex & \
+                        raise-sem-lex-item.'''
       mylang.add(typedef)
       if vc:
-        mylang.add('marking-only-adp-lex := [ SYNSEM.LOCAL.CAT.VC na-or-- ].')
+        mylang.add('passive-marking-adp-lex := \
+                          [ SYNSEM.LOCAL.CAT.VC na-or-- ].')
       if 'case' in dsubj_mark:
         m_parts = dsubj_mark.split('-')
         case = m_parts[1]
-        mylang.add('marking-only-adp-lex := \
+        mylang.add('passive-marking-adp-lex := \
                          [ ARG-ST < [ LOCAL.CAT.HEAD.CASE ' + case + ' ] > ].')
       sform = p.get('dsubj-form')
-      mylang.add('marking-only-adp-lex := \
+      mylang.add('passive-marking-adp-lex := \
                   [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + sform + ' ].')
       mylang.add(sform + ' := form.',section='features')
-      lexicon.add(sform + '-passive :=  marking-only-adp-lex & \
+      lexicon.add(sform + '-passive := passive-marking-adp-lex & \
                     [ STEM < "' + sform + '" > ].') 
       

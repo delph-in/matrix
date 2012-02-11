@@ -228,7 +228,8 @@ def create_lexical_rule_type(ch, lrt):
     new_lrt.features[feat['name']] = {'value': feat['value'],
                                       'head': feat.get('head')}
 
-
+  if lrt.get('comparative') == 'on':
+    new_lrt.comparative = 'on'
   if subj_feat:
     for lri in lrt.get('lri',[]):
       if lri['inflecting'] == 'yes':
@@ -385,11 +386,13 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
 # add possible supertypes here
 ALL_LEX_RULE_SUPERTYPES = set(['cont-change-only-lex-rule',
                                'add-only-no-ccont-rule',
+                               'comparative-creating-lex-rule',
                                'infl-lex-rule',
                                'const-lex-rule',
                                'lex-rule'])
 
 LEX_RULE_SUPERTYPES = set(['cont-change-only-lex-rule',
+                           'comparative-creating-lex-rule', 
                            'add-only-no-ccont-rule'])
 
 def set_lexical_rule_supertypes(lrt):
@@ -407,7 +410,9 @@ def set_lexical_rule_supertypes(lrt):
   if ('value', 'plus') in lrt.features.get('negation',{}).items():
     lrt.supertypes.add('cont-change-only-lex-rule')
   # add other special cases here
-  
+  if lrt.comparative == 'on':
+    lrt.supertypes.add('comparative-creating-lex-rule')
+
 def calculate_supertypes(pch):
   # calculate daughter types first, because we want to percolate them
   calculate_daughter_types(pch)

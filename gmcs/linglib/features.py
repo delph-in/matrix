@@ -98,7 +98,12 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       geom_prefix = 'SC-ARGS.REST.FIRST.'
     elif h == 'rel':
       geom_prefix = 'SYNSEM.NON-LOCAL.REL.LIST.FIRST.'
-
+   # self_rel4: special thing for possessive pronouns
+    # feature goes on RELS list.
+    # TODO: only works if these features are defined last. That should be fixed
+    elif h == 'self_rel4':
+      geom_prefix = 'SYNSEM.LOCAL.CONT.RELS \
+            <! relation, relation, relation, [ ARG0.'
     if pos == 'auxcomplement':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
 
@@ -154,20 +159,30 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             tdlfile.add(type_name +
                     ' := [ ' + geom2 + ' ' + value + ' ].',
                     merge=True)
-        else:  
-          tdlfile.add(type_name +
-                    ' := [ ' + geom + ' ' + value + ' ].',
-                    merge=True)
+        else: 
+          if h == 'self_rel4':
+            suffix = ' ] !> ].'
+            g = geom.split('.')
+            geom = geom_prefix + g[len(g)-2] + '.' +  g[len(g)-1]
+          else:
+            suffix = ' ].'
+          mytype =  type_name + ' := [ ' + geom + ' ' + value + suffix
+          tdlfile.add(mytype,
+                      merge=True)  
         if n == 'case' and ch.has_mixed_case():
           val = '-' if '-synth-' + value in type_name else '+'
           tdlfile.add(type_name +
-                      ' := [ ' + geom + '-MARKED ' + val + ' ].',
-                      merge=True)
+                      ' := [ ' + geom + '-MARKED ' + val + ' ].',merge=True)
       else:
         for value in v:
-          tdlfile.add(type_name +
-                      ' := [ ' + geom + ' ' + value + ' ].',
-                      merge=True)
+          if h == 'self_rel4':
+            suffix = ' ] !> ].'
+            g = geom.split('.')
+            geom = geom_prefix + g[len(g)-2] + '.' +  g[len(g)-1]
+          else:
+            suffix = ' ].'
+          mytype =  type_name + ' := [ ' + geom + ' ' + value + suffix
+          tdlfile.add(mytype, merge=True)  
     elif n == 'argument structure':
       # constrain the ARG-ST to be passed up
       tdlfile.add(type_name + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].',

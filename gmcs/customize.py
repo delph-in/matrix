@@ -38,6 +38,7 @@ from gmcs.linglib import passivization
 from gmcs.linglib import toolboximport
 from gmcs.linglib import long_distance_dependencies
 from gmcs.linglib import extraposition
+from gmcs.linglib import comparatives
 
 ######################################################################
 # globals
@@ -477,6 +478,8 @@ def customize_matrix(path, arch_type, destination=None):
     long_distance_dependencies.customize_long_distance_deps(ch, mylang, rules)
   if ch.get('extraposition') == 'yes':
     extraposition.create_extraposition(ch, mylang, rules)
+  if ch.get('comparatives') == 'yes':
+    comparatives.create_comparative_basic_type(ch, mylang, lexicon)
   customize_punctuation(grammar_path)
   customize_test_sentences(grammar_path)
   customize_itsdb(grammar_path)

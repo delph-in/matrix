@@ -387,7 +387,9 @@ def create_wh_wo_phrases(ch, mylang):
   mylang.add('wh-comp-head-vc-phrase := general-comp-head-vc-phrase & \
                nonverbal-comp-phrase & head-wh.') 
   mylang.add('head-comp-phrase := head-non-wh-or-rel.')
-  mylang.add('adjunct-head-phrase := head-non-wh-or-rel.')
+  mylang.add('adjunct-head-phrase := head-non-wh-or-rel.') 
+  if ch.get('comp-for-np-adj') == 'yes':
+    mylang.add('adjunct-head-phrase := normal-val-mod.')
   mylang.add('head-wh-comp-phrase := head-wh & basic-head-1st-comp-phrase & \
                           head-initial-head-nexus & nonverbal-comp-phrase.')
 
@@ -485,6 +487,9 @@ def create_nachfeld_phrases(ch, mylang, rules):
     mylang.add('extracted-comp-phrase-nachfeld := \
                [ SYNSEM.LOCAL.CAT.SECOND #scd, \
                  HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
+    if ch.get('v2-analysis') == 'mc':
+      mylang.add('nachfeld-head-filler-phrase := \
+               [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
   else:
     mylang.add('nachfeld-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
     mylang.add('nachfeld-head-filler-phrase := \
@@ -501,6 +506,12 @@ def create_nachfeld_phrases(ch, mylang, rules):
   #             [ SYNSEM.LOCAL.CAT.VAL #val, \
   #               NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val ].')
 
+
+def create_special_mod_valence_phrases(mylang):
+  mylang.add('normal-val-mod := head-mod-phrase-simple & \
+ [ SYNSEM.LOCAL.CAT.VAL #val, \
+   HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
+   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
 
 ##########################################################################
 #                                                                        #
