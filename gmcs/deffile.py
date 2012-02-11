@@ -673,6 +673,8 @@ class MatrixDefFile:
         f = f.replace('\\', '/')
         choices = ChoicesFile(f)
         lang = choices.get('language') or '(empty questionnaire)'
+        if lang == 'minimal-grammar':
+          lang = '(minimal grammar)'
         linklist[lang] = f
 
       for k in sorted(linklist.keys(), lambda x, y: cmp(x.lower(), y.lower())):
