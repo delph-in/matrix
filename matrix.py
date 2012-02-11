@@ -3,6 +3,7 @@ import sys
 import os
 import getopt
 import subprocess
+import random
 from gmcs.choices import ChoicesFile
 from gmcs.deffile import MatrixDefFile
 
@@ -117,6 +118,33 @@ def main():
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
                        'regression_tests/run_regression_tests.sh')
     lgnames = get_regression_tests(args[1:])
+    if lgnames is None:
+        sys.exit('No regression tests found for %s' % str(args[1:]))
+    #Using subprocess makes it difficult to kill the process
+    # (e.g. with Ctrl-C), so we need to handle KeyboardInterrupts
+    # (or alternatively use a os.exec* function)
+    try:
+      p = subprocess.Popen([cmd] + lgnames, env=os.environ)
+      p.wait()
+    except KeyboardInterrupt:
+      print "\nProcess interrupted. Aborting regression tests.\n"
+      import signal
+      os.kill(p.pid, signal.SIGKILL)
+
+  elif args[0] in ('rs', 'regression-test-sample'):
+    cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
+                       'regression_tests/run_regression_tests.sh')
+    num = int(args[1])
+    testlist = get_regression_tests(['*'])
+    lgnames = [] 
+    if (num > len(testlist)): 
+      sys.exit("\nThere are only "+str(len(testlist))+" tests available.\
+                \nPass a smaller argument to 'rs' or just call 'r' with no\
+                \narguments to run all tests.\
+                \neg:\
+                \n$./matrix.py -C gmcs/ r\n")
+    else:
+      lgnames = random.sample(testlist, num)
     if lgnames is None:
         sys.exit('No regression tests found for %s' % str(args[1:]))
     #Using subprocess makes it difficult to kill the process
@@ -436,6 +464,15 @@ def usage(command=None, exitcode=2):
     examples += ["  matrix.py --customizationroot=gmcs/ regression-test",
                  "  matrix.py -C gmcs/ r -v",
                  "  matrix.py -C gmcs/ r -cp vso-aux-before-vp Fore"]
+    something_printed = True
+  if command in ('regression-test-sample', 'rs', 'all'):
+    p("regression-test-random (rr) INT")
+    p("            Run a random sample of regression tests.")
+    p("            The size of the sample is given by the argument")
+    p("            which should be an integer and must not be greater")
+    p("            than the number of tests in existance.")
+    examples += ["  matrix.py --customizationroot=gmcs/ regression-test-sample 50",
+                 "  matrix.py -C gmcs/ rs 100"]
     something_printed = True
   if command in ('regression-test-add', 'ra', 'all'):
     p("regression-test-add (ra) CHOICES TXTSUITE")
