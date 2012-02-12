@@ -104,9 +104,10 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
               [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,\
                                                     SPR < >,\
                                                     SPEC < > ] ].')
-
-
-
+  if not wo == 'v2' and ch.get('vc-analysis') == 'auxrule':
+    mylang.add('basic-head-filler-phrase :+ \
+                 [ SYNSEM.LOCAL.CAT.VAL #val, \
+                   HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val ].')
 # Head-comp order
 
   if wo == 'sov' or wo == 'osv' or wo == 'ovs' or wo == 'v-final':
