@@ -233,12 +233,35 @@ HTML_sentencespostbody = '''
 HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors()">
 '''
 
+#HTML_navmenu = '''
+#<div id="navmenu">
+#  <ul>
+#    <li><a onclick="submit_go('general')">General Information</a></li>
+#    <li><a onclick="submit_go('word-order')">Word Order</a></li>
+#    <li><a onclick="submit_go('number')">Number</a></li>
+#    <li><a onclick="submit_go('person')">Person</a></li>
+#    <li><a onclick="submit_go('gender')">Gender</a></li>
+#    <li><a onclick="submit_go('case')">Case</a></li>
+#    <li><a onclick="submit_go('direct-inverse')">Direct-inverse</a></li>
+#    <li><a onclick="submit_go('tense-aspect-mood')">Tense, Aspect and Mood</a></li>
+#    <li><a onclick="submit_go('other-features')">Other Features</a></li>
+#    <li><a onclick="submit_go('sentential-negation')">Sentential Negation</a></li>
+#    <li><a onclick="submit_go('coordination')">Coordination</a></li>
+#    <li><a onclick="submit_go('matrix-yes-no')">Matrix Yes/No Questions</a></li>
+#    <li><a onclick="submit_go('arg-opt')">Argument Optionality</a></li>
+#    <li><a onclick="submit_go('lexicon')">Lexicon</a></li>
+#    <li><a onclick="submit_go('morphology')">Morphology</a></li>
+#    <li><a onclick="border()">border</a></li>
+#    <li><a onclick="sticky()">sticky</a></li>
+#  </ul>
+#</div>'''
+
 HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();">'''
 
 HTML_method = 'post'
-HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '" enctype="multipart/form-data" name="choices_form">'
+HTML_preform = '<div id="form_holder"><form action="matrix.cgi" method="' + HTML_method + '" enctype="multipart/form-data" name="choices_form">'
 
-HTML_postform = '</form>'
+HTML_postform = '</form></div>'
 
 HTML_uploadpreform = '''
 <form action="matrix.cgi" method="post" enctype="multipart/form-data"
@@ -477,6 +500,16 @@ def js_array3(list):
 # on the contents, to produce HTML pages and save choices files.
 
 class MatrixDefFile:
+  sections = { 'general':'General Information',
+  'word-order':'Word Order', 'number':'Number',
+  'person':'Person', 'gender':'Gender', 'case':'Case',
+  'direct-inverse':'Direct-inverse', 'tense-aspect-mood':'Tense, Aspect and Mood',
+  'other-features':'Other Features', 'sentential-negation':'Sentential Negation',
+  'coordination':'Coordination', 'matrix-yes-no':'Matrix Yes/No Questions',
+  'arg-opt':'Argument Optionality', 'lexicon':'Lexicon',
+  'morphology':'Morphology','toolbox-import':'Toolbox Import',
+  'test-sentences':'Test Sentences','gen-options':'TbG Options',
+  'ToolboxLexicon':'Toolbox Lexicon'}
   def_file = ''
   v2f = {}
   f2v = {}
@@ -962,11 +995,13 @@ class MatrixDefFile:
 
     f = open(self.def_file, 'r')
     lines = merge_quoted_strings(f.readlines())
+    
     f.close()
 
     section_begin = -1
     section_end = -1
     section_friendly = ''
+
 
     i = 0
     while i < len(lines):
@@ -1001,6 +1036,56 @@ class MatrixDefFile:
         print HTML_prebody
 
       print '<h2>' + section_friendly + '</h2>'
+
+
+#      print HTML_navmenu
+      print '<div id="navmenu"><ul>'
+
+      # pass through the definition file once, augmenting the list of validation
+      # results with section names so that we can put red asterisks on the links
+      # to the assocated sub-pages on the nav menu.
+      prefix = ''
+      sec_links = []
+      n = -1
+      printed = False 
+      for l in lines:
+        word = tokenize_def(l)
+        cur_sec = ''
+        if len(word) < 2 or word[0][0] == '#':
+          pass
+        elif word[0] == 'Section':
+          printed = False
+          cur_sec = word[1]
+          sec_links.append('</span><a onclick="submit_go(\''+cur_sec+'\')">'+self.sections[cur_sec]+'</a>')
+          n+=1
+        elif word[0] == 'BeginIter':
+          if prefix:
+            prefix += '_'
+          prefix += re.sub('\\{.*\\}', '[0-9]+', word[1])
+        elif word[0] == 'EndIter':
+          prefix = re.sub('_?' + word[1] + '[^_]*$', '', prefix)
+        elif not (word[0] == 'Label' and len(word) < 3):
+          pat = '^' + prefix
+          if prefix:
+            pat += '_'
+          pat += word[1] + '$'
+          if not printed:
+            for k in vr.errors.keys():
+              if re.search(pat, k):
+                sec_links[n] = '*'+sec_links[n]
+                printed = True 
+                break
+          if not printed:
+            for k in vr.warnings.keys():
+              if re.search(pat, k):
+                sec_links[n] = '?'+sec_links[n]
+                printed = True 
+                break
+            
+      for l in sec_links: 
+        print '<li><span style="color:#ff0000;">'+l+'</li>'
+      print '</ul></div>'
+
       print HTML_preform
       print html_input(vr, 'hidden', 'section', section,
                        False, '', '\n')

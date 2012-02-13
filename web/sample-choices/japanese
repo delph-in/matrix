@@ -3,7 +3,6 @@ version=20
 section=general
 language=Japanese
 iso-code=jpn
-archive=yes
 comment=Sample grammar for Japanese.
 
 section=word-order
