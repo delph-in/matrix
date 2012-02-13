@@ -4,7 +4,6 @@ version=22
 section=general
 language=Maltese
 iso-code=mlt
-archive=yes
 comment=Sample grammar for LREC and HPSG 2010 tutorials.
 
 section=word-order

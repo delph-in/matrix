@@ -109,6 +109,7 @@ function clear_form()
 
 // save_form()
 // Save and Vivify the choices on the current subpage
+// Vivify --> Validate? --JDC 10feb2012
 function save_form(section)
 {
   var elm = document.getElementsByTagName('form')[0];
@@ -133,6 +134,25 @@ function submit_main()
   }
   form.submit();
 }
+
+// submit_go(subpage)
+// Submit the form and go to another subpage 
+function submit_go(subpage){
+  var form = document.getElementsByTagName('form')[0];
+  var elms = document.getElementsByTagName('input');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].name == "subpage") {
+      form.removeChild(elms[i]);
+    }
+  } 
+  var inp = document.createElement('input');
+  inp.type= "hidden";
+  inp.name= "subpage";
+  inp.value=subpage
+  form.appendChild(inp);
+  form.submit();
+}
+
 
 // toggle_display_lex()
 // Handle a click on a section show/hide button on the Lexicon Page

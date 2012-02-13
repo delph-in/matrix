@@ -380,6 +380,22 @@ def validate_general(ch, vr):
     if bad_lang:
       vr.err('language', 'The language name contains an illegal character')
 
+  iso = ch.get('iso-code')
+  if len(iso) != 3:
+    vr.warn('iso-code', 'ISO-639 codes should be three letter sequences.')
+  else:
+    valid = True 
+    cmd = 'curl http://www.sil.org/iso639-3/documentation.asp?id='+iso
+    o = os.popen(cmd)
+    lines = o.readlines()
+    for l in lines:
+      if l.find('is not a valid three-letter') > -1:
+        valid = False
+    o.close()
+    if not valid:
+      vr.warn('iso-code', 
+              'The three-letter code you provided is not in ISO-639-3.') 
+
   if not ch.get('archive'):
     vr.warn('archive',
             'Please answer whether you will allow ' +
