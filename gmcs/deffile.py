@@ -259,9 +259,9 @@ HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fil
 HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();">'''
 
 HTML_method = 'post'
-HTML_preform = '<div id="form_holder"><form action="matrix.cgi" method="' + HTML_method + '" enctype="multipart/form-data" name="choices_form">'
+HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '" enctype="multipart/form-data" name="choices_form">'
 
-HTML_postform = '</form></div>'
+HTML_postform = '</form>'
 
 HTML_uploadpreform = '''
 <form action="matrix.cgi" method="post" enctype="multipart/form-data"
@@ -1086,6 +1086,7 @@ class MatrixDefFile:
         print '<li><span style="color:#ff0000;">'+l+'</li>'
       print '</ul></div>'
 
+      print '<div id="form_holder">'
       print HTML_preform
       print html_input(vr, 'hidden', 'section', section,
                        False, '', '\n')
@@ -1101,6 +1102,7 @@ class MatrixDefFile:
 
     print HTML_postform
     print HTML_postbody
+    print '</div>'
 
 
   # Create and print the "download your matrix here" page for the
