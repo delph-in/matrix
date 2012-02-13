@@ -385,7 +385,7 @@ def validate_general(ch, vr):
     vr.warn('iso-code', 'ISO-639 codes should be three letter sequences.')
   else:
     valid = True 
-    cmd = 'curl http://www.sil.org/iso639-3/documentation.asp?id='+iso
+    cmd = 'curl http://www.sil.org/iso639-3/documentation.asp?id='+iso+'2>/dev/null'
     o = os.popen(cmd)
     lines = o.readlines()
     for l in lines:
