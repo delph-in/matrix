@@ -25,12 +25,16 @@ class ValidationResult:
   def __init__(self):
     self.errors = {}
     self.warnings = {}
+    self.infos = {}
 
   def has_errors(self):
     return len(self.errors) != 0
 
   def has_warnings(self):
     return len(self.warnings) != 0
+
+  def has_infos(self):
+    return len(self.infos) != 0
 
   def err(self, key, message, anchor=None, concat=True):
     """
@@ -55,6 +59,17 @@ class ValidationResult:
       self.warnings[key].add_message(message)
     else:
       self.warnings[key] = ValidationMessage(key+"_warning", message, anchor)
+
+  def info(self, key, message, anchor=None, concat=True):
+    """
+    Add an informational message to key (a choices variable).  If the key
+    already has a message and 'concat' is set to true, concatenate
+    the new message with the existing one.  Otherwise replace the message.
+    """
+    if key in self.infos and concat:
+      self.infos[key].add_message(message)
+    else:
+      self.infos[key] = ValidationMessage(key+"_info", message, anchor)
 
 #NTS: we only need to define an anchor for the main page versionsx
 class ValidationMessage:
@@ -385,12 +400,17 @@ def validate_general(ch, vr):
     vr.warn('iso-code', 'ISO-639 codes should be three letter sequences.')
   else:
     valid = True 
-    cmd = 'curl http://www.sil.org/iso639-3/documentation.asp?id='+iso+' 2>/dev/null'
+    url = 'http://www.sil.org/iso639-3/documentation.asp?id='+iso
+    cmd = 'curl '+url+' 2>/dev/null'
     o = os.popen(cmd)
     lines = o.readlines()
-    for l in lines:
-      if l.find('is not a valid three-letter') > -1:
+    i = 0 
+    for i in range(len(lines)):
+      if lines[i].find('is not a valid three-letter') > -1:
         valid = False
+      elif lines[i].find('<td valign="top">Name:') > -1:
+        name = lines[i+2].lstrip('\t ')
+        vr.info('iso-code', 'Your language might be called:'+name, anchor=url) 
     o.close()
     if not valid:
       vr.warn('iso-code', 

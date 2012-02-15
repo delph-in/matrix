@@ -287,7 +287,11 @@ HTML_postbody = '''</body>
 
 def html_mark(mark, vm):
   if vm.href:
-    return '<a href="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
+    if mark == '#':
+      return '<a href="%s" style="text-decoration:none"><span class="info" title="%s">%s</span></a>' %\
+           (vm.href, vm.message.replace('"', '&quot;'), mark)
+    else:
+      return '<a href="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
            (vm.href, vm.message.replace('"', '&quot;'), mark)
   else:
     return '<a name="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
@@ -298,6 +302,9 @@ def html_error_mark(vm):
 
 def html_warning_mark(vm):
   return html_mark('?', vm)
+
+def html_info_mark(vm):
+  return html_mark('#', vm)
 
 # Return an HTML <input> tag with the specified attributes and
 # surrounding text
@@ -329,6 +336,8 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
       mark = html_error_mark(vr.errors[name])
     elif name in vr.warnings:
       mark = html_warning_mark(vr.warnings[name])
+    if name in vr.infos:
+      mark = html_info_mark(vr.infos[name])
 
   if type == 'textarea':
     value = value.replace('\\n','\n')

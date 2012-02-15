@@ -116,6 +116,9 @@ if form_data.has_key('verbpred'):
 
 # Get a list of error messages, determined by validating the current
 # choices.  If the current choices are valid, the list will be empty.
+# --
+# no longer true, there can now be validation info messages.
+# nothing seems to depend on the list being empty #14 feb 2012 
 try:
   vr = validate_choices(os.path.join(session_path, 'choices'))
 except:
