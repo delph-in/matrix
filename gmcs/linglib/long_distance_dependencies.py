@@ -11,8 +11,7 @@ def customize_long_distance_deps(ch, mylang, rules):
 def add_basic_ldd_phrases(ch, mylang, rules):
   
   basic_arg = \
-   '''basic-extracted-arg-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD +vj,
-                      HEAD-DTR.SYNSEM [ MODIFIED notmod,
+   '''basic-extracted-arg-phrase :+ [ HEAD-DTR.SYNSEM [ MODIFIED notmod,
                       NON-LOCAL.REL 0-dlist & [ LIST < > ] ] ].'''
   mylang.add(basic_arg, section='addenda')
    
@@ -67,7 +66,8 @@ def filler_head_basic(ch, mylang, rules):
                          VFRONT #vf ],
                    CONT.HOOK.INDEX.SF prop-or-ques ],
     HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb &
-                                     [ FORM finite ],
+                                     [ FORM finite,
+                                       MOD < > ],
                                 VFRONT #vf,
                                 VAL [ SUBJ < >,
                                       COMPS < >,
@@ -112,10 +112,11 @@ def add_analysis_specific_constraints(ch, mylang, rules):
   ar = ''
   if ch.get('v2-analysis') == 'filler-gap':
     fg = True
-    mylang.add('basic-extracted-arg-phrase :+ \
+    mylang.add('extracted-comp-phrase := \
                 [ SYNSEM.LOCAL.CAT.HEAD.INV -].')
     mylang.add('extracted-subj-phrase := \
-     [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
+     [ HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na, \
+                                   HEAD.INV - ] ].')
   elif ch.get('vc-analysis') == 'basic':
     ac = True
     mylang.add('extracted-subj-phrase := \

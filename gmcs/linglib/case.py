@@ -597,9 +597,13 @@ def customize_verb_case(mylang, ch):
                               #comp2 > ].'
         mylang.add(typedef)
 
-      elif p[0] == 'ditrans' or len(c) == 3:            #ditrans
+      elif p[0] == 'ditrans' or p[0] == 'partv' or len(c) == 3: #ditrans 
         
         if p[0] == 'ditrans':
+          a_case = ''
+          b_case = ''
+          o_case = ''
+        elif p[0] == 'partv':
           a_case = ''
           b_case = ''
           o_case = ''
@@ -607,19 +611,30 @@ def customize_verb_case(mylang, ch):
           a_case = canon_to_abbr(c[0], cases)
           b_case = canon_to_abbr(c[1], cases)
           o_case = canon_to_abbr(c[2], cases)
-
+        
         a_head = 'noun'
         b_head = 'noun'
-        o_head = 'noun'
-        if a_case and b_case and o_case:
-          t_type = dir_inv + a_case + '-' + b_case + '-' + o_case + '-ditransitive-verb-lex'
+###should allow to create list of particles and check if is in list
+###rather than specific form
+        if p[0] == 'partv' or o_case == 'vor':
+          o_head = 'verb'
         else:
-          t_type = dir_inv + 'ditransitive-verb-lex'
+          o_head = 'noun'
+        if o_head == 'noun':
+          if a_case and b_case and o_case:
+            t_type = dir_inv + a_case + '-' + b_case + '-' + o_case + '-ditransitive-verb-lex'
+          else:
+            t_type = dir_inv + 'ditransitive-verb-lex'
+          if t_type != 'ditransitive-verb-lex':
+            mylang.add(t_type + ' := ditransitive-verb-lex.')
+        else:
+          if a_case and b_case and o_case:
+            t_type = dir_inv + a_case + '-' + b_case + '-' + o_case + '-part-transitive-verb-lex'
+          else:
+            t_type = dir_inv + 'part-transitive-verb-lex'
+          if t_type != 'part-transitive-verb-lex':
+            mylang.add(t_type + ' := part-transitive-verb-lex.')
 
-        if t_type != 'ditransitive-verb-lex':
-          mylang.add(t_type + ' := ditransitive-verb-lex.')
-
-       # constrain the head of the agent/subject
         typedef = \
             t_type + ' := \
              [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
@@ -631,31 +646,63 @@ def customize_verb_case(mylang, ch):
              t_type + ' := \
                [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
           mylang.add(typedef)
-
+       
+        if o_head == 'noun':   # constrain the head of the agent/subject
+         
         # constrain the head of the beneficiary
-        typedef = \
-          t_type + ' := \
-              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + b_head + ' ], [ ] > ].'
-        mylang.add(typedef)
-
-        # constrain the case of the patient/object
-        if b_case:
           typedef = \
             t_type + ' := \
-              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + b_case + ' ], [ ] > ].'
+              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + b_head + ' ], [ ] > ].'
           mylang.add(typedef)
 
-        # constrain the head of the patient/object
-        typedef = \
-            t_type + ' := \
-              [ ARG-ST < [ ], [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
-        mylang.add(typedef)
-
         # constrain the case of the patient/object
-        if o_case:
+          if b_case:
+            typedef = \
+            t_type + ' := \
+              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + b_case + ' ], [ ] > ].'
+            mylang.add(typedef)
+
+        # constrain the head of the patient/object
           typedef = \
             t_type + ' := \
-                [ ARG-ST < [ ], [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
+              [ ARG-ST < [ ], [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
+          mylang.add(typedef)
+
+        # constrain the case of the patient/object
+          if o_case:
+            typedef = \
+              t_type + ' := \
+               [ ARG-ST < [ ], [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
+            mylang.add(typedef)
+        else:  
+
+        # constrain the head of the beneficiary
+          typedef = \
+            t_type + ' := \
+              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + b_head + ' ] > ].'
+          mylang.add(typedef)
+
+        # constrain the case of the patient/object
+          if b_case:
+            typedef = \
+              t_type + ' := \
+                [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + b_case + ' ] > ].'
+            mylang.add(typedef)
+
+# constrain the head of the patient/object
+          typedef = \
+            t_type + ' := \
+              [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ], \
+                                             [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
+          mylang.add(typedef)
+          if o_case:
+            o_case += '-part'
+            typedef = \
+              t_type + ' := \
+               [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ], \
+                                     [ LOCAL.CAT.HEAD.FORM ' + o_case + ' ] > ].'
+            mylang.add(o_case + ' := form.')
+ 
           mylang.add(typedef)
 
 

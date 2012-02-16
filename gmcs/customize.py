@@ -439,7 +439,7 @@ def customize_matrix(path, arch_type, destination=None):
   # The following might modify hierarchies in some way, so it's best
   # to customize those components and only have them contribute their
   # information to lexical rules when we customize inflection.
-  lexical_items.customize_lexicon(mylang, ch, lexicon, hierarchies)
+  lexical_items.customize_lexicon(mylang, ch, lexicon, hierarchies, lrules)
   argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies)
   direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
   case.customize_case(mylang, ch, hierarchies)

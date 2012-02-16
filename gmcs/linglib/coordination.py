@@ -8,17 +8,16 @@ from gmcs.utils import TDLencode
 ######################################################################
 # define_coord_strat: a utility function, defines a strategy
 
-def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_number, mc_inv_sh, mylang, rules, irules):
+def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_number, mc_inv_sh, trunc, mylang, rules, irules):
   mylang.add_literal(';;; Coordination Strategy ' + num)
 
   pn = pos + num
   if pos == 'n' or pos == 'np':
     headtype = 'noun'
-  elif pos == 'adj':
-    headtype = 'adj'
-  elif pos == 'adp':
-    headtype = 'adp'
-    add_adposition_rules(mylang)
+  elif pos == 'adj' or pos == 'adv' or pos == 'adp':
+    headtype = pos
+    if pos == 'adp':
+      add_adposition_rules(mylang)
   else:
     headtype = 'verb'
 
@@ -31,12 +30,17 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
   # top rule and a bottom rule, but only some have a mid rule, so if
   # the mid prefix argument $mid is empty, don't emit a rule.
   # Similarly, not all strategies have a left rule.
-
+  tr_val = ''
+  if trunc == 'on':
+    tr_val = 'na'
+  else:
+    tr_val = '-'
 
   mylang.add(pn + '-top-coord-rule :=\
                basic-' + pos + '-top-coord-rule &\
                ' + top + 'top-coord-rule &\
-               [ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].')
+               [ SYNSEM.LOCAL.COORD-STRAT "' + num + '", \
+                 LCOORD-DTR.SYNSEM.LOCAL.COORD ' + tr_val + ' ].')
   if mid:
     mylang.add(pn + '-mid-coord-rule :=\
                  basic-' + pos + '-mid-coord-rule &\
@@ -121,7 +125,12 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
     
 
     if np_number and pos != 'adj':
-      mylang.add(pn + '-top-coord-rule := \
+      if 'coord' in np_number:
+        mylang.add(pn + '-top-coord-rule := \
+               [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM #num, \
+                 RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM #num ].')
+      else: 
+        mylang.add(pn + '-top-coord-rule := \
                [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + np_number + ' ].')
   #adjectives also need to share png info for agreement with nouns
     elif pos == 'adj':
@@ -170,6 +179,21 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
   """
   mylang.set_section('coord')
 
+  if ch.get('truncing') == 'yes':
+    mylang.add('trunc-coord-lex-rule := cat-change-only-lex-rule & \
+                                                     inflecting-lex-rule & \
+                     [ SYNSEM.LOCAL [ COORD na, \
+                                      CAT.HEAD +njd ], \
+                       DTR.SYNSEM.LOCAL [ CAT.HEAD +njd, \
+                                          COORD - ] ].')
+    rule_2 = \
+    '''
+    trunc-marker-suffix :=
+%suffix (* -)
+trunc-coord-lex-rule.
+    '''
+    irules.add_literal(rule_2)
+
   for cs in ch.get('cs'):
     csnum = str(cs.iter_num())
 
@@ -181,12 +205,21 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
     agreement = cs.get('agreement')
     np_number = ''
     np_number = cs.get('npnumber')
+    trunc = cs.get('trunc')
 
     pre = ''
     suf = ''
 
     if mark == 'word':
-      lexicon.add(TDLencode(orth) + ' := conj-lex &\
+      if ',' in orth:
+        words = orth.split(',')
+        for w in words:
+          lexicon.add(TDLencode(w + '_c' + csnum) + ' := conj-lex &\
+                  [ STEM < "' + w + '" >,\
+                    SYNSEM.LKEYS.KEYREL.PRED "_' + w + '_coord_rel",\
+                    CFORM "' + csnum + '" ].')
+      else:
+        lexicon.add(TDLencode(orth) + ' := conj-lex &\
                   [ STEM < "' + orth + '" >,\
                     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",\
                     CFORM "' + csnum + '" ].')
@@ -276,10 +309,10 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
         agr.append('mc-red') 
         agr.append('inv-red')   
 
-    for pos in ('n', 'np', 'vp', 's', 'adj','adp'):
+    for pos in ('n', 'np', 'vp', 's', 'adj','adp','adv'):
       if cs.get(pos):
         define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, agreement,
-    np_number, mc_inv_sh, mylang, rules, irules)
+    np_number, mc_inv_sh, trunc, mylang, rules, irules)
         if pos in ('n','np'):
           if ch.get('reflexives') == 'yes':
             add_np_restrictions(mylang, mid, pos, csnum)

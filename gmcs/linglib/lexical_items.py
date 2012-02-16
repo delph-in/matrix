@@ -318,6 +318,30 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
       mylang.add('ditransitive-verb-lex := non-refl-verb-lex.')
     else:
       mylang.add('ditransitive-verb-lex := ' + mainorverbtype + '.')
+# ditransitive verb lexical type
+  if ch.get('verbal-particles') == 'yes':
+    typedef = \
+    'part-transitive-verb-lex := transitive-lex-item & \
+       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp1 , \
+                                       [ LOCAL.CAT [ VAL [ SPR < >, \
+                                                           SUBJ < >, \
+                                                           SPEC < >, \
+                                                            COMPS < > ] ] ] >, \
+         ARG-ST < [ ], \
+                  #comp1 & \
+                  [ LOCAL.CAT [ VAL [ SPR < >, \
+                                      COMPS < > ] ] ]  > ].'
+    mylang.add(typedef)
+    mylang.add('verbal-particle := verb-lex & norm-zero-arg & \
+                 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
+                                          COMPS < >, \
+                                          SPR < >, \
+                                          SPEC < > ] ].')
+    if refl:
+      mylang.add('part-transitive-verb-lex := non-refl-verb-lex.')
+    else:
+      mylang.add('part-transitive-verb-lex := ' + mainorverbtype + '.')
+
  # clausal complement verb
   if ch.get('emb-clause-2nd-verb') == 'yes':
     typedef = \
@@ -451,6 +475,12 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
           o_case = case.canon_to_abbr(c[1], cases)
           tivity = a_case + '-' + o_case + '-' + c[2]
           tivity += '-trans'
+        elif c[2] == 'vor':
+          a_case = case.canon_to_abbr(c[0], cases)
+          b_case = case.canon_to_abbr(c[1], cases)
+          o_case = case.canon_to_abbr(c[2], cases)
+          tivity = a_case + '-' + b_case + '-' + o_case + '-part-trans'
+          create_particle_lex_entry(mylang, lexicon, o_case)
         else:
           a_case = case.canon_to_abbr(c[0], cases)
           b_case = case.canon_to_abbr(c[1], cases)
@@ -475,13 +505,17 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
           mylang.add(vtype + ' := \
                      [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT \
                                            ' + o_drop_default + ' ].')
-        if len(c) == 3 and not 'obj2' in opt_heads:
-          if not c[1] == 'refl':
+        if len(c) == 3:
+          if c[2] == 'vor':
             mylang.add(vtype + ' := \
+                         [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ], [ OPT - ] > ].')
+          elif not 'obj2' in opt_heads:
+            if not c[1] == 'refl':
+              mylang.add(vtype + ' := \
                      [ ARG-ST < [ ], [ ], \
                                     [ OPT ' + o_drop_default + ' ] > ].')
-          else:
-            mylang.add(vtype + ' := \
+            else:
+              mylang.add(vtype + ' := \
                      [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ], \
                                       [ OPT ' + o_drop_default + ' ] > ].')  
 ###
@@ -515,6 +549,15 @@ def main_or_verb(ch):
     return 'main-verb-lex'
   else:
     return 'verb-lex'
+
+
+def create_particle_lex_entry(mylang, lexicon, o_case):
+  mylang.add(o_case + '-verbal-particle := verbal-particle & \
+              [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + o_case + '-part ].')
+  typedef = \
+    TDLencode(o_case) +  ' := ' + o_case + '-verbal-particle & \
+                    [ STEM < "' + o_case + '" > ].'
+  lexicon.add(typedef)
 
 
 def customize_copula(mylang, ch, lexicon, hierarchies):
@@ -867,6 +910,63 @@ def customize_adjectives(mylang, ch, lexicon):
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
+
+def customize_numbers(ch, mylang, lexicon, lrules):
+  basic_type = \
+  '''number-adjective := basic-int-mod-adj-lex &
+    [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < >,
+                               COMPS < >,
+                               SPR < > ],
+               NON-LOCAL [ SLASH 0-dlist,
+                           QUE 0-dlist,
+                           REL 0-dlist ],
+               LKEYS.KEYREL number-relation ] ].'''
+  mylang.add(basic_type)
+  numb = ch.get('numb',[])
+
+  for n in numb:
+    if n.get('det') == 'yes':
+      lex_rule_type = \
+      '''numb-det-lex-rule := same-non-local-lex-rule &
+			      same-modified-lex-rule &
+			      same-light-lex-rule &
+                              same-val-lex-rule & 
+     [ SYNSEM.LOCAL.CAT [ HEAD det,
+                          VAL.SPEC.FIRST #item & 
+                                       [ LOCAL.CONT.HOOK [ INDEX #index,
+                                                           LTOP #larg] ] ],
+       DTR number-adjective &
+           [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST #item ],
+       C-CONT [ HOOK.INDEX #index,
+                RELS <! quant-relation &
+		   [ PRED "_def_q_rel",
+		     ARG0 #index,
+		     RSTR #harg ] !>,
+	       HCONS <! qeq & 
+		    [ HARG #harg,
+		      LARG #larg ] !> ] ].'''
+
+      mylang.add(lex_rule_type)
+      lrules.add('numb-det-lrule := numb-det-lex-rule.')
+
+    for feat in n.get('feat',[]):
+      if feat.get('head') == 'mod':
+        path = '[ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.'
+      path += feat.get('name').capitalize()
+      path += ' ' + feat.get('value')
+      mylang.add('number-adjective := ' + path + ' ].')
+
+    for stem in n.get('stem',[]):
+      orth = stem.get('orth')
+      pred = stem.get('pred')
+      id = stem.get('name')
+      typedef = \
+        TDLencode(id) + ' := number-adjective & \
+                    [ STEM < "' + orth + '" >, \
+                      SYNSEM.LKEYS.KEYREL.CARG "' + pred + '" ].'
+      lexicon.add(typedef)
+
+
 def customize_adverbs(mylang, ch, lexicon):
 
    # Lexical type for adverbs, if the language has any:
@@ -1056,6 +1156,8 @@ def customize_adpositions(ch, mylang, lexicon):
         incl = True
       if incl:
         sname = 'compl-incl-int-adp-lex-item'
+      if adp.get('det-incl') == 'yes':
+        sname = 'int-adp-integrated-det-lex-item'
       name = adp.get('name') + '-adp-lex-item'
       kind = adp.get('kind')
       form = adp.get('form')
@@ -1188,6 +1290,55 @@ def create_adposition_supertypes(ch, mylang):
 	             NON-LOCAL.SLASH 0-dlist ] ].'''
     mylang.add(m_adp)
 
+###For German vom (von + dem) and im (in + dem)
+  if ch.get('det-incl-adp') == 'yes':
+    sname3 = 'int-adp-integrated-det-lex'
+    typedef = \
+    '''int-adp-integrated-det-lex-item := no-cluster-lex-item & 
+                                         norm-hook-lex-item & basic-one-arg &
+  [ SYNSEM [ LKEYS.KEYREL arg12-ev-relation & [ ARG1 #arg1,
+						ARG2 #arg2 ],
+             NON-LOCAL [ REL 0-dlist,
+                         QUE 0-dlist ],
+             LOCAL [ CAT [ HEAD adp & [ MOD < [ LOCAL intersective-mod &
+                                              [ CONT.HOOK.INDEX #arg1 ] ] > ],
+                         VAL [ SUBJ < >,
+                               SPR < >,
+                               SPEC < >,
+                               COMPS < #comp & [ LOCAL [ CAT [ HEAD noun & 
+                                                                   [ CASE dat ],
+                                      VAL [ SPR < [ OPT -,
+						    NON-LOCAL.SLASH 0-dlist ] >,
+                                                           COMPS < >,
+                                                           SUBJ < >,
+                                                           SPEC < > ] ],
+                                            CONT.HOOK [ INDEX #arg2,
+							LTOP #larg ] ] ] > ] ],
+                     CONT [ HCONS <! qeq & [ HARG #harg,
+                                             LARG #larg ] !>,
+                            RELS <! relation, quant-relation &
+                                                 [ PRED "_def_q_rel",
+                                                   ARG0 #arg2,
+                                                   RSTR #harg ] !> ] ] ],
+    ARG-ST < #comp > ].'''
+
+    mylang.add(typedef)
+#    create_adp_cross_classification(ch, mylang, sname3)
+
+    t2 = \
+      '''int-prep-integr-det-lex-item := int-adp-integrated-det-lex-item &
+               [ SYNSEM.LOCAL.CAT.HEADFINAL - ].'''
+    t3 = \
+      '''noun-int-adp-integrated-det-lex-item := int-prep-integr-det-lex-item &
+                    [ SYNSEM.LOCAL.CAT.HEAD [ MOD.FIRST [ LOCAL.CAT.HEAD noun,
+                                                          LIGHT + ],
+                                              PRD - ] ].'''
+    t4 = \
+      '''verb-int-prep-integrated-det-lex-item := int-prep-integr-det-lex-item &
+               [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD verb ].'''
+    mylang.add(t2)
+    mylang.add(t3)
+    mylang.add(t4)
   return s_name
 
 def need_marking_adposition(ch):
@@ -1619,6 +1770,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       if pers_n:
         mylang.add(ntype + ' := [ SYNSEM.LKEYS.KEYREL named-relation ].')
 
+
+
     features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
 
     for stem in noun.get('stem', []):
@@ -1735,7 +1888,7 @@ def create_wh_phrases(mylang, ch):
 
 
 
-def customize_lexicon(mylang, ch, lexicon, hierarchies):
+def customize_lexicon(mylang, ch, lexicon, hierarchies, lrules):
 
   mylang.set_section('nounlex')
   customize_nouns(mylang, ch, lexicon, hierarchies)
@@ -1754,6 +1907,8 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies):
     customize_copula(mylang, ch, lexicon, hierarchies)
   if ch.get('wh-questions') == 'yes':
     create_wh_phrases(mylang, ch)  
+  if ch.get('numbers') == 'yes':
+    customize_numbers(ch, mylang, lexicon, lrules)
 
   mylang.set_section('otherlex')
   customize_determiners(mylang, ch, lexicon, hierarchies)

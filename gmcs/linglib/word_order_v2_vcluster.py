@@ -1374,9 +1374,11 @@ def filler_gap_word_order(mylang):
 
   mylang.add('head-final-invc := general-head-final-invc.')
  
-  hd_slash_share = '[ SYNSEM.NON-LOCAL.SLASH #slash, \
-                      HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].'
-  mylang.add('basic-head-mod-phrase-simple :+ ' + hd_slash_share)
+ # should not be necessary anymore with revised slash constraints
+ #
+ # hd_slash_share = '[ SYNSEM.NON-LOCAL.SLASH #slash, \
+ #                     HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].'
+ # mylang.add('basic-head-mod-phrase-simple :+ ' + hd_slash_share)
   
   mylang.add('create-informal-vcomp-phrase := \
                [ ARGS < [ SYNSEM.NON-LOCAL.SLASH 0-dlist ] >, \

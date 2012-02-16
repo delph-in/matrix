@@ -713,6 +713,8 @@ class ChoicesFile:
         patterns += [[ 'nom-refl-pp', '', False ]]
       if self.get('expl-two-arg') == 'yes':
         patterns += [[ 'expl-acc', '', False ]]
+      if self.get('verbal-particles') == 'yes':
+        patterns += [ ['nom-acc-vor', '', False] ]
     elif cm == 'erg-abs':
       patterns += [ ['abs', '', False] ]
       patterns += [ ['erg-abs', '', False] ]

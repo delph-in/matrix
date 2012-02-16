@@ -199,7 +199,7 @@ local-min := mod-local &
   [ CAT cat-min,
     CONT mrs-min,
     AGR individual,
-    COORD bool,
+    COORD luk,
     COORD-REL coordination-relation,
     COORD-STRAT string ].
 
@@ -646,13 +646,18 @@ arg1234-ev-relation := arg123-ev-relation & arg1234-relation.
 noun-relation := arg0-relation &
   [ ARG0 ref-ind ].
 
+carg-relation := arg0-relation &
+  [ CARG string ].
+
 ; Relational nouns like 'picture' or 'claim' take an additional semantic 
 ; argument
 noun-arg1-relation := noun-relation & arg1-relation.
 
-named-relation := noun-relation &
-  [ PRED named_rel,
-    CARG string ].
+named-relation := noun-relation & carg-relation &
+  [ PRED named_rel ].
+
+number-relation := arg1-ev-relation & carg-relation &
+  [ PRED "card_rel" ].
 
 ; coordinating and subordinating conjunctions
 
@@ -3064,11 +3069,11 @@ conj-last-bottom-coord-rule := binary-bottom-coord-rule &
 ; ("A and B and C").
 
 monopoly-top-coord-rule := top-coord-rule &
-  [ LCOORD-DTR.SYNSEM.LOCAL.COORD -,
+  [ LCOORD-DTR.SYNSEM.LOCAL.COORD na-or--,
     RCOORD-DTR.SYNSEM.LOCAL.COORD + ].
 
 monopoly-mid-coord-rule := mid-coord-rule &
-  [ LCOORD-DTR.SYNSEM.LOCAL.COORD -,
+  [ LCOORD-DTR.SYNSEM.LOCAL.COORD na-or--,
     RCOORD-DTR.SYNSEM.LOCAL.COORD + ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3085,7 +3090,7 @@ monopoly-mid-coord-rule := mid-coord-rule &
 ; (and non-inflecting) bottom rule.
 
 apoly-top-coord-rule := top-coord-rule &
-  [ LCOORD-DTR.SYNSEM.LOCAL.COORD -,
+  [ LCOORD-DTR.SYNSEM.LOCAL.COORD na-or--,
     RCOORD-DTR.SYNSEM.LOCAL.COORD + ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
