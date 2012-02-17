@@ -466,10 +466,10 @@ def create_nachfeld_phrases(ch, mylang, rules):
 				HEAD +nvj,
 				EDGE +,
                                 VFRONT #vf & - ],
-      SYNSEM.LOCAL.CAT [ VC na-or--,
-		       VFRONT #vf,
-		       MC #mc,
-                       EDGE - ] ].'''
+      SYNSEM [ LOCAL.CAT [ VC na-or--,
+		           VFRONT #vf,
+		           MC #mc,
+                           EDGE - ] ] ].'''
 
   mylang.add(typedef)
   rules.add('extracted-comp-nachfeld := extracted-comp-phrase-nachfeld.')

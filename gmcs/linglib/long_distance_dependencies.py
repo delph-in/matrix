@@ -73,7 +73,7 @@ def filler_head_basic(ch, mylang, rules):
                                       COMPS < >,
                                       SPR < >,
                                       SPEC < > ] ],
-    NON-HEAD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist & [ LIST < > ] ].'''
+    NON-HEAD-DTR.SYNSEM [ NON-LOCAL.REL 0-dlist & [ LIST < > ] ] ].'''
   mylang.add(typedef)
   if ch.get('v2-analysis') == 'filler-gap':
     mylang.add('general-filler-head-phrase := \
