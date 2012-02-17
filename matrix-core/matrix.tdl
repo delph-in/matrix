@@ -2701,10 +2701,12 @@ basic-int-mod-adj-lex := basic-mod-adj-lex & intersective-mod-lex.
 basic-nomod-adj-lex := basic-adjective-lex & no-mod-lex & norm-hook-lex-item.
 
 basic-adposition-lex := single-rel-lex-item &
-  [ SYNSEM [ LOCAL.CAT.HEAD adp,
-	     LKEYS.KEYREL event-relation ]].
+  [ SYNSEM [ LOCAL.CAT [ HEAD adp,
+    	     	         VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX #ind ] > ],
+	     LKEYS.KEYREL arg12-ev-relation &
+	     		  [ ARG2 #ind ]]].
 
-basic-mod-adp-lex := basic-adposition-lex & raise-index-mod-lex-item.
+basic-mod-adp-lex := basic-adposition-lex & norm-sem-lex-item.
 basic-scopal-mod-adposition-lex := basic-mod-adp-lex & scopal-mod-lex.
 basic-int-mod-adposition-lex := basic-mod-adp-lex & intersective-mod-lex.
 basic-nomod-adposition-lex := basic-adposition-lex & no-mod-lex & norm-hook-lex-item.
