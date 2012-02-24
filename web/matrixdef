@@ -773,8 +773,8 @@ Radio neg-exp "neg exp" "" ""
 Label "<hr /><a id='anobutton' onclick='toggle_display_lex(\"asymmetric negation options\",\"anobutton\")'>&#9658; asymmetric negation options</a><div id='asymmetric negation options' style='display:none'>"
 
 
-Label "<div id='anhdiv'><a id='anhbutton' onclick='toggle_display_lex(\"asymmetric negation help\", \"anhbutton\")'>&#9658; asymmetric negation help</a>
-<div id='asymmetric negation help' style='display:none'><p>Negation is marked with respect to affirmation (Givón 1984).  In many languages, there are certain tenses/moods/aspects which are not compatible with negation.  You might model this by enabling a HEAD feature, [NEGATED luk], set this to '+' on negated verbs and have certain constructions and/or lexical types specify an incompatible value.</p>
+Label "<div id='anhdiv'><a id='anhbutton' onclick='toggle_display_lex(\"asymmetric_negation_help\", \"anhbutton\")'>&#9658; asymmetric negation help</a>
+<div id='asymmetric_negation_help' style='display:none'><p>Negation is marked with respect to affirmation (Givón 1984).  In many languages, there are certain tenses/moods/aspects which are not compatible with negation.  You might model this by enabling a HEAD feature, [NEGATED luk], set this to '+' on negated verbs and have certain constructions and/or lexical types specify an incompatible value.</p>
 
 <p>Alternatively, you can have negation specify the values for particular features, and use an agreement mechanism to trigger the presence of any appropriate marking.  For example, in Maung [mph],  irrealis marking is obligatory with negation.  So you might have the negator specify an AGR feature of irrealis, then make sure that the head that it is attaching to agrees.</p>
 
@@ -798,7 +798,7 @@ I do not put.
 
 </div></div>"
 Check neg-head-feature "enable negated head feature" "<p>" "Enable a HEAD feature ([NEGATED luk]) which is appropriate for heads of type verb.<br />"
-Label "</div></div><hr />"
+Label "</div><hr />"
 
 
 Label "<div id='zero-neg' class='neg_exp_switch' style='display:none'><p>Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <emph>absence</emph> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p><p>You can model omissive negation as a phonologically empty inflectional rule ('lexical rule type/instance') which targets a particular position class in your morphotactic system.  You'll then have to specify at least one other morpheme that canuoccur in this position class so that negation is indicated by the lack of phonological material in this position.</p>"

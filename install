@@ -10,6 +10,7 @@
 #      -r: install remotely on homer.u.washington.edu
 #    -lkb: prepare the LKB files for TbG (only needs to be done once;
 #          if you want to refresh the files, delete the delphin directory)
+#    -iso: get the iso table file from iso that allows iso validation
 #
 # Examples:
 #      To install to a local directory:
@@ -36,11 +37,14 @@ then
 fi
 
 # parse command line
-while [ "$1" = -r -o "$1" = -lkb ]
+while [ "$1" = -r -o "$1" = -lkb -o "$1" = -iso ]
 do
     if [ "$1" = -r ]
     then
         dest_prefix="uwcl@homer.u.washington.edu:~/public_html/"
+    elif [ "$1" = -iso ]
+    then
+        get_iso=1
     elif [ "$1" = -lkb ]
     then
         install_lkb=1
@@ -100,6 +104,13 @@ echo "Option -Indexes" >> \
 if [ $install_lkb ]
 then
     rsync -a --exclude=.svn/ $delphin_dir $tempdir
+fi
+
+if [ $get_iso ]
+then
+    echo "Downloading iso code table file from sil.org."
+    echo ""
+    wget http://www.sil.org/iso639-3/iso-639-3_20120206.tab -O "$tempdir/iso.tab"
 fi
 
 #Finally rsync the tempdir to the destination
