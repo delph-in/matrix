@@ -287,7 +287,11 @@ HTML_postbody = '''</body>
 
 def html_mark(mark, vm):
   if vm.href:
-    return '<a href="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
+    if mark == '#':
+      return '<a href="%s" style="text-decoration:none"><span class="info" title="%s">%s</span></a>' %\
+           (vm.href, vm.message.replace('"', '&quot;'), mark)
+    else:
+      return '<a href="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
            (vm.href, vm.message.replace('"', '&quot;'), mark)
   else:
     return '<a name="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
@@ -298,6 +302,9 @@ def html_error_mark(vm):
 
 def html_warning_mark(vm):
   return html_mark('?', vm)
+
+def html_info_mark(vm):
+  return html_mark('#', vm)
 
 # Return an HTML <input> tag with the specified attributes and
 # surrounding text
@@ -329,6 +336,8 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
       mark = html_error_mark(vr.errors[name])
     elif name in vr.warnings:
       mark = html_warning_mark(vr.warnings[name])
+    if name in vr.infos:
+      mark = html_info_mark(vr.infos[name])
 
   if type == 'textarea':
     value = value.replace('\\n','\n')
@@ -1040,10 +1049,9 @@ class MatrixDefFile:
 
 #      print HTML_navmenu
       print '<div id="navmenu"><ul>'
-
-      # pass through the definition file once, augmenting the list of validation
-      # results with section names so that we can put red asterisks on the links
-      # to the assocated sub-pages on the nav menu.
+    # pass through the definition file once, augmenting the list of validation
+    # results with section names so that we can put red asterisks on the links
+    # to the assocated sub-pages on the nav menu.
       prefix = ''
       sec_links = []
       n = -1
@@ -1053,10 +1061,17 @@ class MatrixDefFile:
         cur_sec = ''
         if len(word) < 2 or word[0][0] == '#':
           pass
+        elif len(word) == 4 and word[3] == '0':
+          # don't print links to sections that are marked 0 
+          pass
         elif word[0] == 'Section':
           printed = False
           cur_sec = word[1]
-          sec_links.append('</span><a onclick="submit_go(\''+cur_sec+'\')">'+self.sections[cur_sec]+'</a>')
+          # disable the link if this is the page we're on
+          if cur_sec == section: 
+            sec_links.append('</span><span>'+self.sections[cur_sec]+'</span>')
+          else:
+            sec_links.append('</span><a href="#'+cur_sec+'" onclick="submit_go(\''+cur_sec+'\')">'+self.sections[cur_sec]+'</a>')
           n+=1
         elif word[0] == 'BeginIter':
           if prefix:
@@ -1082,8 +1097,14 @@ class MatrixDefFile:
                 printed = True 
                 break
             
+      print '<li><a href="#main" onclick="submit_main()">Main page</a></li>'
+      print '<hr />'
       for l in sec_links: 
         print '<li><span style="color:#ff0000;">'+l+'</li>'
+
+      print '<hr />'
+      print '<li><a href="#stay" onclick="document.forms[0].submit()">Save and stay here</a></li>'
+      print '<li><a href="#clear" onclick="clear_form()">Clear form</a></li>'
       print '</ul></div>'
 
       print '<div id="form_holder">'
@@ -1095,10 +1116,11 @@ class MatrixDefFile:
                               choices, vr,
                               '', {})
 
-    print html_input(vr, 'button', '', 'Submit', False, '<p>', '', onclick='submit_main()')
-    print html_input(vr, 'submit', '', 'Save', False)
-    print html_input(vr, 'button', '', 'Clear', False, '', '</p>', '',
-                     'clear_form()')
+# these buttons are now in the navmenu
+#    print html_input(vr, 'button', '', 'Submit', False, '<p>', '', onclick='submit_main()')
+#    print html_input(vr, 'submit', '', 'Save', False)
+#    print html_input(vr, 'button', '', 'Clear', False, '', '</p>', '',
+#                     'clear_form()')
 
     print HTML_postform
     print HTML_postbody

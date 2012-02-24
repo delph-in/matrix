@@ -35,9 +35,11 @@ def main():
   # hack adds a blank rule (can cause spinning on generation!)
   cheaphack = False
   # show_warnings, if True, allows printing of warnings from validation
+  #                also prints info messages
   show_warnings = False
   # for the install command, if install_lkb is True also install the lkb
   install_lkb = False
+  get_iso = False
 
   # Extract the options and arguments, act on the options, and validate
   # the commands.
@@ -45,7 +47,7 @@ def main():
     opts, args = getopt.getopt(sys.argv[1:], 'C:Fhw',
                                ['customizationroot=', 'CUSTOMIZATIONROOT=',
                                 'force', 'help', 'warning',
-                                'cheap-hack', 'lkb'])
+                                'cheap-hack', 'lkb', 'iso'])
   except getopt.GetoptError, err:
     print str(err)
     usage()
@@ -65,6 +67,8 @@ def main():
       cheaphack = True
     elif o == '--lkb':
       install_lkb = True
+    elif o == '--iso':
+      get_iso = True
 
   # if CUSTOMIZATIONROOT is not set externally or through an option, try
   # to find an appropriate default directory
@@ -106,6 +110,9 @@ def main():
       for x in v.warnings:
         print x
         print '  ', v.warnings[x].message
+      for x in v.infos:
+        print x
+        print '  ', v.infos[x].message
     # If there are errors, exit with a return code of 1, otherwise 0
     sys.exit(len(v.errors) > 0)
 
@@ -312,6 +319,8 @@ def main():
     cmd = [os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')]
     if install_lkb:
       cmd += ['-lkb']
+    if get_iso:
+      cmd += ['-iso']
     if args[0] in ('ih', 'install-homer'):
       cmd += ['-r']
     subprocess.call(cmd + [args[1]], env=os.environ)
@@ -420,8 +429,11 @@ def usage(command=None, exitcode=2):
       p("            empty) to workaround a bug in Cheap.")
       p("--lkb")
       p("            Install the LKB binaries to a live site.")
+      p("--iso")
+      p("            Used with install to get the iso code table file from")
+      p("            sil.org in order to enable iso639-3 validation.")
       p("--warning (-w)")
-      p("            Print warnings when running validate.")
+      p("            Print warnings and infos when running validate.")
       p("--help (-h) [COMMAND]")
       p("            Print a usage message about COMMAND (if specified) or")
       p("            else all commands and examples.")
@@ -652,7 +664,7 @@ def vivify(force):
   #     since the last vivification.
   #  2. There are no remaining modifications not checked into SVN.
   cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
-  subprocess.call([cmd, '-lkb', '-r', 'matrix/customize'], env=os.environ)
+  subprocess.call([cmd, '-lkb','-iso','-r', 'matrix/customize'], env=os.environ)
 
 def run_web_tests():
   ensure_customization_root_set()

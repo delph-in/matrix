@@ -25,12 +25,16 @@ class ValidationResult:
   def __init__(self):
     self.errors = {}
     self.warnings = {}
+    self.infos = {}
 
   def has_errors(self):
     return len(self.errors) != 0
 
   def has_warnings(self):
     return len(self.warnings) != 0
+
+  def has_infos(self):
+    return len(self.infos) != 0
 
   def err(self, key, message, anchor=None, concat=True):
     """
@@ -55,6 +59,17 @@ class ValidationResult:
       self.warnings[key].add_message(message)
     else:
       self.warnings[key] = ValidationMessage(key+"_warning", message, anchor)
+
+  def info(self, key, message, anchor=None, concat=True):
+    """
+    Add an informational message to key (a choices variable).  If the key
+    already has a message and 'concat' is set to true, concatenate
+    the new message with the existing one.  Otherwise replace the message.
+    """
+    if key in self.infos and concat:
+      self.infos[key].add_message(message)
+    else:
+      self.infos[key] = ValidationMessage(key+"_info", message, anchor)
 
 #NTS: we only need to define an anchor for the main page versionsx
 class ValidationMessage:
@@ -384,17 +399,25 @@ def validate_general(ch, vr):
   if len(iso) != 3:
     vr.warn('iso-code', 'ISO-639 codes should be three letter sequences.')
   else:
-    valid = True 
-    cmd = 'curl http://www.sil.org/iso639-3/documentation.asp?id='+iso+' 2>/dev/null'
-    o = os.popen(cmd)
-    lines = o.readlines()
-    for l in lines:
-      if l.find('is not a valid three-letter') > -1:
-        valid = False
-    o.close()
-    if not valid:
-      vr.warn('iso-code', 
-              'The three-letter code you provided is not in ISO-639-3.') 
+    url = "http://www.ethnologue.com/show_language.asp?code="+iso
+    try:
+      valid = False 
+      f = open('iso.tab')
+      lines = f.readlines()
+      for l in lines:
+        toks = l.split('\t')
+        if iso in toks[0]:
+          vr.info('iso-code', 'ISO 693-3 suggests the reference name for your language is: '+toks[6], anchor=url) 
+          valid = True
+      f.close()
+      if not valid:
+        vr.warn('iso-code', 
+                'The three-letter code you provided is not in ISO-639-3.') 
+    except IOError:
+      sys.stderr.write('''
+[iso-code not validated] Get the latest code table file from sil.org and put it in 
+your installation root directory as iso.tab to enable iso validation:
+\n$wget http://www.sil.org/iso639-3/iso-639-3_20120206.tab -O iso.tab\n\n''') 
 
   if not ch.get('archive'):
     vr.warn('archive',
@@ -1016,6 +1039,7 @@ def validate_choices(choices_file, extra = False):
 # that result.
 
 if __name__ == "__main__":
+  print "hello"
   vr = validate_choices(sys.argv[1])
 
   print sys.argv[1]
