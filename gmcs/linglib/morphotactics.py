@@ -172,6 +172,7 @@ def position_class_hierarchy(choices):
   # now assign pc inputs
   for pc in pc_inputs:
     for inp in pc_inputs[pc]:
+      if inp not in _mns and inp in LEXICAL_CATEGORIES: continue
       _mns[pc].relate(_mns[inp], 'parent')
   return pch
 
