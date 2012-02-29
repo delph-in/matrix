@@ -1,0 +1,19 @@
+; A basic VPM for Matrix grammars.
+
+event          <> e
+ref-ind        <> x
+individual     <> i
+handle         <> h
+non_event      <> p
+*              >> u
+semarg         << u
+
+SORT : SORT
+* <> *
+semsort << *
+
+SF : SF
+* <> *
+
+E.TENSE : E.TENSE
+* <> *
