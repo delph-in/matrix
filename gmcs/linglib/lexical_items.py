@@ -465,8 +465,6 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 #   Create the type definitions associated with the user's test
 #   lexicon.
 
-
-
 def customize_lexicon(mylang, ch, lexicon, hierarchies):
 
   comment = '''Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.'''

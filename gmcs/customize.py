@@ -110,7 +110,7 @@ def customize_punctuation(grammar_path):
     # to do this we have to build a regex for the : line of 
     # the repp file
     # 
-    filename = os.path.join(grammar_path, 'lkb', 'vanilla.rpp') 
+    filename = os.path.join(grammar_path, 'repp', 'vanilla.rpp') 
     lines = codecs.open(filename, 'r', encoding='utf-8').readlines()
     van_rpp = codecs.open(filename, 'w', encoding='utf-8')
     for line in lines:
@@ -122,7 +122,7 @@ def customize_punctuation(grammar_path):
     # here we split on the default list (like discard-all),
     # but *minus* whatevers on the keep list
     chars = list(unicode(ch['punctuation-chars-list'], 'utf8'))
-    filename = os.path.join(grammar_path, 'lkb', 'vanilla.rpp') 
+    filename = os.path.join(grammar_path, 'repp', 'vanilla.rpp') 
     lines = iter(codecs.open(filename, 'r', encoding='utf-8').readlines())
     van_rpp = codecs.open(filename, 'w', encoding='utf-8')
     for line in lines:

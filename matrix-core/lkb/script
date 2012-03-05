@@ -13,7 +13,7 @@
 ;;;
 ;;; vanilla.rpp file contains rules for tokenization
 ;;; see http://moin.delph-in.net/ReppTop for docs
-(read-repp (lkb-pathname (this-directory) "vanilla.rpp"))
+(read-repp (lkb-pathname (parent-directory) "repp/vanilla.rpp"))
 (setf *repp-interactive* '(:vanilla))
 
 ;;;
