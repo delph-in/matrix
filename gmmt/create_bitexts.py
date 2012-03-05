@@ -8,7 +8,7 @@ import re
 import sys
 
 lgs = ['eng', 'epo', 'fas', 'fin', 'hau', 'heb', 'hye', 'isl', 'ita', 'zul']
-dir = '/home/bender/logon/uw/mmt/test_sentences/'
+dir = '/home/ebender/logon/uw/mmt/test_sentences/'
 
 for src in lgs:
     for tgt in lgs:
@@ -21,7 +21,7 @@ for src in lgs:
             src_item = src_input.readline()
             while src_item:
                 tgt_item = tgt_input.readline()
-                if re.search(r'[a-z]+',src_item):
+                if not re.search(r'^\s*$',src_item):
                     bitext.write(src_item)
                     bitext.write(tgt_item)
                     bitext.write("\n")
