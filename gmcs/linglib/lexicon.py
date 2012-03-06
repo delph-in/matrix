@@ -151,6 +151,30 @@ def validate_lexicon(ch, vr):
     vr.warn('noun1_stem1_orth', mess)
 
   # Nouns
+
+  # check noun hierarchy for various properties
+  # this is easier if we build some data objects
+  
+  # for each nountype, 
+  #  if it's got stems, it'll need to be put in the lexicon
+  #    check that it has an answer for 
+  #      has-dets
+  #      that it doesn't conflict with any parents
+  #      check its features 
+  #      see that they don't conflict 
+  #for noun in ch.get('noun'):
+    #inherited_features = {}
+
+    # if there're no supertypes, this inherits from the root/ie noun-lex
+    #next_parents = []
+    #for st in noun.get('supertypes'):
+    #  feats = st.get('feat')
+    #  for f in feats:
+    #    inherited_features[f.name] = feats[f.value]
+    #  parents = st.get('supertypes')
+    #  next_parents.append  
+    #nouns[noun]
+
   for noun in ch.get('noun'):
     det = noun.get('det')
 

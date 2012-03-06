@@ -1171,31 +1171,47 @@ function neg_comp() {
 
 function draw_nouns() {
   var form = document.getElementsByTagName('form')[0];
-  var elms = document.getElementsByTagName('input');
+  var ins = document.getElementsByTagName('input');
   var its = document.getElementsByClassName('iterator');
   var nts = new Array();
   var feats = new Object(); //keep a hash of features defined on types
+  var inherited_feats = new Object();
 
   // figure out how many types are in the hierachy
   // and fill up the nts list with them
   // 
+  // do this by looking through the iterators and 
+  // finding applicable ones with regexes
+  //
   var pat = /noun[0-9]+$/;
   for (var i = 0; i<its.length; i++){
     if (pat.test(its[i].id)) {
       nts[nts.length]=its[i].id;  
+      // also, get this noun-type's features, if any, and put them
+      // into feats
       feats[its[i].id] = new Object(); 
+
+      // childs, is the children of the interior of the interior "iterframe"
+      // ie, the relevant divs to loop through and look for
+      // features and stems and such
+      
       var childs = its[i].children[1].children[1].children;
       var fpat = new RegExp(its[i].id+"_feat[0-9]+$");
+      var spat = new RegExp(its[i].id+"_stem[0-9]+$");
       for(var j=0; j<childs.length; j++){
         if(fpat.test(childs[j].id)){
           var fname = childs[j].children[1].children[0].value;
           var fvalue = childs[j].children[1].children[1].value;
           feats[its[i].id][fname]=fvalue;
         }
+        // also, see if this noun-type has stems, and record that fact
+        if(spat.test(childs[j].id) && childs[j].children[1].children[0].value != ""){
+          feats[its[i].id]["has_stems"] = 1;
+        }
       }
     }
-    
   }
+
   // for each of these noun types, see which one(s) don't
   // have any supertypes
   var ntsups = new Array(nts.length);
@@ -1209,6 +1225,48 @@ function draw_nouns() {
   }
 
   var g = new graph(nts, ntsups);
+
+  // step through every type and add write down its inherited features
+  // this pushes features down as far as possible
+  for (var i = 0;i<nts.length; i++){
+    var parents = new Array(); 
+    var done = false;
+    var nodes_seen = new Object();
+    // have to stop once we've seen every node or
+    // once all sts are "noun"
+    parents = ntsups[i].split(", ");
+    while (!done) {
+      var new_parents = new Array();
+      for (var j = 0; j< parents.length; j++){     
+        for (f in feats[parents[j]]){
+          if (f != "has_stems") {
+            if(inherited_feats[nts[i]] == null ){
+              inherited_feats[nts[i]] = new Object();
+              inherited_feats[nts[i]][f]=feats[parents[j]][f];  
+            } else if (inherited_feats[nts[i]][f] != null) { //might be inheriting a conflict
+              if(inherited_feats[nts[i]][f] != feats[parents[j]][f]){
+                inherited_feats[nts[i]][f]= "conflict! < "+feats[parents[j]][f]+" && "+ inherited_feats[nts[i]][f] + " >";  
+              } 
+            } else {
+              inherited_feats[nts[i]][f]=feats[parents[j]][f];  
+            }
+          }
+        }
+
+        for( k in g.bedges[parents[j]]) {
+          if (nodes_seen[k] == null){
+            new_parents[new_parents.length] = k;
+            nodes_seen[k] = 1;
+          } 
+        }
+      }
+      parents = new_parents.slice();
+      if (parents.length == 0) {
+        done = true;
+      }
+    }
+  }
+
   // up to a given depth
   // some output
   var r;
@@ -1280,7 +1338,7 @@ function draw_nouns() {
   var v_positions = new Object();
   var ydelta = Math.floor(h/(gens.length+1));
   
-  ctx.font="12pt Arial";
+  ctx.font="Italic 12pt Arial";
   ctx.fillStyle="black";
   ctx.fillText("noun", Math.floor(w*.5)- 10 ,Math.floor(ydelta*.5)-5);
   v_positions["noun"] = new Array(Math.floor(w*.5),Math.floor(ydelta*.5));
@@ -1288,32 +1346,75 @@ function draw_nouns() {
     var xdelta = Math.floor(w/(gens[i].length+1));
     for(var j=0;j<gens[i].length;j++){
       // see if there's a user defined name and print that
+      
+      // if this type has stems, we print in blue
+      if(feats[gens[i][j]]["has_stems"] == 1){
+        ctx.fillStyle="blue";
+      } else {
+        ctx.fillStyle="black";
+      }
+
       var text = document.getElementsByName(gens[i][j]+"_name")[0].value;
       if (text == ""){
         text+=gens[i][j];
       }
 
-      // 5+ on x value moves the type name out of the way of the
+      // 10+ on x value moves the type name out of the way of the
       // graph vertex
-      ctx.fillText(text,5+ ((j+1)*xdelta),((i+1)*ydelta));
+      
+      ctx.fillText(text,10+ ((j+1)*xdelta),((i+1)*ydelta));
       v_positions[gens[i][j]] = new Array(((j+1)*xdelta),((i+1)*ydelta)) 
       
       // now print features and values just under types
+      //
+      // for blue guys (types with stems), also print inherited feats
       var z=0;
+      ctx.font="10pt Arial";
+      var matrix_wid = 0;
+      var text = "";
       for (f in feats[gens[i][j]]){
-        z++; 
-        text+=f+":"+feats[gens[i][j]][f];  
-        ctx.fillText("["+f+":"+feats[gens[i][j]][f]+"]",10+((j+1)*xdelta),(15*z)+((i+1)*ydelta));
+        if (f == "has_stems" && feats[gens[i][j]][f] == 1){
+          ctx.fillStyle="green";
+          for (h in inherited_feats[gens[i][j]]){
+            z++; 
+            text=h+" : "+inherited_feats[gens[i][j]][h];  
+            ctx.fillText(text,12+((j+1)*xdelta),(15*z)+((i+1)*ydelta));
+            var tw = ctx.measureText(text).width + 15;
+            matrix_wid = matrix_wid < tw ? tw : matrix_wid;
+          }
+        } else {
+          ctx.fillStyle="black";
+          z++; 
+          text=f+" : "+feats[gens[i][j]][f];  
+          var tw = ctx.measureText(text).width + 15;
+          matrix_wid = matrix_wid < tw ? tw : matrix_wid;
+          ctx.fillText(text,12+((j+1)*xdelta),(15*z)+((i+1)*ydelta));
+        } 
       }
+      // draw the brackets
+      if (z > 0){
+        ctx.beginPath();
+        ctx.moveTo(8+((j+1)*xdelta),4+((i+1)*ydelta));
+        ctx.lineTo(4+((j+1)*xdelta),4+((i+1)*ydelta));
+        ctx.lineTo(4+((j+1)*xdelta),4+(15*z)+(i+1)*ydelta);
+        ctx.lineTo(8+((j+1)*xdelta),4+(15*z)+(i+1)*ydelta);
+        ctx.stroke();
 
-      ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(4+matrix_wid+((j+1)*xdelta),4+((i+1)*ydelta));
+        ctx.lineTo(8+matrix_wid+((j+1)*xdelta),4+((i+1)*ydelta));
+        ctx.lineTo(8+matrix_wid+((j+1)*xdelta),4+(15*z)+(i+1)*ydelta);
+        ctx.lineTo(4+matrix_wid+((j+1)*xdelta),4+(15*z)+(i+1)*ydelta);
+        ctx.stroke();
+      }
+      ctx.font="Italic 12pt Arial";
     }
   }
 
   //now draw all the edges
   ctx.lineWidth=1;
-  ctx.lineCap="round"
-  ctx.lineStyle="black";
+  ctx.lineCap="round";
+  ctx.strokeStyle="#888888";
   for (e in g.edges["noun"]){
       ctx.beginPath();
       ctx.moveTo(v_positions["noun"][0],v_positions["noun"][1]);
@@ -1331,10 +1432,10 @@ function draw_nouns() {
 }
 
 function graph(nts, ntsups) { 
-  
   this.root = "noun";
   this.node_names = nts; 
   this.edges = new Object();
+  this.bedges = new Object(); //backwards edges (for finding parents)
   
   for (var i=0;i<nts.length;i++){
     var sts = ntsups[i].split(", ");
@@ -1342,7 +1443,11 @@ function graph(nts, ntsups) {
       if(this.edges[sts[j]]== null){
         this.edges[sts[j]] = new Object(); 
       }
-        this.edges[sts[j]][nts[i]] = 1;  
+      if(this.bedges[nts[i]]== null){
+        this.bedges[nts[i]] = new Object(); 
+      }
+      this.edges[sts[j]][nts[i]] = 1;  
+      this.bedges[nts[i]][sts[j]] = 1;  
     }
   }
 }
