@@ -162,26 +162,89 @@ def validate_lexicon(ch, vr):
   #      that it doesn't conflict with any parents
   #      check its features 
   #      see that they don't conflict 
-  #for noun in ch.get('noun'):
-    #inherited_features = {}
 
-    # if there're no supertypes, this inherits from the root/ie noun-lex
-    #next_parents = []
-    #for st in noun.get('supertypes'):
-    #  feats = st.get('feat')
-    #  for f in feats:
-    #    inherited_features[f.name] = feats[f.value]
-    #  parents = st.get('supertypes')
-    #  next_parents.append  
-    #nouns[noun]
-
+  # ntsts is a dict of nountype names->lists of supertypes
+  # inherited_feats dict of nountype names->lists of inherited features
+  ntsts = {} 
+  feats = {}
+  inherited_feats = {}
+  
   for noun in ch.get('noun'):
-    det = noun.get('det')
+    ntsts[noun.full_key] = noun.get('supertypes').split(', ')
+    feats[noun.full_key] = {} 
+    for f in noun.get('feat'):
+      feats[noun.full_key][f.get('name')]=f.get('value')
+   
+  
+  # now we can figure out inherited features and write them down
+  # also, print warnings about conflicts
+  # also, figure out the det question for types with stems
 
-    # Did they answer the question about determiners?
-    if not det:
-      mess = 'You must specify whether each noun you define takes a determiner.'
-      vr.err(noun.full_key + '_det', mess)
+  # also, every noun type needs a path to the root
+  for n in ch.get('noun'):
+    root = False
+    det = n.get('det')
+    # det == '' is okay for now, check again after inheritance is computed
+    seen = [] 
+    parents = ntsts[n.full_key] 
+    inherited_feats[n.full_key]= {}
+    while (True):
+      next_parents = []
+      for p in parents:
+        if p == '':
+          root = True
+
+        # get features from this parent and put em in inherited_feats
+        if p != '':
+          ptype = ch.get(p)
+          for f in feats[p]:
+            # see if this feat conflicts with what we already know
+            if f in feats[n.full_key] and feats[p][f] != feats[n.full_key][f]:
+              # inherited feature conficts with self defined feature
+              vr.warn(n.full_key + '_feat', "The specification of "+f+"="+str(feats[n.full_key][f])+" may confict with the value defined on the supertype "+ptype.get('name')+" ("+p+").")
+            elif f in inherited_feats[n.full_key] and feats[p][f] != inherited_feats[n.full_key][f]: 
+              vr.warn(n.full_key + '_supertypes', "The inherited specification of "+f+"="+str(inherited_feats[n.full_key][f])+" may confict with the value defined on the supertype "+ptype.get('name')+" ("+p+").")
+              inherited_feats[n.full_key][f] = "! "+inherited_feats[n.full_key][f]+" && "+feats[p][f]
+            else:
+              inherited_feats[n.full_key][f] = feats[p][f]
+
+          # det question
+          pdet = ptype.get('det')
+          if pdet != '':
+            if det == '':
+              det = pdet
+            elif det != pdet:
+              vr.err(n.full_key + '_det', "This noun type inherits a conflict in answer to the determiner question.",concat=False)
+
+          # add sts to the next generation
+          to_be_seen = []
+          for q in ntsts[p]:
+            if (q != ''):
+              if not (q in seen):
+                next_parents.append(q)
+                to_be_seen.append(q)
+              else:
+                vr.warn(n.full_key + '_supertypes', "This hierarchy may contain a cycle.  Found "+q+" at multiple levels of inheritance")
+            else:
+              root = True
+          seen = seen + to_be_seen
+      if len(next_parents) == 0:
+        break
+      parents = next_parents 
+    
+    if(len(inherited_feats[n.full_key]) > 0):
+      vr.info(n.full_key + '_feat', "inherited features are: "+str(inherited_feats[n.full_key]))
+
+    if not root:
+      vr.err(n.full_key + '_supertypes', "This noun type doesn't inherit from noun-lex or a descendent.")
+
+    # Now we can check whether there's an answer to the question about determiners?
+    # but I only really care about types with stems (right??)
+    s = n.get('stem', [])
+    if len(s) != 0:
+      if not det:
+        mess = 'You must specify whether each noun you define takes a determiner.  Either on this type or on a supertype.'
+        vr.err(n.full_key + '_det', mess)
 
     # If they said the noun takes an obligatory determiner, did they
     # say their language has determiners?
@@ -189,16 +252,16 @@ def validate_lexicon(ch, vr):
       mess = 'You defined a noun that obligatorily takes a determiner, ' +\
              'but also said your language does not have determiners.'
       vr.err('has-dets', mess)
-      vr.err(noun.full_key + '_det', mess)
+      vr.err(n.full_key + '_det', mess)
 
     # or if they said the noun takes an obligatory determiner, did they
     # provide any determiners?
     if det == 'obl' and (not 'det' in ch): 
       mess = 'You defined a noun that obligatorily takes a determiner, ' +\
              'but you haven\'t yet defined any determiners.'
-      vr.warn(noun.full_key + '_det', mess)
+      vr.warn(n.full_key + '_det', mess)
 
-    for stem in noun.get('stem', []):
+    for stem in s:
       orth = stem.get('orth')
       pred = stem.get('pred')
 

@@ -1214,14 +1214,23 @@ function draw_nouns() {
 
   // for each of these noun types, see which one(s) don't
   // have any supertypes
+  // 
+  // there needs to be at least one of these, or else we can't connect to the root
+  // also, every node needs a path to the root, but check this later
+  var anchored = false;
   var ntsups = new Array(nts.length);
   for (var i =0; i<nts.length; i++){
     var nsuper = document.getElementById(nts[i]+"_supertypes_multitext");
     if (nsuper.value == "") {
+      anchored = true;
       ntsups[i] = "noun"
     } else {
       ntsups[i] = nsuper.value;
     }
+  }
+  if (!anchored) {
+    alert("at least one type must inherit from noun-lex. ie, not specify any supertypes on the form.");
+    return null;
   }
 
   var g = new graph(nts, ntsups);
@@ -1234,13 +1243,17 @@ function draw_nouns() {
     var nodes_seen = new Object();
     // have to stop once we've seen every node or
     // once all sts are "noun"
+    //
+    // while we're at it, also check that every node has a path to the root
+    // otherwise, cough up blood and die
+    var root = false;
     parents = ntsups[i].split(", ");
     while (!done) {
       var new_parents = new Array();
       for (var j = 0; j< parents.length; j++){     
         for (f in feats[parents[j]]){
           if (f != "has_stems") {
-            if(inherited_feats[nts[i]] == null ){
+            if (inherited_feats[nts[i]] == null ){
               inherited_feats[nts[i]] = new Object();
               inherited_feats[nts[i]][f]=feats[parents[j]][f];  
             } else if (inherited_feats[nts[i]][f] != null) { //might be inheriting a conflict
@@ -1253,7 +1266,10 @@ function draw_nouns() {
           }
         }
 
-        for( k in g.bedges[parents[j]]) {
+        if (parents[j] == "noun"){
+          root = true;
+        }
+        for (k in g.bedges[parents[j]]) {
           if (nodes_seen[k] == null){
             new_parents[new_parents.length] = k;
             nodes_seen[k] = 1;
@@ -1265,9 +1281,12 @@ function draw_nouns() {
         done = true;
       }
     }
+    if (!root){
+      alert(nts[i]+" isn't connected to the root");
+      return null;
+    }
   }
 
-  // up to a given depth
   // some output
   var r;
   if(document.getElementById("result")){
