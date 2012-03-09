@@ -1229,7 +1229,7 @@ function draw_nouns() {
     }
   }
   if (!anchored) {
-    alert("at least one type must inherit from noun-lex. ie, not specify any supertypes on the form.");
+    alert("Cannot visualize noun hierarchy: at least one type must inherit from noun-lex. ie, not specify any supertypes in the questionnaire.");
     return null;
   }
 
@@ -1248,6 +1248,12 @@ function draw_nouns() {
     // otherwise, cough up blood and die
     var root = false;
     parents = ntsups[i].split(", ");
+    var paths = new Array(); 
+    // seed paths with first gen parents
+    for (var j=0;j<parents.length;j++){
+      paths[paths.length] = [nts[i], parents[j]];
+    }
+
     while (!done) {
       var new_parents = new Array();
       for (var j = 0; j< parents.length; j++){     
@@ -1269,11 +1275,26 @@ function draw_nouns() {
         if (parents[j] == "noun"){
           root = true;
         }
-        for (k in g.bedges[parents[j]]) {
-          if (nodes_seen[k] == null){
-            new_parents[new_parents.length] = k;
-            nodes_seen[k] = 1;
-          } 
+        for (var r=0;r<paths.length;r++) {
+          if (paths[r][paths[r].length-1] == parents[j]){
+            var old_p = (paths.splice(r,1)).toString().split(",");
+            for (k in g.bedges[parents[j]]) {
+              var cycle = false;
+              for (l=0;l<old_p.length;l++){
+                if (k == old_p[l]){
+                  alert("Cannot visualize; this hierarchy contains a cycle.  Found "+k+" at multiple points inheritance path: ["+old_p+","+k+"]");
+                  return;
+                }               
+              }
+              var new_p = old_p.slice();
+              new_p[new_p.length] = k;
+              paths[paths.length] = new_p.slice(); 
+              if (nodes_seen[k] == null){
+                new_parents[new_parents.length] = k;
+                nodes_seen[k] = 1;
+              } 
+            }
+          }
         }
       }
       parents = new_parents.slice();
@@ -1282,7 +1303,7 @@ function draw_nouns() {
       }
     }
     if (!root){
-      alert(nts[i]+" isn't connected to the root");
+      alert("Cannot visualize noun hierarchy: "+nts[i]+" isn't connected to the root.");
       return null;
     }
   }

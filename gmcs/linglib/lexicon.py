@@ -186,6 +186,10 @@ def validate_lexicon(ch, vr):
     det = n.get('det')
     # det == '' is okay for now, check again after inheritance is computed
     seen = [] 
+    paths= []
+    # seed paths with the starting node and the first crop of sts
+    for st in ntsts[n.full_key]:
+      paths.append([n.full_key, st])
     parents = ntsts[n.full_key] 
     inherited_feats[n.full_key]= {}
     while (True):
@@ -218,18 +222,28 @@ def validate_lexicon(ch, vr):
 
           # add sts to the next generation
           to_be_seen = []
-          for q in ntsts[p]:
-            if (q != ''):
-              if not (q in seen):
-                next_parents.append(q)
-                to_be_seen.append(q)
-              else:
-                vr.warn(n.full_key + '_supertypes', "This hierarchy may contain a cycle.  Found "+q+" at multiple levels of inheritance")
-            else:
-              root = True
+          for r in paths:
+            if r[-1] == p: #this is the path to extend, 
+              paths.remove(r)
+              for q in ntsts[p]: #go through all sts
+                if q in r:
+                  vr.err(n.full_key + '_supertypes', "This hierarchy contains a cycle.  Found "+q+" at multiple points in path: "+str(r + [q]))
+                else:
+                  new_path = r + [q]
+                  paths.append(new_path)
+                if (q != ''):
+                  if not (q in seen):
+                    next_parents.append(q)
+                    to_be_seen.append(q)
+                else:
+                  root = True
           seen = seen + to_be_seen
+
+      # if there aren't any next parents, we're done
       if len(next_parents) == 0:
         break
+      
+      # otherwise we go again
       parents = next_parents 
     
     if(len(inherited_feats[n.full_key]) > 0):
@@ -243,7 +257,7 @@ def validate_lexicon(ch, vr):
     s = n.get('stem', [])
     if len(s) != 0:
       if not det:
-        mess = 'You must specify whether each noun you define takes a determiner.  Either on this type or on a supertype.'
+        mess = 'You must specify whether this noun takes a determiner.  Either on this type or on a supertype.'
         vr.err(n.full_key + '_det', mess)
 
     # If they said the noun takes an obligatory determiner, did they
