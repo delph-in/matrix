@@ -972,8 +972,8 @@ function set_negmorph(n,o){
   // first we hide everything
   var divs = document.getElementsByClassName("neg"+n+"_switch");
 	for(var i=0; i<divs.length;i++){
-    var d = divs[i];
-    d.style.display = 'none';
+    var e = divs[i];
+    e.style.display = 'none';
 	}
 
   var d;
@@ -996,11 +996,18 @@ function set_negmorph(n,o){
         document.forms["choices_form"]["neg2-type"][0].disabled=false;
         document.forms["choices_form"]["neg2-type"][1].disabled=false;
         document.forms["choices_form"]["neg2-type"][2].disabled=false;
-        var d = document.getElementById('neg'+n+'-b');
+        d = document.getElementById('neg'+n+'-b');
         // if neg2 is bound, then we'll put our advice about circumfixes
         if (document.forms["choices_form"]["neg2-type"][0].checked) {
           var d2 = document.getElementById("neg2-b");
-          d2.innerHTML = "<p>If both NEG1 and NEG2 are bound to the same root, you can set up the dendency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p>"; 
+          var chkd = document.forms["choices_form"]["neg1b-neg2b"].checked; 
+          var ibox;
+          if (chkd) {
+            ibox =  "<input type=\"checkbox\" name=\"neg1b-neg2b\" checked=\""+chkd+"\">NEG1 bound to Aux requires NEG2 bound to Lexical Verb</input>";
+          } else {
+            ibox =  "<input type=\"checkbox\" name=\"neg1b-neg2b\">NEG1 bound to Aux requires NEG2 bound to Lexical Verb</input>";
+          }
+          d2.innerHTML = "<p>If both NEG1 and NEG2 are bound to the same root, you can set up the dendency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p><p>If NEG1 is bound to an auxiliary and NEG2 is bound to a lexical verb, check the box below.  This will enable several options for you as you define your lexical rules for NEG1 and NEG2 on the morphotactics page.  Indicate the lexical rule corresponding to NEG1 by setting [NEGATION +] (this adds the negative semantics).  Likewise, indicate NEG2 by selecting [NEG2 +].   Auxiliary verbs inflected by NEG1 will require their complement to be headed by a verb which has been inflected by NEG2.</p>"+ibox; 
         } else if (document.forms["choices_form"]["neg2-type"][1].checked){
           var d2 = document.getElementById("neg2-fh");
           d2.innerHTML = "<p>NEG1 is bound and NEG2 is an auxiliary.  <span style=\"font-weight:bold\"><span style=\"color:blue\">This analysis is still under construction.</span></span></p>"; 
@@ -1013,7 +1020,7 @@ function set_negmorph(n,o){
         document.forms["choices_form"]["neg2-type"][0].disabled=false;
         document.forms["choices_form"]["neg2-type"][1].disabled=true;
         document.forms["choices_form"]["neg2-type"][2].disabled=false;
-        var d = document.getElementById('neg'+n+'-fh');
+        d = document.getElementById('neg'+n+'-fh');
         // if neg2 is bound, and we're switching away from neg1 bound,
         // then we need to remove the special message about circumfixes
         // we'll put some advice about this construction there instead
@@ -1033,7 +1040,7 @@ function set_negmorph(n,o){
         document.forms["choices_form"]["neg2-type"][0].disabled=false;
         document.forms["choices_form"]["neg2-type"][1].disabled=false;
         document.forms["choices_form"]["neg2-type"][2].disabled=false;
-        var d = document.getElementById('neg'+n+'-fd');
+        d = document.getElementById('neg'+n+'-fd');
         // if neg2 is bound, we'll put a special message about the status
         // of this type
         if (document.forms["choices_form"]["neg2-type"][0].checked){
@@ -1048,7 +1055,7 @@ function set_negmorph(n,o){
         }
         break;
       default:
-        var d = null; 
+        d = null; 
     }
   } else if (n=='2') {
     switch (o) {
@@ -1056,50 +1063,57 @@ function set_negmorph(n,o){
         if (document.forms["choices_form"]["neg1-type"][0].checked) {
           // neg2 is bound, if neg1 is also bound, we tell them to go
           // make a circumfix on the lexicon page.
-          var d = document.getElementById("neg2-b");
-          d.innerHTML = "<p>If both NEG1 and NEG2 are bound to the same root, you can set up the dependency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p>"; 
+          d = document.getElementById("neg2-b");
+          var chkd = document.forms["choices_form"]["neg1b-neg2b"].checked; 
+          var ibox;
+          if (chkd) {
+            ibox = "<input type=\"checkbox\" name=\"neg1b-neg2b\" checked=\""+chkd+"\">NEG1 bound to Aux requires NEG2 bound to Lexical Verb</input>";
+          } else {
+            ibox = "<input type=\"checkbox\" name=\"neg1b-neg2b\">NEG1 bound to Aux requires NEG2 bound to Lexical Verb</input>";
+          }
+          d.innerHTML = "<p>If both NEG1 and NEG2 are bound to the same root, you can set up the dendency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p><p>If NEG1 is bound to an auxiliary and NEG2 is bound to a lexical verb, check the box below.  This will enable several options for you as you define your lexical rules for NEG1 and NEG2 on the morphotactics page.  Indicate the lexical rule corresponding to NEG1 by setting [NEGATION +] (this adds the negative semantics).  Likewise, indicate NEG2 by selecting [NEG2 +].   Auxiliary verbs inflected by NEG1 will require their complement to be headed by a verb which has been inflected by NEG2.</p>" + ibox; 
         } else if (document.forms["choices_form"]["neg1-type"][1].checked) {
           // neg2 is bound, if neg1 is a free head, give a message
-          var d = document.getElementById("neg2-b");
+          d = document.getElementById("neg2-b");
           d.innerHTML = "<p>NEG1 is a auxiliary and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
         } else if (document.forms["choices_form"]["neg1-type"][2].checked) {
           // neg2 is bound, neg1 is an adverb, give a message 
-          var d = document.getElementById("neg2-b");
+          d = document.getElementById("neg2-b");
           d.innerHTML = "<p>NEG1 is an adverb and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
         }
         break;
       case 'fh':
         if (document.forms["choices_form"]["neg1-type"][0].checked) {
           // neg2 is an aux, neg1 is bound, give an appropriate message
-          var d = document.getElementById("neg2-fh");
+          d = document.getElementById("neg2-fh");
           d.innerHTML = "<p>NEG1 is bound.  NEG2 is an auxiliary.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
         } else if (document.forms["choices_form"]["neg1-type"][1].checked) {
           // neg2 is an aux, neg1 is also an aux, give a message
-          var d = document.getElementById("neg2-fh");
+          d = document.getElementById("neg2-fh");
           d.innerHTML = "<p>We don't have any analysis for a negation type with two auxiliary verbs.  Please contact matrix-dev about this language.</p>"; 
         } else if (document.forms["choices_form"]["neg1-type"][2].checked) {
           // neg2 is an aux, neg1 is an adverb, give a message 
-          var d = document.getElementById("neg2-b");
+          d = document.getElementById("neg2-b");
           d.innerHTML = "<p>NEG1 is a adverb and NEG2 is an auxiliary.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
         }
         break;
       case 'fd':
         if (document.forms["choices_form"]["neg1-type"][0].checked) {
           // neg2 is an adverb, neg1 is bound, give an appropriate message
-          var d = document.getElementById("neg2-fd");
+          d = document.getElementById("neg2-fd");
           d.innerHTML = '<p>NEG1 is bound.  NEG2 is an adverb.  Select the properties of NEG2 below.  A customization system feature \'requires neg adverb\' has been created for your use on the lexicon page.  Specify NEG1 as \'negation plus\' and \'requires neg adverb plus\'.</p>  NEG2 modifies:  <input type="radio" value="s" name="neg2-mod">  S  <input type="radio" value="vp" name="neg2-mod">  VP  <input type="radio" value="v" name="neg2-mod">  V  <br>  NEG2 is ordered:  <input type="radio" value="before" name="neg2-order">  before  <input type="radio" value="after" name="neg2-order">  after  <input type="radio" value="either" name="neg2-order">  on either side of the category it modifies.  <br>  NEG2 is spelled:  <input type="text" size="20" name="neg2-adv-orth">  <p></p>'; 
         } else if (document.forms["choices_form"]["neg1-type"][1].checked) {
           // neg2 is an adverb, neg1 is an aux, give a message
-          var d = document.getElementById("neg2-fd");
+          d = document.getElementById("neg2-fd");
           d.innerHTML = "<p>NEG1 is and auxiliary, NEG2 is an adverb.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
         } else if (document.forms["choices_form"]["neg1-type"][2].checked) {
           // neg2 is an adverb, neg1 is an adverb, give a message 
-          var d = document.getElementById("neg2-fd");
+          d = document.getElementById("neg2-fd");
           d.innerHTML = "<p>NEG1 and NEG2 are both adverbs.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
         }
         break;
       default:
-        var d = null;
+        d = null;
     }
   }
   if (d != null)
@@ -1141,7 +1155,7 @@ function display_neg_form()
       var ntype = document.forms["choices_form"]["neg"+i+"-type"]; 
       for (var j=0;j<ntype.length;j++){
         if(ntype[j].checked){
-          var v = ntype[j].defaultValue;
+          var v = ntype[j].value;
           set_negmorph(i,v);
         }
       }
@@ -1167,333 +1181,4 @@ function neg_comp() {
       after.disabled = false;
     }
   }
-}
-
-function draw_nouns() {
-  var form = document.getElementsByTagName('form')[0];
-  var ins = document.getElementsByTagName('input');
-  var its = document.getElementsByClassName('iterator');
-  var nts = new Array();
-  var feats = new Object(); //keep a hash of features defined on types
-  var inherited_feats = new Object();
-
-  // figure out how many types are in the hierachy
-  // and fill up the nts list with them
-  // 
-  // do this by looking through the iterators and 
-  // finding applicable ones with regexes
-  //
-  var pat = /noun[0-9]+$/;
-  for (var i = 0; i<its.length; i++){
-    if (pat.test(its[i].id)) {
-      nts[nts.length]=its[i].id;  
-      // also, get this noun-type's features, if any, and put them
-      // into feats
-      feats[its[i].id] = new Object(); 
-
-      // childs, is the children of the interior of the interior "iterframe"
-      // ie, the relevant divs to loop through and look for
-      // features and stems and such
-      
-      var childs = its[i].children[1].children[1].children;
-      var fpat = new RegExp(its[i].id+"_feat[0-9]+$");
-      var spat = new RegExp(its[i].id+"_stem[0-9]+$");
-      for(var j=0; j<childs.length; j++){
-        if(fpat.test(childs[j].id)){
-          var fname = childs[j].children[1].children[0].value;
-          var fvalue = childs[j].children[1].children[1].value;
-          feats[its[i].id][fname]=fvalue;
-        }
-        // also, see if this noun-type has stems, and record that fact
-        if(spat.test(childs[j].id) && childs[j].children[1].children[0].value != ""){
-          feats[its[i].id]["has_stems"] = 1;
-        }
-      }
-    }
-  }
-
-  // for each of these noun types, see which one(s) don't
-  // have any supertypes
-  // 
-  // there needs to be at least one of these, or else we can't connect to the root
-  // also, every node needs a path to the root, but check this later
-  var anchored = false;
-  var ntsups = new Array(nts.length);
-  for (var i =0; i<nts.length; i++){
-    var nsuper = document.getElementById(nts[i]+"_supertypes_multitext");
-    if (nsuper.value == "") {
-      anchored = true;
-      ntsups[i] = "noun"
-    } else {
-      ntsups[i] = nsuper.value;
-    }
-  }
-  if (!anchored) {
-    alert("Cannot visualize noun hierarchy: at least one type must inherit from noun-lex. ie, not specify any supertypes in the questionnaire.");
-    return null;
-  }
-
-  var g = new graph(nts, ntsups);
-
-  // step through every type and add write down its inherited features
-  // this pushes features down as far as possible
-  for (var i = 0;i<nts.length; i++){
-    var parents = new Array(); 
-    var done = false;
-    var nodes_seen = new Object();
-    // have to stop once we've seen every node or
-    // once all sts are "noun"
-    //
-    // while we're at it, also check that every node has a path to the root
-    // otherwise, cough up blood and die
-    var root = false;
-    parents = ntsups[i].split(", ");
-    var paths = new Array(); 
-    // seed paths with first gen parents
-    for (var j=0;j<parents.length;j++){
-      paths[paths.length] = [nts[i], parents[j]];
-    }
-
-    while (!done) {
-      var new_parents = new Array();
-      for (var j = 0; j< parents.length; j++){     
-        for (f in feats[parents[j]]){
-          if (f != "has_stems") {
-            if (inherited_feats[nts[i]] == null ){
-              inherited_feats[nts[i]] = new Object();
-              inherited_feats[nts[i]][f]=feats[parents[j]][f];  
-            } else if (inherited_feats[nts[i]][f] != null) { //might be inheriting a conflict
-              if(inherited_feats[nts[i]][f] != feats[parents[j]][f]){
-                inherited_feats[nts[i]][f]= "conflict! < "+feats[parents[j]][f]+" && "+ inherited_feats[nts[i]][f] + " >";  
-              } 
-            } else {
-              inherited_feats[nts[i]][f]=feats[parents[j]][f];  
-            }
-          }
-        }
-
-        if (parents[j] == "noun"){
-          root = true;
-        }
-        for (var r=0;r<paths.length;r++) {
-          if (paths[r][paths[r].length-1] == parents[j]){
-            var old_p = (paths.splice(r,1)).toString().split(",");
-            for (k in g.bedges[parents[j]]) {
-              var cycle = false;
-              for (l=0;l<old_p.length;l++){
-                if (k == old_p[l]){
-                  alert("Cannot visualize; this hierarchy contains a cycle.  Found "+k+" at multiple points inheritance path: ["+old_p+","+k+"]");
-                  return;
-                }               
-              }
-              var new_p = old_p.slice();
-              new_p[new_p.length] = k;
-              paths[paths.length] = new_p.slice(); 
-              if (nodes_seen[k] == null){
-                new_parents[new_parents.length] = k;
-                nodes_seen[k] = 1;
-              } 
-            }
-          }
-        }
-      }
-      parents = new_parents.slice();
-      if (parents.length == 0) {
-        done = true;
-      }
-    }
-    if (!root){
-      alert("Cannot visualize noun hierarchy: "+nts[i]+" isn't connected to the root.");
-      return null;
-    }
-  }
-
-  // some output
-  var r;
-  if(document.getElementById("result")){
-    r = document.getElementById("result");
-    r.style.display = "block";
-  } else {
-    r = document.createElement("div");
-    r.style.position="absolute";
-    r.style.border="1px solid black";
-    r.style.margin="20px";
-    r.id="result";
-    r.style.top=0;
-    r.style.left=0;
-    r.style.background="white";
-    r.style.padding="5px";
-    r.style.height="80%";
-    r.style.width="80%";
-    r.innerHTML+="<button onclick=\"remove_drawing()\">hide</button>";
-    document.body.appendChild(r);
-  }
-
-  var c;
-  if (document.getElementById("n_canvas")){
-    c = document.getElementById("n_canvas");
-  } else {
-    c = document.createElement("canvas");
-    c.id="n_canvas";
-    r.appendChild(c);
- }
-
-
-  var h = r.clientHeight - 50;
-  var w = r.clientWidth - 50;
-  c.setAttribute('height', h);
-  c.setAttribute('width', w);
-  var ctx = c.getContext("2d"); 
-
-  // sort out the vertices into 
-  // "generations" 
-  var printed_all = false;
-  var nodes_printed = new Object();
-  var gens = new Array();
-  var parents = new Array();
-  var children = new Array();
-  var n = 0;
-  var total = 0;
-  parents[0] = "noun";
-  while (!printed_all) {
-    gens[n] = new Array();
-    for (var i=0;i<parents.length;i++){ 
-      for(e in g.edges[parents[i]]){
-        if (nodes_printed[e] == null){
-          children[children.length] = e; 
-          gens[n][gens[n].length] = e;
-          nodes_printed[e]=1;
-          total++;
-        }
-      }
-    }
-    parents = children.slice();
-    children.length = 0;
-    n++;
-    if(total>=g.node_names.length){
-      printed_all = true;
-    }
-  }
-  
-  var v_positions = new Object();
-  var ydelta = Math.floor(h/(gens.length+1));
-  
-  ctx.font="Italic 12pt Arial";
-  ctx.fillStyle="black";
-  ctx.fillText("noun", Math.floor(w*.5)- 10 ,Math.floor(ydelta*.5)-5);
-  v_positions["noun"] = new Array(Math.floor(w*.5),Math.floor(ydelta*.5));
-  for(var i=0;i<gens.length;i++){
-    var xdelta = Math.floor(w/(gens[i].length+1));
-    for(var j=0;j<gens[i].length;j++){
-      // see if there's a user defined name and print that
-      
-      // if this type has stems, we print in blue
-      if(feats[gens[i][j]]["has_stems"] == 1){
-        ctx.fillStyle="blue";
-      } else {
-        ctx.fillStyle="black";
-      }
-
-      var text = document.getElementsByName(gens[i][j]+"_name")[0].value;
-      if (text == ""){
-        text+=gens[i][j];
-      }
-
-      // 10+ on x value moves the type name out of the way of the
-      // graph vertex
-      
-      ctx.fillText(text,10+ ((j+1)*xdelta),((i+1)*ydelta));
-      v_positions[gens[i][j]] = new Array(((j+1)*xdelta),((i+1)*ydelta)) 
-      
-      // now print features and values just under types
-      //
-      // for blue guys (types with stems), also print inherited feats
-      var z=0;
-      ctx.font="10pt Arial";
-      var matrix_wid = 0;
-      var text = "";
-      for (f in feats[gens[i][j]]){
-        if (f == "has_stems" && feats[gens[i][j]][f] == 1){
-          ctx.fillStyle="green";
-          for (h in inherited_feats[gens[i][j]]){
-            z++; 
-            text=h+" : "+inherited_feats[gens[i][j]][h];  
-            ctx.fillText(text,12+((j+1)*xdelta),(15*z)+((i+1)*ydelta));
-            var tw = ctx.measureText(text).width + 15;
-            matrix_wid = matrix_wid < tw ? tw : matrix_wid;
-          }
-        } else {
-          ctx.fillStyle="black";
-          z++; 
-          text=f+" : "+feats[gens[i][j]][f];  
-          var tw = ctx.measureText(text).width + 15;
-          matrix_wid = matrix_wid < tw ? tw : matrix_wid;
-          ctx.fillText(text,12+((j+1)*xdelta),(15*z)+((i+1)*ydelta));
-        } 
-      }
-      // draw the brackets
-      if (z > 0){
-        ctx.beginPath();
-        ctx.moveTo(8+((j+1)*xdelta),4+((i+1)*ydelta));
-        ctx.lineTo(4+((j+1)*xdelta),4+((i+1)*ydelta));
-        ctx.lineTo(4+((j+1)*xdelta),4+(15*z)+(i+1)*ydelta);
-        ctx.lineTo(8+((j+1)*xdelta),4+(15*z)+(i+1)*ydelta);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(4+matrix_wid+((j+1)*xdelta),4+((i+1)*ydelta));
-        ctx.lineTo(8+matrix_wid+((j+1)*xdelta),4+((i+1)*ydelta));
-        ctx.lineTo(8+matrix_wid+((j+1)*xdelta),4+(15*z)+(i+1)*ydelta);
-        ctx.lineTo(4+matrix_wid+((j+1)*xdelta),4+(15*z)+(i+1)*ydelta);
-        ctx.stroke();
-      }
-      ctx.font="Italic 12pt Arial";
-    }
-  }
-
-  //now draw all the edges
-  ctx.lineWidth=1;
-  ctx.lineCap="round";
-  ctx.strokeStyle="#888888";
-  for (e in g.edges["noun"]){
-      ctx.beginPath();
-      ctx.moveTo(v_positions["noun"][0],v_positions["noun"][1]);
-      ctx.lineTo(v_positions[e][0],v_positions[e][1]);
-      ctx.stroke();
-  }
-  for (var i=0;i<g.node_names.length;i++){
-    for (e in g.edges[g.node_names[i]]){
-      ctx.beginPath();
-      ctx.moveTo(v_positions[g.node_names[i]][0],v_positions[g.node_names[i]][1]);
-      ctx.lineTo(v_positions[e][0],v_positions[e][1]);
-      ctx.stroke();
-    }
-  }
-}
-
-function graph(nts, ntsups) { 
-  this.root = "noun";
-  this.node_names = nts; 
-  this.edges = new Object();
-  this.bedges = new Object(); //backwards edges (for finding parents)
-  
-  for (var i=0;i<nts.length;i++){
-    var sts = ntsups[i].split(", ");
-    for (var j=0;j<sts.length;j++){
-      if(this.edges[sts[j]]== null){
-        this.edges[sts[j]] = new Object(); 
-      }
-      if(this.bedges[nts[i]]== null){
-        this.bedges[nts[i]] = new Object(); 
-      }
-      this.edges[sts[j]][nts[i]] = 1;  
-      this.bedges[nts[i]][sts[j]] = 1;  
-    }
-  }
-}
-
-function remove_drawing() {
-  var d = document.getElementById("result");
-  d.style.display="none"; 
-  return;
 }

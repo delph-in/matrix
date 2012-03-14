@@ -1018,6 +1018,8 @@ class MatrixDefFile:
   def sub_page(self, section, cookie, vr):
     print HTTP_header + '\n'
     print HTML_pretitle
+    if section == 'lexicon':
+      print "<script type='text/javascript' src='web/draw.js'></script>"
 
     choices_file = 'sessions/' + cookie + '/choices'
     choices = ChoicesFile(choices_file)
@@ -1385,6 +1387,17 @@ class MatrixDefFile:
        form_data['neg2-type'].value[0] == 'f':
         new_choices['adv-neg'] = 'on'
 
+    # add FORM subtype for neg1b-neg2b analysis
+    if section == 'sentential-negation' and 'neg1b-neg2b' in form_data.keys():
+      next_n = old_choices['nf-subform'].next_iter_num() if 'nf-subform' in old_choices else 1
+      found_negform = False
+      if next_n > 1:
+        nfss = old_choices.get('nf-subform')
+        for nfs in nfss:
+          if nfs['name'] == 'negform':
+            found_negform = True
+      if not found_negform:
+        old_choices['nf-subform%d_name' % next_n ] = 'negform' 
 
     # Open the def file and store it in line[]
     f = open(self.def_file, 'r')

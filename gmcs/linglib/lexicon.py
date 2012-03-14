@@ -158,10 +158,15 @@ def validate_lexicon(ch, vr):
   # for each nountype, 
   #  if it's got stems, it'll need to be put in the lexicon
   #    check that it has an answer for 
-  #      has-dets
-  #      that it doesn't conflict with any parents
-  #      check its features 
-  #      see that they don't conflict 
+  #      * has-dets
+  #      * that its has-dets doesn't conflict with any parents
+  #      * check its features 
+  #        ** see that they don't conflict with each other
+  #      * see that the hierarchy won't cause the 
+  #        vacuous inheritance eg: 
+  #          a := noun                   
+  #          b := a
+  #          c := b & a
 
   # ntsts is a dict of nountype names->lists of supertypes
   # inherited_feats dict of nountype names->lists of inherited features
@@ -182,6 +187,7 @@ def validate_lexicon(ch, vr):
 
   # also, every noun type needs a path to the root
   for n in ch.get('noun'):
+    st_anc = [] # used to make sure we don't have an lkb err as described in comments above
     root = False
     det = n.get('det')
     # det == '' is okay for now, check again after inheritance is computed
@@ -226,6 +232,9 @@ def validate_lexicon(ch, vr):
             if r[-1] == p: #this is the path to extend, 
               paths.remove(r)
               for q in ntsts[p]: #go through all sts
+                # q is a st_anc of n
+                if not q in st_anc:
+                  st_anc.append(q)
                 if q in r:
                   vr.err(n.full_key + '_supertypes', "This hierarchy contains a cycle.  Found "+q+" at multiple points in path: "+str(r + [q]))
                 else:
@@ -251,6 +260,12 @@ def validate_lexicon(ch, vr):
 
     if not root:
       vr.err(n.full_key + '_supertypes', "This noun type doesn't inherit from noun-lex or a descendent.")
+
+    # Now check for the lkb err about vacuous inheritance using goodmami's method: find
+    #  the intersection of supertypes and supertypes's ancestors
+    for t in ntsts[n.full_key]:
+      if t in st_anc:
+        vr.warn(n.full_key + '_supertypes', 'This noun hierarchy may cause an lkb error.  _'+t+'_ is both an immediate supertype and also an ancestor of another supertype.')
 
     # Now we can check whether there's an answer to the question about determiners?
     # but I only really care about types with stems (right??)
