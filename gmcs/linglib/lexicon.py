@@ -182,10 +182,10 @@ def validate_lexicon(ch, vr):
    
   
   # now we can figure out inherited features and write them down
-  # also, print warnings about conflicts
+  # also, print warnings about feature conflicts
   # also, figure out the det question for types with stems
-
   # also, every noun type needs a path to the root
+
   for n in ch.get('noun'):
     st_anc = [] # used to make sure we don't have an lkb err as described in comments above
     root = False
@@ -211,9 +211,9 @@ def validate_lexicon(ch, vr):
             # see if this feat conflicts with what we already know
             if f in feats[n.full_key] and feats[p][f] != feats[n.full_key][f]:
               # inherited feature conficts with self defined feature
-              vr.warn(n.full_key + '_feat', "The specification of "+f+"="+str(feats[n.full_key][f])+" may confict with the value defined on the supertype "+ptype.get('name')+" ("+p+").")
+              vr.warn(n.full_key + '_feat', "The specification of "+f+"="+str(feats[n.full_key][f])+" may confict with the value defined on the supertype "+ptype.get('name')+" ("+p+").", concat=False)
             elif f in inherited_feats[n.full_key] and feats[p][f] != inherited_feats[n.full_key][f]: 
-              vr.warn(n.full_key + '_supertypes', "The inherited specification of "+f+"="+str(inherited_feats[n.full_key][f])+" may confict with the value defined on the supertype "+ptype.get('name')+" ("+p+").")
+              vr.warn(n.full_key + '_supertypes', "This inherited specification of "+f+"="+str(inherited_feats[n.full_key][f])+" may confict with the value defined on the supertype "+ptype.get('name')+" ("+p+").",concat=False)
               inherited_feats[n.full_key][f] = "! "+inherited_feats[n.full_key][f]+" && "+feats[p][f]
             else:
               inherited_feats[n.full_key][f] = feats[p][f]
@@ -236,7 +236,7 @@ def validate_lexicon(ch, vr):
                 if not q in st_anc:
                   st_anc.append(q)
                 if q in r:
-                  vr.err(n.full_key + '_supertypes', "This hierarchy contains a cycle.  Found "+q+" at multiple points in path: "+str(r + [q]))
+                  vr.err(n.full_key + '_supertypes', "This hierarchy contains a cycle.  The type _"+q+"_ was found at multiple points in the inheritance path: "+str(r + [q]))
                 else:
                   new_path = r + [q]
                   paths.append(new_path)
@@ -265,7 +265,7 @@ def validate_lexicon(ch, vr):
     #  the intersection of supertypes and supertypes's ancestors
     for t in ntsts[n.full_key]:
       if t in st_anc:
-        vr.warn(n.full_key + '_supertypes', 'This noun hierarchy may cause an lkb error.  _'+t+'_ is both an immediate supertype and also an ancestor of another supertype.')
+        vr.err(n.full_key + '_supertypes', 'This noun hierarchy contains a redundant link that will result in an lkb error.  _'+t+'_ is both an immediate supertype of'+n.full_key+' and also an ancestor of another supertype.')
 
     # Now we can check whether there's an answer to the question about determiners?
     # but I only really care about types with stems (right??)
@@ -305,16 +305,117 @@ def validate_lexicon(ch, vr):
         vr.err(stem.full_key + '_pred', mess)
 
   # Verbs
+  # check verb hierarchy for various properties
+  # this is easier if we build some data objects
+  
+  # for each verb, 
+  #  if it's got stems, it'll need to be put in the lexicon
+  #    check that it has an answer for 
+  #      * valence 
+  #      * that its has-dets doesn't conflict with any parents
+  #      * check its features 
+  #        ** see that they don't conflict with each other
+  #      * see that the hierarchy won't cause the 
+  #        vacuous inheritance eg: 
+  #          a := verb 
+  #          b := a
+  #          c := b & a
+
+  # ntsts is a dict of nountype names->lists of supertypes
+  # inherited_feats dict of verbtype names->lists of inherited features
+  vtsts = {} 
+  feats = {}
+  inherited_feats = {}
+  for v in ch.get('verb'):
+    vtsts[v.full_key] = v.get('supertypes').split(', ')
+    feats[v.full_key] = {} 
+    for f in v.get('feat'):
+      feats[v.full_key][f.get('name')]=f.get('value')
+
   seenTrans = False
   seenIntrans = False
-  for verb in ch.get('verb'):
-    val = verb.get('valence')
-    bistems = verb.get('bistem', [])
-    bipartitepc = verb.get('bipartitepc')
+
+  for v in ch.get('verb'):
+    st_anc = [] # used to make sure we don't have an lkb err as described in comments above
+    root = False
+    val = v.get('valence')
+    # val can be null for now
+      # check again after computing inheritance
+    seen = [] 
+    paths= []
+
+    bistems = v.get('bistem', [])
+    bipartitepc = v.get('bipartitepc')
+
+    # seed paths with the starting node and the first crop of sts
+    for st in vtsts[v.full_key]:
+      paths.append([v.full_key, st])
+    parents = vtsts[v.full_key] 
+    inherited_feats[v.full_key]= {}
+
+    # now step up through the supertypes until we're done
+    # compute inherited feats and check for clashes on val
+    while(True):
+      next_parents = []
+      for p in parents:
+        if p == '':
+          root = True
+
+        # get features from this parent and put em in inherited_feats
+        if p != '':
+          ptype = ch.get(p)
+          for f in feats[p]:
+            # see if this feat conflicts with what we already know
+            if f in feats[v.full_key] and feats[p][f] != feats[v.full_key][f]:
+              # inherited feature conficts with self defined feature
+              vr.warn(v.full_key + '_feat', "The specification of "+f+"="+str(feats[v.full_key][f])+" may confict with the value defined on the supertype "+ptype.get('name')+" ("+p+").", concat=False)
+            elif f in inherited_feats[v.full_key] and feats[p][f] != inherited_feats[v.full_key][f]: 
+              vr.warn(v.full_key + '_supertypes', "This inherited specification of "+f+"="+str(inherited_feats[v.full_key][f])+" may confict with the value defined on the supertype "+ptype.get('name')+" ("+p+").",concat=False)
+              inherited_feats[v.full_key][f] = "! "+inherited_feats[v.full_key][f]+" && "+feats[p][f]
+            else:
+              inherited_feats[v.full_key][f] = feats[p][f]
+
+          # val question
+          pval = ptype.get('valence')
+          if pval != '':
+            if val == '':
+              val = pval
+            elif val != pval:
+              vr.err(v.full_key + '_valence', "This verb type inherits a conflict in answer to the question about argument structure.",concat=False)
+
+          # add sts to the next generation
+          to_be_seen = []
+          for r in paths:
+            if r[-1] == p: #this is the path to extend, 
+              paths.remove(r)
+              for q in vtsts[p]: #go through all sts
+                # q is a st_anc of n
+                if not q in st_anc:
+                  st_anc.append(q)
+                if q in r:
+                  vr.err(v.full_key + '_supertypes', "This hierarchy contains a cycle.  The type _"+q+"_ was found at multiple points in the inheritance path: "+str(r + [q]))
+                else:
+                  new_path = r + [q]
+                  paths.append(new_path)
+                if (q != ''):
+                  if not (q in seen):
+                    next_parents.append(q)
+                    to_be_seen.append(q)
+                else:
+                  root = True
+          seen = seen + to_be_seen
+
+      # if there aren't any next parents, we're done
+      if len(next_parents) == 0:
+        break
+      
+      # otherwise we go again
+      parents = next_parents 
     
+    # now check val
     if not val:
-      mess = 'You must specify the argument structure of each verb you define.'
-      vr.err(verb.full_key + '_valence', mess)
+      mess = 'You must specify the argument structure of each verb you define.  Either on this type, or on a supertype.'
+      vr.err(v.full_key + '_valence', mess)
     elif val[0:5] == 'trans' or '-' in val:
       seenTrans = True
     else:
@@ -322,9 +423,9 @@ def validate_lexicon(ch, vr):
 
     if bistems and not bipartitepc:
       mess = 'If you add bipartite stems to a class, you must specify a position class for the affix part of the stems.'
-      vr.err(verb.full_key + '_bipartitepc', mess)
+      vr.err(v.full_key + '_bipartitepc', mess)
 
-    for stem in verb.get('stem', []):
+    for stem in v.get('stem', []):
       orth = stem.get('orth')
       pred = stem.get('pred')
 

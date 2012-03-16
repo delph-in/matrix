@@ -1176,7 +1176,7 @@ Label "<a id=\"toggle_all_lex_button\" onclick=\"toggle_all_display_lex(1)\">&#9
 Separator
 
 Label "<h3 style='display:inline'>Noun Types</h3>"
-Label "<span>| <a href='#' onclick='draw_nouns()'>visualize noun hierarchy</a> (experimental)</span><br />"
+Label "<span>| <a href='#' onclick=\"draw_hierarchy('noun')\">visualize noun hierarchy</a> (experimental)</span><br />"
 
 BeginIter noun{i} "a Noun Type" 1 1
 
@@ -1238,7 +1238,8 @@ EndIter noun
 
 Separator
 
-Label "<h3>Verb Types</h3>"
+Label "<h3 style='display:inline'>Verb Types</h3>"
+Label "<span>| <a href='#' onclick=\"draw_hierarchy('verb')\">visualize verb hierarchy</a> (experimental)</span><br />"
 
 BeginIter verb{i} "a Verb Type" 1 2
 
@@ -1248,7 +1249,7 @@ BeginIter verb{i} "a Verb Type" 1 2
 
   Text name "Verb {i} name" "Type name: " "<br /><br />" 20
 
-  MultiSelect supertypes "Noun type {i}" "Supertypes: " "<br /><br />"
+  MultiSelect supertypes "Verb type {i}" "Supertypes: " "<br /><br />"
   fillregex p=verb(?!{i})[0-9]+_name
 
   Label "Features:"
