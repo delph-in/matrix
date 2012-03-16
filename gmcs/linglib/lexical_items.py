@@ -371,7 +371,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
   for noun in ch.get('noun',[]):
     det = noun.get('det')
-    if not seen[det]:
+    if not det == '' and not seen[det]:
       seen[det] = True
       seenCount += 1
 
@@ -398,6 +398,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   # Adding empty MOD on general definitiion for noun-lex
   mylang.add('noun-lex := non-mod-lex-item.')
 
+  # singlentype means there's only one type of n in the hierarchy.
   if singlentype:
     if seen['obl']:
       typedef = 'noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
@@ -436,16 +437,27 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     name = get_name(noun)
     det = noun.get('det')
 
-    if singlentype or det == 'opt':
-      stype = 'noun-lex'
-    elif det == 'obl':
-      stype = 'obl-spr-noun-lex'
-    else:
-      stype = 'no-spr-noun-lex'
+    stypes = noun.get('supertypes').split(', ') 
+    stype_names = []
+    for t in stypes:
+      nt = ch.get(t)
+      ntname = nt.get('name')
+      if not ntname == '':
+        stype_names.append(nt.get('name')+'-noun-lex')
+
+    #if singlentype or det == 'opt':
+    #  stype = 'noun-lex' #we'll get this for free
+    if det == 'obl':
+      stype_names.append('obl-spr-noun-lex')
+    elif det == 'imp':
+      stype_names.append('no-spr-noun-lex')
 
     ntype = name + '-noun-lex'
 
-    mylang.add(ntype + ' := ' + stype + '.')
+    if len(stype_names) == 0:
+      mylang.add(ntype + ' := noun-lex .')
+    else: 
+      mylang.add(ntype + ' := ' + ' & '.join(stype_names) + '.')
 
     features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
 
