@@ -25,12 +25,16 @@ class ValidationResult:
   def __init__(self):
     self.errors = {}
     self.warnings = {}
+    self.infos = {}
 
   def has_errors(self):
     return len(self.errors) != 0
 
   def has_warnings(self):
     return len(self.warnings) != 0
+
+  def has_infos(self):
+    return len(self.infos) != 0
 
   def err(self, key, message, anchor=None, concat=True):
     """
@@ -55,6 +59,17 @@ class ValidationResult:
       self.warnings[key].add_message(message)
     else:
       self.warnings[key] = ValidationMessage(key+"_warning", message, anchor)
+
+  def info(self, key, message, anchor=None, concat=True):
+    """
+    Add an informational message to key (a choices variable).  If the key
+    already has a message and 'concat' is set to true, concatenate
+    the new message with the existing one.  Otherwise replace the message.
+    """
+    if key in self.infos and concat:
+      self.infos[key].add_message(message)
+    else:
+      self.infos[key] = ValidationMessage(key+"_info", message, anchor)
 
 #NTS: we only need to define an anchor for the main page versionsx
 class ValidationMessage:
@@ -124,8 +139,7 @@ cust_types = [
   's-comp-aux-with-pred',
   's-comp-aux-no-pred',
   'determiner-lex',
-  'word-to-lexeme-rule',
-  'track'
+  'word-to-lexeme-rule'
 ]
 
 # regex patterns for sets of names that are not available for
@@ -148,12 +162,6 @@ def validate_names(ch, vr):
   # read matrix types and head types from file
   try:
     filename = 'matrix-types'
-    f = open(filename, 'r')
-    for t in f.readlines():
-      reserved_types[t.strip()] = True
-    f.close()
-    filename = os.path.join(os.environ.get('CUSTOMIZATIONROOT/..', ''),
-                            'matrix-core/head-types')
     f = open(filename, 'r')
     for t in f.readlines():
       reserved_types[t.strip()] = True
@@ -387,6 +395,30 @@ def validate_general(ch, vr):
     if bad_lang:
       vr.err('language', 'The language name contains an illegal character')
 
+  iso = ch.get('iso-code')
+  if len(iso) != 3:
+    vr.warn('iso-code', 'ISO-639 codes should be three letter sequences.')
+  else:
+    url = "http://www.ethnologue.com/show_language.asp?code="+iso
+    try:
+      valid = False 
+      f = open('iso.tab')
+      lines = f.readlines()
+      for l in lines:
+        toks = l.split('\t')
+        if iso in toks[0]:
+          vr.info('iso-code', 'ISO 693-3 suggests the reference name for your language is: '+toks[6], anchor=url) 
+          valid = True
+      f.close()
+      if not valid:
+        vr.warn('iso-code', 
+                'The three-letter code you provided is not in ISO-639-3.') 
+    except IOError:
+      sys.stderr.write('''
+[iso-code not validated] Get the latest code table file from sil.org and put it in 
+your installation root directory as iso.tab to enable iso validation:
+\n$wget http://www.sil.org/iso639-3/iso-639-3_20120206.tab -O iso.tab\n\n''') 
+
   if not ch.get('archive'):
     vr.warn('archive',
             'Please answer whether you will allow ' +
@@ -401,16 +433,17 @@ def validate_general(ch, vr):
       vr.warn('punctuation-chars',
               'No delimiters are necessary for the punctuation string.' +\
               'If a comma appears in the string, it will become parsable.')
-    # check punctuation chars in all orth fields.
-    non_chars = [re.escape(c)
-                 for c in u'!"&\'()*+,−./\;<>?@[]^`{|}~。！？…．　○●◎＊☆★◇◆'
-                 if c not in chars]
-    char_re = re.compile(r'(' + r'|'.join(non_chars) + r')')
-    for (key, val) in ch.walk():
-      if key.endswith('orth') and char_re.search(unicode(val, 'utf8')):
-        vr.warn(key, 'String contains an unparsable punctuation character.' +\
-                     ' Please see the General subpage.')
 
+  # check punctuation chars in all orth fields.
+  non_chars = [re.escape(c)
+               for c in u'!"&\'()*+,−./\;<>?@[]^`{|}~。！？…．　○●◎＊☆★◇◆'
+               if c not in chars]
+  char_re = re.compile(r'(' + r'|'.join(non_chars) + r')')
+  for (key, val) in ch.walk():
+    if key.endswith('orth'):
+      if char_re.search(unicode(val, 'utf8')):
+        vr.warn(key, 'String contains an unparsable punctuation character.' +\
+                   ' Please see the General subpage.')
 
 ######################################################################
 # validate_person(ch, vr)
@@ -518,6 +551,13 @@ def validate_word_order(ch, vr):
     vr.err('has-dets',
            'You specified lexical entries for determiners, ' +
            'but said your language has none.')
+
+  # matrix-dev group rejected this validation step in Jan 2012
+  # if (ch.get('has-dets') == 'yes') and (not 'det' in ch):
+  #  vr.err('has-dets',
+  #         'You specified that your language has determiners, ' +
+  #         'you must define them on the lexicon page.')
+
 
   #Things to do with auxiliaries
   if (not ch.get('has-aux')):
@@ -999,6 +1039,7 @@ def validate_choices(choices_file, extra = False):
 # that result.
 
 if __name__ == "__main__":
+  print "hello"
   vr = validate_choices(sys.argv[1])
 
   print sys.argv[1]
@@ -1017,3 +1058,4 @@ if __name__ == "__main__":
         column += len(w) + 1
     print
   print
+

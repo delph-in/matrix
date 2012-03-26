@@ -1,4 +1,5 @@
 from gmcs.utils import TDLencode
+from gmcs.utils import orth_encode
 
 ######################################################################
 # Coordination
@@ -200,6 +201,7 @@ trunc-coord-lex-rule.
     mark = cs.get('mark')
     pat = cs.get('pat')
     orth = cs.get('orth')
+    orthstr = orth_encode(orth)
     order = cs.get('order')
     agreement = ''
     agreement = cs.get('agreement')
@@ -210,22 +212,27 @@ trunc-coord-lex-rule.
     pre = ''
     suf = ''
 
+    tn = TDLencode(orth)
+    if (len(ch.get('cs')) > 1):
+      tn += csnum
+
     if mark == 'word':
       if ',' in orth:
         words = orth.split(',')
         for w in words:
+          w_str = orth_encode(w)
           lexicon.add(TDLencode(w + '_c' + csnum) + ' := conj-lex &\
-                  [ STEM < "' + w + '" >,\
-                    SYNSEM.LKEYS.KEYREL.PRED "_' + w + '_coord_rel",\
+                  [ STEM < "' + w_str + '" >,\
+                    SYNSEM.LKEYS.KEYREL.PRED "_' + w_str + '_coord_rel",\
                     CFORM "' + csnum + '" ].')
       else:
         lexicon.add(TDLencode(orth) + ' := conj-lex &\
-                  [ STEM < "' + orth + '" >,\
+                  [ STEM < "' + orthstr + '" >,\
                     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",\
                     CFORM "' + csnum + '" ].')
       if pat == 'omni':
-        lexicon.add(TDLencode(orth) + '_nosem := nosem-conj-lex &\
-                      [ STEM < "' + orth + '" >,\
+        lexicon.add( tn + '_nosem := nosem-conj-lex &\
+                      [ STEM < "' + orthstr + '" >,\
                         CFORM "' + csnum + '" ].')
 
     if pat == 'a':

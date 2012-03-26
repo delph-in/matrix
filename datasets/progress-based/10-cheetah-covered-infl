@@ -144,9 +144,9 @@ Gibt der Mann mir das Buch?
 Hat der Mann geschlafen?
 Hat der Mann mich gesehen?
 Hat der Mann mir das Buch gegeben?
-Hat der Mann schlafen künnen?
-Hat der Mann mich sehen künnen?
-Hat der Mann mir das Buch geben künnen?
+Hat der Mann schlafen können?
+Hat der Mann mich sehen können?
+Hat der Mann mir das Buch geben können?
 Schläft er nicht?
 Hat er nicht geschlafen?
 Sieht er mich nicht?
@@ -210,7 +210,7 @@ Die Frau ist riesig.
 Du bist riesig.
 Ich bin riesig.
 Wir sind riesig.
-Ihr seit riesig.
+Ihr seid riesig.
 Sie sind riesig.
 Der Mann und die Frau sind riesig.
 Der Mann ist riesig und gelb.
@@ -276,7 +276,7 @@ trinken will er den Wein gerne.
 Den Wein trinken will er gerne.
 Mir das Buch geben will er gerne.
 will er gerne schlafen?
-Gerne will den Wein trinken.
+Gerne will er den Wein trinken.
 Der mann sieht mich schlafen.
 Schlafen sieht der Mann mich.
 Mich sieht der Mann schlafen.
@@ -418,36 +418,34 @@ Marie will den Wein trinken und will schlafen.
 Marie will den Wein trinken und schlafen.
 Darauf freut Marie sich auf den Wein.
 Marie will den Wein trinken und schläft.
-Frau stinkt Marie.
-Frau ich sehe Marie.
 Der Wein wird von Marie getrunken.
 Der Wein soll von Marie getrunken werden.
-Der Wein ist von Marie getrunken werden.
+Der Wein ist von Marie getrunken worden.
 Der Wein wird getrunken.
 Der Wein soll getrunken werden.
-Der Wein ist getrunken werden.
+Der Wein ist getrunken worden.
 Der Wein wird mir von Marie gegeben.
 Der Wein soll mir von Marie gegeben werden.
-Der Wein ist mir von Marie gegeben werden.
+Der Wein ist mir von Marie gegeben worden.
 Der Wein wird mir gegeben.
 Der Wein soll mir gegeben werden.
-Der Wein ist mir gegeben werden.
+Der Wein ist mir gegeben worden.
 Wird der Wein von Marie getrunken?
 soll der Wein von Marie getrunken werden?
-Ist der Wein von Marie getrunken werden?
+Ist der Wein von Marie getrunken worden?
 Wird der Wein getrunken?
 soll der Wein getrunken werden?
-Ist der Wein getrunken werden?
+Ist der Wein getrunken worden?
 Wird der Wein mir von Marie gegeben?
 soll der Wein mir von Marie gegeben werden?
-Ist der Wein mir von Marie gegeben werden?
+Ist der Wein mir von Marie gegeben worden?
 Wird der Wein mir gegeben?
 soll der Wein mir gegeben werden?
-Ist der Wein mir gegeben werden?
+Ist der Wein mir gegeben worden?
 Marie sagt dass der Wein getrunken wird.
 Marie sagt dass der Wein getrunken werden soll.
-Marie sagt dass der Wein getrunken werden ist.
-Marie sagt dass der Wein ist getrunken werden.
+Marie sagt dass der Wein getrunken worden ist.
+Marie sagt dass der Wein ist getrunken worden.
 Der Wein den Marie trinkt stinkt.
 Der Wein auf den Marie sich gefreut hat stinkt.
 Marie trinkt den Wein der stinkt.
@@ -484,7 +482,7 @@ Marie hat das Buch versucht mir zu schenken.
 Marie hat mir das Buch versucht zu schenken.
 Marie hat den wein versucht zu trinken.
 Marie denkt dass er die Neigung hat zu schlafen.
-Marie denkt dass er die Neigung zu schläft hat.
+Marie denkt dass er die Neigung zu schlafen hat.
 Marie denkt dass dein Wein herrlicher ist als mein Wein.
 Marie denkt dass Peter herrlicheren Wein trinkt als ich.
 Marie hat herrlicheren Wein als du getrunken.
@@ -502,6 +500,15 @@ Vier- bis fuenfhundert Männer schlafen.
 Er sieht vier- bis fuenfhundert Frauen.
 Im Kindes- und Jugendalter schläft er.
 Das Kindes- und Jugendalter ist herrlich.
+Marie trinkt den Wein die stinkt.
+Marie trinkt den Wein mit dem Mann die schläft.
+Marie trinkt den Wein mit dem Mann die sie sieht.
+Wer schläft Jan?
+Der Mann ist riesiger.
+Riesiger ist der Mann.
+Marie sieht den Wein den sie getrunken haben.
+Und bei dem Tisch neben der Frau trinkt der Mann den Wein.
+*Der Mann ist riesigerer.
 *Marie hat versucht zu trinken den Wein.
 *Marie hat den wein versucht den Wein zu trinken.
 *Marie hat zu trinken versucht den Wein.
@@ -516,10 +523,9 @@ Das Kindes- und Jugendalter ist herrlich.
 *Vier- bis fuenfhundert Mann schlafen.
 *Im Kindes und Jugendalter schläft er.
 *Dem kindes und Jungendalter ist herrlich.
-*Der Mann ist riesigerer.
 *Der Mann ist riesiger als der Frau.
 *Dein Wein ist herrlicherer als mein wein.
-*Marie schlägt dein Wein vor.
+*Er schlägt dein Wein vor.
 *Marie vor schlägt Wein.
 *Er trinkt Wein mit dein Frau.
 *Marie hat versucht zu schenken mir das Buch.
@@ -534,7 +540,6 @@ Das Kindes- und Jugendalter ist herrlich.
 *Der Wein den Marie trinken stinkt.
 *Der Wein auf den Marie sich gefreut stinkt.
 *Marie trinkt den Wein den stinkt.
-*Marie trinkt den Wein die stinkt.
 *Marie trinkt den Wein das stinkt.
 *Das Brot mit der Marie den Wein trinkt stinkt.
 *Das Brot mit dem trinkt Marie den Wein stinkt.
@@ -557,11 +562,8 @@ Das Kindes- und Jugendalter ist herrlich.
 *Die Frau auf der Marie sich gefreut hat stinkt.
 *Marie sieht die Frau der stinkt.
 *Marie sieht das Brot stinkt das.
-*Marie sieht den Wein den sie getrunken haben.
 *Marie sieht die Frau die gesehen sie hat.
 *Marie sieht das Brot dass sie gesehen hat.
-*Marie trinkt den Wein mit dem Mann die schläft.
-*Marie trinkt den Wein mit dem Mann die sie sieht.
 *Marie trinkt den Wein mit dem Mann dem sie schläft.
 *Marie trinkt den Wein mit dem Mann sie sich freut darauf.
 *Der Wein wird Marie getrunken.
@@ -707,7 +709,6 @@ Das Kindes- und Jugendalter ist herrlich.
 *hat geschlafen wer?
 *Der Mann hat gesehen wen?
 *Der Mann hat das Buch gegeben wem?
-*Wer schläft Jan?
 *Wo schläft?
 *Wen hat gesehen Marie?
 *Wem mit schläft Jan?
@@ -800,7 +801,6 @@ Das Kindes- und Jugendalter ist herrlich.
 *Der Mann schläft bei neben dem Tisch.
 *Bei neben und dem Tisch schläft der Mann.
 *Der Mann bei und gegen dem Tisch schläft.
-*Und bei dem Tisch neben der Frau trinkt der Mann den Wein.
 *Bei und neben die Männer hat der Mann geschlafen.
 *Der Mann hat bei und geschlafen.
 *Der Mann hat und bei geschlafen.
@@ -825,7 +825,6 @@ Das Kindes- und Jugendalter ist herrlich.
 *Die gelbe riesige Frau und gibt dem riesigen Mann das riesige Buch.
 *Die und gelbe riesige Frau gibt dem riesigen Mann das riesige Buch.
 *Der Mann ist riesige.
-*Der Mann ist riesiger.
 *Der Mann ist riesigen.
 *Der Mann ist riesigem.
 *Das Schaf ist riesiges.
@@ -835,7 +834,6 @@ Das Kindes- und Jugendalter ist herrlich.
 *Der Mann und die Frau sind riesigen.
 *Der Mann und die Frau sind riesige.
 *Riesige ist der Mann.
-*Riesiger ist der Mann.
 *Riesigen ist der Mann.
 *Der Mann liegt riesig.
 *Riesig liegt der Mann.
@@ -853,9 +851,7 @@ Das Kindes- und Jugendalter ist herrlich.
 *Der Mann sagt dass schläft.
 *Der Mann sagt dass schlafen.
 *Der Mann sagt dass geschlafen.
-*Der Mann sagt schläft er.
 *Der Mann sagt dass schläft er.
-*schläft er sagt der Mann.
 *Dass schläft er sagt der Mann.
 *Der Mann fragt er schläft.
 *Der Mann fragt er trinkt den Wein.
@@ -899,12 +895,6 @@ Das Kindes- und Jugendalter ist herrlich.
 *Hat gesehen der Mann mich und hat er den Wein getrunken?
 *Hat der mann gesehen mich und hat er den Wein getrunken?
 *Hat mich gesehen der Mann und hat er den Wein getrunken?
-*Nicht schläft er?
-*Nicht hat er geschlafen?
-*Nicht sieht er mich?
-*Nicht hat er mich gesehen?
-*Nicht gibt er mir das Buch?
-*Nicht hat er mir das Buch gegeben?
 *Mir schläft nicht.
 *Ich sehe ich nicht.
 *Mir sehe ich nicht.
@@ -916,10 +906,10 @@ Das Kindes- und Jugendalter ist herrlich.
 *Hat gesehen der Mann mich?
 *Hat mich gesehen der Mann?
 *Hat der Mann gesehen mich?
-*Hat schlafen der Mann künnen?
+*Hat schlafen der Mann können?
 *Hat schlafen künnen der Mann?
-*Hat mich sehen der Mann künnen?
-*Hat der Mann sehen mich künnen?
+*Hat mich sehen der Mann können?
+*Hat der Mann sehen mich können?
 *Schlafen der Mann?
 *Geschlafen der Mann?
 *Der Mann nicht schläft.

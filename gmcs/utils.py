@@ -42,6 +42,19 @@ def TDLencode(string):
 
   return val
 
+def orth_encode(orthin):
+  """
+  prepare an orth string in a way that 
+  words with spaces are treated properly.
+  """
+  orthlist = orthin.split(' ')
+  orthout = ''
+  if len(orthlist) > 1:
+    orthout = '","'.join(orthlist)
+  else:
+    orthout = orthlist[0]
+  return orthout
+
 
 def get_name(item):
   return item.get('name', None) or item.full_key

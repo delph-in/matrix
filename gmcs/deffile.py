@@ -53,15 +53,7 @@ var verb_case_patterns = [
 %s
 ];
 
-var morph_case_patterns = [
-%s
-];
-
 var numbers = [
-%s
-];
-
-var types = [
 %s
 ];
 </script>
@@ -69,6 +61,13 @@ var types = [
 <link rel="stylesheet" href="web/matrix.css">
 </head>
 '''
+
+HTML_jscache = '''<script type="text/javascript">
+// A cache of choices from other subpages
+var %s = [
+%s
+];
+</script>'''
 
 # toggle_visible provided by
 #   http://blog.movalog.com/a/javascript-toggle-visibility/
@@ -234,10 +233,33 @@ HTML_sentencespostbody = '''
 HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors()">
 '''
 
+#HTML_navmenu = '''
+#<div id="navmenu">
+#  <ul>
+#    <li><a onclick="submit_go('general')">General Information</a></li>
+#    <li><a onclick="submit_go('word-order')">Word Order</a></li>
+#    <li><a onclick="submit_go('number')">Number</a></li>
+#    <li><a onclick="submit_go('person')">Person</a></li>
+#    <li><a onclick="submit_go('gender')">Gender</a></li>
+#    <li><a onclick="submit_go('case')">Case</a></li>
+#    <li><a onclick="submit_go('direct-inverse')">Direct-inverse</a></li>
+#    <li><a onclick="submit_go('tense-aspect-mood')">Tense, Aspect and Mood</a></li>
+#    <li><a onclick="submit_go('other-features')">Other Features</a></li>
+#    <li><a onclick="submit_go('sentential-negation')">Sentential Negation</a></li>
+#    <li><a onclick="submit_go('coordination')">Coordination</a></li>
+#    <li><a onclick="submit_go('matrix-yes-no')">Matrix Yes/No Questions</a></li>
+#    <li><a onclick="submit_go('arg-opt')">Argument Optionality</a></li>
+#    <li><a onclick="submit_go('lexicon')">Lexicon</a></li>
+#    <li><a onclick="submit_go('morphology')">Morphology</a></li>
+#    <li><a onclick="border()">border</a></li>
+#    <li><a onclick="sticky()">sticky</a></li>
+#  </ul>
+#</div>'''
+
 HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();">'''
 
 HTML_method = 'post'
-HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '" enctype="multipart/form-data">'
+HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '" enctype="multipart/form-data" name="choices_form">'
 
 HTML_postform = '</form>'
 
@@ -265,7 +287,11 @@ HTML_postbody = '''</body>
 
 def html_mark(mark, vm):
   if vm.href:
-    return '<a href="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
+    if mark == '#':
+      return '<a href="%s" style="text-decoration:none"><span class="info" title="%s">%s</span></a>' %\
+           (vm.href, vm.message.replace('"', '&quot;'), mark)
+    else:
+      return '<a href="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
            (vm.href, vm.message.replace('"', '&quot;'), mark)
   else:
     return '<a name="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
@@ -276,6 +302,9 @@ def html_error_mark(vm):
 
 def html_warning_mark(vm):
   return html_mark('?', vm)
+
+def html_info_mark(vm):
+  return html_mark('#', vm)
 
 # Return an HTML <input> tag with the specified attributes and
 # surrounding text
@@ -307,6 +336,8 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
       mark = html_error_mark(vr.errors[name])
     elif name in vr.warnings:
       mark = html_warning_mark(vr.warnings[name])
+    if name in vr.infos:
+      mark = html_info_mark(vr.infos[name])
 
   if type == 'textarea':
     value = value.replace('\\n','\n')
@@ -478,6 +509,16 @@ def js_array3(list):
 # on the contents, to produce HTML pages and save choices files.
 
 class MatrixDefFile:
+  sections = { 'general':'General Information',
+  'word-order':'Word Order', 'number':'Number',
+  'person':'Person', 'gender':'Gender', 'case':'Case',
+  'direct-inverse':'Direct-inverse', 'tense-aspect-mood':'Tense, Aspect and Mood',
+  'other-features':'Other Features', 'sentential-negation':'Sentential Negation',
+  'coordination':'Coordination', 'matrix-yes-no':'Matrix Yes/No Questions',
+  'arg-opt':'Argument Optionality', 'lexicon':'Lexicon',
+  'morphology':'Morphology','toolbox-import':'Toolbox Import',
+  'test-sentences':'Test Sentences','gen-options':'TbG Options',
+  'ToolboxLexicon':'Toolbox Lexicon'}
   def_file = ''
   v2f = {}
   f2v = {}
@@ -531,7 +572,7 @@ class MatrixDefFile:
     print 'Set-cookie: session=' + cookie + '\n'
     print HTML_pretitle
     print '<title>The Matrix</title>'
-    print HTML_posttitle % ('', '', '', '', '')
+    print HTML_posttitle % ('', '', '')
 
     try:
       f = open('datestamp', 'r')
@@ -570,7 +611,7 @@ class MatrixDefFile:
       elif word[0] == 'BeginIter':
         if prefix:
           prefix += '_'
-        prefix += re.sub('\\{.*\\}', '.*', word[1])
+        prefix += re.sub('\\{.*\\}', '[0-9]+', word[1])
       elif word[0] == 'EndIter':
         prefix = re.sub('_?' + word[1] + '[^_]*$', '', prefix)
       elif not (word[0] == 'Label' and len(word) < 3):
@@ -674,6 +715,8 @@ class MatrixDefFile:
         f = f.replace('\\', '/')
         choices = ChoicesFile(f)
         lang = choices.get('language') or '(empty questionnaire)'
+        if lang == 'minimal-grammar':
+          lang = '(minimal grammar)'
         linklist[lang] = f
 
       for k in sorted(linklist.keys(), lambda x, y: cmp(x.lower(), y.lower())):
@@ -703,6 +746,14 @@ class MatrixDefFile:
       word = tokenize_def(replace_vars(lines[i], vars))
       if len(word) == 0:
         pass
+      elif word[0] == 'Cache':
+        cache_name = word[1]
+        items = choices.get_regex(word[2])
+        if len(word) > 3:
+          items = [(k, v.get(word[3])) for (k, v) in items]
+        html += HTML_jscache % (cache_name,
+                                '\n'.join(["'" + ':'.join((v, k)) + "',"
+                                           for (k, v) in items]))
       elif word[0] == 'Label':
         if len(word) > 2:
           if prefix + word[1] in vr.errors:
@@ -713,13 +764,24 @@ class MatrixDefFile:
       elif word[0] == 'Separator':
         html += '<hr>'
       elif word[0] == 'Check':
-        (vn, fn, bf, af) = word[1:]
-        vn = prefix + vn
-        checked = choices.get(vn)
-        html += html_input(vr, 'checkbox', vn, '', checked,
-                           bf, af) + '\n'
+        if len(word) > 5:
+          (vn, fn, bf, af, js) = word[1:]
+          vn = prefix + vn
+          checked = choices.get(vn)
+          html += html_input(vr, 'checkbox', vn, '', checked,
+                             bf, af, onclick=js) + '\n'
+        else:
+          (vn, fn, bf, af) = word[1:]
+          vn = prefix + vn
+          checked = choices.get(vn)
+          html += html_input(vr, 'checkbox', vn, '', checked,
+                             bf, af) + '\n'
       elif word[0] == 'Radio':
-        (vn, fn, bf, af) = word[1:]
+        dis = ''
+        if len(word) > 5:
+          (vn, fn, bf, af, dis) = word[1:]
+        else:
+          (vn, fn, bf, af) = word[1:]
         vn = prefix + vn
         html += bf + '\n'
         i += 1
@@ -730,8 +792,12 @@ class MatrixDefFile:
             (rval, rfrn, rbef, raft, js) = word[1:]
             if choices.get(vn) == rval:
               checked = True
-            html += html_input(vr, 'radio', vn, rval, checked,
-                             rbef, raft, onclick=js) + '\n'
+            if dis:
+              html += html_input(vr, 'radio', vn, rval, checked,
+                               rbef, raft, onclick=js, disabled=True) + '\n'
+            else:
+              html += html_input(vr, 'radio', vn, rval, checked,
+                               rbef, raft, onclick=js) + '\n'
           else:
             (rval, rfrn, rbef, raft) = word[1:]
             if choices.get(vn) == rval:
@@ -747,97 +813,42 @@ class MatrixDefFile:
 
         html += bf + '\n'
 
+        fillers=[]
         # look ahead and see if we have an auto-filled drop-down
         i += 1
-        fill_type = ''
-        pattern_arg = ''
-        if lines[i] != '\n':
+        while lines[i].strip().startswith('fill'):
           word = tokenize_def(replace_vars(lines[i], vars))
-          fill_type = word[0]
-#          print 'line'
-#          print lines[i]
+          # arguments are labeled like p=pattern, l(literal_feature)=1,
+          # n(nameOnly)=1, c=cat
+          #note: possible cat values are "noun", "verb" or "both"
+          argstring = ','.join(['true' if a in ('n', 'l') else "'%s'" % x
+                                for (a, x) in [w.split('=') for w in word[1:]]])
+          fillstrings = {'fillregex':'fill_regex(%(args)s)',
+                         'fillnames':'fill_feature_names(%(args)s)',
+                         'fillvalues':'fill_feature_values(%(args)s)',
+                         'fillverbpat':'fill_case_patterns(false)',
+                         'fillnumbers':'fill_numbers()',
+                         'fillcache':'fill_cache(%(args)s)'}
+          fillers += [fillstrings[word[0]] % {'args':argstring}]
+          i += 1
 
-#break out the arguments into key=value pairs for each filltype
-#the argments are labeled like this in matrixdef:
-#p=pattern, l(literal_feature)=1 ,n(nameOnly)=1, c=cat
-#note: possible cat values are "noun", "verb" or "both"
-        
-        if fill_type[0:4] == 'fill': #e.g.word= [fill..., p=..., ..., true]
-          a = {}
-          argument = []
-  
-          for j in range(1, len(word)):
-            argument = word[j].split('=') #e.g.argument[j]= [p, pattern]
-
-            if argument[0]:
-              a[argument[0]] = argument[1] #dict of key-value pairs a={p: pattern; c: category; ...} 
-
-#creates an ordered list of arguments from the fill line arguments in matrixdef
-#appropriately surrounded with quote marks for inclusion in fill type personalized string
-#note: arguments may only be applicable to some filltypes 
-
-          argstrings = []
-          argstring = ''
-          if 'p' in a:
-            argstrings += ['\'' + a['p'] + '\''] # ' + a['p'] + '
-            pattern_arg = a['p'] #for fillvalues argument
-          if 'c' in a:
-            argstrings += ['\'' + a['c'] + '\''] #' + a['c'] + '
-          if 'n' in a or 'l' in a:
-            argstrings += ['true']  
-          argstring = ','.join(argstrings)
-
-          fillstrings = {'fillregex': 'fill_regex(\'' + vn +'\',' + argstring + ')',
-                         'fillnames': 'fill_feature_names(\'' + vn + '\',' + argstring + ')',
-                         'fillvalues':'fill_feature_values(\'' + vn + '\', ' + argstring + ')',
-                         'fillverbpat':'fill_case_patterns(\'' + vn + '\', false)',
-                         'fillmorphpat':'fill_case_patterns(\'' + vn + '\', true)',
-                         'fillnumbers':'fill_numbers(\'' + vn + '\')',
-                         'filltypes':'fill_types(\'' + vn + '\',' + argstring + ')'}
-
-
-          html += html_select(vr, vn, multi, fillstrings[fill_type]) + '\n'
-          html += html_option(vr, '', False, '') + '\n'
-
+        if fillers:
+          fillcmd = "fill('%s', [].concat(%s))" % (vn, ','.join(fillers))
+          html += html_select(vr, vn, multi, fillcmd) + '\n'
+          # Add previously selected item
           if choices.get(vn):
             sval = choices.get(vn)
-            shtml = ''
-            # If we're filling in a SELECT that shows friendly names,
-            # we have to look it up.
-            if fill_type in ['fillvalues']:
-              for sv in sval.split(', '):
-                for f in choices.features():
-                  if f[0] == choices.get(pattern_arg):
-                    for v in f[1].split(';'):
-                      n = v.split('|')
-                      if n[0] == sv:
-                        if shtml:
-                          shtml += ', '
-                        shtml += n[1]
-            elif fill_type in ['fillverbpat']:
-              for sv in sval.split(', '):
-                for p in choices.patterns():
-                  if p[0] == sv:
-                    if shtml:
-                      shtml += ', '
-                    shtml += p[1]
-            else:
-              shtml = sval
-            html += html_option(vr, sval, True, shtml, True) + '\n'
-          i += 1
+            html += html_option(vr, sval, True, sval, True) + '\n'
         else:
           html += html_select(vr, vn, multi) + '\n'
-          html += html_option(vr, '', False, '') + '\n'
-
-        while lines[i].strip() != '':
+        html += html_option(vr, '', False, '') + '\n'
+        # Add individual items, if applicable
+        while lines[i].strip().startswith('.'):
           word = tokenize_def(replace_vars(lines[i], vars))
           (sval, sfrn, shtml) = word[1:]
-          selected = False
-          if choices.get(vn) == sval:
-            selected = True
+          selected = (choices.get(vn) == sval)
           html += html_option(vr, sval, selected, shtml) + '\n'
           i += 1
-
         html += '</select>'
         html += af + '\n'
 
@@ -993,11 +1004,13 @@ class MatrixDefFile:
 
     f = open(self.def_file, 'r')
     lines = merge_quoted_strings(f.readlines())
+    
     f.close()
 
     section_begin = -1
     section_end = -1
     section_friendly = ''
+
 
     i = 0
     while i < len(lines):
@@ -1024,17 +1037,77 @@ class MatrixDefFile:
       print HTML_posttitle % \
             (js_array3(choices.features()),
              js_array([c for c in choices.patterns() if not c[2]]),
-             js_array([c for c in choices.patterns() if c[2]]),
-             js_array([n for n in choices.numbers()]),
-             js_array([t for t in choices.types()]))
+             js_array([n for n in choices.numbers()]))
 
-      print HTML_prebody
       if section == 'sentential-negation':
         print HTML_prebody_sn
       else:
         print HTML_prebody
 
       print '<h2>' + section_friendly + '</h2>'
+
+
+#      print HTML_navmenu
+      print '<div id="navmenu"><ul>'
+    # pass through the definition file once, augmenting the list of validation
+    # results with section names so that we can put red asterisks on the links
+    # to the assocated sub-pages on the nav menu.
+      prefix = ''
+      sec_links = []
+      n = -1
+      printed = False 
+      for l in lines:
+        word = tokenize_def(l)
+        cur_sec = ''
+        if len(word) < 2 or word[0][0] == '#':
+          pass
+        elif len(word) == 4 and word[3] == '0':
+          # don't print links to sections that are marked 0 
+          pass
+        elif word[0] == 'Section':
+          printed = False
+          cur_sec = word[1]
+          # disable the link if this is the page we're on
+          if cur_sec == section: 
+            sec_links.append('</span><span>'+self.sections[cur_sec]+'</span>')
+          else:
+            sec_links.append('</span><a href="#'+cur_sec+'" onclick="submit_go(\''+cur_sec+'\')">'+self.sections[cur_sec]+'</a>')
+          n+=1
+        elif word[0] == 'BeginIter':
+          if prefix:
+            prefix += '_'
+          prefix += re.sub('\\{.*\\}', '[0-9]+', word[1])
+        elif word[0] == 'EndIter':
+          prefix = re.sub('_?' + word[1] + '[^_]*$', '', prefix)
+        elif not (word[0] == 'Label' and len(word) < 3):
+          pat = '^' + prefix
+          if prefix:
+            pat += '_'
+          pat += word[1] + '$'
+          if not printed:
+            for k in vr.errors.keys():
+              if re.search(pat, k):
+                sec_links[n] = '*'+sec_links[n]
+                printed = True 
+                break
+          if not printed:
+            for k in vr.warnings.keys():
+              if re.search(pat, k):
+                sec_links[n] = '?'+sec_links[n]
+                printed = True 
+                break
+            
+      print '<li><a href="#main" onclick="submit_main()">Main page</a></li>'
+      print '<hr />'
+      for l in sec_links: 
+        print '<li><span style="color:#ff0000;">'+l+'</li>'
+
+      print '<hr />'
+      print '<li><a href="#stay" onclick="document.forms[0].submit()">Save and stay here</a></li>'
+      print '<li><a href="#clear" onclick="clear_form()">Clear form</a></li>'
+      print '</ul></div>'
+
+      print '<div id="form_holder">'
       print HTML_preform
       print html_input(vr, 'hidden', 'section', section,
                        False, '', '\n')
@@ -1043,34 +1116,15 @@ class MatrixDefFile:
                               choices, vr,
                               '', {})
 
-    print html_input(vr, 'button', '', 'Submit', False, '<p>', '', onclick='submit_main()')
-    print html_input(vr, 'submit', '', 'Save', False)
-    print html_input(vr, 'button', '', 'Clear', False, '', '</p>', '',
-                     'clear_form()')
+# these buttons are now in the navmenu
+#    print html_input(vr, 'button', '', 'Submit', False, '<p>', '', onclick='submit_main()')
+#    print html_input(vr, 'submit', '', 'Save', False)
+#    print html_input(vr, 'button', '', 'Clear', False, '', '</p>', '',
+#                     'clear_form()')
 
-    if section == 'sentential-negation':
-      # the sentential negation subpage needs access to certain choices
-      # from the lexicon page: specifically those related to verbal inflection
-
-      # so we do some looking about here to find the section we need
-      # since loading the entire lexicon page is too expensive
-
-      print '<div id="hidden_lex_choices" style="display:none">' 
-      start_vpc = ''
-      stop_vpc  = ''
-      for i in range(0,len(lines)):
-        if(lines[i].startswith("Label \"<h3>Verb Inflection")):
-          start_vpc = i
-      for i in range(start_vpc,len(lines)):
-        if(lines[i].startswith("EndIter verb-pc")):
-          stop_vpc = i
-      vpclines = lines[start_vpc:stop_vpc+1]
-      print self.defs_to_html(vpclines,
-                              choices, vr,
-                              '', {})
-      print '</div>'
     print HTML_postform
     print HTML_postbody
+    print '</div>'
 
 
   # Create and print the "download your matrix here" page for the
@@ -1300,9 +1354,16 @@ class MatrixDefFile:
 
     # create a zero-neg lri in choices
     if section == 'sentential-negation' and 'vpc-0-neg' in form_data.keys():
-      # infl-neg should be on for zero-neg to work
-      new_choices['infl-neg'] = 'on'
-      old_choices, new_choices = self.create_infl_neg_choices(old_choices, new_choices)
+      if form_data['vpc-0-neg'].value != "":
+        # infl-neg should be on for zero-neg to work
+        new_choices['infl-neg'] = 'on'
+        old_choices, new_choices = self.create_infl_neg_choices(old_choices, new_choices)
+
+    # bipartite neg adverbs require adv-neg
+    if section == 'sentential-negation' and 'neg1-type' in form_data.keys():
+      if form_data['neg1-type'].value[0] == 'f' or \
+       form_data['neg2-type'].value[0] == 'f':
+        new_choices['adv-neg'] = 'on'
 
 
     # Open the def file and store it in line[]
@@ -1388,7 +1449,7 @@ class MatrixDefFile:
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Invalid Choices File</title>'
-    print HTML_posttitle % ('', '', '', '', '')
+    print HTML_posttitle % ('', '', '')
     print HTML_toggle_visible_js
     print HTML_prebody
 
@@ -1416,7 +1477,7 @@ class MatrixDefFile:
     print HTTP_header + '\n'
     print HTML_pretitle
     print '<title>Problem Customizing Grammar</title>'
-    print HTML_posttitle % ('', '', '', '', '')
+    print HTML_posttitle % ('', '', '')
     print HTML_toggle_visible_js
     print HTML_prebody
 

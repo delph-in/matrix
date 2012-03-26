@@ -10,6 +10,7 @@
 #      -r: install remotely on homer.u.washington.edu
 #    -lkb: prepare the LKB files for TbG (only needs to be done once;
 #          if you want to refresh the files, delete the delphin directory)
+#    -iso: get the iso table file from iso that allows iso validation
 #
 # Examples:
 #      To install to a local directory:
@@ -36,11 +37,14 @@ then
 fi
 
 # parse command line
-while [ "$1" = -r -o "$1" = -lkb ]
+while [ "$1" = -r -o "$1" = -lkb -o "$1" = -iso ]
 do
     if [ "$1" = -r ]
     then
         dest_prefix="uwcl@homer.u.washington.edu:~/public_html/"
+    elif [ "$1" = -iso ]
+    then
+        get_iso=1
     elif [ "$1" = -lkb ]
     then
         install_lkb=1
@@ -82,8 +86,7 @@ rsync -a --exclude={CVS/,.svn/,delphin/,regression_tests/,tests/,sql_profiles/,g
 # create datestamp, matrix-types, and head-types files
 date -u > $tempdir/datestamp
 matrix_core=${CUSTOMIZATIONROOT}/../matrix-core/
-cat $matrix_core/matrix.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/matrix-types
-cat $matrix_core/head-types.tdl | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/head-types
+cat $matrix_core/{matrix.tdl,head-types.tdl,roots.tdl,labels.tdl} | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/matrix-types
 
 # Redirect directory index to cgi script (rather than index.html)
 echo "DirectoryIndex matrix.cgi" >> $tempdir/.htaccess
@@ -103,13 +106,22 @@ then
     rsync -a --exclude=.svn/ $delphin_dir $tempdir
 fi
 
+if [ $get_iso ]
+then
+    echo "Downloading iso code table file from sil.org."
+    echo ""
+    wget http://www.sil.org/iso639-3/iso-639-3_20120206.tab -O "$tempdir/iso.tab"
+fi
+
 #Finally rsync the tempdir to the destination
 #rsync -K maintain destination symlinks
 #      -v verbose
 #      -z compress before sending
 #      -r recursive
 #      -l copy symlinks as symlinks
-rsync -Kvzrl $tempdir/ $dest
+#      -t timestamps (may cause error messages during copy, but they
+#                     are apparently necessary for web-tests)
+rsync -Kvzrlt $tempdir/ $dest
 # The following command will also delete files at the destination that
 # do not exist in tempdir. Not using for now because an incorrect
 # destination could delete more than expected. This means that files

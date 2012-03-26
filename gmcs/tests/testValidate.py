@@ -263,15 +263,17 @@ class TestValidate(unittest.TestCase):
   def test_sentential_negation(self):
     c = ChoicesFile()
 
-    # negation via adverb, but no answers for other questions
+    # negation via adverb and simple negation
+    # but no answers for other questions
     c['adv-neg'] = 'on'
+    c['neg-exp'] = '1'
     self.assertErrors(c, ['neg-mod', 'neg-order', 'neg-adv-orth'])
 
-    # negation via auxiliary, but no auxiliaries ('has-aux' != 'yes')
-    c['neg-sel-adv'] = 'aux'
-    self.assertError(c, 'neg-sel-adv')
-    c['neg-sel-adv'] = 'main-aux'
-    self.assertError(c, 'neg-sel-adv')
+    # auxiliary selects neg complement, 
+    # but no auxiliaries ('has-aux' != 'yes')
+    c['comp-neg'] = 'on'
+    c['comp-neg-head'] = 'aux'
+    self.assertError(c, 'comp-neg-head')
 
 
   def test_coordination(self):

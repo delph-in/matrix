@@ -109,6 +109,7 @@ function clear_form()
 
 // save_form()
 // Save and Vivify the choices on the current subpage
+// Vivify --> Validate? --JDC 10feb2012
 function save_form(section)
 {
   var elm = document.getElementsByTagName('form')[0];
@@ -133,6 +134,25 @@ function submit_main()
   }
   form.submit();
 }
+
+// submit_go(subpage)
+// Submit the form and go to another subpage 
+function submit_go(subpage){
+  var form = document.getElementsByTagName('form')[0];
+  var elms = document.getElementsByTagName('input');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].name == "subpage") {
+      form.removeChild(elms[i]);
+    }
+  } 
+  var inp = document.createElement('input');
+  inp.type= "hidden";
+  inp.name= "subpage";
+  inp.value=subpage
+  form.appendChild(inp);
+  form.submit();
+}
+
 
 // toggle_display_lex()
 // Handle a click on a section show/hide button on the Lexicon Page
@@ -438,19 +458,6 @@ function remove_temp_options(select)
   }
 }
 
-// Fill a SELECT tag with temp OPTIONs defined by the passed-in arrays
-function insert_temp_options(select, values, texts)
-{
-  for (var i = 0; i < values.length; i++) {
-    var o = document.createElement('option');
-    o.className = 'temp';
-    o.value = values[i];
-    o.innerHTML = texts[i];
-
-    select.appendChild(o);
-  }
-}
-
 // Set the value of a SELECT, adding a temporary OPTION if necessary
 function set_select_value(select, value, text)
 {
@@ -472,12 +479,10 @@ function set_select_value(select, value, text)
   select.value = value;
 }
 
-// fill_regex()
-// Fill a SELECT tag with OPTIONs created from the values of any
-// form fields on the page whose NAME matches the pattern.  If the
-// nameOnly flag is true, make the OPTION's VALUE attribute equal to
-// its contents.
-function fill_regex(name, pattern, nameOnly)
+// fill()
+// there is one function to fill a SELECT, and it takes an array of options
+// to insert, and manages the re-selecting of previously selected items
+function fill(name, items)
 {
   var select = document.getElementsByName(name)[0];
   var old_val = select.value;  // store the previously selected option
@@ -485,21 +490,36 @@ function fill_regex(name, pattern, nameOnly)
   if (select.selectedIndex != -1) {
     old_text = select.options[select.selectedIndex].innerHTML;
   }
-
   remove_temp_options(select);
 
+  for (var i = 0; i < items.length; i++) {
+    // Each item should be a (string, value) pair
+    var o = document.createElement('option');
+    o.className = 'temp';
+    o.value = items[i][1];
+    o.innerHTML = items[i][0];
+    select.appendChild(o);
+  }
+  
+  set_select_value(select, old_val, old_text);
+  force_layout(select.parentNode);
+}
+
+// fill_regex() Return the values of any form fields on the page whose NAME
+// matches the pattern.  If the nameOnly flag is true, make the OPTION's VALUE
+// attribute equal to its contents.
+function fill_regex(pattern, nameOnly)
+{
   pattern = '^' + pattern + '$';
+  var items = new Array();
 
   // Pass through the form fields in the page, looking for ones whose
   // name attribute matches the pattern.  When one is found, use its
   // contents to create an option.
-  var values = new Array();
-  var texts = new Array();
   var e = document.forms[0].elements;
   for (var i = 0; i < e.length; i++) {
     if (e[i].name.search(pattern) != -1) {
       var val = e[i].name.replace(/_[^_]*$/, '');
-
       var desc = val;
       var f = document.getElementsByName(val + '_name');
       if (f && f[0] && f[0].value) {
@@ -510,79 +530,37 @@ function fill_regex(name, pattern, nameOnly)
           desc = f[0].value + ' (' + desc + ')';
         }
       }
-
-      var len = values.length;
-      values[len] = val;
-      texts[len] = desc;
+      items.push([desc, val]);
     }
   }
-
-  insert_temp_options(select, values, texts);
-
-  set_select_value(select, old_val, old_text);
-  force_layout(select.parentNode);
+  return items
 }
 
 // fill_feature_names()
-// Fill a SELECT tag with OPTIONs created from the array features[],
-// where every OPTION is a feature name.
+// Return items from the array features[], where every OPTION is a feature name.
 // The cat(egory) argument allows you to restrict the features by category
-function fill_feature_names(select_name, cat)
+function fill_feature_names(cat)
 {
-  var select = document.getElementsByName(select_name)[0];
-  var old_val = select.value;  // store the previously selected option
-  var old_text = old_val;
-  if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].innerHTML;
-  }
-
-  remove_temp_options(select);
-
+  var items = new Array()
   for (var i = 0; i < features.length; i++) {
     var f = features[i].split(':');
     
-    var o = document.createElement('option');
-    o.className = 'temp';
-
-    var inlist = 'yes';
-    if (typeof(cat) != "undefined"){
-      if (f[2] != cat && f[2] != 'both' && cat != 'both') {
-        inlist = 'no';
-      }
-    }
-
-    if (inlist == 'yes'){
-      o.value = f[0];
-      o.innerHTML = f[0];
-      select.appendChild(o);
+    if (typeof(cat) == "undefined" ||
+        f[2] == cat || f[2] == 'both' || cat == 'both') {
+      items.push([f[0], f[0]]);
     }
   }
-
-  set_select_value(select, old_val, old_text);
-  force_layout(select.parentNode);
+  return items
 }
 
 // fill_feature_values()
-// Fill a SELECT tag with OPTIONs created from the array features[],
-// where every OPTION is a feature value for the feature named
-// by the form element named other_name.
-function fill_feature_values(select_name, other_name, literal_feature)
+// Return items from the array features[], where every OPTION is a feature
+// value for the feature named by the form element named other_name.
+function fill_feature_values(other_name, literal_feature)
 {
-  var select = document.getElementsByName(select_name)[0];
-  var old_val = select.value;  // store the previously selected option
-  var old_text = old_val;
-  if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].innerHTML;
-  }
-
-  remove_temp_options(select);
-
-  if (literal_feature == 1) {
-    var other_val = other_name;
-  }  
-  else {
-    var other_val = document.getElementsByName(other_name)[0].value;
-  }
+  var items = new Array()
+  if (literal_feature == 1) { var other_val = other_name; }  
+  else { var other_val = document.getElementsByName(other_name)[0].value; }
 
   for (var i = 0; i < features.length; i++) {
     var v = features[i].split(':');
@@ -592,114 +570,51 @@ function fill_feature_values(select_name, other_name, literal_feature)
 
       for (var j = 0; j < v.length; j++) {
         var n = v[j].split('|');
-        var o = document.createElement('option');
-        o.className = 'temp';
-        o.value = n[0];
-        o.innerHTML = n[1];
-
-        select.appendChild(o);
+        items.push([n[1],n[0]])
       }
     }
   }
-
-  set_select_value(select, old_val, old_text);
-  force_layout(select.parentNode);
+  return items
 }
 
 // fill_case_patterns()
-// Fill a SELECT tag with OPTIONs created from either array
-// morph_case_patterns or verb_case_patterns, as determined by the
-// morph argument.
-function fill_case_patterns(select_name, morph)
+// Return items from either array morph_case_patterns or verb_case_patterns, as
+// determined by the morph argument.
+function fill_case_patterns(morph)
 {
-  var select = document.getElementsByName(select_name)[0];
-  var old_val = select.value;  // store the previously selected option
-  var old_text = old_val;
-  if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].innerHTML;
-  }
-
-  remove_temp_options(select);
-
-  var pats;
-  if (morph) {
-    pats = morph_case_patterns;
-  } else {
-    pats = verb_case_patterns;
-  }
-
+  var items = new Array();
+  var pats = (morph) ? morph_case_patterns : verb_case_patterns;
   for (var i = 0; i < pats.length; i++) {
     var p = pats[i].split(':');
-    
-    var o = document.createElement('option');
-    o.className = 'temp';
-    o.value = p[0];
-    o.innerHTML = p[1];
-
-    select.appendChild(o);
+    items.push([p[1], p[0]]);
   }
-
-  set_select_value(select, old_val, old_text);
-  force_layout(select.parentNode);
+  return items
 }
 
 // fill_numbers()
-// Fill a SELECT tag with OPTIONs created from the array numbers[],
-// where every OPTION is a value of the number feature.
+// Return items from the array numbers[], where every OPTION is a value of the
+// number feature.
 function fill_numbers(select_name)
 {
-  var select = document.getElementsByName(select_name)[0];
-  var old_val = select.value;  // store the previously selected option
-  var old_text = old_val;
-  if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].innerHTML;
-  }
-
-  remove_temp_options(select);
-
+  var items = new Array();
   for (var i = 0; i < numbers.length; i++) {
     var n = numbers[i].split(':');
-    var o = document.createElement('option');
-    o.className = 'temp';
-    o.value = n[0];
-    o.innerHTML = n[0];
-
-    select.appendChild(o);
+    items.push([n[0],n[0]]);
   }
-
-  set_select_value(select, old_val, old_text);
-  force_layout(select.parentNode);
+  return items
 }
 
-// fill_types()
-// Fill a SELECT tag with OPTIONs created from the array types[],
-// where every OPTION is a type name.
-function fill_types(select_name, type_cat)
+// fill_cache()
+// Return items from the given cache.
+function fill_cache(cache_name)
 {
-  var select = document.getElementsByName(select_name)[0];
-  var old_val = select.value;  // store the previously selected option
-  var old_text = old_val;
-  if (select.selectedIndex != -1) {
-    old_text = select.options[select.selectedIndex].innerHTML;
+  var cache = window[cache_name];
+  var items = new Array();
+  for (var i = 0; i < cache.length; i++) {
+    var x = cache[i].split(':');
+    items.push([(x[0] != '') ? x[0] + ' (' + x[1] + ')' : x[1], x[1]]);
   }
-
-  remove_temp_options(select);
-
-  for (var i = 0; i < types.length; i++) {
-    var t = types[i].split(':');
-    var o = document.createElement('option');
-    o.className = 'temp';
-
-    if (t[1] == type_cat) {
-      o.value = t[0];
-      o.innerHTML = t[0];
-
-      select.appendChild(o);
-    }
-  }
-
-  set_select_value(select, old_val, old_text);
-  force_layout(select.parentNode);
+  return items
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -1021,7 +936,7 @@ function import_toolbox_lexicon()
 function set_negexp(n)
 {
   var value = n;
-  var divs = document.getElementsByClassName("switch");
+  var divs = document.getElementsByClassName("neg_exp_switch");
 	for(var i=0; i<divs.length;i++){
     var d = divs[i];
     d.style.display = 'none';
@@ -1052,13 +967,202 @@ function set_negexp(n)
   }
 }
 
+function set_negmorph(n,o){
+
+  // first we hide everything
+  var divs = document.getElementsByClassName("neg"+n+"_switch");
+	for(var i=0; i<divs.length;i++){
+    var d = divs[i];
+    d.style.display = 'none';
+	}
+
+  var d;
+  // n is which morpheme we're specifying (neg1 or neg2)
+  // o is an option on bipartite negation, a morph type { b, fh, fd }
+  // if we're dealing with neg1, we set soem restrictions on neg2 
+  // type depending on what was selected in neg1
+  // if we're dealing with neg2, we may offer some advice depending
+  // on their choice for neg1
+  // we set 'd' to the section we want to dipslay, if it's null
+  // after we loop through, we don't do anything.
+
+  // basically, the user might be changing neg1 or neg2, so we
+  // have to set the messages accordingly for both cases
+  if(n=='1'){
+    switch (o){
+      case 'b':
+        document.forms["choices_form"]["neg2-type"][0].disabled=false;
+        document.forms["choices_form"]["neg2-type"][1].disabled=false;
+        document.forms["choices_form"]["neg2-type"][2].disabled=false;
+        var d = document.getElementById('neg'+n+'-b');
+        // if neg2 is bound, then we'll put our advice about circumfixes
+        if (document.forms["choices_form"]["neg2-type"][0].checked) {
+          var d2 = document.getElementById("neg2-b");
+          d2.innerHTML = "<p>If both NEG1 and NEG2 are bound to the same root, you can set up the dendency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p>"; 
+        } else if (document.forms["choices_form"]["neg2-type"][1].checked){
+          var d2 = document.getElementById("neg2-fh");
+          d2.innerHTML = "<p>NEG1 is bound and NEG2 is an auxiliary.  <span style=\"font-weight:bold\"><span style=\"color:blue\">This analysis is still under construction.</span></span></p>"; 
+        } else if (document.forms["choices_form"]["neg2-type"][2].checked){
+          var d2 = document.getElementById("neg2-fd");
+          d2.innerHTML = "<p>NEG1 is bound and NEG2 is an adverb.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        }
+        break;
+      case 'fh':
+        document.forms["choices_form"]["neg2-type"][0].disabled=false;
+        document.forms["choices_form"]["neg2-type"][1].disabled=true;
+        document.forms["choices_form"]["neg2-type"][2].disabled=false;
+        var d = document.getElementById('neg'+n+'-fh');
+        // if neg2 is bound, and we're switching away from neg1 bound,
+        // then we need to remove the special message about circumfixes
+        // we'll put some advice about this construction there instead
+        
+        if (document.forms["choices_form"]["neg2-type"][0].checked){
+          var d2 = document.getElementById("neg2-b");
+          d2.innerHTML = "<p>NEG1 is an auxiliary and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"
+        } else if (document.forms["choices_form"]["neg2-type"][1].checked){
+          var d2 = document.getElementById("neg2-fh");
+          d2.innerHTML = "<p>We don't have any analysis for a negation type with two auxiliary verbs.  Please contact matrix-dev about this language.</p>"; 
+        } else if (document.forms["choices_form"]["neg2-type"][2].checked){
+          var d2 = document.getElementById("neg2-fd");
+          d2.innerHTML = "<p>NEG1 is an auxiliary and NEG2 is an adverb.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        }
+        break;
+      case 'fd':
+        document.forms["choices_form"]["neg2-type"][0].disabled=false;
+        document.forms["choices_form"]["neg2-type"][1].disabled=false;
+        document.forms["choices_form"]["neg2-type"][2].disabled=false;
+        var d = document.getElementById('neg'+n+'-fd');
+        // if neg2 is bound, we'll put a special message about the status
+        // of this type
+        if (document.forms["choices_form"]["neg2-type"][0].checked){
+          var d2 = document.getElementById("neg2-b");
+          d2.innerHTML = "<p>NEG1 is an adverb and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"
+        } else if (document.forms["choices_form"]["neg2-type"][1].checked){
+          var d2 = document.getElementById("neg2-fh");
+          d2.innerHTML = "<p>NEG1 is an adverb and NEG2 is an auxiliary.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        } else if (document.forms["choices_form"]["neg2-type"][2].checked){
+          var d2 = document.getElementById("neg2-fd");
+          d2.innerHTML = "<p>NEG1 and NEG2 are adverbs.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        }
+        break;
+      default:
+        var d = null; 
+    }
+  } else if (n=='2') {
+    switch (o) {
+      case 'b':
+        if (document.forms["choices_form"]["neg1-type"][0].checked) {
+          // neg2 is bound, if neg1 is also bound, we tell them to go
+          // make a circumfix on the lexicon page.
+          var d = document.getElementById("neg2-b");
+          d.innerHTML = "<p>If both NEG1 and NEG2 are bound to the same root, you can set up the dependency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p>"; 
+        } else if (document.forms["choices_form"]["neg1-type"][1].checked) {
+          // neg2 is bound, if neg1 is a free head, give a message
+          var d = document.getElementById("neg2-b");
+          d.innerHTML = "<p>NEG1 is a auxiliary and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        } else if (document.forms["choices_form"]["neg1-type"][2].checked) {
+          // neg2 is bound, neg1 is an adverb, give a message 
+          var d = document.getElementById("neg2-b");
+          d.innerHTML = "<p>NEG1 is an adverb and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        }
+        break;
+      case 'fh':
+        if (document.forms["choices_form"]["neg1-type"][0].checked) {
+          // neg2 is an aux, neg1 is bound, give an appropriate message
+          var d = document.getElementById("neg2-fh");
+          d.innerHTML = "<p>NEG1 is bound.  NEG2 is an auxiliary.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        } else if (document.forms["choices_form"]["neg1-type"][1].checked) {
+          // neg2 is an aux, neg1 is also an aux, give a message
+          var d = document.getElementById("neg2-fh");
+          d.innerHTML = "<p>We don't have any analysis for a negation type with two auxiliary verbs.  Please contact matrix-dev about this language.</p>"; 
+        } else if (document.forms["choices_form"]["neg1-type"][2].checked) {
+          // neg2 is an aux, neg1 is an adverb, give a message 
+          var d = document.getElementById("neg2-b");
+          d.innerHTML = "<p>NEG1 is a adverb and NEG2 is an auxiliary.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        }
+        break;
+      case 'fd':
+        if (document.forms["choices_form"]["neg1-type"][0].checked) {
+          // neg2 is an adverb, neg1 is bound, give an appropriate message
+          var d = document.getElementById("neg2-fd");
+          d.innerHTML = '<p>NEG1 is bound.  NEG2 is an adverb.  Select the properties of NEG2 below.  A customization system feature \'requires neg adverb\' has been created for your use on the lexicon page.  Specify NEG1 as \'negation plus\' and \'requires neg adverb plus\'.</p>  NEG2 modifies:  <input type="radio" value="s" name="neg2-mod">  S  <input type="radio" value="vp" name="neg2-mod">  VP  <input type="radio" value="v" name="neg2-mod">  V  <br>  NEG2 is ordered:  <input type="radio" value="before" name="neg2-order">  before  <input type="radio" value="after" name="neg2-order">  after  <input type="radio" value="either" name="neg2-order">  on either side of the category it modifies.  <br>  NEG2 is spelled:  <input type="text" size="20" name="neg2-adv-orth">  <p></p>'; 
+        } else if (document.forms["choices_form"]["neg1-type"][1].checked) {
+          // neg2 is an adverb, neg1 is an aux, give a message
+          var d = document.getElementById("neg2-fd");
+          d.innerHTML = "<p>NEG1 is and auxiliary, NEG2 is an adverb.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        } else if (document.forms["choices_form"]["neg1-type"][2].checked) {
+          // neg2 is an adverb, neg1 is an adverb, give a message 
+          var d = document.getElementById("neg2-fd");
+          d.innerHTML = "<p>NEG1 and NEG2 are both adverbs.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+        }
+        break;
+      default:
+        var d = null;
+    }
+  }
+  if (d != null)
+  {
+    d.style.display ='block';
+  }
+}
+
 function display_neg_form()
 {
+  // this function constrols the logical constraints on the form
+  // choices.  it's a little like a pre-validation step.
+  // there are a lot of possible combinations of choices on the
+  // negation page, but most of the combinations won't lead to successful 
+  // grammars.  thus the need to prevent users from going down 
+  // dead ends we know about. 
+
+  // here we display only the exponence section the user has
+  // asked for
   var neg_exp = document.forms["choices_form"]["neg-exp"];
   for (var i=0; i<neg_exp.length;i++)
   {
     if(neg_exp[i].checked){
       set_negexp(neg_exp[i].value); 
+    }
+  }
+
+  // for simple negation, the selected complements analysis has
+  // some dead ends we know about
+  if (neg_exp[1].checked) { 
+    neg_comp();
+  }
+
+  // now we see if there are any choices set for 'negN-type'
+  // these are the neg1 and neg2 choices section on the bipartite
+  // page.
+  if (neg_exp[2].checked) {
+    for (var i=1;i<=2;i++){
+      var ntype = document.forms["choices_form"]["neg"+i+"-type"]; 
+      for (var j=0;j<ntype.length;j++){
+        if(ntype[j].checked){
+          var v = ntype[j].defaultValue;
+          set_negmorph(i,v);
+        }
+      }
+    }
+  }
+}
+
+function neg_comp() {
+// some restrictions on neg_comps analysis
+  // for simple negation, the selected complements analysis has
+  // some dead ends we know about
+  var comp_neg = document.forms["choices_form"]["comp-neg"];
+  var neg_exp  = document.forms["choices_form"]["neg-exp"];
+  if (neg_exp[1].checked && comp_neg.checked){
+    var comp_neg_head = document.forms["choices_form"]["comp-neg-head"];
+    var after = document.forms["choices_form"]["comp-neg-order"][1];
+    if(comp_neg_head[1].checked){
+      // if the user selects any verb as the head, we can't do the post-comps order
+      after.disabled = true;
+      after.checked = false;
+    } else {
+      // turn it back on otherwise
+      after.disabled = false;
     }
   }
 }

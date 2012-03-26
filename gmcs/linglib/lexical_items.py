@@ -1,5 +1,6 @@
 from gmcs.utils import get_name
 from gmcs.utils import TDLencode
+from gmcs.utils import orth_encode
 
 from gmcs.linglib import case
 from gmcs.linglib import features
@@ -171,6 +172,9 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 # includes both aux and lexical/main verbs.
 # If there are no auxiliaries then 'verb-lex' covers all verbs
 
+  # Neither mainverbs or auxs should start out as modifiers (for now)
+  # Assigning constraint to verb-lex
+
   if ch.get('has-aux') == 'yes':
     mylang.add('head :+ [ AUX bool ].', section='addenda')
     #mainorverbtype = 'main-verb-lex'
@@ -220,7 +224,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
   else:
     #mainorverbtype = 'verb-lex'
     vcluster = False
-    mylang.add('verb-lex := basic-verb-lex.')
+    mylang.add('verb-lex := basic-verb-lex & non-mod-lex-item.')
   
   mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')
   
@@ -534,12 +538,12 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     stems.extend(verb.get('bistem', []))
 
     for stem in stems:
-      orth = stem.get('orth')
+      orthstr = orth_encode(stem.get('orth'))
       pred = stem.get('pred')
       id = stem.get('name')
       typedef = \
         TDLencode(id) + ' := ' + vtype + ' & \
-                    [ STEM < "' + orth + '" >, \
+                    [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
@@ -695,7 +699,8 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
                                    COMPS < >, \
                                    SUBJ < > ]].'
     mylang.add(typedef)
-
+    
+    mylang.add('determiner-lex := non-mod-lex-item.')
     # also not to be used as modifiers
     mylang.add('determiner-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].')    
     
@@ -730,12 +735,12 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
     features.customize_feature_values(mylang, ch, hierarchies, det, dtype, 'det')
 
     for stem in det.get('stem',[]):
-      orth = stem.get('orth')
+      orthstr = orth_encode(stem.get('orth'))
       pred = stem.get('pred')
       id = stem.get('name')
       typedef = \
         TDLencode(id) + ' := ' + dtype + ' & \
-                    [ STEM < "' + orth + '" >, \
+                    [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
@@ -1453,9 +1458,10 @@ def customize_misc_lex(ch, lexicon):
   # Question particle
   if ch.get('q-part'):
     orth = ch.get('q-part-orth')
+    orthstr = orth_encode(orth)
     typedef = \
       TDLencode(orth) + ' := qpart-lex-item & \
-                   [ STEM < "' + orth + '" > ].'
+                   [ STEM < "' + orthstr + '" > ].'
     lexicon.add(typedef)
 
 def customize_nouns(mylang, ch, lexicon, hierarchies):
@@ -1775,22 +1781,22 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
 
     for stem in noun.get('stem', []):
-      orth = stem.get('orth')
+      orthstr = orth_encode(stem.get('orth'))
       pred = stem.get('pred')
       id = stem.get('name')
       if expl == 'yes':
         typedef = TDLencode(id) + ' := expl-noun-lex & \
-                    [ STEM < "' + orth + '" > ].'
+                    [ STEM < "' + orthstr + '" > ].'
       elif rel == 'yes' or n_refl == 'obl':
         typedef = TDLencode(id) + ' :=  ' + ntype + ' & \
-                    [ STEM < "' + orth + '" > ].'
+                    [ STEM < "' + orthstr + '" > ].'
       elif pers_n:
         typedef = TDLencode(id) + ' := ' + ntype + ' & \
-                    [ STEM < "' + orth + '" >, \
+                    [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.CARG "' + pred + '" ].'
       else:
         typedef = TDLencode(id) + ' := ' + ntype + ' & \
-                    [ STEM < "' + orth + '" >, \
+                    [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
@@ -1889,6 +1895,10 @@ def create_wh_phrases(mylang, ch):
 
 
 def customize_lexicon(mylang, ch, lexicon, hierarchies, lrules):
+
+  comment = '''Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.'''
+  mylang.add('non-mod-lex-item := lex-item & \
+               [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].',comment)
 
   mylang.set_section('nounlex')
   customize_nouns(mylang, ch, lexicon, hierarchies)

@@ -1,4 +1,5 @@
-### $Id: customize.py,v 1.71 2008-09-30 23:50:02 lpoulson Exp $
+#
+# $Id: customize.py,v 1.71 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -12,6 +13,7 @@ import gzip
 import zipfile
 import sys
 import re
+import codecs
 from subprocess import call
 
 from gmcs.choices import ChoicesFile
@@ -95,39 +97,71 @@ roots = None
 #   Determine which punctuation characters to ignore in parsing
 
 def customize_punctuation(grammar_path):
-  if not ch.get('punctuation-chars',''): return
-  chars = list(unicode(ch['punctuation-chars'], 'utf8'))
-  # First for LKB's globals.lsp
-  punc_re = re.compile(r'(' + r'|'.join(r'#\\' + re.escape(c) + ' ?'
-                                        for c in chars) + r')')
-  filename = os.path.join(grammar_path, 'lkb', 'globals.lsp')
-  lines = iter(open(filename, 'r').readlines())
-  glbl_lsp = open(filename, 'w')
-  for line in lines:
-    if line.startswith('(defparameter *punctuation-characters*'):
-      # NOTE: because we don't want to parse lisp, we assume here that
-      #       the (defparameter block ends at the next blank line
-      while line.strip() != '':
-          line = punc_re.sub('', line)
-          print >>glbl_lsp, line.rstrip()
-          line = lines.next()
-    print >>glbl_lsp, line.rstrip()
-  glbl_lsp.close()
-  # PET's pet.set is a bit easier
-  line_re = re.compile(r'^punctuation-characters := "(.*)".\s*$')
-  # need to escape 1 possibility for PET
-  chars = [{'"':'\\"'}.get(c, c) for c in chars]
-  punc_re = re.compile(r'(' + r'|'.join(re.escape(c) for c in chars) + r')')
-  filename = os.path.join(grammar_path, 'pet', 'pet.set')
-  lines = iter(open(filename, 'r').readlines())
-  pet_set = open(filename, 'w')
-  for line in lines:
-    line = unicode(line, 'utf8')
-    s = line_re.search(line)
-    if s:
-      line = 'punctuation-characters := "%s".' % punc_re.sub('', s.group(1))
-    print >>pet_set, line.rstrip().encode('utf8')
-  pet_set.close()
+  '''sets up repp preprocessing for lkb according to one of 
+     three choices on the questionnaire.  '''
+    # TODO: pet.set output needs to be updated for 
+    # current questionnaire choices and for repp!
+
+  default_splits_str = ' \\t!"#$%&\'()\*\+,-\./:;<=>?@\[\]\^_`{|}~\\\\'.encode('utf-8')
+
+  if ch.get('punctuation-chars') == 'keep-all':
+    # in this case, we just split on [ \t], and that's
+    # what vanilla.rpp already does, so we're done
+    return
+  elif ch.get('punctuation-chars') == 'discard-all':
+    # in this case, "all" punctuation (from the default list)
+    # should be split on and dropped 
+    # to do this we have to build a regex for the : line of 
+    # the repp file
+    # 
+    filename = os.path.join(grammar_path, 'lkb', 'vanilla.rpp') 
+    lines = codecs.open(filename, 'r', encoding='utf-8').readlines()
+    van_rpp = codecs.open(filename, 'w', encoding='utf-8')
+    for line in lines:
+      if line.startswith(':'):
+        line = ":["+default_splits_str+"]".rstrip()
+      print >>van_rpp, line.rstrip('\n')
+    van_rpp.close()       
+  elif ch.get('punctuation-chars') == 'keep-list':
+    # here we split on the default list (like discard-all),
+    # but *minus* whatevers on the keep list
+    chars = list(unicode(ch['punctuation-chars-list'], 'utf8'))
+    filename = os.path.join(grammar_path, 'lkb', 'vanilla.rpp') 
+    lines = iter(codecs.open(filename, 'r', encoding='utf-8').readlines())
+    van_rpp = codecs.open(filename, 'w', encoding='utf-8')
+    for line in lines:
+      if line.startswith(':'):
+        line = line[2:-2]
+      # NOTE: repp syntax says that the line that starts with ':'
+      # defines a list of chars to split on
+        for c in chars:
+          # \ char needs some special treatment
+          # so do the other escaped chars!
+          if c == '\\':
+            c = '\\\\'
+          default_splits_str = default_splits_str.replace(c,'')
+        line= ":["+default_splits_str+"]".rstrip()
+      print >>van_rpp,line.rstrip('\n')
+    van_rpp.close()
+
+  
+#  Need to move pet over to repp
+# 
+#  # PET's pet.set is a bit easier
+#  line_re = re.compile(r'^punctuation-characters := "(.*)".\s*$')
+#  # need to escape 1 possibility for PET
+#  chars = [{'"':'\\"'}.get(c, c) for c in chars]
+#  punc_re = re.compile(r'(' + r'|'.join(re.escape(c) for c in chars) + r')')
+#  filename = os.path.join(grammar_path, 'pet', 'pet.set')
+#  lines = iter(open(filename, 'r').readlines())
+#  pet_set = open(filename, 'w')
+#  for line in lines:
+#    line = unicode(line, 'utf8')
+#    s = line_re.search(line)
+#    if s:
+#      line = 'punctuation-characters := "%s".' % punc_re.sub('', s.group(1))
+#    print >>pet_set, line.rstrip().encode('utf8')
+#  pet_set.close()
 
 ######################################################################
 # customize_test_sentences(grammar_path)
@@ -224,6 +258,18 @@ def customize_pettdl(grammar_path):
   except:
     pass
 
+######################################################################
+# customize_acetdl()
+#
+
+def customize_acetdl(grammar_path):
+  myl = ch.get('language').lower()
+  ace_config = os.path.join(grammar_path, 'ace', 'config.tdl')
+  replace_strings = {'mylanguage': os.path.join('..', myl + '-pet.tdl')}
+  lines = open(ace_config, 'r').read()
+  a_out = open(ace_config, 'w')
+  print >>a_out, lines % replace_strings
+  a_out.close()
 
 ######################################################################
 # customize_roots()
@@ -469,7 +515,7 @@ def customize_matrix(path, arch_type, destination=None):
 ###call specialized Germanic word order rules:
   if ch.get('word-order') == 'v2' and ch.get('verb-cluster') == 'yes':
     word_order_v2_vcluster.v2_and_verbal_clusters(ch, mylang, lrules, rules)
-  negation.customize_sentential_negation(mylang, ch, lexicon, rules)
+  negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules)
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
   if ch.get('passivization') == 'yes':
@@ -485,6 +531,7 @@ def customize_matrix(path, arch_type, destination=None):
   customize_itsdb(grammar_path)
   customize_script(grammar_path)
   customize_pettdl(grammar_path)
+  customize_acetdl(grammar_path)
   customize_roots()
 
   # Save the output files
@@ -516,7 +563,7 @@ def get_grammar_path(isocode, language, destination):
   # three possibilities for dir names. If all are taken, raise an exception
   for dir_name in [isocode, language, isocode + '_grammar']:
     if dir_name == '': continue
-    grammar_path = os.path.join(destination, dir_name)
+    grammar_path = os.path.join(destination, dir_name.replace(' ', '_'))
     # if grammar_path already exists as a file, it is likely the choices file
     if not (os.path.exists(grammar_path) and os.path.isfile(grammar_path)):
       return grammar_path

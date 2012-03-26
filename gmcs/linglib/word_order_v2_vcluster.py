@@ -1193,7 +1193,8 @@ def create_germanic_adjunct_phrases(ch, mylang, rules):
  
 ###if no auxiliary, direct attachment v2
 ###to do: introduce EDGE if not already present
-
+  if not ch.get('edge-related-res') == 'yes':
+    mylang.add('cat :+ [ EDGE luk ].')
   mylang.add('head-2nd-adj-phrase := head-initial-head-nexus & adjunct-head-phrase & \
  [ SYNSEM.LOCAL.CAT.EDGE #edge, \
    HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #edge ].')

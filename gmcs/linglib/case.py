@@ -1,4 +1,5 @@
 from gmcs.utils import TDLencode
+from gmcs.utils import orth_encode
 from gmcs.lib import TDLHierarchy
 from gmcs.utils import get_name
 
@@ -190,7 +191,7 @@ def customize_case_adpositions(mylang, lexicon, ch):
     lexicon.add_literal(';;; Case-marking adpositions')
 
     for adp in ch.get('adp',[]):
-      orth = adp.get('orth','')
+      orth = orth_encode(adp.get('orth'))
 
       # figure out the abbreviation for the case this adp marks
       cn = ''

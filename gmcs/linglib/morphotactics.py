@@ -179,6 +179,7 @@ def position_class_hierarchy(choices):
   # now assign pc inputs
   for pc in pc_inputs:
     for inp in pc_inputs[pc]:
+      if inp not in _mns and inp in LEXICAL_CATEGORIES: continue
       _mns[pc].relate(_mns[inp], 'parent')
   return pch
 
@@ -680,7 +681,7 @@ def validate(choices, vr):
     basic_pc_validation(choices, pc, vr)
     cooccurrence_validation(pc, choices, vr)
     for lrt in pc.get('lrt', []):
-      lrt_validation(lrt, vr, index_feats)
+      lrt_validation(lrt, vr, index_feats, choices)
   cycle_validation(choices, vr)
 
 def basic_pc_validation(choices, pc, vr):
@@ -716,7 +717,7 @@ def basic_pc_validation(choices, pc, vr):
                'therefore cannot themselves take constraints. Apply the ' +\
                'constraints to the position class, instead.')
 
-def lrt_validation(lrt, vr, index_feats):
+def lrt_validation(lrt, vr, index_feats, choices):
   # No supertype means it's a root type within a PC class (no longer an error)
   #if 'supertypes' not in lrt:
   #  vr.err(lrt.full_key + '_supertypes',
@@ -733,6 +734,9 @@ def lrt_validation(lrt, vr, index_feats):
       if 'head' not in feat:
         vr.err(feat.full_key + '_head',
                'You must choose where the feature is specified.')
+      elif feat.get('head') in ['higher', 'lower'] and not choices.get('scale'):
+        vr.err(feat.full_key + '_head',
+               'To use higher/lower ranked NP, please define a scale on the direct-inverse page.') 
       elif feat['head'] == 'verb' and feat.get('name','') in index_feats:
         vr.err(feat.full_key + '_head',
                'This feature is associated with nouns, ' +\

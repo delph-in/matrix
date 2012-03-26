@@ -1563,6 +1563,7 @@ basic-head-filler-phrase := basic-filler-phrase & head-compositional.
 general-basic-head-subj-phrase := head-valence-head-nexus & binary-headed-phrase & head-compositional &
   [ SYNSEM phr-synsem & 
 	   [ LOCAL.CAT [ POSTHEAD +,
+                   HC-LIGHT -,
 			 VAL [ SUBJ < >,
 			       COMPS #comps,
 			       SPR #spr ] ] ],
@@ -1603,7 +1604,8 @@ general-basic-head-spec-phrase := head-valence-phrase & phrasal &
                                COMPS #spcomps,
                                SPR #spr,
                                SPEC #spec ],
-                         POSTHEAD #ph ],
+                         POSTHEAD #ph,
+                         HC-LIGHT - ],
              MODIFIED #modif,
 	     NON-LOCAL.QUE #que ],
     HEAD-DTR [ INFLECTED infl-satisfied,
@@ -2051,7 +2053,8 @@ head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
            [ LOCAL [ CAT [ HEAD #head,
                            VAL #val,
                            POSTHEAD #ph,
-                           MC #hmc ],
+                           MC #hmc,
+                           HC-LIGHT - ],
                      AGR #agr,
                      CONT.HOOK #hdhook ],
              NON-LOCAL [ SLASH #slash & [ LIST #middle,
@@ -2075,6 +2078,15 @@ head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
     C-CONT.RELS <! !> ].
 
 basic-head-mod-phrase-simple := head-mod-phrase-simple & head-nexus-phrase & head-non-wh.
+
+;;;2011-11-07 removing head-mod-phrase-simple
+;;;As pointed out by Bart Cramer, this does not add anything to
+;;;basic-head-mod-phrase-simple, where the HOOK is already shared between
+;;;HEAD-DTR and NON-HEAD-DTR
+; head-mod-phrase-simple := basic-head-mod-phrase-simple &
+;  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #htop,
+;    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #htop ] >].
+
 
 ;;;removed SYNSEM.NON-LOCAL.QUE 0-dlist. to do: test consequences
 basic-head-wh-mod-phrase-simple := head-mod-phrase-simple & head-wh.
@@ -2810,8 +2822,11 @@ basic-int-mod-adj-lex := basic-mod-adj-lex & intersective-mod-lex.
 basic-nomod-adj-lex := basic-adjective-lex & no-mod-lex & norm-hook-lex-item.
 
 basic-adposition-lex := single-rel-lex-item &
-  [ SYNSEM [ LOCAL.CAT.HEAD adp,
-	     LKEYS.KEYREL event-relation ]].
+  [ SYNSEM [ LOCAL.CAT [ HEAD adp,
+    	     	         VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX #ind ] > ],
+	     LKEYS.KEYREL arg12-ev-relation &
+	     		  [ ARG2 #ind ]]].
+
 
 ; ASF 2011-10-23 changed supertype of basic-mod-adp-lex to norm-sem-lex-item.
 ; Previous analysis blocked examples such as 'the man is sitting on the table'
@@ -3017,14 +3032,8 @@ unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
                                      COORD -,
                                      CONT.HOOK [ INDEX #rind ]]] > ].
 
-;;; ERB 2007-05-16 Note for sfd: There is probably a single type
-;;; you could inherit from here that combines what you need.
-
-infl-bottom-coord-rule := same-local-lex-rule &
-                          same-non-local-lex-rule &
-			  same-modified-lex-rule &
-			  same-light-lex-rule &
-                          inflecting-lex-rule &
+infl-bottom-coord-rule := add-only-rule &
+			  inflecting-lex-rule &
   [ INFLECTED infl-satisfied,
     DTR.INFLECTED inflected,
     SYNSEM.LOCAL [ COORD +,
@@ -3168,20 +3177,12 @@ omni-conj-last-left-coord-rule := omni-binary-left-coord-rule &
     NONCONJ-DTR #ncdtr,
     ARGS < #ncdtr, #cdtr > ].
 
-;;; ERB 2007-05-16 Note for sfd: There is probably a single type
-;;; you could inherit from here that combines what you need.
-
 
 infl-left-coord-rule := omni-left-coord-rule &
-			same-modified-lex-rule &
-			same-light-lex-rule &
-                        same-local-lex-rule &
-                        same-non-local-lex-rule &
-                        inflecting-lex-rule &
+		     	infl-add-only-lex-rule &
   [ INFLECTED infl-satisfied,
     DTR.INFLECTED inflected,
-    SYNSEM.LOCAL [ COORD -,
-                   COORD-REL #crel ],
+    SYNSEM.LOCAL [ COORD-REL #crel ],
     C-CONT [ RELS <! #crel !>,
              HCONS <! !> ]].
 

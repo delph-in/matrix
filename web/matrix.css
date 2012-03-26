@@ -57,3 +57,23 @@ div.iterframe div.iterframe div.iterframe div.iterframe div.iterframe div.iterfr
 div.iterframe div.iterframe div.iterframe div.iterframe div.iterframe div.iterframe div.iterframe {
   border-color: #FF8080;
 }
+
+#form_holder {
+  width:85%;
+  float:left;
+}
+
+#navmenu {
+  width:14%;
+  float:right;
+  font-size:75%;
+  margin:5px;
+  padding-right:10px;
+  top:0;
+  right:0;
+  position:fixed;
+  border:1px solid black;
+}
+#navmenu ul {
+  list-style-type:square;
+}

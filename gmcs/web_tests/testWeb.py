@@ -1,5 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+#from selenium.webdriver.support.ui import Select
+#from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 import unittest, time, re, os
 
@@ -14,92 +16,6 @@ class AllPagesEmptyChoices(unittest.TestCase):
     def test_all_pages_empty_choices(self):
         driver = self.driver
         driver.get("http://uakari.ling.washington.edu/matrix/test/matrix.cgi")
-        driver.find_element_by_link_text("General Information").click()
-        try: self.assertEqual("General Information", driver.find_element_by_css_selector("h2").text)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        driver.back()
-        driver.find_element_by_link_text("Number").click()
-        self.assertEqual("Number", driver.find_element_by_css_selector("h2").text)
-        driver.back()
-        driver.find_element_by_link_text("Word Order").click()
-        try: self.assertEqual("Word Order", driver.find_element_by_css_selector("h2").text)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        driver.back()
-        driver.find_element_by_link_text("Person").click()
-        try: self.assertEqual("Person", driver.find_element_by_css_selector("h2").text)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        driver.back()
-        driver.find_element_by_link_text("Gender").click()
-        try: self.assertEqual("Gender", driver.find_element_by_css_selector("h2").text)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        driver.back()
-        driver.find_element_by_link_text("Case").click()
-        try: self.assertEqual("Case", driver.find_element_by_css_selector("h2").text)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        driver.back()
-        driver.find_element_by_link_text("Direct-inverse").click()
-        try: self.assertEqual("Direct-inverse", driver.find_element_by_css_selector("h2").text)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        driver.back()
-        driver.find_element_by_link_text("Tense, Aspect and Mood").click()
-        try: self.assertEqual("Tense, Aspect and Mood", driver.find_element_by_css_selector("h2").text)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        driver.back()
-        driver.find_element_by_link_text("Other Features").click()
-        try: self.assertEqual("Other Features", driver.find_element_by_css_selector("h2").text)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        driver.back()
-        driver.find_element_by_link_text("Sentential Negation").click()
-        try: self.assertEqual("Sentential Negation", driver.find_element_by_css_selector("h2").text)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        driver.back()
-        driver.find_element_by_link_text("Coordination").click()
-        try: self.assertEqual("Coordination", driver.find_element_by_css_selector("h2").text)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        driver.back()
-        driver.find_element_by_link_text("Matrix Yes/No Questions").click()
-        try: self.assertEqual("Matrix Yes/No Questions", driver.find_element_by_css_selector("h2").text)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        driver.back()
-        driver.find_element_by_link_text("Argument Optionality").click()
-        try: self.assertEqual("Argument Optionality", driver.find_element_by_css_selector("h2").text)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        driver.back()
-        driver.find_element_by_link_text("Lexicon").click()
-        try: self.assertEqual("Lexicon", driver.find_element_by_css_selector("h2").text)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        driver.back()
-        driver.find_element_by_link_text("Test Sentences").click()
-        try: self.assertEqual("Test Sentences", driver.find_element_by_css_selector("h2").text)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        driver.back()
-        driver.find_element_by_link_text("Test by Generation Options").click()
-        try: self.assertEqual("Test by Generation Options", driver.find_element_by_css_selector("h2").text)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-    
-    def is_element_present(self, how, what):
-        try: self.driver.find_element(by=how, value=what)
-        except NoSuchElementException, e: return False
-        return True
-    
-    def tearDown(self):
-        self.driver.quit()
-        self.assertEqual([], self.verificationErrors)
-
-class AllPagesJamamadiChoices(unittest.TestCase):
-    '''Check thatt all the pages load with a valid choices file'''
-    def setUp(self):
-        self.driver = webdriver.Firefox()
-        self.driver.implicitly_wait(30)
-        self.base_url = "http://uakari.ling.washington.edu/matrix/test/matrix.cgi"
-        self.verificationErrors = []
-    
-    def test_all_pages_jamamadi_choices(self):
-        driver = self.driver
-        driver.get("http://uakari.ling.washington.edu/matrix/test/matrix.cgi")
-        driver.find_element_by_name("choices").clear()
-        driver.find_element_by_name("choices").send_keys(os.path.abspath("./gmcs/web_tests/web_choices/Jamamadi_choices.txt"))
-        driver.find_element_by_css_selector("form[name=\"choices_form\"] > p > input[type=\"submit\"]").click()
         driver.find_element_by_link_text("General Information").click()
         try: self.assertEqual("General Information", driver.find_element_by_css_selector("h2").text)
         except AssertionError as e: self.verificationErrors.append(str(e))
@@ -154,6 +70,108 @@ class AllPagesJamamadiChoices(unittest.TestCase):
         driver.back()
         driver.find_element_by_link_text("Lexicon").click()
         try: self.assertEqual("Lexicon", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Morphology").click()
+        try: self.assertEqual("Morphology", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Import Toolbox Lexicon").click()
+        try: self.assertEqual("Import Toolbox Lexicon", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Test Sentences").click()
+        try: self.assertEqual("Test Sentences", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Test by Generation Options").click()
+        try: self.assertEqual("Test by Generation Options", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+    
+    def is_element_present(self, how, what):
+        try: self.driver.find_element(by=how, value=what)
+        except NoSuchElementException, e: return False
+        return True
+    
+    def tearDown(self):
+        self.driver.quit()
+        self.assertEqual([], self.verificationErrors)
+
+class AllPagesJamamadiChoices(unittest.TestCase):
+    '''Check that all the pages load with a valid choices file'''
+    def setUp(self):
+        self.driver = webdriver.Firefox()
+        self.driver.implicitly_wait(30)
+        self.base_url = "http://uakari.ling.washington.edu/matrix/test/matrix.cgi"
+        self.verificationErrors = []
+    
+    def test_all_pages_jamamadi_choices(self):
+        driver = self.driver
+        driver.get("http://uakari.ling.washington.edu/matrix/test/matrix.cgi")
+        driver.find_element_by_name("choices").send_keys(os.path.abspath("./gmcs/web_tests/web_choices/Jamamadi_choices.txt"))
+        driver.find_element_by_xpath("//form[2]/p/input").click()
+        driver.find_element_by_link_text("General Information").click()
+        try: self.assertEqual("General Information", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.get("http://uakari.ling.washington.edu/matrix/test/matrix.cgi")
+        driver.find_element_by_link_text("Number").click()
+        try: self.assertEqual("Number", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Word Order").click()
+        try: self.assertEqual("Word Order", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Person").click()
+        try: self.assertEqual("Person", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Gender").click()
+        try: self.assertEqual("Gender", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Case").click()
+        try: self.assertEqual("Case", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Direct-inverse").click()
+        try: self.assertEqual("Direct-inverse", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Tense, Aspect and Mood").click()
+        try: self.assertEqual("Tense, Aspect and Mood", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Other Features").click()
+        try: self.assertEqual("Other Features", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Sentential Negation").click()
+        try: self.assertEqual("Sentential Negation", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Coordination").click()
+        try: self.assertEqual("Coordination", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Matrix Yes/No Questions").click()
+        try: self.assertEqual("Matrix Yes/No Questions", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Argument Optionality").click()
+        try: self.assertEqual("Argument Optionality", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Lexicon").click()
+        try: self.assertEqual("Lexicon", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Morphology").click()
+        try: self.assertEqual("Morphology", driver.find_element_by_css_selector("h2").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.back()
+        driver.find_element_by_link_text("Import Toolbox Lexicon").click()
+        try: self.assertEqual("Import Toolbox Lexicon", driver.find_element_by_css_selector("h2").text)
         except AssertionError as e: self.verificationErrors.append(str(e))
         driver.back()
         driver.find_element_by_link_text("Test Sentences").click()
@@ -280,8 +298,11 @@ class NumberErrors(unittest.TestCase):
         driver.get("http://uakari.ling.washington.edu/matrix/test/matrix.cgi")
         driver.find_element_by_link_text("Number").click()
         driver.find_element_by_css_selector("input[name=''][value='Add a Number']").click()
-        driver.find_element_by_css_selector("#number1 > div.iterframe > p > input[type=\"button\"]").click()
-        driver.find_element_by_css_selector("select[name='number1_supertype1_name']").click()
+#       The driver isn't recognizing the first click of the "Add supertype Button"
+#        Hopefully this will eventually be corrected...
+        driver.find_element_by_xpath("//div[2]/div/p/input").click()
+        driver.find_element_by_xpath("//div[2]/div/p/input").click()
+        driver.find_element_by_css_selector("select[name='number1_supertype1_name'] > option[value='']").click()
         driver.find_element_by_css_selector("select[name='number1_supertype1_name'] > option[value='number1']").click()
         driver.find_element_by_css_selector("input[type='submit']").click()
         try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name=\"number1_name_error\"] > span.error[title=\"You must specify a name for each number you define.\"]"))
@@ -364,6 +385,7 @@ class CaseErrors(unittest.TestCase):
     def tearDown(self):
         self.driver.quit()
         self.assertEqual([], self.verificationErrors)
+
 class DirectInverseErrors(unittest.TestCase):
     '''Test Errors and Warnings for the Direct-Inverse page.'''
     def setUp(self):
@@ -377,7 +399,7 @@ class DirectInverseErrors(unittest.TestCase):
         driver.get("http://uakari.ling.washington.edu/matrix/test/matrix.cgi")
         driver.find_element_by_link_text("Direct-inverse").click()
         driver.find_element_by_css_selector("input[type='button'][value='Add a Scale Entry']").click()
-        driver.find_element_by_css_selector("select[name='scale1_feat1_name']").click()
+        driver.find_element_by_css_selector("select[name='scale1_feat1_name'] > option[value='']").click()
         driver.find_element_by_css_selector("select[name='scale1_feat1_name'] > option[value='argument structure']").click()
         driver.find_element_by_css_selector("input[type='submit']").click();
         try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name=\"scale1_feat1_value_error\"] > span.error[title=\"You have selected an invalid feature value.\"]"))
@@ -393,6 +415,7 @@ class DirectInverseErrors(unittest.TestCase):
     def tearDown(self):
         self.driver.quit()
         self.assertEqual([], self.verificationErrors)
+
 class TenseAspectMoodErrors(unittest.TestCase):
     '''Test Errors and Warnings for the Tense/Aspect page.'''
     def setUp(self):
@@ -418,22 +441,22 @@ class TenseAspectMoodErrors(unittest.TestCase):
         try: self.assertTrue(self.is_element_present(By.CSS_SELECTOR, "a[name=\"tense-definition_error\"] > span.error[title=\"You have chosen to build your own tense hierarchy so you must enter at least one tense subtype.\"]"))
         except AssertionError as e: self.verificationErrors.append(str(e))
         driver.find_element_by_css_selector("input[type='button'][value='Add a tense type']").click()
-        driver.find_element_by_css_selector("select[name='tense1_supertype1_name']").click()
-        driver.find_element_by_css_selector("option[value='tense1']").click()
+        driver.find_element_by_css_selector("select[name='tense1_supertype1_name'] > option[value='']").click()
+        driver.find_element_by_css_selector("select[name='tense1_supertype1_name'] > option[value='tense1']").click()
         driver.find_element_by_css_selector("input[type='button'][value='Add a tense type']").click()
         driver.find_element_by_css_selector("input[name='tense2_name']").send_keys("Pointless-Tense")
         driver.find_element_by_css_selector("input[type='button'][value='Add an aspect type']").click()
-        driver.find_element_by_css_selector("select[name='aspect1_supertype1_name']").click()
-        driver.find_element_by_css_selector("option[value='aspect1']").click()
+        driver.find_element_by_css_selector("select[name='aspect1_supertype1_name'] > option[value='']").click()
+        driver.find_element_by_css_selector("select[name='aspect1_supertype1_name'] > option[value='aspect1']").click()
         driver.find_element_by_css_selector("input[type='button'][value='Add an aspect type']").click()
         driver.find_element_by_css_selector("input[name='aspect2_name']").send_keys("Pointless-Aspect")
         driver.find_element_by_css_selector("input[type='button'][value='Add a situation type']").click()
-        driver.find_element_by_css_selector("select[name='situation1_supertype1_name']").click()
+        driver.find_element_by_css_selector("select[name='situation1_supertype1_name'] > option[value='']").click()
         driver.find_element_by_css_selector("option[value='situation1']").click()
         driver.find_element_by_css_selector("input[type='button'][value='Add a situation type']").click()
         driver.find_element_by_css_selector("input[name='situation2_name']").send_keys("Pointless-Situation")
         driver.find_element_by_css_selector("input[type='button'][value='Add a mood type']").click()
-        driver.find_element_by_css_selector("select[name='mood1_supertype1_name']").click()
+        driver.find_element_by_css_selector("select[name='mood1_supertype1_name'] > option[value='']").click()
         driver.find_element_by_css_selector("option[value='mood1']").click()
         driver.find_element_by_css_selector("input[type='button'][value='Add a mood type']").click()
         driver.find_element_by_css_selector("input[name='mood2_name']").send_keys("Pointless-Mood")
@@ -481,6 +504,7 @@ class TenseAspectMoodErrors(unittest.TestCase):
     def tearDown(self):
         self.driver.quit()
         self.assertEqual([], self.verificationErrors)
+
 
 if __name__ == "__main__":
     unittest.main()

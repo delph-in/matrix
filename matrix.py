@@ -3,6 +3,11 @@ import sys
 import os
 import getopt
 import subprocess
+import random
+from gmcs.choices import ChoicesFile
+from gmcs.deffile import MatrixDefFile
+
+import cgi
 
 ### matrix.py
 ### A general-purpose script for running Matrix code.
@@ -30,9 +35,11 @@ def main():
   # hack adds a blank rule (can cause spinning on generation!)
   cheaphack = False
   # show_warnings, if True, allows printing of warnings from validation
+  #                also prints info messages
   show_warnings = False
   # for the install command, if install_lkb is True also install the lkb
   install_lkb = False
+  get_iso = False
 
   # Extract the options and arguments, act on the options, and validate
   # the commands.
@@ -40,7 +47,7 @@ def main():
     opts, args = getopt.getopt(sys.argv[1:], 'C:Fhw',
                                ['customizationroot=', 'CUSTOMIZATIONROOT=',
                                 'force', 'help', 'warning',
-                                'cheap-hack', 'lkb'])
+                                'cheap-hack', 'lkb', 'iso'])
   except getopt.GetoptError, err:
     print str(err)
     usage()
@@ -60,6 +67,8 @@ def main():
       cheaphack = True
     elif o == '--lkb':
       install_lkb = True
+    elif o == '--iso':
+      get_iso = True
 
   # if CUSTOMIZATIONROOT is not set externally or through an option, try
   # to find an appropriate default directory
@@ -101,8 +110,23 @@ def main():
       for x in v.warnings:
         print x
         print '  ', v.warnings[x].message
+      for x in v.infos:
+        print x
+        print '  ', v.infos[x].message
     # If there are errors, exit with a return code of 1, otherwise 0
     sys.exit(len(v.errors) > 0)
+
+  elif args[0] in ('gm', 'generate-mrs'):
+    choices_file = args[1]
+    if os.path.isdir(choices_file):
+      choices_file = os.path.join(choices_file, 'choices')
+    if not os.path.exists(choices_file):
+      sys.exit("Error: Choices file not found at " + choices_file)
+    import gmcs.choices
+    import gmcs.generate
+    c = gmcs.choices.ChoicesFile(choices_file)
+    for mrs_string in gmcs.generate.configure_mrs(c):
+      print mrs_string
 
   elif args[0] in ('u', 'unit-test'):
     run_unit_tests()
@@ -113,6 +137,33 @@ def main():
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
                        'regression_tests/run_regression_tests.sh')
     lgnames = get_regression_tests(args[1:])
+    if lgnames is None:
+        sys.exit('No regression tests found for %s' % str(args[1:]))
+    #Using subprocess makes it difficult to kill the process
+    # (e.g. with Ctrl-C), so we need to handle KeyboardInterrupts
+    # (or alternatively use a os.exec* function)
+    try:
+      p = subprocess.Popen([cmd] + lgnames, env=os.environ)
+      p.wait()
+    except KeyboardInterrupt:
+      print "\nProcess interrupted. Aborting regression tests.\n"
+      import signal
+      os.kill(p.pid, signal.SIGKILL)
+
+  elif args[0] in ('rs', 'regression-test-sample'):
+    cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
+                       'regression_tests/run_regression_tests.sh')
+    num = int(args[1])
+    testlist = get_regression_tests(['*'])
+    lgnames = [] 
+    if (num > len(testlist)): 
+      sys.exit("\nThere are only "+str(len(testlist))+" tests available.\
+                \nPass a smaller argument to 'rs' or just call 'r' with no\
+                \narguments to run all tests.\
+                \neg:\
+                \n$./matrix.py -C gmcs/ r\n")
+    else:
+      lgnames = random.sample(testlist, num)
     if lgnames is None:
         sys.exit('No regression tests found for %s' % str(args[1:]))
     #Using subprocess makes it difficult to kill the process
@@ -280,6 +331,8 @@ def main():
     cmd = [os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')]
     if install_lkb:
       cmd += ['-lkb']
+    if get_iso:
+      cmd += ['-iso']
     if args[0] in ('ih', 'install-homer'):
       cmd += ['-r']
     subprocess.call(cmd + [args[1]], env=os.environ)
@@ -334,6 +387,8 @@ def validate_args(args):
     if len(args) < 2: usage(command='customize-and-flop')
   elif args[0] in ('v', 'validate'):
     if len(args) < 2: usage(command='validate')
+  elif args[0] in ('gm', 'generate-mrs'):
+    if len(args) < 2: usage(command='generate-mrs')
   elif args[0] in ('u', 'unit-test'):
     pass # no other arguments needed
   elif args[0] in ('r', 'regression-test'):
@@ -388,8 +443,11 @@ def usage(command=None, exitcode=2):
       p("            empty) to workaround a bug in Cheap.")
       p("--lkb")
       p("            Install the LKB binaries to a live site.")
+      p("--iso")
+      p("            Used with install to get the iso code table file from")
+      p("            sil.org in order to enable iso639-3 validation.")
       p("--warning (-w)")
-      p("            Print warnings when running validate.")
+      p("            Print warnings and infos when running validate.")
       p("--help (-h) [COMMAND]")
       p("            Print a usage message about COMMAND (if specified) or")
       p("            else all commands and examples.")
@@ -419,6 +477,10 @@ def usage(command=None, exitcode=2):
     examples += ["  matrix.py validate ../choices/Finnish",
                  "  matrix.py v ../choices/Finnish"]
     something_printed = True
+  if command in ('generate-mrs', 'gm', 'all'):
+    p("generate-mrs (gm) PATH")
+    p("            Create MRS strings from MRS templates using the choices")
+    p("            file at PATH")
   if command in ('regression-test', 'r', 'all'):
     p("regression-test [-TASK] [TESTS]")
     p("            Run regression test TASK (or all tasks if unsprecified)")
@@ -432,6 +494,15 @@ def usage(command=None, exitcode=2):
     examples += ["  matrix.py --customizationroot=gmcs/ regression-test",
                  "  matrix.py -C gmcs/ r -v",
                  "  matrix.py -C gmcs/ r -cp vso-aux-before-vp Fore"]
+    something_printed = True
+  if command in ('regression-test-sample', 'rs', 'all'):
+    p("regression-test-random (rr) INT")
+    p("            Run a random sample of regression tests.")
+    p("            The size of the sample is given by the argument")
+    p("            which should be an integer and must not be greater")
+    p("            than the number of tests in existance.")
+    examples += ["  matrix.py --customizationroot=gmcs/ regression-test-sample 50",
+                 "  matrix.py -C gmcs/ rs 100"]
     something_printed = True
   if command in ('regression-test-add', 'ra', 'all'):
     p("regression-test-add (ra) CHOICES TXTSUITE")
@@ -611,7 +682,7 @@ def vivify(force):
   #     since the last vivification.
   #  2. There are no remaining modifications not checked into SVN.
   cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
-  subprocess.call([cmd, '-lkb', '-r', 'matrix/customize'], env=os.environ)
+  subprocess.call([cmd, '-lkb','-iso','-r', 'matrix/customize'], env=os.environ)
 
 def run_web_tests():
   ensure_customization_root_set()

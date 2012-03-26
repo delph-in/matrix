@@ -905,7 +905,6 @@ class TDLfile(object):
         self.typedefs[i] = TDLmerge(self.typedefs[i], typedef)
         handled = True
         break
-
     if not handled:
       self.typedefs.append(typedef)
 

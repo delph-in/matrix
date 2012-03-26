@@ -1,4 +1,5 @@
 from gmcs.utils import TDLencode
+from gmcs.utils import orth_encode
 
 from gmcs.linglib import case
 from gmcs.linglib import features
@@ -247,7 +248,7 @@ def get_users_type_name(aux):
 
 def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon):
   for stem in aux.get('stem',[]):
-    orth = stem.get('orth')
+    orth = orth_encode(stem.get('orth'))
     id = stem.get('name')
     typedef = TDLencode(id) + ' := ' + userstypename + ' & \
                        [ STEM < "' + orth + '" > ].'

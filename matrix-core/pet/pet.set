@@ -48,6 +48,7 @@ packing-restrictor := RELS HCONS.
 ;;
 mrs-path := "SYNSEM.LOCAL.CONT".
 
+
 ;;
 ;; path to LABEL for relation-to-word mapping, absolute and within a relation
 ;;
@@ -151,5 +152,3 @@ posmapping :=
 ;; need to include the MRS settings from the grammar.
 ;;
 postload-lisp-files := "lkb/mrsglobals.lisp".
-
-
