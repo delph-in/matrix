@@ -659,6 +659,9 @@ named-relation := noun-relation & carg-relation &
 number-relation := arg1-ev-relation & carg-relation &
   [ PRED "card_rel" ].
 
+ord-relation := arg1-ev-relation & carg-relation &
+  [ PRED "ord_rel" ].
+
 ; coordinating and subordinating conjunctions
 
 subord-or-coord-relation := relation &

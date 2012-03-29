@@ -832,7 +832,27 @@ def customize_np_word_order(mylang, ch, rules):
   mylang.add('bare-np-phrase := basic-bare-np-phrase &\
   [ C-CONT.RELS <! [ PRED \"exist_q_rel\" ] !> ].',
              'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
-
+  if ch.get('n_spec_spr') == 'yes':
+    mylang.add('bare-np-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD mass_cnt_noun ].')
+    super_type = \
+    '''basic-bare-np-specincl-phrase := head-only & head-valence-phrase &
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
+			   SUBJ < >,
+			   COMPS < >,
+			   SPEC < > ],
+    HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,
+    			    	  VAL [ SPR < [ LOCAL.CAT.HEAD det,
+					      	OPT +,
+						NON-LOCAL [ SLASH 0-dlist,
+						            REL 0-dlist ] ] >,
+				      	SUBJ < >,
+				      	COMPS < > ] ] ],
+    C-CONT [ RELS <! !>,
+	     HCONS <! !> ] ].'''
+    mylang.add(super_type)
+    mylang.add('bare-np-spec_incl-phrase := basic-bare-np-specincl-phrase & \
+        [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD spr_incl_noun ].')
+    rules.add('bare-np-spec-incl := bare-np-spec_incl-phrase.')
   if ch.get('reflexives') == 'yes':
     mylang.add('bare-np-phrase := [ SYNSEM.LOCAL non-refl-local, \
                                     HEAD-DTR.SYNSEM.LOCAL non-refl-local ].')
@@ -1287,6 +1307,7 @@ def create_wh_phrases(ch, mylang, rules):
                             DTR.SYNSEM.NON-LOCAL.QUE #que ].',section='addenda')
   
   mylang.add('bare-np-phrase := head-nexus-phrase.')
+  mylang.add('bare-np-spec_incl-phrase := head-nexus-phrase.')
   mylang.add('basic-head-wh-mod-phrase-simple :+ \
               [ SYNSEM.LOCAL.CAT.VAL #val, \
                 HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \

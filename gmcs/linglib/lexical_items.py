@@ -817,7 +817,7 @@ def create_rel_determiner(mylang):
   mylang.add(rel_det)
 
 
-def customize_adjectives(mylang, ch, lexicon):
+def customize_adjectives(mylang, ch, lexicon, rules, hierarchies):
 
    # Lexical type for adjectives, if the language has any:
   if ch.get('has-adj') == 'yes':
@@ -831,7 +831,48 @@ def customize_adjectives(mylang, ch, lexicon):
     mylang.add('int-mod-adj-lex := [ SYNSEM [ LOCAL.CONT.HOOK.XARG #xarg, \
                                               LKEYS.KEYREL.ARG1 #xarg ] ].')
 
-
+  
+    if ch.get('comp-adj') == 'yes':
+      comp_adj = \
+      '''
+      basic-compare-adj-lex := basic-comparative-lex &
+      [ SYNSEM.LOCAL.CAT.HEAD adj & [ MOD < [ LOCAL intersective-mod ] > ] ].
+      '''
+      mylang.add(comp_adj)
+    if ch.get('indep-adj') == 'yes':
+      adj_to_noun_phrase = \
+      '''independent_adjective_phrase := basic-unary-phrase & phrasal &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD noun &
+                                [ MOD < > ],
+                           VAL [ SUBJ < >,
+                                 SPR < synsem &
+                                       [ LOCAL [ CAT.VAL [ SPR < >,
+                                                           COMPS < > ],
+                                                 AGR #index ],
+                                         NON-LOCAL.REL 0-dlist ], ... >,
+                                 SPEC < > ] ],
+                     AGR #agr ],
+             NON-LOCAL [ QUE 0-dlist,
+                         REL 0-dlist ] ],
+    ARGS < [ SYNSEM 
+	      [ LOCAL 
+		 [ CAT [ HEAD adj &
+			      [ MOD < synsem & [ LOCAL.AGR #agr &
+							   [ PNG #png ] ] > ],
+			 VAL [ SUBJ < >,
+			       COMPS < > ] ],
+		   CONT.HOOK [ LTOP #nhand,
+			       XARG #index  ] ] ] ] >,
+    C-CONT [ HOOK [ LTOP #nhand,
+                    INDEX #index & [ PNG #png ] ],
+	     RELS.LIST < [ LBL #nhand,
+                           ARG0 #index ], ... > ] ].
+      '''
+      mylang.add(adj_to_noun_phrase, section='phrases')
+      rules.add('ind_adjective := independent_adjective_phrase.') 
+      if ch.get('n_spec_spr') == 'yes':
+        mylang.add('independent_adjective_phrase := \
+           [ SYNSEM.LOCAL.CAT.HEAD mass_cnt_noun ].')
     if ch.get('rel-clause') == 'yes':
       mylang.add('basic-adjective-lex :+ non-rel-lex-item.',section='addenda')
     if ch.get('verb-cluster') == 'yes':
@@ -877,6 +918,8 @@ def customize_adjectives(mylang, ch, lexicon):
     stype = '-mod-adj-lex'
     if adj.get('kind') == 'int':
       stype = 'int' + stype
+    elif adj.get('kind') == 'comp':
+      stype = 'basic-compare-adj-lex'
     else:
       stype = 'scopal' + stype
     atype = name + '-adjective-lex'
@@ -905,6 +948,8 @@ def customize_adjectives(mylang, ch, lexicon):
       mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.HEAD [ STRONG #strength, \
                             MOD < [ LOCAL.CAT.HEAD.STRONG #strength ] > ] ].')
 
+    features.customize_feature_values(mylang, ch, hierarchies, adj, atype, 'adj')
+
     for stem in adj.get('stem',[]):
       orth = stem.get('orth')
       pred = stem.get('pred')
@@ -916,20 +961,25 @@ def customize_adjectives(mylang, ch, lexicon):
       lexicon.add(typedef)
 
 
-def customize_numbers(ch, mylang, lexicon, lrules):
+def customize_numbers(ch, mylang, lexicon, lrules, hierarchies):
   basic_type = \
-  '''number-adjective := basic-int-mod-adj-lex &
+  '''basic-number-adjective-lex := basic-int-mod-adj-lex &
     [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < >,
                                COMPS < >,
                                SPR < > ],
                NON-LOCAL [ SLASH 0-dlist,
                            QUE 0-dlist,
-                           REL 0-dlist ],
-               LKEYS.KEYREL number-relation ] ].'''
+                           REL 0-dlist ] ] ].'''
   mylang.add(basic_type)
   numb = ch.get('numb',[])
-
+  sub_t1 = '''norm-number-adjective-lex := basic-number-adjective-lex &
+          [ SYNSEM.LKEYS.KEYREL number-relation ].'''
+  sub_t2 = '''ord-number-adjective-lex := basic-number-adjective-lex &
+          [ SYNSEM.LKEYS.KEYREL ord-relation ].'''
+  mylang.add(sub_t1)
+  mylang.add(sub_t2)
   for n in numb:
+    nname = n.get('name') + '-lex'
     if n.get('det') == 'yes':
       lex_rule_type = \
       '''numb-det-lex-rule := same-non-local-lex-rule &
@@ -940,7 +990,7 @@ def customize_numbers(ch, mylang, lexicon, lrules):
                           VAL.SPEC.FIRST #item & 
                                        [ LOCAL.CONT.HOOK [ INDEX #index,
                                                            LTOP #larg] ] ],
-       DTR number-adjective &
+       DTR basic-number-adjective-lex &
            [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST #item ],
        C-CONT [ HOOK.INDEX #index,
                 RELS <! quant-relation &
@@ -953,20 +1003,26 @@ def customize_numbers(ch, mylang, lexicon, lrules):
 
       mylang.add(lex_rule_type)
       lrules.add('numb-det-lrule := numb-det-lex-rule.')
+    
+    if n.get('ord') == 'yes':
+      stype = 'norm-number-adjective-lex'
+    else:
+      stype = 'ord-number-adjective-lex'
 
-    for feat in n.get('feat',[]):
-      if feat.get('head') == 'mod':
-        path = '[ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.'
-      path += feat.get('name').capitalize()
-      path += ' ' + feat.get('value')
-      mylang.add('number-adjective := ' + path + ' ].')
+#    for feat in n.get('feat',[]):
+#      if feat.get('head') == 'mod':
+#        path = '[ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.'
+#      path += feat.get('name').upper()
+#      path += ' ' + feat.get('value')
+    mylang.add(nname + ' := ' + stype + '.')
+    features.customize_feature_values(mylang, ch, hierarchies, n, nname, 'adj')
 
     for stem in n.get('stem',[]):
       orth = stem.get('orth')
       pred = stem.get('pred')
       id = stem.get('name')
       typedef = \
-        TDLencode(id) + ' := number-adjective & \
+        TDLencode(id) + ' := ' + nname + ' & \
                     [ STEM < "' + orth + '" >, \
                       SYNSEM.LKEYS.KEYREL.CARG "' + pred + '" ].'
       lexicon.add(typedef)
@@ -1610,6 +1666,70 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     if refl:
       mylang.add('mod-noun-lex := non-reflexive-noun-lex.')
 
+###creating basic type for nouns that don't take specifier, but have meaning
+###for them included
+  spr_incl = []
+  if ch.get('n_spec_spr') == 'yes':
+    mylang.add('spr_incl_noun := noun.')
+    mylang.add('mass_cnt_noun := noun.')
+    type_n = '''basic-spr-incl-noun-lex := norm-hook-lex-item &
+                 [ SYNSEM [ LOCAL [ CONT [ RELS <! relation, #altkey &
+                                                          [ ARG0 #index ] !>,
+                                           HOOK.INDEX #index ],
+                                    CAT [ HEAD spr_incl_noun & [ MOD < > ],
+                                          VAL [ SUBJ < >,
+                                                SPR <  >,
+                                                COMPS < >,
+			                        SPEC < > ] ] ],
+	                    NON-LOCAL.QUE 0-dlist,
+                            LKEYS.ALTKEYREL relation & #altkey ] ].'''
+    mylang.add(type_n)
+
+    if 'pronoun' in ch.get('spr-incl-kind'):
+      spr_incl.append('pronoun')
+      pro_type = '''basic-pronoun-lex := basic-spr-incl-noun-lex & \
+                     [ SYNSEM.LOCAL.CONT [ RELS.LIST [ FIRST.LBL #nhand,
+                                              REST.FIRST [ PRED "_pron_q_rel",
+                                                  RSTR #rhand ] ],
+                                       HCONS <! qeq & [ HARG #rhand,
+                                                       LARG #nhand ] !> ] ].'''
+      mylang.add(pro_type)
+    if 'indef' in ch.get('spr-incl-kind'):
+      spr_incl.append('indef')
+      indef_type = '''basic-indef-noun-lex := basic-spr-incl-noun-lex & \
+                     [ SYNSEM.LOCAL.CONT [ RELS.LIST [ FIRST.LBL #nhand,
+                                              REST.FIRST [ PRED "_indef_q_rel",
+                                                  RSTR #rhand ] ],
+                                       HCONS <! qeq & [ HARG #rhand,
+                                                       LARG #nhand ] !> ] ].'''
+      mylang.add(indef_type)
+    if 'neg' in ch.get('spr-incl-kind'):
+      spr_incl.append('neg')
+      neg_type = '''basic-neg-noun-lex := basic-spr-incl-noun-lex & \
+                     [ SYNSEM.LOCAL.CONT [ RELS.LIST [ FIRST.LBL #nhand,
+                                              REST.FIRST [ PRED "_kein_q_rel",
+                                                  RSTR #rhand ] ],
+                                       HCONS <! qeq & [ HARG #rhand,
+                                                       LARG #nhand ] !> ] ].'''
+      mylang.add(neg_type)
+    if 'every' in ch.get('spr-incl-kind'):
+      spr_incl.append('every')
+      indef_type = '''basic-every-noun-lex := basic-spr-incl-noun-lex & \
+                     [ SYNSEM.LOCAL.CONT [ RELS.LIST [ FIRST.LBL #nhand,
+                                              REST.FIRST [ PRED "_jed_q_rel",
+                                                  RSTR #rhand ] ],
+                                       HCONS <! qeq & [ HARG #rhand,
+                                                       LARG #nhand ] !> ] ].'''
+      mylang.add(indef_type)
+    if 'ander' in ch.get('spr-incl-kind'):
+      spr_incl.append('ander')
+      ander_type = '''basic-ander-noun-lex := basic-spr-incl-noun-lex & \
+                     [ SYNSEM.LOCAL.CONT [ RELS.LIST [ FIRST.LBL #nhand,
+                                              REST.FIRST [ PRED "_ander_q_rel",
+                                                  RSTR #rhand ] ],
+                                       HCONS <! qeq & [ HARG #rhand,
+                                                       LARG #nhand ] !> ] ].'''
+      mylang.add(ander_type)
   if ch.get('verb-cluster') == 'yes':
     mylang.add('general-noun-lex := no-cluster-lex-item.')
 
@@ -1688,6 +1808,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     compound = noun.get('compound')
     pers_n = noun.get('pers-name')
     arg_st = ''
+    kind = noun.get('kind')
     if noun.get('arg-st'):
       arg_st = noun.get('arg-st')
     mod = ''
@@ -1705,6 +1826,16 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       stype = 'wh-noun-lex'
     elif rel == 'yes':
       stype = 'rel-pronoun-lex'
+    elif kind == 'pronoun':
+      stype = 'basic-pronoun-lex'
+    elif kind == 'indef':
+      stype = 'basic-indef-noun-lex'
+    elif kind == 'neg':
+      stype = 'basic-neg-noun-lex'
+    elif kind == 'every':
+      stype = 'basic-every-noun-lex'
+    elif kind == 'ander':
+      stype = 'basic-ander-noun-lex'
     elif arg_st:
 ##2011-12-21 just s-comp for now, more to be added
 ##2012-12-22 also pps now. Assuming arguments on nouns are all optional
@@ -1776,7 +1907,13 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       if pers_n:
         mylang.add(ntype + ' := [ SYNSEM.LKEYS.KEYREL named-relation ].')
 
-
+    if ch.get('n_spec_spr') == 'yes':
+      if kind in spr_incl:
+        n_head = 'spr_incl_noun'
+      else:
+        n_head = 'mass_cnt_noun'
+      if not expl:
+        mylang.add(ntype + ' := [ SYNSEM.LOCAL.CAT.HEAD ' + n_head + ' ].')
 
     features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
 
@@ -1894,7 +2031,7 @@ def create_wh_phrases(mylang, ch):
 
 
 
-def customize_lexicon(mylang, ch, lexicon, hierarchies, lrules):
+def customize_lexicon(mylang, ch, lexicon, hierarchies, lrules, rules):
 
   comment = '''Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.'''
   mylang.add('non-mod-lex-item := lex-item & \
@@ -1918,11 +2055,11 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies, lrules):
   if ch.get('wh-questions') == 'yes':
     create_wh_phrases(mylang, ch)  
   if ch.get('numbers') == 'yes':
-    customize_numbers(ch, mylang, lexicon, lrules)
+    customize_numbers(ch, mylang, lexicon, lrules, hierarchies)
 
   mylang.set_section('otherlex')
   customize_determiners(mylang, ch, lexicon, hierarchies)
-  customize_adjectives(mylang, ch, lexicon)
+  customize_adjectives(mylang, ch, lexicon, rules, hierarchies)
   customize_adverbs(mylang, ch, lexicon)
   customize_adpositions(ch, mylang, lexicon)
   customize_complementizers(ch, mylang, lexicon) 

@@ -58,7 +58,30 @@ def create_comparative_basic_type(ch, mylang, lexicon):
     mylang.add('comparative-creating-lex-rule := \
       [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.FORM ' + form + ' ] > ].')
 
-
+  stype = \
+      '''basic-comp-super-lex := lex-item &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD [ MOD < [ ] > ] ],
+		     CONT [ HOOK [ XARG #ind,
+                                   INDEX #arg0  ],
+                            RELS.LIST < [ LBL #hand,
+                                          ARG1 #ind ],
+                                        #altkeyrel &
+                                        [ LBL #hand,
+                                          ARG0 event,
+                                          ARG1 #arg0 ] > ] ],
+             LKEYS.ALTKEYREL #altkeyrel ] ].
+      '''
+  sub_t1 = \
+  '''basic-comparative-lex := basic-comp-super-lex &
+     [ SYNSEM.LOCAL.CONT.RELS.LIST < [ ], [ PRED "comp_rel" ] > ].
+  '''
+  sub_t2 = \
+  '''basic-superlative-lex := basic-comp-super-lex &
+     [ SYNSEM.LOCAL.CONT.RELS.LIST < [ ], [ PRED "superl_rel" ] > ].
+  '''
+  mylang.add(stype)
+  mylang.add(sub_t1)
+  mylang.add(sub_t2)
 def create_marker_position(mylang, form, lexicon):
   ###TO DO: the case marking should probably go
   my_adp = \

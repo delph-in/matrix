@@ -5,7 +5,7 @@
 
 def create_extraposition(ch, mylang, rules):
   introducing_anchor_and_related_phrases(mylang)
-  add_anchor_related_suptypes_and_constraints(mylang)
+  add_anchor_related_suptypes_and_constraints(ch, mylang)
 
   rules.add('expose-anchor := expose-anchor-rule.')
   rules.add('extraposed-rel := head-mod-phrase-extraposed.')
@@ -93,7 +93,7 @@ def introducing_anchor_and_related_phrases(mylang):
 
   mylang.add(ea_type)
 
-def add_anchor_related_suptypes_and_constraints(mylang):
+def add_anchor_related_suptypes_and_constraints(ch, mylang):
 
   mylang.add('head-spec-phrase := \
                [ SYNSEM.LOCAL [ ANCHOR.ANCHS [ LIST < #index . #first >, \
@@ -106,6 +106,10 @@ def add_anchor_related_suptypes_and_constraints(mylang):
       [ SYNSEM.LOCAL [ ANCHOR.ANCHS <! #index !>, \
  		       CONT.HOOK.INDEX #index ] ].')
 
+  if ch.get('n_spec_spr') == 'yes':
+    mylang.add('bare-np-spec_incl-phrase := \
+      [ SYNSEM.LOCAL [ ANCHOR.ANCHS <! #index !>, \
+ 		       CONT.HOOK.INDEX #index ] ].')
   mylang.add('wh-spec-head-phrase := \
                   [ SYNSEM.LOCAL [ ANCHOR.ANCHS <! #index !>, \
                                    CONT.HOOK.INDEX #index ] ].')
