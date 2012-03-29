@@ -152,3 +152,11 @@ posmapping :=
 ;; need to include the MRS settings from the grammar.
 ;;
 postload-lisp-files := "lkb/mrsglobals.lisp".
+
+;;
+;; SSH 2012-03-28 MRS interface.  In order to make the customized
+;; grammars work with pet off the shelf, mrs.set is newly added with
+;; reference to Jacy.
+;;
+include "mrs".
+
