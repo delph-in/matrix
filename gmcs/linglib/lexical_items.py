@@ -84,7 +84,7 @@ def customize_bipartite_stems(ch):
   """
   # For each verb type
   for verb in ch.get('verb'):
-
+    
     # Check whether there are bipartite stems
     bistems = verb.get('bistem')
     if bistems:
@@ -260,32 +260,47 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
   # Now create the lexical entries for all the defined verb types
   cases = case.case_names(ch)
   for verb in ch.get('verb',[]):
+    stypes = verb.get('supertypes').split(', ') 
+    stype_names = []
+    for t in stypes:
+      vt = ch.get(t)
+      vtname = vt.get('name')
+      if not vtname == '':
+        stype_names.append(vt.get('name')+'-verb-lex')
+
     name = get_name(verb)
     val = verb.get('valence')
 
-    i = val.find(',')
-    dir_inv = ''
-    if i != -1:
-      val = val[:i]
-      dir_inv = 'dir-inv-'
+    if not val == '':
+      i = val.find(',')
+      dir_inv = ''
+      tivity = ''
+      if i != -1:
+        val = val[:i]
+        dir_inv = 'dir-inv-'
 
-    if val == 'trans':
-      tivity = 'trans'
-    elif val == 'intrans':
-      tivity = 'intrans'
-    elif val.find('-') != -1:
-      c = val.split('-')
-      a_case = case.canon_to_abbr(c[0], cases)
-      o_case = case.canon_to_abbr(c[1], cases)
-      tivity = a_case + '-' + o_case + '-trans'
-    else:
-      s_case = case.canon_to_abbr(val, cases)
-      tivity = s_case + '-intrans'
+      if val == 'trans':
+        tivity = 'trans'
+      elif val == 'intrans':
+        tivity = 'intrans'
+      elif val.find('-') != -1:
+        c = val.split('-')
+        a_case = case.canon_to_abbr(c[0], cases)
+        o_case = case.canon_to_abbr(c[1], cases)
+        tivity = a_case + '-' + o_case + '-trans'
+#    else:
+#      s_case = case.canon_to_abbr(val, cases)
+#      tivity = s_case + '-intrans'
+      if not dir_inv == '' or not tivity == '':
+        stype_names.append(dir_inv + tivity + 'itive-verb-lex')
 
-    stype = dir_inv + tivity + 'itive-verb-lex'
+
     vtype = name + '-verb-lex'
 
-    mylang.add(vtype + ' := ' + stype + '.')
+    if len(stype_names) == 0:
+      mylang.add(vtype + ' := verb-lex .')
+    else: 
+      mylang.add(vtype + ' := ' + ' & '.join(stype_names) + '.')
 
     features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
 
