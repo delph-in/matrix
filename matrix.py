@@ -478,11 +478,11 @@ def usage(command=None, exitcode=2):
                  "  matrix.py -C gmcs/ r -cp vso-aux-before-vp Fore"]
     something_printed = True
   if command in ('regression-test-sample', 'rs', 'all'):
-    p("regression-test-random (rr) INT")
+    p("regression-test-random (rs) INT")
     p("            Run a random sample of regression tests.")
     p("            The size of the sample is given by the argument")
-    p("            which should be an integer and must not be greater")
-    p("            than the number of tests in existance.")
+    p("            which should be a (positive) integer and must ")
+    p("            not be greater than the number of defined tests.")
     examples += ["  matrix.py --customizationroot=gmcs/ regression-test-sample 50",
                  "  matrix.py -C gmcs/ rs 100"]
     something_printed = True

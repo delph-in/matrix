@@ -288,9 +288,10 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
         a_case = case.canon_to_abbr(c[0], cases)
         o_case = case.canon_to_abbr(c[1], cases)
         tivity = a_case + '-' + o_case + '-trans'
-#    else:
-#      s_case = case.canon_to_abbr(val, cases)
-#      tivity = s_case + '-intrans'
+      else:
+        s_case = case.canon_to_abbr(val, cases)
+        tivity = s_case + '-intrans'
+
       if not dir_inv == '' or not tivity == '':
         stype_names.append(dir_inv + tivity + 'itive-verb-lex')
 
@@ -462,10 +463,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
     #if singlentype or det == 'opt':
     #  stype = 'noun-lex' #we'll get this for free
-    if det == 'obl':
-      stype_names.append('obl-spr-noun-lex')
-    elif det == 'imp':
-      stype_names.append('no-spr-noun-lex')
+    if not singlentype:
+      if det == 'obl':
+        stype_names.append('obl-spr-noun-lex')
+      elif det == 'imp':
+        stype_names.append('no-spr-noun-lex')
 
     ntype = name + '-noun-lex'
 
