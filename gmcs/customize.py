@@ -142,6 +142,9 @@ def customize_punctuation(grammar_path):
 
   
 #  Need to move pet over to repp
+#  oe says that using repp with pet when not in tsdb mode
+#  is done with a command line option that simply points pet
+#  to the repp file. 
 # 
 #  # PET's pet.set is a bit easier
 #  line_re = re.compile(r'^punctuation-characters := "(.*)".\s*$')
