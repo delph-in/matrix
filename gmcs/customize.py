@@ -257,6 +257,18 @@ def customize_pettdl(grammar_path):
   except:
     pass
 
+######################################################################
+# customize_acetdl()
+#
+
+def customize_acetdl(grammar_path):
+  myl = ch.get('language').lower()
+  ace_config = os.path.join(grammar_path, 'ace', 'config.tdl')
+  replace_strings = {'mylanguage': os.path.join('..', myl + '-pet.tdl')}
+  lines = open(ace_config, 'r').read()
+  a_out = open(ace_config, 'w')
+  print >>a_out, lines % replace_strings
+  a_out.close()
 
 ######################################################################
 # customize_roots()
@@ -497,6 +509,7 @@ def customize_matrix(path, arch_type, destination=None):
   customize_itsdb(grammar_path)
   customize_script(grammar_path)
   customize_pettdl(grammar_path)
+  customize_acetdl(grammar_path)
   customize_roots()
 
   # Save the output files

@@ -116,6 +116,18 @@ def main():
     # If there are errors, exit with a return code of 1, otherwise 0
     sys.exit(len(v.errors) > 0)
 
+  elif args[0] in ('gm', 'generate-mrs'):
+    choices_file = args[1]
+    if os.path.isdir(choices_file):
+      choices_file = os.path.join(choices_file, 'choices')
+    if not os.path.exists(choices_file):
+      sys.exit("Error: Choices file not found at " + choices_file)
+    import gmcs.choices
+    import gmcs.generate
+    c = gmcs.choices.ChoicesFile(choices_file)
+    for mrs_string in gmcs.generate.configure_mrs(c):
+      print mrs_string
+
   elif args[0] in ('u', 'unit-test'):
     run_unit_tests()
 
@@ -375,6 +387,8 @@ def validate_args(args):
     if len(args) < 2: usage(command='customize-and-flop')
   elif args[0] in ('v', 'validate'):
     if len(args) < 2: usage(command='validate')
+  elif args[0] in ('gm', 'generate-mrs'):
+    if len(args) < 2: usage(command='generate-mrs')
   elif args[0] in ('u', 'unit-test'):
     pass # no other arguments needed
   elif args[0] in ('r', 'regression-test'):
@@ -463,6 +477,10 @@ def usage(command=None, exitcode=2):
     examples += ["  matrix.py validate ../choices/Finnish",
                  "  matrix.py v ../choices/Finnish"]
     something_printed = True
+  if command in ('generate-mrs', 'gm', 'all'):
+    p("generate-mrs (gm) PATH")
+    p("            Create MRS strings from MRS templates using the choices")
+    p("            file at PATH")
   if command in ('regression-test', 'r', 'all'):
     p("regression-test [-TASK] [TESTS]")
     p("            Run regression test TASK (or all tasks if unsprecified)")

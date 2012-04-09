@@ -343,6 +343,8 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
         mark = html_warning_mark(vr.warnings[name])
       if name in vr.infos:
         mark = html_info_mark(vr.infos[name])
+    if name in vr.infos:
+      mark = html_info_mark(vr.infos[name])
 
   if type == 'textarea':
     value = value.replace('\\n','\n')
