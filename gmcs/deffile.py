@@ -294,7 +294,11 @@ def html_mark(mark, vm):
       return '<a href="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
            (vm.href, vm.message.replace('"', '&quot;'), mark)
   else:
-    return '<a name="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
+    if mark == '#':
+      return '<a href="%s" style="text-decoration:none"><span class="info" title="%s">%s</span></a>' %\
+           (vm.name, vm.message.replace('"', '&quot;'), mark)
+    else: 
+      return '<a name="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
            (vm.name, vm.message.replace('"', '&quot;'), mark)
 
 def html_error_mark(vm):
@@ -331,11 +335,14 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
     dsabld = ' disabled="disabled"'
 
   mark = ''
-  if vr:
-    if name in vr.errors:
-      mark = html_error_mark(vr.errors[name])
-    elif name in vr.warnings:
-      mark = html_warning_mark(vr.warnings[name])
+  if type != 'radio':
+    if vr:
+      if name in vr.errors:
+        mark = html_error_mark(vr.errors[name])
+      elif name in vr.warnings:
+        mark = html_warning_mark(vr.warnings[name])
+      if name in vr.infos:
+        mark = html_info_mark(vr.infos[name])
     if name in vr.infos:
       mark = html_info_mark(vr.infos[name])
 
@@ -343,6 +350,7 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
     value = value.replace('\\n','\n')
     return '%s%s<TextArea name="%s"%s>%s</TextArea>%s' % \
          (before, mark, name, size, value, after)
+    
   else:
     if value:
       value = ' value="' + value + '"'
@@ -358,6 +366,8 @@ def html_select(vr, name, multi, onfocus = ''):
     mark = html_error_mark(vr.errors[name])
   elif name in vr.warnings:
     mark = html_warning_mark(vr.warnings[name])
+  if name in vr.infos:
+    mark = html_info_mark(vr.infos[name])
 
   multi_attr = ''
   if multi:
@@ -783,7 +793,17 @@ class MatrixDefFile:
         else:
           (vn, fn, bf, af) = word[1:]
         vn = prefix + vn
-        html += bf + '\n'
+        # it's nicer to put vrs for radio buttons on the entire 
+        # collection of inputs, rather than one for each button
+        mark =''
+        if vn in vr.errors:
+          mark = html_error_mark(vr.errors[vn])
+        elif vn in vr.warnings:
+          mark = html_warning_mark(vr.warnings[vn])
+        if vn in vr.infos:
+          mark = html_info_mark(vr.infos[vn])
+        
+        html += bf + mark + '\n'
         i += 1
         while lines[i] != '\n':
           word = tokenize_def(replace_vars(lines[i], vars))
@@ -976,6 +996,8 @@ class MatrixDefFile:
           html += html_error_mark(vr.errors[prefix + iter_name])
         elif prefix + iter_name in vr.warnings:
           html += html_warning_mark(vr.warnings[prefix + iter_name])
+        elif prefix + iter_name in vr.infos:
+          html += html_info_mark(vr.infos[prefix + iter_name])
         # finally add the button
         html += '<input type="button" name="" ' + \
                 'value="Add ' + label + '" ' + \
@@ -998,6 +1020,8 @@ class MatrixDefFile:
   def sub_page(self, section, cookie, vr):
     print HTTP_header + '\n'
     print HTML_pretitle
+    if section == 'lexicon':
+      print "<script type='text/javascript' src='web/draw.js'></script>"
 
     choices_file = 'sessions/' + cookie + '/choices'
     choices = ChoicesFile(choices_file)
@@ -1365,6 +1389,17 @@ class MatrixDefFile:
        form_data['neg2-type'].value[0] == 'f':
         new_choices['adv-neg'] = 'on'
 
+    # add FORM subtype for neg1b-neg2b analysis
+    if section == 'sentential-negation' and 'neg1b-neg2b' in form_data.keys():
+      next_n = old_choices['nf-subform'].next_iter_num() if 'nf-subform' in old_choices else 1
+      found_negform = False
+      if next_n > 1:
+        nfss = old_choices.get('nf-subform')
+        for nfs in nfss:
+          if nfs['name'] == 'negform':
+            found_negform = True
+      if not found_negform:
+        old_choices['nf-subform%d_name' % next_n ] = 'negform' 
 
     # Open the def file and store it in line[]
     f = open(self.def_file, 'r')

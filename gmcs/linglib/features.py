@@ -153,7 +153,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       # lexical type is not compatible with negation
       if ch.get('neg-head-feature') == 'on':
         tdlfile.add(type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].',merge=True)
-
+    
     elif (n == 'question' and v[0] == 'plus'):
       # ERB 2009-07-01 Adding in semantics for question affixes
       tdlfile.add(type_name + ':= \

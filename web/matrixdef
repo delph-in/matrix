@@ -850,7 +850,7 @@ Label "</div></div>"
 
 Label "<div id='bi-neg' class='neg_exp_switch' style='display:none'><p> Negation can be indicated by the required presence of two negative morphemes.  You'll have to specify their morphosyntax and their interactions.</p>"
 
-Label "<p>We can label the two morphemes NEG1 and NEG2 and ask about the syntactic properties of each.  Perhaps in your language one of the two negative morphemes seems more associated with the contribution of negative force to the sentence, and the other functions as a resumptive or specifying marker.  Call the primary indicator of negation NEG1 and the secondary one NEG2.</p>"
+Label "<p>We can label the two morphemes NEG1 and NEG2 and ask about the syntactic properties of each.  Perhaps in your language one of the two negative morphemes is more closely associated with the contribution of negative force to the sentence, and the other functions as a resumptive or specifying marker.  Call the primary indicator of negation NEG1 and the secondary one NEG2.</p>"
 
 Radio neg1-type "NEG1 type" "NEG1" "<br />"
 . b "bound" "" "bound" "set_negmorph('1','b')"
@@ -879,7 +879,9 @@ Radio neg2-type "NEG2 type" "NEG2" "" 1
 . fh "free-H" "" "free, syntactic head" "set_negmorph('2','fh')"
 . fd "free-dep" "" "free, syntactic dependent" "set_negmorph('2','fd')"
 
-Label "<div id='neg2-b' class='neg2_switch' style='display:none'><p> If neg2 is bound, is it bound to a verb?  In this case we'll want to integrate it with the morphotactic system.</p></div>"
+Label "<div id='neg2-b' class='neg2_switch' style='display:none'>"
+Check neg1b-neg2b "neg1 bound to aux requires neg2 bound to lexical verb" "neg1 bound to aux requires neg2 bound to lexical verb" "<br />" 
+Label "</div>"
 Label "<div id='neg2-fh' class='neg2_switch' style='display:none'><p> If neg2 is a syntactic head, is it an auxiliary verb?</p></div>"
 Label "<div id='neg2-fd' class='neg2_switch' style='display:none'><p> If neg2 is a syntactic dependent, we assume it is like an adverb.  Please fill out the following:</p>"
 
@@ -1173,7 +1175,8 @@ Label "<a id=\"toggle_all_lex_button\" onclick=\"toggle_all_display_lex(1)\">&#9
 
 Separator
 
-Label "<h3>Noun Types</h3>"
+Label "<h3 style='display:inline'>Noun Types</h3>"
+Label "<span>| <a href='#' onclick=\"draw_hierarchy('noun')\">visualize noun hierarchy</a> (experimental)</span><br />"
 
 BeginIter noun{i} "a Noun Type" 1 1
 
@@ -1181,7 +1184,10 @@ BeginIter noun{i} "a Noun Type" 1 1
 
   Label "<div style=\"padding-left: 16px\">"
 
-  Text name "Noun {i} name" "Type name: " "<br><br>" 20
+  Text name "Noun {i} name" "Type name: " "<br /><br />" 20
+
+  MultiSelect supertypes "Noun type {i}" "Supertypes: " "<br /><br />"
+  fillregex p=noun(?!{i})[0-9]+_name
 
   Label "Features:"
 
@@ -1232,7 +1238,8 @@ EndIter noun
 
 Separator
 
-Label "<h3>Verb Types</h3>"
+Label "<h3 style='display:inline'>Verb Types</h3>"
+Label "<span>| <a href='#' onclick=\"draw_hierarchy('verb')\">visualize verb hierarchy</a> (experimental)</span><br />"
 
 BeginIter verb{i} "a Verb Type" 1 2
 
@@ -1240,7 +1247,10 @@ BeginIter verb{i} "a Verb Type" 1 2
 
   Label "<div style=\"padding-left: 16px\">"
 
-  Text name "Verb {i} name" "Type name: " "<br><br>" 20
+  Text name "Verb {i} name" "Type name: " "<br /><br />" 20
+
+  MultiSelect supertypes "Verb type {i}" "Supertypes: " "<br /><br />"
+  fillregex p=verb(?!{i})[0-9]+_name
 
   Label "Features:"
 
