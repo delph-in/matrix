@@ -535,6 +535,8 @@ class ChoicesFile:
       self.convert_22_to_23()
     if self.version < 24:
       self.convert_23_to_24()
+    if self.version < 25:
+      self.convert_24_to_25()
     # As we get more versions, add more version-conversion methods, and:
     # if self.version < N:
     #   self.convert_N-1_to_N
@@ -1149,7 +1151,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 24
+    return 25
 
   def convert_value(self, key, old, new, partial=False):
     if key in self:
@@ -1902,6 +1904,20 @@ class ChoicesFile:
       if sentence.get('orth','').startswith('*'):
         sentence['star'] = 'on'
         sentence['orth'] = sentence['orth'].lstrip('*')
+
+  def convert_24_to_25(self):
+    """
+    This uprev converts the old choices about punctuation characters
+    to the new format.  If the old file doesn't have a choice about punctuation
+    then there's nothing to do, the new default behavior should be identical.
+    If the old file has a punctuation-chars key, we just need to set
+    punctuation-chars=keep-list, and put the chars into the punctuation-chars-list
+    key.
+    """
+    if self.get('punctuation-chars'):
+      self.convert_key('punctuation-chars', 'punctuation-chars-list') 
+      self['punctuation-chars'] = 'keep-list'
+
 
 ########################################################################
 # FormData Class

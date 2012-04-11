@@ -3,8 +3,6 @@ version=24
 
 section=general
 language=subj-v-inv-obj-drop
-punctuation-chars=keep-list
-punctuation-chars-list=-
 archive=no
 comment=Grammar made for debugging ticket #617.
 

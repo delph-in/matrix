@@ -3,8 +3,6 @@ version=24
 
 section=general
 language=free-aux-after-v-cluster
-punctuation-chars=keep-list
-punctuation-chars-list=-
 archive=no
 
 section=word-order

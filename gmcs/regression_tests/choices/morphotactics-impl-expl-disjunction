@@ -3,8 +3,6 @@ version=24
 
 section=general
 language=morphotactics-impl-expl-disjunction
-punctuation-chars=keep-list
-punctuation-chars-list=-
 archive=no
 comment=One verb type, verb1, is an input for two PCs (PC1 and PC2), PC1 is the input to PC3 and PC2 is the input to PC4. verb1 disjunctively requires PC1 and PC2, and separately requires PC3 and PC4. The PC1-or-PC2 requirement should result in a disjunctive flag, and the PC3 and the PC4 requirements should also result in a disjunctive flag (PC3 and PC4 represent an implicit disjunction). A second verb type, verb2, is an input for one PC (PC5), which is the input for PC6. verb2 requires PC5 or PC6, representing a sequential disjunctive requirement.
 
