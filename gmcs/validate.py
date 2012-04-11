@@ -424,7 +424,11 @@ your installation root directory as iso.tab to enable iso validation:
             'Please answer whether you will allow ' +
             'your answers to be retained.')
 
-  chars = unicode(ch.get('punctuation-chars',''), 'utf8')
+  if not ch.get('punctuation-chars'):
+    vr.warn('punctuation-chars',
+            'Please provide an answer about tokenization and punctuation ' +\
+            'characters.')
+  chars = unicode(ch.get('punctuation-chars-list',''), 'utf8')
   if chars:
     if ' ' in chars:
       vr.err('punctuation-chars',

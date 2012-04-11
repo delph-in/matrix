@@ -3,8 +3,6 @@ version=24
 
 section=general
 language=morphotactics-req-fbd
-punctuation-chars=keep-list
-punctuation-chars-list=-
 archive=no
 comment=Three verb types (verb1, verb2, and verb3) are all possible inputs to PC1. They inherit a requirement of PC1 from their supertype (intrans-verb). PC1 is an input for two other PCs (PC2 and PC3). PC2 requires either verb1 or verb2, and PC3 forbids verb1.
 

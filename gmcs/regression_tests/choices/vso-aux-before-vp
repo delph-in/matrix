@@ -3,8 +3,6 @@ version=24
 
 section=general
 language=vso-aux-before-vp
-punctuation-chars=keep-list
-punctuation-chars-list=-
 archive=no
 
 section=word-order

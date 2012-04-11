@@ -118,10 +118,13 @@ def customize_punctuation(grammar_path):
         line = ":["+default_splits_str+"]".rstrip()
       print >>van_rpp, line.rstrip('\n')
     van_rpp.close()       
-  elif ch.get('punctuation-chars') == 'keep-list':
+  else: #ch.get('punctuation-chars') == 'keep-list': 
+    # keep list with the hyphen on the keep list is the new default
     # here we split on the default list (like discard-all),
     # but *minus* whatevers on the keep list
     chars = list(unicode(ch['punctuation-chars-list'], 'utf8'))
+    if not chars:
+      chars = [ '-','=',':' ]
     filename = os.path.join(grammar_path, 'repp', 'vanilla.rpp') 
     lines = iter(codecs.open(filename, 'r', encoding='utf-8').readlines())
     van_rpp = codecs.open(filename, 'w', encoding='utf-8')

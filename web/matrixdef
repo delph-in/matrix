@@ -7,7 +7,7 @@ Label "<h3>Language</h3>"
 Text language "Language name" "<p>Name of your language: " "<br>" 50
 Text iso-code "ISO code" "<a href=\"http://www.sil.org/iso639-3/codes.asp\">ISO code</a> for your language: " " (optional) </p>" 6
 
-Label "<h3>String-processing</h3><p>Your grammar will include a basic tokenizer file for string-level processing (<span style='font-family:monospace'>vanilla.rpp</span>, see <a href='http://moin.delph-in.net/ReppTop/'>ReppTop</a> documentation).  We have three default options for this file.<br />"
+Label "<h3>String-processing</h3><p>Your grammar will include a basic tokenizer file for string-level processing (<span style='font-family:monospace'>vanilla.rpp</span>, see <a href='http://moin.delph-in.net/ReppTop/'>ReppTop</a> documentation).  We have three default options for this file.  If you do not answer, your grammar will include a tokenizer which will discard most ascii punctuation (except the hyphen, colon, and equals [-,:,=]).<br />"
 Radio punctuation-chars "Punctuation characters" "<br />" ""
 . discard-all "discard-all" "" "split on, and then discard all punctuation characters found in this default list (all lower ascii punctuation except \x22 \"): <span style='font-family:monospace'>!#$%&'()*+,-./:;<=>?@[]^_`{|}~\</span><!--we can't currently do anything about the unicode characters... maybe later 。！？…．　○●◎＊☆★◇◆--><br />"
 . keep-all "keep-all" "" "only split space and tab characters, all other characters can occur in tokens<br />" 
