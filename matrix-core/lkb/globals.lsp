@@ -37,17 +37,20 @@
 ; "creates the inflectional rule name from the information
 ;  in irregs.tab - for PAGE compatability")
 
-(defparameter *irregular-forms-only-p* t)
+;(defparameter *irregular-forms-only-p* t)
 
 ;;;
 ;;; input characters to be ignored (i.e. suppressed) in tokenization
 ;;;
+;;; Note that these might not be the same as in pet/pet.set, which could
+;;; cause parsing results from PET and LKB to differ.
+;;;
 (defparameter *punctuation-characters*
   (append
-   '(#\space #\! #\" #\& #\(
-     #\) #\* #\+ #\, #\. #\/ #\;
-     #\< #\> #\? #\@ #\[ #\\ #\] #\^
-     #\_ #\` #\{ #\| #\} #\~)
+   '(#\space #\! #\" #\& #\' #\( #\)
+     #\* #\+ #\, #\− #\. #\/ #\\ #\;
+     #\< #\> #\? #\@ #\[ #\] #\^ #\`
+     #\{ #\| #\} #\~)
    #+:ics
    '(#\ideographic_full_stop #\fullwidth_question_mark 
      #\horizontal_ellipsis #\fullwidth_full_stop
@@ -107,4 +110,40 @@
 ;;; not be desirable
 
 ;(setf *lex-rule-suffix* nil)
+
+
+;;; SSH 2012-04-10 Blocking Generation The lists *duplicate-lex-ids*
+;;; and *gen-ignore-rules* below play a function like a filter for
+;;; non-empty predicates which shouldn't be generated (e.g. informal
+;;; and variant forms in Japanese).: *duplicate-lex-ids* for lexical
+;;; items (lexicon.tdl) and *gen-ignore-rules* for lexical rules
+;;; (irules.tdl, lrules.tdl) and phrasal rules (rules.tdl)
+
+(setf *duplicate-lex-ids*
+  '(;; lex-id1 lex-id2 lex-id3 ...
+	
+    ))
+
+
+(setf *gen-ignore-rules*
+  '(;; rule1 rule2 rule3 ... 
+	
+	))
+
+
+;;; SSH 2012-04-11 Making generation faster
+(setf *gen-packing-p* t)
+(setf *gen-filtering-p* t)
+(setf *packing-restrictor*  '(RELS HCONS ORTH STEM RULE-NAME))
+
+
+;;; SSH 2012-04-11 MRS Semantic Equivalence Check
+; prefer results with MRS subsumed by the input
+; but if none exist then output all complete generated results
+(setf *bypass-equality-check* :filter)
+
+; output all complete generated results
+; (setf *bypass-equality-check* t)
+
+
 

@@ -367,12 +367,14 @@ mrs := mrs-min &
     HCONS diff-list ].
 
 ; HOOK values include
+;    GTOP                  ; Global top handle
 ;    LTOP                  ; Local top handle
 ;    INDEX                 ; The salient nominal instance or event
 ;    XARG                  ; The external (controlled) argument of a phrase
 
 hook := avm &
-  [ LTOP handle,
+  [ GTOP handle,
+    LTOP handle,
     INDEX individual,
     XARG individual ].
 
@@ -1497,7 +1499,10 @@ basic-filler-phrase := binary-phrase & phrasal &
 				  QUE 0-dlist,
 				  REL 0-dlist ] ] ] > ].
 
-basic-head-filler-phrase := basic-filler-phrase & headed-phrase.
+; ASF 2011-10-05 changed supertype 'headed-phrase' to more specific 'head-compostional'
+; in order to make sure matrix.tdl provides the right semantics.
+
+basic-head-filler-phrase := basic-filler-phrase & head-compositional.
 
 ; These phrase types should all inherit from head-final or head-initial,
 ; as appropriate, replacing binary-headed-phrase.
@@ -1532,10 +1537,14 @@ basic-head-filler-phrase := basic-filler-phrase & headed-phrase.
 ; C-CONT to be  RELS <! !>, now that we're not putting in messages.  (Hey:
 ; that was already the case. Or not, now I don't see it?)
 
+; JDC 2012-06-02 adding [HC-LIGHT -] to basic-head-* phrases 
+; (with the exception of except head-comps)
+
 basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
 			  head-compositional &
   [ SYNSEM phr-synsem & 
 	   [ LOCAL.CAT [ POSTHEAD +,
+                   HC-LIGHT -,
 			 VAL [ SUBJ < >,
 			       COMPS #comps,
 			       SPR #spr ] ] ],
@@ -1569,7 +1578,8 @@ basic-head-spec-phrase := head-valence-phrase & phrasal &
                                COMPS #spcomps,
                                SPR #spr,
                                SPEC #spec ],
-                         POSTHEAD #ph ],
+                         POSTHEAD #ph,
+                         HC-LIGHT - ],
              MODIFIED #modif ],
     HEAD-DTR [ INFLECTED infl-satisfied,
                SYNSEM [ LOCAL [ CAT [ HEAD #head,
@@ -1786,8 +1796,7 @@ basic-marker-comp-phrase := basic-binary-marker-phrase &
                       NON-LOCAL [ SLASH #slash,
                                   REL #rel,
                                   QUE #que ] ],
-    NON-MARKER-DTR.SYNSEM canonical-synsem & #synsem  & 
-                                      [ LOCAL.COORD - ],
+    NON-MARKER-DTR.SYNSEM canonical-synsem & #synsem,
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ] ].
 
@@ -1863,8 +1872,10 @@ basic-extracted-comp-phrase := basic-extracted-arg-phrase &
 
 ; ERB 2004-08-26 Remove [MC -] on mother; probably specific
 ; to analysis of subject extraction for English.
+; ASF 2011-10-05 Added supertype 'head-compositional' to basic-extracted-subj-phrase
+; in order to make sure matrix.tdl provides the right semantics for extracted subjects.
 
-basic-extracted-subj-phrase := basic-extracted-arg-phrase &
+basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
 			   SPR < >,
 			   COMPS < > ],
@@ -1935,7 +1946,8 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
            [ LOCAL [ CAT [ HEAD #head,
                            VAL #val,
                            POSTHEAD #ph,
-                           MC #hmc ],
+                           MC #hmc,
+                           HC-LIGHT - ],
                      AGR #agr,
                      CONT.HOOK #hdhook ],
              NON-LOCAL #nonloc &
@@ -1951,8 +1963,8 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                                       MC #hmc ],
                                                 AGR #agr,
                                                 CONT.HOOK #hdhook ],
-                                        NON-LOCAL #nonloc,
-					LIGHT #light,
+                                                NON-LOCAL #nonloc,
+                                                LIGHT #light,
                                         MODIFIED #modif ] > ],
                          VAL [ COMPS olist,
                                SPR olist ] ],
@@ -1961,9 +1973,13 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                          QUE 0-dlist & [ LIST null ] ] ],
     C-CONT.RELS <! !> ].
 
-head-mod-phrase-simple := basic-head-mod-phrase-simple &
-  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #htop,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #htop ] >].
+;;;2011-11-07 removing head-mod-phrase-simple
+;;;As pointed out by Bart Cramer, this does not add anything to
+;;;basic-head-mod-phrase-simple, where the HOOK is already shared between
+;;;HEAD-DTR and NON-HEAD-DTR
+; head-mod-phrase-simple := basic-head-mod-phrase-simple &
+;  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #htop,
+;    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #htop ] >].
 
 adj-head-phrase := basic-head-mod-phrase-simple & head-final &
   [ SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
@@ -1989,7 +2005,7 @@ head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
 ; problem" (cf. Kasper '98).  This split is also used in generation, where
 ; we delay construction of intersective modification, but not scopal.
 
-scopal-mod-phrase := head-mod-phrase-simple &
+scopal-mod-phrase := basic-head-mod-phrase-simple &
   [ NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL scopal-mod ] >,
                                 CONT.HOOK #hook ],
     C-CONT [ HOOK #hook,
@@ -2003,7 +2019,7 @@ scopal-mod-phrase := head-mod-phrase-simple &
 ; But, it's probably less necessary, since we'll have fewer non-branching
 ; rules?
 
-isect-mod-phrase := head-mod-phrase-simple & head-compositional &
+isect-mod-phrase := basic-head-mod-phrase-simple & head-compositional &
   [ HEAD-DTR.SYNSEM.LOCAL.CONT [ HOOK.LTOP #hand ],
     NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL intersective-mod ] >,
 				CONT.HOOK.LTOP #hand ],
@@ -2674,16 +2690,23 @@ basic-adjective-lex := single-rel-lex-item &
 ; inherit from this one, predicatives from norm-hook-lex-item.
 ; Need to worry about the relationship between the two.
 
-basic-mod-adj-lex := basic-adjective-lex & raise-index-mod-lex-item.
+; ASF 2011-10-20 basic-mod-adj-lex should not inherit from
+; raise-index-mod-lex-item: this leads to conflicting index values
+; (event for adj, index for nouns) preventing coordination from working
+; changed to norm-sem-lex-item.
+
+basic-mod-adj-lex := basic-adjective-lex & norm-sem-lex-item.
 basic-scopal-mod-adj-lex := basic-mod-adj-lex & scopal-mod-lex.
 basic-int-mod-adj-lex := basic-mod-adj-lex & intersective-mod-lex.
 basic-nomod-adj-lex := basic-adjective-lex & no-mod-lex & norm-hook-lex-item.
 
 basic-adposition-lex := single-rel-lex-item &
-  [ SYNSEM [ LOCAL.CAT.HEAD adp,
-	     LKEYS.KEYREL event-relation ]].
+  [ SYNSEM [ LOCAL.CAT [ HEAD adp,
+    	     	         VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX #ind ] > ],
+	     LKEYS.KEYREL arg12-ev-relation &
+	     		  [ ARG2 #ind ]]].
 
-basic-mod-adp-lex := basic-adposition-lex & raise-index-mod-lex-item.
+basic-mod-adp-lex := basic-adposition-lex & norm-sem-lex-item.
 basic-scopal-mod-adposition-lex := basic-mod-adp-lex & scopal-mod-lex.
 basic-int-mod-adposition-lex := basic-mod-adp-lex & intersective-mod-lex.
 basic-nomod-adposition-lex := basic-adposition-lex & no-mod-lex & norm-hook-lex-item.
@@ -2808,8 +2831,7 @@ basic-conj-lex := basic-zero-arg & no-hcons-lex-item &
   [ CFORM string ].
 
 conj-lex := basic-conj-lex & single-rel-lex-item &
-  [ CFORM string,
-    SYNSEM [ LOCAL [ CAT [ HEAD conj & [ MOD null ],
+  [ SYNSEM [ LOCAL [ CAT [ HEAD conj & [ MOD null ],
                            VAL [ SPR < >,
                                  COMPS < >,
                                  SUBJ < > ]],
@@ -2870,20 +2892,14 @@ unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
     C-CONT [ HOOK [ INDEX #rind ],
 	     RELS <! #crel !>,
 	     HCONS <! !> ],
-    NONCONJ-DTR sign & #ncdtr,
+    NONCONJ-DTR #ncdtr,
     ARGS < #ncdtr & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
                                            VAL #val ],
                                      COORD -,
                                      CONT.HOOK [ INDEX #rind ]]] > ].
 
-;;; ERB 2007-05-16 Note for sfd: There is probably a single type
-;;; you could inherit from here that combines what you need.
-
-infl-bottom-coord-rule := same-local-lex-rule &
-                          same-non-local-lex-rule &
-			  same-modified-lex-rule &
-			  same-light-lex-rule &
-                          inflecting-lex-rule &
+infl-bottom-coord-rule := add-only-rule &
+			  inflecting-lex-rule &
   [ INFLECTED infl-satisfied,
     DTR.INFLECTED inflected,
     SYNSEM.LOCAL [ COORD +,
@@ -2902,10 +2918,10 @@ binary-bottom-coord-rule := bottom-coord-phrase & binary-phrase &
 	     HCONS <! !> ],
     CONJ-DTR conj-lex & [ CFORM #cform,
                           SYNSEM.LKEYS.KEYREL #crel ],
-    NONCONJ-DTR sign & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
-                                              VAL #val ],
-                                        COORD -,
-                                        CONT.HOOK [ INDEX #rind ]]]].
+    NONCONJ-DTR [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                                       VAL #val ],
+                                 COORD -,
+                                 CONT.HOOK [ INDEX #rind ]]]].
 
 conj-first-bottom-coord-rule := binary-bottom-coord-rule &
   [ CONJ-DTR #cdtr,
@@ -2984,10 +3000,10 @@ omni-binary-bottom-coord-rule := bottom-coord-phrase & binary-phrase &
 	     RELS <! !>,
 	     HCONS <! !> ],
     CONJ-DTR nosem-conj-lex & [ CFORM #cform ],
-    NONCONJ-DTR sign & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
-                                              VAL #val ],
-                                        COORD -,
-                                        CONT.HOOK [ INDEX #rind ]]]].
+    NONCONJ-DTR [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                                       VAL #val ],
+                                 COORD -,
+                                 CONT.HOOK [ INDEX #rind ]]]].
 
 omni-conj-first-bottom-coord-rule := omni-binary-bottom-coord-rule &
   [ CONJ-DTR #cdtr,
@@ -3027,20 +3043,12 @@ omni-conj-last-left-coord-rule := omni-binary-left-coord-rule &
     NONCONJ-DTR #ncdtr,
     ARGS < #ncdtr, #cdtr > ].
 
-;;; ERB 2007-05-16 Note for sfd: There is probably a single type
-;;; you could inherit from here that combines what you need.
-
 
 infl-left-coord-rule := omni-left-coord-rule &
-			same-modified-lex-rule &
-			same-light-lex-rule &
-                        same-local-lex-rule &
-                        same-non-local-lex-rule &
-                        inflecting-lex-rule &
+		     	infl-add-only-lex-rule &
   [ INFLECTED infl-satisfied,
     DTR.INFLECTED inflected,
-    SYNSEM.LOCAL [ COORD -,
-                   COORD-REL #crel ],
+    SYNSEM.LOCAL [ COORD-REL #crel ],
     C-CONT [ RELS <! #crel !>,
              HCONS <! !> ]].
 

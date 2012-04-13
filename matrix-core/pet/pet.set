@@ -26,8 +26,7 @@ start-symbols := $root.
 ;;
 ;; word-breaking characters in tokenization --- treated as whitespace
 ;;
-punctuation-characters := "?!.:;,()<>{}[]+*`_\"-".
-
+punctuation-characters := "!\"&'()*+,−./\;<>?@[]^`{|}~。！？…．　○●◎＊☆★◇◆".
 ;;
 ;; suppress results of regular morphology rules if irregular form exists
 ;;
@@ -48,6 +47,7 @@ packing-restrictor := RELS HCONS.
 ;; path into the MRS semantics
 ;;
 mrs-path := "SYNSEM.LOCAL.CONT".
+
 
 ;;
 ;; path to LABEL for relation-to-word mapping, absolute and within a relation
@@ -153,4 +153,10 @@ posmapping :=
 ;;
 postload-lisp-files := "lkb/mrsglobals.lisp".
 
+;;
+;; SSH 2012-03-28 MRS interface.  In order to make the customized
+;; grammars work with pet off the shelf, mrs.set is newly added with
+;; reference to Jacy.
+;;
+include "mrs".
 
