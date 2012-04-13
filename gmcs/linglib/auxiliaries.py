@@ -214,7 +214,7 @@ def get_users_type_name(aux):
   userstypename = name + '-aux-lex'
   return userstypename
 
-def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon):
+def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
   for stem in aux.get('stem',[]):
     orth = orth_encode(stem.get('orth'))
     id = stem.get('name')
@@ -227,9 +227,13 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon):
       typedef = TDLencode(id) + \
                     ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef, merge=True)
+    else:
+      grdef = TDLencode(id) +'_gr := arg0e_gtr & \
+                    [ CONTEXT [ RELS <! [ PRED "non_existing_rel" ] !> ], \
+                      FLAGS.TRIGGER "' + TDLencode(id) + '" ].'
+      trigger.add(grdef)
 
-
-def customize_auxiliaries(mylang, ch, lexicon, hierarchies):
+def customize_auxiliaries(mylang, ch, lexicon, trigger, hierarchies):
 
   lexicon.add_literal(';;; Auxiliaries')
   for aux in ch.get('aux',[]):
@@ -239,7 +243,7 @@ def customize_auxiliaries(mylang, ch, lexicon, hierarchies):
 
     define_arg_str_and_valency(aux, auxcomp, ch, mylang)
     create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies)
-    add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon)
+    add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger)
 
 
 

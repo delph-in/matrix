@@ -84,7 +84,7 @@ def customize_bipartite_stems(ch):
   """
   # For each verb type
   for verb in ch.get('verb'):
-    
+
     # Check whether there are bipartite stems
     bistems = verb.get('bistem')
     if bistems:
@@ -260,48 +260,32 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
   # Now create the lexical entries for all the defined verb types
   cases = case.case_names(ch)
   for verb in ch.get('verb',[]):
-    stypes = verb.get('supertypes').split(', ') 
-    stype_names = []
-    for t in stypes:
-      vt = ch.get(t)
-      vtname = vt.get('name')
-      if not vtname == '':
-        stype_names.append(vt.get('name')+'-verb-lex')
-
     name = get_name(verb)
     val = verb.get('valence')
 
-    if not val == '':
-      i = val.find(',')
-      dir_inv = ''
-      tivity = ''
-      if i != -1:
-        val = val[:i]
-        dir_inv = 'dir-inv-'
+    i = val.find(',')
+    dir_inv = ''
+    if i != -1:
+      val = val[:i]
+      dir_inv = 'dir-inv-'
 
-      if val == 'trans':
-        tivity = 'trans'
-      elif val == 'intrans':
-        tivity = 'intrans'
-      elif val.find('-') != -1:
-        c = val.split('-')
-        a_case = case.canon_to_abbr(c[0], cases)
-        o_case = case.canon_to_abbr(c[1], cases)
-        tivity = a_case + '-' + o_case + '-trans'
-      else:
-        s_case = case.canon_to_abbr(val, cases)
-        tivity = s_case + '-intrans'
+    if val == 'trans':
+      tivity = 'trans'
+    elif val == 'intrans':
+      tivity = 'intrans'
+    elif val.find('-') != -1:
+      c = val.split('-')
+      a_case = case.canon_to_abbr(c[0], cases)
+      o_case = case.canon_to_abbr(c[1], cases)
+      tivity = a_case + '-' + o_case + '-trans'
+    else:
+      s_case = case.canon_to_abbr(val, cases)
+      tivity = s_case + '-intrans'
 
-      if not dir_inv == '' or not tivity == '':
-        stype_names.append(dir_inv + tivity + 'itive-verb-lex')
-
-
+    stype = dir_inv + tivity + 'itive-verb-lex'
     vtype = name + '-verb-lex'
 
-    if len(stype_names) == 0:
-      mylang.add(vtype + ' := verb-lex .')
-    else: 
-      mylang.add(vtype + ' := ' + ' & '.join(stype_names) + '.')
+    mylang.add(vtype + ' := ' + stype + '.')
 
     features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
 
@@ -367,7 +351,7 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
-def customize_misc_lex(ch, lexicon):
+def customize_misc_lex(ch, lexicon, trigger):
 
   #lexicon.add_literal(';;; Other')
 
@@ -379,6 +363,11 @@ def customize_misc_lex(ch, lexicon):
       TDLencode(orth) + ' := qpart-lex-item & \
                    [ STEM < "' + orthstr + '" > ].'
     lexicon.add(typedef)
+    
+    grdef = TDLencode(orth) +'_gr := arg0e_gtr & \
+                   [ CONTEXT [ RELS <! [ PRED "non_existing_rel" ] !> ], \
+                     FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
+    trigger.add(grdef)
 
 def customize_nouns(mylang, ch, lexicon, hierarchies):
   # Figure out which kinds of determiner-marking are in the language
@@ -387,7 +376,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
   for noun in ch.get('noun',[]):
     det = noun.get('det')
-    if not det == '' and not seen[det]:
+    if not seen[det]:
       seen[det] = True
       seenCount += 1
 
@@ -414,7 +403,6 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   # Adding empty MOD on general definitiion for noun-lex
   mylang.add('noun-lex := non-mod-lex-item.')
 
-  # singlentype means there's only one type of n in the hierarchy.
   if singlentype:
     if seen['obl']:
       typedef = 'noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
@@ -453,28 +441,16 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     name = get_name(noun)
     det = noun.get('det')
 
-    stypes = noun.get('supertypes').split(', ') 
-    stype_names = []
-    for t in stypes:
-      nt = ch.get(t)
-      ntname = nt.get('name')
-      if not ntname == '':
-        stype_names.append(nt.get('name')+'-noun-lex')
-
-    #if singlentype or det == 'opt':
-    #  stype = 'noun-lex' #we'll get this for free
-    if not singlentype:
-      if det == 'obl':
-        stype_names.append('obl-spr-noun-lex')
-      elif det == 'imp':
-        stype_names.append('no-spr-noun-lex')
+    if singlentype or det == 'opt':
+      stype = 'noun-lex'
+    elif det == 'obl':
+      stype = 'obl-spr-noun-lex'
+    else:
+      stype = 'no-spr-noun-lex'
 
     ntype = name + '-noun-lex'
 
-    if len(stype_names) == 0:
-      mylang.add(ntype + ' := noun-lex .')
-    else: 
-      mylang.add(ntype + ' := ' + ' & '.join(stype_names) + '.')
+    mylang.add(ntype + ' := ' + stype + '.')
 
     features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
 
@@ -494,7 +470,10 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 #   Create the type definitions associated with the user's test
 #   lexicon.
 
-def customize_lexicon(mylang, ch, lexicon, hierarchies):
+
+
+#def customize_lexicon(mylang, ch, lexicon, hierarchies):
+def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies):
 
   comment = '''Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.'''
   mylang.add('non-mod-lex-item := lex-item & \
@@ -504,7 +483,8 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies):
   customize_nouns(mylang, ch, lexicon, hierarchies)
 
   mylang.set_section('otherlex')
-  to_cfv = case.customize_case_adpositions(mylang, lexicon, ch)
+  # to_cfv = case.customize_case_adpositions(mylang, lexicon, ch)
+  to_cfv = case.customize_case_adpositions(mylang, lexicon, trigger, ch)
   features.process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=lexicon)
 
   mylang.set_section('verblex')
@@ -512,8 +492,8 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies):
   
   if ch.get('has-aux') == 'yes':
     mylang.set_section('auxlex')
-    auxiliaries.customize_auxiliaries(mylang, ch, lexicon, hierarchies)
+    auxiliaries.customize_auxiliaries(mylang, ch, lexicon, trigger, hierarchies)
 
   mylang.set_section('otherlex')
   customize_determiners(mylang, ch, lexicon, hierarchies)
-  customize_misc_lex(ch, lexicon)
+  customize_misc_lex(ch, lexicon, trigger)

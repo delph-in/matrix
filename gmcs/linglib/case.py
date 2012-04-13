@@ -156,7 +156,8 @@ def customize_case_type(mylang, hierarchies):
 # customize_case_adpositions()
 #   Create the appropriate types for case-marking adpositions
 
-def customize_case_adpositions(mylang, lexicon, ch):
+#def customize_case_adpositions(mylang, lexicon, ch):
+def customize_case_adpositions(mylang, lexicon, trigger, ch):
   cases = case_names(ch)
   features = ch.features()
   to_cfv = []
@@ -208,6 +209,11 @@ def customize_case_adpositions(mylang, lexicon, ch):
         adp_type + ' := case-marking-adp-lex & \
                         [ STEM < "' + orth + '" > ].'
       lexicon.add(typedef)
+
+      grdef = adp_type +'_gr := arg0e_gtr & \
+                        [ CONTEXT [ RELS <! [ PRED "non_existing_rel" ] !> ], \
+                          FLAGS.TRIGGER "' + adp_type + '" ].'
+      trigger.add(grdef)
 
       to_cfv += [(adp.full_key, adp_type, 'adp')]
 

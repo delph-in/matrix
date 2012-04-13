@@ -13,7 +13,7 @@
 ;;;
 ;;; vanilla.rpp file contains rules for tokenization
 ;;; see http://moin.delph-in.net/ReppTop for docs
-(read-repp (lkb-pathname (parent-directory) "repp/vanilla.rpp"))
+(read-repp (lkb-pathname (this-directory) "vanilla.rpp"))
 (setf *repp-interactive* '(:vanilla))
 
 ;;;
@@ -38,11 +38,14 @@
 ;;; transfer rules.  Still under development -- ignore for the
 ;;; time being.
 ;;;
+;;; SSH 2012-03-27 mtr.tdl is added but commented.
+;;;
 (read-tdl-type-files-aux
   (list 
    (lkb-pathname (parent-directory) "matrix.tdl")
    (lkb-pathname (parent-directory) "head-types.tdl")
 ;;; Modules: LOAD my_language.tdl
+(lkb-pathname (parent-directory) "mtr.tdl")   
 ))
 
 ;;;
@@ -85,6 +88,18 @@
 ;;; small lexica) in the hope that the generator will be used frequently.
 ;;;
 (lkb-load-lisp (this-directory) "mrsglobals.lsp" t)
+
+;;;
+;;; SSH 2012-03-27 This invokes trigger rules for semantically empty
+;;; lexical entries. The trigger rules themselves should be in
+;;; trigger.mtr in the grammar directory. The documentation on trigger
+;;; rules: http://moin.delph-in.net/LkbGeneration
+;;;
+(mt:read-transfer-rules
+ (list
+  (lkb-pathname (parent-directory) "trigger.mtr"))
+  "Generation trigger rules"
+  :filter nil :task :trigger :recurse nil :edges 200 :subsume nil)
 
 
 ;;;
