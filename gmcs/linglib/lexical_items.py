@@ -364,8 +364,8 @@ def customize_misc_lex(ch, lexicon, trigger):
                    [ STEM < "' + orthstr + '" > ].'
     lexicon.add(typedef)
     
-    grdef = TDLencode(orth) +'_gr := arg0e_gtr & \
-                   [ CONTEXT [ RELS <! [ PRED "non_existing_rel" ] !> ], \
+    grdef = TDLencode(orth) +'_gr := generator_rule & \
+                   [ CONTEXT [ RELS <! [ ARG0.SF ques ] !> ], \
                      FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
     trigger.add(grdef)
 

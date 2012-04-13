@@ -229,7 +229,7 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
       lexicon.add(typedef, merge=True)
     else:
       grdef = TDLencode(id) +'_gr := arg0e_gtr & \
-                    [ CONTEXT [ RELS <! [ PRED "non_existing_rel" ] !> ], \
+                    [ CONTEXT [ RELS <! [ ARG0.E.TENSE ' + 'tense' + ' ] !> ], \
                       FLAGS.TRIGGER "' + TDLencode(id) + '" ].'
       trigger.add(grdef)
 
@@ -243,6 +243,12 @@ def customize_auxiliaries(mylang, ch, lexicon, trigger, hierarchies):
 
     define_arg_str_and_valency(aux, auxcomp, ch, mylang)
     create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies)
+
+    for tense in aux.get('tense', []):
+      trigger.add(tense.get('name'))
+    for tense in ch.get('tense', []):
+      trigger.add(tense.get('name'))
+
     add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger)
 
 
