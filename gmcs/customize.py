@@ -1,4 +1,5 @@
-### $Id: customize.py,v 1.71 2008-09-30 23:50:02 lpoulson Exp $
+#
+# $Id: customize.py,v 1.71 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -12,6 +13,7 @@ import gzip
 import zipfile
 import sys
 import re
+import codecs
 from subprocess import call
 
 from gmcs.choices import ChoicesFile
@@ -33,6 +35,7 @@ from gmcs.linglib import verbal_features
 from gmcs.linglib import negation
 from gmcs.linglib import coordination
 from gmcs.linglib import yes_no_questions
+from gmcs.linglib import toolboximport
 
 
 ######################################################################
@@ -84,6 +87,78 @@ roots = None
 #  else:
 #    error 'probable script bug'
 
+
+######################################################################
+# customize_punctuation(grammar_path)
+#   Determine which punctuation characters to ignore in parsing
+
+def customize_punctuation(grammar_path):
+  '''sets up repp preprocessing for lkb according to one of 
+     three choices on the questionnaire.  '''
+    # TODO: pet.set output needs to be updated for 
+    # current questionnaire choices and for repp!
+
+  default_splits_str = ' \\t!"#$%&\'()\*\+,-\./:;<=>?@\[\]\^_`{|}~\\\\'.encode('utf-8')
+
+  if ch.get('punctuation-chars') == 'keep-all':
+    # in this case, we just split on [ \t], and that's
+    # what vanilla.rpp already does, so we're done
+    return
+  elif ch.get('punctuation-chars') == 'discard-all':
+    # in this case, "all" punctuation (from the default list)
+    # should be split on and dropped 
+    # to do this we have to build a regex for the : line of 
+    # the repp file
+    # 
+    filename = os.path.join(grammar_path, 'lkb', 'vanilla.rpp') 
+    lines = codecs.open(filename, 'r', encoding='utf-8').readlines()
+    van_rpp = codecs.open(filename, 'w', encoding='utf-8')
+    for line in lines:
+      if line.startswith(':'):
+        line = ":["+default_splits_str+"]".rstrip()
+      print >>van_rpp, line.rstrip('\n')
+    van_rpp.close()       
+  elif ch.get('punctuation-chars') == 'keep-list':
+    # here we split on the default list (like discard-all),
+    # but *minus* whatevers on the keep list
+    chars = list(unicode(ch['punctuation-chars-list'], 'utf8'))
+    filename = os.path.join(grammar_path, 'lkb', 'vanilla.rpp') 
+    lines = iter(codecs.open(filename, 'r', encoding='utf-8').readlines())
+    van_rpp = codecs.open(filename, 'w', encoding='utf-8')
+    for line in lines:
+      if line.startswith(':'):
+        line = line[2:-2]
+      # NOTE: repp syntax says that the line that starts with ':'
+      # defines a list of chars to split on
+        for c in chars:
+          # \ char needs some special treatment
+          # so do the other escaped chars!
+          if c == '\\':
+            c = '\\\\'
+          default_splits_str = default_splits_str.replace(c,'')
+        line= ":["+default_splits_str+"]".rstrip()
+      print >>van_rpp,line.rstrip('\n')
+    van_rpp.close()
+
+  
+#  Need to move pet over to repp
+# 
+#  # PET's pet.set is a bit easier
+#  line_re = re.compile(r'^punctuation-characters := "(.*)".\s*$')
+#  # need to escape 1 possibility for PET
+#  chars = [{'"':'\\"'}.get(c, c) for c in chars]
+#  punc_re = re.compile(r'(' + r'|'.join(re.escape(c) for c in chars) + r')')
+#  filename = os.path.join(grammar_path, 'pet', 'pet.set')
+#  lines = iter(open(filename, 'r').readlines())
+#  pet_set = open(filename, 'w')
+#  for line in lines:
+#    line = unicode(line, 'utf8')
+#    s = line_re.search(line)
+#    if s:
+#      line = 'punctuation-characters := "%s".' % punc_re.sub('', s.group(1))
+#    print >>pet_set, line.rstrip().encode('utf8')
+#  pet_set.close()
+
 ######################################################################
 # customize_test_sentences(grammar_path)
 #   Create the script file entries for the user's test sentences.
@@ -112,6 +187,30 @@ def customize_test_sentences(grammar_path):
     ts.close()
   except:
     pass
+
+def customize_itsdb(grammar_path):
+  from gmcs.lib import itsdb
+  if 'sentence' not in ch: return
+
+  def get_item(s, i):
+    return dict([('i-id', str(i+1)),
+                 ('i-origin', 'unknown'),
+                 ('i-register', 'unknown'),
+                 ('i-format', 'none'),
+                 ('i-difficulty', '1'),
+                 ('i-category', 'S' if not s.get('star', False) else ''),
+                 ('i-input', s['orth']),
+                 ('i-wf', '0' if s.get('star', False) else '1'),
+                 ('i-length', str(len(s['orth'].split()))),
+                 ('i-author', 'author-name'),
+                 ('i-date', str(datetime.date.today()))])
+
+  skeletons = os.path.join(grammar_path, 'tsdb', 'skeletons')
+  relations = os.path.join(skeletons, 'Relations')
+  matrix_skeleton = os.path.join(skeletons, 'matrix')
+  items = {'item': (get_item(s, i) for i, s in enumerate(ch['sentence']))}
+  profile = itsdb.TsdbProfile(matrix_skeleton)
+  profile.write_profile(matrix_skeleton, relations, items)
 
 def customize_script(grammar_path):
   try:
@@ -155,6 +254,18 @@ def customize_pettdl(grammar_path):
   except:
     pass
 
+######################################################################
+# customize_acetdl()
+#
+
+def customize_acetdl(grammar_path):
+  myl = ch.get('language').lower()
+  ace_config = os.path.join(grammar_path, 'ace', 'config.tdl')
+  replace_strings = {'mylanguage': os.path.join('..', myl + '-pet.tdl')}
+  lines = open(ace_config, 'r').read()
+  a_out = open(ace_config, 'w')
+  print >>a_out, lines % replace_strings
+  a_out.close()
 
 ######################################################################
 # customize_roots()
@@ -214,7 +325,6 @@ def customize_roots():
 
 def setup_vcs(ch, grammar_path):
   if 'vcs' in ch:
-    from subprocess import call
     IGNORE = open(os.devnull,'w')
     cwd = os.getcwd()
     os.chdir(grammar_path)
@@ -230,11 +340,14 @@ def setup_vcs(ch, grammar_path):
       call(['hg', 'commit',
             '-u Grammar Matrix <matrix-dev@u.washington.edu>',
             '-m "Initial commit."'], stdout=IGNORE, stderr=IGNORE)
-    #elif ch['vcs'] == 'bzr':
-    #  call(['bzr', 'init', grammar_path])
-    #  call(['bzr', 'add', grammar_path])
-    #  call(['bzr', 'commit', '-m "Initial commit."'],
-    #       stdout=IGNORE, stderr=IGNORE)
+    elif ch['vcs'] == 'bzr':
+      call(['bzr', 'init'], stdout=IGNORE, stderr=IGNORE)
+      call(['bzr', 'add'], stdout=IGNORE, stderr=IGNORE)
+      call(['bzr', 'whoami', '--branch',
+            'Grammar Matrix Customization System <matrix-dev@uw.edu>'],
+           stdout=IGNORE, stderr=IGNORE)
+      call(['bzr', 'commit', '-m "Initial commit."'],
+           stdout=IGNORE, stderr=IGNORE)
     os.chdir(cwd)
     IGNORE.close()
 
@@ -258,17 +371,21 @@ def customize_matrix(path, arch_type, destination=None):
   grammar_path = get_grammar_path(ch.get('iso-code', language).lower(),
                                   language.lower(), destination)
 
-  # Copy from matrix-core
+  # delete any existing contents at grammar path
   if os.path.exists(grammar_path):
     shutil.rmtree(grammar_path)
+  # the rsync command won't create the target dirs, so do it now
+  os.makedirs(grammar_path)
+
   # Use the following command when python2.6 is available
   #shutil.copytree('matrix-core', grammar_path,
   #                ignore=shutil.ignore_patterns('.svn'))
-  shutil.copytree(get_matrix_core_path(), grammar_path)
-  # Since we cannot use shutil.ignore_patterns until 2.6, remove .svn dirs
-  shutil.rmtree(os.path.join(grammar_path, '.svn'), ignore_errors=True)
-  shutil.rmtree(os.path.join(grammar_path, 'lkb/.svn'), ignore_errors=True)
-  shutil.rmtree(os.path.join(grammar_path, 'pet/.svn'), ignore_errors=True)
+  IGNORE = open(os.devnull, 'w')
+  call(['rsync', '-a', '--exclude=.svn',
+        get_matrix_core_path() + os.path.sep, grammar_path],
+       stdout=IGNORE, stderr=IGNORE)
+  IGNORE.close()
+
   # include a copy of choices (named 'choices' to avoid collisions)
   shutil.copy(path, os.path.join(grammar_path, 'choices'))
 
@@ -291,6 +408,8 @@ def customize_matrix(path, arch_type, destination=None):
   lrules =  tdl.TDLfile(os.path.join(grammar_path, 'lrules.tdl'))
   lexicon = tdl.TDLfile(os.path.join(grammar_path, 'lexicon.tdl'))
   roots =   tdl.TDLfile(os.path.join(grammar_path, 'roots.tdl'))
+  trigger = tdl.TDLfile(os.path.join(grammar_path, 'trigger.mtr'))
+  trigger.add_literal(';;; Semantically Empty Lexical Entries')
 
   # date/time
   try:
@@ -339,6 +458,12 @@ def customize_matrix(path, arch_type, destination=None):
  # init_form_hierarchy()
   verbal_features.init_verbal_hierarchies(ch, hierarchies)
 
+  #Integrate choices related to lexical entries imported from
+  #Toolbox lexicon file(s), if any.  NOTE: This needs to be called
+  #before anything else that looks at the lexicon-related choices,
+  #so before lexical_items.insert_ids().
+  toolboximport.integrate_imported_entries(ch)
+
   #Create unique ids for each lexical entry; this allows
   #us to do the same merging on the lexicon TDL file as we
   #do on the other TDL files.  NOTE: This needs to be called
@@ -348,7 +473,8 @@ def customize_matrix(path, arch_type, destination=None):
   # The following might modify hierarchies in some way, so it's best
   # to customize those components and only have them contribute their
   # information to lexical rules when we customize inflection.
-  lexical_items.customize_lexicon(mylang, ch, lexicon, hierarchies)
+  # lexical_items.customize_lexicon(mylang, ch, lexicon, hierarchies)
+  lexical_items.customize_lexicon(mylang, ch, lexicon, trigger, hierarchies)
   argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies)
   direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
   case.customize_case(mylang, ch, hierarchies)
@@ -375,12 +501,15 @@ def customize_matrix(path, arch_type, destination=None):
  # customize_mood()
   verbal_features.customize_verbal_features(mylang, hierarchies)
   word_order.customize_word_order(mylang, ch, rules)
-  negation.customize_sentential_negation(mylang, ch, lexicon, rules)
+  negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules)
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
+  customize_punctuation(grammar_path)
   customize_test_sentences(grammar_path)
+  customize_itsdb(grammar_path)
   customize_script(grammar_path)
   customize_pettdl(grammar_path)
+  customize_acetdl(grammar_path)
   customize_roots()
 
   # Save the output files
@@ -390,6 +519,7 @@ def customize_matrix(path, arch_type, destination=None):
   lrules.save()
   lexicon.save()
   roots.save()
+  trigger.save()
   version_lsp.save()
 
   # Setup version control, if any
@@ -398,8 +528,11 @@ def customize_matrix(path, arch_type, destination=None):
   return grammar_path
 
 def get_matrix_core_path():
-  return os.path.join(os.environ.get('CUSTOMIZATIONROOT/..',''),
-                      'matrix-core')
+  # customizationroot is only set for local use. The installation for
+  # the questionnaire does not use it.
+  cr = os.environ.get('CUSTOMIZATIONROOT','')
+  if cr: cr = os.path.join(cr, '..')
+  return os.path.join(cr, 'matrix-core')
 
 def get_grammar_path(isocode, language, destination):
   '''
@@ -408,7 +541,8 @@ def get_grammar_path(isocode, language, destination):
   '''
   # three possibilities for dir names. If all are taken, raise an exception
   for dir_name in [isocode, language, isocode + '_grammar']:
-    grammar_path = os.path.join(destination, dir_name)
+    if dir_name == '': continue
+    grammar_path = os.path.join(destination, dir_name.replace(' ', '_'))
     # if grammar_path already exists as a file, it is likely the choices file
     if not (os.path.exists(grammar_path) and os.path.isfile(grammar_path)):
       return grammar_path

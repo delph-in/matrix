@@ -8,7 +8,7 @@
 # a comment.
 class TDLHierarchy:
   # Initialize
-  def __init__(self, name, type = '', existing = ''):
+  def __init__(self, name, type = ''):
     self.name = name
     self.type = type
     self.hierarchy = []
@@ -17,8 +17,6 @@ class TDLHierarchy:
     self.subtypes = {}
     self.leaves = set()
     self.coverage = {}
-
-    self.existing = existing
 
 
   def is_empty(self):
@@ -42,10 +40,7 @@ class TDLHierarchy:
     tdl_file.add_literal(';;; ' + self.name[0:1].upper() + self.name[1:])
 
     if define:
-      if self.existing == '':
-        tdl_file.add(self.name + ' := *top*.', '', True)
-      else:
-        tdl_file.add(self.name + ' := ' + self.existing + '.', '', True)
+      tdl_file.add(self.name + ' := *top*.', '', True)
 
     for h in self.hierarchy:
       tdl_file.add(h[0] + ' := ' + h[1] + '.', h[2], True)
