@@ -38,7 +38,6 @@ def customize_word_order(mylang, ch, rules):
 
 
 
-
 def customize_major_constituent_order(wo, mylang, ch, rules):
 
 # ERB 2006-09-14 The most elegant factoring of just the major

@@ -79,27 +79,20 @@ def customize_gender(mylang, hierarchies):
 #   Create the type definitions associated with the user's choices
 #   about other features.
 
-
-
 def init_other_hierarchies(ch, hierarchies):
   for feature in ch.get('feature',[]):
     feat = feature.get('name','')
     type = feature.get('type','')
-    new = feature.get('new','')
+    hier = TDLHierarchy(feat, type)
 
-    if new == 'no':
-      existing = feature.get('existing','')
-      hier = TDLHierarchy(feat, type, existing)
+    for value in feature.get('value', []):
+      val = value.get('name')
+      for supertype in value.get('supertype', []):
+        stype = supertype.get('name')
+        hier.add(val, stype)
+
+    if not hier.is_empty():
       hierarchies[hier.name] = hier
-    else:
-      hier = TDLHierarchy(feat, type)
-      for value in feature.get('value', []):
-        val = value.get('name')
-        for supertype in value.get('supertype', []):
-          stype = supertype.get('name')
-          hier.add(val, stype)
-      if not hier.is_empty():
-        hierarchies[hier.name] = hier
 
 
 def customize_other_features(mylang, hierarchies):

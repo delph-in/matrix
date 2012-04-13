@@ -1,5 +1,6 @@
 from gmcs.utils import get_name
 from gmcs.utils import TDLencode
+from gmcs.utils import orth_encode
 
 from gmcs.linglib import case
 from gmcs.linglib import features
@@ -171,6 +172,9 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 # includes both aux and lexical/main verbs.
 # If there are no auxiliaries then 'verb-lex' covers all verbs
 
+  # Neither mainverbs or auxs should start out as modifiers (for now)
+  # Assigning constraint to verb-lex
+
   if ch.get('has-aux') == 'yes':
     mylang.add('head :+ [ AUX bool ].', section='addenda')
     #mainorverbtype = 'main-verb-lex'
@@ -183,7 +187,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     vcluster = determine_vcluster(auxcomp, auxorder, wo, ch)
 
     typedef = \
-      'verb-lex := lex-item & \
+      'verb-lex := non-mod-lex-item & \
                  [ SYNSEM.LOCAL.CAT.HEAD verb ].'
     mylang.add(typedef)
     typedef = \
@@ -200,7 +204,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
   else:
     #mainorverbtype = 'verb-lex'
     vcluster = False
-    mylang.add('verb-lex := basic-verb-lex.')
+    mylang.add('verb-lex := basic-verb-lex & non-mod-lex-item.')
 
   typedef = mainorverbtype + ' :=  \
        [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >, \
@@ -289,12 +293,12 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     stems.extend(verb.get('bistem', []))
 
     for stem in stems:
-      orth = stem.get('orth')
+      orthstr = orth_encode(stem.get('orth'))
       pred = stem.get('pred')
       id = stem.get('name')
       typedef = \
         TDLencode(id) + ' := ' + vtype + ' & \
-                    [ STEM < "' + orth + '" >, \
+                    [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
@@ -321,7 +325,8 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
                                    COMPS < >, \
                                    SUBJ < > ]].'
     mylang.add(typedef)
-
+    
+    mylang.add('determiner-lex := non-mod-lex-item.')
   # Determiners
   if 'det' in ch:
     lexicon.add_literal(';;; Determiners')
@@ -337,26 +342,32 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
     features.customize_feature_values(mylang, ch, hierarchies, det, dtype, 'det')
 
     for stem in det.get('stem',[]):
-      orth = stem.get('orth')
+      orthstr = orth_encode(stem.get('orth'))
       pred = stem.get('pred')
       id = stem.get('name')
       typedef = \
         TDLencode(id) + ' := ' + dtype + ' & \
-                    [ STEM < "' + orth + '" >, \
+                    [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
-def customize_misc_lex(ch, lexicon):
+def customize_misc_lex(ch, lexicon, trigger):
 
   #lexicon.add_literal(';;; Other')
 
   # Question particle
   if ch.get('q-part'):
     orth = ch.get('q-part-orth')
+    orthstr = orth_encode(orth)
     typedef = \
       TDLencode(orth) + ' := qpart-lex-item & \
-                   [ STEM < "' + orth + '" > ].'
+                   [ STEM < "' + orthstr + '" > ].'
     lexicon.add(typedef)
+    
+    grdef = TDLencode(orth) +'_gr := generator_rule & \
+                   [ CONTEXT.RELS <!  [ ARG0.SF ques ] !>, \
+                     FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
+    trigger.add(grdef)
 
 def customize_nouns(mylang, ch, lexicon, hierarchies):
   # Figure out which kinds of determiner-marking are in the language
@@ -388,6 +399,9 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                                   SPEC < > ] ], \
          ARG-ST < #spr > ].'
   mylang.add(typedef)
+
+  # Adding empty MOD on general definitiion for noun-lex
+  mylang.add('noun-lex := non-mod-lex-item.')
 
   if singlentype:
     if seen['obl']:
@@ -441,11 +455,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
 
     for stem in noun.get('stem', []):
-      orth = stem.get('orth')
+      orthstr = orth_encode(stem.get('orth'))
       pred = stem.get('pred')
       id = stem.get('name')
       typedef = TDLencode(id) + ' := ' + ntype + ' & \
-                  [ STEM < "' + orth + '" >, \
+                  [ STEM < "' + orthstr + '" >, \
                     SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
@@ -458,13 +472,19 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
 
 
-def customize_lexicon(mylang, ch, lexicon, hierarchies):
+#def customize_lexicon(mylang, ch, lexicon, hierarchies):
+def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies):
+
+  comment = '''Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.'''
+  mylang.add('non-mod-lex-item := lex-item & \
+               [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].',comment)
 
   mylang.set_section('nounlex')
   customize_nouns(mylang, ch, lexicon, hierarchies)
 
   mylang.set_section('otherlex')
-  to_cfv = case.customize_case_adpositions(mylang, lexicon, ch)
+  # to_cfv = case.customize_case_adpositions(mylang, lexicon, ch)
+  to_cfv = case.customize_case_adpositions(mylang, lexicon, trigger, ch)
   features.process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=lexicon)
 
   mylang.set_section('verblex')
@@ -472,8 +492,8 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies):
   
   if ch.get('has-aux') == 'yes':
     mylang.set_section('auxlex')
-    auxiliaries.customize_auxiliaries(mylang, ch, lexicon, hierarchies)
+    auxiliaries.customize_auxiliaries(mylang, ch, lexicon, trigger, hierarchies)
 
   mylang.set_section('otherlex')
   customize_determiners(mylang, ch, lexicon, hierarchies)
-  customize_misc_lex(ch, lexicon)
+  customize_misc_lex(ch, lexicon, trigger)
