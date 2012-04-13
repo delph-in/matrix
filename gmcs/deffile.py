@@ -124,7 +124,7 @@ support for the phenomena you describe below.  Note that this grammar
 fragment will only treat matrix (main) clauses. Be advised that this
 system is highly experimental.  We are interested in your feedback.
 If you have questions or comments, please email Emily Bender at:
-ebender at u dot washington dot edu.
+<strong>ebender at u dot washington dot edu</strong>.
 
 <p>[<a href="http://www.delph-in.net/matrix/">Back to Matrix main
 page</a>]
