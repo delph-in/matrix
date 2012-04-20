@@ -240,6 +240,7 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
 
       grdef = TDLencode(id) +'_gr := arg0e_gtr & \
                     [ CONTEXT [ RELS <! [ '
+
       if tense == '' and aspect == '' and mood == '':
         grdef += 'PRED "non_existing_rel" ] !> ],'
       else:
@@ -250,8 +251,9 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
           grdef += 'ASPECT ' + aspect + ','	  
 	if mood != '':
           grdef += 'MOOD ' + mood + ','
-	grdef = grdef[:len(grdef)-1] + ' ] !> ], '
-                    
+
+	grdef = grdef[:len(grdef)-1] + ' ] ] !> ], '
+
       grdef += 'FLAGS.TRIGGER "' + TDLencode(id) + '" ].'
       trigger.add(grdef)
 

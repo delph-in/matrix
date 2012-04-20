@@ -153,6 +153,56 @@ def customize_case_type(mylang, hierarchies):
   if 'case' in hierarchies:
     hierarchies['case'].save(mylang)
 
+# customize_trigger_rules()
+#   Create trigger rules for case-marking adpositions
+def customize_trigger_rules(adp_type, cn, trigger, ch):
+  cm = ch.get('case-marking')
+  arg1 = []
+  arg2 = []
+
+  if cm == 'nom-acc':
+    arg1.append(ch.get('nom-acc-nom-case-name'))
+    arg2.append(ch.get('nom-acc-acc-case-name'))
+  elif cm == 'erg-abs':
+    arg1.append(ch.get('erg-abs-erg-case-name'))
+    arg1.append(ch.get('erg-abs-abs-case-name'))
+    arg2.append(ch.get('erg-abs-abs-case-name'))
+  elif cm == 'tripartite':
+    arg1.append(ch.get('tripartite-s-case-name'))
+    arg1.append(ch.get('tripartite-a-case-name'))
+    arg2.append(ch.get('tripartite-o-case-name'))
+  elif cm in ['split-s']:
+    arg1.append(ch.get('split-s-a-case-name'))
+    arg1.append(ch.get('split-s-o-case-name'))
+    arg2.append(ch.get('split-s-o-case-name'))
+  elif cm in ['fluid-s']:
+    arg1.append(ch.get('fluid-s-a-case-name'))
+    arg1.append(ch.get('fluid-s-o-case-name'))
+    arg2.append(ch.get('fluid-s-o-case-name'))
+    arg1.append(ch.get('fluid'))
+  elif cm in ['split-n']:
+    arg1.append(ch.get('split-n-nom-case-name'))
+    arg2.append(ch.get('split-n-acc-case-name'))
+    arg1.append(ch.get('split-n-erg-case-name'))
+    arg1.append(ch.get('split-n-abs-case-name'))
+    arg2.append(ch.get('split-n-abs-case-name'))
+
+
+  for c in cn.split(','):
+    c = c.strip()   
+    if c in arg1:
+      grdef = adp_type +'_gr_1 := arg0e_gtr & \
+                        [ CONTEXT [ RELS <!  [ ARG1 individual & #i ] !> ], \
+                          FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
+      trigger.add(grdef)
+
+    if c in arg2:
+      grdef = adp_type +'_gr_2 := arg0e_gtr & \
+                        [ CONTEXT [ RELS <!  [ ARG2 individual & #i ] !> ], \
+                          FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
+      trigger.add(grdef)
+  
+
 # customize_case_adpositions()
 #   Create the appropriate types for case-marking adpositions
 
@@ -210,10 +260,8 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
                         [ STEM < "' + orth + '" > ].'
       lexicon.add(typedef)
 
-      grdef = adp_type +'_gr := arg0e_gtr & \
-                        [ CONTEXT [ RELS <! [ PRED "non_existing_rel" ] !> ], \
-                          FLAGS.TRIGGER "' + adp_type + '" ].'
-      trigger.add(grdef)
+      if cn.strip() != '':
+        customize_trigger_rules(adp_type, cn.strip(), trigger, ch)
 
       to_cfv += [(adp.full_key, adp_type, 'adp')]
 
