@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "neg-mod-vp-either") (:content . "neg-mod-vp-either: negative modifier which can occur on either side of the vp"))
 ((:path . "neg-v-attach-freewo") (:content . "neg-v-attach-freewo: ensures that lexical attachment for neg adverbs still works without problems with free word order"))
 ((:path . "multi-wd-lex") (:content . "multi-wd-lex: tests multi word lexical item output on a noun"))
 ((:path . "char-test-keep-list") (:content . "char-test-keep-list: test of repp preprocessing where we discard all punc not on a list submitted by user"))

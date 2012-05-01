@@ -1,4 +1,3 @@
-
 ### $Id: deffile.py,v 1.16 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
@@ -36,8 +35,8 @@ def dummy():
 
 HTTP_header = 'Content-type: text/html;charset=UTF-8'
 
-HTML_pretitle = '''<html>
-<head>
+HTML_pretitle = '''<!doctype html><html>
+<head><meta charset="utf-8"/>
 '''
 
 HTML_posttitle = '''<script type="text/javascript" src="web/matrix.js">
@@ -92,7 +91,7 @@ HTML_mainprebody = '''<body onload="animate()">
 
 <p>The <a href="http://www.delph-in.net/matrix">LinGO Grammar
 Matrix</a> is developed at the University of Washington in the context
-of the <a href="http://www.delph-in.net/">DELPH-IN Consortium<a>,
+of the <a href="http://www.delph-in.net/">DELPH-IN Consortium</a>,
 by <a  href="http://faculty.washington.edu/ebender">Emily M. Bender</a>
 and colleagues.  This material is based up work supported by
 the National Science Foundation under Grant No. BCS-0644097.
@@ -690,7 +689,7 @@ class MatrixDefFile:
     print html_input(vr, 'radio', 'delivery', 'zip', zip_checked,
                      ' ', ' .zip<br>')
     print html_input(vr, 'submit', 'create_grammar_submit', 'Create Grammar',
-                     False, '', '</p>', '', '', vr.has_errors())
+                     False, '', '', '', '', vr.has_errors())
 
     print html_input(vr, 'submit', 'sentences', 'Test by Generation', False,
                      '', '</p>', '', '', vr.has_errors())
@@ -706,7 +705,7 @@ class MatrixDefFile:
     print HTML_uploadpreform
     print html_input(vr, 'submit', '', 'Upload Choices File:', False,
                      '<p>', '')
-    print html_input(vr, 'file', 'choices', '', False, '', '</p>', '20')
+    print html_input(vr, 'file', 'choices', '', False, '', '</p>', '')
     print HTML_uploadpostform
 
     print '<hr>\n'

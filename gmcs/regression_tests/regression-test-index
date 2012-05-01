@@ -145,3 +145,4 @@ char-test-discard-all=test of repp preprocessing where we split on then discard 
 char-test-keep-list=test of repp preprocessing where we discard all punc not on a list submitted by user
 multi-wd-lex=tests multi word lexical item output on a noun
 neg-v-attach-freewo=ensures that lexical attachment for neg adverbs still works without problems with free word order
+neg-mod-vp-either=negative modifier which can occur on either side of the vp
