@@ -1062,6 +1062,8 @@ class ChoicesFile:
       if self.get('neg1-type') == 'b' and self.get('neg2-type') == 'fd':
         features += [ ['negation', 'plus|plus;minus|minus', '', 'verb' ] ]
         features += [ ['requires-neg-adv', 'plus|plus', '', 'verb' ] ]
+    if 'neg1b-neg2b' in self.choices:
+      features += [ ['neg2', 'plus|plus', '', 'verb' ] ]
 
     # Questions
     if 'q-infl' in self.choices:

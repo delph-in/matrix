@@ -119,12 +119,15 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     elif (n == 'negation' and v[0] == 'plus'):
       # ERB 2009-01-22 This is where we deal with the
       # negative affixes.
+
       # If neg-head-feature is on, then we also mark the verb
       # negated +.
       # and ensure that verbs start out negated -
+      # If neg1b-neg2b is on, also requre negform on the complement
       if ch.get('neg-head-feature') == 'on':
         tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].',merge=True)
-
+      if ch.get('neg1b-neg2b') == 'on':
+        tdlfile.add(type_name + ':= [ DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM negform ].', merge=True)
       tdlfile.add(type_name + ':= \
                      [ C-CONT [ HOOK [ XARG #xarg,\
 	                     LTOP #ltop,\
@@ -154,6 +157,10 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       if ch.get('neg-head-feature') == 'on':
         tdlfile.add(type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].',merge=True)
     
+    elif (n == 'neg2'  and v[0] == 'plus'):
+      # this is a lexical rule which should change the form value to negform
+      tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.FORM negform ].',
+                  merge=True )
     elif (n == 'question' and v[0] == 'plus'):
       # ERB 2009-07-01 Adding in semantics for question affixes
       tdlfile.add(type_name + ':= \

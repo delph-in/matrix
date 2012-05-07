@@ -622,7 +622,7 @@ function fill_cache(cache_name)
 //
 // To implement multi-select dropdown controls, we make the associated
 // SELECT controls display:none, then insert immediately after them a
-// text control and a button that simulate a dropdown.  When either is
+// text control and a button that simulates a dropdown.  When either is
 // clicked, a box containing a list of checkboxes and labels appears
 // below, until the user clicks the fake-select control again.
 //
@@ -710,9 +710,9 @@ function multi_open(select_name)
   span.id = select.name + '_multibox';
   span.style.position = 'absolute';
   span.style.zIndex = 2;
-  span.style.left = text.offsetLeft;
-  span.style.top = text.offsetTop + text.offsetHeight;
-  span.style.minWidth = text.offsetWidth - 6;
+  span.style.left = text.offsetLeft + "px";
+  span.style.top = text.offsetTop + text.offsetHeight + "px";
+  span.style.minWidth = text.offsetWidth - 6 + "px";
   span.style.backgroundColor = 'white';
   span.style.border = '1px solid black';
   span.style.padding = '2px 4px 2px 2px';
@@ -1007,7 +1007,7 @@ function set_negmorph(n,o){
           } else {
             ibox =  "<input type=\"checkbox\" name=\"neg1b-neg2b\">NEG1 bound to Aux requires NEG2 bound to Lexical Verb</input>";
           }
-          d2.innerHTML = "<p>If both NEG1 and NEG2 are bound to the same root, you can set up the dendency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p><p>If NEG1 is bound to an auxiliary and NEG2 is bound to a lexical verb, check the box below.  This will enable several options for you as you define your lexical rules for NEG1 and NEG2 on the morphotactics page.  Indicate the lexical rule corresponding to NEG1 by setting [NEGATION +] (this adds the negative semantics).  Likewise, indicate NEG2 by selecting [NEG2 +].   Auxiliary verbs inflected by NEG1 will require their complement to be headed by a verb which has been inflected by NEG2.</p>"+ibox; 
+          d2.innerHTML = "<p>If both NEG1 and NEG2 are bound to the same root, you can set up the dendency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p><p>If NEG1 is bound to an auxiliary and NEG2 is bound to a lexical verb, check the box below.  This will enable several options for you as you define your lexical rules for NEG1 and NEG2 on the morphotactics page.  A value for FORM 'negform' will be added to your grammar (as a subtype of nonfinite).  Indicate the lexical rule corresponding to NEG1 by setting [NEGATION +] (this adds the negative semantics) and the requirement that the complement be [FORM negform].  Likewise, indicate NEG2 by selecting [NEG2 +].  This will set up the NEG2 lexical rule to change the FORM value on its head to negform.  In this way, auxiliary verbs inflected by NEG1 will require their complement to be headed by a verb which has been inflected by NEG2.</p>"+ibox; 
         } else if (document.forms["choices_form"]["neg2-type"][1].checked){
           var d2 = document.getElementById("neg2-fh");
           d2.innerHTML = "<p>NEG1 is bound and NEG2 is an auxiliary.  <span style=\"font-weight:bold\"><span style=\"color:blue\">This analysis is still under construction.</span></span></p>"; 
@@ -1020,6 +1020,10 @@ function set_negmorph(n,o){
         document.forms["choices_form"]["neg2-type"][0].disabled=false;
         document.forms["choices_form"]["neg2-type"][1].disabled=true;
         document.forms["choices_form"]["neg2-type"][2].disabled=false;
+
+        // fh analysis require the neg-aux choice to be on
+        document.forms["choices_form"]["neg-aux"].checked = true;
+
         d = document.getElementById('neg'+n+'-fh');
         // if neg2 is bound, and we're switching away from neg1 bound,
         // then we need to remove the special message about circumfixes
@@ -1071,7 +1075,7 @@ function set_negmorph(n,o){
           } else {
             ibox = "<input type=\"checkbox\" name=\"neg1b-neg2b\">NEG1 bound to Aux requires NEG2 bound to Lexical Verb</input>";
           }
-          d.innerHTML = "<p>If both NEG1 and NEG2 are bound to the same root, you can set up the dendency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p><p>If NEG1 is bound to an auxiliary and NEG2 is bound to a lexical verb, check the box below.  This will enable several options for you as you define your lexical rules for NEG1 and NEG2 on the morphotactics page.  Indicate the lexical rule corresponding to NEG1 by setting [NEGATION +] (this adds the negative semantics).  Likewise, indicate NEG2 by selecting [NEG2 +].   Auxiliary verbs inflected by NEG1 will require their complement to be headed by a verb which has been inflected by NEG2.</p>" + ibox; 
+           d.innerHTML = "<p>If both NEG1 and NEG2 are bound to the same root, you can set up the dendency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p><p>If NEG1 is bound to an auxiliary and NEG2 is bound to a lexical verb, check the box below.  This will enable several options for you as you define your lexical rules for NEG1 and NEG2 on the morphotactics page.  A value for FORM 'negform' will be added to your grammar (as a subtype of nonfinite).  Indicate the lexical rule corresponding to NEG1 by setting [NEGATION +] (this adds the negative semantics) and the requirement that the complement be [FORM negform].  Likewise, indicate NEG2 by selecting [NEG2 +].  This will set up the NEG2 lexical rule to change the FORM value on its head to negform.  In this way, auxiliary verbs inflected by NEG1 will require their complement to be headed by a verb which has been inflected by NEG2.</p>"+ibox; 
         } else if (document.forms["choices_form"]["neg1-type"][1].checked) {
           // neg2 is bound, if neg1 is a free head, give a message
           d = document.getElementById("neg2-b");
@@ -1083,6 +1087,8 @@ function set_negmorph(n,o){
         }
         break;
       case 'fh':
+        // set neg-aux on
+        document.forms["choices_form"]["neg-aux"].checked = true;
         if (document.forms["choices_form"]["neg1-type"][0].checked) {
           // neg2 is an aux, neg1 is bound, give an appropriate message
           d = document.getElementById("neg2-fh");

@@ -370,7 +370,7 @@ def html_select(vr, name, multi, onfocus = ''):
 
   multi_attr = ''
   if multi:
-    multi_attr = ' class="multi"'
+    multi_attr = ' class="multi"  multiple="multiple" '
 
   if onfocus:
     onfocus = ' onfocus="' + onfocus + '"'
@@ -1362,6 +1362,7 @@ class MatrixDefFile:
 
     # Read the current choices file (if any) into old_choices
     # but if neg-aux=on exists, create side-effect in lexicon.
+
     old_choices = ChoicesFile(choices_file)
     if section == 'sentential-negation' and 'neg-aux' in form_data.keys():
       # see if we're already storing an index number
