@@ -850,7 +850,9 @@ Label "</div></div>"
 
 Label "<div id='bi-neg' class='neg_exp_switch' style='display:none'><p> Negation can be indicated by the required presence of two negative morphemes.  You'll have to specify their morphosyntax and their interactions.</p>"
 
-Label "<p>We can label the two morphemes NEG1 and NEG2 and ask about the syntactic properties of each.  Perhaps in your language one of the two negative morphemes is more closely associated with the contribution of negative force to the sentence, and the other functions as a resumptive or specifying marker.  Call the primary indicator of negation NEG1 and the secondary one NEG2.</p>"
+Label "<input type=\"hidden\" name=\"bineg-type\"/>"
+
+Label "<p>We can label the two morphemes NEG1 and NEG2 and ask about the syntactic properties of each.  Perhaps in your language one of the two negative morphemes is more closely associated with the contribution of negative force to the sentence, and the other functions as a resumptive or specifying marker.  Call the primary indicator of negation NEG1 and the secondary one NEG2.  Please choose the morpheme type for each exponent of negation:</p>"
 
 Radio neg1-type "NEG1 type" "NEG1" "<br />"
 . b "bound" "" "bound" "display_neg_form()"
@@ -866,39 +868,143 @@ Radio neg2-type "NEG2 type" "NEG2" ""
 . fc "free-comp" "" "free, syntactic complement" "display_neg_form()"
 . fm "free-mod" "" "free, syntactic modifier" "display_neg_form()"
 
-Label "<div id='neg1-b' class='neg1_switch' style='display:none'><p> If NEG1 is bound, we assume it is bound to a verb (please let us know if this is not the case for your language).  We'll want to integrate it with the morphotactic system. A customization feature, 'negation [+/-]' has been created for your use on the lexicon page.  Specify 'negation plus' on lexical rule instances (lris) that contribute a negative relation.  If your language has morphemes in other position classes which cannot occur when negation is present, specify these as 'negation minus'.</p></div>"
-Label "<div id='neg1-fh' class='neg1_switch' style='display:none'><p> If NEG1 is a syntactic head. We assume it is an auxiliary verb.  More details on interactions with NEG2 coming soon.</p></div>"
-Label "<div id='neg1-fd' class='neg1_switch' style='display:none'><p> If NEG1 is a syntactic dependent, we assume is it like an adverb.  Please fill out the following:</p>"
 
-Radio neg1-mod "neg1 adv modifies" "NEG1 modifies:" "<br />"
-. s "S" "" "S "
-. vp "VP" "" "VP "
-. v "V" "" "V "
+Label "<div id=\"infl-infl-neg\" class='bineg_switch' style='display:none'><p>If both NEG2 and NEG2 are bound to the same root, you can set up the dendency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p><p>If NEG1 is bound to an auxiliary and NEG2 is bound to a lexical verb, check the box below.  This will enable several options for you as you define your lexical rules for NEG1 and NEG2 on the morphotactics page.  A value for FORM 'negform' will be added to your grammar (as a subtype of nonfinite).  Indicate the lexical rule corresponding to NEG1 by setting [NEGATION +] (this adds the negative semantics) and the requirement that the complement be [FORM negform].  Likewise, indicate NEG2 by selecting [NEG2 +].  This will set up the NEG2 lexical rule to change the FORM value on its head to negform.  In this way, auxiliary verbs inflected by NEG1 will require their complement to be headed by a verb which has been inflected by NEG2.</p>"
+Check neg1b-neg2b "neg1 bound to aux requires neg2 bound to lexical verb" "neg1 bound to aux requires neg2 bound to lexical verb" "</div>" 
 
-Radio neg1-order "neg1 adverb order" "NEG1 is ordered: " ""
+Label "<div id='infl-head-neg' class='bineg_switch' style='display:none'><p>You have selected a negation construction with a negative auxiliary verb and an inflectional rule.  When you save this page, the negative auxiliary will be created for you on the lexicon page (where you can further define and constrain its syntax.  A subtype of nonfinite (part of the FORM value hierarchy) called 'negform' has also been created and your negative auxiliary should select for a complement which is [FORM negform].  Indicate your negation lexical rule by marking it as [negation plus] on the morphology subpage.  This rule will change the FORM of verbs to which it attaches to [FORM negform].</p></div>"
+
+Label "<div id='infl-comp-neg' class='bineg_switch' style='display:none'><p>You have selected a construction with a negative inflectional rule and a negative selected complement.  Define your lexical rule on the morphology subpage and indicate it with [negation plus].  Please provide some specifics about the negative complement here:</p>"
+
+Radio comp-neg-head "neg selected by" "Is neg selected by" "<br />"
+. aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
+. v   "v"   "" "any (finite) verb" "neg_comp()"
+
+Radio comp-neg-order "neg ordered" "How is neg ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
 . before "before" "" "before "
 . after "after" "" "after "
-. either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg1-adv-orth "neg1 adverb spelling" "NEG1 is spelled: " "</p></div>" 20
-
-Label "<div id='neg2-b' class='neg2_switch' style='display:none'>"
-Check neg1b-neg2b "neg1 bound to aux requires neg2 bound to lexical verb" "neg1 bound to aux requires neg2 bound to lexical verb" "<br />" 
+Text comp-neg-orth "neg spelling" "What's the ORTH value for neg?" "</p>" 20
 Label "</div>"
-Label "<div id='neg2-fh' class='neg2_switch' style='display:none'><p> If neg2 is a syntactic head, is it an auxiliary verb?</p></div>"
-Label "<div id='neg2-fd' class='neg2_switch' style='display:none'><p> If neg2 is a syntactic dependent, we assume it is like an adverb.  Please fill out the following:</p>"
 
-Radio neg2-mod "neg2 adv modifies" "NEG2 modifies:" "<br />"
+Label "<div id='infl-mod-neg' class='bineg_switch' style='display:none'><p>You have selected a negation construction with a negative inflectional rule and a negative word attached through a head-modifier rule.  Define your lexical rule on the morphology subpage and indicate it with [negation plus].  Please provide some further information about the negative modifier here:</p><p>"
+
+Radio neg-mod "negative adv modifies" "NEG adverb modifies:" "<br />"
 . s "S" "" "S "
 . vp "VP" "" "VP "
 . v "V" "" "V "
 
-Radio neg2-order "neg2 adverb order" "NEG2 is ordered: " ""
+Radio neg-mod-order "negative adverb order" "NEG adverb is ordered: " ""
 . before "before" "" "before "
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg2-adv-orth "neg2 adverb spelling" "NEG2 is spelled: " "</p></div>" 20
+Text neg-mod-orth "negative adverb spelling" "NEG adverb is spelled: " "</p>" 20
+Label "</div>"
+
+Label "<div id='head-head-neg' class='bineg_switch' style='display:none'><p>Two negative heads is not available.  Please contact matrix-dev if you believe this is the best analysis for your language.</p></div>"
+Label "<div id='head-comp-neg' class='bineg_switch' style='display:none'><p>You have selected a negative construction with a negative auxiliary verb and a negative selected complement.  When you save the page, the negative auxiliary verb will be created for you on the lexicon page where you can further define its syntax.  Please provide some more information about the negative complement here:</p><p>"
+
+Radio comp-neg-head "neg selected by" "Is NEG complement selected by" "<br />"
+. aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
+. v   "v"   "" "any (finite) verb" "neg_comp()"
+
+Radio comp-neg-order "neg ordered" "How is NEG complement ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
+. before "before" "" "before "
+. after "after" "" "after "
+
+Text comp-neg-orth "neg spelling" "What's the ORTH value for NEG complement?" "</p>" 20
+Label "</div>"
+
+Label "<div id='head-mod-neg' class='bineg_switch' style='display:none'><p>You have selected a negation construction with a negative auxiliary verb and a negative adverb attached through a head-modifier rule.  The negative auxiliary verb will be created for you on the lexicon page where you can further specify its syntax.  Please provide some further information about the negative modifier here:</p>"
+
+Radio neg-mod "negative adv modifies" "NEG adverb modifies:" "<br />"
+. s "S" "" "S "
+. vp "VP" "" "VP "
+. v "V" "" "V "
+
+Radio neg-mod-order "negative adverb order" "NEG adverb is ordered: " ""
+. before "before" "" "before "
+. after "after" "" "after "
+. either "either" "" "on either side of the category it modifies.<br>"
+
+Text neg-mod-orth "negative adverb spelling" "NEG adverb is spelled: " "</p>" 20
+Label "</div>"
+
+Label "<div id='comp-comp-neg' class='bineg_switch' style='display:none'><p>You have selected a construction with two negative complements.  Please provide some further information about the two complements here:</p><p>"
+
+Radio comp-neg1-head "neg selected by" "Is NEG1 selected by" "<br />"
+. aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
+. v   "v"   "" "any (finite) verb" "neg_comp()"
+
+Radio comp-neg1-order "neg ordered" "How is NEG1 ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
+. before "before" "" "before "
+. after "after" "" "after "
+
+Text comp-neg1-orth "neg spelling" "What's the ORTH value for NEG1?" "</p><p>" 20
+
+Radio comp-neg2-head "neg selected by" "Is NEG2 selected by" "<br />"
+. aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
+. v   "v"   "" "any (finite) verb" "neg_comp()"
+
+Radio comp-neg2-order "neg ordered" "How is NEG2 ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
+. before "before" "" "before "
+. after "after" "" "after "
+
+Text comp-neg2-orth "neg spelling" "What's the ORTH value for NEG2?" "</p>" 20
+Label "</div>"
+
+Label "<div id='comp-mod-neg' class='bineg_switch' style='display:none'><p>You have selected a negation construction with a negative complement and a negative modifier.  Please provide some further information here:</p><p>"
+
+Radio comp-neg-head "neg selected by" "Is NEG complement selected by" "<br />"
+. aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
+. v   "v"   "" "any (finite) verb" "neg_comp()"
+
+Radio comp-neg-order "neg ordered" "How is NEG ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
+. before "before" "" "before "
+. after "after" "" "after "
+
+Text comp-neg-orth "neg spelling" "What's the ORTH value for the NEG complement?" "</p><p>" 20
+
+Radio neg-mod "negative adv modifies" "NEG adverb modifies:" "<br />"
+. s "S" "" "S "
+. vp "VP" "" "VP "
+. v "V" "" "V "
+
+Radio neg-mod-order "negative adverb order" "NEG adverb is ordered: " ""
+. before "before" "" "before "
+. after "after" "" "after "
+. either "either" "" "on either side of the category it modifies.<br>"
+
+Text neg-mod-orth "negative adverb spelling" "NEG adverb is spelled: " "</p>" 20
+Label "</div>"
+
+Label "<div id='mod-mod-neg' class='bineg_switch' style='display:none'><p>You have selected a negation construction with two negative modifiers.  Please provide some further information here:</p><p>"
+
+Radio neg1-mod "negative adv modifies" "NEG1 modifies:" "<br />"
+. s "S" "" "S "
+. vp "VP" "" "VP "
+. v "V" "" "V "
+
+Radio neg1-mod-order "negative adverb order" "NEG1 is ordered: " ""
+. before "before" "" "before "
+. after "after" "" "after "
+. either "either" "" "on either side of the category it modifies.<br>"
+
+Text neg1-mod-orth "negative adverb spelling" "NEG1 is spelled: " "</p>" 20
+
+Radio neg2-mod "negative adv modifies" "NEG2 modifies:" "<br />"
+. s "S" "" "S "
+. vp "VP" "" "VP "
+. v "V" "" "V "
+
+Radio neg2-mod-order "negative adverb order" "NEG2 is ordered: " ""
+. before "before" "" "before "
+. after "after" "" "after "
+. either "either" "" "on either side of the category it modifies.<br>"
+
+Text neg2-mod-orth "negative adverb spelling" "NEG2 is spelled: " "</p>" 20
+Label "</div>"
 
 Label "<div id=\"bineg_fb\"></div></div>"
 
