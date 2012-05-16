@@ -1126,9 +1126,11 @@ class MatrixDefFile:
         print '<li><span style="color:#ff0000;">'+l+'</li>'
 
       print '<hr />'
+      print '<li><a href="' + choices_file + '">View choices file</a><br />(right-click to download)</li>'
       print '<li><a href="#stay" onclick="document.forms[0].submit()">Save and stay here</a></li>'
       print '<li><a href="#clear" onclick="clear_form()">Clear form</a></li>'
       print '</ul></div>'
+
 
       print '<div id="form_holder">'
       print HTML_preform
@@ -1356,8 +1358,11 @@ class MatrixDefFile:
 
     # Copy the form_data into a choices object
     new_choices = ChoicesFile('')
+#    print "HTTP:Content-type:text/plain\n\n"
     for k in form_data.keys():
       if k:
+#        print "  "+str(form_data[k])
+#        print "["+k+"]=["+form_data[k].value+"]"
         new_choices[k] = form_data[k].value
 
     # Read the current choices file (if any) into old_choices
@@ -1383,6 +1388,14 @@ class MatrixDefFile:
         new_choices['infl-neg'] = 'on'
         old_choices, new_choices = self.create_infl_neg_choices(old_choices, new_choices)
 
+    # add infl neg whenever there's a bound morpheme negator
+    if section == 'sentential-negation' and 'neg1-type' in form_data.keys():
+      if form_data['neg1-type'].value=='b':  
+        new_choices['infl-neg'] = 'on'
+      if 'neg2-type' in form_data.keys(): 
+        if form_data['neg2-type'].value=='b':
+          new_choices['infl-neg'] = 'on'
+
     # bipartite neg adverbs require adv-neg
     if section == 'sentential-negation' and 'neg1-type' in form_data.keys():
       if form_data['neg1-type'].value[0] == 'f' or \
@@ -1390,16 +1403,22 @@ class MatrixDefFile:
         new_choices['adv-neg'] = 'on'
 
     # add FORM subtype for neg1b-neg2b analysis
-    if section == 'sentential-negation' and 'neg1b-neg2b' in form_data.keys():
-      next_n = old_choices['nf-subform'].next_iter_num() if 'nf-subform' in old_choices else 1
-      found_negform = False
-      if next_n > 1:
-        nfss = old_choices.get('nf-subform')
-        for nfs in nfss:
-          if nfs['name'] == 'negform':
-            found_negform = True
-      if not found_negform:
-        old_choices['nf-subform%d_name' % next_n ] = 'negform' 
+    # also add it for infl-head neg analysis
+    if section == 'sentential-negation': 
+      keys = form_data.keys()
+      if 'neg1b-neg2b' in keys or \
+        ('neg1-type' in keys and 'neg2-type' in keys and form_data['neg1-type'].value == 'fh' and form_data['neg2-type'].value == 'b') or \
+        ('neg1-type' in keys and 'neg2-type' in keys and form_data['neg2-type'].value == 'fh' and form_data['neg1-type'].value == 'b'):
+        next_n = old_choices['nf-subform'].next_iter_num() if 'nf-subform' in old_choices else 1
+        found_negform = False
+        if next_n > 1:
+          nfss = old_choices.get('nf-subform')
+          for nfs in nfss:
+            if nfs['name'] == 'negform':
+              found_negform = True
+        if not found_negform:
+          old_choices['nf-subform%d_name' % next_n ] = 'negform' 
+          old_choices['nf-subform%d_name' % (next_n+1) ] = 'otherform' 
 
     # Open the def file and store it in line[]
     f = open(self.def_file, 'r')

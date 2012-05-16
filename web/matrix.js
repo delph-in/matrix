@@ -654,6 +654,7 @@ function multi_init()
 function multi_create(select)
 {
   select.style.display = 'none';
+  select.onfocus();
 
   var t = document.createElement('input');
   t.id = select.name + '_multitext';
@@ -713,6 +714,9 @@ function multi_open(select_name)
   span.style.left = text.offsetLeft + "px";
   span.style.top = text.offsetTop + text.offsetHeight + "px";
   span.style.minWidth = text.offsetWidth - 6 + "px";
+  span.style.left = text.offsetLeft;
+  span.style.top = text.offsetTop + text.offsetHeight;
+  span.style.minWidth = text.offsetWidth - 6;
   span.style.backgroundColor = 'white';
   span.style.border = '1px solid black';
   span.style.padding = '2px 4px 2px 2px';
@@ -749,10 +753,10 @@ function multi_open(select_name)
   span.id = select.name + '_multiback';
   span.style.position = 'absolute';
   span.style.zIndex = 1;
-  span.style.left = 0;
-  span.style.top = 0;
-  span.style.width = document.body.scrollWidth;
-  span.style.height = document.body.scrollHeight;
+  span.style.left = 0 + "px";
+  span.style.top = 0 + "px";
+  span.style.width = document.body.scrollWidth + "px";
+  span.style.height = document.documentElement.scrollHeight + "px";
   span.style.backgroundColor = 'white';
   span.style.opacity = 0;
   span.style.filter = 'alpha(opacity=0)';
@@ -967,16 +971,105 @@ function set_negexp(n)
   }
 }
 
-function set_negmorph(n,o){
+function set_negmorph(t1,t2){
 
   // first we hide everything
-  var divs = document.getElementsByClassName("neg"+n+"_switch");
+  var divs = document.getElementsByClassName("neg"+1+"_switch");
 	for(var i=0; i<divs.length;i++){
-    var e = divs[i];
-    e.style.display = 'none';
+    divs[i].style.display = 'none';
 	}
 
-  var d;
+  // now calculate the bipartite negation type
+  var t;
+  if (t1=='b'){
+    if (t2=='b'){
+      t = 'infl-infl'; 
+    } else if (t2 == 'fh') {
+      t = 'infl-head'; 
+    } else if (t2 == 'fc') {
+      t = 'infl-comp'; 
+    } else if (t2 == 'fm') {
+      t = 'infl-mod'; 
+    } else {
+      t = 'default';
+    }
+  } else if (t1 == 'fh'){
+    if (t2=='b'){
+      t = 'infl-head'; 
+    } else if (t2 == 'fh') {
+      t = 'head-head'; 
+    } else if (t2 == 'fc') {
+      t = 'head-comp'; 
+    } else if (t2 == 'fm') {
+      t = 'head-mod'; 
+    } else {
+      t = 'default';
+    }
+  } else if (t1 == 'fc'){
+    if (t2=='b'){
+      t = 'infl-comp'; 
+    } else if (t2 == 'fh') {
+      t = 'head-comp'; 
+    } else if (t2 == 'fc') {
+      t = 'comp-comp'; 
+    } else if (t2 == 'fm') {
+      t = 'comp-mod'; 
+    } else {
+      t = 'default';
+    }
+  } else if (t1 == 'fm'){
+    if (t2=='b'){
+      t = 'infl-mod'; 
+    } else if (t2 == 'fh') {
+      t = 'head-mod'; 
+    } else if (t2 == 'fc') {
+      t = 'comp-mod'; 
+    } else if (t2 == 'fm') {
+      t = 'mod-mod'; 
+    } else {
+      t = 'default';
+    }
+  }
+ 
+
+  // now set up the page accordingly
+  var d = document.getElementById('bineg_fb');
+  switch(t){
+    case 'infl-infl':
+      d.innerHTML='infl-infl';
+      break;
+    case 'infl-head':
+      d.innerHTML='infl-head';
+      break;
+    case 'infl-comp':
+      d.innerHTML='infl-comp';
+      break;
+    case 'infl-mod':
+      d.innerHTML='infl-mod';
+      break;
+    case 'head-head':
+      d.innerHTML='head-head';
+      break;
+    case 'head-comp':
+      d.innerHTML='head-comp';
+      break;
+    case 'head-mod':
+      d.innerHTML='head-mod';
+      break;
+    case 'comp-comp':
+      d.innerHTML='comp-comp';
+      break;
+    case 'comp-mod':
+      d.innerHTML='comp-mod';
+      break;
+    case 'mod-mod':
+      d.innerHTML='mod-mod';
+      break;
+    default:
+      d.innerHTML='choose a morpheme type for each exponent';
+      break;
+  }
+  /*var d;
   // n is which morpheme we're specifying (neg1 or neg2)
   // o is an option on bipartite negation, a morph type { b, fh, fd }
   // if we're dealing with neg1, we set soem restrictions on neg2 
@@ -1031,7 +1124,7 @@ function set_negmorph(n,o){
         
         if (document.forms["choices_form"]["neg2-type"][0].checked){
           var d2 = document.getElementById("neg2-b");
-          d2.innerHTML = "<p>NEG1 is an auxiliary and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"
+          d2.innerHTML = "<p>NEG1 is an auxiliary and NEG2 is bound. Saving this page will create the negative auxiliary for you, as well as the FORM value negform (which your negative auxiliary should select for).  Indicate the bound negator using the customization feature NEGATION plus on the morphology page.</p>";
         } else if (document.forms["choices_form"]["neg2-type"][1].checked){
           var d2 = document.getElementById("neg2-fh");
           d2.innerHTML = "<p>We don't have any analysis for a negation type with two auxiliary verbs.  Please contact matrix-dev about this language.</p>"; 
@@ -1079,7 +1172,7 @@ function set_negmorph(n,o){
         } else if (document.forms["choices_form"]["neg1-type"][1].checked) {
           // neg2 is bound, if neg1 is a free head, give a message
           d = document.getElementById("neg2-b");
-          d.innerHTML = "<p>NEG1 is a auxiliary and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
+          d.innerHTML = "<p>NEG1 is an auxiliary and NEG2 is bound. Saving this page will create the negative auxiliary for you, as well as the FORM value negform (which your negative auxiliary should select for).  Indicate the bound negator using the customization feature NEGATION plus on the morphology page.</p>";
         } else if (document.forms["choices_form"]["neg1-type"][2].checked) {
           // neg2 is bound, neg1 is an adverb, give a message 
           d = document.getElementById("neg2-b");
@@ -1125,7 +1218,7 @@ function set_negmorph(n,o){
   if (d != null)
   {
     d.style.display ='block';
-  }
+  }*/
 }
 
 function display_neg_form()
@@ -1156,17 +1249,23 @@ function display_neg_form()
   // now we see if there are any choices set for 'negN-type'
   // these are the neg1 and neg2 choices section on the bipartite
   // page.
+
   if (neg_exp[2].checked) {
-    for (var i=1;i<=2;i++){
-      var ntype = document.forms["choices_form"]["neg"+i+"-type"]; 
-      for (var j=0;j<ntype.length;j++){
-        if(ntype[j].checked){
-          var v = ntype[j].value;
-          set_negmorph(i,v);
-        }
+    var ntype1 = document.forms["choices_form"]["neg"+1+"-type"]; 
+    var ntype2 = document.forms["choices_form"]["neg"+2+"-type"]; 
+    var t1,t2;
+    for (var j=0;j<ntype1.length;j++){
+      if(ntype1[j].checked){
+        var v = ntype1[j].value;
+        t1 = v;
+      }
+      if(ntype2[j].checked){
+        var v = ntype2[j].value;
+        t2 = v;
       }
     }
   }
+  set_negmorph(t1,t2);
 }
 
 function neg_comp() {

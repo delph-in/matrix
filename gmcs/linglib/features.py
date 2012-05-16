@@ -127,7 +127,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       if ch.get('neg-head-feature') == 'on':
         tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].',merge=True)
       if ch.get('neg1b-neg2b') == 'on':
-        tdlfile.add(type_name + ':= [ DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM negform ].', merge=True)
+        tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM negform ].', merge=True)
       tdlfile.add(type_name + ':= \
                      [ C-CONT [ HOOK [ XARG #xarg,\
 	                     LTOP #ltop,\
