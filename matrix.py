@@ -131,6 +131,9 @@ def main():
   elif args[0] in ('u', 'unit-test'):
     run_unit_tests()
 
+  elif args[0] in ('hv', 'html-validate'):
+    validate_html()
+
   #### REGRESSION TESTS ####
 
   elif args[0] in ('r', 'regression-test'):
@@ -548,6 +551,11 @@ def usage(command=None, exitcode=2):
     p("web-test-remove (wr) TEST")
     p("            Remove a Selenium test.")
     something_printed = True
+  if command in ('html-validate', 'hv', 'all'):
+    p("html-validate (hv)")
+    p("            Send off html output of matrix.cgi to W3C validator")
+    p("            API and receive feedback.")
+    something_printed = True
   if command in ('install', 'i', 'all'):
     p("install (i) PATH")
     p("            Install a custom instance of the Grammar Matrix")
@@ -749,6 +757,117 @@ def remove_web_test(testname):
   for line in new_lines:
     test_file.write(line)
   test_file.close()
+
+def validate_html():
+  import time
+  errors = 0
+
+  print "Checking questionnaire pages without any choices file..."
+  print "main page:"
+  httpstr = os.popen('./matrix.cgi').read()
+
+  # need to set cookie "session = xxxx' for later
+  i = httpstr.find('session=')
+  sess = httpstr[i+8:i+13]
+  os.system('export HTTP_COOKIE="session='+sess+'"')
+
+  # need to drop the first few lines of the reply from 
+  # matrix.cgi (HTTP headers!), validation starts at 
+  # doctype
+  i = httpstr.lower().find('<!doctype')
+  if i == -1:
+    print "No doctype string found in reply, validator will complain."
+    i = httpstr.lower().find('<html')
+    html = httpstr[i:]
+  else:
+    html = httpstr[i:]
+
+  e = send_page(html)
+  if e == 0:
+    print "  No errors were found."
+  else:
+    errors += e
+
+  # get the list of subpages by instantiating matrixdef
+  md = MatrixDefFile('web/matrixdef')
+  print "subpages:"
+  subpages = md.sections.keys()
+  for s in subpages:
+    time.sleep(1) # w3c asks for >= 1s  b/t requests
+    print "\nsending subpage: ",s,"..."
+    httpstr = os.popen('./matrix.cgi subpage='+s).read()
+
+    i = httpstr.lower().find('<!doctype')
+    if i == -1:
+      print "No doctype string found in reply, validator will complain."
+      i = httpstr.lower().find('<html')
+      html = httpstr[i:]
+    else:
+      html = httpstr[i:]
+
+    e = send_page(html)
+    if e == 0:
+      print "  No errors were found."
+    else:
+      errors += e
+
+  print "Total errors on all checked pages: ",errors
+    
+
+
+def send_page(page):
+  import urllib
+  import urllib2
+  from xml.dom.minidom import parseString
+  values = { 'uploaded_file':page, 'output':'soap12' }
+  data = urllib.urlencode(values)
+  req = urllib2.Request('http://validator.w3.org/check', data) 
+  reply = urllib2.urlopen(req).read()
+
+  dom = parseString(reply)
+  ecount = int(dom.getElementsByTagName('m:errorcount')[0].firstChild.data)
+  try:
+    dc = dom.getElementsByTagName('m:doctype')[0].firstChild.data
+    print "  Checked document as type:",dc
+  except:
+    pass
+  if ecount > 0:
+    print "  The W3C validator found "+str(ecount)+" error(s) in the document submitted."
+    errors = dom.getElementsByTagName('m:error')
+    for e in errors:
+      l = e.getElementsByTagName('m:line')[0].firstChild.data
+      s = e.getElementsByTagName('m:source')[0].firstChild.data
+      m = e.getElementsByTagName('m:message')[0].firstChild.data
+      print "  error at line "+l+":"
+      s = s.replace('<strong title="Position where error was detected.">','')
+      s = s.replace('</strong>','')
+      print "    source: \""+unescape(s)+"\""
+      print "    message:\""+unescape(m)+"\""
+      print "  --------------------"
+  return ecount
+
+def unescape(text):
+  import re
+  import htmlentitydefs
+  def fixup(m):
+    text = m.group(0)
+    if text[:2] == "&#":
+    # character reference
+      try:
+        if text[:3] == "&#x":
+          return unichr(int(text[3:-1], 16))
+        else:
+          return unichr(int(text[2:-1]))
+      except ValueError:
+        pass
+    else:
+    # named entity
+      try:
+        text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
+      except KeyError:
+        pass
+      return text # leave as is
+  return re.sub("&#?\w+;", fixup, text)
 
 if __name__ == '__main__':
   validate_python_version()
