@@ -132,7 +132,10 @@ def main():
     run_unit_tests()
 
   elif args[0] in ('hv', 'html-validate'):
-    validate_html()
+    if len(args) > 1:
+      validate_html(args[1])
+    else:
+      validate_html('')
 
   #### REGRESSION TESTS ####
 
@@ -758,45 +761,31 @@ def remove_web_test(testname):
     test_file.write(line)
   test_file.close()
 
-def validate_html():
+def validate_html(arg):
+  # takes name of a subpage, or 'main' or all
   import time
   errors = 0
+  print "Checking html validation for "+arg
 
-  print "Checking questionnaire pages without any choices file..."
-  print "main page:"
+  # to check any subpages, we'll need a cookie
+  # (ie, a session number) that we get by hitting
+  # the main page, so go ahead and do this
+
   httpstr = os.popen('./matrix.cgi').read()
-
-  # need to set cookie "session = xxxx' for later
   i = httpstr.find('session=')
   sess = httpstr[i+8:i+13]
   os.system('export HTTP_COOKIE="session='+sess+'"')
 
-  # need to drop the first few lines of the reply from 
-  # matrix.cgi (HTTP headers!), validation starts at 
-  # doctype
-  i = httpstr.lower().find('<!doctype')
-  if i == -1:
-    print "No doctype string found in reply, validator will complain."
-    i = httpstr.lower().find('<html')
-    html = httpstr[i:]
-  else:
-    html = httpstr[i:]
+  # if arg is 'main', ie, main only, send
+  # the httpstr off for validation after dropping
+  # the http headers
 
-  e = send_page(html)
-  if e == 0:
-    print "  No errors were found."
-  else:
-    errors += e
+  if arg in ['main','m','all','a','']:
+    print "main page:"
 
-  # get the list of subpages by instantiating matrixdef
-  md = MatrixDefFile('web/matrixdef')
-  print "subpages:"
-  subpages = md.sections.keys()
-  for s in subpages:
-    time.sleep(1) # w3c asks for >= 1s  b/t requests
-    print "\nsending subpage: ",s,"..."
-    httpstr = os.popen('./matrix.cgi subpage='+s).read()
-
+    # need to drop the first few lines of the reply from 
+    # matrix.cgi (HTTP headers!), validation starts at 
+    # doctype
     i = httpstr.lower().find('<!doctype')
     if i == -1:
       print "No doctype string found in reply, validator will complain."
@@ -810,6 +799,48 @@ def validate_html():
       print "  No errors were found."
     else:
       errors += e
+
+  if arg in ['all', 'a', '']: 
+    # get the list of subpages by instantiating matrixdef
+    md = MatrixDefFile('web/matrixdef')
+    print "subpages:"
+    for s in md.sections.keys():
+      time.sleep(2) # w3c asks for >= 1s  b/t requests
+      print "\nsending subpage: ",s,"..."
+      httpstr = os.popen('./matrix.cgi subpage='+s).read()
+
+      i = httpstr.lower().find('<!doctype')
+      if i == -1:
+        print "No doctype string found in reply, validator will complain."
+        i = httpstr.lower().find('<html')
+        html = httpstr[i:]
+      else:
+        html = httpstr[i:]
+
+      e = send_page(html)
+      if e == 0:
+        print "  No errors were found."
+      else:
+        errors += e
+  else:
+    # else run the specific subpage in the arg
+      print "\nsending subpage: ",arg,"..."
+      httpstr = os.popen('./matrix.cgi subpage='+arg).read()
+
+      i = httpstr.lower().find('<!doctype')
+      if i == -1:
+        print "No doctype string found in reply, validator will complain."
+        i = httpstr.lower().find('<html')
+        html = httpstr[i:]
+      else:
+        html = httpstr[i:]
+
+      e = send_page(html)
+      if e == 0:
+        print "  No errors were found."
+      else:
+        errors += e
+    
 
   print "Total errors on all checked pages: ",errors
     
