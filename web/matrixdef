@@ -7,9 +7,9 @@ Label "<h3>Language</h3>"
 Text language "Language name" "<p>Name of your language: " "<br>" 50
 Text iso-code "ISO code" "<a href=\"http://www.sil.org/iso639-3/codes.asp\">ISO code</a> for your language: " " (optional) </p>" 6
 
-Label "<h3>String-processing</h3><p>Your grammar will include a basic tokenizer file for string-level processing (<span style='font-family:monospace'>vanilla.rpp</span>, see <a href='http://moin.delph-in.net/ReppTop/'>ReppTop</a> documentation).  We have three default options for this file.  If you do not answer, your grammar will include a tokenizer which will discard most ascii punctuation (except the hyphen, colon, and equals [-,:,=]).<br />"
+Label "<h3>String-processing</h3><p>Your grammar will include a basic tokenizer file for string-level processing (<span class='tt'>vanilla.rpp</span>, see <a href='http://moin.delph-in.net/ReppTop/'>ReppTop</a> documentation).  We have three default options for this file.  If you do not answer, your grammar will include a tokenizer which will discard most ascii punctuation (except the hyphen, colon, and equals [-,:,=]).<br />"
 Radio punctuation-chars "Punctuation characters" "<br />" ""
-. discard-all "discard-all" "" "split on, and then discard all punctuation characters found in this default list (all lower ascii punctuation except \x22 \"): <span style='font-family:monospace'>!#$%&'()*+,-./:;<=>?@[]^_`{|}~\</span><!--we can't currently do anything about the unicode characters... maybe later 。！？…．　○●◎＊☆★◇◆--><br />"
+. discard-all "discard-all" "" "split on, and then discard all punctuation characters found in this default list (all lower ascii punctuation except \x22 \"): <span class='tt'>!#$%&#38;'()*+,-./:;&lt;=&gt;?@[]^_`{|}~\</span><!--we can't currently do anything about the unicode characters... maybe later 。！？…．　○●◎＊☆★◇◆--><br />"
 . keep-all "keep-all" "" "only split space and tab characters, all other characters can occur in tokens<br />" 
 . keep-list "keep-list" "" "place characters into a list of characters that can occur within tokens (you can copy and paste from the default list above; do not use any commas or spaces to delimit characters)."
 
@@ -35,13 +35,13 @@ us improve the Grammar Matrix, and possibly to contact you in the
 future.  We will not share your answers or identifying information
 outside the project, unless required by law.</p>"
 
-Text email "Email address" "<table border=\"0\"><tr><td valign=\"top\">Your email address: <td>" "</tr>" 40
+Text email "Email address" "<table id='feedback'><tr><td>Your email address: <td>" "</tr>" 40
 one-name
-Text affiliation "Affiliation" "<tr><td valign=\"top\">Your affiliation: <td>" "</tr>" 40
+Text affiliation "Affiliation" "<tr><td>Your affiliation: <td>" "</tr>" 40
 
-Text motivation "Motivation" "<tr><td valign=\"top\">Your reason for using this system: <td>" "<br>(e.g. descriptive linguistic research, for a class)</tr></table>" 80
+Text motivation "Motivation" "<tr><td>Your reason for using this system: <td>" "<br>(e.g. descriptive linguistic research, for a class)</tr>" 80
 
-TextArea comment "Comments" "<tr><td valign=\"top\">Comments on your implementation of the grammar: <td>" "<br>(e.g. Choice of analyses, sources of information, etc.)</tr></table>" 80x6
+TextArea comment "Comments" "<tr><td>Comments on your implementation of the grammar: <td>" "<br>(e.g. Choice of analyses, sources of information, etc.)</tr></table>" 80x6
 
 Label "<p>We recommend that you use version control for your grammar development, and aim to facilitate that in two ways.  First, you can choose to have your grammar's code initialized into a Git or Mercurial repository.  Please see <a href=\"http://wiki.delph-in.net/moin/VersionControlForGrammarDevelopment\">this wiki page</a> for information on how to use these systems. The wiki also includes information on how to use Subversion (svn) with your grammar.</p>"
 
@@ -110,7 +110,7 @@ Label "NOTE: If your language has free word order and allows more than one auxil
 
 Label "<p><span style=\"color:red\">NOTE: As Modules for V2 order are
 still under development, relative order of auxiliaries and their
-complements have not been implemented yet.</p>"
+complements have not been implemented yet.</span></p>"
 
 Label "</div>"
 
@@ -136,7 +136,8 @@ section of the questionnaire for more details).</p>"
 Label "<p>Please describe the number hierarchy in your language.  Add
 all the values of number that the language's grammar distinguishes.
 For each you may provide one or more supertypes, using the other
-number values you have defined or the root type <tt>number</tt> (which
+number values you have defined or the root type 
+<span class=\"tt\">number</span> (which
 will be assumed if no supertype is provided).  If your language does
 not have number as a grammatical category, leave this section
 blank.</p>"
@@ -207,8 +208,8 @@ Label "Please provide names for the subtypes distinguished by your
 language.  The names you provide below will be prefixed with the
 appropriate person and number value; for example, if you enter a
 subtype named \"excl\" of the first person for the number values
-<tt>dual</tt> and <tt>plural</tt>, the system will produce two
-subtypes named <tt>1dual_excl</tt> and <tt>1plural_excl</tt>.)<br>"
+<span class=\"tt\">dual</span> and <span class=\"tt\">plural</span>, the system will produce two
+subtypes named <span class=\"tt\">1dual_excl</span> and <span class=\"tt\">1plural_excl</span>.)<br>"
 
 BeginIter person-subtype{i} "a Subtype"
 
@@ -246,8 +247,8 @@ questionnaire.</p>"
 Label "<p>Please describe the gender hierarchy in your language.  Add
 all the values of gender that the language's grammar distinguishes.
 For each you may provide one or more supertypes, using the other
-gender values you have defined or the root type <tt>gender</tt> (which
-will be assumed if no supertype is provided).  If your language does
+gender values you have defined or the root type <span class=\"tt\">gender</span> 
+(which will be assumed if no supertype is provided).  If your language does
 not have gender as a grammatical category, leave this section
 blank.</p>"
 
@@ -266,10 +267,10 @@ BeginIter gender{i} "a Gender" 1
 EndIter gender
 
 Label "<h4>References</h4>"
-Label "<font size=\"2\">"
+Label "<div style=\"font-size:2\">"
 Label "<p>Hockett, Charles F. 1958. A Course in Modern
 Linguistics. New York: Macmillan.</p>"
-Label "</font>"
+Label "</div>"
 
 
 Section case "Case"
@@ -401,12 +402,12 @@ BeginIter case{i} "a Case"
 EndIter case
 
 Label "<h4>References</h4>"
-Label "<font size=\"2\">"
+Label "<div style=\"font-size:2\">"
 Label "<p>Blake, Barry J. 2001. Case. Cambridge: Cambridge University
 Press.</p>"
 Label "<p>Dixon, R. M. W. 1968. The Dyirbal Language of North
 Queensland. Ph.D. thesis, University of London.</p>"
-Label "</font>"
+Label "</div>"
 
 
 Section direct-inverse "Direct-inverse"
@@ -485,7 +486,7 @@ and supplement with subtypes as needed, or <li>Build your own
 hierarchy.</ul>"
 
 Radio tense-definition "Tense hierarchy definition style" "" ""
-. choose "Choose" "" "<b>Select among common hierarchy elements</b><br>"
+. choose "Choose" "" "<strong>Select among common hierarchy elements</strong><br>"
 
 Label "<div style=\"padding-left: 35px\">"
 
@@ -507,12 +508,12 @@ Check future "Future" "<br><br>" "<b>future</b><br>"
     Text name "Future subtype {i} name" "Subtype: " "" 20
   EndIter future-subtype
 
-Check nonpast "Non-Past" "<br><br>" "<b>nonpast</b> &nbsp;&nbsp;&nbsp;&nbsp; <font size=-1>(note: If present and/or future are also selected they are assumed to be subtypes of nonpast.)<br></font>"
+Check nonpast "Non-Past" "<br><br>" "<b>nonpast</b> &nbsp;&nbsp;&nbsp;&nbsp; <span style=\"font-size:-1\">(note: If present and/or future are also selected they are assumed to be subtypes of nonpast.)<br></span>"
   BeginIter nonpast-subtype{i} "a subtype"
     Text name "Non-Past subtype {i} name" "Subtype: " "" 20
   EndIter nonpast-subtype
 
-Check nonfuture "Non-Future" "<br><br>" "<b>nonfuture</b> &nbsp;&nbsp;&nbsp;&nbsp; <font size=-1>(note: If present and/or past are also selected they are assumed to be subtypes of nonfuture.)<br></font>"
+Check nonfuture "Non-Future" "<br><br>" "<b>nonfuture</b> &nbsp;&nbsp;&nbsp;&nbsp; <span style=\"font-size:-1\">(note: If present and/or past are also selected they are assumed to be subtypes of nonfuture.)<br></span>"
   BeginIter nonfuture-subtype{i} "a subtype"
     Text name "Non-Future subtype {i} name" "Subtype: " "" 20
   EndIter nonfuture-subtype
@@ -520,11 +521,11 @@ Check nonfuture "Non-Future" "<br><br>" "<b>nonfuture</b> &nbsp;&nbsp;&nbsp;&nbs
 Label "</div>"
 
 Radio tense-definition "Tense hierarchy definition style" "" ""
-. build "Build" "" "<b>Build your own <span class=\"feat\">tense</span> hierarchy</b><br>"
+. build "Build" "" "<strong>Build your own <span class=\"feat\">tense</span> hierarchy</strong><br>"
 
 Label "<div style=\"padding-left: 35px\">"
 Label "<br>Build your hierarchy from the top down starting with
-subtypes of the supertype: tense.</p>"
+subtypes of the supertype: tense.<br>"
 
 BeginIter tense{i} "a tense type" 1
 
@@ -604,7 +605,7 @@ implementation of compositionally derived situation aspect. Currently
 the <span class=\"feat\">situation</span> feature may be used to
 represent inherent lexical qualities or those conveyed through overt
 morphological marking. This more accurately reflects uses of the term
-\"lexical aspect\".</p>"
+\"lexical aspect\".</span></p>"
 
 Label "<p>You may create a hierarchy of values for the feature <span
 class=\"feat\">situation</span>, reflecting inherent or
@@ -667,9 +668,9 @@ complement forms. If not applicable, you may leave this section
 blank.</p>"
 Label "<p>If you have indicated on the word order page that your
 language has auxiliary verbs, your grammar will include
-<tt>finite</tt> and <tt>nonfinite</tt> as values of <span
+<span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span> as values of <span
 class=\"feat\">form</span>. If your language does not have auxiliaries
-you may still include <tt>finite</tt> and <tt>nonfinite</tt> as values
+you may still include <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span> as values
 of <span class=\"feat\">form</span> in your grammar:<br>"
 Check noaux-fin-nf "Finite-nonfinite" "" "My language has no auxiliaries but does make a syntactically relevant finite/non-finite distinction.</p>"
 
@@ -677,7 +678,7 @@ Label "<p>It is often the case that languages have multiple non-finite
 forms, e.g., English: infinitive, past participle, present
 participle. If applicable, you may expand the hierarchy of verb <span
 class=\"feat\">form</span> values in your grammar by providing
-subtypes of <tt>finite</tt> and <tt>nonfinite</tt>:</p>"
+subtypes of <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span>:</p>"
 
 Label "<div style=\"padding-left: 35px\">"
 
@@ -695,7 +696,7 @@ Label "</div>"
 Label "</div>"
 
 Label "<h4>References</h4>"
-Label "<font size=\"2\">"
+Label "<div style=\"font-size:2\">"
 Label "<p>Bybee, Joan L. 2003. Aspect. In: Frawley, W.J. (ed.)
 International Encyclopedia of Linguistics. Second Edition. Oxford:
 OUP. 157-158."
@@ -709,7 +710,7 @@ Label "<p>Smith, Carlota. 1997. The Parameter of Aspect. (Second
 Edition). Dordrecht: Kluwer Academic Publishers. (Revised version of
 Smith, Carlota. 1991. The Parameter of Aspect. Dordrecht: Kluwer
 Academic Publishers)."
-Label "</font>"
+Label "</div>"
 
 
 Section other-features "Other Features"
@@ -770,7 +771,7 @@ Radio neg-exp "neg exp" "" ""
 . 3 "3" "" "tripartite" "set_negexp('3')"
 . more "n" "" "more?!" "set_negexp('more')"
 
-Label "<hr /><a id='anobutton' onclick='toggle_display_lex(\"asymmetric negation options\",\"anobutton\")'>&#9658; asymmetric negation options</a><div id='asymmetric negation options' style='display:none'>"
+Label "<hr /><a id='anobutton' onclick='toggle_display_lex(\"asymmetric_negation_options\",\"anobutton\")'>&#9658; asymmetric negation options</a><div id='asymmetric_negation_options' style='display:none'>"
 
 
 Label "<div id='anhdiv'><a id='anhbutton' onclick='toggle_display_lex(\"asymmetric_negation_help\", \"anhbutton\")'>&#9658; asymmetric negation help</a>
@@ -801,7 +802,7 @@ Check neg-head-feature "enable negated head feature" "<p>" "Enable a HEAD featur
 Label "</div><hr />"
 
 
-Label "<div id='zero-neg' class='neg_exp_switch' style='display:none'><p>Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <emph>absence</emph> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p><p>You can model omissive negation as a phonologically empty inflectional rule ('lexical rule type/instance') which targets a particular position class in your morphotactic system.  You'll then have to specify at least one other morpheme that canuoccur in this position class so that negation is indicated by the lack of phonological material in this position.</p>"
+Label "<div id='zero-neg' class='neg_exp_switch' style='display:none'><p>Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <em>absence</em> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p><p>You can model omissive negation as a phonologically empty inflectional rule ('lexical rule type/instance') which targets a particular position class in your morphotactic system.  You'll then have to specify at least one other morpheme that canuoccur in this position class so that negation is indicated by the lack of phonological material in this position.</p>"
 
 Select vpc-0-neg "0 neg vpc" "<p>I can create a phonologically empty negation affix for you here.  Choose a position class from the verbal position classes that you've defined (on the lexicon page), or choose \"create\" to create a new pc for use with zero neg:" "  You'll see the result of this choice as a lexical rule instance with no affix and a feature called [NEGATION] with the value \"plus\".  This 'feature' is not a grammatical one---it won't appear in your grammar, it only indicates to the customization system that negative semantics should be added to this morpheme at customize time.</p>"
 fillcache c=verbpcs
@@ -812,11 +813,11 @@ Label "</div>"
 
 Label "<div id='uni-neg' class='neg_exp_switch' style='display:none'><p> Negation can be indicated by the presence of a single negative morpheme.  Your negative morpheme might be bound (negation by inflection) or it might be free (one of the other choices). Your free negator might be a syntactic head (a verb), or it might be a dependent (a complement or a modifier).  Specify it's syntax below.</p>"
 
-Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <span class=\"feat\">negation</span> with possible value <tt>plus</tt> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">negation</span> <tt>plus</tt>] will produce lexical rules that add the semantics of negation.</p>" 
+Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <span class=\"feat\">negation</span> with possible value <span class=\"tt\">plus</span> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">negation</span> <span class=\"tt\">plus</span>] will produce lexical rules that add the semantics of negation.</p>" 
 
 Check neg-aux "Negation by auxiliary verb" "<p>" "Negative auxiliary verb: Checking this box creates a neg-aux type which contributes a neg_rel that outscopes it's complement's handle.  This lexical type will show up on the lexicon page where you'll need to further specify its syntax.</p>"
 
-Text neg-aux-index "index for neg aux" "<span style='display:none'>" "</span>" 0
+Text neg-aux-index "index for neg aux" "<span style='display:none'>" "</span>" 1
 
 Check adv-neg "Adverbial negation" "<p>" "An adverb which is a modifier of:<br />"
 
@@ -843,7 +844,7 @@ Radio comp-neg-order "neg ordered" "How is neg ordered with resepct to other COM
 . before "before" "" "before "
 . after "after" "" "after "
 
-Text comp-neg-orth "neg spelling" "What's the ORTH value for neg?" "</p>" 20
+Text comp-neg-orth "neg spelling" "What's the ORTH value for neg?" "" 20
 
 
 Label "</div></div>"
@@ -884,7 +885,7 @@ Radio comp-neg-order "neg ordered" "How is neg ordered with resepct to other COM
 . before "before" "" "before "
 . after "after" "" "after "
 
-Text comp-neg-orth "neg spelling" "What's the ORTH value for neg?" "</p>" 20
+Text comp-neg-orth "neg spelling" "What's the ORTH value for neg?" "" 20
 Label "</div>"
 
 Label "<div id='infl-mod-neg' class='bineg_switch' style='display:none'><p>You have selected a negation construction with a negative inflectional rule and a negative word attached through a head-modifier rule.  Define your lexical rule on the morphology subpage and indicate it with [negation plus].  Please provide some further information about the negative modifier here:</p><p>"
@@ -899,7 +900,7 @@ Radio neg-mod-order "negative adverb order" "NEG adverb is ordered: " ""
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg-mod-orth "negative adverb spelling" "NEG adverb is spelled: " "</p>" 20
+Text neg-mod-orth "negative adverb spelling" "NEG adverb is spelled: " "" 20
 Label "</div>"
 
 Label "<div id='head-head-neg' class='bineg_switch' style='display:none'><p>Two negative heads is not available.  Please contact matrix-dev if you believe this is the best analysis for your language.</p></div>"
@@ -928,7 +929,7 @@ Radio neg-mod-order "negative adverb order" "NEG adverb is ordered: " ""
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg-mod-orth "negative adverb spelling" "NEG adverb is spelled: " "</p>" 20
+Text neg-mod-orth "negative adverb spelling" "NEG adverb is spelled: " "" 20
 Label "</div>"
 
 Label "<div id='comp-comp-neg' class='bineg_switch' style='display:none'><p>You have selected a construction with two negative complements.  Please provide some further information about the two complements here:</p><p>"
@@ -1003,7 +1004,7 @@ Radio neg2-mod-order "negative adverb order" "NEG2 is ordered: " ""
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg2-mod-orth "negative adverb spelling" "NEG2 is spelled: " "</p>" 20
+Text neg2-mod-orth "negative adverb spelling" "NEG2 is spelled: " "" 20
 Label "</div>"
 
 Label "<div id=\"bineg_fb\"></div></div>"
@@ -1039,7 +1040,7 @@ class=\"dfn\">Omnisyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;and
 A and B and C&quot; (all coordinands are marked)<br><span
 class=\"dfn\">Asyndeton</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;A B
 C&quot; (no marking; also known as <span
-class=\"dfn\">juxtaposition</span>)</div></p>"
+class=\"dfn\">juxtaposition</span>)</div>"
 
 Label "<p>You may define any number of coordination strategies below.
 You may also leave this section blank, in which case the starter
@@ -1090,7 +1091,7 @@ Radio q-part-order "Question particle order" "" ""
 
 Text q-part-orth "Question particle spelling" "&nbsp;&nbsp;&nbsp;&nbsp;Spelling of question particle: " "<br>" 40
 
-Check q-infl "Inflection" "<p>" "Verbal inflection: Checking this box enables a features called <span class=\"feat\">question</span> with possible value <tt>plus</tt> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">question</span> <tt>plus</tt>] will produce lexical rules that add the semantics of questions.</p>"
+Check q-infl "Inflection" "<p>" "Verbal inflection: Checking this box enables a features called <span class=\"feat\">question</span> with possible value <span class=\"tt\">plus</span> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">question</span> <span class=\"tt\">plus</span>] will produce lexical rules that add the semantics of questions.</p>"
 
 Check q-inv "Subject-verb inversion" "" "Subject-verb inversion: "
 
@@ -1248,14 +1249,14 @@ optional when an overt object is present, select
 
 
 Label "<h4>References</h4>"
-Label "<font size=\"2\">"
+Label "<div style=\"font-size:2\">"
 Label "<p>Asher, R.E. 1985. Tamil. London:Croom-Helm.</p>"
 Label "<p>Dryer, M. 2008. \"Expression of Pronominal Subjects.\"
 WALS. <a
 href=\"http://wals.info/feature/description/101\">http://wals.info/feature/description/101</a></p>"
 Label "<p> Vainikka, A and Levy, Y. 1999. \"Empty Subjects in Finnish
 and Hebrew.\" Natural Language and Linguistic Theory 17: 614-71.</p>"
-Label "</font>"
+Label "</div>"
 
 Section lexicon "Lexicon"
 
@@ -1269,8 +1270,8 @@ types</span> and <span class=\"dfn\">lexical items</span> within those
 types.  For most lexical items you must provide both the spelling of
 the stem and a <span class=\"dfn\">predicate</span> (or <span
 class=\"dfn\">relation</span>) that identifies the stem's semantic
-contribution (e.g. <tt>_cat_n_rel</tt> for the noun relation
-contributed by <i>cat</i> or <tt>_sleep_v_rel</tt> for the verb
+contribution (e.g. <span class=\"tt\">_cat_n_rel</span> for the noun relation
+contributed by <i>cat</i> or <span class=\"tt\">_sleep_v_rel</span> for the verb
 relation contributed by <i>sleep</i>).  If the predicate is empty
 upon adding a spelling the page will create a predicate value based
 on the <a href=http://wiki.delph-in.net/moin/RmrsPos>DELPH-IN</a>
@@ -1380,10 +1381,10 @@ BeginIter verb{i} "a Verb Type" 1 2
 
   EndIter feat
 
-  Select valence "Verb {i} arguments" "<p>Argument structure: " "</p>"
+  Select valence "Verb {i} arguments" "<br /><br />Argument structure: " "<br />"
   fillverbpat
 
-  Select bipartitepc "Verb {i} bipartite stems position class" "If this verb class includes bipartite stems, select the position class for the affix portion of the stems: " "</p>"
+  Select bipartitepc "Verb {i} bipartite stems position class" "If this verb class includes bipartite stems, select the position class for the affix portion of the stems: " "<br />"
   fillcache c=verbpcs
 
   Label "Stems:"
@@ -1990,14 +1991,14 @@ BeginIter toolboximportconfig{i} "a Toolbox Import Configuration" 1 1
 
   EndIter repeat
 
-  Radio tbpredvalues "pred values" "<p>Every lexical entry requires a semantic predicate.  For entries imported from Toolbox, we can construct these predicates from the stem, from the gloss (which could be long), or from the first word of the gloss.  If either of the gloss options is chosen but some entries lack glosses, lexical entries will be constructed from the stem for those entries.  Predicates should be constructed from: </br>" ""
+  Radio tbpredvalues "pred values" "<p>Every lexical entry requires a semantic predicate.  For entries imported from Toolbox, we can construct these predicates from the stem, from the gloss (which could be long), or from the first word of the gloss.  If either of the gloss options is chosen but some entries lack glosses, lexical entries will be constructed from the stem for those entries.  Predicates should be constructed from: <br />" ""
   . stem "Stem" "" " the stem value<br>"
   . gloss "Gloss" "" " the gloss (if available)<br>"
   . glossfw "Gloss first word" "" " the first word of the gloss (if available)"
 
   BeginIter toolboxfile{j} "a Toolbox File" 0 1
 
-    File tbfilename "file name" "Toolbox file {j}: " "" 20
+    File tbfilename "file name" "Toolbox file {j}: " ""
 
   EndIter toolboxfile
 
@@ -2022,7 +2023,7 @@ Button "Import Toolbox Lexicon" "<br /><br />" "" "import_toolbox_lexicon()"
 Section test-sentences "Test Sentences"
 
 Label "<p>In this section, you can provide example sentences that will
-appear in the file <tt>test_sentences</tt> in your grammar, as defaults
+appear in the file <span class=\"tt\">test_sentences</span> in your grammar, as defaults
 in the LKB's parse dialog, and in the [incr tsdb()] database skeleton
 in the tsdb/skeletons directory of your grammar. Please use only the
 vocabulary defined in the Lexicon section. If the sentence is

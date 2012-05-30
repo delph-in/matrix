@@ -35,7 +35,8 @@ def dummy():
 
 HTTP_header = 'Content-type: text/html;charset=UTF-8'
 
-HTML_pretitle = '''<!doctype html><html>
+HTML_pretitle = '''<!doctype html>
+<html>
 <head><meta charset="utf-8"/>
 '''
 
@@ -588,7 +589,7 @@ class MatrixDefFile:
       datestamp = f.readlines()[0].strip()
       f.close()
     except:
-      datestamp = "<date unknown>"
+      datestamp = "[date unknown]"
 
     print HTML_mainprebody % (datestamp)
     print '<div class="indented">'
@@ -884,11 +885,11 @@ class MatrixDefFile:
         html += html_input(vr, word[0].lower(), vn, value, False,
                            bf, af, sz, onchange=oc) + '\n'
       elif word[0] == 'File':
-        (vn, fn, bf, af, sz) = word[1:]
+        (vn, fn, bf, af) = word[1:]
         vn = prefix + vn
         value = choices.get(vn)
         html += html_input(vr, word[0].lower(), vn, value, False,
-                           bf, af, sz) + '\n'
+                           bf, af) + '\n'
       elif word[0] == 'Button':
         (vn, bf, af, oc) = word[1:]
         html += html_input(vr, word[0].lower(), '', vn, False,
@@ -1071,7 +1072,7 @@ class MatrixDefFile:
 
 
 #      print HTML_navmenu
-      print '<div id="navmenu"><ul>'
+      print '<div id="navmenu"><br />'
     # pass through the definition file once, augmenting the list of validation
     # results with section names so that we can put red asterisks on the links
     # to the assocated sub-pages on the nav menu.
@@ -1120,16 +1121,16 @@ class MatrixDefFile:
                 printed = True 
                 break
             
-      print '<li><a href="#main" onclick="submit_main()">Main page</a></li>'
+      print '<a href="#main" onclick="submit_main()" class="navleft">Main page</a><br />'
       print '<hr />'
       for l in sec_links: 
-        print '<li><span style="color:#ff0000;">'+l+'</li>'
+        print '<span style="color:#ff0000;" class="navleft">'+l+'<br />'
 
       print '<hr />'
-      print '<li><a href="' + choices_file + '">View choices file</a><br />(right-click to download)</li>'
-      print '<li><a href="#stay" onclick="document.forms[0].submit()">Save and stay here</a></li>'
-      print '<li><a href="#clear" onclick="clear_form()">Clear form</a></li>'
-      print '</ul></div>'
+      print '<a href="' + choices_file + '" class="navleft">View choices file</a><br /><span class="navleft">(right-click to download)</span><br />'
+      print '<a href="#stay" onclick="document.forms[0].submit()" class="navleft">Save and stay here</a><br />'
+      print '<a href="#clear" onclick="clear_form()" class="navleft">Clear form</a>'
+      print '</div>'
 
 
       print '<div id="form_holder">'
@@ -1148,8 +1149,8 @@ class MatrixDefFile:
 #                     'clear_form()')
 
     print HTML_postform
-    print HTML_postbody
     print '</div>'
+    print HTML_postbody
 
 
   # Create and print the "download your matrix here" page for the
