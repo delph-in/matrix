@@ -884,6 +884,11 @@ class MatrixDefFile:
         value = choices.get(vn)
         html += html_input(vr, word[0].lower(), vn, value, False,
                            bf, af, sz, onchange=oc) + '\n'
+      elif word[0] == ('Hidden'):
+        (vn, fn) = word[1:]
+        value = choices.get(vn)
+        html += html_input(vr, word[0].lower(), vn, value, False,
+                           '', '', 0) + '\n' 
       elif word[0] == 'File':
         (vn, fn, bf, af) = word[1:]
         vn = prefix + vn
@@ -1313,7 +1318,7 @@ class MatrixDefFile:
       if len(word) == 0:
         pass
       elif word[0] in ['Check', 'Text', 'TextArea',
-                       'Radio', 'Select', 'MultiSelect', 'File']:
+                       'Radio', 'Select', 'MultiSelect', 'File','Hidden']:
         vn = word[1]
         if prefix + vn not in already_saved:
           already_saved[prefix + vn] = True
@@ -1359,12 +1364,18 @@ class MatrixDefFile:
 
     # Copy the form_data into a choices object
     new_choices = ChoicesFile('')
-#    print "HTTP:Content-type:text/plain\n\n"
     for k in form_data.keys():
       if k:
-#        print "  "+str(form_data[k])
-#        print "["+k+"]=["+form_data[k].value+"]"
-        new_choices[k] = form_data[k].value
+        # on sentential negation page, some choices are hidden in 
+        # more than one place, so the FieldStorage object at [k] can 
+        # be a list, but in these cases only one item on the list 
+        # should ever have a value
+        if type(form_data[k]) == list:
+          for l in form_data[k]:
+            if l.value:
+              new_choices[k] = l.value
+        else:
+          new_choices[k] = form_data[k].value
 
     # Read the current choices file (if any) into old_choices
     # but if neg-aux=on exists, create side-effect in lexicon.
@@ -1421,7 +1432,7 @@ class MatrixDefFile:
           old_choices['nf-subform%d_name' % next_n ] = 'negform' 
           old_choices['nf-subform%d_name' % (next_n+1) ] = 'otherform' 
 
-    # Open the def file and store it in line[]
+    # Open the def file and store it in lines[]
     f = open(self.def_file, 'r')
     lines = merge_quoted_strings(f.readlines())
     f.close()

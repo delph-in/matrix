@@ -851,7 +851,7 @@ Label "</div></div>"
 
 Label "<div id='bi-neg' class='neg_exp_switch' style='display:none'><p> Negation can be indicated by the required presence of two negative morphemes.  You'll have to specify their morphosyntax and their interactions.</p>"
 
-Label "<input type=\"hidden\" name=\"bineg-type\"/>"
+Hidden bineg-type "bineg type"
 
 Label "<p>We can label the two morphemes NEG1 and NEG2 and ask about the syntactic properties of each.  Perhaps in your language one of the two negative morphemes is more closely associated with the contribution of negative force to the sentence, and the other functions as a resumptive or specifying marker.  Call the primary indicator of negation NEG1 and the secondary one NEG2.  Please choose the morpheme type for each exponent of negation:</p>"
 
