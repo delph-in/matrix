@@ -116,12 +116,7 @@
 
 (index-for-generator)
 
-;;;
-;;; For the MMT system.  Uncomment semi.vpm line when adding such
-;;; a file.
-;;;
-
-;(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
+(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
 
 (lkb-load-lisp (this-directory) "mt.lsp" t)
 

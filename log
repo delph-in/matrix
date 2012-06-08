@@ -1,0 +1,453 @@
+Cree... being customized
+Dyirbal... being customized
+Finnish... being customized
+Fore... being customized
+German... being customized
+Hindi... being customized
+Sahaptin-short... being customized
+Slave... being customized
+Tagalog... being customized
+Zulu... being customized
+all-subj-drop-wth-opt-marker... being customized
+all-subj-drop-wth-req-marker... being customized
+arg-opt-all-comps-drop-marker-np-wth-drop-opt-wthout... being customized
+arg-opt-all-comps-drop-marker-np-wth-drop-req-wthout... being customized
+arg-opt-all-comps-drop-marker-opt-wth-drop-np-wthout... being customized
+arg-opt-all-comps-drop-marker-opt-wth-drop-opt-wthout... being customized
+arg-opt-all-comps-drop-marker-opt-wth-drop-req-wthout... being customized
+arg-opt-all-comps-drop-marker-req-wth-drop-np-wthout... being customized
+arg-opt-all-comps-drop-marker-req-wth-drop-opt-wthout... being customized
+arg-opt-all-comps-drop-marker-req-wth-drop-req-wthout... being customized
+arg-opt-all-comps-drop-wth-no-marker... being customized
+arg-opt-all-subj-drop-marker-np-wth-drop-opt-wthout... being customized
+arg-opt-all-subj-drop-marker-np-wth-drop-req-wthout... being customized
+arg-opt-all-subj-drop-marker-opt-wth-drop-np-wthout... being customized
+arg-opt-all-subj-drop-marker-opt-wth-drop-opt-wthout... being customized
+arg-opt-all-subj-drop-marker-opt-wth-drop-req-wthout... being customized
+arg-opt-all-subj-drop-marker-req-wth-drop-np-wthout... being customized
+arg-opt-all-subj-drop-marker-req-wth-drop-opt-wthout... being customized
+arg-opt-all-subj-drop-marker-req-wth-drop-req-wthout... being customized
+arg-opt-lex-cntxt-2feat-subj-drop-marker-req-wth-drop-req-wthout... being customized
+arg-opt-lex-cntxt-subj-drop-marker-req-wth-drop-req-wthout... being customized
+arg-opt-lex-comps-drop-marker-np-wth-drop-opt-wthout... being customized
+arg-opt-lex-comps-drop-marker-np-wth-drop-req-wthout... being customized
+arg-opt-lex-comps-drop-marker-opt-wth-drop-np-wthout... being customized
+arg-opt-lex-comps-drop-marker-opt-wth-drop-opt-wthout... being customized
+arg-opt-lex-comps-drop-marker-opt-wth-drop-req-wthout... being customized
+arg-opt-lex-comps-drop-marker-req-wth-drop-np-wthout... being customized
+arg-opt-lex-comps-drop-marker-req-wth-drop-opt-wthout... being customized
+arg-opt-lex-comps-drop-marker-req-wth-drop-req-wthout... being customized
+arg-opt-lex-comps-drop-np-wth-drop-np-wthout... being customized
+arg-opt-lex-subj-drop-marker-np-wth-drop-opt-wthout... being customized
+arg-opt-lex-subj-drop-marker-np-wth-drop-req-wthout... being customized
+arg-opt-lex-subj-drop-marker-opt-wth-drop-np-wthout... being customized
+arg-opt-lex-subj-drop-marker-opt-wth-drop-opt-wthout... being customized
+arg-opt-lex-subj-drop-marker-opt-wth-drop-req-wthout... being customized
+arg-opt-lex-subj-drop-marker-req-wth-drop-np-wthout... being customized
+arg-opt-lex-subj-drop-marker-req-wth-drop-opt-wthout... being customized
+arg-opt-lex-subj-drop-marker-req-wth-drop-req-wthout... being customized
+arg-opt-lex-subj-drop-no-marker... being customized
+asp-mood-contrast-options... being customized
+aux-assigns-subj-case-vp... being customized
+aux-f-vpcomp-nfconst-formfeat... being customized
+aux-s-f-noinfl... being customized
+aux-v-f-noinfl... being customized
+aux-vp-f-noinfl... being customized
+auxcomp-feature-engstative-vp-1013... being customized
+auxcomp-markfeature-vp-1015... being customized
+auxfeatures... being customized
+auxfeatures-onlyformmarked... being customized
+auxten-vpcompnfasp-tafeat... being customized
+bipartite-stems... being customized
+case-erg-abs... being customized
+case-fluid-s... being customized
+case-focus... being customized
+case-mixed... being customized
+case-mixed-optadp... being customized
+case-mixed2... being customized
+case-nom-acc... being customized
+case-nom-acc-adp... being customized
+case-none... being customized
+case-optadp... being customized
+case-split-n... being customized
+case-split-s... being customized
+case-split-v... being customized
+case-tripartite... being customized
+char-test-discard-all... being customized
+char-test-keep-all... being customized
+char-test-keep-list... being customized
+compfeatures... being customized
+compfeatures-onlyformmarked... being customized
+dir-inv-algonquian... being customized
+dir-inv-fore... being customized
+eng-qpart-inf... being customized
+fin-forms-noaux-1008... being customized
+free-aux-after-v-cluster... being customized
+free-aux-after-vp... being customized
+free-aux-before-v-cluster... being customized
+free-aux-before-vp... being customized
+free-one-aux-max-v... being customized
+infl-q-aux-verb... being customized
+infl-q-final-opt-suffix... being customized
+infl-q-main-verb... being customized
+infl-q-main-verb-prefix... being customized
+infl-q-nonfinal-suffix... being customized
+lex-subj-drop... being customized
+mood-buildhierarchy... being customized
+morphotactics-impl-expl-disjunction... being customized
+morphotactics-lrt-inputs... being customized
+morphotactics-opt-oblig-single-input... being customized
+morphotactics-req-fbd... being customized
+multi-featured-aux... being customized
+multi-select-case... being customized
+multi-wd-lex... being customized
+neg-adv-vp-pre... being customized
+neg-aux-min... being customized
+neg-comp-auxattach-postcomps... being customized
+neg-comp-auxattach-precomps... being customized
+neg-comp-finattach-precomps... being customized
+neg-head-feature... being customized
+neg-infl-final-opt-suffix... being customized
+neg-infl-mini... being customized
+neg-infl-nonfinal-suffix... being customized
+neg-infl-sole-suffix... being customized
+neg-v-attach-freewo... being customized
+neg-zero-min... being customized
+neg1b-neg2fd... being customized
+nf-form-withaux-vp-1008... being customized
+nf-twoforms-withtwoaux-vp-1008... being customized
+noaux-toblig-aopt-onv... being customized
+nopaux-noinfl-vpcomp-f-formfeat... being customized
+ovs-aux-after-vp... being customized
+ovs-aux-before-vp... being customized
+qpart-yes-no... being customized
+sov-aux-after-v... being customized
+sov-aux-before-v... being customized
+subj-aux-inv-q... being customized
+subj-drop... being customized
+subj-v-inv-obj-drop... being customized
+svo-aux-after-v... being customized
+svo-aux-before-v... being customized
+test-stative... being customized
+tiniest... being customized
+v-initial-aux-after-v... being customized
+v-initial-aux-after-vp... being customized
+v-initial-aux-before-v... being customized
+v-initial-aux-before-vp... being customized
+v2-aux-eitherside-v... being customized
+v2-aux-eitherside-vp... being customized
+view-inf-situ-inher... being customized
+view-situ-aspect-infl... being customized
+vos-aux-after-vp... being customized
+vos-aux-before-vp... being customized
+vos-vp-aux-case-rais... being customized
+vso-aux-after-v... being customized
+vso-aux-before-v-cluster... being customized
+vso-aux-before-v-no-cluster... being customized
+vso-aux-before-vp... being customized
+Cree... being parsed with PET
+Dyirbal... being parsed with PET
+Finnish... being parsed with PET
+Fore... being parsed with PET
+This grammar is not compatible with PET.
+German... being parsed with PET
+Hindi... being parsed with PET
+Sahaptin-short... being parsed with PET
+Slave... being parsed with PET
+Tagalog... being parsed with PET
+This grammar is not compatible with PET.
+Zulu... being parsed with PET
+all-subj-drop-wth-opt-marker... being parsed with PET
+all-subj-drop-wth-req-marker... being parsed with PET
+arg-opt-all-comps-drop-marker-np-wth-drop-opt-wthout... being parsed with PET
+arg-opt-all-comps-drop-marker-np-wth-drop-req-wthout... being parsed with PET
+arg-opt-all-comps-drop-marker-opt-wth-drop-np-wthout... being parsed with PET
+arg-opt-all-comps-drop-marker-opt-wth-drop-opt-wthout... being parsed with PET
+arg-opt-all-comps-drop-marker-opt-wth-drop-req-wthout... being parsed with PET
+arg-opt-all-comps-drop-marker-req-wth-drop-np-wthout... being parsed with PET
+arg-opt-all-comps-drop-marker-req-wth-drop-opt-wthout... being parsed with PET
+arg-opt-all-comps-drop-marker-req-wth-drop-req-wthout... being parsed with PET
+arg-opt-all-comps-drop-wth-no-marker... being parsed with PET
+arg-opt-all-subj-drop-marker-np-wth-drop-opt-wthout... being parsed with PET
+arg-opt-all-subj-drop-marker-np-wth-drop-req-wthout... being parsed with PET
+arg-opt-all-subj-drop-marker-opt-wth-drop-np-wthout... being parsed with PET
+arg-opt-all-subj-drop-marker-opt-wth-drop-opt-wthout... being parsed with PET
+arg-opt-all-subj-drop-marker-opt-wth-drop-req-wthout... being parsed with PET
+arg-opt-all-subj-drop-marker-req-wth-drop-np-wthout... being parsed with PET
+arg-opt-all-subj-drop-marker-req-wth-drop-opt-wthout... being parsed with PET
+arg-opt-all-subj-drop-marker-req-wth-drop-req-wthout... being parsed with PET
+arg-opt-lex-cntxt-2feat-subj-drop-marker-req-wth-drop-req-wthout... being parsed with PET
+arg-opt-lex-cntxt-subj-drop-marker-req-wth-drop-req-wthout... being parsed with PET
+arg-opt-lex-comps-drop-marker-np-wth-drop-opt-wthout... being parsed with PET
+arg-opt-lex-comps-drop-marker-np-wth-drop-req-wthout... being parsed with PET
+arg-opt-lex-comps-drop-marker-opt-wth-drop-np-wthout... being parsed with PET
+arg-opt-lex-comps-drop-marker-opt-wth-drop-opt-wthout... being parsed with PET
+arg-opt-lex-comps-drop-marker-opt-wth-drop-req-wthout... being parsed with PET
+arg-opt-lex-comps-drop-marker-req-wth-drop-np-wthout... being parsed with PET
+arg-opt-lex-comps-drop-marker-req-wth-drop-opt-wthout... being parsed with PET
+arg-opt-lex-comps-drop-marker-req-wth-drop-req-wthout... being parsed with PET
+arg-opt-lex-comps-drop-np-wth-drop-np-wthout... being parsed with PET
+arg-opt-lex-subj-drop-marker-np-wth-drop-opt-wthout... being parsed with PET
+arg-opt-lex-subj-drop-marker-np-wth-drop-req-wthout... being parsed with PET
+arg-opt-lex-subj-drop-marker-opt-wth-drop-np-wthout... being parsed with PET
+arg-opt-lex-subj-drop-marker-opt-wth-drop-opt-wthout... being parsed with PET
+arg-opt-lex-subj-drop-marker-opt-wth-drop-req-wthout... being parsed with PET
+arg-opt-lex-subj-drop-marker-req-wth-drop-np-wthout... being parsed with PET
+arg-opt-lex-subj-drop-marker-req-wth-drop-opt-wthout... being parsed with PET
+arg-opt-lex-subj-drop-marker-req-wth-drop-req-wthout... being parsed with PET
+arg-opt-lex-subj-drop-no-marker... being parsed with PET
+asp-mood-contrast-options... being parsed with PET
+aux-assigns-subj-case-vp... being parsed with PET
+aux-f-vpcomp-nfconst-formfeat... being parsed with PET
+aux-s-f-noinfl... being parsed with PET
+aux-v-f-noinfl... being parsed with PET
+aux-vp-f-noinfl... being parsed with PET
+auxcomp-feature-engstative-vp-1013... being parsed with PET
+auxcomp-markfeature-vp-1015... being parsed with PET
+auxfeatures... being parsed with PET
+auxfeatures-onlyformmarked... being parsed with PET
+auxten-vpcompnfasp-tafeat... being parsed with PET
+bipartite-stems... being parsed with PET
+case-erg-abs... being parsed with PET
+case-fluid-s... being parsed with PET
+case-focus... being parsed with PET
+case-mixed... being parsed with PET
+case-mixed-optadp... being parsed with PET
+case-mixed2... being parsed with PET
+case-nom-acc... being parsed with PET
+case-nom-acc-adp... being parsed with PET
+case-none... being parsed with PET
+case-optadp... being parsed with PET
+case-split-n... being parsed with PET
+case-split-s... being parsed with PET
+case-split-v... being parsed with PET
+case-tripartite... being parsed with PET
+char-test-discard-all... being parsed with PET
+char-test-keep-all... being parsed with PET
+This grammar is not compatible with PET.
+char-test-keep-list... being parsed with PET
+This grammar is not compatible with PET.
+compfeatures... being parsed with PET
+compfeatures-onlyformmarked... being parsed with PET
+dir-inv-algonquian... being parsed with PET
+dir-inv-fore... being parsed with PET
+eng-qpart-inf... being parsed with PET
+fin-forms-noaux-1008... being parsed with PET
+free-aux-after-v-cluster... being parsed with PET
+free-aux-after-vp... being parsed with PET
+free-aux-before-v-cluster... being parsed with PET
+free-aux-before-vp... being parsed with PET
+free-one-aux-max-v... being parsed with PET
+infl-q-aux-verb... being parsed with PET
+infl-q-final-opt-suffix... being parsed with PET
+infl-q-main-verb... being parsed with PET
+infl-q-main-verb-prefix... being parsed with PET
+infl-q-nonfinal-suffix... being parsed with PET
+lex-subj-drop... being parsed with PET
+mood-buildhierarchy... being parsed with PET
+morphotactics-impl-expl-disjunction... being parsed with PET
+morphotactics-lrt-inputs... being parsed with PET
+morphotactics-opt-oblig-single-input... being parsed with PET
+morphotactics-req-fbd... being parsed with PET
+multi-featured-aux... being parsed with PET
+multi-select-case... being parsed with PET
+multi-wd-lex... being parsed with PET
+This grammar is not compatible with PET.
+neg-adv-vp-pre... being parsed with PET
+neg-aux-min... being parsed with PET
+neg-comp-auxattach-postcomps... being parsed with PET
+neg-comp-auxattach-precomps... being parsed with PET
+neg-comp-finattach-precomps... being parsed with PET
+neg-head-feature... being parsed with PET
+neg-infl-final-opt-suffix... being parsed with PET
+neg-infl-mini... being parsed with PET
+neg-infl-nonfinal-suffix... being parsed with PET
+neg-infl-sole-suffix... being parsed with PET
+neg-v-attach-freewo... being parsed with PET
+neg-zero-min... being parsed with PET
+neg1b-neg2fd... being parsed with PET
+nf-form-withaux-vp-1008... being parsed with PET
+nf-twoforms-withtwoaux-vp-1008... being parsed with PET
+noaux-toblig-aopt-onv... being parsed with PET
+nopaux-noinfl-vpcomp-f-formfeat... being parsed with PET
+ovs-aux-after-vp... being parsed with PET
+ovs-aux-before-vp... being parsed with PET
+qpart-yes-no... being parsed with PET
+sov-aux-after-v... being parsed with PET
+sov-aux-before-v... being parsed with PET
+subj-aux-inv-q... being parsed with PET
+subj-drop... being parsed with PET
+subj-v-inv-obj-drop... being parsed with PET
+svo-aux-after-v... being parsed with PET
+svo-aux-before-v... being parsed with PET
+test-stative... being parsed with PET
+tiniest... being parsed with PET
+v-initial-aux-after-v... being parsed with PET
+v-initial-aux-after-vp... being parsed with PET
+v-initial-aux-before-v... being parsed with PET
+v-initial-aux-before-vp... being parsed with PET
+v2-aux-eitherside-v... being parsed with PET
+v2-aux-eitherside-vp... being parsed with PET
+view-inf-situ-inher... being parsed with PET
+view-situ-aspect-infl... being parsed with PET
+vos-aux-after-vp... being parsed with PET
+vos-aux-before-vp... being parsed with PET
+vos-vp-aux-case-rais... being parsed with PET
+vso-aux-after-v... being parsed with PET
+vso-aux-before-v-cluster... being parsed with PET
+vso-aux-before-v-no-cluster... being parsed with PET
+vso-aux-before-vp... being parsed with PET
+== All grammar(s) are being compared to the golden standards ==
+=== All comparison(s) are completed. ===
+Cree...                                                                DIFFS!
+Dyirbal...                                                             DIFFS!
+Finnish...                                                             DIFFS!
+Fore...                                                                ERROR!
+German...                                                              DIFFS!
+Hindi...                                                               DIFFS!
+Sahaptin-short...                                                      DIFFS!
+Slave...                                                               DIFFS!
+Tagalog...                                                             ERROR!
+Zulu...                                                                DIFFS!
+all-subj-drop-wth-opt-marker...                                        DIFFS!
+all-subj-drop-wth-req-marker...                                        DIFFS!
+arg-opt-all-comps-drop-marker-np-wth-drop-opt-wthout...                DIFFS!
+arg-opt-all-comps-drop-marker-np-wth-drop-req-wthout...                DIFFS!
+arg-opt-all-comps-drop-marker-opt-wth-drop-np-wthout...                DIFFS!
+arg-opt-all-comps-drop-marker-opt-wth-drop-opt-wthout...               DIFFS!
+arg-opt-all-comps-drop-marker-opt-wth-drop-req-wthout...               DIFFS!
+arg-opt-all-comps-drop-marker-req-wth-drop-np-wthout...                DIFFS!
+arg-opt-all-comps-drop-marker-req-wth-drop-opt-wthout...               DIFFS!
+arg-opt-all-comps-drop-marker-req-wth-drop-req-wthout...               DIFFS!
+arg-opt-all-comps-drop-wth-no-marker...                                DIFFS!
+arg-opt-all-subj-drop-marker-np-wth-drop-opt-wthout...                 DIFFS!
+arg-opt-all-subj-drop-marker-np-wth-drop-req-wthout...                 DIFFS!
+arg-opt-all-subj-drop-marker-opt-wth-drop-np-wthout...                 DIFFS!
+arg-opt-all-subj-drop-marker-opt-wth-drop-opt-wthout...                DIFFS!
+arg-opt-all-subj-drop-marker-opt-wth-drop-req-wthout...                DIFFS!
+arg-opt-all-subj-drop-marker-req-wth-drop-np-wthout...                 DIFFS!
+arg-opt-all-subj-drop-marker-req-wth-drop-opt-wthout...                DIFFS!
+arg-opt-all-subj-drop-marker-req-wth-drop-req-wthout...                DIFFS!
+arg-opt-lex-cntxt-2feat-subj-drop-marker-req-wth-drop-req-wthout...    DIFFS!
+arg-opt-lex-cntxt-subj-drop-marker-req-wth-drop-req-wthout...          DIFFS!
+arg-opt-lex-comps-drop-marker-np-wth-drop-opt-wthout...                DIFFS!
+arg-opt-lex-comps-drop-marker-np-wth-drop-req-wthout...                DIFFS!
+arg-opt-lex-comps-drop-marker-opt-wth-drop-np-wthout...                DIFFS!
+arg-opt-lex-comps-drop-marker-opt-wth-drop-opt-wthout...               DIFFS!
+arg-opt-lex-comps-drop-marker-opt-wth-drop-req-wthout...               DIFFS!
+arg-opt-lex-comps-drop-marker-req-wth-drop-np-wthout...                DIFFS!
+arg-opt-lex-comps-drop-marker-req-wth-drop-opt-wthout...               DIFFS!
+arg-opt-lex-comps-drop-marker-req-wth-drop-req-wthout...               DIFFS!
+arg-opt-lex-comps-drop-np-wth-drop-np-wthout...                        DIFFS!
+arg-opt-lex-subj-drop-marker-np-wth-drop-opt-wthout...                 DIFFS!
+arg-opt-lex-subj-drop-marker-np-wth-drop-req-wthout...                 DIFFS!
+arg-opt-lex-subj-drop-marker-opt-wth-drop-np-wthout...                 DIFFS!
+arg-opt-lex-subj-drop-marker-opt-wth-drop-opt-wthout...                DIFFS!
+arg-opt-lex-subj-drop-marker-opt-wth-drop-req-wthout...                DIFFS!
+arg-opt-lex-subj-drop-marker-req-wth-drop-np-wthout...                 DIFFS!
+arg-opt-lex-subj-drop-marker-req-wth-drop-opt-wthout...                DIFFS!
+arg-opt-lex-subj-drop-marker-req-wth-drop-req-wthout...                DIFFS!
+arg-opt-lex-subj-drop-no-marker...                                     DIFFS!
+asp-mood-contrast-options...                                           DIFFS!
+aux-assigns-subj-case-vp...                                            DIFFS!
+aux-f-vpcomp-nfconst-formfeat...                                       DIFFS!
+aux-s-f-noinfl...                                                      DIFFS!
+aux-v-f-noinfl...                                                      DIFFS!
+aux-vp-f-noinfl...                                                     DIFFS!
+auxcomp-feature-engstative-vp-1013...                                  DIFFS!
+auxcomp-markfeature-vp-1015...                                         DIFFS!
+auxfeatures...                                                         DIFFS!
+auxfeatures-onlyformmarked...                                          DIFFS!
+auxten-vpcompnfasp-tafeat...                                           DIFFS!
+bipartite-stems...                                                     DIFFS!
+case-erg-abs...                                                        DIFFS!
+case-fluid-s...                                                        DIFFS!
+case-focus...                                                          DIFFS!
+case-mixed...                                                          DIFFS!
+case-mixed-optadp...                                                   DIFFS!
+case-mixed2...                                                         DIFFS!
+case-nom-acc...                                                        DIFFS!
+case-nom-acc-adp...                                                    DIFFS!
+case-none...                                                           DIFFS!
+case-optadp...                                                         DIFFS!
+case-split-n...                                                        DIFFS!
+case-split-s...                                                        DIFFS!
+case-split-v...                                                        DIFFS!
+case-tripartite...                                                     DIFFS!
+char-test-discard-all...                                               DIFFS!
+char-test-keep-all...                                                  ERROR!
+char-test-keep-list...                                                 ERROR!
+compfeatures...                                                        DIFFS!
+compfeatures-onlyformmarked...                                         DIFFS!
+dir-inv-algonquian...                                                  DIFFS!
+dir-inv-fore...                                                        DIFFS!
+eng-qpart-inf...                                                       DIFFS!
+fin-forms-noaux-1008...                                                DIFFS!
+free-aux-after-v-cluster...                                            DIFFS!
+free-aux-after-vp...                                                   DIFFS!
+free-aux-before-v-cluster...                                           DIFFS!
+free-aux-before-vp...                                                  DIFFS!
+free-one-aux-max-v...                                                  DIFFS!
+infl-q-aux-verb...                                                     DIFFS!
+infl-q-final-opt-suffix...                                             DIFFS!
+infl-q-main-verb...                                                    DIFFS!
+infl-q-main-verb-prefix...                                             DIFFS!
+infl-q-nonfinal-suffix...                                              DIFFS!
+lex-subj-drop...                                                       DIFFS!
+mood-buildhierarchy...                                                 DIFFS!
+morphotactics-impl-expl-disjunction...                                 DIFFS!
+morphotactics-lrt-inputs...                                            DIFFS!
+morphotactics-opt-oblig-single-input...                                DIFFS!
+morphotactics-req-fbd...                                               DIFFS!
+multi-featured-aux...                                                  DIFFS!
+multi-select-case...                                                   DIFFS!
+multi-wd-lex...                                                        ERROR!
+neg-adv-vp-pre...                                                      DIFFS!
+neg-aux-min...                                                         DIFFS!
+neg-comp-auxattach-postcomps...                                        DIFFS!
+neg-comp-auxattach-precomps...                                         DIFFS!
+neg-comp-finattach-precomps...                                         DIFFS!
+neg-head-feature...                                                    DIFFS!
+neg-infl-final-opt-suffix...                                           DIFFS!
+neg-infl-mini...                                                       DIFFS!
+neg-infl-nonfinal-suffix...                                            DIFFS!
+neg-infl-sole-suffix...                                                DIFFS!
+neg-v-attach-freewo...                                                 DIFFS!
+neg-zero-min...                                                        DIFFS!
+neg1b-neg2fd...                                                        DIFFS!
+nf-form-withaux-vp-1008...                                             DIFFS!
+nf-twoforms-withtwoaux-vp-1008...                                      DIFFS!
+noaux-toblig-aopt-onv...                                               DIFFS!
+nopaux-noinfl-vpcomp-f-formfeat...                                     DIFFS!
+ovs-aux-after-vp...                                                    DIFFS!
+ovs-aux-before-vp...                                                   DIFFS!
+qpart-yes-no...                                                        DIFFS!
+sov-aux-after-v...                                                     DIFFS!
+sov-aux-before-v...                                                    DIFFS!
+subj-aux-inv-q...                                                      DIFFS!
+subj-drop...                                                           DIFFS!
+subj-v-inv-obj-drop...                                                 DIFFS!
+svo-aux-after-v...                                                     DIFFS!
+svo-aux-before-v...                                                    DIFFS!
+test-stative...                                                        DIFFS!
+tiniest...                                                             DIFFS!
+v-initial-aux-after-v...                                               DIFFS!
+v-initial-aux-after-vp...                                              DIFFS!
+v-initial-aux-before-v...                                              DIFFS!
+v-initial-aux-before-vp...                                             DIFFS!
+v2-aux-eitherside-v...                                                 DIFFS!
+v2-aux-eitherside-vp...                                                DIFFS!
+view-inf-situ-inher...                                                 DIFFS!
+view-situ-aspect-infl...                                               DIFFS!
+vos-aux-after-vp...                                                    DIFFS!
+vos-aux-before-vp...                                                   DIFFS!
+vos-vp-aux-case-rais...                                                DIFFS!
+vso-aux-after-v...                                                     DIFFS!
+vso-aux-before-v-cluster...                                            DIFFS!
+vso-aux-before-v-no-cluster...                                         DIFFS!
+vso-aux-before-vp...                                                   DIFFS!
+Grepping for 'error' in tsdb log:
+
+
+Results of the regression tests can be seen in
+/home/sanghoun/workspace/matrix/branches/sanghoun/gmcs/regression_tests//logs//regression-tests.2012-05-31

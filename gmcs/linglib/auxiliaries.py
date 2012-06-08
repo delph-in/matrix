@@ -234,7 +234,7 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
         if feat.get('name') == 'tense':
           tense = feat.get('value') 
         if feat.get('name') == 'aspect':
-          aspect= feat.get('value') 
+          aspect = feat.get('value') 
         if feat.get('name') == 'mood':
           mood = feat.get('value') 
 

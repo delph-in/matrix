@@ -1124,8 +1124,15 @@ class ChoicesFile:
       feat_name = feature['name']
       feat_type = feature['type']
 
-      values = ';'.join([val['name'] + '|' + val['name']
-                         for val in feature.get('value', [])])
+      if feature['new'] == 'yes':
+        values = ';'.join([val['name'] + '|' + val['name']
+                           for val in feature.get('value', [])])
+      else:
+        if feature['existing'] == 'bool':
+          values = '+|+;-|-'
+        elif feature['existing'] == 'luk':
+          values = 'na-or-+|na-or-+;na-or--|na-or--;+-or--|+-or--;na|na;+|+;-|-'
+
       geom = ''
       if feat_type == 'head':
         geom = 'LOCAL.CAT.HEAD.' + feat_name.upper()
@@ -1133,6 +1140,7 @@ class ChoicesFile:
       else:
         geom = 'LOCAL.CONT.HOOK.INDEX.PNG.' + feat_name.upper()
         cat = 'noun'
+        
       if values:
         features += [ [feat_name, values, geom, cat] ]
 
