@@ -13,15 +13,16 @@
 import re
 import shutil
 
-from gmcs import tdl
-from gmcs.tdl import TDLparse
-from gmcs.tdl import TDLelem_type
-from gmcs.tdl import TDLelem_av
-from gmcs.tdl import TDLelem_conj
-from gmcs.tdl import TDLelem_feat
-from gmcs.tdl import TDLelem_coref
-from gmcs.tdl import TDLelem_dlist
-from gmcs.tdl import TDLset_file
+
+import tdl
+from tdl import TDLparse
+from tdl import TDLelem_type
+from tdl import TDLelem_av
+from tdl import TDLelem_conj
+from tdl import TDLelem_feat
+from tdl import TDLelem_coref
+from tdl import TDLelem_dlist
+from tdl import TDLset_file
 
 
 ####global for sisters & cousins same generation in hierarchy
@@ -29,6 +30,8 @@ current_generation = set()
 top_subtypes = set()
 atts_and_intro_type = {}
 supts_comm_subts = {}
+
+
 
 class TDLdefined_type(object):
   def __init__(self, type, op):
@@ -101,10 +104,10 @@ def reduce_grammar(path, inst, type_defs):
   attributes = set()
   itypes = build_defined_types_hierarchy(path, inst)
 
-  script = open(path + "/lkb/script")
+  script = open(path + "/lkb/script.common")
   irulesfile = identify_irules(script)
   script.close()
-  
+#  irulesfile = 'infl.tdl'
   irules = path + '/' + irulesfile
   process_irules(irules, itypes)
   print "created inventories"  
@@ -141,9 +144,10 @@ def reduce_grammar(path, inst, type_defs):
     separate_instantiated_non_instantiated(file, instantiatedset, superflset)
     file.close()  
   
-  script = open(path + "/lkb/script")
+  script = open(path + "/lkb/script.common")
   labelsfile = identify_label_file(script)
   script.close()  
+  labelsfile = 'labels.tdl'
   file = open (path + '/' + labelsfile)
   remove_redundant_labels(file, instantiatedset, attributes)
   
@@ -160,16 +164,24 @@ def reduce_grammar(path, inst, type_defs):
 
 
 def process_script(path):
-  script = open( path + '/lkb/script' )   
+  script = open( path + '/lkb/script.common' )   
   inst = identify_instantiation_files(script)
   script.close()
-  script = open( path + '/lkb/script' )
+  script = open( path + '/lkb/script.common' )
   type_defs = identify_type_def_files(script)
   script.close()
   reduce_grammar(path, inst, type_defs)
 
 
+def creating_compression_info(fname):
+  tfile = open( fname )
+  comp_sup_found = tfile.readlines()
+  compress_rem = []
+  for line in comp_sup_found:
+    myline = line.replace("\n","")
+    compress_rem.append(myline)
 
+  return compress_rem
 
 ###########################################################
 #
@@ -284,7 +296,9 @@ def set_complete_constraints(t, thierarchy):
         n_val = ct.compl_val_constr[vc]
         o_val = my_t.compl_val_constr[vc]
         if not o_val == n_val:
-          if not is_difflist(n_val) and not o_val == "*top*" and not is_difflist(o_val):
+          if not is_difflist(n_val) and not o_val == "*top*" and not is_difflist(o_val) and not n_val == "*top*" and not n_val == None:
+            if n_val == None:
+              print t
             n_t = thierarchy[n_val]
             old_t = thierarchy[o_val]
             if not is_subtype(n_t, old_t, thierarchy):
@@ -483,8 +497,17 @@ def identify_inst_types(itypes, deftypes, attributes, id_inst_types = set()):
     for it in itypes:
       req_inst_types.add(it)
 
-  #retrieve all requested elem types from instantiated types
+####ADDING ALL TYPES FROM TYPEHIERARCHY NOT REMOVED BY COMPRESSION
 
+  fname = "../../../required_japanese_types.txt" 
+  compress_red_types = creating_compression_info(fname)
+
+  for at in deftypes:
+    if not at in compress_red_types:
+      req_inst_types.add(at)
+  #retrieve all requested elem types from instantiated types
+  req_inst_types.add('number-frag-rule-type')
+  req_inst_types.add('phr-synsem-min')
   for v in itypes.itervalues():
     for st in v.supertypes:
       req_inst_types.add(st)
@@ -516,6 +539,14 @@ def walk_through_instantiated(requested, identified, defined, atts):
           atts.add(a)
 #create list of defined type's values
         my_types = defined[rit].values
+        blah = False
+        if rit == "compound-rule":
+          blah = True
+          my_types.append('compound_rel')
+          my_types.append('udef_q_rel')
+          my_types.append('unspec-compound-relation')
+        else:
+          blah = False
         for v in defined[rit].compl_val_constr.itervalues():
           if v not in my_types:
             my_types.append(v)
@@ -575,12 +606,16 @@ def is_affix(t_name):
 
 'returns true if type is a difference list'
 def is_difflist(t):
-  if t == '< >':
+  if t == None:
+    return False 
+  elif t == '< >':
     return False
   elif re.match('<\!*', t):
     return True
   else:
     return False
+
+
 
 
 ###########################################################
@@ -977,16 +1012,30 @@ def identify_irules(script):
 def identify_type_def_files(script):
   script_lines = script.readlines()
   defined_types = []
+  print "ABOUT TO IDENTIFY TYPE DEFINING FILES"
   td = False
-  for line in script_lines:
+  for line in script_lines: 
     if td:    
+      print line
       parts = re.split('\"', line)
       if len(parts) > 1:
+        print "FOUND ONE"
         defined_types.append(parts[1])
       elif not re.match('\(list', line):
         td = False
     elif re.match('\(read-tdl-type-files-aux', line):
       td = True 
+  for f in defined_types:
+    print "FOUND"
+    print f
+#silly hack
+  defined_types.append('matrix.tdl')
+  defined_types.append('fundamentals.tdl')
+  defined_types.append('rule-types.tdl')
+  defined_types.append('principles.tdl')
+  defined_types.append('letypes.tdl')
+  defined_types.append('mtr.tdl')
+  defined_types.append('tmt.tdl')
   return defined_types
 
 
@@ -1141,3 +1190,9 @@ def determine_sub_sup_type(t1, t2, th):
     print t1 + " " + t2 + " are assigned to the same type"
     print "but do not have a subtype-supertype relation..."
     return []
+
+
+
+
+
+process_script("../../../jacy-spring-cleaned")
