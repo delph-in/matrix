@@ -1381,7 +1381,10 @@ class MatrixDefFile:
     # but if neg-aux=on exists, create side-effect in lexicon.
 
     old_choices = ChoicesFile(choices_file)
-    if section == 'sentential-negation' and 'neg-aux' in form_data.keys():
+    if section == 'sentential-negation' \
+      and ('neg-aux' in form_data.keys() \
+      or ('bineg-type' in form_data.keys() \
+      and form_data['bineg-type'].value =='infl-head')):
       # see if we're already storing an index number
       if 'neg-aux-index' in old_choices.keys():
         # we have an index for a neg-aux, see if it's still around

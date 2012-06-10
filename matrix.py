@@ -762,16 +762,18 @@ def remove_web_test(testname):
   test_file.close()
 
 def validate_html(arg):
-  # takes name of a subpage, or 'main' or all
+  # takes name of a subpage, or 'main' or no argument = all 
   import time
   errors = 0
-  print "Checking html validation for "+arg
+  print "Checking html validation for "+(arg if arg != '' else 'all')
 
   # to check any subpages, we'll need a cookie
   # (ie, a session number) that we get by hitting
   # the main page, so go ahead and do this
 
-  httpstr = os.popen('./matrix.cgi').read()
+  cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
+                       '../matrix.cgi')
+  httpstr = os.popen(cmd).read()
   i = httpstr.find('session=')
   sess = httpstr[i+8:i+13]
   os.system('export HTTP_COOKIE="session='+sess+'"')
@@ -780,7 +782,7 @@ def validate_html(arg):
   # the httpstr off for validation after dropping
   # the http headers
 
-  if arg in ['main','m','all','a','']:
+  if arg in ['main','m','']:
     print "main page:"
 
     # need to drop the first few lines of the reply from 
@@ -800,14 +802,16 @@ def validate_html(arg):
     else:
       errors += e
 
-  if arg in ['all', 'a', '']: 
+  if arg == '': 
     # get the list of subpages by instantiating matrixdef
     md = MatrixDefFile('web/matrixdef')
     print "subpages:"
     for s in md.sections.keys():
       time.sleep(2) # w3c asks for >= 1s  b/t requests
       print "\nsending subpage: ",s,"..."
-      httpstr = os.popen('./matrix.cgi subpage='+s).read()
+      cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
+                           '../matrix.cgi')
+      httpstr = os.popen(cmd+' subpage='+s).read()
 
       i = httpstr.lower().find('<!doctype')
       if i == -1:
@@ -825,7 +829,9 @@ def validate_html(arg):
   else:
     # else run the specific subpage in the arg
       print "\nsending subpage: ",arg,"..."
-      httpstr = os.popen('./matrix.cgi subpage='+arg).read()
+      cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
+                           '../matrix.cgi')
+      httpstr = os.popen(cmd+' subpage='+arg).read()
 
       i = httpstr.lower().find('<!doctype')
       if i == -1:

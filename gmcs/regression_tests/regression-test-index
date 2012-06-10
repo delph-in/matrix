@@ -1,149 +1,296 @@
 tiniest=very basic grammar to get the regression tests started - SOV word order, no frills
+
 case-erg-abs=Case, ergative-absolutive
+
 case-fluid-s=Case, fluid-S
+
 case-focus=Case, focus
+
 case-nom-acc=Case, nominative-accusative
+
 case-nom-acc-adp=Case, nominative-accusative w/ adpositions
+
 case-none=Case, none
+
 case-split-n=Case, split-N
+
 case-split-s=Case, split-S
+
 case-split-v=Case, split-V
+
 case-tripartite=Case, tripartite
+
 dir-inv-algonquian=Direct-inverse, pseudo-Algonquian
+
 dir-inv-fore=Direct-inverse, pseudo-Fore
+
 aux-s-f-noinfl=two aux, finite sentential compelement, no inflection, level1 test
+
 aux-vp-f-noinfl=two aux, finite vp comp, no inflection, level 1 test
+
 aux-v-f-noinfl=two aux, finite v vomp, no inflection, level 1 test
+
 aux-f-vpcomp-nfconst-formfeat=finite auxes with nf vp compleof the nf comp is constrained - level 2 test (inflection, no t&a features)
+
 nopaux-noinfl-vpcomp-f-formfeat=single uninflected aux with finite vp complement, level 2 test (inflection but no t&a features)
+
 auxten-vpcompnfasp-tafeat=tensed auxilialevel 3 test
+
 noaux-toblig-aopt-onv=obligatory tense, optional aspect on v, no aux level 3 test
+
 auxcomp-feature-engstative-vp-1013=testing verb class feature stative and aux constrained to nonstative
+
 auxcomp-markfeature-vp-1015=testing KEYS.KEY mhat is being used to distinguish etre and avoir type auxiliary verb classes
+
 fin-forms-noaux-1008=testing finite/nonfinite distinction when there are no auxiliaries
+
 nf-form-withaux-vp-1008=testing nonfinite form constraint for aux complement
+
 nf-twoforms-withtwoaux-vp-1008=testing-- two nonfinite forms
+
 multi-select-case=multi-select of feature values, namely case
+
 v2-aux-eitherside-v=v2nd word order with one auxiliary that takes a v (not vp) complement which can appear freely on either side ofthe aux
+
 v2-aux-eitherside-vp=v2nd word order with one auxiliary that takes a vp complement on either side
+
 vos-vp-aux-case-rais=testing case constraints imposed by the auxiliary: here it raises the case value from its vcomp's subject
+
 aux-assigns-subj-case-vp=grammar tests case restrictions imposed by auxiliary: here the auxiliary aentence
+
 ovs-aux-after-vp=testing ovs word order with auxiliaries that follow their vp complement
+
 ovs-aux-before-vp=tests word order ovs with auxiliaries that precede their vp complement
+
 vos-aux-before-vp=testing word order for vos languages with auxiliaries preceding their vp complement
+
 vos-aux-after-vp=testing word order for vos languages in which the auxiliary follows its vp complement
+
 free-aux-after-vp=testing word order with auxiliaries following their vp-compl, else free word order
+
 free-aux-before-vp=testing free word order with auxiliary that needs to come before its verbal complements
+
 multi-featured-aux=very! short test of features on the auxiliary itself
+
 vso-aux-before-vp=testing vso word order where auxiliary precedes main-verb and takes vso complement style Irish and Welsh
+
 free-aux-after-v-cluster=testing free word order where the aux follows its vcomp and forms verbal clusters
+
 free-aux-before-v-cluster="testing free word order with preceding auxiliaries that take a v-comp and form a v-cluster"
+
 sov-aux-after-v="testing sov word order where auxiliaries precede v-comp"
+
 sov-aux-before-v="testing sov word order with auxiliaries preceding their v-comp"
+
 svo-aux-after-v="testing svo word order with aux following its v-complement"
+
 svo-aux-before-v="testing svo word order with auxiliary preceding v-comp"
+
 v-initial-aux-after-vp="testing v-initial word order with auxiliaries following their vp-complement"
+
 v-initial-aux-before-vp="testing v-initial word order where the auxiliary precedes its vp complement"
+
 v-initial-aux-after-v="testing v-initial word order when the auxiliary follows its v-complement"
+
 v-initial-aux-before-v="testing v-initial word order with aux preceding its v-complement"
+
 vso-aux-after-v="testing vso word order where the auxiliary follows its v-complement"
+
 vso-aux-before-v-cluster="testing vso word order where the aux precedes its v-comp forming a verbal cluster"
+
 vso-aux-before-v-no-cluster="test vso word order where aux precedes its v-complement and does not form a verbal cluster"
+
 free-one-aux-max-v=tests free word order with no verbal clusters, thus maximum one aux
+
 view-inf-situ-inher=inflected viewpoint and inherent situation aspect
+
 view-situ-aspect-infl=situation and viewpoint aspect as inflection
+
 test-stative=testing assignment of prog-asp to non-stative-ing comp, ignoring tense/person/number/spelling, only transitive
+
 Zulu=Zulu test for morphotactics
+
 Slave=Slave test for morphotactics
+
 Finnish=Finnish test for morphotactics
+
 case-mixed=case, mixed adpositional and morphological marking
+
 case-mixed-optadp=case with mixed optional adpositional and morphological marking
+
 case-optadp=case with optional adpositional marking
+
 auxfeatures=testing features on auxiliary verb
+
 compfeatures=testing features on the auxiliary complement
+
 compfeatures-onlyformmarked=testing features on auxiliary complement but only FORM is marked on the verb
+
 auxfeatures-onlyformmarked=testing features on the auxiliaryFORM marked on the complement verb
+
 subj-drop=All subjects caobjects can be dropped.  No markers for subject dropping.
+
 lex-subj-drop=Lexical subject dropping with no marker.  No object dropping
+
 all-subj-drop-wth-req-marker=All subject droppiuired marker for both dropped and overt subjects.  No object dropping.
+
 all-subj-drop-wth-opt-marker=Subject dropping for all verbs with a marker left optionally for both dropped and overt subjects
+
 arg-opt-all-comps-drop-wth-no-marker=All complements can be dropped. No marker.
+
 arg-opt-all-comps-drop-marker-req-wth-drop-opt-wthout="Object dropping allowed for all verbs.  Marker is required for dropping and optional otherwise."
+
 arg-opt-all-comps-drop-marker-req-wth-drop-req-wthout="Object dropping is allowed for all verbs and a marker is required when objects are dropped and when they are not."
+
 arg-opt-all-comps-drop-marker-req-wth-drop-np-wthout="Object dropping is allowed for all verbs and an object marker is required when the object is dropped and not permitted with an overt object."
+
 arg-opt-all-comps-drop-marker-opt-wth-drop-opt-wthout="Object dropping is allowed for verb types and object marking is optional when for dropped and overt objects."
+
 arg-opt-all-comps-drop-marker-opt-wth-drop-np-wthout="Object dropping is allowed for all verb types and a marker is optional if the object is dropped and not permitted if it is overt."
+
 arg-opt-all-comps-drop-marker-np-wth-drop-req-wthout="Object dropping is allowed for all verb types.  A marker is required with overt arguments and not permitted with dropped arguments."
+
 arg-opt-all-comps-drop-marker-np-wth-drop-opt-wthout="Object dropping is allowed for all verb types a marker is not permitted with dropped arguments and is optional for overt."
+
 arg-opt-all-comps-drop-marker-opt-wth-drop-req-wthout="Object dropping for all verb types.  Marker is optional for dropped objects and required for overt objects."
+
 arg-opt-all-subj-drop-marker-np-wth-drop-opt-wthout=Subject dropping is allowed for all verb types.  A marker is not permitted with a dropped subject and is optional with an overt one.  Object dropping is not allowed.
+
 arg-opt-all-subj-drop-marker-np-wth-drop-req-wthout=Subject dropping for all verb types. Marker not permitted with dropped subj and req with overt arg.
+
 arg-opt-all-subj-drop-marker-opt-wth-drop-np-wthout=Subject dropping for all verb types. Marker optional with drop and not permitted with overt subj.
+
 arg-opt-all-subj-drop-marker-opt-wth-drop-opt-wthout=Subject dropping allowed for al verb types. Marker optional for both dropped and overt subjects.
+
 arg-opt-all-subj-drop-marker-opt-wth-drop-req-wthout=Subject dropping allowed for all verb types. Marker opt for dropped subj and req for overt subj.
+
 arg-opt-all-subj-drop-marker-req-wth-drop-np-wthout=Subject dropping allowed for all verb types. Marker required for drop and not permitted with overt subj.
+
 arg-opt-all-subj-drop-marker-req-wth-drop-opt-wthout=Subject dropping allowed for all verb types.  Marker req for drop and opt for overt subj.
+
 arg-opt-all-subj-drop-marker-req-wth-drop-req-wthout=Subject dropping for all verb types. Marker required for both dropped and overt subjects
+
 arg-opt-lex-subj-drop-no-marker=Lexical based subject dropping. No marker.
+
 arg-opt-lex-subj-drop-marker-req-wth-drop-req-wthout=Lexically based subject dropping. Marker required for dropped and overt subjs.
+
 arg-opt-lex-cntxt-subj-drop-marker-req-wth-drop-req-wthout=Subject dropping according to one context with one feature specified on the verb.
+
 arg-opt-lex-cntxt-2feat-subj-drop-marker-req-wth-drop-req-wthout=Subject dropping only in one context with multiple features.  One specified on the verb.  One on the subj.
+
 Cree=Plains Cree (sfd dissertation)
+
 Dyirbal=Dyirbal (sfd dissertation)
+
 Fore=Fore (sfd dissertation)
+
 German=German (sfd dissertation)
+
 Hindi=Hindi (sfd dissertation)
+
 Tagalog=Tagalog (sfd dissertation)
+
 case-mixed2=mixed adpositional and morphological marking (2)
+
 Sahaptin-short=Sahaptin, shorter version (sfd dissertation)
+
 qpart-yes-no=Questions marked via sentence-initial question particle.
+
 subj-aux-inv-q=Questions marked by subj-aux inversion.
+
 infl-q-main-verb=Question marking as inflection on the main verb, no other affixes
+
 infl-q-main-verb-prefix=Questions as prefix on main verbs.
+
 infl-q-aux-verb=Questions as inflection on aux verbs.
+
 infl-q-final-opt-suffix=Question inflection as optional suffix after one other suffix
+
 infl-q-nonfinal-suffix=Question affix as non-final in suffix string.
+
 arg-opt-lex-comps-drop-marker-np-wth-drop-opt-wthout=lexically licensed object dropping.marker not permitted if the object is dropped and optional if it is overt.
+
 arg-opt-lex-comps-drop-marker-np-wth-drop-req-wthout=lexically licensed object dropping. marker not permitted with dropped object and required with an overt object.
+
 arg-opt-lex-comps-drop-marker-opt-wth-drop-np-wthout=lexically licensed object dropping. marker is optional with dropped object and not permitted with overt object.
+
 arg-opt-lex-comps-drop-marker-opt-wth-drop-opt-wthout=lexically licensed object dropping. marker is optional for both dropped and overt objects.
+
 arg-opt-lex-comps-drop-marker-opt-wth-drop-req-wthout=lexically licensed object dropping. marker is optional with a dropped object and required with an overt object
+
 arg-opt-lex-comps-drop-marker-req-wth-drop-np-wthout=lexically licensed object dropping. marker is required with a dropped object and not permitted with an overt object
+
 arg-opt-lex-comps-drop-marker-req-wth-drop-opt-wthout=lexically licensed object dropping.marker is required with a dropped object and optional with an overt object.
+
 arg-opt-lex-comps-drop-marker-req-wth-drop-req-wthout=lexicallylicensed object dropping. marker is required with a dropped object and required with an overt object
+
 arg-opt-lex-subj-drop-marker-np-wth-drop-opt-wthout=lexically licensed subject dropping. marker is not permitted when subject is dropped and is optional when it is overt
+
 arg-opt-lex-subj-drop-marker-np-wth-drop-req-wthout=lexically licensed subject dropping. subject marker is not permitted with an dropped subject and required with an overt subject.
+
 arg-opt-lex-subj-drop-marker-opt-wth-drop-np-wthout=lexically licensed subject dropping. maker is optional with dropped subject and not permitted with overt subject
+
 arg-opt-lex-subj-drop-marker-opt-wth-drop-opt-wthout=lexically licensed subject drop. marker is optional with dropped subject and optional with an overt subject
+
 arg-opt-lex-subj-drop-marker-opt-wth-drop-req-wthout=lexically licensed subject dropping. marker is optional with a dropped subject and required with an overt subject
+
 arg-opt-lex-subj-drop-marker-req-wth-drop-np-wthout=lexically licensed subject dropping. marker is required with a dropped subject and not permitted with an overt subject
+
 arg-opt-lex-subj-drop-marker-req-wth-drop-opt-wthout=lexically licensed subject dropping. marker is required for a dropped subject and optional for a overt subject
+
 arg-opt-lex-comps-drop-np-wth-drop-np-wthout=lexically licensed object dropping.  marker is not permitted for dropped or overt objects
+
 eng-qpart-inf=Testing interaction of non-finite form and question particle.  Question particle should now only attach to finite sentences.
+
 subj-v-inv-obj-drop=Testing interaction of subj-v inversion and object drop, as well as interaction of subj-v intersion and FORM and AUX features.
+
 asp-mood-contrast-options=tests options to add simple imper/perf and subj/ind hierarchies
+
 mood-buildhierarchy=testing the build your own mood hierarchy
+
 morphotactics-opt-oblig-single-input=Tests simple morphotactics with position classes having only 1 input. Also tests that obligatory PCs arequired by the lexical types they take as input.
+
 morphotactics-req-fbd=Tests forwards and backwards require, and (backward) forbid, morphotactic co-occurrence restrictions on an input graph with both conjunction and disjunction.
+
 morphotactics-lrt-inputs=Tests inputs and constraints using hierarchies (trees and multiple inheritance) of lexical rule types.
+
 morphotactics-impl-expl-disjunction=Models and tests both implicit and explicit non-sequential disjunctions, and an explicit sequential disjunction.
+
 bipartite-stems=Basic test cases for bipartite stems, based on mini-English
+
 neg-aux-min=scope of negation for negative auxiliary verbs. uses minimal grammar augmented with some choices for auxiliaries
+
 neg-zero-min=checks semantics of negation for a basic zero-neg grammar (a phonologically empty negation suffix)
+
 neg-head-feature=uses a syntactic head feature to ensure that two affixes are mutually incompatible---intended to model the incompatibility of negation with certain other inflectional morphemes; implemented by having those morphemes specify NEGATED -, while negation obviously, has NEGATION +.
+
 neg-infl-nonfinal-suffix=Inflectional negation as optional non-final suffix, optionality with check box
+
 neg-infl-final-opt-suffix=Negative affix as optional suffix at end of suffix string
+
 neg-adv-vp-pre=negation as independent pre VP modifier
+
 neg-infl-sole-suffix=negation as the only suffix, optional
+
 neg-infl-mini=negation as inflection, simple case
+
 neg-comp-auxattach-precomps=neg adv as selected first comp of an aux type after application of a lexical rule
+
 neg-comp-finattach-precomps=neg-comp-add-lex-rule adds neg-adv as selected first comp of a finite verb
+
 neg-comp-auxattach-postcomps=negative complement lexical rule adds a second complement (a neg adverb) to the comps list of an auxiliary verb
-neg1b-neg2fd=bipartite negation, neg1 is bound and requires neg2, a posthead VP adverb, neg2 cannot occur without neg1
+
 char-test-keep-all=test of repp preprocessing where user only wants to split on whitespace
+
 char-test-discard-all=test of repp preprocessing where we split on then discard all lower ascii punctuation including space and tab
+
 char-test-keep-list=test of repp preprocessing where we discard all punc not on a list submitted by user
+
 multi-wd-lex=tests multi word lexical item output on a noun
+
 neg-v-attach-freewo=ensures that lexical attachment for neg adverbs still works without problems with free word order
+
 neg-mod-vp-either=negative modifier which can occur on either side of the vp
-neg1b-neg2b=bipartite negation both bound, one to auxiliary the other to lexical verb
+
+neg-infl-infl=bipartite negation both bound, one to auxiliary the other to lexical verb
+

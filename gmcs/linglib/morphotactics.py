@@ -382,9 +382,11 @@ def set_lexical_rule_supertypes(lrt):
       lrt.supertypes.add('infl-lex-rule')
     else:
       lrt.supertypes.add('const-lex-rule')
+
   # feature-based supertypes
-  if ('value', 'plus') in lrt.features.get('negation',{}).items():
-    lrt.supertypes.add('cont-change-only-lex-rule')
+  # JDC 04 June 2012 now negation supertypes are set in features.py
+#  if ('value', 'a') in lrt.features.get('negation',{}).items():
+#    lrt.supertypes.add('cont-change-only-lex-rule')
   # add other special cases here
   
 def calculate_supertypes(pch):

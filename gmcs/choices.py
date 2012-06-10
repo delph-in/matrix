@@ -537,6 +537,8 @@ class ChoicesFile:
       self.convert_23_to_24()
     if self.version < 25:
       self.convert_24_to_25()
+    if self.version < 26:
+      self.convert_25_to_26()
     # As we get more versions, add more version-conversion methods, and:
     # if self.version < N:
     #   self.convert_N-1_to_N
@@ -1153,7 +1155,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 25
+    return 26
 
   def convert_value(self, key, old, new, partial=False):
     if key in self:
@@ -1919,6 +1921,14 @@ class ChoicesFile:
     if self.get('punctuation-chars'):
       self.convert_key('punctuation-chars', 'punctuation-chars-list') 
       self['punctuation-chars'] = 'keep-list'
+
+  def convert_25_to_26(self):
+    """
+    This uprev adds exp=1 to old choices files so that they are compatible
+    with the new negation library.
+    """
+    if self.get('infl-neg'):
+      self['neg-exp']='1'
 
 
 ########################################################################
