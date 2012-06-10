@@ -106,7 +106,7 @@ def get_vtype(stem, choices):
 ### MAIN LOGIC METHODS ###
 ##########################
 
-def customize_inflection(choices, add_methods, mylang, irules, lrules, lextdl):
+def customize_inflection(choices, add_methods, mylandg, irules, lrules, lextdl):
   """
   Process the information in the given choices file and add the rules
   and types necessary to model the inflectional system into the irules,
@@ -114,6 +114,9 @@ def customize_inflection(choices, add_methods, mylang, irules, lrules, lextdl):
   """
   # first call other libraries' add_lexrules methods to see if they
   # have anything to add to the choices file before we begin
+  # TODO: negation.py should be called later but should use 
+  # one of these add_methods 
+  print str(choices)
   for method in add_methods:
     method(choices)
   # now create the hierarchy
@@ -208,6 +211,7 @@ def create_lexical_rule_types(cur_pc, pc):
     cur_pc.add_node(cur_lrt)
   for child in lrt_parents:
     for parent in lrt_parents[child]:
+      print str(cur_pc)
       cur_pc.relate_parent_child(_mns[parent], _mns[child])
 
 def create_lexical_rule_type(lrt):

@@ -123,7 +123,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # on a type is a function of the negation strategy chosen
     elif (n == 'negation' and v[0] == 'a'):
       # this is simple infl neg:
-      basic_infl_neg_def = ''':= cont-change-only-lex-rule & \
+      basic_infl_neg_def = ''':= \
                        [ C-CONT [ HOOK [ XARG #xarg,\
                          LTOP #ltop,\
                          INDEX #ind ],\
@@ -143,7 +143,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       '''
 
       tdlfile.add(type_name + basic_infl_neg_def,
-                 'This adds negative semantics to the verb\'s\n\RELS list.',
+                 'This adds negative semantics to the verb\'s\nRELS list.',
                   merge=True)
       # If neg-head-feature is on, then we also mark the verb
       # negated +.

@@ -47,13 +47,13 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules):
     # we have a simple negation strategy
     if ch.get('infl-neg') == 'on':
       # change value of negation=plus to negation=a
-      for vpc in ch.get('verb-pc'):
-        for lrt in vpc.get('lrt'):
-          for f in lrt.get('feat'):
+      for vpc in ch['verb-pc']:
+        for lrt in vpc['lrt']:
+          for f in lrt['feat']:
             if 'negation' in f['name']:
-              lrt['supertype'] = 'cont-change-only-lex-rule' 
+#              next_n = lrt['supertypes'].next_iter_num() if 'supertypes' in lrt else 1
+              lrt['supertypes'] = 'cont-change-only-lex-rule' 
               f['value'] = 'a'
-              print str(lrt)
     elif ch.get('neg-aux') == 'on':
       pass
       # nothing to do, neg-aux is like any other aux, 
