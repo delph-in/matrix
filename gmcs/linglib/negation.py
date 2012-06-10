@@ -53,6 +53,7 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules):
             if 'negation' in f['name']:
               lrt['supertype'] = 'cont-change-only-lex-rule' 
               f['value'] = 'a'
+              print str(lrt)
     elif ch.get('neg-aux') == 'on':
       pass
       # nothing to do, neg-aux is like any other aux, 
