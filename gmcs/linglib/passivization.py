@@ -160,9 +160,10 @@ def customize_passivization(ch, mylang, lrules, lexicon):
         mylang.add('passive-marking-adp-lex := \
                          [ ARG-ST < [ LOCAL.CAT.HEAD.CASE ' + case + ' ] > ].')
       sform = p.get('dsubj-form')
+####make sure pform is introduced....
       mylang.add('passive-marking-adp-lex := \
                   [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + sform + ' ].')
-      mylang.add(sform + ' := form.',section='features')
+      mylang.add(sform + ' := pform.',section='features')
       lexicon.add(sform + '-passive := passive-marking-adp-lex & \
                     [ STEM < "' + sform + '" > ].') 
       

@@ -1960,6 +1960,8 @@ class ChoicesFile:
     if not self['punctuation-chars']:
       self['punctuation-chars'] = 'keep-list'
       self['punctuation-chars-list'] = '-'
+    if self['adv-neg'] and not self['neg-exp']:
+      self['neg-exp'] = '1'
 
 ########################################################################
 # FormData Class

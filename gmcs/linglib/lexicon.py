@@ -1,5 +1,6 @@
 from gmcs.linglib import case
 from gmcs.linglib import lexical_items
+from gmcs.linglib import subcategorization
 from gmcs.utils import get_name
 from gmcs.linglib.lexbase import LexicalType, PositionClass
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
@@ -82,7 +83,7 @@ def get_lexical_supertype(lt_key, choices):
   elif lexical_category in ('aux','mverb','iverb','tverb','dverb','sc2verb','scontrverb','oraisverb','cop','reflverb','partverb'):
     return 'verb'
   elif lexical_category == 'verb':
-    return case.interpret_verb_valence(choices[lt_key]['valence'])
+    return subcategorization.interpret_verb_valence(choices[lt_key]['valence'])
   elif lexical_category in ('noun', 'det', 'aux','adj','adv','comp','adp'):
     return lexical_category
   return None
@@ -105,7 +106,7 @@ def expand_lexical_supertype(st_key, choices):
     return [v.full_key for v in choices['verb'] + choices['aux']] + i_t + m
   elif st_key in ('iverb','tverb','dverb','sc2verb','scontrverb','oraisverb','reflverb','partverb'):
     return [v.full_key for v in choices['verb']
-            if case.interpret_verb_valence(v['valence']) == st_key]
+            if subcategorization.interpret_verb_valence(v['valence']) == st_key]
   else:
     return [x.full_key for x in choices.get(st_key,[])]
 
@@ -128,7 +129,7 @@ def used_lexical_supertypes(choices):
       used.add(x)
   if 'verb' in choices:
     used.add('verb')
-    used.update([case.interpret_verb_valence(v['valence'])
+    used.update([subcategorization.interpret_verb_valence(v['valence'])
                  for v in choices['verb']])
     if choices['has-aux'] == 'yes':
       used.add('mverb')
@@ -150,7 +151,7 @@ def get_lexical_supertypes(lrt_key, choices):
     else: return []
   # otherwise we have a lexical type (e.g. noun1, verb2, etc)
   elif lexical_category == 'verb':
-    verb_type = case.interpret_verb_valence(choices[lrt_key]['valence'])
+    verb_type = subcategorization.interpret_verb_valence(choices[lrt_key]['valence'])
     return [verb_type] + get_lexical_supertypes(verb_type, choices)
   elif lexical_category in ('aux','cop'):
     return ['verb']

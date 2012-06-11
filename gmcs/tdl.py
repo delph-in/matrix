@@ -294,6 +294,7 @@ class TDLelem_conj(TDLelem):
 
     old_i = TDLget_indent()
   
+    last_was_feat = False
     for ch in self.child[0:1]:
       if ch:
         ch.write()
@@ -308,7 +309,8 @@ class TDLelem_conj(TDLelem):
           TDLwrite(' ')
       else:
         TDLwrite(' & ')
-      ch.write()
+      if ch is not None:
+        ch.write()
       last_was_feat = cur_is_feat
 
 

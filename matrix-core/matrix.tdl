@@ -2387,6 +2387,38 @@ basic-three-arg := lex-item &
 		       QUE [ LIST #qfirst,
 			     LAST #qlast ] ] ].
 
+basic-four-arg := lex-item &
+  [ ARG-ST < [ NON-LOCAL [ SLASH [ LIST #smiddle3,
+				   LAST #slast ],
+			   REL [ LIST #rmiddle3,
+				 LAST #rlast ],
+			   QUE [ LIST #qmiddle3,
+				 LAST #qlast ] ] ],
+	     [ NON-LOCAL [ SLASH [ LIST #sfirst,
+				   LAST #smiddle1 ],
+			   REL [ LIST #rfirst,
+				 LAST #rmiddle1 ],
+			   QUE [ LIST #qfirst,
+				 LAST #qmiddle1 ] ] ],
+	     [ NON-LOCAL [ SLASH [ LIST #smiddle1,
+				   LAST #smiddle2 ],
+			   REL [ LIST #rmiddle1,
+				 LAST #rmiddle2 ],
+			   QUE [ LIST #qmiddle1,
+				 LAST #qmiddle2 ] ] ],
+	     [ NON-LOCAL [ SLASH [ LIST #smiddle2,
+				   LAST #smiddle3 ],
+			   REL [ LIST #rmiddle2,
+				 LAST #rmiddle3 ],
+			   QUE [ LIST #qmiddle2,
+				 LAST #qmiddle3 ] ] ] >,
+    SYNSEM.NON-LOCAL [ SLASH [ LIST #sfirst,
+			       LAST #slast ],
+		       REL [ LIST #rfirst,
+			     LAST #rlast ],
+		       QUE [ LIST #qfirst,
+			     LAST #qlast ] ] ].
+
 ; ERB 2007-01-22  In the message-free universe, many more qeqs are
 ; introduced by lexical items (basically any head that selects a clausal
 ; complement).  To facilitate this, I'm going to move the no-hcons

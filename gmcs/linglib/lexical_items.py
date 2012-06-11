@@ -5,6 +5,7 @@ from gmcs.utils import orth_encode
 from gmcs.linglib import case
 from gmcs.linglib import features
 from gmcs.linglib import auxiliaries
+from gmcs.linglib import subcategorization
 from gmcs.linglib.parameters import determine_vcluster
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
 
@@ -336,11 +337,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                   [ LOCAL.CAT [ VAL [ SPR < >, \
                                       COMPS < > ] ] ]  > ].'
     mylang.add(typedef)
-    mylang.add('verbal-particle := verb-lex & norm-zero-arg & \
-                 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
-                                          COMPS < >, \
-                                          SPR < >, \
-                                          SPEC < > ] ].')
+
     if refl:
       mylang.add('part-transitive-verb-lex := non-refl-verb-lex.')
     else:
@@ -410,7 +407,12 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     mylang.add('obj-raising-verb-lex := ' + comps_struc)
 
 
-  case.customize_verb_case(mylang, ch)
+  vcross = False
+  if ch.get('verb-cross-classification') == 'yes':
+    subcategorization.create_basic_verb_types(ch, mylang)
+    vcross = True
+  else:
+    subcategorization.customize_verb_case(mylang, ch)
 
   # Add constraints to choices to create lex rules for bipartite stems
   customize_bipartite_stems(ch)
@@ -449,7 +451,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
       tivity = 'trans'
     elif val == 'intrans':
       tivity = 'intrans'
-    elif val.find('-') != -1:
+    elif val.find('-') != -1 and not vcross:
       c = val.split('-')
 #c can point to transitive or ditransitive
       if len(c) == 2:
@@ -490,11 +492,26 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
           b_case = case.canon_to_abbr(c[1], cases)
           o_case = case.canon_to_abbr(c[2], cases)
           tivity = a_case + '-' + b_case + '-' + o_case + '-ditrans'
+    elif val.find('-') != -1:
+      tivity = val
+      vparts = val.split('-')
+      if len(vparts) == '2':
+        tivity += '-trans'
+      elif len(vparts) == '3':
+        tivity += '-ditrans'
+      elif len(vparts) == '4':
+        tivity += '-3arg'
+      elif len(vparts) == '5':
+        tivity += '-4arg'
     else:
-      s_case = case.canon_to_abbr(val, cases)
+      if not vcross:
+        s_case = case.canon_to_abbr(val, cases)
+      else:
+        s_case = val
       tivity = s_case + '-intrans'
-
-    stype = dir_inv + tivity + 'itive-verb-lex'
+    if not vcross:
+      tivity += 'itive'
+    stype = dir_inv + tivity + '-verb-lex'
     vtype = name + '-verb-lex'
 
     mylang.add(vtype + ' := ' + stype + '.')
@@ -502,9 +519,9 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     if aux_s:
       mylang.add(vtype + ' := ' + aux_s + '-only-verb-lex.')
 
-
     if o_drop_default:
       if val == 'trans' or '-' in val:
+        c = val.split('-')
         if not 'obj' in opt_heads:
           mylang.add(vtype + ' := \
                      [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT \
@@ -527,7 +544,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 # does the verb take questions, affirmatives or both as a complement?
 #
     sf = verb.get('compl-sf')
-    if sf:
+    if sf and not vcross:
       mylang.add(vtype + ' := \
           [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.SF ' \
            + sf + ' ].')
@@ -556,10 +573,10 @@ def main_or_verb(ch):
 
 
 def create_particle_lex_entry(mylang, lexicon, o_case):
-  mylang.add(o_case + '-verbal-particle := verbal-particle & \
+  mylang.add(o_case + '-verbal-particle-lex := verbal-particle-lex & \
               [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + o_case + '-part ].')
   typedef = \
-    TDLencode(o_case) +  ' := ' + o_case + '-verbal-particle & \
+    TDLencode(o_case) +  ' := ' + o_case + '-verbal-particle-lex & \
                     [ STEM < "' + o_case + '" > ].'
   lexicon.add(typedef)
 
@@ -673,9 +690,10 @@ def customize_copula(mylang, ch, lexicon, hierarchies):
 def add_copula_to_lexicon(userstypename, cop, lexicon):
   for stem in cop.get('stem',[]):
     orth = stem.get('orth')
+    orthstr = orth_encode(orth)
     id = stem.get('name')
     typedef = TDLencode(id) + ' := ' + userstypename + ' & \
-                       [ STEM < "' + orth + '" > ].'
+                       [ STEM < "' + orthstr + '" > ].'
     lexicon.add(typedef)
   
     if cop.get('loc') == 'on':
@@ -904,8 +922,14 @@ def customize_adjectives(mylang, ch, lexicon, rules, hierarchies):
   #depending on agreement properties, CASE is a feature of nouns or of nouns
   #and adjectives
     if case_agr:
-      mylang.add('+nj :+ [ CASE case].', section='addenda')
-    elif ch.get('case-marking') != 'none':
+      if ch.get('cp-at-np') == 'yes':
+        mylang.add('+njc :+ [ CASE case].', section='addenda')
+      else:
+        mylang.add('+nj :+ [ CASE case].', section='addenda')
+    elif ch.get('case-marking') != 'none': 
+      if ch.get('cp-at-np') == 'yes':
+        mylang.add('+nc :+ [ CASE case].', section='addenda')
+      else:
         mylang.add('noun :+ [ CASE case ].', section='addenda')
       
  # Adjectives
@@ -952,11 +976,12 @@ def customize_adjectives(mylang, ch, lexicon, rules, hierarchies):
 
     for stem in adj.get('stem',[]):
       orth = stem.get('orth')
+      orthstr = orth_encode(orth)
       pred = stem.get('pred')
       id = stem.get('name')
       typedef = \
         TDLencode(id) + ' := ' + atype + ' & \
-                    [ STEM < "' + orth + '" >, \
+                    [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
@@ -1019,11 +1044,12 @@ def customize_numbers(ch, mylang, lexicon, lrules, hierarchies):
 
     for stem in n.get('stem',[]):
       orth = stem.get('orth')
+      orthstr = orth_encode(orth)
       pred = stem.get('pred')
       id = stem.get('name')
       typedef = \
         TDLencode(id) + ' := ' + nname + ' & \
-                    [ STEM < "' + orth + '" >, \
+                    [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.CARG "' + pred + '" ].'
       lexicon.add(typedef)
 
@@ -1082,6 +1108,9 @@ def customize_adverbs(mylang, ch, lexicon):
         mod_head += 'n'
       if 's' in modh:
         mod_head += 'v'
+      if 'ad' in modh:
+        mod_head += 'j'
+        mod_head += 'r'
       if 'pp' in modh:
         mod_head += 'p'
     elif modh == 'pp':
@@ -1193,16 +1222,17 @@ def customize_adverbs(mylang, ch, lexicon):
                                                SPEC < > ] ] ]  > ].')
     for stem in adv.get('stem',[]):
       orth = stem.get('orth')
+      orthstr = orth_encode(orth)
       pred = stem.get('pred')
       id = stem.get('name')
       typedef = \
         TDLencode(id) + ' := ' + atype + ' & \
-                    [ STEM < "' + orth + '" >, \
+                    [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
 
-def customize_adpositions(ch, mylang, lexicon):
+def customize_adpositions(ch, mylang, lexicon, hierarchies):
   cases = case.case_names(ch)
   if ch.get('has-adp'):
     s_name = create_adposition_supertypes(ch, mylang)
@@ -1222,11 +1252,12 @@ def customize_adpositions(ch, mylang, lexicon):
       name = adp.get('name') + '-adp-lex-item'
       kind = adp.get('kind')
       form = adp.get('form')
+      circum = adp.get('circum')
       if kind == 'mod':
         mod = adp.get('mod')
         if kind in exception and mod in exception:
           set_order = True
-        if 'incl' in sname:
+        if 'incl' in sname or circum == 'yes':
           set_order = False
       #add basic frame
         if set_order:
@@ -1237,7 +1268,10 @@ def customize_adpositions(ch, mylang, lexicon):
           else:
             name = name.replace('adp',default)
             sname = sname.replace('adp',default)
-
+        elif circum == 'yes': 
+          sname = 'circump-lex-item'
+          create_adp_cross_classification(ch, mylang, sname)
+ 
         mylang.add(name + ' := ' + mod + '-' + sname + '.')
         order = adp.get('order')
         if order == 'post':
@@ -1250,17 +1284,18 @@ def customize_adpositions(ch, mylang, lexicon):
         mylang.add(name + ' := prd-' + sname + '& \
           [ SYNSEM.LOCAL.CAT [ HEAD.PRD +, \
                                VC - ] ].' )
-     
-      for feat in adp.get('feat',[]):
-        if feat.get('name') == 'case':
-          constr = 'LOCAL.CAT.HEAD.CASE '
-          value = case.canon_to_abbr(feat.get('value'), cases)
-          value += ' ] >'
-        if feat.get('head') == 'comp':
-          path = 'SYNSEM.LOCAL.CAT.VAL.COMPS < [ '
-          
-        typedef = name + ' := [ ' + path + constr + value + ' ].'
-        mylang.add(typedef)
+
+      features.customize_feature_values(mylang, ch, hierarchies, adp, name, 'adp')
+#     for feat in adp.get('feat',[]):
+#      if feat.get('name') == 'case':
+#          constr = 'LOCAL.CAT.HEAD.CASE '
+#          value = case.canon_to_abbr(feat.get('value'), cases)
+#          value += ' ] >'
+#        if feat.get('head') == 'comp':
+#          path = 'SYNSEM.LOCAL.CAT.VAL.COMPS < [ '
+#          
+#        typedef = name + ' := [ ' + path + constr + value + ' ].'
+#        mylang.add(typedef)
       if form:
         sf = ''
         if ch.get('nachfeld') == 'yes' and 'pform' in ch.get('nf-forms'):
@@ -1273,18 +1308,23 @@ def customize_adpositions(ch, mylang, lexicon):
 
       for stem in adp.get('stem',[]):
         orth = stem.get('orth')
+        orthstr = orth_encode(orth)
         pred = stem.get('pred')
         id = stem.get('name')
+        tname = TDLencode(id)
         typedef = \
-            TDLencode(id) + ' := ' + name + ' & \
-                   [ STEM < "' + orth + '" >, \
+            tname + ' := ' + name + ' & \
+                   [ STEM < "' + orthstr + '" >, \
                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
         lexicon.add(typedef)
-
+        if circum:
+          pform = stem.get('prt-form') + '-prt'
+          lexicon.add(tname + ' := [ SYNSEM.LKEYS.KEY-PART ' + pform + ' ].')
 
 
 def create_adposition_supertypes(ch, mylang):
 ###probably not universal
+
   if ch.get('obj-drop'):
     mylang.add('basic-adposition-lex :+ \
                   [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].',section='addenda')
@@ -1293,7 +1333,7 @@ def create_adposition_supertypes(ch, mylang):
                         VAL [ SPR < >, \
                               COMPS < >, \
                               SUBJ < >,\
-                              SPEC < > ] ] ] '
+                              SPEC < > ] ] ]'
   mylang.add(s_name + ' := basic-int-mod-adposition-lex & \
                 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
                                          COMPS < ' + comp + ' > \
@@ -1302,6 +1342,36 @@ def create_adposition_supertypes(ch, mylang):
   
 ###adds ARG2, co-indexed with comp  
   mylang.add(s_name + ' := [ SYNSEM [ LKEYS.KEYREL.ARG2 #arg2, \
+                  LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #arg2 ] ].')
+
+  if ch.get('circumpositions') == 'yes':
+    comment = '''KEY-PART based on Cramer: way to introduce selected particle's form in lexicon'''
+    mylang.add('lexkeys :+ [ KEY-PART form ].',comment=comment,section='addenda')
+
+    basic_circp = '''basic-circumposition-lex := single-rel-lex-item &
+  [ SYNSEM [ LOCAL.CAT [ HEAD adp,
+    	     	         VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX #ind ], [ ] > ],
+	     LKEYS.KEYREL arg12-ev-relation &
+	     		  [ ARG2 #ind ]]].'''
+    mylang.add(basic_circp)
+    mylang.add('basic-int-mod-circumposition-lex := intersective-mod-lex & \
+                                                     basic-circumposition-lex.')
+    circ_name = 'int-circump-lex-item'
+    comp2 = '[ LOCAL.CAT [ HEAD verb & [ FORM #prtform ], \
+                        VAL [ SPR < >, \
+                              COMPS < >, \
+                              SUBJ < >,\
+                              SPEC < > ] ], \
+               OPT - ]'
+    mylang.add(circ_name + ' := basic-int-mod-circumposition-lex & \
+                [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < >, \
+                                         COMPS < ' + comp + ', ' + comp2 + ' > \
+                                         SPR < >, \
+                                         SPEC < > ], \
+                           LKEYS.KEY-PART #prtform ] ].')
+  
+###adds ARG2, co-indexed with comp  
+    mylang.add(circ_name + ' := [ SYNSEM [ LKEYS.KEYREL.ARG2 #arg2, \
                   LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #arg2 ] ].')
 
   create_adp_cross_classification(ch, mylang, s_name)
@@ -1366,8 +1436,7 @@ def create_adposition_supertypes(ch, mylang):
                          VAL [ SUBJ < >,
                                SPR < >,
                                SPEC < >,
-                               COMPS < #comp & [ LOCAL [ CAT [ HEAD noun & 
-                                                                   [ CASE dat ],
+                               COMPS < #comp & [ LOCAL [ CAT [ HEAD noun,
                                       VAL [ SPR < [ OPT -,
 						    NON-LOCAL.SLASH 0-dlist ] >,
                                                            COMPS < >,
@@ -1402,6 +1471,44 @@ def create_adposition_supertypes(ch, mylang):
     mylang.add(t4)
   return s_name
 
+
+def customize_particles(ch, mylang, lexicon):
+
+  comment = 'For now, we make particles verbal types (though only particles that are verbal complements can occur in the verbal cluster).'
+  super_type = '''basic-verbal-particle-lex := norm-zero-arg &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
+                           COMPS < >,
+                           SPR < >,
+                           SPEC < > ] ].'''
+
+  mylang.add(super_type, comment)
+  mylang.add('verbal-particle-lex := basic-verbal-particle-lex & verb-lex.')
+  mylang.add('adp-particle-lex := basic-verbal-particle-lex & \
+            [ SYNSEM.LOCAL.CAT.HEAD verb & [ MOD < > ] ].')
+  mylang.add('part-form := form.')
+
+  for part in ch.get('part',[]):
+    name = part.get('name')
+    hd = part.get('head') 
+    mylang.add(name + '-lex := ' + hd + '-particle-lex.')
+    if part.get('vcluster') == 'no':
+      mylang.add(name + '-lex := no-cluster-lex-item.')
+
+    for stem in part.get('stem', []):
+##only using orth: no multiwords for particles (for now?)
+      orth = stem.get('orth')
+      form = orth + '-prt'
+      part_id_name = name + '-' + orth + '-lex'
+      mylang.add(form + ' := part-form.')
+      mylang.add(part_id_name + ' := ' + name + '-lex & \
+                   [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
+
+      orthstr = orth_encode(orth)
+      typedef = \
+            TDLencode(orth) + ' := ' + part_id_name + ' & \
+                   [ STEM < "' + orthstr + '" > ].'
+      lexicon.add(typedef)
+      
 def need_marking_adposition(ch):
   needed = False
   if ch.get('comparatives') == 'yes' and ch.get('comparative-comp-head') == 'adp':
@@ -1447,14 +1554,14 @@ def create_adp_cross_classification(ch, mylang, sname):
           mylang.add(type_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.' + constr + ' ].')
  
         if not 'incl' in type_n:
-          if both_orders:
+          if both_orders and not 'circum' in type_n:
             type_npre = type_n.replace('adp', 'prep')
             type_npost = type_n.replace('adp', 'postp')
             mylang.add(type_npre + ' := prep-lex-item & ' + type_n + '.')
             mylang.add(type_npost + ' := postp-lex-item & ' + type_n + '.')
           elif default:
             mylang.add(type_n + ' := ' + default + '-lex-item.')
- 
+
     elif spadp.get('kind') == 'prd':
       type_n = 'prd-' + sname
       mylang.add(type_n + ' := ' + sname + ' & \
@@ -1493,6 +1600,10 @@ def customize_complementizers(ch, mylang, lexicon):
 			    SPR < >, \
 			    SPEC < > ] ], \
           ARG-ST < #comp > ].')
+    if ch.get('cp-at-np') == 'yes':
+      cases = ch.get('cp-cases')
+      mylang.add('complementizer-lex-item := \
+                  [ SYNSEM.LOCAL.CAT.HEAD.CASE ' + cases + ' ].')
     for compl in ch.get('compl',[]):
       sf = compl.get('sf')
       type = compl.get('name')
@@ -1501,9 +1612,10 @@ def customize_complementizers(ch, mylang, lexicon):
       
       for stem in compl.get('stem'):
         orth = stem.get('orth')
+        orthstr = orth_encode(orth)
         typedef = \
             TDLencode(orth) + ' := ' + type + ' & \
-                   [ STEM < "' + orth + '" > ].'
+                   [ STEM < "' + orthstr + '" > ].'
         lexicon.add(typedef)
 
 
@@ -2061,6 +2173,8 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies, lrules, rules):
   customize_determiners(mylang, ch, lexicon, hierarchies)
   customize_adjectives(mylang, ch, lexicon, rules, hierarchies)
   customize_adverbs(mylang, ch, lexicon)
-  customize_adpositions(ch, mylang, lexicon)
+  customize_adpositions(ch, mylang, lexicon, hierarchies)
+  if ch.get('verbal-particles') == 'yes' or ch.get('circumpositions') == 'yes':
+    customize_particles(ch, mylang, lexicon)
   customize_complementizers(ch, mylang, lexicon) 
   customize_misc_lex(ch, lexicon)

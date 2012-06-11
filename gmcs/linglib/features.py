@@ -1,4 +1,5 @@
 from gmcs.linglib import case
+from gmcs.linglib import subcategorization
 
 ######################################################################
 # customize_feature_values(ch_dict, type_name, pos, features, cases)
@@ -52,7 +53,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 
     if n == 'case':
       v = [case.canon_to_abbr(c, cases) for c in v]
-
+      if pos == 'adp': 
+        pos_geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
+  
     geom_prefix = pos_geom_prefix
     # Germanic: Auxrule analysis requires a different prefix
     # No subj list to put feature on...geom_prefix2 used for this purpose
@@ -196,7 +199,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       for argst in v:
         # specify the subj/comps CASE values
         c = argst.split('-')
-        if case.interpret_verb_valence(argst) == 'tverb':
+        if subcategorization.interpret_verb_valence(argst) == 'tverb':
           # if no case marking specified AVMS are blank
           a_case = o_case = ''
           # otherwise use the geometry and case name
