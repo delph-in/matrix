@@ -51,8 +51,8 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules):
         for lrt in vpc['lrt']:
           for f in lrt['feat']:
             if 'negation' in f['name']:
-#              next_n = lrt['supertypes'].next_iter_num() if 'supertypes' in lrt else 1
-              lrt['supertypes'] = 'cont-change-only-lex-rule' 
+              lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
+                                            ['cont-change-only-lex-rule']) 
               f['value'] = 'a'
     elif ch.get('neg-aux') == 'on':
       pass

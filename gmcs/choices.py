@@ -109,6 +109,9 @@ class ChoiceDict(ChoiceCategory, dict):
             return int(result.group(0))
     return None
 
+  def split_value(self, key):
+    return [x for x in self[key].split(', ') if x != ''] 
+
   def walk(self, intermediates=False):
     if intermediates and self.full_key != None:
       yield (self.full_key, self)
