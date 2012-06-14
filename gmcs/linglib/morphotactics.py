@@ -194,11 +194,6 @@ def add_lexical_type_hierarchy(pch, choices):
     pch.add_node(lth)
 
 def pc_lrt_mergeable(pc):
-  for lrt in pc['lrt']:
-    print lrt.get('supertypes')
-    print defined_lexrule_sts(lrt,pc)
-  
-  print len([l for l in pc['lrt'] if not defined_lexrule_sts(l, pc)]) == 1
   return len([l for l in pc['lrt'] if not defined_lexrule_sts(l, pc)]) == 1
 
 def pc_lrt_merge(cur_pc, pc):

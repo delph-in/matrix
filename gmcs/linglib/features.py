@@ -205,6 +205,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 #      # this feature on a bound morpheme means that this morpheme is neg1 and 
 #      # introduces a dependency for neg2 as an independent adverb
 ##      tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.NEG-SATISFIED - ].',merge=True)
+
     elif (n == 'negation' and v[0] == 'minus'):
       # JDC 2011-01-11 Users specify negation minus to indicate that a 
       # lexical type is not compatible with negation

@@ -50,7 +50,7 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules):
       for vpc in ch['verb-pc']:
         for lrt in vpc['lrt']:
           for f in lrt['feat']:
-            if 'negation' in f['name']:
+            if 'negation' in f['name'] and f['value']=='plus':
               lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
                                             ['cont-change-only-lex-rule']) 
               f['value'] = 'a'
