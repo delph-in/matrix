@@ -743,14 +743,16 @@ BeginIter feature{i} "a Feature" 1
   Label "Values in the feature hierarchy:<br>"
 
   Radio new "Value {i} type" "" ""
-  . no "existing" "<span onclick='remove_element(\"feature{i}_value{j}\")'>" "</span> use an existing value type: " 
+  . no "existing" "<span onclick='remove_element_all(\"feature{i}\", \"value\");'>" "</span> use an existing value type: " 
 
-  Select existing "existing" "" " <br>"
-  fillregex p=(existing_value_type[0-9]+_name) n=1
-  #fillregex p=(feature[0-9]+_name|feature[0-9]+_value[0-9]+_name|existing_value_type[0-9]+_name) n=1
+  Select existing "existing" "<span onclick='remove_element_all(\"feature{i}\", \"value\"); select_radio_button(\"feature{i}_new\", \"no\")'>" "</span><br>" 
+  fillregex p=(existing_value_type[0-9]+_name) n=1  
+  fillnames c=both 
+  #fillregex p=(existing_value_type[0-9]+_name|feature[0-9]+_name|feature[0-9]+_value[0-9]+_name) n=1
+
 
   Radio new "Value {i} type" "" ""
-  . yes "new" "" " define a new feature hierarchy<br>"
+  . yes "new" "<span onclick='empty_value(\"feature{i}_existing\", 0);'>" "</span> define a new value type<br>"
 
   BeginIter value{j} "a Value" 1
 

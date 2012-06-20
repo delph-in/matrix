@@ -444,6 +444,44 @@ function remove_element(id)
   }
 }
 
+// remove_element_all()
+// Remove all elements starting with id
+// and remove any associated show/hide buttons
+// and remove any show/hide errors
+function remove_element_all(id, suffix)
+{
+  for(var i = 0; i < 100; i++)
+  {
+    var child = id + '_' + suffix + i;
+	var e = document.getElementById(child);
+    if (e != null) remove_element(child);
+  }
+}
+
+function select_radio_button(_name, _type)
+{
+	var _radio = document.getElementsByName(_name);
+    if(_type == 'no')
+	{
+		_radio[0].checked = true;
+		_radio[1].checked = false;
+	}
+	else
+	{
+		_radio[0].checked = false;
+		_radio[1].checked = true;
+	}
+}
+
+function empty_value(_name, _i)
+{
+	var e = document.getElementsByName(_name);
+	e[_i].value = '';
+}
+
+
+
+
 //////////////////////////////////////////////////////////////////////
 // SELECT filler functions
 
