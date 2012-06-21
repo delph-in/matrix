@@ -7,7 +7,7 @@ Label "<h3>Language</h3>"
 Text language "Language name" "<p>Name of your language: " "<br>" 50
 Text iso-code "ISO code" "<a href=\"http://www.sil.org/iso639-3/codes.asp\">ISO code</a> for your language: " " (optional) </p>" 6
 
-Label "<h3>String-processing</h3><p>Your grammar will include a basic tokenizer file for string-level processing (<span style='font-family:monospace'>vanilla.rpp</span>, see <a href='http://moin.delph-in.net/ReppTop/'>ReppTop</a> documentation).  We have three default options for this file.<br />"
+Label "<h3>String-processing</h3><p>Your grammar will include a basic tokenizer file for string-level processing (<span style='font-family:monospace'>vanilla.rpp</span>, see <a href='http://moin.delph-in.net/ReppTop/'>ReppTop</a> documentation).  We have three default options for this file.  If you do not answer, your grammar will include a tokenizer which will discard most ascii punctuation (except the hyphen, colon, and equals [-,:,=]).<br />"
 Radio punctuation-chars "Punctuation characters" "<br />" ""
 . discard-all "discard-all" "" "split on, and then discard all punctuation characters found in this default list (all lower ascii punctuation except \x22 \"): <span style='font-family:monospace'>!#$%&'()*+,-./:;<=>?@[]^_`{|}~\</span><!--we can't currently do anything about the unicode characters... maybe later 。！？…．　○●◎＊☆★◇◆--><br />"
 . keep-all "keep-all" "" "only split space and tab characters, all other characters can occur in tokens<br />" 
@@ -872,7 +872,7 @@ Label "</div></div>"
 
 Label "<div id='bi-neg' class='neg_exp_switch' style='display:none'><p> Negation can be indicated by the required presence of two negative morphemes.  You'll have to specify their morphosyntax and their interactions.</p>"
 
-Label "<p>We can label the two morphemes NEG1 and NEG2 and ask about the syntactic properties of each.  Perhaps in your language one of the two negative morphemes seems more associated with the contribution of negative force to the sentence, and the other functions as a resumptive or specifying marker.  Call the primary indicator of negation NEG1 and the secondary one NEG2.</p>"
+Label "<p>We can label the two morphemes NEG1 and NEG2 and ask about the syntactic properties of each.  Perhaps in your language one of the two negative morphemes is more closely associated with the contribution of negative force to the sentence, and the other functions as a resumptive or specifying marker.  Call the primary indicator of negation NEG1 and the secondary one NEG2.</p>"
 
 Radio neg1-type "NEG1 type" "NEG1" "<br />"
 . b "bound" "" "bound" "set_negmorph('1','b')"
@@ -901,7 +901,9 @@ Radio neg2-type "NEG2 type" "NEG2" "" 1
 . fh "free-H" "" "free, syntactic head" "set_negmorph('2','fh')"
 . fd "free-dep" "" "free, syntactic dependent" "set_negmorph('2','fd')"
 
-Label "<div id='neg2-b' class='neg2_switch' style='display:none'><p> If neg2 is bound, is it bound to a verb?  In this case we'll want to integrate it with the morphotactic system.</p></div>"
+Label "<div id='neg2-b' class='neg2_switch' style='display:none'>"
+Check neg1b-neg2b "neg1 bound to aux requires neg2 bound to lexical verb" "neg1 bound to aux requires neg2 bound to lexical verb" "<br />" 
+Label "</div>"
 Label "<div id='neg2-fh' class='neg2_switch' style='display:none'><p> If neg2 is a syntactic head, is it an auxiliary verb?</p></div>"
 Label "<div id='neg2-fd' class='neg2_switch' style='display:none'><p> If neg2 is a syntactic dependent, we assume it is like an adverb.  Please fill out the following:</p>"
 
@@ -1010,151 +1012,6 @@ Radio q-inv-verb "Inverted verb in questions" "" ""
 . aux "Auxiliary" "" "auxiliaries only "
 . main-aux "Main and auxiliary" "" "any verb<br>"
 
-
-Section info-str "Information Structure"
-
-Label "<p> Information structure, consisting of topic (what an
-utterance is about) and focus (the new information an utterance
-provides), refers to how speakers structure the content they wish to
-convey to listeners. Different languages use different phonological,
-morphological, and syntactic means of marking information structure in
-sentences. </p>"
-
-Label "<h3>Focus</h3>"
-
-Check info-str-focus-lex "Lexical markings for focus" "" "My language employs lexical marking to express focus.<br>"
-
-BeginIter focus-marker{i} "a focus marker" 1
-
-  Radio focus-marker "Focus {i} marker" "This marker is:<br> " ""
-  . affix "Affix" "&nbsp;&nbsp;&nbsp;&nbsp;" "an affix?<br> "
-  . word "Word" "&nbsp;&nbsp;&nbsp;&nbsp;" "a word (e.g. a clitic)?<br> "
-
-  Radio focus-marker-usage "Focus {i} marker usage" "This marker appears:<br> " "<br>"
-  . optionally "optionally" "&nbsp;&nbsp;&nbsp;&nbsp;[ " "optionally "
-  . obligatorily "obligatorily" " / " "obligatorily ] "
-
-  Radio focus-marker-order "Focus {i} marker order" "" ""
-  . before "before" "&nbsp;&nbsp;&nbsp;&nbsp;[ " "before "
-  . after "after" " / " "after ] "
-
-  Check focus-marker-noun "Focus {i} marker for nouns" "&nbsp;&nbsp;&nbsp;&nbsp;[ " "nouns "
-  Check focus-marker-verb "Focus {i} marker for verbs" " / " "verbs ]. "
-
-  Text focus-marker-orth "Focus {i} marker orth" "<br>Spelling: " "<br>" 20
-
-EndIter focus-marker
-
-Check info-str-focus-pos "Specific position for focus" "<br><br>" "My language places focused constituents in a specific position. The position is:<br>"
-
-Radio focus-pos "Focus position" "" ""
-  . clause-initial "clause-initial" "&nbsp;&nbsp;&nbsp;&nbsp;" "clause-initial.<br> "
-  . clause-final "clause-final" "&nbsp;&nbsp;&nbsp;&nbsp;" "clause-final.<br> "
-  . preverbal "preverbal" "&nbsp;&nbsp;&nbsp;&nbsp;" "preverbal.<br> "
-  . postverbal "postverbal" "&nbsp;&nbsp;&nbsp;&nbsp;" "postverbal.<br> "
-
-
-Label "<h3>Topic</h3>"
-
-Check info-str-topic-lex "Lexical markings for topic" "" "My language employs lexical marking to express topic.<br>"
-
-BeginIter topic-marker{i} "a topic marker" 1
-
-  Radio topic-marker "Topic {i} marker" "This marker is:<br> " ""
-  . affix "Affix" "&nbsp;&nbsp;&nbsp;&nbsp;" "an affix?<br> "
-  . word "Word" "&nbsp;&nbsp;&nbsp;&nbsp;" "a word (e.g. a clitic)?<br> "
-
-  Radio topic-marker-usage "Topic {i} marker usage" "This marker appears:<br> " "<br>"
-  . optionally "optionally" "&nbsp;&nbsp;&nbsp;&nbsp;[ " "optionally "
-  . obligatorily "obligatorily" " / " "obligatorily ] "
-
-  Radio topic-marker-order "Topic {i} marker order" "" ""
-  . before "before" "&nbsp;&nbsp;&nbsp;&nbsp;[ " "before "
-  . after "after" " / " "after ] "
-
-  Check topic-marker-noun "Topic {i} marker for nouns" "&nbsp;&nbsp;&nbsp;&nbsp;[ " "nouns "
-  Check topic-marker-verb "Topic {i} marker for verbs" " / " "verbs ]. "
-
-  Text topic-marker-orth "Topic {i} marker orth" "<br>Spelling: " "<br>" 20
-
-EndIter topic-marker
-
-Check info-str-topic-pos "Specific position for topic" "<br><br>&nbsp;&nbsp;" "Topic should occur sentence-initially in my language.<br> "
-
-
-Label "<h3>Contrastive Focus</h3>"
-
-
-Check info-str-c-focus "Contrastive focus" "" "My language uses the same means to express contrastive focus with non-contrastive focus.<br>"
-
-Check info-str-c-focus-lex "Lexical markings for contrastive focus" "" "My language employs lexical marking to express contrastive focus.<br>"
-
-BeginIter c-focus-marker{i} "a contrastive focus marker" 1
-
-  Radio c-focus-marker "Contrastive focus {i} marker" "This marker is:<br> " ""
-  . affix "Affix" "&nbsp;&nbsp;&nbsp;&nbsp;" "an affix?<br> "
-  . word "Word" "&nbsp;&nbsp;&nbsp;&nbsp;" "a word (e.g. a clitic)?<br> "
-
-  Radio c-focus-marker-usage "Contrastive focus {i} marker usage" "This marker appears:<br> " "<br>"
-  . optionally "optionally" "&nbsp;&nbsp;&nbsp;&nbsp;[ " "optionally "
-  . obligatorily "obligatorily" " / " "obligatorily ] "
-
-  Radio c-focus-marker-order "Contrastive Focus {i} marker order" "" ""
-  . before "before" "&nbsp;&nbsp;&nbsp;&nbsp;[ " "before "
-  . after "after" " / " "after ] "
-
-  Check c-focus-marker-noun "Contrastive focus {i} marker for nouns" "&nbsp;&nbsp;&nbsp;&nbsp;[ " "nouns "
-  Check c-focus-marker-verb "Contrastive focus {i} marker for verbs" " / " "verbs ]. "
-
-  Text c-focus-marker-orth "Contrastive focus {i} marker orth" "<br>Spelling: " "<br>" 20
-
-EndIter c-focus-marker
-
-Check info-str-c-focus-pos "Specific position for contrastive focus" "<br><br>" "My language places contrastively focused constituents in a specific position. The position is:<br>"
-
-Radio c-focus-pos "Contrastive focus position" "" ""
-  . clause-initial "clause-initial" "&nbsp;&nbsp;&nbsp;&nbsp;" "clause-initial.<br> "
-  . clause-final "clause-final" "&nbsp;&nbsp;&nbsp;&nbsp;" "clause-final.<br> "
-  . preverbal "preverbal" "&nbsp;&nbsp;&nbsp;&nbsp;" "preverbal.<br> "
-  . postverbal "postverbal" "&nbsp;&nbsp;&nbsp;&nbsp;" "postverbal.<br> "
-
-
-Label "<h3>Contrastive Topic</h3>"
-
-Check info-str-c-focus "Contrastive focus" "" "My language uses the same means to express contrastive topic with non-contrastive topic.<br>"
-
-Check info-str-c-topic-lex "Lexical markings for contrastive topic" "" "My language employs lexical marking to express contrastive topic.<br>"
-
-BeginIter c-topic-marker{i} "a contrastive topic marker" 1
-
-  Radio c-topic-marker "Contrastive topic {i} marker" "This marker is:<br> " ""
-  . affix "Affix" "&nbsp;&nbsp;&nbsp;&nbsp;" "an affix?<br> "
-  . word "Word" "&nbsp;&nbsp;&nbsp;&nbsp;" "a word (e.g. a clitic)?<br> "
-
-  Radio c-topic-marker-usage "Contrastive topic {i} marker usage" "This marker appears:<br> " "<br>"
-  . optionally "optionally" "&nbsp;&nbsp;&nbsp;&nbsp;[ " "optionally "
-  . obligatorily "obligatorily" " / " "obligatorily ] "
-
-  Radio c-topic-marker-order "Contrastive topic {i} marker order" "" ""
-  . before "before" "&nbsp;&nbsp;&nbsp;&nbsp;[ " "before "
-  . after "after" " / " "after ] "
-
-  Check c-topic-marker-noun "Contrastive topic {i} marker for nouns" "&nbsp;&nbsp;&nbsp;&nbsp;[ " "nouns "
-  Check c-topic-marker-verb "Contrastive topic {i} marker for verbs" " / " "verbs ]. "
-
-  Text c-topic-marker-orth "Contrastive Topic {i} marker orth" "<br>Spelling: " "<br>" 20
-
-EndIter c-topic-marker
-
-
-Label "<h4>References</h4>"
-Label "<font size=\"2\">"
-Label "<p>Lambrecht, Knud. 1996. Information Structure and Sentence Form: Topic, Focus, and the Mental Representations of Discourse Referents. Cambridge, UK: Cambridge University Press.</p>"
-Label "<p>Gundel, Jeanette K. 1999. On Different Kinds of Focus. In Peter Bosch and Rob van der Sandt (eds.), Focus: Linguistic, Cognitive, and Computational Perspectives, pages 293-305, Cambridge: Cambridge University Press.</p>"
-Label "<p>Krifka, Manfred. 2008. Basic Notions of Information Structure. Acta Linguistica Hungarica 55(3), 243-276.</p>"
-Label "<p>Fery, Caroline and Krifka, Manfred. 2008. Information Structure: Notional Distinctions, Ways of Expression. Unity and Diversity of Languages pages 123-136.</p>"
-Label "<p>Song, Sanghoun and Bender, Emily M. 2011. Using Information Structure to Improve Transfer-based MT. Proceedings of the 18th International Conference on Head-Driven Phrase Structure Grammar, pages 348-368, Stanford: CSLI Publications.</p>"
-Label "</font>"
 
 
 Section arg-opt "Argument Optionality"
@@ -1340,7 +1197,8 @@ Label "<a id=\"toggle_all_lex_button\" onclick=\"toggle_all_display_lex(1)\">&#9
 
 Separator
 
-Label "<h3>Noun Types</h3>"
+Label "<h3 style='display:inline'>Noun Types</h3>"
+Label "<span>| <a href='#' onclick=\"draw_hierarchy('noun')\">visualize noun hierarchy</a> (experimental)</span><br />"
 
 BeginIter noun{i} "a Noun Type" 1 1
 
@@ -1348,7 +1206,10 @@ BeginIter noun{i} "a Noun Type" 1 1
 
   Label "<div style=\"padding-left: 16px\">"
 
-  Text name "Noun {i} name" "Type name: " "<br><br>" 20
+  Text name "Noun {i} name" "Type name: " "<br /><br />" 20
+
+  MultiSelect supertypes "Noun type {i}" "Supertypes: " "<br /><br />"
+  fillregex p=noun(?!{i})[0-9]+_name
 
   Label "Features:"
 
@@ -1399,7 +1260,8 @@ EndIter noun
 
 Separator
 
-Label "<h3>Verb Types</h3>"
+Label "<h3 style='display:inline'>Verb Types</h3>"
+Label "<span>| <a href='#' onclick=\"draw_hierarchy('verb')\">visualize verb hierarchy</a> (experimental)</span><br />"
 
 BeginIter verb{i} "a Verb Type" 1 2
 
@@ -1407,7 +1269,10 @@ BeginIter verb{i} "a Verb Type" 1 2
 
   Label "<div style=\"padding-left: 16px\">"
 
-  Text name "Verb {i} name" "Type name: " "<br><br>" 20
+  Text name "Verb {i} name" "Type name: " "<br /><br />" 20
+
+  MultiSelect supertypes "Verb type {i}" "Supertypes: " "<br /><br />"
+  fillregex p=verb(?!{i})[0-9]+_name
 
   Label "Features:"
 
