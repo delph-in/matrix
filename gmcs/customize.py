@@ -112,7 +112,7 @@ def customize_punctuation(grammar_path):
     # to do this we have to build a regex for the : line of 
     # the repp file
     # 
-    filename = os.path.join(grammar_path, 'lkb', 'vanilla.rpp') 
+    filename = os.path.join(grammar_path, 'repp', 'vanilla.rpp') 
     lines = codecs.open(filename, 'r', encoding='utf-8').readlines()
     van_rpp = codecs.open(filename, 'w', encoding='utf-8')
     for line in lines:
@@ -120,11 +120,14 @@ def customize_punctuation(grammar_path):
         line = ":["+default_splits_str+"]".rstrip()
       print >>van_rpp, line.rstrip('\n')
     van_rpp.close()       
-  elif ch.get('punctuation-chars') == 'keep-list':
+  else: #ch.get('punctuation-chars') == 'keep-list': 
+    # keep list with the hyphen on the keep list is the new default
     # here we split on the default list (like discard-all),
     # but *minus* whatevers on the keep list
     chars = list(unicode(ch['punctuation-chars-list'], 'utf8'))
-    filename = os.path.join(grammar_path, 'lkb', 'vanilla.rpp') 
+    if not chars:
+      chars = [ '-','=',':' ]
+    filename = os.path.join(grammar_path, 'repp', 'vanilla.rpp') 
     lines = iter(codecs.open(filename, 'r', encoding='utf-8').readlines())
     van_rpp = codecs.open(filename, 'w', encoding='utf-8')
     for line in lines:
@@ -144,6 +147,9 @@ def customize_punctuation(grammar_path):
 
   
 #  Need to move pet over to repp
+#  oe says that using repp with pet when not in tsdb mode
+#  is done with a command line option that simply points pet
+#  to the repp file. 
 # 
 #  # PET's pet.set is a bit easier
 #  line_re = re.compile(r'^punctuation-characters := "(.*)".\s*$')
@@ -513,7 +519,6 @@ def customize_matrix(path, arch_type, destination=None):
   # The following might modify hierarchies in some way, so it's best
   # to customize those components and only have them contribute their
   # information to lexical rules when we customize inflection.
-  # lexical_items.customize_lexicon(mylang, ch, lexicon, hierarchies)
   lexical_items.customize_lexicon(mylang, ch, lexicon, trigger, hierarchies)
   argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies)
   direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)

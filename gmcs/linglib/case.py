@@ -173,8 +173,6 @@ def customize_trigger_rules(adp_type, trigger):
 
 # customize_case_adpositions()
 #   Create the appropriate types for case-marking adpositions
-
-#def customize_case_adpositions(mylang, lexicon, ch):
 def customize_case_adpositions(mylang, lexicon, trigger, ch):
   cases = case_names(ch)
   features = ch.features()

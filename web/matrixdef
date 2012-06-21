@@ -740,16 +740,19 @@ BeginIter feature{i} "a Feature" 1
   . head "Head" "" " a syntactic feature (which will go under <span class=\"feat\">head</span>)?<br>"
   . index "Index" "" " a semantic feature (which will go under <span class=\"feat\">index</span>)?<br><br>"
 
+  Radio cat "Feature {i} cat" "Is this feature for:<br>" ""
+  . noun "noun" "" " nominal categories?<br>"
+  . verb "verb" "" " verbal categories?<br>"
+  . both "both" "" " both categories?<br><br>"
+
   Label "Values in the feature hierarchy:<br>"
 
   Radio new "Value {i} type" "" ""
   . no "existing" "<span onclick='remove_element_all(\"feature{i}\", \"value\");'>" "</span> use an existing value type: " 
 
-  Select existing "existing" "<span onclick='remove_element_all(\"feature{i}\", \"value\"); select_radio_button(\"feature{i}_new\", \"no\")'>" "</span><br>" 
+  Select existing "existing" "<span onclick='remove_element_all(\"feature{i}\", \"value\"); check_radio_button(\"feature{i}_new\", \"no\")'>" "</span><br>" 
   fillregex p=(existing_value_type[0-9]+_name) n=1  
-  fillnames c=both 
-  #fillregex p=(existing_value_type[0-9]+_name|feature[0-9]+_name|feature[0-9]+_value[0-9]+_name) n=1
-
+  fillnames2 c=both 
 
   Radio new "Value {i} type" "" ""
   . yes "new" "<span onclick='empty_value(\"feature{i}_existing\", 0);'>" "</span> define a new value type<br>"

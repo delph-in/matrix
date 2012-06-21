@@ -510,9 +510,7 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies):
   customize_nouns(mylang, ch, lexicon, hierarchies)
 
   mylang.set_section('otherlex')
-
   to_cfv = case.customize_case_adpositions(mylang, lexicon, trigger, ch)
-
   features.process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=lexicon)
 
   mylang.set_section('verblex')

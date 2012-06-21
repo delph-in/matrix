@@ -458,10 +458,12 @@ function remove_element_all(id, suffix)
   }
 }
 
-function select_radio_button(_name, _type)
+// check_radio_button(_name, _type)
+function check_radio_button(_name, _type)
 {
 	var _radio = document.getElementsByName(_name);
-    if(_type == 'no')
+	
+	if(_type == 'no')
 	{
 		_radio[0].checked = true;
 		_radio[1].checked = false;
@@ -473,6 +475,7 @@ function select_radio_button(_name, _type)
 	}
 }
 
+//empty_value(_name, _i)
 function empty_value(_name, _i)
 {
 	var e = document.getElementsByName(_name);
@@ -583,6 +586,25 @@ function fill_feature_names(cat)
   for (var i = 0; i < features.length; i++) {
     var f = features[i].split(':');
     
+    if (typeof(cat) == "undefined" ||
+        f[2] == cat || f[2] == 'both' || cat == 'both') {
+      items.push([f[0], f[0]]);
+    }
+  }
+  return items
+}
+
+// fill_feature_names_only_customized(cat)
+// This is used on the other features.
+// An HPSG feature which is not customized by user cannot
+// show up as an existing value type.
+function fill_feature_names_only_customized(cat)
+{
+  var items = new Array()
+  for (var i = 0; i < features.length; i++) {
+    var f = features[i].split(':');
+    if (f[3] == 'n' || f[3] == 'no' || f[3] == '')
+      continue;
     if (typeof(cat) == "undefined" ||
         f[2] == cat || f[2] == 'both' || cat == 'both') {
       items.push([f[0], f[0]]);

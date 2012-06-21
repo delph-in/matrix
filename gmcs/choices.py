@@ -980,14 +980,14 @@ class ChoicesFile:
             for t in ('noun', 'verb', 'aux', 'det')
             if t in self.choices and 'name' in self.choices[t]]
 
-  def __get_features(self, feat_list, i1, i2, label, tdl, cat):
+  def __get_features(self, feat_list, i1, i2, label, tdl, cat, customized):
     """
     If there are values available for the given feature, construct a
     list of the feature label, values, tdl code and category for that feature.
     """
     values = ';'.join([x[i1] + '|' + x[i2] for x in feat_list])
     if values:
-      return [ [label, values, tdl, cat] ]
+      return [ [label, values, tdl, cat, customized] ]
     return []
 
   def index_features(self):
@@ -1008,89 +1008,95 @@ class ChoicesFile:
   #   list of values is a pair of the form 'name|friendly name'.
   #   The category string can have the values 'noun' or 'verb' or 'both' depending 
   #   whether the features are appropriate for "nouny" or "verby" things.
+
+  #   SSH (2012-06-20) 
+  #   A flag feature 'customized' is added, which indicates whether the feature
+  #   is created in the customization system by users. A feature is specified as
+  #   either 'customized=y' or 'customized=n'. The latter means an HPSG feature.
+
   def features(self):
     features = []
 
     # Case
     features += self.__get_features(case.case_names(self), 0, 1, 'case',
-                                    'LOCAL.CAT.HEAD.CASE','noun')
+                                    'LOCAL.CAT.HEAD.CASE','noun', 'y')
     # Number, Person, and Pernum
     pernums = self.pernums()
     if pernums:
       features += self.__get_features(pernums, 0, 0, 'pernum',
-                                      'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM','noun')
+                                      'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM','noun', 'y')
     else:
       features += self.__get_features(self.numbers(), 0, 0, 'number',
-                                      'LOCAL.CONT.HOOK.INDEX.PNG.NUM','noun')
+                                      'LOCAL.CONT.HOOK.INDEX.PNG.NUM','noun', 'y')
       features += self.__get_features(self.persons(), 0, 0, 'person',
-                                      'LOCAL.CONT.HOOK.INDEX.PNG.PER','noun')
+                                      'LOCAL.CONT.HOOK.INDEX.PNG.PER','noun', 'y')
 
     # Gender
     features += self.__get_features(self.genders(), 0, 0, 'gender',
-                                    'LOCAL.CONT.HOOK.INDEX.PNG.GEND','noun')
+                                    'LOCAL.CONT.HOOK.INDEX.PNG.GEND','noun', 'y')
 
     # Case patterns
     features += self.__get_features(self.patterns(), 0, 1,
-                                    'argument structure', '', 'verb')
+                                    'argument structure', '', 'verb', 'n')
 
     # Form
     features += self.__get_features(self.forms(), 0, 0, 'form',
-                                    'LOCAL.CAT.HEAD.FORM', 'verb')
+                                    'LOCAL.CAT.HEAD.FORM', 'verb', 'n')
 
     # Tense
     features += self.__get_features(self.tenses(), 0, 0, 'tense',
-                                    'LOCAL.CONT.HOOK.INDEX.E.TENSE', 'verb')
+                                    'LOCAL.CONT.HOOK.INDEX.E.TENSE', 'verb', 'y')
 
     # Viewpoint Aspect
     features += self.__get_features(self.aspects(), 0, 0, 'aspect',
-                                    'LOCAL.CONT.HOOK.INDEX.E.ASPECT', 'verb')
+                                    'LOCAL.CONT.HOOK.INDEX.E.ASPECT', 'verb', 'y')
 
     #Situation Aspect
     features += self.__get_features(self.situations(), 0, 0, 'situation',
-                                    'LOCAL.CONT.HOOK.INDEX.E.SITUATION', 'verb')
+                                    'LOCAL.CONT.HOOK.INDEX.E.SITUATION', 'verb', 'y')
     #Mood
     features += self.__get_features(self.moods(), 0, 0, 'mood',
-                                    'LOCAL.CONT.HOOK.INDEX.E.MOOD', 'verb')
+                                    'LOCAL.CONT.HOOK.INDEX.E.MOOD', 'verb', 'y')
     # Direction
     if self.has_dirinv():
-      features += [ ['direction', 'dir|direct;inv|inverse', '', 'verb'] ]
+      features += [ ['direction', 'dir|direct;inv|inverse', '', 'verb', 'y'] ]
 
     # Negaton
     if 'infl-neg' in self.choices:
-      features += [ ['negation', 'plus|plus;minus|minus', '', 'verb' ] ]
+      features += [ ['negation', 'plus|plus;minus|minus', '', 'verb', 'y'] ]
     if self.get('neg-exp') == '2':
       if self.get('neg1-type') == 'b' and self.get('neg2-type') == 'fd':
-        features += [ ['negation', 'plus|plus;minus|minus', '', 'verb' ] ]
-        features += [ ['requires-neg-adv', 'plus|plus', '', 'verb' ] ]
+        features += [ ['negation', 'plus|plus;minus|minus', '', 'verb', 'y'] ]
+        features += [ ['requires-neg-adv', 'plus|plus', '', 'verb', 'y'] ]
 
     # Questions
     if 'q-infl' in self.choices:
-      features += [ ['question', 'plus|plus', '', 'verb' ] ]
+      features += [ ['question', 'plus|plus', '', 'verb', 'y'] ]
 
     # Argument Optionality
     if 'subj-drop' in self.choices or 'obj-drop' in self.choices:
-      features +=[['OPT', 'plus|plus;minus|minus', '', 'verb']]
+      features +=[['OPT', 'plus|plus;minus|minus', '', 'verb', 'y']]
 
     perm_notperm_string = 'permitted|permitted;not-permitted|not-permitted'
     # Overt Argument
     if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
          self.get('obj-mark-drop') == 'obj-mark-drop-req':
-      features += [['overt-arg', perm_notperm_string, '', '']]
+      features += [['overt-arg', perm_notperm_string, '', '', '']]
     elif self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
          self.get('obj-mark-drop') == 'obj-mark-drop-req':
-      features += [['overt-arg', perm_notperm_string, '', '']]
+      features += [['overt-arg', perm_notperm_string, '', '', '']]
     elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and \
          self.get('subj-mark-drop') == 'subj-mark-drop-req':
-      features += [['overt-arg', perm_notperm_string, '', '']]
+      features += [['overt-arg', perm_notperm_string, '', '', '']]
     elif self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
          self.get('obj-mark-drop') == 'obj-mark-drop-opt' :
-      features += [['overt-arg', perm_notperm_string, '', '']]
+      features += [['overt-arg', perm_notperm_string, '', '', '']]
     elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and \
          self.get('subj-mark-drop') == 'subj-mark-drop-opt' :
-      features += [['overt-arg', perm_notperm_string, '', '']]
+      features += [['overt-arg', perm_notperm_string, '', '', '']]
     elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and \
          self.get('subj-mark-drop') == 'subj-mark-drop-req':
-      features += [['overt-arg', perm_notperm_string, '', '']]
+      features += [['overt-arg', perm_notperm_string, '', '', '']]
 
     # Dropped Argument
     #if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
@@ -1101,28 +1107,30 @@ class ChoicesFile:
     #  features += [['dropped-arg', perm_notperm_string, '']]
     if self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
          self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
-      features += [['dropped-arg', perm_notperm_string,'', '']]
+      features += [['dropped-arg', perm_notperm_string,'', '', '']]
     elif self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
          self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt':
-      features += [['dropped-arg', perm_notperm_string,'', '']]
+      features += [['dropped-arg', perm_notperm_string,'', '', '']]
     elif self.get('obj-mark-drop') == 'obj-mark-drop-opt' and \
          self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
-      features += [['dropped-arg', perm_notperm_string, '', '']]
+      features += [['dropped-arg', perm_notperm_string, '', '', '']]
     elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
          self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
-      features += [['dropped-arg', perm_notperm_string,'', '']]
+      features += [['dropped-arg', perm_notperm_string,'', '', '']]
     elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
          self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt':
-      features += [['dropped-arg', perm_notperm_string,'', '']]
+      features += [['dropped-arg', perm_notperm_string,'', '', '']]
     elif self.get('subj-mark-drop') == 'subj-mark-drop-opt' and \
          self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
-      features += [['dropped-arg', perm_notperm_string,'', '']]
+      features += [['dropped-arg', perm_notperm_string,'', '', '']]
 
  #elif self.get('subj-mark-drop') == 'subj-mark-drop-opt') and self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req': features += [['dropped-arg', perm_notperm_string, '']]
 
     for feature in self.get('feature'):
       feat_name = feature['name']
       feat_type = feature['type']
+      feat_cat = feature['cat']
+      values = ''
 
       if feature['new'] == 'yes':
         values = ';'.join([val['name'] + '|' + val['name']
@@ -1136,13 +1144,11 @@ class ChoicesFile:
       geom = ''
       if feat_type == 'head':
         geom = 'LOCAL.CAT.HEAD.' + feat_name.upper()
-        cat = 'both'
       else:
         geom = 'LOCAL.CONT.HOOK.INDEX.PNG.' + feat_name.upper()
-        cat = 'noun'
         
-      if values:
-        features += [ [feat_name, values, geom, cat] ]
+      if len(values) > 0:
+        features += [ [feat_name, values, geom, feat_cat, 'y'] ]
 
     return features
 

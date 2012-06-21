@@ -13,7 +13,7 @@
 ;;;
 ;;; vanilla.rpp file contains rules for tokenization
 ;;; see http://moin.delph-in.net/ReppTop for docs
-(read-repp (lkb-pathname (this-directory) "vanilla.rpp"))
+(read-repp (lkb-pathname (parent-directory) "repp/vanilla.rpp"))
 (setf *repp-interactive* '(:vanilla))
 
 ;;;
@@ -38,14 +38,12 @@
 ;;; transfer rules.  Still under development -- ignore for the
 ;;; time being.
 ;;;
-;;; SSH 2012-03-27 mtr.tdl is added but commented.
-;;;
 (read-tdl-type-files-aux
   (list 
    (lkb-pathname (parent-directory) "matrix.tdl")
    (lkb-pathname (parent-directory) "head-types.tdl")
 ;;; Modules: LOAD my_language.tdl
-(lkb-pathname (parent-directory) "mtr.tdl")   
+   (lkb-pathname (parent-directory) "mtr.tdl")   
 ))
 
 ;;;
