@@ -1012,7 +1012,7 @@ class ChoicesFile:
   #   SSH (2012-06-20) 
   #   A flag feature 'customized' is added, which indicates whether the feature
   #   is created in the customization system by users. A feature is specified as
-  #   either 'customized=y' or 'customized=n'. The latter means an HPSG feature.
+  #   either 'customized=y' or 'customized=n'. 
 
   def features(self):
     features = []
@@ -1041,7 +1041,7 @@ class ChoicesFile:
 
     # Form
     features += self.__get_features(self.forms(), 0, 0, 'form',
-                                    'LOCAL.CAT.HEAD.FORM', 'verb', 'n')
+                                    'LOCAL.CAT.HEAD.FORM', 'verb', 'y')
 
     # Tense
     features += self.__get_features(self.tenses(), 0, 0, 'tense',

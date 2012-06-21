@@ -85,6 +85,20 @@ function toggle_display(para_id, button_id)
   }
 }
 
+// _display()
+// Display or hide an entity
+function _display(_id, display_or_not)
+{
+ 	var e = document.getElementById(_id);
+	if (e != null)
+	{
+		if (display_or_not == 'no' || display_or_not == 'n' || display_or_not == 'none')
+			e.style.display = 'none';
+		else
+			e.style.display = 'block';
+	}
+}
+
 //////////////////////////////////////////////////////////////////////
 // Sub Page functions
 
@@ -596,8 +610,8 @@ function fill_feature_names(cat)
 
 // fill_feature_names_only_customized(cat)
 // This is used on the other features.
-// An HPSG feature which is not customized by user cannot
-// show up as an existing value type.
+// Only feature(s) that users specify on the customization system can
+// show up as an existing value type with bool and luk.
 function fill_feature_names_only_customized(cat)
 {
   var items = new Array()
