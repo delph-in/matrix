@@ -712,6 +712,7 @@ Academic Publishers)."
 Label "</font>"
 
 
+
 Section other-features "Other Features"
 
 Label "<p>If your language has other features beyond those that can be
@@ -748,16 +749,16 @@ BeginIter feature{i} "a Feature" 1
   Label "Values in the feature hierarchy:<br>"
 
   Radio new "Value {i} type" "" ""
-  . no "existing" "" " use an existing value type: " "remove_element_all('feature{i}', 'value'); _display('feature{i}_region', 'no')" 
+  . no "existing" "" " use an existing value type: " "remove_element_all('feature{i}', 'value');" 
 
-  Select existing "existing" "<span onclick='remove_element_all(\"feature{i}\", \"value\"); check_radio_button(\"feature{i}_new\", \"no\"); _display(\"feature{i}_region\", \"no\");'>" "</span><br>" 
+  Select existing "existing" "" "<br>" "remove_element_all('feature{i}', 'value');check_radio_button('feature{i}_new', 'no');"
   fillregex p=(existing_value_type[0-9]+_name) n=1  
   fillnames2 c=both 
 
   Radio new "Value {i} type" "" ""
-  . yes "new" "" " define a new value type<br>" "empty_value('feature{i}_existing', 0); _display('feature{i}_region', 'yes')"
+  . yes "new" "" " define a new value type<br>" "empty_value('feature{i}_existing', 0);"
 
-  Label "<div style='display:none' id='feature{i}_region'>"
+  Label "<div id='feature{i}_region'>"
 
   BeginIter value{j} "a Value" 1
 
@@ -775,6 +776,7 @@ BeginIter feature{i} "a Feature" 1
   Label "</div>"
 
 EndIter feature
+
 
 
 Section sentential-negation "Sentential Negation"

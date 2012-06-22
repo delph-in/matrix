@@ -839,7 +839,12 @@ class MatrixDefFile:
         html += af + '\n'
       elif word[0] in ['Select', 'MultiSelect']:
         multi = (word[0] == 'MultiSelect')
-        (vn, fn, bf, af) = word[1:]
+        (vn, fn, bf, af) = word[1:5]
+
+	onfocus = ""
+	if len(word) > 5: 
+	  onfocus = word[5]
+
         vn = prefix + vn
 
         html += bf + '\n'
@@ -865,8 +870,8 @@ class MatrixDefFile:
           i += 1
 
         if fillers:
-          fillcmd = "fill('%s', [].concat(%s))" % (vn, ','.join(fillers))
-          html += html_select(vr, vn, multi, fillcmd) + '\n'
+          fillcmd = "fill('%s', [].concat(%s));" % (vn, ','.join(fillers))
+          html += html_select(vr, vn, multi, fillcmd+onfocus) + '\n'
           # Add previously selected item
           if choices.get(vn):
             sval = choices.get(vn)

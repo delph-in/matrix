@@ -517,9 +517,17 @@ def validate_other_features(ch, vr):
       vr.err(feature.full_key + '_new',
              'You must specify whether each feature you define uses an existing value type.')
     else:
-      if feature['new'] == 'no' and 'existing' not in feature:
-        vr.err(feature.full_key + '_existing',
+      if feature['new'] == 'no':
+        if 'existing' not in feature:
+          vr.err(feature.full_key + '_existing',
              'You must specify which existing value type is used for each feature.')	
+        if 'value' in feature:
+          vr.err(feature.full_key + '_new',
+             'You must check [define a new value type] if you add a value.')	
+      else:
+        if 'value' not in feature:
+          vr.err(feature.full_key + '_new',
+             'You must add a value if you check [define a new value type].')	
 
     for value in feature.get('value', []):
       if 'name' not in value:
