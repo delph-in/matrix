@@ -496,6 +496,13 @@ function empty_value(_name, _i)
 	e[_i].value = '';
 }
 
+function check_value_and_dispaly(_name, _value_, _id)
+{
+	alert('asdf');
+	var e = document.getElementsByName(_name);
+	alert(e);
+	alert(e.value);
+}
 
 
 

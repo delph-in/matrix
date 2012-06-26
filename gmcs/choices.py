@@ -537,6 +537,8 @@ class ChoicesFile:
       self.convert_23_to_24()
     if self.version < 25:
       self.convert_24_to_25()
+    if self.version < 26:
+      self.convert_25_to_26()
     # As we get more versions, add more version-conversion methods, and:
     # if self.version < N:
     #   self.convert_N-1_to_N
@@ -1165,7 +1167,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 25
+    return 26
 
   def convert_value(self, key, old, new, partial=False):
     if key in self:
@@ -1932,6 +1934,31 @@ class ChoicesFile:
       self.convert_key('punctuation-chars', 'punctuation-chars-list') 
       self['punctuation-chars'] = 'keep-list'
 
+  def convert_25_to_26(self):
+    """ 
+    This uprev converts the old choices that do not work with mtr.tdl and do not 
+    contain feature#_cat and feature#_new in the Other Feature. 
+    Some choices files have vlaue names that should be used only in mtr.tdl, which include
+    a, u, i, etc. The names should be changed. On the other hand, nouny vs. verby / 
+    existing vs. new are required on the Other Feature.
+    """
+
+    mtr = [ 'a', 'e', 'i', 'h', 'p', 'u', 'x', 'A', 'E', 'I', 'H', 'P', 'U', 'X' ]
+    for g in self.get('gender'):
+      name = g['name']
+      if name in mtr:
+        self.convert_value(g.full_key + '_name', name, '_'+name)
+
+    for lextype in ['noun', 'verb', 'det']:
+      for feature in lextype.get('feature'):
+        value = feature['value']
+        print value
+
+    for feature in self.get('feature'):
+      #feature[feat_key + '_cat'] = 'both'
+      #feature[feat_key + '_new'] = 'yes'
+      feature['new'] = 'yes'
+      feature['cat'] = 'both'
 
 ########################################################################
 # FormData Class
