@@ -158,8 +158,16 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       tdlfile.add(type_name + basic_infl_neg_def,
                  'This adds negative semantics to the verb\'s\nRELS list.',
                   merge=True)
-      tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM negform ].',
-                  merge=True)
+      tdlfile.add(type_name + ''':= [ SYNSEM.LOCAL.CAT.VAL [
+                             SUBJ #subj,
+                             SPR #spr,
+                             SPEC #spec,
+                             COMPS #comps & [ FIRST.LOCAL.CAT.HEAD.FORM negform ] ],
+                             DTR.SYNSEM.LOCAL.CAT.VAL [
+                             COMPS #comps,
+                             SUBJ #subj,
+                             SPEC #spec,
+                             SPR #spr ]].''', merge=True)
       tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
                   merge=True)
 

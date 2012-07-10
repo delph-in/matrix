@@ -72,7 +72,7 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules):
     if bnegtype == 'infl-infl':
       customize_infl_infl_neg(ch)
     elif bnegtype == 'infl-head':
-      customize_infl_head_neg()
+      customize_infl_head_neg(ch)
     elif bnegtype == 'infl-comp':
       customize_infl_comp_neg(mylang,ch,lexicon)
     elif bnegtype == 'infl-mod':
@@ -439,11 +439,16 @@ def customize_infl_infl_neg(ch):
       for f in lrt['feat']:
         if 'negation' in f['name'] and f['value']=='plus':
           lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
-                                        ['cont-change-only-lex-rule']) 
+                                        ['same-agr-lex-rule',
+                                         'same-ctxt-lex-rule',
+                                         'same-head-lex-rule',
+                                         'same-hc-light-lex-rule',
+                                         'same-posthead-lex-rule',
+                                         'same-mc-lex-rule'])
           f['value'] = 'b'
         if 'neg2' in f['name'] and f['value']=='plus':
           lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
-                                        ['val-change-only-lex-rule']) 
+                                        ['head-change-only-lex-rule']) 
           f['name'] = 'negation'
           f['value'] = 'c'
 def customize_infl_head_neg(ch):
