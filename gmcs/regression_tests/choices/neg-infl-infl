@@ -34,6 +34,7 @@ neg-exp=2
 infl-neg=on
 neg1-type=b
 neg2-type=b
+bineg-type=infl-infl
 neg1b-neg2b=on
 
 section=coordination

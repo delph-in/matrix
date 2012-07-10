@@ -740,7 +740,7 @@ BeginIter feature{i} "a Feature" 1
 
   Label "Values in the feature hierarchy:"
 
-  BeginIter value{j} "a Value" 1
+  BeginIter value{j} "a Value"
 
    Text name "Feature {i} Value {j} name" "Value name: " "" 20
 

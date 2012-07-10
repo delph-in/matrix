@@ -1060,7 +1060,7 @@ class ChoicesFile:
     if self.has_dirinv():
       features += [ ['direction', 'dir|direct;inv|inverse', '', 'verb'] ]
 
-    # Negaton
+    # Negation
     if 'infl-neg' in self.choices:
       features += [ ['negation', 'plus|plus;minus|minus', '', 'verb' ] ]
     if self.get('neg-exp') == '2':
@@ -1930,7 +1930,7 @@ class ChoicesFile:
     This uprev adds exp=1 to old choices files so that they are compatible
     with the new negation library.
     """
-    if self.get('infl-neg'):
+    if (self.get('infl-neg')) and (not self.get('neg-exp')):
       self['neg-exp']='1'
 
 

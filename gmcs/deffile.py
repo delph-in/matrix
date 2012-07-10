@@ -1393,7 +1393,7 @@ class MatrixDefFile:
           old_choices, neg_aux_index = self.create_neg_aux_choices(old_choices)
           new_choices["neg-aux-index"] = str(neg_aux_index) if neg_aux_index > 0 else str(1)
       else: #we don't have any neg aux index stored, so make a new one
-        old_choices, neg_aux_index = self.create_neg_aux_choices(old_choices)
+        old_choices, neg_aux_index = self.create_neg_aux_choices(old_choices,form_data)
         new_choices["neg-aux-index"] = str(neg_aux_index) if neg_aux_index > 0 else str(1)
 
     # create a zero-neg lri in choices
@@ -1471,7 +1471,7 @@ class MatrixDefFile:
 
     f.close()
 
-  def create_neg_aux_choices(self, choices):
+  def create_neg_aux_choices(self, choices,form_data):
     '''this is a side effect of the existence of neg-aux
     in the form data, it puts some lines pertaining to a neg-aux
     lexical item into the choices file object unless they are
@@ -1488,6 +1488,11 @@ class MatrixDefFile:
     nli = choices['aux'].get_last()
     nli['sem']='add-pred'
     nli['stem1_pred'] = 'neg_rel'
+
+    if 'bineg-type' in form_data.keys() and \
+      form_data['bineg-type'].value =='infl-head':
+      nli['compfeature1_name']='form'
+      nli['compfeature1_value']='negform'
     return choices, next_n
 
   def create_infl_neg_choices(self, old_choices, new_choices):

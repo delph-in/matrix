@@ -29,13 +29,12 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules):
   # negation values on lexical rules:
   #   'a' = standard simple negation, 
   #         * cont-change-only-lex-rule 
-  #   'b' = lex rule for adding comps,
-  #         * val-change-only-lex-rule
-  #   'c' = lex rule for changing FORM 
-  #         value on a comp, which also
-  #         adds negative semantics
-  #         * val-change-lex-rule 
-  #         * cont-change-lex-rule 
+  #   'b' = lex rule with negation semantics,
+  #         also requires NEGFORM on its complement
+  #         this should only appear on auxiliaries
+  #   'c' = form changing lex rule,
+  #         changes form to negform and
+  #         does not add semantics
   #         ...
 
 
@@ -46,7 +45,9 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules):
   if exp == '1':
     # we have a simple negation strategy
     if ch.get('infl-neg') == 'on':
-      # change value of negation=plus to negation=a
+      # two things to do:
+      #  * add supertype to appropriate lri (for morphotactic.py to work)
+      #  * change value of negation=plus to negation=a (for feature.py to work)
       for vpc in ch['verb-pc']:
         for lrt in vpc['lrt']:
           for f in lrt['feat']:
@@ -69,7 +70,7 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules):
   elif exp == '2': 
     bnegtype = ch.get('bineg-type')
     if bnegtype == 'infl-infl':
-      customize_infl_infl_neg()
+      customize_infl_infl_neg(ch)
     elif bnegtype == 'infl-head':
       customize_infl_head_neg()
     elif bnegtype == 'infl-comp':
@@ -426,13 +427,38 @@ def customize_comp_neg(mylang, ch, lexicon, rules, lrules):
 #               section='addenda')
 
 # bipartite negation types
-def customize_infl_infl_neg():
-  # handled in feature processing, nothing to do here
-  pass
-def customize_infl_head_neg():
+def customize_infl_infl_neg(ch):
   # mostly handled in feature processing
   # and custo system
-  pass
+  # need to change the value of negation=plus
+  # and neg2=plus to let
+  # feature processing know what kind of lex rules these are 
+
+  for vpc in ch['verb-pc']:
+    for lrt in vpc['lrt']:
+      for f in lrt['feat']:
+        if 'negation' in f['name'] and f['value']=='plus':
+          lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
+                                        ['cont-change-only-lex-rule']) 
+          f['value'] = 'b'
+        if 'neg2' in f['name'] and f['value']=='plus':
+          lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
+                                        ['val-change-only-lex-rule']) 
+          f['name'] = 'negation'
+          f['value'] = 'c'
+def customize_infl_head_neg(ch):
+  # mostly handled in feature processing
+  # and custo system
+  # need to change the value of negation=plus to let
+  # feature processing know that we need a form changing lex rule
+  for vpc in ch['verb-pc']:
+    for lrt in vpc['lrt']:
+      for f in lrt['feat']:
+        if 'negation' in f['name'] and f['value']=='plus':
+          lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
+                                        ['head-change-only-lex-rule']) 
+          f['value'] = 'c'
+
 def customize_infl_comp_neg(mylang,ch,lexicon):
   # neg affix on verb requires neg-adv with neg semantics 
 

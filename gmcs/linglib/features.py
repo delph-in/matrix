@@ -34,6 +34,25 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
   else:
     iter_feat = 'feat'
 
+  basic_infl_neg_def = ''':= \
+                   [ C-CONT [ HOOK [ XARG #xarg,\
+                     LTOP #ltop,\
+                     INDEX #ind ],\
+              RELS <! event-relation &\
+                      [ PRED "neg_rel",\
+                        LBL #ltop,\
+                        ARG1 #harg ] !>,\
+              HCONS <! qeq &\
+                       [ HARG #harg,\
+                         LARG #larg ] !> ],\
+              SYNSEM.LKEYS #lkeys,\
+            DTR [ SYNSEM [ LKEYS #lkeys,\
+                    LOCAL [ CONT.HOOK [ XARG #xarg,\
+                                              INDEX #ind,\
+                                        LTOP #larg ],\
+                          CAT.HEAD verb]]]].
+  '''
+
   for feat in ch_dict.get(iter_feat,[]):
     n = feat.get('name','')
     v = feat.get('value','').split(', ')
@@ -123,24 +142,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # on a type is a function of the negation strategy chosen
     elif (n == 'negation' and v[0] == 'a'):
       # this is simple infl neg:
-      basic_infl_neg_def = ''':= \
-                       [ C-CONT [ HOOK [ XARG #xarg,\
-                         LTOP #ltop,\
-                         INDEX #ind ],\
-                  RELS <! event-relation &\
-                          [ PRED "neg_rel",\
-                            LBL #ltop,\
-                            ARG1 #harg ] !>,\
-                  HCONS <! qeq &\
-                           [ HARG #harg,\
-                             LARG #larg ] !> ],\
-                  SYNSEM.LKEYS #lkeys,\
-                DTR [ SYNSEM [ LKEYS #lkeys,\
-                        LOCAL [ CONT.HOOK [ XARG #xarg,\
-                                                  INDEX #ind,\
-                                            LTOP #larg ],\
-                              CAT.HEAD verb]]]].
-      '''
 
       tdlfile.add(type_name + basic_infl_neg_def,
                  'This adds negative semantics to the verb\'s\nRELS list.',
@@ -151,6 +152,24 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       if ch.get('neg-head-feature') == 'on':
         tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].',merge=True)
 
+    elif (n == 'negation' and v[0] == 'b'):
+    # this is a negation lex rule that also requires negform on its
+    # complement, should only attach to aux
+      tdlfile.add(type_name + basic_infl_neg_def,
+                 'This adds negative semantics to the verb\'s\nRELS list.',
+                  merge=True)
+      tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM negform ].',
+                  merge=True)
+      tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+                  merge=True)
+
+    elif (n == 'negation' and v[0] == 'c'):
+    # this negation lexical rule adds no semantics and changes form
+      tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.FORM negform ].',
+                  merge=True)
+
+
+      # this is simple infl neg:
       # otherwise, it's a bipartite construction
 #      elif ch.get('neg-exp') == '2':
 #        bnegtype = ch.get('bineg-type')

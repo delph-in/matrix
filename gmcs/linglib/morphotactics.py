@@ -49,7 +49,16 @@ def defined_lexrule_sts(lrt,pc):
   Return the list of lexical rule supertypes, filtering out ones
   not defined in the pc (likely Matrix types)
   """
-  return [st for st in lrt.split_value('supertypes') if st in pc['lrt']]
+  sts = lrt.split_value('supertypes')
+  to_return = []
+  for lrt in pc['lrt']: 
+    if lrt.full_key in sts:
+      to_return.append(lrt.full_key)
+  return to_return
+#  for st in lrt.split_value('supertypes'):
+#    print st in [[l.full_key] for l in pc['lrt']]
+  #return [st for st in lrt.split_value('supertypes') if st in [[l.full_key] for l in pc['lrt']]] 
+  #return [st for st in lrt.split_value('supertypes') if st in pc['lrt']]
 
 def disjunctive_typename(mns):
   """
@@ -194,6 +203,10 @@ def add_lexical_type_hierarchy(pch, choices):
     pch.add_node(lth)
 
 def pc_lrt_mergeable(pc):
+  """
+  A pc is mergeable with its only daughter in case it only has
+  one daughter.
+  """
   return len([l for l in pc['lrt'] if not defined_lexrule_sts(l, pc)]) == 1
 
 def pc_lrt_merge(cur_pc, pc):
@@ -220,7 +233,6 @@ def create_lexical_rule_types(cur_pc, pc):
     cur_pc.add_node(cur_lrt)
   for child in lrt_parents:
     for parent in lrt_parents[child]:
-      print str(cur_pc)
       cur_pc.relate_parent_child(_mns[parent], _mns[child])
 
 def create_lexical_rule_type(lrt, mtx_supertypes):
@@ -425,7 +437,6 @@ def calculate_daughter_types(pch):
         inp.supertypes.add(dtr_name)
       # Add to the global daughter set so it gets written later
       _dtrs.add(dtr_name)
-    # set the daughter value
     for pc in pcs:
       pc.daughter_type = dtr_name
 
