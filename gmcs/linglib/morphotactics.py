@@ -642,6 +642,8 @@ def write_i_or_l_rules(ch, irules, lrules, lrt, order):
       order = 'prefix'
     elif order.lower() in ('suffix', 'after'):
       order = 'suffix'
+    elif order.lower() in ('dummy', 'irreg'):
+      order = 'irreg'
     # if there's only one LRI don't give the rule a number
     num = [''] if len(lrt.lris) == 1 else range(1, len(lrt.lris) + 1)
 ###GERMANIC ADDITION: auxiliaries and main verbs must handle agreement 
@@ -649,11 +651,21 @@ def write_i_or_l_rules(ch, irules, lrules, lrt, order):
 ###their own.
     if ch.get('verb-cluster') == 'yes' and len(lrt.lris) == 2 and ch.get('word-order') == 'v2':
       lri = lrt.lris[1]
-      rule1 = '\n'.join(['-'.join([lrt.name, 'main-verb-' + order]) + ' :=',
+      
+      if 'irreg' in order:
+        rule1 = '\n'.join(['-'.join([lrt.name, 'main-verb-' + order]) + ' :=',
+                      r'%suffix  (' + lri + ' ' + lri + ')',
+                      lrt.identifier()]) + '-main-verb.'
+        
+        rule2 = '\n'.join(['-'.join([lrt.name, 'aux-' + order]) + ' :=',
+                      r'%suffix (' + lri + ' ' + lri + ')',
+                      lrt.identifier()]) + '-aux.'
+      else:
+        rule1 = '\n'.join(['-'.join([lrt.name, 'main-verb-' + order]) + ' :=',
                       r'%' + order + ' (* ' + lri + ')',
                       lrt.identifier()]) + '-main-verb.'
         
-      rule2 = '\n'.join(['-'.join([lrt.name, 'aux-' + order]) + ' :=',
+        rule2 = '\n'.join(['-'.join([lrt.name, 'aux-' + order]) + ' :=',
                       r'%' + order + ' (* ' + lri + ')',
                       lrt.identifier()]) + '-aux.'
  
@@ -661,7 +673,13 @@ def write_i_or_l_rules(ch, irules, lrules, lrt, order):
       irules.add_literal(rule2)
     else:
       for i, lri in enumerate(lrt.lris):
-        rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
+        if 'irreg' in order:
+          rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
+                      r'%suffix' + ' (' + lri + ' ' + lri + ')',
+                      lrt.identifier()]) + '.'
+
+        else:
+          rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
                       r'%' + order + ' (* ' + lri + ')',
                       lrt.identifier()]) + '.'
         irules.add_literal(rule)

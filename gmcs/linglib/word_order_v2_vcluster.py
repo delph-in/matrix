@@ -171,7 +171,7 @@ def add_v2_with_cluster_rules(ch, rules):
   rules.add('aux-2nd-comp := aux-2nd-comp-phrase.')
   rules.add('comp-aux-2nd := comp-aux-2nd-phrase.')
 # Additional rules for if object-raising is covered
-  if ch.get('vc-analysis') == 'basic':
+  if ch.get('vc-analysis') == 'basic' and not ch.get('v2-analysis') == 'filler-gap':
     rules.add('comp-aux-2nd-2 := comp-aux-2nd-phrase-2.')
   else:
     rules.add('mverb-2nd-vcomp := mverb-2nd-vcomp-phrase.')
@@ -683,7 +683,8 @@ def split_cluster_arg_comp_lex_rule(ch, mylang, lrules):
   mylang.add('comp-head-vc-phrase := ' + headdtrval + ' & na-or-- ].')
   mylang.add('comp-2-head-vc-phrase:= [ HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT - ].')
   mylang.add('comp-aux-2nd-phrase := ' + nhddtrval + ' ].')
-  mylang.add('comp-aux-2nd-phrase-2 := ' + nhddtrval + ' ].')
+  if not ch.get('v2-analysis') == 'filler-gap': 
+    mylang.add('comp-aux-2nd-phrase-2 := ' + nhddtrval + ' ].')
 
   mylang.add('comp-aux-vc-phrase := ' + nhddtrval + ' ].')
   mylang.add('basic-head-subj-phrase :+ '+ headdtrval + ' ].')
@@ -885,8 +886,9 @@ def add_additional_arg_order_constraints(ch, mylang):
                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao ].')
   mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao ].')
-##################TODOTODOTODO 
-  mylang.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
+##################TODOTODOTODO  
+  if not ch.get('v2-analysis') == 'filler-gap':
+    mylang.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
   mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.ARG-ORDER + ].')
 
   mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
@@ -1501,8 +1503,9 @@ def mc_argcomp_word_order_phrases(ch, mylang, rules):
     mylang.add('gen-comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
   mylang.add('comp-aux-2nd-phrase := gen-comp-aux-2nd-phrase & \
                                  basic-head-1st-comp-phrase & \
-                      [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
-  mylang.add('comp-aux-2nd-phrase-2 := gen-comp-aux-2nd-phrase & \
+                      [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].') 
+  if not ch.get('v2-analysis') == 'filler-gap':
+    mylang.add('comp-aux-2nd-phrase-2 := gen-comp-aux-2nd-phrase & \
                                  basic-head-2nd-comp-phrase & \
                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND +, \
                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX - ] ].')
@@ -1518,8 +1521,9 @@ def mc_argcomp_word_order_phrases(ch, mylang, rules):
 #b) de man gegeven heb ik het boek.
 
   if ch.get('argument-order') == 'fixed':
-    mylang.add('comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
-    mylang.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
+    mylang.add('comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].') 
+    if not ch.get('v2-analysis') == 'filler-gap':
+      mylang.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART na-or-+ ].')
   if ch.get('q-inv'):
     mylang.add('gen-comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
 
@@ -1532,7 +1536,8 @@ def mc_argcomp_revised_wo(mylang):
   mylang.add('gen-comp-aux-2nd-phrase := basic-head-comp-share-vc.')
   mylang.add('comp-aux-2nd-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT + ].')
   vfrontval = 'bool'
-  mylang.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT ' + vfrontval + ' ].')
+  if not ch.get('v2-analysis') == 'filler-gap':
+    mylang.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT ' + vfrontval + ' ].')
 
 ### [ MC + ] is mc specific (filler-gap [ MC na ])
 

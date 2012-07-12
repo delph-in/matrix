@@ -194,7 +194,20 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
 trunc-coord-lex-rule.
     '''
     irules.add_literal(rule_2)
-
+####also adding trunc lex item from Bart's grammar
+    mylang.add('trunc-lex := word-or-lexrule & \
+                     [ SYNSEM.LOCAL [ COORD na, \
+                                      CAT.HEAD +njd ] ].')
+####adding semantic properties of words
+    #norm-ltop
+    mylang.add('trunc-lex := [ SYNSEM [ LOCAL.CONT [ HOOK [ LTOP #ltop ], \
+                          RELS.LIST.FIRST #keyrel ], \
+             LKEYS.KEYREL #keyrel & [ LBL #ltop ] ] ].')
+    #norm-hook
+    mylang.add('trunc-lex :=  [ SYNSEM [ LOCAL.CONT.HOOK.INDEX #index, \
+             LKEYS.KEYREL.ARG0 #index ] ].')
+    #single-rel
+    mylang.add('trunc-lex := [ SYNSEM.LOCAL.CONT.RELS <! relation !> ].')
   for cs in ch.get('cs'):
     csnum = str(cs.iter_num())
 

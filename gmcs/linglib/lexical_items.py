@@ -385,7 +385,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     else:
       mylang.add('obj-raising-verb-lex := ' + mainorverbtype + '.')
     typedef = \
-    'obj-raising-verb-lex := distrans-second-arg-raising-lex-item & \
+    'obj-raising-verb-lex := ditrans-second-arg-raising-lex-item & \
      [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
 			      SPR < >, \
 			      SPEC < > ], \
@@ -410,6 +410,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
   vcross = False
   if ch.get('verb-cross-classification') == 'yes':
     subcategorization.create_basic_verb_types(ch, mylang)
+  #  subcategorization.customize_verb_case(mylang, ch)
     vcross = True
   else:
     subcategorization.customize_verb_case(mylang, ch)
@@ -959,10 +960,26 @@ def customize_adjectives(mylang, ch, lexicon, rules, hierarchies):
                    COMPS < >, \
                    SPR < >, \
                    SPEC < > ]'
-
+    elif arg_str == 'acc':
+      val = 'VAL [ SUBJ < >, \
+                   COMPS < [ LOCAL.CAT.HEAD noun & [ CASE acc ] ]>, \
+                   SPR < >, \
+                   SPEC < > ]'
+    elif arg_str == 'dat':
+      val = 'VAL [ SUBJ < >, \
+                   COMPS < [ LOCAL.CAT.HEAD noun & [ CASE dat ] ]>, \
+                   SPR < >, \
+                   SPEC < > ]'
+    elif arg_str == 'adp':
+      val = 'VAL [ SUBJ < >, \
+                   COMPS < [ LOCAL.CAT.HEAD adp & [ FORM #pform ] ]>, \
+                   SPR < >, \
+                   SPEC < > ]'
+      mylang.add(atype + ' := [ SYNSEM.LKEYS.KEY-ADP #pform ].')
+ 
     if val:
       mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.' + val + ' ].')
- 
+      
 
     if case_agr and not ll:
       mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.HEAD [ CASE #case, \
@@ -1476,16 +1493,18 @@ def customize_particles(ch, mylang, lexicon):
 
   comment = 'For now, we make particles verbal types (though only particles that are verbal complements can occur in the verbal cluster).'
   super_type = '''basic-verbal-particle-lex := norm-zero-arg &
-  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
-                           COMPS < >,
-                           SPR < >,
-                           SPEC < > ] ].'''
-
+  [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < >,
+                             COMPS < >,
+                             SPR < >,
+                             SPEC < > ],
+                       HEAD.PART-FORM #prt-form ],
+    STEM #prt-form ].'''
+  mylang.add('verb :+ [ PART-FORM list ].',section='features')
   mylang.add(super_type, comment)
   mylang.add('verbal-particle-lex := basic-verbal-particle-lex & verb-lex.')
   mylang.add('adp-particle-lex := basic-verbal-particle-lex & \
             [ SYNSEM.LOCAL.CAT.HEAD verb & [ MOD < > ] ].')
-  mylang.add('part-form := form.')
+ # mylang.add('part-form := form.')
 
   for part in ch.get('part',[]):
     name = part.get('name')
@@ -1497,15 +1516,17 @@ def customize_particles(ch, mylang, lexicon):
     for stem in part.get('stem', []):
 ##only using orth: no multiwords for particles (for now?)
       orth = stem.get('orth')
-      form = orth + '-prt'
-      part_id_name = name + '-' + orth + '-lex'
-      mylang.add(form + ' := part-form.')
-      mylang.add(part_id_name + ' := ' + name + '-lex & \
-                   [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
-
+# OLD ANALYSIS: NOW, PART GETS ITS STEM AS FORM
+#
+#      form = orth + '-prt'
+#      part_id_name = name + '-' + orth + '-lex'
+#      mylang.add(form + ' := part-form.')
+#      mylang.add(part_id_name + ' := ' + name + '-lex & \
+#                   [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
+      
       orthstr = orth_encode(orth)
       typedef = \
-            TDLencode(orth) + ' := ' + part_id_name + ' & \
+            TDLencode(orth) + ' := ' + name + '-lex & \
                    [ STEM < "' + orthstr + '" > ].'
       lexicon.add(typedef)
       
@@ -1988,7 +2009,9 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       elif arg_st == 'adp':
         mylang.add(ntype + ' := [ ARG-ST < [ ], \
                                 [ LOCAL.CAT.HEAD adp & \
-                                   [ MOD < [ LOCAL.CAT.HEAD noun ] > ] ] > ].')
+                                   [ MOD < [ LOCAL.CAT.HEAD noun ] >, \
+                                     FORM #pform ] ] >, \
+                                 SYNSEM.LKEYS.KEY-ADP #pform ].')
       elif arg_st == 'zuinf':
         mylang.add(ntype + ' := [ ARG-ST < [ ], \
                                            [ LOCAL [ CAT [ HEAD verb & [ FORM zuinf ], \

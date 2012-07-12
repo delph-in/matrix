@@ -31,10 +31,10 @@ preload-files := "".
 
 ;postload-files := "qc".
 
-;irregs-file := "../irregs.tab".
+irregs-file := "irregs.tab".
 
 ;; to complete names from irregs.tab
-lex-rule-suffix := "-IRULE".
+lex-rule-suffix := "".
 
 affixes-are-instances.
 

@@ -2688,7 +2688,7 @@ ditrans-first-arg-control-lex-item := basic-three-arg &
 
 ; ERB 2007-01-22 Adding in qeq here.
 
-distrans-second-arg-raising-lex-item := basic-three-arg &
+ditrans-second-arg-raising-lex-item := basic-three-arg &
    [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
 	      [ LOCAL.CONT.HOOK.INDEX #ind2 ],
 	      [ LOCAL.CONT.HOOK [ XARG #ind2,
