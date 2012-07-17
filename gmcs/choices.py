@@ -1943,20 +1943,22 @@ class ChoicesFile:
     existing vs. new are required on the Other Feature.
     """
 
+    """
     mtr = [ 'a', 'e', 'i', 'h', 'p', 'u', 'x', 'A', 'E', 'I', 'H', 'P', 'U', 'X' ]
     for g in self.get('gender'):
       name = g['name']
       if name in mtr:
         self.convert_value(g.full_key + '_name', name, '_'+name)
 
-    for lextype in ['noun', 'verb', 'det']:
-      for feature in lextype.get('feature'):
-        value = feature['value']
-        print value
+    for lextype in ['aux','det','verb','noun']:
+      for lt in self[lextype]:
+        for feature in lt['feat']:
+          value = feature['value']
+          if value in mtr:
+            feature['value'] = '_'+value
+    """
 
     for feature in self.get('feature'):
-      #feature[feat_key + '_cat'] = 'both'
-      #feature[feat_key + '_new'] = 'yes'
       feature['new'] = 'yes'
       feature['cat'] = 'both'
 
