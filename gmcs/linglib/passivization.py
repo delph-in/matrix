@@ -49,6 +49,9 @@ def customize_passivization(ch, mylang, lrules, lexicon):
                                             NON-LOCAL #nlo ] . 
                                  #vcomps > ] ] ] ].'''
     mylang.add(typedef)
+    if ch.get('verbal-particles') == 'yes':
+      mylang.add('passive-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf, \
+                          DTR.SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf ].')
     lrules.add('passive-lr := passive-lex-rule.')
     lr_n = 'passive-lex-rule'
     mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
