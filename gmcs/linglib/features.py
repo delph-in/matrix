@@ -55,7 +55,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       v = [case.canon_to_abbr(c, cases) for c in v]
       if pos == 'adp': 
         pos_geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
-  
+
     geom_prefix = pos_geom_prefix
     # Germanic: Auxrule analysis requires a different prefix
     # No subj list to put feature on...geom_prefix2 used for this purpose

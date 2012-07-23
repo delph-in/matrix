@@ -234,9 +234,11 @@ trunc-coord-lex-rule.
         words = orth.split(',')
         for w in words:
           w_str = orth_encode(w)
+          print w_str
+          print w
           lexicon.add(TDLencode(w + '_c' + csnum) + ' := conj-lex &\
                   [ STEM < "' + w_str + '" >,\
-                    SYNSEM.LKEYS.KEYREL.PRED "_' + w_str + '_coord_rel",\
+                    SYNSEM.LKEYS.KEYREL.PRED "_' + w + '_coord_rel",\
                     CFORM "' + csnum + '" ].')
       else:
         lexicon.add(TDLencode(orth) + ' := conj-lex &\
