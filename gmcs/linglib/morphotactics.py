@@ -231,6 +231,10 @@ def create_lexical_rule_type(ch, lrt):
 
   if lrt.get('comparative') == 'on':
     new_lrt.comparative = 'on'
+  if lrt.get('valchange') == 'on':
+    new_lrt.valchange = 'on'
+  if lrt.get('valstable') == 'on':
+    new_lrt.valstable = 'on'
   if subj_feat:
     for lri in lrt.get('lri',[]):
       if lri['inflecting'] == 'yes':
@@ -388,12 +392,14 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
 ALL_LEX_RULE_SUPERTYPES = set(['cont-change-only-lex-rule',
                                'add-only-no-ccont-rule',
                                'comparative-creating-lex-rule',
+                               'val-change-only-lex-rule',
                                'infl-lex-rule',
                                'const-lex-rule',
                                'lex-rule'])
 
 LEX_RULE_SUPERTYPES = set(['cont-change-only-lex-rule',
                            'comparative-creating-lex-rule', 
+                           'val-change-only-lex-rule',
                            'add-only-no-ccont-rule'])
 
 def set_lexical_rule_supertypes(lrt):
@@ -413,6 +419,10 @@ def set_lexical_rule_supertypes(lrt):
   # add other special cases here
   if lrt.comparative == 'on':
     lrt.supertypes.add('comparative-creating-lex-rule')
+  if lrt.valchange == 'on':
+    lrt.supertypes.add('val-change-only-lex-rule')
+  if lrt.valstable == 'on':
+    lrt.supertypes.add('same-val-lex-rule')
 
 def calculate_supertypes(pch):
   # calculate daughter types first, because we want to percolate them
@@ -446,7 +456,7 @@ def percolate_supertypes(pc):
   # from the next one.
   def validate_supertypes(x):
     if pc.is_lex_rule:
-      if not any(st in LEX_RULE_SUPERTYPES for st in x.supertypes):
+      if not any(st in LEX_RULE_SUPERTYPES for st in x.supertypes):        
         x.supertypes.add('add-only-no-ccont-rule')
 
   for r in pc.roots():

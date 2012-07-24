@@ -559,6 +559,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
       orthstr = orth_encode(stem.get('orth'))
       pred = stem.get('pred')
       id = stem.get('name')
+      id = id.replace(' ','_')
       typedef = \
         TDLencode(id) + ' := ' + vtype + ' & \
                     [ STEM < "' + orthstr + '" >, \
@@ -693,6 +694,7 @@ def add_copula_to_lexicon(userstypename, cop, lexicon):
     orth = stem.get('orth')
     orthstr = orth_encode(orth)
     id = stem.get('name')
+    id = id.replace(' ','_')
     typedef = TDLencode(id) + ' := ' + userstypename + ' & \
                        [ STEM < "' + orthstr + '" > ].'
     lexicon.add(typedef)
@@ -757,6 +759,7 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
       orthstr = orth_encode(stem.get('orth'))
       pred = stem.get('pred')
       id = stem.get('name')
+      id = id.replace(' ','_')
       typedef = \
         TDLencode(id) + ' := ' + dtype + ' & \
                     [ STEM < "' + orthstr + '" >, \
@@ -996,6 +999,7 @@ def customize_adjectives(mylang, ch, lexicon, rules, hierarchies):
       orthstr = orth_encode(orth)
       pred = stem.get('pred')
       id = stem.get('name')
+      id = id.replace(' ','_')
       typedef = \
         TDLencode(id) + ' := ' + atype + ' & \
                     [ STEM < "' + orthstr + '" >, \
@@ -1064,6 +1068,7 @@ def customize_numbers(ch, mylang, lexicon, lrules, hierarchies):
       orthstr = orth_encode(orth)
       pred = stem.get('pred')
       id = stem.get('name')
+      id = id.replace(' ','_')
       typedef = \
         TDLencode(id) + ' := ' + nname + ' & \
                     [ STEM < "' + orthstr + '" >, \
@@ -1242,6 +1247,7 @@ def customize_adverbs(mylang, ch, lexicon):
       orthstr = orth_encode(orth)
       pred = stem.get('pred')
       id = stem.get('name')
+      id = id.replace(' ','_')
       typedef = \
         TDLencode(id) + ' := ' + atype + ' & \
                     [ STEM < "' + orthstr + '" >, \
@@ -1328,6 +1334,7 @@ def customize_adpositions(ch, mylang, lexicon, hierarchies):
         orthstr = orth_encode(orth)
         pred = stem.get('pred')
         id = stem.get('name')
+        id = id.replace(' ','_')
         tname = TDLencode(id)
         typedef = \
             tname + ' := ' + name + ' & \
@@ -1525,6 +1532,7 @@ def customize_particles(ch, mylang, lexicon):
 #                   [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
       
       orthstr = orth_encode(orth)
+      orth = orth.replace(' ','_')
       typedef = \
             TDLencode(orth) + ' := ' + name + '-lex & \
                    [ STEM < "' + orthstr + '" > ].'
@@ -1634,6 +1642,7 @@ def customize_complementizers(ch, mylang, lexicon):
       for stem in compl.get('stem'):
         orth = stem.get('orth')
         orthstr = orth_encode(orth)
+        orth = orth.replace(' ','_')
         typedef = \
             TDLencode(orth) + ' := ' + type + ' & \
                    [ STEM < "' + orthstr + '" > ].'
@@ -1648,6 +1657,7 @@ def customize_misc_lex(ch, lexicon):
   if ch.get('q-part'):
     orth = ch.get('q-part-orth')
     orthstr = orth_encode(orth)
+    orth = orth.replace(' ','_')
     typedef = \
       TDLencode(orth) + ' := qpart-lex-item & \
                    [ STEM < "' + orthstr + '" > ].'
@@ -2056,6 +2066,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       orthstr = orth_encode(stem.get('orth'))
       pred = stem.get('pred')
       id = stem.get('name')
+      id = id.replace(' ','_')
       if expl == 'yes':
         typedef = TDLencode(id) + ' := expl-noun-lex & \
                     [ STEM < "' + orthstr + '" > ].'

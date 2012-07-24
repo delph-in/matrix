@@ -273,9 +273,26 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       #  tdlfile.add(type_name + ':= obj-drop-verb-lex.', merge = True)
 
     elif n == 'OPT':
-      bool_val = {'plus': '+', 'minus': '-'}[v[0].lower()]
-      val_geom = {'subj': 'SUBJ', 'obj': 'COMPS'}[h.lower()]
-      tdlfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.OPT %(bv)s].' \
+      bool_val = {'plus': '+', 'minus': '-', 'uspec': '#'}[v[0].lower()]
+      val_geom = {'subj': 'SUBJ', 'obj': 'COMPS', 'spr': 'SPR'}[h.lower()]
+      if bool_val == '#':
+        bool_val += h.lower() + '-loc'
+        tdlfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.LOCAL %(bv)s,\
+                 DTR.SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.LOCAL %(bv)s].' \
+                  % {'id': type_name, 'vg': val_geom, 'bv': bool_val},
+                  merge=True)
+###HACK: for now, this is only possible for nouns: share other vals:
+        tdlfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
+                                                       COMPS #comps, \
+                                                       SPEC #spec ], \
+                 DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
+                                            COMPS #comps, \
+                                            SPEC #spec ] ].' \
+                  % {'id': type_name },
+                  merge=True)
+
+      else:
+        tdlfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.OPT %(bv)s].' \
                   % {'id': type_name, 'vg': val_geom, 'bv': bool_val},
                   merge=True)
 
