@@ -1433,7 +1433,6 @@ class MatrixDefFile:
               found_negform = True
         if not found_negform:
           old_choices['nf-subform%d_name' % next_n ] = 'negform' 
-          old_choices['nf-subform%d_name' % (next_n+1) ] = 'otherform' 
 
     # Open the def file and store it in lines[]
     f = open(self.def_file, 'r')

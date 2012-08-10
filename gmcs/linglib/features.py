@@ -155,83 +155,46 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     elif (n == 'negation' and v[0] == 'b'):
     # this is a negation lex rule that also requires negform on its
     # complement, should only attach to aux
-      tdlfile.add(type_name + basic_infl_neg_def,
+
+    # to make the neg-rule a little more elegant we can define a form-and-cont-change-rule
+    # and use it as a supertype for this rule
+
+      tdlfile.add('''val-and-cont-change-lex-rule := same-head-lex-rule & same-hc-light-lex-rule & 
+                     same-posthead-lex-rule & same-mc-lex-rule & same-ctxt-lex-rule & 
+                     same-modified-lex-rule & same-light-lex-rule & same-non-local-lex-rule &
+                     [ SYNSEM.LOCAL.CAT.VAL [ SPR #spr,
+                                              SUBJ #subj, 
+                                              SPEC #spec ],
+                       DTR.SYNSEM.LOCAL.CAT.VAL [ SPR #spr,
+                                                  SUBJ #subj,
+                                                  SPEC #spec ] ].''',section='addenda')
+                         
+      tdlfile.add(type_name + ''' := \
+                   [ C-CONT [ HOOK [ XARG #xarg,\
+                     LTOP #ltop,\
+                     INDEX #ind ],\
+              RELS <! event-relation &\
+                      [ PRED "neg_rel",\
+                        LBL #ltop,\
+                        ARG1 #harg ] !>,\
+              HCONS <! qeq &\
+                       [ HARG #harg,\
+                         LARG #larg ] !> ],\
+              SYNSEM.LKEYS #lkeys,\
+            DTR [ SYNSEM [ LKEYS #lkeys,\
+                    LOCAL [ CONT.HOOK [ XARG #xarg,\
+                                              INDEX #ind ],\
+                          CAT [ VAL.COMPS.FIRST.LOCAL.CONT.HOOK.LTOP #larg,
+                                HEAD verb ]]]]].
+  '''
                  'This adds negative semantics to the verb\'s\nRELS list.',
                   merge=True)
-      tdlfile.add(type_name + ''':= [ SYNSEM.LOCAL.CAT.VAL [
-                             SUBJ #subj,
-                             SPR #spr,
-                             SPEC #spec,
-                             COMPS #comps & [ FIRST.LOCAL.CAT.HEAD.FORM negform ] ],
-                             DTR.SYNSEM.LOCAL.CAT.VAL [
-                             COMPS #comps,
-                             SUBJ #subj,
-                             SPEC #spec,
-                             SPR #spr ]].''', merge=True)
+      tdlfile.add(type_name + ''':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST [ LOCAL.CAT [ VAL #val,
+                                                                                     HEAD.FORM negform ] ],
+                                      DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.VAL #val ]. ''', merge=True)
       tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
                   merge=True)
 
-    elif (n == 'negation' and v[0] == 'c'):
-    # this negation lexical rule adds no semantics and changes form
-      tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.FORM negform ].',
-                  merge=True)
-
-
-      # this is simple infl neg:
-      # otherwise, it's a bipartite construction
-#      elif ch.get('neg-exp') == '2':
-#        bnegtype = ch.get('bineg-type')
-#        if bnegtype == 'infl-infl':
-#        # If neg1b-neg2b is on, also requre negform on the complement
-#          if ch.get('neg1b-neg2b') == 'on':
-#            # TODO: better supertype for FORM and CONT change lex-rule
-#            tdlfile.add(type_name + ':= cont-change-only-lex-rule & [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM negform ].', merge=True)
-#        elif bnegtype == 'infl-head':
-#        # if neg-type=infl-head then negation plus only changes the form value for
-#        # the complement, the actual negation semantics are in neg-aux
-#          tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.FORM negform ].', merge=True)
-#        elif bnegtype == 'infl-comp':
-#        # in infl-comp, the infl rule adds the negative complement requirement
-#          if ch.get('comp-neg-order') == 'before':
-#            tdlfile.add(type_name +''':= infl-val-change-only-lex-rule &
-#               [ SYNSEM.LOCAL [ CAT.VAL [  SUBJ #subj,
-#                                           COMPS < canonical-synsem & 
-#                                                 [ LOCAL.CAT.HEAD [ NEGATED +,
-#                                MOD < [ LOCAL.CONT.HOOK #hook ] > ] ] 
-#                                                   . #comps > ] ],
-#                 DTR.SYNSEM.LOCAL [ CAT.VAL [ SUBJ #subj,
-#                                              COMPS #comps ],
-#                                        CONT.HOOK #hook ] ].
-#               ''')
-#
-#          elif ch.get('comp-neg-order') == 'after':
-#            tdlfile.add(type_name +''':= infl-val-change-only-lex-rule &
-#               [ SYNSEM.LOCAL.CAT.VAL [  SUBJ #subj,
-#                                         COMPS < #comps , canonical-synsem & 
-#                                             [ LOCAL.CAT.HEAD [ NEGATED +,
-#                                             MOD < [ LOCAL.CONT.HOOK #hook ] > ] ] > ],
-#                 DTR.SYNSEM.LOCAL [ CAT.VAL [ SUBJ #subj,
-#                                              COMPS.FIRST #comps ],
-#                                    CONT.HOOK #hook ] ].
-#               ''')
-#
-#
-#          tdlfile.add_comment(type_name,'This rule adds the negative complement to the verb\'s COMPS list.')
-#          # deal with type of selecting verb: auxiliary verb or any finite verb
-#          if(ch.get('comp-neg-head')=='aux'):
-#            tdlfile.add(type_name +' := [ DTR aux-lex ].')
-#          elif(ch.get('comp-neg-head')=='v'):
-#            tdlfile.add(type_name +''':= [ DTR verb-lex &
-#                        [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ] ].''')
-#
-#        elif bnegtype == 'infl-mod':
-#          pass
-#        
-#
-##    elif (n == 'requires-neg-adv' and v[0] == 'plus'):
-#      # this feature on a bound morpheme means that this morpheme is neg1 and 
-#      # introduces a dependency for neg2 as an independent adverb
-##      tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.NEG-SATISFIED - ].',merge=True)
 
     elif (n == 'negation' and v[0] == 'minus'):
       # JDC 2011-01-11 Users specify negation minus to indicate that a 
@@ -239,10 +202,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       if ch.get('neg-head-feature') == 'on':
         tdlfile.add(type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].',merge=True)
     
-#    elif (n == 'neg2'  and v[0] == 'plus'):
-#      # this is a lexical rule which should change the form value to negform
-#      tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.FORM negform ].',
-#                  merge=True )
     elif (n == 'question' and v[0] == 'plus'):
       # ERB 2009-07-01 Adding in semantics for question affixes
       tdlfile.add(type_name + ':= \

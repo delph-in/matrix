@@ -72,7 +72,7 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules):
     if bnegtype == 'infl-infl':
       customize_infl_infl_neg(ch)
     elif bnegtype == 'infl-head':
-      customize_infl_head_neg(ch)
+      customize_infl_head_neg()
     elif bnegtype == 'infl-comp':
       customize_infl_comp_neg(mylang,ch,lexicon)
     elif bnegtype == 'infl-mod':
@@ -438,31 +438,35 @@ def customize_infl_infl_neg(ch):
     for lrt in vpc['lrt']:
       for f in lrt['feat']:
         if 'negation' in f['name'] and f['value']=='plus':
+#          lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
+#                                        ['add-only-rule'])
           lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
-                                        ['same-agr-lex-rule',
-                                         'same-ctxt-lex-rule',
+                                        [#'same-agr-lex-rule',
+#                                         'same-ctxt-lex-rule',
+#                                         'val-and-cont-change-lex-rule',
                                          'same-head-lex-rule',
-                                         'same-hc-light-lex-rule',
-                                         'same-posthead-lex-rule',
-                                         'same-mc-lex-rule'])
+                                         'same-val-lex-rule',
+#                                         'same-hc-light-lex-rule',
+#                                         'same-posthead-lex-rule',
+#                                         'same-mc-lex-rule'
+                                         ])
           f['value'] = 'b'
         if 'neg2' in f['name'] and f['value']=='plus':
-          lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
-                                        ['head-change-only-lex-rule']) 
+#          lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
+#                                        ['head-change-only-rule']) 
           f['name'] = 'negation'
           f['value'] = 'c'
-def customize_infl_head_neg(ch):
-  # mostly handled in feature processing
-  # and custo system
-  # need to change the value of negation=plus to let
-  # feature processing know that we need a form changing lex rule
-  for vpc in ch['verb-pc']:
-    for lrt in vpc['lrt']:
-      for f in lrt['feat']:
-        if 'negation' in f['name'] and f['value']=='plus':
-          lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
-                                        ['head-change-only-lex-rule']) 
-          f['value'] = 'c'
+def customize_infl_head_neg():
+  pass
+  # completely handled by customization system and 
+  # existing infrastructure.
+  
+  # * neg-aux is a typical aux, 
+  # * the required FORM value is added
+  #   to the questionairre page automatically, 
+  # * user selects that the inflector is FORM negform 
+  #   and makes the position class required to enforce 
+  #   complementary distribution of FORM 
 
 def customize_infl_comp_neg(mylang,ch,lexicon):
   # neg affix on verb requires neg-adv with neg semantics 

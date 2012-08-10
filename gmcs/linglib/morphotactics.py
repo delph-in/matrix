@@ -396,7 +396,9 @@ ALL_LEX_RULE_SUPERTYPES = set(['same-agr-lex-rule',
                                'const-lex-rule',
                                'lex-rule'])
 
-LEX_RULE_SUPERTYPES = set(['same-agr-lex-rule',
+LEX_RULE_SUPERTYPES = set(['val-and-cont-change-lex-rule',
+                           'add-only-rule',
+                           'same-head-lex-rule',
                            'val-change-only-lex-rule',
                            'head-change-only-lex-rule',
                            'cont-change-only-lex-rule',

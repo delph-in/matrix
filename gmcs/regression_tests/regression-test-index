@@ -294,3 +294,4 @@ neg-mod-vp-either=negative modifier which can occur on either side of the vp
 
 neg-infl-infl=bipartite negation both bound, one to auxiliary the other to lexical verb
 
+neg-infl-head=bipartite negation neg-aux and required inflection on main verb

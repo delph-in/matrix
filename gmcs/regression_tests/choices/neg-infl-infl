@@ -1,5 +1,5 @@
 
-version=25
+version=26
 
 section=general
 language=neg-infl-infl
@@ -26,15 +26,16 @@ section=direct-inverse
 
 section=tense-aspect-mood
   nf-subform1_name=negform
+  nf-subform2_name=otherform
 
 section=other-features
 
 section=sentential-negation
 neg-exp=2
 infl-neg=on
+bineg-type=infl-infl
 neg1-type=b
 neg2-type=b
-bineg-type=infl-infl
 neg1b-neg2b=on
 
 section=coordination
@@ -59,7 +60,7 @@ section=lexicon
   aux1_sem=no-pred
   aux1_subj=np
     aux1_compfeature1_name=form
-    aux1_compfeature1_value=nonfinite
+    aux1_compfeature1_value=otherform
     aux1_stem1_orth=aux
 
 section=morphology
@@ -72,13 +73,25 @@ section=morphology
       verb-pc1_lrt1_lri1_inflecting=yes
       verb-pc1_lrt1_lri1_orth=-neg1
   verb-pc2_name=neg2
+  verb-pc2_obligatory=on
   verb-pc2_order=suffix
-  verb-pc2_inputs=verb
+  verb-pc2_inputs=verb1, verb2
       verb-pc2_lrt1_feat1_name=neg2
       verb-pc2_lrt1_feat1_value=plus
       verb-pc2_lrt1_feat1_head=verb
+      verb-pc2_lrt1_feat2_name=form
+      verb-pc2_lrt1_feat2_value=negform
+      verb-pc2_lrt1_feat2_head=verb
       verb-pc2_lrt1_lri1_inflecting=yes
       verb-pc2_lrt1_lri1_orth=-neg2
+      verb-pc2_lrt2_feat1_name=form
+      verb-pc2_lrt2_feat1_value=otherform
+      verb-pc2_lrt2_feat1_head=verb
+      verb-pc2_lrt2_lri1_inflecting=no
+      verb-pc2_lrt3_feat1_name=form
+      verb-pc2_lrt3_feat1_value=finite
+      verb-pc2_lrt3_feat1_head=verb
+      verb-pc2_lrt3_lri1_inflecting=no
 
 section=toolbox-import
 
