@@ -292,6 +292,6 @@ neg-v-attach-freewo=ensures that lexical attachment for neg adverbs still works 
 
 neg-mod-vp-either=negative modifier which can occur on either side of the vp
 
-neg-infl-infl=bipartite negation both bound, one to auxiliary the other to lexical verb
 
 neg-infl-head=bipartite negation neg-aux and required inflection on main verb
+neg-infl-infl=bipartite negation, two bound negators, one attaches to aux and requires the other on the lexical verb

@@ -169,29 +169,15 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                                                   SUBJ #subj,
                                                   SPEC #spec ] ].''',section='addenda')
                          
-      tdlfile.add(type_name + ''' := \
-                   [ C-CONT [ HOOK [ XARG #xarg,\
-                     LTOP #ltop,\
-                     INDEX #ind ],\
-              RELS <! event-relation &\
-                      [ PRED "neg_rel",\
-                        LBL #ltop,\
-                        ARG1 #harg ] !>,\
-              HCONS <! qeq &\
-                       [ HARG #harg,\
-                         LARG #larg ] !> ],\
-              SYNSEM.LKEYS #lkeys,\
-            DTR [ SYNSEM [ LKEYS #lkeys,\
-                    LOCAL [ CONT.HOOK [ XARG #xarg,\
-                                              INDEX #ind ],\
-                          CAT [ VAL.COMPS.FIRST.LOCAL.CONT.HOOK.LTOP #larg,
-                                HEAD verb ]]]]].
-  '''
-                 'This adds negative semantics to the verb\'s\nRELS list.',
-                  merge=True)
-      tdlfile.add(type_name + ''':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST [ LOCAL.CAT [ VAL #val,
-                                                                                     HEAD.FORM negform ] ],
-                                      DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.VAL #val ]. ''', merge=True)
+      tdlfile.add(type_name + basic_infl_neg_def, merge=True)
+      # because this is a val changing rule, we need the complement verbs VAL 
+      # and HOOK to be copied up explicitly
+      # also, we specify FORM negform on the complement
+      tdlfile.add(type_name + ''':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL [ CAT [ VAL #val,
+     HEAD.FORM negform ], 
+ CONT.HOOK #hook ],
+     DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL [ CAT.VAL #val,
+                                                  CONT.HOOK #hook ] ]. ''', merge=True)
       tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
                   merge=True)
 

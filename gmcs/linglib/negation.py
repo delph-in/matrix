@@ -443,9 +443,9 @@ def customize_infl_infl_neg(ch):
           lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
                                         [#'same-agr-lex-rule',
 #                                         'same-ctxt-lex-rule',
-#                                         'val-and-cont-change-lex-rule',
-                                         'same-head-lex-rule',
-                                         'same-val-lex-rule',
+                                         'val-and-cont-change-lex-rule',
+#                                         'same-head-lex-rule',
+#                                         'same-val-lex-rule',
 #                                         'same-hc-light-lex-rule',
 #                                         'same-posthead-lex-rule',
 #                                         'same-mc-lex-rule'
