@@ -295,3 +295,5 @@ neg-mod-vp-either=negative modifier which can occur on either side of the vp
 
 neg-infl-head=bipartite negation neg-aux and required inflection on main verb
 neg-infl-infl=bipartite negation, two bound negators, one attaches to aux and requires the other on the lexical verb
+neg-infl-comp=bipartite negation, infl lex-rule puts neg-comp on comps list of verb, a la French [fra]
+neg-infl-mod=bipartite negation, infl rule introduces feature dependency to require neg adv, uses mod rules

@@ -182,6 +182,29 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                   merge=True)
 
 
+#    elif (n == 'negation' and v[0] == 'c'):
+#   'c'  is deprecated!
+    elif (n == 'negation' and v[0] == 'd'):
+    # this is a comps changing lex rule which adds a negadv to the 
+    # comps list
+      tdlfile.add(type_name + ''':= [
+        SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,
+                                 SPEC #spec,
+                                 SUBJ #subj,   
+                                 COMPS < canonical-synsem & 
+                                         [ LOCAL.CAT.HEAD [ NEGATED +,
+                                         MOD < [ LOCAL.CONT.HOOK #hook ] > ] ]
+                                         . #oldcomps > ] ],
+        DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,
+                                     SPEC #spec,
+                                     SUBJ #subj,
+                                     COMPS #oldcomps ],
+                           CONT.HOOK #hook ] ].''', merge=True)
+
+    elif (n == 'negation' and v[0] == 'e'):
+    # negation lex rule to set NEG-SAT to -
+      tdlfile.add(type_name + ':= [ SYNSEM.NEG-SAT - ].')
+
     elif (n == 'negation' and v[0] == 'minus'):
       # JDC 2011-01-11 Users specify negation minus to indicate that a 
       # lexical type is not compatible with negation

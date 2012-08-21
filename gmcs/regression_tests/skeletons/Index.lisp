@@ -22,6 +22,8 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "neg-infl-mod") (:content . "neg-infl-mod: bipartite negation, infl rule introduces feature dependency to require neg adv, uses mod rules"))
+((:path . "neg-infl-comp") (:content . "neg-infl-comp: bipartite negation, infl lex-rule puts neg-comp on comps list of verb, a la French [fra]"))
 ((:path . "neg-infl-head") (:content . "neg-infl-head: bipartite negation neg-aux and required inflection on main verb"))
 ((:path . "neg-infl-infl") (:content . "neg-infl-infl: bipartite negation both bound, one to auxiliary the other to lexical verb"))
 ((:path . "neg-mod-vp-either") (:content . "neg-mod-vp-either: negative modifier which can occur on either side of the vp"))
