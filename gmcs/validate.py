@@ -151,7 +151,11 @@ forbidden_type_patterns = [
   '[a-z]+[0-9]+-mid-coord-rule',
   '[a-z]+[0-9]+-bottom-coord-rule',
   '[a-z]+[0-9]+-left-coord-rule',
-  'context[0-9]+-decl-head-opt-subj-phrase'
+
+  #type names that collide with the type names used by mtr.tdl
+  '[aeihpuxAEIHPUX]', 
+  
+  'context[0-9]+-decl-head-opt-subj-phrase'  
 ]
 
 def validate_names(ch, vr):

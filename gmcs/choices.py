@@ -1943,24 +1943,30 @@ class ChoicesFile:
     existing vs. new are required on the Other Feature.
     """
 
-    """
     mtr = [ 'a', 'e', 'i', 'h', 'p', 'u', 'x', 'A', 'E', 'I', 'H', 'P', 'U', 'X' ]
+
     for g in self.get('gender'):
       name = g['name']
       if name in mtr:
         self.convert_value(g.full_key + '_name', name, '_'+name)
-
+	
     for lextype in ['aux','det','verb','noun']:
       for lt in self[lextype]:
         for feature in lt['feat']:
           value = feature['value']
           if value in mtr:
             feature['value'] = '_'+value
-    """
 
+    cm = self.get('case-marking')
+    case_name = self.get(cm + '-a-case-name')
+    if case_name in mtr:
+      self.convert_value(cm + '-a-case-name', case_name, '_'+case_name)
+
+ 
     for feature in self.get('feature'):
-      feature['new'] = 'yes'
-      feature['cat'] = 'both'
+      if not feature.has_key('new'):
+        feature['new'] = 'yes'
+        feature['cat'] = 'both'
 
 ########################################################################
 # FormData Class

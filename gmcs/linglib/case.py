@@ -125,14 +125,20 @@ def init_case_hierarchy(ch, hierarchies):
       for c in cases:
         hier.add(c[2], 'case', c[1])
     else:  # 'split-n':
-      hier.add('a', 'case', 'transitive agent')
+    # SSH (2012-08-27) 
+    # 'a' collides with the type name used by mtr.tdl
+    # 'a' is simply replaced by '_a'.
+      hier.add('_a', 'case', 'transitive agent')
+    #hier.add('a', 'case', 'transitive agent')
       hier.add('s', 'case', 'intransitive subject')
       hier.add('o', 'case', 'transitive patient')
       for c in cases:
         if c[2] == erg_a:
-          hier.add(c[2], 'a', c[1])
+          hier.add(c[2], '_a', c[1])
+          #hier.add(c[2], 'a', c[1]) 
         elif c[2] == nom_a:
-          hier.add(c[2], 'a', c[1])
+          hier.add(c[2], '_a', c[1])
+          #hier.add(c[2], 'a', c[1])
           hier.add(c[2], 's', c[1])
         elif c[2] == abs_a:
           hier.add(c[2], 's', c[1])
@@ -333,9 +339,16 @@ def customize_verb_case(mylang, ch):
 
         # constrain the case of the agent/subject
         if a_case:
+        # SSH (2012-08-27) 
+        # The type name 'a' collides with the type names used by mtr.tdl 
+        # Temporarily, a_case is replaced by _a_case in order to avoid the collision.
+          _a_case = a_case
+          if a_case == 'a':
+            _a_case = '_a' 
+            
           typedef = \
             t_type + ' := \
-            [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
+            [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + _a_case + ' ].'
           mylang.add(typedef)
 
         # constrain CASE-MARKING of the agent/subject, if appropriate
