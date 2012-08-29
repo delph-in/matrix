@@ -43,6 +43,7 @@
    (lkb-pathname (parent-directory) "matrix.tdl")
    (lkb-pathname (parent-directory) "head-types.tdl")
 ;;; Modules: LOAD my_language.tdl
+   (lkb-pathname (parent-directory) "mtr.tdl")   
 ))
 
 ;;;
@@ -86,6 +87,18 @@
 ;;;
 (lkb-load-lisp (this-directory) "mrsglobals.lsp" t)
 
+;;;
+;;; SSH 2012-03-27 This invokes trigger rules for semantically empty
+;;; lexical entries. The trigger rules themselves should be in
+;;; trigger.mtr in the grammar directory. The documentation on trigger
+;;; rules: http://moin.delph-in.net/LkbGeneration
+;;;
+(mt:read-transfer-rules
+ (list
+  (lkb-pathname (parent-directory) "trigger.mtr"))
+  "Generation trigger rules"
+  :filter nil :task :trigger :recurse nil :edges 200 :subsume nil)
+
 
 ;;;
 ;;; Matrix-derived grammars often have stable enough semantic 
@@ -101,12 +114,7 @@
 
 (index-for-generator)
 
-;;;
-;;; For the MMT system.  Uncomment semi.vpm line when adding such
-;;; a file.
-;;;
-
-;(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
+(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
 
 (lkb-load-lisp (this-directory) "mt.lsp" t)
 

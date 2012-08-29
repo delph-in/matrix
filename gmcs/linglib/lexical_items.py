@@ -367,7 +367,8 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef)
 
-def customize_misc_lex(ch, lexicon):
+
+def customize_misc_lex(ch, lexicon, trigger):
 
   #lexicon.add_literal(';;; Other')
 
@@ -379,6 +380,11 @@ def customize_misc_lex(ch, lexicon):
       TDLencode(orth) + ' := qpart-lex-item & \
                    [ STEM < "' + orthstr + '" > ].'
     lexicon.add(typedef)
+    grdef = TDLencode(orth) +'_gr := generator_rule & \
+                   [ CONTEXT [ RELS <! [ ARG0.SF ques ] !> ], \
+                     FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
+    trigger.add(grdef)
+
 
 def customize_nouns(mylang, ch, lexicon, hierarchies):
   # Figure out which kinds of determiner-marking are in the language
@@ -494,7 +500,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 #   Create the type definitions associated with the user's test
 #   lexicon.
 
-def customize_lexicon(mylang, ch, lexicon, hierarchies):
+def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies):
 
   comment = '''Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.'''
   mylang.add('non-mod-lex-item := lex-item & \
@@ -504,7 +510,7 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies):
   customize_nouns(mylang, ch, lexicon, hierarchies)
 
   mylang.set_section('otherlex')
-  to_cfv = case.customize_case_adpositions(mylang, lexicon, ch)
+  to_cfv = case.customize_case_adpositions(mylang, lexicon, trigger, ch)
   features.process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=lexicon)
 
   mylang.set_section('verblex')
@@ -512,8 +518,9 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies):
   
   if ch.get('has-aux') == 'yes':
     mylang.set_section('auxlex')
-    auxiliaries.customize_auxiliaries(mylang, ch, lexicon, hierarchies)
+    auxiliaries.customize_auxiliaries(mylang, ch, lexicon, trigger, hierarchies)
 
   mylang.set_section('otherlex')
   customize_determiners(mylang, ch, lexicon, hierarchies)
-  customize_misc_lex(ch, lexicon)
+  customize_misc_lex(ch, lexicon, trigger)
+

@@ -712,6 +712,7 @@ Academic Publishers)."
 Label "</font>"
 
 
+
 Section other-features "Other Features"
 
 Label "<p>If your language has other features beyond those that can be
@@ -729,15 +730,35 @@ class=\"feat\">pernum</span>), and then a series of other values of
 the feature, each of which is the subtype of at least one of the other
 values, possibly the root.</p>"
 
+Label "<input type=\"hidden\" name=\"existing_value_type1_name\"  value=\"bool\">
+<input type=\"hidden\" name=\"existing_value_type2_name\"  value=\"luk\">"
+
 BeginIter feature{i} "a Feature" 1
 
   Text name "Feature {i} name" "Feature name: " "<br>" 20
 
   Radio type "Feature {i} type" "Is this feature:<br>" ""
   . head "Head" "" " a syntactic feature (which will go under <span class=\"feat\">head</span>)?<br>"
-  . index "Index" "" " a semantic feature (which will go under <span class=\"feat\">index</span>)?<br>"
+  . index "Index" "" " a semantic feature (which will go under <span class=\"feat\">index</span>)?<br><br>"
 
-  Label "Values in the feature hierarchy:"
+  Radio cat "Feature {i} cat" "Is this feature for:<br>" ""
+  . noun "noun" "" " nominal categories?<br>"
+  . verb "verb" "" " verbal categories?<br>"
+  . both "both" "" " both categories?<br><br>"
+
+  Label "Values in the feature hierarchy:<br>"
+
+  Radio new "Value {i} type" "" ""
+  . no "existing" "" " use an existing value type: " "remove_element_all('feature{i}', 'value');" 
+
+  Select existing "existing" "" "<br>" "remove_element_all('feature{i}', 'value');check_radio_button('feature{i}_new', 'no');"
+  fillregex p=(existing_value_type[0-9]+_name) n=1  
+  fillnames2 c=both 
+
+  Radio new "Value {i} type" "" ""
+  . yes "new" "" " define a new value type<br>" "empty_value('feature{i}_existing', 0);"
+
+  Label "<div id='feature{i}_region'>"
 
   BeginIter value{j} "a Value" 1
 
@@ -752,7 +773,10 @@ BeginIter feature{i} "a Feature" 1
 
   EndIter value
 
+  Label "</div>"
+
 EndIter feature
+
 
 
 Section sentential-negation "Sentential Negation"

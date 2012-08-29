@@ -51,6 +51,8 @@ irules = None
 lrules = None
 lexicon = None
 roots = None
+trigger = None
+vpm = None
 
 # ERB 2006-09-16 There are properties which are derived from the
 # choices file as a whole which various modules will want to know about.
@@ -325,6 +327,42 @@ def customize_roots():
 
 
 ######################################################################
+# customize_vpm()
+# Automatically create semi.vpm blocks.   
+
+def customize_vpm(ch, vpm, hierarchies):
+
+  agreement_features.create_vpm_blocks(ch, vpm, hierarchies)
+  verbal_features.create_vpm_blocks(ch, vpm)
+
+  #Add default values to the file semi.vpm
+  literal = """
+SF : SF
+  prop <> prop
+  ques <> ques
+  prop-or-ques >> prop-or-ques
+  prop << prop-or-ques
+  comm <> comm
+
+COG-ST : COG-ST
+  type-id <> type-id 
+  uniq-id <> uniq-id 
+  familiar <> familiar 
+  activated <> activated 
+  in-foc <> in-foc 
+  activ+fam <> activ+fam 
+  uniq+fam <> uniq+fam 
+  activ-or-more <> activ-or-more 
+  uniq-or-less <> uniq-or-less 
+  uniq+fam+act <> uniq+fam+act 
+  fam-or-more <> fam-or-more 
+  fam-or-less <> fam-or-less
+  uniq-or-more <> uniq-or-more
+  activ-or-less <> activ-or-less
+"""
+  vpm.add_literal(literal)		
+
+######################################################################
 # Version Control
 #   Use shell commands to setup Mercurial or Bazaar, if the user
 #   has specified that they want one or the other.
@@ -414,6 +452,9 @@ def customize_matrix(path, arch_type, destination=None):
   lrules =  tdl.TDLfile(os.path.join(grammar_path, 'lrules.tdl'))
   lexicon = tdl.TDLfile(os.path.join(grammar_path, 'lexicon.tdl'))
   roots =   tdl.TDLfile(os.path.join(grammar_path, 'roots.tdl'))
+  trigger = tdl.TDLfile(os.path.join(grammar_path, 'trigger.mtr'))
+  trigger.add_literal(';;; Semantically Empty Lexical Entries')
+  vpm = tdl.TDLfile(os.path.join(grammar_path, 'semi.vpm'))	
 
   # date/time
   try:
@@ -454,13 +495,14 @@ def customize_matrix(path, arch_type, destination=None):
  # init_pernum_hierarchy()
  # init_gender_hierarchy()
  # init_other_hierarchies()
-  agreement_features.init_agreement_hierarchies(ch, hierarchies)
+  agreement_features.init_agreement_hierarchies(ch, mylang, hierarchies)
  # init_tense_hierarchy()
  # init_aspect_hierarchy()
  # init_situation_hierarchy()
  # init_mood_hierarchy()
  # init_form_hierarchy()
   verbal_features.init_verbal_hierarchies(ch, hierarchies)
+
 
   #Integrate choices related to lexical entries imported from
   #Toolbox lexicon file(s), if any.  NOTE: This needs to be called
@@ -477,7 +519,7 @@ def customize_matrix(path, arch_type, destination=None):
   # The following might modify hierarchies in some way, so it's best
   # to customize those components and only have them contribute their
   # information to lexical rules when we customize inflection.
-  lexical_items.customize_lexicon(mylang, ch, lexicon, hierarchies)
+  lexical_items.customize_lexicon(mylang, ch, lexicon, trigger, hierarchies)
   argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies)
   direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
   case.customize_case(mylang, ch, hierarchies)
@@ -515,6 +557,8 @@ def customize_matrix(path, arch_type, destination=None):
   customize_acetdl(grammar_path)
   customize_roots()
 
+  customize_vpm(ch, vpm, hierarchies)
+
   # Save the output files
   mylang.save()
   rules.save()
@@ -522,6 +566,8 @@ def customize_matrix(path, arch_type, destination=None):
   lrules.save()
   lexicon.save()
   roots.save()
+  trigger.save()
+  vpm.save()
   version_lsp.save()
 
   # Setup version control, if any
