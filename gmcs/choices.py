@@ -1938,16 +1938,6 @@ class ChoicesFile:
       self.convert_key('punctuation-chars', 'punctuation-chars-list') 
       self['punctuation-chars'] = 'keep-list'
 
-<<<<<<< .working
-  def convert_25_to_26(self):
-    """ 
-    This uprev converts the old choices that do not work with mtr.tdl and do not 
-    contain feature#_cat and feature#_new in the Other Feature. 
-    Some choices files have vlaue names that should be used only in mtr.tdl, which include
-    a, u, i, etc. The names should be changed. On the other hand, nouny vs. verby / 
-    existing vs. new are required on the Other Feature.
-    """
-=======
   def convert_25_to_26(self):
     """ 
     This uprev converts the old choices that do not work with mtr.tdl and do not 
@@ -1961,7 +1951,6 @@ class ChoicesFile:
     """
     if (self.get('infl-neg')) and (not self.get('neg-exp')):
       self['neg-exp']='1'
->>>>>>> .merge-right.r22130
 
     mtr = [ 'e', 'i', 'h', 'p', 'u', 'x', 'E', 'I', 'H', 'P', 'U', 'X' ]
     for g in self.get('gender'):
