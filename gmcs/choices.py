@@ -109,6 +109,9 @@ class ChoiceDict(ChoiceCategory, dict):
             return int(result.group(0))
     return None
 
+  def split_value(self, key):
+    return [x for x in self[key].split(', ') if x != ''] 
+
   def walk(self, intermediates=False):
     if intermediates and self.full_key != None:
       yield (self.full_key, self)
@@ -1063,13 +1066,11 @@ class ChoicesFile:
     if self.has_dirinv():
       features += [ ['direction', 'dir|direct;inv|inverse', '', 'verb', 'y'] ]
 
-    # Negaton
-    if 'infl-neg' in self.choices:
+    # Negation
+    if  'infl-neg' or 'neg-aux' in self.choices:
       features += [ ['negation', 'plus|plus;minus|minus', '', 'verb', 'y'] ]
-    if self.get('neg-exp') == '2':
-      if self.get('neg1-type') == 'b' and self.get('neg2-type') == 'fd':
-        features += [ ['negation', 'plus|plus;minus|minus', '', 'verb', 'y'] ]
-        features += [ ['requires-neg-adv', 'plus|plus', '', 'verb', 'y'] ]
+    if 'neg1b-neg2b' in self.choices:
+      features += [ ['neg2', 'plus|plus', '', 'verb' ] ]
 
     # Questions
     if 'q-infl' in self.choices:
@@ -1921,6 +1922,9 @@ class ChoicesFile:
         sentence['star'] = 'on'
         sentence['orth'] = sentence['orth'].lstrip('*')
 
+
+
+
   def convert_24_to_25(self):
     """
     This uprev converts the old choices about punctuation characters
@@ -1934,6 +1938,7 @@ class ChoicesFile:
       self.convert_key('punctuation-chars', 'punctuation-chars-list') 
       self['punctuation-chars'] = 'keep-list'
 
+<<<<<<< .working
   def convert_25_to_26(self):
     """ 
     This uprev converts the old choices that do not work with mtr.tdl and do not 
@@ -1942,6 +1947,21 @@ class ChoicesFile:
     a, u, i, etc. The names should be changed. On the other hand, nouny vs. verby / 
     existing vs. new are required on the Other Feature.
     """
+=======
+  def convert_25_to_26(self):
+    """ 
+    This uprev converts the old choices that do not work with mtr.tdl and do not 
+    contain feature#_cat and feature#_new in the Other Feature. 
+    Some choices files have vlaue names that should be used only in mtr.tdl, which include
+    a, u, i, etc. The names should be changed. On the other hand, nouny vs. verby / 
+    existing vs. new are required on the Other Feature.
+    
+    This uprev also adds exp=1 to old choices files so that they are compatible
+    with the new negation library.
+    """
+    if (self.get('infl-neg')) and (not self.get('neg-exp')):
+      self['neg-exp']='1'
+>>>>>>> .merge-right.r22130
 
     mtr = [ 'e', 'i', 'h', 'p', 'u', 'x', 'E', 'I', 'H', 'P', 'U', 'X' ]
     for g in self.get('gender'):

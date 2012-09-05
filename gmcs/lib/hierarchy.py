@@ -34,6 +34,9 @@ class Hierarchy(object):
     self.nodes = {}
     self.__cache = {}
 
+  def __str__(self):
+    return str(self.nodes)
+
   def add_node(self, node):
     if node.key in self.nodes:
       return None

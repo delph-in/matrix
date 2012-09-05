@@ -1,0 +1,91 @@
+
+version=26
+
+section=general
+language=neg-infl-head
+
+section=word-order
+word-order=svo
+has-dets=no
+has-aux=yes
+aux-comp-order=before
+aux-comp=vp
+multiple-aux=yes
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+  nf-subform1_name=negform
+  nf-subform2_name=otherform
+
+section=other-features
+
+section=sentential-negation
+neg-exp=2
+infl-neg=on
+neg-aux-index=1
+adv-neg=on
+bineg-type=infl-head
+neg1-type=b
+neg2-type=fh
+
+section=coordination
+
+section=matrix-yes-no
+
+section=arg-opt
+
+section=lexicon
+  noun1_det=imp
+    noun1_stem1_orth=n1
+    noun1_stem1_pred=_n1_n_rel
+  noun2_det=imp
+    noun2_stem1_orth=n2
+    noun2_stem1_pred=_n2_n_rel
+  verb1_valence=intrans
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+  aux1_name=neg
+  aux1_sem=add-pred
+  aux1_subj=np
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=negform
+    aux1_stem1_orth=negaux
+    aux1_stem1_pred=neg_rel
+
+section=morphology
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=iverb, tverb
+    verb-pc1_lrt1_name=inflneg
+      verb-pc1_lrt1_feat2_name=form
+      verb-pc1_lrt1_feat2_value=negform
+      verb-pc1_lrt1_feat2_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-neg
+    verb-pc1_lrt2_name=noneg
+      verb-pc1_lrt2_feat1_name=form
+      verb-pc1_lrt2_feat1_value=finite
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_lri1_inflecting=no
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

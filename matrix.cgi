@@ -30,7 +30,8 @@ from gmcs.deffile import HTTP_header
 # beginning of main program
 
 # Uncomment this to see the output from print in the HTML page
-#print HTTP_header + '\n'
+# print HTTP_header + '\n'
+
 
 matrixdef = MatrixDefFile('web/matrixdef')
 

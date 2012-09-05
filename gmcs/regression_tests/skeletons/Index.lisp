@@ -22,6 +22,17 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "neg-head-mod-vpaux-modafter") (:content . "neg-head-mod-vpaux-modafter: bipartite neg, neg auxiliary requires dummy neg modifier, aux selects vp comp, mod after comp"))
+((:path . "neg-head-comp-vpauxbefore-compbefore") (:content . "neg-head-comp-vpauxbefore-compbefore: bipartite neg, negaux selects dummy negcomp followed by vpcomp, raises subject"))
+((:path . "neg-head-comp-vpauxbefore-compafter") (:content . "neg-head-comp-vpauxbefore-compafter: bibpartite neg, negaux selects vp complement (raises subject) second comp is dummy auxiliary negcomp"))
+((:path . "neg-head-comp-sauxbefore-compbefore") (:content . "neg-head-comp-sauxbefore-compbefore: bipartite neg, negaux selects for dummy negcomp followed by s comp"))
+((:path . "neg-head-comp-sauxbefore-compafter") (:content . "neg-head-comp-sauxbefore-compafter: bipartite neg, negaux selects for sentential complement followed by dummy negcomp"))
+((:path . "neg-head-comp") (:content . "neg-head-comp: bipartite negation, negative auxiliary precedes S complement, requires dummy adv after S complement"))
+((:path . "neg-infl-mod") (:content . "neg-infl-mod: bipartite negation, infl rule introduces feature dependency to require neg adv, uses mod rules"))
+((:path . "neg-infl-comp") (:content . "neg-infl-comp: bipartite negation, infl lex-rule puts neg-comp on comps list of verb, a la French [fra]"))
+((:path . "neg-infl-head") (:content . "neg-infl-head: bipartite negation neg-aux and required inflection on main verb"))
+((:path . "neg-infl-infl") (:content . "neg-infl-infl: bipartite negation both bound, one to auxiliary the other to lexical verb"))
+((:path . "neg-mod-vp-either") (:content . "neg-mod-vp-either: negative modifier which can occur on either side of the vp"))
 ((:path . "neg-v-attach-freewo") (:content . "neg-v-attach-freewo: ensures that lexical attachment for neg adverbs still works without problems with free word order"))
 ((:path . "multi-wd-lex") (:content . "multi-wd-lex: tests multi word lexical item output on a noun"))
 ((:path . "char-test-keep-list") (:content . "char-test-keep-list: test of repp preprocessing where we discard all punc not on a list submitted by user"))

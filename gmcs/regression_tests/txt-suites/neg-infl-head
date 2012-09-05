@@ -1,0 +1,7 @@
+n1 iv
+n1 tv n2
+*n1 negaux
+*n1 iv-neg
+*n1 tv-neg n2
+n1 negaux iv-neg
+n1 negaux tv-neg n2

@@ -1,0 +1,8 @@
+n1 aux iv
+n1 aux tv n2
+n1 aux-neg1 iv-neg2
+n1 aux-neg1 tv-neg2 n2
+*n1 aux iv-neg2
+*n1 aux-neg1 iv
+*n1 aux tv-neg2 n2
+*n1 aux-neg1 tv n2

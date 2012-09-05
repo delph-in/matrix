@@ -527,11 +527,18 @@ def customize_matrix(path, arch_type, destination=None):
   # after all structures have been customized, customize inflection,
   # but provide the methods the components above have for their own
   # contributions to the lexical rules
+
+  negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchies)
+
   add_lexrules_methods = [case.add_lexrules,
                           argument_optionality.add_lexrules,
                           direct_inverse.add_lexrules]
   to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
                                               mylang, irules, lrules, lexicon)
+
+  # customize_feature_values is called by process_cfv_list 
+  # negation.py needs to run first!
+
   features.process_cfv_list(mylang, ch, hierarchies, to_cfv)
 
   # Call the other customization functions
@@ -546,7 +553,6 @@ def customize_matrix(path, arch_type, destination=None):
  # customize_mood()
   verbal_features.customize_verbal_features(mylang, hierarchies)
   word_order.customize_word_order(mylang, ch, rules)
-  negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules)
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
   customize_punctuation(grammar_path)

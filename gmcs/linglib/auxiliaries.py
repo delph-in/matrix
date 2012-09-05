@@ -29,14 +29,17 @@ def set_supertypename(auxcomp):
 
       
 
-def define_arg_str_and_valency(aux, auxcomp, ch, mylang):
+def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
+  if negaux:
+    norder = ch.get('comp-neg-order')
   supertypename = set_supertypename(auxcomp)
   basic_typedef = supertypename + ' := aux-lex & \
                 [ SYNSEM.LOCAL.CAT.VAL [ SPR < >, \
                                          SPEC < > ] ].'
   mylang.add(basic_typedef)
   if auxcomp == 's':
-    comp_spec_typedef = supertypename + ' := basic-one-arg & \
+    if not negaux:
+      comp_spec_typedef = supertypename + ' := basic-one-arg & \
                             [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
                                                      COMPS < #comps > ], \
                               ARG-ST < #comps & \
@@ -45,40 +48,124 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang):
                                                              SPR < >, \
                                                              SPEC < > ], \
                                                        HEAD verb ]] > ].'
-    if ch.get('multiple-aux') == 'no':
-      auxrest_type = supertypename + ' := \
+      if ch.get('multiple-aux') == 'no':
+        auxrest_type = supertypename + ' := \
                          [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ] > ].'
-      mylang.add(auxrest_type)
-
+        mylang.add(auxrest_type)
+    else: 
+      if norder == 'after':
+        comp_spec_typedef = supertypename + ' := basic-two-arg & \
+                              [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
+                                                       COMPS < #comps,\
+                                                               #negcomp & \
+                                                     [ LOCAL.CAT.HEAD.NEGATED + ] > ], \
+                                ARG-ST < #comps & \
+                                           [ LOCAL.CAT [ VAL [ SUBJ < >, \
+                                                               COMPS < >, \
+                                                               SPR < >, \
+                                                               SPEC < > ], \
+                                                         HEAD verb ]], \
+                                          #negcomp  > ].'
+        if ch.get('multiple-aux') == 'no':
+          auxrest_type = supertypename + ' := \
+                           [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ], [ ] > ].'
+          mylang.add(auxrest_type)
+      else: #norder == 'before'
+        comp_spec_typedef = supertypename + ''' := basic-two-arg & 
+                 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, 
+                                          COMPS < #negcomp , #comp > ],
+                   ARG-ST < #negcomp &  
+                            [ LOCAL.CAT.HEAD.NEGATED + ] ,
+                            #comp &
+                            [ LOCAL.CAT [ VAL [ SUBJ < >,
+                                                COMPS < >,
+                                                SPR < >,
+                                                SPEC < > ],
+                                          HEAD verb ] ] > ].'''
+        if ch.get('multiple-aux') == 'no':
+          auxrest_type = supertypename + ' := \
+                             [ ARG-ST < [ ] , [ LOCAL.CAT.HEAD.AUX - ] > ].'
+          mylang.add(auxrest_type)
+        
 ###VP and V-compl have more in common
 
   else:
-    comp_spec_typedef = supertypename + ' := \
-                             [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < #subj >, \
-                                              CONT.HOOK.XARG #xarg ], \
-                               ARG-ST < #subj & \
-                                        [ LOCAL [ CAT.VAL [ SUBJ < >, \
-                                                            SPR < >, \
-                                                            SPEC < >, \
-                                                            COMPS < > ], \
-                                                  CONT.HOOK.INDEX #xarg ] ], \
-                                        [ ] > ].'
-    if ch.get('multiple-aux') == 'no':
-      auxrest_type = supertypename + ' := \
-                         [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
-      mylang.add(auxrest_type)
+    if not negaux:
+      comp_spec_typedef = supertypename + ' := \
+                               [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < #subj >, \
+                                                CONT.HOOK.XARG #xarg ], \
+                                 ARG-ST < #subj & \
+                                          [ LOCAL [ CAT.VAL [ SUBJ < >, \
+                                                              SPR < >, \
+                                                              SPEC < >, \
+                                                              COMPS < > ], \
+                                                    CONT.HOOK.INDEX #xarg ] ], \
+                                          [ ] > ].'
+      if ch.get('multiple-aux') == 'no':
+        auxrest_type = supertypename + ' := \
+                           [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
+        mylang.add(auxrest_type)
+    else: #negaux
+      comp_spec_typedef = supertypename + ' := \
+                               [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < #subj >, \
+                                                CONT.HOOK.XARG #xarg ], \
+                                 ARG-ST < #subj & \
+                                          [ LOCAL [ CAT.VAL [ SUBJ < >, \
+                                                              SPR < >, \
+                                                              SPEC < >, \
+                                                              COMPS < > ], \
+                                                    CONT.HOOK.INDEX #xarg ] ], \
+                                          [ ], [ ] > ].'
+      if ch.get('multiple-aux') == 'no':
+        if norder == 'after':
+          auxrest_type = supertypename + ' := \
+                             [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ], [ ] > ].'
+        else: #norder == 'before'
+          auxrest_type = supertypename + ' := \
+                             [ ARG-ST < [ ], [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
+        mylang.add(auxrest_type)
 
     if auxcomp == 'vp':
-      comp_spec_typedef_2 = supertypename + ' := \
-                                          trans-first-arg-raising-lex-item  & \
-                   [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >, \
-                     ARG-ST < [ ], \
-                              #comps & \
-                              [ LOCAL.CAT [ VAL [ SUBJ < [ ] >, \
-                                                  COMPS < >, \
-                                                  SPR < >, \
-                                                  SPEC < > ], \
-                                            HEAD verb ]] > ].'
+      if not negaux:
+        comp_spec_typedef_2 = supertypename + ' := \
+                                            trans-first-arg-raising-lex-item  & \
+                     [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >, \
+                       ARG-ST < [ ], \
+                                #comps & \
+                                [ LOCAL.CAT [ VAL [ SUBJ < [ ] >, \
+                                                    COMPS < >, \
+                                                    SPR < >, \
+                                                    SPEC < > ], \
+                                              HEAD verb ]] > ].'
+      else: #negaux == True
+        if norder=='after':
+          comp_spec_typedef_2 = supertypename + ' := \
+                                              basic-three-arg  & \
+                       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps, #negcomp >, \
+                         ARG-ST < [ LOCAL.CONT.HOOK.INDEX #ind ], \
+                                  #comps & \
+                                  [ LOCAL [ CAT [ VAL [ SUBJ < [ ] >, \
+                                                      COMPS < >, \
+                                                      SPR < >, \
+                                                      SPEC < > ], \
+                                                  HEAD verb ], \
+                                            CONT.HOOK.XARG #ind ] ], \
+                                  #negcomp & \
+                                  [ LOCAL.CAT.HEAD.NEGATED + ] > ].'
+        else: #norder =='before' 
+          comp_spec_typedef_2 = supertypename + ' := \
+                                              basic-three-arg  & \
+                       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #negcomp, #comps >, \
+                         ARG-ST < [ LOCAL.CONT.HOOK.INDEX #ind ], \
+                                  #negcomp & \
+                                  [ LOCAL.CAT.HEAD.NEGATED + ], \
+                                  #comps & \
+                                  [ LOCAL [ CAT [ VAL [ SUBJ < [ ] >, \
+                                                      COMPS < >, \
+                                                      SPR < >, \
+                                                      SPEC < > ], \
+                                                  HEAD verb ],\
+                                            CONT.HOOK.XARG #ind ] ] > ].'
     elif auxcomp == 'v':
       comment = \
         '; Somewhat surprisingly, this inherits from basic-two-arg, so\n' + \
@@ -128,19 +215,45 @@ def add_subj_tdl(aux, auxcomp, ch, mylang):
   mylang.add(subjtype)
     
 
-def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies):
+def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
+  if negaux:
+    norder = ch.get('comp-neg-order')
   supertypename = set_supertypename(auxcomp)
   if sem == 'add-pred':
     auxtypename = supertypename + '-with-pred'
     basic_typedef = auxtypename + ' := ' + supertypename + '.' 
     if auxcomp == 'vp':
-      typedef = auxtypename + ' := norm-sem-lex-item & \
-                                        trans-first-arg-raising-lex-item-1 .'
+      if not negaux:
+        typedef = auxtypename + ' := norm-sem-lex-item & \
+                                          trans-first-arg-raising-lex-item-1 .'
+      else: #negaux
+        if norder=='after':
+          typedef = auxtypename + ''' := norm-sem-lex-item & 
+          [ ARG-ST < [ ], [ LOCAL.CONT.HOOK.LTOP #larg ], [ ] >,
+            SYNSEM [ LOCAL.CONT.HCONS <! qeq & 
+                                        [ HARG #harg,
+                                          LARG #larg ] !>,
+                     LKEYS.KEYREL event-relation & 
+                       [ ARG1 #harg ]]].'''
+        else: #norder=='before'
+          typedef = auxtypename + ''' := norm-sem-lex-item & 
+          [ ARG-ST < [ ], [ ], [ LOCAL.CONT.HOOK.LTOP #larg ] >,
+            SYNSEM [ LOCAL.CONT.HCONS <! qeq & 
+                                        [ HARG #harg,
+                                          LARG #larg ] !>,
+                     LKEYS.KEYREL event-relation & 
+                       [ ARG1 #harg ]]].'''
     else:
       if auxcomp == 'v':
         arg_def = 'ARG-ST < [ ], [ LOCAL.CONT.HOOK.LTOP #larg ] >'
-      else:
-        arg_def =  'ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ] >'
+      else: # == 's'
+        if not negaux:
+          arg_def =  'ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ] >'
+        else:
+          if norder == 'after':
+            arg_def =  'ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ], [ ] >'
+          else:
+            arg_def =  'ARG-ST < [ ], [ LOCAL.CONT.HOOK.LTOP #larg ] >'
 
       comment = \
         '; Not inheriting from basic-verb-lex, so need to put in\n' + \
@@ -182,7 +295,13 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies):
         '; might not be true.'
       mylang.add_literal(comment)
       if auxcomp == 's':
-        arg_str = '< [ LOCAL.CAT.HEAD.AUX - ] >'
+        if not negaux:
+          arg_str = '< [ LOCAL.CAT.HEAD.AUX - ] >'
+        else:
+          if norder == 'after':
+            arg_str = '< [ LOCAL.CAT.HEAD.AUX - ], [ ] >'
+          else:
+            arg_str = '< [ ], [ LOCAL.CAT.HEAD.AUX - ] >'
       else:
         arg_str = '< [ ], [ LOCAL.CAT.HEAD.AUX - ] >'
          
@@ -262,13 +381,23 @@ def customize_auxiliaries(mylang, ch, lexicon, trigger, hierarchies):
 
   lexicon.add_literal(';;; Auxiliaries')
   for aux in ch.get('aux',[]):
+
+    # negaux is a parameter to create auxiliries with extra 
+    # syntactic arguments in the head-comp neg bipartite construction
+    negaux = False
+    if ch.get('bineg-type') == 'head-comp':
+      negaux = True if  'negation' in [f['name'] for f in aux['feat']] else False 
     auxcomp = ch.get('aux-comp')
     userstypename = get_users_type_name(aux)
+
+    # need to add a feature here for 'head-mod-neg' analysis
+    if ch.get('bineg-type') == 'head-mod':
+      if  'negation' in [f['name'] for f in aux['feat']]:
+        mylang.add(userstypename + ':= [SYNSEM.NEG-SAT -].')
     sem = aux.get('sem', '')
 
-    define_arg_str_and_valency(aux, auxcomp, ch, mylang)
-    create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies)
-
+    define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux)
+    create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux)
     add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger)
 
 
