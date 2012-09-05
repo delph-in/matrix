@@ -1,0 +1,10 @@
+n1 iv-negaff negadv
+n1 tv-negaff n2 negadv
+*n1 iv-negaff
+*n1 tv-negaff n2
+*n1 iv negadv
+*n1 negadv iv
+*n1 tv n2 negadv
+*n1 tv negadv n2
+*n1 negadv iv-negaff
+*n1 negadv tv-negaff n2
