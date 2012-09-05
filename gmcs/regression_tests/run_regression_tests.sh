@@ -228,7 +228,6 @@ do
   
           echo "(setf target \"$target\")"
           echo "(tsdb:tsdb :create target :skeleton \"$lgname\")"
-  
           echo "(tsdb:tsdb :process target)"
   
           echo "(tsdb::compare-in-detail \"$target\" \"$gold\" :format :ascii :compare '(:readings :mrs) :append \"$log\")"

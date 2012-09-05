@@ -85,6 +85,20 @@ function toggle_display(para_id, button_id)
   }
 }
 
+// _display()
+// Display or hide an entity
+function _display(_id, display_or_not)
+{
+ 	var e = document.getElementById(_id);
+	if (e != null)
+	{
+		if (display_or_not == 'no' || display_or_not == 'n' || display_or_not == 'none')
+			e.style.display = 'none';
+		else
+			e.style.display = 'block';
+	}
+}
+
 //////////////////////////////////////////////////////////////////////
 // Sub Page functions
 
@@ -444,6 +458,47 @@ function remove_element(id)
   }
 }
 
+// remove_element_all()
+// Remove all elements starting with id
+// and remove any associated show/hide buttons
+// and remove any show/hide errors
+function remove_element_all(id, suffix)
+{
+  for(var i = 0; i < 100; i++)
+  {
+    var child = id + '_' + suffix + i;
+	var e = document.getElementById(child);
+    if (e != null) remove_element(child);
+  }
+}
+
+// check_radio_button(_name, _type)
+function check_radio_button(_name, _type)
+{
+	var _radio = document.getElementsByName(_name);
+	
+	if(_type == 'no')
+	{
+		_radio[0].checked = true;
+		_radio[1].checked = false;
+	}
+	else
+	{
+		_radio[0].checked = false;
+		_radio[1].checked = true;
+	}
+}
+
+//empty_value(_name, _i)
+function empty_value(_name, _i)
+{
+	var e = document.getElementsByName(_name);
+	e[_i].value = '';
+}
+
+
+
+
 //////////////////////////////////////////////////////////////////////
 // SELECT filler functions
 
@@ -545,6 +600,25 @@ function fill_feature_names(cat)
   for (var i = 0; i < features.length; i++) {
     var f = features[i].split(':');
     
+    if (typeof(cat) == "undefined" ||
+        f[2] == cat || f[2] == 'both' || cat == 'both') {
+      items.push([f[0], f[0]]);
+    }
+  }
+  return items
+}
+
+// fill_feature_names_only_customized(cat)
+// This is used on the other features.
+// Only feature(s) that users specify on the customization system can
+// show up as an existing value type with bool and luk.
+function fill_feature_names_only_customized(cat)
+{
+  var items = new Array()
+  for (var i = 0; i < features.length; i++) {
+    var f = features[i].split(':');
+    if (f[3] == 'n' || f[3] == 'no' || f[3] == '')
+      continue;
     if (typeof(cat) == "undefined" ||
         f[2] == cat || f[2] == 'both' || cat == 'both') {
       items.push([f[0], f[0]]);

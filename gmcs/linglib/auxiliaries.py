@@ -333,7 +333,7 @@ def get_users_type_name(aux):
   userstypename = name + '-aux-lex'
   return userstypename
 
-def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon):
+def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
   for stem in aux.get('stem',[]):
     orth = orth_encode(stem.get('orth'))
     id = stem.get('name')
@@ -346,9 +346,38 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon):
       typedef = TDLencode(id) + \
                     ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef, merge=True)
+    else:
+      tense = aspect = mood = ''
+
+      for feat in aux.get('feat',[]):
+        if feat.get('name') == 'tense':
+          tense = feat.get('value') 
+        if feat.get('name') == 'aspect':
+          aspect = feat.get('value') 
+        if feat.get('name') == 'mood':
+          mood = feat.get('value') 
+
+      grdef = TDLencode(id) +'_gr := arg0e_gtr & \
+                    [ CONTEXT [ RELS <! [ '
+
+      if tense == '' and aspect == '' and mood == '':
+        grdef += 'PRED "non_existing_rel" ] !> ],'
+      else:
+        grdef += 'ARG0.E [ '
+	if tense != '':
+          grdef += 'TENSE ' + tense + ','
+	if aspect != '':
+          grdef += 'ASPECT ' + aspect + ','	  
+	if mood != '':
+          grdef += 'MOOD ' + mood + ','
+
+	grdef = grdef[:len(grdef)-1] + ' ] ] !> ], '
+
+      grdef += 'FLAGS.TRIGGER "' + TDLencode(id) + '" ].'
+      trigger.add(grdef)
 
 
-def customize_auxiliaries(mylang, ch, lexicon, hierarchies):
+def customize_auxiliaries(mylang, ch, lexicon, trigger, hierarchies):
 
   lexicon.add_literal(';;; Auxiliaries')
   for aux in ch.get('aux',[]):
@@ -369,7 +398,8 @@ def customize_auxiliaries(mylang, ch, lexicon, hierarchies):
 
     define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux)
     create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux)
-    add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon)
+
+    add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger)
 
 
 

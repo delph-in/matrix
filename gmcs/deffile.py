@@ -124,7 +124,7 @@ support for the phenomena you describe below.  Note that this grammar
 fragment will only treat matrix (main) clauses. Be advised that this
 system is highly experimental.  We are interested in your feedback.
 If you have questions or comments, please email Emily Bender at:
-ebender at u dot washington dot edu.
+<strong>ebender at u dot washington dot edu</strong>.
 
 <p>[<a href="http://www.delph-in.net/matrix/">Back to Matrix main
 page</a>]
@@ -512,6 +512,17 @@ def js_array3(list):
   val = val[:-2]  # trim off the last ,\n
   return val
 
+# From a list of triples of strings [string1, string2, ...], return
+# a string containing a JavaScript-formatted list of strings of the
+# form 'string1:string2:string3:string4'. This is used to convey features, 
+# values, category (category of feature), a flag feature 'customized'.
+def js_array4(list):
+  val = ''
+  for l in list:
+    val += '\'' + l[0] + ':' + l[1] + ':' + l[3] + ':' + l[4] + '\',\n'
+  val = val[:-2]  # trim off the last ,\n
+  return val
+
 ######################################################################
 # MatrixDefFile class
 # This class and its methods are used to parse Matrix definition
@@ -828,7 +839,12 @@ class MatrixDefFile:
         html += af + '\n'
       elif word[0] in ['Select', 'MultiSelect']:
         multi = (word[0] == 'MultiSelect')
-        (vn, fn, bf, af) = word[1:]
+        (vn, fn, bf, af) = word[1:5]
+
+	onfocus = ""
+	if len(word) > 5: 
+	  onfocus = word[5]
+
         vn = prefix + vn
 
         html += bf + '\n'
@@ -845,6 +861,7 @@ class MatrixDefFile:
                                 for (a, x) in [w.split('=') for w in word[1:]]])
           fillstrings = {'fillregex':'fill_regex(%(args)s)',
                          'fillnames':'fill_feature_names(%(args)s)',
+                         'fillnames2':'fill_feature_names_only_customized(%(args)s)',
                          'fillvalues':'fill_feature_values(%(args)s)',
                          'fillverbpat':'fill_case_patterns(false)',
                          'fillnumbers':'fill_numbers()',
@@ -853,8 +870,8 @@ class MatrixDefFile:
           i += 1
 
         if fillers:
-          fillcmd = "fill('%s', [].concat(%s))" % (vn, ','.join(fillers))
-          html += html_select(vr, vn, multi, fillcmd) + '\n'
+          fillcmd = "fill('%s', [].concat(%s));" % (vn, ','.join(fillers))
+          html += html_select(vr, vn, multi, fillcmd+onfocus) + '\n'
           # Add previously selected item
           if choices.get(vn):
             sval = choices.get(vn)
@@ -1064,7 +1081,7 @@ class MatrixDefFile:
 
       print '<title>' + section_friendly + '</title>'
       print HTML_posttitle % \
-            (js_array3(choices.features()),
+            (js_array4(choices.features()),
              js_array([c for c in choices.patterns() if not c[2]]),
              js_array([n for n in choices.numbers()]))
 

@@ -8,6 +8,7 @@ Text language "Language name" "<p>Name of your language: " "<br>" 50
 Text iso-code "ISO code" "<a href=\"http://www.sil.org/iso639-3/codes.asp\">ISO code</a> for your language: " " (optional) </p>" 6
 
 Label "<h3>String-processing</h3><p>Your grammar will include a basic tokenizer file for string-level processing (<span class='tt'>vanilla.rpp</span>, see <a href='http://moin.delph-in.net/ReppTop/'>ReppTop</a> documentation).  We have three default options for this file.  If you do not answer, your grammar will include a tokenizer which will discard most ascii punctuation (except the hyphen, colon, and equals [-,:,=]).<br />"
+
 Radio punctuation-chars "Punctuation characters" "<br />" ""
 . discard-all "discard-all" "" "split on, and then discard all punctuation characters found in this default list (all lower ascii punctuation except \x22 \"): <span class='tt'>!#$%&#38;'()*+,-./:;&lt;=&gt;?@[]^_`{|}~\</span><!--we can't currently do anything about the unicode characters... maybe later 。！？…．　○●◎＊☆★◇◆--><br />"
 . keep-all "keep-all" "" "only split space and tab characters, all other characters can occur in tokens<br />" 
@@ -713,6 +714,7 @@ Academic Publishers)."
 Label "</div>"
 
 
+
 Section other-features "Other Features"
 
 Label "<p>If your language has other features beyond those that can be
@@ -730,17 +732,37 @@ class=\"feat\">pernum</span>), and then a series of other values of
 the feature, each of which is the subtype of at least one of the other
 values, possibly the root.</p>"
 
+Label "<input type=\"hidden\" name=\"existing_value_type1_name\"  value=\"bool\">
+<input type=\"hidden\" name=\"existing_value_type2_name\"  value=\"luk\">"
+
 BeginIter feature{i} "a Feature" 1
 
   Text name "Feature {i} name" "Feature name: " "<br>" 20
 
   Radio type "Feature {i} type" "Is this feature:<br>" ""
   . head "Head" "" " a syntactic feature (which will go under <span class=\"feat\">head</span>)?<br>"
-  . index "Index" "" " a semantic feature (which will go under <span class=\"feat\">index</span>)?<br>"
+  . index "Index" "" " a semantic feature (which will go under <span class=\"feat\">index</span>)?<br><br>"
 
-  Label "Values in the feature hierarchy:"
+  Radio cat "Feature {i} cat" "Is this feature for:<br>" ""
+  . noun "noun" "" " nominal categories?<br>"
+  . verb "verb" "" " verbal categories?<br>"
+  . both "both" "" " both categories?<br><br>"
 
-  BeginIter value{j} "a Value"
+  Label "Values in the feature hierarchy:<br>"
+
+  Radio new "Value {i} type" "" ""
+  . no "existing" "" " use an existing value type: " "remove_element_all('feature{i}', 'value');" 
+
+  Select existing "existing" "" "<br>" "remove_element_all('feature{i}', 'value');check_radio_button('feature{i}_new', 'no');"
+  fillregex p=(existing_value_type[0-9]+_name) n=1  
+  fillnames2 c=both 
+
+  Radio new "Value {i} type" "" ""
+  . yes "new" "" " define a new value type<br>" "empty_value('feature{i}_existing', 0);"
+
+  Label "<div id='feature{i}_region'>"
+
+  BeginIter value{j} "a Value" 1
 
    Text name "Feature {i} Value {j} name" "Value name: " "" 20
 
@@ -753,7 +775,10 @@ BeginIter feature{i} "a Feature" 1
 
   EndIter value
 
+  Label "</div>"
+
 EndIter feature
+
 
 
 Section sentential-negation "Sentential Negation"

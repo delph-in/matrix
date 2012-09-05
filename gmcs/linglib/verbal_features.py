@@ -178,3 +178,58 @@ def customize_verbal_features(mylang, hierarchies):
   customize_situation(mylang, hierarchies)
   customize_mood(mylang, hierarchies)
 
+def create_vpm_tense(ch, vpm):
+  literal = ''
+  default_tense = ''
+
+  tdefn = ch.get('tense-definition')
+  if tdefn:
+
+    if tdefn == 'choose':
+      for ten in ('present', 'nonpast', 'past', 'nonfuture', 'future' ):
+        if ten in ch:
+          literal += '  ' + ten + ' <> ' + ten + '\n'           
+          if default_tense == '':
+            default_tense += '  ' + ten + ' << *\n'
+            default_tense += '  ' + ten + ' << [e]'
+
+    elif tdefn == 'build':
+      tenses = ch.get('tense',[])
+      for tense in tenses:
+        name = tense.get('name')
+        literal += '  ' + name + ' <> ' + name + '\n'     
+        if default_tense == '':
+          default_tense += '  ' + name + ' << *\n'
+          default_tense += '  ' + name + ' << [e]'
+
+  if literal != '':
+    vpm.add_literal('E.TENSE : TENSE\n' + literal + default_tense)
+
+
+def create_vpm_aspect(ch, vpm):
+  literal = ''
+
+  for aspect in ch.get('aspect',[]):
+    name = aspect.get('name')
+    literal += '  ' + name + ' <> ' + name + '\n'           
+
+  if literal != '':
+    vpm.add_literal('E.ASPECT : ASPECT\n' + literal + '  * <> !')
+
+
+def create_vpm_mood(ch, vpm):
+  literal = ''
+
+  for mood in ch.get('mood',[]):
+    name = mood.get('name')
+    literal += '  ' + name + ' <> ' + name + '\n'           
+
+  if literal != '':
+    vpm.add_literal('E.MOOD : MOOD\n' + literal + '  * <> !')
+
+
+def create_vpm_blocks(ch, vpm):
+  create_vpm_tense(ch, vpm)
+  create_vpm_aspect(ch, vpm)
+  create_vpm_mood(ch, vpm)
+

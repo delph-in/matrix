@@ -88,7 +88,7 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchie
     elif bnegtype == 'head-mod':
       customize_head_mod_neg(mylang,ch,lexicon,rules)
     elif bnegtype == 'comp-comp':
-      customize_comp_comp_neg()
+      customize_comp_comp_neg(mylang,ch,lexicon)
     elif bnegtype == 'comp-mod':
       customize_comp_mod_neg()
     elif bnegtype == 'mod-mod':
@@ -757,8 +757,55 @@ def customize_head_mod_neg(mylang, ch, lexicon,rules):
              section='addenda')
 
   pass
-def customize_comp_comp_neg():
-  pass
+def customize_comp_comp_neg(mylang,ch,lexicon):
+  # bipartite negation type with two negative complements,
+  # presumably one is selected by an aux, the other by a v
+  # 
+
+  # this analysis uses the neg-head-feature
+  if(ch.get('neg-head-feature')!='on'):
+    mylang.add('head :+ [ NEGATED luk ].', section='addenda')
+
+  # add neg1 complement
+  mylang.set_section('otherlex')
+  mylang.add('''neg1-comp-lex := basic-scopal-adverb-lex &
+                 [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
+                                            SPEC < >,
+                                            COMPS < >,
+                                            SUBJ < > ],
+                                      HEAD [ NEGATED +, 
+                                             MOD < [ LOCAL.CAT.HEAD verb ] > ] ] ].''',
+             '''Type for negative selected comps. 
+                This type uses the MOD list to get scopal semantics.
+                Constrain head-modifier rules to be [NEGATED -] if you don't
+                want this type to act as a modifer.''')
+
+  # add lexical instance
+  if(ch.get('comp-neg1-orth')):
+    orth = ch.get('comp-neg1-orth')
+    orthstr = orth_encode(orth)
+    lexicon.add(TDLencode(orth) + ' := neg1-comp-lex &\
+                [ STEM < \"'+ orthstr +'\" >,\
+                  SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
+
+  # non-inflecting lexical rule must add neg-adv to comps list, 
+#  next_n = ch['verb-pc'].next_iter_num() if 'verb-pc' in ch else 1
+#  ch['verb-pc%d_name' % next_n] = 'neg'
+#  nvpc = ch['verb-pc'].get_last()
+#  nvpc['order'] = 'suffix' 
+#  nvpc['inputs'] = 'verb'
+#  nvpc['lrt1_feat1_name'] = 'negation'
+#  nvpc['lrt1_feat1_value'] = 'e'
+#  nvpc['lrt1_lri1_inflecting'] = 'no'
+#  print ch
+#  for vpc in ch['verb-pc']:
+#    for lrt in vpc['lrt']:
+#      for f in lrt['feat']:
+#        if 'negation' in f['name'] and f['value']=='plus':
+#          lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
+#                                        ['val-change-only-lex-rule']) 
+#          f['value']='d'
+
 def customize_comp_mod_neg():
   pass
 def customize_mod_mod_neg():
