@@ -486,7 +486,7 @@ def customize_matrix(path, arch_type, destination=None):
   # but provide the methods the components above have for their own
   # contributions to the lexical rules
 
-  negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules)
+  negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchies)
 
   add_lexrules_methods = [case.add_lexrules,
                           argument_optionality.add_lexrules,

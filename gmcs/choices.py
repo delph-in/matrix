@@ -1061,12 +1061,11 @@ class ChoicesFile:
       features += [ ['direction', 'dir|direct;inv|inverse', '', 'verb'] ]
 
     # Negation
-    if 'infl-neg' in self.choices:
+    if  'infl-neg' or 'neg-aux' in self.choices:
       features += [ ['negation', 'plus|plus;minus|minus', '', 'verb' ] ]
-    if self.get('neg-exp') == '2':
-      if self.get('neg1-type') == 'b' and self.get('neg2-type') == 'fd':
-        features += [ ['negation', 'plus|plus;minus|minus', '', 'verb' ] ]
-        features += [ ['requires-neg-adv', 'plus|plus', '', 'verb' ] ]
+#    if self.get('neg-exp') == '2':
+#      if self.get('bineg-type') in [ 'head-comp' ]: 
+#        features += [ ['negation', 'plus|plus;minus|minus', '', 'verb' ] ]
     if 'neg1b-neg2b' in self.choices:
       features += [ ['neg2', 'plus|plus', '', 'verb' ] ]
 

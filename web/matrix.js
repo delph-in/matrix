@@ -1022,13 +1022,34 @@ function set_negmorph(t1,t2){
     } else {
       t = 'default';
     }
-  }
+  } else { t = 'default'; }
+
   // if t != 'default', then we
   //  have a well defined bipartite negation
   //  type to implement for the user.
   //  set the choice accordingly
   //  this choice is useful at customize time
   //
+  //  also, set subchoices to interface with
+  //  deffile side-effects (neg-aux), and 
+  //  neg library dependencies
+  if (t.search(/head/) > -1) {
+    document.forms['choices_form']['neg-aux'].checked= true; 
+  } else {
+    document.forms['choices_form']['neg-aux'].checked = false;
+  }
+  if (t.search(/comp|mod/) > -1) {
+    document.forms['choices_form']['adv-neg'].checked= true; 
+  } else {
+    document.forms['choices_form']['adv-neg'].checked = false;
+  }
+  if (t.search(/infl/) > -1) {
+    document.forms['choices_form']['infl-neg'].checked= true; 
+  } else {
+    document.forms['choices_form']['infl-neg'].checked = false;
+  }
+
+
   var d = document.getElementById('bineg_fb');
   if (t != 'default') {
     document.forms['choices_form']['bineg-type'].value = t;

@@ -1403,20 +1403,6 @@ class MatrixDefFile:
         new_choices['infl-neg'] = 'on'
         old_choices, new_choices = self.create_infl_neg_choices(old_choices, new_choices)
 
-    # add infl neg whenever there's a bound morpheme negator
-    if section == 'sentential-negation' and 'neg1-type' in form_data.keys():
-      if form_data['neg1-type'].value=='b':  
-        new_choices['infl-neg'] = 'on'
-      if 'neg2-type' in form_data.keys(): 
-        if form_data['neg2-type'].value=='b':
-          new_choices['infl-neg'] = 'on'
-
-    # bipartite neg adverbs require adv-neg
-    if section == 'sentential-negation' and 'neg1-type' in form_data.keys():
-      if form_data['neg1-type'].value[0] == 'f' or \
-       form_data['neg2-type'].value[0] == 'f':
-        new_choices['adv-neg'] = 'on'
-
     # add FORM subtype for neg1b-neg2b analysis
     # also add it for infl-head neg analysis
     if section == 'sentential-negation': 
@@ -1492,6 +1478,9 @@ class MatrixDefFile:
       form_data['bineg-type'].value =='infl-head':
       nli['compfeature1_name']='form'
       nli['compfeature1_value']='negform'
+
+    # if auxiliaries are off, turn them on 
+    choices['has-aux'] = 'yes'
     return choices, next_n
 
   def create_infl_neg_choices(self, old_choices, new_choices):

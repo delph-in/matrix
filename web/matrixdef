@@ -906,9 +906,11 @@ Label "</div>"
 Label "<div id='head-head-neg' class='bineg_switch' style='display:none'><p>Two negative heads is not available.  Please contact matrix-dev if you believe this is the best analysis for your language.</p></div>"
 Label "<div id='head-comp-neg' class='bineg_switch' style='display:none'><p>You have selected a negative construction with a negative auxiliary verb and a negative selected complement.  When you save the page, the negative auxiliary verb will be created for you on the lexicon page where you can further define its syntax.  Please provide some more information about the negative complement here:</p><p>"
 
-Radio comp-neg-head "neg selected by" "Is NEG complement selected by" "<br />"
-. aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
-. v   "v"   "" "any (finite) verb" "neg_comp()"
+## in head-comp neg, the comp should be a comp of the head (an auxiliary),
+## so we don't need this choice
+# Radio comp-neg-head "neg selected by" "Is NEG complement selected by" "<br />"
+# . aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
+# . v   "v"   "" "any (finite) verb" "neg_comp()"
 
 Radio comp-neg-order "neg ordered" "How is NEG complement ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
 . before "before" "" "before "
