@@ -7,7 +7,7 @@ from gmcs.lib import Hierarchy, HierarchyNode
 ################################
 
 # all types of lexical items (on lexicon page)
-ALL_LEX_TYPES = ['noun', 'verb', 'det', 'aux', 'adj', 'adv', 'comp', 'adp','cop']
+ALL_LEX_TYPES = ['noun', 'verb', 'det', 'aux', 'adj', 'adv', 'comp', 'adp','cop', 'mverb']
 
 # types used for lexical rules (verb and aux are merged)
 LEXICAL_CATEGORIES = ['noun', 'verb', 'det', 'adj', 'adv', 'comp', 'adp']

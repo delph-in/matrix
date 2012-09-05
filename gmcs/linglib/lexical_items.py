@@ -1276,6 +1276,7 @@ def customize_adpositions(ch, mylang, lexicon, hierarchies):
       kind = adp.get('kind')
       form = adp.get('form')
       circum = adp.get('circum')
+        
       if kind == 'mod':
         mod = adp.get('mod')
         if kind in exception and mod in exception:
@@ -1295,7 +1296,17 @@ def customize_adpositions(ch, mylang, lexicon, hierarchies):
           sname = 'circump-lex-item'
           create_adp_cross_classification(ch, mylang, sname)
  
-        mylang.add(name + ' := ' + mod + '-' + sname + '.')
+        if adp.get('sprundersp') == 'on':
+          mylang.add(name + ' := general-int-adp-lex-item & prep-lex-item.')
+          if mod == 'noun':
+            mylang.add(name + ' := \
+               [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST [ LOCAL.CAT.HEAD noun, \
+                                                   LIGHT + ] ].')
+          elif kind == 'prd':
+            mylang.add(name + ' := [ SYNSEM [ LOCAL.CONT.HOOK.XARG #arg1, \
+                                     LKEYS.KEYREL.ARG1 #arg1 ] ].')
+        else:
+          mylang.add(name + ' := ' + mod + '-' + sname + '.')
         order = adp.get('order')
         if order == 'post':
           mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
@@ -1352,10 +1363,11 @@ def create_adposition_supertypes(ch, mylang):
   if ch.get('obj-drop'):
     mylang.add('basic-adposition-lex :+ \
                   [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].',section='addenda')
-  s_name = 'int-adp-lex-item'
+###general introduced because 'als' (as) in German may combine with N as well as NP
+ 
+  s_name = 'general-int-adp-lex-item'
   comp = '[ LOCAL.CAT [ HEAD noun, \
-                        VAL [ SPR < >, \
-                              COMPS < >, \
+                        VAL [ COMPS < >, \
                               SUBJ < >,\
                               SPEC < > ] ] ]'
   mylang.add(s_name + ' := basic-int-mod-adposition-lex & \
@@ -1363,7 +1375,8 @@ def create_adposition_supertypes(ch, mylang):
                                          COMPS < ' + comp + ' > \
                                          SPR < >, \
                                          SPEC < > ] ].')
-  
+  mylang.add('int-adp-lex-item := general-int-adp-lex-item & \
+         [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.VAL.SPR < > ].')  
 ###adds ARG2, co-indexed with comp  
   mylang.add(s_name + ' := [ SYNSEM [ LKEYS.KEYREL.ARG2 #arg2, \
                   LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #arg2 ] ].')
