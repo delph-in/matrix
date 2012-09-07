@@ -87,7 +87,8 @@ HTML_toggle_visible_js = '''<script type="text/javascript">
 
 HTML_mainprebody = '''<body onload="animate()">
 <h1>LinGO Grammar Matrix</h1>
-<h1 style="display:inline">Matrix customization and download page</h1> <span class="tt">[<a href="http://moin.delph-in.net/MatrixDocTop">help</a>]</span>
+<h1 style="display:inline">Matrix customization and download page</h1> 
+<span class="tt">[<a href="http://moin.delph-in.net/MatrixDocTop" target="matrixdoc">help</a>]</span>
 <h2>Version of %s</h2>
 
 <p>The <a href="http://www.delph-in.net/matrix">LinGO Grammar
@@ -1107,7 +1108,7 @@ class MatrixDefFile:
 
       print '<h2 style="display:inline">' + section_friendly + '</h2>'
       doclink = '<a href="http://moin.delph-in.net/MatrixDoc/' + \
-                self.doclinks[section] + '">help</a>'
+                self.doclinks[section] + '" target="matrixdoc">help</a>'
       print '<span class="tt">['+doclink+']</span><br />'
 
 
