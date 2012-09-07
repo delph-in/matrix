@@ -55,7 +55,9 @@ Label "<p>You may also wish to have your repository hosted through an open sourc
 
 Section word-order "Word Order"
 
-Radio word-order "Basic word order" "Please indicate which pattern best describes the basic word order of your language in matrix (main) clauses:<br>" ""
+Label "<p>"
+
+Radio word-order "Basic word order" "Please indicate which pattern best describes the basic word order of your language in matrix (main) clauses:<br>" "</p>"
 . sov "Subject, Object, Verb" "" "SOV<br>"
 . svo "Subject, Verb, Object" "" "SVO<br>"
 . vso "Verb, Subject, Object" "" "VSO<br>"

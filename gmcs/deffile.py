@@ -87,7 +87,8 @@ HTML_toggle_visible_js = '''<script type="text/javascript">
 
 HTML_mainprebody = '''<body onload="animate()">
 <h1>LinGO Grammar Matrix</h1>
-<h1>Matrix customization and download page</h1>
+<h1 style="display:inline">Matrix customization and download page</h1> 
+<span class="tt">[<a href="http://moin.delph-in.net/MatrixDocTop" target="matrixdoc">help</a>]</span>
 <h2>Version of %s</h2>
 
 <p>The <a href="http://www.delph-in.net/matrix">LinGO Grammar
@@ -530,6 +531,8 @@ def js_array4(list):
 # on the contents, to produce HTML pages and save choices files.
 
 class MatrixDefFile:
+  # links between names and friendly names for 
+  # use in links on html navigation menu
   sections = { 'general':'General Information',
   'word-order':'Word Order', 'number':'Number',
   'person':'Person', 'gender':'Gender', 'case':'Case',
@@ -540,6 +543,19 @@ class MatrixDefFile:
   'morphology':'Morphology','toolbox-import':'Toolbox Import',
   'test-sentences':'Test Sentences','gen-options':'TbG Options',
   'ToolboxLexicon':'Toolbox Lexicon'}
+
+  # used to link section names to their documentation
+  # page name in the delp-in wiki
+  doclinks = { 'general':'GeneralInfo',
+  'word-order':'WordOrder', 'number':'Number',
+  'person':'Person', 'gender':'Gender', 'case':'Case',
+  'direct-inverse':'DirectInverse', 'tense-aspect-mood':'TenseAspectMood',
+  'other-features':'OtherFeatures', 'sentential-negation':'SententialNegation',
+  'coordination':'Coordination', 'matrix-yes-no':'YesNoQ',
+  'arg-opt':'ArgumentOptionality', 'lexicon':'Lexicon',
+  'morphology':'Morphology','toolbox-import':'ImportToolboxLexicon',
+  'test-sentences':'TestSentences','gen-options':'TestByGeneration',
+  'ToolboxLexicon':'ImportToolboxLexicon'}
   def_file = ''
   v2f = {}
   f2v = {}
@@ -1090,7 +1106,10 @@ class MatrixDefFile:
       else:
         print HTML_prebody
 
-      print '<h2>' + section_friendly + '</h2>'
+      print '<h2 style="display:inline">' + section_friendly + '</h2>'
+      doclink = '<a href="http://moin.delph-in.net/MatrixDoc/' + \
+                self.doclinks[section] + '" target="matrixdoc">help</a>'
+      print '<span class="tt">['+doclink+']</span><br />'
 
 
 #      print HTML_navmenu
