@@ -205,7 +205,7 @@ def validate_lexicon(ch, vr):
           root = True
 
         # get features from this parent and put em in inherited_feats
-        if p != '':
+        else:
           ptype = ch.get(p)
           for f in feats[p]:
             # see if this feat conflicts with what we already know

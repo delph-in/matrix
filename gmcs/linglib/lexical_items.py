@@ -455,9 +455,47 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   # Add the lexical entries
   lexicon.add_literal(';;; Nouns')
 
+  # make a hash of nountypes --> lists of children so that we
+  # can stopdet on children
+  children = {}
+  for noun in ch.get('noun',[]):
+    for p in noun.get('supertypes').split(', '):
+      if p in children:
+        children[p][noun.full_key] = 1
+      else:
+        children[p] = {}
+        children[p][noun.full_key] = 1
+  
+  # make and populate a dictionary of stopdets, to avoid vacuous det supertypes
+  # have to follow inheritance paths downwards from any nonempty det values
+  stopdets={}
+  for noun in ch.get('noun',[]):
+    # if det is nonempty, child nouns shouldn't inherit det
+    det = noun.get('det')
+    if det != '':
+      if noun.full_key in children: 
+      # there are children to stopdet on
+      # recursively look for children   
+        parents = [ noun.full_key ] 
+        while (True):
+          next_parents = []
+          for p in parents:
+            if p in children:
+              for c in children[p].keys():
+                stopdets[c]=True 
+                if not c in next_parents:
+                  next_parents.append(c)
+          if len(next_parents) == 0:
+            break
+          else:
+            parents = next_parents
+
+
   for noun in ch.get('noun',[]):
     name = get_name(noun)
     det = noun.get('det')
+    if noun.full_key in stopdets: 
+      det = ''
 
     stypes = noun.get('supertypes').split(', ') 
     stype_names = []
@@ -468,7 +506,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         stype_names.append(nt.get('name')+'-noun-lex')
 
     #if singlentype or det == 'opt':
-    #  stype = 'noun-lex' #we'll get this for free
+    #  stype = 'noun-lex'
     if not singlentype:
       if det == 'obl':
         stype_names.append('obl-spr-noun-lex')
