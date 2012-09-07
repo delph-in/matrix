@@ -398,7 +398,6 @@ def customize_auxiliaries(mylang, ch, lexicon, trigger, hierarchies):
 
     define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux)
     create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux)
-
     add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger)
 
 
