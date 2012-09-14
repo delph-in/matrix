@@ -963,25 +963,25 @@ Label "</div>"
 
 Label "<div id='comp-comp-neg' class='bineg_switch' style='display:none'><p>You have selected a construction with two negative complements.  Please provide some further information about the two complements here:</p><p>"
 
-Radio comp-neg1-head "neg selected by" "Is NEG1 selected by" "<br />"
+Radio comp-neg1-head "neg1 selected by" "Is NEG1 selected by" "<br />"
 . aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
 . v   "v"   "" "any (finite) verb" "neg_comp()"
 
-Radio comp-neg1-order "neg ordered" "How is NEG1 ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
+Radio comp-neg1-order "neg1 ordered" "How is NEG1 ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
 . before "before" "" "before "
 . after "after" "" "after "
 
-Text comp-neg1-orth "neg spelling" "What's the ORTH value for NEG1?" "</p><p>" 20
+Text comp-neg1-orth "neg1 spelling" "What's the ORTH value for NEG1?" "</p><p>" 20
 
-Radio comp-neg2-head "neg selected by" "Is NEG2 selected by" "<br />"
+Radio comp-neg2-head "neg2 selected by" "Is NEG2 selected by" "<br />"
 . aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
 . v   "v"   "" "any (finite) verb" "neg_comp()"
 
-Radio comp-neg2-order "neg ordered" "How is NEG2 ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
+Radio comp-neg2-order "neg2 ordered" "How is NEG2 ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
 . before "before" "" "before "
 . after "after" "" "after "
 
-Text comp-neg2-orth "neg spelling" "What's the ORTH value for NEG2?" "</p>" 20
+Text comp-neg2-orth "neg2 spelling" "What's the ORTH value for NEG2?" "</p>" 20
 Label "</div>"
 
 Label "<div id='comp-mod-neg' class='bineg_switch' style='display:none'><p>You have selected a negation construction with a negative complement and a negative modifier.  Please provide some further information here:</p><p>"

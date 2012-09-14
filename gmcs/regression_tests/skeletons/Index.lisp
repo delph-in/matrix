@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "neg-comp-mod") (:content . "neg-comp-mod: bipartite negation, negative complement carries semantics, requires a negative (dummy) modifier via NEG-SAT feature passing"))
 ((:path . "neg-comp-comp") (:content . "neg-comp-comp: two negative complements, introduced by two lexical rules, one attaches to aux, the other to lexical vers, mutual requires"))
 ((:path . "neg-head-mod-vpaux-modafter") (:content . "neg-head-mod-vpaux-modafter: bipartite neg, neg auxiliary requires dummy neg modifier, aux selects vp comp, mod after comp"))
 ((:path . "neg-head-comp-vpauxbefore-compbefore") (:content . "neg-head-comp-vpauxbefore-compbefore: bipartite neg, negaux selects dummy negcomp followed by vpcomp, raises subject"))

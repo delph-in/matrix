@@ -252,6 +252,22 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                                HEAD.AUX - ],
                          CONT.HOOK #hook ] ] ].''', merge=True)
 
+    elif (n == 'negation' and v[0] == 'h'):
+      # comps adding neg rule which also sets NEG-SAT -
+      tdlfile.add(type_name + ''':= [
+        SYNSEM [ NEG-SAT -,
+                 LOCAL [ CAT.VAL [ SPR #spr,
+                                 SPEC #spec,
+                                 SUBJ #subj,   
+                                 COMPS < canonical-synsem & 
+                                         [ LOCAL.CAT.HEAD [ NEGATED +,
+                                         MOD < [ LOCAL.CONT.HOOK #hook ] > ] ]
+                                         . #oldcomps > ] ] ],
+        DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,
+                                     SPEC #spec,
+                                     SUBJ #subj,
+                                     COMPS #oldcomps ],
+                           CONT.HOOK #hook ] ].''', merge=True)
     elif (n == 'negation' and v[0] == 'minus'):
       # JDC 2011-01-11 Users specify negation minus to indicate that a 
       # lexical type is not compatible with negation
