@@ -93,7 +93,7 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchie
     elif bnegtype == 'comp-mod':
       customize_comp_mod_neg(mylang,ch,lexicon,rules)
     elif bnegtype == 'mod-mod':
-      customize_mod_mod_neg()
+      customize_mod_mod_neg(mylang,ch,lexicon,rules)
 #  if ch.get('neg-exp') == '2':
 #    # see if we need to make any neg advs
 #    if ch.get('neg1-type')[0] == 'f' or \
@@ -979,8 +979,154 @@ def customize_comp_mod_neg(mylang,ch,lexicon,rules):
              'and adpositions can be modifiers.',
              section='addenda')
 
-def customize_mod_mod_neg():
-  pass
+def customize_mod_mod_neg(mylang,ch,lexicon,rules):
+  # need to create two modifiers, one sets neg-sat to minus, the other to
+  # back to plus.
+
+  # add neg-sat and decorate psrs
+  # this analysis uses the neg-head-feature
+  if(ch.get('neg-head-feature')!='on'):
+    mylang.add('head :+ [ NEGATED luk ].', section='addenda')
+
+  # add neg-sat to SYNSEM
+  mylang.set_section('addenda')
+  mylang.add('''synsem :+ [ NEG-SAT luk ].''')
+
+  # verbs must start out NEG-SAT na-or-+
+  mylang.add('''basic-verb-lex :+ [ SYNSEM.NEG-SAT na-or-+ ].''')
+
+  # decorate psrs to pass up NEG-SAT value
+  mylang.add('''basic-head-comp-phrase :+ [ SYNSEM.NEG-SAT #ns,
+                                            HEAD-DTR.SYNSEM.NEG-SAT #ns ].''') 
+  mylang.add('''basic-head-subj-phrase :+ [ SYNSEM.NEG-SAT #ns,
+                                            HEAD-DTR.SYNSEM.NEG-SAT #ns ].''') 
+
+  # ammend root condition
+  mylang.add('''clause :+ [ SYNSEM.NEG-SAT na-or-+ ].''')
+
+  # add neg1 mod (sets neg-sat to -, via its psr)
+  mylang.set_section('otherlex')
+  mylang.add('''neg1-adv-lex := basic-scopal-adverb-lex &
+                 [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
+                                            SPEC < >,
+                                            COMPS < >,
+                                            SUBJ < > ],
+                                      HEAD [ NEGATED +, 
+                                             MOD < [ LOCAL.CAT.HEAD verb ] > ] ] ].''',
+             '''This type uses the MOD list to get scopal semantics.
+                Constrain head-modifier rules to be [NEGATED -] if you don't
+                want this type to act as a modifer.''')
+
+  # add neg2 mod (sets neg-sat back to +, via its psr)
+  mylang.add('''neg2-adv-lex := norm-zero-arg & 
+                [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
+                                             SPEC < >,
+                                             COMPS < >,
+                                             SUBJ < > ],
+                                       HEAD adv & [ NEGATED +,
+                                                    MOD < [ LOCAL.CAT.HEAD verb ] > ] ],
+                                 CONT [ RELS <! !>,
+                                        HCONS <! !> ] ] ].''')
+
+  # create lexical instance for neg1
+  if(ch.get('neg1-mod-orth')):
+    orth = ch.get('neg1-mod-orth')
+    orthstr = orth_encode(orth)
+    lexicon.add(TDLencode(orth) + ' := neg1-adv-lex &\
+                [ STEM < \"'+ orthstr +'\" >,\
+                  SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
+
+  # create lexical instance for neg2
+  if(ch.get('neg2-mod-orth')):
+    orth = ch.get('neg2-mod-orth')
+    orthstr = orth_encode(orth)
+    lexicon.add(TDLencode(orth) + ' := neg2-adv-lex &\
+                [ STEM < \"'+ orthstr +'\" > ].')
+
+  # now parameterize as pre/posthead, no value here means both orders
+  # should work, also add specialized modifier rules
+  if ch.get('neg1-mod-order') == 'before':
+    mylang.add('neg1-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+    mylang.add('''neg1-adj-head-scop-phrase := adj-head-scop-phrase &
+                 [ SYNSEM.NEG-SAT -,
+                   HEAD-DTR.SYNSEM.NEG-SAT na-or-+,
+                   NON-HEAD-DTR neg1-adv-lex ].''')
+    rules.add('neg1-adj-head-scop := neg1-adj-head-scop-phrase.')
+  elif ch.get('neg1-mod-order') == 'after':
+    mylang.add('neg1-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
+    mylang.add('''neg1-head-adj-scop-phrase := head-adj-scop-phrase &
+               [ SYNSEM.NEG-SAT -,
+                 HEAD-DTR.SYNSEM.NEG-SAT na-or-+,
+                 NON-HEAD-DTR neg1-adv-lex ].''')
+    rules.add('neg1-head-adj-scop := neg1-head-adj-scop-phrase.')
+  else:
+    mylang.add('''neg1-adj-head-scop-phrase := adj-head-scop-phrase &
+                 [ SYNSEM.NEG-SAT -,
+                   HEAD-DTR.SYNSEM.NEG-SAT na-or-+,
+                   NON-HEAD-DTR neg1-adv-lex ].''')
+    rules.add('neg1-adj-head-scop := neg1-adj-head-scop-phrase.')
+    mylang.add('''neg1-head-adj-scop-phrase := head-adj-scop-phrase &
+               [ SYNSEM.NEG-SAT -,
+                 HEAD-DTR.SYNSEM.NEG-SAT na-or-+,
+                 NON-HEAD-DTR neg1-adv-lex ].''')
+    rules.add('neg1-head-adj-scop := neg1-head-adj-scop-phrase.')
+
+
+  # constrain type of constituent modified by neg-adv
+  if ch.get('neg1-mod') == 's':
+    mylang.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
+                                                                                   COMPS null ]].''')
+  elif ch.get('neg-mod1') == 'vp':
+    mylang.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
+                                                                                   COMPS null ]].''')
+  elif ch.get('neg1-mod') == 'v':
+    mylang.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
+  lexical Vs for V-level attachment of negative adverbs.''')
+
+  # now parameterize as pre/posthead, no value here means both orders
+  # should work, also add specialized modifier rules
+  if ch.get('neg2-mod-order') == 'before':
+    mylang.add('neg2-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+    mylang.add('''neg2-adj-head-scop-phrase := adj-head-scop-phrase &
+                 [ SYNSEM.NEG-SAT +,
+                   HEAD-DTR.SYNSEM.NEG-SAT -,
+                   NON-HEAD-DTR neg2-adv-lex ].''')
+    rules.add('neg2-adj-head-scop := neg2-adj-head-scop-phrase.')
+  elif ch.get('neg2-mod-order') == 'after':
+    mylang.add('neg2-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
+    mylang.add('''neg2-head-adj-scop-phrase := head-adj-scop-phrase &
+               [ SYNSEM.NEG-SAT +,
+                 HEAD-DTR.SYNSEM.NEG-SAT -,
+                 NON-HEAD-DTR neg2-adv-lex ].''')
+    rules.add('neg2-head-adj-scop := neg2-head-adj-scop-phrase.')
+  else:
+    mylang.add('''neg2-adj-head-scop-phrase := adj-head-scop-phrase &
+                 [ SYNSEM.NEG-SAT +,
+                   HEAD-DTR.SYNSEM.NEG-SAT -,
+                   NON-HEAD-DTR neg2-adv-lex ].''')
+    rules.add('neg2-adj-head-scop := neg2-adj-head-scop-phrase.')
+    mylang.add('''neg2-head-adj-scop-phrase := head-adj-scop-phrase &
+               [ SYNSEM.NEG-SAT +,
+                 HEAD-DTR.SYNSEM.NEG-SAT -,
+                 NON-HEAD-DTR neg2-adv-lex ].''')
+    rules.add('neg2-head-adj-scop := neg2-head-adj-scop-phrase.')
+
+
+  # constrain type of constituent modified by neg-adv
+  if ch.get('neg2-mod') == 's':
+    mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
+                                                                                   COMPS null ]].''')
+  elif ch.get('neg-mod2') == 'vp':
+    mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
+                                                                                   COMPS null ]].''')
+  elif ch.get('neg2-mod') == 'v':
+    mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
+  lexical Vs for V-level attachment of negative adverbs.''')
+
 
 
 ##################

@@ -232,7 +232,7 @@ do
   
           echo "(tsdb::compare-in-detail \"$target\" \"$gold\" :format :ascii :compare '(:readings :mrs) :append \"$log\")"
   
-      } | ${LOGONROOT}/bin/logon --32 \
+      } | ${LOGONROOT}/bin/logon \
           -I base -locale no_NO.UTF-8 -qq 2> ${TSDBLOG} > ${TSDBLOG}
       
     # The $TSDBLOG is overwritten each time, so copy it to $ALLTSDBLOG

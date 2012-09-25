@@ -1992,10 +1992,13 @@ adj-head-phrase := basic-head-mod-phrase-simple & head-final &
 				      REL 0-dlist ],
                           MODIFIED.PERIPH #periph ] ].
 
+;;; 2012-26-09 removed this constraint from head-adj-phrase
+;;    HEAD-DTR.SYNSEM.MODIFIED notmod-or-rmod,
+;; As Antske Fokkens points out in an e-mail to matrix-dev,
+;;   this is an english-specific leftover ---JDC
 head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
   [ SYNSEM [ LOCAL.CAT.POSTHEAD +,
 	     MODIFIED rmod ],
-    HEAD-DTR.SYNSEM.MODIFIED notmod-or-rmod,
     NON-HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD +,
 			  NON-LOCAL.QUE 0-dlist ] ].
 

@@ -187,8 +187,10 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     elif (n == 'negation' and v[0] == 'd'):
     # this is a comps changing lex rule which adds a negadv to the 
     # comps list
-      tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
-                  merge=True)
+
+    ## shouldn't have to apply to AUXes
+    #  tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+    #              merge=True)
       tdlfile.add(type_name + ''':= [
         SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,
                                  SPEC #spec,
