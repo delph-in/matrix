@@ -1069,8 +1069,8 @@ class ChoicesFile:
     # Negation
     if  'infl-neg' or 'neg-aux' in self.choices:
       features += [ ['negation', 'plus|plus;minus|minus', '', 'verb', 'y'] ]
-    if 'neg1b-neg2b' in self.choices:
-      features += [ ['neg2', 'plus|plus', '', 'verb' ] ]
+    # if 'neg1b-neg2b' in self.choices:
+    #  features += [ ['neg2', 'plus|plus', '', 'verb' ] ]
 
     # Questions
     if 'q-infl' in self.choices:
