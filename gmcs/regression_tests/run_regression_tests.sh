@@ -24,6 +24,12 @@ if [ -z "${CUSTOMIZATIONROOT}" ]; then
   exit 1
 fi
 
+logon32=''
+if [ ! -z "${LOGON32}" ]; then
+  echo "running regression tests with --32 flag for logon"
+  logon32='--32'
+fi
+
 # set the appropriate Python version
 python_cmd='python'
 if ! echo $( $python_cmd -V 2>&1 ) | grep -q "Python 2\.[5,6,7]"; then
@@ -232,7 +238,7 @@ do
   
           echo "(tsdb::compare-in-detail \"$target\" \"$gold\" :format :ascii :compare '(:readings :mrs) :append \"$log\")"
   
-      } | ${LOGONROOT}/bin/logon \
+      } | ${LOGONROOT}/bin/logon $logon32 \
           -I base -locale no_NO.UTF-8 -qq 2> ${TSDBLOG} > ${TSDBLOG}
       
     # The $TSDBLOG is overwritten each time, so copy it to $ALLTSDBLOG

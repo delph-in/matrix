@@ -187,6 +187,10 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     elif (n == 'negation' and v[0] == 'd'):
     # this is a comps changing lex rule which adds a negadv to the 
     # comps list
+
+    ## shouldn't have to apply to AUXes
+    #  tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+    #              merge=True)
       tdlfile.add(type_name + ''':= [
         SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,
                                  SPEC #spec,
@@ -205,6 +209,67 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # negation lex rule to set NEG-SAT to -
       tdlfile.add(type_name + ':= [ SYNSEM.NEG-SAT - ].')
 
+    elif (n == 'negation' and v[0] == 'f'):
+    # negation lex rule to add negative complement and
+    # require that original comps is NEGATED +
+      tdlfile.add(type_name + ''':= [ SYNSEM.LOCAL.CAT.VAL [ SPR #spr,
+                           SPEC #spec,
+                           SUBJ #subj,
+                           COMPS < canonical-synsem &
+                                   [ LOCAL [ CAT.HEAD [ NEGATED +,
+                                                      MOD < [ LOCAL.CONT.HOOK #hook ] > ],
+                                              CONT.RELS <! arg1-ev-relation !>   ] ] . [ FIRST [ LOCAL [ CAT [ VAL #v,
+                                      HEAD verb & [ NEGATED + ] ],
+                                CONT #c ],
+                        NON-LOCAL #nl ] ] > ],
+    DTR verb-lex &
+        [ SYNSEM.LOCAL [ CAT [ VAL [ SPR #spr,
+                                     SPEC #spec,
+                                     SUBJ #subj,
+                                     COMPS.FIRST [ LOCAL [ CAT.VAL #v,
+                                                           CONT #c ],
+                                                   NON-LOCAL #nl ] ],
+                               HEAD.AUX + ],
+                         CONT.HOOK #hook ] ] ].''', merge=True)
+
+    elif (n == 'negation' and v[0] == 'g'):
+    # negation lex rule to add dummy negative complement and
+    # only apply to lexical verbs 
+
+    # also, flip negated + value
+      tdlfile.add(type_name +''':= [ SYNSEM.LOCAL.CAT [ VAL [ SPR #spr,
+                             SPEC #spec,
+                             SUBJ #subj,
+                             COMPS < canonical-synsem &
+                                     [ LOCAL [ CAT.HEAD [ NEGATED +,
+                                                        MOD < [ LOCAL.CONT.HOOK #hook ] > ],
+                                                CONT.RELS <! !> ] ] . #oldcomps > ],
+                       HEAD verb & [ NEGATED +,
+                              AUX - ] ],
+    DTR verb-lex &
+        [ SYNSEM.LOCAL [ CAT [ VAL [ SPR #spr,
+                                     SPEC #spec,
+                                     SUBJ #subj,
+                                     COMPS #oldcomps ],
+                               HEAD.AUX - ],
+                         CONT.HOOK #hook ] ] ].''', merge=True)
+
+    elif (n == 'negation' and v[0] == 'h'):
+      # comps adding neg rule which also sets NEG-SAT -
+      tdlfile.add(type_name + ''':= [
+        SYNSEM [ NEG-SAT -,
+                 LOCAL [ CAT.VAL [ SPR #spr,
+                                 SPEC #spec,
+                                 SUBJ #subj,   
+                                 COMPS < canonical-synsem & 
+                                         [ LOCAL.CAT.HEAD [ NEGATED +,
+                                         MOD < [ LOCAL.CONT.HOOK #hook ] > ] ]
+                                         . #oldcomps > ] ] ],
+        DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,
+                                     SPEC #spec,
+                                     SUBJ #subj,
+                                     COMPS #oldcomps ],
+                           CONT.HOOK #hook ] ].''', merge=True)
     elif (n == 'negation' and v[0] == 'minus'):
       # JDC 2011-01-11 Users specify negation minus to indicate that a 
       # lexical type is not compatible with negation

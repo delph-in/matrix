@@ -387,7 +387,8 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
 ### SUPERTYPES ###
 
 # add possible supertypes here
-ALL_LEX_RULE_SUPERTYPES = set(['same-agr-lex-rule',
+ALL_LEX_RULE_SUPERTYPES = set(['cat-change-only-lex-rule',
+                               'same-agr-lex-rule',
                                'cont-change-only-lex-rule',
                                'add-only-no-ccont-rule',
                                'val-change-only-lex-rule',
@@ -396,7 +397,8 @@ ALL_LEX_RULE_SUPERTYPES = set(['same-agr-lex-rule',
                                'const-lex-rule',
                                'lex-rule'])
 
-LEX_RULE_SUPERTYPES = set(['val-and-cont-change-lex-rule',
+LEX_RULE_SUPERTYPES = set(['cat-change-only-lex-rule',
+                           'val-and-cont-change-lex-rule',
                            'add-only-rule',
                            'same-head-lex-rule',
                            'val-change-only-lex-rule',
