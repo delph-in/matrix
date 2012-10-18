@@ -24,6 +24,7 @@ from gmcs.utils import format_comment_block
 from gmcs.lib import TDLHierarchy
 
 from gmcs.linglib import morphotactics
+from gmcs.linglib import information_structure
 from gmcs.linglib import argument_optionality
 from gmcs.linglib import direct_inverse
 from gmcs.linglib import case
@@ -95,9 +96,9 @@ vpm = None
 #   Determine which punctuation characters to ignore in parsing
 
 def customize_punctuation(grammar_path):
-  '''sets up repp preprocessing for lkb according to one of 
+  '''sets up repp preprocessing for lkb according to one of
      three choices on the questionnaire.  '''
-    # TODO: pet.set output needs to be updated for 
+    # TODO: pet.set output needs to be updated for
     # current questionnaire choices and for repp!
 
   default_splits_str = ' \\t!"#$%&\'()\*\+,-\./:;<=>?@\[\]\^_`{|}~\\\\'.encode('utf-8')
@@ -108,26 +109,26 @@ def customize_punctuation(grammar_path):
     return
   elif ch.get('punctuation-chars') == 'discard-all':
     # in this case, "all" punctuation (from the default list)
-    # should be split on and dropped 
-    # to do this we have to build a regex for the : line of 
+    # should be split on and dropped
+    # to do this we have to build a regex for the : line of
     # the repp file
-    # 
-    filename = os.path.join(grammar_path, 'repp', 'vanilla.rpp') 
+    #
+    filename = os.path.join(grammar_path, 'repp', 'vanilla.rpp')
     lines = codecs.open(filename, 'r', encoding='utf-8').readlines()
     van_rpp = codecs.open(filename, 'w', encoding='utf-8')
     for line in lines:
       if line.startswith(':'):
         line = ":["+default_splits_str+"]".rstrip()
       print >>van_rpp, line.rstrip('\n')
-    van_rpp.close()       
-  else: #ch.get('punctuation-chars') == 'keep-list': 
+    van_rpp.close()
+  else: #ch.get('punctuation-chars') == 'keep-list':
     # keep list with the hyphen on the keep list is the new default
     # here we split on the default list (like discard-all),
     # but *minus* whatevers on the keep list
     chars = list(unicode(ch['punctuation-chars-list'], 'utf8'))
     if not chars:
       chars = [ '-','=',':' ]
-    filename = os.path.join(grammar_path, 'repp', 'vanilla.rpp') 
+    filename = os.path.join(grammar_path, 'repp', 'vanilla.rpp')
     lines = iter(codecs.open(filename, 'r', encoding='utf-8').readlines())
     van_rpp = codecs.open(filename, 'w', encoding='utf-8')
     for line in lines:
@@ -145,12 +146,12 @@ def customize_punctuation(grammar_path):
       print >>van_rpp,line.rstrip('\n')
     van_rpp.close()
 
-  
+
 #  Need to move pet over to repp
 #  oe says that using repp with pet when not in tsdb mode
 #  is done with a command line option that simply points pet
-#  to the repp file. 
-# 
+#  to the repp file.
+#
 #  # PET's pet.set is a bit easier
 #  line_re = re.compile(r'^punctuation-characters := "(.*)".\s*$')
 #  # need to escape 1 possibility for PET
@@ -328,7 +329,7 @@ def customize_roots():
 
 ######################################################################
 # customize_vpm()
-# Automatically create semi.vpm blocks.   
+# Automatically create semi.vpm blocks.
 
 def customize_vpm(ch, vpm, hierarchies):
 
@@ -345,22 +346,22 @@ SF : SF
   comm <> comm
 
 COG-ST : COG-ST
-  type-id <> type-id 
-  uniq-id <> uniq-id 
-  familiar <> familiar 
-  activated <> activated 
-  in-foc <> in-foc 
-  activ+fam <> activ+fam 
-  uniq+fam <> uniq+fam 
-  activ-or-more <> activ-or-more 
-  uniq-or-less <> uniq-or-less 
-  uniq+fam+act <> uniq+fam+act 
-  fam-or-more <> fam-or-more 
+  type-id <> type-id
+  uniq-id <> uniq-id
+  familiar <> familiar
+  activated <> activated
+  in-foc <> in-foc
+  activ+fam <> activ+fam
+  uniq+fam <> uniq+fam
+  activ-or-more <> activ-or-more
+  uniq-or-less <> uniq-or-less
+  uniq+fam+act <> uniq+fam+act
+  fam-or-more <> fam-or-more
   fam-or-less <> fam-or-less
   uniq-or-more <> uniq-or-more
   activ-or-less <> activ-or-less
 """
-  vpm.add_literal(literal)		
+  vpm.add_literal(literal)
 
 ######################################################################
 # Version Control
@@ -372,26 +373,30 @@ def setup_vcs(ch, grammar_path):
     IGNORE = open(os.devnull,'w')
     cwd = os.getcwd()
     os.chdir(grammar_path)
-    if ch['vcs'] == 'git':
-      call(['git', 'init'], stdout=IGNORE, stderr=IGNORE)
-      call(['git', 'add', '.'], stdout=IGNORE, stderr=IGNORE)
-      call(['git', 'commit',
-            '--author="Grammar Matrix <matrix-dev@u.washington.edu>"',
-            '-m "Initial commit."'], stdout=IGNORE, stderr=IGNORE)
-    elif ch['vcs'] == 'hg':
-      call(['hg', 'init'], stdout=IGNORE, stderr=IGNORE)
-      call(['hg', 'add'], stdout=IGNORE, stderr=IGNORE)
-      call(['hg', 'commit',
-            '-u Grammar Matrix <matrix-dev@u.washington.edu>',
-            '-m "Initial commit."'], stdout=IGNORE, stderr=IGNORE)
-    elif ch['vcs'] == 'bzr':
-      call(['bzr', 'init'], stdout=IGNORE, stderr=IGNORE)
-      call(['bzr', 'add'], stdout=IGNORE, stderr=IGNORE)
-      call(['bzr', 'whoami', '--branch',
-            'Grammar Matrix Customization System <matrix-dev@uw.edu>'],
-           stdout=IGNORE, stderr=IGNORE)
-      call(['bzr', 'commit', '-m "Initial commit."'],
-           stdout=IGNORE, stderr=IGNORE)
+    try:
+      if ch['vcs'] == 'git':
+        call(['git', 'init'], stdout=IGNORE, stderr=IGNORE)
+        call(['git', 'add', '.'], stdout=IGNORE, stderr=IGNORE)
+        call(['git', 'commit',
+              '--author="Grammar Matrix <matrix-dev@u.washington.edu>"',
+              '-m "Initial commit."'], stdout=IGNORE, stderr=IGNORE)
+      elif ch['vcs'] == 'hg':
+        call(['hg', 'init'], stdout=IGNORE, stderr=IGNORE)
+        call(['hg', 'add'], stdout=IGNORE, stderr=IGNORE)
+        call(['hg', 'commit',
+              '-u Grammar Matrix <matrix-dev@u.washington.edu>',
+              '-m "Initial commit."'], stdout=IGNORE, stderr=IGNORE)
+      elif ch['vcs'] == 'bzr':
+        call(['bzr', 'init'], stdout=IGNORE, stderr=IGNORE)
+        call(['bzr', 'add'], stdout=IGNORE, stderr=IGNORE)
+        call(['bzr', 'whoami', '--branch',
+              'Grammar Matrix Customization System <matrix-dev@uw.edu>'],
+             stdout=IGNORE, stderr=IGNORE)
+        call(['bzr', 'commit', '-m "Initial commit."'],
+             stdout=IGNORE, stderr=IGNORE)
+    except OSError, er:
+      print "OS Error. Most likely %s is not installed." % ch['vcs']
+      print er.message
     os.chdir(cwd)
     IGNORE.close()
 
@@ -425,9 +430,14 @@ def customize_matrix(path, arch_type, destination=None):
   #shutil.copytree('matrix-core', grammar_path,
   #                ignore=shutil.ignore_patterns('.svn'))
   IGNORE = open(os.devnull, 'w')
-  call(['rsync', '-a', '--exclude=.svn',
-        get_matrix_core_path() + os.path.sep, grammar_path],
-       stdout=IGNORE, stderr=IGNORE)
+  try:
+    call(['rsync', '-a', '--exclude=.svn',
+          get_matrix_core_path() + os.path.sep, grammar_path],
+         stdout=IGNORE, stderr=IGNORE)
+  except OSError, er:
+    print "OS Error. Most likely rsync is not installed."
+    print er.message
+    sys.exit(1)
   IGNORE.close()
 
   # include a copy of choices (named 'choices' to avoid collisions)
@@ -454,7 +464,7 @@ def customize_matrix(path, arch_type, destination=None):
   roots =   tdl.TDLfile(os.path.join(grammar_path, 'roots.tdl'))
   trigger = tdl.TDLfile(os.path.join(grammar_path, 'trigger.mtr'))
   trigger.add_literal(';;; Semantically Empty Lexical Entries')
-  vpm = tdl.TDLfile(os.path.join(grammar_path, 'semi.vpm'))	
+  vpm = tdl.TDLfile(os.path.join(grammar_path, 'semi.vpm'))
 
   # date/time
   try:
@@ -520,6 +530,9 @@ def customize_matrix(path, arch_type, destination=None):
   # to customize those components and only have them contribute their
   # information to lexical rules when we customize inflection.
   lexical_items.customize_lexicon(mylang, ch, lexicon, trigger, hierarchies)
+
+  information_structure.customize_information_structure(mylang, ch, rules, hierarchies)
+
   argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies)
   direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
   case.customize_case(mylang, ch, hierarchies)
@@ -527,11 +540,18 @@ def customize_matrix(path, arch_type, destination=None):
   # after all structures have been customized, customize inflection,
   # but provide the methods the components above have for their own
   # contributions to the lexical rules
+
+  negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchies)
+
   add_lexrules_methods = [case.add_lexrules,
                           argument_optionality.add_lexrules,
                           direct_inverse.add_lexrules]
   to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
                                               mylang, irules, lrules, lexicon)
+
+  # customize_feature_values is called by process_cfv_list
+  # negation.py needs to run first!
+
   features.process_cfv_list(mylang, ch, hierarchies, to_cfv)
 
   # Call the other customization functions
@@ -546,7 +566,6 @@ def customize_matrix(path, arch_type, destination=None):
  # customize_mood()
   verbal_features.customize_verbal_features(mylang, hierarchies)
   word_order.customize_word_order(mylang, ch, rules)
-  negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules)
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
   customize_punctuation(grammar_path)

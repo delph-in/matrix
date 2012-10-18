@@ -237,12 +237,17 @@ cat-min := avm.
 ; value of MC is luk, allowing for a third possibility of na, for
 ; not applicable.
 
+; SSH 2012-02-16 MKG stands for "MarKinG" which represents lexical
+; markings for information structure.
+
 cat := cat-min &
   [ HEAD head-min,
     VAL valence-min,
     MC luk,
+    MKG mkg,
     HC-LIGHT luk,
     POSTHEAD bool ].
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;  HEAD 
@@ -355,28 +360,38 @@ semsort :< sort.
 ;   HOOK                   : Externally visible attributes of a sign
 ;   RELS diff-list         ; List of semantic relations
 ;   HCONS diff-list        ; Scope constraints: list of qeq's
+;   ICONS diff-list        ; Individual constraints: list of icons
 
 mrs-min := avm.
 
 ; ERB 2007-01-21 Removing feature MSG here (moving it to a feature--SF---
 ; of events).
 
+; SSH 2012-02-16 ICONS (individual contraints)
+
 mrs := mrs-min &
   [ HOOK hook,
     RELS diff-list,
-    HCONS diff-list ].
+    HCONS diff-list,
+	ICONS diff-list ].
 
 ; HOOK values include
 ;    GTOP                  ; Global top handle
 ;    LTOP                  ; Local top handle
 ;    INDEX                 ; The salient nominal instance or event
 ;    XARG                  ; The external (controlled) argument of a phrase
+;    --ICONS               ; Indexes for icons
+;    --CLAUSE              ; A feature to mediate between the INDEX of the
+;                            head and the CLAUSE value of the dependent.
 
+; SSH 2012-02-16 --ICONS 
 hook := avm &
   [ GTOP handle,
     LTOP handle,
     INDEX individual,
-    XARG individual ].
+    XARG individual,
+	--ICONS icons,
+	--CLAUSE event ].
 
 ; MRSs are divided into psoas (with a distinguished event) and
 ; nom-objs (with a distinguished index).  We use a polymorphic
@@ -677,6 +692,38 @@ quant-relation := arg0-relation &
 norm_rel := predsort.
 named_rel := norm_rel.
 
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; individual contraints 
+; SSH 2012-02-16 ICONS was originally designed in order to represent
+; anaphoric items, such as reflecxives.  constraints on anaphora
+
+icons := avm.
+; a-cons := icons.
+
+info-str := icons &
+  [ CLAUSE individual,
+    TARGET individual ].
+
+; constraints on information structure
+non-topic := info-str. 
+contrast := info-str.
+non-focus := info-str.
+
+focus := non-topic.
+topic := non-focus.
+
+semantic-focus := focus.
+contrast-focus := contrast & focus. 
+contrast-topic := contrast & topic. 
+aboutness-topic := topic. 
+frame-setting-topic := topic.
+
+bg := non-topic & non-focus.
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Head types
 
@@ -815,24 +862,31 @@ onull := olist & null.
 ; We are interested in cases where this constraint is or appears to
 ; be problematic.
 
+; SSH 2012-03-03 ICONS is newly added in lex-rule.
 lex-rule := phrase-or-lexrule & word-or-lexrule &
   [ NEEDS-AFFIX bool,
-    SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
-			     LAST #last ],
-			HCONS [ LIST #hfirst,
-				LAST #hlast ] ],
-    DTR #dtr & word-or-lexrule &
-	[ SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
-		  	             LAST #middle ],
-			      HCONS [ LIST #hfirst,
-				      LAST #hmiddle ] ],
-	  ALTS #alts ],
-    C-CONT [ RELS [ LIST #middle,
-		    LAST #last ],
-	     HCONS [ LIST #hmiddle,
-		     LAST #hlast ]],
-    ALTS #alts,
-    ARGS < #dtr > ].
+	SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
+							   LAST #last ],
+						HCONS [ LIST #hfirst,
+								LAST #hlast ],
+						ICONS [ LIST #ifirst,
+								LAST #ilast ] ],
+	DTR #dtr & word-or-lexrule &
+				[ SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
+											 LAST #middle ],
+									  HCONS [ LIST #hfirst,
+											  LAST #hmiddle ],
+									  ICONS [ LIST #ifirst,
+											  LAST #imiddle ] ],
+				  ALTS #alts ],
+	C-CONT [ RELS [ LIST #middle,
+					LAST #last ],
+			 HCONS [ LIST #hmiddle,
+					 LAST #hlast ],
+			 ICONS [ LIST #imiddle,
+					 LAST #ilast ] ],
+	ALTS #alts,
+	ARGS < #dtr > ].
 
 ; To model the morphotactics, we introduce a complex type on which we
 ; set or check flags. The flags (luk features) change value based on
@@ -914,9 +968,11 @@ same-mc-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.CAT.MC #mc,
     DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
+; SSH 2012-03-03
 no-ccont-lex-rule := lex-rule &
   [ C-CONT [ RELS <! !>,
-	     HCONS <! !> ]].
+			 HCONS <! !>,
+			 ICONS <! !> ] ].
 
 ; ERB 2007-05-16 Realized I haven't been copying up MODIFIED
 ; and LIGHT.  Fixing that.
@@ -1113,11 +1169,13 @@ headed-phrase := phrase &
                    AGR #agr,
                    COORD -,
                    COORD-REL #crel ],
+	C-CONT.HOOK.--ICONS #icons,
     HEAD-DTR.SYNSEM.LOCAL local &
 		 [ CAT.HEAD #head,
-                   AGR #agr,
-                   COORD -,
-                   COORD-REL #crel ] ].
+		   CONT.HOOK.--ICONS #icons,
+		   AGR #agr,
+		   COORD -,
+		   COORD-REL #crel ] ].
 
 non-headed-phrase := phrase.
 
@@ -1181,22 +1239,29 @@ head-valence-phrase := head-nexus-phrase &
 
 ; All phrases are either unary or binary.
 
+; SSH 2012-02-16 ICONS in basic-unary-phrase and basic-binary-phrase.
 basic-unary-phrase := phrase &
   [ STEM #stem,
     SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
-        		       LAST #last ],
-			HCONS [ LIST #scfirst,
-				LAST #sclast ] ],
-    C-CONT [ RELS [ LIST #middle,
-		    LAST #last ],
-	     HCONS [ LIST #scmiddle,
-		     LAST #sclast ] ],
-    ARGS < sign & [ STEM #stem,
+							   LAST #last ],
+						HCONS [ LIST #scfirst,
+								LAST #sclast ],
+						ICONS [ LIST #icfirst,
+								LAST #iclast ] ],
+	C-CONT [ RELS [ LIST #middle,
+					LAST #last ],
+			 HCONS [ LIST #scmiddle,
+					 LAST #sclast ],
+			 ICONS [ LIST #icmiddle,
+					 LAST #iclast ] ],
+	ARGS < sign & [ STEM #stem,
                     SYNSEM.LOCAL local &
-				 [ CONT [ RELS [ LIST #first,
-						 LAST #middle ],
-					  HCONS [ LIST #scfirst,
-						  LAST #scmiddle ] ] ] ] > ].
+						 [ CONT [ RELS [ LIST #first,
+										 LAST #middle ],
+								  HCONS [ LIST #scfirst,
+										  LAST #scmiddle ],
+								  ICONS [ LIST #icfirst,
+										  LAST #icmiddle ] ] ] ] > ].
 
 unary-phrase := basic-unary-phrase &
   [ INFLECTED infl-satisfied,
@@ -1204,23 +1269,31 @@ unary-phrase := basic-unary-phrase &
 
 basic-binary-phrase := phrase &
   [ SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
-			       LAST #last ],
-			HCONS [ LIST #scfirst,
-				LAST #sclast ] ],
+							   LAST #last ],
+						HCONS [ LIST #scfirst,
+								LAST #sclast ],
+						ICONS [ LIST #icfirst,
+								LAST #iclast ] ],
     C-CONT [ RELS [ LIST #middle2,
-		    LAST #last ],
-	     HCONS [ LIST #scmiddle2,
-		     LAST #sclast ] ],
+					LAST #last ],
+			 HCONS [ LIST #scmiddle2,
+					 LAST #sclast ],
+			 ICONS [ LIST #icmiddle2,
+					 LAST #iclast ] ],
     ARGS < sign & [ SYNSEM.LOCAL local &
-				 [ CONT [ RELS [ LIST #first,
-						 LAST #middle1 ],
-					  HCONS [ LIST #scfirst,
-						  LAST #scmiddle1 ] ] ] ],
+								 [ CONT [ RELS [ LIST #first,
+												 LAST #middle1 ],
+										  HCONS [ LIST #scfirst,
+												  LAST #scmiddle1 ],
+										  ICONS [ LIST #icfirst,
+												  LAST #icmiddle1 ] ] ] ],
 	   sign & [ SYNSEM.LOCAL local &
-				 [ CONT [ RELS [ LIST #middle1,
-						 LAST #middle2 ],
-					  HCONS [ LIST #scmiddle1,
-						  LAST #scmiddle2 ] ] ] ] > ].
+							 [ CONT [ RELS [ LIST #middle1,
+											 LAST #middle2 ],
+									  HCONS [ LIST #scmiddle1,
+											  LAST #scmiddle2 ],
+									  ICONS [ LIST #icmiddle1,
+											  LAST #icmiddle2 ] ] ] ] > ].
 
 binary-phrase := basic-binary-phrase &
   [ INFLECTED infl-satisfied,
@@ -1337,6 +1410,12 @@ head-compositional := headed-phrase &
   [ C-CONT.HOOK #hook,
     HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ].
 
+; SSH 2012-02-12 This type links an NP (the target of ICONS) to the
+; corresponding predicate.
+head-icons-phrase := basic-binary-headed-phrase & 
+   [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.--CLAUSE #clause,
+	 NON-HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.--ICONS.CLAUSE #clause ].
+
 ; Clauses have message types as values, non-clauses have the value no-msg.
 ; Constrain the HEAD value of clause to verb or whatever type is
 ; appropriate.  Clauses have empty QUE values.
@@ -1411,12 +1490,14 @@ clause := phrasal &
 
 ; ERB 2007-01-21 Er, not head-only any more, though. 
 
+; SSH 2012-05-07 ICONS <! !>
 basic-non-rel-clause := clause & head-compositional &
   [ SYNSEM.NON-LOCAL.REL 0-dlist,
     HEAD-DTR.SYNSEM.NON-LOCAL [ QUE 0-dlist,
 				REL 0-dlist ],
     C-CONT [ RELS <! !>,
-	     HCONS <! !> ]].
+			 HCONS <! !>,
+			 ICONS <! !> ] ].
 
 ; For non-interrogative non-rel clauses, hook up 
 ; MARG to head daughter's LTOP.  Subtypes will need
@@ -1540,26 +1621,28 @@ basic-head-filler-phrase := basic-filler-phrase & head-compositional.
 ; JDC 2012-06-02 adding [HC-LIGHT -] to basic-head-* phrases 
 ; (with the exception of except head-comps)
 
+; SSH 2012-02-17 head-icons-phrase is newly added.
 basic-head-subj-phrase := head-valence-phrase & binary-headed-phrase &
-			  head-compositional &
+			  head-compositional & head-icons-phrase &
   [ SYNSEM phr-synsem & 
-	   [ LOCAL.CAT [ POSTHEAD +,
-                   HC-LIGHT -,
-			 VAL [ SUBJ < >,
-			       COMPS #comps,
-			       SPR #spr ] ] ],
-    C-CONT [ RELS <! !>,
-	     HCONS <! !> ],
-    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < #synsem >,
-				      COMPS #comps,	
-                                      SPR #spr ],
-    NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem &
-		 [ LOCAL [ CAT [ VAL [ SUBJ olist,
-				       COMPS olist,
-				       SPR olist ] ] ],
-		   NON-LOCAL [ SLASH 0-dlist & [ LIST < > ],
-			       REL 0-dlist,
-			       QUE 0-dlist ] ]].
+		   [ LOCAL.CAT [ POSTHEAD +,
+						 HC-LIGHT -,
+						 VAL [ SUBJ < >,
+							   COMPS #comps,
+							   SPR #spr ] ] ],
+	C-CONT [ RELS <! !>,
+			 HCONS <! !>,
+			 ICONS <! !> ],
+	HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < #synsem >,
+									COMPS #comps,	
+									SPR #spr ],
+	NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem &
+		   [ LOCAL [ CAT [ VAL [ SUBJ olist,
+								 COMPS olist,
+								 SPR olist ] ] ],
+			 NON-LOCAL [ SLASH 0-dlist & [ LIST < > ],
+						 REL 0-dlist,
+						 QUE 0-dlist ] ]].
 
 decl-head-subj-phrase := basic-head-subj-phrase & declarative-clause.
 imp-head-subj-phrase := basic-head-subj-phrase & imperative-clause.
@@ -1578,8 +1661,8 @@ basic-head-spec-phrase := head-valence-phrase & phrasal &
                                COMPS #spcomps,
                                SPR #spr,
                                SPEC #spec ],
-                         POSTHEAD #ph,
-                         HC-LIGHT - ],
+						 POSTHEAD #ph,
+						 HC-LIGHT - ],
              MODIFIED #modif ],
     HEAD-DTR [ INFLECTED infl-satisfied,
                SYNSEM [ LOCAL [ CAT [ HEAD #head,
@@ -1600,8 +1683,9 @@ basic-head-spec-phrase := head-valence-phrase & phrasal &
                    CONT.HOOK #hook ],
            MODIFIED #modif ],
     C-CONT [ HOOK #hook,
-             RELS <! !>,
-	     HCONS <! !> ] ].
+			 RELS <! !>,
+			 HCONS <! !>,
+			 ICONS <! !> ] ].
 
 ; Value of LIGHT comes from head-daughter's specification in HC-LIGHT.
 
@@ -1614,22 +1698,22 @@ basic-head-spec-phrase := head-valence-phrase & phrasal &
 ; that does not pass up the MC feature..token id between mother and head
 ; daughter removed
 
-
 basic-head-comp-phrase := head-valence-phrase & head-compositional &
-			  binary-headed-phrase &
+			  binary-headed-phrase & head-icons-phrase &
   [ SYNSEM phr-synsem-min &
-	   [ LOCAL.CAT [ VAL [ SUBJ #subj,
-			       SPR #spr ],
-			 POSTHEAD #ph,
-			 HC-LIGHT #light ],
-             LIGHT #light ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
-                                        SPR #spr ],
-				  HC-LIGHT #light,
-                                  POSTHEAD #ph ]], 
-    NON-HEAD-DTR.SYNSEM canonical-synsem,
-    C-CONT [ RELS <! !>,
-	     HCONS <! !> ] ].
+		   [ LOCAL.CAT [ VAL [ SUBJ #subj,
+							   SPR #spr ],
+						 POSTHEAD #ph,
+						 HC-LIGHT #light ],
+			 LIGHT #light ],
+	HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
+										SPR #spr ],
+								  HC-LIGHT #light,
+								  POSTHEAD #ph ]], 
+	NON-HEAD-DTR.SYNSEM canonical-synsem,
+	C-CONT [ RELS <! !>,
+			 HCONS <! !>,
+			 ICONS <! !> ] ].
 
 ; ERB 2004-12-14 This is what used to be called basic-head-comp-phrase.
 
@@ -1689,7 +1773,8 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
 			      CONT.HOOK.INDEX event ],
                       MODIFIED #mod ] ],
     C-CONT [ RELS <! !>,
-	     HCONS <! !> ] ].
+			 HCONS <! !>,
+			 ICONS <! !> ] ].
 
 
 ; ERB 2004-05-10 For languages that allow "pro-drop" of subjects.
@@ -1724,7 +1809,8 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 			    POSTHEAD #ph ],
 		MODIFIED #mod ],
     C-CONT [ RELS <! !>,
-	     HCONS <! !> ],
+			 HCONS <! !>,
+			 ICONS <! !> ],
     HEAD-DTR [ INFLECTED #infl & infl-satisfied,
 		SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < unexpressed-reg &
 						    [ OPT +,
@@ -1798,7 +1884,8 @@ basic-marker-comp-phrase := basic-binary-marker-phrase &
                                   QUE #que ] ],
     NON-MARKER-DTR.SYNSEM canonical-synsem & #synsem,
     C-CONT [ RELS <! !>,
-	     HCONS <! !> ] ].
+			 HCONS <! !>,
+			 ICONS <! !> ] ].
 
 
 
@@ -1825,27 +1912,29 @@ marker-final-phrase := basic-binary-marker-phrase &
 ; is incompatible with any of the available overt determiners.  This
 ; could conceivably be regulated on the basis of semantics.
 
+; SSH 2012-03-03 ICONS
 basic-bare-np-phrase := head-only &
   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
-			   SUBJ < >,
-			   COMPS < >,
-			   SPEC < > ],
+						   SUBJ < >,
+						   COMPS < >,
+						   SPEC < > ],
     HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,
-    			    	  VAL [ SPR < [ LOCAL.CAT.HEAD det,
-					      	OPT + ] >,
-				      	SUBJ < >,
-				      	COMPS < > ] ],
-			    CONT.HOOK [ INDEX #index,
-					LTOP #larg ] ],
+								  VAL [ SPR < [ LOCAL.CAT.HEAD det,
+												OPT + ] >,
+										SUBJ < >,
+										COMPS < > ] ],
+							CONT.HOOK [ INDEX #index,
+										LTOP #larg ] ],
     C-CONT [ RELS <! quant-relation &
-		   [ LBL #ltop,
-		     ARG0 #index,
-		     RSTR #harg ] !>,
-	     HCONS <! qeq & 
-		    [ HARG #harg,
-		      LARG #larg ] !>,
-	     HOOK [ INDEX #index,
-		    LTOP #ltop ] ] ].
+				   [ LBL #ltop,
+					 ARG0 #index,
+					 RSTR #harg ] !>,
+			 HCONS <! qeq & 
+					[ HARG #harg,
+					  LARG #larg ] !>,
+			 ICONS <! !>,
+			 HOOK [ INDEX #index,
+					LTOP #ltop ] ] ].
 
 ; Unary rules for extraction
 
@@ -1868,7 +1957,8 @@ basic-extracted-comp-phrase := basic-extracted-arg-phrase &
                              MC #mc ],
 		 NON-LOCAL.SLASH #slash ] ],
     C-CONT [ RELS <! !>,
-	     HCONS <! !> ] ].
+			 HCONS <! !>,
+			 ICONS <! !> ] ].
 
 ; ERB 2004-08-26 Remove [MC -] on mother; probably specific
 ; to analysis of subject extraction for English.
@@ -1930,7 +2020,8 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
              NON-LOCAL.SLASH 0-dlist,
 	     MODIFIED notmod ],
     C-CONT [ HOOK #hook,
-	     HCONS <! !> ] ].
+			 HCONS <! !>,
+			 ICONS <! !> ] ].
 
 ; ERB 2004-05-10 Bug fix: non-head daughter's MOD..LIGHT value should
 ; be matched to head-daughters LIGHT value.
@@ -1946,15 +2037,15 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
            [ LOCAL [ CAT [ HEAD #head,
                            VAL #val,
                            POSTHEAD #ph,
-                           MC #hmc,
-                           HC-LIGHT - ],
+						   MC #hmc,
+						   HC-LIGHT - ],
                      AGR #agr,
                      CONT.HOOK #hdhook ],
              NON-LOCAL #nonloc &
                    [ SLASH [ LIST #middle,
                              LAST #last ] ],
-	     LIGHT #light,
-             MODIFIED #modif ],
+			 LIGHT #light,
+			 MODIFIED #modif ],
     NON-HEAD-DTR.SYNSEM 
            [ LOCAL.CAT [ HEAD [ MOD < [ LOCAL local & 
                                               [ CAT [ HEAD #head,
@@ -1963,8 +2054,8 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                                       MC #hmc ],
                                                 AGR #agr,
                                                 CONT.HOOK #hdhook ],
-                                                NON-LOCAL #nonloc,
-                                                LIGHT #light,
+                                        NON-LOCAL #nonloc,
+										LIGHT #light,
                                         MODIFIED #modif ] > ],
                          VAL [ COMPS olist,
                                SPR olist ] ],
@@ -2009,7 +2100,8 @@ scopal-mod-phrase := basic-head-mod-phrase-simple &
   [ NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL scopal-mod ] >,
                                 CONT.HOOK #hook ],
     C-CONT [ HOOK #hook,
-             HCONS <! !> ] ].
+             HCONS <! !>,
+			 ICONS <! !> ] ].
 
 ; ERB 2004-05-18 I'm guessing that MSG no-msg on the head
 ; daughter here is going to turn out too restrictive for other
@@ -2023,7 +2115,8 @@ isect-mod-phrase := basic-head-mod-phrase-simple & head-compositional &
   [ HEAD-DTR.SYNSEM.LOCAL.CONT [ HOOK.LTOP #hand ],
     NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL intersective-mod ] >,
 				CONT.HOOK.LTOP #hand ],
-    C-CONT.HCONS <! !> ].
+    C-CONT [ HCONS <! !>,
+			 ICONS <! !> ] ].
 
 adj-head-scop-phrase := adj-head-phrase & scopal-mod-phrase &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.POSTHEAD - ].
@@ -2104,7 +2197,7 @@ norm-hook-lex-item := norm-ltop-lex-item &
 
 raise-index-mod-lex-item := norm-ltop-lex-item &
   [ SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX #index ] >,
-		   CONT.HOOK.INDEX #index ] ].
+				   CONT.HOOK.INDEX #index ] ].
 
 
 ; Furthermore, most lexical items contribute only one relation, and
@@ -2115,6 +2208,15 @@ single-rel-lex-item := lex-item &
 
 no-hcons-lex-item := lex-item & 
   [ SYNSEM.LOCAL.CONT.HCONS <! !> ].
+
+; SSH 2012-03-03
+; SSH 2012-05-07
+no-icons-lex-item := lex-item & 
+  [ SYNSEM.LOCAL.CONT.ICONS <! !> ].
+
+no-info-str-lex-item := no-icons-lex-item & 
+  [ SYNSEM.LOCAL.CONT.HOOK [ --ICONS.CLAUSE #clause,
+							 --CLAUSE #clause ] ].
 
 ; ERB 2005-05-11 Normal lex items don't introduce messages. 
 ; Since I'm trying out an analysis where the no-msg-phrases
@@ -2131,7 +2233,15 @@ no-hcons-lex-item := lex-item &
 ; messages). HCONS should now (in most cases) be constrained
 ; by the linking types.
 
-norm-sem-lex-item := norm-hook-lex-item & single-rel-lex-item. 
+; SSH 2012-02-16 ICONS is added to this type.
+; SSH 2012-05-07 info-str & ... is not needed any more under ICONS. 
+icons-lex-item := lex-item &
+  [ SYNSEM.LOCAL.CONT [ HOOK [ INDEX #index,
+							   --ICONS #icons ],
+						ICONS <! #icons & info-str & [ TARGET #index ] !> ] ].
+
+; SSH 2012-02-16 icons-lex-item is newly used.
+norm-sem-lex-item := norm-hook-lex-item & single-rel-lex-item & icons-lex-item.
 
 hcons-lex-item := norm-hook-lex-item & single-rel-lex-item.
 
@@ -2139,10 +2249,11 @@ hcons-lex-item := norm-hook-lex-item & single-rel-lex-item.
 ; and auxiliaries which only contribute tense/aspect information.
 ; These all take HOOK from their first complements.
 
-raise-sem-lex-item := no-hcons-lex-item & 
+; SSH 2012-03-03 
+raise-sem-lex-item := no-hcons-lex-item & no-info-str-lex-item & 
   [ SYNSEM.LOCAL [ CONT [ RELS <! !>,
-			  HOOK #hook ],
-		   CAT.VAL.COMPS < [ LOCAL.CONT.HOOK #hook ] , ... > ]].
+						  HOOK #hook ],
+				   CAT.VAL.COMPS < [ LOCAL.CONT.HOOK #hook ] , ... > ]].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; inflected v. uninflected
@@ -2274,6 +2385,22 @@ basic-one-arg-no-hcons := basic-one-arg & no-hcons-lex-item.
 basic-two-arg-no-hcons := basic-two-arg & no-hcons-lex-item.
 basic-three-arg-no-hcons := basic-three-arg & no-hcons-lex-item.
 
+
+; icons-one-arg-lex-item := lex-item &
+;   [ ARG-ST < [ LOCAL.CONT.HOOK.--ICONS.CLAUSE #clause ] >,
+;     SYNSEM.LOCAL.CONT.HOOK.INDEX #clause ].
+; icons-two-arg-lex-item := lex-item &
+;   [ ARG-ST < [ LOCAL.CONT.HOOK.--ICONS.CLAUSE #clause ],
+; 			 [ LOCAL.CONT.HOOK.--ICONS.CLAUSE #clause ] >,
+;     SYNSEM.LOCAL.CONT.HOOK.INDEX #clause ].
+; icons-three-arg-lex-item := lex-item &
+;   [ ARG-ST < [ LOCAL.CONT.HOOK.--ICONS.CLAUSE #clause ],
+; 			 [ LOCAL.CONT.HOOK.--ICONS.CLAUSE #clause ],
+; 			 [ LOCAL.CONT.HOOK.--ICONS.CLAUSE #clause ] >,
+;     SYNSEM.LOCAL.CONT.HOOK.INDEX #clause ].
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Subcategorization/linking
 
@@ -2340,7 +2467,8 @@ basic-three-arg-no-hcons := basic-three-arg & no-hcons-lex-item.
 
 ; (Kim is a student requires an analysis of predicative NPs.)
 
-intransitive-lex-item := basic-one-arg-no-hcons & 
+;intransitive-lex-item := basic-one-arg-no-hcons & icons-one-arg-lex-item &
+intransitive-lex-item := basic-one-arg-no-hcons &
   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ] >,
     SYNSEM.LKEYS.KEYREL.ARG1 #ind ].
 
@@ -2354,6 +2482,7 @@ expl-arg-only-lex-item := basic-one-arg-no-hcons &
 ; Kim ga hiru gohan wo taberu.  
 ; Kim mange le dejeuner.  
 
+;transitive-lex-item := basic-two-arg-no-hcons & icons-two-arg-lex-item &
 transitive-lex-item := basic-two-arg-no-hcons &
    [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
 	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ] >,
@@ -2364,7 +2493,8 @@ transitive-lex-item := basic-two-arg-no-hcons &
 ; Kim ga Sandy ni hon wo ageru.
 ; Kim donne un livre a Sandy.
 
-ditransitive-lex-item := basic-three-arg-no-hcons &
+;ditransitive-lex-item := basic-three-arg-no-hcons & icons-three-arg-lex-item &
+ditransitive-lex-item := basic-three-arg-no-hcons & 
   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
 	     [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
 	     [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind3 ] >,
@@ -2651,8 +2781,11 @@ attrib-or-pred-lex-item := lex-item &
 ; Removing that constraint on now defunct feature MESG.
 
 basic-verb-lex := norm-sem-lex-item & 
-  [ SYNSEM [ LOCAL.CAT.HEAD verb,
-	     LKEYS.KEYREL event-relation ]].
+  [ SYNSEM [ LOCAL [ CAT.HEAD verb,
+					 CONT.HOOK [ INDEX #index,
+								 --ICONS.CLAUSE #index,
+								 --CLAUSE #index ] ],
+			 LKEYS.KEYREL event-relation ]].
 
 ; ERB 2004-08-26 Put in qeq, assuming that for all scopal modifiers
 ; the relevant argument position is ARG1, and there will be
@@ -2741,7 +2874,7 @@ basic-noun-lex := norm-sem-lex-item &
 ; language-specific.  In this case, however, it does not concern
 ; a mapping to ARG-ST.
 
-basic-determiner-lex := norm-hook-lex-item &
+basic-determiner-lex := norm-hook-lex-item & no-icons-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD det,
 			   VAL.SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #ind,
 							    LTOP #larg ]],
@@ -3231,3 +3364,60 @@ s-bottom-coord-phrase := bottom-coord-phrase &
                        VAL.SUBJ < > ],
     NONCONJ-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
                                    VAL.SUBJ < > ]].
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Information Structure 
+; (SSH 2012-02-17)
+
+
+;;; lexical marking (a value of cat)
+mkg := *top* &
+  [ TP bool,
+	FC bool ].
+tp := mkg & [ TP + ].
+fc := mkg & [ FC + ].
+non-tp := mkg & [ TP - ].
+non-fc := mkg & [ FC - ].
+tp-only := tp & non-fc.
+fc-only := fc & non-tp.
+tp-or-fc := tp & fc.
+unmkg := non-tp & non-fc.
+
+mkg-tp-lex := lex-item &
+ [ SYNSEM.LOCAL.CAT.MKG tp ].
+mkg-tp-only-lex := lex-item &
+ [ SYNSEM.LOCAL.CAT.MKG tp-only ].
+mkg-fc-lex := lex-item &
+ [ SYNSEM.LOCAL.CAT.MKG fc ].
+mkg-fc-only-lex := lex-item &
+ [ SYNSEM.LOCAL.CAT.MKG fc-only ].
+mkg-unmkg-lex := lex-item &
+ [ SYNSEM.LOCAL.CAT.MKG unmkg ].
+
+same-mkg-phrase := headed-phrase &
+ [ SYNSEM.LOCAL.CAT.MKG #mkg,
+   HEAD-DTR.SYNSEM.LOCAL.CAT.MKG #mkg ].
+
+
+;;; sentential forms (syntactic types which make differences in
+;;; information structure)
+sform := basic-binary-headed-phrase.
+
+topicality := sform.
+topic-comment := topicality &
+  [ SYNSEM.LOCAL.CAT.MKG tp,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG fc,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MKG tp ].
+topicless := topicality.
+
+focality := sform.
+narrow-focus := focality.
+wide-focus := focality.
+
+topic-focus-bg := topic-comment & narrow-focus.
+topic-bg-focus := topic-comment & narrow-focus.
+topic-focus := topic-comment & wide-focus.
+focus-bg := topicless & narrow-focus.
+all-focus := topicless & wide-focus.
+

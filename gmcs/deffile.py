@@ -1,4 +1,3 @@
-
 ### $Id: deffile.py,v 1.16 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
@@ -36,8 +35,9 @@ def dummy():
 
 HTTP_header = 'Content-type: text/html;charset=UTF-8'
 
-HTML_pretitle = '''<html>
-<head>
+HTML_pretitle = '''<!doctype html>
+<html>
+<head><meta charset="utf-8"/>
 '''
 
 HTML_posttitle = '''<script type="text/javascript" src="web/matrix.js">
@@ -87,12 +87,13 @@ HTML_toggle_visible_js = '''<script type="text/javascript">
 
 HTML_mainprebody = '''<body onload="animate()">
 <h1>LinGO Grammar Matrix</h1>
-<h1>Matrix customization and download page</h1>
+<h1 style="display:inline">Matrix customization and download page</h1> 
+<span class="tt">[<a href="http://moin.delph-in.net/MatrixDocTop" target="matrixdoc">help</a>]</span>
 <h2>Version of %s</h2>
 
 <p>The <a href="http://www.delph-in.net/matrix">LinGO Grammar
 Matrix</a> is developed at the University of Washington in the context
-of the <a href="http://www.delph-in.net/">DELPH-IN Consortium<a>,
+of the <a href="http://www.delph-in.net/">DELPH-IN Consortium</a>,
 by <a  href="http://faculty.washington.edu/ebender">Emily M. Bender</a>
 and colleagues.  This material is based up work supported by
 the National Science Foundation under Grant No. BCS-0644097.
@@ -248,6 +249,7 @@ HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fil
 #    <li><a onclick="submit_go('sentential-negation')">Sentential Negation</a></li>
 #    <li><a onclick="submit_go('coordination')">Coordination</a></li>
 #    <li><a onclick="submit_go('matrix-yes-no')">Matrix Yes/No Questions</a></li>
+#    <li><a onclick="submit_go('info-str')">Information Structure</a></li>
 #    <li><a onclick="submit_go('arg-opt')">Argument Optionality</a></li>
 #    <li><a onclick="submit_go('lexicon')">Lexicon</a></li>
 #    <li><a onclick="submit_go('morphology')">Morphology</a></li>
@@ -371,7 +373,7 @@ def html_select(vr, name, multi, onfocus = ''):
 
   multi_attr = ''
   if multi:
-    multi_attr = ' class="multi"'
+    multi_attr = ' class="multi"  multiple="multiple" '
 
   if onfocus:
     onfocus = ' onfocus="' + onfocus + '"'
@@ -530,16 +532,33 @@ def js_array4(list):
 # on the contents, to produce HTML pages and save choices files.
 
 class MatrixDefFile:
+  # links between names and friendly names for 
+  # use in links on html navigation menu
   sections = { 'general':'General Information',
   'word-order':'Word Order', 'number':'Number',
   'person':'Person', 'gender':'Gender', 'case':'Case',
   'direct-inverse':'Direct-inverse', 'tense-aspect-mood':'Tense, Aspect and Mood',
   'other-features':'Other Features', 'sentential-negation':'Sentential Negation',
   'coordination':'Coordination', 'matrix-yes-no':'Matrix Yes/No Questions',
+  'info-str':'Information Structure',
   'arg-opt':'Argument Optionality', 'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'Toolbox Import',
   'test-sentences':'Test Sentences','gen-options':'TbG Options',
   'ToolboxLexicon':'Toolbox Lexicon'}
+
+  # used to link section names to their documentation
+  # page name in the delp-in wiki
+  doclinks = { 'general':'GeneralInfo',
+  'word-order':'WordOrder', 'number':'Number',
+  'person':'Person', 'gender':'Gender', 'case':'Case',
+  'direct-inverse':'DirectInverse', 'tense-aspect-mood':'TenseAspectMood',
+  'other-features':'OtherFeatures', 'sentential-negation':'SententialNegation',
+  'coordination':'Coordination', 'matrix-yes-no':'YesNoQ',
+  'info-str':'InformationStructure',
+  'arg-opt':'ArgumentOptionality', 'lexicon':'Lexicon',
+  'morphology':'Morphology','toolbox-import':'ImportToolboxLexicon',
+  'test-sentences':'TestSentences','gen-options':'TestByGeneration',
+  'ToolboxLexicon':'ImportToolboxLexicon'}
   def_file = ''
   v2f = {}
   f2v = {}
@@ -600,7 +619,7 @@ class MatrixDefFile:
       datestamp = f.readlines()[0].strip()
       f.close()
     except:
-      datestamp = "<date unknown>"
+      datestamp = "[date unknown]"
 
     print HTML_mainprebody % (datestamp)
     print '<div class="indented">'
@@ -701,7 +720,7 @@ class MatrixDefFile:
     print html_input(vr, 'radio', 'delivery', 'zip', zip_checked,
                      ' ', ' .zip<br>')
     print html_input(vr, 'submit', 'create_grammar_submit', 'Create Grammar',
-                     False, '', '</p>', '', '', vr.has_errors())
+                     False, '', '', '', '', vr.has_errors())
 
     print html_input(vr, 'submit', 'sentences', 'Test by Generation', False,
                      '', '</p>', '', '', vr.has_errors())
@@ -717,7 +736,7 @@ class MatrixDefFile:
     print HTML_uploadpreform
     print html_input(vr, 'submit', '', 'Upload Choices File:', False,
                      '<p>', '')
-    print html_input(vr, 'file', 'choices', '', False, '', '</p>', '20')
+    print html_input(vr, 'file', 'choices', '', False, '', '</p>', '')
     print HTML_uploadpostform
 
     print '<hr>\n'
@@ -901,12 +920,17 @@ class MatrixDefFile:
         value = choices.get(vn)
         html += html_input(vr, word[0].lower(), vn, value, False,
                            bf, af, sz, onchange=oc) + '\n'
+      elif word[0] == ('Hidden'):
+        (vn, fn) = word[1:]
+        value = choices.get(vn)
+        html += html_input(vr, word[0].lower(), vn, value, False,
+                           '', '', 0) + '\n' 
       elif word[0] == 'File':
-        (vn, fn, bf, af, sz) = word[1:]
+        (vn, fn, bf, af) = word[1:]
         vn = prefix + vn
         value = choices.get(vn)
         html += html_input(vr, word[0].lower(), vn, value, False,
-                           bf, af, sz) + '\n'
+                           bf, af) + '\n'
       elif word[0] == 'Button':
         (vn, bf, af, oc) = word[1:]
         html += html_input(vr, word[0].lower(), '', vn, False,
@@ -1085,11 +1109,14 @@ class MatrixDefFile:
       else:
         print HTML_prebody
 
-      print '<h2>' + section_friendly + '</h2>'
+      print '<h2 style="display:inline">' + section_friendly + '</h2>'
+      doclink = '<a href="http://moin.delph-in.net/MatrixDoc/' + \
+                self.doclinks[section] + '" target="matrixdoc">help</a>'
+      print '<span class="tt">['+doclink+']</span><br />'
 
 
 #      print HTML_navmenu
-      print '<div id="navmenu"><ul>'
+      print '<div id="navmenu"><br />'
     # pass through the definition file once, augmenting the list of validation
     # results with section names so that we can put red asterisks on the links
     # to the assocated sub-pages on the nav menu.
@@ -1138,15 +1165,17 @@ class MatrixDefFile:
                 printed = True 
                 break
             
-      print '<li><a href="#main" onclick="submit_main()">Main page</a></li>'
+      print '<a href="#main" onclick="submit_main()" class="navleft">Main page</a><br />'
       print '<hr />'
       for l in sec_links: 
-        print '<li><span style="color:#ff0000;">'+l+'</li>'
+        print '<span style="color:#ff0000;" class="navleft">'+l+'<br />'
 
       print '<hr />'
-      print '<li><a href="#stay" onclick="document.forms[0].submit()">Save and stay here</a></li>'
-      print '<li><a href="#clear" onclick="clear_form()">Clear form</a></li>'
-      print '</ul></div>'
+      print '<a href="' + choices_file + '" class="navleft">View choices file</a><br /><span class="navleft">(right-click to download)</span><br />'
+      print '<a href="#stay" onclick="document.forms[0].submit()" class="navleft">Save and stay here</a><br />'
+      print '<a href="#clear" onclick="clear_form()" class="navleft">Clear form</a>'
+      print '</div>'
+
 
       print '<div id="form_holder">'
       print HTML_preform
@@ -1164,8 +1193,8 @@ class MatrixDefFile:
 #                     'clear_form()')
 
     print HTML_postform
-    print HTML_postbody
     print '</div>'
+    print HTML_postbody
 
 
   # Create and print the "download your matrix here" page for the
@@ -1328,7 +1357,7 @@ class MatrixDefFile:
       if len(word) == 0:
         pass
       elif word[0] in ['Check', 'Text', 'TextArea',
-                       'Radio', 'Select', 'MultiSelect', 'File']:
+                       'Radio', 'Select', 'MultiSelect', 'File','Hidden']:
         vn = word[1]
         if prefix + vn not in already_saved:
           already_saved[prefix + vn] = True
@@ -1376,12 +1405,25 @@ class MatrixDefFile:
     new_choices = ChoicesFile('')
     for k in form_data.keys():
       if k:
-        new_choices[k] = form_data[k].value
+        # on sentential negation page, some choices are hidden in 
+        # more than one place, so the FieldStorage object at [k] can 
+        # be a list, but in these cases only one item on the list 
+        # should ever have a value
+        if type(form_data[k]) == list:
+          for l in form_data[k]:
+            if l.value:
+              new_choices[k] = l.value
+        else:
+          new_choices[k] = form_data[k].value
 
     # Read the current choices file (if any) into old_choices
     # but if neg-aux=on exists, create side-effect in lexicon.
+
     old_choices = ChoicesFile(choices_file)
-    if section == 'sentential-negation' and 'neg-aux' in form_data.keys():
+    if section == 'sentential-negation' \
+      and ('neg-aux' in form_data.keys() \
+      or ('bineg-type' in form_data.keys() \
+      and form_data['bineg-type'].value =='infl-head')):
       # see if we're already storing an index number
       if 'neg-aux-index' in old_choices.keys():
         # we have an index for a neg-aux, see if it's still around
@@ -1390,7 +1432,7 @@ class MatrixDefFile:
           old_choices, neg_aux_index = self.create_neg_aux_choices(old_choices)
           new_choices["neg-aux-index"] = str(neg_aux_index) if neg_aux_index > 0 else str(1)
       else: #we don't have any neg aux index stored, so make a new one
-        old_choices, neg_aux_index = self.create_neg_aux_choices(old_choices)
+        old_choices, neg_aux_index = self.create_neg_aux_choices(old_choices,form_data)
         new_choices["neg-aux-index"] = str(neg_aux_index) if neg_aux_index > 0 else str(1)
 
     # create a zero-neg lri in choices
@@ -1400,25 +1442,24 @@ class MatrixDefFile:
         new_choices['infl-neg'] = 'on'
         old_choices, new_choices = self.create_infl_neg_choices(old_choices, new_choices)
 
-    # bipartite neg adverbs require adv-neg
-    if section == 'sentential-negation' and 'neg1-type' in form_data.keys():
-      if form_data['neg1-type'].value[0] == 'f' or \
-       form_data['neg2-type'].value[0] == 'f':
-        new_choices['adv-neg'] = 'on'
-
     # add FORM subtype for neg1b-neg2b analysis
-    if section == 'sentential-negation' and 'neg1b-neg2b' in form_data.keys():
-      next_n = old_choices['nf-subform'].next_iter_num() if 'nf-subform' in old_choices else 1
-      found_negform = False
-      if next_n > 1:
-        nfss = old_choices.get('nf-subform')
-        for nfs in nfss:
-          if nfs['name'] == 'negform':
-            found_negform = True
-      if not found_negform:
-        old_choices['nf-subform%d_name' % next_n ] = 'negform' 
+    # also add it for infl-head neg analysis
+    if section == 'sentential-negation': 
+      keys = form_data.keys()
+      if 'neg1b-neg2b' in keys or \
+        ('neg1-type' in keys and 'neg2-type' in keys and form_data['neg1-type'].value == 'fh' and form_data['neg2-type'].value == 'b') or \
+        ('neg1-type' in keys and 'neg2-type' in keys and form_data['neg2-type'].value == 'fh' and form_data['neg1-type'].value == 'b'):
+        next_n = old_choices['nf-subform'].next_iter_num() if 'nf-subform' in old_choices else 1
+        found_negform = False
+        if next_n > 1:
+          nfss = old_choices.get('nf-subform')
+          for nfs in nfss:
+            if nfs['name'] == 'negform':
+              found_negform = True
+        if not found_negform:
+          old_choices['nf-subform%d_name' % next_n ] = 'negform' 
 
-    # Open the def file and store it in line[]
+    # Open the def file and store it in lines[]
     f = open(self.def_file, 'r')
     lines = merge_quoted_strings(f.readlines())
     f.close()
@@ -1454,7 +1495,7 @@ class MatrixDefFile:
 
     f.close()
 
-  def create_neg_aux_choices(self, choices):
+  def create_neg_aux_choices(self, choices,form_data):
     '''this is a side effect of the existence of neg-aux
     in the form data, it puts some lines pertaining to a neg-aux
     lexical item into the choices file object unless they are
@@ -1471,6 +1512,14 @@ class MatrixDefFile:
     nli = choices['aux'].get_last()
     nli['sem']='add-pred'
     nli['stem1_pred'] = 'neg_rel'
+
+    if 'bineg-type' in form_data.keys() and \
+      form_data['bineg-type'].value =='infl-head':
+      nli['compfeature1_name']='form'
+      nli['compfeature1_value']='negform'
+
+    # if auxiliaries are off, turn them on 
+    choices['has-aux'] = 'yes'
     return choices, next_n
 
   def create_infl_neg_choices(self, old_choices, new_choices):

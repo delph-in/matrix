@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/python
 
 ### $Id: matrix.cgi,v 1.27 2008-09-09 08:37:52 sfd Exp $
 
@@ -30,7 +30,8 @@ from gmcs.deffile import HTTP_header
 # beginning of main program
 
 # Uncomment this to see the output from print in the HTML page
-#print HTTP_header + '\n'
+# print HTTP_header + '\n'
+
 
 matrixdef = MatrixDefFile('web/matrixdef')
 

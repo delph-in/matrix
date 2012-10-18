@@ -696,7 +696,7 @@ function fill_cache(cache_name)
 //
 // To implement multi-select dropdown controls, we make the associated
 // SELECT controls display:none, then insert immediately after them a
-// text control and a button that simulate a dropdown.  When either is
+// text control and a button that simulates a dropdown.  When either is
 // clicked, a box containing a list of checkboxes and labels appears
 // below, until the user clicks the fake-select control again.
 //
@@ -728,6 +728,7 @@ function multi_init()
 function multi_create(select)
 {
   select.style.display = 'none';
+  select.onfocus();
 
   var t = document.createElement('input');
   t.id = select.name + '_multitext';
@@ -784,6 +785,9 @@ function multi_open(select_name)
   span.id = select.name + '_multibox';
   span.style.position = 'absolute';
   span.style.zIndex = 2;
+  span.style.left = text.offsetLeft + "px";
+  span.style.top = text.offsetTop + text.offsetHeight + "px";
+  span.style.minWidth = text.offsetWidth - 6 + "px";
   span.style.left = text.offsetLeft;
   span.style.top = text.offsetTop + text.offsetHeight;
   span.style.minWidth = text.offsetWidth - 6;
@@ -823,10 +827,10 @@ function multi_open(select_name)
   span.id = select.name + '_multiback';
   span.style.position = 'absolute';
   span.style.zIndex = 1;
-  span.style.left = 0;
-  span.style.top = 0;
-  span.style.width = document.body.scrollWidth;
-  span.style.height = document.body.scrollHeight;
+  span.style.left = 0 + "px";
+  span.style.top = 0 + "px";
+  span.style.width = document.body.scrollWidth + "px";
+  span.style.height = document.documentElement.scrollHeight + "px";
   span.style.backgroundColor = 'white';
   span.style.opacity = 0;
   span.style.filter = 'alpha(opacity=0)';
@@ -1041,158 +1045,92 @@ function set_negexp(n)
   }
 }
 
-function set_negmorph(n,o){
-
-  // first we hide everything
-  var divs = document.getElementsByClassName("neg"+n+"_switch");
-	for(var i=0; i<divs.length;i++){
-    var e = divs[i];
-    e.style.display = 'none';
-	}
-
-  var d;
-  // n is which morpheme we're specifying (neg1 or neg2)
-  // o is an option on bipartite negation, a morph type { b, fh, fd }
-  // if we're dealing with neg1, we set soem restrictions on neg2 
-  // type depending on what was selected in neg1
-  // if we're dealing with neg2, we may offer some advice depending
-  // on their choice for neg1
-  // we set 'd' to the section we want to dipslay, if it's null
-  // after we loop through, we don't do anything.
-
-  // basically, the user might be changing neg1 or neg2, so we
-  // have to set the messages accordingly for both cases
-  if(n=='1'){
-    switch (o){
-      case 'b':
-        // enable infl-neg, which allows the lexicon features
-        document.forms["choices_form"]["infl-neg"].checked=true;
-        document.forms["choices_form"]["neg2-type"][0].disabled=false;
-        document.forms["choices_form"]["neg2-type"][1].disabled=false;
-        document.forms["choices_form"]["neg2-type"][2].disabled=false;
-        d = document.getElementById('neg'+n+'-b');
-        // if neg2 is bound, then we'll put our advice about circumfixes
-        if (document.forms["choices_form"]["neg2-type"][0].checked) {
-          var d2 = document.getElementById("neg2-b");
-          var chkd = document.forms["choices_form"]["neg1b-neg2b"].checked; 
-          var ibox;
-          if (chkd) {
-            ibox =  "<input type=\"checkbox\" name=\"neg1b-neg2b\" checked=\""+chkd+"\">NEG1 bound to Aux requires NEG2 bound to Lexical Verb</input>";
-          } else {
-            ibox =  "<input type=\"checkbox\" name=\"neg1b-neg2b\">NEG1 bound to Aux requires NEG2 bound to Lexical Verb</input>";
-          }
-          d2.innerHTML = "<p>If both NEG1 and NEG2 are bound to the same root, you can set up the dendency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p><p>If NEG1 is bound to an auxiliary and NEG2 is bound to a lexical verb, check the box below.  This will enable several options for you as you define your lexical rules for NEG1 and NEG2 on the morphotactics page.  Indicate the lexical rule corresponding to NEG1 by setting [NEGATION +] (this adds the negative semantics).  Likewise, indicate NEG2 by selecting [NEG2 +].   Auxiliary verbs inflected by NEG1 will require their complement to be headed by a verb which has been inflected by NEG2.</p>"+ibox; 
-        } else if (document.forms["choices_form"]["neg2-type"][1].checked){
-          var d2 = document.getElementById("neg2-fh");
-          d2.innerHTML = "<p>NEG1 is bound and NEG2 is an auxiliary.  <span style=\"font-weight:bold\"><span style=\"color:blue\">This analysis is still under construction.</span></span></p>"; 
-        } else if (document.forms["choices_form"]["neg2-type"][2].checked){
-          var d2 = document.getElementById("neg2-fd");
-          d2.innerHTML = "<p>NEG1 is bound and NEG2 is an adverb.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
-        }
-        break;
-      case 'fh':
-        document.forms["choices_form"]["neg2-type"][0].disabled=false;
-        document.forms["choices_form"]["neg2-type"][1].disabled=true;
-        document.forms["choices_form"]["neg2-type"][2].disabled=false;
-        d = document.getElementById('neg'+n+'-fh');
-        // if neg2 is bound, and we're switching away from neg1 bound,
-        // then we need to remove the special message about circumfixes
-        // we'll put some advice about this construction there instead
-        
-        if (document.forms["choices_form"]["neg2-type"][0].checked){
-          var d2 = document.getElementById("neg2-b");
-          d2.innerHTML = "<p>NEG1 is an auxiliary and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"
-        } else if (document.forms["choices_form"]["neg2-type"][1].checked){
-          var d2 = document.getElementById("neg2-fh");
-          d2.innerHTML = "<p>We don't have any analysis for a negation type with two auxiliary verbs.  Please contact matrix-dev about this language.</p>"; 
-        } else if (document.forms["choices_form"]["neg2-type"][2].checked){
-          var d2 = document.getElementById("neg2-fd");
-          d2.innerHTML = "<p>NEG1 is an auxiliary and NEG2 is an adverb.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
-        }
-        break;
-      case 'fd':
-        document.forms["choices_form"]["neg2-type"][0].disabled=false;
-        document.forms["choices_form"]["neg2-type"][1].disabled=false;
-        document.forms["choices_form"]["neg2-type"][2].disabled=false;
-        d = document.getElementById('neg'+n+'-fd');
-        // if neg2 is bound, we'll put a special message about the status
-        // of this type
-        if (document.forms["choices_form"]["neg2-type"][0].checked){
-          var d2 = document.getElementById("neg2-b");
-          d2.innerHTML = "<p>NEG1 is an adverb and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"
-        } else if (document.forms["choices_form"]["neg2-type"][1].checked){
-          var d2 = document.getElementById("neg2-fh");
-          d2.innerHTML = "<p>NEG1 is an adverb and NEG2 is an auxiliary.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
-        } else if (document.forms["choices_form"]["neg2-type"][2].checked){
-          var d2 = document.getElementById("neg2-fd");
-          d2.innerHTML = "<p>NEG1 and NEG2 are adverbs.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
-        }
-        break;
-      default:
-        d = null; 
+function set_negmorph(t1,t2){
+  // now calculate the bipartite negation type
+  var t;
+  if (t1=='b'){
+    if (t2=='b'){
+      t = 'infl-infl'; 
+    } else if (t2 == 'fh') {
+      t = 'infl-head'; 
+    } else if (t2 == 'fc') {
+      t = 'infl-comp'; 
+    } else if (t2 == 'fm') {
+      t = 'infl-mod'; 
+    } else {
+      t = 'default';
     }
-  } else if (n=='2') {
-    switch (o) {
-      case 'b':
-        if (document.forms["choices_form"]["neg1-type"][0].checked) {
-          // neg2 is bound, if neg1 is also bound, we tell them to go
-          // make a circumfix on the lexicon page.
-          d = document.getElementById("neg2-b");
-          var chkd = document.forms["choices_form"]["neg1b-neg2b"].checked; 
-          var ibox;
-          if (chkd) {
-            ibox = "<input type=\"checkbox\" name=\"neg1b-neg2b\" checked=\""+chkd+"\">NEG1 bound to Aux requires NEG2 bound to Lexical Verb</input>";
-          } else {
-            ibox = "<input type=\"checkbox\" name=\"neg1b-neg2b\">NEG1 bound to Aux requires NEG2 bound to Lexical Verb</input>";
-          }
-          d.innerHTML = "<p>If both NEG1 and NEG2 are bound to the same root, you can set up the dendency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p><p>If NEG1 is bound to an auxiliary and NEG2 is bound to a lexical verb, check the box below.  This will enable several options for you as you define your lexical rules for NEG1 and NEG2 on the morphotactics page.  Indicate the lexical rule corresponding to NEG1 by setting [NEGATION +] (this adds the negative semantics).  Likewise, indicate NEG2 by selecting [NEG2 +].   Auxiliary verbs inflected by NEG1 will require their complement to be headed by a verb which has been inflected by NEG2.</p>" + ibox; 
-        } else if (document.forms["choices_form"]["neg1-type"][1].checked) {
-          // neg2 is bound, if neg1 is a free head, give a message
-          d = document.getElementById("neg2-b");
-          d.innerHTML = "<p>NEG1 is a auxiliary and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
-        } else if (document.forms["choices_form"]["neg1-type"][2].checked) {
-          // neg2 is bound, neg1 is an adverb, give a message 
-          d = document.getElementById("neg2-b");
-          d.innerHTML = "<p>NEG1 is an adverb and NEG2 is bound.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
-        }
-        break;
-      case 'fh':
-        if (document.forms["choices_form"]["neg1-type"][0].checked) {
-          // neg2 is an aux, neg1 is bound, give an appropriate message
-          d = document.getElementById("neg2-fh");
-          d.innerHTML = "<p>NEG1 is bound.  NEG2 is an auxiliary.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
-        } else if (document.forms["choices_form"]["neg1-type"][1].checked) {
-          // neg2 is an aux, neg1 is also an aux, give a message
-          d = document.getElementById("neg2-fh");
-          d.innerHTML = "<p>We don't have any analysis for a negation type with two auxiliary verbs.  Please contact matrix-dev about this language.</p>"; 
-        } else if (document.forms["choices_form"]["neg1-type"][2].checked) {
-          // neg2 is an aux, neg1 is an adverb, give a message 
-          d = document.getElementById("neg2-b");
-          d.innerHTML = "<p>NEG1 is a adverb and NEG2 is an auxiliary.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
-        }
-        break;
-      case 'fd':
-        if (document.forms["choices_form"]["neg1-type"][0].checked) {
-          // neg2 is an adverb, neg1 is bound, give an appropriate message
-          d = document.getElementById("neg2-fd");
-          d.innerHTML = '<p>NEG1 is bound.  NEG2 is an adverb.  Select the properties of NEG2 below.  A customization system feature \'requires neg adverb\' has been created for your use on the lexicon page.  Specify NEG1 as \'negation plus\' and \'requires neg adverb plus\'.</p>  NEG2 modifies:  <input type="radio" value="s" name="neg2-mod">  S  <input type="radio" value="vp" name="neg2-mod">  VP  <input type="radio" value="v" name="neg2-mod">  V  <br>  NEG2 is ordered:  <input type="radio" value="before" name="neg2-order">  before  <input type="radio" value="after" name="neg2-order">  after  <input type="radio" value="either" name="neg2-order">  on either side of the category it modifies.  <br>  NEG2 is spelled:  <input type="text" size="20" name="neg2-adv-orth">  <p></p>'; 
-        } else if (document.forms["choices_form"]["neg1-type"][1].checked) {
-          // neg2 is an adverb, neg1 is an aux, give a message
-          d = document.getElementById("neg2-fd");
-          d.innerHTML = "<p>NEG1 is and auxiliary, NEG2 is an adverb.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
-        } else if (document.forms["choices_form"]["neg1-type"][2].checked) {
-          // neg2 is an adverb, neg1 is an adverb, give a message 
-          d = document.getElementById("neg2-fd");
-          d.innerHTML = "<p>NEG1 and NEG2 are both adverbs.  <span style=\"font-weight:bold\">This analysis is still under construction.</span></p>"; 
-        }
-        break;
-      default:
-        d = null;
+  } else if (t1 == 'fh'){
+    if (t2=='b'){
+      t = 'infl-head'; 
+    } else if (t2 == 'fh') {
+      t = 'head-head'; 
+    } else if (t2 == 'fc') {
+      t = 'head-comp'; 
+    } else if (t2 == 'fm') {
+      t = 'head-mod'; 
+    } else {
+      t = 'default';
     }
+  } else if (t1 == 'fc'){
+    if (t2=='b'){
+      t = 'infl-comp'; 
+    } else if (t2 == 'fh') {
+      t = 'head-comp'; 
+    } else if (t2 == 'fc') {
+      t = 'comp-comp'; 
+    } else if (t2 == 'fm') {
+      t = 'comp-mod'; 
+    } else {
+      t = 'default';
+    }
+  } else if (t1 == 'fm'){
+    if (t2=='b'){
+      t = 'infl-mod'; 
+    } else if (t2 == 'fh') {
+      t = 'head-mod'; 
+    } else if (t2 == 'fc') {
+      t = 'comp-mod'; 
+    } else if (t2 == 'fm') {
+      t = 'mod-mod'; 
+    } else {
+      t = 'default';
+    }
+  } else { t = 'default'; }
+
+  // if t != 'default', then we
+  //  have a well defined bipartite negation
+  //  type to implement for the user.
+  //  set the choice accordingly
+  //  this choice is useful at customize time
+  //
+  //  also, set subchoices to interface with
+  //  deffile side-effects (neg-aux), and 
+  //  neg library dependencies
+  if (t.search(/head/) > -1) {
+    document.forms['choices_form']['neg-aux'].checked= true; 
+  } else {
+    document.forms['choices_form']['neg-aux'].checked = false;
   }
-  if (d != null)
-  {
-    d.style.display ='block';
+  if (t.search(/comp|mod/) > -1) {
+    document.forms['choices_form']['adv-neg'].checked= true; 
+  } else {
+    document.forms['choices_form']['adv-neg'].checked = false;
+  }
+  if (t.search(/infl/) > -1) {
+    document.forms['choices_form']['infl-neg'].checked= true; 
+  } else {
+    document.forms['choices_form']['infl-neg'].checked = false;
+  }
+
+
+  var d = document.getElementById('bineg_fb');
+  if (t != 'default') {
+    document.forms['choices_form']['bineg-type'].value = t;
+    // now set up the page accordingly
+    d.innerHTML=document.getElementById(t+'-neg').innerHTML;
+  } else {
+    d.innerHTML='<p>Please choose a morpheme type for each exponent.</p>';
   }
 }
 
@@ -1224,17 +1162,23 @@ function display_neg_form()
   // now we see if there are any choices set for 'negN-type'
   // these are the neg1 and neg2 choices section on the bipartite
   // page.
+
   if (neg_exp[2].checked) {
-    for (var i=1;i<=2;i++){
-      var ntype = document.forms["choices_form"]["neg"+i+"-type"]; 
-      for (var j=0;j<ntype.length;j++){
-        if(ntype[j].checked){
-          var v = ntype[j].value;
-          set_negmorph(i,v);
-        }
+    var ntype1 = document.forms["choices_form"]["neg"+1+"-type"]; 
+    var ntype2 = document.forms["choices_form"]["neg"+2+"-type"]; 
+    var t1,t2;
+    for (var j=0;j<ntype1.length;j++){
+      if(ntype1[j].checked){
+        var v = ntype1[j].value;
+        t1 = v;
+      }
+      if(ntype2[j].checked){
+        var v = ntype2[j].value;
+        t2 = v;
       }
     }
   }
+  set_negmorph(t1,t2);
 }
 
 function neg_comp() {

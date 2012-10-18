@@ -44,6 +44,22 @@ def all_position_classes(choices):
     for pc in choices[lt + '-pc']:
       yield pc
 
+def defined_lexrule_sts(lrt,pc):
+  """
+  Return the list of lexical rule supertypes, filtering out ones
+  not defined in the pc (likely Matrix types)
+  """
+  sts = lrt.split_value('supertypes')
+  to_return = []
+  for lrt in pc['lrt']: 
+    if lrt.full_key in sts:
+      to_return.append(lrt.full_key)
+  return to_return
+#  for st in lrt.split_value('supertypes'):
+#    print st in [[l.full_key] for l in pc['lrt']]
+  #return [st for st in lrt.split_value('supertypes') if st in [[l.full_key] for l in pc['lrt']]] 
+  #return [st for st in lrt.split_value('supertypes') if st in pc['lrt']]
+
 def disjunctive_typename(mns):
   """
   Return a string that uses '-or-' as a delimiter to concatenate the
@@ -114,6 +130,8 @@ def customize_inflection(choices, add_methods, mylang, irules, lrules, lextdl):
   """
   # first call other libraries' add_lexrules methods to see if they
   # have anything to add to the choices file before we begin
+  # TODO: negation.py should be called later but should use 
+  # one of these add_methods 
   for method in add_methods:
     method(choices)
   # now create the hierarchy
@@ -185,7 +203,11 @@ def add_lexical_type_hierarchy(pch, choices):
     pch.add_node(lth)
 
 def pc_lrt_mergeable(pc):
-  return len([l for l in pc['lrt'] if not l.get('supertypes')]) == 1
+  """
+  A pc is mergeable with its only daughter in case it only has
+  one daughter.
+  """
+  return len([l for l in pc['lrt'] if not defined_lexrule_sts(l, pc)]) == 1
 
 def pc_lrt_merge(cur_pc, pc):
   lrt = pc['lrt'].get_first()
@@ -197,12 +219,15 @@ def pc_lrt_merge(cur_pc, pc):
 def create_lexical_rule_types(cur_pc, pc):
   lrt_parents = {}
   for j, lrt in enumerate(pc.get('lrt')):
+    mtx_supertypes = set()
     if 'supertypes' in lrt:
-      lrt_parents[lrt.full_key] = set(lrt.get('supertypes').split(', '))
+      lrt_parents[lrt.full_key] = set(defined_lexrule_sts(lrt,pc))
+      mtx_supertypes = set(lrt.split_value('supertypes')).difference(
+                         lrt_parents.get(lrt.full_key,set()))
     # default name uses name of PC with _lrtX
     if 'name' not in lrt:
       lrt['name'] = cur_pc.name + lrt.full_key.replace(cur_pc.key, '', 1)
-    cur_lrt = create_lexical_rule_type(lrt)
+    cur_lrt = create_lexical_rule_type(lrt, mtx_supertypes)
     # the ordering should only mess up if there are 100+ lrts
     cur_lrt.tdl_order = cur_pc.tdl_order + (0.01 * j)
     cur_pc.add_node(cur_lrt)
@@ -210,7 +235,7 @@ def create_lexical_rule_types(cur_pc, pc):
     for parent in lrt_parents[child]:
       cur_pc.relate_parent_child(_mns[parent], _mns[child])
 
-def create_lexical_rule_type(lrt):
+def create_lexical_rule_type(lrt, mtx_supertypes):
   new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
   for feat in lrt.get('feat'):
     new_lrt.features[feat['name']] = {'value': feat['value'],
@@ -218,7 +243,7 @@ def create_lexical_rule_type(lrt):
   new_lrt.lris = [lri['orth'] if lri['inflecting'] == 'yes' else ''
                   for lri in lrt.get('lri',[])]
   # Fill out the obvious supertypes (later we'll finish)
-  set_lexical_rule_supertypes(new_lrt)
+  set_lexical_rule_supertypes(new_lrt, mtx_supertypes)
   _mns[new_lrt.key] = new_lrt
   return new_lrt
 
@@ -362,29 +387,42 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
 ### SUPERTYPES ###
 
 # add possible supertypes here
-ALL_LEX_RULE_SUPERTYPES = set(['cont-change-only-lex-rule',
+ALL_LEX_RULE_SUPERTYPES = set(['cat-change-only-lex-rule',
+                               'same-agr-lex-rule',
+                               'cont-change-only-lex-rule',
                                'add-only-no-ccont-rule',
+                               'val-change-only-lex-rule',
+                               'head-change-only-lex-rule',
                                'infl-lex-rule',
                                'const-lex-rule',
                                'lex-rule'])
 
-LEX_RULE_SUPERTYPES = set(['cont-change-only-lex-rule',
+LEX_RULE_SUPERTYPES = set(['cat-change-only-lex-rule',
+                           'val-and-cont-change-lex-rule',
+                           'add-only-rule',
+                           'same-head-lex-rule',
+                           'val-change-only-lex-rule',
+                           'head-change-only-lex-rule',
+                           'cont-change-only-lex-rule',
                            'add-only-no-ccont-rule'])
 
-def set_lexical_rule_supertypes(lrt):
+def set_lexical_rule_supertypes(lrt, mtx_supertypes):
   """
   Assign initial supertypes to lexical rule types. These can be inferred
   from the lexical rule instances and feature types.
   """
+  lrt.supertypes.update(mtx_supertypes)
   # if there exists a non-empty lri, give it an infl supertype
   if len(lrt.lris) > 0:
     if any([len(lri) > 0 for lri in lrt.lris]):
       lrt.supertypes.add('infl-lex-rule')
     else:
       lrt.supertypes.add('const-lex-rule')
+
   # feature-based supertypes
-  if ('value', 'plus') in lrt.features.get('negation',{}).items():
-    lrt.supertypes.add('cont-change-only-lex-rule')
+  # JDC 04 June 2012 now negation supertypes are set in features.py
+#  if ('value', 'a') in lrt.features.get('negation',{}).items():
+#    lrt.supertypes.add('cont-change-only-lex-rule')
   # add other special cases here
   
 def calculate_supertypes(pch):
@@ -409,7 +447,6 @@ def calculate_daughter_types(pch):
         inp.supertypes.add(dtr_name)
       # Add to the global daughter set so it gets written later
       _dtrs.add(dtr_name)
-    # set the daughter value
     for pc in pcs:
       pc.daughter_type = dtr_name
 

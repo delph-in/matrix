@@ -29,26 +29,24 @@ def case_names(ch):
     canon.append('abs')
     user.append(ch[cm + '-abs-case-name'])
   elif cm == 'tripartite':
-    canon.append('s')
+    canon.append('s_case')
     user.append(ch[cm + '-s-case-name'])
-    canon.append('a')
+    canon.append('a_case')
     user.append(ch[cm + '-a-case-name'])
-    canon.append('o')
+    canon.append('o_case')
     user.append(ch[cm + '-o-case-name'])
   elif cm in ['split-s']:
-    canon.append('a')
+    canon.append('a_case')
     user.append(ch[cm + '-a-case-name'])
-    canon.append('o')
+    canon.append('o_case')
     user.append(ch[cm + '-o-case-name'])
-  elif cm in ['fluid-s']:
-    a_name = ch[cm + '-a-case-name']
-    o_name = ch[cm + '-o-case-name']
-    canon.append('a+o')
+  elif cm in ['fluid-s']:   
+    canon.append('a_case+o_case')
     user.append('fluid')
-    canon.append('a')
-    user.append(a_name)
-    canon.append('o')
-    user.append(o_name)
+    canon.append('a_case')
+    user.append(ch[cm + '-a-case-name'])
+    canon.append('o_case')
+    user.append(ch[cm + '-o-case-name'])
   elif cm in ['split-n', 'split-v']:
     canon.append('nom')
     user.append(ch[cm + '-nom-case-name'])
@@ -61,9 +59,9 @@ def case_names(ch):
   elif cm in ['focus']:
     canon.append('focus')
     user.append(ch[cm + '-focus-case-name'])
-    canon.append('a')
+    canon.append('a_case')
     user.append(ch[cm + '-a-case-name'])
-    canon.append('o')
+    canon.append('o_case')
     user.append(ch[cm + '-o-case-name'])
 
   # fill in any additional cases the user has specified
@@ -110,9 +108,9 @@ def init_case_hierarchy(ch, hierarchies):
     for c in cases:
       hier.add(c[2], 'case', c[1])
   elif cm in ['fluid-s']:
-    abbr = canon_to_abbr('a+o', cases)
+    abbr = canon_to_abbr('a_case+o_case', cases)
     for c in cases:
-      if c[0] in ['a', 'o']:
+      if c[0] in ['a_case', 'o_case']:
         hier.add(c[2], abbr, c[1])
       else:
         hier.add(c[2], 'case', c[1])
@@ -125,20 +123,20 @@ def init_case_hierarchy(ch, hierarchies):
       for c in cases:
         hier.add(c[2], 'case', c[1])
     else:  # 'split-n':
-      hier.add('a', 'case', 'transitive agent')
-      hier.add('s', 'case', 'intransitive subject')
-      hier.add('o', 'case', 'transitive patient')
+      hier.add('a_case', 'case', 'transitive agent')
+      hier.add('s_case', 'case', 'intransitive subject')
+      hier.add('o_case', 'case', 'transitive patient')
       for c in cases:
         if c[2] == erg_a:
-          hier.add(c[2], 'a', c[1])
+          hier.add(c[2], 'a_case', c[1])
         elif c[2] == nom_a:
-          hier.add(c[2], 'a', c[1])
-          hier.add(c[2], 's', c[1])
+          hier.add(c[2], 'a_case', c[1])
+          hier.add(c[2], 's_case', c[1])
         elif c[2] == abs_a:
-          hier.add(c[2], 's', c[1])
-          hier.add(c[2], 'o', c[1])
+          hier.add(c[2], 's_case', c[1])
+          hier.add(c[2], 'o_case', c[1])
         elif c[2] == acc_a:
-          hier.add(c[2], 'o', c[1])
+          hier.add(c[2], 'o_case', c[1])
         else:
           hier.add(c[2], 'case', c[1])
 
@@ -332,7 +330,7 @@ def customize_verb_case(mylang, ch):
         mylang.add(typedef)
 
         # constrain the case of the agent/subject
-        if a_case:
+        if a_case:          
           typedef = \
             t_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'

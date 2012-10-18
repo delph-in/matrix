@@ -34,6 +34,25 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
   else:
     iter_feat = 'feat'
 
+  basic_infl_neg_def = ''':= \
+                   [ C-CONT [ HOOK [ XARG #xarg,\
+                     LTOP #ltop,\
+                     INDEX #ind ],\
+              RELS <! event-relation &\
+                      [ PRED "neg_rel",\
+                        LBL #ltop,\
+                        ARG1 #harg ] !>,\
+              HCONS <! qeq &\
+                       [ HARG #harg,\
+                         LARG #larg ] !> ],\
+              SYNSEM.LKEYS #lkeys,\
+            DTR [ SYNSEM [ LKEYS #lkeys,\
+                    LOCAL [ CONT.HOOK [ XARG #xarg,\
+                                              INDEX #ind,\
+                                        LTOP #larg ],\
+                          CAT.HEAD verb]]]].
+  '''
+
   for feat in ch_dict.get(iter_feat,[]):
     n = feat.get('name','')
     v = feat.get('value','').split(', ')
@@ -116,38 +135,141 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                       ' := [ ARG-ST < [ ' + s_case + '] > ].',
                       merge=True)
 
-    elif (n == 'negation' and v[0] == 'plus'):
-      # ERB 2009-01-22 This is where we deal with the
-      # negative affixes.
+    # ERB 2009-01-22 This is where we deal with the
+    # negative affixes.
+
+    # In the new negation library, the 'meaning' of negation +
+    # on a type is a function of the negation strategy chosen
+    elif (n == 'negation' and v[0] == 'a'):
+      # this is simple infl neg:
+
+      tdlfile.add(type_name + basic_infl_neg_def,
+                 'This adds negative semantics to the verb\'s\nRELS list.',
+                  merge=True)
       # If neg-head-feature is on, then we also mark the verb
       # negated +.
       # and ensure that verbs start out negated -
       if ch.get('neg-head-feature') == 'on':
         tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].',merge=True)
 
-      tdlfile.add(type_name + ':= \
-                     [ C-CONT [ HOOK [ XARG #xarg,\
-	                     LTOP #ltop,\
-	                     INDEX #ind ],\
-	              RELS <! event-relation &\
-	                      [ PRED "neg_rel",\
-	                        LBL #ltop,\
-	                        ARG1 #harg ] !>,\
-	              HCONS <! qeq &\
-	                       [ HARG #harg,\
-	                         LARG #larg ] !> ],\
-	              SYNSEM.LKEYS #lkeys,\
-	            DTR [ SYNSEM [ LKEYS #lkeys,\
-	                    LOCAL [ CONT.HOOK [ XARG #xarg,\
-                                                INDEX #ind,\
-	                                        LTOP #larg ],\
-	                          CAT.HEAD verb]]]].',
-                 'This lexical rule adds the neg_rel to the verb\'s\n\RELS list.',
+    elif (n == 'negation' and v[0] == 'b'):
+    # this is a negation lex rule that also requires negform on its
+    # complement, should only attach to aux
+
+    # to make the neg-rule a little more elegant we can define a form-and-cont-change-rule
+    # and use it as a supertype for this rule
+
+      tdlfile.add('''val-and-cont-change-lex-rule := same-head-lex-rule & same-hc-light-lex-rule & 
+                     same-posthead-lex-rule & same-mc-lex-rule & same-ctxt-lex-rule & 
+                     same-modified-lex-rule & same-light-lex-rule & same-non-local-lex-rule &
+                     [ SYNSEM.LOCAL.CAT.VAL [ SPR #spr,
+                                              SUBJ #subj, 
+                                              SPEC #spec ],
+                       DTR.SYNSEM.LOCAL.CAT.VAL [ SPR #spr,
+                                                  SUBJ #subj,
+                                                  SPEC #spec ] ].''',section='addenda')
+                         
+      tdlfile.add(type_name + basic_infl_neg_def, merge=True)
+      # because this is a val changing rule, we need the complement verbs VAL 
+      # and HOOK to be copied up explicitly
+      # also, we specify FORM negform on the complement
+      tdlfile.add(type_name + ''':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL [ CAT [ VAL #val,
+     HEAD.FORM negform ], 
+ CONT.HOOK #hook ],
+     DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL [ CAT.VAL #val,
+                                                  CONT.HOOK #hook ] ]. ''', merge=True)
+      tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
                   merge=True)
-    elif (n == 'requires-neg-adv' and v[0] == 'plus'):
-      # this feature on a bound morpheme means that this morpheme is neg1 and 
-      # introduces a dependency for neg2 as an independent adverb
-      tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.NEG-SATISFIED - ].',merge=True)
+
+
+#    elif (n == 'negation' and v[0] == 'c'):
+#   'c'  is deprecated!
+    elif (n == 'negation' and v[0] == 'd'):
+    # this is a comps changing lex rule which adds a negadv to the 
+    # comps list
+
+    ## shouldn't have to apply to AUXes
+    #  tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+    #              merge=True)
+      tdlfile.add(type_name + ''':= [
+        SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,
+                                 SPEC #spec,
+                                 SUBJ #subj,   
+                                 COMPS < canonical-synsem & 
+                                         [ LOCAL.CAT.HEAD [ NEGATED +,
+                                         MOD < [ LOCAL.CONT.HOOK #hook ] > ] ]
+                                         . #oldcomps > ] ],
+        DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,
+                                     SPEC #spec,
+                                     SUBJ #subj,
+                                     COMPS #oldcomps ],
+                           CONT.HOOK #hook ] ].''', merge=True)
+
+    elif (n == 'negation' and v[0] == 'e'):
+    # negation lex rule to set NEG-SAT to -
+      tdlfile.add(type_name + ':= [ SYNSEM.NEG-SAT - ].')
+
+    elif (n == 'negation' and v[0] == 'f'):
+    # negation lex rule to add negative complement and
+    # require that original comps is NEGATED +
+      tdlfile.add(type_name + ''':= [ SYNSEM.LOCAL.CAT.VAL [ SPR #spr,
+                           SPEC #spec,
+                           SUBJ #subj,
+                           COMPS < canonical-synsem &
+                                   [ LOCAL [ CAT.HEAD [ NEGATED +,
+                                                      MOD < [ LOCAL.CONT.HOOK #hook ] > ],
+                                              CONT.RELS <! arg1-ev-relation !>   ] ] . [ FIRST [ LOCAL [ CAT [ VAL #v,
+                                      HEAD verb & [ NEGATED + ] ],
+                                CONT #c ],
+                        NON-LOCAL #nl ] ] > ],
+    DTR verb-lex &
+        [ SYNSEM.LOCAL [ CAT [ VAL [ SPR #spr,
+                                     SPEC #spec,
+                                     SUBJ #subj,
+                                     COMPS.FIRST [ LOCAL [ CAT.VAL #v,
+                                                           CONT #c ],
+                                                   NON-LOCAL #nl ] ],
+                               HEAD.AUX + ],
+                         CONT.HOOK #hook ] ] ].''', merge=True)
+
+    elif (n == 'negation' and v[0] == 'g'):
+    # negation lex rule to add dummy negative complement and
+    # only apply to lexical verbs 
+
+    # also, flip negated + value
+      tdlfile.add(type_name +''':= [ SYNSEM.LOCAL.CAT [ VAL [ SPR #spr,
+                             SPEC #spec,
+                             SUBJ #subj,
+                             COMPS < canonical-synsem &
+                                     [ LOCAL [ CAT.HEAD [ NEGATED +,
+                                                        MOD < [ LOCAL.CONT.HOOK #hook ] > ],
+                                                CONT.RELS <! !> ] ] . #oldcomps > ],
+                       HEAD verb & [ NEGATED +,
+                              AUX - ] ],
+    DTR verb-lex &
+        [ SYNSEM.LOCAL [ CAT [ VAL [ SPR #spr,
+                                     SPEC #spec,
+                                     SUBJ #subj,
+                                     COMPS #oldcomps ],
+                               HEAD.AUX - ],
+                         CONT.HOOK #hook ] ] ].''', merge=True)
+
+    elif (n == 'negation' and v[0] == 'h'):
+      # comps adding neg rule which also sets NEG-SAT -
+      tdlfile.add(type_name + ''':= [
+        SYNSEM [ NEG-SAT -,
+                 LOCAL [ CAT.VAL [ SPR #spr,
+                                 SPEC #spec,
+                                 SUBJ #subj,   
+                                 COMPS < canonical-synsem & 
+                                         [ LOCAL.CAT.HEAD [ NEGATED +,
+                                         MOD < [ LOCAL.CONT.HOOK #hook ] > ] ]
+                                         . #oldcomps > ] ] ],
+        DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,
+                                     SPEC #spec,
+                                     SUBJ #subj,
+                                     COMPS #oldcomps ],
+                           CONT.HOOK #hook ] ].''', merge=True)
     elif (n == 'negation' and v[0] == 'minus'):
       # JDC 2011-01-11 Users specify negation minus to indicate that a 
       # lexical type is not compatible with negation
