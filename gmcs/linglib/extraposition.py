@@ -116,8 +116,8 @@ def add_anchor_related_suptypes_and_constraints(ch, mylang):
   mylang.add('basic-rel-phrase := \
                      [ SYNSEM.LOCAL.ANCHOR [ ANCHS <! !>, \
 			                     TO-BIND < > ] ],')  
-
-  mylang.add('basic-informal-vcomp := \
+  if ch.get('clz-optionality'):
+    mylang.add('basic-informal-vcomp := \
                   [ ARGS < [ SYNSEM.LOCAL.ANCHOR.TO-BIND < > ] > ].')
 
   mylang.add('compound-noun-phrase := collect-anchor-phrase.')

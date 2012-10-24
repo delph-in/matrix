@@ -9,7 +9,7 @@ from gmcs.utils import orth_encode
 ######################################################################
 # define_coord_strat: a utility function, defines a strategy
 
-def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_number, mc_inv_sh, trunc, mylang, rules, irules):
+def define_coord_strat(ch, num, pos, top, mid, bot, left, pre, suf, agreement, np_number, mc_inv_sh, trunc, mylang, rules, irules):
   mylang.add_literal(';;; Coordination Strategy ' + num)
 
   pn = pos + num
@@ -119,7 +119,18 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, agreement, np_nu
     share_rel_properties(mylang, pn, mid)
 
   if pos == 'n' or pos == 'np' or pos == 'adj':
-    noun_feat = ['case','vc']
+    noun_feat = ['vc']
+    if not pos == 'adj':
+      noun_feat.append('case')
+    else:
+       ###Agreement properties
+      case_agr = False
+      for agr in ch.get('adjagr'):
+        if agr.get('feat') == 'case':
+          case_agr = True
+      if case_agr:
+        noun_feat.append('case')
+
     for nf in noun_feat:
       if nf in agr:
         add_sharing_supertypes(mylang, pn, mid, nf) 
@@ -336,7 +347,7 @@ trunc-coord-lex-rule.
 
     for pos in ('n', 'np', 'vp', 's', 'adj','adp','adv'):
       if cs.get(pos):
-        define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, agreement,
+        define_coord_strat(ch, csnum, pos, top, mid, bot, left, pre, suf, agreement,
     np_number, mc_inv_sh, trunc, mylang, rules, irules)
         if pos in ('n','np'):
           if ch.get('reflexives') == 'yes':

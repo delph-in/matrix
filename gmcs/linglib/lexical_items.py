@@ -207,6 +207,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
   ###Germanic slightly generalized: using form to allow verbs to select
   ###for an auxiliary (haben/sein + ptc)
+
     if ch.get('aux-select') == 'yes':
       auxs = ch.get('sel_aux',[])
       for aux in auxs:
@@ -482,7 +483,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
           o_case = case.canon_to_abbr(c[1], cases)
           tivity = a_case + '-' + o_case + '-' + c[2]
           tivity += '-trans'
-        elif c[2] == 'vor':
+        elif c[2] == 'vor' or c[2] == 'voor':
           a_case = case.canon_to_abbr(c[0], cases)
           b_case = case.canon_to_abbr(c[1], cases)
           o_case = case.canon_to_abbr(c[2], cases)
@@ -528,7 +529,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                      [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT \
                                            ' + o_drop_default + ' ].')
         if len(c) == 3:
-          if c[2] == 'vor':
+          if c[2] == 'vor' or c[2] == 'voor':
             mylang.add(vtype + ' := \
                          [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ], [ OPT - ] > ].')
           elif not 'obj2' in opt_heads:
@@ -930,7 +931,7 @@ def customize_adjectives(mylang, ch, lexicon, rules, hierarchies):
         mylang.add('+njc :+ [ CASE case].', section='addenda')
       else:
         mylang.add('+nj :+ [ CASE case].', section='addenda')
-    elif ch.get('case-marking') != 'none': 
+    elif ch.get('case-marking') != 'none' or ch.get('real-case-marking') != 'none': 
       if ch.get('cp-at-np') == 'yes':
         mylang.add('+nc :+ [ CASE case].', section='addenda')
       else:
@@ -974,11 +975,17 @@ def customize_adjectives(mylang, ch, lexicon, rules, hierarchies):
                    SPR < >, \
                    SPEC < > ]'
     elif arg_str == 'adp':
-      val = 'VAL [ SUBJ < >, \
+      if ch.get('verb-cross-classification') == 'yes':
+        val = 'VAL [ SUBJ < >, \
                    COMPS < [ LOCAL.CAT.HEAD adp & [ FORM #pform ] ]>, \
                    SPR < >, \
                    SPEC < > ]'
-      mylang.add(atype + ' := [ SYNSEM.LKEYS.KEY-ADP #pform ].')
+        mylang.add(atype + ' := [ SYNSEM.LKEYS.KEY-ADP #pform ].')
+      else:
+        val = 'VAL [ SUBJ < >, \
+                   COMPS < [ LOCAL.CAT.HEAD adp ]>, \
+                   SPR < >, \
+                   SPEC < > ]'
  
     if val:
       mylang.add(atype + ' := [ SYNSEM.LOCAL.CAT.' + val + ' ].')
@@ -2030,11 +2037,16 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                           [ LOCAL.CONT.HOOK.INDEX.SF ques, \
                             NON-LOCAL.SLASH 0-dlist ] > ].')
       elif arg_st == 'adp':
-        mylang.add(ntype + ' := [ ARG-ST < [ ], \
+        if ch.get('verb-cross-classification') == 'yes':
+          mylang.add(ntype + ' := [ ARG-ST < [ ], \
                                 [ LOCAL.CAT.HEAD adp & \
                                    [ MOD < [ LOCAL.CAT.HEAD noun ] >, \
                                      FORM #pform ] ] >, \
                                  SYNSEM.LKEYS.KEY-ADP #pform ].')
+        else:
+          mylang.add(ntype + ' := [ ARG-ST < [ ], \
+                                [ LOCAL.CAT.HEAD adp & \
+                                   [ MOD < [ LOCAL.CAT.HEAD noun ] > ] ] > ].')
       elif arg_st == 'zuinf':
         mylang.add(ntype + ' := [ ARG-ST < [ ], \
                                            [ LOCAL [ CAT [ HEAD verb & [ FORM zuinf ], \

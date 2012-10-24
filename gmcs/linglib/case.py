@@ -100,6 +100,8 @@ def name_to_abbr(name, cases):
 
 def init_case_hierarchy(ch, hierarchies):
   cm = ch.get('case-marking')
+  if ch.get('case-marking') == 'none':
+    cm = ch.get('real-case-marking')
   cases = case_names(ch)
 
   hier = TDLHierarchy('case')
@@ -289,7 +291,6 @@ def interpret_verb_valence(valence):
 def customize_verb_case(mylang, ch):
   cm = ch.get('case-marking')
   cases = case_names(ch)
-
   # Pass through the list of case-marking patterns.  If a pattern is a
   # lexical pattern (i.e. the third item in the list is False), then
   # create and contrain the appropriate lexical type.  This type is a
@@ -599,7 +600,6 @@ def customize_verb_case(mylang, ch):
         mylang.add(typedef)
 
       elif p[0] == 'ditrans' or p[0] == 'partv' or len(c) == 3: #ditrans 
-        
         if p[0] == 'ditrans':
           a_case = ''
           b_case = ''
@@ -617,7 +617,7 @@ def customize_verb_case(mylang, ch):
         b_head = 'noun'
 ###should allow to create list of particles and check if is in list
 ###rather than specific form
-        if p[0] == 'partv' or o_case == 'vor':
+        if p[0] == 'partv' or o_case == 'vor' or o_case == 'voor':
           o_head = 'verb'
         else:
           o_head = 'noun'

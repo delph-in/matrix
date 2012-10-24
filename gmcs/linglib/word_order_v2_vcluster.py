@@ -1383,7 +1383,8 @@ def filler_gap_word_order(mylang):
  #                     HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].'
  # mylang.add('basic-head-mod-phrase-simple :+ ' + hd_slash_share)
   
-  mylang.add('create-informal-vcomp-phrase := \
+  if ch.get('clz-optionality'):
+    mylang.add('create-informal-vcomp-phrase := \
                [ ARGS < [ SYNSEM.NON-LOCAL.SLASH 0-dlist ] >, \
                  SYNSEM.NON-LOCAL.SLASH 0-dlist ].')
 

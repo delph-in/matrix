@@ -88,7 +88,8 @@ def filler_head_basic(ch, mylang, rules):
          [ SYNSEM.LOCAL.CAT.VFRONT - ].')
     else:
       add_ldd_additional_fg(mylang)
-      add_ldd_informal_vcomp(ch, mylang, rules) 
+      if ch.get('clz-optionality'):
+        add_ldd_informal_vcomp(ch, mylang, rules) 
   else:
     mc_ldd_constraints(ch, mylang)
 
@@ -163,7 +164,8 @@ def add_analysis_specific_constraints(ch, mylang, rules):
                 [ SYNSEM.LOCAL.CAT.EDGE -, \
                   HEAD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist & [ LIST < > ] ].')
     add_ldd_additional_constraints_nonfg(ch, mylang)
-    add_ldd_informal_vcomp(ch, mylang, rules)
+    if ch.get('clz-optionality'):
+      add_ldd_informal_vcomp(ch, mylang, rules)
 
 def mc_ldd_constraints(ch, mylang):
   mylang.add('general-filler-head-phrase := \

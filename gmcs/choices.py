@@ -701,6 +701,8 @@ class ChoicesFile:
   #   marking pattern.
   def patterns(self):
     cm = self.get('case-marking')
+    if cm == 'none':
+      cm = self.get('real-case-marking')
     cases = case.case_names(self)
 
     patterns = []
@@ -710,7 +712,10 @@ class ChoicesFile:
       patterns += [ ['nom', '', False] ]
       patterns += [ ['nom-acc', '', False] ]
       if self.get('ditransitives') == 'yes':
-        patterns += [ ['nom-dat-acc', '', False] ]
+        if 'dative' in cases:
+          patterns += [ ['nom-dat-acc', '', False] ]
+        else:
+          patterns += [ ['nom-acc-acc', '', False] ]
       if self.get('emb-clause-2nd-verb') == 'yes':
         patterns += [ ['nom-scomp', '', False ] ]
       if self.get('subj-control-verb') == 'yes':
@@ -724,6 +729,7 @@ class ChoicesFile:
         patterns += [[ 'expl-acc', '', False ]]
       if self.get('verbal-particles') == 'yes':
         patterns += [ ['nom-acc-vor', '', False] ]
+        patterns += [ ['nom-acc-voor', '', False] ]
     elif cm == 'erg-abs':
       patterns += [ ['abs', '', False] ]
       patterns += [ ['erg-abs', '', False] ]
@@ -1599,8 +1605,8 @@ class ChoicesFile:
     self.convert_key('aux-subj', 'aux1_subj')
     if self.get('aux1_orth'):
       self['has-aux'] = 'yes'
-    elif len(self):  # don't add this if the choices file is empty
-      self['has-aux'] = 'no'
+#    elif len(self):  # don't add this if the choices file is empty
+#      self['has-aux'] = 'no'
 
     for verb in self['verb']:
       self.delete('_'.join([verb.full_key, 'non-finite']))
