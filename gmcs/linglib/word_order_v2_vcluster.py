@@ -67,6 +67,16 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
   if head_rest:
     mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.HEAD ' + head_rest + ' ].')    
 
+  if ch.get('second-dependent-morph') == 'yes':
+    mylang.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND - ].')
+    mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
+    mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
+                           HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
+    mylang.add('aux-2nd-comp-phrase := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
+                           HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
+    mylang.add('comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
+                           HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
+
 
 def add_basic_phrases_v2_with_cluster(ch, mylang, rules):
 
@@ -955,6 +965,13 @@ def create_aux_plus_verb_phrases(ch, mylang):
 #
 
 def spec_word_order_phrases_aux_plus_verb(ch, mylang):
+
+  if ch.get('second-dependent-morph') == 'yes':
+    mylang.add('cat :+ [ SECOND luk ].',comment='SECOND used to check whether subject follows or precedes the verb (morphology on verb changes for 2nd person sg in Dutch).',section='features')
+    mylang.add('subj-v-inv-lrule := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
+                                     DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
+    mylang.add('int-cl := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
+                            HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
 
   if ch.get('extraposition') == 'yes':
     stype = 'collect-anchor-phrase'
