@@ -241,7 +241,10 @@ def get_choice(choice, choices):
     choice_lines = choices.readlines()
 
   for line in [l.strip() for l in choice_lines if '=' in l]:
-    key, val = line.split('=')
+    try:
+      key, val = line.split('=')
+    except:
+      print line
     if key == choice:
       return val
   return None

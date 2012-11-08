@@ -41,6 +41,7 @@ from gmcs.linglib import toolboximport
 from gmcs.linglib import long_distance_dependencies
 from gmcs.linglib import extraposition
 from gmcs.linglib import comparatives
+from gmcs.linglib import argument_alternation
 
 ######################################################################
 # globals
@@ -489,6 +490,7 @@ def customize_matrix(path, arch_type, destination=None):
   argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies)
   direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
   case.customize_case(mylang, ch, hierarchies)
+  argument_alternation.customize_argument_alternation(ch, mylang, lrules, lexicon)
   #argument_optionality.customize_arg_op(ch, mylang)
   # after all structures have been customized, customize inflection,
   # but provide the methods the components above have for their own
