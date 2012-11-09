@@ -1276,14 +1276,22 @@ def customize_adpositions(ch, mylang, lexicon, hierarchies):
       if adp.get('incl') == 'yes':
         incl = True
       if incl:
-        sname = 'compl-incl-int-adp-lex-item'
+        sname = 'compl-incl-adp-lex-item'
       if adp.get('det-incl') == 'yes':
         sname = 'int-adp-integrated-det-lex-item'
       name = adp.get('name') + '-adp-lex-item'
       kind = adp.get('kind')
       form = adp.get('form')
       circum = adp.get('circum')
-        
+      rel = adp.get('relative-cl') 
+### based on Dutch (and absence in German) relative adposition is always compl-incl
+      if rel == 'yes' and incl:
+        mylang.add('relative-adposition-lex := ' + sname + ' & \
+              [ SYNSEM [ LOCAL.CONT.RELS.LIST.FIRST.ARG2 #arg2, \
+                         NON-LOCAL.REL 1-dlist & <! [ INDEX #arg2 ] !> ] ].')   
+        sname = 'relative-adposition-lex' 
+        create_adp_cross_classification(ch, mylang, sname)   
+
       if kind == 'mod':
         mod = adp.get('mod')
         if kind in exception and mod in exception:
@@ -1314,6 +1322,9 @@ def customize_adpositions(ch, mylang, lexicon, hierarchies):
                                      LKEYS.KEYREL.ARG1 #arg1 ] ].')
         else:
           mylang.add(name + ' := ' + mod + '-' + sname + '.')
+          #used to be part of supertype, but inclusives can also be args
+          if incl:
+            mylang.add(name + ' := ' + 'intersective-mod-lex.')
         order = adp.get('order')
         if order == 'post':
           mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
@@ -1371,7 +1382,11 @@ def create_adposition_supertypes(ch, mylang):
     mylang.add('basic-adposition-lex :+ \
                   [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].',section='addenda')
 ###general introduced because 'als' (as) in German may combine with N as well as NP
- 
+  if ch.get('adp-rel-is-wh') == 'yes':
+    mylang.add('basic-adposition-lex :+ \
+       [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST.NON-LOCAL.QUE #rel, \
+                  NON-LOCAL.REL #rel ] ].') 
+
   s_name = 'general-int-adp-lex-item'
   comp = '[ LOCAL.CAT [ HEAD noun, \
                         VAL [ COMPS < >, \
@@ -1426,9 +1441,9 @@ def create_adposition_supertypes(ch, mylang):
                complement. They cannot inherit from basic-adp-lex which is a \
                one-rel-lex-item, because it needs to introduce the semantics \
                of its complement.'
-    sname2 = 'compl-incl-int-adp-lex-item' 
+####CAREFUL REMOVING INT FROM COMPL-INCL: MUST BE ADDED ELSEWHERE!
+    sname2 = 'compl-incl-adp-lex-item' 
     mylang.add(sname2 + ' := norm-hook-lex-item & no-cluster-lex-item & \
-                                                 intersective-mod-lex & \
                   [ SYNSEM.LOCAL.CAT [ HEAD adp, \
                                        VAL [ SUBJ < >, \
                                              SPR < >, \
@@ -2176,6 +2191,15 @@ def create_wh_phrases(mylang, ch):
                  [ SYNSEM [ LOCAL.CAT.HEAD noun & [ MOD < > ], \
                             LKEYS.KEYREL noun-relation ] ].'
     mylang.add(wh_noun)
+    if ch.get('adp-rel-is-wh') == 'yes':
+      add_constraint_whnoun = \
+      'wh-noun-lex :=   [ SYNSEM [ LOCAL.CONT.HOOK [ LTOP #hand, \
+                                                     INDEX #ind, \
+                                                     XARG #xarg ], \
+                                   NON-LOCAL.QUE.LIST < [ LTOP #hand, \
+                                                          INDEX #ind,\
+                                                          XARG #xarg ] > ] ].'
+      mylang.add(add_constraint_whnoun)
   if ch.get('wh-det') == 'on':
     wh_det = \
      'wh-determiner-lex := basic-determiner-lex & zero-arg-nonslash & \
