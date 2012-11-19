@@ -220,7 +220,7 @@ def validate_lexicon(ch, vr):
 
           # det question
           pdet = ptype.get('det')
-          if pdet != '':
+          if pdet in ['imp','obl']:
             if det == '':
               det = pdet
             elif det != pdet:

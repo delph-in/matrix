@@ -161,8 +161,8 @@ def main():
                        'regression_tests/run_regression_tests.sh')
     num = int(args[1])
     testlist = get_regression_tests(['*'])
-    lgnames = [] 
-    if (num > len(testlist)): 
+    lgnames = []
+    if (num > len(testlist)):
       sys.exit("\nThere are only "+str(len(testlist))+" tests available.\
                 \nPass a smaller argument to 'rs' or just call 'r' with no\
                 \narguments to run all tests.\
@@ -203,6 +203,9 @@ def main():
     except ValueError, er:
       print "Error adding regression test."
       print er.message
+    except OSError, er:
+      print "OS Error. Most likely Subversion is not installed."
+      print er.message
 
   elif args[0] in ('regression-test-update', 'ru'):
     from gmcs import utils
@@ -236,24 +239,28 @@ def main():
     print "Do you want to remove them from subversion? If you choose to remove"
     print "them, the test entry in regression-test-index will also be removed."
     if utils.verify():
-      # remove the entry from regression-test-index
-      rti_path = os.path.join(rpath, 'regression-test-index')
-      rti = open(rti_path).readlines()
-      rti_file = open(rti_path, 'w')
-      for l in rti:
-        if l.split('=')[0] != test:
-          print >>rti_file, l.strip()
-      rti_file.close()
-      # remove the relevant files from subversion
-      for test_path in test_paths:
-        subprocess.call(['svn', '-q', '--non-interactive', 'rm', test_path])
-      # All done, print a success message and reminder
-      print "Remember you must commit your changes to subversion. Also,"
-      print "there may still be files not in the repository related to this"
-      print "test. Look in the following directories:"
-      print os.path.join(rpath, 'grammars')
-      print os.path.join(rpath, 'home', 'current')
-      print os.path.join(rpath, 'logs')
+      try:
+        # remove the relevant files from subversion
+        for test_path in test_paths:
+          subprocess.call(['svn', '-q', '--non-interactive', 'rm', test_path])
+        # All done, print a success message and reminder
+        print "Remember you must commit your changes to subversion. Also,"
+        print "there may still be files not in the repository related to this"
+        print "test. Look in the following directories:"
+        print os.path.join(rpath, 'grammars')
+        print os.path.join(rpath, 'home', 'current')
+        print os.path.join(rpath, 'logs')
+        # remove the entry from regression-test-index
+        rti_path = os.path.join(rpath, 'regression-test-index')
+        rti = open(rti_path).readlines()
+        rti_file = open(rti_path, 'w')
+        for l in rti:
+          if l.split('=')[0] != test:
+            print >>rti_file, l.strip()
+        rti_file.close()
+      except OSError, er:
+        print "OS Error. Most likely Subversion is not installed."
+        print er.message
     else:
       print "Aborted."
     sys.exit(1)
@@ -266,31 +273,36 @@ def main():
     if oldname not in (l.split('=')[0] for l in rti):
       print 'Error: cannot find test', oldname
       sys.exit(2)
-    rti_file = open(os.path.join(rpath, 'regression-test-index'), 'w')
-    for l in rti:
-      if l.split('=')[0] == oldname:
-        print >>rti_file, l.replace(oldname, newname, 1)
-      else:
-        print >>rti_file, l
-    rti_file.close()
-    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
-                     os.path.join(rpath, 'home', 'gold', oldname),
-                     os.path.join(rpath, 'home', 'gold', newname)])
-    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
-                     os.path.join(rpath, 'skeletons', oldname),
-                     os.path.join(rpath, 'skeletons', newname)])
-    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
-                     os.path.join(rpath, 'choices', oldname),
-                     os.path.join(rpath, 'choices', newname)])
-    subprocess.call(['svn', '-q', '--non-interactive', 'mv',
-                     os.path.join(rpath, 'txt-suites', oldname),
-                     os.path.join(rpath, 'txt-suites', newname)])
-    print "Remember you must commit your changes to subversion. Also,"
-    print "there may still be files not in the repository related to this"
-    print "test. Look in the following directories:"
-    print os.path.join(rpath, 'grammars')
-    print os.path.join(rpath, 'home', 'current')
-    print os.path.join(rpath, 'logs')
+    try:
+      subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                       os.path.join(rpath, 'home', 'gold', oldname),
+                       os.path.join(rpath, 'home', 'gold', newname)])
+      subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                       os.path.join(rpath, 'skeletons', oldname),
+                       os.path.join(rpath, 'skeletons', newname)])
+      subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                       os.path.join(rpath, 'choices', oldname),
+                       os.path.join(rpath, 'choices', newname)])
+      subprocess.call(['svn', '-q', '--non-interactive', 'mv',
+                       os.path.join(rpath, 'txt-suites', oldname),
+                       os.path.join(rpath, 'txt-suites', newname)])
+      print "Remember you must commit your changes to subversion. Also,"
+      print "there may still be files not in the repository related to this"
+      print "test. Look in the following directories:"
+      print os.path.join(rpath, 'grammars')
+      print os.path.join(rpath, 'home', 'current')
+      print os.path.join(rpath, 'logs')
+      # modify the regression test index after making SVN changes
+      rti_file = open(os.path.join(rpath, 'regression-test-index'), 'w')
+      for l in rti:
+        if l.split('=')[0] == oldname:
+          print >>rti_file, l.replace(oldname, newname, 1)
+        else:
+          print >>rti_file, l
+      rti_file.close()
+    except OSError, er:
+      print "OS Error. Most likely Subversion is not installed."
+      print er.message
 
   elif args[0] in ('regression-test-list', 'rl'):
     patterns = ['*']
@@ -762,7 +774,7 @@ def remove_web_test(testname):
   test_file.close()
 
 def validate_html(arg):
-  # takes name of a subpage, or 'main' or no argument = all 
+  # takes name of a subpage, or 'main' or no argument = all
   import time
   errors = 0
   print "Checking html validation for "+(arg if arg != '' else 'all')
@@ -785,8 +797,8 @@ def validate_html(arg):
   if arg in ['main','m','']:
     print "main page:"
 
-    # need to drop the first few lines of the reply from 
-    # matrix.cgi (HTTP headers!), validation starts at 
+    # need to drop the first few lines of the reply from
+    # matrix.cgi (HTTP headers!), validation starts at
     # doctype
     i = httpstr.lower().find('<!doctype')
     if i == -1:
@@ -802,7 +814,7 @@ def validate_html(arg):
     else:
       errors += e
 
-  if arg == '': 
+  if arg == '':
     # get the list of subpages by instantiating matrixdef
     md = MatrixDefFile('web/matrixdef')
     print "subpages:"
@@ -846,10 +858,10 @@ def validate_html(arg):
         print "  No errors were found."
       else:
         errors += e
-    
+
 
   print "Total errors on all checked pages: ",errors
-    
+
 
 
 def send_page(page):
@@ -858,7 +870,7 @@ def send_page(page):
   from xml.dom.minidom import parseString
   values = { 'uploaded_file':page, 'output':'soap12' }
   data = urllib.urlencode(values)
-  req = urllib2.Request('http://validator.w3.org/check', data) 
+  req = urllib2.Request('http://validator.w3.org/check', data)
   reply = urllib2.urlopen(req).read()
 
   dom = parseString(reply)

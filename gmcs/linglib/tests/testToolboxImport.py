@@ -68,8 +68,15 @@ class TestToolboxImport(unittest.TestCase):
     self.c = ChoicesFile(choices.name)
     choices.close()
     self.c["toolboximportconfig1_toolboxfile1_tbfilename"] = ''
+#    self.c["version"] = str(self.c.current_version())
     self.gold.load_choices(test_gold_file.splitlines())
+#    self.gold["version"] = str(self.gold.current_version())
+#    try:
     self.assertEqual(self.c, self.gold)
+#    except:
+#      print "diffs"
+#      diffs = list(set(self.c) - set(self.gold))
+#      print diffs
 
 
 ##############################################################################
@@ -12073,7 +12080,7 @@ test_toolbox_file = '''
 empty_choices_file = ''
 
 test_choices_file = '''
-version=24
+version=26
 
 section=general
 language=import_test
@@ -12180,10 +12187,10 @@ section=test-sentences
 
 section=gen-options
 
-section=ToolboxLexicon'''
+section=ToolboxLexicon''' 
 
 test_gold_file = '''
-version=24
+version=26
 
 section=general
 language=import_test
@@ -12690,8 +12697,7 @@ section=ToolboxLexicon
   imported-entry133_lextype=noun1
   imported-entry133_orth=4836.3519236004
   imported-entry133_pred=_6172%2E12633457846_n_rel
-'''
-
+''' 
 
 if __name__ == '__main__':
     unittest.main()
