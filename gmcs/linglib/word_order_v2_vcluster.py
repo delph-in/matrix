@@ -28,7 +28,7 @@ def v2_and_verbal_clusters(ch, mylang, lrules, rules):
     add_revised_analysis_incl_obj_raising_constraints(ch, mylang, lrules)
 
   if ch.get('rel-clause') == 'yes':
-    create_rel_clause_phrases(mylang, rules)
+    create_rel_clause_phrases(mylang, rules, ch)
     if not ch.get('wh-questions') == 'yes':
       mylang.add('bare-np-phrase := head-nexus-phrase.')
 
@@ -72,9 +72,10 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
     mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
     mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
                            HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
-    mylang.add('aux-2nd-comp-phrase := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
+    if ch.get('vc-analysis') == 'aux-rule':
+      mylang.add('comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
                            HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
-    mylang.add('comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
+      mylang.add('aux-2nd-comp-phrase := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
                            HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
 
 
@@ -464,7 +465,8 @@ def create_nachfeld_phrases(ch, mylang, rules):
 			 NON-LOCAL [ SLASH 0-dlist,
                                      REL 0-dlist,
 				     QUE 0-dlist ],
-			 LIGHT - ] ].''' 
+			 LIGHT - ] ].'''
+ 
   mylang.add(nf_type)
   if ch.get('extraposition'):
     mylang.add('nachfeld-phrase := collect-anchor-phrase.')
@@ -482,6 +484,15 @@ def create_nachfeld_phrases(ch, mylang, rules):
                            EDGE - ] ] ].'''
 
   mylang.add(typedef)
+
+  if ch.get('ldd') == 'yes':
+    mylang.add('cat :+ [ HEADFINAL bool ].')
+    mylang.add('nachfeld-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL - ].') 
+    mylang.add('extracted-comp-phrase-nachfeld := \
+     [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEADFINAL - ].')
+    mylang.add('general-filler-head-phrase := \
+      [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL + ].')
+
   rules.add('extracted-comp-nachfeld := extracted-comp-phrase-nachfeld.')
   mylang.add('nachfeld-head-filler-phrase := nachfeld-phrase.') 
   mylang.add('nachfeld-head-filler-phrase := basic-head-filler-phrase & \
@@ -551,7 +562,6 @@ def create_special_mod_valence_phrases(mylang):
 ####DISCLAIMER: NOT ALL LOGICAL COMBINATIONS ARE COVERED BY CODE FOR NOW
 
 def create_argument_composition_phrases(ch, mylang, rules):
-
   if ch.get('has-dets') == 'yes':
     if ch.get('noun-det-order') == 'det-noun':
       mylang.add('head-spec-phrase := [ SYNSEM.LOCAL.CAT.VC #vc, \
@@ -596,7 +606,7 @@ def create_argument_composition_phrases(ch, mylang, rules):
   if not ch.get('v2-analysis') == 'filler-gap':
     mc_argcomp_word_order_phrases(ch, mylang, rules)
     if not ch.get('old-analysis') == 'on':
-      mc_argcomp_revised_wo(mylang)
+      mc_argcomp_revised_wo(ch, mylang)
 ################################################################
 # specialized phrases for argument composition plus clusters
 #
@@ -1252,7 +1262,7 @@ def create_germanic_adjunct_phrases(ch, mylang, rules):
     rules.add('adj-head-scop-vc := adj-head-scop-vc-phrase.')
 
 
-def create_rel_clause_phrases(mylang, rules):
+def create_rel_clause_phrases(mylang, rules, ch):
 
   basic_rel = \
    '''basic-rel-phrase := basic-binary-marker-phrase &
@@ -1317,6 +1327,19 @@ def create_rel_clause_phrases(mylang, rules):
   mylang.add('head-spec-phrase := [ SYNSEM.NON-LOCAL.REL #rel, \
                   NON-HEAD-DTR.SYNSEM.NON-LOCAL.REL #rel ].')
 
+  if ch.get('wh-rel') or ch.get('non-wh-rel'):
+    mylang.add('infl-satisfied :+ [ WH-FLAG luk ].')
+    mylang.add('infl-wh := infl-satisfied & [ WH-FLAG + ].')
+    mylang.add('infl-non-wh := infl-satisfied & [ WH-FLAG na ].')
+
+####assuming for now that other way around does not occur in Germanic
+####we know from English that having one of the two in both positions (wh)
+####occurs
+
+    if ch.get('non-wh-rel') != 'embedded' and ch.get('non-wh-rel') != 'both':
+      mylang.add('head-comp-sub-phrase := [ NON-HEAD-DTR.INFLECTED infl-wh ].')
+    if ch.get('wh-rel') != 'non-embedded' and ch.get('wh-rel') != 'both':
+      mylang.add('rel-phrase := [ NON-MARKER-DTR.INFLECTED infl-non-wh ].')
 ########################################################
 # I) MC analysis (which follows from the original v-2 analysis
 # from the Grammar Matrix
@@ -1548,7 +1571,7 @@ def mc_argcomp_word_order_phrases(ch, mylang, rules):
   if ch.get('wh-questions') == 'yes':
     wh_mc_argcomp_word_order(ch, mylang, rules)
 
-def mc_argcomp_revised_wo(mylang):
+def mc_argcomp_revised_wo(ch, mylang):
   mylang.add('comp-head-phrase := basic-head-comp-share-vc.')
   mylang.add('comp-head-phrase-2 := basic-head-comp-share-vc.')
   mylang.add('gen-comp-aux-2nd-phrase := basic-head-comp-share-vc.')

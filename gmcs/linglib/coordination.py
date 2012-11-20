@@ -23,7 +23,9 @@ def define_coord_strat(ch, num, pos, top, mid, bot, left, pre, suf, agreement, n
     headtype = 'verb'
 
   #this allows users to define agreement features in the choices file
+
   agr = agreement.split(',')
+  
   if mc_inv_sh == 'red': 
     agr.append('mc-red') 
     agr.append('inv-red')   
@@ -119,21 +121,23 @@ def define_coord_strat(ch, num, pos, top, mid, bot, left, pre, suf, agreement, n
     share_rel_properties(mylang, pn, mid)
 
   if pos == 'n' or pos == 'np' or pos == 'adj':
+    if trunc and pos == 'n':
+      add_sharing_supertypes(mylang, pn, mid, 'gender')
     noun_feat = ['vc']
     if not pos == 'adj':
       noun_feat.append('case')
     else:
        ###Agreement properties
       case_agr = False
-      for agr in ch.get('adjagr'):
-        if agr.get('feat') == 'case':
+      for adjagr in ch.get('adjagr'):
+        if adjagr.get('feat') == 'case':
           case_agr = True
       if case_agr:
         noun_feat.append('case')
 
     for nf in noun_feat:
       if nf in agr:
-        add_sharing_supertypes(mylang, pn, mid, nf) 
+        add_sharing_supertypes(mylang, pn, mid, nf)
     
 
     if np_number and pos != 'adj':
@@ -145,7 +149,7 @@ def define_coord_strat(ch, num, pos, top, mid, bot, left, pre, suf, agreement, n
         mylang.add(pn + '-top-coord-rule := \
                [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + np_number + ' ].')
   #adjectives also need to share png info for agreement with nouns
-    elif pos == 'adj':
+    if pos == 'adj':
       if 'prd' in agr:
         add_sharing_supertypes(mylang, pn, mid, 'prd') 
       path = 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.'
@@ -219,6 +223,18 @@ trunc-coord-lex-rule.
              LKEYS.KEYREL.ARG0 #index ] ].')
     #single-rel
     mylang.add('trunc-lex := [ SYNSEM.LOCAL.CONT.RELS <! relation !> ].')
+    #gender value of combined N should come from right-hand noun
+    #GERMANIC ONLY: ASSUMING THERE IS GENDER (SHOULD CHECK WHETHER GENDER DEFINED)
+    mylang.add('gender-agr-bottom-coord-rule := bottom-coord-phrase & \
+        [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND #gend, \
+          NONCONJ-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND #gend ].')
+    mylang.add('gender-agr-mid-coord-rule := mid-coord-rule & \
+        [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND #gend, \
+          RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND #gend ].')
+    mylang.add('gender-agr-top-coord-rule := top-coord-rule & \
+        [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND #gend, \
+          RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND #gend ].')
+    
   for cs in ch.get('cs'):
     csnum = str(cs.iter_num())
 
@@ -344,6 +360,7 @@ trunc-coord-lex-rule.
         mc_inv_sh = 'red' 
         agr.append('mc-red') 
         agr.append('inv-red')   
+
 
     for pos in ('n', 'np', 'vp', 's', 'adj','adp','adv'):
       if cs.get(pos):

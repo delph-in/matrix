@@ -1382,11 +1382,8 @@ def create_adposition_supertypes(ch, mylang):
     mylang.add('basic-adposition-lex :+ \
                   [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].',section='addenda')
 ###general introduced because 'als' (as) in German may combine with N as well as NP
-  if ch.get('adp-rel-is-wh') == 'yes':
-    mylang.add('basic-adposition-lex :+ \
-       [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST.NON-LOCAL.QUE #rel, \
-                  NON-LOCAL.REL #rel ] ].') 
 
+  mylang.add('basic-adposition-lex :+ basic-one-arg.')
   s_name = 'general-int-adp-lex-item'
   comp = '[ LOCAL.CAT [ HEAD noun, \
                         VAL [ COMPS < >, \
@@ -1810,6 +1807,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 						  INDEX #ind,
 						  XARG #xarg ] > ] ] ] ]. '''
       mylang.add(relprn)
+      if ch.get('wh-rel') or ch.get('non-wh-rel'):
+        mylang.add('wh-rel-pronoun-lex := rel-pronoun-lex & \
+                     [ INFLECTED infl-wh ].')
+        mylang.add('non-wh-rel-pronoun-lex := rel-pronoun-lex & \
+             [ INFLECTED infl-non-wh ].')
       if refl:
         mylang.add('rel-local := rel-non-refl-local.',section='features')
       else:
@@ -1977,11 +1979,14 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   # Add the lexical entries
   lexicon.add_literal(';;; Nouns')
 
+###
+
   for noun in ch.get('noun',[]):
     name = get_name(noun)
     det = noun.get('det')
     wh = noun.get('wh')
     rel = noun.get('rel-pn')
+    sub_rel = noun.get('sub-rel')
     expl = noun.get('expl')
     compound = noun.get('compound')
     pers_n = noun.get('pers-name')
@@ -2004,6 +2009,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       stype = 'wh-noun-lex'
     elif rel == 'yes':
       stype = 'rel-pronoun-lex'
+      if sub_rel:
+        stype = sub_rel + '-rel-pronoun-lex'
     elif kind == 'pronoun':
       stype = 'basic-pronoun-lex'
     elif kind == 'indef':
@@ -2191,15 +2198,6 @@ def create_wh_phrases(mylang, ch):
                  [ SYNSEM [ LOCAL.CAT.HEAD noun & [ MOD < > ], \
                             LKEYS.KEYREL noun-relation ] ].'
     mylang.add(wh_noun)
-    if ch.get('adp-rel-is-wh') == 'yes':
-      add_constraint_whnoun = \
-      'wh-noun-lex :=   [ SYNSEM [ LOCAL.CONT.HOOK [ LTOP #hand, \
-                                                     INDEX #ind, \
-                                                     XARG #xarg ], \
-                                   NON-LOCAL.QUE.LIST < [ LTOP #hand, \
-                                                          INDEX #ind,\
-                                                          XARG #xarg ] > ] ].'
-      mylang.add(add_constraint_whnoun)
   if ch.get('wh-det') == 'on':
     wh_det = \
      'wh-determiner-lex := basic-determiner-lex & zero-arg-nonslash & \
@@ -2213,7 +2211,7 @@ def create_wh_phrases(mylang, ch):
   mylang.add('non-wh-lex-item := lex-item & [ SYNSEM.NON-LOCAL.QUE 0-dlist].')
   mylang.add('basic-adjective-lex :+ non-wh-lex-item.')
   mylang.add('basic-adverb-lex :+ non-wh-lex-item.')
-  mylang.add('basic-adposition-lex :+ basic-one-arg & \
+  mylang.add('basic-adposition-lex :+ \
              [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp & [ ] >, \
                ARG-ST < #comp > ].')
   mylang.add('determiner-lex := non-wh-lex-item.') 

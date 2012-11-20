@@ -31,27 +31,71 @@ def customize_passivization(ch, mylang, lrules, lexicon):
 ###starting assumption: direct-object becomes subject
 ###subject becomes optional first argument on COMPS list
 
+######SYNTACTIC PROPERTIES: ONLY COMP CHANGES, BUT LINKING CHANGES
+
     typedef = \
-    '''
-  passive-lex-rule := cat-change-only-lex-rule &
- [ SYNSEM [ LOCAL.CAT [ HEAD verb & [ MOD #mod ],
-			VAL [ SUBJ < [ LOCAL.CONT #arg2,
-                                       NON-LOCAL #nlo ] >,
-                              SPR #spr,
-			      COMPS < [ LOCAL.CONT #arg1,
-                                        NON-LOCAL #nls,
-					OPT + ] . #vcomps > ] ] ],
-   DTR.SYNSEM.LOCAL [ CAT [ HEAD verb & [ MOD #mod ],
-		  	    VAL [ SUBJ < [ LOCAL.CONT #arg1,
-                                           NON-LOCAL #nls ] >,
-                                  SPR #spr,
-				  COMPS < [ LOCAL.CONT #arg2,
-                                            NON-LOCAL #nlo ] . 
-                                 #vcomps > ] ] ] ].'''
+    '''passive-lex-rule := local-change-only-lex-rule &
+  [ SYNSEM.LOCAL [ CAT [ EDGE #edge,
+                       VAL [ SPR #spr,
+                             SUBJ < [ NON-LOCAL #nlo,
+                                      LOCAL [ CONT #arg2 & [ HOOK.INDEX #xarg ],
+                                              CAT.HEAD noun &
+                                                       [ CASE nom ] ] ] >,
+                             COMPS < [ NON-LOCAL #nls,
+                                       OPT +,
+                                       LOCAL [ CONT #arg1,
+                                               CAT [ VAL.COMPS < >,
+                                                     HEAD adp &
+                                                          [ MOD < >,
+                                                            FORM van ] ] ] ] . #vcomps > ],
+                       HEAD verb &
+                            [ MOD #mod,
+                              PART-FORM #pf,
+                              FORM pass-participle,
+                              AUX #aux,
+                              INV #inv & - ],
+                       VC #vc,
+                       MC #mc ],
+                   CONT [ HOOK [ XARG #xarg,
+				 GTOP #gtop,
+				 LTOP #ltop, 
+				 INDEX #index ],
+			  RELS #rels,
+			  HCONS #hcons ],
+		   COORD #coord,
+		   COORD-REL #coord-rel,
+		   COORD-STRAT #coord-strat ],
+    DTR.SYNSEM.LOCAL [ CAT [ EDGE #edge,
+                           VAL [ SUBJ < [ LOCAL.CONT #arg1,
+                                          NON-LOCAL #nls ] >,
+                                 SPR #spr,
+                                 COMPS < [ NON-LOCAL #nlo,
+                                           LOCAL [ CONT #arg2,
+                                                   CAT.HEAD noun &
+                                                            [ CASE acc ] ] ] . #vcomps > ],
+                           HEAD verb &
+                                [ MOD #mod,
+                                  PART-FORM #pf,
+                                  FORM participle,
+                                  AUX #aux,
+                                  INV #inv ],
+                           VC #vc,
+                           MC #mc ], 
+		       CONT [ HOOK [ GTOP #gtop,
+				     LTOP #ltop,
+				     INDEX #index ],
+			      RELS #rels,
+			      HCONS #hcons ],
+		       COORD #coord,
+		       COORD-REL #coord-rel,
+		       COORD-STRAT #coord-strat ] ].'''
     mylang.add(typedef)
     if ch.get('verbal-particles') == 'yes':
       mylang.add('passive-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf, \
                           DTR.SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf ].')
+    if ch.get("edge-related-res") == "yes":
+      mylang.add('passive-lex-rule := [ SYNSEM.LOCAL.CAT.EDGE #edge, \
+                            DTR.SYNSEM.LOCAL.CAT.EDGE #edge ].')
     lrules.add('passive-lr := passive-lex-rule.')
     lr_n = 'passive-lex-rule'
     mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
@@ -61,7 +105,6 @@ def customize_passivization(ch, mylang, lrules, lexicon):
     elif marking == 'morph':
       mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
                              DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].')
-  
 ###should be done properly using feature_code
 
     arg_res = p.get('arg_res', [])
