@@ -177,8 +177,12 @@ def define_coord_strat(ch, num, pos, top, mid, bot, left, pre, suf, agreement, n
     if pos == 'v' or pos == 'vp':
       path = 'SYNSEM.LOCAL.CONT.HOOK.'
       add_shared_features(mylang, 'xarg', path, mid)
-      add_sharing_supertypes(mylang, pn, mid, 'xarg') 
- 
+      add_sharing_supertypes(mylang, pn, mid, 'xarg')
+###taking head value from right most verb
+      add_sharing_supertypes(mylang, pn, mid, 'head')
+       
+
+
 ###should probably not be general, but since it won't do any harm....
     if pos == 's':
       mylang.add('s1-bottom-coord-rule := \
@@ -234,6 +238,17 @@ trunc-coord-lex-rule.
     mylang.add('gender-agr-top-coord-rule := top-coord-rule & \
         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND #gend, \
           RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND #gend ].')
+    #Germanic only: taking AUX value from right most daughter (closest to correct)
+    
+    mylang.add('head-agr-bottom-coord-rule := bottom-coord-phrase & \
+        [ SYNSEM.LOCAL.CAT.HEAD #head, \
+          NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD #head ].')
+    mylang.add('head-agr-mid-coord-rule := mid-coord-rule & \
+        [ SYNSEM.LOCAL.CAT.HEAD #head, \
+          RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD #head ].')
+    mylang.add('head-agr-top-coord-rule := top-coord-rule & \
+        [ SYNSEM.LOCAL.CAT.HEAD #head, \
+          RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD #head ].')  
     
   for cs in ch.get('cs'):
     csnum = str(cs.iter_num())

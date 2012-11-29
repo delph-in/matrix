@@ -1150,7 +1150,7 @@ class ChoicesFile:
     if self.get('edge-related-res') == 'yes':
       features += [ ['edge', 'na-or-+|na-or--', 'LOCAL.CAT.EDGE' ] ]
     if self.get('second-dependent-morph') == 'yes':
-      features += [ ['second', 'na-or-+|-', 'LOCAL.CAT.SECOND' ] ]
+      features += [ ['sub-pos', '+|-', 'LOCAL.CAT.SUB-POS' ] ]
  
     if self.get('verb-cluster') == 'yes' and self.get('aux-comp-order') == 'both':
       features += [ ['headfinal', '-|-', 'LOCAL.CAT.HEADFINAL' ] ]

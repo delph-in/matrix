@@ -67,17 +67,23 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
   if head_rest:
     mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.HEAD ' + head_rest + ' ].')    
 
+  
   if ch.get('second-dependent-morph') == 'yes':
-    mylang.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND - ].')
-    mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND + ].')
-    mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
-                           HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
-    if ch.get('vc-analysis') == 'aux-rule':
-      mylang.add('comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
-                           HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
-      mylang.add('aux-2nd-comp-phrase := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
-                           HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
+    mylang.add('cat :+ [ SUB-POS bool ].',comment='SUB-POS used to check whether subject follows or precedes the verb (morphology on verb changes for 2nd person sg in Dutch).',section='features')
+    mylang.add('subj-v-inv-lrule := [ SYNSEM.LOCAL.CAT.SUB-POS #subpos, \
+                                     DTR.SYNSEM.LOCAL.CAT.SUB-POS #subpos ].')
+    mylang.add('int-cl := [ SYNSEM.LOCAL.CAT.SUB-POS #sub-pos, \
+                            HEAD-DTR.SYNSEM.LOCAL.CAT.SUB-POS #sub-pos ].')
+    mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.SUB-POS + ].')
+    mylang.add('aux-2nd-comp-phrase := [ SYNSEM.LOCAL.CAT.SUB-POS #sub-pos, \
+                           HEAD-DTR.SYNSEM.LOCAL.CAT.SUB-POS #sub-pos ].')
 
+    if not ch.get('v2-analysis') == 'filler-gap':
+      mylang.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.SUB-POS - ].')
+      mylang.add('comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.SUB-POS #sub-pos, \
+                           HEAD-DTR.SYNSEM.LOCAL.CAT.SUB-POS #sub-pos ].')
+      mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.SUB-POS #sub-pos, \
+                           HEAD-DTR.SYNSEM.LOCAL.CAT.SUB-POS #sub-pos ].')
 
 def add_basic_phrases_v2_with_cluster(ch, mylang, rules):
 
@@ -132,7 +138,7 @@ def add_basic_phrases_v2_with_cluster(ch, mylang, rules):
 
   if ch.get('v2-analysis') == 'filler-gap':
     long_distance_dependencies.add_basic_ldd_phrases(ch, mylang, rules)
-    filler_gap_word_order(mylang)
+    filler_gap_word_order(ch, mylang)
     filler_gap_rules(rules)
   else:
     mc_v2_word_order(ch, mylang, rules)
@@ -717,7 +723,8 @@ def split_cluster_arg_comp_lex_rule(ch, mylang, lrules):
   mylang.add('cat :+ [ VFRONT luk ].', 'VFRONT checks whether ditransitive verb has undergone needed modification to occur in the Vorfeld', section='addenda')
   mylang.add('infl-lex-rule :+ [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                                        DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
-  mylang.add('change-arg-order-rule := const-val-change-only-lex-rule & \
+  if ch.get('argument-order') != 'fixed':
+    mylang.add('change-arg-order-rule := const-val-change-only-lex-rule & \
  [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ #subj, \
 			    COMPS < #comp2, #comp1 >,\
 			    SPR #spr,\
@@ -731,19 +738,19 @@ def split_cluster_arg_comp_lex_rule(ch, mylang, lrules):
 			  HEAD verb & [ AUX - ],\
 			  VC #vc,\
 			  SECOND #sd   ] ].')
-  mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.VFRONT +, \
+    mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.VFRONT +, \
                     DTR.SYNSEM.LOCAL.CAT [ VFRONT -, \
                                            HEAD.FORM nonfinite ] ].' )
-  lrules.add('change-arg-order := change-arg-order-rule.')
-  if ch.get('argument-order') == 'fixed':
-    mylang.add('change-arg-order-rule := \
+    lrules.add('change-arg-order := change-arg-order-rule.')
+    if ch.get('argument-order') == 'fixed':
+      mylang.add('change-arg-order-rule := \
                         [ SYNSEM.LOCAL.CAT [ ARG-ORDER #ao, \
                                              ALLOWED-PART #ap ], \
                           DTR.SYNSEM.LOCAL.CAT [ ARG-ORDER #ao, \
                                                  ALLOWED-PART #ap ]].')
 
-  if ch.get('edge-related-res') == 'yes':
-    mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.EDGE #ed, \
+    if ch.get('edge-related-res') == 'yes':
+      mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.EDGE #ed, \
                                           DTR.SYNSEM.LOCAL.CAT.EDGE #ed ].')
   if ch.get('aux-comp-order') == 'both':
     mylang.add('aux-comp-vc-phrase := ' + nhddtrval + ' ].')
@@ -810,7 +817,12 @@ def add_revised_analysis_incl_obj_raising_constraints(ch, mylang, lrules):
     mylang.add('comp-2-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
 
 ###moved constraint [ MC + ] to mc specific (filler-gap [ MC na ])
-    mylang.add('aux-2nd-comp-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC bool ].')  
+###for dutch aux-2nd-comp-phrase must have VC na-or-+
+    if ch.get('argument-order') == 'fixed':
+      val = 'na-or-+'
+    else:
+      val = 'bool'
+    mylang.add('aux-2nd-comp-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC ' + val + ' ].')  
   
     argument_composition_revised_additional_constraints(ch, mylang, lrules)
 
@@ -838,7 +850,11 @@ def argument_composition_revised_additional_constraints(ch, mylang, lrules):
               NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
   mylang.add('head-final-invc := [ SYNSEM.LOCAL.CAT.VC na-or-+ ].')
 
-  mylang.add('change-arg-order-rule := const-val-change-only-lex-rule & \
+#with revised rules for object generation, languages with fixed argument order
+#shouldn't use the change-arg-order-rule anymore
+
+  if ch.get('argument-order') != 'fixed': 
+    mylang.add('change-arg-order-rule := const-val-change-only-lex-rule & \
  [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ #subj, \
 			    COMPS < #comp2, #comp1 >,\
 			    SPR #spr,\
@@ -855,7 +871,10 @@ def argument_composition_revised_additional_constraints(ch, mylang, lrules):
                           VFRONT +, \
 			  SECOND #sd   ] ].')
 
-  lrules.add('change-arg-order := change-arg-order-rule.')
+    lrules.add('change-arg-order := change-arg-order-rule.')
+    if ch.get('edge-related-res') == 'yes':
+      mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.EDGE #ed, \
+                                          DTR.SYNSEM.LOCAL.CAT.EDGE #ed ].')
 
   headdtrval = '[ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                   HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf'
@@ -874,16 +893,13 @@ def argument_composition_revised_additional_constraints(ch, mylang, lrules):
   mylang.add('infl-lex-rule :+ [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                                        DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
 
-  if ch.get('argument-order') == 'fixed':
-    mylang.add('change-arg-order-rule := \
-                        [ SYNSEM.LOCAL.CAT [ ARG-ORDER #ao, \
-                                             ALLOWED-PART #ap ], \
-                          DTR.SYNSEM.LOCAL.CAT [ ARG-ORDER #ao, \
-                                                 ALLOWED-PART #ap ]].')
+ # if ch.get('argument-order') == 'fixed':
+ #   mylang.add('change-arg-order-rule := \
+ #                       [ SYNSEM.LOCAL.CAT [ ARG-ORDER #ao, \
+ #                                            ALLOWED-PART #ap ], \
+ #                         DTR.SYNSEM.LOCAL.CAT [ ARG-ORDER #ao, \
+ #                                                ALLOWED-PART #ap ]].')
 
-  if ch.get('edge-related-res') == 'yes':
-    mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.EDGE #ed, \
-                                          DTR.SYNSEM.LOCAL.CAT.EDGE #ed ].')
   if ch.get('aux-comp-order') == 'both':
     mylang.add('aux-comp-vc-phrase := ' + nhddtrval + ' ].')
 
@@ -909,7 +925,8 @@ def add_additional_arg_order_constraints(ch, mylang):
 ##################TODOTODOTODO  
   if not ch.get('v2-analysis') == 'filler-gap':
     mylang.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
-  mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.ARG-ORDER + ].')
+  if not ch.get('argument-order') == 'fixed':
+    mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.ARG-ORDER + ].')
 
   mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
                HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao ].')
@@ -922,9 +939,10 @@ def add_additional_arg_order_constraints(ch, mylang):
                   HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
                   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao ].')
 #######################TODOTODOTO
-  mylang.add('subj-head-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
-  mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
-  mylang.add('comp-head-phrase-2 := [ SYNSEM.LOCAL.CAT.ARG-ORDER + ].')
+  if not ch.get('v2-analysis') == 'filler-gap':
+    mylang.add('subj-head-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
+    mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
+    mylang.add('comp-head-phrase-2 := [ SYNSEM.LOCAL.CAT.ARG-ORDER + ].')
 
 
 #######################################################################
@@ -976,12 +994,6 @@ def create_aux_plus_verb_phrases(ch, mylang):
 
 def spec_word_order_phrases_aux_plus_verb(ch, mylang):
 
-  if ch.get('second-dependent-morph') == 'yes':
-    mylang.add('cat :+ [ SECOND luk ].',comment='SECOND used to check whether subject follows or precedes the verb (morphology on verb changes for 2nd person sg in Dutch).',section='features')
-    mylang.add('subj-v-inv-lrule := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
-                                     DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
-    mylang.add('int-cl := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
-                            HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
 
   if ch.get('extraposition') == 'yes':
     stype = 'collect-anchor-phrase'
@@ -1404,7 +1416,7 @@ def wh_mc_word_order_rules(rules):
 # II. Filler-gap analysis: standard HPSG for German v-2
 #
 
-def filler_gap_word_order(mylang):
+def filler_gap_word_order(ch, mylang):
 ####head-initial-head-nexus must have HEAD-DTR [ MC + ] for MC analysis,
 #### [ MC na ] for filler-gap  
   mylang.add('head-initial-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
