@@ -947,6 +947,17 @@ def validate(ch, vr):
           mess = 'When inflectional negation is selected ' +\
                  '[negation +] should only be found on bound morphemes.'
           vr.err(f.full_key + '_name', mess)
+    if ch.get('neg-exp') == "1":
+      found=False
+      for vpc in ch.get('verb-pc'):
+        for lrt in vpc.get('lrt'):
+          for f in lrt.get('feat', []):
+            if f.get('name') == 'negation':
+              found=True
+      if not found:
+        mess = 'You have selected an inflectional negation strategy,' +\
+               'but no lexical rules are marked with [negation plus]'
+        vr.warn('verb-pc' , mess)
     for verb in ch.get('verb', []):
       for cf in verb.get('compfeature', []):
         if cf.get('name') == 'negation':
@@ -965,7 +976,7 @@ def validate(ch, vr):
   if ch.get('neg-aux', default=False):
     has_neg_aux = False
     for aux in ch.get('aux', []):
-      if aux.get('name') == 'neg-aux':
+      if aux.get('name') == 'neg':
         has_neg_aux = True
         break
     if has_neg_aux == False:
@@ -1022,6 +1033,43 @@ def validate(ch, vr):
              'that your language has auxiliaries.'
       vr.err('comp-neg-head', mess)
 
+  if ch.get('neg-exp') == '2':
+    if ch.get('bineg-type') == 'infl-infl' and ch.get('neg1b-neg2b') == 'on':
+      # loose check that both lexical rules are present  
+      found1=False
+      found2=False
+      for vpc in ch.get('verb-pc'):
+        for lrt in vpc.get('lrt'):
+          for f in lrt.get('feat', []):
+            if f.get('name') == 'negation':
+              found1=True
+            elif f.get('name') == 'form':
+              found2=True
+      if not found1:
+        mess = 'You have indicated that your language marks negation ' +\
+                'with two bound morphs.  The one which carries '  +\
+                'semantics should be marked [negation plus] (none ' +\
+                'were found.)'
+        vr.warn('verb-pc',mess)
+      if not found2:
+        mess = 'You have indicated that your language marks negation ' +\
+                'with two bound morphs.  The semantically empty one should ' +\
+                'specify a FORM (no such rules were found).'  
+        vr.warn('verb-pc',mess)
+    if ch.get('bineg-type') == 'infl-head':
+      found=False
+      for vpc in ch.get('verb-pc'):
+        for lrt in vpc.get('lrt'):
+          for f in lrt.get('feat', []):
+            if f.get('name') == 'form' and f.get('value')=='negform':
+              found=True
+      if not found:
+        mess = 'You have indicated that your language marks negation ' +\
+               'with a negative auxiliary and an inflectional marker. ' +\
+               'At least one inflectional rule type should be specified ' +\
+               'for FORM negform.'
+        vr.warn('verb-pc',mess)
+                
    # If aux is selected then has-aux = 'yes' must be chosen in word
    # order section
 #    if ((negseladv == 'aux' or negseladv == 'main-aux') and

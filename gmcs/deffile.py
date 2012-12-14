@@ -231,7 +231,7 @@ HTML_sentencespostbody = '''
 <a href="http://www.delph-in.net/lkb">To the LKB page</a>
 '''
 
-HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors()">
+HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();scalenav();">
 '''
 
 #HTML_navmenu = '''
@@ -257,7 +257,7 @@ HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fil
 #  </ul>
 #</div>'''
 
-HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();">'''
+HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();scalenav();">'''
 
 HTML_method = 'post'
 HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '" enctype="multipart/form-data" name="choices_form">'
@@ -1134,9 +1134,9 @@ class MatrixDefFile:
           cur_sec = word[1]
           # disable the link if this is the page we're on
           if cur_sec == section: 
-            sec_links.append('</span><span>'+self.sections[cur_sec]+'</span>')
+            sec_links.append('</span><span class="navlinks">'+self.sections[cur_sec]+'</span>')
           else:
-            sec_links.append('</span><a href="#'+cur_sec+'" onclick="submit_go(\''+cur_sec+'\')">'+self.sections[cur_sec]+'</a>')
+            sec_links.append('</span><a class="navlinks" href="#'+cur_sec+'" onclick="submit_go(\''+cur_sec+'\')">'+self.sections[cur_sec]+'</a>')
           n+=1
         elif word[0] == 'BeginIter':
           if prefix:
@@ -1168,8 +1168,8 @@ class MatrixDefFile:
         print '<span style="color:#ff0000;" class="navleft">'+l+'<br />'
 
       print '<hr />'
-      print '<a href="' + choices_file + '" class="navleft">View choices file</a><br /><span class="navleft">(right-click to download)</span><br />'
-      print '<a href="#stay" onclick="document.forms[0].submit()" class="navleft">Save and stay here</a><br />'
+      print '<a href="' + choices_file + '" class="navleft">Choices file</a><br /><div class="navleft" style="margin-bottom:0;padding-bottom:0">(right-click to download)</div>'
+      print '<a href="#stay" onclick="document.forms[0].submit()" class="navleft">Save &amp; stay</a><br />'
       print '<a href="#clear" onclick="clear_form()" class="navleft">Clear form</a>'
       print '</div>'
 
