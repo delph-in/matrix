@@ -202,12 +202,35 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
         'case-marking-adp-lex := \
          [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].')
 
+
+    # checking whether language has both prepositions and postpositions
+    bidirectional = False
+    adporders = []
+    for adp in ch.get('adp',[]):
+      adp_order = adp.get('order')
+      if not adp_order in adporders:
+        adporders.append(adp_order)
+    if len(adporders) == 2:
+      bidirectional = True
+      mylang.add('case-marking-prep-lex := case-marking-adp-lex & \
+               [ SYNSEM.LOCAL.CAT.HEADFINAL - ].')
+      mylang.add('case-marking-postp-lex := case-marking-adp-lex & \
+               [ SYNSEM.LOCAL.CAT.HEADFINAL + ].')
+
+
     # Lexical entries
     lexicon.add_literal(';;; Case-marking adpositions')
 
     for adp in ch.get('adp',[]):
       orth = orth_encode(adp.get('orth'))
+      infix_tname = 'ad'
+      if bidirectional:
+        if adp.get('order') == 'before':
+          infix_tname = 'pre'
+        elif adp.get('order') == 'after':
+          infix_tname = 'post'
 
+      super_type = 'case-marking-' + infix_tname + 'p-lex'
       # figure out the abbreviation for the case this adp marks
       cn = ''
       abbr = ''
@@ -220,7 +243,7 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
 
       adp_type = TDLencode(abbr + '-marker')
       typedef = \
-        adp_type + ' := case-marking-adp-lex & \
+        adp_type + ' := ' + super_type + ' & \
                         [ STEM < "' + orth + '" > ].'
       lexicon.add(typedef)
 

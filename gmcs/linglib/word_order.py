@@ -1,4 +1,4 @@
-
+from sets import Set
 from gmcs.linglib.parameters import determine_vcluster
 
 ######################################################################
@@ -358,12 +358,20 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
   # SUBJ or COMPS on these additional rules because they'll only be for
   # adp or auxv or qpart, so far
 
-  if hc == 'comp-head' and (adp == 'ov-prep' or aux == 'ov-auxv' or qpart_order == 'ov-qs'):
+  if hc == 'comp-head' and (adp == 'ov-prep' or adp == 'ov-both' or aux == 'ov-auxv' or qpart_order == 'ov-qs'):
     mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial.')
+  
 
-  if hc == 'head-comp' and (adp == 'vo-post' or aux == 'vo-vaux' or qpart_order == 'vo-sq'):
+  if hc == 'head-comp' and (adp == 'vo-post' or adp == 'ov-both' or aux == 'vo-vaux' or qpart_order == 'vo-sq'):
     mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final.')
 
+  # ASF: allowing for both prepositions and postpositions
+  # if it is both HEADFINAL is used (for now) to register order of adposition
+  if 'both' in adp:
+    mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL - ].')
+    mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL + ].')
+    mylang.add('cat :+ [ HEADFINAL  bool].', comment='HEADFINAL registers whether a word precedes or follows its complement',section='features')
+  
   # ASF 2008-11-18, special auxiliary rule that allows for auxiliaries
   # to combine with v's when aux-comp order is not harmonic
   # the vcluster + constraint is added to head-comp-phrase, since this
@@ -417,10 +425,10 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
 
   # Add rules to rules.tdl when necessary
 
-  if aux == 'ov-auxv' or adp == 'ov-prep' or qpart_order == 'ov-qs':
+  if aux == 'ov-auxv' or adp == 'ov-prep' or adp == 'ov-both' or qpart_order == 'ov-qs':
     rules.add('head-comp := head-comp-phrase.')
 
-  if aux == 'vo-vaux' or adp == 'vo-post' or qpart_order == 'vo-sq':
+  if aux == 'vo-vaux' or adp == 'vo-post' or adp == 'vo-both' or qpart_order == 'vo-sq':
     rules.add('comp-head := comp-head-phrase.')
 
   if aux == 'auxv-rule' or aux == 'auxc':
@@ -446,7 +454,7 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
   # VO order
   if aux == 'vo-vaux':
      comp_head_is.append('aux')
-  if adp == 'vo-post':
+  if adp == 'vo-post' or adp == 'vo-both':
     comp_head_is.append('adp')
   if qpart_order == 'vo-sq':
     comp_head_is.append('comp')
@@ -455,7 +463,7 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
 
   if aux == 'ov-auxv':
     head_comp_is.append('aux')
-  if adp == 'ov-prep':
+  if adp == 'ov-prep' or adp == 'ov-both':
     head_comp_is.append('adp')
   if qpart_order == 'ov-qs':
     head_comp_is.append('comp')
@@ -717,23 +725,40 @@ def determine_consistent_order(wo,hc,ch):
   # Assuming that adpositions are consistent within a language (i.e., you won't
   # find subject postpositions and object prepositions).
 
-  adporder = ''
+
+  # ASF: bug fix, adporder is whatever adporder was defined last
+  # which excludes the possibility to have both prepositions and adpositions
+  adporders = []
   for adp in ch.get('adp',[]):
-    adporder = adp.get('order')
+    adp_order = adp.get('order')
+    if not adp_order in adporders:
+      adporders.append(adp_order)
 
   # ERB 2006-10-05 Fixing bug in free word order case.
-
+  adporder = ''
+  if len(adporders) == 2:
+    adporder = 'both'
+  elif len(adporders) == 1:
+    adporder = adporders[0]
+  
   if adporder:
     if wo == 'free':
       if adporder == 'before':
         adp = 'free-prep'
       elif adporder == 'after':
         adp = 'free-post'
-    elif hc == 'comp-head' and adporder == 'before':
-      adp = 'ov-prep'
-    elif hc == 'head-comp' and adporder == 'after':
-      adp = 'vo-post'
-
+      elif adporder == 'both':
+        adp = 'free-both'  
+    elif hc == 'comp-head':
+      if adporder == 'before':
+        adp = 'ov-prep'
+      elif adporder == 'both':
+        adp = 'ov-both'
+    elif hc == 'head-comp': 
+      if adporder == 'after':
+        adp = 'vo-post'
+      elif adporder == 'both':
+        adp = 'vo-both'
   # Now what about auxiliaries?
   # ASF 2008-12-07 for non-harmonic order and v (not vp) comps,
   # we need a different procedure (see if auxcomp...)

@@ -1177,8 +1177,8 @@ function display_neg_form()
         t2 = v;
       }
     }
+    set_negmorph(t1,t2);
   }
-  set_negmorph(t1,t2);
 }
 
 function neg_comp() {
