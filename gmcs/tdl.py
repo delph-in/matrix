@@ -780,6 +780,26 @@ class TDLfile(object):
       newsec.force = s[3]
       self.sections += [newsec]
 
+  def define_climb_sections(self):
+    """
+    Use the passed-in list of sections for this file.  The sections
+    list is a list of quadruples, each of which contains:
+      name (string)
+      comment (string)
+      major (Boolean)
+      force (Boolean) 
+    For CLIMB files, a fixed number of sections is defined, 
+    namely all tdl files to be created.
+    """
+    sections = [['mylang', 'File=Language Specific', True, False],
+               ['rules', 'File=rules', True, False],
+               ['lrules', 'File=lrules', True, False],
+               ['irules', 'File=irules', True, True],
+               ['lexicon', 'File=lexicon', True, False],
+               ['roots', 'File=roots', True, False]]
+
+    self.define_sections(sections)
+
 
   def set_section(self, section):
     """

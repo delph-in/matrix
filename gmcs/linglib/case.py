@@ -158,7 +158,7 @@ def customize_case_type(mylang, hierarchies):
 # customize_case_adpositions()
 #   Create the appropriate types for case-marking adpositions
 
-def customize_case_adpositions(mylang, lexicon, ch):
+def customize_case_adpositions(mylang, lexicon, climb_case, ch):
   cases = case_names(ch)
   features = ch.features()
   to_cfv = []
@@ -169,8 +169,10 @@ def customize_case_adpositions(mylang, lexicon, ch):
       ';;; Case marking adpositions are constrained not to\n' + \
       ';;; be modifiers.'
     mylang.add_literal(comment)
+    climb_case.add_literal(comment)
 
     mylang.add('+np :+ [ CASE case ].', section='addenda')
+    climb_case.add('+np :+ [ CASE case ].', section='addenda')
 
     typedef = \
       'case-marking-adp-lex := basic-one-arg & raise-sem-lex-item & \
@@ -182,15 +184,21 @@ def customize_case_adpositions(mylang, lexicon, ch):
             ARG-ST < #comps & [ LOCAL.CAT [ HEAD noun & [ CASE #case ], \
                                             VAL.SPR < > ]] > ].'
     mylang.add(typedef)
+    climb_case.add(typedef)
 
     if ch.has_mixed_case():
       mylang.add('+np :+ [ CASE-MARKED bool ].', section='addenda')
       mylang.add(
         'case-marking-adp-lex := \
          [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].')
+      climb_case.add('+np :+ [ CASE-MARKED bool ].', section='addenda')
+      climb_case.add(
+        'case-marking-adp-lex := \
+         [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].')
 
     # Lexical entries
     lexicon.add_literal(';;; Case-marking adpositions')
+    climb_case.add_literal(';;; Case-marking adpositions', section='lexicon')
 
     for adp in ch.get('adp',[]):
       orth = orth_encode(adp.get('orth'))
@@ -210,6 +218,7 @@ def customize_case_adpositions(mylang, lexicon, ch):
         adp_type + ' := case-marking-adp-lex & \
                         [ STEM < "' + orth + '" > ].'
       lexicon.add(typedef)
+      climb_case.add(typedef, section='lexicon')
 
       to_cfv += [(adp.full_key, adp_type, 'adp')]
 

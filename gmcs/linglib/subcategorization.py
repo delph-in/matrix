@@ -21,9 +21,13 @@ def main_or_verb(ch):
 #
 ################################################################################
 
-def create_subcategorization_values(ch, mylang):
+def create_subcategorization_values(ch, mylang, climb_verbs):
 
   mylang.add('synsem-sat := synsem & \
+               [ LOCAL.CAT.VAL [ SUBJ < >, \
+                                 COMPS < >, \
+                                 SPR < > ] ].')
+  climb_verbs.add('synsem-sat := synsem & \
                [ LOCAL.CAT.VAL [ SUBJ < >, \
                                  COMPS < >, \
                                  SPR < > ] ].')
@@ -32,8 +36,9 @@ def create_subcategorization_values(ch, mylang):
   # if full tiger lexicon is used, no arg should be optional for verbs
   if not ch.get('subcat-regroup') == 'on':
     mylang.add('synsem-sat := [ OPT - ].')  
+    climb_verbs.add('synsem-sat := [ OPT - ].')  
   else:
-    create_optional_argument_frames(mylang)
+    create_optional_argument_frames(mylang, climb_verbs)
     
 
   synsem_ts = []
@@ -41,6 +46,8 @@ def create_subcategorization_values(ch, mylang):
     if head:
       name = head + '-synsem'
       mylang.add(name + ' := synsem & \
+                [ LOCAL.CAT.HEAD ' + head + ' ].')
+      climb_verbs.add(name + ' := synsem & \
                 [ LOCAL.CAT.HEAD ' + head + ' ].')
       synsem_ts.append(name)
       if head == 'comp':
@@ -53,12 +60,24 @@ def create_subcategorization_values(ch, mylang):
         mylang.add('gap-wh-synsem := wh-synsem & gap.')
         mylang.add('phr-prop-synsem := prop-comp-synsem & phr-synsem.')
         mylang.add('gap-prop-synsem := prop-comp-synsem & gap.')
+        climb_verbs.add(name + ' := [ LOCAL.CONT.HOOK.INDEX.SF prop-or-ques ].')
+        climb_verbs.add('prop-' + name + ' := ' + name + ' & \
+                                  [ LOCAL.CONT.HOOK.INDEX.SF prop ].') 
+        climb_verbs.add('wh-synsem := ' + name + ' & \
+                                  [ LOCAL.CONT.HOOK.INDEX.SF ques ].')
+        climb_verbs.add('phr-wh-synsem := wh-synsem & phr-synsem.')
+        climb_verbs.add('gap-wh-synsem := wh-synsem & gap.')
+        climb_verbs.add('phr-prop-synsem := prop-comp-synsem & phr-synsem.')
+        climb_verbs.add('gap-prop-synsem := prop-comp-synsem & gap.')
       elif head == 'adj':
         mylang.add(name + ' := [ LOCAL.CAT.HEAD.PRD + ].')
+        climb_verbs.add(name + ' := [ LOCAL.CAT.HEAD.PRD + ].')
   for form in ch.get('subcatforms').split(','):
     if form:
       name = form + '-synsem'
       mylang.add(name + ' := verb-synsem & \
+                [ LOCAL.CAT.HEAD.FORM ' + form + ' ].')
+      climb_verbs.add(name + ' := verb-synsem & \
                 [ LOCAL.CAT.HEAD.FORM ' + form + ' ].')
       synsem_ts.append(name)
   for case in ch.get('subcatcases').split(','):
@@ -66,12 +85,14 @@ def create_subcategorization_values(ch, mylang):
       name = case + '-synsem'
       mylang.add(name + ' := \
                 [ LOCAL.CAT.HEAD.CASE ' + case + ' ].')
+      climb_verbs.add(name + ' := \
+                [ LOCAL.CAT.HEAD.CASE ' + case + ' ].')
       synsem_ts.append(name)
 
 #CROSS-CLASS: if not in exceptions: synsem-sat, final name based on
 #FORM or CASE or (if irrelevant, HEAD adds synsem-sat)
 
-def create_synsem_cross_classifications(ch, mylang):
+def create_synsem_cross_classifications(ch, mylang, climb_verbs):
 
   combs = ch.get('subcatcombs').split(',')
   val_excepts = ch.get('subcat-valexcept')
@@ -84,11 +105,16 @@ def create_synsem_cross_classifications(ch, mylang):
            [ LOCAL.CAT.VAL [ SUBJ <[ ]>, \
                              COMPS < >, \
                              SPR < > ] ].')
+    climb_verbs.add('sbj-open-synsem := synsem & \
+           [ LOCAL.CAT.VAL [ SUBJ <[ ]>, \
+                             COMPS < >, \
+                             SPR < > ] ].')
   # if full tiger lexicon is used, no arg should be optional for verbs
     if not ch.get('subcat-regroup') == 'on':
       mylang.add('synsem-sat := [ OPT - ].')
+      climb_verbs.add('synsem-sat := [ OPT - ].')
     else:
-      create_optional_argument_frames(mylang)
+      create_optional_argument_frames(mylang, climb_verbs)
   for comb in combs:
     parts = comb.split('-')
     if comb == 'verb-finite':
@@ -105,10 +131,16 @@ def create_synsem_cross_classifications(ch, mylang):
 # subtypes allowing for both unifications
     mylang.add('phr-' + name + ' := ' + name + ' & phr-synsem.')
     mylang.add('gap-' + name + ' := ' + name + ' & gap.')
+
+    climb_verbs.add(name + ' := ' + parts[0] + '-synsem.')
+    climb_verbs.add('phr-' + name + ' := ' + name + ' & phr-synsem.')
+    climb_verbs.add('gap-' + name + ' := ' + name + ' & gap.')
     if not comb in exs:
       mylang.add(name + ' := synsem-sat.')
+      climb_verbs.add(name + ' := synsem-sat.')
     else:
       mylang.add(name + ' := sbj-open-synsem.')
+      climb_verbs.add(name + ' := sbj-open-synsem.')
 
 ####redo: for each position define possibles
 ####sum of these consitutues list from above
@@ -130,7 +162,7 @@ def create_synsem_cross_classifications(ch, mylang):
 #9. Run replacement algorithm on irules/irreg tabs
 
 
-def create_optional_argument_frames(mylang):
+def create_optional_argument_frames(mylang, climb_verbs):
 
   # subject already done in create_basic_subject_values
   # optional objects
@@ -144,15 +176,30 @@ def create_optional_argument_frames(mylang):
   mylang.add('3rd-comp-opt-lex-item := lex-item & \
     [ SYNSEM.LOCAL.CAT.VAL.COMPS.REST.REST.FIRST.OPT + ].')
 
+  climb_verbs.add('1st-comp-opt-lex-item := lex-item & \
+    [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT + ].')
+
+  climb_verbs.add('2nd-comp-opt-lex-item := lex-item & \
+    [ SYNSEM.LOCAL.CAT.VAL.COMPS.REST.FIRST.OPT + ].') 
+
+  climb_verbs.add('3rd-comp-opt-lex-item := lex-item & \
+    [ SYNSEM.LOCAL.CAT.VAL.COMPS.REST.REST.FIRST.OPT + ].')
+
   # 1comp
  
   mylang.add('comp1-lex-item := lex-item & \
+    [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT - ].')
+
+  climb_verbs.add('comp1-lex-item := lex-item & \
     [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT - ].')
 
   # 2comps
 #  mylang.add('opt-comp1-opt-comp2-lex-item := 1st-comp-opt-lex-item & 2nd-comp-opt-lex-item.')
 #  mylang.add('opt-comp1-comp2-lex-item := 1st-comp-opt-lex-item & \
   mylang.add('comp2-lex-item := lex-item & \
+             [ SYNSEM.LOCAL.CAT.VAL.COMPS.REST.FIRST.OPT - ].')
+
+  climb_verbs.add('comp2-lex-item := lex-item & \
              [ SYNSEM.LOCAL.CAT.VAL.COMPS.REST.FIRST.OPT - ].')
 
 #  mylang.add('comp1-opt-comp2-lex-item := 2nd-comp-opt-lex-item & \
@@ -166,6 +213,9 @@ def create_optional_argument_frames(mylang):
 #  mylang.add('opt-comp1-opt-comp2-opt-comp3-lex-item := opt-comp1-opt-comp2-lex-item & 3rd-comp-opt-lex-item.')
 
   mylang.add('comp3-lex-item := lex-item & \
+      [ SYNSEM.LOCAL.CAT.VAL.COMPS.REST.REST.FIRST.OPT - ].')
+
+  climb_verbs.add('comp3-lex-item := lex-item & \
       [ SYNSEM.LOCAL.CAT.VAL.COMPS.REST.REST.FIRST.OPT - ].')
 
 #  mylang.add('opt-comp1-comp2-opt-comp3-lex-item := opt-comp1-comp2-lex-item & \
@@ -187,7 +237,7 @@ def create_optional_argument_frames(mylang):
 #       [ SYNSEM.LOCAL.CAT.VAL.COMPS.REST.REST.FIRST.OPT - ].')
 
 
-def create_basic_subject_values(ch, mylang, stype):
+def create_basic_subject_values(ch, mylang, stype, climb_lex):
 # 
 ####list of those elements that can occur as subject
   subj_list = []
@@ -200,6 +250,10 @@ def create_basic_subject_values(ch, mylang, stype):
     mylang.add('opt-sbj-verb-lex := ' + stype + ' & \
        [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ OPT + ] >].')
     mylang.add('obl-sbj-verb-lex := ' + stype + ' & \
+       [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ OPT - ] >].')
+    climb_lex.add('opt-sbj-verb-lex := ' + stype + ' & \
+       [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ OPT + ] >].')
+    climb_lex.add('obl-sbj-verb-lex := ' + stype + ' & \
        [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ OPT - ] >].')
 
     opt_kds = []  
@@ -216,6 +270,8 @@ def create_basic_subject_values(ch, mylang, stype):
       pref = eh
     mylang.add('expl-synsem := ' + pref + '-synsem & \
                     [ LOCAL.CONT.HOOK.INDEX expl-ind ].')
+    climb_lex.add('expl-synsem := ' + pref + '-synsem & \
+                    [ LOCAL.CONT.HOOK.INDEX expl-ind ].')
       
 
 
@@ -231,12 +287,14 @@ def create_basic_subject_values(ch, mylang, stype):
 
     mylang.add(tn + '-sbj-verb-lex := ' + mys + ' & \
              [ SYNSEM.LOCAL.CAT.VAL.SUBJ < ' + s + '-synsem > ].')
+    climb_lex.add(tn + '-sbj-verb-lex := ' + mys + ' & \
+             [ SYNSEM.LOCAL.CAT.VAL.SUBJ < ' + s + '-synsem > ].')
     
     subj_list.append(tn)
 
   return subj_list
 
-def create_some_compl(ch, mylang, stype, prefix):
+def create_some_compl(ch, mylang, climb_verbs, stype, prefix):
   myc = prefix + '_comp'
   comps = ch.get(myc + '-cmps-sub').split(',')
   refl = ch.get(myc + '_refl')
@@ -265,7 +323,7 @@ def create_some_compl(ch, mylang, stype, prefix):
         constraint = '], [ ' + constraint
         if prefix != '3rd':
           constraint = '], [ ' + constraint
-    add_comp_feature(mylang, cur_stype, name, constraint)
+    add_comp_feature(mylang, climb_verbs, cur_stype, name, constraint)
     name = 'obl-' + cur_stype
     constraint = 'OPT -'
     if prefix != '1st':
@@ -274,7 +332,7 @@ def create_some_compl(ch, mylang, stype, prefix):
         constraint = '], [ ' + constraint
         if prefix != '3rd':
           constraint = '], [ ' + constraint
-    add_comp_feature(mylang, cur_stype, name, constraint)
+    add_comp_feature(mylang, climb_verbs, cur_stype, name, constraint)
         
   for c in comps:
     if 'opt_' in c:
@@ -298,11 +356,19 @@ def create_some_compl(ch, mylang, stype, prefix):
         mylang.add('obl-' + c + '-' + prefix + '-comp-verb-lex := \
                                  obl-' + stype + ' & \
                [ SYNSEM.LOCAL.CAT.VAL.COMPS <' + constraint + ', ... > ].')
+        climb_verbs.add('opt-' + c + '-' + prefix + '-comp-verb-lex := \
+                                 opt-' + stype + ' & \
+               [ SYNSEM.LOCAL.CAT.VAL.COMPS <' + constraint + ', ... > ].')
+        climb_verbs.add('obl-' + c + '-' + prefix + '-comp-verb-lex := \
+                                 obl-' + stype + ' & \
+               [ SYNSEM.LOCAL.CAT.VAL.COMPS <' + constraint + ', ... > ].')
       else:
         stype = 'obl-' + basic_stype  
     else:
       stype = basic_stype
     mylang.add(c + '-' + prefix + '-comp-verb-lex := ' + stype + ' & \
+               [ SYNSEM.LOCAL.CAT.VAL.COMPS <' + constraint + ', ... > ].')
+    climb_verbs.add(c + '-' + prefix + '-comp-verb-lex := ' + stype + ' & \
                [ SYNSEM.LOCAL.CAT.VAL.COMPS <' + constraint + ', ... > ].')
     comps_list.append(c) 
   
@@ -312,10 +378,18 @@ def create_some_compl(ch, mylang, stype, prefix):
          [ SYNSEM.LOCAL.CAT.VAL [ COMPS.FIRST.LOCAL refl-local & \
                                      [ CONT.HOOK.INDEX #ind ], \
                              SUBJ < [ LOCAL.CONT.HOOK.INDEX #ind ] > ] ].')
+    climb_verbs.add('refl-1st-comp-verb-lex := acc-1st-comp-verb-lex & comp1-lex-item & \
+         [ SYNSEM.LOCAL.CAT.VAL [ COMPS.FIRST.LOCAL refl-local & \
+                                     [ CONT.HOOK.INDEX #ind ], \
+                             SUBJ < [ LOCAL.CONT.HOOK.INDEX #ind ] > ] ].')
     comps_list.append('refl')
 
   if opt_refl:
     mylang.add('opt-refl-1st-comp-verb-lex := acc-1st-comp-verb-lex & 1st-comp-opt-lex-item & \
+         [ SYNSEM.LOCAL.CAT.VAL [ COMPS.FIRST.LOCAL refl-local & \
+                                     [ CONT.HOOK.INDEX #ind ], \
+                             SUBJ < [ LOCAL.CONT.HOOK.INDEX #ind ] > ] ].')
+    climb_verbs.add('opt-refl-1st-comp-verb-lex := acc-1st-comp-verb-lex & 1st-comp-opt-lex-item & \
          [ SYNSEM.LOCAL.CAT.VAL [ COMPS.FIRST.LOCAL refl-local & \
                                      [ CONT.HOOK.INDEX #ind ], \
                              SUBJ < [ LOCAL.CONT.HOOK.INDEX #ind ] > ] ].')
@@ -327,6 +401,10 @@ def create_some_compl(ch, mylang, stype, prefix):
     mylang.add('verb :+ [ PART-FORM list ].', section='addenda')
     mylang.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.PART-FORM < "nopart" > ].')
     mylang.add('aux-lex := [ SYNSEM.LOCAL.CAT.HEAD.PART-FORM < "nopart" > ].')
+    climb_verbs.add('lexkeys :+ [ KEY-PART list ].', comment='section=\'addenda\'')
+    climb_verbs.add('verb :+ [ PART-FORM list ].', comment='section=\'addenda\'')
+    climb_verbs.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.PART-FORM < "nopart" > ].')
+    climb_verbs.add('aux-lex := [ SYNSEM.LOCAL.CAT.HEAD.PART-FORM < "nopart" > ].')
     constraint = 'OPT -, \
               LOCAL.CAT.HEAD verb & [ PART-FORM #prt ] ] >,'
     if prefix != '1st':
@@ -338,12 +416,16 @@ def create_some_compl(ch, mylang, stype, prefix):
     mylang.add('part-' + prefix + '-comp-verb-lex := ' + stype + ' & \
      [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ ' + constraint + \
                 'LKEYS.KEY-PART #prt ] ].')
+    climb_verbs.add('part-' + prefix + '-comp-verb-lex := ' + stype + ' & \
+     [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ ' + constraint + \
+                'LKEYS.KEY-PART #prt ] ].')
     comps_list.append('part')
 
 ###to facilitate incorporation of Cheetah's lexicon
 
   if 'adp' in comps:
     mylang.add('lexkeys :+ [ KEY-ADP pform ].', section='addenda')
+    climb_verbs.add('lexkeys :+ [ KEY-ADP pform ].', comment='section=\'addenda\'')
     constraint = 'OPT -, \
               LOCAL.CAT.HEAD.FORM #pform ], ...>,'
     if prefix != '1st':
@@ -355,6 +437,9 @@ def create_some_compl(ch, mylang, stype, prefix):
     mylang.add('adp-' + prefix + '-comp-verb-lex := \
      [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ ' + constraint + \
                 'LKEYS.KEY-ADP #pform ] ].')
+    climb_verbs.add('adp-' + prefix + '-comp-verb-lex := \
+     [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ ' + constraint + \
+                'LKEYS.KEY-ADP #pform ] ].')
 
   my_lists = []
   my_lists.append(comps_list)
@@ -363,14 +448,14 @@ def create_some_compl(ch, mylang, stype, prefix):
 
 
 
-def create_basic_verb_types(ch, mylang):
-  create_subcategorization_values(ch, mylang)
-  create_synsem_cross_classifications(ch, mylang)
+def create_basic_verb_types(ch, mylang, climb_verbs):
+  create_subcategorization_values(ch, mylang, climb_verbs)
+  create_synsem_cross_classifications(ch, mylang, climb_verbs)
   stype = main_or_verb(ch)
-  subjs = create_basic_subject_values(ch, mylang, stype)
-  fcomps = create_some_compl(ch, mylang, stype, '1st')
-  scomps = create_some_compl(ch, mylang, stype, '2nd')
-  tcomps = create_some_compl(ch, mylang, stype, '3rd')
+  subjs = create_basic_subject_values(ch, mylang, stype, climb_verbs)
+  fcomps = create_some_compl(ch, mylang, climb_verbs, stype, '1st')
+  scomps = create_some_compl(ch, mylang, climb_verbs, stype, '2nd')
+  tcomps = create_some_compl(ch, mylang, climb_verbs, stype, '3rd')
 
   if ch.get('subcat-regroup') == 'on':
     pats = create_subcat_with_opt_list(ch) 
@@ -379,10 +464,10 @@ def create_basic_verb_types(ch, mylang):
 
 # pats create_subcat_with_opt_list(ch)
 
-  add_pforms_imported_lex(mylang)
+  add_pforms_imported_lex(mylang, climb_verbs)
  # fourcomps = [] #create_some_compl(ch, mylang, stype, '4th')
 
-  cross_classify_verb_types(mylang, subjs, fcomps, scomps, tcomps, pats)
+  cross_classify_verb_types(mylang, climb_verbs, subjs, fcomps, scomps, tcomps, pats)
 
 
 def combine_opt_features(mylang, bname, npart, constraint, opt_kds, prefix):
@@ -416,8 +501,10 @@ def combine_opt_features(mylang, bname, npart, constraint, opt_kds, prefix):
           constraint = '], [ ' + constraint
     add_comp_feature(mylang, sname, name, constraint)
 
-def add_comp_feature(mylang, stype, name, constraint):
+def add_comp_feature(mylang, climb_verbs, stype, name, constraint):
   mylang.add(name + ' := ' + stype + ' & \
+    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ' + constraint + ' ], ... > ].')
+  climb_verbs.add(name + ' := ' + stype + ' & \
     [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ' + constraint + ' ], ... > ].')
 
 
@@ -429,19 +516,23 @@ def cross_classify(mylang, prop1, prop2, suffix, arg_list):
       arg_list.append(p1 + '-' + p2)
   return arg_list
 
-def cross_classify_verb_types(mylang, slist, fcomps, scomps, tcomps, pats):
-  subjs = cross_class_intransitives(mylang, slist)
-  s_c1 = cross_class_comps(mylang, subjs, fcomps, pats)
-  s_c2 = cross_class_comps(mylang, s_c1, scomps, pats)
-  s_c3 = cross_class_comps(mylang, s_c2, tcomps, pats)
+def cross_classify_verb_types(mylang, climb_verbs, slist, fcomps, scomps, tcomps, pats):
+  subjs = cross_class_intransitives(mylang, climb_verbs, slist)
+  s_c1 = cross_class_comps(mylang, climb_verbs, subjs, fcomps, pats)
+  s_c2 = cross_class_comps(mylang, climb_verbs, s_c1, scomps, pats)
+  s_c3 = cross_class_comps(mylang, climb_verbs, s_c2, tcomps, pats)
 # cross_class_comps(mylang, s_c3, lcomps)
 
 
 
 ###name shortening done above now..., see if can be simplified
-def cross_class_intransitives(mylang, slist):
+def cross_class_intransitives(mylang, climb_verbs, slist):
   sbs = []
   mylang.add('basic-intransitive-verb := basic-verb-lex & \
+              [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
+                                       COMPS < > ], \
+                ARG-ST < #subj > ].')
+  climb_verbs.add('basic-intransitive-verb := basic-verb-lex & \
               [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
                                        COMPS < > ], \
                 ARG-ST < #subj > ].')
@@ -458,10 +549,14 @@ def cross_class_intransitives(mylang, slist):
     
     mylang.add(s + '-intrans-verb-lex := ' + s + '-sbj-verb-lex & \
                                              basic-intransitive-verb.') 
+    climb_verbs.add(s + '-intrans-verb-lex := ' + s + '-sbj-verb-lex & \
+                                             basic-intransitive-verb.') 
     if 'opt' in s:
       mylang.add(s + '-intrans-verb-lex := opt-sbj-verb-lex.')
+      climb_verbs.add(s + '-intrans-verb-lex := opt-sbj-verb-lex.')
     else:
       mylang.add(s + '-intrans-verb-lex := obl-sbj-verb-lex.')
+      climb_verbs.add(s + '-intrans-verb-lex := obl-sbj-verb-lex.')
  #   if 'expl' in s:
  #     if not 'opt' in s:
  #       mylang.add(s + '-intrans-verb-lex := ' + s + '-sbj-verb-lex & \
@@ -472,12 +567,18 @@ def cross_class_intransitives(mylang, slist):
  #                                            basic-intransitive-verb.') 
     if not 'expl' in s and not 'comp' in s:
       mylang.add(s + '-intrans-verb-lex := intransitive-lex-item.')
+      climb_verbs.add(s + '-intrans-verb-lex := intransitive-lex-item.')
   return slist
 
-def cross_class_comps(mylang, fargs, ncomps_nadps, pats):
+def cross_class_comps(mylang, climb_verbs, fargs, ncomps_nadps, pats):
   ncomps = ncomps_nadps[0]
 #  nadps = ncomps_nadps[1]
   mylang.add('basic-transitive-verb := basic-verb-lex & basic-two-arg & \
+    [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
+                             COMPS < #comp > ], \
+      ARG-ST < #subj & [ ], #comp & [ ] > ].')
+
+  climb_verbs.add('basic-transitive-verb := basic-verb-lex & basic-two-arg & \
     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
                              COMPS < #comp > ], \
       ARG-ST < #subj & [ ], #comp & [ ] > ].')
@@ -492,7 +593,22 @@ def cross_class_comps(mylang, fargs, ncomps_nadps, pats):
                  LKEYS.KEYREL [ ARG1 #harg1, \
                                 ARG2 #harg2 ] ] ].')
 
+  climb_verbs.add('clausal-1st-2nd-arg-trans-lex-item := basic-two-arg & \
+      [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg1 ], \
+                 [ LOCAL.CONT.HOOK.LTOP #larg2 ] >, \
+        SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ], \
+                                     qeq & [ HARG #harg2, LARG #larg2 ] !>, \
+                 LKEYS.KEYREL [ ARG1 #harg1, \
+                                ARG2 #harg2 ] ] ].')
+
   mylang.add('clausal-first-arg-refl-lex-item := basic-two-arg & \
+   [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ], \
+	      [ LOCAL refl-local ] >, \
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg, \
+					  LARG #larg ] !>, \
+	      LKEYS.KEYREL [ ARG1 #harg ] ] ].')
+
+  climb_verbs.add('clausal-first-arg-refl-lex-item := basic-two-arg & \
    [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ], \
 	      [ LOCAL refl-local ] >, \
      SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg, \
@@ -503,9 +619,18 @@ def cross_class_comps(mylang, fargs, ncomps_nadps, pats):
   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX expl-ind ], \
              [ LOCAL refl-local ] > ].')
 
+  climb_verbs.add('expl-refl-arg-lex-item := basic-two-arg-no-hcons & \
+  [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX expl-ind ], \
+             [ LOCAL refl-local ] > ].')
+
   mylang.add('expl-refl-arg-verb-lex := expl-refl-arg-lex-item & main-verb-lex.')
+  climb_verbs.add('expl-refl-arg-verb-lex := expl-refl-arg-lex-item & main-verb-lex.')
 
   mylang.add('basic-ditransitive-verb := basic-verb-lex & basic-three-arg & \
+    [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
+                             COMPS < #comp1, #comp2 > ], \
+      ARG-ST < #subj & [ ], #comp1 & [ ], #comp2 & [ ] > ].')
+  climb_verbs.add('basic-ditransitive-verb := basic-verb-lex & basic-three-arg & \
     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
                              COMPS < #comp1, #comp2 > ], \
       ARG-ST < #subj & [ ], #comp1 & [ ], #comp2 & [ ] > ].')
@@ -521,7 +646,30 @@ def cross_class_comps(mylang, fargs, ncomps_nadps, pats):
 	      LKEYS.KEYREL [ ARG1 #harg1, \
                              ARG2 #ind, \
                              ARG3 #harg2 ] ] ].')
+  climb_verbs.add('clausal-1st-3rd-arg-lex-item := basic-three-arg & \
+   [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg1 ], \
+	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ], \
+	      [ LOCAL.CONT.HOOK.LTOP #larg2 ] >, \
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg1, \
+                                          LARG #larg1 ], \
+                                  qeq & [ HARG #harg2, \
+					  LARG #larg2 ] !>, \
+	      LKEYS.KEYREL [ ARG1 #harg1, \
+                             ARG2 #ind, \
+                             ARG3 #harg2 ] ] ].')
+
   mylang.add('clausal-1st-refl-3rd-arg-lex-item := basic-three-arg & \
+   [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg1 ], \
+	      [ LOCAL refl-local ], \
+	      [ LOCAL.CONT.HOOK.LTOP #larg2 ] >, \
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg1, \
+                                          LARG #larg1 ], \
+                                  qeq & [ HARG #harg2, \
+					  LARG #larg2 ] !>, \
+	      LKEYS.KEYREL [ ARG1 #harg1, \
+                             ARG2 #harg2 ] ] ].')
+
+  climb_verbs.add('clausal-1st-refl-3rd-arg-lex-item := basic-three-arg & \
    [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg1 ], \
 	      [ LOCAL refl-local ], \
 	      [ LOCAL.CONT.HOOK.LTOP #larg2 ] >, \
@@ -541,12 +689,31 @@ def cross_class_comps(mylang, fargs, ncomps_nadps, pats):
 	      LKEYS.KEYREL [ ARG1 #ind, \
                              ARG2 #harg ] ] ].')
 
+  climb_verbs.add('clausal-3rd-expl-arg-lex-item := basic-three-arg & \
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX expl-ind ], \
+	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ], \
+	      [ LOCAL.CONT.HOOK.LTOP #larg ] >, \
+     SYNSEM [ LOCAL.CONT.HCONS <! qeq & [ HARG #harg, \
+					  LARG #larg ] !>, \
+	      LKEYS.KEYREL [ ARG1 #ind, \
+                             ARG2 #harg ] ] ].')
+
   mylang.add('basic-fourarg-verb := basic-verb-lex & basic-four-arg & \
     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
                              COMPS < #comp1, #comp2, #comp3 > ], \
       ARG-ST < #subj & [ ], #comp1 & [ ], #comp2 & [ ], #comp3 & [ ] > ].')
 
+  climb_verbs.add('basic-fourarg-verb := basic-verb-lex & basic-four-arg & \
+    [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
+                             COMPS < #comp1, #comp2, #comp3 > ], \
+      ARG-ST < #subj & [ ], #comp1 & [ ], #comp2 & [ ], #comp3 & [ ] > ].')
+
   mylang.add('basic-fivearg-verb := basic-verb-lex & basic-four-arg & \
+    [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
+                             COMPS < #comp1, #comp2, #comp3, [ ] > ], \
+      ARG-ST < #subj & [ ], #comp1 & [ ], #comp2 & [ ], #comp3 & [ ] > ].')
+
+  climb_verbs.add('basic-fivearg-verb := basic-verb-lex & basic-four-arg & \
     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
                              COMPS < #comp1, #comp2, #comp3, [ ] > ], \
       ARG-ST < #subj & [ ], #comp1 & [ ], #comp2 & [ ], #comp3 & [ ] > ].')
@@ -566,22 +733,22 @@ def cross_class_comps(mylang, fargs, ncomps_nadps, pats):
           latest = parts[len(parts) - 1]
           if latest in only_followed_by_part:
             if cn == 'part':
-              sbj_cps = create_relevant_types(mylang, sbj_cps, c, fa, cn)
+              sbj_cps = create_relevant_types(mylang, climb_verbs, sbj_cps, c, fa, cn)
  #       elif latest in nadps:
  #         if cn == 'part' or cn in only_followed_by_part:
  #           sbj_cps = create_relevant_types(mylang, sbj_cps, c, fa, cn)
           else:
-            sbj_cps = create_relevant_types(mylang, sbj_cps, c, fa, cn)
+            sbj_cps = create_relevant_types(mylang, climb_verbs, sbj_cps, c, fa, cn)
   else:
     for fa in fargs:
       for c in ncomps:
         if fa + '-' + c in pats:
-          sbj_cps = create_relevant_types(mylang, sbj_cps, c, fa, c)
+          sbj_cps = create_relevant_types(mylang, climb_verbs, sbj_cps, c, fa, c)
 
   return sbj_cps
 
 
-def create_relevant_types(mylang, sbj_cps, c, fa, cn):
+def create_relevant_types(mylang, climb_verbs, sbj_cps, c, fa, cn):
   name = fa + '-' + cn
   sbj_cps.append(name)
   if '-' not in fa:
@@ -593,67 +760,95 @@ def create_relevant_types(mylang, sbj_cps, c, fa, cn):
     fan = fa
     mylang.add(name + '-verb-lex := ' + fan + '-sbj-verb-lex & ' + c + '-comp-verb-lex.')
     mylang.add(name + '-trans-verb-lex := ' + name + '-verb-lex & basic-transitive-verb.')
+    climb_verbs.add(name + '-verb-lex := ' + fan + '-sbj-verb-lex & ' + c + '-comp-verb-lex.')
+    climb_verbs.add(name + '-trans-verb-lex := ' + name + '-verb-lex & basic-transitive-verb.')
     if 'opt_' in cn:
       mylang.add(name + '-verb-lex := 1st-comp-opt-lex-item.')
+      climb_verbs.add(name + '-verb-lex := 1st-comp-opt-lex-item.')
     else:
       mylang.add(name + '-verb-lex := comp1-lex-item.')
+      climb_verbs.add(name + '-verb-lex := comp1-lex-item.')
     if '-comp' in name or '-sent' in name or '-wh' in name or '_comp' in name or '_sent' in name or '_wh' in name:
       if 'comp-' in name:
         mylang.add(name + '-trans-verb-lex := clausal-1st-2nd-arg-trans-lex-item.')
+        climb_verbs.add(name + '-trans-verb-lex := clausal-1st-2nd-arg-trans-lex-item.')
       elif 'expl-' in name:
         mylang.add(name + '-trans-verb-lex := clausal-expl-arg-lex-item.')
+        climb_verbs.add(name + '-trans-verb-lex := clausal-expl-arg-lex-item.')
       else:
         mylang.add(name + '-trans-verb-lex := clausal-second-arg-trans-lex-item.')
+        climb_verbs.add(name + '-trans-verb-lex := clausal-second-arg-trans-lex-item.')
     elif 'expl-' in name:
       if '-refl' in name:
         mylang.add(name + '-trans-verb-lex := expl-refl-arg-verb-lex.')
+        climb_verbs.add(name + '-trans-verb-lex := expl-refl-arg-verb-lex.')
       else:
         mylang.add(name + '-trans-verb-lex := expl-two-arg-verb-lex.')
+        climb_verbs.add(name + '-trans-verb-lex := expl-two-arg-verb-lex.')
     elif 'comp-' in name:
       if '-refl' in name:
         mylang.add(name + '-trans-verb-lex := clausal-first-arg-refl-lex-item.')
+        climb_verbs.add(name + '-trans-verb-lex := clausal-first-arg-refl-lex-item.')
       else:
         mylang.add(name + '-trans-verb-lex := clausal-first-arg-trans-lex-item.')
+        climb_verbs.add(name + '-trans-verb-lex := clausal-first-arg-trans-lex-item.')
 ####to-do: all these should get correct supertype
     elif 'part' not in c and 'refl' not in c:
       mylang.add(name + '-trans-verb-lex := transitive-verb-lex.')
+      climb_verbs.add(name + '-trans-verb-lex := transitive-verb-lex.')
   else:
     fas = fa.split('-')
     if len(fas) == 2:
       c += '-2nd'
       mylang.add(name + '-verb-lex := ' + fa + '-verb-lex & ' + c + '-comp-verb-lex.')
       mylang.add(name + '-ditrans-verb-lex := ' + name + '-verb-lex & basic-ditransitive-verb.')
+      climb_verbs.add(name + '-verb-lex := ' + fa + '-verb-lex & ' + c + '-comp-verb-lex.')
+      climb_verbs.add(name + '-ditrans-verb-lex := ' + name + '-verb-lex & basic-ditransitive-verb.')
       if 'opt_' in cn:
         mylang.add(name + '-verb-lex := 2nd-comp-opt-lex-item.')
+        climb_verbs.add(name + '-verb-lex := 2nd-comp-opt-lex-item.')
       else:
         mylang.add(name + '-verb-lex := comp2-lex-item.')
+        climb_verbs.add(name + '-verb-lex := comp2-lex-item.')
       if ('-comp' in name and not 'comp-' in name) or ('-wh' in name and not 'wh-' in name) or ('_comp' in name and not 'comp-' in name) or ('_wh' in name and not 'wh-' in name):
         if 'expl-' in name:  
           mylang.add(name + '-ditrans-verb-lex := clausal-3rd-expl-arg-lex-item.')
+          climb_verbs.add(name + '-ditrans-verb-lex := clausal-3rd-expl-arg-lex-item.')
 #no comp-X-comp in lexicon, but comp-X-wh is found
         elif 'comp-' in name:
           if '-refl-' in name:
             mylang.add(name + '-ditrans-verb-lex := clausal-1st-refl-3rd-arg-lex-item.')
+            climb_verbs.add(name + '-ditrans-verb-lex := clausal-1st-refl-3rd-arg-lex-item.')
           else:
             mylang.add(name + '-ditrans-verb-lex := clausal-1st-3rd-arg-lex-item.')
+            climb_verbs.add(name + '-ditrans-verb-lex := clausal-1st-3rd-arg-lex-item.')
         else:
           mylang.add(name + '-ditrans-verb-lex := clausal-third-arg-ditrans-lex-item.')
+          climb_verbs.add(name + '-ditrans-verb-lex := clausal-third-arg-ditrans-lex-item.')
       elif 'part' not in c and 'refl' not in c and 'expl' not in fa and 'comp' not in fa and 'wh' not in fa:
         mylang.add(name + '-ditrans-verb-lex := ditransitive-lex-item.')
+        climb_verbs.add(name + '-ditrans-verb-lex := ditransitive-lex-item.')
     elif len(fas) == 3:
       c += '-3rd'
       mylang.add(name + '-verb-lex := ' + fa + '-verb-lex & ' + c + '-comp-verb-lex.')
       mylang.add(name + '-4arg-verb-lex := ' + name + '-verb-lex & basic-fourarg-verb.')
+      climb_verbs.add(name + '-verb-lex := ' + fa + '-verb-lex & ' + c + '-comp-verb-lex.')
+      climb_verbs.add(name + '-4arg-verb-lex := ' + name + '-verb-lex & basic-fourarg-verb.')
       if 'opt_' in cn:
         mylang.add(name + '-verb-lex := 3rd-comp-opt-lex-item.')
+        climb_verbs.add(name + '-verb-lex := 3rd-comp-opt-lex-item.')
       else:
         mylang.add(name + '-verb-lex := comp3-lex-item.')
+        climb_verbs.add(name + '-verb-lex := comp3-lex-item.')
       if 'part' not in c and 'refl' not in c and 'expl' not in fa and 'comp' not in fa:
         mylang.add(name + '-4arg-verb-lex := basic-fourarg-verb.')
+        climb_verbs.add(name + '-4arg-verb-lex := basic-fourarg-verb.')
     elif len(fas) == 4:
       c += '-4th'
       mylang.add(name + '-verb-lex := ' + fa + '-verb-lex & ' + c + '-comp-verb-lex.')
       mylang.add(name + '-5arg-verb-lex := ' + name + '-verb-lex & basic-fivearg-verb.')
+      climb_verbs.add(name + '-verb-lex := ' + fa + '-verb-lex & ' + c + '-comp-verb-lex.')
+      climb_verbs.add(name + '-5arg-verb-lex := ' + name + '-verb-lex & basic-fivearg-verb.')
 
   return sbj_cps
 
@@ -679,7 +874,7 @@ def create_subcat_with_opt_list(ch):
 
   return sc_list
 
-def add_pforms_imported_lex(mylang):
+def add_pforms_imported_lex(mylang, climb_verbs):
 
   mylang.add('auf-ueber := pform.',section='features')
   mylang.add('auf := auf-ueber.',section='features')
@@ -703,6 +898,29 @@ def add_pforms_imported_lex(mylang):
   mylang.add('trotz := pform.',section='features')
   mylang.add('durch := pform.',section='features')
   mylang.add('als := pform.',section='features')
+
+  climb_verbs.add('auf-ueber := pform.',comment='section=\'features\'')
+  climb_verbs.add('auf := auf-ueber.',comment='section=\'features\'')
+  climb_verbs.add('ueber := auf-ueber.',comment='section=\'features\'')
+  climb_verbs.add('von := pform.',comment='section=\'features\'')
+  climb_verbs.add('um := pform.',comment='section=\'features\'')
+  climb_verbs.add('aus := pform.',comment='section=\'features\'')
+  climb_verbs.add('an := pform.',comment='section=\'features\'')
+  climb_verbs.add('mit := pform.',comment='section=\'features\'')
+  climb_verbs.add('fuer := pform.',comment='section=\'features\'')
+  climb_verbs.add('zu := pform.',comment='section=\'features\'')
+  climb_verbs.add('unter := pform.',comment='section=\'features\'')
+  climb_verbs.add('nach := pform.',comment='section=\'features\'')
+  climb_verbs.add('bis := pform.',comment='section=\'features\'')
+  climb_verbs.add('vor := pform.',comment='section=\'features\'')
+  climb_verbs.add('bei := pform.',comment='section=\'features\'')
+  climb_verbs.add('in := pform.',comment='section=\'features\'')
+  climb_verbs.add('gegen := pform.',comment='section=\'features\'')
+  climb_verbs.add('ohne := pform.',comment='section=\'features\'')
+  climb_verbs.add('andie := pform.',comment='section=\'features\'')
+  climb_verbs.add('trotz := pform.',comment='section=\'features\'')
+  climb_verbs.add('durch := pform.',comment='section=\'features\'')
+  climb_verbs.add('als := pform.',comment='section=\'features\'')
 
 
 def interpret_verb_valence(valence):
@@ -761,7 +979,7 @@ def interpret_verb_valence(valence):
 
 
 
-def customize_verb_case(mylang, ch):
+def customize_verb_case(mylang, climb_verbs, ch):
   cm = ch.get('case-marking')
   cases = case.case_names(ch)
 
@@ -805,13 +1023,15 @@ def customize_verb_case(mylang, ch):
           t_type = a_case + '-scomp-transitive-verb-lex'
         else:
           t_type = 'scomp-transitive-verb-lex'                      
-        mylang.add(t_type + ' := s-comp-2nd-arg-verb-lex.')
+        mylang.add(t_type + ' := s-comp-2nd-arg-verb-lex.')         
+        climb_verbs.add(t_type + ' := s-comp-2nd-arg-verb-lex.')
 
         # constrain the head of the agent/subject
         typedef = \
           t_type + ' := \
           [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
         mylang.add(typedef)
+        climb_verbs.add(typedef)
 
         # constrain the case of the agent/subject
         if a_case:
@@ -819,6 +1039,7 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
 ####subj control verbs: TODO make better interface and restrictions
   
@@ -839,9 +1060,11 @@ def customize_verb_case(mylang, ch):
 #HACK to get old choices files to work with addition of zuinf
           elif b_res == 'zuinf':
             mylang.add('zuinf := nonfinite.')
+            climb_verbs.add('zuinf := nonfinite.')
         else:
           t_type = 'subj-contr-transitive-verb-lex'                      
-        mylang.add(t_type + ' := subj-contr-transitive-verb-lex.')
+        mylang.add(t_type + ' := subj-contr-transitive-verb-lex.')      
+        climb_verbs.add(t_type + ' := subj-contr-transitive-verb-lex.')
 
         # constrain the head of the agent/subject
         if ch.get('vc-analysis') != 'aux-rule':
@@ -854,6 +1077,7 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
             [ ARG-ST < [ LOCAL.CAT.HEAD verb & [ FORM ' + b_res + ' ] ] > ].'
         mylang.add(typedef)
+        climb_verbs.add(typedef)
 
         # constrain the case of the agent/subject
         if a_case and not ch.get('vc-analysis') == 'aux-rule':
@@ -861,6 +1085,7 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
       elif p[0] == 'expl' or (len(c) == 2 and c[0] == 'expl'):      
 ###skipping just 'expl' scenario for now  
@@ -876,6 +1101,9 @@ def customize_verb_case(mylang, ch):
         mylang.add(t_type + ' := expl-two-arg-verb-lex & \
                       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp >, \
                         ARG-ST < [ ], #comp & [ ] > ].')
+        climb_verbs.add(t_type + ' := expl-two-arg-verb-lex & \
+                      [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp >, \
+                        ARG-ST < [ ], #comp & [ ] > ].')
 ###a_case value is not expl, but nom for Germanic
         a_case = 'nom'  
  # constrain the head of the agent/subject
@@ -883,6 +1111,7 @@ def customize_verb_case(mylang, ch):
           t_type + ' := \
           [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
         mylang.add(typedef)
+        climb_verbs.add(typedef)
 
         # constrain the case of the agent/subject
         if a_case:
@@ -890,11 +1119,13 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 # constrain the head of the patient/object
         typedef = \
           t_type + ' := \
           [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
         mylang.add(typedef)
+        climb_verbs.add(typedef)
 
         # constrain the case of the patient/object
         if o_case:
@@ -902,6 +1133,7 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
             [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
       elif p[0] == 'trans' or len(c) == 2:  # transitive
         if p[0] == 'trans':
@@ -922,12 +1154,14 @@ def customize_verb_case(mylang, ch):
 
         if t_type != 'transitive-verb-lex':
           mylang.add(t_type + ' := transitive-verb-lex.')
+          climb_verbs.add(t_type + ' := transitive-verb-lex.')
 
         # constrain the head of the agent/subject
         typedef = \
           t_type + ' := \
           [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
         mylang.add(typedef)
+        climb_verbs.add(typedef)
 
         # constrain the case of the agent/subject
         if a_case:
@@ -935,6 +1169,7 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
         # constrain CASE-MARKING of the agent/subject, if appropriate
         if a_case and ch.has_mixed_case() and not ch.has_optadp_case(a_case):
@@ -942,12 +1177,14 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
             [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
         # constrain the head of the patient/object
         typedef = \
           t_type + ' := \
           [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
         mylang.add(typedef)
+        climb_verbs.add(typedef)
 
         # constrain the case of the patient/object
         if o_case:
@@ -955,6 +1192,7 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
             [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
         # constrain CASE-MARKING of the patient/object, if appropriate
         if o_case and ch.has_mixed_case() and not ch.has_optadp_case(o_case):
@@ -962,6 +1200,7 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
             [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
       elif p[0] == 'oraisverb' or (len(c) == 3 and c[2] == 'inf'):
         if p[0] == 'oraisverb':
@@ -981,7 +1220,8 @@ def customize_verb_case(mylang, ch):
           b_res += 'initive'
         else:
           t_type = 'obj-rais-ditrans-verb-lex'                      
-        mylang.add(t_type + ' := obj-raising-verb-lex.')
+        mylang.add(t_type + ' := obj-raising-verb-lex.')           
+        climb_verbs.add(t_type + ' := obj-raising-verb-lex.')
 
         # constrain the head of the agent/subject
         
@@ -1000,6 +1240,7 @@ def customize_verb_case(mylang, ch):
       #                 [ LOCAL.CAT.HEAD verb  & [ FORM ' + b_res + ' ] ] > ].'
 
         mylang.add(typedef)
+        climb_verbs.add(typedef)
 
         # constrain the case of the agent/subject
         if a_case:
@@ -1007,11 +1248,13 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
         if o_case:
           typedef = \
             t_type + ' := \
               [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ], [ ] > ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
       elif p[0] == 'refl' or (len(c) == 3 and c[1] == 'refl'):   #reflexive
         if p[0] == 'refl':
@@ -1038,6 +1281,7 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
              [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
         mylang.add(typedef)
+        climb_verbs.add(typedef)
 
         # constrain the case of the agent/subject
         if a_case:
@@ -1045,15 +1289,18 @@ def customize_verb_case(mylang, ch):
              t_type + ' := \
                [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
         # second argument get correct properties from refl-verb-lex
         mylang.add(t_type + ' := refl-verb-lex.')
+        climb_verbs.add(t_type + ' := refl-verb-lex.')
 
         # constrain the head of the patient/object
         typedef = \
             t_type + ' := \
               [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
         mylang.add(typedef)
+        climb_verbs.add(typedef)
 
         # constrain the case of the patient/object
         if not o_case == 'pp':
@@ -1061,6 +1308,7 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
                 [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
        ####adding some properties to get the semantics right
         typedef = \
@@ -1072,6 +1320,7 @@ def customize_verb_case(mylang, ch):
                  ARG-ST < [ LOCAL.CONT.HOOK.INDEX #arg1 ], \
                               #comp2 > ].'
         mylang.add(typedef)
+        climb_verbs.add(typedef)
 
       elif p[0] == 'ditrans' or p[0] == 'partv' or len(c) == 3: #ditrans 
 
@@ -1103,6 +1352,7 @@ def customize_verb_case(mylang, ch):
             t_type = dir_inv + 'ditransitive-verb-lex'
           if t_type != 'ditransitive-verb-lex':
             mylang.add(t_type + ' := ditransitive-verb-lex.')
+            climb_verbs.add(t_type + ' := ditransitive-verb-lex.')
         else:
           if a_case and b_case and o_case:
             t_type = dir_inv + a_case + '-' + b_case + '-' + o_case + '-part-transitive-verb-lex'
@@ -1110,11 +1360,13 @@ def customize_verb_case(mylang, ch):
             t_type = dir_inv + 'part-transitive-verb-lex'
           if t_type != 'part-transitive-verb-lex':
             mylang.add(t_type + ' := part-transitive-verb-lex.')
+            climb_verbs.add(t_type + ' := part-transitive-verb-lex.')
 
         typedef = \
             t_type + ' := \
              [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
         mylang.add(typedef)
+        climb_verbs.add(typedef)
 
         # constrain the case of the agent/subject
         if a_case:
@@ -1122,6 +1374,7 @@ def customize_verb_case(mylang, ch):
              t_type + ' := \
                [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
        
         if o_head == 'noun':   # constrain the head of the agent/subject
          
@@ -1130,6 +1383,7 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
               [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + b_head + ' ], [ ] > ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
         # constrain the case of the patient/object
           if b_case:
@@ -1137,12 +1391,14 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
               [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + b_case + ' ], [ ] > ].'
             mylang.add(typedef)
+            climb_verbs.add(typedef)
 
         # constrain the head of the patient/object
           typedef = \
             t_type + ' := \
               [ ARG-ST < [ ], [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
         # constrain the case of the patient/object
           if o_case:
@@ -1150,6 +1406,7 @@ def customize_verb_case(mylang, ch):
               t_type + ' := \
                [ ARG-ST < [ ], [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
             mylang.add(typedef)
+            climb_verbs.add(typedef)
         else:  
 
         # constrain the head of the beneficiary
@@ -1157,6 +1414,7 @@ def customize_verb_case(mylang, ch):
             t_type + ' := \
               [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + b_head + ' ] > ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
         # constrain the case of the patient/object
           if b_case:
@@ -1164,6 +1422,7 @@ def customize_verb_case(mylang, ch):
               t_type + ' := \
                 [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + b_case + ' ] > ].'
             mylang.add(typedef)
+            climb_verbs.add(typedef)
 
 # constrain the head of the patient/object
           typedef = \
@@ -1171,6 +1430,7 @@ def customize_verb_case(mylang, ch):
               [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ], \
                                              [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
           if o_case:
             o_case += '-part'
             typedef = \
@@ -1178,8 +1438,10 @@ def customize_verb_case(mylang, ch):
                [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ], \
                                      [ LOCAL.CAT.HEAD.FORM ' + o_case + ' ] > ].'
             mylang.add(o_case + ' := form.')
+            climb_verbs.add(o_case + ' := form.')
  
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
 
       else:     # intransitive
@@ -1197,12 +1459,14 @@ def customize_verb_case(mylang, ch):
 
         if i_type != 'intransitive-verb-lex':
           mylang.add(i_type + ' := intransitive-verb-lex.')
+          climb_verbs.add(i_type + ' := intransitive-verb-lex.')
 
         # constrain the head of the subject
         typedef = \
           i_type + ' := \
           [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + s_head + ' ].'
         mylang.add(typedef)
+        climb_verbs.add(typedef)
 
         # constrain the case of the subject
         if s_case:
@@ -1210,6 +1474,7 @@ def customize_verb_case(mylang, ch):
             i_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + s_case + ' ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
         # constrain CASE-MARKING of the subject, if appropriate
         if s_case and ch.has_mixed_case() and not ch.has_optadp_case(s_case):
@@ -1217,6 +1482,7 @@ def customize_verb_case(mylang, ch):
             i_type + ' := \
             [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
           mylang.add(typedef)
+          climb_verbs.add(typedef)
 
 
 
@@ -1262,7 +1528,7 @@ def create_some_compl_old(ch, mylang, stype, prefix):
           if prefix != '3rd':
             constraint = '], [ ' + constraint
       cur_stype = prefix + '-comp-verb-lex'
-      add_comp_feature(mylang, cur_stype, name, constraint)
+      add_comp_feature(mylang, climb_verbs, cur_stype, name, constraint)
       name = prefix + '-plus-comp-verb-lex'
       constraint = 'OPT -'
       if prefix != '1st':
@@ -1271,7 +1537,7 @@ def create_some_compl_old(ch, mylang, stype, prefix):
           constraint = '], [ ' + constraint
           if prefix != '3rd':
             constraint = '], [ ' + constraint
-      add_comp_feature(mylang, cur_stype, name, constraint)
+      add_comp_feature(mylang, climb_verbs, cur_stype, name, constraint)
         
   if vals:
     for val in vals:

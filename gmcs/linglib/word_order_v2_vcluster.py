@@ -78,7 +78,9 @@ def add_nexus_constraints_v2_with_cluster(ch, mylang):
     mylang.add('aux-2nd-comp-phrase := [ SYNSEM.LOCAL.CAT.SUB-POS #sub-pos, \
                            HEAD-DTR.SYNSEM.LOCAL.CAT.SUB-POS #sub-pos ].')
 
-    if not ch.get('v2-analysis') == 'filler-gap':
+    if ch.get('v2-analysis') == 'filler-gap':
+      mylang.add('extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.SUB-POS -].')
+    else:
       mylang.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.SUB-POS - ].')
       mylang.add('comp-aux-2nd-phrase := [ SYNSEM.LOCAL.CAT.SUB-POS #sub-pos, \
                            HEAD-DTR.SYNSEM.LOCAL.CAT.SUB-POS #sub-pos ].')
@@ -122,6 +124,9 @@ def add_basic_phrases_v2_with_cluster(ch, mylang, rules):
     mylang.add('head-comp-phrase-2 := [ ' + path + ' verb ].')
     mylang.add('head-comp-phrase-2 := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
  
+  if not (ch.get('argument-order') == 'fixed' and ch.get('v2-analysis') == 'filler-gap'):
+    mylang.add('basic-extracted-subj-phrase :+ [ SYNSEM.LOCAL.CAT.COMPS < > ].', section='addenda')
+
 ###Additional trick to help efficiency: conj cannot be complement or subjects
   comment = 'Conjunction markers and determiners cannot be complement or subject markers. Adding the appropriate restrictions helps against spurious analyses'
   mylang.add('basic-head-comp-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvjrpcm ].', section='addenda')
@@ -1428,7 +1433,15 @@ def filler_gap_word_order(ch, mylang):
                                    HEAD.INV - ] ].')
 
   mylang.add('head-final-invc := general-head-final-invc.')
- 
+
+# additional constraints for fixed argument order:
+
+  if ch.get('argument-order') == 'fixed':
+#    mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 1-dlist].')
+    mylang.add('aux-2nd-comp-phrase := [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
+                                                         COMPS < > ] ].')
+#                                  NON-HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 1-dlist ].') 
+
  # should not be necessary anymore with revised slash constraints
  #
  # hd_slash_share = '[ SYNSEM.NON-LOCAL.SLASH #slash, \

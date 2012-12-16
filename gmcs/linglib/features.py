@@ -7,12 +7,12 @@ from gmcs.linglib import subcategorization
 #   iterator and specify the feature/value pairs found to the
 #   passed-in type.
 
-def process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=None):
+def process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=None, climbfile=None):
   for (ch_key, type_id, pos) in to_cfv:
     customize_feature_values(mylang, ch, hierarchies, ch[ch_key], type_id, pos,
-                             tdlfile=tdlfile or mylang)
+                             tdlfile=tdlfile or mylang, climbfile = climbfile or mylang)
 
-def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, features=None, cases=None, tdlfile=None):
+def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, features=None, cases=None, tdlfile=None, climbfile=None):
 
   if not features:
     features = ch.features()
@@ -20,7 +20,10 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     cases = case.case_names(ch)
   if not tdlfile:
     tdlfile = mylang
-
+#hack so I won't have to wait testing until all is done
+  if not climbfile:
+    climbfile = mylang
+  
   pos_geom_prefix = ''
  
 
@@ -64,6 +67,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     geom_prefix = pos_geom_prefix
     # Germanic: Auxrule analysis requires a different prefix
     # No subj list to put feature on...geom_prefix2 used for this purpose
+    # This also applies to filler-gap analyses for languages with fixed argument order (i.e. Dutch)
     geom_prefix2 = ''
 
     # The 'head' choice only appears on verb pcs, and allows the user
@@ -80,7 +84,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # also needed for auxiliaries in general
       if ch.get('verb-cluster') == 'yes' and ch.get('word-order') == 'v2': 
         v_val = ''
-        if ch.get('vc-analysis') == 'aux-rule':
+        if ch.get('vc-analysis') == 'aux-rule' or (ch.get('v2-analysis') == 'filler-gap' and ch.get('argument-order') == 'fixed'):
           v_val = ch_dict.get('valence')
           if pos == 'aux' or v_val == 'nom-inf' or v_val == 'nom-zuinf':
             indirect_subj_mark = True
@@ -162,9 +166,24 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             tdlfile.add(type_name_2 +
                       ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
                          merge=True)
+            climbfile.add(type_name_1 +
+                      ' := ' + type_name + ' & ' +
+                       ' [ ' + geom + ' ' + value + ' ].')
+            climbfile.add(type_name_1 +
+                      ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].', 
+                         merge=True)
+            climbfile.add(type_name_2 +
+                      ' := ' + type_name + ' & ' +
+                       ' [ ' + geom2 + ' ' + value + ' ].')
+            climbfile.add(type_name_2 +
+                      ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+                         merge=True)
 ####else case, if aux-rule and on lexical item rather than rule
           else:
             tdlfile.add(type_name +
+                    ' := [ ' + geom2 + ' ' + value + ' ].',
+                    merge=True)
+            climbfile.add(type_name +
                     ' := [ ' + geom2 + ' ' + value + ' ].',
                     merge=True)
         else: 
@@ -177,9 +196,13 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
           mytype =  type_name + ' := [ ' + geom + ' ' + value + suffix
           tdlfile.add(mytype,
                       merge=True)  
+          climbfile.add(mytype,
+                      merge=True)  
         if n == 'case' and ch.has_mixed_case():
           val = '-' if '-synth-' + value in type_name else '+'
           tdlfile.add(type_name +
+                      ' := [ ' + geom + '-MARKED ' + val + ' ].',merge=True)
+          climbfile.add(type_name +
                       ' := [ ' + geom + '-MARKED ' + val + ' ].',merge=True)
       else:
         for value in v:
@@ -190,10 +213,13 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
           else:
             suffix = ' ].'
           mytype =  type_name + ' := [ ' + geom + ' ' + value + suffix
-          tdlfile.add(mytype, merge=True)  
+          tdlfile.add(mytype, merge=True) 
+          climbfile.add(mytype, merge=True)   
     elif n == 'argument structure':
       # constrain the ARG-ST to be passed up
       tdlfile.add(type_name + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].',
+                  merge=True)
+      climbfile.add(type_name + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].',
                   merge=True)
 
       # get the feature geometry of CASE
@@ -215,11 +241,18 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                       ' := [ ARG-ST < [ ' + a_case + '], ' +\
                                      '[ ' + o_case + '] > ].',
                       merge=True)
+          climbfile.add(type_name + \
+                      ' := [ ARG-ST < [ ' + a_case + '], ' +\
+                                     '[ ' + o_case + '] > ].',
+                      merge=True)
         else:
           c = c[0]
           s_case = '' if c == 'intrans' \
                       else (geom + ' ' + case.canon_to_abbr(c, cases))
           tdlfile.add(type_name + \
+                      ' := [ ARG-ST < [ ' + s_case + '] > ].',
+                      merge=True)
+          climbfile.add(type_name + \
                       ' := [ ARG-ST < [ ' + s_case + '] > ].',
                       merge=True)
 
@@ -231,8 +264,28 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       # and ensure that verbs start out negated -
       if ch.get('neg-head-feature') == 'on':
         tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].',merge=True)
+        climbfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].',merge=True)
 
       tdlfile.add(type_name + ':= \
+                     [ C-CONT [ HOOK [ XARG #xarg,\
+	                     LTOP #ltop,\
+	                     INDEX #ind ],\
+	              RELS <! event-relation &\
+	                      [ PRED "neg_rel",\
+	                        LBL #ltop,\
+	                        ARG1 #harg ] !>,\
+	              HCONS <! qeq &\
+	                       [ HARG #harg,\
+	                         LARG #larg ] !> ],\
+	              SYNSEM.LKEYS #lkeys,\
+	            DTR [ SYNSEM [ LKEYS #lkeys,\
+	                    LOCAL [ CONT.HOOK [ XARG #xarg,\
+                                                INDEX #ind,\
+	                                        LTOP #larg ],\
+	                          CAT.HEAD verb]]]].',
+                 'This lexical rule adds the neg_rel to the verb\'s\n\RELS list.',
+                  merge=True)
+      climbfile.add(type_name + ':= \
                      [ C-CONT [ HOOK [ XARG #xarg,\
 	                     LTOP #ltop,\
 	                     INDEX #ind ],\
@@ -255,15 +308,20 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       # this feature on a bound morpheme means that this morpheme is neg1 and 
       # introduces a dependency for neg2 as an independent adverb
       tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.NEG-SATISFIED - ].',merge=True)
+      climbfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.NEG-SATISFIED - ].',merge=True)
     elif (n == 'negation' and v[0] == 'minus'):
       # JDC 2011-01-11 Users specify negation minus to indicate that a 
       # lexical type is not compatible with negation
       if ch.get('neg-head-feature') == 'on':
         tdlfile.add(type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].',merge=True)
+        climbfile.add(type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].',merge=True)
 
     elif (n == 'question' and v[0] == 'plus'):
       # ERB 2009-07-01 Adding in semantics for question affixes
       tdlfile.add(type_name + ':= \
+                     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].',
+                  merge=True)
+      climbfile.add(type_name + ':= \
                      [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].',
                   merge=True)
 
@@ -295,23 +353,43 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                                             SPEC #spec ] ].' \
                   % {'id': type_name },
                   merge=True)
+        climbfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.LOCAL %(bv)s,\
+                 DTR.SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.LOCAL %(bv)s].' \
+                  % {'id': type_name, 'vg': val_geom, 'bv': bool_val},
+                  merge=True)
+###HACK: for now, this is only possible for nouns: share other vals:
+        climbfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
+                                                       COMPS #comps, \
+                                                       SPEC #spec ], \
+                 DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
+                                            COMPS #comps, \
+                                            SPEC #spec ] ].' \
+                  % {'id': type_name },
+                  merge=True)
 
       else:
         tdlfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.OPT %(bv)s].' \
+                  % {'id': type_name, 'vg': val_geom, 'bv': bool_val},
+                  merge=True)
+        climbfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.OPT %(bv)s].' \
                   % {'id': type_name, 'vg': val_geom, 'bv': bool_val},
                   merge=True)
 
     elif n == 'direction':
       if v[0] == 'dir':
         tdlfile.add(type_name + ' := dir-lex-rule.')
+        climbfile.add(type_name + ' := dir-lex-rule.')
       else:
         tdlfile.add(type_name + ' := inv-lex-rule.')
+        climbfile.add(type_name + ' := inv-lex-rule.')
     elif n == 'dirinv-type':
       d = v[0]
       if h == 'subj':
         tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ < '+d+' > ].')
+        climbfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ < '+d+' > ].')
       elif h == 'obj':
         tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS < '+d+' > ].')
+        climbfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS < '+d+' > ].')
 
 # Note: customize case code is now in gmcs/linglib/case.py
 

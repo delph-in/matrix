@@ -1992,10 +1992,10 @@ basic-extracted-comp-phrase := basic-extracted-arg-phrase &
 basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
 			   SPR < >,
-			   COMPS < > ],
+			   COMPS #comps ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ < gap &
 					       [ NON-LOCAL.SLASH #slash ] >,
-        			      COMPS < > ],
+        			      COMPS #comps ],
 		      NON-LOCAL.SLASH #slash ] ].
 
 ; ERB 2004-05-05 Allow modifiers to attach to things with

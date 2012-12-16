@@ -29,7 +29,7 @@ def set_supertypename(auxcomp):
 
       
 
-def define_arg_str_and_valency(aux, auxcomp, ch, mylang):
+def define_arg_str_and_valency(aux, auxcomp, ch, mylang, climb_aux):
 
   Germanic = is_germanic(ch)
 
@@ -41,6 +41,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang):
                 [ SYNSEM.LOCAL.CAT.VAL [ SPR < >, \
                                          SPEC < > ] ].'
   mylang.add(basic_typedef)
+  climb_aux.add(basic_typedef)
 
   if Germanic:
     comp_spec_typedef = define_germanic_arg_str_and_valency(ch, supertypename)  
@@ -48,13 +49,20 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang):
       if ch.get('vc-analysis') == 'basic':
         mylang.add(supertypename + ' := [ ARG-ST < [  ], \
                                                    [ OPT - ] > ].')
+        climb_aux.add(supertypename + ' := [ ARG-ST < [  ], \
+                                                   [ OPT - ] > ].')
         if ch.get('v2-analysis') == 'mc':
           mylang.add(supertypename + ' := \
                                   [ ARG-ST < [ NON-LOCAL.SLASH 0-dlist & \
                                                                [ LIST < > ] ], \
                                              [ ] > ].')
+          climb_aux.add(supertypename + ' := \
+                                  [ ARG-ST < [ NON-LOCAL.SLASH 0-dlist & \
+                                                               [ LIST < > ] ], \
+                                             [ ] > ].')
       elif ch.get('vc-analysis') == 'aux-rule':
-        mylang.add(supertypename + ' := [ ARG-ST < [ OPT - ] > ].')  
+        mylang.add(supertypename + ' := [ ARG-ST < [ OPT - ] > ].') 
+        climb_aux.add(supertypename + ' := [ ARG-ST < [ OPT - ] > ].')  
   elif auxcomp == 's':
     comp_spec_typedef = supertypename + ' := basic-one-arg & \
                             [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
@@ -69,6 +77,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang):
       auxrest_type = supertypename + ' := \
                          [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ] > ].'
       mylang.add(auxrest_type)
+      climb_aux.add(auxrest_type)
 
 ###VP and V-compl have more in common
 
@@ -87,6 +96,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang):
       auxrest_type = supertypename + ' := \
                          [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
       mylang.add(auxrest_type)
+      climb_aux.add(auxrest_type)
 
     if auxcomp == 'vp':
       comp_spec_typedef_2 = supertypename + ' := \
@@ -105,6 +115,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang):
         '; that the non-local features are amalgamated from subj, the\n' + \
         '; lexical verb complement, but not the other complements, if any.'
       mylang.add_literal(comment)
+      climb_aux.add_literal(comment)
       comp_spec_typedef_2 = supertypename + ' := basic-two-arg & \
              [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps . #vcomps >, \
                ARG-ST < [ ], \
@@ -115,11 +126,13 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang):
                                       HEAD verb ], \
                                 CONT.HOOK.XARG #xarg ]] > ].'
     mylang.add(comp_spec_typedef_2)
-    add_subj_tdl(aux, auxcomp, ch, mylang)
+    climb_aux.add(comp_spec_typedef_2)
+    add_subj_tdl(aux, auxcomp, ch, mylang, climb_aux)
 
-  mylang.add(comp_spec_typedef)    
+  mylang.add(comp_spec_typedef)   
+  climb_aux.add(comp_spec_typedef)    
   
-def add_subj_tdl(aux, auxcomp, ch, mylang):
+def add_subj_tdl(aux, auxcomp, ch, mylang, climb_aux):
   """
   A function to add subject related tdl to type definition if the complement
   is either a V or a VP.
@@ -141,14 +154,17 @@ def add_subj_tdl(aux, auxcomp, ch, mylang):
       scasetype = typename + ' := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE #case  ], \
           [ LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE #case ] > ] > ].'
       mylang.add(scasetype)
+      climb_aux.add(scasetype)
     elif subj == 'np-aux-case':
       scasetype = typename + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + subjcase + ' ].'
       mylang.add(scasetype)
+      climb_aux.add(scasetype)
 
   mylang.add(subjtype)
+  climb_aux.add(subjtype)
     
 
-def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies):
+def create_semantics(sem, aux, auxcomp, mylang, climb_aux, ch, hierarchies):
   Germanic = is_germanic(ch)
 
   if not Germanic:
@@ -173,6 +189,7 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies):
         '; Not inheriting from basic-verb-lex, so need to put in\n' + \
         '; event-relation by hand here.'
       mylang.add_literal(comment)
+      climb_aux.add_literal(comment)
 
       typedef = auxtypename +  ' := hcons-lex-item & \
                [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & \
@@ -183,6 +200,8 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies):
       
     mylang.add(basic_typedef)
     mylang.add(typedef)
+    climb_aux.add(basic_typedef)
+    climb_aux.add(typedef)
   else:   
     auxtypename = supertypename + '-no-pred'
     typedef = auxtypename + ' := ' + supertypename + ' & raise-sem-lex-item.'
@@ -195,6 +214,7 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies):
         '; tell that you had an argument composition auxiliary if it\n' + \
         '; wasn\'t appearing adjacent to the verb.'
       mylang.add_literal(comment)
+      climb_aux.add_literal(comment)
 #### Restriction to stop semantically empty auxiliaries from spinning
 #### Check multiple aux: no need to add constraint when already present on 
 #### supertype
@@ -208,6 +228,7 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies):
         '; but I don\'t want to rely on this.  Then again, [ AUX - ]\n' + \
         '; might not be true.'
       mylang.add_literal(comment)
+      climb_aux.add_literal(comment)
 ###Germanic specific: auxrule gives only one argument to auxiliaries
       if auxcomp == 's' or ch.get('vc-analysis') == 'aux-rule':
         arg_str = '< [ LOCAL.CAT.HEAD.AUX - ] >'
@@ -216,14 +237,16 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies):
          
 
       auxres_type = auxtypename + ' := [ ARG-ST ' + arg_str + ' ].'   
-      mylang.add(auxres_type)
+      mylang.add(auxres_type)  
+      climb_aux.add(auxres_type)
 
     mylang.add(typedef)
+    climb_aux.add(typedef)
 
-  customize_users_auxtype(auxtypename, aux, ch, mylang, hierarchies)
+  customize_users_auxtype(auxtypename, aux, ch, mylang, climb_aux, hierarchies)
 
 
-def customize_users_auxtype(auxtypename, aux, ch, mylang, hierarchies):
+def customize_users_auxtype(auxtypename, aux, ch, mylang, climb_aux, hierarchies):
   """
   A utility that declares the userstype as subtype of supertype and
   calls the functions that specify feature values on the type.
@@ -234,11 +257,13 @@ def customize_users_auxtype(auxtypename, aux, ch, mylang, hierarchies):
   auxcomp = ch.get('aux-comp')
   userstypename = get_users_type_name(aux)
   aux_s = aux.get('aux-select')
-  features.customize_feature_values(mylang, ch, hierarchies, aux, userstypename, 'aux')
-  features.customize_feature_values(mylang, ch, hierarchies, aux, userstypename, 'auxcomplement')
+  features.customize_feature_values(mylang, ch, hierarchies, aux, userstypename, 'aux', climbfile = climb_aux)
+  features.customize_feature_values(mylang, ch, hierarchies, aux, userstypename, 'auxcomplement', climbfile = climb_aux)
   mylang.add(userstypename + ':= ' + auxtypename + '.')
+  climb_aux.add(userstypename + ':= ' + auxtypename + '.')
   if aux_s:
     mylang.add(userstypename + ' := ' + aux_s + '-only-verb-lex.')
+    climb_aux.add(userstypename + ' := ' + aux_s + '-only-verb-lex.')
 
 
 def get_users_type_name(aux):
@@ -246,31 +271,32 @@ def get_users_type_name(aux):
   userstypename = name + '-aux-lex'
   return userstypename
 
-def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon):
+def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, climb_aux):
   for stem in aux.get('stem',[]):
     orth = orth_encode(stem.get('orth'))
     id = stem.get('name')
     typedef = TDLencode(id) + ' := ' + userstypename + ' & \
                        [ STEM < "' + orth + '" > ].'
     lexicon.add(typedef)
-
+    climb_aux.add(typedef, section='lexicon')
     if sem == 'add-pred':
       pred = stem.get('pred')
       typedef = TDLencode(id) + \
                     ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef, merge=True)
+      climb_aux.add(typedef, merge=True)
 
 
-def customize_auxiliaries(mylang, ch, lexicon, hierarchies):
+def customize_auxiliaries(mylang, climb_aux, ch, lexicon, hierarchies):
 
   lexicon.add_literal(';;; Auxiliaries')
   for aux in ch.get('aux',[]):
     auxcomp = ch.get('aux-comp')
     userstypename = get_users_type_name(aux)
     sem = aux.get('sem', '')
-    define_arg_str_and_valency(aux, auxcomp, ch, mylang)
-    create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies)
-    add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon)
+    define_arg_str_and_valency(aux, auxcomp, ch, mylang, climb_aux)
+    create_semantics(sem, aux, auxcomp, mylang, climb_aux, ch, hierarchies)
+    add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, climb_aux)
 
 
 

@@ -366,6 +366,32 @@ def setup_vcs(ch, grammar_path):
     os.chdir(cwd)
     IGNORE.close()
 
+
+def create_climb_files_dict(grammar_path):
+
+  climb_dict = {}
+  climb_dict['lexical_items'] =  tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'lexical_items.tdl'))
+  climb_dict['nouns'] =  tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'nouns.tdl'))
+  climb_dict['verbs'] =  tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'nouns.tdl'))
+  climb_dict['case'] =  tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'case.tdl'))
+  climb_dict['aux'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'auxiliaries.tdl'))
+  climb_dict['cop'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'copula.tdl'))
+  climb_dict['wh'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'wh-analyses.tdl'))
+  climb_dict['arg-opt'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'argument_optionality.tdl'))
+
+
+  climb_dict['lexical_items'].define_climb_sections()
+  climb_dict['nouns'].define_climb_sections()
+  climb_dict['verbs'].define_climb_sections()
+  climb_dict['case'].define_climb_sections()
+  climb_dict['aux'].define_climb_sections()
+  climb_dict['cop'].define_climb_sections()
+  climb_dict['wh'].define_climb_sections()
+  climb_dict['arg-opt'].define_climb_sections()
+
+  return climb_dict
+
+
 ######################################################################
 # customize_matrix(path)
 #   Create and prepare for download a copy of the matrix based on
@@ -391,6 +417,12 @@ def customize_matrix(path, arch_type, destination=None):
     shutil.rmtree(grammar_path)
   # the rsync command won't create the target dirs, so do it now
   os.makedirs(grammar_path)
+  
+  # creating a climb directory
+  
+  os.makedirs(grammar_path + '/climb')
+
+
 
   # Use the following command when python2.6 is available
   #shutil.copytree('matrix-core', grammar_path,
@@ -423,6 +455,10 @@ def customize_matrix(path, arch_type, destination=None):
   lrules =  tdl.TDLfile(os.path.join(grammar_path, 'lrules.tdl'))
   lexicon = tdl.TDLfile(os.path.join(grammar_path, 'lexicon.tdl'))
   roots =   tdl.TDLfile(os.path.join(grammar_path, 'roots.tdl'))
+
+  climb_files = create_climb_files_dict(grammar_path)
+
+
 
   # date/time
   try:
@@ -486,8 +522,11 @@ def customize_matrix(path, arch_type, destination=None):
   # The following might modify hierarchies in some way, so it's best
   # to customize those components and only have them contribute their
   # information to lexical rules when we customize inflection.
-  lexical_items.customize_lexicon(mylang, ch, lexicon, hierarchies, lrules, rules)
-  argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies)
+  
+
+  lexical_items.customize_lexicon(mylang, ch, lexicon, hierarchies, lrules, rules, climb_files)
+  argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies, climb_files)
+  ####climb insertion from here
   direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
   case.customize_case(mylang, ch, hierarchies)
   argument_alternation.customize_argument_alternation(ch, mylang, lrules, lexicon)
@@ -544,6 +583,14 @@ def customize_matrix(path, arch_type, destination=None):
   lexicon.save()
   roots.save()
   version_lsp.save()
+
+  for cl_file in climb_files.itervalues():
+    cl_file.save()
+
+  #here feature geometry will be created
+
+  #here path reduction will be applied to files in climb
+
 
   # Setup version control, if any
   setup_vcs(ch, grammar_path)
