@@ -378,7 +378,19 @@ def create_climb_files_dict(grammar_path):
   climb_dict['cop'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'copula.tdl'))
   climb_dict['wh'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'wh-analyses.tdl'))
   climb_dict['arg-opt'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'argument_optionality.tdl'))
-
+  climb_dict['arg-alternation'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'argument_alternation.tdl'))
+  climb_dict['morph'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'morphotactics.tdl'))
+  climb_dict['agreement'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'agreement.tdl'))
+  climb_dict['verbal-feat'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'verbal_features.tdl'))
+  climb_dict['word-order'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'word_order.tdl'))
+  climb_dict['ger-wo'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'germanic_word_order.tdl'))
+  climb_dict['neg'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'negation.tdl'))
+  climb_dict['coord'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'coordination.tdl'))
+  climb_dict['polar-q'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'polar_questions.tdl'))
+  climb_dict['pass'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'passivization.tdl'))
+  climb_dict['ldd'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'long_distance_dep.tdl'))
+  climb_dict['extrapos'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'extraposition.tdl'))
+  climb_dict['compar'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'comparatives.tdl'))
 
   climb_dict['lexical_items'].define_climb_sections()
   climb_dict['nouns'].define_climb_sections()
@@ -388,6 +400,19 @@ def create_climb_files_dict(grammar_path):
   climb_dict['cop'].define_climb_sections()
   climb_dict['wh'].define_climb_sections()
   climb_dict['arg-opt'].define_climb_sections()
+  climb_dict['arg-alternation'].define_climb_sections()
+  climb_dict['morph'].define_climb_sections()
+  climb_dict['agreement'].define_climb_sections()
+  climb_dict['verbal-feat'].define_climb_sections()
+  climb_dict['word-order'].define_climb_sections()
+  climb_dict['ger-wo'].define_climb_sections()
+  climb_dict['neg'].define_climb_sections()
+  climb_dict['coord'].define_climb_sections()
+  climb_dict['polar-q'].define_climb_sections()
+  climb_dict['pass'].define_climb_sections()
+  climb_dict['lld'].define_climb_sections()
+  climb_dict['extrapos'].define_climb_sections()
+  climb_dict['compar'].define_climb_sections()
 
   return climb_dict
 
@@ -526,8 +551,8 @@ def customize_matrix(path, arch_type, destination=None):
 
   lexical_items.customize_lexicon(mylang, ch, lexicon, hierarchies, lrules, rules, climb_files)
   argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies, climb_files)
-  ####climb insertion from here
-  direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
+  ###DIRECT INVERSE, TODO WHEN DOING DESCRIPTION
+  direct_inverse.customize_direct_inverse(ch, mylang, climb_files, hierarchies)
   case.customize_case(mylang, ch, hierarchies)
   argument_alternation.customize_argument_alternation(ch, mylang, lrules, lexicon)
   #argument_optionality.customize_arg_op(ch, mylang)
@@ -537,30 +562,34 @@ def customize_matrix(path, arch_type, destination=None):
   add_lexrules_methods = [case.add_lexrules,
                           argument_optionality.add_lexrules,
                           direct_inverse.add_lexrules]
+
+  climb_morph = climb_lists.get('morph')
+  climb_morph.set_section('mylang')
   to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
-                                              mylang, irules, lrules, lexicon)
-  features.process_cfv_list(mylang, ch, hierarchies, to_cfv)
+                                              mylang, irules, lrules, lexicon, climb_morph)
+  features.process_cfv_list(mylang, ch, hierarchies, to_cfv, climbfile=climb_morph)
 
   # Call the other customization functions
  # customize_person_and_number()
  # customize_gender()
  #  customize_other_features()
-  agreement_features.customize_agreement_features(mylang, hierarchies)
+  agreement_features.customize_agreement_features(mylang, climb_files, hierarchies)
  # customize_form()
  # customize_tense()
  # customize_aspect()
  # customize_situation()
  # customize_mood()
-  verbal_features.customize_verbal_features(mylang, hierarchies)
-  word_order.customize_word_order(mylang, ch, rules)
+  verbal_features.customize_verbal_features(mylang, climb_files, hierarchies)
+  word_order.customize_word_order(mylang, ch, rules, climb_files)
 ###call specialized Germanic word order rules:
   if ch.get('word-order') == 'v2' and ch.get('verb-cluster') == 'yes':
-    word_order_v2_vcluster.v2_and_verbal_clusters(ch, mylang, lrules, rules)
-  negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules)
-  coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
-  yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
+    word_order_v2_vcluster.v2_and_verbal_clusters(ch, mylang, lrules, rules, climb_files)
+ #climb dict continue here
+  negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules, climb_files)
+  coordination.customize_coordination(mylang, ch, lexicon, rules, irules, climb_files)
+  yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, climb_files)
   if ch.get('passivization') == 'yes':
-    passivization.customize_passivization(ch, mylang, lrules, lexicon)
+    passivization.customize_passivization(ch, mylang, lrules, lexicon, climb_files)
   if ch.get('ldd') == 'yes':
     long_distance_dependencies.customize_long_distance_deps(ch, mylang, rules)
   if ch.get('extraposition') == 'yes':

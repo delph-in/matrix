@@ -8,8 +8,10 @@
 # This library contains possibilities to go beyond Germanic languages
 # but is not based on any cross-linguistic research whatsoever!
 
-def customize_passivization(ch, mylang, lrules, lexicon):
+def customize_passivization(ch, mylang, lrules, lexicon, climb_files):
 
+  climb_pass = climb_files.get('pass')
+  climb_pass.set_section('mylang')
   vc = ch.get('vc-analysis')
   passive = ch.get('pass',[])
 
@@ -25,6 +27,7 @@ def customize_passivization(ch, mylang, lrules, lexicon):
 ###
     if form:
       mylang.add(form + ' := nonfinite.', section='features')
+      climb_pass.add(form + ' := nonfinite.', comment='section=features')
 
     
 ###only lexical rule for now
@@ -90,20 +93,31 @@ def customize_passivization(ch, mylang, lrules, lexicon):
 		       COORD-REL #coord-rel,
 		       COORD-STRAT #coord-strat ] ].'''
     mylang.add(typedef)
+    climb_pass.add(typedef)
     if ch.get('verbal-particles') == 'yes':
       mylang.add('passive-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf, \
+                          DTR.SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf ].')
+      climb_pass.add('passive-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf, \
                           DTR.SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf ].')
     if ch.get("edge-related-res") == "yes":
       mylang.add('passive-lex-rule := [ SYNSEM.LOCAL.CAT.EDGE #edge, \
                             DTR.SYNSEM.LOCAL.CAT.EDGE #edge ].')
+      climb_pass.add('passive-lex-rule := [ SYNSEM.LOCAL.CAT.EDGE #edge, \
+                            DTR.SYNSEM.LOCAL.CAT.EDGE #edge ].')
     lrules.add('passive-lr := passive-lex-rule.')
+    climb_pass.add('passive-lr := passive-lex-rule.',section='lrules')
     lr_n = 'passive-lex-rule'
     mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
+    climb_pass.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
     if marking == 'aux':
       mylang.add(lr_n + ' := \
            [ DTR.SYNSEM.LOCAL.CAT.HEAD.FORM ' + p.get('form') + ' ].')
+      climb_pass.add(lr_n + ' := \
+           [ DTR.SYNSEM.LOCAL.CAT.HEAD.FORM ' + p.get('form') + ' ].')
     elif marking == 'morph':
       mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
+                             DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].')
+      climb_pass.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM #form, \
                              DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].')
 ###should be done properly using feature_code
 
@@ -138,20 +152,29 @@ def customize_passivization(ch, mylang, lrules, lexicon):
           path += 'VAL.COMPS ' + val
              
         mylang.add(lr_n + ' := ' + path + ' ].')
+        climb_pass.add(lr_n + ' := ' + path + ' ].')
 
 ###passing up features that need to be passed up
     vc = False
     if ch.get('has-aux') == 'yes':
       mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX #aux, \
                              DTR.SYNSEM.LOCAL.CAT.HEAD.AUX #aux ].')
+      climb_pass.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX #aux, \
+                             DTR.SYNSEM.LOCAL.CAT.HEAD.AUX #aux ].')
     if ch.get('q-inv'):
       mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.INV #inv & -, \
+                             DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv ].')
+      climb_pass.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.INV #inv & -, \
                              DTR.SYNSEM.LOCAL.CAT.HEAD.INV #inv ].')
     if ch.get('verb-cluster') == 'yes' and ch.get('word-order') == 'v2':
       vc = True
       mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.VC #vc , \
                                  DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
       mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.MC #mc, \
+                                 DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+      climb_pass.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.VC #vc , \
+                                 DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
+      climb_pass.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.MC #mc, \
                                  DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
     if ch.get('vc-analysis') == 'basic':
 #        if ch.get('v2-analysis') == 'mc':
@@ -161,6 +184,8 @@ def customize_passivization(ch, mylang, lrules, lexicon):
 #         
 #        else:
         mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.VFRONT +, \
+                                 DTR.SYNSEM.LOCAL.CAT.VFRONT na-or-- ].')
+        climb_pass.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.VFRONT +, \
                                  DTR.SYNSEM.LOCAL.CAT.VFRONT na-or-- ].')
     else:
       typedef = \
@@ -187,6 +212,8 @@ def customize_passivization(ch, mylang, lrules, lexicon):
                            EDGE #ed ] ].'''
       mylang.add(typedef)
       lrules.add('change-arg-order := change-arg-order-rule.')
+      climb_pass.add(typedef)
+      climb_pass.add('change-arg-order := change-arg-order-rule.',section='lrules')
       
 ###If the subject is marked by an adposition after passivization,
 ###we need something like a 'case-marking-adposition', but without case
@@ -197,19 +224,29 @@ def customize_passivization(ch, mylang, lrules, lexicon):
       '''passive-marking-adp-lex := basic-marking-only-adp-lex & \
                         raise-sem-lex-item.'''
       mylang.add(typedef)
+      climb_pass.add(typedef)
       if vc:
         mylang.add('passive-marking-adp-lex := \
+                          [ SYNSEM.LOCAL.CAT.VC na-or-- ].')
+        climb_pass.add('passive-marking-adp-lex := \
                           [ SYNSEM.LOCAL.CAT.VC na-or-- ].')
       if 'case' in dsubj_mark:
         m_parts = dsubj_mark.split('-')
         case = m_parts[1]
         mylang.add('passive-marking-adp-lex := \
                          [ ARG-ST < [ LOCAL.CAT.HEAD.CASE ' + case + ' ] > ].')
+        climb_pass.add('passive-marking-adp-lex := \
+                         [ ARG-ST < [ LOCAL.CAT.HEAD.CASE ' + case + ' ] > ].')
       sform = p.get('dsubj-form')
 ####make sure pform is introduced....
       mylang.add('passive-marking-adp-lex := \
                   [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + sform + ' ].')
       mylang.add(sform + ' := pform.',section='features')
+      climb_pass.add('passive-marking-adp-lex := \
+                  [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + sform + ' ].')
+      climb_pass.add(sform + ' := pform.',comment='section=features')
       lexicon.add(sform + '-passive := passive-marking-adp-lex & \
                     [ STEM < "' + sform + '" > ].') 
+      climb_pass.add(sform + '-passive := passive-marking-adp-lex & \
+                    [ STEM < "' + sform + '" > ].',section='lexicon') 
       

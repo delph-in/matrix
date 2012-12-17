@@ -151,9 +151,10 @@ def init_case_hierarchy(ch, hierarchies):
 # customize_case_type()
 #   Create a type for case
 
-def customize_case_type(mylang, hierarchies):
+def customize_case_type(mylang, climb_case, hierarchies):
   if 'case' in hierarchies:
     hierarchies['case'].save(mylang)
+    hierarchies['case'].save(climb_case)
 
 # customize_case_adpositions()
 #   Create the appropriate types for case-marking adpositions
@@ -224,9 +225,10 @@ def customize_case_adpositions(mylang, lexicon, climb_case, ch):
 
   return to_cfv
 
-def customize_case(mylang, ch, hierarchies):
+def customize_case(mylang, climb_files, ch, hierarchies):
   # first we need to peek in things like lex-rules for when something
   # has mixed case, and replace with the appropriate type covering
+  climb_case = climb_files.get('case')
   from gmcs.linglib.lexbase import ALL_LEX_TYPES
   cases = case_names(ch)
   for x in ALL_LEX_TYPES:
@@ -237,7 +239,7 @@ def customize_case(mylang, ch, hierarchies):
       for lrt in pc['lrt']:
         convert_mixed_case(lrt, hierarchies, cases)
   # now output the case hierarchies
-  customize_case_type(mylang, hierarchies)
+  customize_case_type(mylang, climb_case, hierarchies)
 
 def convert_mixed_case(item, hierarchies, cases):
   for feat in item.get('feat',[]):

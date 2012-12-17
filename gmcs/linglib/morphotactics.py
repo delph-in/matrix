@@ -113,7 +113,7 @@ def get_vtype(stem, choices):
 ### MAIN LOGIC METHODS ###
 ##########################
 
-def customize_inflection(choices, add_methods, mylang, irules, lrules, lextdl):
+def customize_inflection(choices, add_methods, mylang, irules, lrules, lextdl, climb_morph):
   """
   Process the information in the given choices file and add the rules
   and types necessary to model the inflectional system into the irules,
@@ -127,7 +127,7 @@ def customize_inflection(choices, add_methods, mylang, irules, lrules, lextdl):
   pch = customize_lexical_rules(choices)
   # write_rules currently returns a list of items needing feature
   # customization. Hopefully we can find a better solution
-  return write_rules(pch, mylang, irules, lrules, lextdl, choices)
+  return write_rules(pch, mylang, irules, lrules, lextdl, climb_morph, choices)
 
 def customize_lexical_rules(choices):
   """
@@ -490,41 +490,46 @@ def percolate_supertypes(pc):
 ### OUTPUT METHODS ###
 ######################
 
-def write_rules(pch, mylang, irules, lrules, lextdl, choices):
+def write_rules(pch, mylang, irules, lrules, lextdl, climb_morph, choices):
   all_flags = get_all_flags('out').union(get_all_flags('in'))
-  write_inflected_avms(mylang, all_flags)
+  write_inflected_avms(mylang, climb_morph, all_flags)
   mylang.set_section('lexrules')
+  climb_morph.add_literal('section=lexrules')
   # First write any intermediate types (keep them together)
-  write_intermediate_types(mylang)
+  write_intermediate_types(mylang, climb_morph)
   mylang.add_literal(';;; Lexical rule types')
+  climb_morph.add_literal(';;; Lexical rule types')
   for pc in sorted(pch.nodes.values(), key=lambda x: x.tdl_order):
     # set the appropriate section
     mylang.set_section(get_section_from_pc(pc))
+    climb_lex.add_literal('section='get_section_from_pc(pc))
     # if it's a lexical type, just write flags and move on
     if not pc.is_lex_rule:
-      write_pc_flags(mylang, lextdl, pc, all_flags, choices)
+      write_pc_flags(mylang, lextdl, climb_morph, pc, all_flags, choices)
       for lt in pc.nodes.values():
-        write_supertypes(mylang, lt.identifier(), lt.supertypes)
+        write_supertypes(mylang, climb_morph, lt.identifier(), lt.supertypes)
       continue
     # only lexical rules from this point
-    write_supertypes(mylang, pc.identifier(), pc.supertypes)
-    write_pc_flags(mylang, lextdl, pc, all_flags, choices)
+    write_supertypes(mylang, climb_morph, pc.identifier(), pc.supertypes)
+    write_pc_flags(mylang, lextdl, climb_morph, pc, all_flags, choices)
     for lrt in sorted(pc.nodes.values(), key=lambda x: x.tdl_order):
-      write_i_or_l_rules(choices, irules, lrules, lrt, pc.order)
+      write_i_or_l_rules(choices, irules, lrules, climb_morph, lrt, pc.order)
       # merged LRT/PCs have the same identifier, so don't write supertypes here
       if lrt.identifier() != pc.identifier():
-        write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
-    write_daughter_types(mylang, pc)
+        write_supertypes(mylang, climb_morph, lrt.identifier(), lrt.all_supertypes())
+    write_daughter_types(mylang, climb_morph, pc)
   # features need to be written later
   return [(mn.key, mn.identifier(), mn.key.split('-')[0])
           for mn in _mns.values()
           if isinstance(mn, LexicalRuleType) and len(mn.features) > 0]
 
-def write_intermediate_types(mylang):
+def write_intermediate_types(mylang, climb_morph):
   if _dtrs:
     mylang.add_literal(';;; Intermediate rule types')
+    climb_morph.add_literal(';;; Intermediate rule types')
     for dtr in _dtrs:
       mylang.add('''%(dtr)s := word-or-lexrule.''' % {'dtr': dtr}, one_line=True)
+      climb_morph.add('''%(dtr)s := word-or-lexrule.''' % {'dtr': dtr}, one_line=True)
 
 def get_section_from_pc(pc):
   """
@@ -545,12 +550,14 @@ def get_section_from_pc(pc):
     else:
       return 'lexrules'
 
-def write_supertypes(mylang, identifier, supertypes=None):
+def write_supertypes(mylang, climb_morph, identifier, supertypes=None):
   if supertypes is not None and len(supertypes) > 0:
     mylang.add('''%(id)s := %(sts)s.''' %\
                {'id': identifier, 'sts': ' & '.join(sorted(supertypes))})
+    climb_morph.add('''%(id)s := %(sts)s.''' %\
+               {'id': identifier, 'sts': ' & '.join(sorted(supertypes))})
 
-def write_daughter_types(mylang, pc):
+def write_daughter_types(mylang, climb_morph, pc):
   """
   Find the proper value for each position class's DTR, creating
   intermediate rule types when necessary.
@@ -558,49 +565,55 @@ def write_daughter_types(mylang, pc):
   if pc.is_lex_rule:
     mylang.add('''%(id)s := [ DTR %(dtr)s ].''' %\
                {'id':pc.identifier(), 'dtr': pc.daughter_type})
+    climb_morph.add('''%(id)s := [ DTR %(dtr)s ].''' %\
+               {'id':pc.identifier(), 'dtr': pc.daughter_type})
 
-def write_inflected_avms(mylang, all_flags):
+def write_inflected_avms(mylang, climb_morph, all_flags):
   mylang.set_section('addenda')
+  climb_morph.add_literal('; section=addenda')
   for f in all_flags:
     flag = flag_name(f)
     mylang.add('''inflected :+ [%(flag)s luk].''' % {'flag': flag})
     mylang.add('''infl-satisfied :+ [%(flag)s na-or-+].''' % {'flag': flag})
+    climb_morph.add('''inflected :+ [%(flag)s luk].''' % {'flag': flag})
+    climb_morph.add('''infl-satisfied :+ [%(flag)s na-or-+].''' % {'flag': flag})
 
-def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
+def write_pc_flags(mylang, lextdl, climb_morph, pc, all_flags, choices):
   """
   Go down the PC hierarchy and write input and output flags. If no
   output flags have been written, copy up all flags. Otherwise, copy
   up the flags that don't occur as output flags.
   """
   if len(all_flags) == 0: return
-  write_flags(mylang, pc)
+  write_flags(mylang, climb_morph, pc)
   out_flags = set(pc.flags['out'].keys())
   to_copy = {}
   for mn in pc.roots():
-     to_copy[mn.key] = write_mn_flags(mylang, lextdl, mn, out_flags, all_flags,
-                                      choices)
+     to_copy[mn.key] = write_mn_flags(mylang, lextdl, climb_morph, mn, out_flags, all_flags, choices)
   # for lex-rule PCs (not lexical types), write copy-up flags
   if pc.is_lex_rule:
     # first write copy-ups for the root nodes
-    copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
+    copied_flags = write_copy_up_flags(mylang, climb_morph, to_copy, all_flags)
     # then, if any remain, copy up on the pc (if a lexrule)
     to_copy = {pc.key: all_flags.difference(out_flags.union(copied_flags))}
-    write_copy_up_flags(mylang, to_copy, all_flags, force_write=True)
+    write_copy_up_flags(mylang, climb_morph, to_copy, all_flags, force_write=True)
 
-def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
+def write_mn_flags(mylang, lextdl, climb_morph, mn, output_flags, all_flags, choices):
   if mn.instance:
-    write_flags(lextdl, mn)
+    climb_morph.set_section('lexicon')
+    write_flags(lextdl, climb_morph, mn)
+    climb_morph.set_section('mylang')
   else:
-    write_flags(mylang, mn)
+    write_flags(mylang, climb_morph, mn)
   to_copy = {}
   cur_output_flags = output_flags.union(set(mn.flags['out'].keys()))
   for sub_mn in mn.children().values():
-    to_copy[sub_mn.key] = write_mn_flags(mylang, lextdl, sub_mn,
+    to_copy[sub_mn.key] = write_mn_flags(mylang, lextdl, climb_morph, sub_mn,
                                          cur_output_flags, all_flags, choices)
-  copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
+  copied_flags = write_copy_up_flags(mylang, climb_morph, to_copy, all_flags)
   return all_flags.difference(cur_output_flags).difference(copied_flags)
 
-def write_flags(tdlfile, mn):
+def write_flags(tdlfile, climb_morph, mn):
   if len(mn.flags['in']) + len(mn.flags['out']) == 0:
     return
   flag_strs = []
@@ -614,8 +627,9 @@ def write_flags(tdlfile, mn):
                             for flag in mn.flags['out']) + ' ]']
   tdl_str = mn.identifier() + ' := [ ' + ', '.join(flag_strs) + ' ].'
   tdlfile.add(tdl_str)
+  climb_morph.add(tdl_str)
 
-def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
+def write_copy_up_flags(mylang, climb_morph, to_copy, all_flags, force_write=False):
   copied_flags = set()
   if len(to_copy) == 0: return copied_flags
   common_flags = reduce(set.intersection, to_copy.values())
@@ -630,6 +644,8 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
     if mn_copy_flags == all_flags:
       mylang.add(mn.identifier() + ''' := [ INFLECTED #infl,
                                             DTR.INFLECTED #infl ].''')
+      climb_morph.add(mn.identifier() + ''' := [ INFLECTED #infl,
+                                            DTR.INFLECTED #infl ].''')
     elif len(mn_copy_flags) > 0:
       flag_tags = [(flag_name(flag), disjunctive_typename(flag).lower())
                    for flag in mn_copy_flags]
@@ -641,10 +657,11 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
                 ', '.join(['%(flag)s #%(tag)s' % {'flag':ft[0], 'tag':ft[1]}
                            for ft in flag_tags]) + ' ] ].'
       mylang.add(tdl_str)
+      climb_morph.add(tdl_str)
     copied_flags.update(mn_copy_flags)
   return copied_flags
 
-def write_i_or_l_rules(ch, irules, lrules, lrt, order):
+def write_i_or_l_rules(ch, irules, lrules, climb_morph, lrt, order):
   if len(lrt.lris) == 0: return
   if any(len(lri) > 0 for lri in lrt.lris):
     # inflectional rules
@@ -681,6 +698,8 @@ def write_i_or_l_rules(ch, irules, lrules, lrt, order):
  
       irules.add_literal(rule1)
       irules.add_literal(rule2)
+      climb_morph.add_literal(rule1, section='irules')
+      climb_morph.add_literal(rule2, section='irules')
     else:
       for i, lri in enumerate(lrt.lris):
         if 'irreg' in order:
@@ -693,11 +712,13 @@ def write_i_or_l_rules(ch, irules, lrules, lrt, order):
                       r'%' + order + ' (* ' + lri + ')',
                       lrt.identifier()]) + '.'
         irules.add_literal(rule)
+        climb_morph.add_literal(rule, section='irules')
   else:
     # lexical rules
     for lri in lrt.lris:
       lrt_id = lrt.identifier()
       lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
+      climb_morph.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.', section='lrules')
 
 ##################
 ### VALIDATION ###

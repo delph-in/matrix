@@ -6,30 +6,36 @@ from gmcs.linglib import  word_order_v2_vcluster
 #   about basic word order, including information about adpositions
 #   and auxiliaries.
 
-def customize_word_order(mylang, ch, rules):
+def customize_word_order(mylang, ch, rules, climb_files):
 
   wo = ch.get('word-order')
+  climb_wo = climb_files.get('word-order')
 
   mylang.set_section('phrases')
+  climb_wo.set_section('mylang')
+  climb_wo.add_literal('; section=word-order')
 
+  
+  climb_gwo = climb_files.get('ger-wo')
+  climb_gwo.set_section('mylang')
 # Add type definitions.
 
 # Handle major constituent order first.  This function returns the hs and hc
 # values that other parts of this code will want.
 
-  linear_precedence = customize_major_constituent_order(wo, mylang, ch, rules)
+  linear_precedence = customize_major_constituent_order(wo, mylang, ch, rules,climb_wo, climb_gwo)
   hs = linear_precedence['hs']
   hc = linear_precedence['hc']
 
 
 # Head specifier rules
 
-  customize_np_word_order(mylang, ch, rules)
+  customize_np_word_order(mylang, ch, rules, climb_wo)
 
 # adverb rules (only Germanic)
   if ch.get('has-adv') == 'yes' and ch.get('verb-cluster') == 'yes':
     if ch.get('adv-order') == 'free':
-      word_order_v2_vcluster.create_germanic_adjunct_phrases(ch, mylang, rules)
+      word_order_v2_vcluster.create_germanic_adjunct_phrases(ch, mylang, rules, climb_gwo)
 
 # ERB 2006-09-14 Then add information as necessary to handle adpositions,
 # free auxiliaries, etc.
@@ -38,11 +44,13 @@ def customize_word_order(mylang, ch, rules):
 #clause type (matrix v. subordinate) and dependent type.
 
   orders = determine_consistent_order(wo,hc,ch)
-  specialize_word_order(hc,orders,mylang,ch,rules)
+  climb_wh = climb_files.get('wh')
+  climb_wh.set_section('mylang')
+  specialize_word_order(hc,orders,mylang,ch,rules,climb_wo, climb_wh)
 
 
 
-def customize_major_constituent_order(wo, mylang, ch, rules):
+def customize_major_constituent_order(wo, mylang, ch, rules, climb_wo, climb_gwo):
 
 # ERB 2006-09-14 The most elegant factoring of just the major
 # constituent information uses the same type names for head-comp and
@@ -78,8 +86,12 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
                 [ SYNSEM.LOCAL.CAT.VAL #val, \
                   HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
                   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].',comment='Adding the old standard valence constraints to basic-head-mod-phrase-simple. Pulled out of the matrix, because modifiers can introduce arguments for the entire phrase sometimes, e.g. This is better wine than yours.')
+    climb_wo.add('basic-head-mod-phrase-simple :+\
+                [ SYNSEM.LOCAL.CAT.VAL #val, \
+                  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
+                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].',comment='Adding the old standard valence constraints to basic-head-mod-phrase-simple. Pulled out of the matrix, because modifiers can introduce arguments for the entire phrase sometimes, e.g. This is better wine than yours.')
   else:
-    word_order_v2_vcluster.create_special_mod_valence_phrases(mylang)
+    word_order_v2_vcluster.create_special_mod_valence_phrases(mylang, climb_gwo)
 
 
   if not wo == 'v2':
@@ -93,6 +105,16 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
                 [ SYNSEM.LOCAL.CAT.MC #mc, \
                   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
                section='addenda')
+    climb_wo.add_literal(';Constraint on MC used to be part of matrix.tdl\n;' +
+               ';it applies to all wo implementations, except for v2')
+    climb_wo.add('basic-head-comp-phrase :+\
+                [ SYNSEM.LOCAL.CAT.MC #mc,\
+                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
+               section='addenda')
+    climb_wo.add('basic-head-mod-phrase-simple :+\
+                [ SYNSEM.LOCAL.CAT.MC #mc, \
+                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
+               section='addenda')
 
 
 # ASF 2011-10-23 adpositions can occur without their (obligatory) complements
@@ -103,8 +125,15 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
               [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,\
                                                     SPR < >,\
                                                     SPEC < > ] ].')
+  climb_wo.add('basic-head-mod-phrase-simple :+\
+              [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,\
+                                                    SPR < >,\
+                                                    SPEC < > ] ].')
   if not wo == 'v2' and ch.get('vc-analysis') == 'auxrule':
     mylang.add('basic-head-filler-phrase :+ \
+                 [ SYNSEM.LOCAL.CAT.VAL #val, \
+                   HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val ].')
+    climb_wo.add('basic-head-filler-phrase :+ \
                  [ SYNSEM.LOCAL.CAT.VAL #val, \
                    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val ].')
 # Head-comp order
@@ -112,25 +141,30 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
   if wo == 'sov' or wo == 'osv' or wo == 'ovs' or wo == 'v-final':
     hc = 'comp-head'
     mylang.add(hc + '-phrase := basic-head-1st-comp-phrase & head-final.')
+    climb_wo.add(hc + '-phrase := basic-head-1st-comp-phrase & head-final.')
 
   if wo == 'svo' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
     hc = 'head-comp'
     mylang.add(hc + '-phrase := basic-head-1st-comp-phrase & head-initial.')
+    climb_wo.add(hc + '-phrase := basic-head-1st-comp-phrase & head-initial.')
 
 # Head-subj order
 
   if wo == 'osv' or wo == 'sov' or wo == 'svo' or wo == 'v-final':
     hs = 'subj-head'
     mylang.add(hs + '-phrase := decl-head-subj-phrase & head-final.')
+    climb_wo.add(hs + '-phrase := decl-head-subj-phrase & head-final.')
 
   if wo == 'ovs' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
     hs = 'head-subj'
     mylang.add(hs + '-phrase := decl-head-subj-phrase & head-initial.')
+    climb_wo.add(hs + '-phrase := decl-head-subj-phrase & head-initial.')
 
 # Complements attach before subjects
 
   if wo == 'ovs' or wo == 'vos' or wo == 'sov' or wo == 'svo':
     mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
+    climb_wo.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
 
 # Subjects attach before complements
 # ASF 2008-11-20 in order to allow for aux with vp-comp for VSO and OSV
@@ -141,8 +175,10 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
   if wo == 'vso' or wo == 'osv':
     if ch.get('has-aux') == 'yes' and auxcomp == 'vp':
       mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
+      climb_wo.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
     else:
       mylang.add(hc + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
+      climb_wo.add(hc + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
 
 # ERB 2006-09-14 Free word order is a big fat special case:
 
@@ -200,6 +236,26 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
                'attachment).  We might be able to collapse these one\n' +
                'day, but that\'s not obvious.',
                section='addenda')
+    climb_wo.add('synsem :+ [ ATTACH xmod ].',
+               'We can\'t just use the V-final and V-initial word\n' +
+               'order modules together to get a good free word order\n' +
+               'module. The root of the problem seems to be that we\n' +
+               'need the subject to be able to attach inside the\n' +
+               'object(s) for VSO and OSV, but at the same time, we\n' +
+               'don\'t want complete flexibility on order of attachment\n' +
+               'when the verb is in the middle -- that would give\n' +
+               'spurious ambiguity.  This solution adopts the xmod\n' +
+               'hierarchy to enforce right-first attachment.  That is,\n' +
+               'all arguments appears to the right of the verb must\n' +
+               'attach before all arguments appearing to the left.  The\n' +
+               'linguistic prediction of this analysis is that free\n' +
+               'word order languages do not have a consistent VP\n' +
+               'consituent, even when the verb and object are adjacent\n' +
+               '(OV order).  Using a separate feature for tracking\n' +
+               'argument attachment (as opposed to modifier\n' +
+               'attachment).  We might be able to collapse these one\n' +
+               'day, but that\'s not obvious.\n' + 
+               'section=addenda')
 
 # ASF 2008-11-18, if free wo lgge has aux and aux precedes verb,
 # the enforced attachment must apply in the other direction.
@@ -210,12 +266,23 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
                   HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
       mylang.add('head-initial-head-nexus := head-initial &\
                 [ SYNSEM.ATTACH rmod ].')
+      climb_wo.add('head-final-head-nexus := head-final & \
+                [ SYNSEM.ATTACH lmod,\
+                  HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
+      climb_wo.add('head-initial-head-nexus := head-initial &\
+                [ SYNSEM.ATTACH rmod ].')
     else:
       mylang.add('head-initial-head-nexus := head-initial & \
                 [ SYNSEM.ATTACH lmod,\
                   HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
 
       mylang.add('head-final-head-nexus := head-final &\
+                [ SYNSEM.ATTACH rmod ].')
+      climb_wo.add('head-initial-head-nexus := head-initial & \
+                [ SYNSEM.ATTACH lmod,\
+                  HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
+
+      climb_wo.add('head-final-head-nexus := head-final &\
                 [ SYNSEM.ATTACH rmod ].')
 
     mylang.add('head-mod-phrase :+\
@@ -226,6 +293,14 @@ mother and head-daughter for all other kinds of phrases\n\
 if we do this.  Just for illustration, I\'m putting it\n\
 in for head-adjunct phrases here:',
                section='addenda')
+    climb_wo.add('head-mod-phrase :+\
+                [ SYNSEM.ATTACH #attach,\
+                  HEAD-DTR.SYNSEM.ATTACH #attach ].',
+               'We\'ll need to add identification of ATTACH between\n\
+mother and head-daughter for all other kinds of phrases\n\
+if we do this.  Just for illustration, I\'m putting it\n\
+in for head-adjunct phrases here:\n' +
+               'section=addenda')
 
 
 # ASF (2008-11-03) Another big special case: v2
@@ -250,8 +325,17 @@ in for head-adjunct phrases here:',
     mylang.add('head-initial-head-nexus := head-initial & \
                 [ SYNSEM.LOCAL.CAT.MC #mc, \
                   HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+    climb_wo.add('verbal-head-nexus := headed-phrase & \
+                [ SYNSEM.LOCAL.CAT.HEAD verb ].')
+# Change introduced by Germanic: [ MC na ] only if no verbal cluster
+# removed [ na ] value from rule below
+    climb_wo.add('head-initial-head-nexus := head-initial & \
+                [ SYNSEM.LOCAL.CAT.MC #mc, \
+                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
     if not ch.get('v2-analysis') == 'filler-gap':
       mylang.add('head-final-head-nexus := head-final & \
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
+      climb_wo.add('head-final-head-nexus := head-final & \
                 [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
 
 #####value "na" on head-initial-head-nexus only for no cluster
@@ -260,8 +344,10 @@ in for head-adjunct phrases here:',
 
     if not ch.get('verb-cluster') == 'yes':
       mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.MC na ].')
+      climb_wo.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.MC na ].')
       if not ch.get('v2-analysis') == 'filler-gap':
         mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.MC bool ].')
+        climb_wo.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.MC bool ].')
    
 
 #rules shared among free and v2
@@ -269,15 +355,21 @@ in for head-adjunct phrases here:',
   if wo == 'free' or wo == 'v2':
     mylang.add('head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
     mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.')
+    climb_wo.add('head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
+    climb_wo.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.')
     if not ch.get('v2-analysis') == 'filler-gap':
       mylang.add('subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
       mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.')
+      climb_wo.add('subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
+      climb_wo.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.')
 # Change introduced by Germanic: head-comp-phrase-2 not needed 
 # for all v2 analyses when verbal cluster is formed
     if not ch.get('verb-cluster') == 'yes':
       mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
+      climb_wo.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
     if not ch.get('v2-analysis') == 'filler-gap':
       mylang.add('comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.')
+      climb_wo.add('comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.')
 
 
 
@@ -286,19 +378,27 @@ in for head-adjunct phrases here:',
   if wo == 'free' or wo == 'v2':
     rules.add('head-comp := head-comp-phrase.')
     rules.add('head-subj := head-subj-phrase.')
+    climb_wo.add('head-comp := head-comp-phrase.',section='rules')
+    climb_wo.add('head-subj := head-subj-phrase.',section='rules')
     if not ch.get('v2-analysis') == 'filler-gap':
       rules.add('comp-head := comp-head-phrase.')
       rules.add('subj-head := subj-head-phrase.')
       rules.add('comp-head-2 := comp-head-phrase-2.')
+      climb_wo.add('comp-head := comp-head-phrase.',section='rules')
+      climb_wo.add('subj-head := subj-head-phrase.',section='rules')
+      climb_wo.add('comp-head-2 := comp-head-phrase-2.',section='rules')
 # Change introduced by Germanic: see above
     if wo == 'free'  or (not ch.get('verb-cluster') == 'yes'):
       rules.add('head-comp-2 := head-comp-phrase-2.')
+      climb_wo.add('head-comp-2 := head-comp-phrase-2.',section='rules')
   # Assume at this point that there's a good value of wo.
   # Rule names are stored in hs and hc, since they're the same as type names
   # without the -phrase suffix.
   else:
     rules.add(hc + ' :=  ' + hc + '-phrase.')
     rules.add(hs + ' :=  ' + hs + '-phrase.')
+    climb_wo.add(hc + ' :=  ' + hc + '-phrase.',section='rules')
+    climb_wo.add(hs + ' :=  ' + hs + '-phrase.',section='rules')
 
   return {'hs': hs, 'hc': hc}
 
@@ -370,7 +470,7 @@ in for head-adjunct phrases here:',
 
 
 
-def specialize_word_order(hc,orders, mylang, ch, rules):
+def specialize_word_order(hc,orders, mylang, ch, rules, climb_wo, climb_wh):
 
   adp = orders['adp']
   aux = orders['aux']
@@ -395,11 +495,20 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
     mylang.add('lex-rule :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
                               DTR.SYNSEM.LOCAL.CAT.VC #vc ].',
                section='addenda')
+    climb_wo.add('cat :+ [ VC luk ].',
+               'Introducing VC keeps track whether main-verb is present in cluster',
+               comment='section=addenda')
+    climb_wo.add('lex-rule :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
+                              DTR.SYNSEM.LOCAL.CAT.VC #vc ].',
+               comment='section=addenda')
 ###Germanic introduced change:
     if not wo == 'v2':
       mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].',
                section='addenda')
+      climb_wo.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
+                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].',
+               comment='section=addenda')
   # ERB 2006-09-15 First add head-comp or comp-head if they aren't
   # already there.  I don't think we have to worry about constraining
   # SUBJ or COMPS on these additional rules because they'll only be for
@@ -407,9 +516,11 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
 
   if hc == 'comp-head' and (adp == 'ov-prep' or aux == 'ov-auxv' or qpart_order == 'ov-qs'):
     mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial.')
+    climb_wo.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial.')
 
   if hc == 'head-comp' and (adp == 'vo-post' or aux == 'vo-vaux' or qpart_order == 'vo-sq'):
     mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final.')
+    climb_wo.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final.')
 
   # ASF 2008-11-18, special auxiliary rule that allows for auxiliaries
   # to combine with v's when aux-comp order is not harmonic
@@ -425,6 +536,14 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
                                      NON-MARKER-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
                                                              VC #vc ] ].''')
     mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+    climb_wo.add('''aux-comp-phrase := basic-marker-comp-phrase & marker-initial-phrase &
+                                   [ SYNSEM.LOCAL.CAT [ HEAD.FORM #vform,
+                                                        VC #vc ],
+                                     MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX +,
+                                                                               FORM #vform ],
+                                     NON-MARKER-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
+                                                             VC #vc ] ].''')
+    climb_wo.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
   if aux == 'vaux-rule':
     mylang.add('''comp-aux-phrase := basic-marker-comp-phrase & marker-final-phrase &
                                    [ SYNSEM.LOCAL.CAT [ HEAD.FORM #vform,
@@ -434,6 +553,14 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
                                      NON-MARKER-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
                                                              VC #vc ] ].''')
     mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+    climb_wo.add('''comp-aux-phrase := basic-marker-comp-phrase & marker-final-phrase &
+                                   [ SYNSEM.LOCAL.CAT [ HEAD.FORM #vform,
+                                                        VC #vc ],
+                                     MARKER-DTR.SYNSEM.LOCAL.CAT.HEAD verb & [ AUX +,
+                                                                               FORM #vform ],
+                                     NON-MARKER-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
+                                                             VC #vc ] ].''')
+    climb_wo.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
 
   # add necessary restrictions to assure verb clusters
   # and special auxiliary rules for vso/osv and free word order.
@@ -441,15 +568,22 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
   if vcluster:
     if wo == 'vso' or wo == 'free' or wo == 'v-initial':
       mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+      climb_wo.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
     if wo == 'osv' or wo == 'free' or wo == 'v-final':
       mylang.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+      climb_wo.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
     if (aux == 'vini-vc' and aux == 'vo-auxv' ) or wo == 'free':
       mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+      climb_wo.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
     if (aux == 'vfin-vc' and aux == 'ov-vaux') or wo == 'free':
       mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+      climb_wo.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
     if wo == 'free' or wo == 'vso' or wo == 'osv':
       if auxorder == 'before' and aux != 'ov-auxv':
         mylang.add('aux-comp-phrase := basic-head-1st-comp-phrase & head-initial & \
+                    [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ], \
+                      NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
+        climb_wo.add('aux-comp-phrase := basic-head-1st-comp-phrase & head-initial & \
                     [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ], \
                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
         aux = 'auxc'
@@ -457,29 +591,39 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
         mylang.add('comp-aux-phrase := basic-head-1st-comp-phrase & head-final & \
                     [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ], \
                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
+        climb_wo.add('comp-aux-phrase := basic-head-1st-comp-phrase & head-final & \
+                    [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ], \
+                      NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
         aux = 'caux'
       if wo == 'free':
         mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
         mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+        climb_wo.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+        climb_wo.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
 
   # Add rules to rules.tdl when necessary
 
   if aux == 'ov-auxv' or adp == 'ov-prep' or qpart_order == 'ov-qs':
     rules.add('head-comp := head-comp-phrase.')
+    climb_wo.add('head-comp := head-comp-phrase.',section='rules')
 
   if aux == 'vo-vaux' or adp == 'vo-post' or qpart_order == 'vo-sq':
     rules.add('comp-head := comp-head-phrase.')
+    climb_wo.add('comp-head := comp-head-phrase.',section='rules')
 
   if aux == 'auxv-rule' or aux == 'auxc':
     rules.add('aux-comp := aux-comp-phrase.')
+    climb_wo.add('aux-comp := aux-comp-phrase.',section='rules')
 
   if aux == 'vaux-rule' or aux == 'caux':
     rules.add('comp-aux := comp-aux-phrase.')
+    climb_wo.add('comp-aux := comp-aux-phrase.',section='rules')
 
   # ERB 2006-09-15 AUX if we're going to mention it, so the tdl compiles.
 
   if aux != 'easy':
     mylang.add('head :+ [AUX bool].', section='addenda')
+    climb_wo.add('head :+ [AUX bool].', comment='section=addenda')
 
   # ERB 2006-10-05 Collect positive statements about head-comp/comp-head
   # We only need to do this is if the word order is not free, and we only
@@ -558,10 +702,15 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
     if head == 'aux':
       mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ] ].',
                'head-comp-phrase requires auxiliary heads.')
+      climb_wo.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ] ].',
+               'head-comp-phrase requires auxiliary heads.')
       if wo == 'v-final' and auxcomp == 'vp':
         mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] > ].')
+        climb_wo.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] > ].')
     else:
       mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+               'head-comp-phrase requires things that are [ HEAD ' + head + ' ].')
+      climb_wo.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'head-comp-phrase requires things that are [ HEAD ' + head + ' ].')
 
   if len(comp_head_is) == 1:
@@ -569,10 +718,15 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
     if head == 'aux':
       mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ] ].',
                'comp-head-phrase requires auxiliary heads.')
+      climb_wo.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ] ].',
+               'comp-head-phrase requires auxiliary heads.')
       if wo == 'v-initial' and auxcomp == 'vp':
         mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] > ].')
+        climb_wo.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] > ].')
     else:
       mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+               'comp-head-phrase requires things that are [ HEAD ' + head + ' ].')
+      climb_wo.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'comp-head-phrase requires things that are [ HEAD ' + head + ' ].')
 
   # Now the case where we do have disjunctive constraints.   NB: The order
@@ -598,8 +752,11 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
 
     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'head-comp-phrase requires things that are one of: ' + str(head_comp_is))
+    climb_wo.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+               'head-comp-phrase requires things that are one of: ' + str(head_comp_is))
     if auxresthc:
       mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
+      climb_wo.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
 
   if len(comp_head_is) > 1:
     head = '+'
@@ -614,8 +771,11 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
 
     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'comp-head-phrase requires things that are one of: ' + str(head_comp_is))
+    climb_wo.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+               'comp-head-phrase requires things that are one of: ' + str(head_comp_is))
     if auxrestch:
       mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
+      climb_wo.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
 
   # Now the negative constraints.  This is where we extracted the
   # information that head-comp or comp-head can't be certain things.
@@ -629,6 +789,7 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
 
   if head_comp_is_not.count('aux'):
     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
+    climb_wo.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
     head_comp_is_not.remove('aux')
 
   if len(head_comp_is_not) > 0:
@@ -644,9 +805,12 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
 
     mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'The head of head-comp-phrase can\'t be: ' + str(head_comp_is_not))
+    climb_wo.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+               'The head of head-comp-phrase can\'t be: ' + str(head_comp_is_not))
 
   if comp_head_is_not.count('aux'):
     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
+    climb_wo.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
     comp_head_is_not.remove('aux')
 
   if len(comp_head_is_not) > 0:
@@ -662,13 +826,15 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
 
     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                'The head of comp-head-phrase can\'t be: ' + str(comp_head_is_not))
+    climb_wo.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+               'The head of comp-head-phrase can\'t be: ' + str(comp_head_is_not))
 
 # ASF 2011-11-08 Not directly related to specialize_word_order
 # adding additional phrases for wh-words (should probably be moved...)
 
 
   if ch.get('wh-questions') == 'yes':
-    create_wh_phrases(ch, mylang, rules)
+    create_wh_phrases(ch, mylang, rules, climb_wh)
 
 
 # ERB 2006-10-05 Below is what I had before I had to generalize because
@@ -727,20 +893,27 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
 
 # ERB 2006-09-15 Subroutine for handling NP rules.
 
-def customize_np_word_order(mylang, ch, rules):
+def customize_np_word_order(mylang, ch, rules, climb_wo):
 
   if ch.get('has-dets') == 'yes':
     mylang.add(
       'head-spec-phrase := basic-head-spec-phrase.',
       'Rules for building NPs.  Note that the Matrix uses SPR for\n' +
       'the specifier of nouns and SUBJ for the subject (specifier) of verbs.')
+    climb_wo.add(
+      'head-spec-phrase := basic-head-spec-phrase.',
+      'Rules for building NPs.  Note that the Matrix uses SPR for\n' +
+      'the specifier of nouns and SUBJ for the subject (specifier) of verbs.')
 
     if ch.get('noun-det-order') == 'noun-det':
       mylang.add('head-spec-phrase := head-initial.')
+      climb_wo.add('head-spec-phrase := head-initial.')
     if ch.get('noun-det-order') == 'det-noun':
       mylang.add('head-spec-phrase := head-final.')
+      climb_wo.add('head-spec-phrase := head-final.')
      
     rules.add('head-spec := head-spec-phrase.')
+    climb_wo.add('head-spec := head-spec-phrase.',section='rules')
 
 ####
 # Adjectives
@@ -763,6 +936,7 @@ def customize_np_word_order(mylang, ch, rules):
 
   if ch.get('has-cop') == 'yes' and not ll_adj:
     mylang.add('basic-head-mod-phrase-simple :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.PRD - ].')
+    climb_wo.add('basic-head-mod-phrase-simple :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.PRD - ].')
   if ch.get('has-adj') == 'yes':
     # adding adjective specific phrase
     # Germanic, same phrase for adverb modifiers when not modifying verbs
@@ -770,9 +944,12 @@ def customize_np_word_order(mylang, ch, rules):
     mylang.add('mod-non-verbal-head-phrase := basic-head-mod-phrase-simple & \
                  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +jr, \
                    HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +njrpd ].')
+    climb_wo.add('mod-non-verbal-head-phrase := basic-head-mod-phrase-simple & \
+                 [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +jr, \
+                   HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +njrpd ].')
       
     if ll_adj:
-      create_adjective_learning_phrases(ch, mylang, rules)
+      create_adjective_learning_phrases(ch, mylang, rules, climb_wo)
       adj_st += 'gram-'
     adj_st += 'mod-non-verbal-head-phrase'
 
@@ -782,16 +959,29 @@ def customize_np_word_order(mylang, ch, rules):
       mylang.add('head-nonv-mod-scop-phrase := head-adj-scop-phrase & ' + adj_st + '.')
       rules.add('head-nonv-mod-int := head-nonv-mod-int-phrase.')
       rules.add('head-nonv-mod-scop := head-nonv-mod-scop-phrase.') 
+      climb_wo.add('head-nonv-mod-int-phrase := head-adj-int-phrase & ' + adj_st + '.')
+
+      climb_wo.add('head-nonv-mod-scop-phrase := head-adj-scop-phrase & ' + adj_st + '.')
+      climb_wo.add('head-nonv-mod-int := head-nonv-mod-int-phrase.',section='rules')
+      climb_wo.add('head-nonv-mod-scop := head-nonv-mod-scop-phrase.',section='rules') 
     if ch.get('noun-adj-order') != 'noun-adj':
       mylang.add('mod-nonv-head-int-phrase := adj-head-int-phrase & ' + adj_st + '.')
 
       mylang.add('mod-nonv-head-scop-phrase := adj-head-scop-phrase & ' + adj_st + '.')
       rules.add('mod-nonv-head-int := mod-nonv-head-int-phrase.')
       rules.add('mod-head-scop := mod-nonv-head-scop-phrase.') 
+      climb_wo.add('mod-nonv-head-int-phrase := adj-head-int-phrase & ' + adj_st + '.')
+
+      climb_wo.add('mod-nonv-head-scop-phrase := adj-head-scop-phrase & ' + adj_st + '.')
+      climb_wo.add('mod-nonv-head-int := mod-nonv-head-int-phrase.',section='rules')
+      climb_wo.add('mod-head-scop := mod-nonv-head-scop-phrase.',section='rules') 
 
    
     if not ch.get('comp-for-np-adj') == 'yes':
       mylang.add('mod-non-verbal-head-phrase := \
+                 [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
+                   SYNSEM.LOCAL.CAT.VAL #val ].')
+      climb_wo.add('mod-non-verbal-head-phrase := \
                  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
                    SYNSEM.LOCAL.CAT.VAL #val ].')
     else:
@@ -801,6 +991,16 @@ def customize_np_word_order(mylang, ch, rules):
                HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
                SYNSEM.LOCAL.CAT.VAL #val ].')
       mylang.add('mod-nonv-head-scop-phrase := \
+             [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD adv, \
+                                               VAL.COMPS < > ], \
+               HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
+               SYNSEM.LOCAL.CAT.VAL #val ].')
+      climb_wo.add('mod-nonv-head-int-phrase := \
+             [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD adv, \
+                                               VAL.COMPS < > ], \
+               HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
+               SYNSEM.LOCAL.CAT.VAL #val ].')
+      climb_wo.add('mod-nonv-head-scop-phrase := \
              [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD adv, \
                                                VAL.COMPS < > ], \
                HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
@@ -817,12 +1017,19 @@ def customize_np_word_order(mylang, ch, rules):
 			            SPR #spr,
 			            SPEC #spec ] ].'''
       mylang.add(adj_n_phr)     
+      climb_wo.add(adj_n_phr)     
       mylang.add('adj-int-noun-phrase := adj-head-int-phrase & \
                                                      adjective-noun-phrase.') 
       mylang.add('adj-scop-noun-phrase := adj-head-scop-phrase & \
                                                      adjective-noun-phrase.') 
       rules.add('adj-int-noun := adj-int-noun-phrase.')
       rules.add('adj-scop-noun := adj-scop-noun-phrase.')
+      climb_wo.add('adj-int-noun-phrase := adj-head-int-phrase & \
+                                                     adjective-noun-phrase.') 
+      climb_wo.add('adj-scop-noun-phrase := adj-head-scop-phrase & \
+                                                     adjective-noun-phrase.') 
+      climb_wo.add('adj-int-noun := adj-int-noun-phrase.',section='rules')
+      climb_wo.add('adj-scop-noun := adj-scop-noun-phrase.',section='rules')
  
 
     # ERB 2006-09-14 I think that all languages have some form of
@@ -832,8 +1039,12 @@ def customize_np_word_order(mylang, ch, rules):
   mylang.add('bare-np-phrase := basic-bare-np-phrase &\
   [ C-CONT.RELS <! [ PRED \"exist_q_rel\" ] !> ].',
              'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
+  climb_wo.add('bare-np-phrase := basic-bare-np-phrase &\
+  [ C-CONT.RELS <! [ PRED \"exist_q_rel\" ] !> ].',
+             'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
   if ch.get('n_spec_spr') == 'yes':
     mylang.add('bare-np-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD mass_cnt_noun ].')
+    climb_wo.add('bare-np-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD mass_cnt_noun ].')
     super_type = \
     '''basic-bare-np-specincl-phrase := head-only & head-valence-phrase &
   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
@@ -850,17 +1061,25 @@ def customize_np_word_order(mylang, ch, rules):
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ] ].'''
     mylang.add(super_type)
+    climb_wo.add(super_type)
     mylang.add('bare-np-spec_incl-phrase := basic-bare-np-specincl-phrase & \
         [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD spr_incl_noun ].')
     rules.add('bare-np-spec-incl := bare-np-spec_incl-phrase.')
+    climb_wo.add('bare-np-spec_incl-phrase := basic-bare-np-specincl-phrase & \
+        [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD spr_incl_noun ].')
+    climb_wo.add('bare-np-spec-incl := bare-np-spec_incl-phrase.',section='rules')
   if ch.get('reflexives') == 'yes':
     mylang.add('bare-np-phrase := [ SYNSEM.LOCAL non-refl-local, \
                                     HEAD-DTR.SYNSEM.LOCAL non-refl-local ].')
+    climb_wo.add('bare-np-phrase := [ SYNSEM.LOCAL non-refl-local, \
+                                    HEAD-DTR.SYNSEM.LOCAL non-refl-local ].')
     if ch.get('has-dets') == 'yes':
       mylang.add('head-spec-phrase := [ SYNSEM.LOCAL non-refl-local ].')
+      climb_wo.add('head-spec-phrase := [ SYNSEM.LOCAL non-refl-local ].')
 
   if ch.get('compound-nouns') == 'yes':
     mylang.add('bare-np-phrase := [ SYNSEM.LIGHT - ].')
+    climb_wo.add('bare-np-phrase := [ SYNSEM.LIGHT - ].')
     typedef = \
       'compound-noun-phrase := head-initial & \
            [ SYNSEM [ NON-LOCAL #non-loc, \
@@ -884,9 +1103,12 @@ def customize_np_word_order(mylang, ch, rules):
                                      ARG1 #hind, \
                                      ARG2 #modind ], ... > ].'
     mylang.add(typedef)
+    climb_wo.add(typedef)
     rules.add('compound-noun := compound-noun-phrase.')
+    climb_wo.add('compound-noun := compound-noun-phrase.',section='rules')
 
   rules.add('bare-np := bare-np-phrase.')
+  climb_wo.add('bare-np := bare-np-phrase.',section='rules')
 
 ###################################################
 #
@@ -1000,7 +1222,7 @@ def customize_np_word_order(mylang, ch, rules):
 # for adp and aux.  It takes in the values of wo and hc determined in
 # the course of creating the basic word order rules.
 
-def create_adjective_learning_phrases(ch, mylang, rules):
+def create_adjective_learning_phrases(ch, mylang, rules, climb_wo):
 ######determine agreement features
 #  caseagr = False
 #  strengthagr = False
@@ -1026,11 +1248,35 @@ def create_adjective_learning_phrases(ch, mylang, rules):
   
   mylang.add('all-agr-adjective-head-phrase := syn-agr-adj-head-phrase & \
                                          sem-agr-adj-head-phrase.')
+  climb_wo.add('case-sharing-adj-head := adjective-head-phrase & \
+         [ SYNSEM.LOCAL.CAT.HEAD.CASE #case, \
+           NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
+  climb_wo.add('strength-sharing-adj-head := adjective-head-phrase & \
+         [ SYNSEM.LOCAL.CAT.HEAD.STRONG #strength, \
+           NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.STRONG #strength ].')
+  climb_wo.add('gend-sharing-adj-head := adjective-head-phrase & \
+         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND #gend, \
+           NON-HEAD-DTR.SYNSEM.LOCAL.AGR.PNG.GEND #gend ].')
+  climb_wo.add('number-sharing-adj-head := adjective-head-phrase & \
+         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM #number, \
+           NON-HEAD-DTR.SYNSEM.LOCAL.AGR.PNG.NUM #number ].') 
+
+  climb_wo.add('syn-agr-adj-head-phrase := case-sharing-adj-head & \
+                                         strength-sharing-adj-head.')
+  climb_wo.add('sem-agr-adj-head-phrase := gend-sharing-adj-head & \
+                                           number-sharing-adj-head.')
+  
+  climb_wo.add('all-agr-adjective-head-phrase := syn-agr-adj-head-phrase & \
+                                         sem-agr-adj-head-phrase.')
 ####predicative constraint
   mylang.add('no-prd-adj-head-phrase := adjective-head-phrase & \
                                [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.PRD - ].')
+  climb_wo.add('no-prd-adj-head-phrase := adjective-head-phrase & \
+                               [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.PRD - ].')
 ####phrase only allowing grammatical combinations
   mylang.add('gram-adjective-head-phrase := all-agr-adjective-head-phrase & \
+                  no-prd-adj-head-phrase.')
+  climb_wo.add('gram-adjective-head-phrase := all-agr-adjective-head-phrase & \
                   no-prd-adj-head-phrase.')
 #####robustness rules
   mylang.add('wrong-case-adj-head-phrase := strength-sharing-adj-head & \
@@ -1040,6 +1286,14 @@ def create_adjective_learning_phrases(ch, mylang, rules):
   mylang.add('wrong-gend-adj-head-phrase :=  number-sharing-adj-head & \
                              syn-agr-adj-head-phrase & no-prd-adj-head-phrase.')
   mylang.add('wrong-number-adj-head-phrase :=  gend-sharing-adj-head & \
+                             syn-agr-adj-head-phrase & no-prd-adj-head-phrase.')
+  climb_wo.add('wrong-case-adj-head-phrase := strength-sharing-adj-head & \
+                             sem-agr-adj-head-phrase & no-prd-adj-head-phrase.')
+  climb_wo.add('wrong-strength-adj-head-phrase :=  case-sharing-adj-head & \
+                             sem-agr-adj-head-phrase & no-prd-adj-head-phrase.')
+  climb_wo.add('wrong-gend-adj-head-phrase :=  number-sharing-adj-head & \
+                             syn-agr-adj-head-phrase & no-prd-adj-head-phrase.')
+  climb_wo.add('wrong-number-adj-head-phrase :=  gend-sharing-adj-head & \
                              syn-agr-adj-head-phrase & no-prd-adj-head-phrase.')
   
 ######cross classification with scop and int (only adjective noun for now)
@@ -1066,6 +1320,30 @@ def create_adjective_learning_phrases(ch, mylang, rules):
   mylang.add('missing-infl-scop-adj-phrase := adj-head-scop-phrase & \
                                               all-agr-adjective-head-phrase & \
                                [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.PRD + ].')
+
+  climb_wo.add('wr-case-int-adj-head-phrase := wrong-case-adj-head-phrase & \
+                                                        adj-head-int-phrase.')
+  climb_wo.add('wr-case-scop-adj-head-phrase := wrong-case-adj-head-phrase & \
+                                                        adj-head-scop-phrase.')
+  climb_wo.add('wr-strength-int-adj-head-phrase := \
+                        wrong-strength-adj-head-phrase & adj-head-int-phrase.')
+  climb_wo.add('wr-strength-scop-adj-head-phrase := \
+                      wrong-strength-adj-head-phrase & adj-head-scop-phrase.')
+  climb_wo.add('wr-gend-int-adj-head-phrase := wrong-gend-adj-head-phrase & \
+                                                        adj-head-int-phrase.')
+  climb_wo.add('wr-gend-scop-adj-head-phrase := wrong-gend-adj-head-phrase & \
+                                                        adj-head-scop-phrase.')
+  climb_wo.add('wr-number-int-adj-head-phrase := wrong-number-adj-head-phrase & \
+                                                        adj-head-int-phrase.')
+  climb_wo.add('wr-number-scop-adj-head-phrase := wrong-number-adj-head-phrase & \
+                                                        adj-head-scop-phrase.')
+
+  climb_wo.add('missing-infl-int-adj-phrase := adj-head-int-phrase & \
+                                              all-agr-adjective-head-phrase & \
+                               [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.PRD + ].')
+  climb_wo.add('missing-infl-scop-adj-phrase := adj-head-scop-phrase & \
+                                              all-agr-adjective-head-phrase & \
+                               [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.PRD + ].')
 ##########adding robustness rules.
 
   rules.add('int-adj-head-case-robust := wr-case-int-adj-head-phrase.')
@@ -1079,6 +1357,21 @@ def create_adjective_learning_phrases(ch, mylang, rules):
   rules.add('scop-adj-head-number-robust := wr-number-scop-adj-head-phrase.')
   rules.add('missing-infl-int-adj-robust := missing-infl-int-adj-phrase .')
   rules.add('missing-infl-scop-adj-robust := missing-infl-scop-adj-phrase .')
+
+  climb_wo.set_section('rules')
+  climb_wo.add('int-adj-head-case-robust := wr-case-int-adj-head-phrase.')
+  climb_wo.add('int-adj-head-strength-robust := wr-strength-int-adj-head-phrase.')
+  climb_wo.add('int-adj-head-gend-robust := wr-gend-int-adj-head-phrase.')
+  climb_wo.add('int-adj-head-number-robust := wr-number-int-adj-head-phrase.')
+  climb_wo.add('scop-adj-head-case-robust := wr-case-scop-adj-head-phrase.')
+  climb_wo.add('scop-adj-head-strength-robust := \
+                                           wr-strength-scop-adj-head-phrase.')
+  climb_wo.add('scop-adj-head-gend-robust := wr-gend-scop-adj-head-phrase.')
+  climb_wo.add('scop-adj-head-number-robust := wr-number-scop-adj-head-phrase.')
+  climb_wo.add('missing-infl-int-adj-robust := missing-infl-int-adj-phrase .')
+  climb_wo.add('missing-infl-scop-adj-robust := missing-infl-scop-adj-phrase .')
+
+  climb_wo.set_section('mylang')
 
 def determine_consistent_order(wo,hc,ch):
 
@@ -1302,13 +1595,22 @@ def add_subclausal_rules(ch, rules):
   if ch.get('clz-optionality'):
     rules.add('informal-vcomp := create-informal-vcomp-phrase.')
 
-def create_wh_phrases(ch, mylang, rules):
+def create_wh_phrases(ch, mylang, rules, climb_wh):
   mylang.add('lex-rule :+ [ SYNSEM.NON-LOCAL.QUE #que, \
                             DTR.SYNSEM.NON-LOCAL.QUE #que ].',section='addenda')
   
   mylang.add('bare-np-phrase := head-nexus-phrase.')
   mylang.add('bare-np-spec_incl-phrase := head-nexus-phrase.')
   mylang.add('basic-head-wh-mod-phrase-simple :+ \
+              [ SYNSEM.LOCAL.CAT.VAL #val, \
+                HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
+                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', section='addenda') 
+  climb_wh.add('lex-rule :+ [ SYNSEM.NON-LOCAL.QUE #que, \
+                            DTR.SYNSEM.NON-LOCAL.QUE #que ].',section='addenda')
+  
+  climb_wh.add('bare-np-phrase := head-nexus-phrase.')
+  climb_wh.add('bare-np-spec_incl-phrase := head-nexus-phrase.')
+  climb_wh.add('basic-head-wh-mod-phrase-simple :+ \
               [ SYNSEM.LOCAL.CAT.VAL #val, \
                 HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val, \
                 NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', section='addenda') 
@@ -1343,7 +1645,8 @@ def create_wh_phrases(ch, mylang, rules):
                NON-LOCAL [ QUE 0-dlist, \
                            SLASH #slash ] ] ].'
     mylang.add(wh_sub_type)
+    climb_wh.add(wh_sub_type)
   
 ###word order rules in Germanic specific for now
-  word_order_v2_vcluster.create_wh_wo_phrases(ch, mylang)
-  word_order_v2_vcluster.create_wh_rules(ch, rules)
+  word_order_v2_vcluster.create_wh_wo_phrases(ch, mylang, climb_wh)
+  word_order_v2_vcluster.create_wh_rules(ch, rules, climb_wh)

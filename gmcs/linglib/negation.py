@@ -7,7 +7,7 @@ from gmcs.utils import orth_encode
 #   Create the type definitions associated with the user's choices
 #   about sentential negation.
 
-def customize_sentential_negation(mylang, ch, lexicon, rules, lrules):
+def customize_sentential_negation(mylang, ch, lexicon, rules, lrules, climb_files):
   # JDC 2011-11-04 Nowadays this function just handles the syntactic
   # negation particles (auxes and adverbs) and (coming) interactions
   # between them also possible interactions with inflection(-al negation)
@@ -19,28 +19,45 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules):
   # This intermediate version only does independent adverbs, and so
   # I'm removing ch.get('neg-adv') == 'ind-adv' as a second part of
   # the test below.
+  climb_neg = climb_files.get('neg')
+  climb_gwo = climb_files.get('ger-wo')
+  climb_neg.set_section('mylang')
+  climb_gwo.set_section('mylang')
+
 
   if ch.get('adv-neg') == 'on' and ch.get('neg-exp') == '1':
-    create_neg_adv_lex_item(mylang, ch, lexicon, rules, 1)
+    create_neg_adv_lex_item(mylang, ch, lexicon, rules, climb_neg, climb_gwo, 1)
 
   if ch.get('comp-neg') == 'on':
-    create_neg_comp_lex_item(mylang, ch, lexicon, rules, lrules)
+    create_neg_comp_lex_item(mylang, ch, lexicon, rules, lrules, climb_neg)
 
   if ch.get('neg-head-feature') == 'on':
     mylang.add('head :+ [ NEGATED luk ].', section='addenda')
+    climb_neg.add('head :+ [ NEGATED luk ].', comment='section=addenda')
 
   if ch.get('neg-exp') == '2':
     # see if we need to make any neg advs
     if ch.get('neg1-type')[0] == 'f' or \
       ch.get('neg2-type')[0] == 'f':
-      create_neg_adv_lex_item(mylang, ch, lexicon, rules, 2)
+      create_neg_adv_lex_item(mylang, ch, lexicon, rules, climb_neg, climb_gwo, 2)
     
 
-def create_neg_comp_lex_item(mylang, ch, lexicon, rules, lrules):
+def create_neg_comp_lex_item(mylang, ch, lexicon, rules, lrules, climb_neg):
 
   mylang.set_section('otherlex')
+  climb_neg.add_literal(';otherlex')
   
   mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
+                 [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
+                                            COMPS < >,
+                                            SUBJ < > ],
+                                      HEAD [ NEGATED +, 
+                                             MOD < [ LOCAL.CAT.HEAD verb ] > ] ] ].''',
+             '''Type for negative selected comps. 
+                This type uses the MOD list to get scopal semantics.
+                Constrain head-modifier rules to be [NEGATED -] if you don't
+                want this type to act as a modifer.''')
+  climb_neg.add('''neg-adv-lex := basic-scopal-adverb-lex &
                  [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
                                             COMPS < >,
                                             SUBJ < > ],
@@ -56,6 +73,7 @@ def create_neg_comp_lex_item(mylang, ch, lexicon, rules, lrules):
   # the neg-comp analyses require the neg-head-feature choice
   # simulate it here if it's not on 
     mylang.add('head :+ [ NEGATED luk ].', section='addenda')
+    climb_neg.add('head :+ [ NEGATED luk ].', section='addenda')
   
   if(ch.get('comp-neg-orth')):
     orth = ch.get('comp-neg-orth')
@@ -63,12 +81,25 @@ def create_neg_comp_lex_item(mylang, ch, lexicon, rules, lrules):
     lexicon.add(TDLencode('neg-lex-' + orth) + ' := neg-adv-lex &\
                 [ STEM < \"'+ orthstr +'\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
+    climb_neg.add(TDLencode('neg-lex-' + orth) + ' := neg-adv-lex &\
+                [ STEM < \"'+ orthstr +'\" >,\
+                  SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].',section='lexicon')
 
 
   # we need the lexical rule to add these types to the comps lists
   # of the verbs that selecte them
   if ch.get('comp-neg-order') == 'before':
     mylang.add('''neg-comp-add-lex-rule := const-val-change-only-lex-rule &
+               [ SYNSEM.LOCAL [ CAT.VAL [  SUBJ #subj,
+                                           COMPS < canonical-synsem & 
+                                                 [ LOCAL.CAT.HEAD [ NEGATED +,
+                                MOD < [ LOCAL.CONT.HOOK #hook ] > ] ] 
+                                                   . #comps > ] ],
+                 DTR.SYNSEM.LOCAL [ CAT.VAL [ SUBJ #subj,
+                                              COMPS #comps ],
+                                        CONT.HOOK #hook ] ].
+               ''')
+    climb_neg.add('''neg-comp-add-lex-rule := const-val-change-only-lex-rule &
                [ SYNSEM.LOCAL [ CAT.VAL [  SUBJ #subj,
                                            COMPS < canonical-synsem & 
                                                  [ LOCAL.CAT.HEAD [ NEGATED +,
@@ -89,21 +120,41 @@ def create_neg_comp_lex_item(mylang, ch, lexicon, rules, lrules):
                                               COMPS.FIRST #comps ],
                                     CONT.HOOK #hook ] ].
                ''')
+    climb_neg.add('''neg-comp-add-lex-rule := const-val-change-only-lex-rule &
+               [ SYNSEM.LOCAL.CAT.VAL [  SUBJ #subj,
+                                         COMPS < #comps , canonical-synsem & 
+                                             [ LOCAL.CAT.HEAD [ NEGATED +,
+                                             MOD < [ LOCAL.CONT.HOOK #hook ] > ] ] > ],
+                 DTR.SYNSEM.LOCAL [ CAT.VAL [ SUBJ #subj,
+                                              COMPS.FIRST #comps ],
+                                    CONT.HOOK #hook ] ].
+               ''')
 
   lrules.add('neg-lex-rule := neg-comp-add-lex-rule.')
+  climb_neg.add('neg-lex-rule := neg-comp-add-lex-rule.',section='lrules')
 
   # deal with type of selecting verb: auxiliary verb or any finite verb
   if(ch.get('comp-neg-head')=='aux'):
     mylang.add('neg-comp-add-lex-rule := [ DTR aux-lex ].')
+    climb_neg.add('neg-comp-add-lex-rule := [ DTR aux-lex ].')
   elif(ch.get('comp-neg-head')=='v'):
     mylang.add('''neg-comp-add-lex-rule := [ DTR verb-lex &
+                [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ] ].''')
+    climb_neg.add('''neg-comp-add-lex-rule := [ DTR verb-lex &
                 [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ] ].''')
 
 
 
-def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
+def create_neg_adv_lex_item(mylang, ch, lexicon, rules, climb_neg, climb_gwo, exp):
   mylang.set_section('otherlex')
   mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
+                 [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
+                                            COMPS < >,
+                                            SUBJ < > ],
+                                      HEAD.MOD < [ LOCAL.CAT.HEAD verb ] > ]].''',
+             'Type for negative adverbs.')
+  climb_neg.add_literal(';;;otherlex')
+  climb_neg.add('''neg-adv-lex := basic-scopal-adverb-lex &
                  [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
                                             COMPS < >,
                                             SUBJ < > ],
@@ -116,57 +167,90 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
     To keep spurious parses down, as a starting point, we have\n
     assumed that it only modifies verbs (e.g., non-finite verbs).''')
 
+  climb_neg.add_comment('neg-adv-lex',
+    '''Constrain the MOD value of this adverb to keep\n
+    it from modifying the kind of verbs which can select it,\n
+    To keep spurious parses down, as a starting point, we have\n
+    assumed that it only modifies verbs (e.g., non-finite verbs).''')
+
   if exp == 1:
     if ch.get('neg-order') == 'before':
       mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+      climb_neg.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
     elif ch.get('neg-order') == 'after':
       mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
+      climb_neg.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
 
     if ch.get('neg-mod') == 's':
       mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
                                                                                      COMPS null ]].''')
+      climb_neg.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
+                                                                                     COMPS null ]].''')
     elif ch.get('neg-mod') == 'vp':
       mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
                                                                                      COMPS null ]].''')
+      climb_neg.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
+                                                                                     COMPS null ]].''')
     elif ch.get('neg-mod') == 'v':
       mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+      climb_neg.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
+    lexical Vs for V-level attachment of negative adverbs.''')
+    climb_neg.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
     lexical Vs for V-level attachment of negative adverbs.''')
   elif exp == 2:
     if ch.get('neg1-type')[0] == 'f':
       mylang.add('neg1-adv-lex := neg-adv-lex.')
+      climb_neg.add('neg1-adv-lex := neg-adv-lex.')
       if ch.get('neg1-order') == 'before':
         mylang.add('neg1-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+        climb_neg.add('neg1-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
       elif ch.get('neg1-order') == 'after':
         mylang.add('neg1-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
+        climb_neg.add('neg1-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
 
       if ch.get('neg-mod') == 's':
         mylang.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
                                                                                        COMPS null ]].''')
+        climb_neg.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
+                                                                                       COMPS null ]].''')
       elif ch.get('neg1-mod') == 'vp':
         mylang.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
                                                                                        COMPS null ]].''')
+        climb_neg.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
+                                                                                       COMPS null ]].''')
       elif ch.get('neg1-mod') == 'v':
         mylang.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+        climb_neg.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
 
     if ch.get('neg2-type')[0] == 'f':
       mylang.add('neg2-adv-lex := neg-adv-lex.')
+      climb_neg.add('neg2-adv-lex := neg-adv-lex.')
         
       if ch.get('neg2-order') == 'before':
         mylang.add('neg2-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].', merge=True)
+        climb_neg.add('neg2-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].', merge=True)
       elif ch.get('neg2-order') == 'after':
         mylang.add('neg2-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].', merge=True)
+        climb_neg.add('neg2-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].', merge=True)
 
       if ch.get('neg2-mod') == 's':
         mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
                                                                                        COMPS null ]].''', merge=True)
+        climb_neg.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
+                                                                                       COMPS null ]].''', merge=True)
       elif ch.get('neg2-mod') == 'vp':
         mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
                                                                                        COMPS null ]].''', merge=True)
+        climb_neg.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
+                                                                                       COMPS null ]].''', merge=True)
       elif ch.get('neg2-mod') == 'v':
         mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''', merge=True)
+        climb_neg.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''', merge=True)
 
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
+    lexical Vs for V-level attachment of negative adverbs.''')
+    climb_neg.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
     lexical Vs for V-level attachment of negative adverbs.''')
     
 
@@ -180,6 +264,9 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
     lexicon.add(TDLencode('neg-lex-' + orth) + ' := neg-adv-lex &\
                 [ STEM < \"'+ orthstr +'\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
+    climb_neg.add(TDLencode('neg-lex-' + orth) + ' := neg-adv-lex &\
+                [ STEM < \"'+ orthstr +'\" >,\
+                  SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].',section='lexicon')
 
   if(ch.get('neg1-adv-orth')):
     orth = ch.get('neg1-adv-orth')
@@ -187,12 +274,17 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
     lexicon.add(TDLencode('neg-lex-' + orth) + '1 := neg1-adv-lex &\
                 [ STEM < \"'+ orthstr +'\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
+    climb_neg.add(TDLencode('neg-lex-' + orth) + '1 := neg1-adv-lex &\
+                [ STEM < \"'+ orthstr +'\" >,\
+                  SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].',section='lexicon')
 
   if(ch.get('neg2-adv-orth')):
     orth = ch.get('neg2-adv-orth')
     orthstr = orth_encode(orth)
     lexicon.add(TDLencode('neg-lex-' + orth) + '2 := neg2-adv-lex &\
                 [ STEM < \"'+ orthstr +'\" > ].')
+    climb_neg.add(TDLencode('neg-lex-' + orth) + '2 := neg2-adv-lex &\
+                [ STEM < \"'+ orthstr +'\" > ].',section='lexicon')
 
 
   # ERB 2006-10-06 And of course we need the head-modifier rules, if we're
@@ -205,7 +297,7 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
   adjective_order = ch.get('adj-noun-order')
   if ch.get('word-order') == 'v2' and ch.get('verb-cluster') == 'yes':
     if not ch.get('has-adv') == 'yes':
-      word_order_v2_vcluster.create_germanic_adverbial_phrases(ch, mylang, rules)
+      word_order_v2_vcluster.create_germanic_adjunct_phrases(ch, mylang, rules, climb_gwo)
   else:
   #if advAlone != 'never':
   #rules.add('head-adj-scop := head-adj-scop-phrase.')
@@ -220,9 +312,17 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
       mylang.add('''basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns, HEAD-DTR.SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns ].''', section='addenda')
       mylang.add('''basic-head-subj-phrase :+ [ SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns, HEAD-DTR.SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns ].''', section='addenda')
 
+
+      climb_neg.add('''cat :+ [ NEG-SATISFIED luk ].''', comment='section=addenda')
+      climb_neg.add('''clause :+ [ SYNSEM.LOCAL.CAT.NEG-SATISFIED na-or-+ ].''', comment='section=addenda')
+      climb_neg.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.NEG-SATISFIED + ].''', merge=True, section='otherlex')
+      climb_neg.add('''basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns, HEAD-DTR.SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns ].''', comment='section=addenda')
+      climb_neg.add('''basic-head-subj-phrase :+ [ SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns, HEAD-DTR.SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns ].''', comment='section=addenda')
+
     # also, if we don't want neg2 to be able to occur alone, we require that the 
     # verb it modifies is NEGATED +
       mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.NEGATED + ] > ].''', merge=True, section='otherlex')
+      climb_neg.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.NEGATED + ] > ].''', merge=True, comment='section=otherlex')
 
       if ch.get('neg2-order')=='after':
         mylang.add('''neg-head-adj-scop-phrase := head-adj-scop-phrase &
@@ -233,6 +333,14 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
              'are defined in matrix.tdl.  This rule copies NEG-SATISFIED up \n' +
              'from the non-head daughter (the negative adv), other rules \n' +
              'pass NEG-SATISFIED up the head path\n')
+        climb_neg.add('''neg-head-adj-scop-phrase := head-adj-scop-phrase &
+                            [ SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns,
+                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns ].''')
+        climb_neg.add('head-adj-scop := neg-head-adj-scop-phrase.',
+            'Rule instances for head-modifier structures. Corresponding types\n' +
+             'are defined in matrix.tdl.  This rule copies NEG-SATISFIED up \n' +
+             'from the non-head daughter (the negative adv), other rules \n' +
+             'pass NEG-SATISFIED up the head path\n',section='rules')
       else:
         mylang.add('''neg-adj-head-scop-phrase := adj-head-scop-phrase &
                             [ SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns,
@@ -242,6 +350,14 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
              'are defined in matrix.tdl.  This rule copies NEG-SATISFIED up \n' +
              'from the non-head daughter (the negative adv), other rules \n' +
              'pass NEG-SATISFIED up the head path\n')
+        climb_neg.add('''neg-adj-head-scop-phrase := adj-head-scop-phrase &
+                            [ SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns,
+                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.NEG-SATISFIED #ns ].''')
+        climb_neg.add('adj-head-scop := neg-adj-head-scop-phrase.',
+            'Rule instances for head-modifier structures. Corresponding types\n' +
+             'are defined in matrix.tdl.  This rule copies NEG-SATISFIED up \n' +
+             'from the non-head daughter (the negative adv), other rules \n' +
+             'pass NEG-SATISFIED up the head path\n',section='rules')
     else:
       rules.add('adj-head-scop := adj-head-scop-phrase.')
       rules.add('head-adj-scop := head-adj-scop-phrase.',
@@ -256,6 +372,19 @@ def create_neg_adv_lex_item(mylang, ch, lexicon, rules, exp):
                'This constraint says that only adverbs, adjectives,\n' +
                'and adpositions can be modifiers.',
                section='addenda')
+
+      climb_neg.add('adj-head-scop := adj-head-scop-phrase.',section='rules')
+      climb_neg.add('head-adj-scop := head-adj-scop-phrase.',
+            'Rule instances for head-modifier structures. Corresponding types\n' +
+             'are defined in matrix.tdl.  The matrix customization script did\n' +
+             'not need to add any further constraints, so no corresponding types\n' +
+             'appear in ' + ch.get('language').lower() + '.tdl',section='rules')
+      climb_neg.add('+nvcdmo :+ [ MOD < > ].',
+               'This grammar includes head-modifier rules.  To keep\n' +
+               'out extraneous parses, constrain the value of MOD on\n' +
+               'various subtypes of head.  This may need to be loosened later.\n' +
+               'This constraint says that only adverbs, adjectives,\n' +
+               'and adpositions can be modifiers.\n' + 'section=addenda')
 
 
 

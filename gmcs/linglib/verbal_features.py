@@ -47,9 +47,10 @@ def init_tense_hierarchy(ch, hierarchies):
     hierarchies[hier.name] = hier
 
 
-def customize_tense(mylang, hierarchies):
+def customize_tense(mylang, climb_vfeat, hierarchies):
   if 'tense' in hierarchies:
     hierarchies['tense'].save(mylang, False)
+    hierarchies['tense'].save(climb_vfeat, False)
 
 
 ######################################################################
@@ -74,9 +75,10 @@ def init_aspect_hierarchy(ch, hierarchies):
       hier.add(name, supername)
       hierarchies[hier.name] = hier
 
-def customize_aspect(mylang, hierarchies):
+def customize_aspect(mylang, climb_vfeat, hierarchies):
   if 'aspect' in hierarchies:
     hierarchies['aspect'].save(mylang, False)
+    hierarchies['aspect'].save(climb_vfeat, False)
 
 # customize_situation()
 # Create situation aspect feature value definitions per the user's choices
@@ -93,12 +95,16 @@ def init_situation_hierarchy(ch, hierarchies):
   if not hier.is_empty():
     hierarchies[hier.name] = hier
 
-def customize_situation(mylang, hierarchies):
+def customize_situation(mylang, climb_vfeat, hierarchies):
   if 'situation' in hierarchies:
     mylang.set_section('features')
     mylang.add('situation := sort.')
     mylang.add('tam :+ [SITUATION situation].', section='addenda')
     hierarchies['situation'].save(mylang, False)
+    climb_vfeat.add_literal(';section=features')
+    climb_vfeat.add('situation := sort.')
+    climb_vfeat.add('tam :+ [SITUATION situation].', comment='section=addenda')
+    hierarchies['situation'].save(climb_vfeat, False)
 
 ######################################################################
 # customize_mood()
@@ -122,9 +128,10 @@ def init_mood_hierarchy(ch, hierarchies):
       hier.add(name, supername)
       hierarchies[hier.name] = hier
 
-def customize_mood(mylang, hierarchies):
+def customize_mood(mylang, climb_vfeat, hierarchies):
   if 'mood' in hierarchies:
     hierarchies['mood'].save(mylang, False)
+    hierarchies['mood'].save(climb_vfeat, False)
 
 
 ###############################################################
@@ -203,10 +210,12 @@ def auxiliary_selection(ch):
     auxsel.append(my_auxs)
   return auxsel
 
-def customize_form(mylang, hierarchies):
+def customize_form(mylang, climb_vfeat, hierarchies):
   if 'form' in hierarchies:
     mylang.add('head :+ [FORM form].', section='addenda')
     hierarchies['form'].save(mylang)
+    climb_vfeat.add('head :+ [FORM form].', section='addenda')
+    hierarchies['form'].save(climb_vfeat)
 
 def init_verbal_hierarchies(ch, hierarchies):
   init_tense_hierarchy(ch, hierarchies)
@@ -215,10 +224,10 @@ def init_verbal_hierarchies(ch, hierarchies):
   init_mood_hierarchy(ch, hierarchies)
   init_form_hierarchy(ch, hierarchies)
 
-def customize_verbal_features(mylang, hierarchies):
-  customize_form(mylang, hierarchies)
-  customize_tense(mylang, hierarchies)
-  customize_aspect(mylang, hierarchies)
-  customize_situation(mylang, hierarchies)
-  customize_mood(mylang, hierarchies)
-
+def customize_verbal_features(mylang, climb_files, hierarchies):
+  climb_verb_feat = climb_files.get('verbal-feat')
+  customize_form(mylang, climb_verb_feat, hierarchies)
+  customize_tense(mylang, climb_verb_feat, hierarchies)
+  customize_aspect(mylang, climb_verb_feat, hierarchies)
+  customize_situation(mylang, climb_verb_feat, hierarchies)
+  customize_mood(mylang, climb_verb_feat, hierarchies)

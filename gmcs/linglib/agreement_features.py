@@ -38,18 +38,24 @@ def init_pernum_hierarchy(ch, hierarchies):
     hierarchies[hier.name] = hier
 
 
-def customize_person_and_number(mylang, hierarchies):
+def customize_person_and_number(mylang, climb_agree, hierarchies):
   if 'pernum' in hierarchies:
     mylang.add('png :+ [ PERNUM pernum ].', section='addenda')
     hierarchies['pernum'].save(mylang)
+    climb_agree.add('png :+ [ PERNUM pernum ].', comment='section=addenda')
+    hierarchies['pernum'].save(climb_agree)
   else:
     if 'person' in hierarchies:
       mylang.add('png :+ [ PER person ].', section='addenda')
       hierarchies['person'].save(mylang)
+      climb_agree.add('png :+ [ PER person ].', comment='section=addenda')
+      hierarchies['person'].save(climb_agree)
 
     if 'number' in hierarchies:
       mylang.add('png :+ [ NUM number ].', section='addenda')
       hierarchies['number'].save(mylang)
+      climb_agree.add('png :+ [ NUM number ].', comment='section=addenda')
+      hierarchies['number'].save(climb_agree)
 
 
 ######################################################################
@@ -68,10 +74,12 @@ def init_gender_hierarchy(ch, hierarchies):
     hierarchies[hier.name] = hier
 
 
-def customize_gender(mylang, hierarchies):
+def customize_gender(mylang, climb_agree, hierarchies):
   if 'gender' in hierarchies:
     mylang.add('png :+ [ GEND gender ].', section='addenda')
     hierarchies['gender'].save(mylang)
+    climb_agree.add('png :+ [ GEND gender ].', comment='section=addenda')
+    hierarchies['gender'].save(climb_agree)
 
 
 ######################################################################
@@ -95,7 +103,7 @@ def init_other_hierarchies(ch, hierarchies):
       hierarchies[hier.name] = hier
 
 
-def customize_other_features(mylang, hierarchies):
+def customize_other_features(mylang, climb_agree, hierarchies):
   for name in hierarchies:
     h = hierarchies[name]
     feat = h.name
@@ -106,9 +114,13 @@ def customize_other_features(mylang, hierarchies):
       if type == 'head':
         mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].',
                    section='addenda')
+        climb_agree.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].',
+                   comment='section=addenda')
       else:
         mylang.add('png :+ [ ' + feat.upper() + ' ' + feat + ' ].',
                    section='addenda')
+        climb_agree.add('png :+ [ ' + feat.upper() + ' ' + feat + ' ].',
+                   comment='section=addenda')
 
       # sfd: If it's an 'index' feature, we should make sure to strip it
       # out in the VPM
@@ -124,7 +136,8 @@ def init_agreement_hierarchies(ch, hierarchies):
   init_other_hierarchies(ch, hierarchies)
 
 
-def customize_agreement_features(mylang, hierarchies):
-  customize_person_and_number(mylang, hierarchies)
-  customize_gender(mylang, hierarchies)
-  customize_other_features(mylang, hierarchies)
+def customize_agreement_features(mylang, climb_files, hierarchies):
+  climb_agree = climb_files.get('agreement')
+  customize_person_and_number(mylang, climb_agree, hierarchies)
+  customize_gender(mylang, climb_agree, hierarchies)
+  customize_other_features(mylang, climb_agree, hierarchies)

@@ -28,7 +28,7 @@ def get_subj_comps_types(j, scale_size, direc, equal):
 ### MAIN LOGIC METHODS ###
 ##########################
 
-def customize_direct_inverse(choices, mylang, hierarchies):
+def customize_direct_inverse(choices, mylang, climb_files, hierarchies):
   if not choices.has_dirinv():
       return
   write_dir_inv_types(choices, mylang, hierarchies)

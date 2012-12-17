@@ -4,27 +4,32 @@
 #   Create the type definitions associated with the user's choices
 #   about matrix yes/no questions.
 
-def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
+def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, climb_files):
 
+  climb_polar = climb_files.get('polar')
+  climb_polar.set_section('mylang')
   qinvverb = ch.get('q-inv-verb')
   qpartposthead = ch.get('q-part-order')
   qpartform = ch.get('q-part-orth')
 
   if ch.get('q-inv'):
     comment = \
-      'For the analysis of inverted yes-no questions, we add the feature INV.'
+      'For the analysis of inverted yes-no questions, we add the feature INV.\n'
     mylang.add('verb :+ [ INV bool ].', comment, section='addenda')
+    comment += 'section=addenda'
+    climb_polar.add('verb :+ [ INV bool ].', comment)
 
     comment = \
-      'All verbs start off as not inverted.'
+      'All verbs start off as not inverted.\n'
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].',
                comment, section='verblex')
-
+    comment += 'section=verblex'
+    climb_polar.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].',comment)
 
     comment = \
       'Rule for inverted subject verb order in questions.\n' + \
       'The incompatible SUBJ values on SYNSEM and DTR are\n' + \
-      'what keeps this one from spinning.'
+      'what keeps this one from spinning.\n'
 
       # ERB 2006-10-05 Adding in semantics here.  This rule constrains MESG to ques.
       # ERB 2007-01-21 Removing semantics here: Need to allow inversion to not express questions.  Instead, the result of this is MC na, and there is a separate non-branching rule which introduces question semantics.  Following the ERG in this.
@@ -67,10 +72,12 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
                                        SPEC #spec ]],
                      LKEYS #lkeys ]].'''
     mylang.add(typedef, comment, section='lexrules')
+    comment += 'section=lexrule'
+    climb_polar.add(typedef, comment)
    
 
     lrules.add('inv-lr := subj-v-inv-lrule.')
-
+    climb_polar.add('inv-lr := subj-v-inv-lrule.',section='lrules')
     # ERB 2010-04-15 Cleaning up treatent of constraints on AUX, 
     # which were still very old-school. Need to both constrain DTR
     # and copy the value up.  Only checking qinvverb if we know
@@ -83,12 +90,20 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
                                               AUX #aux ],
                       DTR.SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
                                                   AUX #aux ] ].''')
+      climb_polar.add('''
+                 subj-v-inv-lrule :=
+                    [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
+                                              AUX #aux ],
+                      DTR.SYNSEM.LOCAL.CAT.HEAD [ FORM #form,
+                                                  AUX #aux ] ].''')
 
       if qinvverb == 'aux':
         mylang.add('subj-v-inv-lrule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
+        climb_polar.add('subj-v-inv-lrule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
 
       if qinvverb == 'main':
         mylang.add('subj-v-inv-lrule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
+        climb_polar.add('subj-v-inv-lrule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
 
 
 
@@ -102,6 +117,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
 
     if ch.get('obj-drop') and not ch.get('verb-cluster') == 'yes':
       mylang.add('subj-v-inv-lrule := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT - ].')
+      climb_polar.add('subj-v-inv-lrule := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT - ].')
 
 
     # ERB 2010-04-15 If we have a finite/non-finite disctintion,
@@ -111,6 +127,10 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
 
     if 'form' in hierarchies:
       mylang.add('''
+                 subj-v-inv-lrule :=
+                    [ SYNSEM.LOCAL.CAT.HEAD.FORM #form,
+                      DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].''')
+      climb_polar.add('''
                  subj-v-inv-lrule :=
                     [ SYNSEM.LOCAL.CAT.HEAD.FORM #form,
                       DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].''')
@@ -135,21 +155,29 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
                         NON-LOCAL #nl ],
       C-CONT.HOOK.INDEX.SF ques ].'''
     mylang.add(typedef, comment, section='phrases')
+    comment += 'section=phrases'
+    climb_polar.add(typedef, comment)
 
     if not ch.get('word-order') == 'v2':
       mylang.add('int-cl := [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,\
                                                      COMPS < > ] ].')
+      climb_polar.add('int-cl := [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,\
+                                                     COMPS < > ] ].')
     else:
       comment = 'See aux-1st-comp for reasons for using MODIFIED'
       mylang.add('int-cl := [ SYNSEM.MODIFIED notmod-or-lmod ].')
+      climb_polar.add('int-cl := [ SYNSEM.MODIFIED notmod-or-lmod ].')
    #second value must be passed up to prevent over-generation
    #*hat Marie mir gegeben den Wein?
 
       if ch.get('vc-analysis') == 'basic':
         mylang.add('int-cl := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
                                 HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
+        climb_polar.add('int-cl := [ SYNSEM.LOCAL.CAT.SECOND #scd, \
+                                HEAD-DTR.SYNSEM.LOCAL.CAT.SECOND #scd ].')
 
     rules.add('int := int-cl.')
+    climb_polar.add('int := int-cl.',section='rules')
 
   # ERB 2006-10-05 Moving away from the modifier analysis of question particles
   # which I think doesn't handle the facts well.  These look more like complementizers
@@ -158,7 +186,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
   if ch.get('q-part'):
     comment = \
              'We treat question particles as complementizers.\n' + \
-             'Here is the lexical type for complementizers.'
+             'Here is the lexical type for complementizers.\n'
     typedef = '''
       complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
          [ SYNSEM.LOCAL.CAT [ HEAD comp &
@@ -172,12 +200,16 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
                                                 COMPS < > ]]] > ]
                                                 .'''
     mylang.add(typedef, comment, section='otherlex')
+    comment += 'section=otherlex'
+    climb_polar.add(typedef, comment)
 
-    comment = 'Subtype for question particles. Constrains SF to ques.'
+    comment = 'Subtype for question particles. Constrains SF to ques.\n'
     typedef = '''
       qpart-lex-item := complementizer-lex-item &
          [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
     mylang.add(typedef, comment, section='otherlex')
+    comment += 'section=otherlex'
+    climb_polar.add(typedef, comment)
 
     # ERB 2010-04-15 If we have a finite/non-finite distinction in the
     # language, the qpart should insist on attaching to finite clauses
@@ -191,6 +223,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
 
     if 'form' in hierarchies:
       mylang.add('qpart-lex-item := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].')
+      climb_polar.add('qpart-lex-item := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].')
 
 
 
