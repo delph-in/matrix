@@ -591,9 +591,9 @@ def customize_matrix(path, arch_type, destination=None):
   if ch.get('passivization') == 'yes':
     passivization.customize_passivization(ch, mylang, lrules, lexicon, climb_files)
   if ch.get('ldd') == 'yes':
-    long_distance_dependencies.customize_long_distance_deps(ch, mylang, rules)
+    long_distance_dependencies.customize_long_distance_deps(ch, mylang, rules, climb_files)
   if ch.get('extraposition') == 'yes':
-    extraposition.create_extraposition(ch, mylang, rules)
+    extraposition.create_extraposition(ch, mylang, rules, climb_files)
   if ch.get('comparatives') == 'yes':
     comparatives.create_comparative_basic_type(ch, mylang, lexicon)
   customize_punctuation(grammar_path)

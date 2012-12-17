@@ -4,12 +4,13 @@
 #
 
 
-def customize_long_distance_deps(ch, mylang, rules):
+def customize_long_distance_deps(ch, mylang, rules, climb_files):
+  climb_ldd = climb_files.get('ldd')
   if ch.get('vcomp-ldd') == 'yes':
-    add_basic_ldd_phrases(ch, mylang, rules)
+    add_basic_ldd_phrases(ch, mylang, rules, climb_ldd)
 
 def add_basic_ldd_phrases(ch, mylang, rules, climb_file):
-  
+  climb_file.set_section('mylang')
   basic_arg = \
    '''basic-extracted-arg-phrase :+ [ HEAD-DTR.SYNSEM [ MODIFIED notmod,
                       NON-LOCAL.REL 0-dlist & [ LIST < > ] ] ].'''
