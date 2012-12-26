@@ -8,7 +8,7 @@
 # but is not based on any cross-linguistic research whatsoever!
 
 
-def customize_argument_alternation(ch, mylang, climb_files, lrules, lexicon):
+def customize_argument_alternation(ch, mylang, lrules, lexicon, climb_files):
   climb_arg_alt = climb_files.get('arg-alternation')
   if ch.get('dative-shift') == 'on':
     customize_dative_shift(ch, mylang, lrules, lexicon, climb_arg_alt)

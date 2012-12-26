@@ -24,6 +24,8 @@ def customize_passivization(ch, mylang, lrules, lexicon, climb_files):
       form = 'pass-' + p.get('form')
     elif marking == 'morph':
       form = p.get('form')
+    sform = p.get('dsubj-form')
+     
 ###
     if form:
       mylang.add(form + ' := nonfinite.', section='features')
@@ -50,7 +52,7 @@ def customize_passivization(ch, mylang, lrules, lexicon, climb_files):
                                                CAT [ VAL.COMPS < >,
                                                      HEAD adp &
                                                           [ MOD < >,
-                                                            FORM van ] ] ] ] . #vcomps > ],
+                                                            FORM ''' + sform + '''] ] ] ] . #vcomps > ],
                        HEAD verb &
                             [ MOD #mod,
                               PART-FORM #pf,

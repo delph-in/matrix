@@ -14,6 +14,8 @@ import zipfile
 import sys
 import re
 import codecs
+import extract_feature_geometry
+import abbreviate_paths_in_climb
 from subprocess import call
 
 from gmcs.choices import ChoicesFile
@@ -372,7 +374,7 @@ def create_climb_files_dict(grammar_path):
   climb_dict = {}
   climb_dict['lexical_items'] =  tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'lexical_items.tdl'))
   climb_dict['nouns'] =  tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'nouns.tdl'))
-  climb_dict['verbs'] =  tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'nouns.tdl'))
+  climb_dict['verbs'] =  tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'verbs.tdl'))
   climb_dict['case'] =  tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'case.tdl'))
   climb_dict['aux'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'auxiliaries.tdl'))
   climb_dict['cop'] = tdl.TDLfile(os.path.join(grammar_path + '/climb/', 'copula.tdl'))
@@ -410,7 +412,7 @@ def create_climb_files_dict(grammar_path):
   climb_dict['coord'].define_climb_sections()
   climb_dict['polar-q'].define_climb_sections()
   climb_dict['pass'].define_climb_sections()
-  climb_dict['lld'].define_climb_sections()
+  climb_dict['ldd'].define_climb_sections()
   climb_dict['extrapos'].define_climb_sections()
   climb_dict['compar'].define_climb_sections()
 
@@ -457,6 +459,15 @@ def customize_matrix(path, arch_type, destination=None):
         get_matrix_core_path() + os.path.sep, grammar_path],
        stdout=IGNORE, stderr=IGNORE)
   IGNORE.close()
+  
+  # include copy of CLIMB material
+  
+  IGNORE = open(os.devnull, 'w')
+  call(['rsync', '-a', '--exclude=.svn',
+        get_climb_path() + os.path.sep, grammar_path + '/climb'],
+       stdout=IGNORE, stderr=IGNORE)
+  IGNORE.close()
+  
 
   # include a copy of choices (named 'choices' to avoid collisions)
   shutil.copy(path, os.path.join(grammar_path, 'choices'))
@@ -482,7 +493,6 @@ def customize_matrix(path, arch_type, destination=None):
   roots =   tdl.TDLfile(os.path.join(grammar_path, 'roots.tdl'))
 
   climb_files = create_climb_files_dict(grammar_path)
-
 
 
   # date/time
@@ -553,8 +563,8 @@ def customize_matrix(path, arch_type, destination=None):
   argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies, climb_files)
   ###DIRECT INVERSE, TODO WHEN DOING DESCRIPTION
   direct_inverse.customize_direct_inverse(ch, mylang, climb_files, hierarchies)
-  case.customize_case(mylang, ch, hierarchies)
-  argument_alternation.customize_argument_alternation(ch, mylang, lrules, lexicon)
+  case.customize_case(mylang, climb_files, ch, hierarchies)
+  argument_alternation.customize_argument_alternation(ch, mylang, lrules, lexicon, climb_files)
   #argument_optionality.customize_arg_op(ch, mylang)
   # after all structures have been customized, customize inflection,
   # but provide the methods the components above have for their own
@@ -563,7 +573,7 @@ def customize_matrix(path, arch_type, destination=None):
                           argument_optionality.add_lexrules,
                           direct_inverse.add_lexrules]
 
-  climb_morph = climb_lists.get('morph')
+  climb_morph = climb_files.get('morph')
   climb_morph.set_section('mylang')
   to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
                                               mylang, irules, lrules, lexicon, climb_morph)
@@ -595,7 +605,7 @@ def customize_matrix(path, arch_type, destination=None):
   if ch.get('extraposition') == 'yes':
     extraposition.create_extraposition(ch, mylang, rules, climb_files)
   if ch.get('comparatives') == 'yes':
-    comparatives.create_comparative_basic_type(ch, mylang, lexicon)
+    comparatives.create_comparative_basic_type(ch, mylang, lexicon, climb_files)
   customize_punctuation(grammar_path)
   customize_test_sentences(grammar_path)
   customize_itsdb(grammar_path)
@@ -617,7 +627,9 @@ def customize_matrix(path, arch_type, destination=None):
     cl_file.save()
 
   #here feature geometry will be created
-
+  flop_file = grammar_path +  '/' + ch.get('language').lower() + '-pet.tdl'
+  extract_feature_geometry.extract_feature_geometry(flop_file)
+  abbreviate_paths_in_climb.abbreviate_paths(grammar_path + '/climb/')
   #here path reduction will be applied to files in climb
 
 
@@ -625,6 +637,13 @@ def customize_matrix(path, arch_type, destination=None):
   setup_vcs(ch, grammar_path)
 
   return grammar_path
+
+def get_climb_path():
+  # customizationroot is only set for local use. The installation for
+  # the questionnaire does not use it.
+  cr = os.environ.get('CUSTOMIZATIONROOT','')
+  if cr: cr = os.path.join(cr, '..')
+  return os.path.join(cr, 'climb')
 
 def get_matrix_core_path():
   # customizationroot is only set for local use. The installation for

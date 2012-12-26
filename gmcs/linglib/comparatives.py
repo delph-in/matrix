@@ -8,7 +8,8 @@
 # but is not based on any cross-linguistic research whatsoever!
 
 
-def create_comparative_basic_type(ch, mylang, lexicon):
+def create_comparative_basic_type(ch, mylang, lexicon, climb_files):
+  climb_comp = climb_files.get('compar')
   typedef = \
   '''comp-or-superlative-creating-lex-rule := same-non-local-lex-rule &
 			     same-modified-lex-rule &
@@ -47,10 +48,19 @@ def create_comparative_basic_type(ch, mylang, lexicon):
   mylang.add('superlative-creating-lex-rule := \
                                     comp-or-superlative-creating-lex-rule & \
                 [ SYNSEM.LOCAL.CONT.RELS <! [ ], [ PRED "_superl_rel" ] !> ].')
+  climb_comp.add(typedef)
+  climb_comp.add('comparative-creating-lex-rule := \
+                                    comp-or-superlative-creating-lex-rule & \
+                [ SYNSEM.LOCAL.CONT.RELS <! [ ], [ PRED "_comp_rel" ] !> ].')
+  climb_comp.add('superlative-creating-lex-rule := \
+                                    comp-or-superlative-creating-lex-rule & \
+                [ SYNSEM.LOCAL.CONT.RELS <! [ ], [ PRED "_superl_rel" ] !> ].')
   head = ''
   if ch.get('comparative-comp-head'):
     head = ch.get('comparative-comp-head')
     mylang.add('comparative-creating-lex-rule := \
+      [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD ' + head + ' ] > ].')
+    climb_comp.add('comparative-creating-lex-rule := \
       [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD ' + head + ' ] > ].')
   
   form = ''
@@ -63,14 +73,18 @@ def create_comparative_basic_type(ch, mylang, lexicon):
   form = form.strip('+')
   if head == 'adp':
     superform += 'p'
-    create_marker_position(mylang, form, lexicon)
+    create_marker_position(mylang, form, lexicon, climb_comp)
     superform += 'form'
 
   if form and superform:
     mylang.add(form + ' := ' + superform + '.')
+    climb_comp.add(form + ' := ' + superform + '.')
   elif form:
     mylang.add(form + ' := ' + form + '.')
+    climb_comp.add(form + ' := ' + form + '.')
   mylang.add('comparative-creating-lex-rule := \
+      [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.FORM ' + form + ' ] > ].')
+  climb_comp.add('comparative-creating-lex-rule := \
       [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.FORM ' + form + ' ] > ].')
 
   stype = \
@@ -97,7 +111,11 @@ def create_comparative_basic_type(ch, mylang, lexicon):
   mylang.add(stype)
   mylang.add(sub_t1)
   mylang.add(sub_t2)
-def create_marker_position(mylang, form, lexicon):
+  climb_comp.add(stype)
+  climb_comp.add(sub_t1)
+  climb_comp.add(sub_t2)
+
+def create_marker_position(mylang, form, lexicon, climb_comp):
   ###TO DO: the case marking should probably go
   my_adp = \
    '''comp-marking-adp-lex := basic-marking-only-adp-lex & norm-sem-lex-item &
@@ -107,9 +125,14 @@ def create_marker_position(mylang, form, lexicon):
                                      [ PRED "_ellipis_ref_rel",
 				       ARG1 #arg1 ] !> ] ].'''
   mylang.add(my_adp)
+  climb_comp.add(my_adp)
   stype = form + '-comp-marking-adp-lex'
   mylang.add(stype + ' := comp-marking-adp-lex & \
+     [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
+  climb_comp.add(stype + ' := comp-marking-adp-lex & \
      [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
 
   lexicon.add(form + '-comparative := comp-marking-adp-lex & \
                     [ STEM < "' + form + '" > ].') 
+  climb_comp.add(form + '-comparative := comp-marking-adp-lex & \
+                    [ STEM < "' + form + '" > ].',section='lexicon') 

@@ -559,10 +559,10 @@ def validate_word_order(ch, vr):
   #         'you must define them on the lexicon page.')
 
 
-  #Things to do with auxiliaries
-  if (not ch.get('has-aux')):
-    vr.err('has-aux',
-           'You must specify whether your language has auxiliary verbs.')
+# Things to do with auxiliaries
+#  if (not ch.get('has-aux')):
+#    vr.err('has-aux',
+#           'You must specify whether your language has auxiliary verbs.')
 
   if ((ch.get('has-aux') == 'yes') and (not ch.get('aux-comp-order'))):
     vr.err('aux-comp-order',

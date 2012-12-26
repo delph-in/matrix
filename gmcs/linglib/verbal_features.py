@@ -214,7 +214,7 @@ def customize_form(mylang, climb_vfeat, hierarchies):
   if 'form' in hierarchies:
     mylang.add('head :+ [FORM form].', section='addenda')
     hierarchies['form'].save(mylang)
-    climb_vfeat.add('head :+ [FORM form].', section='addenda')
+    climb_vfeat.add('head :+ [FORM form].', comment='section=addenda')
     hierarchies['form'].save(climb_vfeat)
 
 def init_verbal_hierarchies(ch, hierarchies):

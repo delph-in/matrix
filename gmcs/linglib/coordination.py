@@ -279,6 +279,9 @@ trunc-coord-lex-rule.
     climb_coord.add('trunc-lex := [ SYNSEM.LOCAL.CONT.RELS <! relation !> ].')
     #gender value of combined N should come from right-hand noun
     #GERMANIC ONLY: ASSUMING THERE IS GENDER (SHOULD CHECK WHETHER GENDER DEFINED)
+
+###only if gender is defined
+  if len(ch.genders()) > 0:
     mylang.add('gender-agr-bottom-coord-rule := bottom-coord-phrase & \
         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND #gend, \
           NONCONJ-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND #gend ].')
@@ -299,22 +302,22 @@ trunc-coord-lex-rule.
           RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND #gend ].')
     #Germanic only: taking AUX value from right most daughter (closest to correct)
     
-    mylang.add('head-agr-bottom-coord-rule := bottom-coord-phrase & \
+  mylang.add('head-agr-bottom-coord-rule := bottom-coord-phrase & \
         [ SYNSEM.LOCAL.CAT.HEAD #head, \
           NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD #head ].')
-    mylang.add('head-agr-mid-coord-rule := mid-coord-rule & \
+  mylang.add('head-agr-mid-coord-rule := mid-coord-rule & \
         [ SYNSEM.LOCAL.CAT.HEAD #head, \
           RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD #head ].')
-    mylang.add('head-agr-top-coord-rule := top-coord-rule & \
+  mylang.add('head-agr-top-coord-rule := top-coord-rule & \
         [ SYNSEM.LOCAL.CAT.HEAD #head, \
           RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD #head ].')  
-    climb_coord.add('head-agr-bottom-coord-rule := bottom-coord-phrase & \
+  climb_coord.add('head-agr-bottom-coord-rule := bottom-coord-phrase & \
         [ SYNSEM.LOCAL.CAT.HEAD #head, \
           NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD #head ].')
-    climb_coord.add('head-agr-mid-coord-rule := mid-coord-rule & \
+  climb_coord.add('head-agr-mid-coord-rule := mid-coord-rule & \
         [ SYNSEM.LOCAL.CAT.HEAD #head, \
           RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD #head ].')
-    climb_coord.add('head-agr-top-coord-rule := top-coord-rule & \
+  climb_coord.add('head-agr-top-coord-rule := top-coord-rule & \
         [ SYNSEM.LOCAL.CAT.HEAD #head, \
           RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD #head ].')  
     

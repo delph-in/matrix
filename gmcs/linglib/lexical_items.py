@@ -1263,10 +1263,10 @@ def customize_adverbs(mylang, ch, lexicon, climb_lex):
     if ch.get('adv-argst') == 'yes':
       mylang.add('int-mod-with-one-arg-lex := intersective-mod-lex & \
                     [ SYNSEM.LKEYS.KEYREL.ARG2 #arg2, \
-                      ARGS < [ LOCAL.CONT.HOOK.INDEX #arg2 ] > ].')
+                      ARG-ST < [ LOCAL.CONT.HOOK.INDEX #arg2 ] > ].')
       climb_lex.add('int-mod-with-one-arg-lex := intersective-mod-lex & \
                     [ SYNSEM.LKEYS.KEYREL.ARG2 #arg2, \
-                      ARGS < [ LOCAL.CONT.HOOK.INDEX #arg2 ] > ].')
+                      ARG-ST < [ LOCAL.CONT.HOOK.INDEX #arg2 ] > ].')
 
     if ch.get('rel-clause') == 'yes':
       mylang.add('basic-adverb-lex :+ non-rel-lex-item.',section='addenda')

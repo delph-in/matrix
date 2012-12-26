@@ -149,7 +149,7 @@ if form_data.has_key('customize'):
 
       # look at the files in saved-choices, which will have names like
       # choices.N, figure out the next serial number, and copy the current
-      # choices file to saved-choices/choices.N+1
+      # choices file to saved-choices/choices.
       serial = 1
       for f in glob.glob('saved-choices/choices.*'):
         i = f.rfind('.')

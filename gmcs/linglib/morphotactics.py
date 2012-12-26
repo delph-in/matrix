@@ -494,7 +494,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, climb_morph, choices):
   all_flags = get_all_flags('out').union(get_all_flags('in'))
   write_inflected_avms(mylang, climb_morph, all_flags)
   mylang.set_section('lexrules')
-  climb_morph.add_literal('section=lexrules')
+  climb_morph.add_literal('; section=lexrules')
   # First write any intermediate types (keep them together)
   write_intermediate_types(mylang, climb_morph)
   mylang.add_literal(';;; Lexical rule types')
@@ -502,7 +502,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, climb_morph, choices):
   for pc in sorted(pch.nodes.values(), key=lambda x: x.tdl_order):
     # set the appropriate section
     mylang.set_section(get_section_from_pc(pc))
-    climb_lex.add_literal('section='get_section_from_pc(pc))
+    climb_morph.add_literal('; section=' + get_section_from_pc(pc))
     # if it's a lexical type, just write flags and move on
     if not pc.is_lex_rule:
       write_pc_flags(mylang, lextdl, climb_morph, pc, all_flags, choices)

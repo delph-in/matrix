@@ -30,7 +30,7 @@ def v2_and_verbal_clusters(ch, mylang, lrules, rules, climb_files):
     add_revised_analysis_incl_obj_raising_constraints(ch, mylang, lrules, climb_gwo)
 
   if ch.get('rel-clause') == 'yes':
-    create_rel_clause_phrases(mylang, rules, ch, climb_gwo)
+    create_rel_clause_phrases(mylang, rules, climb_gwo, ch)
     if not ch.get('wh-questions') == 'yes':
       mylang.add('bare-np-phrase := head-nexus-phrase.')
 
@@ -153,8 +153,8 @@ def add_basic_phrases_v2_with_cluster(ch, mylang, rules, climb_gwo):
     climb_gwo.add('head-comp-phrase-2 := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
  
   if not (ch.get('argument-order') == 'fixed' and ch.get('v2-analysis') == 'filler-gap'):
-    mylang.add('basic-extracted-subj-phrase :+ [ SYNSEM.LOCAL.CAT.COMPS < > ].', section='addenda')
-    climb_gwo.add('basic-extracted-subj-phrase :+ [ SYNSEM.LOCAL.CAT.COMPS < > ].', comment='section=addenda')
+    mylang.add('basic-extracted-subj-phrase :+ [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', section='addenda')
+    climb_gwo.add('basic-extracted-subj-phrase :+ [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', comment='section=addenda')
 
 ###Additional trick to help efficiency: conj cannot be complement or subjects
   comment = 'Conjunction markers and determiners cannot be complement or subject markers. Adding the appropriate restrictions helps against spurious analyses'
@@ -273,7 +273,8 @@ def add_v2_with_cluster_rules(ch, rules, climb_gwo):
     climb_gwo.add('aux-1st-comp := aux-1st-comp-phrase.')
 
 ###2011-11-02 removing condition of non-fixed arg order (see above)
-# if ch.get('argument-order') != 'fixed':
+###2012-12-17 trying to put it back in Dutch grammar is overgenerating...
+#  if ch.get('argument-order') != 'fixed':
   rules.add('head-comp-2 := head-comp-phrase-2.')
   climb_gwo.add('head-comp-2 := head-comp-phrase-2.')
 
@@ -1916,7 +1917,7 @@ def create_rel_clause_phrases(mylang, rules, climb_gwo, ch):
 # from the Grammar Matrix
 #
 
-def mc_v2_word_order(ch, mylang, rules):
+def mc_v2_word_order(ch, mylang, rules, climb_gwo):
 #
 # head-final phrases with head in second position
 #
@@ -1934,28 +1935,43 @@ def mc_v2_word_order(ch, mylang, rules):
 #### [ MC na ] for filler-gap  
   mylang.add('head-initial-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC + ].')
   mylang.add('head-comp-phrase-2 := nonverbal-comp-phrase.')
+
+  climb_gwo.add('head-final-head-nexus := nonverbal-comp-phrase & \
+                                       [ SYNSEM.LOCAL.CAT.MC +,\
+                                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].')
+
+####head-initial-head-nexus must have HEAD-DTR [ MC + ] for MC analysis,
+#### [ MC na ] for filler-gap  
+  climb_gwo.add('head-initial-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC + ].')
+  climb_gwo.add('head-comp-phrase-2 := nonverbal-comp-phrase.')
   if ch.get('wh-questions') == 'yes':
     mylang.add('head-wh-comp-phrase := nonverbal-comp-phrase.')
     mylang.add('head-wh-comp-phrase-2 := nonverbal-comp-phrase.')
+    climb_gwo.add('head-wh-comp-phrase := nonverbal-comp-phrase.')
+    climb_gwo.add('head-wh-comp-phrase-2 := nonverbal-comp-phrase.')
   
   if ch.get('q-inv'):  
     mylang.add('head-final-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV - ].')
+    climb_gwo.add('head-final-head-nexus := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV - ].')
 
 ####TO BE MOVED
   if ch.get('vc-analysis') == 'aux-rule':
     mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.HEADFINAL #hf, \
                                            HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL #hf ].')
+    climb_gwo.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.HEADFINAL #hf, \
+                                           HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL #hf ].')
   
   if head_rest:
     mylang.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.HEAD ' + head_rest + ' ].')
+    climb_gwo.add('head-final-head-nexus := [ SYNSEM.LOCAL.CAT.HEAD ' + head_rest + ' ].')
 
 
   if ch.get('wh-questions') == 'yes':
-    wh_mc_word_order_phrases(mylang)
-    wh_mc_word_order_rules(rules)
+    wh_mc_word_order_phrases(mylang, climb_gwo)
+    wh_mc_word_order_rules(rules, climb_gwo)
 
 
-def wh_mc_word_order_phrases(mylang):
+def wh_mc_word_order_phrases(mylang, climb_gwo):
   
   mylang.add('wh-subj-head-phrase := basic-head-wh-subj-phrase & head-final-head-nexus.')
   mylang.add('wh-adj-head-2nd-int-phrase := wh-adj-head-int-phrase & \
@@ -1964,11 +1980,23 @@ def wh_mc_word_order_phrases(mylang):
   mylang.add('wh-comp-head-phrase := head-wh & basic-head-1st-comp-phrase & \
                         head-final-head-nexus.')
 
+  climb_gwo.add('wh-subj-head-phrase := basic-head-wh-subj-phrase & head-final-head-nexus.')
+  climb_gwo.add('wh-adj-head-2nd-int-phrase := wh-adj-head-int-phrase & \
+               head-final-head-nexus & wh-adjunct-head-phrase.')
+  climb_gwo.add('comp-head-phrase := head-non-wh-or-rel.')
+  climb_gwo.add('wh-comp-head-phrase := head-wh & basic-head-1st-comp-phrase & \
+                        head-final-head-nexus.')
 
-def wh_mc_word_order_rules(rules):
+
+def wh_mc_word_order_rules(rules, climb_gwo):
+  climb_gwo.set_section('rules')
   rules.add('wh-subj-head := wh-subj-head-phrase.')
   rules.add('wh-comp-head := wh-comp-head-phrase.')
   rules.add('wh-adj-head-2nd-int := wh-adj-head-2nd-int-phrase.')
+  climb_gwo.add('wh-subj-head := wh-subj-head-phrase.')
+  climb_gwo.add('wh-comp-head := wh-comp-head-phrase.')
+  climb_gwo.add('wh-adj-head-2nd-int := wh-adj-head-2nd-int-phrase.')
+  climb_gwo.set_section('mylang')
 
 #########################################################################
 #

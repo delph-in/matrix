@@ -715,7 +715,11 @@ class ChoicesFile:
       patterns += [ ['nom', '', False] ]
       patterns += [ ['nom-acc', '', False] ]
       if self.get('ditransitives') == 'yes':
-        if 'dative' in cases:
+        has_datives = False
+        for my_case in cases:
+          if 'dative' in my_case or 'dat' in my_case:
+            has_datives = True
+        if has_datives:
           patterns += [ ['nom-dat-acc', '', False] ]
         else:
           patterns += [ ['nom-acc-acc', '', False] ]

@@ -6,7 +6,7 @@
 
 def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, climb_files):
 
-  climb_polar = climb_files.get('polar')
+  climb_polar = climb_files.get('polar-q')
   climb_polar.set_section('mylang')
   qinvverb = ch.get('q-inv-verb')
   qpartposthead = ch.get('q-part-order')

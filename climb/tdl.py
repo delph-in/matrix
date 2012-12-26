@@ -6,7 +6,6 @@
 import sys
 import os
 import copy
-import pdb
 ###########################################################################
 # TDL Tokenization
 #
@@ -1246,7 +1245,6 @@ def abbreviate_paths_through_tokenization(my_tok, feat_geo_files):
   open_brack_in_list = 0
   for i, my_t in enumerate(my_tok):
     
-    #pdb.set_trace()
     if my_t == '[':
       open_brackets += 1
       if open_list > 0 or open_dlist > 0:
@@ -1357,7 +1355,6 @@ def get_current_type(new_toks, val_2_types):
 
 def complete_paths_through_tokenization(my_tok, fg_dicts, begin_type):
   
-  #  pdb.set_trace()
   no_att_val_brack =  ['.', ',', '&',':+',':=',':<','>','!','...','\'','"','!>']
   prec_is_val = [',',']','&','>','!>']
   compl_toks = []
@@ -1374,7 +1371,6 @@ def complete_paths_through_tokenization(my_tok, fg_dicts, begin_type):
   open_dlist = 0
   open_brack_in_list = 0
   for i, my_t in enumerate(my_tok):
- #   pdb.set_trace()
     if my_t == '[':
       open_brackets += 1
       if open_list > 0 or open_dlist > 0:
@@ -1455,7 +1451,6 @@ def complete_paths_through_tokenization(my_tok, fg_dicts, begin_type):
         else:
           compl_toks.append(my_t)
       elif new_path:
-      #  pdb.set_trace()
         if open_list > 0 and not open_brack_in_list > 1:
           end_type = def_types[open_list]
         elif open_dlist > 0 and not open_brack_in_list > 1:
