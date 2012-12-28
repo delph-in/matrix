@@ -10,3 +10,4 @@ The lines below are to be read as follows:
 Number and name of version	repository version	short description
 
 0-acl-covered:			19578			covers the same phenomena as Fokkens (2011), new implementation to improve structure
+1-acl+adj			19589			adjectives included as well
