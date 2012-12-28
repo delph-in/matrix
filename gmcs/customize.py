@@ -627,9 +627,10 @@ def customize_matrix(path, arch_type, destination=None):
     cl_file.save()
 
   #here feature geometry will be created
-  flop_file = grammar_path +  '/' + ch.get('language').lower() + '-pet.tdl'
-  extract_feature_geometry.extract_feature_geometry(flop_file)
-  abbreviate_paths_in_climb.abbreviate_paths(grammar_path + '/climb/')
+  if not ch.get('subcat_list') == 'tiger-complete':
+    flop_file = grammar_path +  '/' + ch.get('language').lower() + '-pet.tdl'
+    extract_feature_geometry.extract_feature_geometry(flop_file)
+    abbreviate_paths_in_climb.abbreviate_paths(grammar_path + '/climb/')
   #here path reduction will be applied to files in climb
 
 

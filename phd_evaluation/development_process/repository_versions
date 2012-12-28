@@ -1,0 +1,12 @@
+This file provides information on the repository versions that can be used to create grammars with the choices files listed in the choices directory.
+
+Grammars can be created with versions of CLIMB created later than the choices file, but not necessarily the other way around.
+
+
+The main purpose of this information is to allow external users to replicate teh results presented in Fokkens (2013).
+
+The lines below are to be read as follows: 
+
+Number and name of version	repository version	short description
+
+0-acl-covered:			19578			covers the same phenomena as Fokkens (2011), new implementation to improve structure

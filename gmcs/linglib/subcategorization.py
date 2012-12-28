@@ -37,8 +37,7 @@ def create_subcategorization_values(ch, mylang, climb_verbs):
   if not ch.get('subcat-regroup') == 'on':
     mylang.add('synsem-sat := [ OPT - ].')  
     climb_verbs.add('synsem-sat := [ OPT - ].')  
-  else:
-    create_optional_argument_frames(mylang, climb_verbs)
+  create_optional_argument_frames(mylang, climb_verbs)
     
 
   synsem_ts = []
