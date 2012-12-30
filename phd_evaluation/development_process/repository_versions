@@ -12,3 +12,4 @@ Number and name of version	repository version	short description
 0-acl-covered:			19578			covers the same phenomena as Fokkens (2011), new implementation to improve structure
 1-acl+adj			19589			adjectives included as well
 2-acl+adj-polar-neg		19613			added polar questions, negation, corrected coordination for adjectives and word order interactions.
+2-acl+adj-yn-neg-adv-adp-cp	19617			added adverbs, adpositions (other than case bearing) and cp complements
