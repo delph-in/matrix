@@ -9,8 +9,9 @@ The lines below are to be read as follows:
 
 Number and name of version	repository version	short description
 
-0-acl-covered:			19578			covers the same phenomena as Fokkens (2011), new implementation to improve structure
-1-acl+adj			19589			adjectives included as well
-2-acl+adj-polar-neg		19613			added polar questions, negation, corrected coordination for adjectives and word order interactions.
-3-acl+adj-yn-neg-adv-adp-cp	19617			added adverbs, adpositions (other than case bearing) and cp complements
-4-acl+adj-ynneg-ads-cp-cop	19626			added copula where adjectives and pps can be used predicatively
+0-acl-covered:				19578			covers the same phenomena as Fokkens (2011), new implementation to improve structure
+1-acl+adj				19589			adjectives included as well
+2-acl+adj-polar-neg			19613			added polar questions, negation, corrected coordination for adjectives and word order interactions.
+3-acl+adj-yn-neg-adv-adp-cp		19617			added adverbs, adpositions (other than case bearing) and cp complements
+4-acl+adj-ynneg-ads-cp-cop		19626			added copula where adjectives and pps can be used predicatively
+5-acl+ynneg-mod-cp-cop-sbj-contr	19672		added subject control
