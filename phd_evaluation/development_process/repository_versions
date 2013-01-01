@@ -17,3 +17,6 @@ Number and name of version	repository version	short description
 5-acl+ynneg-mod-cp-cop-sbj-contr	19672			added subject control
 6-acl+yneg-mod-cp-cop-rais-contr	19732			added object raising, revised word order	
 7-acl+ynnneg-mod-cp-cop-rais-contr-wh	19769			added wh sentences 
+7-inflection				19860			inflection loads, bug for aux_verb rule
+7-filler-gap				19978			filler-gap analysis added
+8-additional-arg-str			20019			different kinds of arg-str cross-categorial, subordinates
