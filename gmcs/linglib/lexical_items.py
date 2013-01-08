@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from gmcs.utils import get_name
 from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
@@ -7,6 +9,20 @@ from gmcs.linglib import features
 from gmcs.linglib import auxiliaries
 from gmcs.linglib.parameters import determine_vcluster
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
+
+# helper functions
+def verb_id(item):
+  """Return the identifier for a verb lexical item."""
+  return get_name(item) + '-verb-lex'
+
+def noun_id(item):
+  """Return the identifier for a noun lexical item."""
+  return get_name(item) + '-noun-lex'
+
+def det_id(item):
+  """Return the identifier for a determiner lexical item."""
+  return get_name(item) + '-determiner-lex'
+
 
 ##########################################################
 # insert_ids()
@@ -84,7 +100,7 @@ def customize_bipartite_stems(ch):
   """
   # For each verb type
   for verb in ch.get('verb'):
-    
+
     # Check whether there are bipartite stems
     bistems = verb.get('bistem')
     if bistems:
@@ -260,15 +276,10 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
   # Now create the lexical entries for all the defined verb types
   cases = case.case_names(ch)
   for verb in ch.get('verb',[]):
-    stypes = verb.get('supertypes').split(', ') 
-    stype_names = []
-    for t in stypes:
-      vt = ch.get(t)
-      vtname = vt.get('name')
-      if not vtname == '':
-        stype_names.append(vt.get('name')+'-verb-lex')
+    stypes = verb.get('supertypes').split(', ')
+    stype_names = [verb_id(ch[st]) for st in stypes if st != '']
 
-    name = get_name(verb)
+    vtype = verb_id(verb)
     val = verb.get('valence')
 
     if not val == '':
@@ -295,12 +306,9 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
       if not dir_inv == '' or not tivity == '':
         stype_names.append(dir_inv + tivity + 'itive-verb-lex')
 
-
-    vtype = name + '-verb-lex'
-
     if len(stype_names) == 0:
       mylang.add(vtype + ' := verb-lex .')
-    else: 
+    else:
       mylang.add(vtype + ' := ' + ' & '.join(stype_names) + '.')
 
     features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
@@ -341,17 +349,15 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
                                    COMPS < >, \
                                    SUBJ < > ]].'
     mylang.add(typedef)
-    
+
     mylang.add('determiner-lex := non-mod-lex-item.')
   # Determiners
   if 'det' in ch:
     lexicon.add_literal(';;; Determiners')
 
   for det in ch.get('det',[]):
-    name = get_name(det)
-
     stype = 'determiner-lex'
-    dtype = name + '-determiner-lex'
+    dtype = det_id(det)
 
     mylang.add(dtype + ' := ' + stype + '.')
 
@@ -457,15 +463,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
   # make a hash of nountypes --> lists of children so that we
   # can stopdet on children
-  children = {}
+  children = defaultdict(dict)
   for noun in ch.get('noun',[]):
     for p in noun.get('supertypes').split(', '):
-      if p in children:
-        children[p][noun.full_key] = 1
-      else:
-        children[p] = {}
-        children[p][noun.full_key] = 1
-  
+      children[p][noun.full_key] = 1
+
   # make and populate a dictionary of stopdets, to avoid vacuous det supertypes
   # have to follow inheritance paths downwards from any nonempty det values
   stopdets={}
@@ -473,16 +475,16 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # if det is nonempty, child nouns shouldn't inherit det
     det = noun.get('det')
     if det != '':
-      if noun.full_key in children: 
+      if noun.full_key in children:
       # there are children to stopdet on
-      # recursively look for children   
-        parents = [ noun.full_key ] 
+      # recursively look for children
+        parents = [ noun.full_key ]
         while (True):
           next_parents = []
           for p in parents:
             if p in children:
               for c in children[p].keys():
-                stopdets[c]=True 
+                stopdets[c]=True
                 if not c in next_parents:
                   next_parents.append(c)
           if len(next_parents) == 0:
@@ -492,18 +494,13 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
 
   for noun in ch.get('noun',[]):
-    name = get_name(noun)
+    ntype = noun_id(noun)
     det = noun.get('det')
-    if noun.full_key in stopdets: 
+    if noun.full_key in stopdets:
       det = ''
 
-    stypes = noun.get('supertypes').split(', ') 
-    stype_names = []
-    for t in stypes:
-      nt = ch.get(t)
-      ntname = nt.get('name')
-      if not ntname == '':
-        stype_names.append(nt.get('name')+'-noun-lex')
+    stypes = noun.get('supertypes').split(', ')
+    stype_names = [noun_id(ch[st]) for st in stypes if st != '']
 
     #if singlentype or det == 'opt':
     #  stype = 'noun-lex'
@@ -513,11 +510,9 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
       elif det == 'imp':
         stype_names.append('no-spr-noun-lex')
 
-    ntype = name + '-noun-lex'
-
     if len(stype_names) == 0:
       mylang.add(ntype + ' := noun-lex .')
-    else: 
+    else:
       mylang.add(ntype + ' := ' + ' & '.join(stype_names) + '.')
 
     features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
@@ -553,7 +548,7 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies):
 
   mylang.set_section('verblex')
   customize_verbs(mylang, ch, lexicon, hierarchies)
-  
+
   if ch.get('has-aux') == 'yes':
     mylang.set_section('auxlex')
     auxiliaries.customize_auxiliaries(mylang, ch, lexicon, trigger, hierarchies)
