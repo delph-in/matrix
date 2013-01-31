@@ -106,7 +106,7 @@ do
   esac
 done
 # if none were set, do all tasks
-if ! [[ $validate || $customize || $performace ]]
+if ! [[ $validate || $customize || $performance ]]
 then
   validate=true
   customize=true
@@ -176,7 +176,7 @@ do
     fi
 
     # Customize (Performance needs a grammar, too, though)
-    if [[ $customize || $performace ]]; then
+    if [[ $customize || $performance ]]; then
       $matrix_cmd --cheap-hack cf $choicesfile $grammardir >> $log
       if [[ $customize && $? != 0 ]]; then
         echo "FAIL!"
