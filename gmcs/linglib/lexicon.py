@@ -54,7 +54,7 @@ def get_lexical_supertype(lt_key, choices):
     return 'verb'
   elif lexical_category == 'verb':
     return case.interpret_verb_valence(choices[lt_key]['valence'])
-  elif lexical_category in ('noun', 'det', 'aux'):
+  elif lexical_category in ('noun', 'det', 'aux', 'adj'):
     return lexical_category
   return None
 
@@ -261,13 +261,14 @@ def validate_lexicon(ch, vr):
     if not root:
       vr.err(n.full_key + '_supertypes', "This noun type doesn't inherit from noun-lex or a descendent.")
 
-    # Now check for the lkb err about vacuous inheritance using goodmami's method: find
-    #  the intersection of supertypes and supertypes's ancestors
+    # Now check for the lkb err about vacuous inheritance using goodmami's 
+    # method: find the intersection of supertypes and supertypes's ancestors
     for t in ntsts[n.full_key]:
       if t in st_anc:
         vr.err(n.full_key + '_supertypes', 'This noun hierarchy contains a redundant link that will result in an lkb error.  _'+t+'_ is both an immediate supertype of'+n.full_key+' and also an ancestor of another supertype.')
 
-    # Now we can check whether there's an answer to the question about determiners?
+    # Now we can check whether there's an answer to the question about 
+    # determiners?
     # but I only really care about types with stems (right??)
     s = n.get('stem', [])
     if len(s) != 0:

@@ -450,6 +450,7 @@ def customize_matrix(path, arch_type, destination=None):
                           ['dirinv', 'Direct-Inverse', True, False],
                           ['lextypes', 'Lexical Types', True, True],
                           ['nounlex', 'Nouns', False, False],
+                          ['adjlex', 'Adjectives', False, False],
                           ['verblex', 'Verbs', False, False],
                           ['auxlex', 'Auxiliaries', False, False],
                           ['otherlex', 'Others', False, False],

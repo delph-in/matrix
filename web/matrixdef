@@ -75,15 +75,19 @@ subordinate clauses are currently under development.</p>"
 
 Separator
 
-Radio has-dets "Has determiners" "Does your language have determiners (as independent words)?" ""
+Radio has-dets "Has determiners" "Does your language have determiners (as independent words)?" "<br />"
 . yes "Yes" "" "yes"
-. no "No" "" "no<br>"
+. no "No" "" "no"
 
 Radio noun-det-order "Order of determiners and nouns" "If so, what is the order of determiners with respect to nouns?" ""
 . noun-det "Noun-Det" "" "Noun-Det"
 . det-noun "Det-Noun" "" "Det-Noun<br><br>"
 
 Separator
+
+Radio has-adj "Has adjectives" "Does your language have adjectives?" "<br />"
+. yes "Yes" "" "yes"
+. no "No" "" "no"
 
 Radio has-aux "Has auxiliaries" "Does your language have auxiliary verbs?" ""
 . yes "Yes" "" "yes"
@@ -1287,12 +1291,16 @@ Label "<p> Vainikka, A and Levy, Y. 1999. \"Empty Subjects in Finnish
 and Hebrew.\" Natural Language and Linguistic Theory 17: 614-71.</p>"
 Label "</div>"
 
+# Section adjectives "Adjectives"
+# Label "Coming soon."
+
 Section lexicon "Lexicon"
 
 Cache nounlrs noun-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache verbpcs verb-pc[0-9]+$ name
 Cache verblrs verb-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache detlrs det-pc[0-9]+(_lrt[0-9]+)?$ name
+Cache adjlrs adj-pc[0-9]+(_lrt[0-9]+)?$ name
 
 Label "<p>On this page you will define <span class=\"dfn\">lexical
 types</span> and <span class=\"dfn\">lexical items</span> within those
@@ -1374,6 +1382,74 @@ BeginIter noun{i} "a Noun Type" 1 1
   Label "</div>"
 
 EndIter noun
+
+Separator
+
+Label "<h3>Adjectives</h3>"
+
+BeginIter adj{i} "an Adjective Type" 1
+
+  Label "<b>Adjective type {i}</b>:"
+  Label "<div style=\"padding-left: 16px\">"
+  Text name "Adjective {i} name" "Type name: " "<br /><br />" 20
+
+  MultiSelect supertypes "Adjective type {i}" "Supertypes: " "<br /><br />"
+  fillregex p=adj(?!{i})[0-9]+_name
+
+  Label "Features:"
+
+  BeginIter feat{j} "an Agreement Feature"
+
+    Label "<p>Note that features specified here for adjective types are will be written onto the value of the element on the MOD list---so these features can be used to constrain agreement." 
+
+    Select name "Adjective {i} feature {j} name" "Name: " " "
+    fillnames c=noun
+
+    MultiSelect value "Adjective {i} feature {j} value" "Value: " ""
+    fillvalues p=adj{i}_feat{j}_name
+
+  EndIter feat
+
+  Radio attrpred "Adjective {i} predicative" "<p>Can adjectives of this type occur in predicative (copular or subject complement) constructions, or is it restricted to attributive constructions (occuring within an NP)?" "</p>"
+  . pred "predicative only" "" "pred"
+  . both "either context" "" "both"
+  . attr "attributive only" "" "attr"
+
+  Radio attach "Adjective {i} attachment" "<p>Does this adjective class attach to the left (pre) or right (post) of its head, or either placement?" "</p>" 
+  . pre "left side (pre)" "" "pre"
+  . either "either side" "" "both"
+  . attr "right side (post)" "" "post"
+
+  Label "Stems:"
+
+  BeginIter stem{j} "a Stem" 0 1
+
+    Text orth "Adjective {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('adj{i}_stem{j}', 'n')"
+
+    Text pred "Adjective {i} stem {j} predicate" " Predicate: " "" 30
+
+  EndIter stem
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Adjective {i} Requires" "Adjective {i} requires one of the following: " ""
+    fillcache c=adjlrs
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Adjective {i} Forbids" "Adjective {i} forbids the following position class: " ""
+    fillcache c=adjlrs
+
+  EndIter forbid
+
+  Label "</div>"
+
+EndIter adj 
+
 
 Separator
 
@@ -1562,6 +1638,7 @@ BeginIter aux{i} "an Auxiliary Type" 1
 EndIter aux
 
 Separator
+
 
 Label "<h3>Determiners</h3>"
 

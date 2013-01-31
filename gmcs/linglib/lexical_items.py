@@ -325,6 +325,48 @@ def main_or_verb(ch):
   else:
     return 'verb-lex'
 
+def customize_adjectives(mylang, ch, lexicon, hierarchies):
+  if ch.get('has-adj') == 'yes':
+    comment = \
+      ';;; Adjectives\n' + \
+      ';;; [informative comment here]'
+    mylang.add_literal(comment)
+
+    # add type for intersective adjectives
+    typedef = \
+      '''adjective-lex := basic-adjective-lex & intersective-mod-lex &
+                     norm-ltop-lex-item & 
+         [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL.CAT [ HEAD noun,
+                                                           VAL.SPR cons ]]>,
+                                  VAL [ SPR < >,
+                                        SUBJ < >,
+                                        COMPS < >,
+                                        SPEC < > ],
+                                  POSTHEAD luk ]]]].'''
+    mylang.add(typedef)
+
+  if 'adj' in ch:
+    lexicon.add_literal(';;; Adjectives')
+
+  for adj in ch.get('adj',[]):
+    name = get_name(adj)
+
+    stype = 'adjective-lex'
+    dtype = name + '-adjective-lex'
+
+    mylang.add(dtype + ' := ' + stype + '.')
+
+    features.customize_feature_values(mylang, ch, hierarchies, adj, dtype, 'adj')
+
+    for stem in adj.get('stem',[]):
+      orthstr = orth_encode(stem.get('orth'))
+      pred = stem.get('pred')
+      id = stem.get('name')
+      typedef = \
+        TDLencode(id) + ' := ' + dtype + ' & \
+                    [ STEM < "' + orthstr + '" >, \
+                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+      lexicon.add(typedef)
 
 def customize_determiners(mylang, ch, lexicon, hierarchies):
 
@@ -466,7 +508,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         children[p] = {}
         children[p][noun.full_key] = 1
   
-  # make and populate a dictionary of stopdets, to avoid vacuous det supertypes
+  # make and populate a dictionary of stopdets, to avoid vacuous det 
+  # supertypes
   # have to follow inheritance paths downwards from any nonempty det values
   stopdets={}
   for noun in ch.get('noun',[]):
@@ -546,6 +589,9 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies):
 
   mylang.set_section('nounlex')
   customize_nouns(mylang, ch, lexicon, hierarchies)
+
+  mylang.set_section('adjlex')
+  customize_adjectives(mylang, ch, lexicon, hierarchies)
 
   mylang.set_section('otherlex')
   to_cfv = case.customize_case_adpositions(mylang, lexicon, trigger, ch)

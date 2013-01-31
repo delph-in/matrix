@@ -27,6 +27,9 @@ def customize_word_order(mylang, ch, rules):
 
   customize_np_word_order(mylang, ch, rules)
 
+# Head modifier rules
+  if ch.get('has-adj')=='yes':
+    add_int_adj_rules(mylang, ch, rules)
 # ERB 2006-09-14 Then add information as necessary to handle adpositions,
 # free auxiliaries, etc.
 
@@ -37,6 +40,9 @@ def customize_word_order(mylang, ch, rules):
   specialize_word_order(hc,orders,mylang,ch,rules)
 
 
+def add_int_adj_rules(mylang, ch, rules):
+  rules.add('head-adj-int := head-adj-int-phrase.')
+  rules.add('adj-head-int := adj-head-int-phrase.')
 
 def customize_major_constituent_order(wo, mylang, ch, rules):
 

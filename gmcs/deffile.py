@@ -539,7 +539,8 @@ class MatrixDefFile:
   'direct-inverse':'Direct-inverse', 'tense-aspect-mood':'Tense, Aspect and Mood',
   'other-features':'Other Features', 'sentential-negation':'Sentential Negation',
   'coordination':'Coordination', 'matrix-yes-no':'Matrix Yes/No Questions',
-  'arg-opt':'Argument Optionality', 'lexicon':'Lexicon',
+  'arg-opt':'Argument Optionality', 'adjectives':'Adjectives', 
+  'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'Toolbox Import',
   'test-sentences':'Test Sentences','gen-options':'TbG Options',
   'ToolboxLexicon':'Toolbox Lexicon'}
@@ -552,7 +553,8 @@ class MatrixDefFile:
   'direct-inverse':'DirectInverse', 'tense-aspect-mood':'TenseAspectMood',
   'other-features':'OtherFeatures', 'sentential-negation':'SententialNegation',
   'coordination':'Coordination', 'matrix-yes-no':'YesNoQ',
-  'arg-opt':'ArgumentOptionality', 'lexicon':'Lexicon',
+  'arg-opt':'ArgumentOptionality', 'adjectives':'Adjectives', 
+  'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'ImportToolboxLexicon',
   'test-sentences':'TestSentences','gen-options':'TestByGeneration',
   'ToolboxLexicon':'ImportToolboxLexicon'}
