@@ -991,7 +991,7 @@ def validate_features(ch, vr):
 
 def validate_arg_opt(ch, vr):
   """Check to see if the user completed the necessary portions of the arg
-   opt page"""
+   opt page and see that the OPT feature is used correctly elsewhere"""
 
   if ch.get('subj-drop') and not ch.get('subj-mark-drop'):
     vr.err('subj-mark-drop',
@@ -1018,6 +1018,14 @@ def validate_arg_opt(ch, vr):
       if not feat.get('head'):
         mess = 'You must choose where the feature is specified.'
         vr.err(feat.full_key+'_head',mess)
+  
+  verbslist =  ch.get('verb')
+  for v in verbslist:
+    for feat in v['feat']:
+      if feat.get('name') == 'OPT' and not feat.get('head') in ['subj','obj']:
+        mess = "The OPT feature on verbs should be specified " + \
+               "on the subject NP or the object NP."
+        vr.err(feat.full_key+'_head',mess)        
 
 
 def validate(ch, extra = False):
