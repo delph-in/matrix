@@ -26,6 +26,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     pos_geom_prefix = 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.'
   elif pos == 'con':
     pos_geom_prefix = 'HEAD-DTR.SYNSEM.'
+  elif pos == 'adj':
+    pos_geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.'
   else:
     pos_geom_prefix = 'SYNSEM.'
 

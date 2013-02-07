@@ -89,6 +89,12 @@ Radio has-adj "Has adjectives" "Does your language have adjectives?" "<br />"
 . yes "Yes" "" "yes"
 . no "No" "" "no"
 
+Radio pred-on "Predicate adjectives" "If yes above, can adjectives head their own phrase in predicative contexts?" "<br />"
+. yes "Yes" "<br />" "yes"
+. no  "No, only attibutive adjectives inside NPs." "" "no"
+
+Separator
+
 Radio has-aux "Has auxiliaries" "Does your language have auxiliary verbs?" ""
 . yes "Yes" "" "yes"
 . no "No" "" "no<br>"
@@ -1291,8 +1297,6 @@ Label "<p> Vainikka, A and Levy, Y. 1999. \"Empty Subjects in Finnish
 and Hebrew.\" Natural Language and Linguistic Theory 17: 614-71.</p>"
 Label "</div>"
 
-# Section adjectives "Adjectives"
-# Label "Coming soon."
 
 Section lexicon "Lexicon"
 

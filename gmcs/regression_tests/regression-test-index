@@ -305,3 +305,4 @@ neg-head-mod-vpaux-modafter=bipartite neg, neg auxiliary requires dummy neg modi
 neg-comp-comp=two negative complements, introduced by two lexical rules, one attaches to aux, the other to lexical verbs, mutual requires
 neg-comp-mod=bipartite negation, negative complement carries semantics, requires a negative (dummy) modifier via NEG-SAT feature passing
 neg-mod-mod=bipartite negation, two negative modifiers in mutual requires relationship
+adj-attr-agr=adjective agreement in the NP
