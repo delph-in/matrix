@@ -1726,6 +1726,7 @@ Cache nouns noun[0-9]+$ name
 Cache verbs verb[0-9]+$ name
 Cache auxes aux[0-9]+$ name
 Cache dets det[0-9]+$ name
+Cache adjs adj[0-9]+$ name
 
 Label "<p>Here you can define inflectional morphology for nouns, verbs, and
 determiners.  To do so, first define one or more inflectional <span
@@ -1833,6 +1834,102 @@ BeginIter noun-pc{i} "a Position Class" 1
   EndIter lrt
 
 EndIter noun-pc
+
+Separator
+
+Label "<h3>Adjective Inflection</h3>"
+
+BeginIter adj-pc{i} "a Position Class" 1
+
+  Text name "Adjective Position Class {i} Name" "<b>Adjective Position Class {i}</b>:<br/>Position Class Name: " " " 20
+
+  Check obligatory "Adjective Position Class {i} Obligatory" "<br/>Obligatorily occurs:" ""
+
+  Select order "Adjective Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
+  . prefix "Prefix" "prefix"
+  . suffix "Suffix" "suffix"
+
+  MultiSelect inputs "Adjective Position Class {i} Input" "<br/>Possible inputs:" ""
+  fillcache c=adjs
+  fillregex p=adj-pc[0-9]+(_lrt[0-9]+)?_name
+  . adj "Any adjective" "any adjective"
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Adjective Position Class {i} Requires" "Adjective Position Class {i} requires one of the following: " ""
+    fillcache c=adjs
+    fillregex p=adj-pc[0-9]+(_lrt[0-9]+)?_name
+    . adj "Any adjective" "any adjective"
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Adjective Position Class {i} Forbids" "Adjective Position Class {i} forbids the following: " ""
+    fillcache c=adjs
+    fillregex p=adj-pc[0-9]+(_lrt[0-9]+)?_name
+    . adj "Any adj" "any adj"
+
+  EndIter forbid
+
+  Label "<p>Lexical Rule Types that appear in this Position Class:</p>"
+
+  BeginIter lrt{j} "a Lexical Rule Type" 1 1
+
+    Text name "Adjective Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
+
+    MultiSelect supertypes "Adjective Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
+    fillregex p=adj-pc{i}_lrt[0-9]+_name
+
+    Label "<p>Features:</p>"
+
+    BeginIter feat{k} "a Feature"
+
+      Select name "Adjective Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
+      fillnames c=noun
+
+      MultiSelect value "Adjective Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
+      fillvalues p=adj-pc{i}_lrt{j}_feat{k}_name
+
+    EndIter feat
+
+    Label "<p>Morphotactic Constraints:</p>"
+
+    BeginIter require{k} "a Require constraint"
+
+      MultiSelect others "Adjective Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
+      fillcache c=adjs
+      fillregex p=adj-pc[0-9]+(_lrt[0-9]+)?_name
+      . adj "Any adjective" "any adjective"
+
+    EndIter require
+
+    BeginIter forbid{k} "a Forbid constraint"
+
+      Select others "Adjective Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
+      fillcache c=adjs
+      fillregex p=adj-pc[0-9]+(_lrt[0-9]+)?_name
+      . adj "Any adjective" "any adjective"
+
+    EndIter forbid
+
+    Label "<p>Lexical Rule Instances:</p>"
+
+    BeginIter lri{k} "a Lexical Rule Instance" 0 1
+
+      Radio inflecting "Adjective Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
+      . no "No" "" "No affix"
+      . yes "Yes" "" "Affix"
+
+      Text orth "Adjective Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "spelled" "" 20
+
+    EndIter lri
+
+  EndIter lrt
+
+EndIter adj-pc
 
 Separator
 

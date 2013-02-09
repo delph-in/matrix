@@ -1172,7 +1172,9 @@ class MatrixDefFile:
       print '<hr />'
       print '<a href="' + choices_file + '" class="navleft">Choices file</a><br /><div class="navleft" style="margin-bottom:0;padding-bottom:0">(right-click to download)</div>'
       print '<a href="#stay" onclick="document.forms[0].submit()" class="navleft">Save &amp; stay</a><br />'
-      print '<a href="#clear" onclick="clear_form()" class="navleft">Clear form</a>'
+      print '<a href="#clear" onclick="clear_form()" class="navleft">Clear form</a><br />'
+      print '<span class="navleft">Create grammar:</span><br />'
+      print '<a href="#customize" onclick="nav_customize(\'tgz\')" class="navleft" style="padding-left:15px">tgz</a>, <a href="#customize" onclick="nav_customize(\'zip\')" class="navleft">zip</a>'
       print '</div>'
 
 

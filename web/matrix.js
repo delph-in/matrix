@@ -1240,3 +1240,23 @@ function scalenav() {
     }
   }
 }
+
+// call customize grammar from a subpage
+function nav_customize(type) {
+  var f = document.forms['choices_form']; 
+  var t = document.createElement('input');
+  var i = document.createElement('input');
+
+  t.type= "hidden";
+  i.type= "hidden";
+
+  t.name= "delivery";
+  i.name= "customize";
+
+  t.value=type;
+  i.value="customize"
+
+  f.appendChild(t);
+  f.appendChild(i);
+  f.submit();
+}
