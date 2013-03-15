@@ -1155,7 +1155,7 @@ BeginIter focus-marker{i} "a focus marker" 1
   Select type "Focus {i} marker" "This marker is" ""
   . affix "Affix" "an affix"
   . adp "Adposition" "an adposition"
-  . clitics "Clitics" "a clitic"
+  . modifier "Modifier" "a modifier"
 
   MultiSelect pos "Focus {i} marker pos" "and appears" ""
   fillregex p=(pos_type[0-9]_name) n=1  
@@ -1274,6 +1274,7 @@ Label "<p>Gundel, Jeanette K. 1999. On Different Kinds of Focus. In Peter Bosch 
 Label "<p>Krifka, Manfred. 2008. Basic Notions of Information Structure. Acta Linguistica Hungarica 55(3), 243-276.</p>"
 Label "<p>Fery, Caroline and Krifka, Manfred. 2008. Information Structure: Notional Distinctions, Ways of Expression. Unity and Diversity of Languages pages 123-136.</p>"
 Label "<p>Song, Sanghoun and Bender, Emily M. 2011. Using Information Structure to Improve Transfer-based MT. Proceedings of the 18th International Conference on Head-Driven Phrase Structure Grammar, pages 348-368, Stanford: CSLI Publications.</p>"
+Label "<p>Song, Sanghoun and Bender, Emily M. 2012. Individual Constraints for Information Structure. Proceedings of the 19th International Conference on Head-Driven Phrase Structure Grammar, pages 330–348, Stanford: CSLI Publications.</p>"
 Label "</font>"
 
 

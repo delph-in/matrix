@@ -36,9 +36,11 @@ sign-min := avm &
 basic-sign := sign-min &
   [ KEY-ARG bool ].
 
+; SSH 2013-03-06 - added PHON.
 sign := basic-sign &
   [ SYNSEM synsem,
     ARGS list,
+	PHON phon,
     INFLECTED inflected ].
 
 ; C-CONT encodes the semantic contribution of the rule (phrasal
@@ -132,9 +134,14 @@ synsem-min := avm &
 ; or nearly so from larger phrases.  It is inspired by the work 
 ; of Abeille and Godard (e.g., 2003).
 
-lex-or-phrase-synsem := synsem-min &
-  [ LIGHT luk ].
+; SSH (2013-03-05) SCOPE-ARG is newly added in order to differentiate
+; scopal arguments vs. non-scopal argument.  
+; Kim chases the dog. vs. Kim thinks the dog barks.
 
+lex-or-phrase-synsem := synsem-min &
+  [ LIGHT luk,
+	SCOPE-ARG luk ].
+ 
 synsem := synsem-min.
 
 expressed-synsem := synsem.
@@ -380,8 +387,8 @@ mrs := mrs-min &
 ;    LTOP                  ; Local top handle
 ;    INDEX                 ; The salient nominal instance or event
 ;    XARG                  ; The external (controlled) argument of a phrase
-;    --ICONS               ; Indexes for icons
-;    --CLAUSE              ; A feature to mediate between the INDEX of the
+;    ICONS-KEY             ; Indexes for icons
+;    CLAUSE-KEY            ; A feature to mediate between the INDEX of the
 ;                            head and the CLAUSE value of the dependent.
 
 ; SSH 2012-02-16 --ICONS 
@@ -390,8 +397,8 @@ hook := avm &
     LTOP handle,
     INDEX individual,
     XARG individual,
-	--ICONS icons,
-	--CLAUSE event ].
+	ICONS-KEY icons,
+	CLAUSE-KEY event ].
 
 ; MRSs are divided into psoas (with a distinguished event) and
 ; nom-objs (with a distinguished index).  We use a polymorphic
@@ -699,9 +706,9 @@ named_rel := norm_rel.
 ; individual contraints 
 ; SSH 2012-02-16 ICONS was originally designed in order to represent
 ; anaphoric items, such as reflecxives.  constraints on anaphora
+; SSH 2013-02-13 revised
 
 icons := avm.
-; a-cons := icons.
 
 info-str := icons &
   [ CLAUSE individual,
@@ -709,11 +716,13 @@ info-str := icons &
 
 ; constraints on information structure
 non-topic := info-str. 
-contrast := info-str.
+focus-or-topic := info-str. 
 non-focus := info-str.
 
-focus := non-topic.
-topic := non-focus.
+focus := non-topic & focus-or-topic.
+contrast := focus-or-topic.
+topic := non-focus & focus-or-topic.
+bg := non-topic & non-focus.
 
 semantic-focus := focus.
 contrast-focus := contrast & focus. 
@@ -721,7 +730,6 @@ contrast-topic := contrast & topic.
 aboutness-topic := topic. 
 frame-setting-topic := topic.
 
-bg := non-topic & non-focus.
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -969,7 +977,7 @@ same-mc-lex-rule := lex-rule &
     DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 ; SSH 2012-03-03
-no-ccont-lex-rule := lex-rule &
+no-ccont-lex-rule := lex-rule & 
   [ C-CONT [ RELS <! !>,
 			 HCONS <! !>,
 			 ICONS <! !> ] ].
@@ -1169,10 +1177,10 @@ headed-phrase := phrase &
                    AGR #agr,
                    COORD -,
                    COORD-REL #crel ],
-	C-CONT.HOOK.--ICONS #icons,
+	C-CONT.HOOK.ICONS-KEY #icons,
     HEAD-DTR.SYNSEM.LOCAL local &
 		 [ CAT.HEAD #head,
-		   CONT.HOOK.--ICONS #icons,
+		   CONT.HOOK.ICONS-KEY #icons,
 		   AGR #agr,
 		   COORD -,
 		   COORD-REL #crel ] ].
@@ -1413,8 +1421,8 @@ head-compositional := headed-phrase &
 ; SSH 2012-02-12 This type links an NP (the target of ICONS) to the
 ; corresponding predicate.
 head-icons-phrase := basic-binary-headed-phrase & 
-   [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.--CLAUSE #clause,
-	 NON-HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.--ICONS.CLAUSE #clause ].
+   [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.CLAUSE-KEY #clause,
+	 NON-HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.ICONS-KEY.CLAUSE #clause ].
 
 ; Clauses have message types as values, non-clauses have the value no-msg.
 ; Constrain the HEAD value of clause to verb or whatever type is
@@ -1663,26 +1671,26 @@ basic-head-spec-phrase := head-valence-phrase & phrasal &
                                SPEC #spec ],
 						 POSTHEAD #ph,
 						 HC-LIGHT - ],
-             MODIFIED #modif ],
+			 MODIFIED #modif ],
     HEAD-DTR [ INFLECTED infl-satisfied,
                SYNSEM [ LOCAL [ CAT [ HEAD #head,
-                                      VAL [ SUBJ #subj,
-                                            COMPS olist & #comps,
-                                            SPR < #synsem & 
+									  VAL [ SUBJ #subj,
+											COMPS olist & #comps,
+											SPR < #synsem & 
                                                   canonical-synsem . #spr >,
-                                            SPEC #spec ],
-                                      POSTHEAD #ph ],
-                                CONT.HOOK #hdhook ],
-                        MODIFIED #hmodif ] ],
+											SPEC #spec ],
+									  POSTHEAD #ph ],
+								CONT.HOOK #hdhook ],
+						MODIFIED #hmodif ] ],
     NON-HEAD-DTR.SYNSEM #synsem &
 	 [ LOCAL [ CAT [ VAL [ SPEC < [ LOCAL [ CAT [ HEAD #head,
-                                                      VAL.COMPS #comps ],
-                                                CONT.HOOK #hdhook ],
-                                        MODIFIED #hmodif ] >,
-                               COMPS #spcomps ] ],
-                   CONT.HOOK #hook ],
+												  VAL.COMPS #comps ],
+											CONT.HOOK #hdhook ],
+									MODIFIED #hmodif ] >,
+						   COMPS #spcomps ] ],
+			   CONT.HOOK #hook ],
            MODIFIED #modif ],
-    C-CONT [ HOOK #hook,
+	C-CONT [ HOOK #hook,
 			 RELS <! !>,
 			 HCONS <! !>,
 			 ICONS <! !> ] ].
@@ -1913,6 +1921,7 @@ marker-final-phrase := basic-binary-marker-phrase &
 ; could conceivably be regulated on the basis of semantics.
 
 ; SSH 2012-03-03 ICONS
+; SSH 2013-02-19 deleting ICONS ?
 basic-bare-np-phrase := head-only &
   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
 						   SUBJ < >,
@@ -2215,8 +2224,8 @@ no-icons-lex-item := lex-item &
   [ SYNSEM.LOCAL.CONT.ICONS <! !> ].
 
 no-info-str-lex-item := no-icons-lex-item & 
-  [ SYNSEM.LOCAL.CONT.HOOK [ --ICONS.CLAUSE #clause,
-							 --CLAUSE #clause ] ].
+  [ SYNSEM.LOCAL.CONT.HOOK [ ICONS-KEY.CLAUSE #clause,
+							 CLAUSE-KEY #clause ] ].
 
 ; ERB 2005-05-11 Normal lex items don't introduce messages. 
 ; Since I'm trying out an analysis where the no-msg-phrases
@@ -2237,7 +2246,7 @@ no-info-str-lex-item := no-icons-lex-item &
 ; SSH 2012-05-07 info-str & ... is not needed any more under ICONS. 
 icons-lex-item := lex-item &
   [ SYNSEM.LOCAL.CONT [ HOOK [ INDEX #index,
-							   --ICONS #icons ],
+							   ICONS-KEY #icons ],
 						ICONS <! #icons & info-str & [ TARGET #index ] !> ] ].
 
 ; SSH 2012-02-16 icons-lex-item is newly used.
@@ -2386,21 +2395,6 @@ basic-two-arg-no-hcons := basic-two-arg & no-hcons-lex-item.
 basic-three-arg-no-hcons := basic-three-arg & no-hcons-lex-item.
 
 
-; icons-one-arg-lex-item := lex-item &
-;   [ ARG-ST < [ LOCAL.CONT.HOOK.--ICONS.CLAUSE #clause ] >,
-;     SYNSEM.LOCAL.CONT.HOOK.INDEX #clause ].
-; icons-two-arg-lex-item := lex-item &
-;   [ ARG-ST < [ LOCAL.CONT.HOOK.--ICONS.CLAUSE #clause ],
-; 			 [ LOCAL.CONT.HOOK.--ICONS.CLAUSE #clause ] >,
-;     SYNSEM.LOCAL.CONT.HOOK.INDEX #clause ].
-; icons-three-arg-lex-item := lex-item &
-;   [ ARG-ST < [ LOCAL.CONT.HOOK.--ICONS.CLAUSE #clause ],
-; 			 [ LOCAL.CONT.HOOK.--ICONS.CLAUSE #clause ],
-; 			 [ LOCAL.CONT.HOOK.--ICONS.CLAUSE #clause ] >,
-;     SYNSEM.LOCAL.CONT.HOOK.INDEX #clause ].
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Subcategorization/linking
 
@@ -2467,7 +2461,6 @@ basic-three-arg-no-hcons := basic-three-arg & no-hcons-lex-item.
 
 ; (Kim is a student requires an analysis of predicative NPs.)
 
-;intransitive-lex-item := basic-one-arg-no-hcons & icons-one-arg-lex-item &
 intransitive-lex-item := basic-one-arg-no-hcons &
   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ] >,
     SYNSEM.LKEYS.KEYREL.ARG1 #ind ].
@@ -2482,7 +2475,6 @@ expl-arg-only-lex-item := basic-one-arg-no-hcons &
 ; Kim ga hiru gohan wo taberu.  
 ; Kim mange le dejeuner.  
 
-;transitive-lex-item := basic-two-arg-no-hcons & icons-two-arg-lex-item &
 transitive-lex-item := basic-two-arg-no-hcons &
    [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
 	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ] >,
@@ -2493,7 +2485,6 @@ transitive-lex-item := basic-two-arg-no-hcons &
 ; Kim ga Sandy ni hon wo ageru.
 ; Kim donne un livre a Sandy.
 
-;ditransitive-lex-item := basic-three-arg-no-hcons & icons-three-arg-lex-item &
 ditransitive-lex-item := basic-three-arg-no-hcons & 
   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
 	     [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
@@ -2783,8 +2774,8 @@ attrib-or-pred-lex-item := lex-item &
 basic-verb-lex := norm-sem-lex-item & 
   [ SYNSEM [ LOCAL [ CAT.HEAD verb,
 					 CONT.HOOK [ INDEX #index,
-								 --ICONS.CLAUSE #index,
-								 --CLAUSE #index ] ],
+								 ICONS-KEY.CLAUSE #index,
+								 CLAUSE-KEY #index ] ],
 			 LKEYS.KEYREL event-relation ]].
 
 ; ERB 2004-08-26 Put in qeq, assuming that for all scopal modifiers
@@ -3369,55 +3360,155 @@ s-bottom-coord-phrase := bottom-coord-phrase &
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Information Structure 
 ; (SSH 2012-02-17)
+; (SSH 2013-02-13): revised
 
 
 ;;; lexical marking (a value of cat)
 mkg := *top* &
-  [ TP bool,
-	FC bool ].
-tp := mkg & [ TP + ].
+  [ FC bool,
+	TP bool ].
 fc := mkg & [ FC + ].
 non-tp := mkg & [ TP - ].
+tp := mkg & [ TP + ].
 non-fc := mkg & [ FC - ].
-tp-only := tp & non-fc.
 fc-only := fc & non-tp.
-tp-or-fc := tp & fc.
+fc-+-tp := tp & fc.
 unmkg := non-tp & non-fc.
+tp-only := tp & non-fc.
 
 mkg-tp-lex := lex-item &
- [ SYNSEM.LOCAL.CAT.MKG tp ].
+  [ SYNSEM.LOCAL.CAT.MKG tp ].
 mkg-tp-only-lex := lex-item &
- [ SYNSEM.LOCAL.CAT.MKG tp-only ].
+  [ SYNSEM.LOCAL.CAT.MKG tp-only ].
 mkg-fc-lex := lex-item &
- [ SYNSEM.LOCAL.CAT.MKG fc ].
+  [ SYNSEM.LOCAL.CAT.MKG fc ].
 mkg-fc-only-lex := lex-item &
- [ SYNSEM.LOCAL.CAT.MKG fc-only ].
+  [ SYNSEM.LOCAL.CAT.MKG fc-only ].
 mkg-unmkg-lex := lex-item &
- [ SYNSEM.LOCAL.CAT.MKG unmkg ].
-
+  [ SYNSEM.LOCAL.CAT.MKG unmkg ].
+ 
 same-mkg-phrase := headed-phrase &
- [ SYNSEM.LOCAL.CAT.MKG #mkg,
-   HEAD-DTR.SYNSEM.LOCAL.CAT.MKG #mkg ].
+  [ SYNSEM.LOCAL.CAT.MKG #mkg,
+	HEAD-DTR.SYNSEM.LOCAL.CAT.MKG #mkg ].
 
 
 ;;; sentential forms (syntactic types which make differences in
 ;;; information structure)
 sform := basic-binary-headed-phrase.
 
-topicality := sform.
-topic-comment := topicality &
-  [ SYNSEM.LOCAL.CAT.MKG tp,
-    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG fc,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MKG tp ].
-topicless := topicality.
+focality := sform &
+  [ SYNSEM.LOCAL.CAT.MKG fc-only,
+	HEAD-DTR.SYNSEM.LOCAL.CAT.MKG fc ].
 
-focality := sform.
+topicality := sform.
+
 narrow-focus := focality.
 wide-focus := focality.
 
-topic-focus-bg := topic-comment & narrow-focus.
-topic-bg-focus := topic-comment & narrow-focus.
-topic-focus := topic-comment & wide-focus.
-focus-bg := topicless & narrow-focus.
-all-focus := topicless & wide-focus.
+topicless := topicality.
+topic-comment := topicality &
+  [ SYNSEM.LOCAL.CAT.MKG tp,
+	NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MKG tp ].
+
+focus-bg := narrow-focus & topicless &
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MKG unmkg ].
+all-focus := wide-focus & topicless &
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MKG fc ].
+
+frame-setting := topic-comment.
+non-frame-setting := topic-comment &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.MKG fc-only ].
+
+;;; icons-realted rules
+no-icons-ccont-rule := phrase-or-lexrule & word-or-lexrule &
+  [ C-CONT.ICONS <! !> ].
+
+scope-arg-rule := phrase-or-lexrule & word-or-lexrule &
+  [ SYNSEM.SCOPE-ARG + ].
+
+no-scope-arg-rule := phrase-or-lexrule & word-or-lexrule &
+  [ SYNSEM.SCOPE-ARG - ].
+
+
+
+
+;;; PHON information
+
+phon-min := avm  &
+  [ ONSET onset ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;  PA      ; Pitch Accents
+;  BD      ; BounDary tones
+;  UT      ; phonological UTterance
+;  IP      ; Intonational Phrase
+;  PHP     ; PHonological Phrase
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+phon := phon-min &
+  [ PA tone-or-none,
+    BT tone-or-none,
+    UT epr,
+    IP epr,
+    PHP epr ].
+
+
+onset := sort &
+  [ --TL list ].
+
+con-or-unk := onset.
+voc-or-unk := onset.
+con-or-voc := onset. &
+  [ --TL native-token-list ].
+con := con-or-unk & con-or-voc.
+voc := voc-or-unk & con-or-voc.
+; For unknown words
+unk-onset := con-or-unk & voc-or-unk &
+ [ --TL generic-token-list ].
+
+native-token-list := list.
+generic-token-list := list.
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;  EPR     ; Edges and PRominence
+;  LE      ; Left Edge
+;  RE      ; Right Edge
+;  DTE     ; Designated Terminal Element
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+epr := avm &
+  [ LE luk,
+    RE luk,
+    DTE luk ].
+
+
+tone-or-none := avm.
+no-tone := tone-or-none.
+tone := tone-or-none.
+simple-tone := tone.
+complex-tone := tone.
+
+;basic tones
+low := simple-tone.
+high := simple-tone.
+
+;simple pitch accents
+low-star := simple-tone.
+high-star := simple-tone.
+
+;simple boundary tones
+low-percent := simple-tone.
+high-percent := simple-tone.
+
+;complex pitch accents
+low-star-high := complex-tone.
+low-high-star := complex-tone.
+high-star-low := complex-tone.
+high-low-star := complex-tone.
+
+;complex boundary tones on intonational phrases
+low-low-percent := complex-tone.
+low-high-percent := complex-tone.
+high-low-percent := complex-tone.
+high-high-percent := complex-tone.
+
 

@@ -531,7 +531,7 @@ def customize_matrix(path, arch_type, destination=None):
   # information to lexical rules when we customize inflection.
   lexical_items.customize_lexicon(mylang, ch, lexicon, trigger, hierarchies)
 
-  information_structure.customize_information_structure(mylang, ch, rules, hierarchies)
+  information_structure.customize_information_structure(mylang, ch, rules, irules, lexicon, hierarchies)
 
   argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies)
   direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
