@@ -145,7 +145,10 @@ def add_basic_phrases_v2_with_cluster(ch, mylang, rules, climb_gwo):
   mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus & nonverbal-comp-phrase.')
   climb_gwo.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus & nonverbal-comp-phrase.')
   if ch.get('argument-order') == 'fixed':
-    add_fixed_argument_order_constraints(mylang, climb_gwo)
+    if ch.get('vc-placement') == 'post':
+      add_fixed_argument_order_constraints_post_obj(mylang, climb_gwo)
+    else:
+      add_fixed_argument_order_constraints_pre_obj(mylang, climb_gwo)
     path = 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD'
     mylang.add('head-comp-phrase-2 := [ ' + path + ' verb ].')
     mylang.add('head-comp-phrase-2 := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
@@ -246,13 +249,17 @@ def general_post_objectival_cluster_phrases(ch, mylang, climb_gwo):
 
 def add_v2_with_cluster_rules(ch, rules, climb_gwo):
   climb_gwo.set_section('rules')
-
-  rules.add('comp-2-head-vc := comp-2-head-vc-phrase.')
+  
+  if ch.get('vc-placement') == 'post':
+    rules.add('comp-2-head-vc := comp-2-head-vc-phrase.')
+    climb_gwo.add('comp-2-head-vc := comp-2-head-vc-phrase.')
+  else:
+    rules.add('head-comp-2-vc := head-comp-2-vc-phrase.')
+    climb_gwo.add('head-comp-2-vc := head-comp-2-vc-phrase.')
   rules.add('subj-head-vc := subj-head-vc-phrase.')
   rules.add('aux-2nd-comp := aux-2nd-comp-phrase.')
   rules.add('comp-aux-2nd := comp-aux-2nd-phrase.')
 
-  climb_gwo.add('comp-2-head-vc := comp-2-head-vc-phrase.')
   climb_gwo.add('subj-head-vc := subj-head-vc-phrase.')
   climb_gwo.add('aux-2nd-comp := aux-2nd-comp-phrase.')
   climb_gwo.add('comp-aux-2nd := comp-aux-2nd-phrase.')
@@ -359,7 +366,7 @@ def add_edge_constraint(mylang, climb_gwo, dtr):
 ###function that adds necessary constraints to make complements that are not
 ###in sentence initial position appear in fixed order
 
-def add_fixed_argument_order_constraints(mylang, climb_gwo):
+def add_fixed_argument_order_constraints_post_obj(mylang, climb_gwo):
 
 ####TO DO: MOVE NON-HEAD-FILLER-PHRASE CONSTRAINTS TO WORD ORDER ANALYSES.
 
@@ -381,6 +388,30 @@ def add_fixed_argument_order_constraints(mylang, climb_gwo):
 ###test: sharing removed or staying?
   mylang.add('comp-2-head-vc-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER  + ].')
   climb_gwo.add('comp-2-head-vc-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER  + ].')
+
+
+def add_fixed_argument_order_constraints_pre_obj(mylang, climb_gwo):
+
+####TO DO: MOVE NON-HEAD-FILLER-PHRASE CONSTRAINTS TO WORD ORDER ANALYSES.
+
+  mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')  
+  mylang.add('subj-head-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
+  mylang.add('head-comp-vc-phrase := \
+                      [ SYNSEM.LOCAL.CAT [ ALLOWED-PART #ap & bool, \
+                                           ARG-ORDER - ], \
+                        HEAD-DTR.SYNSEM.LOCAL.CAT [ ALLOWED-PART #ap, \
+                                                    ARG-ORDER + ] ].')
+
+  climb_gwo.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')  
+  climb_gwo.add('subj-head-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
+  climb_gwo.add('head-comp-vc-phrase := \
+                      [ SYNSEM.LOCAL.CAT [ ALLOWED-PART #ap & bool, \
+                                           ARG-ORDER - ], \
+                        HEAD-DTR.SYNSEM.LOCAL.CAT [ ALLOWED-PART #ap, \
+                                                    ARG-ORDER + ] ].')
+###test: sharing removed or staying?
+  mylang.add('head-comp-2-vc-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER  + ].')
+  climb_gwo.add('head-comp-2-vc-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER  + ].')
 
 
 def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules, climb_gwo):
@@ -537,9 +568,21 @@ def create_wh_wo_phrases(ch, mylang, climb_wh):
                 head-final-invc & wh-adjunct-head-phrase.')
 
   mylang.add('comp-aux-vc-phrase := head-non-wh-or-rel.')
-  mylang.add('comp-head-vc-phrase := head-non-wh-or-rel & share-que-non-head-phrase.')
-  mylang.add('wh-comp-head-vc-phrase := general-comp-head-vc-phrase & \
+  if ch.get('vc-placement') == 'post':
+    mylang.add('comp-head-vc-phrase := head-non-wh-or-rel & share-que-non-head-phrase.')
+    mylang.add('wh-comp-head-vc-phrase := general-comp-head-vc-phrase & \
                nonverbal-comp-phrase & head-wh.') 
+    climb_wh.add('comp-head-vc-phrase := head-non-wh-or-rel & share-que-non-head-phrase.')
+    climb_wh.add('wh-comp-head-vc-phrase := general-comp-head-vc-phrase & \
+               nonverbal-comp-phrase & head-wh.') 
+  else:
+    mylang.add('head-comp-vc-phrase := head-non-wh-or-rel & share-que-non-head-phrase.')
+    mylang.add('head-wh-comp-vc-phrase := general-head-comp-vc-phrase & \
+               nonverbal-comp-phrase & head-wh.') 
+    climb_wh.add('head-comp-vc-phrase := head-non-wh-or-rel & share-que-non-head-phrase.')
+    climb_wh.add('head-wh-comp-vc-phrase := general-head-comp-vc-phrase & \
+               nonverbal-comp-phrase & head-wh.') 
+    
   mylang.add('head-comp-phrase := head-non-wh-or-rel.')
   mylang.add('adjunct-head-phrase := head-non-wh-or-rel.') 
 
@@ -550,9 +593,6 @@ def create_wh_wo_phrases(ch, mylang, climb_wh):
                 head-final-invc & wh-adjunct-head-phrase.')
 
   climb_wh.add('comp-aux-vc-phrase := head-non-wh-or-rel.')
-  climb_wh.add('comp-head-vc-phrase := head-non-wh-or-rel & share-que-non-head-phrase.')
-  climb_wh.add('wh-comp-head-vc-phrase := general-comp-head-vc-phrase & \
-               nonverbal-comp-phrase & head-wh.') 
   climb_wh.add('head-comp-phrase := head-non-wh-or-rel.')
   climb_wh.add('adjunct-head-phrase := head-non-wh-or-rel.') 
 
@@ -566,8 +606,12 @@ def create_wh_wo_phrases(ch, mylang, climb_wh):
                           head-initial-head-nexus & nonverbal-comp-phrase.')
 
   if ch.get('v2-analysis') == 'mc' and ch.get('vc-analysis') == 'basic':
-    mylang.add('comp-2-head-vc-phrase := head-non-wh-or-rel.')
-    climb_wh.add('comp-2-head-vc-phrase := head-non-wh-or-rel.')
+    if ch.get('vc-placement') == 'post':
+      mylang.add('comp-2-head-vc-phrase := head-non-wh-or-rel.')
+      climb_wh.add('comp-2-head-vc-phrase := head-non-wh-or-rel.')
+    else:
+      mylang.add('head-comp-2-vc-phrase := head-non-wh-or-rel.')
+      climb_wh.add('head-comp-2-vc-phrase := head-non-wh-or-rel.')
 ####if 100% correct, should check for presence of determiners
 ###but Germanic languages have them
   mylang.add('wh-spec-head-phrase := basic-head-wh-spec-phrase & head-final & \
@@ -586,7 +630,10 @@ def create_wh_wo_phrases(ch, mylang, climb_wh):
 def create_wh_rules(ch, rules, climb_wh):
   rules.add('head-wh-subj := head-wh-subj-phrase.')
   rules.add('wh-subj-head-vc := wh-subj-head-vc-phrase.')
-  rules.add('wh-comp-head-vc := wh-comp-head-vc-phrase.')
+  if ch.get('vc-placement') == 'post':
+    rules.add('wh-comp-head-vc := wh-comp-head-vc-phrase.')
+  else:
+    rules.add('head-wh-comp-vc := head-wh-comp-vc-phrase.')
   rules.add('head-wh-comp := head-wh-comp-phrase.')
  # if not ch.get('v2-analysis') == 'filler-gap':
   rules.add('wh-ques := create-wh-ques-vcomp-phrase.')
@@ -596,7 +643,11 @@ def create_wh_rules(ch, rules, climb_wh):
   climb_wh.set_section('rules')
   climb_wh.add('head-wh-subj := head-wh-subj-phrase.')
   climb_wh.add('wh-subj-head-vc := wh-subj-head-vc-phrase.')
-  climb_wh.add('wh-comp-head-vc := wh-comp-head-vc-phrase.')
+  if ch.get('vc-placement') == 'post':
+    climb_wh.add('wh-comp-head-vc := wh-comp-head-vc-phrase.')
+  else:
+    climb_wh.add('head-wh-comp-vc := head-wh-comp-vc-phrase.')
+    
   climb_wh.add('head-wh-comp := head-wh-comp-phrase.')
  # if not ch.get('v2-analysis') == 'filler-gap':
   climb_wh.add('wh-ques := create-wh-ques-vcomp-phrase.')
@@ -1043,9 +1094,10 @@ def add_old_analysis_no_obj_raising_constraints(ch, mylang, rules, lrules, climb
   climb_gwo.add('no-cluster-lex-item := lex-item & [ SYNSEM.LOCAL.CAT.VC - ].')  
 
   if ch.get('argument-order') == 'fixed':
-    mylang.add('comp-2-head-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
+    if ch.get('vc-placement') == 'post':
+      mylang.add('comp-2-head-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
                        HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao ].')
-    climb_gwo.add('comp-2-head-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
+      climb_gwo.add('comp-2-head-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
                        HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao ].')
 
   if ch.get('vc-analysis') == 'basic':
@@ -1071,14 +1123,15 @@ def add_wh_additions_for_arg_comp(ch, mylang, rules, climb_gwo):
     mylang.add('head-wh-comp-phrase := basic-head-comp-share-vc.')
     climb_gwo.add('head-wh-comp-phrase := basic-head-comp-share-vc.')
 
-  mylang.add('wh-comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+  if ch.get('vc-placement') == 'post':
+    mylang.add('wh-comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
+                HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
+    climb_gwo.add('wh-comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
                 HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
   mylang.add('head-comp-phrase-2 := head-non-wh-or-rel.')
   mylang.add('head-wh-comp-phrase-2 := basic-head-2nd-comp-phrase & \
                head-initial-head-nexus & basic-head-comp-share-vc & head-wh.')
 
-  climb_gwo.add('wh-comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT #vf, \
-                HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vf ].')
   climb_gwo.add('head-comp-phrase-2 := head-non-wh-or-rel.')
   climb_gwo.add('head-wh-comp-phrase-2 := basic-head-2nd-comp-phrase & \
                head-initial-head-nexus & basic-head-comp-share-vc & head-wh.')
@@ -1098,15 +1151,16 @@ def add_revised_analysis_incl_obj_raising_constraints(ch, mylang, lrules, climb_
                                  [ SYNSEM.LOCAL.CAT.VC #vc, \
                                    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
 
-    mylang.add('comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
-    mylang.add('comp-2-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
+    if ch.get('vc-placement') == 'post':
+      mylang.add('comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
+      mylang.add('comp-2-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
+      climb_gwo.add('comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
+      climb_gwo.add('comp-2-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
 
     climb_gwo.add('basic-head-comp-share-vc := basic-head-comp-phrase & \
                                  [ SYNSEM.LOCAL.CAT.VC #vc, \
                                    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
 
-    climb_gwo.add('comp-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
-    climb_gwo.add('comp-2-head-vc-phrase := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
 
 ###moved constraint [ MC + ] to mc specific (filler-gap [ MC na ])
 ###for dutch aux-2nd-comp-phrase must have VC na-or-+
@@ -1132,14 +1186,20 @@ def argument_composition_revised_additional_constraints(ch, mylang, lrules, clim
   mylang.add('head-initial-head-nexus := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC bool ].')
   mylang.add('head-comp-phrase := basic-head-comp-share-vc.')
   mylang.add('head-comp-phrase-2 := basic-head-comp-share-vc.')
-  mylang.add('general-comp-head-vc-phrase := basic-head-comp-share-vc.')
-  mylang.add('comp-2-head-vc-phrase := basic-head-comp-share-vc.')
+  if ch.get('vc-placement') == 'post':
+    mylang.add('general-comp-head-vc-phrase := basic-head-comp-share-vc.')
+    mylang.add('comp-2-head-vc-phrase := basic-head-comp-share-vc.')
+    climb_gwo.add('general-comp-head-vc-phrase := basic-head-comp-share-vc.')
+    climb_gwo.add('comp-2-head-vc-phrase := basic-head-comp-share-vc.')
+  else:
+    mylang.add('general-head-comp-vc-phrase := basic-head-comp-share-vc.')
+    mylang.add('head-comp-2-vc-phrase := basic-head-comp-share-vc.')
+    climb_gwo.add('general-head-comp-vc-phrase := basic-head-comp-share-vc.')
+    climb_gwo.add('head-comp-2-vc-phrase := basic-head-comp-share-vc.')
 
   climb_gwo.add('head-initial-head-nexus := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC bool ].')
   climb_gwo.add('head-comp-phrase := basic-head-comp-share-vc.')
   climb_gwo.add('head-comp-phrase-2 := basic-head-comp-share-vc.')
-  climb_gwo.add('general-comp-head-vc-phrase := basic-head-comp-share-vc.')
-  climb_gwo.add('comp-2-head-vc-phrase := basic-head-comp-share-vc.')
 
   aux2nd = ''
   if ch.get('v2-analysis') == 'filler-gap':
@@ -1210,15 +1270,18 @@ def argument_composition_revised_additional_constraints(ch, mylang, lrules, clim
   mylang.add('head-initial-head-nexus := ' + headdtrval + ' ].')
   climb_gwo.add('head-initial-head-nexus := ' + headdtrval + ' ].')
 
-  mylang.add('comp-head-vc-phrase := ' + headdtrval + ' ].')
-  mylang.add('comp-2-head-vc-phrase := ' + headdtrval + ' ].')
+  if ch.get('vc-placement') == 'post':
+    mylang.add('comp-head-vc-phrase := ' + headdtrval + ' ].')
+    mylang.add('comp-2-head-vc-phrase := ' + headdtrval + ' ].')
+  else:
+    climb_gwo.add('comp-head-vc-phrase := ' + headdtrval + ' ].')
+    climb_gwo.add('comp-2-head-vc-phrase := ' + headdtrval + ' ].')
+   
   mylang.add('comp-aux-vc-phrase := ' + nhddtrval + ' ].')
   mylang.add('basic-head-subj-phrase :+ '+ headdtrval + ' ].')
   mylang.add(aux2nd + ' := ' + nhddtrval + ' ].')
   mylang.add('basic-head-mod-phrase-simple :+ ' +headdtrval + ' ].')
 
-  climb_gwo.add('comp-head-vc-phrase := ' + headdtrval + ' ].')
-  climb_gwo.add('comp-2-head-vc-phrase := ' + headdtrval + ' ].')
   climb_gwo.add('comp-aux-vc-phrase := ' + nhddtrval + ' ].')
   climb_gwo.add('basic-head-subj-phrase :+ '+ headdtrval + ' ].')
   climb_gwo.add(aux2nd + ' := ' + nhddtrval + ' ].')
