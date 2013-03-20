@@ -1753,12 +1753,14 @@ def create_adposition_supertypes(ch, mylang, climb_lex):
                                        SUBJ < >,
                                        COMPS < #comps >,
                                        SPEC < > ],
-			         HEADFINAL -,
                                  HEAD adp &
                                         [ MOD < > ] ],
 	             NON-LOCAL.SLASH 0-dlist ] ].'''
     mylang.add(m_adp)
     climb_lex.add(m_adp)
+    if needs_head_final(ch):
+      mylang.add('basic-marking-only-adp-lex := [ SYNSEM.LOCAL.CAT.HEADFINAL - ].')
+      climb_lex.add('basic-marking-only-adp-lex := [ SYNSEM.LOCAL.CAT.HEADFINAL - ].')
 
 ###For German vom (von + dem) and im (in + dem)
   if ch.get('det-incl-adp') == 'yes':
@@ -1794,7 +1796,6 @@ def create_adposition_supertypes(ch, mylang, climb_lex):
     mylang.add(typedef)
     climb_lex.add(typedef)
 #    create_adp_cross_classification(ch, mylang, sname3)
-
     t2 = \
       '''int-prep-integr-det-lex-item := int-adp-integrated-det-lex-item &
                [ SYNSEM.LOCAL.CAT.HEADFINAL - ].'''
@@ -1806,10 +1807,13 @@ def create_adposition_supertypes(ch, mylang, climb_lex):
     t4 = \
       '''verb-int-prep-integrated-det-lex-item := int-prep-integr-det-lex-item &
                [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD verb ].'''
-    mylang.add(t2)
+
+    if needs_head_final(ch):
+      mylang.add(t2)
+      climb_lex.add(t2)
+
     mylang.add(t3)
     mylang.add(t4)
-    climb_lex.add(t2)
     climb_lex.add(t3)
     climb_lex.add(t4)
   return s_name
@@ -1878,9 +1882,23 @@ def need_marking_adposition(ch):
 
   return needed  
 
+def needs_head_final(ch):
+  needed = False
+  if ch.get('ldd') == 'yes':
+    needed = True
+  elif ch.get('vc-analysis') == 'aux-rule' or ch.get('aux-comp-order') == 'both':
+    needed = True
+  elif ch.get('adp-order') == 'both':
+    needed = True
+
+  return needed
+
+
 def create_adp_cross_classification(ch, mylang, climb_lex, sname):
   
   if ch.get('adp-order') == 'both':
+    mylang.add('cat :+ [ HEADFINAL bool ].')
+    climb_lex.add('cat :+ [ HEADFINAL bool ].')
     mylang.add('prep-lex-item := basic-adposition-lex & \
               [ SYNSEM.LOCAL.CAT.HEADFINAL - ].')
     mylang.add('postp-lex-item := basic-adposition-lex & \

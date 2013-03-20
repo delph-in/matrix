@@ -2,6 +2,7 @@ import shutil
 import os
 import tdl
 import re
+import sys
 from tdl import TDLparse_compl
 from tdl import TDLmergeable
 from tdl import TDLmerge
@@ -65,6 +66,12 @@ def retrieve_language_name():
             return line.split('=')[1].rstrip()
 
 
+def selected_type(begin_type, excl_analysis):
+    for excl_an in excl_analysis:
+        if begin_type.endswith(excl_an):
+            return False
+    return True
+
 
 '''returns true if current location is part of comment'''
 def partOfComment(line, flag):
@@ -109,7 +116,7 @@ def retrieve_begin_type(description):
     return 'sign'
 
 
-def process_file(f, tdl_files):
+def process_file(f, tdl_files, exclusions):
     #always start with mylang
     current_tdl = mylang
 #go through file, if not 'utf stuff '
@@ -121,15 +128,35 @@ def process_file(f, tdl_files):
     comment = ''
     irules = False
     irule = ''
+    include = True
+    included_lib = True
     for line in my_climb_file:
-        if 'File=' in line:
+        if 'Library=' in line:
+            libname = line.split('=')[1].rstrip()
+            if libname in exclusions('libraries'):
+                included_lib = False
+                include = False
+            else:
+                included_lib = True
+                include = True
+        elif 'Begin=' in line:
+            chunkname = line.split('=')[1].rstrip()
+            if chunkname in exclusions('chunks'):
+                include = False
+            else:
+                if included_lib:
+                    include = True
+        elif 'End=' in line:
+            if not include and include_lib:
+                include = True
+        elif 'File=' in line:
             new_fname = line.split('=')[1].rstrip()
             current_tdl = tdl_files[new_fname]
             if 'File=irules' in line:
                 irules = True
             else:
                 irules = False
-        elif irule and line == '\n':
+        elif irule and line == '\n' and include:
             current_tdl.add_literal(irule)
             irule = ''
         elif irules:
@@ -143,7 +170,7 @@ def process_file(f, tdl_files):
 #appearing in a description itself
 #INSTEAD: use groups before ';' and after
 #before is line, after is stored as comment
-            if comment:
+            if comment and include:
                 current_tdl.add_literal(comment)
                 comment = ''
             line = re.sub( r';.*', '', line )
@@ -153,15 +180,16 @@ def process_file(f, tdl_files):
                 description = temp_descr
                 temp_descr = ''
                 begin_type = retrieve_begin_type(description)
-                tdl_object = TDLparse_compl(description, fg_dicts, begin_type)
-                handled = False
-                for i in range(len(current_tdl.typedefs) - 1, -1, -1):
-                     if TDLmergeable(current_tdl.typedefs[i], tdl_object):
-                         current_tdl.typedefs[i] = TDLmerge(current_tdl.typedefs[i], tdl_object)
-                         handled = True
-                         break
-                if not handled:
-                     current_tdl.typedefs.append(tdl_object)
+                if include and selected_type(begin_type, exclusions['analysis']):
+                    tdl_object = TDLparse_compl(description, fg_dicts, begin_type)
+                    handled = False
+                    for i in range(len(current_tdl.typedefs) - 1, -1, -1):
+                        if TDLmergeable(current_tdl.typedefs[i], tdl_object):
+                            current_tdl.typedefs[i] = TDLmerge(current_tdl.typedefs[i], tdl_object)
+                            handled = True
+                            break
+                        if not handled:
+                            current_tdl.typedefs.append(tdl_object)
         else:
             if not ';;; -*- Mode: TDL; Coding: utf-8 -*-' in line:
                 comment += line
@@ -175,11 +203,12 @@ def process_file(f, tdl_files):
 #or build types
 #print to output file or section
 
-def process_climb_files():
+def process_climb_files(exclusions):
     climb_files = [f for f in os.listdir('.') if os.path.isfile(f) and f.endswith("tdl")]
     tdl_files = {'Language Specific': mylang, 'rules':rules, 'irules':irules, 'lexicon':lexicon, 'lrules': lrules, 'roots':roots }
     for f in climb_files:
-        process_file(f, tdl_files)
+        if not f in exclusions['tdl-files']:
+            process_file(f, tdl_files, exclusions)
     #go through files in current directory
     
     for tdl_f in tdl_files.values():
@@ -191,7 +220,23 @@ def process_thierarchy(my_language):
     global thierarchy
     thierarchy = build_defined_types_hierarchy('../', tdl_files)
 
-def create_grammar():
+
+
+def interpret_choices(choices):
+    exclusions = {'tdl-files': [], 'libraries': [], 'chunks': [], 'analysis': []}
+    if choices:
+        c_file = open(choices, 'r')
+        excl_cat = ''
+        for line in c_file:
+            if 'category=' in line:
+                excl_cat = line.split('=')[1].rstrip()
+            elif 'exclude=' in line:
+                exclusion = line.split('=')[1].rstrip()
+                if excl_cat:
+                    exclusions[excl_cat].append(exclusion)
+    return exclusions
+
+def create_grammar(choices = None):
     
     feat_geom_file = 'feature_geometry'
     global fg_dicts
@@ -200,19 +245,24 @@ def create_grammar():
     
     process_thierarchy(my_language)
     create_tdl_files(my_language)
-    process_climb_files()
+    exclusions = interpret_choices(choices)
+    process_climb_files(exclusions)
     #3. go through climb files, add types to correct objects
 
 
 
 
+def main(argv=None):
 
-
-
-
+    if argv = None:
+        argv = sys.argv
+    if len(argv) < 2:
+        create_grammar()
+    else:
+        create_grammar(argv[1])
 
 
 
 if __name__ == "__main__":
-    create_grammar()
+    main()
   #main -> always create back-up files

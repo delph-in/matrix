@@ -55,7 +55,6 @@ def customize_passivization(ch, mylang, lrules, lexicon, climb_files):
                                                             FORM ''' + sform + '''] ] ] ] . #vcomps > ],
                        HEAD verb &
                             [ MOD #mod,
-                              PART-FORM #pf,
                               FORM pass-participle,
                               AUX #aux,
                               INV #inv & - ],
@@ -80,7 +79,6 @@ def customize_passivization(ch, mylang, lrules, lexicon, climb_files):
                                                             [ CASE acc ] ] ] . #vcomps > ],
                            HEAD verb &
                                 [ MOD #mod,
-                                  PART-FORM #pf,
                                   FORM participle,
                                   AUX #aux,
                                   INV #inv ],
@@ -96,7 +94,7 @@ def customize_passivization(ch, mylang, lrules, lexicon, climb_files):
 		       COORD-STRAT #coord-strat ] ].'''
     mylang.add(typedef)
     climb_pass.add(typedef)
-    if ch.get('verbal-particles') == 'yes':
+    if ch.get('verbal-particles') == 'yes' or ch.get('circumpositions') == 'yes':
       mylang.add('passive-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf, \
                           DTR.SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf ].')
       climb_pass.add('passive-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf, \
@@ -241,6 +239,12 @@ def customize_passivization(ch, mylang, lrules, lexicon, climb_files):
                          [ ARG-ST < [ LOCAL.CAT.HEAD.CASE ' + case + ' ] > ].')
       sform = p.get('dsubj-form')
 ####make sure pform is introduced....
+      
+      sf = ''
+      if ch.get('nachfeld') == 'yes' and 'pform' in ch.get('nf-forms'):
+        sf += 'nf-'
+      sf += 'form'
+      mylang.add('pform := ' + sf + '.',section='features')
       mylang.add('passive-marking-adp-lex := \
                   [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + sform + ' ].')
       mylang.add(sform + ' := pform.',section='features')

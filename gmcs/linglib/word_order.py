@@ -1539,7 +1539,10 @@ def customize_head_comp_non_main_phrase(ch, mylang, climb_wo):
 ###assuming (probably wrong cross-linguistically) that if both orders occur
 ###at least one category allows both orders, and feature HEADFINAL
 ###was introduced somewhere
+###CORRECTION: introducing HEADFINAL, just in case
     if fhead:
+      mylang.add('cat :+ [ HEADFINAL bool ].')
+      climb_wo.add('cat :+ [ HEADFINAL bool ].')
       mylang.add('head-comp-sub-phrase := \
                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL - ].')
       climb_wo.add('head-comp-sub-phrase := \
@@ -1562,6 +1565,8 @@ def customize_head_comp_non_main_phrase(ch, mylang, climb_wo):
       climb_wo.add('comp-head-sub-phrase := ' + vc_share) 
 ###see comment above
     if ihead:
+      mylang.add('cat :+ [ HEADFINAL bool ].')
+      climb_wo.add('cat :+ [ HEADFINAL bool ].')
       mylang.add('comp-head-sub-phrase := \
                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL + ].')
       climb_wo.add('comp-head-sub-phrase := \

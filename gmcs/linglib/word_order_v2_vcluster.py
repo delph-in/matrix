@@ -284,7 +284,7 @@ def add_v2_with_cluster_rules(ch, rules, climb_gwo):
     auxRule = False
 
   if ch.get('vc-placement') == 'pre':
-    add_preobjectival_verbcluster_rules(rules, climb_gwo, auxRule)
+    add_preobjectival_verbcluster_rules(ch, rules, climb_gwo, auxRule)
   else:
     add_postobjectival_verbcluster_rules(ch, rules, climb_gwo, auxRule)
 
@@ -294,7 +294,7 @@ def add_v2_with_cluster_rules(ch, rules, climb_gwo):
   
   climb_gwo.set_section('mylang')
 
-def add_preobjectival_verbcluster_rules(rules, climb_gwo, auxRule):
+def add_preobjectival_verbcluster_rules(ch, rules, climb_gwo, auxRule):
 
   rules.add('head-comp-vc := head-comp-vc-phrase.')
   if not auxRule:
@@ -1256,13 +1256,16 @@ def add_additional_arg_order_constraints(ch, mylang, climb_gwo):
 
 #function adds some additional constraints for Dutch
 #temporal solution to be improved 2011-11-03
-  mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
+  auxorder = ch.get('aux-comp-order')
+  if auxorder != 'before':
+    mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao ].')
-  mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
+    climb_gwo.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao ].')
-  climb_gwo.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
+  if auxorder != 'after': 
+    mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao ].')
-  climb_gwo.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
+    climb_gwo.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao ].')
 ##################TODOTODOTODO  
   if not ch.get('v2-analysis') == 'filler-gap':
