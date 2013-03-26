@@ -5,6 +5,12 @@ from gmcs.utils import orth_encode
 
 tdls = []
 
+def get_irule(irule_name, affix_type, orth, type_name, affix_cnt):
+  irule = irule_name.strip() + '-affix-' + str(affix_cnt)
+  irule += ' :=\n%' + affix_type.strip() + ' '
+  irule += '(* ' + orth.strip() + ')\n' + type_name.strip() + '.'
+  return irule
+
 def add_lexrules(mylang, tdl, _section):
   if tdl not in tdls:
     mylang.add(tdl, merge = True, section=_section)
@@ -13,14 +19,14 @@ def add_lexrules(mylang, tdl, _section):
 def customize_information_structure(mylang, ch, rules, irules, lexicon, hierarchies):
   if ch.get('info-str-focus-lex') == 'on':
 
-    affix_num = adp_num = mod_num = 1
+    affix_cnt = adp_cnt = mod_cnt = 1
 
     for fm in ch.get('focus-marker'):            
 
-      _type = fm['type']
-      _pos = fm['pos']
-      _cat = fm['cat']
-      _orth = fm['orth']
+      _type = fm['type'].strip()
+      _pos = fm['pos'].strip()
+      _cat = fm['cat'].strip()
+      _orth = fm['orth'].strip()
 
       _dtr = _head = ''
       if _cat == 'nouns':
@@ -40,8 +46,7 @@ def customize_information_structure(mylang, ch, rules, irules, lexicon, hierarch
         pass
       else:
         pass
-
-      
+     
       if _type == 'affix':        
         _name = ''
 
@@ -49,18 +54,21 @@ def customize_information_structure(mylang, ch, rules, irules, lexicon, hierarch
           _name = 'focus-' + _cat + '-lex-rule'
           tdl = _name + ' := focus-lex-rule &'
           tdl += '[DTR ' + _dtr + ' ].'
-          add_lexrules(myland, tdl, 'lexrules')
+          add_lexrules(mylang, tdl, 'lexrules')
 
-        irules_foc = 'focus-suffix-'+ str(affix_num)
-
+        
         if _pos == 'before':
-          irules_foc += ' :=\n%prefix '
-        else:
-          irules_foc += ' :=\n%suffix '
+          irules.add_literal(get_irule('focus', 'prefix', _orth, _name, affix_cnt))
+          affix_cnt += 1
+        elif _pos == 'after':
+          irules.add_literal(get_irule('focus', 'suffix', _orth, _name, affix_cnt))
+          affix_cnt += 1
+        else: #both
+          irules.add_literal(get_irule('focus', 'prefix', _orth, _name, affix_cnt))
+          affix_cnt += 1
+          irules.add_literal(get_irule('focus', 'suffix', _orth, _name, affix_cnt))
+          affix_cnt += 1
 
-        irules_foc += '(* ' + _orth + ')\n' + _name + '.'
-        irules.add_literal(irules_foc)
-        affix_num += 1
 
       elif _type == 'adp':
       #The following line should be deleted after the lexicon page can handle adp for information structure.
