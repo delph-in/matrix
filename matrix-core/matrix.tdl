@@ -2225,7 +2225,11 @@ no-icons-lex-item := lex-item &
 
 no-info-str-lex-item := no-icons-lex-item & 
   [ SYNSEM.LOCAL.CONT.HOOK [ ICONS-KEY.CLAUSE #clause,
-							 CLAUSE-KEY #clause ] ].
+		             CLAUSE-KEY #clause ] ].
+
+; SSH 2013-03-27
+no-rels-hcons-icons-lex-item := no-hcons-lex-item & no-icons-lex-item & 
+  [ SYNSEM.LOCAL.CONT.RELS <! !> ].
 
 ; ERB 2005-05-11 Normal lex items don't introduce messages. 
 ; Since I'm trying out an analysis where the no-msg-phrases

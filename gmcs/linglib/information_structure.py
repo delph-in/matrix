@@ -35,12 +35,15 @@ def customize_information_structure(mylang, ch, rules, irules, lexicon, hierarch
       elif _cat == 'verbs':
         _dtr = 'verb-lex'
         _head = 'verb'
+      else: #both
+        _dtr = 'both'
+        _head = 'both'
 
 
       if _type == 'affix':
         tdl = 'infostr-lex-rule := infl-add-only-no-ccont-lex-rule.'
         add_lexrules(mylang, tdl, 'lexrules')
-        tdl = 'focus-lex-rule := infostr-lex-rule & [ SYNSEM.LOCAL.CONT.ICONS <! focus !> ].'
+        tdl = 'focus-lex-rule := infostr-lex-rule & [ SYNSEM.LOCAL [ CAT.MKG fc, CONT.ICONS <! focus !> ].'
         add_lexrules(mylang, tdl, 'lexrules')    
       elif _type == 'adp':
         pass
@@ -51,11 +54,16 @@ def customize_information_structure(mylang, ch, rules, irules, lexicon, hierarch
         _name = ''
 
         if _dtr != '':
-          _name = 'focus-' + _cat + '-lex-rule'
-          tdl = _name + ' := focus-lex-rule &'
-          tdl += '[DTR ' + _dtr + ' ].'
-          add_lexrules(mylang, tdl, 'lexrules')
-
+          if _dtr != 'both':
+            _name = 'focus-' + _cat + '-lex-rule'
+            tdl = _name + ' := focus-lex-rule &'
+            tdl += '[DTR ' + _dtr + ' ].'
+            add_lexrules(mylang, tdl, 'lexrules')
+          else:
+            _name = 'focus-both-lex-rule'
+            tdl = _name + ' := focus-lex-rule &'
+            tdl += '[ DTR.SYNSEM.LOCAL.CAT.HEAD +nv ].'
+            add_lexrules(mylang, tdl, 'lexrules')
         
         if _pos == 'before':
           irules.add_literal(get_irule('focus', 'prefix', _orth, _name, affix_cnt))
@@ -101,12 +109,33 @@ def customize_information_structure(mylang, ch, rules, irules, lexicon, hierarch
 			                     VAL.COMPS.FIRST.LOCAL.CONT.HOOK.ICONS-KEY focus ] ].'
         lexicon.add(typedef)       
 
-      else:
-        pass
+      else: #modifier
+        tdl = 'infostr-mod-lex := no-rels-hcons-icons-lex-item & [ SYNSEM.LOCAL.CAT [ HEAD adv, VAL [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ] ].'
+        add_lexrules(mylang, tdl, 'lexrules')
+        tdl = 'focus-mod-lex := infostr-mod-lex & [ SYNSEM.LOCAL.CAT [ MKG fc, HEAD.MOD < [ LOCAL.CONT.HOOK.ICONS-KEY focus ] > ] ].'
+        add_lexrules(mylang, tdl, 'lexrules')    
+        
+        tdl = rule = ''
 
+        if _pos == 'before':
+          tdl = 'infostr-mod-head-phrase := no-ccont-rule & adj-head-scop-phrase & '
+          rule = 'nf-mod-head := infostr-mod-head-phrase.'
+        elif _pos == 'after':
+          tdl = 'head-infostr-mod-phrase := no-ccont-rule & head-adj-scop-phrase & '
+          rule = 'head-nf-mod := head-infostr-mod-phrase.'
+        else: #both
+          tdl += 'infostr-mod-phrase := no-ccont-rule & adj-head-phrase & scopal-mod-phrase & '
+          rule = 'nf-mod := infostr-mod-phrase.'
 
+        tdl += '[ SYNSEM [ LIGHT -, LOCAL [ CAT.MKG fc, CONT.HOOK [ ICONS-KEY.CLAUSE #clause, CLAUSE-KEY #clause ] ] ] ].'
+        mylang.add(tdl, '', section='phrases')
+        rules.add(rule)
 
-
+        orth = orth_encode(_orth)
+        tdl = TDLencode(_orth + '-modifier')
+        tdl += ' := focus-mod-lex & \
+                        [ STEM < "' + orth + '" > ].'
+        lexicon.add(tdl)     
 
 
 
