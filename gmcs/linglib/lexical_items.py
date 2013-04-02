@@ -917,7 +917,8 @@ def add_basic_possessive_pron_det(mylang, climb_lex):
                                   [ PRED "_pronoun_q_rel",
                                     RSTR #rhand,
                                     ARG0 #ind ],
-				  [ LBL #prohand,
+				  [ PRED "pron_rel",
+                                    LBL #prohand,
                                     ARG0 #ind ] !>,
                             HCONS <! qeq, qeq & [ HARG #rhand,
                                                   LARG #prohand ] !> ] ],
@@ -2676,7 +2677,7 @@ def create_wh_phrases(mylang, climb_wh, ch):
   mylang.add('basic-adjective-lex :+ non-wh-lex-item.')
   mylang.add('basic-adverb-lex :+ non-wh-lex-item.')
   mylang.add('basic-adposition-lex :+ \
-             [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp & [ ] >, \
+             [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comp & [ LOCAL.CAT.VAL.SPR < > ] >, \
                ARG-ST < #comp > ].')
   mylang.add('determiner-lex := non-wh-lex-item.') 
   climb_wh.add('non-wh-lex-item := lex-item & [ SYNSEM.NON-LOCAL.QUE 0-dlist].')

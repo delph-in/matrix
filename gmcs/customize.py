@@ -334,6 +334,12 @@ def customize_roots():
     'lex-root := word-or-lexrule.'
   roots.add(typedef, comment)
 
+  ##1. Add alternative roots (can parse NP or CP)
+  ##2. Make sure they are listed in globals
+
+
+
+
 
 ######################################################################
 # Version Control

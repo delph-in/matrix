@@ -12,10 +12,11 @@ def customize_long_distance_deps(ch, mylang, rules, climb_files):
 def add_basic_ldd_phrases(ch, mylang, rules, climb_file):
   climb_file.set_section('mylang')
   basic_arg = \
-   '''basic-extracted-arg-phrase :+ [ HEAD-DTR.SYNSEM [ MODIFIED notmod,
-                      NON-LOCAL.REL 0-dlist & [ LIST < > ] ] ].'''
+   '''basic-extracted-arg-phrase :+ [ HEAD-DTR.SYNSEM [ NON-LOCAL.REL 0-dlist & [ LIST < > ] ] ].'''
   mylang.add(basic_arg, section='addenda')
   climb_file.add(basic_arg, comment='section=addenda')
+  if not ch.get('v2-analysis') == 'filler-gap':
+    mylang.add('basic-extracted-arg-phrase :+ [ HEAD-DTR.SYNSEM.MODIFIED notmod ].')
    
   comp_ex = \
   '''extracted-comp-phrase := basic-extracted-comp-phrase &

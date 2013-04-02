@@ -25,7 +25,7 @@ def create_comparative_basic_type(ch, mylang, lexicon, climb_files):
 			 VAL [ SUBJ #subj,
 			       COMPS < #comp & [ OPT +,
                                          LOCAL [ CAT [ VAL.COMPS < > ],
-						 CONT.HOOK.INDEX #arg2 ]] >,
+						 CONT.HOOK.LTOP #arg2 ]] >,
 			       SPR #spr,
 			       SPEC #spec ] ],
                    CONT [ HOOK #hook,

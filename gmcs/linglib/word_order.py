@@ -1041,6 +1041,18 @@ def customize_np_word_order(mylang, ch, rules, climb_wo):
   climb_wo.add('bare-np-phrase := basic-bare-np-phrase &\
   [ C-CONT.RELS <! [ PRED \"exist_q_rel\" ] !> ].',
              'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
+  if ch.get('def-morph-mark') == 'yes': 
+    mylang.add('bare-def-np-phrase := basic-bare-np-phrase &\
+      [ C-CONT.RELS <! [ PRED \"def_q_rel\" ] !>,\
+        HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.DEF + ].',
+             'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
+    climb_wo.add('bare-def-np-phrase := basic-bare-np-phrase &\
+     [ C-CONT.RELS <! [ PRED \"def_q_rel\" ] !>,\
+       HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.DEF + ].',
+             'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
+    mylang.add('bare-np-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.DEF - ].')
+    climb_wo.add('bare-np-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.DEF - ].')
+
   if ch.get('n_spec_spr') == 'yes':
     mylang.add('bare-np-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD mass_cnt_noun ].')
     climb_wo.add('bare-np-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD mass_cnt_noun ].')

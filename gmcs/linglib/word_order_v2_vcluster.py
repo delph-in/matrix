@@ -2174,11 +2174,9 @@ def filler_gap_word_order(ch, mylang, climb_gwo):
  #              ;;;Dich sah der Mann schlafen.''' 
 
   mylang.add('extracted-non-verbal-comp-phrase := extracted-comp-phrase & \
- [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.COMPS.FIRST.LOCAL.CAT.HEAD +njrpcdmo, \
-			       SECOND na-or-+ ] ].', comment)
+ [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.COMPS.FIRST.LOCAL.CAT.HEAD +njrpcdmo ] ].', comment)
   climb_gwo.add('extracted-non-verbal-comp-phrase := extracted-comp-phrase & \
- [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.COMPS.FIRST.LOCAL.CAT.HEAD +njrpcdmo, \
-			       SECOND na-or-+ ] ].', comment)
+ [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.COMPS.FIRST.LOCAL.CAT.HEAD +njrpcdmo ] ].', comment)
 
   mylang.add('extracted-verbal-comp-phrase := extracted-comp-phrase & \
  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT [ HEAD verb, \
