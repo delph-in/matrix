@@ -998,26 +998,357 @@ def interpret_verb_valence(valence):
 #
 #
 
-def create_semantic_types_for_part_verbs(mylang, climb_verbs):
+def create_semantic_types_for_different_args(mylang, climb_verbs):
 
-  t1 = '''two-arg-intransitive-lex := basic-two-arg-no-hcons &
-    [ SYNSEM.LKEYS.KEYREL.ARG1 #ind,
-      ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ], [] > ].'''
+##types linking the subject to the right argument
 
-  t2 = '''three-arg-transitive-lex := basic-three-arg-no-hcons & 
-   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
-	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ], [] >,
-     SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
-			   ARG2 #ind2 ] ].'''
+  mylang.add('subj-arg1-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #ind ] >, \
+               LKEYS.KEYREL.ARG1 #ind ] ].')
+
+  mylang.add('subj-clausal-arg1-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.LTOP #larg1 ] > ], \
+               LKEYS.KEYREL.ARG1 #harg1 ] ].')
+
+  climb_verbs.add('subj-arg1-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #ind ] >, \
+               LKEYS.KEYREL.ARG1 #ind ] ].')
+
+  climb_verbs.add('subj-clausal-arg1-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.LTOP #larg1 ] > ], \
+               LKEYS.KEYREL.ARG1 #harg1 ] ].')
+###first compl-types
+
+##if subj is expl, first comp is the first argument
   
-  t3 = '''four-arg-ditransitive-lex := basic-four-arg-no-hcons &
-  [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
-	     [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
-	     [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind3 ], [] >,
-    SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
-			  ARG2 #ind2,
-			  ARG3 #ind3 ] ].'''
+  mylang.add('comp1-arg1-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG1 #ind ] ].')
+
+  mylang.add('comp1-clausal-arg1-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG1 #harg1 ] ].')
   
+
+  climb_verbs.add('comp1-arg1-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG1 #ind ] ].')
+
+  climb_verbs.add('comp1-clausal-arg1-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG1 #harg1 ] ].')
+
+  ##usually it will be arg2
+
+  mylang.add('comp1-arg2-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG2 #ind ] ].')
+
+  mylang.add('comp1-clausal-arg2-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG2 #harg1 ] ].')
+  
+
+  climb_verbs.add('comp1-arg2-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG2 #ind ] ].')
+
+  climb_verbs.add('comp1-clausal-arg2-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG2 #harg1 ] ].')
+
+
+##if subj is expl and first comp is refl second, 2nd comp is first arg 
+  
+  mylang.add('comp2-arg1-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.REST.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG1 #ind ] ].')
+
+  mylang.add('comp2-clausal-arg1-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.REST.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG1 #harg1 ] ].')
+  
+
+  climb_verbs.add('comp2-arg1-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.REST.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG1 #ind ] ].')
+
+  climb_verbs.add('comp2-clausal-arg1-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.REST.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG1 #harg1 ] ].')
+
+  ##if the subject is expl or the first arg is refl, it is arg2
+
+  mylang.add('comp2-arg2-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.REST.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG2 #ind ] ].')
+
+  mylang.add('comp2-clausal-arg2-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.REST.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG2 #harg1 ] ].')
+  
+
+  climb_verbs.add('comp2-arg2-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.REST.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG2 #ind ] ].')
+
+  climb_verbs.add('comp2-clausal-arg2-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.REST.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG2 #harg1 ] ].')
+
+###usually it is arg3
+
+  mylang.add('comp2-arg3-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.REST.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG3 #ind ] ].')
+
+  mylang.add('comp2-clausal-arg3-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.REST.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG3 #harg1 ] ].')
+  
+
+  climb_verbs.add('comp2-arg3-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.REST.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG3 #ind ] ].')
+
+  climb_verbs.add('comp2-clausal-arg3-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.REST.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG3 #harg1 ] ].')
+
+
+##if subj is expl and first comp is refl second, 3rd comp is second arg 
+  
+  mylang.add('comp3-arg2-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.REST.REST.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG2 #ind ] ].')
+
+  mylang.add('comp3-clausal-arg2-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.REST.REST.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG2 #harg1 ] ].')
+  
+
+  climb_verbs.add('comp3-arg2-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.REST.REST.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG2 #ind ] ].')
+
+  climb_verbs.add('comp3-clausal-arg2-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.REST.REST.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG2 #harg1 ] ].')
+
+  ##if the subject is expl or the first arg is refl, it is arg3
+
+  mylang.add('comp3-arg3-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.REST.REST.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG3 #ind ] ].')
+
+  mylang.add('comp3-clausal-arg3-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.REST.REST.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG3 #harg1 ] ].')
+  
+
+  climb_verbs.add('comp3-arg3-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.REST.REST.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG3 #ind ] ].')
+
+  climb_verbs.add('comp3-clausal-arg3-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.REST.REST.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG3 #harg1 ] ].')
+
+###usually it is arg4
+
+  mylang.add('comp3-arg4-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.REST.REST.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG4 #ind ] ].')
+
+  mylang.add('comp3-clausal-arg4-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.REST.REST.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG4 #harg1 ] ].')
+  
+
+  climb_verbs.add('comp3-arg4-structure := lex-item & \
+    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.REST.REST.FIRST.LOCAL.CONT.HOOK.INDEX #ind, \
+               LKEYS.KEYREL.ARG4 #ind ] ].')
+
+  climb_verbs.add('comp3-clausal-arg4-structure := lex-item & \
+    [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & [ HARG #harg1, LARG #larg1 ] !>, \
+                       CAT.VAL.COMPS.REST.REST.FIRST.LOCAL.CONT.HOOK.LTOP #larg1 ], \
+               LKEYS.KEYREL.ARG4 #harg1 ] ].')
+
+  #all possible variations with expl-subject
+  mylang.add('e-n-args-lex := comp1-arg1-structure.')
+  mylang.add('e-c-args-lex := comp1-clausal-arg1-structure.')
+  mylang.add('e-n-n-args-lex := e-n-args-lex & comp2-arg2-structure.')
+  mylang.add('e-n-c-args-lex := e-n-args-lex & comp2-clausal-arg2-structure.')
+  mylang.add('e-c-n-args-lex := e-c-args-lex & comp2-arg2-structure.')
+  mylang.add('e-c-c-args-lex := e-c-args-lex & comp2-clausal-arg2-structure.')
+  mylang.add('e-r-n-args-lex := comp2-arg1-structure.')
+  mylang.add('e-r-c-args-lex := comp2-clausal-arg1-structure.')
+  mylang.add('e-n-n-n-args-lex := e-n-n-args-lex & comp3-arg3-structure.')
+  mylang.add('e-n-n-c-args-lex := e-n-n-args-lex & comp3-clausal-arg3-structure.')
+  mylang.add('e-c-n-n-args-lex := e-c-n-args-lex & comp3-arg3-structure.')
+  mylang.add('e-c-n-c-args-lex := e-c-n-args-lex & comp3-clausal-arg3-structure.')
+  mylang.add('e-r-n-n-args-lex := e-r-n-args-lex & comp3-arg2-structure.')
+  mylang.add('e-r-n-c-args-lex := e-r-n-args-lex & comp3-clausal-arg2-structure.')
+  mylang.add('e-n-c-n-args-lex := e-n-c-args-lex & comp3-arg3-structure.')
+  mylang.add('e-n-c-c-args-lex := e-n-c-args-lex & comp3-clausal-arg3-structure.')
+  mylang.add('e-c-c-n-args-lex := e-c-c-args-lex & comp3-arg3-structure.')
+  mylang.add('e-c-c-c-args-lex := e-c-c-args-lex & comp3-clausal-arg3-structure.')
+  mylang.add('e-r-c-n-args-lex := e-r-c-args-lex & comp3-arg2-structure.')
+  mylang.add('e-r-c-c-args-lex := e-r-c-args-lex & comp3-clausal-arg2-structure.')
+
+  #all variations with refl, except for explicit subjects
+
+  mylang.add('n-r-args-lex := subj-arg1-structure.') 
+  mylang.add('c-r-args-lex := subj-clausal-arg1-structure.') 
+  mylang.add('n-r-n-args-lex := n-r-args-lex & comp2-arg2-structure.') 
+  mylang.add('n-r-c-args-lex := n-r-args-lex & comp2-clausal-arg2-structure.') 
+  mylang.add('c-r-n-args-lex := c-r-args-lex & comp2-arg2-structure.') 
+  mylang.add('c-r-c-args-lex := c-r-args-lex & comp2-clausal-arg2-structure.')
+  mylang.add('n-r-n-n-args-lex := n-r-n-args-lex & comp3-arg3-structure.') 
+  mylang.add('n-r-n-c-args-lex := n-r-n-args-lex & comp3-clausal-arg3-structure.') 
+  mylang.add('c-r-n-n-args-lex := c-r-n-args-lex & comp3-arg3-structure.') 
+  mylang.add('c-r-n-c-args-lex := c-r-n-args-lex & comp3-clausal-arg3-structure.') 
+  mylang.add('n-r-c-n-args-lex := n-r-c-args-lex & comp3-arg3-structure.') 
+  mylang.add('n-r-c-c-args-lex := n-r-c-args-lex & comp3-clausal-arg3-structure.') 
+  mylang.add('c-r-c-n-args-lex := c-r-c-args-lex & comp3-arg3-structure.') 
+  mylang.add('c-r-c-c-args-lex := c-r-c-args-lex & comp3-clausal-arg3-structure.') 
+  
+  #variations with at least one clausal arg (all others are covered)
+
+  mylang.add('c-arg-lex := subj-clausal-arg1-structure.')
+  mylang.add('c-c-args-lex := c-arg-lex & comp1-clausal-arg2-structure.')
+  mylang.add('c-n-args-lex := c-arg-lex & comp1-arg2-structure.')
+  mylang.add('n-c-args-lex := subj-arg1-structure & comp1-clausal-arg2-structure.')
+  mylang.add('c-c-args-lex := c-arg-lex & comp1-clausal-arg2-structure.')
+  mylang.add('c-n-args-lex := c-arg-lex & comp1-arg2-structure.')
+  mylang.add('n-c-args-lex := subj-arg1-structure & comp1-clausal-arg2-structure.')
+
+  mylang.add('c-n-n-args-lex := c-n-args-lex & comp2-arg3-structure.')
+  mylang.add('c-n-c-args-lex := c-n-args-lex & comp2-clausal-arg3-structure.')
+  mylang.add('c-c-n-args-lex := c-c-args-lex & comp2-arg3-structure.')
+  mylang.add('c-c-c-args-lex := c-c-args-lex & comp2-clausal-arg3-structure.')
+  mylang.add('n-c-n-args-lex := n-c-args-lex & comp2-arg3-structure.')
+  mylang.add('n-c-c-args-lex := n-c-args-lex & comp2-clausal-arg3-structure.')
+  mylang.add('n-n-c-args-lex := subj-arg1-structure & comp1-arg2-structure & comp2-clausal-arg3-structure.')
+
+  mylang.add('c-n-n-n-args-lex := c-n-n-args-lex & comp3-arg4-structure.')
+  mylang.add('c-n-n-c-args-lex := c-n-n-args-lex & comp3-clausal-arg4-structure.')
+  mylang.add('c-c-n-n-args-lex := c-c-n-args-lex & comp3-arg4-structure.')
+  mylang.add('c-c-n-c-args-lex := c-c-n-args-lex & comp3-clausal-arg4-structure.')
+  mylang.add('n-c-n-n-args-lex := n-c-n-args-lex & comp3-arg4-structure.')
+  mylang.add('n-c-n-c-args-lex := n-c-n-args-lex & comp3-clausal-arg4-structure.')
+
+  mylang.add('c-n-c-n-args-lex := c-n-c-args-lex & comp3-arg4-structure.')
+  mylang.add('c-n-c-c-args-lex := c-n-c-args-lex & comp3-clausal-arg4-structure.')
+  mylang.add('c-c-c-n-args-lex := c-c-c-args-lex & comp3-arg4-structure.')
+  mylang.add('c-c-c-c-args-lex := c-c-c-args-lex & comp3-clausal-arg4-structure.')
+  mylang.add('n-c-c-n-args-lex := n-c-c-args-lex & comp3-arg4-structure.')
+  mylang.add('n-c-c-c-args-lex := n-c-c-args-lex & comp3-clausal-arg4-structure.')
+
+  mylang.add('n-n-c-n-args-lex := n-n-c-args-lex & comp3-arg4-structure.')
+  mylang.add('n-n-c-c-args-lex := n-n-c-args-lex & comp3-clausal-arg4-structure.')
+
+
+  mylang.add('n-n-n-c-args-lex := subj-arg1-structure & comp1-arg2-structure & \
+                  comp2-arg3-structure & comp3-clausal-arg4-structure.')
+
+
+###########
+
+  climb_verbs.add('e-n-args-lex := comp1-arg1-structure.')
+  climb_verbs.add('e-c-args-lex := comp1-clausal-arg1-structure.')
+  climb_verbs.add('e-n-n-args-lex := e-n-args-lex & comp2-arg2-structure.')
+  climb_verbs.add('e-n-c-args-lex := e-n-args-lex & comp2-clausal-arg2-structure.')
+  climb_verbs.add('e-c-n-args-lex := e-c-args-lex & comp2-arg2-structure.')
+  climb_verbs.add('e-c-c-args-lex := e-c-args-lex & comp2-clausal-arg2-structure.')
+  climb_verbs.add('e-r-n-args-lex := comp2-arg1-structure.')
+  climb_verbs.add('e-r-c-args-lex := comp2-clausal-arg1-structure.')
+  climb_verbs.add('e-n-n-n-args-lex := e-n-n-args-lex & comp3-arg3-structure.')
+  climb_verbs.add('e-n-n-c-args-lex := e-n-n-args-lex & comp3-clausal-arg3-structure.')
+  climb_verbs.add('e-c-n-n-args-lex := e-c-n-args-lex & comp3-arg3-structure.')
+  climb_verbs.add('e-c-n-c-args-lex := e-c-n-args-lex & comp3-clausal-arg3-structure.')
+  climb_verbs.add('e-r-n-n-args-lex := e-r-n-args-lex & comp3-arg2-structure.')
+  climb_verbs.add('e-r-n-c-args-lex := e-r-n-args-lex & comp3-clausal-arg2-structure.')
+  climb_verbs.add('e-n-c-n-args-lex := e-n-c-args-lex & comp3-arg3-structure.')
+  climb_verbs.add('e-n-c-c-args-lex := e-n-c-args-lex & comp3-clausal-arg3-structure.')
+  climb_verbs.add('e-c-c-n-args-lex := e-c-c-args-lex & comp3-arg3-structure.')
+  climb_verbs.add('e-c-c-c-args-lex := e-c-c-args-lex & comp3-clausal-arg3-structure.')
+  climb_verbs.add('e-r-c-n-args-lex := e-r-c-args-lex & comp3-arg2-structure.')
+  climb_verbs.add('e-r-c-c-args-lex := e-r-c-args-lex & comp3-clausal-arg2-structure.')
+
+  #all variations with refl, except for explicit subjects
+
+  climb_verbs.add('n-r-args-lex := subj-arg1-structure.') 
+  climb_verbs.add('c-r-args-lex := subj-clausal-arg1-structure.') 
+  climb_verbs.add('n-r-n-args-lex := n-r-args-lex & comp2-arg2-structure.') 
+  climb_verbs.add('n-r-c-args-lex := n-r-args-lex & comp2-clausal-arg2-structure.') 
+  climb_verbs.add('c-r-n-args-lex := c-r-args-lex & comp2-arg2-structure.') 
+  climb_verbs.add('c-r-c-args-lex := c-r-args-lex & comp2-clausal-arg2-structure.')
+  climb_verbs.add('n-r-n-n-args-lex := n-r-n-args-lex & comp3-arg3-structure.') 
+  climb_verbs.add('n-r-n-c-args-lex := n-r-n-args-lex & comp3-clausal-arg3-structure.') 
+  climb_verbs.add('c-r-n-n-args-lex := c-r-n-args-lex & comp3-arg3-structure.') 
+  climb_verbs.add('c-r-n-c-args-lex := c-r-n-args-lex & comp3-clausal-arg3-structure.') 
+  climb_verbs.add('n-r-c-n-args-lex := n-r-c-args-lex & comp3-arg3-structure.') 
+  climb_verbs.add('n-r-c-c-args-lex := n-r-c-args-lex & comp3-clausal-arg3-structure.') 
+  climb_verbs.add('c-r-c-n-args-lex := c-r-c-args-lex & comp3-arg3-structure.') 
+  climb_verbs.add('c-r-c-c-args-lex := c-r-c-args-lex & comp3-clausal-arg3-structure.') 
+  
+  #variations with at least one clausal arg (all others are covered)
+
+  climb_verbs.add('c-arg-lex := subj-clausal-arg1-structure.')
+  climb_verbs.add('c-c-args-lex := c-arg-lex & comp1-clausal-arg2-structure.')
+  climb_verbs.add('c-n-args-lex := c-arg-lex & comp1-arg2-structure.')
+  climb_verbs.add('n-c-args-lex := subj-arg1-structure & comp1-clausal-arg2-structure.')
+  climb_verbs.add('c-c-args-lex := c-arg-lex & comp1-clausal-arg2-structure.')
+  climb_verbs.add('c-n-args-lex := c-arg-lex & comp1-arg2-structure.')
+  climb_verbs.add('n-c-args-lex := subj-arg1-structure & comp1-clausal-arg2-structure.')
+
+  climb_verbs.add('c-n-n-args-lex := c-n-args-lex & comp2-arg3-structure.')
+  climb_verbs.add('c-n-c-args-lex := c-n-args-lex & comp2-clausal-arg3-structure.')
+  climb_verbs.add('c-c-n-args-lex := c-c-args-lex & comp2-arg3-structure.')
+  climb_verbs.add('c-c-c-args-lex := c-c-args-lex & comp2-clausal-arg3-structure.')
+  climb_verbs.add('n-c-n-args-lex := n-c-args-lex & comp2-arg3-structure.')
+  climb_verbs.add('n-c-c-args-lex := n-c-args-lex & comp2-clausal-arg3-structure.')
+  climb_verbs.add('n-n-c-args-lex := subj-arg1-structure & comp1-arg2-structure & comp2-clausal-arg3-structure.')
+
+  climb_verbs.add('c-n-n-n-args-lex := c-n-n-args-lex & comp3-arg4-structure.')
+  climb_verbs.add('c-n-n-c-args-lex := c-n-n-args-lex & comp3-clausal-arg4-structure.')
+  climb_verbs.add('c-c-n-n-args-lex := c-c-n-args-lex & comp3-arg4-structure.')
+  climb_verbs.add('c-c-n-c-args-lex := c-c-n-args-lex & comp3-clausal-arg4-structure.')
+  climb_verbs.add('n-c-n-n-args-lex := n-c-n-args-lex & comp3-arg4-structure.')
+  climb_verbs.add('n-c-n-c-args-lex := n-c-n-args-lex & comp3-clausal-arg4-structure.')
+
+  climb_verbs.add('c-n-c-n-args-lex := c-n-c-args-lex & comp3-arg4-structure.')
+  climb_verbs.add('c-n-c-c-args-lex := c-n-c-args-lex & comp3-clausal-arg4-structure.')
+  climb_verbs.add('c-c-c-n-args-lex := c-c-c-args-lex & comp3-arg4-structure.')
+  climb_verbs.add('c-c-c-c-args-lex := c-c-c-args-lex & comp3-clausal-arg4-structure.')
+  climb_verbs.add('n-c-c-n-args-lex := n-c-c-args-lex & comp3-arg4-structure.')
+  climb_verbs.add('n-c-c-c-args-lex := n-c-c-args-lex & comp3-clausal-arg4-structure.')
+
+  climb_verbs.add('n-n-c-n-args-lex := n-n-c-args-lex & comp3-arg4-structure.')
+  climb_verbs.add('n-n-c-c-args-lex := n-n-c-args-lex & comp3-clausal-arg4-structure.')
+
+
+  climb_verbs.add('n-n-n-c-args-lex := subj-arg1-structure & comp1-arg2-structure & \
+                  comp2-arg3-structure & comp3-clausal-arg4-structure.')
+
 
 
 def customize_verb_case(mylang, climb_verbs, ch):
