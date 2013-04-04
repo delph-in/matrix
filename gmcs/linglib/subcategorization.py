@@ -245,20 +245,27 @@ def create_basic_subject_values(ch, mylang, stype, climb_lex):
 
   opt = ch.get('opt_subj',[])
 
-  if len(opt) > 0:
-    mylang.add('opt-sbj-verb-lex := ' + stype + ' & \
+###FOR NOW, ALWAYS INCLUDING THESE TYPES, BETTER APPROACH TO
+###CHECK WHETHER THEY ARE NEEDED TO BE CREATED LATER ON
+
+  if ch.get('verb-morph-exception') == 'yes':
+    bstype = 'gen-' + stype
+  else:
+    bstype = stype
+#  if len(opt) > 0:
+  mylang.add('opt-sbj-verb-lex := ' + bstype + ' & \
        [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ OPT + ] >].')
-    mylang.add('obl-sbj-verb-lex := ' + stype + ' & \
+  mylang.add('obl-sbj-verb-lex := ' + bstype + ' & \
        [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ OPT - ] >].')
-    climb_lex.add('opt-sbj-verb-lex := ' + stype + ' & \
+  climb_lex.add('opt-sbj-verb-lex := ' + bstype + ' & \
        [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ OPT + ] >].')
-    climb_lex.add('obl-sbj-verb-lex := ' + stype + ' & \
+  climb_lex.add('obl-sbj-verb-lex := ' + bstype + ' & \
        [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ OPT - ] >].')
 
-    opt_kds = []  
-    for k in opt:
-      kn = k.get('name')
-      opt_kds.append(kn)
+  opt_kds = []  
+  for k in opt:
+    kn = k.get('name')
+    opt_kds.append(kn)
     
   if ch.get('expl') == 'yes':
     eh = ch.get('expl_head')
@@ -271,8 +278,15 @@ def create_basic_subject_values(ch, mylang, stype, climb_lex):
                     [ LOCAL.CONT.HOOK.INDEX expl-ind ].')
     climb_lex.add('expl-synsem := ' + pref + '-synsem & \
                     [ LOCAL.CONT.HOOK.INDEX expl-ind ].')
+    mylang.add('phr-expl-synsem := expl-synsem & phr-synsem.')
+    mylang.add('gap-expl-synsem := expl-synsem & gap.')
+    climb_lex.add('phr-expl-synsem := expl-synsem & phr-synsem.')
+    climb_lex.add('gap-expl-synsem := expl-synsem & gap.')
       
-
+  if ch.get('vmorph-exceptions'):
+    morph_except = ch.get('vmorph-exceptions').split(',')
+  else:
+    morph_except = []
 
   for s in subs:     
 ###Subjects in German (non-spoken language) can only be dropped if they are
@@ -283,6 +297,8 @@ def create_basic_subject_values(ch, mylang, stype, climb_lex):
     else:
       tn = s
     mys = stype
+    if tn in morph_except:
+      mys = 'infl-' + stype
 
     mylang.add(tn + '-sbj-verb-lex := ' + mys + ' & \
              [ SYNSEM.LOCAL.CAT.VAL.SUBJ < ' + s + '-synsem > ].')
@@ -305,6 +321,12 @@ def create_some_compl(ch, mylang, climb_verbs, stype, prefix):
 
   comps_list = [] 
 
+  
+  if ch.get('verb-morph-exception') == 'yes':
+    stype = 'gen-' + stype
+    mtype = stype
+  else:
+    mtype = 'main-verb-lex'
 ###############
 # NEXT: COLLECT IRULES FROM TABS AND CREATE IRULES
 ################
@@ -345,7 +367,7 @@ def create_some_compl(ch, mylang, climb_verbs, stype, prefix):
         constraint = 'synsem, ' + constraint
         if prefix != '3rd':
           constraint = 'synsem, ' + constraint
-    basic_stype = 'main-verb-lex'
+    basic_stype = mtype
     if opts:
       if c in opt_kds:
         stype = basic_stype
@@ -373,11 +395,11 @@ def create_some_compl(ch, mylang, climb_verbs, stype, prefix):
   
 ####REFL
   if refl:
-    mylang.add('refl-1st-comp-verb-lex := acc-1st-comp-verb-lex & comp1-lex-item & \
+    mylang.add('refl-1st-comp-verb-lex := acc-1st-comp-verb-lex & \
          [ SYNSEM.LOCAL.CAT.VAL [ COMPS.FIRST.LOCAL refl-local & \
                                      [ CONT.HOOK.INDEX #ind ], \
                              SUBJ < [ LOCAL.CONT.HOOK.INDEX #ind ] > ] ].')
-    climb_verbs.add('refl-1st-comp-verb-lex := acc-1st-comp-verb-lex & comp1-lex-item & \
+    climb_verbs.add('refl-1st-comp-verb-lex := acc-1st-comp-verb-lex & \
          [ SYNSEM.LOCAL.CAT.VAL [ COMPS.FIRST.LOCAL refl-local & \
                                      [ CONT.HOOK.INDEX #ind ], \
                              SUBJ < [ LOCAL.CONT.HOOK.INDEX #ind ] > ] ].')
@@ -622,8 +644,11 @@ def cross_class_comps(mylang, climb_verbs, fargs, ncomps_nadps, pats):
   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX expl-ind ], \
              [ LOCAL refl-local ] > ].')
 
-  mylang.add('expl-refl-arg-verb-lex := expl-refl-arg-lex-item & main-verb-lex.')
-  climb_verbs.add('expl-refl-arg-verb-lex := expl-refl-arg-lex-item & main-verb-lex.')
+### 2013-04-04 removed supertype main-verb-lex: problems for explitives
+### which should not take morphological marking (expl vs ref index...)
+### under the assumption that the final types will inherit from gen-main-verb-lex, or main-verb-lex through some other supertype.
+  mylang.add('expl-refl-arg-verb-lex := expl-refl-arg-lex-item.')
+  climb_verbs.add('expl-refl-arg-verb-lex := expl-refl-arg-lex-item.')
 
   mylang.add('basic-ditransitive-verb := basic-verb-lex & basic-three-arg & \
     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < #subj >, \
@@ -973,9 +998,26 @@ def interpret_verb_valence(valence):
 #
 #
 
+def create_semantic_types_for_part_verbs(mylang, climb_verbs):
 
+  t1 = '''two-arg-intransitive-lex := basic-two-arg-no-hcons &
+    [ SYNSEM.LKEYS.KEYREL.ARG1 #ind,
+      ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ], [] > ].'''
 
-
+  t2 = '''three-arg-transitive-lex := basic-three-arg-no-hcons & 
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
+	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ], [] >,
+     SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
+			   ARG2 #ind2 ] ].'''
+  
+  t3 = '''four-arg-ditransitive-lex := basic-four-arg-no-hcons &
+  [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
+	     [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
+	     [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind3 ], [] >,
+    SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
+			  ARG2 #ind2,
+			  ARG3 #ind3 ] ].'''
+  
 
 
 def customize_verb_case(mylang, climb_verbs, ch):
@@ -1496,6 +1538,8 @@ def create_some_compl_old(ch, mylang, stype, prefix):
 # for now only one val variation, change if needed
   vals = ch.get(myc + 'val',[])
   arg_ana = ch.get('adp-arg-analysis')
+ 
+  
 
   comps_list = [] 
   sd_val = '[ SUBJ < >, \

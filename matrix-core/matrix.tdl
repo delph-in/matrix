@@ -2429,6 +2429,7 @@ basic-four-arg := lex-item &
 basic-one-arg-no-hcons := basic-one-arg & no-hcons-lex-item.
 basic-two-arg-no-hcons := basic-two-arg & no-hcons-lex-item.
 basic-three-arg-no-hcons := basic-three-arg & no-hcons-lex-item.
+basic-four-arg-no-hcons := basic-four-arg & no-hcons-lex-item.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Subcategorization/linking

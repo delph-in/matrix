@@ -199,7 +199,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies, climb_verbs):
     mylang.add(typedef)
     climb_verbs.add(typedef)
     typedef = \
-      'main-verb-lex := verb-lex & basic-verb-lex & \
+      mainorverbtype + ' := verb-lex & basic-verb-lex & \
                       [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].'
     mylang.add(typedef)
     climb_verbs.add(typedef)
@@ -222,16 +222,17 @@ def customize_verbs(mylang, ch, lexicon, hierarchies, climb_verbs):
                     [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + auxn + '-only ].')
   #Germanic change: uses VC differently
     if vcluster and not wo == 'v2':
-      mylang.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
+
+      mylang.add(mainorverbtype + ' := [ SYNSEM.LOCAL.CAT.VC + ].')
       mylang.add('aux-lex := [ SYNSEM.LOCAL.CAT.VC - ].')
-      climb_verbs.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
+      climb_verbs.add(mainorverbtype + ' := [ SYNSEM.LOCAL.CAT.VC + ].')
       climb_verbs.add('aux-lex := [ SYNSEM.LOCAL.CAT.VC - ].')
   #Small addition for Germanic
     if ch.get('verb-cluster') == 'yes' and wo == 'v2':
       if ch.get('vc-analysis') == 'basic' and not ch.get('old-analysis') == 'yes':
-        mylang.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
+        mylang.add(mainorverbtype + ' := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
         mylang.add('aux-lex := [ SYNSEM.LOCAL.CAT.VFRONT - ].')
-        climb_verbs.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
+        climb_verbs.add(mainorverbtype + ' := [ SYNSEM.LOCAL.CAT.VFRONT na-or-+ ].')
         climb_verbs.add('aux-lex := [ SYNSEM.LOCAL.CAT.VFRONT - ].')
   else:
     #mainorverbtype = 'verb-lex'
@@ -253,7 +254,12 @@ def customize_verbs(mylang, ch, lexicon, hierarchies, climb_verbs):
                             CONT.HOOK.INDEX #xarg ] ], ... > ].'
   mylang.add(typedef)
   climb_verbs.add(typedef)
-
+  ###if all verbs take inflection, except some specific group
+  ###the following applies
+  if 'gen-' in mainorverbtype:
+    mylang.add('main-verb-lex := gen-main-verb-lex.')
+    mylang.add('infl-main-verb-lex := gen-main-verb-lex & \
+                 [ INFLECTED.VERB-INFLECTION-FLAG + ].')
 ###adding type selecting for reflexive pronouns
   refl = False
   if ch.get('reflexives') == 'yes':
@@ -491,7 +497,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies, climb_verbs):
     name = get_name(verb)
     val = verb.get('valence')
     aux_s = verb.get('aux-select')
-
+    raising = verb.get('raising')
     i = val.find(',')
     dir_inv = ''
     if i != -1:
@@ -546,14 +552,15 @@ def customize_verbs(mylang, ch, lexicon, hierarchies, climb_verbs):
     elif val.find('-') != -1:
       tivity = val
       vparts = val.split('-')
-      if len(vparts) == '2':
-        tivity += '-trans'
-      elif len(vparts) == '3':
-        tivity += '-ditrans'
-      elif len(vparts) == '4':
-        tivity += '-3arg'
-      elif len(vparts) == '5':
-        tivity += '-4arg'
+      if not raising:
+        if len(vparts) == 2:
+          tivity += '-trans'
+        elif len(vparts) == 3:
+          tivity += '-ditrans'
+        elif len(vparts) == 4:
+          tivity += '-3arg'
+        elif len(vparts) == 5:
+          tivity += '-4arg'
     else:
       if not vcross:
         s_case = case.canon_to_abbr(val, cases)
@@ -636,7 +643,10 @@ def customize_verbs(mylang, ch, lexicon, hierarchies, climb_verbs):
 # Returns the verb type for lexical/main verbs.
 def main_or_verb(ch):
   if ch.get('has-aux') == 'yes':
-    return 'main-verb-lex'
+    if ch.get('verb-morph-exception') == 'yes':
+      return 'gen-main-verb-lex'
+    else:
+      return 'main-verb-lex'
   else:
     return 'verb-lex'
 
