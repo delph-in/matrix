@@ -483,6 +483,8 @@ def create_basic_verb_types(ch, mylang, climb_verbs):
   else:
     pats = create_subcat_total_list(ch)
 
+  create_semantic_types_for_different_args(mylang, climb_verbs)
+
 # pats create_subcat_with_opt_list(ch)
 
   add_pforms_imported_lex(mylang, climb_verbs)
@@ -586,9 +588,13 @@ def cross_class_intransitives(mylang, climb_verbs, slist):
  #   #  mylang.add(sn + '-verb-lex := ' + s + '-sbj-verb-lex.')
  #     mylang.add(s + '-intrans-verb-lex := ' + s + '-sbj-verb-lex & \
  #                                            basic-intransitive-verb.') 
-    if not 'expl' in s and not 'comp' in s:
+    if not 'expl' in s and not 'comp' in s and not 'sent' in s:
       mylang.add(s + '-intrans-verb-lex := intransitive-lex-item.')
       climb_verbs.add(s + '-intrans-verb-lex := intransitive-lex-item.')
+    elif 'comp' in s or 'sent' in s:
+      mylang.add(s + '-intrans-verb-lex := c-arg-lex.')
+      climb_verbs.add(s + '-intrans-verb-lex := c-arg-lex.')
+
   return slist
 
 def cross_class_comps(mylang, climb_verbs, fargs, ncomps_nadps, pats):
@@ -772,9 +778,46 @@ def cross_class_comps(mylang, climb_verbs, fargs, ncomps_nadps, pats):
   return sbj_cps
 
 
+def retrieve_semantic_supertype(name):
+
+# this function is only called by verbs that are at least transitive
+
+  if 'expl' in name or 'comp' in name or 'sent' in name or 'refl' in name or 'part' in name:
+    if name == 'expl-refl':
+      return 'NO-SEM'
+    else:
+      args = name.split('-')
+      st_name = ''
+      al = 0
+      for arg in args:
+        if arg == 'expl':
+          st_name += 'e-'
+          al += 1
+        elif arg == 'refl':
+          st_name += 'r-'
+          al += 1
+        elif arg == 'sent' or arg == 'comp':
+          st_name += 'c-'
+          al += 1
+        elif arg != 'part':
+          st_name += 'n-'
+          al += 1
+      st_name += 'arg'
+      if al > 1:
+        st_name += 's'
+      st_name += '-lex'
+      return st_name
+  else:
+    return None
+
+  
+      
+
+
 def create_relevant_types(mylang, climb_verbs, sbj_cps, c, fa, cn):
   name = fa + '-' + cn
   sbj_cps.append(name)
+  st_name = retrieve_semantic_supertype(name)
   if '-' not in fa:
     c += '-1st'
   # default for expl: not optional
@@ -782,6 +825,9 @@ def create_relevant_types(mylang, climb_verbs, sbj_cps, c, fa, cn):
   #    fan = fa + '-obl'
   #  else:
     fan = fa
+
+
+
     mylang.add(name + '-verb-lex := ' + fan + '-sbj-verb-lex & ' + c + '-comp-verb-lex.')
     mylang.add(name + '-trans-verb-lex := ' + name + '-verb-lex & basic-transitive-verb.')
     climb_verbs.add(name + '-verb-lex := ' + fan + '-sbj-verb-lex & ' + c + '-comp-verb-lex.')
@@ -820,6 +866,9 @@ def create_relevant_types(mylang, climb_verbs, sbj_cps, c, fa, cn):
     elif 'part' not in c and 'refl' not in c:
       mylang.add(name + '-trans-verb-lex := transitive-verb-lex.')
       climb_verbs.add(name + '-trans-verb-lex := transitive-verb-lex.')
+    elif st_name and st_name != 'NO-SEM':
+      mylang.add(name + '-trans-verb-lex := ' + st_name + '.')
+      climb_verbs.add(name + '-trans-verb-lex := ' + st_name + '.')
   else:
     fas = fa.split('-')
     if len(fas) == 2:
@@ -852,6 +901,9 @@ def create_relevant_types(mylang, climb_verbs, sbj_cps, c, fa, cn):
       elif 'part' not in c and 'refl' not in c and 'expl' not in fa and 'comp' not in fa and 'wh' not in fa:
         mylang.add(name + '-ditrans-verb-lex := ditransitive-lex-item.')
         climb_verbs.add(name + '-ditrans-verb-lex := ditransitive-lex-item.')
+      elif st_name and st_name != 'NO-SEM':
+        mylang.add(name + '-ditrans-verb-lex := ' + st_name + '.')
+        climb_verbs.add(name + '-ditrans-verb-lex := ' + st_name + '.')
     elif len(fas) == 3:
       c += '-3rd'
       mylang.add(name + '-verb-lex := ' + fa + '-verb-lex & ' + c + '-comp-verb-lex.')
@@ -867,6 +919,9 @@ def create_relevant_types(mylang, climb_verbs, sbj_cps, c, fa, cn):
       if 'part' not in c and 'refl' not in c and 'expl' not in fa and 'comp' not in fa:
         mylang.add(name + '-4arg-verb-lex := basic-fourarg-verb.')
         climb_verbs.add(name + '-4arg-verb-lex := basic-fourarg-verb.')
+      elif st_name and st_name != 'NO-SEM':
+        mylang.add(name + '-4arg-verb-lex := ' + st_name + '.')
+        climb_verbs.add(name + '-4arg-verb-lex := ' + st_name + '.')
     elif len(fas) == 4:
       c += '-4th'
       mylang.add(name + '-verb-lex := ' + fa + '-verb-lex & ' + c + '-comp-verb-lex.')
@@ -1269,6 +1324,13 @@ def create_semantic_types_for_different_args(mylang, climb_verbs):
   mylang.add('n-n-n-c-args-lex := subj-arg1-structure & comp1-arg2-structure & \
                   comp2-arg3-structure & comp3-clausal-arg4-structure.')
 
+####and the normal args ones (we need these for verbs with a particle)
+  
+  mylang.add('n-arg-lex := subj-arg1-structure.')
+  mylang.add('n-n-args-lex := n-arg-lex & comp1-arg2-structure.')
+  mylang.add('n-n-n-args-lex := n-n-args-lex & comp2-arg3-structure.')
+  mylang.add('n-n-n-n-args-lex := n-n-n-args-lex & comp3-arg4-structure.')
+
 
 ###########
 
@@ -1349,7 +1411,11 @@ def create_semantic_types_for_different_args(mylang, climb_verbs):
   climb_verbs.add('n-n-n-c-args-lex := subj-arg1-structure & comp1-arg2-structure & \
                   comp2-arg3-structure & comp3-clausal-arg4-structure.')
 
-
+  
+  climb_verbs.add('n-arg-lex := subj-arg1-structure.')
+  climb_verbs.add('n-n-args-lex := n-arg-lex & comp1-arg2-structure.')
+  climb_verbs.add('n-n-n-args-lex := n-n-args-lex & comp2-arg3-structure.')
+  climb_verbs.add('n-n-n-n-args-lex := n-n-n-args-lex & comp3-arg4-structure.')
 
 def customize_verb_case(mylang, climb_verbs, ch):
   cm = ch.get('case-marking')
