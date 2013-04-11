@@ -92,6 +92,10 @@ def main():
     customize_grammar(args[1], destination=dest,
                       flop=True, cheaphack=cheaphack)
 
+  elif args[0] in ('uc', 'update-choices'):
+    c = ChoicesFile(args[1])
+    print c
+
   #################
   #### TESTING ####
 
@@ -403,6 +407,8 @@ def validate_args(args):
     if len(args) < 2: usage(command='customize')
   elif args[0] in ('cf', 'customize-and-flop'):
     if len(args) < 2: usage(command='customize-and-flop')
+  elif args[0] in ('uc', 'update-choices'):
+    if len(args) < 2: usage(command='update-choices')
   elif args[0] in ('v', 'validate'):
     if len(args) < 2: usage(command='validate')
   elif args[0] in ('gm', 'generate-mrs'):
@@ -488,6 +494,12 @@ def usage(command=None, exitcode=2):
     p("            choices file or a directory that contains a choices file.")
     examples += ["  matrix.py customize-and-flop ../choices/Finnish",
                  "  matrix.py cf ../choices/Finnish"]
+    something_printed = True
+  if command in ('update-choices', 'uc', 'all'):
+    p("update-choices (uc) PATH")
+    p("            Print out an upreved choices file at PATH.")
+    examples += ["  matrix.py update-choices ../choices/Finnish/choices",
+                 "  matrix.py uc ../choices/Finnish/choices"]
     something_printed = True
   if command in ('validate', 'v', 'all'):
     p("validate (v) PATH")
