@@ -446,7 +446,7 @@ BeginIter scale{i} "a Scale Entry" 1
   BeginIter feat{j} "a Feature" 0 1
 
     Select name "Scale entry {i} feature {j} name" "Name: " " "
-    fillnames c=verb
+    fillnames c=noun
 
     Select value "Scale entry {i} feature {j} value" "Value: " ""
     fillvalues p=scale{i}_feat{j}_name
