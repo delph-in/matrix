@@ -190,7 +190,8 @@ def position_class_hierarchy(choices):
   # now assign pc inputs
   for pc in pc_inputs:
     for inp in pc_inputs[pc]:
-      if inp not in _mns and inp in LEXICAL_CATEGORIES: continue
+      if inp not in _mns and inp in LEXICAL_CATEGORIES:
+        continue
       _mns[pc].relate(_mns[inp], 'parent')
   return pch
 
@@ -752,7 +753,10 @@ def lrt_validation(lrt, vr, index_feats, choices):
     orths[orth] = True
 
 def cycle_validation(choices, vr):
-  pch = position_class_hierarchy(choices)
+  try:
+    pch = position_class_hierarchy(choices)
+  except KeyError:
+    return # there is probably another error that validation will pick up
   for pc in pch.nodes.values():
     cyclic_inps = set([i.key for i in pc.input_span().values()
                        if pc.precedes(i) and i.precedes(pc)])

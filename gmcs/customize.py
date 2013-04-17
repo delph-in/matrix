@@ -331,12 +331,23 @@ def customize_roots():
 # Automatically create semi.vpm blocks.
 
 def customize_vpm(ch, vpm, hierarchies):
-
-  agreement_features.create_vpm_blocks(ch, vpm, hierarchies)
-  verbal_features.create_vpm_blocks(ch, vpm)
-
   #Add default values to the file semi.vpm
-  literal = """
+  vpm.add_literal("""; A basic VPM for Matrix grammars.
+event          <> e
+ref-ind        <> x
+individual     <> i
+handle         <> h
+non_event      <> p
+*              >> u
+semarg         << u
+
+SORT : SORT
+  * <> *
+  semsort << *
+
+E.TENSE : E.TENSE
+  * <> *
+
 SF : SF
   prop <> prop
   ques <> ques
@@ -359,8 +370,10 @@ COG-ST : COG-ST
   fam-or-less <> fam-or-less
   uniq-or-more <> uniq-or-more
   activ-or-less <> activ-or-less
-"""
-  vpm.add_literal(literal)
+""")
+  # Add customized mappings
+  agreement_features.create_vpm_blocks(ch, vpm, hierarchies)
+  verbal_features.create_vpm_blocks(ch, vpm)
 
 ######################################################################
 # Version Control

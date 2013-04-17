@@ -2,7 +2,7 @@
 
 grammar-top               := "%(mylanguage)s".
 variable-property-mapping := "../semi.vpm".
-preprocessor              := "../lkb/vanilla.rpp".
+preprocessor              := "../repp/vanilla.rpp".
 ;generation-ignore-signs   := "generation.ignore".
 ;generation-trigger-rules  := "../lkb/trigger.mtr".
 version                   := "../Version.lsp".

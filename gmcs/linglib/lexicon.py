@@ -154,33 +154,38 @@ def validate_lexicon(ch, vr):
 
   # check noun hierarchy for various properties
   # this is easier if we build some data objects
-  
-  # for each nountype, 
+
+  # for each nountype,
   #  if it's got stems, it'll need to be put in the lexicon
-  #    check that it has an answer for 
+  #    check that it has an answer for
   #      * has-dets
   #      * that its has-dets doesn't conflict with any parents
-  #      * check its features 
+  #      * check its features
   #        ** see that they don't conflict with each other
-  #      * see that the hierarchy won't cause the 
-  #        vacuous inheritance eg: 
-  #          a := noun                   
+  #      * see that the hierarchy won't cause the
+  #        vacuous inheritance eg:
+  #          a := noun
   #          b := a
   #          c := b & a
 
   # ntsts is a dict of nountype names->lists of supertypes
   # inherited_feats dict of nountype names->lists of inherited features
-  ntsts = {} 
+  ntsts = {}
   feats = {}
   inherited_feats = {}
-  
+
   for noun in ch.get('noun'):
-    ntsts[noun.full_key] = noun.get('supertypes').split(', ')
-    feats[noun.full_key] = {} 
+    sts = noun.get('supertypes').split(', ')
+    undefined_sts = filter(lambda x: x not in ch, sts)
+    if undefined_sts:
+      vr.err(noun.full_key + '_supertypes',
+             "The following supertypes are not defined: "
+             "%s" % ', '.join(undefined_sts))
+    ntsts[noun.full_key] = sts
+    feats[noun.full_key] = {}
     for f in noun.get('feat'):
       feats[noun.full_key][f.get('name')]=f.get('value')
-   
-  
+
   # now we can figure out inherited features and write them down
   # also, print warnings about feature conflicts
   # also, figure out the det question for types with stems
@@ -191,12 +196,12 @@ def validate_lexicon(ch, vr):
     root = False
     det = n.get('det')
     # det == '' is okay for now, check again after inheritance is computed
-    seen = [] 
+    seen = []
     paths= []
     # seed paths with the starting node and the first crop of sts
     for st in ntsts[n.full_key]:
       paths.append([n.full_key, st])
-    parents = ntsts[n.full_key] 
+    parents = ntsts[n.full_key]
     inherited_feats[n.full_key]= {}
     while (True):
       next_parents = []
@@ -207,12 +212,13 @@ def validate_lexicon(ch, vr):
         # get features from this parent and put em in inherited_feats
         else:
           ptype = ch.get(p)
+          if not ptype: continue
           for f in feats[p]:
             # see if this feat conflicts with what we already know
             if f in feats[n.full_key] and feats[p][f] != feats[n.full_key][f]:
               # inherited feature conficts with self defined feature
               vr.warn(n.full_key + '_feat', "The specification of "+f+"="+str(feats[n.full_key][f])+" may confict with the value defined on the supertype "+ptype.get('name')+" ("+p+").", concat=False)
-            elif f in inherited_feats[n.full_key] and feats[p][f] != inherited_feats[n.full_key][f]: 
+            elif f in inherited_feats[n.full_key] and feats[p][f] != inherited_feats[n.full_key][f]:
               vr.warn(n.full_key + '_supertypes', "This inherited specification of "+f+"="+str(inherited_feats[n.full_key][f])+" may confict with the value defined on the supertype "+ptype.get('name')+" ("+p+").",concat=False)
               inherited_feats[n.full_key][f] = "! "+inherited_feats[n.full_key][f]+" && "+feats[p][f]
             else:
@@ -229,7 +235,7 @@ def validate_lexicon(ch, vr):
           # add sts to the next generation
           to_be_seen = []
           for r in paths:
-            if r[-1] == p: #this is the path to extend, 
+            if r[-1] == p: #this is the path to extend,
               paths.remove(r)
               for q in ntsts[p]: #go through all sts
                 # q is a st_anc of n
@@ -251,10 +257,10 @@ def validate_lexicon(ch, vr):
       # if there aren't any next parents, we're done
       if len(next_parents) == 0:
         break
-      
+
       # otherwise we go again
-      parents = next_parents 
-    
+      parents = next_parents
+
     if(len(inherited_feats[n.full_key]) > 0):
       vr.info(n.full_key + '_feat', "inherited features are: "+str(inherited_feats[n.full_key]))
 
@@ -285,7 +291,7 @@ def validate_lexicon(ch, vr):
 
     # or if they said the noun takes an obligatory determiner, did they
     # provide any determiners?
-    if det == 'obl' and (not 'det' in ch): 
+    if det == 'obl' and (not 'det' in ch):
       mess = 'You defined a noun that obligatorily takes a determiner, ' +\
              'but you haven\'t yet defined any determiners.'
       vr.warn(n.full_key + '_det', mess)
@@ -307,28 +313,28 @@ def validate_lexicon(ch, vr):
   # Verbs
   # check verb hierarchy for various properties
   # this is easier if we build some data objects
-  
-  # for each verb, 
+
+  # for each verb,
   #  if it's got stems, it'll need to be put in the lexicon
-  #    check that it has an answer for 
-  #      * valence 
+  #    check that it has an answer for
+  #      * valence
   #      * that its has-dets doesn't conflict with any parents
-  #      * check its features 
+  #      * check its features
   #        ** see that they don't conflict with each other
-  #      * see that the hierarchy won't cause the 
-  #        vacuous inheritance eg: 
-  #          a := verb 
+  #      * see that the hierarchy won't cause the
+  #        vacuous inheritance eg:
+  #          a := verb
   #          b := a
   #          c := b & a
 
   # ntsts is a dict of nountype names->lists of supertypes
   # inherited_feats dict of verbtype names->lists of inherited features
-  vtsts = {} 
+  vtsts = {}
   feats = {}
   inherited_feats = {}
   for v in ch.get('verb'):
     vtsts[v.full_key] = v.get('supertypes').split(', ')
-    feats[v.full_key] = {} 
+    feats[v.full_key] = {}
     for f in v.get('feat'):
       feats[v.full_key][f.get('name')]=f.get('value')
 
@@ -341,7 +347,7 @@ def validate_lexicon(ch, vr):
     val = v.get('valence')
     # val can be null for now
       # check again after computing inheritance
-    seen = [] 
+    seen = []
     paths= []
 
     bistems = v.get('bistem', [])
@@ -350,7 +356,7 @@ def validate_lexicon(ch, vr):
     # seed paths with the starting node and the first crop of sts
     for st in vtsts[v.full_key]:
       paths.append([v.full_key, st])
-    parents = vtsts[v.full_key] 
+    parents = vtsts[v.full_key]
     inherited_feats[v.full_key]= {}
 
     # now step up through the supertypes until we're done
@@ -364,12 +370,13 @@ def validate_lexicon(ch, vr):
         # get features from this parent and put em in inherited_feats
         if p != '':
           ptype = ch.get(p)
+          if not ptype: continue
           for f in feats[p]:
             # see if this feat conflicts with what we already know
             if f in feats[v.full_key] and feats[p][f] != feats[v.full_key][f]:
               # inherited feature conficts with self defined feature
               vr.warn(v.full_key + '_feat', "The specification of "+f+"="+str(feats[v.full_key][f])+" may confict with the value defined on the supertype "+ptype.get('name')+" ("+p+").", concat=False)
-            elif f in inherited_feats[v.full_key] and feats[p][f] != inherited_feats[v.full_key][f]: 
+            elif f in inherited_feats[v.full_key] and feats[p][f] != inherited_feats[v.full_key][f]:
               vr.warn(v.full_key + '_supertypes', "This inherited specification of "+f+"="+str(inherited_feats[v.full_key][f])+" may confict with the value defined on the supertype "+ptype.get('name')+" ("+p+").",concat=False)
               inherited_feats[v.full_key][f] = "! "+inherited_feats[v.full_key][f]+" && "+feats[p][f]
             else:
@@ -386,7 +393,7 @@ def validate_lexicon(ch, vr):
           # add sts to the next generation
           to_be_seen = []
           for r in paths:
-            if r[-1] == p: #this is the path to extend, 
+            if r[-1] == p: #this is the path to extend,
               paths.remove(r)
               for q in vtsts[p]: #go through all sts
                 # q is a st_anc of n
@@ -408,10 +415,10 @@ def validate_lexicon(ch, vr):
       # if there aren't any next parents, we're done
       if len(next_parents) == 0:
         break
-      
+
       # otherwise we go again
-      parents = next_parents 
-    
+      parents = next_parents
+
     # now check val
     if not val:
       mess = 'You must specify the argument structure of each verb you define.  Either on this type, or on a supertype.'
@@ -543,8 +550,8 @@ def validate_lexicon(ch, vr):
       mess = 'You should specify a value for at least one feature (e.g., CASE).'
       vr.warn(adp.full_key + '_feat1_name', mess)
 
-  # For verbs and verbal inflection, we need to prevent that index features are 
-  # assigned to verbs: making set of features that should not be assigned to 
+  # For verbs and verbal inflection, we need to prevent that index features are
+  # assigned to verbs: making set of features that should not be assigned to
   # verbs
 
   index_feat = ['person', 'number','gender']
