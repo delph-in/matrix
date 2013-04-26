@@ -489,6 +489,20 @@ function check_radio_button(_name, _type)
 	}
 }
 
+// uncheck_all_radio_button(_name)
+function uncheck_all(_name)
+{
+	var _boxes = document.getElementsByName(_name);
+	var i = 0;
+	while(1)
+	{
+		if(_boxes[i] == null)
+			break;
+		_boxes[i].checked = false;
+		i++;
+	}
+}
+
 //empty_value(_name, _i)
 function empty_value(_name, _i)
 {

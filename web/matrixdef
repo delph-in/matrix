@@ -1131,6 +1131,132 @@ Radio q-inv-verb "Inverted verb in questions" "" ""
 
 
 
+
+Section info-str "Information Structure"
+
+Label "<p> Information structure, consisting of topic (what an
+utterance is about) and focus (the new information an utterance
+provides), refers to how speakers structure the content they wish to
+convey to listeners. Different languages use different phonological,
+morphological, and syntactic means of marking information structure in
+sentences. <br><br>
+Note: Modules for constraining positions of information structural components in FREE word order languages are currently under development. If your language uses free word order and multiple positions are checked, the grammar may not work properly. </p>"
+
+Label	"<input type=\"hidden\" name=\"cat_type1_name\" value=\"nouns\">
+     	 <input type=\"hidden\" name=\"cat_type2_name\" value=\"verbs\">
+         <input type=\"hidden\" name=\"pos_type1_name\" value=\"before\">
+         <input type=\"hidden\" name=\"pos_type2_name\" value=\"after\">"
+
+Label "<h3>Focus</h3>"
+
+Radio focus-pos "Focus position" "My language places focused constituents in a specific position. The position is<br>" ""
+  . clause-initial "clause-initial" "&nbsp;&nbsp;&nbsp;&nbsp;" "clause-initial.<br> "
+  . clause-final "clause-final" "&nbsp;&nbsp;&nbsp;&nbsp;" "clause-final.<br> "
+  . preverbal "preverbal" "&nbsp;&nbsp;&nbsp;&nbsp;" "preverbal.<br> "
+  . postverbal "postverbal" "&nbsp;&nbsp;&nbsp;&nbsp;" "postverbal.<br> "
+
+
+BeginIter focus-marker{i} "a Focus Marker" 1
+
+Radio type "Focus {i} marker" "This marker is<br>" ""
+  . affix "Affix" "" "an affix (You should create this affix on Morphology.)<br>"
+  . adp "Adposition" "" "an adposition (You should create this adposition on Lexicon.)<br>"
+  . modifier "Modifier" "" "a modifier"
+
+  MultiSelect pos "Focus {i} marker pos" "and appears" ""
+  fillregex p=(pos_type[0-9]_name) n=1  
+
+  MultiSelect cat "Focus {i} marker cat" "" ""
+  fillregex p=(cat_type[0-9]_name) n=1 
+
+  Text orth "Focus {i} marker orth" " Spelling: " "<br>" 10
+
+EndIter focus-marker
+
+
+Label "<h3>Topic</h3>"
+
+Check topic-first "Specific position for topic" "" "Topic always occurs sentence-initially in my language.<br> "
+
+BeginIter topic-marker{i} "a Topic Marker" 1
+
+Radio type "Topic {i} marker" "This marker is<br>" ""
+  . affix "Affix" "" "an affix (You should create this affix on Morphology.)<br>"
+  . adp "Adposition" "" "an adposition (You should create this adposition on Lexicon.)<br>"
+  . modifier "Modifier" "" "a modifier"
+
+  MultiSelect pos "Topic {i} marker pos" "that appears" ""
+  fillregex p=(pos_type[0-9]_name) n=1  
+
+  MultiSelect cat "Topic {i} marker cat" "" ""
+  fillregex p=(cat_type[0-9]_name) n=1 
+
+  Text orth "Topic {i} marker orth" " Spelling: " "<br>" 10
+
+EndIter topic-marker
+
+
+Label "<h3>Contrastive Focus</h3>"
+
+
+Check c-focus "Contrastive focus" "" "My language uses the same position to express contrastive focus as non-contrastive focus.<br>" "uncheck_all('c-focus-pos');"
+
+Radio c-focus-pos "Contrastive focus position" "<br>My language places contrastively focused constituents in a specific position. The position is<br>" ""
+  . clause-initial "clause-initial" "&nbsp;&nbsp;&nbsp;&nbsp;" "clause-initial.<br> " "uncheck_all('c-focus');"
+  . clause-final "clause-final" "&nbsp;&nbsp;&nbsp;&nbsp;" "clause-final.<br> " "uncheck_all('c-focus');"
+  . preverbal "preverbal" "&nbsp;&nbsp;&nbsp;&nbsp;" "preverbal.<br> " "uncheck_all('c-focus');"
+  . postverbal "postverbal" "&nbsp;&nbsp;&nbsp;&nbsp;" "postverbal.<br> " "uncheck_all('c-focus');"
+
+BeginIter c-focus-marker{i} "a Contrastive Focus Marker" 1
+
+Radio type "Contrastive focus {i} marker" "This marker is<br>" ""
+  . affix "Affix" "" "an affix (You should create this affix on Morphology.)<br>"
+  . adp "Adposition" "" "an adposition (You should create this adposition on Lexicon.)<br>"
+  . modifier "Modifier" "" "a modifier"
+
+  MultiSelect pos "Contrastive focus {i} marker pos" "that appears" ""
+  fillregex p=(pos_type[0-9]_name) n=1  
+
+  MultiSelect cat "Contrastive focus {i} marker cat" "" ""
+  fillregex p=(cat_type[0-9]_name) n=1 
+
+  Text orth "Contrastive focus {i} marker orth" " Spelling: " "<br>" 10
+
+EndIter c-focus-marker
+
+
+Label "<h3>Contrastive Topic</h3>"
+
+BeginIter c-topic-marker{i} "a Contrastive Topic Marker" 1
+
+Radio type "Contrastive topic {i} marker" "This marker is<br>" ""
+  . affix "Affix" "" "an affix (You should create this affix on Morphology.)<br>"
+  . adp "Adposition" "" "an adposition (You should create this adposition on Lexicon.)<br>"
+  . modifier "Modifier" "" "a modifier"
+
+  MultiSelect pos "Contrastive topic {i} marker pos" "that appears" ""
+  fillregex p=(pos_type[0-9]_name) n=1  
+
+  MultiSelect cat "Contrastive topic {i} marker cat" "" ""
+  fillregex p=(cat_type[0-9]_name) n=1 
+
+  Text orth "Contrastive topic {i} marker orth" " Spelling: " "<br>" 10
+
+EndIter c-topic-marker
+
+
+Label "<h4>References</h4>"
+Label "<font size=\"2\">"
+Label "<p>Lambrecht, Knud. 1996. Information Structure and Sentence Form: Topic, Focus, and the Mental Representations of Discourse Referents. Cambridge, UK: Cambridge University Press.</p>"
+Label "<p>Gundel, Jeanette K. 1999. On Different Kinds of Focus. In Peter Bosch and Rob van der Sandt (eds.), Focus: Linguistic, Cognitive, and Computational Perspectives, pages 293-305, Cambridge: Cambridge University Press.</p>"
+Label "<p>Krifka, Manfred. 2008. Basic Notions of Information Structure. Acta Linguistica Hungarica 55(3), 243-276.</p>"
+Label "<p>Fery, Caroline and Krifka, Manfred. 2008. Information Structure: Notional Distinctions, Ways of Expression. Unity and Diversity of Languages pages 123-136.</p>"
+Label "<p>Song, Sanghoun and Bender, Emily M. 2011. Using Information Structure to Improve Transfer-based MT. Proceedings of the 18th International Conference on Head-Driven Phrase Structure Grammar, pages 348-368, Stanford: CSLI Publications.</p>"
+Label "<p>Song, Sanghoun and Bender, Emily M. 2012. Individual Constraints for Information Structure. Proceedings of the 19th International Conference on Head-Driven Phrase Structure Grammar, pages 330–348, Stanford: CSLI Publications.</p>"
+Label "</font>"
+
+
+
 Section arg-opt "Argument Optionality"
 
 Label "<p> Languages place different restrictions on argument
@@ -1615,7 +1741,7 @@ EndIter det
 
 Separator
 
-Label "<h3>Case-marking Adpositions</h3>"
+Label "<h3>Case-marking and/or Information Structural Adpositions</h3>"
 
 BeginIter adp{i} "an Adposition" 1
 
