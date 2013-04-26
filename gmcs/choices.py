@@ -542,6 +542,8 @@ class ChoicesFile:
       self.convert_24_to_25()
     if self.version < 26:
       self.convert_25_to_26()
+    if self.version < 27:
+      self.convert_26_to_27()
     # As we get more versions, add more version-conversion methods, and:
     # if self.version < N:
     #   self.convert_N-1_to_N
@@ -601,6 +603,25 @@ class ChoicesFile:
     return result
 
 
+  def has_adp_only_infostr(self):
+    """
+    Returns True iff the target language has information structural adpositions 
+    without case-marking.
+    If the check_opt argument is True, only return True
+    if the adposition is optional.
+    """
+    if self.has_adp_case():
+      return False
+
+    for adp in self.get('adp'):
+      opt = adp.get('opt')
+      for feat in adp.get('feat', []):
+        if feat['name'] == 'information-structure meaning':
+          return True
+
+    return False
+
+
   def has_adp_case(self, case = '', check_opt = False):
     """
     Returns True iff the target language has case-marking adpositions
@@ -653,6 +674,8 @@ class ChoicesFile:
     has_optadp = self.has_optadp_case(case)
 
     if (has_noun and has_adp) or has_optadp:
+      return '+np'
+    elif self.has_adp_only_infostr():
       return '+np'
     elif has_adp:
       return 'adp'
@@ -1076,6 +1099,23 @@ class ChoicesFile:
     if 'q-infl' in self.choices:
       features += [ ['question', 'plus|plus', '', 'verb', 'y'] ]
 
+    # Information Structure
+    infostr_values = 'focus|focus;topic|topic;contrast|contrast;semantic-focus|non-contrastive-focus;contrast-focus|contrastive-focus;aboutness-topic|non-contrastive-topic;contrast-topic|contrastive-topic;frame-setting-topic|frame-setting-topic;focus-or-topic|focus-or-topic;contrast-or-focus|contrast-or-focus;contrast-or-topic|contrast-or-topic;non-topic|non-topic;non-focus|non-focus;bg|background'
+    mkg_values = 'fc|focus;tp|topic;fc-only|focus-only;tp-only|topic-only;fc-+-tp|focus-and-topic;non-tp|non-topic;non-fc|non-focus;unmkg|unmarking'
+    """
+    is_infostr_marker = False
+    for marker in ['focus-marker', 'topic-marker', 'c-focus-marker', 'c-topic-marker']:
+      if is_infostr_marker:
+	break
+      for m in self.get(marker):            
+        if m['type'].strip() in ['affix', 'adp']:
+	  is_infostr_marker = True
+	  break
+    if is_infostr_marker: 
+    """
+    features += [ ['information-structure marking', mkg_values, 'LOCAL.CAT.MKG', 'both', 'n'] ]
+    features += [ ['information-structure meaning', infostr_values, 'LOCAL.CONT.HOOK.ICONS-KEY', 'both', 'n'] ]  
+
     # Argument Optionality
     if 'subj-drop' in self.choices or 'obj-drop' in self.choices:
       features +=[['OPT', 'plus|plus;minus|minus', '', 'verb', 'y']]
@@ -1168,7 +1208,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 26
+    return 27
 
   def convert_value(self, key, old, new, partial=False):
     if key in self:
@@ -2035,6 +2075,33 @@ class ChoicesFile:
       if not feature.has_key('new'):
         feature['new'] = 'yes'
         feature['cat'] = 'both'
+
+  def convert_26_to_27(self):
+    """ 
+    This uprev converts the names involving topicality in other features.
+    """
+    for feature in self.get('feature'):
+      self.convert_value(feature.full_key + '_name', 'topicality', '_topicality')
+      for value in feature['value']:
+        self.convert_value(value.full_key + '_name', 'topic', '_topic')
+        self.convert_value(value.full_key + '_name', 'non-topic', '_non-topic')
+        for supertype in value['supertype']:
+          self.convert_value(supertype.full_key + '_name', 'topicality', '_topicality')
+
+    for scale in self.get('scale'):
+      for feat in scale['feat']:
+        self.convert_value(feat.full_key + '_name', 'topicality', '_topicality')
+        self.convert_value(feat.full_key + '_value', 'topic', '_topic')
+        self.convert_value(feat.full_key + '_value', 'non-topic', '_non-topic')
+
+    for cat in ['noun-pc', 'verb-pc']:
+      for pc in self.get(cat):
+        self.convert_value(pc.full_key + '_name', 'topic', '_topic')
+        for lrt in pc['lrt']:
+          for feat in lrt['feat']:
+            self.convert_value(feat.full_key + '_name', 'topicality', '_topicality')
+            self.convert_value(feat.full_key + '_value', 'topic', '_topic')
+            self.convert_value(feat.full_key + '_value', 'non-topic', '_non-topic')
 
 ########################################################################
 # FormData Class

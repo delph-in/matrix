@@ -24,6 +24,7 @@ from gmcs.utils import format_comment_block
 from gmcs.lib import TDLHierarchy
 
 from gmcs.linglib import morphotactics
+from gmcs.linglib import information_structure
 from gmcs.linglib import argument_optionality
 from gmcs.linglib import direct_inverse
 from gmcs.linglib import case
@@ -542,6 +543,7 @@ def customize_matrix(path, arch_type, destination=None):
   # to customize those components and only have them contribute their
   # information to lexical rules when we customize inflection.
   lexical_items.customize_lexicon(mylang, ch, lexicon, trigger, hierarchies)
+  information_structure.customize_information_structure(mylang, ch, rules, irules, lexicon, trigger, hierarchies)
   argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies)
   direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
   case.customize_case(mylang, ch, hierarchies)

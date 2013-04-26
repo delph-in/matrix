@@ -249,6 +249,7 @@ HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fil
 #    <li><a onclick="submit_go('sentential-negation')">Sentential Negation</a></li>
 #    <li><a onclick="submit_go('coordination')">Coordination</a></li>
 #    <li><a onclick="submit_go('matrix-yes-no')">Matrix Yes/No Questions</a></li>
+#    <li><a onclick="submit_go('info-str')">Information Structure</a></li>
 #    <li><a onclick="submit_go('arg-opt')">Argument Optionality</a></li>
 #    <li><a onclick="submit_go('lexicon')">Lexicon</a></li>
 #    <li><a onclick="submit_go('morphology')">Morphology</a></li>
@@ -539,6 +540,7 @@ class MatrixDefFile:
   'direct-inverse':'Direct-inverse', 'tense-aspect-mood':'Tense, Aspect and Mood',
   'other-features':'Other Features', 'sentential-negation':'Sentential Negation',
   'coordination':'Coordination', 'matrix-yes-no':'Matrix Yes/No Questions',
+  'info-str':'Information Structure',
   'arg-opt':'Argument Optionality', 'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'Toolbox Import',
   'test-sentences':'Test Sentences','gen-options':'TbG Options',
@@ -552,6 +554,7 @@ class MatrixDefFile:
   'direct-inverse':'DirectInverse', 'tense-aspect-mood':'TenseAspectMood',
   'other-features':'OtherFeatures', 'sentential-negation':'SententialNegation',
   'coordination':'Coordination', 'matrix-yes-no':'YesNoQ',
+  'info-str':'InformationStructure',
   'arg-opt':'ArgumentOptionality', 'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'ImportToolboxLexicon',
   'test-sentences':'TestSentences','gen-options':'TestByGeneration',

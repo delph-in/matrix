@@ -7,6 +7,7 @@ from gmcs.utils import orth_encode
 from gmcs.linglib import case
 from gmcs.linglib import features
 from gmcs.linglib import auxiliaries
+from gmcs.linglib import information_structure
 from gmcs.linglib.parameters import determine_vcluster
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
 
@@ -545,6 +546,10 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies):
   mylang.set_section('otherlex')
   to_cfv = case.customize_case_adpositions(mylang, lexicon, trigger, ch)
   features.process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=lexicon)
+
+  if ch.has_adp_only_infostr():
+    to_cfv = information_structure.customize_infostr_adpositions(mylang, lexicon, trigger, ch)
+    features.process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=lexicon)
 
   mylang.set_section('verblex')
   customize_verbs(mylang, ch, lexicon, hierarchies)
