@@ -91,3 +91,9 @@
 
 (setf *sem-relation-suffix* "_rel")
 (setf *rel-name-path* `(,(vsym "PRED") ))
+
+;;;
+;;; MWG 2013-05-16: adding to allow generation with [incr tsdb()]
+;;;
+
+(setf *show-lnk-p* nil)
