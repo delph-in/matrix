@@ -1160,6 +1160,10 @@ class ChoicesFile:
       features += [ ['headfinal', '-|-', 'LOCAL.CAT.HEADFINAL' ] ]
       features += [ ['headfinal', '+|+', 'LOCAL.CAT.HEADFINAL' ] ]
 
+
+    if self.get('explitives') == 'yes':
+      features += [ ['index', 'expl-ind', 'LOCAL.CONT.HOOK.INDEX'] ]
+
     #Adjective strength measurement
     adj_strength = ''
     adj_strength = self.get('strength-marking')

@@ -13,6 +13,8 @@ from tdl import TDLelem_coref
 from tdl import TDLelem_dlist
 from tdl import TDLset_file
 
+from abbreviate_paths_in_climb import create_feature_geom_objects
+
 top_subtypes = set()
 atts_and_intro_type = {}
 
@@ -623,6 +625,46 @@ def find_common_supertype(t1, t2, thierarchy):
           if not t2_st == '*top*':
             return t2_st 
 
+def create_dict_of_begin_types(thierarchy, fg_dicts):
+  type_btype = {}
+  # print len(fg_dicts)
+  # print fg_dicts
+  #find out what fg_dicts is as an object and create it from intro val
+  for t in thierarchy.keys():
+    btype = retrieve_begin_type(t, fg_dicts, thierarchy)
+    type_btype[t] = btype
+
+  return type_btype
+
+
+def retrieve_begin_type(type_name, fg_dicts, thierarchy):
+    if '+' in type_name:
+        type_name = 'head'
+    t2val = fg_dicts[1]
+    if type_name in t2val:
+        return type_name
+    else:
+        for t in t2val.keys():
+            if type_name in t:
+                return t
+    if type_name in thierarchy:
+        my_t = thierarchy[type_name]
+        for tl in t2val:
+            if not '|' in tl:
+                if tl in thierarchy and not tl == 'avm':
+                    my_tl = thierarchy[tl]
+                    if is_subtype(my_t, my_tl, thierarchy) or is_subtype(my_tl, my_t, thierarchy):
+                        return tl
+            elif type_name in tl:
+                return tl
+            else:
+                for t in tl.split('|'):
+                    if not t == 'avm' and t in thierarchy:
+                        my_t2 = thierarchy[t]
+                        if is_subtype(my_t, my_t2, thierarchy) or is_subtype(my_t2, my_t, thierarchy):
+                            return tl
+                    
+    return 'sign'
 
 
 
@@ -641,7 +683,7 @@ def update_supertype_list(chain_parts, t2, thierarchy):
       found = True
   return chain
 
-def retrieve_feature_geometry(input_files, output_file):
+def retrieve_feature_geometry(input_files, output_file_fg, output_file_bt):
 
   my_typedef_files = input_files[0]
   gram_dir = input_files[1]
@@ -661,8 +703,8 @@ def retrieve_feature_geometry(input_files, output_file):
   
 
   atts_intro_val = retrieve_attributes_basic_values(thierarchy)
-  
-  fg_file = gram_dir + output_file
+ 
+  fg_file = gram_dir + output_file_fg
   feat_geom = open(fg_file, 'w')
   
   att_rel_types = set()
@@ -691,6 +733,21 @@ def retrieve_feature_geometry(input_files, output_file):
     feat_geom.write(my_c + '\n')
 
   feat_geom.close()
+  
+ # feat_geom_file = open(fg_file, 'r')
+  fg_dicts = create_feature_geom_objects(fg_file)
+  ###create dictionary that identifies begin_type of each type
+  begin_types = create_dict_of_begin_types(thierarchy, fg_dicts)
+
+  btypes_f = gram_dir + output_file_bt
+  bt_file = open(btypes_f, 'w')
+
+  for t, bt in begin_types.items():
+    bt_file.write(t + ':' + bt + '\n')
+
+  bt_file.close()
+
+
 
   #####TODO
   #3. improve functionality for lists (make defaults work)
@@ -800,7 +857,8 @@ def extract_feature_geometry(flop_file):
 
   input_files = retrieve_input_files(flop_file)
   outfile = 'climb/feature_geometry'
-  retrieve_feature_geometry(input_files, outfile)
+  outfile_bt = 'climb/begin_types'
+  retrieve_feature_geometry(input_files, outfile, outfile_bt)
 
 
 
@@ -820,7 +878,7 @@ def main():
   flop_file = args[0]
   # list containing two elements: list of files, grammar_directory
   input_files = retrieve_input_files(flop_file)
-  retrieve_feature_geometry(input_files, 'feature_geometry')
+  retrieve_feature_geometry(input_files, 'feature_geometry', 'basic_types')
 
 '''Print an appropriate usage message and exit.'''
 def usage():

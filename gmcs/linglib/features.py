@@ -53,7 +53,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
   for feat in ch_dict.get(iter_feat,[]):
     n = feat.get('name','')
     v = feat.get('value','').split(', ')
-   
     #avoiding features with empty string as value are assigned
     if len(v) == 1 and v[0] == '':
       n = ''
@@ -146,12 +145,18 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         if 'rule' in det_type:
           type_name_1 = type_name + '-main-verb'
           type_name_2 = type_name + '-aux'
-
+          
     # If the feature has a geometry, just specify its value;
     # otherwise, handle it specially.
+    # HACK: making sure 'expl' morphological rules have main-verb subtypes...
     if geom:
-      if n in hierarchies:
-        value = hierarchies[n].get_type_covering(v)
+      if n in hierarchies or (geom2 and 'expl' in det_type):
+        if n in hierarchies:
+          value = hierarchies[n].get_type_covering(v)
+          expl = False
+        else:
+          value = v[0]
+          expl = True
         if geom2:
           if 'rule' in det_type:
             tdlfile.add(type_name_1 +
@@ -160,22 +165,23 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             tdlfile.add(type_name_1 +
                       ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].', 
                          merge=True)
-            tdlfile.add(type_name_2 +
-                      ' := ' + type_name + ' & ' +
-                       ' [ ' + geom2 + ' ' + value + ' ].')
-            tdlfile.add(type_name_2 +
-                      ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
-                         merge=True)
             climbfile.add(type_name_1 +
                       ' := ' + type_name + ' & ' +
                        ' [ ' + geom + ' ' + value + ' ].')
             climbfile.add(type_name_1 +
                       ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].', 
                          merge=True)
-            climbfile.add(type_name_2 +
+            if not expl:
+              tdlfile.add(type_name_2 +
                       ' := ' + type_name + ' & ' +
                        ' [ ' + geom2 + ' ' + value + ' ].')
-            climbfile.add(type_name_2 +
+              tdlfile.add(type_name_2 +
+                      ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+                         merge=True)
+              climbfile.add(type_name_2 +
+                      ' := ' + type_name + ' & ' +
+                       ' [ ' + geom2 + ' ' + value + ' ].')
+              climbfile.add(type_name_2 +
                       ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
                          merge=True)
 ####else case, if aux-rule and on lexical item rather than rule
@@ -214,7 +220,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             suffix = ' ].'
           mytype =  type_name + ' := [ ' + geom + ' ' + value + suffix
           tdlfile.add(mytype, merge=True) 
-          climbfile.add(mytype, merge=True)   
+          climbfile.add(mytype, merge=True) 
     elif n == 'argument structure':
       # constrain the ARG-ST to be passed up
       tdlfile.add(type_name + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].',

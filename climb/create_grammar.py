@@ -6,8 +6,8 @@ import sys
 from tdl import TDLparse_compl
 from tdl import TDLmergeable
 from tdl import TDLmerge
-from extract_feature_geometry import build_defined_types_hierarchy
-from extract_feature_geometry import is_subtype
+#from extract_feature_geometry import build_defined_types_hierarchy
+#from extract_feature_geometry import is_subtype
 from abbreviate_paths_in_climb import create_feature_geom_objects
 
 #output files
@@ -19,8 +19,10 @@ lrules = None
 lexicon = None
 roots = None
 
-thierarchy = {}
+#thierarchy = {}
 fg_dicts = []
+type_begintypes = {}
+begin_types = {}
 
 def create_back_ups(file_names):
     base_dir = '../'
@@ -85,35 +87,20 @@ def partOfComment(line, flag):
 
 
 def retrieve_begin_type(description):
+    global type_begintypes, begin_types
     type_name = description.split(':')[0].rstrip()
     type_name = type_name.lstrip()
+    #matrix based hack
     if '+' in type_name:
         type_name = 'head'
-    t2val = fg_dicts[1]
-    if type_name in t2val:
-        return type_name
+    if type_name in begin_types:
+        return begin_types.get(type_name)
     else:
-        for t in t2val.keys():
-            if type_name in t:
-                return t
-    if type_name in thierarchy:
-        my_t = thierarchy[type_name]
-        for tl in t2val:
-            if not '|' in tl:
-                if tl in thierarchy and not tl == 'avm':
-                    my_tl = thierarchy[tl]
-                    if is_subtype(my_t, my_tl, thierarchy) or is_subtype(my_tl, my_t, thierarchy):
-                        return tl
-            elif type_name in tl:
-                return tl
-            else:
-                for t in tl.split('|'):
-                    if not t == 'avm' and t in thierarchy:
-                        my_t2 = thierarchy[t]
-                        if is_subtype(my_t, my_t2, thierarchy) or is_subtype(my_t2, my_t, thierarchy):
-                            return tl
-                    
-    return 'sign'
+        btype = type_begintypes.get(type_name)
+        if btype: 
+            return btype
+        else:
+            return 'sign'
 
 
 def process_file(f, tdl_files, exclusions):
@@ -188,7 +175,7 @@ def process_file(f, tdl_files, exclusions):
                             current_tdl.typedefs[i] = TDLmerge(current_tdl.typedefs[i], tdl_object)
                             handled = True
                             break
-                        if not handled:
+                    if not handled:
                             current_tdl.typedefs.append(tdl_object)
         else:
             if not ';;; -*- Mode: TDL; Coding: utf-8 -*-' in line:
@@ -215,10 +202,10 @@ def process_climb_files(exclusions):
         tdl_f.save()
 
 
-def process_thierarchy(my_language):
-    tdl_files = [my_language + '.tdl','matrix.tdl','head-types.tdl']
-    global thierarchy
-    thierarchy = build_defined_types_hierarchy('../', tdl_files)
+#def process_thierarchy(my_language):
+#    tdl_files = [my_language + '.tdl','matrix.tdl','head-types.tdl']
+#    global thierarchy
+#    thierarchy = build_defined_types_hierarchy('../', tdl_files)
 
 
 
@@ -236,14 +223,33 @@ def interpret_choices(choices):
                     exclusions[excl_cat].append(exclusion)
     return exclusions
 
+def create_begin_types_dict(t_begin):
+    global begin_types
+    my_handled_vals = []
+    bt_dict = {}
+    bt_file = open(t_begin, 'r')
+    for line in bt_file:
+        t_bt = line.split(':')
+        val =  t_bt[1].rstrip()
+        bt_dict[t_bt[0]] =  val
+        if not val in my_handled_vals: 
+            my_vals = val.split('|')
+            for v in my_vals:
+                begin_types[v] = val
+            my_handled_vals.append(val)
+
+    return bt_dict
+
 def create_grammar(choices = None):
     
     feat_geom_file = 'feature_geometry'
-    global fg_dicts
+    begin_types_file = 'begin_types'
+    global fg_dicts, type_begintypes
     fg_dicts = create_feature_geom_objects(feat_geom_file)
+    type_begintypes = create_begin_types_dict(begin_types_file)
     my_language = retrieve_language_name()
     
-    process_thierarchy(my_language)
+#    process_thierarchy(my_language)
     create_tdl_files(my_language)
     exclusions = interpret_choices(choices)
     process_climb_files(exclusions)
@@ -254,7 +260,7 @@ def create_grammar(choices = None):
 
 def main(argv=None):
 
-    if argv = None:
+    if argv == None:
         argv = sys.argv
     if len(argv) < 2:
         create_grammar()

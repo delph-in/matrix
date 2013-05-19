@@ -1592,7 +1592,7 @@ def create_feature_list(feat_name, feat_n, index_types, open_list, end_type = ''
         break
     else:
       feat_name = f_names
-  if part_of_list and not 'LIST' in my_p and not 'FIRST' in my_p:
+  if part_of_list and not 'LIST' in my_p and not 'FIRST' in my_p and not 'LAST' in my_p:
     my_p.append('FIRST')
   return my_p
 

@@ -44,7 +44,8 @@ def process_for_indexing_types(feat_file):
 
 '''creates dictionary with attributes as KEY and list of intro type and feature-value as its value '''
 def process_for_feature_names(feat_file):
-
+ # print feat_file
+ # print '++++++++++++++++++++++++'
   feat_geom = open(feat_file, 'r')
   def_feats = feat_geom.readlines()
   my_feats = {}
