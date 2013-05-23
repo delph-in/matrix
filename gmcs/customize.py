@@ -346,9 +346,6 @@ SORT : SORT
   * <> *
   semsort << *
 
-E.TENSE : E.TENSE
-  * <> *
-
 SF : SF
   prop <> prop
   ques <> ques
