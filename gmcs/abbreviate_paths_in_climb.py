@@ -275,7 +275,8 @@ def abbreviate_paths(climb_dir):
   tdl_files = get_tdl_files(climb_dir)
   for tdl_file in tdl_files:
     fg_dicts = reduce_paths_in_file(climb_dir + tdl_file, fg_dicts)
-  update_feat_geom_file(feat_geom_file, fg_dicts)  
+  update_feat_geom_file(feat_geom_file, fg_dicts)
+
 
 
 if __name__ == "__main__":
