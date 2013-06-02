@@ -1621,7 +1621,7 @@ def customize_adpositions(ch, mylang, lexicon, climb_lex, hierarchies):
         lexicon.add(typedef)
         climb_lex.add(typedef,section='lexicon')
         if circum:
-          pform = stem.get('prt-form') + '-prt'
+          pform = '< "' + stem.get('prt-form') + '">'
           lexicon.add(tname + ' := [ SYNSEM.LKEYS.KEY-PART ' + pform + ' ].')
           climb_lex.add(tname + ' := [ SYNSEM.LKEYS.KEY-PART ' + pform + ' ].',section='lexicon')
 
@@ -1665,9 +1665,9 @@ def create_adposition_supertypes(ch, mylang, climb_lex):
 
   if ch.get('circumpositions') == 'yes':
     comment = '''KEY-PART based on Cramer: way to introduce selected particle's form in lexicon'''
-    mylang.add('lexkeys :+ [ KEY-PART form ].',comment=comment,section='addenda')
+    mylang.add('lexkeys :+ [ KEY-PART list ].',comment=comment,section='addenda')
     comment += '\n ;section=\'addenda\''
-    climb_lex.add('lexkeys :+ [ KEY-PART form ].',comment=comment)
+    climb_lex.add('lexkeys :+ [ KEY-PART list ].',comment=comment)
 
     basic_circp = '''basic-circumposition-lex := single-rel-lex-item &
   [ SYNSEM [ LOCAL.CAT [ HEAD adp,
@@ -1681,7 +1681,7 @@ def create_adposition_supertypes(ch, mylang, climb_lex):
     climb_lex.add('basic-int-mod-circumposition-lex := intersective-mod-lex & \
                                                      basic-circumposition-lex.')
     circ_name = 'int-circump-lex-item'
-    comp2 = '[ LOCAL.CAT [ HEAD verb & [ FORM #prtform ], \
+    comp2 = '[ LOCAL.CAT [ HEAD verb & [ PART-FORM #prtform ], \
                         VAL [ SPR < >, \
                               COMPS < >, \
                               SUBJ < >,\
