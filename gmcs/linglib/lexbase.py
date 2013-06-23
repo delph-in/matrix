@@ -50,6 +50,7 @@ class MorphotacticNode(HierarchyNode):
     self.valchange = ''
     self.valstable = ''
     self.identifier_suffix = ''
+    self.adjpassive = ''
     # tdl order is used for sorting the rules as the occur in the tdl
     # PCs are integers (1, 2, 3), LRTs are floats (1.1, 2,1, 2.2, etc)
     self.tdl_order = 0

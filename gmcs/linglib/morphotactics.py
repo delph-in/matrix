@@ -235,6 +235,8 @@ def create_lexical_rule_type(ch, lrt):
     new_lrt.valchange = 'on'
   if lrt.get('valstable') == 'on':
     new_lrt.valstable = 'on'
+  if lrt.get('adjpassive') == 'on':
+    new_lrt.adjpassive = 'on'
   if subj_feat:
     for lri in lrt.get('lri',[]):
       if lri['inflecting'] == 'yes':
@@ -395,12 +397,14 @@ ALL_LEX_RULE_SUPERTYPES = set(['cont-change-only-lex-rule',
                                'val-change-only-lex-rule',
                                'infl-lex-rule',
                                'const-lex-rule',
-                               'lex-rule'])
+                               'lex-rule',
+                               'participle-to-adj-rule'])
 
 LEX_RULE_SUPERTYPES = set(['cont-change-only-lex-rule',
                            'comparative-creating-lex-rule', 
                            'val-change-only-lex-rule',
-                           'add-only-no-ccont-rule'])
+                           'add-only-no-ccont-rule',
+                           'participle-to-adj-rule'])
 
 def set_lexical_rule_supertypes(lrt):
   """
@@ -423,6 +427,8 @@ def set_lexical_rule_supertypes(lrt):
     lrt.supertypes.add('val-change-only-lex-rule')
   if lrt.valstable == 'on':
     lrt.supertypes.add('same-val-lex-rule')
+  if lrt.adjpassive == 'on':
+    lrt.supertypes.add('participle-to-adj-rule')
 
 def calculate_supertypes(pch):
   # calculate daughter types first, because we want to percolate them
