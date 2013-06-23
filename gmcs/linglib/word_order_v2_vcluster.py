@@ -258,20 +258,22 @@ def add_v2_with_cluster_rules(ch, rules, climb_gwo):
     climb_gwo.add('head-comp-2-vc := head-comp-2-vc-phrase.')
   rules.add('subj-head-vc := subj-head-vc-phrase.')
   rules.add('aux-2nd-comp := aux-2nd-comp-phrase.')
-  rules.add('comp-aux-2nd := comp-aux-2nd-phrase.')
-
   climb_gwo.add('subj-head-vc := subj-head-vc-phrase.')
   climb_gwo.add('aux-2nd-comp := aux-2nd-comp-phrase.')
-  climb_gwo.add('comp-aux-2nd := comp-aux-2nd-phrase.')
+
+  if not ch.get('v2-analysis') == 'filler-gap':
+    rules.add('comp-aux-2nd := comp-aux-2nd-phrase.')
+    climb_gwo.add('comp-aux-2nd := comp-aux-2nd-phrase.')
+
 # Additional rules for if object-raising is covered
   if ch.get('vc-analysis') == 'basic' and not ch.get('v2-analysis') == 'filler-gap':
     rules.add('comp-aux-2nd-2 := comp-aux-2nd-phrase-2.')
     climb_gwo.add('comp-aux-2nd-2 := comp-aux-2nd-phrase-2.')
-  else:
-    rules.add('mverb-2nd-vcomp := mverb-2nd-vcomp-phrase.')
+  elif ch.get('vc-analysis') == 'aux-rule':
     rules.add('vcomp-mverb-2nd := vcomp-mverb-2nd-phrase.')
-    climb_gwo.add('mverb-2nd-vcomp := mverb-2nd-vcomp-phrase.')
+    rules.add('mverb-2nd-vcomp := mverb-2nd-vcomp-phrase.')
     climb_gwo.add('vcomp-mverb-2nd := vcomp-mverb-2nd-phrase.')
+    climb_gwo.add('mverb-2nd-vcomp := mverb-2nd-vcomp-phrase.')
   # rule for yes-no question inversion
   # for now only when analysis is aux-rule (apparently not used for 
   # arg-comp, or old error...)

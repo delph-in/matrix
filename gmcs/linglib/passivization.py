@@ -39,20 +39,9 @@ def customize_passivization(ch, mylang, lrules, lexicon, climb_files):
 ######SYNTACTIC PROPERTIES: ONLY COMP CHANGES, BUT LINKING CHANGES
 
     typedef = \
-    '''passive-lex-rule := local-change-only-lex-rule &
+    '''gen-passive-lex-rule := local-change-only-lex-rule &
   [ SYNSEM.LOCAL [ CAT [ EDGE #edge,
-                       VAL [ SPR #spr,
-                             SUBJ < [ NON-LOCAL #nlo,
-                                      LOCAL [ CONT #arg2 & [ HOOK.INDEX #xarg ],
-                                              CAT.HEAD noun &
-                                                       [ CASE nom ] ] ] >,
-                             COMPS < [ NON-LOCAL #nls,
-                                       OPT +,
-                                       LOCAL [ CONT #arg1,
-                                               CAT [ VAL.COMPS < >,
-                                                     HEAD adp &
-                                                          [ MOD < >,
-                                                            FORM ''' + sform + '''] ] ] ] . #vcomps > ],
+                       VAL.SPR #spr,
                        HEAD verb &
                             [ MOD #mod,
                               FORM pass-participle,
@@ -60,8 +49,7 @@ def customize_passivization(ch, mylang, lrules, lexicon, climb_files):
                               INV #inv & - ],
                        VC #vc,
                        MC #mc ],
-                   CONT [ HOOK [ XARG #xarg,
-				 GTOP #gtop,
+                   CONT [ HOOK [ GTOP #gtop,
 				 LTOP #ltop, 
 				 INDEX #index ],
 			  RELS #rels,
@@ -70,13 +58,7 @@ def customize_passivization(ch, mylang, lrules, lexicon, climb_files):
 		   COORD-REL #coord-rel,
 		   COORD-STRAT #coord-strat ],
     DTR.SYNSEM.LOCAL [ CAT [ EDGE #edge,
-                           VAL [ SUBJ < [ LOCAL.CONT #arg1,
-                                          NON-LOCAL #nls ] >,
-                                 SPR #spr,
-                                 COMPS < [ NON-LOCAL #nlo,
-                                           LOCAL [ CONT #arg2,
-                                                   CAT.HEAD noun &
-                                                            [ CASE acc ] ] ] . #vcomps > ],
+                           VAL.SPR #spr,
                            HEAD verb &
                                 [ MOD #mod,
                                   FORM participle,
@@ -94,19 +76,61 @@ def customize_passivization(ch, mylang, lrules, lexicon, climb_files):
 		       COORD-STRAT #coord-strat ] ].'''
     mylang.add(typedef)
     climb_pass.add(typedef)
+
+    pas_typedef = '''passive-lex-rule := gen-passive-lex-rule &
+        [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < [ NON-LOCAL #nlo,
+                                      LOCAL [ CONT #arg2 & [ HOOK.INDEX #xarg ],
+                                              CAT.HEAD noun &
+                                                       [ CASE nom ] ] ] >,
+                             COMPS < [ NON-LOCAL #nls,
+                                       OPT +,
+                                       LOCAL [ CONT #arg1,
+                                               CAT [ VAL.COMPS < >,
+                                                     HEAD adp &
+                                                          [ MOD < >,
+                                                            FORM ''' + sform + '''] ] ] ] . #othercomps > ],
+                         CONT.HOOK.XARG #xarg ],
+          DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL.CONT #arg1,
+                                          NON-LOCAL #nls ] >,
+                                 COMPS < [ NON-LOCAL #nlo,
+                                           LOCAL [ CONT #arg2,
+                                                   CAT.HEAD noun &
+                                                            [ CASE acc ] ] ] . #othercomps > ] ]. '''
+
+    mylang.add(pas_typedef)
+    climb_pass.add(pas_typedef)
+    if ch.get('imp-passive') == 'yes':
+      imp_p_typedef = '''imp-passive-lex-rule := gen-passive-lex-rule & 
+         [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX expl-index ] >,
+                                  COMPS < [ NON-LOCAL #nls,
+                                       OPT +,
+                                       LOCAL [ CONT #arg1,
+                                               CAT [ VAL.COMPS < >,
+                                                     HEAD adp &
+                                                          [ MOD < >,
+                                                            FORM ''' + sform + '''] ] ] ] . #othercomps > ],  
+           DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL.CONT #arg1,
+                                          NON-LOCAL #nls ] >,
+                                 COMPS < #othercomps > ] ].'''
+      mylang.add(imp_p_typedef)
+      climb_pass.add(imp_p_typedef)
+
     if ch.get('verbal-particles') == 'yes' or ch.get('circumpositions') == 'yes':
-      mylang.add('passive-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf, \
+      mylang.add('gen-passive-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf, \
                           DTR.SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf ].')
-      climb_pass.add('passive-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf, \
+      climb_pass.add('gen-passive-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf, \
                           DTR.SYNSEM.LOCAL.CAT.HEAD.PART-FORM #pf ].')
     if ch.get("edge-related-res") == "yes":
-      mylang.add('passive-lex-rule := [ SYNSEM.LOCAL.CAT.EDGE #edge, \
+      mylang.add('gen-passive-lex-rule := [ SYNSEM.LOCAL.CAT.EDGE #edge, \
                             DTR.SYNSEM.LOCAL.CAT.EDGE #edge ].')
-      climb_pass.add('passive-lex-rule := [ SYNSEM.LOCAL.CAT.EDGE #edge, \
+      climb_pass.add('gen-passive-lex-rule := [ SYNSEM.LOCAL.CAT.EDGE #edge, \
                             DTR.SYNSEM.LOCAL.CAT.EDGE #edge ].')
     lrules.add('passive-lr := passive-lex-rule.')
-    climb_pass.add('passive-lr := passive-lex-rule.',section='lrules')
-    lr_n = 'passive-lex-rule'
+    climb_pass.add('passive-lr := passive-lex-rule.',section='lrules') 
+    if ch.get('imp-passive') == 'yes':
+      lrules.add('imp-passive-lr := imp-passive-lex-rule.')
+      climb_pass.add('imp-passive-lr := imp-passive-lex-rule.',section='lrules') 
+    lr_n = 'gen-passive-lex-rule'
     mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
     climb_pass.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
     if marking == 'aux':
