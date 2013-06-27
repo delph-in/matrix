@@ -163,6 +163,10 @@ def define_coord_strat(ch, num, pos, top, mid, bot, left, pre, suf, agreement, n
     for nf in noun_feat:
       if nf in agr:
         add_sharing_supertypes(mylang, climb_coord, pn, mid, nf)
+      #adding sharing head (which makes sharing case superfluous TODO)
+      #because some structures can only occur with certain heads and both
+      #conjuncts should have this head
+    add_sharing_supertypes(mylang, climb_coord, pn, mid, 'head')
     
 
     if np_number and pos != 'adj':

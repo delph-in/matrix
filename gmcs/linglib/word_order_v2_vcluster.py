@@ -540,23 +540,30 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules, climb_gwo)
 
 def create_wh_wo_phrases(ch, mylang, climb_wh):
 
+### RESTRICTING ALL THAT IS VC OR 2ND TO VERBAL HEADS 2013-06-02
+### TODO: SEE IF THIS IS NECESSARY
+
+
   mylang.add('head-wh-subj-phrase := basic-head-wh-subj-phrase & head-initial-head-nexus & nonverbal-comp-phrase.')
-  mylang.add('wh-subj-head-vc-phrase := basic-head-wh-subj-phrase & head-final-invc & nonverbal-comp-phrase.')
+  mylang.add('wh-subj-head-vc-phrase := basic-head-wh-subj-phrase & head-final-invc & nonverbal-comp-phrase & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
   
   mylang.add('wh-adjunct-head-phrase := basic-head-wh-mod-phrase-simple & \
             [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +rp ].')
 
   mylang.add('head-2nd-wh-adj-int-phrase := head-wh-adj-int-phrase & \
-               head-initial-head-nexus & wh-adjunct-head-phrase.')
+               head-initial-head-nexus & wh-adjunct-head-phrase & \
+              [ SYNSEM.LOCAL.CAT.HEAD verb ].')
 
   climb_wh.add('head-wh-subj-phrase := basic-head-wh-subj-phrase & head-initial-head-nexus & nonverbal-comp-phrase.')
-  climb_wh.add('wh-subj-head-vc-phrase := basic-head-wh-subj-phrase & head-final-invc & nonverbal-comp-phrase.')
+  climb_wh.add('wh-subj-head-vc-phrase := basic-head-wh-subj-phrase & head-final-invc & nonverbal-comp-phrase & \
+              [ SYNSEM.LOCAL.CAT.HEAD verb ].')
   
   climb_wh.add('wh-adjunct-head-phrase := basic-head-wh-mod-phrase-simple & \
             [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +rp ].')
 
   climb_wh.add('head-2nd-wh-adj-int-phrase := head-wh-adj-int-phrase & \
-               head-initial-head-nexus & wh-adjunct-head-phrase.')
+               head-initial-head-nexus & wh-adjunct-head-phrase & \
+             [ SYNSEM.LOCAL.CAT.HEAD verb ].')
 
   hf_invc = ''
   if ch.get('v2-analysis') == 'filler-gap':
@@ -564,35 +571,39 @@ def create_wh_wo_phrases(ch, mylang, climb_wh):
   else:
     hf_invc = 'head-final-invc'
   mylang.add('adj-head-int-vc-phrase := adj-head-int-phrase & ' 
-             + hf_invc + ' & adjunct-head-phrase.')
+             + hf_invc + ' & adjunct-head-phrase  \
+              [ SYNSEM.LOCAL.CAT.HEAD verb ].')
 
   mylang.add('wh-adj-head-int-vc-phrase := wh-adj-head-int-phrase & \
-                head-final-invc & wh-adjunct-head-phrase.')
+                head-final-invc & wh-adjunct-head-phrase  & \
+              [ SYNSEM.LOCAL.CAT.HEAD verb ].')
 
   mylang.add('comp-aux-vc-phrase := head-non-wh-or-rel.')
   if ch.get('vc-placement') == 'post':
-    mylang.add('comp-head-vc-phrase := head-non-wh-or-rel & share-que-non-head-phrase.')
+    mylang.add('comp-head-vc-phrase := head-non-wh-or-rel & share-que-non-head-phrase  & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
     mylang.add('wh-comp-head-vc-phrase := general-comp-head-vc-phrase & \
-               nonverbal-comp-phrase & head-wh.') 
-    climb_wh.add('comp-head-vc-phrase := head-non-wh-or-rel & share-que-non-head-phrase.')
+               nonverbal-comp-phrase & head-wh  & \
+              [ SYNSEM.LOCAL.CAT.HEAD verb ].') 
+    climb_wh.add('comp-head-vc-phrase := head-non-wh-or-rel & share-que-non-head-phrase  & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
     climb_wh.add('wh-comp-head-vc-phrase := general-comp-head-vc-phrase & \
-               nonverbal-comp-phrase & head-wh.') 
+               nonverbal-comp-phrase & head-wh & \
+                [ SYNSEM.LOCAL.CAT.HEAD verb ].') 
   else:
-    mylang.add('head-comp-vc-phrase := head-non-wh-or-rel & share-que-non-head-phrase.')
+    mylang.add('head-comp-vc-phrase := head-non-wh-or-rel & share-que-non-head-phrase  & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
     mylang.add('head-wh-comp-vc-phrase := general-head-comp-vc-phrase & \
-               nonverbal-comp-phrase & head-wh.') 
-    climb_wh.add('head-comp-vc-phrase := head-non-wh-or-rel & share-que-non-head-phrase.')
+               nonverbal-comp-phrase & head-wh & [ SYNSEM.LOCAL.CAT.HEAD verb ].') 
+    climb_wh.add('head-comp-vc-phrase := head-non-wh-or-rel & share-que-non-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
     climb_wh.add('head-wh-comp-vc-phrase := general-head-comp-vc-phrase & \
-               nonverbal-comp-phrase & head-wh.') 
+               nonverbal-comp-phrase & head-wh & [ SYNSEM.LOCAL.CAT.HEAD verb ].') 
     
   mylang.add('head-comp-phrase := head-non-wh-or-rel.')
   mylang.add('adjunct-head-phrase := head-non-wh-or-rel.') 
 
   climb_wh.add('adj-head-int-vc-phrase := adj-head-int-phrase & ' 
-             + hf_invc + ' & adjunct-head-phrase.')
+             + hf_invc + ' & adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
 
   climb_wh.add('wh-adj-head-int-vc-phrase := wh-adj-head-int-phrase & \
-                head-final-invc & wh-adjunct-head-phrase.')
+                head-final-invc & wh-adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
 
   climb_wh.add('comp-aux-vc-phrase := head-non-wh-or-rel.')
   climb_wh.add('head-comp-phrase := head-non-wh-or-rel.')
@@ -694,11 +705,9 @@ def create_nachfeld_phrases(ch, mylang, rules, climb_gwo):
     climb_gwo.add(f + ' := nf-form.', comment='section=features')
   nf_type = '''nachfeld-phrase := head-initial &
  [ SYNSEM.LOCAL.CAT [ VC na-or--,
-		      VFRONT #vf,
 		      MC #mc ],
    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
 			       VC bool,
-			       VFRONT #vf,
 			       MC #mc ],
    NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD +vpc & [ FORM nf-form ] ],
 			 NON-LOCAL [ SLASH 0-dlist,
@@ -708,6 +717,7 @@ def create_nachfeld_phrases(ch, mylang, rules, climb_gwo):
  
   mylang.add(nf_type)
   climb_gwo.add(nf_type)
+
   if ch.get('extraposition'):
     mylang.add('nachfeld-phrase := collect-anchor-phrase.')
     climb_gwo.add('nachfeld-phrase := collect-anchor-phrase.')
@@ -726,6 +736,17 @@ def create_nachfeld_phrases(ch, mylang, rules, climb_gwo):
 
   mylang.add(typedef)
   climb_gwo.add(typedef)
+
+
+  if ch.get('split-cluster') == 'yes':
+    mylang.add('nachfeld-phrase := [ SYNSEM.LOCAL.CAT.VFRONT #vfront, \
+                                     HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vfront ].')
+    climb_gwo.add('nachfeld-phrase := [ SYNSEM.LOCAL.CAT.VFRONT #vfront,\
+                                     HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vfront ].')
+    mylang.add('extracted-comp-phrase-nachfeld := [ SYNSEM.LOCAL.CAT.VFRONT #vfront & -, \
+                                     HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vfront ].')
+    climb_gwo.add('extracted-comp-phrase-nachfeld := [ SYNSEM.LOCAL.CAT.VFRONT #vfront & -, \
+                                     HEAD-DTR.SYNSEM.LOCAL.CAT.VFRONT #vfront ].')
 
   if ch.get('ldd') == 'yes':
     mylang.add('cat :+ [ HEADFINAL bool ].')
@@ -1826,10 +1847,12 @@ def create_germanic_adjunct_phrases(ch, mylang, rules, climb_gwo):
     climb_gwo.add('cat :+ [ EDGE luk ].')
 
   mylang.add('head-2nd-adj-phrase := head-initial-head-nexus & adjunct-head-phrase & \
- [ SYNSEM.LOCAL.CAT.EDGE #edge, \
+ [ SYNSEM.LOCAL.CAT [ EDGE #edge, \
+                      HEAD verb ], \
    HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #edge ].')
   climb_gwo.add('head-2nd-adj-phrase := head-initial-head-nexus & adjunct-head-phrase & \
- [ SYNSEM.LOCAL.CAT.EDGE #edge, \
+ [ SYNSEM.LOCAL.CAT [ EDGE #edge, \
+                      HEAD verb ], \
    HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #edge ].')
 ####only verbs can be modified by post-modifying adverbs
   if ch.get('q-inv') and ch.get('vc-analysis') == 'aux-rule':
@@ -1848,12 +1871,12 @@ def create_germanic_adjunct_phrases(ch, mylang, rules, climb_gwo):
 
  
   if not ch.get('v2-analysis') == 'filler-gap':
-    mylang.add('adj-head-2nd-int-phrase := adj-head-int-phrase & head-final-head-nexus & adjunct-head-phrase.')
+    mylang.add('adj-head-2nd-int-phrase := adj-head-int-phrase & head-final-head-nexus & adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
  
-    mylang.add('adj-head-2nd-scop-phrase := adj-head-scop-phrase & head-final-head-nexus & adjunct-head-phrase.')
-    climb_gwo.add('adj-head-2nd-int-phrase := adj-head-int-phrase & head-final-head-nexus & adjunct-head-phrase.')
+    mylang.add('adj-head-2nd-scop-phrase := adj-head-scop-phrase & head-final-head-nexus & adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
+    climb_gwo.add('adj-head-2nd-int-phrase := adj-head-int-phrase & head-final-head-nexus & adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
  
-    climb_gwo.add('adj-head-2nd-scop-phrase := adj-head-scop-phrase & head-final-head-nexus & adjunct-head-phrase.')
+    climb_gwo.add('adj-head-2nd-scop-phrase := adj-head-scop-phrase & head-final-head-nexus & adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
 
     rules.add('adj-head-2nd-int := adj-head-2nd-int-phrase.')
     rules.add('adj-head-2nd-scop := adj-head-2nd-scop-phrase.')
@@ -2043,14 +2066,14 @@ def wh_mc_word_order_phrases(mylang, climb_gwo):
   
   mylang.add('wh-subj-head-phrase := basic-head-wh-subj-phrase & head-final-head-nexus.')
   mylang.add('wh-adj-head-2nd-int-phrase := wh-adj-head-int-phrase & \
-               head-final-head-nexus & wh-adjunct-head-phrase.')
+               head-final-head-nexus & wh-adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
   mylang.add('comp-head-phrase := head-non-wh-or-rel.')
   mylang.add('wh-comp-head-phrase := head-wh & basic-head-1st-comp-phrase & \
                         head-final-head-nexus.')
 
   climb_gwo.add('wh-subj-head-phrase := basic-head-wh-subj-phrase & head-final-head-nexus.')
   climb_gwo.add('wh-adj-head-2nd-int-phrase := wh-adj-head-int-phrase & \
-               head-final-head-nexus & wh-adjunct-head-phrase.')
+               head-final-head-nexus & wh-adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
   climb_gwo.add('comp-head-phrase := head-non-wh-or-rel.')
   climb_gwo.add('wh-comp-head-phrase := head-wh & basic-head-1st-comp-phrase & \
                         head-final-head-nexus.')

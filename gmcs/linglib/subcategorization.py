@@ -57,8 +57,10 @@ def create_subcategorization_values(ch, mylang, climb_verbs):
         mylang.add('wh-synsem := ' + name + ' & \
                                   [ LOCAL.CONT.HOOK.INDEX.SF ques ].')
         mylang.add('phr-wh-synsem := wh-synsem & phr-synsem.')
+        mylang.add('unexpressed-wh-synsem := wh-synsem & unexpressed.')
         mylang.add('gap-wh-synsem := wh-synsem & gap.')
         mylang.add('phr-prop-synsem := prop-comp-synsem & phr-synsem.')
+        mylang.add('unexpressed-prop-synsem := prop-comp-synsem & unexpressed.')
         mylang.add('gap-prop-synsem := prop-comp-synsem & gap.')
         climb_verbs.add(name + ' := [ LOCAL.CONT.HOOK.INDEX.SF prop-or-ques ].')
         climb_verbs.add('prop-' + name + ' := ' + name + ' & \
@@ -66,8 +68,10 @@ def create_subcategorization_values(ch, mylang, climb_verbs):
         climb_verbs.add('wh-synsem := ' + name + ' & \
                                   [ LOCAL.CONT.HOOK.INDEX.SF ques ].')
         climb_verbs.add('phr-wh-synsem := wh-synsem & phr-synsem.')
+        climb_verbs.add('unexpressed-wh-synsem := wh-synsem & unexpressed.')
         climb_verbs.add('gap-wh-synsem := wh-synsem & gap.')
         climb_verbs.add('phr-prop-synsem := prop-comp-synsem & phr-synsem.')
+        climb_verbs.add('unexpressed-prop-synsem := prop-synsem & unexpressed.')
         climb_verbs.add('gap-prop-synsem := prop-comp-synsem & gap.')
       elif head == 'adj':
         mylang.add(name + ' := [ LOCAL.CAT.HEAD.PRD + ].')
@@ -130,10 +134,12 @@ def create_synsem_cross_classifications(ch, mylang, climb_verbs):
 # should be able to occur as phrase (as argument) or be gapped
 # subtypes allowing for both unifications
     mylang.add('phr-' + name + ' := ' + name + ' & phr-synsem.')
+    mylang.add('unexpressed-' + name + ' := ' + name + ' & unexpressed.')
     mylang.add('gap-' + name + ' := ' + name + ' & gap.')
 
     climb_verbs.add(name + ' := ' + parts[0] + '-synsem.')
     climb_verbs.add('phr-' + name + ' := ' + name + ' & phr-synsem.')
+    climb_verbs.add('unexpressed-' + name + ' := ' + name + ' & unexpressed.')
     climb_verbs.add('gap-' + name + ' := ' + name + ' & gap.')
     if not comb in exs:
       mylang.add(name + ' := synsem-sat.')
@@ -280,8 +286,10 @@ def create_basic_subject_values(ch, mylang, stype, climb_lex):
     climb_lex.add('expl-synsem := ' + pref + '-synsem & \
                     [ LOCAL.CONT.HOOK.INDEX expl-ind ].')
     mylang.add('phr-expl-synsem := expl-synsem & phr-synsem.')
+    mylang.add('unexpressed-expl-synsem := expl-synsem & unexpressed.')
     mylang.add('gap-expl-synsem := expl-synsem & gap.')
     climb_lex.add('phr-expl-synsem := expl-synsem & phr-synsem.')
+    climb_lex.add('unexpressed-expl-synsem := expl-synsem & unexpressed.')
     climb_lex.add('gap-expl-synsem := expl-synsem & gap.')
       
   if ch.get('vmorph-exceptions'):
