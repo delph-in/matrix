@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python2
 
 ### $Id: matrix.cgi,v 1.27 2008-09-09 08:37:52 sfd Exp $
 

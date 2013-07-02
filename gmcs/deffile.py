@@ -22,6 +22,7 @@ import gzip
 import zipfile
 import gmcs.tdl
 
+from gmcs import choices
 from gmcs.choices import ChoicesFile
 from gmcs.utils import tokenize_def
 from gmcs import generate
@@ -565,6 +566,9 @@ class MatrixDefFile:
 
   def __init__(self, def_file):
     self.def_file = def_file
+    f = open(self.def_file)
+    self.def_lines = merge_quoted_strings(f.readlines()) 
+    f.close()
     self.make_name_map()
 
   ######################################################################
@@ -572,11 +576,7 @@ class MatrixDefFile:
   
   # initialize the v2f and f2v dicts
   def make_name_map(self):
-    f = open(self.def_file, 'r')
-    line = merge_quoted_strings(f.readlines())
-    f.close()
-  
-    for l in line:
+    for l in self.def_lines:
       l = l.strip()
       if len(l):
         w = tokenize_def(l)
@@ -634,15 +634,11 @@ class MatrixDefFile:
     except:
       pass
 
-    f = open(self.def_file, 'r')
-    line = merge_quoted_strings(f.readlines())
-    f.close()
-
     # pass through the definition file once, augmenting the list of validation
     # results with section names so that we can put red asterisks on the links
     # to the assocated sub-pages on the main page.
     prefix = ''
-    for l in line:
+    for l in self.def_lines:
       word = tokenize_def(l)
       if len(word) < 2 or word[0][0] == '#':
         pass
@@ -671,7 +667,7 @@ class MatrixDefFile:
             break
 
     # now pass through again to actually emit the page
-    for l in line:
+    for l in self.def_lines:
       word = tokenize_def(l)
       if len(word) == 0:
         pass
@@ -753,8 +749,7 @@ class MatrixDefFile:
 
       for f in globlist:
         f = f.replace('\\', '/')
-        choices = ChoicesFile(f)
-        lang = choices.get('language') or '(empty questionnaire)'
+        lang = choices.get_choice('language',f) or '(empty questionnaire)'
         if lang == 'minimal-grammar':
           lang = '(minimal grammar)'
         linklist[lang] = f
@@ -1067,19 +1062,14 @@ class MatrixDefFile:
     choices_file = 'sessions/' + cookie + '/choices'
     choices = ChoicesFile(choices_file)
 
-    f = open(self.def_file, 'r')
-    lines = merge_quoted_strings(f.readlines())
-    
-    f.close()
-
     section_begin = -1
     section_end = -1
     section_friendly = ''
 
 
     i = 0
-    while i < len(lines):
-      word = tokenize_def(lines[i])
+    while i < len(self.def_lines):
+      word = tokenize_def(self.def_lines[i])
       if len(word) == 0:
         pass
       elif word[0] == 'Section':
@@ -1124,7 +1114,7 @@ class MatrixDefFile:
       sec_links = []
       n = -1
       printed = False 
-      for l in lines:
+      for l in self.def_lines:
         word = tokenize_def(l)
         cur_sec = ''
         if len(word) < 2 or word[0][0] == '#':
@@ -1182,7 +1172,7 @@ class MatrixDefFile:
       print html_input(vr, 'hidden', 'section', section,
                        False, '', '\n')
       print html_input(vr, 'hidden', 'subpage', section, False, '', '\n')
-      print self.defs_to_html(lines[section_begin:section_end],
+      print self.defs_to_html(self.def_lines[section_begin:section_end],
                               choices, vr,
                               '', {})
 
@@ -1459,11 +1449,6 @@ class MatrixDefFile:
         if not found_negform:
           old_choices['nf-subform%d_name' % next_n ] = 'negform' 
 
-    # Open the def file and store it in lines[]
-    f = open(self.def_file, 'r')
-    lines = merge_quoted_strings(f.readlines())
-    f.close()
-
     # Now pass through the def file, writing out either the old choices
     # for each section or, for the section we're saving, the new choices
     f = open(choices_file, 'w')
@@ -1473,13 +1458,13 @@ class MatrixDefFile:
     cur_sec = ''
     cur_sec_begin = 0
     i = 0
-    while i < len(lines):
-      word = tokenize_def(lines[i])
+    while i < len(self.def_lines):
+      word = tokenize_def(self.def_lines[i])
       if len(word) == 0:
         pass
       elif word[0] == 'Section':
         if cur_sec:
-          self.save_choices_section(lines[cur_sec_begin:i], f, choices)
+          self.save_choices_section(self.def_lines[cur_sec_begin:i], f, choices)
           f.write('\n')
         cur_sec = word[1]
         cur_sec_begin = i + 1
@@ -1491,7 +1476,7 @@ class MatrixDefFile:
       i += 1
     # Make sure to save the last section
     if cur_sec_begin:
-      self.save_choices_section(lines[cur_sec_begin:i], f, choices)
+      self.save_choices_section(self.def_lines[cur_sec_begin:i], f, choices)
 
     f.close()
 
