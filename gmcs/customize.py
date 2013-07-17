@@ -166,6 +166,42 @@ def customize_punctuation(grammar_path):
 #    print >>pet_set, line.rstrip().encode('utf8')
 #  pet_set.close()
 
+#####################################################################
+#
+# adds fragment root as option to globals, if called by choices
+
+def customize_globals(grammar_path):
+  
+  
+  try:
+    o_gl = open(os.path.join(grammar_path, 'lkb/globals.lsp'), 'r')
+    lines = o_gl.readlines()
+    o_gl.close()
+    n_gl = open(os.path.join(grammar_path, 'lkb/globals.lsp'), 'w')
+    for line in lines:
+      if '*start-symbol*' in line:
+        n_gl.write('(defparameter *start-symbol* \'(root phrase-root)\n')
+      else:
+        n_gl.write(line)
+    n_gl.close()
+  except:
+    pass
+
+def customize_root_in_pet(grammar_path):
+  try:
+    pet_set = open(os.path.join(grammar_path, 'pet/pet.set'), 'r')
+    lines = pet_set.readlines()
+    pet_set.close()
+    new_pet_set = open(os.path.join(grammar_path, 'pet/pet.set'), 'w')
+    for line in lines:
+      if 'start-symbols := ' in line:
+        new_pet_set.write('start-symbols := $root $phrase-root.')
+      else:
+        new_pet_set.write(line)
+    new_pet_set.close()
+  except:
+    pass
+
 ######################################################################
 # customize_test_sentences(grammar_path)
 #   Create the script file entries for the user's test sentences.
@@ -278,7 +314,7 @@ def customize_acetdl(grammar_path):
 # customize_roots()
 #   Create the file roots.tdl
 
-def customize_roots():
+def customize_roots(grammar_path):
   comment = \
     'A sample start symbol: Accept fully-saturated verbal\n' + \
     'projections only; if a grammar makes use of the head-subject and\n' + \
@@ -326,6 +362,21 @@ def customize_roots():
     roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD +vc ].')
   else:
     roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD verb ].')
+
+
+  if ch.get('phrase-root') == 'on':
+    comment = \
+     'This root is for phrases only. Should be turned on when data\n' + \
+     'also contains titles of articles or for parsing fragments'
+    typedef = \
+     '''phrase-root := phrase &
+        [ SYNSEM [ NON-LOCAL.SLASH <! !>,
+                   LOCAL [ ANCHOR.TO-BIND < >,
+                           CAT.VAL [ SUBJ < >,
+                                     COMPS < > ] ] ] ].'''
+    roots.add(typedef, comment) 
+    customize_globals(grammar_path)
+    customize_root_in_pet(grammar_path)
 
   comment = \
     'This start symbol allows you to parse single words as stand-alone\n' + \
@@ -618,7 +669,7 @@ def customize_matrix(path, arch_type, destination=None):
   customize_script(grammar_path)
   customize_pettdl(grammar_path)
   customize_acetdl(grammar_path)
-  customize_roots()
+  customize_roots(grammar_path)
 
   # Save the output files
   mylang.save()
