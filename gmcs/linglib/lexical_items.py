@@ -1007,39 +1007,40 @@ def customize_adjectives(mylang, ch, lexicon, rules, climb_lex, hierarchies):
       '''independent_adjective_phrase := basic-unary-phrase & phrasal &
   [ SYNSEM [ LOCAL [ CAT [ HEAD noun &
                                 [ MOD < >,
-                                  CASE #case,
-                                  STRONG #strong ],
+				  CASE #case,
+				  STRONG #strength ],
                            VAL [ SUBJ < >,
-                                 SPR < synsem &
-                                       [ LOCAL [ CAT [ VAL [ SPR < >,
-                                                           COMPS < > ],
-                                                 HEAD det ],
-                                                 AGR #index ],
-                                         NON-LOCAL.REL 0-dlist,
-                                         OPT - ], ... >,
+                                 SPR.FIRST synsem &
+                                           [ LOCAL [ CAT [ VAL [ SPR < >,
+                                                                 COMPS < > ]
+                                                           HEAD det ],
+                                                     AGR #index ],
+                                             NON-LOCAL.REL 0-dlist,
+                                             OPT - ],
                                  COMPS < >,
                                  SPEC < > ] ],
                      AGR #agr,
-                     COORD - ],
+		     COORD - ],
              NON-LOCAL [ QUE 0-dlist,
                          REL 0-dlist ] ],
-    ARGS < unary-phrase & [ INFLECTED infl-satisfied,
-             SYNSEM 
-	      [ LOCAL 
-		 [ CAT [ HEAD adj &
-			      [ MOD < synsem & [ LOCAL [ AGR #agr &
-							   [ PNG #png ],
-                                                         CAT.HEAD.CASE #case ] >, 
-                                STRONG #strong ],
-			 VAL [ SUBJ < >,
-			       COMPS < > ] ],
-		   CONT.HOOK [ LTOP #nhand,
-			       XARG #index  ] ] ] ] >,
+    ARGS < word-or-lexrule & [ SYNSEM [ LOCAL [ CAT [ HEAD adj &
+                                       [ STRONG #strength,
+                                         MOD < synsem &
+                                               [ LOCAL [ AGR #agr &
+                                                           [ PNG #png ],
+							 CAT.HEAD.CASE #case ] ] > ],
+                                  VAL [ SUBJ < >,
+                                        COMPS < > ] ],
+                            CONT.HOOK [ LTOP #nhand,
+                                        XARG #index ],
+		     COORD - ] ] ] >,
     C-CONT [ HOOK [ LTOP #nhand,
-                    INDEX #index & [ PNG #png ] ],
-	     RELS.LIST < [ LBL #nhand,
-                           ARG0 #index ], ... > ] ].
+                    INDEX #index &
+                          [ PNG #png ] ],
+             RELS.LIST.FIRST [ LBL #nhand,
+                               ARG0 #index ] ] ].
       '''
+
       mylang.add(adj_to_noun_phrase, section='phrases')
       climb_lex.add(adj_to_noun_phrase, comment='section=\'phrases\'')
       rules.add('ind_adjective := independent_adjective_phrase.') 
