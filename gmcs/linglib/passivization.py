@@ -180,7 +180,12 @@ def customize_passivization(ch, mylang, lrules, lexicon, climb_files):
     climb_pass.add('passive-lr := passive-lex-rule.',section='lrules') 
     if ch.get('imp-passive') == 'yes':
       lrules.add('imp-passive-lr := imp-passive-lex-rule.')
-      climb_pass.add('imp-passive-lr := imp-passive-lex-rule.',section='lrules') 
+      climb_pass.add('imp-passive-lr := imp-passive-lex-rule.',section='lrules')
+
+    if ch.get('verb-to-adj-passive') == 'yes': 
+      lrules.add('part-to-adj := participle-to-adj-rule.')
+      climb_pass.add('part-to-adj := participle-to-adj-rule.',section='lrules')
+
     lr_n = 'gen-passive-lex-rule'
     mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
     climb_pass.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
