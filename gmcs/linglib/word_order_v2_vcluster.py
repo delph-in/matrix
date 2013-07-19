@@ -1848,11 +1848,11 @@ def create_germanic_adjunct_phrases(ch, mylang, rules, climb_gwo):
 
   mylang.add('head-2nd-adj-phrase := head-initial-head-nexus & adjunct-head-phrase & \
  [ SYNSEM.LOCAL.CAT [ EDGE #edge, \
-                      HEAD verb ], \
+                      HEAD +nv ], \
    HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #edge ].')
   climb_gwo.add('head-2nd-adj-phrase := head-initial-head-nexus & adjunct-head-phrase & \
  [ SYNSEM.LOCAL.CAT [ EDGE #edge, \
-                      HEAD verb ], \
+                      HEAD +nv ], \
    HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #edge ].')
 ####only verbs can be modified by post-modifying adverbs
   if ch.get('q-inv') and ch.get('vc-analysis') == 'aux-rule':
@@ -1871,12 +1871,12 @@ def create_germanic_adjunct_phrases(ch, mylang, rules, climb_gwo):
 
  
   if not ch.get('v2-analysis') == 'filler-gap':
-    mylang.add('adj-head-2nd-int-phrase := adj-head-int-phrase & head-final-head-nexus & adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
+    mylang.add('adj-head-2nd-int-phrase := adj-head-int-phrase & head-final-head-nexus & adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD +nv ].')
  
-    mylang.add('adj-head-2nd-scop-phrase := adj-head-scop-phrase & head-final-head-nexus & adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
-    climb_gwo.add('adj-head-2nd-int-phrase := adj-head-int-phrase & head-final-head-nexus & adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
+    mylang.add('adj-head-2nd-scop-phrase := adj-head-scop-phrase & head-final-head-nexus & adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD +nv ].')
+    climb_gwo.add('adj-head-2nd-int-phrase := adj-head-int-phrase & head-final-head-nexus & adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD +nv ].')
  
-    climb_gwo.add('adj-head-2nd-scop-phrase := adj-head-scop-phrase & head-final-head-nexus & adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD verb ].')
+    climb_gwo.add('adj-head-2nd-scop-phrase := adj-head-scop-phrase & head-final-head-nexus & adjunct-head-phrase & [ SYNSEM.LOCAL.CAT.HEAD +nv ].')
 
     rules.add('adj-head-2nd-int := adj-head-2nd-int-phrase.')
     rules.add('adj-head-2nd-scop := adj-head-2nd-scop-phrase.')
