@@ -1006,7 +1006,9 @@ def customize_adjectives(mylang, ch, lexicon, rules, climb_lex, hierarchies):
       adj_to_noun_phrase = \
       '''independent_adjective_phrase := basic-unary-phrase & phrasal &
   [ SYNSEM [ LOCAL [ CAT [ HEAD noun &
-                                [ MOD < > ],
+                                [ MOD < >,
+                                  CASE #case,
+                                  STRONG #strong ],
                            VAL [ SUBJ < >,
                                  SPR < synsem &
                                        [ LOCAL [ CAT [ VAL [ SPR < >,
@@ -1017,14 +1019,18 @@ def customize_adjectives(mylang, ch, lexicon, rules, climb_lex, hierarchies):
                                          OPT - ], ... >,
                                  COMPS < >,
                                  SPEC < > ] ],
-                     AGR #agr ],
+                     AGR #agr,
+                     COORD - ],
              NON-LOCAL [ QUE 0-dlist,
                          REL 0-dlist ] ],
-    ARGS < [ SYNSEM 
+    ARGS < unary-phrase & [ INFLECTED infl-satisfied,
+             SYNSEM 
 	      [ LOCAL 
 		 [ CAT [ HEAD adj &
-			      [ MOD < synsem & [ LOCAL.AGR #agr &
-							   [ PNG #png ] ] > ],
+			      [ MOD < synsem & [ LOCAL [ AGR #agr &
+							   [ PNG #png ],
+                                                         CAT.HEAD.CASE #case ] >, 
+                                STRONG #strong ],
 			 VAL [ SUBJ < >,
 			       COMPS < > ] ],
 		   CONT.HOOK [ LTOP #nhand,
