@@ -1013,6 +1013,7 @@ def customize_adjectives(mylang, ch, lexicon, rules, climb_lex, hierarchies):
                                                            COMPS < > ],
                                                  AGR #index ],
                                          NON-LOCAL.REL 0-dlist ], ... >,
+                                 COMPS < >,
                                  SPEC < > ] ],
                      AGR #agr ],
              NON-LOCAL [ QUE 0-dlist,
