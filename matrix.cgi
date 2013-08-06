@@ -135,7 +135,7 @@ if form_data.has_key('customize'):
     arch_type = form_data['delivery'].value
   else:
     arch_type = ''
-  if arch_type != 'tgz' and arch_type != 'zip':
+  if arch_type not in [ 'tgz', 'zip' ]:
     vr.err('delivery', 'You must specify an archive type.')
 
   if vr.has_errors():

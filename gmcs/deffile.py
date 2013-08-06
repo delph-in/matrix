@@ -1129,7 +1129,7 @@ class MatrixDefFile:
           if cur_sec == section: 
             sec_links.append('</span><span class="navlinks">'+self.sections[cur_sec]+'</span>')
           else:
-            sec_links.append('</span><a class="navlinks" href="#'+cur_sec+'" onclick="submit_go(\''+cur_sec+'\')">'+self.sections[cur_sec]+'</a>')
+            sec_links.append('</span><a class="navlinks" href="?subpage='+cur_sec+'" onclick="submit_go(\''+cur_sec+'\')">'+self.sections[cur_sec]+'</a>')
           n+=1
         elif word[0] == 'BeginIter':
           if prefix:
@@ -1163,7 +1163,10 @@ class MatrixDefFile:
       print '<hr />'
       print '<a href="' + choices_file + '" class="navleft">Choices file</a><br /><div class="navleft" style="margin-bottom:0;padding-bottom:0">(right-click to download)</div>'
       print '<a href="#stay" onclick="document.forms[0].submit()" class="navleft">Save &amp; stay</a><br />'
-      print '<a href="#clear" onclick="clear_form()" class="navleft">Clear form</a>'
+      print '<a href="#clear" onclick="clear_form()" class="navleft">Clear form</a><br />'
+      if vr.has_errors() == 0:
+        print '<span class="navleft">Create grammar:</span><br />'
+        print '<a href="#customize" onclick="nav_customize(\'tgz\')" class="navleft" style="padding-left:15px">tgz</a>, <a href="#customize" onclick="nav_customize(\'zip\')" class="navleft">zip</a>'
       print '</div>'
 
 
@@ -1300,7 +1303,7 @@ class MatrixDefFile:
       print '<dl>'
       for k in vr.errors:
         print '<dt><b>' + k + ':</b></dt>'
-        print '<dd>' + vr.errors[k] + '</dd>'
+        print '<dd>' + vr.errors[k].message + '</dd>'
       print '</dl>'
 
     if vr.has_warnings():
@@ -1308,7 +1311,7 @@ class MatrixDefFile:
       print '<dl>'
       for k in vr.warnings:
         print '<dt><b>' + k + ':</b></dt>'
-        print '<dd>' + vr.warnings[k] + '</dd>'
+        print '<dd>' + vr.warnings[k].message + '</dd>'
       print '</dl>'
 
     print HTML_postbody
