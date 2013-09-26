@@ -160,16 +160,19 @@ def add_basic_phrases_v2_with_cluster(ch, mylang, rules, climb_gwo):
     climb_gwo.add('basic-extracted-subj-phrase :+ [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', comment='section=addenda')
 
 ###Additional trick to help efficiency: conj cannot be complement or subjects
-  comment = 'Conjunction markers and determiners cannot be complement or subject markers. Adding the appropriate restrictions helps against spurious analyses'
-  mylang.add('basic-head-comp-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvjrpcm ].', section='addenda')
-  climb_gwo.add('basic-head-comp-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvjrpcm ].', comment='section=addenda')
+###2013-09-26 changed so that it can be turned off.
+
+  if not ch.get('forbid-constraints-nhd') == 'on':
+    comment = 'Conjunction markers and determiners cannot be complement or subject markers. Adding the appropriate restrictions helps against spurious analyses'
+    mylang.add('basic-head-comp-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvjrpcm ].', section='addenda')
+    climb_gwo.add('basic-head-comp-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvjrpcm ].', comment='section=addenda')
 ###See comment
-  comment = 'Germanic languages (except for Icelandic) only have nominative NPs as subject'
-  mylang.add('basic-head-subj-phrase :+ \
+    comment = 'Germanic languages (except for Icelandic) only have nominative NPs as subject'
+    mylang.add('basic-head-subj-phrase :+ \
               [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD noun & [ CASE nom ], \
                                                 VAL.SPR < > ] ].', comment, section='addenda')
-  comment += '\n section=addenda'
-  climb_gwo.add('basic-head-subj-phrase :+ \
+    comment += '\n section=addenda'
+    climb_gwo.add('basic-head-subj-phrase :+ \
               [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD noun & [ CASE nom ], \
                                                 VAL.SPR < > ] ].', comment)
 
@@ -446,13 +449,19 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules, climb_gwo)
 
 ##nonverbal-comp-phrase: states that phrase cannot be used to combine
 ##head with verbal complement
+###2013-09-21 changing so that this only restricts to non-verbs when basic non-head-dtr constraints are not used
+  if not ch.get('forbid-constraints-nhd') == 'on':
+    hres = '+njrpcm'
+  else:
+    hres = '+njrpcdmo'
+
   mylang.add('nonverbal-comp-phrase := basic-binary-headed-phrase & \
-                   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +njrpcm, \
+                   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD ' + hres + ', \
                                                      VAL [ SPR < >, \
                                                            SUBJ < >, \
                                                            COMPS < > ] ] ].')
   climb_gwo.add('nonverbal-comp-phrase := basic-binary-headed-phrase & \
-                   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +njrpcm, \
+                   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD ' + hres + ', \
                                                      VAL [ SPR < >, \
                                                            SUBJ < >, \
                                                            COMPS < > ] ] ].')
@@ -945,10 +954,14 @@ def spec_word_order_phrases_argument_composition(ch, mylang, lrules, rules, clim
   mylang.add('cat :+ [ SECOND luk ].')
   climb_gwo.add('cat :+ [ SECOND luk ].')
 
-  mylang.add('basic-head-2nd-comp-phrase :+ \
+ 
+### 2013-09-26: changing this to an option that can be turned on or off
+
+  if not ch.get('forbid-constraints-nhd') == 'on':
+    mylang.add('basic-head-2nd-comp-phrase :+ \
  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvrpcdm ].','As coverage grows (nachfeld, comparatives), the unspecified COMPS list of auxiliaries leads to problems.', section='addenda')
 
-  climb_gwo.add('basic-head-2nd-comp-phrase :+ \
+    climb_gwo.add('basic-head-2nd-comp-phrase :+ \
  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvrpcdm ].','As coverage grows (nachfeld, comparatives), the unspecified COMPS list of auxiliaries leads to problems.\nsection=addenda')
 
 ###verbal items are [ VC + ]

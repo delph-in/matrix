@@ -939,6 +939,7 @@ def customize_np_word_order(mylang, ch, rules, climb_wo):
   if ch.get('has-adj') == 'yes':
     # adding adjective specific phrase
     # Germanic, same phrase for adverb modifiers when not modifying verbs
+    # 2013-09-26: Future work: avoid constraints on the phrases.
     adj_st = ''
     mylang.add('mod-non-verbal-head-phrase := basic-head-mod-phrase-simple & \
                  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +jr, \
