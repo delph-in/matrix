@@ -19,6 +19,10 @@ def create_extraposition(ch, mylang, rules, climb_files):
   else:
     mc_wo_slash_constraints(ch, mylang, climb_expos)
 
+  if ch.get('vc-analysis') == 'aux-rule':
+    mylang.add('cat :+ [ VFRONT luk ].', section='addenda')
+    climb_expos.add('cat :+ [ VFRONT luk ].', comment='section=addenda')
+
 def introducing_anchor_and_related_phrases(mylang, climb_expos):
 
   mylang.add('anchor-min := avm.') 

@@ -259,8 +259,8 @@ def mc_ldd_constraints(ch, mylang, climb_file):
 def add_ldd_additional_constraints_all(ch, mylang, climb_file):
 ####needed for long distance dependencies
   if not ch.get('edge-related-res'):
-    mylang.add('cat :+ [ EDGE luk ]', 'EDGE is used to prevent or assure specific sequences of phrases in the structure.',section='addenda')
-    climb_file.add('cat :+ [ EDGE luk ]', 'EDGE is used to prevent or assure specific sequences of phrases in the structure.',section='addenda')
+    mylang.add('cat :+ [ EDGE luk ].', 'EDGE is used to prevent or assure specific sequences of phrases in the structure.',section='addenda')
+    climb_file.add('cat :+ [ EDGE luk ].', 'EDGE is used to prevent or assure specific sequences of phrases in the structure.',section='addenda')
   mylang.add('head-initial-head-nexus := \
                 [ SYNSEM.LOCAL.CAT.EDGE #edge, \
                   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.EDGE #edge ].')
